@@ -75,6 +75,8 @@ import org.eclipse.ui.console.IConsoleConstants;
 public class PerspectiveFactory implements IPerspectiveFactory {
 	private static final String ID_BUILD_ACTION_SET =
 		"org.objectstyle.wolips.ui.BuildActionSet";
+	private static final String ID_WIZARDS_ACTION_SET =
+		"org.objectstyle.wolips.wizards.ElementCreationActionSet";
 	private static final String ID_RELATED =
 		"org.objectstyle.wolips.ui.view.RelatedView";
 
@@ -113,6 +115,7 @@ public class PerspectiveFactory implements IPerspectiveFactory {
 		layout.addActionSet(JavaUI.ID_ACTION_SET);
 		layout.addActionSet(JavaUI.ID_ELEMENT_CREATION_ACTION_SET);
 		layout.addActionSet(PerspectiveFactory.ID_BUILD_ACTION_SET);
+		layout.addActionSet(PerspectiveFactory.ID_WIZARDS_ACTION_SET);
 		layout.addActionSet(IPageLayout.ID_NAVIGATE_ACTION_SET);
 		// views - java
 		//layout.addShowViewShortcut(WOLipsPlugin.ID_Finder);

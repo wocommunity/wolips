@@ -54,6 +54,16 @@
          </description>
       </wizard>
       <wizard
+            name="%WOLips.D2WApplication"
+            icon="icons/woproject/d2wapplication_wiz.gif"
+            category="org.objectstyle.wolips.wizards.webobjects.5.1"
+            class="org.objectstyle.wolips.wizards.D2WApplicationWizard"
+            project="true"
+            id="org.objectstyle.wolips.wizards.new.wo.5.1.d2wapplication">
+         <description>
+         </description>
+      </wizard>
+      <wizard
             name="%WOLips.Framework"
             icon="icons/woproject/woframework_wiz.gif"
             category="org.objectstyle.wolips.wizards.webobjects.5.1"
@@ -86,4 +96,64 @@
          </selection>
       </wizard>
    </extension>
+<!-- =================================================================================== -->
+<!-- Extension: Action set in the perspective                                            -->
+<!-- =================================================================================== -->
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            label="%ElementCreationActionSet.label"
+            description="%ElementCreationActionSet.description"
+            visible="false"
+            id="org.objectstyle.wolips.wizards.ElementCreationActionSet">
+         <action
+               label="%OpenEOModelCreationWizard.label"
+               icon="icons/woproject/eomodel_wiz.gif"
+               tooltip="%OpenEOModelCreationWizard.tooltip"
+               class="org.objectstyle.wolips.wizards.actions.OpenEOModelWizard"
+               toolbarPath="Normal/WOLipsWizards"
+               id="org.objectstyle.wolips.wizards.actions.OpenEOModelWizard">
+         </action>
+         <action
+               label="%OpenWOComponentCreationWizard.label"
+               icon="icons/wobuilder/wocomponent_wiz.gif"
+               tooltip="%OpenWOComponentCreationWizard.tooltip"
+               class="org.objectstyle.wolips.wizards.actions.OpenWOComponentWizard"
+               toolbarPath="Normal/WOLipsWizards"
+               id="org.objectstyle.wolips.wizards.actions.OpenWOComponentWizard">
+         </action>
+         <action
+               label="%OpenJarProjectCreationWizard.label"
+               icon="icons/woproject/jar_project_wiz.gif"
+               tooltip="%OpenJarProjectCreationWizard.tooltip"
+               class="org.objectstyle.wolips.wizards.actions.OpenJarProjectWizard"
+               toolbarPath="Normal/WOLipsWizards"
+               id="org.objectstyle.wolips.wizards.actions.OpenJarProjectWizard">
+         </action>
+         <action
+               label="%OpenWOFrameworkCreationWizard.label"
+               icon="icons/woproject/woframework_wiz.gif"
+               tooltip="%OpenWOFrameworkCreationWizard.tooltip"
+               class="org.objectstyle.wolips.wizards.actions.OpenWOFrameworkWizard"
+               toolbarPath="Normal/WOLipsWizards"
+               id="org.objectstyle.wolips.wizards.actions.OpenWOFrameworkWizard">
+         </action>
+         <action
+               label="%OpenD2WApplicationCreationWizard.label"
+               icon="icons/woproject/d2wapplication_wiz.gif"
+               tooltip="%OpenD2WApplicationCreationWizard.tooltip"
+               class="org.objectstyle.wolips.wizards.actions.OpenD2WApplicationWizard"
+               toolbarPath="Normal/WOLipsWizards"
+               id="org.objectstyle.wolips.wizards.actions.OpenD2WApplicationWizard">
+         </action>
+         <action
+               label="%OpenWOApplicationCreationWizard.label"
+               icon="icons/woproject/woapplication_wiz.gif"
+               tooltip="%OpenWOApplicationCreationWizard.tooltip"
+               class="org.objectstyle.wolips.wizards.actions.OpenWOApplicationWizard"
+               toolbarPath="Normal/WOLipsWizards"
+               id="org.objectstyle.wolips.wizards.actions.OpenWOApplicationWizard">
+         </action>
+      </actionSet>
+	</extension>
 </fragment>
