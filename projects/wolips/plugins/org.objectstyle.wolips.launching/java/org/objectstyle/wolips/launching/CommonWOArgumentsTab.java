@@ -421,9 +421,7 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 	 * @see ILaunchConfigurationTab#getImage()
 	 */
 	public Image getImage() {
-		//TODO: return image
 		return null;
-		//return JavaDebugImages.get(JavaDebugImages.IMG_VIEW_ARGUMENTS_TAB);
 	}
 
 	/**
