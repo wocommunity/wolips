@@ -47,7 +47,6 @@
             </fileset>
 	</delete>
         <delete dir="wolips/update"/>
-        <delete dir="wolips/lib/eclipse"/>
         <delete dir="wolips/lib/jmechanic"/>
    </target>
 
@@ -104,8 +103,7 @@
 <!-- wolips -->
         <copy todir="wolips/lib">
             <fileset dir="../../woproject/lib">
-        	<include name="eclipse/*.jar"/>
-        	<include name="jmechanic/*.jar"/>
+		<include name="jmechanic/*.jar"/>
             </fileset>
         </copy>
 

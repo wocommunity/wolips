@@ -12,12 +12,20 @@
     <!-- classpath the classpath refid     -->
     <!-- ============================================= -->
     <target name="java">
+        <path id="full.classpath">
+	    <path refid="classpath"/>
+            <fileset dir="${eclipse.home}/plugins">
+                <include name="**/*.jar"/>
+		<exclude name="**/org.objectstyle.*/**"/>
+            </fileset>
+        </path>
+
        <javac srcdir="${param.plugin.dir}/java"
                 destdir="${param.java.dest.dir}"
                 deprecation="${compile.deprecation}"
                 debug="${compile.debug}"
                 optimize="${compile.optimize}">
-            <classpath refid="classpath"/>
+            <classpath refid="full.classpath"/>
         </javac>
     </target>
 

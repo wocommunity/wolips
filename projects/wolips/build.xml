@@ -5,20 +5,48 @@
 <!-- Serves as a facade for different helper build files.     -->
 <!-- ======================================================== -->
 <project name="wolips" default="" basedir=".">
-
     <!-- ========================================== -->
-    <!-- Build all.                                 -->
+    <!-- Verify eclipse.home.                       -->
     <!-- ========================================== -->
-    <target name="all">
+    <target name="verify">
+        <condition property="eclipse.home.set">
+            <isset property="eclipse.home"/>
+        </condition>
+        <condition property="eclipse.home.not.set">
+            <not>
+                <isset property="eclipse.home"/>
+            </not>
+        </condition>
+    </target>
+    <!-- ========================================== -->
+    <!-- Inform user.                               -->
+    <!-- ========================================== -->
+    <target name="inform_user" if="eclipse.home.not.set">
+        <echo message="Please set the property eclipse.home in your build.properties to build wolips."/>
+    </target>
+    <!-- ========================================== -->
+    <!-- Build all children.                        -->
+    <!-- ========================================== -->
+    <target name="all_children" if="eclipse.home.set">
 	<ant dir="plugins" target="all"/>
 	<ant dir="features" target="all"/>
     </target>
     <!-- ========================================== -->
-    <!-- Build dist.                                -->
+    <!-- Build all.                                 -->
     <!-- ========================================== -->
-    <target name="dist">
+    <target name="all" depends="verify,all_children,inform_user">
+    </target>
+    <!-- ========================================== -->
+    <!-- Build dist children.                       -->
+    <!-- ========================================== -->
+    <target name="dist_children" if="EclipseHomeSet">
 	<ant dir="plugins" target="dist"/>
 	<ant dir="features" target="dist"/>
+    </target>
+    <!-- ========================================== -->
+    <!-- Build dist.                                -->
+    <!-- ========================================== -->
+    <target name="dist" depends="verify,dist_children,inform_user">
     </target>
 
 </project>
