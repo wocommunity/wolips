@@ -98,18 +98,19 @@ public class RunAnt {
 	 */
 	public static void asAnt(String buildFile, IProgressMonitor monitor)
 		throws Exception {
-			AntRunner runner = null;
-			try {
-	runner = new AntRunner();
-		runner.setBuildFileLocation(buildFile);
-		//runner.setArguments("-Dmessage=Building -verbose");
-		monitor.subTask(
-			BuildMessages.getString("Build.SubTask.Name") + " " + buildFile);
-		runner.run(new SubProgressMonitor(monitor, 1));
-			}
-			finally {
-				runner = null;
-			}
+		AntRunner runner = null;
+		try {
+			runner = new AntRunner();
+			runner.setBuildFileLocation(buildFile);
+			//runner.setArguments("-Dmessage=Building -verbose");
+			monitor.subTask(
+				BuildMessages.getString("Build.SubTask.Name")
+					+ " "
+					+ buildFile);
+			runner.run(new SubProgressMonitor(monitor, 1));
+		} finally {
+			runner = null;
+		}
 	}
 
 	/**
@@ -162,7 +163,7 @@ public class RunAnt {
 	 * @param configuration the configuration to launch
 	 * @param mode launch mode - run or debug
 	 */
-	public static void launch(
+	private static void launch(
 		final ILaunchConfiguration configuration,
 		final String mode) {
 		ProgressMonitorDialog dialog =
@@ -201,7 +202,7 @@ public class RunAnt {
 	 * @param file
 	 * @return default launch configuration
 	 */
-	protected static ILaunchConfiguration createDefaultLaunchConfiguration(IFile file)
+	private static ILaunchConfiguration createDefaultLaunchConfiguration(IFile file)
 		throws CoreException {
 		ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
 		ILaunchConfigurationType type =

@@ -141,6 +141,12 @@ public class PreferencesPage
 					"Preferences.NSProjectSearchPath.Label"),
 				60,
 				getFieldEditorParent()));
+		addField(
+			new BooleanFieldEditor(
+				IWOLipsPluginConstants.PREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH,
+				PreferencesMessages.getString(
+					"Preferences.RebuildWOBuildProperties.Label"),
+				getFieldEditorParent()));
 		/*addField(
 			new StringFieldEditor(
 				IWOLipsPluginConstants

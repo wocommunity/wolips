@@ -108,6 +108,9 @@ public class Preferences {
 		store.setDefault(
 			IWOLipsPluginConstants.PREF_NS_PROJECT_SEARCH_PATH,
 			"");
+		store.setDefault(
+			IWOLipsPluginConstants.PREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH,
+			PreferencesMessages.getString(Preferences.falseString));
 	}
 
 	/**

@@ -78,6 +78,8 @@ public interface IWOLipsPluginConstants {
 		"org.objectstyle.wolips.Preference.RunAntAsExternalTool";
 	public static final String PREF_NS_PROJECT_SEARCH_PATH =
 		"org.objectstyle.wolips.Preference.NSProjectSearch";
+	public static final String PREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH =
+		"org.objectstyle.wolips.Preference.RebuildWOBuildPropertiesOnNextLaunch";
 	// flle extensions and resource identifier
 	public static final String EXT_PROJECT = "project";
 	public static final String EXT_SUBPROJECT = "subproj";

@@ -73,6 +73,7 @@ import org.objectstyle.wolips.env.Environment;
 import org.objectstyle.wolips.io.WOLipsLog;
 import org.objectstyle.wolips.listener.JavaElementChangeListener;
 import org.objectstyle.wolips.listener.ResourceChangeListener;
+import org.objectstyle.wolips.preferences.Preferences;
 import org.objectstyle.wolips.workbench.WorkbenchHelper;
 
 /**
@@ -118,6 +119,11 @@ public class EarlyStartup {
 	 * Method writePropertiesFileToUserHome.
 	 */
 	private static void writePropertiesFileToUserHome() throws Exception {
+		if (!Preferences
+			.getBoolean(
+				IWOLipsPluginConstants
+					.PREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH))
+			return;
 		URL relativeBuildFile = null;
 		URL buildFile = null;
 		IProgressMonitor monitor = null;
@@ -129,6 +135,10 @@ public class EarlyStartup {
 			buildFile = Platform.asLocalURL(relativeBuildFile);
 			monitor = new NullProgressMonitor();
 			RunAnt.asAnt(buildFile.getFile().toString(), monitor);
+			Preferences.setBoolean(
+				IWOLipsPluginConstants
+					.PREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH,
+				false);
 		} finally {
 			relativeBuildFile = null;
 			buildFile = null;
