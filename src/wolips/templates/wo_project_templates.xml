@@ -33,7 +33,7 @@
 		<nature id="org.eclipse.jdt.core.javanature"/>
 		<nature id="org.objectstyle.wolips.applicationnature"/>
 		<classpath>
-			<classpathentry kind="src" path="${project.name}.proj"/>
+			<classpathentry kind="src" path="src"/>
 			<classpathentry kind="var" path="NEXT_ROOT/Library/Frameworks/JavaWebObjects.framework/Resources/Java/javawebobjects.jar"/>
 			<classpathentry kind="var" path="NEXT_ROOT/Library/Frameworks/JavaFoundation.framework/Resources/Java/javafoundation.jar"/>
 			<classpathentry kind="var" path="NEXT_ROOT/Library/Frameworks/JavaXML.framework/Resources/Java/javaxml.jar"/>
@@ -61,7 +61,7 @@
 		<nature id="org.eclipse.jdt.core.javanature"/>
 		<nature id="org.objectstyle.wolips.applicationnature"/>
 		<classpath>
-			<classpathentry kind="src" path="${project.name}.proj"/>
+			<classpathentry kind="src" path="src"/>
 			<classpathentry kind="var" path="NEXT_ROOT/Library/Frameworks/JavaWebObjects.framework/Resources/Java/javawebobjects.jar"/>
 			<classpathentry kind="var" path="NEXT_ROOT/Library/Frameworks/JavaFoundation.framework/Resources/Java/javafoundation.jar"/>
 			<classpathentry kind="var" path="NEXT_ROOT/Library/Frameworks/JavaXML.framework/Resources/Java/javaxml.jar"/>
@@ -86,7 +86,7 @@
 		<nature id="org.eclipse.jdt.core.javanature"/>
 		<nature id="org.objectstyle.wolips.frameworknature"/>
 		<classpath>
-			<classpathentry kind="src" path="${project.name}.proj"/>
+			<classpathentry kind="src" path="src"/>
 			<classpathentry kind="var" path="NEXT_ROOT/Library/Frameworks/JavaWebObjects.framework/Resources/Java/javawebobjects.jar"/>
 			<classpathentry kind="var" path="NEXT_ROOT/Library/Frameworks/JavaFoundation.framework/Resources/Java/javafoundation.jar"/>
 			<classpathentry kind="var" path="NEXT_ROOT/Library/Frameworks/JavaXML.framework/Resources/Java/javaxml.jar"/>

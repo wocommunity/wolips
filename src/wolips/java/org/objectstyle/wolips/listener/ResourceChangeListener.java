@@ -70,7 +70,6 @@ import org.eclipse.core.runtime.QualifiedName;
 import org.objectstyle.wolips.IWOLipsPluginConstants;
 import org.objectstyle.wolips.WOLipsPlugin;
 import org.objectstyle.wolips.project.PBProjectUpdater;
-
 import com.webobjects.foundation.NSDictionary;
 import com.webobjects.foundation.NSMutableArray;
 import com.webobjects.foundation.NSMutableDictionary;
@@ -150,9 +149,7 @@ public class ResourceChangeListener
 					IResourceDelta.REMOVED);
 			}
 		}
-
 	}
-
 	private class ProjectFileResourceValidator
 		implements IResourceDeltaVisitor {
 		//private QualifiedName resourceQualifier;
@@ -252,7 +249,8 @@ public class ResourceChangeListener
 						// files with java extension are located in src folders
 						// the relating project file is determined through the
 						// name of the src folder containing the java file
-						if (EXT_JAVA.equals(resource.getFileExtension())) {
+						//if (EXT_JAVA.equals(resource.getFileExtension())) {
+						if (false) {
 							// determine project file
 							IResource parent = resource;
 							IPath projectFilePath = new Path(PROJECT_FILE_NAME);
@@ -316,6 +314,14 @@ public class ResourceChangeListener
 								resource,
 								CLASSES_ID,
 								projectFile);
+						}
+						if (EXT_JAVA.equals(resource.getFileExtension())) {
+							updateProjectFile(
+								kindOfChange,
+								resource,
+								CLASSES_ID,
+								resource.getParent().getFile(
+									new Path(PROJECT_FILE_NAME)));
 						} else if (
 							EXT_API.equals(resource.getFileExtension())
 								|| EXT_STRINGS.equals(

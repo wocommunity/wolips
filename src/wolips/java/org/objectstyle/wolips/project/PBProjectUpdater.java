@@ -58,7 +58,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -71,7 +70,6 @@ import org.objectstyle.wolips.IWOLipsPluginConstants;
 import org.objectstyle.wolips.WOLipsPlugin;
 import org.objectstyle.wolips.io.FileStringScanner;
 import org.objectstyle.woproject.pb.PBProject;
-
 import com.webobjects.foundation.NSArray;
 import com.webobjects.foundation.NSDictionary;
 /**
@@ -83,29 +81,37 @@ import com.webobjects.foundation.NSDictionary;
  * Window>Preferences>Java>Code Generation.
  */
 public class PBProjectUpdater {
-
 	//public static String PBProject = "PB.projectContainer"; moved to IWOLipsPluginConstants.PROJECT_FILE_NAME (mn)
 	private PBProject pbProject;
 	private IContainer projectContainer;
 	private static final String dirtyPBProject = "<?xml";
-
 	/**
 	 * Constructor for PBProjectUpdater.
 	 */
 	public PBProjectUpdater(IContainer aProjectContainer) {
 		super();
-		//pbProject = 
-		getPBProject(aProjectContainer);
-		projectContainer = aProjectContainer;
+		//check if theres a PB.project in the Container. If not go to the parent
+		IContainer findContainer = aProjectContainer;
+		while ((findContainer
+			.findMember(IWOLipsPluginConstants.PROJECT_FILE_NAME)
+			== null)
+			&& (findContainer.getParent() != null)) {
+			findContainer = findContainer.getParent();
+		}
+		if (findContainer.getParent() == null)
+			projectContainer = projectContainer.getProject();
+		if (findContainer.findMember(IWOLipsPluginConstants.PROJECT_FILE_NAME)
+			!= null)
+			projectContainer = findContainer;
+		getPBProject(projectContainer);
+		//projectContainer = aProjectContainer;
 	}
-
 	public void updatePBProject() throws CoreException {
 		syncPBProjectWithProject();
 		if (projectContainer != null)
 			PBProjectNotifications.postPBProjectDidUpgradeNotification(
 				projectContainer.getName());
 	}
-
 	/**
 	 * On MacOSX the EOModeler converts the PB.project file to xml.
 	 */
@@ -120,12 +126,12 @@ public class PBProjectUpdater {
 			WOLipsPlugin.log(anException);
 		}
 	}
-
 	private void getPBProject(IContainer aProject) {
-		IFile aPBProject =
-			aProject.getFile(
-				new Path(IWOLipsPluginConstants.PROJECT_FILE_NAME));
-		File aFile = aPBProject.getLocation().toFile();
+		File aFile =
+			aProject
+				.getFile(new Path(IWOLipsPluginConstants.PROJECT_FILE_NAME))
+				.getLocation()
+				.toFile();
 		pbProject = null;
 		fixEOModelerMacOSXBug(aFile);
 		try {
@@ -134,14 +140,13 @@ public class PBProjectUpdater {
 				new PBProject(
 					aFile,
 					!ProjectHelper.isWOAppBuilderInstalled(
-						(IProject) aProject));
+						(IProject) aProject.getProject()));
 			if (sync)
 				syncPBProjectWithProject();
 		} catch (Exception anException) {
 			WOLipsPlugin.log(anException);
 		}
 	}
-
 	private void syncPBProjectWithProject() {
 		try {
 			pbProject.update();
@@ -152,7 +157,6 @@ public class PBProjectUpdater {
 			WOLipsPlugin.log(ioex);
 		}
 	}
-
 	private void syncFilestable() {
 		ArrayList aClassesList = new ArrayList();
 		ArrayList aWOComponentsList = new ArrayList();
@@ -179,7 +183,6 @@ public class PBProjectUpdater {
 		this.syncWOComponents(aWOComponentsList);
 		this.syncWOAppResources(aWOAppResourcesList);
 	}
-
 	private void proceedResource(
 		IResource aResource,
 		List aClassesList,
@@ -236,7 +239,6 @@ public class PBProjectUpdater {
 	private void syncWOAppResources(List list) {
 		pbProject.setWoAppResources(list);
 	}
-
 	//////////// removing adding filestable resources
 	public void syncFilestable(
 		NSDictionary changedResources,

@@ -415,10 +415,10 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 							.EXT_SRC
 							.equals(classpathKind)) {
 							// set source path extension
-							if (!".".equals(currentRawPath)) {
+							if (!".".equals(currentRawPath) && false) {
 								currentRawPath += "."
 									+ IWOLipsPluginConstants.EXT_SRC;
-							} else {
+							} else if(false) {
 								// source path must be folder to create
 								// non-nested source path folder for subprojects
 								currentRawPath =
@@ -558,7 +558,8 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 					newSubproject.getProject().getFolder(
 						new Path(
 							newSubproject.getName()
-								+ "."
+								//+ "/"
+								+ "/"
 								+ IWOLipsPluginConstants.EXT_SRC));
 				try {
 					if (!parentResource.exists()) {

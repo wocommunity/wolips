@@ -13,3 +13,5 @@ This is our list of open items.
 - add a field to the component wizard to add the package for the component
 - JavaClientSupport
 - eclipse independent build.xml(launch the ant script from the commandline)
+- avoid the use of Eclipse internal Classes
+- avoid the use of foundation Classes
