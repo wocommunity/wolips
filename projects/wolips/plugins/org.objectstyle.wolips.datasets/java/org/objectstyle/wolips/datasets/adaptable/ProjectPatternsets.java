@@ -88,7 +88,7 @@ public class ProjectPatternsets extends AbstractProjectAdapterType {
 	public final static String ANT_FOLDER_NAME = "woproject";
 
 	public final static String LEGACY_ANT_FOLDER_NAME = "ant";
-	
+
 	private PatternsetMatcher woappResourcesIncludeMatcher = null;
 
 	private PatternsetMatcher woappResourcesExcludeMatcher = null;
@@ -127,9 +127,11 @@ public class ProjectPatternsets extends AbstractProjectAdapterType {
 	 * @return the ant folder within the project
 	 */
 	public IFolder getAntFolder() {
-		IFolder folder = this.getIProject().getFolder(ProjectPatternsets.LEGACY_ANT_FOLDER_NAME);
-		if(!folder.exists()) 
-			folder = this.getIProject().getFolder(ProjectPatternsets.ANT_FOLDER_NAME);
+		IFolder folder = this.getIProject().getFolder(
+				ProjectPatternsets.LEGACY_ANT_FOLDER_NAME);
+		if (!folder.exists())
+			folder = this.getIProject().getFolder(
+					ProjectPatternsets.ANT_FOLDER_NAME);
 		return folder;
 	}
 
@@ -279,9 +281,26 @@ public class ProjectPatternsets extends AbstractProjectAdapterType {
 		return this.woappResourcesIncludeMatcher;
 	}
 
-	private String toProjectRelativePath(IResource resource) {
+	private String[] toProjectRelativePaths(IResource resource) {
+		String[] returnValue = null;
+		if (resource.getParent().getType() != IResource.ROOT
+				&& resource.getParent().getType() != IResource.PROJECT) {
+			returnValue = new String[2];
+			IPath path = resource.getParent().getProjectRelativePath();
+			String string = resource.getProject().getName() + "/"
+					+ path.toString() + "/";
+			returnValue[0] = string;
+		} else {
+			returnValue = new String[1];
+		}
 		IPath path = resource.getProjectRelativePath();
-		return path.toString();
+		String string = resource.getProject().getName() + "/" + path.toString();
+		if (returnValue.length == 2) {
+			returnValue[1] = string;
+		} else {
+			returnValue[0] = string;
+		}
+		return returnValue;
 	}
 
 	/**
@@ -289,10 +308,10 @@ public class ProjectPatternsets extends AbstractProjectAdapterType {
 	 * @return
 	 */
 	public boolean matchesClassesPattern(IResource resource) {
-		String string = this.toProjectRelativePath(resource);
-		if (this.getClassesExcludeMatcher().match(string))
+		String[] strings = this.toProjectRelativePaths(resource);
+		if (this.getClassesExcludeMatcher().match(strings))
 			return false;
-		return this.getClassesIncludeMatcher().match(string);
+		return this.getClassesIncludeMatcher().match(strings);
 	}
 
 	/**
@@ -300,10 +319,10 @@ public class ProjectPatternsets extends AbstractProjectAdapterType {
 	 * @return
 	 */
 	public boolean matchesWOAppResourcesPattern(IResource resource) {
-		String string = this.toProjectRelativePath(resource);
-		if (this.getWoappResourcesExcludeMatcher().match(string))
+		String[] strings = this.toProjectRelativePaths(resource);
+		if (this.getWoappResourcesExcludeMatcher().match(strings))
 			return false;
-		return this.getWoappResourcesIncludeMatcher().match(string);
+		return this.getWoappResourcesIncludeMatcher().match(strings);
 	}
 
 	/**
@@ -311,10 +330,10 @@ public class ProjectPatternsets extends AbstractProjectAdapterType {
 	 * @return
 	 */
 	public boolean matchesResourcesPattern(IResource resource) {
-		String string = this.toProjectRelativePath(resource);
-		if (this.getResourcesExcludeMatcher().match(string))
+		String[] strings = this.toProjectRelativePaths(resource);
+		if (this.getResourcesExcludeMatcher().match(strings))
 			return false;
-		return this.getResourcesIncludeMatcher().match(string);
+		return this.getResourcesIncludeMatcher().match(strings);
 	}
 
 	/**
