@@ -114,7 +114,8 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 	 * @see org.eclipse.ui.IStartup#earlyStartup()
 	 */
 	public void earlyStartup() {
-		EarlyStartup.earlyStartup();
+		EarlyStartup earlyStartup = new EarlyStartup();
+		earlyStartup.earlyStartup();
 	}
 	/**
 	 * Returns an ImageDescriptor.

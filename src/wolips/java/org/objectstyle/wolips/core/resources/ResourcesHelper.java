@@ -71,6 +71,7 @@ import org.objectstyle.wolips.core.plugin.logging.WOLipsLog;
  * Window>Preferences>Java>Templates.
  * To enable and disable the creation of type comments go to
  * Window>Preferences>Java>Code Generation.
+ * @deprecated instead make your class a subclass of AWOLips
  */
 public class ResourcesHelper {
 
