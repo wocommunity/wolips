@@ -7,6 +7,22 @@
     </properties>
 
     <body>        
+        <!-- WO 5.2.2 section -->
+        <section name="WO 5.2.2">
+        	<p>How to enable the support for the old PB.project of WO 5.2.2 under Panther with Xcode.</p>
+ 			<p>At your own risk.</p>
+ 			<p>Restore the previous versions of the WODevKit and IDEServices frameworks located under</p> 
+ 			<p>/System/Library/PrivateFrameworks/ There are 2 ways to do this.</p>
+ 			<ul>
+            	<li><p>Restore them from the WO 5.2 or 5.2.1 CD with <a href="http://www.charlessoft.com/">pacifist</a>.</p></li>
+            	<li><p>Copy them from a 5.2.1 installation.</p></li>
+            </ul>
+            <p>Create 2 symlinks:</p>
+			<p>cd /System/Library/PrivateFrameworks/</p>
+			<p>sudo ln -s DevToolsRemoteClient.framework PBXRemoteClient.framework</p>
+			<p>cd DevToolsRemoteClient.framework/Versions/A/</p>
+			<p>sudo ln -s DevToolsRemoteClient PBXRemoteClient</p>
+ 		</section> 
         <!-- Bugs section -->
         <section name="Bugs">
         	<p>Report your <a href="http://objectstyle.org/jira/">bug</a>.</p>
