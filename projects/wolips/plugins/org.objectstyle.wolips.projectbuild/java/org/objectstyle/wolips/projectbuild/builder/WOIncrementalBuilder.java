@@ -131,11 +131,11 @@ public class WOIncrementalBuilder extends IncrementalProjectBuilder {
 			monitor = new NullProgressMonitor();
 		}
 		//monitor = new SubProgressMonitor (monitor, 100*1000);
-		System.out.println("<incremental build>");
+		//System.out.println("<incremental build>");
 		monitor.beginTask("building WebObjects layout ...", 100);
 		try {
 			IResourceDelta delta = getDelta(getProject());
-			System.out.println(delta);
+			//System.out.println(delta);
 			boolean fullBuild = (null != delta) && (kind == FULL_BUILD);
 			if (null != _buildVisitor) {
 				fullBuild = _buildVisitor.setBuildArgs(args) || fullBuild;
@@ -166,56 +166,56 @@ public class WOIncrementalBuilder extends IncrementalProjectBuilder {
 				monitor.subTask("scrubbing build folder ...");
 				buildFolder.refreshLocal(IResource.DEPTH_INFINITE, null);
 				monitor.worked(1);
-				System.out.println("refresh build folder took: "
-						+ (System.currentTimeMillis() - t0) + " ms");
+				//System.out.println("refresh build folder took: "
+				//		+ (System.currentTimeMillis() - t0) + " ms");
 				t0 = System.currentTimeMillis();
 				buildFolder.delete(true, false, null);
 				monitor.worked(2);
-				System.out.println("scrubbing build folder took: "
-						+ (System.currentTimeMillis() - t0) + " ms");
+				//System.out.println("scrubbing build folder took: "
+				//		+ (System.currentTimeMillis() - t0) + " ms");
 				t0 = System.currentTimeMillis();
 				buildFolder.refreshLocal(IResource.DEPTH_INFINITE, null);
 				monitor.subTask("re-creating structure ...");
 				_buildVisitor._checkDirs();
 				monitor.worked(2);
-				System.out.println("re-creating build folder took: "
-						+ (System.currentTimeMillis() - t0) + " ms");
+				//System.out.println("re-creating build folder took: "
+				//		+ (System.currentTimeMillis() - t0) + " ms");
 			}
 			monitor.subTask("creating Info.plist");
 			_createInfoPlist();
 			monitor.worked(1);
 			if ((null != delta) && (null != _buildVisitor)) {
-				System.out.println("<partial build>");
+				//System.out.println("<partial build>");
 				monitor.subTask("preparing partial build");
 				long t0 = System.currentTimeMillis();
 				_buildVisitor.resetCount();
 				delta.accept(_buildVisitor, IResourceDelta.ALL_WITH_PHANTOMS);
-				System.out.println("delta.accept with " + _buildVisitor.count
-						+ " delta nodes took: "
-						+ (System.currentTimeMillis() - t0) + " ms");
-				System.out.println("</partial build>");
+				//System.out.println("delta.accept with " + _buildVisitor.count
+				//		+ " delta nodes took: "
+				//		+ (System.currentTimeMillis() - t0) + " ms");
+				//System.out.println("</partial build>");
 				monitor.worked(12);
 			} else {
-				System.out.println("<full build>");
+				//System.out.println("<full build>");
 				monitor.subTask("preparing full build");
 				long t0 = System.currentTimeMillis();
 				t0 = System.currentTimeMillis();
 				_buildVisitor.resetCount();
 				getProject().accept(_buildVisitor);
-				System.out.println("preparing with " + _buildVisitor.count
-						+ " project nodes took: "
-						+ (System.currentTimeMillis() - t0) + " ms");
-				System.out.println("</full build>");
+				//System.out.println("preparing with " + _buildVisitor.count
+				//		+ " project nodes took: "
+				//		+ (System.currentTimeMillis() - t0) + " ms");
+				//System.out.println("</full build>");
 				monitor.worked(12);
 			}
 			long t0 = System.currentTimeMillis();
 			_buildVisitor.executeTasks(monitor);
-			System.out.println("building structure took: "
-					+ (System.currentTimeMillis() - t0) + " ms");
+			//System.out.println("building structure took: "
+			//		+ (System.currentTimeMillis() - t0) + " ms");
 			t0 = System.currentTimeMillis();
 			monitor.subTask("copying classes");
 			_jarBuild(delta, monitor);
-			//System.out.println("copying classes took:
+			////System.out.println("copying classes took:
 			// "+(System.currentTimeMillis()-t0)+" ms");
 			monitor.done();
 		} catch (RuntimeException up) {
@@ -225,7 +225,7 @@ public class WOIncrementalBuilder extends IncrementalProjectBuilder {
 			up.printStackTrace();
 			throw up;
 		}
-		System.out.println("</incremental build>");
+		//System.out.println("</incremental build>");
 		return null;
 	}
 	private void _createInfoPlist() throws CoreException {
@@ -240,7 +240,7 @@ public class WOIncrementalBuilder extends IncrementalProjectBuilder {
 				Object o = PropertyListSerialization.propertyListFromFile(cipl
 						.getLocation().toFile());
 				//HashMap hash =
-				//System.out.println ("PLS.pLFS: "+o);
+				////System.out.println ("PLS.pLFS: "+o);
 				if (o instanceof HashMap) {
 					customInfo = (HashMap) o;
 					ResourceUtilities
@@ -255,7 +255,7 @@ public class WOIncrementalBuilder extends IncrementalProjectBuilder {
 									"unknown");
 				}
 				//      } catch (ParseException pe) {
-				//        System.out.println("parsing CustomInfo.plist:");
+				//        //System.out.println("parsing CustomInfo.plist:");
 				//        
 				//        pe.printStackTrace();
 				//        int location = pe.currentToken.beginLine;
@@ -263,7 +263,7 @@ public class WOIncrementalBuilder extends IncrementalProjectBuilder {
 				// MARKER_BUILD_PROBLEM, IMarker.SEVERITY_WARNING,
 				// pe.getMessage(), "unknown");
 			} catch (Throwable up) {
-				System.out.println("parsing CustomInfo.plist:");
+				//System.out.println("parsing CustomInfo.plist:");
 				up.printStackTrace();
 				ResourceUtilities.markResource(cipl, ProjectBuildPlugin.MARKER_BUILD_PROBLEM,
 						IMarker.SEVERITY_WARNING, up.getMessage(), "unknown");
@@ -310,7 +310,7 @@ public class WOIncrementalBuilder extends IncrementalProjectBuilder {
 	}
 	private void _jarBuild(IResourceDelta delta, IProgressMonitor m)
 			throws CoreException {
-		System.out.println("<jar build>");
+		//System.out.println("<jar build>");
 		WOJarBuilder jarBuilder = new WOJarBuilder(m, getProject());
 		long t0 = System.currentTimeMillis();
 		if (null != delta) {
@@ -323,14 +323,14 @@ public class WOIncrementalBuilder extends IncrementalProjectBuilder {
 			}
 			output.accept(jarBuilder);
 		}
-		System.out.println("prepare jar copy took "
-				+ (System.currentTimeMillis() - t0) + " ms");
+		//System.out.println("prepare jar copy took "
+		//		+ (System.currentTimeMillis() - t0) + " ms");
 		m.worked(10);
 		t0 = System.currentTimeMillis();
 		jarBuilder.executeTasks(m);
-		System.out.println("executing jar copy took "
-				+ (System.currentTimeMillis() - t0) + " ms");
-		System.out.println("</jar build>");
+		//System.out.println("executing jar copy took "
+		//		+ (System.currentTimeMillis() - t0) + " ms");
+		//System.out.println("</jar build>");
 	}
 	private IJavaProject getJavaProject() {
 		try {
@@ -343,12 +343,12 @@ public class WOIncrementalBuilder extends IncrementalProjectBuilder {
 	 * @see org.eclipse.core.resources.IncrementalProjectBuilder#startupOnInitialize()
 	 */
 	protected void startupOnInitialize() {
-		try {
-			IJavaProject javaProject = getJavaProject();
-			System.out.println(javaProject.getOutputLocation());
-		} catch (Throwable up) {
-		}
-		super.startupOnInitialize();
+		//try {
+			//IJavaProject javaProject = getJavaProject();
+			//System.out.println(javaProject.getOutputLocation());
+		//} catch (Throwable up) {
+		//}
+		//super.startupOnInitialize();
 	}
 	WOBuildVisitor _buildVisitor = null;
 	static abstract class WOBuildHelper extends ResourceUtilities
@@ -436,14 +436,14 @@ public class WOIncrementalBuilder extends IncrementalProjectBuilder {
 				} catch (CoreException up) {
 					error = " *failed* to copy resource " + _res + " -> "
 							+ _dest + " (" + up.getMessage() + ")";
-					System.out.println(_msgPrefix + error);
+					//System.out.println(_msgPrefix + error);
 					//          up.printStackTrace();
 					//          m.setCanceled(true);
 					//throw up;
 				} catch (RuntimeException up) {
 					error = " *failed* to copy resource " + _res + " -> "
 							+ _dest + " (" + up.getMessage() + ")";
-					System.out.println(_msgPrefix + error);
+					//System.out.println(_msgPrefix + error);
 					//          up.printStackTrace();
 					//          throw up;
 				}
@@ -493,25 +493,25 @@ public class WOIncrementalBuilder extends IncrementalProjectBuilder {
 				IFile theFile = getWorkspaceRoot().getFile(_path);
 				IContainer theFolder = getWorkspaceRoot().getFolder(_path);
 				if (null != theFile) {
-					//System.out.println (_msgPrefix+" delete "+_path);
+					////System.out.println (_msgPrefix+" delete "+_path);
 					m.subTask("delete " + _path);
 					theFile.delete(true, true, null);
 				} else if ((null != theFolder)
 						&& (theFolder instanceof IFolder)) {
-					System.out.println(_msgPrefix + " delete " + _path);
+					//System.out.println(_msgPrefix + " delete " + _path);
 					m.subTask("delete " + _path);
 					((IFolder) theFolder).delete(true, true, null);
 				}
 				/*
 				 * if (theFile.exists()) { if (theFile.isFile()) {
-				 * System.out.println (_msgPrefix+" delete "+_path);
+				 * //System.out.println (_msgPrefix+" delete "+_path);
 				 * theFile.delete(); } else if (theFile.isDirectory()) {
-				 * System.out.println ("*** not deleting folder: "+theFile); } }
+				 * //System.out.println ("*** not deleting folder: "+theFile); } }
 				 */
 				/*
-				 * if ((null != res) && res.exists()) { System.out.println
+				 * if ((null != res) && res.exists()) { //System.out.println
 				 * (_msgPrefix+" delete "+_path); res.delete (true, m); } else {
-				 * System.out.println (_msgPrefix+" delete (not) "+_path); }
+				 * //System.out.println (_msgPrefix+" delete (not) "+_path); }
 				 */
 			}
 			IPath _path;
@@ -625,7 +625,8 @@ public class WOIncrementalBuilder extends IncrementalProjectBuilder {
 		 */
 		public void handleResource(IResource resource, IResourceDelta delta)
 				throws CoreException {
-			if ("class".equals(resource.getFileExtension())) {
+			Project adaptedProject = (Project) resource.getProject().getAdapter(Project.class);
+			if (adaptedProject.matchesClassesPattern(resource)) {
 				IPath path = resource.getFullPath();
 				if (_compilerOutPath.isPrefixOf(path)
 						&& !_outPath.isPrefixOf(path)) {
@@ -713,7 +714,7 @@ public class WOIncrementalBuilder extends IncrementalProjectBuilder {
 					IPath shortened = copyToPath.removeFirstSegments(2);
 					String message = "duplicate resource for destination .../"
 							+ shortened.toString();
-					System.out.println("** " + message);
+					//System.out.println("** " + message);
 					markResource(res, ProjectBuildPlugin.MARKER_BUILD_DUPLICATE,
 							IMarker.SEVERITY_ERROR, message, src.getFullPath()
 									.toString());
@@ -781,7 +782,7 @@ public class WOIncrementalBuilder extends IncrementalProjectBuilder {
 				}
 			}
 			if (!handled) {
-				//System.out.println("//ignore: "+res);
+				////System.out.println("//ignore: "+res);
 				unmarkResource(res, ProjectBuildPlugin.MARKER_BUILD_DUPLICATE);
 			}
 		}
@@ -804,8 +805,8 @@ public class WOIncrementalBuilder extends IncrementalProjectBuilder {
 			return true;
 			/*
 			 * IPath resPath = res.getFullPath(); if
-			 * (!_outputPath.isPrefixOf(resPath)) { System.out.println(res); if
-			 * (null != delta) System.out.println(delta); }
+			 * (!_outputPath.isPrefixOf(resPath)) { //System.out.println(res); if
+			 * (null != delta) //System.out.println(delta); }
 			 */
 		}
 		IPath _outputPath = null;
