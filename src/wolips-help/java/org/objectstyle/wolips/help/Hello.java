@@ -53,9 +53,8 @@
  * <http://objectstyle.org/>.
  *
  */
- 
 package org.objectstyle.wolips.help;
 
-public class Hello
-{	
+public class Hello {
+
 }
