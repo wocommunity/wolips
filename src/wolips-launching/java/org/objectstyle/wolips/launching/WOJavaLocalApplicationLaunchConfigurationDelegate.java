@@ -174,6 +174,14 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 					} else
 						continue;
 				}
+				if ("-NSProjectSearchPath".equals(parameter)) {
+					spaceBetweenParameterAndArgument = false;
+					argument =
+						this.replaceInArgumentGeneratedByWOLips(
+							argument,
+							configuration);
+				}
+
 				launchArgument.append(parameter);
 				if (spaceBetweenParameterAndArgument)
 					launchArgument.append(" ");
@@ -201,18 +209,7 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 		// Create VM config
 		VMRunnerConfiguration runConfig =
 			new VMRunnerConfiguration(mainTypeName, classpath);
-		//There may be a NullPointerException
-		//In this case we use the program arguments without replacing
-		try {
-			runConfig.setProgramArguments(
-				this.replaceGeneratedByWOLips(
-					execArgs.getProgramArgumentsArray(),
-					configuration));
-		} catch (Exception anException) {
-			//May we should show a dialog
-			WOLipsLog.log(anException);
-			runConfig.setProgramArguments(execArgs.getProgramArgumentsArray());
-		}
+		runConfig.setProgramArguments(execArgs.getProgramArgumentsArray());
 		runConfig.setVMArguments(execArgs.getVMArgumentsArray());
 		runConfig.setWorkingDirectory(workingDirName);
 		runConfig.setVMSpecificAttributesMap(vmAttributesMap);
@@ -258,27 +255,7 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 		}
 		return aFile;
 	}
-	/**
-	 * Method replaceGeneratedByWOLips.
-	 * @param args
-	 * @return returns the same String[] but the string GeneratedByWOLips is
-	 * replaced
-	 */
-	private String[] replaceGeneratedByWOLips(
-		String[] args,
-		ILaunchConfiguration configuration) {
-		for (int i = 0; i < args.length; i++) {
-			String argument = args[i];
-			if (argument != null
-				&& argument.indexOf(
-					LaunchingMessages.getString(
-						"WOArguments.GeneratedByWOLips"))
-					> 0)
-				args[i] =
-					replaceInArgumentGeneratedByWOLips(argument, configuration);
-		}
-		return args;
-	}
+
 	/**
 	 * Method addVMArgument return the vmArgs.
 	 * @param vmArgs
@@ -330,18 +307,14 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 					if (returnValue.length() > 0)
 						returnValue = returnValue + ",";
 
-					returnValue = returnValue + "\""
-						//TODO: only add this when the app is not on the top level
-		//+ projects[i].getLocation().toOSString()
-		//otherwise
-	+".." + "\"";
+					returnValue = returnValue + "\"" + ".." + "\"";
 				}
 			}
 		}
 		returnValue = FileStringScanner.replace(returnValue, "\\", "/");
 		returnValue = this.addPreferencesValue(returnValue);
-		if ("".equals(returnValue))
-			returnValue = "\"\"";
+		/*if ("".equals(returnValue))
+			returnValue = "\"..\"";*/
 		return returnValue;
 	}
 	/**
@@ -377,7 +350,6 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 				return true;
 		} catch (Exception anException) {
 			WOLipsLog.log(anException);
-			return false;
 		}
 		return false;
 	}
