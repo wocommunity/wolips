@@ -80,12 +80,12 @@ public abstract class WOProjectResourceCreator
 	protected static final int EOMODEL_CREATOR = 2;
 	protected static final int SUBPROJECT_CREATOR = 3;
 	protected static final int PROJECT_CREATOR = 4;
-
-	protected IResource parentResource;
 	protected FileFromTemplateCreator fileCreator;
+	
+	protected IResource parentResource;
 	private static boolean aboutToCreateProperty;
 	private static QualifiedName currentlyCreatedResourceQualifier;
-
+	
 	/**
 	 * Constructor for WOProjectResourceCreator.
 	 */
@@ -93,9 +93,11 @@ public abstract class WOProjectResourceCreator
 		super();
 		this.parentResource = parentResource;
 	}
-
+	/**
+	 * Method getType.
+	 * @return int
+	 */
 	protected abstract int getType();
-
 	/**
 	 * @see org.eclipse.jface.operation.IRunnableWithProgress#run(IProgressMonitor)
 	 */
@@ -106,7 +108,13 @@ public abstract class WOProjectResourceCreator
 		}
 
 	}
-
+	/**
+	 * Method createResourceFolderInProject.
+	 * @param folderToCreate
+	 * @param monitor
+	 * @throws CoreException
+	 * @throws InvocationTargetException
+	 */
 	protected void createResourceFolderInProject(
 		IFolder folderToCreate,
 		IProgressMonitor monitor)
@@ -145,23 +153,11 @@ public abstract class WOProjectResourceCreator
 				}
 		*/
 	}
-
-	/**
-	 * Returns the fileCreator.
-	 * @return FileFromTemplateCreator
-	 */
-	public FileFromTemplateCreator getFileCreator() {
+	protected FileFromTemplateCreator fileCreator() {
+		if (fileCreator == null)
+		fileCreator = new FileFromTemplateCreator();
 		return fileCreator;
 	}
-
-	/**
-	 * Sets the fileCreator.
-	 * @param fileCreator The fileCreator to set
-	 */
-	public void setFileCreator(FileFromTemplateCreator fileCreator) {
-		this.fileCreator = fileCreator;
-	}
-
 	/**
 	 * Returns if an instance of WOProjectResourceCreator is creating a project resource.<br>
 	 * @return boolean
@@ -169,7 +165,6 @@ public abstract class WOProjectResourceCreator
 	public static boolean isAboutToCreateProjectResource() {
 		return aboutToCreateProperty;
 	}
-
 	/**
 	 * Returns the resource qualifier for the resource currently created or null if
 	 * no resource is currently created.
@@ -178,7 +173,6 @@ public abstract class WOProjectResourceCreator
 	public static QualifiedName getCurrentlyCreatedResourceQualifier() {
 		return currentlyCreatedResourceQualifier;
 	}
-
 	/**
 	 * Sets the currently created resource's qualifier.
 	 * @param currentlyCreatedResourceQualifier The currentlyCreatedResourceQualifier to set

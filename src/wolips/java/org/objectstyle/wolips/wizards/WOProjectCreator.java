@@ -65,7 +65,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.tools.ant.DirectoryScanner;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -85,7 +84,6 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.objectstyle.wolips.IWOLipsPluginConstants;
 import org.objectstyle.wolips.WOLipsPlugin;
-import org.objectstyle.wolips.io.FileFromTemplateCreator;
 import org.objectstyle.wolips.io.WOLipsLog;
 import org.objectstyle.wolips.io.XercesDocumentBuilder;
 import org.objectstyle.wolips.project.ProjectHelper;
@@ -191,7 +189,9 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 				? locationPath
 				: null;
 	}
-
+	/**
+	 * @see org.objectstyle.wolips.wizards.WOProjectResourceCreator#getType()
+	 */
 	protected int getType() {
 		return PROJECT_CREATOR;
 	}
@@ -241,15 +241,17 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 			monitor.done();
 		}
 	}
+	/**
+	 * Method createProjectContents.
+	 * @param monitor
+	 * @throws InvocationTargetException
+	 */
 	private void createProjectContents(IProgressMonitor monitor)
 		throws InvocationTargetException {
-		fileCreator = new FileFromTemplateCreator();
 		WOComponentCreator componentCreator =
 			new WOComponentCreator(parentResource, "Main", true);
-		componentCreator.setFileCreator(fileCreator);
 		NodeList fileNodeList = elementForTemplate.getElementsByTagName("file");
 		try {
-
 			String currentFileTemplateId = null;
 			String currentFileName = null;
 			for (int i = 0; i < fileNodeList.getLength(); i++) {
@@ -281,6 +283,14 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 			throw new InvocationTargetException(e);
 		}
 	}
+	/**
+	 * Method createNewProjectResource.
+	 * @param fileName
+	 * @param fileTemplateId
+	 * @param parentResource
+	 * @param monitor
+	 * @throws InvocationTargetException
+	 */
 	private void createNewProjectResource(
 		String fileName,
 		String fileTemplateId,
@@ -306,7 +316,7 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 						((IProject) parentResource).getFile(fileName);
 				}
 				try {
-					fileCreator.create(
+					fileCreator().create(
 						fileToCreate,
 						fileTemplateId,
 						new SubProgressMonitor(monitor, 1));
@@ -324,13 +334,14 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 					// add java file to source folder
 					fileToCreate =
 						ProjectHelper.getSubprojectSourceFolder(
-							(IFolder) parentResource,true).getFile(
+							(IFolder) parentResource,
+							true).getFile(
 							fileName);
 				} else {
 					// add wo resource file
 					fileToCreate = ((IFolder) parentResource).getFile(fileName);
 				}
-				fileCreator.create(
+				fileCreator().create(
 					fileToCreate,
 					fileTemplateId,
 					new SubProgressMonitor(monitor, 1));
@@ -340,6 +351,12 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 					new Exception("Wrong parent resource - check validation"));
 		}
 	}
+	/**
+	 * Method configNewProject.
+	 * @param natureIds
+	 * @param monitor
+	 * @throws InvocationTargetException
+	 */
 	private void configNewProject(String[] natureIds, IProgressMonitor monitor)
 		throws InvocationTargetException {
 		switch (parentResource.getType()) {
@@ -421,7 +438,7 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 							if (!".".equals(currentRawPath) && false) {
 								currentRawPath += "."
 									+ IWOLipsPluginConstants.EXT_SRC;
-							} else if(false) {
+							} else if (false) {
 								// source path must be folder to create
 								// non-nested source path folder for subprojects
 								currentRawPath =
@@ -610,33 +627,36 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 		}
 		return variableList;
 	}
+	/**
+	 * Method getProjectTemplateDocument.
+	 * @return Document
+	 * @throws InvocationTargetException
+	 */
 	private static synchronized Document getProjectTemplateDocument()
 		throws InvocationTargetException {
-		if (templateDocument == null) {
-			IPath templatePath;
-			File templateFile;
-			try {
-				InputStream input =
-					(new URL(WOLipsPlugin.baseURL(),
-						Messages.getString("webobjects.template.directory")
-							+ "/"
-							+ Messages.getString("webobjects.template.project")))
-						.openStream();
-				templateDocument = XercesDocumentBuilder.documentBuilder().parse(input);
-			} catch (java.util.MissingResourceException e) {
-				throw new InvocationTargetException(e);
-			} catch (MalformedURLException e) {
-				throw new InvocationTargetException(e);
-			} catch (SAXException e) {
-				throw new InvocationTargetException(e);
-			} catch (IOException e) {
-				throw new InvocationTargetException(e);
-			} catch (NullPointerException e) {
-				throw new InvocationTargetException(e);
-			}
+		if (templateDocument != null)
+			return templateDocument;
+		IPath templatePath;
+		File templateFile;
+		try {
+			InputStream input =
+				(new URL(WOLipsPlugin.baseURL(),
+					Messages.getString("webobjects.template.directory")
+						+ "/"
+						+ Messages.getString("webobjects.template.project")))
+					.openStream();
+			templateDocument =
+				XercesDocumentBuilder.documentBuilder().parse(input);
+		} catch (Exception e) {
+			throw new InvocationTargetException(e);
 		}
 		return templateDocument;
 	}
+	/**
+	 * Method addAdditionalFrameworks.
+	 * @param monitor
+	 * @param additionalResourceDir
+	 */
 	private void addAdditionalFrameworks(
 		IProgressMonitor monitor,
 		File additionalResourceDir) {
@@ -667,6 +687,14 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 			}
 		}
 	}
+	/**
+	 * Method addAdditionalContents.
+	 * @param monitor
+	 * @param parentContainer
+	 * @param additionalResourcesDir
+	 * @throws InvocationTargetException
+	 * @throws InterruptedException
+	 */
 	private void addAdditionalContents(
 		IProgressMonitor monitor,
 		IContainer parentContainer,
@@ -820,7 +848,8 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 				case IResource.FOLDER :
 					sourceFolder =
 						ProjectHelper.getSubprojectSourceFolder(
-							(IFolder) parentContainer,true);
+							(IFolder) parentContainer,
+							true);
 					break;
 			}
 			if (sourceFolder != null) {
@@ -880,6 +909,12 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 				additionalSubprojectResourcesFile);
 		}
 	}
+	/**
+	 * @author uli
+	 *To change this generated comment edit the template variable "typecomment":
+	 *Window>Preferences>Java>Templates. To enable and disable the creation of
+	 *type comments go to Window>Preferences>Java>Code Generation.
+	 */
 	private class CopyFileToResource {
 		private IFile resourceFileToCreate;
 		private IFolder resourceFolderToCreate;
@@ -907,60 +942,74 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 			}
 			this.monitor = monitor;
 		}
+		/**
+		 * Method execute.
+		 * @throws CoreException
+		 */
 		public void execute() throws CoreException {
-			if (resourceFileToCreate != null) {
-				BufferedInputStream resourceFileInputStream = null;
+			if (resourceFileToCreate == null)
+				this.executeWithNOResourceFileToCreate();
+			BufferedInputStream resourceFileInputStream = null;
+			try {
+				resourceFileInputStream =
+					new BufferedInputStream(new FileInputStream(sourceFile));
+			} catch (FileNotFoundException e) {
+				// nothing file exists (see constructor)
+			}
+			try {
+				if (resourceFileToCreate.exists()) {
+					resourceFileToCreate.setContents(
+						resourceFileInputStream,
+						true,
+						true,
+						monitor);
+				} else {
+					resourceFileToCreate.create(
+						resourceFileInputStream,
+						true,
+						monitor);
+				}
+			} finally {
 				try {
-					resourceFileInputStream =
-						new BufferedInputStream(
-							new FileInputStream(sourceFile));
-				} catch (FileNotFoundException e) {
-					// nothing file exists (see constructor)
-				}
-				try {
-					if (resourceFileToCreate.exists()) {
-						resourceFileToCreate.setContents(
-							resourceFileInputStream,
-							true,
-							true,
-							monitor);
-					} else {
-						resourceFileToCreate.create(
-							resourceFileInputStream,
-							true,
-							monitor);
-					}
-				} finally {
-					try {
-						if (resourceFileInputStream != null)
-							resourceFileInputStream.close();
-					} catch (IOException e) {
-					}
-				}
-			} else if (resourceFolderToCreate != null) {
-				if (!resourceFolderToCreate.exists()) {
-					resourceFolderToCreate.create(true, true, monitor);
-				}
-				CopyFileToResource copy;
-				String[] directoryContent = sourceFile.list();
-				for (int i = 0; i < directoryContent.length; i++) {
-					try {
-						copy =
-							new CopyFileToResource(
-								sourceFile,
-								resourceFolderToCreate,
-								directoryContent[i],
-								monitor);
-					} catch (FileNotFoundException e) {
-						continue;
-					}
-					try {
-						copy.execute();
-					} catch (CoreException e) {
-						continue;
-					}
+					if (resourceFileInputStream != null)
+						resourceFileInputStream.close();
+				} catch (IOException e) {
 				}
 			}
+		}
+		/**
+		 * Method executeWithNOResourceFileToCreate.
+		 * @throws CoreException
+		 */
+		private void executeWithNOResourceFileToCreate() throws CoreException {
+			if (resourceFolderToCreate == null)
+				return;
+			this.createIfNotExist(resourceFolderToCreate);
+			String[] directoryContent = sourceFile.list();
+			for (int i = 0; i < directoryContent.length; i++) {
+				try {
+					CopyFileToResource copy =
+						new CopyFileToResource(
+							sourceFile,
+							resourceFolderToCreate,
+							directoryContent[i],
+							monitor);
+					copy.execute();
+				} catch (Exception e) {
+					WOLipsLog.log(e);
+					continue;
+				}
+			}
+		}
+		/**
+		 * Method createIfNotExist.
+		 * @param aFolder
+		 * @throws CoreException
+		 */
+		private void createIfNotExist(IFolder aFolder) throws CoreException {
+			if (aFolder.exists())
+				return;
+			aFolder.create(true, true, monitor);
 		}
 	}
 }

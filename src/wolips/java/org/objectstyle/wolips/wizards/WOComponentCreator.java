@@ -84,6 +84,9 @@ public class WOComponentCreator extends WOProjectResourceCreator {
 		this.componentName = componentName;
 		this.createBodyTag = createBodyTag;
 	}
+	/**
+	 * @see org.objectstyle.wolips.wizards.WOProjectResourceCreator#getType()
+	 */
 	protected int getType() {
 		return COMPONENT_CREATOR;
 	}
@@ -99,12 +102,14 @@ public class WOComponentCreator extends WOProjectResourceCreator {
 			throw new InvocationTargetException(e);
 		}
 	}
+	/**
+	 * Method createWOComponent.
+	 * @param monitor
+	 * @throws CoreException
+	 * @throws InvocationTargetException
+	 */
 	public void createWOComponent(IProgressMonitor monitor)
 		throws CoreException, InvocationTargetException {
-		// create the new file resources
-		if (fileCreator == null) {
-			fileCreator = new FileFromTemplateCreator();
-		}
 		IFolder componentFolder = null;
 		IFile componentJavaFile = null;
 		IFile componentApiFile = null;
@@ -142,9 +147,9 @@ public class WOComponentCreator extends WOProjectResourceCreator {
 		IFile componentHTMLTemplate =
 			componentFolder.getFile(componentName + "." + EXT_HTML);
 		createResourceFolderInProject(componentFolder, monitor);
-		fileCreator.create(componentDescription, monitor);
+		fileCreator().create(componentDescription, monitor);
 		if (createBodyTag) {
-			fileCreator.create(componentHTMLTemplate, monitor);
+			fileCreator().create(componentHTMLTemplate, monitor);
 		} else {
 			// create empty file
 			componentHTMLTemplate.create(
@@ -152,7 +157,7 @@ public class WOComponentCreator extends WOProjectResourceCreator {
 				false,
 				null);
 		}
-		fileCreator.create(componentJavaFile, "wocomponent", monitor);
-		fileCreator.create(componentApiFile, monitor);
+		fileCreator().create(componentJavaFile, "wocomponent", monitor);
+		fileCreator().create(componentApiFile, monitor);
 	}
 }

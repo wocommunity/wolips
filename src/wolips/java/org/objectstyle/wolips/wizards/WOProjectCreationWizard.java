@@ -60,13 +60,12 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.wizards.newresource.BasicNewProjectResourceWizard;
-import org.objectstyle.wolips.WOLipsPlugin;
 import org.objectstyle.wolips.images.WOLipsPluginImages;
 import org.objectstyle.wolips.io.WOLipsLog;
 import org.objectstyle.wolips.project.ProjectHelper;
+import org.objectstyle.wolips.workbench.WorkbenchHelper;
 /**
  * @author mnolte
  * @author uli
@@ -77,7 +76,6 @@ import org.objectstyle.wolips.project.ProjectHelper;
  * Window>Preferences>Java>Code Generation.
  */
 public class WOProjectCreationWizard extends BasicNewProjectResourceWizard {
-
 	private IWorkbench workbench;
 	private WOProjectCreationPage mainPage;
 	/** (non-Javadoc)
@@ -87,7 +85,6 @@ public class WOProjectCreationWizard extends BasicNewProjectResourceWizard {
 		mainPage = new WOProjectCreationPage("createWOProjectPage1");
 		addPage(mainPage);
 	}
-
 	/** (non-Javadoc)
 	 * Method declared on INewWizard
 	 */
@@ -99,7 +96,6 @@ public class WOProjectCreationWizard extends BasicNewProjectResourceWizard {
 		setDefaultPageImageDescriptor(
 			WOLipsPluginImages.WOPROJECT_WIZARD_BANNER);
 	}
-
 	/** (non-Javadoc)
 	 * Method declared on IWizard
 	 */
@@ -110,7 +106,6 @@ public class WOProjectCreationWizard extends BasicNewProjectResourceWizard {
 				ProjectHelper.installBuilder(
 					mainPage.getProjectHandle(),
 					ProjectHelper.WOAPPLICATION_BUILDER_ID);
-
 				openResource(mainPage.getElementToOpen());
 			} catch (Exception anException) {
 				WOLipsLog.log(anException);
@@ -119,29 +114,26 @@ public class WOProjectCreationWizard extends BasicNewProjectResourceWizard {
 		}
 		return creationSuccessful;
 	}
-
+	/**
+	 * Method openResource.
+	 * @param resource
+	 */
 	private void openResource(final IResource resource) {
-		if (resource == null || resource.getType() != IResource.FILE) {
+		if (resource == null || resource.getType() != IResource.FILE)
 			return;
-		}
-		IWorkbenchWindow window =
-			WOLipsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow();
-		if (window == null) {
+		final IWorkbenchPage activePage = WorkbenchHelper.getActivePage();
+		if (activePage == null)
 			return;
-		}
-		final IWorkbenchPage activePage = window.getActivePage();
-		if (activePage != null) {
-			final Display display = getShell().getDisplay();
-			display.asyncExec(new Runnable() {
-				public void run() {
-					try {
-						activePage.openEditor((IFile) resource);
-					} catch (PartInitException e) {
-						WOLipsLog.log(e);
-					}
+		final Display display = getShell().getDisplay();
+		display.asyncExec(new Runnable() {
+			public void run() {
+				try {
+					activePage.openEditor((IFile) resource);
+				} catch (PartInitException e) {
+					WOLipsLog.log(e);
 				}
-			});
-			selectAndReveal(resource);
-		}
+			}
+		});
+		selectAndReveal(resource);
 	}
 }

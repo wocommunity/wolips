@@ -92,6 +92,20 @@ public class EOModelCreator extends WOProjectResourceCreator {
 		this.modelName = modelName;
 		this.adaptorName = adaptorName;
 	}
+	/**
+	 * @see org.objectstyle.wolips.wizards.WOProjectResourceCreator#fileCreator()
+	 */
+	protected FileFromTemplateCreator fileCreator() {
+		if (fileCreator == null) {
+					Hashtable adaptorNameTranslation = new Hashtable(1);
+					adaptorNameTranslation.put("ADAPTOR_NAME", adaptorName);
+					fileCreator = new FileFromTemplateCreator(adaptorNameTranslation);
+				}
+		return fileCreator;
+	}
+	/**
+	 * @see org.objectstyle.wolips.wizards.WOProjectResourceCreator#getType()
+	 */
 	protected int getType() {
 		return EOMODEL_CREATOR;
 	}
@@ -122,12 +136,6 @@ public class EOModelCreator extends WOProjectResourceCreator {
 	 */
 	public void createEOModel(IProgressMonitor monitor)
 		throws CoreException, InvocationTargetException {
-		// create the new file resources
-		if (fileCreator == null) {
-			Hashtable adaptorNameTranslation = new Hashtable(1);
-			adaptorNameTranslation.put("ADAPTOR_NAME", adaptorName);
-			fileCreator = new FileFromTemplateCreator(adaptorNameTranslation);
-		}
 		IFolder modelFolder = null;
 		switch (parentResource.getType()) {
 			case IResource.PROJECT :
@@ -147,8 +155,8 @@ public class EOModelCreator extends WOProjectResourceCreator {
 		IFile modelIndexFile = modelFolder.getFile("index." + EXT_EOMODEL);
 		IFile modelDiagramLayoutFile = modelFolder.getFile("DiagramLayout");
 		createResourceFolderInProject(modelFolder, monitor);
-		fileCreator.create(modelIndexFile, monitor);
-		fileCreator.create(modelDiagramLayoutFile, "diagram", monitor);
+		fileCreator().create(modelIndexFile, monitor);
+		fileCreator().create(modelDiagramLayoutFile, "diagram", monitor);
 		// add adaptor framework
 		if (!"None".equals(adaptorName)) {
 			IJavaProject projectToUpdate =

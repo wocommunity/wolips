@@ -64,7 +64,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.objectstyle.wolips.IWOLipsPluginConstants;
-import org.objectstyle.wolips.io.FileFromTemplateCreator;
 
 /**
  * @author mnolte
@@ -78,7 +77,7 @@ import org.objectstyle.wolips.io.FileFromTemplateCreator;
 public class WOSubprojectCreator extends WOProjectResourceCreator {
 
 	private String subprojectName;
-
+	
 	/**
 	 * Constructor for WOSubprojectCreator.
 	 */
@@ -89,11 +88,12 @@ public class WOSubprojectCreator extends WOProjectResourceCreator {
 		this.subprojectName =
 			subprojectName + "." + IWOLipsPluginConstants.EXT_SUBPROJECT;
 	}
-
+	/**
+	 * @see org.objectstyle.wolips.wizards.WOProjectResourceCreator#getType()
+	 */
 	protected int getType() {
 		return SUBPROJECT_CREATOR;
 	}
-
 	/**
 	 * @see WOProjectResourceCreator#run(IProgressMonitor)
 	 */
@@ -106,15 +106,15 @@ public class WOSubprojectCreator extends WOProjectResourceCreator {
 			throw new InvocationTargetException(e);
 		}
 	}
-
+	/**
+	 * Method createSubproject.
+	 * @param monitor
+	 * @throws CoreException
+	 * @throws InvocationTargetException
+	 * @throws InterruptedException
+	 */
 	public void createSubproject(IProgressMonitor monitor)
 		throws CoreException, InvocationTargetException, InterruptedException {
-
-		// create the new file resources
-		if (fileCreator == null) {
-			fileCreator = new FileFromTemplateCreator();
-		}
-
 		IFolder subprojectFolder = null;
 
 		switch (parentResource.getType()) {
@@ -142,5 +142,4 @@ public class WOSubprojectCreator extends WOProjectResourceCreator {
 			new WOProjectCreator(subprojectFolder, projectTemplateID);
 		projectCreator.run(monitor);
 	}
-
 }

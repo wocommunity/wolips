@@ -84,89 +84,136 @@ public class WOLabelDecorator
 	public WOLabelDecorator() {
 		super();
 	}
-
+	/**
+	 * Method withName.
+	 * @param aString
+	 * @param image
+	 * @return Image
+	 */
+	private Image createImagewithName(Image image, String aString) {
+		return new WOImageDescriptor(image, aString).createImage();
+	}
+	/**
+	 * Method subprojectImage.
+	 * @param image
+	 * @return Image
+	 */
+	private Image subprojectImage(Image image) {
+		if (subprojectImage == null) {
+			subprojectImage =
+				this.createImagewithName(image, "subproj_overlay.gif");
+		}
+		return subprojectImage;
+	}
+	/**
+	 * Method componentImage.
+	 * @param image
+	 * @return Image
+	 */
+	private Image componentImage(Image image) {
+		if (componentImage == null) {
+			componentImage =
+				this.createImagewithName(image, "comp_overlay.gif");
+		}
+		return componentImage;
+	}
+	/**
+	 * Method eomodelImage.
+	 * @param image
+	 * @return Image
+	 */
+	private Image eomodelImage(Image image) {
+		if (eomodelImage == null) {
+			eomodelImage =this.createImagewithName(image, "eomodel_overlay.gif");
+		}
+		return eomodelImage;
+	}
+	/**
+	 * Method buildImage.
+	 * @param image
+	 * @return Image
+	 */
+	private Image buildImage(Image image) {
+		if (buildImage == null) {
+			buildImage = this.createImagewithName(image, "build_overlay.gif");
+		}
+		return buildImage;
+	}
+	/**
+	 * Method imageForExtension.
+	 * @param image
+	 * @param aString
+	 * @return Image
+	 */
+	private Image imageForExtension(Image image, String aString) {
+		if (EXT_SUBPROJECT.equals(aString))
+		return subprojectImage(image);
+		if (EXT_COMPONENT.equals(aString))
+		return componentImage(image);
+		if (EXT_EOMODEL.equals(aString))
+		return eomodelImage(image);
+		if (EXT_FRAMEWORK.equals(aString) || EXT_WOA.equals(aString))
+		return buildImage(image);
+		return image;
+	}
 	/**
 	 * @see org.eclipse.jface.viewers.ILabelDecorator#decorateImage(Image, Object)
 	 */
 	public Image decorateImage(Image image, Object element) {
-
-		if (element instanceof IFolder
-			&& ProjectHelper.isWOProjectResource((IResource) element)) {
-			String extension = ((IFolder) element).getFileExtension();
-			if (EXT_SUBPROJECT.equals(extension)) {
-				if (subprojectImage == null) {
-					subprojectImage =
-						new WOImageDescriptor(image, "subproj_overlay.gif")
-							.createImage();
-				}
-				return subprojectImage;
-			}
-			if (EXT_COMPONENT.equals(extension)) {
-				if (componentImage == null) {
-					componentImage =
-						new WOImageDescriptor(image, "comp_overlay.gif")
-							.createImage();
-				}
-				return componentImage;
-			}
-			if (EXT_EOMODEL.equals(extension)) {
-				if (eomodelImage == null) {
-					eomodelImage =
-						new WOImageDescriptor(image, "eomodel_overlay.gif")
-							.createImage();
-				}
-				return eomodelImage;
-			}
-			if (EXT_WOA.equals(extension) || EXT_FRAMEWORK.equals(extension)) {
-				if (buildImage == null) {
-					buildImage =
-						new WOImageDescriptor(image, "build_overlay.gif")
-							.createImage();
-				}
-				return buildImage;
-			}
-		}
-		return image;
+		if (!(element instanceof IFolder))
+			return image;
+		if (!ProjectHelper.isWOProjectResource((IResource) element))
+			return image;
+		String extension = ((IFolder) element).getFileExtension();
+		return this.imageForExtension(image, extension);
 	}
-
 	/**
 	 * @see org.eclipse.jface.viewers.ILabelDecorator#decorateText(String, Object)
 	 */
 	public String decorateText(String text, Object element) {
 		return text;
 	}
-
 	/**
 	 * @see org.eclipse.jface.viewers.IBaseLabelProvider#addListener(ILabelProviderListener)
 	 */
 	public void addListener(ILabelProviderListener listener) {
 	}
-
 	/**
 	 * @see org.eclipse.jface.viewers.IBaseLabelProvider#dispose()
 	 */
 	public void dispose() {
 	}
-
 	/**
 	 * @see org.eclipse.jface.viewers.IBaseLabelProvider#isLabelProperty(Object, String)
 	 */
 	public boolean isLabelProperty(Object element, String property) {
 		return false;
 	}
-
 	/**
 	 * @see org.eclipse.jface.viewers.IBaseLabelProvider#removeListener(ILabelProviderListener)
 	 */
 	public void removeListener(ILabelProviderListener listener) {
 	}
 
+	/**
+		 * @author uli
+		 *
+		 * To change this generated comment edit the template variable "typecomment":
+		 * Window>Preferences>Java>Templates.
+		 * To enable and disable the creation of type comments go to
+		 * Window>Preferences>Java>Code Generation.
+		 */
 	private class WOImageDescriptor extends CompositeImageDescriptor {
 
 		private ImageData baseImageData;
 		private ImageData overlayImageData;
 		private Point size;
 
+		/**
+		 * Method WOImageDescriptor.
+		 * @param image
+		 * @param overlayImageFilename
+		 */
 		public WOImageDescriptor(Image image, String overlayImageFilename) {
 			baseImageData = image.getImageData();
 			size = new Point(baseImageData.width, baseImageData.height);
@@ -177,7 +224,6 @@ public class WOLabelDecorator
 						overlayImageFilename)
 					.getImageData();
 		}
-
 		/**
 		 * @see org.eclipse.jface.resource.CompositeImageDescriptor#drawCompositeImage(int, int)
 		 */
@@ -188,14 +234,11 @@ public class WOLabelDecorator
 			x -= overlayImageData.width;
 			drawImage(overlayImageData, x, 0);
 		}
-
 		/**
 		 * @see org.eclipse.jface.resource.CompositeImageDescriptor#getSize()
 		 */
 		protected Point getSize() {
 			return size;
 		}
-
 	}
-
 }
