@@ -18,32 +18,6 @@
     <!-- ============================================= -->
     <property name="dist" value="${dist.base}/${project.name}-${project.version}"/>
     <property name="output" value="output"/>
-    
-
-    <target name="help">
-        <echo>
-        ****************************************
-        * TARGETS (also you can use "-projecthelp" ant flag):
-        *
-        *  1. help       - prints this message.
-        *  2. prepare    - creates directories needed for distribution.
-        *  3. java       - compiles java and webapp subprojects.
-        *  4. clean      - cleans temporary directories.
-        *  5. doc        - creates documentation including Javadoc.
-        *  6. dist       - creates WOProject distribution.
-        *  7. test       - Run JUnit tests.
-        *
-        *
-        * Build environment:
-        *
-        * java.home = ${java.home}
-        * build.compiler = ${build.compiler}
-        * ant.home = ${ant.home}
-        * user.home = ${user.home}
-        *
-        ****************************************
-        </echo>
-    </target>
 
 
     <!-- ============================================= -->
@@ -119,7 +93,7 @@
     
 
     <!-- ========================================== -->
-    <!-- Builds WOProject documenatation.          -->
+    <!-- Builds WOProject documenatation.           -->
     <!-- ========================================== -->
     <target name="doc">
 		<ant antfile="build-doc.xml" target="doc"/>
@@ -140,6 +114,5 @@
     <!-- ============================================= -->
     <target name="deploy-web" depends="java,doc,api" if="deploy.web">
 		<ant antfile="build-doc.xml" target="deploy-web"/>
-
     </target>
 </project>

@@ -82,6 +82,7 @@
     <!-- ========================================== -->
     <target name="doc">
 		<ant antfile="build-core.xml" target="doc"/>
+		<ant antfile="build-wolips.xml" target="doc"/>
     </target>
 
 

@@ -16,6 +16,14 @@
         <hr/>
         </p>
         
+        <p><b>WOLips Eclipse plugin is now part of WOProject.</b> 
+        WOLips is a plugin wizard for <a href="http://eclipse.org">Eclipse IDE</a> that
+        supports development of WebObjects applications and frameworks. It can be downloaded 
+        as a separate package that includes WOProject jar files. For more details go to
+        <a href="wolips/toc.html">WOLips page</a>. 
+        <hr/>
+        </p>
+        
         <p>Welcome to WOProject project page. WOProject provides a set of tools to work 
         with WebObjects 5.1 independent from platform and IDE. Even though Apple is doing a
         great job maintaining cross-platform development tools, for obvious reasons support 
@@ -47,8 +55,11 @@
  		</section>
  		
  	    <section name="Contact Us">
-        <p>With questions about WOProject please email Andrei 
-        Adamchik: <img src="images/email.jpg" align="absbottom"/>.</p>
+        <p>If you have questions about WOProject or suggestions on how to fix/improve
+        its features, post a message on <a href=
+        "http://objectstyle.org/woproject/lists.html">woproject-dev 
+        mailing list</a>. This is the best way to get help from WOProject creators 
+        and user community.</p>
  		</section>
     </body>
 </document>

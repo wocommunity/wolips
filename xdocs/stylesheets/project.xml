@@ -19,6 +19,7 @@
 
     <menu name="Documentation">
         <item name="Ant Tasks" href="/ant/index.html"/>
+        <item name="WOLips Plugin" href="/wolips/toc.html"/>
         <item name="Javadoc API" href="/api/index.html"/>
     </menu>
 

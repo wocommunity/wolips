@@ -63,7 +63,7 @@
          </copy>
     </target>
 
-    <target name="dist" depends="prepare,java,api">
+    <target name="dist" depends="prepare,java,doc,api">
          <!-- Copy source code -->
          <copy todir="${dist-wolips}/src">
              <fileset dir="src/wolips/java"/>
@@ -114,7 +114,7 @@
     <!-- Deploys WOLips web site files in a local      -->
     <!-- directory.                                    -->
     <!-- ============================================= -->
-    <target name="deploy-web" depends="prepare,api" if="deploy.web">
+    <target name="deploy-web" depends="prepare,doc,api" if="deploy.web">
          <mkdir dir="${deploy.web}/woproject"/>
 
          <!-- copy all but HTML -->
@@ -162,5 +162,48 @@
         <doctitle><![CDATA[<h2>WOLips API Documentation</h2>]]></doctitle>
         <link href="http://developer.java.sun.com/developer/products/xml/docs/api/"/>
         </javadoc>
+    </target>
+    
+    
+    <target name="doc" depends="prepare">
+        <!-- copy all licenses inclusing ours -->
+        <copy todir="${dist-wolips}/doc">
+            <fileset dir="doc">
+               <include name="LICENSE*"/>
+            </fileset>
+        </copy>
+
+        <taskdef name="anakia" classname="org.apache.velocity.anakia.AnakiaTask">
+            <classpath refid="classpath"/>
+        </taskdef>
+
+        <!-- Build site in WOProject site directory -->
+        <anakia basedir="src/wolips/xdocs" destdir="${dist}/doc"
+             extension=".html" style="woproject.vsl"
+             projectFile="../../../xdocs/stylesheets/project.xml"
+             excludes="**/stylesheets/**"
+             includes="**/*.xml"
+             lastModifiedCheck="true"
+             templatePath="xdocs/stylesheets">
+        </anakia>
+        
+       <!-- Build site in Plugin docs directory -->
+        <anakia basedir="src/wolips/xdocs/wolips" destdir="${dist-wolips}/doc"
+             extension=".html" style="wolips.vsl"
+             excludes="**/stylesheets/**"
+             includes="**/*.xml"
+             lastModifiedCheck="true"
+             templatePath="src/wolips/xdocs/stylesheets">
+        </anakia>
+
+        <!-- copy images -->
+        <copy todir="${dist}/doc/images" filtering="no">
+            <fileset dir="xdocs/images">
+                <include name="**/*.gif"/>
+                <include name="**/*.jpeg"/>
+                <include name="**/*.jpg"/>
+                <include name="**/*.css"/>
+            </fileset>
+        </copy>
     </target>
 </project>

@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<document>
+<title>WOLips: Quick Start</title>
+    
+<body>      
+	<section name="WOLips: Quick Start">
+	<p>Here is a short how to set up a WOFramework with WOLips:</p>
+	<p>1. File -> new -> project</p>
+	<p>2. WO Version 5.* -> WOFramework -> and go through the dialog.</p>
+	<p>3. In the dialog create a new folder "src" as the source folder and 
+	accept bin as the output folder.</p>
+	<p>4. the woframework is build in a folder named framework-export 
+	which you should find in the same directory where your workspace is located.</p>
+	
+	
+	<subsection name="WOApplication">
+	<p>Coming soon...</p>
+	</subsection>
+	</section>
+</body>
+</document>

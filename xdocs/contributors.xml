@@ -33,6 +33,42 @@
                 <td>-</td>
                 <td>WOApplication idea, framework code, unit and functional tests</td>
             </tr>
+            <tr>
+                <td>Ulrich Koster</td>
+                <td>uli at mac dot com</td>
+                <td>-</td>
+                <td>WOLips Eclipse Plugin</td>
+            </tr>
+            </table>
+            </subsection>
+            
+            <subsection name="Contributors">
+            <p></p> 
+            <table>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Web</th>
+                <th>Role</th>
+            </tr>
+            <tr>
+                <td>Anjo Krank</td>
+                <td>anjo dot krank at t-online dot de</td>
+                <td>-</td>
+                <td>MacOS patches, lots of cool ideas</td>
+            </tr>
+            <tr>
+                <td>Geoff Hopson</td>
+                <td>ghopson at mac dot com</td>
+                <td>-</td>
+                <td>Bug fixes</td>
+            </tr>
+            <tr>
+                <td>Tatsuya Kawano</td>
+                <td>tatsuyaml at mac dot com</td>
+                <td>-</td>
+                <td>Bug fixes</td>
+            </tr>
             </table>
             </subsection>
         </section>
