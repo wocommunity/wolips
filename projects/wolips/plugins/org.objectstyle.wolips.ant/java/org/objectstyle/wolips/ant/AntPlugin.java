@@ -57,6 +57,8 @@
 package org.objectstyle.wolips.ant;
 
 import org.eclipse.core.runtime.*;
+import org.osgi.framework.Bundle;
+
 import java.util.*;
 
 /**
@@ -71,8 +73,7 @@ public class AntPlugin extends Plugin {
 	/**
 	 * The constructor.
 	 */
-	public AntPlugin(IPluginDescriptor descriptor) {
-		super(descriptor);
+	public AntPlugin(Bundle descriptor) {
 		plugin = this;
 		try {
 			resourceBundle   = ResourceBundle.getBundle("org.objectstyle.wolips.ant.AntPluginResources");
