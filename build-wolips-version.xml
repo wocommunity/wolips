@@ -48,5 +48,6 @@
     	<replace file="${basedir}/src/wolips-logging/plugin.properties" token="${WOLips.previous.version}" value="${WOLips.version}"/>
     	<replace file="${basedir}/src/wolips-team/plugin.xml" token="${WOLips.previous.version}" value="${WOLips.version}"/>      
     	<replace file="${basedir}/src/wolips-team/plugin.properties" token="${WOLips.previous.version}" value="${WOLips.version}"/>      
+    	<replace file="${basedir}/doc/update/local/site.xml" token="${WOLips.previous.version}" value="${WOLips.version}"/>      
     </target>
 </project>
