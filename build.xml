@@ -5,8 +5,10 @@
     <property file="${user.home}/build.properties" />
     <property file="build.properties" />
     <property file="default.properties" />
-    
-    
+    <property environment="env"/>
+    <property name="next.root" value="${env.NEXT_ROOT}"/>
+
+
     <!-- ============================================= -->
     <!-- Define extra CLASSPATH                        -->
     <!-- ============================================= -->
@@ -17,7 +19,7 @@
         <fileset dir="lib">
             <include name="*.jar"/>
         </fileset>
-        <fileset dir="${next.root}/Library/Frameworks">           
+        <fileset dir="${next.root}/Library/Frameworks">
             <include name="JavaEOAccess.framework/Resources/Java/*.jar"/>
             <include name="JavaEOControl.framework/Resources/Java/*.jar"/>
             <include name="JavaFoundation.framework/Resources/Java/*.jar"/>
@@ -25,8 +27,8 @@
             <include name="JavaJDBCAdaptor.framework/Resources/Java/*.jar"/>
         </fileset>
     </path>
-    
-    
+
+
     <!-- ============================================= -->
     <!-- Derived Properties. These properties are      -->
     <!-- derived from other properties. You probably   -->
@@ -34,13 +36,13 @@
     <!-- ============================================= -->
     <property name="dist" value="${dist.base}/${project.name}-${project.version}"/>
 
-    
+
     <target name="help">
         <echo>
         ****************************************
         * TARGETS (also you can use "-projecthelp" ant flag):
         *
-        *  1. help       - prints this message. 
+        *  1. help       - prints this message.
         *  2. prepare    - creates directories needed for distribution.
         *  3. java       - compiles java and webapp subprojects.
         *  4. clean      - cleans temporary directories.
@@ -68,57 +70,57 @@
          <copy todir="${dist}/src">
              <fileset dir="src"/>
          </copy>
-         
+
          <tar tarfile="${dist.base}/${project.name}-src-${project.version}.tar">
              <tarfileset dir="${dist.base}">
                 <include name="${project.name}-${project.version}/**"/>
             </tarfileset>
         </tar>
-        <gzip src="${dist.base}/${project.name}-src-${project.version}.tar" 
-              zipfile="${dist.base}/${project.name}-src-${project.version}.tar.gz"/>  
+        <gzip src="${dist.base}/${project.name}-src-${project.version}.tar"
+              zipfile="${dist.base}/${project.name}-src-${project.version}.tar.gz"/>
         <delete file="${dist.base}/${project.name}-src-${project.version}.tar"/>
     </target>
-    
-    
+
+
     <!-- ============================================= -->
     <!-- Deploys WOProject web site in a local         -->
     <!-- directory.                                    -->
     <!-- ============================================= -->
     <target name="deploy-web" depends="prepare,java,doc,api" if="deploy.web">
          <mkdir dir="${deploy.web}/woproject"/>
-             
+
          <!-- copy all but HTML -->
          <copy todir="${deploy.web}/woproject">
-             <fileset dir="${dist}/doc"> 
+             <fileset dir="${dist}/doc">
              	<exclude name="**/*.html"/>
              </fileset>
          </copy>
-         
+
          <!-- do replacement in HTML files -->
          <copy todir="${deploy.web}/woproject" overwrite="true">
-             <fileset dir="${dist}/doc"> 
+             <fileset dir="${dist}/doc">
              	<include name="**/*.html"/>
              </fileset>
-             
+
              <filterset begintoken="!--" endtoken="--">
 				<filter token="SFLOGO" value="${sf.logo}"/>
 			 </filterset>
          </copy>
     </target>
-    
+
 
     <!-- ============================================= -->
     <!-- Compiles Java classes                         -->
     <!-- ============================================= -->
     <target name="java" depends="prepare">
-       <javac srcdir="src/java" 
+       <javac srcdir="src/java"
                 destdir="build"
                 deprecation="${compile.deprecation}"
                 debug="${compile.debug}"
                 optimize="${compile.optimize}">
             <classpath refid="classpath"/>
         </javac>
-        
+
         <jar jarfile="${dist}/lib/${project.name}.jar">
             <fileset dir="build" />
             <fileset dir="src/resources">
@@ -129,11 +131,11 @@
                 <include name="LICENSE*"/>
             </metainf>
         </jar>
-        
+
         <copy todir="${dist}/lib" file="lib/cayenne.jar"/>
     </target>
-    
-    
+
+
     <!-- ============================================= -->
     <!-- Sets up build and distribution directories.   -->
     <!-- ============================================= -->
@@ -144,8 +146,8 @@
         <mkdir dir="${dist}/doc"/>
         <mkdir dir="${dist}/doc/api"/>
     </target>
-    
-    
+
+
     <!-- ============================================= -->
     <!-- Different clean targets.                      -->
     <!-- ============================================= -->
@@ -170,7 +172,7 @@
         <taskdef name="anakia" classname="org.apache.velocity.anakia.AnakiaTask">
             <classpath refid="classpath"/>
         </taskdef>
-        
+
         <!-- Build site -->
         <anakia basedir="xdocs" destdir="${dist}/doc"
              extension=".html" style="woproject.vsl"
@@ -190,7 +192,7 @@
                 <include name="**/*.css"/>
             </fileset>
         </copy>
-        
+
         <!-- copy templates -->
         <copy todir="${dist}/doc/templates" filtering="no">
             <fileset dir="src/resources/wogen">
@@ -209,7 +211,7 @@
                 <include name="**/LICENSE*"/>
             </fileset>
         </copy>
-        
+
         <javadoc   packagenames="org.objectstyle.*"
                    defaultexcludes="yes"
                    destdir="${dist}/doc/api"
@@ -217,7 +219,7 @@
                    version="true"
                    use="true"
                    windowtitle="WOProject API">
-                
+
         <classpath refid="classpath"/>
         <sourcepath>
             <pathelement path="src/java"/>
