@@ -89,11 +89,20 @@ public class FrameworkSet extends FileSet {
 	 */
 	public String getRootPrefix() throws BuildException {
 		if (isWORoot()) {
-			return AntStringUtils.replace(root, WOPropertiesHandler.WO_ROOT, "WOROOT");
+			return AntStringUtils.replace(
+				root,
+				WOPropertiesHandler.WO_ROOT,
+				"WOROOT");
 		} else if (isHomeRoot()) {
-			return AntStringUtils.replace(root, WOPropertiesHandler.HOME_ROOT, "HOMEROOT");
+			return AntStringUtils.replace(
+				root,
+				WOPropertiesHandler.HOME_ROOT,
+				"HOMEROOT");
 		} else if (isLocalRoot()) {
-			return AntStringUtils.replace(root, WOPropertiesHandler.LOCAL_ROOT, "LOCALROOT");
+			return AntStringUtils.replace(
+				root,
+				WOPropertiesHandler.LOCAL_ROOT,
+				"LOCALROOT");
 		} else if (isAbsoluteRoot()) {
 			return getRoot();
 		} else {
@@ -114,7 +123,8 @@ public class FrameworkSet extends FileSet {
 	}
 
 	public boolean isAbsoluteRoot() {
-		return root.charAt(0) == '/';
+		return root.charAt(0) == '/'
+			|| (root.length() >= 3 && root.substring(1, 3).equals(":/"));
 	}
 
 	/** 
@@ -140,13 +150,25 @@ public class FrameworkSet extends FileSet {
 			new WOPropertiesHandler(this.getProject());
 
 		if (isWORoot()) {
-			String newRoot = AntStringUtils.replace(root, WOPropertiesHandler.WO_ROOT, propsHandler.getWORoot());
+			String newRoot =
+				AntStringUtils.replace(
+					root,
+					WOPropertiesHandler.WO_ROOT,
+					propsHandler.getWORoot());
 			super.setDir(new File(newRoot));
 		} else if (isLocalRoot()) {
-			String newRoot = AntStringUtils.replace(root, WOPropertiesHandler.LOCAL_ROOT, propsHandler.getLocalRoot());
+			String newRoot =
+				AntStringUtils.replace(
+					root,
+					WOPropertiesHandler.LOCAL_ROOT,
+					propsHandler.getLocalRoot());
 			super.setDir(new File(newRoot));
 		} else if (isHomeRoot()) {
-			String newRoot = AntStringUtils.replace(root, WOPropertiesHandler.HOME_ROOT, propsHandler.getHomeRoot());
+			String newRoot =
+				AntStringUtils.replace(
+					root,
+					WOPropertiesHandler.HOME_ROOT,
+					propsHandler.getHomeRoot());
 		} else if (isAbsoluteRoot()) {
 			super.setDir(new File(root));
 		} else {
@@ -176,16 +198,15 @@ public class FrameworkSet extends FileSet {
 		}
 
 		String[] files = jarDir.list(new JarFilter());
-		
+
 		// prepend path
 		String[] finalFiles = new String[files.length];
-		for(int i = 0; i < finalFiles.length; i++) {
+		for (int i = 0; i < finalFiles.length; i++) {
 			finalFiles[i] = jarDirName + File.separator + files[i];
 		}
-		
+
 		return finalFiles;
 	}
-
 
 	class JarFilter implements FilenameFilter {
 		public boolean accept(File dir, String name) {
