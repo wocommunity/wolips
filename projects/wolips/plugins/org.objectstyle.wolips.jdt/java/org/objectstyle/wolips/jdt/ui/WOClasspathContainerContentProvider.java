@@ -159,6 +159,10 @@ public class WOClasspathContainerContentProvider implements ITreeContentProvider
 			return containerPath;
 		}
 
+		protected IPath getRootPath() {
+			return rootPath;
+		}
+
 	}
 
 	public final class WOClasspathContainerEntry {
@@ -182,7 +186,7 @@ public class WOClasspathContainerContentProvider implements ITreeContentProvider
 							&& segments[i].equals(name)
 							&& this.exists(
 								segments[i],
-								(this.getRoot().getContainerPath())));
+								(this.getRoot().getRootPath())));
 					if (checked) {
 						i = segments.length;
 						allEntries.add(name);
@@ -193,10 +197,10 @@ public class WOClasspathContainerContentProvider implements ITreeContentProvider
 		}
 
 		private boolean exists(String framework, IPath rootPath) {
+			IPath frameworkPath = rootPath.append(framework + ".framework").append("Resources").append("Java");
 			File frameworkFile =
 					new File(
-							rootPath.toOSString(),
-						framework + ".framework/Resources/Java");
+							frameworkPath.toOSString());
 				return frameworkFile.isDirectory();
 		}
 		/**
