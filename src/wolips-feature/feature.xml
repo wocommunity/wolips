@@ -13,6 +13,10 @@
       %description
    </description>
 
+   <license url="%licenseURL">
+     %license
+   </license>
+
    <url>
       <update label="WOLips update site" url="http://www.objectstyle.org/woproject/update"/>
       <discovery label="WOLips discovery site" url="http://www.objectstyle.org/woproject/index.html"/>

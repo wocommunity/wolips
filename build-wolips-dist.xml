@@ -13,6 +13,16 @@
         	<exclude name=".project"/>
         </fileset>
     </copy>
+    <copy todir="${wolips.feature.dist}">
+        <fileset dir="doc">
+        	<include name="LICENSE"/>
+        </fileset>
+    </copy>
+    <copy todir="${wolips.feature.dist}">
+        <fileset dir="src/wolips/icons/wolips">
+        	<include name="WOLips-medium.gif"/>
+        </fileset>
+    </copy>
 
     <mkdir dir="${wolips.profiling.feature.dist}"/>
     <copy todir="${wolips.profiling.feature.dist}">
@@ -20,11 +30,31 @@
         	<exclude name=".project"/>
         </fileset>
     </copy>
+    <copy todir="${wolips.profiling.feature.dist}">
+        <fileset dir="doc">
+        	<include name="LICENSE"/>
+        </fileset>
+    </copy>
+    <copy todir="${wolips.profiling.feature.dist}">
+        <fileset dir="src/wolips/icons/wolips">
+        	<include name="WOLips-medium.gif"/>
+        </fileset>
+    </copy>
   
     <mkdir dir="${wolips.tests.feature.dist}"/>
     <copy todir="${wolips.tests.feature.dist}">
-        <fileset dir="src/tests">
+        <fileset dir="src/wolips-tests-feature">
         	<exclude name=".project"/>
+        </fileset>
+    </copy>
+    <copy todir="${wolips.tests.feature.dist}">
+        <fileset dir="doc">
+        	<include name="LICENSE"/>
+        </fileset>
+    </copy>
+    <copy todir="${wolips.tests.feature.dist}">
+        <fileset dir="src/wolips/icons/wolips">
+        	<include name="WOLips-medium.gif"/>
         </fileset>
     </copy>
   
