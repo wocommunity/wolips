@@ -10,6 +10,9 @@
       <library name="lib/wolips.jar">
       	<export name="*"/>
       </library>
+      <library name="lib/woproject.jar">
+      	<export name="*"/>
+      </library>
    </runtime>
    
    <requires>
@@ -183,11 +186,19 @@
       </editor>
       <editor
             name="EOModeler"
-            default="false"
+            default="true"
             icon="icons/eomodeler/webobjects_eomodeler.gif"
             extensions="eomodeld"
             launcher="org.objectstyle.wolips.editor.OpenSystemEditor"
             id="org.objectstyle.wolips.external.eomodeld.editor">
+      </editor>
+      <editor
+            name="ProjectBuilderWO"
+            default="false"
+            icon="icons/projectbuilder/projectbuilderwo.gif"
+            extensions="project"
+            launcher="org.objectstyle.wolips.editor.OpenSystemEditor"
+            id="org.objectstyle.wolips.external.eomodeld.projectbuilderwo">
       </editor>
    </extension>
 </plugin>
