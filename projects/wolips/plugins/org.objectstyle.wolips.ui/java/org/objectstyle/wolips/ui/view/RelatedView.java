@@ -66,8 +66,8 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IMember;
 import org.eclipse.jdt.internal.ui.JavaPlugin;
-import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor;
 import org.eclipse.jdt.internal.ui.viewsupport.StorageLabelProvider;
+import org.eclipse.jdt.ui.IWorkingCopyManager;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.DecoratingLabelProvider;
 import org.eclipse.jface.viewers.DoubleClickEvent;
@@ -371,37 +371,22 @@ public final class RelatedView extends ViewPart implements ISelectionListener, I
 	protected Action getDoubleClickAction() {
 		return doubleClickAction;
 	}
-	/**
-	 * @see IPartListener#partActivated(IWorkbenchPart)
-	 */
+	
 	public void partActivated(IWorkbenchPart part) {
 		if (part instanceof IEditorPart) {
-			if (part instanceof CompilationUnitEditor) {
-				IEditorInput input = ((IEditorPart)part).getEditorInput();
-				if (input instanceof IFileEditorInput) {
-					viewer.setInput(JavaPlugin.getDefault().getWorkingCopyManager().getWorkingCopy(input));
-				}
+			IEditorInput input = ((IEditorPart)part).getEditorInput();
+			if (input instanceof IFileEditorInput) {
+				IWorkingCopyManager manager = JavaPlugin.getDefault().getWorkingCopyManager();
+				viewer.setInput(manager.getWorkingCopy(input));
 			}
 		}
 	}
-	/**
-	 * @see IPartListener#partClosed(IWorkbenchPart)
-	 */
 	public void partClosed(IWorkbenchPart part) {
 	}
-	/**
-	 * @see IPartListener#partOpened(IWorkbenchPart)
-	 */
 	public void partOpened(IWorkbenchPart part) {
 	}
-	/**
-	 * @see IPartListener#partDeactivated(IWorkbenchPart)
-	 */
 	public void partDeactivated(IWorkbenchPart part) {
 	}
-	/**
-	 * @see IPartListener#partBroughtToTop(IWorkbenchPart)
-	 */
 	public void partBroughtToTop(IWorkbenchPart part) {
 	}
 }
