@@ -165,7 +165,10 @@ public final class WorkbenchUtilities {
 			ArrayList referencedProjects = new ArrayList();
 			for (int i = 0; i < projects.length; i++) {
 				if (WorkbenchUtilities
-					.projectISReferencedByProject(projects[i], project))
+					.projectISReferencedByProject(projects[i], project)
+					|| WorkbenchUtilities.projectISReferencedByProject(
+						project,
+						projects[i]))
 					referencedProjects.add(projects[i]);
 			}
 			int numReferencedProjects = referencedProjects.size();
