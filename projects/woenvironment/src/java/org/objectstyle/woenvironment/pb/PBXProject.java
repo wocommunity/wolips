@@ -59,6 +59,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Comparator;
 import java.util.TreeMap;
 import java.util.Iterator;
 import java.util.List;
@@ -235,7 +236,7 @@ public class PBXProject {
 			"objects",			objectsTable });
 	}
 	
-	protected static class ObjectsTable extends HashMap {
+	protected static class ObjectsTable extends TreeMap {
 		public static class ID extends Number {
 			int _value;
 			protected ID( int value ) {
@@ -266,7 +267,14 @@ public class PBXProject {
 		}
 		
 		public ObjectsTable() {
-			super();
+                    super(new Comparator() {
+                        public int compare(Object a, Object b) {
+                            if(a == b) return 0;
+                            if(a == null) return -1;
+                            if(b == null) return 1;
+                            return a.toString().compareTo(b.toString());
+                        }
+                    });
 		}
 		
 		public ID insert( Object object ) {
