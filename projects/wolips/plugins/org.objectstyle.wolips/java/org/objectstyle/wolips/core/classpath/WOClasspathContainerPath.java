@@ -80,18 +80,19 @@ import org.objectstyle.wolips.core.project.WOLipsCore;
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public class WOClasspathContainerPath
+public final class WOClasspathContainerPath
 	implements ITreeContentProvider, ILabelProvider {
 	private WOClasspathContainerRoot[] roots;
 	private CheckboxTreeViewer viewer;
-	private ArrayList allEntries = new ArrayList();
+	protected ArrayList allEntries = new ArrayList();
 	private boolean isExported = false;
-	private Image framworkRootImage =
+	private final Image framworkRootImage =
 		WOLipsPluginImages.WOFRAMEWORK_ROOT_IMAGE.createImage(false);
-	private Image framworkImage =
+	private final Image framworkImage =
 		WOLipsPluginImages.WOFRAMEWORK_IMAGE.createImage(false);
-	private Image standardFramworkImage =
+	private final Image standardFramworkImage =
 		WOLipsPluginImages.WOSTANDARD_FRAMEWORK_IMAGE.createImage(false);
+		
 	public WOClasspathContainerPath(IClasspathEntry containerEntry) {
 		IPath path = null;
 		if (containerEntry == null || containerEntry.getPath() == null)
@@ -111,10 +112,10 @@ public class WOClasspathContainerPath
 		}
 	}
 
-	public class WOClasspathContainerRoot {
+	public final class WOClasspathContainerRoot {
 		private String root;
 		private WOClasspathContainerEntry[] entries;
-		private WOClasspathContainerRoot(String root, IPath path) {
+		protected WOClasspathContainerRoot(String root, IPath path) {
 			this.root = root;
 			IPath basePath = JavaCore.getClasspathVariable(root);
 			String base = basePath.toOSString();
@@ -140,7 +141,7 @@ public class WOClasspathContainerPath
 			}
 		}
 
-		public String getRootName() {
+		protected String getRootName() {
 			return WOLipsCore
 				.getClasspathVariablesAccessor()
 				.getclasspathVariableName(
@@ -152,15 +153,19 @@ public class WOClasspathContainerPath
 		public WOClasspathContainerEntry[] getEntries() {
 			return entries;
 		}
+		
+		protected String getRoot() {
+			return root;
+		}
 
 	}
 
-	public class WOClasspathContainerEntry {
+	public final class WOClasspathContainerEntry {
 		private WOClasspathContainerRoot root;
 		private File framework;
 		private boolean checked = false;
 		private String name;
-		private WOClasspathContainerEntry(
+		protected WOClasspathContainerEntry(
 			WOClasspathContainerRoot root,
 			IPath path,
 			File framework) {
@@ -176,7 +181,7 @@ public class WOClasspathContainerPath
 						(i > 0
 							&& !allEntries.contains(name)
 							&& segments[i].equals(name)
-							&& this.exists(segments[i], (this.root.root)));
+							&& this.exists(segments[i], (this.getRoot().getRoot())));
 					if (checked) {
 						i = segments.length;
 						allEntries.add(name);
@@ -213,17 +218,21 @@ public class WOClasspathContainerPath
 		/**
 		 * @param b
 		 */
-		public void setChecked(boolean b) {
+		protected void setChecked(boolean b) {
 			checked = b;
 		}
 
-		public String getName() {
+		protected String getName() {
 			return name;
+		}
+		
+		protected WOClasspathContainerRoot getRoot() {
+			return root;
 		}
 
 	}
 
-	private static class WildcardFilenameFilter implements FilenameFilter {
+	private static final class WildcardFilenameFilter implements FilenameFilter {
 		WildcardFilenameFilter(String prefix, String suffix) {
 			_prefix = prefix;
 			_suffix = suffix;
@@ -242,7 +251,7 @@ public class WOClasspathContainerPath
 		String _suffix;
 	}
 
-	private static class WOFWFilenameFilter implements FilenameFilter {
+	private static final class WOFWFilenameFilter implements FilenameFilter {
 		public boolean accept(File file, String name) {
 			/*name.startsWith("Java") &&*/
 			boolean candidate = name.endsWith(".framework");
@@ -299,7 +308,7 @@ public class WOClasspathContainerPath
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.viewers.ITreeContentProvider#getChildren(java.lang.Object)
 	 */
-	public Object[] getChildren(Object parentElement) {
+	 public Object[] getChildren(Object parentElement) {
 		if (parentElement instanceof WOClasspathContainerRoot) {
 			WOClasspathContainerEntry[] entries =
 				((WOClasspathContainerRoot) parentElement).getEntries();
@@ -324,18 +333,18 @@ public class WOClasspathContainerPath
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.viewers.ITreeContentProvider#getParent(java.lang.Object)
 	 */
-	public Object getParent(Object element) {
+	 public Object getParent(Object element) {
 		if (element instanceof WOClasspathContainerRoot)
 			return this;
 		if (element instanceof WOClasspathContainerEntry)
-			return ((WOClasspathContainerEntry) element).root;
+			return ((WOClasspathContainerEntry) element).getRoot();
 		return null;
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.viewers.ITreeContentProvider#hasChildren(java.lang.Object)
 	 */
-	public boolean hasChildren(Object element) {
+	 public boolean hasChildren(Object element) {
 		if (element instanceof WOClasspathContainerPath)
 			return ((WOClasspathContainerPath) element).getRoots() != null
 				&& ((WOClasspathContainerPath) element).getRoots().length > 0;
@@ -381,7 +390,7 @@ public class WOClasspathContainerPath
 				i++) {
 				if (WOClasspathContainer
 					.WOLIPS_CLASSPATH_STANDARD_FRAMEWORKS[i]
-					.equals(((WOClasspathContainerEntry) element).name))
+					.equals(((WOClasspathContainerEntry) element).getName()))
 					return this.standardFramworkImage;
 			}
 			return this.framworkImage;

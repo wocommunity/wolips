@@ -229,19 +229,19 @@ public class WOLipsProject implements IWOLipsProject {
 		private void addTargetBuilder() throws CoreException {
 			if (this.isTargetBuilderInstalled())
 				return;
-			IProjectDescription description = project.getDescription();
+			IProjectDescription description = this.getProject().getDescription();
 			String[] natures = description.getNatureIds();
 			String[] newNatures = new String[natures.length + 1];
 			System.arraycopy(natures, 0, newNatures, 0, natures.length);
 			newNatures[natures.length] = TargetBuilderNatureID;
 			description.setNatureIds(newNatures);
-			project.setDescription(description, null);
+			this.getProject().setDescription(description, null);
 		}
 
 		private void removeTargetBuilder() throws CoreException {
 			if (!this.isTargetBuilderInstalled())
 				return;
-			IProjectDescription description = project.getDescription();
+			IProjectDescription description = this.getProject().getDescription();
 			ArrayList natureList = new ArrayList();
 			natureList.addAll(Arrays.asList(description.getNatureIds()));
 			for (int i = 0; i < natureList.size(); i++)
@@ -251,7 +251,7 @@ public class WOLipsProject implements IWOLipsProject {
 			for (int i = 0; i < natureList.size(); i++)
 				newNatures[i] = (String) natureList.get(i);
 			description.setNatureIds(newNatures);
-			project.setDescription(description, null);
+			this.getProject().setDescription(description, null);
 		}
 
 		public boolean isTargetBuilderInstalled() throws CoreException {
@@ -472,10 +472,10 @@ public class WOLipsProject implements IWOLipsProject {
 		 * @return May return null.
 		 */
 		public IProjectNature getIncrementalNature() throws CoreException {
-			if (project.hasNature(INCREMENTAL_APPLICATION_NATURE_ID)) {
-				return project.getNature(INCREMENTAL_APPLICATION_NATURE_ID);
-			} else if (project.hasNature(INCREMENTAL_FRAMEWORK_NATURE_ID)) {
-				return project.getNature(INCREMENTAL_FRAMEWORK_NATURE_ID);
+			if (this.getProject().hasNature(INCREMENTAL_APPLICATION_NATURE_ID)) {
+				return this.getProject().getNature(INCREMENTAL_APPLICATION_NATURE_ID);
+			} else if (this.getProject().hasNature(INCREMENTAL_FRAMEWORK_NATURE_ID)) {
+				return this.getProject().getNature(INCREMENTAL_FRAMEWORK_NATURE_ID);
 
 			}
 			return null;

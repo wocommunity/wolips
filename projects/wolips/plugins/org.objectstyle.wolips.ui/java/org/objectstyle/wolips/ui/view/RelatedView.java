@@ -47,10 +47,10 @@ import org.objectstyle.wolips.core.resources.IWOLipsResource;
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public class RelatedView extends ViewPart implements ISelectionListener {
+public final class RelatedView extends ViewPart implements ISelectionListener {
 	private boolean forceOpenInTextEditor = false;
 
-	class ViewContentProvider implements ITreeContentProvider {
+	protected class ViewContentProvider implements ITreeContentProvider {
 
 		Object input = null;
 
@@ -69,7 +69,7 @@ public class RelatedView extends ViewPart implements ISelectionListener {
 				wolipsResource =
 					WOLipsCore.getWOLipsModel().getWOLipsResource(
 						(IResource) parent);
-				viewer.setInput(wolipsResource);
+				getViewer().setInput(wolipsResource);
 			} else if (parent instanceof ICompilationUnit) {
 				wolipsResource =
 					WOLipsCore.getWOLipsModel().getWOLipsCompilationUnit(
@@ -190,10 +190,10 @@ public class RelatedView extends ViewPart implements ISelectionListener {
 		viewer.getTable().addKeyListener(new KeyListener() {
 			public void keyPressed(KeyEvent e) {
 				if (e.keyCode == SWT.COMMAND || e.keyCode == SWT.ALT)
-					forceOpenInTextEditor = true;
+					setForceOpenInTextEditor(true);
 			}
 			public void keyReleased(KeyEvent e) {
-				forceOpenInTextEditor = false;
+				setForceOpenInTextEditor(false);
 			}
 		});
 
@@ -201,7 +201,7 @@ public class RelatedView extends ViewPart implements ISelectionListener {
 
 			public void run() {
 
-				ISelection selection = viewer.getSelection();
+				ISelection selection = getViewer().getSelection();
 
 				List list = ((IStructuredSelection) selection).toList();
 				for (int i = 0; i < list.size(); i++) {
@@ -220,7 +220,7 @@ public class RelatedView extends ViewPart implements ISelectionListener {
 									(ICompilationUnit) object);
 						}
 						if (wolipsResource != null) {
-							wolipsResource.open(forceOpenInTextEditor);
+							wolipsResource.open(isForceOpenInTextEditor());
 						}
 					}
 				}
@@ -230,8 +230,8 @@ public class RelatedView extends ViewPart implements ISelectionListener {
 		viewer.addDoubleClickListener(new IDoubleClickListener() {
 
 			public void doubleClick(DoubleClickEvent event) {
-				doubleClickAction.run();
-				forceOpenInTextEditor = false;
+				getDoubleClickAction().run();
+				setForceOpenInTextEditor(false);
 			}
 
 		});
@@ -250,7 +250,7 @@ public class RelatedView extends ViewPart implements ISelectionListener {
 
 					public void run() {
 
-						viewer.refresh(false);
+						getViewer().refresh(false);
 
 					}
 
@@ -277,20 +277,32 @@ public class RelatedView extends ViewPart implements ISelectionListener {
 			IStructuredSelection sel = (IStructuredSelection) selection;
 
 			Object selectedElement = sel.getFirstElement();
-			/*if (selectedElement instanceof IResource) {
-				IWOLipsResource wolipsResource =
-					WOLipsCore.getWOLipsModel().getWOLipsResource(
-						(IResource) selectedElement);
-				viewer.setInput(wolipsResource);
-			} else if (selectedElement instanceof ICompilationUnit) {
-				IWOLipsResource wolipsResource =
-					WOLipsCore.getWOLipsModel().getWOLipsCompilationUnit(
-						(ICompilationUnit) selectedElement);
-				viewer.setInput(wolipsResource);
-			} else*/
 			viewer.setInput(selectedElement);
 
 		}
 	}
 
+	protected TableViewer getViewer() {
+		return viewer;
+	}
+	/**
+	 * @return
+	 */
+	protected boolean isForceOpenInTextEditor() {
+		return forceOpenInTextEditor;
+	}
+
+	/**
+	 * @param b
+	 */
+	protected void setForceOpenInTextEditor(boolean b) {
+		forceOpenInTextEditor = b;
+	}
+
+	/**
+	 * @return
+	 */
+	protected Action getDoubleClickAction() {
+		return doubleClickAction;
+	}
 }
