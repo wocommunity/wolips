@@ -6,7 +6,6 @@
 		<project>org.objectstyle.wolips</project>
 		<project>org.objectstyle.wolips.devstudio</project>
 		<project>org.objectstyle.wolips.help</project>
-		<project>org.objectstyle.wolips.launching</project>
 		<project>org.objectstyle.wolips.projectbuild</project>
 		<project>org.objectstyle.wolips.support</project>
 		<project>org.objectstyle.wolips.ui</project>
