@@ -27,6 +27,9 @@
       <import plugin="org.objectstyle.wolips.ant"/>
       <import plugin="org.objectstyle.wolips.templateengine"/>
       <import plugin="org.objectstyle.wolips.workbenchutilities"/>
+      <import plugin="org.eclipse.ui.externaltools"/>
+      <import plugin="org.eclipse.ant.ui"/>
+      <import plugin="org.eclipse.core.variables"/>
    </requires>
 
 <!-- =================================================================================== -->

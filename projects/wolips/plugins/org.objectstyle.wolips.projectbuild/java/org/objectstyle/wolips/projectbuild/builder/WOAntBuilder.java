@@ -52,6 +52,8 @@ import java.util.Map;
 
 import org.eclipse.ant.core.AntCorePlugin;
 import org.eclipse.ant.core.AntRunner;
+import org.eclipse.ant.internal.ui.launchConfigurations.IAntLaunchConfigurationConstants;
+import org.eclipse.ant.internal.ui.model.IAntUIConstants;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
@@ -62,14 +64,18 @@ import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.QualifiedName;
+import org.eclipse.core.variables.VariablesPlugin;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunchConfiguration;
+import org.eclipse.debug.core.ILaunchConfigurationType;
+import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
+import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.jdt.launching.IVMInstall;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.externaltools.internal.model.IExternalToolConstants;
 import org.objectstyle.wolips.ant.runner.BuildMessages;
-import org.objectstyle.wolips.ant.runner.RunAnt;
 import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
 import org.objectstyle.wolips.core.preferences.Preferences;
 import org.objectstyle.wolips.datasets.resources.IWOLipsModel;
@@ -80,6 +86,7 @@ import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
  * @author uli
  */
 public class WOAntBuilder extends IncrementalProjectBuilder {
+	private static final String MAIN_TYPE_NAME = "org.eclipse.ant.internal.ui.antsupport.InternalAntRunner";
 	private static final int TOTAL_WORK_UNITS = 1;
 	private String informUserString = "WOLips: "
 			+ "To avoid frequent crashes don't forget to install the patched org.eclipse.core.ant plugin. "
@@ -166,7 +173,7 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 				aMarker = null;
 			}
 		}
-		RunAnt runAnt = new RunAnt();
+		//RunAnt runAnt = new RunAnt();
 		//if (projectNeedsClean())
 		//TODO:handle clean
 		this.launchAntInExternalVM(getProject().getFile(aBuildFile), monitor);
@@ -371,11 +378,14 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 			throws CoreException {
 		ILaunchConfiguration config = null;
 		try {
-			config = this.createDefaultLaunchConfiguration(buildFile, monitor);
+			//config = this.createDefaultLaunchConfiguration(buildFile,
+			// monitor);
+			config = this.createDefaultLaunchConfiguration(buildFile);
 		} catch (CoreException e) {
 			config = null;
-			WorkbenchUtilitiesPlugin.handleException(Display.getCurrent().getActiveShell(),
-					e, BuildMessages.getString("Build.Exception"));
+			WorkbenchUtilitiesPlugin.handleException(Display.getCurrent()
+					.getActiveShell(), e, BuildMessages
+					.getString("Build.Exception"));
 			return;
 		}
 		try {
@@ -384,6 +394,62 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 		} finally {
 			config = null;
 		}
+	}
+	/**
+	 * Creates and returns a default launch configuration for the given file.
+	 * 
+	 * @param file
+	 * @return default launch configuration
+	 */
+	private ILaunchConfiguration createDefaultLaunchConfiguration(IFile file)
+			throws CoreException {
+		ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
+		ILaunchConfigurationType type = manager
+				.getLaunchConfigurationType(IAntLaunchConfigurationConstants.ID_ANT_LAUNCH_CONFIGURATION_TYPE);
+		StringBuffer buffer = new StringBuffer(file.getProject().getName());
+		buffer.append(' ');
+		buffer.append(file.getName());
+		buffer.append(" (WOLips)");
+		String name = buffer.toString().trim();
+		name = manager.generateUniqueLaunchConfigurationNameFrom(name);
+		ILaunchConfigurationWorkingCopy workingCopy = type.newInstance(null,
+				name);
+		workingCopy.setAttribute(IExternalToolConstants.ATTR_LOCATION,
+				VariablesPlugin.getDefault().getStringVariableManager()
+						.generateVariableExpression("workspace_loc",
+								file.getFullPath().toString())); //$NON-NLS-1$
+		workingCopy.setAttribute(
+				IJavaLaunchConfigurationConstants.ATTR_CLASSPATH_PROVIDER,
+				"org.eclipse.ant.ui.AntClasspathProvider"); //$NON-NLS-1$
+		IVMInstall defaultInstall= null;
+		try {
+			defaultInstall = JavaRuntime.computeVMInstall(workingCopy);
+		} catch (CoreException e) {
+			//core exception thrown for non-Java project
+			defaultInstall= JavaRuntime.getDefaultVMInstall();
+		}
+		if (defaultInstall != null) {
+			String vmName = defaultInstall.getName();
+			String vmTypeID = defaultInstall.getVMInstallType().getId();					
+			workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_INSTALL_NAME, vmName);
+			workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_INSTALL_TYPE, vmTypeID);
+		}
+		workingCopy.setAttribute(
+				IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME,
+				MAIN_TYPE_NAME);
+		workingCopy.setAttribute(DebugPlugin.ATTR_PROCESS_FACTORY_ID,
+				IAntUIConstants.REMOTE_ANT_PROCESS_FACTORY_ID);
+		workingCopy.setAttribute(
+				IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME,
+				"org.eclipse.ant.internal.ui.antsupport.InternalAntRunner");
+		workingCopy.setAttribute(
+				IJavaLaunchConfigurationConstants.ATTR_PROGRAM_ARGUMENTS,
+				(String) null);
+		
+		workingCopy.setAttribute("org.eclipse.ui.externaltools.ATTR_SHOW_CONSOLE", false);
+		workingCopy.setAttribute("org.eclipse.debug.ui.ATTR_LAUNCH_IN_BACKGROUND", false);
+		workingCopy.setAttribute("org.eclipse.ui.externaltools.ATTR_CAPTURE_OUTPUT", false);
+		return workingCopy.doSave();
 	}
 	/**
 	 * Creates and returns a default launch configuration for the given file.
@@ -404,16 +470,19 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 				buildLaunchEngine.init();
 				buildLaunchEngine.setProjectName(project.getName());
 				buildLaunchEngine.setProject(project);
-				buildLaunchEngine.setAttrLocation(buildFile.getLocation().toString());
-				buildLaunchEngine.setWorkingDirectory(project.getLocation().toString());
+				buildLaunchEngine.setAttrLocation(buildFile.getLocation()
+						.toString());
+				buildLaunchEngine.setWorkingDirectory(project.getLocation()
+						.toString());
 				IVMInstall vmInstall = JavaRuntime.getDefaultVMInstall();
-			    buildLaunchEngine.setVmInstallName(vmInstall.getName());
+				buildLaunchEngine.setVmInstallName(vmInstall.getName());
 				buildLaunchEngine.setVmInstallTypeId(vmInstall.getId());
 				buildLaunchEngine.run(monitor);
 			} catch (Exception e) {
 				WOLipsPlugin.getDefault().getPluginLogger().log(e);
 			}
-			persistentLaunchConfigFile.refreshLocal(IResource.DEPTH_ONE, monitor);
+			persistentLaunchConfigFile.refreshLocal(IResource.DEPTH_ONE,
+					monitor);
 		}
 		ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
 		ILaunchConfiguration config = manager
