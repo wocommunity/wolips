@@ -100,7 +100,7 @@ public class IncrementalNature
 
 		IFolder buildFolder = project.getFolder("build");
 		if (!buildFolder.exists()) {
-			buildFolder.create(IFolder.FORCE, true, null);
+			buildFolder.create(IResource.FORCE, true, null);
 		}
 		buildFolder.setDerived(true);
 
@@ -479,11 +479,7 @@ public class IncrementalNature
 	IProject _project = null;
   WOLipsProject _woLipsProject = null;
 
-	private static final String NAME_PROPERTY = "PROJECT_NAME";
-	private static final String FRAMEWORK_PROPERTY = "IS_FRAMEWORK";
-
 	private static final String APPINFO_PATH = "Contents";
-	private static final String FWINFO_PATH = "Resources";
 	private static final String RESOURCE_PATH = "Resources";
 	private static final String WEBRESOURCE_PATH = "WebServerResources";
 	private static final String JAVA_PATH = "Resources/Java";

@@ -104,7 +104,6 @@ public class ProjectNaturePage
   private static final String WO_USE_INCREMENTAL_TITLE = "Incremental";
   private static final String WO_USE_ANT_TITLE = "Use Ant (build.xml)";
 
-	private static final int TEXT_FIELD_WIDTH = 50;
 	/**
 	 * Constructor for WOLipsProjectNaturePage.
 	 */
@@ -138,18 +137,6 @@ public class ProjectNaturePage
 	}
 
 	/**
-	 * @param parent
-	 */
-	private void _addSeparator(Composite parent) {
-		Label separator = new Label(parent, SWT.SEPARATOR | SWT.HORIZONTAL);
-		GridData gridData = new GridData();
-		gridData.horizontalAlignment = GridData.FILL;
-		gridData.grabExcessHorizontalSpace = true;
-		separator.setLayoutData(gridData);
-	}
-
-
-  /**
    * @param parent
    * @param woLipsProject
    * @throws CoreException
@@ -322,25 +309,7 @@ public class ProjectNaturePage
 		return composite;
 	}
 
-	/**
-	 * @param parent
-	 * @return Composite
-	 */
-	private Composite _createDefaultComposite(Composite parent) {
-		Composite composite = new Composite(parent, SWT.NULL);
-		GridLayout layout = new GridLayout();
-		layout.numColumns = 2;
-		composite.setLayout(layout);
-
-		GridData data = new GridData();
-		data.verticalAlignment = GridData.FILL;
-		data.horizontalAlignment = GridData.FILL;
-		composite.setLayoutData(data);
-
-		return composite;
-	}
-
-  private Composite _createLabelledComposite(Composite parent, String label) {
+	private Composite _createLabelledComposite(Composite parent, String label) {
     Group composite = new Group(parent, SWT.NULL);
     FormLayout layout = new FormLayout();
     //layout.numColumns = 2;

@@ -253,7 +253,7 @@ public class AppFormat extends ProjectFormat {
 					dirs = ds.getIncludedDirectories();
 
 					for (int j = 0; j < dirs.length; j++) {
-						File[] jars = fs.findJars(project, dirs[j]);
+						File[] jars = fs.findJars(dirs[j]);
 
 						if (jars == null || jars.length == 0) {
 							log(

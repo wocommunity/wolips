@@ -68,7 +68,6 @@ import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.SubProgressMonitor;
 import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
 import org.objectstyle.wolips.core.preferences.Preferences;
 import org.objectstyle.wolips.core.project.ant.BuildMessages;
@@ -98,21 +97,6 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 		return string.endsWith("objectstyle.org");
 	}
 
-	private void waitForAnt(IProgressMonitor monitor) {
-		monitor.subTask(BuildMessages.getString("Build.Waiting.Name"));
-		IProgressMonitor subProgressMonitor =
-			new SubProgressMonitor(monitor, 1);
-		boolean exception = false;
-		while (AntRunner.isBuildRunning() || exception) {
-			try {
-				this.wait(100);
-				Thread.yield();
-			} catch (InterruptedException interruptedException) {
-				exception = true;
-			}
-		}
-		subProgressMonitor.done();
-	}
 	/**
 	 * Runs the build with the ant runner.
 	 * @see org.eclipse.core.internal.events.InternalBuilder#build(int, java.
@@ -140,7 +124,7 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 				IMarker.TASK,
 				false,
 				IResource.DEPTH_ONE);
-			if (!projectNeedsAnUpdate() && kind != WOAntBuilder.FULL_BUILD) {
+			if (!projectNeedsAnUpdate() && kind != IncrementalProjectBuilder.FULL_BUILD) {
 				monitor.done();
 				return null;
 			}
@@ -149,7 +133,7 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 				getProject().getFile(aBuildFile).deleteMarkers(
 					IMarker.TASK,
 					false,
-					IProject.DEPTH_ONE);
+					IResource.DEPTH_ONE);
 				this.execute(kind, args, monitor, aBuildFile);
 			}
 		} catch (Exception e) {
@@ -234,16 +218,26 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 	 * @return boolean
 	 */
 	private boolean projectNeedsAnUpdate() {
-		boolean returnValue = false;
 		IResourceDelta aDelta = this.getDelta(this.getProject());
 		if (aDelta == null)
 			return false;
+		return this.deltaNeedsAnUpdate(aDelta);
+	}
+	/**
+	 * Method projectNeedsAnUpdate.
+	 * @return boolean
+	 */
+	private boolean deltaNeedsAnUpdate(IResourceDelta aDelta) {
+		if(aDelta == null)
+		return false;
 		IResourceDelta[] children = aDelta.getAffectedChildren();
 		for (int i = 0; i < children.length; i++) {
 			if (!isIgnoredPath(children[i].getProjectRelativePath()))
-				returnValue = true;
+				return true;
+				if(this.deltaNeedsAnUpdate(children[i]))
+				return true;
 		}
-		return returnValue;
+		return false;
 	}
 	/**
 	 * Method isIgnoredPath.

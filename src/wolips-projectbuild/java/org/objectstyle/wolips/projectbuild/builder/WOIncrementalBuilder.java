@@ -115,7 +115,7 @@ public class WOIncrementalBuilder
   }
   
   /* this is duplicated from ProjectNaturePage, couldn't find a good place for now */
-  private static String _getArg (Map values, String key, String defVal) {
+  static String _getArg (Map values, String key, String defVal) {
     String result = null;
     
     try {
@@ -146,8 +146,6 @@ public class WOIncrementalBuilder
     monitor.beginTask("building WebObjects layout ...", 100);
     
     try {
-      IJavaProject javaProject = getJavaProject();
-  
       IResourceDelta delta = getDelta(getProject());
       System.out.println(delta);
   
@@ -413,11 +411,6 @@ public class WOIncrementalBuilder
       public void doWork (IProgressMonitor m) throws CoreException {
         String error = null;
         try {
-          IContainer cont = _res.getParent();
-          //cont.refreshLocal(IResource.DEPTH_INFINITE, m);
-
-          //System.out.println (_msgPrefix+" copy "+_res+" -> "+_dest);
-          
           int n = _dest.segmentCount()-3;
           IPath dstShortened = _dest;
           if (n > 0) {
@@ -665,7 +658,6 @@ public class WOIncrementalBuilder
       ) {
         IPath path = resource.getFullPath();
         if (_compilerOutPath.isPrefixOf(path) && !_outPath.isPrefixOf(path)) {
-          boolean delete = false;
           IPath cp = path.removeFirstSegments(_baseSegments);
           path = _outPath.append(cp);
           if ((null != delta) && (delta.getKind() == IResourceDelta.REMOVED)) {
@@ -756,7 +748,6 @@ public class WOIncrementalBuilder
         result = true;
       } else {
         if (!deleted) {
-          IMarker marker = res.createMarker(MARKER_BUILD_DUPLICATE);
           IPath shortened = copyToPath.removeFirstSegments(2);
           String message = "duplicate resource for destination .../"+shortened.toString();
           System.out.println("** "+message);
@@ -774,10 +765,9 @@ public class WOIncrementalBuilder
       return result;
     }
     
-    private boolean _checkDirs () throws CoreException {
+    boolean _checkDirs () throws CoreException {
       
       IPath buildPath  = _woNature.getBuildPath();
-      IPath resultPath = _woNature.getResultPath();
       IPath resPath    = _woNature.getResourceOutputPath();
       IPath javaPath   = _woNature.getJavaOutputPath();
       IPath webresPath = _woNature.getWebResourceOutputPath();
@@ -875,7 +865,7 @@ public class WOIncrementalBuilder
     
     // key: IPath/destination, value: IResource/source
     private Map _destinations = new HashMap ();
-  };
+  }
 
 
 

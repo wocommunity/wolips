@@ -59,7 +59,6 @@ import java.io.File;
 import java.io.FilenameFilter;
 
 import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.Project;
 import org.apache.tools.ant.ProjectHelper;
 import org.apache.tools.ant.types.FileSet;
 
@@ -131,7 +130,7 @@ public class FrameworkSet extends FileSet {
 		return getProject().getProperty(string) != null;
 	}
 
-	public File[] findJars(Project project, String frameworkDir) {
+	public File[] findJars(String frameworkDir) {
 		if (!testIfCondition())
 			return new File[] {
 		};

@@ -66,11 +66,11 @@ import org.objectstyle.woproject.util.FileStringScanner;
  */
 public class WOVariables {
 	private final String WO_ROOT = "wo.woroot";
-	private final String LOCAL_ROOT = "wo.localroot";
+	//private final String LOCAL_ROOT = "wo.localroot";
 	private final String WO_WO_SYSTEM_ROOT = "wo.wosystemroot";
 	private final String WO_WO_LOCAL_ROOT = "wo.wolocalroot";
 	private final String HOME_ROOT = "wo.homeroot";
-	private final String ABSOLUTE_ROOT = "wo.absoluteroot";
+	//private final String ABSOLUTE_ROOT = "wo.absoluteroot";
 	/**
 	 * Key for setting wobuild.properties path by environment
 	 * @see WOVariables
@@ -118,15 +118,11 @@ public class WOVariables {
 			}
 		}
 		if (wobuildPropertiesFile != null) {
-			boolean loadingSuccess = false;
 			try {
 				wobuildProperties.load(
 					new FileInputStream(wobuildPropertiesFile));
-				loadingSuccess = true;
 			} catch (FileNotFoundException e) {
-				loadingSuccess = false;
 			} catch (IOException e) {
-				loadingSuccess = false;
 			}
 		}
 	}
@@ -373,12 +369,6 @@ public class WOVariables {
 		if (path == null || path.length() == 0)
 			return null;
 		return FileStringScanner.replace(path, "\\", "/");
-	}
-	/**
-	 * @return Properties
-	 */
-	private Properties getWOBuildProperties() {
-		return wobuildProperties;
 	}
 	/**
 	 * @return boolean

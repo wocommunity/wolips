@@ -238,7 +238,7 @@ public class WOClassPathContainerPage
       
       return (result);
     }
-  };
+  }
 
   private void _initFrameworkList () {
     File fwBase = WOClasspathContainer._getFrameworkBase();

@@ -94,7 +94,7 @@ public class WOCompile extends Javac {
                 String[] dirs = ds.getIncludedDirectories();
 
                 for (int j = 0; j < dirs.length; j++) {
-                    File[] jars = fs.findJars(project, dirs[j]);
+                    File[] jars = fs.findJars(dirs[j]);
 
                     if (jars == null || jars.length == 0) {
                         log("No Jars in " + dirs[j] + ", ignoring.",
@@ -116,8 +116,8 @@ public class WOCompile extends Javac {
         Object someFiles[] = jarSet.toArray();
         size = someFiles.length;
         for (int i = 0; i < size; i++) {
-            log(": Framework JAR " + (File) someFiles[i], Project.MSG_VERBOSE);
-            buf.append((File) someFiles[i]).append(":");
+            log(": Framework JAR " + someFiles[i], Project.MSG_VERBOSE);
+            buf.append(someFiles[i]).append(":");
         }
         return buf.toString();
     }
