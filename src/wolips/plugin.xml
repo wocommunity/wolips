@@ -11,9 +11,9 @@
          <export name="*"/>
          <packages prefixes="org.objectstyle.wolips.core"/>
       </library>
-      <library name="lib/woproject-wolips.jar">
+      <library name="lib/woproject.jar">
          <export name="*"/>
-         <packages prefixes="org.objectstyle.woproject.env,org.objectstyle.woproject.pb"/>
+         <packages prefixes="org.objectstyle.woproject"/>
       </library>
       <library name="lib/cayenne.jar">
          <export name="*"/>
@@ -224,58 +224,5 @@
             pattern="*.subproj">
       </filter>
    </extension>
-<!-- =================================================================================== -->
-<!-- Extension: Ant                                                                      -->
-<!-- =================================================================================== -->
-   <extension
-         point="org.eclipse.ant.core.extraClasspathEntries">
-      <extraClasspathEntry
-            library="lib/wolips-ant.jar">
-      </extraClasspathEntry>
-      <extraClasspathEntry
-            library="lib/woproject.jar">
-      </extraClasspathEntry>
-      <extraClasspathEntry
-            library="lib/cayenne.jar">
-      </extraClasspathEntry>
-      <extraClasspathEntry
-            library="lib/commons-logging.jar">
-      </extraClasspathEntry>
-       <extraClasspathEntry
-            library="lib/log4j.jar">
-      </extraClasspathEntry>
-   </extension>
-   <extension
-         point="org.eclipse.ant.core.antTasks">
-      <antTask
-            library="lib/woproject.jar"
-            name="woapplication"
-            class="org.objectstyle.woproject.ant.WOApplication">
-      </antTask>
-      <antTask
-            library="lib/woproject.jar"
-            name="woframework"
-            class="org.objectstyle.woproject.ant.WOFramework">
-      </antTask>
-      <antTask
-            library="lib/woproject.jar"
-            name="wogen"
-            class="org.objectstyle.woproject.ant.WOGenerator">
-      </antTask>
-      	  <antTask
-            library="lib/wolips-ant.jar"
-            name="updateframeworksets"
-            class="org.objectstyle.wolips.core.project.ant.UpdateFrameworkIncludeFiles">
-      </antTask>
-      <antTask
-            library="lib/wolips-ant.jar"
-            name="refreshview"
-            class="org.objectstyle.wolips.core.project.ant.RefreshEclipse">
-      </antTask>
-      <antTask
-            library="lib/wolips-ant.jar"
-            name="updateotherclasspaths"
-            class="org.objectstyle.wolips.core.project.ant.UpdateOtherClasspathIncludeFiles">
-      </antTask>
-   </extension>
+
 </plugin>

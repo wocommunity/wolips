@@ -117,5 +117,10 @@
          download-size="0"
          install-size="0"
          version="1.0.0"/>
+   <plugin
+         id="org.objectstyle.wolips.ant"
+         download-size="0"
+         install-size="0"
+         version="1.0.0"/>
 
 </feature>

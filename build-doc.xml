@@ -155,7 +155,7 @@
         <classpath refid="classpath"/>
         <sourcepath>
              <pathelement path="src/java"/>
-             <pathelement path="src/wolips/src-ant"/>
+             <pathelement path="src/wolips-ant/java"/>
              <pathelement path="src/wolips/java"/>
              <pathelement path="src/wolips-help/java"/>
              <pathelement path="src/wolips-targetbuilder/java"/>

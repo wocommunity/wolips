@@ -3,12 +3,12 @@
 <!-- ======================================================== -->
 <!--                 WOLips Ant file.                         -->
 <!-- ======================================================== -->
-<project name="woproject-wolips-profiling" default="java" basedir=".">
+<project name="woproject-wolips-ant" default="java" basedir=".">
 
     <!-- ============================================= -->
     <!-- Define CLASSPATH settings.                    -->
     <!-- ============================================= -->
-    <target name="defineClasspath" if="wolips.build.profiling">
+    <target name="defineClasspath" if="wolips.build.ant">
         <path id="classpath">
             <fileset dir="${ant.home}/lib">
                 <include name="ant.jar"/>
@@ -18,32 +18,40 @@
 	            <include name="eclipse/**/*.jar"/>
 		        <include name="jmechanic/**/*.jar"/>
             </fileset>
-	        <fileset dir="${wolips.dist}">
-		    	<include name="**/wolips.jar"/>
-	        </fileset>
-	        <fileset dir="${wolips.launching.dist}">
-		    	<include name="**/wolips-launching.jar"/>
-	        </fileset>
-            <fileset dir="${wo.dir.library.frameworks}">
+	    <fileset dir="${wo.dir.library.frameworks}">
                 <include name="JavaFoundation.framework/Resources/Java/*.jar"/>
             </fileset>
             <!-- Depends on WOProject core. -->
             <pathelement path="${build}/main"/>
             </path>
+        <!-- Copy WOProject JAR's -->
+        <copy todir="${wolips.ant.dist}/lib">
+             <fileset dir="${woproject.dist}/lib">
+             	<exclude name="${lib.junit}"/>
+             	<exclude name="${lib.log4j}"/>
+             	<exclude name="${lib.cayenne}"/>
+             	<exclude name="${lib.commons-logging}"/>
+             	<exclude name="ant.jar"/>
+             	<exclude name="woproject-tests.jar"/>
+             </fileset>
+         </copy>
+         <copy file="${woproject.dist}/lib/${lib.cayenne}" tofile="${wolips.ant.dist}/lib/cayenne.jar"/>
+         <copy file="${woproject.dist}/lib/${lib.commons-logging}" tofile="${wolips.ant.dist}/lib/commons-logging.jar"/>
+         <copy file="${woproject.dist}/lib/${lib.log4j}" tofile="${wolips.ant.dist}/lib/log4j.jar"/>
     </target>
 
-    <target name="java" depends="prepare" if="wolips.build.profiling">
-        <javac srcdir="src/wolips-profiling/java"
-                destdir="${build}/wolips-profiling"
+    <target name="java" depends="prepare" if="wolips.build.ant">
+        <javac srcdir="src/wolips-ant/java"
+                destdir="${build}/wolips-ant"
                 deprecation="${compile.deprecation}"
                 debug="${compile.debug}"
                 optimize="${compile.optimize}">
             <classpath refid="classpath"/>
         </javac>
          
-        <jar jarfile="${wolips.profiling.dist}/lib/wolips-profiling.jar">
-            <fileset dir="${build}/wolips-profiling"/>
-            <fileset dir="src/wolips-profiling/java">
+        <jar jarfile="${wolips.ant.dist}/lib/wolips-ant.jar">
+            <fileset dir="${build}/wolips-ant"/>
+            <fileset dir="src/wolips-ant/java">
           	    <include name="**/*.properties"/>
              </fileset>         
             <metainf dir="doc">
@@ -53,9 +61,9 @@
         
     </target>
 
-    <target name="dist" depends="prepare,java,doc,api" if="wolips.build.profiling">
-        <copy todir="${wolips.profiling.dist}">
-             <fileset dir="src/wolips-profiling">
+    <target name="dist" depends="prepare,java,doc,api" if="wolips.build.ant">
+        <copy todir="${wolips.ant.dist}">
+             <fileset dir="src/wolips-ant">
              	<exclude name="**/java/**"/>
              	<exclude name="**/lib/**"/>
              	<exclude name="**/xdocs/**"/>
@@ -65,8 +73,8 @@
              	<exclude name="build.properties"/>
              </fileset>
          </copy>
-      <jar jarfile="${wolips.profiling.dist}.jar">
-     	<fileset dir="${wolips.profiling.dist}">
+      <jar jarfile="${wolips.ant.dist}.jar">
+     	<fileset dir="${wolips.ant.dist}">
      	</fileset>
      </jar>
          
@@ -77,9 +85,9 @@
     <!-- ============================================= -->
     <!-- Sets up build and distribution directories.   -->
     <!-- ============================================= -->
-    <target name="prepare" depends="defineClasspath" if="wolips.build.profiling">
-        <mkdir dir="${build}/wolips-profiling"/>
-        <mkdir dir="${wolips.profiling.dist}/lib"/>
+    <target name="prepare" depends="defineClasspath" if="wolips.build.ant">
+        <mkdir dir="${build}/wolips-ant"/>
+        <mkdir dir="${wolips.ant.dist}/lib"/>
     </target>
 
 
@@ -87,8 +95,8 @@
     <!-- Deletes temporary files.                      -->
     <!-- ============================================= -->
     <target name="clean">
-        <delete dir="${build}/wolips-profiling"/>
-        <delete dir="${wolips.profiling.dist}"/>
+        <delete dir="${build}/wolips-ant"/>
+        <delete dir="${wolips.ant.dist}"/>
     </target>
     
     
@@ -102,13 +110,13 @@
     <!-- ========================================== -->
     <!-- Builds API documenatation.                 -->
     <!-- ========================================== -->
-    <target name="api" depends="prepare" if="wolips.build.profiling">
+    <target name="api" depends="prepare" if="wolips.build.ant">
     </target>
     
     
-    <target name="doc" depends="prepare" if="wolips.build.profiling">
+    <target name="doc" depends="prepare" if="wolips.build.ant">
     </target>
     
-    <target name="site-doc" depends="prepare" if="wolips.build.profiling">
+    <target name="site-doc" depends="prepare" if="wolips.build.ant">
     </target>
 </project>

@@ -61,6 +61,7 @@ import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Vector;
 
+import org.apache.commons.logging.LogFactory;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.Task;
@@ -68,6 +69,7 @@ import org.apache.tools.ant.taskdefs.Copy;
 import org.apache.tools.ant.taskdefs.Jar;
 import org.apache.tools.ant.taskdefs.Mkdir;
 import org.apache.tools.ant.types.FileSet;
+import org.objectstyle.woproject.logging.WOProjectLogFactory;
 
 /**
  * A <b>WOTask</b> is a common superclass of WOApplication and WOFramework that 
@@ -93,11 +95,11 @@ public abstract class WOTask extends Task {
     public WOTask() {
     	super();
 		// set log factory
-/*		System.setProperty(
+		System.setProperty(
 			"org.apache.commons.logging.LogFactory",
 			"org.objectstyle.woproject.logging.WOProjectLogFactory");
 		LogFactory.getFactory().setAttribute(WOProjectLogFactory.ATTR_ANT_TASK,this);
-		*/
+		
 		// set own logger
 		//log=LogFactory.getLog(WOTask.class);	
 

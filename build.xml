@@ -41,6 +41,8 @@
     <property name="wolips.projectbuild.dist" value="${wolips.plugins.folder}/${wolips.projectbuild.name}"/>
     <property name="wolips.wounit.name" value="org.objectstyle.wolips.wounit_${WOLips.version}"/>
     <property name="wolips.wounit.dist" value="${wolips.plugins.folder}/${wolips.wounit.name}"/>
+    <property name="wolips.ant.name" value="org.objectstyle.wolips.ant_${WOLips.version}"/>
+    <property name="wolips.ant.dist" value="${wolips.plugins.folder}/${wolips.ant.name}"/>
     <property name="wolips.tests.name" value="org.objectstyle.wolips.tests_${WOLips.version}"/>
     <property name="wolips.tests.dist" value="${wolips.plugins.folder}/${wolips.tests.name}"/>
     <property name="wolips.ui.name" value="org.objectstyle.wolips.ui_${WOLips.version}"/>
@@ -96,6 +98,7 @@
 	<ant antfile="build-wolips-source.xml" target="dist"/>
 	<ant antfile="build-wolips-ui.xml" target="dist"/>
 	<ant antfile="build-wolips-wizards.xml" target="dist"/>
+	<ant antfile="build-wolips-ant.xml" target="dist"/>
 	<ant antfile="build-wolips-dist.xml" target="dist"/>
     </target>
 
@@ -116,6 +119,7 @@
 	<ant antfile="build-wolips-wounit.xml" target="java"/>
 	<ant antfile="build-wolips-ui.xml" target="java"/>
 	<ant antfile="build-wolips-source.xml" target="java"/>
+	<ant antfile="build-wolips-ant.xml" target="java"/>
 	<ant antfile="build-wolips-wizards.xml" target="java"/>
     </target>
 
@@ -154,6 +158,7 @@
 	<ant antfile="build-wolips-wounit.xml" target="doc"/>
 	<ant antfile="build-wolips-ui.xml" target="doc"/>
 	<ant antfile="build-wolips-source.xml" target="doc"/>
+	<ant antfile="build-wolips-ant.xml" target="doc"/>
 	<ant antfile="build-wolips-wizards.xml" target="doc"/>
     </target>
 
@@ -175,6 +180,7 @@
 	<ant antfile="build-wolips-wounit.xml" target="api"/>
 	<ant antfile="build-wolips-ui.xml" target="api"/>
 	<ant antfile="build-wolips-source.xml" target="api"/>
+	<ant antfile="build-wolips-ant.xml" target="api"/>
 	<ant antfile="build-wolips-wizards.xml" target="api"/>
     </target>
     
@@ -197,6 +203,7 @@
 	<ant antfile="build-wolips-ui.xml" target="deploy-web"/>
 	<ant antfile="build-wolips-wizards.xml" target="deploy-web"/>
 	<ant antfile="build-wolips-source.xml" target="deploy-web"/>
+	<ant antfile="build-wolips-ant.xml" target="deploy-web"/>
 	<!-- This must be the last task, since it would copy all the folders. -->
 	<ant antfile="build-core.xml" target="deploy-web"/>
     </target>
