@@ -112,4 +112,9 @@
     <taglib-location>/WEB-INF/tlds/@WOTagLib@</taglib-location>
   </taglib>
 
+ <context-param> 
+ 	<param-name>WEBINFROOT</param-name> 
+ 	<param-value>%WEBINFROOT%</param-value> 
+ </context-param>
+
 </web-app>
