@@ -3,7 +3,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0
  * 
- * Copyright (c) 2002 The ObjectStyle Group and individual authors of the
+ * Copyright (c) 2002 - 2004 The ObjectStyle Group and individual authors of the
  * software. All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -49,9 +49,6 @@
  */
 package org.objectstyle.wolips.core.plugin;
 import java.net.URL;
-
-import org.eclipse.core.runtime.IPluginDescriptor;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.objectstyle.wolips.commons.logging.PluginLogger;
 import org.objectstyle.wolips.core.preferences.Preferences;
@@ -74,8 +71,8 @@ public class WOLipsPlugin extends AbstractUIPlugin {
 	 */
 	//The constructur is very sensitive. Make sure that your stuff works.
 	//If this cunstructor fails, the whole plugin will be disabled.
-	public WOLipsPlugin(IPluginDescriptor descriptor) {
-		super(descriptor);
+	public WOLipsPlugin() {
+		super();
 		plugin = this;
 		try {
 			// set up missing preferences
@@ -90,11 +87,6 @@ public class WOLipsPlugin extends AbstractUIPlugin {
 	 * @return
 	 */
 	public static WOLipsPlugin getDefault() {
-		if (plugin == null) {
-			// ensure plugin instance is always available using id
-			return new WOLipsPlugin(Platform.getPlugin(WOLipsPlugin.PLUGIN_ID)
-					.getDescriptor());
-		}
 		return plugin;
 	}
 	/**
@@ -114,7 +106,7 @@ public class WOLipsPlugin extends AbstractUIPlugin {
 		if (plugin != null) {
 			return getDefault().getDescriptor().getUniqueIdentifier();
 		} else
-			return WOLipsPlugin.PLUGIN_ID;
+			return null;
 	}
 	/**
 	 * @return Returns the pluginLogger.

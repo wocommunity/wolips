@@ -61,7 +61,6 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.IPluginDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.objectstyle.wolips.commons.logging.PluginLogger;
 
@@ -81,8 +80,8 @@ public class WizardsPlugin extends AbstractUIPlugin {
 	 * The constructor.
 	 * @param descriptor
 	 */
-	public WizardsPlugin(IPluginDescriptor descriptor) {
-		super(descriptor);
+	public WizardsPlugin() {
+		super();
 		plugin = this;
 		try {
 			resourceBundle= ResourceBundle.getBundle("org.objectstyle.wolips.wizards.WizardsPluginResources");

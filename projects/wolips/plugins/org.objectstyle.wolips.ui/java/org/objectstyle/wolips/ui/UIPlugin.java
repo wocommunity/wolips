@@ -49,9 +49,6 @@
  */
 package org.objectstyle.wolips.ui;
 import java.net.URL;
-
-import org.eclipse.core.runtime.IPluginDescriptor;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.objectstyle.wolips.commons.logging.PluginLogger;
 /**
@@ -73,8 +70,8 @@ public class UIPlugin extends AbstractUIPlugin {
 	 */
 	//The constructur is very sensitive. Make sure that your stuff works.
 	//If this cunstructor fails, the whole plugin will be disabled.
-	public UIPlugin(IPluginDescriptor descriptor) {
-		super(descriptor);
+	public UIPlugin() {
+		super();
 		plugin = this;
 	}
 	/**
@@ -83,11 +80,6 @@ public class UIPlugin extends AbstractUIPlugin {
 	 * @return
 	 */
 	public static UIPlugin getDefault() {
-		if (plugin == null) {
-			// ensure plugin instance is always available using id
-			return new UIPlugin(Platform.getPlugin(UIPlugin.PLUGIN_ID)
-					.getDescriptor());
-		}
 		return plugin;
 	}
 	/**
@@ -107,7 +99,7 @@ public class UIPlugin extends AbstractUIPlugin {
 		if (plugin != null) {
 			return getDefault().getDescriptor().getUniqueIdentifier();
 		} else
-			return UIPlugin.PLUGIN_ID;
+			return null;
 	}
 	/**
 	 * @return Returns the pluginLogger.

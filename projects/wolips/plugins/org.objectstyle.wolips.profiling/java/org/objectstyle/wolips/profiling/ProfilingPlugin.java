@@ -49,9 +49,6 @@
  */
 package org.objectstyle.wolips.profiling;
 import java.net.URL;
-
-import org.eclipse.core.runtime.IPluginDescriptor;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.objectstyle.wolips.commons.logging.PluginLogger;
 /**
@@ -73,8 +70,8 @@ public class ProfilingPlugin extends AbstractUIPlugin {
 	 */
 	//The constructur is very sensitive. Make sure that your stuff works.
 	//If this cunstructor fails, the whole plugin will be disabled.
-	public ProfilingPlugin(IPluginDescriptor descriptor) {
-		super(descriptor);
+	public ProfilingPlugin() {
+		super();
 		plugin = this;
 	}
 	/**
@@ -83,11 +80,6 @@ public class ProfilingPlugin extends AbstractUIPlugin {
 	 * @return
 	 */
 	public static ProfilingPlugin getDefault() {
-		if (plugin == null) {
-			// ensure plugin instance is always available using id
-			return new ProfilingPlugin(Platform.getPlugin(ProfilingPlugin.PLUGIN_ID)
-					.getDescriptor());
-		}
 		return plugin;
 	}
 	/**

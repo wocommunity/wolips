@@ -56,35 +56,30 @@
 package org.objectstyle.wolips.datasets;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
-
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IPluginDescriptor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IStartup;
 import org.objectstyle.wolips.datasets.internal.Api;
 import org.objectstyle.wolips.datasets.listener.ResourceChangeListener;
+import org.osgi.framework.BundleContext;
 /**
  * The main plugin class to be used in the desktop.
  */
-public class DataSetsPlugin extends Plugin implements IDataSetTypes, IStartup {
-	
+public class DataSetsPlugin extends Plugin implements IDataSetTypes {
 	private final static String PLUGIN_ID = "org.objectstyle.wolips.datasets";
 	//The shared instance.
 	private static DataSetsPlugin plugin;
 	//Resource bundle.
 	private ResourceBundle resourceBundle;
-	
 	//	DataSets based on files
 	protected final static String API_EXTENSION = "api";
 	protected final static String WOD_EXTENSION = "wod";
@@ -108,8 +103,8 @@ public class DataSetsPlugin extends Plugin implements IDataSetTypes, IStartup {
 	/**
 	 * The constructor.
 	 */
-	public DataSetsPlugin(IPluginDescriptor descriptor) {
-		super(descriptor);
+	public DataSetsPlugin() {
+		super();
 		plugin = this;
 		try {
 			resourceBundle = ResourceBundle
@@ -122,17 +117,11 @@ public class DataSetsPlugin extends Plugin implements IDataSetTypes, IStartup {
 	 * Returns the shared instance.
 	 */
 	public static DataSetsPlugin getDefault() {
-		if (plugin == null) {
-			// ensure plugin instance is always available using id
-			return new DataSetsPlugin(
-				Platform.getPlugin(DataSetsPlugin.PLUGIN_ID).getDescriptor());
-		}
 		return plugin;
 	}
-	
-	
 	/**
 	 * Returns the PluginID.
+	 * 
 	 * @return
 	 */
 	public static String getPluginId() {
@@ -141,37 +130,32 @@ public class DataSetsPlugin extends Plugin implements IDataSetTypes, IStartup {
 		} else
 			return DataSetsPlugin.PLUGIN_ID;
 	}
-
 	/**
 	 * Prints a Status.
+	 * 
 	 * @param e
 	 */
 	public static void log(IStatus status) {
 		DataSetsPlugin.getDefault().getLog().log(status);
 	}
-
 	/**
 	 * Prints a Throwable.
+	 * 
 	 * @param e
 	 */
 	public static void log(Throwable e) {
-		DataSetsPlugin.log(new Status(IStatus.ERROR, DataSetsPlugin.getPluginId(), IStatus.ERROR, "Internal Error", e)); //$NON-NLS-1$
+		DataSetsPlugin.log(new Status(IStatus.ERROR, DataSetsPlugin
+				.getPluginId(), IStatus.ERROR, "Internal Error", e)); //$NON-NLS-1$
 	}
-	
 	/**
 	 * Prints a message.
+	 * 
 	 * @param message
 	 */
 	public static void log(String message) {
-		DataSetsPlugin.log(
-			new Status(
-				IStatus.ERROR,
-				DataSetsPlugin.getPluginId(),
-				IStatus.ERROR,
-				message,
-				null));
+		DataSetsPlugin.log(new Status(IStatus.ERROR, DataSetsPlugin
+				.getPluginId(), IStatus.ERROR, message, null));
 	}
-	
 	/**
 	 * Returns the workspace instance.
 	 */
@@ -244,7 +228,6 @@ public class DataSetsPlugin extends Plugin implements IDataSetTypes, IStartup {
 		}
 		return -1;
 	}
-	
 	/**
 	 * @return The path to user settings.
 	 */
@@ -254,23 +237,9 @@ public class DataSetsPlugin extends Plugin implements IDataSetTypes, IStartup {
 		path = path.append("WOLips");
 		return path;
 	}
-
-	/**
-	 * Calls EarlyStartup.earlyStartup().
-	 * <br>
-	 * @see org.eclipse.ui.IStartup#earlyStartup()
-	 */
-	public void earlyStartup() {
-//		 add resource change listener to update project file on resource changes
-		IResourceChangeListener resourceChangeListener =
-			new ResourceChangeListener();
-		ResourcesPlugin.getWorkspace().addResourceChangeListener(
-			resourceChangeListener,
-			IResourceChangeEvent.PRE_AUTO_BUILD);
-	}
-	
 	/**
 	 * Method informUser.
+	 * 
 	 * @param shell
 	 * @param message
 	 */
@@ -278,5 +247,17 @@ public class DataSetsPlugin extends Plugin implements IDataSetTypes, IStartup {
 		String title = "Error";
 		MessageDialog.openError(shell, title, message);
 	}
-	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
+	 */
+	public void start(BundleContext context) throws Exception {
+		super.start(context);
+		//add resource change listener to update project file on resource
+		// changes
+		IResourceChangeListener resourceChangeListener = new ResourceChangeListener();
+		ResourcesPlugin.getWorkspace().addResourceChangeListener(
+				resourceChangeListener, IResourceChangeEvent.PRE_AUTO_BUILD);
+	}
 }

@@ -60,7 +60,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
-
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -68,7 +67,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPluginDescriptor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
@@ -98,8 +96,8 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 	/**
 	 * The constructor.
 	 */
-	public WorkbenchUtilitiesPlugin(IPluginDescriptor descriptor) {
-		super(descriptor);
+	public WorkbenchUtilitiesPlugin() {
+		super();
 		plugin = this;
 		try {
 			resourceBundle   = ResourceBundle.getBundle("org.objectstyle.wolips.workbenchutilities.WorkbenchutilitiesPluginResources");

@@ -15,10 +15,8 @@
    </runtime>
    <requires>
       <import plugin="org.junit"/>
-      <import plugin="org.eclipse.core.resources"/>
-      <import plugin="org.eclipse.jdt.core"/>
       <import plugin="org.objectstyle.wolips.tests.core"/>
-      <import plugin="org.eclipse.core.runtime.compatibility"/>
+      <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.jdt.core"/>
       <import plugin="org.eclipse.jface"/>
@@ -32,11 +30,8 @@
 
 
 <!-- =================================================================================== -->
-<!-- Extension: Startup                                                                  -->
+<!-- Extension: Adapters                                                                 -->
 <!-- =================================================================================== -->
-   <extension
-         point="org.eclipse.ui.startup">
-   </extension>
    <extension point="org.eclipse.core.runtime.adapters">
        <factory class="org.objectstyle.wolips.datasets.adaptable.IProjectAdapterFactory"
            adaptableType="org.eclipse.core.resources.IProject">
