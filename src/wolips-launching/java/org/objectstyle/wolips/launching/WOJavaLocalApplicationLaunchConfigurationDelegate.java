@@ -304,7 +304,7 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 		returnValue = FileStringScanner.replace(returnValue, "\\", "/");
 		returnValue = this.addPreferencesValue(returnValue);
 		if ("".equals(returnValue))
-			returnValue = "\"" + ".." + "\"";
+			returnValue = "(" +"\"" + ".." + "\"" + ")";
 		if (moreThenOne)
 		/*	returnValue = "\"(" + returnValue + ")\"";
 			else */
