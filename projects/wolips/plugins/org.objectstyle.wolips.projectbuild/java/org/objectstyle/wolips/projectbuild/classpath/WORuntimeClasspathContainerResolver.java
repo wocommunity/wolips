@@ -99,7 +99,6 @@ public class WORuntimeClasspathContainerResolver
   )
 		throws CoreException 
   {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -108,7 +107,6 @@ public class WORuntimeClasspathContainerResolver
 	 */
 	public IVMInstall resolveVMInstall(IClasspathEntry entry)
 		throws CoreException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
