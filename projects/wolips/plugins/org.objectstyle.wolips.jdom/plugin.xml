@@ -9,6 +9,7 @@
    <runtime>
       <library name="lib/jdom-b9.jar">
          <export name="*"/>
+         <packages prefixes="org.jdom"/>
       </library>
    </runtime>
 
