@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin
+   id="org.objectstyle.wolips.jdt"
+   name="WOLips Jdt Plug-in"
+   version="1.0.6"
+   provider-name="objectstyle.org"
+   class="org.objectstyle.wolips.jdt.JdtPlugin">
+
+   <runtime>
+      <library name="lib/wolips-jdt.jar">
+         <export name="*"/>
+      </library>
+   </runtime>
+   <requires>
+      <import plugin="org.eclipse.jdt.core"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.swt"/>
+      <import plugin="org.eclipse.jface"/>
+      <import plugin="org.eclipse.jdt.launching"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.objectstyle.wolips.variables"/>
+      <import plugin="org.eclipse.jdt.ui"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.objectstyle.wolips.datasets"/>
+      <import plugin="org.objectstyle.wolips.commons"/>
+   </requires>
+
+<!-- =================================================================================== -->
+<!-- Extension: Classpath variables initializer                                          -->
+<!-- =================================================================================== -->
+<extension point="org.eclipse.jdt.core.classpathVariableInitializer">
+	<classpathVariableInitializer
+		variable="NEXT_LOCAL_ROOT"
+		class="org.objectstyle.wolips.jdt.classpath.NextLocalRootInitializer"/>
+</extension>
+<extension point="org.eclipse.jdt.core.classpathVariableInitializer">
+	<classpathVariableInitializer
+		variable="NEXT_SYSTEM_ROOT"
+		class="org.objectstyle.wolips.jdt.classpath.NextSystemRootInitializer"/>
+</extension>
+<extension point="org.eclipse.jdt.core.classpathVariableInitializer">
+	<classpathVariableInitializer
+		variable="NEXT_ROOT"
+		class="org.objectstyle.wolips.jdt.classpath.NextRootInitializer"/>
+</extension>
+<extension point="org.eclipse.jdt.core.classpathVariableInitializer">
+	<classpathVariableInitializer
+		variable="EXTERNAL_BUILD_ROOT"
+		class="org.objectstyle.wolips.jdt.classpath.ExternalBuildRootInitializer"/>
+</extension>
+<!-- =================================================================================== -->
+<!-- Extension: Classpath container initializer                                          -->
+<!-- =================================================================================== -->
+   <extension
+         point="org.eclipse.jdt.core.classpathContainerInitializer">
+      <classpathContainerInitializer
+            class="org.objectstyle.wolips.jdt.classpath.WOClasspathContainerInitializer"
+            id="org.objectstyle.wolips.WO_CLASSPATH">
+      </classpathContainerInitializer>
+   </extension>
+   <extension
+         point="org.eclipse.jdt.core.classpathContainerInitializer">
+      <classpathContainerInitializer
+            class="org.objectstyle.wolips.jdt.classpath.ContainerInitializer"
+            id="org.objectstyle.wolips.ContainerInitializer">
+      </classpathContainerInitializer>
+   </extension>
+<!-- =================================================================================== -->
+<!-- Extension: Classpath container page                                                 -->
+<!-- =================================================================================== -->
+   <extension
+         point="org.eclipse.jdt.ui.classpathContainerPage">
+      <classpathContainerPage
+            name="WebObjects Frameworks old"
+            class="org.objectstyle.wolips.jdt.ui.WOClassPathContainerPage"
+            id="org.objectstyle.wolips.WO_CLASSPATH">
+      </classpathContainerPage>
+   </extension>
+   <extension
+         point="org.eclipse.jdt.ui.classpathContainerPage">
+      <classpathContainerPage
+            name="WebObjects Frameworks"
+            class="org.objectstyle.wolips.jdt.ui.ContainerPage"
+            id="org.objectstyle.wolips.ContainerInitializer">
+      </classpathContainerPage>
+   </extension>
+<!-- =================================================================================== -->
+<!-- Extension: templates                                                                  -->
+<!-- =================================================================================== -->
+    <extension point="org.eclipse.ui.editors.templates">
+		<template
+    			name="action"
+        		icon="icons/template.gif"
+        		description="action to return a page"
+        		contextTypeId="java"
+        		id="org.objectstyle.wolips.jdt.ui.templates.action">
+        		<pattern>
+        		public ${return_type} ${name}() {
+			${return_type} page = (${return_type})this.pageWithName(${return_type}.class.getName());
+			${cursor}
+			return page;
+			}
+			</pattern>
+		</template>
+		<template
+    			name="action.this"
+        		icon="icons/template.gif"
+        		description="action to return this page"
+        		contextTypeId="java"
+        		id="org.objectstyle.wolips.jdt.ui.templates.action.this">
+        		<pattern>
+        		public ${primary_type_name} ${name}() {
+        		${cursor}
+			return (${primary_type_name})this.context().page();
+			}
+			</pattern>
+		</template>
+		<template
+    			name="ec session default"
+        		icon="icons/template.gif"
+        		description="editing context from the session"
+        		contextTypeId="java"
+        		id="org.objectstyle.wolips.jdt.ui.templates.ec.session">
+        		<pattern>
+        		EOEditingContext ${name} = session().defaultEditingContext();
+        		${cursor}
+			</pattern>
+		</template>
+		<template
+    			name="ec new"
+        		icon="icons/template.gif"
+        		description="new editing context"
+        		contextTypeId="java"
+        		id="org.objectstyle.wolips.jdt.ui.templates.ec.new">
+        		<pattern>
+        		EOEditingContext ${name} = new EOEditingContext();
+        		${cursor}
+			</pattern>
+		</template>
+		<template
+    			name="new nsarray string"
+        		icon="icons/template.gif"
+        		description="new NSArray inititialised with a String array"
+        		contextTypeId="java"
+        		id="org.objectstyle.wolips.jdt.ui.templates.nsarray.string">
+        		<pattern>
+        		NSArray ${name} = new NSArray( new String[${cursor}]);
+        		${cursor}
+			</pattern>
+		</template>
+		<template
+    			name="new nsarray int"
+        		icon="icons/template.gif"
+        		description="new NSArray inititialised with an int array"
+        		contextTypeId="java"
+        		id="org.objectstyle.wolips.jdt.ui.templates.nsarray.int">
+        		<pattern>
+        		NSArray ${name} = new NSArray( new int[${cursor}]);
+        		${cursor}
+			</pattern>
+		</template>
+	</extension>
+  
+</plugin>

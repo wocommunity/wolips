@@ -3,7 +3,6 @@
 	<name>org.objectstyle.wolips.profiling.about</name>
 	<comment></comment>
 	<projects>
-		<project>org.objectstyle.wolips.profiling.feature</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

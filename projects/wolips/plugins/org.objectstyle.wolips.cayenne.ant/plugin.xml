@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
 <plugin
    id="org.objectstyle.wolips.cayenne.ant"
-   name="%WOLips.cayenne.ant.pluginName"
+   name="WOLips Cayenne Ant"
    version="1.0.6"
-   provider-name="%WOLips.providerName">
+   provider-name="objectstyle.org">
 
    <runtime>
    </runtime>
@@ -14,7 +15,8 @@
    <extension
          point="org.eclipse.ant.core.extraClasspathEntries">
       <extraClasspathEntry
-            library="lib/cayenne.jar">
+            library="lib/cayenne.jar"
+            eclipseRuntime="false">
       </extraClasspathEntry>
    </extension>
 

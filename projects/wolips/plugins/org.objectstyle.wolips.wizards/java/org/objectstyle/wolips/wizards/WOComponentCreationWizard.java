@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 The ObjectStyle Group 
+ * Copyright (c) 2002, 2004 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -53,68 +53,50 @@
  * <http://objectstyle.org/>.
  *
  */
-
 package org.objectstyle.wolips.wizards;
-
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
-import org.objectstyle.wolips.core.plugin.WOLipsPluginImages;
-
+import org.objectstyle.wolips.templateengine.TemplateEnginePlugin;
 /**
  * @author mnolte
  * @author uli
- *
-  * This class implements the interface required by the desktop
- * for all 'New' wizards.  This wizard creates WOComponent folders and files.
+ * 
+ * This class implements the interface required by the desktop for all 'New'
+ * wizards. This wizard creates WOComponent folders and files.
  */
-public class WOComponentCreationWizard extends Wizard implements INewWizard {
-
-	private IStructuredSelection selection;
-	private IWorkbench workbench;
+public class WOComponentCreationWizard extends AbstractResourceWizard  implements INewWizard {
+	/**
+	 * @param templatesID
+	 */
+	public WOComponentCreationWizard() {
+		super(TemplateEnginePlugin.WOComponent);
+	}
 	private WOComponentCreationPage mainPage;
-
-	/** (non-Javadoc)
-	 * Method declared on Wizard.
+	/**
+	 * (non-Javadoc) Method declared on Wizard.
 	 */
 	public void addPages() {
-		mainPage = new WOComponentCreationPage(selection);
 		addPage(mainPage);
 	}
-
-	/** (non-Javadoc)
-	 * Method declared on INewWizard
+	/**
+	 * (non-Javadoc) Method declared on INewWizard
 	 */
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
-		this.workbench = workbench;
-		this.selection = selection;
+		super.init(workbench, selection);
+		mainPage = new WOComponentCreationPage(selection);
 		setWindowTitle(Messages.getString("WOComponentCreationWizard.title"));
-		setDefaultPageImageDescriptor(
-			WOLipsPluginImages.WOCOMPONENT_WIZARD_BANNER);
+		setDefaultPageImageDescriptor(WizardsPlugin
+				.WOCOMPONENT_WIZARD_BANNER());
 	}
-	/** (non-Javadoc)
-	 * Method declared on IWizard
+	/**
+	 * (non-Javadoc) Method declared on IWizard
 	 */
 	public boolean performFinish() {
-		return mainPage.createComponent();
-		/*
-		moved to WizardNewWOResourcePage.sledgeHammer()
 		boolean returnValue = mainPage.createComponent();
-		IWorkbenchWindow a[] =
-			WOLipsPlugin.getDefault().getWorkbench().getWorkbenchWindows();
-		for (int i = 0; i < a.length; i++) {
-			IWorkbenchPage b[] = a[i].getPages();
-			for (int j = 0; j < b.length; j++) {
-				IViewReference c[] = b[j].getViewReferences();
-				for (int k = 0; k < c.length; k++) {
-					IViewPart d = c[k].getView(false); //maybe null
-					if ((d != null) && (d instanceof PackageExplorerPart))
-						 ((PackageExplorerPart) d).getTreeViewer().refresh();
-				}
-			}
+		if(returnValue) {
+			this.selectAndReveal(mainPage.getResourceToReveal());
 		}
 		return returnValue;
-		*/
 	}
 }

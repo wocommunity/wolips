@@ -2,7 +2,7 @@
  *
  * The ObjectStyle Group Software License, Version 1.0
  *
- * Copyright (c) 2002 The ObjectStyle Group,
+ * Copyright (c) 2002 - 2004 The ObjectStyle Group,
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -57,7 +57,9 @@ package org.objectstyle.wolips.tests.suite;
 
 import junit.framework.TestCase;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 
 /**
@@ -68,7 +70,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
  */
 public class CheckWorkspaceTest extends TestCase {
 
-	private IWorkspace workspace = null;
 	/**
 	 * Constructor for CheckWorkspaceTest.
 	 * @param arg0
@@ -77,26 +78,17 @@ public class CheckWorkspaceTest extends TestCase {
 		super(arg0);
 	}
 
-	/*
-	 * @see TestCase#setUp()
+	/**
+	 * 
 	 */
-	protected void setUp() throws Exception {
-		super.setUp();
-		workspace = ResourcesPlugin.getWorkspace();
-	}
-
-	/*
-	 * @see TestCase#tearDown()
-	 */
-	protected void tearDown() throws Exception {
-		super.tearDown();
-		workspace = null;
-	}
-
 	public void testWorkspaceIsEmpty() {
+		IWorkspace workspace = null;
+		workspace = ResourcesPlugin.getWorkspace();
 		assertNotNull("there should allways be a workspace", workspace);
-		assertNotNull("there should allways be a root for the workspace", workspace.getRoot());
-		assertNotNull("the array may contain no entries but the result should be at least the array", workspace.getRoot().getProjects());
-		assertEquals("before and after the tests, the workspace should be empty", workspace.getRoot().getProjects().length, 0);
+		IWorkspaceRoot root = workspace.getRoot();
+		assertNotNull("there should allways be a root for the workspace", root);
+		IProject[] projects = root.getProjects();
+		assertNotNull("the array may contain no entries but the result should be at least the array", projects);
+		assertEquals("before and after the tests, the workspace should be empty", 0, projects.length);
 	}
 }

@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
 <plugin
    id="org.objectstyle.wolips.woproject.ant"
-   name="%WOLips.woproject.ant.pluginName"
+   name="WOProject Ant"
    version="1.0.6"
-   provider-name="%WOLips.providerName">
+   provider-name="objectstyle.org">
 
    <runtime>
    </runtime>
@@ -14,7 +15,8 @@
    <extension
          point="org.eclipse.ant.core.extraClasspathEntries">
       <extraClasspathEntry
-            library="lib/woproject.jar">
+            library="lib/woproject.jar"
+            eclipseRuntime="false">
       </extraClasspathEntry>
    </extension>
    <extension
@@ -22,32 +24,50 @@
       <antTask
             library="lib/woproject.jar"
             name="woapplication"
-            class="org.objectstyle.woproject.ant.WOApplication">
+            class="org.objectstyle.woproject.ant.WOApplication"
+            eclipseRuntime="false">
       </antTask>
       <antTask
             library="lib/woproject.jar"
             name="woframework"
-            class="org.objectstyle.woproject.ant.WOFramework">
+            class="org.objectstyle.woproject.ant.WOFramework"
+            eclipseRuntime="false">
       </antTask>
       <antTask
             library="lib/woproject.jar"
             name="wogen"
-            class="org.objectstyle.woproject.ant.WOGenerator">
+            class="org.objectstyle.woproject.ant.WOGenerator"
+            eclipseRuntime="false">
       </antTask>
       <antTask
             library="lib/woproject.jar"
             name="wocompile"
-            class="org.objectstyle.woproject.ant.WOCompile">
+            class="org.objectstyle.woproject.ant.WOCompile"
+            eclipseRuntime="false">
       </antTask>
       <antTask
             library="lib/woproject.jar"
             name="pbindex"
-            class="org.objectstyle.woproject.ant.PBIndex">
+            class="org.objectstyle.woproject.ant.PBIndex"
+            eclipseRuntime="false">
       </antTask>
       <antTask
             library="lib/woproject.jar"
             name="pbxindex"
-            class="org.objectstyle.woproject.ant.PBXIndex">
+            class="org.objectstyle.woproject.ant.PBXIndex"
+            eclipseRuntime="false">
+      </antTask>
+      <antTask
+            library="lib/woproject.jar"
+            name="pbxindex2"
+            class="org.objectstyle.woproject.ant.WOPBXBuild"
+            eclipseRuntime="false">
+      </antTask>
+      <antTask
+            library="lib/woproject.jar"
+            name="eomodel"
+            class="org.objectstyle.woproject.ant.EOModel"
+            eclipseRuntime="false">
       </antTask>
    </extension>
 

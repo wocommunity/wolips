@@ -1,0 +1,521 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin
+   id="org.objectstyle.wolips.ui"
+   name="WOLips User Interface"
+   version="1.0.6"
+   provider-name="objectstyle.org"
+   class="org.objectstyle.wolips.ui.UIPlugin">
+
+   <runtime>
+      <library name="lib/wolips-ui.jar">
+      </library>
+   </runtime>
+   <requires>
+      <import plugin="org.eclipse.search"/>
+      <import plugin="org.eclipse.ui.console"/>
+      <import plugin="org.eclipse.jface.text"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.debug.ui"/>
+      <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.ui.workbench.texteditor"/>
+      <import plugin="org.eclipse.ui.editors"/>
+      <import plugin="org.eclipse.jdt.ui"/>
+      <import plugin="org.eclipse.jdt.core"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.objectstyle.wolips.preferences"/>
+      <import plugin="org.objectstyle.wolips.commons"/>
+      <import plugin="org.objectstyle.wolips.variables"/>
+      <import plugin="org.objectstyle.wolips.workbenchutilities"/>
+      <import plugin="org.objectstyle.wolips.datasets"/>
+      <import plugin="org.eclipse.ui.forms"/>
+      <import plugin="org.objectstyle.wolips.projectbuild"/>
+      <import plugin="org.objectstyle.wolips.ant"/>
+   </requires>
+
+
+<!-- =================================================================================== -->
+<!-- Extension: Popup menus                                                              -->
+<!-- =================================================================================== -->
+   <extension
+         point="org.eclipse.ui.popupMenus">
+<!-- =================================================================================== -->
+<!-- menu                                                                                -->
+<!-- =================================================================================== -->
+      <objectContribution
+            adaptable="true"
+            objectClass="org.eclipse.core.resources.IResource"
+            id="org.objectstyle.wolips.ui.ResourceContributions">
+         <menu
+               label="&amp;WOLips Tools"
+               path="additions"
+               id="org.objectstyle.wolips.ui.ResourceContributions">
+            <separator
+                  name="group1">
+            </separator>
+            <separator
+                  name="group2">
+            </separator>
+            <separator
+                  name="group3">
+            </separator>
+            <separator
+                  name="group4">
+            </separator>
+            <separator
+                  name="group5">
+            </separator>
+            <separator
+                  name="group6">
+            </separator>
+            <separator
+                  name="group7">
+            </separator>
+         </menu>
+      </objectContribution>
+<!-- =================================================================================== -->
+<!-- project actions                                                                     -->
+<!-- =================================================================================== -->
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IProject"
+            adaptable="true"
+            id="org.objectstyle.wolips.ui">
+         <filter
+               name="nature"
+               value="org.eclipse.jdt.core.javanature">
+         </filter>
+         <action
+               label="Update PB.project"
+               class="org.objectstyle.wolips.ui.actions.PBAction"
+               menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group1"
+               enablesFor="1"
+               id="org.objectstyle.wolips.ui.actions.PBAction">
+         </action>
+      </objectContribution>
+<!-- =================================================================================== -->
+<!-- Extension: File actions                                                             -->
+<!-- =================================================================================== -->
+      <objectContribution
+            objectClass="org.eclipse.jdt.core.ICompilationUnit"
+            adaptable="true"
+            nameFilter="*.java"
+            id="org.objectstyle.wolips.ui.actions.OpenComponentAction">
+         <action
+               label="Open WOComponent"
+               class="org.objectstyle.wolips.ui.actions.OpenComponentAction"
+               menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group0"
+               enablesFor="1"
+               id="org.objectstyle.wolips.ui.actions.OpenComponentAction">
+         </action>
+      </objectContribution>
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IFile"
+            adaptable="true"
+            nameFilter="*.wod"
+            id="org.objectstyle.wolips.ui.actions.OpenSourceAction">
+         <action
+               label="Open .java"
+               class="org.objectstyle.wolips.ui.actions.OpenSourceAction"
+               menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group0"
+               enablesFor="1"
+               id="org.objectstyle.wolips.ui.actions.OpenSourceAction">
+         </action>
+      </objectContribution>
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IContainer"
+            adaptable="true"
+            nameFilter="*.wo"
+            id="org.objectstyle.wolips.ui.actions.OpenSourceAction">
+         <action
+               label="Open .java"
+               class="org.objectstyle.wolips.ui.actions.OpenSourceAction"
+               menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group0"
+               enablesFor="1"
+               id="org.objectstyle.wolips.ui.actions.OpenSourceAction">
+         </action>
+      </objectContribution>
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IContainer"
+            adaptable="true"
+            nameFilter="*.eomodeld"
+            id="org.objectstyle.wolips.ui.actions.OpenEOModelIndexAction">
+         <action
+               label="Open EOModel"
+               class="org.objectstyle.wolips.ui.actions.OpenEOModelIndexAction"
+               menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group0"
+               enablesFor="1"
+               id="org.objectstyle.wolips.ui.actions.OpenEOModelIndexAction">
+         </action>
+      </objectContribution>
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IResource"
+            adaptable="true"
+            id="org.objectstyle.wolips.ui.actions.AddToWOAppResourcesIncludePatternsetAction">
+         <action
+               label="Include as WebServerResource"
+               class="org.objectstyle.wolips.ui.actions.AddToWOAppResourcesIncludePatternsetAction"
+               menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group3"
+               enablesFor="1"
+               id="org.objectstyle.wolips.ui.actions.AddToWOAppResourcesIncludePatternsetAction">
+         </action>
+      </objectContribution>
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IResource"
+            adaptable="true"
+            id="org.objectstyle.wolips.ui.actions.AddToWOAppResourcesExcludePatternsetAction">
+         <action
+               label="Exclude as WebServerResource"
+               class="org.objectstyle.wolips.ui.actions.AddToWOAppResourcesExcludePatternsetAction"
+               menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group3"
+               enablesFor="1"
+               id="org.objectstyle.wolips.ui.actions.AddToWOAppResourcesExcludePatternsetAction">
+         </action>
+      </objectContribution>
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IResource"
+            adaptable="true"
+            id="org.objectstyle.wolips.ui.actions.AddToResourcesIncludePatternsetAction">
+         <action
+               label="Include as Resource"
+               class="org.objectstyle.wolips.ui.actions.AddToResourcesIncludePatternsetAction"
+               menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group3"
+               enablesFor="1"
+               id="org.objectstyle.wolips.ui.actions.AddToResourcesIncludePatternsetAction">
+         </action>
+      </objectContribution>
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IResource"
+            adaptable="true"
+            id="org.objectstyle.wolips.ui.actions.AddToResourcesExcludePatternsetAction">
+         <action
+               label="Exclude as Resource"
+               class="org.objectstyle.wolips.ui.actions.AddToResourcesExcludePatternsetAction"
+               menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group3"
+               enablesFor="1"
+               id="org.objectstyle.wolips.ui.actions.AddToResourcesExcludePatternsetAction">
+         </action>
+      </objectContribution>
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IResource"
+            adaptable="true"
+            id="org.objectstyle.wolips.ui.actions.AddToClassesIncludePatternsetAction">
+         <action
+               label="Include as Class"
+               class="org.objectstyle.wolips.ui.actions.AddToClassesIncludePatternsetAction"
+               menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group3"
+               enablesFor="1"
+               id="org.objectstyle.wolips.ui.actions.AddToClassesIncludePatternsetAction">
+         </action>
+      </objectContribution>
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IResource"
+            adaptable="true"
+            id="org.objectstyle.wolips.ui.actions.AddToClassesExcludePatternsetAction">
+         <action
+               label="Exclude as Class"
+               class="org.objectstyle.wolips.ui.actions.AddToClassesExcludePatternsetAction"
+               menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group3"
+               enablesFor="1"
+               id="org.objectstyle.wolips.ui.actions.AddToClassesExcludePatternsetAction">
+         </action>
+      </objectContribution>
+   </extension>
+<!-- =================================================================================== -->
+<!-- Extension: Editors                                                                  -->
+<!-- =================================================================================== -->
+   <extension
+         id="org.objectstyle.wolips.editors"
+         point="org.eclipse.ui.editors">
+      <editor
+            name="WOBuilder"
+            default="true"
+            icon="icons/wobuilder/webobjects_builder.gif"
+            extensions="api,wod,woo"
+            launcher="org.objectstyle.wolips.ui.editor.OpenSystemEditor"
+            id="org.objectstyle.wolips.external.wod.editor">
+      </editor>
+      <editor
+            name="WOComponent TextEditor"
+            default="false"
+            icon="icons/wobuilder/webobjects_builder.gif"
+            extensions="api,wod,woo"
+            contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
+            class="org.eclipse.ui.editors.text.TextEditor"
+            id="org.objectstyle.wolips.internal.wod.editor">
+      </editor>
+      <editor
+            name="HTML TextEditor"
+            default="false"
+            icon="icons/wobuilder/webobjects_builder.gif"
+            extensions="html"
+            contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
+            class="org.eclipse.ui.editors.text.TextEditor"
+            id="org.objectstyle.wolips.internal.html.editor">
+      </editor>
+      <editor
+            name="EOModeler"
+            default="true"
+            icon="icons/eomodeler/webobjects_eomodeler.gif"
+            extensions="eomodeld"
+            launcher="org.objectstyle.wolips.ui.editor.OpenSystemEditor"
+            id="org.objectstyle.wolips.external.eomodeld.editor">
+      </editor>
+      <editor
+            name="ProjectBuilderWO"
+            default="false"
+            icon="icons/projectbuilder/projectbuilderwo.gif"
+            extensions="project"
+            launcher="org.objectstyle.wolips.ui.editor.OpenSystemEditor"
+            id="org.objectstyle.wolips.external.projectbuilder.wo">
+      </editor>
+      <editor
+            name="RuleEditor"
+            default="true"
+            icon="icons/eomodeler/webobjects_eomodeler.gif"
+            extensions="d2wmodel"
+            launcher="org.objectstyle.wolips.ui.editor.OpenSystemEditor"
+            id="org.objectstyle.wolips.external.d2w.model">
+      </editor>
+      <editor
+            name="GraphicEditor"
+            default="true"
+            icon="icons/files/icns.gif"
+            extensions="icns"
+            launcher="org.objectstyle.wolips.ui.editor.OpenSystemEditor"
+            id="org.objectstyle.wolips.ui.icns">
+      </editor>
+      <editor
+            name="MakefileEditor"
+            icon="icons/files/text_file.gif"
+            extensions="Makefile,postamble,preamble"
+            contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
+            class="org.eclipse.ui.editors.text.TextEditor"
+            id="org.objectstyle.wolips.ui.DefaultMakefileEditor">
+      </editor>
+      <editor
+            name="PropertyListEditor"
+            icon="icons/files/text_file.gif"
+            extensions="plist"
+            contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
+            class="org.eclipse.ui.editors.text.TextEditor"
+            id="org.objectstyle.wolips.ui.DefaultPropertyListEditor">
+      </editor>
+      <editor
+            name="AntIncludesFileEditor"
+            icon="icons/files/ant_buildfile.gif"
+            extensions="home,wosystemroot,wolocalroot"
+            contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
+            class="org.eclipse.ui.editors.text.TextEditor"
+            id="org.objectstyle.wolips.ui.DefaultAntIncludesFileEditor">
+      </editor>
+      <editor
+            default="true"
+            name="Pattern Set Editor"
+            icon="icons/files/ant_buildfile.gif"
+            extensions="patternset"
+            class="org.objectstyle.wolips.ui.editor.PatternsetEditor"
+            id="org.objectstyle.wolips.ui.editor.PatternsetEditor">
+      </editor>
+   </extension>
+<!-- =================================================================================== -->
+<!-- Extension: Perspective                                                              -->
+<!-- =================================================================================== -->
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            name="WOLips"
+            icon="icons/wolips/WOLips-icon.gif"
+            class="org.objectstyle.wolips.ui.view.PerspectiveFactory"
+            id="org.objectstyle.wolips.ui.Perspective">
+      </perspective>
+   </extension>
+<!-- =================================================================================== -->
+<!-- Extension: View                                                                     -->
+<!-- =================================================================================== -->
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="WOLips"
+            id="org.objectstyle.wolips.ui">
+      </category>
+      <view
+            name="Related"
+            icon="icons/wolips/WOLips-icon.gif"
+            category="org.objectstyle.wolips.ui"
+            class="org.objectstyle.wolips.ui.view.RelatedView"
+            id="org.objectstyle.wolips.ui.view.RelatedView">
+      </view>
+      <view
+            name="Support"
+            icon="icons/wolips/WOLips-icon.gif"
+            category="org.objectstyle.wolips.ui"
+            class="org.objectstyle.wolips.ui.support.SupportView"
+            id="org.objectstyle.wolips.ui.support.SupportView">
+      </view>
+   </extension>
+<!-- =================================================================================== -->
+<!-- Extension: Preferences                                                              -->
+<!-- =================================================================================== -->
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            name="WOLips"
+            class="org.objectstyle.wolips.ui.preferences.PreferencesPage"
+            id="org.objectstyle.wolips.preferences.PreferencesPage">
+      </page>
+      <page
+            name="Build"
+            category="org.objectstyle.wolips.preferences.PreferencesPage"
+            class="org.objectstyle.wolips.ui.preferences.BuildPreferencesPage"
+            id="org.objectstyle.wolips.preferences.BuildPreferencesPage">
+      </page>
+      <page
+            name="Launch"
+            category="org.objectstyle.wolips.preferences.PreferencesPage"
+            class="org.objectstyle.wolips.ui.preferences.LaunchPreferencesPage"
+            id="org.objectstyle.wolips.preferences.LaunchPreferencesPage">
+      </page>
+   </extension>
+<!-- =================================================================================== -->
+<!-- Extension: Decorators                                                               -->
+<!-- =================================================================================== -->
+   <extension
+         point="org.eclipse.ui.decorators">
+      <decorator
+            objectClass="org.eclipse.core.resources.IResource"
+            label="WebObjects"
+            state="true"
+            class="org.objectstyle.wolips.ui.labeldecorator.WOLabelDecorator"
+            id="org.objectstyle.wolips.ui.labeldecorator.WOLabelDecorator">
+      </decorator>
+   </extension>
+<!-- =================================================================================== -->
+<!-- Extension: Action set in the perspective                                            -->
+<!-- =================================================================================== -->
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            label="WOLips"
+            description="WOLips Actions"
+            visible="false"
+            id="org.objectstyle.wolips.ui.BuildActionSet">
+         <action
+               label="Toggle WOBuild"
+               style="toggle"
+               icon="icons/wobuild/toggle_build.gif"
+               tooltip="Toggle WOBuild"
+               class="org.objectstyle.wolips.ui.actions.WOBuildToggleAction"
+               toolbarPath="Normal/WOLipsActions"
+               id="org.objectstyle.wolips.ui.actions.WOBuildToggleAction">
+         </action>
+         <action
+               label="Toggle Ant Output"
+               style="toggle"
+               icon="icons/wobuild/toggle_ant_output.gif"
+               tooltip="Toggle Ant Output"
+               class="org.objectstyle.wolips.ui.actions.ToggleAntOutputAction"
+               toolbarPath="Normal/WOLipsActions"
+               id="org.objectstyle.wolips.ui.actions.ToggleAntOutputAction">
+         </action>
+      </actionSet>
+   </extension>
+<!-- =========================================================================== -->
+<!-- Filter Support                                                              -->
+<!-- =========================================================================== -->
+   <extension
+         point="org.eclipse.jdt.ui.javaElementFilters">
+<!-- Package Explorer -->
+      <filter
+            name="PB makefiles (WOLips)"
+            enabled="true"
+            description="Hide the makefiles required by PBWO"
+            pattern="Makefil*">
+      </filter>
+      <filter
+            name="ant classpath files (WOLips)"
+            enabled="true"
+            description="Hide the ant classpath files generated by WOLips"
+            pattern="ant.classpaths.*">
+      </filter>
+      <filter
+            name="ant framework files (WOLips)"
+            enabled="true"
+            description="Hide the ant framework files generated by WOLips"
+            pattern="ant.frameworks.*">
+      </filter>
+      <filter
+            name="PB.project (WOLips)"
+            enabled="true"
+            description="Hide the PBWO project file."
+            pattern="PB.project">
+      </filter>
+      <filter
+            name="WOComponent api (WOLips)"
+            enabled="false"
+            description="Hide all *.api files"
+            pattern="*.api">
+      </filter>
+      <filter
+            name="woo (WOLips)"
+            enabled="false"
+            description="Hide all *.woo files"
+            pattern="*.woo">
+      </filter>
+      <filter
+            name="WOA Icon (WOLips)"
+            enabled="true"
+            description="Hides the WOA Icon"
+            pattern="WOAfile.icns">
+      </filter>
+      <filter
+            name="CustomInfo.plist (WOLips)"
+            enabled="true"
+            description="Hide all CustomInfo.plist files"
+            pattern="CustomInfo.Plist">
+      </filter>
+      <filter
+            name="Properties (WOLips)"
+            enabled="true"
+            description="Hides files named Properties"
+            pattern="Properties">
+      </filter>
+      <filter
+            name="build.properties (WOLips)"
+            enabled="true"
+            description="Hide all build.properties files"
+            pattern="build.properties">
+      </filter>
+      <filter
+            name="build.xml (WOLips)"
+            enabled="true"
+            description="Hide all build.xml files"
+            pattern="build.xml">
+      </filter>
+      <filter
+            name="build launch config (WOLips)"
+            enabled="true"
+            description="Hide all *.build.launch files"
+            pattern="*.build.launch">
+      </filter>
+   </extension>
+
+<!-- =================================================================================== -->
+<!-- Extension: WOLips projectbuild property page                                        -->
+<!-- =================================================================================== -->
+   <extension
+         point="org.eclipse.ui.propertyPages">
+      <page
+            adaptable="true"
+            objectClass="org.eclipse.core.resources.IProject"
+            name="WOLips build"
+            class="org.objectstyle.wolips.ui.propertypages.ProjectNaturePage"
+            id="org.objectstyle.wolips.ui.propertypages.ProjectNaturePage">
+         <filter
+               name="nature"
+               value="org.eclipse.jdt.core.javanature">
+         </filter>
+      </page>
+   </extension>
+
+</plugin>

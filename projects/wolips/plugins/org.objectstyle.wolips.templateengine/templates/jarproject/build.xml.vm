@@ -1,0 +1,18 @@
+<!-- ======================================================== -->
+<!--              Script to build a jar                       -->
+<!-- ======================================================== -->
+<project name="${WOLipsContext.getProjectName()}" default="jar" basedir=".">
+
+    <!-- ============================================= -->
+    <!-- Jars Java classes                             -->
+    <!-- ============================================= -->
+    <target name="jar">
+    <property file="build.properties"/>
+	<jar jarfile="${jar.name}.jar">
+        <fileset dir="${classes.dir}">
+			<include name="**/*.class" />
+			<include name="**/*.properties" />
+	    </fileset>
+	</jar>
+    </target>
+</project>

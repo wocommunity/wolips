@@ -63,102 +63,116 @@ import org.apache.tools.ant.ProjectHelper;
 import org.apache.tools.ant.types.FileSet;
 
 /**
- * Customized subclass of FileSet used to locate frameworks.
- *
+ * A subclass of FileSet that with special support for matching WOFrameworks.
+ * 
  * @author Andrei Adamchik
  */
 public class FrameworkSet extends FileSet {
-	protected File aDirectory;
-	protected boolean embed = false;
-	protected String ifCondition = "";
-	/** 
-	 * Creates new FrameworkSet.
-	 */
-	public FrameworkSet() {
-		super();
-	}
 
-	/** 
-	 * Returns a symbolic root prefix that can be used in
-	 * classpath files (like CLASSPATH.TXT).
-	 */
+    protected boolean embed;
+    protected File deploymentDir;
+    
+    protected String ifCondition = "";
 
-	/** 
-	 * Overrides parent to discard the value. A warning 
-	 * will be printed if log level is high enough.
-	 */
-	public void setDir(File dir) throws BuildException {
-		aDirectory = dir;
-		super.setDir(this.aDirectory);
-	}
+    /**
+     * Creates new FrameworkSet.
+     */
+    public FrameworkSet() {
+        super();
+    }
 
-	/** 
-	 * Sets root directory of this FileSet based on a symbolic name, 
-	 * that can be "wo.homeroot", "wo.woroot", "wo.localroot". Throws
-	 * BuildException if an invalid root is specified.
-	 */
-	public void setRoot(File aRoot) throws BuildException {
-		aDirectory = aRoot;
-		super.setDir(this.aDirectory);
-	}
+    /**
+     * Sets the deployment root directory (can be different from the normal <code>root</code> specified). 
+     * The idea is that you can specify the compile time path via <code>dir=/some_binary_release_path/</code>,
+     * but still end up with <code>LOCALROOT/Library/Frameworks/Bar.framework</code> as the prefix.
+     * 
+     * @param root
+     */
+    public void setDeploymentDir(File root) {
+        this.deploymentDir = root;
+    }
+    
+    public File getDeployedFile(File file) {
+        File result = file;
+        if(this.deploymentDir != null && !getEmbed()) {
+            // maps
+            //  foo/bar/Baz.framework/Resources/Java/xxx.jar -> /System/Library/Frameworks/Baz.framework
+            String oldPath = file.getPath();
+            String newRoot = deploymentDir.getPath();
+            String newPath = oldPath.replaceFirst("(.*?)(/\\w+\\.framework/)", newRoot + "$2");
+            System.out.println(oldPath + "->" + newPath);
+            result = new File(newPath);
+        }
+        return result;
+    }
+    
+    /**
+     * Sets root directory of this FileSet based on a symbolic name, that can be
+     * "wo.homeroot", "wo.woroot", "wo.localroot". Throws BuildException if an
+     * invalid root is specified.
+     * 
+     * @deprecated since WOProject 1.1, use {@link #setDir(File)}.
+     */
+    public void setRoot(File root) throws BuildException {
+        setDir(root);
+    }
 
-	public void setEmbed(boolean flag) {
-		this.embed = flag;
-	}
-	
-	//from  "Jonathan 'Wolf' Rentzsch"
-	//to enable work with references
-	public boolean getEmbed() {
-	  if (isReference() && getProject() != null) {
-		return ((FrameworkSet)getRef(getProject())).getEmbed();
-	  }
-	  return this.embed;
-	}
+    public void setEmbed(boolean flag) {
+        this.embed = flag;
+    }
 
-	public void setIf(String string) {
-		ifCondition = string == null ? "" : string;
-	}
+    public boolean getEmbed() {
+        if (isReference() && getProject() != null) {
+            return ((FrameworkSet) getRef(getProject())).getEmbed();
+        }
+        return this.embed;
+    }
 
-	private boolean testIfCondition() {
-		if ("".equals(ifCondition))
-			return true;
-		String string =
-			ProjectHelper.replaceProperties(
-				getProject(),
-				ifCondition,
-				getProject().getProperties());
-		return getProject().getProperty(string) != null;
-	}
+    public void setIf(String string) {
+        ifCondition = string == null ? "" : string;
+    }
 
-        public String[] getFrameworks() {
-            String[] files = getDirectoryScanner(getProject()).getIncludedDirectories();
-            return files;
+    private boolean testIfCondition() {
+        if ("".equals(ifCondition)) {
+            return true;
         }
 
-        public File[] findJars(String frameworkDir) {
-		if (!testIfCondition())
-			return new File[] {
-		};
+        String string = ProjectHelper.replaceProperties(
+                getProject(),
+                ifCondition,
+                getProject().getProperties());
+        return getProject().getProperty(string) != null;
+    }
 
-		String jarDirName =
-			frameworkDir
-				+ File.separator
-				+ "Resources"
-				+ File.separator
-				+ "Java";
+    public String[] getFrameworks() {
+        String[] files = getDirectoryScanner(getProject())
+                .getIncludedDirectories();
+        return files;
+    }
 
-		File jarDir = new File(getDir(project), jarDirName);
-		if (!jarDir.isDirectory()) {
-			return null;
-		}
+    public File[] findJars(String frameworkDir) {
+        if (!testIfCondition())
+            return new File[] {};
 
-		File[] finalFiles = jarDir.listFiles(new JarFilter());
-		return finalFiles;
-	}
+        String jarDirName = frameworkDir
+                + File.separator
+                + "Resources"
+                + File.separator
+                + "Java";
 
-	class JarFilter implements FilenameFilter {
-		public boolean accept(File dir, String name) {
-			return name.endsWith(".jar") || name.endsWith(".zip");
-		}
-	}
+        File jarDir = new File(getDir(this.getProject()), jarDirName);
+        if (!jarDir.isDirectory()) {
+            return null;
+        }
+
+        File[] finalFiles = jarDir.listFiles(new JarFilter());
+        return finalFiles;
+    }
+
+    class JarFilter implements FilenameFilter {
+
+        public boolean accept(File dir, String name) {
+            return name.endsWith(".jar") || name.endsWith(".zip");
+        }
+    }
 }

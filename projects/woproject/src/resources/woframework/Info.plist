@@ -34,5 +34,6 @@
 	<key>CFBundlePackageType</key>
 	<string>FMWK</string>
 	@PRINCIPAL_CLASS@
+	@CUSTOM_CONTENT@
 </dict>
 </plist>

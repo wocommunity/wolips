@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 The ObjectStyle Group 
+ * Copyright (c) 2002, 2004 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -59,89 +59,83 @@ import java.io.FilenameFilter;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Vector;
-
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.actions.WorkspaceModifyDelegatingOperation;
-import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
-
+import org.objectstyle.wolips.variables.VariablesPlugin;
 /**
  * @author mnolte
- * @author uli
- * The one and only page in the eo model creation wizard
+ * @author uli The one and only page in the eo model creation wizard
  */
 public class EOModelCreationPage extends WizardNewWOResourcePage {
-	private IWorkbench workbench;
 	private HashMap availableAdaptors;
-	private Composite parentComposite;
+	private IResource resourceToReveal;
 	// widgets
-//	private Button adaptorJDBCCheckbox;
-//	private Button adaptorJDBCPatchedCheckbox;
+	//	private Button adaptorJDBCCheckbox;
+	//	private Button adaptorJDBCPatchedCheckbox;
 	/**
 	 * Creates the page for the eomodel creation wizard.
-	 *
-	 * @param workbench  the workbench on which the page should be created
-	 * @param selection  the current selection
+	 * 
+	 * @param workbench
+	 *            the workbench on which the page should be created
+	 * @param selection
+	 *            the current selection
 	 */
-	public EOModelCreationPage(
-		IWorkbench workbench,
-		IStructuredSelection selection) {
+	public EOModelCreationPage(IStructuredSelection selection) {
 		super("createEOModelPage1", selection);
 		this.setTitle(Messages.getString("EOModelCreationPage.title"));
-		this.setDescription(
-			Messages.getString("EOModelCreationPage.description"));
-		this.workbench = workbench;
+		this.setDescription(Messages
+				.getString("EOModelCreationPage.description"));
 	}
-	/** (non-Javadoc)
-	 * Method declared on IDialogPage.
+	/**
+	 * (non-Javadoc) Method declared on IDialogPage.
 	 */
 	public void createControl(Composite parent) {
-		parentComposite = parent;
 		// inherit default container and name specification widgets
 		super.createControl(parent);
 		Composite composite = (Composite) getControl();
-		//WorkbenchHelp.setHelp(composite, IReadmeConstants.CREATION_WIZARD_PAGE_CONTEXT);
+		//WorkbenchHelp.setHelp(composite,
+		// IReadmeConstants.CREATION_WIZARD_PAGE_CONTEXT);
 		//GridData data = (GridData) composite.getLayoutData();
-		this.setFileName(
-			Messages.getString("EOModelCreationPage.newEOModel.defaultName"));
+		this.setFileName(Messages
+				.getString("EOModelCreationPage.newEOModel.defaultName"));
 		new Label(composite, SWT.NONE); // vertical spacer
 		// section generation group
 		Group group = new Group(composite, SWT.NONE);
 		group.setLayout(new GridLayout());
-		group.setText(
-			Messages.getString("EOModelCreationPage.creationOptions.title"));
-		group.setLayoutData(
-			new GridData(
-				GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
+		group.setText(Messages
+				.getString("EOModelCreationPage.creationOptions.title"));
+		group.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
+				| GridData.HORIZONTAL_ALIGN_FILL));
 		createAvailableAdaptorButtons(group);
 		new Label(composite, SWT.NONE); // vertical spacer
 		setPageComplete(validatePage());
 	}
 	/**
-	 * Creates a new eomodel as requested by the user. If everything
-	 * is OK then answer true. If not, false will cause the dialog
-	 * to stay open and the appropiate error message is shown
-	 *
+	 * Creates a new eomodel as requested by the user. If everything is OK then
+	 * answer true. If not, false will cause the dialog to stay open and the
+	 * appropiate error message is shown
+	 * 
 	 * @return whether creation was successful
 	 * @see EOModelCreationWizard#performFinish()
 	 */
 	public boolean createEOModel() {
 		EOModelCreator modelCreator;
 		String modelName = getFileName();
-		IProject actualProject =
-			ResourcesPlugin.getWorkspace().getRoot().getProject(
-				getContainerFullPath().segment(0));
+		IProject actualProject = ResourcesPlugin.getWorkspace().getRoot()
+				.getProject(getContainerFullPath().segment(0));
 		// determine adaptor
 		String adaptorName = "";
 		Button currentButton;
@@ -160,61 +154,55 @@ public class EOModelCreationPage extends WizardNewWOResourcePage {
 				setErrorMessage("unknown error");
 				return false;
 			case 1 :
-				modelCreator =
-					new EOModelCreator(actualProject, modelName, adaptorName);
+				modelCreator = new EOModelCreator(actualProject, modelName,
+						adaptorName, this);
 				break;
 			default :
-				IFolder subprojectFolder =
-					actualProject.getFolder(
-						getContainerFullPath().removeFirstSegments(1));
-				modelCreator =
-					new EOModelCreator(
-						subprojectFolder,
-						modelName,
-						adaptorName);
+				IFolder subprojectFolder = actualProject
+						.getFolder(getContainerFullPath()
+								.removeFirstSegments(1));
+				modelCreator = new EOModelCreator(subprojectFolder, modelName,
+						adaptorName, this);
 				break;
 		}
-		IRunnableWithProgress op =
-			new WorkspaceModifyDelegatingOperation(modelCreator);
+		IRunnableWithProgress op = new WorkspaceModifyDelegatingOperation(
+				modelCreator);
 		return createResourceOperation(op);
 	}
 	/**
-	 * Method createAvailableAdaptorButtons. Parses system framework library directory 
-	 * for all occurences of "Java[Adaptorname]Adaptor.framework". For each match one 
-	 * button in the given group is created. The button's text is equal to the Adaptorname 
-	 * part of the Adaptorframework name.
+	 * Method createAvailableAdaptorButtons. Parses system framework library
+	 * directory for all occurences of "Java[Adaptorname]Adaptor.framework".
+	 * For each match one button in the given group is created. The button's
+	 * text is equal to the Adaptorname part of the Adaptorframework name.
+	 * 
 	 * @param group
 	 */
 	private void createAvailableAdaptorButtons(Group group) {
-		File systemFrameworkDir =
-			new File(
-				WOLipsPlugin
-					.getDefault()
-					.getWOEnvironment()
-					.getWOVariables()
-					.libraryDir(),
-				"Frameworks");
+		Composite row = new Composite(group, SWT.NONE);
+		RowLayout rowLayout = new RowLayout();
+		row.setLayout(rowLayout);
+		File systemFrameworkDir = new File(VariablesPlugin.getDefault().getSystemRoot().append("Library").append("Frameworks").toOSString());
 		AdaptorFilter adaptorFilter = new AdaptorFilter();
 		systemFrameworkDir.listFiles(adaptorFilter);
-		availableAdaptors =
-			new HashMap(adaptorFilter.getAdaptorNames().size() + 1);
+		availableAdaptors = new HashMap(
+				adaptorFilter.getAdaptorNames().size() + 1);
 		Button currentAdaptorButton;
 		String buttonText;
 		// add none adaptor entry
-		currentAdaptorButton = new Button(group, SWT.RADIO);
+		currentAdaptorButton = new Button(row, SWT.RADIO);
 		buttonText = "None";
 		currentAdaptorButton.setText(buttonText);
 		currentAdaptorButton.setSelection(true);
 		availableAdaptors.put(currentAdaptorButton, "None");
 		for (int i = 0; i < adaptorFilter.getAdaptorNames().size(); i++) {
-			currentAdaptorButton = new Button(group, SWT.RADIO);
+			currentAdaptorButton = new Button(row, SWT.RADIO);
 			buttonText = (String) adaptorFilter.getAdaptorNames().elementAt(i);
 			currentAdaptorButton.setText(buttonText);
 			availableAdaptors.put(currentAdaptorButton, buttonText);
 		}
 	}
-	/** (non-Javadoc)
-	 * Method declared on WizardNewFileCreationPage.
+	/**
+	 * (non-Javadoc) Method declared on WizardNewFileCreationPage.
 	 */
 	protected String getNewFileLabel() {
 		return Messages.getString("EOModelCreationPage.newEOModel.label");
@@ -229,26 +217,33 @@ public class EOModelCreationPage extends WizardNewWOResourcePage {
 		}
 		public boolean accept(File dir, String name) {
 			String adaptorName = null;
-			boolean isAdaptor =
-				(name.length()
-					> (ADAPTOR_PREFIX.length() + ADAPTOR_POSTFIX.length()))
+			boolean isAdaptor = (name.length() > (ADAPTOR_PREFIX.length() + ADAPTOR_POSTFIX
+					.length()))
 					&& name.startsWith(ADAPTOR_PREFIX)
 					&& name.endsWith(ADAPTOR_POSTFIX);
 			if (isAdaptor) {
-				adaptorName =
-					name.substring(
-						ADAPTOR_PREFIX.length(),
-						name.length() - ADAPTOR_POSTFIX.length());
+				adaptorName = name.substring(ADAPTOR_PREFIX.length(), name
+						.length()
+						- ADAPTOR_POSTFIX.length());
 				adaptorNames.add(adaptorName);
 			}
 			return isAdaptor;
 		}
 		/**
 		 * Returns the adaptorNames.
+		 * 
 		 * @return Vector
 		 */
 		public Vector getAdaptorNames() {
 			return adaptorNames;
 		}
+	}
+	
+	
+	public IResource getResourceToReveal() {
+		return resourceToReveal;
+	}
+	public void setResourceToReveal(IResource resourceToReveal) {
+		this.resourceToReveal = resourceToReveal;
 	}
 }

@@ -45,6 +45,16 @@
 					<td valign="top">The value of the <code>NSPrincipal</code> class in the Info.plist to use.</td>
 					<td valign="top" align="center"><code>NO</code></td>
 				</tr>
+				<tr>
+					<td valign="top">customInfoPListContent</td>
+					<td valign="top">String to append to the Info.plist.</td>
+					<td valign="top" align="center"><code>NO</code></td>
+				</tr>
+				<tr>
+					<td valign="top">eoAdaptorClassName</td>
+					<td valign="top">EOAdaptorClassName. Only useful for EOAdaptor frameworks.</td>
+					<td valign="top" align="center"><code>NO</code></td>
+				</tr>
 			</table>
 
 			<h3>Nested elements:</h3>

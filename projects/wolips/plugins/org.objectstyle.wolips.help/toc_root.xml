@@ -34,6 +34,9 @@
 	</topic>
 	<topic label="What's New" href="doc_root/history.html"/>
 	<topic label="Bugs and Issues" href="doc_root/issues.html"/>
+	<topic label="Template Engine" href="doc_root/template_engine/index.html">
+		<topic label="My Templates My Context" href="doc_root/template_engine/my_templates_my_context.html"/>
+	</topic>
 	<topic label="Programmer's Guide" href="doc_root/programmer/index.html">
 		<topic label="Inside WOLips" href="doc_root/programmer/pde.html"/>
 		<topic label="Building From Source" href="doc_root/programmer/build.html"/>

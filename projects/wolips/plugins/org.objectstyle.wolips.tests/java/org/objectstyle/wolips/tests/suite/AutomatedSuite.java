@@ -2,7 +2,7 @@
  *
  * The ObjectStyle Group Software License, Version 1.0
  *
- * Copyright (c) 2002 The ObjectStyle Group,
+ * Copyright (c) 2002 - 2004 The ObjectStyle Group,
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -54,25 +54,40 @@
  *
  */
 package org.objectstyle.wolips.tests.suite;
-
-import org.objectstyle.wolips.core.project.ProjectsTestSuite;
-
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+import org.objectstyle.wolips.datasets.DataSetsTestSuite;
+import org.objectstyle.wolips.templateengine.TemplatesTestSuite;
+import org.objectstyle.wolips.tests.core.TestsCorePluginTestSuite;
+import org.objectstyle.wolips.wizards.WizardsTestSuite;
 /**
  * Run all compiler regression tests
  */
 public class AutomatedSuite extends TestCase {
-
+	
+	/**
+	 * @param testName
+	 */
 	public AutomatedSuite(String testName) {
 		super(testName);
 	}
+	
+	/**
+	 * @return
+	 * @throws Exception
+	 */
 	public static Test suite() throws Exception {
 		TestSuite suite = new TestSuite();
 		suite.addTestSuite(CheckWorkspaceTest.class);
-		suite.addTest(ProjectsTestSuite.suite());
+		suite.addTest(TestsCorePluginTestSuite.suite());
+		suite.addTestSuite(CheckWorkspaceTest.class);
+		suite.addTest(TemplatesTestSuite.suite());
+		suite.addTestSuite(CheckWorkspaceTest.class);
+		suite.addTest(DataSetsTestSuite.suite());
+		suite.addTestSuite(CheckWorkspaceTest.class);
+		suite.addTest(WizardsTestSuite.suite());
 		suite.addTestSuite(CheckWorkspaceTest.class);
 		return suite;
 	}

@@ -3,7 +3,6 @@
 	<name>org.objectstyle.wolips.tests.about</name>
 	<comment></comment>
 	<projects>
-		<project>org.objectstyle.wolips.tests.feature</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

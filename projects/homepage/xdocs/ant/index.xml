@@ -1,38 +1,57 @@
 <?xml version="1.0"?>
 <document>
     <title>Ant Tasks</title>
-
-    <properties>
-        <author>Andrei Adamchik</author>
-    </properties>
-
     <body>
- 		<section name="Ant Tasks">
- 			<p>Currently WOProject supports the following Ant tasks (for more 
- 			information about Ant, go to <a href="http://jakarta.apache.org/ant/index.html">Jakarta 
- 			Ant Site</a>):
- 				<ul>
- 				<li><a href="wocompile.html">WOCompile</a>: Allows to compile by specifying the frameworks.</li>
-		        <li><a href="woapplication.html">WOApplication</a>: Allows to build WebObjects applications
- 				 without using ProjectBuilder.</li>
- 				<li><a href="woframework.html">WOFramework</a>: Allows to build WebObjects frameworks
- 				 without using ProjectBuilder.</li>
- 				<li><a href="wogen.html">WOGen</a>: Generates and maintains EOEnterprsieObjects
- 				based on EOModel. Ant-based analog of EOGenerator, using "generation gap" design pattern.
- 				</li>
- 				<li><a href="pbxindex.html">PBIndex</a>: Maintains
- 				PB.project file needed for WebObjects tools, even when ProjectBuilderWO is not used.</li>
-				<li><i><font color="red">[New]</font></i> <a href="pbxindex.html">PBXIndex</a>: Maintains
- 				.pbproj file needed for WebObjects tools, even when ProjectBuilder is not used.</li>
- 				</ul>
+   		<section name="WOProject Tasks Installation">
+ 			<p>There is no WOProject installation per se. All WOProject needs is the following JAR files 
+ 			included in the distribution:
  			</p>
-
- 			<p>When these tasks are called from user buildfiles, Ant would need access to
- 			two ".jar" files from WOProject distribution:
  			<ul>
  				<li><code>[WOProject_installdir]/lib/woproject.jar</code> <i>(needed for all tasks)</i></li>
  				<li><code>[WOProject_installdir]/lib/cayenne.jar</code> <i>(needed for WOGen task only)</i></li>
  			</ul>
+ 			
+ 			<p>These files can be copied anywhere in the filesystem. Of course Ant has to be installed. It can be 
+ 			downloaded from <a href="http://ant.apache.org/" target="_blank">http://ant.apache.org/</a>.</p>
+ 		</section>
+ 		
+ 		<section name="Ant Tasks">
+ 			<p>WOProject ships with the following Ant tasks:</p>
+ 			
+ 			<p><strong>Core Tasks:</strong></p>
+ 				<ul>
+ 				<li><a href="wocompile.html">WOCompile</a>: A Javac task extension that allows including
+ 				WOFrameworks in CLASSPATH.</li>
+		        <li><a href="woapplication.html">WOApplication</a>: A task for assembling WebObjects 
+		        applications.</li>
+ 				<li><a href="woframework.html">WOFramework</a>: A task for assembling WebObjects frameworks.</li>
+ 				<li><a href="wogen.html">WOGen</a>: A task for generating custom Java EO 
+ 				classes from EOModel. 
+ 				</li>
+ 				<li><a href="eomodel.html">EOModel</a>: A task for configuring custom connection dictionary 
+ 				for EOModels.
+ 				</li>
+ 			</ul>
+ 			
+ 			<p><strong>WO Tools Integration Tasks:</strong></p>
+ 				<ul>
+ 				<li><a href="pbindex.html">PBIndex</a>: Maintains
+ 				PB.project file for integration with WOBuilder on Windows.</li>
+				<li><a href="pbxindex.html">PBXIndex</a>: Maintains
+				PBX.pbproj file for integration with WOBuilder and EOModeler on older Mac OS X.</li>
+ 				<li><a href="xcodeindex.html">XcodeIndex</a>: Maintains
+ 				XCode project files for integration with WOBuilder on the latest Mac OS X.</li>
+ 				</ul>
+ 		</section>
+ 		
+ 		
+ 		
+ 		<section name="Ant Data Structures">
+ 			<p>
+ 				<ul>
+ 				<li><a href="frameworkset.html">FrameworkSet</a>: An extension of Ant FileSet to match 
+ 				WOFrameworks.</li>
+ 				</ul>
  			</p>
  		</section>
  		

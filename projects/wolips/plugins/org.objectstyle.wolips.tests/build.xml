@@ -36,6 +36,7 @@
             <include name="**/org/objectstyle/wolips/tests/**"/>
             <include name="**/org/objectstyle/wolips/**/*Test.class"/>
             <include name="**/org/objectstyle/wolips/**/*TestSuite.class"/>
+            <exclude name="**/org/objectstyle/wolips/test/core/**"/>
         </patternset>
             
 	    <ant dir="." antfile="../../../${project.buildscripts.dir}/plugin-project.xml" target="jar">

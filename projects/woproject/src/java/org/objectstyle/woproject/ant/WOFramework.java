@@ -2,7 +2,7 @@
  *
  * The ObjectStyle Group Software License, Version 1.0
  *
- * Copyright (c) 2002 The ObjectStyle Group
+ * Copyright (c) 2002, 2004 The ObjectStyle Group
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -69,6 +69,8 @@ import org.apache.tools.ant.types.FileSet;
  */
 public class WOFramework extends WOTask {
 
+	protected String eoAdaptorClassName;
+	
     public void addLib(FileSet set) {
         lib.addElement(set);
     }
@@ -132,4 +134,10 @@ public class WOFramework extends WOTask {
         resources.clear();
         wsresources.clear();
     }
+	public String getEOAdaptorClassName() {
+		return eoAdaptorClassName;
+	}
+	public void setEOAdaptorClassName(String eoAdaptorClassName) {
+		this.eoAdaptorClassName = eoAdaptorClassName;
+	}
 }

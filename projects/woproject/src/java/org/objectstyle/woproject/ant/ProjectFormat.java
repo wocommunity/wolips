@@ -2,7 +2,7 @@
  *
  * The ObjectStyle Group Software License, Version 1.0
  *
- * Copyright (c) 2002 The ObjectStyle Group
+ * Copyright (c) 2002, 2004 The ObjectStyle Group
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -71,43 +71,42 @@ import org.apache.tools.ant.types.FilterSet;
 import org.apache.tools.ant.types.FilterSetCollection;
 
 /**
- * Abstract helper class that defines the algorithm for 
- * autogeneration of standard project files needed for deployment
- * of the applications and frameworks. In a way it "formats"
- * deployed project.
- *
+ * Abstract helper class that defines the algorithm for autogeneration of
+ * standard project files needed for deployment of the applications and
+ * frameworks. In a way it "formats" deployed project.
+ * 
  * @author Andrei Adamchik
  */
 public abstract class ProjectFormat {
 	protected WOTask task;
 
-	/** 
-	 * Creates new TemplateFilter and initializes it with the name
-	 * of the project being built.
+	/**
+	 * Creates new TemplateFilter and initializes it with the name of the
+	 * project being built.
 	 */
 	public ProjectFormat(WOTask task) {
 		this.task = task;
 	}
 
-	/** 
-	 * Returns a name of WebObjects project being built. 
+	/**
+	 * Returns a name of WebObjects project being built.
 	 */
 	public String getName() {
 		return task.getName();
 	}
 
 	/**
-	    * Returns a name of the jar WebObjects project being built with ".jar" appended.
+	 * Returns a name of the jar WebObjects project being built with ".jar"
+	 * appended.
 	 */
 	public String getJarName() {
 		return task.getJarName() + ".jar";
 	}
 
-	/** 
-	* Creates all needed files based on WOProject templates. 
-	* This is a main worker method.
-	* Returns true when a template is written. 
-	*/
+	/**
+	 * Creates all needed files based on WOProject templates. This is a main
+	 * worker method. Returns true when a template is written.
+	 */
 	public boolean processTemplates() throws BuildException {
 		Iterator it = fileIterator();
 		boolean returnValue = false;
@@ -135,53 +134,47 @@ public abstract class ProjectFormat {
 		return returnValue;
 	}
 
-	/** 
-	 * Returns an iterator over String objects that
-	 * specify paths of the files to be created during
-	 * the build process.
+	/**
+	 * Returns an iterator over String objects that specify paths of the files
+	 * to be created during the build process.
 	 */
 	public abstract Iterator fileIterator();
 
-	/** 
-	 * Returns a path to the template that should be used to
-	 * build a target file.
+	/**
+	 * Returns a path to the template that should be used to build a target
+	 * file.
 	 */
 	public abstract String templateForTarget(String targetName)
-		throws BuildException;
-
-	/** 
-	 * Returns a FilterSetCollection that should be applied when
-	 * generating a target file.
-	 */
-	public abstract FilterSetCollection filtersForTarget(String targetName)
-		throws BuildException;
+			throws BuildException;
 
 	/**
-	 * Convienence method to copy a file from a source to a
-	 * destination specifying if token filtering must be used.
-	 *
-	 * <p><i>This method is copied from Ant FileUtils with some changes
-	 * and simplifications. FileUtils can't be used directly, since its 
-	 * API doesn't allow InputStreams for the source file.</i></p>
-	 *  
-	 * @throws IOException
-	 * Returns true when a .sh file is copied. 
+	 * Returns a FilterSetCollection that should be applied when generating a
+	 * target file.
 	 */
-	public boolean copyFile(
-		InputStream src,
-		File destFile,
-		FilterSetCollection filters)
-		throws IOException {
-		log(
-			"destFile.getName(): "
-				+ destFile.getName()
-				+ " this.getName(): "
-				+ this.getName(),
-			Project.MSG_VERBOSE);
-		if (destFile.exists()
-			&& destFile.isFile()
-			&& destFile.getName().equals(this.getName())) {
-			//these files only need an update when a new Version of WO is installed.
+	public abstract FilterSetCollection filtersForTarget(String targetName)
+			throws BuildException;
+
+	/**
+	 * Convienence method to copy a file from a source to a destination
+	 * specifying if token filtering must be used.
+	 * 
+	 * <p>
+	 * <i>This method is copied from Ant FileUtils with some changes and
+	 * simplifications. FileUtils can't be used directly, since its API doesn't
+	 * allow InputStreams for the source file. </i>
+	 * </p>
+	 * 
+	 * @throws IOException
+	 *             Returns true when a .sh file is copied.
+	 */
+	public boolean copyFile(InputStream src, File destFile,
+			FilterSetCollection filters) throws IOException {
+		log("destFile.getName(): " + destFile.getName() + " this.getName(): "
+				+ this.getName(), Project.MSG_VERBOSE);
+		if (destFile.exists() && destFile.isFile()
+				&& destFile.getName().equals(this.getName())) {
+			//these files only need an update when a new Version of WO is
+			// installed.
 			//A clean in that case is better.
 			//destFile.delete();
 			src.close();
@@ -235,9 +228,9 @@ public abstract class ProjectFormat {
 		return destFile.getName().equals(this.getName());
 	}
 
-	/** 
-	 * Returns a string that can be used in Info.plist
-	 * file to indicate JARs required by the project.
+	/**
+	 * Returns a string that can be used in Info.plist file to indicate JARs
+	 * required by the project.
 	 */
 	private String libString(Iterator extLibs) {
 		String endLine = System.getProperty("line.separator");
@@ -245,9 +238,8 @@ public abstract class ProjectFormat {
 
 		buf.append("<array>");
 		if (task.hasClasses()) {
-			buf.append(endLine).append("\t\t<string>").append(
-				getJarName()).append(
-				"</string>");
+			buf.append(endLine).append("\t\t<string>").append(getJarName())
+					.append("</string>");
 		}
 
 		if (extLibs != null) {
@@ -261,26 +253,37 @@ public abstract class ProjectFormat {
 		buf.append(endLine).append("\t</array>");
 		return buf.toString();
 	}
+
 	/**
-	 * Returns a string that can be used in Info.plist
-	 * file to indicate the principal class for the framework or app.
+	 * Returns a string that can be used in Info.plist file to indicate the
+	 * principal class for the framework or app.
 	 */
 	private String principalClassString() {
 		String endLine = System.getProperty("line.separator");
 		StringBuffer buf = new StringBuffer();
 		if (task.getPrincipalClass() != null
-			&& task.getPrincipalClass().length() > 0) {
+				&& task.getPrincipalClass().length() > 0) {
 			buf.append("<key>NSPrincipalClass</key>").append(endLine);
-			buf
-				.append("\t<string>")
-				.append(task.getPrincipalClass())
-				.append("</string>")
-				.append(endLine);
+			buf.append("\t<string>").append(task.getPrincipalClass()).append(
+					"</string>").append(endLine);
 		}
 		return buf.toString();
 	}
-	/** 
-	 * Returns a FilterSet that can be used to build Info.plist file. 
+
+	/**
+	 * Returns a string that can be used in Info.plist file to indicate the
+	 * principal class for the framework or app.
+	 */
+	private String getCustomInfoPListContent() {
+		String string = task.getCustomInfoPListContent();
+		if (string != null) {
+			return string;
+		}
+		return "";
+	}
+
+	/**
+	 * Returns a FilterSet that can be used to build Info.plist file.
 	 */
 	public FilterSetCollection infoFilter(Iterator extLibs) {
 		FilterSet filter = new FilterSet();
@@ -289,6 +292,7 @@ public abstract class ProjectFormat {
 		filter.addFilter("NAME", getName());
 		filter.addFilter("JAR_NAME", getJarName());
 		filter.addFilter("JAR_ARRAY", libString(extLibs));
+		filter.addFilter("CUSTOM_CONTENT", getCustomInfoPListContent());
 
 		return new FilterSetCollection(filter);
 	}

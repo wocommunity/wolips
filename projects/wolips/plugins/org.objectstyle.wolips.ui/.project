@@ -4,7 +4,9 @@
 	<comment></comment>
 	<projects>
 		<project>org.objectstyle.wolips</project>
-		<project>org.objectstyle.wolips.woproject</project>
+		<project>org.objectstyle.wolips.datasets</project>
+		<project>org.objectstyle.wolips.variables</project>
+		<project>org.objectstyle.wolips.workbenchutilities</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
@@ -24,7 +26,9 @@
 		</buildCommand>
 	</buildSpec>
 	<natures>
+		<nature>org.eclipse.jem.workbench.JavaEMFNature</nature>
 		<nature>org.eclipse.pde.PluginNature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
+		<nature>org.eclipse.jem.beaninfo.BeanInfoNature</nature>
 	</natures>
 </projectDescription>

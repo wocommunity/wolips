@@ -4,15 +4,7 @@
 	<comment></comment>
 	<projects>
 		<project>org.objectstyle.wolips</project>
-		<project>org.objectstyle.wolips.devstudio</project>
-		<project>org.objectstyle.wolips.help</project>
 		<project>org.objectstyle.wolips.launching</project>
-		<project>org.objectstyle.wolips.projectbuild</project>
-		<project>org.objectstyle.wolips.support</project>
-		<project>org.objectstyle.wolips.ui</project>
-		<project>org.objectstyle.wolips.wizards</project>
-		<project>org.objectstyle.wolips.wolips</project>
-		<project>org.objectstyle.wolips.wounit</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 The ObjectStyle Group 
+ * Copyright (c) 2002 - 2004 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -56,20 +56,21 @@
 
 package org.objectstyle.wolips.ui.actions;
 
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
-import org.objectstyle.wolips.core.logging.WOLipsLog;
-import org.objectstyle.wolips.core.project.IWOLipsProject;
-import org.objectstyle.wolips.core.project.WOLipsCore;
+import org.objectstyle.wolips.datasets.adaptable.Project;
+import org.objectstyle.wolips.ui.UIPlugin;
+import org.objectstyle.wolips.workbenchutilities.actions.ActionOnIResource;
 
 /**
  * @author uli
- *
- *The Action for updating the PB.project file.
+ * 
+ * The Action for updating the PB.project file.
  */
 public class PBAction extends ActionOnIResource {
 
-	private static String UpdatePBProjectID = "UpdatePB.Project.ID";
+	private static String UpdatePBProjectID = "org.objectstyle.wolips.ui.actions.PBAction";
 
 	/**
 	 * Contructor for the PBAction
@@ -84,50 +85,37 @@ public class PBAction extends ActionOnIResource {
 		super.dispose();
 	}
 	/**
-	 * Updates the PB.project file.
-	 * Will be invoked by the popup menu.
+	 * Updates the PB.project file. Will be invoked by the popup menu.
+	 * @param action
 	 */
 	public void run(IAction action) {
-		if (project() != null) {
+		if (getIProject() != null) {
 			try {
 				if (action.getId().equals(PBAction.UpdatePBProjectID)) {
-					IWOLipsProject woLipsProject =
-						WOLipsCore.createProject(project());
-					//remove all existing entries
-					woLipsProject
-						.getPBProjectFilesAccessor()
-						.cleanAllFileTables();
-					this.project().close(null);
-					//invokes the ResoureChangeListener indirectly
-					this.project().open(null);
-					this.project().findMember(".classpath").touch(null);
-					/*IJavaProject javaProject = JavaCore.create(project());
-					javaProject.setRawClasspath(
-						javaProject.getRawClasspath(),
-						null);*/
+					TouchAllFilesOperation touchAllFilesOperation = new TouchAllFilesOperation(
+							getIProject());
+					touchAllFilesOperation.run(new NullProgressMonitor());
 				}
 			} catch (Exception ex) {
-				WOLipsLog.log(ex);
+				UIPlugin.getDefault().getPluginLogger().log(ex);
 			}
 		}
 	}
 
-	/**
-	 * Calls super.
-	 * Inactivates the Action if the project has no WOBuilder installed
+	/* (non-Javadoc)
+	 * @see org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action.IAction, org.eclipse.jface.viewers.ISelection)
 	 */
 	public void selectionChanged(IAction action, ISelection selection) {
 		super.selectionChanged(action, selection);
-		if (project() != null) {
+		if (getIProject() != null) {
 			if (action.getId().equals(PBAction.UpdatePBProjectID)) {
 				action.setEnabled(true);
 				try {
-					IWOLipsProject woLipsProject =
-						WOLipsCore.createProject(project());
-					action.setEnabled(
-						woLipsProject.getNaturesAccessor().hasWOLipsNature());
+					Project project = (Project) (getIProject())
+							.getAdapter(Project.class);
+					action.setEnabled(project.hasWOLipsNature());
 				} catch (Exception exception) {
-					WOLipsLog.log(exception);
+					UIPlugin.getDefault().getPluginLogger().log(exception);
 				}
 			}
 		} else {

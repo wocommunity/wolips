@@ -2,7 +2,7 @@
  *
  * The ObjectStyle Group Software License, Version 1.0
  *
- * Copyright (c) 2002 The ObjectStyle Group
+ * Copyright (c) 2002, 2004 The ObjectStyle Group
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -84,6 +84,7 @@ public abstract class WOTask extends Task {
     protected String wsDestDir;
     protected String principalClass;
     protected String jarName;
+    protected String customInfoPListContent;
     protected Vector resources = new Vector();
     protected Vector wsresources = new Vector();
     protected Vector lib = new Vector();
@@ -148,6 +149,18 @@ public abstract class WOTask extends Task {
         return principalClass;
     }
 
+    /**
+	 * @return The CustomContent for the Info.plist
+	 */
+	public String getCustomInfoPListContent() {
+		return customInfoPListContent;
+	}
+	/**
+	 * @return The CustomContent for the Info.plist
+	 */
+	public void setCustomInfoPListContent(String customInfoPListContent) {
+		this.customInfoPListContent = customInfoPListContent;
+	}
     /**
      * Method setDestDir.
      * @param destDir

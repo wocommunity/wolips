@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 The ObjectStyle Group 
+ * Copyright (c) 2002 - 2004 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -63,83 +63,114 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.objectstyle.wolips.core.resources.IWOLipsModel;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.jdt.core.IClasspathEntry;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.objectstyle.wolips.datasets.resources.IWOLipsModel;
+import org.objectstyle.wolips.templateengine.TemplateDefinition;
+import org.objectstyle.wolips.templateengine.TemplateEngine;
 
 /**
  * @author mnolte
  * @author uli
- *
+ * 
  * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates.
- * To enable and disable the creation of type comments go to
- * Window>Preferences>Java>Code Generation.
+ * Window>Preferences>Java>Templates. To enable and disable the creation of type
+ * comments go to Window>Preferences>Java>Code Generation.
  */
-public class WOSubprojectCreator extends WOProjectResourceCreator {
+public class WOSubprojectCreator implements IRunnableWithProgress {
 
 	private String subprojectName;
-	
+
+	private IResource parentResource;
+
 	/**
 	 * Constructor for WOSubprojectCreator.
 	 */
-	public WOSubprojectCreator(
-		IResource parentResource,
-		String subprojectName) {
-		super(parentResource);
-		this.subprojectName =
-			subprojectName + "." + IWOLipsModel.EXT_SUBPROJECT;
+	public WOSubprojectCreator(IResource parentResource, String subprojectName) {
+		this.subprojectName = subprojectName + "."
+				+ IWOLipsModel.EXT_SUBPROJECT;
+		this.parentResource = parentResource;
 	}
-	/**
-	 * @see org.objectstyle.wolips.wizards.WOProjectResourceCreator#getType()
-	 */
-	protected int getType() {
-		return SUBPROJECT_CREATOR;
-	}
+
 	/**
 	 * @see WOProjectResourceCreator#run(IProgressMonitor)
 	 */
-	public void run(IProgressMonitor monitor)
-		throws InvocationTargetException, InterruptedException {
-		super.run(monitor);
+	public void run(IProgressMonitor monitor) throws InvocationTargetException,
+			InterruptedException {
 		try {
 			createSubproject(monitor);
 		} catch (CoreException e) {
 			throw new InvocationTargetException(e);
 		}
 	}
+
 	/**
 	 * Method createSubproject.
+	 * 
 	 * @param monitor
 	 * @throws CoreException
 	 * @throws InvocationTargetException
 	 * @throws InterruptedException
 	 */
 	public void createSubproject(IProgressMonitor monitor)
-		throws CoreException, InvocationTargetException, InterruptedException {
+			throws CoreException, InvocationTargetException,
+			InterruptedException {
 		IFolder subprojectFolder = null;
-
 		switch (parentResource.getType()) {
-			case IResource.PROJECT :
-				subprojectFolder =
-					((IProject) parentResource).getFolder(subprojectName);
-				break;
-			case IResource.FOLDER :
-				subprojectFolder =
-					((IFolder) parentResource).getFolder(subprojectName);
+		case IResource.PROJECT:
+			subprojectFolder = ((IProject) parentResource)
+					.getFolder(subprojectName);
+			break;
+		case IResource.FOLDER:
+			subprojectFolder = ((IFolder) parentResource)
+					.getFolder(subprojectName);
 
-				break;
-			default :
-				throw new InvocationTargetException(
-					new Exception("Wrong parent resource - check validation"));
+			break;
+		default:
+			throw new InvocationTargetException(new Exception(
+					"Wrong parent resource - check validation"));
 		}
+		subprojectFolder.create(false, true, monitor);
 
-		createResourceFolderInProject(subprojectFolder, monitor);
-
-		String projectTemplateID =
-			Messages.getString("webobjects.projectType.java.subproject");
-
-		// delegate subproject resource file creation to project creator
-		WOProjectCreator projectCreator =
-			new WOProjectCreator(subprojectFolder, projectTemplateID);
-		projectCreator.run(monitor);
+		String path = subprojectFolder.getLocation().toOSString();
+		TemplateEngine templateEngine = new TemplateEngine();
+		try {
+			templateEngine.init();
+		} catch (Exception e) {
+			WizardsPlugin.getDefault().getPluginLogger().log(e);
+			throw new InvocationTargetException(e);
+		}
+		templateEngine.getWolipsContext().setProjectName(subprojectName);
+		templateEngine.addTemplate(new TemplateDefinition(
+				"subproject/PB.project.vm", path, "PB.project", "PB.project"));
+		try {
+			templateEngine.run(new NullProgressMonitor());
+		} catch (Exception e) {
+			WizardsPlugin.getDefault().getPluginLogger().log(e);
+			throw new InvocationTargetException(e);
+		}
+		
+		subprojectFolder.refreshLocal(IResource.DEPTH_INFINITE, monitor);
+		
+		IFolder sourceFolder;
+		sourceFolder = subprojectFolder.getFolder(IWOLipsModel.EXT_SRC);
+		if (!sourceFolder.exists()) {
+			// create source folder
+			try {
+				sourceFolder.create(true, true, monitor);
+			} catch (CoreException e) {
+				throw new InvocationTargetException(e);
+			}
+		}
+		IJavaProject javaProject = JavaCore.create(parentResource.getProject());
+		IClasspathEntry classpathEntry = JavaCore.newSourceEntry(sourceFolder.getFullPath());
+		IClasspathEntry[] classpathEntries = javaProject.getRawClasspath();
+		IClasspathEntry[] newClasspathEntries = new IClasspathEntry[classpathEntries.length + 1];
+		System.arraycopy(classpathEntries, 0, newClasspathEntries, 0, classpathEntries.length);
+		newClasspathEntries[classpathEntries.length] = classpathEntry;
+		javaProject.setRawClasspath(newClasspathEntries, monitor);
 	}
 }

@@ -1,25 +1,69 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
 <plugin
    id="org.objectstyle.wolips.ant"
-   name="%WOLips.ant.pluginName"
+   name="WOLips Ant Plug-in"
    version="1.0.6"
-   provider-name="%WOLips.providerName">
+   provider-name="objectstyle.org"
+   class="org.objectstyle.wolips.ant.AntPlugin">
 
    <runtime>
+      <library name="lib/wolips-ant.jar">
+         <export name="*"/>
+      </library>
    </runtime>
    <requires>
-      <import plugin="org.eclipse.ant.core"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.debug.core"/>
+      <import plugin="org.eclipse.ant.ui"/>
+      <import plugin="org.eclipse.jdt.launching"/>
+      <import plugin="org.eclipse.core.variables"/>
+      <import plugin="org.eclipse.debug.ui"/>
+      <import plugin="org.eclipse.ui.externaltools"/>
+      <import plugin="org.objectstyle.wolips.commons"/>
+      <import plugin="org.objectstyle.wolips.workbenchutilities"/>
+      <import plugin="org.eclipse.jface"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.objectstyle.wolips.datasets"/>
+      <import plugin="org.eclipse.jdt.core"/>
    </requires>
-
-
 <!-- =================================================================================== -->
-<!-- Extension: Ant                                                                      -->
+<!-- Extension: File actions                                                             -->
 <!-- =================================================================================== -->
    <extension
-         point="org.eclipse.ant.core.extraClasspathEntries">
-      <extraClasspathEntry
-            library="lib/log4j.jar">
-      </extraClasspathEntry>
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IResource"
+            adaptable="true"
+            id="org.objectstyle.wolips.ant.ui.FixWaitingForVirtualMachineToExitActions">
+         <action
+               label="Fix 'Waiting for virtual machine to exit' bug"
+               class="org.objectstyle.wolips.ant.ui.FixWaitingForVirtualMachineToExitAction"
+               menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group6"
+               enablesFor="1"
+               id="org.objectstyle.wolips.ant.ui.FixWaitingForVirtualMachineToExitAction">
+         </action>
+      </objectContribution>
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IResource"
+            adaptable="true"
+            id="org.objectstyle.wolips.ant.ui.InstallActions">
+         <action
+               label="Install..."
+               class="org.objectstyle.wolips.ant.ui.InstallWithSelectionDialogAction"
+               menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group5"
+               enablesFor="1"
+               id="org.objectstyle.wolips.ant.ui.InstallWithSelectionDialogAction">
+         </action>
+         <action
+               label="Install"
+               class="org.objectstyle.wolips.ant.ui.InstallAction"
+               menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group5"
+               enablesFor="1"
+               id="org.objectstyle.wolips.ant.ui.InstallAction">
+         </action>
+      </objectContribution>
    </extension>
 
 </plugin>

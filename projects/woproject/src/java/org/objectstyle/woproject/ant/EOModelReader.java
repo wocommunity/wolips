@@ -66,18 +66,27 @@ import org.objectstyle.cayenne.wocompat.EOModelProcessor;
  * @author Andrei Adamchik
  */
 public class EOModelReader extends EOModelProcessor {
+    protected boolean useValueType;
 
     /**
      * Constructor for EOModelProcessor.
      */
     public EOModelReader() {
-        super();
+        this(false);
+    }
+
+    /**
+     * Constructor for EOModelProcessor.
+     */
+    public EOModelReader(boolean useValueType) {
+        this.useValueType = useValueType;
     }
 
     /**
      * @see org.objectstyle.cayenne.wocompat.EOModelProcessor#makeHelper(String)
      */
-    protected EOModelHelper makeHelper(String arg0, boolean genereateClientClass) throws Exception {
+    protected EOModelHelper makeHelper(String arg0, boolean genereateClientClass)
+        throws Exception {
         return new WOFriendlyHelper(arg0);
     }
 
@@ -89,18 +98,27 @@ public class EOModelReader extends EOModelProcessor {
 
         /**
          * Returns WO common Java types.
+         * 
+         * @deprecated Corresponding super method is deprecated. 
+         * Use {@link #javaTypeForEOModelerType(String, String)}
          */
         public String javaTypeForEOModelerType(String type) {
-            if (type.equals("NSCalendarDate")) {
+            return javaTypeForEOModelerType(type, null);
+        }
+
+        public String javaTypeForEOModelerType(String valueClassName, String valueType) {
+            if (valueClassName.equals("NSCalendarDate")) {
                 return "com.webobjects.foundation.NSTimestamp";
             }
-            if (type.equals("NSNumber")) {
-                return "java.lang.Number";
-            }
-            if (type.equals("NSData")) {
+
+            if (valueClassName.equals("NSData")) {
                 return "com.webobjects.foundation.NSData";
             }
-            return super.javaTypeForEOModelerType(type);
+
+            // hide valueType if we are configured to do so
+            return super.javaTypeForEOModelerType(
+                valueClassName,
+                useValueType ? valueType : null);
         }
     }
 }

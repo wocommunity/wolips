@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
 <fragment
    id="org.objectstyle.wolips.source"
-   name="%WOLips.source.fragmentName"
+   name="WOLips Source"
    version="1.0.6"
-   provider-name="%WOLips.providerName"
+   provider-name="objectstyle.org"
    plugin-id="org.objectstyle.wolips"
    plugin-version="1.0.6"
    match="compatible">
@@ -11,6 +12,5 @@
    <runtime>
    </runtime>
 
-   <requires>
-   </requires>
+
 </fragment>

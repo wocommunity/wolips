@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin
+   id="org.objectstyle.wolips.goodies.ui.mac"
+   name="Goodies UI Mac Plug-in"
+   version="1.0.0"
+   provider-name="objectstyle.org"
+   class="org.objectstyle.wolips.goodies.ui.mac.MacPlugin">
+
+   <runtime>
+      <library name="lib/wolips-goodies-ui-mac.jar">
+         <export name="*"/>
+      </library>
+   </runtime>
+
+   <requires>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.objectstyle.wolips.goodies.core.mac"/>
+      <import plugin="org.eclipse.jdt.core"/>
+   </requires>
+
+
+<!-- =================================================================================== -->
+<!-- Extension: Popup menus                                                              -->
+<!-- =================================================================================== -->
+   <extension
+         point="org.eclipse.ui.popupMenus">
+<!-- =================================================================================== -->
+<!-- menu                                                                                -->
+<!-- =================================================================================== -->
+      <objectContribution
+            adaptable="true"
+            objectClass="org.eclipse.core.resources.IResource"
+            id="org.objectstyle.wolips.goodies.ui.mac.ResourceContributions">
+         <menu
+               label="&amp;Mac Goodies"
+               path="additions"
+               id="org.objectstyle.wolips.goodies.ui.mac.ResourceContributions">
+            <separator
+                  name="group1">
+            </separator>
+            <separator
+                  name="group2">
+            </separator>
+            <separator
+                  name="group3">
+            </separator>
+         </menu>
+      </objectContribution>
+<!-- =================================================================================== -->
+<!-- actions                                                                             -->
+<!-- =================================================================================== -->
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IResource"
+            adaptable="true"
+            id="org.objectstyle.wolips.goodies.ui.mac.actions.RevealInFinderAction">
+         <action
+               label="Reveal in Finder"
+               class="org.objectstyle.wolips.goodies.ui.mac.actions.RevealInFinderAction"
+               menubarPath="org.objectstyle.wolips.goodies.ui.mac.ResourceContributions/group1"
+               enablesFor="1"
+               id="org.objectstyle.wolips.goodies.ui.mac.actions.RevealInFinderAction">
+         </action>
+      </objectContribution>
+         <objectContribution
+            objectClass="org.eclipse.core.resources.IContainer"
+            adaptable="true"
+            id="org.objectstyle.wolips.goodies.ui.mac.actions.CdInTerminalAction">
+         <action
+               label="Cd in Terminal"
+               class="org.objectstyle.wolips.goodies.ui.mac.actions.CdInTerminalAction"
+               menubarPath="org.objectstyle.wolips.goodies.ui.mac.ResourceContributions/group1"
+               enablesFor="1"
+               id="org.objectstyle.wolips.goodies.ui.mac.actions.CdInTerminalAction">
+         </action>
+      </objectContribution>
+   </extension>
+   
+</plugin>

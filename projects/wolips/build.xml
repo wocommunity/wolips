@@ -47,7 +47,7 @@
     <target name="dist_children" if="eclipse.home.set">
 	    <ant dir="plugins" target="dist"/>
 	    <ant dir="features" target="dist"/>
-	    <copy file="update/local/site.xml" todir="../${build.output.dist.dir}"/>
+	    <copy file="update/local/site.xml" todir="../${build.output.dist.dir}" overwrite="true" />
         <replace file="../${build.output.dist.dir}/site.xml" token="${build.version.to.replace}" value="${build.version}"/>
     </target>
 

@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
 <plugin
    id="org.objectstyle.wolips.wounit"
    name="%WOLips.pluginName"
@@ -10,8 +11,5 @@
          <packages prefixes="org.objectstyle.wolips.wounit"/>
       </library>
    </runtime>
-   <requires>
-      <import plugin="org.objectstyle.wolips"/>
-   </requires>
 
 </plugin>

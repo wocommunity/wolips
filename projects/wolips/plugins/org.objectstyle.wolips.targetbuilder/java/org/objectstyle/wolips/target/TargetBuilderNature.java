@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 The ObjectStyle Group 
+ * Copyright (c) 2002 - 2004 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -74,8 +74,7 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.objectstyle.cayenne.wocompat.PropertyListSerialization;
-import org.objectstyle.wolips.core.project.IWOLipsProject;
-import org.objectstyle.wolips.core.project.WOLipsCore;
+import org.objectstyle.wolips.datasets.adaptable.Project;
 /**
  * @author uwe
  *
@@ -119,7 +118,7 @@ public class TargetBuilderNature implements IProjectNature
 		return getProject().getFile(TargetBuilderNature.TARGETFILE).getLocation();
 	}
 
-	public void synchronizeWithFile() throws CoreException
+	public void synchronizeWithFile()
 	{
 		Map targetMap;
 
@@ -186,22 +185,30 @@ public class TargetBuilderNature implements IProjectNature
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.eclipse.core.resources.IProjectNature#configure()
+	 */
 	public void configure() throws CoreException
 	{
 		// Add nature-specific information
 		// for the project, such as adding a builder
 		// to a project's build spec.*/
-		IWOLipsProject woLipsProject = WOLipsCore.createProject(this.getProject());
-		int position = woLipsProject.getBuilderAccessor().removeJavaBuilder();
-		synchronizeWithFile();
-		woLipsProject.getBuilderAccessor().installTargetBuilder(position);
+		Project project = (Project) (this.getProject())
+		.getAdapter(Project.class);
+		int position = project.removeJavaBuilder();
+		this.synchronizeWithFile();
+		project.installTargetBuilder(position);
 	}
 		
+	/* (non-Javadoc)
+	 * @see org.eclipse.core.resources.IProjectNature#deconfigure()
+	 */
 	public void deconfigure() throws CoreException
 	{
-		IWOLipsProject woLipsProject = WOLipsCore.createProject(this.getProject());
-		int position = woLipsProject.getBuilderAccessor().removeTargetBuilder();
-		woLipsProject.getBuilderAccessor().installJavaBuilder(position);
+		Project project = (Project) (this.getProject())
+		.getAdapter(Project.class);
+		int position = project.removeTargetBuilder();
+		project.installJavaBuilder(position);
 	}
 
 	public IProject getProject()

@@ -2,7 +2,7 @@
  *
  * The ObjectStyle Group Software License, Version 1.0
  *
- * Copyright (c) 2002 The ObjectStyle Group
+ * Copyright (c) 2002 - 2004 The ObjectStyle Group
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -69,28 +69,38 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
-import org.eclipse.jdt.launching.AbstractJavaLaunchConfigurationDelegate;
+import org.eclipse.debug.core.model.ILaunchConfigurationDelegate;
 import org.eclipse.jdt.launching.ExecutionArguments;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.jdt.launching.IVMInstall;
 import org.eclipse.jdt.launching.IVMRunner;
 import org.eclipse.jdt.launching.VMRunnerConfiguration;
-import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
-import org.objectstyle.wolips.core.preferences.ILaunchInfo;
-import org.objectstyle.wolips.core.preferences.Preferences;
-import org.objectstyle.wolips.core.project.WOLipsJavaProject;
+import org.objectstyle.wolips.datasets.adaptable.JavaProject;
+import org.objectstyle.wolips.preferences.ILaunchInfo;
+import org.objectstyle.wolips.preferences.Preferences;
+import org.objectstyle.wolips.variables.VariablesPlugin;
 
 /**
  * Launches a local VM.
  */
 public class WOJavaLocalApplicationLaunchConfigurationDelegate
-	extends AbstractJavaLaunchConfigurationDelegate {
+	extends AbstractAddVMArgumentsLaunchConfigurationDelegate {
+	/**
+	 * Comment for <code>WOJavaLocalApplicationID</code>
+	 */
 	public static final String WOJavaLocalApplicationID =
 		"org.objectstyle.wolips.launching.WOLocalJavaApplication";
 	/** The launch configuration attribute for stack trace depth */
 	public static final String ATTR_WOLIPS_LAUNCH_WOARGUMENTS =
 		"org.objectstyle.wolips.launchinfo";
-
+	/**
+	 * Comment for <code>ATTR_WOLIPS_LAUNCH_DEBUG_GROUPS</code>
+	 */
+	public static final String ATTR_WOLIPS_LAUNCH_DEBUG_GROUPS =
+		"WOJavaLocalApplicationLaunchConfigurationDelegate.NSDebugGroups";
+	/**
+	 * @param config
+	 */
 	public static void initConfiguration(ILaunchConfigurationWorkingCopy config) {
 		config.setAttribute(
 			IJavaLaunchConfigurationConstants.ATTR_CLASSPATH_PROVIDER,
@@ -117,8 +127,8 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 		if (monitor.isCanceled()) {
 			return;
 		}
-		WOLipsJavaProject woLipsJavaProject =
-			new WOLipsJavaProject(this.getJavaProject(configuration));
+		JavaProject javaProject =
+			(JavaProject)(this.getJavaProject(configuration).getAdapter(JavaProject.class));
 
 		String mainTypeName = verifyMainTypeName(configuration);
 
@@ -155,36 +165,21 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 				String argument = launchInfo[i].getArgument();
 				if (automatic.equals(argument)) {
 					if ("-WOApplicationClassName".equals(parameter))
-						argument =
-							woLipsJavaProject
-								.getLaunchParameterAccessor()
-								.getWOApplicationClassNameArgument(configuration);
+						argument = mainTypeName;
 					if ("-DWORoot=".equals(parameter)) {
 						argument =
-							WOLipsPlugin
-								.getDefault()
-								.getWOEnvironment()
-								.getWOVariables()
-								.systemRoot();
+							VariablesPlugin.getDefault().getSystemRoot().toOSString();
 						spaceBetweenParameterAndArgument = false;
-						if (woLipsJavaProject
-							.getLaunchParameterAccessor()
-							.isOnMacOSX()) {
+						if (javaProject.isOnMacOSX()) {
 							parameter = "";
 							argument = "";
 						}
 					}
 					if ("-DWORootDirectory=".equals(parameter)) {
 						argument =
-							WOLipsPlugin
-								.getDefault()
-								.getWOEnvironment()
-								.getWOVariables()
-								.systemRoot();
+							VariablesPlugin.getDefault().getSystemRoot().toOSString();
 						spaceBetweenParameterAndArgument = false;
-						if (woLipsJavaProject
-							.getLaunchParameterAccessor()
-							.isOnMacOSX()) {
+						if (javaProject.isOnMacOSX()) {
 							parameter = "";
 							argument = "";
 						}
@@ -195,9 +190,7 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 					}
 					if ("-NSProjectSearchPath".equals(parameter)) {
 						argument =
-							woLipsJavaProject
-								.getLaunchParameterAccessor()
-								.getGeneratedByWOLips();
+							javaProject.getGeneratedByWOLips(Preferences.getPREF_NS_PROJECT_SEARCH_PATH());
 					}
 
 				}
@@ -208,6 +201,15 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 				launchArgument.append(argument);
 				launchArgument.append(" ");
 			}
+		}
+		String debugGroups = configuration.getAttribute(
+				WOJavaLocalApplicationLaunchConfigurationDelegate
+				.ATTR_WOLIPS_LAUNCH_DEBUG_GROUPS,
+				"");
+		if(debugGroups != null && debugGroups.length() > 0) {
+			launchArgument.append(" -DNSDebugGroups=\"(");
+			launchArgument.append(debugGroups);
+			launchArgument.append(")\"");
 		}
 		// Program & VM args
 		String pgmArgs =
@@ -267,35 +269,36 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 		IProject theProject = this.getJavaProject(configuration).getProject();
 
 		IPath wd = getWorkingDirectoryPath(configuration);
-		WOLipsJavaProject woLipsJavaProject =
-			new WOLipsJavaProject(this.getJavaProject(configuration));
+		JavaProject javaProject =
+			(JavaProject)(this.getJavaProject(configuration).getAdapter(JavaProject.class));
+
 		File wdFile =
-			woLipsJavaProject.getLaunchParameterAccessor().getWDFolder(
+			javaProject.getWDFolder(
 				theProject,
 				wd);
+		if(null == wdFile) {
+			IPath path = VariablesPlugin.getDefault().getExternalBuildRoot();
+			path = path.append(theProject.getName() + ".woa");
+			wdFile = path.toFile();
+			if(!wdFile.exists()) {
+				wdFile = null;
+			}
+		}
 		if (null == wdFile) {
 			wdFile = super.verifyWorkingDirectory(configuration);
 		}
-
 		if (((wdFile == null) || (wdFile.toString().indexOf(".woa") < 0))) {
 			abort(MessageFormat.format(LaunchingMessages.getString("WOJavaLocalApplicationLaunchConfigurationDelegate.Working_directory_is_not_a_woa__{0}_12"), new String[] { wdFile.toString()}), null, IJavaLaunchConfigurationConstants.ERR_WORKING_DIRECTORY_DOES_NOT_EXIST); //$NON-NLS-1$
 		}
 
 		return wdFile;
 	}
-	/**
-	 * Method addVMArgument return the vmArgs.
-	 * @param vmArgs
-	 * @param configuration
-	 * @param hprofPort
-	 */
+	
 	protected StringBuffer addVMArguments(
 		StringBuffer vmArgs,
 		ILaunchConfiguration configuration,
 		ILaunch launch,
-		String mode)
-		throws CoreException {
+		String mode) {
 		return vmArgs;
 	}
-
 }

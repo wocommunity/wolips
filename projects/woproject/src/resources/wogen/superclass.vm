@@ -8,30 +8,45 @@ package ${classGen.packageName};
 
 import com.webobjects.foundation.*;
 import com.webobjects.eocontrol.*;
+import com.webobjects.eoaccess.*;
 import java.util.*;
 
 
 /** ${classGen.className} */
-public class ${classGen.superPrefix}${classGen.className} extends EOGenericRecord {
+public class ${classGen.superPrefix}${classGen.className} extends ${classGen.superClassName} {
 
     public ${classGen.superPrefix}${classGen.className}() {
         super();
     }
     
+## EOFetchSpecifications
+#foreach( $query in ${classGen.Entity.EOQueries} )
+    public static NSArray objectsWith${classGen.capitalized(${query.EOName})}(EOEditingContext context#foreach( $bind in ${query.BindingNames} ), ${classGen.formatJavaType($query.bindingClass($bind))} $bind#end) {
+        NSMutableDictionary bindings = new NSMutableDictionary();
+#foreach( $bind in ${query.BindingNames} )
+        if($bind != null) {
+            bindings.setObjectForKey(${bind}, "${bind}");
+        }
+#end
+        return EOUtilities.objectsWithFetchSpecificationAndBindings(context, "${classGen.Entity.Name}", "${query.EOName}", bindings);
+    }
+    
+#end
+    
 ## Create attribute set/get methods
-#foreach( $attr in ${classGen.Entity.Attributes} )
+#foreach( $attr in ${classGen.Entity.DeclaredAttributes} )
 #set( $classGen.Prop = $attr.Name )## let controller know about current property
-    public void set${classGen.cappedProp}(${attr.Type} ${attr.Name}) {
+    public void set${classGen.cappedProp}(${classGen.formatJavaType(${attr.Type})} ${attr.Name}) {
         takeStoredValueForKey(${attr.Name}, "${attr.Name}");
     }
-    public ${attr.Type} ${attr.Name}() {
-        return (${attr.Type})storedValueForKey("${attr.Name}");
+    public ${classGen.formatJavaType(${attr.Type})} ${attr.Name}() {
+        return (${classGen.formatJavaType(${attr.Type})})storedValueForKey("${attr.Name}");
     }
     
 #end
 
 ## Create list add/remove/get methods
-#foreach( $rel in ${classGen.Entity.Relationships} )
+#foreach( $rel in ${classGen.Entity.DeclaredRelationships} )
 #set( $classGen.Prop = $rel.Name )## let controller know about current property
 #if( $rel.ToMany )
     public void set${classGen.cappedProp}(NSMutableArray aValue) {

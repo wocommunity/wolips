@@ -9,73 +9,46 @@
     <body>
 <section name="WOCompile Task Manual"> 
   <h3>Description:</h3>
-  <p><code>WOCompile</code> is an Ant task to build WebObjects (5.1 or higher) 
-    frameworks from a set of files. It does not enforce any particular project 
-    structure and can be used to create frameworks without using the ProjectBuilder 
-    tool. </p>
+  <p><code>WOCompile</code> is an Ant task to build WebObjects Java source code. It is a WO-friendly extension 
+  of <a href=
+	"http://ant.apache.org/manual/CoreTasks/javac.html" target="_blank">Javac Ant task</a>.</p>
   <h3>Parameters:</h3>
-  <p>There are no special parameters. The documentation for the <a
-			href="http://jakarta.apache.org/ant/manual/CoreTasks/javac.html">JavaC</a> 
-    applies.</p>
+  <p>There are no special parameters. The documentation for the <a href=
+	"http://ant.apache.org/manual/CoreTasks/javac.html" target="_blank">Javac</a> applies.</p>
+	
   <h3>Nested elements:</h3>
   <h4>frameworks</h4>
 			<p>The nested <code>frameworks</code> is a <a
-			href="http://jakarta.apache.org/ant/manual/CoreTypes/fileset.html">FileSet</a>
-			structure that specifies the names of the
-            WebObjects Frameworks that this application is dependant upon. The jar files from
-            these frameworks will be referenced in varios platform-specific depoyment files 
-            (such as CLASSPATH.TXT), and specified in the web.xml classpath if an application 
-            is deployed as a servlet. When building a FileSet, path should match up to the 
-            "*.framework" directory (no need to match individual JAR files).</p>
+			href="frameworkset.html">FrameworkSet</a>
+			structure that specifies the names of the WebObjects Frameworks needed to compile the source
+			code. The jar files from these frameworks will be added to the WOCompile CLASSPATH. </p>
 
-			<p><i>Note: all standard FileSet 
-			parameters are supported as well, though <code>dir</code>
-			wouldn't make sense and will be ignored.</i></p>
-            <table border="1" cellpadding="2" cellspacing="0">
-				<tr>
-					<th valign="top"><b>Attribute</b></th>
-					<th valign="top"><b>Description</b></th>
-					<th align="center" valign="top"><b>Required</b></th>
-				</tr>
-				<tr>
-					<td valign="top">root</td>
-					<td valign="top">Logical base location of the framework. Allowed values are 
-					"wo.homeroot", "wo.woroot", "wo.localroot" (these are string values,
-					don't include them in <code>${}</code>)</td>
-					<td valign="top" align="center">Yes</td>
-				</tr>
-				<tr>
-					<td valign="top">if</td>
-					<td valign="top">The name if a property that decides if the framework set is included. 
-					This is a string value, don't include them in <code>${}</code>. You can then set the property to include the framework or leave it undefined to leave it out.</td>
-					<td valign="top" align="center">Not applicable, leave it out when you want to include the framework by default.</td>
-				</tr>
-			</table>
-  <h4></h4>
+  <p> </p>
   <h4>Examples:</h4>
 
-<source>&amp;lt;taskdef name=&amp;quot;wocompile&amp;quot; classname=&amp;quot;org.objectstyle.woproject.ant.WOCompile&amp;quot;&amp;gt;
-  &amp;lt;/taskdef&amp;gt; &amp;lt;wocompile srcdir=&amp;quot;${project.dir}/Sources&amp;quot; destdir=&amp;quot;${build.classes}&amp;quot; 
-  debug=&amp;quot;on&amp;quot; optimize=&amp;quot;off&amp;quot; deprecation=&amp;quot;on&amp;quot;&amp;gt;
-	  &amp;lt;frameworks root=&amp;quot;${build.root}&amp;quot;&amp;gt;
-		  &amp;lt;include name=&amp;quot;JavaWOExtension.framework&amp;quot;/&amp;gt;
-		  &amp;lt;include name=&amp;quot;ERJars.framework&amp;quot;/&amp;gt;
-		  &amp;lt;include name=&amp;quot;ERExtensions.framework&amp;quot;/&amp;gt;
-		  &amp;lt;include name=&amp;quot;ERDirectToWeb.framework&amp;quot;/&amp;gt;
-		  &amp;lt;include name=&amp;quot;ERCoreBusinessLogic.framework&amp;quot;/&amp;gt;
-		  &amp;lt;include name=&amp;quot;ERExtras.framework&amp;quot;/&amp;gt;
-		  &amp;lt;include name=&amp;quot;PRLogic.framework&amp;quot;/&amp;gt;
-		  &amp;lt;exclude name=&amp;quot;ERNeutralLook.framework&amp;quot;/&amp;gt;
-	  &amp;lt;/frameworks&amp;gt;
-	  &amp;lt;frameworks root=&amp;quot;${wo.localroot}&amp;quot;&amp;gt;
-	      &amp;lt;include name=&amp;quot;Mysql*.framework&amp;quot;/&amp;gt;
-	  &amp;lt;/frameworks&amp;gt;
-	  &amp;lt;classpath&amp;gt; 
-	      &amp;lt;fileset dir=&amp;quot;${project.dir}/Libraries&amp;quot;&amp;gt;
-	          &amp;lt;include name=&amp;quot;**/*.jar&amp;quot; /&amp;gt;
-	      &amp;lt;/fileset&amp;gt;
-	  &amp;lt;/classpath&amp;gt;
-  &amp;lt;/wocompile&amp;gt;
+<source>&amp;lt;taskdef  name=&amp;quot;wocompile&amp;quot;  classname=&amp;quot;org.objectstyle.woproject.ant.WOCompile&amp;quot;/&amp;gt;
+
+&amp;lt;wocompile srcdir=&amp;quot;Java&amp;quot; destdir=&amp;quot;classes&amp;quot;
+    debug=&amp;quot;on&amp;quot; 
+    optimize=&amp;quot;off&amp;quot;
+    deprecation=&amp;quot;on&amp;quot;&amp;gt;
+    
+   &amp;lt;frameworks dir=&amp;quot;${build.root}&amp;quot;&amp;gt;
+      &amp;lt;include name=&amp;quot;JavaWOExtension.framework&amp;quot;/&amp;gt;
+      &amp;lt;include name=&amp;quot;ER*.framework&amp;quot;/&amp;gt;
+      &amp;lt;include name=&amp;quot;PRLogic.framework&amp;quot;/&amp;gt;
+      &amp;lt;exclude name=&amp;quot;ERNeutralLook.framework&amp;quot;/&amp;gt;
+   &amp;lt;/frameworks&amp;gt;
+	  
+   &amp;lt;frameworks dir=&amp;quot;${wo.localroot}&amp;quot;&amp;gt;
+      &amp;lt;include name=&amp;quot;Mysql*.framework&amp;quot;/&amp;gt;
+   &amp;lt;/frameworks&amp;gt;
+	  
+   &amp;lt;classpath&amp;gt; 
+      &amp;lt;fileset dir=&amp;quot;Libraries&amp;quot; includes=&amp;quot;**/*.jar&amp;quot; /&amp;gt;
+   &amp;lt;/classpath&amp;gt;
+	  
+&amp;lt;/wocompile&amp;gt;
   </source>
     	</section>
     </body>

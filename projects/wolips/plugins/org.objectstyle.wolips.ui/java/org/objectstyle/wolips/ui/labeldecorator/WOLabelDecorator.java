@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 The ObjectStyle Group 
+ * Copyright (c) 2002 - 2004 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -56,7 +56,9 @@
 package org.objectstyle.wolips.ui.labeldecorator;
 
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.resource.CompositeImageDescriptor;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ILabelDecorator;
@@ -64,11 +66,12 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.Point;
-import org.objectstyle.wolips.core.project.WOLipsProject;
-import org.objectstyle.wolips.core.resources.IWOLipsModel;
+import org.objectstyle.wolips.datasets.adaptable.Project;
+import org.objectstyle.wolips.datasets.resources.IWOLipsModel;
+import org.objectstyle.wolips.ui.UIPlugin;
 /**
  * @author mnolte
- *
+ *  
  */
 public class WOLabelDecorator implements ILabelDecorator {
 
@@ -85,6 +88,7 @@ public class WOLabelDecorator implements ILabelDecorator {
 	}
 	/**
 	 * Method withName.
+	 * 
 	 * @param aString
 	 * @param image
 	 * @return Image
@@ -94,42 +98,46 @@ public class WOLabelDecorator implements ILabelDecorator {
 	}
 	/**
 	 * Method subprojectImage.
+	 * 
 	 * @param image
 	 * @return Image
 	 */
 	private Image subprojectImage(Image image) {
 		if (subprojectImage == null) {
-			subprojectImage =
-				this.createImagewithName(image, "subproj_overlay.gif");
+			subprojectImage = this.createImagewithName(image,
+					"subproj_overlay.gif");
 		}
 		return subprojectImage;
 	}
 	/**
 	 * Method componentImage.
+	 * 
 	 * @param image
 	 * @return Image
 	 */
 	private Image componentImage(Image image) {
 		if (componentImage == null) {
-			componentImage =
-				this.createImagewithName(image, "comp_overlay.gif");
+			componentImage = this
+					.createImagewithName(image, "comp_overlay.gif");
 		}
 		return componentImage;
 	}
 	/**
 	 * Method eomodelImage.
+	 * 
 	 * @param image
 	 * @return Image
 	 */
 	private Image eomodelImage(Image image) {
 		if (eomodelImage == null) {
-			eomodelImage =
-				this.createImagewithName(image, "eomodel_overlay.gif");
+			eomodelImage = this.createImagewithName(image,
+					"eomodel_overlay.gif");
 		}
 		return eomodelImage;
 	}
 	/**
 	 * Method buildImage.
+	 * 
 	 * @param image
 	 * @return Image
 	 */
@@ -141,6 +149,7 @@ public class WOLabelDecorator implements ILabelDecorator {
 	}
 	/**
 	 * Method imageForExtension.
+	 * 
 	 * @param image
 	 * @param aString
 	 * @return Image
@@ -153,33 +162,45 @@ public class WOLabelDecorator implements ILabelDecorator {
 		if (IWOLipsModel.EXT_EOMODEL.equals(aString))
 			return eomodelImage(image);
 		if (IWOLipsModel.EXT_FRAMEWORK.equals(aString)
-			|| IWOLipsModel.EXT_WOA.equals(aString)
-			|| IWOLipsModel.EXT_BUILD.equals(aString)
-			|| IWOLipsModel.EXT_DIST.equals(aString))
+				|| IWOLipsModel.EXT_WOA.equals(aString)
+				|| IWOLipsModel.EXT_BUILD.equals(aString)
+				|| IWOLipsModel.EXT_DIST.equals(aString))
 			return buildImage(image);
 		return image;
 	}
 
 	/**
 	 * Method imageForName.
+	 * 
 	 * @param image
 	 * @param aString
 	 * @return Image
 	 */
 	private Image imageForName(Image image, String aString) {
 		if (IWOLipsModel.EXT_BUILD.equals(aString)
-			|| IWOLipsModel.EXT_DIST.equals(aString))
+				|| IWOLipsModel.EXT_DIST.equals(aString))
 			return buildImage(image);
 		return image;
 	}
 	/**
-	 * @see org.eclipse.jface.viewers.ILabelDecorator#decorateImage(Image, Object)
+	 * @see org.eclipse.jface.viewers.ILabelDecorator#decorateImage(Image,
+	 *      Object)
 	 */
 	public Image decorateImage(Image image, Object element) {
 		if (!(element instanceof IFolder))
 			return image;
-		if (!WOLipsProject.isWOProjectResource((IResource) element))
-			return image;
+		if (element instanceof IResource) {
+			IResource resource = (IResource) element;
+			IProject iProject = resource.getProject();
+			Project project = (Project) iProject.getAdapter(Project.class);
+			try {
+				if (!project.hasWOLipsNature())
+					return image;
+			} catch (CoreException e) {
+				UIPlugin.getDefault().getPluginLogger().log(e);
+				return image;
+			}
+		}
 		String extension = ((IFolder) element).getFileExtension();
 		if (extension != null && extension.length() > 0)
 			return this.imageForExtension(image, extension);
@@ -187,7 +208,8 @@ public class WOLabelDecorator implements ILabelDecorator {
 		return this.imageForName(image, extension);
 	}
 	/**
-	 * @see org.eclipse.jface.viewers.ILabelDecorator#decorateText(String, Object)
+	 * @see org.eclipse.jface.viewers.ILabelDecorator#decorateText(String,
+	 *      Object)
 	 */
 	public String decorateText(String text, Object element) {
 		return text;
@@ -196,14 +218,17 @@ public class WOLabelDecorator implements ILabelDecorator {
 	 * @see org.eclipse.jface.viewers.IBaseLabelProvider#addListener(ILabelProviderListener)
 	 */
 	public void addListener(ILabelProviderListener listener) {
+		return;
 	}
 	/**
 	 * @see org.eclipse.jface.viewers.IBaseLabelProvider#dispose()
 	 */
 	public void dispose() {
+		return;
 	}
 	/**
-	 * @see org.eclipse.jface.viewers.IBaseLabelProvider#isLabelProperty(Object, String)
+	 * @see org.eclipse.jface.viewers.IBaseLabelProvider#isLabelProperty(Object,
+	 *      String)
 	 */
 	public boolean isLabelProperty(Object element, String property) {
 		return false;
@@ -212,16 +237,17 @@ public class WOLabelDecorator implements ILabelDecorator {
 	 * @see org.eclipse.jface.viewers.IBaseLabelProvider#removeListener(ILabelProviderListener)
 	 */
 	public void removeListener(ILabelProviderListener listener) {
+		return;
 	}
 
 	/**
-			 * @author uli
-			 *
-			 * To change this generated comment edit the template variable "typecomment":
-			 * Window>Preferences>Java>Templates.
-			 * To enable and disable the creation of type comments go to
-			 * Window>Preferences>Java>Code Generation.
-			 */
+	 * @author uli
+	 * 
+	 * To change this generated comment edit the template variable
+	 * "typecomment": Window>Preferences>Java>Templates. To enable and disable
+	 * the creation of type comments go to Window>Preferences>Java>Code
+	 * Generation.
+	 */
 	private class WOImageDescriptor extends CompositeImageDescriptor {
 
 		private ImageData baseImageData;
@@ -230,40 +256,41 @@ public class WOLabelDecorator implements ILabelDecorator {
 
 		/**
 		 * Method WOImageDescriptor.
+		 * 
 		 * @param image
 		 * @param overlayImageFilename
 		 */
 		public WOImageDescriptor(Image image, String overlayImageFilename) {
 			if (image != null) {
-				baseImageData = image.getImageData();
-				size = new Point(baseImageData.width, baseImageData.height);
+				this.baseImageData = image.getImageData();
+				this.size = new Point(this.baseImageData.width, this.baseImageData.height);
 			}
-			overlayImageData =
-				ImageDescriptor
-					.createFromFile(
-						WOLabelDecorator.class,
-						overlayImageFilename)
+			this.overlayImageData = ImageDescriptor.createFromFile(
+					WOLabelDecorator.class, overlayImageFilename)
 					.getImageData();
-			if (size == null)
-				size =
-					new Point(overlayImageData.width, overlayImageData.height);
+			if (this.size == null) {
+				this.size = new Point(this.overlayImageData.width,
+						this.overlayImageData.height);
+			}
 		}
 		/**
-		 * @see org.eclipse.jface.resource.CompositeImageDescriptor#drawCompositeImage(int, int)
+		 * @see org.eclipse.jface.resource.CompositeImageDescriptor#drawCompositeImage(int,
+		 *      int)
 		 */
 		protected void drawCompositeImage(int width, int height) {
 			// draw base image
-			if (baseImageData != null)
-				drawImage(baseImageData, 0, 0);
+			if (this.baseImageData != null) {
+				this.drawImage(this.baseImageData, 0, 0);
+			}
 			int x = getSize().x;
-			x -= overlayImageData.width;
-			drawImage(overlayImageData, x, 0);
+			x -= this.overlayImageData.width;
+			this.drawImage(this.overlayImageData, x, 0);
 		}
 		/**
 		 * @see org.eclipse.jface.resource.CompositeImageDescriptor#getSize()
 		 */
 		protected Point getSize() {
-			return size;
+			return this.size;
 		}
 	}
 }

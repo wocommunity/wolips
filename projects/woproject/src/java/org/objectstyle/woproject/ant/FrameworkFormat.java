@@ -2,7 +2,7 @@
  *
  * The ObjectStyle Group Software License, Version 1.0
  *
- * Copyright (c) 2002 The ObjectStyle Group
+ * Copyright (c) 2002, 2004 The ObjectStyle Group
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -60,20 +60,21 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.types.FilterSet;
 import org.apache.tools.ant.types.FilterSetCollection;
 
 /**
- * Subclass of ProjectFormat that defines file copying 
- * strategy for WOFrameworks.
- *
+ * Subclass of ProjectFormat that defines file copying strategy for
+ * WOFrameworks.
+ * 
  * @author Andrei Adamchik
  */
 public class FrameworkFormat extends ProjectFormat {
 	public final String INFO_TEMPLATE = "woframework/Info.plist";
 
-	/** 
-	 * Creates new FrameworkFormat and initializes it with the name
-	 * of the project being built.
+	/**
+	 * Creates new FrameworkFormat and initializes it with the name of the
+	 * project being built.
 	 */
 	public FrameworkFormat(WOTask task) {
 		super(task);
@@ -97,17 +98,36 @@ public class FrameworkFormat extends ProjectFormat {
 	}
 
 	public FilterSetCollection filtersForTarget(String targetName)
-		throws BuildException {
-			
+			throws BuildException {
+
 		if (targetName.endsWith("Info.plist")) {
 			return infoFilter(getFrameworkTask().getLibNames());
 		} else {
 			throw new BuildException("Invalid target: " + targetName);
 		}
 	}
-	
 
-	/** 
+	/**
+	 * Returns a FilterSet that can be used to build Info.plist file.
+	 */
+	public FilterSetCollection infoFilter(Iterator extLibs) {
+		FilterSetCollection filterSetCollection = super.infoFilter(extLibs);
+		String string = null;
+		if(getFrameworkTask().getEOAdaptorClassName() == null || getFrameworkTask().getEOAdaptorClassName().length() == 0) {
+			string = "";
+		}
+		else {
+			string = "  <key>EOAdaptorClassName</key>" + "\r\n"
+			+ "  <string>" + getFrameworkTask().getEOAdaptorClassName() + "</string>" + "\r\n";
+		}
+		FilterSet filter = new FilterSet();
+
+		filter.addFilter("EOAdaptorClassName", getFrameworkTask().getEOAdaptorClassName());
+		filterSetCollection.addFilterSet(filter);
+		
+		return filterSetCollection;
+	}
+	/**
 	 * Returns an iterator with a single String element.
 	 */
 	private Iterator stringIterator(String str) {

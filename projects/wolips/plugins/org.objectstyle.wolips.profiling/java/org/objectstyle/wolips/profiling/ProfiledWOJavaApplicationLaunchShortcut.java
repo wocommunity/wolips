@@ -72,7 +72,8 @@ public class ProfiledWOJavaApplicationLaunchShortcut extends WOJavaApplicationLa
 	 * Returns the local java launch config type
 	 */
 	protected ILaunchConfigurationType getJavaLaunchConfigType() {
-		return getLaunchManager().getLaunchConfigurationType(ProfiledWOJavaLocalApplicationLaunchConfigurationDelegate.ProfiledWOJavaLocalApplicationID);		
+	    String type = ProfiledWOJavaLocalApplicationLaunchConfigurationDelegate.ProfiledWOJavaLocalApplicationID;
+		return getLaunchManager().getLaunchConfigurationType(type);		
 	}
 
 }

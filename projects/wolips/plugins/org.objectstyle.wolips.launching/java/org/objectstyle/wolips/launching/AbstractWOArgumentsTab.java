@@ -2,7 +2,7 @@
  *
  * The ObjectStyle Group Software License, Version 1.0
  *
- * Copyright (c) 2002 The ObjectStyle Group
+ * Copyright (c) 2002 - 2004 The ObjectStyle Group
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -58,7 +58,6 @@ package org.objectstyle.wolips.launching;
 
  
 import org.eclipse.debug.core.DebugPlugin;
-import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
@@ -120,7 +119,7 @@ public abstract class AbstractWOArgumentsTab implements ILaunchConfigurationTab 
 	 * @return launch configuration dialog, or <code>null</code>
 	 */
 	protected ILaunchConfigurationDialog getLaunchConfigurationDialog() {
-		return fLaunchConfigurationDialog;
+		return this.fLaunchConfigurationDialog;
 	}	
 		
 	/**
@@ -138,7 +137,7 @@ public abstract class AbstractWOArgumentsTab implements ILaunchConfigurationTab 
 	 * @see ILaunchConfigurationTab#getControl()
 	 */
 	public Control getControl() {
-		return fControl;
+		return this.fControl;
 	}
 
 	/**
@@ -147,36 +146,28 @@ public abstract class AbstractWOArgumentsTab implements ILaunchConfigurationTab 
 	 * @param control the control for this tab
 	 */
 	protected void setControl(Control control) {
-		fControl = control;
+		this.fControl = control;
 	}
 
 	/**
 	 * @see ILaunchConfigurationTab#getErrorMessage()
 	 */
 	public String getErrorMessage() {
-		return fErrorMessage;
+		return this.fErrorMessage;
 	}
 
 	/**
 	 * @see ILaunchConfigurationTab#getMessage()
 	 */
 	public String getMessage() {
-		return fMessage;
-	}
-
-	/**
-	 * By default, do nothing.
-	 * 
-	 * @see ILaunchConfigurationTab#launched(ILaunch)
-	 */
-	public void launched(ILaunch launch) {
+		return this.fMessage;
 	}
 
 	/**
 	 * @see ILaunchConfigurationTab#setLaunchConfigurationDialog(ILaunchConfigurationDialog)
 	 */
 	public void setLaunchConfigurationDialog(ILaunchConfigurationDialog dialog) {
-		fLaunchConfigurationDialog = dialog;
+		this.fLaunchConfigurationDialog = dialog;
 	}
 	
 	/**
@@ -185,7 +176,7 @@ public abstract class AbstractWOArgumentsTab implements ILaunchConfigurationTab 
 	 * @param errorMessage the error message or <code>null</code>
 	 */
 	protected void setErrorMessage(String errorMessage) {
-		fErrorMessage = errorMessage;
+		this.fErrorMessage = errorMessage;
 	}
 
 	/**
@@ -194,7 +185,7 @@ public abstract class AbstractWOArgumentsTab implements ILaunchConfigurationTab 
 	 * @param message the message or <code>null</code>
 	 */
 	protected void setMessage(String message) {
-		fMessage = message;
+		this.fMessage = message;
 	}
 	
 	/**
@@ -212,6 +203,7 @@ public abstract class AbstractWOArgumentsTab implements ILaunchConfigurationTab 
 	 * @see ILaunchConfigurationTab#dispose()
 	 */
 	public void dispose() {
+		return;
 	}
 	
 	/**
@@ -270,6 +262,8 @@ public abstract class AbstractWOArgumentsTab implements ILaunchConfigurationTab 
 
 	/**
 	 * Create some empty space.
+	 * @param comp
+	 * @param colSpan
 	 */
 	protected void createVerticalSpacer(Composite comp, int colSpan) {
 		Label label = new Label(comp, SWT.NONE);
@@ -313,7 +307,7 @@ public abstract class AbstractWOArgumentsTab implements ILaunchConfigurationTab 
 	 * @since 2.1
 	 */
 	protected boolean isDirty() {
-		return fDirty;
+		return this.fDirty;
 	}
 
 	/**
@@ -324,6 +318,6 @@ public abstract class AbstractWOArgumentsTab implements ILaunchConfigurationTab 
 	 * @since 2.1
 	 */
 	protected void setDirty(boolean dirty) {
-		fDirty = dirty;
+		this.fDirty = dirty;
 	}
 }

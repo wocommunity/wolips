@@ -38,7 +38,7 @@
 					<td valign="top" align="center">Yes</td>
 				</tr>
 				<tr>
-					<td valign="top">destDir</td>
+					<td valign="top">destdir</td>
 					<td valign="top">Destination directory for Java classes
 					<i>(ignoring their package names)</i>.</td>
 					<td valign="top" align="center">Yes</td>
@@ -90,8 +90,13 @@
 					<td valign="top" align="center">No</td>
 				</tr>
 				<tr>
-					<td valign="top">javaclient</td>
-					<td valign="top">If set to "true", will generate classes for JavaClient. "false" is default.</td>
+					<td valign="top">usevaluetype</td>
+					<td valign="top">If set to "true" (default is "false"), 
+					"valueType" specified in the EOModel will be taken into account
+					when generating numeric attributes, resulting in Enterprise Objects with
+					attribute types like java.lang.Integer, java.lang.Double, java.lang.Boolean, etc. 
+					Otherwise a generic java.lang.Number is used as attribute type.
+					</td>
 					<td valign="top" align="center">No</td>
 				</tr>
 			</table>
@@ -105,7 +110,7 @@
 &amp;lt;taskdef name="wogen" classname="org.objectstyle.woproject.ant.WOGenerator"&amp;gt;
      &amp;lt;classpath refid="classpath"/&amp;gt;
 &amp;lt;/taskdef&amp;gt;
-&amp;lt;wogen map="src/test.eomodeld" destDir="src/java/eo" usepkgpath="false"/&amp;gt;
+&amp;lt;wogen model="src/test.eomodeld" destDir="src/java/eo" usepkgpath="false"/&amp;gt;
 </source>
 
 			<p>2. Generating EOEnterpriseObject
@@ -121,7 +126,7 @@
 &amp;lt;taskdef name="wogen" classname="org.objectstyle.woproject.ant.WOGenerator"&amp;gt;
      &amp;lt;classpath refid="classpath"/&amp;gt;
 &amp;lt;/taskdef&amp;gt;
-&amp;lt;wogen map="src/test.eomodeld" destDir="src/java"/&amp;gt;
+&amp;lt;wogen model="src/test.eomodeld" destDir="src/java"/&amp;gt;
 </source>
     </section>
 </body>

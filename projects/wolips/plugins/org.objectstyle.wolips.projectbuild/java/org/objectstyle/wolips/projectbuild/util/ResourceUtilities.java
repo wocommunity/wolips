@@ -99,36 +99,48 @@ public class ResourceUtilities {
   }
 
 
-  /** 
+  /**
    * check if a folder exists under a path, create it if necessary
-   * @param path the path to the folder to be created (relative to the workspace root or absolute)
-   * @param m a ProgressMonitor
-   * @return
- * @throws CoreException
- */
+   * 
+   * @param path
+   *          the path to the folder to be created (relative to the workspace
+   *          root or absolute)
+   * @param m
+   *          a ProgressMonitor
+   * @return 
+   *          true, iff the folder already existed, false, if it had to be created
+   * @throws
+   *         CoreException
+   */
   public static boolean checkDir (IPath path, IProgressMonitor m) 
-    throws CoreException 
+    throws CoreException
   {
-    boolean result = true;
-    
-    IFolder f = getWorkspaceRoot().getFolder (path);
-    if (!f.exists()) {
-      createFolder (f, m);
-      result = false;
-    }
-    
-    return (result);
+    return checkDir(path,m,false);
   }
 
+  /**
+   * @param path
+   * @param m
+   * @return 
+   * @throws CoreException
+   */
   public static boolean checkDerivedDir (IPath path, IProgressMonitor m) 
     throws CoreException 
   {
+    return checkDir(path, m, true);
+  }
+
+  public static boolean checkDir (IPath path, IProgressMonitor m, boolean derived) 
+    throws CoreException 
+  {
     boolean result = true;
     
     IFolder f = getWorkspaceRoot().getFolder (path);
     if (!f.exists()) {
       createFolder (f, m);
-      f.setDerived(true);
+      if (derived) {
+        f.setDerived(true);
+      }
       result = false;
     }
     
@@ -146,7 +158,15 @@ public class ResourceUtilities {
  * @throws CoreException
  */
   public static IResource checkDestination (IPath path, IProgressMonitor m) throws CoreException {
-    if (checkDir (path.removeLastSegments(1), m)) {
+    return checkDestination(path, m, false);
+  }
+  public static IResource checkDerivedDestination (IPath path, IProgressMonitor m) throws CoreException {
+    return checkDestination(path, m, true);
+  }
+  public static IResource checkDestination (IPath path, IProgressMonitor m, boolean derived) 
+    throws CoreException 
+  {
+    if (checkDir (path.removeLastSegments(1), m, derived)) {
       IResource res  = getWorkspaceRoot().findMember(path);
       if (null != res && res.exists()) {
         try {
@@ -178,20 +198,74 @@ public class ResourceUtilities {
     return _uniqifier++;
   }
   
-  public static void copyDerived (IResource res, IPath dest, IProgressMonitor m) throws CoreException  {
+  /**
+   * @param res
+   * @param dest
+   * @param m
+   * @throws CoreException
+   */
+  public static void copyDerivedOld(IResource res, IPath dest, IProgressMonitor m)
+    throws CoreException
+  {
+    if (res.isTeamPrivateMember ())
+      return;
+  
     IResource rdest = checkDestination (dest, m);
-    res.copy(dest, true, null);
+    res.copy (dest, true, null);
     if (null != rdest) {
-      rdest.setDerived(true);
+      rdest.setDerived (true);
     }
   }
 
-  public static IWorkspace getWorkspace () {
-    return ResourcesPlugin.getWorkspace();
+  /**
+   * @param res the Resource to copy
+   * @param dest where it should be copied to
+   * @param m ProgressMonitor to show what's going on
+   * 
+   * @throws CoreException if something goes wrong (and we notice)
+   */
+  public static void copyDerived(IResource res, IPath dest, IProgressMonitor m)
+    throws CoreException 
+  {
+    if (res.isTeamPrivateMember ())
+      return;
+  
+    if (res instanceof IFolder) {
+      IResource[] members = ((IFolder)res).members ();
+      IResource rdest = checkDerivedDestination (dest, m);
+      
+      for (int i = 0; i < members.length; i++) {
+        IResource thisOne = members[i];
+        if (!members[i].isTeamPrivateMember ()) {
+          IPath thisDest = dest.append(thisOne.getName());
+          copyDerived (thisOne, thisDest, m);
+        }
+      }
+      if (null != rdest) {
+        rdest.setDerived (true);
+      }
+    } else {
+      // it's a file, let's just copy it
+      IResource rdest = checkDestination (dest, m);
+      res.copy (dest, true, m);
+      if (null != rdest) {
+        rdest.setDerived (true);
+      }
+    }
   }
 
-  public static IWorkspaceRoot getWorkspaceRoot () {
-    return ResourcesPlugin.getWorkspace().getRoot();
+  /**
+   * @return
+   */
+  public static IWorkspace getWorkspace() {
+    return ResourcesPlugin.getWorkspace ();
+  }
+
+  /**
+   * @return
+   */
+  public static IWorkspaceRoot getWorkspaceRoot() {
+    return ResourcesPlugin.getWorkspace ().getRoot ();
   }
   
   protected ResourceUtilities () {
@@ -201,6 +275,11 @@ public class ResourceUtilities {
   private static int _uniqifier = 1;
 
 
+	/**
+	 * @param res
+	 * @param markerId
+	 * @throws CoreException
+	 */
 	public static void unmarkResource(IResource res, String markerId) throws CoreException {
 	  if (res.exists()) {
 	    res.deleteMarkers(markerId, true, 0);
@@ -208,6 +287,15 @@ public class ResourceUtilities {
 	}
 
 
+	/**
+	 * @param res
+	 * @param markerId
+	 * @param severity
+	 * @param message
+	 * @param location
+	 * @return
+	 * @throws CoreException
+	 */
 	public static IMarker markResource(IResource res, String markerId, int severity, String message, String location) throws CoreException {
 	  IMarker marker[] = res.findMarkers(markerId, true, 0);
 	  if (marker.length != 1) {

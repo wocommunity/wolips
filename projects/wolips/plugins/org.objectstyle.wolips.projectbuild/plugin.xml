@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin
+   id="org.objectstyle.wolips.projectbuild"
+   name="WOLips Project Build"
+   version="1.0.6"
+   provider-name="objectstyle.org"
+   class="org.objectstyle.wolips.projectbuild.ProjectBuildPlugin">
+
+   <runtime>
+      <library name="lib/wolips-projectbuild.jar">
+         <export name="*"/>
+      </library>
+   </runtime>
+   
+   <requires>
+      <import plugin="org.objectstyle.wolips.cayenne"/>
+      <import plugin="org.objectstyle.wolips.datasets"/>
+      <import plugin="org.objectstyle.wolips.workbenchutilities"/>
+      <import plugin="org.objectstyle.wolips.commons"/>
+      <import plugin="org.objectstyle.wolips.preferences"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.core.variables"/>
+      <import plugin="org.eclipse.jdt.core"/>
+      <import plugin="org.eclipse.ant.core"/>
+      <import plugin="org.eclipse.swt"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.objectstyle.wolips.ant"/>
+   </requires>
+
+
+<!-- =================================================================================== -->
+<!-- Extension: WOLips projectbuild problem marker                                       -->
+<!-- =================================================================================== -->
+   <extension
+         id="projectbuild.taskmarker"
+         name="WOLips Task Marker"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="org.eclipse.core.resources.taskmarker">
+      </super>
+   </extension>
+   <extension
+         id="projectbuild.marker"
+         name="WOLips Build Marker"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="org.eclipse.core.resources.problemmarker">
+      </super>
+   </extension>
+   <extension
+         id="projectbuild.problem"
+         name="WOLips Build Problem Marker"
+         point="org.eclipse.core.resources.markers">
+      <persistent
+            value="true">
+      </persistent>
+      <super
+            type="org.objectstyle.wolips.projectbuild.marker">
+      </super>
+   </extension>
+   <extension
+         id="projectbuild.duplicate"
+         name="WOLips Build Duplicate Marker"
+         point="org.eclipse.core.resources.markers">
+      <persistent
+            value="true">
+      </persistent>
+      <super
+            type="org.objectstyle.wolips.projectbuild.marker">
+      </super>
+   </extension>
+   <extension
+         point="org.eclipse.core.variables.dynamicVariables">
+      <variable
+            name="working_dir_loc_WOLips"
+            resolver="org.objectstyle.wolips.projectbuild.variables.WorkingDirResolver"
+            description="Resolves the working dir for a WebObjects Application within a WOLips project. Add the ProjectName as the argument.">
+      </variable>
+   </extension>
+
+</plugin>

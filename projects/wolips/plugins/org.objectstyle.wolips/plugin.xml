@@ -1,127 +1,114 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
 <plugin
    id="org.objectstyle.wolips"
-   name="%WOLips.pluginName"
+   name="WOLips Core"
    version="1.0.6"
-   provider-name="%WOLips.providerName"
+   provider-name="objectstyle.org"
    class="org.objectstyle.wolips.core.plugin.WOLipsPlugin">
 
    <runtime>
       <library name="lib/wolips.jar">
          <export name="*"/>
-         <packages prefixes="org.objectstyle.wolips.core"/>
       </library>
    </runtime>
    <requires>
-      <import plugin="org.apache.xerces"/>
       <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.eclipse.core.resources"/>
-      <import plugin="org.eclipse.ui"/>
-      <import plugin="org.eclipse.ant.core"/>
-      <import plugin="org.eclipse.ui.externaltools"/>
-      <import plugin="org.eclipse.jdt.core"/>
-      <import plugin="org.eclipse.jdt.launching"/>
-      <import plugin="org.eclipse.debug.core"/>
-      <import plugin="org.eclipse.debug.ui"/>
-      <import plugin="org.eclipse.ui.externaltools"/>
-      <import plugin="org.apache.ant"/>
-      <import plugin="org.eclipse.jface"/>
-      <import plugin="org.objectstyle.wolips.woproject"/>
+      <import plugin="org.objectstyle.wolips.commons"/>
+      <import plugin="org.objectstyle.wolips.projectbuild"/>
    </requires>
 
 <!-- =================================================================================== -->
-<!-- Extension: Startup                                                                  -->
+<!-- Extension: WOProject Builder                                                      -->
 <!-- =================================================================================== -->
    <extension
-         point="org.eclipse.ui.startup">
+         id="incrementalbuilder"
+         name="WOLips Incremental Builder"
+         point="org.eclipse.core.resources.builders">
+      <builder>
+         <run
+               class="org.objectstyle.wolips.projectbuild.builder.WOIncrementalBuilder">
+         </run>
+      </builder>
+   </extension>
+   <extension
+         id="antbuilder"
+         name="WOLips Ant Builder"
+         point="org.eclipse.core.resources.builders">
+      <builder>
+         <run
+               class="org.objectstyle.wolips.projectbuild.builder.WOAntBuilder">
+         </run>
+      </builder>
    </extension>
 <!-- =================================================================================== -->
-<!-- Extension: Resource filter                                                          -->
+<!-- Extension: Project Natures                                                          -->
 <!-- =================================================================================== -->
    <extension
-         point="org.eclipse.ui.resourceFilters">
-      <filter
-            selected="false"
-            pattern="*.woa">
-      </filter>
-      <filter
-            selected="false"
-            pattern="*.framework">
-      </filter>
-      <filter
-            selected="false"
-            pattern="*.java">
-      </filter>
-      <filter
-            selected="false"
-            pattern="*.wod">
-      </filter>
-      <filter
-            selected="false"
-            pattern="*.woo">
-      </filter>
-      <filter
-            selected="false"
-            pattern="*.html">
-      </filter>
-      <filter
-            selected="false"
-            pattern="*.api">
-      </filter>
-      <filter
-            selected="false"
-            pattern="*.wo">
-      </filter>
-      <filter
-            selected="false"
-            pattern="*.plist">
-      </filter>
-      <filter
-            selected="false"
-            pattern="*.eomodeld">
-      </filter>
-      <filter
-            selected="false"
-            pattern="*.d2wmodel">
-      </filter>
-      <filter
-            selected="false"
-            pattern="*.pbxuser">
-      </filter>
-      <filter
-            selected="false"
-            pattern="PB.project">
-      </filter>
-      <filter
-            selected="false"
-            pattern="*.postamble">
-      </filter>
-      <filter
-            selected="false"
-            pattern="*.preamble">
-      </filter>
-      <filter
-            selected="false"
-            pattern="makefile">
-      </filter>
-      <filter
-            selected="false"
-            pattern="build.xml">
-      </filter>
-      <filter
-            selected="false"
-            pattern="*.subproj">
-      </filter>
+         id="incrementalframeworknature"
+         name="org.objectstyle.wolips.projectbuild.WOIncrementalNature"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run
+               class="org.objectstyle.wolips.projectbuild.natures.IncrementalNature">
+         </run>
+      </runtime>
+      <requires-nature
+            id="org.eclipse.jdt.core.javanature">
+      </requires-nature>
    </extension>
-<!-- =================================================================================== -->
-<!-- Extension: Classpath container initializer                                          -->
-<!-- =================================================================================== -->
    <extension
-         point="org.eclipse.jdt.core.classpathContainerInitializer">
-      <classpathContainerInitializer
-            class="org.objectstyle.wolips.core.classpath.WOClasspathContainerInitializer"
-            id="org.objectstyle.wolips.WO_CLASSPATH">
-      </classpathContainerInitializer>
+         id="incrementalapplicationnature"
+         name="org.objectstyle.wolips.projectbuild.WOIncrementalNature"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run
+               class="org.objectstyle.wolips.projectbuild.natures.IncrementalNature">
+         </run>
+      </runtime>
+      <requires-nature
+            id="org.eclipse.jdt.core.javanature">
+      </requires-nature>
+   </extension>
+<!-- Simple nature that runs ant -->
+   <extension
+         id="antnature"
+         name="org.objectstyle.wolips.projectbuild.wolipsantnature"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run
+               class="org.objectstyle.wolips.projectbuild.natures.AntNature">
+         </run>
+      </runtime>
+      <requires-nature
+            id="org.eclipse.jdt.core.javanature">
+      </requires-nature>
+   </extension>
+   <extension
+         id="antframeworknature"
+         name="org.objectstyle.wolips.projectbuild.wolipsantnature"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run
+               class="org.objectstyle.wolips.projectbuild.natures.AntNature">
+         </run>
+      </runtime>
+      <requires-nature
+            id="org.eclipse.jdt.core.javanature">
+      </requires-nature>
+   </extension>
+   <extension
+         id="antapplicationnature"
+         name="org.objectstyle.wolips.projectbuild.wolipsantnature"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run
+               class="org.objectstyle.wolips.projectbuild.natures.AntNature">
+         </run>
+      </runtime>
+      <requires-nature
+            id="org.eclipse.jdt.core.javanature">
+      </requires-nature>
    </extension>
 
 </plugin>

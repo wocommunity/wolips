@@ -57,16 +57,22 @@
 package org.objectstyle.wolips.launching;
 
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTabGroup;
 import org.eclipse.debug.ui.CommonTab;
 import org.eclipse.debug.ui.ILaunchConfigurationDialog;
 import org.eclipse.debug.ui.ILaunchConfigurationTab;
+import org.eclipse.debug.ui.ILaunchConfigurationTabGroup;
+import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.debug.ui.launchConfigurations.JavaArgumentsTab;
 import org.eclipse.jdt.debug.ui.launchConfigurations.JavaClasspathTab;
 import org.eclipse.jdt.debug.ui.launchConfigurations.JavaJRETab;
 import org.eclipse.jdt.debug.ui.launchConfigurations.JavaMainTab;
 import org.eclipse.jdt.debug.ui.launchConfigurations.JavaSourceLookupTab;
+import org.eclipse.jdt.internal.debug.ui.launcher.WorkingDirectoryBlock;
+import org.eclipse.jdt.launching.JavaRuntime;
 
 /**
  * @author uli
@@ -82,9 +88,35 @@ public class WOLocalJavaApplicationTabGroup extends AbstractLaunchConfigurationT
 	 * @see ILaunchConfigurationTabGroup#createTabs(ILaunchConfigurationDialog, String)
 	 */
 	public void createTabs(ILaunchConfigurationDialog dialog, String mode) {
+		
+		JavaArgumentsTab javaArgumentsTab = new JavaArgumentsTab() {
+			protected WorkingDirectoryBlock createWorkingDirBlock() {
+				return new WorkingDirectoryBlock() {
+					/**
+					 * Sets the default working directory
+					 */
+					protected void setDefaultWorkingDir() {
+						try {
+							ILaunchConfiguration config = getLaunchConfiguration();
+							if (config != null) {
+								IJavaProject javaProject = JavaRuntime.getJavaProject(config);
+								if (javaProject != null) {
+									this.fWorkingDirText.setText("${working_dir_loc_WOLips:" + javaProject.getProject().getName() + "}"); //$NON-NLS-1$ //$NON-NLS-2$
+									return;
+								}
+							}
+						} catch (CoreException ce) {
+							LaunchingPlugin.getDefault().getPluginLogger().log(ce);
+						}
+						this.fWorkingDirText.setText(System.getProperty("user.dir")); //$NON-NLS-1$
+					}
+
+				};
+			}
+		};
 		ILaunchConfigurationTab[] tabs = new ILaunchConfigurationTab[] {
 			new JavaMainTab(),
-			new JavaArgumentsTab(),
+			javaArgumentsTab,
 			new CommonWOArgumentsTab(),
 			//new AdvancedWOArgumentsTab(),
 			new JavaJRETab(),
@@ -95,13 +127,12 @@ public class WOLocalJavaApplicationTabGroup extends AbstractLaunchConfigurationT
 		setTabs(tabs);
 	}
 
-  /* (non-Javadoc)
+	/* (non-Javadoc)
 	 * @see org.eclipse.debug.ui.AbstractLaunchConfigurationTabGroup#setDefaults(org.eclipse.debug.core.ILaunchConfigurationWorkingCopy)
 	 */
 	public void setDefaults(ILaunchConfigurationWorkingCopy wc) {
-    WOJavaLocalApplicationLaunchConfigurationDelegate.initConfiguration(wc);
-
-		super.setDefaults(wc);
+	    WOJavaLocalApplicationLaunchConfigurationDelegate.initConfiguration(wc);
+	    super.setDefaults(wc);
 	}
-
+	
 }

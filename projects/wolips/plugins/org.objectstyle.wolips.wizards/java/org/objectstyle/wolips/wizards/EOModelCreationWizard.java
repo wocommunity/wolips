@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 The ObjectStyle Group 
+ * Copyright (c) 2002, 2004 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -53,57 +53,49 @@
  * <http://objectstyle.org/>.
  *
  */
-
 package org.objectstyle.wolips.wizards;
-
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
-import org.objectstyle.wolips.core.plugin.WOLipsPluginImages;
-
+import org.objectstyle.wolips.templateengine.TemplateEnginePlugin;
 /**
  * @author mnolte
- * @author uli
- * Wizard to create new eo model in selected webobjects java project
+ * @author uli Wizard to create new eo model in selected webobjects java
+ *         project
  */
-public class EOModelCreationWizard extends Wizard implements INewWizard {
-
-	private IStructuredSelection selection;
-	private IWorkbench workbench;
+public class EOModelCreationWizard extends AbstractResourceWizard implements INewWizard {
 	private EOModelCreationPage mainPage;
-
 	/**
 	 * Constructor for EOModelCreationWizard.
 	 */
 	public EOModelCreationWizard() {
-		super();
+		super(TemplateEnginePlugin.EOModel);
 	}
-
 	/**
 	 * @see org.eclipse.jface.wizard.IWizard#addPages()
 	 */
 	public void addPages() {
-		mainPage = new EOModelCreationPage(workbench, selection);
 		addPage(mainPage);
 	}
-
 	/**
 	 * @see org.eclipse.jface.wizard.IWizard#performFinish()
 	 */
 	public boolean performFinish() {
-		return mainPage.createEOModel();
+		boolean returnValue = mainPage.createEOModel();
+		if(returnValue) {
+			this.selectAndReveal(mainPage.getResourceToReveal());
+		}
+		return returnValue;
 	}
-
 	/**
-	 * @see org.eclipse.ui.IWorkbenchWizard#init(IWorkbench, IStructuredSelection)
+	 * @see org.eclipse.ui.IWorkbenchWizard#init(IWorkbench,
+	 *      IStructuredSelection)
 	 */
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
-		this.workbench = workbench;
-		this.selection = selection;
+		super.init(workbench, selection);
+		mainPage = new EOModelCreationPage(selection);
 		setWindowTitle(Messages.getString("EOModelCreationWizard.title"));
-		setDefaultPageImageDescriptor(
-			WOLipsPluginImages.WOCOMPONENT_WIZARD_BANNER);
+		setDefaultPageImageDescriptor(WizardsPlugin
+				.WOCOMPONENT_WIZARD_BANNER());
 	}
-
 }

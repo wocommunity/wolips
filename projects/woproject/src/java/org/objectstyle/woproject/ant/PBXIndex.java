@@ -73,7 +73,13 @@ public class PBXIndex extends Task {
 	protected File projectFile;
 	protected Vector resources = new Vector();
 	protected Vector frameworkSets = new Vector();
+	protected Vector sources = new Vector();
+
 	protected SubtaskFactory subtaskFactory = new SubtaskFactory(this);
+
+	public void addSources(FileSet set) {
+		sources.addElement(set);
+	}
 
 	public void addResources(FileSet set) {
 		resources.addElement(set);
@@ -128,11 +134,30 @@ public class PBXIndex extends Task {
 	protected void addToProject( PBXProject proj ) {
 		//	Add resource file references.
 		File	dir;
-		Iterator it = resources.iterator();
+		
+		Iterator it;
+		it = sources.iterator();
 		while (it.hasNext()) {
 			FileSet fs = (FileSet) it.next();
 			dir = fs.getDir(getProject());
-			//System.out.println( "**** resources dir: "+dir );
+			DirectoryScanner ds = fs.getDirectoryScanner(getProject());
+			ds.scan();
+			
+			String[] allFiles = ds.getIncludedFiles();
+			for (int i = 0; i < allFiles.length; i++) {
+				proj.addSourceReference((new File(dir,fixPath(allFiles[i]))).getAbsolutePath());
+			}
+
+			String[] allDirs = ds.getIncludedDirectories();
+			for (int i = 0; i < allDirs.length; i++) {
+				proj.addSourceReference((new File(dir,fixPath(allDirs[i]))).getAbsolutePath());
+			}
+		}
+
+		it = resources.iterator();
+		while (it.hasNext()) {
+			FileSet fs = (FileSet) it.next();
+			dir = fs.getDir(getProject());
 			DirectoryScanner ds = fs.getDirectoryScanner(getProject());
 			ds.scan();
 			
@@ -143,7 +168,7 @@ public class PBXIndex extends Task {
 
 			String[] allDirs = ds.getIncludedDirectories();
 			for (int i = 0; i < allDirs.length; i++) {
-				proj.addFileReference((new File(dir,fixPath(allDirs[i]))).getAbsolutePath());
+				proj.addFolderReference((new File(dir,fixPath(allDirs[i]))).getAbsolutePath());
 			}
 		}
 		

@@ -1,21 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
 <plugin
    id="org.objectstyle.wolips.profiling"
-   name="%WOLips.profiling.pluginName"
+   name="WOLips Profiling"
    version="1.0.6"
-   provider-name="%WOLips.providerName">
+   provider-name="objectstyle.org"
+   class="org.objectstyle.wolips.profiling.ProfilingPlugin">
 
    <runtime>
       <library name="lib/wolips-profiling.jar">
-         <packages prefixes="org.objectstyle.wolips.profiling"/>
       </library>
    </runtime>
    <requires>
-      <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.jdt.debug.ui"/>
       <import plugin="org.eclipse.debug.core"/>
       <import plugin="org.eclipse.debug.ui"/>
-      <import plugin="org.objectstyle.wolips"/>
+      <import plugin="org.objectstyle.wolips.launching"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.jdt.launching"/>
+      <import plugin="org.objectstyle.wolips.commons"/>
+      <import plugin="org.eclipse.ui"/>
       <import plugin="jmechanic.eclipse.profiler"/>
    </requires>
 
@@ -28,7 +32,7 @@
       <launchConfigurationType
             name="Profiled WOApplication"
             delegate="org.objectstyle.wolips.profiling.ProfiledWOJavaLocalApplicationLaunchConfigurationDelegate"
-            modes="run, debug"
+            modes="debug"
             id="org.objectstyle.wolips.profiling.ProfiledWOLocalJavaApplication">
       </launchConfigurationType>
    </extension>
@@ -62,9 +66,24 @@
       <shortcut
             label="WOApplication (profiled)"
             icon="icons/profiling/WOLips-profiling.gif"
-            modes="run, debug"
+            modes="debug"
             class="org.objectstyle.wolips.profiling.ProfiledWOJavaApplicationLaunchShortcut"
             id="org.objectstyle.wolips.profiling.ProfiledWOJavaApplicationLaunchShortcut">
+         <contextualLaunch>
+           <enablement>
+             <with variable="selection">
+               <count value="1"/>
+               <iterate>
+                 <or>
+                   <test property="org.eclipse.debug.ui.matchesPattern" value="*.java"/>
+                   <test property="org.eclipse.debug.ui.matchesPattern" value="*.class"/>
+                   <instanceof value="org.eclipse.jdt.core.IJavaElement"/>
+                 </or>
+                 <test property="org.eclipse.jdt.debug.ui.hasMainType"/>
+               </iterate>
+             </with>
+           </enablement>
+  		 </contextualLaunch>
          <perspective
                id="org.eclipse.jdt.ui.JavaPerspective">
          </perspective>
@@ -85,5 +104,4 @@
          </perspective>
       </shortcut>
    </extension>
-
 </plugin>

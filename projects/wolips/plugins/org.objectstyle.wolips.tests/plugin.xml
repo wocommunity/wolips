@@ -1,23 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
 <plugin
    id="org.objectstyle.wolips.tests"
-   name="%WOLipsTestsName"
+   name="WOLips Tests"
    version="1.0.6"
-   provider-name="www.objectstyle.org"
+   provider-name="objectstyle.org"
    class="org.objectstyle.wolips.tests.WOLipsTestsPlugin">
 
    <runtime>
       <library name="lib/wolips-tests.jar">
-         <packages prefixes="org.objectstyle.wolips.tests"/>
       </library>
    </runtime>
    <requires>
-      <import plugin="org.objectstyle.wolips"/>
+      <import plugin="org.objectstyle.wolips.tests.core"/>
+      <import plugin="org.objectstyle.wolips.datasets"/>
       <import plugin="org.junit"/>
-      <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.ui"/>
-      <import plugin="org.eclipse.jdt.core"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.objectstyle.wolips.templateengine"/>
+      <import plugin="org.objectstyle.wolips.wizards"/>
    </requires>
 
 

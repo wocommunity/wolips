@@ -62,24 +62,19 @@ import org.objectstyle.wolips.wizards.WOSubprojectCreationWizard;
 
 /**
  * @author uli
- *
- * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates.
- * To enable and disable the creation of type comments go to
- * Window>Preferences>Java>Code Generation.
  */
 public class OpenWOSubprojectCreationWizard extends AbstractOpenWizardAction {
 
+	/**
+	 * @see org.eclipse.jdt.internal.ui.wizards.AbstractOpenWizardAction#checkWorkspaceNotEmpty()
+	 */
+	protected boolean checkWorkspaceNotEmpty() {
+		return true;
+	}
 	/**
 	 * @see org.eclipse.jdt.internal.ui.wizards.AbstractOpenWizardAction#createWizard()
 	 */
 	protected Wizard createWizard() {
 		return new WOSubprojectCreationWizard();
-	}
-	/**
-	 * Method dispose.
-	 */
-	public void dispose() {
-		super.dispose();
 	}
 }

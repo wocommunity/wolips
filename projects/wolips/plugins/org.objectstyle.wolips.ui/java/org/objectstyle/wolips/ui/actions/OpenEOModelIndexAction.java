@@ -2,7 +2,7 @@
  *
  * The ObjectStyle Group Software License, Version 1.0
  *
- * Copyright (c) 2002 The ObjectStyle Group
+ * Copyright (c) 2002 - 2004 The ObjectStyle Group
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -57,36 +57,38 @@
 package org.objectstyle.wolips.ui.actions;
 
 import java.util.ArrayList;
-
 import org.eclipse.jface.action.IAction;
-import org.objectstyle.wolips.core.util.WorkbenchUtilities;
+import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
+import org.objectstyle.wolips.workbenchutilities.actions.ActionOnIResource;
 
 /**
  * @author ulrich
- *
+ * 
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
 public class OpenEOModelIndexAction extends ActionOnIResource {
 
 	private final String eoModelExtension = ".eomodeld";
-/**
- * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
- */
-public void run(IAction action) {
-	if (actionResource() != null) {
-		String fileName = actionResource().getName();
-		fileName = fileName.substring(0, fileName.length() - eoModelExtension.length());
+	/**
+	 * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
+	 */
+	public void run(IAction action) {
+		if (getActionResource() != null) {
+			String fileName = getActionResource().getName();
+			fileName = fileName.substring(0, fileName.length()
+					- this.eoModelExtension.length());
 
-		ArrayList list = new ArrayList();
-		WorkbenchUtilities.findFilesInResourceByName(list, actionResource(), "index" + eoModelExtension);
-		WorkbenchUtilities.open(list);
+			ArrayList list = new ArrayList();
+			WorkbenchUtilitiesPlugin.findFilesInResourceByName(list,
+					getActionResource(), "index" + this.eoModelExtension);
+			WorkbenchUtilitiesPlugin.open(list);
+		}
 	}
-}
-/**
- * Method dispose.
- */
-public void dispose() {
-	super.dispose();
-}
+	/**
+	 * Method dispose.
+	 */
+	public void dispose() {
+		super.dispose();
+	}
 }

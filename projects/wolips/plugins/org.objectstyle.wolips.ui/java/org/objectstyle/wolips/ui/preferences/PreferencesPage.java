@@ -2,7 +2,7 @@
  *
  * The ObjectStyle Group Software License, Version 1.0
  *
- * Copyright (c) 2002 The ObjectStyle Group
+ * Copyright (c) 2002 - 2004 The ObjectStyle Group
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -56,12 +56,11 @@
 
 package org.objectstyle.wolips.ui.preferences;
 
-import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
-import org.objectstyle.wolips.core.preferences.Preferences;
-import org.objectstyle.wolips.core.preferences.PreferencesMessages;
+import org.objectstyle.wolips.preferences.Preferences;
+import org.objectstyle.wolips.preferences.PreferencesMessages;
 
 /**
  * @author uli
@@ -90,35 +89,19 @@ public class PreferencesPage
 	 * @see org.eclipse.jface.preference.FieldEditorPreferencePage#createFieldEditors()
 	 */
 	public void createFieldEditors() {
-		addField(
-			new BooleanFieldEditor(
-				Preferences.PREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH,
-				PreferencesMessages.getString(
-					"Preferences.RebuildWOBuildProperties.Label"),
-				getFieldEditorParent()));
-
-		/*addField(
-			new StringFieldEditor(
-				IWOLipsPluginConstants
-					.PREF_OPEN_WOCOMPONENT_ACTION_INCLUDES_OPEN_HTML,
-				PreferencesMessages.getString(
-					"Preferences.OpenWOComponentActionIncludesOpenHTML.Label"),
-				getFieldEditorParent()));*/
+		return;
 	}
 	/**
 	 * Method performOK.
 	 * @return boolean
 	 */
 	public boolean performOk() {
-		if (super.performOk()) {
-			//do some stuff	
-			return true;
-		}
-		return false;
+		return super.performOk();
 	}
 	/**
 	 * @see org.eclipse.ui.IWorkbenchPreferencePage#init(IWorkbench)
 	 */
 	public void init(IWorkbench workbench) {
+		return;
 	}
 }

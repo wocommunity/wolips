@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
 <plugin
    id="org.objectstyle.wolips.profiling.about"
-   name="%WOLips.pluginName"
+   name="WOLips Profiling About"
    version="1.0.6"
-   provider-name="%WOLips.providerName">
+   provider-name="objectstyle.org">
 
    <runtime>
    </runtime>

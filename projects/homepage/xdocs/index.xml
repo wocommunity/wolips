@@ -9,8 +9,32 @@
     <body>        
         <!-- Welcome section -->
         <section name="Welcome to WOProject and WOLips">
-
-        <p><i>December 01, 2003.</i> <b>WOLips 1.0.7.40 for Eclipse 2.1.2 released.</b></p>
+        
+        <p><i>November 11, 2004.</i> <b>WOProject release 1.1.0.91 RC 2 is out.</b></p>
+        <p>Download a new <a href="compatibilty_matrix.html">release</a> of WOProject.
+        <hr/>
+        </p>
+        
+        
+        <p><i>November 11, 2004.</i> <b>WOLips release 1.1.0.91 RC 2 is out.</b></p>
+        <p>Download a new <a href="compatibilty_matrix.html">release</a> of WOLips.
+        <hr/>
+        </p>
+        
+        
+        <p><i>November 10, 2004.</i> <b>WOLips release 1.1.0.90 RC 1 is out.</b></p>
+        <p>Download a new <a href="compatibilty_matrix.html">release</a> of WOLips.
+        <hr/>
+        </p>
+        
+        
+        <p><i>August 22, 2004.</i> <b>WOProject release 1.1.0.82 beta 3 is out.</b></p>
+        <p>Download a new <a href="compatibilty_matrix.html">release</a> of WOProject.
+        <hr/>
+        </p>
+        
+        
+        <p><i>August 22, 2004.</i> <b>WOLips 1.1.0.82 beta 3 for Eclipse 3.0.0 released.</b></p>
         <p>WOLips is a plugin for <a href="http://eclipse.org">Eclipse IDE</a> that
         support development of WebObjects applications and frameworks.
         <ul>
@@ -20,7 +44,13 @@
         <hr/>
         </p>
         
-        <p><i>November 28, 2003.</i> <b>WOLips 1.0.7.37 for Eclipse 3.0.0 M5 released.</b></p>
+        <p><i>August 07, 2004.</i> <b>WOProject release 1.1.0.77 beta 2 is out.</b></p>
+        <p>Download a new <a href="compatibilty_matrix.html">release</a> of WOProject.
+        <hr/>
+        </p>
+        
+        
+        <p><i>August 07, 2004.</i> <b>WOLips 1.1.0.77 beta 2 for Eclipse 3.0.0 released.</b></p>
         <p>WOLips is a plugin for <a href="http://eclipse.org">Eclipse IDE</a> that
         support development of WebObjects applications and frameworks.
         <ul>
@@ -30,6 +60,41 @@
         <hr/>
         </p>
 
+        <p><i>July 20, 2004.</i> <b>WOProject release 1.1.0.70 beta 1 is out.</b></p>
+        <p>Download a new <a href="compatibilty_matrix.html">release</a> of WOProject.
+        <hr/>
+        </p>
+        
+        
+        <p><i>July 20, 2004.</i> <b>WOLips 1.1.0.70 beta 1 for Eclipse 3.0.0 released.</b></p>
+        <p>WOLips is a plugin for <a href="http://eclipse.org">Eclipse IDE</a> that
+        support development of WebObjects applications and frameworks.
+        <ul>
+            <li>To find the correct version <a href="compatibilty_matrix.html">click</a> here.</li>
+            <li><a href="wolips_install.html">How to install via Update Manager.</a></li>
+        </ul>
+        <hr/>
+        </p>
+
+        <p><i>January 24, 2004.</i> <b>WOLips 1.0.7.50 for Eclipse 2.1.3 released.</b></p>
+        <p>WOLips is a plugin for <a href="http://eclipse.org">Eclipse IDE</a> that
+        support development of WebObjects applications and frameworks.
+        <ul>
+            <li>To find the correct version <a href="compatibilty_matrix.html">click</a> here.</li>
+            <li><a href="wolips_install.html">How to install via Update Manager.</a></li>
+        </ul>
+        <hr/>
+        </p>
+
+        <p><i>November 28, 2003.</i> <b>WOLips 1.0.7.37 for Eclipse 3.0.0 M5 released.</b></p>
+        <p>WOLips is a plugin for <a href="http://eclipse.org">Eclipse IDE</a> that
+        support development of WebObjects applications and frameworks.
+        <ul>
+            <li>To find the correct version <a href="compatibilty_matrix.html">click</a> here.</li>
+            <li><a href="wolips_install.html">How to install via Update Manager.</a></li>
+        </ul>
+        <hr/>
+        </p>
 
         <p><i>November 25, 2003.</i> <b>WO 5.2.2 on Panther</b></p>
         <p>Read <a href="wolips.html">more</a>.

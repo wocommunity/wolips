@@ -1,15 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
 <plugin
    id="org.objectstyle.wolips.team"
-   name="%WOLips.team.pluginName"
+   name="WOLips Team"
    version="1.0.6"
-   provider-name="%WOLips.providerName">
+   provider-name="objectstyle.org">
 
+   <runtime>
+   </runtime>
 <!-- =================================================================================== -->
 <!-- Required Plugins                                                                    -->
-<!-- =================================================================================== -->   
+<!-- =================================================================================== -->
    <requires>
+      <import plugin="org.eclipse.team.core"/>
    </requires>
+
 
 <!-- =================================================================================== -->
 <!-- Extension: Team file types                                                          -->
@@ -96,6 +101,26 @@
             type="text"
             extension="ant.frameworks.wo.wosystemroot">
       </fileTypes>
+      <fileTypes
+            type="text"
+            extension="resources.include.patternset">
+      </fileTypes>
+      <fileTypes
+            type="text"
+            extension="resources.exclude.patternset">
+      </fileTypes>
+      <fileTypes
+            type="text"
+            extension="wsresources.include.patternset">
+      </fileTypes>
+      <fileTypes
+            type="text"
+            extension="wsresources.exclude.patternset">
+      </fileTypes>
+      <fileTypes
+            type="text"
+            extension="build.launch">
+      </fileTypes>
    </extension>
 <!-- =================================================================================== -->
 <!-- Extension: Ignored team file types                                                          -->
@@ -125,6 +150,10 @@
       <ignore
             selected="false"
             pattern=".api">
+      </ignore>
+      <ignore
+            selected="true"
+            pattern=".build.launch">
       </ignore>
    </extension>
 

@@ -35,5 +35,6 @@
 	<string></string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
+	@CUSTOM_CONTENT@
 </dict>
 </plist>

@@ -10,9 +10,9 @@
  		<section name="WOApplication Task Manual">
 			<h3>Description:</h3>
 
-			<p><code>WOApplication</code> is an Ant task to build WebObjects (5.1 or higher) 
+			<p><code>WOApplication</code> is an Ant task to build WebObjects
 			applications from a set of files. It does not enforce any particular project structure
-			and can be used to create applications without using the ProjectBuilder tool.
+			and can be used to create applications without using the ProjectBuilder or XCode.
 			</p>
 			
 			<h3>Properties:</h3>
@@ -84,7 +84,12 @@
 				<tr>
 					<td valign="top">principalClass</td>
 					<td valign="top">Subclass of <code>WOApplication</code> to use.</td>
-					<td valign="top" align="center"><code>Application</code></td>
+					<td valign="top" align="center">Application</td>
+				</tr>
+				<tr>
+					<td valign="top">customInfoPListContent</td>
+					<td valign="top">String to append to the Info.plist.</td>
+					<td valign="top" align="center">No</td>
 				</tr>
 				<tr>
 					<td valign="top">stdFrameworks</td>
@@ -129,6 +134,11 @@
 					<td valign="top">Optional parameter for the web.xml</td>
 					<td valign="top" align="center">NO</td>
 				</tr>
+				<tr>
+					<td valign="top">webXML_CustomContent</td>
+					<td valign="top">Optional parameter for the web.xml</td>
+					<td valign="top" align="center">NO</td>
+				</tr>
 			</table>
 
 			<h3>Nested elements:</h3>
@@ -158,7 +168,7 @@
 
             <h4>frameworks</h4>
 			<p>The nested <code>frameworks</code> is a <a
-			href="http://jakarta.apache.org/ant/manual/CoreTypes/fileset.html">FileSet</a>
+			href="frameworkset.html">FrameworkSet</a>
 			structure that specifies the names of the
             WebObjects Frameworks that this application is dependant upon. The jar files from
             these frameworks will be referenced in varios platform-specific depoyment files 
@@ -166,30 +176,6 @@
             is deployed as a servlet. When building a FileSet, path should match up to the 
             "*.framework" directory (no need to match individual JAR files).</p>
             
-			<h4>Nested <code>frameworks</code> Parameters: </h4>
-			<p><i>Note: all standard FileSet 
-			parameters are supported as well, though <code>dir</code>
-			wouldn't make sense and will be ignored.</i></p>
-            <table border="1" cellpadding="2" cellspacing="0">
-				<tr>
-					<th valign="top"><b>Attribute</b></th>
-					<th valign="top"><b>Description</b></th>
-					<th align="center" valign="top"><b>Required</b></th>
-				</tr>
-				<tr>
-					<td valign="top">root</td>
-					<td valign="top">Logical base location of the framework. Allowed values are 
-					"wo.homeroot", "wo.wosystemroot", "wo.localroot" (these are string values,
-					don't include them in <code>${}</code>)</td>
-					<td valign="top" align="center">Yes</td>
-				</tr>
-				<tr>
-					<td valign="top">if</td>
-					<td valign="top">The name if a property that decides if the framework set is included. 
-					This is a string value, don't include them in <code>${}</code>. You can then set the property to include the framework or leave it undefined to leave it out.</td>
-					<td valign="top" align="center">Not applicable, leave it out when you want to include the framework by default.</td>
-				</tr>
-			</table>
             <h4>lib</h4>
 			<p>The nested <code>lib</code> element specifies a <a
 			href="http://jakarta.apache.org/ant/manual/CoreTypes/fileset.html">FileSet</a>.
@@ -205,6 +191,7 @@
 &amp;lt;taskdef name="woapplication" classname="org.objectstyle.woproject.ant.WOApplication"&amp;gt;
      &amp;lt;classpath refid="classpath"/&amp;gt;
 &amp;lt;/taskdef&amp;gt;
+
 &amp;lt;woapplication name="MyApp" destDir="${dist}/WebObjects/Applications"&amp;gt;
    &amp;lt;classes dir="${build}/common"&amp;gt;
       &amp;lt;exclude name="*.properties"/&amp;gt;
@@ -229,7 +216,7 @@
 <source>
 &amp;lt;woapplication name="MyApp" stdFrameworks="false" destDir="${dist}/WebObjects/Applications"&amp;gt;
    ...
-   &amp;lt;frameworks root="home"&amp;gt;
+   &amp;lt;frameworks dir="../Frameworks"&amp;gt;
       &amp;lt;include name="**/*.framework"/&amp;gt;
    &amp;lt;/frameworks&amp;gt;
 &amp;lt;/woapplication&amp;gt;

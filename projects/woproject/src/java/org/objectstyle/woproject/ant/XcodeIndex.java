@@ -57,25 +57,15 @@ package org.objectstyle.woproject.ant;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.Vector;
 
 import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.DirectoryScanner;
-import org.apache.tools.ant.Task;
-import org.apache.tools.ant.types.FileSet;
 import org.objectstyle.woenvironment.pb.XcodeProject;
 
 /**
  * @author Jonathan 'Wolf' Rentzsch
  */
 public class XcodeIndex extends PBXIndex {
-	protected Vector sources = new Vector();
-
-	public void addSources(FileSet set) {
-		sources.addElement(set);
-	}
-
+    
 	/**
 	 * @see org.apache.tools.ant.Task#execute()
 	 */
@@ -84,26 +74,6 @@ public class XcodeIndex extends PBXIndex {
 		
 		XcodeProject proj = new XcodeProject();
 		addToProject( proj );
-		
-		//	Add source file references.
-		File	dir;
-		Iterator it = sources.iterator();
-		while (it.hasNext()) {
-			FileSet fs = (FileSet) it.next();
-			dir = fs.getDir(getProject());
-			DirectoryScanner ds = fs.getDirectoryScanner(getProject());
-			ds.scan();
-			
-			String[] allFiles = ds.getIncludedFiles();
-			for (int i = 0; i < allFiles.length; i++) {
-				proj.addSourceReference((new File(dir,fixPath(allFiles[i]))).getAbsolutePath());
-			}
-
-			String[] allDirs = ds.getIncludedDirectories();
-			for (int i = 0; i < allDirs.length; i++) {
-				proj.addSourceReference((new File(dir,fixPath(allDirs[i]))).getAbsolutePath());
-			}
-		}
 		
 		if( getProjectFile().exists() ) {
 			if( !getProjectFile().isDirectory() )

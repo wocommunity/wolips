@@ -15,8 +15,9 @@
     <property file="default.properties"/>
     <property file="${project.lib.dir}/lib.properties"/>
     <property name="build.version.to.replace" value="1.0.6"/>
+    <property file="buildserver.version"/>
+	<property name="build.version" value="${eclipse_3_0_0}"/>
     
-	
     <!-- ========================================== -->
     <!-- Print help.                                -->
     <!-- ========================================== -->
@@ -39,17 +40,9 @@
     </target>
     
     <!-- ========================================== -->
-    <!-- Build homepage.                            -->
-    <!-- ========================================== -->
-    <target name="load.version.file">
-	    <loadfile property="build.version"
-            srcFile="buildserver.version"/>
-    </target>
-    	
-    <!-- ========================================== -->
     <!-- Print environment.                         -->
     <!-- ========================================== -->
-    <target name="print.environment" depends="load.version.file">
+    <target name="print.environment">
         <echo>
         ****************************************
         * java.home = ${java.home}
@@ -68,10 +61,11 @@
         * deploy.dir = ${deploy.dir} (set by the buildserver)
         * eclipse.home = ${eclipse.home}
         * no.clean = ${no.clean}
+        * no.docs = ${no.docs}
         * compile options
         * compile.deprecation= ${compile.deprecation}
         * compile.debug= ${compile.debug}
-        * compile.optimize= "${compile.optimize}
+        * compile.optimize= ${compile.optimize}
         * test environment
         * build.output.test.dir = ${build.output.test.dir}
         * test.eclipse.home = ${test.eclipse.home}                
@@ -85,7 +79,7 @@
     <!-- ========================================== -->
     <!-- Build homepage.                            -->
     <!-- ========================================== -->
-    <target name="homepage">
+    <target name="homepage" unless="no.docs">
 	    <ant dir="${project.homepage.dir}" target="all"/>
     </target>
 

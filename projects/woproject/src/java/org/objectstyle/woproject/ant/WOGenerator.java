@@ -1,8 +1,8 @@
 /* ====================================================================
+ * 
+ * The ObjectStyle Group Software License, Version 1.0 
  *
- * The ObjectStyle Group Software License, Version 1.0
- *
- * Copyright (c) 2002 The ObjectStyle Group
+ * Copyright (c) 2002 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,15 +18,15 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution, if
- *    any, must include the following acknowlegement:
- *       "This product includes software developed by the
+ *    any, must include the following acknowlegement:  
+ *       "This product includes software developed by the 
  *        ObjectStyle Group (http://objectstyle.org/)."
  *    Alternately, this acknowlegement may appear in the software itself,
  *    if and wherever such third-party acknowlegements normally appear.
  *
- * 4. The names "ObjectStyle Group" and "Cayenne"
+ * 4. The names "ObjectStyle Group" and "Cayenne" 
  *    must not be used to endorse or promote products derived
- *    from this software without prior written permission. For written
+ *    from this software without prior written permission. For written 
  *    permission, please contact andrus@objectstyle.org.
  *
  * 5. Products derived from this software may not be called "ObjectStyle"
@@ -59,111 +59,129 @@ package org.objectstyle.woproject.ant;
 import java.io.File;
 
 import org.objectstyle.cayenne.gen.AntClassGenerator;
+import org.objectstyle.cayenne.gen.ClassGenerator;
 import org.objectstyle.cayenne.gen.DefaultClassGenerator;
-import org.objectstyle.cayenne.gen.MapClassGenerator;
 import org.objectstyle.cayenne.map.DataMap;
+import org.objectstyle.cayenne.map.ObjEntity;
 import org.objectstyle.cayenne.tools.CayenneGenerator;
+import org.objectstyle.cayenne.gen.MapClassGenerator;
 
 /**
-  * Ant task to generate EOEnterpriseObjects from EOModel.
-  * For detailed instructions go to the
-  * <a href="../../../../../ant/wogen.html">manual page</a>.
-  *
+  * Ant task to generate EOEnterpriseObjects from EOModel. 
+  * For detailed instructions go to the  
+  * <a href="../../../../../ant/wogen.html">manual page</a>. 
+  * 
   * @ant.task category="packaging"
   * @author Andrei Adamchik
   */
 public class WOGenerator extends CayenneGenerator {
-
-    // flag whether client java class should be created or not.
-    protected boolean javaclient = false;
-
-	/**
-	  * Wrapper of the superclass <code>setMap</code>
-	  * method to provide WebObjects-friendly name.
-	  */
-	public void setModel(File model) {
-		super.setMap(model);
-	}
+    protected boolean useValueType;
 
     /**
-     * Added Attribute for WOGen Ant task. Sets the flag whether client Java class
-     * should be created or not. If set to true Java client classes will be created.
-     * @param b
-     */
-    public void setJavaclient(boolean b) {
-       javaclient = b;
+      * Wrapper of the superclass <code>setMap</code>
+      * method to provide WebObjects-friendly name. 
+      */
+    public void setModel(File model) {
+        super.setMap(model);
     }
 
-	/**
-	 * Overrides superclass implementation to create DataMap
-	 * from EOModel instead of Cayenne DataMap XML file.
-	 */
-	protected DataMap loadDataMap() throws Exception {
-		return new EOModelReader().loadEOModel(map.getCanonicalPath(), javaclient);
-	}
+    /**
+     * Ant task attribute defining whether generated class attributes
+     * should use the lowest possible subclass determined from the "valueType" 
+     * parameter in EOModel. If false (default) a common superclass will be used. 
+     * E.g. for "NSNumber", java.lang.Number attributes will be genertaed. 
+     * 
+     * <p>Note that this is only implemented for numeric value types.</p>
+     */
+    public void setUseValueType(boolean flag) {
+        this.useValueType = flag;
+    }
 
+    /** 
+     * Overrides superclass implementation to create DataMap
+     * from EOModel instead of Cayenne DataMap XML file. 
+     */
+    protected DataMap loadDataMap() throws Exception {
+        return new EOModelReader(useValueType).loadEOModel(map.getCanonicalPath());
+    }
 
-	protected DefaultClassGenerator createGenerator() {
-		WOAntClassGenerator gen = new WOAntClassGenerator();
-		gen.setParentTask(this);
-		return gen;
-	}
+    protected DefaultClassGenerator createGenerator() {
+        WOAntClassGenerator gen = new WOAntClassGenerator();
+        gen.setParentTask(this);
+        return gen;
+    }
 
+    final class WOAntClassGenerator extends AntClassGenerator {
+        private final String WOGEN_SUPERCLASS_TEMPLATE = "wogen/superclass.vm";
+        private final String WOGEN_SUBCLASS_TEMPLATE = "wogen/subclass.vm";
+        private final String WOGEN_SINGLE_CLASS_TEMPLATE = "wogen/singleclass.vm";
 
-	final class WOAntClassGenerator extends AntClassGenerator {
-		private final String SUPERCLASS_TEMPLATE = "wogen/superclass.vm";
-		private final String SUBCLASS_TEMPLATE = "wogen/subclass.vm";
-		private final String SINGLE_CLASS_TEMPLATE = "wogen/singleclass.vm";
+        private final String[] RESERVED_CLASS_NAMES =
+            new String[] { "EOGenericRecord", "EOCustomObject" };
 
-		private final String[] RESERVED_CLASS_NAMES =
-			new String[] { "EOGenericRecord", "EOCustomObject" };
+        protected String defaultSingleClassTemplate() {
+            return WOGEN_SINGLE_CLASS_TEMPLATE;
+        }
 
-		protected String defaultSingleClassTemplate() {
-			return SINGLE_CLASS_TEMPLATE;
-		}
+        protected String defaultSubclassTemplate() {
+            return WOGEN_SUBCLASS_TEMPLATE;
+        }
 
-		protected String defaultSubclassTemplate() {
-			return SUBCLASS_TEMPLATE;
-		}
+        protected String defaultSuperclassTemplate() {
+            return WOGEN_SUPERCLASS_TEMPLATE;
+        }
 
-		protected String defaultSuperclassTemplate() {
-			return SUPERCLASS_TEMPLATE;
-		}
+        protected File fileForClass(String packageName, String className)
+            throws Exception {
 
-		protected File fileForClass(String packageName, String className)
-			throws Exception {
+            if (isReservedName(className)) {
+                return null;
+            }
 
-			if (isReservedName(className)) {
-				return null;
-			}
+            return super.fileForClass(packageName, className);
+        }
 
-			return super.fileForClass(packageName, className);
-		}
+        protected File fileForSuperclass(String packageName, String className)
+            throws Exception {
 
-		protected File fileForSuperclass(String packageName, String className)
-			throws Exception {
+            if (isReservedName(className)) {
+                return null;
+            }
+            return super.fileForSuperclass(packageName, className);
+        }
 
-			if (isReservedName(className)) {
-				return null;
-			}
-			return super.fileForSuperclass(packageName, className);
-		}
+        protected boolean isReservedName(String className) {
+            if (className.startsWith(MapClassGenerator.SUPERCLASS_PREFIX)) {
+                className =
+                    className.substring(MapClassGenerator.SUPERCLASS_PREFIX.length());
+            }
 
-		protected boolean isReservedName(String className) {
-			if (className.startsWith(MapClassGenerator.SUPERCLASS_PREFIX)) {
-				className =
-					className.substring(
-						MapClassGenerator.SUPERCLASS_PREFIX.length());
-			}
+            for (int i = 0; i < RESERVED_CLASS_NAMES.length; i++) {
+                if (RESERVED_CLASS_NAMES[i].equals(className)) {
+                    return true;
+                }
+            }
 
-			for (int i = 0; i < RESERVED_CLASS_NAMES.length; i++) {
-				if (RESERVED_CLASS_NAMES[i].equals(className)) {
-					return true;
-				}
-			}
+            return false;
+        }
+        
+        /**
+         * Fixes some Classgenerator defaults assumed by Cayenne.
+         */
+        protected void initClassGenerator(
+                ClassGenerator gen,
+                ObjEntity entity,
+                boolean superclass) {
 
-			return false;
-		}
+            super.initClassGenerator(gen, entity, superclass);
 
-	}
+            // fix default superclass
+            if (gen.getSuperClassName() == null
+                    || gen.getSuperClassName().indexOf("org.objectstyle.cayenne") >= 0) {
+
+                gen.setSuperClassName("EOGenericRecord");
+            }
+        }
+
+    }
 }

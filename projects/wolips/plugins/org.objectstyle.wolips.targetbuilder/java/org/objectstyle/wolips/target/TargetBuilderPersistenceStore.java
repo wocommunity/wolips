@@ -74,7 +74,6 @@ import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.ISaveContext;
 import org.eclipse.core.resources.ISaveParticipant;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.internal.core.builder.JavaBuilder;
 import org.eclipse.jdt.internal.core.builder.State;
@@ -108,7 +107,7 @@ public class TargetBuilderPersistenceStore implements ISaveParticipant, IResourc
 		f.delete();
 	}
 
-	public void prepareToSave(ISaveContext context) throws CoreException
+	public void prepareToSave(ISaveContext context)
 	{}
 
 	public void rollback(ISaveContext context)
@@ -121,7 +120,7 @@ public class TargetBuilderPersistenceStore implements ISaveParticipant, IResourc
 		f.delete();
 	}
 
-	public void saving(ISaveContext context) throws CoreException
+	public void saving(ISaveContext context)
 	{
 		switch (context.getKind())
 		{
@@ -150,7 +149,7 @@ public class TargetBuilderPersistenceStore implements ISaveParticipant, IResourc
 		}
 	}
 
-	protected void writeImportantState(File target) throws CoreException
+	protected void writeImportantState(File target)
 	{
 		try
 		{
