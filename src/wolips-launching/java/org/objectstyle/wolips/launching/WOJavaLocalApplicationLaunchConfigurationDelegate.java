@@ -267,28 +267,27 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 		IProject[] projects =
 			ResourcesPlugin.getWorkspace().getRoot().getProjects();
 		for (int i = 0; i < projects.length; i++) {
-			if (isAFramework(projects[i], configuration)) {
-				if (returnValue.length() > 0)
-					returnValue = returnValue + ",";
+			if (isValidProjectPath(projects[i], configuration)) {
+				if (isAFramework(projects[i], configuration)) {
+					if (returnValue.length() > 0)
+						returnValue = returnValue + ",";
 
-				returnValue =
-					returnValue
-						+ "\""
-						+ projects[i].getLocation().toOSString()
-						+ "\"";
-			}
-			if (isTheLaunchApp(projects[i], configuration)) {
-				if (returnValue.length() > 0)
-					returnValue = returnValue + ",";
+					returnValue =
+						returnValue
+							+ "\""
+							+ projects[i].getLocation().toOSString()
+							+ "\"";
+				}
+				if (isTheLaunchApp(projects[i], configuration)) {
+					if (returnValue.length() > 0)
+						returnValue = returnValue + ",";
 
-				returnValue =
-					returnValue
-						+ "\""
+					returnValue = returnValue + "\""
 						//TODO: only add this when the app is not on the top level
-						//+ projects[i].getLocation().toOSString()
-						//otherwise
-						+ ".."
-						+ "\"";
+		//+ projects[i].getLocation().toOSString()
+		//otherwise
+	+".." + "\"";
+				}
 			}
 		}
 		returnValue = FileStringScanner.replace(returnValue, "\\", "/");
@@ -296,6 +295,23 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 		if ("".equals(returnValue))
 			returnValue = "\"\"";
 		return returnValue;
+	}
+	/**
+	 * Method isValidProjectPath.
+	 * @param project
+	 * @param configuration
+	 * @return boolean
+	 */
+	private boolean isValidProjectPath(
+		IProject project,
+		ILaunchConfiguration configuration) {
+		IJavaProject buildProject = null;
+		try {
+			return project.getLocation().toOSString().indexOf("-") == -1;
+		} catch (Exception anException) {
+			WOLipsLog.log(anException);
+			return false;
+		}
 	}
 	/**
 	 * Method isTheLaunchAppOrFramework.
@@ -330,9 +346,11 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 		try {
 			buildProject = this.getJavaProject(configuration);
 			WOLipsProject woLipsProject = new WOLipsProject(project);
-			if(woLipsProject.getNaturesAccessor().isFramework() && projectISReferencedByProject(
-			project,
-			buildProject.getProject())) return true;
+			if (woLipsProject.getNaturesAccessor().isFramework()
+				&& projectISReferencedByProject(
+					project,
+					buildProject.getProject()))
+				return true;
 		} catch (Exception anException) {
 			WOLipsLog.log(anException);
 			return false;
