@@ -345,7 +345,9 @@ public final class RelatedView extends ViewPart implements ISelectionListener, I
 			IStructuredSelection sel = (IStructuredSelection) selection;
 
 			Object selectedElement = sel.getFirstElement();
-			viewer.setInput(selectedElement);
+			Object viewerInput = viewer.getInput();
+			if(viewerInput == null || (!viewerInput.equals(selectedElement)))
+				viewer.setInput(selectedElement);
 		}
 	}
 
@@ -385,6 +387,13 @@ public final class RelatedView extends ViewPart implements ISelectionListener, I
 	public void partClosed(IWorkbenchPart part) {
 	}
 	public void partOpened(IWorkbenchPart part) {
+		if (part instanceof IEditorPart) {
+			IEditorInput input = ((IEditorPart)part).getEditorInput();
+			if (input instanceof IFileEditorInput) {
+				IWorkingCopyManager manager = JavaPlugin.getDefault().getWorkingCopyManager();
+				viewer.setInput(manager.getWorkingCopy(input));
+			}
+		}
 	}
 	public void partDeactivated(IWorkbenchPart part) {
 	}
