@@ -74,30 +74,45 @@ public class WOLipsPluginImages {
 	private static Image WOFRAMEWORK_IMAGE;
 	private static Image WOSTANDARD_FRAMEWORK_IMAGE;
 	
+	/**
+	 * @return Returns the image descriptor.
+	 */
 	public static ImageDescriptor WOCOMPONENT_WIZARD_BANNER() {
 		if(WOCOMPONENT_WIZARD_BANNER == null)
 			WOCOMPONENT_WIZARD_BANNER = createImageDescriptor("icons/wizban/webobjects_wiz.gif");
 		return WOCOMPONENT_WIZARD_BANNER;
 	}
 	
+	/**
+	 * @return Returns the image descriptor.
+	 */
 	public static final ImageDescriptor WOPROJECT_WIZARD_BANNER() {
 		if(WOPROJECT_WIZARD_BANNER == null)
 			WOPROJECT_WIZARD_BANNER = createImageDescriptor("icons/wizban/webobjects_wiz.gif");
 		return WOPROJECT_WIZARD_BANNER;
 	}
 	
+	/**
+	 * @return Returns the image descriptor.
+	 */
 	public static final Image WOFRAMEWORK_ROOT_IMAGE() {
 		if(WOFRAMEWORK_ROOT_IMAGE == null)
 			WOFRAMEWORK_ROOT_IMAGE = createImageDescriptor("icons/frameworks/framework_root.gif").createImage(false);
 		return WOFRAMEWORK_ROOT_IMAGE;
 	}
 	
+	/**
+	 * @return Returns the image descriptor.
+	 */
 	public static final Image WOFRAMEWORK_IMAGE() {
 		if(WOFRAMEWORK_IMAGE == null)
 			WOFRAMEWORK_IMAGE = createImageDescriptor("icons/frameworks/framework.gif").createImage(false);
 		return WOFRAMEWORK_IMAGE;
 	}
 	
+	/**
+	 * @return Returns the image descriptor.
+	 */
 	public static final Image WOSTANDARD_FRAMEWORK_IMAGE() {
 		if(WOSTANDARD_FRAMEWORK_IMAGE == null)
 			WOSTANDARD_FRAMEWORK_IMAGE = createImageDescriptor("icons/frameworks/standard_framework.gif").createImage(false);

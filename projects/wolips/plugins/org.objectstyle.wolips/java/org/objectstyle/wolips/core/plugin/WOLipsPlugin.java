@@ -52,6 +52,7 @@ import java.net.URL;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.objectstyle.wolips.commons.logging.PluginLogger;
 import org.objectstyle.wolips.core.preferences.Preferences;
+import org.osgi.framework.BundleContext;
 /**
  * The main plugin class to be used in the desktop.
  * 
@@ -61,25 +62,15 @@ import org.objectstyle.wolips.core.preferences.Preferences;
 public class WOLipsPlugin extends AbstractUIPlugin {
 	//The plugin.
 	private static WOLipsPlugin plugin;
-	private static final String PLUGIN_ID = "org.objectstyle.wolips";
-	private PluginLogger pluginLogger = new PluginLogger(
-			WOLipsPlugin.PLUGIN_ID, false);
+	private PluginLogger pluginLogger = null;
 	/**
 	 * The constructor.
-	 * 
-	 * @param descriptor
 	 */
 	//The constructur is very sensitive. Make sure that your stuff works.
 	//If this cunstructor fails, the whole plugin will be disabled.
 	public WOLipsPlugin() {
 		super();
 		plugin = this;
-		try {
-			// set up missing preferences
-			Preferences.setDefaults();
-		} catch (Exception exception) {
-			pluginLogger.log("Exception in WOLips constructor: ", exception);
-		}
 	}
 	/**
 	 * Returns the shared instance.
@@ -113,5 +104,24 @@ public class WOLipsPlugin extends AbstractUIPlugin {
 	 */
 	public PluginLogger getPluginLogger() {
 		return pluginLogger;
+	}
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.core.runtime.Plugin#start(org.osgi.framework.BundleContext)
+	 */
+	/**
+	 * @param context
+	 * @throws Exception
+	 */
+	public void start(BundleContext context) throws Exception {
+		super.start(context);
+		pluginLogger = new PluginLogger(WOLipsPlugin.getPluginId(), false);
+		try {
+			// set up missing preferences
+			Preferences.setDefaults();
+		} catch (Exception exception) {
+			pluginLogger.log("Exception in WOLips constructor: ", exception);
+		}
 	}
 }

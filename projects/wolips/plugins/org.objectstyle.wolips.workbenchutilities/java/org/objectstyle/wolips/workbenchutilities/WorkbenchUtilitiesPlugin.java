@@ -1,61 +1,59 @@
 /* ====================================================================
-*
-* The ObjectStyle Group Software License, Version 1.0
-*
-* Copyright (c) 2004 The ObjectStyle Group
-* and individual authors of the software.  All rights reserved.
-*
-* Redistribution and use in source and binary forms, with or without
-* modification, are permitted provided that the following conditions
-* are met:
-*
-* 1. Redistributions of source code must retain the above copyright
-*    notice, this list of conditions and the following disclaimer.
-*
-* 2. Redistributions in binary form must reproduce the above copyright
-*    notice, this list of conditions and the following disclaimer in
-*    the documentation and/or other materials provided with the
-*    distribution.
-*
-* 3. The end-user documentation included with the redistribution, if
-*    any, must include the following acknowlegement:
-*       "This product includes software developed by the
-*        ObjectStyle Group (http://objectstyle.org/)."
-*    Alternately, this acknowlegement may appear in the software itself,
-*    if and wherever such third-party acknowlegements normally appear.
-*
-* 4. The names "ObjectStyle Group" and "Cayenne"
-*    must not be used to endorse or promote products derived
-*    from this software without prior written permission. For written
-*    permission, please contact andrus@objectstyle.org.
-*
-* 5. Products derived from this software may not be called "ObjectStyle"
-*    nor may "ObjectStyle" appear in their names without prior written
-*    permission of the ObjectStyle Group.
-*
-* THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
-* WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-* OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-* DISCLAIMED.  IN NO EVENT SHALL THE OBJECTSTYLE GROUP OR
-* ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-* LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
-* USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-* ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-* OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
-* OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
-* SUCH DAMAGE.
-* ====================================================================
-*
-* This software consists of voluntary contributions made by many
-* individuals on behalf of the ObjectStyle Group.  For more
-* information on the ObjectStyle Group, please see
-* <http://objectstyle.org/>.
-*
-*/
-
+ *
+ * The ObjectStyle Group Software License, Version 1.0
+ *
+ * Copyright (c) 2004 The ObjectStyle Group
+ * and individual authors of the software.  All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in
+ *    the documentation and/or other materials provided with the
+ *    distribution.
+ *
+ * 3. The end-user documentation included with the redistribution, if
+ *    any, must include the following acknowlegement:
+ *       "This product includes software developed by the
+ *        ObjectStyle Group (http://objectstyle.org/)."
+ *    Alternately, this acknowlegement may appear in the software itself,
+ *    if and wherever such third-party acknowlegements normally appear.
+ *
+ * 4. The names "ObjectStyle Group" and "Cayenne"
+ *    must not be used to endorse or promote products derived
+ *    from this software without prior written permission. For written
+ *    permission, please contact andrus@objectstyle.org.
+ *
+ * 5. Products derived from this software may not be called "ObjectStyle"
+ *    nor may "ObjectStyle" appear in their names without prior written
+ *    permission of the ObjectStyle Group.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
+ * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED.  IN NO EVENT SHALL THE OBJECTSTYLE GROUP OR
+ * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+ * USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
+ * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ * ====================================================================
+ *
+ * This software consists of voluntary contributions made by many
+ * individuals on behalf of the ObjectStyle Group.  For more
+ * information on the ObjectStyle Group, please see
+ * <http://objectstyle.org/>.
+ *
+ */
 package org.objectstyle.wolips.workbenchutilities;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.MissingResourceException;
@@ -80,7 +78,6 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.objectstyle.wolips.commons.logging.PluginLogger;
-
 /**
  * The main plugin class to be used in the desktop.
  */
@@ -90,9 +87,8 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 	private static WorkbenchUtilitiesPlugin plugin;
 	//Resource bundle.
 	private ResourceBundle resourceBundle;
-	
-	private PluginLogger pluginLogger = new PluginLogger(WorkbenchUtilitiesPlugin.PLUGIN_ID, false);
-	
+	private PluginLogger pluginLogger = new PluginLogger(
+			WorkbenchUtilitiesPlugin.PLUGIN_ID, false);
 	/**
 	 * The constructor.
 	 */
@@ -100,42 +96,41 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 		super();
 		plugin = this;
 		try {
-			resourceBundle   = ResourceBundle.getBundle("org.objectstyle.wolips.workbenchutilities.WorkbenchutilitiesPluginResources");
+			resourceBundle = ResourceBundle
+					.getBundle("org.objectstyle.wolips.workbenchutilities.WorkbenchutilitiesPluginResources");
 		} catch (MissingResourceException x) {
 			resourceBundle = null;
 		}
 	}
-
 	/**
 	 * @return Returns the shared instance.
 	 */
 	public static WorkbenchUtilitiesPlugin getDefault() {
 		return plugin;
 	}
-
 	/**
-	 * @return Returns the string from the plugin's resource bundle,
-	 * or 'key' if not found.
+	 * @return Returns the string from the plugin's resource bundle, or 'key' if
+	 *         not found.
 	 * @param key
 	 */
 	public static String getResourceString(String key) {
-		ResourceBundle bundle = WorkbenchUtilitiesPlugin.getDefault().getResourceBundle();
+		ResourceBundle bundle = WorkbenchUtilitiesPlugin.getDefault()
+				.getResourceBundle();
 		try {
 			return (bundle != null) ? bundle.getString(key) : key;
 		} catch (MissingResourceException e) {
 			return key;
 		}
 	}
-
 	/**
 	 * @return Returns the plugin's resource bundle,
 	 */
 	public ResourceBundle getResourceBundle() {
 		return resourceBundle;
 	}
-	
 	/**
 	 * Returns the PluginID.
+	 * 
 	 * @return
 	 */
 	public static String getPluginId() {
@@ -144,83 +139,82 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 		} else
 			return WorkbenchUtilitiesPlugin.PLUGIN_ID;
 	}
-
 	/**
 	 * Prints a Status.
-	 * @param status The status to log.
+	 * 
+	 * @param status
+	 *            The status to log.
 	 */
 	public static void log(IStatus status) {
 		WorkbenchUtilitiesPlugin.getDefault().getLog().log(status);
 	}
-
 	/**
 	 * Prints a Throwable.
+	 * 
 	 * @param e
 	 */
 	public static void log(Throwable e) {
-		WorkbenchUtilitiesPlugin.log(new Status(IStatus.ERROR, WorkbenchUtilitiesPlugin.getPluginId(), IStatus.ERROR, "Internal Error", e)); //$NON-NLS-1$
+		WorkbenchUtilitiesPlugin.log(new Status(IStatus.ERROR,
+				WorkbenchUtilitiesPlugin.getPluginId(), IStatus.ERROR,
+				"Internal Error", e)); //$NON-NLS-1$
 	}
-
 	/**
 	 * Utility method with conventions
+	 * 
 	 * @param shell
 	 * @param title
 	 * @param message
 	 * @param s
 	 */
-	public final static void errorDialog(
-		Shell shell,
-		String title,
-		String message,
-		IStatus s) {
+	public final static void errorDialog(Shell shell, String title,
+			String message, IStatus s) {
 		WorkbenchUtilitiesPlugin.log(s);
-		// if the 'message' resource string and the IStatus' message are the same,
+		// if the 'message' resource string and the IStatus' message are the
+		// same,
 		// don't show both in the dialog
 		if (s != null && message.equals(s.getMessage())) {
 			message = null;
 		}
 		ErrorDialog.openError(shell, title, message, s);
 	}
-
 	/**
 	 * Utility method with conventions
+	 * 
 	 * @param shell
 	 * @param title
 	 * @param message
 	 * @param t
 	 */
-	public final static void errorDialog(
-		Shell shell,
-		String title,
-		String message,
-		Throwable t) {
+	public final static void errorDialog(Shell shell, String title,
+			String message, Throwable t) {
 		WorkbenchUtilitiesPlugin.log(t);
 		IStatus status;
 		if (t instanceof CoreException) {
 			status = ((CoreException) t).getStatus();
-			// if the 'message' resource string and the IStatus' message are the same,
+			// if the 'message' resource string and the IStatus' message are the
+			// same,
 			// don't show both in the dialog
 			if (status != null && message.equals(status.getMessage())) {
 				message = null;
 			}
 		} else {
-			status = new Status(IStatus.ERROR, WorkbenchUtilitiesPlugin.getPluginId(), IStatus.ERROR, "Error within Debug UI: ", t); //$NON-NLS-1$	
+			status = new Status(IStatus.ERROR, WorkbenchUtilitiesPlugin
+					.getPluginId(), IStatus.ERROR, "Error within Debug UI: ", t); //$NON-NLS-1$	
 		}
 		ErrorDialog.openError(shell, title, message, status);
 	}
-
 	/**
-			 * Method projectISReferencedByProject.
-			 * @param child
-			 * @param mother
-			 * @return boolean
-			 */
-	private static boolean projectISReferencedByProject(
-		IProject child,
-		IProject mother) {
+	 * Method projectISReferencedByProject.
+	 * 
+	 * @param child
+	 * @param mother
+	 * @return boolean
+	 */
+	private static boolean projectISReferencedByProject(IProject child,
+			IProject mother) {
 		IProject[] projects = null;
 		try {
-			if(!mother.isOpen() || !mother.isAccessible())
+			if (!mother.isOpen() || !mother.isAccessible())
 				//return maybe;
 				return false;
 			projects = mother.getReferencedProjects();
@@ -234,7 +228,6 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 		}
 		return false;
 	}
-
 	/**
 	 * @param project
 	 * @param name
@@ -243,20 +236,18 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 	 * @return The list of resources.
 	 */
 	public final static List findResourcesInProjectByNameAndExtensions(
-		IProject project,
-		String name,
-		String[] extensions,
-		boolean includesReferencedProjects) {
+			IProject project, String name, String[] extensions,
+			boolean includesReferencedProjects) {
 		if (includesReferencedProjects) {
-			IProject[] projects =
-				WorkbenchUtilitiesPlugin.getWorkspace().getRoot().getProjects();
+			IProject[] projects = WorkbenchUtilitiesPlugin.getWorkspace()
+					.getRoot().getProjects();
 			ArrayList referencedProjects = new ArrayList();
 			for (int i = 0; i < projects.length; i++) {
-				if (WorkbenchUtilitiesPlugin
-					.projectISReferencedByProject(projects[i], project)
-					|| WorkbenchUtilitiesPlugin.projectISReferencedByProject(
-						project,
-						projects[i]))
+				if (WorkbenchUtilitiesPlugin.projectISReferencedByProject(
+						projects[i], project)
+						|| WorkbenchUtilitiesPlugin
+								.projectISReferencedByProject(project,
+										projects[i]))
 					referencedProjects.add(projects[i]);
 			}
 			int numReferencedProjects = referencedProjects.size();
@@ -266,19 +257,15 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 			}
 			searchScope[numReferencedProjects] = project;
 			return WorkbenchUtilitiesPlugin
-				.findResourcesInResourcesByNameAndExtensions(
-				searchScope,
-				name,
-				extensions);
+					.findResourcesInResourcesByNameAndExtensions(searchScope,
+							name, extensions);
 		}
 		IProject[] searchScope = new IProject[1];
 		searchScope[0] = project;
-		return WorkbenchUtilitiesPlugin.findResourcesInResourcesByNameAndExtensions(
-			searchScope,
-			name,
-			extensions);
+		return WorkbenchUtilitiesPlugin
+				.findResourcesInResourcesByNameAndExtensions(searchScope, name,
+						extensions);
 	}
-
 	/**
 	 * @param resources
 	 * @param name
@@ -286,19 +273,14 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 	 * @return
 	 */
 	public final static List findResourcesInResourcesByNameAndExtensions(
-		IResource[] resources,
-		String name,
-		String[] extensions) {
+			IResource[] resources, String name, String[] extensions) {
 		ArrayList list = new ArrayList();
 		for (int i = 0; i < resources.length; i++)
-			list.addAll(
-					WorkbenchUtilitiesPlugin.findResourcesInResourceByNameAndExtensions(
-					resources[i],
-					name,
-					extensions));
+			list.addAll(WorkbenchUtilitiesPlugin
+					.findResourcesInResourceByNameAndExtensions(resources[i],
+							name, extensions));
 		return list;
 	}
-
 	/**
 	 * @param resource
 	 * @param name
@@ -306,61 +288,48 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 	 * @return
 	 */
 	public final static List findResourcesInResourceByNameAndExtensions(
-		IResource resource,
-		String name,
-		String[] extensions) {
+			IResource resource, String name, String[] extensions) {
 		ArrayList list = new ArrayList();
 		if ((resource != null)) {
 			if ((resource instanceof IContainer)
-				|| (resource instanceof IProject)) {
+					|| (resource instanceof IProject)) {
 				for (int i = 0; i < extensions.length; i++) {
-					IResource foundResource =
-						((IContainer) resource).findMember(
-							name + "." + extensions[i]);
+					IResource foundResource = ((IContainer) resource)
+							.findMember(name + "." + extensions[i]);
 					if ((foundResource != null))
 						list.add(foundResource);
 				}
-				IResource[] members = WorkbenchUtilitiesPlugin.members(resource);
+				IResource[] members = WorkbenchUtilitiesPlugin
+						.members(resource);
 				WorkbenchUtilitiesPlugin
-					.findResourcesInResourceByNameAndExtensionsAndAddToArrayList(
-					members,
-					name,
-					extensions,
-					list);
+						.findResourcesInResourceByNameAndExtensionsAndAddToArrayList(
+								members, name, extensions, list);
 			}
 		}
 		return list;
 	}
-
 	private final static void findResourcesInResourceByNameAndExtensionsAndAddToArrayList(
-		IResource[] resources,
-		String name,
-		String[] extensions,
-		ArrayList list) {
+			IResource[] resources, String name, String[] extensions,
+			ArrayList list) {
 		for (int i = 0; i < resources.length; i++) {
 			IResource resource = resources[i];
-			if ((resource != null)
-				&& (resource instanceof IContainer)
-				&& (!resource.toString().endsWith(".framework"))
-				&& (!resource.toString().endsWith(".woa"))) {
+			if ((resource != null) && (resource instanceof IContainer)
+					&& (!resource.toString().endsWith(".framework"))
+					&& (!resource.toString().endsWith(".woa"))) {
 				if ((resource != null)) {
 					if ((resource instanceof IContainer)
-						|| (resource instanceof IProject)) {
+							|| (resource instanceof IProject)) {
 						for (int j = 0; j < extensions.length; j++) {
-							IResource foundResource =
-								((IContainer) resource).findMember(
-									name + "." + extensions[j]);
+							IResource foundResource = ((IContainer) resource)
+									.findMember(name + "." + extensions[j]);
 							if ((foundResource != null))
 								list.add(foundResource);
 						}
-						IResource[] members =
-							WorkbenchUtilitiesPlugin.members(resource);
+						IResource[] members = WorkbenchUtilitiesPlugin
+								.members(resource);
 						WorkbenchUtilitiesPlugin
-							.findResourcesInResourceByNameAndExtensionsAndAddToArrayList(
-							members,
-							name,
-							extensions,
-							list);
+								.findResourcesInResourceByNameAndExtensionsAndAddToArrayList(
+										members, name, extensions, list);
 					}
 				}
 			}
@@ -368,53 +337,49 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 	}
 	/**
 	 * Method findFilesInResourceByName.
+	 * 
 	 * @param anArrayList
 	 * @param aResource
 	 * @param aFileName
 	 */
-	public final static void findFilesInResourceByName(
-		ArrayList anArrayList,
-		IResource aResource,
-		String aFileName) {
+	public final static void findFilesInResourceByName(ArrayList anArrayList,
+			IResource aResource, String aFileName) {
 		if ((aResource != null)) {
 			if ((aResource instanceof IContainer)
-				|| (aResource instanceof IProject)) {
-				IResource resource =
-					((IContainer) aResource).findMember(aFileName);
+					|| (aResource instanceof IProject)) {
+				IResource resource = ((IContainer) aResource)
+						.findMember(aFileName);
 				if ((resource != null) && (resource instanceof IFile))
 					anArrayList.add(resource);
-				IResource[] members = WorkbenchUtilitiesPlugin.members(aResource);
-				WorkbenchUtilitiesPlugin.findFilesInResourceByName(
-					anArrayList,
-					members,
-					aFileName);
+				IResource[] members = WorkbenchUtilitiesPlugin
+						.members(aResource);
+				WorkbenchUtilitiesPlugin.findFilesInResourceByName(anArrayList,
+						members, aFileName);
 			}
 		}
 	}
 	/**
 	 * Method findFilesInResourceByName.
+	 * 
 	 * @param anArrayList
 	 * @param aResource
 	 * @param aFileName
 	 */
-	private final static void findFilesInResourceByName(
-		ArrayList anArrayList,
-		IResource[] aResource,
-		String aFileName) {
+	private final static void findFilesInResourceByName(ArrayList anArrayList,
+			IResource[] aResource, String aFileName) {
 		for (int i = 0; i < aResource.length; i++) {
 			IResource memberResource = aResource[i];
 			if ((memberResource != null)
-				&& (memberResource instanceof IContainer)
-				&& (!memberResource.toString().endsWith(".framework"))
-				&& (!memberResource.toString().endsWith(".woa")))
-				WorkbenchUtilitiesPlugin.findFilesInResourceByName(
-					anArrayList,
-					memberResource,
-					aFileName);
+					&& (memberResource instanceof IContainer)
+					&& (!memberResource.toString().endsWith(".framework"))
+					&& (!memberResource.toString().endsWith(".woa")))
+				WorkbenchUtilitiesPlugin.findFilesInResourceByName(anArrayList,
+						memberResource, aFileName);
 		}
 	}
 	/**
 	 * Returns the ActiveEditor.
+	 * 
 	 * @return IEditorPart
 	 */
 	public final static IEditorPart getActiveEditor() {
@@ -426,6 +391,7 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 	}
 	/**
 	 * Method getEditorInput.
+	 * 
 	 * @return IEditorInput
 	 */
 	public final static IEditorInput getActiveEditorInput() {
@@ -439,7 +405,8 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 	 * @return Returns the active page.
 	 */
 	public final static IWorkbenchPage getActivePage() {
-		return WorkbenchUtilitiesPlugin.getActiveWorkbenchWindow().getActivePage();
+		return WorkbenchUtilitiesPlugin.getActiveWorkbenchWindow()
+				.getActivePage();
 	}
 	/**
 	 * @return Returns the active workbench shell.
@@ -451,20 +418,21 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 	 * @return Returns the the active workbench window.
 	 */
 	public final static IWorkbenchWindow getActiveWorkbenchWindow() {
-		return WorkbenchUtilitiesPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow();
+		return WorkbenchUtilitiesPlugin.getDefault().getWorkbench()
+				.getActiveWorkbenchWindow();
 	}
-
 	/**
 	 * Method getShell.
+	 * 
 	 * @return Shell
 	 */
 	public final static Shell getShell() {
 		if (WorkbenchUtilitiesPlugin.getActiveWorkbenchWindow() != null) {
-			return WorkbenchUtilitiesPlugin.getActiveWorkbenchWindow().getShell();
+			return WorkbenchUtilitiesPlugin.getActiveWorkbenchWindow()
+					.getShell();
 		}
 		return null;
 	}
-	
 	/**
 	 * @return Returns the workspace instance.
 	 */
@@ -473,6 +441,7 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 	}
 	/**
 	 * Method members.
+	 * 
 	 * @param aResource
 	 * @return IResource[]
 	 */
@@ -487,6 +456,7 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 	}
 	/**
 	 * Method open.
+	 * 
 	 * @param anArrayList
 	 */
 	public final static void open(ArrayList anArrayList) {
@@ -498,46 +468,44 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 	}
 	/**
 	 * Method open.
-	 * @param file The file to open.
+	 * 
+	 * @param file
+	 *            The file to open.
 	 */
 	public final static void open(IFile file) {
 		WorkbenchUtilitiesPlugin.open(file, false, null);
 	}
-
 	/**
 	 * Method open.
-	 * @param file The file to open.
-	 * @param forceToOpenIntextEditor If forceToOpenIntextEditor is set to true the resource opens in a texteditor.
+	 * 
+	 * @param file
+	 *            The file to open.
+	 * @param forceToOpenIntextEditor
+	 *            If forceToOpenIntextEditor is set to true the resource opens
+	 *            in a texteditor.
 	 * @param editor
 	 */
-	public final static void open(
-		IFile file,
-		boolean forceToOpenIntextEditor,
-		String editor) {
-		IWorkbenchWindow workbenchWindow =
-			WorkbenchUtilitiesPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow();
+	public final static void open(IFile file, boolean forceToOpenIntextEditor,
+			String editor) {
+		IWorkbenchWindow workbenchWindow = WorkbenchUtilitiesPlugin
+				.getDefault().getWorkbench().getActiveWorkbenchWindow();
 		if (workbenchWindow != null) {
 			IWorkbenchPage workbenchPage = workbenchWindow.getActivePage();
 			if (workbenchPage != null) {
 				try {
-					IEditorDescriptor editorDescriptor =
-						WorkbenchUtilitiesPlugin
-					.getDefault()
-					.getWorkbench()
-					.getEditorRegistry()
-					.getDefaultEditor(
-							file.getName());
+					IEditorDescriptor editorDescriptor = WorkbenchUtilitiesPlugin
+							.getDefault().getWorkbench().getEditorRegistry()
+							.getDefaultEditor(file.getName());
 					if (forceToOpenIntextEditor) {
-						workbenchPage.openEditor(new FileEditorInput(file), editor);
-						WorkbenchUtilitiesPlugin
-							.getDefault()
-							.getWorkbench()
-							.getEditorRegistry()
-							.setDefaultEditor(
-							file.getName(),
-							editorDescriptor.getId());
+						workbenchPage.openEditor(new FileEditorInput(file),
+								editor);
+						WorkbenchUtilitiesPlugin.getDefault().getWorkbench()
+								.getEditorRegistry().setDefaultEditor(
+										file.getName(),
+										editorDescriptor.getId());
 					} else
-						workbenchPage.openEditor(new FileEditorInput(file), editorDescriptor.getId());
+						workbenchPage.openEditor(new FileEditorInput(file),
+								editorDescriptor.getId());
 				} catch (Exception anException) {
 					WorkbenchUtilitiesPlugin.log(anException);
 				}
@@ -566,14 +534,13 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 			MessageDialog.openError(shell, title, target.getMessage());
 			//WOLipsLog.log(target);
 		}
-		WorkbenchUtilitiesPlugin.getDefault().getPluginLogger().log(message, target);
+		WorkbenchUtilitiesPlugin.getDefault().getPluginLogger().log(message,
+				target);
 	}
-	
 	/**
 	 * @return Returns the pluginLogger.
 	 */
 	public PluginLogger getPluginLogger() {
 		return pluginLogger;
 	}
-
 }
