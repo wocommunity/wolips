@@ -106,10 +106,16 @@
                 <td>PBIndex framework support, PBXIndex, documentation.</td>
             </tr>
              <tr>
-                <td>Chuck Hill </td>
+                <td>Chuck Hill</td>
                 <td>chill at global-village dot net</td>
                 <td><a href="http://www.global-village.net">http://www.global-village.net</a></td>
                 <td>chief evangelist</td>
+            </tr>
+             <tr>
+                <td>Antoine Perdaens</td>
+                <td>tlg at denali dot be</td>
+                <td><a href="www.denali.be">http://www.denali.be</a></td>
+                <td>XCode project file serialisation</td>
             </tr>
             </table>
             </subsection>
