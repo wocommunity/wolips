@@ -60,7 +60,7 @@ import java.net.MalformedURLException;
 
 public class WOFrameworkBuilder extends WOBuilder {
 	
-	public String buildFileLocation() throws MalformedURLException, IOException {
-		return getProject().getFile("build.xml").getLocation().toOSString();
+	public String buildFile() {
+		return "build.xml";
 	}
 }

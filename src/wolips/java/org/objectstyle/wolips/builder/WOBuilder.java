@@ -55,12 +55,13 @@
  */
  package org.objectstyle.wolips.builder;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.Hashtable;
+import java.util.ListIterator;
 import java.util.Map;
+import java.util.Vector;
 
 import org.eclipse.ant.core.AntRunner;
+import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
@@ -72,6 +73,8 @@ import org.objectstyle.wolips.wo.WOVariables;
  * @author uli
  */
 public class WOBuilder extends IncrementalProjectBuilder {
+	
+	private static Vector marker = new Vector();
 	
 	public static String WOLIPS_NEXT_ROOT = "wolips.next.root";
 	/**
@@ -85,22 +88,53 @@ public class WOBuilder extends IncrementalProjectBuilder {
 		throws CoreException {									
 		if (getProject() == null || !getProject().exists()) 
 			return new IProject[0];
-		
+		Exception anException = null;
 		try {
-			WOLipsBuild.initWithProject(getProject());
-			AntRunner anAntRunner = new AntRunner();
-			anAntRunner.setBuildFileLocation(this.buildFileLocation());
-			Hashtable aHashtable = this.properties();
-			anAntRunner.addUserProperties(aHashtable);
-			anAntRunner.run(monitor);
-			getProject().refreshLocal(getProject().DEPTH_INFINITE, monitor);
+			getProject().deleteMarkers(IMarker.TASK, false, getProject().DEPTH_ONE);
+			String aBuildFile = this.buildFile();
+			if(checkIfBuildfileExist(aBuildFile)) {
+				getProject().getFile(aBuildFile).deleteMarkers(IMarker.TASK, false, getProject().DEPTH_ONE);
+				//WOLipsBuild.initWithProject(getProject());
+				AntRunner anAntRunner = new AntRunner();
+				anAntRunner.setBuildFileLocation(getProject().getFile(aBuildFile).getLocation().toOSString());
+				Hashtable aHashtable = this.properties();
+				anAntRunner.addUserProperties(aHashtable);
+				anAntRunner.run(monitor);
+				getProject().refreshLocal(getProject().DEPTH_INFINITE, monitor);
+			}
 		} 
 		catch(Exception e) {
-				WOLipsPlugin.log(e);
+				anException = e;
 		}
-		
+		if(anException != null) {
+			try {
+				IMarker aMarker = getProject().getFile(this.buildFile()).createMarker(IMarker.TASK);
+				aMarker.setAttribute(IMarker.MESSAGE, "WOLips: " + anException.getMessage() + " Please visit the Eclipse log for mor details.");
+				aMarker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
+			}
+			catch(Exception e) {
+			WOLipsPlugin.log(e);
+			}
+		}
 		return new IProject[0];
-		
+	}
+
+
+	private boolean checkIfBuildfileExist(String aBuildFile) {
+		try {
+			if(getProject().getFile(aBuildFile).exists()) return true;
+		}
+		catch (Exception anException) {
+		}
+		try {
+			IMarker aMarker = getProject().createMarker(IMarker.TASK);
+			aMarker.setAttribute(IMarker.MESSAGE, "WOLips: Can not find: " + this.buildFile());
+			aMarker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
+		}
+		catch (Exception anException) {
+			WOLipsPlugin.log(anException);
+		}
+		return false;
 	}
 			
 	public Hashtable properties() {
@@ -109,7 +143,7 @@ public class WOBuilder extends IncrementalProjectBuilder {
 		return aHashtable;
 	}
 	
-	public String buildFileLocation() throws MalformedURLException, IOException  {
+	public String buildFile() {
 		return "";
 	}
 		

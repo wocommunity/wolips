@@ -71,7 +71,7 @@ public class WOApplicationBuilder extends WOBuilder {
 		super();
 	}
 	
-	public String buildFileLocation() throws MalformedURLException, IOException {
-		return getProject().getFile("build.xml").getLocation().toOSString();
+	public String buildFile() {
+		return "build.xml";
 	}
 }
