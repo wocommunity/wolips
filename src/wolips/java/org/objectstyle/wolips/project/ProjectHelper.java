@@ -247,7 +247,7 @@ public class ProjectHelper implements IWOLipsPluginConstants {
 	}
 	/**
 	 * Method getSubprojectSourceFolder. Searches classpath source entries for correspondending
-	 * subproject source folder (subprojectFolder.getName().[IWOLipsPluginConstants.EXT_SRC]
+	 * subproject source folder (subprojectFolder.getName()/[IWOLipsPluginConstants.EXT_SRC]
 	 * @param subprojectFolder
 	 * @return IFolder
 	 */
@@ -257,10 +257,7 @@ public class ProjectHelper implements IWOLipsPluginConstants {
 		for (int i = 0; i < subprojectFolders.size(); i++) {
 			if (((IFolder) subprojectFolders.get(i))
 				.getName()
-				.equals(
-					subprojectFolder.getName()
-						+ "."
-						+ IWOLipsPluginConstants.EXT_SRC)) {
+				.equals(IWOLipsPluginConstants.EXT_SRC)) {
 				return (IFolder) subprojectFolders.get(i);
 			}
 		}
@@ -268,7 +265,7 @@ public class ProjectHelper implements IWOLipsPluginConstants {
 		IFolder subprojectSourceFolder =
 			subprojectFolder.getProject().getFolder(
 				subprojectFolder.getName()
-					+ "."
+					+ "/"
 					+ IWOLipsPluginConstants.EXT_SRC);
 		if (!subprojectSourceFolder.exists()) {
 			try {
@@ -304,7 +301,7 @@ public class ProjectHelper implements IWOLipsPluginConstants {
 					&& classpathEntries[i].getPath().toString().indexOf(
 						"."
 							+ IWOLipsPluginConstants.EXT_SUBPROJECT
-							+ "."
+							+ "/"
 							+ IWOLipsPluginConstants.EXT_SRC)
 						!= -1) {
 					foundFolders.add(
