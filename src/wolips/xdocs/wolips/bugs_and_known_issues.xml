@@ -4,7 +4,9 @@
     
 <body>
 	<section name="WOLips">
-		<p><a href="wizards.html">wizards</a>
+		<p><a href="download.html">download</a>
+		<a href="install.html">install</a>
+		<a href="wizards.html">wizards</a>
 		<a href="popup.html">popup</a>
 		<a href="manipulating_the_build_process.html">manipulating the build process</a>
 		bugs and known issues
@@ -16,6 +18,7 @@
 	
 	<section name="Known Issues">
 		<p>Currently you can not build woapplications.</p>
+		<p>Please use a 1.4* version of ant to build wolips. There is currently no support for ant1.5.* within Eclipse.</p>
 	</section>
 </body>
 </document>
