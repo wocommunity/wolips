@@ -71,5 +71,4 @@ public class NewWOApplicationWizard extends NewWOProjectWizard {
 		super();
 		projectTemplateID = WOVariables.woProjectTypeJavaApplication();
 	}
-
 }

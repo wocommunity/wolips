@@ -99,11 +99,17 @@ public class FileFromTemplateCreator {
 			"directAction",
 			"applicationproject",
 			"frameworkproject",
-			"makefile",
-			"makefile.preamble",
-			"makefile.postamble",
+			"woapplication.makefile",
+			"woapplication.makefile.preamble",
+			"woapplication.makefile.postamble",
+			"woframework.makefile",
+			"woframework.makefile.preamble",
+			"woframework.makefile.postamble",
 			"antwoapplication",
-			"antwoframework" };
+			"antwoframework",
+			"woapplication.custominfo.plist",
+			"woframework.custominfo.plist"
+			 };
 	private static Hashtable keyToIntegerDict;
 	private static ArrayList supportedExtensions;
 	private IFile fileToCreate;

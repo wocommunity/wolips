@@ -17,9 +17,9 @@
 		<p><a href="wizard_woapplication.html">WOApplication</a> <a href="wizard_woframework.html">WOFramework</a>WOComponent</p>
 	
 	<subsection name="WOComponent">
-		<p>Right click on your project root and select new-other</p>
-		<img src="/images/wolips/component_step_1.jpg"/>
-		<p>In the /wizard please select WO Version 5.* and WOComponent. Continue with next.</p>
+		<p>From the menu select new-other</p>
+		<img src="/images/wolips/step_1.jpg"/>
+		<p>In the wizard please select WO Version 5.* and Component. Continue with next.</p>
 		<img src="images/wolips/component_step_2.jpg"/>
 		<p>Enter a name for your new component and finish the dialog.</p>
 		<img src="/images/wolips/component_step_3.jpg"/>

@@ -106,7 +106,7 @@ public class WOLipsPlugin extends AbstractUIPlugin {
 	/**
 	 * Set this variable to true to get debug output
 	 */
-	public static final boolean debug = true;
+	public static final boolean debug = false;
 
 	/**
 	 * The constructor.
@@ -141,13 +141,6 @@ public class WOLipsPlugin extends AbstractUIPlugin {
 		super.startup();
 		WOClasspathUpdater.update();
 		Hashtable options = JavaCore.getOptions();
-		WOLipsPlugin.debug("before options: " + options);
-		String aFilter = (String)options.get(JavaCore.CORE_JAVA_BUILD_RESOURCE_COPY_FILTER);
-		if((aFilter != null) && (aFilter.length() > 0)) aFilter = aFilter + ",";
-		aFilter = aFilter + WOLipsPlugin.getJavaBuildFilter();
-   		options.put(JavaCore.CORE_JAVA_BUILD_RESOURCE_COPY_FILTER, aFilter);
-   		JavaCore.setOptions(options);
-   		WOLipsPlugin.debug("after options: " + options);
 	}
 	
 	/**
