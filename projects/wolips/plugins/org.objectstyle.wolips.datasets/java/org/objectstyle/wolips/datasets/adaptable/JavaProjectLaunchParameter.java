@@ -85,27 +85,6 @@ public class JavaProjectLaunchParameter extends JavaProjectClasspath {
 				.startsWith("/System");
 	}
 	/**
-	 * Method projectISReferencedByProject.
-	 * 
-	 * @param child
-	 * @param mother
-	 * @return boolean
-	 */
-	public boolean projectISReferencedByProject(IProject child, IProject mother) {
-		IProject[] projects = null;
-		try {
-			projects = mother.getReferencedProjects();
-		} catch (Exception anException) {
-			DataSetsPlugin.getDefault().getPluginLogger().log(anException);
-			return false;
-		}
-		for (int i = 0; i < projects.length; i++) {
-			if (projects[i].equals(child))
-				return true;
-		}
-		return false;
-	}
-	/**
 	 * Method isTheLaunchAppOrFramework.
 	 * 
 	 * @param iProject

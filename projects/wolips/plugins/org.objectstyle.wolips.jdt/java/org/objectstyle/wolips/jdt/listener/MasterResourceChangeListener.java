@@ -47,18 +47,18 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.datasets.listener;
+package org.objectstyle.wolips.jdt.listener;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
-import org.objectstyle.wolips.datasets.DataSetsPlugin;
+import org.objectstyle.wolips.jdt.JdtPlugin;
 
 /**
  * @author ulrich
- *
+ * 
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
@@ -69,6 +69,7 @@ public class MasterResourceChangeListener implements IResourceChangeListener {
 	public MasterResourceChangeListener() {
 		super();
 	}
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.core.resources.IResourceChangeListener#resourceChanged(org.eclipse.core.resources.IResourceChangeEvent)
 	 */
@@ -101,7 +102,7 @@ public class MasterResourceChangeListener implements IResourceChangeListener {
 			resourceChangeListener.schedule();
 		}
 		else {
-			DataSetsPlugin.getDefault().getPluginLogger().log("No rule to create Resource Change listener.");
+			JdtPlugin.getDefault().getPluginLogger().log("No rule to create Resource Change listener.");
 		}
 	}
 }

@@ -496,6 +496,22 @@ public final class PBProjectUpdater {
 	 * 
 	 * @param newFrameworks
 	 */
+	public void setFrameworks(List newFrameworks) {
+		List actualFrameworks = this.pbProject.getFrameworks();
+		this.saveRequired = true;
+		this.pbProject.setFrameworks(newFrameworks);
+		try {
+			this._saveChanges();
+		} catch (Throwable throwable) {
+			this.handleException(throwable);
+		}
+	}
+
+	/**
+	 * Method addFrameworks.
+	 * 
+	 * @param newFrameworks
+	 */
 	public void addFrameworks(List newFrameworks) {
 		List actualFrameworks = this.pbProject.getFrameworks();
 		for (int i = 0; i < newFrameworks.size(); i++) {

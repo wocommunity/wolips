@@ -54,6 +54,7 @@
  *
  */
 package org.objectstyle.wolips.datasets.adaptable;
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,6 +62,7 @@ import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -71,6 +73,7 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.objectstyle.wolips.datasets.DataSetsPlugin;
 import org.objectstyle.wolips.datasets.resources.IWOLipsModel;
 import org.objectstyle.wolips.variables.VariablesPlugin;
+
 /**
  * @author ulrich
  * 
@@ -84,6 +87,7 @@ public class JavaProjectClasspath extends AbstractJavaProjectAdapterType {
 	protected JavaProjectClasspath(IProject project) {
 		super(project);
 	}
+
 	/**
 	 * Method addNewSourcefolderToClassPath.
 	 * 
@@ -119,6 +123,7 @@ public class JavaProjectClasspath extends AbstractJavaProjectAdapterType {
 			throw new InvocationTargetException(e);
 		}
 	}
+
 	/**
 	 * Method getSubprojectSourceFolder. Searches classpath source entries for
 	 * correspondending subproject source folder (first found source folder in
@@ -174,6 +179,7 @@ public class JavaProjectClasspath extends AbstractJavaProjectAdapterType {
 		}
 		return null;
 	}
+
 	/**
 	 * Method getProjectSourceFolder. Searches classpath source entries for
 	 * project source folder. The project source folder is the first found
@@ -230,6 +236,7 @@ public class JavaProjectClasspath extends AbstractJavaProjectAdapterType {
 		}
 		return projectSourceFolder;
 	}
+
 	/**
 	 * Method getSubProjectsSourceFolder. Searches classpath source entries for
 	 * all source folders who's parents are NOT project.
@@ -270,6 +277,7 @@ public class JavaProjectClasspath extends AbstractJavaProjectAdapterType {
 		}
 		return foundFolders;
 	}
+
 	/**
 	 * Method removeSourcefolderFromClassPath.
 	 * 
@@ -311,6 +319,7 @@ public class JavaProjectClasspath extends AbstractJavaProjectAdapterType {
 			}
 		}
 	}
+
 	/**
 	 * Method addFrameworkListToClasspathEntries.
 	 * 
@@ -334,8 +343,8 @@ public class JavaProjectClasspath extends AbstractJavaProjectAdapterType {
 			frameworkExtIndex = frameworkName
 					.indexOf(IWOLipsModel.EXT_FRAMEWORK);
 			if (frameworkExtIndex == -1 || frameworkExtIndex == 0) { // invalid
-																	 // framework
-																	 // name
+				// framework
+				// name
 				continue;
 			}
 			jarName = frameworkName.substring(0, frameworkExtIndex - 1)
@@ -408,6 +417,7 @@ public class JavaProjectClasspath extends AbstractJavaProjectAdapterType {
 		}
 		return newClasspathEntries;
 	}
+
 	private IResource getJar(String prefix, String postfix) {
 		IResource result = null;
 		String projectName = this.getIProject().getName();
@@ -421,6 +431,7 @@ public class JavaProjectClasspath extends AbstractJavaProjectAdapterType {
 		}
 		return result;
 	}
+
 	/**
 	 * @return
 	 * @throws CoreException
@@ -472,4 +483,93 @@ public class JavaProjectClasspath extends AbstractJavaProjectAdapterType {
 		}
 		return path;
 	}
+
+	public List getFrameworkNames() {
+		ArrayList list = new ArrayList();
+		IProject[] projects = ResourcesPlugin.getWorkspace().getRoot()
+				.getProjects();
+		for (int i = 0; i < projects.length; i++) {
+			if (isAFramework(projects[i])) {
+				list.add(projects[i].getName() + "." + IWOLipsModel.EXT_FRAMEWORK);
+			}
+		}
+		try {
+			list.addAll(this.toFrameworkNames(this.getIJavaProject()
+					.getResolvedClasspath(false)));
+		} catch (JavaModelException e) {
+			DataSetsPlugin.getDefault().getPluginLogger().log(e);
+		}
+		return list;
+	}
+
+	private List toFrameworkNames(IClasspathEntry[] classpathEntries) {
+		ArrayList arrayList = new ArrayList();
+		for (int i = 0; i < classpathEntries.length; i++) {
+			IPath path = classpathEntries[i].getPath();
+			String name = this.getFrameworkName(path);
+			if (name != null && !name.startsWith("JavaVM")) {
+				arrayList.add(name);
+			}
+		}
+		return arrayList;
+	}
+
+	private String getFrameworkName(IPath frameworkPath) {
+		String frameworkName = null;
+		int i = 0;
+		int count = frameworkPath.segmentCount();
+		while (i < count && frameworkName == null) {
+			String segment = frameworkPath.segment(i);
+			if (segment.endsWith("." + IWOLipsModel.EXT_FRAMEWORK))
+				frameworkName = segment;
+			else
+				i++;
+		}
+		return frameworkName;
+	}
+
+	/**
+	 * Method isTheLaunchAppOrFramework.
+	 * 
+	 * @param iProject
+	 * @return boolean
+	 */
+	public boolean isAFramework(IProject iProject) {
+		IJavaProject buildProject = null;
+		try {
+			buildProject = this.getIJavaProject();
+			Project project = (Project) iProject.getAdapter(Project.class);
+			if (project.isFramework()
+					&& projectISReferencedByProject(iProject, buildProject
+							.getProject()))
+				return true;
+		} catch (Exception anException) {
+			DataSetsPlugin.getDefault().getPluginLogger().log(anException);
+			return false;
+		}
+		return false;
+	}
+
+	/**
+	 * Method projectISReferencedByProject.
+	 * 
+	 * @param child
+	 * @param mother
+	 * @return boolean
+	 */
+	public boolean projectISReferencedByProject(IProject child, IProject mother) {
+		IProject[] projects = null;
+		try {
+			projects = mother.getReferencedProjects();
+		} catch (Exception anException) {
+			DataSetsPlugin.getDefault().getPluginLogger().log(anException);
+			return false;
+		}
+		for (int i = 0; i < projects.length; i++) {
+			if (projects[i].equals(child))
+				return true;
+		}
+		return false;
+	}
+
 }
