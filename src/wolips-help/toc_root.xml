@@ -33,7 +33,7 @@
 		<topic label="Plug-ins, Features and Fragments" href="./doc_root/reference/plugins_features.html"/>
 	</topic>
 	<topic label="What's New" href="./doc_root/history.html"/>
-	<topic label="Bugs, Issues and Other Things" href="./doc_root/issues.html"/>
+	<topic label="Bugs and Issues" href="./doc_root/issues.html"/>
 	<topic label="Programmer's Guide" href="./doc_root/programmer/index.html">
 		<topic label="Inside WOLips" href="./doc_root/programmer/pde.html"/>
 		<topic label="Building From Source" href="./doc_root/programmer/build.html"/>
