@@ -8,7 +8,7 @@
    class="org.objectstyle.wolips.tests.core.TestsCorePlugin">
 
    <runtime>
-      <library name="lib/wolips-core.jar">
+      <library name="lib/wolips-testscore.jar">
          <export name="*"/>
       </library>
    </runtime>
