@@ -1,0 +1,15 @@
+#* comment
+WOGen Template for EO Java subclass. 
+Refer to http://jakarta.apache.org/velocity/ for template syntax.
+*#
+#if( ${classGen.isUsingPackage()} )
+package ${classGen.packageName};
+#end
+
+
+import com.webobjects.foundation.*;
+import com.webobjects.eocontrol.*;
+
+/** ${classGen.className}	*/
+public class ${classGen.className} extends #if(${classGen.isUsingSuperPackage()})${classGen.superPackageName}.#end${classGen.superPrefix}${classGen.className} {
+}
