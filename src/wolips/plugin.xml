@@ -40,6 +40,7 @@
       <import plugin="org.eclipse.debug.ui"/>
       <import plugin="org.eclipse.ui.externaltools"/>
       <import plugin="org.apache.ant"/>
+      <import plugin="org.eclipse.jface"/>
    </requires>
 
 
