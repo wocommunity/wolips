@@ -34,12 +34,12 @@
 		<nature id="org.objectstyle.wolips.applicationnature"/>
 		<classpath>
 			<classpathentry kind="src" path="src"/>
-			<classpathentry kind="var" path="NEXT_ROOT/Library/Frameworks/JavaWebObjects.framework/Resources/Java/javawebobjects.jar"/>
-			<classpathentry kind="var" path="NEXT_ROOT/Library/Frameworks/JavaFoundation.framework/Resources/Java/javafoundation.jar"/>
-			<classpathentry kind="var" path="NEXT_ROOT/Library/Frameworks/JavaXML.framework/Resources/Java/javaxml.jar"/>
-			<classpathentry kind="var" path="NEXT_ROOT/Library/Frameworks/JavaWOExtensions.framework/Resources/Java/JavaWOExtensions.jar"/>
-			<classpathentry kind="var" path="NEXT_ROOT/Library/Frameworks/JavaEOAccess.framework/Resources/Java/javaeoaccess.jar"/>
-			<classpathentry kind="var" path="NEXT_ROOT/Library/Frameworks/JavaEOControl.framework/Resources/Java/javaeocontrol.jar"/>
+			<classpathentry kind="var" path="NEXT_SYSTEM_ROOT/Library/Frameworks/JavaWebObjects.framework/Resources/Java/javawebobjects.jar"/>
+			<classpathentry kind="var" path="NEXT_SYSTEM_ROOT/Library/Frameworks/JavaFoundation.framework/Resources/Java/javafoundation.jar"/>
+			<classpathentry kind="var" path="NEXT_SYSTEM_ROOT/Library/Frameworks/JavaXML.framework/Resources/Java/javaxml.jar"/>
+			<classpathentry kind="var" path="NEXT_SYSTEM_ROOT/Library/Frameworks/JavaWOExtensions.framework/Resources/Java/JavaWOExtensions.jar"/>
+			<classpathentry kind="var" path="NEXT_SYSTEM_ROOT/Library/Frameworks/JavaEOAccess.framework/Resources/Java/javaeoaccess.jar"/>
+			<classpathentry kind="var" path="NEXT_SYSTEM_ROOT/Library/Frameworks/JavaEOControl.framework/Resources/Java/javaeocontrol.jar"/>
 			<classpathentry kind="var" path="JRE_LIB" rootpath="JRE_SRCROOT" sourcepath="JRE_SRC"/>
 		</classpath>
 		<files>
@@ -62,12 +62,12 @@
 		<nature id="org.objectstyle.wolips.applicationnature"/>
 		<classpath>
 			<classpathentry kind="src" path="src"/>
-			<classpathentry kind="var" path="NEXT_ROOT/Library/Frameworks/JavaWebObjects.framework/Resources/Java/javawebobjects.jar"/>
-			<classpathentry kind="var" path="NEXT_ROOT/Library/Frameworks/JavaFoundation.framework/Resources/Java/javafoundation.jar"/>
-			<classpathentry kind="var" path="NEXT_ROOT/Library/Frameworks/JavaXML.framework/Resources/Java/javaxml.jar"/>
-			<classpathentry kind="var" path="NEXT_ROOT/Library/Frameworks/JavaWOExtensions.framework/Resources/Java/JavaWOExtensions.jar"/>
-			<classpathentry kind="var" path="NEXT_ROOT/Library/Frameworks/JavaEOAccess.framework/Resources/Java/javaeoaccess.jar"/>
-			<classpathentry kind="var" path="NEXT_ROOT/Library/Frameworks/JavaEOControl.framework/Resources/Java/javaeocontrol.jar"/>
+			<classpathentry kind="var" path="NEXT_SYSTEM_ROOT/Library/Frameworks/JavaWebObjects.framework/Resources/Java/javawebobjects.jar"/>
+			<classpathentry kind="var" path="NEXT_SYSTEM_ROOT/Library/Frameworks/JavaFoundation.framework/Resources/Java/javafoundation.jar"/>
+			<classpathentry kind="var" path="NEXT_SYSTEM_ROOT/Library/Frameworks/JavaXML.framework/Resources/Java/javaxml.jar"/>
+			<classpathentry kind="var" path="NEXT_SYSTEM_ROOT/Library/Frameworks/JavaWOExtensions.framework/Resources/Java/JavaWOExtensions.jar"/>
+			<classpathentry kind="var" path="NEXT_SYSTEM_ROOT/Library/Frameworks/JavaEOAccess.framework/Resources/Java/javaeoaccess.jar"/>
+			<classpathentry kind="var" path="NEXT_SYSTEM_ROOT/Library/Frameworks/JavaEOControl.framework/Resources/Java/javaeocontrol.jar"/>
 			<classpathentry kind="var" path="JRE_LIB" rootpath="JRE_SRCROOT" sourcepath="JRE_SRC"/>
 		</classpath>
 		<files>
