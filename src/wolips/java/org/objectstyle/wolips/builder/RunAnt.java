@@ -297,6 +297,9 @@ public class RunAnt {
 			workingCopy.setAttribute(
 				IExternalToolConstants.ATTR_SHOW_CONSOLE,
 				true);
+			workingCopy.setAttribute(
+				IExternalToolConstants.ATTR_TOOL_ARGUMENTS,
+				(String) null);
 		} else {
 			workingCopy.setAttribute(
 				IExternalToolConstants.ATTR_SHOW_CONSOLE,
@@ -304,11 +307,7 @@ public class RunAnt {
 			workingCopy.setAttribute(
 				IExternalToolConstants.ATTR_CAPTURE_OUTPUT,
 				(String) null);
-			String quiet =
-				"-quiet "
-					+ workingCopy.getAttribute(
-						IExternalToolConstants.ATTR_TOOL_ARGUMENTS,
-						"");
+			String quiet = "-quiet";
 			workingCopy.setAttribute(
 				IExternalToolConstants.ATTR_TOOL_ARGUMENTS,
 				quiet);
