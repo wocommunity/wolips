@@ -88,7 +88,7 @@ public class UpdateOtherClasspathIncludeFiles extends UpdateIncludeFiles {
 		buildIncludeFiles();
 	}
 	/**
-	 * @see org.objectstyle.wolips.ant.UpdateIncludeFiles#buildIncludeFiles()
+	 * @see org.objectstyle.wolips.core.ant.UpdateIncludeFiles#buildIncludeFiles()
 	 */
 	protected void buildIncludeFiles() {
 		// avoid double entries

@@ -88,7 +88,7 @@ public class UpdateFrameworkIncludeFiles extends UpdateIncludeFiles {
 		buildIncludeFiles();
 	}
 	/**
-	 * @see org.objectstyle.wolips.ant.UpdateIncludeFiles#buildIncludeFiles()
+	 * @see org.objectstyle.wolips.core.ant.UpdateIncludeFiles#buildIncludeFiles()
 	 */
 	protected synchronized void buildIncludeFiles() {
     // avoid creating two entries for one classPath Entry

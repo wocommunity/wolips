@@ -97,7 +97,6 @@ public abstract class UpdateIncludeFiles {
 	}
 	/**
 	 * Method buildIncludeFiles.
-	 * @throws BuildException
 	 */
 	protected abstract void buildIncludeFiles();
 
