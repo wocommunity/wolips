@@ -62,10 +62,18 @@
     <!-- Compiles java source code, deploys it as a    -->
     <!-- framework.                                    -->
     <!-- ============================================= -->
-    <target name="compile" depends="prepare">
-        <javac srcdir="src" destdir="build">
+    <target name="compile" depends="prepare,gen-classes">
+        <javac srcdir="src/java" destdir="build">
             <classpath refid="classpath"/>
         </javac>       
+    </target>
+    
+    
+    <target name="gen-classes">
+    	<taskdef name="wogen" classname="org.objectstyle.woproject.ant.WOGenerator">
+			<classpath refid="classpath"/>
+		</taskdef>
+		<wogen map="src/art.eomodeld" destDir="src/java" superpkg="org.objectstyle.art.auto"/>
     </target>
     
     

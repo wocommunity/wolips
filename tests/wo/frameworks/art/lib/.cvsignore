@@ -1,2 +1,6 @@
-# this jar is added dynamically, don't check it in
+
+# this jars are added dynamically during build process,
+# don't check them in
+
 woproject.jar
+cayenne.jar

@@ -167,6 +167,7 @@
         <copy todir="${dist}/lib" file="lib/junit.jar"/>
         <copy todir="${dist}/lib" file="${ant.home}/lib/ant.jar"/>
         <copy todir="tests/wo/frameworks/art/lib" file="${dist}/lib/${project.name}.jar"/>
+        <copy todir="tests/wo/frameworks/art/lib" file="${dist}/lib/cayenne.jar"/>
     </target>
 
 
