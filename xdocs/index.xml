@@ -10,8 +10,8 @@
         <!-- Welcome section -->
         <section name="Welcome to WOProject and WOLips">
         
-        <p><i>March 23, 2003.</i> <b>WOLips 1.0.0 RC3 released.</b></p>
-        <p>WOLips is a plugin for <a href="http://eclipse.org">Eclipse IDE</a> that
+        <p><i>March 31, 2003.</i> <b>WOLips 1.0.0 RC4 released.</b></p>
+        <p>WOLips is a plugin for <a href="http://eclipse.org">Eclipse version 2.1 IDE</a> that
         support development of WebObjects applications and frameworks.
         <ul>
             <li><a href="http://sourceforge.net/project/showfiles.php?group_id=50507">Download</a></li>
