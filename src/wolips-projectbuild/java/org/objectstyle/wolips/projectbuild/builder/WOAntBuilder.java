@@ -99,7 +99,7 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 			monitor.done();
 			return null;
 		}
-		Exception anException = null;
+		String aBuildFile = null;
 		try {
 			getProject().deleteMarkers(
 				IMarker.TASK,
@@ -109,7 +109,7 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 				monitor.done();
 				return null;
 			}
-			String aBuildFile = this.buildFile();
+			aBuildFile = this.buildFile();
 			if (checkIfBuildfileExist(aBuildFile)) {
 				getProject().getFile(aBuildFile).deleteMarkers(
 					IMarker.TASK,
@@ -120,8 +120,10 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 		} catch (Exception e) {
 			this.handleException(e);
 		}
+		aBuildFile = null;
 		//this.forgetLastBuiltState();
 		monitor.done();
+		System.gc();
 		return null;
 	}
 

@@ -73,7 +73,7 @@ public class WOProjectLogFactory extends LogFactory {
 	public static final String ATTR_ANT_TASK = "log.ant.task";
 	public static final int DEFAULT_LOG_LEVEL = WOProjectLog.INFO;
 
-	public static Log log;
+	public Log log;
 
 	private boolean initialized = false;
 	private Hashtable attributes;
@@ -182,6 +182,10 @@ public class WOProjectLogFactory extends LogFactory {
 		}else{
 			log.warn("setGlobalLogLevel -> unable to set level " + newLevel);
 		}
+	}
+	public void finalize() throws Throwable {
+		System.out.println("finalize: " + this.getClass());
+		super.finalize();
 	}
 
 }

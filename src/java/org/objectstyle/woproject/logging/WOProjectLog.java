@@ -311,5 +311,9 @@ public class WOProjectLog implements Log {
 	public void setName(String name) {
 		this.name = name;
 	}
+	public void finalize() throws Throwable {
+		System.out.println("finalize: " + this.getClass());
+		super.finalize();
+	}
 
 }

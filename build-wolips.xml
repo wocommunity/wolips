@@ -49,7 +49,44 @@
                 <include name="LICENSE*"/>
             </metainf>
         </jar>
+
+        <javac srcdir="src/wolips/src-ant"
+                destdir="${build}/wolips-ant"
+                deprecation="${compile.deprecation}"
+                debug="${compile.debug}"
+                optimize="${compile.optimize}">
+            <classpath refid="classpath"/>
+        </javac>
+         
+        <jar jarfile="${wolips.dist}/lib/wolips-ant.jar">
+            <fileset dir="${build}/wolips-ant"/>
+            <fileset dir="src/wolips/src-ant">
+          	    <include name="**/*.properties"/>
+             </fileset>
+             <fileset dir="src/wolips/src-ant">
+          	    <include name="**/*.gif"/>
+             </fileset>         
+            <metainf dir="doc">
+                <include name="LICENSE*"/>
+            </metainf>
+        </jar>
         
+        <jar jarfile="${wolips.dist}/lib/woproject-wolips.jar">
+            <fileset dir="${build}/main">
+               <include name="*/pb/*"/>
+               <include name="*/env/*"/>
+            </fileset>
+            <fileset dir="src/wolips/src-ant">
+          	    <include name="**/*.properties"/>
+             </fileset>
+             <fileset dir="src/wolips/src-ant">
+          	    <include name="**/*.gif"/>
+             </fileset>         
+            <metainf dir="doc">
+                <include name="LICENSE*"/>
+            </metainf>
+        </jar>
+         
         <!-- Copy WOProject JAR's -->
         <copy todir="${wolips.dist}/lib">
              <fileset dir="${woproject.dist}/lib">
@@ -77,6 +114,7 @@
          <copy todir="${wolips.dist}">
              <fileset dir="src/wolips">
              	<exclude name="**/java/**"/>
+             	<exclude name="**/src-ant/**"/>
              	<exclude name="**/lib/**"/>
              	<exclude name="**/xdocs/**"/>
              	<exclude name="**/docs/**"/>
@@ -112,6 +150,7 @@
     <!-- ============================================= -->
     <target name="prepare" depends="defineClasspath">
         <mkdir dir="${build}/wolips"/>
+	<mkdir dir="${build}/wolips-ant"/>
         <mkdir dir="${wolips.dist}/lib"/>
     </target>
 

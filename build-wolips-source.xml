@@ -58,6 +58,7 @@
          <copy todir="${wolips.source.dist}/src">
              <fileset dir="src/java"/>
              <fileset dir="src/wolips/java"/>
+             <fileset dir="src/wolips/src-ant"/>
              <fileset dir="src/wolips-help/java"/>
              <fileset dir="src/wolips-targetbuilder/java"/>
              <fileset dir="src/wolips-support/java"/>

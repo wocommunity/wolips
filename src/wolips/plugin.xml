@@ -11,9 +11,9 @@
          <export name="*"/>
          <packages prefixes="org.objectstyle.wolips.core"/>
       </library>
-      <library name="lib/woproject.jar">
+      <library name="lib/woproject-wolips.jar">
          <export name="*"/>
-         <packages prefixes="org.objectstyle.woproject"/>
+         <packages prefixes="org.objectstyle.woproject.env,org.objectstyle.woproject.pb"/>
       </library>
       <library name="lib/cayenne.jar">
          <export name="*"/>
@@ -22,6 +22,10 @@
       <library name="lib/commons-logging.jar">
          <export name="*"/>
          <packages prefixes="org.apache.commons.logging"/>
+      </library>
+      <library name="lib/log4j.jar">
+         <export name="*"/>
+         <packages prefixes="org.apache.log4j"/>
       </library>
    </runtime>
    <requires>
@@ -226,7 +230,7 @@
    <extension
          point="org.eclipse.ant.core.extraClasspathEntries">
       <extraClasspathEntry
-            library="lib/wolips.jar">
+            library="lib/wolips-ant.jar">
       </extraClasspathEntry>
       <extraClasspathEntry
             library="lib/woproject.jar">
@@ -259,17 +263,17 @@
             class="org.objectstyle.woproject.ant.WOGenerator">
       </antTask>
       	  <antTask
-            library="lib/wolips.jar"
+            library="lib/wolips-ant.jar"
             name="updateframeworksets"
             class="org.objectstyle.wolips.core.project.ant.UpdateFrameworkIncludeFiles">
       </antTask>
       <antTask
-            library="lib/wolips.jar"
+            library="lib/wolips-ant.jar"
             name="refreshview"
             class="org.objectstyle.wolips.core.project.ant.RefreshEclipse">
       </antTask>
       <antTask
-            library="lib/wolips.jar"
+            library="lib/wolips-ant.jar"
             name="updateotherclasspaths"
             class="org.objectstyle.wolips.core.project.ant.UpdateOtherClasspathIncludeFiles">
       </antTask>
