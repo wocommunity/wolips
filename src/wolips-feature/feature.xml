@@ -2,7 +2,7 @@
 <feature
       id="org.objectstyle.wolips.feature"
       label="%featureName"
-      version="0.9.6"
+      version="0.9.7"
       provider-name="%providerName"
       os="aix,hpux,linux,macosx,qnx,solaris,win32"
       ws="carbon,gtk,motif,photon,win32"
@@ -22,40 +22,40 @@
          id="org.objectstyle.wolips"
          download-size="0"
          install-size="0"
-         version="0.9.6"/>
+         version="0.9.7"/>
 
    <plugin
          id="org.objectstyle.wolips.targetbuilder"
          download-size="0"
          install-size="0"
-         version="0.9.6"/>
+         version="0.9.7"/>
 
    <plugin
          id="org.objectstyle.wolips.help"
          download-size="0"
          install-size="0"
-         version="0.9.6"
+         version="0.9.7"
          fragment="true"/>
 
    <plugin
          id="org.objectstyle.wolips.launching"
          download-size="0"
          install-size="0"
-         version="0.9.6"
+         version="0.9.7"
          fragment="true"/>
 
    <plugin
          id="org.objectstyle.wolips.source"
          download-size="0"
          install-size="0"
-         version="0.9.6"
+         version="0.9.7"
          fragment="true"/>
 
    <plugin
          id="org.objectstyle.wolips.support"
          download-size="0"
          install-size="0"
-         version="0.9.6"
+         version="0.9.7"
          fragment="true"/>
 
 </feature>
