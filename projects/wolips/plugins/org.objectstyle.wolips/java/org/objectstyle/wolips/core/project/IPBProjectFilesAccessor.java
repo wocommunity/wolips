@@ -86,4 +86,9 @@ public interface IPBProjectFilesAccessor {
 	 * is returned when Projects PB.project is found
 	 */
 	public abstract IFolder getParentFolderWithPBProject(IFolder aFolder);
+
+	/**
+	 * @throws Exception
+	 */
+	public abstract void addLocalFrameworkSectionToPBProject();
 }

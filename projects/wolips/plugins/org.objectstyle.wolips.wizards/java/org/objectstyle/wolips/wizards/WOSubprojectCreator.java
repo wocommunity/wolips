@@ -63,7 +63,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
+import org.objectstyle.wolips.core.resources.IWOLipsModel;
 
 /**
  * @author mnolte
@@ -86,7 +86,7 @@ public class WOSubprojectCreator extends WOProjectResourceCreator {
 		String subprojectName) {
 		super(parentResource);
 		this.subprojectName =
-			subprojectName + "." + IWOLipsPluginConstants.EXT_SUBPROJECT;
+			subprojectName + "." + IWOLipsModel.EXT_SUBPROJECT;
 	}
 	/**
 	 * @see org.objectstyle.wolips.wizards.WOProjectResourceCreator#getType()

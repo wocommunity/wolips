@@ -65,7 +65,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
 import org.objectstyle.wolips.wizards.templates.FileFromTemplateCreator;
 
 /**
@@ -73,7 +72,7 @@ import org.objectstyle.wolips.wizards.templates.FileFromTemplateCreator;
  * @author uli
  */
 public abstract class WOProjectResourceCreator
-	implements IWOLipsPluginConstants, IRunnableWithProgress {
+	implements IRunnableWithProgress {
 
 	// define types of creators
 	protected static final int COMPONENT_CREATOR = 1;

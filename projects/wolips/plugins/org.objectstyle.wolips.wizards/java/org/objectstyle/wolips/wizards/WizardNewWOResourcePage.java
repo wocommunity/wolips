@@ -55,7 +55,6 @@
  */
 package org.objectstyle.wolips.wizards;
 import java.lang.reflect.InvocationTargetException;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
@@ -76,8 +75,8 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.WizardNewFileCreationPage;
-import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
 import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
+import org.objectstyle.wolips.core.resources.IWOLipsModel;
 /**
  * @author mnolte
  * @author uli
@@ -145,7 +144,6 @@ public abstract class WizardNewWOResourcePage
 		sledgeHammer();
 		return true;
 	}
-
 	/**
 	 * Method sledgeHammer. Fixes eclipse refresh view bug
 	 */
@@ -164,7 +162,7 @@ public abstract class WizardNewWOResourcePage
 			}
 		}
 	}
-	
+
 	/**
 	 * Method validatePage. If super is true, checks if container selection is an project or subproject.
 	 * 
@@ -185,7 +183,7 @@ public abstract class WizardNewWOResourcePage
 						return false;
 					case 1 :
 						if (!actualProject
-							.getFile(IWOLipsPluginConstants.PROJECT_FILE_NAME)
+							.getFile(IWOLipsModel.PROJECT_FILE_NAME)
 							.exists()) {
 							// no webobjects project selected
 							setErrorMessage(
@@ -197,8 +195,7 @@ public abstract class WizardNewWOResourcePage
 					default :
 						if (false) {
 							if (!actualProject
-								.getFile(
-									IWOLipsPluginConstants.PROJECT_FILE_NAME)
+								.getFile(IWOLipsModel.PROJECT_FILE_NAME)
 								.exists()) {
 								// no webobjects project selected
 								setErrorMessage(
@@ -210,8 +207,7 @@ public abstract class WizardNewWOResourcePage
 								IPath projectFilePath =
 									getContainerFullPath().removeFirstSegments(
 										1).append(
-										IWOLipsPluginConstants
-											.PROJECT_FILE_NAME);
+										IWOLipsModel.PROJECT_FILE_NAME);
 								if (!actualProject
 									.getFile(projectFilePath)
 									.exists()) {

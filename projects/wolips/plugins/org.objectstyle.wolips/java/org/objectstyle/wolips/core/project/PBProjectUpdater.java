@@ -72,8 +72,8 @@ import org.objectstyle.woenvironment.pb.PBProject;
 import org.objectstyle.woenvironment.util.FileStringScanner;
 import org.objectstyle.wolips.core.classpath.WOClasspathContainer;
 import org.objectstyle.wolips.core.logging.WOLipsLog;
-import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
 import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
+import org.objectstyle.wolips.core.resources.IWOLipsModel;
 /**
  * @author uli
  *
@@ -100,14 +100,14 @@ public final class PBProjectUpdater {
 		//check if theres a PB.project in the Container. If not go to the parent
 		IContainer findContainer = aProjectContainer;
 		while ((findContainer
-			.findMember(IWOLipsPluginConstants.PROJECT_FILE_NAME)
+			.findMember(IWOLipsModel.PROJECT_FILE_NAME)
 			== null)
 			&& (findContainer.getParent() != null)) {
 			findContainer = findContainer.getParent();
 		}
 		if (findContainer.getParent() == null)
 			projectContainer = projectContainer.getProject();
-		if (findContainer.findMember(IWOLipsPluginConstants.PROJECT_FILE_NAME)
+		if (findContainer.findMember(IWOLipsModel.PROJECT_FILE_NAME)
 			!= null)
 			projectContainer = findContainer;
 		this.removeProjectMarker();
@@ -118,7 +118,7 @@ public final class PBProjectUpdater {
 		try {
 			IFile aFile =
 				projectContainer.getFile(
-					new Path(IWOLipsPluginConstants.PROJECT_FILE_NAME));
+					new Path(IWOLipsModel.PROJECT_FILE_NAME));
 			if (aFile.exists())
 				aFile.deleteMarkers(
 					IMarker.PROBLEM,
@@ -132,7 +132,7 @@ public final class PBProjectUpdater {
 		try {
 			IFile aFile =
 				projectContainer.getFile(
-					new Path(IWOLipsPluginConstants.PROJECT_FILE_NAME));
+					new Path(IWOLipsModel.PROJECT_FILE_NAME));
 			if (aFile.exists()) {
 				IMarker marker = aFile.createMarker(IMarker.PROBLEM);
 				marker.setAttribute(
@@ -211,7 +211,7 @@ public final class PBProjectUpdater {
 	private void getPBProject(IContainer aProject) {
 		File aFile =
 			aProject
-				.getFile(new Path(IWOLipsPluginConstants.PROJECT_FILE_NAME))
+				.getFile(new Path(IWOLipsModel.PROJECT_FILE_NAME))
 				.getLocation()
 				.toFile();
 		pbProject = null;
@@ -248,7 +248,7 @@ public final class PBProjectUpdater {
 			try {
 				IResource res =
 					projectContainer.findMember(
-						IWOLipsPluginConstants.PROJECT_FILE_NAME);
+						IWOLipsModel.PROJECT_FILE_NAME);
 				if (null != res)
 					res.refreshLocal(IResource.DEPTH_ZERO, null);
 			} catch (CoreException up) {
@@ -399,7 +399,7 @@ public final class PBProjectUpdater {
 		Object[] allKeys = changedResources.keySet().toArray();
 		for (int i = 0; i < allKeys.length; i++) {
 			currentKey = (String) allKeys[i];
-			if (IWOLipsPluginConstants.RESOURCES_ID.equals(currentKey)) {
+			if (IWOLipsModel.RESOURCES_ID.equals(currentKey)) {
 				actualResources = pbProject.getWoAppResources();
 				switch (kindOfChange) {
 					case IResourceDelta.ADDED :
@@ -415,7 +415,7 @@ public final class PBProjectUpdater {
 								actualResources));
 						break;
 				}
-			} else if (IWOLipsPluginConstants.CLASSES_ID.equals(currentKey)) {
+			} else if (IWOLipsModel.CLASSES_ID.equals(currentKey)) {
 				actualResources = pbProject.getClasses();
 				switch (kindOfChange) {
 					case IResourceDelta.ADDED :
@@ -432,7 +432,7 @@ public final class PBProjectUpdater {
 						break;
 				}
 			} else if (
-				IWOLipsPluginConstants.SUBPROJECTS_ID.equals(currentKey)) {
+				IWOLipsModel.SUBPROJECTS_ID.equals(currentKey)) {
 				actualResources = pbProject.getSubprojects();
 				switch (kindOfChange) {
 					case IResourceDelta.ADDED :
@@ -449,7 +449,7 @@ public final class PBProjectUpdater {
 						break;
 				}
 			} else if (
-				IWOLipsPluginConstants.COMPONENTS_ID.equals(currentKey)) {
+				IWOLipsModel.COMPONENTS_ID.equals(currentKey)) {
 				actualResources = pbProject.getWoComponents();
 				switch (kindOfChange) {
 					case IResourceDelta.ADDED :
@@ -486,7 +486,7 @@ public final class PBProjectUpdater {
 		String relativResourcePath;
 		IFile projectFile =
 			projectContainer.getFile(
-				new Path(IWOLipsPluginConstants.PROJECT_FILE_NAME));
+				new Path(IWOLipsModel.PROJECT_FILE_NAME));
 		for (int i = 0; i < newResources.size(); i++) {
 			relativResourcePath =
 				relativResourcePath(
@@ -506,7 +506,7 @@ public final class PBProjectUpdater {
 		String relativResourcePath;
 		IFile projectFile =
 			projectContainer.getFile(
-				new Path(IWOLipsPluginConstants.PROJECT_FILE_NAME));
+				new Path(IWOLipsModel.PROJECT_FILE_NAME));
 		for (int i = 0; i < removedResources.size(); i++) {
 			relativResourcePath =
 				relativResourcePath(
@@ -650,7 +650,7 @@ public final class PBProjectUpdater {
 			for (int i = 0; i < frameworkPath.segmentCount(); i++) {
 				frameworkName = frameworkPath.segment(i);
 				if (frameworkName
-					.endsWith("." + IWOLipsPluginConstants.EXT_FRAMEWORK)) {
+					.endsWith("." + IWOLipsModel.EXT_FRAMEWORK)) {
 					break;
 				} else {
 					frameworkName = null;

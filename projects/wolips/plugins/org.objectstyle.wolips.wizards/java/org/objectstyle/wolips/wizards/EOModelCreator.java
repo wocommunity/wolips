@@ -69,6 +69,7 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.objectstyle.wolips.core.project.WOLipsJavaProject;
+import org.objectstyle.wolips.core.resources.IWOLipsModel;
 import org.objectstyle.wolips.wizards.templates.FileFromTemplateCreator;
 /**
  * @author mnolte
@@ -140,18 +141,18 @@ public class EOModelCreator extends WOProjectResourceCreator {
 			case IResource.PROJECT :
 				modelFolder =
 					((IProject) parentResource).getFolder(
-						modelName + "." + EXT_EOMODEL);
+						modelName + "." + IWOLipsModel.EXT_EOMODEL);
 				break;
 			case IResource.FOLDER :
 				modelFolder =
 					((IFolder) parentResource).getFolder(
-						modelName + "." + EXT_EOMODEL);
+						modelName + "." + IWOLipsModel.EXT_EOMODEL);
 				break;
 			default :
 				throw new InvocationTargetException(
 					new Exception("Wrong parent resource - check validation"));
 		}
-		IFile modelIndexFile = modelFolder.getFile("index." + EXT_EOMODEL);
+		IFile modelIndexFile = modelFolder.getFile("index." + IWOLipsModel.EXT_EOMODEL);
 		IFile modelDiagramLayoutFile = modelFolder.getFile("DiagramLayout");
 		createResourceFolderInProject(modelFolder, monitor);
 		fileCreator().create(modelIndexFile, monitor);
@@ -162,7 +163,7 @@ public class EOModelCreator extends WOProjectResourceCreator {
 				JavaCore.create(parentResource.getProject());
 			Vector newAdaptorFrameworkList = new Vector();
 			newAdaptorFrameworkList.add(
-				"Java" + adaptorName + "Adaptor." + EXT_FRAMEWORK);
+				"Java" + adaptorName + "Adaptor." + IWOLipsModel.EXT_FRAMEWORK);
 			WOLipsJavaProject wolipsJavaProject =
 				new WOLipsJavaProject(projectToUpdate);
 			IClasspathEntry[] newClasspathEntries =

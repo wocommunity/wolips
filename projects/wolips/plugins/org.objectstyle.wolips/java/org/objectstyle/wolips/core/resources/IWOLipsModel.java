@@ -66,7 +66,51 @@ import org.eclipse.jdt.core.ICompilationUnit;
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
 public interface IWOLipsModel {
-
+//	flle extensions and resource identifier
+	 public static final String EXT_PROJECT = "project";
+	 public static final String EXT_SUBPROJECT = "subproj";
+	 public static final String EXT_JAVA = "java";
+	 public static final String EXT_COMPONENT = "wo";
+	 public static final String EXT_API = "api";
+	 public static final String EXT_WOD = "wod";
+	 public static final String EXT_WOO = "woo";
+	 public static final String EXT_HTML = "html";
+	 public static final String EXT_EOMODEL = "eomodeld";
+	 public static final String EXT_EOMODEL_BACKUP = "eomodeld~";
+	 public static final String EXT_D2WMODEL = "d2wmodel";
+	 public static final String EXT_PROPERTIES = "properties";
+	 public static final String EXT_STRINGS = "strings";
+	 public static final String EXT_SRC = "src";
+	 public static final String EXT_FRAMEWORK = "framework";
+	 public static final String EXT_WOA = "woa";
+	 public static final String EXT_BUILD = "build";
+	 public static final String EXT_DIST = "dist";
+	 // webobjects project file lists
+	 public static final String RESOURCES_ID = "WOAPP_RESOURCES";
+	 public static final String CLASSES_ID = "CLASSES";
+	 public static final String COMPONENTS_ID = "WO_COMPONENTS";
+	 public static final String SUBPROJECTS_ID = "SUBPROJECTS";
+	 public static final String FRAMEWORKS_ID = "FRAMEWORKS";
+	 public static final String PROJECT_FILE_NAME = "PB.project";
+	 public static final String[] RESOURCE_IDENTIFIERS =
+		 {
+			 EXT_JAVA,
+			 EXT_COMPONENT,
+			 EXT_API,
+			 EXT_EOMODEL,
+			 EXT_STRINGS,
+			 EXT_SUBPROJECT,
+			 EXT_FRAMEWORK };
+	 public static final String[] LIST_IDENTIFIERS =
+		 {
+			 CLASSES_ID,
+			 COMPONENTS_ID,
+			 RESOURCES_ID,
+			 RESOURCES_ID,
+			 RESOURCES_ID,
+			 SUBPROJECTS_ID,
+			 FRAMEWORKS_ID };
+	
 	/**
 	 * @param Returns the IWOLipsResource if the resource is a WOLips resource. Otherwise null is returned.
 	 * @return

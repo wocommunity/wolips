@@ -70,18 +70,18 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.JavaCore;
 import org.objectstyle.wolips.core.logging.WOLipsLog;
-import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
 import org.objectstyle.wolips.core.preferences.Preferences;
 import org.objectstyle.wolips.core.project.IWOLipsProject;
 import org.objectstyle.wolips.core.project.PBProjectUpdater;
 import org.objectstyle.wolips.core.project.WOLipsCore;
 import org.objectstyle.wolips.core.project.WOLipsJavaProject;
+import org.objectstyle.wolips.core.resources.IWOLipsModel;
 import org.objectstyle.wolips.core.util.StringListMatcher;
 /**
  * Tracking changes in resources and synchronizes webobjects project file
  */
 public class ResourceChangeListener
-	implements IResourceChangeListener, IWOLipsPluginConstants {
+	implements IResourceChangeListener {
 	StringListMatcher woappResourcesIncludeMatcher = null;
 	StringListMatcher woappResourcesExcludeMatcher = null;
 	StringListMatcher classesIncludeMatcher = null;
@@ -229,29 +229,29 @@ public class ResourceChangeListener
 				case IResource.FOLDER :
 					//is this really required?
 					// what if this delta has no changes but a child of it?
-					if (EXT_FRAMEWORK.equals(resource.getFileExtension())
-						|| EXT_WOA.equals(resource.getFileExtension())
+					if (IWOLipsModel.EXT_FRAMEWORK.equals(resource.getFileExtension())
+						|| IWOLipsModel.EXT_WOA.equals(resource.getFileExtension())
 						|| "build".equals(resource.getName())
 						|| "dist".equals(resource.getName())) {
 						// no further examination needed
 						return false;
 					}
 					if (needsProjectFileUpdate(kindOfChange)) {
-						if (EXT_COMPONENT
+						if (IWOLipsModel.EXT_COMPONENT
 							.equals(resource.getFileExtension())) {
 							updateProjectFile(
 								kindOfChange,
 								resource,
-								COMPONENTS_ID,
+								IWOLipsModel.COMPONENTS_ID,
 								resource.getParent().getFile(
-									new Path(PROJECT_FILE_NAME)));
+									new Path(IWOLipsModel.PROJECT_FILE_NAME)));
 						} else if (matchWOAppResourcesPattern(resource)) {
 							updateProjectFile(
 								kindOfChange,
 								resource,
-								RESOURCES_ID,
+								IWOLipsModel.RESOURCES_ID,
 								resource.getParent().getFile(
-									new Path(PROJECT_FILE_NAME)));
+									new Path(IWOLipsModel.PROJECT_FILE_NAME)));
 						} /*else if (
 																																																	EXT_EOMODEL.equals(resource.getFileExtension())) {
 																																																	updateProjectFile(
@@ -267,14 +267,14 @@ public class ResourceChangeListener
 							deleteTeamPrivateMembers((IFolder) resource);
 						}*/
 						else if (
-							EXT_SUBPROJECT.equals(
+						IWOLipsModel.EXT_SUBPROJECT.equals(
 								resource.getFileExtension())) {
 							updateProjectFile(
 								kindOfChange,
 								resource,
-								SUBPROJECTS_ID,
+								IWOLipsModel.SUBPROJECTS_ID,
 								resource.getParent().getFile(
-									new Path(PROJECT_FILE_NAME)));
+									new Path(IWOLipsModel.PROJECT_FILE_NAME)));
 							if (IResourceDelta.REMOVED == kindOfChange) {
 								// remove project's source folder from
 								// classpathentries
@@ -338,16 +338,16 @@ public class ResourceChangeListener
 							updateProjectFile(
 								kindOfChange,
 								resource,
-								RESOURCES_ID,
+							IWOLipsModel.RESOURCES_ID,
 								resource.getParent().getFile(
-									new Path(PROJECT_FILE_NAME)));
+									new Path(IWOLipsModel.PROJECT_FILE_NAME)));
 						} else if (matchClassesPattern(resource)) {
 							updateProjectFile(
 								kindOfChange,
 								resource,
-								CLASSES_ID,
+							IWOLipsModel.CLASSES_ID,
 								resource.getParent().getFile(
-									new Path(PROJECT_FILE_NAME)));
+									new Path(IWOLipsModel.PROJECT_FILE_NAME)));
 						}
 						//return false;
 					}

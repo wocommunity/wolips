@@ -84,7 +84,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.objectstyle.wolips.core.logging.WOLipsLog;
-import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
+import org.objectstyle.wolips.core.resources.IWOLipsModel;
 import org.objectstyle.wolips.core.util.WorkbenchUtilities;
 
 /**
@@ -92,7 +92,7 @@ import org.objectstyle.wolips.core.util.WorkbenchUtilities;
  *
  * Use this class to modify an IProject.
  */
-public class WOLipsProject implements IWOLipsPluginConstants, IWOLipsProject {
+public class WOLipsProject implements IWOLipsProject {
 	private IProject project;
 	private NaturesAccessor naturesAccessor;
 	private BuilderAccessor builderAccessor;
@@ -190,7 +190,7 @@ public class WOLipsProject implements IWOLipsPluginConstants, IWOLipsProject {
 	 */
 	protected class NaturesAccessor
 		extends WOLipsProjectInnerClass
-		implements IWOLipsPluginConstants, INaturesAccessor {
+		implements INaturesAccessor {
 		private final String TargetBuilderNatureID =
 			"org.objectstyle.wolips.targetbuilder.targetbuildernature";
 		private final String INCREMENTAL_FRAMEWORK_NATURE_ID =
@@ -206,9 +206,7 @@ public class WOLipsProject implements IWOLipsPluginConstants, IWOLipsProject {
 				INCREMENTAL_FRAMEWORK_NATURE_ID,
 				ANT_FRAMEWORK_NATURE_ID,
 				INCREMENTAL_APPLICATION_NATURE_ID,
-				ANT_APPLICATION_NATURE_ID,
-				WO_APPLICATION_NATURE_OLD,
-				WO_FRAMEWORK_NATURE_OLD };
+				ANT_APPLICATION_NATURE_ID };
 		/**
 		 * @param woLipsProject
 		 */
@@ -288,8 +286,7 @@ public class WOLipsProject implements IWOLipsPluginConstants, IWOLipsProject {
 		public boolean isApplication() throws CoreException {
 			return (
 				projectHasNature(ANT_APPLICATION_NATURE_ID)
-					|| projectHasNature(INCREMENTAL_APPLICATION_NATURE_ID)
-					|| projectHasNature(WO_APPLICATION_NATURE_OLD));
+					|| projectHasNature(INCREMENTAL_APPLICATION_NATURE_ID));
 		}
 		/**
 		 * @return true only if one of the WOLips framework natures is installed. False does not mean that this is an application.
@@ -298,8 +295,7 @@ public class WOLipsProject implements IWOLipsPluginConstants, IWOLipsProject {
 		public boolean isFramework() throws CoreException {
 			return (
 				this.projectHasNature(ANT_FRAMEWORK_NATURE_ID)
-					|| this.projectHasNature(INCREMENTAL_FRAMEWORK_NATURE_ID)
-					|| this.projectHasNature(WO_FRAMEWORK_NATURE_OLD));
+					|| this.projectHasNature(INCREMENTAL_FRAMEWORK_NATURE_ID));
 		}
 		/**
 		 * @return true only if one of the WOLips ant natures is installed. False does not mean that this is an incremental nature.
@@ -895,8 +891,7 @@ public class WOLipsProject implements IWOLipsPluginConstants, IWOLipsProject {
 		 */
 		public IFolder getParentFolderWithPBProject(IFolder aFolder) {
 			IFolder findFolder = aFolder;
-			while ((findFolder
-				.findMember(IWOLipsPluginConstants.PROJECT_FILE_NAME)
+			while ((findFolder.findMember(IWOLipsModel.PROJECT_FILE_NAME)
 				== null)
 				&& (findFolder.getParent() != null)
 				&& (findFolder.getParent().getType() != IResource.PROJECT)) {
@@ -904,8 +899,7 @@ public class WOLipsProject implements IWOLipsPluginConstants, IWOLipsProject {
 			}
 			if (findFolder.getParent() == null)
 				return null;
-			if (findFolder.findMember(IWOLipsPluginConstants.PROJECT_FILE_NAME)
-				!= null)
+			if (findFolder.findMember(IWOLipsModel.PROJECT_FILE_NAME) != null)
 				return findFolder;
 			return null;
 		}
@@ -931,7 +925,7 @@ public class WOLipsProject implements IWOLipsPluginConstants, IWOLipsProject {
 			WorkbenchUtilities.findFilesInResourceByName(
 				arrayList,
 				this.getProject(),
-				IWOLipsPluginConstants.PROJECT_FILE_NAME);
+				IWOLipsModel.PROJECT_FILE_NAME);
 			for (int i = 0; i < arrayList.size(); i++) {
 				IResource resource = (IResource) arrayList.get(i);
 				PBProjectUpdater pbProjectUpdater =
@@ -939,6 +933,25 @@ public class WOLipsProject implements IWOLipsPluginConstants, IWOLipsProject {
 				pbProjectUpdater.cleanTables();
 			}
 		}
+
+		/**
+		 * @throws Exception
+		 */
+		public void addLocalFrameworkSectionToPBProject() {
+			try {
+				IResource pbproject =
+					this.getProject().findMember(
+						IWOLipsModel.PROJECT_FILE_NAME);
+				if (pbproject != null) {
+					PBProjectUpdater pbProjectUpdater =
+						PBProjectUpdater.instance(pbproject.getParent());
+					pbProjectUpdater.addLocalFrameworkSectionToPBProject();
+				}
+			} catch (Exception exception) {
+				WOLipsLog.log(exception);
+			}
+		}
+
 	}
 
 }

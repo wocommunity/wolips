@@ -77,9 +77,9 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.objectstyle.woenvironment.util.FileStringScanner;
 import org.objectstyle.wolips.core.logging.WOLipsLog;
-import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
 import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
 import org.objectstyle.wolips.core.preferences.Preferences;
+import org.objectstyle.wolips.core.resources.IWOLipsModel;
 
 /**
  * @author uli
@@ -225,7 +225,7 @@ public final class WOLipsJavaProject extends WOLipsProject implements IWOLipsJav
 			IFolder subprojectFolder,
 			boolean forceCreation) {
 			//ensure that the folder is a subproject
-			if (!EXT_SUBPROJECT.equals(subprojectFolder.getFileExtension())) {
+			if (!IWOLipsModel.EXT_SUBPROJECT.equals(subprojectFolder.getFileExtension())) {
 				IFolder parentFolder =
 					this
 						.getWOLipsJavaProject()
@@ -252,7 +252,7 @@ public final class WOLipsJavaProject extends WOLipsProject implements IWOLipsJav
 					subprojectFolder.getProject().getFolder(
 						subprojectFolder.getName()
 							+ "/"
-							+ IWOLipsPluginConstants.EXT_SRC);
+							+ IWOLipsModel.EXT_SRC);
 				if (!subprojectSourceFolder.exists()) {
 					try {
 						subprojectSourceFolder.create(true, true, null);
@@ -322,7 +322,7 @@ public final class WOLipsJavaProject extends WOLipsProject implements IWOLipsJav
 			}
 			// no source folder found -> create new one
 			IFolder projectSourceFolder =
-				this.getProject().getFolder(IWOLipsPluginConstants.EXT_SRC);
+				this.getProject().getFolder(IWOLipsModel.EXT_SRC);
 			if (!projectSourceFolder.exists()) {
 				try {
 					projectSourceFolder.create(true, true, null);
@@ -455,7 +455,7 @@ public final class WOLipsJavaProject extends WOLipsProject implements IWOLipsJav
 			for (int i = 0; i < frameworkList.size(); i++) {
 				frameworkName = (String) frameworkList.get(i);
 				// check for framework extentsion
-				frameworkExtIndex = frameworkName.indexOf(EXT_FRAMEWORK);
+				frameworkExtIndex = frameworkName.indexOf(IWOLipsModel.EXT_FRAMEWORK);
 				if (frameworkExtIndex == -1
 					|| frameworkExtIndex == 0) { // invalid framework name
 					continue;

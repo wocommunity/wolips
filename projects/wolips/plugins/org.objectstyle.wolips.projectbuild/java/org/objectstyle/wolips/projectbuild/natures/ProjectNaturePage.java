@@ -80,14 +80,13 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.objectstyle.wolips.core.logging.WOLipsLog;
-import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
 import org.objectstyle.wolips.core.project.IWOLipsProject;
 import org.objectstyle.wolips.core.project.WOLipsCore;
 import org.objectstyle.wolips.projectbuild.WOProjectBuildConstants;
 
 public class ProjectNaturePage 
   extends PropertyPage 
-  implements IAdaptable, IWOLipsPluginConstants, WOProjectBuildConstants
+  implements IAdaptable, WOProjectBuildConstants
 {
 
   private static final String BUILD_STYLE_TITLE = " Build style";

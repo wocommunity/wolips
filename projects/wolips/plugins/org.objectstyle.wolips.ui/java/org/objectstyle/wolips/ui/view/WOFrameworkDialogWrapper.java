@@ -59,7 +59,7 @@ package org.objectstyle.wolips.ui.view;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 
-import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathEntry;
@@ -74,9 +74,9 @@ import org.eclipse.ui.dialogs.FileSystemElement;
 import org.eclipse.ui.wizards.datatransfer.FileSystemStructureProvider;
 import org.eclipse.ui.wizards.datatransfer.SelectFilesOperation;
 import org.objectstyle.wolips.core.logging.WOLipsLog;
-import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
 import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
-import org.objectstyle.wolips.core.project.PBProjectUpdater;
+import org.objectstyle.wolips.core.project.IWOLipsProject;
+import org.objectstyle.wolips.core.project.WOLipsCore;
 
 /**
  * Wrapper of FileSelectionDialog to select jars from given
@@ -230,17 +230,15 @@ public class WOFrameworkDialogWrapper {
 			WOLipsPlugin.handleException(part.getSite().getShell(), e, null);
 		}
 		if (addLocalFrameworkSectionToPBProject) {
+			IWOLipsProject wolipsProject;
 			try {
-				IResource pbproject =
-					projectToUpdate.getProject().findMember(
-						IWOLipsPluginConstants.PROJECT_FILE_NAME);
-				if (pbproject != null) {
-					PBProjectUpdater pbProjectUpdater =
-						PBProjectUpdater.instance(pbproject.getParent());
-					pbProjectUpdater.addLocalFrameworkSectionToPBProject();
-				}
-			} catch (Exception exception) {
-				WOLipsLog.log(exception);
+				wolipsProject =
+					WOLipsCore.createProject(projectToUpdate.getProject());
+				wolipsProject
+					.getPBProjectFilesAccessor()
+					.addLocalFrameworkSectionToPBProject();
+			} catch (CoreException e) {
+				WOLipsLog.log(e);
 			}
 		}
 	}

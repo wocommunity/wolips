@@ -66,6 +66,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.JavaCore;
 import org.objectstyle.wolips.core.project.WOLipsJavaProject;
+import org.objectstyle.wolips.core.resources.IWOLipsModel;
 /**
  * @author mnolte
  * @author uli
@@ -124,7 +125,7 @@ public class WOComponentCreator extends WOProjectResourceCreator {
 			case IResource.PROJECT :
 				componentFolder =
 					((IProject) parentResource).getFolder(
-						componentName + "." + EXT_COMPONENT);
+						componentName + "." + IWOLipsModel.EXT_COMPONENT);
 				wolipsJavaProject =
 					new WOLipsJavaProject(
 						JavaCore.create((IProject) parentResource));
@@ -133,15 +134,15 @@ public class WOComponentCreator extends WOProjectResourceCreator {
 						.getClasspathAccessor()
 						.getProjectSourceFolder()
 						.getFile(
-						new Path(componentName + "." + EXT_JAVA));
+						new Path(componentName + "." + IWOLipsModel.EXT_JAVA));
 				componentApiFile =
 					((IProject) parentResource).getFile(
-						componentName + "." + EXT_API);
+						componentName + "." + IWOLipsModel.EXT_API);
 				break;
 			case IResource.FOLDER :
 				componentFolder =
 					((IFolder) parentResource).getFolder(
-						componentName + "." + EXT_COMPONENT);
+						componentName + "." + IWOLipsModel.EXT_COMPONENT);
 				wolipsJavaProject =
 					new WOLipsJavaProject(
 						JavaCore.create(parentResource.getProject()));
@@ -151,21 +152,21 @@ public class WOComponentCreator extends WOProjectResourceCreator {
 						.getSubprojectSourceFolder(
 							(IFolder) parentResource,
 							true)
-						.getFile(componentName + "." + EXT_JAVA);
+						.getFile(componentName + "." + IWOLipsModel.EXT_JAVA);
 				componentApiFile =
 					((IFolder) parentResource).getFile(
-						componentName + "." + EXT_API);
+						componentName + "." + IWOLipsModel.EXT_API);
 				break;
 			default :
 				throw new InvocationTargetException(
 					new Exception("Wrong parent resource - check validation"));
 		}
 		IFile componentDescription =
-			componentFolder.getFile(componentName + "." + EXT_WOD);
+			componentFolder.getFile(componentName + "." + IWOLipsModel.EXT_WOD);
 		IFile componentWoo =
-			componentFolder.getFile(componentName + "." + EXT_WOO);
+			componentFolder.getFile(componentName + "." + IWOLipsModel.EXT_WOO);
 		IFile componentHTMLTemplate =
-			componentFolder.getFile(componentName + "." + EXT_HTML);
+			componentFolder.getFile(componentName + "." + IWOLipsModel.EXT_HTML);
 		createResourceFolderInProject(componentFolder, monitor);
 		fileCreator().create(componentDescription, monitor);
 		if (createBodyTag) {

@@ -64,14 +64,14 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.Point;
-import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
 import org.objectstyle.wolips.core.project.WOLipsProject;
+import org.objectstyle.wolips.core.resources.IWOLipsModel;
 /**
  * @author mnolte
  *
  */
 public class WOLabelDecorator
-	implements ILabelDecorator, IWOLipsPluginConstants {
+	implements ILabelDecorator {
 
 	private static Image subprojectImage;
 	private static Image componentImage;
@@ -147,13 +147,13 @@ public class WOLabelDecorator
 	 * @return Image
 	 */
 	private Image imageForExtension(Image image, String aString) {
-		if (EXT_SUBPROJECT.equals(aString))
+		if (IWOLipsModel.EXT_SUBPROJECT.equals(aString))
 			return subprojectImage(image);
-		if (EXT_COMPONENT.equals(aString))
+		if (IWOLipsModel.EXT_COMPONENT.equals(aString))
 			return componentImage(image);
-		if (EXT_EOMODEL.equals(aString))
+		if (IWOLipsModel.EXT_EOMODEL.equals(aString))
 			return eomodelImage(image);
-		if (EXT_FRAMEWORK.equals(aString) || EXT_WOA.equals(aString) || EXT_BUILD.equals(aString) || EXT_DIST.equals(aString))
+		if (IWOLipsModel.EXT_FRAMEWORK.equals(aString) || IWOLipsModel.EXT_WOA.equals(aString) || IWOLipsModel.EXT_BUILD.equals(aString) || IWOLipsModel.EXT_DIST.equals(aString))
 			return buildImage(image);
 		return image;
 	}
@@ -165,7 +165,7 @@ public class WOLabelDecorator
 	 * @return Image
 	 */
 	private Image imageForName(Image image, String aString) {
-		if (EXT_BUILD.equals(aString) || EXT_DIST.equals(aString))
+		if (IWOLipsModel.EXT_BUILD.equals(aString) || IWOLipsModel.EXT_DIST.equals(aString))
 			return buildImage(image);
 		return image;
 	}

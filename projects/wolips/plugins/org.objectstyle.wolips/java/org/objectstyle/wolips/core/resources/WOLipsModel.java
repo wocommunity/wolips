@@ -63,7 +63,6 @@ import org.eclipse.jdt.core.ITypeHierarchy;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.objectstyle.wolips.core.logging.WOLipsLog;
-import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
 
 /**
  * @author ulrich
@@ -251,7 +250,7 @@ public final class WOLipsModel implements IWOLipsModel {
 				resourceName.substring(
 					0,
 					resourceName.length()
-						- IWOLipsPluginConstants.EXT_JAVA.length()
+						- IWOLipsModel.EXT_JAVA.length()
 						- 1);
 			IType type = compilationUnit.getType(typeName);
 			IRegion region = JavaCore.newRegion();

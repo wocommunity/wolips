@@ -85,11 +85,11 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.objectstyle.woenvironment.pb.PBProject;
 import org.objectstyle.wolips.core.logging.WOLipsLog;
-import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
 import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
 import org.objectstyle.wolips.core.project.IWOLipsProject;
 import org.objectstyle.wolips.core.project.WOLipsCore;
 import org.objectstyle.wolips.core.project.WOLipsJavaProject;
+import org.objectstyle.wolips.core.resources.IWOLipsModel;
 import org.objectstyle.wolips.core.util.StringUtilities;
 import org.objectstyle.wolips.wizards.templates.XercesDocumentBuilder;
 import org.w3c.dom.Document;
@@ -309,8 +309,7 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 		IProgressMonitor monitor)
 		throws InvocationTargetException {
 		boolean isJavaFile =
-			fileName != null
-				&& fileName.endsWith("." + IWOLipsPluginConstants.EXT_JAVA);
+			fileName != null && fileName.endsWith("." + IWOLipsModel.EXT_JAVA);
 		IFile fileToCreate = null;
 		WOLipsJavaProject wolipsJavaProject = null;
 		switch (parentResource.getType()) {
@@ -473,20 +472,17 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 									.getNodeValue();
 						}
 						////////////////// kind "src"
-						if (IWOLipsPluginConstants
-							.EXT_SRC
-							.equals(classpathKind)) {
+						if (IWOLipsModel.EXT_SRC.equals(classpathKind)) {
 							// set source path extension
 							if (!".".equals(currentRawPath) && false) {
-								currentRawPath += "."
-									+ IWOLipsPluginConstants.EXT_SRC;
+								currentRawPath += "." + IWOLipsModel.EXT_SRC;
 							} else if (false) {
 								// source path must be folder to create
 								// non-nested source path folder for subprojects
 								currentRawPath =
 									parentResource.getName()
 										+ "."
-										+ IWOLipsPluginConstants.EXT_SRC;
+										+ IWOLipsModel.EXT_SRC;
 							}
 							IPath sourcePath;
 							// is path project name depending
@@ -624,8 +620,7 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 				// subproject
 				IFolder newSubproject = (IFolder) parentResource;
 				IFolder newSubprojectSourceFolder =
-					newSubproject.getFolder(
-						new Path(IWOLipsPluginConstants.EXT_SRC));
+					newSubproject.getFolder(new Path(IWOLipsModel.EXT_SRC));
 				try {
 					if (!parentResource.exists()) {
 						createResourceFolderInProject(newSubproject, monitor);
@@ -715,12 +710,14 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 	private void addAdditionalFrameworks(
 		IProgressMonitor monitor,
 		File additionalResourceDir) {
-		File projectFile = new File(additionalResourceDir, PROJECT_FILE_NAME);
+		File projectFile =
+			new File(additionalResourceDir, IWOLipsModel.PROJECT_FILE_NAME);
 		if (this.parentResource instanceof IProject
 			&& projectFile.exists()
 			&& !projectFile.isDirectory()) {
 			boolean isFramework =
-				EXT_FRAMEWORK.equals(this.parentResource.getFileExtension());
+				IWOLipsModel.EXT_FRAMEWORK.equals(
+					this.parentResource.getFileExtension());
 			// try to add frameworks from project file
 			PBProject pbProject;
 			try {
@@ -760,28 +757,32 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 		throws InvocationTargetException, InterruptedException {
 		monitor.beginTask("Copying project contents", IProgressMonitor.UNKNOWN);
 		CopyFileToResource copy;
-		File projectFile = new File(additionalResourcesDir, PROJECT_FILE_NAME);
+		File projectFile =
+			new File(additionalResourcesDir, IWOLipsModel.PROJECT_FILE_NAME);
 		// init directory scanner includes/excludes
 		String[] resourcesIncludes;
 		String[] resourcesExcludes =
 			new String[] {
-				PROJECT_FILE_NAME,
+				IWOLipsModel.PROJECT_FILE_NAME,
 				"CVS",
-				"*." + EXT_WOA,
-				"*." + EXT_BUILD,
-				"*." + EXT_SUBPROJECT,
-				"*." + EXT_JAVA };
+				"*." + IWOLipsModel.EXT_WOA,
+				"*." + IWOLipsModel.EXT_BUILD,
+				"*." + IWOLipsModel.EXT_SUBPROJECT,
+				"*." + IWOLipsModel.EXT_JAVA };
 		String[] classesIncludes;
 		String[] classesExcludes =
 			new String[] {
-				PROJECT_FILE_NAME,
+				IWOLipsModel.PROJECT_FILE_NAME,
 				"CVS",
-				"*." + EXT_WOA,
-				"*." + EXT_BUILD,
-				"*." + EXT_SUBPROJECT };
+				"*." + IWOLipsModel.EXT_WOA,
+				"*." + IWOLipsModel.EXT_BUILD,
+				"*." + IWOLipsModel.EXT_SUBPROJECT };
 		String[] subprojectsIncludes;
 		String[] subprojectsExcludes =
-			new String[] { "CVS", "*." + EXT_WOA, "*." + EXT_BUILD };
+			new String[] {
+				"CVS",
+				"*." + IWOLipsModel.EXT_WOA,
+				"*." + IWOLipsModel.EXT_BUILD };
 		PBProject pbProject = null;
 		if (projectFile.exists()) {
 			// try to set includes from PB.Project
@@ -790,7 +791,7 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 					new PBProject(
 						projectFile,
 						additionalResourcesDir.getName().endsWith(
-							"." + EXT_FRAMEWORK));
+							"." + IWOLipsModel.EXT_FRAMEWORK));
 				List woAppResources =
 					pbProject.getWoAppResources() != null
 						? pbProject.getWoAppResources()
@@ -830,14 +831,16 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 				}
 			} catch (IOException e) {
 				resourcesIncludes = new String[] { "*" };
-				classesIncludes = new String[] { "*." + EXT_JAVA };
-				subprojectsIncludes = new String[] { "*." + EXT_SUBPROJECT };
+				classesIncludes = new String[] { "*." + IWOLipsModel.EXT_JAVA };
+				subprojectsIncludes =
+					new String[] { "*." + IWOLipsModel.EXT_SUBPROJECT };
 				WOLipsLog.log(e);
 			}
 		} else {
 			resourcesIncludes = new String[] { "*" };
-			classesIncludes = new String[] { "*." + EXT_JAVA };
-			subprojectsIncludes = new String[] { "*." + EXT_SUBPROJECT };
+			classesIncludes = new String[] { "*." + IWOLipsModel.EXT_JAVA };
+			subprojectsIncludes =
+				new String[] { "*." + IWOLipsModel.EXT_SUBPROJECT };
 		}
 		// scan directory for non subproject resources
 		DirectoryScanner ds = new DirectoryScanner();
@@ -869,8 +872,8 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 		}
 		String[] foundDirs = ds.getIncludedDirectories();
 		for (int i = 0; i < foundDirs.length; i++) {
-			if (foundDirs[i].endsWith("." + EXT_COMPONENT)
-				|| foundDirs[i].endsWith("." + EXT_EOMODEL)) {
+			if (foundDirs[i].endsWith("." + IWOLipsModel.EXT_COMPONENT)
+				|| foundDirs[i].endsWith("." + IWOLipsModel.EXT_EOMODEL)) {
 				try {
 					copy =
 						new CopyFileToResource(
@@ -950,11 +953,13 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 		WOSubprojectCreator currentSubprojectCreator;
 		String currentSubprojectName;
 		for (int i = 0; i < foundSubprojects.length; i++) {
-			if (foundSubprojects[i].indexOf("." + EXT_SUBPROJECT) != -1) {
+			if (foundSubprojects[i].indexOf("." + IWOLipsModel.EXT_SUBPROJECT)
+				!= -1) {
 				currentSubprojectName =
 					foundSubprojects[i].substring(
 						0,
-						foundSubprojects[i].lastIndexOf("." + EXT_SUBPROJECT));
+						foundSubprojects[i].lastIndexOf(
+							"." + IWOLipsModel.EXT_SUBPROJECT));
 			} else {
 				currentSubprojectName = foundSubprojects[i];
 			}

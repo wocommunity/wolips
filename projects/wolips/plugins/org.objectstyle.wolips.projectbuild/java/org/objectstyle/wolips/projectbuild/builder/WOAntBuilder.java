@@ -69,18 +69,17 @@ import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.objectstyle.wolips.core.logging.WOLipsLog;
-import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
 import org.objectstyle.wolips.core.preferences.Preferences;
 import org.objectstyle.wolips.core.project.ant.BuildMessages;
 import org.objectstyle.wolips.core.project.ant.RunAnt;
+import org.objectstyle.wolips.core.resources.IWOLipsModel;
 import org.objectstyle.wolips.projectbuild.WOProjectBuildConstants;
 
 /**
  * @author uli
  */
 public class WOAntBuilder
-	extends IncrementalProjectBuilder
-	implements IWOLipsPluginConstants {
+	extends IncrementalProjectBuilder {
 	private static final int TOTAL_WORK_UNITS = 1;
 	private String informUserString =
 		"WOLips: "
@@ -355,8 +354,8 @@ public class WOAntBuilder
 						return false;
 					}
 				case IResource.FOLDER :
-					if (EXT_FRAMEWORK.equals(resource.getFileExtension())
-						|| EXT_WOA.equals(resource.getFileExtension())
+					if (IWOLipsModel.EXT_FRAMEWORK.equals(resource.getFileExtension())
+						|| IWOLipsModel.EXT_WOA.equals(resource.getFileExtension())
 						|| "build".equals(resource.getName())
 						|| "dist".equals(resource.getName())) {
 						// no further examination needed

@@ -58,7 +58,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbench;
 import org.objectstyle.wolips.core.logging.WOLipsLog;
-import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
 import org.objectstyle.wolips.core.project.IWOLipsProject;
 import org.objectstyle.wolips.core.project.WOLipsCore;
 /**
@@ -70,8 +69,7 @@ import org.objectstyle.wolips.core.project.WOLipsCore;
  * Window>Preferences>Java>Code Generation.
  */
 public class JarProjectCreationWizard
-	extends WOProjectCreationWizard
-	implements IWOLipsPluginConstants {
+	extends WOProjectCreationWizard {
 	private JarProjectCreationPage mainPage;
 	/** (non-Javadoc)
 	 * Method declared on Wizard.
