@@ -57,6 +57,7 @@
 package org.objectstyle.woenvironment.env;
 
 import java.io.File;
+import java.util.Map;
 
 /**
  * @author uli
@@ -71,6 +72,16 @@ public final class WOEnvironment extends Environment {
 	public WOEnvironment() {
 		super();
 		woVariables = new WOVariables(this);
+	}
+	
+	/**
+	 * Creates new WOEnvironment, specifying the list of alternative properties.
+	 * 
+	 * @param properties
+	 */
+	public WOEnvironment(Map altProperties) {
+	    super();
+        woVariables = new WOVariables(this, altProperties);
 	}
 
 	/**
@@ -165,5 +176,9 @@ public final class WOEnvironment extends Environment {
 			System.out.println(anException);
 		}
 		return null;
+	}
+	
+	public boolean variablesConfigured() {
+		 return getWOVariables().systemRoot() != null && getWOVariables().localRoot() != null;
 	}
 }

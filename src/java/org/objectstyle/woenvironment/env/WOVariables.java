@@ -58,7 +58,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.Map;
 import java.util.Properties;
+
 import org.objectstyle.woenvironment.util.FileStringScanner;
 /**
  * @author uli
@@ -80,14 +83,23 @@ public class WOVariables {
 	private Properties wobuildProperties;
 	private File wobuildPropertiesFile;
 	private Environment environment;
+	
 	/**
 	 * Constructor for WOVariables.
 	 */
 	protected WOVariables(Environment environment) {
+		this(environment, Collections.EMPTY_MAP);
+	}
+	
+	/**
+	 * Constructor for WOVariables.
+	 */
+	protected WOVariables(Environment environment, Map altProperties) {
 		super();
 		this.environment = environment;
-		this.init();
+		this.init(altProperties);
 	}
+	
 	/**
 	 * Method init.Tries to load wobuild.properties file in the following way
 	 * <ul>
@@ -98,7 +110,7 @@ public class WOVariables {
 	 * <li>try to find wobuild.properties in user.home</li>
 	 * This method is invoked when the class is loaded.
 	 */
-	private void init() {
+	private void init(Map altProperties) {
 		// load properties
 		wobuildProperties = new Properties();
 		// try user home
@@ -124,6 +136,26 @@ public class WOVariables {
 			} catch (FileNotFoundException e) {
 			} catch (IOException e) {
 			}
+		}
+		else if(altProperties != null) {
+					// import required properties from project.. maybe do a scan on "wo.*"?
+					if (altProperties.get(WO_ROOT) != null) {
+						wobuildProperties.setProperty(
+							WO_ROOT,
+						altProperties.get(WO_ROOT).toString());
+					}
+
+					if (altProperties.get(WO_WO_LOCAL_ROOT) != null) {
+						wobuildProperties.setProperty(
+							WO_WO_LOCAL_ROOT,
+						altProperties.get(WO_WO_LOCAL_ROOT).toString());
+					}
+
+					if (altProperties.get(WO_WO_SYSTEM_ROOT) != null) {
+						wobuildProperties.setProperty(
+							WO_WO_SYSTEM_ROOT,
+						altProperties.get(WO_WO_SYSTEM_ROOT).toString());
+					}
 		}
 	}
 	private boolean validateWobuildPropertiesFile(String fileName) {
