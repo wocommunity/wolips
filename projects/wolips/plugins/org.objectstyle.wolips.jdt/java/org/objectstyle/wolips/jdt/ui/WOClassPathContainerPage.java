@@ -70,9 +70,8 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.objectstyle.wolips.jdt.classpath.WOClasspathContainerPath;
-import org.objectstyle.wolips.jdt.classpath.WOClasspathContainerPath.WOClasspathContainerEntry;
-import org.objectstyle.wolips.jdt.classpath.WOClasspathContainerPath.WOClasspathContainerRoot;
+import org.objectstyle.wolips.jdt.ui.WOClasspathContainerContentProvider.WOClasspathContainerEntry;
+import org.objectstyle.wolips.jdt.ui.WOClasspathContainerContentProvider.WOClasspathContainerRoot;
 
 /**
  * Insert the type's description here.
@@ -81,7 +80,7 @@ import org.objectstyle.wolips.jdt.classpath.WOClasspathContainerPath.WOClasspath
 public class WOClassPathContainerPage
 	extends WizardPage
 	implements IClasspathContainerPage {
-	private WOClasspathContainerPath path;
+	private WOClasspathContainerContentProvider path;
 	/**
 	 * The constructor.
 	 */
@@ -155,7 +154,7 @@ public class WOClassPathContainerPage
 	 * @see org.eclipse.jdt.ui.wizards.IClasspathContainerPage#setSelection(org.eclipse.jdt.core.IClasspathEntry)
 	 */
 	public void setSelection(IClasspathEntry containerEntry) {
-		path = new WOClasspathContainerPath(containerEntry);
+		path = new WOClasspathContainerContentProvider(containerEntry);
 	}
 
 	private CheckboxTreeViewer _uiList;

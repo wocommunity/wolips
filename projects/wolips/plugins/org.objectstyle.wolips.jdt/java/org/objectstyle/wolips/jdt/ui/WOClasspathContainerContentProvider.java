@@ -1,60 +1,10 @@
-/* ====================================================================
- * 
- * The ObjectStyle Group Software License, Version 1.0 
+/*
+ * Created on 01.03.2004
  *
- * Copyright (c) 2002 The ObjectStyle Group 
- * and individual authors of the software.  All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- *
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
- *
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in
- *    the documentation and/or other materials provided with the
- *    distribution.
- *
- * 3. The end-user documentation included with the redistribution, if
- *    any, must include the following acknowlegement:  
- *       "This product includes software developed by the 
- *        ObjectStyle Group (http://objectstyle.org/)."
- *    Alternately, this acknowlegement may appear in the software itself,
- *    if and wherever such third-party acknowlegements normally appear.
- *
- * 4. The names "ObjectStyle Group" and "Cayenne" 
- *    must not be used to endorse or promote products derived
- *    from this software without prior written permission. For written 
- *    permission, please contact andrus@objectstyle.org.
- *
- * 5. Products derived from this software may not be called "ObjectStyle"
- *    nor may "ObjectStyle" appear in their names without prior written
- *    permission of the ObjectStyle Group.
- *
- * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
- * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED.  IN NO EVENT SHALL THE OBJECTSTYLE GROUP OR
- * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
- * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
- * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
- * USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
- * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
- * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
- * SUCH DAMAGE.
- * ====================================================================
- *
- * This software consists of voluntary contributions made by many
- * individuals on behalf of the ObjectStyle Group.  For more
- * information on the ObjectStyle Group, please see
- * <http://objectstyle.org/>.
- *
+ * To change the template for this generated file go to
+ * Window>Preferences>Java>Code Generation>Code and Comments
  */
-
-package org.objectstyle.wolips.jdt.classpath;
+package org.objectstyle.wolips.jdt.ui;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -71,6 +21,7 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.graphics.Image;
 import org.objectstyle.wolips.jdt.PluginImages;
+import org.objectstyle.wolips.jdt.classpath.WOClasspathContainer;
 import org.objectstyle.wolips.variables.VariablesPlugin;
 
 /**
@@ -79,14 +30,17 @@ import org.objectstyle.wolips.variables.VariablesPlugin;
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public final class WOClasspathContainerPath
-	implements ITreeContentProvider, ILabelProvider {
+public class WOClasspathContainerContentProvider implements ITreeContentProvider, ILabelProvider {
 	private WOClasspathContainerRoot[] roots;
 	private CheckboxTreeViewer checkboxTreeViewer;
 	protected ArrayList allEntries = new ArrayList();
 	private boolean isExported = false;
-	
-	public WOClasspathContainerPath(IClasspathEntry containerEntry) {
+
+	/**
+	 * @param containerEntry
+	 */
+	public WOClasspathContainerContentProvider(IClasspathEntry containerEntry) {
+		super();
 		IPath path = null;
 		if (containerEntry == null || containerEntry.getPath() == null) {
 			path =
@@ -109,21 +63,24 @@ public final class WOClasspathContainerPath
 			path = containerEntry.getPath();
 		}
 		String[] rootsNames = VariablesPlugin.getDefault().getFrameworkRootsNames();
+		IPath[] rootsPaths = VariablesPlugin.getDefault().getFrameworkRoots();
 		roots = new WOClasspathContainerRoot[rootsNames.length];
 		for (int i = 0; i < rootsNames.length; i++) {
 			roots[i] =
-				new WOClasspathContainerRoot(rootsNames[i], path);
+				new WOClasspathContainerRoot(rootsNames[i], rootsPaths[i], path);
 		}
 	}
 
 	public final class WOClasspathContainerRoot {
 		private String root;
-		private IPath path;
+		private IPath rootPath;
+		private IPath containerPath;
 		private WOClasspathContainerEntry[] entries;
-		protected WOClasspathContainerRoot(String root, IPath path) {
+		protected WOClasspathContainerRoot(String root, IPath rootPath, IPath containerPath) {
 			this.root = root;
-			this.path = path;
-			File fwBase = new File(path.toOSString());
+			this.rootPath = rootPath;
+			this.containerPath = containerPath;
+			File fwBase = new File(rootPath.toOSString());
 			if (fwBase.exists() && fwBase.isDirectory()) {
 				File frameworks[] = fwBase.listFiles(new WOFWFilenameFilter());
 				entries = new WOClasspathContainerEntry[frameworks.length];
@@ -131,19 +88,13 @@ public final class WOClasspathContainerPath
 					WOClasspathContainerEntry entry =
 						new WOClasspathContainerEntry(
 							this,
-							path,
+							containerPath,
 							frameworks[i]);
 					entries[i] = entry;
 				}
 			}
 		}
 
-		/*protected String getRootName() {
-			return JdtPlugin.getDefault()
-				.getClasspathVariablesAccessor()
-				.getclasspathVariableName(
-				root);
-		}*/
 		/**
 		 * @return
 		 */
@@ -155,8 +106,8 @@ public final class WOClasspathContainerPath
 			return root;
 		}
 		
-		protected IPath getPath() {
-			return path;
+		protected IPath getContainerPath() {
+			return containerPath;
 		}
 
 	}
@@ -182,7 +133,7 @@ public final class WOClasspathContainerPath
 							&& segments[i].equals(name)
 							&& this.exists(
 								segments[i],
-								(this.getRoot().getPath())));
+								(this.getRoot().getContainerPath())));
 					if (checked) {
 						i = segments.length;
 						allEntries.add(name);
@@ -296,7 +247,6 @@ public final class WOClasspathContainerPath
 	public WOClasspathContainerRoot[] getRoots() {
 		return roots;
 	}
-
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.viewers.ITreeContentProvider#getChildren(java.lang.Object)
 	 */
@@ -310,9 +260,9 @@ public final class WOClasspathContainerPath
 			}*/
 			return entries;
 		}
-		if (parentElement instanceof WOClasspathContainerPath) {
+		if (parentElement instanceof WOClasspathContainerContentProvider) {
 			WOClasspathContainerRoot[] currentRoots =
-				((WOClasspathContainerPath) parentElement).getRoots();
+				((WOClasspathContainerContentProvider) parentElement).getRoots();
 			/*
 			for (int i = 0; i < roots.length; i++) {
 			viewer.add(roots[i], this.getChildren(roots[i]));
@@ -337,9 +287,9 @@ public final class WOClasspathContainerPath
 	 * @see org.eclipse.jface.viewers.ITreeContentProvider#hasChildren(java.lang.Object)
 	 */
 	public boolean hasChildren(Object element) {
-		if (element instanceof WOClasspathContainerPath)
-			return ((WOClasspathContainerPath) element).getRoots() != null
-				&& ((WOClasspathContainerPath) element).getRoots().length > 0;
+		if (element instanceof WOClasspathContainerContentProvider)
+			return ((WOClasspathContainerContentProvider) element).getRoots() != null
+				&& ((WOClasspathContainerContentProvider) element).getRoots().length > 0;
 		if (element instanceof WOClasspathContainerRoot)
 			return ((WOClasspathContainerRoot) element).getEntries() != null
 				&& ((WOClasspathContainerRoot) element).getEntries().length > 0;
