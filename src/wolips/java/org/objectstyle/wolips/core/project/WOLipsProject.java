@@ -60,8 +60,10 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -108,6 +110,29 @@ public class WOLipsProject implements IWOLipsPluginConstants {
 	public IProject getProject() {
 		return project;
 	}
+
+  /**
+   * @param name Name of a build command
+   * @return boolean whether this is one of ours
+   */
+  private static boolean isWOLBuilder (String name) {
+    return (
+      name.equals (INCREMENTAL_BUILDER_ID)
+      || name.equals (ANT_BUILDER_ID)
+    );
+  }
+
+  /**
+   * @param natureID
+   * @return boolean
+   */
+  private static boolean isWOLipsNature(String natureID) {
+    for (int i = 0; i < WOLIPS_NATURES.length; i++) {
+      if (WOLIPS_NATURES[i].equals(natureID))
+        return true;
+    }
+    return false;
+  }
 
 	/**
 	 * @return WOLipsProjectNatures
@@ -250,59 +275,133 @@ public class WOLipsProject implements IWOLipsPluginConstants {
 		/**
 		 * @param isFramework
 		 * @param useTargetBuilder currently does nothing
-		 * Removes all WOLips nature, calls deconfigure on them, adds the ant nature and calls configure on it.
+		 * Replaces any currently set WOLips natures with the Ant Nature for Framework or Application.
 		 * @throws CoreException
 		 */
 		public void setAntNature(boolean isFramework, boolean useTargetBuilder)
 			throws CoreException {
 			//TODO : add targetbuilder support
-			this.callDeconfigure();
-			this.removeWOLipsNatures();
 			if (isFramework) {
-				this.addNature(ANT_FRAMEWORK_NATURE_ID);
+				this.setWONature(ANT_FRAMEWORK_NATURE_ID, ANT_BUILDER_ID, null);
 			} else {
-				this.addNature(ANT_APPLICATION_NATURE_ID);
+				this.setWONature(ANT_APPLICATION_NATURE_ID, ANT_BUILDER_ID, null);
 			}
-			this.callConfigure();
 		}
 		/**
 		 * @param isFramework
 		 * @param useTargetBuilder currently does nothing
-		 * Removes all WOLips nature, calls deconfigure on them, adds the ant nature and calls configure on it.
+     * Replaces any currently set WOLips natures with the incremental Nature for Framework or Application.
 		 * @throws CoreException
 		 */
 		public void setIncrementalNature(
 			boolean isFramework,
-			boolean useTargetBuilder)
-			throws CoreException {
+			boolean useTargetBuilder,
+      Map buildArgs
+    )
+			throws CoreException 
+    {
 			//TODO : add targetbuilder support
-			//this.callDeconfigure();
-			this.removeWOLipsNatures();
 			if (isFramework) {
-				this.addNature(INCREMENTAL_FRAMEWORK_NATURE_ID);
+				this.setWONature(INCREMENTAL_FRAMEWORK_NATURE_ID, INCREMENTAL_BUILDER_ID, buildArgs);
 			} else {
-				this.addNature(INCREMENTAL_APPLICATION_NATURE_ID);
+				this.setWONature(INCREMENTAL_APPLICATION_NATURE_ID, INCREMENTAL_BUILDER_ID, buildArgs);
 			}
-			this.callConfigure();
 		}
-		/**
-		 * @param natureID
-		 * @throws CoreException
-		 */
-		private void addNature(String natureID) throws CoreException {
-			String[] projectNatures = this.getProjectNatures();
-			List naturesList = new ArrayList(Arrays.asList(projectNatures));
+    
+    private void setWONature (String natureID, String builderID, Map args) throws CoreException {
+      IProject project = this.getProject();
       
-      if (!naturesList.contains(natureID)) {
-        naturesList.add(natureID);
-        IProjectDescription desc = this.getProject().getDescription();
-
-        desc.setNatureIds(
-          (String[]) naturesList.toArray(new String[naturesList.size()])
-        );
-        _setDescription (this.getProject(), desc);
+      if (null == args) {
+        args = Collections.EMPTY_MAP;
       }
-		}
+
+      System.out.println("configure - " + project);
+
+      IProjectDescription desc = project.getDescription();
+
+      boolean setDesc = false;
+
+      // add / remove natures as needed, avoid setting the project description more than once
+      {
+        List naturesList = new ArrayList(Arrays.asList(desc.getNatureIds()));
+        
+        if (!naturesList.contains(natureID)) {
+          Iterator iter = naturesList.iterator();
+          while (iter.hasNext()) {
+            if (isWOLipsNature((String)iter.next())) {
+              iter.remove();
+            }
+          }
+          naturesList.add(natureID);
+          desc.setNatureIds(
+            (String[]) naturesList.toArray(new String[naturesList.size()])
+          );
+          setDesc = true;
+        }
+      }
+
+      // add / remove builder -- used to be done in ...Nature.configure / deconfigure 
+      {
+        List buildCommands = new ArrayList(Arrays.asList(desc.getBuildSpec()));
+  
+        boolean found = false;
+        boolean mustSetBS = false;
+
+        Iterator iter = buildCommands.iterator ();
+        while (iter.hasNext()) {
+          ICommand thisOne = (ICommand)iter.next();        
+          String bName = thisOne.getBuilderName();
+          if (bName.equals(builderID)) {
+            if (!thisOne.getArguments().equals(args)) {
+              thisOne.setArguments(args);
+              mustSetBS = true;
+              setDesc = true;
+            }
+            found = true;
+          } else if (isWOLBuilder(bName)) {
+            iter.remove();            
+            mustSetBS = true;
+          }
+        }
+  
+        if (!found) {
+          ICommand newCommand = desc.newCommand();
+          newCommand.setBuilderName(builderID);
+          newCommand.setArguments(args);
+          buildCommands.add(newCommand);
+          mustSetBS = true;
+          setDesc = true;
+        }
+        if (mustSetBS) {
+          desc.setBuildSpec(
+            (ICommand[]) buildCommands.toArray(
+              new ICommand[buildCommands.size()]));
+        }
+
+      }
+      if (setDesc) {
+        _setDescription(project, desc);
+      }
+    }
+    
+//		/**
+//		 * @param natureID
+//		 * @throws CoreException
+//		 */
+//		private void addNature(String natureID) throws CoreException {
+//			String[] projectNatures = this.getProjectNatures();
+//			List naturesList = new ArrayList(Arrays.asList(projectNatures));
+//      
+//      if (!naturesList.contains(natureID)) {
+//        naturesList.add(natureID);
+//        IProjectDescription desc = this.getProject().getDescription();
+//
+//        desc.setNatureIds(
+//          (String[]) naturesList.toArray(new String[naturesList.size()])
+//        );
+//        _setDescription (this.getProject(), desc);
+//      }
+//		}
     
     private void _setDescription(
       final IProject f_project,
@@ -366,7 +465,11 @@ public class WOLipsProject implements IWOLipsPluginConstants {
 		private String[] getProjectNatures() throws CoreException {
 			return this.getProject().getDescription().getNatureIds();
 		}
+
 		/**
+     * Remove all WOLips Natures 
+     * and in consequence, their builders -- the Natures do that in .deconfigure
+     * 
 		 * @throws CoreException
 		 */
 		public void removeWOLipsNatures() throws CoreException {
@@ -383,20 +486,14 @@ public class WOLipsProject implements IWOLipsPluginConstants {
       desc.setNatureIds(projectNatures);
       _setDescription(this.getProject(), desc);
 		}
-		/**
-		 * @param natureID
-		 * @return boolean
-		 */
-		private boolean isWOLipsNature(String natureID) {
-			for (int i = 0; i < WOLIPS_NATURES.length; i++) {
-				if (WOLIPS_NATURES[i].equals(natureID))
-					return true;
-			}
-			return false;
-		}
+
 		/**
 		 * Calls configure on all WOLips natures.
 		 * @throws CoreException
+     * @deprecated this should not be necessary, if the normal 
+     * Eclipse APIs are used correctly, unfortunately, the Project creation
+     * Wizard calls it and I'm unable to figure out what's going on there (hn3000)
+     * -- maybe someone can explain it to me?
 		 */
 		public void callConfigure() throws CoreException {
 			//This is needed by the project wizard
@@ -405,27 +502,29 @@ public class WOLipsProject implements IWOLipsPluginConstants {
 				projectNatures[i].configure();
 			}
 		}
-		/**
-		 * Calls deconfigure on all WOLips natures.
-		 * @throws CoreException
-		 */
-		public void callDeconfigure() throws CoreException {
-			/*
-                        IProjectNature[] projectNatures = this.getWOLipsNatures();
-			for (int i = 0; i < projectNatures.length; i++) {
-				projectNatures[i].deconfigure();
-			}
-                        */
-		}
 
-		/**
-		 * @param natures
-		 * @throws CoreException
-		 */
-		private void setProjectNatures(String[] natures) throws CoreException {
-			this.getProject().getDescription().setNatureIds(natures);
 
-		}
+//		/**
+//		 * Calls deconfigure on all WOLips natures.
+//		 * @throws CoreException
+//		 */
+//		public void callDeconfigure() throws CoreException {
+//			/*
+//                        IProjectNature[] projectNatures = this.getWOLipsNatures();
+//			for (int i = 0; i < projectNatures.length; i++) {
+//				projectNatures[i].deconfigure();
+//			}
+//                        */
+//		}
+
+//		/**
+//		 * @param natures
+//		 * @throws CoreException
+//		 */
+//		private void setProjectNatures(String[] natures) throws CoreException {
+//			this.getProject().getDescription().setNatureIds(natures);
+//
+//		}
 	}
 
 	/**
@@ -442,6 +541,35 @@ public class WOLipsProject implements IWOLipsPluginConstants {
 		protected BuilderAccessor(WOLipsProject wolipsProject) {
 			super(wolipsProject);
 		}
+    
+    public Map getBuilderArgs () {
+      Map result = null;
+      
+      try {
+        IProjectDescription desc = this.getProject().getDescription();
+        List cmdList = Arrays.asList(desc.getBuildSpec());
+        Iterator iter = cmdList.iterator();
+        while (iter.hasNext()) {
+          ICommand cmd = (ICommand)iter.next();
+          if (isWOLBuilder(cmd.getBuilderName())) {
+            result = cmd.getArguments();
+            break;
+          }
+        }
+      } catch (Exception up) {
+        // if anything went wrong, we simply don't have any args (yet)
+        // might wanna log the exception, though
+      }
+
+      if (null == result) {
+        // this doesn't exist pre-JDK1.3, is that a problem?
+        result = Collections.EMPTY_MAP;
+        //result = new HashMap();
+      }
+      
+      return (result);
+    }
+    
 		/**
 		 * Method removeJavaBuilder.
 		 * @param project
