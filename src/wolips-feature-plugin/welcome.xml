@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<welcomePage 
+ title="WOLips">
+ <intro><b>First steps with WOLips.</b>
+This page will help familiarize you with WOLips.
+To get started, read the sections below and click on the related links. </intro>
+
+<item><b>What is WOLips?</b>
+WOLips is a plugin for <topic href="http://eclipse.org/">eclipse</topic> that support development
+of <a href="http://www.apple.com/webobjects/">WebObjects</a> applications and frameworks.
+WOLips is a part of <a href="http://objectstyle.org/woproject/">WOProject</a>. <a href="http://eclipse.org/">eclipse</a> is a kind of universal tool platform - an
+open extensible IDE for anything and nothing in particular. <a href="http://objectstyle.org/woproject/">WOProject</a>
+is a set of OS and IDE independent tools (based on <a href="http://jakarta.apache.org/ant/">Ant</a>)
+for working with <a href="http://www.apple.com/webobjects/">WebObjects</a>.
+<a href="http://jakarta.apache.org/ant/">Ant</a> is a Java-based build tool.
+</item>
+
+<item><b>Audience and Scope</b>
+Are you familiar with WebObjects, and
+curious about Ant, WOProject and WOLips? Would you like to use eclipse to
+develop WebObjects applications? Then this document is for you. It aims to get
+you started using WOLips. There will be no detailed technical discussions, and
+larger subjects like Ant, WOProject or plugin develepment for eclipse are not
+discussed.
+
+The author of this document is not a WOLips
+or WOProject developer, and it contains no API or reference documentation. It's
+not even a user manual. It's simply something to get you started.
+</item>
+
+<item><b>Using eclipse without WOLips</b>
+If you are not yet familiar with eclipse; spend some time with it before continuing. Make certain to
+have a look at the Windows > Open Perspective and Windows > Show View menu alternatives,
+and don't miss the Refactor menu. Bring yourself to a level where you can create projects and
+run/debug applications before continuing.
+You can turn an existing WO project into an eclipse project by simply running the New Project
+wizard. select Java Project and point the project content path to the already existing WO project
+folder. (Remember that this is without using WOLips.) Doing this you'll get warnings related to all
+the WO specific imports. You need to add all relevant jar files to the Build Path of the project. If
+you have many WO projects, that all need the same libraries, this can be tedious. To make this
+easier, create a new empty project, call it WO5 or something similar. Add all the relevant libraries
+to this project, build path, and mark them to be exported. Then all you need to add to all the WO
+projects is this new project.
+This way you can use eclipse to edit existing java files. Doing this could be worthwhile (As a Java
+IDE eclipse is superior to ProjectBuilder.) but eclipse has no notion of WO specifics. Here's a list
+of what eclipse can't do with this setup:
+You need to maintain the original ProjectBuilder project in parallel. Eclipse will only be
+aware of the *.java files, and even these files can't be moved or renamed without confusing
+ProjectBuilder.
+Invoking WOBuilder and EOModeler from within ProjectBuilder is not the same thing as
+invoking them from Finder/Explorer. Invoking them from eclipse will be equivalent to the
+Finder/Explorer alternative.
+Eclipse cannot build a WO framework or application.
+What does WOLips bring to the table?
+WOLips aims to overcome the problems listed above.
+WOLips incorporates the ideas of WOProject (using Ant).
+WOLips will extend eclipse features, like refactoring, to work with WO specific files. This
+is not yet possible, but will be in future releases.</item>
+
+<item><b>HelloWOrld</b>
+It is very easy to create and run a basic WO application using WOLips. Here's how to do it:
+1. Open the WOLips Perspective: <action pluginId="org.objectstyle.wolips"  class="org.objectstyle.wolips.ui.PerspectiveFactory">Window > Open Perspective > other > WOLips</action>
+2. Create a <action pluginId="org.objectstyle.wolips" class="org.objectstyle.wolips.actions.OpenWOProjectCreationWizard">application project</action>
+3. Name the project HelloWOrld press Finish.
+On the left in WOLips Navigator you'll find four folders, and a number of files. They are:
+bin contains all the *.class files.
+HelloWOrld.proj.src contains all the *.java files.
+HelloWOrld.woa is the executable application. eclipse keeps all code compiled at all
+times (as soon as you save changes). Among other things this folder contains the
+application start script HelloWOrld.cmd.
+Main.wo contain the *.html, *.wod and *.woo files for the Main component as
+expected. The *.api file is stored directly under the project root (as in ProjectBuilder)
+and the *.java file is stored in the *.proj.src folder (as we saw before). If/when you add
+more components; their files will be stored accordingly.
+.classpath and .project are eclipse project files.
+build.properties, build.xml and build-subproj.xml are Ant/WOProject files.
+CustomInfo.plist, Makefile, Makefile.postamble, Makefile.preamble and
+PB.project are ProjectBuilder files.
+Properties is a WOLips specific file.
+WOAfile.icns is the application icon set.
+5. Double-click PB.project and ProjectBuilder opens... (Return to eclipse.)
+6. Double-click Main.wod and WOBuilder opens... (Modify it to be a simple HelloWOrld
+component.)
+7. Double-click HelloWOrld.cmd and the application is launched...
+That's it!</item>
+
+<item><b>ProjectBuilder: Why PBWO and not PBX?</b>
+In this document, when referring to ProjectBuilder, it is the Windows and/or old Macintosh version
+(PBWO) that is intended not the new, Macintosh only, version (PBX).
+WOLips needs to maintain either the PBWO PB.project file or the PBX .pbproj file in order to
+have WOBuilder and EOModeler function as desired. The PBWO file is apparently much easier to
+maintain than the PBX file. Working in parallel with PBWO and eclipse/WOLips is possible, but is
+not the primary reason for maintaining the project files.
+Moving things around - using packages
+...
+</item>
+
+<item><b>What you should now about the build process.</b>
+Thanks to the rapid turnaround mode there is no need to build your apps and frameworks everytime you build your java classes.
+To build your apps and frameworks for deployment activate the build of apps and frameworks with the + button in the WOLips perspective. After it you can safely deactivate it.
+</item>
+
+<item><b>What you can and can't do.</b>
+...
+</item>
+
+<item><b>How to link to a framework to get access to all resources - not just the java code.</b>
+Importing existing projects
+...
+Probably different for applications and frameworks and depending on if it a PBWO or PBX
+project.</item>
+
+<item><b>Using the eclipse Debugger</b>
+Select Run->Debug as->JavaApplication.
+</item>
+
+<item><b>Getting help</b>
+If you'd like to ask question regarding WOLips or to get in contact with the developers use the
+WOProject mailing list. Suggestions on improving this document are also best discussed on that
+list.</item>
+
+<item><b>Learn more </b>
+To learn more you can browse the <topic id="/org.objectstyle.wolips/toc.xml">WOLips User Guide</topic>.</item>
+
+</welcomePage>

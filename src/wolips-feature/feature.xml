@@ -104,6 +104,12 @@
          version="1.0.4"/>
 
    <plugin
+         id="org.objectstyle.wolips.feature"
+         download-size="0"
+         install-size="0"
+         version="1.0.4"/>
+
+   <plugin
          id="org.objectstyle.wolips.help"
          download-size="0"
          install-size="0"

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin
+   id="org.objectstyle.wolips.feature"
+   name="%WOLips.pluginName"
+   version="1.0.4"
+   provider-name="%WOLips.providerName"
+  >
+
+   <requires>
+      <import plugin="org.objectstyle.wolips"/>
+   </requires>
+   
+</plugin>
