@@ -65,13 +65,16 @@ import org.eclipse.core.runtime.Platform;
 
 /**
  * @author ulrich
- * 
+ *  
  */
 public class NativeHelper {
 	private static final String REVEAL_IN_FINDER_ACTION = "REVEAL_IN_FINDER";
+
 	private static final String CD_IN_TERMINAL_ACTION = "CD_IN_TERMINAL";
 
 	private static String NATIVE_HELPER_PATH = null;
+
+	private static boolean ChmodDone = false;
 
 	private static String helperCommand() {
 		if (NativeHelper.NATIVE_HELPER_PATH == null) {
@@ -89,16 +92,28 @@ public class NativeHelper {
 	}
 
 	private static void launchHelper(String action, String argument) {
-		StringBuffer stringBuffer = new StringBuffer();
-		stringBuffer.append(NativeHelper.helperCommand());
-		stringBuffer.append(" ");
-		stringBuffer.append(action);
-		stringBuffer.append(" \"");
-		stringBuffer.append(argument.replace(' ', ':'));
-		stringBuffer.append("\"");
-		String string = stringBuffer.toString();
+		if (!NativeHelper.ChmodDone) {
+			StringBuffer chmodStringBuffer = new StringBuffer();
+			chmodStringBuffer.append("chmod 755 ");
+			chmodStringBuffer.append(NativeHelper.helperCommand());
+			String chmodString = chmodStringBuffer.toString();
+			try {
+				Runtime.getRuntime().exec(chmodString);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			NativeHelper.ChmodDone = true;
+		}
+		StringBuffer toolStringBuffer = new StringBuffer();
+		toolStringBuffer.append(NativeHelper.helperCommand());
+		toolStringBuffer.append(" ");
+		toolStringBuffer.append(action);
+		toolStringBuffer.append(" \"");
+		toolStringBuffer.append(argument.replace(' ', ':'));
+		toolStringBuffer.append("\"");
+		String toolString = toolStringBuffer.toString();
 		try {
-			Runtime.getRuntime().exec(string);
+			Runtime.getRuntime().exec(toolString);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -111,13 +126,13 @@ public class NativeHelper {
 		NativeHelper.launchHelper(NativeHelper.REVEAL_IN_FINDER_ACTION,
 				resource.getLocation().toOSString());
 	}
-	
+
 	/**
 	 * @param container
 	 */
 	public static void cdInTerminal(IContainer container) {
-		NativeHelper.launchHelper(NativeHelper.CD_IN_TERMINAL_ACTION,
-				container.getLocation().toOSString());
+		NativeHelper.launchHelper(NativeHelper.CD_IN_TERMINAL_ACTION, container
+				.getLocation().toOSString());
 	}
 
 }
