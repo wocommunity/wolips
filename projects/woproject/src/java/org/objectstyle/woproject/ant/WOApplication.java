@@ -216,6 +216,7 @@ public class WOApplication extends WOTask {
 		// in the <frameworks> tag.
 		List frameworkSets = getFrameworkSets();
 		int size = frameworkSets.size();
+                boolean hasSet = false;
 		for (int i = 0; i < size; i++) {
 			FrameworkSet fs = (FrameworkSet) frameworkSets.get(i);
 
@@ -244,9 +245,11 @@ public class WOApplication extends WOTask {
 				include.setName(includeName + "/WebServerResources/");
 
 				cp.addFileset(newFs);
+                                hasSet = true;
 			}
 		}
-		cp.execute();
+                if(hasSet)
+                    cp.execute();
 	}
 
 	/**
