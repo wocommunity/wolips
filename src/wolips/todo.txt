@@ -1,0 +1,16 @@
+This is our list of open items.
+- wo view draft -> ulrich
+- launch/debug wizard to add woarguments -> Harald
+- ClasspathContainer -> Harald
+- improved documentation -> Anders
+- import wizards(improve the current stuff) -> Markus
+- wo view implementation
+- handle packages on import
+- handle .lproj folder on import
+- add WO icon to the WOApplication(currently the file is empty)
+- dynamically resolve the src folder
+- add a field to the project wizards to enter the src folder name
+- add a field to the app wizard to enter the package for the java classes(Main, App...)
+- add a field to the component wizard to add the package for the component
+- JavaClientSupport
+- eclipse independent build.xml(launch the ant script from the commandline)
