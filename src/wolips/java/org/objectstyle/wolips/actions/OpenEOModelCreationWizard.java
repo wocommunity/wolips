@@ -56,10 +56,8 @@
  
  package org.objectstyle.wolips.actions;
 
-import org.eclipse.jdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.jdt.internal.ui.wizards.AbstractOpenWizardAction;
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.ui.help.WorkbenchHelp;
 import org.objectstyle.wolips.wizards.EOModelCreationWizard;
 
 /**
@@ -71,21 +69,9 @@ import org.objectstyle.wolips.wizards.EOModelCreationWizard;
  * Window>Preferences>Java>Code Generation.
  */
 public class OpenEOModelCreationWizard extends AbstractOpenWizardAction {
-
-	public OpenEOModelCreationWizard() {
-		WorkbenchHelp.setHelp(this, IJavaHelpContextIds.OPEN_SNIPPET_WIZARD_ACTION);
-	}
-	
-	public OpenEOModelCreationWizard(String label, Class[] acceptedTypes) {
-		super(label, acceptedTypes, false);
-		WorkbenchHelp.setHelp(this, IJavaHelpContextIds.OPEN_SNIPPET_WIZARD_ACTION);
-	}
 	
 	protected Wizard createWizard() { 
 		return new EOModelCreationWizard(); 
 	}
-	
-	protected boolean shouldAcceptElement(Object obj) { 
-		return !isInArchive(obj);
-	}
+
 }
