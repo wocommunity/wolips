@@ -55,26 +55,6 @@ WOLips incorporates the ideas of WOProject (using Ant).
 WOLips will extend eclipse features, like refactoring, to work with WO specific files. This
 is not yet possible, but will be in future releases.</item>
 
-<item><b>Installing WOLips</b>
-1. If you have any previous version of WOLips installed then uninstall that first. (This
-document, and more specifically these instructions, assumes that you are new to WOLips,
-and that you are installing it for the first time.)
-2. Quit eclipse if you have it running.
-3. Download the latest release from SourceForge.
-4. Unpack the downloaded file. You should end up with a folder named something like
-org.objectstyle.wolips_x.y.z.tar.gz. This folder should in turn contain two folders: features
-and plugings.
-5. Locate the eclipse folder (where eclipse is installed on your disk). Among other things this
-folder does also contain a features and a plugins folder.
-6. Copy whatever you downloaded from org.objectstyle.wolips_x.y.z\features and
-org.objectstyle.wolips_x.y.z\pluins to eclipse\features and eclipse\plugins
-respectively.
-7. Currently you have to this as well: Replace the ant.jar and the jakarta-ant-1.4.1-optional.jar
-in the ant plugin with ant.jar and optional.jar(rename it to jakarta-ant-1.4.1-optional.jar)
-from the ant 1.5.* distribution.
-8. Restart eclipse. When you start eclipse with a new or updated feature you have to activate it
-with the Update Manager. It should appear automatically when eclipse is started. If not, youll find it under Help > Software Updates > Update Manager.</item>
-
 <item><b>HelloWOrld</b>
 It is very easy to create and run a basic WO application using WOLips. Here's how to do it:
 1. Open the WOLips Perspective: <action pluginId="org.objectstyle.wolips"  class="org.objectstyle.wolips.ui.PerspectiveFactory">Window > Open Perspective > other > WOLips</action>
@@ -110,11 +90,12 @@ have WOBuilder and EOModeler function as desired. The PBWO file is apparently mu
 maintain than the PBX file. Working in parallel with PBWO and eclipse/WOLips is possible, but is
 not the primary reason for maintaining the project files.
 Moving things around - using packages
-...</item>
+...
+</item>
 
 <item><b>What you can and can't do.</b>
-WO frameworks
-...</item>
+...
+</item>
 
 <item><b>How to link to a framework to get access to all resources - not just the java code.</b>
 Importing existing projects
@@ -123,7 +104,8 @@ Probably different for applications and frameworks and depending on if it a PBWO
 project.</item>
 
 <item><b>Using the eclipse Debugger</b>
-...</item>
+Select Run->Debug as->JavaApplication.
+</item>
 
 <item><b>Getting help</b>
 If you'd like to ask question regarding WOLips or to get in contact with the developers use the
