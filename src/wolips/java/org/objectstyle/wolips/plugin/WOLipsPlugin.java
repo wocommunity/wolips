@@ -57,6 +57,7 @@ package org.objectstyle.wolips.plugin;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPluginDescriptor;
@@ -72,7 +73,6 @@ import org.objectstyle.wolips.logging.WOLipsLog;
 import org.objectstyle.wolips.logging.WOLipsLogFactory;
 import org.objectstyle.wolips.preferences.Preferences;
 import org.objectstyle.wolips.wo.Foundation;
-import org.objectstyle.woproject.env.WOVariables;
 /**
  * The main plugin class to be used in the desktop.
  * 
@@ -80,6 +80,8 @@ import org.objectstyle.woproject.env.WOVariables;
  * @author markus
  */
 public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
+	
+	public static Log log;
 	//The plugin.
 	private static WOLipsPlugin plugin;
 	/**
@@ -97,7 +99,8 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 			"org.apache.commons.logging.LogFactory",
 			"org.objectstyle.wolips.logging.WOLipsLogFactory");
 		LogFactory.getFactory().setAttribute(WOLipsLogFactory.ATTR_GLOBAL_LOG_LEVEL,new Integer(Preferences.getString(IWOLipsPluginConstants.PREF_LOG_LEVEL)));
-		WOVariables.log.debug("test");
+		// set own logger
+		log=LogFactory.getLog(WOLipsPlugin.class);
 		Foundation.loadFoundationClasses();
 		Preferences.setDefaults();
 	}
@@ -158,11 +161,12 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 		if (target instanceof CoreException) {
 			IStatus status = ((CoreException) target).getStatus();
 			ErrorDialog.openError(shell, title, message, status);
-			WOLipsLog.log(status);
+			//WOLipsLog.log(status);
 		} else {
 			MessageDialog.openError(shell, title, target.getMessage());
-			WOLipsLog.log(target);
+			//WOLipsLog.log(target);
 		}
+		log.error(message,target);
 	}
 	/**
 	 * Returns the PluginID.

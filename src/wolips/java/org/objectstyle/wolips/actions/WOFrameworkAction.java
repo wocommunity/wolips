@@ -56,8 +56,6 @@
 
 package org.objectstyle.wolips.actions;
 
-import java.io.File;
-
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.action.IAction;
@@ -65,8 +63,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.IWorkbenchPart;
 import org.objectstyle.wolips.ui.WOFrameworkDialogWrapper;
 import org.objectstyle.wolips.wizards.Messages;
-import org.objectstyle.woproject.env.WOVariables;
-
+import org.objectstyle.woproject.env.Environment;
 
 /**
  * Adding WOFrameworks
@@ -102,13 +99,13 @@ public class WOFrameworkAction extends ActionOnIProject {
 			WOFrameworkAction.frameworkDialog(
 				this.part,
 				javaProject,
-				new File(WOVariables.libraryDir(), "Frameworks"));
+				Environment.NEXT_SYSTEM_ROOT);
 			return;
 		} else if (action.getId().equals(WOLocalFrameworkAddID)) {
 			WOFrameworkAction.frameworkDialog(
 				this.part,
 				javaProject,
-				new File(WOVariables.localLibraryDir(), "Frameworks"));
+				Environment.NEXT_LOCAL_ROOT);
 			return;
 		}
 		MessageDialog.openInformation(
@@ -120,9 +117,12 @@ public class WOFrameworkAction extends ActionOnIProject {
 	private static void frameworkDialog(
 		IWorkbenchPart aPart,
 		IJavaProject aProject,
-		File aFile) {
+		String classPathVariableName) {
 		WOFrameworkDialogWrapper frameworkDialog =
-			new WOFrameworkDialogWrapper(aPart, aProject, aFile);
+			new WOFrameworkDialogWrapper(
+				aPart,
+				aProject,
+				classPathVariableName);
 		frameworkDialog.executeDialog();
 	}
 }

@@ -59,6 +59,8 @@ package org.objectstyle.wolips.ui;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathEntry;
@@ -74,8 +76,6 @@ import org.eclipse.ui.wizards.datatransfer.FileSystemStructureProvider;
 import org.eclipse.ui.wizards.datatransfer.SelectFilesOperation;
 import org.objectstyle.wolips.plugin.WOLipsPlugin;
 import org.objectstyle.wolips.wizards.Messages;
-import org.objectstyle.woproject.env.Environment;
-import org.objectstyle.woproject.env.WOVariables;
 
 /**
  * Wrapper of FileSelectionDialog to select jars from given
@@ -86,12 +86,16 @@ import org.objectstyle.woproject.env.WOVariables;
  */
 public class WOFrameworkDialogWrapper {
 
-	private static Path nextRootAsPath = new Path(WOVariables.nextRoot());
+	public static Log log = LogFactory.getLog(WOFrameworkDialogWrapper.class);
+	//private static Path nextRootAsPath = new Path(WOVariables.nextRoot());
 
 	private FileSelectionDialog dialog;
 	private IJavaProject projectToUpdate;
 	private IWorkbenchPart part;
 	private IClasspathEntry[] oldClasspathEntries;
+	private IPath frameworkRootPath;
+	private IPath expandedClassPathVariable;
+	private String classPathVariableName;
 
 	/**
 	 * Constructor for WOFrameworkDialogWrapper.
@@ -102,10 +106,24 @@ public class WOFrameworkDialogWrapper {
 	public WOFrameworkDialogWrapper(
 		IWorkbenchPart part,
 		IJavaProject projectToUpdate,
-		File fileRoot) {
+		String classPathVariableName) {
 		super();
 		this.part = part;
-
+		this.classPathVariableName = classPathVariableName;
+		// expand class path	
+		expandedClassPathVariable =
+			JavaCore.getClasspathVariable(classPathVariableName);
+		if (expandedClassPathVariable == null) {
+			WOLipsPlugin.handleException(
+				part.getSite().getShell(),
+				new Exception(
+					"unable to resolve eclipse class path variable: "
+						+ classPathVariableName),
+				"unable to resolve eclipse class path variable: "
+					+ classPathVariableName);
+			return;
+		}
+		frameworkRootPath = expandedClassPathVariable.append("Library/Frameworks");
 		// get old class path values to limit selection on FileSystemElement (see below)
 		this.projectToUpdate = projectToUpdate;
 		try {
@@ -115,7 +133,8 @@ public class WOFrameworkDialogWrapper {
 			return;
 		}
 
-		FrameworkRootOperation op = new FrameworkRootOperation(fileRoot);
+		FrameworkRootOperation op =
+			new FrameworkRootOperation(frameworkRootPath.toFile());
 
 		try {
 			new ProgressMonitorDialog(
@@ -170,20 +189,21 @@ public class WOFrameworkDialogWrapper {
 					.getAbsolutePath();
 			currentNewClasspath = new Path(currentFileName);
 
-			// determine if new class path begins with next root
+			// determine if new class path begins with file root path
 			if ((currentNewClasspath.segmentCount()
-				> nextRootAsPath.segmentCount())
+				> frameworkRootPath.segmentCount())
 				&& currentNewClasspath
 					.removeLastSegments(
 						currentNewClasspath.segmentCount()
-							- nextRootAsPath.segmentCount())
-					.equals(nextRootAsPath)) {
+							- frameworkRootPath.segmentCount())
+					.equals(frameworkRootPath)) {
 
-				// replace beginning of class path with next root
+				// replace beginning of class path with correspondending
+				// class path variable
 				currentNewClasspath =
-					new Path(Environment.NEXT_ROOT).append(
+					new Path(classPathVariableName).append(
 						currentNewClasspath.removeFirstSegments(
-							nextRootAsPath.segmentCount()));
+							expandedClassPathVariable.segmentCount()));
 
 				// set path as variable entry			
 				newClasspathEntries[i + oldClasspathEntries.length] =
@@ -260,7 +280,7 @@ public class WOFrameworkDialogWrapper {
 				if (!isValidPath) {
 					return null;
 				}
-				
+
 				IClasspathEntry[] resolvedOldClasspathEntries;
 				try {
 					resolvedOldClasspathEntries =
