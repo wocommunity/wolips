@@ -42,9 +42,9 @@
          <mkdir dir="${param.build.output.build.dir}/plugins/${param.plugin.name}_${build.version}"/>
          <copy todir="${param.build.output.build.dir}/plugins/${param.plugin.name}_${build.version}">
             <fileset dir="${param.plugin.dir}">
-        	    <exclude name="build.xml"/>
+        	<exclude name="build.xml"/>
                 <exclude name="default.properties"/>
-        	    <exclude name=".project"/>
+        	<exclude name=".project"/>
                 <exclude name=".classpath"/>
                 <exclude name="**/java/**"/>
             </fileset>
