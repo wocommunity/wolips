@@ -56,13 +56,10 @@
 
 package org.objectstyle.wolips.projectbuild.natures;
 
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PlatformUI;
 import org.objectstyle.wolips.core.plugin.logging.WOLipsLog;
+import org.objectstyle.wolips.core.project.WOLipsProject;
 import org.objectstyle.wolips.projectbuild.WOProjectBuildConstants;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -75,13 +72,8 @@ import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.jface.dialogs.ProgressMonitorDialog;
-import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.eclipse.swt.widgets.Shell;
 
 /**
  * @author Harald Niesche
@@ -186,6 +178,11 @@ public class IncrementalNature
 	 */
 	public void setProject(IProject project) {
 		_project = project;
+    if (null != project) {
+      _woLipsProject = new WOLipsProject(_project);
+    } else {
+      _woLipsProject = null;
+    }
 	}
 
 	/* ************************************************************************ */
@@ -202,44 +199,51 @@ public class IncrementalNature
 		return (null);
 	}
 
-	public String getStringProperty(String key) {
-		String result = "";
-		try {
-			result =
-				getProject().getPersistentProperty(new QualifiedName("", key));
-		} catch (CoreException up) {
-			up.printStackTrace();
-		}
-
-		return (result);
-	}
-
-	public void setStringProperty(String key, String value) {
-		try {
-			getProject().setPersistentProperty(
-				new QualifiedName("", key),
-				value);
-		} catch (CoreException up) {
-			up.printStackTrace();
-		}
-
-	}
-
-	public boolean getBooleanProperty(String key) {
-		return ("true".equals(getStringProperty(key)));
-	}
-
-	public void setBooleanProperty(String key, boolean value) {
-		setStringProperty(key, value ? "true" : "false");
-	}
+//	public String getStringProperty(String key) {
+//		String result = "";
+//		try {
+//			result =
+//				getProject().getPersistentProperty(new QualifiedName("", key));
+//		} catch (CoreException up) {
+//			up.printStackTrace();
+//		}
+//
+//		return (result);
+//	}
+//
+//	public void setStringProperty(String key, String value) {
+//		try {
+//			getProject().setPersistentProperty(
+//				new QualifiedName("", key),
+//				value);
+//		} catch (CoreException up) {
+//			up.printStackTrace();
+//		}
+//
+//	}
+//
+//	public boolean getBooleanProperty(String key) {
+//		return ("true".equals(getStringProperty(key)));
+//	}
+//
+//	public void setBooleanProperty(String key, boolean value) {
+//		setStringProperty(key, value ? "true" : "false");
+//	}
 
 	public boolean isFramework() {
-		return (getBooleanProperty(FRAMEWORK_PROPERTY));
+		//return (getBooleanProperty(FRAMEWORK_PROPERTY));
+    try {
+      return (_woLipsProject.getNaturesAccessor().isFramework());
+    } catch (CoreException up) {
+      WOLipsLog.log(up.getStatus());
+    }
+    
+    return false;
 	}
 
-	public void setIsFramework(boolean isFramework) {
-		setBooleanProperty(FRAMEWORK_PROPERTY, isFramework);
-	}
+//	public void setIsFramework(boolean isFramework) {
+//		setBooleanProperty(FRAMEWORK_PROPERTY, isFramework);
+//	}
 
 	/**
 	 * either name.woa or name.framework
@@ -404,98 +408,104 @@ public class IncrementalNature
 	}
 
 	/* ************************************************************************ */
-	public static String getNature(boolean isFramework) {
-		if (isFramework)
-			return INCREMENTAL_FRAMEWORK_NATURE_ID;
-		return INCREMENTAL_APPLICATION_NATURE_ID;
-	}
+  public static IncrementalNature s_getNature(IProject project) {
+    try {
+      if (project.hasNature(INCREMENTAL_APPLICATION_NATURE_ID)) {
+        return (IncrementalNature) project.getNature(
+          INCREMENTAL_APPLICATION_NATURE_ID
+        );
+      } else if (project.hasNature(INCREMENTAL_FRAMEWORK_NATURE_ID)) {
+        return (IncrementalNature) project.getNature(
+          INCREMENTAL_FRAMEWORK_NATURE_ID
+        );
+      }
 
-	public static void s_addToProject(IProject project, boolean isFramework)
-		throws CoreException {
-		IProjectDescription desc = project.getDescription();
+    } catch (CoreException exception) {
+      WOLipsLog.log(exception);
+    }
+    return null;
+  }
 
-		String natures_array[] = desc.getNatureIds();
-
-		List natures = new ArrayList(Arrays.asList(natures_array));
-		if (!natures.contains(getNature(isFramework))) {
-			natures.add(getNature(isFramework));
-			natures_array =
-				(String[]) natures.toArray(new String[natures.size()]);
-			desc.setNatureIds(natures_array);
-			s_setDescription(project, desc);
-		}
-	}
-
-	public static void s_removeFromProject(
-		IProject project,
-		boolean isFramework)
-		throws CoreException {
-		IProjectDescription desc = project.getDescription();
-
-		String natures_array[] = desc.getNatureIds();
-
-		List natures = new ArrayList(Arrays.asList(natures_array));
-
-		if (natures.contains(getNature(isFramework))) {
-			natures.remove(getNature(isFramework));
-			natures_array =
-				(String[]) natures.toArray(new String[natures.size()]);
-			desc.setNatureIds(natures_array);
-			s_setDescription(project, desc);
-		}
-	}
-
-	private static void s_setDescription(
-		final IProject f_project,
-		final IProjectDescription f_desc) {
-		s_showProgress(new IRunnableWithProgress() {
-			public void run(IProgressMonitor pm) {
-				try {
-					f_project.setDescription(f_desc, pm);
-				} catch (CoreException up) {
-					pm.done();
-				}
-			}
-		});
-	}
-	public static IncrementalNature s_getNature(IProject project) {
-		try {
-			if (project.hasNature(INCREMENTAL_APPLICATION_NATURE_ID))
-				return (IncrementalNature) project.getNature(
-					INCREMENTAL_APPLICATION_NATURE_ID);
-			if (project.hasNature(INCREMENTAL_FRAMEWORK_NATURE_ID))
-				return (IncrementalNature) project.getNature(
-					INCREMENTAL_FRAMEWORK_NATURE_ID);
-		} catch (CoreException exception) {
-			WOLipsLog.log(exception);
-		}
-		return null;
-	}
-
-	public static void s_showProgress(IRunnableWithProgress rwp) {
-		IWorkbench workbench = PlatformUI.getWorkbench();
-		Shell shell = null;
-		if (null != workbench) {
-			IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-			if (null != window) {
-				shell = window.getShell();
-			}
-		}
-
-		ProgressMonitorDialog pmd = new ProgressMonitorDialog(shell);
-
-		try {
-			pmd.run(true, true, rwp);
-		} catch (InvocationTargetException e) {
-			// handle exception
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// handle cancelation
-			e.printStackTrace();
-		}
-	}
+//	public static String getNature(boolean isFramework) {
+//		if (isFramework)
+//			return INCREMENTAL_FRAMEWORK_NATURE_ID;
+//		return INCREMENTAL_APPLICATION_NATURE_ID;
+//	}
+//
+//	public static void s_addToProject(IProject project, boolean isFramework)
+//		throws CoreException {
+//		IProjectDescription desc = project.getDescription();
+//
+//		String natures_array[] = desc.getNatureIds();
+//
+//		List natures = new ArrayList(Arrays.asList(natures_array));
+//		if (!natures.contains(getNature(isFramework))) {
+//			natures.add(getNature(isFramework));
+//			natures_array =
+//				(String[]) natures.toArray(new String[natures.size()]);
+//			desc.setNatureIds(natures_array);
+//			s_setDescription(project, desc);
+//		}
+//	}
+//
+//	public static void s_removeFromProject(
+//		IProject project,
+//		boolean isFramework)
+//		throws CoreException {
+//		IProjectDescription desc = project.getDescription();
+//
+//		String natures_array[] = desc.getNatureIds();
+//
+//		List natures = new ArrayList(Arrays.asList(natures_array));
+//
+//		if (natures.contains(getNature(isFramework))) {
+//			natures.remove(getNature(isFramework));
+//			natures_array =
+//				(String[]) natures.toArray(new String[natures.size()]);
+//			desc.setNatureIds(natures_array);
+//			s_setDescription(project, desc);
+//		}
+//	}
+//
+//	private static void s_setDescription(
+//		final IProject f_project,
+//		final IProjectDescription f_desc) {
+//		s_showProgress(new IRunnableWithProgress() {
+//			public void run(IProgressMonitor pm) {
+//				try {
+//					f_project.setDescription(f_desc, pm);
+//				} catch (CoreException up) {
+//					pm.done();
+//				}
+//			}
+//		});
+//	}
+//
+//	public static void s_showProgress(IRunnableWithProgress rwp) {
+//		IWorkbench workbench = PlatformUI.getWorkbench();
+//		Shell shell = null;
+//		if (null != workbench) {
+//			IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+//			if (null != window) {
+//				shell = window.getShell();
+//			}
+//		}
+//
+//		ProgressMonitorDialog pmd = new ProgressMonitorDialog(shell);
+//
+//		try {
+//			pmd.run(true, true, rwp);
+//		} catch (InvocationTargetException e) {
+//			// handle exception
+//			e.printStackTrace();
+//		} catch (InterruptedException e) {
+//			// handle cancelation
+//			e.printStackTrace();
+//		}
+//	}
 
 	IProject _project = null;
+  WOLipsProject _woLipsProject = null;
 
 	private static final String NAME_PROPERTY = "PROJECT_NAME";
 	private static final String FRAMEWORK_PROPERTY = "IS_FRAMEWORK";
