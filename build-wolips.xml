@@ -99,9 +99,15 @@
              	<exclude name="**/docs/**"/>
              	<exclude name=".project"/>
              	<exclude name=".classpath"/>
+             	<exclude name="*.html"/>
              </fileset>
          </copy>
          
+         <copy todir="${dist.base}">
+             <fileset dir="src/wolips">
+             	<include name="*.html"/>
+             </fileset>
+         </copy>
          <copy todir="${dist.base}/stuff">
              <fileset dir="src/wolips/stuff">
              	<include name="**/Info.plist"/>
