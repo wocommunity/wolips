@@ -176,6 +176,11 @@ public class EOModelCreator extends WOProjectResourceCreator {
 			} catch (JavaModelException e) {
 				throw new InvocationTargetException(e);
 			}
+			finally {
+				projectToUpdate = null;
+				newAdaptorFrameworkList = null;
+				newClasspathEntries = null;
+			}
 		}
 	}
 }

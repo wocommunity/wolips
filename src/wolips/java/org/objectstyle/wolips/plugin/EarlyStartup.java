@@ -118,13 +118,22 @@ public class EarlyStartup {
 	 * Method writePropertiesFileToUserHome.
 	 */
 	private static void writePropertiesFileToUserHome() throws Exception {
-		URL relativeBuildFile =
-			new URL(
-				WOLipsPlugin.baseURL(),
-				IWOLipsPluginConstants.build_user_home_properties);
-		URL buildFile = Platform.asLocalURL(relativeBuildFile);
-		IProgressMonitor monitor = new NullProgressMonitor();
-		RunAnt.asAnt(buildFile.getFile().toString(), monitor);
+		URL relativeBuildFile = null;
+		URL buildFile = null;
+		IProgressMonitor monitor = null;
+		try {
+			relativeBuildFile =
+				new URL(
+					WOLipsPlugin.baseURL(),
+					IWOLipsPluginConstants.build_user_home_properties);
+			buildFile = Platform.asLocalURL(relativeBuildFile);
+			monitor = new NullProgressMonitor();
+			RunAnt.asAnt(buildFile.getFile().toString(), monitor);
+		} finally {
+			relativeBuildFile = null;
+			buildFile = null;
+			monitor = null;
+		}
 	}
 	/**
 	 * Method validateMandatoryAttributes.

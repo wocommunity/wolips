@@ -79,10 +79,16 @@ public abstract class UpdateIncludeFiles extends Task {
 	private String projectName;
 	protected IProject actualProject;
 
+	/**
+	 * Method buildIncludeFiles.
+	 * @throws BuildException
+	 */
 	protected abstract void buildIncludeFiles() throws BuildException;
-
+	/**
+	 * Method validateAttributes.
+	 * @throws BuildException
+	 */
 	protected abstract void validateAttributes() throws BuildException;
-
 	/**
 	 * Method sortedRootPaths. Array of root path keys ordered by the
 	 * segmentCount of the underlying <code>Path</code>

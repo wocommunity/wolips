@@ -94,6 +94,9 @@ public class RefreshEclipse extends Task {
 				System.out.println("Exception while trying to refresh project");
 				return;
 			}
+			finally {
+				actualProject = null;
+			}
 			forceFullGarbageCollection();
 		} else {
 			System.out.println(

@@ -98,12 +98,18 @@ public class RunAnt {
 	 */
 	public static void asAnt(String buildFile, IProgressMonitor monitor)
 		throws Exception {
-		AntRunner runner = new AntRunner();
+			AntRunner runner = null;
+			try {
+	runner = new AntRunner();
 		runner.setBuildFileLocation(buildFile);
 		//runner.setArguments("-Dmessage=Building -verbose");
 		monitor.subTask(
 			BuildMessages.getString("Build.SubTask.Name") + " " + buildFile);
 		runner.run(new SubProgressMonitor(monitor, 1));
+			}
+			finally {
+				runner = null;
+			}
 	}
 
 	/**

@@ -89,13 +89,19 @@ public class FileStringScanner {
 		String replace,
 		String with)
 		throws IOException {
-		String stringFromFile =
-			FileStringScanner.stringFromFile(new File(file));
-		String replacedString =
-			FileStringScanner.replace(stringFromFile, replace, with);
-		//if nothing replaced
-		if (replacedString != null)
-			FileStringScanner.stringToFile(new File(file), replacedString);
+		String stringFromFile = null;
+		String replacedString = null;
+		try {
+			stringFromFile = FileStringScanner.stringFromFile(new File(file));
+			replacedString =
+				FileStringScanner.replace(stringFromFile, replace, with);
+			//if nothing replaced
+			if (replacedString != null)
+				FileStringScanner.stringToFile(new File(file), replacedString);
+		} finally {
+			stringFromFile = null;
+			replacedString = null;
+		}
 	}
 	/**
 	 * Method stringFromFile.
@@ -104,14 +110,21 @@ public class FileStringScanner {
 	 * @throws IOException
 	 */
 	public static String stringFromFile(File aFile) throws IOException {
-		int size = (int) aFile.length();
-		FileInputStream fis = new FileInputStream(aFile);
-		byte[] data = new byte[size];
-		int bytesRead = 0;
-		while (bytesRead < size) {
-			bytesRead += fis.read(data, bytesRead, size - bytesRead);
+		FileInputStream fis = null;
+		byte[] data = null;
+		try {
+			int size = (int) aFile.length();
+			fis = new FileInputStream(aFile);
+			data = new byte[size];
+			int bytesRead = 0;
+			while (bytesRead < size) {
+				bytesRead += fis.read(data, bytesRead, size - bytesRead);
+			}
+			fis.close();
+		} finally {
+			fis = null;
+			data = null;
 		}
-		fis.close();
 		return new String(data);
 	}
 	/**
@@ -123,9 +136,14 @@ public class FileStringScanner {
 	public static void stringToFile(File aFile, String aString)
 		throws IOException {
 		int length = aString.length();
-		FileOutputStream fos = new FileOutputStream(aFile);
-		fos.write(aString.getBytes(), 0, length);
-		fos.close();
+		FileOutputStream fos = null;
+		try {
+			fos = new FileOutputStream(aFile);
+			fos.write(aString.getBytes(), 0, length);
+			fos.close();
+		} finally {
+			fos = null;
+		}
 	}
 	/**
 	 * Method replace.

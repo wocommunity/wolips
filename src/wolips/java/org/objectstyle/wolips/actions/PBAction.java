@@ -89,14 +89,18 @@ public class PBAction extends ActionOnIProject {
 	 */
 	public void run(IAction action) {
 		if (project() != null) {
+			PBProjectUpdater projectUpdater = null;
 			try {
 				if (action.getId().equals(PBAction.UpdatePBProjectSetID)) {
-					PBProjectUpdater projectUpdater =
+					projectUpdater =
 						new PBProjectUpdater(project());
 					projectUpdater.updatePBProject();
 				}
 			} catch (Exception ex) {
 				WOLipsLog.log(ex);
+			}
+			finally {
+				projectUpdater = null;
 			}
 		}
 	}

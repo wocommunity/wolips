@@ -59,7 +59,6 @@ import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Hashtable;
-
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -191,6 +190,9 @@ public class FileFromTemplateCreator extends _FileFromTemplateCreator {
 					throw new InvocationTargetException(e);
 				}
 			}
+		} finally {
+			fileName = null;
+			fileExtension = null;
 		}
 	}
 	/**
@@ -205,13 +207,20 @@ public class FileFromTemplateCreator extends _FileFromTemplateCreator {
 		IFile fileToCreate,
 		IProgressMonitor monitor)
 		throws InvocationTargetException {
-		String fileName = fileToCreate.getName();
+		String fileName = null;
 		String fileExtension = null;
-		int extIndex = fileName.indexOf(".");
-		if (extIndex != -1 && extIndex < fileName.length() - 1) {
-			fileExtension = fileName.substring(extIndex + 1);
+		try {
+			fileName = fileToCreate.getName();
+			fileExtension = null;
+			int extIndex = fileName.indexOf(".");
+			if (extIndex != -1 && extIndex < fileName.length() - 1) {
+				fileExtension = fileName.substring(extIndex + 1);
+			}
+			create(fileToCreate, fileExtension, monitor);
+		} finally {
+			fileName = null;
+			fileExtension = null;
 		}
-		create(fileToCreate, fileExtension, monitor);
 	}
 	/**
 	 * Helper method to create an input stream containing content definded by
@@ -227,43 +236,58 @@ public class FileFromTemplateCreator extends _FileFromTemplateCreator {
 	 */
 	private InputStream createInputStream(String templateID)
 		throws InvocationTargetException {
-		Element elementForTemplate =
-			getFileTemplateDocument().getElementById(templateID);
-		StringBuffer content = new StringBuffer("");
-		if (elementForTemplate != null
-			&& (new Boolean(elementForTemplate.getAttribute("enabled"))
-				.booleanValue())
-			&& elementForTemplate.getFirstChild() != null) {
-			String templateContent =
-				elementForTemplate.getFirstChild().getNodeValue();
-			if (templateContent != null) {
-				// assign initial content
-				content.append(templateContent);
-				// build list of variables to expand
-				String variablesToExpand =
-					elementForTemplate.getAttribute("variables");
-				ArrayList variableList =
-					WOLipsUtils.arrayListFromCSV(variablesToExpand);
-				if (variablesToExpand != null && !variableList.isEmpty()) {
-					// expand variables
-					String variableToExpand = null;
-					int index = -1;
-					for (int i = 0; i < variableList.size(); i++) {
-						variableToExpand = (String) variableList.get(i);
-						// replace all occurences of "${" + variableToExpand + "}"
-						while ((index =
-							templateContent.indexOf(
-								"${" + variableToExpand + "}"))
-							!= -1) {
-							content.replace(
-								index,
-								index + variableToExpand.length() + 3,
-								expandVariable(variableToExpand));
-							templateContent = content.toString();
+		Element elementForTemplate = null;
+		StringBuffer content = null;
+		String templateContent = null;
+		String variablesToExpand = null;
+		ArrayList variableList = null;
+		String variableToExpand = null;
+		try {
+			elementForTemplate =
+				getFileTemplateDocument().getElementById(templateID);
+			content = new StringBuffer("");
+			if (elementForTemplate != null
+				&& (new Boolean(elementForTemplate.getAttribute("enabled"))
+					.booleanValue())
+				&& elementForTemplate.getFirstChild() != null) {
+				templateContent =
+					elementForTemplate.getFirstChild().getNodeValue();
+				if (templateContent != null) {
+					// assign initial content
+					content.append(templateContent);
+					// build list of variables to expand
+					variablesToExpand =
+						elementForTemplate.getAttribute("variables");
+					variableList =
+						WOLipsUtils.arrayListFromCSV(variablesToExpand);
+					if (variablesToExpand != null && !variableList.isEmpty()) {
+						// expand variables
+						variableToExpand = null;
+						int index = -1;
+						for (int i = 0; i < variableList.size(); i++) {
+							variableToExpand = (String) variableList.get(i);
+							// replace all occurences of "${" + variableToExpand + "}"
+							while ((index =
+								templateContent.indexOf(
+									"${" + variableToExpand + "}"))
+								!= -1) {
+								content.replace(
+									index,
+									index + variableToExpand.length() + 3,
+									expandVariable(variableToExpand));
+								templateContent = content.toString();
+							}
 						}
 					}
 				}
 			}
+		} finally {
+			elementForTemplate = null;
+			content = null;
+			templateContent = null;
+			variablesToExpand = null;
+			variableList = null;
+			variableToExpand = null;
 		}
 		return new ByteArrayInputStream(content.toString().getBytes());
 	}
@@ -372,6 +396,8 @@ public class FileFromTemplateCreator extends _FileFromTemplateCreator {
 			outputLocation = actualJavaProject.getOutputLocation();
 		} catch (JavaModelException e) {
 			return expandedValue;
+		} finally {
+			actualJavaProject = null;
 		}
 		expandedValue =
 			outputLocation.makeRelative().removeFirstSegments(1).toString();

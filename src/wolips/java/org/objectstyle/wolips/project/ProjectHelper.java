@@ -106,27 +106,40 @@ public class ProjectHelper implements IWOLipsPluginConstants {
 	 */
 	public static void removeBuilder(IProject aProject, String aBuilder)
 		throws CoreException {
-		IProjectDescription desc = aProject.getDescription();
-		ICommand[] coms = desc.getBuildSpec();
-		ArrayList comList = new ArrayList();
-		List tmp = Arrays.asList(coms);
-		comList.addAll(tmp);
-		boolean foundJBuilder = false;
-		for (int i = 0; i < comList.size(); i++) {
-			if (((ICommand) comList.get(i))
-				.getBuilderName()
-				.equals(aBuilder)) {
-				comList.remove(i);
-				foundJBuilder = true;
-			}
-		}
-		if (foundJBuilder) {
-			ICommand[] newCom = new ICommand[comList.size()];
+		IProjectDescription desc = null;
+		ICommand[] coms = null;
+		ArrayList comList = null;
+		List tmp = null;
+		ICommand[] newCom = null;
+		try {
+			desc = aProject.getDescription();
+			coms = desc.getBuildSpec();
+			comList = new ArrayList();
+			tmp = Arrays.asList(coms);
+			comList.addAll(tmp);
+			boolean foundJBuilder = false;
 			for (int i = 0; i < comList.size(); i++) {
-				newCom[i] = (ICommand) comList.get(i);
+				if (((ICommand) comList.get(i))
+					.getBuilderName()
+					.equals(aBuilder)) {
+					comList.remove(i);
+					foundJBuilder = true;
+				}
 			}
-			desc.setBuildSpec(newCom);
-			aProject.setDescription(desc, null);
+			if (foundJBuilder) {
+				newCom = new ICommand[comList.size()];
+				for (int i = 0; i < comList.size(); i++) {
+					newCom[i] = (ICommand) comList.get(i);
+				}
+				desc.setBuildSpec(newCom);
+				aProject.setDescription(desc, null);
+			}
+		} finally {
+			desc = null;
+			coms = null;
+			comList = null;
+			tmp = null;
+			newCom = null;
 		}
 	}
 	/**
@@ -137,37 +150,66 @@ public class ProjectHelper implements IWOLipsPluginConstants {
 	 */
 	public static void installBuilder(IProject aProject, String aBuilder)
 		throws CoreException {
-		IProjectDescription desc = aProject.getDescription();
-		ICommand[] coms = desc.getBuildSpec();
-		boolean foundJBuilder = false;
-		for (int i = 0; i < coms.length; i++) {
-			if (coms[i].getBuilderName().equals(aBuilder)) {
-				foundJBuilder = true;
+		IProjectDescription desc = null;
+		ICommand[] coms = null;
+		ICommand[] newIc = null;
+		ICommand command = null;
+		try {
+			desc = aProject.getDescription();
+			coms = desc.getBuildSpec();
+			boolean foundJBuilder = false;
+			for (int i = 0; i < coms.length; i++) {
+				if (coms[i].getBuilderName().equals(aBuilder)) {
+					foundJBuilder = true;
+				}
 			}
-		}
-		if (!foundJBuilder) {
-			ICommand[] newIc = null;
-			ICommand command = desc.newCommand();
-			command.setBuilderName(aBuilder);
-			newIc = new ICommand[coms.length + 1];
-			System.arraycopy(coms, 0, newIc, 0, coms.length);
-			newIc[coms.length] = command;
-			desc.setBuildSpec(newIc);
-			aProject.setDescription(desc, null);
+			if (!foundJBuilder) {
+				newIc = null;
+				command = desc.newCommand();
+				command.setBuilderName(aBuilder);
+				newIc = new ICommand[coms.length + 1];
+				System.arraycopy(coms, 0, newIc, 0, coms.length);
+				newIc[coms.length] = command;
+				desc.setBuildSpec(newIc);
+				aProject.setDescription(desc, null);
+			}
+		} finally {
+			desc = null;
+			coms = null;
+			newIc = null;
+			command = null;
 		}
 	}
+	/**
+	 * Method addWOFrameworkStuffToJavaProject.
+	 * @param aProject
+	 * @param aMonitor
+	 * @throws CoreException
+	 */
 	public static void addWOFrameworkStuffToJavaProject(
 		IProject aProject,
 		IProgressMonitor aMonitor)
 		throws CoreException {
 		ProjectHelper.addCommonStuff(aProject, aMonitor);
 	}
+	/**
+	 * Method addWOApplicationStuffToJavaProject.
+	 * @param aProject
+	 * @param aMonitor
+	 * @throws CoreException
+	 */
 	public static void addWOApplicationStuffToJavaProject(
 		IProject aProject,
 		IProgressMonitor aMonitor)
 		throws CoreException {
 		ProjectHelper.addCommonStuff(aProject, aMonitor);
 	}
+	/**
+	 * Method addCommonStuff.
+	 * @param aProject
+	 * @param aMonitor
+	 * @throws CoreException
+	 */
 	private static void addCommonStuff(
 		IProject aProject,
 		IProgressMonitor aMonitor)
@@ -175,27 +217,57 @@ public class ProjectHelper implements IWOLipsPluginConstants {
 		ProjectHelper.createFolder("Resources", aProject, aMonitor);
 		ProjectHelper.createFolder("WSResources", aProject, aMonitor);
 	}
+	/**
+	 * Method createFolder.
+	 * @param aFolderName
+	 * @param aProject
+	 * @param aMonitor
+	 * @throws CoreException
+	 */
 	private static void createFolder(
 		String aFolderName,
 		IProject aProject,
 		IProgressMonitor aMonitor)
 		throws CoreException {
-		IFolder folder = aProject.getFolder(aFolderName);
-		IPath path = folder.getFullPath();
-		if (!folder.exists()) {
-			CoreUtility.createFolder(folder, true, true, aMonitor);
+		IFolder folder = null;
+		IPath path = null;
+		try {
+			folder = aProject.getFolder(aFolderName);
+			path = folder.getFullPath();
+			if (!folder.exists()) {
+				CoreUtility.createFolder(folder, true, true, aMonitor);
+			}
+		} finally {
+			folder = null;
+			path = null;
 		}
 	}
+	/**
+	 * Method isWOAppBuilderInstalled.
+	 * @param aProject
+	 * @return boolean
+	 */
 	public static boolean isWOAppBuilderInstalled(IProject aProject) {
 		return ProjectHelper.isBuilderInstalled(
 			aProject,
 			ProjectHelper.WOAPPLICATION_BUILDER_ID);
 	}
+	/**
+	 * Method isWOFwBuilderInstalled.
+	 * @param aProject
+	 * @return boolean
+	 */
 	public static boolean isWOFwBuilderInstalled(IProject aProject) {
 		return ProjectHelper.isBuilderInstalled(
 			aProject,
 			ProjectHelper.WOFRAMEWORK_BUILDER_ID);
 	}
+	/**
+	 * Method isBuilderInstalled.
+	 * @param aProject
+	 * @param anID
+	 * @return boolean
+	 */
 	private static boolean isBuilderInstalled(IProject aProject, String anID) {
 		try {
 			ICommand[] nids = aProject.getDescription().getBuildSpec();
@@ -388,15 +460,19 @@ public class ProjectHelper implements IWOLipsPluginConstants {
 		IProgressMonitor monitor)
 		throws InvocationTargetException {
 		// add source classpath entry for project
-		IJavaProject actualJavaProject =
-			JavaCore.create(newSourceFolder.getProject());
-		IClasspathEntry[] oldClassPathEntries;
+		IJavaProject actualJavaProject = null;
+		IClasspathEntry[] oldClassPathEntries = null;
+		;
+		IClasspathEntry[] newClassPathEntries = null;
 		try {
+			actualJavaProject = JavaCore.create(newSourceFolder.getProject());
 			oldClassPathEntries = actualJavaProject.getRawClasspath();
 		} catch (JavaModelException e) {
+			actualJavaProject = null;
+			oldClassPathEntries = null;
 			throw new InvocationTargetException(e);
 		}
-		IClasspathEntry[] newClassPathEntries =
+		newClassPathEntries =
 			new IClasspathEntry[oldClassPathEntries.length + 1];
 		System.arraycopy(
 			oldClassPathEntries,
@@ -409,6 +485,9 @@ public class ProjectHelper implements IWOLipsPluginConstants {
 		try {
 			actualJavaProject.setRawClasspath(newClassPathEntries, monitor);
 		} catch (JavaModelException e) {
+			actualJavaProject = null;
+			oldClassPathEntries = null;
+			newClassPathEntries = null;
 			throw new InvocationTargetException(e);
 		}
 	}
@@ -429,6 +508,8 @@ public class ProjectHelper implements IWOLipsPluginConstants {
 			try {
 				oldClassPathEntries = actualJavaProject.getRawClasspath();
 			} catch (JavaModelException e) {
+				actualJavaProject = null;
+				oldClassPathEntries = null;
 				throw new InvocationTargetException(e);
 			}
 			IClasspathEntry[] newClassPathEntries =
@@ -450,6 +531,9 @@ public class ProjectHelper implements IWOLipsPluginConstants {
 						newClassPathEntries,
 						monitor);
 				} catch (JavaModelException e) {
+					actualJavaProject = null;
+					oldClassPathEntries = null;
+					newClassPathEntries = null;
 					throw new InvocationTargetException(e);
 				}
 			}
@@ -578,13 +662,27 @@ public class ProjectHelper implements IWOLipsPluginConstants {
 		}
 		return newClasspathEntries;
 	} ///////////////////////////////// builder stuff ////////////////////////
+	/**
+	 * Method positionForBuilder.
+	 * @param aProject
+	 * @param aBuilder
+	 * @return int
+	 * @throws CoreException
+	 */
 	public static int positionForBuilder(IProject aProject, String aBuilder)
 		throws CoreException {
-		IProjectDescription desc = aProject.getDescription();
-		ICommand[] coms = desc.getBuildSpec();
-		for (int i = 0; i < coms.length; i++) {
-			if (coms[i].getBuilderName().equals(aBuilder))
-				return i;
+		IProjectDescription desc = null;
+		ICommand[] coms = null;
+		try {
+			desc = aProject.getDescription();
+			coms = desc.getBuildSpec();
+			for (int i = 0; i < coms.length; i++) {
+				if (coms[i].getBuilderName().equals(aBuilder))
+					return i;
+			}
+		} finally {
+			desc = null;
+			coms = null;
 		}
 		return ProjectHelper.NotFound;
 	}

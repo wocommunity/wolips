@@ -120,14 +120,18 @@ public class PBProjectUpdater {
 	 * On MacOSX the EOModeler converts the PB.project file to xml.
 	 */
 	private void fixEOModelerMacOSXBug(File aFile) {
+		String file = null;
 		try {
 			if ((aFile != null) && (aFile.exists())) {
-				String file = FileStringScanner.stringFromFile(aFile);
+				file = FileStringScanner.stringFromFile(aFile);
 				if (file.startsWith(PBProjectUpdater.dirtyPBProject))
 					aFile.delete();
 			}
 		} catch (Exception anException) {
 			WOLipsLog.log(anException);
+		}
+		finally {
+			file = null;
 		}
 	}
 	/**
@@ -153,6 +157,9 @@ public class PBProjectUpdater {
 				syncPBProjectWithProject();
 		} catch (Exception anException) {
 			WOLipsLog.log(anException);
+		}
+		finally {
+			aFile = null;
 		}
 	}
 	/**
@@ -180,6 +187,10 @@ public class PBProjectUpdater {
 			resources = projectContainer.members();
 		} catch (Exception anException) {
 			WOLipsLog.log(anException);
+			aClassesList = null;
+			aWOComponentsList = null;
+			aWOAppResourcesList = null;
+			resources = null;
 			return;
 		}
 		int lastResource = resources.length;

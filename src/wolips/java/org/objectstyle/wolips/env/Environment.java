@@ -85,18 +85,25 @@ public class Environment {
 	 * @throws Exception
 	 */
 	public static Properties getEnvVars() throws Exception {
-		if (envVars != null)
-			return envVars;
-		Process p = Environment.osProcess();
-		Environment.envVars = new Properties();
-		BufferedReader br =
-			new BufferedReader(new InputStreamReader(p.getInputStream()));
-		String line;
-		while ((line = br.readLine()) != null) {
-			int idx = line.indexOf('=');
-			String key = line.substring(0, idx);
-			String value = line.substring(idx + 1);
-			Environment.envVars.setProperty(key, value);
+		Process p = null;
+		BufferedReader br = null;
+		String line = null;
+		try {
+			if (envVars != null)
+				return envVars;
+			p = Environment.osProcess();
+			Environment.envVars = new Properties();
+			br = new BufferedReader(new InputStreamReader(p.getInputStream()));
+			while ((line = br.readLine()) != null) {
+				int idx = line.indexOf('=');
+				String key = line.substring(0, idx);
+				String value = line.substring(idx + 1);
+				Environment.envVars.setProperty(key, value);
+			}
+		} finally {
+			p = null;
+			br = null;
+			line = null;
 		}
 		return Environment.envVars;
 	}
@@ -107,15 +114,24 @@ public class Environment {
 	 */
 	private static Process osProcess() throws Exception {
 		Process p = null;
-		Runtime r = Runtime.getRuntime();
-		String OS = System.getProperty("os.name").toLowerCase();
-		if (OS.indexOf("windows 9") > -1) {
-			p = r.exec("command.com /c set");
-		} else if (
-			(OS.indexOf("nt") > -1) || (OS.indexOf("windows 2000") > -1)) {
-			p = r.exec("cmd.exe /c set");
-		} else {
-			p = r.exec("env");
+		Runtime r = null;
+		String OS = null;
+		try {
+			p = null;
+			r = Runtime.getRuntime();
+			OS = System.getProperty("os.name").toLowerCase();
+			if (OS.indexOf("windows 9") > -1) {
+				p = r.exec("command.com /c set");
+			} else if (
+				(OS.indexOf("nt") > -1) || (OS.indexOf("windows 2000") > -1)) {
+				p = r.exec("cmd.exe /c set");
+			} else {
+				p = r.exec("env");
+			}
+		} finally {
+			p = null;
+			r = null;
+			OS = null;
 		}
 		return p;
 	}
@@ -148,14 +164,17 @@ public class Environment {
 	public static String nextRoot() {
 		if (Environment.nextRoot != null)
 			return Environment.nextRoot;
+		Properties aEnv = null;
 		try {
-			Properties aEnv = Environment.getEnvVars();
+			aEnv = Environment.getEnvVars();
 			if (aEnv.containsKey(Environment.NEXT_ROOT)) {
 				Environment.nextRoot = aEnv.getProperty(Environment.NEXT_ROOT);
 				return Environment.nextRoot;
 			}
 		} catch (Exception anException) {
 			WOLipsLog.log(anException);
+		} finally {
+			aEnv = null;
 		}
 		Environment.nextRoot = "/System";
 		return Environment.nextRoot;

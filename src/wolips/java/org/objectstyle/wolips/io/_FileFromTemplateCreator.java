@@ -120,6 +120,10 @@ public abstract class _FileFromTemplateCreator {
 			} catch (Exception e) {
 				throw new InvocationTargetException(e);
 			}
+			finally {
+				templatePath = null;
+				templateFile = null;
+			}
 		}
 		return templateDocument;
 	}
