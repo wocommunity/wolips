@@ -57,7 +57,8 @@
 package org.objectstyle.woproject.ant.functiontest;
 
 import java.io.File;
-import org.apache.tools.ant.*;
+
+import org.apache.tools.ant.Project;
 
 /**
  * A test case that builds the art framework using its ant buildfile

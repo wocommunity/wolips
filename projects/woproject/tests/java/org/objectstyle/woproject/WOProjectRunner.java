@@ -56,11 +56,14 @@
 
 package org.objectstyle.woproject;
 
-import java.util.*;
-
-import junit.framework.*;
-
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Iterator;
+
+import junit.framework.TestFailure;
+import junit.framework.TestResult;
+import junit.framework.TestSuite;
 
 /** 
  * Test runner to run batches of test suites. 

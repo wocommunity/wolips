@@ -55,10 +55,9 @@
  */
 package org.objectstyle.woproject.ant.functiontest;
 
-import junit.framework.TestCase;
-
 import java.io.File;
-import org.apache.tools.ant.*;
+
+import org.apache.tools.ant.Project;
 
 /**
  * A test case that builds the MailJava and MailUtilities frameworks

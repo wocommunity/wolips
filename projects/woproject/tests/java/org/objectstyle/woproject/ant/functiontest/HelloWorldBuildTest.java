@@ -57,8 +57,6 @@ package org.objectstyle.woproject.ant.functiontest;
 
 import java.io.File;
 
-import junit.framework.AssertionFailedError;
-
 import org.apache.tools.ant.Project;
 
 public class HelloWorldBuildTest extends AppBuildTestCase {

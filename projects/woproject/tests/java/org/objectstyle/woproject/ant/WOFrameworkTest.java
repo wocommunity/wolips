@@ -55,16 +55,10 @@
  */
 package org.objectstyle.woproject.ant;
 
-import java.io.*;
-import java.util.Enumeration;
-import java.util.Vector;
-
-import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.Task;
-import org.apache.tools.ant.taskdefs.*;
-import org.apache.tools.ant.types.FileSet;
-
-import java.io.*;
+import java.io.DataInput;
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 
 import junit.framework.TestCase;
 

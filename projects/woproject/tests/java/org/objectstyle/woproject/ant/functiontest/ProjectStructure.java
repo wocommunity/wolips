@@ -56,7 +56,6 @@
 
 package org.objectstyle.woproject.ant.functiontest;
 
-import java.io.File;
 
 /**
  * Java bean that keeps information about WebObjects

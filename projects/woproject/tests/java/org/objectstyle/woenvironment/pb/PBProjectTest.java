@@ -53,12 +53,14 @@
  * <http://objectstyle.org/>.
  *
  */
-package org.objectstyle.woproject.pb;
+package org.objectstyle.woenvironment.pb;
 
 import java.io.File;
 import java.util.ArrayList;
 
 import junit.framework.TestCase;
+
+import org.objectstyle.woenvironment.pb.PBProject;
 
 /**
  * PBProject JUnit tests.
