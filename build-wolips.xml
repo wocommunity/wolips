@@ -56,7 +56,7 @@
         <!-- Copy WOProject JAR's -->
         <copy todir="${dist-wolips}/lib">
              <fileset dir="${dist}/lib">
-          	    <exclude name="junit.jar"/>
+             	<exclude name="junit.jar"/>
              	<exclude name="ant.jar"/>
              	<exclude name="woproject-tests.jar"/>
              </fileset>
@@ -71,7 +71,10 @@
          
          <copy todir="${dist-wolips}">
              <fileset dir="src/wolips">
-             	<exclude name="src/wolips/java"/>
+             	<exclude name="**/java/**"/>
+             	<exclude name="**/lib/**"/>
+             	<exclude name=".project"/>
+             	<exclude name=".classpath"/>
              </fileset>
          </copy>
          
