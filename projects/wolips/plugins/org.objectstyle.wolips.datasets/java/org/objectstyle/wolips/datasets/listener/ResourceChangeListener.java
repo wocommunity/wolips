@@ -59,12 +59,12 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.WorkspaceJob;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jdt.core.JavaCore;
 import org.objectstyle.wolips.datasets.DataSetsPlugin;
 import org.objectstyle.wolips.datasets.adaptable.JavaProject;
@@ -75,7 +75,7 @@ import org.objectstyle.wolips.datasets.resources.IWOLipsModel;
 /**
  * Tracking changes in resources and synchronizes webobjects project file
  */
-public class ResourceChangeListener extends Job {
+public class ResourceChangeListener extends WorkspaceJob {
 	private IResourceChangeEvent event;
 
 	/**
@@ -85,12 +85,10 @@ public class ResourceChangeListener extends Job {
 		super("WOLips Project Files Updates (Resources)");
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.core.runtime.jobs.Job#run(org.eclipse.core.runtime.IProgressMonitor)
+	/* (non-Javadoc)
+	 * @see org.eclipse.core.resources.WorkspaceJob#runInWorkspace(org.eclipse.core.runtime.IProgressMonitor)
 	 */
-	protected IStatus run(IProgressMonitor monitor) {
+	public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException {
 		PatternsetDeltaVisitor patternsetDeltaVisitor = new PatternsetDeltaVisitor();
 		ProjectFileResourceValidator resourceValidator = new ProjectFileResourceValidator();
 		try {
@@ -432,4 +430,5 @@ public class ResourceChangeListener extends Job {
 	public void setEvent(IResourceChangeEvent event) {
 		this.event = event;
 	}
+
 }

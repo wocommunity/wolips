@@ -49,8 +49,12 @@
  */
 package org.objectstyle.wolips.datasets.listener;
 
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.IResourceDelta;
+import org.objectstyle.wolips.datasets.DataSetsPlugin;
 
 /**
  * @author ulrich
@@ -76,6 +80,32 @@ public class MasterResourceChangeListener implements IResourceChangeListener {
 //System.out.println("MasterResourceChangeListener.resourceChanged");
 		ResourceChangeListener resourceChangeListener = new ResourceChangeListener();
 		resourceChangeListener.setEvent(event);
-		resourceChangeListener.schedule();
+		IResource resource = event.getDelta().getResource();
+		IResource rule = null;
+		if(resource.getType() == IResource.ROOT) {
+			IResourceDelta[] resourceDelta = event.getDelta().getAffectedChildren();
+			if(resourceDelta.length > 1)
+			{
+				rule = resource;
+			}
+			if(resourceDelta.length == 1)
+			{
+				rule = resourceDelta[0].getResource();
+			}
+		}
+		else
+		{
+		IProject iProject = null;
+		if(resource != null) {
+			rule = resource.getProject();
+		}
+		}
+		if(rule != null) {
+			resourceChangeListener.setRule(rule);
+			resourceChangeListener.schedule();
+		}
+		else {
+			DataSetsPlugin.getDefault().getPluginLogger().log("No rule to create Resource Change listener.");
+		}
 	}
 }

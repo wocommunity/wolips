@@ -60,12 +60,12 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.WorkspaceJob;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jdt.core.ElementChangedEvent;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaElementDelta;
@@ -79,7 +79,7 @@ import org.objectstyle.wolips.jdt.JdtPlugin;
 /**
  * Tracking changes in classpath and synchronizes webobjects project file
  */
-public class JavaElementChangeListener extends Job {
+public class JavaElementChangeListener extends WorkspaceJob {
 	private ElementChangedEvent event;
 
 	/**
@@ -89,12 +89,10 @@ public class JavaElementChangeListener extends Job {
 		super("WOLips Project Files Updates (Java Elements)");
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.core.runtime.jobs.Job#run(org.eclipse.core.runtime.IProgressMonitor)
+	/* (non-Javadoc)
+	 * @see org.eclipse.core.resources.WorkspaceJob#runInWorkspace(org.eclipse.core.runtime.IProgressMonitor)
 	 */
-	protected IStatus run(IProgressMonitor monitor) {
+	public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException {
 		/*
 		 * if (ElementChangedEvent.POST_CHANGE != event.getType()) return;
 		 */
