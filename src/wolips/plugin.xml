@@ -110,23 +110,35 @@
    <extension
          point="org.eclipse.team.core.ignore">
       <ignore
-            selected="true"
+            enabled="true"
+            pattern="*.woa">
+      </ignore>
+      <ignore
+            enabled="true"
+            pattern="*.framework">
+      </ignore>
+      <ignore
+            enabled="true"
+            pattern="*.eomodeld~">
+      </ignore>
+      <ignore
+            enabled="true"
             pattern=".DS_Store">
       </ignore>
       <ignore
-            selected="true"
+            enabled="true"
             pattern="ant.frameworks.wo.woroot">
       </ignore>
       <ignore
-            selected="true"
+            enabled="true"
             pattern="ant.frameworks.wo.wolocalroot">
       </ignore>
       <ignore
-            selected="true"
+            enabled="true"
             pattern="ant.frameworks.user.home">
       </ignore>
       <ignore
-            selected="true"
+            enabled="true"
             pattern="ant.classpaths.wo.woroot">
       </ignore>
    </extension>
