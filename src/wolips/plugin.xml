@@ -478,7 +478,6 @@
          point="org.eclipse.ui.preferencePages">
       <page
             name="%WOLips.preferences.viewName"
-            category="%WOLipsCategoryName"
             class="org.objectstyle.wolips.preferences.PreferencesPage"
             id="org.objectstyle.wolips.preferences.PreferencesPage">
       </page>
