@@ -1,3 +1,13 @@
+Files:
+.project: Required to get the branches within Eclipse.
+buildserver.version: Maintained by the buildserver.
+build.properties: Your build properties.
+
+Folder:
+homepage: The Anakia xml files to create the homepage for www.objectstyle.org/woproject
+woenvironment: Abstraction layer to get nextroot and so on on different platforms
+woproject: woproject
+wolips: wolips
 If you have the time, it would be great if you can take a look at the new project structure.
 
 How to use it:
