@@ -55,7 +55,6 @@
  */
 package org.objectstyle.wolips.wo;
 import java.io.File;
-
 import org.objectstyle.wolips.env.Environment;
 import org.objectstyle.wolips.io.WOLipsLog;
 /**
@@ -73,23 +72,25 @@ public class WOVariables {
 	private WOVariables() {
 		super();
 	}
-
-	public static String nextRoot() {
-		return Environment.nextRoot();
-	}
-
+	/**
+	 * Method developerDir.
+	 * @return String
+	 */
 	public static String developerDir() {
 		String returnValue = "";
 		if (Environment.isNextRootSet())
-			returnValue = WOVariables.nextRoot();
+			returnValue = Environment.nextRoot();
 		returnValue = returnValue + File.separator + "Developer";
 		return returnValue;
 	}
-
+	/**
+	 * Method developerAppsDir.
+	 * @return String
+	 */
 	public static String developerAppsDir() {
 		String returnValue = "";
 		if (Environment.isNextRootSet())
-			returnValue = WOVariables.nextRoot();
+			returnValue = Environment.nextRoot();
 		returnValue =
 			returnValue
 				+ File.separator
@@ -98,13 +99,19 @@ public class WOVariables {
 				+ "Applications";
 		return returnValue;
 	}
-
+	/**
+	 * Method libraryDir.
+	 * @return String
+	 */
 	public static String libraryDir() {
 		String returnValue = "";
-		returnValue = WOVariables.nextRoot() + File.separator + "Library";
+		returnValue = Environment.nextRoot() + File.separator + "Library";
 		return returnValue;
 	}
-
+	/**
+	 * Method localDeveloperDir.
+	 * @return String
+	 */
 	public static String localDeveloperDir() {
 		String returnValue = "";
 		/*
@@ -114,6 +121,10 @@ public class WOVariables {
 		returnValue = Environment.localRoot() + File.separator + "Developer";
 		return returnValue;
 	}
+	/**
+	 * Method localLibraryDir.
+	 * @return String
+	 */
 	public static String localLibraryDir() {
 		String returnValue = "";
 		/*
@@ -123,37 +134,54 @@ public class WOVariables {
 		returnValue = Environment.localRoot() + File.separator + "Library";
 		return returnValue;
 	}
-
+	/**
+	 * Method woTemplateDirectory.
+	 * @return String
+	 */
 	public static String woTemplateDirectory() {
 		return "templates";
 	}
-
+	/**
+	 * Method woTemplateFiles.
+	 * @return String
+	 */
 	public static String woTemplateFiles() {
 		return "/wo_file_templates.xml";
 	}
-
+	/**
+	 * Method woTemplateProject.
+	 * @return String
+	 */
 	public static String woTemplateProject() {
 		return "/wo_project_templates.xml";
 	}
-
+	/**
+	 * Method woProjectFileName.
+	 * @return String
+	 */
 	public static String woProjectFileName() {
 		return "PB.project";
 	}
-
+	/**
+	 * Method webServerResourcesDirName.
+	 * @return String
+	 */
 	public static String webServerResourcesDirName() {
 		return "WebServerResources";
 	}
-
+	/**
+	 * Method classPathVariableToExpand.
+	 * @param aString
+	 * @return String
+	 */
 	public static String classPathVariableToExpand(String aString) {
-		String returnValue = "";
-		if (aString != null) {
-			if (aString.equals("webobjects.next.root"))
-				returnValue = WOVariables.nextRoot();
-			if (aString.equals("webobjects.system.library.dir"))
-				returnValue = WOVariables.libraryDir();
-		}
-		if ((returnValue == null) || (returnValue.equals("")))
-			WOLipsLog.log("Can not resolve classpath variable: " + aString);
-		return returnValue;
+		if (aString == null)
+			return null;
+		if (aString.equals("webobjects.next.root"))
+			return Environment.nextRoot();
+		if (aString.equals("webobjects.system.library.dir"))
+			return WOVariables.libraryDir();
+		WOLipsLog.log("Can not resolve classpath variable: " + aString);
+		return null;
 	}
 }

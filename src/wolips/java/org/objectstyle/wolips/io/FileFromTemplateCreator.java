@@ -77,6 +77,7 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.objectstyle.wolips.WOLipsPlugin;
+import org.objectstyle.wolips.env.Environment;
 import org.objectstyle.wolips.utils.WOLipsUtils;
 import org.objectstyle.wolips.wizards.Messages;
 import org.objectstyle.wolips.wo.WOVariables;
@@ -389,7 +390,7 @@ public class FileFromTemplateCreator {
 					}
 					break;
 				case NEXT_ROOT :
-					expandedValue = WOVariables.nextRoot();
+					expandedValue = Environment.nextRoot();
 					break;
 			}
 		}

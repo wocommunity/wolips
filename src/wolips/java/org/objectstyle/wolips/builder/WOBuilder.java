@@ -80,24 +80,22 @@ public abstract class WOBuilder extends IncrementalProjectBuilder {
 		super();
 	}
 	/**
-			 * Runs the build with the ant runner.
-			 * @see org.eclipse.core.internal.events.InternalBuilder#build(int, java.util.Map, org.eclipse.core.runtime.IProgressMonitor)
-			 */
+	 * Runs the build with the ant runner.
+	 * @see org.eclipse.core.internal.events.InternalBuilder#build(int, java.
+	 * util. Map, org.eclipse.core.runtime.IProgressMonitor)
+	 */
 	protected IProject[] build(int kind, Map args, IProgressMonitor monitor)
 		throws CoreException {
 		monitor.beginTask(
 			BuildMessages.getString("Build.Monitor.Title"),
 			WOBuilder.TOTAL_WORK_UNITS);
-		if (getProject() == null || !getProject().exists()) {
-			monitor.done();
-			return null;
-		}
 		if (!Preferences
-			.getBoolean(IWOLipsPluginConstants.PREF_RUN_WOBUILDER_ON_BUILD)) {
+			.getBoolean(IWOLipsPluginConstants.PREF_RUN_WOBUILDER_ON_BUILD)
+			|| getProject() == null
+			|| !getProject().exists()) {
 			monitor.done();
 			return null;
 		}
-
 		Exception anException = null;
 		try {
 			getProject().deleteMarkers(
@@ -120,27 +118,32 @@ public abstract class WOBuilder extends IncrementalProjectBuilder {
 					monitor);
 			}
 		} catch (Exception e) {
-			anException = e;
-		}
-		if (anException != null) {
-			try {
-				IMarker aMarker =
-					getProject().getFile(this.buildFile()).createMarker(
-						IMarker.TASK);
-				aMarker.setAttribute(
-					IMarker.MESSAGE,
-					"WOLips: "
-						+ anException.getMessage()
-						+ " Please visit the Eclipse log for mor details.");
-				aMarker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
-			} catch (Exception e) {
-				WOLipsLog.log(e);
-			}
+			this.handleException(e);
 		}
 		monitor.done();
 		return null;
 	}
-
+	/**
+	 * Method handleException.
+	 * @param anException
+	 */
+	private void handleException(Exception anException) {
+		if (anException == null)
+			return;
+		try {
+			IMarker aMarker =
+				getProject().getFile(this.buildFile()).createMarker(
+					IMarker.TASK);
+			aMarker.setAttribute(
+				IMarker.MESSAGE,
+				"WOLips: "
+					+ anException.getMessage()
+					+ " Please visit the Eclipse log for mor details.");
+			aMarker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
+		} catch (Exception e) {
+			WOLipsLog.log(e);
+		}
+	}
 	/**
 	 * Checks if the build file exists.
 	 * @param aBuildFile
@@ -168,5 +171,4 @@ public abstract class WOBuilder extends IncrementalProjectBuilder {
 	 * @return String
 	 */
 	public abstract String buildFile();
-
 }

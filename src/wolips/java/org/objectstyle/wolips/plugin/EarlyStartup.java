@@ -17,7 +17,6 @@ import org.objectstyle.wolips.env.Environment;
 import org.objectstyle.wolips.io.WOLipsLog;
 import org.objectstyle.wolips.listener.JavaElementChangeListener;
 import org.objectstyle.wolips.listener.ResourceChangeListener;
-import org.objectstyle.wolips.wo.WOVariables;
 import org.objectstyle.wolips.workbench.WorkbenchHelper;
 
 /**
@@ -76,7 +75,7 @@ public class EarlyStartup {
 			try {
 				JavaCore.setClasspathVariable(
 					Environment.NEXT_ROOT,
-					new Path(WOVariables.nextRoot()),
+					new Path(Environment.nextRoot()),
 					null);
 			} catch (JavaModelException e) {
 				WOLipsLog.log(e);

@@ -86,7 +86,7 @@ import org.objectstyle.wolips.wo.WOVariables;
  */
 public class WOFrameworkDialogWrapper {
 
-	private static Path nextRootAsPath = new Path(WOVariables.nextRoot());
+	private static Path nextRootAsPath = new Path(Environment.nextRoot());
 
 	private FileSelectionDialog dialog;
 	private IJavaProject projectToUpdate;

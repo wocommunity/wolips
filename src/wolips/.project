@@ -3,7 +3,6 @@
 	<name>wolips</name>
 	<comment></comment>
 	<projects>
-		<project>org.eclipse.ui.externaltools</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
@@ -21,9 +20,15 @@
 			<arguments>
 			</arguments>
 		</buildCommand>
+		<buildCommand>
+			<name>com.teaminabox.eclipse.metrics.MetricsBuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
 	</buildSpec>
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>org.eclipse.pde.PluginNature</nature>
+		<nature>com.teaminabox.eclipse.metrics.MetricsNature</nature>
 	</natures>
 </projectDescription>

@@ -71,10 +71,19 @@ import java.io.IOException;
  */
 public class FileStringScanner {
 
+	/**
+	 * @see java.lang.Object#Object()
+	 */
 	public FileStringScanner() {
 		super();
 	}
-
+	/**
+	 * Method fileOpenReplaceWith.
+	 * @param file
+	 * @param replace
+	 * @param with
+	 * @throws IOException
+	 */
 	public static void fileOpenReplaceWith(
 		String file,
 		String replace,
@@ -88,7 +97,12 @@ public class FileStringScanner {
 		if (replacedString != null)
 			FileStringScanner.stringToFile(new File(file), replacedString);
 	}
-
+	/**
+	 * Method stringFromFile.
+	 * @param aFile
+	 * @return String
+	 * @throws IOException
+	 */
 	public static String stringFromFile(File aFile) throws IOException {
 		int size = (int) aFile.length();
 		FileInputStream fis = new FileInputStream(aFile);
@@ -100,7 +114,12 @@ public class FileStringScanner {
 		fis.close();
 		return new String(data);
 	}
-
+	/**
+	 * Method stringToFile.
+	 * @param aFile
+	 * @param aString
+	 * @throws IOException
+	 */
 	public static void stringToFile(File aFile, String aString)
 		throws IOException {
 		int length = aString.length();
@@ -108,27 +127,30 @@ public class FileStringScanner {
 		fos.write(aString.getBytes(), 0, length);
 		fos.close();
 	}
-
+	/**
+	 * Method replace.
+	 * @param text
+	 * @param replace
+	 * @param with
+	 * @return String
+	 */
 	public static String replace(String text, String replace, String with) {
-		if (text != null) {
-			int li = 0;
-			int l = replace.length();
-			int i = text.indexOf(replace, li);
-			if (i >= 0) {
-				StringBuffer aWorkString = new StringBuffer(text.length() + 1);
-				while (i >= 0) {
-					if (i > li)
-						aWorkString.append(text.substring(li, i));
-					aWorkString.append(with);
-					li = i + l;
-					i = text.indexOf(replace, li);
-				}
-				aWorkString.append(text.substring(li));
-				return aWorkString.toString();
-			}
+		if (text == null)
 			return null;
+		int li = 0;
+		int l = replace.length();
+		int i = text.indexOf(replace, li);
+		if (i > 0)
+			return null;
+		StringBuffer aWorkString = new StringBuffer(text.length() + 1);
+		while (i >= 0) {
+			if (i > li)
+				aWorkString.append(text.substring(li, i));
+			aWorkString.append(with);
+			li = i + l;
+			i = text.indexOf(replace, li);
 		}
-		return null;
+		aWorkString.append(text.substring(li));
+		return aWorkString.toString();
 	}
-
 }

@@ -469,7 +469,7 @@ public class ProjectHelper implements IWOLipsPluginConstants {
 		throws JavaModelException {
 		IClasspathEntry[] oldClasspathEntries =
 			projectToUpdate.getResolvedClasspath(true);
-		IPath nextRootAsPath = new Path(WOVariables.nextRoot());
+		IPath nextRootAsPath = new Path(Environment.nextRoot());
 		ArrayList classpathEntries = new ArrayList(frameworkList.size());
 		IPath frameworkPath;
 		String jarName;
