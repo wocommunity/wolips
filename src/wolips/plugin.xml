@@ -9,7 +9,7 @@
    <runtime>
       <library name="lib/wolips.jar">
          <export name="*"/>
-         <packages prefixes="org.objectstyle.wolips.actions,org.objectstyle.wolips.ant,org.objectstyle.wolips.builder,org.objectstyle.wolips.editor,org.objectstyle.wolips.env,org.objectstyle.wolips.ide,org.objectstyle.wolips.images,org.objectstyle.wolips.io,org.objectstyle.wolips.listener,org.objectstyle.wolips.natures,org.objectstyle.wolips.plugin,org.objectstyle.wolips.preferences,org.objectstyle.wolips.project,org.objectstyle.wolips.resources,org.objectstyle.wolips.ui,org.objectstyle.wolips.ui.filters,org.objectstyle.wolips.utils,org.objectstyle.wolips.wizards,org.objectstyle.wolips.wo,org.objectstyle.wolips.workbench"/>
+         <packages prefixes="org.objectstyle.wolips.actions,org.objectstyle.wolips.ant,org.objectstyle.wolips.builder,org.objectstyle.wolips.editor,org.objectstyle.wolips.env,org.objectstyle.wolips.ide,org.objectstyle.wolips.images,org.objectstyle.wolips.io,org.objectstyle.wolips.listener,org.objectstyle.wolips.natures,org.objectstyle.wolips.plugin,org.objectstyle.wolips.preferences,org.objectstyle.wolips.project,org.objectstyle.wolips.resources,org.objectstyle.wolips.ui,org.objectstyle.wolips.utils,org.objectstyle.wolips.wizards,org.objectstyle.wolips.wo,org.objectstyle.wolips.workbench"/>
       </library>
       <library name="lib/woproject.jar">
          <export name="*"/>
@@ -287,13 +287,13 @@
    <extension
          point="org.eclipse.ant.core.extraClasspathEntries">
       <extraClasspathEntry
+            library="lib/wolips.jar">
+      </extraClasspathEntry>
+      <extraClasspathEntry
             library="lib/woproject.jar">
       </extraClasspathEntry>
       <extraClasspathEntry
             library="lib/cayenne.jar">
-      </extraClasspathEntry>
-      <extraClasspathEntry
-            library="lib/log4j-1.2beta4.jar">
       </extraClasspathEntry>
    </extension>
    <extension
