@@ -37,7 +37,7 @@
 	<topic label="Programmer's Guide" href="./doc_root/programmer/index.html">
 		<topic label="Inside WOLips" href="./doc_root/programmer/pde.html"/>
 		<topic label="Building From Source" href="./doc_root/programmer/build.html"/>
-		<topic label="API Reference" href="./doc_root/programmer/api/index.html"/>
+		<topic label="API Reference" href="./doc_root/programmer/api/overview-summary.html"/>
 	</topic>
 	<topic label="Future Releases" href="./doc_root/future.html"/>
 	<topic label="About This Document" href="./doc_root/index.html"/>

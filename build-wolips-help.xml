@@ -17,13 +17,6 @@
                 <include name="*.jar"/>
 	            <include name="eclipse/**/*.jar"/>
             </fileset>
-	    <fileset dir="${wo.dir.library.frameworks}">
-                <include name="JavaEOAccess.framework/Resources/Java/*.jar"/>
-                <include name="JavaEOControl.framework/Resources/Java/*.jar"/>
-                <include name="JavaFoundation.framework/Resources/Java/*.jar"/>
-                <include name="JavaWebObjects.framework/Resources/Java/*.jar"/>
-                <include name="JavaJDBCAdaptor.framework/Resources/Java/*.jar"/>
-            </fileset>
          </path>
     </target>
 
@@ -51,15 +44,21 @@
     <target name="dist" depends="prepare,java,doc,api" if="wolips.build.help">
          <copy todir="${wolips.help.dist}">
              <fileset dir="src/wolips-help">
-             	<exclude name="**/java/**"/>
-             	<exclude name="**/lib/**"/>
-             	<exclude name="**/xdocs/**"/>
-             	<exclude name="**/docs/**"/>
-             	<exclude name=".project"/>
-             	<exclude name=".classpath"/>
-             	<exclude name="build.properties"/>
+             	<include name="*.xml"/>
              </fileset>
          </copy>
+                <copy todir="${wolips.help.dist}/doc">
+            <fileset dir="doc">
+                <include name="**/LICENSE*"/>
+            </fileset>
+        </copy>
+         	<zip zipfile="${wolips.help.dist}/doc.zip">
+             <zipfileset  dir="${woproject.dist}/doc/api" prefix="doc_root/programmer/api">
+             </zipfileset >
+             <zipfileset  dir="src/wolips-help/doc_root" prefix="doc_root">
+             </zipfileset >
+        </zip>
+         
         <jar jarfile="${wolips.help.dist}.jar">
      		<fileset dir="${wolips.help.dist}">
      	</fileset>
@@ -98,21 +97,12 @@
     <!-- Builds API documenatation.                 -->
     <!-- ========================================== -->
     <target name="api" depends="prepare" if="wolips.build.help">
-        <copy todir="${wolips.help.dist}/doc">
-            <fileset dir="doc">
-                <include name="**/LICENSE*"/>
-            </fileset>
-        </copy>
+ 
     </target>
     
     
     <target name="doc" depends="prepare" if="wolips.build.help">
-        <!-- copy all licenses inclusing ours -->
-        <copy todir="${wolips.help.dist}/doc">
-            <fileset dir="doc">
-               <include name="LICENSE*"/>
-            </fileset>
-        </copy>
+ 
     </target>
     
     <target name="site-doc" depends="prepare" if="wolips.build.help">
