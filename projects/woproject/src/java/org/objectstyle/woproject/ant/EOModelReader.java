@@ -77,7 +77,8 @@ public class EOModelReader extends EOModelProcessor {
     /**
      * @see org.objectstyle.cayenne.wocompat.EOModelProcessor#makeHelper(String)
      */
-    protected EOModelHelper makeHelper(String arg0, boolean genereateClientClass) throws Exception {
+    protected EOModelHelper makeHelper(String arg0, boolean genereateClientClass)
+        throws Exception {
         return new WOFriendlyHelper(arg0);
     }
 
@@ -91,16 +92,20 @@ public class EOModelReader extends EOModelProcessor {
          * Returns WO common Java types.
          */
         public String javaTypeForEOModelerType(String type) {
-            if (type.equals("NSCalendarDate")) {
+            return javaTypeForEOModelerType(type, null);
+        }
+
+        public String javaTypeForEOModelerType(String valueClassName, String valueType) {
+            if (valueClassName.equals("NSCalendarDate")) {
                 return "com.webobjects.foundation.NSTimestamp";
             }
-            if (type.equals("NSNumber")) {
+            if (valueClassName.equals("NSNumber")) {
                 return "java.lang.Number";
             }
-            if (type.equals("NSData")) {
+            if (valueClassName.equals("NSData")) {
                 return "com.webobjects.foundation.NSData";
             }
-            return super.javaTypeForEOModelerType(type);
+            return super.javaTypeForEOModelerType(valueClassName);
         }
     }
 }
