@@ -4,7 +4,8 @@
     
 <body>      
 	<section name="Popup">
-		<p>Coming soon...</p>
+		<p>If you right click on your project root you will find the WOLips menu.</p>
+		<img src="/images/wolips/popup.jpg"/>
 	</section>
 </body>
 </document>
