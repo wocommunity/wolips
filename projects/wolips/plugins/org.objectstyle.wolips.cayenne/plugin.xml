@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin
+   id="org.objectstyle.wolips.cayenne"
+   name="%WOLips.cayenne.pluginName"
+   version="1.0.6"
+   provider-name="%WOLips.providerName">
+
+   <runtime>
+      <library name="lib/cayenne.jar">
+         <export name="*"/>
+         <packages prefixes="org.objectstyle.cayenne"/>
+      </library>
+   </runtime>
+
+</plugin>

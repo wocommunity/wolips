@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin
+   id="org.objectstyle.wolips.logging"
+   name="%WOLips.logging.pluginName"
+   version="1.0.6"
+   provider-name="%WOLips.providerName"
+   class="org.objectstyle.wolips.logging.WOLipsLoggingPlugin">
+
+   <runtime>
+      <library name="lib/wolips-logging.jar">
+         <export name="*"/>
+         <packages prefixes="org.objectstyle.wolips.logging"/>
+      </library>
+      <library name="lib/commons-logging.jar">
+         <export name="*"/>
+         <packages prefixes="org.apache.commons.logging"/>
+      </library>
+      <library name="lib/log4j.jar">
+         <export name="*"/>
+         <packages prefixes="org.apache.log4j"/>
+      </library>
+</runtime>
+
+<!-- =================================================================================== -->
+<!-- Required Plugins                                                                    -->
+<!-- =================================================================================== -->   
+   <requires>
+   </requires>
+
+
+</plugin>

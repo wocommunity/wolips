@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin
+   id="org.objectstyle.wolips.ant"
+   name="%WOLips.ant.pluginName"
+   version="1.0.6"
+   provider-name="%WOLips.providerName">
+
+   <runtime>
+   </runtime>
+
+<!-- =================================================================================== -->
+<!-- Required Plugins                                                                    -->
+<!-- =================================================================================== -->   
+   <requires>
+          <import plugin="org.apache.xerces"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.search"/>
+      <import plugin="org.eclipse.ant.core"/>
+      <import plugin="org.eclipse.ui.externaltools"/>
+      <import plugin="org.eclipse.jdt.core"/>
+      <import plugin="org.eclipse.jdt.ui"/>
+      <import plugin="org.eclipse.jdt.debug.ui"/>
+      <import plugin="org.eclipse.jdt.launching"/>
+      <import plugin="org.eclipse.debug.core"/>
+      <import plugin="org.eclipse.debug.ui"/>
+      <import plugin="org.eclipse.ui.externaltools"/>
+      <import plugin="org.apache.ant"/>
+      <import plugin="org.eclipse.jface"/>
+   </requires>
+
+<!-- =================================================================================== -->
+<!-- Extension: Ant                                                                      -->
+<!-- =================================================================================== -->
+   <extension
+         point="org.eclipse.ant.core.extraClasspathEntries">
+      <extraClasspathEntry
+            library="lib/log4j.jar">
+      </extraClasspathEntry>
+   </extension>
+   
+</plugin>

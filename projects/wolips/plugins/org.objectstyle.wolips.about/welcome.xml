@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<welcomePage title="WOLips">
+
+<intro><b>Welcome to WOLips.</b></intro>
+
+<item><b>New to WOLips?</b>
+To learn more you can browse the <topic id="/org.objectstyle.wolips/toc_root.xml">WOLips User Guide</topic>.
+</item>
+
+<item><b>What's new?</b>
+To solve the problem with foo.eomodeld/index.eomodeld entries in the PB.project:
+1. Open the preferences. Window->Preferences
+2. Restore the defaults of the WOLips->ProjectBuilder->WOAppResources exclude page.
+3. Save the preferences.
+4. Restart Eclipse.
+5. Open your PB.project files with the text editor. 
+6. If there entries like foo.eomodeld/index.eomodeld right click on the project root and select WOLips->Update PB.project 
+
+</item>	
+
+<item><b>Learn More</b>
+This is the official site of woproject/WOLips: <topic href="http://www.objectstyle.org/woproject/">http://www.objectstyle.org/woproject</topic>
+</item>	
+
+</welcomePage>

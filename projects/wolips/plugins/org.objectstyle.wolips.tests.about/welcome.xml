@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<welcomePage title="WOLips Tests">
+
+<intro><b>Welcome to WOLips Tests.</b></intro>
+
+<item><b>New to WOLips?</b>
+To learn more you can browse the <topic id="/org.objectstyle.wolips/toc_root.xml">WOLips User Guide</topic>.
+</item>
+
+<item><b>Learn More</b>
+This is the official site of woproject/WOLips: <topic href="http://www.objectstyle.org/woproject/">http://www.objectstyle.org/woproject</topic>
+</item>	
+
+</welcomePage>

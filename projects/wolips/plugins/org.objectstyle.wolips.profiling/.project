@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>org.objectstyle.wolips.profiling</name>
+	<comment></comment>
+	<projects>
+		<project>org.objectstyle.wolips.wolips</project>
+		<project>org.objectstyle.wolips.cayenne</project>
+		<project>org.objectstyle.wolips.devstudio</project>
+		<project>org.objectstyle.wolips.help</project>
+		<project>org.objectstyle.wolips.launching</project>
+		<project>org.objectstyle.wolips.logging</project>
+		<project>org.objectstyle.wolips.projectbuild</project>
+		<project>org.objectstyle.wolips.support</project>
+		<project>org.objectstyle.wolips.ui</project>
+		<project>org.objectstyle.wolips.wizards</project>
+		<project>org.objectstyle.wolips.woproject</project>
+		<project>org.objectstyle.wolips.wounit</project>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>org.eclipse.jdt.core.javabuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
+			<name>org.eclipse.pde.ManifestBuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
+			<name>org.eclipse.pde.SchemaBuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>org.eclipse.pde.PluginNature</nature>
+		<nature>org.eclipse.jdt.core.javanature</nature>
+	</natures>
+</projectDescription>

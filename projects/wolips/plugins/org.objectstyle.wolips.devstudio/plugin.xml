@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin
+   id="org.objectstyle.wolips.devstudio"
+   name="%WOLips.pluginName"
+   version="1.0.6"
+   provider-name="%WOLips.providerName">
+
+   <runtime>
+      <library name="lib/wolips-devstudio.jar">
+         <packages prefixes="org.objectstyle.wolips.devstudio"/>
+      </library>
+   </runtime>
+
+   <requires>
+  </requires>
+
+</plugin>

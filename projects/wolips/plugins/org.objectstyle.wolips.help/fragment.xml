@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fragment
+   id="org.objectstyle.wolips.help"
+   name="%WOLips.help.fragmentName"
+   version="1.0.6"
+   provider-name="%WOLips.providerName"
+   plugin-id="org.objectstyle.wolips"
+   plugin-version="1.0.6"
+   match="compatible">
+
+   <runtime>
+      <library name="lib/wolips-help.jar">
+         <packages prefixes="org.objectstyle.wolips.help"/>
+      </library>
+   </runtime>
+
+<!-- ============================================== -->
+<!-- Define the main book                           -->
+<!-- ============================================== -->
+
+    <extension point="org.eclipse.help.toc">
+        <toc file="toc_root.xml" primary="true" />
+    </extension>
+       	
+</fragment>

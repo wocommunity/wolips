@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+
+<project name="testsuite" default="run" basedir=".">
+  
+  <!-- sets the properties eclipse-home, and library-file -->
+  <property name="plugin-name" value="org.objectstyle.wolips.tests"/>
+  <property name="library-file"
+            value="${param.eclipse.home}/plugins/org.eclipse.test/library.xml"/>
+
+  <!-- This target holds all initialization code that needs to be done for -->
+  <!-- all tests that are to be run. Initialization for individual tests -->
+  <!-- should be done within the body of the suite target. -->
+  <target name="init">
+    <tstamp/>
+    <delete>
+      <fileset dir="${param.eclipse.home}" includes="org*.xml"/>
+    </delete>
+  </target>
+
+  <!-- This target defines the tests that need to be run. -->
+  <target name="suite">
+    <property name="wolips-folder" 
+              value="./wolips-folder"/>
+    <delete dir="${wolips-folder}" quiet="true"/>
+
+    <echo message="Run library xml dir ${param.eclipse.home}"/>
+    <echo message="library-file ${library-file}"/>
+    
+    <ant target="core-test" antfile="${library-file}" dir="${param.eclipse.home}">
+      <property name="data-dir" value="${wolips-folder}"/>
+      <property name="plugin-name" value="${plugin-name}"/>
+      <property name="classname" 
+                value="org.objectstyle.wolips.tests.suite.AutomatedSuite"/>
+      <property name="vmargs" value="-Djava.library.path=${test.java.library.path}"/>          
+    </ant>
+  </target>
+
+  <!-- This target holds code to cleanup the testing environment after -->
+  <!-- after all of the tests have been run. You can use this target to -->
+  <!-- delete temporary files that have been created. -->
+  <target name="cleanup">
+  </target>
+
+  <!-- This target runs the test suite. Any actions that need to happen -->
+  <!-- after all the tests have been run should go here. -->
+  <target name="run" depends="init,suite,cleanup">
+    <ant target="collect" antfile="${library-file}" dir="${param.eclipse.home}">
+      <property name="includes" value="org*.xml"/>
+      <property name="output-file" value="${plugin-name}.xml"/>
+    </ant>
+  </target>
+
+</project>
