@@ -305,5 +305,21 @@
             id="org.objectstyle.wolips.utils.decorator">
       </decorator>
    </extension>
-
+<!-- =================================================================================== -->
+<!-- Extension: View                                                    -->
+<!-- =================================================================================== -->
+	<extension 
+		point="org.eclipse.ui.views">
+		<category 
+			id="org.eclipse.wolips.ui"
+			name="%WOLipsCategoryName">
+		</category>
+		<view
+			id="org.objectstyle.wolips.ui.Navigator"
+			name="%packagesViewName"
+			icon="icons/full/cview16/package.gif"
+			category="org.eclipse.jdt.ui.java"
+			class="org.objectstyle.wolips.ui.Navigator">
+		</view>
+	</extension>
 </plugin>
