@@ -75,6 +75,8 @@ import org.objectstyle.wolips.datasets.adaptable.Project;
 import org.objectstyle.wolips.datasets.project.PBProjectUpdater;
 import org.objectstyle.wolips.datasets.resources.IWOLipsModel;
 import org.objectstyle.wolips.jdt.JdtPlugin;
+import org.objectstyle.wolips.jdt.ant.UpdateFrameworkIncludeFiles;
+import org.objectstyle.wolips.jdt.ant.UpdateOtherClasspathIncludeFiles;
 
 /**
  * Tracking changes in classpath and synchronizes webobjects project file
@@ -99,6 +101,7 @@ public class JavaElementChangeListener extends WorkspaceJob {
 		if (this.event.getDelta().getElement().getElementType() != IJavaElement.JAVA_MODEL)
 			return new Status(IStatus.OK, JdtPlugin.getPluginId(), IStatus.OK,
 					"Done", null);
+		
 		IJavaElementDelta elementDeltaToExamine = this.event.getDelta();
 		ArrayList foundChangedElements = new ArrayList();
 		HashMap addedFrameworksProjectDict = new HashMap();
@@ -122,6 +125,16 @@ public class JavaElementChangeListener extends WorkspaceJob {
 						foundChangedElements))
 					continue;
 				javaProjectChanges = true;
+				UpdateOtherClasspathIncludeFiles updateOtherClasspathIncludeFiles = new UpdateOtherClasspathIncludeFiles();
+				updateOtherClasspathIncludeFiles
+						.setIProject(projectToExamine);
+				updateOtherClasspathIncludeFiles.execute();
+				UpdateFrameworkIncludeFiles updateFrameworkIncludeFiles = new UpdateFrameworkIncludeFiles();
+				updateFrameworkIncludeFiles
+						.setIProject(projectToExamine);
+				updateFrameworkIncludeFiles.execute();
+				
+				
 				Project woLipsProject = null;
 				try {
 					woLipsProject = (Project) (projectToExamine)
@@ -145,7 +158,7 @@ public class JavaElementChangeListener extends WorkspaceJob {
 						for (int j = 0; j < foundElements.size(); j++) {
 							currentPackageFragmentRoot = (IPackageFragmentRoot) foundElements
 									.get(j);
-							System.out.println(currentPackageFragmentRoot);
+							//System.out.println(currentPackageFragmentRoot);
 							addedFrameworks.add(currentPackageFragmentRoot
 									.getPath());
 						}
@@ -230,7 +243,7 @@ public class JavaElementChangeListener extends WorkspaceJob {
 						changeFlagToSearch, foundElements)) {
 					continue;
 				}
-			} else if (deltasToExamine[i].getFlags() == changeFlagToSearch) {
+			} else if ((deltasToExamine[i].getFlags() & changeFlagToSearch) == 0) {
 				// element found
 				foundElements.add(deltasToExamine[i].getElement());
 			}
@@ -279,7 +292,7 @@ public class JavaElementChangeListener extends WorkspaceJob {
 
 	private List toFrameworkNames(List paths) {
 		ArrayList arrayList = new ArrayList();
-		for (int i = 0; i > paths.size(); i++) {
+		for (int i = 0; i < paths.size(); i++) {
 			IPath path = (IPath) paths.get(i);
 			arrayList.add(this.getFrameworkName(path));
 		}

@@ -74,8 +74,6 @@ import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.externaltools.internal.model.IExternalToolConstants;
 import org.objectstyle.wolips.datasets.adaptable.Project;
-import org.objectstyle.wolips.jdt.ant.UpdateFrameworkIncludeFiles;
-import org.objectstyle.wolips.jdt.ant.UpdateOtherClasspathIncludeFiles;
 import org.objectstyle.wolips.preferences.Preferences;
 import org.objectstyle.wolips.projectbuild.ProjectBuildPlugin;
 import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
@@ -151,15 +149,6 @@ public class WOAntBuilder extends AbstractIncrementalProjectBuilder {
 		//TODO:handle clean
 		Project project = (Project)this.getProject().getAdapter(Project.class);
 		project.setUpPatternsetFiles();
-		UpdateOtherClasspathIncludeFiles updateOtherClasspathIncludeFiles = new UpdateOtherClasspathIncludeFiles();
-		updateOtherClasspathIncludeFiles
-				.setIProject(this.getProject());
-		updateOtherClasspathIncludeFiles.execute();
-		UpdateFrameworkIncludeFiles updateFrameworkIncludeFiles = new UpdateFrameworkIncludeFiles();
-		updateFrameworkIncludeFiles
-				.setIProject(this.getProject());
-		updateFrameworkIncludeFiles.execute();
-		
 		this.launchAntInExternalVM(getProject().getFile(aBuildFile), monitor);
 	}
 	/**
