@@ -234,7 +234,7 @@ public class VariablesPlugin extends AbstractUIPlugin {
 	 * @return the names of the framework roots
 	 */
 	public String[] getFrameworkRootsNames() {
-		return new String[] { "System", "Local", "User Home", "External Build Root"};
+		return new String[] { "External Build Root", "User Home", "Local", "System" };
 	}
 	
 	/**
@@ -242,10 +242,10 @@ public class VariablesPlugin extends AbstractUIPlugin {
 	 */
 	public IPath[] getFrameworkRoots() {
 		IPath[] paths = new IPath[4];
-		paths[3] = this.getExternalBuildRoot();
-		paths[2] = this.appendLibraryFrameworks(this.getUserHome());
-		paths[1] = this.appendLibraryFrameworks(this.getLocalRoot());
-		paths[0] = this.appendLibraryFrameworks(this.getSystemRoot());
+		paths[0] = this.getExternalBuildRoot();
+		paths[1] = this.appendLibraryFrameworks(this.getUserHome());
+		paths[2] = this.appendLibraryFrameworks(this.getLocalRoot());
+		paths[3] = this.appendLibraryFrameworks(this.getSystemRoot());
 		return paths;
 	}
 	private IPath appendLibraryFrameworks(IPath path) {
