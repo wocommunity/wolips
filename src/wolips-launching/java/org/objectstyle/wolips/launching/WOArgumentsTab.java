@@ -112,7 +112,7 @@ public class WOArgumentsTab extends JavaLaunchConfigurationTab {
 						
 		fPrgmArgumentsText = new Text(comp, SWT.MULTI | SWT.WRAP | SWT.BORDER | SWT.V_SCROLL);
 		gd = new GridData(GridData.FILL_BOTH);
-		gd.heightHint = 40;
+		gd.heightHint = 80;
 		fPrgmArgumentsText.setLayoutData(gd);
 		fPrgmArgumentsText.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent evt) {
