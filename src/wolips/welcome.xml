@@ -93,6 +93,11 @@ Moving things around - using packages
 ...
 </item>
 
+<item><b>What you should now about the build process.</b>
+Thanks to the rapid turnaround mode there is no need to build your apps and frameworks everytime you build your java classes.
+To build your apps and frameworks for deployment activate the build of apps and frameworks with the + button in the WOLips perspective. After it you can safely deactivate it.
+</item>
+
 <item><b>What you can and can't do.</b>
 ...
 </item>
