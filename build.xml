@@ -106,9 +106,10 @@
          <tar tarfile="${dist.base}/${project.name}-src-${project.version}.tar">
              <tarfileset dir="${dist.base}">
                 <include name="${project.name}-${project.version}/**"/>
-                <exclude name="**/WOApplication.*"/>
-                <exclude name="**/examples/applications/**"/>
-                <exclude name="**/examples/frameworks/Mail*/**"/>
+                <exclude name="**/WOApplication.java"/>
+                <exclude name="**/examples/**"/>
+                <exclude name="**/lib/ant.jar"/>
+                <exclude name="**/lib/junit.jar"/>
             </tarfileset>
          </tar>
          <gzip src="${dist.base}/${project.name}-src-${project.version}.tar"
