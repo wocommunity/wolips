@@ -141,7 +141,7 @@ public final class RunAnt {
 	 */
 	public void asExternalTool(IFile buildFile, String target)
 		throws Exception {
-		ILaunchConfiguration config = null;
+		//ILaunchConfiguration config = null;
 		return;
 		/*try {
 			config = RunAnt.createDefaultLaunchConfiguration(buildFile, target);
@@ -190,7 +190,7 @@ public final class RunAnt {
 			new ProgressMonitorDialog(WorkbenchUtilities.getShell());
 		IRunnableWithProgress runnable = new IRunnableWithProgress() {
 			public void run(IProgressMonitor monitor)
-				throws InvocationTargetException, InterruptedException {
+				throws InvocationTargetException {
 				try {
 					configuration.launch(mode, monitor);
 				} catch (CoreException e) {
