@@ -64,7 +64,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathContainer;
 import org.eclipse.jdt.core.IClasspathEntry;
-import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.launching.IRuntimeContainerComparator;
 import org.objectstyle.wolips.core.project.WOLipsCore;
@@ -82,11 +81,9 @@ public final class WOClasspathContainer
 	/**
 	 * Constructor for WOClassPathContainer.
 	 */
-	public WOClasspathContainer(IPath id, IJavaProject project) {
+	public WOClasspathContainer(IPath id) {
 		super();
 		_id = id;
-
-		_project = project;
 
 		_initPath();
 	}
@@ -188,5 +185,4 @@ public final class WOClasspathContainer
 
 	private ArrayList _path = new ArrayList();
 
-	private IJavaProject _project = null;
 }

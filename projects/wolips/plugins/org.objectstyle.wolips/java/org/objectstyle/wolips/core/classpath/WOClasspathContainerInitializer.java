@@ -98,7 +98,7 @@ public final class WOClasspathContainerInitializer
             JavaCore.setClasspathContainer(
               containerPath, 
               new IJavaProject[] {project}, 
-              new IClasspathContainer[] {new WOClasspathContainer (containerPath, project)}, 
+              new IClasspathContainer[] {new WOClasspathContainer (containerPath)}, 
               null
             );
         }
