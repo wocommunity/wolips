@@ -150,7 +150,6 @@
             <pathelement path="src/java"/>
         </sourcepath>
         <doctitle><![CDATA[<h2>WOProject API Documentation</h2>]]></doctitle>
-        <link href="http://developer.java.sun.com/developer/products/xml/docs/api/"/>
         </javadoc>
     </target>
 </project>

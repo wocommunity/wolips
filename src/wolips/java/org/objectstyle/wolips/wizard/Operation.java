@@ -64,12 +64,7 @@ import java.net.URL;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.*;
 import org.eclipse.ui.dialogs.IOverwriteQuery;
 import org.eclipse.ui.wizards.datatransfer.FileSystemStructureProvider;
 import org.eclipse.ui.wizards.datatransfer.ImportOperation;
@@ -115,7 +110,7 @@ public class Operation {
 		IFile aApiFile = resources.getFile("wocomponent.api");
 		IFile aNewApiFile = resources.getFile(aComponentName + ".api");
 		aApiFile.move(aNewApiFile.getFullPath(), true, monitor);
-		FileStringScanner.FileOpenReplaceWith(aNewApiFile.getLocation().toOSString(), "wocomponenttemplate", aFullyQualifiedComponentName);
+		FileStringScanner.fileOpenReplaceWith(aNewApiFile.getLocation().toOSString(), "wocomponenttemplate", aFullyQualifiedComponentName);
 	
 		IFolder afolder = resources.getFolder("wocomponent.wo");
 		IFolder aNewFolder = resources.getFolder(aComponentName + ".wo");

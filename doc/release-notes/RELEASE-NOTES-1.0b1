@@ -12,4 +12,7 @@ Changes in this release:
 1. Added WOLips subproject. WOLips is a full featured Eclipse 
 WebObjects plugin.
 
-2. 
+2. Added PBIndex task (somewhat experimental) - an updater of 
+PB.project files.
+
+3. Added "single-folder" deployment option.

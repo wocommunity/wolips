@@ -61,16 +61,19 @@ import java.util.Vector;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
-import org.apache.tools.ant.taskdefs.*;
+import org.apache.tools.ant.taskdefs.Copy;
+import org.apache.tools.ant.taskdefs.Jar;
+import org.apache.tools.ant.taskdefs.Mkdir;
 import org.apache.tools.ant.types.FileSet;
 
 /**
- * Common superclass for WOApplication and WOFramework that looks
- * after common functionality.
+ * A <b>WOTask</b> is a common superclass of WOApplication and WOFramework that 
+ * implements common build functionality.
  * 
- * @author Emily Bache, Andrei Adamchik
+ * @author Emily Bache
+ * @author Andrei Adamchik
  */
-public abstract class WOTask extends MatchingTask {
+public abstract class WOTask extends Task {
 
     protected Vector classes = new Vector();
     protected String name;
@@ -148,7 +151,7 @@ public abstract class WOTask extends MatchingTask {
      * Ensure we have a consistent and legal set of attributes, and set any
      * internal flags necessary based on different combinations of attributes.
      *
-     * @throws BuildException Description of the Exception
+     * @throws BuildException if task attributes are inconsistent or missing.
      */
     protected void validateAttributes() throws BuildException {
         if (name == null) {

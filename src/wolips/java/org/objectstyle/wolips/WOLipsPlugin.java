@@ -58,10 +58,7 @@ package org.objectstyle.wolips;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Hashtable;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
 
-import org.eclipse.core.internal.boot.URLContentFilter;
 import org.eclipse.core.internal.plugins.PluginClassLoader;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
@@ -75,13 +72,12 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.objectstyle.wolips.env.Environment;
 import org.objectstyle.wolips.ide.WOClasspathUpdater;
 import org.objectstyle.wolips.project.PBProjectUpdater;
-
-/**
- * @author uli
- */
+import org.eclipse.core.internal.boot.URLContentFilter;
 
 /**
  * The main plugin class to be used in the desktop.
+ * 
+ * @author uli
  */
 public class WOLipsPlugin extends AbstractUIPlugin {
 	private static WOLipsPlugin plugin;

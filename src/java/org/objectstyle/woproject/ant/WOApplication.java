@@ -56,13 +56,18 @@
 package org.objectstyle.woproject.ant;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Vector;
 
 import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.types.PatternSet;
+import org.apache.tools.ant.DirectoryScanner;
+import org.apache.tools.ant.Project;
+import org.apache.tools.ant.taskdefs.Chmod;
 import org.apache.tools.ant.taskdefs.Copy;
 import org.apache.tools.ant.types.FileSet;
-import org.apache.tools.ant.DirectoryScanner;
+import org.apache.tools.ant.types.PatternSet;
 
 /**
  * Ant task to build WebObjects application. For detailed instructions go to the
@@ -86,21 +91,21 @@ public class WOApplication extends WOTask {
 			"JavaXML" };
 
 	protected ArrayList frameworkSets = new ArrayList();
-	private Vector lib = new Vector();
+	protected Vector lib = new Vector();
 	protected boolean stdFrameworks = true;
 	protected boolean embedStdFrameworks = false;
 
 	public void addLib(FileSet set) {
-	    lib.addElement(set);
+		lib.addElement(set);
 	}
 
-    public String getPrincipalClass() {
-    	String principalClass = super.getPrincipalClass();
-    	if(principalClass == null) {
-    	    principalClass = "Application";
-    	}
-    	return principalClass;
-    }
+	public String getPrincipalClass() {
+		String principalClass = super.getPrincipalClass();
+		if (principalClass == null) {
+			principalClass = "Application";
+		}
+		return principalClass;
+	}
 
 	/** 
 	 * Runs WOApplication task. Main worker method that would validate
@@ -108,14 +113,14 @@ public class WOApplication extends WOTask {
 	 */
 	public void execute() throws BuildException {
 		validateAttributes();
-		
+
 		log("Installing " + name + " in " + destDir);
 		createDirectories();
 		if (hasClasses()) {
 			jarClasses();
 		}
 		if (hasLib()) {
-		    copyLibs();
+			copyLibs();
 		}
 		if (hasResources()) {
 			copyResources();
@@ -124,72 +129,100 @@ public class WOApplication extends WOTask {
 			copyWsresources();
 		}
 		if (hasEmbeddedFrameworks()) {
-		    copyEmbeddedFrameworks();
+			copyEmbeddedFrameworks();
 		}
 
 		// create all needed scripts
 		new AppFormat(this).processTemplates();
+
+		// chmod UNIX scripts
+		chmodScripts();
+	}
+
+	/**
+	 * Sets executable flag for all scripts. This is required 
+	 * on UNIX/Mac platforms. On Windows this action is simply ignored.
+	 */
+	protected void chmodScripts() throws BuildException {
+		if (System.getProperty("os.name").toLowerCase().indexOf("win") < 0) {
+			File dir = taskDir();
+			super.log("chmod scripts in " + dir, Project.MSG_VERBOSE);
+
+			FileSet fs = new FileSet();
+			fs.setDir(dir);
+			fs.createInclude().setName("**/" + name);
+			fs.createInclude().setName("**/*.sh");
+
+			Chmod chmod = subtaskFactory.getChmod();
+			chmod.setPerm("gu+x");
+			chmod.addFileset(fs);
+			chmod.execute();
+		} else {
+			super.log(
+				"'"
+					+ System.getProperty("os.name")
+					+ "' is some kind of windows, skipping chmod.");
+		}
 	}
 
 	protected void copyEmbeddedFrameworks() throws BuildException {
-//	    Copy cp = subtaskFactory.getResourceCopy();
-	    Copy cp = new Copy();
-	    cp.setOwningTarget(getOwningTarget());
-            cp.setProject(getProject()); 
-            cp.setTaskName(getTaskName());   
-            cp.setLocation(getLocation()); 
+		Copy cp = new Copy();
+		cp.setOwningTarget(getOwningTarget());
+		cp.setProject(getProject());
+		cp.setTaskName(getTaskName());
+		cp.setLocation(getLocation());
 
-	    cp.setTodir(embeddedFrameworksDir());
- 
-	    // The purpose of this is to create filesets that actually
-	    // allow the framework directory to be copied into the
-	    // WOApplication directory.  If we didn't do this, we'd
-	    // have to append '/' or '/**' to the end of the includes
-	    // in the <frameworks> tag.
-	    List frameworkSets = getFrameworkSets();
-	    int size = frameworkSets.size();
-	    for (int i = 0; i < size; i++) {
-		FrameworkSet fs = (FrameworkSet)frameworkSets.get(i);
+		cp.setTodir(embeddedFrameworksDir());
 
-		if ( fs.getEmbed() == false ) {
-		    continue;
+		// The purpose of this is to create filesets that actually
+		// allow the framework directory to be copied into the
+		// WOApplication directory.  If we didn't do this, we'd
+		// have to append '/' or '/**' to the end of the includes
+		// in the <frameworks> tag.
+		List frameworkSets = getFrameworkSets();
+		int size = frameworkSets.size();
+		for (int i = 0; i < size; i++) {
+			FrameworkSet fs = (FrameworkSet) frameworkSets.get(i);
+
+			if (fs.getEmbed() == false) {
+				continue;
+			}
+
+			File root = fs.getDir(getProject());
+			DirectoryScanner ds = fs.getDirectoryScanner(getProject());
+			String[] dirs = ds.getIncludedDirectories();
+
+			for (int j = 0; j < dirs.length; j++) {
+				String includeName = dirs[j];
+
+				if (includeName.endsWith(".framework") == false) {
+					throw new BuildException("'name' attribute must end with '.framework'");
+				}
+
+				FileSet newFs = new FileSet();
+				PatternSet.NameEntry include;
+
+				newFs.setDir(root);
+				include = newFs.createInclude();
+				include.setName(includeName + "/Resources/");
+				include = newFs.createInclude();
+				include.setName(includeName + "/WebServerResources/");
+
+				cp.addFileset(newFs);
+			}
 		}
-
-		File root = fs.getDir(getProject());
-		DirectoryScanner ds = fs.getDirectoryScanner(getProject());
-		String[] dirs = ds.getIncludedDirectories();
-
-		for (int j = 0; j < dirs.length; j++) {
-		    String includeName = dirs[j];
-
-		    if ( includeName.endsWith(".framework") == false ) {
-			throw new BuildException("'name' attribute must end with '.framework'");
-		    }
-
-		    FileSet newFs = new FileSet();
-		    PatternSet.NameEntry include;
-
-		    newFs.setDir(root);
-		    include = newFs.createInclude();
-		    include.setName(includeName + "/Resources/");
-		    include = newFs.createInclude();
-		    include.setName(includeName + "/WebServerResources/");
-		    
-		    cp.addFileset(newFs);
-		}
-	    }
-	    cp.execute();
+		cp.execute();
 	}
 
 	protected void copyLibs() throws BuildException {
-	    Copy cp = subtaskFactory.getResourceCopy();
-	    cp.setTodir(new File(resourcesDir(), "Java"));
- 
-	    Enumeration en = lib.elements();
-	    while (en.hasMoreElements()) {
-		cp.addFileset((FileSet) en.nextElement());
-	    }
-	    cp.execute();
+		Copy cp = subtaskFactory.getResourceCopy();
+		cp.setTodir(new File(resourcesDir(), "Java"));
+
+		Enumeration en = lib.elements();
+		while (en.hasMoreElements()) {
+			cp.addFileset((FileSet) en.nextElement());
+		}
+		cp.execute();
 	}
 
 	/**
@@ -198,12 +231,12 @@ public class WOApplication extends WOTask {
 		FrameworkSet set = new FrameworkSet();
 		set.setProject(this.getProject());
 		set.setRoot(WOPropertiesHandler.WO_ROOT + "/Library/Frameworks");
-//		set.setRoot(WOPropertiesHandler.WO_ROOT);
+		//		set.setRoot(WOPropertiesHandler.WO_ROOT);
 
 		for (int i = 0; i < stdFrameworkNames.length; i++) {
 			String path =
-//				"Library/Frameworks/" + stdFrameworkNames[i] + ".framework";
-				stdFrameworkNames[i] + ".framework";
+				//				"Library/Frameworks/" + stdFrameworkNames[i] + ".framework";
+	stdFrameworkNames[i] + ".framework";
 			PatternSet.NameEntry include = set.createInclude();
 			include.setName(path);
 		}
@@ -228,8 +261,8 @@ public class WOApplication extends WOTask {
 		// If we request embedding for the standard
 		// frameworks, we certainly want to reference
 		// them.
-		if ( flag ) {
-		  stdFrameworks = true;
+		if (flag) {
+			stdFrameworks = true;
 		}
 	}
 
@@ -238,8 +271,7 @@ public class WOApplication extends WOTask {
 	 * For WebObjects applications this is a <code>.woa</code> directory.
 	 */
 	protected File taskDir() {
-		return getProject().resolveFile(
-			destDir + File.separator + name + ".woa");
+		return getProject().resolveFile(destDir + File.separator + name + ".woa");
 	}
 
 	protected File contentsDir() {
@@ -259,22 +291,22 @@ public class WOApplication extends WOTask {
 	}
 
 	protected boolean hasLib() {
-	    return lib.size() > 0;
+		return lib.size() > 0;
 	}
 
 	protected boolean hasEmbeddedFrameworks() {
-	    List frameworkSets = getFrameworkSets();
-	    int size = frameworkSets.size();
+		List frameworkSets = getFrameworkSets();
+		int size = frameworkSets.size();
 
-	    for (int i = 0; i < size; i++) {
-		FrameworkSet fs = (FrameworkSet)frameworkSets.get(i);
+		for (int i = 0; i < size; i++) {
+			FrameworkSet fs = (FrameworkSet) frameworkSets.get(i);
 
-		if ( fs.getEmbed() ) {
-		    return true;
+			if (fs.getEmbed()) {
+				return true;
+			}
 		}
-	    }
 
-	    return false;
+		return false;
 	}
 
 	/**

@@ -75,7 +75,7 @@ public class FileStringScanner {
         super();
     }
 
-    public static void FileOpenReplaceWith(String file, String replace, String with) throws IOException {
+    public static void fileOpenReplaceWith(String file, String replace, String with) throws IOException {
         String stringFromFile = FileStringScanner.stringFromFile(new File(file));
         String replacedString = FileStringScanner.replace(stringFromFile, replace, with);
         //if nothing replaced

@@ -18,6 +18,10 @@
         <fileset dir="${env.JAVA_HOME}/lib">
   			<include name="*.jar" /> 
   		</fileset>
+  		
+  		<fileset dir="${next.root}/Library/Frameworks">
+            <include name="JavaFoundation.framework/Resources/Java/*.jar"/>
+        </fileset>
     </path>
 
 

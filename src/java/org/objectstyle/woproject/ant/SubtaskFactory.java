@@ -102,6 +102,15 @@ public class SubtaskFactory {
 		initChildTask(task);
 		return task;
 	}
+	
+	/** 
+	 * Returns a new Chmod task.
+	 */
+	public Chmod getChmod() {
+		Chmod task = new Chmod();
+		initChildTask(task);
+		return task;
+	}
 
 	/** 
 	 * Returns Jar task.

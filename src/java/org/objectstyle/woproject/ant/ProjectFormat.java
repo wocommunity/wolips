@@ -71,8 +71,7 @@ import org.apache.tools.ant.types.FilterSetCollection;
  * @author Andrei Adamchik
  */
 public abstract class ProjectFormat {
-	protected static final String endLine =
-		System.getProperty("line.separator");
+	protected static final String endLine = System.getProperty("line.separator");
 
 	protected WOTask task;
 
@@ -91,17 +90,17 @@ public abstract class ProjectFormat {
 		return task.getName();
 	}
 
-        /**
-            * Returns a name of the jar WebObjects project being built with ".jar" appended.
-         */
-        public String getJarName() {
-            return task.getJarName() + ".jar";
-        }
-
-        /** 
-	 * Creates all needed files based on WOProject templates. 
-	 * This is a main worker method. 
+	/**
+	    * Returns a name of the jar WebObjects project being built with ".jar" appended.
 	 */
+	public String getJarName() {
+		return task.getJarName() + ".jar";
+	}
+
+	/** 
+	* Creates all needed files based on WOProject templates. 
+	* This is a main worker method. 
+	*/
 	public void processTemplates() throws BuildException {
 		Iterator it = fileIterator();
 
@@ -112,8 +111,7 @@ public abstract class ProjectFormat {
 				FilterSetCollection filters = filtersForTarget(targetName);
 
 				InputStream template =
-					this.getClass().getClassLoader().getResourceAsStream(
-						templName);
+					this.getClass().getClassLoader().getResourceAsStream(templName);
 				File target = new File(targetName);
 				copyFile(template, target, filters);
 			}
@@ -133,8 +131,7 @@ public abstract class ProjectFormat {
 	 * Returns a path to the template that should be used to
 	 * build a target file.
 	 */
-	public abstract String templateForTarget(String targetName)
-		throws BuildException;
+	public abstract String templateForTarget(String targetName) throws BuildException;
 
 	/** 
 	 * Returns a FilterSetCollection that should be applied when
@@ -153,10 +150,7 @@ public abstract class ProjectFormat {
 	 *  
 	 * @throws IOException 
 	 */
-	public void copyFile(
-		InputStream src,
-		File destFile,
-		FilterSetCollection filters)
+	public void copyFile(InputStream src, File destFile, FilterSetCollection filters)
 		throws IOException {
 
 		if (destFile.exists() && destFile.isFile()) {
@@ -214,11 +208,8 @@ public abstract class ProjectFormat {
 
 		buf.append("<array>");
 		if (task.hasClasses()) {
-			buf
-				.append(endLine)
-				.append("\t\t<string>")
-				.append(getJarName())
-				.append("</string>");
+			buf.append(endLine).append("\t\t<string>").append(getJarName()).append(
+				"</string>");
 		}
 
 		if (extLibs != null) {
@@ -232,26 +223,28 @@ public abstract class ProjectFormat {
 		buf.append(endLine).append("\t</array>");
 		return buf.toString();
 	}
-        /**
-         * Returns a string that can be used in Info.plist
-         * file to indicate the principal class for the framework or app.
-         */
-        private String principalClassString() {
-            StringBuffer buf = new StringBuffer();
-            if(task.getPrincipalClass() != null && task.getPrincipalClass().length() > 0) {
-                buf.append("<key>NSPrincipalClass</key>").append(endLine);
-                buf.append("\t<string>").append(task.getPrincipalClass()).append("</string>").append(endLine);
-            }
-            return buf.toString();
-        }
+	/**
+	 * Returns a string that can be used in Info.plist
+	 * file to indicate the principal class for the framework or app.
+	 */
+	private String principalClassString() {
+		StringBuffer buf = new StringBuffer();
+		if (task.getPrincipalClass() != null && task.getPrincipalClass().length() > 0) {
+			buf.append("<key>NSPrincipalClass</key>").append(endLine);
+			buf.append("\t<string>").append(task.getPrincipalClass()).append(
+				"</string>").append(
+				endLine);
+		}
+		return buf.toString();
+	}
 	/** 
 	 * Returns a FilterSet that can be used to build Info.plist file. 
 	 */
 	public FilterSetCollection infoFilter(Iterator extLibs) {
 		FilterSet filter = new FilterSet();
 
-            filter.addFilter("PRINCIPAL_CLASS", principalClassString());
-            filter.addFilter("NAME", getName());
+		filter.addFilter("PRINCIPAL_CLASS", principalClassString());
+		filter.addFilter("NAME", getName());
 		filter.addFilter("JAR_NAME", getJarName());
 		filter.addFilter("JAR_ARRAY", libString(extLibs));
 

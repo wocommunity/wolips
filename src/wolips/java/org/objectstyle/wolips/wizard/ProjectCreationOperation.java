@@ -64,13 +64,7 @@ import java.util.zip.ZipFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.core.runtime.*;
 import org.eclipse.ui.dialogs.IOverwriteQuery;
 import org.eclipse.ui.wizards.datatransfer.ImportOperation;
 import org.eclipse.ui.wizards.datatransfer.ZipFileStructureProvider;
@@ -79,11 +73,6 @@ import org.objectstyle.wolips.io.FileStringScanner;
 
 /**
  * @author uli
- *
- * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates.
- * To enable and disable the creation of type comments go to
- * Window>Preferences>Java>Code Generation.
  */
 public class ProjectCreationOperation extends Operation {
 
@@ -132,8 +121,8 @@ public class ProjectCreationOperation extends Operation {
 		String path = project.getLocation().toOSString();
 		String file = path + relativePath;
 		try {	
-			FileStringScanner.FileOpenReplaceWith(file, "xxxxx", project.getName().toLowerCase());
-			FileStringScanner.FileOpenReplaceWith(file, "yyyyy", project.getName());
+			FileStringScanner.fileOpenReplaceWith(file, "xxxxx", project.getName().toLowerCase());
+			FileStringScanner.fileOpenReplaceWith(file, "yyyyy", project.getName());
 				}		
 		 catch (IOException e) {
 			String message= path + ": " + e.getMessage(); //$NON-NLS-1$

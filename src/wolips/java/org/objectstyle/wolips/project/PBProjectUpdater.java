@@ -53,11 +53,14 @@
  * <http://objectstyle.org/>.
  *
  */
- 
- package org.objectstyle.wolips.project;
+
+package org.objectstyle.wolips.project;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -67,9 +70,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Platform;
 import org.objectstyle.wolips.WOLipsPlugin;
 import org.objectstyle.wolips.io.FileStringScanner;
-
-import com.webobjects.foundation.NSArray;
-import com.webobjects.foundation.NSMutableArray;
+import org.objectstyle.woproject.pb.PBProject;
 
 /**
  * @author uli
@@ -80,7 +81,7 @@ import com.webobjects.foundation.NSMutableArray;
  * Window>Preferences>Java>Code Generation.
  */
 public class PBProjectUpdater {
-	
+
 	public static String PBProject = "PB.project";
 	private PBProject pbProject;
 	private IProject project;
@@ -96,116 +97,145 @@ public class PBProjectUpdater {
 
 	public void updatePBProject() throws CoreException {
 		syncPBProjectWithProject();
-		if(project != null)
+		if (project != null)
 			PBProjectNotifications.postPBProjectDidUpgradeNotification(project.getName());
 	}
-	
+
 	private PBProject getPBProject(IProject aProject) {
 		IFile aPBProject = aProject.getFile(PBProjectUpdater.PBProject);
 		File aFile = aPBProject.getLocation().toFile();
 		boolean isWOApp = ProjectHelper.isWOAppBuilderInstalled(aProject);
-		if(!aFile.exists()) {
+		if (!aFile.exists()) {
 			try {
 				aFile.createNewFile();
-	
+
 				String contents;
-				URL aStarterURL = WOLipsPlugin.getDefault().getDescriptor().getInstallURL();
+				URL aStarterURL =
+					WOLipsPlugin.getDefault().getDescriptor().getInstallURL();
 				URL aURL;
-				if(isWOApp) {
-					aURL= new URL(aStarterURL, "templates/woapplication/PB.project");
-				}
-				else {
-					aURL= new URL(aStarterURL, "templates/woframework/PB.project");    		
+				if (isWOApp) {
+					aURL = new URL(aStarterURL, "templates/woapplication/PB.project");
+				} else {
+					aURL = new URL(aStarterURL, "templates/woframework/PB.project");
 				}
 				String aPBProjectFile = Platform.asLocalURL(aURL).getFile();
 				contents = FileStringScanner.stringFromFile(new File(aPBProjectFile));
 				FileStringScanner.stringToFile(aFile, contents);
-			}
-			catch (Exception anException) {
+
+			} catch (Exception anException) {
 				WOLipsPlugin.log(anException);
 			}
 		}
-		return new PBProject(aFile, isWOApp);
+
+		try {
+			return new PBProject(aFile, !isWOApp);
+		} catch (IOException ioex) {
+			ioex.printStackTrace();
+			return null;
+		}
 	}
-	
+
 	private void syncPBProjectWithProject() {
-		pbProject.update();
-		this.syncFilestable();
-		this.syncProjectName();
-		pbProject.saveChanges();
+		try {
+			pbProject.update();
+			this.syncFilestable();
+			this.syncProjectName();
+			pbProject.saveChanges();
+		} catch (IOException ioex) {
+			ioex.printStackTrace();
+		}
+
 	}
-	
+
 	private void syncFilestable() {
-		NSMutableArray aClassesList = new NSMutableArray();
-		NSMutableArray aWOComponentsList = new NSMutableArray();
-		NSMutableArray aWOAppResourcesList = new NSMutableArray();
-		
+		ArrayList aClassesList = new ArrayList();
+		ArrayList aWOComponentsList = new ArrayList();
+		ArrayList aWOAppResourcesList = new ArrayList();
+
 		IResource[] resources;
 		try {
 			resources = project.members();
-		}
-		catch (Exception anException) {
+
+		} catch (Exception anException) {
 			WOLipsPlugin.log(anException);
+
 			return;
 		}
 		int lastResource = resources.length;
 		int i = 0;
-		while (i<lastResource) {
+		while (i < lastResource) {
 			IResource aResource = resources[i];
 			i++;
-			proceedResource(aResource, aClassesList, aWOComponentsList, aWOAppResourcesList);
+			proceedResource(
+				aResource,
+				aClassesList,
+				aWOComponentsList,
+				aWOAppResourcesList);
 		}
-		
+
 		this.syncClasses(aClassesList);
 		this.syncWOComponents(aWOComponentsList);
 		this.syncWOAppResources(aWOAppResourcesList);
 	}
-	
-	private void proceedResource(IResource aResource, NSMutableArray aClassesList, NSMutableArray aWOComponentsList, NSMutableArray aWOAppResourcesList) {
+
+	private void proceedResource(
+		IResource aResource,
+		List aClassesList,
+		List aWOComponentsList,
+		List aWOAppResourcesList) {
 		try {
 			String aPath = aResource.getProjectRelativePath().toString();
 			File aFile = new File(aResource.getLocation().toOSString());
 			IFolder aFolder = null;
-			if(aFile.isDirectory())
+			if (aFile.isDirectory())
 				aFolder = project.getFolder(aResource.getProjectRelativePath());
-			if(aFolder != null) {
-				if(aPath.endsWith(".wo")) aWOComponentsList.addObject(aPath);
+
+			if (aFolder != null) {
+				if (aPath.endsWith(".wo"))
+					aWOComponentsList.add(aPath);
+
 				else {
 					IResource[] resources;
 					resources = aFolder.members();
 					int lastResource = resources.length;
 					int i = 0;
-					while (i<lastResource) {
+					while (i < lastResource) {
 						IResource aFolderResource = resources[i];
 						i++;
-						this.proceedResource(aFolderResource, aClassesList, aWOComponentsList, aWOAppResourcesList);
+						this.proceedResource(
+							aFolderResource,
+							aClassesList,
+							aWOComponentsList,
+							aWOAppResourcesList);
 					}
 				}
+			} else {
+				if (aPath.endsWith(".java"))
+					aClassesList.add(aPath);
+
+				if (aPath.endsWith(".api"))
+					aWOAppResourcesList.add(aPath);
 			}
-			else {
-				if(aPath.endsWith(".java")) aClassesList.addObject(aPath);
-				
-				if(aPath.endsWith(".api")) aWOAppResourcesList.addObject(aPath);
-			}
-		}
-		catch(Exception anException) {
+
+		} catch (Exception anException) {
 			WOLipsPlugin.log(anException);
+
 		}
 	}
-	
+
 	private void syncProjectName() {
 		pbProject.setProjectName(project.getName());
 	}
-	
-	private void syncClasses(NSMutableArray anNSMutableArray) {
-		pbProject.setClasses(anNSMutableArray);
+
+	private void syncClasses(List list) {
+		pbProject.setClasses(list);
 	}
-	
-	private void syncWOComponents(NSMutableArray anNSMutableArray) {
-		pbProject.setWoComponents(anNSMutableArray);
+
+	private void syncWOComponents(List list) {
+		pbProject.setWoComponents(list);
 	}
-	
-	private void syncWOAppResources(NSMutableArray anNSMutableArray) {
-		pbProject.setWoAppResources(anNSMutableArray);
+
+	private void syncWOAppResources(List list) {
+		pbProject.setWoAppResources(list);
 	}
 }

@@ -69,9 +69,11 @@ import org.apache.tools.ant.Project;
 import org.apache.tools.ant.ProjectHelper;
 
 /**
- * Provides testing framework for the functional tests of project building tasks.
+ * Provides testing framework for the functional tests 
+ * of project building tasks.
  *
- * @author Andrei Adamchik, Emily Bache
+ * @author Andrei Adamchik
+ * @author Emily Bache
  */
 public abstract class BuildTestCase extends TestCase {
     private static Logger logger = Logger.getLogger(BuildTestCase.class);
