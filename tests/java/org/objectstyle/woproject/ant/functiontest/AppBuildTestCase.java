@@ -87,6 +87,19 @@ public abstract class AppBuildTestCase extends BuildTestCase {
 		assertWindows(struct);
 		assertMac(struct);
 		assertUnix(struct);
+
+		// assert common
+		File runscriptWin =
+			new File(struct.getDirectoryPath(), struct.getName() + ".cmd");
+		Assert.assertTrue(
+			"Windows run script is missing: " + runscriptWin,
+			runscriptWin.isFile());
+
+		File runscriptUnix =
+			new File(struct.getDirectoryPath(), struct.getName());
+		Assert.assertTrue(
+			"UNIX run script is missing: " + runscriptUnix,
+			runscriptUnix.isFile());
 	}
 
 	protected void assertWindows(ApplicationStructure struct)
@@ -95,6 +108,21 @@ public abstract class AppBuildTestCase extends BuildTestCase {
 		Assert.assertTrue(
 			"Windows scripts directory is missing: " + winFolder,
 			winFolder.isDirectory());
+
+		File clpath = new File(winFolder, "CLSSPATH.TXT");
+		Assert.assertTrue(
+			"Windows CLSSPATH.TXT is missing: " + clpath,
+			clpath.isFile());
+
+		File subpath = new File(winFolder, "SUBPATHS.TXT");
+		Assert.assertTrue(
+			"Windows SUBPATHS.TXT is missing: " + subpath,
+			subpath.isFile());
+
+		File runscript = new File(winFolder, struct.getName() + ".cmd");
+		Assert.assertTrue(
+			"Windows run script is missing: " + runscript,
+			runscript.isFile());
 	}
 
 	protected void assertMac(ApplicationStructure struct)
@@ -103,6 +131,21 @@ public abstract class AppBuildTestCase extends BuildTestCase {
 		Assert.assertTrue(
 			"Mac scripts directory is missing: " + macFolder,
 			macFolder.isDirectory());
+
+		File clpath = new File(macFolder, "MacOSClassPath.txt");
+		Assert.assertTrue(
+			"MacOSClassPath.txt is missing: " + clpath,
+			clpath.isFile());
+
+		File serverPath = new File(macFolder, "MacOSXServerClassPath.txt");
+		Assert.assertTrue(
+			"MacOSXServerClassPath.txt is missing: " + serverPath,
+			serverPath.isFile());
+
+		File runscript = new File(macFolder, struct.getName());
+		Assert.assertTrue(
+			"Mac run script is missing: " + runscript,
+			runscript.isFile());
 	}
 
 	protected void assertUnix(ApplicationStructure struct)
@@ -111,5 +154,10 @@ public abstract class AppBuildTestCase extends BuildTestCase {
 		Assert.assertTrue(
 			"UNIX scripts directory is missing: " + unixFolder,
 			unixFolder.isDirectory());
+
+		File clpath = new File(unixFolder, "UNIXClassPath.txt");
+		Assert.assertTrue(
+			"UNIXClassPath.txt is missing: " + clpath,
+			clpath.isFile());
 	}
 }
