@@ -60,6 +60,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -615,12 +616,37 @@ public class WOLipsProject implements IWOLipsPluginConstants {
 	 * Window>Preferences>Java>Code Generation>Code Template
 	 */
 	public class PBProjectFilesAccessor extends WOLipsProjectInnerClass {
-
+		private Hashtable pbProjectFileAccessors = new Hashtable();
 		/**
 		 * @param wolipsProject
 		 */
 		protected PBProjectFilesAccessor(WOLipsProject wolipsProject) {
 			super(wolipsProject);
+		}
+		/**
+		 * @param resource
+		 * @return PBProjectFileAccessor
+		 */
+		public PBProjectFileAccessor getPBProjectFileAccessor(IResource resource) {
+			if (resource == null) return null;
+			IFolder folder = this.getParentFolderWithPBProject(resource);
+			if(folder == null) return null;
+			PBProjectFileAccessor pbProjectFileAccessor = (PBProjectFileAccessor)pbProjectFileAccessors.get(folder.getFullPath().toOSString());
+			if(pbProjectFileAccessor != null) return pbProjectFileAccessor;
+			return new PBProjectFileAccessor(this, folder);
+		}
+		/**
+		 * @param resource
+		 * @return IFolder
+		 */
+		protected IFolder getParentFolderWithPBProject(IResource resource) {
+			if(resource.getType() == IResource.FILE)
+			return getParentFolderWithPBProject((IFolder)resource.getParent());
+			if(resource.getType() == IResource.FOLDER)
+			return getParentFolderWithPBProject((IFolder)resource);
+			if(resource.getType() == IResource.PROJECT)
+			return getParentFolderWithPBProject((IFolder)resource);
+			return null;
 		}
 		/**
 		 * Method getParentFolderWithPBProject.
@@ -643,6 +669,20 @@ public class WOLipsProject implements IWOLipsPluginConstants {
 				!= null)
 				return findFolder;
 			return null;
+		}
+		
+		public class PBProjectFileAccessor {
+			private PBProjectFilesAccessor pbProjectFilesAccessor;
+			public PBProjectFileAccessor(PBProjectFilesAccessor pbProjectFilesAccessor, IFolder folder) {
+				this.pbProjectFilesAccessor = pbProjectFilesAccessor;
+			}
+			/**
+			 * @return PBProjectFilesAccessor
+			 */
+			protected PBProjectFilesAccessor getPbProjectFilesAccessor() {
+				return pbProjectFilesAccessor;
+			}
+
 		}
 	}
 

@@ -165,7 +165,9 @@ public interface IWOLipsPluginConstants {
 			+ IWOLipsPluginConstants.build_user_home_properties
 			+ " from woproject to wolips.";
 	public static final String ID_ELEMENT_CREATION_ACTION_SET =
-		"org.objectstyle.wolips.ElementCreationActionSet";
+		"org.objectstyle.wolips.wizards.ElementCreationActionSet";
+	public static final String ID_BUILD_ACTION_SET =
+		"org.objectstyle.wolips.ui.BuildActionSet";
 	public static final String ID_Navigator = "org.objectstyle.wolips.ui.Navigator"; //$NON-NLS-1$
 	public static final String ID_WONavigator = "org.objectstyle.wolips.ui.WONavigator"; //$NON-NLS-1$
 	public static final String ID_ModelNavigator = "org.objectstyle.wolips.ui.ModelNavigator"; //$NON-NLS-1$
