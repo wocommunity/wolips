@@ -61,8 +61,10 @@ import java.util.Map;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.objectstyle.wolips.io.WOLipsLog;
 import org.objectstyle.wolips.plugin.IWOLipsPluginConstants;
@@ -72,7 +74,6 @@ import org.objectstyle.wolips.preferences.Preferences;
  * @author uli
  */
 public abstract class WOBuilder extends IncrementalProjectBuilder {
-	private IProgressMonitor lastMonitor = null;
 	private static final int TOTAL_WORK_UNITS = 1;
 	/**
 	 * Constructor for WOBuilder.
@@ -87,10 +88,6 @@ public abstract class WOBuilder extends IncrementalProjectBuilder {
 	 */
 	protected IProject[] build(int kind, Map args, IProgressMonitor monitor)
 		throws CoreException {
-		//do not run twice for the same monitor
-		//if(true) return null;
-		if (monitor != null && monitor == lastMonitor)
-			return null;
 		monitor.beginTask(
 			BuildMessages.getString("Build.Monitor.Title"),
 			WOBuilder.TOTAL_WORK_UNITS);
@@ -107,6 +104,10 @@ public abstract class WOBuilder extends IncrementalProjectBuilder {
 				IMarker.TASK,
 				false,
 				IResource.DEPTH_ONE);
+			if(!projectNeedsAnUpdate() && kind != WOBuilder.FULL_BUILD) {
+				monitor.done();
+				return null;
+				} 
 			String aBuildFile = this.buildFile();
 			if (checkIfBuildfileExist(aBuildFile)) {
 				getProject().getFile(aBuildFile).deleteMarkers(
@@ -138,8 +139,23 @@ public abstract class WOBuilder extends IncrementalProjectBuilder {
 			this.handleException(e);
 		}
 		monitor.done();
-		lastMonitor = monitor;
 		return null;
+	}
+	
+	private boolean projectNeedsAnUpdate() {
+		IResourceDelta aDelta = this.getDelta(this.getProject());
+		IResourceDelta[] children = aDelta.getAffectedChildren();
+		for(int i = 0;i < children.length;i++) {
+			if(!isIgnoredPath(children[i].getProjectRelativePath()))
+			return true;
+		}
+		return false;
+	}
+	
+	private boolean isIgnoredPath(IPath aPath) {
+		if(aPath.isEmpty()) return false;
+		String aString = aPath.toString();
+		return (aString.indexOf(".woa")> 0 || aString.indexOf(".framework")> 0 || aString.indexOf("ant.")> 0 || aString.indexOf("PB.project")> 0 || aString.indexOf("make")> 0);
 	}
 	/**
 	 * Method handleException.
