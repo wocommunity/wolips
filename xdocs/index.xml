@@ -9,7 +9,9 @@
     <body>        
         <!-- Welcome section -->
         <section name="Welcome to WOProject">
-        <p>Welcome to WOProject project page.</p>
+        <p>Welcome to WOProject project page. WOProject provides a set of tools to work 
+        with WebObjects 5.1 independent from platform and IDE. 
+        Most of the tasks are based on Jakarta Ant. Also contains class libraries. </p>
  		</section>
     </body>
 </document>

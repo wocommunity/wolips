@@ -168,7 +168,6 @@
     <target name="api" depends="prepare">
         <copy todir="${dist}/doc">
             <fileset dir="doc">
-                <include name="**/*.html"/>
                 <include name="**/LICENSE*"/>
             </fileset>
         </copy>

@@ -29,8 +29,8 @@
 <head>
         <title>$project.getChild("title").getText(): $root.getChild("title").getText()</title>
         <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
-        <meta name="keywords" content="Object Relational Mapping framework for Java database applications, Java Development, Cayenne, OO-to-Relational mapping, Object-Oriented Software, OpenSource Development, WebObjects, EOF, Enterprise Objects Framework">
-        <meta name="description" content="Cayenne is an object-relational mapping Java framework. It is free and OpenSource, developed under apache license.">
+        <meta name="keywords" content="WebObjects, OpenSource Development, Ant, buildtool, Log4J, logging, NSLog, WebObjects 5.1, EOF, Enterprise Objects Framework">
+        <meta name="description" content="Framework for WebObjects 5.1">
         <link href="${relativePath}$css" rel="stylesheet">
 </head>
 
@@ -38,7 +38,7 @@
     <table border="0" cellpadding="0" cellspacing="2" width="100%">
         <tr height="61">
             <td valign="bottom" bgcolor="white"><a href="http://objectstyle.org/"><img border="0" src="${relativePath}$oslogo"></a></td>
-            <td valign="bottom" align="right" bgcolor="white"><a href="http://objectstyle.org/cayenne/"><img border="0" src="${relativePath}$logo"><a></td>
+            <td valign="bottom" align="right" bgcolor="white"><a href="http://objectstyle.org/woproject/"><img border="0" src="${relativePath}$logo"><a></td>
             <td width="70" bgcolor="white"><img src="${relativePath}$spacer" width="70" height="1"></td>
         </tr>
     </table>
