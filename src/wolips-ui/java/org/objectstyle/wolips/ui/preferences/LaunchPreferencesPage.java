@@ -95,6 +95,7 @@ public class LaunchPreferencesPage
 	private Table includeTable;
 	private Button addButton;
 	private Button removeButton;
+	private Button changeButton;
 	private String preferencesKey;
 	
 	private Vector allParameter;
@@ -189,6 +190,25 @@ public class LaunchPreferencesPage
 				removeIgnore();
 			}
 		});
+		changeButton = new Button(buttons, SWT.PUSH);
+		changeButton.setText(PreferencesMessages.getString("LaunchPreferencesPage.change")); //$NON-NLS-1$
+		data = new GridData();
+		data.horizontalAlignment = GridData.FILL;
+		data.heightHint =
+			convertVerticalDLUsToPixels(IDialogConstants.BUTTON_HEIGHT);
+		widthHint =
+			convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
+		data.widthHint =
+			Math.max(
+				widthHint,
+				removeButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x);
+		changeButton.setLayoutData(data);
+		changeButton.setEnabled(false);
+		changeButton.addListener(SWT.Selection, new Listener() {
+			public void handleEvent(Event e) {
+				changeArgument();
+			}
+		});
 		fillTable(Preferences.getLaunchInfoForKey(preferencesKey));
 		Dialog.applyDialogFont(ancestor);
 		return parent;
@@ -270,13 +290,40 @@ public class LaunchPreferencesPage
 	private void removeIgnore() {
 		int[] selection = includeTable.getSelectionIndices();
 		includeTable.remove(selection);
-		allParameter.remove(selection);
-		allArguments.remove(selection);		
+		String remove = "WOLips_Remove_request";
+		
+		for (int i = 0; i < selection.length; i++) {
+			allParameter.setElementAt(remove, i);
+			allArguments.setElementAt(remove, i);
+		}
+		for (int i = 0; i < selection.length; i++) {
+			allParameter.remove(remove);
+			allArguments.remove(remove);
+		}
 	}
+
+	private void changeArgument() {
+		int[] selection = includeTable.getSelectionIndices();
+		if (selection.length != 1)
+			return;
+		int index = selection[0];
+		InputDialog argumentDialog = new InputDialog(getShell(), PreferencesMessages.getString("LaunchPreferencesPage.enterArgumentShort"), Preferences.getString("IgnorePreferencePage.enterPatternLong"), null, null); //$NON-NLS-1$ //$NON-NLS-2$
+		argumentDialog.open();
+		if (argumentDialog.getReturnCode() != InputDialog.OK)
+			return;
+		String argument = argumentDialog.getValue();
+		String parameter = (String) allParameter.elementAt(index);
+		TableItem item = includeTable.getItem(index);
+		item.setText(parameter + " " + argument);
+		allArguments.setElementAt(argument, index);
+	}
+	
 	private void handleSelection() {
 		if (includeTable.getSelectionCount() > 0) {
+			changeButton.setEnabled(true);
 			removeButton.setEnabled(true);
 		} else {
+			changeButton.setEnabled(false);
 			removeButton.setEnabled(false);
 		}
 	}
