@@ -64,9 +64,10 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.jdt.core.IJavaProject;
+import org.objectstyle.wolips.tests.core.Utils;
 
 /**
  * @author ulrich
@@ -76,7 +77,9 @@ import org.eclipse.core.runtime.NullProgressMonitor;
  */
 public abstract class AbstractDataSetTest extends TestCase {
 
-
+	private IProject project = null;
+	private IJavaProject javaProject = null;
+	
 	/**
 	 * Constructor for AbstractResourcesTest.
 	 * @param arg0
@@ -90,55 +93,71 @@ public abstract class AbstractDataSetTest extends TestCase {
 	 */
 	protected void setUp() throws Exception {
 		super.setUp();
-	}
+		try {
+			project = Utils.CreateProject(AbstractDataSetTest.class.getName());
+			javaProject = Utils.CreateJavaProject(AbstractDataSetTest.class.getName()
+						+ "Java");
+		} catch (CoreException e) {
+			assertNull("Project creation shouldnt throw an Exception",
+					e);
+		}
+		}
 
 	/*
 	 * @see TestCase#tearDown()
 	 */
 	protected void tearDown() throws Exception {
 		super.tearDown();
+		try {
+			project.delete(false, new NullProgressMonitor());
+			javaProject.getProject().delete(false,
+						new NullProgressMonitor());
+		} catch (CoreException e) {
+			assertNull("Project deletion shouldnt throw an exception",
+					e);
+		}
 	}
-
+	
 	protected void assertTypeAndExtensionForFile(int type, String extension) {
 		int newType = DataSetsPlugin.getDefault().getAssociatedType(DataSetsPlugin.API_EXTENSION);
 		Assert.assertEquals("type does not match", newType, type);
-		AbstractDataSetTest.assertFileType(type, extension);
+		this.assertFileType(type, extension);
 	}
 	
-	protected static void assertTypeAndExtensionForFolder(int type, String extension) {
+	protected void assertTypeAndExtensionForFolder(int type, String extension) {
 		int newType = DataSetsPlugin.getDefault().getAssociatedType(DataSetsPlugin.API_EXTENSION);
 		Assert.assertEquals("type does not match", newType, type);
-		AbstractDataSetTest.assertFolderType(type, extension);
+		this.assertFolderType(type, extension);
 	}
 	
-	private static void assertFileType(int type, String extension) {
-		IDataSet dataSet = AbstractDataSetTest.getDataSet(AbstractDataSetTest.file(extension));
+	private void assertFileType(int type, String extension) {
+		IDataSet dataSet = this.getDataSet(this.file(extension));
 		Assert.assertNotNull("getResource should not return null for: " + extension , dataSet);
 		Assert.assertEquals("the dataset should return the same type", type, dataSet.getType());
 	}
 	
-	private static void assertFolderType(int type, String extension) {
-		IDataSet dataSet = AbstractDataSetTest.getDataSet(AbstractDataSetTest.folder(extension));
+	private void assertFolderType(int type, String extension) {
+		IDataSet dataSet = this.getDataSet(this.folder(extension));
 		Assert.assertNotNull("getResource should not return null for: " + extension , dataSet);
 		Assert.assertEquals("the dataset should return the same type", type, dataSet.getType());
 	}
 	
-	private static IDataSet getDataSet(IResource resource) {
+	private IDataSet getDataSet(IResource resource) {
 		return DataSetsPlugin.getDefault().getDataSet(resource);
 	}
 	
-	private static IFile file(String string) {
-		IFile file = AbstractDataSetTest.getProject().getFile("foo." + string);
+	private IFile file(String string) {
+		IFile file = project.getFile("foo." + string);
 		try {
 			file.create(new StringBufferInputStream(""), false, new NullProgressMonitor());
 		} catch (CoreException e) {
-			Assert.assertNull("Project creation should not throw an exception", e);
+			Assert.assertNull("file creation should not throw an exception", e);
 		}
 		return file;
 	}
 
-	private static IFolder folder(String string) {
-		IFolder folder = AbstractDataSetTest.getProject().getFolder("foo." + string);
+	private IFolder folder(String string) {
+		IFolder folder =project.getFolder("foo." + string);
 		try {
 			folder.create(false, false, new NullProgressMonitor());
 		} catch (CoreException e) {
@@ -147,15 +166,4 @@ public abstract class AbstractDataSetTest extends TestCase {
 		return folder;
 	}
 
-	private static IProject getProject() {
-		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(AbstractDataSetTest.class.getName());
-		if(!project.exists()) {
-			try {
-				project.create(new NullProgressMonitor());
-			} catch (CoreException e) {
-				Assert.assertNull("Project creation should not throw an exception", e);
-			}
-		}
-		return project;
-	}
 }

@@ -11,6 +11,7 @@
 		<project>org.objectstyle.wolips.launching</project>
 		<project>org.objectstyle.wolips.projectbuild</project>
 		<project>org.objectstyle.wolips.support</project>
+		<project>org.objectstyle.wolips.tests.core</project>
 		<project>org.objectstyle.wolips.ui</project>
 		<project>org.objectstyle.wolips.wizards</project>
 		<project>org.objectstyle.wolips.wounit</project>

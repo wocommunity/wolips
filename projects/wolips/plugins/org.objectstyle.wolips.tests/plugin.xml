@@ -2,7 +2,7 @@
 <?eclipse version="3.0"?>
 <plugin
    id="org.objectstyle.wolips.tests"
-   name="%WOLipsTestsName"
+   name="WOLips Tests"
    version="1.0.6"
    provider-name="objectstyle.org"
    class="org.objectstyle.wolips.tests.WOLipsTestsPlugin">
@@ -13,6 +13,7 @@
       </library>
    </runtime>
    <requires>
+      <import plugin="org.objectstyle.wolips.tests.core"/>
       <import plugin="org.objectstyle.wolips"/>
       <import plugin="org.objectstyle.wolips.datasets"/>
       <import plugin="org.junit"/>
