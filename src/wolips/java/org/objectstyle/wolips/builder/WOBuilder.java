@@ -125,7 +125,8 @@ public abstract class WOBuilder extends IncrementalProjectBuilder {
 				antRunner().setBuildFileLocation(getProject().getFile(aBuildFile).getLocation().toOSString());
 				//if we dont get a logger the stuff goes to the console
 				try {
-					antRunner.addBuildLogger(ANT_LOGGER_CLASS);
+					Class a = Class.forName(WOBuilder.ANT_LOGGER_CLASS);
+					antRunner.addBuildLogger(WOBuilder.ANT_LOGGER_CLASS);
 				}
 				catch (Exception aLoggerException) {
 					WOLipsPlugin.log(aLoggerException);				
