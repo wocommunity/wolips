@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
-<fragment
+<plugin
    id="org.objectstyle.wolips.launching"
-   name="%WOLips.launching.fragmentName"
+   name="WOLips Launching"
    version="1.0.6"
-   provider-name="%WOLips.providerName"
-   plugin-id="org.objectstyle.wolips"
+   provider-name="objectstyle.org"
    plugin-version="1.0.6"
    match="compatible">
 
@@ -17,6 +16,7 @@
    </runtime>
 
    <requires>
+      <import plugin="org.objectstyle.wolips"/>
       <import plugin="org.eclipse.jdt.debug.ui"/>
       <import plugin="org.eclipse.core.runtime.compatibility"/>
    </requires>
@@ -102,4 +102,4 @@
             id="org.objectstyle.wolips.launching.WORuntimeClasspathProvider">
       </runtimeClasspathEntryResolver>
    </extension>
-</fragment>
+</plugin>
