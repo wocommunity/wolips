@@ -73,6 +73,9 @@ public class Environment {
 	 * The String NEXT_ROOT.
 	 */
 	public static final String NEXT_ROOT = "NEXT_ROOT";
+	private static Properties envVars;
+	private static String nextRoot;
+	private static String foundationJarPath;
 	
 	/**
 	 * Constructor for Environment.
@@ -82,12 +85,14 @@ public class Environment {
 	}
 	
 	/**
+	 * The values are cached.
 	 * @return environment variables as Properties.
 	 * @throws Exception
 	 */
 	public static Properties getEnvVars() throws Exception {
+		if(envVars != null) return envVars;
   		Process p = null;
-  		Properties envVars = new Properties();
+  		Environment.envVars = new Properties();
  		Runtime r = Runtime.getRuntime();
   		String OS = System.getProperty("os.name").toLowerCase();
   		if (OS.indexOf("windows 9") > -1) {
@@ -105,51 +110,57 @@ public class Environment {
   			int idx = line.indexOf( '=' );
    			String key = line.substring( 0, idx );
   			String value = line.substring( idx+1 );
-   			envVars.setProperty( key, value );
+   			Environment.envVars.setProperty( key, value );
    		}
-  	return envVars;
+  	return Environment.envVars;
   }
   
   /**
    * @return String with path to the foundation.jar
    */
   public static String foundationJarPath() {
-  	String aPath = null;
+  	if(foundationJarPath != null) return foundationJarPath;
   	try {
-		Properties aEnv = Environment.getEnvVars();
-		if(aEnv.containsKey(Environment.NEXT_ROOT)) aPath = aEnv.getProperty(Environment.NEXT_ROOT); 
-		if(aPath == null) aPath = "file:///System/Library/Frameworks/JavaFoundation.framework/Resources/Java/javafoundation.jar";
-		else aPath = "file:///" + FileStringScanner.replace(aPath, "/", "\\") + "\\Library\\Frameworks\\JavaFoundation.framework\\Resources\\Java\\javafoundation.jar";
-  	}
+		if(Environment.isNextRootSet())
+			foundationJarPath = "file:///" + 
+			FileStringScanner.replace(Environment.nextRoot(), "/", "\\") +
+			"\\Library\\Frameworks\\JavaFoundation.framework\\Resources\\Java\\javafoundation.jar"; 
+		else
+			foundationJarPath = "file:///System/Library/Frameworks/JavaFoundation.framework/Resources/Java/javafoundation.jar";
+	}
   	catch (Exception anException) {
   		WOLipsPlugin.log(anException);
   	}
-  	return aPath;
+  	return foundationJarPath;
   }
 
 	/**
 	 * @return Returns the NEXT_ROOT
 	 */
 	public static String nextRoot() {
+		if(Environment.nextRoot != null) return Environment.nextRoot;
 		try {
 			Properties aEnv = Environment.getEnvVars();
-			if(aEnv.containsKey(Environment.NEXT_ROOT)) return aEnv.getProperty(Environment.NEXT_ROOT);
+			if(aEnv.containsKey(Environment.NEXT_ROOT)) {
+				Environment.nextRoot = aEnv.getProperty(Environment.NEXT_ROOT);
+				return Environment.nextRoot;
+			}
 		}
-  	catch (Exception anException) {
-  		WOLipsPlugin.log(anException);
+  		catch (Exception anException) {
+  			WOLipsPlugin.log(anException);
+  		}
+  		Environment.nextRoot = "/System";
+  		return Environment.nextRoot;
   	}
-  	return "/System";
-  }
   
-  public static boolean isNextRootSet() {
-  	try {
-			Properties aEnv = Environment.getEnvVars();
-			if(aEnv.containsKey(Environment.NEXT_ROOT)) return true;
+  	public static boolean isNextRootSet() {
+  		try {
+			if(Environment.getEnvVars().containsKey(Environment.NEXT_ROOT)) return true;
 		}
-  	catch (Exception anException) {
-  		WOLipsPlugin.log(anException);
+  		catch (Exception anException) {
+  			WOLipsPlugin.log(anException);
+  		}
+  		return false;
   	}
-  	return false;
-  }
   	
 }
