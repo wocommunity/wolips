@@ -56,12 +56,9 @@
 package org.objectstyle.wolips.wizards;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.objectstyle.wolips.ant.runner.RunAnt;
-import org.objectstyle.wolips.datasets.resources.IWOLipsModel;
 import org.objectstyle.wolips.templateengine.TemplateDefinition;
 import org.objectstyle.wolips.templateengine.TemplateEngine;
 import org.objectstyle.wolips.templateengine.TemplateEnginePlugin;
@@ -110,7 +107,7 @@ public class WOApplicationWizard extends AbstractProjectWizard {
 				File xcode = new File(path + File.separator + projectName
 						+ ".xcode");
 				xcode.mkdirs();
-				project.close(nullProgressMonitor);
+				//project.close(nullProgressMonitor);
 				TemplateEngine templateEngine = new TemplateEngine();
 				try {
 					templateEngine.init();
@@ -206,10 +203,10 @@ public class WOApplicationWizard extends AbstractProjectWizard {
 								+ File.separator + projectName + ".xcode",
 						"project.pbxproj", "project.pbxproj"));
 				templateEngine.run(nullProgressMonitor);
-				project.open(nullProgressMonitor);
-				RunAnt runAnt = new RunAnt();
-				runAnt.asAnt(path + File.separator
-						+ IWOLipsModel.DEFAULT_BUILD_FILENAME, null, null);
+				//project.open(nullProgressMonitor);
+				//RunAnt runAnt = new RunAnt();
+				//runAnt.asAnt(path + File.separator
+				//		+ IWOLipsModel.DEFAULT_BUILD_FILENAME, null, null);
 				project.refreshLocal(IResource.DEPTH_INFINITE,
 						nullProgressMonitor);
 			} catch (Exception e) {
