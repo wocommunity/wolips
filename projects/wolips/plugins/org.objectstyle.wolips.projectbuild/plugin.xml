@@ -28,6 +28,7 @@
       <import plugin="org.eclipse.core.variables"/>
       <import plugin="org.objectstyle.wolips.commons"/>
       <import plugin="org.objectstyle.wolips.preferences"/>
+      <import plugin="org.eclipse.debug.ui"/>
    </requires>
 
 
@@ -78,8 +79,8 @@
    <extension
          point="org.eclipse.ui.propertyPages">
       <page
-            objectClass="org.eclipse.core.resources.IProject"
             adaptable="true"
+            objectClass="org.eclipse.core.resources.IProject"
             name="WOLips build"
             class="org.objectstyle.wolips.projectbuild.natures.ProjectNaturePage"
             id="org.objectstyle.wolips.projectbuild.natures.ProjectNaturePage">
@@ -89,6 +90,5 @@
          </filter>
       </page>
    </extension>
-
 
 </plugin>

@@ -49,7 +49,7 @@
  */
 package org.objectstyle.wolips.projectbuild.builder;
 import java.util.Map;
-import org.eclipse.ant.core.AntCorePlugin;
+
 import org.eclipse.ant.core.AntRunner;
 import org.eclipse.ant.internal.ui.launchConfigurations.IAntLaunchConfigurationConstants;
 import org.eclipse.ant.internal.ui.model.IAntUIConstants;
@@ -69,14 +69,15 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
+import org.eclipse.debug.ui.IDebugUIConstants;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.jdt.launching.IVMInstall;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.externaltools.internal.model.IExternalToolConstants;
-import org.objectstyle.wolips.preferences.Preferences;
 import org.objectstyle.wolips.datasets.adaptable.Project;
 import org.objectstyle.wolips.datasets.resources.IWOLipsModel;
+import org.objectstyle.wolips.preferences.Preferences;
 import org.objectstyle.wolips.projectbuild.ProjectBuildPlugin;
 import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 /**
@@ -85,20 +86,11 @@ import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 public class WOAntBuilder extends IncrementalProjectBuilder {
 	private static final String MAIN_TYPE_NAME = "org.eclipse.ant.internal.ui.antsupport.InternalAntRunner";
 	private static final int TOTAL_WORK_UNITS = 1;
-	private String informUserString = "WOLips: "
-			+ "To avoid frequent crashes don't forget to install the patched org.eclipse.core.ant plugin. "
-			+ "It's available as a separate download and from the optional folder in the download.";
 	/**
 	 * Constructor for WOBuilder.
 	 */
 	public WOAntBuilder() {
 		super();
-	}
-	private boolean isPatchInstalled() {
-		//TODO: No check needed ant runs in a external vm
-		String string = AntCorePlugin.getPlugin().getDescriptor()
-				.getProviderName();
-		return string.endsWith("objectstyle.org");
 	}
 	/**
 	 * Runs the build with the ant runner.
@@ -121,9 +113,6 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 		}
 		String aBuildFile = null;
 		try {
-			getProject().deleteMarkers(
-					ProjectBuildPlugin.MARKER_TASK_GENERIC, false,
-					IResource.DEPTH_ONE);
 			if (!projectNeedsAnUpdate()
 					&& kind != IncrementalProjectBuilder.FULL_BUILD) {
 				monitor.done();
@@ -158,17 +147,6 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 	 */
 	private void execute(IProgressMonitor monitor, String aBuildFile)
 			throws Exception {
-		if (!this.isPatchInstalled()) {
-			IMarker aMarker = null;
-			try {
-				aMarker = this.getBuildfileMarker();
-				aMarker.setAttribute(IMarker.MESSAGE, informUserString);
-			} catch (Exception e) {
-				ProjectBuildPlugin.getDefault().getPluginLogger().log(e);
-			} finally {
-				aMarker = null;
-			}
-		}
 		//RunAnt runAnt = new RunAnt();
 		//if (projectNeedsClean())
 		//TODO:handle clean
@@ -390,7 +368,7 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 			//config= ExternalToolMigration.migrateRunInBackground(config);
 			ILaunch launch = config.launch(ILaunchManager.RUN_MODE, monitor);
 			ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
-			manager.removeLaunch(launch);	
+			//manager.removeLaunch(launch);	
 		} finally {
 			config = null;
 		}
@@ -451,6 +429,7 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 		workingCopy.setAttribute("org.eclipse.ui.externaltools.ATTR_SHOW_CONSOLE", false);
 		workingCopy.setAttribute("org.eclipse.debug.ui.ATTR_LAUNCH_IN_BACKGROUND", false);
 		workingCopy.setAttribute("org.eclipse.ui.externaltools.ATTR_CAPTURE_OUTPUT", false);
+		workingCopy.setAttribute(IDebugUIConstants.ATTR_PRIVATE, true);
 		return workingCopy.doSave();
 	}
 
