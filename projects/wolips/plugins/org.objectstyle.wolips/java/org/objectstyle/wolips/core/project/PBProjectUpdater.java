@@ -59,9 +59,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.CoreException;
@@ -108,8 +110,42 @@ public final class PBProjectUpdater {
 		if (findContainer.findMember(IWOLipsPluginConstants.PROJECT_FILE_NAME)
 			!= null)
 			projectContainer = findContainer;
-		getPBProject(projectContainer);
+		this.removeProjectMarker();
+		this.getPBProject(projectContainer);
 		//projectContainer = aProjectContainer;
+	}
+	private final void removeProjectMarker() {
+		try {
+			IFile aFile =
+				projectContainer.getFile(
+					new Path(IWOLipsPluginConstants.PROJECT_FILE_NAME));
+			if (aFile.exists())
+				aFile.deleteMarkers(
+					IMarker.PROBLEM,
+					false,
+					IResource.DEPTH_ONE);
+		} catch (Exception e) {
+			WOLipsLog.log(e);
+		}
+	}
+	private final void addProjectMarker() {
+		try {
+			IFile aFile =
+				projectContainer.getFile(
+					new Path(IWOLipsPluginConstants.PROJECT_FILE_NAME));
+			if (aFile.exists()) {
+				IMarker marker = aFile.createMarker(IMarker.PROBLEM);
+				marker.setAttribute(
+					IMarker.MESSAGE,
+					"Error while updating PB.project");
+			}
+		} catch (Exception e) {
+			WOLipsLog.log(e);
+		}
+	}
+	private final void handleException(Exception exception) {
+		this.addProjectMarker();
+		WOLipsLog.log(exception);
 	}
 	/**
 	 * Method instance.
@@ -163,7 +199,7 @@ public final class PBProjectUpdater {
 				}
 			}
 		} catch (Exception anException) {
-			WOLipsLog.log(anException);
+			this.handleException(anException);
 		} finally {
 			file = null;
 		}
@@ -191,7 +227,7 @@ public final class PBProjectUpdater {
 			if (sync)
 				syncPBProjectWithProject();
 		} catch (Exception anException) {
-			WOLipsLog.log(anException);
+			this.handleException(anException);
 		} finally {
 			aFile = null;
 		}
@@ -217,7 +253,7 @@ public final class PBProjectUpdater {
 					res.refreshLocal(IResource.DEPTH_ZERO, null);
 			} catch (CoreException up) {
 				// no idea how to handle this case, ignore for now (and log, of course
-				WOLipsLog.log(up);
+				this.handleException(up);
 			}
 		}
 	}
@@ -231,7 +267,7 @@ public final class PBProjectUpdater {
 			this.syncProjectName();
 			_saveChanges();
 		} catch (Exception ioex) {
-			WOLipsLog.log(ioex);
+			this.handleException(ioex);
 		}
 	}
 	/**
@@ -245,7 +281,7 @@ public final class PBProjectUpdater {
 		try {
 			resources = projectContainer.members();
 		} catch (Exception anException) {
-			WOLipsLog.log(anException);
+			this.handleException(anException);
 			aClassesList = null;
 			aWOComponentsList = null;
 			aWOAppResourcesList = null;
@@ -315,24 +351,19 @@ public final class PBProjectUpdater {
 					aWOAppResourcesList.add(aPath);
 			}
 		} catch (Exception anException) {
-			WOLipsLog.log(anException);
+			this.handleException(anException);
 		}
 	}
 	/**
 	 * Method syncProjectName.
 	 */
 	public void syncProjectName() {
-		WOLipsLog.log(
-			"projectContainer.getName() + pbProject.getProjectName(): "
-				+ projectContainer.getName()
-				+ " "
-				+ pbProject.getProjectName());
 		if (!projectContainer.getName().equals(pbProject.getProjectName())) {
 			pbProject.setProjectName(projectContainer.getName());
 			try {
 				this._saveChanges();
 			} catch (IOException e) {
-				WOLipsLog.log(e);
+				this.handleException(e);
 			}
 		}
 	}
@@ -439,7 +470,7 @@ public final class PBProjectUpdater {
 		try {
 			_saveChanges();
 		} catch (IOException e) {
-			WOLipsLog.log(e);
+			this.handleException(e);
 		}
 	}
 	/**
@@ -540,7 +571,7 @@ public final class PBProjectUpdater {
 			}
 			_saveChanges();
 		} catch (IOException e) {
-			WOLipsLog.log(e);
+			this.handleException(e);
 		}
 	}
 	/**
@@ -563,10 +594,10 @@ public final class PBProjectUpdater {
 			}
 		}
 		try {
-			if(saveRequired)
-			_saveChanges();
+			if (saveRequired)
+				_saveChanges();
 		} catch (IOException e) {
-			WOLipsLog.log(e);
+			this.handleException(e);
 		}
 	}
 	/**
@@ -589,10 +620,10 @@ public final class PBProjectUpdater {
 			}
 		}
 		try {
-			if(saveRequired)
-			_saveChanges();
+			if (saveRequired)
+				_saveChanges();
 		} catch (IOException e) {
-			WOLipsLog.log(e);
+			this.handleException(e);
 		}
 	}
 	/**
