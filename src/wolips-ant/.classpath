@@ -1,7 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-    <classpathentry kind="src" path="java"/>
-    <classpathentry kind="src" path="/wolips-launching"/>
-    <classpathentry kind="src" path="/jMechanic"/>
     <classpathentry kind="output" path="bin"/>
 </classpath>

@@ -3,7 +3,6 @@
 	<name>wolips-profiling</name>
 	<comment></comment>
 	<projects>
-		<project>jMechanic</project>
 		<project>wolips-launching</project>
 	</projects>
 	<buildSpec>
