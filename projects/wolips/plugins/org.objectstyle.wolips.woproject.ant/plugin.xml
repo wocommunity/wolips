@@ -63,6 +63,12 @@
             class="org.objectstyle.woproject.ant.WOPBXBuild"
             eclipseRuntime="false">
       </antTask>
+      <antTask
+            library="lib/woproject.jar"
+            name="eomodel"
+            class="org.objectstyle.woproject.ant.EOModel"
+            eclipseRuntime="false">
+      </antTask>
    </extension>
 
 </plugin>

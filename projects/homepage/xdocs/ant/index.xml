@@ -20,6 +20,8 @@
  				<li><a href="wogen.html">WOGen</a>: Generates and maintains EOEnterprsieObjects
  				based on EOModel. Ant-based analog of EOGenerator, using "generation gap" design pattern.
  				</li>
+ 				<li><a href="eomodel.html">EOModel</a>: Maintains EOModel.
+ 				</li>
  				<li><a href="pbxindex.html">PBIndex</a>: Maintains
  				PB.project file needed for WebObjects tools, even when ProjectBuilderWO is not used.</li>
 				<li><i><font color="red">[New]</font></i> <a href="pbxindex.html">PBXIndex</a>: Maintains
