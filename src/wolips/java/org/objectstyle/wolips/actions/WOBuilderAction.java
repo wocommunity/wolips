@@ -102,29 +102,15 @@ public class WOBuilderAction implements IActionDelegate {
 		Object obj = (((IStructuredSelection) selection).getFirstElement());
 		if ( obj != null && obj instanceof Project ) {
 			project = ((Project)obj).getProject();
-			try {
-				ICommand[] nids = project.getDescription().getBuildSpec();
-				boolean isWOBuilderInstalled = false;
-				for (int i = 0; i < nids.length; i++) {
-					if ( ( nids[i].getBuilderName().equals(ProjectHelper.WOAPPLICATION_BUILDER_ID)) || ( nids[i].getBuilderName().equals(ProjectHelper.WOFRAMEWORK_BUILDER_ID)) ){
-						isWOBuilderInstalled = true;	
-					}		
-				}	
 				if ( action.getId().equals("WOFrameworkBuilder.Set.ID") ) {
-					action.setEnabled(!isWOBuilderInstalled);
+					action.setEnabled(!ProjectHelper.isWOFwBuilderInstalled(project));
 				}
 				if ( action.getId().equals("WOApplicationBuilder.Set.ID") ) {
-					action.setEnabled(!isWOBuilderInstalled);
+					action.setEnabled(!ProjectHelper.isWOAppBuilderInstalled(project));
 				}
 				if ( action.getId().equals("WOBuilder.Remove.ID") ) {
-					action.setEnabled(isWOBuilderInstalled);
+					action.setEnabled(ProjectHelper.isWOAppBuilderInstalled(project) || ProjectHelper.isWOFwBuilderInstalled(project));
 				}
-				
-			}
-		
-			catch(Exception ex) {
-				System.out.println(ex.getMessage());
-			}
 		}
 		else {
 			action.setEnabled(false);
