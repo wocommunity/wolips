@@ -59,7 +59,8 @@ import java.io.File;
 import java.util.*;
 
 import org.apache.tools.ant.*;
-import org.apache.tools.ant.types.*;
+import org.apache.tools.ant.types.FilterSet;
+import org.apache.tools.ant.types.FilterSetCollection;
 
 /**
  * Subclass of ProjectFormat that defines file copying 
@@ -70,8 +71,8 @@ import org.apache.tools.ant.types.*;
 public class AppFormat extends ProjectFormat {
 	protected HashMap templateMap = new HashMap();
 	protected HashMap filterMap = new HashMap();
-	protected String unixFrameworks;
-	protected String winFrameworks;
+	protected String appPath;
+	protected String frameworkPaths;
 
 	/** 
 	 * Creates new AppFormat and initializes it with the name
@@ -87,7 +88,7 @@ public class AppFormat extends ProjectFormat {
 	 * maps them to templates and filters. 
 	 */
 	private void prepare() {
-		// prepareFrameworks();
+		preparePaths();
 
 		prepareWindows();
 		prepareUnix();
@@ -101,64 +102,63 @@ public class AppFormat extends ProjectFormat {
 		createMappings(infoFile, "woapp/Info.plist", infoFilter(null));
 	}
 
-	/** 
-	 * Extracts a list of included frameworks from the application 
-	 * task FrameworkSet.
+	/**
+	 * Prepares all path values needed for substitutions.
 	 */
-	private void prepareFrameworks() {
+	private void preparePaths() {
+		appPath = buildAppPath();
+		frameworkPaths = buildFrameworkPaths();
+	}
+
+	/**
+	 * Returns a String that consists of paths to the aplication jar. 
+	 * File separator used is platform dependent
+	 * and may need to be changed when creating files for multiple 
+	 * platforms.
+	 */
+	protected String buildAppPath() {
+		String name = getApplicatonTask().getName().toLowerCase() + ".jar";
+		return "APPROOT"
+			+ File.separator
+			+ "Resources"
+			+ File.separator
+			+ "Java"
+			+ File.separator
+			+ name;
+	}
+
+	/** 
+	 * Returns a String that consists of paths of all framework's jar's
+	 * needed by the application. File separator used is platform dependent
+	 * and may need to be changed when creating files for multiple 
+	 * platforms.
+	 */
+	protected String buildFrameworkPaths() {
+		StringBuffer buf = new StringBuffer();
+
 		List frameworkSets = getApplicatonTask().getFrameworkSets();
 		int size = frameworkSets.size();
-		
-		if (size > 0) {
-			
-			StringBuffer unixBuf = new StringBuffer();
-			StringBuffer winBuf = new StringBuffer();
-			
-			// depending on where the build is done,
-			// we will need to substitute either forward
-			// slashes for windows or backslashes for UNIX
-			
-			// newline character is always '\n' 
-			
-			StringBuffer subst = null;
-			StringBuffer noSubst = null;
-			char substFrom = 0;
-			char substTo = 0;
+		for (int i = 0; i < size; i++) {
+			FrameworkSet fs = (FrameworkSet) frameworkSets.get(i);
+			String root = fs.getRootPrefix();
+			try {
+				DirectoryScanner ds = fs.getDirectoryScanner(task.getProject());
+				String[] dirs = ds.getIncludedDirectories();
 
-			
-			if(System.getProperty("file.separator") == "/") {
-				subst = winBuf;
-				noSubst = unixBuf;
-				substFrom = '/';
-				substTo = '\\';
-			}
-			else {
-				subst = unixBuf;
-				noSubst = winBuf;
-				substFrom = '\\';
-				substTo = '/';
-			}
-			
-			for (int i = 0; i < size; i++) {
-				FileSet fs = (FileSet) frameworkSets.get(i);
-				try {
-					DirectoryScanner ds =
-						fs.getDirectoryScanner(task.getProject());
-					String[] dirs = ds.getIncludedDirectories();
-					for (int j = 0; j < dirs.length; j++) {
-						System.out.println("Dir found: " + dirs[i]);
-						
-					}
-					
-				} catch (BuildException be) {
-					// directory doesn't exist or is not readable
-					log(be.getMessage(), Project.MSG_WARN);
+				for (int j = 0; j < dirs.length; j++) {
+					// using Windows line ending, since all templates have it anyway.
+					// Please report any problems with that on other platforms
+					buf.append(root).append(File.separatorChar).append(
+						dirs[i]).append(
+						"\r\n");
 				}
+			} catch (BuildException be) {
+				// directory doesn't exist or is not readable
+				log(be.getMessage(), Project.MSG_WARN);
 			}
-			
-			unixFrameworks = unixBuf.toString();
-			winFrameworks = winBuf.toString();
 		}
+
+		return buf.toString();
 	}
 
 	/** 
@@ -234,8 +234,17 @@ public class AppFormat extends ProjectFormat {
 	private FilterSet classpathFilter(char pathSeparator) {
 		FilterSet filter = new FilterSet();
 
-		filter.addFilter("APP_JAR", "# App JAR goes here...");
-		filter.addFilter("FRAMEWORK_JAR", "# Framework JAR goes here...");
+		if (pathSeparator == File.separatorChar) {
+			filter.addFilter("APP_JAR", appPath);
+			filter.addFilter("FRAMEWORK_JAR", frameworkPaths);
+		} else {
+			filter.addFilter(
+				"APP_JAR",
+				appPath.replace(File.separatorChar, pathSeparator));
+			filter.addFilter(
+				"FRAMEWORK_JAR",
+				frameworkPaths.replace(File.separatorChar, pathSeparator));
+		}
 
 		return filter;
 	}

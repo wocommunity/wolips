@@ -80,6 +80,22 @@ public class FrameworkSet extends FileSet {
 		return root;
 	}
 
+	/** 
+	 * Returns a symbolic root prefix that can be used in
+	 * classpath files (like CLASSPATH.TXT).
+	 */
+	public String getRootPrefix() throws BuildException {
+		if (isWORoot()) {
+			return "WOROOT";
+		} else if (isHomeRoot()) {
+			return "HOMEROOT";
+		} else if (isLocalRoot()) {
+			return "LOCALROOT";
+		} else {
+			throw new BuildException("Unrecognized or indefined root: " + root);
+		}
+	}
+
 	public boolean isWORoot() {
 		return WOPropertiesHandler.WO_ROOT.equals(root);
 	}
@@ -108,7 +124,7 @@ public class FrameworkSet extends FileSet {
 	 * that can be "wo.homeroot", "wo.woroot", "wo.localroot". Throws
 	 * BuildException if an invalid root is specified.
 	 */
-	public void setRoot(String root) {
+	public void setRoot(String root) throws BuildException {
 		this.root = root;
 
 		WOPropertiesHandler propsHandler =
@@ -121,7 +137,7 @@ public class FrameworkSet extends FileSet {
 		} else if (isHomeRoot()) {
 			super.setDir(new File(propsHandler.getHomeRoot()));
 		} else {
-			throw new BuildException("Unrecognized root specifier: " + root);
+			throw new BuildException("Unrecognized root: " + root);
 		}
 	}
 }
