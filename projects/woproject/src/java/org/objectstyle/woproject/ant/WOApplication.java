@@ -80,485 +80,500 @@ import org.objectstyle.woenvironment.env.WOEnvironment;
  * @author Andrei Adamchik
  */
 public class WOApplication extends WOTask {
-	private final String[] stdFrameworkNames =
-		new String[] {
-			"JavaWebObjects",
-			"JavaWOExtensions",
-			"JavaEOAccess",
-			"JavaEOControl",
-			"JavaFoundation",
-			"JavaJDBCAdaptor",
-			"JavaXML" };
 
-	protected ArrayList frameworkSets = new ArrayList();
-	protected ArrayList otherClasspathSets = new ArrayList();
-	protected boolean stdFrameworks = true;
-	protected boolean embedStdFrameworks = false;
-	private WOEnvironment woEnvironment;
-	//was "gu+x"
-	protected String chmod = "750";
-	protected String jvmOptions = "";
+    private final String[] stdFrameworkNames = new String[] {
+            "JavaWebObjects", "JavaWOExtensions", "JavaEOAccess",
+            "JavaEOControl", "JavaFoundation", "JavaJDBCAdaptor", "JavaXML"
+    };
 
-	//web.xml stuff
-	protected boolean webXML = false;
-	protected String webXML_WOROOT = null;
-	protected String webXML_LOCALROOT = null;
-	protected String webXML_WOAINSTALLROOT = null;
-	protected String webXML_WOAppMode = null;
-	protected String webXML_WOtaglib = null;
+    protected ArrayList frameworkSets = new ArrayList();
 
-	public void release() {
-		super.release();
-		frameworkSets = null;
-		otherClasspathSets = null;
-		woEnvironment = null;
-	}
+    protected ArrayList otherClasspathSets = new ArrayList();
 
-	public String getPrincipalClass() {
-		String aPrincipalClass = super.getPrincipalClass();
-		if (aPrincipalClass == null) {
-			aPrincipalClass = "Application";
-		}
-		return aPrincipalClass;
-	}
+    protected boolean stdFrameworks = true;
 
-	/** 
-	 * Runs WOApplication task. Main worker method that would validate
-	 * all task settings and create a WOApplication.
-	 */
-	public void execute() throws BuildException {
-		super.execute();
-		validateAttributes();
+    protected boolean embedStdFrameworks = false;
 
-		log("Installing " + name + " in " + destDir);
-		createDirectories();
-		if (hasClasses()) {
-			jarClasses();
-		}
-		if (hasLib()) {
-			copyLibs();
-		}
-		if (hasResources()) {
-			copyResources();
-		}
-		if (hasWs()) {
-			copyWsresources();
-		}
-		if (hasEmbeddedFrameworks()) {
-			copyEmbeddedFrameworks();
-		}
+    private WOEnvironment woEnvironment;
 
-		// create all needed scripts
-		AppFormat appFormat = new AppFormat(this);
-		if (appFormat.processTemplates()) {
-			// chmod UNIX scripts
-			chmodScripts();
-		}
-		appFormat.release();
-		frameworkSets = new ArrayList();
-		otherClasspathSets = new ArrayList();
-		woEnvironment = null;
-		this.release();
-	}
+    //was "gu+x"
+    protected String chmod = "750";
 
-	/**
-	 * Sets executable flag for all scripts. This is required 
-	 * on UNIX/Mac platforms. On Windows this action is simply ignored.
-	 */
-	protected void chmodScripts() throws BuildException {
-		if (System.getProperty("os.name").toLowerCase().indexOf("win") < 0) {
-			File dir = null;
-			FileSet fs = null;
-			Chmod aChmod = null;
-			try {
-				dir = taskDir();
-				super.log("chmod scripts in " + dir, Project.MSG_VERBOSE);
+    protected String jvmOptions = "";
 
-				fs = new FileSet();
-				fs.setDir(dir);
-				fs.createInclude().setName("**/" + name);
-				fs.createInclude().setName("**/*.sh");
+    //web.xml stuff
+    protected boolean webXML = false;
 
-				aChmod = this.getSubtaskFactory().getChmod();
-				aChmod.setPerm(this.getChmod());
-				aChmod.addFileset(fs);
-				aChmod.execute();
-			} finally {
-				dir = null;
-				fs = null;
-				aChmod = null;
-			}
-		} else {
-			super.log(
-				"'"
-					+ System.getProperty("os.name")
-					+ "' is some kind of windows, skipping chmod.");
-		}
-	}
+    protected String webXML_WOROOT = null;
 
-	/**
-	 * Method copyEmbeddedFrameworks.
-	 * @throws BuildException
-	 */
-	protected void copyEmbeddedFrameworks() throws BuildException {
-		Copy cp = new Copy();
-		cp.setOwningTarget(getOwningTarget());
-		cp.setProject(getProject());
-		cp.setTaskName(getTaskName());
-		cp.setLocation(getLocation());
+    protected String webXML_LOCALROOT = null;
 
-		cp.setTodir(embeddedFrameworksDir());
+    protected String webXML_WOAINSTALLROOT = null;
 
-		// The purpose of this is to create filesets that actually
-		// allow the framework directory to be copied into the
-		// WOApplication directory.  If we didn't do this, we'd
-		// have to append '/' or '/**' to the end of the includes
-		// in the <frameworks> tag.
-		List theFrameworkSets = getFrameworkSets();
-		int size = theFrameworkSets.size();
-                boolean hasSet = false;
-		for (int i = 0; i < size; i++) {
-			FrameworkSet fs = (FrameworkSet) theFrameworkSets.get(i);
+    protected String webXML_WOAppMode = null;
 
-			if (fs.getEmbed() == false) {
-				continue;
-			}
+    protected String webXML_WOtaglib = null;
 
-			File root = fs.getDir(getProject());
-			DirectoryScanner ds = fs.getDirectoryScanner(getProject());
-			String[] dirs = ds.getIncludedDirectories();
+    public void release() {
+        super.release();
+        frameworkSets = null;
+        otherClasspathSets = null;
+        woEnvironment = null;
+    }
 
-			for (int j = 0; j < dirs.length; j++) {
-				String includeName = dirs[j];
+    public String getPrincipalClass() {
+        String aPrincipalClass = super.getPrincipalClass();
+        if (aPrincipalClass == null) {
+            aPrincipalClass = "Application";
+        }
+        return aPrincipalClass;
+    }
 
-				if (includeName.endsWith(".framework") == false) {
-					throw new BuildException("'name' attribute must end with '.framework'");
-				}
+    /**
+     * Runs WOApplication task. Main worker method that would validate all task
+     * settings and create a WOApplication.
+     */
+    public void execute() throws BuildException {
+        super.execute();
+        validateAttributes();
 
-				FileSet newFs = new FileSet();
-				PatternSet.NameEntry include;
+        log("Installing " + name + " in " + destDir);
+        createDirectories();
+        if (hasClasses()) {
+            jarClasses();
+        }
+        if (hasLib()) {
+            copyLibs();
+        }
+        if (hasResources()) {
+            copyResources();
+        }
+        if (hasWs()) {
+            copyWsresources();
+        }
+        if (hasEmbeddedFrameworks()) {
+            copyEmbeddedFrameworks();
+        }
 
-				newFs.setDir(root);
-				include = newFs.createInclude();
-				include.setName(includeName + "/Resources/");
-				include = newFs.createInclude();
-				include.setName(includeName + "/WebServerResources/");
+        // create all needed scripts
+        AppFormat appFormat = new AppFormat(this);
+        if (appFormat.processTemplates()) {
+            // chmod UNIX scripts
+            chmodScripts();
+        }
+        appFormat.release();
+        frameworkSets = new ArrayList();
+        otherClasspathSets = new ArrayList();
+        woEnvironment = null;
+        this.release();
+    }
 
-				cp.addFileset(newFs);
-                                hasSet = true;
-			}
-		}
-                if(hasSet)
-                    cp.execute();
-	}
+    /**
+     * Sets executable flag for all scripts. This is required on UNIX/Mac
+     * platforms. On Windows this action is simply ignored.
+     */
+    protected void chmodScripts() throws BuildException {
+        if (System.getProperty("os.name").toLowerCase().indexOf("win") < 0) {
+            File dir = null;
+            FileSet fs = null;
+            Chmod aChmod = null;
+            try {
+                dir = taskDir();
+                super.log("chmod scripts in " + dir, Project.MSG_VERBOSE);
 
-	/**
-	 * Returns a list of standard frameworks as a FrameworkSet. */
-	public FrameworkSet standardSet() {
-		FrameworkSet set = new FrameworkSet();
-		set.setProject(this.getProject());
-		set.setRoot(
-			new File(
-				this.getWOEnvironment().getWOVariables().systemRoot()
-					+ "/Library/Frameworks"));
+                fs = new FileSet();
+                fs.setDir(dir);
+                fs.createInclude().setName("**/" + name);
+                fs.createInclude().setName("**/*.sh");
 
-		for (int i = 0; i < stdFrameworkNames.length; i++) {
-			String path =
-				//				"Library/Frameworks/" + stdFrameworkNames[i] + ".framework";
-	stdFrameworkNames[i] + ".framework";
-			PatternSet.NameEntry include = set.createInclude();
-			include.setName(path);
-		}
+                aChmod = this.getSubtaskFactory().getChmod();
+                aChmod.setPerm(this.getChmod());
+                aChmod.addFileset(fs);
+                aChmod.execute();
+            }
+            finally {
+                dir = null;
+                fs = null;
+                aChmod = null;
+            }
+        } else {
+            super.log("'" + System.getProperty("os.name")
+                    + "' is some kind of windows, skipping chmod.");
+        }
+    }
 
-		// Force embedding of the standard frameworks.
-		set.setEmbed(embedStdFrameworks);
-		return set;
-	}
+    /**
+     * Method copyEmbeddedFrameworks.
+     * 
+     * @throws BuildException
+     */
+    protected void copyEmbeddedFrameworks() throws BuildException {
+        Copy cp = new Copy();
+        cp.setOwningTarget(getOwningTarget());
+        cp.setProject(getProject());
+        cp.setTaskName(getTaskName());
+        cp.setLocation(getLocation());
 
-	/** 
-	 * Sets a flag indicating that standard frameworks,
-	 * namely JavaWebObjects, JavaWOExtensions, JavaEOAccess, JavaEOControl, 
-	 * JavaFoundation, JavaJDBCAdaptor should be automatically 
-	 * referenced in deployed application.
-	 */
-	public void setStdFrameworks(boolean flag) {
-		stdFrameworks = flag;
-	}
+        cp.setTodir(embeddedFrameworksDir());
 
-	public void setEmbedStdFrameworks(boolean flag) {
-		embedStdFrameworks = flag;
-		// If we request embedding for the standard
-		// frameworks, we certainly want to reference
-		// them.
-		if (flag) {
-			stdFrameworks = true;
-		}
-	}
+        // The purpose of this is to create filesets that actually
+        // allow the framework directory to be copied into the
+        // WOApplication directory. If we didn't do this, we'd
+        // have to append '/' or '/**' to the end of the includes
+        // in the <frameworks> tag.
+        List theFrameworkSets = getFrameworkSets();
+        int size = theFrameworkSets.size();
+        boolean hasSet = false;
+        for (int i = 0; i < size; i++) {
+            FrameworkSet fs = (FrameworkSet) theFrameworkSets.get(i);
 
-	/**
-	 * Returns location where WOApplication is being built up. 
-	 * For WebObjects applications this is a <code>.woa</code> directory.
-	 */
-	protected File taskDir() {
-		return getProject().resolveFile(
-			destDir + File.separator + name + ".woa");
-	}
+            if (fs.getEmbed() == false) {
+                continue;
+            }
 
-	protected File contentsDir() {
-		return new File(taskDir(), "Contents");
-	}
+            File root = fs.getDir(getProject());
+            DirectoryScanner ds = fs.getDirectoryScanner(getProject());
+            String[] dirs = ds.getIncludedDirectories();
 
-	protected File embeddedFrameworksDir() {
-		return new File(contentsDir(), "Frameworks");
-	}
+            for (int j = 0; j < dirs.length; j++) {
+                String includeName = dirs[j];
 
-	protected File resourcesDir() {
-		return new File(contentsDir(), "Resources");
-	}
+                if (includeName.endsWith(".framework") == false) {
+                    throw new BuildException(
+                            "'name' attribute must end with '.framework'");
+                }
 
-	protected File wsresourcesDir() {
-		return new File(contentsDir(), "WebServerResources");
-	}
+                FileSet newFs = new FileSet();
+                PatternSet.NameEntry include;
 
-	protected File wsresourcesDestDir() {
-		File woLocation = new File(webServerDir(), "WebObjects");
-		File appLocation = new File(woLocation, name + ".woa");
-		File contentLocation = new File(appLocation, "Contents");
-		return new File(contentLocation, "WebServerResources");
-	}
+                newFs.setDir(root);
+                include = newFs.createInclude();
+                include.setName(includeName + "/Resources/");
+                include = newFs.createInclude();
+                include.setName(includeName + "/WebServerResources/");
 
-	/**
-	 * @return
-	 */
-	public String getWebXML_LOCALROOT() {
-		return webXML_LOCALROOT;
-	}
+                cp.addFileset(newFs);
+                hasSet = true;
+            }
+        }
+        if (hasSet)
+            cp.execute();
+    }
 
-	/**
-	 * @return
-	 */
-	public String getWebXML_WOAINSTALLROOT() {
-		return webXML_WOAINSTALLROOT;
-	}
+    /**
+     * Returns a list of standard frameworks as a FrameworkSet.
+     */
+    public FrameworkSet standardSet() {
+        FrameworkSet set = new FrameworkSet();
+        set.setProject(this.getProject());
+        set.setDir(new File(this.getWOEnvironment().getWOVariables()
+                .systemRoot()
+                + "/Library/Frameworks"));
 
-	/**
-	 * @return
-	 */
-	public String getWebXML_WOAppMode() {
-		return webXML_WOAppMode;
-	}
+        for (int i = 0; i < stdFrameworkNames.length; i++) {
+            String path =
 
-	/**
-	 * @return
-	 */
-	public String getWebXML_WOROOT() {
-		log(
-			" WOApplication.getWebXML_WOROOT() webXML_WOROOT: "
-				+ webXML_WOROOT,
-			Project.MSG_VERBOSE);
-		return webXML_WOROOT;
-	}
+            stdFrameworkNames[i] + ".framework";
+            PatternSet.NameEntry include = set.createInclude();
+            include.setName(path);
+        }
 
-	/**
-	 * @return
-	 */
-	public String getWebXML_WOtaglib() {
-		return webXML_WOtaglib;
-	}
+        // Force embedding of the standard frameworks.
+        set.setEmbed(embedStdFrameworks);
+        return set;
+    }
 
-	/**
-		 * @return
-		 */
-	public boolean getWebXML() {
-		return webXML;
-	}
+    /**
+     * Sets a flag indicating that standard frameworks, namely JavaWebObjects,
+     * JavaWOExtensions, JavaEOAccess, JavaEOControl, JavaFoundation,
+     * JavaJDBCAdaptor should be automatically referenced in deployed
+     * application.
+     */
+    public void setStdFrameworks(boolean flag) {
+        stdFrameworks = flag;
+    }
 
-	/**
-	 * @param string
-	 */
-	public void setWebXML_LOCALROOT(String string) {
-		webXML_LOCALROOT = string;
-	}
+    public void setEmbedStdFrameworks(boolean flag) {
+        embedStdFrameworks = flag;
+        // If we request embedding for the standard
+        // frameworks, we certainly want to reference
+        // them.
+        if (flag) {
+            stdFrameworks = true;
+        }
+    }
 
-	/**
-	 * @param string
-	 */
-	public void setWebXML_WOAINSTALLROOT(String string) {
-		webXML_WOAINSTALLROOT = string;
-	}
+    /**
+     * Returns location where WOApplication is being built up. For WebObjects
+     * applications this is a <code>.woa</code> directory.
+     */
+    protected File taskDir() {
+        return getProject().resolveFile(
+                destDir + File.separator + name + ".woa");
+    }
 
-	/**
-	 * @param string
-	 */
-	public void setWebXML_WOAppMode(String string) {
-		webXML_WOAppMode = string;
-	}
+    protected File contentsDir() {
+        return new File(taskDir(), "Contents");
+    }
 
-	/**
-	 * @param string
-	 */
-	public void setWebXML_WOROOT(String string) {
-		webXML_WOROOT = string;
-	}
+    protected File embeddedFrameworksDir() {
+        return new File(contentsDir(), "Frameworks");
+    }
 
-	/**
-	 * @param string
-	 */
-	public void setWebXML_WOtaglib(String string) {
-		webXML_WOtaglib = string;
-	}
+    protected File resourcesDir() {
+        return new File(contentsDir(), "Resources");
+    }
 
-	/**
-	 * @param string
-	 */
-	public void setWebXML(boolean value) {
-		webXML = value;
-	}
-	protected boolean hasLib() {
-		return lib.size() > 0;
-	}
+    protected File wsresourcesDir() {
+        return new File(contentsDir(), "WebServerResources");
+    }
 
-	protected boolean hasEmbeddedFrameworks() {
-		List theFrameworkSets = getFrameworkSets();
-		int size = theFrameworkSets.size();
+    protected File wsresourcesDestDir() {
+        File woLocation = new File(webServerDir(), "WebObjects");
+        File appLocation = new File(woLocation, name + ".woa");
+        File contentLocation = new File(appLocation, "Contents");
+        return new File(contentLocation, "WebServerResources");
+    }
 
-		for (int i = 0; i < size; i++) {
-			FrameworkSet fs = (FrameworkSet) theFrameworkSets.get(i);
+    /**
+     * @return
+     */
+    public String getWebXML_LOCALROOT() {
+        return webXML_LOCALROOT;
+    }
 
-			if (fs.getEmbed()) {
-				return true;
-			}
-		}
+    /**
+     * @return
+     */
+    public String getWebXML_WOAINSTALLROOT() {
+        return webXML_WOAINSTALLROOT;
+    }
 
-		return false;
-	}
+    /**
+     * @return
+     */
+    public String getWebXML_WOAppMode() {
+        return webXML_WOAppMode;
+    }
 
-	/**
-	 * Create a nested FrameworkSet.
-	 */
-	public FrameworkSet createFrameworks() {
-		FrameworkSet frameSet = new FrameworkSet();
-		frameworkSets.add(frameSet);
-		return frameSet;
-	}
+    /**
+     * @return
+     */
+    public String getWebXML_WOROOT() {
+        log(
+                " WOApplication.getWebXML_WOROOT() webXML_WOROOT: "
+                        + webXML_WOROOT,
+                Project.MSG_VERBOSE);
+        return webXML_WOROOT;
+    }
 
-	public List getFrameworkSets() {
-		if (stdFrameworks) {
-			ArrayList fullList = new ArrayList(frameworkSets.size() + 1);
-			fullList.add(standardSet());
-			fullList.addAll(frameworkSets);
-			return fullList;
-		} else {
-			return frameworkSets;
-		}
-	}
+    /**
+     * @return
+     */
+    public String getWebXML_WOtaglib() {
+        return webXML_WOtaglib;
+    }
 
-	/**
-	 * Create a nested OtherClasspath.
-	 */
-	public OtherClasspathSet createOtherclasspath() {
-		OtherClasspathSet otherClasspathSet = new OtherClasspathSet();
-		otherClasspathSets.add(otherClasspathSet);
-		return otherClasspathSet;
-	}
+    /**
+     * @return
+     */
+    public boolean getWebXML() {
+        return webXML;
+    }
 
-	/**
-	 * @return List
-	 */
-	public List getOtherClasspath() {
-		return otherClasspathSets;
-	}
-	/**
-	 * @return WOEnvironment
-	 */
-	public WOEnvironment getWOEnvironment() {
-		if (woEnvironment != null)
-			return woEnvironment;
-		woEnvironment = new WOEnvironment(this.getProject().getProperties());
-		if (!woEnvironment.variablesConfigured())
-			this.getProject().fireBuildFinished(
-				new WOBuildPropertiesNotFoundException());
-		return woEnvironment;
-	}
+    /**
+     * @param string
+     */
+    public void setWebXML_LOCALROOT(String string) {
+        webXML_LOCALROOT = string;
+    }
 
-	/**
-	 * @return
-	 */
-	public String getChmod() {
-		return chmod;
-	}
+    /**
+     * @param string
+     */
+    public void setWebXML_WOAINSTALLROOT(String string) {
+        webXML_WOAINSTALLROOT = string;
+    }
 
-	/**
-	 * @param string
-	 */
-	public void setChmod(String string) {
-		chmod = string;
-	}
+    /**
+     * @param string
+     */
+    public void setWebXML_WOAppMode(String string) {
+        webXML_WOAppMode = string;
+    }
 
-	/**
-	* Method setJvmOptions.
-	* @param jvmOptions
-	*/
-	public void setJvmOptions(String jvmOptions) {
-		if (jvmOptions == null) {
-			this.jvmOptions = "";
-		}
-		this.jvmOptions = jvmOptions;
-	}
+    /**
+     * @param string
+     */
+    public void setWebXML_WOROOT(String string) {
+        webXML_WOROOT = string;
+    }
 
-	/**
-	* Method getJvmOptions.
-	* @return String
-	*/
-	public String getJvmOptions() {
-		return jvmOptions;
-	}
+    /**
+     * @param string
+     */
+    public void setWebXML_WOtaglib(String string) {
+        webXML_WOtaglib = string;
+    }
 
-	/**
-	  * Ensure we have a consistent and legal set of attributes, and set any
-	  * internal flags necessary based on different combinations of attributes.
-	  *
-	  * @throws BuildException if task attributes are inconsistent or missing.
-	  */
-	protected void validateAttributes() throws BuildException {
-		log(
-			" this.getName().validateAttributes(): "
-				+ this.getName()
-				+ " webXML: "
-				+ webXML
-				+ " webXML_WOROOT: "
-				+ webXML_WOROOT,
-			Project.MSG_VERBOSE);
-		if (webXML) {
-			if (webXML_WOROOT == null) {
-				webXML_WOROOT =
-					this.getWOEnvironment().getWOVariables().systemRoot();
-				if (webXML_WOROOT == null)
-					throw new BuildException("'webXML_WOROOT' attribute is missing.");
-			}
-			if (webXML_LOCALROOT == null) {
-				webXML_LOCALROOT =
-					this.getWOEnvironment().getWOVariables().localRoot();
-				if (webXML_LOCALROOT == null)
-					throw new BuildException("'webXML_LOCALROOT' attribute is missing.");
-			}
-			if (webXML_WOAINSTALLROOT == null) {
-				webXML_WOAINSTALLROOT =
-					this.getWOEnvironment().getWOVariables().localLibraryDir()
-						+ "/WebObjects/Applications";
-				if (webXML_WOAINSTALLROOT == null)
-					throw new BuildException("'webXML_WOAINSTALLROOT' attribute is missing.");
-			}
-			if (webXML_WOAppMode == null) {
-				webXML_WOAppMode = "Development";
-				if (webXML_WOAppMode == null)
-					throw new BuildException("'webXML_WOAppMode' attribute is missing.");
-			}
-			if (webXML_WOtaglib == null) {
-				webXML_WOtaglib = "/WEB-INF/tlds/WOtaglib_1_0.tld";
-				if (webXML_WOtaglib == null)
-					throw new BuildException("'webXML_WOtaglib' attribute is missing.");
-			}
-		}
-	}
+    /**
+     * @param string
+     */
+    public void setWebXML(boolean value) {
+        webXML = value;
+    }
+
+    protected boolean hasLib() {
+        return lib.size() > 0;
+    }
+
+    protected boolean hasEmbeddedFrameworks() {
+        List theFrameworkSets = getFrameworkSets();
+        int size = theFrameworkSets.size();
+
+        for (int i = 0; i < size; i++) {
+            FrameworkSet fs = (FrameworkSet) theFrameworkSets.get(i);
+
+            if (fs.getEmbed()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Create a nested FrameworkSet.
+     */
+    public FrameworkSet createFrameworks() {
+        FrameworkSet frameSet = new FrameworkSet();
+        frameworkSets.add(frameSet);
+        return frameSet;
+    }
+
+    public List getFrameworkSets() {
+        if (stdFrameworks) {
+            ArrayList fullList = new ArrayList(frameworkSets.size() + 1);
+            fullList.add(standardSet());
+            fullList.addAll(frameworkSets);
+            return fullList;
+        } else {
+            return frameworkSets;
+        }
+    }
+
+    /**
+     * Create a nested OtherClasspath.
+     */
+    public OtherClasspathSet createOtherclasspath() {
+        OtherClasspathSet otherClasspathSet = new OtherClasspathSet();
+        otherClasspathSets.add(otherClasspathSet);
+        return otherClasspathSet;
+    }
+
+    /**
+     * @return List
+     */
+    public List getOtherClasspath() {
+        return otherClasspathSets;
+    }
+
+    /**
+     * @return WOEnvironment
+     */
+    public WOEnvironment getWOEnvironment() {
+        if (woEnvironment != null)
+            return woEnvironment;
+        woEnvironment = new WOEnvironment(this.getProject().getProperties());
+        if (!woEnvironment.variablesConfigured())
+            this.getProject().fireBuildFinished(
+                    new WOBuildPropertiesNotFoundException());
+        return woEnvironment;
+    }
+
+    /**
+     * @return
+     */
+    public String getChmod() {
+        return chmod;
+    }
+
+    /**
+     * @param string
+     */
+    public void setChmod(String string) {
+        chmod = string;
+    }
+
+    /**
+     * Method setJvmOptions.
+     * 
+     * @param jvmOptions
+     */
+    public void setJvmOptions(String jvmOptions) {
+        if (jvmOptions == null) {
+            this.jvmOptions = "";
+        }
+        this.jvmOptions = jvmOptions;
+    }
+
+    /**
+     * Method getJvmOptions.
+     * 
+     * @return String
+     */
+    public String getJvmOptions() {
+        return jvmOptions;
+    }
+
+    /**
+     * Ensure we have a consistent and legal set of attributes, and set any
+     * internal flags necessary based on different combinations of attributes.
+     * 
+     * @throws BuildException
+     *             if task attributes are inconsistent or missing.
+     */
+    protected void validateAttributes() throws BuildException {
+        log(
+                " this.getName().validateAttributes(): " + this.getName()
+                        + " webXML: " + webXML + " webXML_WOROOT: "
+                        + webXML_WOROOT,
+                Project.MSG_VERBOSE);
+        if (webXML) {
+            if (webXML_WOROOT == null) {
+                webXML_WOROOT = this.getWOEnvironment().getWOVariables()
+                        .systemRoot();
+                if (webXML_WOROOT == null)
+                    throw new BuildException(
+                            "'webXML_WOROOT' attribute is missing.");
+            }
+            if (webXML_LOCALROOT == null) {
+                webXML_LOCALROOT = this.getWOEnvironment().getWOVariables()
+                        .localRoot();
+                if (webXML_LOCALROOT == null)
+                    throw new BuildException(
+                            "'webXML_LOCALROOT' attribute is missing.");
+            }
+            if (webXML_WOAINSTALLROOT == null) {
+                webXML_WOAINSTALLROOT = this.getWOEnvironment()
+                        .getWOVariables().localLibraryDir()
+                        + "/WebObjects/Applications";
+                if (webXML_WOAINSTALLROOT == null)
+                    throw new BuildException(
+                            "'webXML_WOAINSTALLROOT' attribute is missing.");
+            }
+            if (webXML_WOAppMode == null) {
+                webXML_WOAppMode = "Development";
+                if (webXML_WOAppMode == null)
+                    throw new BuildException(
+                            "'webXML_WOAppMode' attribute is missing.");
+            }
+            if (webXML_WOtaglib == null) {
+                webXML_WOtaglib = "/WEB-INF/tlds/WOtaglib_1_0.tld";
+                if (webXML_WOtaglib == null)
+                    throw new BuildException(
+                            "'webXML_WOtaglib' attribute is missing.");
+            }
+        }
+    }
 }
