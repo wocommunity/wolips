@@ -117,9 +117,12 @@ public abstract class ProjectFormat {
 				String templName = templateForTarget(targetName);
 				FilterSetCollection filters = filtersForTarget(targetName);
 
-				InputStream template =
-					this.getClass().getClassLoader().getResourceAsStream(
-						templName);
+				ClassLoader cl = this.getClass().getClassLoader();
+				if(cl == null) {
+					cl = ClassLoader.getSystemClassLoader();
+				}
+
+				InputStream template = cl.getResourceAsStream(templName);
 				File target = new File(targetName);
 				if (copyFile(template, target, filters))
 					returnValue = true;
@@ -194,7 +197,6 @@ public abstract class ProjectFormat {
 			BufferedReader in = new BufferedReader(new InputStreamReader(src));
 			BufferedWriter out = new BufferedWriter(new FileWriter(destFile));
 
-			int length;
 			String newline = null;
 			String line = in.readLine();
 			while (line != null) {
