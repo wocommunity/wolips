@@ -242,21 +242,21 @@ public class DirectAction extends WODirectAction {
    			<resources dir=".">
 				<include name="Properties"/>
    				<include name="**/*.eomodeld/"/>
-       			<include name="**/*.wo/"/>
-       			<include name="**/*.api"/>
+       				<include name="**/*.wo/"/>
+       				<include name="**/*.api"/>
        		</resources>
 			<frameworks root="${wo.woroot}">
-      			<patternset>
+      				<patternset>
   					<includesfile name="ant.frameworks.wo.woroot"/> 
 				</patternset>
    			</frameworks>
    			<frameworks root="${wo.wolocalroot}">
-      			<patternset>
+      				<patternset>
   					<includesfile name="ant.frameworks.wo.wolocalroot"/> 
 				</patternset>
    			</frameworks>
 			<frameworks root="${user.home}">
-      			<patternset>
+      				<patternset>
   					<includesfile name="ant.frameworks.user.home"/> 
 				</patternset>
    			</frameworks>
@@ -281,7 +281,7 @@ public class DirectAction extends WODirectAction {
 	 <!-- copy strings files -->	
 	<target name="copy.strings">
    		 <copy todir="${dest.dir}/${project.name}.woa/Contents/Resources">
-       		<fileset dir="." casesensitive="yes">
+       			<fileset dir="." casesensitive="yes">
 				<include name="*.strings"/>
         			<include name="**/*.strings"/>
     			</fileset>
@@ -346,8 +346,8 @@ project.name = ${PROJECT_NAME}
    			<classes dir="${classes.dir}">
    			</classes>
    			<resources dir=".">
-       			<include name="**/*.eomodeld/"/>
-       			<include name="**/*.wo/"/>
+       				<include name="**/*.eomodeld/"/>
+       				<include name="**/*.wo/"/>
 				<include name="**/*.api"/>
    			</resources>
    		</woframework>
@@ -362,7 +362,7 @@ project.name = ${PROJECT_NAME}
 	 <!-- copy strings files -->	
 	<target name="copy.strings">
    		 <copy todir="${dest.dir}/${framework.name}.framework/Resources">
-       		<fileset dir="." casesensitive="yes">
+       			<fileset dir="." casesensitive="yes">
 				<include name="*.strings"/>
         			<include name="**/*.strings"/>
     			</fileset>
@@ -398,7 +398,7 @@ framework.name = ${PROJECT_NAME}
 	
 		<!-- copy api files (all) -->
  		<copy todir="${toDir}">
-    		<fileset dir="." casesensitive="yes">
+    			<fileset dir="." casesensitive="yes">
    				<include name="**/*.api"/>
 			</fileset>
       		<mapper type="flatten"/>
@@ -406,14 +406,14 @@ framework.name = ${PROJECT_NAME}
   		
   		<!-- copy wo components (windows) -->
   		<copy todir="${toDir}">
-    		<fileset dir="." casesensitive="yes">
+    			<fileset dir="." casesensitive="yes">
    				<include name="**/*.wo/"/>
 			</fileset>
       		<mapper type="regexp" from="^(.*)\\(.*\.wo)\\(.*\..+)$$" to="\2/\3"/>
   		</copy>
 		<!-- copy wo components (mac/unix) -->
 		<copy todir="${toDir}">
-    		<fileset dir="." casesensitive="yes">
+    			<fileset dir="." casesensitive="yes">
    				<include name="**/*.wo/"/>
 			</fileset>
       		<mapper type="regexp" from="^(.*)/(.*\.wo)/(.*\..+)$$" to="\2/\3"/>
@@ -421,14 +421,14 @@ framework.name = ${PROJECT_NAME}
   		
   		<!-- copy eomodels (windows) -->
   		<copy todir="${toDir}">
-    		<fileset dir="." casesensitive="yes">
+    			<fileset dir="." casesensitive="yes">
    				<include name="**/*.eomodeld/"/>
 			</fileset>
       		<mapper type="regexp" from="^(.*)\\(.*\.eomodeld)\\(.*)$$" to="\2/\3"/>
   		</copy>
 		<!-- copy eomodels (mac/unix) -->
   		<copy todir="${toDir}">
-    		<fileset dir="." casesensitive="yes">
+    			<fileset dir="." casesensitive="yes">
    				<include name="**/*.eomodeld/"/>
 			</fileset>
       		<mapper type="regexp" from="^(.*)/(.*\.eomodeld)/(.*)$$" to="\2/\3"/>
