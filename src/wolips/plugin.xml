@@ -170,4 +170,24 @@
 	</objectContribution>
 </extension>
 
+<extension
+         id="org.objectstyle.wolips.editors"
+         point="org.eclipse.ui.editors">
+      <editor
+            name="WOComponent Builder"
+            default="true"
+            icon="icons/wobuilder/webobjects_builder.gif"
+            extensions="wod"
+            launcher="org.objectstyle.wolips.editor.OpenSystemEditor"
+            id="org.objectstyle.wolips.external.wod.editor">
+      </editor>
+      <editor
+            name="EOModeler"
+            default="false"
+            icon="icons/eomodeler/webobjects_eomodeler.gif"
+            extensions="eomodeld"
+            launcher="org.objectstyle.wolips.editor.OpenSystemEditor"
+            id="org.objectstyle.wolips.external.eomodeld.editor">
+      </editor>
+   </extension>
 </plugin>

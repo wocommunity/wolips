@@ -61,6 +61,7 @@ import java.util.Hashtable;
 import java.util.Map;
 
 import org.eclipse.ant.core.AntRunner;
+import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;

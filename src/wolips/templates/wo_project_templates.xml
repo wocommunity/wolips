@@ -49,9 +49,9 @@
 			
 		</classpath>
 		<files>
-			<file templateId="application" name="Application.java"/>
-			<file templateId="session" name="Session.java"/>
-			<file templateId="directAction" name="DirectAction.java"/>
+			<file templateId="application" name="src/Application.java"/>
+			<file templateId="session" name="src/Session.java"/>
+			<file templateId="directAction" name="src/DirectAction.java"/>
 			<file templateId="properties" name="Properties"/>
 			<file templateId="applicationproject" name="PB.project"/>
 			<file templateId="antwoapplication" name="build.xml"/>
@@ -72,7 +72,6 @@
 			<classpathentry kind="lib" path="${webobjects.system.library.dir}/Frameworks/JavaEOAccess.framework/Resources/Java/javaeoaccess.jar"/>
 
 			<classpathentry kind="lib" path="${webobjects.system.library.dir}/Frameworks/JavaEOControl.framework/Resources/Java/javaeocontrol.jar"/>
-
 			<classpathentry kind="var" path="JRE_LIB" rootpath="JRE_SRCROOT" sourcepath="JRE_SRC"/>
 		</classpath>
 		<files>

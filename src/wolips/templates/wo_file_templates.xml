@@ -91,10 +91,10 @@ public class DirectAction extends WODirectAction {
     DYNAMIC_CODE_GEN = YES; 
     FILESTABLE = {
         CLASSES = (
-             Application.java,
-             DirectAction.java, 
-             Session.java, 
-             Main.java
+             src/Application.java,
+             src/DirectAction.java, 
+             src/Session.java, 
+             src/Main.java
         ); 
         FRAMEWORKS = (
             JavaWebObjects.framework, 

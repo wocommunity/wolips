@@ -101,7 +101,7 @@ if (fileCreator==null){
 			componentFolder.getFile(componentName + ".wod");
 		IFile componentHTMLTemplate =
 			componentFolder.getFile(componentName + ".html");
-		IFile componentJavaFile = project.getFile(componentName + ".java");
+		IFile componentJavaFile = project.getFolder("src").getFile(componentName + ".java");
 		IFile componentApiFile = project.getFile(componentName + ".api");
 
 		componentFolder.create(false, true, null);

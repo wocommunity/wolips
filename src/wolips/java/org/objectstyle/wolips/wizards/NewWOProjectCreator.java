@@ -65,6 +65,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.CoreException;
@@ -75,9 +76,14 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jdt.internal.ui.preferences.NewJavaProjectPreferencePage;
+import org.eclipse.jdt.internal.ui.util.CoreUtility;
+import org.eclipse.jdt.internal.ui.wizards.buildpaths.BuildPathsBlock;
 import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.swt.widgets.Shell;
 import org.objectstyle.wolips.WOLipsPlugin;
 import org.objectstyle.wolips.io.FileFromTemplateCreator;
 import org.objectstyle.wolips.io.FileFromTemplateCreator.FileCreationException;
@@ -189,6 +195,11 @@ public class NewWOProjectCreator implements IRunnableWithProgress {
 
 		NodeList fileNodeList = elementForTemplate.getElementsByTagName("file");
 		try {
+			
+			//create src folder
+			
+			newProject.getFolder("src").create(true,true,monitor);
+			
 			String currentFileTemplateId = null;
 			String currentFileName = null;
 			for (int i = 0; i < fileNodeList.getLength(); i++) {
@@ -256,6 +267,18 @@ public class NewWOProjectCreator implements IRunnableWithProgress {
 			existentClasspathEntries = myJavaProject.getRawClasspath();
 			existentClasspathEntriesCnt =
 				myJavaProject.getRawClasspath().length;
+				WOLipsPlugin.debug("existentClasspathEntries: " + existentClasspathEntries);
+				for (int x = 0; x < existentClasspathEntriesCnt; x++) {
+					IClasspathEntry anIClasspathEntry = existentClasspathEntries[x];
+					WOLipsPlugin.debug("IClasspathEntry.CPE_SOURCE: " + IClasspathEntry.CPE_SOURCE);
+					WOLipsPlugin.debug("ContentKind: " + existentClasspathEntries[x].getContentKind());
+					WOLipsPlugin.debug("EntryKind: " + existentClasspathEntries[x].getEntryKind());
+					WOLipsPlugin.debug("path: " + existentClasspathEntries[x].getPath());
+					if(anIClasspathEntry.getEntryKind() == IClasspathEntry.CPE_SOURCE) {
+						existentClasspathEntries[x] = JavaCore.newSourceEntry(anIClasspathEntry.getPath().addTrailingSeparator().append("src"));
+					}
+				}
+				
 		} catch (JavaModelException e) {
 			throw new InvocationTargetException(e);
 		}
@@ -354,7 +377,8 @@ public class NewWOProjectCreator implements IRunnableWithProgress {
 					allClasspathEntriesResolved[existentClasspathEntriesCnt
 						+ i] =
 						JavaCore.newLibraryEntry(newClasspath, null, null);
-				} else if ("var".equals(classpathKind)) {
+				}
+				else if ("var".equals(classpathKind)) {
 
 					newClasspath = new Path(currentRawClassPath);
 
@@ -435,6 +459,7 @@ public class NewWOProjectCreator implements IRunnableWithProgress {
 		}
 		return templateDocument;
 	}
+
 
 	/*
 		public static class ProjectCreationException extends Exception {

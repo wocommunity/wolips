@@ -64,7 +64,6 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.ui.actions.WorkspaceModifyDelegatingOperation;
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
 import org.objectstyle.wolips.WOLipsPlugin;
-import org.objectstyle.wolips.wo.WOVariables;
 
 /**
  * @author mnolte
@@ -106,7 +105,7 @@ public class NewWOProjectPage extends WizardNewProjectCreationPage {
 			return false;
 		}
 		IResource fileToOpen =
-			newProject.getFile("Application.java");
+			newProject.getFolder("src").getFile("Application.java");
 		if (fileToOpen != null) {
 			elementToOpen = fileToOpen;
 		}
