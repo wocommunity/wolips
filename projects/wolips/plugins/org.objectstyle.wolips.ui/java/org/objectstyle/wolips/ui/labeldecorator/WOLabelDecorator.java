@@ -70,8 +70,7 @@ import org.objectstyle.wolips.core.resources.IWOLipsModel;
  * @author mnolte
  *
  */
-public class WOLabelDecorator
-	implements ILabelDecorator {
+public class WOLabelDecorator implements ILabelDecorator {
 
 	private static Image subprojectImage;
 	private static Image componentImage;
@@ -153,11 +152,14 @@ public class WOLabelDecorator
 			return componentImage(image);
 		if (IWOLipsModel.EXT_EOMODEL.equals(aString))
 			return eomodelImage(image);
-		if (IWOLipsModel.EXT_FRAMEWORK.equals(aString) || IWOLipsModel.EXT_WOA.equals(aString) || IWOLipsModel.EXT_BUILD.equals(aString) || IWOLipsModel.EXT_DIST.equals(aString))
+		if (IWOLipsModel.EXT_FRAMEWORK.equals(aString)
+			|| IWOLipsModel.EXT_WOA.equals(aString)
+			|| IWOLipsModel.EXT_BUILD.equals(aString)
+			|| IWOLipsModel.EXT_DIST.equals(aString))
 			return buildImage(image);
 		return image;
 	}
-	
+
 	/**
 	 * Method imageForName.
 	 * @param image
@@ -165,7 +167,8 @@ public class WOLabelDecorator
 	 * @return Image
 	 */
 	private Image imageForName(Image image, String aString) {
-		if (IWOLipsModel.EXT_BUILD.equals(aString) || IWOLipsModel.EXT_DIST.equals(aString))
+		if (IWOLipsModel.EXT_BUILD.equals(aString)
+			|| IWOLipsModel.EXT_DIST.equals(aString))
 			return buildImage(image);
 		return image;
 	}
@@ -178,8 +181,8 @@ public class WOLabelDecorator
 		if (!WOLipsProject.isWOProjectResource((IResource) element))
 			return image;
 		String extension = ((IFolder) element).getFileExtension();
-		if(extension != null && extension.length() > 0)
-		return this.imageForExtension(image, extension);
+		if (extension != null && extension.length() > 0)
+			return this.imageForExtension(image, extension);
 		extension = ((IFolder) element).getName();
 		return this.imageForName(image, extension);
 	}
@@ -212,13 +215,13 @@ public class WOLabelDecorator
 	}
 
 	/**
-		 * @author uli
-		 *
-		 * To change this generated comment edit the template variable "typecomment":
-		 * Window>Preferences>Java>Templates.
-		 * To enable and disable the creation of type comments go to
-		 * Window>Preferences>Java>Code Generation.
-		 */
+			 * @author uli
+			 *
+			 * To change this generated comment edit the template variable "typecomment":
+			 * Window>Preferences>Java>Templates.
+			 * To enable and disable the creation of type comments go to
+			 * Window>Preferences>Java>Code Generation.
+			 */
 	private class WOImageDescriptor extends CompositeImageDescriptor {
 
 		private ImageData baseImageData;
@@ -231,21 +234,27 @@ public class WOLabelDecorator
 		 * @param overlayImageFilename
 		 */
 		public WOImageDescriptor(Image image, String overlayImageFilename) {
-			baseImageData = image.getImageData();
-			size = new Point(baseImageData.width, baseImageData.height);
+			if (image != null) {
+				baseImageData = image.getImageData();
+				size = new Point(baseImageData.width, baseImageData.height);
+			}
 			overlayImageData =
 				ImageDescriptor
 					.createFromFile(
 						WOLabelDecorator.class,
 						overlayImageFilename)
 					.getImageData();
+			if (size == null)
+				size =
+					new Point(overlayImageData.width, overlayImageData.height);
 		}
 		/**
 		 * @see org.eclipse.jface.resource.CompositeImageDescriptor#drawCompositeImage(int, int)
 		 */
 		protected void drawCompositeImage(int width, int height) {
 			// draw base image
-			drawImage(baseImageData, 0, 0);
+			if (baseImageData != null)
+				drawImage(baseImageData, 0, 0);
 			int x = getSize().x;
 			x -= overlayImageData.width;
 			drawImage(overlayImageData, x, 0);
