@@ -78,6 +78,7 @@ import org.eclipse.jdt.launching.VMRunnerConfiguration;
 import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
 import org.objectstyle.wolips.core.plugin.logging.WOLipsLog;
 import org.objectstyle.wolips.core.preferences.Preferences;
+import org.objectstyle.wolips.core.project.WOLipsProject;
 import org.objectstyle.woproject.util.FileStringScanner;
 
 /**
@@ -198,8 +199,13 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 	 */
 	public File verifyWorkingDirectory(ILaunchConfiguration configuration)
 		throws CoreException {
+		WOLipsProject wolipsProject =
+			new WOLipsProject(this.getJavaProject(configuration).getProject());
+		boolean projectIsBuildByAnt =
+			wolipsProject.getNaturesAccessor().isAnt();
 		File aFile = super.verifyWorkingDirectory(configuration);
-		if ((aFile == null) || (aFile.toString().indexOf(".woa") < 0)) {
+		if (projectIsBuildByAnt
+			&& ((aFile == null) || (aFile.toString().indexOf(".woa") < 0))) {
 			abort(MessageFormat.format(LaunchingMessages.getString("WOJavaLocalApplicationLaunchConfigurationDelegate.Working_directory_is_not_a_woa__{0}_12"), new String[] { aFile.toString()}), null, IJavaLaunchConfigurationConstants.ERR_WORKING_DIRECTORY_DOES_NOT_EXIST); //$NON-NLS-1$
 		}
 		return aFile;
