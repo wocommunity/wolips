@@ -95,6 +95,10 @@ public class Preferences {
 			IWOLipsPluginConstants.PREF_PRODUCT_NAVIGATOR_FILTER,
 			PreferencesMessages.getString(
 				"Preferences.ProductNavigatorFilter.Default"));
+		store.setDefault(
+					IWOLipsPluginConstants.PREF_OPEN_WOCOMPONENT_ACTION_INCLUDES_OPEN_HTML,
+					PreferencesMessages.getString(
+						Preferences.falseString));
 	}
 
 	/**

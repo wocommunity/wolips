@@ -90,11 +90,11 @@ public class PreferencesPage
 	 * @see org.eclipse.jface.preference.FieldEditorPreferencePage#createFieldEditors()
 	 */
 	public void createFieldEditors() {
-		addField(
+		/*addField(
 			new StringFieldEditor(
 				IWOLipsPluginConstants.PREF_ANT_BUILD_FILE,
 				PreferencesMessages.getString("Preferences.AntBuildFile.Label"),
-				getFieldEditorParent()));
+				getFieldEditorParent()));*/
 		addField(
 			new BooleanFieldEditor(
 				IWOLipsPluginConstants.PREF_RUN_WOBUILDER_ON_BUILD,
@@ -119,6 +119,13 @@ public class PreferencesPage
 				PreferencesMessages.getString(
 					"Preferences.ProductNavigatorFilter.Label"),
 				getFieldEditorParent()));
+		/*addField(
+			new StringFieldEditor(
+				IWOLipsPluginConstants
+					.PREF_OPEN_WOCOMPONENT_ACTION_INCLUDES_OPEN_HTML,
+				PreferencesMessages.getString(
+					"Preferences.OpenWOComponentActionIncludesOpenHTML.Label"),
+				getFieldEditorParent()));*/
 	}
 	/**
 	 * Method performOK.

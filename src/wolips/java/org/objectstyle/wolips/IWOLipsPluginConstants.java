@@ -70,6 +70,8 @@ public interface IWOLipsPluginConstants {
 		"org.objectstyle.wolips.preference.AntBuildFile";
 	public static final String PREF_RUN_WOBUILDER_ON_BUILD =
 		"org.objectstyle.wolips.preference.RunWOBuilderOnBuild";
+	public static final String PREF_OPEN_WOCOMPONENT_ACTION_INCLUDES_OPEN_HTML =
+			"org.objectstyle.wolips.Preference.OpenWOComponentActionIncludesOpenHTML";
 	// file extensions and resource identifier
 	public static final String EXT_PROJECT = "project";
 	public static final String EXT_SUBPROJECT = "subproj";
