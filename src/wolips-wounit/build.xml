@@ -1,0 +1,108 @@
+<project name="WOUnit" default="build" basedir=".">
+
+	<!-- main targets  -->
+	<!-- add optional targets to depends list if needed -->
+	<target name="build" depends="fetch,setProps,init.build,build.woapp,refreshView,cleanUp"/>
+
+	<target name="fetch">
+	</target>
+	
+	<target name="cleanUp">
+	</target>
+	
+	<target name="clean" depends="setProps">
+	  	<delete dir="${project.name}.woa"/>
+	</target>
+
+	<!-- property determination  -->
+	<target name="setProps">
+		<property file="build.properties"/>
+		<property file="${user.home}${file.separator}Library${file.separator}wobuild.properties"/>
+		<condition property="wo.properties.check.failed">
+			<not>
+    			<and>
+      				<isset property="wo.wosystemroot"/>
+      				<isset property="wo.wolocalroot"/>
+    			</and>
+    		</not>
+  		</condition>
+  		<fail message="Could not find ${user.home}${file.separator}Library${file.separator}wobuild.properties." if="wo.properties.check.failed"/>
+		<property name="install.dir" value="${wo.wolocalroot}/Library/Webobjects/Applications"/>
+	</target>
+		
+	<!-- basic initializations  -->
+	<target name="init.install">
+		 <tstamp/>
+		<property name="dest.dir" value="${install.dir}"/>
+	</target>
+	
+	<target name="init.build">
+	 	<tstamp/>
+		<property name="dest.dir" value="."/>
+	</target>
+	
+	<!-- woproject tasks -->
+	<target name="build.woapp">
+		<updateframeworksets projectname="${project.name}"/>
+		<updateotherclasspaths projectname="${project.name}"/>
+		<woapplication name="${project.name}"  stdFrameworks="false" destDir="${dest.dir}">
+   			<classes dir="${classes.dir}">
+   			</classes>
+   			<wsresources dir=".">
+   				<include name="i/**"/>
+				<exclude name="**/*.woa/**"/>
+			</wsresources>
+   			<resources dir=".">
+				<include name="Properties"/>
+   				<include name="**/*.eomodeld/"/>
+       			<include name="**/*.wo/"/>
+       			<include name="**/*.api"/>
+       			<include name="**/*.strings"/>
+       			<exclude name="**/*.eomodeld~/"/>
+       			<exclude name="**/*.woa/**"/>
+       		</resources>
+			<frameworks root="${wo.wosystemroot}">
+      				<patternset>
+  					<includesfile name="ant.frameworks.wo.wosystemroot"/> 
+				</patternset>
+   			</frameworks>
+   			<frameworks root="${wo.wolocalroot}">
+      				<patternset>
+  					<includesfile name="ant.frameworks.wo.wolocalroot"/> 
+				</patternset>
+   			</frameworks>
+			<frameworks root="${user.home}">
+      				<patternset>
+  					<includesfile name="ant.frameworks.user.home"/> 
+				</patternset>
+   			</frameworks>
+			<otherclasspath root="${wo.wosystemroot}">
+   				<patternset>
+  					<includesfile name="ant.classpaths.wo.wosystemroot"/> 
+				</patternset>
+			</otherclasspath>
+			<lib dir=".">
+				<include name="Add .jar's that should be copied in the woa."/>
+				<exclude name="**/*.woa/**"/>
+			</lib>
+   		</woapplication>
+		<!-- delete include files -->
+		<delete file="ant.frameworks.wo.wosystemroot"/>
+		<delete file="ant.frameworks.wo.wolocalroot"/>
+		<delete file="ant.frameworks.user.home"/>
+		<delete file="ant.classpaths.wo.wosystemroot"/>
+	</target>
+
+	<!-- optional targets -->
+	 <!-- copy strings files -->	
+	<target name="copy.strings">
+   		 <copy todir="${dest.dir}/${project.name}.woa/Contents/Resources">
+       			<fileset dir="." casesensitive="yes">
+				<include name="*.strings"/>
+        			<include name="**/*.strings"/>
+    			</fileset>
+         		<mapper type="flatten"/>
+     		</copy>
+ 	</target>
+
+</project>
