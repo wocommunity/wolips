@@ -91,8 +91,13 @@ public class UpdateFrameworkIncludeFiles extends UpdateIncludeFiles {
 	 * @see org.objectstyle.wolips.ant.UpdateIncludeFiles#buildIncludeFiles()
 	 */
 	protected synchronized void buildIncludeFiles() {
-		// avoid double entries
-		HashSet resolvedEntries = new HashSet();
+    // avoid creating two entries for one classPath Entry
+    HashSet resolvedEntries = new HashSet();
+    
+    // avoid double entries
+    HashSet generatedEntries = new HashSet();
+
+
 		// add wo classpath entries
 		IJavaProject myJavaProject = JavaCore.create(this.getIProject());
 		IClasspathEntry[] classPaths;
@@ -104,6 +109,7 @@ public class UpdateFrameworkIncludeFiles extends UpdateIncludeFiles {
 					+ e.getMessage());
 			return;
 		}
+
 		IFile currentFrameworkListFile;
 		// use sorted root paths to ensure correct replacement of 
 		// classpath entries with framework entries
@@ -133,22 +139,30 @@ public class UpdateFrameworkIncludeFiles extends UpdateIncludeFiles {
 			StringBuffer newFrameworkEntries = new StringBuffer();
 			String resolvedEntry;
 			for (int j = 0; j < classPaths.length; j++) {
-				if (classPaths[j].getEntryKind() == IClasspathEntry.CPE_LIBRARY
-					|| classPaths[j].getEntryKind()
+        IClasspathEntry thisEntry = classPaths[j];
+				if (thisEntry.getEntryKind() == IClasspathEntry.CPE_LIBRARY
+					|| thisEntry.getEntryKind()
 						== IClasspathEntry.CPE_VARIABLE) {
 
-					// convert classpath entries to woproject acceptable paths
-					resolvedEntry =
-						classpathEntryToFrameworkEntry(
-							classPaths[j],
-							thisPath);
-					//Uk was sorted
-					if (resolvedEntry != null
-						&& !resolvedEntries.contains(resolvedEntry)) {
-						resolvedEntries.add(resolvedEntry);
-						newFrameworkEntries.append(resolvedEntry);
-						newFrameworkEntries.append("\n");
-					}
+          if (!resolvedEntries.contains(thisEntry)) {
+            // convert classpath entries to woproject acceptable paths
+            resolvedEntry =
+              classpathEntryToFrameworkEntry(
+                thisEntry,
+                thisPath);
+
+            //Uk was sorted
+            if (
+              resolvedEntry != null
+            ) {
+              if (!generatedEntries.contains(resolvedEntry)) {
+                generatedEntries.add(resolvedEntry);
+                newFrameworkEntries.append(resolvedEntry);
+                newFrameworkEntries.append("\n");
+              }
+              resolvedEntries.add(thisEntry);
+            }
+          }
 				}
 			}
 
