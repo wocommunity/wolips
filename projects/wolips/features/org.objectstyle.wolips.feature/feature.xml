@@ -238,4 +238,10 @@
          install-size="24"
          version="1.0.6"/>
 
+   <plugin
+         id="org.objectstyle.wolips.refactoring"
+         download-size="12"
+         install-size="24"
+         version="1.0.6"/>
+
 </feature>
