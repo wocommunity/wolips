@@ -376,6 +376,15 @@ public class WOLipsProject implements IWOLipsProject {
 							new String[naturesList.size()]));
 					_setDescription(this.getProject(), desc);
 				}
+				List buildersList = 
+					new ArrayList(Arrays.asList(desc.getBuildSpec()));
+				for (Iterator builders = buildersList.iterator(); builders.hasNext();) {
+					ICommand command = (ICommand) builders.next();
+					String name = command.getBuilderName();
+					if(name.equals(BuilderAccessor.INCREMENTAL_BUILDER_ID)) {
+						command.setArguments(args);
+					}
+				}
 			}
 		}
 
