@@ -3,6 +3,7 @@
 	<name>org.objectstyle.wolips.templateengine</name>
 	<comment></comment>
 	<projects>
+		<project>org.objectstyle.wolips.jdom</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
