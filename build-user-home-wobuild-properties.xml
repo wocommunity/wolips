@@ -33,9 +33,9 @@
 	
 	<target name="correct_win" if="correct.win">
 		
-		<replaceregexp file="${user.home}${file.separator}Library${file.separator}wobuild.properties" match="\\:" replace=":" byline="false" flags="g"/> 
-		<replaceregexp file="${user.home}${file.separator}Library${file.separator}wobuild.properties" match="/" replace="\\\" byline="false" flags="g"/> 
-
+		<replaceregexp file="${user.home}${file.separator}Library${file.separator}wobuild.properties" match="\\:" replace=":" byline="false" flags="g"/>
+		<replaceregexp file="${user.home}${file.separator}Library${file.separator}wobuild.properties" match="\\\\" replace="/" byline="false" flags="g"/>
+				
 	</target>
 
 	<target name="set_other" if="wo.properties.ckeck.failed">
