@@ -120,7 +120,7 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 		} catch (Exception e) {
 			this.handleException(e);
 		}
-		this.forgetLastBuiltState();
+		//this.forgetLastBuiltState();
 		monitor.done();
 		return null;
 	}

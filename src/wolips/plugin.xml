@@ -237,6 +237,9 @@
       <extraClasspathEntry
             library="lib/commons-logging.jar">
       </extraClasspathEntry>
+       <extraClasspathEntry
+            library="lib/log4j.jar">
+      </extraClasspathEntry>
    </extension>
    <extension
          point="org.eclipse.ant.core.antTasks">

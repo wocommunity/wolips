@@ -63,6 +63,7 @@
          </copy>
          <copy file="${woproject.dist}/lib/${lib.cayenne}" tofile="${wolips.dist}/lib/cayenne.jar"/>
          <copy file="${woproject.dist}/lib/${lib.commons-logging}" tofile="${wolips.dist}/lib/commons-logging.jar"/>
+         <copy file="${woproject.dist}/lib/${lib.log4j}" tofile="${wolips.dist}/lib/log4j.jar"/>
     </target>
 
     <target name="dist" depends="prepare,java,doc,api">
