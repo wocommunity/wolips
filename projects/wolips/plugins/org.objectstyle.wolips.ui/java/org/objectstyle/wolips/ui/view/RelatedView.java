@@ -15,8 +15,12 @@ import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jdt.core.ICompilationUnit;
+import org.eclipse.jdt.core.IMember;
+import org.eclipse.jdt.internal.ui.JavaPlugin;
+import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor;
 import org.eclipse.jdt.internal.ui.viewsupport.StorageLabelProvider;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.DecoratingLabelProvider;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -35,11 +39,17 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IEditorReference;
+import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.internal.PartSite;
 import org.eclipse.ui.part.ViewPart;
 import org.objectstyle.wolips.core.logging.WOLipsLog;
 import org.objectstyle.wolips.core.project.WOLipsCore;
@@ -51,7 +61,7 @@ import org.objectstyle.wolips.core.resources.IWOLipsResource;
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public final class RelatedView extends ViewPart implements ISelectionListener {
+public final class RelatedView extends ViewPart implements ISelectionListener, IPartListener {
 	private boolean forceOpenInTextEditor = false;
 
 	protected class ViewContentProvider implements ITreeContentProvider {
@@ -69,6 +79,9 @@ public final class RelatedView extends ViewPart implements ISelectionListener {
 		public Object[] getElements(Object parent) {
 			IWOLipsResource wolipsResource = null;
 
+			if(parent instanceof IMember) {
+				parent = ((IMember)parent).getCompilationUnit();
+			}
 			if (parent instanceof IResource) {
 				wolipsResource =
 					WOLipsCore.getWOLipsModel().getWOLipsResource(
@@ -78,6 +91,9 @@ public final class RelatedView extends ViewPart implements ISelectionListener {
 				wolipsResource =
 					WOLipsCore.getWOLipsModel().getWOLipsCompilationUnit(
 						(ICompilationUnit) parent);
+			} else {
+				if(parent != null)
+					WOLipsLog.log(parent.getClass().getName());
 			}
 			List result = new LinkedList();
 			if (wolipsResource != null) {
@@ -270,7 +286,7 @@ public final class RelatedView extends ViewPart implements ISelectionListener {
 		});
 
 		getViewSite().getPage().addSelectionListener(this);
-
+		getViewSite().getPage().addPartListener(this);
 	}
 
 	public void setFocus() {
@@ -280,14 +296,18 @@ public final class RelatedView extends ViewPart implements ISelectionListener {
 	}
 
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-
-		if (selection instanceof IStructuredSelection) {
+		if (selection instanceof ITextSelection) {
+			ITextSelection sel = (ITextSelection) selection;
+			
+		} else if (selection instanceof IStructuredSelection) {
 
 			IStructuredSelection sel = (IStructuredSelection) selection;
 
 			Object selectedElement = sel.getFirstElement();
 			viewer.setInput(selectedElement);
 
+		} else {
+			WOLipsLog.log(selection.getClass().getName());
 		}
 	}
 
@@ -313,5 +333,38 @@ public final class RelatedView extends ViewPart implements ISelectionListener {
 	 */
 	protected Action getDoubleClickAction() {
 		return doubleClickAction;
+	}
+	/**
+	 * @see IPartListener#partActivated(IWorkbenchPart)
+	 */
+	public void partActivated(IWorkbenchPart part) {
+		if (part instanceof IEditorPart) {
+			if (part instanceof CompilationUnitEditor) {
+				IEditorInput input = ((IEditorPart)part).getEditorInput();
+				if (input instanceof IFileEditorInput) {
+					viewer.setInput(JavaPlugin.getDefault().getWorkingCopyManager().getWorkingCopy(input));
+				}
+			}
+		}
+	}
+	/**
+	 * @see IPartListener#partClosed(IWorkbenchPart)
+	 */
+	public void partClosed(IWorkbenchPart part) {
+	}
+	/**
+	 * @see IPartListener#partOpened(IWorkbenchPart)
+	 */
+	public void partOpened(IWorkbenchPart part) {
+	}
+	/**
+	 * @see IPartListener#partDeactivated(IWorkbenchPart)
+	 */
+	public void partDeactivated(IWorkbenchPart part) {
+	}
+	/**
+	 * @see IPartListener#partBroughtToTop(IWorkbenchPart)
+	 */
+	public void partBroughtToTop(IWorkbenchPart part) {
 	}
 }
