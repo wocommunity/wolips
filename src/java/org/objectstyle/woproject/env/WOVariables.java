@@ -166,6 +166,8 @@ public class WOVariables {
 	/**
 	 * Method nextRoot. NEXT_ROOT defined in wobuild.properties (key: <code>wo.
 	 * woroot</code>)
+	 * * @deprecated  Not for public use in the future.
+     * Use localRoot() and systemRoot() instead. 
 	 * @return String
 	 */
 	public static String nextRoot() {
