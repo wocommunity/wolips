@@ -1,0 +1,95 @@
+<?xml version="1.0"?>
+<document>
+    <title>WOApplication Task Manual</title>
+
+    <properties>
+        <author>Andrei Adamchik, Emily Bache</author>
+    </properties>
+
+    <body>
+ 		<section name="WOApplication Task Manual">
+			<h3>Description:</h3>
+
+			<p><code>WOApplication</code> is an Ant task to build WebObjects (5.1 or higher) applications
+			from a set of files. It does not enforce any particular project structure
+			and can be used to create applications without using the ProjectBuilder tool.
+			</p>
+            <p>
+            This task has the limitation that it does not generate the script files
+            that Project Builder creates to run your application. However, you can run your
+            application standalone using the <a href="worun.html">WORun</a> ant task,
+            or run it as a servlet.
+            </p>
+
+			<h3>Parameters:</h3>
+
+			<table border="1" cellpadding="2" cellspacing="0">
+				<tr>
+					<th valign="top"><b>Attribute</b></th>
+					<th valign="top"><b>Description</b></th>
+					<th align="center" valign="top"><b>Required</b></th>
+				</tr>
+				<tr>
+					<td valign="top">name</td>
+					<td valign="top">Name of the application (without <i>.woa</i> extension).</td>
+					<td valign="top" align="center">Yes</td>
+				</tr>
+				<tr>
+					<td valign="top">destDir</td>
+					<td valign="top">Destination directory where the application woa should be created.</td>
+					<td valign="top" align="center">Yes</td>
+				</tr>
+                <tr>
+					<td valign="top">warDestDir</td>
+					<td valign="top">Destination directory where the application war file should be created.
+                                     <i>(no war will be created if this parameter is omitted)</i></td>
+					<td valign="top" align="center">No</td>
+				</tr>
+			</table>
+
+			<h3>Nested elements:</h3>
+
+			<h4>classes</h4>
+			<p>The nested <code>classes</code> element specifies a <a
+			href="http://jakarta.apache.org/ant/manual/CoreTypes/fileset.html">FileSet</a>.
+			All files included in this fileset will
+			end up in the <code>Contents/Resources/Java/*.jar</code> file of the application.</p>
+
+
+			<h4>resources</h4>
+			<p>The nested <code>resources</code> element specifies a <a
+			href="http://jakarta.apache.org/ant/manual/CoreTypes/fileset.html">FileSet</a>.
+			All files included in this fileset will
+			end up in the <code>Contents/Resources</code> directory of the application. </p>
+
+			<h4>wsresources</h4>
+			<p>The nested <code>wsresources</code> element specifies a <a
+			href="http://jakarta.apache.org/ant/manual/CoreTypes/fileset.html">FileSet</a>.
+			All files included in this fileset will
+			end up in the <code>Contents/WebServerResources</code> directory of the application. </p>
+
+			<h4>Examples:</h4>
+
+<source>
+&amp;lt;taskdef name="woapplication" classname="org.objectstyle.woproject.ant.WOApplication"&amp;gt;
+     &amp;lt;classpath refid="classpath"/&amp;gt;
+&amp;lt;/taskdef&amp;gt;
+&amp;lt;woapplication name="MyApp" destDir="${dist}/Applications"&amp;gt;
+   &amp;lt;classes dir="${build}/common"&amp;gt;
+      &amp;lt;exclude name="*.properties"/&amp;gt;
+   &amp;lt;/classes&amp;gt;
+   &amp;lt;classes dir="${build}/business"&amp;gt;
+       &amp;lt;exclude name="*.properties"/&amp;gt;
+   &amp;lt;/classes&amp;gt;
+   &amp;lt;resources dir="src/resources"&amp;gt;
+       &amp;lt;include name="*.eomodeld/**"/&amp;gt;
+       &amp;lt;include name="*.wo/**"/&amp;gt;
+   &amp;lt;/resources&amp;gt;
+   &amp;lt;wsresources dir="src/frameworks/WSResources"&amp;gt;
+       &amp;lt;include name="Images/**"/&amp;gt;
+   &amp;lt;/wsresources&amp;gt;
+&amp;lt;/woapplication&amp;gt;
+</source>
+    	</section>
+    </body>
+</document>
