@@ -56,13 +56,13 @@
  
  package org.objectstyle.wolips.target;
 
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
-import org.eclipse.jface.action.*;
-import org.eclipse.jface.viewers.*;
-import org.objectstyle.wolips.target.*;
-import org.eclipse.ui.IActionDelegate;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.ui.IActionDelegate;
 
 /**
  * @author Uwe

@@ -56,15 +56,17 @@
  
  package org.objectstyle.wolips.target;
 
-import java.util.*;
-import java.io.*;
+import java.io.File;
 
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
-import org.eclipse.jdt.core.*;
-import org.objectstyle.wolips.target.*;
-import org.eclipse.jdt.internal.core.builder.*;
-import org.eclipse.jdt.internal.core.*;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.ISavedState;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IPluginDescriptor;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Plugin;
+import org.eclipse.jdt.internal.core.builder.State;
 
 public class TargetBuilderPlugin extends Plugin
 {
