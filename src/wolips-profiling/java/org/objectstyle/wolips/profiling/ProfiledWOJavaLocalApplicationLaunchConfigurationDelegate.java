@@ -85,14 +85,16 @@ public class ProfiledWOJavaLocalApplicationLaunchConfigurationDelegate
 		ILaunch launch,
 		String mode)
 		throws CoreException {
-		super.addVMArguments(vmArgs, configuration, launch, mode);
+		vmArgs = super.addVMArguments(vmArgs, configuration, launch, mode);
 		// Set things up for profiling only if this is
 		// debug mode
-		return JavaProfilingLaunchConfigDelegate.addProfilingVMArgments(
-			configuration,
-			mode,
-			launch,
-			vmArgs);
+		return vmArgs;
+		//when jmechanic 0.4.1 is released this can be uncommented
+		/*		return JavaProfilingLaunchConfigDelegate.addProfilingVMArgments(
+					configuration,
+					mode,
+					launch,
+					vmArgs);*/
 	}
 
 }
