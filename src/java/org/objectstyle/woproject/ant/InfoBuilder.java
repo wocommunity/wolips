@@ -1,13 +1,19 @@
 package org.objectstyle.woproject.ant;
 
 import java.io.*;
+import java.util.*;
 
 public class InfoBuilder {
 
     private String name;
+    private Vector libFiles;
+    private boolean hasOwnClasses;
 
-    public InfoBuilder(String fwName) {
+
+    public InfoBuilder(String fwName, Vector libFiles, boolean hasOwnClasses) {
         this.name = fwName;
+        this.libFiles = libFiles;
+        this.hasOwnClasses = hasOwnClasses;
     }
 
     /**

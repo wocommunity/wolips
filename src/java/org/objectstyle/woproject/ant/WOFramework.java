@@ -62,6 +62,7 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.taskdefs.*;
 import org.apache.tools.ant.types.FileSet;
+import org.apache.tools.ant.DirectoryScanner;
 
 /**
  * Ant task to build WebObjects framework. For detailed instructions go to the
@@ -192,7 +193,18 @@ public class WOFramework extends MatchingTask {
     }
 
 
-    protected void copyLibs() throws BuildException { }
+    protected void copyLibs() throws BuildException {
+        Copy cp = new Copy();
+        initChildTask(cp);
+
+        cp.setTodir(new File(resourcesDir(), "Java"));
+
+        Enumeration en = lib.elements();
+        while (en.hasMoreElements()) {
+            cp.addFileset((FileSet) en.nextElement());
+        }
+        cp.execute();
+    }
 
 
     protected void copyResources() throws BuildException {
@@ -223,12 +235,32 @@ public class WOFramework extends MatchingTask {
 
 
     protected void buildInfo() throws BuildException {
-        InfoBuilder infoBuilder = new InfoBuilder(name);
+        Vector libs = getLibFiles();
+        InfoBuilder infoBuilder = new InfoBuilder(name, libs, hasClasses());
         try {
             infoBuilder.writeInfo("Info.plist", new File(resourcesDir(), "Info.plist"));
         } catch (IOException ioex) {
             throw new BuildException("Error copying Info.plist", ioex);
         }
+    }
+
+    /**
+     * returns a vector of Strings - the file names of the library files
+     * included in the lib nested element.
+     */
+    private Vector getLibFiles() {
+        Vector answer = new Vector();
+        Enumeration en = lib.elements();
+        while (en.hasMoreElements()) {
+            FileSet fs = (FileSet) en.nextElement();
+            DirectoryScanner scanner = fs.getDirectoryScanner(project);
+            String[] libs = scanner.getIncludedFiles();
+            for (int i = 0; i < libs.length; i++) {
+                File libFile = new File(libs[i]);
+                answer.add(libFile.getName());
+            }
+        }
+        return answer;
     }
 
     protected File frameworkDir() {
