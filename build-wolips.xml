@@ -142,19 +142,19 @@
             </fileset>
         </copy>
 
-        <javadoc   packagenames="org.objectstyle.woproject.wolips.*"
+        <javadoc   packagenames="org.objectstyle.wolips.*"
                    defaultexcludes="yes"
                    destdir="${dist-wolips}/doc/api"
                    author="true"
                    version="true"
                    use="true"
-                   windowtitle="WOProject API">
+                   windowtitle="WOLips API">
 
         <classpath refid="classpath"/>
         <sourcepath>
             <pathelement path="src/wolips/java"/>
         </sourcepath>
-        <doctitle><![CDATA[<h2>WOProject API Documentation</h2>]]></doctitle>
+        <doctitle><![CDATA[<h2>WOLips API Documentation</h2>]]></doctitle>
         <link href="http://developer.java.sun.com/developer/products/xml/docs/api/"/>
         </javadoc>
     </target>
