@@ -63,6 +63,7 @@
         * build.output.java.test.dir = ${build.output.java.test.dir}
         * build.output.build.dir = ${build.output.build.dir}
         * build.output.dist.dir = ${build.output.dist.dir}
+        * build.output.dist.targz.dir = ${build.output.dist.targz.dir}
         * build.output.homepage.dir = ${build.output.homepage.dir}
         * deploy.dir = ${deploy.dir} (set by the buildserver)
         * eclipse.home = ${eclipse.home}

@@ -138,5 +138,18 @@
     <!-- Build dist.                                -->
     <!-- ========================================== -->
     <target name="dist">
+    	<mkdir dir="../${build.output.dist.targz.dir}"/>
+	    
+	    <tar tarfile="../${build.output.dist.targz.dir}/woproject_${build.version}.tar">
+        	<tarfileset dir="../${build.output.build.dir}/woproject_${build.version}">
+                <exclude name="**/examples/**"/>
+                <exclude name="**/lib/ant.jar"/>
+                <exclude name="**/lib/${lib.junit}"/>
+            </tarfileset>
+         </tar>
+         
+         <gzip src="../${build.output.dist.targz.dir}/woproject_${build.version}.tar"
+              zipfile="../${build.output.dist.targz.dir}/woproject_${build.version}.tar.gz"/>
+         <delete file="../${build.output.dist.targz.dir}/woproject_${build.version}.tar"/>    
     </target>
 </project>

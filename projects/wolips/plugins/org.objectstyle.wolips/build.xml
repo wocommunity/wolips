@@ -85,6 +85,7 @@
             <property name="param.build.output.build.dir" value="../../../${build.output.build.dir}"/>
             <property name="param.build.dist.build.dir" value="../../../${build.output.dist.dir}"/>
 	    </ant>
+    	<copy file="README.html" todir="../../../${build.output.dist.dir}"/>
     </target>
 
 </project>

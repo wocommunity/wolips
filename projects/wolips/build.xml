@@ -68,6 +68,16 @@
     <!-- Build dist.                                -->
     <!-- ========================================== -->
     <target name="dist" depends="verify,dist_children,inform_user">
+    	<mkdir dir="../${build.output.dist.targz.dir}"/>
+	    
+	    <tar tarfile="../${build.output.dist.targz.dir}/WOLips_${build.version}.tar">
+        	<tarfileset dir="../${build.output.dist.dir}">
+            </tarfileset>
+         </tar>
+         
+         <gzip src="../${build.output.dist.targz.dir}/WOLips_${build.version}.tar"
+              zipfile="../${build.output.dist.targz.dir}/WOLips_${build.version}.tar.gz"/>
+         <delete file="../${build.output.dist.targz.dir}/WOLips_${build.version}.tar"/>    
     </target>
 
 </project>
