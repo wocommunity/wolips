@@ -90,18 +90,57 @@ public class WOMapper extends Mapper {
 		 * with a path rewritten using localization rules.
 		 */
 		public String[] mapFileName(String sourceFileName) {
-			// check for default exclusions
-			if (NON_LOCALIZED.equals(sourceFileName)) {
-				return null;
-			}
 
-			// apply filters
-			String localizedPath = localizationFilter(sourceFileName);
-			String wocompPath = wocompFilter(localizedPath);
-			String finalPath = eomodelFilter(wocompPath);
+		// check for default exclusions
 
-			return new String[] { finalPath };
+		if (NON_LOCALIZED.equals(sourceFileName)) {
+
+			return null;
+
 		}
+
+		// apply filters
+
+		String localizedPath = localizationFilter(sourceFileName);
+
+		String wocompPath = wocompFilter(localizedPath);
+
+		String miscFilter = miscFilter(wocompPath);
+
+		String finalPath = eomodelFilter(miscFilter);
+
+		return new String[] { finalPath };
+
+		}
+
+		/**
+
+		* Returns destination path based on source file path applying
+
+		* miscancellous rules, like *.strings to <code>path</code> if
+
+		* applicable.
+
+		*/
+
+		private final String miscFilter(String path) {
+
+		File f = new File(path);
+
+		// add other file extensions here!
+
+		if (path.endsWith(".strings")) {
+
+			return flatten(f);
+
+		}
+
+		// skip the filter
+
+		return path;
+
+		}
+
 
 		/** 
 		 * Returns destination path based on source file path applying
