@@ -19,7 +19,6 @@
  			<p>Open the Update Manager. From the Help menu choose:Software Updates -> Update Manager</p>
  			<p>The view in the buttom left has an item 'My Computer'. Expand it to the location of the expanded download.</p>
  			<p>When you reach the location you get an item WOLips. A click on it will open details in the right view. Click on the install button and follow the wizard.</p>
- 			<p>To install the profiling feature you have install jMechanic first.</p>
  		</section> 
         <!-- update manager section -->
         <section name="Via Eclipse update manager">
@@ -30,6 +29,7 @@
         <section name="Build from source">
         	<p>Check out.</p>
         	<p>Run ant.</p>
+        	<p>Install the site in dist folder.</p>
  		</section> 
     </body>
 </document>
