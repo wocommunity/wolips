@@ -186,9 +186,9 @@ public class DirectAction extends WODirectAction {
 </plist>]]></template>
 	<template name="ant file woapplication" id="woapplication.ant.build" variables="PROJECT_NAME" enabled="true"><![CDATA[<project name="${PROJECT_NAME}" default="build" basedir=".">
 
+	<!-- property determination  -->
 	<target name="setProps">
 		<property file="build.properties"/>
-	
 		<!-- determine os depending properties -->
 		<property environment="env"/>
 		<property name="wo.woroot" value="${env.NEXT_ROOT}"/>
@@ -198,7 +198,6 @@ public class DirectAction extends WODirectAction {
                 <os family="unix" />
             </and>
         </condition>
-
 		<property name="wo.wolocalroot" value="${wo.woroot}/Local"/>
 		<condition property= "wo.wolocalroot" value="/">
             <and>
@@ -206,21 +205,25 @@ public class DirectAction extends WODirectAction {
                 <os family="unix" />
             </and>
      	</condition>
-
 		<property name="install.dir" value="${wo.wolocalroot}/Library/Webobjects/Applications"/>
 	</target>
 
-    <!-- ============================================= -->
-    <!-- Subproject Support                            -->
-    <!-- ============================================= -->
+    <!-- temporary subproject support -->
     <target name="subproj"> 
     	<ant antfile="build-subproj.xml" target="copy.resources.application"/>
     </target>
     
+	<!-- main targets  -->
 	<target name="build" depends="setProps,init.build,subproj,build.woapp"/>
 
 	<target name="install" depends="setProps,init.install,subproj,build.woapp"/>
 		
+	<target name="clean" depends="setProps">
+	  	<delete dir="${project.name}.woa"/>
+		<eclipse.refreshLocal resource="${project.name}" depth="infinite"/>
+	</target>
+	
+	<!-- basic initializations  -->
 	<target name="init.install">
 		 <tstamp/>
 		<property name="dest.dir" value="${install.dir}"/>
@@ -231,11 +234,7 @@ public class DirectAction extends WODirectAction {
 		<property name="dest.dir" value="."/>
 	</target>
 
-	<target name="clean" depends="setProps">
-	  	<delete dir="${project.name}.woa"/>
-		<eclipse.refreshLocal resource="${project.name}" depth="infinite"/>
-	</target>
-	  
+	<!-- woproject tasks -->  
 	<target name="build.woapp">
 		<updateframeworksets projectname="${project.name}"/>
 		<updateotherclasspaths projectname="${project.name}"/>
@@ -262,12 +261,11 @@ public class DirectAction extends WODirectAction {
   					<includesfile name="ant.frameworks.user.home"/> 
 				</patternset>
    			</frameworks>
-			<otherclasspath root="${wo.woroot}">
-   				<patternset>
-  					<includesfile name="ant.classpaths.wo.woroot"/> 
-				</patternset>
-			</otherclasspath>
    		</woapplication>
+		<!-- delete include files -->
+		<delete file="ant.frameworks.wo.woroot"/>
+		<delete file="ant.frameworks.wo.wolocalroot"/>
+		<delete file="ant.frameworks.user.home"/>
 		<eclipse.refreshLocal resource="${project.name}" depth="infinite"/>
 	</target>
 		
@@ -278,9 +276,9 @@ project.name = ${PROJECT_NAME}
 ]]></template>
 	<template name="ant file woframework" id="woframework.ant.build" variables="PROJECT_NAME" enabled="true"><![CDATA[<project name="${PROJECT_NAME}" default="build" basedir=".">
 
+	<!-- property determination  -->
 	<target name="setProps">
 		<property file="build.properties"/>
-	
 		<!-- determine os depending properties -->
 		<property environment="env"/>
 		<property name="wo.woroot" value="${env.NEXT_ROOT}"/>
@@ -290,7 +288,6 @@ project.name = ${PROJECT_NAME}
                 <os family="unix" />
             </and>
         </condition>
-
 		<property name="wo.wolocalroot" value="${wo.woroot}/Local"/>
 		<condition property= "wo.wolocalroot" value="/">
             <and>
@@ -298,24 +295,26 @@ project.name = ${PROJECT_NAME}
                 <os family="unix" />
             </and>
      	</condition>
-
 		<property name="install.dir" value="${wo.wolocalroot}/Library/Frameworks"/>
 	</target>
 
 
-
+ 	<!-- main targets  -->
 	<target name="build" depends="setProps,init.build,subproj,build.woframework"/>
 
 	<target name="install" depends="setProps,init.install,subproj,build.woframework"/>
 	
-    <!-- ============================================= -->
-    <!-- Subproject Support            .                                               -->
-    <!-- ============================================= -->
-    <target name="subproj"> 
-    	<ant antfile="build-subproj.xml" target="copy.resources.framework"/>
-    </target>
+	<target name="clean" depends="setProps">
+	  	<delete dir="${framework.name}.framework"/>
+		<eclipse.refreshLocal resource="${framework.name}" depth="infinite"/>
+	</target>
+	
+      <!-- temporary subproject support -->
+   	 <target name="subproj"> 
+    		<ant antfile="build-subproj.xml" target="copy.resources.framework"/>
+    	</target>
     
-
+	<!-- basic initializations  -->
 	<target name="init.install">
 		 <tstamp/>
 		<property name="dest.dir" value="${install.dir}"/>
@@ -326,11 +325,7 @@ project.name = ${PROJECT_NAME}
 		<property name="dest.dir" value="."/>
 	</target>
 
-	<target name="clean" depends="setProps">
-	  	<delete dir="${framework.name}.framework"/>
-		<eclipse.refreshLocal resource="${framework.name}" depth="infinite"/>
-	</target>
-	  
+	<!-- woproject tasks -->	  
 	<target name="build.woframework">	
 		<woframework name="${framework.name}" destDir="${dest.dir}">
    			<classes dir="${classes.dir}">
@@ -354,17 +349,23 @@ framework.name = ${PROJECT_NAME}
 
 	<property file="build.properties"/>
 	
-	<target name="copy.resources.framework">
-		<property name="toDir" value="${dest.dir}/${framework.name}.framework/Contents/Resources"/>
+	<target name="copy.resources.framework" depends="setFrameworkDir,copy.resources"/>
+	<target name="copy.resources.application" depends="setApplicationDir,copy.resources"/>
+	
+	
+	<target name="setFrameworkDir">
+		<property name="toDir" value="${dest.dir}/${framework.name}.framework/Resources"/>
 	</target>
-	<target name="copy.resources.application">
+	
+	<target name="setApplicationDir">
 		<property name="toDir" value="${dest.dir}/${project.name}.woa/Contents/Resources"/>
 	</target>
+
 	
 	<target name="copy.resources">
 	
 		<!-- copy api files (all) -->
- 		<copy todir="${dest.dir}/${project.name}.woa/Contents/Resources">
+ 		<copy todir="${toDir}">
     		<fileset dir="." casesensitive="yes">
    				<include name="**/*.api"/>
 			</fileset>
@@ -372,14 +373,14 @@ framework.name = ${PROJECT_NAME}
   		</copy>
   		
   		<!-- copy wo components (windows) -->
-  		<copy todir="${dest.dir}/${project.name}.woa/Contents/Resources">
+  		<copy todir="${toDir}">
     		<fileset dir="." casesensitive="yes">
    				<include name="**/*.wo/"/>
 			</fileset>
       		<mapper type="regexp" from="^(.*)\\(.*\.wo)\\(.*\..+)$$" to="\2/\3"/>
   		</copy>
 		<!-- copy wo components (mac/unix) -->
-		<copy todir="${dest.dir}/${project.name}.woa/Contents/Resources">
+		<copy todir="${toDir}">
     		<fileset dir="." casesensitive="yes">
    				<include name="**/*.wo/"/>
 			</fileset>
@@ -387,14 +388,14 @@ framework.name = ${PROJECT_NAME}
   		</copy>
   		
   		<!-- copy eomodels (windows) -->
-  		<copy todir="${dest.dir}/${project.name}.woa/Contents/Resources">
+  		<copy todir="${toDir}">
     		<fileset dir="." casesensitive="yes">
    				<include name="**/*.eomodeld/"/>
 			</fileset>
       		<mapper type="regexp" from="^(.*)\\(.*\.eomodeld)\\(.*)$$" to="\2/\3"/>
   		</copy>
 		<!-- copy eomodels (mac/unix) -->
-  		<copy todir="${dest.dir}/${project.name}.woa/Contents/Resources">
+  		<copy todir="${toDir}">
     		<fileset dir="." casesensitive="yes">
    				<include name="**/*.eomodeld/"/>
 			</fileset>

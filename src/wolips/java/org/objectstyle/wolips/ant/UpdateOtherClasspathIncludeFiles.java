@@ -107,7 +107,7 @@ public class UpdateOtherClasspathIncludeFiles extends UpdateIncludeFiles {
 	}
 
 	protected void buildIncludeFiles() throws BuildException {
-		// void double entries
+		// avoid double entries
 		HashSet resolvedEntries = new HashSet();
 		// add wo classpath entries
 		IJavaProject myJavaProject = JavaCore.create(actualProject);
