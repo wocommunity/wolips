@@ -123,7 +123,7 @@
                 <pathelement path="../wolips/plugins/org.objectstyle.wolips.ant/java"/>
                 <pathelement path="../wolips/plugins/org.objectstyle.wolips.variables/java"/>
                 <pathelement path="../wolips/plugins/org.objectstyle.wolips.jdt/java"/>
-                <pathelement path="../wolips/plugins/org.objectstyle.wolips.help/java"/>
+                <pathelement path="../wolips/plugins/org.objectstyle.wolips.documentation/java"/>
                 <pathelement path="../wolips/plugins/org.objectstyle.wolips.targetbuilder/java"/>
                 <pathelement path="../wolips/plugins/org.objectstyle.wolips.datasets/java"/>
                 <pathelement path="../wolips/plugins/org.objectstyle.wolips.launching/java"/>
