@@ -55,6 +55,8 @@
  */
  package org.objectstyle.wolips.builder;
 
+import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.Map;
 import java.util.Vector;
 
@@ -74,8 +76,10 @@ public abstract class WOBuilder extends IncrementalProjectBuilder {
 	
 	private static AntRunner antRunner = null;
 	private static Vector marker = new Vector();
-	private static final boolean cacheAntRunner = false;
+	private static final boolean cacheAntRunner = true;
 	private static final String ANT_LOGGER_CLASS = "org.eclipse.ui.externaltools.internal.ui.ant.AntBuildLogger";
+	private static IProgressMonitor lastMonitor = null;
+	private static ArrayList projects = null;
 	
 	/**
 	 * Constructor for WOBuilder.
@@ -89,6 +93,24 @@ public abstract class WOBuilder extends IncrementalProjectBuilder {
 		if(WOBuilder.antRunner == null) WOBuilder.antRunner = new AntRunner();
 		return WOBuilder.antRunner;
 	}
+	
+	/**
+	 * Method isFirstRequest.
+	 * After a build a refresh is called. To prevent a second build a list of projects for the monitor is stored.
+	 * @param monitor
+	 * @return boolean
+	 */
+	private boolean isFirstRequest(IProgressMonitor monitor) {
+		if(monitor == null) return true;
+		if(lastMonitor == null) {
+			lastMonitor = monitor;
+			projects = new ArrayList();
+			}
+		if(lastMonitor != monitor) projects = new ArrayList();
+		if(projects.contains(getProject())) return false;
+		projects.add(getProject());
+		return true;
+	}
 		
 	protected IProject[] build(int kind, Map args, IProgressMonitor monitor)
 		throws CoreException {									
@@ -98,7 +120,7 @@ public abstract class WOBuilder extends IncrementalProjectBuilder {
 		try {
 			getProject().deleteMarkers(IMarker.TASK, false, getProject().DEPTH_ONE);
 			String aBuildFile = this.buildFile();
-			if(checkIfBuildfileExist(aBuildFile)) {
+			if(checkIfBuildfileExist(aBuildFile) && isFirstRequest(monitor)) {
 				getProject().getFile(aBuildFile).deleteMarkers(IMarker.TASK, false, getProject().DEPTH_ONE);
 				antRunner().setBuildFileLocation(getProject().getFile(aBuildFile).getLocation().toOSString());
 				antRunner.addBuildLogger(ANT_LOGGER_CLASS);
