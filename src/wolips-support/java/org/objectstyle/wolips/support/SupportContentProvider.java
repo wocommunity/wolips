@@ -62,7 +62,7 @@ import org.objectstyle.wolips.env.Environment;
 import org.objectstyle.wolips.plugin.IWOLipsPluginConstants;
 import org.objectstyle.wolips.preferences.Preferences;
 import org.objectstyle.wolips.preferences.PreferencesMessages;
-import org.objectstyle.wolips.wo.WOVariables;
+import org.objectstyle.woproject.env.WOVariables;
 
 /**
  * @author uli
