@@ -57,7 +57,6 @@ package org.objectstyle.wolips.core.listener;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -66,9 +65,7 @@ import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
-import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.JavaCore;
 import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
@@ -234,14 +231,15 @@ public class ResourceChangeListener
 				case IResource.FOLDER :
 					//is this really required?
 					// what if this delta has no changes but a child of it?
+					if (EXT_FRAMEWORK.equals(resource.getFileExtension())
+						|| EXT_WOA.equals(resource.getFileExtension())
+						|| "build".equals(resource.getName())
+						|| "dist".equals(resource.getName())) {
+						// no further examination needed
+						return false;
+					}
 					if (needsProjectFileUpdate(kindOfChange)) {
-						if (EXT_FRAMEWORK.equals(resource.getFileExtension())
-							|| EXT_WOA.equals(resource.getFileExtension())
-							|| "build".equals(resource.getName())
-							|| "dist".equals(resource.getName())) {
-							// no further examination needed
-							return false;
-						}
+
 						if (EXT_COMPONENT
 							.equals(resource.getFileExtension())) {
 							updateProjectFile(
@@ -258,14 +256,14 @@ public class ResourceChangeListener
 								resource.getParent().getFile(
 									new Path(PROJECT_FILE_NAME)));
 						} /*else if (
-																									EXT_EOMODEL.equals(resource.getFileExtension())) {
-																									updateProjectFile(
-																										kindOfChange,
-																										resource,
-																										RESOURCES_ID,
-																										resource.getParent().getFile(
-																											new Path(PROJECT_FILE_NAME)));
-																								} */
+																															EXT_EOMODEL.equals(resource.getFileExtension())) {
+																															updateProjectFile(
+																																kindOfChange,
+																																resource,
+																																RESOURCES_ID,
+																																resource.getParent().getFile(
+																																	new Path(PROJECT_FILE_NAME)));
+																														} */
 						/*else if (
 							EXT_EOMODEL_BACKUP.equals(
 								resource.getFileExtension())) {
@@ -311,71 +309,6 @@ public class ResourceChangeListener
 						// the relating project file is determined through the
 						// name of the src folder containing the java file
 						//if (EXT_JAVA.equals(resource.getFileExtension())) {
-						if (false) {
-							// determine project file
-							IResource parent = resource;
-							IPath projectFilePath = new Path(PROJECT_FILE_NAME);
-							while ((parent = parent.getParent())
-								!= resource.getProject()) {
-								if (EXT_SRC.equals(parent.getFileExtension())
-									&& parent instanceof IContainer) {
-									// determine name of project file container
-									// (remove ".src" extension from resource containing
-									// changed java file
-									final String projectFileContainerName =
-										parent.getName().substring(
-											0,
-											parent.getName().length()
-												- (EXT_SRC.length() + 1));
-									// search for project file
-									IResourceVisitor projectFileFinder =
-										new IResourceVisitor() {
-										private IContainer projectFileContainer;
-										public boolean visit(IResource resource) {
-											if ((resource.getType()
-												== IResource.FOLDER
-												|| resource.getType()
-													== IResource.PROJECT)
-												&& resource.getName().equals(
-													projectFileContainerName)) {
-												projectFileContainer =
-													(IContainer) resource;
-												projectFile =
-													projectFileContainer
-														.getFile(
-														new Path(PROJECT_FILE_NAME));
-												if (projectFile.exists()) {
-													// file found
-													return false;
-												} else {
-													// continue search	
-													projectFile = null;
-													return true;
-												}
-											}
-											return true;
-										}
-									};
-									resource.getProject().accept(
-										projectFileFinder);
-									if (projectFile == null
-										&& resource
-											.getProject()
-											.getFile(projectFilePath)
-											.exists()) {
-										// try to find application project file
-										projectFile =
-											resource.getProject().getFile(
-												projectFilePath);
-									}
-								}
-							}
-							updateProjectFile(
-								kindOfChange,
-								resource,
-								CLASSES_ID,
-								projectFile);
-						}
 						/*if (EXT_JAVA.equals(resource.getFileExtension())) {
 							updateProjectFile(
 								kindOfChange,
@@ -404,7 +337,7 @@ public class ResourceChangeListener
 								resource.getParent().getFile(
 									new Path(PROJECT_FILE_NAME)));
 						} */
-						else if (matchWOAppResourcesPattern(resource)) {
+						if (matchWOAppResourcesPattern(resource)) {
 							updateProjectFile(
 								kindOfChange,
 								resource,
