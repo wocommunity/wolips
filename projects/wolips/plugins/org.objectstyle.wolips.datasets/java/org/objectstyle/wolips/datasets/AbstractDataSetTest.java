@@ -125,18 +125,22 @@ public abstract class AbstractDataSetTest extends TestCase {
 	}
 	
 	protected void assertTypeAndExtensionForFolder(int type, String extension) {
-		int newType = DataSetsPlugin.getDefault().getAssociatedType(DataSetsPlugin.API_EXTENSION);
+		int newType = DataSetsPlugin.getDefault().getAssociatedType(DataSetsPlugin.WOCOMPONENT_EXTENSION);
 		Assert.assertEquals("type does not match", newType, type);
 		this.assertFolderType(type, extension);
 	}
 	
 	private void assertFileType(int type, String extension) {
-		IDataSet dataSet = this.getDataSet(this.file(extension));
+		IFile file = this.file(extension);
+		Assert.assertNotNull("could not create file with extension: " + extension , file);
+		IDataSet dataSet = this.getDataSet(file);
 		Assert.assertNotNull("getResource should not return null for: " + extension , dataSet);
 		Assert.assertEquals("the dataset should return the same type", type, dataSet.getType());
 	}
 	
 	private void assertFolderType(int type, String extension) {
+		IFolder folder = this.folder(extension);
+		Assert.assertNotNull("could not create folder with extension: " + extension , folder);
 		IDataSet dataSet = this.getDataSet(this.folder(extension));
 		Assert.assertNotNull("getResource should not return null for: " + extension , dataSet);
 		Assert.assertEquals("the dataset should return the same type", type, dataSet.getType());

@@ -62,6 +62,7 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.IPluginDescriptor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
+import org.objectstyle.wolips.datasets.internal.Api;
 /**
  * The main plugin class to be used in the desktop.
  */
@@ -148,10 +149,12 @@ public class DataSetsPlugin extends Plugin implements IDataSetTypes {
 	public IDataSet getDataSet(IResource resource) {
 		if (resource == null)
 			return null;
+		IDataSet dataSet = null;
 		switch (resource.getType()) {
 			case IResource.FILE :
 				switch (this.getAssociatedType(resource.getFileExtension())) {
 					case IDataSetTypes.API :
+						dataSet = new Api(IDataSetTypes.API, resource);
 						break;
 					default :
 						break;
@@ -170,7 +173,7 @@ public class DataSetsPlugin extends Plugin implements IDataSetTypes {
 			default :
 				break;
 		}
-		return null;
+		return dataSet;
 	}
 	/**
 	 * @param extension

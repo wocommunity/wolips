@@ -58,7 +58,6 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.objectstyle.wolips.core.project.ProjectsTestSuite;
 import org.objectstyle.wolips.datasets.DataSetsPluginTestSuite;
 import org.objectstyle.wolips.tests.core.TestsCorePluginTestSuite;
 /**
@@ -76,8 +75,6 @@ public class AutomatedSuite extends TestCase {
 		suite.addTest(TestsCorePluginTestSuite.suite());
 		suite.addTestSuite(CheckWorkspaceTest.class);
 		suite.addTest(DataSetsPluginTestSuite.suite());
-		suite.addTestSuite(CheckWorkspaceTest.class);
-		suite.addTest(ProjectsTestSuite.suite());
 		suite.addTestSuite(CheckWorkspaceTest.class);
 		return suite;
 	}
