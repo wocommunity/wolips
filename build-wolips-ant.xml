@@ -24,8 +24,7 @@
             <!-- Depends on WOProject core. -->
             <pathelement path="${build}/main"/>
             </path>
-       <copy file="${woproject.dist}/lib/${lib.commons-logging}" tofile="${wolips.ant.dist}/lib/commons-logging.jar"/>
-         <copy file="${woproject.dist}/lib/${lib.log4j}" tofile="${wolips.ant.dist}/lib/log4j.jar"/>
+       <copy file="${woproject.dist}/lib/${lib.log4j}" tofile="${wolips.ant.dist}/lib/log4j.jar"/>
     </target>
 
     <target name="java" depends="prepare" if="wolips.build.ant">
