@@ -10,8 +10,8 @@
          <packages prefixes="org.objectstyle.wolips.wounit"/>
       </library>
    </runtime>
-
    <requires>
-  </requires>
+      <import plugin="org.objectstyle.wolips"/>
+   </requires>
 
 </plugin>

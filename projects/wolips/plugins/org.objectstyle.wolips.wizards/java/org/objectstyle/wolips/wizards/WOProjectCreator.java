@@ -64,7 +64,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.tools.ant.DirectoryScanner;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -565,6 +564,12 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 									newSourcepath,
 									newRootpath));
 						}
+						////////////////// kind "var"
+						else if ("con".equals(classpathKind)) {
+							newClasspath = new Path(currentRawPath);
+							allClasspathEntriesResolved.add(
+								JavaCore.newContainerEntry(newClasspath));
+						}
 						////////////////// kind "output
 						else if ("output".equals(classpathKind)) {
 							IPath absoluteOutputPath = null;
@@ -994,7 +999,8 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 			throws FileNotFoundException {
 			super();
 			sourceFile = new File(baseDir, sourceFileName);
-			if (!"CVS".equals(sourceFile.getName()) && !"Icon?".equals(sourceFile.getName())) {
+			if (!"CVS".equals(sourceFile.getName())
+				&& !"Icon?".equals(sourceFile.getName())) {
 				if (sourceFile.isDirectory()) {
 					resourceFolderToCreate =
 						destContainer.getFolder(new Path(sourceFileName));

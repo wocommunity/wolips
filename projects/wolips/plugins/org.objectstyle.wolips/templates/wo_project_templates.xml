@@ -34,13 +34,8 @@
 		<nature id="org.objectstyle.wolips.antapplicationnature"/>
 		<classpath>
 			<classpathentry kind="src" path="src"/>
-			<classpathentry kind="var" path="NEXT_SYSTEM_ROOT/Library/Frameworks/JavaWebObjects.framework/Resources/Java/javawebobjects.jar"/>
-			<classpathentry kind="var" path="NEXT_SYSTEM_ROOT/Library/Frameworks/JavaFoundation.framework/Resources/Java/javafoundation.jar"/>
-			<classpathentry kind="var" path="NEXT_SYSTEM_ROOT/Library/Frameworks/JavaXML.framework/Resources/Java/javaxml.jar"/>
-			<classpathentry kind="var" path="NEXT_SYSTEM_ROOT/Library/Frameworks/JavaWOExtensions.framework/Resources/Java/JavaWOExtensions.jar"/>
-			<classpathentry kind="var" path="NEXT_SYSTEM_ROOT/Library/Frameworks/JavaEOAccess.framework/Resources/Java/javaeoaccess.jar"/>
-			<classpathentry kind="var" path="NEXT_SYSTEM_ROOT/Library/Frameworks/JavaEOControl.framework/Resources/Java/javaeocontrol.jar"/>
-			<classpathentry kind="var" path="JRE_LIB" rootpath="JRE_SRCROOT" sourcepath="JRE_SRC"/>
+			<classpathentry kind="con" path="org.objectstyle.wolips.WO_CLASSPATH/JavaWebObjects/JavaFoundation/JavaXML/JavaWOExtensions/JavaEOAccess/JavaEOControl"/>
+			<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 		</classpath>
 		<files>
 			<file templateId="application" name="Application.java"/>
@@ -62,13 +57,8 @@
 		<nature id="org.objectstyle.wolips.antapplicationnature"/>
 		<classpath>
 			<classpathentry kind="src" path="src"/>
-			<classpathentry kind="var" path="NEXT_SYSTEM_ROOT/Library/Frameworks/JavaWebObjects.framework/Resources/Java/javawebobjects.jar"/>
-			<classpathentry kind="var" path="NEXT_SYSTEM_ROOT/Library/Frameworks/JavaFoundation.framework/Resources/Java/javafoundation.jar"/>
-			<classpathentry kind="var" path="NEXT_SYSTEM_ROOT/Library/Frameworks/JavaXML.framework/Resources/Java/javaxml.jar"/>
-			<classpathentry kind="var" path="NEXT_SYSTEM_ROOT/Library/Frameworks/JavaWOExtensions.framework/Resources/Java/JavaWOExtensions.jar"/>
-			<classpathentry kind="var" path="NEXT_SYSTEM_ROOT/Library/Frameworks/JavaEOAccess.framework/Resources/Java/javaeoaccess.jar"/>
-			<classpathentry kind="var" path="NEXT_SYSTEM_ROOT/Library/Frameworks/JavaEOControl.framework/Resources/Java/javaeocontrol.jar"/>
-			<classpathentry kind="var" path="JRE_LIB" rootpath="JRE_SRCROOT" sourcepath="JRE_SRC"/>
+			<classpathentry kind="con" path="org.objectstyle.wolips.WO_CLASSPATH/JavaWebObjects/JavaFoundation/JavaXML/JavaWOExtensions/JavaEOAccess/JavaEOControl"/>
+			<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 		</classpath>
 		<files>
 			<file templateId="properties" name="Properties"/>
@@ -87,14 +77,9 @@
 		<nature id="org.objectstyle.wolips.antframeworknature"/>
 		<classpath>
 			<classpathentry kind="src" path="src"/>
-			<classpathentry kind="var" path="NEXT_SYSTEM_ROOT/Library/Frameworks/JavaWebObjects.framework/Resources/Java/javawebobjects.jar"/>
-			<classpathentry kind="var" path="NEXT_SYSTEM_ROOT/Library/Frameworks/JavaFoundation.framework/Resources/Java/javafoundation.jar"/>
-			<classpathentry kind="var" path="NEXT_SYSTEM_ROOT/Library/Frameworks/JavaXML.framework/Resources/Java/javaxml.jar"/>
-			<classpathentry kind="var" path="NEXT_SYSTEM_ROOT/Library/Frameworks/JavaWOExtensions.framework/Resources/Java/JavaWOExtensions.jar"/>
-			<classpathentry kind="var" path="NEXT_SYSTEM_ROOT/Library/Frameworks/JavaEOAccess.framework/Resources/Java/javaeoaccess.jar"/>
-			<classpathentry kind="var" path="NEXT_SYSTEM_ROOT/Library/Frameworks/JavaEOControl.framework/Resources/Java/javaeocontrol.jar"/>
-			<classpathentry kind="var" path="JRE_LIB" rootpath="JRE_SRCROOT" sourcepath="JRE_SRC"/>
-		</classpath>
+			<classpathentry kind="con" path="org.objectstyle.wolips.WO_CLASSPATH/JavaWebObjects/JavaFoundation/JavaXML/JavaWOExtensions/JavaEOAccess/JavaEOControl"/>
+			<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+        </classpath>
 		<files>
 			<file templateId="properties" name="Properties"/>
 			<file templateId="frameworkproject" name="PB.project"/>
@@ -110,13 +95,8 @@
 		<nature id="org.eclipse.jdt.core.javanature"/>
 		<classpath>
 			<classpathentry kind="src" path="src"/>
-			<classpathentry kind="var" path="NEXT_SYSTEM_ROOT/Library/Frameworks/JavaWebObjects.framework/Resources/Java/javawebobjects.jar"/>
-			<classpathentry kind="var" path="NEXT_SYSTEM_ROOT/Library/Frameworks/JavaFoundation.framework/Resources/Java/javafoundation.jar"/>
-			<classpathentry kind="var" path="NEXT_SYSTEM_ROOT/Library/Frameworks/JavaXML.framework/Resources/Java/javaxml.jar"/>
-			<classpathentry kind="var" path="NEXT_SYSTEM_ROOT/Library/Frameworks/JavaWOExtensions.framework/Resources/Java/JavaWOExtensions.jar"/>
-			<classpathentry kind="var" path="NEXT_SYSTEM_ROOT/Library/Frameworks/JavaEOAccess.framework/Resources/Java/javaeoaccess.jar"/>
-			<classpathentry kind="var" path="NEXT_SYSTEM_ROOT/Library/Frameworks/JavaEOControl.framework/Resources/Java/javaeocontrol.jar"/>
-			<classpathentry kind="var" path="JRE_LIB" rootpath="JRE_SRCROOT" sourcepath="JRE_SRC"/>
+			<classpathentry kind="con" path="org.objectstyle.wolips.WO_CLASSPATH/JavaWebObjects/JavaFoundation/JavaXML/JavaWOExtensions/JavaEOAccess/JavaEOControl"/>
+			<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 		</classpath>
 		<files>
 			<file templateId="javaantjar.ant.build" name="build.xml"/>

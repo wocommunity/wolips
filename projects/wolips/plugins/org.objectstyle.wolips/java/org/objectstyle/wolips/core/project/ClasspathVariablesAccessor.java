@@ -72,6 +72,15 @@ import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
 public final class ClasspathVariablesAccessor
 	implements IClasspathVariablesAccessor {
 
+	private final String[] classpathVariables =
+		new String[] {
+			"USER.HOME",
+			"NEXT_LOCAL_ROOT",
+			"NEXT_SYSTEM_ROOT",
+			"PROJECT.WONDER.HOME" };
+	private final String[] classpathVariablesNames =
+		new String[] { "User Home", "Local", "System", "Project Wonder" };
+
 	protected ClasspathVariablesAccessor() {
 		super();
 	}
@@ -206,10 +215,41 @@ public final class ClasspathVariablesAccessor
 		if (aString == null)
 			return null;
 		if (aString.equals("webobjects.next.root"))
-			return WOLipsPlugin.getDefault().getWOEnvironment().getWOVariables().systemRoot();
+			return WOLipsPlugin
+				.getDefault()
+				.getWOEnvironment()
+				.getWOVariables()
+				.systemRoot();
 		if (aString.equals("webobjects.system.library.dir"))
-			return WOLipsPlugin.getDefault().getWOEnvironment().getWOVariables().libraryDir();
+			return WOLipsPlugin
+				.getDefault()
+				.getWOEnvironment()
+				.getWOVariables()
+				.libraryDir();
 		WOLipsLog.log("Can not resolve classpath variable: " + aString);
 		return null;
 	}
+
+	/**
+	 * Method classpathVariables.
+	 * The variables sorted by priority
+	 * @return String[]
+	 */
+	public final String[] classpathVariables() {
+		return classpathVariables;
+	}
+
+	/**
+	 * @param string
+	 * @return Returns the localized name of a given classpath variable. If the variable does not exist null is returned.
+	 */
+	public final String getclasspathVariableName(String string) {
+		for (int i = 0; i < classpathVariables.length; i++) {
+			if (string.equals(classpathVariables[i]))
+				if (i < classpathVariablesNames.length)
+					return classpathVariablesNames[i];
+		}
+		return null;
+	}
+
 }

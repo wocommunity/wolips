@@ -357,4 +357,98 @@
          </action>
       </actionSet>
    </extension>
+<!-- =================================================================================== -->
+<!-- Extension: Classpath container page                                                 -->
+<!-- =================================================================================== -->
+   <extension
+         point="org.eclipse.jdt.ui.classpathContainerPage">
+      <classpathContainerPage
+            name="WO Frameworks"
+            class="org.objectstyle.wolips.ui.classpath.WOClassPathContainerPage"
+            id="org.objectstyle.wolips.WO_CLASSPATH">
+      </classpathContainerPage>
+   </extension>
+<!-- =========================================================================== -->
+<!-- Filter Support                                                              -->
+<!-- =========================================================================== -->
+    <extension point= "org.eclipse.jdt.ui.javaElementFilters">
+	    <!-- Package Explorer -->
+	    <filter
+		    name= "%HideMakeFiles.label"
+		    description= "%HideMakeFiles.description"
+		    pattern= "Makefil*"
+		    viewId= "org.eclipse.jdt.ui.PackageExplorer"
+		    enabled = "true">
+	    </filter>
+	    <filter
+		    name= "%HideAntClasspathIncludeFiles.label"
+		    description= "%HideAntClasspathIncludeFiles.description"
+		    pattern= "ant.classpaths.*"
+		    viewId= "org.eclipse.jdt.ui.PackageExplorer"
+		    enabled = "true">
+	    </filter>
+	    <filter
+		    name= "%HideAntFrameworksIncludeFiles.label"
+		    description= "%HideAntFrameworksIncludeFiles.description"
+		    pattern= "ant.frameworks.*"
+		    viewId= "org.eclipse.jdt.ui.PackageExplorer"
+		    enabled = "true">
+	    </filter>
+	    <filter
+		    name= "%HidePBProjectFiles.label"
+		    description= "%HidePBProjectFiles.description"
+		    pattern= "PB.project"
+		    viewId= "org.eclipse.jdt.ui.PackageExplorer"
+		    enabled = "true">
+	    </filter>
+ 	    <filter
+		    name= "%HideWOApiFiles.label"
+		    description= "%HideWOApiFiles.description"
+		    pattern= "*.api"
+		    viewId= "org.eclipse.jdt.ui.PackageExplorer"
+		    enabled = "false">
+	    </filter>
+ 	    <filter
+		    name= "%HideWooFiles.label"
+		    description= "%HideWooFiles.description"
+		    pattern= "*.woo"
+		    viewId= "org.eclipse.jdt.ui.PackageExplorer"
+		    enabled = "false">
+	    </filter>
+ 	    <filter
+		    name= "%HideWOAIconFiles.label"
+		    description= "%HideWOAIconFiles.description"
+		    pattern= "WOAfile.icns"
+		    viewId= "org.eclipse.jdt.ui.PackageExplorer"
+		    enabled = "true">
+	    </filter>
+ 	    <filter
+		    name= "%HideCustomInfo.PlistFiles.label"
+		    description= "%HideCustomInfo.PlistFiles.description"
+		    pattern= "CustomInfo.Plist"
+		    viewId= "org.eclipse.jdt.ui.PackageExplorer"
+		    enabled = "true">
+	    </filter>
+ 	    <filter
+		    name= "%HidePropertiesFiles.label"
+		    description= "%HidePropertiesFiles.description"
+		    pattern= "Properties"
+		    viewId= "org.eclipse.jdt.ui.PackageExplorer"
+		    enabled = "true">
+	    </filter>
+ 	    <filter
+		    name= "%HideBuild.propertiesFiles.label"
+		    description= "%HideBuild.propertiesFiles.description"
+		    pattern= "build.properties"
+		    viewId= "org.eclipse.jdt.ui.PackageExplorer"
+		    enabled = "true">
+	    </filter>
+ 	    <filter
+		    name= "%HideBuild.xmlFiles.label"
+		    description= "%HideBuild.xmlFiles.description"
+		    pattern= "build.xml"
+		    viewId= "org.eclipse.jdt.ui.PackageExplorer"
+		    enabled = "true">
+	    </filter>
+    </extension>  	      
 </fragment>

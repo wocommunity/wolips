@@ -70,6 +70,9 @@ public class WOLipsPluginImages {
 
 	public static final ImageDescriptor WOCOMPONENT_WIZARD_BANNER;
 	public static final ImageDescriptor WOPROJECT_WIZARD_BANNER;
+	public static final ImageDescriptor WOFRAMEWORK_ROOT_IMAGE;
+	public static final ImageDescriptor WOFRAMEWORK_IMAGE;
+	public static final ImageDescriptor WOSTANDARD_FRAMEWORK_IMAGE;
 
 	static {
 		String iconPath = "icons/";
@@ -78,6 +81,13 @@ public class WOLipsPluginImages {
 			createImageDescriptor(prefix + "webobjects_wiz.gif");
 		WOPROJECT_WIZARD_BANNER =
 			createImageDescriptor(prefix + "webobjects_wiz.gif");
+		prefix = iconPath + "frameworks/";
+		WOFRAMEWORK_ROOT_IMAGE =
+			createImageDescriptor(prefix + "framework_root.gif");
+		WOFRAMEWORK_IMAGE =
+			createImageDescriptor(prefix + "framework.gif");
+		WOSTANDARD_FRAMEWORK_IMAGE =
+		createImageDescriptor(prefix + "standard_framework.gif");
 	}
 
 	/**

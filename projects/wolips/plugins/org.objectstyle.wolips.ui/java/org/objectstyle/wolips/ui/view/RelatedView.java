@@ -21,9 +21,9 @@ import org.eclipse.jface.viewers.DecoratingLabelProvider;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
@@ -50,16 +50,12 @@ import org.objectstyle.wolips.core.resources.IWOLipsResource;
 public class RelatedView extends ViewPart implements ISelectionListener {
 	private boolean forceOpenInTextEditor = false;
 
-	class ViewContentProvider implements IStructuredContentProvider {
+	class ViewContentProvider implements ITreeContentProvider {
 
-		IWOLipsResource wolipsResource = null;
+		Object input = null;
 
 		public void inputChanged(Viewer v, Object oldInput, Object newInput) {
-			if (newInput != null)
-				wolipsResource = (IWOLipsResource) newInput;
-			else
-				wolipsResource = null;
-
+			input = newInput;
 		}
 
 		public void dispose() {
@@ -67,11 +63,22 @@ public class RelatedView extends ViewPart implements ISelectionListener {
 		}
 
 		public Object[] getElements(Object parent) {
+			IWOLipsResource wolipsResource = null;
 
+			if (parent instanceof IResource) {
+				wolipsResource =
+					WOLipsCore.getWOLipsModel().getWOLipsResource(
+						(IResource) parent);
+				viewer.setInput(wolipsResource);
+			} else if (parent instanceof ICompilationUnit) {
+				wolipsResource =
+					WOLipsCore.getWOLipsModel().getWOLipsCompilationUnit(
+						(ICompilationUnit) parent);
+			}
 			List result = new LinkedList();
 			if (wolipsResource != null) {
 				try {
-					List list = wolipsResource.getRelatedResources();
+					List list = (wolipsResource).getRelatedResources();
 					result.addAll(list);
 
 				} catch (Exception e) {
@@ -81,6 +88,30 @@ public class RelatedView extends ViewPart implements ISelectionListener {
 			return result.toArray();
 		}
 		ViewContentProvider() {
+		}
+
+		/* (non-Javadoc)
+		 * @see org.eclipse.jface.viewers.ITreeContentProvider#getChildren(java.lang.Object)
+		 */
+		public Object[] getChildren(Object parentElement) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		/* (non-Javadoc)
+		 * @see org.eclipse.jface.viewers.ITreeContentProvider#getParent(java.lang.Object)
+		 */
+		public Object getParent(Object element) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		/* (non-Javadoc)
+		 * @see org.eclipse.jface.viewers.ITreeContentProvider#hasChildren(java.lang.Object)
+		 */
+		public boolean hasChildren(Object element) {
+			// TODO Auto-generated method stub
+			return false;
 		}
 	}
 
@@ -194,7 +225,7 @@ public class RelatedView extends ViewPart implements ISelectionListener {
 					}
 				}
 			}
-			
+
 		};
 		viewer.addDoubleClickListener(new IDoubleClickListener() {
 
@@ -246,7 +277,7 @@ public class RelatedView extends ViewPart implements ISelectionListener {
 			IStructuredSelection sel = (IStructuredSelection) selection;
 
 			Object selectedElement = sel.getFirstElement();
-			if (selectedElement instanceof IResource) {
+			/*if (selectedElement instanceof IResource) {
 				IWOLipsResource wolipsResource =
 					WOLipsCore.getWOLipsModel().getWOLipsResource(
 						(IResource) selectedElement);
@@ -256,8 +287,8 @@ public class RelatedView extends ViewPart implements ISelectionListener {
 					WOLipsCore.getWOLipsModel().getWOLipsCompilationUnit(
 						(ICompilationUnit) selectedElement);
 				viewer.setInput(wolipsResource);
-			} else
-				viewer.setInput(null);
+			} else*/
+			viewer.setInput(selectedElement);
 
 		}
 	}

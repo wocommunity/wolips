@@ -53,102 +53,56 @@
  * <http://objectstyle.org/>.
  *
  */
+ 
+/**
+ * Created on 28.06.2002
+ *
+ */
+package org.objectstyle.wolips.core.classpath;
 
-package org.objectstyle.wolips.core.project;
-
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jdt.core.ClasspathContainerInitializer;
+import org.eclipse.jdt.core.IClasspathContainer;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
 
 /**
- * @author ulrich
+ * @author Harald Niesche
  *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public interface IClasspathVariablesAccessor {
+public final class WOClasspathContainerInitializer
+    extends ClasspathContainerInitializer 
+{
 
-	public final static String UserHomeClasspathVariable = "USER.HOME";
-	public final static String ProjectWonderHomeClasspathVariable =
-		"PROJECT.WONDER.HOME";
+    /**
+     * Constructor for WOClasspathContainerInitializer.
+     */
+    public WOClasspathContainerInitializer() {
+        super();
+    }
 
-	/**
-	 * @return IPath from NextLocalRoot Classpath variable if it exists.
-	 */
-	public abstract IPath getNextLocalRootClassPathVariable();
+    /**
+     * @see org.eclipse.jdt.core.ClasspathContainerInitializer#initialize(IPath, IJavaProject)
+     */
+    public final void initialize(IPath containerPath, IJavaProject project)
+        throws CoreException 
+    {
+      int size = containerPath.segmentCount();
+      if (size > 0) {
+      	String firstSegment = containerPath.segment(0); 
+        if (
+          firstSegment.startsWith(WOClasspathContainer.WOLIPS_CLASSPATH_CONTAINER_IDENTITY)
+        ) {
+          
+            JavaCore.setClasspathContainer(
+              containerPath, 
+              new IJavaProject[] {project}, 
+              new IClasspathContainer[] {new WOClasspathContainer (containerPath, project)}, 
+              null
+            );
+        }
+      }
+    }
 
-	/**
-	 * @return IPath from NextRoot Classpath variable if it exists.
-	 */
-	public abstract IPath getNextRootClassPathVariable();
-
-	/**
-	 * @return IPath from NextSystemRoot Classpath variable if it exists.
-	 */
-	public abstract IPath getNextSystemRootClassPathVariable();
-
-	/**
-	 * @return IPath from UserHome Classpath variable if it exists.
-	 */
-	public abstract IPath getUserHomeClassPathVariable();
-
-	/**
-	 * @return IPath from UserHome Classpath variable if it exists.
-	 */
-	public abstract IPath getProjectWonderHomeClassPathVariable();
-
-	/**
-	 *set IPath for NextLocalRoot Classpath variable.
-	 */
-	public abstract void setNextLocalRootClassPathVariable(IPath path)
-		throws JavaModelException;
-
-	/**
-	 * set IPath for NextRoot Classpath variable.
-	 */
-	public abstract void setNextRootClassPathVariable(IPath path)
-		throws JavaModelException;
-
-	/**
-	 * set IPath for NextSystemRoot Classpath variable.
-	 */
-	public abstract void setNextSystemRootClassPathVariable(IPath path)
-		throws JavaModelException;
-
-	/**
-	 * set IPath for UserHome Classpath variable.
-	 */
-	public abstract void setUserHomeClassPathVariable(IPath path)
-		throws JavaModelException;
-
-	/**
-	 * set IPath for UserHome Classpath variable.
-	 */
-	public abstract void setProjectWonderHomeClassPathVariable(IPath path)
-		throws JavaModelException;
-
-	/**
-	 * @return Returns true if the named classpath variable is controlled by WOLips.
-	 */
-	public abstract boolean isUnderWOLipsControl(String classpathVariable);
-
-	/**
-	 * Method classPathVariableToExpand.
-	 * @param aString
-	 * @return String
-	 */
-	public abstract String classPathVariableToExpand(String aString);
-	
-	/**
-	 * Method classpathVariables.
-	 * The variables sorted by priority
-	 * @return String[]
-	 */
-	public abstract String[] classpathVariables();
-
-	/**
-	 * @param string
-	 * @return Returns the localized name of a given classpath variable. If the variable does not exist null is returned.
-	 */
-	public abstract String getclasspathVariableName(String string);
-	
 }

@@ -61,6 +61,8 @@ import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.objectstyle.wolips.core.logging.WOLipsLog;
 import org.objectstyle.wolips.core.util.WorkbenchUtilities;
 
 /**
@@ -88,7 +90,31 @@ public final class WOComponentBundle
 	 * @see org.objectstyle.wolips.core.resources.IWOLipsResource#getRelatedResources()
 	 */
 	public final List getRelatedResources() {
-		return new ArrayList();
+		List list = new ArrayList();
+		if (this.getCorrespondingResource() != null) {
+			try {
+				IProject[] projects =
+					WorkbenchUtilities.getWorkspace().getRoot().getProjects();
+				String fileName = this.getCorrespondingResource().getName();
+				fileName = fileName.substring(0, fileName.length() - 3);
+				String[] extensions =
+					new String[] {
+						WOLipsModel.WOCOMPONENT_WOD_EXTENSION,
+						WOLipsModel.WOCOMPONENT_HTML_EXTENSION,
+						WOLipsModel.WOCOMPONENT_WOO_EXTENSION,
+						WOLipsModel.WOCOMPONENT_API_EXTENSION };
+				list =
+					WorkbenchUtilities
+						.findResourcesInResourcesByNameAndExtensions(
+						projects,
+						fileName,
+						extensions);
+
+			} catch (Exception e) {
+				WOLipsLog.log(e);
+			}
+		}
+		return list;
 	}
 
 	/**
@@ -100,19 +126,21 @@ public final class WOComponentBundle
 		fileName = fileName.substring(0, fileName.length() - 3);
 		if (forceToOpenIntextEditor) {
 			WorkbenchUtilities.open(
-					(IFile)((IFolder) this.getCorrespondingResource()).findMember(fileName + "." + WOLipsModel.WOCOMPONENT_WOD_EXTENSION),
-					forceToOpenIntextEditor,
-					"org.objectstyle.wolips.internal.wod.editor");
+				(IFile) ((IFolder) this.getCorrespondingResource()).findMember(
+					fileName + "." + WOLipsModel.WOCOMPONENT_WOD_EXTENSION),
+				forceToOpenIntextEditor,
+				"org.objectstyle.wolips.internal.wod.editor");
 			WorkbenchUtilities.open(
-					(IFile)((IFolder) this.getCorrespondingResource()).findMember(fileName + "." + WOLipsModel.WOCOMPONENT_HTML_EXTENSION),
-					forceToOpenIntextEditor,
-					"org.objectstyle.wolips.internal.html.editor");
-		}
-		else {
+				(IFile) ((IFolder) this.getCorrespondingResource()).findMember(
+					fileName + "." + WOLipsModel.WOCOMPONENT_HTML_EXTENSION),
+				forceToOpenIntextEditor,
+				"org.objectstyle.wolips.internal.html.editor");
+		} else {
 			WorkbenchUtilities.open(
-					(IFile)((IFolder) this.getCorrespondingResource()).findMember(fileName + "." + WOLipsModel.WOCOMPONENT_WOD_EXTENSION),
-					forceToOpenIntextEditor,
-					"org.objectstyle.wolips.internal.wod.editor");
+				(IFile) ((IFolder) this.getCorrespondingResource()).findMember(
+					fileName + "." + WOLipsModel.WOCOMPONENT_WOD_EXTENSION),
+				forceToOpenIntextEditor,
+				"org.objectstyle.wolips.internal.wod.editor");
 		}
 	}
 }

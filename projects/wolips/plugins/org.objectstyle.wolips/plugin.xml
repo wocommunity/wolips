@@ -29,7 +29,6 @@
       <import plugin="org.objectstyle.wolips.woproject"/>
    </requires>
 
-
 <!-- =================================================================================== -->
 <!-- Extension: Startup                                                                  -->
 <!-- =================================================================================== -->
@@ -113,6 +112,16 @@
             selected="false"
             pattern="*.subproj">
       </filter>
+   </extension>
+<!-- =================================================================================== -->
+<!-- Extension: Classpath container initializer                                          -->
+<!-- =================================================================================== -->
+   <extension
+         point="org.eclipse.jdt.core.classpathContainerInitializer">
+      <classpathContainerInitializer
+            class="org.objectstyle.wolips.core.classpath.WOClasspathContainerInitializer"
+            id="org.objectstyle.wolips.WO_CLASSPATH">
+      </classpathContainerInitializer>
    </extension>
 
 </plugin>
