@@ -5,12 +5,11 @@
 <!-- Serves as a facade for different helper build files.     -->
 <!-- ======================================================== -->
 <project name="org.objectstyle.wolips" default="" basedir=".">
-
     <!-- ========================================== -->
     <!-- Build java.                                -->
     <!-- ========================================== -->
     <target name="java">
-        <path id="classpath">
+       <path id="classpath">
             <fileset dir="${ant.home}/lib">
                 <include name="ant.jar"/>
             </fileset>
@@ -29,11 +28,10 @@
             </fileset>
     	    <pathelement path="../../../${build.output.java.dir}"/>
         </path>
-
-        <ant dir="." antfile="../../../${project.buildscripts.dir}/plugin-project.xml" target="java">
+	<ant dir="." antfile="../../../${project.buildscripts.dir}/plugin-project.xml" target="java">
             <property name="param.plugin.dir" value="."/>
             <property name="param.java.dest.dir" value="../../../${build.output.java.dir}"/>
-            <reference refid="classpath"/>
+            <reference refid="classpath" torefid="classpath"/>
 	</ant>
     </target>
 
@@ -49,6 +47,8 @@
 
     <!-- ========================================== -->
     <!-- Build all.                                 -->
+    <!-- Required parameters                        -->
+    <!-- classpath the classpath refid              -->
     <!-- ========================================== -->
     <target name="all" depends="java,copy.resources">
     </target>

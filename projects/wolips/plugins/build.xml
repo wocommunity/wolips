@@ -22,7 +22,7 @@
 	<ant dir="org.objectstyle.wolips.tests" target="all"/>
 	<ant dir="org.objectstyle.wolips.wounit" target="all"/>
 	<ant dir="org.objectstyle.wolips.ui" target="all"/>
-	<ant dir="org.objectstyle.wolips.wizard" target="all"/>
+	<ant dir="org.objectstyle.wolips.wizards" target="all"/>
 	<ant dir="org.objectstyle.wolips.source" target="all"/>
 	<ant dir="org.objectstyle.wolips.woproject" target="all"/>
 	<ant dir="org.objectstyle.wolips.woproject.ant" target="all"/>
@@ -46,7 +46,7 @@
 	<ant dir="org.objectstyle.wolips.tests" target="dist"/>
 	<ant dir="org.objectstyle.wolips.wounit" target="dist"/>
 	<ant dir="org.objectstyle.wolips.ui" target="dist"/>
-	<ant dir="org.objectstyle.wolips.wizard" target="dist"/>
+	<ant dir="org.objectstyle.wolips.wizards" target="dist"/>
 	<ant dir="org.objectstyle.wolips.source" target="dist"/>
 	<ant dir="org.objectstyle.wolips.woproject" target="dist"/>
 	<ant dir="org.objectstyle.wolips.woproject.ant" target="dist"/>
