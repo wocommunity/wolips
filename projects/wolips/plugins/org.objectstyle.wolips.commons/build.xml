@@ -33,7 +33,7 @@
     <!-- ========================================== -->
     <target name="jar">
 	    <patternset id="param.classes.patternset.refid">
-            <include name="**/org/objectstyle/wolips/datasets/**"/>
+            <include name="**/org/objectstyle/wolips/commons/**"/>
             <exclude name="*Test.class"/>
             <exclude name="*TestSuite.class"/>
         </patternset>
