@@ -86,6 +86,7 @@
          </perspective>
       </shortcut>
    </extension>
+   
    <extension
          point="org.eclipse.jdt.launching.classpathProviders">
       <classpathProvider
@@ -93,4 +94,12 @@
             id="org.objectstyle.wolips.launching.WORuntimeClasspath">
       </classpathProvider>
    </extension>
+   
+  	<extension point="org.eclipse.jdt.launching.runtimeClasspathEntryResolvers">
+		<runtimeClasspathEntryResolver 
+			id="org.objectstyle.wolips.launching.WORuntimeClasspathProvider"
+			class="org.objectstyle.wolips.launching.WORuntimeClasspathResolver"
+			container="org.objectstyle.wolips.WO_CLASSPATH">
+		</runtimeClasspathEntryResolver>
+	</extension>
 </fragment>

@@ -91,7 +91,8 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 	/** The launch configuration attribute for stack trace depth */
 	public static final String ATTR_WOLIPS_LAUNCH_WOARGUMENTS =
 		"org.objectstyle.wolips.launchinfo";
-
+	public static final String ATTR_WOLIPS_LAUNCH_DEBUG_GROUPS =
+		"WOJavaLocalApplicationLaunchConfigurationDelegate.NSDebugGroups";
 	public static void initConfiguration(ILaunchConfigurationWorkingCopy config) {
 		config.setAttribute(
 			IJavaLaunchConfigurationConstants.ATTR_CLASSPATH_PROVIDER,
@@ -209,6 +210,15 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 				launchArgument.append(argument);
 				launchArgument.append(" ");
 			}
+		}
+		String debugGroups = configuration.getAttribute(
+				WOJavaLocalApplicationLaunchConfigurationDelegate
+				.ATTR_WOLIPS_LAUNCH_DEBUG_GROUPS,
+				"");
+		if(debugGroups != null && debugGroups.length() > 0) {
+			launchArgument.append(" -DNSDebugGroups=\"(");
+			launchArgument.append(debugGroups);
+			launchArgument.append(")\"");
 		}
 		// Program & VM args
 		String pgmArgs =

@@ -56,6 +56,7 @@
 
 package org.objectstyle.wolips.launching;
 
+import java.util.StringTokenizer;
 import java.util.Vector;
 
 import org.eclipse.core.resources.IContainer;
@@ -99,12 +100,14 @@ import org.objectstyle.wolips.core.util.ArrayUtilities;
 public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 
 	private Table includeTable;
+	private Table debugGroupsTable;
 	private Button addButton;
 	private Button removeButton;
 	private Button changeButton;
 
 	private Vector allParameter;
 	private Vector allArguments;
+	
 	protected static final String EMPTY_STRING = ""; //$NON-NLS-1$
 	/**
 	 * @see ILaunchConfigurationTab#createControl(Composite)
@@ -133,10 +136,10 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 
 		//includeTable = new Table(parent, SWT.CHECK | SWT.BORDER);
 		includeTable = new Table(parent, SWT.CHECK | SWT.BORDER);
-		GridData gd = new GridData(GridData.FILL_BOTH);
+		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
 		//gd.widthHint = convertWidthInCharsToPixels(30);
 		gd.widthHint = 150;
-		gd.heightHint = 200;
+		gd.heightHint = 250;
 		includeTable.setLayoutData(gd);
 		includeTable.addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event e) {
@@ -145,6 +148,19 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 		});
 
 		includeTable.addListener(SWT.CHECK, new Listener() {
+			public void handleEvent(Event e) {
+				superUpdateLaunchConfigurationDialog();
+			}
+		});
+
+		debugGroupsTable = new Table(parent, SWT.CHECK | SWT.BORDER);
+		GridData gd2 = new GridData(GridData.FILL_HORIZONTAL);
+		//gd.widthHint = convertWidthInCharsToPixels(30);
+		gd2.widthHint = 150;
+		gd2.heightHint = 250;
+		debugGroupsTable.setLayoutData(gd2);
+		
+		debugGroupsTable.addListener(SWT.CHECK, new Listener() {
 			public void handleEvent(Event e) {
 				superUpdateLaunchConfigurationDialog();
 			}
@@ -238,6 +254,20 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 		}
 	}
 
+	private void fillDebugGroupsTable(String aString) {
+		String debugGroups = LaunchingMessages.getString(WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_DEBUG_GROUPS);
+		StringTokenizer stringTokenizer = new StringTokenizer(debugGroups, ",");
+		debugGroupsTable.removeAll();
+		while(stringTokenizer.hasMoreTokens()) {
+			TableItem item = new TableItem(debugGroupsTable, SWT.NONE);
+			String token = stringTokenizer.nextToken();
+			item.setText(token);
+			if(aString != null && aString.indexOf(token) >= 0)
+				item.setChecked(true);
+			else
+				item.setChecked(false);
+		}
+	}
 	protected void addIgnore() {
 		InputDialog parameterDialog = new InputDialog(getShell(), PreferencesMessages.getString("LaunchPreferencesPage.enterParameterShort"), Preferences.getString("IgnorePreferencePage.enterPatternLong"), null, null); //$NON-NLS-1$ //$NON-NLS-2$
 		parameterDialog.open();
@@ -340,6 +370,10 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 			WOJavaLocalApplicationLaunchConfigurationDelegate
 				.ATTR_WOLIPS_LAUNCH_WOARGUMENTS,
 			string);
+		config.setAttribute(
+				WOJavaLocalApplicationLaunchConfigurationDelegate
+				.ATTR_WOLIPS_LAUNCH_DEBUG_GROUPS,
+				"");
 	}
 
 	/**
@@ -349,6 +383,9 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 		try {
 			String string = configuration.getAttribute(WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_WOARGUMENTS, Preferences.getPREF_LAUNCH_GLOBAL()); //$NON-NLS-1$
 			this.fillTable(Preferences.getLaunchInfoFrom(string));
+			this.fillDebugGroupsTable(configuration.getAttribute(
+					WOJavaLocalApplicationLaunchConfigurationDelegate
+					.ATTR_WOLIPS_LAUNCH_DEBUG_GROUPS, ""));
 		} catch (CoreException e) {
 			setErrorMessage(LaunchingMessages.getString("WOArgumentsTab.Exception_occurred_reading_configuration___15") + e.getStatus().getMessage()); //$NON-NLS-1$
 			WOLipsLog.log(e);
@@ -375,6 +412,20 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 			WOJavaLocalApplicationLaunchConfigurationDelegate
 				.ATTR_WOLIPS_LAUNCH_WOARGUMENTS,
 			string);
+		
+		String aString = "";
+		TableItem[] debugGrouspItems = debugGroupsTable.getItems();
+		for (int i = 0; i < debugGrouspItems.length; i++) {
+			if(debugGrouspItems[i].getChecked()) {
+				if(aString.length() > 0)
+					aString = aString +",";
+				aString = aString + debugGrouspItems[i].getText();
+			}
+		}
+		configuration.setAttribute(
+				WOJavaLocalApplicationLaunchConfigurationDelegate
+				.ATTR_WOLIPS_LAUNCH_DEBUG_GROUPS,
+				aString);
 	}
 
 	/**
