@@ -56,7 +56,7 @@
 package org.objectstyle.woproject.ant;
 
 import java.io.File;
-import java.util.Enumeration;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.apache.tools.ant.BuildException;
@@ -99,16 +99,21 @@ public class FrameworkFormat extends ProjectFormat {
 
 	public FilterSetCollection filtersForTarget(String targetName)
 		throws BuildException {
+			
 		if (targetName.endsWith("Info.plist")) {
-			FilterSet filter = new FilterSet();
-
-			filter.addFilter("NAME", getName());
-			filter.addFilter("LOWERC_NAME", getName().toLowerCase());
-			filter.addFilter("JAR_ARRAY", libString(getFrameworkTask().getLibNames()));
-
-			return new FilterSetCollection(filter);
+			return infoFilter(getFrameworkTask().getLibNames());
 		} else {
 			throw new BuildException("Invalid target: " + targetName);
 		}
+	}
+	
+
+	/** 
+	 * Returns an iterator with a single String element.
+	 */
+	private Iterator stringIterator(String str) {
+		ArrayList list = new ArrayList(1);
+		list.add(str);
+		return list.iterator();
 	}
 }

@@ -55,18 +55,11 @@
  */
 package org.objectstyle.woproject.ant;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
+import java.io.*;
 import java.util.Iterator;
 
 import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.types.FilterSet;
 import org.apache.tools.ant.types.FilterSetCollection;
 
 /**
@@ -201,31 +194,10 @@ public abstract class ProjectFormat {
 	}
 
 	/** 
-	 * Returns an iterator over a String array.
-	 */
-	public Iterator stringArrayIterator(String[] strs) {
-		ArrayList list = new ArrayList(strs.length);
-		for (int i = 0; i < strs.length; i++) {
-			list.add(strs[i]);
-		}
-
-		return list.iterator();
-	}
-
-	/** 
-	 * Returns an iterator with a single String element.
-	 */
-	public Iterator stringIterator(String str) {
-		ArrayList list = new ArrayList(1);
-		list.add(str);
-		return list.iterator();
-	}
-
-	/** 
 	 * Returns a string that can be used in Info.plist
 	 * file to indicate JARs required by the project.
 	 */
-	public String libString(Iterator extLibs) {
+	private String libString(Iterator extLibs) {
 		StringBuffer buf = new StringBuffer();
 
 		buf.append("<array>");
@@ -247,5 +219,18 @@ public abstract class ProjectFormat {
 		}
 		buf.append(endLine).append("\t</array>");
 		return buf.toString();
+	}
+
+    /** 
+     * Returns a FilterSet that can be used to build Info.plist file. 
+     */
+	public FilterSetCollection infoFilter(Iterator extLibs) {
+		FilterSet filter = new FilterSet();
+
+		filter.addFilter("NAME", getName());
+		filter.addFilter("LOWERC_NAME", getName().toLowerCase());
+		filter.addFilter("JAR_ARRAY", libString(extLibs));
+		
+		return new FilterSetCollection(filter);
 	}
 }

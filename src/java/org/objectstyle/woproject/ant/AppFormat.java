@@ -56,8 +56,7 @@
 package org.objectstyle.woproject.ant;
 
 import java.io.File;
-import java.util.Enumeration;
-import java.util.Iterator;
+import java.util.*;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.types.FilterSet;
@@ -72,12 +71,35 @@ import org.apache.tools.ant.types.FilterSetCollection;
 public class AppFormat extends ProjectFormat {
 	public static final String INFO_TEMPLATE = "woapp/Info.plist";
 
+    private HashMap templateMap = new HashMap();
+    private HashMap filterMap = new HashMap();
+    
 	/** 
 	 * Creates new AppFormat and initializes it with the name
 	 * of the project being built.
 	 */
 	public AppFormat(WOTask task) {
 		super(task);
+		
+		prepare();
+	}
+	
+	/** 
+	 * Builds a list of files for the application, 
+	 * maps them to templates and filters. 
+	 */
+	private void prepare() {
+	    String infoFile = new File(getApplicatonTask().contentsDir(), "Info.plist").getPath();
+	    createMappings(infoFile, INFO_TEMPLATE, infoFilter(null));
+	}
+	
+	private void createMappings(String fileName, String template, FilterSet filter) {
+		createMappings(fileName, template, new FilterSetCollection(filter));
+	}
+	
+    private void createMappings(String fileName, String template, FilterSetCollection filter) {
+		templateMap.put(fileName, template);
+		filterMap.put(fileName, filter);
 	}
 
 	private WOApplication getApplicatonTask() {
@@ -85,30 +107,23 @@ public class AppFormat extends ProjectFormat {
 	}
 
 	public Iterator fileIterator() {
-		String infoFile = new File(getApplicatonTask().contentsDir(), "Info.plist").getPath();
-		return stringIterator(infoFile);
+		return templateMap.keySet().iterator();
 	}
 
 	public String templateForTarget(String targetName) throws BuildException {
-		if (targetName.endsWith("Info.plist")) {
-			return INFO_TEMPLATE;
-		} else {
-			throw new BuildException("Invalid target: " + targetName);
-		}
+        String template = (String)templateMap.get(targetName);
+        if(template == null) {
+        	throw new BuildException("Invalid target, no template found: " + targetName);
+        }
+        return template;
 	}
 
 	public FilterSetCollection filtersForTarget(String targetName)
 		throws BuildException {
-		if (targetName.endsWith("Info.plist")) {
-			FilterSet filter = new FilterSet();
-
-			filter.addFilter("NAME", getName());
-			filter.addFilter("LOWERC_NAME", getName().toLowerCase());
-            filter.addFilter("JAR_ARRAY", libString(null));
-            
-			return new FilterSetCollection(filter);
-		} else {
-			throw new BuildException("Invalid target: " + targetName);
-		}
+        
+        if(!filterMap.containsKey(targetName)) {
+        	throw new BuildException("Invalid target: " + targetName);
+        }
+        return (FilterSetCollection)filterMap.get(targetName);
 	}
 }
