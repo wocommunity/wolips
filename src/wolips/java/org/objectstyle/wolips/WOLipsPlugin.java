@@ -64,7 +64,6 @@ import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
-import org.apache.tools.ant.types.Environment;
 import org.eclipse.core.internal.boot.URLContentFilter;
 import org.eclipse.core.internal.plugins.PluginClassLoader;
 import org.eclipse.core.resources.IProject;
@@ -77,6 +76,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.objectstyle.wolips.ide.WOClasspathUpdater;
+import org.objectstyle.wolips.io.FileStringScanner;
 import org.objectstyle.wolips.project.PBProjectUpdater;
 
 /**
@@ -115,8 +115,10 @@ public class WOLipsPlugin extends AbstractUIPlugin {
 			Properties aEnv = WOLipsPlugin.getEnvVars();
 			if(aEnv.containsKey(WOLipsPlugin.NEXT_ROOT)) aPath = aEnv.getProperty(WOLipsPlugin.NEXT_ROOT); 
 			System.out.println("aPath" + aPath);
-			if(aPath == null) aPath = "/System";
-			theUrls[0] = new URL("file://" + aPath + "/Library/Frameworks/JavaFoundation.framework/Resources/Java/javafoundation.jar");
+			if(aPath == null) aPath = "file:///System/Library/Frameworks/JavaFoundation.framework/Resources/Java/javafoundation.jar";
+			else aPath = "file:///" + FileStringScanner.replace(aPath, "/", "\\") + "\\Library\\Frameworks\\JavaFoundation.framework\\Resources\\Java\\javafoundation.jar";
+			theUrls[0] = new URL(aPath);
+			System.out.println("theUrls[0].getPath() :" + theUrls[0].getPath());
 			((PluginClassLoader)aClassLoader).addURLs(theUrls, theURLContentFilter, null, null);
 		}
 		catch (Exception anException) {
