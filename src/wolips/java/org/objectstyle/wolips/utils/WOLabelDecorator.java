@@ -56,7 +56,6 @@
 package org.objectstyle.wolips.utils;
 
 import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.resource.CompositeImageDescriptor;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -66,6 +65,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.Point;
 import org.objectstyle.wolips.IWOLipsPluginConstants;
+import org.objectstyle.wolips.project.ProjectHelper;
 /**
  * @author mnolte
  *
@@ -91,7 +91,7 @@ public class WOLabelDecorator
 	public Image decorateImage(Image image, Object element) {
 	
 		if (element instanceof IFolder
-			&& WOLipsUtils.isWOProjectResource((IResource) element)) {
+			&& ProjectHelper.isWOProjectResource((IResource) element)) {
 			String extension = ((IFolder) element).getFileExtension();
 			if (EXT_SUBPROJECT.equals(extension)) {
 				if (subprojectImage == null) {
