@@ -95,7 +95,7 @@ public class WOFramework extends WOTask {
             copyWsresources();
         }
 
-        boolean changes = new FrameworkFormat(this).processTemplates();
+        new FrameworkFormat(this).processTemplates();
     }
 
     /**
@@ -115,6 +115,13 @@ public class WOFramework extends WOTask {
     protected File wsresourcesDir() {
         return new File(taskDir(), "WebServerResources");
     }
+    
+	protected File wsresourcesDestDir() {
+		File woLocation = new File(webServerDir(), "WebObjects");
+		File frameworksLocation = new File(woLocation, "Frameworks");
+		File frameworkLocation = new File(frameworksLocation, name + ".framework");
+		return new File(frameworkLocation, "WebServerResources");
+	}
 
     /**
      * Do any clean up necessary to allow this instance to be used again.
