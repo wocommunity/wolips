@@ -57,6 +57,7 @@
 package org.objectstyle.wolips.core.util;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -71,6 +72,7 @@ import org.eclipse.debug.ui.IDebugUIConstants;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbench;
@@ -127,6 +129,81 @@ public final class WorkbenchUtilities {
 			status = new Status(IStatus.ERROR, WOLipsPlugin.getPluginId(), IDebugUIConstants.INTERNAL_ERROR, "Error within Debug UI: ", t); //$NON-NLS-1$	
 		}
 		ErrorDialog.openError(shell, title, message, status);
+	}
+
+	public final static List findResourcesInResourcesByNameAndExtensions(
+		IResource[] resources,
+		String name,
+		String[] extensions) {
+		ArrayList list = new ArrayList();
+		for (int i = 0; i < resources.length; i++)
+			list.addAll(
+				WorkbenchUtilities.findResourcesInResourceByNameAndExtensions(
+					resources[i],
+					name,
+					extensions));
+		return list;
+	}
+	public final static List findResourcesInResourceByNameAndExtensions(
+		IResource resource,
+		String name,
+		String[] extensions) {
+		ArrayList list = new ArrayList();
+		if ((resource != null)) {
+			if ((resource instanceof IContainer)
+				|| (resource instanceof IProject)) {
+				for (int i = 0; i < extensions.length; i++) {
+					IResource foundResource =
+						((IContainer) resource).findMember(
+							name + "." + extensions[i]);
+					if ((foundResource != null))
+						list.add(foundResource);
+				}
+				IResource[] members = WorkbenchUtilities.members(resource);
+				WorkbenchUtilities
+					.findResourcesInResourceByNameAndExtensionsAndAddToArrayList(
+					members,
+					name,
+					extensions,
+					list);
+			}
+		}
+		return list;
+	}
+
+	private final static void findResourcesInResourceByNameAndExtensionsAndAddToArrayList(
+		IResource[] resources,
+		String name,
+		String[] extensions,
+		ArrayList list) {
+		for (int i = 0; i < resources.length; i++) {
+			IResource resource = resources[i];
+			if ((resource != null)
+				&& (resource instanceof IContainer)
+				&& (!resource.toString().endsWith(".framework"))
+				&& (!resource.toString().endsWith(".woa"))) {
+				if ((resource != null)) {
+					if ((resource instanceof IContainer)
+						|| (resource instanceof IProject)) {
+						for (int j = 0; j < extensions.length; j++) {
+							IResource foundResource =
+								((IContainer) resource).findMember(
+									name + "." + extensions[j]);
+							if ((foundResource != null))
+								list.add(foundResource);
+						}
+						IResource[] members =
+							WorkbenchUtilities.members(resource);
+						WorkbenchUtilities
+							.findResourcesInResourceByNameAndExtensionsAndAddToArrayList(
+							members,
+							name,
+							extensions,
+							list);
+					}
+				}
+			}
+		}
 	}
 	/**
 	 * Method findFilesInResourceByName.
@@ -323,16 +400,44 @@ public final class WorkbenchUtilities {
 	}
 	/**
 	 * Method open.
-	 * @param aFile
+	 * @param file The file to open.
 	 */
-	public final static void open(IFile aFile) {
+	public final static void open(IFile file) {
+		WorkbenchUtilities.open(file, false, null);
+	}
+
+	/**
+	 * Method open.
+	 * @param file The file to open.
+	 * @param If forceToOpenIntextEditor is set to true the resource opens in a texteditor.
+	 */
+	public final static void open(
+		IFile file,
+		boolean forceToOpenIntextEditor,
+		String editor) {
 		IWorkbenchWindow workbenchWindow =
 			WOLipsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow();
 		if (workbenchWindow != null) {
 			IWorkbenchPage workbenchPage = workbenchWindow.getActivePage();
 			if (workbenchPage != null) {
 				try {
-					workbenchPage.openEditor(aFile);
+					if (forceToOpenIntextEditor) {
+						IEditorDescriptor editorDescriptor =
+							WOLipsPlugin
+								.getDefault()
+								.getWorkbench()
+								.getEditorRegistry()
+								.getDefaultEditor(file);
+						workbenchPage.openEditor(file, editor);
+						WOLipsPlugin
+							.getDefault()
+							.getWorkbench()
+							.getEditorRegistry()
+							.setDefaultEditor(
+							file,
+							editorDescriptor.getId());
+					} else
+						workbenchPage.openEditor(file);
 				} catch (Exception anException) {
 					WOLipsLog.log(anException);
 				}

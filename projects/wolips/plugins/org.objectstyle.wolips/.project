@@ -3,10 +3,11 @@
 	<name>org.objectstyle.wolips</name>
 	<comment></comment>
 	<projects>
+		<project>org.objectstyle.wolips</project>
 		<project>org.objectstyle.wolips.cayenne</project>
 		<project>org.objectstyle.wolips.feature</project>
-		<project>org.objectstyle.wolips.woproject</project>
 		<project>org.objectstyle.wolips.logging</project>
+		<project>org.objectstyle.wolips.woproject</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

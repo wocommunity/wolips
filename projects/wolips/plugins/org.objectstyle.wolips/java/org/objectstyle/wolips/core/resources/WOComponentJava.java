@@ -53,16 +53,18 @@
  * <http://objectstyle.org/>.
  *
  */
- 
-package org.objectstyle.wolips.core.project;
 
+package org.objectstyle.wolips.core.resources;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.jdt.core.IJavaProject;
-import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
-import org.objectstyle.wolips.core.resources.*;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.jdt.core.JavaModelException;
+import org.objectstyle.wolips.core.util.WorkbenchUtilities;
+import org.objectstyle.wolips.logging.WOLipsLog;
 
 /**
  * @author ulrich
@@ -70,41 +72,74 @@ import org.objectstyle.wolips.core.resources.*;
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public final class WOLipsCore {
-	
-	public final static IWOLipsProject createProject(IProject project)
-		throws CoreException {
-		if (project == null)
-			throw new CoreException(
-				new Status(
-					IStatus.ERROR,
-					WOLipsPlugin.getPluginId(),
-					IStatus.ERROR,
-					WOLipsCore.class
-						+ ": Can't create an IWOLipsProject for null.",
-					null));
-		return new WOLipsProject(project);
+public final class WOComponentJava
+	extends WOLipsCompilationUnit
+	implements IWOComponentJava {
+
+	protected WOComponentJava() {
+		super();
+	}
+	/**
+	 * @return Returns the IResource.
+	 */
+	public final IResource getCorrespondingResource() {
+		IResource resource = null;
+		try {
+			this.getCorrespondingCompilationUnit().getCorrespondingResource();
+		} catch (JavaModelException e) {
+			WOLipsLog.log(e);
+		}
+		return resource;
+	}
+	/* (non-Javadoc)
+	 * @see org.objectstyle.wolips.core.resources.IWOLipsResource#getType()
+	 */
+	public final int getType() {
+		return IWOLipsCompilationUnit.WOCOMPONENT_JAVA;
 	}
 
-	public final static IWOLipsJavaProject createJavaProject(IJavaProject project)
-		throws CoreException {
-		if (project == null)
-			throw new CoreException(
-				new Status(
-					IStatus.ERROR,
-					WOLipsPlugin.getPluginId(),
-					IStatus.ERROR,
-					WOLipsCore.class
-						+ ": Can't create an IWOLipsJavaProject for null.",
-					null));
-		return new WOLipsJavaProject(project);
+	/* (non-Javadoc)
+	 * @see org.objectstyle.wolips.core.resources.IWOLipsResource#getRelatedResources()
+	 */
+	public final List getRelatedResources() {
+		List list = new ArrayList();
+		if (this.getCorrespondingCompilationUnit() != null) {
+			try {
+				IProject[] projects =
+					WorkbenchUtilities.getWorkspace().getRoot().getProjects();
+				String fileName =
+					this
+						.getCorrespondingCompilationUnit()
+						.getCorrespondingResource()
+						.getName();
+				fileName = fileName.substring(0, fileName.length() - 5);
+				String[] extensions =
+					new String[] {
+						WOLipsModel.WOCOMPONENT_BUNDLE_EXTENSION,
+						WOLipsModel.WOCOMPONENT_WOD_EXTENSION,
+						WOLipsModel.WOCOMPONENT_HTML_EXTENSION,
+						WOLipsModel.WOCOMPONENT_WOO_EXTENSION,
+						WOLipsModel.WOCOMPONENT_API_EXTENSION };
+				list =
+					WorkbenchUtilities
+						.findResourcesInResourcesByNameAndExtensions(
+						projects,
+						fileName,
+						extensions);
+
+			} catch (Exception e) {
+				WOLipsLog.log(e);
+			}
+		}
+		return list;
 	}
 
-	public final static IClasspathVariablesAccessor getClasspathVariablesAccessor() {
-		return new ClasspathVariablesAccessor();
+	/**
+	 * Opens the resource in a Editor.
+	 * @param If forceToOpenIntextEditor is set to true the resource opens in a texteditor.
+	 */
+	public final void open(boolean forceToOpenIntextEditor) {
+		WorkbenchUtilities.open((IFile)this.getCorrespondingResource(), forceToOpenIntextEditor, "org.objectstyle.wolips.internal.wod.editor");
 	}
-	
-	public final static IWOLipsModel getWOLipsModel() {
-		return WOLipsModel.getSharedWOLipsModel();
-	}
+
 }

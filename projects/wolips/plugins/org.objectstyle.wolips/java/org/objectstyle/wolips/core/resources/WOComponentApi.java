@@ -53,16 +53,14 @@
  * <http://objectstyle.org/>.
  *
  */
- 
-package org.objectstyle.wolips.core.project;
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.jdt.core.IJavaProject;
-import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
-import org.objectstyle.wolips.core.resources.*;
+package org.objectstyle.wolips.core.resources;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.core.resources.IFile;
+import org.objectstyle.wolips.core.util.WorkbenchUtilities;
 
 /**
  * @author ulrich
@@ -70,41 +68,34 @@ import org.objectstyle.wolips.core.resources.*;
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public final class WOLipsCore {
-	
-	public final static IWOLipsProject createProject(IProject project)
-		throws CoreException {
-		if (project == null)
-			throw new CoreException(
-				new Status(
-					IStatus.ERROR,
-					WOLipsPlugin.getPluginId(),
-					IStatus.ERROR,
-					WOLipsCore.class
-						+ ": Can't create an IWOLipsProject for null.",
-					null));
-		return new WOLipsProject(project);
+public final class WOComponentApi
+	extends WOLipsResource
+	implements IWOComponentApi {
+
+	protected WOComponentApi() {
+		super();
 	}
 
-	public final static IWOLipsJavaProject createJavaProject(IJavaProject project)
-		throws CoreException {
-		if (project == null)
-			throw new CoreException(
-				new Status(
-					IStatus.ERROR,
-					WOLipsPlugin.getPluginId(),
-					IStatus.ERROR,
-					WOLipsCore.class
-						+ ": Can't create an IWOLipsJavaProject for null.",
-					null));
-		return new WOLipsJavaProject(project);
+	/* (non-Javadoc)
+	 * @see org.objectstyle.wolips.core.resources.IWOLipsResource#getType()
+	 */
+	public final int getType() {
+		return IWOLipsResource.WOCOMPONENT_API;
 	}
 
-	public final static IClasspathVariablesAccessor getClasspathVariablesAccessor() {
-		return new ClasspathVariablesAccessor();
+	/* (non-Javadoc)
+	 * @see org.objectstyle.wolips.core.resources.IWOLipsResource#getRelatedResources()
+	 */
+	public final List getRelatedResources() {
+		return new ArrayList();
 	}
-	
-	public final static IWOLipsModel getWOLipsModel() {
-		return WOLipsModel.getSharedWOLipsModel();
+
+	/**
+	 * Opens the resource in a Editor.
+	 * @param If forceToOpenIntextEditor is set to true the resource opens in a texteditor.
+	 */
+	public final void open(boolean forceToOpenIntextEditor) {
+		WorkbenchUtilities.open((IFile)this.getCorrespondingResource(), forceToOpenIntextEditor, "org.objectstyle.wolips.internal.wod.editor");
 	}
+
 }

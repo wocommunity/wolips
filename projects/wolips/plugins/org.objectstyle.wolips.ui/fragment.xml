@@ -144,12 +144,30 @@
          id="org.objectstyle.wolips.editors"
          point="org.eclipse.ui.editors">
       <editor
-            name="WOComponent Builder"
+            name="WOBuilder"
             default="true"
             icon="icons/wobuilder/webobjects_builder.gif"
             extensions="api,wod,woo"
             launcher="org.objectstyle.wolips.ui.editor.OpenSystemEditor"
             id="org.objectstyle.wolips.external.wod.editor">
+      </editor>
+      <editor
+            name="WOComponent TextEditor"
+            default="false"
+            icon="icons/wobuilder/webobjects_builder.gif"
+            extensions="api,wod,woo"
+            class="org.eclipse.ui.editors.text.TextEditor"
+            contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
+            id="org.objectstyle.wolips.internal.wod.editor">
+      </editor>
+      <editor
+            name="HTML TextEditor"
+            default="false"
+            icon="icons/wobuilder/webobjects_builder.gif"
+            extensions="html"
+            class="org.eclipse.ui.editors.text.TextEditor"
+            contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
+            id="org.objectstyle.wolips.internal.html.editor">
       </editor>
       <editor
             name="EOModeler"

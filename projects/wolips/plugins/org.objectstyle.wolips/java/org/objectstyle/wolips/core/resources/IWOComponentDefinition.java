@@ -53,16 +53,8 @@
  * <http://objectstyle.org/>.
  *
  */
- 
-package org.objectstyle.wolips.core.project;
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.jdt.core.IJavaProject;
-import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
-import org.objectstyle.wolips.core.resources.*;
+package org.objectstyle.wolips.core.resources;
 
 /**
  * @author ulrich
@@ -70,41 +62,6 @@ import org.objectstyle.wolips.core.resources.*;
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public final class WOLipsCore {
-	
-	public final static IWOLipsProject createProject(IProject project)
-		throws CoreException {
-		if (project == null)
-			throw new CoreException(
-				new Status(
-					IStatus.ERROR,
-					WOLipsPlugin.getPluginId(),
-					IStatus.ERROR,
-					WOLipsCore.class
-						+ ": Can't create an IWOLipsProject for null.",
-					null));
-		return new WOLipsProject(project);
-	}
+public interface IWOComponentDefinition {
 
-	public final static IWOLipsJavaProject createJavaProject(IJavaProject project)
-		throws CoreException {
-		if (project == null)
-			throw new CoreException(
-				new Status(
-					IStatus.ERROR,
-					WOLipsPlugin.getPluginId(),
-					IStatus.ERROR,
-					WOLipsCore.class
-						+ ": Can't create an IWOLipsJavaProject for null.",
-					null));
-		return new WOLipsJavaProject(project);
-	}
-
-	public final static IClasspathVariablesAccessor getClasspathVariablesAccessor() {
-		return new ClasspathVariablesAccessor();
-	}
-	
-	public final static IWOLipsModel getWOLipsModel() {
-		return WOLipsModel.getSharedWOLipsModel();
-	}
 }
