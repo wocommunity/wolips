@@ -62,11 +62,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
-
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IPluginDescriptor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
@@ -83,19 +81,39 @@ public class TemplateEnginePlugin extends AbstractUIPlugin {
 	private static TemplateEnginePlugin plugin;
 	//Resource bundle.
 	private ResourceBundle resourceBundle;
+	/**
+	 * Comment for <code>WOApplicationProject</code>
+	 */
 	public static final String WOApplicationProject = "WOApplicationProject";
+	/**
+	 * Comment for <code>D2W_ApplicationProject</code>
+	 */
+	/**
+	 * Comment for <code>D2W_ApplicationProject</code>
+	 */
 	public static final String D2W_ApplicationProject = "D2W_ApplicationProject";
+	/**
+	 * Comment for <code>WOFrameworkProject</code>
+	 */
 	public static final String WOFrameworkProject = "WOFrameworkProject";
+	/**
+	 * Comment for <code>JarProject</code>
+	 */
 	public static final String JarProject = "JarProject";
+	/**
+	 * Comment for <code>WOComponent</code>
+	 */
 	public static final String WOComponent = "WOComponent";
+	/**
+	 * Comment for <code>EOModel</code>
+	 */
 	public static final String EOModel = "EOModel";
 	
 	/**
 	 * The constructor.
-	 * @param descriptor
 	 */
-	public TemplateEnginePlugin(IPluginDescriptor descriptor) {
-		super(descriptor);
+	public TemplateEnginePlugin() {
+		super();
 		plugin = this;
 		try {
 			resourceBundle= ResourceBundle.getBundle("org.objectstyle.wolips.templateengine.TemplateenginePluginResources");
@@ -104,33 +122,26 @@ public class TemplateEnginePlugin extends AbstractUIPlugin {
 		}
 	}
 
-		/**
-	 * Returns the shared instance.
+	/**
+	 * @return Returns the shared instance.
 	 */
 	public static TemplateEnginePlugin getDefault() {
-		if (plugin == null) {
-			// ensure plugin instance is always available using id
-			return new TemplateEnginePlugin(
-				Platform.getPlugin(TemplateEnginePlugin.PLUGIN_ID).getDescriptor());
-		}
 		return plugin;
 	}
 	
 	
 	/**
-	 * Returns the PluginID.
-	 * @return
+	 * @return Returns the PluginID.
 	 */
 	public static String getPluginId() {
 		if (plugin != null) {
 			return getDefault().getDescriptor().getUniqueIdentifier();
 		} else
-			return TemplateEnginePlugin.PLUGIN_ID;
+			return null;
 	}
 
 	/**
-	 * Prints a Status.
-	 * @param e
+	 * @param status Prints a Status.
 	 */
 	public static void log(IStatus status) {
 		TemplateEnginePlugin.getDefault().getLog().log(status);
@@ -247,7 +258,7 @@ public class TemplateEnginePlugin extends AbstractUIPlugin {
 	}
 	/**
 	 * @param templateFolderRoots
-	 * @param string
+	 * @param type
 	 * @return The of templates folder array for the given type.
 	 */
 	protected static TemplateFolder[] getTemplateFolder(TemplateFolderRoot[] templateFolderRoots, String type) {
@@ -265,7 +276,7 @@ public class TemplateEnginePlugin extends AbstractUIPlugin {
 	}
 	
 	/**
-	 * @param string
+	 * @param type
 	 * @return The of templates folder array for the given type.
 	 */
 	public static TemplateFolder[] getTemplateFolder(String type) {
