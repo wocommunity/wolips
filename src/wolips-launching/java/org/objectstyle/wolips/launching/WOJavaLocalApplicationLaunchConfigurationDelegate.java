@@ -67,6 +67,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchManager;
+import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.launching.AbstractJavaLaunchConfigurationDelegate;
 import org.eclipse.jdt.launching.ExecutionArguments;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
@@ -77,6 +78,7 @@ import org.objectstyle.wolips.io.FileStringScanner;
 import org.objectstyle.wolips.io.WOLipsLog;
 import org.objectstyle.wolips.plugin.IWOLipsPluginConstants;
 import org.objectstyle.wolips.preferences.Preferences;
+import org.objectstyle.wolips.project.ProjectHelper;
 import org.objectstyle.wolips.workbench.WorkbenchHelper;
 
 /**
@@ -152,7 +154,8 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 		try {
 			runConfig.setProgramArguments(
 				this.replaceGeneratedByWOLips(
-					execArgs.getProgramArgumentsArray()));
+					execArgs.getProgramArgumentsArray(),
+					configuration));
 		} catch (Exception anException) {
 			//May we should show a dialog
 			WOLipsLog.log(anException);
@@ -204,7 +207,9 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 	 * @return returns the same String[] but the string GeneratedByWOLips is
 	 * replaced
 	 */
-	private String[] replaceGeneratedByWOLips(String[] args) {
+	private String[] replaceGeneratedByWOLips(
+		String[] args,
+		ILaunchConfiguration configuration) {
 		for (int i = 0; i < args.length; i++) {
 			String argument = args[i];
 			if (argument != null
@@ -212,7 +217,8 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 					LaunchingMessages.getString(
 						"WOArguments.GeneratedByWOLips"))
 					> 0)
-				args[i] = replaceInArgumentGeneratedByWOLips(argument);
+				args[i] =
+					replaceInArgumentGeneratedByWOLips(argument, configuration);
 		}
 		return args;
 	}
@@ -232,34 +238,82 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 	 * @param anArgument
 	 * @return String
 	 */
-	private String replaceInArgumentGeneratedByWOLips(String anArgument) {
+	private String replaceInArgumentGeneratedByWOLips(
+		String anArgument,
+		ILaunchConfiguration configuration) {
 		return FileStringScanner.replace(
 			anArgument,
 			LaunchingMessages.getString("WOArguments.GeneratedByWOLips"),
-			this.getGeneratedByWOLips());
+			this.getGeneratedByWOLips(configuration));
 	}
 	/**
 	 * Method getGeneratedByWOLips.
 	 * @return String
 	 */
-	private String getGeneratedByWOLips() {
+	private String getGeneratedByWOLips(ILaunchConfiguration configuration) {
 		String returnValue = "";
 		IProject[] projects =
 			WorkbenchHelper.getWorkspace().getRoot().getProjects();
 		for (int i = 0; i < projects.length; i++) {
-			if (i > 0)
-				returnValue = returnValue + ",";
-			returnValue =
-				returnValue
-					+ "\""
-					+ projects[i].getLocation().toOSString()
-					+ "\"";
+			if (isTheLaunchAppOrAFramework(projects[i], configuration)) {
+				if (returnValue.length() > 0)
+					returnValue = returnValue + ",";
+
+				returnValue =
+					returnValue
+						+ "\""
+						+ projects[i].getLocation().toOSString()
+						+ "\"";
+			}
 		}
 		returnValue = FileStringScanner.replace(returnValue, "\\", "/");
 		returnValue = this.addPreferencesValue(returnValue);
 		if ("".equals(returnValue))
 			returnValue = "\"\"";
 		return returnValue;
+	}
+	/**
+	 * Method isTheLaunchAppOrFramework.
+	 * @param project
+	 * @param configuration
+	 * @return boolean
+	 */
+	private boolean isTheLaunchAppOrAFramework(
+		IProject project,
+		ILaunchConfiguration configuration) {
+		IJavaProject buildProject = null;
+		try {
+			buildProject = this.getJavaProject(configuration);
+			if(ProjectHelper.isWOFwBuilderInstalled(project) && projectISReferencedByProject(project, buildProject.getProject()))
+			return true;
+			if(project.equals(buildProject.getProject()))
+			return true;
+		} catch (Exception anException) {
+			WOLipsLog.log(anException);
+			return false;
+		}
+		return false;
+	}
+	/**
+	 * Method projectISReferencedByProject.
+	 * @param child
+	 * @param mother
+	 * @return boolean
+	 */
+	private boolean projectISReferencedByProject(IProject child, IProject mother) {
+		IProject[] projects = null;
+		try {
+			projects = mother.getReferencedProjects();
+		}
+		catch (Exception anException) {
+			WOLipsLog.log(anException);
+			return false;
+		}
+		for(int i = 0;i < projects.length;i++) {
+			if(projects[i].equals(child))
+			return true;
+		}
+		return false;
 	}
 	/**
 	 * Method addPreferencesValue.
@@ -274,8 +328,8 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 				IWOLipsPluginConstants.PREF_NS_PROJECT_SEARCH_PATH);
 		if (nsProjectSarchPath == null || nsProjectSarchPath.length() == 0)
 			return aString;
-		if (aString.length() == 0)
-			return aString;
-		return aString + "," + nsProjectSarchPath;
+		if (aString.length() > 0)
+			aString = aString + ",";
+		return aString + nsProjectSarchPath;
 	}
 }
