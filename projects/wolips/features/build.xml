@@ -14,8 +14,7 @@
 	    <ant dir="org.objectstyle.wolips.profiling.feature" target="all"/>
 	    <ant dir="org.objectstyle.wolips.tests.feature" target="all"/>
 	    <ant dir="org.objectstyle.wolips.wounit.feature" target="all"/>
-	    <ant dir="org.objectstyle.wolips.devstudio.feature" target="all"/>
-    </target>
+	</target>
     <!-- ========================================== -->
     <!-- Build dist.                                -->
     <!-- ========================================== -->
@@ -25,7 +24,6 @@
 	    <ant dir="org.objectstyle.wolips.profiling.feature" target="dist"/>
 	    <ant dir="org.objectstyle.wolips.tests.feature" target="dist"/>
 	    <ant dir="org.objectstyle.wolips.wounit.feature" target="dist"/>
-	    <ant dir="org.objectstyle.wolips.devstudio.feature" target="dist"/>
-    </target>
+	</target>
 
 </project>
