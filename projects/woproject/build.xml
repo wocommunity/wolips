@@ -5,7 +5,25 @@
 <!-- Serves as a facade for different helper build files.     -->
 <!-- ======================================================== -->
 <project name="woproject" default="all" basedir=".">
-
+       <path id="classpath">
+            <fileset dir="${ant.home}/lib">
+                <include name="ant.jar"/>
+            </fileset>
+            <fileset dir="lib">
+                <include name="*.jar"/>
+	    </fileset>
+            <fileset dir="../lib">
+                <include name="*.jar"/>
+	    </fileset>
+            <fileset dir="${wo.dir.library.frameworks}">
+            	<include name="JavaEOAccess.framework/Resources/Java/*.jar"/>
+            	<include name="JavaEOControl.framework/Resources/Java/*.jar"/>
+            	<include name="JavaFoundation.framework/Resources/Java/*.jar"/>
+            	<include name="JavaWebObjects.framework/Resources/Java/*.jar"/>
+            	<include name="JavaJDBCAdaptor.framework/Resources/Java/*.jar"/>
+            </fileset>
+            <pathelement path="${build.output.java.dir}"/>
+        </path>
     <!-- ========================================== -->
     <!-- Build copy.resources.                      -->
     <!-- ========================================== -->
@@ -30,31 +48,11 @@
     <!-- Build java.                                -->
     <!-- ========================================== -->
     <target name="java">
-        <path id="classpath">
-            <fileset dir="${ant.home}/lib">
-                <include name="ant.jar"/>
-            </fileset>
-            <fileset dir="lib">
-                <include name="*.jar"/>
-	    </fileset>
-            <fileset dir="../lib">
-                <include name="*.jar"/>
-	    </fileset>
-            <fileset dir="${wo.dir.library.frameworks}">
-            	<include name="JavaEOAccess.framework/Resources/Java/*.jar"/>
-            	<include name="JavaEOControl.framework/Resources/Java/*.jar"/>
-            	<include name="JavaFoundation.framework/Resources/Java/*.jar"/>
-            	<include name="JavaWebObjects.framework/Resources/Java/*.jar"/>
-            	<include name="JavaJDBCAdaptor.framework/Resources/Java/*.jar"/>
-            </fileset>
-            <pathelement path="${build.output.java.dir}"/>
-    	</path>
-
-	<ant dir="." antfile="../${project.buildscripts.dir}/ant-style-project.xml" target="java">
+        <ant dir="." antfile="../${project.buildscripts.dir}/ant-style-project.xml" target="java">
             <property name="param.src.dir" value="src/java"/>
             <property name="param.dest.dir" value="../${build.output.java.dir}"/>
             <reference refid="classpath"/>
-	</ant>
+	    </ant>
     </target>
 
     <!-- ========================================== -->
@@ -65,6 +63,7 @@
         <patternset id="param.classes.patternset.refid">
                 <include name="**/org/objectstyle/woenvironment/**"/>
                 <include name="**/org/objectstyle/woproject/**"/>
+                <exclude name="**/*Test.class"/>
             </patternset>
             
 	<ant dir="." antfile="../${project.buildscripts.dir}/ant-style-project.xml" target="jar">
@@ -78,13 +77,12 @@
     <!-- Build copy jars.                           -->
     <!-- ========================================== -->
     <target name="lib">
-	<mkdir dir="../${build.output.build.dir}/woproject/lib"/>
+	    <mkdir dir="../${build.output.build.dir}/woproject/lib"/>
 
-	<copy todir="../${build.output.build.dir}/woproject/lib">
+	    <copy todir="../${build.output.build.dir}/woproject/lib">
             <fileset dir="../lib">
-                <include name="lib.cayenne"/>
-                <include name="lib.log4j"/>
-                <include name="lib.commons-logging"/>
+                <include name="${lib.cayenne}"/>
+                <include name="${lib.log4j}"/>
 	    </fileset>
         </copy>
     </target>
@@ -93,6 +91,45 @@
     <!-- Build all.                                 -->
     <!-- ========================================== -->
     <target name="all" depends="copy.resources,java,jar,lib">
+    </target>
+    
+    <!-- ============================================= -->
+    <!-- Run tests.                                    -->
+    <!-- ============================================= -->
+    <target name="test">
+    	<property environment="env"/>
+    	
+    	<path id="classpath-tests-run">
+        	<fileset dir="../${build.output.build.dir}/woproject/lib">
+            	<include name="*.jar"/>
+        	</fileset>
+			
+        	<!-- This is important, since java.home can point to  -->
+        	<!-- JRE that has no compiler.                        -->
+        	<fileset dir="${env.JAVA_HOME}/lib">
+  				<include name="*.jar" /> 
+  			</fileset>
+  		
+  			<fileset dir="${wo.woroot}/Library/Frameworks">
+            	<include name="JavaFoundation.framework/Resources/Java/*.jar"/>
+        	</fileset>
+        </path>
+        <path id="classpath-tests">
+    		<path refid="classpath"/>
+    		<pathelement path="../${build.output.build.dir}/woproject/lib/woproject.jar"/>
+    	</path>
+    	<mkdir dir="../${build.output.java.test.dir}"/>
+    	<ant dir="." antfile="../${project.buildscripts.dir}/ant-style-project.xml" target="java.tests">
+            <property name="param.src.dir" value="tests/java"/>
+            <property name="param.dest.dir" value="../${build.output.java.test.dir}"/>
+            <reference refid="classpath-tests"/>
+	    </ant>
+    	<ant antfile="build-test.xml">
+            <property name="test.results" value="../${build.output.test.dir}/results"/>
+            <property name="test.classes" value="../${build.output.java.test.dir}"/>
+        	<reference refid="classpath-tests"/>
+        	<reference refid="classpath-tests-run"/>
+        </ant>
     </target>
 
     <!-- ========================================== -->

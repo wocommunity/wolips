@@ -86,9 +86,16 @@
     </target>
 
     <!-- ========================================== -->
+    <!-- Build migrate.                             -->
+    <!-- ========================================== -->
+    <target name="build_migrate">
+	<ant antfile="build_migrate.xml"/>
+    </target>
+
+    <!-- ========================================== -->
     <!-- Build buildserver.                         -->
     <!-- ========================================== -->
-    <target name="buildserver">
+    <target name="buildserver" depends="build_migrate,dist,test">
     </target>
 
     <!-- ============================================= -->
@@ -107,6 +114,33 @@
     <target name="clean">
         <delete dir="${build.output.dir}"/>
         <delete file="velocity.log"/>
+    </target>
+
+    <!-- ============================================= -->
+    <!-- Run tests.                                    -->
+    <!-- ============================================= -->
+    <target name="test" depends="woenvironment.test,woproject.test,wolips.test">
+    </target>
+
+    <!-- ========================================== -->
+    <!-- Run woenvironment tests.                   -->
+    <!-- ========================================== -->
+    <target name="woenvironment.test">
+	<ant dir="${project.woenvironment.dir}" target="test"/>
+    </target>
+
+    <!-- ========================================== -->
+    <!-- Run woproject tests.                       -->
+    <!-- ========================================== -->
+    <target name="woproject.test">
+	<ant dir="${project.woproject.dir}" target="test"/>
+    </target>
+
+    <!-- ========================================== -->
+    <!-- Run wolips  tests.                         -->
+    <!-- ========================================== -->
+    <target name="wolips.test">
+	<ant dir="${project.wolips.dir}" target="test"/>
     </target>
 
     <!-- ========================================== -->

@@ -23,6 +23,23 @@
     </target>
 
     <!-- ============================================= -->
+    <!-- Compiles Java test cases                      -->
+    <!-- Required parameters                           -->
+    <!-- param.src.dir the src directory               -->
+    <!-- param.dest.dir the javac output directory     -->
+    <!-- classpath-tests the classpath refid           -->
+    <!-- ============================================= -->
+    <target name="java.tests">
+       <javac srcdir="${param.src.dir}"
+                destdir="${param.dest.dir}"
+                deprecation="${compile.deprecation}"
+                debug="${compile.debug}"
+                optimize="${compile.optimize}">
+            <classpath refid="classpath-tests"/>
+        </javac>
+    </target>
+
+    <!-- ============================================= -->
     <!-- Jars Java classes                             -->
     <!-- Required parameters                           -->
     <!-- param.classes.dir                             -->
