@@ -5,7 +5,9 @@
    version="0.9.5"
    provider-name="%WOLips.providerName"
    class="org.objectstyle.wolips.plugin.WOLipsPlugin">
-
+<!-- =================================================================================== -->
+<!-- runtime                                                                             -->
+<!-- =================================================================================== -->
    <runtime>
       <library name="lib/wolips.jar">
          <export name="*"/>
@@ -27,6 +29,9 @@
          <packages prefixes="org.objectstyle.cayenne"/>
       </library>
    </runtime>
+<!-- =================================================================================== -->
+<!-- Required Plugins                                                                    -->
+<!-- =================================================================================== -->   
    <requires>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.core.resources"/>
@@ -48,8 +53,6 @@
       <import plugin="org.eclipse.ui.externaltools"/>
       <import plugin="org.eclipse.pde.runtime"/>
    </requires>
-
-
 <!-- =================================================================================== -->
 <!-- Extension: Project Wizards                                                          -->
 <!-- =================================================================================== -->
