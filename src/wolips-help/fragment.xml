@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fragment
+   id="org.objectstyle.wolips.help"
+   name="%WOLips.help.fragmentName"
+   version="0.9.3"
+   provider-name="%WOLips.providerName"
+   plugin-id="org.objectstyle.wolips"
+   plugin-version="0.9.3"
+   match="compatible">
+
+   <runtime>
+   </runtime>
+
+   <requires>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.ui"/>
+   </requires>
+
+<!-- ============================================== -->
+<!-- Define the main book                           -->
+<!-- ============================================== -->
+
+    <extension point="org.eclipse.help.toc">
+        <toc file="book.xml" primary="true" />
+    </extension>
+
+<!-- =============================================== -->
+<!-- Link the sections into the book                 -->
+<!-- =============================================== -->
+
+    <extension point="org.eclipse.help.toc">
+        <toc file="toc_Concepts.xml" />
+        <toc file="toc_Tasks.xml" />
+        <toc file="toc_Ref.xml" />
+    </extension>
+
+</fragment>
