@@ -12,15 +12,14 @@
     <property name="output" value="output"/>
     <property name="next.root" value="${env.NEXT_ROOT}"/>
     
-    
     <!-- ============================================= -->
     <!-- Derived Properties.                           -->
     <!-- ============================================= -->
     <property name="build" value="${output}/build"/>
     <property name="wolips.targetbuilder.name" value="org.objectstyle.wolips.targetbuilder_${WOLips.version}"/>
-    <property name="wolips.targetbuilder.dist" value="${dist.base}/${wolips.targetbuilder.name}"/>
+    <property name="wolips.targetbuilder.dist" value="${dist.base}/plugins/${wolips.targetbuilder.name}"/>
     <property name="wolips.name" value="org.objectstyle.wolips_${WOLips.version}" /> 
-	<property name="wolips.dist" value="${dist.base}/${wolips.name}" /> 
+	<property name="wolips.dist" value="${dist.base}/plugins/${wolips.name}" /> 
 
     <!-- main distribution. -->
     <property name="dist" value="${dist.base}/${project.name}-${project.version}"/>
@@ -43,7 +42,7 @@
                 <include name="*.jar"/>
 	            <include name="eclipse/**/*.jar"/>
             </fileset>
-	    <fileset dir="dist/org.objectstyle.wolips_${WOLips.version}">
+	    <fileset dir="${wolips.dist}">
 			<include name="**/wolips.jar"/>
 	    </fileset>
             <fileset dir="${next.root}/Library/Frameworks">

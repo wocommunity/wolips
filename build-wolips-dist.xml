@@ -11,16 +11,25 @@
     <property name="wolips.name" value="org.objectstyle.wolips_${WOLips.version}"/>
     <property name="wolips.targetbuilder.name" value="org.objectstyle.wolips.targetbuilder_${WOLips.version}"/>
     <property name="wolips.dist" value="${dist.base}/${wolips.name}"/>
+    <property name="wolips.feature.dist" value="${dist.base}/features/${wolips.name}"/>
     
     <!-- main distribution. -->
     <property name="dist" value="${dist.base}/${project.name}-${project.version}"/>
-         <!-- make wolips dist -->
-         <tar tarfile="${wolips.dist}.tar">
-             <tarfileset dir="${dist.base}">
-             	<include name="**/${wolips.name}/**"/>
-             	<include name="**/${wolips.targetbuilder.name}/**"/>
+    
+    <!-- make feature -->
+    <mkdir dir="${wolips.feature.dist}"/>
+    <copy todir="${wolips.feature.dist}">
+        <fileset dir="src/wolips-feature">
+        </fileset>
+    </copy>
+    
+    <!-- make wolips dist -->
+    <tar tarfile="${wolips.dist}.tar">
+        <tarfileset dir="${dist.base}">
+         	<include name="plugins/**"/>
+           	<include name="features/**"/>
             </tarfileset>
-         </tar>
+        </tar>
          
          <gzip src="${wolips.dist}.tar"
               zipfile="${wolips.dist}.tar.gz"/>

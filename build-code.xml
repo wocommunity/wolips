@@ -13,12 +13,12 @@
     <!-- ============================================= -->
     <target name="define-classpath">
         <condition property="next.root" value="/System">
-            <and>
-                <os family="mac" />
-                <os family="unix" />
-            </and>
-        </condition>
-        <path id="classpath">
+        	<and>
+             	<os family="mac" />
+            	 <os family="unix" />
+        	</and>
+    	</condition>
+    	<path id="classpath">
         	<fileset dir="${ant.home}/lib">
             	<include name="ant.jar"/>
         	</fileset>

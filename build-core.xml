@@ -9,7 +9,7 @@
     <property file="default.properties" />
     <property environment="env"/>
     <property name="next.root" value="${env.NEXT_ROOT}"/>
-
+	      
 
     <!-- ============================================= -->
     <!-- Derived Properties. These properties are      -->
