@@ -2,9 +2,9 @@
 <?eclipse version="3.0"?>
 <fragment
    id="org.objectstyle.wolips.ui"
-   name="%WOLips.ui.fragmentName"
+   name="WOLips User Interface"
    version="1.0.6"
-   provider-name="%WOLips.providerName"
+   provider-name="objectstyle.org"
    plugin-id="org.objectstyle.wolips"
    plugin-version="1.0.6"
    match="compatible">
@@ -43,18 +43,12 @@
                label="&amp;WOLips"
                path="additions"
                id="org.objectstyle.wolips">
-            <separator
-                  name="project">
-            </separator>
-            <separator
-                  name="woframeworks">
-            </separator>
          </menu>
          <action
-               label="%UpdatePB.Project"
+               label="Update PB.project"
                class="org.objectstyle.wolips.ui.actions.PBAction"
-               menubarPath="org.objectstyle.wolips/project"
-               id="%UpdatePB.Project.ID">
+               menubarPath="org.objectstyle.wolips"
+               id="org.objectstyle.wolips.ui.actions.PBAction">
          </action>
       </objectContribution>
 <!-- =================================================================================== -->
@@ -66,7 +60,7 @@
             nameFilter="*.java"
             id="org.objectstyle.wolips.ui.actions.OpenComponentAction">
          <action
-               label="%WOLips.PopupMenu.OpenComponentAction"
+               label="Open WOComponent"
                class="org.objectstyle.wolips.ui.actions.OpenComponentAction"
                menubarPath="additions"
                enablesFor="1"
@@ -79,7 +73,7 @@
             nameFilter="*.wod"
             id="org.objectstyle.wolips.ui.actions.OpenSourceAction">
          <action
-               label="%WOLips.PopupMenu.OpenSourceAction"
+               label="Open .java"
                class="org.objectstyle.wolips.ui.actions.OpenSourceAction"
                menubarPath="additions"
                enablesFor="1"
@@ -92,7 +86,7 @@
             nameFilter="*.wo"
             id="org.objectstyle.wolips.ui.actions.OpenSourceAction">
          <action
-               label="%WOLips.PopupMenu.OpenSourceAction"
+               label="Open .java"
                class="org.objectstyle.wolips.ui.actions.OpenSourceAction"
                menubarPath="additions"
                enablesFor="1"
@@ -105,7 +99,7 @@
             nameFilter="*.eomodeld"
             id="org.objectstyle.wolips.ui.actions.OpenEOModelIndexAction">
          <action
-               label="%WOLips.PopupMenu.OpenEOModelIndexAction"
+               label="Open EOModel"
                class="org.objectstyle.wolips.ui.actions.OpenEOModelIndexAction"
                menubarPath="additions"
                enablesFor="1"
@@ -220,14 +214,22 @@
    <extension
          point="org.eclipse.ui.views">
       <category
-            name="%WOLips.View.Category.Name"
+            name="WOLips"
             id="org.objectstyle.wolips.ui">
       </category>
       <view
             name="Related"
             icon="icons/wolips/WOLips-icon.gif"
+            category="org.objectstyle.wolips.ui"
             class="org.objectstyle.wolips.ui.view.RelatedView"
             id="org.objectstyle.wolips.ui.view.RelatedView">
+      </view>
+      <view
+            name="Support"
+            icon="icons/wolips/WOLips-icon.gif"
+            category="org.objectstyle.wolips.ui"
+            class="org.objectstyle.wolips.ui.support.SupportView"
+            id="org.objectstyle.wolips.ui.support.SupportView">
       </view>
    </extension>
 <!-- =================================================================================== -->
@@ -236,48 +238,48 @@
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
-            name="%WOLips.preferences.viewName"
+            name="WOLips"
             class="org.objectstyle.wolips.ui.preferences.PreferencesPage"
             id="org.objectstyle.wolips.preferences.PreferencesPage">
       </page>
       <page
-            name="%WOLips.preferences.build.viewName"
+            name="Build"
             category="org.objectstyle.wolips.preferences.PreferencesPage"
             class="org.objectstyle.wolips.ui.preferences.BuildPreferencesPage"
             id="org.objectstyle.wolips.preferences.BuildPreferencesPage">
       </page>
       <page
-            name="%WOLips.preferences.launch.viewName"
+            name="Launch"
             category="org.objectstyle.wolips.preferences.PreferencesPage"
             class="org.objectstyle.wolips.ui.preferences.LaunchPreferencesPage"
             id="org.objectstyle.wolips.preferences.LaunchPreferencesPage">
       </page>
       <page
-            name="%WOLips.preferences.projectbuilder.viewName"
+            name="ProjectBuilder"
             category="org.objectstyle.wolips.preferences.PreferencesPage"
             class="org.objectstyle.wolips.ui.preferences.ProjectBuilderPreferencesPage"
             id="org.objectstyle.wolips.preferences.ProjectBuilderPreferencesPage">
       </page>
       <page
-            name="%WOLips.preferences.projectbuilder.woappresourcesincludeviewName"
+            name="PB Woappresources Include"
             category="org.objectstyle.wolips.preferences.PreferencesPage/org.objectstyle.wolips.preferences.ProjectBuilderPreferencesPage"
             class="org.objectstyle.wolips.ui.preferences.ProjectBuilderWOAppResourcesIncludePreferencesPage"
             id="org.objectstyle.wolips.preferences.ProjectBuilderWOAppResourcesIncludePreferencesPage">
       </page>
       <page
-            name="%WOLips.preferences.projectbuilder.woappresourcesexcludeviewName"
+            name="PB Woappresources Exclude"
             category="org.objectstyle.wolips.preferences.PreferencesPage/org.objectstyle.wolips.preferences.ProjectBuilderPreferencesPage"
             class="org.objectstyle.wolips.ui.preferences.ProjectBuilderWOAppResourcesExcludePreferencesPage"
             id="org.objectstyle.wolips.ui.preferences.ProjectBuilderWOAppResourcesExcludePreferencesPage">
       </page>
       <page
-            name="%WOLips.preferences.projectbuilder.classesincludeviewName"
+            name="PB Classes Include"
             category="org.objectstyle.wolips.preferences.PreferencesPage/org.objectstyle.wolips.preferences.ProjectBuilderPreferencesPage"
             class="org.objectstyle.wolips.ui.preferences.ProjectBuilderClassesIncludePreferencesPage"
             id="org.objectstyle.wolips.ui.preferences.ProjectBuilderClassesIncludePreferencesPage">
       </page>
       <page
-            name="%WOLips.preferences.projectbuilder.classesexcludeviewName"
+            name="PB Classes Exclude"
             category="org.objectstyle.wolips.preferences.PreferencesPage/org.objectstyle.wolips.preferences.ProjectBuilderPreferencesPage"
             class="org.objectstyle.wolips.ui.preferences.ProjectBuilderClassesExcludePreferencesPage"
             id="org.objectstyle.wolips.ui.preferences.ProjectBuilderClassesExcludePreferencesPage">
@@ -302,15 +304,15 @@
    <extension
          point="org.eclipse.ui.actionSets">
       <actionSet
-            label="%ElementCreationActionSet.label"
-            description="%ElementCreationActionSet.description"
+            label="WOLips"
+            description="WOLips Wizards"
             visible="false"
             id="org.objectstyle.wolips.ui.BuildActionSet">
          <action
-               label="%ToggleWOBuild.label"
+               label="Toggle WOBuild"
                style="toggle"
                icon="icons/wobuild/toggle_build.gif"
-               tooltip="%ToggleWOBuild.tooltip"
+               tooltip="Toggle WOBuild"
                class="org.objectstyle.wolips.ui.actions.WOBuildToggleAction"
                toolbarPath="Normal/WOLipsWizards"
                id="org.objectstyle.wolips.ui.actions.WOBuildToggleAction">
@@ -336,79 +338,79 @@
 <!-- Package Explorer -->
       <filter
             viewId="org.eclipse.jdt.ui.PackageExplorer"
-            name="%HideMakeFiles.label"
+            name="PB makefiles (WOLips)"
             enabled="true"
-            description="%HideMakeFiles.description"
+            description="Hide the makefiles required by PBWO"
             pattern="Makefil*">
       </filter>
       <filter
             viewId="org.eclipse.jdt.ui.PackageExplorer"
-            name="%HideAntClasspathIncludeFiles.label"
+            name="ant classpath files (WOLips)"
             enabled="true"
-            description="%HideAntClasspathIncludeFiles.description"
+            description="Hide the ant classpath files generated by WOLips"
             pattern="ant.classpaths.*">
       </filter>
       <filter
             viewId="org.eclipse.jdt.ui.PackageExplorer"
-            name="%HideAntFrameworksIncludeFiles.label"
+            name="ant framework files (WOLips)"
             enabled="true"
-            description="%HideAntFrameworksIncludeFiles.description"
+            description="Hide the ant framework files generated by WOLips"
             pattern="ant.frameworks.*">
       </filter>
       <filter
             viewId="org.eclipse.jdt.ui.PackageExplorer"
-            name="%HidePBProjectFiles.label"
+            name="PB.project (WOLips)"
             enabled="true"
-            description="%HidePBProjectFiles.description"
+            description="Hide the PBWO project file."
             pattern="PB.project">
       </filter>
       <filter
             viewId="org.eclipse.jdt.ui.PackageExplorer"
-            name="%HideWOApiFiles.label"
+            name="WOComponent api (WOLips)"
             enabled="false"
-            description="%HideWOApiFiles.description"
+            description="Hide all *.api files"
             pattern="*.api">
       </filter>
       <filter
             viewId="org.eclipse.jdt.ui.PackageExplorer"
-            name="%HideWooFiles.label"
+            name="woo (WOLips)"
             enabled="false"
-            description="%HideWooFiles.description"
+            description="Hide all *.woo files"
             pattern="*.woo">
       </filter>
       <filter
             viewId="org.eclipse.jdt.ui.PackageExplorer"
-            name="%HideWOAIconFiles.label"
+            name="WOA Icon (WOLips)"
             enabled="true"
-            description="%HideWOAIconFiles.description"
+            description="Hides the WOA Icon"
             pattern="WOAfile.icns">
       </filter>
       <filter
             viewId="org.eclipse.jdt.ui.PackageExplorer"
-            name="%HideCustomInfo.PlistFiles.label"
+            name="CustomInfo.plist (WOLips)"
             enabled="true"
-            description="%HideCustomInfo.PlistFiles.description"
+            description="Hide all CustomInfo.plist files"
             pattern="CustomInfo.Plist">
       </filter>
       <filter
             viewId="org.eclipse.jdt.ui.PackageExplorer"
-            name="%HidePropertiesFiles.label"
+            name="Properties (WOLips)"
             enabled="true"
-            description="%HidePropertiesFiles.description"
+            description="Hides files named Properties"
             pattern="Properties">
       </filter>
       <filter
             viewId="org.eclipse.jdt.ui.PackageExplorer"
-            name="%HideBuild.propertiesFiles.label"
+            name="build.properties (WOLips)"
             enabled="true"
-            description="%HideBuild.propertiesFiles.description"
+            description="Hide all build.properties files"
             pattern="build.properties">
       </filter>
       <filter
             viewId="org.eclipse.jdt.ui.PackageExplorer"
-            name="%HideBuild.xmlFiles.label"
+            name="build.xml (WOLips)"
             enabled="true"
-            description="%HideBuild.xmlFiles.description"
+            description="Hide all build.xml files"
             pattern="build.xml">
       </filter>
    </extension>
