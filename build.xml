@@ -7,7 +7,7 @@
 <project name="woproject" default="java" basedir=".">
 	<property file="build.properties"/>
     <property file="${user.home}/build.properties"/>
-    <property file="${user.home}/wobuild.properties"/>
+    <property file="${user.home}/Library/wobuild.properties"/>
     <property file="default.properties"/>
     <property file="lib/lib.properties"/>
 

@@ -202,7 +202,7 @@ public class DirectAction extends WODirectAction {
 	<!-- property determination  -->
 	<target name="setProps">
 		<property file="build.properties"/>
-		<property file="${user.home}/wobuild.properties"/>
+		<property file="${user.home}/Library/wobuild.properties"/>
 		<condition property="wo.properties.ckeck.failed">
 			<not>
     			<and>
@@ -306,7 +306,7 @@ project.name = ${PROJECT_NAME}
 	<!-- property determination  -->
 	<target name="setProps">
 		<property file="build.properties"/>
-		<property file="${user.home}/wobuild.properties"/>
+		<property file="${user.home}/Library/wobuild.properties"/>
 		<condition property="wo.properties.ckeck.failed">
 			<not>
     			<and>

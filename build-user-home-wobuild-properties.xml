@@ -4,10 +4,10 @@
 <!-- ======================================================== -->
 
 <project name="woproject" default="check" basedir=".">
-	<property file="${user.home}/wobuild.properties"/>
+	<property file="${user.home}/Library/wobuild.properties"/>
 	
 	<target name="check" depends="check_file,set_other,check_env,set_mac">
-		<fail message="Could not find ${user.home}/wobuild.properties. There should now be a generated one. Just launch ant again" if="wo.properties.ckeck.failed"/>
+		<fail message="Could not find ${user.home}/Library/wobuild.properties. There should now be a generated one. Just launch ant again" if="wo.properties.ckeck.failed"/>
 	</target>
 	
 	<target name="check_file">
@@ -25,7 +25,9 @@
 	
 		<property environment="env"/>
 		
-		<propertyfile file="${user.home}/wobuild.properties" comment="This file stores the wo specific properties">
+		<mkdir dir="${user.home}/Library"/>
+		
+		<propertyfile file="${user.home}/Library/wobuild.properties" comment="This file stores the wo specific properties">
   			<entry  key="wo.woroot" value="${env.NEXT_ROOT}"/>
  			<entry  key="wo.wolocalroot" value="${env.NEXT_ROOT}/Local"/>
 		</propertyfile>
@@ -33,7 +35,7 @@
 	</target>
 	
 	<target name="set_mac" if="env.ckeck.failed">
-		<propertyfile file="${user.home}/wobuild.properties" comment="This file stores the wo specific properties">
+		<propertyfile file="${user.home}/Library/wobuild.properties" comment="This file stores the wo specific properties">
   			<entry  key="wo.woroot" value="/System"/>
  			<entry  key="wo.wolocalroot" value="/"/>
 		</propertyfile>
