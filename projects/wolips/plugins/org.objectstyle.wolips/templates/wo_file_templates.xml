@@ -295,23 +295,23 @@ public class DirectAction extends WODirectAction {
     <!-- To use this target remove the if="${never}" statement and create the LICENSE in your project  
          and create the web.xml file with the woapplication task.--> 
     <target name="ssdd" if="${never}">
-    	<mkdir dir="${dest.dir}/${project.name}/WEB_INF/tlds"/>
-    	<copy todir="${dest.dir}/${project.name}/WEB_INF/">
+    	<mkdir dir="${dest.dir}/${project.name}/WEB-INF/tlds"/>
+    	<copy todir="${dest.dir}/${project.name}/WEB-INF/">
             <fileset dir="${dest.dir}/${project.name}.woa/Contents/"> 
                 <include name="web.xml"/> 
             </fileset> 
         </copy>
-    	<copy todir="${dest.dir}/${project.name}/WEB_INF/">
+    	<copy todir="${dest.dir}/${project.name}/WEB-INF/">
             <fileset dir=".."> 
                 <include name="LICENSE"/> 
             </fileset> 
         </copy>
-        <copy todir="${dest.dir}/${project.name}/WEB_INF/">
+        <copy todir="${dest.dir}/${project.name}/WEB-INF/">
             <fileset dir="${dest.dir}"> 
                 <include name="${project.name}.woa/**"/> 
             </fileset> 
         </copy>    	 
-    	<copy todir="${dest.dir}/${project.name}/WEB_INF/tlds">
+    	<copy todir="${dest.dir}/${project.name}/WEB-INF/tlds">
             <fileset dir="${wo.wosystemroot}/Library/Frameworks/JavaWOJSPServlet.framework/Resources/"> 
                 <include name="WOtaglib_1_0.tld"/> 
             </fileset> 
