@@ -3,6 +3,7 @@
 <toc label="WOLips User Guide" href="doc_root/index.html">
 	<topic label="Getting Started" href="doc_root/introduction.html"/>
 	<topic label="Concepts" href="doc_root/concepts.html"/>
+	<topic label="Eclipse set up" href="doc_root/eclipse.html"/>
 	<topic label="Tasks" href="doc_root/tasks/index.html">
 		<topic label="Installing" href="doc_root/tasks/install.html"/>
 		<topic label="Wizards" href="doc_root/tasks/wiz/index.html">
