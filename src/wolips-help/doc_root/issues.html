@@ -6,6 +6,14 @@
 
 <body bgcolor="#FFFFFF">
 <h1>Bugs, Issues and Other Things</h1>
+<p>This is not the official WOLips bug list. You'll find that on SourceForge:</p>
+<ul>
+  <li><a href="http://sourceforge.net/tracker/?atid=459967&amp;group_id=50507&amp;func=browse">Bugs</a></li>
+  <li><a href="http://sourceforge.net/tracker/?atid=459970&amp;group_id=50507&amp;func=browse">Feature 
+    Requests</a></li>
+</ul>
+<p>What you find here is descriptions on how to work-around (fix) some of the 
+  known problems.</p>
 <h2><a name="bugs"></a>Bugs</h2>
 <p>...problems with documented features.</p>
 <table width="100%">
@@ -18,51 +26,34 @@
     </td>
   </tr>
   <tr> 
-    <td>Importing projects with localized components doesn't work.</td>
-    <td>?</td>
-  </tr>
-  <tr> 
-    <td> 
-      <p><span
-     lang=EN-GB style='mso-fareast-font-family:"MS Mincho";mso-ansi-language:
-     EN-GB'>On Windows the ~\Library\<span class=SpellE>wobuild.properties is 
-        created with paths using single '\' instead of double '\\'. This will 
-        cause some WOProject Ant scripts to fail. In particular it is not possible 
-        to build WOProject and/or WOLips from source.</span></span></p>
-    </td>
-    <td> 
-      <p>Edit the file, and replace all <span lang=EN-GB
-style='mso-fareast-font-family:"MS Mincho";mso-ansi-language:EN-GB'><o:p></o:p></span><span
-     lang=EN-GB style='mso-fareast-font-family:"MS Mincho";mso-ansi-language:
-     EN-GB'><span class=SpellE>single '\' with double '\\'.</span></span></p>
-    </td>
-  </tr>
-  <tr> 
-    <td>Importing projects with java code organised in packages doesn't work properly. 
-      Either the java files are not found or they may be put in the wrong directory.</td>
-    <td>Adding them manually is not a big task!</td>
-  </tr>
-  <tr> 
-    <td>In some situations eclipse freezes or throws an OutOfMemoryError.</td>
-    <td>Try turning off &quot;Build after JavaBuilder&quot; in the WOLips preferences.</td>
-  </tr>
-  <tr>
-    <td>
-      <p>WOLips adds this to the PB.project file:</p>
+    <td align="left" valign="top"> 
+      <p><a href="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=693046&amp;group_id=50507&amp;atid=459967">693046</a></p>
+      <p>When you add local framework to using PBWO this is also added to the 
+        PB.project file: </p>
+      <p>FRAMEWORKSEARCH = ("C:\\Apple\\Local\\Library\\Frameworks");</p>
+      <p>If/when you do the same thing using WOLips this does not happen.</p>
+      <p>In addition WOLips keeps transforming the section to:</p>
       <p>FRAMEWORKSEARCH = ( <br>
         C:\Apple\Local\Library\Frameworks<br>
         ); </p>
-      <p>While PBWO adds this: </p>
-      <p>FRAMEWORKSEARCH = ("C:\\Apple\\Local\\Library\\Frameworks");</p>
-      <p> The WOLips version does not work - ProjectBuilder, WOBuilder and other 
-        tools can't parse the PB.project file! </p>
+      <p>This does not work! PBWO, EOModeler and WOBuilder all stop working.</p>
     </td>
-    <td>Manually fix the PB.project file each time this happens.</td>
+    <td align="left" valign="top"> 
+      <p>Use PBWO to add local frameworks, manually fix the PB.project file each 
+        time WOLips screws it up.</p>
+    </td>
+  </tr>
+  <tr> 
+    <td align="left" valign="top"> 
+      <p><a href="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=695129&amp;group_id=50507&amp;atid=459967">695129</a></p>
+      <p>Importing projects with java code organised in packages doesn't work 
+        properly. Either the java files are not found or they may be put in the 
+        wrong directory.</p>
+    </td>
+    <td align="left" valign="top">Adding them manually is not a big task!</td>
   </tr>
 </table>
-<p>You can also have a look at the <a href="http://sourceforge.net/pm/?group_id=50507">SourceForge 
-  tasks list for WOProject</a>. </p>
-<h2><a name="issues"></a>Issues</h2>
+<h2><a name="issues"></a>Issues (Feature Requests)</h2>
 <p>...things you may want to do, but can't.</p>
 <table width="100%">
   <tr> 
@@ -74,13 +65,12 @@ style='mso-fareast-font-family:"MS Mincho";mso-ansi-language:EN-GB'><o:p></o:p><
     </td>
   </tr>
   <tr> 
-    <td>Currently you can not use the ant scripts outside of Eclipse.</td>
-    <td>&nbsp;</td>
-  </tr>
-  <tr> 
-    <td>The import (project) Wizards currently only work with PBWO projects. If 
-      you try it with PBX projects you may find that some file where skipped and 
-      that the eclipse .project file in incomplete. </td>
+    <td align="left" valign="top"> 
+      <p><a href="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=695152&amp;group_id=50507&amp;atid=459970">695152</a></p>
+      <p>The import (project) Wizards currently only work with PBWO projects. 
+        If you try it with PBX projects you may find that some file where skipped 
+        and that the eclipse .project file in incomplete. </p>
+    </td>
     <td> 
       <p>How to import an existing PBX project (or any collection of suitable 
         files)</p>
@@ -95,34 +85,16 @@ style='mso-fareast-font-family:"MS Mincho";mso-ansi-language:EN-GB'><o:p></o:p><
     </td>
   </tr>
   <tr> 
-    <td> 
+    <td align="left" valign="top"> 
+      <p><a href="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=695157&amp;group_id=50507&amp;atid=459970">695157</a></p>
       <p>EOModeler on Macintosh may convert the PB.project file to XML.</p>
     </td>
-    <td> 
+    <td align="left" valign="top"> 
       <p>When EOModeler asks you if you want to add the file(s) to to the project 
         - decline.</p>
     </td>
   </tr>
-  <tr> 
-    <td><span lang=EN-GB style='mso-fareast-font-family:"MS Mincho";
-mso-ansi-language:EN-GB'>WOLips needs to maintain either the <span
-class=SpellE>PBWO</span> ‘<span class=SpellE>PB.project</span>’ file or the PBX 
-      ‘*.<span class=SpellE>pbproj</span>’ file in order to have <span class=SpellE>WOBuilder</span> 
-      and <span class=SpellE>EOModeler</span> function as desired. The <span
-class=SpellE>PBWO</span> file is apparently much easier to maintain than the PBX 
-      file. Working in parallel with <span class=SpellE>PBWO</span> and eclipse/WOLips 
-      is possible, but is not the primary reason for maintaining the project files.</span></td>
-    <td>&nbsp;</td>
-  </tr>
-  <tr>
-    <td>WObuilder wont display component members correctly if the import statements 
-      of its class are too tight.</td>
-    <td>In Windows &gt; Preferences &gt; Java &gt; Organize Imports set &quot;Number 
-      of imports needed for .*&quot; to 2.</td>
-  </tr>
 </table>
-<p>You can also have a look at the <a href="http://sourceforge.net/pm/?group_id=50507">SourceForge 
-  tasks list for WOProject</a>. </p>
 <h2><a name="other"></a>Other Things</h2>
 <p>...not directly related to WOLips or WOProject. Perhaps common problems with 
   eclipse or WebObjects.</p>
@@ -136,10 +108,11 @@ class=SpellE>PBWO</span> file is apparently much easier to maintain than the PBX
     </td>
   </tr>
   <tr> 
-    <td valign="top">On Microsoft Windows 2000, a WebObjects 5.1 (and 5.0) application 
-      linked to several frameworks may not open or "launch". The problem is that 
-      the cmd.exe in Win2k can not handle commands longer than 2000 characters.</td>
-    <td> 
+    <td valign="top" align="left">On Microsoft Windows 2000, a WebObjects 5.1 
+      (and 5.0) application linked to several frameworks may not open or "launch". 
+      The problem is that the cmd.exe in Win2k can not handle commands longer 
+      than 2000 characters.</td>
+    <td align="left" valign="top"> 
       <p>You have 4 alternatives:</p>
       <ol>
         <li>Switch to WO 5.2</li>
@@ -149,8 +122,23 @@ class=SpellE>PBWO</span> file is apparently much easier to maintain than the PBX
         <li><a href="http://docs.info.apple.com/article.html?artnum=75300">Use 
           WOLauncher.exe</a></li>
       </ol>
-    *) You must also modify the MAXLEN variable of the application start script 
+      *) You must also modify the MAXLEN variable of the application start script 
       to allow commands longer than 2000 characters.</td>
+  </tr>
+  <tr> 
+    <td valign="top" align="left">WOBuilder wont display component members correctly 
+      if the import statements of its class are too tight. Eclipse has a tendency 
+      keep them very tight.</td>
+    <td align="left" valign="top">In Windows &gt; Preferences &gt; Java &gt; Organize 
+      Imports set &quot;Number of imports needed for .*&quot; to 2. This should 
+      enough for most situations.</td>
+  </tr>
+  <tr>
+    <td valign="top" align="left">Excessive use of Ant (internally) could cause 
+      Elipse to freeze and/or throw an OutOfMemoryError. This is a priblem with 
+      the Ant plug-in currently shipping with Eclipse.</td>
+    <td align="left" valign="top">Try turning off &quot;Build after JavaBuilder&quot; 
+      in the WOLips preferences.</td>
   </tr>
 </table>
 <p>&nbsp;</p>
