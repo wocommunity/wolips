@@ -2,7 +2,7 @@
  *
  * The ObjectStyle Group Software License, Version 1.0
  *
- * Copyright (c) 2002 The ObjectStyle Group
+ * Copyright (c) 2002, 2004 The ObjectStyle Group
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -58,22 +58,24 @@ package org.objectstyle.wolips.preferences;
 
 /**
  * @author ulrich
- *
+ * 
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
 public interface ILaunchInfo {
 	/**
-	 * @return
+	 * @return the parameter
 	 */
 	public String getParameter();
+
 	/**
-	 * @return
+	 * @return the argument
 	 */
 	public String getArgument();
+
 	/**
-	 * @return
+	 * @return is enabled
 	 */
 	public boolean isEnabled();
-	
+
 }

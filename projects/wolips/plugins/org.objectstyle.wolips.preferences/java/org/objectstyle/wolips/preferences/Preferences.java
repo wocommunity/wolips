@@ -64,63 +64,65 @@ import org.eclipse.jface.preference.IPreferenceStore;
 
 /**
  * @author uli
- *
+ * 
  * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates.
- * To enable and disable the creation of type comments go to
- * Window>Preferences>Java>Code Generation.
+ * Window>Preferences>Java>Templates. To enable and disable the creation of type
+ * comments go to Window>Preferences>Java>Code Generation.
  */
 public class Preferences {
 
 	/**
 	 * Comment for <code>PREF_RUN_WOBUILDER_ON_BUILD</code>
 	 */
-	public static final String PREF_RUN_WOBUILDER_ON_BUILD =
-		"org.objectstyle.wolips.preference.RunWOBuilderOnBuild";
+	public static final String PREF_RUN_WOBUILDER_ON_BUILD = "org.objectstyle.wolips.preference.RunWOBuilderOnBuild";
+
 	/**
 	 * Comment for <code>PREF_CAPTURE_ANT_OUTPUT</code>
 	 */
-	public static final String PREF_CAPTURE_ANT_OUTPUT =
-		"org.objectstyle.wolips.preference.CapureAntOutput";
+	public static final String PREF_CAPTURE_ANT_OUTPUT = "org.objectstyle.wolips.preference.CapureAntOutput";
+
 	/**
 	 * Comment for <code>PREF_OPEN_WOCOMPONENT_ACTION_INCLUDES_OPEN_HTML</code>
 	 */
-	public static final String PREF_OPEN_WOCOMPONENT_ACTION_INCLUDES_OPEN_HTML =
-		"org.objectstyle.wolips.Preference.OpenWOComponentActionIncludesOpenHTML";
+	public static final String PREF_OPEN_WOCOMPONENT_ACTION_INCLUDES_OPEN_HTML = "org.objectstyle.wolips.Preference.OpenWOComponentActionIncludesOpenHTML";
+
 	/**
 	 * Comment for <code>PREF_NS_PROJECT_SEARCH_PATH</code>
 	 */
-	public static final String PREF_NS_PROJECT_SEARCH_PATH =
-		"org.objectstyle.wolips.Preference.NSProjectSearch";
+	public static final String PREF_NS_PROJECT_SEARCH_PATH = "org.objectstyle.wolips.Preference.NSProjectSearch";
+
 	/**
 	 * Comment for <code>PREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH</code>
 	 */
-	public static final String PREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH =
-		"org.objectstyle.wolips.Preference.RebuildWOBuildPropertiesOnNextLaunch";
+	public static final String PREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH = "org.objectstyle.wolips.Preference.RebuildWOBuildPropertiesOnNextLaunch";
+
 	/**
 	 * Comment for <code>PREF_WOLIPS_VERSION_EARLY_STARTUP</code>
 	 */
-	public static final String PREF_WOLIPS_VERSION_EARLY_STARTUP =
-		"org.objectstyle.wolips.Preference.WOLipsVersionEarlyStartup";
+	public static final String PREF_WOLIPS_VERSION_EARLY_STARTUP = "org.objectstyle.wolips.Preference.WOLipsVersionEarlyStartup";
+
 	/**
 	 * Comment for <code>PREF_LAUNCH_GLOBAL</code>
 	 */
-	public static final String PREF_LAUNCH_GLOBAL =
-		"org.objectstyle.wolips.Preference.Launch_Global";
+	public static final String PREF_LAUNCH_GLOBAL = "org.objectstyle.wolips.Preference.Launch_Global";
 
 	/**
 	 * Comment for <code>FLAG_INCLUDE_EXCLUDE_RULES_CHANGED</code>
 	 */
 	public static boolean FLAG_INCLUDE_EXCLUDE_RULES_CHANGED = false;
+
 	/**
 	 * Comment for <code>trueString</code>
 	 */
 	public static final String trueString = "true";
+
 	/**
 	 * Comment for <code>falseString</code>
 	 */
 	public static final String falseString = "false";
-	//set this sting to a preferences key and call set defaults to set the default value for this preferences key
+
+	// set this sting to a preferences key and call set defaults to set the
+	// default value for this preferences key
 	private static String SET_DEFAULTS_STRING = null;
 
 	/**
@@ -129,8 +131,7 @@ public class Preferences {
 	public static void save() {
 		IPreferenceStore store = getPreferenceStore();
 		if (store instanceof IPersistentPreferenceStore) {
-			IPersistentPreferenceStore pstore =
-				(IPersistentPreferenceStore) store;
+			IPersistentPreferenceStore pstore = (IPersistentPreferenceStore) store;
 			if (pstore.needsSaving()) {
 				try {
 					pstore.save();
@@ -148,47 +149,45 @@ public class Preferences {
 	public static void setDefaults() {
 		IPreferenceStore store = getPreferenceStore();
 		if (Preferences.SET_DEFAULTS_STRING == null
-				|| Preferences.SET_DEFAULTS_STRING.equals(
-					Preferences.PREF_CAPTURE_ANT_OUTPUT))
-				store.setDefault(
-					Preferences.PREF_CAPTURE_ANT_OUTPUT,
+				|| Preferences.SET_DEFAULTS_STRING
+						.equals(Preferences.PREF_CAPTURE_ANT_OUTPUT))
+			store.setDefault(Preferences.PREF_CAPTURE_ANT_OUTPUT,
 					Preferences.falseString);
 		if (Preferences.SET_DEFAULTS_STRING == null
-				|| Preferences.SET_DEFAULTS_STRING.equals(
-					Preferences.PREF_RUN_WOBUILDER_ON_BUILD))
-				store.setDefault(
-					Preferences.PREF_RUN_WOBUILDER_ON_BUILD,
+				|| Preferences.SET_DEFAULTS_STRING
+						.equals(Preferences.PREF_RUN_WOBUILDER_ON_BUILD))
+			store.setDefault(Preferences.PREF_RUN_WOBUILDER_ON_BUILD,
 					Preferences.trueString);
 		if (Preferences.SET_DEFAULTS_STRING == null
-			|| Preferences.SET_DEFAULTS_STRING.equals(
-				Preferences.PREF_OPEN_WOCOMPONENT_ACTION_INCLUDES_OPEN_HTML))
-			store.setDefault(
-				Preferences.PREF_OPEN_WOCOMPONENT_ACTION_INCLUDES_OPEN_HTML,
-				Preferences.falseString);
+				|| Preferences.SET_DEFAULTS_STRING
+						.equals(Preferences.PREF_OPEN_WOCOMPONENT_ACTION_INCLUDES_OPEN_HTML))
+			store
+					.setDefault(
+							Preferences.PREF_OPEN_WOCOMPONENT_ACTION_INCLUDES_OPEN_HTML,
+							Preferences.falseString);
 		if (Preferences.SET_DEFAULTS_STRING == null
-			|| Preferences.SET_DEFAULTS_STRING.equals(
-				Preferences.PREF_NS_PROJECT_SEARCH_PATH))
+				|| Preferences.SET_DEFAULTS_STRING
+						.equals(Preferences.PREF_NS_PROJECT_SEARCH_PATH))
 			store.setDefault(Preferences.PREF_NS_PROJECT_SEARCH_PATH, "");
 		if (Preferences.SET_DEFAULTS_STRING == null
-			|| Preferences.SET_DEFAULTS_STRING.equals(
-				Preferences.PREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH))
+				|| Preferences.SET_DEFAULTS_STRING
+						.equals(Preferences.PREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH))
 			store.setDefault(
-				Preferences.PREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH,
-				PreferencesMessages.getString(Preferences.falseString));
+					Preferences.PREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH,
+					PreferencesMessages.getString(Preferences.falseString));
 		if (Preferences.SET_DEFAULTS_STRING == null
-			|| Preferences.SET_DEFAULTS_STRING.equals(
-				Preferences.PREF_WOLIPS_VERSION_EARLY_STARTUP))
-			store.setDefault(
-				Preferences.PREF_WOLIPS_VERSION_EARLY_STARTUP,
-				"0.0.0");
-		store.setDefault(
-			Preferences.PREF_LAUNCH_GLOBAL,
-			PreferencesMessages.getString(Preferences.PREF_LAUNCH_GLOBAL));
+				|| Preferences.SET_DEFAULTS_STRING
+						.equals(Preferences.PREF_WOLIPS_VERSION_EARLY_STARTUP))
+			store.setDefault(Preferences.PREF_WOLIPS_VERSION_EARLY_STARTUP,
+					"0.0.0");
+		store.setDefault(Preferences.PREF_LAUNCH_GLOBAL, PreferencesMessages
+				.getString(Preferences.PREF_LAUNCH_GLOBAL));
 		Preferences.SET_DEFAULTS_STRING = null;
 	}
 
 	/**
 	 * Method getString.
+	 * 
 	 * @param key
 	 * @return String
 	 */
@@ -202,8 +201,10 @@ public class Preferences {
 		}
 		return returnValue;
 	}
+
 	/**
 	 * Method setString.
+	 * 
 	 * @param key
 	 * @param value
 	 */
@@ -213,16 +214,19 @@ public class Preferences {
 	}
 
 	/**
-	* Method getBoolean.
-	* @param key
-	* @return boolean
-	*/
+	 * Method getBoolean.
+	 * 
+	 * @param key
+	 * @return boolean
+	 */
 	private static boolean getBoolean(String key) {
 		IPreferenceStore store = getPreferenceStore();
 		return (Preferences.trueString.equals(store.getString(key)));
 	}
+
 	/**
 	 * Method setBoolean.
+	 * 
 	 * @param key
 	 * @param value
 	 */
@@ -233,8 +237,10 @@ public class Preferences {
 		else
 			store.setValue(key, Preferences.falseString);
 	}
+
 	/**
 	 * Method getPreferenceStore.
+	 * 
 	 * @return IPreferenceStore
 	 */
 	public static IPreferenceStore getPreferenceStore() {
@@ -243,7 +249,7 @@ public class Preferences {
 
 	/**
 	 * @param key
-	 * @return
+	 * @return the launch info for the given key
 	 */
 	public static ILaunchInfo[] getLaunchInfoForKey(String key) {
 		String string = Preferences.getString(key);
@@ -252,7 +258,7 @@ public class Preferences {
 
 	/**
 	 * @param string
-	 * @return
+	 * @return creates a launch info from the given string
 	 */
 	public static ILaunchInfo[] getLaunchInfoFrom(String string) {
 		if (string == null)
@@ -266,26 +272,22 @@ public class Preferences {
 		ILaunchInfo[] launchInfo = new ILaunchInfo[vector.size() / 3];
 		int j = 0;
 		for (int i = 0; i < launchInfo.length; i++) {
-			launchInfo[i] =
-				new LaunchInfo(
-					(String) vector.elementAt(j),
-					(String) vector.elementAt(j + 1),
-					(String) vector.elementAt(j + 2));
+			launchInfo[i] = new LaunchInfo((String) vector.elementAt(j),
+					(String) vector.elementAt(j + 1), (String) vector
+							.elementAt(j + 2));
 			j = j + 3;
 		}
 		return launchInfo;
 	}
-	
+
 	/**
 	 * @param parameter
 	 * @param arguments
 	 * @param enabled
-	 * @return
+	 * @return the launch info converted to a string
 	 */
-	public static String LaunchInfoToString(
-		String[] parameter,
-		String[] arguments,
-		boolean[] enabled) {
+	public static String LaunchInfoToString(String[] parameter,
+			String[] arguments, boolean[] enabled) {
 		String value = "";
 		for (int i = 0; i < parameter.length; i++) {
 			value += parameter[i];
@@ -298,35 +300,36 @@ public class Preferences {
 		}
 		return value;
 	}
+
 	/**
 	 * @param parameter
 	 * @param arguments
 	 * @param enabled
 	 * @param key
 	 */
-	public static void setLaunchInfoForKey(
-		String[] parameter,
-		String[] arguments,
-		boolean[] enabled,
-		String key) {
-		String value =
-			Preferences.LaunchInfoToString(parameter, arguments, enabled);
+	public static void setLaunchInfoForKey(String[] parameter,
+			String[] arguments, boolean[] enabled, String key) {
+		String value = Preferences.LaunchInfoToString(parameter, arguments,
+				enabled);
 		Preferences.setString(key, value);
 	}
-	
+
 	private static class LaunchInfo implements ILaunchInfo {
 		/**
 		 * Comment for <code>parameter</code>
 		 */
 		public String parameter;
+
 		/**
 		 * Comment for <code>argument</code>
 		 */
 		public String argument;
+
 		/**
 		 * Comment for <code>enabled</code>
 		 */
 		public boolean enabled;
+
 		/**
 		 * @param parameter
 		 * @param argument
@@ -335,27 +338,18 @@ public class Preferences {
 		public LaunchInfo(String parameter, String argument, String enabled) {
 			this.parameter = parameter;
 			this.argument = argument;
-			this.enabled =
-				(enabled != null && Preferences.trueString.equals(enabled));
+			this.enabled = (enabled != null && Preferences.trueString
+					.equals(enabled));
 		}
 
-		/**
-		 * @return
-		 */
 		public String getArgument() {
 			return this.argument;
 		}
 
-		/**
-		 * @return
-		 */
 		public boolean isEnabled() {
 			return this.enabled;
 		}
 
-		/**
-		 * @return
-		 */
 		public String getParameter() {
 			return this.parameter;
 		}
@@ -363,55 +357,55 @@ public class Preferences {
 	}
 
 	/**
-	 * @return
+	 * @return the global lauch preferences
 	 */
 	public static String getPREF_LAUNCH_GLOBAL() {
 		return Preferences.getString(Preferences.PREF_LAUNCH_GLOBAL);
 	}
 
 	/**
-	 * @return
+	 * @return the nsprojectsearchpath preferences
 	 */
 	public static String getPREF_NS_PROJECT_SEARCH_PATH() {
 		return Preferences.getString(Preferences.PREF_NS_PROJECT_SEARCH_PATH);
 	}
 
 	/**
-	 * @return
+	 * @return the preference
 	 */
 	public static String getPREF_OPEN_WOCOMPONENT_ACTION_INCLUDES_OPEN_HTML() {
-		return Preferences.getString(
-			Preferences.PREF_OPEN_WOCOMPONENT_ACTION_INCLUDES_OPEN_HTML);
+		return Preferences
+				.getString(Preferences.PREF_OPEN_WOCOMPONENT_ACTION_INCLUDES_OPEN_HTML);
 	}
 
 	/**
-	 * @return
+	 * @return the preference
 	 */
 	public static boolean getPREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH() {
-		return Preferences.getBoolean(
-			Preferences.PREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH);
+		return Preferences
+				.getBoolean(Preferences.PREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH);
 	}
 
 	/**
-	 * @return
+	 * @return the preferences
 	 */
 	public static boolean getPREF_CAPTURE_ANT_OUTPUT() {
 		return Preferences.getBoolean(Preferences.PREF_CAPTURE_ANT_OUTPUT);
 	}
 
 	/**
-	 * @return
+	 * @return the preferences
 	 */
 	public static boolean getPREF_RUN_WOBUILDER_ON_BUILD() {
 		return Preferences.getBoolean(Preferences.PREF_RUN_WOBUILDER_ON_BUILD);
 	}
 
 	/**
-	 * @return
+	 * @return the preferences
 	 */
 	public static String getPREF_WOLIPS_VERSION_EARLY_STARTUP() {
-		return Preferences.getString(
-			Preferences.PREF_WOLIPS_VERSION_EARLY_STARTUP);
+		return Preferences
+				.getString(Preferences.PREF_WOLIPS_VERSION_EARLY_STARTUP);
 	}
 
 	/**
@@ -431,19 +425,21 @@ public class Preferences {
 	/**
 	 * @param value
 	 */
-	public static void setPREF_OPEN_WOCOMPONENT_ACTION_INCLUDES_OPEN_HTML(boolean value) {
+	public static void setPREF_OPEN_WOCOMPONENT_ACTION_INCLUDES_OPEN_HTML(
+			boolean value) {
 		Preferences.setBoolean(
-			Preferences.PREF_OPEN_WOCOMPONENT_ACTION_INCLUDES_OPEN_HTML,
-			value);
+				Preferences.PREF_OPEN_WOCOMPONENT_ACTION_INCLUDES_OPEN_HTML,
+				value);
 	}
 
 	/**
 	 * @param value
 	 */
-	public static void setPREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH(boolean value) {
+	public static void setPREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH(
+			boolean value) {
 		Preferences.setBoolean(
-			Preferences.PREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH,
-			value);
+				Preferences.PREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH,
+				value);
 	}
 
 	/**
@@ -464,9 +460,8 @@ public class Preferences {
 	 * @param string
 	 */
 	public static void setPREF_WOLIPS_VERSION_EARLY_STARTUP(String string) {
-		Preferences.setString(
-			Preferences.PREF_WOLIPS_VERSION_EARLY_STARTUP,
-			string);
+		Preferences.setString(Preferences.PREF_WOLIPS_VERSION_EARLY_STARTUP,
+				string);
 	}
 
 }

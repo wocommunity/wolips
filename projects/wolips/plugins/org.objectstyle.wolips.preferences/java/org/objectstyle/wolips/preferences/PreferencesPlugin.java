@@ -48,9 +48,11 @@
  *  
  */
 package org.objectstyle.wolips.preferences;
+
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.objectstyle.wolips.commons.logging.PluginLogger;
 import org.osgi.framework.BundleContext;
+
 /**
  * The main plugin class to be used in the desktop.
  * 
@@ -59,42 +61,36 @@ import org.osgi.framework.BundleContext;
  */
 public class PreferencesPlugin extends AbstractUIPlugin {
 	private final static String PLUGIN_ID = "org.objectstyle.wolips.preferences";
-	
-	//The plugin.
+
+	// The plugin.
 	private static PreferencesPlugin plugin;
+
 	private PluginLogger pluginLogger = null;
+
 	/**
 	 * The constructor.
 	 */
-	//The constructur is very sensitive. Make sure that your stuff works.
-	//If this cunstructor fails, the whole plugin will be disabled.
+	// The constructur is very sensitive. Make sure that your stuff works.
+	// If this cunstructor fails, the whole plugin will be disabled.
 	public PreferencesPlugin() {
 		super();
 		plugin = this;
 	}
+
 	/**
-	 * Returns the shared instance.
-	 * 
-	 * @return
+	 * @return the shared instance
 	 */
 	public static PreferencesPlugin getDefault() {
 		return plugin;
 	}
+
 	/**
 	 * @return Returns the pluginLogger.
 	 */
 	public PluginLogger getPluginLogger() {
 		return this.pluginLogger;
 	}
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.core.runtime.Plugin#start(org.osgi.framework.BundleContext)
-	 */
-	/**
-	 * @param context
-	 * @throws Exception
-	 */
+
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		this.pluginLogger = new PluginLogger(PreferencesPlugin.PLUGIN_ID, false);
@@ -102,7 +98,8 @@ public class PreferencesPlugin extends AbstractUIPlugin {
 			// set up missing preferences
 			Preferences.setDefaults();
 		} catch (Exception exception) {
-			this.pluginLogger.log("Exception in WOLips constructor: ", exception);
+			this.pluginLogger.log("Exception in WOLips constructor: ",
+					exception);
 		}
 	}
 }
