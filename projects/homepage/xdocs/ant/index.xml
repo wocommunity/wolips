@@ -1,16 +1,24 @@
 <?xml version="1.0"?>
 <document>
     <title>Ant Tasks</title>
-
-    <properties>
-        <author>Andrei Adamchik</author>
-    </properties>
-
     <body>
+   		<section name="WOProject Tasks Installation">
+ 			<p>There is no WOProject installation per se. All WOProject needs is the following JAR files 
+ 			included in the distribution:
+ 			</p>
+ 			<ul>
+ 				<li><code>[WOProject_installdir]/lib/woproject.jar</code> <i>(needed for all tasks)</i></li>
+ 				<li><code>[WOProject_installdir]/lib/cayenne.jar</code> <i>(needed for WOGen task only)</i></li>
+ 			</ul>
+ 			
+ 			<p>These files can be copied anywhere in the filesystem. Of course Ant has to be installed. It can be 
+ 			downloaded from <a href="http://ant.apache.org/" target="_blank">http://ant.apache.org/</a>.</p>
+ 		</section>
+ 		
  		<section name="Ant Tasks">
- 			<p>Currently WOProject supports the following Ant tasks (for more 
- 			information about Ant, go to <a href="http://jakarta.apache.org/ant/index.html">Jakarta 
- 			Ant Site</a>):
+ 			<p>WOProject ships with the following Ant tasks:</p>
+ 			
+ 			<p><strong>Core Tasks:</strong></p>
  				<ul>
  				<li><a href="wocompile.html">WOCompile</a>: A Javac task extension that allows including
  				WOFrameworks in CLASSPATH.</li>
@@ -23,21 +31,20 @@
  				<li><a href="eomodel.html">EOModel</a>: A task for configuring custom connection dictionary 
  				for EOModels.
  				</li>
- 				<li><a href="pbindex.html">PBIndex</a>: Maintains
- 				PB.project file needed for WebObjects tools, even when ProjectBuilderWO is not used.</li>
-				<li><a href="pbxindex.html">PBXIndex</a>: Maintains
- 				PBX.pbproj file needed for WebObjects tools, even when ProjectBuilder is not used.</li>
- 				</ul>
- 			</p>
-
- 			<p>When these tasks are called from user buildfiles, Ant would need access to
- 			two ".jar" files from WOProject distribution:
- 			<ul>
- 				<li><code>[WOProject_installdir]/lib/woproject.jar</code> <i>(needed for all tasks)</i></li>
- 				<li><code>[WOProject_installdir]/lib/cayenne.jar</code> <i>(needed for WOGen task only)</i></li>
  			</ul>
- 			</p>
+ 			
+ 			<p><strong>WO Tools Integration Tasks:</strong></p>
+ 				<ul>
+ 				<li><a href="pbindex.html">PBIndex</a>: Maintains
+ 				PB.project file for integration with WOBuilder on Windows.</li>
+				<li><a href="pbxindex.html">PBXIndex</a>: Maintains
+				PBX.pbproj file for integration with WOBuilder and EOModeler on older Mac OS X.</li>
+ 				<li><a href="xcodeindex.html">XcodeIndex</a>: Maintains
+ 				XCode project files for integration with WOBuilder on the latest Mac OS X.</li>
+ 				</ul>
  		</section>
+ 		
+ 		
  		
  		<section name="Ant Data Structures">
  			<p>
