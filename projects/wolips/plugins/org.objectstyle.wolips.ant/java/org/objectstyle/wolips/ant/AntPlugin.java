@@ -56,31 +56,38 @@
 
 package org.objectstyle.wolips.ant;
 
-import org.eclipse.core.runtime.*;
-import org.osgi.framework.Bundle;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 
-import java.util.*;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.objectstyle.wolips.commons.logging.PluginLogger;
+import org.osgi.framework.BundleContext;
 
 /**
  * The main plugin class to be used in the desktop.
  */
-public class AntPlugin extends Plugin {
+public class AntPlugin extends AbstractUIPlugin {
 	//The shared instance.
 	private static AntPlugin plugin;
 	//Resource bundle.
 	private ResourceBundle resourceBundle;
+	private static String PLUGIN_ID ="org.objectstyle.wolips.ant";
+	
+	private PluginLogger pluginLogger;
 	
 	/**
 	 * The constructor.
 	 */
-	public AntPlugin(Bundle descriptor) {
-		plugin = this;
-		try {
-			resourceBundle   = ResourceBundle.getBundle("org.objectstyle.wolips.ant.AntPluginResources");
-		} catch (MissingResourceException x) {
-			resourceBundle = null;
-		}
+	public AntPlugin() {
+	super();
+	plugin = this;
+	try {
+		this.resourceBundle = ResourceBundle
+				.getBundle("org.objectstyle.wolips.jdt.JdtPluginResources");
+	} catch (MissingResourceException x) {
+		this.resourceBundle = null;
 	}
+}
 
 	/**
 	 * Returns the shared instance.
@@ -108,5 +115,31 @@ public class AntPlugin extends Plugin {
 	public ResourceBundle getResourceBundle() {
 		return resourceBundle;
 	}
+	/**
+	 * @return Returns the pluginLogger.
+	 */
+	public PluginLogger getPluginLogger() {
+		return pluginLogger;
+	}
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
+	 */
+	public void start(BundleContext context) throws Exception {
+		super.start(context);
+		this.pluginLogger = new PluginLogger(AntPlugin.PLUGIN_ID, false);
+	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
+	 */
+	public void stop(BundleContext context) throws Exception {
+		super.stop(context);
+		this.pluginLogger = null;
+	}
+	
+	
 }
