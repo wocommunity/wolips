@@ -205,20 +205,20 @@
 
    <plugin
          id="org.objectstyle.wolips.jdt"
-         download-size="0"
-         install-size="0"
+         download-size="60"
+         install-size="100"
          version="1.0.6"/>
 
    <plugin
          id="org.objectstyle.wolips.variables"
-         download-size="0"
-         install-size="0"
+         download-size="60"
+         install-size="100"
          version="1.0.6"/>
 
    <plugin
          id="org.objectstyle.wolips.workbenchutilities"
-         download-size="0"
-         install-size="0"
+         download-size="60"
+         install-size="100"
          version="1.0.6"/>
 
 </feature>
