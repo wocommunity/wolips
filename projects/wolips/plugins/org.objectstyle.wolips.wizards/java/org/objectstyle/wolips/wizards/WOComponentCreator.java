@@ -65,7 +65,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.JavaCore;
-import org.objectstyle.wolips.core.project.ProjectHelper;
 import org.objectstyle.wolips.core.project.WOLipsJavaProject;
 /**
  * @author mnolte
@@ -120,15 +119,15 @@ public class WOComponentCreator extends WOProjectResourceCreator {
 		IFolder componentFolder = null;
 		IFile componentJavaFile = null;
 		IFile componentApiFile = null;
+		WOLipsJavaProject wolipsJavaProject = null;
 		switch (parentResource.getType()) {
 			case IResource.PROJECT :
 				componentFolder =
 					((IProject) parentResource).getFolder(
 						componentName + "." + EXT_COMPONENT);
-				WOLipsJavaProject wolipsJavaProject =
+				wolipsJavaProject =
 					new WOLipsJavaProject(
 						JavaCore.create((IProject) parentResource));
-
 				componentJavaFile =
 					wolipsJavaProject
 						.getClasspathAccessor()
@@ -143,11 +142,16 @@ public class WOComponentCreator extends WOProjectResourceCreator {
 				componentFolder =
 					((IFolder) parentResource).getFolder(
 						componentName + "." + EXT_COMPONENT);
+				wolipsJavaProject =
+					new WOLipsJavaProject(
+						JavaCore.create(parentResource.getProject()));
 				componentJavaFile =
-					ProjectHelper.getSubprojectSourceFolder(
-						(IFolder) parentResource,
-						true).getFile(
-						componentName + "." + EXT_JAVA);
+					wolipsJavaProject
+						.getClasspathAccessor()
+						.getSubprojectSourceFolder(
+							(IFolder) parentResource,
+							true)
+						.getFile(componentName + "." + EXT_JAVA);
 				componentApiFile =
 					((IFolder) parentResource).getFile(
 						componentName + "." + EXT_API);

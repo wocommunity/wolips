@@ -64,6 +64,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.apache.tools.ant.DirectoryScanner;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -88,7 +89,6 @@ import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
 import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
 import org.objectstyle.wolips.core.plugin.WOLipsUtils;
 import org.objectstyle.wolips.core.project.IWOLipsProject;
-import org.objectstyle.wolips.core.project.ProjectHelper;
 import org.objectstyle.wolips.core.project.WOLipsCore;
 import org.objectstyle.wolips.core.project.WOLipsJavaProject;
 import org.objectstyle.wolips.core.project.WOLipsProject;
@@ -312,11 +312,12 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 			fileName != null
 				&& fileName.endsWith("." + IWOLipsPluginConstants.EXT_JAVA);
 		IFile fileToCreate = null;
+		WOLipsJavaProject wolipsJavaProject = null;
 		switch (parentResource.getType()) {
 			case IResource.PROJECT :
 				if (isJavaFile) {
 					// add java file to source folder
-					WOLipsJavaProject wolipsJavaProject =
+					wolipsJavaProject =
 						new WOLipsJavaProject(
 							JavaCore.create((IProject) parentResource));
 					fileToCreate =
@@ -346,11 +347,16 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 			case IResource.FOLDER :
 				if (isJavaFile) {
 					// add java file to source folder
+					wolipsJavaProject =
+						new WOLipsJavaProject(
+							JavaCore.create(parentResource.getProject()));
 					fileToCreate =
-						ProjectHelper.getSubprojectSourceFolder(
-							(IFolder) parentResource,
-							true).getFile(
-							fileName);
+						wolipsJavaProject
+							.getClasspathAccessor()
+							.getSubprojectSourceFolder(
+								(IFolder) parentResource,
+								true)
+							.getFile(fileName);
 				} else {
 					// add wo resource file
 					fileToCreate = ((IFolder) parentResource).getFile(fileName);
@@ -625,7 +631,12 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 				} catch (CoreException e) {
 					throw new InvocationTargetException(e);
 				}
-				ProjectHelper.addNewSourcefolderToClassPath(
+				WOLipsJavaProject wolipsJavaProject =
+					new WOLipsJavaProject(
+						JavaCore.create(parentResource.getProject()));
+				wolipsJavaProject
+					.getClasspathAccessor()
+					.addNewSourcefolderToClassPath(
 					newSubprojectSourceFolder,
 					monitor);
 				// subproject
@@ -878,20 +889,25 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 		String[] foundJavaFiles = ds.getIncludedFiles();
 		if (foundJavaFiles.length > 0) {
 			IContainer sourceFolder = null;
+			WOLipsJavaProject wolipsJavaProject = null;
 			switch (parentContainer.getType()) {
 				case IResource.PROJECT :
-					WOLipsJavaProject wolipsJavaProject =
+					wolipsJavaProject =
 						new WOLipsJavaProject(
 							JavaCore.create((IProject) parentContainer));
-
 					sourceFolder =
 						wolipsJavaProject
 							.getClasspathAccessor()
 							.getProjectSourceFolder();
 					break;
 				case IResource.FOLDER :
+					wolipsJavaProject =
+						new WOLipsJavaProject(
+							JavaCore.create(parentContainer.getProject()));
 					sourceFolder =
-						ProjectHelper.getSubprojectSourceFolder(
+						wolipsJavaProject
+							.getClasspathAccessor()
+							.getSubprojectSourceFolder(
 							(IFolder) parentContainer,
 							true);
 					break;
