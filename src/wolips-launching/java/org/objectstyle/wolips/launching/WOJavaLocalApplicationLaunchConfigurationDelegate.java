@@ -296,12 +296,10 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 		IJavaProject buildProject = null;
 		try {
 			buildProject = this.getJavaProject(configuration);
-			//			TODO: check if is application
-			/*if (ProjectHelper.isWOFwBuilderInstalled(project)
-				&& projectISReferencedByProject(
-					project,
-					buildProject.getProject()))
-				return true;*/
+			WOLipsProject woLipsProject = new WOLipsProject(project);
+			if(woLipsProject.getNaturesAccessor().isFramework() && projectISReferencedByProject(
+			project,
+			buildProject.getProject())) return true;
 			if (project.equals(buildProject.getProject()))
 				return true;
 		} catch (Exception anException) {

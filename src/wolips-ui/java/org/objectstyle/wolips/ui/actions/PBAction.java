@@ -59,6 +59,7 @@ package org.objectstyle.wolips.ui.actions;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.objectstyle.wolips.core.plugin.logging.WOLipsLog;
+import org.objectstyle.wolips.core.project.WOLipsProject;
 
 /**
  * @author uli
@@ -87,19 +88,16 @@ public class PBAction extends ActionOnIProject {
 	 */
 	public void run(IAction action) {
 		if (project() != null) {
-			//PBProjectUpdater projectUpdater = null;
 			try {
 				if (action.getId().equals(PBAction.UpdatePBProjectID)) {
-					//todo add progress monitor
+					//TODO: add progress monitor
+					WOLipsProject woLipsProject = new WOLipsProject(project());
+					woLipsProject.getPBProjectFilesAccessor().cleanAllFileTables();
 					this.project().close(null);
 					this.project().open(null);
-					//projectUpdater = PBProjectUpdater.instance(project());
-					//projectUpdater.forceRebuild();
 				}
 			} catch (Exception ex) {
 				WOLipsLog.log(ex);
-			} finally {
-				//projectUpdater = null;
 			}
 		}
 	}
@@ -113,10 +111,13 @@ public class PBAction extends ActionOnIProject {
 		if (project() != null) {
 			if (action.getId().equals(PBAction.UpdatePBProjectID)) {
 				action.setEnabled(true);
-//				TODO: is this an application
-				/*action.setEnabled(
-					ProjectHelper.isWOFwBuilderInstalled(project())
-						|| ProjectHelper.isWOAppBuilderInstalled(project()));*/
+				WOLipsProject woLipsProject = new WOLipsProject(project());
+				try {
+					action.setEnabled(
+						woLipsProject.getNaturesAccessor().hasWOLipsNature());
+				} catch (Exception exception) {
+					WOLipsLog.log(exception);
+				}
 			}
 		} else {
 			action.setEnabled(false);

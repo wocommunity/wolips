@@ -56,6 +56,7 @@
 
 package org.objectstyle.wolips.core.project;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -80,6 +81,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
+import org.objectstyle.wolips.core.plugin.WOLipsUtils;
 import org.objectstyle.wolips.core.plugin.logging.WOLipsLog;
 
 /**
@@ -682,6 +684,19 @@ public class WOLipsProject implements IWOLipsPluginConstants {
 				return pbProjectFilesAccessor;
 			}
 
+		}
+		/**
+		 * 
+		 */
+		public void cleanAllFileTables() throws IOException {
+		ArrayList arrayList = new ArrayList();
+		WOLipsUtils woLipsUtils = new WOLipsUtils();
+		woLipsUtils.findFilesInResourceByName(arrayList,this.getProject(),IWOLipsPluginConstants.PROJECT_FILE_NAME);
+		for(int i = 0; i < arrayList.size(); i++) {
+			IResource resource = (IResource)arrayList.get(i);
+			PBProjectUpdater pbProjectUpdater = PBProjectUpdater.instance(resource.getParent());
+			pbProjectUpdater.cleanTables();
+		}
 		}
 	}
 

@@ -195,6 +195,13 @@ public class PBProjectUpdater extends AWOLips {
 			aFile = null;
 		}
 	}
+	
+	public void cleanTables() throws IOException {
+		this.syncClasses(new ArrayList());
+		this.syncWOAppResources(new ArrayList());
+		this.syncWOComponents(new ArrayList());
+		pbProject.saveChanges();
+	}
 	/**
 	 * Method syncPBProjectWithProject.
 	 */
