@@ -16,12 +16,7 @@
         <hr/>
         </p>
         
-        <p><i>September 16, 2003.</i> <b>WOProject release 1.0.7.33 for Eclipse 3.0.0 M5 is out.</b></p>
-        <p>Download a new <a href="compatibilty_matrix.html">release</a> of WOProject.
-        <hr/>
-        </p>
-        
-        <p><i>September 16, 2003.</i> <b>WOLips 1.0.7.23 released.</b></p>
+        <p><i>November 24, 2003.</i> <b>WOLips 1.0.7.33 for Eclipse 3.0.0 M5 released.</b></p>
         <p>WOLips is a plugin for <a href="http://eclipse.org">Eclipse IDE</a> that
         support development of WebObjects applications and frameworks.
         <ul>
@@ -31,6 +26,11 @@
         <hr/>
         </p>
 
+        <p><i>September 16, 2003.</i> <b>WOProject release 1.0.7.23 is out.</b></p>
+        <p>Download a new <a href="compatibilty_matrix.html">release</a> of WOProject.
+        <hr/>
+        </p>
+        
         <p><i>September 12, 2003.</i> <b>Patched org.eclipse.core.ant plugin.</b></p>
         <p>Find out <a href="patched_ant_plugin.html">more</a>.
         <hr/>
