@@ -384,11 +384,165 @@
    <extension
          point="org.eclipse.ui.decorators">
       <decorator
-            objectClass="org.eclipse.core.resources.IResource"
-            label="WebObjects"
+            lightweight="true"
+            adaptable="true"
+            label="WebObjects Application"
+            icon="icons/ovr16/woapplication_co.gif"
             state="true"
-            class="org.objectstyle.wolips.ui.labeldecorator.WOLabelDecorator"
-            id="org.objectstyle.wolips.ui.labeldecorator.WOLabelDecorator">
+            location="TOP_LEFT"
+            id="org.objectstyle.wolips.ui.labeldecorator.WOApplicationLabelDecorator">
+         <description>
+            WebObjects Application
+         </description>
+		<enablement>
+			<and>
+				<objectClass name="org.eclipse.core.resources.IProject">
+				</objectClass>
+				<or>
+					<objectState name="nature"
+						value="org.objectstyle.wolips.antapplicationnature">
+					</objectState>
+					<objectState name="nature"
+						value="org.objectstyle.wolips.incrementalapplicationnature">
+					</objectState>
+				</or>	
+            </and>
+         </enablement>
+      </decorator>
+      <decorator
+            lightweight="true"
+            adaptable="true"
+            label="WebObjects Framework"
+            icon="icons/ovr16/woframework_co.gif"
+            state="true"
+            location="TOP_LEFT"
+            id="org.objectstyle.wolips.ui.labeldecorator.WOFrameworkLabelDecorator">
+         <description>
+            WebObjects Framework
+         </description>
+		<enablement>
+			<and>
+				<objectClass name="org.eclipse.core.resources.IProject">
+				</objectClass>
+				<or>
+					<objectState name="nature"
+						value="org.objectstyle.wolips.antframeworknature">
+					</objectState>
+					<objectState name="nature"
+						value="org.objectstyle.wolips.incrementalframeworknature">
+					</objectState>
+				</or>	
+            </and>
+         </enablement>
+      </decorator>
+      <decorator
+            lightweight="true"
+            adaptable="true"
+            label="WOLips build folder"
+            icon="icons/ovr16/build_co.gif"
+            state="true"
+            location="TOP_LEFT"
+            id="org.objectstyle.wolips.ui.labeldecorator.BuildFolderLabelDecorator">
+         <description>
+            WOLips build folder
+         </description>
+		<enablement>
+			<and>
+				<objectClass name="org.eclipse.core.resources.IFolder">
+				</objectClass>
+				<or>
+					<objectState name="name"
+						value="build">
+					</objectState>
+					<objectState name="name"
+						value="dist">
+					</objectState>
+				</or>	
+            </and>
+         </enablement>
+      </decorator>
+      <decorator
+            lightweight="true"
+            adaptable="true"
+            label="WOComponent folder"
+            icon="icons/ovr16/comp_co.gif"
+            state="true"
+            location="TOP_RIGHT"
+            id="org.objectstyle.wolips.ui.labeldecorator.WOComponentFolderLabelDecorator">
+         <description>
+            WOComponent folder
+         </description>
+		<enablement>
+			<and>
+				<objectClass name="org.eclipse.core.resources.IFolder">
+				</objectClass>
+				<objectState name="extension"
+					value="wo">
+				</objectState>
+            </and>
+         </enablement>
+      </decorator>
+      <decorator
+            lightweight="true"
+            adaptable="true"
+            label="EOModel folder"
+            icon="icons/ovr16/eomodel_co.gif"
+            state="true"
+            location="TOP_RIGHT"
+            id="org.objectstyle.wolips.ui.labeldecorator.EOModelFolderLabelDecorator">
+         <description>
+            EOModel folder
+         </description>
+		<enablement>
+			<and>
+				<objectClass name="org.eclipse.core.resources.IFolder">
+				</objectClass>
+				<objectState name="extension"
+					value="eomodeld">
+				</objectState>
+            </and>
+         </enablement>
+      </decorator>
+      <decorator
+            lightweight="true"
+            adaptable="true"
+            label="Subproject folder"
+            icon="icons/ovr16/subproj_co.gif"
+            state="true"
+            location="TOP_RIGHT"
+            id="org.objectstyle.wolips.ui.labeldecorator.SubprojectFolderLabelDecorator">
+         <description>
+            Subproject folder
+         </description>
+		<enablement>
+			<and>
+				<objectClass name="org.eclipse.core.resources.IFolder">
+				</objectClass>
+				<objectState name="extension"
+					value="subproj">
+				</objectState>
+            </and>
+         </enablement>
+      </decorator>
+      <decorator
+            lightweight="true"
+            adaptable="true"
+            label="WOProject folder"
+            icon="icons/ovr16/woproject_co.gif"
+            state="true"
+            id="org.objectstyle.wolips.ui.labeldecorator.WOProjectFolderLabelDecorator">
+         <description>
+            Subproject folder
+         </description>
+		<enablement>
+			<and>
+				<objectClass name="org.eclipse.core.resources.IFolder">
+				</objectClass>
+				<objectState name="name"
+					value="woproject">
+				</objectState>
+            </and>
+         </enablement>
       </decorator>
    </extension>
 <!-- =================================================================================== -->
@@ -509,7 +663,7 @@
       <page
             adaptable="true"
             objectClass="org.eclipse.core.resources.IProject"
-            name="WOLips build"
+            name="WOLips Build"
             class="org.objectstyle.wolips.ui.propertypages.ProjectNaturePage"
             id="org.objectstyle.wolips.ui.propertypages.ProjectNaturePage">
          <filter
