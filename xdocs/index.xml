@@ -10,23 +10,21 @@
         <!-- Welcome section -->
         <section name="Welcome to WOProject and WOLips">
         
-        <p><i>April 30, 2003.</i> <b>WOLips 1.0.1 released.</b></p>
-        <p>WOLips is a plugin for <a href="http://eclipse.org">Eclipse version 2.1 IDE</a> that
+        <p><i>June 16, 2003.</i> <b>WOProject release 1.0.2 is out.</b></p>
+        <p>Download a new <a href="compatibilty_matrix.html">release</a> of WOProject.
+        <hr/>
+        </p>
+
+        <p><i>June 16, 2003.</i> <b>WOLips 1.0.2 released.</b></p>
+        <p>WOLips is a plugin for <a href="http://eclipse.org">Eclipse IDE</a> that
         support development of WebObjects applications and frameworks.
         <ul>
-            <li><a href="http://sourceforge.net/project/showfiles.php?group_id=50507">Download</a></li>
+            <li>To find the correct version <a href="compatibilty_matrix.html">click</a> here.</li>
             <li><a href="wolips_install.html">How to install via Update Manager.</a></li>
         </ul>
         <hr/>
         </p>
-                
-        <p><i>November 14, 2002.</i> <b>WOProject release 1.0b2 is out.</b></p>
-        <p>Download a new release of WOProject from <a 
-        href="http://sourceforge.net/project/showfiles.php?group_id=50507">SourceForge 
-        server</a>.
-        <hr/>
-        </p>
-        
+                       
         <p><i>September 2, 2002.</i> <b>Start-Script Lobotomy.</b></p>
         <p>Read <a href="articles/WOFLobotomy1/index.html">an article</a> by Reimer Mellin on an easy way 
         to deploy WebObjects 5.x applications. To download WOStart code discussed in the

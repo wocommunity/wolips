@@ -2,7 +2,7 @@
 <plugin
    id="org.objectstyle.wolips"
    name="%WOLips.pluginName"
-   version="1.0.1"
+   version="1.0.2"
    provider-name="%WOLips.providerName"
    class="org.objectstyle.wolips.core.plugin.WOLipsPlugin">
 

@@ -12,7 +12,7 @@
         <!-- To test it build WOLips and locate it under my computer or copy it to your web server and add a bookmark for it. -->
         <!-- Take a look here http://veloedit.sourceforge.net/UpdateSiteBookmark.png and here http://veloedit.sourceforge.net/-->
         <section name="Download from sourceforge">
-        	<p><a href="http://sourceforge.net/project/showfiles.php?group_id=50507">Download</a></p>
+        	<p><a href="compatibilty_matrix.html">Download</a></p>
  			<p>Expand the .tar.gz.</p>
  			<p>In case you have installed a 1.0.0 release candidate please uninstall it first.</p>
  			<p>Launch Eclipse.</p>
@@ -22,6 +22,7 @@
  		</section> 
         <!-- update manager section -->
         <section name="Via Eclipse update manager">
+		<p><a href="compatibilty_matrix.html">Compatibilty matrix.</a></p>
         	<p>After download and successful install of 'WOLips 1.0.0 final' there will be an item WOLips in the update perspective.</p>
         	<p>To install WOLips trough the Update Manager create a UpdateSite bookmark for http://woproject.sourceforge.net/update/ and install WOLips.</p>
  		</section> 

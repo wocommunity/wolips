@@ -2,7 +2,7 @@
 <feature
       id="org.objectstyle.wolips.profiling.feature"
       label="%featureName"
-      version="1.0.1"
+      version="1.0.2"
       provider-name="%providerName"
       image="%image">
 
@@ -98,6 +98,6 @@
          id="org.objectstyle.wolips.profiling"
          download-size="0"
          install-size="0"
-         version="1.0.1"/>
+         version="1.0.2"/>
 
 </feature>
