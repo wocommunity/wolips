@@ -225,7 +225,7 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 					+ projects[i].getLocation().toOSString()
 					+ "\"";
 		}
-		returnValue = FileStringScanner.replace(returnValue, "/", "\\");
+		returnValue = FileStringScanner.replace(returnValue, "\\", "/");
 		returnValue = this.addPreferencesValue(returnValue);
 		if ("".equals(returnValue))
 			returnValue = "\"\"";
