@@ -21,6 +21,9 @@
       <import plugin="org.eclipse.jdt.ui"/>
       <import plugin="org.apache.xerces"/>
       <import plugin="org.objectstyle.wolips"/>
+      <import plugin="org.objectstyle.cayenne"/>
+      <import plugin="org.objectstyle.logging"/>
+      <import plugin="org.objectstyle.woproject"/>
    </requires>
 
 

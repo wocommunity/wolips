@@ -1,12 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>wolips</name>
+	<name>wolips-logging</name>
 	<comment></comment>
 	<projects>
-		<project>wolips-cayenne</project>
-		<project>wolips-feature</project>
-		<project>wolips-woproject</project>
-		<project>wolips-logging</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

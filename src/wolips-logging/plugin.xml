@@ -1,23 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin
-   id="org.objectstyle.wolips.woproject"
-   name="%WOLips.woproject.pluginName"
+   id="org.objectstyle.wolips.logging"
+   name="%WOLips.logging.pluginName"
    version="1.0.0"
    provider-name="%WOLips.providerName">
 
    <runtime>
-      <library name="lib/woproject.jar">
+      <library name="lib/commons-logging.jar">
          <export name="*"/>
-         <packages prefixes="org.objectstyle.woproject"/>
+         <packages prefixes="org.apache.commons.logging"/>
       </library>
-   </runtime>
+      <library name="lib/log4j.jar">
+         <export name="*"/>
+         <packages prefixes="org.apache.log4j"/>
+      </library>
+</runtime>
 
 <!-- =================================================================================== -->
 <!-- Required Plugins                                                                    -->
 <!-- =================================================================================== -->   
    <requires>
-      <import plugin="org.objectstyle.wolips.cayenne"/>
-      <import plugin="org.objectstyle.wolips.logging"/>
    </requires>
 
 
