@@ -108,6 +108,10 @@ public class PBProjectUpdater {
 		getPBProject(projectContainer);
 		//projectContainer = aProjectContainer;
 	}
+	/**
+	 * Method updatePBProject.
+	 * @throws CoreException
+	 */
 	public void updatePBProject() throws CoreException {
 		syncPBProjectWithProject();
 		if (projectContainer != null)
@@ -128,6 +132,10 @@ public class PBProjectUpdater {
 			WOLipsLog.log(anException);
 		}
 	}
+	/**
+	 * Method getPBProject.
+	 * @param aProject
+	 */
 	private void getPBProject(IContainer aProject) {
 		File aFile =
 			aProject
@@ -149,6 +157,9 @@ public class PBProjectUpdater {
 			WOLipsLog.log(anException);
 		}
 	}
+	/**
+	 * Method syncPBProjectWithProject.
+	 */
 	private void syncPBProjectWithProject() {
 		try {
 			pbProject.update();
@@ -159,6 +170,9 @@ public class PBProjectUpdater {
 			WOLipsLog.log(ioex);
 		}
 	}
+	/**
+	 * Method syncFilestable.
+	 */
 	private void syncFilestable() {
 		ArrayList aClassesList = new ArrayList();
 		ArrayList aWOComponentsList = new ArrayList();
@@ -185,6 +199,13 @@ public class PBProjectUpdater {
 		this.syncWOComponents(aWOComponentsList);
 		this.syncWOAppResources(aWOAppResourcesList);
 	}
+	/**
+	 * Method proceedResource.
+	 * @param aResource
+	 * @param aClassesList
+	 * @param aWOComponentsList
+	 * @param aWOAppResourcesList
+	 */
 	private void proceedResource(
 		IResource aResource,
 		List aClassesList,
@@ -229,19 +250,38 @@ public class PBProjectUpdater {
 			WOLipsLog.log(anException);
 		}
 	}
+	/**
+	 * Method syncProjectName.
+	 */
 	private void syncProjectName() {
 		pbProject.setProjectName(projectContainer.getName());
 	}
+	/**
+	 * Method syncClasses.
+	 * @param list
+	 */
 	private void syncClasses(List list) {
 		pbProject.setClasses(list);
 	}
+	/**
+	 * Method syncWOComponents.
+	 * @param list
+	 */
 	private void syncWOComponents(List list) {
 		pbProject.setWoComponents(list);
 	}
+	/**
+	 * Method syncWOAppResources.
+	 * @param list
+	 */
 	private void syncWOAppResources(List list) {
 		pbProject.setWoAppResources(list);
 	}
-	//////////// removing adding filestable resources
+	/**
+	 * Method syncFilestable.
+	 * @param changedResources
+	 * @param kindOfChange
+	 */
 	public void syncFilestable(
 		NSDictionary changedResources,
 		int kindOfChange) {
@@ -331,6 +371,12 @@ public class PBProjectUpdater {
 			WOLipsLog.log(e);
 		}
 	}
+	/**
+	 * Method addResources.
+	 * @param newResources
+	 * @param actualResources
+	 * @return List
+	 */
 	private List addResources(NSArray newResources, List actualResources) {
 		if (actualResources == null) {
 			actualResources = new ArrayList();
@@ -373,6 +419,12 @@ public class PBProjectUpdater {
 		}
 		return actualResources;
 	}
+	/**
+	 * Method relativResourcePath.
+	 * @param resource
+	 * @param projectFile
+	 * @return String
+	 */
 	private String relativResourcePath(IResource resource, IFile projectFile) {
 		// determine relativ path to resource
 		String resourcePath;
@@ -405,7 +457,10 @@ public class PBProjectUpdater {
 		}
 		return resourcePath;
 	}
-	////////// framework adding/removing
+	/**
+	 * Method addFrameworks.
+	 * @param newFrameworks
+	 */
 	public void addFrameworks(NSArray newFrameworks) {
 		List actualFrameworks = pbProject.getFrameworks();
 		String frameworkName = null;
@@ -424,6 +479,10 @@ public class PBProjectUpdater {
 			WOLipsLog.log(e);
 		}
 	}
+	/**
+	 * Method removeFrameworks.
+	 * @param removedFrameworks
+	 */
 	public void removeFrameworks(NSArray removedFrameworks) {
 		List actualFrameworks = pbProject.getFrameworks();
 		String frameworkName = null;
@@ -442,6 +501,11 @@ public class PBProjectUpdater {
 			WOLipsLog.log(e);
 		}
 	}
+	/**
+	 * Method frameworkIdentifierFromPath.
+	 * @param frameworkPath
+	 * @return String
+	 */
 	private String frameworkIdentifierFromPath(Path frameworkPath) {
 		String frameworkName = null;
 		// search framework segment in path

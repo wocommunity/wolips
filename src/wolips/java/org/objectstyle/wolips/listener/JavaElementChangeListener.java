@@ -235,6 +235,11 @@ public class JavaElementChangeListener implements IElementChangedListener {
 		}
 		return false;
 	}
+	/**
+	 * Method updateProjects.
+	 * @param addedFrameworksProjectDict
+	 * @param removedFrameworksProjectDict
+	 */
 	private void updateProjects(
 		NSDictionary addedFrameworksProjectDict,
 		NSDictionary removedFrameworksProjectDict) {

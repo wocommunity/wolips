@@ -60,7 +60,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFolder;
@@ -130,6 +129,12 @@ public class ProjectHelper implements IWOLipsPluginConstants {
 			aProject.setDescription(desc, null);
 		}
 	}
+	/**
+	 * Method installBuilder.
+	 * @param aProject
+	 * @param aBuilder
+	 * @throws CoreException
+	 */
 	public static void installBuilder(IProject aProject, String aBuilder)
 		throws CoreException {
 		IProjectDescription desc = aProject.getDescription();
@@ -372,6 +377,12 @@ public class ProjectHelper implements IWOLipsPluginConstants {
 		}
 		return foundFolders;
 	}
+	/**
+	 * Method addNewSourcefolderToClassPath.
+	 * @param newSourceFolder
+	 * @param monitor
+	 * @throws InvocationTargetException
+	 */
 	public static void addNewSourcefolderToClassPath(
 		IFolder newSourceFolder,
 		IProgressMonitor monitor)
@@ -401,6 +412,12 @@ public class ProjectHelper implements IWOLipsPluginConstants {
 			throw new InvocationTargetException(e);
 		}
 	}
+	/**
+	 * Method removeSourcefolderFromClassPath.
+	 * @param folderToRemove
+	 * @param monitor
+	 * @throws InvocationTargetException
+	 */
 	public static void removeSourcefolderFromClassPath(
 		IFolder folderToRemove,
 		IProgressMonitor monitor)
@@ -438,31 +455,39 @@ public class ProjectHelper implements IWOLipsPluginConstants {
 			}
 		}
 	}
-
+	/**
+	 * Method isWOProjectResource.
+	 * @param aResource
+	 * @return boolean
+	 */
 	public static boolean isWOProjectResource(IResource aResource) {
-		if (aResource != null) {
-			try {
-				switch (aResource.getType()) {
-					case IResource.PROJECT :
-						return ((IProject) aResource).hasNature(
-							WO_APPLICATION_NATURE)
-							|| ((IProject) aResource).hasNature(
-								WO_FRAMEWORK_NATURE);
-					default :
-						return aResource.getProject() != null
-							&& (aResource
-								.getProject()
-								.hasNature(WO_APPLICATION_NATURE)
-								|| aResource.getProject().hasNature(
-									WO_FRAMEWORK_NATURE));
-				}
-			} catch (CoreException e) {
-				return false;
+		if (aResource == null)
+			return false;
+		try {
+			switch (aResource.getType()) {
+				case IResource.PROJECT :
+					return ((IProject) aResource).hasNature(
+						WO_APPLICATION_NATURE)
+						|| ((IProject) aResource).hasNature(WO_FRAMEWORK_NATURE);
+				default :
+					return aResource.getProject() != null
+						&& (aResource
+							.getProject()
+							.hasNature(WO_APPLICATION_NATURE)
+							|| aResource.getProject().hasNature(
+								WO_FRAMEWORK_NATURE));
 			}
-		} else {
+		} catch (CoreException e) {
 			return false;
 		}
 	}
+	/**
+	 * Method addFrameworkListToClasspathEntries.
+	 * @param frameworkList
+	 * @param projectToUpdate
+	 * @return IClasspathEntry[]
+	 * @throws JavaModelException
+	 */
 	public static IClasspathEntry[] addFrameworkListToClasspathEntries(
 		List frameworkList,
 		IJavaProject projectToUpdate)
@@ -563,6 +588,14 @@ public class ProjectHelper implements IWOLipsPluginConstants {
 		}
 		return ProjectHelper.NotFound;
 	}
+	/**
+	 * Method installBuilderAtPosition.
+	 * @param aProject
+	 * @param aBuilder
+	 * @param installPos
+	 * @param arguments
+	 * @throws CoreException
+	 */
 	public static void installBuilderAtPosition(
 		IProject aProject,
 		String aBuilder,

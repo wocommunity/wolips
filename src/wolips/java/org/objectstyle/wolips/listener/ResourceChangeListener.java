@@ -55,7 +55,6 @@
  */
 package org.objectstyle.wolips.listener;
 import java.lang.reflect.InvocationTargetException;
-
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -74,7 +73,6 @@ import org.objectstyle.wolips.IWOLipsPluginConstants;
 import org.objectstyle.wolips.io.WOLipsLog;
 import org.objectstyle.wolips.project.PBProjectUpdater;
 import org.objectstyle.wolips.project.ProjectHelper;
-
 import com.webobjects.foundation.NSDictionary;
 import com.webobjects.foundation.NSMutableArray;
 import com.webobjects.foundation.NSMutableDictionary;
@@ -155,12 +153,21 @@ public class ResourceChangeListener
 			}
 		}
 	}
+	/**
+	 * @author uli To change this generated comment edit the template variable
+	 * "typecomment": Window>Preferences>Java>Templates. To enable and disable
+	 * the creation of type comments go to Window>Preferences>Java>Code
+	 * Generation.
+	 */
 	private class ProjectFileResourceValidator
 		implements IResourceDeltaVisitor {
 		//private QualifiedName resourceQualifier;
 		private IFile projectFile;
 		private NSMutableDictionary addedResourcesProjectDict;
 		private NSMutableDictionary removedResourcesProjectDict;
+		/**
+		 * @see java.lang.Object#Object()
+		 */
 		/**
 		 * Constructor for ProjectFileResourceValidator.
 		 */
@@ -358,6 +365,11 @@ public class ResourceChangeListener
 			}
 			return false;
 		}
+		/**
+		 * Method needsProjectFileUpdate.
+		 * @param kindOfChange
+		 * @return boolean
+		 */
 		private boolean needsProjectFileUpdate(int kindOfChange) {
 			return IResourceDelta.ADDED == kindOfChange
 				|| IResourceDelta.REMOVED == kindOfChange;
@@ -401,6 +413,13 @@ public class ResourceChangeListener
 				changedResourcesArray.addObject(resourceToUpdate);
 			}
 		}
+		/**
+		 * Method getChangedResourcesArray.
+		 * @param projectDict
+		 * @param fileStableId
+		 * @param projectFileToUpdate
+		 * @return NSMutableArray
+		 */
 		private NSMutableArray getChangedResourcesArray(
 			NSMutableDictionary projectDict,
 			String fileStableId,
