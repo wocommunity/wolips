@@ -130,6 +130,11 @@ public class AppFormat extends ProjectFormat {
 		String[] files = ds.getIncludedFiles();
 		StringBuffer buf = new StringBuffer();
 
+		// prepend the path with Resources/Java (for CompilerProxy support)
+		buf.append("APPROOT").append(File.separatorChar)
+			.append("Resources").append(File.separatorChar)
+			.append("Java").append(File.separatorChar)
+			.append("\r\n");
 		for (int i = 0; i < files.length; i++) {
 			buf.append("APPROOT").append(File.separatorChar).append(
 				files[i]).append(
@@ -152,7 +157,7 @@ public class AppFormat extends ProjectFormat {
 		WOPropertiesHandler aHandler = new WOPropertiesHandler(project);
 
 		// track included jar files to avoid double entries
-		HashSet jarSet = new HashSet();
+		Vector jarSet = new Vector();		
 
 		int size = frameworkSets.size();
 		for (int i = 0; i < size; i++) {
@@ -180,7 +185,8 @@ public class AppFormat extends ProjectFormat {
 
 					int jsize = jars.length;
 					for (int k = 0; k < jsize; k++) {
-						jarSet.add(jars[k]);
+						if(!jarSet.contains(jars[k]))
+							jarSet.add(jars[k]);
 					}
 				}
 			} catch (BuildException be) {
