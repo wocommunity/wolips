@@ -573,7 +573,7 @@ public class ProjectPatternsets extends AbstractProjectAdapterType {
 		}
 		list.add(string);
 		IFile resourcesIncludePatternset = this.getAntFolder().getFile(
-				"resources.exclude.patternset");
+				"resources.include.patternset");
 		PatternsetWriter.create(resourcesIncludePatternset, (String[]) list
 				.toArray(new String[list.size()]));
 		this.resourcesIncludeMatcher = new PatternsetMatcher(
