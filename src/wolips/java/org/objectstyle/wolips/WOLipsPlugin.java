@@ -57,10 +57,10 @@ package org.objectstyle.wolips;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLClassLoader;
 import java.util.Hashtable;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+import java.util.StringTokenizer;
 
 import org.eclipse.core.internal.boot.URLContentFilter;
 import org.eclipse.core.internal.plugins.PluginClassLoader;
@@ -103,8 +103,6 @@ public class WOLipsPlugin extends AbstractUIPlugin {
 	}
 
 	private void loadFoundationClasses() {
-		if(classesLoaded) return;
-		else classesLoaded = true;
 		ClassLoader aClassLoader = this.getClass().getClassLoader();
 		URLContentFilter[] theURLContentFilter = new URLContentFilter[2];
 		theURLContentFilter[0] = new URLContentFilter(true);
@@ -112,7 +110,7 @@ public class WOLipsPlugin extends AbstractUIPlugin {
 		URL[] theUrls = new URL[2];
 		try {
 			theUrls[0] = new URL("file:///System/Library/Frameworks/JavaFoundation.framework/Resources/Java/javafoundation.jar");
-			theUrls[1] = new URL("file://${NEXT_ROOT}/Library/Frameworks/JavaFoundation.framework/Resources/Java/javafoundation.jar");
+			theUrls[1] = new URL("file://%NEXT_ROOT%/Library/Frameworks/JavaFoundation.framework/Resources/Java/javafoundation.jar");
 			((PluginClassLoader)aClassLoader).addURLs(theUrls, theURLContentFilter, null, null);
 		}
 		catch (Exception anException) {
