@@ -119,7 +119,6 @@
             <sourcepath>
                 <pathelement path="../woenvironment/src/java"/>
                 <pathelement path="../woproject/src/java"/>
-                <pathelement path="../wolips/plugins/org.objectstyle.wolips.ant/java"/>
                 <pathelement path="../wolips/plugins/org.objectstyle.wolips/java"/>
                 <pathelement path="../wolips/plugins/org.objectstyle.wolips.help/java"/>
                 <pathelement path="../wolips/plugins/org.objectstyle.wolips.targetbuilder/java"/>
@@ -131,7 +130,7 @@
 	            <pathelement path="../wolips/plugins/org.objectstyle.wolips.wounit/java"/>
 	            <pathelement path="../wolips/plugins/org.objectstyle.wolips.ui/java"/>
 	            <pathelement path="../wolips/plugins/org.objectstyle.wolips.wizards/java"/>
-	            <pathelement path="../wolips/plugins/org.objectstyle.wolips.logging/java"/>
+	            <pathelement path="../wolips/plugins/org.objectstyle.wolips.templateengine/java"/>
             </sourcepath>
             <doctitle><![CDATA[<h2>WOProject API Documentation</h2>]]></doctitle>
         </javadoc>
