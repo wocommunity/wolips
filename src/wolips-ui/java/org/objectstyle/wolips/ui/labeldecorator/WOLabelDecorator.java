@@ -55,6 +55,8 @@
  */
 package org.objectstyle.wolips.ui.labeldecorator;
 
+import java.util.Hashtable;
+
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.resource.CompositeImageDescriptor;
@@ -77,6 +79,7 @@ public class WOLabelDecorator
 	private static Image componentImage;
 	private static Image buildImage;
 	private static Image eomodelImage;
+	private Hashtable decoratedResources = new Hashtable();
 
 	/**
 	 * Constructor for WOLabelDecorator.
@@ -124,7 +127,8 @@ public class WOLabelDecorator
 	 */
 	private Image eomodelImage(Image image) {
 		if (eomodelImage == null) {
-			eomodelImage =this.createImagewithName(image, "eomodel_overlay.gif");
+			eomodelImage =
+				this.createImagewithName(image, "eomodel_overlay.gif");
 		}
 		return eomodelImage;
 	}
@@ -147,15 +151,24 @@ public class WOLabelDecorator
 	 */
 	private Image imageForExtension(Image image, String aString) {
 		if (EXT_SUBPROJECT.equals(aString))
-		return subprojectImage(image);
+			return subprojectImage(image);
 		if (EXT_COMPONENT.equals(aString))
-		return componentImage(image);
+			return componentImage(image);
 		if (EXT_EOMODEL.equals(aString))
-		return eomodelImage(image);
+			return eomodelImage(image);
 		if (EXT_FRAMEWORK.equals(aString) || EXT_WOA.equals(aString))
-		return buildImage(image);
+			return buildImage(image);
 		return image;
 	}
+	private boolean isDecorated(IFolder element) {
+		String elementKey = element.getLocation().toString();
+		return (decoratedResources.containsKey(elementKey) && decoratedResources.get(elementKey).equals(element.getModificationStamp() + ""));
+	}
+	private void addToDecorated(IFolder element) {
+		String elementKey = element.getLocation().toString();
+		decoratedResources.put(elementKey, element.getModificationStamp() + "");
+	}
+
 	/**
 	 * @see org.eclipse.jface.viewers.ILabelDecorator#decorateImage(Image, Object)
 	 */
@@ -164,6 +177,10 @@ public class WOLabelDecorator
 			return image;
 		if (!WOLipsProject.isWOProjectResource((IResource) element))
 			return image;
+		//avoid memory leak
+		if (this.isDecorated((IFolder) element))
+			return image;
+		this.addToDecorated((IFolder) element);
 		String extension = ((IFolder) element).getFileExtension();
 		return this.imageForExtension(image, extension);
 	}
