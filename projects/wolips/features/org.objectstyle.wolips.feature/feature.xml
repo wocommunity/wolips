@@ -73,42 +73,37 @@
    </url>
 
    <requires>
-      <import plugin="org.eclipse.ui"/>
-      <import plugin="org.eclipse.jdt.core"/>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.jdt.core"/>
+      <import plugin="org.eclipse.jface"/>
+      <import plugin="org.eclipse.ui.workbench"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.apache.ant"/>
+      <import plugin="org.objectstyle.wolips.tests.core"/>
+      <import plugin="org.eclipse.swt"/>
+      <import plugin="org.eclipse.jdt.launching"/>
+      <import plugin="org.eclipse.jdt.ui"/>
+      <import plugin="org.eclipse.debug.core"/>
+      <import plugin="org.eclipse.debug.ui"/>
+      <import plugin="org.eclipse.jdt.debug.ui"/>
+      <import plugin="org.eclipse.core.variables"/>
+      <import plugin="org.eclipse.ant.core"/>
+      <import plugin="org.eclipse.team.core"/>
       <import plugin="org.eclipse.search"/>
       <import plugin="org.eclipse.ui.console"/>
       <import plugin="org.eclipse.jface.text"/>
-      <import plugin="org.eclipse.debug.ui"/>
       <import plugin="org.eclipse.ui.ide"/>
       <import plugin="org.eclipse.ui.workbench.texteditor"/>
       <import plugin="org.eclipse.ui.editors"/>
-      <import plugin="org.eclipse.jdt.ui"/>
       <import plugin="org.eclipse.ui.forms"/>
-      <import plugin="org.objectstyle.wolips.tests.core"/>
-      <import plugin="org.eclipse.ui.workbench"/>
-      <import plugin="org.eclipse.jdt.launching"/>
-      <import plugin="org.eclipse.debug.core"/>
-      <import plugin="org.eclipse.ant.core"/>
-      <import plugin="org.eclipse.ui.externaltools"/>
+      <import plugin="org.eclipse.core.runtime.compatibility"/>
       <import plugin="org.eclipse.ant.ui"/>
-      <import plugin="org.eclipse.core.variables"/>
-      <import plugin="org.eclipse.team.core"/>
-      <import plugin="org.junit"/>
-      <import plugin="org.eclipse.jface"/>
-      <import plugin="org.apache.ant"/>
-      <import plugin="org.eclipse.swt"/>
+      <import plugin="org.eclipse.ui.externaltools"/>
    </requires>
 
    <plugin
          id="org.objectstyle.wolips"
-         download-size="8"
-         install-size="36"
-         version="1.0.6"/>
-
-   <plugin
-         id="org.objectstyle.wolips.about"
          download-size="8"
          install-size="36"
          version="1.0.6"/>
@@ -154,7 +149,7 @@
          download-size="60"
          install-size="100"
          version="1.0.6"/>
-         
+
    <plugin
          id="org.objectstyle.wolips.launching"
          download-size="60"
@@ -225,6 +220,12 @@
          id="org.objectstyle.wolips.workbenchutilities"
          download-size="60"
          install-size="100"
+         version="1.0.6"/>
+
+   <plugin
+         id="org.objectstyle.wolips.ant"
+         download-size="0"
+         install-size="0"
          version="1.0.6"/>
 
 </feature>
