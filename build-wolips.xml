@@ -10,13 +10,13 @@
     <property environment="env"/>
     <property name="output" value="output"/>
     <property name="next.root" value="${env.NEXT_ROOT}"/>
-    <property name="wolips.project.version" value="0.8.5"/>
+    <property name="wolips.project.version" value="0.8.6"/>
     
     <!-- ============================================= -->
     <!-- Derived Properties.                           -->
     <!-- ============================================= -->
     <property name="build" value="${output}/build"/>
-    <property name="wolips.name" value="com.objectstyle.wolips_${wolips.project.version}"/>
+    <property name="wolips.name" value="org.objectstyle.wolips_${wolips.project.version}"/>
     <property name="wolips.dist" value="${dist.base}/${wolips.name}"/>
     <!-- main distribution. -->
     <property name="dist" value="${dist.base}/${project.name}-${project.version}"/>
