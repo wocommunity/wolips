@@ -77,5 +77,13 @@
             type="org.objectstyle.wolips.projectbuild.marker">
       </super>
    </extension>
+   <extension
+         point="org.eclipse.core.variables.dynamicVariables">
+      <variable
+            name="working_dir_loc_WOLips"
+            resolver="org.objectstyle.wolips.projectbuild.variables.WorkingDirResolver"
+            description="Resolves the working dir for a WebObjects Application within a WOLips project. Add the ProjectName as the argument.">
+      </variable>
+   </extension>
 
 </plugin>

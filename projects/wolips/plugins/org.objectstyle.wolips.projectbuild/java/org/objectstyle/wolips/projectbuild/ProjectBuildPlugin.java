@@ -58,7 +58,7 @@ import org.osgi.framework.BundleContext;
  * @author markus
  */
 public class ProjectBuildPlugin extends AbstractUIPlugin {
-	private final static String PLUGIN_ID = "org.objectstyle.wolips.projectbuild";
+	public final static String PLUGIN_ID = "org.objectstyle.wolips.projectbuild";
 	/**
 	 * Comment for <code>MARKER_TASK_GENERIC</code>
 	 */
