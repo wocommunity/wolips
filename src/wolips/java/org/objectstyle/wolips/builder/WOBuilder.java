@@ -73,6 +73,7 @@ public abstract class WOBuilder extends IncrementalProjectBuilder {
 	
 	private static AntRunner antRunner = null;
 	private static Vector marker = new Vector();
+	private static final boolean cacheAntRunner = false;
 	
 //	public static String WOLIPS_NEXT_ROOT = "wolips.next.root";
 	/**
@@ -106,6 +107,7 @@ public abstract class WOBuilder extends IncrementalProjectBuilder {
 				antRunner().addUserProperties(args);
 				antRunner().run(monitor);
 				//getProject().refreshLocal(getProject().DEPTH_INFINITE, monitor);
+			if(!WOBuilder.cacheAntRunner) WOBuilder.antRunner = null;
 			}
 		} 
 		catch(Exception e) {
