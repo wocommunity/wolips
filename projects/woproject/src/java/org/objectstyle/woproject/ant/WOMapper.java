@@ -73,6 +73,7 @@ import org.apache.tools.ant.util.IdentityMapper;
  */
 public class WOMapper extends Mapper {
 	private final String LPROJ_SUFFIX = ".lproj";
+	private final String SUBPROJ_SUFFIX = ".subproj";
 	private final String NON_LOCALIZED = "Nonlocalized" + LPROJ_SUFFIX;
 
 	public WOMapper(Project project) {
@@ -90,55 +91,33 @@ public class WOMapper extends Mapper {
 		 * with a path rewritten using localization rules.
 		 */
 		public String[] mapFileName(String sourceFileName) {
+			// check for default exclusions
+			if (NON_LOCALIZED.equals(sourceFileName)) {
+				return null;
+			}
+			// apply filters
+			String subprojPath = subprojFilter(sourceFileName);
 
-		// check for default exclusions
+			String localizedPath = localizationFilter(subprojPath);
 
-		if (NON_LOCALIZED.equals(sourceFileName)) {
-
-			return null;
-
+			String wocompPath = wocompFilter(localizedPath);
+			String miscFilter = miscFilter(wocompPath);
+			String finalPath = eomodelFilter(miscFilter);
+			return new String[] { finalPath };
 		}
-
-		// apply filters
-
-		String localizedPath = localizationFilter(sourceFileName);
-
-		String wocompPath = wocompFilter(localizedPath);
-
-		String miscFilter = miscFilter(wocompPath);
-
-		String finalPath = eomodelFilter(miscFilter);
-
-		return new String[] { finalPath };
-
-		}
-
 		/**
-
 		* Returns destination path based on source file path applying
-
 		* miscancellous rules, like *.strings to <code>path</code> if
-
 		* applicable.
-
 		*/
-
 		private final String miscFilter(String path) {
-
-		File f = new File(path);
-
-		// add other file extensions here!
-
-		if (path.endsWith(".strings")) {
-
-			return flatten(f);
-
-		}
-
-		// skip the filter
-
-		return path;
-
+			File f = new File(path);
+			// add other file extensions here!
+			if (path.endsWith(".strings")) {
+				return flatten(f);
+			}
+			// skip the filter
+			return path;
 		}
 
 		/** 
@@ -162,12 +141,13 @@ public class WOMapper extends Mapper {
 			// skip the filter
 			return path;
 		}
-		
+
 		private final String eomodelFilter(String path) {
 			File f = new File(path);
 
 			// EOModel directory
-			if (path.endsWith(".eomodeld") && !path.endsWith("index.eomodeld")) {
+			if (path.endsWith(".eomodeld")
+				&& !path.endsWith("index.eomodeld")) {
 				return flatten(f);
 			}
 
@@ -181,6 +161,28 @@ public class WOMapper extends Mapper {
 			return path;
 		}
 
+		/** 
+		 * Returns destination path based on source file path applying
+		 * subproj rules to <code>path</code>. 
+		 */
+		private String subprojFilter(String path) {
+			File f = new File(path);
+			File p1 = f.getParentFile();
+
+			// check for localization
+			File p2 = null;
+			while (p1 != null) {
+				p2 = p1;
+				p1 = p1.getParentFile();
+			}
+
+			if (p2 != null) {
+				String topmostParent = p2.getName();
+				if (topmostParent.endsWith(SUBPROJ_SUFFIX))
+					return path.substring(topmostParent.length());
+			}
+			return path;
+		}
 		/** 
 		 * Returns destination path based on source file path applying
 		 * localization rules to <code>path</code>. 
@@ -216,8 +218,8 @@ public class WOMapper extends Mapper {
 			}
 
 			return f.getName();
-		} 
-		
+		}
+
 		/** 
 		  * Flatten parent path, taking localization into account. No need to check for 
 		  * Nonlocalized.lproj here, since it should've been stripped by localization

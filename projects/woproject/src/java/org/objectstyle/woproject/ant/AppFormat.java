@@ -116,13 +116,14 @@ public class AppFormat extends ProjectFormat {
 			woappPlusVersion() + "/Info.plist",
 			infoFilter(null));
 		// add web.xml
-		if(((WOApplication)this.task).webXML) {
-		String webXMLFile =
-			new File(getApplicatonTask().contentsDir(), "web.xml").getPath();
-		createMappings(
-			webXMLFile,
-			woappPlusVersion() + "/ServletEnv_web.xml",
-			webXMLFilter());
+		if (((WOApplication) this.task).webXML) {
+			String webXMLFile =
+				new File(getApplicatonTask().contentsDir(), "web.xml")
+					.getPath();
+			createMappings(
+				webXMLFile,
+				woappPlusVersion() + "/ServletEnv_web.xml",
+				webXMLFilter());
 		}
 	}
 
@@ -139,17 +140,12 @@ public class AppFormat extends ProjectFormat {
 	 * Prepares all path values needed for substitutions.
 	 */
 	private void prepare52() {
-		if (this
-			.getApplicatonTask()
-			.getWOEnvironment()
-			.wo52(this.getApplicatonTask().getProject())) {
+		if (this.getApplicatonTask().getWOEnvironment().wo52()) {
 			Copy cp = new Copy();
 			//cp.setOwningTarget(getApplicatonTask().getProject().getDefaultTarget());
 			cp.setProject(getApplicatonTask().getProject());
 			cp.setTaskName("copy bootstrap");
-			cp.setFile(
-				this.getApplicatonTask().getWOEnvironment().bootstrap(
-					this.getApplicatonTask().getProject()));
+			cp.setFile(this.getApplicatonTask().getWOEnvironment().bootstrap());
 			cp.setTodir(getApplicatonTask().taskDir());
 			cp.execute();
 		}
@@ -237,16 +233,16 @@ public class AppFormat extends ProjectFormat {
 						Project.MSG_VERBOSE);
 				}
 				if (true /*
-													|| fs.hasSelectors()
-													|| (fs.hasPatterns()
-														&& fs.createPatternSet() != null
-														&& (fs.createPatternSet().createInclude() != null
-															&& fs.createPatternSet().createExclude() != null
-															&& (fs.createPatternSet().getIncludePatterns(project)
-																!= null
-																|| fs.createPatternSet().getExcludePatterns(
-																	project)
-																	!= null)))*/
+																	|| fs.hasSelectors()
+																	|| (fs.hasPatterns()
+																		&& fs.createPatternSet() != null
+																		&& (fs.createPatternSet().createInclude() != null
+																			&& fs.createPatternSet().createExclude() != null
+																			&& (fs.createPatternSet().getIncludePatterns(project)
+																				!= null
+																				|| fs.createPatternSet().getExcludePatterns(
+																					project)
+																					!= null)))*/
 					) {
 					if (fs.getEmbed()) {
 						continue;
@@ -324,15 +320,15 @@ public class AppFormat extends ProjectFormat {
 
 				OtherClasspathSet cs = (OtherClasspathSet) classpathSets.get(i);
 				if (true /*cs.hasSelectors()
-													|| (cs.hasPatterns()
-														&& cs.createPatternSet() != null
-														&& (cs.createPatternSet().createInclude() != null
-															&& cs.createPatternSet().createExclude() != null
-															&& (cs.createPatternSet().getIncludePatterns(project)
-																!= null
-																|| cs.createPatternSet().getExcludePatterns(
-																	project)
-																	!= null)))*/
+																	|| (cs.hasPatterns()
+																		&& cs.createPatternSet() != null
+																		&& (cs.createPatternSet().createInclude() != null
+																			&& cs.createPatternSet().createExclude() != null
+																			&& (cs.createPatternSet().getIncludePatterns(project)
+																				!= null
+																				|| cs.createPatternSet().getExcludePatterns(
+																					project)
+																					!= null)))*/
 					)
 					cs.collectClassPaths(project, pathSet);
 			}
@@ -550,10 +546,7 @@ public class AppFormat extends ProjectFormat {
 	 * @return String
 	 */
 	public String woappPlusVersion() {
-		if (this
-			.getApplicatonTask()
-			.getWOEnvironment()
-			.wo5or51(this.getApplicatonTask().getProject()))
+		if (this.getApplicatonTask().getWOEnvironment().wo5or51())
 			return "woapp";
 		return "woapp_52";
 	}

@@ -1,4 +1,4 @@
-package org.objectstyle.woenvironment.util;
+package org.objectstyle.woproject.util;
 /* ====================================================================
  * 
  * The ObjectStyle Group Software License, Version 1.0 
