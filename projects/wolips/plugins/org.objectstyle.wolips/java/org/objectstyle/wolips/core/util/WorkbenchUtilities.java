@@ -78,6 +78,7 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.part.FileEditorInput;
 import org.objectstyle.woenvironment.env.WOEnvironment;
 import org.objectstyle.woenvironment.env.WOVariables;
 import org.objectstyle.wolips.core.logging.WOLipsLog;
@@ -485,24 +486,24 @@ public final class WorkbenchUtilities {
 			IWorkbenchPage workbenchPage = workbenchWindow.getActivePage();
 			if (workbenchPage != null) {
 				try {
+					IEditorDescriptor editorDescriptor =
+					WOLipsPlugin
+					.getDefault()
+					.getWorkbench()
+					.getEditorRegistry()
+					.getDefaultEditor(
+							file.getName());
 					if (forceToOpenIntextEditor) {
-						IEditorDescriptor editorDescriptor =
-							WOLipsPlugin
-								.getDefault()
-								.getWorkbench()
-								.getEditorRegistry()
-								.getDefaultEditor(
-								file);
-						workbenchPage.openEditor(file, editor);
+						workbenchPage.openEditor(new FileEditorInput(file), editor);
 						WOLipsPlugin
 							.getDefault()
 							.getWorkbench()
 							.getEditorRegistry()
 							.setDefaultEditor(
-							file,
+							file.getName(),
 							editorDescriptor.getId());
 					} else
-						workbenchPage.openEditor(file);
+						workbenchPage.openEditor(new FileEditorInput(file), editorDescriptor.getId());
 				} catch (Exception anException) {
 					WOLipsLog.log(anException);
 				}

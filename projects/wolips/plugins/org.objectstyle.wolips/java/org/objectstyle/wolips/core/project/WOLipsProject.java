@@ -270,6 +270,8 @@ public class WOLipsProject implements IWOLipsProject {
 		 * @throws CoreException
 		 */
 		private boolean projectHasNature(String nature) throws CoreException {
+			if(!this.getProject().isOpen() || !this.getProject().isAccessible())
+				return false;
 			return this.getProject().hasNature(nature);
 		}
 		/**
@@ -277,6 +279,8 @@ public class WOLipsProject implements IWOLipsProject {
 		 * @throws CoreException
 		 */
 		public boolean hasWOLipsNature() throws CoreException {
+			if(!this.getProject().isOpen() || !this.getProject().isAccessible())
+				return false;
 			return (this.isApplication() || this.isFramework());
 		}
 		/**

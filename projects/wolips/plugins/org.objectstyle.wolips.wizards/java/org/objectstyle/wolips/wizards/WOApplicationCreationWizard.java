@@ -80,7 +80,8 @@ public class WOApplicationCreationWizard extends WOProjectCreationWizard {
 		addPage(mainPage);
 	}
 	/** (non-Javadoc)
-	 * Method declared on INewWizard
+	 * @param workbench
+	 * @param selection
 	 */
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
 		super.init(workbench, selection);
@@ -88,6 +89,7 @@ public class WOApplicationCreationWizard extends WOProjectCreationWizard {
 	}
 	/** (non-Javadoc)
 	 * Method declared on IWizard
+	 * @return
 	 */
 	public boolean performFinish() {
 		boolean creationSuccessful = mainPage.createProject();
@@ -113,3 +115,4 @@ public class WOApplicationCreationWizard extends WOProjectCreationWizard {
 		selectAndReveal(resource);
 	}
 }
+

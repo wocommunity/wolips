@@ -483,6 +483,22 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 		this.getControl().update();
 		this.includeTable.update();
 	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#activated(org.eclipse.debug.core.ILaunchConfigurationWorkingCopy)
+	 */
+	public void activated(ILaunchConfigurationWorkingCopy workingCopy) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#deactivated(org.eclipse.debug.core.ILaunchConfigurationWorkingCopy)
+	 */
+	public void deactivated(ILaunchConfigurationWorkingCopy workingCopy) {
+		// TODO Auto-generated method stub
+		
+	}
 }
 /*
 private String getWOApplicationPlatformSpecificArguments() {

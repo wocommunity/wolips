@@ -61,23 +61,13 @@ import java.lang.reflect.InvocationTargetException;
 import org.eclipse.ant.core.AntRunner;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
-import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunchConfiguration;
-import org.eclipse.debug.core.ILaunchConfigurationType;
-import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
-import org.eclipse.debug.core.ILaunchManager;
-import org.eclipse.debug.ui.CommonTab;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.externaltools.internal.model.IExternalToolConstants;
-import org.eclipse.ui.externaltools.internal.model.ToolUtil;
-import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
-import org.objectstyle.wolips.core.preferences.Preferences;
 import org.objectstyle.wolips.core.util.WorkbenchUtilities;
+
 
 /**
  * @author uli
@@ -152,7 +142,8 @@ public final class RunAnt {
 	public void asExternalTool(IFile buildFile, String target)
 		throws Exception {
 		ILaunchConfiguration config = null;
-		try {
+		return;
+		/*try {
 			config = RunAnt.createDefaultLaunchConfiguration(buildFile, target);
 		} catch (CoreException e) {
 			config = null;
@@ -171,7 +162,7 @@ public final class RunAnt {
 			});
 		} finally {
 			config = null;
-		}
+		}*/
 		/*if (kind == IncrementalProjectBuilder.AUTO_BUILD)
 			config.setAttribute(
 				IExternalToolConstants.VAR_BUILD_TYPE,
@@ -230,7 +221,7 @@ public final class RunAnt {
 	 * @param file
 	 * @return default launch configuration
 	 */
-	private static ILaunchConfiguration createDefaultLaunchConfiguration(
+	/*private static ILaunchConfiguration createDefaultLaunchConfiguration(
 		IFile file,
 		String target)
 		throws CoreException {
@@ -296,5 +287,5 @@ public final class RunAnt {
 				quiet);
 		}
 		return workingCopy;
-	}
+	}*/
 }

@@ -27,91 +27,16 @@
       <import plugin="org.apache.ant"/>
       <import plugin="org.eclipse.jface"/>
       <import plugin="org.objectstyle.wolips.woproject"/>
+      <import plugin="org.eclipse.jface.text"/>
+      <import plugin="org.eclipse.ui.ide"/>
    </requires>
+
 
 <!-- =================================================================================== -->
 <!-- Extension: Startup                                                                  -->
 <!-- =================================================================================== -->
    <extension
          point="org.eclipse.ui.startup">
-   </extension>
-<!-- =================================================================================== -->
-<!-- Extension: Resource filter                                                          -->
-<!-- =================================================================================== -->
-   <extension
-         point="org.eclipse.ui.resourceFilters">
-      <filter
-            selected="false"
-            pattern="*.woa">
-      </filter>
-      <filter
-            selected="false"
-            pattern="*.framework">
-      </filter>
-      <filter
-            selected="false"
-            pattern="*.java">
-      </filter>
-      <filter
-            selected="false"
-            pattern="*.wod">
-      </filter>
-      <filter
-            selected="false"
-            pattern="*.woo">
-      </filter>
-      <filter
-            selected="false"
-            pattern="*.html">
-      </filter>
-      <filter
-            selected="false"
-            pattern="*.api">
-      </filter>
-      <filter
-            selected="false"
-            pattern="*.wo">
-      </filter>
-      <filter
-            selected="false"
-            pattern="*.plist">
-      </filter>
-      <filter
-            selected="false"
-            pattern="*.eomodeld">
-      </filter>
-      <filter
-            selected="false"
-            pattern="*.d2wmodel">
-      </filter>
-      <filter
-            selected="false"
-            pattern="*.pbxuser">
-      </filter>
-      <filter
-            selected="false"
-            pattern="PB.project">
-      </filter>
-      <filter
-            selected="false"
-            pattern="*.postamble">
-      </filter>
-      <filter
-            selected="false"
-            pattern="*.preamble">
-      </filter>
-      <filter
-            selected="false"
-            pattern="makefile">
-      </filter>
-      <filter
-            selected="false"
-            pattern="build.xml">
-      </filter>
-      <filter
-            selected="false"
-            pattern="*.subproj">
-      </filter>
    </extension>
 <!-- =================================================================================== -->
 <!-- Extension: Classpath container initializer                                          -->
