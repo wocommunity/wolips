@@ -56,7 +56,6 @@
 package org.objectstyle.wolips.wizards;
 import java.io.ByteArrayInputStream;
 import java.lang.reflect.InvocationTargetException;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -72,16 +71,22 @@ import org.objectstyle.wolips.core.project.ProjectHelper;
 public class WOComponentCreator extends WOProjectResourceCreator {
 	private String componentName;
 	private boolean createBodyTag;
+	private boolean createApiFile;
+	private boolean createWooFile;
 	/**
 	 * Constructor for WOComponentCreator.
 	 */
 	public WOComponentCreator(
 		IResource parentResource,
 		String componentName,
-		boolean createBodyTag) {
+		boolean createBodyTag,
+		boolean createApiFile,
+		boolean createWooFile) {
 		super(parentResource);
 		this.componentName = componentName;
 		this.createBodyTag = createBodyTag;
+		this.createApiFile = createApiFile;
+		this.createWooFile = createWooFile;
 	}
 	/**
 	 * @see org.objectstyle.wolips.wizards.WOProjectResourceCreator#getType()
@@ -160,7 +165,9 @@ public class WOComponentCreator extends WOProjectResourceCreator {
 				null);
 		}
 		fileCreator().create(componentJavaFile, "wocomponent", monitor);
-		fileCreator().create(componentApiFile, monitor);
-		fileCreator().create(componentWoo, monitor);
+		if (createApiFile)
+			fileCreator().create(componentApiFile, monitor);
+		if (createWooFile)
+			fileCreator().create(componentWoo, monitor);
 	}
 }

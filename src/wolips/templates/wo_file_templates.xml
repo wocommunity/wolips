@@ -1030,4 +1030,28 @@ DSTROOT = $(NEXT_ROOT)
 ]]></template>
 	<template name="eomodel index" id="eomodeld" variables="ADAPTOR_NAME" enabled="true"><![CDATA[{EOModelVersion = 2.1; adaptorName = ${ADAPTOR_NAME}; entities = (); }]]></template>
 	<template name="eomodel diagram layout" id="diagram" enabled="true"><![CDATA[{}]]></template>
+	<template name="ant properties jar" id="javaantjar.ant.properties" variables="BUILD_DIR,PROJECT_NAME" enabled="true"><![CDATA[
+classes.dir =  ${BUILD_DIR}
+jar.name = ${PROJECT_NAME}
+]]></template>
+	<template name="ant build jar" id="javaantjar.ant.build" enabled="true"><![CDATA[<?xml version="1.0"?>
+
+<!-- ======================================================== -->
+<!--              Script to build a jar                       -->
+<!-- ======================================================== -->
+<project name="build-jar" default="jar" basedir=".">
+
+    <!-- ============================================= -->
+    <!-- Jars Java classes                             -->
+    <!-- ============================================= -->
+    <target name="jar">
+    <property file="build.properties"/>
+	<jar jarfile="${jar.name}.jar">
+        <fileset dir="${classes.dir}">
+			<include name="**/*.class" />
+			<include name="**/*.properties" />
+	    </fileset>
+	</jar>
+    </target>
+</project>]]></template>
 </templates>

@@ -80,6 +80,8 @@ import org.eclipse.ui.actions.WorkspaceModifyDelegatingOperation;
 public class WOComponentCreationPage extends WizardNewWOResourcePage {
 	// widgets
 	private Button bodyCheckbox;
+	private Button wooCheckbox;
+	private Button apiCheckbox;
 	/**
 	 * Creates the page for the wocomponent creation wizard.
 	 *
@@ -122,6 +124,18 @@ public class WOComponentCreationPage extends WizardNewWOResourcePage {
 				"WOComponentCreationPage.creationOptions.bodyTag"));
 		bodyCheckbox.setSelection(true);
 		bodyCheckbox.addListener(SWT.Selection, this);
+		wooCheckbox = new Button(group, SWT.CHECK);
+		wooCheckbox.setText(
+			Messages.getString(
+				"WOComponentCreationPage.creationOptions.wooFile"));
+		wooCheckbox.setSelection(true);
+		wooCheckbox.addListener(SWT.Selection, this);
+		apiCheckbox = new Button(group, SWT.CHECK);
+		apiCheckbox.setText(
+			Messages.getString(
+				"WOComponentCreationPage.creationOptions.apiFile"));
+		apiCheckbox.setSelection(true);
+		apiCheckbox.addListener(SWT.Selection, this);
 		new Label(composite, SWT.NONE); // vertical spacer
 		setPageComplete(validatePage());
 	}
@@ -149,7 +163,9 @@ public class WOComponentCreationPage extends WizardNewWOResourcePage {
 					new WOComponentCreator(
 						actualProject,
 						componentName,
-						bodyCheckbox.getSelection());
+						bodyCheckbox.getSelection(),
+						apiCheckbox.getSelection(),
+						wooCheckbox.getSelection());
 				break;
 			default :
 				// determine parent resource for component creator by removing first element (workspace) from full path
@@ -160,7 +176,9 @@ public class WOComponentCreationPage extends WizardNewWOResourcePage {
 					new WOComponentCreator(
 						subprojectFolder,
 						componentName,
-						bodyCheckbox.getSelection());
+						bodyCheckbox.getSelection(),
+						apiCheckbox.getSelection(),
+						wooCheckbox.getSelection());
 				break;
 		}
 		IRunnableWithProgress op =

@@ -184,6 +184,20 @@
             id="org.eclipse.jdt.core.javanature">
       </requires-nature>
    </extension>
+<!-- Simple nature that runs ant -->  
+   <extension
+         id="antnature"
+         name="org.objectstyle.wolips.projectbuild.wolipsantnature"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run
+               class="org.objectstyle.wolips.projectbuild.natures.AntNature">
+         </run>
+      </runtime>
+      <requires-nature
+            id="org.eclipse.jdt.core.javanature">
+      </requires-nature>
+   </extension>
    <extension
          id="antframeworknature"
          name="org.objectstyle.wolips.projectbuild.wolipsantnature"

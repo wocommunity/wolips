@@ -64,7 +64,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.tools.ant.DirectoryScanner;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -96,7 +95,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
 /**
  * @author mnolte
  * @author uli
@@ -259,7 +257,7 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 	private void createProjectContents(IProgressMonitor monitor)
 		throws InvocationTargetException {
 		WOComponentCreator componentCreator =
-			new WOComponentCreator(parentResource, "Main", true);
+			new WOComponentCreator(parentResource, "Main", true, true, true);
 		NodeList fileNodeList = elementForTemplate.getElementsByTagName("file");
 		try {
 			String currentFileTemplateId = null;
@@ -401,7 +399,6 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 					WOLipsLog.log(anException);
 				}
 				try {
-
 					//newProjectHandle.setDescription(newProjectHandle.getDescription(), new SubProgressMonitor(monitor, 1000));
 					WOLipsProject woLipsProject =
 						new WOLipsProject(newProjectHandle);
@@ -409,7 +406,6 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 				} catch (Exception anException) {
 					WOLipsLog.log(anException);
 				}
-
 				NodeList classpathNodeList =
 					elementForTemplate.getElementsByTagName("classpathentry");
 				ArrayList allClasspathEntriesResolved =

@@ -68,6 +68,16 @@
          </description>
       </wizard>
       <wizard
+            name="%WOLips.JarProject"
+            icon="icons/woproject/jar_project_wiz.gif"
+            category="org.objectstyle.wolips.wizards.webobjects.5.1"
+            class="org.objectstyle.wolips.wizards.JarProjectCreationWizard"
+            project="true"
+            id="org.objectstyle.wolips.wizards.new.wo.5.1.jarproject">
+         <description>
+         </description>
+      </wizard>
+      <wizard
             name="%WOLips.EOModel"
             icon="icons/woproject/eomodel_wiz.gif"
             category="org.objectstyle.wolips.wizards.webobjects.5.1"
@@ -121,6 +131,14 @@
                class="org.objectstyle.wolips.wizards.actions.OpenWOFrameworkCreationWizard"
                toolbarPath="Normal/WOLipsWizards"
                id="org.objectstyle.wolips.OpenWOFrameworkCreationWizard">
+         </action>
+         <action
+               label="%OpenJarProjectCreationWizard.label"
+               icon="icons/woproject/jar_project_wiz.gif"
+               tooltip="%OpenJarProjectCreationWizard.tooltip"
+               class="org.objectstyle.wolips.wizards.actions.OpenJarProjectCreationWizard"
+               toolbarPath="Normal/WOLipsWizards"
+               id="org.objectstyle.wolips.OpenJarProjectCreationWizard">
          </action>
          <action
                label="%OpenWOApplicationCreationWizard.label"

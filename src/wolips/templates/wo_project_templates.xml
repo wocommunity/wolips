@@ -106,6 +106,23 @@
 			<file templateId="woframework.custominfo.plist" name="CustomInfo.plist"/>
 		</files>
 	</projectType>
+	<projectType name="Java Ant jar" id="JavaAntJar">
+		<nature id="org.eclipse.jdt.core.javanature"/>
+		<classpath>
+			<classpathentry kind="src" path="src"/>
+			<classpathentry kind="var" path="NEXT_SYSTEM_ROOT/Library/Frameworks/JavaWebObjects.framework/Resources/Java/javawebobjects.jar"/>
+			<classpathentry kind="var" path="NEXT_SYSTEM_ROOT/Library/Frameworks/JavaFoundation.framework/Resources/Java/javafoundation.jar"/>
+			<classpathentry kind="var" path="NEXT_SYSTEM_ROOT/Library/Frameworks/JavaXML.framework/Resources/Java/javaxml.jar"/>
+			<classpathentry kind="var" path="NEXT_SYSTEM_ROOT/Library/Frameworks/JavaWOExtensions.framework/Resources/Java/JavaWOExtensions.jar"/>
+			<classpathentry kind="var" path="NEXT_SYSTEM_ROOT/Library/Frameworks/JavaEOAccess.framework/Resources/Java/javaeoaccess.jar"/>
+			<classpathentry kind="var" path="NEXT_SYSTEM_ROOT/Library/Frameworks/JavaEOControl.framework/Resources/Java/javaeocontrol.jar"/>
+			<classpathentry kind="var" path="JRE_LIB" rootpath="JRE_SRCROOT" sourcepath="JRE_SRC"/>
+		</classpath>
+		<files>
+			<file templateId="javaantjar.ant.build" name="build.xml"/>
+			<file templateId="javaantjar.ant.properties" name="build.properties"/>
+		</files>
+	</projectType>
 	<projectType name="WebObjects Subproject" id="JavaWebObjectsSubproject">
 		<files>
 			<file templateId="subproject" name="PB.project"/>
