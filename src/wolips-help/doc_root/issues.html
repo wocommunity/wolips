@@ -11,7 +11,7 @@
 <table width="100%">
   <tr> 
     <td> 
-      <h3>Problem</h3>
+      <h3>Bug</h3>
     </td>
     <td> 
       <h3>Fix</h3>
@@ -67,10 +67,10 @@ style='mso-fareast-font-family:"MS Mincho";mso-ansi-language:EN-GB'><o:p></o:p><
     </td>
   </tr>
   <tr> 
-    <td>Doing 'Add Local Framework' gives different results (in .classpath) on 
-      Windows and Macintosh - none of which works when you move the project to 
-      the other platform.</td>
-    <td>?</td>
+    <td height="41">Doing 'Add Local Framework' gives different results (in .classpath) 
+      on Windows and Macintosh - none of which works when you move the project 
+      to the other platform.</td>
+    <td height="41">?</td>
   </tr>
   <tr> 
     <td>When building on Macintosh the CLSSPATH.TXT (for Windows deployemnt) file 
@@ -79,37 +79,56 @@ style='mso-fareast-font-family:"MS Mincho";mso-ansi-language:EN-GB'><o:p></o:p><
   </tr>
 </table>
 <h2><a name="issues"></a>Issues</h2>
-...currently under debate. 
-<ul>
-  <li>Currently you can not use the ant scripts outside of Eclipse.</li>
-  <li>There seems to be some problems with Java 1.4.</li>
-  <li>Make sure that there is no older version of Xerces in your classpath.</li>
-  <li>Please use a 1.5* version of ant to build wolips.</li>
-  <li>...there are tasks for it at sourceforge: - handle .java files on import 
-    - .lporj on import - webserveresources and import</li>
-  <li>Decline it if the EOModeler on MacOSX asks you to add the files to the project. 
-    Otherwise your PB.project is converted to a XML file.</li>
-</ul>
+<p>...currently under debate.</p>
+<table width="100%">
+  <tr> 
+    <td> 
+      <h3>Issue</h3>
+    </td>
+    <td> 
+      <h3>Fix</h3>
+    </td>
+  </tr>
+  <tr> 
+    <td>Currently you can not use the ant scripts outside of Eclipse.</td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr> 
+    <td>The import (project) Wizards currently only work with PBWO projects. If 
+      you try it with PBX projects you may find that some file where skipped and 
+      that the eclipse .project file in incomplete. </td>
+    <td> 
+      <p>How to import an existing PBX project (or any collection of suitable 
+        files)</p>
+      <ol>
+        <li>Create a new empty WOLips project</li>
+        <li>Copy all necessary files from the old PBX project to the new WOLips 
+          project</li>
+        <li>Do Refresh, Close and Open - and you have fully functional WOLips 
+          project !) Do not use the import wizard</li>
+      </ol>
+    </td>
+  </tr>
+  <tr> 
+    <td>Decline it if the EOModeler on MacOSX asks you to add the files to the 
+      project. Otherwise your PB.project is converted to a XML file.</td>
+    <td>Don't do it!</td>
+  </tr>
+</table>
 <h2><a name="other"></a>Other Things</h2>
 <p>...possibly on the to do list.</p>
-<ul>
-  <li>Working with PBX simultaneously.</li>
-  <li> 
-    <p class=MsoNormal><span lang=EN-GB style='mso-fareast-font-family:"MS Mincho";
+<p>Working with PBX simultaneously. <span lang=EN-GB style='mso-fareast-font-family:"MS Mincho";
 mso-ansi-language:EN-GB'>In this document, when referring to <span
 class=SpellE>ProjectBuilder</span>, it is the Windows and/or old Macintosh version 
-      (<span class=SpellE>PBWO</span>) that is intended – not the new, Macintosh 
-      only, version (PBX).<o:p></o:p></span></p>
-    <p class=MsoNormal><span lang=EN-GB style='mso-fareast-font-family:"MS Mincho";
+  (<span class=SpellE>PBWO</span>) that is intended – not the new, Macintosh only, 
+  version (PBX).<o:p></o:p> </span><span lang=EN-GB style='mso-fareast-font-family:"MS Mincho";
 mso-ansi-language:EN-GB'>WOLips needs to maintain either the <span
 class=SpellE>PBWO</span> ‘<span class=SpellE>PB.project</span>’ file or the PBX 
-      ‘*.<span class=SpellE>pbproj</span>’ file in order to have <span class=SpellE>WOBuilder</span> 
-      and <span class=SpellE>EOModeler</span> function as desired. The <span
+  ‘*.<span class=SpellE>pbproj</span>’ file in order to have <span class=SpellE>WOBuilder</span> 
+  and <span class=SpellE>EOModeler</span> function as desired. The <span
 class=SpellE>PBWO</span> file is apparently much easier to maintain than the PBX 
-      file. Working in parallel with <span class=SpellE>PBWO</span> and eclipse/WOLips 
-      is possible, but is not the primary reason for maintaining the project files.</span></p>
-  </li>
-</ul>
+  file. Working in parallel with <span class=SpellE>PBWO</span> and eclipse/WOLips 
+  is possible, but is not the primary reason for maintaining the project files.</span></p>
 <p>You can also have a look at the <a href="http://sourceforge.net/pm/?group_id=50507">SourceForge 
   tasks list for WOProject</a>.</p>
 <p>&nbsp;</p>
