@@ -13,6 +13,7 @@
 		<topic label="Import Application" href="./doc_root/tasks/wiz/import_application.html"/>
 		<topic label="Import Framework" href="./doc_root/tasks/wiz/import_framework.html"/>
 		<topic label="Add Component" href="./doc_root/tasks/wiz/add_component.html"/>
+        <topic label="Add EO Model" href="./doc_root/tasks/wiz/add_eomodel.html"/>
 
 	</topic>
 	
