@@ -58,9 +58,11 @@ package org.objectstyle.wolips.preferences;
 
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.jface.preference.RadioGroupFieldEditor;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.objectstyle.wolips.logging.WOLipsLog;
 import org.objectstyle.wolips.plugin.IWOLipsPluginConstants;
 
 /**
@@ -148,12 +150,28 @@ public class PreferencesPage
 				PreferencesMessages.getString(
 					"Preferences.RebuildWOBuildProperties.Label"),
 				getFieldEditorParent()));
+		String[][] labelsAndValues =
+			new String[][] { {PreferencesMessages.getString("Preferences.LogLevel." + WOLipsLog.TRACE + ".Label"),
+				PreferencesMessages.getString("Preferences.LogLevel." + WOLipsLog.DEBUG + ".Label"),
+				PreferencesMessages.getString("Preferences.LogLevel." + WOLipsLog.INFO + ".Label"),
+				PreferencesMessages.getString("Preferences.LogLevel." + WOLipsLog.WARN + ".Label"),
+				PreferencesMessages.getString("Preferences.LogLevel." + WOLipsLog.ERROR + ".Label"),
+				PreferencesMessages.getString("Preferences.LogLevel." + WOLipsLog.FATAL + ".Label") }, {
+				WOLipsLog.TRACE + "",
+				WOLipsLog.DEBUG + "",
+				WOLipsLog.INFO + "",
+				WOLipsLog.WARN + "",
+				WOLipsLog.ERROR + "",
+				WOLipsLog.FATAL + "" }
+		};
 		addField(
-			new StringFieldEditor(
+			new RadioGroupFieldEditor(
 				IWOLipsPluginConstants.PREF_LOG_LEVEL,
 				PreferencesMessages.getString("Preferences.LogLevel.Label"),
-				60,
-				getFieldEditorParent()));
+				1,
+				labelsAndValues,
+				getFieldEditorParent(),
+				true));
 		/*addField(
 			new StringFieldEditor(
 				IWOLipsPluginConstants

@@ -72,49 +72,87 @@ public class Preferences {
 
 	private static final String trueString = "true";
 	private static final String falseString = "false";
+	//set this sting to a preferences key and call set defaults to set the default value for this preferences key
+	private static String SET_DEFAULTS_STRING = null;
 	/**
 	 * Method setDefaults.
 	 */
 	public static void setDefaults() {
 		IPreferenceStore store = getPreferenceStore();
-		store.setDefault(
-			IWOLipsPluginConstants.PREF_ANT_BUILD_FILE,
-			org.apache.tools.ant.Main.DEFAULT_BUILD_FILENAME);
-		store.setDefault(
-			IWOLipsPluginConstants.PREF_RUN_WOBUILDER_ON_BUILD,
-			Preferences.trueString);
-		store.setDefault(
-			IWOLipsPluginConstants.PREF_RUN_ANT_AS_EXTERNAL_TOOL,
-			Preferences.falseString);
-		store.setDefault(
-			IWOLipsPluginConstants.PREF_MODEL_NAVIGATOR_FILTER,
-			PreferencesMessages.getString(
-				"Preferences.ModelNavigatorFilter.Default"));
-		store.setDefault(
-			IWOLipsPluginConstants.PREF_WO_NAVIGATOR_FILTER,
-			PreferencesMessages.getString(
-				"Preferences.WONavigatorFilter.Default"));
-		store.setDefault(
-			IWOLipsPluginConstants.PREF_PRODUCT_NAVIGATOR_FILTER,
-			PreferencesMessages.getString(
-				"Preferences.ProductNavigatorFilter.Default"));
-		store.setDefault(
-			IWOLipsPluginConstants
-				.PREF_OPEN_WOCOMPONENT_ACTION_INCLUDES_OPEN_HTML,
-			Preferences.falseString);
-		store.setDefault(
-			IWOLipsPluginConstants.PREF_SHOW_BUILD_OUTPUT,
-			Preferences.falseString);
-		store.setDefault(
-			IWOLipsPluginConstants.PREF_NS_PROJECT_SEARCH_PATH,
-			"");
-		store.setDefault(
-			IWOLipsPluginConstants
-				.PREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH,
-			PreferencesMessages.getString(Preferences.falseString));
-		store.setDefault(
-			IWOLipsPluginConstants.PREF_LOG_LEVEL,
-			PreferencesMessages.getString("Preferences.LogLevel.Default"));
+		if (Preferences.SET_DEFAULTS_STRING == null
+			|| Preferences.SET_DEFAULTS_STRING.equals(
+				IWOLipsPluginConstants.PREF_ANT_BUILD_FILE))
+			store.setDefault(
+				IWOLipsPluginConstants.PREF_ANT_BUILD_FILE,
+				org.apache.tools.ant.Main.DEFAULT_BUILD_FILENAME);
+		if (Preferences.SET_DEFAULTS_STRING == null
+			|| Preferences.SET_DEFAULTS_STRING.equals(
+				IWOLipsPluginConstants.PREF_RUN_WOBUILDER_ON_BUILD))
+			store.setDefault(
+				IWOLipsPluginConstants.PREF_RUN_WOBUILDER_ON_BUILD,
+				Preferences.trueString);
+		if (Preferences.SET_DEFAULTS_STRING == null
+			|| Preferences.SET_DEFAULTS_STRING.equals(
+				IWOLipsPluginConstants.PREF_RUN_ANT_AS_EXTERNAL_TOOL))
+			store.setDefault(
+				IWOLipsPluginConstants.PREF_RUN_ANT_AS_EXTERNAL_TOOL,
+				Preferences.falseString);
+		if (Preferences.SET_DEFAULTS_STRING == null
+			|| Preferences.SET_DEFAULTS_STRING.equals(
+				IWOLipsPluginConstants.PREF_MODEL_NAVIGATOR_FILTER))
+			store.setDefault(
+				IWOLipsPluginConstants.PREF_MODEL_NAVIGATOR_FILTER,
+				PreferencesMessages.getString(
+					"Preferences.ModelNavigatorFilter.Default"));
+		if (Preferences.SET_DEFAULTS_STRING == null
+			|| Preferences.SET_DEFAULTS_STRING.equals(
+				IWOLipsPluginConstants.PREF_WO_NAVIGATOR_FILTER))
+			store.setDefault(
+				IWOLipsPluginConstants.PREF_WO_NAVIGATOR_FILTER,
+				PreferencesMessages.getString(
+					"Preferences.WONavigatorFilter.Default"));
+		if (Preferences.SET_DEFAULTS_STRING == null
+			|| Preferences.SET_DEFAULTS_STRING.equals(
+				IWOLipsPluginConstants.PREF_PRODUCT_NAVIGATOR_FILTER))
+			store.setDefault(
+				IWOLipsPluginConstants.PREF_PRODUCT_NAVIGATOR_FILTER,
+				PreferencesMessages.getString(
+					"Preferences.ProductNavigatorFilter.Default"));
+		if (Preferences.SET_DEFAULTS_STRING == null
+			|| Preferences.SET_DEFAULTS_STRING.equals(
+				IWOLipsPluginConstants
+					.PREF_OPEN_WOCOMPONENT_ACTION_INCLUDES_OPEN_HTML))
+			store.setDefault(
+				IWOLipsPluginConstants
+					.PREF_OPEN_WOCOMPONENT_ACTION_INCLUDES_OPEN_HTML,
+				Preferences.falseString);
+		if (Preferences.SET_DEFAULTS_STRING == null
+			|| Preferences.SET_DEFAULTS_STRING.equals(
+				IWOLipsPluginConstants.PREF_SHOW_BUILD_OUTPUT))
+			store.setDefault(
+				IWOLipsPluginConstants.PREF_SHOW_BUILD_OUTPUT,
+				Preferences.falseString);
+		if (Preferences.SET_DEFAULTS_STRING == null
+			|| Preferences.SET_DEFAULTS_STRING.equals(
+				IWOLipsPluginConstants.PREF_NS_PROJECT_SEARCH_PATH))
+			store.setDefault(
+				IWOLipsPluginConstants.PREF_NS_PROJECT_SEARCH_PATH,
+				"");
+		if (Preferences.SET_DEFAULTS_STRING == null
+			|| Preferences.SET_DEFAULTS_STRING.equals(
+				IWOLipsPluginConstants
+					.PREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH))
+			store.setDefault(
+				IWOLipsPluginConstants
+					.PREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH,
+				PreferencesMessages.getString(Preferences.falseString));
+		if (Preferences.SET_DEFAULTS_STRING == null
+			|| Preferences.SET_DEFAULTS_STRING.equals(
+				IWOLipsPluginConstants.PREF_LOG_LEVEL))
+			store.setDefault(
+				IWOLipsPluginConstants.PREF_LOG_LEVEL,
+				PreferencesMessages.getString("Preferences.LogLevel.Default"));
+		Preferences.SET_DEFAULTS_STRING = null;
 	}
 
 	/**
@@ -124,7 +162,13 @@ public class Preferences {
 	 */
 	public static String getString(String key) {
 		IPreferenceStore store = getPreferenceStore();
-		return store.getString(key);
+		String returnValue = store.getString(key);
+		if (returnValue.equals(IPreferenceStore.STRING_DEFAULT_DEFAULT)) {
+			Preferences.setDefaults();
+			Preferences.SET_DEFAULTS_STRING = key;
+			returnValue = store.getString(key);
+		}
+		return returnValue;
 	}
 	/**
 	 * Method setString.
