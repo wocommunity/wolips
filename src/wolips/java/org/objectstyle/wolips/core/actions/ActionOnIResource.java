@@ -65,6 +65,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
+import org.objectstyle.wolips.core.plugin.AWOLips;
 
 /**
  * @author uli
@@ -74,7 +75,7 @@ import org.eclipse.ui.IWorkbenchPart;
  * To enable and disable the creation of type comments go to
  * Window>Preferences>Java>Code Generation.
  */
-public class ActionOnIResource implements IObjectActionDelegate {
+public class ActionOnIResource extends AWOLips implements IObjectActionDelegate {
 
 	private IProject project;
 	private IResource actionResource;

@@ -59,8 +59,6 @@ package org.objectstyle.wolips.core.actions;
 import java.util.ArrayList;
 
 import org.eclipse.jface.action.IAction;
-import org.objectstyle.wolips.core.resources.ResourcesHelper;
-import org.objectstyle.wolips.core.workbench.WorkbenchHelper;
 
 /**
  * @author uli
@@ -84,11 +82,8 @@ public class OpenSourceAction extends ActionOnIResource {
 				fileName = fileName.substring(0, fileName.length() - 3);
 
 			ArrayList list = new ArrayList();
-			ResourcesHelper.findFilesInResourceByName(
-				list,
-				project(),
-				fileName + ".java");
-			WorkbenchHelper.open(list);
+			this.findFilesInResourceByName(list, project(), fileName + ".java");
+			this.open(list);
 		}
 	}
 	/**
