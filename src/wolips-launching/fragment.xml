@@ -15,112 +15,77 @@
       </library>
    </runtime>
 
-   <requires>
-   </requires>
+
 <!-- =================================================================================== -->
 <!-- Extension: Launch configuration types                                                -->
 <!-- =================================================================================== -->
-   <extension point = "org.eclipse.debug.core.launchConfigurationTypes">
-   		<launchConfigurationType
-   	   		id="org.objectstyle.wolips.launching.WOLocalJavaApplication"
-	   		name="WOApplication"
-	   		delegate="org.objectstyle.wolips.launching.WOJavaLocalApplicationLaunchConfigurationDelegate"
-	   		modes= "run, debug">
-	    </launchConfigurationType>
+   <extension
+         point="org.eclipse.debug.core.launchConfigurationTypes">
+      <launchConfigurationType
+            name="WOApplication"
+            delegate="org.objectstyle.wolips.launching.WOJavaLocalApplicationLaunchConfigurationDelegate"
+            modes="run, debug"
+            id="org.objectstyle.wolips.launching.WOLocalJavaApplication">
+      </launchConfigurationType>
    </extension>
 <!-- =================================================================================== -->
 <!-- Extension: Launch configuration images                                               -->
 <!-- =================================================================================== -->
    <extension
-
          point="org.eclipse.debug.ui.launchConfigurationTypeImages">
-
       <launchConfigurationTypeImage
-
             icon="icons/launching/WOLips-launching.gif"
-
             configTypeID="org.objectstyle.wolips.launching.WOLocalJavaApplication"
-
             id="org.objectstyle.wolips.launching.WOLocalJavaApplicationImage">
-
       </launchConfigurationTypeImage>
-
    </extension>
 <!-- =================================================================================== -->
 <!-- Extension: Launch configuration tab groups                                           -->
 <!-- =================================================================================== -->
    <extension
-
          point="org.eclipse.debug.ui.launchConfigurationTabGroups">
-
       <launchConfigurationTabGroup
-
             type="org.objectstyle.wolips.launching.WOLocalJavaApplication"
-
             class="org.objectstyle.wolips.launching.WOLocalJavaApplicationTabGroup"
-
             id="org.objectstyle.wolips.launching.WOLocalJavaApplicationTabGroup">
-
       </launchConfigurationTabGroup>
-
    </extension>
 <!-- =================================================================================== -->
 <!-- Extension: Launch shortcuts                                                         -->
 <!-- =================================================================================== -->
    <extension
-
          point="org.eclipse.debug.ui.launchShortcuts">
-
       <shortcut
-
             label="WOApplication"
-
             icon="icons/launching/WOLips-launching.gif"
-
             modes="run, debug"
-
             class="org.objectstyle.wolips.launching.WOJavaApplicationLaunchShortcut"
-
             id="org.objectstyle.wolips.launching.WOJavaApplicationLaunchShortcut">
-
          <perspective
-
                id="org.eclipse.jdt.ui.JavaPerspective">
-
          </perspective>
-
          <perspective
-
                id="org.eclipse.jdt.ui.JavaHierarchyPerspective">
-
          </perspective>
-
          <perspective
-
                id="org.eclipse.jdt.ui.JavaBrowsingPerspective">
-
          </perspective>
-
          <perspective
-
                id="org.eclipse.debug.ui.DebugPerspective">
-
          </perspective>
-
          <perspective
-
                id="org.eclipse.pde.PDEPerspective">
-
          </perspective>
-         
          <perspective
-
                id="org.objectstyle.wolips.ui.Perspective">
-
          </perspective>
-
       </shortcut>
-
    </extension>
-
+   <extension
+         point="org.eclipse.jdt.launching.classpathProviders">
+      <classpathProvider
+            class="org.objectstyle.wolips.launching.WORuntimeClasspathProvider"
+            id="org.objectstyle.wolips.launching.WORuntimeClasspath">
+      </classpathProvider>
+   </extension>
 </fragment>
