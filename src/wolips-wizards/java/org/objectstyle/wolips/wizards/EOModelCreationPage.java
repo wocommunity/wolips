@@ -74,6 +74,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.actions.WorkspaceModifyDelegatingOperation;
+import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
 
 /**
  * @author mnolte
@@ -81,7 +82,12 @@ import org.eclipse.ui.actions.WorkspaceModifyDelegatingOperation;
  * The one and only page in the eo model creation wizard
  */
 public class EOModelCreationPage extends WizardNewWOResourcePage {
+	private IWorkbench workbench;
 	private HashMap availableAdaptors;
+	private Composite parentComposite;
+	// widgets
+	private Button adaptorJDBCCheckbox;
+	private Button adaptorJDBCPatchedCheckbox;
 	/**
 	 * Creates the page for the eomodel creation wizard.
 	 *
@@ -95,15 +101,18 @@ public class EOModelCreationPage extends WizardNewWOResourcePage {
 		this.setTitle(Messages.getString("EOModelCreationPage.title"));
 		this.setDescription(
 			Messages.getString("EOModelCreationPage.description"));
+		this.workbench = workbench;
 	}
 	/** (non-Javadoc)
 	 * Method declared on IDialogPage.
 	 */
 	public void createControl(Composite parent) {
+		parentComposite = parent;
 		// inherit default container and name specification widgets
 		super.createControl(parent);
 		Composite composite = (Composite) getControl();
 		//WorkbenchHelp.setHelp(composite, IReadmeConstants.CREATION_WIZARD_PAGE_CONTEXT);
+		GridData data = (GridData) composite.getLayoutData();
 		this.setFileName(
 			Messages.getString("EOModelCreationPage.newEOModel.defaultName"));
 		new Label(composite, SWT.NONE); // vertical spacer
@@ -177,7 +186,16 @@ public class EOModelCreationPage extends WizardNewWOResourcePage {
 	 * @param group
 	 */
 	private void createAvailableAdaptorButtons(Group group) {
+		File systemFrameworkDir =
+			new File(
+				WOLipsPlugin
+					.getDefault()
+					.getWOEnvironment()
+					.getWOVariables()
+					.libraryDir(),
+				"Frameworks");
 		AdaptorFilter adaptorFilter = new AdaptorFilter();
+		File[] finalFiles = systemFrameworkDir.listFiles(adaptorFilter);
 		availableAdaptors =
 			new HashMap(adaptorFilter.getAdaptorNames().size() + 1);
 		Button currentAdaptorButton;
