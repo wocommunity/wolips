@@ -10,7 +10,12 @@
         <!-- Welcome section -->
         <section name="Welcome to WOProject">
         <p><i>September 24, 2002.</i> <b>WOLips 0.8.8 released.</b></p>
-        <p>Read <a href="wolips/toc.html">this</a> to get started with WOLips. WOLips <a href="http://sourceforge.net/project/showfiles.php?group_id=50507">download</a>.
+        <p>WOLips is a plugin for <a href="http://eclipse.org">Eclipse IDE</a> that
+        support development of WebObjects applications and frameworks.
+        <ul>
+            <li><a href="wolips/toc.html">WOLips Documentation</a></li>
+            <li><a href="http://sourceforge.net/project/showfiles.php?group_id=50507">Download</a></li>
+        </ul>
         <hr/>
         </p>
                 
