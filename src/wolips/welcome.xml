@@ -73,16 +73,16 @@ respectively.
 in the ant plugin with ant.jar and optional.jar(rename it to jakarta-ant-1.4.1-optional.jar)
 from the ant 1.5.* distribution.
 8. Restart eclipse. When you start eclipse with a new or updated feature you have to activate it
-with the Update Manager. It should appear automatically when eclipse is started. If not, you’ll find it under Help > Software Updates > Update Manager.</item>
+with the Update Manager. It should appear automatically when eclipse is started. If not, youll find it under Help > Software Updates > Update Manager.</item>
 
 <item><b>HelloWOrld</b>
-It is very easy to create and run a basic WO application using WOLips. Here’s how to do it:
-1. Select the menu option File > New > Other...
-2. Select WOLips WO 5.1 and then Application press next.
+It is very easy to create and run a basic WO application using WOLips. Here's how to do it:
+1. Open the WOLips Perspective: <action pluginId="org.objectstyle.wolips"  class="org.objectstyle.wolips.ui.PerspectiveFactory">Window > Open Perspective > other > WOLips</action>
+2. Create a <action pluginId="org.objectstyle.wolips" class="org.objectstyle.wolips.actions.OpenWOProjectCreationWizard">application project</action>
 3. Name the project HelloWOrld press Finish.
 4. Open the Navigator view and expand the HelloWOrld node. (There is a WOLips
 perspective and a WOLips Navigator view. This is not the one referred to here.) Inside
-you’ll find four folders, and a number of files. They are:
+you'll find four folders, and a number of files. They are:
 bin contains all the *.class files.
 HelloWOrld.proj.src contains all the *.java files.
 HelloWOrld.woa is the executable application. eclipse keeps all code compiled at all
@@ -131,13 +131,6 @@ project.</item>
 If you'd like to ask question regarding WOLips or to get in contact with the developers use the
 WOProject mailing list. Suggestions on improving this document are also best discussed on that
 list.</item>
-
- <item><b>The WOLips Perspective </b>
-To do WO development open to the WOLips Perspective by selecting
-<action pluginId="org.objectstyle.wolips"  class="org.objectstyle.wolips.ui.PerspectiveFactory">Window > Open Perspective > other > WOLips</action>.</item> 
-
- <item><b>Create New Application </b>
-To start create a <action pluginId="org.objectstyle.wolips" class="org.objectstyle.wolips.actions.OpenWOProjectCreationWizard">application project</action>.</item>
 
 <item><b>Learn more </b>
 To learn more you can browse the <topic id="/org.objectstyle.wolips/toc.xml">WOLips User Guide</topic>.</item>
