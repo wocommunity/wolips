@@ -73,13 +73,13 @@ import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
 
 public interface WOProjectBuildConstants extends IWOLipsPluginConstants {
   static final String RES_EXCLUDES = "res.exclude.patterns";
-  static final String RES_EXCLUDES_DEFAULT = "*/Thumbs.db,*/.*,*/CVS/*,CustomInfo.plist";
+  static final String RES_EXCLUDES_DEFAULT = "*/Thumbs.db,*/.*,*/CVS/*,/CustomInfo.plist,/build.xml";
   
   static final String RES_INCLUDES = "res.include.patterns";
-  static final String RES_INCLUDES_DEFAULT = "Properties,*.api,*.d2wmodel,*.xml,*.plist,*.strings,/Resources/*,*/*.wo/*,*/*.eomodeld/*";
+  static final String RES_INCLUDES_DEFAULT = "/Properties,*.api,*.d2wmodel,*.xml,*.plist,*.strings,/Resources/*,*/*.wo/*,*/*.eomodeld/*";
   
   static final String WSRES_EXCLUDES = "webserver.res.exclude.patterns";
-  static final String WSRES_EXCLUDES_DEFAULT = "*/Thumbs.db,*/.*,*/CVS/*,CustomInfo.plist,*/*.wo/*,*/*.eomodeld/*";
+  static final String WSRES_EXCLUDES_DEFAULT = "*/Thumbs.db,*/.*,*/CVS/*,/CustomInfo.plist,*/*.wo/*,*/*.eomodeld/*";
 
   static final String WSRES_INCLUDES = "webserver.res.include.patterns";
   static final String WSRES_INCLUDES_DEFAULT = "*.js,*.css,*.jpg,*.jpeg,*.png,*.gif,*.html,/WebResources/*";
