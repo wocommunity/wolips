@@ -111,7 +111,7 @@ public class ProjectNaturePage extends PropertyPage implements IAdaptable {
 		_woNatureCheck.setEnabled(true);
 
 		_woNatureCheck.setSelection(
-			woLipsProject.getWOLipsProjectNatures().hasWOLipsNature());
+			woLipsProject.getNaturesAccessor().hasWOLipsNature());
 	}
 
 	/**
@@ -142,7 +142,7 @@ public class ProjectNaturePage extends PropertyPage implements IAdaptable {
 		_woIsIncrementalCheck.setEnabled(true);
 
 		_woIsIncrementalCheck.setSelection(
-			woLipsProject.getWOLipsProjectNatures().isIncremental());
+			woLipsProject.getNaturesAccessor().isIncremental());
 	}
 	/**
 	 * @param parent
@@ -161,7 +161,7 @@ public class ProjectNaturePage extends PropertyPage implements IAdaptable {
 		_woIsFrameworkCheck.setEnabled(true);
 
 		_woIsFrameworkCheck.setSelection(
-			woLipsProject.getWOLipsProjectNatures().isFramework());
+			woLipsProject.getNaturesAccessor().isFramework());
 	}
 
 	/**
@@ -221,9 +221,9 @@ public class ProjectNaturePage extends PropertyPage implements IAdaptable {
 			woLipsProject = this.getWOLipsProject();
 			if (_woNatureCheck.getSelection()) {
 				if (_woIsIncrementalCheck.getSelection()) {
-					woLipsProject.getWOLipsProjectNatures().setIncrementalNature(_woIsFrameworkCheck.getSelection(), false);
+					woLipsProject.getNaturesAccessor().setIncrementalNature(_woIsFrameworkCheck.getSelection(), false);
 				} else {
-					woLipsProject.getWOLipsProjectNatures().setAntNature(_woIsFrameworkCheck.getSelection(), false);
+					woLipsProject.getNaturesAccessor().setAntNature(_woIsFrameworkCheck.getSelection(), false);
 				}
 			}
 

@@ -393,7 +393,7 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 						newProjectHandle.open(null);
 					}
 					WOLipsProject woLipsProject = new WOLipsProject(newProjectHandle);
-					woLipsProject.getWOLipsProjectNatures().callConfigure();
+					woLipsProject.getNaturesAccessor().callConfigure();
 				} catch (CoreException e) {
 					throw new InvocationTargetException(e);
 				}

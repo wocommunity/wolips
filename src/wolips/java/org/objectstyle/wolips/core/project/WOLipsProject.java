@@ -80,7 +80,7 @@ import org.objectstyle.wolips.core.plugin.logging.WOLipsLog;
  */
 public class WOLipsProject implements IWOLipsPluginConstants {
 	private IProject project;
-	private WOLipsProjectNatures woLipsProjectNatures;
+	private NaturesAccessor naturesAccessor;
 	private BuilderAccessor builderAccessor;
 	private PBProjectFilesAccessor pbProjectFilesAccessor;
 
@@ -101,10 +101,10 @@ public class WOLipsProject implements IWOLipsPluginConstants {
 	/**
 	 * @return WOLipsProjectNatures
 	 */
-	public WOLipsProjectNatures getWOLipsProjectNatures() {
-		if (woLipsProjectNatures == null)
-			woLipsProjectNatures = new WOLipsProjectNatures(this);
-		return woLipsProjectNatures;
+	public NaturesAccessor getNaturesAccessor() {
+		if (naturesAccessor == null)
+		naturesAccessor = new NaturesAccessor(this);
+		return naturesAccessor;
 	}
 	/**
 	 * @return BuilderAccessor
@@ -134,12 +134,12 @@ public class WOLipsProject implements IWOLipsPluginConstants {
 			switch (aResource.getType()) {
 				case IResource.PROJECT :
 					return new WOLipsProject((IProject) aResource)
-						.getWOLipsProjectNatures()
+						.getNaturesAccessor()
 						.hasWOLipsNature();
 				default :
 					return aResource.getProject() != null
 						&& new WOLipsProject(aResource.getProject())
-							.getWOLipsProjectNatures()
+							.getNaturesAccessor()
 							.hasWOLipsNature();
 			}
 		} catch (CoreException e) {
@@ -173,13 +173,13 @@ public class WOLipsProject implements IWOLipsPluginConstants {
 	 *
 	 * Add and remove WOLips natures.
 	 */
-	public class WOLipsProjectNatures
+	public class NaturesAccessor
 		extends WOLipsProjectInnerClass
 		implements IWOLipsPluginConstants {
 		/**
 		 * @param woLipsProject
 		 */
-		protected WOLipsProjectNatures(WOLipsProject woLipsProject) {
+		protected NaturesAccessor(WOLipsProject woLipsProject) {
 			super(woLipsProject);
 		}
 		/**

@@ -195,7 +195,7 @@ public class ResourceChangeListener
 						return false;
 					}
 					WOLipsProject wolipsProject = new WOLipsProject((IProject) resource);
-					if (wolipsProject.getWOLipsProjectNatures().hasWOLipsNature()) {
+					if (wolipsProject.getNaturesAccessor().hasWOLipsNature()) {
 						// resource change concerns to webobjects project
 						// -> visit childs
 						return true;
