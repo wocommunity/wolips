@@ -239,7 +239,7 @@ public class DirectAction extends WODirectAction {
        			<include name="**/*.wo/"/>
        			<include name="**/*.api"/>
        			<exclude name="**/*.eomodeld~/"/>
-       			<exclude name="**/*.woa/**"
+       			<exclude name="**/*.woa/**"/>
        		</resources>
 			<frameworks root="${wo.woroot}">
       				<patternset>
