@@ -107,15 +107,16 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 	}
 
 	/**
-	 * Returns the shared instance.
+	 * @return Returns the shared instance.
 	 */
 	public static WorkbenchUtilitiesPlugin getDefault() {
 		return plugin;
 	}
 
 	/**
-	 * Returns the string from the plugin's resource bundle,
+	 * @return Returns the string from the plugin's resource bundle,
 	 * or 'key' if not found.
+	 * @param key
 	 */
 	public static String getResourceString(String key) {
 		ResourceBundle bundle = WorkbenchUtilitiesPlugin.getDefault().getResourceBundle();
@@ -127,7 +128,7 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 	}
 
 	/**
-	 * Returns the plugin's resource bundle,
+	 * @return Returns the plugin's resource bundle,
 	 */
 	public ResourceBundle getResourceBundle() {
 		return resourceBundle;
@@ -146,7 +147,7 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 
 	/**
 	 * Prints a Status.
-	 * @param e
+	 * @param status The status to log.
 	 */
 	public static void log(IStatus status) {
 		WorkbenchUtilitiesPlugin.getDefault().getLog().log(status);
@@ -162,6 +163,10 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 
 	/**
 	 * Utility method with conventions
+	 * @param shell
+	 * @param title
+	 * @param message
+	 * @param s
 	 */
 	public final static void errorDialog(
 		Shell shell,
@@ -179,6 +184,10 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 
 	/**
 	 * Utility method with conventions
+	 * @param shell
+	 * @param title
+	 * @param message
+	 * @param t
 	 */
 	public final static void errorDialog(
 		Shell shell,
@@ -226,6 +235,13 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 		return false;
 	}
 
+	/**
+	 * @param project
+	 * @param name
+	 * @param extensions
+	 * @param includesReferencedProjects
+	 * @return The list of resources.
+	 */
 	public final static List findResourcesInProjectByNameAndExtensions(
 		IProject project,
 		String name,
@@ -263,6 +279,12 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 			extensions);
 	}
 
+	/**
+	 * @param resources
+	 * @param name
+	 * @param extensions
+	 * @return
+	 */
 	public final static List findResourcesInResourcesByNameAndExtensions(
 		IResource[] resources,
 		String name,
@@ -277,6 +299,12 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 		return list;
 	}
 
+	/**
+	 * @param resource
+	 * @param name
+	 * @param extensions
+	 * @return
+	 */
 	public final static List findResourcesInResourceByNameAndExtensions(
 		IResource resource,
 		String name,
@@ -438,7 +466,7 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 	}
 	
 	/**
-	 * Returns the workspace instance.
+	 * @return Returns the workspace instance.
 	 */
 	public final static IWorkspace getWorkspace() {
 		return ResourcesPlugin.getWorkspace();
@@ -479,7 +507,8 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 	/**
 	 * Method open.
 	 * @param file The file to open.
-	 * @param If forceToOpenIntextEditor is set to true the resource opens in a texteditor.
+	 * @param forceToOpenIntextEditor If forceToOpenIntextEditor is set to true the resource opens in a texteditor.
+	 * @param editor
 	 */
 	public final static void open(
 		IFile file,
@@ -546,4 +575,5 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 	public PluginLogger getPluginLogger() {
 		return pluginLogger;
 	}
+
 }
