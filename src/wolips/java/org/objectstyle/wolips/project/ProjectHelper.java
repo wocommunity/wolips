@@ -59,7 +59,9 @@ package org.objectstyle.wolips.project;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IContainer;
@@ -90,6 +92,7 @@ public class ProjectHelper {
 	public static String WOFRAMEWORK_BUILDER_ID = "org.objectstyle.wolips.woframeworkbuilder";
 	public static String WOAPPLICATION_BUILDER_ID = "org.objectstyle.wolips.woapplicationbuilder";
 	public static String JAVA_BUILDER_ID = "org.eclipse.jdt.core.javabuilder";
+	public static final int NotFound = -1;
 
 	/**
 	 * Constructor for ProjectHelper.
@@ -344,7 +347,61 @@ public class ProjectHelper {
 
 	}
 
-
+public static int positionForBuilder(IProject aProject, String aBuilder) throws CoreException
+	{
+		IProjectDescription desc = aProject.getDescription();
+		ICommand[] coms = desc.getBuildSpec();
+		for (int i = 0; i < coms.length; i++)
+		{
+			if (coms[i].getBuilderName().equals(aBuilder))
+				return i;
+		}
+		return ProjectHelper.NotFound;
+	}
 	
+	public static void installBuilderAtPosition(IProject aProject, String aBuilder, int installPos, Map arguments)
+		throws CoreException
+	{
+		IProjectDescription desc = aProject.getDescription();
+		ICommand[] coms = desc.getBuildSpec();
+
+		if (arguments == null)
+			arguments = new HashMap();
+
+		for (int i = 0; i < coms.length; i++)
+		{
+			if (coms[i].getBuilderName().equals(aBuilder) && coms[i].getArguments().equals(arguments))
+				return;
+		}
+
+		ICommand[] newIc = null;
+
+		ICommand command = desc.newCommand();
+		command.setBuilderName(aBuilder);
+		command.setArguments(arguments);
+
+		newIc = new ICommand[coms.length + 1];
+		if (installPos <= 0)
+		{
+			System.arraycopy(coms, 0, newIc, 1, coms.length);
+			newIc[0] = command;
+		}
+		else
+			if (installPos >= coms.length)
+			{
+				System.arraycopy(coms, 0, newIc, 0, coms.length);
+				newIc[coms.length] = command;
+			}
+			else
+			{
+				System.arraycopy(coms, 0, newIc, 0, installPos);
+				newIc[installPos] = command;
+				System.arraycopy(coms, installPos, newIc, installPos + 1, coms.length - installPos);
+			}
+
+		desc.setBuildSpec(newIc);
+		aProject.setDescription(desc, null);
+	}
+
 }
 
