@@ -3,14 +3,17 @@
       id="org.objectstyle.wolips"
       label="%featureName"
       version="0.9.1"
-      image="wolips"
-      provider-name="%providerName">
+      image="%image"
+      provider-name="%providerName"
+      os="%os"
+      ws="%ws"
+      nl="%nl">
 
    <description>
       %description
    </description>
 
-      <requires>
+   <requires>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.ui"/>
@@ -26,20 +29,22 @@
       <import plugin="org.eclipse.jdt.launching"/>
       <import plugin="org.eclipse.compare"/>
       <import plugin="org.apache.lucene"/>
+      <import plugin="org.eclipse.ui.externaltools"/>
    </requires>
+
 
    <plugin
          id="org.objectstyle.wolips"
          download-size="0"
          install-size="0"
-         version="0.9.0">
+         version="0.9.2">
    </plugin>
 
    <plugin
          id="org.objectstyle.wolips.target"
          download-size="0"
          install-size="0"
-         version="0.9.0">
+         version="0.9.2">
    </plugin>
    
    
