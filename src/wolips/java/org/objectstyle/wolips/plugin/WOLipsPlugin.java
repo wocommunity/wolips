@@ -72,7 +72,6 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.objectstyle.wolips.logging.WOLipsLog;
 import org.objectstyle.wolips.logging.WOLipsLogFactory;
 import org.objectstyle.wolips.preferences.Preferences;
-import org.objectstyle.wolips.wo.Foundation;
 /**
  * The main plugin class to be used in the desktop.
  * 
@@ -101,7 +100,6 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 		LogFactory.getFactory().setAttribute(WOLipsLogFactory.ATTR_GLOBAL_LOG_LEVEL,new Integer(Preferences.getString(IWOLipsPluginConstants.PREF_LOG_LEVEL)));
 		// set own logger
 		log=LogFactory.getLog(WOLipsPlugin.class);
-		Foundation.loadFoundationClasses();
 		Preferences.setDefaults();
 	}
 	/**
