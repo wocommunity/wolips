@@ -78,6 +78,12 @@ public class WOBuilderAction extends ActionOnIProject {
 		super();
 	}
 	/**
+	 * Method dispose.
+	 */
+	public void dispose() {
+		super.dispose();
+	}
+	/**
 	 * Runs the action.
 	 */
 	public void run(IAction action) {

@@ -77,7 +77,12 @@ public class PBAction extends ActionOnIProject {
 	public PBAction() {
 		super();
 	}
-
+	/**
+	 * Method dispose.
+	 */
+	public void dispose() {
+		super.dispose();
+	}
 	/**
 	 * Updates the PB.project file.
 	 * Will be invoked by the popup menu.

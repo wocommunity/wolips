@@ -91,4 +91,10 @@ public class OpenSourceAction extends ActionOnIResource {
 			WorkbenchHelper.open(list);
 		}
 	}
+	/**
+	 * Method dispose.
+	 */
+	public void dispose() {
+		super.dispose();
+	}
 }

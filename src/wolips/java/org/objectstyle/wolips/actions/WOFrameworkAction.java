@@ -84,7 +84,12 @@ public class WOFrameworkAction extends ActionOnIProject {
 	public WOFrameworkAction() {
 		super();
 	}
-
+	/**
+	 * Method dispose.
+	 */
+	public void dispose() {
+		super.dispose();
+	}
 	/**
 	 * Runs the action.
 	 */

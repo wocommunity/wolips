@@ -79,6 +79,9 @@ public class ActionOnIProject implements IObjectActionDelegate {
 	protected IProject project() {
 		return project;
 	}
+	/**
+	 * Method dispose.
+	 */
 	public void dispose() {
 		part = null;
 		project = null;

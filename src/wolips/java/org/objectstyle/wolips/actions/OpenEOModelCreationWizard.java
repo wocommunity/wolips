@@ -70,8 +70,16 @@ import org.objectstyle.wolips.wizards.EOModelCreationWizard;
  */
 public class OpenEOModelCreationWizard extends AbstractOpenWizardAction {
 
+	/**
+	 * @see org.eclipse.jdt.internal.ui.wizards.AbstractOpenWizardAction#createWizard()
+	 */
 	protected Wizard createWizard() {
 		return new EOModelCreationWizard();
 	}
-
+	/**
+	 * Method dispose.
+	 */
+	public void dispose() {
+		super.dispose();
+	}
 }

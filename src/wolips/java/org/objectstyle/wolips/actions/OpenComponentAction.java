@@ -91,4 +91,10 @@ public class OpenComponentAction extends ActionOnIResource {
 			}
 		}
 	}
+	/**
+	 * Method dispose.
+	 */
+	public void dispose() {
+		super.dispose();
+	}
 }

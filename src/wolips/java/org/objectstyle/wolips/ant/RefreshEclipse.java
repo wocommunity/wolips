@@ -76,7 +76,9 @@ public class RefreshEclipse extends Task {
 	public RefreshEclipse() {
 		super();
 	}
-
+	/**
+	 * @see org.apache.tools.ant.Task#execute()
+	 */
 	public void execute() throws BuildException {
 		validateAttributes();
 
@@ -107,7 +109,6 @@ public class RefreshEclipse extends Task {
 			throw new BuildException("'projectName' attribute is missing.");
 		}
 	}
-
 	/**
 	 * Returns the projectName.
 	 * @return Object
@@ -115,7 +116,6 @@ public class RefreshEclipse extends Task {
 	public String getProjectName() {
 		return projectName;
 	}
-
 	/**
 	 * Sets the projectName.
 	 * @param projectName The projectName to set
@@ -123,7 +123,9 @@ public class RefreshEclipse extends Task {
 	public void setProjectName(String projectName) {
 		this.projectName = projectName;
 	}
-
+	/**
+	 * Method forceFullGarbageCollection.
+	 */
 	public void forceFullGarbageCollection() {
 		if (forceFullGarbageCollection) {
 			Runtime runtime = Runtime.getRuntime();
@@ -149,5 +151,4 @@ public class RefreshEclipse extends Task {
 			System.out.println("...done");
 		}
 	}
-
 }

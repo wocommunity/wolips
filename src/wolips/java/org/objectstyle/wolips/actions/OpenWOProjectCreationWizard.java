@@ -70,12 +70,22 @@ import org.objectstyle.wolips.wizards.WOApplicationCreationWizard;
  */
 public class OpenWOProjectCreationWizard extends AbstractOpenWizardAction {
 
+	/**
+	 * @see org.eclipse.jdt.internal.ui.wizards.AbstractOpenWizardAction#checkWorkspaceNotEmpty()
+	 */
 	protected boolean checkWorkspaceNotEmpty() {
 		return true;
 	}
-
+	/**
+	 * @see org.eclipse.jdt.internal.ui.wizards.AbstractOpenWizardAction#createWizard()
+	 */
 	protected Wizard createWizard() {
 		return new WOApplicationCreationWizard();
 	}
-
+	/**
+	 * Method dispose.
+	 */
+	public void dispose() {
+		super.dispose();
+	}
 }

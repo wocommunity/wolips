@@ -70,8 +70,16 @@ import org.objectstyle.wolips.wizards.WOComponentCreationWizard;
  */
 public class OpenWOComponentCreationWizard extends AbstractOpenWizardAction {
 
+	/**
+	 * @see org.eclipse.jdt.internal.ui.wizards.AbstractOpenWizardAction#createWizard()
+	 */
 	protected Wizard createWizard() {
 		return new WOComponentCreationWizard();
 	}
-
+	/**
+	 * Method dispose.
+	 */
+	public void dispose() {
+		super.dispose();
+	}
 }

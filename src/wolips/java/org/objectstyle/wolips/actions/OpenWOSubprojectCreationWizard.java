@@ -70,8 +70,16 @@ import org.objectstyle.wolips.wizards.WOSubprojectCreationWizard;
  */
 public class OpenWOSubprojectCreationWizard extends AbstractOpenWizardAction {
 
+	/**
+	 * @see org.eclipse.jdt.internal.ui.wizards.AbstractOpenWizardAction#createWizard()
+	 */
 	protected Wizard createWizard() {
 		return new WOSubprojectCreationWizard();
 	}
-
+	/**
+	 * Method dispose.
+	 */
+	public void dispose() {
+		super.dispose();
+	}
 }

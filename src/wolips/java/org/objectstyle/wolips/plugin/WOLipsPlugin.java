@@ -82,7 +82,7 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 	/**
 	 * Set this variable to true to get debug output
 	 */
-	public static final boolean debug = false;
+	public static final boolean debug = true;
 	/**
 	 * The constructor.
 	 */
