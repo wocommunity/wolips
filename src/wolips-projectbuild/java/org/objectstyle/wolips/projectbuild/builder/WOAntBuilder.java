@@ -105,7 +105,7 @@ public class WOAntBuilder extends IncrementalProjectBuilder implements IWOLipsPl
 	 */
 	protected IProject[] build(int kind, Map args, IProgressMonitor monitor)
 		throws CoreException {
-		if (AntRunner.isBuildRunning() || this.getProject() == null || !this.projectNeedsAnUpdate()) {
+		if (AntRunner.isBuildRunning() || this.getProject() == null) {
 			monitor.done();
 			return null;
 		}
