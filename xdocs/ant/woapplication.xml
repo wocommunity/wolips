@@ -66,6 +66,11 @@
 					<td valign="top" align="center">Yes</td>
 				</tr>
 				<tr>
+					<td valign="top">principalClass</td>
+					<td valign="top">Subclass of <code>WOApplication</code> to use.</td>
+					<td valign="top" align="center"><code>Application</code></td>
+				</tr>
+				<tr>
 					<td valign="top">stdFrameworks</td>
 					<td valign="top">If set to <i>true</i>, a set of standard frameworks will be 
 					associated with the deployed application (default is <i>true</i>). "Standard"
@@ -126,6 +131,12 @@
 					"wo.homeroot", "wo.woroot", "wo.localroot" (these are string values,
 					don't include them in <code>${}</code>)</td>
 					<td valign="top" align="center">Yes</td>
+				</tr>
+				<tr>
+					<td valign="top">if</td>
+					<td valign="top">The name if a property that decides if the framework set is included. 
+					This is a string value, don't include them in <code>${}</code>. You can then set the property to include the framework or leave it undefined to leave it out.</td>
+					<td valign="top" align="center">Not applicable, leave it out when you want to include the framework by default.</td>
 				</tr>
 			</table>
 			

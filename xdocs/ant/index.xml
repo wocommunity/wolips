@@ -12,7 +12,8 @@
  			information about Ant, go to <a href="http://jakarta.apache.org/ant/index.html">Jakarta 
  			Ant Site</a>):
  				<ul>
-                <li><a href="woapplication.html">WOApplication</a>: Allows to build WebObjects applications
+ 				<li><i><font color="red">[New]</font></i><a href="wocompile.html">WOCompile</a>: Allows to compile by specifying the frameworks.</li>
+		                <li><a href="woapplication.html">WOApplication</a>: Allows to build WebObjects applications
  				 without using ProjectBuilder.</li>
  				<li><a href="woframework.html">WOFramework</a>: Allows to build WebObjects frameworks
  				 without using ProjectBuilder.</li>
