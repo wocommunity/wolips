@@ -76,12 +76,9 @@ public class FileStringScanner {
     }
 
     public static void FileOpenReplaceWith(String file, String replace, String with) throws IOException {
-        System.out.println("file: " + file);
         String stringFromFile = FileStringScanner.stringFromFile(new File(file));
-                        System.out.println("stringFromFile:" + stringFromFile);
         String replacedString = FileStringScanner.replace(stringFromFile, replace, with);
-                        System.out.println("replacedString: " + replacedString);
-                        //if nothing replaced
+        //if nothing replaced
         if(replacedString != null)
         	FileStringScanner.stringToFile(new File(file), replacedString);
     }

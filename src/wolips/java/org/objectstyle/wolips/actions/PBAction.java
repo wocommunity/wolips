@@ -65,34 +65,39 @@ import org.objectstyle.wolips.project.ProjectHelper;
 /**
  * @author uli
  *
- * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates.
- * To enable and disable the creation of type comments go to
- * Window>Preferences>Java>Code Generation.
+ *The Action for updating the PB.project file.
  */
 public class PBAction extends ActionOnIProject {
 	
 	private static String UpdatePBProjectSetID = "UpdatePB.Project.Set.ID";
 	
+	/**
+	 * Contructor for the PBAction
+	 */
 	public PBAction() {
 		super();
 	}
 	
+	/**
+	 * Updates the PB.project file.
+	 * Will be invoked by the popup menu.
+	 */
 	public void run(IAction action) {
-		System.out.println("PBAction.run");
 		if ( project() != null ){
 			try {
 			if ( action.getId().equals(PBAction.UpdatePBProjectSetID) )
-				System.out.println("PBProjectUpdater: " + project());	
 				WOLipsPlugin.getDefault().getProjectUpdater(project()).updatePBProject();
 			}
 			catch (CoreException ex) {
-				System.out.println(ex.getMessage());
+				WOLipsPlugin.log(ex);
 			}
 		}
 	}
 
-
+	/**
+	 * Calls super.
+	 * Inactivates the Action if the project has no WOBuilder installed
+	 */
 	public void selectionChanged(IAction action, ISelection selection) {
 		super.selectionChanged(action, selection);
 		if ( project() != null) {

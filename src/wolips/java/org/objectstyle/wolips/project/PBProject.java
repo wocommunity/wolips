@@ -58,6 +58,7 @@
 
 import java.io.File;
 
+import org.objectstyle.wolips.WOLipsPlugin;
 import org.objectstyle.wolips.io.FileStringScanner;
 
 import com.webobjects.foundation.NSArray;
@@ -114,7 +115,7 @@ public class PBProject {
 			
 		}
 		catch (Exception anException) {
-			System.out.println("update: " + anException.getMessage());
+			WOLipsPlugin.log(anException);
 		}
 	}
 	
@@ -124,7 +125,7 @@ public class PBProject {
 			FileStringScanner.stringToFile(pbProjectFile, pbProject.toString());
 		}
 		catch (Exception anException) {
-			System.out.println("saveChanges: " + anException.getMessage());
+			WOLipsPlugin.log(anException);
 		}
 	}
 	

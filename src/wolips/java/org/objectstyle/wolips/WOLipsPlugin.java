@@ -55,13 +55,10 @@
  */
 package org.objectstyle.wolips;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Hashtable;
 import java.util.MissingResourceException;
-import java.util.Properties;
 import java.util.ResourceBundle;
 
 import org.eclipse.core.internal.boot.URLContentFilter;
@@ -75,33 +72,31 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.objectstyle.wolips.env.Environment;
 import org.objectstyle.wolips.ide.WOClasspathUpdater;
-import org.objectstyle.wolips.io.FileStringScanner;
 import org.objectstyle.wolips.project.PBProjectUpdater;
+
+/**
+ * @author uli
+ */
 
 /**
  * The main plugin class to be used in the desktop.
  */
 public class WOLipsPlugin extends AbstractUIPlugin {
-	//The shared instance.
 	private static WOLipsPlugin plugin;
-	//Resource bundle.
-	private ResourceBundle resourceBundle;
 	private Hashtable projectUpdater;
+	/**
+	 * Set this variable to true to get debug output
+	 */
+	public static final boolean debug = false;
 
-	private boolean classesLoaded = false;
-	private static String NEXT_ROOT = "NEXT_ROOT";
 	/**
 	 * The constructor.
 	 */
 	public WOLipsPlugin(IPluginDescriptor descriptor) {
 		super(descriptor);
 		plugin = this;
-		try {
-			resourceBundle= ResourceBundle.getBundle("org.objectstyle.woproject.wolips.WOLipsPluginResources");
-		} catch (MissingResourceException x) {
-			resourceBundle = null;
-		}
 		this.loadFoundationClasses();
 	}
 
@@ -111,18 +106,11 @@ public class WOLipsPlugin extends AbstractUIPlugin {
 		theURLContentFilter[0] = new URLContentFilter(true);
 		URL[] theUrls = new URL[1];
 		try {
-			String aPath = null;
-			Properties aEnv = WOLipsPlugin.getEnvVars();
-			if(aEnv.containsKey(WOLipsPlugin.NEXT_ROOT)) aPath = aEnv.getProperty(WOLipsPlugin.NEXT_ROOT); 
-			System.out.println("aPath" + aPath);
-			if(aPath == null) aPath = "file:///System/Library/Frameworks/JavaFoundation.framework/Resources/Java/javafoundation.jar";
-			else aPath = "file:///" + FileStringScanner.replace(aPath, "/", "\\") + "\\Library\\Frameworks\\JavaFoundation.framework\\Resources\\Java\\javafoundation.jar";
-			theUrls[0] = new URL(aPath);
-			System.out.println("theUrls[0].getPath() :" + theUrls[0].getPath());
+			theUrls[0] = new URL(Environment.foundationJarPath());
 			((PluginClassLoader)aClassLoader).addURLs(theUrls, theURLContentFilter, null, null);
 		}
 		catch (Exception anException) {
-			System.out.println("Error setting up ClassLoader for javafoundation: " + anException.getMessage() + "ex: " + anException);
+			WOLipsPlugin.log(anException);
 		}		
 	}
 	/**
@@ -145,25 +133,8 @@ public class WOLipsPlugin extends AbstractUIPlugin {
 	}
 
 	/**
-	 * Returns the string from the plugin's resource bundle,
-	 * or 'key' if not found.
+	 * Returns an ImageDescriptor.
 	 */
-	public static String getResourceString(String key) {
-		ResourceBundle bundle= WOLipsPlugin.getDefault().getResourceBundle();
-		try {
-			return bundle.getString(key);
-		} catch (MissingResourceException e) {
-			return key;
-		}
-	}
-
-	/**
-	 * Returns the plugin's resource bundle,
-	 */
-	public ResourceBundle getResourceBundle() {
-		return resourceBundle;
-	}
-	
 	public ImageDescriptor getImageDescriptor(String name) {
 		try {
 			URL url= new URL(getDescriptor().getInstallURL(), name);
@@ -173,25 +144,44 @@ public class WOLipsPlugin extends AbstractUIPlugin {
 		}
 	}	
 	
+	/**
+	 * Returns the PluginID.
+	 */
 	public static String getPluginId() {
 		return getDefault().getDescriptor().getUniqueIdentifier();
 	}	
-
-
+	
+	/**
+	 * Prints an IStatus.
+	 */
 	public static void log(IStatus status) {
 		getDefault().getLog().log(status);
 	}
 
-
+	/**
+	 * Prints a message.
+	 */
 	public static void log(String message) {
 		log(new Status(IStatus.ERROR, getPluginId(), IStatus.ERROR, message, null));
 	}
 
-
+	/**
+	 * Prints a Throwable.
+	 */
 	public static void log(Throwable e) {
 		log(new Status(IStatus.ERROR, getPluginId(), IStatus.ERROR, "Internal Error", e)); //$NON-NLS-1$
 	}
-
+	
+	/**
+	 * If WOLips.debug is true this method prints a String to the console.
+	 */
+	public static void debug(String aString) {
+		if(WOLipsPlugin.debug) System.out.println(aString);
+	}
+	
+	/**
+	 * Returns a PBProjectUpdater for an given IProject. Never returns null;
+	 */
 	public PBProjectUpdater getProjectUpdater(IProject aProject) {
 		if(projectUpdater == null) projectUpdater = new Hashtable();
 		String aProjectName = aProject.getName();
@@ -203,31 +193,4 @@ public class WOLipsPlugin extends AbstractUIPlugin {
 		return aProjectUpdater;	
 	}
 
-	public static Properties getEnvVars() throws Exception {
-  		Process p = null;
-  		Properties envVars = new Properties();
- 		Runtime r = Runtime.getRuntime();
-  		String OS = System.getProperty("os.name").toLowerCase();
-  		// System.out.println(OS);
-  		if (OS.indexOf("windows 9") > -1) {
-    		p = r.exec( "command.com /c set" );
-    	}
-  		else if ( (OS.indexOf("nt") > -1) || (OS.indexOf("windows 2000") > -1) ) {
-    		p = r.exec( "cmd.exe /c set" );
-    	}
-  		else {  
-    		// our last hope, we assume Unix (thanks to H. Ware for the fix)
-    		p = r.exec( "env" );
-    	}
-  		BufferedReader br = new BufferedReader( new InputStreamReader( p.getInputStream() ) );
-  		String line;
-  		while( (line = br.readLine()) != null ) {
-  			int idx = line.indexOf( '=' );
-   			String key = line.substring( 0, idx );
-  			String value = line.substring( idx+1 );
-   			envVars.setProperty( key, value );
-   			// System.out.println( key + " = " + value );
-   		}
-  	return envVars;
-  }
 }

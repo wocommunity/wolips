@@ -101,11 +101,8 @@ public class PBProjectUpdater {
 	}
 	
 	private PBProject getPBProject(IProject aProject) {
-		System.out.println("PBProjectUpdater.getPBProject");
 		IFile aPBProject = aProject.getFile(PBProjectUpdater.PBProject);
-		System.out.println("aPBProject" + aPBProject);
 		File aFile = aPBProject.getLocation().toFile();
-		System.out.println("aFile: " + aFile);
 		boolean isWOApp = ProjectHelper.isWOAppBuilderInstalled(aProject);
 		if(!aFile.exists()) {
 			try {
@@ -125,24 +122,20 @@ public class PBProjectUpdater {
 				FileStringScanner.stringToFile(aFile, contents);
 			}
 			catch (Exception anException) {
-				System.out.println(anException);
+				WOLipsPlugin.log(anException);
 			}
 		}
 		return new PBProject(aFile, isWOApp);
 	}
 	
 	private void syncPBProjectWithProject() {
-		System.out.println("PBProjectUpdater.syncPBProjectWithProject");
-		System.out.println("pbProject.update");
 		pbProject.update();
 		this.syncFilestable();
 		this.syncProjectName();
-		System.out.println("pbProject.saveChanges");
 		pbProject.saveChanges();
 	}
 	
 	private void syncFilestable() {
-		System.out.println("PBProjectUpdater.syncFilestable");
 		NSMutableArray aClassesList = new NSMutableArray();
 		NSMutableArray aWOComponentsList = new NSMutableArray();
 		NSMutableArray aWOAppResourcesList = new NSMutableArray();
@@ -152,7 +145,7 @@ public class PBProjectUpdater {
 			resources = project.members();
 		}
 		catch (Exception anException) {
-			System.out.println(anException);
+			WOLipsPlugin.log(anException);
 			return;
 		}
 		int lastResource = resources.length;
@@ -171,12 +164,10 @@ public class PBProjectUpdater {
 	private void proceedResource(IResource aResource, NSMutableArray aClassesList, NSMutableArray aWOComponentsList, NSMutableArray aWOAppResourcesList) {
 		try {
 			String aPath = aResource.getProjectRelativePath().toString();
-			System.out.println("Member path: " + aPath);
 			File aFile = new File(aResource.getLocation().toOSString());
 			IFolder aFolder = null;
 			if(aFile.isDirectory())
 				aFolder = project.getFolder(aResource.getProjectRelativePath());
-			System.out.println("aFolder: " + aFolder + " ");
 			if(aFolder != null) {
 				if(aPath.endsWith(".wo")) aWOComponentsList.addObject(aPath);
 				else {
@@ -198,30 +189,23 @@ public class PBProjectUpdater {
 			}
 		}
 		catch(Exception anException) {
-			System.out.println(anException);
+			WOLipsPlugin.log(anException);
 		}
 	}
 	
 	private void syncProjectName() {
-		System.out.println("PBProjectUpdater.syncProjectName");
 		pbProject.setProjectName(project.getName());
 	}
 	
 	private void syncClasses(NSMutableArray anNSMutableArray) {
-		System.out.println("PBProjectUpdater.syncClasses");
-		System.out.println(anNSMutableArray);
 		pbProject.setClasses(anNSMutableArray);
 	}
 	
 	private void syncWOComponents(NSMutableArray anNSMutableArray) {
-		System.out.println("PBProjectUpdater.syncWOComponents");
-		System.out.println(anNSMutableArray);
 		pbProject.setWoComponents(anNSMutableArray);
 	}
 	
 	private void syncWOAppResources(NSMutableArray anNSMutableArray) {
-		System.out.println("PBProjectUpdater.syncWOAppResources");
-		System.out.println(anNSMutableArray);
 		pbProject.setWoAppResources(anNSMutableArray);
 	}
 }

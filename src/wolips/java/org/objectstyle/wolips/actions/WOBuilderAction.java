@@ -58,19 +58,30 @@ package org.objectstyle.wolips.actions;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
+import org.objectstyle.wolips.WOLipsPlugin;
 import org.objectstyle.wolips.project.ProjectHelper;
 
+/**
+ * @author uli
+ *
+ * Action for adding and removing the WOBuilder
+ */
 public class WOBuilderAction extends ActionOnIProject {
 
 	private static String WOBuilderRemoveID = "WOBuilder.Remove.ID";
 	private static String WOFrameworkBuilderSetID = "WOFrameworkBuilder.Set.ID";
 	private static String WOApplicationBuilderSetID = "WOApplicationBuilder.Set.ID";
 	
+	/**
+	 * The constructor.
+	 */
 	public WOBuilderAction() {
 		super();
 	}
 
-	
+	/**
+	 * Runs the action.
+	 */
 	public void run(IAction action) {
 		if ( project() != null ){
 			try {
@@ -87,12 +98,14 @@ public class WOBuilderAction extends ActionOnIProject {
 			}
 			}
 			catch (CoreException ex) {
-				System.out.println(ex.getMessage());
+				WOLipsPlugin.log(ex);
 			}
 		}				
 	}
 
-
+	/**
+	 * Disables and enables the menus for adding and removing WOBuilder.
+	 */
 	public void selectionChanged(IAction action, ISelection selection) {
 		super.selectionChanged(action, selection);
 		if ( project() != null) {

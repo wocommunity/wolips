@@ -66,10 +66,7 @@ import org.eclipse.ui.IActionDelegate;
 /**
  * @author uli
  *
- * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates.
- * To enable and disable the creation of type comments go to
- * Window>Preferences>Java>Code Generation.
+ * The superclass for all Actions
  */
 public class ActionOnIProject implements IActionDelegate {
 	
@@ -80,25 +77,32 @@ public class ActionOnIProject implements IActionDelegate {
 		super();
 	}
 
+	/**
+	 * @return Returns the IProject
+	 */
 	protected IProject project() {
 		return project;
 	}
 		
 	public void dispose() {
 	}
-
+	
+	/**
+	 * Has to be implemented in the subclass.
+	 */
 	public void run(IAction action) {
 	}
 	
+	/**
+	 * Resets the project when the selection is changed.
+	 */
 	public void selectionChanged(IAction action, ISelection selection) {
 		Object obj = (((IStructuredSelection) selection).getFirstElement());
-		System.out.println("Instance of first element: " + obj.getClass());
 		project = null;
 		if ( obj != null && obj instanceof IProject )
 			project = ((IProject)obj).getProject();
 		if ( obj != null && obj instanceof IJavaProject )
 			project = ((IJavaProject)obj).getProject();
 	}
-
 
 }

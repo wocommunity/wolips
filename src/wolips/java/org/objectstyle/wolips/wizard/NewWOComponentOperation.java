@@ -118,8 +118,9 @@ public class NewWOComponentOperation extends Operation implements IRunnableWithP
 			//IPath resouresPath = resourcesFolder.getLocation();
 			this.importFilesFromDirectory("templates/wocomponent", project.getFolder("Resources").getFullPath(), monitor, overwriteQuery);
 			renameNewWOComponentTo(project, componentName, fullyQualifiedComponentName, project.getFullPath().toFile(), monitor);
-		} catch (Exception e) {
-			System.out.println("ohje: " + e.getMessage());
+		}
+		catch (Exception e) {
+			WOLipsPlugin.log(e);
 			throw new InvocationTargetException(e);
 		}
 	}

@@ -68,6 +68,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.internal.ui.util.CoreUtility;
+import org.objectstyle.wolips.WOLipsPlugin;
 
 /**
  * @author uli
@@ -105,7 +106,6 @@ public class ProjectHelper {
 												.equals(aBuilder) ) {
 					comList.remove(i);
 					foundJBuilder = true;
-					System.out.println("found javabuilder");
 				} 
 			}
 			
@@ -129,7 +129,6 @@ public class ProjectHelper {
 			for (int i = 0; i < coms.length; i++) {
 				if ( coms[i].getBuilderName().equals(aBuilder) ) {
 					foundJBuilder = true;
-					System.out.println("found javabuilder");	
 				} 
 			}
 			
@@ -142,10 +141,6 @@ public class ProjectHelper {
 				newIc = new ICommand[coms.length+1];
 				System.arraycopy(coms, 0, newIc, 0, coms.length);
 				newIc[coms.length] = command;	
-				
-				for (int i = 0; i < newIc.length; i++) {
-					System.out.println(newIc[i].getBuilderName());
-				}
 				
 				desc.setBuildSpec(newIc);
 				aProject.setDescription(desc, null);
@@ -190,7 +185,7 @@ public class ProjectHelper {
 			}
 		}
 		catch (Exception anException) {
-			System.out.println(anException.getMessage());
+			WOLipsPlugin.log(anException);
 			return false;
 		}
 		return false; 	
