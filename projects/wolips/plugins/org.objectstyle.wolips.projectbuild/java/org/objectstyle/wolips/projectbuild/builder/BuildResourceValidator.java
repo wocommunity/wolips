@@ -55,93 +55,97 @@ import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.CoreException;
 import org.objectstyle.wolips.datasets.adaptable.Project;
 import org.objectstyle.wolips.datasets.listener.DefaultDeltaVisitor;
+
 /**
  * @author uli
  */
 final class BuildResourceValidator extends DefaultDeltaVisitor {
 	private boolean buildRequired = false;
+
 	private Project project;
+
 	/**
 	 * Constructor for ProjectFileResourceValidator.
 	 */
 	public BuildResourceValidator() {
 		super();
 	}
+
 	/**
-	 * 
+	 *  
 	 */
 	public void reset() {
 		this.buildRequired = false;
 	}
+
 	/**
 	 * @throws CoreException
 	 * @see org.eclipse.core.resources.IResourceDeltaVisitor#visit(IResourceDelta)
 	 */
 	public final boolean visit(IResourceDelta delta) throws CoreException {
-		if(this.buildRequired) {
+		if (this.buildRequired) {
 			return false;
 		}
-		if(!super.visit(delta)) {
+		if (!super.visit(delta)) {
 			return false;
 		}
 		IResource resource = delta.getResource();
 		return examineResource(resource, delta.getKind());
 	}
+
 	/**
 	 * Method examineResource. Examines changed resources for added and/or
-	 * removed webobjects project resources and synchronizes project file.
-	 * <br>
+	 * removed webobjects project resources and synchronizes project file. <br>
 	 * 
 	 * @param resource
 	 * @param kindOfChange
 	 * @return boolean
 	 */
-	private final boolean examineResource(IResource resource,
-			int kindOfChange) {
+	private final boolean examineResource(IResource resource, int kindOfChange) {
 		//see bugreport #708385
-		if (!resource.isAccessible()
-				&& kindOfChange != IResourceDelta.REMOVED)
+		if (!resource.isAccessible() && kindOfChange != IResourceDelta.REMOVED)
 			return false;
 		// reset project file to update
 		switch (resource.getType()) {
-			case IResource.ROOT :
-				// further investigation of resource delta needed
-				return true;
-			case IResource.PROJECT :
-				this.project = (Project) resource.getAdapter(Project.class);
-			case IResource.FOLDER :
-				// further examination of resource delta needed
-				return true;
-			case IResource.FILE :
-				if (needsUpdate(kindOfChange)) {
-					if (".project".equals(resource.getName())
-							|| "PB.project".equals(resource.getName())
-							|| ".classpath".equals(resource.getName())
-							|| "Makefile".equals(resource.getName())
-							|| resource.getName().startsWith("ant.")) {
-						return false;
-					} else if (resource.getName().endsWith(".java")
-							|| this.project
-									.matchesResourcesPattern(resource)
-							|| this.project
-									.matchesWOAppResourcesPattern(resource)
-							|| this.project.matchesClassesPattern(resource)) {
-						this.buildRequired = true;
-						return false;
-					}
+		case IResource.ROOT:
+			// further investigation of resource delta needed
+			return true;
+		case IResource.PROJECT:
+			this.project = (Project) resource.getAdapter(Project.class);
+			return true;
+		case IResource.FOLDER:
+			// further examination of resource delta needed
+			return true;
+		case IResource.FILE:
+			if (needsUpdate(kindOfChange)) {
+				if (".project".equals(resource.getName())
+						|| "PB.project".equals(resource.getName())
+						|| ".classpath".equals(resource.getName())
+						|| "Makefile".equals(resource.getName())
+						|| resource.getName().startsWith("ant.")) {
+					return false;
+				} else if (resource.getName().endsWith(".java")
+						|| this.project.matchesResourcesPattern(resource)
+						|| this.project.matchesWOAppResourcesPattern(resource)
+						|| this.project.matchesClassesPattern(resource)) {
+					this.buildRequired = true;
+					return false;
 				}
+			}
+		default:
+			return false;
 		}
-		return false;
 	}
-	/** Method needsUpdate.
-	 * @ param kindOfChange
-	 * @ return boolean
+
+	/**
+	 * Method needsUpdate. @ param kindOfChange @ return boolean
 	 */
 	private final boolean needsUpdate(int kindOfChange) {
 		return IResourceDelta.ADDED == kindOfChange
 				|| IResourceDelta.REMOVED == kindOfChange
 				|| IResourceDelta.CHANGED == kindOfChange;
 	}
+
 	/**
 	 * @return
 	 */

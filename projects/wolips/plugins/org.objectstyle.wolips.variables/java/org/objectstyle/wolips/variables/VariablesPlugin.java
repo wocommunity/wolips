@@ -206,7 +206,7 @@ public class VariablesPlugin extends AbstractUIPlugin {
 	}
 
 	private IPath fixMissingSeparatorAfterDevice(String string) {
-		if (string.length() > 1 && string.charAt(1) == ':') {
+		if (string != null && string.length() > 1 && string.charAt(1) == ':') {
 			return new Path(string.substring(2)).setDevice(string.substring(0,
 					2));
 		}

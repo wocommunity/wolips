@@ -20,6 +20,7 @@ import org.objectstyle.wolips.projectbuild.ProjectBuildPlugin;
 public abstract class AbstractIncrementalProjectBuilder extends IncrementalProjectBuilder {
 
 	private BuildResourceValidator buildResourceValidator = new BuildResourceValidator();
+	private PatternsetDeltaVisitor patternsetDeltaVisitor = new PatternsetDeltaVisitor();
 	
 	/**
 	 * Method projectNeedsAnUpdate.
@@ -27,7 +28,6 @@ public abstract class AbstractIncrementalProjectBuilder extends IncrementalProje
 	 * @return boolean
 	 */
 	protected boolean projectNeedsAnUpdate() {
-		PatternsetDeltaVisitor patternsetDeltaVisitor = new PatternsetDeltaVisitor();
 		this.buildResourceValidator.reset();
 		if(this.getProject() == null
 				|| this.getDelta(this.getProject()) == null)
