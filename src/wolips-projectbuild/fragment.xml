@@ -40,6 +40,13 @@
 			container="org.objectstyle.wolips.WO_CLASSPATH"
 		/>
 	</extension>
+	<extension point="org.eclipse.jdt.launching.runtimeClasspathEntryResolvers">
+		<runtimeClasspathEntryResolver 
+			id="org.objectstyle.wolips.projectbuild.classpath.WORuntimeClasspathContainerResolver"
+			class="org.objectstyle.wolips.projectbuild.classpath.WORuntimeClasspathContainerResolver"
+			container="de.thecode.eclipse.wosupport.WO_CLASSPATH"
+		/>
+	</extension>
 
    <extension
          point="org.eclipse.jdt.ui.classpathContainerPage">
