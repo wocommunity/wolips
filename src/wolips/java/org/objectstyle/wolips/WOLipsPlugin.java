@@ -108,13 +108,6 @@ import org.objectstyle.wolips.wo.WOVariables;
  * @author markus
  */
 public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
-	private static final String PLUGIN_ID = "org.objectstyle.wolips";
-	private static final String build_user_home_properties =
-		"build-user-home-wobuild-properties.xml";
-	private static final String build_user_home_properties_pde_info =
-		"PDE User please copy "
-			+ WOLipsPlugin.build_user_home_properties
-			+ " from woproject to wolips.";
 	private static WOLipsPlugin plugin;
 	private static IResourceChangeListener resourceChangeListener;
 	private static IElementChangedListener javaElementChangeListener;
@@ -124,12 +117,6 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 	 * Set this variable to true to get debug output
 	 */
 	public static final boolean debug = false;
-	public static final String ID_ELEMENT_CREATION_ACTION_SET =
-		"org.objectstyle.wolips.ElementCreationActionSet";
-	public static final String ID_Navigator = "org.objectstyle.wolips.ui.Navigator"; //$NON-NLS-1$
-	public static final String ID_WONavigator = "org.objectstyle.wolips.ui.WONavigator"; //$NON-NLS-1$
-	public static final String ID_ModelNavigator = "org.objectstyle.wolips.ui.ModelNavigator"; //$NON-NLS-1$
-	public static final String ID_ProductNavigator = "org.objectstyle.wolips.ui.ProductNavigator"; //$NON-NLS-1$
 
 	/**
 	 * The constructor.
@@ -151,7 +138,8 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 			WOLipsPlugin.writePropertiesFileToUserHome();
 		} catch (Exception anException) {
 			WOLipsPlugin.log(anException);
-			WOLipsPlugin.log(WOLipsPlugin.build_user_home_properties_pde_info);
+			WOLipsPlugin.log(
+				IWOLipsPluginConstants.build_user_home_properties_pde_info);
 		}
 		validateMandatoryAttributes();
 		// add resource change listener to update project file on resource changes
@@ -173,7 +161,7 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 		URL relativeBuildFile =
 			new URL(
 				WOLipsPlugin.baseURL(),
-				WOLipsPlugin.build_user_home_properties);
+				IWOLipsPluginConstants.build_user_home_properties);
 		URL buildFile = Platform.asLocalURL(relativeBuildFile);
 		antRunner.setBuildFileLocation(buildFile.getPath());
 		antRunner.run();
@@ -201,7 +189,9 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 		if (plugin == null) {
 			// ensure plugin instance is always available using id
 			return new WOLipsPlugin(
-				Platform.getPlugin(PLUGIN_ID).getDescriptor());
+				Platform
+					.getPlugin(IWOLipsPluginConstants.PLUGIN_ID)
+					.getDescriptor());
 		}
 		return plugin;
 	}
@@ -234,7 +224,7 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 		if (plugin != null) {
 			return getDefault().getDescriptor().getUniqueIdentifier();
 		} else
-			return PLUGIN_ID;
+			return IWOLipsPluginConstants.PLUGIN_ID;
 	}
 	/**
 	 * Prints an IStatus.

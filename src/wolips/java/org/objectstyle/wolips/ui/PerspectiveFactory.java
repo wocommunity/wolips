@@ -62,7 +62,7 @@ import org.eclipse.search.ui.SearchUI;
 import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
-import org.objectstyle.wolips.WOLipsPlugin;
+import org.objectstyle.wolips.IWOLipsPluginConstants;
 
 /**
  * @author uli
@@ -80,10 +80,11 @@ public class PerspectiveFactory implements IPerspectiveFactory {
 		String editorArea = layout.getEditorArea();
 
 		IFolderLayout folder = layout.createFolder("left", IPageLayout.LEFT, (float) 0.25, editorArea); //$NON-NLS-1$
-		folder.addView(WOLipsPlugin.ID_Navigator);
-		folder.addView(WOLipsPlugin.ID_WONavigator);
-		folder.addView(WOLipsPlugin.ID_ModelNavigator);
-		folder.addView(WOLipsPlugin.ID_ProductNavigator);
+		folder.addView(IWOLipsPluginConstants.ID_Navigator);
+		folder.addView(IWOLipsPluginConstants.ID_WONavigator);
+		folder.addView(IWOLipsPluginConstants.ID_ModelNavigator);
+		folder.addView(IWOLipsPluginConstants.ID_AntNavigator);
+		folder.addView(IWOLipsPluginConstants.ID_ProductNavigator);
 		folder.addPlaceholder(IPageLayout.ID_RES_NAV);
 
 		IFolderLayout outputfolder = layout.createFolder("bottom", IPageLayout.BOTTOM, (float) 0.75, editorArea); //$NON-NLS-1$
@@ -103,7 +104,7 @@ public class PerspectiveFactory implements IPerspectiveFactory {
 		layout.addActionSet(IDebugUIConstants.LAUNCH_ACTION_SET);
 		layout.addActionSet(JavaUI.ID_ACTION_SET);
 		layout.addActionSet(JavaUI.ID_ELEMENT_CREATION_ACTION_SET);
-		layout.addActionSet(WOLipsPlugin.ID_ELEMENT_CREATION_ACTION_SET);
+		layout.addActionSet(IWOLipsPluginConstants.ID_ELEMENT_CREATION_ACTION_SET);
 
 		// views - java
 		//layout.addShowViewShortcut(WOLipsPlugin.ID_Finder);

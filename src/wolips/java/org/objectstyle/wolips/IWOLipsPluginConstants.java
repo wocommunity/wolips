@@ -117,4 +117,18 @@ public interface IWOLipsPluginConstants {
 	// mandatory eclipse classpath variables
 	public static final String[] MANDATORY_CLASSPATH_VARIABLES =
 		{ Environment.NEXT_ROOT };
+	public static final String PLUGIN_ID = "org.objectstyle.wolips";
+	public static final String build_user_home_properties =
+		"build-user-home-wobuild-properties.xml";
+	public static final String build_user_home_properties_pde_info =
+		"PDE User please copy "
+			+ IWOLipsPluginConstants.build_user_home_properties
+			+ " from woproject to wolips.";
+	public static final String ID_ELEMENT_CREATION_ACTION_SET =
+		"org.objectstyle.wolips.ElementCreationActionSet";
+	public static final String ID_Navigator = "org.objectstyle.wolips.ui.Navigator"; //$NON-NLS-1$
+	public static final String ID_WONavigator = "org.objectstyle.wolips.ui.WONavigator"; //$NON-NLS-1$
+	public static final String ID_ModelNavigator = "org.objectstyle.wolips.ui.ModelNavigator"; //$NON-NLS-1$
+	public static final String ID_ProductNavigator = "org.objectstyle.wolips.ui.ProductNavigator"; //$NON-NLS-1$
+	public static final String ID_AntNavigator = "org.eclipse.ui.externaltools.AntView"; //$NON-NLS-1$
 }
