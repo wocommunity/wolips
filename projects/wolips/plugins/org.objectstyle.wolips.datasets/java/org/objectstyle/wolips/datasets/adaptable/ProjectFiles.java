@@ -54,7 +54,6 @@
  *
  */
 package org.objectstyle.wolips.datasets.adaptable;
-import java.io.IOException;
 import java.util.ArrayList;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -111,10 +110,8 @@ public class ProjectFiles extends ProjectPatternsets {
 	}
 	/**
 	 * cleans all tables
-	 * 
-	 * @throws IOException
 	 */
-	public void cleanAllFileTables() throws IOException {
+	public void cleanAllFileTables() {
 		ArrayList arrayList = new ArrayList();
 		WorkbenchUtilitiesPlugin.findFilesInResourceByName(arrayList, this
 				.getIProject(), IWOLipsModel.PROJECT_FILE_NAME);
@@ -138,7 +135,7 @@ public class ProjectFiles extends ProjectPatternsets {
 				pbProjectUpdater.addLocalFrameworkSectionToPBProject();
 			}
 		} catch (Exception exception) {
-			DataSetsPlugin.log(exception);
+			DataSetsPlugin.getDefault().getPluginLogger().log(exception);
 		}
 	}
 }

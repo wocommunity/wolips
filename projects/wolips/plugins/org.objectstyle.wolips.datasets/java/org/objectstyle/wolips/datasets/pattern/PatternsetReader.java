@@ -62,9 +62,24 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import org.eclipse.core.resources.IFile;
+import org.objectstyle.wolips.datasets.DataSetsPlugin;
 
+/**
+ * @author ulrich
+*/
 public class PatternsetReader {
-	public String[] pattern = new String[0];
+	private String[] pattern = new String[0];
+	
+	/**
+	 * @param pattern
+	 */
+	public PatternsetReader(String[] pattern) {
+		super();
+		this.pattern = pattern;
+	}
+	/**
+	 * @param patternset
+	 */
 	public PatternsetReader(IFile patternset) {
 		ArrayList patternList = new ArrayList();
 		BufferedReader patternReader = null;
@@ -78,9 +93,7 @@ public class PatternsetReader {
 				line = patternReader.readLine();
 			}
 		} catch (IOException ioe) {
-			String msg = "An error occured while reading from pattern file: "
-					+ patternset.getLocation().toOSString();
-			//throw new InvocationException(msg, ioe);
+			DataSetsPlugin.getDefault().getPluginLogger().log(ioe);
 		} finally {
 			if (null != patternReader) {
 				try {
@@ -90,12 +103,12 @@ public class PatternsetReader {
 				}
 			}
 		}
-		pattern = (String[])patternList.toArray(new String[patternList.size()]);
+		this.pattern = (String[])patternList.toArray(new String[patternList.size()]);
 	}
 	/**
 	 * @return Returns the pattern.
 	 */
 	public String[] getPattern() {
-		return pattern;
+		return this.pattern;
 	}
 }

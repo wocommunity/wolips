@@ -2,7 +2,7 @@
  *
  * The ObjectStyle Group Software License, Version 1.0
  *
- * Copyright (c) 2002 The ObjectStyle Group,
+ * Copyright (c) 2002 - 2004 The ObjectStyle Group,
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -67,10 +67,17 @@ import org.objectstyle.wolips.wizards.WizardsTestSuite;
  */
 public class AutomatedSuite extends TestCase {
 	
+	/**
+	 * @param testName
+	 */
 	public AutomatedSuite(String testName) {
 		super(testName);
 	}
 	
+	/**
+	 * @return
+	 * @throws Exception
+	 */
 	public static Test suite() throws Exception {
 		TestSuite suite = new TestSuite();
 		suite.addTestSuite(CheckWorkspaceTest.class);

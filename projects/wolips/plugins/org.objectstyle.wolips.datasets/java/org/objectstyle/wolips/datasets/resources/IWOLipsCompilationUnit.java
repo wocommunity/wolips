@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 The ObjectStyle Group 
+ * Copyright (c) 2002 - 2004 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -67,7 +67,13 @@ import org.eclipse.jdt.core.ICompilationUnit;
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
 public interface IWOLipsCompilationUnit extends IWOLipsResource {
+	/**
+	 * Comment for <code>WOCOMPONENT_JAVA</code>
+	 */
 	public static final int WOCOMPONENT_JAVA = 0;
+	/**
+	 * Comment for <code>EOENTITY_JAVA</code>
+	 */
 	public static final int EOENTITY_JAVA = 1;
 	/**
 	 * @return Returns the IResource;

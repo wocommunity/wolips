@@ -55,8 +55,10 @@
  */
 package org.objectstyle.wolips.variables;
 import java.net.URL;
+import java.util.Dictionary;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+
 import org.eclipse.ant.core.AntRunner;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -65,6 +67,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.osgi.framework.internal.core.Constants;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.objectstyle.woenvironment.env.WOEnvironment;
 import org.objectstyle.woenvironment.env.WOVariables;
@@ -89,10 +92,10 @@ public class VariablesPlugin extends AbstractUIPlugin {
 		super();
 		plugin = this;
 		try {
-			resourceBundle = ResourceBundle
+			this.resourceBundle = ResourceBundle
 					.getBundle("org.objectstyle.wolips.variables.VariablesPluginResources");
 		} catch (MissingResourceException x) {
-			resourceBundle = null;
+			this.resourceBundle = null;
 		}
 	}
 	private void logError(String string) {
@@ -104,8 +107,8 @@ public class VariablesPlugin extends AbstractUIPlugin {
 	 * Method setUpPreferencesForPropertiesFile.
 	 */
 	private void setUpPreferencesForPropertiesFile() {
-		String currentVersion = VariablesPlugin.getDefault().getDescriptor()
-				.getVersionIdentifier().toString();
+		Dictionary dictionary = VariablesPlugin.getDefault().getBundle().getHeaders();
+		String currentVersion = (String)dictionary.get(Constants.BUNDLE_VERSION);
 		String preferencesVersion = Preferences
 				.getPREF_WOLIPS_VERSION_EARLY_STARTUP();
 		if (!currentVersion.equals(preferencesVersion))
@@ -115,11 +118,11 @@ public class VariablesPlugin extends AbstractUIPlugin {
 	 * Method setUpPreferencesAfterPropertiesFile.
 	 */
 	private void setUpPreferencesAfterPropertiesFile() {
+		Dictionary dictionary = VariablesPlugin.getDefault().getBundle().getHeaders();
+		String currentVersion = (String)dictionary.get(Constants.BUNDLE_VERSION);
 		Preferences.setPREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH(false);
 		Preferences
-				.setPREF_WOLIPS_VERSION_EARLY_STARTUP(VariablesPlugin
-						.getDefault().getDescriptor().getVersionIdentifier()
-						.toString());
+				.setPREF_WOLIPS_VERSION_EARLY_STARTUP(currentVersion);
 	}
 	/**
 	 * Method writePropertiesFileToUserHome.
@@ -132,8 +135,7 @@ public class VariablesPlugin extends AbstractUIPlugin {
 		URL relativeBuildFile = null;
 		URL buildFile = null;
 		IProgressMonitor monitor = null;
-		relativeBuildFile = new URL(VariablesPlugin.baseURL(),
-				VariablesPlugin.build_user_home_properties);
+		relativeBuildFile = this.find(new Path(VariablesPlugin.build_user_home_properties));
 		buildFile = Platform.asLocalURL(relativeBuildFile);
 		monitor = new NullProgressMonitor();
 		AntRunner runner = null;
@@ -154,6 +156,7 @@ public class VariablesPlugin extends AbstractUIPlugin {
 	}
 	/**
 	 * Returns the shared instance.
+	 * @return
 	 */
 	public static VariablesPlugin getDefault() {
 		return plugin;
@@ -161,6 +164,8 @@ public class VariablesPlugin extends AbstractUIPlugin {
 	/**
 	 * Returns the string from the plugin's resource bundle, or 'key' if not
 	 * found.
+	 * @param key
+	 * @return
 	 */
 	public static String getResourceString(String key) {
 		ResourceBundle bundle = VariablesPlugin.getDefault()
@@ -173,9 +178,10 @@ public class VariablesPlugin extends AbstractUIPlugin {
 	}
 	/**
 	 * Returns the plugin's resource bundle,
+	 * @return
 	 */
 	public ResourceBundle getResourceBundle() {
-		return resourceBundle;
+		return this.resourceBundle;
 	}
 	/**
 	 * @return the path to the local root
@@ -226,9 +232,10 @@ public class VariablesPlugin extends AbstractUIPlugin {
 		return this.getWOEnvironment().getWOVariables();
 	}
 	private WOEnvironment getWOEnvironment() {
-		if (woEnvironment == null)
-			woEnvironment = new WOEnvironment();
-		return woEnvironment;
+		if (this.woEnvironment == null) {
+			this.woEnvironment = new WOEnvironment();
+		}
+		return this.woEnvironment;
 	}
 	/**
 	 * Returns the PluginID.
@@ -237,17 +244,11 @@ public class VariablesPlugin extends AbstractUIPlugin {
 	 */
 	public static String getPluginId() {
 		if (plugin != null) {
-			return getDefault().getDescriptor().getUniqueIdentifier();
-		} else
-			return null;
-	}
-	/**
-	 * Method baseURL.
-	 * 
-	 * @return URL
-	 */
-	public static URL baseURL() {
-		return VariablesPlugin.getDefault().getDescriptor().getInstallURL();
+			Dictionary dictionary = plugin.getBundle().getHeaders();
+			String pluginID = (String)dictionary.get(Constants.BUNDLE_NAME);
+			return pluginID;
+		}
+		return null;
 	}
 	/*
 	 * (non-Javadoc)

@@ -80,7 +80,7 @@ public class PluginLogger {
 	 * @param message
 	 */
 	public void log(String message) {
-		this.log(new Status(IStatus.ERROR, pluginID, IStatus.ERROR, message,
+		this.log(new Status(IStatus.ERROR, this.pluginID, IStatus.ERROR, message,
 				null));
 	}
 	/**
@@ -89,7 +89,7 @@ public class PluginLogger {
 	 * @param e
 	 */
 	public void log(Throwable e) {
-		this.log(new Status(IStatus.ERROR, pluginID, IStatus.ERROR,
+		this.log(new Status(IStatus.ERROR, this.pluginID, IStatus.ERROR,
 				"Internal Error", e)); //$NON-NLS-1$
 	}
 	/**
@@ -98,7 +98,7 @@ public class PluginLogger {
 	 * @param e
 	 */
 	public void log(String message, Throwable e) {
-		this.log(new Status(IStatus.ERROR, pluginID, IStatus.ERROR,
+		this.log(new Status(IStatus.ERROR, this.pluginID, IStatus.ERROR,
 				message, e)); //$NON-NLS-1$
 	}
 	/**
@@ -107,8 +107,9 @@ public class PluginLogger {
 	 * @param aString
 	 */
 	public void debug(String aString) {
-		if (debug)
+		if (this.debug) {
 			this.log(aString);
+		}
 	}
 	/**
 	 * If debug is true this method prints an Exception to the log.
@@ -116,24 +117,27 @@ public class PluginLogger {
 	 * @param aThrowable
 	 */
 	public void debug(Throwable aThrowable) {
-		if (debug)
+		if (this.debug) {
 			this.log(aThrowable);
+		}
 	}
 	/**
 	 * @param message
 	 * @param t
 	 */
 	public void debug(Object message, Throwable t) {
-		if (debug)
-			this.log(new Status(IStatus.WARNING, pluginID, IStatus.WARNING,
+		if (this.debug) {
+			this.log(new Status(IStatus.WARNING, this.pluginID, IStatus.WARNING,
 					message.toString(), t)); //$NON-NLS-1$
+		}
 	}
 	/**
 	 * @param message
 	 */
 	public void debug(Object message) {
-		if (debug)
-			this.log(new Status(IStatus.WARNING, pluginID, IStatus.WARNING,
+		if (this.debug) {
+			this.log(new Status(IStatus.WARNING, this.pluginID, IStatus.WARNING,
 					message.toString(), null)); //$NON-NLS-1$
+		}
 	}
 }

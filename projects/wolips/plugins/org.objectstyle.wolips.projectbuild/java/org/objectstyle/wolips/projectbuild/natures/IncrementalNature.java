@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 The ObjectStyle Group 
+ * Copyright (c) 2002 - 2004 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -95,9 +95,9 @@ public class IncrementalNature implements IProjectNature {
 		}
 		buildFolder.setDerived(true);
 
-		IPath outputPath = ((IJavaProject) this.getProject().getNature(
-				JavaCore.NATURE_ID)).getOutputLocation();
-		IFolder outputFolder = this.getProject().getFolder(outputPath);
+		//IPath outputPath = ((IJavaProject) this.getProject().getNature(
+		//		JavaCore.NATURE_ID)).getOutputLocation();
+		//IFolder outputFolder = this.getProject().getFolder(outputPath);
 
 		//System.out.println(outputFolder.isDerived());
 	}
@@ -120,30 +120,35 @@ public class IncrementalNature implements IProjectNature {
 	 * @see org.eclipse.core.resources.IProjectNature#getProject()
 	 */
 	public IProject getProject() {
-		return _project;
+		return this._project;
 	}
 
 	/**
 	 * @see org.eclipse.core.resources.IProjectNature#setProject(IProject)
 	 */
 	public void setProject(IProject project) {
-		_project = project;
+		this._project = project;
 	}
 
 	/* ************************************************************************ */
 
 	/**
+	 * @return
 	 *  
 	 */
 	public IJavaProject getJavaProject() {
 		try {
 			return ((IJavaProject) getProject().getNature(JavaCore.NATURE_ID));
 		} catch (CoreException up) {
+			ProjectBuildPlugin.getDefault().getPluginLogger().log(up);
 		}
 
 		return (null);
 	}
 
+	/**
+	 * @return
+	 */
 	//	public String getStringProperty(String key) {
 	//		String result = "";
 	//		try {
@@ -195,53 +200,75 @@ public class IncrementalNature implements IProjectNature {
 
 	/**
 	 * either name.woa or name.framework
+	 * @return
 	 */
 	public String getResultName() {
 		String name = getProject().getName();
 
 		if (isFramework()) {
 			return (name + ".framework");
-		} else {
-			return (name + ".woa");
 		}
+		return (name + ".woa");
 	}
 
+	/**
+	 * @return
+	 */
 	public IPath getBuildPath() {
 		return (getProject().getFullPath().append("build"));
 	}
 
+	/**
+	 * @return
+	 */
 	public IPath getResultPath() {
 		return (getBuildPath().append(getResultName()));
 	}
 
+	/**
+	 * @return
+	 */
 	public IPath getInfoPath() {
 		if (isFramework()) {
 			return (getResultPath().append("Resources"));
-		} else {
-			return (getResultPath().append(APPINFO_PATH));
 		}
+		return (getResultPath().append(APPINFO_PATH));
 	}
 
+	/**
+	 * @return
+	 */
 	public IPath _getResultPath() {
 		if (isFramework()) {
 			return (getResultPath());
-		} else {
-			return (getResultPath().append(APPINFO_PATH));
 		}
+		return (getResultPath().append(APPINFO_PATH));
 	}
 
+	/**
+	 * @return
+	 */
 	public IPath getResourceOutputPath() {
 		return (_getResultPath().append(RESOURCE_PATH));
 	}
 
+	/**
+	 * @return
+	 */
 	public IPath getJavaOutputPath() {
 		return (_getResultPath().append(JAVA_PATH));
 	}
 
+	/**
+	 * @return
+	 */
 	public IPath getWebResourceOutputPath() {
 		return (_getResultPath().append(WEBRESOURCE_PATH));
 	}
 
+	/**
+	 * @return
+	 */
 	public String getResourceName() {
 		String result = "";
 		if (!isFramework()) {
@@ -251,6 +278,9 @@ public class IncrementalNature implements IProjectNature {
 		return (result);
 	}
 
+	/**
+	 * @return
+	 */
 	public String getWebResourceName() {
 		String result = "";
 		if (!isFramework()) {
@@ -306,6 +336,11 @@ public class IncrementalNature implements IProjectNature {
 		return (tmp);
 	}
 
+	/**
+	 * @param path
+	 * @param res
+	 * @return
+	 */
 	public IPath asResourcePath(IPath path, IResource res) {
 		if (IResource.FILE == res.getType()
 				|| IResource.FOLDER == res.getType()) {
@@ -328,6 +363,11 @@ public class IncrementalNature implements IProjectNature {
 		return (null);
 	}
 
+	/**
+	 * @param path
+	 * @param res
+	 * @return
+	 */
 	public IPath asWebResourcePath(IPath path, IResource res) {
 		if (IResource.FILE == res.getType()) {
 			return _appendSpecial(getWebResourceOutputPath(), path);

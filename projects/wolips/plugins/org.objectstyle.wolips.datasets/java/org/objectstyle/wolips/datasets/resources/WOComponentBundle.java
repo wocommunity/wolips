@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 The ObjectStyle Group 
+ * Copyright (c) 2002 - 2004 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -108,7 +108,7 @@ public final class WOComponentBundle
 						extensions,
 						true);
 			} catch (Exception e) {
-				DataSetsPlugin.log(e);
+				DataSetsPlugin.getDefault().getPluginLogger().log(e);
 			}
 		}
 		return list;
@@ -116,7 +116,7 @@ public final class WOComponentBundle
 
 	/**
 	 * Opens the resource in a Editor.
-	 * @param If forceToOpenIntextEditor is set to true the resource opens in a texteditor.
+	 * @param forceToOpenIntextEditor If forceToOpenIntextEditor is set to true the resource opens in a texteditor.
 	 */
 	public final void open(boolean forceToOpenIntextEditor) {
 		String fileName = this.getCorrespondingResource().getName();

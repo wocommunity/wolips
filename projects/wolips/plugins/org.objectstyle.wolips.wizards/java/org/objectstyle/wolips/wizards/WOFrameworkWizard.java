@@ -56,9 +56,13 @@
 package org.objectstyle.wolips.wizards;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.objectstyle.wolips.templateengine.TemplateDefinition;
 import org.objectstyle.wolips.templateengine.TemplateEngine;
 import org.objectstyle.wolips.templateengine.TemplateEnginePlugin;
@@ -67,8 +71,8 @@ import org.objectstyle.wolips.templateengine.TemplateEnginePlugin;
  * @author uli
  * 
  * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates. To enable and disable the creation of
- * type comments go to Window>Preferences>Java>Code Generation.
+ * Window>Preferences>Java>Templates. To enable and disable the creation of type
+ * comments go to Window>Preferences>Java>Code Generation.
  */
 public class WOFrameworkWizard extends AbstractProjectWizard {
 	/**
@@ -85,17 +89,20 @@ public class WOFrameworkWizard extends AbstractProjectWizard {
 	public String getWindowTitle() {
 		return Messages.getString("WOFrameworkCreationWizard.title");
 	}
-	/**
-	 * (non-Javadoc) Method declared on IWizard
-	 * 
-	 * @return
-	 */
-	public boolean performFinish() {
-		boolean success = super.performFinish();
-		if (success) {
-			IProject project = super.getNewProject();
-			String projectName = project.getName();
-			String path = project.getLocation().toOSString();
+
+	private class Operation extends WorkspaceModifyOperation {
+		IProject project = null;
+		/**
+		 * @param project
+		 */
+		public Operation(IProject project) {
+			super();
+			this.project = project;
+		}
+		protected void execute(IProgressMonitor monitor) throws CoreException,
+				InvocationTargetException, InterruptedException {
+			String projectName = this.project.getName();
+			String path = this.project.getLocation().toOSString();
 			NullProgressMonitor nullProgressMonitor = new NullProgressMonitor();
 			try {
 				File src = new File(path + File.separator + "src");
@@ -105,6 +112,8 @@ public class WOFrameworkWizard extends AbstractProjectWizard {
 				File xcode = new File(path + File.separator + projectName
 						+ ".xcode");
 				xcode.mkdirs();
+				File ant = new File(path + File.separator + "ant");
+				ant.mkdirs();
 				//project.close(nullProgressMonitor);
 				TemplateEngine templateEngine = new TemplateEngine();
 				try {
@@ -155,9 +164,29 @@ public class WOFrameworkWizard extends AbstractProjectWizard {
 				//RunAnt runAnt = new RunAnt();
 				//runAnt.asAnt(path + File.separator
 				//		+ IWOLipsModel.DEFAULT_BUILD_FILENAME, null, null);
-				project.refreshLocal(IResource.DEPTH_INFINITE,
+				this.project.refreshLocal(IResource.DEPTH_INFINITE,
 						nullProgressMonitor);
 			} catch (Exception e) {
+				throw new InvocationTargetException(e);
+			}
+		}
+	}
+	/**
+	 * (non-Javadoc) Method declared on IWizard
+	 * 
+	 * @return
+	 */
+	public boolean performFinish() {
+		boolean success = super.performFinish();
+		if (success) {
+			IProject project = super.getNewProject();
+			Operation operation = new Operation(project);
+			try {
+				operation.run(new NullProgressMonitor());
+			} catch (InvocationTargetException e) {
+				WizardsPlugin.getDefault().getPluginLogger().log(e);
+				success = false;
+			} catch (InterruptedException e) {
 				WizardsPlugin.getDefault().getPluginLogger().log(e);
 				success = false;
 			}

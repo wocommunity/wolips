@@ -81,16 +81,19 @@ public abstract class AbstractEngine implements IRunnableWithProgress {
 	private VelocityContext context = null;
 	private ArrayList templates = null;
 	private VelocityEngine velocityEngine = null;
+	/**
+	 * @throws Exception
+	 */
 	public void init() throws Exception {
 		/*
 		 * create a new instance of the engine
 		 */
-		velocityEngine = new VelocityEngine();
+		this.velocityEngine = new VelocityEngine();
 		/*
 		 * configure the engine. In this case, we are using ourselves as a
 		 * logger (see logging examples..)
 		 */
-		velocityEngine
+		this.velocityEngine
 				.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM, this);
 		/*
 		 * initialize the engine
@@ -102,10 +105,10 @@ public abstract class AbstractEngine implements IRunnableWithProgress {
 		String templatePaths = userHomeWOLipsPath + ", ";
 		Path path = new Path(url.getPath());
 		templatePaths = templatePaths + path.append("templates").toOSString();
-		velocityEngine.setProperty("file.resource.loader.path", templatePaths);
-		velocityEngine.init();
-		context = new VelocityContext();
-		templates = new ArrayList();
+		this.velocityEngine.setProperty("file.resource.loader.path", templatePaths);
+		this.velocityEngine.init();
+		this.context = new VelocityContext();
+		this.templates = new ArrayList();
 		this.setPropertyForKey(this, WOLipsContext.Key);
 		SAXBuilder builder;
 		Document myContext = null;
@@ -124,19 +127,30 @@ public abstract class AbstractEngine implements IRunnableWithProgress {
 			this.setPropertyForKey(myContext, "MyContext");
 		}
 	}
+	/**
+	 * @param template
+	 */
 	public void addTemplate(TemplateDefinition template) {
-		templates.add(template);
+		this.templates.add(template);
 	}
+	/**
+	 * @param templateDefinitions
+	 */
 	public void addTemplates(TemplateDefinition[] templateDefinitions) {
-		if (templates == null)
+		if (this.templates == null) {
 			return;
+		}
 		for (int i = 0; i < templateDefinitions.length; i++) {
 			TemplateDefinition templateDefinition = templateDefinitions[i];
-			templates.add(templateDefinition);
+			this.templates.add(templateDefinition);
 		}
 	}
+	/**
+	 * @param property
+	 * @param key
+	 */
 	public void setPropertyForKey(Object property, String key) {
-		context.put(key, property);
+		this.context.put(key, property);
 	}
 	/*
 	 * (non-Javadoc)
@@ -145,8 +159,8 @@ public abstract class AbstractEngine implements IRunnableWithProgress {
 	 */
 	public void run(IProgressMonitor monitor) throws InvocationTargetException {
 		try {
-			for (int i = 0; i < templates.size(); i++) {
-				TemplateDefinition templateDefinition = (TemplateDefinition) templates
+			for (int i = 0; i < this.templates.size(); i++) {
+				TemplateDefinition templateDefinition = (TemplateDefinition) this.templates
 						.get(i);
 				this.run(templateDefinition);
 			}
@@ -161,9 +175,9 @@ public abstract class AbstractEngine implements IRunnableWithProgress {
 			 * make a writer, and merge the template 'against' the context
 			 */
 			String templateName = templateDefinition.getTemplateName();
-			Template template = velocityEngine.getTemplate(templateName);
+			Template template = this.velocityEngine.getTemplate(templateName);
 			writer = new FileWriter(templateDefinition.getDestinationPath());
-			template.merge(context, writer);
+			template.merge(this.context, writer);
 		} catch (Exception e) {
 			System.out.println("Exception : " + e);
 		} finally {
@@ -182,7 +196,7 @@ public abstract class AbstractEngine implements IRunnableWithProgress {
 	 * @return Returns the projectName.
 	 */
 	public String getProjectName() {
-		return projectName;
+		return this.projectName;
 	}
 	/**
 	 * @param projectName

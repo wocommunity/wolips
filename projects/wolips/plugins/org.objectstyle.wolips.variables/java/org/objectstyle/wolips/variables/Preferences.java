@@ -2,7 +2,7 @@
  *
  * The ObjectStyle Group Software License, Version 1.0
  *
- * Copyright (c) 2002 The ObjectStyle Group
+ * Copyright (c) 2002 - 2004 The ObjectStyle Group
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -71,15 +71,30 @@ import org.eclipse.jface.preference.IPreferenceStore;
  */
 public class Preferences {
 
+	/**
+	 * Comment for <code>PREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH</code>
+	 */
 	public static final String PREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH =
 		"org.objectstyle.wolips.Preference.RebuildWOBuildPropertiesOnNextLaunch";
+	/**
+	 * Comment for <code>PREF_WOLIPS_VERSION_EARLY_STARTUP</code>
+	 */
 	public static final String PREF_WOLIPS_VERSION_EARLY_STARTUP =
 		"org.objectstyle.wolips.Preference.WOLipsVersionEarlyStartup";
+	/**
+	 * Comment for <code>trueString</code>
+	 */
 	public static final String trueString = "true";
+	/**
+	 * Comment for <code>falseString</code>
+	 */
 	public static final String falseString = "false";
 	//set this sting to a preferences key and call set defaults to set the default value for this preferences key
 	private static String SET_DEFAULTS_STRING = null;
 
+	/**
+	 * 
+	 */
 	public static void save() {
 		IPreferenceStore store = getPreferenceStore();
 		if (store instanceof IPersistentPreferenceStore) {
@@ -185,9 +200,8 @@ public class Preferences {
 		return Preferences.getString(
 			Preferences.PREF_WOLIPS_VERSION_EARLY_STARTUP);
 	}
-
 	/**
-	 * @param string
+	 * @param value
 	 */
 	public static void setPREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH(boolean value) {
 		Preferences.setBoolean(

@@ -88,10 +88,6 @@ public class WOClassPathContainerPage
 		super("non-localized WOClassPathContainerPage");
 	}
 
-	/**
-	 * Insert the method's description here.
-	 * @see WizardPage#createControl
-	 */
 	public void createControl(Composite parent) {
 		Composite thisPage = new Composite(parent, SWT.NONE);
 
@@ -99,25 +95,25 @@ public class WOClassPathContainerPage
 		thisPage.setLayout(new GridLayout());
 		//thisPage.setLayout(new RowLayout(SWT.VERTICAL));
 
-		_uiList = new CheckboxTreeViewer(thisPage, SWT.MULTI);
+		this._uiList = new CheckboxTreeViewer(thisPage, SWT.MULTI);
 		//_uiList = new CheckboxTreeViewer(thisPage, SWT.MULTI | SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
 		GridData gd =
 			new GridData(
 				GridData.HORIZONTAL_ALIGN_FILL | GridData.FILL_HORIZONTAL);
 		//|GridData.VERTICAL_ALIGN_FILL
 		Rectangle trim =
-			_uiList.getTree().computeTrim(
+			this._uiList.getTree().computeTrim(
 				0,
 				0,
 				0,
-				12 * _uiList.getTree().getItemHeight());
+				12 * this._uiList.getTree().getItemHeight());
 		gd.heightHint = trim.height;
-		_uiList.getTree().setLayoutData(gd);
-		_uiList.setContentProvider(path);
-		_uiList.setLabelProvider(path);
-		_uiList.setInput(path);
+		this._uiList.getTree().setLayoutData(gd);
+		this._uiList.setContentProvider(this.path);
+		this._uiList.setLabelProvider(this.path);
+		this._uiList.setInput(this.path);
 		ArrayList checked = new ArrayList();
-		WOClasspathContainerRoot[] roots = path.getRoots();
+		WOClasspathContainerRoot[] roots = this.path.getRoots();
 		if (roots != null)
 			for (int i = 0; i < roots.length; i++) {
 				WOClasspathContainerEntry[] entries =
@@ -128,7 +124,7 @@ public class WOClassPathContainerPage
 						checked.add(entries[j]);
 					}
 			}
-		_uiList.setCheckedElements(checked.toArray());
+		this._uiList.setCheckedElements(checked.toArray());
 						
 		Label lbl = new Label(thisPage, SWT.SINGLE);
 		lbl.setText("Hint: use Ctrl-click or Shift-click");
@@ -148,13 +144,13 @@ public class WOClassPathContainerPage
 	 * @see org.eclipse.jdt.ui.wizards.IClasspathContainerPage#getSelection()
 	 */
 	public IClasspathEntry getSelection() {
-		return path.getClasspathEntry();
+		return this.path.getClasspathEntry();
 	}
 	/* (non-Javadoc)
 	 * @see org.eclipse.jdt.ui.wizards.IClasspathContainerPage#setSelection(org.eclipse.jdt.core.IClasspathEntry)
 	 */
 	public void setSelection(IClasspathEntry containerEntry) {
-		path = new WOClasspathContainerContentProvider(containerEntry);
+		this.path = new WOClasspathContainerContentProvider(containerEntry);
 	}
 
 	private CheckboxTreeViewer _uiList;

@@ -74,6 +74,10 @@ public class StringUtilities {
 	/**
 	 * replace every occurence of oldPart with newPart in origin
 	 * returns changed origin (since String is immutable...)
+	 * @param origin
+	 * @param oldPart
+	 * @param newPart
+	 * @return
 	 */
 
 	static public String replace(
@@ -105,6 +109,11 @@ public class StringUtilities {
 		return buffer.toString();
 	}
 
+	/**
+	 * @param string
+	 * @param sep
+	 * @return
+	 */
 	public static String[] smartSplit(String string, char sep) {
 		QuotedStringTokenizer tok = new QuotedStringTokenizer(string, sep);
 		List tmp = new ArrayList();

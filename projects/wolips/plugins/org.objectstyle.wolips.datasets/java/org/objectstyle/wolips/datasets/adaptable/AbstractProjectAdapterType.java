@@ -73,6 +73,6 @@ public abstract class AbstractProjectAdapterType {
 	 * @return Returns the project.
 	 */
 	public IProject getIProject() {
-		return project;
+		return this.project;
 	}
 }

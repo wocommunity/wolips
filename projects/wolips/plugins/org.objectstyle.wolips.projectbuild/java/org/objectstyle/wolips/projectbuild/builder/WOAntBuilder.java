@@ -150,6 +150,8 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 		//RunAnt runAnt = new RunAnt();
 		//if (projectNeedsClean())
 		//TODO:handle clean
+		Project project = (Project)this.getProject().getAdapter(Project.class);
+		project.setUpPatternsetFiles();
 		this.launchAntInExternalVM(getProject().getFile(aBuildFile), monitor);
 	}
 	/**
@@ -308,7 +310,6 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 								|| ".classpath".equals(resource.getName())
 								|| "Makefile".equals(resource.getName())
 								|| resource.getName().startsWith("ant.")) {
-							this.buildRequired = true;
 							return false;
 						} else if (resource.getName().endsWith(".java")
 								|| this.project

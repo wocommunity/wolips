@@ -68,6 +68,15 @@ public class PatternsetMatcher extends PatternsetReader implements IStringMatche
 	public PatternsetMatcher(IFile patternset) {
 		super(patternset);
 	}
+	
+	/**
+	 * @param pattern
+	 */
+	public  PatternsetMatcher(String[] pattern) {
+		super(pattern);
+	}
+	
+
 	/**
 	 * match the given <code>text</code> with the pattern
 	 * @param string

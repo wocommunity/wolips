@@ -66,9 +66,16 @@ import org.objectstyle.wolips.datasets.adaptable.AdaptableTestSuite;
  */
 public class DataSetsTestSuite extends TestCase {
 
+	/**
+	 * @param testName
+	 */
 	public DataSetsTestSuite(String testName) {
 		super(testName);
 	}
+	/**
+	 * @return
+	 * @throws Exception
+	 */
 	public static Test suite() throws Exception {
 		TestSuite suite = new TestSuite();
 		suite.addTestSuite(DataSetsPluginTest.class);

@@ -10,7 +10,7 @@ public class TestsCorePlugin extends Plugin {
 	/**
 	 * The constructor.
 	 */
-	public TestsCorePlugin(IPluginDescriptor descriptor) {
-		super(descriptor);
+	public TestsCorePlugin() {
+		super();
 	}
 }

@@ -63,12 +63,11 @@ import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Plugin;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
+import org.objectstyle.wolips.commons.logging.PluginLogger;
 import org.objectstyle.wolips.datasets.adaptable.AdapterCache;
 import org.objectstyle.wolips.datasets.internal.Api;
 import org.objectstyle.wolips.datasets.listener.MasterResourceChangeListener;
@@ -78,11 +77,12 @@ import org.osgi.framework.BundleContext;
  */
 public class DataSetsPlugin extends Plugin implements IDataSetTypes {
 	private final static String PLUGIN_ID = "org.objectstyle.wolips.datasets";
+	private PluginLogger pluginLogger;
 	//The shared instance.
 	private static DataSetsPlugin plugin;
 	//Resource bundle.
 	private ResourceBundle resourceBundle;
-	
+
 	private AdapterCache adapterCache;
 	//	DataSets based on files
 	protected final static String API_EXTENSION = "api";
@@ -104,7 +104,7 @@ public class DataSetsPlugin extends Plugin implements IDataSetTypes {
 			HTML_EXTENSION, WOCOMPONENT_EXTENSION, SUBPROJECT_EXTENSION,
 			EOMODEL_EXTENSION, EOMODEL_BACKUP_EXTENSION, D2WMODEL_EXTENSION,
 			FRAMEWORK_EXTENSION, WOA_EXTENSION, BUILD_EXTENSION, DIST_EXTENSION};
-	
+
 	private IResourceChangeListener resourceChangeListener;
 	/**
 	 * The constructor.
@@ -121,7 +121,7 @@ public class DataSetsPlugin extends Plugin implements IDataSetTypes {
 	}
 	/**
 	 * @return Returns the shared instance.
-	 * 
+	 *  
 	 */
 	public static DataSetsPlugin getDefault() {
 		return plugin;
@@ -135,32 +135,6 @@ public class DataSetsPlugin extends Plugin implements IDataSetTypes {
 		return DataSetsPlugin.PLUGIN_ID;
 	}
 	/**
-	 * Prints a Status.
-	 * 
-	 * @param status
-	 */
-	public static void log(IStatus status) {
-		DataSetsPlugin.getDefault().getLog().log(status);
-	}
-	/**
-	 * Prints a Throwable.
-	 * 
-	 * @param e
-	 */
-	public static void log(Throwable e) {
-		DataSetsPlugin.log(new Status(IStatus.ERROR, DataSetsPlugin
-				.getPluginId(), IStatus.ERROR, "Internal Error", e)); //$NON-NLS-1$
-	}
-	/**
-	 * Prints a message.
-	 * 
-	 * @param message
-	 */
-	public static void log(String message) {
-		DataSetsPlugin.log(new Status(IStatus.ERROR, DataSetsPlugin
-				.getPluginId(), IStatus.ERROR, message, null));
-	}
-	/**
 	 * @return Returns the workspace instance.
 	 */
 	public static IWorkspace getWorkspace() {
@@ -168,8 +142,8 @@ public class DataSetsPlugin extends Plugin implements IDataSetTypes {
 	}
 	/**
 	 * @param key
-	 * @return Returns the string from the plugin's resource bundle, or 'key' if not
-	 * found.
+	 * @return Returns the string from the plugin's resource bundle, or 'key' if
+	 *         not found.
 	 */
 	public static String getResourceString(String key) {
 		ResourceBundle bundle = DataSetsPlugin.getDefault().getResourceBundle();
@@ -187,7 +161,8 @@ public class DataSetsPlugin extends Plugin implements IDataSetTypes {
 	}
 	/**
 	 * @param resource
-	 * @return Null if the resource is null or unsupported otherwise the IDataSet
+	 * @return Null if the resource is null or unsupported otherwise the
+	 *         IDataSet
 	 */
 	public IDataSet getDataSet(IResource resource) {
 		if (resource == null)
@@ -251,11 +226,14 @@ public class DataSetsPlugin extends Plugin implements IDataSetTypes {
 		String title = "Error";
 		MessageDialog.openError(shell, title, message);
 	}
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.core.runtime.Plugin#start(org.osgi.framework.BundleContext)
 	 */
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
+		this.pluginLogger = new PluginLogger(DataSetsPlugin.PLUGIN_ID, false);
 		this.adapterCache = new AdapterCache();
 		//add resource change listener to update project file on resource
 		// changes
@@ -263,9 +241,10 @@ public class DataSetsPlugin extends Plugin implements IDataSetTypes {
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(
 				this.resourceChangeListener, IResourceChangeEvent.PRE_BUILD);
 	}
-	
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
 	 */
 	public void stop(BundleContext context) throws Exception {
@@ -281,5 +260,11 @@ public class DataSetsPlugin extends Plugin implements IDataSetTypes {
 	public AdapterCache getAdapterCache() {
 		return this.adapterCache;
 	}
-	
+
+	/**
+	 * @return Returns the pluginLogger.
+	 */
+	public PluginLogger getPluginLogger() {
+		return this.pluginLogger;
+	}
 }

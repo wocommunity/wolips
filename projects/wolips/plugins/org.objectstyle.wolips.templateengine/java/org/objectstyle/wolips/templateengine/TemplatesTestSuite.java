@@ -64,9 +64,16 @@ import junit.framework.TestSuite;
  */
 public class TemplatesTestSuite extends TestCase {
 
+	/**
+	 * @param testName
+	 */
 	public TemplatesTestSuite(String testName) {
 		super(testName);
 	}
+	/**
+	 * @return
+	 * @throws Exception
+	 */
 	public static Test suite() throws Exception {
 		TestSuite suite = new TestSuite();
 		suite.addTestSuite(TemplateEnginePluginTest.class);

@@ -51,6 +51,7 @@ package org.objectstyle.wolips.datasets.listener;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -66,9 +67,9 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jdt.core.JavaCore;
 import org.objectstyle.wolips.datasets.DataSetsPlugin;
+import org.objectstyle.wolips.datasets.adaptable.JavaProject;
 import org.objectstyle.wolips.datasets.adaptable.Project;
 import org.objectstyle.wolips.datasets.project.PBProjectUpdater;
-import org.objectstyle.wolips.datasets.project.WOLipsJavaProject;
 import org.objectstyle.wolips.datasets.resources.IWOLipsModel;
 /**
  * Tracking changes in resources and synchronizes webobjects project file
@@ -89,9 +90,9 @@ public class ResourceChangeListener extends Job {
 	protected IStatus run(IProgressMonitor monitor) {
 		ProjectFileResourceValidator resourceValidator = new ProjectFileResourceValidator();
 		try {
-			event.getDelta().accept(resourceValidator);
+			this.event.getDelta().accept(resourceValidator);
 		} catch (CoreException e) {
-			DataSetsPlugin.log(e);
+			DataSetsPlugin.getDefault().getPluginLogger().log(e);
 		}
 		// update project files
 		IFile projectFileToUpdate;
@@ -122,7 +123,8 @@ public class ResourceChangeListener extends Job {
 								projectFileToUpdate), IResourceDelta.REMOVED);
 			}
 		}
-		return new Status(IStatus.OK, DataSetsPlugin.getPluginId(), IStatus.OK, "Done", null);
+		return new Status(IStatus.OK, DataSetsPlugin.getPluginId(), IStatus.OK,
+				"Done", null);
 	}
 	private final class ProjectFileResourceValidator
 			implements
@@ -139,8 +141,8 @@ public class ResourceChangeListener extends Job {
 		 */
 		public ProjectFileResourceValidator() {
 			super();
-			addedResourcesProjectDict = new HashMap();
-			removedResourcesProjectDict = new HashMap();
+			this.addedResourcesProjectDict = new HashMap();
+			this.removedResourcesProjectDict = new HashMap();
 		}
 		/**
 		 * @param delta
@@ -152,7 +154,7 @@ public class ResourceChangeListener extends Job {
 			try {
 				return examineResource(resource, delta.getKind());
 			} catch (CoreException e) {
-				DataSetsPlugin.log(e);
+				DataSetsPlugin.getDefault().getPluginLogger().log(e);
 				return false;
 			}
 		}
@@ -182,12 +184,13 @@ public class ResourceChangeListener extends Job {
 						// project deleted no further investigation needed
 						return false;
 					}
-					project = null;
-					project = (Project) ((IProject) resource)
+					this.project = null;
+					this.project = (Project) ((IProject) resource)
 							.getAdapter(Project.class);
-					if (project == null)
+					if (this.project == null) {
 						return false;
-					if (project.isWOLipsProject()) {
+					}
+					if (this.project.isWOLipsProject()) {
 						return true;
 					} // no webobjects project
 					return false;
@@ -215,7 +218,7 @@ public class ResourceChangeListener extends Job {
 											.getFile(
 													new Path(
 															IWOLipsModel.PROJECT_FILE_NAME)));
-						} else if (project
+						} else if (this.project
 								.matchesWOAppResourcesPattern(resource)) {
 							updateProjectFile(
 									kindOfChange,
@@ -256,20 +259,18 @@ public class ResourceChangeListener extends Job {
 								// remove project's source folder from
 								// classpathentries
 								try {
-									WOLipsJavaProject woLipsJavaProject = new WOLipsJavaProject(
-											JavaCore.create(resource
-													.getProject()));
-									woLipsJavaProject
-											.getClasspathAccessor()
+									JavaProject javaProject = (JavaProject) JavaCore
+											.create(resource.getProject())
+											.getAdapter(Project.class);
+									javaProject
 											.removeSourcefolderFromClassPath(
-													woLipsJavaProject
-															.getClasspathAccessor()
+													javaProject
 															.getSubprojectSourceFolder(
 																	(IFolder) resource,
 																	false),
 													null);
 								} catch (InvocationTargetException e) {
-									DataSetsPlugin.log(e);
+									DataSetsPlugin.getDefault().getPluginLogger().log(e);
 								}
 							}
 						}
@@ -281,7 +282,7 @@ public class ResourceChangeListener extends Job {
 						// files with java extension are located in src folders
 						// the relating project file is determined through the
 						// name of the src folder containing the java file
-						if (project.matchesResourcesPattern(resource)) {
+						if (this.project.matchesResourcesPattern(resource)) {
 							updateProjectFile(
 									kindOfChange,
 									resource,
@@ -291,7 +292,7 @@ public class ResourceChangeListener extends Job {
 											.getFile(
 													new Path(
 															IWOLipsModel.PROJECT_FILE_NAME)));
-						} else if (project
+						} else if (this.project
 								.matchesWOAppResourcesPattern(resource)) {
 							updateProjectFile(
 									kindOfChange,
@@ -302,7 +303,7 @@ public class ResourceChangeListener extends Job {
 											.getFile(
 													new Path(
 															IWOLipsModel.PROJECT_FILE_NAME)));
-						} else if (project.matchesClassesPattern(resource)) {
+						} else if (this.project.matchesClassesPattern(resource) || resource.getName().endsWith(".java")) {
 							updateProjectFile(
 									kindOfChange,
 									resource,
@@ -331,11 +332,11 @@ public class ResourceChangeListener extends Job {
 		/**
 		 * Method updateProjectFile adds or removes resources from project file
 		 * if the resources belongs to project file (determined in
-		 *  @param kindOfChange
+		 * 
+		 * @param kindOfChange
 		 * @param resourceToUpdate
 		 * @param fileStableId
 		 * @param projectFileToUpdate
-		 * @link WOProjectFileUpdater#isProjectResource(IResource))
 		 */
 		private final void updateProjectFile(int kindOfChange,
 				IResource resourceToUpdate, String fileStableId,
@@ -348,17 +349,17 @@ public class ResourceChangeListener extends Job {
 			switch (kindOfChange) {
 				case IResourceDelta.CHANGED :
 					changedResourcesArray = getChangedResourcesArray(
-							addedResourcesProjectDict, fileStableId,
+							this.addedResourcesProjectDict, fileStableId,
 							projectFileToUpdate);
 					break;
 				case IResourceDelta.ADDED :
 					changedResourcesArray = getChangedResourcesArray(
-							addedResourcesProjectDict, fileStableId,
+							this.addedResourcesProjectDict, fileStableId,
 							projectFileToUpdate);
 					break;
 				case IResourceDelta.REMOVED :
 					changedResourcesArray = getChangedResourcesArray(
-							removedResourcesProjectDict, fileStableId,
+							this.removedResourcesProjectDict, fileStableId,
 							projectFileToUpdate);
 					break;
 			}
@@ -402,7 +403,7 @@ public class ResourceChangeListener extends Job {
 		 * @return NSMutableDictionary
 		 */
 		public final HashMap getAddedResourcesProjectDict() {
-			return addedResourcesProjectDict;
+			return this.addedResourcesProjectDict;
 		}
 		/**
 		 * Returns the removedResourcesProjectDict.
@@ -410,11 +411,12 @@ public class ResourceChangeListener extends Job {
 		 * @return NSMutableDictionary
 		 */
 		public final HashMap getRemovedResourcesProjectDict() {
-			return removedResourcesProjectDict;
+			return this.removedResourcesProjectDict;
 		}
 	}
 	/**
-	 * @param event The event to set.
+	 * @param event
+	 *            The event to set.
 	 */
 	public void setEvent(IResourceChangeEvent event) {
 		this.event = event;

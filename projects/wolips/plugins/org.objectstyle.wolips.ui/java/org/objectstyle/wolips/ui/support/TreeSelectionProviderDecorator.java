@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 The ObjectStyle Group 
+ * Copyright (c) 2002 - 2004 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -94,7 +94,7 @@ public class TreeSelectionProviderDecorator implements ISelectionProvider {
 	 * @see org.eclipse.jface.viewers.ISelectionProvider#addSelectionChangedListener(org.eclipse.jface.viewers.ISelectionChangedListener)
 	 */
 	public void addSelectionChangedListener(ISelectionChangedListener listener) {
-		selectionProvider.addSelectionChangedListener(listener);
+		this.selectionProvider.addSelectionChangedListener(listener);
 	}
 
 	/**
@@ -110,7 +110,7 @@ public class TreeSelectionProviderDecorator implements ISelectionProvider {
 	 */
 	public ISelection getSelection() {
 		// gets the original selection object 
-		ISelection selection = selectionProvider.getSelection();
+		ISelection selection = this.selectionProvider.getSelection();
 
 		// in these cases the original selection will be returned
 		if (selection == null || selection.isEmpty() || !(selection instanceof IStructuredSelection))
@@ -153,6 +153,7 @@ public class TreeSelectionProviderDecorator implements ISelectionProvider {
 	/** 
 	 * Returns the first element in the list that is instance of 
 	 * <code>TreeContentProviderNode</code>.
+	 * @param elements
 	 * 
 	 * @return the first element that is a tree node or null, if none is found.
 	 */
@@ -170,14 +171,14 @@ public class TreeSelectionProviderDecorator implements ISelectionProvider {
 	 * @see org.eclipse.jface.viewers.ISelectionProvider#removeSelectionChangedListener(org.eclipse.jface.viewers.ISelectionChangedListener)
 	 */
 	public void removeSelectionChangedListener(ISelectionChangedListener listener) {
-		selectionProvider.removeSelectionChangedListener(listener);
+		this.selectionProvider.removeSelectionChangedListener(listener);
 	}
 
 	/**
 	 * @see org.eclipse.jface.viewers.ISelectionProvider#setSelection(org.eclipse.jface.viewers.ISelection)
 	 */
 	public void setSelection(ISelection selection) {
-		selectionProvider.setSelection(selection);
+		this.selectionProvider.setSelection(selection);
 	}
 
 }

@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 The ObjectStyle Group 
+ * Copyright (c) 2002 - 2004 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -56,9 +56,13 @@
 package org.objectstyle.wolips.wizards;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.objectstyle.wolips.templateengine.TemplateDefinition;
 import org.objectstyle.wolips.templateengine.TemplateEngine;
 import org.objectstyle.wolips.templateengine.TemplateEnginePlugin;
@@ -67,8 +71,8 @@ import org.objectstyle.wolips.templateengine.TemplateEnginePlugin;
  * @author uli
  * 
  * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates. To enable and disable the creation of
- * type comments go to Window>Preferences>Java>Code Generation.
+ * Window>Preferences>Java>Templates. To enable and disable the creation of type
+ * comments go to Window>Preferences>Java>Code Generation.
  */
 public class WOApplicationWizard extends AbstractProjectWizard {
 	/**
@@ -85,17 +89,20 @@ public class WOApplicationWizard extends AbstractProjectWizard {
 	public String getWindowTitle() {
 		return Messages.getString("WOApplicationCreationWizard.title");
 	}
-	/**
-	 * (non-Javadoc) Method declared on IWizard
-	 * 
-	 * @return
-	 */
-	public boolean performFinish() {
-		boolean success = super.performFinish();
-		if (success) {
-			IProject project = super.getNewProject();
-			String projectName = project.getName();
-			String path = project.getLocation().toOSString();
+
+	private class Operation extends WorkspaceModifyOperation {
+		IProject project = null;
+		/**
+		 * @param project
+		 */
+		public Operation(IProject project) {
+			super();
+			this.project = project;
+		}
+		protected void execute(IProgressMonitor monitor) throws CoreException,
+				InvocationTargetException, InterruptedException {
+			String projectName = this.project.getName();
+			String path = this.project.getLocation().toOSString();
 			NullProgressMonitor nullProgressMonitor = new NullProgressMonitor();
 			try {
 				File mainwo = new File(path + File.separator + "Main.wo");
@@ -107,6 +114,8 @@ public class WOApplicationWizard extends AbstractProjectWizard {
 				File xcode = new File(path + File.separator + projectName
 						+ ".xcode");
 				xcode.mkdirs();
+				File ant = new File(path + File.separator + "ant");
+				ant.mkdirs();
 				//project.close(nullProgressMonitor);
 				TemplateEngine templateEngine = new TemplateEngine();
 				try {
@@ -148,28 +157,34 @@ public class WOApplicationWizard extends AbstractProjectWizard {
 				templateEngine
 						.addTemplate(new TemplateDefinition(
 								"woapplication/ant.classpaths.user.home.vm",
-								path, "ant.classpaths.user.home",
+								path + File.separator + "ant",
+								"ant.classpaths.user.home",
 								"ant.classpaths.user.home"));
 				templateEngine.addTemplate(new TemplateDefinition(
-						"woapplication/ant.classpaths.wo.wolocalroot.vm", path,
+						"woapplication/ant.classpaths.wo.wolocalroot.vm", path
+								+ File.separator + "ant",
 						"ant.classpaths.wo.wolocalroot",
 						"ant.classpaths.wo.wolocalroot"));
 				templateEngine.addTemplate(new TemplateDefinition(
-						"woapplication/ant.classpaths.wo.wosystemroot.vm",
-						path, "ant.classpaths.wo.wosystemroot",
+						"woapplication/ant.classpaths.wo.wosystemroot.vm", path
+								+ File.separator + "ant",
+						"ant.classpaths.wo.wosystemroot",
 						"ant.classpaths.wo.wosystemroot"));
 				templateEngine
 						.addTemplate(new TemplateDefinition(
 								"woapplication/ant.frameworks.user.home.vm",
-								path, "ant.frameworks.user.home",
+								path + File.separator + "ant",
+								"ant.frameworks.user.home",
 								"ant.frameworks.user.home"));
 				templateEngine.addTemplate(new TemplateDefinition(
-						"woapplication/ant.frameworks.wo.wolocalroot.vm", path,
+						"woapplication/ant.frameworks.wo.wolocalroot.vm", path
+								+ File.separator + "ant",
 						"ant.frameworks.wo.wolocalroot",
 						"ant.frameworks.wo.wolocalroot"));
 				templateEngine.addTemplate(new TemplateDefinition(
-						"woapplication/ant.frameworks.wo.wosystemroot.vm",
-						path, "ant.frameworks.wo.wosystemroot",
+						"woapplication/ant.frameworks.wo.wosystemroot.vm", path
+								+ File.separator + "ant",
+						"ant.frameworks.wo.wosystemroot",
 						"ant.frameworks.wo.wosystemroot"));
 				templateEngine.addTemplate(new TemplateDefinition(
 						"woapplication/build.xml.vm", path, "build.xml",
@@ -207,9 +222,29 @@ public class WOApplicationWizard extends AbstractProjectWizard {
 				//RunAnt runAnt = new RunAnt();
 				//runAnt.asAnt(path + File.separator
 				//		+ IWOLipsModel.DEFAULT_BUILD_FILENAME, null, null);
-				project.refreshLocal(IResource.DEPTH_INFINITE,
+				this.project.refreshLocal(IResource.DEPTH_INFINITE,
 						nullProgressMonitor);
 			} catch (Exception e) {
+				throw new InvocationTargetException(e);
+			}
+		}
+	}
+	/**
+	 * (non-Javadoc) Method declared on IWizard
+	 * 
+	 * @return
+	 */
+	public boolean performFinish() {
+		boolean success = super.performFinish();
+		if (success) {
+			IProject project = super.getNewProject();
+			Operation operation = new Operation(project);
+			try {
+				operation.run(new NullProgressMonitor());
+			} catch (InvocationTargetException e) {
+				WizardsPlugin.getDefault().getPluginLogger().log(e);
+				success = false;
+			} catch (InterruptedException e) {
 				WizardsPlugin.getDefault().getPluginLogger().log(e);
 				success = false;
 			}

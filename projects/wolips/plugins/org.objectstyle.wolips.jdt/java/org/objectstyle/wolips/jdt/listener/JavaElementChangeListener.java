@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 The ObjectStyle Group 
+ * Copyright (c) 2002 - 2004 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -83,17 +83,17 @@ public class JavaElementChangeListener implements IElementChangedListener {
 		super();
 	}
 	/**
-	 * Catches changed webobjects nature projects and updates frameworks in webobjects
-	 * project file.
-	 * <br>
+	 * Catches changed webobjects nature projects and updates frameworks in
+	 * webobjects project file. <br>
+	 * 
 	 * @param event
 	 * @see org.eclipse.jdt.core.IElementChangedListener#elementChanged(ElementChangedEvent)
 	 */
 	public final void elementChanged(ElementChangedEvent event) {
-		/*if (ElementChangedEvent.POST_CHANGE != event.getType())
-			return;*/
-		if (event.getDelta().getElement().getElementType()
-			!= IJavaElement.JAVA_MODEL)
+		/*
+		 * if (ElementChangedEvent.POST_CHANGE != event.getType()) return;
+		 */
+		if (event.getDelta().getElement().getElementType() != IJavaElement.JAVA_MODEL)
 			return;
 		IJavaElementDelta elementDeltaToExamine = event.getDelta();
 		ArrayList foundChangedElements = new ArrayList();
@@ -101,157 +101,136 @@ public class JavaElementChangeListener implements IElementChangedListener {
 		HashMap removedFrameworksProjectDict = new HashMap();
 		boolean javaProjectChanges = false;
 		// java model has changed - get affected webobjects projects
-		for (int i = 0;
-			i < elementDeltaToExamine.getChangedChildren().length;
-			i++) {
+		for (int i = 0; i < elementDeltaToExamine.getChangedChildren().length; i++) {
 			// examine changed children if they are webobjects projects
-			if (elementDeltaToExamine
-				.getChangedChildren()[i]
-				.getElement()
-				.getElementType()
-				== IJavaElement.JAVA_PROJECT) {
-				IProject projectToExamine =
-					((IJavaProject) elementDeltaToExamine
-						.getChangedChildren()[i]
-						.getElement())
-						.getProject();
+			if (elementDeltaToExamine.getChangedChildren()[i].getElement()
+					.getElementType() == IJavaElement.JAVA_PROJECT) {
+				IProject projectToExamine = ((IJavaProject) elementDeltaToExamine
+						.getChangedChildren()[i].getElement()).getProject();
 				if (!projectToExamine.exists()
-					|| !projectToExamine.isAccessible()) {
+						|| !projectToExamine.isAccessible()) {
 					// project deleted no further investigatin needed
 					continue;
 				}
 				if (!searchDeltasForElementType(elementDeltaToExamine
-					.getChangedChildren()[i]
-					.getChangedChildren(),
-					IJavaElement.PACKAGE_FRAGMENT_ROOT,
-					foundChangedElements))
+						.getChangedChildren()[i].getChangedChildren(),
+						IJavaElement.PACKAGE_FRAGMENT_ROOT,
+						foundChangedElements))
 					continue;
 				javaProjectChanges = true;
 				Project woLipsProject = null;
 				try {
-					woLipsProject = (Project) ( projectToExamine)
-					.getAdapter(Project.class);
+					woLipsProject = (Project) (projectToExamine)
+							.getAdapter(Project.class);
 					if (woLipsProject.hasWOLipsNature()) {
-						UpdateOtherClasspathIncludeFiles updateOtherClasspathIncludeFiles =
-							new UpdateOtherClasspathIncludeFiles();
-						updateOtherClasspathIncludeFiles.setIProject(
-							projectToExamine);
+						UpdateOtherClasspathIncludeFiles updateOtherClasspathIncludeFiles = new UpdateOtherClasspathIncludeFiles();
+						updateOtherClasspathIncludeFiles
+								.setIProject(projectToExamine);
 						updateOtherClasspathIncludeFiles.execute();
-						UpdateFrameworkIncludeFiles updateFrameworkIncludeFiles =
-							new UpdateFrameworkIncludeFiles();
-						updateFrameworkIncludeFiles.setIProject(
-							projectToExamine);
+						UpdateFrameworkIncludeFiles updateFrameworkIncludeFiles = new UpdateFrameworkIncludeFiles();
+						updateFrameworkIncludeFiles
+								.setIProject(projectToExamine);
 						updateFrameworkIncludeFiles.execute();
-						addedFrameworksProjectDict.put(
-								projectToExamine,
+						addedFrameworksProjectDict.put(projectToExamine,
 								new ArrayList());
-							removedFrameworksProjectDict.put(
-								projectToExamine,
+						removedFrameworksProjectDict.put(projectToExamine,
 								new ArrayList());
-							// webobjects project changed 
-							ArrayList foundElements = new ArrayList();
-							// search deltas for classpath changes
-							searchDeltas(
-								elementDeltaToExamine
-									.getChangedChildren()[i]
-									.getChangedChildren(),
+						// webobjects project changed
+						ArrayList foundElements = new ArrayList();
+						// search deltas for classpath changes
+						searchDeltas(
+								elementDeltaToExamine.getChangedChildren()[i]
+										.getChangedChildren(),
 								IJavaElementDelta.F_ADDED_TO_CLASSPATH,
 								foundElements);
-							IPackageFragmentRoot currentPackageFragmentRoot;
-							ArrayList addedFrameworks =
-								(ArrayList) addedFrameworksProjectDict.get(
-									projectToExamine);
-							for (int j = 0; j < foundElements.size(); j++) {
-								currentPackageFragmentRoot =
-									(IPackageFragmentRoot) foundElements.get(j);
-								addedFrameworks.add(
-									currentPackageFragmentRoot
-										.getRawClasspathEntry()
-										.getPath());
-							}
-							foundElements = new ArrayList();
-							// search deltas for classpath changes
-							searchDeltas(
-								elementDeltaToExamine
-									.getChangedChildren()[i]
-									.getChangedChildren(),
+						IPackageFragmentRoot currentPackageFragmentRoot;
+						ArrayList addedFrameworks = (ArrayList) addedFrameworksProjectDict
+								.get(projectToExamine);
+						for (int j = 0; j < foundElements.size(); j++) {
+							currentPackageFragmentRoot = (IPackageFragmentRoot) foundElements
+									.get(j);
+							addedFrameworks.add(currentPackageFragmentRoot
+									.getRawClasspathEntry().getPath());
+						}
+						foundElements = new ArrayList();
+						// search deltas for classpath changes
+						searchDeltas(
+								elementDeltaToExamine.getChangedChildren()[i]
+										.getChangedChildren(),
 								IJavaElementDelta.F_REMOVED_FROM_CLASSPATH,
 								foundElements);
-							ArrayList removedFrameworks =
-								(ArrayList) removedFrameworksProjectDict.get(
-									projectToExamine);
-							for (int j = 0; j < foundElements.size(); j++) {
-								currentPackageFragmentRoot =
-									(IPackageFragmentRoot) foundElements.get(j);
-								IPath rawClasspathEntryPath =
-									currentPackageFragmentRoot.getPath();
-										//.getRawClasspathEntry()
-										//.getPath();
-								removedFrameworks.add(rawClasspathEntryPath);
-							}
+						ArrayList removedFrameworks = (ArrayList) removedFrameworksProjectDict
+								.get(projectToExamine);
+						for (int j = 0; j < foundElements.size(); j++) {
+							currentPackageFragmentRoot = (IPackageFragmentRoot) foundElements
+									.get(j);
+							IPath rawClasspathEntryPath = currentPackageFragmentRoot
+									.getPath();
+							//.getRawClasspathEntry()
+							//.getPath();
+							removedFrameworks.add(rawClasspathEntryPath);
+						}
 					}
 				} catch (CoreException e) {
-					JdtPlugin.log(e);
+					JdtPlugin.getDefault().getPluginLogger().log(e);
 				}
 			}
 		}
 		if (javaProjectChanges)
 			// update project files
-			updateProjects(
-				addedFrameworksProjectDict,
-				removedFrameworksProjectDict);
+			updateProjects(addedFrameworksProjectDict,
+					removedFrameworksProjectDict);
 	}
 	/**
-		 * Method searchDeltas. Recursive search in java element deltas for changed elements
-		 * matching the change flag to search for. The results are stored in foundElements.
-		 * <br><br>
-		 * @param deltasToExamine
-		 * @param elementType
-		 * @param foundElements
-		 * @return boolean
-		 */
+	 * Method searchDeltas. Recursive search in java element deltas for changed
+	 * elements matching the change flag to search for. The results are stored
+	 * in foundElements. <br>
+	 * <br>
+	 * 
+	 * @param deltasToExamine
+	 * @param elementType
+	 * @param foundElements
+	 * @return boolean
+	 */
 	private final boolean searchDeltasForElementType(
-		IJavaElementDelta[] deltasToExamine,
-		int elementType,
-		ArrayList foundElements) {
+			IJavaElementDelta[] deltasToExamine, int elementType,
+			ArrayList foundElements) {
 		for (int i = 0; i < deltasToExamine.length; i++) {
-			if (deltasToExamine[i].getFlags()
-				== IJavaElementDelta.F_CHILDREN) {
+			if (deltasToExamine[i].getFlags() == IJavaElementDelta.F_CHILDREN) {
 				// further examination needed
 				while (searchDeltas(deltasToExamine[i].getChangedChildren(),
-					elementType,
-					foundElements));
-			} else if (
-				deltasToExamine[i].getElement().getElementType()
-					== elementType) {
-				// element found 
+						elementType, foundElements)) {
+					continue;
+				}
+			} else if (deltasToExamine[i].getElement().getElementType() == elementType) {
+				// element found
 				foundElements.add(deltasToExamine[i].getElement());
 			}
 		}
 		return (foundElements != null && foundElements.size() > 0);
 	}
 	/**
-	 * Method searchDeltas. Recursive search in java element deltas for changed elements
-	 * matching the change flag to search for. The results are stored in foundElements.
-	 * <br><br>
+	 * Method searchDeltas. Recursive search in java element deltas for changed
+	 * elements matching the change flag to search for. The results are stored
+	 * in foundElements. <br>
+	 * <br>
+	 * 
 	 * @param deltasToExamine
 	 * @param changeFlagToSearch
 	 * @param foundElements
 	 * @return boolean
 	 */
-	private final boolean searchDeltas(
-		IJavaElementDelta[] deltasToExamine,
-		int changeFlagToSearch,
-		ArrayList foundElements) {
+	private final boolean searchDeltas(IJavaElementDelta[] deltasToExamine,
+			int changeFlagToSearch, ArrayList foundElements) {
 		for (int i = 0; i < deltasToExamine.length; i++) {
-			if (deltasToExamine[i].getFlags()
-				== IJavaElementDelta.F_CHILDREN) {
+			if (deltasToExamine[i].getFlags() == IJavaElementDelta.F_CHILDREN) {
 				// further examination needed
 				while (searchDeltas(deltasToExamine[i].getChangedChildren(),
-					changeFlagToSearch,
-					foundElements));
+						changeFlagToSearch, foundElements)) {
+					continue;
+				}
 			} else if (deltasToExamine[i].getFlags() == changeFlagToSearch) {
-				// element found 
+				// element found
 				foundElements.add(deltasToExamine[i].getElement());
 			}
 		}
@@ -259,34 +238,34 @@ public class JavaElementChangeListener implements IElementChangedListener {
 	}
 	/**
 	 * Method updateProjects.
+	 * 
 	 * @param addedFrameworksProjectDict
 	 * @param removedFrameworksProjectDict
 	 */
-	private final void updateProjects(
-		HashMap addedFrameworksProjectDict,
-		HashMap removedFrameworksProjectDict) {
+	private final void updateProjects(HashMap addedFrameworksProjectDict,
+			HashMap removedFrameworksProjectDict) {
 		IProject currentProject;
 		List changedFrameworks;
-		Object[] allRemovedKeys =
-			removedFrameworksProjectDict.keySet().toArray();
+		Object[] allRemovedKeys = removedFrameworksProjectDict.keySet()
+				.toArray();
 		for (int i = 0; i < allRemovedKeys.length; i++) {
 			currentProject = (IProject) allRemovedKeys[i];
-			changedFrameworks =
-				(List) removedFrameworksProjectDict.get(currentProject);
+			changedFrameworks = (List) removedFrameworksProjectDict
+					.get(currentProject);
 			if (changedFrameworks.size() > 0) {
-				PBProjectUpdater projectUpdater =
-					PBProjectUpdater.instance(currentProject);
+				PBProjectUpdater projectUpdater = PBProjectUpdater
+						.instance(currentProject);
 				projectUpdater.removeFrameworks(changedFrameworks);
 			}
 		}
 		Object[] allAddedKeys = addedFrameworksProjectDict.keySet().toArray();
 		for (int i = 0; i < allAddedKeys.length; i++) {
 			currentProject = (IProject) allAddedKeys[i];
-			changedFrameworks =
-				(ArrayList) addedFrameworksProjectDict.get(currentProject);
+			changedFrameworks = (ArrayList) addedFrameworksProjectDict
+					.get(currentProject);
 			if (changedFrameworks.size() > 0) {
-				PBProjectUpdater projectUpdater =
-					PBProjectUpdater.instance(currentProject);
+				PBProjectUpdater projectUpdater = PBProjectUpdater
+						.instance(currentProject);
 				projectUpdater.addFrameworks(changedFrameworks);
 			}
 		}

@@ -2,7 +2,7 @@
  *
  * The ObjectStyle Group Software License, Version 1.0
  *
- * Copyright (c) 2002 The ObjectStyle Group,
+ * Copyright (c) 2002 - 2004 The ObjectStyle Group,
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -76,6 +76,9 @@ public class UtilsTest extends TestCase {
 	public UtilsTest(String name) {
 		super(name);
 	}
+	/**
+	 * 
+	 */
 	public void testCreateProject() {
 		IProject project = null;
 		try {
@@ -91,6 +94,9 @@ public class UtilsTest extends TestCase {
 		}
 	}
 	
+	/**
+	 * 
+	 */
 	public void testDeleteProject() {
 		try {
 			IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject("foo");
@@ -102,6 +108,9 @@ public class UtilsTest extends TestCase {
 		}
 	}
 	
+	/**
+	 * 
+	 */
 	public void testCreateJavaProject() {
 		IJavaProject project = null;
 		try {
@@ -117,6 +126,9 @@ public class UtilsTest extends TestCase {
 		}
 	}
 	
+	/**
+	 * 
+	 */
 	public void testDeleteJavaProject() {
 		try {
 			IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject("foo");

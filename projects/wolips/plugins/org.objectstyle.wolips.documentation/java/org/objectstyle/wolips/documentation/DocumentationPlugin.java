@@ -47,48 +47,25 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.projectbuild;
+package org.objectstyle.wolips.documentation;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.objectstyle.wolips.commons.logging.PluginLogger;
-import org.osgi.framework.BundleContext;
 /**
  * The main plugin class to be used in the desktop.
  * 
  * @author uli
  * @author markus
  */
-public class ProjectBuildPlugin extends AbstractUIPlugin {
-	private final static String PLUGIN_ID = "org.objectstyle.wolips.projectbuild";
-	/**
-	 * Comment for <code>MARKER_TASK_GENERIC</code>
-	 */
-	public static final String MARKER_TASK_GENERIC   = "org.objectstyle.wolips.projectbuild.taskmarker";
-	/**
-	 * Comment for <code>MARKER_BUILD_GENERIC</code>
-	 */
-	public static final String MARKER_BUILD_GENERIC   = "org.objectstyle.wolips.projectbuild.marker";
-	/**
-	 * Comment for <code>MARKER_BUILD_PROBLEM</code>
-	 */
-	public static final String MARKER_BUILD_PROBLEM   = "org.objectstyle.wolips.projectbuild.problem";
-	/**
-	 * Comment for <code>MARKER_BUILD_DUPLICATE</code>
-	 */
-	public static final String MARKER_BUILD_DUPLICATE = "org.objectstyle.wolips.projectbuild.duplicate";
-
-	/**
-	 * Comment for <code>NS_PRINCIPAL_CLASS</code>
-	 */
-	public static final String NS_PRINCIPAL_CLASS = "nsprincipalclass";
-//The plugin.
-	private static ProjectBuildPlugin plugin;
-	private PluginLogger pluginLogger = null;
+public class DocumentationPlugin extends AbstractUIPlugin {
+	//The plugin.
+	private static DocumentationPlugin plugin;
+	private static final String PLUGIN_ID = "org.objectstyle.wolips.documentation";
+	private PluginLogger pluginLogger = new PluginLogger(
+			DocumentationPlugin.PLUGIN_ID, false);
 	/**
 	 * The constructor.
 	 */
-	//The constructur is very sensitive. Make sure that your stuff works.
-	//If this cunstructor fails, the whole plugin will be disabled.
-	public ProjectBuildPlugin() {
+	public DocumentationPlugin() {
 		super();
 		plugin = this;
 	}
@@ -97,7 +74,7 @@ public class ProjectBuildPlugin extends AbstractUIPlugin {
 	 * 
 	 * @return
 	 */
-	public static ProjectBuildPlugin getDefault() {
+	public static DocumentationPlugin getDefault() {
 		return plugin;
 	}
 	/**
@@ -105,18 +82,5 @@ public class ProjectBuildPlugin extends AbstractUIPlugin {
 	 */
 	public PluginLogger getPluginLogger() {
 		return this.pluginLogger;
-	}
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.core.runtime.Plugin#start(org.osgi.framework.BundleContext)
-	 */
-	/**
-	 * @param context
-	 * @throws Exception
-	 */
-	public void start(BundleContext context) throws Exception {
-		super.start(context);
-		this.pluginLogger = new PluginLogger(ProjectBuildPlugin.PLUGIN_ID, false);
 	}
 }

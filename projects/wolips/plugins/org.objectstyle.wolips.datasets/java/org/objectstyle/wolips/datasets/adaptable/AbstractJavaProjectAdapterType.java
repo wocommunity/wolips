@@ -74,7 +74,7 @@ public abstract class AbstractJavaProjectAdapterType extends Project {
 	 * @return Returns the java project.
 	 */
 	public IJavaProject getIJavaProject() {
-		return iJavaProject;
+		return this.iJavaProject;
 	}
 	/**
 	 * @param iJavaProject

@@ -49,7 +49,6 @@
  */
 package org.objectstyle.wolips.core.plugin;
 import org.eclipse.core.runtime.Plugin;
-import org.objectstyle.wolips.commons.logging.PluginLogger;
 /**
  * The main plugin class to be used in the desktop.
  * 
@@ -59,7 +58,6 @@ import org.objectstyle.wolips.commons.logging.PluginLogger;
 public class WOLipsPlugin extends Plugin {
 	//The plugin.
 	private static WOLipsPlugin plugin;
-	private PluginLogger pluginLogger = null;
 	/**
 	 * The constructor.
 	 */
@@ -76,11 +74,5 @@ public class WOLipsPlugin extends Plugin {
 	 */
 	public static WOLipsPlugin getDefault() {
 		return plugin;
-	}
-	/**
-	 * @return Returns the pluginLogger.
-	 */
-	public PluginLogger getPluginLogger() {
-		return this.pluginLogger;
 	}
 }

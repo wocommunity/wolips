@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 The ObjectStyle Group 
+ * Copyright (c) 2002 - 2004 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -67,11 +67,29 @@ import org.eclipse.core.resources.IResource;
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
 public interface IWOLipsResource {
+	/**
+	 * Comment for <code>WOCOMPONENT_BUNDLE</code>
+	 */
 	public static final int WOCOMPONENT_BUNDLE = 0;
+	/**
+	 * Comment for <code>WOCOMPONENT_WOD</code>
+	 */
 	public static final int WOCOMPONENT_WOD = 1;
+	/**
+	 * Comment for <code>WOCOMPONENT_HTML</code>
+	 */
 	public static final int WOCOMPONENT_HTML = 2;
+	/**
+	 * Comment for <code>WOCOMPONENT_WOO</code>
+	 */
 	public static final int WOCOMPONENT_WOO = 3;
+	/**
+	 * Comment for <code>WOCOMPONENT_API</code>
+	 */
 	public static final int WOCOMPONENT_API = 4;
+	/**
+	 * Comment for <code>EOMODEL</code>
+	 */
 	public static final int EOMODEL = 5;
 	/**
 	 * @return Returns the IResource;
@@ -87,7 +105,7 @@ public interface IWOLipsResource {
 	public abstract List getRelatedResources();
 	/**
 	 * Opens the resource in a Editor.
-	 * @param If forceToOpenIntextEditor is set to true the resource opens in a texteditor.
+	 * @param forceToOpenIntextEditor If forceToOpenIntextEditor is set to true the resource opens in a texteditor.
 	 */
 	public abstract void open(boolean forceToOpenIntextEditor);
 }

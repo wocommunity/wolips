@@ -4,13 +4,19 @@
    id="org.objectstyle.wolips.documentation"
    name="WOLips Help"
    version="1.0.6"
-   provider-name="objectstyle.org">
+   provider-name="objectstyle.org"
+   class="org.objectstyle.wolips.launching.DocumentationPlugin">
 
    <runtime>
       <library name="lib/wolips-documentation.jar">
          <packages prefixes="org.objectstyle.wolips.documentation"/>
       </library>
    </runtime>
+   <requires>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.objectstyle.wolips.commons"/>
+   </requires>
 
 
 <!-- ============================================== -->

@@ -96,10 +96,10 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 		super();
 		plugin = this;
 		try {
-			resourceBundle = ResourceBundle
+			this.resourceBundle = ResourceBundle
 					.getBundle("org.objectstyle.wolips.workbenchutilities.WorkbenchutilitiesPluginResources");
 		} catch (MissingResourceException x) {
-			resourceBundle = null;
+			this.resourceBundle = null;
 		}
 	}
 	/**
@@ -126,7 +126,7 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 	 * @return Returns the plugin's resource bundle,
 	 */
 	public ResourceBundle getResourceBundle() {
-		return resourceBundle;
+		return this.resourceBundle;
 	}
 	/**
 	 * Prints a Status.
@@ -505,12 +505,15 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 	/**
 	 * Method handleException.
 	 * 
+	 * If you don't provide a shell, the one from the active is used.
 	 * @param shell
 	 * @param target
 	 * @param message
 	 */
 	public static void handleException(Shell shell, Throwable target,
 			String message) {
+		if(shell == null)
+			shell = WorkbenchUtilitiesPlugin.getActiveWorkbenchShell();
 		WorkbenchUtilitiesPlugin.getDefault().getPluginLogger().debug(target);
 		String title = "Error";
 		if (message == null) {
@@ -531,6 +534,6 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 	 * @return Returns the pluginLogger.
 	 */
 	public PluginLogger getPluginLogger() {
-		return pluginLogger;
+		return this.pluginLogger;
 	}
 }

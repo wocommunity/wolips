@@ -72,10 +72,16 @@ public class DataSetsPluginTest extends AbstractDataSetTest {
 		super(arg0);
 	}
 	
+	/**
+	 * 
+	 */
 	public void testCreateDataSetsPluginNotNull() {
 		assertNotNull("No default DataSetsPlugin", DataSetsPlugin.getDefault());
 	}
 
+	/**
+	 * 
+	 */
 	public void testGetNullResource() {
 		assertNull("getResource should return null for null", DataSetsPlugin.getDefault().getDataSet(null));
 	}

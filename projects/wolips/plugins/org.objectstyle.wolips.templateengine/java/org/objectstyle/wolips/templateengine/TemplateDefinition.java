@@ -60,7 +60,7 @@ import java.io.File;
 
 /**
  * @author ulrich
- *
+ * 
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
@@ -70,8 +70,15 @@ public class TemplateDefinition {
 	private String destination;
 	private String finalName;
 	private String type;
-	
-	public TemplateDefinition(String templateName, String destination, String finalName, String type) {
+
+	/**
+	 * @param templateName
+	 * @param destination
+	 * @param finalName
+	 * @param type
+	 */
+	public TemplateDefinition(String templateName, String destination,
+			String finalName, String type) {
 		super();
 		this.templateName = templateName;
 		this.destination = destination;
@@ -83,11 +90,12 @@ public class TemplateDefinition {
 	 * @return
 	 */
 	public String getTemplateName() {
-		return templateName;
+		return this.templateName;
 	}
 
 	/**
-	 * @param finalName Sets the final name without the extension
+	 * @param finalName
+	 *            Sets the final name without the extension
 	 */
 	public void setFinalName(String finalName) {
 		this.finalName = finalName;
@@ -96,13 +104,14 @@ public class TemplateDefinition {
 	 * @return
 	 */
 	public String getDestinationPath() {
-		
-		StringBuffer returnValue = new StringBuffer(destination);
+
+		StringBuffer returnValue = new StringBuffer(this.destination);
 		returnValue.append(File.separator);
-		returnValue.append(finalName);
-		if(!finalName.equals(type) && !finalName.endsWith("." + type)) {
+		returnValue.append(this.finalName);
+		if (!this.finalName.equals(this.type)
+				&& !this.finalName.endsWith("." + this.type)) {
 			returnValue.append(".");
-			returnValue.append(type);
+			returnValue.append(this.type);
 		}
 		return returnValue.toString();
 	}
@@ -110,16 +119,17 @@ public class TemplateDefinition {
 	 * @return Returns the type.
 	 */
 	public String getType() {
-		return type;
+		return this.type;
 	}
 	/**
 	 * @return Returns the destination.
 	 */
 	public String getDestination() {
-		return destination;
+		return this.destination;
 	}
 	/**
-	 * @param destination The destination to set.
+	 * @param destination
+	 *            The destination to set.
 	 */
 	public void setDestination(String destination) {
 		this.destination = destination;

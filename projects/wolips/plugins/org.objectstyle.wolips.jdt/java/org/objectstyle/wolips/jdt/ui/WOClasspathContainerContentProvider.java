@@ -75,11 +75,14 @@ import org.objectstyle.wolips.variables.VariablesPlugin;
 
 /**
  * @author ulrich
- *
+ * 
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public class WOClasspathContainerContentProvider implements ITreeContentProvider, ILabelProvider {
+public class WOClasspathContainerContentProvider
+		implements
+			ITreeContentProvider,
+			ILabelProvider {
 	private WOClasspathContainerRoot[] roots;
 	private CheckboxTreeViewer checkboxTreeViewer;
 	protected ArrayList allEntries = new ArrayList();
@@ -92,54 +95,51 @@ public class WOClasspathContainerContentProvider implements ITreeContentProvider
 		super();
 		IPath path = null;
 		if (containerEntry == null || containerEntry.getPath() == null) {
-			path =
-				new Path(
+			path = new Path(
 					WOClasspathContainer.WOLIPS_CLASSPATH_CONTAINER_IDENTITY);
-			for (int i = 0;
-				i
-					< WOClasspathContainer
-						.WOLIPS_CLASSPATH_STANDARD_FRAMEWORKS
-						.length;
-				i++) {
-				path =
-					path.append(
-						"/"
-							+ WOClasspathContainer
-								.WOLIPS_CLASSPATH_STANDARD_FRAMEWORKS[i]);
+			for (int i = 0; i < WOClasspathContainer.WOLIPS_CLASSPATH_STANDARD_FRAMEWORKS.length; i++) {
+				path = path
+						.append("/"
+								+ WOClasspathContainer.WOLIPS_CLASSPATH_STANDARD_FRAMEWORKS[i]);
 			}
 		} else {
-			isExported = containerEntry.isExported();
+			this.isExported = containerEntry.isExported();
 			path = containerEntry.getPath();
 		}
-		String[] rootsNames = VariablesPlugin.getDefault().getFrameworkRootsNames();
+		String[] rootsNames = VariablesPlugin.getDefault()
+				.getFrameworkRootsNames();
 		IPath[] rootsPaths = VariablesPlugin.getDefault().getFrameworkRoots();
-		roots = new WOClasspathContainerRoot[rootsNames.length];
+		this.roots = new WOClasspathContainerRoot[rootsNames.length];
 		for (int i = 0; i < rootsNames.length; i++) {
-			roots[i] =
-				new WOClasspathContainerRoot(rootsNames[i], rootsPaths[i], path);
+			this.roots[i] = new WOClasspathContainerRoot(rootsNames[i],
+					rootsPaths[i], path);
 		}
 	}
 
+	/**
+	 * @author ulrich
+	 * 
+	 * TODO To change the template for this generated type comment go to Window -
+	 * Preferences - Java - Code Style - Code Templates
+	 */
 	public final class WOClasspathContainerRoot {
 		private String root;
 		private IPath rootPath;
 		private IPath containerPath;
 		private WOClasspathContainerEntry[] entries;
-		protected WOClasspathContainerRoot(String root, IPath rootPath, IPath containerPath) {
+		protected WOClasspathContainerRoot(String root, IPath rootPath,
+				IPath containerPath) {
 			this.root = root;
 			this.rootPath = rootPath;
 			this.containerPath = containerPath;
 			File fwBase = new File(rootPath.toOSString());
 			if (fwBase.exists() && fwBase.isDirectory()) {
 				File frameworks[] = fwBase.listFiles(new WOFWFilenameFilter());
-				entries = new WOClasspathContainerEntry[frameworks.length];
+				this.entries = new WOClasspathContainerEntry[frameworks.length];
 				for (int i = 0; i < frameworks.length; i++) {
-					WOClasspathContainerEntry entry =
-						new WOClasspathContainerEntry(
-							this,
-							containerPath,
-							frameworks[i]);
-					entries[i] = entry;
+					WOClasspathContainerEntry entry = new WOClasspathContainerEntry(
+							this, containerPath, frameworks[i]);
+					this.entries[i] = entry;
 				}
 			}
 		}
@@ -148,48 +148,51 @@ public class WOClasspathContainerContentProvider implements ITreeContentProvider
 		 * @return
 		 */
 		public WOClasspathContainerEntry[] getEntries() {
-			return entries;
+			return this.entries;
 		}
 
 		protected String getRoot() {
-			return root;
+			return this.root;
 		}
-		
+
 		protected IPath getContainerPath() {
-			return containerPath;
+			return this.containerPath;
 		}
 
 		protected IPath getRootPath() {
-			return rootPath;
+			return this.rootPath;
 		}
 
 	}
 
+	/**
+	 * @author ulrich
+	 * 
+	 * TODO To change the template for this generated type comment go to Window -
+	 * Preferences - Java - Code Style - Code Templates
+	 */
 	public final class WOClasspathContainerEntry {
 		private WOClasspathContainerRoot root;
 		private boolean checked = false;
 		private String name;
-		protected WOClasspathContainerEntry(
-			WOClasspathContainerRoot root,
-			IPath path,
-			File framework) {
+		protected WOClasspathContainerEntry(WOClasspathContainerRoot root,
+				IPath path, File framework) {
 			this.root = root;
 			if (path != null) {
 				String[] segments = path.segments();
-				name = framework.getName();
+				this.name = framework.getName();
 				//				cut off the .framework
-				name = name.substring(0, name.length() - 10);
+				this.name = this.name.substring(0, this.name.length() - 10);
 				for (int i = 0; i < segments.length; i++) {
-					checked =
-						(i > 0
-							&& !allEntries.contains(name)
-							&& segments[i].equals(name)
-							&& this.exists(
-								segments[i],
-								(this.getRoot().getRootPath())));
-					if (checked) {
+					this.checked = (i > 0
+							&& !WOClasspathContainerContentProvider.this.allEntries
+									.contains(this.name)
+							&& segments[i].equals(this.name) && this.exists(
+							segments[i], (this.getRoot().getRootPath())));
+					if (this.checked) {
 						i = segments.length;
-						allEntries.add(name);
+						WOClasspathContainerContentProvider.this.allEntries
+								.add(this.name);
 					}
 
 				}
@@ -197,50 +200,48 @@ public class WOClasspathContainerContentProvider implements ITreeContentProvider
 		}
 
 		private boolean exists(String framework, IPath rootPath) {
-			IPath frameworkPath = rootPath.append(framework + ".framework").append("Resources").append("Java");
-			File frameworkFile =
-					new File(
-							frameworkPath.toOSString());
-				return frameworkFile.isDirectory();
+			IPath frameworkPath = rootPath.append(framework + ".framework")
+					.append("Resources").append("Java");
+			File frameworkFile = new File(frameworkPath.toOSString());
+			return frameworkFile.isDirectory();
 		}
 		/**
 		 * @return
 		 */
 		public boolean isChecked() {
-			return checked;
+			return this.checked;
 		}
 
 		/**
 		 * @param b
 		 */
 		protected void setChecked(boolean b) {
-			checked = b;
+			this.checked = b;
 		}
 
 		protected String getName() {
-			return name;
+			return this.name;
 		}
 
 		protected WOClasspathContainerRoot getRoot() {
-			return root;
+			return this.root;
 		}
 
 	}
 
-	private static final class WildcardFilenameFilter
-		implements FilenameFilter {
+	private static final class WildcardFilenameFilter implements FilenameFilter {
 		WildcardFilenameFilter(String prefix, String suffix) {
-			_prefix = prefix;
-			_suffix = suffix;
+			this._prefix = prefix;
+			this._suffix = suffix;
 		}
 
 		public boolean accept(File file, String name) {
 
 			String lowerName = name.toLowerCase();
 
-			return (
-				((null == _prefix) || lowerName.startsWith(_prefix))
-					&& ((null == _suffix) || lowerName.endsWith(_suffix)));
+			return (((null == this._prefix) || lowerName
+					.startsWith(this._prefix)) && ((null == this._suffix) || lowerName
+					.endsWith(this._suffix)));
 		}
 
 		String _prefix;
@@ -249,7 +250,7 @@ public class WOClasspathContainerContentProvider implements ITreeContentProvider
 
 	private static final class WOFWFilenameFilter implements FilenameFilter {
 		public boolean accept(File file, String name) {
-			/*name.startsWith("Java") &&*/
+			/* name.startsWith("Java") && */
 			boolean candidate = name.endsWith(".framework");
 
 			boolean result = false;
@@ -258,10 +259,10 @@ public class WOClasspathContainerContentProvider implements ITreeContentProvider
 				File resDir = new File(file, name + "/Resources/Java");
 				if (resDir.exists()) {
 
-					String jarFiles[] =
-						resDir.list(new WildcardFilenameFilter(null, ".jar"));
-					String zipFiles[] =
-						resDir.list(new WildcardFilenameFilter(null, ".zip"));
+					String jarFiles[] = resDir.list(new WildcardFilenameFilter(
+							null, ".jar"));
+					String zipFiles[] = resDir.list(new WildcardFilenameFilter(
+							null, ".zip"));
 
 					result = (0 != jarFiles.length) || (0 != zipFiles.length);
 
@@ -277,55 +278,60 @@ public class WOClasspathContainerContentProvider implements ITreeContentProvider
 	 */
 	public IClasspathEntry getClasspathEntry() {
 		IPath path = null;
-		path =
-			new Path(WOClasspathContainer.WOLIPS_CLASSPATH_CONTAINER_IDENTITY);
+		path = new Path(
+				WOClasspathContainer.WOLIPS_CLASSPATH_CONTAINER_IDENTITY);
 		if (this.getRoots() != null)
 			for (int i = 0; i < this.getRoots().length; i++) {
 				WOClasspathContainerRoot root = this.getRoots()[i];
 				if (root.getEntries() != null)
 					for (int j = 0; j < root.getEntries().length; j++) {
 						if (root.getEntries() != null
-							&& checkboxTreeViewer.getChecked(root.getEntries()[j])) {
+								&& this.checkboxTreeViewer.getChecked(root
+										.getEntries()[j])) {
 							//path = path.append(root.root);
 							path = path.append(root.getEntries()[j].getName());
 						}
 					}
 			}
-		return JavaCore.newContainerEntry(path, isExported);
+		return JavaCore.newContainerEntry(path, this.isExported);
 	}
 
 	/**
 	 * @return
 	 */
 	public WOClasspathContainerRoot[] getRoots() {
-		return roots;
+		return this.roots;
 	}
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.jface.viewers.ITreeContentProvider#getChildren(java.lang.Object)
 	 */
 	public Object[] getChildren(Object parentElement) {
 		if (parentElement instanceof WOClasspathContainerRoot) {
-			WOClasspathContainerEntry[] entries =
-				((WOClasspathContainerRoot) parentElement).getEntries();
+			WOClasspathContainerEntry[] entries = ((WOClasspathContainerRoot) parentElement)
+					.getEntries();
 			/*
-			for (int i = 0; i < entries.length; i++) {
-			viewer.setChecked(entries[i], entries[i].isChecked());
-			}*/
+			 * for (int i = 0; i < entries.length; i++) {
+			 * viewer.setChecked(entries[i], entries[i].isChecked()); }
+			 */
 			return entries;
 		}
 		if (parentElement instanceof WOClasspathContainerContentProvider) {
-			WOClasspathContainerRoot[] currentRoots =
-				((WOClasspathContainerContentProvider) parentElement).getRoots();
+			WOClasspathContainerRoot[] currentRoots = ((WOClasspathContainerContentProvider) parentElement)
+					.getRoots();
 			/*
-			for (int i = 0; i < roots.length; i++) {
-			viewer.add(roots[i], this.getChildren(roots[i]));
-			}*/
+			 * for (int i = 0; i < roots.length; i++) { viewer.add(roots[i],
+			 * this.getChildren(roots[i])); }
+			 */
 			return currentRoots;
 		}
 		return new Object[0];
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.jface.viewers.ITreeContentProvider#getParent(java.lang.Object)
 	 */
 	public Object getParent(Object element) {
@@ -336,55 +342,62 @@ public class WOClasspathContainerContentProvider implements ITreeContentProvider
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.jface.viewers.ITreeContentProvider#hasChildren(java.lang.Object)
 	 */
 	public boolean hasChildren(Object element) {
 		if (element instanceof WOClasspathContainerContentProvider)
 			return ((WOClasspathContainerContentProvider) element).getRoots() != null
-				&& ((WOClasspathContainerContentProvider) element).getRoots().length > 0;
+					&& ((WOClasspathContainerContentProvider) element)
+							.getRoots().length > 0;
 		if (element instanceof WOClasspathContainerRoot)
 			return ((WOClasspathContainerRoot) element).getEntries() != null
-				&& ((WOClasspathContainerRoot) element).getEntries().length > 0;
+					&& ((WOClasspathContainerRoot) element).getEntries().length > 0;
 		return false;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
 	 */
 	public Object[] getElements(Object inputElement) {
 		return this.getChildren(inputElement);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.jface.viewers.IContentProvider#dispose()
 	 */
 	public void dispose() {
+		return;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer,
+	 *      java.lang.Object, java.lang.Object)
 	 */
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 		this.checkboxTreeViewer = (CheckboxTreeViewer) viewer;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.jface.viewers.ILabelProvider#getImage(java.lang.Object)
 	 */
 	public Image getImage(Object element) {
 		if (element instanceof WOClasspathContainerRoot)
 			return PluginImages.WOFRAMEWORK_ROOT_IMAGE();
 		if (element instanceof WOClasspathContainerEntry) {
-			for (int i = 0;
-				i
-					< WOClasspathContainer
-						.WOLIPS_CLASSPATH_STANDARD_FRAMEWORKS
-						.length;
-				i++) {
-				if (WOClasspathContainer
-					.WOLIPS_CLASSPATH_STANDARD_FRAMEWORKS[i]
-					.equals(((WOClasspathContainerEntry) element).getName()))
+			for (int i = 0; i < WOClasspathContainer.WOLIPS_CLASSPATH_STANDARD_FRAMEWORKS.length; i++) {
+				if (WOClasspathContainer.WOLIPS_CLASSPATH_STANDARD_FRAMEWORKS[i]
+						.equals(((WOClasspathContainerEntry) element).getName()))
 					return PluginImages.WOSTANDARD_FRAMEWORK_IMAGE();
 			}
 			return PluginImages.WOFRAMEWORK_IMAGE();
@@ -392,7 +405,9 @@ public class WOClasspathContainerContentProvider implements ITreeContentProvider
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.jface.viewers.ILabelProvider#getText(java.lang.Object)
 	 */
 	public String getText(Object element) {
@@ -404,23 +419,32 @@ public class WOClasspathContainerContentProvider implements ITreeContentProvider
 		return element.toString();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.jface.viewers.IBaseLabelProvider#addListener(org.eclipse.jface.viewers.ILabelProviderListener)
 	 */
 	public void addListener(ILabelProviderListener listener) {
+		return;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jface.viewers.IBaseLabelProvider#isLabelProperty(java.lang.Object, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.jface.viewers.IBaseLabelProvider#isLabelProperty(java.lang.Object,
+	 *      java.lang.String)
 	 */
 	public boolean isLabelProperty(Object element, String property) {
 		return false;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.jface.viewers.IBaseLabelProvider#removeListener(org.eclipse.jface.viewers.ILabelProviderListener)
 	 */
 	public void removeListener(ILabelProviderListener listener) {
+		return;
 	}
 
 }

@@ -64,8 +64,6 @@ public class LaunchingPlugin extends AbstractUIPlugin {
 			LaunchingPlugin.PLUGIN_ID, false);
 	/**
 	 * The constructor.
-	 * 
-	 * @param descriptor
 	 */
 	public LaunchingPlugin() {
 		super();
@@ -83,6 +81,6 @@ public class LaunchingPlugin extends AbstractUIPlugin {
 	 * @return Returns the pluginLogger.
 	 */
 	public PluginLogger getPluginLogger() {
-		return pluginLogger;
+		return this.pluginLogger;
 	}
 }

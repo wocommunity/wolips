@@ -68,6 +68,9 @@ public class TemplateFolderRoot {
 
 	private IPath path;
 	
+	/**
+	 * @param location
+	 */
 	public TemplateFolderRoot(IPath location) {
 		super();
 		this.path = location;
@@ -76,6 +79,6 @@ public class TemplateFolderRoot {
 	 * @return Returns the path.
 	 */
 	public IPath getPath() {
-		return path;
+		return this.path;
 	}
 }

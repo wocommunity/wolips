@@ -84,7 +84,7 @@ public class ComponentEngine extends AbstractEngine {
 	 * @return Returns the apiPath.
 	 */
 	public IPath getApiPath() {
-		return apiPath;
+		return this.apiPath;
 	}
 	/**
 	 * @param apiPath The apiPath to set.
@@ -96,7 +96,7 @@ public class ComponentEngine extends AbstractEngine {
 	 * @return Returns the componentPath.
 	 */
 	public IPath getComponentPath() {
-		return componentPath;
+		return this.componentPath;
 	}
 	/**
 	 * @param componentPath The componentPath to set.
@@ -108,7 +108,7 @@ public class ComponentEngine extends AbstractEngine {
 	 * @return Returns the javaPath.
 	 */
 	public IPath getJavaPath() {
-		return javaPath;
+		return this.javaPath;
 	}
 	/**
 	 * @param javaPath The javaPath to set.
@@ -120,7 +120,7 @@ public class ComponentEngine extends AbstractEngine {
 	 * @return Returns the createBodyTag.
 	 */
 	public boolean getCreateBodyTag() {
-		return createBodyTag;
+		return this.createBodyTag;
 	}
 	/**
 	 * @param createBodyTag The createBodyTag to set.
@@ -132,7 +132,7 @@ public class ComponentEngine extends AbstractEngine {
 	 * @return Returns the componentName.
 	 */
 	public String getComponentName() {
-		return componentName;
+		return this.componentName;
 	}
 	/**
 	 * @param componentName The componentName to set.
@@ -144,26 +144,28 @@ public class ComponentEngine extends AbstractEngine {
 	 * inits the engine
 	 */
 	public void init() throws Exception {
-		templateFolder = TemplateEnginePlugin.getTemplateFolder(TemplateEnginePlugin.WOComponent);
+		this.templateFolder = TemplateEnginePlugin.getTemplateFolder(TemplateEnginePlugin.WOComponent);
 		super.init();
 	}
 	/**
 	 * @return the template folder count.
 	 */
 	public int templateFolderCount() {
-		if(templateFolder == null)
+		if(this.templateFolder == null) {
 			return 0;
-		return templateFolder.length;
+		}
+		return this.templateFolder.length;
 	}
 	/**
 	 * @return the names.
 	 */
 	public String[] names() {
-		if(templateFolder == null)
+		if(this.templateFolder == null) {
 			return new String[0];
-		String[] names = new String[templateFolder.length];
+		}
+		String[] names = new String[this.templateFolder.length];
 		for(int i = 0; i < names.length; i++) {
-			names[i] = templateFolder[i].getTemplatesDocument().getName();
+			names[i] = this.templateFolder[i].getTemplatesDocument().getName();
 		}
 		return names;
 	}
@@ -173,8 +175,9 @@ public class ComponentEngine extends AbstractEngine {
 	public void setSelectedTemplateName(String string) {
 		String[] names = this.names();
 		for(int i = 0; i < names.length; i++) {
-			if(names[i].equals(templateFolder[i].getTemplatesDocument().getName()))
-					selectedTemplateFolder = templateFolder[i];
+			if(names[i].equals(this.templateFolder[i].getTemplatesDocument().getName())) {
+				this.selectedTemplateFolder = this.templateFolder[i];
+			}
 		}
 	}
 	
@@ -183,32 +186,34 @@ public class ComponentEngine extends AbstractEngine {
 		try {
 			templateEngine.init();
 		} catch (Exception e) {
-			TemplateEnginePlugin.log(e);
+			TemplateEnginePlugin.getDefault().getPluginLogger().log(e);
 			throw new InvocationTargetException(e);
 		}
 		this.addTemplate(new TemplateDefinition(
-				"wocomponent/wocomponent.html.vm", this.getComponentPath().toOSString(), componentName + "."
+				"wocomponent/wocomponent.html.vm", this.getComponentPath().toOSString(), this.componentName + "."
 						+ IWOLipsModel.EXT_HTML, IWOLipsModel.EXT_HTML));
 		this.addTemplate(new TemplateDefinition(
-				"wocomponent/wocomponent.wod.vm", this.getComponentPath().toOSString(), componentName + "."
+				"wocomponent/wocomponent.wod.vm", this.getComponentPath().toOSString(), this.componentName + "."
 						+ IWOLipsModel.EXT_WOD, IWOLipsModel.EXT_WOD));
-		if (createWooFile)
+		if (this.createWooFile) {
 			this.addTemplate(new TemplateDefinition(
-					"wocomponent/wocomponent.woo.vm", this.getComponentPath().toOSString(), componentName + "."
+					"wocomponent/wocomponent.woo.vm", this.getComponentPath().toOSString(), this.componentName + "."
 							+ IWOLipsModel.EXT_WOO, IWOLipsModel.EXT_WOO));
+		}
 		this.addTemplate(new TemplateDefinition(
 				"wocomponent/wocomponent.java.vm", this.getJavaPath().toOSString(),
-				componentName + "." + IWOLipsModel.EXT_JAVA,
+				this.componentName + "." + IWOLipsModel.EXT_JAVA,
 				IWOLipsModel.EXT_JAVA));
-		if (createApiFile)
+		if (this.createApiFile) {
 			this.addTemplate(new TemplateDefinition(
 					"wocomponent/wocomponent.api.vm", this.getApiPath().toOSString(),
-					componentName + "." + IWOLipsModel.EXT_API,
+					this.componentName + "." + IWOLipsModel.EXT_API,
 					IWOLipsModel.EXT_API));
+		}
 		try {
 			super.run(monitor);
 		} catch (Exception e) {
-			TemplateEnginePlugin.log(e);
+			TemplateEnginePlugin.getDefault().getPluginLogger().log(e);
 			throw new InvocationTargetException(e);
 		}
 	}
@@ -216,7 +221,7 @@ public class ComponentEngine extends AbstractEngine {
 	 * @return Returns the createApiFile.
 	 */
 	public boolean isCreateApiFile() {
-		return createApiFile;
+		return this.createApiFile;
 	}
 	/**
 	 * @param createApiFile The createApiFile to set.
@@ -228,7 +233,7 @@ public class ComponentEngine extends AbstractEngine {
 	 * @return Returns the createWooFile.
 	 */
 	public boolean isCreateWooFile() {
-		return createWooFile;
+		return this.createWooFile;
 	}
 	/**
 	 * @param createWooFile The createWooFile to set.

@@ -65,6 +65,9 @@ import junit.framework.TestCase;
  */
 public class TemplateFolderTest extends TestCase {
 	
+	/**
+	 * 
+	 */
 	public void testIsOfWOApplicationProjectType() {
 		TemplateFolderRoot[] templateFolderRoots = TemplateEnginePlugin
 					.getTemplateFolderRoots();
@@ -77,6 +80,9 @@ public class TemplateFolderTest extends TestCase {
 			}
 	}
 	
+	/**
+	 * 
+	 */
 	public void testIsOfD2W_ApplicationProjectType() {
 		TemplateFolderRoot[] templateFolderRoots = TemplateEnginePlugin
 					.getTemplateFolderRoots();
@@ -89,6 +95,9 @@ public class TemplateFolderTest extends TestCase {
 			}
 	}
 	
+	/**
+	 * 
+	 */
 	public void testIsOfWOFrameworkProjectType() {
 		TemplateFolderRoot[] templateFolderRoots = TemplateEnginePlugin
 					.getTemplateFolderRoots();
@@ -101,6 +110,9 @@ public class TemplateFolderTest extends TestCase {
 			}
 	}
 	
+	/**
+	 * 
+	 */
 	public void testIsOfJarProjectType() {
 		TemplateFolderRoot[] templateFolderRoots = TemplateEnginePlugin
 					.getTemplateFolderRoots();
@@ -113,6 +125,9 @@ public class TemplateFolderTest extends TestCase {
 			}
 	}
 	
+	/**
+	 * 
+	 */
 	public void testIsOfEOModelType() {
 		TemplateFolderRoot[] templateFolderRoots = TemplateEnginePlugin
 					.getTemplateFolderRoots();
@@ -125,6 +140,9 @@ public class TemplateFolderTest extends TestCase {
 			}
 	}
 	
+	/**
+	 * 
+	 */
 	public void testIsOfWOComponentType() {
 		TemplateFolderRoot[] templateFolderRoots = TemplateEnginePlugin
 					.getTemplateFolderRoots();

@@ -62,6 +62,6 @@ package org.objectstyle.wolips.datasets;
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
 public interface IApi extends IDataSet {
-	
-	
+
+	//TODO: :-)
 }

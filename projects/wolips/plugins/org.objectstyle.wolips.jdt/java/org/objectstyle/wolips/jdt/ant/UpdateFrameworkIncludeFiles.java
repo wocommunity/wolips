@@ -70,10 +70,10 @@ public class UpdateFrameworkIncludeFiles extends UpdateIncludeFiles {
 	 */
 	public UpdateFrameworkIncludeFiles() {
 		super();
-		INCLUDES_FILE_PREFIX = "ant.frameworks";
+		this.INCLUDES_FILE_PREFIX = "ant.frameworks";
 	}
 	/**
-	 * @see org.apache.tools.ant.Task#execute()
+	 *  
 	 */
 	public void execute() {
 		buildIncludeFiles();
@@ -94,7 +94,7 @@ public class UpdateFrameworkIncludeFiles extends UpdateIncludeFiles {
 		try {
 			classPaths = myJavaProject.getResolvedClasspath(true);
 		} catch (JavaModelException e) {
-			JdtPlugin.log(e.getMessage());
+			JdtPlugin.getDefault().getPluginLogger().log(e);
 			return;
 		}
 
@@ -105,9 +105,8 @@ public class UpdateFrameworkIncludeFiles extends UpdateIncludeFiles {
 
 			String thisPath = getPaths()[i].toOSString();
 
-			currentFrameworkListFile =
-				this.getIProject().getFile(
-					INCLUDES_FILE_PREFIX + "." + rootPaths[i]);
+			currentFrameworkListFile = this.getIProject().getFolder("ant").getFile(
+					this.INCLUDES_FILE_PREFIX + "." + this.rootPaths[i]);
 
 			//if (currentFrameworkListFile.exists()) {
 			// delete old include file
@@ -125,13 +124,13 @@ public class UpdateFrameworkIncludeFiles extends UpdateIncludeFiles {
 			for (int j = 0; j < classPaths.length; j++) {
 				IClasspathEntry thisEntry = classPaths[j];
 				if (thisEntry.getEntryKind() == IClasspathEntry.CPE_LIBRARY
-					|| thisEntry.getEntryKind() == IClasspathEntry.CPE_VARIABLE) {
+						|| thisEntry.getEntryKind() == IClasspathEntry.CPE_VARIABLE) {
 
 					if (!resolvedEntries.contains(thisEntry)) {
 						// convert classpath entries to woproject
 						// acceptable paths
-						resolvedEntry =
-							classpathEntryToFrameworkEntry(thisEntry, thisPath);
+						resolvedEntry = classpathEntryToFrameworkEntry(
+								thisEntry, thisPath);
 
 						//Uk was sorted
 						if (resolvedEntry != null) {
@@ -145,47 +144,48 @@ public class UpdateFrameworkIncludeFiles extends UpdateIncludeFiles {
 					}
 				}
 			}
-			if (thisPath.equals(VariablesPlugin.getDefault().getLocalRoot().toOSString())) {
+			if (thisPath.equals(VariablesPlugin.getDefault().getLocalRoot()
+					.toOSString())) {
 				IProject[] referencedProjects;
 				try {
 					referencedProjects = getIProject().getReferencedProjects();
 				} catch (CoreException e1) {
-					JdtPlugin.log(e1);
+					JdtPlugin.getDefault().getPluginLogger().log(e1);
 					referencedProjects = null;
 				}
 				if (referencedProjects != null) {
 					for (int j = 0; j < referencedProjects.length; j++) {
 						if (referencedProjects[j].isAccessible()
-							&& referencedProjects[j].isOpen()) {
+								&& referencedProjects[j].isOpen()) {
 							try {
 								Project referencedWOLipsProject = (Project) (referencedProjects[j])
-								.getAdapter(Project.class);
+										.getAdapter(Project.class);
 								if (referencedWOLipsProject != null
-									&& referencedWOLipsProject
-										.hasWOLipsNature()
-									&& referencedWOLipsProject
-										.isFramework()) {
-									newFrameworkEntries.append(
-										"Library/Frameworks/");
-									newFrameworkEntries.append(
-										referencedWOLipsProject
-											.getIProject()
-											.getName());
+										&& referencedWOLipsProject
+												.hasWOLipsNature()
+										&& referencedWOLipsProject
+												.isFramework()) {
+									newFrameworkEntries
+											.append("Library/Frameworks/");
+									newFrameworkEntries
+											.append(referencedWOLipsProject
+													.getIProject().getName());
 									newFrameworkEntries.append(".");
-									newFrameworkEntries.append(
-										IWOLipsModel.EXT_FRAMEWORK);
+									newFrameworkEntries
+											.append(IWOLipsModel.EXT_FRAMEWORK);
 									newFrameworkEntries.append("\n");
 								}
 							} catch (CoreException e1) {
-								JdtPlugin.log(e1);
+								JdtPlugin.getDefault().getPluginLogger()
+										.log(e1);
 							}
 						}
 					}
 				}
 			}
 			if (newFrameworkEntries.length() == 0) {
-				newFrameworkEntries.append(
-					"An empty file result in a full filesystem scan");
+				newFrameworkEntries
+						.append("An empty file result in a full filesystem scan");
 				newFrameworkEntries.append("\n");
 			}
 			try {
@@ -193,21 +193,18 @@ public class UpdateFrameworkIncludeFiles extends UpdateIncludeFiles {
 					// file may be created by WOBuilder in the meantime
 					// no update needed
 					currentFrameworkListFile.setContents(
-						new ByteArrayInputStream(
-							newFrameworkEntries.toString().getBytes()),
-						true,
-						true,
-						null);
+							new ByteArrayInputStream(newFrameworkEntries
+									.toString().getBytes()), true, true, null);
 				} else {
 					// create list file if any entries found
-					currentFrameworkListFile.create(
-						new ByteArrayInputStream(
-							newFrameworkEntries.toString().getBytes()),
-						true,
-						null);
+					Project project = (Project)this.getIProject().getAdapter(Project.class);
+					project.createAntFolder();
+					currentFrameworkListFile.create(new ByteArrayInputStream(
+							newFrameworkEntries.toString().getBytes()), true,
+							null);
 				}
 			} catch (CoreException e) {
-				JdtPlugin.log(e.getMessage());
+				JdtPlugin.getDefault().getPluginLogger().log(e.getMessage());
 				return;
 			}
 		}
@@ -220,9 +217,8 @@ public class UpdateFrameworkIncludeFiles extends UpdateIncludeFiles {
 	 * @param rootDir
 	 * @return String
 	 */
-	private String classpathEntryToFrameworkEntry(
-		IClasspathEntry entry,
-		String rootDir) {
+	private String classpathEntryToFrameworkEntry(IClasspathEntry entry,
+			String rootDir) {
 
 		IPath pathToConvert;
 
@@ -240,9 +236,9 @@ public class UpdateFrameworkIncludeFiles extends UpdateIncludeFiles {
 		for (int i = pathToConvert.segmentCount(); i > 0; i--) {
 			if (pathToConvert.segment(i - 1).endsWith(".framework")) {
 				// remove segments after framework
-				pathToConvert =
-					pathToConvert.removeLastSegments(
-						pathToConvert.segmentCount() - i);
+				pathToConvert = pathToConvert.removeLastSegments(pathToConvert
+						.segmentCount()
+						- i);
 				break;
 			}
 		}

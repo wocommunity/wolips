@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 The ObjectStyle Group 
+ * Copyright (c) 2002 - 2004 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -56,12 +56,6 @@
  
 package org.objectstyle.wolips.datasets.project;
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.jdt.core.IJavaProject;
-import org.objectstyle.wolips.datasets.DataSetsPlugin;
 import org.objectstyle.wolips.datasets.resources.IWOLipsModel;
 import org.objectstyle.wolips.datasets.resources.WOLipsModel;
 
@@ -72,35 +66,10 @@ import org.objectstyle.wolips.datasets.resources.WOLipsModel;
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
 public final class WOLipsCore {
-	
-	public final static IWOLipsProject createProject(IProject project)
-		throws CoreException {
-		if (project == null)
-			throw new CoreException(
-				new Status(
-					IStatus.ERROR,
-					DataSetsPlugin.getPluginId(),
-					IStatus.ERROR,
-					WOLipsCore.class
-						+ ": Can't create an IWOLipsProject for null.",
-					null));
-		return new WOLipsProject(project);
-	}
 
-	public final static IWOLipsJavaProject createJavaProject(IJavaProject project)
-		throws CoreException {
-		if (project == null)
-			throw new CoreException(
-				new Status(
-					IStatus.ERROR,
-					DataSetsPlugin.getPluginId(),
-					IStatus.ERROR,
-					WOLipsCore.class
-						+ ": Can't create an IWOLipsJavaProject for null.",
-					null));
-		return new WOLipsJavaProject(project);
-	}
-
+	/**
+	 * @return
+	 */
 	public final static IWOLipsModel getWOLipsModel() {
 		return WOLipsModel.getSharedWOLipsModel();
 	}

@@ -56,9 +56,9 @@
 
 package org.objectstyle.wolips.jdt;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 
@@ -71,39 +71,49 @@ public class PluginImages {
 	private static Image WOFRAMEWORK_ROOT_IMAGE;
 	private static Image WOFRAMEWORK_IMAGE;
 	private static Image WOSTANDARD_FRAMEWORK_IMAGE;
-	
-	public static final Image WOFRAMEWORK_ROOT_IMAGE() {
-		if(WOFRAMEWORK_ROOT_IMAGE == null)
-			WOFRAMEWORK_ROOT_IMAGE = createImageDescriptor("icons/frameworks/framework_root.gif").createImage(false);
-		return WOFRAMEWORK_ROOT_IMAGE;
-	}
-	
-	public static final Image WOFRAMEWORK_IMAGE() {
-		if(WOFRAMEWORK_IMAGE == null)
-			WOFRAMEWORK_IMAGE = createImageDescriptor("icons/frameworks/framework.gif").createImage(false);
-		return WOFRAMEWORK_IMAGE;
-	}
-	
-	public static final Image WOSTANDARD_FRAMEWORK_IMAGE() {
-		if(WOSTANDARD_FRAMEWORK_IMAGE == null)
-			WOSTANDARD_FRAMEWORK_IMAGE = createImageDescriptor("icons/frameworks/standard_framework.gif").createImage(false);
-		return WOSTANDARD_FRAMEWORK_IMAGE;
-	}
-	
 
 	/**
-	 * Utility method to create an <code>ImageDescriptor</code>
-	 * from a path to a file.
+	 * @return
+	 */
+	public static final Image WOFRAMEWORK_ROOT_IMAGE() {
+		if (WOFRAMEWORK_ROOT_IMAGE == null)
+			WOFRAMEWORK_ROOT_IMAGE = createImageDescriptor(
+					"icons/frameworks/framework_root.gif").createImage(false);
+		return WOFRAMEWORK_ROOT_IMAGE;
+	}
+
+	/**
+	 * @return
+	 */
+	public static final Image WOFRAMEWORK_IMAGE() {
+		if (WOFRAMEWORK_IMAGE == null)
+			WOFRAMEWORK_IMAGE = createImageDescriptor(
+					"icons/frameworks/framework.gif").createImage(false);
+		return WOFRAMEWORK_IMAGE;
+	}
+
+	/**
+	 * @return
+	 */
+	public static final Image WOSTANDARD_FRAMEWORK_IMAGE() {
+		if (WOSTANDARD_FRAMEWORK_IMAGE == null)
+			WOSTANDARD_FRAMEWORK_IMAGE = createImageDescriptor(
+					"icons/frameworks/standard_framework.gif").createImage(
+					false);
+		return WOSTANDARD_FRAMEWORK_IMAGE;
+	}
+
+	/**
+	 * Utility method to create an <code>ImageDescriptor</code> from a path to
+	 * a file.
+	 * 
 	 * @param path
 	 * @return
 	 */
 	private static ImageDescriptor createImageDescriptor(String path) {
-		try {
-			URL url = new URL(JdtPlugin.baseURL(), path);
+		URL url = JdtPlugin.getDefault().find(new Path(path));
+		if (url != null)
 			return ImageDescriptor.createFromURL(url);
-		} catch (MalformedURLException e) {
-			JdtPlugin.log(e);
-		}
 		return ImageDescriptor.getMissingImageDescriptor();
 	}
 }

@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 The ObjectStyle Group 
+ * Copyright (c) 2002 - 2004 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -53,7 +53,7 @@
  * <http://objectstyle.org/>.
  *
  */
- 
+
 package org.objectstyle.wolips.ui.support;
 
 import org.eclipse.jface.action.IMenuListener;
@@ -70,75 +70,72 @@ import org.eclipse.ui.part.ViewPart;
 
 /**
  * @author uli
- *
+ * 
  * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates.
- * To enable and disable the creation of type comments go to
- * Window>Preferences>Java>Code Generation.
+ * Window>Preferences>Java>Templates. To enable and disable the creation of type
+ * comments go to Window>Preferences>Java>Code Generation.
  */
 public class SupportView extends ViewPart {
 
 	/** JFace's tree component used to present resource details. */
 	private AbstractTreeViewer viewer;
 
-
 	/** The content provider for this view's TreeViewer. */
 	private SupportContentProvider supportContentProvider;
 
 	/**
-	 * Constructs a resource view object, registering a resource change listener.
+	 * Constructs a resource view object, registering a resource change
+	 * listener.
 	 */
 	public SupportView() {
+		super();
 	}
 
 	/**
 	 * Creates the SWT controls for the resource view.
 	 * 
-	 * @param parent the parent control
-	 * @see IWorkbenchPart#createPartControl(org.eclipse.swt.widgets.Composite) 
+	 * @param parent
+	 *            the parent control
+	 * @see IWorkbenchPart#createPartControl(org.eclipse.swt.widgets.Composite)
 	 */
 	public void createPartControl(Composite parent) {
-
-		viewer = new TreeViewer(parent);
-		supportContentProvider = new SupportContentProvider();
-		viewer.setContentProvider(supportContentProvider);
-		this.start(supportContentProvider);
+		this.viewer = new TreeViewer(parent);
+		this.supportContentProvider = new SupportContentProvider();
+		this.viewer.setContentProvider(this.supportContentProvider);
+		this.start(this.supportContentProvider);
 		createActions();
-
 	}
-	
-	/**
-	 * Method start.
-	 * @param contentProvider
-	 */
-	private void start(SupportContentProvider contentProvider) {
 
-		if (viewer.getControl().isDisposed())
+	private void start(SupportContentProvider contentProvider) {
+		if (this.viewer.getControl().isDisposed()) {
 			return;
+		}
 
 		// turn redraw off so the UI will reflect changes only after we are done
-		viewer.getControl().setRedraw(false);
+		this.viewer.getControl().setRedraw(false);
 
-		// fires viewer update			
-		viewer.setInput(contentProvider);
+		// fires viewer update
+		this.viewer.setInput(contentProvider);
 
-		// shows all nodes in the resource tree		
-		viewer.expandAll();
+		// shows all nodes in the resource tree
+		this.viewer.expandAll();
 
 		// we are done, turn redraw on
-		viewer.getControl().setRedraw(true);
+		this.viewer.getControl().setRedraw(true);
 	}
 
 	/**
-	 * Creates and publishes this view's actions. 
+	 * Creates and publishes this view's actions.
 	 */
 	private void createActions() {
 		IActionBars actionBars = this.getViewSite().getActionBars();
 
-		final GlobalAction copyAction = new CopyStructuredSelectionAction(new TreeSelectionProviderDecorator(viewer));
+		final GlobalAction copyAction = new CopyStructuredSelectionAction(
+				new TreeSelectionProviderDecorator(this.viewer));
 		copyAction.registerAsGlobalAction(actionBars);
 
-		final GlobalAction selectAllAction = new SelectAllAction(new TreeTextOperationTarget((Tree) viewer.getControl()));
+		final GlobalAction selectAllAction = new SelectAllAction(
+				new TreeTextOperationTarget((Tree) this.viewer.getControl()));
 		selectAllAction.registerAsGlobalAction(actionBars);
 
 		actionBars.updateActionBars();
@@ -150,8 +147,8 @@ public class SupportView extends ViewPart {
 				manager.add(copyAction);
 			}
 		});
-		Menu menu = menuMgr.createContextMenu(viewer.getControl());
-		viewer.getControl().setMenu(menu);
+		Menu menu = menuMgr.createContextMenu(this.viewer.getControl());
+		this.viewer.getControl().setMenu(menu);
 	}
 
 	/**
@@ -167,5 +164,6 @@ public class SupportView extends ViewPart {
 	 * Asks this part to take focus within the workbench. Does nothing.
 	 */
 	public void setFocus() {
+		return;
 	}
 }

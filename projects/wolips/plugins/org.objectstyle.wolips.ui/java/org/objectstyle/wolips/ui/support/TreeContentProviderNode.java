@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 The ObjectStyle Group 
+ * Copyright (c) 2002 - 2004 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -53,7 +53,7 @@
  * <http://objectstyle.org/>.
  *
  */
- 
+
 package org.objectstyle.wolips.ui.support;
 
 import java.util.ArrayList;
@@ -63,16 +63,15 @@ import java.util.List;
 
 /**
  * @author uli
- *
+ * 
  * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates.
- * To enable and disable the creation of type comments go to
- * Window>Preferences>Java>Code Generation.
+ * Window>Preferences>Java>Templates. To enable and disable the creation of type
+ * comments go to Window>Preferences>Java>Code Generation.
  */
 public class TreeContentProviderNode implements Comparable {
 
 	/**
-	 * A list containing this node's children. 
+	 * A list containing this node's children.
 	 */
 	private List children;
 
@@ -81,7 +80,7 @@ public class TreeContentProviderNode implements Comparable {
 	 */
 	private String name;
 
-	/** 
+	/**
 	 * This node's value (may be null).
 	 */
 	private Object value;
@@ -94,8 +93,10 @@ public class TreeContentProviderNode implements Comparable {
 	/**
 	 * Constructs a TreeContentProviderNode with the given name and value.
 	 * 
-	 * @param name this node's name
-	 * @param value this node's value (may be null)
+	 * @param name
+	 *            this node's name
+	 * @param value
+	 *            this node's value (may be null)
 	 */
 	public TreeContentProviderNode(String name, Object value) {
 		this.name = name;
@@ -104,7 +105,8 @@ public class TreeContentProviderNode implements Comparable {
 	/**
 	 * Constructs a TreeContentProviderNode with the given name.
 	 * 
-	 * @param name this node's name. 
+	 * @param name
+	 *            this node's name.
 	 */
 	public TreeContentProviderNode(String name) {
 		this(name, null);
@@ -113,17 +115,19 @@ public class TreeContentProviderNode implements Comparable {
 	/**
 	 * Sets this node's parent.
 	 * 
-	 * @param parent this node's new parent
+	 * @param parent
+	 *            this node's new parent
 	 */
 	private void setParent(TreeContentProviderNode parent) {
 		this.parent = parent;
 	}
 
 	/**
-	 * Adds a new child. If the child is a TreeContentProviderNode, sets its parent
-	 * to this object.
+	 * Adds a new child. If the child is a TreeContentProviderNode, sets its
+	 * parent to this object.
 	 * 
-	 * @param child a new child to be added.
+	 * @param child
+	 *            a new child to be added.
 	 */
 	public void addChild(Object child) {
 		// lazilly instantiates the children's list
@@ -138,13 +142,13 @@ public class TreeContentProviderNode implements Comparable {
 	}
 
 	/**
-	 * Returns an array containing all children this node has. If this node 
-	 * has no children, returns an empty array.
+	 * Returns an array containing all children this node has. If this node has
+	 * no children, returns an empty array.
 	 * 
 	 * @return an array containing this node's children.
 	 */
 	public Object[] getChildren() {
-		return children == null ? new Object[0] : children.toArray();
+		return this.children == null ? new Object[0] : this.children.toArray();
 	}
 
 	/**
@@ -153,7 +157,7 @@ public class TreeContentProviderNode implements Comparable {
 	 * @return true, if this node has children, false otherwise
 	 */
 	public boolean hasChildren() {
-		return children != null && !children.isEmpty();
+		return this.children != null && !this.children.isEmpty();
 	}
 
 	/**
@@ -162,7 +166,8 @@ public class TreeContentProviderNode implements Comparable {
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {
-		return name + (value == null ? "" : (" = " + value.toString()));
+		return this.name
+				+ (this.value == null ? "" : (" = " + this.value.toString()));
 	}
 
 	/**
@@ -171,7 +176,7 @@ public class TreeContentProviderNode implements Comparable {
 	 * @return this node's parent node or null, if this node is a root
 	 */
 	public TreeContentProviderNode getParent() {
-		return parent;
+		return this.parent;
 	}
 
 	/**
@@ -180,7 +185,7 @@ public class TreeContentProviderNode implements Comparable {
 	 * @return this node's value
 	 */
 	public Object getValue() {
-		return value;
+		return this.value;
 	}
 
 	/**
@@ -189,33 +194,35 @@ public class TreeContentProviderNode implements Comparable {
 	 * @return true if this node is root, false otherwise
 	 */
 	public boolean isRoot() {
-		return parent == null;
+		return this.parent == null;
 	}
 	/**
 	 * Removes all child nodes (if any) from this node. This operation affects
-	 * only this node. No changes are made to the child nodes. 
+	 * only this node. No changes are made to the child nodes.
 	 */
 	public void removeAllChildren() {
-		if (children == null)
+		if (this.children == null) {
 			return;
+		}
 
-		children.clear();
+		this.children.clear();
 	}
 
 	/**
-	 * Sorts this node's children list in ascending order. The children are 
-	 * ordered by name. Any changes in the children list will potentially 
-	 * invalidate the ordering. All children must be instances of 
-	 * <code>TreeContentProviderNode</code>. 
+	 * Sorts this node's children list in ascending order. The children are
+	 * ordered by name. Any changes in the children list will potentially
+	 * invalidate the ordering. All children must be instances of
+	 * <code>TreeContentProviderNode</code>.
 	 */
 	public void sort() {
-		if (children == null)
+		if (this.children == null) {
 			return;
-		Collections.sort(children);
+		}
+		Collections.sort(this.children);
 	}
 
 	/**
-	 * Compares this node with another node. 
+	 * Compares this node with another node.
 	 * 
 	 * @see java.lang.Comparable#compareTo(java.lang.Object)
 	 */
@@ -225,28 +232,32 @@ public class TreeContentProviderNode implements Comparable {
 	}
 
 	/**
-	 * Accepts the given visitor. The visitor's <code>visit</code> method is called
-	 * with this node. If the visitor returns <code>true</code>, this method visits
-	 * this node's child nodes.
-	 *
-	 * @param visitor the visitor
+	 * Accepts the given visitor. The visitor's <code>visit</code> method is
+	 * called with this node. If the visitor returns <code>true</code>, this
+	 * method visits this node's child nodes.
+	 * 
+	 * @param visitor
+	 *            the visitor
 	 * @see ITreeNodeVisitor#visit
 	 */
 	public void accept(ITreeNodeVisitor visitor) {
 		if (!visitor.visit(this))
 			return;
-		if (children == null)
+		if (this.children == null) {
 			return;
-		for (Iterator childrenIter = children.iterator(); childrenIter.hasNext();) {
+		}
+		for (Iterator childrenIter = this.children.iterator(); childrenIter
+				.hasNext();) {
 			Object child = childrenIter.next();
 			// child nodes don't need to be TreeContentProviderNodes
 			if (child instanceof TreeContentProviderNode)
-				 ((TreeContentProviderNode) child).accept(visitor);
+				((TreeContentProviderNode) child).accept(visitor);
 		}
 	}
 
 	/**
-	 * Returns this node's tree root node. If this node is a root node, returns itself.
+	 * Returns this node's tree root node. If this node is a root node, returns
+	 * itself.
 	 * 
 	 * @return this node's tree root node
 	 */

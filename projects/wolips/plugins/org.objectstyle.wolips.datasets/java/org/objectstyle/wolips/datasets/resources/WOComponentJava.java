@@ -86,7 +86,7 @@ public final class WOComponentJava
 		try {
 			this.getCorrespondingCompilationUnit().getCorrespondingResource();
 		} catch (JavaModelException e) {
-			DataSetsPlugin.log(e);
+			DataSetsPlugin.getDefault().getPluginLogger().log(e);
 		}
 		return resource;
 	}
@@ -126,7 +126,7 @@ public final class WOComponentJava
 						true);
 
 			} catch (Exception e) {
-				DataSetsPlugin.log(e);
+				DataSetsPlugin.getDefault().getPluginLogger().log(e);
 			}
 		}
 		return list;
@@ -134,7 +134,7 @@ public final class WOComponentJava
 
 	/**
 	 * Opens the resource in a Editor.
-	 * @param If forceToOpenIntextEditor is set to true the resource opens in a texteditor.
+	 * @param forceToOpenIntextEditor If forceToOpenIntextEditor is set to true the resource opens in a texteditor.
 	 */
 	public final void open(boolean forceToOpenIntextEditor) {
 		WorkbenchUtilitiesPlugin.open(

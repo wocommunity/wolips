@@ -82,6 +82,7 @@ public class PatternsetEditor extends FormEditor {
 	 *  
 	 */
 	public PatternsetEditor() {
+		super();
 	}
 	
 	/*
@@ -94,12 +95,12 @@ public class PatternsetEditor extends FormEditor {
 		IFile inputFile = ((IFileEditorInput)editorInput).getFile();
 		PatternsetReader patternsetReader = new PatternsetReader(inputFile);
 		String[] pattern = patternsetReader.getPattern();
-		patternList = new ArrayList();
+		this.patternList = new ArrayList();
 		for(int i = 0; i < pattern.length; i++) {
-			patternList.add(pattern[i]);
+			this.patternList.add(pattern[i]);
 		}
 		try {
-		addPage(new PatternsetPage(this, patternList));
+		addPage(new PatternsetPage(this, this.patternList));
 		}
 		catch (PartInitException e) {
 			//
@@ -113,7 +114,7 @@ public class PatternsetEditor extends FormEditor {
 	public void doSave(IProgressMonitor monitor) {
 		IEditorInput editorInput = getEditorInput();
 		IFile inputFile = ((IFileEditorInput)editorInput).getFile();
-		String[] pattern = (String[])patternList.toArray(new String[patternList.size()]);
+		String[] pattern = (String[])this.patternList.toArray(new String[this.patternList.size()]);
 		PatternsetWriter.create(inputFile, pattern);
 		this.setDirty(false);
 		TouchAllFilesOperation touchAllFilesOperation = new TouchAllFilesOperation(inputFile.getProject());
@@ -131,6 +132,7 @@ public class PatternsetEditor extends FormEditor {
 	 * @see org.eclipse.ui.ISaveablePart#doSaveAs()
 	 */
 	public void doSaveAs() {
+		return;
 	}
 	/*
 	 * (non-Javadoc)
@@ -144,7 +146,7 @@ public class PatternsetEditor extends FormEditor {
 	 * @return Returns the isDirty.
 	 */
 	public boolean isDirty() {
-		return isDirty;
+		return this.isDirty;
 	}
 	/**
 	 * @param isDirty The isDirty to set.

@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002, 2004 The ObjectStyle Group 
+ * Copyright (c) 2002 - 2004 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -103,11 +103,14 @@ import org.objectstyle.wolips.ui.UIPlugin;
 
 /**
  * @author ulrich
- *
+ * 
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public final class RelatedView extends ViewPart implements ISelectionListener, IPartListener {
+public final class RelatedView extends ViewPart
+		implements
+			ISelectionListener,
+			IPartListener {
 	private boolean forceOpenInTextEditor = false;
 
 	protected class ViewContentProvider implements ITreeContentProvider {
@@ -115,28 +118,26 @@ public final class RelatedView extends ViewPart implements ISelectionListener, I
 		Object input = null;
 
 		public void inputChanged(Viewer v, Object oldInput, Object newInput) {
-			input = newInput;
+			this.input = newInput;
 		}
 
 		public void dispose() {
-
+			return;
 		}
 
 		public Object[] getElements(Object parent) {
 			IWOLipsResource wolipsResource = null;
 
-			if(parent instanceof IMember) {
-				parent = ((IMember)parent).getCompilationUnit();
+			if (parent instanceof IMember) {
+				parent = ((IMember) parent).getCompilationUnit();
 			}
 			if (parent instanceof IResource) {
-				wolipsResource =
-					WOLipsCore.getWOLipsModel().getWOLipsResource(
+				wolipsResource = WOLipsCore.getWOLipsModel().getWOLipsResource(
 						(IResource) parent);
 				getViewer().setInput(wolipsResource);
 			} else if (parent instanceof ICompilationUnit) {
-				wolipsResource =
-					WOLipsCore.getWOLipsModel().getWOLipsCompilationUnit(
-						(ICompilationUnit) parent);
+				wolipsResource = WOLipsCore.getWOLipsModel()
+						.getWOLipsCompilationUnit((ICompilationUnit) parent);
 			}
 			List result = new LinkedList();
 			if (wolipsResource != null) {
@@ -151,23 +152,30 @@ public final class RelatedView extends ViewPart implements ISelectionListener, I
 			return result.toArray();
 		}
 		ViewContentProvider() {
+			super();
 		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see org.eclipse.jface.viewers.ITreeContentProvider#getChildren(java.lang.Object)
 		 */
 		public Object[] getChildren(Object parentElement) {
 			return null;
 		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see org.eclipse.jface.viewers.ITreeContentProvider#getParent(java.lang.Object)
 		 */
 		public Object getParent(Object element) {
 			return null;
 		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see org.eclipse.jface.viewers.ITreeContentProvider#hasChildren(java.lang.Object)
 		 */
 		public boolean hasChildren(Object element) {
@@ -175,24 +183,16 @@ public final class RelatedView extends ViewPart implements ISelectionListener, I
 		}
 	}
 
-	class ViewLabelProvider
-		extends LabelProvider
-		implements ITableLabelProvider {
+	class ViewLabelProvider extends LabelProvider
+			implements
+				ITableLabelProvider {
 
 		public String getColumnText(Object obj, int index) {
-
 			if (obj instanceof IStorage) {
-
 				IStorage s = (IStorage) obj;
-
 				return s.getName();
-
-			} else {
-
-				return getText(obj);
-
 			}
-
+			return getText(obj);
 		}
 
 		public Image getColumnImage(Object obj, int index) {
@@ -204,12 +204,12 @@ public final class RelatedView extends ViewPart implements ISelectionListener, I
 		public Image getImage(Object obj) {
 
 			return PlatformUI.getWorkbench().getSharedImages().getImage(
-				"IMG_OBJ_ELEMENTS");
+					"IMG_OBJ_ELEMENTS");
 
 		}
 
 		ViewLabelProvider() {
-
+			super();
 		}
 
 	}
@@ -217,7 +217,7 @@ public final class RelatedView extends ViewPart implements ISelectionListener, I
 	class NameSorter extends ViewerSorter {
 
 		NameSorter() {
-
+			super();
 		}
 
 	}
@@ -226,28 +226,26 @@ public final class RelatedView extends ViewPart implements ISelectionListener, I
 
 	private Action doubleClickAction;
 
+	/**
+	 *  
+	 */
 	public RelatedView() {
 		super();
-
 	}
 
 	public void createPartControl(Composite parent) {
 
-		viewer = new TableViewer(parent, 770);
+		this.viewer = new TableViewer(parent, 770);
 
-		viewer.setContentProvider(new ViewContentProvider());
+		this.viewer.setContentProvider(new ViewContentProvider());
 
-		viewer.setLabelProvider(
-			new DecoratingLabelProvider(
-				new StorageLabelProvider(),
-				getSite()
-					.getWorkbenchWindow()
-					.getWorkbench()
-					.getDecoratorManager()
-					.getLabelDecorator()));
+		this.viewer.setLabelProvider(new DecoratingLabelProvider(
+				new StorageLabelProvider(), getSite().getWorkbenchWindow()
+						.getWorkbench().getDecoratorManager()
+						.getLabelDecorator()));
 
-		viewer.setSorter(new NameSorter());
-		viewer.getTable().addKeyListener(new KeyListener() {
+		this.viewer.setSorter(new NameSorter());
+		this.viewer.getTable().addKeyListener(new KeyListener() {
 			public void keyPressed(KeyEvent e) {
 				if (e.keyCode == SWT.COMMAND || e.keyCode == SWT.ALT)
 					setForceOpenInTextEditor(true);
@@ -257,7 +255,7 @@ public final class RelatedView extends ViewPart implements ISelectionListener, I
 			}
 		});
 
-		doubleClickAction = new Action() {
+		this.doubleClickAction = new Action() {
 
 			public void run() {
 
@@ -269,15 +267,12 @@ public final class RelatedView extends ViewPart implements ISelectionListener, I
 					IWOLipsResource wolipsResource = null;
 					if (object != null) {
 						if (object instanceof IResource) {
-							wolipsResource =
-								WOLipsCore.getWOLipsModel().getWOLipsResource(
-									(IResource) object);
+							wolipsResource = WOLipsCore.getWOLipsModel()
+									.getWOLipsResource((IResource) object);
 						} else if (object instanceof ICompilationUnit) {
-							wolipsResource =
-								WOLipsCore
-									.getWOLipsModel()
+							wolipsResource = WOLipsCore.getWOLipsModel()
 									.getWOLipsCompilationUnit(
-									(ICompilationUnit) object);
+											(ICompilationUnit) object);
 						}
 						if (wolipsResource != null) {
 							wolipsResource.open(isForceOpenInTextEditor());
@@ -287,7 +282,7 @@ public final class RelatedView extends ViewPart implements ISelectionListener, I
 			}
 
 		};
-		viewer.addDoubleClickListener(new IDoubleClickListener() {
+		this.viewer.addDoubleClickListener(new IDoubleClickListener() {
 
 			public void doubleClick(DoubleClickEvent event) {
 				getDoubleClickAction().run();
@@ -296,37 +291,36 @@ public final class RelatedView extends ViewPart implements ISelectionListener, I
 
 		});
 
-		ResourcesPlugin
-			.getWorkspace()
-			.addResourceChangeListener(new IResourceChangeListener() {
+		ResourcesPlugin.getWorkspace().addResourceChangeListener(
+				new IResourceChangeListener() {
 
-			public void resourceChanged(IResourceChangeEvent event) {
-				IViewSite viewSite = getViewSite();
-				if (viewSite == null)
-					return;
-				IWorkbenchWindow workbenchWindow =
-					viewSite.getWorkbenchWindow();
-				if (workbenchWindow == null)
-					return;
-				Shell shell = workbenchWindow.getShell();
-				if (shell == null)
-					return;
-				Display display = shell.getDisplay();
-				if (display == null)
-					return;
-				display.asyncExec(new Runnable() {
+					public void resourceChanged(IResourceChangeEvent event) {
+						IViewSite viewSite = getViewSite();
+						if (viewSite == null)
+							return;
+						IWorkbenchWindow workbenchWindow = viewSite
+								.getWorkbenchWindow();
+						if (workbenchWindow == null)
+							return;
+						Shell shell = workbenchWindow.getShell();
+						if (shell == null)
+							return;
+						Display display = shell.getDisplay();
+						if (display == null)
+							return;
+						display.asyncExec(new Runnable() {
 
-					public void run() {
+							public void run() {
 
-						getViewer().refresh(false);
+								getViewer().refresh(false);
+
+							}
+
+						});
 
 					}
 
 				});
-
-			}
-
-		});
 
 		getViewSite().getPage().addSelectionListener(this);
 		getViewSite().getPage().addPartListener(this);
@@ -334,9 +328,7 @@ public final class RelatedView extends ViewPart implements ISelectionListener, I
 	}
 
 	public void setFocus() {
-
-		viewer.getControl().setFocus();
-
+		this.viewer.getControl().setFocus();
 	}
 
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
@@ -345,61 +337,68 @@ public final class RelatedView extends ViewPart implements ISelectionListener, I
 			IStructuredSelection sel = (IStructuredSelection) selection;
 
 			Object selectedElement = sel.getFirstElement();
-			Object viewerInput = viewer.getInput();
-			if(viewerInput == null || (!viewerInput.equals(selectedElement)))
-				viewer.setInput(selectedElement);
+			Object viewerInput = this.viewer.getInput();
+			if (viewerInput == null || (!viewerInput.equals(selectedElement)))
+				this.viewer.setInput(selectedElement);
 		}
 	}
 
 	protected TableViewer getViewer() {
-		return viewer;
+		return this.viewer;
 	}
 	/**
 	 * @return
 	 */
 	protected boolean isForceOpenInTextEditor() {
-		return forceOpenInTextEditor;
+		return this.forceOpenInTextEditor;
 	}
 
 	/**
 	 * @param b
 	 */
 	protected void setForceOpenInTextEditor(boolean b) {
-		forceOpenInTextEditor = b;
+		this.forceOpenInTextEditor = b;
 	}
 
 	/**
 	 * @return
 	 */
 	protected Action getDoubleClickAction() {
-		return doubleClickAction;
+		return this.doubleClickAction;
 	}
-	
+
 	public void partActivated(IWorkbenchPart part) {
 		if (part instanceof IEditorPart) {
-			IEditorInput input = ((IEditorPart)part).getEditorInput();
+			IEditorInput input = ((IEditorPart) part).getEditorInput();
 			if (input instanceof IFileEditorInput) {
-				IWorkingCopyManager manager = JavaPlugin.getDefault().getWorkingCopyManager();
-				viewer.setInput(manager.getWorkingCopy(input));
+				IWorkingCopyManager manager = JavaPlugin.getDefault()
+						.getWorkingCopyManager();
+				this.viewer.setInput(manager.getWorkingCopy(input));
 			}
 		}
 	}
 	public void partClosed(IWorkbenchPart part) {
+		return;
 	}
 	public void partOpened(IWorkbenchPart part) {
 		if (part instanceof IEditorPart) {
-			IEditorInput input = ((IEditorPart)part).getEditorInput();
+			IEditorInput input = ((IEditorPart) part).getEditorInput();
 			if (input instanceof IFileEditorInput) {
-				IWorkingCopyManager manager = JavaPlugin.getDefault().getWorkingCopyManager();
-				viewer.setInput(manager.getWorkingCopy(input));
+				IWorkingCopyManager manager = JavaPlugin.getDefault()
+						.getWorkingCopyManager();
+				this.viewer.setInput(manager.getWorkingCopy(input));
 			}
 		}
 	}
 	public void partDeactivated(IWorkbenchPart part) {
+		return;
 	}
 	public void partBroughtToTop(IWorkbenchPart part) {
+		return;
 	}
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ui.IWorkbenchPart#dispose()
 	 */
 	public void dispose() {

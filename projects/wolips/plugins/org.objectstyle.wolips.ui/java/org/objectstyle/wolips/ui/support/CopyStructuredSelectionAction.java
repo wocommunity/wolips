@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 The ObjectStyle Group 
+ * Copyright (c) 2002 - 2004 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -57,9 +57,9 @@
 package org.objectstyle.wolips.ui.support;
 
 import java.util.Iterator;
+
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.Viewer;
 
 /**
  * @author uli
@@ -71,28 +71,16 @@ import org.eclipse.jface.viewers.Viewer;
  */
 public class CopyStructuredSelectionAction extends AbstractCopySelectionAction {
 
-	/** 
-	 * @see org.eclipse.core.tools.spy.utils.
-	 * AbstractCopySelectionAction#AbstractCopySelectionAction(Viewer)
+	/**
+	 * @param selectionProvider
 	 */
 	public CopyStructuredSelectionAction(ISelectionProvider selectionProvider) {
 		super(selectionProvider);
 	}
 
-	/**
-	 * Returns the current structured selection as a string object where each 
-	 * node is followed by a line terminator char.  This method depends on the
-	 * toString() method of each node to define a reasonably formatted string
-	 * for display.
-	 * 
-	 * @return a string containing the currently selected elements separated by
-	 * line terminators 
-	 * @see org.eclipse.core.tools.spy.utils.
-	 * AbstractCopySelectionAction#getContents()
-	 */
 	public String getContents() {
 		// retrieves the selected contents from the selection provider
-		IStructuredSelection selection = (IStructuredSelection) selectionProvider.getSelection();
+		IStructuredSelection selection = (IStructuredSelection) this.selectionProvider.getSelection();
 		StringBuffer content = new StringBuffer();
 		for (Iterator selectionIter = selection.iterator(); selectionIter.hasNext();) {
 			content.append(selectionIter.next());

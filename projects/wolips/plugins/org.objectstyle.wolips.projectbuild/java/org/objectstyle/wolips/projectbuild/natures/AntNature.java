@@ -66,7 +66,7 @@ import org.objectstyle.wolips.datasets.adaptable.Project;
  *  
  */
 public class AntNature implements IProjectNature {
-	private IProject project;
+	private IProject iProject;
 	/**
 	 * Constructor for WOApplicationNature.
 	 */
@@ -95,14 +95,14 @@ public class AntNature implements IProjectNature {
 	 * @see org.eclipse.core.resources.IProjectNature#getProject()
 	 */
 	public IProject getProject() {
-		return project;
+		return this.iProject;
 	}
 
 	/**
 	 * @see org.eclipse.core.resources.IProjectNature#setProject(IProject)
 	 */
 	public void setProject(IProject project) {
-		this.project = project;
+		this.iProject = project;
 	}
 
 }

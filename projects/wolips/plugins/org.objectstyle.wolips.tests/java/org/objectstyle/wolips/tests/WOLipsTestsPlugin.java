@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 The ObjectStyle Group 
+ * Copyright (c) 2002 - 2004 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -54,8 +54,6 @@
  *
  */
 package org.objectstyle.wolips.tests;
-import org.eclipse.core.runtime.IPluginDescriptor;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 /**
  * The main plugin class to be used in the desktop.
@@ -66,26 +64,24 @@ public class WOLipsTestsPlugin extends AbstractUIPlugin {
 	
 	//The plugin.
 	private static WOLipsTestsPlugin plugin;
-	private static String WOLipsTestsPluginID ="org.objectstyle.wolips.tests";
+	//private static String WOLipsTestsPluginID ="org.objectstyle.wolips.tests";
 	/**
 	 * The constructor.
 	 */
 	//The constructur is very sensitive. Make sure that your stuff works.
 	//If this cunstructor fails, the whole plugin will be disabled.
-	public WOLipsTestsPlugin(IPluginDescriptor descriptor) {
-		super(descriptor);
+	public WOLipsTestsPlugin() {
+		super();
 		plugin = this;
 	}
 	/**
 	 * Returns the shared instance.
+	 * @return
 	 */
 	public static WOLipsTestsPlugin getDefault() {
 		if (plugin == null) {
 			// ensure plugin instance is always available using id
-			return new WOLipsTestsPlugin(
-				Platform
-					.getPlugin(WOLipsTestsPluginID)
-					.getDescriptor());
+			return new WOLipsTestsPlugin();
 		}
 		return plugin;
 	}

@@ -61,13 +61,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
 import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.JavaCore;
 import org.objectstyle.wolips.datasets.DataSetsPlugin;
-import org.objectstyle.wolips.datasets.project.IBuilderAccessor;
 /**
  * @author ulrich
  * 
@@ -108,7 +108,7 @@ public class ProjectBuilder extends ProjectFiles {
 	 */
 	public int removeTargetBuilder() throws CoreException {
 		if (!this.isTargetBuilderInstalled())
-			return IBuilderAccessor.BuilderNotFound;
+			return ProjectBuilder.BuilderNotFound;
 		int returnValue = this
 				.positionForBuilder(ProjectBuilder.TARGET_BUILDER_ID);
 		this.removeBuilder(ProjectBuilder.TARGET_BUILDER_ID);
@@ -178,7 +178,7 @@ public class ProjectBuilder extends ProjectFiles {
 	 */
 	public int removeJavaBuilder() throws CoreException {
 		if (!this.isJavaBuilderInstalled())
-			return IBuilderAccessor.BuilderNotFound;
+			return ProjectBuilder.BuilderNotFound;
 		int returnValue = this.positionForBuilder(JavaCore.BUILDER_ID);
 		this.removeBuilder(JavaCore.BUILDER_ID);
 		return returnValue;
@@ -337,7 +337,7 @@ public class ProjectBuilder extends ProjectFiles {
 					return true;
 			}
 		} catch (Exception anException) {
-			DataSetsPlugin.log(anException);
+			DataSetsPlugin.getDefault().getPluginLogger().log(anException);
 			return false;
 		}
 		return false;
@@ -375,8 +375,8 @@ public class ProjectBuilder extends ProjectFiles {
 	 */
 	private void installBuilderAtPosition(String aBuilder, int installPos,
 			Map arguments) throws CoreException {
-		if (installPos == IBuilderAccessor.BuilderNotFound) {
-			DataSetsPlugin
+		if (installPos == ProjectBuilder.BuilderNotFound) {
+			DataSetsPlugin.getDefault().getPluginLogger()
 					.log("Somebody tries to install builder: "
 							+ aBuilder
 							+ " at an illegal position. This may happen if the removed builder does not exist.");

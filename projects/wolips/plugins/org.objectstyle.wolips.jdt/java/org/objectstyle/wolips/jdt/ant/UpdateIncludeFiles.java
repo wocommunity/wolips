@@ -71,27 +71,33 @@ public abstract class UpdateIncludeFiles {
 
 	protected String INCLUDES_FILE_PREFIX;
 
-	protected IProject project;
+	private IProject project;
 
+	/**
+	 * 
+	 */
 	public UpdateIncludeFiles() {
-		paths =
+		this.paths =
 			new IPath[] {
 				VariablesPlugin.getDefault().getUserHome(),
 				VariablesPlugin.getDefault().getLocalRoot(),
 				VariablesPlugin.getDefault().getSystemRoot()};
-		rootPaths = new String [] { "user.home", "wo.wolocalroot", "wo.wosystemroot" };
-		if (paths[1].toOSString().length() < paths[2].toOSString().length()) {
-			paths =
+		this.rootPaths = new String [] { "user.home", "wo.wolocalroot", "wo.wosystemroot" };
+		if (this.paths[1].toOSString().length() < this.paths[2].toOSString().length()) {
+			this.paths =
 				new IPath[] {
 				VariablesPlugin.getDefault().getUserHome(),
 				VariablesPlugin.getDefault().getSystemRoot(),
 				VariablesPlugin.getDefault().getLocalRoot() };
-			rootPaths = new String [] { "user.home", "wo.wosystemroot", "wo.wolocalroot" };
+			this.rootPaths = new String [] { "user.home", "wo.wosystemroot", "wo.wolocalroot" };
 		}
 	}
 
+	/**
+	 * @return
+	 */
 	public IPath[] getPaths() {
-		return paths;
+		return this.paths;
 	}
 	/**
 	 * Method buildIncludeFiles.
@@ -102,7 +108,7 @@ public abstract class UpdateIncludeFiles {
 	 * @return
 	 */
 	public IProject getIProject() {
-		return project;
+		return this.project;
 	}
 
 	/**

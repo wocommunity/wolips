@@ -104,7 +104,7 @@ public class ProjectNaturePage extends PropertyPage implements IAdaptable {
 	}
 	/**
 	 * @param parent
-	 * @param woLipsProject
+	 * @param project
 	 * @throws CoreException
 	 */
 	private void _addFirstSection(Composite parent, Project project)
@@ -114,73 +114,73 @@ public class ProjectNaturePage extends PropertyPage implements IAdaptable {
 		layout.numColumns = 3;
 		group.setLayout(layout);
 		group.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		_woNatureCheck = new Button(group, SWT.CHECK | SWT.LEFT);
-		_woNatureCheck.setText(WO_NATURE_TITLE);
-		_woNatureCheck.setEnabled(true);
-		_woNatureCheck.setSelection(project.hasWOLipsNature());
+		this._woNatureCheck = new Button(group, SWT.CHECK | SWT.LEFT);
+		this._woNatureCheck.setText(WO_NATURE_TITLE);
+		this._woNatureCheck.setEnabled(true);
+		this._woNatureCheck.setSelection(project.hasWOLipsNature());
 	}
 	/**
 	 * @param parent
-	 * @param woLipsProject
+	 * @param project
 	 * @throws CoreException
 	 */
 	private void _addBuildStyleSection(Composite parent, Project project)
 			throws CoreException {
 		Composite group = _createLabelledComposite(parent, BUILD_STYLE_TITLE);
 		// project kind field (is framework?)
-		_woIsIncrementalButton = new Button(group, SWT.RADIO | SWT.LEFT);
-		_woIsIncrementalButton.setText(WO_USE_INCREMENTAL_TITLE);
-		_woIsIncrementalButton.setEnabled(true);
+		this._woIsIncrementalButton = new Button(group, SWT.RADIO | SWT.LEFT);
+		this._woIsIncrementalButton.setText(WO_USE_INCREMENTAL_TITLE);
+		this._woIsIncrementalButton.setEnabled(true);
 		FormData fd = new FormData();
 		fd.left = new FormAttachment(0, 0);
-		_woIsIncrementalButton.setLayoutData(fd);
+		this._woIsIncrementalButton.setLayoutData(fd);
 		Button antButton = new Button(group, SWT.RADIO | SWT.LEFT);
 		antButton.setText(WO_USE_ANT_TITLE);
 		antButton.setEnabled(true);
 		fd = new FormData();
-		fd.left = new FormAttachment(_woIsIncrementalButton, 0);
+		fd.left = new FormAttachment(this._woIsIncrementalButton, 0);
 		antButton.setLayoutData(fd);
 		boolean isIncremental = project.isIncremental();
-		_woIsIncrementalButton.setSelection(isIncremental);
+		this._woIsIncrementalButton.setSelection(isIncremental);
 		antButton.setSelection(!isIncremental);
 		Label noteTitle = new Label(group, SWT.BOLD);
 		noteTitle.setText(PROJECT_KIND_NOTE_TITLE);
 		noteTitle.setFont(JFaceResources.getBannerFont());
 		fd = new FormData();
 		fd.left = new FormAttachment(0, 0);
-		fd.top = new FormAttachment(_woIsIncrementalButton, 5);
+		fd.top = new FormAttachment(this._woIsIncrementalButton, 5);
 		noteTitle.setLayoutData(fd);
 		Label note = new Label(group, SWT.NULL);
 		note.setText(PROJECT_KIND_NOTE);
 		fd = new FormData();
 		fd.left = new FormAttachment(noteTitle, 0);
-		fd.top = new FormAttachment(_woIsIncrementalButton, 5);
+		fd.top = new FormAttachment(this._woIsIncrementalButton, 5);
 		note.setLayoutData(fd);
 	}
 	/**
 	 * @param parent
-	 * @param woLipsProject
+	 * @param project
 	 * @throws CoreException
 	 */
 	private void _addProjectKindSection(Composite parent, Project project)
 			throws CoreException {
 		Composite group = _createLabelledComposite(parent, PROJECT_KIND_TITLE);
 		// project kind field (is framework?)
-		_woIsApplicationButton = new Button(group, SWT.RADIO | SWT.LEFT);
-		_woIsApplicationButton.setText(WO_IS_APP_TITLE);
-		_woIsApplicationButton.setEnabled(true);
+		this._woIsApplicationButton = new Button(group, SWT.RADIO | SWT.LEFT);
+		this._woIsApplicationButton.setText(WO_IS_APP_TITLE);
+		this._woIsApplicationButton.setEnabled(true);
 		FormData fd = new FormData();
 		fd.left = new FormAttachment(0, 0);
-		_woIsApplicationButton.setLayoutData(fd);
-		_woIsFrameworkButton = new Button(group, SWT.RADIO | SWT.LEFT);
-		_woIsFrameworkButton.setText(WO_IS_FRAMEWORK_TITLE);
-		_woIsFrameworkButton.setEnabled(true);
+		this._woIsApplicationButton.setLayoutData(fd);
+		this._woIsFrameworkButton = new Button(group, SWT.RADIO | SWT.LEFT);
+		this._woIsFrameworkButton.setText(WO_IS_FRAMEWORK_TITLE);
+		this._woIsFrameworkButton.setEnabled(true);
 		fd = new FormData();
-		fd.left = new FormAttachment(_woIsApplicationButton, 0);
-		_woIsFrameworkButton.setLayoutData(fd);
+		fd.left = new FormAttachment(this._woIsApplicationButton, 0);
+		this._woIsFrameworkButton.setLayoutData(fd);
 		boolean isFramework = project.isFramework();
-		_woIsFrameworkButton.setSelection(isFramework);
-		_woIsApplicationButton.setSelection(!isFramework);
+		this._woIsFrameworkButton.setSelection(isFramework);
+		this._woIsApplicationButton.setSelection(!isFramework);
 	}
 	private Text _addTextField(Composite parent, String label) {
 		GridData gd = new GridData();
@@ -211,30 +211,28 @@ public class ProjectNaturePage extends PropertyPage implements IAdaptable {
 	private void _addPatternSection(Composite parent) {
 		Composite group = _createLabelledComposite(parent, BUILD_PARAMS_TITLE);
 		group.setLayout(new GridLayout(2, false));
-		_principalClass = _addTextField(group, "Principal Class");
+		this._principalClass = _addTextField(group, "Principal Class");
 	}
 	/**
 	 * @param parent
-	 * @param woLipsProject
-	 * @throws CoreException
+	 * @param project
 	 */
-	private void _addTargetBuilderSection(Composite parent, Project project)
-			throws CoreException {
+	private void _addTargetBuilderSection(Composite parent, Project project) {
 		Composite group = new Composite(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		layout.numColumns = 3;
 		group.setLayout(layout);
 		group.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-		_woTargetBuilderCheck = new Button(group, SWT.CHECK | SWT.LEFT);
-		_woTargetBuilderCheck.setText(WO_USE_TARGET_BUILDET_TITLE);
-		_woTargetBuilderCheck.setEnabled(true);
-		_woTargetBuilderCheck.setSelection(project.isTargetBuilderInstalled());
+		this._woTargetBuilderCheck = new Button(group, SWT.CHECK | SWT.LEFT);
+		this._woTargetBuilderCheck.setText(WO_USE_TARGET_BUILDET_TITLE);
+		this._woTargetBuilderCheck.setEnabled(true);
+		this._woTargetBuilderCheck.setSelection(project.isTargetBuilderInstalled());
 	}
 	private void enableWidgets(boolean enabled) {
-		_woTargetBuilderCheck.setEnabled(enabled);
-		_woIsFrameworkButton.setEnabled(enabled);
-		_woIsApplicationButton.setEnabled(enabled);
-		_principalClass.setEnabled(enabled);
+		this._woTargetBuilderCheck.setEnabled(enabled);
+		this._woIsFrameworkButton.setEnabled(enabled);
+		this._woIsApplicationButton.setEnabled(enabled);
+		this._principalClass.setEnabled(enabled);
 	}
 	/**
 	 * @see PreferencePage#createContents(Composite)
@@ -256,17 +254,17 @@ public class ProjectNaturePage extends PropertyPage implements IAdaptable {
 			// --
 			_addPatternSection(composite);
 			_addTargetBuilderSection(composite, project);
-			_woIsIncrementalButton
+			this._woIsIncrementalButton
 					.addSelectionListener(new SelectionListener() {
 						public void widgetSelected(SelectionEvent e) {
-							enableWidgets(_woIsIncrementalButton.getSelection());
+							enableWidgets(ProjectNaturePage.this._woIsIncrementalButton.getSelection());
 						}
 						public void widgetDefaultSelected(SelectionEvent e) {
-							enableWidgets(_woIsIncrementalButton.getSelection());
+							enableWidgets(ProjectNaturePage.this._woIsIncrementalButton.getSelection());
 						}
 					});
 			setDefaults(project);
-			enableWidgets(_woIsIncrementalButton.getSelection());
+			enableWidgets(this._woIsIncrementalButton.getSelection());
 		} catch (CoreException exception) {
 			UIPlugin.getDefault().getPluginLogger().log(exception);
 		}
@@ -297,11 +295,12 @@ public class ProjectNaturePage extends PropertyPage implements IAdaptable {
 		setDefaults(getProject());
 	}
 	/**
+	 * @param project
 	 *  
 	 */
 	private void setDefaults(Project project) {
 		Map args = project.getBuilderArgs();
-		_principalClass.setText(_getArg(args,
+		this._principalClass.setText(_getArg(args,
 				ProjectBuildPlugin.NS_PRINCIPAL_CLASS, ""));
 	}
 	/*
@@ -314,20 +313,20 @@ public class ProjectNaturePage extends PropertyPage implements IAdaptable {
 		Project project;
 		try {
 			project = this.getProject();
-			if (_woNatureCheck.getSelection()) {
-				if (_woIsIncrementalButton.getSelection()) {
+			if (this._woNatureCheck.getSelection()) {
+				if (this._woIsIncrementalButton.getSelection()) {
 					Map args = new HashMap();
 					args.put(ProjectBuildPlugin.NS_PRINCIPAL_CLASS,
-							_principalClass.getText());
-					project.setIncrementalNature(_woIsFrameworkButton
+							this._principalClass.getText());
+					project.setIncrementalNature(this._woIsFrameworkButton
 							.getSelection(), args);
 				} else {
-					project.setAntNature(_woIsFrameworkButton.getSelection());
+					project.setAntNature(this._woIsFrameworkButton.getSelection());
 				}
 			} else {
 				project.removeWOLipsNatures();
 			}
-			boolean selection = _woTargetBuilderCheck.getSelection();
+			boolean selection = this._woTargetBuilderCheck.getSelection();
 			project.useTargetBuilder(selection);
 		} catch (CoreException up) {
 			UIPlugin.getDefault().getPluginLogger().log(up);
@@ -370,7 +369,7 @@ public class ProjectNaturePage extends PropertyPage implements IAdaptable {
 	}
 	private Button _woTargetBuilderCheck;
 	private Button _woNatureCheck;
-	private Button _woIsIncrementalButton;
+	Button _woIsIncrementalButton;
 	private Button _woIsFrameworkButton;
 	private Button _woIsApplicationButton;
 	private Text _principalClass;

@@ -3,7 +3,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0
  * 
- * Copyright (c) 2002 The ObjectStyle Group and individual authors of the
+ * Copyright (c) 2002 - 2004 The ObjectStyle Group and individual authors of the
  * software. All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -59,8 +59,7 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.launching.IRuntimeClasspathEntry;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.jdt.launching.StandardClasspathProvider;
-import org.objectstyle.wolips.datasets.project.IWOLipsJavaProject;
-import org.objectstyle.wolips.datasets.project.WOLipsCore;
+import org.objectstyle.wolips.datasets.adaptable.JavaProject;
 
 /**
  * @author hn3000
@@ -69,6 +68,9 @@ import org.objectstyle.wolips.datasets.project.WOLipsCore;
  * Generation>Code Template
  */
 public class WORuntimeClasspathProvider extends StandardClasspathProvider {
+	/**
+	 * Comment for <code>ID</code>
+	 */
 	public final static String ID =
 		"org.objectstyle.wolips.launching.WORuntimeClasspath";
 
@@ -148,10 +150,8 @@ public class WORuntimeClasspathProvider extends StandardClasspathProvider {
 		throws CoreException {
 		if (IRuntimeClasspathEntry.PROJECT == entry.getType()) {
 			IProject project = (IProject) entry.getResource();
-
-			IWOLipsJavaProject wolipsJavaProject =
-				WOLipsCore.createJavaProject(JavaCore.create(project));
-			return wolipsJavaProject.getClasspathAccessor().getWOJavaArchive();
+			JavaProject javaProject = (JavaProject)JavaCore.create(project).getAdapter(JavaProject.class);
+			return javaProject.getWOJavaArchive();
 		}
 		return null;
 	}

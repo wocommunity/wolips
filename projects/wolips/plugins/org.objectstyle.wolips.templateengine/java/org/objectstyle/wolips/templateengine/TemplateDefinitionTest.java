@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 The ObjectStyle Group 
+ * Copyright (c) 2002 - 2004 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -68,11 +68,17 @@ import junit.framework.TestCase;
  */
 public class TemplateDefinitionTest extends TestCase {
 	
+	/**
+	 * 
+	 */
 	public void testConstructor() {
 		TemplateDefinition templateDefinition = new TemplateDefinition("foo", "foo1", "foo2", "foo3");
 		assertNotNull(templateDefinition);
 	}
 	
+	/**
+	 * 
+	 */
 	public void testGetDestinationPath() {
 		TemplateDefinition templateDefinition = new TemplateDefinition("foo", "foo1", "foo2", "foo2");
 		assertEquals("foo1" + File.separator + "foo2", templateDefinition);	

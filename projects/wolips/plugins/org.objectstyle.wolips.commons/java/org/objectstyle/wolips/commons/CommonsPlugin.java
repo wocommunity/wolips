@@ -69,9 +69,9 @@ public class CommonsPlugin extends Plugin {
 		super();
 		plugin = this;
 		try {
-			resourceBundle   = ResourceBundle.getBundle("org.objectstyle.wolips.commons.CommonsPluginResources");
+			this.resourceBundle   = ResourceBundle.getBundle("org.objectstyle.wolips.commons.CommonsPluginResources");
 		} catch (MissingResourceException x) {
-			resourceBundle = null;
+			this.resourceBundle = null;
 		}
 	}
 
@@ -101,6 +101,6 @@ public class CommonsPlugin extends Plugin {
 	 * @return Returns the plugin's resource bundle,
 	 */
 	public ResourceBundle getResourceBundle() {
-		return resourceBundle;
+		return this.resourceBundle;
 	}
 }

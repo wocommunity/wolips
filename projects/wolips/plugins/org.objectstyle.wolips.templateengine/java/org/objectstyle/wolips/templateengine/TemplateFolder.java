@@ -59,14 +59,17 @@ import org.eclipse.core.runtime.IPath;
 
 /**
  * @author ulrich
- *
+ * 
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
 public class TemplateFolder {
 	private IPath path;
 	private TemplatesDocument templatesProperties;
-	
+
+	/**
+	 * @param location
+	 */
 	public TemplateFolder(IPath location) {
 		super();
 		this.path = location;
@@ -75,7 +78,7 @@ public class TemplateFolder {
 	 * @return Returns the path.
 	 */
 	public IPath getPath() {
-		return path;
+		return this.path;
 	}
 	/**
 	 * @param string
@@ -89,9 +92,10 @@ public class TemplateFolder {
 	 * @return Returns the templatesProperties.
 	 */
 	public TemplatesDocument getTemplatesDocument() {
-		if(templatesProperties != null)
-			return templatesProperties;
-		templatesProperties = new TemplatesDocument(path);
-		return templatesProperties;
+		if (this.templatesProperties != null) {
+			return this.templatesProperties;
+		}
+		this.templatesProperties = new TemplatesDocument(this.path);
+		return this.templatesProperties;
 	}
 }

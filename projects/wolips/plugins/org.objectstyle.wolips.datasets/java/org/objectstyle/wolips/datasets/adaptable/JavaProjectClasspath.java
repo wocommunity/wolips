@@ -160,7 +160,7 @@ public class JavaProjectClasspath extends AbstractJavaProjectAdapterType {
 				try {
 					subprojectSourceFolder.create(true, true, null);
 				} catch (CoreException e) {
-					DataSetsPlugin.log(e);
+					DataSetsPlugin.getDefault().getPluginLogger().log(e);
 				}
 			} // add folder to classpath
 			try {
@@ -168,7 +168,7 @@ public class JavaProjectClasspath extends AbstractJavaProjectAdapterType {
 						.addNewSourcefolderToClassPath(subprojectSourceFolder,
 								null);
 			} catch (InvocationTargetException e) {
-				DataSetsPlugin.log(e);
+				DataSetsPlugin.getDefault().getPluginLogger().log(e);
 			}
 			return subprojectSourceFolder;
 		}
@@ -186,7 +186,7 @@ public class JavaProjectClasspath extends AbstractJavaProjectAdapterType {
 		try {
 			classpathEntries = this.getIJavaProject().getRawClasspath();
 		} catch (JavaModelException e) {
-			DataSetsPlugin.log(e);
+			DataSetsPlugin.getDefault().getPluginLogger().log(e);
 			return null;
 		}
 		for (int i = 0; i < classpathEntries.length; i++) {
@@ -219,14 +219,14 @@ public class JavaProjectClasspath extends AbstractJavaProjectAdapterType {
 			try {
 				projectSourceFolder.create(true, true, null);
 			} catch (CoreException e) {
-				DataSetsPlugin.log(e);
+				DataSetsPlugin.getDefault().getPluginLogger().log(e);
 			}
 		}
 		// add to classpath
 		try {
 			this.addNewSourcefolderToClassPath(projectSourceFolder, null);
 		} catch (InvocationTargetException e) {
-			DataSetsPlugin.log(e);
+			DataSetsPlugin.getDefault().getPluginLogger().log(e);
 		}
 		return projectSourceFolder;
 	}
@@ -242,7 +242,7 @@ public class JavaProjectClasspath extends AbstractJavaProjectAdapterType {
 		try {
 			classpathEntries = this.getIJavaProject().getRawClasspath();
 		} catch (JavaModelException e) {
-			DataSetsPlugin.log(e);
+			DataSetsPlugin.getDefault().getPluginLogger().log(e);
 			return null;
 		}
 		for (int i = 0; i < classpathEntries.length; i++) {

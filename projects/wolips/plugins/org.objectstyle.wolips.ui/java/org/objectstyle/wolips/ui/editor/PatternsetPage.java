@@ -86,13 +86,13 @@ import org.objectstyle.wolips.commons.util.ArrayUtilities;
  */
 public class PatternsetPage extends FormPage {
 	private ArrayList patternList;
-	private Table t;
+	private Table table;
 	private Button changeButton;
 	private Button removeButton;
 
 	/**
-	 * @param id
-	 * @param title
+	 * @param editor
+	 * @param patternList
 	 */
 	public PatternsetPage(PatternsetEditor editor, ArrayList patternList) {
 		super(editor, "Pattern", "Pattern");
@@ -124,16 +124,16 @@ public class PatternsetPage extends FormPage {
 		layout.numColumns = 2;
 
 		client.setLayout(layout);
-		t = toolkit.createTable(client, SWT.NULL);
+		this.table = toolkit.createTable(client, SWT.NULL);
 		GridData gd = new GridData(GridData.FILL_BOTH);
 		gd.heightHint = 200;
 		gd.widthHint = 100;
-		t.setLayoutData(gd);
-		for(int i = 0; i < patternList.size(); i++) {
-			TableItem item = new TableItem(t, SWT.NONE);
-			item.setText((String)patternList.get(i));
+		this.table.setLayoutData(gd);
+		for(int i = 0; i < this.patternList.size(); i++) {
+			TableItem item = new TableItem(this.table, SWT.NONE);
+			item.setText((String)this.patternList.get(i));
 		}
-		t.addListener(SWT.Selection, new Listener() {
+		this.table.addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event e) {
 				handleSelection();
 			}
@@ -147,18 +147,18 @@ public class PatternsetPage extends FormPage {
 				addPattern();
 			}
 		});
-		removeButton = toolkit.createButton(client, PatternsetEditorMessages.getString("PaternsetEditor.remove"), SWT.PUSH);
+		this.removeButton = toolkit.createButton(client, PatternsetEditorMessages.getString("PaternsetEditor.remove"), SWT.PUSH);
 		gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
-		removeButton.setLayoutData(gd);
-		removeButton.addListener(SWT.Selection, new Listener() {
+		this.removeButton.setLayoutData(gd);
+		this.removeButton.addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event e) {
 				removePattern();
 			}
 		});
-		changeButton = toolkit.createButton(client, PatternsetEditorMessages.getString("PaternsetEditor.change"), SWT.PUSH);
+		this.changeButton = toolkit.createButton(client, PatternsetEditorMessages.getString("PaternsetEditor.change"), SWT.PUSH);
 		gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
-		changeButton.setLayoutData(gd);
-		changeButton.addListener(SWT.Selection, new Listener() {
+		this.changeButton.setLayoutData(gd);
+		this.changeButton.addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event e) {
 				changePattern();
 			}
@@ -174,8 +174,8 @@ public class PatternsetPage extends FormPage {
 		});
 		gd = new GridData(GridData.FILL_BOTH);
 		section.setLayoutData(gd);
-		changeButton.setEnabled(false);
-		removeButton.setEnabled(false);
+		this.changeButton.setEnabled(false);
+		this.removeButton.setEnabled(false);
 	}
 	
 	void addPattern() {
@@ -187,22 +187,22 @@ public class PatternsetPage extends FormPage {
 		if (pattern.equals(""))
 			return; //$NON-NLS-1$
 		// Check if the item already exists
-		TableItem[] items = t.getItems();
+		TableItem[] items = this.table.getItems();
 		for (int i = 0; i < items.length; i++) {
 			if (items[i].getText().equals(pattern)) {
 				MessageDialog.openWarning(this.getEditorSite().getShell(), PatternsetEditorMessages.getString("PaternsetEditor.patternExistsShort"), PatternsetEditorMessages.getString("PaternsetEditor.patternExistsLong")); //$NON-NLS-1$ //$NON-NLS-2$
 				return;
 			}
 		}
-		TableItem item = new TableItem(t, SWT.NONE);
+		TableItem item = new TableItem(this.table, SWT.NONE);
 		item.setText(pattern);
-		patternList.add(pattern);
+		this.patternList.add(pattern);
 		this.markDirty();
 	}
 
 	void removePattern() {
-		int[] selection = t.getSelectionIndices();
-		t.remove(selection);
+		int[] selection = this.table.getSelectionIndices();
+		this.table.remove(selection);
 		if (selection == null)
 			return;
 		int[] newIndices = new int[selection.length];
@@ -212,7 +212,7 @@ public class PatternsetPage extends FormPage {
 		for (int i = 0; i < newIndices.length; i++) {
 			int index = newIndices[i];
 			if (index != last || i == 0) {
-				patternList.remove(index);
+				this.patternList.remove(index);
 			}
 
 			last = index;
@@ -221,28 +221,28 @@ public class PatternsetPage extends FormPage {
 	}
 
 	void changePattern() {
-		int[] selection = t.getSelectionIndices();
+		int[] selection = this.table.getSelectionIndices();
 		if (selection.length != 1)
 			return;
 		int index = selection[0];
-		InputDialog patternDialog = new InputDialog(this.getEditorSite().getShell(), PatternsetEditorMessages.getString("PaternsetEditor.enterPatternShort"), PatternsetEditorMessages.getString("PaternsetEditor.enterPatternLong"), (String)patternList.get(index), null); //$NON-NLS-1$ //$NON-NLS-2$
+		InputDialog patternDialog = new InputDialog(this.getEditorSite().getShell(), PatternsetEditorMessages.getString("PaternsetEditor.enterPatternShort"), PatternsetEditorMessages.getString("PaternsetEditor.enterPatternLong"), (String)this.patternList.get(index), null); //$NON-NLS-1$ //$NON-NLS-2$
 		patternDialog.open();
 		if (patternDialog.getReturnCode() != Window.OK)
 			return;
 		String pattern = patternDialog.getValue();
-		TableItem item = t.getItem(index);
+		TableItem item = this.table.getItem(index);
 		item.setText(pattern);
-		patternList.set(index, pattern);
+		this.patternList.set(index, pattern);
 		this.markDirty();
 	}
 
 	void handleSelection() {
-		if (t.getSelectionCount() > 0) {
-			changeButton.setEnabled(true);
-			removeButton.setEnabled(true);
+		if (this.table.getSelectionCount() > 0) {
+			this.changeButton.setEnabled(true);
+			this.removeButton.setEnabled(true);
 		} else {
-			changeButton.setEnabled(false);
-			removeButton.setEnabled(false);
+			this.changeButton.setEnabled(false);
+			this.removeButton.setEnabled(false);
 		}
 	}
 	

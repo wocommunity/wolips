@@ -2,7 +2,7 @@
  *
  * The ObjectStyle Group Software License, Version 1.0
  *
- * Copyright (c) 2002 The ObjectStyle Group
+ * Copyright (c) 2002 - 2004 The ObjectStyle Group
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -70,8 +70,13 @@ public class LaunchingMessages {
 		ResourceBundle.getBundle(RESOURCE_BUNDLE);
 
 	private LaunchingMessages() {
+		super();
 	}
 
+	/**
+	 * @param key
+	 * @return
+	 */
 	public static String getString(String key) {
 		try {
 			return fgResourceBundle.getString(key);
@@ -84,6 +89,8 @@ public class LaunchingMessages {
 	 * Gets a string from the resource bundle and formats it with the argument
 	 *
 	 * @param key	the string used to get the bundle value, must not be null
+	 * @param arg
+	 * @return
 	 */
 	public static String getFormattedString(String key, Object arg) {
 		return MessageFormat.format(getString(key), new Object[] { arg });
@@ -91,6 +98,9 @@ public class LaunchingMessages {
 
 	/**
 	 * Gets a string from the resource bundle and formats it with arguments
+	 * @param key
+	 * @param args
+	 * @return
 	 */
 	public static String getFormattedString(String key, Object[] args) {
 		return MessageFormat.format(getString(key), args);

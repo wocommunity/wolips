@@ -56,9 +56,13 @@
 package org.objectstyle.wolips.wizards;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.objectstyle.wolips.templateengine.TemplateDefinition;
 import org.objectstyle.wolips.templateengine.TemplateEngine;
 import org.objectstyle.wolips.templateengine.TemplateEnginePlugin;
@@ -67,8 +71,8 @@ import org.objectstyle.wolips.templateengine.TemplateEnginePlugin;
  * @author uli
  * 
  * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates. To enable and disable the creation of
- * type comments go to Window>Preferences>Java>Code Generation.
+ * Window>Preferences>Java>Templates. To enable and disable the creation of type
+ * comments go to Window>Preferences>Java>Code Generation.
  */
 public class D2WApplicationWizard extends AbstractProjectWizard {
 	/**
@@ -85,24 +89,30 @@ public class D2WApplicationWizard extends AbstractProjectWizard {
 	public String getWindowTitle() {
 		return Messages.getString("D2WApplicationWizard.title");
 	}
-	/**
-	 * (non-Javadoc) Method declared on IWizard
-	 * 
-	 * @return
-	 */
-	public boolean performFinish() {
-		boolean success = super.performFinish();
-		if (success) {
-			IProject project = super.getNewProject();
-			String projectName = project.getName();
-			String path = project.getLocation().toOSString();
+
+	private class Operation extends WorkspaceModifyOperation {
+		IProject project = null;
+		/**
+		 * @param project
+		 */
+		public Operation(IProject project) {
+			super();
+			this.project = project;
+		}
+		protected void execute(IProgressMonitor monitor) throws CoreException,
+				InvocationTargetException, InterruptedException {
+
+			String projectName = this.project.getName();
+			String path = this.project.getLocation().toOSString();
 			NullProgressMonitor nullProgressMonitor = new NullProgressMonitor();
 			try {
 				File mainwo = new File(path + File.separator + "Main.wo");
 				mainwo.mkdirs();
-				File menuHeaderwo = new File(path + File.separator + "MenuHeader.wo");
+				File menuHeaderwo = new File(path + File.separator
+						+ "MenuHeader.wo");
 				menuHeaderwo.mkdirs();
-				File pageWrapperwo = new File(path + File.separator + "PageWrapper.wo");
+				File pageWrapperwo = new File(path + File.separator
+						+ "PageWrapper.wo");
 				pageWrapperwo.mkdirs();
 				File src = new File(path + File.separator + "src");
 				src.mkdirs();
@@ -111,6 +121,8 @@ public class D2WApplicationWizard extends AbstractProjectWizard {
 				File xcode = new File(path + File.separator + projectName
 						+ ".xcode");
 				xcode.mkdirs();
+				File ant = new File(path + File.separator + "ant");
+				ant.mkdirs();
 				//project.close(nullProgressMonitor);
 				TemplateEngine templateEngine = new TemplateEngine();
 				try {
@@ -121,122 +133,166 @@ public class D2WApplicationWizard extends AbstractProjectWizard {
 				}
 				templateEngine.getWolipsContext().setProjectName(projectName);
 				templateEngine.addTemplate(new TemplateDefinition(
-						"d2wapplication/Main.html.vm", path + File.separator
+						"d2w_application/Main.html.vm", path + File.separator
 								+ "Main.wo", "Main.html", "Main.html"));
 				templateEngine.addTemplate(new TemplateDefinition(
-						"d2wapplication/Main.wod.vm", path + File.separator
+						"d2w_application/Main.wod.vm", path + File.separator
 								+ "Main.wo", "Main.wod", "Main.wod"));
 				templateEngine.addTemplate(new TemplateDefinition(
-						"d2wapplication/Main.woo.vm", path + File.separator
+						"d2w_application/Main.woo.vm", path + File.separator
 								+ "Main.wo", "Main.woo", "Main.woo"));
 				templateEngine.addTemplate(new TemplateDefinition(
-						"d2wapplication/MenuHeader.html.vm", path + File.separator
-								+ "MenuHeader.wo", "MenuHeader.html", "MenuHeader.html"));
+						"d2w_application/MenuHeader.html.vm", path
+								+ File.separator + "MenuHeader.wo",
+						"MenuHeader.html", "MenuHeader.html"));
 				templateEngine.addTemplate(new TemplateDefinition(
-						"d2wapplication/MenuHeader.wod.vm", path + File.separator
-								+ "MenuHeader.wo", "MenuHeader.wod", "MenuHeader.wod"));
+						"d2w_application/MenuHeader.wod.vm", path
+								+ File.separator + "MenuHeader.wo",
+						"MenuHeader.wod", "MenuHeader.wod"));
 				templateEngine.addTemplate(new TemplateDefinition(
-						"d2wapplication/MenuHeader.woo.vm", path + File.separator
-								+ "MenuHeader.wo", "MenuHeader.woo", "MenuHeader.woo"));
+						"d2w_application/MenuHeader.woo.vm", path
+								+ File.separator + "MenuHeader.wo",
+						"MenuHeader.woo", "MenuHeader.woo"));
 				templateEngine.addTemplate(new TemplateDefinition(
-						"d2wapplication/PageWrapper.html.vm", path + File.separator
-								+ "PageWrapper.wo", "PageWrapper.html", "PageWrapper.html"));
+						"d2w_application/PageWrapper.html.vm", path
+								+ File.separator + "PageWrapper.wo",
+						"PageWrapper.html", "PageWrapper.html"));
 				templateEngine.addTemplate(new TemplateDefinition(
-						"d2wapplication/PageWrapper.wod.vm", path + File.separator
-								+ "PageWrapper.wo", "PageWrapper.wod", "PageWrapper.wod"));
+						"d2w_application/PageWrapper.wod.vm", path
+								+ File.separator + "PageWrapper.wo",
+						"PageWrapper.wod", "PageWrapper.wod"));
 				templateEngine.addTemplate(new TemplateDefinition(
-						"d2wapplication/Main.woo.vm", path + File.separator
-								+ "PageWrapper.wo", "PageWrapper.woo", "PageWrapper.woo"));
+						"d2w_application/Main.woo.vm", path + File.separator
+								+ "PageWrapper.wo", "PageWrapper.woo",
+						"PageWrapper.woo"));
 				templateEngine.addTemplate(new TemplateDefinition(
-						"d2wapplication/Application.java.vm", path
-								+ File.separator + "src", "Application.java", "Application.java"));
+						"d2w_application/Application.java.vm", path
+								+ File.separator + "src", "Application.java",
+						"Application.java"));
 				templateEngine.addTemplate(new TemplateDefinition(
-						"d2wapplication/DirectAction.java.vm", path
-								+ File.separator + "src", "DirectAction.java", "DirectAction.java"));
+						"d2w_application/DirectAction.java.vm", path
+								+ File.separator + "src", "DirectAction.java",
+						"DirectAction.java"));
 				templateEngine.addTemplate(new TemplateDefinition(
-						"d2wapplication/Main.java.vm", path + File.separator
+						"d2w_application/Main.java.vm", path + File.separator
 								+ "src", "Main.java", "Main.java"));
 				templateEngine.addTemplate(new TemplateDefinition(
-						"d2wapplication/MenuHeader.java.vm", path + File.separator
-								+ "src", "MenuHeader.java", "MenuHeader.java"));
+						"d2w_application/MenuHeader.java.vm", path
+								+ File.separator + "src", "MenuHeader.java",
+						"MenuHeader.java"));
 				templateEngine.addTemplate(new TemplateDefinition(
-						"d2wapplication/PageWrapper.java.vm", path + File.separator
-								+ "src", "PageWrapper.java", "PageWrapper.java"));
+						"d2w_application/PageWrapper.java.vm", path
+								+ File.separator + "src", "PageWrapper.java",
+						"PageWrapper.java"));
 				templateEngine.addTemplate(new TemplateDefinition(
-						"d2wapplication/Session.java.vm", path + File.separator
+						"d2w_application/Session.java.vm", path + File.separator
 								+ "src", "Session.java", "Session.java"));
 				templateEngine.addTemplate(new TemplateDefinition(
-						"d2wapplication/.classpath.vm", path, ".classpath", ".classpath"));
+						"d2w_application/.classpath.vm", path, ".classpath",
+						".classpath"));
 				templateEngine.addTemplate(new TemplateDefinition(
-						"d2wapplication/.project.vm", path, ".project", ".project"));
+						"d2w_application/.project.vm", path, ".project",
+						".project"));
+				templateEngine
+						.addTemplate(new TemplateDefinition(
+								"d2w_application/ant.classpaths.user.home.vm",
+								path + File.separator + "ant",
+								"ant.classpaths.user.home",
+								"ant.classpaths.user.home"));
 				templateEngine.addTemplate(new TemplateDefinition(
-						"d2wapplication/ant.classpaths.user.home.vm", path,
-						"ant.classpaths.user.home",
-						"ant.classpaths.user.home"));
-				templateEngine.addTemplate(new TemplateDefinition(
-						"d2wapplication/ant.classpaths.wo.wolocalroot.vm", path,
+						"d2w_application/ant.classpaths.wo.wolocalroot.vm", path
+								+ File.separator + "ant",
 						"ant.classpaths.wo.wolocalroot",
 						"ant.classpaths.wo.wolocalroot"));
 				templateEngine.addTemplate(new TemplateDefinition(
-						"d2wapplication/ant.classpaths.wo.wosystemroot.vm",
-						path, "ant.classpaths.wo.wosystemroot", "ant.classpaths.wo.wosystemroot"));
+						"d2w_application/ant.classpaths.wo.wosystemroot.vm",
+						path + File.separator + "ant",
+						"ant.classpaths.wo.wosystemroot",
+						"ant.classpaths.wo.wosystemroot"));
+				templateEngine
+						.addTemplate(new TemplateDefinition(
+								"d2w_application/ant.frameworks.user.home.vm",
+								path + File.separator + "ant",
+								"ant.frameworks.user.home",
+								"ant.frameworks.user.home"));
 				templateEngine.addTemplate(new TemplateDefinition(
-						"d2wapplication/ant.frameworks.user.home.vm", path,
-						"ant.frameworks.user.home",
-						"ant.frameworks.user.home"));
-				templateEngine.addTemplate(new TemplateDefinition(
-						"d2wapplication/ant.frameworks.wo.wolocalroot.vm", path,
+						"d2w_application/ant.frameworks.wo.wolocalroot.vm", path
+								+ File.separator + "ant",
 						"ant.frameworks.wo.wolocalroot",
 						"ant.frameworks.wo.wolocalroot"));
 				templateEngine.addTemplate(new TemplateDefinition(
-						"d2wapplication/ant.frameworks.wo.wosystemroot.vm",
-						path, "ant.frameworks.wo.wosystemroot", "ant.frameworks.wo.wosystemroot"));
+						"d2w_application/ant.frameworks.wo.wosystemroot.vm",
+						path + File.separator + "ant",
+						"ant.frameworks.wo.wosystemroot",
+						"ant.frameworks.wo.wosystemroot"));
 				templateEngine.addTemplate(new TemplateDefinition(
-						"d2wapplication/build.xml.vm", path, "build.xml", "build.xml"));
+						"d2w_application/build.xml.vm", path, "build.xml",
+						"build.xml"));
 				templateEngine.addTemplate(new TemplateDefinition(
-						"d2wapplication/build.properties.vm", path,
-						"build.properties",
-						"build.properties"));
+						"d2w_application/build.properties.vm", path,
+						"build.properties", "build.properties"));
 				templateEngine.addTemplate(new TemplateDefinition(
-						"d2wapplication/CustomInfo.plist.vm", path,
-						"CustomInfo.plist",
-						"CustomInfo.plist"));
+						"d2w_application/CustomInfo.plist.vm", path,
+						"CustomInfo.plist", "CustomInfo.plist"));
 				templateEngine.addTemplate(new TemplateDefinition(
-						"d2wapplication/Main.api.vm", path, "Main.api", "Main.api"));
+						"d2w_application/Main.api.vm", path, "Main.api",
+						"Main.api"));
 				templateEngine.addTemplate(new TemplateDefinition(
-						"d2wapplication/MenuHeader.api.vm", path, "MenuHeader.api", "MenuHeader.api"));
+						"d2w_application/MenuHeader.api.vm", path,
+						"MenuHeader.api", "MenuHeader.api"));
 				templateEngine.addTemplate(new TemplateDefinition(
-						"d2wapplication/PageWrapper.api.vm", path, "PageWrapper.api", "PageWrapper.api"));
+						"d2w_application/PageWrapper.api.vm", path,
+						"PageWrapper.api", "PageWrapper.api"));
 				templateEngine.addTemplate(new TemplateDefinition(
-						"d2wapplication/Makefile.vm", path, "Makefile", "Makefile"));
+						"d2w_application/Makefile.vm", path, "Makefile",
+						"Makefile"));
 				templateEngine.addTemplate(new TemplateDefinition(
-						"d2wapplication/Makefile.postamble.vm", path,
-						"Makefile.postamble",
-						"Makefile.postamble"));
+						"d2w_application/Makefile.postamble.vm", path,
+						"Makefile.postamble", "Makefile.postamble"));
 				templateEngine.addTemplate(new TemplateDefinition(
-						"d2wapplication/Makefile.preamble.vm", path,
-						"Makefile.preamble",
-						"Makefile.preamble"));
+						"d2w_application/Makefile.preamble.vm", path,
+						"Makefile.preamble", "Makefile.preamble"));
 				templateEngine.addTemplate(new TemplateDefinition(
-						"d2wapplication/PB.project.vm", path, "PB.project", "PB.project"));
+						"d2w_application/PB.project.vm", path, "PB.project",
+						"PB.project"));
 				templateEngine.addTemplate(new TemplateDefinition(
-						"d2wapplication/Properties.vm", path, "Properties", "Properties"));
+						"d2w_application/Properties.vm", path, "Properties",
+						"Properties"));
 				templateEngine.addTemplate(new TemplateDefinition(
-						"d2wapplication/project.pbxproj.vm", path
+						"d2w_application/project.pbxproj.vm", path
 								+ File.separator + projectName + ".xcode",
-								"project.pbxproj",
-								"project.pbxproj"));
+						"project.pbxproj", "project.pbxproj"));
 				templateEngine.addTemplate(new TemplateDefinition(
-								"d2wapplication/user.d2wmodel.vm", path,
-								"user.d2wmodel",
-								"user.d2wmodel"));
+						"d2w_application/user.d2wmodel.vm", path,
+						"user.d2wmodel", "user.d2wmodel"));
 				templateEngine.run(nullProgressMonitor);
 				//project.open(nullProgressMonitor);
 				//RunAnt runAnt = new RunAnt();
-				//runAnt.asAnt(path + File.separator + IWOLipsModel.DEFAULT_BUILD_FILENAME, null, null);
-				project.refreshLocal(IResource.DEPTH_INFINITE,
+				//runAnt.asAnt(path + File.separator +
+				// IWOLipsModel.DEFAULT_BUILD_FILENAME, null, null);
+				this.project.refreshLocal(IResource.DEPTH_INFINITE,
 						nullProgressMonitor);
 			} catch (Exception e) {
+				throw new InvocationTargetException(e);
+			}
+		}
+	}
+	/**
+	 * (non-Javadoc) Method declared on IWizard
+	 * 
+	 * @return
+	 */
+	public boolean performFinish() {
+		boolean success = super.performFinish();
+		if (success) {
+			IProject project = super.getNewProject();
+			Operation operation = new Operation(project);
+			try {
+				operation.run(new NullProgressMonitor());
+			} catch (InvocationTargetException e) {
+				WizardsPlugin.getDefault().getPluginLogger().log(e);
+				success = false;
+			} catch (InterruptedException e) {
 				WizardsPlugin.getDefault().getPluginLogger().log(e);
 				success = false;
 			}

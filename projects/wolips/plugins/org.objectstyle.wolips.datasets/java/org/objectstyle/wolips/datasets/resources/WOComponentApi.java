@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 The ObjectStyle Group 
+ * Copyright (c) 2002 - 2004 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -76,24 +76,14 @@ public final class WOComponentApi
 		super();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.objectstyle.wolips.core.resources.IWOLipsResource#getType()
-	 */
 	public final int getType() {
 		return IWOLipsResource.WOCOMPONENT_API;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.objectstyle.wolips.core.resources.IWOLipsResource#getRelatedResources()
-	 */
 	public final List getRelatedResources() {
 		return new ArrayList();
 	}
 
-	/**
-	 * Opens the resource in a Editor.
-	 * @param If forceToOpenIntextEditor is set to true the resource opens in a texteditor.
-	 */
 	public final void open(boolean forceToOpenIntextEditor) {
 		WorkbenchUtilitiesPlugin.open((IFile)this.getCorrespondingResource(), forceToOpenIntextEditor, "org.objectstyle.wolips.internal.wod.editor");
 	}

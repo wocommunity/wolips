@@ -73,20 +73,23 @@ import org.jdom.input.SAXBuilder;
 public class TemplatesDocument {
 	private Document document = null;
 	
+	/**
+	 * @param location
+	 */
 	public TemplatesDocument(IPath location) {
 		super();
 		SAXBuilder builder;
 		try {
 			builder = new SAXBuilder();
-			document = builder.build(location.toOSString() + File.separator + "Templates.xml");
+			this.document = builder.build(location.toOSString() + File.separator + "Templates.xml");
 		} catch (Exception ee) {
 			builder = null;
-			document = null;
+			this.document = null;
 		}
 	}
 
 	/**
-	 * @param string
+	 * @param type
 	 * @return
 	 */
 	public boolean isOfType(String type) {
@@ -97,26 +100,29 @@ public class TemplatesDocument {
 	 * @return
 	 */
 	public boolean isValid() {
-		if(document == null)
+		if(this.document == null) {
 			return false;
+		}
 		if(this.getType() == null)
 			return false;
 		return true;
 	}
 	
 	private String getType() {
-		if(document == null)
+		if(this.document == null) {
 			return null;
-		return document.getRootElement().getChildText("type");
+		}
+		return this.document.getRootElement().getChildText("type");
 	}
 
 	/**
 	 * @return Returns the name
 	 */
 	public String getName() {
-		if(document == null)
+		if(this.document == null) {
 			return null;
-		return document.getRootElement().getChildText("name");
+		}
+		return this.document.getRootElement().getChildText("name");
 	}
 
 	/**
@@ -125,7 +131,7 @@ public class TemplatesDocument {
 	public TemplateDefinition[] getTemplateDefinitions() {
 		if(!isValid())
 			return null; 
-		List templates = document.getRootElement().getChildren("templates");
+		List templates = this.document.getRootElement().getChildren("templates");
 		ArrayList templateDefinitions = new ArrayList();
 		for (int i = 0; i < templates.size(); i++) {
 			Element child = (Element)templates.get(i);

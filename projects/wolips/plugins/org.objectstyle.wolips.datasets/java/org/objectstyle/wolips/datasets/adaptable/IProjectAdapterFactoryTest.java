@@ -62,4 +62,5 @@ import junit.framework.TestCase;
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
 public class IProjectAdapterFactoryTest extends TestCase {
+	//TODO: :-)
 }

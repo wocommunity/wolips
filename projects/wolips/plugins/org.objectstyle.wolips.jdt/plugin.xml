@@ -24,6 +24,7 @@
       <import plugin="org.eclipse.jdt.ui"/>
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.objectstyle.wolips.datasets"/>
+      <import plugin="org.objectstyle.wolips.commons"/>
    </requires>
 
 

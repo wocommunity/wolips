@@ -64,9 +64,16 @@ import junit.framework.TestSuite;
  */
 public class TestsCorePluginTestSuite extends TestCase {
 
+	/**
+	 * @param testName
+	 */
 	public TestsCorePluginTestSuite(String testName) {
 		super(testName);
 	}
+	/**
+	 * @return
+	 * @throws Exception
+	 */
 	public static Test suite() throws Exception {
 		TestSuite suite = new TestSuite();
 		suite.addTestSuite(UtilsTest.class);

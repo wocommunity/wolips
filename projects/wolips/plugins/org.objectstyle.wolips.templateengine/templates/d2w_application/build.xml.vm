@@ -46,37 +46,41 @@
 		<!-- add webXML="true" to generate a web.xml file -->
 		<woapplication name="${project.name}"  stdFrameworks="false" destDir="${dest.dir}">
    			<classes dir="${classes.dir}">
+      			<patternset>
+  					<includesfile name="ant/classes.include.patternset"/> 
+					<excludesfile name="ant/classes.exclude.patternset"/> 
+				</patternset>
    			</classes>
    			<wsresources dir=".">
       			<patternset>
-  					<includesfile name="wsresources.include.patternset"/> 
-					<excludesfile name="wsresources.exclude.patternset"/> 
+  					<includesfile name="ant/wsresources.include.patternset"/> 
+					<excludesfile name="ant/wsresources.exclude.patternset"/> 
 				</patternset>
 			</wsresources>
    			<resources dir=".">
       			<patternset>
-  					<includesfile name="resources.include.patternset"/> 
-					<excludesfile name="resources.exclude.patternset"/> 
+  					<includesfile name="ant/resources.include.patternset"/> 
+					<excludesfile name="ant/resources.exclude.patternset"/> 
 				</patternset>
        		</resources>
 			<frameworks root="${wo.wosystemroot}">
       				<patternset>
-  					<includesfile name="ant.frameworks.wo.wosystemroot"/> 
+  					<includesfile name="ant/ant.frameworks.wo.wosystemroot"/> 
 				</patternset>
    			</frameworks>
    			<frameworks root="${wo.wolocalroot}">
       				<patternset>
-  					<includesfile name="ant.frameworks.wo.wolocalroot"/> 
+  					<includesfile name="ant/ant.frameworks.wo.wolocalroot"/> 
 				</patternset>
    			</frameworks>
 			<frameworks root="${user.home}">
       				<patternset>
-  					<includesfile name="ant.frameworks.user.home"/> 
+  					<includesfile name="ant/ant.frameworks.user.home"/> 
 				</patternset>
    			</frameworks>
 			<otherclasspath root="${wo.wosystemroot}">
    				<patternset>
-  					<includesfile name="ant.classpaths.wo.wosystemroot"/> 
+  					<includesfile name="ant/ant.classpaths.wo.wosystemroot"/> 
 				</patternset>
 			</otherclasspath>
 			<lib dir=".">

@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 The ObjectStyle Group 
+ * Copyright (c) 2002 - 2004 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -104,13 +104,6 @@ public abstract class AbstractCopySelectionAction extends GlobalAction {
 		clipboard.dispose();
 	}
 
-	/**
-	 * Registers this action as a global action handler.
-	 * 
-	 * @param actionBars the action bars where this action will be registered.
-	 * @see org.eclipse.core.tools.spy.utils.GlobalAction#registerAsGlobalAction(
-	 * org.eclipse.ui.IActionBars)
-	 */
 	public void registerAsGlobalAction(IActionBars actionBars) {
 		actionBars.setGlobalActionHandler(ActionFactory.COPY.getId(), this);
 	}

@@ -56,7 +56,6 @@
 
 package org.objectstyle.wolips.ui.actions;
 
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.resources.IFolder;
@@ -96,7 +95,7 @@ public class TouchAllFilesOperation extends WorkspaceModifyOperation {
 		try {
 			//remove all existing entries
 			project.cleanAllFileTables();
-		} catch (IOException e) {
+		} catch (Throwable e) {
 			UIPlugin.getDefault().getPluginLogger().log(e);
 		}
 		this.touch(this.iProject, monitor);

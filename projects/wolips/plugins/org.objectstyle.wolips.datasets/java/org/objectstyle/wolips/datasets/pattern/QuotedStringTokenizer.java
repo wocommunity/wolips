@@ -1,10 +1,3 @@
-/*
- * Created on 28.07.2003
- *
- * QuotedStringTokenizer -- tokenize string ignoring quoted separators
- *
- */
-
 /* ====================================================================
  * 
  * The ObjectStyle Group Software License, Version 1.0 
@@ -60,140 +53,148 @@
  * <http://objectstyle.org/>.
  *
  */
-
 package org.objectstyle.wolips.datasets.pattern;
 
 import java.util.Iterator;
 
 /**
  * @author Harald Niesche
- * @version 1.0
+ * @version 1.0 QuotedStringTokenizer -- tokenize string ignoring quoted
+ *          separators
  */
 public class QuotedStringTokenizer implements Iterator {
 
-  /**
-   * construct a string tokenizer for String <i>string</i>,
-   * using ' ' (blank) as separator
-   */
-  public QuotedStringTokenizer (String string) {
-    _s = string;
-    _sep = ' ';
-    _nextStart = 0;
-  }
+	/**
+	 * construct a string tokenizer for String <i>string </i>, using ' ' (blank)
+	 * as separator
+	 * 
+	 * @param string
+	 */
+	public QuotedStringTokenizer(String string) {
+		this._s = string;
+		this._sep = ' ';
+		this._nextStart = 0;
+	}
 
-  /**
-   * construct a string tokenizer for String <i>string</i>,
-   * using sep as the separator
-   */
-  public QuotedStringTokenizer (String string, int sep) {
-    _s = string;
-    _sep = sep;
-    _nextStart = 0;
-  }
+	/**
+	 * construct a string tokenizer for String <i>string </i>, using sep as the
+	 * separator
+	 * 
+	 * @param string
+	 * @param sep
+	 */
+	public QuotedStringTokenizer(String string, int sep) {
+		this._s = string;
+		this._sep = sep;
+		this._nextStart = 0;
+	}
 
-  /**
-   * checks whether more tokens are available
-   */
+	/**
+	 * checks whether more tokens are available
+	 */
 
-  public boolean hasNext () {
-    return (_s.length() >= _nextStart);
-  }
+	public boolean hasNext() {
+		return (this._s.length() >= this._nextStart);
+	}
 
-  public boolean hasMoreTokens() {
-    return (hasNext());
-  }
+	/**
+	 * @return
+	 */
+	public boolean hasMoreTokens() {
+		return (hasNext());
+	}
 
-  /**
-   * Iterator interface: obtains the next token as Object
-   */
-  public Object next () {
-    return nextToken (_sep);
-  }
+	/**
+	 * Iterator interface: obtains the next token as Object
+	 */
+	public Object next() {
+		return nextToken(this._sep);
+	}
 
-  /**
-   * Iterator interface: remove current token (skips it, actually)
-   */
-  public void remove () {
-    nextToken (_sep);
-  }
+	/**
+	 * Iterator interface: remove current token (skips it, actually)
+	 */
+	public void remove() {
+		nextToken(this._sep);
+	}
 
-  /**
-   * obtain current token as String
-   */
-  public String nextToken () {
-    return (nextToken (_sep));
-  }
+	/**
+	 * obtain current token as String
+	 * @return
+	 */
+	public String nextToken() {
+		return (nextToken(this._sep));
+	}
 
-  /**
-   * obtain current token as String, using sep as separator
-   */
-  public String nextToken (int sep) {
-    if (_s.length () < _nextStart) {
-      return (null);
-    }
+	/**
+	 * obtain current token as String, using sep as separator
+	 * @param sep
+	 * @return
+	 */
+	public String nextToken(int sep) {
+		if (this._s.length() < this._nextStart) {
+			return (null);
+		}
 
-    if (_s.length () == _nextStart) {
-      ++_nextStart;
-      return ("");
-    }
+		if (this._s.length() == this._nextStart) {
+			++this._nextStart;
+			return ("");
+		}
 
-    StringBuffer buffer = new StringBuffer ();
+		StringBuffer buffer = new StringBuffer();
 
-    int end;
-    int tmp;
-    int restStart = _nextStart;
-    if ('"' == _s.charAt (_nextStart)) {
-      ++_nextStart;
-      restStart = _nextStart;
-      tmp = _s.indexOf ('"', _nextStart);
+		int end;
+		int tmp;
+		int restStart = this._nextStart;
+		if ('"' == this._s.charAt(this._nextStart)) {
+			++this._nextStart;
+			restStart = this._nextStart;
+			tmp = this._s.indexOf('"', this._nextStart);
 
-      while (
-        (tmp != -1) 
-        && (tmp+1 < _s.length()) 
-        && (_s.charAt(tmp+1) == '"')
-      ) {
-        buffer.append (_s.substring(restStart, tmp+1));
-        restStart = tmp+2;
-        tmp = _s.indexOf ('"', tmp+2);
-      }
+			while ((tmp != -1) && (tmp + 1 < this._s.length())
+					&& (this._s.charAt(tmp + 1) == '"')) {
+				buffer.append(this._s.substring(restStart, tmp + 1));
+				restStart = tmp + 2;
+				tmp = this._s.indexOf('"', tmp + 2);
+			}
 
-      if (tmp == -1) {
-        tmp = _s.length();
-      }
-    } else {
-      tmp = _nextStart;
-    }
-    int end1 = _s.indexOf (sep, tmp);
-    int end2 = _s.length ();
-    if (-1 == end1) {
-      end1 = _s.length();
-    }
+			if (tmp == -1) {
+				tmp = this._s.length();
+			}
+		} else {
+			tmp = this._nextStart;
+		}
+		int end1 = this._s.indexOf(sep, tmp);
+		int end2 = this._s.length();
+		if (-1 == end1) {
+			end1 = this._s.length();
+		}
 
-    if (end1 < end2) {
-      end = end1;
-    } else {
-      end = end2;
-    }
+		if (end1 < end2) {
+			end = end1;
+		} else {
+			end = end2;
+		}
 
-    if (restStart < end) {
-      if (_s.charAt (end-1) == '"') {
-        buffer.append (_s.substring(restStart, end-1));
-      } else {
-        buffer.append (_s.substring(restStart, end));
-      }
-    }
+		if (restStart < end) {
+			if (this._s.charAt(end - 1) == '"') {
+				buffer.append(this._s.substring(restStart, end - 1));
+			} else {
+				buffer.append(this._s.substring(restStart, end));
+			}
+		}
 
-    _nextStart = end+1; // skip the separator
+		this._nextStart = end + 1; // skip the separator
 
-    String result = buffer.toString();
-    if (result == null) {
-      result = "";
-    }
+		String result = buffer.toString();
+		if (result == null) {
+			result = "";
+		}
 
-    return (result);
-  }
+		return (result);
+	}
 
-  private String _s;
-  private int _sep;
-  private int _nextStart;
+	private String _s;
+	private int _sep;
+	private int _nextStart;
 }

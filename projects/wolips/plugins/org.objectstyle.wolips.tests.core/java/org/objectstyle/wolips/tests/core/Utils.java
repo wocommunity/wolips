@@ -2,7 +2,7 @@
  *
  * The ObjectStyle Group Software License, Version 1.0
  *
- * Copyright (c) 2002 The ObjectStyle Group,
+ * Copyright (c) 2002 - 2004 The ObjectStyle Group,
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -68,6 +68,11 @@ import org.eclipse.jdt.core.JavaCore;
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
 public final class Utils {
+	/**
+	 * @param projectName
+	 * @return
+	 * @throws CoreException
+	 */
 	public static IProject CreateProject(String projectName)
 			throws CoreException {
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(
@@ -88,6 +93,11 @@ public final class Utils {
 		return project;
 	}
 	
+	/**
+	 * @param projectName
+	 * @return
+	 * @throws CoreException
+	 */
 	public static IJavaProject CreateJavaProject(String projectName)
 			throws CoreException {
 		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(

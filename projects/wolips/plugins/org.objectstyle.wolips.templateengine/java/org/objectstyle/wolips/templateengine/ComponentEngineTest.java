@@ -69,6 +69,9 @@ import org.eclipse.core.runtime.Path;
  */
 public class ComponentEngineTest extends TestCase {
 	
+	/**
+	 * 
+	 */
 	public void testComponentPath() {
 		ComponentEngine componentEngine = new ComponentEngine();
 		IPath path = new Path("foo");
@@ -76,6 +79,9 @@ public class ComponentEngineTest extends TestCase {
 		assertEquals(path, componentEngine.getComponentPath());
 	}
 	
+	/**
+	 * 
+	 */
 	public void testApiPath() {
 		ComponentEngine componentEngine = new ComponentEngine();
 		IPath path = new Path("foo");
@@ -83,6 +89,9 @@ public class ComponentEngineTest extends TestCase {
 		assertEquals(path, componentEngine.getApiPath());
 	}
 	
+	/**
+	 * 
+	 */
 	public void testJavaPath() {
 		ComponentEngine componentEngine = new ComponentEngine();
 		IPath path = new Path("foo");
@@ -90,6 +99,9 @@ public class ComponentEngineTest extends TestCase {
 		assertEquals(path, componentEngine.getJavaPath());
 	}
 	
+	/**
+	 * 
+	 */
 	public void testInit() {
 		ComponentEngine componentEngine = new ComponentEngine();
 		assertEquals(0, componentEngine.templateFolderCount());
@@ -104,6 +116,9 @@ public class ComponentEngineTest extends TestCase {
 	}
 	
 	
+	/**
+	 * 
+	 */
 	public void testSelection() {
 		ComponentEngine componentEngine = new ComponentEngine();
 		try {

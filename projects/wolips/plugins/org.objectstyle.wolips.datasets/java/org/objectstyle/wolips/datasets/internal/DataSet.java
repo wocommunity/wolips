@@ -69,6 +69,10 @@ public class DataSet implements IDataSet {
 	private int type = -1;
 	private IResource correspondingResource;
 	
+	/**
+	 * @param type
+	 * @param correspondingResource
+	 */
 	public DataSet(int type, IResource correspondingResource) {
 		super();
 		this.type = type;
@@ -78,12 +82,12 @@ public class DataSet implements IDataSet {
 	 * @see org.objectstyle.wolips.datasets.IDataSet#getCorrespondingResource()
 	 */
 	public IResource getCorrespondingResource() {
-		return correspondingResource;
+		return this.correspondingResource;
 	}
 	/* (non-Javadoc)
 	 * @see org.objectstyle.wolips.datasets.IDataSet#getType()
 	 */
 	public int getType() {
-		return type;
+		return this.type;
 	}
 }

@@ -72,25 +72,16 @@ public final class WOComponentHtml extends WOLipsResource implements IWOComponen
 		super();
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.objectstyle.wolips.core.resources.IWOLipsResource#getType()
-	 */
 	public final int getType() {
 		return IWOLipsResource.WOCOMPONENT_HTML;
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.objectstyle.wolips.core.resources.IWOLipsResource#getRelatedResources()
-	 */
 	public final List getRelatedResources() {
 		return new ArrayList();
 	}
 
-	/**
-	 * Opens the resource in a Editor.
-	 * @param If forceToOpenIntextEditor is set to true the resource opens in a texteditor.
-	 */
 	public final void open(boolean forceToOpenIntextEditor) {
+		//::-)
 	}
 
 }

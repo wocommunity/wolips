@@ -77,10 +77,16 @@ public class IApiTest extends AbstractDataSetTest {
 		super(arg0);
 	}
 
+	/**
+	 * 
+	 */
 	public void testCreation() {
 		this.assertTypeAndExtensionForFile(IDataSetTypes.API, DataSetsPlugin.API_EXTENSION);
 	}
 	
+	/**
+	 * 
+	 */
 	public void testGetWo() {
 		//File file = new File("WOCompletionBar.api");
 		IPath path = new Path("/System/Library/Frameworks/JavaWOExtensions.framework/Versions/A/Resources/WOCompletionBar.api");

@@ -61,9 +61,17 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 import org.eclipse.core.resources.IFile;
+import org.objectstyle.wolips.datasets.DataSetsPlugin;
 
+/**
+ * @author ulrich
+ */
 public class PatternsetWriter {
 	
+	/**
+	 * @param patternset
+	 * @param pattern
+	 */
 	public static void create(IFile patternset, String[] pattern) {
 		BufferedWriter patternWriter = null;
 		try {
@@ -73,9 +81,7 @@ public class PatternsetWriter {
 				patternWriter.write("\n");
 			}
 		} catch (IOException ioe) {
-			String msg = "An error occured while reading from pattern file: "
-					+ patternset.getLocation().toOSString();
-			//throw new InvocationException(msg, ioe);
+			DataSetsPlugin.getDefault().getPluginLogger().log(ioe);
 		} finally {
 			if (null != patternWriter) {
 				try {

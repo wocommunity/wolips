@@ -82,27 +82,60 @@ public final class WOLipsModel implements IWOLipsModel {
 			WOComponentWoo.class.getName(),
 			WOComponentApi.class.getName(),
 			EOModel.class.getName()};
+	/**
+	 * Comment for <code>WOCOMPONENT_BUNDLE_EXTENSION</code>
+	 */
 	public final static String WOCOMPONENT_BUNDLE_EXTENSION = "wo";
+	/**
+	 * Comment for <code>WOCOMPONENT_WOD_EXTENSION</code>
+	 */
 	public final static String WOCOMPONENT_WOD_EXTENSION = "wod";
+	/**
+	 * Comment for <code>WOCOMPONENT_HTML_EXTENSION</code>
+	 */
 	public final static String WOCOMPONENT_HTML_EXTENSION = "html";
+	/**
+	 * Comment for <code>WOCOMPONENT_WOO_EXTENSION</code>
+	 */
 	public final static String WOCOMPONENT_WOO_EXTENSION = "woo";
+	/**
+	 * Comment for <code>WOCOMPONENT_API_EXTENSION</code>
+	 */
 	public final static String WOCOMPONENT_API_EXTENSION = "api";
+	/**
+	 * Comment for <code>EOMODEL_EXTENSION</code>
+	 */
 	public final static String EOMODEL_EXTENSION = "eomodeld";
+	/**
+	 * Comment for <code>EOENTITY_PLIST_EXTENSION</code>
+	 */
 	public final static String EOENTITY_PLIST_EXTENSION = "plist";
+	/**
+	 * Comment for <code>BUNDLE_TYPES</code>
+	 */
 	public final static String[] BUNDLE_TYPES =
 		new String[] {
 			WOLipsModel.WOCOMPONENT_BUNDLE_EXTENSION,
 			WOLipsModel.EOMODEL_EXTENSION };
+	/**
+	 * Comment for <code>BUNDLE_TYPES_TO_RESOURCE_TYPE_MAPPING</code>
+	 */
 	public final static int[] BUNDLE_TYPES_TO_RESOURCE_TYPE_MAPPING =
 		new int[] {
 			IWOLipsResource.WOCOMPONENT_BUNDLE,
 			IWOLipsResource.EOMODEL };
+	/**
+	 * Comment for <code>FILE_TYPES</code>
+	 */
 	public final static String[] FILE_TYPES =
 		new String[] {
 			WOLipsModel.WOCOMPONENT_WOD_EXTENSION,
 			WOLipsModel.WOCOMPONENT_HTML_EXTENSION,
 			WOLipsModel.WOCOMPONENT_WOO_EXTENSION,
 			WOLipsModel.WOCOMPONENT_API_EXTENSION };
+	/**
+	 * Comment for <code>FILE_TYPES_TO_RESOURCE_TYPE_MAPPING</code>
+	 */
 	public final static int[] FILE_TYPES_TO_RESOURCE_TYPE_MAPPING =
 		new int[] {
 			IWOLipsResource.WOCOMPONENT_WOD,
@@ -126,10 +159,6 @@ public final class WOLipsModel implements IWOLipsModel {
 		super();
 	}
 
-	/**
-	 * @param Returns the IWOLipsResource if the resource is a WOLips resource. Otherwise null is returned.
-	 * @return
-	 */
 	public final IWOLipsResource getWOLipsResource(IResource resource) {
 		if (resource == null || !resource.isAccessible())
 			return null;
@@ -146,13 +175,13 @@ public final class WOLipsModel implements IWOLipsModel {
 			wolipsResource.setCorrespondingResource(resource);
 		} catch (InstantiationException e) {
 			wolipsResource = null;
-			DataSetsPlugin.log(e);
+			DataSetsPlugin.getDefault().getPluginLogger().log(e);
 		} catch (IllegalAccessException e) {
 			wolipsResource = null;
-			DataSetsPlugin.log(e);
+			DataSetsPlugin.getDefault().getPluginLogger().log(e);
 		} catch (ClassNotFoundException e) {
 			wolipsResource = null;
-			DataSetsPlugin.log(e);
+			DataSetsPlugin.getDefault().getPluginLogger().log(e);
 		} finally {
 			clazz = null;
 		}
@@ -167,10 +196,6 @@ public final class WOLipsModel implements IWOLipsModel {
 			== WOLipsModel.UNKNOWN_RESOURCE_TYPE;
 	}
 
-	/**
-	 * @param Returns the IWOLipsResource if the resource is a WOLips resource. Otherwise null is returned.
-	 * @return
-	 */
 	public final IWOLipsCompilationUnit getWOLipsCompilationUnit(ICompilationUnit compilationUnit) {
 		try {
 			if (compilationUnit == null
@@ -178,7 +203,7 @@ public final class WOLipsModel implements IWOLipsModel {
 				|| !compilationUnit.getCorrespondingResource().isAccessible())
 				return null;
 		} catch (JavaModelException e) {
-			DataSetsPlugin.log(e);
+			DataSetsPlugin.getDefault().getPluginLogger().log(e);
 			return null;
 		}
 		final int compilationUnitType =
@@ -196,23 +221,19 @@ public final class WOLipsModel implements IWOLipsModel {
 				compilationUnit);
 		} catch (InstantiationException e) {
 			wolipsCompilationUnit = null;
-			DataSetsPlugin.log(e);
+			DataSetsPlugin.getDefault().getPluginLogger().log(e);
 		} catch (IllegalAccessException e) {
 			wolipsCompilationUnit = null;
-			DataSetsPlugin.log(e);
+			DataSetsPlugin.getDefault().getPluginLogger().log(e);
 		} catch (ClassNotFoundException e) {
 			wolipsCompilationUnit = null;
-			DataSetsPlugin.log(e);
+			DataSetsPlugin.getDefault().getPluginLogger().log(e);
 		} finally {
 			clazz = null;
 		}
 		return wolipsCompilationUnit;
 	}
 
-	/**
-	 * @param resource
-	 * @return Returns true is the ICompilationUnit is a WOLips CompilationUnit.
-	 */
 	public final boolean isWOLipsCompilationUnit(ICompilationUnit compilationUnit) {
 		return this.getWOLipsCompilationUnitType(compilationUnit)
 			== WOLipsModel.UNKNOWN_COMPILATION_UNIT_TYPE;
@@ -269,11 +290,15 @@ public final class WOLipsModel implements IWOLipsModel {
 				compilationUnitType = this.getWOLipsCompilationUnitType(types);
 			}
 		} catch (JavaModelException e) {
-			DataSetsPlugin.log(e);
+			DataSetsPlugin.getDefault().getPluginLogger().log(e);
 		}
 		return compilationUnitType;
 	}
 
+	/**
+	 * @param types
+	 * @return
+	 */
 	public final int getWOLipsCompilationUnitType(IType[] types) {
 		int compilationUnitType = WOLipsModel.UNKNOWN_COMPILATION_UNIT_TYPE;
 		for (int i = 0; i < types.length; i++) {
@@ -285,6 +310,10 @@ public final class WOLipsModel implements IWOLipsModel {
 		return compilationUnitType;
 	}
 
+	/**
+	 * @param type
+	 * @return
+	 */
 	public final int getWOLipsCompilationUnitType(IType type) {
 		int compilationUnitType = WOLipsModel.UNKNOWN_COMPILATION_UNIT_TYPE;
 		for (int i = 0;

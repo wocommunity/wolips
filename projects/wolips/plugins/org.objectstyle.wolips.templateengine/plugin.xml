@@ -23,6 +23,7 @@
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.objectstyle.wolips.tests.core"/>
       <import plugin="org.objectstyle.wolips.datasets"/>
+      <import plugin="org.objectstyle.wolips.commons"/>
    </requires>
 
 </plugin>

@@ -60,8 +60,10 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Dictionary;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
@@ -69,8 +71,11 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.osgi.framework.internal.core.Constants;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.objectstyle.wolips.commons.logging.PluginLogger;
 import org.objectstyle.wolips.datasets.DataSetsPlugin;
+import org.osgi.framework.BundleContext;
 
 /**
  * The main plugin class to be used in the desktop.
@@ -81,6 +86,7 @@ public class TemplateEnginePlugin extends AbstractUIPlugin {
 	private static TemplateEnginePlugin plugin;
 	//Resource bundle.
 	private ResourceBundle resourceBundle;
+	private PluginLogger pluginLogger = null;
 	/**
 	 * Comment for <code>WOApplicationProject</code>
 	 */
@@ -108,7 +114,7 @@ public class TemplateEnginePlugin extends AbstractUIPlugin {
 	 * Comment for <code>EOModel</code>
 	 */
 	public static final String EOModel = "EOModel";
-	
+
 	/**
 	 * The constructor.
 	 */
@@ -116,9 +122,10 @@ public class TemplateEnginePlugin extends AbstractUIPlugin {
 		super();
 		plugin = this;
 		try {
-			resourceBundle= ResourceBundle.getBundle("org.objectstyle.wolips.templateengine.TemplateenginePluginResources");
+			this.resourceBundle = ResourceBundle
+					.getBundle("org.objectstyle.wolips.templateengine.TemplateenginePluginResources");
 		} catch (MissingResourceException x) {
-			resourceBundle = null;
+			this.resourceBundle = null;
 		}
 	}
 
@@ -128,50 +135,22 @@ public class TemplateEnginePlugin extends AbstractUIPlugin {
 	public static TemplateEnginePlugin getDefault() {
 		return plugin;
 	}
-	
-	
+
 	/**
 	 * @return Returns the PluginID.
 	 */
 	public static String getPluginId() {
 		if (plugin != null) {
-			return getDefault().getDescriptor().getUniqueIdentifier();
-		} else
-			return null;
+			Dictionary dictionary = plugin.getBundle().getHeaders();
+			String pluginID = (String) dictionary.get(Constants.BUNDLE_NAME);
+			return pluginID;
+		}
+		return null;
 	}
-
-	/**
-	 * @param status Prints a Status.
-	 */
-	public static void log(IStatus status) {
-		TemplateEnginePlugin.getDefault().getLog().log(status);
-	}
-
-	/**
-	 * Prints a Throwable.
-	 * @param e
-	 */
-	public static void log(Throwable e) {
-		TemplateEnginePlugin.log(new Status(IStatus.ERROR, TemplateEnginePlugin.getPluginId(), IStatus.ERROR, "Internal Error", e)); //$NON-NLS-1$
-	}
-	
-	/**
-	 * Prints a message.
-	 * @param message
-	 */
-	public static void log(String message) {
-		TemplateEnginePlugin.log(
-			new Status(
-				IStatus.ERROR,
-				TemplateEnginePlugin.getPluginId(),
-				IStatus.ERROR,
-				message,
-				null));
-	}
-
 
 	/**
 	 * Returns the workspace instance.
+	 * 
 	 * @return
 	 */
 	public static IWorkspace getWorkspace() {
@@ -179,13 +158,15 @@ public class TemplateEnginePlugin extends AbstractUIPlugin {
 	}
 
 	/**
-	 * Returns the string from the plugin's resource bundle,
-	 * or 'key' if not found.
+	 * Returns the string from the plugin's resource bundle, or 'key' if not
+	 * found.
+	 * 
 	 * @param key
 	 * @return
 	 */
 	public static String getResourceString(String key) {
-		ResourceBundle bundle= TemplateEnginePlugin.getDefault().getResourceBundle();
+		ResourceBundle bundle = TemplateEnginePlugin.getDefault()
+				.getResourceBundle();
 		try {
 			return bundle.getString(key);
 		} catch (MissingResourceException e) {
@@ -195,18 +176,21 @@ public class TemplateEnginePlugin extends AbstractUIPlugin {
 
 	/**
 	 * Returns the plugin's resource bundle,
+	 * 
 	 * @return
 	 */
 	public ResourceBundle getResourceBundle() {
-		return resourceBundle;
+		return this.resourceBundle;
 	}
 
 	/**
 	 * Method baseURL.
+	 * 
 	 * @return URL
 	 */
 	public static URL baseURL() {
-		return TemplateEnginePlugin.getDefault().getDescriptor().getInstallURL();
+		return TemplateEnginePlugin.getDefault().getDescriptor()
+				.getInstallURL();
 	}
 
 	private static IPath templatesPath() {
@@ -217,13 +201,13 @@ public class TemplateEnginePlugin extends AbstractUIPlugin {
 			e.printStackTrace();
 			url = null;
 		}
-		if(url == null)
+		if (url == null)
 			return null;
 		IPath path = new Path(url.getPath());
 		path = path.append("templates");
 		return path;
 	}
-	
+
 	private static IPath userTemplatesPath() {
 		IPath path = DataSetsPlugin.UserHomeLibrayWOLipsPath();
 		path = path.append("Templates");
@@ -234,12 +218,15 @@ public class TemplateEnginePlugin extends AbstractUIPlugin {
 	 */
 	protected static TemplateFolderRoot[] getTemplateFolderRoots() {
 		TemplateFolderRoot[] templateFolderRoots = new TemplateFolderRoot[2];
-		templateFolderRoots[0] = new TemplateFolderRoot(TemplateEnginePlugin.templatesPath());
-		templateFolderRoots[1] = new TemplateFolderRoot(TemplateEnginePlugin.userTemplatesPath());
+		templateFolderRoots[0] = new TemplateFolderRoot(TemplateEnginePlugin
+				.templatesPath());
+		templateFolderRoots[1] = new TemplateFolderRoot(TemplateEnginePlugin
+				.userTemplatesPath());
 		return templateFolderRoots;
 	}
 
-	private static TemplateFolder[] getTemplateFolder(TemplateFolderRoot templateFolderRoot) {
+	private static TemplateFolder[] getTemplateFolder(
+			TemplateFolderRoot templateFolderRoot) {
 		ArrayList templateFolderList = new ArrayList();
 		IPath root = templateFolderRoot.getPath();
 		File file = new File(root.toOSString());
@@ -247,40 +234,71 @@ public class TemplateEnginePlugin extends AbstractUIPlugin {
 			File[] files = file.listFiles();
 			for (int j = 0; j < files.length; j++) {
 				File fileInRootFolder = files[j];
-				if(fileInRootFolder.isDirectory()) {
+				if (fileInRootFolder.isDirectory()) {
 					IPath path = new Path(fileInRootFolder.getAbsolutePath());
 					TemplateFolder templateFolder = new TemplateFolder(path);
 					templateFolderList.add(templateFolder);
 				}
 			}
 		}
-		return (TemplateFolder[])templateFolderList.toArray(new TemplateFolder[templateFolderList.size()]);
+		return (TemplateFolder[]) templateFolderList
+				.toArray(new TemplateFolder[templateFolderList.size()]);
 	}
 	/**
 	 * @param templateFolderRoots
 	 * @param type
 	 * @return The of templates folder array for the given type.
 	 */
-	protected static TemplateFolder[] getTemplateFolder(TemplateFolderRoot[] templateFolderRoots, String type) {
+	protected static TemplateFolder[] getTemplateFolder(
+			TemplateFolderRoot[] templateFolderRoots, String type) {
 		ArrayList templateFolderList = new ArrayList();
-		for(int i = 0; i < templateFolderRoots.length; i++) {
+		for (int i = 0; i < templateFolderRoots.length; i++) {
 			TemplateFolderRoot templateFolderRoot = templateFolderRoots[i];
-			TemplateFolder[] templateFolders = TemplateEnginePlugin.getTemplateFolder(templateFolderRoot);
+			TemplateFolder[] templateFolders = TemplateEnginePlugin
+					.getTemplateFolder(templateFolderRoot);
 			for (int j = 0; j < templateFolders.length; j++) {
 				TemplateFolder templateFolder = templateFolders[j];
-				if(templateFolder.isOfType(type))
-					templateFolderList.add(templateFolder);	
+				if (templateFolder.isOfType(type))
+					templateFolderList.add(templateFolder);
 			}
 		}
-		return (TemplateFolder[])templateFolderList.toArray(new TemplateFolder[templateFolderList.size()]);
+		return (TemplateFolder[]) templateFolderList
+				.toArray(new TemplateFolder[templateFolderList.size()]);
 	}
-	
+
 	/**
 	 * @param type
 	 * @return The of templates folder array for the given type.
 	 */
 	public static TemplateFolder[] getTemplateFolder(String type) {
-		return TemplateEnginePlugin.getTemplateFolder(TemplateEnginePlugin.getTemplateFolderRoots(), type);
+		return TemplateEnginePlugin.getTemplateFolder(TemplateEnginePlugin
+				.getTemplateFolderRoots(), type);
 	}
-	
+
+	/**
+	 * @return Returns the pluginLogger.
+	 */
+	protected PluginLogger getPluginLogger() {
+		return this.pluginLogger;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
+	 */
+	public void start(BundleContext context) throws Exception {
+		super.start(context);
+		this.pluginLogger = new PluginLogger(TemplateEnginePlugin.PLUGIN_ID,
+				false);
+	}
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
+	 */
+	public void stop(BundleContext context) throws Exception {
+		super.stop(context);
+		this.pluginLogger = null;
+	}
 }

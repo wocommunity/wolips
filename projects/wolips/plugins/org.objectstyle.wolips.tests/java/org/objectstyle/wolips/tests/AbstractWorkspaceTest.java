@@ -83,7 +83,7 @@ public abstract class AbstractWorkspaceTest extends TestCase {
 	 */
 	protected void setUp() throws Exception {
 		super.setUp();
-		workspace = ResourcesPlugin.getWorkspace();
+		this.workspace = ResourcesPlugin.getWorkspace();
 	}
 
 	/*
@@ -91,10 +91,10 @@ public abstract class AbstractWorkspaceTest extends TestCase {
 	 */
 	protected void tearDown() throws Exception {
 		super.tearDown();
-		workspace = null;
+		this.workspace = null;
 	}
 
 	protected IWorkspace getWorkspace() {
-		return workspace;
+		return this.workspace;
 	}
 }

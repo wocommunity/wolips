@@ -56,6 +56,7 @@
 package org.objectstyle.wolips.wizards;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Vector;
+
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -67,7 +68,7 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.objectstyle.wolips.datasets.project.WOLipsJavaProject;
+import org.objectstyle.wolips.datasets.adaptable.JavaProject;
 import org.objectstyle.wolips.datasets.resources.IWOLipsModel;
 import org.objectstyle.wolips.templateengine.TemplateDefinition;
 import org.objectstyle.wolips.templateengine.TemplateEngine;
@@ -75,7 +76,6 @@ import org.objectstyle.wolips.templateengine.TemplateEngine;
  * @author mnolte
  * @author uli Creates new eo model file resources from values gathered by
  *         EOModelCreationPage. <br>
- * @see com.neusta.webobjects.eclipse.wizards.EOModelCreationPage
  */
 public class EOModelCreator implements IRunnableWithProgress {
 	private String modelName;
@@ -83,6 +83,9 @@ public class EOModelCreator implements IRunnableWithProgress {
 	private IResource parentResource;
 	/**
 	 * Constructor for EOModelCreator.
+	 * @param parentResource
+	 * @param modelName
+	 * @param adaptorName
 	 */
 	public EOModelCreator(IResource parentResource, String modelName,
 			String adaptorName) {
@@ -90,9 +93,6 @@ public class EOModelCreator implements IRunnableWithProgress {
 		this.modelName = modelName;
 		this.adaptorName = adaptorName;
 	}
-	/**
-	 * @see WOProjectResourceCreator#run(IProgressMonitor)
-	 */
 	public void run(IProgressMonitor monitor) throws InvocationTargetException {
 		try {
 			createEOModel(monitor);
@@ -107,9 +107,6 @@ public class EOModelCreator implements IRunnableWithProgress {
 	 * in @link WOProjectResourceCreator#createResourceFolderInProject(IFolder,
 	 * IProgressMonitor). <br>
 	 * 
-	 * @see com.neusta.webobjects.eclipse.ResourceChangeListener
-	 * @param modelName
-	 * @param adaptorName
 	 * @param monitor
 	 * @throws CoreException
 	 * @throws InvocationTargetException
@@ -117,13 +114,13 @@ public class EOModelCreator implements IRunnableWithProgress {
 	public void createEOModel(IProgressMonitor monitor) throws CoreException,
 			InvocationTargetException {
 		IFolder modelFolder = null;
-		switch (parentResource.getType()) {
+		switch (this.parentResource.getType()) {
 			case IResource.PROJECT :
-				modelFolder = ((IProject) parentResource).getFolder(modelName
+				modelFolder = ((IProject) this.parentResource).getFolder(this.modelName
 						+ "." + IWOLipsModel.EXT_EOMODEL);
 				break;
 			case IResource.FOLDER :
-				modelFolder = ((IFolder) parentResource).getFolder(modelName
+				modelFolder = ((IFolder) this.parentResource).getFolder(this.modelName
 						+ "." + IWOLipsModel.EXT_EOMODEL);
 				break;
 			default :
@@ -131,7 +128,7 @@ public class EOModelCreator implements IRunnableWithProgress {
 						"Wrong parent resource - check validation"));
 		}
 		modelFolder.create(false, true, monitor);
-		String projectName = parentResource.getProject().getName();
+		String projectName = this.parentResource.getProject().getName();
 		String path = modelFolder.getLocation().toOSString();
 		TemplateEngine templateEngine = new TemplateEngine();
 		try {
@@ -141,7 +138,7 @@ public class EOModelCreator implements IRunnableWithProgress {
 			throw new InvocationTargetException(e);
 		}
 		templateEngine.getWolipsContext().setProjectName(projectName);
-		templateEngine.getWolipsContext().setAdaptorName(adaptorName);
+		templateEngine.getWolipsContext().setAdaptorName(this.adaptorName);
 		templateEngine.addTemplate(new TemplateDefinition(
 				"eomodel/index.eomodeld.vm", path, "index.eomodeld", "index.eomodeld"));
 		templateEngine.addTemplate(new TemplateDefinition(
@@ -154,16 +151,14 @@ public class EOModelCreator implements IRunnableWithProgress {
 		}
 		modelFolder.refreshLocal(IResource.DEPTH_INFINITE, monitor);
 		// add adaptor framework
-		if (!"None".equals(adaptorName)) {
-			IJavaProject projectToUpdate = JavaCore.create(parentResource
+		if (!"None".equals(this.adaptorName)) {
+			IJavaProject projectToUpdate = JavaCore.create(this.parentResource
 					.getProject());
 			Vector newAdaptorFrameworkList = new Vector();
-			newAdaptorFrameworkList.add("Java" + adaptorName + "Adaptor."
+			newAdaptorFrameworkList.add("Java" + this.adaptorName + "Adaptor."
 					+ IWOLipsModel.EXT_FRAMEWORK);
-			WOLipsJavaProject wolipsJavaProject = new WOLipsJavaProject(
-					projectToUpdate);
-			IClasspathEntry[] newClasspathEntries = wolipsJavaProject
-					.getClasspathAccessor().addFrameworkListToClasspathEntries(
+			JavaProject javaProject = (JavaProject)projectToUpdate.getAdapter(JavaProject.class);
+			IClasspathEntry[] newClasspathEntries = javaProject.addFrameworkListToClasspathEntries(
 							newAdaptorFrameworkList);
 			try {
 				projectToUpdate.setRawClasspath(newClasspathEntries, null);

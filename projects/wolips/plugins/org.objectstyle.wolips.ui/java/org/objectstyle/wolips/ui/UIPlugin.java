@@ -65,11 +65,7 @@ public class UIPlugin extends AbstractUIPlugin {
 			UIPlugin.PLUGIN_ID, false);
 	/**
 	 * The constructor.
-	 * 
-	 * @param descriptor
 	 */
-	//The constructur is very sensitive. Make sure that your stuff works.
-	//If this cunstructor fails, the whole plugin will be disabled.
 	public UIPlugin() {
 		super();
 		plugin = this;
@@ -98,13 +94,13 @@ public class UIPlugin extends AbstractUIPlugin {
 	public static String getPluginId() {
 		if (plugin != null) {
 			return getDefault().getDescriptor().getUniqueIdentifier();
-		} else
-			return null;
+		}
+		return null;
 	}
 	/**
 	 * @return Returns the pluginLogger.
 	 */
 	public PluginLogger getPluginLogger() {
-		return pluginLogger;
+		return this.pluginLogger;
 	}
 }

@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 The ObjectStyle Group 
+ * Copyright (c) 2002 - 2004 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -89,7 +89,7 @@ public final class EOEntityJava
 		try {
 			this.getCorrespondingCompilationUnit().getCorrespondingResource();
 		} catch (JavaModelException e) {
-			DataSetsPlugin.log(e);
+			DataSetsPlugin.getDefault().getPluginLogger().log(e);
 		}
 		return resource;
 	}
@@ -157,7 +157,7 @@ public final class EOEntityJava
 				}
 				
 			} catch (Exception e) {
-				DataSetsPlugin.log(e);
+				DataSetsPlugin.getDefault().getPluginLogger().log(e);
 			}
 		}
 		return list;
@@ -165,10 +165,9 @@ public final class EOEntityJava
 
 	/**
 	 * Opens the resource in a Editor.
-	 * @param If forceToOpenIntextEditor is set to true the resource opens in a texteditor.
+	 * @paramforceToOpenIntextEditor If forceToOpenIntextEditor is set to true the resource opens in a texteditor.
 	 */
 	public final void open(boolean forceToOpenIntextEditor) {
-		String fileName = this.getCorrespondingResource().getName();
 		IFile index = (IFile) ((IFolder) this.getCorrespondingResource()).findMember("index.eomodeld");
 		WorkbenchUtilitiesPlugin.open(index);
 	}

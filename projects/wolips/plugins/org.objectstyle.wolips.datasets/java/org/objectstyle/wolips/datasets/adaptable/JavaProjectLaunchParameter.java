@@ -96,7 +96,7 @@ public class JavaProjectLaunchParameter extends JavaProjectClasspath {
 		try {
 			projects = mother.getReferencedProjects();
 		} catch (Exception anException) {
-			DataSetsPlugin.log(anException);
+			DataSetsPlugin.getDefault().getPluginLogger().log(anException);
 			return false;
 		}
 		for (int i = 0; i < projects.length; i++) {
@@ -120,7 +120,7 @@ public class JavaProjectLaunchParameter extends JavaProjectClasspath {
 							.getProject()))
 				return true;
 		} catch (Exception anException) {
-			DataSetsPlugin.log(anException);
+			DataSetsPlugin.getDefault().getPluginLogger().log(anException);
 			return false;
 		}
 		return false;
@@ -138,7 +138,7 @@ public class JavaProjectLaunchParameter extends JavaProjectClasspath {
 			if (project.equals(buildProject.getProject()))
 				return true;
 		} catch (Exception anException) {
-			DataSetsPlugin.log(anException);
+			DataSetsPlugin.getDefault().getPluginLogger().log(anException);
 		}
 		return false;
 	}
@@ -152,7 +152,7 @@ public class JavaProjectLaunchParameter extends JavaProjectClasspath {
 		try {
 			return project.getLocation().toOSString().indexOf("-") == -1;
 		} catch (Exception anException) {
-			DataSetsPlugin.log(anException);
+			DataSetsPlugin.getDefault().getPluginLogger().log(anException);
 			return false;
 		}
 	}

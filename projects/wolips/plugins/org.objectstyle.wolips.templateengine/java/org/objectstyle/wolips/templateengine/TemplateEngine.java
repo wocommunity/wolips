@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 The ObjectStyle Group 
+ * Copyright (c) 2002 - 2004 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -81,17 +81,20 @@ public class TemplateEngine implements IRunnableWithProgress {
 	private ArrayList templates = null;
 	private VelocityEngine velocityEngine = null;
 	private WOLipsContext wolipsContext;
+	/**
+	 * @throws Exception
+	 */
 	public void init() throws Exception {
 		/*
 		 * create a new instance of the engine
 		 */
-		velocityEngine = new VelocityEngine();
+		this.velocityEngine = new VelocityEngine();
 		/*
 		 * configure the engine. In this case, we are using ourselves as a
 		 * logger (see logging examples..)
 		 */
-		velocityEngine
-				.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM, this);
+		this.velocityEngine.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM,
+				this);
 		/*
 		 * initialize the engine
 		 */
@@ -102,12 +105,13 @@ public class TemplateEngine implements IRunnableWithProgress {
 		String templatePaths = userHomeWOLipsPath + ", ";
 		Path path = new Path(url.getPath());
 		templatePaths = templatePaths + path.append("templates").toOSString();
-		velocityEngine.setProperty("file.resource.loader.path", templatePaths);
-		velocityEngine.init();
-		context = new VelocityContext();
-		templates = new ArrayList();
-		wolipsContext = new WOLipsContext();
-		this.setPropertyForKey(wolipsContext, WOLipsContext.Key);
+		this.velocityEngine.setProperty("file.resource.loader.path",
+				templatePaths);
+		this.velocityEngine.init();
+		this.context = new VelocityContext();
+		this.templates = new ArrayList();
+		this.wolipsContext = new WOLipsContext();
+		this.setPropertyForKey(this.wolipsContext, WOLipsContext.Key);
 		SAXBuilder builder;
 		Document myContext = null;
 		try {
@@ -125,19 +129,30 @@ public class TemplateEngine implements IRunnableWithProgress {
 			this.setPropertyForKey(myContext, "MyContext");
 		}
 	}
+	/**
+	 * @param template
+	 */
 	public void addTemplate(TemplateDefinition template) {
-		templates.add(template);
+		this.templates.add(template);
 	}
+	/**
+	 * @param templateDefinitions
+	 */
 	public void addTemplates(TemplateDefinition[] templateDefinitions) {
-		if (templates == null)
+		if (this.templates == null) {
 			return;
+		}
 		for (int i = 0; i < templateDefinitions.length; i++) {
 			TemplateDefinition templateDefinition = templateDefinitions[i];
-			templates.add(templateDefinition);
+			this.templates.add(templateDefinition);
 		}
 	}
+	/**
+	 * @param property
+	 * @param key
+	 */
 	public void setPropertyForKey(Object property, String key) {
-		context.put(key, property);
+		this.context.put(key, property);
 	}
 	/*
 	 * (non-Javadoc)
@@ -146,8 +161,8 @@ public class TemplateEngine implements IRunnableWithProgress {
 	 */
 	public void run(IProgressMonitor monitor) throws InvocationTargetException {
 		try {
-			for (int i = 0; i < templates.size(); i++) {
-				TemplateDefinition templateDefinition = (TemplateDefinition) templates
+			for (int i = 0; i < this.templates.size(); i++) {
+				TemplateDefinition templateDefinition = (TemplateDefinition) this.templates
 						.get(i);
 				this.run(templateDefinition);
 			}
@@ -155,7 +170,7 @@ public class TemplateEngine implements IRunnableWithProgress {
 			throw new InvocationTargetException(e);
 		}
 	}
-	
+
 	private void run(TemplateDefinition templateDefinition) {
 		FileWriter writer = null;
 		try {
@@ -163,9 +178,9 @@ public class TemplateEngine implements IRunnableWithProgress {
 			 * make a writer, and merge the template 'against' the context
 			 */
 			String templateName = templateDefinition.getTemplateName();
-			Template template = velocityEngine.getTemplate(templateName);
+			Template template = this.velocityEngine.getTemplate(templateName);
 			writer = new FileWriter(templateDefinition.getDestinationPath());
-			template.merge(context, writer);
+			template.merge(this.context, writer);
 		} catch (Exception e) {
 			System.out.println("Exception : " + e);
 		} finally {
@@ -183,6 +198,6 @@ public class TemplateEngine implements IRunnableWithProgress {
 	 * @return Returns the wolipsContext.
 	 */
 	public WOLipsContext getWolipsContext() {
-		return wolipsContext;
+		return this.wolipsContext;
 	}
 }

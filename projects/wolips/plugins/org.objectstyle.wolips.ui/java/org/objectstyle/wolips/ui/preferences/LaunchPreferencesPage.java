@@ -2,7 +2,7 @@
  *
  * The ObjectStyle Group Software License, Version 1.0
  *
- * Copyright (c) 2002 The ObjectStyle Group
+ * Copyright (c) 2002 - 2004 The ObjectStyle Group
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -106,11 +106,6 @@ public class LaunchPreferencesPage
 		setDescription(PreferencesMessages.getString("LaunchPreferencesPage.description")); //$NON-NLS-1$
 		this.preferencesKey = Preferences.PREF_LAUNCH_GLOBAL;
 	}
-	/**
-	 * Creates preference page controls on demand.
-	 *
-	 * @param parent  the parent for the preference page
-	 */
 	protected Control createContents(Composite ancestor) {
 
 		Composite parent = new Composite(ancestor, SWT.NULL);
@@ -134,12 +129,12 @@ public class LaunchPreferencesPage
 		l1.setLayoutData(data);
 
 		//includeTable = new Table(parent, SWT.CHECK | SWT.BORDER);
-		includeTable = new Table(parent, SWT.CHECK | SWT.BORDER);
+		this.includeTable = new Table(parent, SWT.CHECK | SWT.BORDER);
 		GridData gd = new GridData(GridData.FILL_BOTH);
 		//gd.widthHint = convertWidthInCharsToPixels(30);
 		gd.heightHint = 300;
-		includeTable.setLayoutData(gd);
-		includeTable.addListener(SWT.Selection, new Listener() {
+		this.includeTable.setLayoutData(gd);
+		this.includeTable.addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event e) {
 				handleSelection();
 			}
@@ -152,8 +147,8 @@ public class LaunchPreferencesPage
 		layout.marginWidth = 0;
 		buttons.setLayout(layout);
 
-		addButton = new Button(buttons, SWT.PUSH);
-		addButton.setText(PreferencesMessages.getString("LaunchPreferencesPage.add")); //$NON-NLS-1$
+		this.addButton = new Button(buttons, SWT.PUSH);
+		this.addButton.setText(PreferencesMessages.getString("LaunchPreferencesPage.add")); //$NON-NLS-1$
 		data = new GridData();
 		data.horizontalAlignment = GridData.FILL;
 		data.heightHint =
@@ -163,16 +158,16 @@ public class LaunchPreferencesPage
 		data.widthHint =
 			Math.max(
 				widthHint,
-				addButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x);
-		addButton.setLayoutData(data);
-		addButton.addListener(SWT.Selection, new Listener() {
+				this.addButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x);
+		this.addButton.setLayoutData(data);
+		this.addButton.addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event e) {
 				addIgnore();
 			}
 		});
 
-		removeButton = new Button(buttons, SWT.PUSH);
-		removeButton.setText(PreferencesMessages.getString("LaunchPreferencesPage.remove")); //$NON-NLS-1$
+		this.removeButton = new Button(buttons, SWT.PUSH);
+		this.removeButton.setText(PreferencesMessages.getString("LaunchPreferencesPage.remove")); //$NON-NLS-1$
 		data = new GridData();
 		data.horizontalAlignment = GridData.FILL;
 		data.heightHint =
@@ -182,16 +177,16 @@ public class LaunchPreferencesPage
 		data.widthHint =
 			Math.max(
 				widthHint,
-				removeButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x);
-		removeButton.setLayoutData(data);
-		removeButton.setEnabled(false);
-		removeButton.addListener(SWT.Selection, new Listener() {
+				this.removeButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x);
+		this.removeButton.setLayoutData(data);
+		this.removeButton.setEnabled(false);
+		this.removeButton.addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event e) {
 				removeIgnore();
 			}
 		});
-		changeButton = new Button(buttons, SWT.PUSH);
-		changeButton.setText(PreferencesMessages.getString("LaunchPreferencesPage.change")); //$NON-NLS-1$
+		this.changeButton = new Button(buttons, SWT.PUSH);
+		this.changeButton.setText(PreferencesMessages.getString("LaunchPreferencesPage.change")); //$NON-NLS-1$
 		data = new GridData();
 		data.horizontalAlignment = GridData.FILL;
 		data.heightHint =
@@ -201,15 +196,15 @@ public class LaunchPreferencesPage
 		data.widthHint =
 			Math.max(
 				widthHint,
-				removeButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x);
-		changeButton.setLayoutData(data);
-		changeButton.setEnabled(false);
-		changeButton.addListener(SWT.Selection, new Listener() {
+				this.removeButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x);
+		this.changeButton.setLayoutData(data);
+		this.changeButton.setEnabled(false);
+		this.changeButton.addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event e) {
 				changeArgument();
 			}
 		});
-		fillTable(Preferences.getLaunchInfoForKey(preferencesKey));
+		fillTable(Preferences.getLaunchInfoForKey(this.preferencesKey));
 		Dialog.applyDialogFont(ancestor);
 		return parent;
 	}
@@ -219,21 +214,21 @@ public class LaunchPreferencesPage
 	 * @return whether it is okay to close the preference page
 	 */
 	public boolean performOk() {
-		int count = includeTable.getItemCount();
+		int count = this.includeTable.getItemCount();
 		String[] parameter = new String[count];
 		String[] arguments = new String[count];
 		boolean[] enabled = new boolean[count];
-		TableItem[] items = includeTable.getItems();
+		TableItem[] items = this.includeTable.getItems();
 		for (int i = 0; i < count; i++) {
-			parameter[i] = (String) allParameter.get(i);
-			arguments[i] = (String) allArguments.get(i);
+			parameter[i] = (String) this.allParameter.get(i);
+			arguments[i] = (String) this.allArguments.get(i);
 			enabled[i] = items[i].getChecked();
 		}
 		Preferences.setLaunchInfoForKey(
 			parameter,
 			arguments,
 			enabled,
-			preferencesKey);
+			this.preferencesKey);
 		//Team.setAllIgnores(patterns, enabled);
 		//TeamUIPlugin.broadcastPropertyChange(new PropertyChangeEvent(this, TeamUI.GLOBAL_IGNORES_CHANGED, null, null));
 		return true;
@@ -241,25 +236,22 @@ public class LaunchPreferencesPage
 
 	protected void performDefaults() {
 		super.performDefaults();
-		includeTable.removeAll();
-		String string = PreferencesMessages.getString(preferencesKey);
-		Preferences.setString(preferencesKey, string);
-		fillTable(Preferences.getLaunchInfoForKey(preferencesKey));
+		this.includeTable.removeAll();
+		String string = PreferencesMessages.getString(this.preferencesKey);
+		Preferences.setString(this.preferencesKey, string);
+		fillTable(Preferences.getLaunchInfoForKey(this.preferencesKey));
 	}
 
-	/**
-	 * @param ignore
-	 */
 	private void fillTable(ILaunchInfo[] launchInfoArray) {
-		allArguments = new Vector();
-		allParameter = new Vector();
+		this.allArguments = new Vector();
+		this.allParameter = new Vector();
 		for (int i = 0; i < launchInfoArray.length; i++) {
 			ILaunchInfo launchInfo = launchInfoArray[i];
-			TableItem item = new TableItem(includeTable, SWT.NONE);
+			TableItem item = new TableItem(this.includeTable, SWT.NONE);
 			item.setText(
 				launchInfo.getParameter() + " " + launchInfo.getArgument());
-			allParameter.add(launchInfo.getParameter());
-			allArguments.add(launchInfo.getArgument());
+			this.allParameter.add(launchInfo.getParameter());
+			this.allArguments.add(launchInfo.getArgument());
 			item.setChecked(launchInfo.isEnabled());
 		}
 	}
@@ -278,23 +270,23 @@ public class LaunchPreferencesPage
 		if (parameter.equals("") || argument.equals(""))
 			return; //$NON-NLS-1$
 		// Check if the item already exists
-		TableItem[] items = includeTable.getItems();
+		TableItem[] items = this.includeTable.getItems();
 		for (int i = 0; i < items.length; i++) {
 			if (items[i].getText(1).equals(parameter)) {
 				MessageDialog.openWarning(getShell(), PreferencesMessages.getString("LaunchPreferencesPage.parameterExistsShort"), PreferencesMessages.getString("IgnorePreferencePage.patternExistsLong")); //$NON-NLS-1$ //$NON-NLS-2$
 				return;
 			}
 		}
-		TableItem item = new TableItem(includeTable, SWT.NONE);
+		TableItem item = new TableItem(this.includeTable, SWT.NONE);
 		item.setText(parameter + " " + argument);
-		allParameter.add(parameter);
-		allArguments.add(argument);
+		this.allParameter.add(parameter);
+		this.allArguments.add(argument);
 		item.setChecked(true);
 	}
 
 	void removeIgnore() {
-		int[] selection = includeTable.getSelectionIndices();
-		includeTable.remove(selection);
+		int[] selection = this.includeTable.getSelectionIndices();
+		this.includeTable.remove(selection);
 		if (selection == null)
 			return;
 		int[] newIndices = new int[selection.length];
@@ -304,8 +296,8 @@ public class LaunchPreferencesPage
 		for (int i = 0; i < newIndices.length; i++) {
 			int index = newIndices[i];
 			if (index != last || i == 0) {
-				allParameter.remove(index);
-				allArguments.remove(index);
+				this.allParameter.remove(index);
+				this.allArguments.remove(index);
 			}
 
 			last = index;
@@ -313,28 +305,28 @@ public class LaunchPreferencesPage
 	}
 
 	void changeArgument() {
-		int[] selection = includeTable.getSelectionIndices();
+		int[] selection = this.includeTable.getSelectionIndices();
 		if (selection.length != 1)
 			return;
 		int index = selection[0];
-		InputDialog argumentDialog = new InputDialog(getShell(), PreferencesMessages.getString("LaunchPreferencesPage.enterArgumentShort"), PreferencesMessages.getString("IgnorePreferencePage.enterPatternLong"), allArguments.elementAt(index).toString(), null); //$NON-NLS-1$ //$NON-NLS-2$
+		InputDialog argumentDialog = new InputDialog(getShell(), PreferencesMessages.getString("LaunchPreferencesPage.enterArgumentShort"), PreferencesMessages.getString("IgnorePreferencePage.enterPatternLong"), this.allArguments.elementAt(index).toString(), null); //$NON-NLS-1$ //$NON-NLS-2$
 		argumentDialog.open();
 		if (argumentDialog.getReturnCode() != Window.OK)
 			return;
 		String argument = argumentDialog.getValue();
-		String parameter = (String) allParameter.elementAt(index);
-		TableItem item = includeTable.getItem(index);
+		String parameter = (String) this.allParameter.elementAt(index);
+		TableItem item = this.includeTable.getItem(index);
 		item.setText(parameter + " " + argument);
-		allArguments.setElementAt(argument, index);
+		this.allArguments.setElementAt(argument, index);
 	}
 
 	void handleSelection() {
-		if (includeTable.getSelectionCount() > 0) {
-			changeButton.setEnabled(true);
-			removeButton.setEnabled(true);
+		if (this.includeTable.getSelectionCount() > 0) {
+			this.changeButton.setEnabled(true);
+			this.removeButton.setEnabled(true);
 		} else {
-			changeButton.setEnabled(false);
-			removeButton.setEnabled(false);
+			this.changeButton.setEnabled(false);
+			this.removeButton.setEnabled(false);
 		}
 	}
 }

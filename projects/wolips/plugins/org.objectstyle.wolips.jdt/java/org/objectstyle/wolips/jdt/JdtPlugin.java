@@ -54,15 +54,16 @@
  *
  */
 package org.objectstyle.wolips.jdt;
-import java.net.URL;
+
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
+
 import org.eclipse.jdt.core.ElementChangedEvent;
 import org.eclipse.jdt.core.IElementChangedListener;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.objectstyle.wolips.commons.logging.PluginLogger;
+import org.objectstyle.wolips.jdt.classpath.model.ClasspathModel;
 import org.objectstyle.wolips.jdt.listener.JavaElementChangeListener;
 import org.osgi.framework.BundleContext;
 /**
@@ -74,6 +75,8 @@ public class JdtPlugin extends AbstractUIPlugin {
 	private static JdtPlugin plugin;
 	//Resource bundle.
 	private ResourceBundle resourceBundle;
+	private PluginLogger pluginLogger = null;
+	private ClasspathModel classpathModel = null;
 	/**
 	 * The constructor.
 	 */
@@ -81,58 +84,23 @@ public class JdtPlugin extends AbstractUIPlugin {
 		super();
 		plugin = this;
 		try {
-			resourceBundle = ResourceBundle
+			this.resourceBundle = ResourceBundle
 					.getBundle("org.objectstyle.wolips.jdt.JdtPluginResources");
 		} catch (MissingResourceException x) {
-			resourceBundle = null;
+			this.resourceBundle = null;
 		}
 	}
 	/**
-	 * Returns the shared instance.
+	 * @return the shared instance.
 	 */
 	public static JdtPlugin getDefault() {
 		return plugin;
 	}
+
 	/**
-	 * Returns the PluginID.
-	 * 
-	 * @return
-	 */
-	public static String getPluginId() {
-		if (plugin != null) {
-			return getDefault().getDescriptor().getUniqueIdentifier();
-		} else
-			return JdtPlugin.PLUGIN_ID;
-	}
-	/**
-	 * Prints a Status.
-	 * 
-	 * @param e
-	 */
-	public static void log(IStatus status) {
-		JdtPlugin.getDefault().getLog().log(status);
-	}
-	/**
-	 * Prints a Throwable.
-	 * 
-	 * @param e
-	 */
-	public static void log(Throwable e) {
-		JdtPlugin.log(new Status(IStatus.ERROR, JdtPlugin.getPluginId(),
-				IStatus.ERROR, "Internal Error", e)); //$NON-NLS-1$
-	}
-	/**
-	 * Prints a message.
-	 * 
-	 * @param message
-	 */
-	public static void log(String message) {
-		JdtPlugin.log(new Status(IStatus.ERROR, JdtPlugin.getPluginId(),
-				IStatus.ERROR, message, null));
-	}
-	/**
-	 * Returns the string from the plugin's resource bundle, or 'key' if not
-	 * found.
+	 * @return the string from the plugin's resource bundle, or 'key' if not
+	 *         found.
+	 * @param key
 	 */
 	public static String getResourceString(String key) {
 		ResourceBundle bundle = JdtPlugin.getDefault().getResourceBundle();
@@ -146,15 +114,7 @@ public class JdtPlugin extends AbstractUIPlugin {
 	 * @return Returns the plugin's resource bundle,
 	 */
 	public ResourceBundle getResourceBundle() {
-		return resourceBundle;
-	}
-	/**
-	 * Method baseURL.
-	 * 
-	 * @return URL
-	 */
-	public static URL baseURL() {
-		return JdtPlugin.getDefault().getDescriptor().getInstallURL();
+		return this.resourceBundle;
 	}
 	/*
 	 * (non-Javadoc)
@@ -163,10 +123,36 @@ public class JdtPlugin extends AbstractUIPlugin {
 	 */
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
+		this.pluginLogger = new PluginLogger(JdtPlugin.PLUGIN_ID, false);
+		this.classpathModel = new ClasspathModel();
 		// add element change listener to update project file on classpath
 		// changes
 		IElementChangedListener javaElementChangeListener = new JavaElementChangeListener();
 		JavaCore.addElementChangedListener(javaElementChangeListener,
 				ElementChangedEvent.POST_CHANGE);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
+	 */
+	public void stop(BundleContext context) throws Exception {
+		super.stop(context);
+		this.classpathModel = null;
+		this.pluginLogger = null;
+	}
+	/**
+	 * @return Returns the pluginLogger.
+	 */
+	public PluginLogger getPluginLogger() {
+		return this.pluginLogger;
+	}
+
+	/**
+	 * @return Returns the classpathModel.
+	 */
+	protected ClasspathModel getClasspathModel() {
+		return this.classpathModel;
 	}
 }

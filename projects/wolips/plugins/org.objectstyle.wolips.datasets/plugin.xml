@@ -25,6 +25,7 @@
       <import plugin="org.objectstyle.wolips.woproject"/>
       <import plugin="org.objectstyle.wolips.workbenchutilities"/>
       <import plugin="org.objectstyle.wolips.tests.core"/>
+      <import plugin="org.objectstyle.wolips.commons"/>
    </requires>
 
 <!-- =================================================================================== -->
@@ -36,7 +37,7 @@
            <adapter type="org.objectstyle.wolips.datasets.adaptable.Project"/>
        </factory>
        <factory class="org.objectstyle.wolips.datasets.adaptable.IJavaProjectAdapterFactory"
-           adaptableType="org.eclipse.core.resources.IJavaProject">
+           adaptableType="org.eclipse.jdt.core.IJavaProject">
            <adapter type="org.objectstyle.wolips.datasets.adaptable.JavaProject"/>
        </factory>
    </extension>

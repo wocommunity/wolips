@@ -64,6 +64,9 @@ import junit.framework.TestCase;
  */
 public class TemplateEnginePluginTest extends TestCase {
 	
+	/**
+	 * 
+	 */
 	public void testGetTemplateFolderRoots() {
 		TemplateFolderRoot[] templateFolderRoots = TemplateEnginePlugin
 				.getTemplateFolderRoots();
@@ -71,6 +74,9 @@ public class TemplateEnginePluginTest extends TestCase {
 		assertEquals(1, templateFolderRoots.length);
 	}
 	
+	/**
+	 * 
+	 */
 	public void testGetD2W_ApplicationProjectTemplateFolder() {
 		TemplateFolderRoot[] templateFolderRoots = TemplateEnginePlugin
 				.getTemplateFolderRoots();
@@ -81,6 +87,9 @@ public class TemplateEnginePluginTest extends TestCase {
 		assertEquals(1, templateFolder.length);
 	}
 	
+	/**
+	 * 
+	 */
 	public void testGetWOApplicationProjectTemplateFolder() {
 		TemplateFolderRoot[] templateFolderRoots = TemplateEnginePlugin
 				.getTemplateFolderRoots();
@@ -91,6 +100,9 @@ public class TemplateEnginePluginTest extends TestCase {
 		assertEquals(2, templateFolder.length);
 	}
 	
+	/**
+	 * 
+	 */
 	public void testGetWOFrameworkProjectTemplateFolder() {
 		TemplateFolderRoot[] templateFolderRoots = TemplateEnginePlugin
 				.getTemplateFolderRoots();
@@ -101,6 +113,9 @@ public class TemplateEnginePluginTest extends TestCase {
 		assertEquals(1, templateFolder.length);
 	}
 	
+	/**
+	 * 
+	 */
 	public void testGetJarProjectTemplateFolder() {
 		TemplateFolderRoot[] templateFolderRoots = TemplateEnginePlugin
 				.getTemplateFolderRoots();
@@ -111,6 +126,9 @@ public class TemplateEnginePluginTest extends TestCase {
 		assertEquals(1, templateFolder.length);
 	}
 	
+	/**
+	 * 
+	 */
 	public void testGetWOComponentTemplateFolder() {
 		TemplateFolderRoot[] templateFolderRoots = TemplateEnginePlugin
 				.getTemplateFolderRoots();
@@ -121,6 +139,9 @@ public class TemplateEnginePluginTest extends TestCase {
 		assertEquals(1, templateFolder.length);
 	}
 	
+	/**
+	 * 
+	 */
 	public void testGetEOModelTemplateFolder() {
 		TemplateFolderRoot[] templateFolderRoots = TemplateEnginePlugin
 				.getTemplateFolderRoots();

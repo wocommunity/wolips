@@ -86,9 +86,10 @@ public class ProjectNatures extends ProjectBuilder {
 	private final String ANT_FRAMEWORK_NATURE_ID = "org.objectstyle.wolips.antframeworknature";
 	private final String INCREMENTAL_APPLICATION_NATURE_ID = "org.objectstyle.wolips.incrementalapplicationnature";
 	private final String ANT_APPLICATION_NATURE_ID = "org.objectstyle.wolips.antapplicationnature";
-	private final String[] WOLIPS_NATURES = {INCREMENTAL_FRAMEWORK_NATURE_ID,
-			ANT_FRAMEWORK_NATURE_ID, INCREMENTAL_APPLICATION_NATURE_ID,
-			ANT_APPLICATION_NATURE_ID};
+	private final String[] WOLIPS_NATURES = {
+			this.INCREMENTAL_FRAMEWORK_NATURE_ID, this.ANT_FRAMEWORK_NATURE_ID,
+			this.INCREMENTAL_APPLICATION_NATURE_ID,
+			this.ANT_APPLICATION_NATURE_ID};
 	/**
 	 * @param project
 	 */
@@ -107,9 +108,10 @@ public class ProjectNatures extends ProjectBuilder {
 	 * @return boolean
 	 */
 	private boolean isWOLipsNature(String natureID) {
-		for (int i = 0; i < WOLIPS_NATURES.length; i++) {
-			if (WOLIPS_NATURES[i].equals(natureID))
+		for (int i = 0; i < this.WOLIPS_NATURES.length; i++) {
+			if (this.WOLIPS_NATURES[i].equals(natureID)) {
 				return true;
+			}
 		}
 		return false;
 	}
@@ -120,7 +122,7 @@ public class ProjectNatures extends ProjectBuilder {
 		String[] natures = description.getNatureIds();
 		String[] newNatures = new String[natures.length + 1];
 		System.arraycopy(natures, 0, newNatures, 0, natures.length);
-		newNatures[natures.length] = TargetBuilderNatureID;
+		newNatures[natures.length] = this.TargetBuilderNatureID;
 		description.setNatureIds(newNatures);
 		this.getIProject().setDescription(description, null);
 	}
@@ -162,7 +164,7 @@ public class ProjectNatures extends ProjectBuilder {
 	 * @throws CoreException
 	 */
 	public boolean isApplication() throws CoreException {
-		return (projectHasNature(ANT_APPLICATION_NATURE_ID) || projectHasNature(INCREMENTAL_APPLICATION_NATURE_ID));
+		return (projectHasNature(this.ANT_APPLICATION_NATURE_ID) || projectHasNature(this.INCREMENTAL_APPLICATION_NATURE_ID));
 	}
 	/**
 	 * @return true only if one of the WOLips framework natures is installed.
@@ -170,8 +172,8 @@ public class ProjectNatures extends ProjectBuilder {
 	 * @throws CoreException
 	 */
 	public boolean isFramework() throws CoreException {
-		return (this.projectHasNature(ANT_FRAMEWORK_NATURE_ID) || this
-				.projectHasNature(INCREMENTAL_FRAMEWORK_NATURE_ID));
+		return (this.projectHasNature(this.ANT_FRAMEWORK_NATURE_ID) || this
+				.projectHasNature(this.INCREMENTAL_FRAMEWORK_NATURE_ID));
 	}
 	/**
 	 * @return true only if one of the WOLips ant natures is installed. False
@@ -179,8 +181,8 @@ public class ProjectNatures extends ProjectBuilder {
 	 * @throws CoreException
 	 */
 	public boolean isAnt() throws CoreException {
-		return (this.projectHasNature(ANT_FRAMEWORK_NATURE_ID) || this
-				.projectHasNature(ANT_APPLICATION_NATURE_ID));
+		return (this.projectHasNature(this.ANT_FRAMEWORK_NATURE_ID) || this
+				.projectHasNature(this.ANT_APPLICATION_NATURE_ID));
 	}
 	/**
 	 * @return true only if one of the WOLips incremental natures is installed.
@@ -188,8 +190,8 @@ public class ProjectNatures extends ProjectBuilder {
 	 * @throws CoreException
 	 */
 	public boolean isIncremental() throws CoreException {
-		return (this.projectHasNature(INCREMENTAL_APPLICATION_NATURE_ID) || this
-				.projectHasNature(INCREMENTAL_FRAMEWORK_NATURE_ID));
+		return (this.projectHasNature(this.INCREMENTAL_APPLICATION_NATURE_ID) || this
+				.projectHasNature(this.INCREMENTAL_FRAMEWORK_NATURE_ID));
 	}
 	/**
 	 * @param isFramework
@@ -199,9 +201,9 @@ public class ProjectNatures extends ProjectBuilder {
 	 */
 	public void setAntNature(boolean isFramework) throws CoreException {
 		if (isFramework) {
-			this.setWONature(ANT_FRAMEWORK_NATURE_ID, null);
+			this.setWONature(this.ANT_FRAMEWORK_NATURE_ID, null);
 		} else {
-			this.setWONature(ANT_APPLICATION_NATURE_ID, null);
+			this.setWONature(this.ANT_APPLICATION_NATURE_ID, null);
 		}
 	}
 	/**
@@ -215,9 +217,9 @@ public class ProjectNatures extends ProjectBuilder {
 	public void setIncrementalNature(boolean isFramework, Map buildArgs)
 			throws CoreException {
 		if (isFramework) {
-			this.setWONature(INCREMENTAL_FRAMEWORK_NATURE_ID, buildArgs);
+			this.setWONature(this.INCREMENTAL_FRAMEWORK_NATURE_ID, buildArgs);
 		} else {
-			this.setWONature(INCREMENTAL_APPLICATION_NATURE_ID, buildArgs);
+			this.setWONature(this.INCREMENTAL_APPLICATION_NATURE_ID, buildArgs);
 		}
 	}
 	private void setWONature(String natureID, Map args) throws CoreException {
@@ -291,10 +293,10 @@ public class ProjectNatures extends ProjectBuilder {
 	 */
 	public IProjectNature[] getWOLipsNatures() throws CoreException {
 		Vector naturesVector = new Vector();
-		for (int i = 0; i < WOLIPS_NATURES.length; i++) {
-			if (this.projectHasNature(WOLIPS_NATURES[i])) {
+		for (int i = 0; i < this.WOLIPS_NATURES.length; i++) {
+			if (this.projectHasNature(this.WOLIPS_NATURES[i])) {
 				naturesVector.add(this.getIProject().getNature(
-						WOLIPS_NATURES[i]));
+						this.WOLIPS_NATURES[i]));
 			}
 		}
 		if (naturesVector.size() == 0)
@@ -346,13 +348,14 @@ public class ProjectNatures extends ProjectBuilder {
 	 * @throws CoreException
 	 */
 	public IProjectNature getIncrementalNature() throws CoreException {
-		if (this.getIProject().hasNature(INCREMENTAL_APPLICATION_NATURE_ID)) {
+		if (this.getIProject()
+				.hasNature(this.INCREMENTAL_APPLICATION_NATURE_ID)) {
 			return this.getIProject().getNature(
-					INCREMENTAL_APPLICATION_NATURE_ID);
-		} else if (this.getIProject()
-				.hasNature(INCREMENTAL_FRAMEWORK_NATURE_ID)) {
-			return this.getIProject()
-					.getNature(INCREMENTAL_FRAMEWORK_NATURE_ID);
+					this.INCREMENTAL_APPLICATION_NATURE_ID);
+		} else if (this.getIProject().hasNature(
+				this.INCREMENTAL_FRAMEWORK_NATURE_ID)) {
+			return this.getIProject().getNature(
+					this.INCREMENTAL_FRAMEWORK_NATURE_ID);
 		}
 		return null;
 	}
@@ -361,6 +364,6 @@ public class ProjectNatures extends ProjectBuilder {
 	 * @throws CoreException
 	 */
 	public IProjectNature getTargetbuilderNature() throws CoreException {
-		return this.getIProject().getNature(TargetBuilderNatureID);
+		return this.getIProject().getNature(this.TargetBuilderNatureID);
 	}
 }

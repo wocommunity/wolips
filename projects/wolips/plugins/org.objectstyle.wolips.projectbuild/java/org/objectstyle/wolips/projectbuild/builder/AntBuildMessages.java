@@ -70,6 +70,7 @@ public class AntBuildMessages {
 		ResourceBundle.getBundle(RESOURCE_BUNDLE);
 
 	private AntBuildMessages() {
+		super();
 	}
 
 	/**

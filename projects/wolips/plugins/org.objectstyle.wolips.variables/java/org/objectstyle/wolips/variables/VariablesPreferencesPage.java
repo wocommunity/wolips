@@ -2,7 +2,7 @@
  *
  * The ObjectStyle Group Software License, Version 1.0
  *
- * Copyright (c) 2002 The ObjectStyle Group
+ * Copyright (c) 2002 - 2004 The ObjectStyle Group
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -63,15 +63,14 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 
 /**
  * @author uli
- *
+ * 
  * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates.
- * To enable and disable the creation of type comments go to
- * Window>Preferences>Java>Code Generation.
+ * Window>Preferences>Java>Templates. To enable and disable the creation of type
+ * comments go to Window>Preferences>Java>Code Generation.
  */
-public class VariablesPreferencesPage
-	extends FieldEditorPreferencePage
-	implements IWorkbenchPreferencePage {
+public class VariablesPreferencesPage extends FieldEditorPreferencePage
+		implements
+			IWorkbenchPreferencePage {
 
 	/**
 	 * Constructor
@@ -79,8 +78,8 @@ public class VariablesPreferencesPage
 	public VariablesPreferencesPage() {
 		super(GRID);
 		setPreferenceStore(Preferences.getPreferenceStore());
-		setDescription(
-			PreferencesMessages.getString("VariablesPreferences.PageDescription"));
+		setDescription(PreferencesMessages
+				.getString("VariablesPreferences.PageDescription"));
 		Preferences.setDefaults();
 	}
 
@@ -88,28 +87,25 @@ public class VariablesPreferencesPage
 	 * @see org.eclipse.jface.preference.FieldEditorPreferencePage#createFieldEditors()
 	 */
 	public void createFieldEditors() {
-		addField(
-			new BooleanFieldEditor(
+		addField(new BooleanFieldEditor(
 				Preferences.PREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH,
-				PreferencesMessages.getString(
-					"VariablesPreferences.RebuildWOBuildProperties.Label"),
+				PreferencesMessages
+						.getString("VariablesPreferences.RebuildWOBuildProperties.Label"),
 				getFieldEditorParent()));
 
 	}
 	/**
 	 * Method performOK.
+	 * 
 	 * @return boolean
 	 */
 	public boolean performOk() {
-		if (super.performOk()) {
-			//do some stuff	
-			return true;
-		}
-		return false;
+		return super.performOk();
 	}
 	/**
 	 * @see org.eclipse.ui.IWorkbenchPreferencePage#init(IWorkbench)
 	 */
 	public void init(IWorkbench workbench) {
+		return;
 	}
 }

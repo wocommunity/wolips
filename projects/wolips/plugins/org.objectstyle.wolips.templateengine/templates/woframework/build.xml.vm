@@ -45,17 +45,21 @@
 
 		<woframework name="${framework.name}" destDir="${dest.dir}">
    			<classes dir="${classes.dir}">
+      			<patternset>
+  					<includesfile name="ant/classes.include.patternset"/> 
+					<excludesfile name="ant/classes.exclude.patternset"/> 
+				</patternset>
    			</classes>
    			<wsresources dir=".">
       			<patternset>
-  					<includesfile name="wsresources.include.patternset"/> 
-					<excludesfile name="wsresources.exclude.patternset"/> 
+  					<includesfile name="ant/wsresources.include.patternset"/> 
+					<excludesfile name="ant/wsresources.exclude.patternset"/> 
 				</patternset>
 			</wsresources>
    			<resources dir=".">
       			<patternset>
-  					<includesfile name="resources.include.patternset"/> 
-					<excludesfile name="resources.exclude.patternset"/> 
+  					<includesfile name="ant/resources.include.patternset"/> 
+					<excludesfile name="ant/resources.exclude.patternset"/> 
 				</patternset>
        		</resources>
 			<lib dir=".">

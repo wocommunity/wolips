@@ -55,6 +55,7 @@
  */
 package org.objectstyle.wolips.wizards;
 import java.lang.reflect.InvocationTargetException;
+
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -62,9 +63,10 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.objectstyle.wolips.datasets.project.WOLipsJavaProject;
+import org.objectstyle.wolips.datasets.adaptable.JavaProject;
 import org.objectstyle.wolips.datasets.resources.IWOLipsModel;
 import org.objectstyle.wolips.templateengine.ComponentEngine;
 /**
@@ -79,6 +81,12 @@ public class WOComponentCreator implements IRunnableWithProgress {
 	private IResource parentResource;
 	/**
 	 * Constructor for WOComponentCreator.
+	 * 
+	 * @param parentResource
+	 * @param componentName
+	 * @param createBodyTag
+	 * @param createApiFile
+	 * @param createWooFile
 	 */
 	public WOComponentCreator(IResource parentResource, String componentName,
 			boolean createBodyTag, boolean createApiFile, boolean createWooFile) {
@@ -88,9 +96,6 @@ public class WOComponentCreator implements IRunnableWithProgress {
 		this.createApiFile = createApiFile;
 		this.createWooFile = createWooFile;
 	}
-	/**
-	 * @see WOProjectResourceCreator#run(IProgressMonitor)
-	 */
 	public void run(IProgressMonitor monitor) throws InvocationTargetException {
 		try {
 			createWOComponent(monitor);
@@ -109,35 +114,32 @@ public class WOComponentCreator implements IRunnableWithProgress {
 			throws CoreException, InvocationTargetException {
 		IFolder componentFolder = null;
 		IPath componentJavaPath = null;
-		WOLipsJavaProject wolipsJavaProject = null;
-		switch (parentResource.getType()) {
+		IJavaProject iJavaProject = JavaCore.create(
+				this.parentResource.getProject());
+		JavaProject javaProject = (JavaProject) iJavaProject.getAdapter(JavaProject.class);
+		switch (this.parentResource.getType()) {
 			case IResource.PROJECT :
-				componentFolder = ((IProject) parentResource)
-						.getFolder(componentName + "."
+				componentFolder = ((IProject) this.parentResource)
+						.getFolder(this.componentName + "."
 								+ IWOLipsModel.EXT_COMPONENT);
-				wolipsJavaProject = new WOLipsJavaProject(JavaCore
-						.create((IProject) parentResource));
-				componentJavaPath = wolipsJavaProject.getClasspathAccessor()
-						.getProjectSourceFolder().getLocation();
+				componentJavaPath = javaProject.getProjectSourceFolder()
+						.getLocation();
 				break;
 			case IResource.FOLDER :
-				componentFolder = ((IFolder) parentResource)
-						.getFolder(componentName + "."
+				componentFolder = ((IFolder) this.parentResource)
+						.getFolder(this.componentName + "."
 								+ IWOLipsModel.EXT_COMPONENT);
-				wolipsJavaProject = new WOLipsJavaProject(JavaCore
-						.create(parentResource.getProject()));
-				componentJavaPath = wolipsJavaProject.getClasspathAccessor()
-						.getSubprojectSourceFolder((IFolder) parentResource,
-								true).getLocation();
+				componentJavaPath = javaProject.getSubprojectSourceFolder(
+						(IFolder) this.parentResource, true).getLocation();
 				break;
 			default :
 				throw new InvocationTargetException(new Exception(
 						"Wrong parent resource - check validation"));
 		}
 		componentFolder.create(false, true, monitor);
-		String projectName = parentResource.getProject().getName();
+		String projectName = this.parentResource.getProject().getName();
 		IPath path = componentFolder.getLocation();
-		IPath projectPath = parentResource.getProject().getLocation();
+		IPath projectPath = this.parentResource.getProject().getLocation();
 		ComponentEngine componentEngine = new ComponentEngine();
 		try {
 			componentEngine.init();
@@ -148,15 +150,17 @@ public class WOComponentCreator implements IRunnableWithProgress {
 		//TODO: select template in the user interface
 		componentEngine.setSelectedTemplateName(componentEngine.names()[0]);
 		componentEngine.setProjectName(projectName);
-		componentEngine.setCreateBodyTag(createBodyTag);
-		componentEngine.setComponentName(componentName);
+		componentEngine.setCreateBodyTag(this.createBodyTag);
+		componentEngine.setComponentName(this.componentName);
 		componentEngine.setComponentPath(path);
 		componentEngine.setApiPath(projectPath);
 		componentEngine.setJavaPath(componentJavaPath);
+		componentEngine.setCreateWooFile(this.createWooFile);
+		componentEngine.setCreateApiFile(this.createApiFile);
 		try {
 			componentEngine.run(new NullProgressMonitor());
-			parentResource.getProject().refreshLocal(IResource.DEPTH_INFINITE,
-					monitor);
+			this.parentResource.getProject().refreshLocal(
+					IResource.DEPTH_INFINITE, monitor);
 		} catch (Exception e) {
 			WizardsPlugin.getDefault().getPluginLogger().log(e);
 			throw new InvocationTargetException(e);
