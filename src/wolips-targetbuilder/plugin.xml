@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin
-   id="org.objectstyle.wolips.target"
+   id="org.objectstyle.wolips.targetbuilder"
    name="Target Builder Additions for WOLips"
    version="0.9.4"
    provider-name="objectstyle.org"
