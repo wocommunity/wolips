@@ -53,107 +53,19 @@
  * <http://objectstyle.org/>.
  *
  */
+
 package org.objectstyle.woproject.env;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Properties;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
 /**
  * @author uli
- * Utility for the environment.
+ *
+ * To change this generated comment go to 
+ * Window>Preferences>Java>Code Generation>Code Template
  */
-public class Environment {
-	public static Log log = LogFactory.getLog(Environment.class);
-	/**
-	 * The String NEXT_ROOT.
-	 */
-	public static final String NEXT_ROOT = "NEXT_ROOT";
-	public static final String NEXT_LOCAL_ROOT = "NEXT_LOCAL_ROOT";
-	public static final String NEXT_SYSTEM_ROOT = "NEXT_SYSTEM_ROOT";
+public class WOBuildPropertiesNotFoundException extends Throwable {
 
-	private Properties envVars;
-	/**
-	 * Constructor for Environment.
-	 */
-	protected Environment() {
-		super();
-	}
-	/**
-	 * The values are cached.
-	 * @return environment variables as Properties.
-	 * @throws Exception
-	 */
-	public Properties getEnvVars() {
-		if (envVars != null)
-			return envVars;
-		Process p = null;
-		BufferedReader br = null;
-		String line = null;
-		try {
-			p = Environment.osProcess();
-		} catch (InvocationTargetException e) {
-			log.warn("getEnvVars -> unable to load environment variables", e);
-		}
-		envVars = new Properties();
-		br = new BufferedReader(new InputStreamReader(p.getInputStream()));
-		try {
-			while ((line = br.readLine()) != null) {
-				int idx = line.indexOf('=');
-				String key = line.substring(0, idx);
-				String value = line.substring(idx + 1);
-				envVars.setProperty(key, value);
-			}
-		} catch (IOException e) {
-			log.warn("getEnvVars -> unable to load environment variables", e);
-		}
-		p = null;
-		br = null;
-		line = null;
-		return envVars;
-	}
-	/**
-	 * Method osProcess.
-	 * @return Process
-	 * @throws Exception
-	 */
-	private static Process osProcess() throws InvocationTargetException {
-		Process p = null;
-		Runtime r = null;
-		String OS = null;
-		try {
-			r = Runtime.getRuntime();
-			OS = System.getProperty("os.name").toLowerCase();
-			if (OS.indexOf("windows 9") > -1) {
-				p = r.exec("command.com /c set");
-			} else if (
-				(OS.indexOf("nt") > -1) || (OS.indexOf("windows 2000") > -1)) {
-				p = r.exec("cmd.exe /c set");
-			} else {
-				p = r.exec("env");
-			}
-			//p = null;
-			r = null;
-			OS = null;
-			return p;
-		} catch (IOException e) {
-			p = null;
-			r = null;
-			OS = null;
-			throw new InvocationTargetException(e);
-		}
+	public WOBuildPropertiesNotFoundException() {
+		super("Could not find wobuild.properties. Run the buildfile: build-user-home-wobuild-properties.xml first.");
 	}
 
-	public String userHome() {
-		if (System.getProperty("user.home") != null) {
-			return System.getProperty("user.home");
-		} else if (this.getEnvVars().getProperty("USERPROFILE") != null) {
-			return this.getEnvVars().getProperty("USERPROFILE");
-		} else {
-			log.warn("userHome -> no user home found");
-			return null;
-		}
-	}
 }

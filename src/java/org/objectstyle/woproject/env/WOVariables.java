@@ -66,22 +66,30 @@ import org.apache.commons.logging.LogFactory;
  *
  */
 public class WOVariables {
+	public static final String WO_ROOT = "wo.woroot";
+	public static final String LOCAL_ROOT = "wo.localroot";
+	public static final String WO_WO_SYSTEM_ROOT = "wo.wosystemroot";
+	public static final String WO_WO_LOCAL_ROOT = "wo.wolocalroot";
+	public static final String HOME_ROOT = "wo.homeroot";
+	public static final String ABSOLUTE_ROOT = "wo.absoluteroot";
 	public static Log log = LogFactory.getLog(WOVariables.class);
 	/**
-	 * WOBUILD_PROPERTIES java system property to determine wobuild.properties file
-	 * path
+	 * Key for setting wobuild.properties path by environment
+	 * @see WOVariables
 	 */
-	public static final String WOBUILD_PROPERTIES = "wobuild.properties";
-	private static Properties wobuildProperties;
-	private static File wobuildPropertiesFile;
-	static {
-		init();
-	}
+	public static final String WOBUILD_PROPERTIES = "WOBUILD_PROPERTIES";
+	public static final String WOBUILD_PROPERTIES_FILE_NAME = "wobuild.properties";
+	private Properties wobuildProperties;
+	private File wobuildPropertiesFile;
+	private Environment environment;
+
 	/**
 	 * Constructor for WOVariables.
 	 */
-	private WOVariables() {
+	protected WOVariables(Environment environment) {
 		super();
+		this.environment = environment;
+		this.init();
 	}
 	/**
 	 * Method init.Tries to load wobuild.properties file in the following way
@@ -93,33 +101,32 @@ public class WOVariables {
 	 * <li>try to find wobuild.properties in user.home</li>
 	 * This method is invoked when the class is loaded.
 	 */
-	public static void init() {
+	private void init() {
 		// load properties
 		wobuildProperties = new Properties();
-		// first try system property
-		if (!validateWobuildPropertiesFile(System
-			.getProperty(WOVariables.WOBUILD_PROPERTIES))) {
+		// try user home
+		if (!validateWobuildPropertiesFile(environment.userHome()
+			+ File.separator
+			+ "Library"
+			+ File.separator
+			+ WOVariables.WOBUILD_PROPERTIES_FILE_NAME)) {
 			if (log.isInfoEnabled()) {
-				log.info(
-					"init -> no wobuild.properties in java system properties found");
+				log.info("init -> no wobuild.properties in user home found");
 			}
-			// try environment variable
-			if (!validateWobuildPropertiesFile(Environment
-				.getEnvVars()
-				.getProperty(Environment.WOBUILD_PROPERTIES))) {
+			// try system property
+			if (!validateWobuildPropertiesFile(System
+				.getProperty(WOVariables.WOBUILD_PROPERTIES))) {
 				if (log.isInfoEnabled()) {
 					log.info(
-						"init -> no wobuild.properties in environment found");
+						"init -> no wobuild.properties in java system properties found");
 				}
-				// try user home
-				if (!validateWobuildPropertiesFile(Environment.userHome()
-					+ File.separator
-					+ "Library"
-					+ File.separator
-					+ WOVariables.WOBUILD_PROPERTIES)) {
+				// try environment variable
+				if (!validateWobuildPropertiesFile(environment
+					.getEnvVars()
+					.getProperty(WOVariables.WOBUILD_PROPERTIES))) {
 					if (log.isInfoEnabled()) {
 						log.info(
-							"init -> no wobuild.properties in user home found");
+							"init -> no wobuild.properties in environment found");
 					}
 				}
 			}
@@ -152,7 +159,7 @@ public class WOVariables {
 			}
 		}
 	}
-	private static boolean validateWobuildPropertiesFile(String fileName) {
+	private boolean validateWobuildPropertiesFile(String fileName) {
 		if (fileName != null) {
 			wobuildPropertiesFile = new File(fileName);
 			if (wobuildPropertiesFile.exists()
@@ -167,10 +174,10 @@ public class WOVariables {
 	 * Method nextRoot. NEXT_ROOT defined in wobuild.properties (key: <code>wo.
 	 * woroot</code>)
 	 * * @deprecated  Not for public use in the future.
-     * Use localRoot() and systemRoot() instead. 
+	 * Use localRoot() and systemRoot() instead. 
 	 * @return String
 	 */
-	public static String nextRoot() {
+	public String nextRoot() {
 		return wobuildProperties.getProperty("wo.woroot");
 	}
 	/**
@@ -178,7 +185,7 @@ public class WOVariables {
 	 * <code>wo.localroot</code>)
 	 * @return String
 	 */
-	public static String localRoot() {
+	public String localRoot() {
 		return wobuildProperties.getProperty("wo.wolocalroot");
 	}
 	/**
@@ -186,14 +193,14 @@ public class WOVariables {
 	 * <code>wo.systemroot</code>)
 	 * @return String
 	 */
-	public static String systemRoot() {
+	public String systemRoot() {
 		return wobuildProperties.getProperty("wo.wosystemroot");
 	}
 	/**
 	 * Method developerDir.
 	 * @return String
 	 */
-	public static String developerDir() {
+	public String developerDir() {
 		/*
 		String returnValue = "";
 		if (Environment.isNextRootSet())
@@ -201,13 +208,13 @@ public class WOVariables {
 		returnValue = returnValue + File.separator + "Developer";
 		return returnValue;
 		*/
-		return nextRoot() + File.separator + "Developer";
+		return systemRoot() + File.separator + "Developer";
 	}
 	/**
 	 * Method developerAppsDir.
 	 * @return String
 	 */
-	public static String developerAppsDir() {
+	public String developerAppsDir() {
 		/*
 		String returnValue = "";
 		if (Environment.isNextRootSet())
@@ -220,7 +227,7 @@ public class WOVariables {
 				+ "Applications";
 		return returnValue;
 		*/
-		return nextRoot()
+		return systemRoot()
 			+ File.separator
 			+ "Developer"
 			+ File.separator
@@ -230,7 +237,7 @@ public class WOVariables {
 	 * Method libraryDir.
 	 * @return String
 	 */
-	public static String libraryDir() {
+	public String libraryDir() {
 		/*
 		String returnValue = "";
 		returnValue = Environment.nextRoot() + File.separator + "Library";
@@ -242,7 +249,7 @@ public class WOVariables {
 	 * Method localDeveloperDir.
 	 * @return String
 	 */
-	public static String localDeveloperDir() {
+	public String localDeveloperDir() {
 		/*
 		String returnValue = "";
 		
@@ -258,7 +265,7 @@ public class WOVariables {
 	 * Method localLibraryDir.
 	 * @return String
 	 */
-	public static String localLibraryDir() {
+	public String localLibraryDir() {
 		/*
 		String returnValue = "";
 		
@@ -309,20 +316,78 @@ public class WOVariables {
 		return "WebServerResources";
 	}
 	/**
-	 * Method classPathVariableToExpand.
-	 * @param aString
-	 * @return String
+	 * @return String with path to the foundation.jar
 	 */
-	/* mn: moved to WOLipsUtils
-	public static String classPathVariableToExpand(String aString) {
-		if (aString == null)
-			return null;
-		if (aString.equals("webobjects.next.root"))
-			return WOVariables.nextRoot();
-		if (aString.equals("webobjects.system.library.dir"))
-			return WOVariables.libraryDir();
-		//WOLipsLog.log("Can not resolve classpath variable: " + aString);
+	public String foundationJarPath() {
+		return "file:///"
+			+ systemRoot()
+			+ "/Library/Frameworks/JavaFoundation.framework/Resources/Java/javafoundation.jar";
+	}
+	/**
+		 * Method encodePathForFile.
+		 * @param aFile
+		 * @return String
+		 */
+	public String encodePathForFile(File aFile) {
+		String aPrefix = null;
+		String aPath = null;
+		try {
+			//aPath = aFile.getCanonicalPath();
+			//u.k. the CanonicalPath will resolve links this will
+			//result in path with /Versions/a in it
+			aPath = aFile.getPath();
+			//            aPrefix = this.getAppRootPath();
+			//            if((aPrefix != null) && (aPrefix.length() > 1) && (aPath.startsWith(aPrefix))) {
+			//            	return "APPROOT" + aPath.substring(aPrefix.length());
+			//            }
+			aPrefix = localRoot();
+			if (log.isInfoEnabled()) {
+				log.info("aPrefix + aPath " + aPrefix + " " + aPath);
+			}
+			if ((aPrefix != null)
+				&& (aPrefix.length() > 1)
+				&& (aPath.startsWith(aPrefix))) {
+				return "LOCALROOT" + aPath.substring(aPrefix.length());
+			}
+			aPrefix = environment.userHome();
+			if (log.isInfoEnabled()) {
+				log.info("aPrefix + aPath " + aPrefix + " " + aPath);
+			}
+			if ((aPrefix != null)
+				&& (aPrefix.length() > 1)
+				&& (aPath.startsWith(aPrefix))) {
+				return "HOMEROOT" + aPath.substring(aPrefix.length());
+			}
+			aPrefix = systemRoot();
+			if (log.isInfoEnabled()) {
+				log.info("aPrefix + aPath " + aPrefix + " " + aPath);
+			}
+			if ((aPrefix != null)
+				&& (aPrefix.length() > 1)
+				&& (aPath.startsWith(aPrefix))) {
+				return "WOROOT" + aPath.substring(aPrefix.length());
+			}
+			return aPath;
+		} catch (Exception anException) {
+			if (log.isInfoEnabled()) {
+				log.info("Exception " + anException);
+			}
+		} finally {
+			aPrefix = null;
+			aPath = null;
+		}
 		return null;
 	}
-	*/
+	/**
+	 * @return Properties
+	 */
+	private Properties getWOBuildProperties() {
+		return wobuildProperties;
+	}
+	/**
+	 * @return boolean
+	 */
+	public boolean foundWOBuildProperties() {
+		return (wobuildPropertiesFile != null);
+	}
 }

@@ -66,6 +66,8 @@ import org.apache.tools.ant.taskdefs.Chmod;
 import org.apache.tools.ant.taskdefs.Copy;
 import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.PatternSet;
+import org.objectstyle.woproject.env.WOBuildPropertiesNotFoundException;
+import org.objectstyle.woproject.env.WOEnvironment;
 
 /**
  * Ant task to build WebObjects application. For detailed instructions go to the
@@ -92,6 +94,7 @@ public class WOApplication extends WOTask {
 	protected ArrayList otherClasspathSets = new ArrayList();
 	protected boolean stdFrameworks = true;
 	protected boolean embedStdFrameworks = false;
+	protected WOEnvironment woEnvironment;
 
 	public String getPrincipalClass() {
 		String principalClass = super.getPrincipalClass();
@@ -225,11 +228,11 @@ public class WOApplication extends WOTask {
 	 * Returns a list of standard frameworks as a FrameworkSet. */
 	public FrameworkSet standardSet() {
 		FrameworkSet set = new FrameworkSet();
-		WOPropertiesHandler aHandler =
-			new WOPropertiesHandler(this.getProject());
-
 		set.setProject(this.getProject());
-		set.setRoot(new File(aHandler.getWORootPath() + "/Library/Frameworks"));
+		set.setRoot(
+			new File(
+				this.getWOEnvironment().getWOVariables().systemRoot()
+					+ "/Library/Frameworks"));
 
 		for (int i = 0; i < stdFrameworkNames.length; i++) {
 			String path =
@@ -337,7 +340,23 @@ public class WOApplication extends WOTask {
 		return otherClasspathSet;
 	}
 
+	/**
+	 * @return List
+	 */
 	public List getOtherClasspath() {
 		return otherClasspathSets;
 	}
+	/**
+	 * @return WOEnvironment
+	 */
+	public WOEnvironment getWOEnvironment() {
+		if (woEnvironment != null)
+			return woEnvironment;
+		woEnvironment = new WOEnvironment();
+		if (!woEnvironment.getWOVariables().foundWOBuildProperties())
+			this.getProject().fireBuildFinished(
+				new WOBuildPropertiesNotFoundException());
+		return woEnvironment;
+	}
+
 }

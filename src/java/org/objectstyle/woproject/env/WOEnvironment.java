@@ -1,8 +1,8 @@
 /* ====================================================================
+ * 
+ * The ObjectStyle Group Software License, Version 1.0 
  *
- * The ObjectStyle Group Software License, Version 1.0
- *
- * Copyright (c) 2002 The ObjectStyle Group
+ * Copyright (c) 2002 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,15 +18,15 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution, if
- *    any, must include the following acknowlegement:
- *       "This product includes software developed by the
+ *    any, must include the following acknowlegement:  
+ *       "This product includes software developed by the 
  *        ObjectStyle Group (http://objectstyle.org/)."
  *    Alternately, this acknowlegement may appear in the software itself,
  *    if and wherever such third-party acknowlegements normally appear.
  *
- * 4. The names "ObjectStyle Group" and "Cayenne"
+ * 4. The names "ObjectStyle Group" and "Cayenne" 
  *    must not be used to endorse or promote products derived
- *    from this software without prior written permission. For written
+ *    from this software without prior written permission. For written 
  *    permission, please contact andrus@objectstyle.org.
  *
  * 5. Products derived from this software may not be called "ObjectStyle"
@@ -54,48 +54,63 @@
  *
  */
 
-package org.objectstyle.woproject.wo;
+package org.objectstyle.woproject.env;
 
 import java.io.File;
 
 import org.apache.tools.ant.Project;
-import org.objectstyle.woproject.ant.WOPropertiesHandler;
+import org.objectstyle.woproject.env.WOVariables;
 
 /**
  * @author uli
  *
- * Class to get the current installed WO version
+ * To prevent static variables create an instance of WOEnvironment
+ * to access the environment and WOVariables.
  */
-public abstract class WOVersion {
 
+public final class WOEnvironment extends Environment {
+	private Environment environment;
+	private WOVariables woVariables;
+
+	public WOEnvironment() {
+		super();
+		woVariables = new WOVariables(this);
+	}
+
+	/**
+	 * @return WOVariables
+	 */
+	public WOVariables getWOVariables() {
+		return woVariables;
+	}
 	/**
 	 * Method wo5or51 returns true if the installe WO version is 5.0 or 5.1.
 	 * @return boolean
 	 */
-	public static boolean wo5or51(Project project) {
-		return (WOVersion.bootstrap(project) == null);
+	public boolean wo5or51(Project project) {
+		return (this.bootstrap(project) == null);
 	}
 	/**
 	 * Method wo52 returns true if the installe WO version is 5.2.
 	 * @return boolean
 	 */
-	public static boolean wo52(Project project) {
-		return !WOVersion.wo5or51(project);
+	public boolean wo52(Project project) {
+		return !this.wo5or51(project);
 	}
 	/**
 	 * Method bootstrap returns the bootstrap.jar if it exists.
 	 * @param project
 	 * @return File
 	 */
-	public static File bootstrap(Project project) {
+	public File bootstrap(Project project) {
 		File aFile = null;
-		aFile = WOVersion.macBootstrap(project);
+		aFile = this.macBootstrap(project);
 		if ((aFile != null) && (aFile.exists()))
 			return aFile;
-		aFile = WOVersion.winBootstrap(project);
+		aFile = this.winBootstrap(project);
 		if ((aFile != null) && (aFile.exists()))
 			return aFile;
-		aFile = WOVersion.otherBootstrap(project);
+		aFile = this.otherBootstrap(project);
 		if ((aFile != null) && (aFile.exists()))
 			return aFile;
 		return null;
@@ -105,7 +120,7 @@ public abstract class WOVersion {
 	 * @param project
 	 * @return File
 	 */
-	private static File macBootstrap(Project project) {
+	private File macBootstrap(Project project) {
 		File aFile = null;
 		try {
 			aFile =
@@ -122,13 +137,12 @@ public abstract class WOVersion {
 	 * @param project
 	 * @return File
 	 */
-	private static File winBootstrap(Project project) {
+	private File winBootstrap(Project project) {
 		File aFile = null;
 		try {
-			WOPropertiesHandler aHandler = new WOPropertiesHandler(project);
 			aFile =
 				new File(
-					aHandler.getWORootPath()
+					this.getWOVariables().systemRoot()
 						+ "/Library/WebObjects/JavaApplications/wotaskd.woa/WOBootstrap.jar");
 			if ((aFile != null) && (aFile.exists()))
 				return aFile;
@@ -142,13 +156,12 @@ public abstract class WOVersion {
 	 * @param project
 	 * @return File
 	 */
-	private static File otherBootstrap(Project project) {
+	private File otherBootstrap(Project project) {
 		File aFile = null;
 		try {
-			WOPropertiesHandler aHandler = new WOPropertiesHandler(project);
 			aFile =
 				new File(
-					aHandler.getWORootPath()
+					this.getWOVariables().systemRoot()
 						+ "\\Library\\WebObjects\\JavaApplications\\wotaskd.woa\\WOBootstrap.jar");
 			if ((aFile != null) && (aFile.exists()))
 				return aFile;

@@ -70,7 +70,6 @@ import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.FilterSet;
 import org.apache.tools.ant.types.FilterSetCollection;
 import org.apache.tools.ant.types.PatternSet;
-import org.objectstyle.woproject.wo.WOVersion;
 
 /**
  * Subclass of ProjectFormat that defines file copying 
@@ -130,13 +129,17 @@ public class AppFormat extends ProjectFormat {
 	 * Prepares all path values needed for substitutions.
 	 */
 	private void prepare52() {
-		if (WOVersion.wo52(this.getApplicatonTask().getProject())) {
+		if (this
+			.getApplicatonTask()
+			.getWOEnvironment()
+			.wo52(this.getApplicatonTask().getProject())) {
 			Copy cp = new Copy();
 			//cp.setOwningTarget(getApplicatonTask().getProject().getDefaultTarget());
 			cp.setProject(getApplicatonTask().getProject());
 			cp.setTaskName("copy bootstrap");
 			cp.setFile(
-				WOVersion.bootstrap(this.getApplicatonTask().getProject()));
+				this.getApplicatonTask().getWOEnvironment().bootstrap(
+					this.getApplicatonTask().getProject()));
 			cp.setTodir(getApplicatonTask().taskDir());
 			cp.execute();
 		}
@@ -154,35 +157,33 @@ public class AppFormat extends ProjectFormat {
 		String[] files = null;
 		StringBuffer buf = null;
 		try {
-		fs = new FileSet();
-		fs.setDir(getApplicatonTask().contentsDir());
-		include = fs.createInclude();
-		include.setName("**/Resources/Java/**/*.jar");
+			fs = new FileSet();
+			fs.setDir(getApplicatonTask().contentsDir());
+			include = fs.createInclude();
+			include.setName("**/Resources/Java/**/*.jar");
 
-		ds = fs.getDirectoryScanner(task.getProject());
-		files = ds.getIncludedFiles();
-		buf = new StringBuffer();
+			ds = fs.getDirectoryScanner(task.getProject());
+			files = ds.getIncludedFiles();
+			buf = new StringBuffer();
 
-		// prepend the path with Resources/Java (for CompilerProxy support)
-		buf
-			.append("APPROOT")
-			.append(File.separatorChar)
-			.append("Resources")
-			.append(File.separatorChar)
-			.append("Java")
-			.append(File.separatorChar)
-			.append("\r\n");
-		for (int i = 0; i < files.length; i++) {
-			buf.append("APPROOT").append(File.separatorChar).append(
-				files[i]).append(
-				"\r\n");
-		}
-		return buf.toString();
-		}
-		catch  (Exception anException) {
-		log(anException.getMessage(), Project.MSG_WARN);			
-		}
-		finally {
+			// prepend the path with Resources/Java (for CompilerProxy support)
+			buf
+				.append("APPROOT")
+				.append(File.separatorChar)
+				.append("Resources")
+				.append(File.separatorChar)
+				.append("Java")
+				.append(File.separatorChar)
+				.append("\r\n");
+			for (int i = 0; i < files.length; i++) {
+				buf.append("APPROOT").append(File.separatorChar).append(
+					files[i]).append(
+					"\r\n");
+			}
+			return buf.toString();
+		} catch (Exception anException) {
+			log(anException.getMessage(), Project.MSG_WARN);
+		} finally {
 			fs = null;
 			include = null;
 			ds = null;
@@ -203,7 +204,6 @@ public class AppFormat extends ProjectFormat {
 
 		List frameworkSets = getApplicatonTask().getFrameworkSets();
 		Project project = task.getProject();
-		WOPropertiesHandler aHandler = new WOPropertiesHandler(project);
 
 		// track included jar files to avoid double entries
 		Vector jarSet = new Vector();
@@ -252,7 +252,15 @@ public class AppFormat extends ProjectFormat {
 			for (int i = 0; i < jarSet.size(); i++) {
 				aFile = (File) jarSet.elementAt(i);
 				log(": Framework JAR " + aFile, Project.MSG_VERBOSE);
-				buf.append(aHandler.encodePathForFile(aFile)).append("\r\n");
+				buf
+					.append(
+						this
+							.getApplicatonTask()
+							.getWOEnvironment()
+							.getWOVariables()
+							.encodePathForFile(
+							aFile))
+					.append("\r\n");
 			}
 			return buf.toString();
 		} catch (Exception anException) {
@@ -273,7 +281,6 @@ public class AppFormat extends ProjectFormat {
 
 		List classpathSets = getApplicatonTask().getOtherClasspath();
 		Project project = task.getProject();
-		WOPropertiesHandler aHandler = new WOPropertiesHandler(project);
 
 		// track included paths to avoid double entries
 		HashSet pathSet = new HashSet();
@@ -294,8 +301,15 @@ public class AppFormat extends ProjectFormat {
 		size = someFiles.length;
 		for (int i = 0; i < size; i++) {
 			//log(": Framework JAR " + (File) someFiles[i], Project.MSG_VERBOSE);
-			buf.append(aHandler.encodePathForFile((File) someFiles[i])).append(
-				"\r\n");
+			buf
+				.append(
+					this
+						.getApplicatonTask()
+						.getWOEnvironment()
+						.getWOVariables()
+						.encodePathForFile(
+						(File) someFiles[i]))
+				.append("\r\n");
 		}
 		return buf.toString();
 	}
@@ -491,7 +505,10 @@ public class AppFormat extends ProjectFormat {
 	 * @return String
 	 */
 	public String woappPlusVersion() {
-		if (WOVersion.wo5or51(this.getApplicatonTask().getProject()))
+		if (this
+			.getApplicatonTask()
+			.getWOEnvironment()
+			.wo5or51(this.getApplicatonTask().getProject()))
 			return "woapp";
 		return "woapp_52";
 	}

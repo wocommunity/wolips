@@ -69,6 +69,7 @@ import org.apache.tools.ant.taskdefs.Execute;
  * initializing them with defaults if needed.
  *
  * @author Andrei Adamchik
+ * @deprecated use WOVariables instead
  */
 public class WOPropertiesHandler extends ProjectComponent {
 	public static final String WO_ROOT = "wo.woroot";
