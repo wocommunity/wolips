@@ -50,18 +50,6 @@
             </metainf>
         </jar>
             
-        <!-- Copy WOProject JAR's -->
-        <copy todir="${wolips.dist}/lib">
-             <fileset dir="${woproject.dist}/lib">
-             	<exclude name="${lib.junit}"/>
-             	<exclude name="${lib.log4j}"/>
-             	<exclude name="${lib.cayenne}"/>
-             	<exclude name="${lib.commons-logging}"/>
-             	<exclude name="ant.jar"/>
-             	<exclude name="woproject-tests.jar"/>
-             </fileset>
-         </copy>
-         <copy file="${woproject.dist}/lib/${lib.cayenne}" tofile="${wolips.dist}/lib/cayenne.jar"/>
          <copy file="${woproject.dist}/lib/${lib.commons-logging}" tofile="${wolips.dist}/lib/commons-logging.jar"/>
          <copy file="${woproject.dist}/lib/${lib.log4j}" tofile="${wolips.dist}/lib/log4j.jar"/>
     </target>

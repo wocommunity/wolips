@@ -1,0 +1,87 @@
+<?xml version="1.0"?>
+
+<!-- ======================================================== -->
+<!--                 WOLips Ant file.                         -->
+<!-- ======================================================== -->
+<project name="woproject-wolips-woproject" default="java" basedir=".">
+
+    <!-- ============================================= -->
+    <!-- Define CLASSPATH settings.                    -->
+    <!-- ============================================= -->
+    <target name="defineClasspath" if="wolips.build.woproject">
+        <!-- Copy WOProject JAR's -->
+        <copy todir="${wolips.woproject.dist}/lib">
+             <fileset dir="${woproject.dist}/lib">
+             	<exclude name="${lib.junit}"/>
+             	<exclude name="${lib.log4j}"/>
+             	<exclude name="${lib.cayenne}"/>
+             	<exclude name="${lib.commons-logging}"/>
+             	<exclude name="ant.jar"/>
+             	<exclude name="woproject-tests.jar"/>
+             </fileset>
+         </copy>
+    </target>
+
+    <target name="java" depends="prepare" if="wolips.build.woproject">
+
+    </target>
+
+    <target name="dist" depends="prepare,java,doc,api" if="wolips.build.woproject">
+        <copy todir="${wolips.woproject.dist}">
+             <fileset dir="src/wolips-woproject">
+             	<exclude name="**/java/**"/>
+             	<exclude name="**/lib/**"/>
+             	<exclude name="**/xdocs/**"/>
+             	<exclude name="**/docs/**"/>
+             	<exclude name=".project"/>
+             	<exclude name=".classpath"/>
+             	<exclude name="build.properties"/>
+             </fileset>
+         </copy>
+      <jar jarfile="${wolips.woproject.dist}.jar">
+     	<fileset dir="${wolips.woproject.dist}">
+     	</fileset>
+     </jar>
+         
+    </target>
+         
+         
+         
+    <!-- ============================================= -->
+    <!-- Sets up build and distribution directories.   -->
+    <!-- ============================================= -->
+    <target name="prepare" depends="defineClasspath" if="wolips.build.woproject">
+        <mkdir dir="${build}/wolips-woproject"/>
+        <mkdir dir="${wolips.woproject.dist}/lib"/>
+    </target>
+
+
+    <!-- ============================================= -->
+    <!-- Deletes temporary files.                      -->
+    <!-- ============================================= -->
+    <target name="clean">
+        <delete dir="${build}/wolips-woproject"/>
+        <delete dir="${wolips.woproject.dist}"/>
+    </target>
+    
+    
+    <!-- ============================================= -->
+    <!-- Deploys WOLips web site files in a local      -->
+    <!-- directory.                                    -->
+    <!-- ============================================= -->
+    <target name="deploy-web" depends="prepare,site-doc" if="deploy.web"/>
+    
+    
+    <!-- ========================================== -->
+    <!-- Builds API documenatation.                 -->
+    <!-- ========================================== -->
+    <target name="api" depends="prepare" if="wolips.build.woproject">
+    </target>
+    
+    
+    <target name="doc" depends="prepare" if="wolips.build.woproject">
+    </target>
+    
+    <target name="site-doc" depends="prepare" if="wolips.build.woproject">
+    </target>
+</project>

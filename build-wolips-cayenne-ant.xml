@@ -1,0 +1,77 @@
+<?xml version="1.0"?>
+
+<!-- ======================================================== -->
+<!--                 WOLips Ant file.                         -->
+<!-- ======================================================== -->
+<project name="woproject-wolips-cayenne-ant" default="java" basedir=".">
+
+    <!-- ============================================= -->
+    <!-- Define CLASSPATH settings.                    -->
+    <!-- ============================================= -->
+    <target name="defineClasspath" if="wolips.build.cayenne.ant">
+        <!-- Copy WOProject JAR's -->
+        <copy file="${woproject.dist}/lib/${lib.cayenne}" tofile="${wolips.cayenne.ant.dist}/lib/cayenne.jar"/>
+    </target>
+
+    <target name="java" depends="prepare" if="wolips.build.cayenne.ant">
+    </target>
+
+    <target name="dist" depends="prepare,java,doc,api" if="wolips.build.cayenne.ant">
+        <copy todir="${wolips.cayenne.ant.dist}">
+             <fileset dir="src/wolips-cayenne-ant">
+             	<exclude name="**/java/**"/>
+             	<exclude name="**/lib/**"/>
+             	<exclude name="**/xdocs/**"/>
+             	<exclude name="**/docs/**"/>
+             	<exclude name=".project"/>
+             	<exclude name=".classpath"/>
+             	<exclude name="build.properties"/>
+             </fileset>
+         </copy>
+      <jar jarfile="${wolips.cayenne.ant.dist}.jar">
+     	<fileset dir="${wolips.cayenne.ant.dist}">
+     	</fileset>
+     </jar>
+         
+    </target>
+         
+         
+         
+    <!-- ============================================= -->
+    <!-- Sets up build and distribution directories.   -->
+    <!-- ============================================= -->
+    <target name="prepare" depends="defineClasspath" if="wolips.build.cayenne.ant">
+        <mkdir dir="${build}/wolips-cayenne-ant"/>
+        <mkdir dir="${wolips.cayenne.ant.dist}/lib"/>
+    </target>
+
+
+    <!-- ============================================= -->
+    <!-- Deletes temporary files.                      -->
+    <!-- ============================================= -->
+    <target name="clean">
+        <delete dir="${build}/wolips-cayenne-ant"/>
+        <delete dir="${wolips.cayenne.ant.dist}"/>
+    </target>
+    
+    
+    <!-- ============================================= -->
+    <!-- Deploys WOLips web site files in a local      -->
+    <!-- directory.                                    -->
+    <!-- ============================================= -->
+    <target name="deploy-web" depends="prepare,site-doc" if="deploy.web"/>
+    
+    
+    <!-- ========================================== -->
+    <!-- Builds API documenatation.                 -->
+    <!-- ========================================== -->
+    <target name="api" depends="prepare" if="wolips.build.cayenne.ant">
+    </target>
+    
+    
+    <target name="doc" depends="prepare" if="wolips.build.cayenne.ant">
+    </target>
+    
+    <target name="site-doc" depends="prepare" if="wolips.build.cayenne.ant">
+    </target>
+</project>

@@ -31,5 +31,11 @@
         <replace file="${basedir}/src/wolips-tests/scripts/test.properties" token="${WOLips.previous.version}" value="${WOLips.version}"/>
     	<replace file="${basedir}/src/wolips-ui/fragment.xml" token="${WOLips.previous.version}" value="${WOLips.version}"/>
     	<replace file="${basedir}/src/wolips-wizards/fragment.xml" token="${WOLips.previous.version}" value="${WOLips.version}"/>
+    	<replace file="${basedir}/src/wolips-ant/plugin.properties" token="${WOLips.previous.version}" value="${WOLips.version}"/>
+    	<replace file="${basedir}/src/wolips-ant/plugin.xml" token="${WOLips.previous.version}" value="${WOLips.version}"/>
+    	<replace file="${basedir}/src/wolips-woproject/plugin.properties" token="${WOLips.previous.version}" value="${WOLips.version}"/>
+    	<replace file="${basedir}/src/wolips-woproject-ant/plugin.xml" token="${WOLips.previous.version}" value="${WOLips.version}"/>
+    	<replace file="${basedir}/src/wolips-cayenne/plugin.properties" token="${WOLips.previous.version}" value="${WOLips.version}"/>
+    	<replace file="${basedir}/src/wolips-cayenne-ant/plugin.xml" token="${WOLips.previous.version}" value="${WOLips.version}"/>      
     </target>
 </project>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin
+   id="org.objectstyle.wolips.cayenne.ant"
+   name="%WOLips.cayenne.ant.pluginName"
+   version="1.0.0"
+   provider-name="%WOLips.providerName">
+
+   <runtime>
+   </runtime>
+
+<!-- =================================================================================== -->
+<!-- Required Plugins                                                                    -->
+<!-- =================================================================================== -->   
+   <requires>
+      <import plugin="org.apache.ant"/>
+   </requires>
+
+<!-- =================================================================================== -->
+<!-- Extension: Ant                                                                      -->
+<!-- =================================================================================== -->
+   <extension
+         point="org.eclipse.ant.core.extraClasspathEntries">
+      <extraClasspathEntry
+            library="lib/cayenne.jar">
+      </extraClasspathEntry>
+</extension>
+
+</plugin>

@@ -76,12 +76,20 @@
         <fileset dir="optional">
         </fileset>
 	</copy>
+
+
+     <copy todir="${wolips.dist.base}">
+        <fileset dir="doc/update">
+        	<include name="site.xml"/>
+        </fileset>
+    </copy>
      
     <!-- make wolips dist -->
     <tar tarfile="${wolips.dist.filename}.tar">
         <tarfileset dir="${wolips.dist.base}">
         	<exclude name="**/plugins/*.jar"/>
         	<exclude name="**/features/*.jar"/>
+		<exclude name="site.xml"/>
 	</tarfileset>
      </tar>
          

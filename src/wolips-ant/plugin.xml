@@ -38,13 +38,7 @@
       <extraClasspathEntry
             library="lib/wolips-ant.jar">
       </extraClasspathEntry>
-      <extraClasspathEntry
-            library="lib/woproject.jar">
-      </extraClasspathEntry>
-      <extraClasspathEntry
-            library="lib/cayenne.jar">
-      </extraClasspathEntry>
-      <extraClasspathEntry
+     <extraClasspathEntry
             library="lib/commons-logging.jar">
       </extraClasspathEntry>
        <extraClasspathEntry
@@ -53,22 +47,7 @@
    </extension>
    <extension
          point="org.eclipse.ant.core.antTasks">
-      <antTask
-            library="lib/woproject.jar"
-            name="woapplication"
-            class="org.objectstyle.woproject.ant.WOApplication">
-      </antTask>
-      <antTask
-            library="lib/woproject.jar"
-            name="woframework"
-            class="org.objectstyle.woproject.ant.WOFramework">
-      </antTask>
-      <antTask
-            library="lib/woproject.jar"
-            name="wogen"
-            class="org.objectstyle.woproject.ant.WOGenerator">
-      </antTask>
-      	  <antTask
+    <antTask
             library="lib/wolips-ant.jar"
             name="updateframeworksets"
             class="org.objectstyle.wolips.ant.UpdateFrameworkIncludeFiles">

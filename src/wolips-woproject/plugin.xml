@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin
+   id="org.objectstyle.wolips.woproject"
+   name="%WOLips.woproject.pluginName"
+   version="1.0.0"
+   provider-name="%WOLips.providerName">
+
+   <runtime>
+      <library name="lib/woproject.jar">
+         <export name="*"/>
+         <packages prefixes="org.objectstyle.woproject"/>
+      </library>
+   </runtime>
+
+<!-- =================================================================================== -->
+<!-- Required Plugins                                                                    -->
+<!-- =================================================================================== -->   
+   <requires>
+   </requires>
+
+
+</plugin>

@@ -174,5 +174,25 @@
          download-size="0"
          install-size="0"
          version="1.0.0"/>
+   <plugin
+         id="org.objectstyle.wolips.woproject"
+         download-size="0"
+         install-size="0"
+         version="1.0.0"/>
+   <plugin
+         id="org.objectstyle.wolips.woproject.ant"
+         download-size="0"
+         install-size="0"
+         version="1.0.0"/>
+   <plugin
+         id="org.objectstyle.wolips.cayenne"
+         download-size="0"
+         install-size="0"
+         version="1.0.0"/>
+   <plugin
+         id="org.objectstyle.wolips.cayenne.ant"
+         download-size="0"
+         install-size="0"
+         version="1.0.0"/>
 
 </feature>
