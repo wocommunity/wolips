@@ -60,7 +60,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFolder;
@@ -207,8 +206,7 @@ public class ProjectHelper implements IWOLipsPluginConstants {
 	////////////////// source folder stuff
 	/**
 	 * Method getProjectSourceFolder. Searches classpath source entries for project source folder.
-	 * The project source folder is the first found source folder without subproject extension
-	 * (.[IWOLipsPluginConstants.EXT_SUBPROJECT].[IWOLipsPluginConstants.EXT_SRC])
+	 * The project source folder is the first found source folder the project container contains.
 	 * @param project
 	 * @return IContainer found source folder
 	 */
@@ -227,27 +225,52 @@ public class ProjectHelper implements IWOLipsPluginConstants {
 				== classpathEntries[i].getEntryKind()) {
 				// source entry found
 				if (classpathEntries[i].getPath() != null
-					&& classpathEntries[i].getPath().toString().indexOf(
-						"."
-							+ IWOLipsPluginConstants.EXT_SUBPROJECT
-							+ "."
-							+ IWOLipsPluginConstants.EXT_SRC)
-						== -1) {
+					&& classpathEntries[i].getPath().removeLastSegments(1).equals(
+						project.getFullPath())) {
+					// source folder's parent is project
+					// project source folder found
+					return project.getWorkspace().getRoot().getFolder(
+						classpathEntries[i].getPath());
+				}
+				/*
+				if (classpathEntries[i].getPath() != null
+						&& classpathEntries[i].getPath().toString().indexOf(
+					"."
+				+ IWOLipsPluginConstants.EXT_SUBPROJECT
+				+ "."
+				+ IWOLipsPluginConstants.EXT_SRC)
+				== -1) {
 					// non subproject entry found
 					if (classpathEntries[i].getPath().segmentCount() > 1) {
-						return project.getWorkspace().getRoot().getFolder(
-							classpathEntries[i].getPath());
+							return project.getWorkspace().getRoot().getFolder(
+						classpathEntries[i].getPath());
 					}
-					break;
+						break;
 				}
+				*/
 			}
 		}
-		// project is source container
-		return project;
+		// no source folder found -> create new one
+		IFolder projectSourceFolder =
+			project.getFolder(IWOLipsPluginConstants.EXT_SRC);
+		if (!projectSourceFolder.exists()) {
+			try {
+				projectSourceFolder.create(true, true, null);
+			} catch (CoreException e) {
+				WOLipsPlugin.log(e);
+			}
+		}
+		// add to classpath
+		try {
+			addNewSourcefolderToClassPath(projectSourceFolder, null);
+		} catch (InvocationTargetException e) {
+			WOLipsPlugin.log(e);
+		}
+		return projectSourceFolder;
 	}
 	/**
 	 * Method getSubprojectSourceFolder. Searches classpath source entries for correspondending
-	 * subproject source folder (subprojectFolder.getName()/[IWOLipsPluginConstants.EXT_SRC]
+	 * subproject source folder (first found source folder in subproject folder)
 	 * @param subprojectFolder
 	 * @return IFolder
 	 */
@@ -256,12 +279,12 @@ public class ProjectHelper implements IWOLipsPluginConstants {
 			getSubProjectsSourceFolder(subprojectFolder.getProject());
 		for (int i = 0; i < subprojectFolders.size(); i++) {
 			if (((IFolder) subprojectFolders.get(i))
-				.getName()
-				.equals(IWOLipsPluginConstants.EXT_SRC)) {
+				.getFullPath()
+				.removeLastSegments(1)
+				.equals(subprojectFolder)) {
 				return (IFolder) subprojectFolders.get(i);
 			}
-		}
-		// no folder found - create new source folder
+		} // no folder found - create new source folder
 		IFolder subprojectSourceFolder =
 			subprojectFolder.getProject().getFolder(
 				subprojectFolder.getName()
@@ -273,8 +296,7 @@ public class ProjectHelper implements IWOLipsPluginConstants {
 			} catch (CoreException e) {
 				WOLipsPlugin.log(e);
 			}
-		}
-		// add
+		} // add folder to classpath
 		try {
 			addNewSourcefolderToClassPath(subprojectSourceFolder, null);
 		} catch (InvocationTargetException e) {
@@ -282,6 +304,13 @@ public class ProjectHelper implements IWOLipsPluginConstants {
 		}
 		return subprojectSourceFolder;
 	}
+	
+	/**
+	 * Method getSubProjectsSourceFolder. Searches classpath source entries for all source
+	 * folders who's parents are NOT project.
+	 * @param project
+	 * @return List
+	 */
 	public static List getSubProjectsSourceFolder(IProject project) {
 		IClasspathEntry[] classpathEntries;
 		IJavaProject javaProject;
@@ -298,6 +327,17 @@ public class ProjectHelper implements IWOLipsPluginConstants {
 				== classpathEntries[i].getEntryKind()) {
 				// source entry found
 				if (classpathEntries[i].getPath() != null
+					&& !classpathEntries[i].getPath().removeLastSegments(
+						1).equals(
+						project.getFullPath())) {
+					// source folder's parent is not project
+					// project source folder found
+					foundFolders.add(
+						project.getWorkspace().getRoot().getFolder(
+							classpathEntries[i].getPath()));
+				}
+				/*
+				if (classpathEntries[i].getPath() != null
 					&& classpathEntries[i].getPath().toString().indexOf(
 						"."
 							+ IWOLipsPluginConstants.EXT_SUBPROJECT
@@ -308,6 +348,7 @@ public class ProjectHelper implements IWOLipsPluginConstants {
 						project.getWorkspace().getRoot().getFolder(
 							classpathEntries[i].getPath()));
 				}
+				*/
 			}
 		}
 		return foundFolders;
@@ -365,12 +406,10 @@ public class ProjectHelper implements IWOLipsPluginConstants {
 			return false;
 		}
 	}
-
 	public static IClasspathEntry[] addFrameworkListToClasspathEntries(
 		List frameworkList,
 		IJavaProject projectToUpdate)
 		throws JavaModelException {
-
 		IClasspathEntry[] oldClasspathEntries =
 			projectToUpdate.getResolvedClasspath(true);
 		IPath nextRootAsPath = new Path(WOVariables.nextRoot());
@@ -383,15 +422,13 @@ public class ProjectHelper implements IWOLipsPluginConstants {
 			frameworkName = (String) frameworkList.get(i);
 			// check for framework extentsion
 			frameworkExtIndex = frameworkName.indexOf(EXT_FRAMEWORK);
-			if (frameworkExtIndex == -1 || frameworkExtIndex == 0) {
-				// invalid framework name
+			if (frameworkExtIndex == -1
+				|| frameworkExtIndex == 0) { // invalid framework name
 				continue;
 			}
-
 			jarName =
 				frameworkName.substring(0, frameworkExtIndex - 1).toLowerCase()
 					+ ".jar";
-
 			// check for root
 			frameworkPath = new Path(WOVariables.libraryDir());
 			frameworkPath = frameworkPath.append("Frameworks");
@@ -401,12 +438,9 @@ public class ProjectHelper implements IWOLipsPluginConstants {
 				frameworkPath = frameworkPath.append("Frameworks");
 				frameworkPath = frameworkPath.append(frameworkName);
 			}
-			if (!frameworkPath.toFile().isDirectory()) {
-				// invalid path
+			if (!frameworkPath.toFile().isDirectory()) { // invalid path
 				continue;
-			}
-
-			// check for jar existance
+			} // check for jar existance
 			int j = 0;
 			frameworkPath = frameworkPath.append("Resources/Java/");
 			String[] frameJarDirContent = frameworkPath.toFile().list();
@@ -417,25 +451,19 @@ public class ProjectHelper implements IWOLipsPluginConstants {
 					break;
 				}
 			}
-			if (j == frameJarDirContent.length) {
-				// jar doesn't exists
+			if (j == frameJarDirContent.length) { // jar doesn't exists
 				continue;
-			}
-
-			// add case-sensitive jar name
+			} // add case-sensitive jar name
 			frameworkPath = frameworkPath.append(jarName);
-
 			// check for existing classpath entries
 			for (j = 0; j < oldClasspathEntries.length; j++) {
 				if (oldClasspathEntries[j].getPath().equals(frameworkPath)) {
 					break;
 				}
 			}
-			if (j != oldClasspathEntries.length) {
-				// entry already set
+			if (j != oldClasspathEntries.length) { // entry already set
 				continue;
-			}
-			// determine if new class path begins with next root
+			} // determine if new class path begins with next root
 			if ((frameworkPath.segmentCount() > nextRootAsPath.segmentCount())
 				&& frameworkPath
 					.removeLastSegments(
@@ -454,8 +482,7 @@ public class ProjectHelper implements IWOLipsPluginConstants {
 				classpathEntries.add(
 					JavaCore.newLibraryEntry(frameworkPath, null, null));
 			}
-		}
-		// build new class path entry array
+		} // build new class path entry array
 		oldClasspathEntries = projectToUpdate.getRawClasspath();
 		IClasspathEntry[] newClasspathEntries =
 			new IClasspathEntry[classpathEntries.size()
@@ -467,11 +494,8 @@ public class ProjectHelper implements IWOLipsPluginConstants {
 			newClasspathEntries[i + oldClasspathEntries.length] =
 				(IClasspathEntry) classpathEntries.get(i);
 		}
-
 		return newClasspathEntries;
-	}
-
-	///////////////////////////////// builder stuff ////////////////////////
+	} ///////////////////////////////// builder stuff ////////////////////////
 	public static int positionForBuilder(IProject aProject, String aBuilder)
 		throws CoreException {
 		IProjectDescription desc = aProject.getDescription();
