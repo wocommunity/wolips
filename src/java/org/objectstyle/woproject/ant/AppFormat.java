@@ -75,6 +75,7 @@ public class AppFormat extends ProjectFormat {
 	protected HashMap filterMap = new HashMap();
 	protected String appPaths;
 	protected String frameworkPaths;
+	protected String otherClasspaths;
 
 	/** 
 	 * Creates new AppFormat and initializes it with the name
@@ -110,6 +111,7 @@ public class AppFormat extends ProjectFormat {
 	private void preparePaths() {
 		appPaths = buildAppPaths();
 		frameworkPaths = buildFrameworkPaths();
+		otherClasspaths = buildOtherClassPaths();
 	}
 
 	/**
@@ -129,7 +131,9 @@ public class AppFormat extends ProjectFormat {
 		StringBuffer buf = new StringBuffer();
 
 		for (int i = 0; i < files.length; i++) {
-		  buf.append("APPROOT").append(File.separatorChar).append(files[i]).append("\r\n");
+			buf.append("APPROOT").append(File.separatorChar).append(
+				files[i]).append(
+				"\r\n");
 		}
 		return buf.toString();
 	}
@@ -145,7 +149,7 @@ public class AppFormat extends ProjectFormat {
 
 		List frameworkSets = getApplicatonTask().getFrameworkSets();
 		Project project = task.getProject();
-        WOPropertiesHandler aHandler = new WOPropertiesHandler(project);
+		WOPropertiesHandler aHandler = new WOPropertiesHandler(project);
 
 		// track included jar files to avoid double entries
 		HashSet jarSet = new HashSet();
@@ -156,8 +160,8 @@ public class AppFormat extends ProjectFormat {
 			FrameworkSet fs = (FrameworkSet) frameworkSets.get(i);
 
 			// Don't bother checking if it's embedded.
-			if ( fs.getEmbed() ) {
-			    continue;
+			if (fs.getEmbed()) {
+				continue;
 			}
 
 			try {
@@ -187,9 +191,42 @@ public class AppFormat extends ProjectFormat {
 		Object someFiles[] = jarSet.toArray();
 		size = someFiles.length;
 		for (int i = 0; i < size; i++) {
-			log(": Framework JAR " + (File)someFiles[i], Project.MSG_VERBOSE);
-			buf.append( aHandler.encodePathForFile((File)someFiles[i])).append("\r\n");
-        }
+			log(": Framework JAR " + (File) someFiles[i], Project.MSG_VERBOSE);
+			buf.append(aHandler.encodePathForFile((File) someFiles[i])).append(
+				"\r\n");
+		}
+		return buf.toString();
+	}
+
+	protected String buildOtherClassPaths() {
+		StringBuffer buf = new StringBuffer();
+
+		List classpathSets = getApplicatonTask().getOtherClasspath();
+		Project project = task.getProject();
+		WOPropertiesHandler aHandler = new WOPropertiesHandler(project);
+
+		// track included paths to avoid double entries
+		HashSet pathSet = new HashSet();
+
+		int size = classpathSets.size();
+		try {
+			for (int i = 0; i < size; i++) {
+
+				OtherClasspathSet cs = (OtherClasspathSet) classpathSets.get(i);
+				cs.collectClassPaths(project, pathSet);
+
+			}
+		} catch (BuildException be) {
+			// paths doesn't exist or are not readable
+			log(be.getMessage(), Project.MSG_WARN);
+		}
+		Object someFiles[] = pathSet.toArray();
+		size = someFiles.length;
+		for (int i = 0; i < size; i++) {
+			//log(": Framework JAR " + (File) someFiles[i], Project.MSG_VERBOSE);
+			buf.append(aHandler.encodePathForFile((File) someFiles[i])).append(
+				"\r\n");
+		}
 		return buf.toString();
 	}
 
@@ -269,6 +306,7 @@ public class AppFormat extends ProjectFormat {
 		if (pathSeparator == File.separatorChar) {
 			filter.addFilter("APP_JAR", appPaths);
 			filter.addFilter("FRAMEWORK_JAR", frameworkPaths);
+			filter.addFilter("OTHER_PATHS", otherClasspaths);
 		} else {
 			filter.addFilter(
 				"APP_JAR",
@@ -276,13 +314,16 @@ public class AppFormat extends ProjectFormat {
 			filter.addFilter(
 				"FRAMEWORK_JAR",
 				frameworkPaths.replace(File.separatorChar, pathSeparator));
+			filter.addFilter(
+				"OTHER_PATHS",
+				otherClasspaths.replace(File.separatorChar, pathSeparator));
 		}
 
 		return filter;
 	}
-	
+
 	private String getAppClass() {
-        return task.getPrincipalClass();
+		return task.getPrincipalClass();
 	}
 
 	private void createMappings(

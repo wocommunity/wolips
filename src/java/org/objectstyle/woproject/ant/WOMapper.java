@@ -97,7 +97,8 @@ public class WOMapper extends Mapper {
 
 			// apply filters
 			String localizedPath = localizationFilter(sourceFileName);
-			String finalPath = wocompFilter(localizedPath);
+			String wocompPath = wocompFilter(localizedPath);
+			String finalPath = eomodelFilter(wocompPath);
 
 			return new String[] { finalPath };
 		}
@@ -109,14 +110,32 @@ public class WOMapper extends Mapper {
 		private final String wocompFilter(String path) {
 			File f = new File(path);
 
-			// WOComponent directory
-			if (path.endsWith(".wo")) {
+			// WOComponent directory or WOComponent's api
+			if (path.endsWith(".wo") || path.endsWith(".api")) {
 				return flatten(f);
 			}
 
 			// File in WOComponent directory
 			String parent = f.getParent();
 			if (parent != null && parent.endsWith(".wo")) {
+				return flattenWithParent(f);
+			}
+
+			// skip the filter
+			return path;
+		}
+		
+		private final String eomodelFilter(String path) {
+			File f = new File(path);
+
+			// EOModel directory
+			if (path.endsWith(".eomodeld") && !path.endsWith("index.eomodeld")) {
+				return flatten(f);
+			}
+
+			// File in EOModel directory
+			String parent = f.getParent();
+			if (parent != null && parent.endsWith(".eomodeld")) {
 				return flattenWithParent(f);
 			}
 

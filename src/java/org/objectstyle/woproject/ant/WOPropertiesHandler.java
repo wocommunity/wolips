@@ -102,17 +102,17 @@ public class WOPropertiesHandler extends ProjectComponent {
 //            	return "APPROOT" + aPath.substring(aPrefix.length());
 //            }
             aPrefix = this.getLocalRootPath();
-System.err.println("aPrefix + aPath "+ aPrefix + " " + aPath);
+//System.err.println("aPrefix + aPath "+ aPrefix + " " + aPath);
             if((aPrefix != null) && (aPrefix.length() > 1) && (aPath.startsWith(aPrefix))) {
             	return "LOCALROOT" + aPath.substring(aPrefix.length());
             }
             aPrefix = this.getHomeRootPath();
-System.err.println("aPrefix + aPath "+ aPrefix + " " + aPath);
+//System.err.println("aPrefix + aPath "+ aPrefix + " " + aPath);
             if((aPrefix != null) && (aPrefix.length() > 1) && (aPath.startsWith(aPrefix))) {
             	return "HOMEROOT" + aPath.substring(aPrefix.length());
             }
             aPrefix = this.getWORootPath();
-System.err.println("aPrefix + aPath "+ aPrefix + " " + aPath);
+//System.err.println("aPrefix + aPath "+ aPrefix + " " + aPath);
             if((aPrefix != null) && (aPrefix.length() > 1) && (aPath.startsWith(aPrefix))) {
             	return "WOROOT" + aPath.substring(aPrefix.length());
             }

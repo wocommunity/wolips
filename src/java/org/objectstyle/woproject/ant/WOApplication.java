@@ -91,6 +91,7 @@ public class WOApplication extends WOTask {
 			"JavaXML" };
 
 	protected ArrayList frameworkSets = new ArrayList();
+	protected ArrayList otherClasspathSets = new ArrayList();
 	protected Vector lib = new Vector();
 	protected boolean stdFrameworks = true;
 	protected boolean embedStdFrameworks = false;
@@ -318,7 +319,7 @@ public class WOApplication extends WOTask {
 		frameworkSets.add(frameSet);
 		return frameSet;
 	}
-
+	
 	public List getFrameworkSets() {
 		if (stdFrameworks) {
 			ArrayList fullList = new ArrayList(frameworkSets.size() + 1);
@@ -328,5 +329,18 @@ public class WOApplication extends WOTask {
 		} else {
 			return frameworkSets;
 		}
+	}
+	
+	/**
+	 * Create a nested OtherClasspath.
+	 */
+	public OtherClasspathSet createOtherclasspath() {
+		OtherClasspathSet otherClasspathSet = new OtherClasspathSet();
+		otherClasspathSets.add(otherClasspathSet);
+		return otherClasspathSet;
+	}
+	
+	public List getOtherClasspath(){
+		return otherClasspathSets;
 	}
 }
