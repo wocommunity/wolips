@@ -127,7 +127,7 @@ public class WOComponentCreator extends WOProjectResourceCreator {
 						componentName + "." + EXT_COMPONENT);
 				componentJavaFile =
 					ProjectHelper.getSubprojectSourceFolder(
-						(IFolder) parentResource).getFile(
+						(IFolder) parentResource,true).getFile(
 						componentName + "." + EXT_JAVA);
 				componentApiFile =
 					((IFolder) parentResource).getFile(

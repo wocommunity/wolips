@@ -321,7 +321,7 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 					// add java file to source folder
 					fileToCreate =
 						ProjectHelper.getSubprojectSourceFolder(
-							(IFolder) parentResource).getFile(
+							(IFolder) parentResource,true).getFile(
 							fileName);
 				} else {
 					// add wo resource file
@@ -817,7 +817,7 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 				case IResource.FOLDER :
 					sourceFolder =
 						ProjectHelper.getSubprojectSourceFolder(
-							(IFolder) parentContainer);
+							(IFolder) parentContainer,true);
 					break;
 			}
 			if (sourceFolder != null) {

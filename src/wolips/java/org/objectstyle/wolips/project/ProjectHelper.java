@@ -272,15 +272,24 @@ public class ProjectHelper implements IWOLipsPluginConstants {
 	 * Method getSubprojectSourceFolder. Searches classpath source entries for correspondending
 	 * subproject source folder (first found source folder in subproject folder)
 	 * @param subprojectFolder
+	 * @param forceCreation - create folder if necessary
 	 * @return IFolder
 	 */
-	public static IFolder getSubprojectSourceFolder(IFolder subprojectFolder) {
-		//Make sure that the folder is a subproject
-		IFolder parentFolder = getParentFolderWithPBProject(subprojectFolder);
-		//this belongs to the project and not a subproject
-		if(parentFolder == null)
-			return subprojectFolder.getProject().getFolder(ProjectHelper.getProjectSourceFolder(subprojectFolder.getProject()).getProjectRelativePath());
-		subprojectFolder = parentFolder;
+	public static IFolder getSubprojectSourceFolder(
+		IFolder subprojectFolder,
+		boolean forceCreation) {
+		//ensure that the folder is a subproject
+		if (!subprojectFolder.getFileExtension().equals(EXT_SUBPROJECT)) {
+			IFolder parentFolder =
+				getParentFolderWithPBProject(subprojectFolder);
+			//this belongs to the project and not a subproject
+			if (parentFolder == null)
+				return subprojectFolder.getProject().getFolder(
+					ProjectHelper
+						.getProjectSourceFolder(subprojectFolder.getProject())
+						.getProjectRelativePath());
+			subprojectFolder = parentFolder;
+		}
 		List subprojectFolders =
 			getSubProjectsSourceFolder(subprojectFolder.getProject());
 		for (int i = 0; i < subprojectFolders.size(); i++) {
@@ -290,25 +299,29 @@ public class ProjectHelper implements IWOLipsPluginConstants {
 				.equals(subprojectFolder.getFullPath())) {
 				return (IFolder) subprojectFolders.get(i);
 			}
-		} // no folder found - create new source folder
-		IFolder subprojectSourceFolder =
-			subprojectFolder.getProject().getFolder(
-				subprojectFolder.getName()
-					+ "/"
-					+ IWOLipsPluginConstants.EXT_SRC);
-		if (!subprojectSourceFolder.exists()) {
+		}
+		if (forceCreation) {
+			// no folder found - create new source folder
+			IFolder subprojectSourceFolder =
+				subprojectFolder.getProject().getFolder(
+					subprojectFolder.getName()
+						+ "/"
+						+ IWOLipsPluginConstants.EXT_SRC);
+			if (!subprojectSourceFolder.exists()) {
+				try {
+					subprojectSourceFolder.create(true, true, null);
+				} catch (CoreException e) {
+					WOLipsPlugin.log(e);
+				}
+			} // add folder to classpath
 			try {
-				subprojectSourceFolder.create(true, true, null);
-			} catch (CoreException e) {
+				addNewSourcefolderToClassPath(subprojectSourceFolder, null);
+			} catch (InvocationTargetException e) {
 				WOLipsPlugin.log(e);
 			}
-		} // add folder to classpath
-		try {
-			addNewSourcefolderToClassPath(subprojectSourceFolder, null);
-		} catch (InvocationTargetException e) {
-			WOLipsPlugin.log(e);
+			return subprojectSourceFolder;
 		}
-		return subprojectSourceFolder;
+		return null;
 	}
 	/**
 	 * Method getSubProjectsSourceFolder. Searches classpath source entries for all source
@@ -387,6 +400,40 @@ public class ProjectHelper implements IWOLipsPluginConstants {
 			throw new InvocationTargetException(e);
 		}
 	}
+	public static void removeSourcefolderFromClassPath(
+		IFolder folderToRemove,
+		IProgressMonitor monitor)
+		throws InvocationTargetException {
+		IJavaProject actualJavaProject =
+			JavaCore.create(folderToRemove.getProject());
+		IClasspathEntry[] oldClassPathEntries;
+		try {
+			oldClassPathEntries = actualJavaProject.getRawClasspath();
+		} catch (JavaModelException e) {
+			throw new InvocationTargetException(e);
+		}
+		IClasspathEntry[] newClassPathEntries =
+			new IClasspathEntry[oldClassPathEntries.length - 1];
+		int offSet = 0;
+		for (int i = 0; i < oldClassPathEntries.length; i++) {
+			if (IClasspathEntry.CPE_SOURCE
+				== oldClassPathEntries[i].getEntryKind()
+				&& oldClassPathEntries[i].getPath().equals(
+					folderToRemove.getFullPath())) {
+				offSet = 1;
+			} else {
+				newClassPathEntries[i - offSet] = oldClassPathEntries[i];
+			}
+		}
+		if (offSet != 0) {
+			try {
+				actualJavaProject.setRawClasspath(newClassPathEntries, monitor);
+			} catch (JavaModelException e) {
+				throw new InvocationTargetException(e);
+			}
+		}
+	}
+	
 	public static boolean isWOProjectResource(IResource aResource) {
 		if (aResource != null) {
 			try {
@@ -550,8 +597,6 @@ public class ProjectHelper implements IWOLipsPluginConstants {
 		desc.setBuildSpec(newIc);
 		aProject.setDescription(desc, null);
 	}
-	
-	
 	/**
 	 * Method getParentFolderWithPBProject.
 	 * @param aFolder
@@ -562,7 +607,8 @@ public class ProjectHelper implements IWOLipsPluginConstants {
 		IFolder findFolder = aFolder;
 		while ((findFolder.findMember(IWOLipsPluginConstants.PROJECT_FILE_NAME)
 			== null)
-			&& (findFolder.getParent() != null) && (findFolder.getParent().getType() != IProject.PROJECT)) {
+			&& (findFolder.getParent() != null)
+			&& (findFolder.getParent().getType() != IProject.PROJECT)) {
 			findFolder = (IFolder) findFolder.getParent();
 		}
 		if (findFolder.getParent() == null)

@@ -54,8 +54,10 @@
  *
  */
 package org.objectstyle.wolips.listener;
+import java.lang.reflect.InvocationTargetException;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
@@ -70,6 +72,7 @@ import org.eclipse.core.runtime.QualifiedName;
 import org.objectstyle.wolips.IWOLipsPluginConstants;
 import org.objectstyle.wolips.WOLipsPlugin;
 import org.objectstyle.wolips.project.PBProjectUpdater;
+import org.objectstyle.wolips.project.ProjectHelper;
 import com.webobjects.foundation.NSDictionary;
 import com.webobjects.foundation.NSMutableArray;
 import com.webobjects.foundation.NSMutableDictionary;
@@ -238,6 +241,16 @@ public class ResourceChangeListener
 								SUBPROJECTS_ID,
 								resource.getParent().getFile(
 									new Path(PROJECT_FILE_NAME)));
+							// remove project's source folder from
+							// classpathentries
+							try {
+								ProjectHelper.removeSourcefolderFromClassPath(
+									ProjectHelper.getSubprojectSourceFolder(
+										(IFolder) resource,false),
+									null);
+							} catch (InvocationTargetException e) {
+								WOLipsPlugin.log(e);
+							}
 						}
 					}
 					// further examination of resource delta needed
