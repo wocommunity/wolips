@@ -12,12 +12,6 @@
     <!-- Define CLASSPATH settings.                    -->
     <!-- ============================================= -->
     <target name="defineClasspath">
-        <condition property="next.root" value="/System">
-            <and>
-                <os family="mac" />
-                <os family="unix" />
-            </and>
-        </condition>
         <path id="classpath">
             <fileset dir="${ant.home}/lib">
                 <include name="ant.jar"/>
@@ -26,7 +20,7 @@
                 <include name="*.jar"/>
 	            <include name="eclipse/**/*.jar"/>
             </fileset>
-            <fileset dir="${wo.woroot}/Library/Frameworks">
+            <fileset dir="${wo.dir.library.frameworks}">
                 <include name="JavaFoundation.framework/Resources/Java/*.jar"/>
             </fileset>
              <!-- Depends on WOProject core. -->

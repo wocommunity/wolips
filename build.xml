@@ -52,10 +52,9 @@
         *  5. doc        - creates documentation including Javadoc.
         *  6. dist       - creates WOProject distribution.
         *  7. test       - Run JUnit tests.
-        *  8. set        - Stores the wo specific properties in a file.
-        *  9. set_mac    - Stores the wo specific properties in a file on a mac.
-        * 10. version    - keeps the wolips version common
-        * 11. .ds_store  - delete important files
+        *  8. check      - Stores the wo specific properties in a file.
+        *  9. version    - keeps the wolips version common
+        * 10. .ds_store  - delete important files
         * Build environment:
         *
         * java.home = ${java.home}

@@ -24,7 +24,7 @@
 	        <fileset dir="${wolips.launching.dist}">
 		    	<include name="**/wolips-launching.jar"/>
 	        </fileset>
-            <fileset dir="${wo.woroot}/Library/Frameworks">
+            <fileset dir="${wo.dir.library.frameworks}">
                 <include name="JavaFoundation.framework/Resources/Java/*.jar"/>
             </fileset>
             <!-- Depends on WOProject core. -->
