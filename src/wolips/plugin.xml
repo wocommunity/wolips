@@ -37,6 +37,7 @@
       <import plugin="org.eclipse.ui.externaltools"/>
    </requires>
 
+
 <!-- =================================================================================== -->
 <!-- Extension: help                                                                     -->
 <!-- =================================================================================== -->
@@ -50,7 +51,7 @@
 <!-- =================================================================================== -->
 <!-- Extension: Project Wizards                                                          -->
 <!-- =================================================================================== -->
-  <extension
+   <extension
          point="org.eclipse.ui.newWizards">
       <category
             name="%WOLips.webobjects.5.1.categoryName"
@@ -200,6 +201,9 @@
             <separator
                   name="wobuilder">
             </separator>
+            <separator
+                  name="woframeworks">
+            </separator>
          </menu>
          <action
                label="%WOBuilder.Remove"
@@ -219,55 +223,68 @@
                menubarPath="org.objectstyle.wolips/wobuilder"
                id="%WOFrameworkBuilder.Set.ID">
          </action>
+         <action
+               label="%WOSystemFramework.Add"
+               class="org.objectstyle.wolips.actions.WOFrameworkAction"
+               menubarPath="org.objectstyle.wolips/woframeworks"
+               id="%WOSystemFramework.Add.ID">
+         </action>
+         <action
+               label="%WOLocalFramework.Add"
+               class="org.objectstyle.wolips.actions.WOFrameworkAction"
+               menubarPath="org.objectstyle.wolips/woframeworks"
+               id="%WOLocalFramework.Add.ID">
+         </action>
       </objectContribution>
    </extension>
 <!-- =================================================================================== -->
 <!-- Extension: File actions                                                             -->
 <!-- =================================================================================== -->
-	<extension point="org.eclipse.ui.popupMenus">
-		<objectContribution
-			id="org.objectstyle.wolips.actions.OpenComponentAction"
-			objectClass="org.eclipse.jdt.core.ICompilationUnit"
-			adaptable="true"
-			nameFilter="*.java">
-			<action
-				id="org.objectstyle.wolips.actions.OpenComponentAction"
-				label="%WOLips.PopupMenu.OpenComponentAction"
-				tooltip="%WOLips.PopupMenu.OpenComponentActionTip"
-				menubarPath="additions"
-				enablesFor="1"
-				class="org.objectstyle.wolips.actions.OpenComponentAction">
-			</action>
-		</objectContribution>
-		<objectContribution
-			id="org.objectstyle.wolips.actions.OpenSourceAction"
-			objectClass="org.eclipse.core.resources.IFile"
-			adaptable="true"
-			nameFilter="*.wod">
-			<action
-				id="org.objectstyle.wolips.actions.OpenSourceAction"
-				label="%WOLips.PopupMenu.OpenSourceAction"
-				tooltip="%WOLips.PopupMenu.OpenSourceActionTip"
-				menubarPath="additions"
-				enablesFor="1"
-				class="org.objectstyle.wolips.actions.OpenSourceAction">
-			</action>
-		</objectContribution>
-		<objectContribution
-			id="org.objectstyle.wolips.actions.OpenSourceAction"
-			objectClass="org.eclipse.core.resources.IContainer"
-			adaptable="true"
-			nameFilter="*.wo">
-			<action
-				id="org.objectstyle.wolips.actions.OpenSourceAction"
-				label="%WOLips.PopupMenu.OpenSourceAction"
-				tooltip="%WOLips.PopupMenu.OpenSourceActionTip"
-				menubarPath="additions"
-				enablesFor="1"
-				class="org.objectstyle.wolips.actions.OpenSourceAction">
-			</action>
-		</objectContribution>				
-	</extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            objectClass="org.eclipse.jdt.core.ICompilationUnit"
+            adaptable="true"
+            nameFilter="*.java"
+            id="org.objectstyle.wolips.actions.OpenComponentAction">
+         <action
+               label="%WOLips.PopupMenu.OpenComponentAction"
+               tooltip="%WOLips.PopupMenu.OpenComponentActionTip"
+               class="org.objectstyle.wolips.actions.OpenComponentAction"
+               menubarPath="additions"
+               enablesFor="1"
+               id="org.objectstyle.wolips.actions.OpenComponentAction">
+         </action>
+      </objectContribution>
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IFile"
+            adaptable="true"
+            nameFilter="*.wod"
+            id="org.objectstyle.wolips.actions.OpenSourceAction">
+         <action
+               label="%WOLips.PopupMenu.OpenSourceAction"
+               tooltip="%WOLips.PopupMenu.OpenSourceActionTip"
+               class="org.objectstyle.wolips.actions.OpenSourceAction"
+               menubarPath="additions"
+               enablesFor="1"
+               id="org.objectstyle.wolips.actions.OpenSourceAction">
+         </action>
+      </objectContribution>
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IContainer"
+            adaptable="true"
+            nameFilter="*.wo"
+            id="org.objectstyle.wolips.actions.OpenSourceAction">
+         <action
+               label="%WOLips.PopupMenu.OpenSourceAction"
+               tooltip="%WOLips.PopupMenu.OpenSourceActionTip"
+               class="org.objectstyle.wolips.actions.OpenSourceAction"
+               menubarPath="additions"
+               enablesFor="1"
+               id="org.objectstyle.wolips.actions.OpenSourceAction">
+         </action>
+      </objectContribution>
+   </extension>
 <!-- =================================================================================== -->
 <!-- Extension: Ant                                                                      -->
 <!-- =================================================================================== -->
@@ -484,21 +501,58 @@
    </extension>
 <!-- =================================================================================== -->
 <!-- Extension: Team file types                                                          -->
-<!-- =================================================================================== -->    
-	<extension point="org.eclipse.team.core.fileTypes">
-	  <fileTypes extension="wod" type="text"/>
-	  <fileTypes extension="woo" type="text"/>
-	  <fileTypes extension="plist" type="text"/>
-	  <fileTypes extension="eomodeld" type="text"/>
-	  <fileTypes extension="api" type="text"/>
-	  <fileTypes extension="postamble" type="text"/>
-	  <fileTypes extension="preamble" type="text"/>
-	  <fileTypes extension="d2wmodel" type="text"/>
-	  <fileTypes extension="pbxuser" type="text"/>
-	  <fileTypes extension="pbxproj" type="text"/>
-	  <fileTypes extension="ini" type="text"/>
-	  <fileTypes extension="mappings" type="text"/>
-	</extension>
+<!-- =================================================================================== -->
+   <extension
+         point="org.eclipse.team.core.fileTypes">
+      <fileTypes
+            type="text"
+            extension="wod">
+      </fileTypes>
+      <fileTypes
+            type="text"
+            extension="woo">
+      </fileTypes>
+      <fileTypes
+            type="text"
+            extension="plist">
+      </fileTypes>
+      <fileTypes
+            type="text"
+            extension="eomodeld">
+      </fileTypes>
+      <fileTypes
+            type="text"
+            extension="api">
+      </fileTypes>
+      <fileTypes
+            type="text"
+            extension="postamble">
+      </fileTypes>
+      <fileTypes
+            type="text"
+            extension="preamble">
+      </fileTypes>
+      <fileTypes
+            type="text"
+            extension="d2wmodel">
+      </fileTypes>
+      <fileTypes
+            type="text"
+            extension="pbxuser">
+      </fileTypes>
+      <fileTypes
+            type="text"
+            extension="pbxproj">
+      </fileTypes>
+      <fileTypes
+            type="text"
+            extension="ini">
+      </fileTypes>
+      <fileTypes
+            type="text"
+            extension="mappings">
+      </fileTypes>
+   </extension>
 <!-- =================================================================================== -->
 <!-- Extension: Resource filter                                                          -->
 <!-- =================================================================================== -->    
