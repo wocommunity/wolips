@@ -2,7 +2,7 @@
 <plugin
    id="org.objectstyle.wolips.target"
    name="Target Builder Additions for WOLips"
-   version="0.9.0"
+   version="0.9.1"
    provider-name="objectstyle.org"
    class="org.objectstyle.wolips.target.TargetBuilderPlugin">
 
