@@ -62,6 +62,7 @@ import org.apache.tools.ant.BuildException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
@@ -90,7 +91,7 @@ public class UpdateFrameworkIncludeFiles extends UpdateIncludeFiles {
 	 * @see org.objectstyle.wolips.ant.UpdateIncludeFiles#buildIncludeFiles()
 	 */
 	protected synchronized void buildIncludeFiles() {
-		// void double entries
+		// avoid double entries
 		HashSet resolvedEntries = new HashSet();
 		// add wo classpath entries
 		IJavaProject myJavaProject = JavaCore.create(this.getIProject());
@@ -107,6 +108,8 @@ public class UpdateFrameworkIncludeFiles extends UpdateIncludeFiles {
 		// use sorted root paths to ensure correct replacement of 
 		// classpath entries with framework entries
 		for (int i = 0; i < this.getPaths().length; i++) {
+      
+      IPath thisPath = new Path(getPaths()[i]);
 
 			currentFrameworkListFile =
 				this.getIProject().getFile(
@@ -138,11 +141,11 @@ public class UpdateFrameworkIncludeFiles extends UpdateIncludeFiles {
 					resolvedEntry =
 						classpathEntryToFrameworkEntry(
 							classPaths[j],
-							getPaths()[i]);
+							thisPath);
 					//Uk was sorted
 					if (resolvedEntry != null
-						&& !resolvedEntries.contains(classPaths[j])) {
-						resolvedEntries.add(classPaths[j]);
+						&& !resolvedEntries.contains(resolvedEntry)) {
+						resolvedEntries.add(resolvedEntry);
 						newFrameworkEntries.append(resolvedEntry);
 						newFrameworkEntries.append("\n");
 					}
@@ -189,16 +192,17 @@ public class UpdateFrameworkIncludeFiles extends UpdateIncludeFiles {
 	 */
 	private String classpathEntryToFrameworkEntry(
 		IClasspathEntry entry,
-		String rootDir) {
-		String toReturn = null;
+		IPath rootDir) {
+
 		IPath pathToConvert;
+
 		// determine if entry's path begins with rootDir
-		if (!entry.getPath().toString().startsWith(rootDir))
+    // Quoting the JavaDoc:
+    // "To be a prefix, this path's segments must appear 
+    // in the argument path in the same order, and their device ids must match."
+		if (!rootDir.isPrefixOf(entry.getPath()))
 			return null;
-		/*
-		if (entry.getPath().matchingFirstSegments(rootDir)
-		== rootDir.segmentCount()) {
-		*/
+
 		// remove root dir from path, remove device and make relative
 		pathToConvert = entry.getPath();
 
@@ -208,18 +212,22 @@ public class UpdateFrameworkIncludeFiles extends UpdateIncludeFiles {
 				pathToConvert =
 					pathToConvert.removeLastSegments(
 						pathToConvert.segmentCount() - i);
-				toReturn = pathToConvert.toString();
 				break;
 			}
 		}
 
-		if (toReturn != null) {
-			toReturn = toReturn.substring(rootDir.length());
-			if (toReturn.startsWith("/") || toReturn.startsWith("\\"))
-				toReturn = toReturn.substring(1);
+    String result = null;
+
+		if (pathToConvert != null) {
+      pathToConvert = pathToConvert.setDevice(null);
+      
+      pathToConvert = pathToConvert.removeFirstSegments(rootDir.segmentCount());
+      result = pathToConvert.toString();
+			if (result.startsWith("/") || result.startsWith("\\"))
+				result = result.substring(1);
 		}
 
-		return toReturn;
+		return result;
 	}
 
 }
