@@ -76,6 +76,7 @@ import org.eclipse.jdt.launching.IVMInstall;
 import org.eclipse.jdt.launching.IVMRunner;
 import org.eclipse.jdt.launching.VMRunnerConfiguration;
 import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
+import org.objectstyle.wolips.core.preferences.ILaunchInfo;
 import org.objectstyle.wolips.core.preferences.Preferences;
 import org.objectstyle.wolips.core.project.WOLipsProject;
 import org.objectstyle.wolips.logging.WOLipsLog;
@@ -129,15 +130,26 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 		if (workingDir != null) {
 			workingDirName = workingDir.getAbsolutePath();
 		}
-
+		String launchArguments =
+			configuration.getAttribute(
+				WOJavaLocalApplicationLaunchConfigurationDelegate
+					.ATTR_WOLIPS_LAUNCH_WOARGUMENTS,
+				"");
+		ILaunchInfo[] launchInfo = Preferences.getLaunchInfoFrom(launchArguments);
+		StringBuffer launchArgument = new StringBuffer();
+		for (int i = 0; i < launchInfo.length; i++) {
+				if(launchInfo[i].isEnabled()) {
+					launchArgument.append(launchInfo[i].getParameter());
+					launchArgument.append(" ");
+					launchArgument.append(launchInfo[i].getArgument());
+					launchArgument.append(" ");	
+				}
+		}
 		// Program & VM args
 		String pgmArgs =
 			getProgramArguments(configuration)
 				+ " "
-				+ configuration.getAttribute(
-					WOJavaLocalApplicationLaunchConfigurationDelegate
-						.ATTR_WOLIPS_LAUNCH_WOARGUMENTS,
-					"");
+				+ launchArgument.toString();
 		String vmArgs = getVMArguments(configuration);
 		StringBuffer vmArgsBuffer = new StringBuffer(vmArgs);
 

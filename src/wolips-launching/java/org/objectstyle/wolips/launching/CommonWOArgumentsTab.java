@@ -56,6 +56,8 @@
 
 package org.objectstyle.wolips.launching;
 
+import java.util.Vector;
+
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -65,24 +67,31 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.ILaunchConfigurationDialog;
-import org.eclipse.jdt.internal.debug.ui.IJavaDebugHelpContextIds;
 import org.eclipse.jdt.internal.debug.ui.JDIDebugUIPlugin;
 import org.eclipse.jdt.internal.debug.ui.JavaDebugImages;
 import org.eclipse.jdt.internal.debug.ui.launcher.JavaLaunchConfigurationTab;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.InputDialog;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.help.WorkbenchHelp;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableItem;
+import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
 import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
+import org.objectstyle.wolips.core.preferences.ILaunchInfo;
+import org.objectstyle.wolips.core.preferences.Preferences;
+import org.objectstyle.wolips.core.preferences.PreferencesMessages;
 import org.objectstyle.wolips.logging.WOLipsLog;
-
 /**
  * @author uli
  *
@@ -93,79 +102,162 @@ import org.objectstyle.wolips.logging.WOLipsLog;
  */
 public class CommonWOArgumentsTab extends JavaLaunchConfigurationTab {
 
-	//new stuff
-	//extends WOArgumentsTab {
-	/*
-		protected Label fPrgmArgumentsLabel;
-		/**
-		 * @see ILaunchConfigurationTab#createControl(Composite)
-		 */
-	/*	public void createControl(Composite parent) {
-			Composite comp = new Composite(parent, SWT.NONE);
-			setControl(comp);
-			WorkbenchHelp.setHelp(
-				getControl(),
-				IJavaDebugHelpContextIds.LAUNCH_CONFIGURATION_DIALOG_ARGUMENTS_TAB);
-			GridLayout topLayout = new GridLayout();
-			comp.setLayout(topLayout);
-			GridData gd;
-	
-			createVerticalSpacer(comp, 1);
-	
-			fPrgmArgumentsLabel = new Label(comp, SWT.NONE);
-			fPrgmArgumentsLabel.setText(LaunchingMessages.getString("WOArgumentsTab.&Program_arguments__5")); //$NON-NLS-1$
-	
-		}*/
-	/**
-	* @see ILaunchConfigurationTab#getName()
-	*/
-	/*	public String getName() {
-			return LaunchingMessages.getString("CommonWOArgumentsTab.Name"); //$NON-NLS-1$
-		}
-	*/
-	//old stuff
+	private Table includeTable;
+	private Button addButton;
+	private Button removeButton;
+	private String preferencesKey = IWOLipsPluginConstants.PREF_LAUNCH_GLOBAL;
 
-	// Program arguments widgets
-	protected Label fPrgmArgumentsLabel;
-	protected Text fPrgmArgumentsText;
-
+	private Vector allParameter;
+	private Vector allArguments;
 	protected static final String EMPTY_STRING = ""; //$NON-NLS-1$
-
+	private boolean isTableFilled = false;
 	/**
 	 * @see ILaunchConfigurationTab#createControl(Composite)
 	 */
-	public void createControl(Composite parent) {
+	public void createControl(Composite parentComposite) {
 
-		Composite comp = new Composite(parent, SWT.NONE);
-		setControl(comp);
-		WorkbenchHelp.setHelp(
-			getControl(),
-			IJavaDebugHelpContextIds.LAUNCH_CONFIGURATION_DIALOG_ARGUMENTS_TAB);
-		GridLayout topLayout = new GridLayout();
-		comp.setLayout(topLayout);
-		GridData gd;
+		Composite parent = new Composite(parentComposite, SWT.NULL);
+		GridLayout layout = new GridLayout();
+		layout.marginWidth = 0;
+		layout.marginHeight = 0;
+		layout.numColumns = 2;
+		parent.setLayout(layout);
+		GridData data = new GridData();
+		data.verticalAlignment = GridData.FILL;
+		data.horizontalAlignment = GridData.FILL;
+		parent.setLayoutData(data);
 
-		createVerticalSpacer(comp, 1);
+		// set F1 help
+		//WorkbenchHelp.setHelp(parent, IHelpContextIds.IGNORE_PREFERENCE_PAGE);
 
-		fPrgmArgumentsLabel = new Label(comp, SWT.NONE);
-		fPrgmArgumentsLabel.setText(LaunchingMessages.getString("WOArgumentsTab.&Program_arguments__5")); //$NON-NLS-1$
+		Label l1 = new Label(parent, SWT.NULL);
+		l1.setText(PreferencesMessages.getString("LaunchPreferencesPage.label")); //$NON-NLS-1$
+		data = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
+		data.horizontalSpan = 3;
+		l1.setLayoutData(data);
 
-		fPrgmArgumentsText =
-			new Text(
-				comp,
-				SWT.MULTI
-					| SWT.WRAP
-					| SWT.BORDER
-					| SWT.V_SCROLL
-					| SWT.H_SCROLL);
-		gd = new GridData(GridData.FILL_BOTH);
-		gd.heightHint = 80;
-		fPrgmArgumentsText.setLayoutData(gd);
-		fPrgmArgumentsText.addModifyListener(new ModifyListener() {
-			public void modifyText(ModifyEvent evt) {
-				updateLaunchConfigurationDialog();
+		//includeTable = new Table(parent, SWT.CHECK | SWT.BORDER);
+		includeTable = new Table(parent, SWT.CHECK | SWT.BORDER);
+		GridData gd = new GridData(GridData.FILL_BOTH);
+		//gd.widthHint = convertWidthInCharsToPixels(30);
+		gd.widthHint = 150;
+		gd.heightHint = 200;
+		includeTable.setLayoutData(gd);
+		includeTable.addListener(SWT.Selection, new Listener() {
+			public void handleEvent(Event e) {
+				handleSelection();
 			}
 		});
+
+		Composite buttons = new Composite(parent, SWT.NULL);
+		buttons.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
+		layout = new GridLayout();
+		layout.marginHeight = 0;
+		layout.marginWidth = 0;
+		buttons.setLayout(layout);
+
+		addButton = new Button(buttons, SWT.PUSH);
+		addButton.setText(PreferencesMessages.getString("LaunchPreferencesPage.add")); //$NON-NLS-1$
+		data = new GridData();
+		data.horizontalAlignment = GridData.FILL;
+		data.heightHint = 20;
+		//convertVerticalDLUsToPixels(IDialogConstants.BUTTON_HEIGHT);
+		int widthHint = 100;
+		//convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
+		data.widthHint =
+			Math.max(
+				widthHint,
+				addButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x);
+		addButton.setLayoutData(data);
+		addButton.addListener(SWT.Selection, new Listener() {
+			public void handleEvent(Event e) {
+				addIgnore();
+			}
+		});
+
+		removeButton = new Button(buttons, SWT.PUSH);
+		removeButton.setText(PreferencesMessages.getString("LaunchPreferencesPage.remove")); //$NON-NLS-1$
+		data = new GridData();
+		data.horizontalAlignment = GridData.FILL;
+		data.heightHint = 20;
+		//Dialog.convertVerticalDLUsToPixels(new FontMetrics(), IDialogConstants.BUTTON_HEIGHT);
+		widthHint = 100;
+		//Dialog.convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
+		data.widthHint =
+			Math.max(
+				widthHint,
+				removeButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x);
+		removeButton.setLayoutData(data);
+		removeButton.setEnabled(false);
+		removeButton.addListener(SWT.Selection, new Listener() {
+			public void handleEvent(Event e) {
+				removeIgnore();
+			}
+		});
+		
+		Dialog.applyDialogFont(parent);
+		this.setControl(parent);
+	}
+
+	/**
+	 * @param ignore
+	 */
+	private void fillTable(ILaunchInfo[] launchInfoArray) {
+		if(isTableFilled) return;
+		isTableFilled = true;
+		allArguments = new Vector();
+		allParameter = new Vector();
+		for (int i = 0; i < launchInfoArray.length; i++) {
+			ILaunchInfo launchInfo = launchInfoArray[i];
+			TableItem item = new TableItem(includeTable, SWT.NONE);
+			item.setText(
+				launchInfo.getParameter() + " " + launchInfo.getArgument());
+			allParameter.add(launchInfo.getParameter());
+			allArguments.add(launchInfo.getArgument());
+			item.setChecked(launchInfo.isEnabled());
+		}
+	}
+
+	private void addIgnore() {
+		InputDialog parameterDialog = new InputDialog(getShell(), PreferencesMessages.getString("LaunchPreferencesPage.enterParameterShort"), Preferences.getString("IgnorePreferencePage.enterPatternLong"), null, null); //$NON-NLS-1$ //$NON-NLS-2$
+		parameterDialog.open();
+		if (parameterDialog.getReturnCode() != InputDialog.OK)
+			return;
+		InputDialog argumentDialog = new InputDialog(getShell(), PreferencesMessages.getString("LaunchPreferencesPage.enterArgumentShort"), Preferences.getString("IgnorePreferencePage.enterPatternLong"), null, null); //$NON-NLS-1$ //$NON-NLS-2$
+		argumentDialog.open();
+		if (argumentDialog.getReturnCode() != InputDialog.OK)
+			return;
+		String parameter = parameterDialog.getValue();
+		String argument = argumentDialog.getValue();
+		if (parameter.equals("") || argument.equals(""))
+			return; //$NON-NLS-1$
+		// Check if the item already exists
+		TableItem[] items = includeTable.getItems();
+		for (int i = 0; i < items.length; i++) {
+			if (items[i].getText(1).equals(parameter)) {
+				MessageDialog.openWarning(getShell(), PreferencesMessages.getString("LaunchPreferencesPage.parameterExistsShort"), Preferences.getString("IgnorePreferencePage.patternExistsLong")); //$NON-NLS-1$ //$NON-NLS-2$
+				return;
+			}
+		}
+		TableItem item = new TableItem(includeTable, SWT.NONE);
+		item.setText(parameter + " " + argument);
+		allParameter.add(parameter);
+		allArguments.add(argument);
+		item.setChecked(true);
+	}
+
+	private void removeIgnore() {
+		int[] selection = includeTable.getSelectionIndices();
+		includeTable.remove(selection);
+		allParameter.remove(selection);
+		allArguments.remove(selection);
+	}
+	private void handleSelection() {
+		if (includeTable.getSelectionCount() > 0) {
+			removeButton.setEnabled(true);
+		} else {
+			removeButton.setEnabled(false);
+		}
 	}
 
 	/**
@@ -187,10 +279,11 @@ public class CommonWOArgumentsTab extends JavaLaunchConfigurationTab {
 	 * @see ILaunchConfigurationTab#setDefaults(ILaunchConfigurationWorkingCopy)
 	 */
 	public void setDefaults(ILaunchConfigurationWorkingCopy config) {
+		String string = this.getDefaultArguments(config);
 		config.setAttribute(
 			WOJavaLocalApplicationLaunchConfigurationDelegate
 				.ATTR_WOLIPS_LAUNCH_WOARGUMENTS,
-			this.getDefaultArguments(config));
+			string);
 	}
 
 	/**
@@ -198,7 +291,8 @@ public class CommonWOArgumentsTab extends JavaLaunchConfigurationTab {
 	 */
 	public void initializeFrom(ILaunchConfiguration configuration) {
 		try {
-			fPrgmArgumentsText.setText(configuration.getAttribute(WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_WOARGUMENTS, "")); //$NON-NLS-1$
+			String string = configuration.getAttribute(WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_WOARGUMENTS, ""); //$NON-NLS-1$
+			this.fillTable(Preferences.getLaunchInfoFrom(string));
 		} catch (CoreException e) {
 			setErrorMessage(LaunchingMessages.getString("WOArgumentsTab.Exception_occurred_reading_configuration___15") + e.getStatus().getMessage()); //$NON-NLS-1$
 			JDIDebugUIPlugin.log(e);
@@ -209,10 +303,22 @@ public class CommonWOArgumentsTab extends JavaLaunchConfigurationTab {
 	 * @see ILaunchConfigurationTab#performApply(ILaunchConfigurationWorkingCopy)
 	 */
 	public void performApply(ILaunchConfigurationWorkingCopy configuration) {
+		int count = includeTable.getItemCount();
+		String[] parameter = new String[count];
+		String[] arguments = new String[count];
+		boolean[] enabled = new boolean[count];
+		TableItem[] items = (TableItem[]) includeTable.getItems();
+		for (int i = 0; i < count; i++) {
+			parameter[i] = (String) allParameter.get(i);
+			arguments[i] = (String) allArguments.get(i);
+			enabled[i] = items[i].getChecked();
+		}
+		String string =
+			Preferences.LaunchInfoToString(parameter, arguments, enabled);
 		configuration.setAttribute(
 			WOJavaLocalApplicationLaunchConfigurationDelegate
 				.ATTR_WOLIPS_LAUNCH_WOARGUMENTS,
-			getAttributeValueFrom(fPrgmArgumentsText));
+			string);
 	}
 
 	/**
@@ -220,13 +326,13 @@ public class CommonWOArgumentsTab extends JavaLaunchConfigurationTab {
 	 * 
 	 * @return text or <code>null</code>
 	 */
-	protected String getAttributeValueFrom(Text text) {
+	/*protected String getAttributeValueFrom(Text text) {
 		String content = text.getText().trim();
 		if (content.length() > 0) {
 			return content;
 		}
 		return null;
-	}
+	}*/
 
 	/**
 	 * @see ILaunchConfigurationTab#getName()
@@ -298,9 +404,10 @@ public class CommonWOArgumentsTab extends JavaLaunchConfigurationTab {
 		} catch (Exception anException) {
 			WOLipsLog.log(anException);
 		}
-		return this.getWOApplicationPlatformSpecificArguments()
+		/*return this.getWOApplicationPlatformSpecificArguments()
 			+ this.getWOApplicationClassNameArgument(config)
-			+ this.getCommonWOApplicationArguments();
+			+ this.getCommonWOApplicationArguments();*/
+		return Preferences.getString(preferencesKey);
 	}
 
 	/**
@@ -357,6 +464,14 @@ public class CommonWOArgumentsTab extends JavaLaunchConfigurationTab {
 	 */
 	private String getCommonWOApplicationArguments() {
 		return LaunchingMessages.getString("WOArguments.common");
+	}
+
+	private GridData fillIntoGrid(Control control, int hspan, boolean grab) {
+		GridData gd = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
+		gd.horizontalSpan = hspan;
+		gd.grabExcessHorizontalSpace = grab;
+		control.setLayoutData(gd);
+		return gd;
 	}
 
 }

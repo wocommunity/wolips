@@ -54,32 +54,11 @@
  *
  */
 
-package org.objectstyle.wolips.launching;
+package org.objectstyle.wolips.core.preferences;
 
-import org.eclipse.swt.widgets.Composite;
-
-
-/**
- * @author uli
- *
- * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates.
- * To enable and disable the creation of type comments go to
- * Window>Preferences>Java>Code Generation.
- */
-public class AdvancedWOArgumentsTab extends WOArgumentsTab {
-
-
-	/**
-	 * @see ILaunchConfigurationTab#createControl(Composite)
-	 */
-	public void createControl(Composite parent) {
-	}
-	/**
-	 * @see ILaunchConfigurationTab#getName()
-	 */
-	public String getName() {
-		return LaunchingMessages.getString("AdvancedWOArgumentsTab.Name"); //$NON-NLS-1$
-	}
-
+public interface ILaunchInfo {
+	public String getParameter();
+	public String getArgument();
+	public boolean isEnabled();
+	
 }

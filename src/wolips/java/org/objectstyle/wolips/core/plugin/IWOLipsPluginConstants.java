@@ -93,6 +93,7 @@ public interface IWOLipsPluginConstants {
 		"org.objectstyle.wolips.Preference.PBWO_Project_Included_Classes";
 	public static final String PREF_PBWO_PROJECT_EXCLUDED_CLASSES =
 		"org.objectstyle.wolips.Preference.PBWO_Project_Excluded_Classes";
+	public static final String PREF_LAUNCH_GLOBAL = "org.objectstyle.wolips.Preference.Launch_Global";
 	// flle extensions and resource identifier
 	public static final String EXT_PROJECT = "project";
 	public static final String EXT_SUBPROJECT = "subproj";

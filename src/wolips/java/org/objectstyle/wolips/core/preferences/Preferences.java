@@ -201,6 +201,10 @@ public class Preferences {
 				PreferencesMessages.getString(
 					IWOLipsPluginConstants
 						.PREF_PBWO_PROJECT_EXCLUDED_WOAPP_RESOURCES));
+		store.setDefault(
+			IWOLipsPluginConstants.PREF_LAUNCH_GLOBAL,
+			PreferencesMessages.getString(
+				IWOLipsPluginConstants.PREF_LAUNCH_GLOBAL));
 		Preferences.SET_DEFAULTS_STRING = null;
 	}
 
@@ -258,11 +262,12 @@ public class Preferences {
 		return WOLipsPlugin.getDefault().getPreferenceStore();
 	}
 
-	public static String[] getStringArrayForKey(String key) {
+	public static String[] getStringArrayForKey(String key, String separator) {
 		String string = Preferences.getString(key);
 		if (string == null)
 			return new String[0];
-		StringTokenizer stringTokenizer = new StringTokenizer(string, ",");
+		StringTokenizer stringTokenizer =
+			new StringTokenizer(string, separator);
 		Vector vector = new Vector();
 		while (stringTokenizer.hasMoreElements()) {
 			vector.add(stringTokenizer.nextElement());
@@ -290,6 +295,32 @@ public class Preferences {
 		return includeInfo;
 	}
 
+	public static ILaunchInfo[] getLaunchInfoForKey(String key) {
+		String string = Preferences.getString(key);
+		return Preferences.getLaunchInfoFrom(string);
+	}
+
+	public static ILaunchInfo[] getLaunchInfoFrom(String string) {
+		if (string == null)
+			return new ILaunchInfo[0];
+		StringTokenizer stringTokenizer = new StringTokenizer(string, "<>");
+		Vector vector = new Vector();
+		while (stringTokenizer.hasMoreElements()) {
+			Object token = stringTokenizer.nextElement();
+			vector.add(token);
+		}
+		ILaunchInfo[] launchInfo = new ILaunchInfo[vector.size() / 3];
+		int j = 0;
+		for (int i = 0; i < launchInfo.length; i++) {
+			launchInfo[i] =
+				new LaunchInfo(
+					(String) vector.elementAt(j),
+					(String) vector.elementAt(j + 1),
+					(String) vector.elementAt(j + 2));
+			j = j + 3;
+		}
+		return launchInfo;
+	}
 	public static void setIncludeInfoForKey(String[] includeInfo, String key) {
 		String value = "";
 		for (int i = 0; i < includeInfo.length; i++) {
@@ -300,6 +331,37 @@ public class Preferences {
 		Preferences.setString(key, value);
 	}
 
+	public static String LaunchInfoToString(
+		String[] parameter,
+		String[] arguments,
+		boolean[] enabled) {
+		String value = "";
+		for (int i = 0; i < parameter.length; i++) {
+			value += parameter[i];
+			value += "<>";
+			value += arguments[i];
+			value += "<>";
+			value += enabled[i];
+			if (i != (parameter.length - 1))
+				value += "<>";
+		}
+		return value;
+	}
+	/**
+	 * @param parameter
+	 * @param arguments
+	 * @param enabled
+	 * @param preferencesKey
+	 */
+	public static void setLaunchInfoForKey(
+		String[] parameter,
+		String[] arguments,
+		boolean[] enabled,
+		String key) {
+		String value =
+			Preferences.LaunchInfoToString(parameter, arguments, enabled);
+		Preferences.setString(key, value);
+	};
 	private static class IncludeInfo implements IIncludeInfo {
 		private String pattern;
 
@@ -310,4 +372,38 @@ public class Preferences {
 			return pattern;
 		}
 	};
+
+	private static class LaunchInfo implements ILaunchInfo {
+		public String parameter;
+		public String argument;
+		public boolean enabled;
+		public LaunchInfo(String parameter, String argument, String enabled) {
+			this.parameter = parameter;
+			this.argument = argument;
+			this.enabled =
+				(enabled != null && Preferences.trueString.equals(enabled));
+		}
+
+		/**
+		 * @return
+		 */
+		public String getArgument() {
+			return argument;
+		}
+
+		/**
+		 * @return
+		 */
+		public boolean isEnabled() {
+			return enabled;
+		}
+
+		/**
+		 * @return
+		 */
+		public String getParameter() {
+			return parameter;
+		}
+
+	}
 }

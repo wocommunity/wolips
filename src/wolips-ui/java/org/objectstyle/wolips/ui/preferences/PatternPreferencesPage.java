@@ -108,7 +108,7 @@ public abstract class PatternPreferencesPage
 		GridLayout layout = new GridLayout();
 		layout.marginWidth = 0;
 		layout.marginHeight = 0;
-		layout.numColumns = 2;
+		layout.numColumns = 1;
 		parent.setLayout(layout);
 		GridData data = new GridData();
 		data.verticalAlignment = GridData.FILL;
@@ -121,7 +121,7 @@ public abstract class PatternPreferencesPage
 		Label l1 = new Label(parent, SWT.NULL);
 		l1.setText(PreferencesMessages.getString("PatternPreferencesPage.includePatterns")); //$NON-NLS-1$
 		data = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
-		data.horizontalSpan = 2;
+		data.horizontalSpan = 1;
 		l1.setLayoutData(data);
 
 		//includeTable = new Table(parent, SWT.CHECK | SWT.BORDER);
@@ -243,7 +243,7 @@ public abstract class PatternPreferencesPage
 		}
 		TableItem item = new TableItem(includeTable, SWT.NONE);
 		item.setText(pattern);
-		item.setChecked(true);
+		//item.setChecked(true);
 	}
 
 	private void removeIgnore() {

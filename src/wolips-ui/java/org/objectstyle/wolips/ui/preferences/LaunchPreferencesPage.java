@@ -56,11 +56,28 @@
 
 package org.objectstyle.wolips.ui.preferences;
 
-import org.eclipse.jface.preference.FieldEditorPreferencePage;
-import org.eclipse.jface.preference.StringFieldEditor;
+import java.util.Vector;
+
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.InputDialog;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.preference.PreferencePage;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
+import org.objectstyle.wolips.core.preferences.ILaunchInfo;
 import org.objectstyle.wolips.core.preferences.Preferences;
 import org.objectstyle.wolips.core.preferences.PreferencesMessages;
 
@@ -73,45 +90,194 @@ import org.objectstyle.wolips.core.preferences.PreferencesMessages;
  * Window>Preferences>Java>Code Generation.
  */
 public class LaunchPreferencesPage
-	extends FieldEditorPreferencePage
+	extends PreferencePage
 	implements IWorkbenchPreferencePage {
-
+	private Table includeTable;
+	private Button addButton;
+	private Button removeButton;
+	private String preferencesKey;
+	
+	private Vector allParameter;
+	private Vector allArguments;
+	
+	public void init(
+		IWorkbench workbench) {
+		setDescription(PreferencesMessages.getString("LaunchPreferencesPage.description")); //$NON-NLS-1$
+		this.preferencesKey = IWOLipsPluginConstants.PREF_LAUNCH_GLOBAL;
+		}
 	/**
-	 * Constructor
+	 * Creates preference page controls on demand.
+	 *
+	 * @param parent  the parent for the preference page
 	 */
-	public LaunchPreferencesPage() {
-		super(GRID);
-		setPreferenceStore(Preferences.getPreferenceStore());
-		setDescription(
-			PreferencesMessages.getString("Preferences.Launch.PageDescription"));
-		Preferences.setDefaults();
+	protected Control createContents(Composite ancestor) {
+
+		Composite parent = new Composite(ancestor, SWT.NULL);
+		GridLayout layout = new GridLayout();
+		layout.marginWidth = 0;
+		layout.marginHeight = 0;
+		layout.numColumns = 2;
+		parent.setLayout(layout);
+		GridData data = new GridData();
+		data.verticalAlignment = GridData.FILL;
+		data.horizontalAlignment = GridData.FILL;
+		parent.setLayoutData(data);
+
+		// set F1 help
+		//WorkbenchHelp.setHelp(parent, IHelpContextIds.IGNORE_PREFERENCE_PAGE);
+
+		Label l1 = new Label(parent, SWT.NULL);
+		l1.setText(PreferencesMessages.getString("LaunchPreferencesPage.label")); //$NON-NLS-1$
+		data = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
+		data.horizontalSpan = 3;
+		l1.setLayoutData(data);
+
+		//includeTable = new Table(parent, SWT.CHECK | SWT.BORDER);
+		includeTable = new Table(parent, SWT.CHECK | SWT.BORDER);
+		GridData gd = new GridData(GridData.FILL_BOTH);
+		//gd.widthHint = convertWidthInCharsToPixels(30);
+		gd.heightHint = 300;
+		includeTable.setLayoutData(gd);
+		includeTable.addListener(SWT.Selection, new Listener() {
+			public void handleEvent(Event e) {
+				handleSelection();
+			}
+		});
+
+		Composite buttons = new Composite(parent, SWT.NULL);
+		buttons.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
+		layout = new GridLayout();
+		layout.marginHeight = 0;
+		layout.marginWidth = 0;
+		buttons.setLayout(layout);
+
+		addButton = new Button(buttons, SWT.PUSH);
+		addButton.setText(PreferencesMessages.getString("LaunchPreferencesPage.add")); //$NON-NLS-1$
+		data = new GridData();
+		data.horizontalAlignment = GridData.FILL;
+		data.heightHint =
+			convertVerticalDLUsToPixels(IDialogConstants.BUTTON_HEIGHT);
+		int widthHint =
+			convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
+		data.widthHint =
+			Math.max(
+				widthHint,
+				addButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x);
+		addButton.setLayoutData(data);
+		addButton.addListener(SWT.Selection, new Listener() {
+			public void handleEvent(Event e) {
+				addIgnore();
+			}
+		});
+
+		removeButton = new Button(buttons, SWT.PUSH);
+		removeButton.setText(PreferencesMessages.getString("LaunchPreferencesPage.remove")); //$NON-NLS-1$
+		data = new GridData();
+		data.horizontalAlignment = GridData.FILL;
+		data.heightHint =
+			convertVerticalDLUsToPixels(IDialogConstants.BUTTON_HEIGHT);
+		widthHint =
+			convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
+		data.widthHint =
+			Math.max(
+				widthHint,
+				removeButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x);
+		removeButton.setLayoutData(data);
+		removeButton.setEnabled(false);
+		removeButton.addListener(SWT.Selection, new Listener() {
+			public void handleEvent(Event e) {
+				removeIgnore();
+			}
+		});
+		fillTable(Preferences.getLaunchInfoForKey(preferencesKey));
+		Dialog.applyDialogFont(ancestor);
+		return parent;
 	}
 	/**
-		 * @see org.eclipse.jface.preference.FieldEditorPreferencePage#createFieldEditors()
-		 */
-	public void createFieldEditors() {
-		addField(
-			new StringFieldEditor(
-				IWOLipsPluginConstants.PREF_NS_PROJECT_SEARCH_PATH,
-				PreferencesMessages.getString(
-					"Preferences.NSProjectSearchPath.Label"),
-				60,
-				getFieldEditorParent()));
-	}
-	/**
-	 * Method performOK.
-	 * @return boolean
+	 * Do anything necessary because the OK button has been pressed.
+	 *
+	 * @return whether it is okay to close the preference page
 	 */
 	public boolean performOk() {
-		if (super.performOk()) {
-			//do some stuff	
-			return true;
+		int count = includeTable.getItemCount();
+		String[] parameter = new String[count];
+		String[] arguments = new String[count];
+		boolean[] enabled = new boolean[count];
+		TableItem[] items = (TableItem[])includeTable.getItems();
+		for (int i = 0; i < count; i++) {
+			parameter[i] = (String)allParameter.get(i);
+			arguments[i] = (String)allArguments.get(i);
+			enabled[i] = items[i].getChecked();
 		}
-		return false;
+		Preferences.setLaunchInfoForKey(parameter, arguments, enabled, preferencesKey);
+		//Team.setAllIgnores(patterns, enabled);
+		//TeamUIPlugin.broadcastPropertyChange(new PropertyChangeEvent(this, TeamUI.GLOBAL_IGNORES_CHANGED, null, null));
+		return true;
 	}
+
+	protected void performDefaults() {
+		super.performDefaults();
+		includeTable.removeAll();
+		String string = PreferencesMessages.getString(preferencesKey);
+		Preferences.setString(preferencesKey, string);
+		fillTable(Preferences.getLaunchInfoForKey(preferencesKey));
+	}
+
 	/**
-	 * @see org.eclipse.ui.IWorkbenchPreferencePage#init(IWorkbench)
+	 * @param ignore
 	 */
-	public void init(IWorkbench workbench) {
+	private void fillTable(ILaunchInfo[] launchInfoArray) {
+		allArguments = new Vector();
+		allParameter = new Vector();
+		for (int i = 0; i < launchInfoArray.length; i++) {
+			ILaunchInfo launchInfo = launchInfoArray[i];
+			TableItem item = new TableItem(includeTable, SWT.NONE);
+			item.setText(launchInfo.getParameter() + " " + launchInfo.getArgument());
+			allParameter.add(launchInfo.getParameter());
+			allArguments.add(launchInfo.getArgument());
+			item.setChecked(launchInfo.isEnabled());	
+		}
+	}
+
+	private void addIgnore() {
+		InputDialog parameterDialog = new InputDialog(getShell(), PreferencesMessages.getString("LaunchPreferencesPage.enterParameterShort"), Preferences.getString("IgnorePreferencePage.enterPatternLong"), null, null); //$NON-NLS-1$ //$NON-NLS-2$
+		parameterDialog.open();
+		if (parameterDialog.getReturnCode() != InputDialog.OK)
+			return;
+		InputDialog argumentDialog = new InputDialog(getShell(), PreferencesMessages.getString("LaunchPreferencesPage.enterArgumentShort"), Preferences.getString("IgnorePreferencePage.enterPatternLong"), null, null); //$NON-NLS-1$ //$NON-NLS-2$
+		argumentDialog.open();
+				if (argumentDialog.getReturnCode() != InputDialog.OK)
+					return;
+		String parameter = parameterDialog.getValue();	
+		String argument = argumentDialog.getValue();
+		if (parameter.equals("") || argument.equals(""))
+			return; //$NON-NLS-1$
+		// Check if the item already exists
+		TableItem[] items = includeTable.getItems();
+		for (int i = 0; i < items.length; i++) {
+			if (items[i].getText(1).equals(parameter)) {
+				MessageDialog.openWarning(getShell(), PreferencesMessages.getString("LaunchPreferencesPage.parameterExistsShort"), Preferences.getString("IgnorePreferencePage.patternExistsLong")); //$NON-NLS-1$ //$NON-NLS-2$
+				return;
+			}
+		}
+		TableItem item = new TableItem(includeTable, SWT.NONE);
+		item.setText(parameter + " " + argument);
+		allParameter.add(parameter);
+		allArguments.add(argument);
+		item.setChecked(true);
+	}
+
+	private void removeIgnore() {
+		int[] selection = includeTable.getSelectionIndices();
+		includeTable.remove(selection);
+		allParameter.remove(selection);
+		allArguments.remove(selection);		
+	}
+	private void handleSelection() {
+		if (includeTable.getSelectionCount() > 0) {
+			removeButton.setEnabled(true);
+		} else {
+			removeButton.setEnabled(false);
+		}
 	}
 }

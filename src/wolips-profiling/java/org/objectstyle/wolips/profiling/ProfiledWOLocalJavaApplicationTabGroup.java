@@ -68,7 +68,6 @@ import org.eclipse.jdt.debug.ui.launchConfigurations.JavaClasspathTab;
 import org.eclipse.jdt.debug.ui.launchConfigurations.JavaJRETab;
 import org.eclipse.jdt.debug.ui.launchConfigurations.JavaMainTab;
 import org.eclipse.jdt.debug.ui.launchConfigurations.JavaSourceLookupTab;
-import org.objectstyle.wolips.launching.AdvancedWOArgumentsTab;
 import org.objectstyle.wolips.launching.CommonWOArgumentsTab;
 
 /**
@@ -89,7 +88,6 @@ public class ProfiledWOLocalJavaApplicationTabGroup extends AbstractLaunchConfig
 			new JavaMainTab(),
 			new JavaArgumentsTab(),
 			new CommonWOArgumentsTab(),
-			new AdvancedWOArgumentsTab(),
 			new JavaJRETab(),
 			new JavaClasspathTab(),
 			new JavaSourceLookupTab(),

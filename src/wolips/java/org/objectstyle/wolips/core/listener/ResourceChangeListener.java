@@ -97,7 +97,8 @@ public class ResourceChangeListener
 		String[] patterns =
 			Preferences.getStringArrayForKey(
 				IWOLipsPluginConstants
-					.PREF_PBWO_PROJECT_INCLUDED_WOAPP_RESOURCES);
+					.PREF_PBWO_PROJECT_INCLUDED_WOAPP_RESOURCES,
+				",");
 		woappResourcesIncludeMatcher = new StringMatcher[patterns.length];
 		for (int i = 0; i < patterns.length; i++) {
 			woappResourcesIncludeMatcher[i] =
@@ -106,7 +107,8 @@ public class ResourceChangeListener
 		patterns =
 			Preferences.getStringArrayForKey(
 				IWOLipsPluginConstants
-					.PREF_PBWO_PROJECT_EXCLUDED_WOAPP_RESOURCES);
+					.PREF_PBWO_PROJECT_EXCLUDED_WOAPP_RESOURCES,
+				",");
 		woappResourcesExcludeMatcher = new StringMatcher[patterns.length];
 		for (int i = 0; i < patterns.length; i++) {
 			woappResourcesExcludeMatcher[i] =
@@ -114,7 +116,8 @@ public class ResourceChangeListener
 		}
 		patterns =
 			Preferences.getStringArrayForKey(
-				IWOLipsPluginConstants.PREF_PBWO_PROJECT_INCLUDED_CLASSES);
+				IWOLipsPluginConstants.PREF_PBWO_PROJECT_INCLUDED_CLASSES,
+				",");
 		classesIncludeMatcher = new StringMatcher[patterns.length];
 		for (int i = 0; i < patterns.length; i++) {
 			classesIncludeMatcher[i] =
@@ -122,7 +125,7 @@ public class ResourceChangeListener
 		}
 		patterns =
 			Preferences.getStringArrayForKey(
-				IWOLipsPluginConstants.PREF_PBWO_PROJECT_EXCLUDED_CLASSES);
+				IWOLipsPluginConstants.PREF_PBWO_PROJECT_EXCLUDED_CLASSES, ",");
 		classesExcludeMatcher = new StringMatcher[patterns.length];
 		for (int i = 0; i < patterns.length; i++) {
 			classesExcludeMatcher[i] =
@@ -273,14 +276,14 @@ public class ResourceChangeListener
 								resource.getParent().getFile(
 									new Path(PROJECT_FILE_NAME)));
 						} /*else if (
-													EXT_EOMODEL.equals(resource.getFileExtension())) {
-													updateProjectFile(
-														kindOfChange,
-														resource,
-														RESOURCES_ID,
-														resource.getParent().getFile(
-															new Path(PROJECT_FILE_NAME)));
-												} */
+																			EXT_EOMODEL.equals(resource.getFileExtension())) {
+																			updateProjectFile(
+																				kindOfChange,
+																				resource,
+																				RESOURCES_ID,
+																				resource.getParent().getFile(
+																					new Path(PROJECT_FILE_NAME)));
+																		} */
 						/*else if (
 							EXT_EOMODEL_BACKUP.equals(
 								resource.getFileExtension())) {
