@@ -319,7 +319,8 @@ public class WOApplication extends WOTask {
 	protected File wsresourcesDestDir() {
 		File woLocation = new File(webServerDir(), "WebObjects");
 		File appLocation = new File(woLocation, name + ".woa");
-		return new File(appLocation, "WebServerResources");
+		File contentLocation = new File(appLocation, "Contents");
+		return new File(contentLocation, "WebServerResources");
 	}
 
 	/**
