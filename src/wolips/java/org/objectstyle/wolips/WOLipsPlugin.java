@@ -54,19 +54,16 @@
  *
  */
 package org.objectstyle.wolips;
-
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.StringTokenizer;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
-
 import org.eclipse.core.internal.boot.URLContentFilter;
 import org.eclipse.core.internal.plugins.PluginClassLoader;
 import org.eclipse.core.resources.IContainer;
@@ -79,12 +76,14 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPluginDescriptor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jdt.core.ElementChangedEvent;
 import org.eclipse.jdt.core.IElementChangedListener;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -101,27 +100,29 @@ import org.objectstyle.wolips.io.FileStringScanner;
 import org.objectstyle.wolips.listener.JavaElementChangeListener;
 import org.objectstyle.wolips.listener.ResourceChangeListener;
 import org.objectstyle.wolips.project.PBProjectUpdater;
+import org.objectstyle.wolips.wo.WOVariables;
 
 /**
  * The main plugin class to be used in the desktop.
  * 
  * @author uli
+ * @author markus
  */
 public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
+	
+	private static final String PLUGIN_ID = "org.objectstyle.wolips";
 	private static WOLipsPlugin plugin;
 	private Hashtable projectUpdater;
 	private static IResourceChangeListener resourceChangeListener;
 	private static IElementChangedListener javaElementChangeListener;
-	
 	//Resource bundle.
 	private static DocumentBuilder documentBuilder;
 	/**
 	 * Set this variable to true to get debug output
 	 */
 	public static final boolean debug = false;
-	
-	public static final String ID_ELEMENT_CREATION_ACTION_SET= "org.objectstyle.wolips.ElementCreationActionSet";
-
+	public static final String ID_ELEMENT_CREATION_ACTION_SET =
+		"org.objectstyle.wolips.ElementCreationActionSet";
 	/**
 	 * The constructor.
 	 */
@@ -138,13 +139,14 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 	 * @see org.eclipse.ui.IStartup#earlyStartup()
 	 */
 	public void earlyStartup() {
-
+		
+		validateMandatoryAttributes();
+		
 		// add resource change listener to update project file on resource changes
 		resourceChangeListener = new ResourceChangeListener();
 		getWorkspace().addResourceChangeListener(
 			resourceChangeListener,
 			IResourceChangeEvent.PRE_AUTO_BUILD);
-
 		// add element change listener to update project file on classpath changes
 		javaElementChangeListener = new JavaElementChangeListener();
 		JavaCore.addElementChangedListener(
@@ -159,19 +161,23 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 		URL[] theUrls = new URL[1];
 		try {
 			theUrls[0] = new URL(Environment.foundationJarPath());
-			((PluginClassLoader)aClassLoader).addURLs(theUrls, theURLContentFilter, null, null);
-		}
-		catch (Exception anException) {
+			((PluginClassLoader) aClassLoader).addURLs(
+				theUrls,
+				theURLContentFilter,
+				null,
+				null);
+		} catch (Exception anException) {
 			WOLipsPlugin.log(anException);
-		}		
+		}
 	}
+	
 	/**
 	 * Returns the shared instance.
 	 */
 	public static WOLipsPlugin getDefault() {
 		return plugin;
 	}
-
+	
 	public void startup() throws CoreException {
 		super.startup();
 		WOClasspathUpdater.update();
@@ -184,25 +190,28 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 	public static IWorkspace getWorkspace() {
 		return ResourcesPlugin.getWorkspace();
 	}
-
+	
 	/**
 	 * Returns an ImageDescriptor.
 	 */
 	public ImageDescriptor getImageDescriptor(String name) {
 		try {
-			URL url= new URL(getDescriptor().getInstallURL(), name);
+			URL url = new URL(getDescriptor().getInstallURL(), name);
 			return ImageDescriptor.createFromURL(url);
 		} catch (MalformedURLException e) {
 			return ImageDescriptor.getMissingImageDescriptor();
 		}
-	}	
+	}
 	
 	/**
 	 * Returns the PluginID.
 	 */
 	public static String getPluginId() {
-		return getDefault().getDescriptor().getUniqueIdentifier();
-	}	
+		if (plugin != null) {
+			return getDefault().getDescriptor().getUniqueIdentifier();
+		} else
+			return PLUGIN_ID;
+	}
 	
 	/**
 	 * Prints an IStatus.
@@ -210,14 +219,20 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 	public static void log(IStatus status) {
 		getDefault().getLog().log(status);
 	}
-
+	
 	/**
 	 * Prints a message.
 	 */
 	public static void log(String message) {
-		log(new Status(IStatus.ERROR, getPluginId(), IStatus.ERROR, message, null));
+		log(
+			new Status(
+				IStatus.ERROR,
+				getPluginId(),
+				IStatus.ERROR,
+				message,
+				null));
 	}
-
+	
 	/**
 	 * Prints a Throwable.
 	 */
@@ -229,92 +244,99 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 	 * If WOLips.debug is true this method prints a String to the console.
 	 */
 	public static void debug(String aString) {
-		if(WOLipsPlugin.debug) System.out.println(aString);
+		if (WOLipsPlugin.debug)
+			System.out.println(aString);
 	}
 	
 	/**
 	 * If WOLips.debug is true this method prints an Exception to the console.
 	 */
 	public static void debug(Throwable aThrowable) {
-		if(WOLipsPlugin.debug);
+		if (WOLipsPlugin.debug);
 		System.out.println("Exception: " + aThrowable);
 	}
-	
 	
 	/**
 	 * Returns a PBProjectUpdater for an given IProject. Never returns null;
 	 */
 	public PBProjectUpdater getProjectUpdater(IProject aProject) {
-		if(projectUpdater == null) projectUpdater = new Hashtable();
+		if (projectUpdater == null)
+			projectUpdater = new Hashtable();
 		String aProjectName = aProject.getName();
-		PBProjectUpdater aProjectUpdater = (PBProjectUpdater)projectUpdater.get(aProjectName);
-		if(aProjectUpdater == null) {
+		PBProjectUpdater aProjectUpdater =
+			(PBProjectUpdater) projectUpdater.get(aProjectName);
+		if (aProjectUpdater == null) {
 			aProjectUpdater = new PBProjectUpdater(aProject);
 			projectUpdater.put(aProjectName, aProjectUpdater);
 		}
-		return aProjectUpdater;	
+		return aProjectUpdater;
 	}
-
+	
 	/**
 	 * @return Returns the active page.
 	 */
 	public IWorkbenchPage getActivePage() {
-    	return getActiveWorkbenchWindow().getActivePage();
-  	}
-  	
-  	/**
-  	 * @return Returns the active workbench shell.
-  	 */
-  	public Shell getActiveWorkbenchShell() {
-    	return getActiveWorkbenchWindow().getShell();
-  	}
-
+		return getActiveWorkbenchWindow().getActivePage();
+	}
+	
+	/**
+	 * @return Returns the active workbench shell.
+	 */
+	public Shell getActiveWorkbenchShell() {
+		return getActiveWorkbenchWindow().getShell();
+	}
+	
 	/**
 	 * @return Returns the the active workbench window.
 	 */
-  	public IWorkbenchWindow getActiveWorkbenchWindow() {
-    	return getWorkbench().getActiveWorkbenchWindow();
-  	}
-
+	public IWorkbenchWindow getActiveWorkbenchWindow() {
+		return getWorkbench().getActiveWorkbenchWindow();
+	}
+	
 	/**
 	 * @return Returns the active editor java input.
 	 */
 	public static IJavaElement getActiveEditorJavaInput() {
-
-    IWorkbenchPage page = getDefault().getActivePage();
-
-    if (page != null) {
-      IEditorPart part = page.getActiveEditor();
-      if (part != null) {
-        IEditorInput editorInput = part.getEditorInput();
-        if (editorInput != null) {
-          IJavaElement result = (IJavaElement) editorInput.getAdapter(IJavaElement.class);
-          if (result == null) {
-            IResource nonjava = (IResource) editorInput.getAdapter(IResource.class);
-            if (nonjava != null) {
-              IContainer parent = nonjava.getParent();
-              while (parent != null) {
-                result = (IJavaElement) parent.getAdapter(IJavaElement.class);
-                if (result != null) {
-                  break;
-                }
-                parent = parent.getParent();
-              }
-            }
-          }
-          return result;
-        }
-
-      }
-    }
-    return null;
-  }
-
+		IWorkbenchPage page = getDefault().getActivePage();
+		if (page != null) {
+			IEditorPart part = page.getActiveEditor();
+			if (part != null) {
+				IEditorInput editorInput = part.getEditorInput();
+				if (editorInput != null) {
+					IJavaElement result =
+						(IJavaElement) editorInput.getAdapter(
+							IJavaElement.class);
+					if (result == null) {
+						IResource nonjava =
+							(IResource) editorInput.getAdapter(IResource.class);
+						if (nonjava != null) {
+							IContainer parent = nonjava.getParent();
+							while (parent != null) {
+								result =
+									(IJavaElement) parent.getAdapter(
+										IJavaElement.class);
+								if (result != null) {
+									break;
+								}
+								parent = parent.getParent();
+							}
+						}
+					}
+					return result;
+				}
+			}
+		}
+		return null;
+	}
+	
 	public static URL baseURL() {
 		return WOLipsPlugin.getDefault().getDescriptor().getInstallURL();
 	}
 	
-	public static void handleException(Shell shell, Throwable target, String message) {
+	public static void handleException(
+		Shell shell,
+		Throwable target,
+		String message) {
 		WOLipsPlugin.debug(target);
 		String title = "Error";
 		if (message == null) {
@@ -342,11 +364,9 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 						jaxpPropertyName,
 						apacheXercesPropertyValue);
 				}
-
 				DocumentBuilderFactory builderFactory =
 					DocumentBuilderFactory.newInstance();
 				documentBuilder = builderFactory.newDocumentBuilder();
-
 			} catch (ParserConfigurationException pce) {
 				WOLipsPlugin.log(pce);
 				documentBuilder = null;
@@ -354,21 +374,22 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 				WOLipsPlugin.log(fce);
 				documentBuilder = null;
 			}
-
 		}
 		return documentBuilder;
 	}
 	
 	public static String getJavaBuildFilter() {
 		try {
-			URL aStarterURL = WOLipsPlugin.getDefault().getDescriptor().getInstallURL();
+			URL aStarterURL =
+				WOLipsPlugin.getDefault().getDescriptor().getInstallURL();
 			URL aURL = new URL(aStarterURL, "JavaBuildFilter.txt");
 			String aJavaBuildFilterFile = Platform.asLocalURL(aURL).getFile();
-			String contents = FileStringScanner.stringFromFile(new File(aJavaBuildFilterFile));
+			String contents =
+				FileStringScanner.stringFromFile(
+					new File(aJavaBuildFilterFile));
 			WOLipsPlugin.debug("JavaBuildFilter.txt: " + contents);
 			return contents;
-		}
-		catch (Exception anException) {
+		} catch (Exception anException) {
 			WOLipsPlugin.log(anException);
 		}
 		return "";
@@ -388,5 +409,18 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 	
 	public static String getId() {
 		return getDefault().getDescriptor().getUniqueIdentifier();
+	}
+
+	private void validateMandatoryAttributes() {
+		if (JavaCore.getClasspathVariable(Environment.NEXT_ROOT) == null) {
+			try {
+				JavaCore.setClasspathVariable(
+					Environment.NEXT_ROOT,
+					new Path(WOVariables.nextRoot()),
+					null);
+			} catch (JavaModelException e) {
+				log(e);
+			}
+		}
 	}
 }

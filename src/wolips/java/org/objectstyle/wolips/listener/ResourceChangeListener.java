@@ -76,7 +76,8 @@ import com.webobjects.foundation.NSMutableDictionary;
 /**
  * Tracking changes in resources and synchronizes webobjects project file
  */
-public class ResourceChangeListener implements IResourceChangeListener {
+public class ResourceChangeListener
+	implements IResourceChangeListener, IWOLipsPluginConstants {
 	/**
 	 * Constructor for ResourceChangeListener.
 	 */
@@ -199,61 +200,45 @@ public class ResourceChangeListener implements IResourceChangeListener {
 					// further investigation of resource delta needed
 					return true;
 				case IResource.PROJECT :
-					if (((IProject) resource)
-						.hasNature(IWOLipsPluginConstants.WO_APPLICATION_NATURE)
-						|| ((IProject) resource).hasNature(
-							IWOLipsPluginConstants.WO_FRAMEWORK_NATURE)) {
+					if (((IProject) resource).hasNature(WO_APPLICATION_NATURE)
+						|| ((IProject) resource).hasNature(WO_FRAMEWORK_NATURE)) {
 						// resource change concerns to webobjects project
 						// -> visit childs
 						return true;
 					} // no webobjects project
 					return false;
-
 				case IResource.FOLDER :
 					if (needsProjectFileUpdate(kindOfChange)) {
-						
-						if (IWOLipsPluginConstants
-							.EXT_FRAMEWORK
-							.equals(resource.getFileExtension())
-							|| IWOLipsPluginConstants.EXT_WOA.equals(
-								resource.getFileExtension())) {
+						if (EXT_FRAMEWORK.equals(resource.getFileExtension())
+							|| EXT_WOA.equals(resource.getFileExtension())) {
 							// no further examination needed
 							return false;
 						}
-						
-						if (IWOLipsPluginConstants
-							.EXT_COMPONENT
+						if (EXT_COMPONENT
 							.equals(resource.getFileExtension())) {
 							updateProjectFile(
 								kindOfChange,
 								resource,
-								IWOLipsPluginConstants.COMPONENTS_ID,
+								COMPONENTS_ID,
 								resource.getParent().getFile(
-									new Path(
-										IWOLipsPluginConstants
-											.PROJECT_FILE_NAME)));
+									new Path(PROJECT_FILE_NAME)));
 						} else if (
-							IWOLipsPluginConstants.EXT_EOMODEL.equals(
+							EXT_EOMODEL.equals(resource.getFileExtension())) {
+							updateProjectFile(
+								kindOfChange,
+								resource,
+								RESOURCES_ID,
+								resource.getParent().getFile(
+									new Path(PROJECT_FILE_NAME)));
+						} else if (
+							EXT_SUBPROJECT.equals(
 								resource.getFileExtension())) {
 							updateProjectFile(
 								kindOfChange,
 								resource,
-								IWOLipsPluginConstants.RESOURCES_ID,
+								SUBPROJECTS_ID,
 								resource.getParent().getFile(
-									new Path(
-										IWOLipsPluginConstants
-											.PROJECT_FILE_NAME)));
-						} else if (
-							IWOLipsPluginConstants.EXT_SUBPROJECT.equals(
-								resource.getFileExtension())) {
-							updateProjectFile(
-								kindOfChange,
-								resource,
-								IWOLipsPluginConstants.SUBPROJECTS_ID,
-								resource.getParent().getFile(
-									new Path(
-										IWOLipsPluginConstants
-											.PROJECT_FILE_NAME)));
+									new Path(PROJECT_FILE_NAME)));
 						}
 					}
 					// further examination of resource delta needed
@@ -265,19 +250,13 @@ public class ResourceChangeListener implements IResourceChangeListener {
 						// files with java extension are located in src folders
 						// the relating project file is determined through the
 						// name of the src folder containing the java file
-						if (IWOLipsPluginConstants
-							.EXT_JAVA
-							.equals(resource.getFileExtension())) {
+						if (EXT_JAVA.equals(resource.getFileExtension())) {
 							// determine project file
 							IResource parent = resource;
-							IPath projectFilePath =
-								new Path(
-									IWOLipsPluginConstants.PROJECT_FILE_NAME);
+							IPath projectFilePath = new Path(PROJECT_FILE_NAME);
 							while ((parent = parent.getParent())
 								!= resource.getProject()) {
-								if (IWOLipsPluginConstants
-									.EXT_SRC
-									.equals(parent.getFileExtension())
+								if (EXT_SRC.equals(parent.getFileExtension())
 									&& parent instanceof IContainer) {
 									// determine name of project file container
 									// (remove ".src" extension from resource containing
@@ -286,10 +265,7 @@ public class ResourceChangeListener implements IResourceChangeListener {
 										parent.getName().substring(
 											0,
 											parent.getName().length()
-												- (IWOLipsPluginConstants
-													.EXT_SRC
-													.length()
-													+ 1));
+												- (EXT_SRC.length() + 1));
 									// search for project file
 									IResourceVisitor projectFileFinder =
 										new IResourceVisitor() {
@@ -306,9 +282,7 @@ public class ResourceChangeListener implements IResourceChangeListener {
 												projectFile =
 													projectFileContainer
 														.getFile(
-														new Path(
-															IWOLipsPluginConstants
-																.PROJECT_FILE_NAME));
+														new Path(PROJECT_FILE_NAME));
 												if (projectFile.exists()) {
 													// file found
 													return false;
@@ -338,19 +312,19 @@ public class ResourceChangeListener implements IResourceChangeListener {
 							updateProjectFile(
 								kindOfChange,
 								resource,
-								IWOLipsPluginConstants.CLASSES_ID,
+								CLASSES_ID,
 								projectFile);
 						} else if (
-							IWOLipsPluginConstants.EXT_API.equals(
-								resource.getFileExtension())) {
+							EXT_API.equals(resource.getFileExtension())
+								|| EXT_STRINGS.equals(
+									resource.getFileExtension())) {
+
 							updateProjectFile(
 								kindOfChange,
 								resource,
-								IWOLipsPluginConstants.RESOURCES_ID,
+								RESOURCES_ID,
 								resource.getParent().getFile(
-									new Path(
-										IWOLipsPluginConstants
-											.PROJECT_FILE_NAME)));
+									new Path(PROJECT_FILE_NAME)));
 						}
 						//return false;
 					}

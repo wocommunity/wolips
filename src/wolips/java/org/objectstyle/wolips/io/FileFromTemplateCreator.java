@@ -126,7 +126,7 @@ public class FileFromTemplateCreator {
 	private static final String[] ALL_KEYS =
 		{
 			"PLUGIN_NAME",
-			"EXT_JAVA",
+			"CLASS",
 			"DATE",
 			"PROJECT_NAME",
 			"PACKAGE_NAME",

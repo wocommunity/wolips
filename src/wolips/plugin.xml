@@ -70,6 +70,7 @@
             icon="icons/woproject/woapplication_wiz.gif"
             category="org.objectstyle.wolips.wizards.webobjects.5.1"
             class="org.objectstyle.wolips.wizards.WOProjectCreationWizard"
+            project="true"
             id="org.objectstyle.wolips.wizards.new.wo.5.1.application">
          <description>
          </description>
@@ -79,6 +80,7 @@
             icon="icons/woproject/woframework_wiz.gif"
             category="org.objectstyle.wolips.wizards.webobjects.5.1"
             class="org.objectstyle.wolips.wizards.WOFrameworkCreationWizard"
+            project="true"
             id="org.objectstyle.wolips.wizards.new.wo.5.1.framework">
          <description>
          </description>

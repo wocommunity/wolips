@@ -73,86 +73,120 @@ import org.objectstyle.wolips.project.ProjectHelper;
  * @author mnolte
  * @author uli
  */
+
 public class WOComponentCreator extends WOProjectResourceCreator {
 
 	private String componentName;
+
 	private boolean createBodyTag;
 
 	/**
 	 * Constructor for WOComponentCreator.
 	 */
+
 	public WOComponentCreator(
 		IResource parentResource,
 		String componentName,
 		boolean createBodyTag) {
+
 		super(parentResource);
+
 		this.componentName = componentName;
+
 		this.createBodyTag = createBodyTag;
+
 	}
 
 	protected int getType() {
+
 		return COMPONENT_CREATOR;
+
 	}
 
 	/**
 	 * @see WOProjectResourceCreator#run(IProgressMonitor)
 	 */
+
 	public void run(IProgressMonitor monitor)
 		throws InvocationTargetException, InterruptedException {
+
 		super.run(monitor);
+
 		try {
+
 			createWOComponent(monitor);
+
 		} catch (CoreException e) {
+
 			throw new InvocationTargetException(e);
+
 		}
+
 	}
 
 	public void createWOComponent(IProgressMonitor monitor)
 		throws CoreException, InvocationTargetException {
 
 		// create the new file resources
+
 		if (fileCreator == null) {
+
 			fileCreator = new FileFromTemplateCreator();
+
 		}
 
 		IFolder componentFolder = null;
+
 		IFile componentJavaFile = null;
+
 		IFile componentApiFile = null;
 
 		switch (parentResource.getType()) {
+
 			case IResource.PROJECT :
+
 				componentFolder =
 					((IProject) parentResource).getFolder(
 						componentName + "." + EXT_COMPONENT);
+
 				componentJavaFile =
 					ProjectHelper.getProjectSourceFolder(
 						(IProject) parentResource).getFile(
 						new Path(componentName + "." + EXT_JAVA));
+
 				componentApiFile =
 					((IProject) parentResource).getFile(
 						componentName + "." + EXT_API);
 
 				break;
+
 			case IResource.FOLDER :
+
 				componentFolder =
 					((IFolder) parentResource).getFolder(
 						componentName + "." + EXT_COMPONENT);
+
 				componentJavaFile =
 					ProjectHelper.getSubprojectSourceFolder(
 						(IFolder) parentResource).getFile(
 						componentName + "." + EXT_JAVA);
+
 				componentApiFile =
 					((IFolder) parentResource).getFile(
 						componentName + "." + EXT_API);
 
 				break;
+
 			default :
+
 				throw new InvocationTargetException(
 					new Exception("Wrong parent resource - check validation"));
+
 		}
 
 		IFile componentDescription =
 			componentFolder.getFile(componentName + "." + EXT_WOD);
+
 		IFile componentHTMLTemplate =
 			componentFolder.getFile(componentName + "." + EXT_HTML);
 
@@ -161,16 +195,22 @@ public class WOComponentCreator extends WOProjectResourceCreator {
 		fileCreator.create(componentDescription, monitor);
 
 		if (createBodyTag) {
+
 			fileCreator.create(componentHTMLTemplate, monitor);
+
 		} else {
+
 			// create empty file
+
 			componentHTMLTemplate.create(
 				new ByteArrayInputStream("".getBytes()),
 				false,
 				null);
+
 		}
 
 		fileCreator.create(componentJavaFile, "wocomponent", monitor);
+
 		fileCreator.create(componentApiFile, monitor);
 
 	}
