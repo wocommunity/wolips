@@ -76,10 +76,10 @@ import org.apache.log4j.Category;
  *
  *
  * @ant.task category="packaging"
+ * 
+ * @author Emily Bache
  */
 public class WOApplication extends WOTask {
-    private static Category logger = Category.getInstance(WOApplication.class.getName());
-    private static boolean DEBUG = logger.isDebugEnabled();
 
     public void execute() throws BuildException {
         validateAttributes();
@@ -98,8 +98,8 @@ public class WOApplication extends WOTask {
     }
 
     /**
-     * location where WOTask is being built up: ie the .woa dir or the .framework dir.
-     * In this case, the .woa dir.
+     * Returns location where WOTask is being built up: ie the .woa dir 
+     * or the .framework dir. In this case, the .woa dir.
      */
     protected File taskDir() {
         return getProject().resolveFile(destDir + File.separator + name + ".woa");
@@ -121,10 +121,9 @@ public class WOApplication extends WOTask {
     protected void buildInfo() throws BuildException {
         InfoBuilder infoBuilder = new InfoBuilder(name, new Vector(), true);
         try {
-            infoBuilder.writeInfo("Info_app.plist", new File(contentsDir(), "Info.plist"));
+            infoBuilder.writeInfo("woapp/Info.plist", new File(contentsDir(), "Info.plist"));
         } catch (IOException ioex) {
             throw new BuildException("Error copying Info.plist", ioex);
         }
     }
-
 }

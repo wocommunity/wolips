@@ -26,7 +26,7 @@
     <!-- ============================================= -->
     <path id="classpath">
     	<!-- Include project extra libraries. -->
-        <fileset dir="lib">
+        <fileset dir="../../lib">
             <include name="**/*.jar"/>
         </fileset>        
         
@@ -95,7 +95,7 @@
 				<include name="*.eomodeld/**"/>
 			</resources>
 			<wsresources dir="src/web"/>
-			<lib dir="lib">
+			<lib dir="../../lib">
 				<include name="**/*.jar"/>
 			</lib>
 		</woframework>

@@ -81,7 +81,6 @@ public class ArtBuildTest extends BuildTestCase {
     }
 
     public void tearDown() throws Exception {
-
         super.tearDown();
     }
 
@@ -95,10 +94,5 @@ public class ArtBuildTest extends BuildTestCase {
         artFrwk.setWsResources(new String[] { "images/spacer.gif" });
 
         assertStructure(artFrwk);
-
-    }
-
-    public static void main(String[] args) {
-        junit.textui.TestRunner.main(new String[]{ArtBuildTest.class.getName()});
     }
 }

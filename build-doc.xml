@@ -1,0 +1,145 @@
+<?xml version="1.0"?>
+
+<!-- ======================================================== -->
+<!--          WOProject documentation Ant build file          -->
+<!--       Normally is called from the main build.xml.        -->
+<!-- ======================================================== -->
+<project name="woproject-doc" default="doc" basedir=".">
+
+    <!-- ============================================= -->
+    <!-- Define CLASSPATH settings.                    -->
+    <!-- ============================================= -->
+    <path id="classpath">
+        <fileset dir="${ant.home}/lib">
+            <include name="ant.jar"/>
+        </fileset>
+        <fileset dir="lib">
+            <include name="*.jar"/>
+        </fileset>
+        <fileset dir="${next.root}/Library/Frameworks">
+            <include name="JavaEOAccess.framework/Resources/Java/*.jar"/>
+            <include name="JavaEOControl.framework/Resources/Java/*.jar"/>
+            <include name="JavaFoundation.framework/Resources/Java/*.jar"/>
+            <include name="JavaWebObjects.framework/Resources/Java/*.jar"/>
+            <include name="JavaJDBCAdaptor.framework/Resources/Java/*.jar"/>
+        </fileset>
+    </path>
+
+
+
+    <!-- ============================================= -->
+    <!-- Deploys WOProject web site in a local         -->
+    <!-- directory.                                    -->
+    <!-- ============================================= -->
+    <target name="deploy-web" depends="prepare,doc,api" if="deploy.web">
+         <mkdir dir="${deploy.web}/woproject"/>
+
+         <!-- copy all but HTML -->
+         <copy todir="${deploy.web}/woproject">
+             <fileset dir="${dist}/doc">
+             	<exclude name="**/*.html"/>
+             </fileset>
+         </copy>
+
+         <!-- do replacement in HTML files -->
+         <copy todir="${deploy.web}/woproject" overwrite="true">
+             <fileset dir="${dist}/doc">
+             	<include name="**/*.html"/>
+             </fileset>
+
+             <filterset begintoken="!--" endtoken="--">
+				<filter token="SFLOGO" value="${sf.logo}"/>
+			 </filterset>
+         </copy>
+    </target>
+
+
+    <!-- ============================================= -->
+    <!-- Sets up build and distribution directories.   -->
+    <!-- ============================================= -->
+    <target name="prepare">
+        <mkdir dir="${dist}/doc"/>
+        <mkdir dir="${dist}/doc/api"/>
+    </target>
+
+
+    <!-- ============================================= -->
+    <!-- Different clean targets.                      -->
+    <!-- ============================================= -->
+    <target name="clean">
+        <delete dir="${dist}/doc"/>
+    </target>
+
+
+
+    <!-- ========================================== -->
+    <!-- Builds WOProject documenatation.          -->
+    <!-- ========================================== -->
+    <target name="doc" depends="prepare">
+        <!-- copy all licenses inclusing ours -->
+        <copy todir="${dist}/doc">
+            <fileset dir="doc">
+               <include name="LICENSE*"/>
+            </fileset>
+        </copy>
+
+        <taskdef name="anakia" classname="org.apache.velocity.anakia.AnakiaTask">
+            <classpath refid="classpath"/>
+        </taskdef>
+
+        <!-- Build site -->
+        <anakia basedir="xdocs" destdir="${dist}/doc"
+             extension=".html" style="woproject.vsl"
+             projectFile="stylesheets/project.xml"
+             excludes="**/stylesheets/**"
+             includes="**/*.xml"
+             lastModifiedCheck="true"
+             templatePath="xdocs/stylesheets">
+        </anakia>
+
+        <!-- copy images -->
+        <copy todir="${dist}/doc/images" filtering="no">
+            <fileset dir="xdocs/images">
+                <include name="**/*.gif"/>
+                <include name="**/*.jpeg"/>
+                <include name="**/*.jpg"/>
+                <include name="**/*.css"/>
+            </fileset>
+        </copy>
+
+        <!-- copy templates -->
+        <copy todir="${dist}/doc/templates" filtering="no">
+            <fileset dir="src/resources/wogen">
+                <include name="**/*.vm"/>
+            </fileset>
+        </copy>
+    </target>
+
+
+    <!-- ========================================== -->
+    <!-- Builds API documenatation.                 -->
+    <!-- ========================================== -->
+    <target name="api" depends="prepare">
+        <copy todir="${dist}/doc">
+            <fileset dir="doc">
+                <include name="**/LICENSE*"/>
+            </fileset>
+        </copy>
+
+        <javadoc   packagenames="org.objectstyle.*"
+                   defaultexcludes="yes"
+                   destdir="${dist}/doc/api"
+                   author="true"
+                   version="true"
+                   use="true"
+                   windowtitle="WOProject API">
+
+        <classpath refid="classpath"/>
+        <sourcepath>
+            <pathelement path="src/java"/>
+        </sourcepath>
+        <doctitle><![CDATA[<h2>WOProject API Documentation</h2>]]></doctitle>
+        <link href="http://developer.java.sun.com/developer/products/xml/docs/api/"/>
+        </javadoc>
+    </target>
+</project>

@@ -1,0 +1,15 @@
+# JVM              == java
+# JVMOptions       == 
+# JDB              == jdb
+# JDBOptions       == 
+# ApplicationClass == Application
+APPROOT/Resources/Java/tstapplication1.jar
+WOROOT/Library/Frameworks/JavaWebObjects.framework/Resources/Java/javawebobjects.jar
+WOROOT/Library/Frameworks/JavaEOControl.framework/Resources/Java/javaeocontrol.jar
+WOROOT/Library/Frameworks/JavaEOAccess.framework/Resources/Java/javaeoaccess.jar
+WOROOT/Library/Frameworks/JavaWOExtensions.framework/Resources/Java/JavaWOExtensions.jar
+HOMEROOT/objectstyle/wotemplates/dist/Frameworks/TstFramework2.framework/Resources/Java/tstframework2.jar
+HOMEROOT/objectstyle/wotemplates/dist/Frameworks/TstFramework1.framework/Resources/Java/tstframework1.jar
+WOROOT/Library/Frameworks/JavaXML.framework/Resources/Java/javaxml.jar
+WOROOT/Library/Frameworks/JavaFoundation.framework/Resources/Java/javafoundation.jar
+

@@ -1,4 +1,3 @@
-package org.objectstyle.woproject.ant;
 /* ====================================================================
  *
  * The ObjectStyle Group Software License, Version 1.0
@@ -54,6 +53,9 @@ package org.objectstyle.woproject.ant;
  * <http://objectstyle.org/>.
  *
  */
+
+package org.objectstyle.woproject.ant;
+
 import java.io.*;
 import java.util.Enumeration;
 import java.util.Vector;
@@ -67,7 +69,6 @@ import org.apache.tools.ant.DirectoryScanner;
 /**
  * Ant task to build WebObjects framework. For detailed instructions go to the
  * <a href="../../../../../ant/woframework.html">manual page</a> .
- *
  *
  * @ant.task category="packaging"
  */
@@ -101,8 +102,6 @@ public class WOFramework extends WOTask {
         buildInfo();
     }
 
-
-
     protected void copyLibs() throws BuildException {
         Copy cp = new Copy();
         initChildTask(cp);
@@ -116,16 +115,11 @@ public class WOFramework extends WOTask {
         cp.execute();
     }
 
-
-
-
-
-
     protected void buildInfo() throws BuildException {
         Vector libs = getLibFiles();
         InfoBuilder infoBuilder = new InfoBuilder(name, libs, hasClasses());
         try {
-            infoBuilder.writeInfo("Info.plist", new File(resourcesDir(), "Info.plist"));
+            infoBuilder.writeInfo("woframework/Info.plist", new File(resourcesDir(), "Info.plist"));
         } catch (IOException ioex) {
             throw new BuildException("Error copying Info.plist", ioex);
         }
@@ -168,8 +162,6 @@ public class WOFramework extends WOTask {
         return new File(taskDir(), "WebServerResources");
     }
 
-
-
     protected boolean hasLib() {
         return lib.size() > 0;
     }
@@ -178,8 +170,6 @@ public class WOFramework extends WOTask {
     protected boolean hasJava() {
         return classes.size() > 0 || lib.size() > 0;
     }
-
-
 
 
     /**
@@ -191,7 +181,4 @@ public class WOFramework extends WOTask {
         resources.clear();
         wsresources.clear();
     }
-
-
-
 }

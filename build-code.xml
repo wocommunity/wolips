@@ -1,0 +1,108 @@
+<?xml version="1.0"?>
+
+
+<!-- ======================================================== -->
+<!--          WOProject Java class compilation.               -->
+<!--       Normally is called from the main build.xml.        -->
+<!-- ======================================================== -->
+<project name="woproject-code" default="java" basedir=".">
+    <property name="build" value="${output}/build"/>
+
+    <!-- ============================================= -->
+    <!-- Define CLASSPATH settings.                    -->
+    <!-- ============================================= -->
+    <path id="classpath">
+        <fileset dir="${ant.home}/lib">
+            <include name="ant.jar"/>
+        </fileset>
+        <fileset dir="lib">
+            <include name="*.jar"/>
+        </fileset>
+        <fileset dir="${next.root}/Library/Frameworks">
+            <include name="JavaEOAccess.framework/Resources/Java/*.jar"/>
+            <include name="JavaEOControl.framework/Resources/Java/*.jar"/>
+            <include name="JavaFoundation.framework/Resources/Java/*.jar"/>
+            <include name="JavaWebObjects.framework/Resources/Java/*.jar"/>
+            <include name="JavaJDBCAdaptor.framework/Resources/Java/*.jar"/>
+        </fileset>
+    </path>
+
+
+    <path id="classpath-tests">
+    	<path refid="classpath"/>
+    	<pathelement path="${dist}/lib/${project.name}.jar"/>
+    </path>
+
+
+    <!-- ============================================= -->
+    <!-- Compiles Java classes                         -->
+    <!-- ============================================= -->
+    <target name="java" depends="java-main,java-tests"/>
+
+    <target name="java-main" depends="prepare">
+       <javac srcdir="src/java"
+                destdir="${build}/main"
+                deprecation="${compile.deprecation}"
+                debug="${compile.debug}"
+                optimize="${compile.optimize}">
+            <classpath refid="classpath"/>
+        </javac>
+
+        <jar jarfile="${dist}/lib/${project.name}.jar">
+            <fileset dir="${build}/main" />
+            <fileset dir="src/resources"/>
+            
+            <metainf dir="doc">
+                <include name="LICENSE*"/>
+            </metainf>
+        </jar>
+
+        <copy todir="${dist}/lib" file="lib/cayenne.jar"/>
+    </target>
+
+
+    <target name="java-tests" depends="prepare,java-main">
+       <javac srcdir="tests/java"
+                destdir="${build}/tests"
+                deprecation="${compile.deprecation}"
+                debug="${compile.debug}"
+                optimize="${compile.optimize}">
+            <classpath refid="classpath-tests"/>
+        </javac>
+
+        <jar jarfile="${dist}/lib/${project.name}-tests.jar">
+            <fileset dir="${build}/tests" />
+            <metainf dir="doc">
+                <include name="LICENSE*"/>
+            </metainf>
+        </jar>
+
+        <copy todir="${dist}/lib">
+        	<fileset dir="lib">
+        		<include name="log4j*"/>
+        		<include name="junit.jar"/>
+        	</fileset>
+        	<fileset dir="${ant.home}/lib">
+        		<include name="ant.jar"/>
+        	</fileset>
+        </copy>
+    </target>
+
+    <!-- ============================================= -->
+    <!-- Sets up build and distribution directories.   -->
+    <!-- ============================================= -->
+    <target name="prepare">
+        <mkdir dir="${build}/main"/>
+        <mkdir dir="${build}/tests"/>
+        <mkdir dir="${dist}/lib"/>
+    </target>
+
+
+    <!-- ============================================= -->
+    <!-- Deletes temporary files.                      -->
+    <!-- ============================================= -->
+    <target name="clean">
+        <delete dir="${dist}/lib"/>
+        <delete dir="${build}"/>
+    </target>
+</project>

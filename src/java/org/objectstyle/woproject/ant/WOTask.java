@@ -204,7 +204,7 @@ public abstract class WOTask extends MatchingTask {
     }
 
     protected void copyWsresources() throws BuildException {
-        Copy cp = new Copy();
+        WOCompCopy cp = new WOCompCopy();
         initChildTask(cp);
 
         cp.setTodir(wsresourcesDir());

@@ -1,4 +1,3 @@
-package org.objectstyle.woproject.ant;
 /* ====================================================================
  * 
  * The ObjectStyle Group Software License, Version 1.0 
@@ -55,6 +54,8 @@ package org.objectstyle.woproject.ant;
  *
  */
 
+package org.objectstyle.woproject.ant;
+
 import java.io.File;
 
 import org.apache.tools.ant.BuildException;
@@ -63,6 +64,11 @@ import org.apache.tools.ant.types.Mapper;
 import org.apache.tools.ant.util.FileNameMapper;
 import org.apache.tools.ant.util.IdentityMapper;
 
+/** 
+ * Mapper that allows to flatten copied resources. 
+ * 
+ * @author Andrei Adamchik
+ */
 public class WOMapper extends Mapper {
 
     public WOMapper(Project project) {

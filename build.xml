@@ -1,12 +1,16 @@
 <?xml version="1.0"?>
 
-<!-- Main WOProject build file -->
+<!-- ======================================================== -->
+<!--              Main WOProject Ant build file               -->
+<!-- Serves as a facade for different helper build files.     -->
+<!-- ======================================================== -->
 <project name="woproject" default="java" basedir=".">
+	<property file="build.properties" />
     <property file="${user.home}/build.properties" />
-    <property file="build.properties" />
     <property file="default.properties" />
     <property environment="env"/>
     <property name="next.root" value="${env.NEXT_ROOT}"/>
+
 
     <!-- ============================================= -->
     <!-- Derived Properties. These properties are      -->
@@ -15,46 +19,7 @@
     <!-- ============================================= -->
     <property name="dist" value="${dist.base}/${project.name}-${project.version}"/>
     <property name="output" value="output"/>
-    <property name="build" value="${output}/build"/>
-    <property name="test_results" value="${output}/test_results"/>
-
-
-    <!-- ============================================= -->
-    <!-- Define CLASSPATH settings.                    -->
-    <!-- ============================================= -->
-    <path id="classpath">
-        <fileset dir="${ant.home}/lib">
-            <include name="ant.jar"/>
-        </fileset>
-        <fileset dir="lib">
-            <include name="*.jar"/>
-        </fileset>
-        <fileset dir="${next.root}/Library/Frameworks">
-            <include name="JavaEOAccess.framework/Resources/Java/*.jar"/>
-            <include name="JavaEOControl.framework/Resources/Java/*.jar"/>
-            <include name="JavaFoundation.framework/Resources/Java/*.jar"/>
-            <include name="JavaWebObjects.framework/Resources/Java/*.jar"/>
-            <include name="JavaJDBCAdaptor.framework/Resources/Java/*.jar"/>
-        </fileset>
-    </path>
-
-    <path id="classpath-tests">
-    	<path refid="classpath"/>
-    	<pathelement path="${dist}/lib/${project.name}.jar"/>
-    </path>
-
-    <path id="classpath-tests-run">
-        <fileset dir="${ant.home}/lib">
-            <include name="*.jar"/>
-        </fileset>
-        <fileset dir="${dist}/lib">
-            <include name="*.jar"/>
-        </fileset>
-        <fileset dir="${env.JAVA_HOME}/lib">
-            <include name="*.jar"/>
-        </fileset>
-    </path>
-
+    
 
     <target name="help">
         <echo>
@@ -86,12 +51,9 @@
     <!-- Creates WOProject distribution.               -->
     <!-- ============================================= -->
     <target name="dist" depends="prepare,java,doc,api">
-
          <!-- Copy source code -->
          <copy todir="${dist}/src">
-             <fileset dir="src">
-             	<exclude name="**/WOApplication.java"/>
-             </fileset>
+             <fileset dir="src"/>
          </copy>
 
          <!-- Copy examples code -->
@@ -112,6 +74,7 @@
                 <exclude name="**/lib/junit.jar"/>
             </tarfileset>
          </tar>
+         
          <gzip src="${dist.base}/${project.name}-src-${project.version}.tar"
               zipfile="${dist.base}/${project.name}-src-${project.version}.tar.gz"/>
          <delete file="${dist.base}/${project.name}-src-${project.version}.tar"/>
@@ -119,228 +82,50 @@
 
 
     <!-- ============================================= -->
-    <!-- Deploys WOProject web site in a local         -->
-    <!-- directory.                                    -->
-    <!-- ============================================= -->
-    <target name="deploy-web" depends="prepare,java,doc,api" if="deploy.web">
-         <mkdir dir="${deploy.web}/woproject"/>
-
-         <!-- copy all but HTML -->
-         <copy todir="${deploy.web}/woproject">
-             <fileset dir="${dist}/doc">
-             	<exclude name="**/*.html"/>
-             </fileset>
-         </copy>
-
-         <!-- do replacement in HTML files -->
-         <copy todir="${deploy.web}/woproject" overwrite="true">
-             <fileset dir="${dist}/doc">
-             	<include name="**/*.html"/>
-             </fileset>
-
-             <filterset begintoken="!--" endtoken="--">
-				<filter token="SFLOGO" value="${sf.logo}"/>
-			 </filterset>
-         </copy>
-    </target>
-
-
-    <!-- ============================================= -->
     <!-- Compiles Java classes                         -->
     <!-- ============================================= -->
-    <target name="java" depends="java-main,java-tests"/>
-
-    <target name="java-main" depends="prepare">
-       <javac srcdir="src/java"
-                destdir="${build}/main"
-                deprecation="${compile.deprecation}"
-                debug="${compile.debug}"
-                optimize="${compile.optimize}">
-            <classpath refid="classpath"/>
-        </javac>
-
-        <jar jarfile="${dist}/lib/${project.name}.jar">
-            <fileset dir="${build}/main" />
-            <fileset dir="src/resources">
-                <include name="Info.plist"/>
-                <include name="Info_app.plist"/>
-                <include name="**/*.vm"/>
-            </fileset>
-            <metainf dir="doc">
-                <include name="LICENSE*"/>
-            </metainf>
-        </jar>
-
-        <copy todir="${dist}/lib" file="lib/cayenne.jar"/>
-    </target>
-
-
-    <target name="java-tests" depends="prepare,java-main">
-       <javac srcdir="tests/java"
-                destdir="${build}/tests"
-                deprecation="${compile.deprecation}"
-                debug="${compile.debug}"
-                optimize="${compile.optimize}">
-            <classpath refid="classpath-tests"/>
-        </javac>
-
-        <jar jarfile="${dist}/lib/${project.name}-tests.jar">
-            <fileset dir="${build}/tests" />
-            <metainf dir="doc">
-                <include name="LICENSE*"/>
-            </metainf>
-        </jar>
-
-        <copy todir="${dist}/lib">
-        	<fileset dir="lib">
-        		<include name="log4j*"/>
-        		<include name="junit.jar"/>
-        	</fileset>
-        	<fileset dir="${ant.home}/lib">
-        		<include name="ant.jar"/>
-        	</fileset>
-        </copy>
-
-        <copy todir="tests/wo/frameworks/art/lib" file="${dist}/lib/${project.name}.jar"/>
-        <copy todir="tests/wo/frameworks/art/lib" file="${dist}/lib/cayenne.jar"/>
+    <target name="java">
+		<ant antfile="build-code.xml"/>
     </target>
 
 
     <!-- ============================================= -->
     <!-- Runs Unit tests.                              -->
     <!-- ============================================= -->
-    <target name="execute-unit-tests" depends="java-tests">
-
-        <junit fork="yes" haltonfailure="no" errorProperty="unit-tests-failed"
-                failureProperty="unit-tests-failed" dir="${basedir}">
-            <classpath refid="classpath-tests-run"/>
-            <formatter type="plain" usefile="true"/>
-            <batchtest todir="${test_results}/unit">
-                <fileset dir="${build}/tests">
-                    <include name="**/*Test.class"/>
-                    <exclude name="**/*BuildTest.class"/>
-                </fileset>
-            </batchtest>
-        </junit>
+    <target name="test" depends="prepare,java">
+        <ant antfile="build-test.xml"/>
     </target>
-
-    <target name="execute-functional-tests" depends="java-tests">
-        <!-- clean-build test cases using woproject -->
-        <delete dir="tests/wo/dist"/>
-
-        <!-- delete auto-generated superclasses -->
-        <delete includeEmptyDirs="true">
-        	<fileset dir="tests/wo/frameworks">
-        		<include name="**/auto/*.java"/>
-        	</fileset>
-        </delete>
-
-        <junit fork="yes" haltonfailure="no" errorProperty="functional-tests-failed"
-                failureProperty="functional-tests-failed" dir="${basedir}">
-            <classpath refid="classpath-tests-run"/>
-            <formatter type="plain" usefile="true"/>
-            <batchtest todir="${test_results}/functional">
-                <fileset dir="${build}/tests">
-                    <include name="**/*BuildTest.class"/>
-                </fileset>
-            </batchtest>
-        </junit>
-    </target>
-
-    <!-- ============================================= -->
-    <!-- reports on unit tests.                        -->
-    <!-- [emily] We could make this much more fancy and produce html reports. -->
-    <!-- ============================================= -->
-    <target name="unit-test-report" description="report on unit test results"
-            depends = "execute-unit-tests" if = "unit-tests-failed">
-        <fail message="unit tests failed, see files in ${test_results}/unit for details"/>
-    </target>
-
-    <!-- ============================================= -->
-    <!-- reports on functional tests.                  -->
-    <!-- ============================================= -->
-    <target name="functional-test-report" description="report on functional test results"
-            depends = "execute-functional-tests" if = "functional-tests-failed">
-        <fail message="functional tests failed, see files in ${test_results}/functional for details"/>
-    </target>
-
-    <!-- ============================================= -->
-    <!-- runs and reports on tests.                    -->
-    <!-- ============================================= -->
-    <target name="test"
-       depends="execute-unit-tests,execute-functional-tests,unit-test-report,functional-test-report">
-
-    </target>
+    
 
     <!-- ============================================= -->
     <!-- Sets up build and distribution directories.   -->
     <!-- ============================================= -->
     <target name="prepare">
-        <mkdir dir="${build}/main"/>
-        <mkdir dir="${build}/tests"/>
-        <mkdir dir="${test_results}/unit"/>
-        <mkdir dir="${test_results}/functional"/>
         <mkdir dir="${dist}"/>
         <mkdir dir="${dist}/src"/>
-        <mkdir dir="${dist}/lib"/>
         <mkdir dir="${dist}/examples"/>
-        <mkdir dir="${dist}/doc"/>
-        <mkdir dir="${dist}/doc/api"/>
     </target>
 
 
     <!-- ============================================= -->
-    <!-- Different clean targets.                      -->
+    <!-- Deletes temporary files.                      -->
     <!-- ============================================= -->
-    <target name="clean">
+    <target name="clean">        
+        <ant antfile="build-test.xml" target="clean"/>
+        <ant antfile="build-code.xml" target="clean"/>
+        <ant antfile="build-doc.xml" target="clean"/>
+        
         <delete dir="${dist.base}"/>
         <delete dir="${output}"/>
-        <delete dir="tests/wo/dist"/>
     </target>
-
-
+    
+    
 
     <!-- ========================================== -->
     <!-- Builds WOProject documenatation.          -->
     <!-- ========================================== -->
-    <target name="doc" depends="prepare">
-        <!-- copy all licenses inclusing ours -->
-        <copy todir="${dist}/doc">
-            <fileset dir="doc">
-               <include name="LICENSE*"/>
-            </fileset>
-        </copy>
-
-        <taskdef name="anakia" classname="org.apache.velocity.anakia.AnakiaTask">
-            <classpath refid="classpath"/>
-        </taskdef>
-
-        <!-- Build site -->
-        <anakia basedir="xdocs" destdir="${dist}/doc"
-             extension=".html" style="woproject.vsl"
-             projectFile="stylesheets/project.xml"
-             excludes="**/stylesheets/**"
-             includes="**/*.xml"
-             lastModifiedCheck="true"
-             templatePath="xdocs/stylesheets">
-        </anakia>
-
-        <!-- copy images -->
-        <copy todir="${dist}/doc/images" filtering="no">
-            <fileset dir="xdocs/images">
-                <include name="**/*.gif"/>
-                <include name="**/*.jpeg"/>
-                <include name="**/*.jpg"/>
-                <include name="**/*.css"/>
-            </fileset>
-        </copy>
-
-        <!-- copy templates -->
-        <copy todir="${dist}/doc/templates" filtering="no">
-            <fileset dir="src/resources/wogen">
-                <include name="**/*.vm"/>
-            </fileset>
-        </copy>
+    <target name="doc">
+		<ant antfile="build-doc.xml" target="doc"/>
     </target>
 
 
@@ -348,26 +133,15 @@
     <!-- Builds API documenatation.                 -->
     <!-- ========================================== -->
     <target name="api" depends="prepare">
-        <copy todir="${dist}/doc">
-            <fileset dir="doc">
-                <include name="**/LICENSE*"/>
-            </fileset>
-        </copy>
-
-        <javadoc   packagenames="org.objectstyle.*"
-                   defaultexcludes="yes"
-                   destdir="${dist}/doc/api"
-                   author="true"
-                   version="true"
-                   use="true"
-                   windowtitle="WOProject API">
-
-        <classpath refid="classpath"/>
-        <sourcepath>
-            <pathelement path="src/java"/>
-        </sourcepath>
-        <doctitle><![CDATA[<h2>WOProject API Documentation</h2>]]></doctitle>
-        <link href="http://developer.java.sun.com/developer/products/xml/docs/api/"/>
-        </javadoc>
+		<ant antfile="build-doc.xml" target="api"/>
+    </target>
+    
+    
+    <!-- ============================================= -->
+    <!-- Deploys WOProject web site in a local         -->
+    <!-- directory.                                    -->
+    <!-- ============================================= -->
+    <target name="deploy-web" depends="prepare,java,doc,api" if="deploy.web">
+		<ant antfile="build-doc.xml" target="deploy-web"/>
     </target>
 </project>

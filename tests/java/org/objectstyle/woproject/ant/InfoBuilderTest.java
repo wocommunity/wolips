@@ -75,7 +75,7 @@ public class InfoBuilderTest extends TestCase {
 
     public void setUp() throws Exception {
         super.setUp();
-        fin = new FileReader("src/resources/Info.plist");
+        fin = new FileReader("src/resources/woframework/Info.plist");
         bin = new BufferedReader(fin);
         sout = new StringWriter();
         bout = new BufferedWriter(sout);
@@ -138,10 +138,5 @@ public class InfoBuilderTest extends TestCase {
             + "\t\t<string>" + lib3 + "</string>\n"
             + "\t</array>\n\t"
             , nsJavaPath);
-
-    }
-
-    public static void main(String[] args) {
-        junit.textui.TestRunner.main(new String[]{InfoBuilderTest.class.getName()});
     }
 }
