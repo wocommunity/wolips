@@ -5,7 +5,7 @@
 <!-- ======================================================== -->
 <project name="woproject-wolips" default="java" basedir=".">
 	<property file="build.properties" />
-    <property file="${user.home}/build.properties" />
+    <property file="${user.home}${file.separator}build.properties" />
     <property file="default.properties" />
     <property file="src/wolips/plugin.properties"/>
     <property name="output" value="output"/>

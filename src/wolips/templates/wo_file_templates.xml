@@ -192,7 +192,7 @@ public class DirectAction extends WODirectAction {
 	<!-- property determination  -->
 	<target name="setProps">
 		<property file="build.properties"/>
-		<property file="${user.home}/Library/wobuild.properties"/>
+		<property file="${user.home}${file.separator}Library${file.separator}wobuild.properties"/>
 		<condition property="wo.properties.ckeck.failed">
 			<not>
     			<and>
@@ -201,7 +201,7 @@ public class DirectAction extends WODirectAction {
     			</and>
     		</not>
   		</condition>
-  		<fail message="Could not find ${user.home}/wobuild.properties." if="wo.properties.ckeck.failed"/>
+  		<fail message="Could not find ${user.home}${file.separator}Library${file.separator}wobuild.properties." if="wo.properties.ckeck.failed"/>
 		<property name="install.dir" value="${wo.wolocalroot}/Library/Webobjects/Applications"/>
 	</target>
 		
@@ -300,7 +300,7 @@ project.name = ${PROJECT_NAME}
 	<!-- property determination  -->
 	<target name="setProps">
 		<property file="build.properties"/>
-		<property file="${user.home}/Library/wobuild.properties"/>
+		<property file="${user.home}${file.separator}Library${file.separator}wobuild.properties"/>
 		<condition property="wo.properties.ckeck.failed">
 			<not>
     			<and>
@@ -309,7 +309,7 @@ project.name = ${PROJECT_NAME}
     			</and>
     		</not>
   		</condition>
-  		<fail message="Could not find ${user.home}/wobuild.properties." if="wo.properties.ckeck.failed"/>
+  		<fail message="Could not find ${user.home}${file.separator}Library${file.separator}wobuild.properties." if="wo.properties.ckeck.failed"/>
 		<property name="install.dir" value="${wo.wolocalroot}/Library/Frameworks"/>
 	</target>
 
