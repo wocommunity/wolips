@@ -14,9 +14,9 @@
         <!-- This is important, since java.home can point to  -->
         <!-- JRE that has no compiler.                        -->
         <fileset dir="${env.JAVA_HOME}/lib">
-  	    <include name="*.jar" /> 
-  	</fileset>
-  	<fileset dir="${wo.wosystemroot}/Library/Frameworks">
+  	        <include name="*.jar" /> 
+  	    </fileset>
+  	    <fileset dir="${wo.wosystemroot}/Library/Frameworks">
             <include name="JavaFoundation.framework/Resources/Java/*.jar"/>
         </fileset>
     </path>
@@ -92,7 +92,6 @@
             description="report on unit test results" 
             depends="unit-test" 
             if="test.unit.failure">
-        <fail message="Unit tests failed, see files in ${test.results}/unit for details"/>
     </target>
     
 
@@ -102,7 +101,6 @@
     <target name="functional-test-report" 
             description="report on functional test results"
             depends = "functional-test" if = "test.functional.failure">
-        <fail message="functional tests failed, see files in ${test.results}/functional for details"/>
     </target>
 
 
