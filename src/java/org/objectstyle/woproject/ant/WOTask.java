@@ -203,4 +203,18 @@ public abstract class WOTask extends MatchingTask {
         cp.execute();
     }
 
+    protected void copyWsresources() throws BuildException {
+        Copy cp = new Copy();
+        initChildTask(cp);
+
+        cp.setTodir(wsresourcesDir());
+
+        Enumeration en = wsresources.elements();
+        while (en.hasMoreElements()) {
+            cp.addFileset((FileSet) en.nextElement());
+        }
+        cp.execute();
+    }
+
+
 }

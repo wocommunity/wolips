@@ -90,6 +90,9 @@ public class WOApplication extends WOTask {
         if (hasResources()) {
             copyResources();
         }
+        if (hasWs()) {
+            copyWsresources();
+        }
         buildInfo();
         // @todo - create web.xml and/or classpath files
     }

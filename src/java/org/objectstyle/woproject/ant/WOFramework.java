@@ -119,18 +119,6 @@ public class WOFramework extends WOTask {
 
 
 
-    protected void copyWsresources() throws BuildException {
-        Copy cp = new Copy();
-        initChildTask(cp);
-
-        cp.setTodir(wsresourcesDir());
-
-        Enumeration en = wsresources.elements();
-        while (en.hasMoreElements()) {
-            cp.addFileset((FileSet) en.nextElement());
-        }
-        cp.execute();
-    }
 
 
     protected void buildInfo() throws BuildException {

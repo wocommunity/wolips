@@ -74,6 +74,7 @@ public class HelloWorldBuildTest extends BuildTestCase {
 
         ApplicationStructure app = new ApplicationStructure("HelloWorld");
         app.setWocomps(new String[] { "Main" });
+        app.setWsResources(new String[] {"hello.gif"});
         assertStructure(app);
     }
 

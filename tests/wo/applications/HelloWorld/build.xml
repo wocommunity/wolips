@@ -66,6 +66,9 @@
 			<resources dir="Resources">
 				<include name="**/*.wo/**"/>
 			</resources>
+            <wsresources dir="WebServerResources">
+				<include name="**/*.gif"/>
+			</wsresources>
         </woapplication>
 
    </target>
