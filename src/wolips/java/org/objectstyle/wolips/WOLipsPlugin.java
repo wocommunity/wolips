@@ -350,23 +350,25 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 	public static DocumentBuilder documentBuilder() {
 		if (documentBuilder == null) {
 			try {
-				String jaxpPropertyName =
+				//Eclipse set this stuff
+				/*String jaxpPropertyName =
 					"javax.xml.parsers.DocumentBuilderFactory";
 				if (System.getProperty(jaxpPropertyName) == null) {
 					String apacheXercesPropertyValue =
 						"org.apache.xerces.jaxp.DocumentBuilderFactoryImpl";
+					WOLipsPlugin.log("2");
 					System.setProperty(
 						jaxpPropertyName,
 						apacheXercesPropertyValue);
-				}
+				}*/
 				DocumentBuilderFactory builderFactory =
 					DocumentBuilderFactory.newInstance();
 				documentBuilder = builderFactory.newDocumentBuilder();
 			} catch (ParserConfigurationException pce) {
-				WOLipsPlugin.log(pce);
+				WOLipsPlugin.log("ParserConfigurationException: " + pce);
 				documentBuilder = null;
 			} catch (FactoryConfigurationError fce) {
-				WOLipsPlugin.log(fce);
+				WOLipsPlugin.log("FactoryConfigurationError: " + fce);
 				documentBuilder = null;
 			}
 		}
