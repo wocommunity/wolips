@@ -10,10 +10,42 @@
  		<section name="WOApplication Task Manual">
 			<h3>Description:</h3>
 
-			<p><code>WOApplication</code> is an Ant task to build WebObjects (5.1 or higher) applications
-			from a set of files. It does not enforce any particular project structure
+			<p><code>WOApplication</code> is an Ant task to build WebObjects (5.1 or higher) 
+			applications from a set of files. It does not enforce any particular project structure
 			and can be used to create applications without using the ProjectBuilder tool.
 			</p>
+			
+			<h3>Properties:</h3>
+			
+			<p>WOApplication behavior depends on the following properties that specify
+			common locations of the frameworks used by the application. 
+			If any of these properties is not initialized, a default value for this property 
+			is used:</p>
+			
+			<table border="1" cellpadding="2" cellspacing="0">
+				<tr>
+					<th valign="top"><b>Property</b></th>
+					<th valign="top"><b>Description</b></th>
+					<th align="center" valign="top"><b>Default</b></th>
+				</tr>
+				<tr>
+					<td valign="top">wo.woroot</td>
+					<td valign="top">Usually this is a WebObjects installation directory,
+					like "C:\Apple".</td>
+					<td valign="top" align="center">NEXT_ROOT environment variable, or root directory "/".</td>
+				</tr>
+				<tr>
+					<td valign="top">wo.localroot</td>
+					<td valign="top">Usually this is a "Local" directory
+					under the directory specified by "wo.woroot".</td>
+					<td valign="top" align="center">${wo.woroot}/Local</td>
+				</tr>
+				<tr>
+					<td valign="top">wo.homeroot</td>
+					<td valign="top">Usually this is a user home directory.</td>
+					<td valign="top" align="center">${user.home}</td>
+				</tr>
+			</table>
 
 			<h3>Parameters:</h3>
 
@@ -49,7 +81,7 @@
 					<td valign="top">If set to <i>true</i>, a set of standard frameworks will be 
 					associated with the deployed application (default is <i>true</i>). "Standard"
 					frameworks are: JavaWebObjects, JavaWOExtensions, JavaEOAccess, JavaEOControl,
-					JavaFoundation.</td>
+					JavaFoundation, JavaJDBCAdaptor.</td>
 					<td valign="top" align="center">No</td>
 				</tr>
 			</table>
@@ -79,42 +111,17 @@
 			For the discussion
 			of resource localization issues follow <a href="localized.html">this link</a>.</p>
 
-            <h4>framework</h4>
-			<p>The nested <code>framework</code> element specifies the names of the
+            <h4>frameworks</h4>
+			<p>The nested <code>frameworks</code> is a <a
+			href="http://jakarta.apache.org/ant/manual/CoreTypes/fileset.html">FileSet</a>
+			structure that specifies the names of the
             WebObjects Frameworks that this application is dependant upon. The jar files from
             these frameworks will be referenced in varios platform-specific depoyment files 
             (such as CLASSPATH.TXT), and specified in the web.xml classpath if an application 
-            is deployed as a servlet. Nested "framework" can be used in two forms: standalone and
-            <a
-			href="http://jakarta.apache.org/ant/manual/CoreTypes/fileset.html">FileSet</a> form. </p>
+            is deployed as a servlet. When building a FileSet, path should match up to the 
+            "*.framework" directory (no need to match individual JAR files).</p>
             
-            <h4>Standalone Nested "framework" Parameters:</h4>
-            <table border="1" cellpadding="2" cellspacing="0">
-				<tr>
-					<th valign="top"><b>Attribute</b></th>
-					<th valign="top"><b>Description</b></th>
-					<th align="center" valign="top"><b>Required</b></th>
-				</tr>
-				<tr>
-					<td valign="top">name</td>
-					<td valign="top">Name of the framework (without <i>.framework</i> extension).</td>
-					<td valign="top" align="center">Yes</td>
-				</tr>
-				<tr>
-					<td valign="top">base</td>
-					<td valign="top">Logical base location of the framework. Allowed values are 
-					"home", "wo", "local"</td>
-					<td valign="top" align="center">No</td>
-				</tr>
-				<tr>
-					<td valign="top">path</td>
-					<td valign="top">Path to the framework relative to the "base"
-					directory. If ommitted, "Library/Frameworks" is used.</td>
-					<td valign="top" align="center">No</td>
-				</tr>
-			</table>
-
-			<h4>FileSet Nested "framework" Parameters:</h4>
+			<h4>Nested <code>frameworks</code> Parameters:</h4>
             <table border="1" cellpadding="2" cellspacing="0">
 				<tr>
 					<th valign="top"><b>Attribute</b></th>
@@ -125,12 +132,6 @@
 					<td valign="top">base</td>
 					<td valign="top">Logical base location of the framework. Allowed values are 
 					"home", "wo", "local"</td>
-					<td valign="top" align="center">Yes</td>
-				</tr>
-				<tr>
-					<td valign="top">dir</td>
-					<td valign="top">Base path to look for the frameworks. Must correspond 
-					to the logical path specified in "base" parameter.</td>
 					<td valign="top" align="center">Yes</td>
 				</tr>
 			</table>
@@ -159,24 +160,16 @@
 &amp;lt;/woapplication&amp;gt;
 </source>
 
-			<p>Create an application "MyApp" with no implicit standard frameworks
-			and a custom framework located at HOMEROOT/Library/Frameworks:</p>
-<source>
-&amp;lt;woapplication name="MyApp" stdFrameworks="false" destDir="${dist}/Applications"&amp;gt;
-   ...
-   &amp;lt;framework name="CustFramework" base="home"/&amp;gt;
-&amp;lt;/woapplication&amp;gt;
-</source>
 
-			<p>Create an application "MyApp" with implicit standard frameworks
-			and a set of custom frameworks located under HOMEROOT that
-			resolves on developer machine to the user home directory:</p>
+			<p>Create an application "MyApp" with no implicit standard frameworks
+			and a set of custom frameworks located under HOMEROOT (defined from the 
+			value of <code>wo.homeroot</code> property):</p>
 <source>
 &amp;lt;woapplication name="MyApp" stdFrameworks="false" destDir="${dist}/Applications"&amp;gt;
    ...
-   &amp;lt;framework base="home" dir="${user.home}"&amp;gt;
+   &amp;lt;frameworks base="home"&amp;gt;
       &amp;lt;include name="**/*.framework"/&amp;gt;
-   &amp;lt;/framework&amp;gt;
+   &amp;lt;/frameworks&amp;gt;
 &amp;lt;/woapplication&amp;gt;
 </source>
     	</section>
