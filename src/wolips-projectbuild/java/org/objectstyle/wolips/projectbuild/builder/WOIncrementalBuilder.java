@@ -89,6 +89,7 @@ import org.eclipse.jdt.core.JavaCore;
 import org.objectstyle.cayenne.wocompat.PropertyListSerialization;
 import org.objectstyle.wolips.core.util.ExcludeIncludeMatcher;
 import org.objectstyle.wolips.core.util.IStringMatcher;
+import org.objectstyle.wolips.core.util.StringListMatcher;
 import org.objectstyle.wolips.core.util.StringUtilities;
 import org.objectstyle.wolips.projectbuild.WOProjectBuildConstants;
 import org.objectstyle.wolips.projectbuild.natures.IncrementalNature;
@@ -510,28 +511,47 @@ public class WOIncrementalBuilder
       String _msgPrefix;
     }
 
-
     public WOBuildHelper (IProgressMonitor monitor, IProject project) 
       throws CoreException
     {
       _monitor = monitor;
       _project = project;
       _woNature = IncrementalNature.s_getNature(project);
+      
+      _buildPath = _woNature.getBuildPath();
+      _distPath = new Path ("dist");
+      _resultMatcher = new StringListMatcher ("*.woa,*.framework");
     }
 
     /**
      * @see org.eclipse.core.resources.IResourceDeltaVisitor#visit(IResourceDelta)
      */
     public boolean visit(IResourceDelta delta) throws CoreException {
-      handleResource (delta.getResource(), delta);
-      return true;
+      return _visitResource (delta.getResource(), delta);
     }
 
     /**
      * @see org.eclipse.core.resources.IResourceVisitor#visit(IResource)
      */
     public boolean visit(IResource resource) throws CoreException {
-      handleResource (resource, null);
+      return _visitResource (resource, null);
+    }
+    
+    private boolean _visitResource (IResource res, IResourceDelta delta) 
+      throws CoreException
+    {
+      IPath resPath = res.getProjectRelativePath();
+
+      if (
+        _buildPath.isPrefixOf (resPath)
+        || _distPath.isPrefixOf (resPath)
+        || _resultMatcher.match(resPath.toString())
+      ) {
+        return false;
+      } 
+
+      handleResource (res, delta);
+
       return true;
     }
 
@@ -615,6 +635,10 @@ public class WOIncrementalBuilder
 
     protected IProgressMonitor _monitor;
     protected IProject _project;
+    protected IPath _buildPath;
+    protected IPath _distPath;
+    protected IStringMatcher _resultMatcher;
+
     protected IncrementalNature _woNature = null;
     private List _buildTasks = new ArrayList ();
     private int  _buildWork = 0;
