@@ -54,70 +54,35 @@
  *
  */
 
-package org.objectstyle.wolips.actions;
-
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.viewers.ISelection;
-import org.objectstyle.wolips.io.WOLipsLog;
-import org.objectstyle.wolips.project.PBProjectUpdater;
-import org.objectstyle.wolips.project.ProjectHelper;
+package org.objectstyle.wolips.builder;
 
 /**
  * @author uli
  *
- *The Action for updating the PB.project file.
+ * To change this generated comment edit the template variable "typecomment":
+ * Window>Preferences>Java>Templates.
+ * To enable and disable the creation of type comments go to
+ * Window>Preferences>Java>Code Generation.
  */
-public class PBAction extends ActionOnIProject {
-
-	private static String UpdatePBProjectSetID = "UpdatePB.Project.Set.ID";
+public class WOGenerator extends WOBuilder {
 
 	/**
-	 * Contructor for the PBAction
+	 * Constructor for WOGenerator.
 	 */
-	public PBAction() {
+	public WOGenerator() {
 		super();
 	}
-	/**
-	 * Method dispose.
-	 */
-	public void dispose() {
-		super.dispose();
-	}
-	/**
-	 * Updates the PB.project file.
-	 * Will be invoked by the popup menu.
-	 */
-	public void run(IAction action) {
-		if (project() != null) {
-			PBProjectUpdater projectUpdater = null;
-			try {
-				if (action.getId().equals(PBAction.UpdatePBProjectSetID)) {
-					projectUpdater = PBProjectUpdater.instance(project());
-					projectUpdater.updatePBProject();
-				}
-			} catch (Exception ex) {
-				WOLipsLog.log(ex);
-			} finally {
-				projectUpdater = null;
-			}
-		}
-	}
 
 	/**
-	 * Calls super.
-	 * Inactivates the Action if the project has no WOBuilder installed
+	 * @see org.objectstyle.wolips.builder.WOBuilder#buildFile()
 	 */
-	public void selectionChanged(IAction action, ISelection selection) {
-		super.selectionChanged(action, selection);
-		if (project() != null) {
-			if (action.getId().equals(PBAction.UpdatePBProjectSetID)) {
-				action.setEnabled(
-					ProjectHelper.isWOFwBuilderInstalled(project())
-						|| ProjectHelper.isWOAppBuilderInstalled(project()));
-			}
-		} else {
-			action.setEnabled(false);
-		}
+	public String buildFile() {
+		return "buildeos.xml";
 	}
-
+	/**
+	 * @see org.objectstyle.wolips.builder.WOBuilder#defaultTarget()
+	 */
+	public String defaultTarget() {
+		return "generate";
+	}
 }

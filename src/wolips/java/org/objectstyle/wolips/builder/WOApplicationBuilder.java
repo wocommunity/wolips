@@ -67,8 +67,16 @@ public class WOApplicationBuilder extends WOBuilder {
 	public WOApplicationBuilder() {
 		super();
 	}
-
+	/**
+	 * @see org.objectstyle.wolips.builder.WOBuilder#buildFile()
+	 */
 	public String buildFile() {
 		return "build.xml";
+	}
+	/**
+	 * @see org.objectstyle.wolips.builder.WOBuilder#defaultTarget()
+	 */
+	public String defaultTarget() {
+		return null;
 	}
 }

@@ -120,7 +120,8 @@ public abstract class WOBuilder extends IncrementalProjectBuilder {
 					RunAnt.asExternalTool(
 						getProject().getFile(aBuildFile),
 						kind,
-						monitor);
+						monitor,
+						this.defaultTarget());
 
 				} else {
 					RunAnt.asAnt(
@@ -128,7 +129,8 @@ public abstract class WOBuilder extends IncrementalProjectBuilder {
 							.getFile(aBuildFile)
 							.getLocation()
 							.toOSString(),
-						monitor);
+						monitor,
+						this.defaultTarget());
 				}
 
 			}
@@ -187,4 +189,9 @@ public abstract class WOBuilder extends IncrementalProjectBuilder {
 	 * @return String
 	 */
 	public abstract String buildFile();
+	/**
+	 * Must be implemented in the subclass.
+	 * @return String
+	 */
+	public abstract String defaultTarget();
 }

@@ -282,6 +282,34 @@
                id="org.objectstyle.wolips.actions.OpenSourceAction">
          </action>
       </objectContribution>
+            <objectContribution
+            objectClass="org.eclipse.core.resources.IFile"
+            adaptable="true"
+            nameFilter="*.eomodeld"
+            id="org.objectstyle.wolips.actions.EnableEOGeneration">
+         <action
+               label="%WOLips.PopupMenu.EnableEOGeneration.label"
+               tooltip="%WOLips.PopupMenu.EnableEOGeneration.tooltip"
+               class="org.objectstyle.wolips.actions.EnableEOGeneration"
+               menubarPath="additions"
+               enablesFor="1"
+               id="org.objectstyle.wolips.actions.EnableEOGeneration">
+         </action>
+      </objectContribution>
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IContainer"
+            adaptable="true"
+            nameFilter="*.eomodeld"
+            id="org.objectstyle.wolips.actions.EnableEOGeneration">
+         <action
+               label="%WOLips.PopupMenu.EnableEOGeneration.label"
+               tooltip="%WOLips.PopupMenu.EnableEOGeneration.tooltip"
+               class="org.objectstyle.wolips.actions.EnableEOGeneration"
+               menubarPath="additions"
+               enablesFor="1"
+               id="org.objectstyle.wolips.actions.EnableEOGeneration">
+         </action>
+      </objectContribution>
    </extension>
 <!-- =================================================================================== -->
 <!-- Extension: Ant                                                                      -->
@@ -312,7 +340,7 @@
       </antTask>
       <antTask
             library="lib/woproject.jar"
-            name="wogenerator"
+            name="wogen"
             class="org.objectstyle.woproject.ant.WOGenerator">
       </antTask>
       <antTask
@@ -330,6 +358,19 @@
             name="updateotherclasspaths"
             class="org.objectstyle.wolips.ant.UpdateOtherClasspathIncludeFiles">
       </antTask>
+   </extension>
+<!-- =================================================================================== -->
+<!-- Extension: WOGenerator                                                              -->
+<!-- =================================================================================== -->
+   <extension
+         id="wogenerator"
+         name="%WOGenerator.Name"
+         point="org.eclipse.core.resources.builders">
+      <builder>
+         <run
+               class="org.objectstyle.wolips.builder.WOGenerator">
+         </run>
+      </builder>
    </extension>
 <!-- =================================================================================== -->
 <!-- Extension: WOFramework Builder                                                      -->

@@ -88,10 +88,8 @@ public class JavaElementChangeListener implements IElementChangedListener {
 	 * @see org.eclipse.jdt.core.IElementChangedListener#elementChanged(ElementChangedEvent)
 	 */
 	public final void elementChanged(ElementChangedEvent event) {
-		HashMap addedFrameworksProjectDict =
-			new HashMap();
-		HashMap removedFrameworksProjectDict =
-			new HashMap();
+		HashMap addedFrameworksProjectDict = new HashMap();
+		HashMap removedFrameworksProjectDict = new HashMap();
 		if (event.getDelta().getElement().getElementType()
 			== IJavaElement.JAVA_MODEL) {
 			IJavaElementDelta elementDeltaToExamine = event.getDelta();
@@ -114,15 +112,18 @@ public class JavaElementChangeListener implements IElementChangedListener {
 						// project deleted no further investigatin needed
 						continue;
 					}
-
 					try {
 						if (projectToExamine
 							.hasNature(
 								IWOLipsPluginConstants.WO_APPLICATION_NATURE)
 							|| projectToExamine.hasNature(
 								IWOLipsPluginConstants.WO_FRAMEWORK_NATURE)) {
-							addedFrameworksProjectDict.put(projectToExamine,new ArrayList());
-							removedFrameworksProjectDict.put(projectToExamine,new ArrayList());
+							addedFrameworksProjectDict.put(
+								projectToExamine,
+								new ArrayList());
+							removedFrameworksProjectDict.put(
+								projectToExamine,
+								new ArrayList());
 							// webobjects project changed 
 							ArrayList foundElements = new ArrayList();
 							// search deltas for classpath changes
@@ -137,7 +138,8 @@ public class JavaElementChangeListener implements IElementChangedListener {
 								currentPackageFragmentRoot =
 									(IPackageFragmentRoot) foundElements.get(j);
 								ArrayList addedFrameworks =
-									(ArrayList) addedFrameworksProjectDict.get(projectToExamine);
+									(ArrayList) addedFrameworksProjectDict.get(
+										projectToExamine);
 								addedFrameworks.add(
 									currentPackageFragmentRoot
 										.getRawClasspathEntry()
@@ -165,7 +167,10 @@ public class JavaElementChangeListener implements IElementChangedListener {
 								currentPackageFragmentRoot =
 									(IPackageFragmentRoot) foundElements.get(j);
 								ArrayList removedFrameworks =
-									(ArrayList) removedFrameworksProjectDict.get(projectToExamine);
+									(
+										ArrayList) removedFrameworksProjectDict
+											.get(
+										projectToExamine);
 								removedFrameworks.add(
 									new Path(
 										currentPackageFragmentRoot
@@ -228,32 +233,31 @@ public class JavaElementChangeListener implements IElementChangedListener {
 	 */
 	private final void updateProjects(
 		HashMap addedFrameworksProjectDict,
-	HashMap removedFrameworksProjectDict) {
+		HashMap removedFrameworksProjectDict) {
 		IProject currentProject;
 		PBProject currentPBProject;
 		List frameworks;
 		List changedFrameworks;
 		Object[] allAddedKeys = addedFrameworksProjectDict.keySet().toArray();
-		for (int i = 0;i < allAddedKeys.length;i++) {
-			currentProject =
-				(IProject)allAddedKeys[i];
+		for (int i = 0; i < allAddedKeys.length; i++) {
+			currentProject = (IProject) allAddedKeys[i];
 			changedFrameworks =
 				(ArrayList) addedFrameworksProjectDict.get(currentProject);
 			if (changedFrameworks.size() > 0) {
 				PBProjectUpdater projectUpdater =
-					new PBProjectUpdater(currentProject);
+					PBProjectUpdater.instance(currentProject);
 				projectUpdater.addFrameworks(changedFrameworks);
 			}
 		}
-		Object[] allRemovedKeys = removedFrameworksProjectDict.keySet().toArray();
-		for (int i = 0;i < allRemovedKeys.length;i++) {
-			currentProject =
-				(IProject)allRemovedKeys[i];
+		Object[] allRemovedKeys =
+			removedFrameworksProjectDict.keySet().toArray();
+		for (int i = 0; i < allRemovedKeys.length; i++) {
+			currentProject = (IProject) allRemovedKeys[i];
 			changedFrameworks =
 				(List) removedFrameworksProjectDict.get(currentProject);
 			if (changedFrameworks.size() > 0) {
 				PBProjectUpdater projectUpdater =
-					new PBProjectUpdater(currentProject);
+					PBProjectUpdater.instance(currentProject);
 				projectUpdater.removeFrameworks(changedFrameworks);
 			}
 		}

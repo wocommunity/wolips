@@ -88,7 +88,9 @@ import org.objectstyle.wolips.wo.WOVariables;
  * Window>Preferences>Java>Code Generation.
  */
 public class ProjectHelper implements IWOLipsPluginConstants {
-	public static String WOFRAMEWORK_BUILDER_ID =
+	public static String WOGENERATOR_ID =
+		"org.objectstyle.wolips.wogenerator";
+		public static String WOFRAMEWORK_BUILDER_ID =
 		"org.objectstyle.wolips.woframeworkbuilder";
 	public static String WOAPPLICATION_BUILDER_ID =
 		"org.objectstyle.wolips.woapplicationbuilder";
@@ -241,6 +243,16 @@ public class ProjectHelper implements IWOLipsPluginConstants {
 			folder = null;
 			path = null;
 		}
+	}
+	/**
+	 * Method isWOGeneratorInstalled.
+	 * @param aProject
+	 * @return boolean
+	 */
+	public static boolean isWOGeneratorInstalled(IProject aProject) {
+		return ProjectHelper.isBuilderInstalled(
+			aProject,
+			ProjectHelper.WOGENERATOR_ID);
 	}
 	/**
 	 * Method isWOAppBuilderInstalled.

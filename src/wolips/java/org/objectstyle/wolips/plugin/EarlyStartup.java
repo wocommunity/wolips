@@ -134,7 +134,7 @@ public class EarlyStartup {
 					IWOLipsPluginConstants.build_user_home_properties);
 			buildFile = Platform.asLocalURL(relativeBuildFile);
 			monitor = new NullProgressMonitor();
-			RunAnt.asAnt(buildFile.getFile().toString(), monitor);
+			RunAnt.asAnt(buildFile.getFile().toString(), monitor, null);
 			Preferences.setBoolean(
 				IWOLipsPluginConstants
 					.PREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH,

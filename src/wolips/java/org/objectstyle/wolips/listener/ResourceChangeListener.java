@@ -55,8 +55,8 @@
  */
 package org.objectstyle.wolips.listener;
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -106,26 +106,29 @@ public class ResourceChangeListener
 		// update project files
 		IFile projectFileToUpdate;
 		PBProjectUpdater projectUpdater;
-		Object[] allAddedKeys = resourceValidator.getAddedResourcesProjectDict().keySet().toArray();
-		for (int i = 0;i< allAddedKeys.length;i++) {
-			projectFileToUpdate =
-				(IFile) allAddedKeys[i];
+		Object[] allAddedKeys =
+			resourceValidator.getAddedResourcesProjectDict().keySet().toArray();
+		for (int i = 0; i < allAddedKeys.length; i++) {
+			projectFileToUpdate = (IFile) allAddedKeys[i];
 			projectUpdater =
-				new PBProjectUpdater(projectFileToUpdate.getParent());
+				PBProjectUpdater.instance(projectFileToUpdate.getParent());
 			projectUpdater.syncFilestable(
-				(HashMap) resourceValidator.getAddedResourcesProjectDict()
-					.get(projectFileToUpdate),
+				(HashMap) resourceValidator.getAddedResourcesProjectDict().get(
+					projectFileToUpdate),
 				IResourceDelta.ADDED);
 		}
-		Object[] allRemovedKeys = resourceValidator.getRemovedResourcesProjectDict().keySet().toArray();
-		for (int i = 0;i< allRemovedKeys.length;i++) {
-			projectFileToUpdate =
-				(IFile) allRemovedKeys[i];
+		Object[] allRemovedKeys =
+			resourceValidator
+				.getRemovedResourcesProjectDict()
+				.keySet()
+				.toArray();
+		for (int i = 0; i < allRemovedKeys.length; i++) {
+			projectFileToUpdate = (IFile) allRemovedKeys[i];
 			// ensure project file container exists
 			// if no container exists the whole project is deleted
 			if (projectFileToUpdate.getParent().exists()) {
 				projectUpdater =
-					new PBProjectUpdater(projectFileToUpdate.getParent());
+					PBProjectUpdater.instance(projectFileToUpdate.getParent());
 				projectUpdater.syncFilestable(
 					(HashMap) resourceValidator
 						.getRemovedResourcesProjectDict()
@@ -135,7 +138,7 @@ public class ResourceChangeListener
 			}
 		}
 	}
-	
+
 	private final class ProjectFileResourceValidator
 		implements IResourceDeltaVisitor {
 		//private QualifiedName resourceQualifier;
@@ -175,7 +178,9 @@ public class ResourceChangeListener
 		 * @return boolean
 		 * @throws CoreException
 		 */
-		private final boolean examineResource(IResource resource, int kindOfChange)
+		private final boolean examineResource(
+			IResource resource,
+			int kindOfChange)
 			throws CoreException {
 			// reset project file to update
 			projectFile = null;
@@ -406,7 +411,7 @@ public class ResourceChangeListener
 			if (projectDict.get(projectFileToUpdate) == null) {
 				// new project found add file stable dict
 				fileStableIdDict = new HashMap();
-				projectDict.put(projectFileToUpdate,fileStableIdDict);
+				projectDict.put(projectFileToUpdate, fileStableIdDict);
 			} else {
 				fileStableIdDict =
 					(HashMap) projectDict.get(projectFileToUpdate);
@@ -414,7 +419,7 @@ public class ResourceChangeListener
 			if (fileStableIdDict.get(fileStableId) == null) {
 				// add changedResourcesArray of type fileStableId
 				changedResourcesArray = new ArrayList();
-				fileStableIdDict.put(fileStableId,changedResourcesArray);
+				fileStableIdDict.put(fileStableId, changedResourcesArray);
 			} else {
 				changedResourcesArray =
 					(ArrayList) fileStableIdDict.get(fileStableId);

@@ -57,9 +57,9 @@ package org.objectstyle.wolips.project;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -81,6 +81,7 @@ import org.objectstyle.woproject.pb.PBProject;
  * Window>Preferences>Java>Code Generation.
  */
 public class PBProjectUpdater {
+	private static Hashtable projectUpdater = new Hashtable();
 	//public static String PBProject = "PB.projectContainer"; moved to IWOLipsPluginConstants.PROJECT_FILE_NAME (mn)
 	private PBProject pbProject;
 	private IContainer projectContainer;
@@ -88,7 +89,7 @@ public class PBProjectUpdater {
 	/**
 	 * Constructor for PBProjectUpdater.
 	 */
-	public PBProjectUpdater(IContainer aProjectContainer) {
+	private PBProjectUpdater(IContainer aProjectContainer) {
 		super();
 		//check if theres a PB.project in the Container. If not go to the parent
 		IContainer findContainer = aProjectContainer;
@@ -105,6 +106,20 @@ public class PBProjectUpdater {
 			projectContainer = findContainer;
 		getPBProject(projectContainer);
 		//projectContainer = aProjectContainer;
+	}
+	/**
+	 * Method instance.
+	 * @param aProjectContainer
+	 * @return PBProjectUpdater
+	 */
+	public static PBProjectUpdater instance(IContainer aProjectContainer) {
+		PBProjectUpdater returnValue =
+			(PBProjectUpdater) PBProjectUpdater.projectUpdater.get(aProjectContainer);
+		if (returnValue == null) {
+			returnValue = new PBProjectUpdater(aProjectContainer);
+			PBProjectUpdater.projectUpdater.put(aProjectContainer, returnValue);
+		}
+		return returnValue;
 	}
 	/**
 	 * Method updatePBProject.
@@ -129,8 +144,7 @@ public class PBProjectUpdater {
 			}
 		} catch (Exception anException) {
 			WOLipsLog.log(anException);
-		}
-		finally {
+		} finally {
 			file = null;
 		}
 	}
@@ -157,8 +171,7 @@ public class PBProjectUpdater {
 				syncPBProjectWithProject();
 		} catch (Exception anException) {
 			WOLipsLog.log(anException);
-		}
-		finally {
+		} finally {
 			aFile = null;
 		}
 	}
@@ -464,8 +477,7 @@ public class PBProjectUpdater {
 		String frameworkName = null;
 		for (int j = 0; j < newFrameworks.size(); j++) {
 			frameworkName =
-				frameworkIdentifierFromPath(
-					(Path) newFrameworks.get(j));
+				frameworkIdentifierFromPath((Path) newFrameworks.get(j));
 			if (frameworkName != null
 				&& !actualFrameworks.contains(frameworkName)) {
 				actualFrameworks.add(frameworkName);
@@ -486,8 +498,7 @@ public class PBProjectUpdater {
 		String frameworkName = null;
 		for (int j = 0; j < removedFrameworks.size(); j++) {
 			frameworkName =
-				frameworkIdentifierFromPath(
-					(Path) removedFrameworks.get(j));
+				frameworkIdentifierFromPath((Path) removedFrameworks.get(j));
 			if (frameworkName != null
 				&& actualFrameworks.contains(frameworkName)) {
 				actualFrameworks.remove(frameworkName);

@@ -96,12 +96,20 @@ public class RunAnt {
 	 * @param monitor
 	 * @throws Exception
 	 */
-	public static void asAnt(String buildFile, IProgressMonitor monitor)
+	public static void asAnt(
+		String buildFile,
+		IProgressMonitor monitor,
+		String target)
 		throws Exception {
 		AntRunner runner = null;
 		try {
 			runner = new AntRunner();
 			runner.setBuildFileLocation(buildFile);
+			if (target != null) {
+				String[] targets = new String[1];
+				targets[1] = target;
+				runner.setExecutionTargets(targets);
+			}
 			//runner.setArguments("-Dmessage=Building -verbose");
 			monitor.subTask(
 				BuildMessages.getString("Build.SubTask.Name")
@@ -123,11 +131,12 @@ public class RunAnt {
 	public static void asExternalTool(
 		IFile buildFile,
 		int kind,
-		IProgressMonitor monitor)
+		IProgressMonitor monitor,
+		String target)
 		throws Exception {
 		ILaunchConfiguration config = null;
 		try {
-			config = RunAnt.createDefaultLaunchConfiguration(buildFile);
+			config = RunAnt.createDefaultLaunchConfiguration(buildFile, target);
 		} catch (CoreException e) {
 			config = null;
 			WOLipsPlugin.handleException(
@@ -202,7 +211,9 @@ public class RunAnt {
 	 * @param file
 	 * @return default launch configuration
 	 */
-	private static ILaunchConfiguration createDefaultLaunchConfiguration(IFile file)
+	private static ILaunchConfiguration createDefaultLaunchConfiguration(
+		IFile file,
+		String target)
 		throws CoreException {
 		ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
 		ILaunchConfigurationType type =
@@ -234,7 +245,11 @@ public class RunAnt {
 		workingCopy.setAttribute(
 			IExternalToolConstants.ATTR_RUN_IN_BACKGROUND,
 			true);
-
+		if (target != null) {
+			workingCopy.setAttribute(
+				IExternalToolConstants.ATTR_ANT_TARGETS,
+				target);
+		}
 		// set default for common settings
 		CommonTab tab = new CommonTab();
 		tab.setDefaults(workingCopy);
