@@ -349,8 +349,8 @@ public class WOVariables {
 			//            	return "APPROOT" + aPath.substring(aPrefix.length());
 			//            }
 			aPrefix = localRoot();
-			if (log.isInfoEnabled()) {
-				log.info("aPrefix + aPath " + aPrefix + " " + aPath);
+			if (log.isDebugEnabled()) {
+				log.debug("aPrefix + aPath " + aPrefix + " " + aPath);
 			}
 			if ((aPrefix != null)
 				&& (aPrefix.length() > 1)

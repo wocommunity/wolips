@@ -73,15 +73,17 @@
         
         <jar jarfile="${wolips.dist}/lib/woproject-wolips.jar">
             <fileset dir="${build}/main">
-               <include name="*/pb/*"/>
-               <include name="*/env/*"/>
+               <include name="org/objectstyle/woproject/pb/*.class"/>
+               <include name="org/objectstyle/woproject/env/*.class"/>
             </fileset>
-            <fileset dir="src/wolips/src-ant">
-          	    <include name="**/*.properties"/>
-             </fileset>
-             <fileset dir="src/wolips/src-ant">
-          	    <include name="**/*.gif"/>
-             </fileset>         
+            <fileset dir="src/java">
+               <include name="org/objectstyle/woproject/pb/*.properties"/>
+	       <include name="org/objectstyle/woproject/env/*.properties"/>
+            </fileset>
+             <fileset dir="src/java">
+          	<include name="org/objectstyle/woproject/pb/*.gif"/>
+	        <include name="org/objectstyle/woproject/env/*.gif"/>
+            </fileset>         
             <metainf dir="doc">
                 <include name="LICENSE*"/>
             </metainf>
