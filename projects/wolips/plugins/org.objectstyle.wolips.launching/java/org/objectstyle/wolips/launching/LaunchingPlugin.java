@@ -48,7 +48,6 @@
  *  
  */
 package org.objectstyle.wolips.launching;
-import java.net.URL;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.objectstyle.wolips.commons.logging.PluginLogger;
 /**
@@ -68,8 +67,6 @@ public class LaunchingPlugin extends AbstractUIPlugin {
 	 * 
 	 * @param descriptor
 	 */
-	//The constructur is very sensitive. Make sure that your stuff works.
-	//If this cunstructor fails, the whole plugin will be disabled.
 	public LaunchingPlugin() {
 		super();
 		plugin = this;
@@ -81,25 +78,6 @@ public class LaunchingPlugin extends AbstractUIPlugin {
 	 */
 	public static LaunchingPlugin getDefault() {
 		return plugin;
-	}
-	/**
-	 * Method baseURL.
-	 * 
-	 * @return URL
-	 */
-	public static URL baseURL() {
-		return LaunchingPlugin.getDefault().getDescriptor().getInstallURL();
-	}
-	/**
-	 * Returns the PluginID.
-	 * 
-	 * @return
-	 */
-	public static String getPluginId() {
-		if (plugin != null) {
-			return getDefault().getDescriptor().getUniqueIdentifier();
-		} else
-			return null;
 	}
 	/**
 	 * @return Returns the pluginLogger.
