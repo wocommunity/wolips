@@ -128,8 +128,8 @@ public abstract class WOProjectResourceCreator implements IWOLipsPluginConstants
 
 		if (identifier != null) {
 
-			QualifiedName resourceQualifier = WOPluginUtils.qualifierFromResourceIdentifier(identifier);
-			String listId = (String) WOPluginUtils.getResourceQualifierToListIdDict().get(resourceQualifier);
+			QualifiedName resourceQualifier = WOLipsUtils.qualifierFromResourceIdentifier(identifier);
+			String listId = (String) WOLipsUtils.getResourceQualifierToListIdDict().get(resourceQualifier);
 			setCurrentlyCreatedResourceQualifier(resourceQualifier);
 			aboutToCreateProperty = true;
 			folderToCreate.create(false, true, monitor);

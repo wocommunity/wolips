@@ -191,8 +191,8 @@ public class FileFromTemplateCreator {
 		}
 		/*
 				if (fileExtension != null) {
-					QualifiedName resourceQualifier = WOPluginUtils.qualifierFromResourceIdentifier(fileExtension);
-					String listId = (String) WOPluginUtils.getResourceQualifierToListIdDict().get(resourceQualifier);
+					QualifiedName resourceQualifier = WOLipsUtils.qualifierFromResourceIdentifier(fileExtension);
+					String listId = (String) WOLipsUtils.getResourceQualifierToListIdDict().get(resourceQualifier);
 					try {
 						// mark resource as project depending
 						fileToCreate.setPersistentProperty(resourceQualifier, listId);

@@ -102,7 +102,7 @@ public class WOFrameworkCreationPage extends WizardNewProjectCreationPage {
 			WOLipsPlugin.handleException(getShell(), e.getTargetException(), null);
 			return false;
 		} catch (InterruptedException e) {
-			//WOPluginUtils.handleException(getShell(), e, null);
+			//WOLipsUtils.handleException(getShell(), e, null);
 			return false;
 		}
 		IResource resourceToOpen = newProject;

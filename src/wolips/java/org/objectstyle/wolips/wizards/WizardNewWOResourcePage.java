@@ -53,11 +53,8 @@
  * <http://objectstyle.org/>.
  *
  */
- 
- package org.objectstyle.wolips.wizards;
-
+package org.objectstyle.wolips.wizards;
 import java.lang.reflect.InvocationTargetException;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
@@ -67,99 +64,116 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.dialogs.WizardNewFileCreationPage;
 import org.objectstyle.wolips.IWOLipsPluginConstants;
 import org.objectstyle.wolips.WOLipsPlugin;
-
 /**
  * @author mnolte
  * @author uli
  * Basic wizard page for all project file manipulating webobjects wizard pages.
  */
-public abstract class WizardNewWOResourcePage extends WizardNewFileCreationPage {
-
-
+public abstract class WizardNewWOResourcePage
+	extends WizardNewFileCreationPage {
 	/**
 	 * Constructor for WizardNewWOResourcePage.
 	 * @param pageName
 	 * @param selection
 	 */
-	public WizardNewWOResourcePage(String pageName, IStructuredSelection selection) {
+	public WizardNewWOResourcePage(
+		String pageName,
+		IStructuredSelection selection) {
 		super(pageName, selection);
 	}
-	
-	protected boolean createResourceOperation(IRunnableWithProgress creationOperation){
+	protected boolean createResourceOperation(IRunnableWithProgress creationOperation) {
 		try {
-			new ProgressMonitorDialog(getShell()).run(false,false,creationOperation);
+			new ProgressMonitorDialog(getShell()).run(
+				false,
+				false,
+				creationOperation);
 			//getContainer().run(false, false, creationOperation);
 		} catch (InvocationTargetException e) {
-			WOLipsPlugin.handleException(getShell(), e.getTargetException(), null);
+			WOLipsPlugin.handleException(
+				getShell(),
+				e.getTargetException(),
+				null);
 			return false;
 		} catch (InterruptedException e) {
 			// cancelling is disabled
 			return false;
 		}
-
 		return true;
 	}
-	
 	/**
 	 * Method validatePage. If super is true, checks if container selection is an project or subproject.
 	 * 
 	 * @see org.eclipse.ui.dialogs.WizardNewFileCreationPage#validatePage()
 	 */
 	protected boolean validatePage() {
-
+		
 		if (super.validatePage()) {
-			IProject actualProject;
 			
-			switch (getContainerFullPath().segmentCount()) {
-				case 0 :
-					// no project selected
-					setErrorMessage(
-						Messages.getString("WizardNewWOResourcePage.errorMessage.containerNoProject"));
-					//setPageComplete(false);
-					return false;
-					//break;
-
-				case 1 :
-					actualProject =
-						ResourcesPlugin.getWorkspace().getRoot().getProject(getContainerFullPath().segment(0));
-					if (!actualProject.getFile(IWOLipsPluginConstants.PROJECT_FILE_NAME).exists()) {
-						// no webobjects project selected
+			if (getContainerFullPath().segmentCount() > 0) {
+				IProject actualProject =
+					ResourcesPlugin.getWorkspace().getRoot().getProject(
+						getContainerFullPath().segment(0));
+						
+				switch (getContainerFullPath().segmentCount()) {
+					case 0 :
+						// no project selected
 						setErrorMessage(
-							Messages.getString("WizardNewWOResourcePage.errorMessage.containerNoWOProject"));
-						//setPageComplete(false);
+							Messages.getString(
+								"WizardNewWOResourcePage.errorMessage.containerNoProject"));
 						return false;
-					}
-					break;
-
-				default :
-					actualProject =
-						ResourcesPlugin.getWorkspace().getRoot().getProject(getContainerFullPath().segment(0));
-					if (!actualProject.getFile(IWOLipsPluginConstants.PROJECT_FILE_NAME).exists()) {
-						// no webobjects project selected
-						setErrorMessage(
-							Messages.getString("WizardNewWOResourcePage.errorMessage.containerNoWOProject"));
-						//setPageComplete(false);
-						return false;
-					} else {
-						// project is selected and wo project - now check for subproject
-						IPath projectFilePath = getContainerFullPath().removeFirstSegments(1).append(IWOLipsPluginConstants.PROJECT_FILE_NAME);
-
-						if (!actualProject.getFile(projectFilePath).exists()) {
-							// no webobjects subproject selected
+					case 1 :
+						
+						if (!actualProject
+							.getFile(IWOLipsPluginConstants.PROJECT_FILE_NAME)
+							.exists()) {
+							// no webobjects project selected
 							setErrorMessage(
 								Messages.getString(
-									"WizardNewWOResourcePage.errorMessage.containerNoWOSubproject"));
-							//setPageComplete(false);
+									"WizardNewWOResourcePage.errorMessage.containerNoWOProject"));
 							return false;
 						}
-					}
-
-					break;
+						break;
+					default :
+						
+						if (!actualProject
+							.getFile(IWOLipsPluginConstants.PROJECT_FILE_NAME)
+							.exists()) {
+							// no webobjects project selected
+							setErrorMessage(
+								Messages.getString(
+									"WizardNewWOResourcePage.errorMessage.containerNoWOProject"));
+							return false;
+						} else {
+							// project is selected and wo project - now check for subproject
+							IPath projectFilePath =
+								getContainerFullPath().removeFirstSegments(
+									1).append(
+									IWOLipsPluginConstants.PROJECT_FILE_NAME);
+							if (!actualProject
+								.getFile(projectFilePath)
+								.exists()) {
+								// no webobjects subproject selected
+								setErrorMessage(
+									Messages.getString(
+										"WizardNewWOResourcePage.errorMessage.containerNoWOSubproject"));
+								return false;
+							}
+						}
+						break;
+				}
+				// selection validated
+				return true;
+			} else {
+				// no project selected (container path is < 1)
+				setErrorMessage(
+					Messages.getString(
+						"WizardNewWOResourcePage.errorMessage.containerNoWOProject"));
+				return false;
 			}
-
+		} else {
+			// super validation failed
+			return false;
 		}
-		return true;
 	}
-
 
 }

@@ -191,10 +191,10 @@ public class WOSubprojectCreationPage extends WizardNewWOResourcePage {
 			try {
 				getContainer().run(false, true, op);
 			} catch (InvocationTargetException e) {
-				WOPluginUtils.handleException(getShell(), e.getTargetException(), null);
+				WOLipsUtils.handleException(getShell(), e.getTargetException(), null);
 				return false;
 			} catch (InterruptedException e) {
-				//WOPluginUtils.handleException(getShell(), e, null);
+				//WOLipsUtils.handleException(getShell(), e, null);
 				return false;
 			}
 		
