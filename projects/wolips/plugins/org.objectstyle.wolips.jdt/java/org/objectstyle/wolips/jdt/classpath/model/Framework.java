@@ -67,7 +67,10 @@ public class Framework {
 	private Root root;
 	private String jarFiles[];
 	private String zipFiles[];
-
+	private String order;
+	private IPath srcPath;
+	private IPath javaDocPath;
+	private boolean exported = false;
 	
 	protected Framework(String name, Root root, String jarFiles[], String zipFiles[]) {
 		this.name = name;
@@ -112,5 +115,53 @@ public class Framework {
 	 */
 	public Root getRoot() {
 		return this.root;
+	}
+	/**
+	 * @return Returns the exported.
+	 */
+	public boolean isExported() {
+		return exported;
+	}
+	/**
+	 * @param exported The exported to set.
+	 */
+	public void setExported(boolean exported) {
+		this.exported = exported;
+	}
+	/**
+	 * @return Returns the javaDocPath.
+	 */
+	public IPath getJavaDocPath() {
+		return javaDocPath;
+	}
+	/**
+	 * @param javaDocPath The javaDocPath to set.
+	 */
+	public void setJavaDocPath(IPath javaDocPath) {
+		this.javaDocPath = javaDocPath;
+	}
+	/**
+	 * @return Returns the order.
+	 */
+	public String getOrder() {
+		return order;
+	}
+	/**
+	 * @param order The order to set.
+	 */
+	public void setOrder(String order) {
+		this.order = order;
+	}
+	/**
+	 * @return Returns the srcPath.
+	 */
+	public IPath getSrcPath() {
+		return srcPath;
+	}
+	/**
+	 * @param srcPath The srcPath to set.
+	 */
+	public void setSrcPath(IPath srcPath) {
+		this.srcPath = srcPath;
 	}
 }

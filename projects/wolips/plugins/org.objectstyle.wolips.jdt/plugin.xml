@@ -9,8 +9,8 @@
 
    <runtime>
       <library name="lib/wolips-jdt.jar">
+         <packages prefixes="org.objectstyle.wolips.jdt,org.objectstyle.wolips.jdt.listener,org.objectstyle.wolips.jdt.classpath,org.objectstyle.wolips.jdt.classpath.model,org.objectstyle.wolips.jdt.ant"/>
          <export name="*"/>
-         <packages prefixes="org.objectstyle.wolips.jdt,org.objectstyle.wolips.jdt.classpath,org.objectstyle.wolips.jdt.ui,org.objectstyle.wolips.jdt.ant,org.objectstyle.wolips.jdt.listener"/>
       </library>
    </runtime>
    <requires>
@@ -83,7 +83,7 @@
       <classpathContainerPage
             name="WebObjects Frameworks"
             class="org.objectstyle.wolips.jdt.ui.ContainerPage"
-            id="org.objectstyle.wolips.jdt.ui.ContainerPage">
+            id="org.objectstyle.wolips.ContainerInitializer">
       </classpathContainerPage>
    </extension>
 <!-- =================================================================================== -->
