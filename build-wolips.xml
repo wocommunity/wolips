@@ -97,7 +97,8 @@
          
 	     <!-- make wolips dist -->
          <tar tarfile="${wolips.dist}.tar">
-             <tarfileset dir="${wolips.dist}">
+             <tarfileset dir="${dist.base}">
+             	<include name="**/${wolips.name}/**"/>
             </tarfileset>
          </tar>
          
