@@ -18,6 +18,7 @@
    <requires>
       <import plugin="org.eclipse.jdt.ui"/>
       <import plugin="org.eclipse.core.runtime.compatibility"/>
+      <import plugin="org.apache.ant"/>
    </requires>
 
 
@@ -110,48 +111,48 @@
          <action
                label="%OpenEOModelCreationWizard.label"
                icon="icons/woproject/eomodel_wiz.gif"
-               tooltip="%OpenEOModelCreationWizard.tooltip"
                class="org.objectstyle.wolips.wizards.actions.OpenEOModelCreationWizard"
+               tooltip="%OpenEOModelCreationWizard.tooltip"
                toolbarPath="Normal/WOLipsWizards"
                id="org.objectstyle.wolips.OpenEOModelCreationWizard">
          </action>
          <action
                label="%OpenWOComponentCreationWizard.label"
                icon="icons/wobuilder/wocomponent_wiz.gif"
-               tooltip="%OpenWOComponentCreationWizard.tooltip"
                class="org.objectstyle.wolips.wizards.actions.OpenWOComponentCreationWizard"
+               tooltip="%OpenWOComponentCreationWizard.tooltip"
                toolbarPath="Normal/WOLipsWizards"
                id="org.objectstyle.wolips.OpenWOComponentCreationWizard">
          </action>
          <action
                label="%OpenWOSubprojectCreationWizard.label"
                icon="icons/woproject/wosubproject_wiz.gif"
-               tooltip="%OpenWOSubprojectCreationWizard.tooltip"
                class="org.objectstyle.wolips.wizards.actions.OpenWOSubprojectCreationWizard"
+               tooltip="%OpenWOSubprojectCreationWizard.tooltip"
                toolbarPath="Normal/WOLipsWizards"
                id="org.objectstyle.wolips.OpenWOSubprojectCreationWizard">
          </action>
          <action
                label="%OpenJarProjectCreationWizard.label"
                icon="icons/woproject/jar_project_wiz.gif"
-               tooltip="%OpenJarProjectCreationWizard.tooltip"
                class="org.objectstyle.wolips.wizards.actions.OpenJarProjectCreationWizard"
+               tooltip="%OpenJarProjectCreationWizard.tooltip"
                toolbarPath="Normal/WOLipsWizards"
                id="org.objectstyle.wolips.OpenJarProjectCreationWizard">
          </action>
          <action
                label="%OpenWOFrameworkCreationWizard.label"
                icon="icons/woproject/woframework_wiz.gif"
-               tooltip="%OpenWOFrameworkCreationWizard.tooltip"
                class="org.objectstyle.wolips.wizards.actions.OpenWOFrameworkCreationWizard"
+               tooltip="%OpenWOFrameworkCreationWizard.tooltip"
                toolbarPath="Normal/WOLipsWizards"
                id="org.objectstyle.wolips.OpenWOFrameworkCreationWizard">
          </action>
          <action
                label="%OpenWOApplicationCreationWizard.label"
                icon="icons/woproject/woapplication_wiz.gif"
-               tooltip="%OpenWOApplicationCreationWizard.tooltip"
                class="org.objectstyle.wolips.wizards.actions.OpenWOProjectCreationWizard"
+               tooltip="%OpenWOApplicationCreationWizard.tooltip"
                toolbarPath="Normal/WOLipsWizards"
                id="org.objectstyle.wolips.OpenWOProjectCreationWizard">
          </action>
