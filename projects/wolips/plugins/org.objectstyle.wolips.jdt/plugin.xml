@@ -73,7 +73,7 @@
    <extension
          point="org.eclipse.jdt.ui.classpathContainerPage">
       <classpathContainerPage
-            name="WO Frameworks"
+            name="WebObjects Frameworks old"
             class="org.objectstyle.wolips.jdt.ui.WOClassPathContainerPage"
             id="org.objectstyle.wolips.WO_CLASSPATH">
       </classpathContainerPage>
