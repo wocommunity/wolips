@@ -167,6 +167,7 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 				monitor,
 				this.defaultTarget());
 		}
+		runAnt.waitUntilAntFinished();
 	}
 	/**
 	 * Method projectNeedsClean.

@@ -90,13 +90,14 @@ import org.objectstyle.wolips.core.preferences.Preferences;
  */
 public class RunAnt extends AWOLips {
 
-	private void waitUntilAntFinished() {
-		while (AntRunner.isBuildRunning()) {
+	public void waitUntilAntFinished() {
+		/*while (AntRunner.isBuildRunning()) {
 			try {
-				this.wait();
+				this.wait(100);
+				Thread.yield();
 			} catch (InterruptedException interruptedException) {
 			}
-		}
+		}*/
 	}
 
 	/**
@@ -126,9 +127,8 @@ public class RunAnt extends AWOLips {
 				BuildMessages.getString("Build.SubTask.Name")
 					+ " "
 					+ buildFile);
-			this.waitUntilAntFinished();
 			runner.run(new SubProgressMonitor(monitor, 1));
-		} finally {
+			} finally {
 			runner = null;
 		}
 	}
@@ -147,7 +147,6 @@ public class RunAnt extends AWOLips {
 		String target)
 		throws Exception {
 		ILaunchConfiguration config = null;
-		//this.waitUntilAntFinished();
 		try {
 			config = RunAnt.createDefaultLaunchConfiguration(buildFile, target);
 		} catch (CoreException e) {
@@ -165,7 +164,7 @@ public class RunAnt extends AWOLips {
 					new RunAnt().launch(finalConfig, ILaunchManager.RUN_MODE);
 				}
 			});
-		} finally {
+			} finally {
 			config = null;
 		}
 		/*if (kind == IncrementalProjectBuilder.AUTO_BUILD)
