@@ -101,7 +101,6 @@ import org.objectstyle.wolips.listener.JavaElementChangeListener;
 import org.objectstyle.wolips.listener.ResourceChangeListener;
 import org.objectstyle.wolips.project.PBProjectUpdater;
 import org.objectstyle.wolips.wo.WOVariables;
-
 /**
  * The main plugin class to be used in the desktop.
  * 
@@ -109,7 +108,7 @@ import org.objectstyle.wolips.wo.WOVariables;
  * @author markus
  */
 public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
-	
+
 	private static final String PLUGIN_ID = "org.objectstyle.wolips";
 	private static WOLipsPlugin plugin;
 	private Hashtable projectUpdater;
@@ -132,7 +131,7 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 		plugin = this;
 		this.loadFoundationClasses();
 	}
-	
+
 	/**
 	 * Adds listeners for resource and java classpath changes to keep
 	 * webobjects project file synchronized.
@@ -140,9 +139,9 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 	 * @see org.eclipse.ui.IStartup#earlyStartup()
 	 */
 	public void earlyStartup() {
-		
+
 		validateMandatoryAttributes();
-		
+
 		// add resource change listener to update project file on resource changes
 		resourceChangeListener = new ResourceChangeListener();
 		getWorkspace().addResourceChangeListener(
@@ -154,7 +153,7 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 			javaElementChangeListener,
 			ElementChangedEvent.PRE_AUTO_BUILD);
 	}
-	
+
 	private void loadFoundationClasses() {
 		ClassLoader aClassLoader = this.getClass().getClassLoader();
 		URLContentFilter[] theURLContentFilter = new URLContentFilter[1];
@@ -171,40 +170,32 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 			WOLipsPlugin.log(anException);
 		}
 	}
-	
+
 	/**
 	 * Returns the shared instance.
 	 */
 	public static WOLipsPlugin getDefault() {
 		if (plugin == null) {
-
 			// ensure plugin instance is always available using id
-			try {
-				return (WOLipsPlugin) Platform
-					.getPlugin(PLUGIN_ID)
-					.getDescriptor()
-					.getPlugin();
-			} catch (CoreException e) {
-				// ummh .. what to do now?!
-				throw new RuntimeException("Missing plugin with id: " + PLUGIN_ID);
-			}
+			return new WOLipsPlugin(
+				Platform.getPlugin(PLUGIN_ID).getDescriptor());
 		}
 		return plugin;
 	}
-	
+
 	public void startup() throws CoreException {
 		super.startup();
 		WOClasspathUpdater.update();
 		Hashtable options = JavaCore.getOptions();
 	}
-	
+
 	/**
 	 * Returns the workspace instance.
 	 */
 	public static IWorkspace getWorkspace() {
 		return ResourcesPlugin.getWorkspace();
 	}
-	
+
 	/**
 	 * Returns an ImageDescriptor.
 	 */
@@ -216,7 +207,7 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 			return ImageDescriptor.getMissingImageDescriptor();
 		}
 	}
-	
+
 	/**
 	 * Returns the PluginID.
 	 */
@@ -226,14 +217,14 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 		} else
 			return PLUGIN_ID;
 	}
-	
+
 	/**
 	 * Prints an IStatus.
 	 */
 	public static void log(IStatus status) {
 		getDefault().getLog().log(status);
 	}
-	
+
 	/**
 	 * Prints a message.
 	 */
@@ -246,14 +237,14 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 				message,
 				null));
 	}
-	
+
 	/**
 	 * Prints a Throwable.
 	 */
 	public static void log(Throwable e) {
 		log(new Status(IStatus.ERROR, getPluginId(), IStatus.ERROR, "Internal Error", e)); //$NON-NLS-1$
 	}
-	
+
 	/**
 	 * If WOLips.debug is true this method prints a String to the console.
 	 */
@@ -261,7 +252,7 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 		if (WOLipsPlugin.debug)
 			System.out.println(aString);
 	}
-	
+
 	/**
 	 * If WOLips.debug is true this method prints an Exception to the console.
 	 */
@@ -269,7 +260,7 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 		if (WOLipsPlugin.debug);
 		System.out.println("Exception: " + aThrowable);
 	}
-	
+
 	/**
 	 * Returns a PBProjectUpdater for an given IProject. Never returns null;
 	 */
@@ -285,28 +276,28 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 		}
 		return aProjectUpdater;
 	}
-	
+
 	/**
 	 * @return Returns the active page.
 	 */
 	public IWorkbenchPage getActivePage() {
 		return getActiveWorkbenchWindow().getActivePage();
 	}
-	
+
 	/**
 	 * @return Returns the active workbench shell.
 	 */
 	public Shell getActiveWorkbenchShell() {
 		return getActiveWorkbenchWindow().getShell();
 	}
-	
+
 	/**
 	 * @return Returns the the active workbench window.
 	 */
 	public IWorkbenchWindow getActiveWorkbenchWindow() {
 		return getWorkbench().getActiveWorkbenchWindow();
 	}
-	
+
 	/**
 	 * @return Returns the active editor java input.
 	 */
@@ -342,11 +333,11 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 		}
 		return null;
 	}
-	
+
 	public static URL baseURL() {
 		return WOLipsPlugin.getDefault().getDescriptor().getInstallURL();
 	}
-	
+
 	public static void handleException(
 		Shell shell,
 		Throwable target,
@@ -365,7 +356,7 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 			WOLipsPlugin.log(target);
 		}
 	}
-	
+
 	public static DocumentBuilder documentBuilder() {
 		if (documentBuilder == null) {
 			try {
@@ -391,7 +382,7 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 		}
 		return documentBuilder;
 	}
-	
+
 	public static String getJavaBuildFilter() {
 		try {
 			URL aStarterURL =
@@ -408,7 +399,7 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 		}
 		return "";
 	}
-	
+
 	public static synchronized ArrayList arrayListFromCSV(String csvString) {
 		if (csvString == null || csvString.length() == 0) {
 			return new ArrayList();
@@ -420,11 +411,10 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 		}
 		return resultList;
 	}
-	
+
 	public static String getId() {
 		return getDefault().getDescriptor().getUniqueIdentifier();
 	}
-
 	private void validateMandatoryAttributes() {
 		if (JavaCore.getClasspathVariable(Environment.NEXT_ROOT) == null) {
 			try {

@@ -90,6 +90,7 @@ public class RefreshEclipse extends Task {
 				System.out.println("Exception while trying to refresh project");
 				return;
 			}
+			forceFullGarbageCollection();
 		} else {
 			System.out.println(
 				"Project " + actualProject.getName() + " does not exist");
@@ -120,5 +121,21 @@ public class RefreshEclipse extends Task {
 	public void setProjectName(String projectName) {
 		this.projectName = projectName;
 	}
+	
+	public void forceFullGarbageCollection() {
+        Runtime runtime = Runtime.getRuntime();
+         System.out.println("Forcing full garbage collection... " );
+        long isFree = runtime.freeMemory();
+        long total = runtime.totalMemory();
+        long wasFree;
+        System.out.println( "Was free    : " + isFree + "\t Was used    : " + ( total - isFree ) );
+        wasFree = isFree;
+        runtime.gc();
+        isFree = runtime.freeMemory();
+        runtime.runFinalization();
+        total = runtime.totalMemory();
+        System.out.println( "Is now free : " + isFree + "\t Is now used : " + ( total - isFree ) );
+        System.out.println( "...done" );
+    }
 
 }

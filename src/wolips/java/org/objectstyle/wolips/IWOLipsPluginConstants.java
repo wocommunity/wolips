@@ -59,7 +59,6 @@ import org.objectstyle.wolips.env.Environment;
  * @author mnolte
  */
 public interface IWOLipsPluginConstants {
-
 	// file extensions and resource identifier
 	public static final String EXT_PROJECT = "project";
 	public static final String EXT_SUBPROJECT = "subproj";
@@ -74,13 +73,13 @@ public interface IWOLipsPluginConstants {
 	public static final String EXT_SRC = "src";
 	public static final String EXT_FRAMEWORK = "framework";
 	public static final String EXT_WOA = "woa";
+	public static final String EXT_BUILD = "build";
 	// webobjects project file lists
 	public static final String RESOURCES_ID = "WOAPP_RESOURCES";
 	public static final String CLASSES_ID = "CLASSES";
 	public static final String COMPONENTS_ID = "WO_COMPONENTS";
 	public static final String SUBPROJECTS_ID = "SUBPROJECTS";
 	public static final String FRAMEWORKS_ID = "FRAMEWORKS";
-
 	public static final String[] RESOURCE_IDENTIFIERS =
 		{
 			EXT_JAVA,
@@ -90,7 +89,6 @@ public interface IWOLipsPluginConstants {
 			EXT_STRINGS,
 			EXT_SUBPROJECT,
 			EXT_FRAMEWORK };
-
 	public static final String[] LIST_IDENTIFIERS =
 		{
 			CLASSES_ID,
@@ -100,13 +98,11 @@ public interface IWOLipsPluginConstants {
 			RESOURCES_ID,
 			SUBPROJECTS_ID,
 			FRAMEWORKS_ID };
-
 	public static final String PROJECT_FILE_NAME = "PB.project";
 	public static final String WO_APPLICATION_NATURE =
 		"org.objectstyle.wolips.applicationnature";
 	public static final String WO_FRAMEWORK_NATURE =
 		"org.objectstyle.wolips.frameworknature";
-
 	// mandatory eclipse classpath variables
 	public static final String[] MANDATORY_CLASSPATH_VARIABLES =
 		{ Environment.NEXT_ROOT };
