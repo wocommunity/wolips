@@ -46,7 +46,7 @@
 			<classpathentry kind="lib" path="${webobjects.system.library.dir}/Frameworks/JavaEOControl.framework/Resources/Java/javaeocontrol.jar"/>
 
 			<classpathentry kind="var" path="JRE_LIB" rootpath="JRE_SRCROOT" sourcepath="JRE_SRC"/>
-			<classpathentry kind="output" path="bin"/>
+			
 		</classpath>
 		<files>
 			<file templateId="application" name="Application.java"/>
@@ -74,7 +74,6 @@
 			<classpathentry kind="lib" path="${webobjects.system.library.dir}/Frameworks/JavaEOControl.framework/Resources/Java/javaeocontrol.jar"/>
 
 			<classpathentry kind="var" path="JRE_LIB" rootpath="JRE_SRCROOT" sourcepath="JRE_SRC"/>
-			<classpathentry kind="output" path="bin"/>
 		</classpath>
 		<files>
 			<file templateId="properties" name="Properties"/>
