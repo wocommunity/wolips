@@ -16,7 +16,7 @@
         <fileset dir="lib">
             <include name="*.jar"/>
         </fileset>
-        <fileset dir="${next.root}/Library/Frameworks">
+        <fileset dir="${wo.woroot}/Library/Frameworks">
             <include name="JavaEOAccess.framework/Resources/Java/*.jar"/>
             <include name="JavaEOControl.framework/Resources/Java/*.jar"/>
             <include name="JavaFoundation.framework/Resources/Java/*.jar"/>

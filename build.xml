@@ -7,6 +7,7 @@
 <project name="woproject" default="java" basedir=".">
 	<property file="build.properties"/>
     <property file="${user.home}/build.properties"/>
+    <property file="${user.home}/wobuild.properties"/>
     <property file="default.properties"/>
     <property file="lib/lib.properties"/>
 
@@ -16,7 +17,7 @@
     <!-- don't want to redefine them.                  -->
     <!-- ============================================= -->
     <property name="output" value="output"/>
-    
+        
     <target name="help">
         <echo>
         ****************************************
@@ -29,6 +30,8 @@
         *  5. doc        - creates documentation including Javadoc.
         *  6. dist       - creates WOProject distribution.
         *  7. test       - Run JUnit tests.
+        *  8. set        - Stores the wo specific properties in a file.
+        *  9. set_mac    - Stores the wo specific properties in a file on a mac.
         *
         *
         * Build environment:
@@ -46,7 +49,7 @@
     <!-- ============================================= -->
     <!-- Creates WOProject distribution.               -->
     <!-- ============================================= -->
-    <target name="dist"> 
+    <target name="dist" depends="check"> 
     	<ant antfile="build-core.xml" target="dist"/>
     	<ant antfile="build-wolips.xml" target="dist"/>
 		<ant antfile="build-wolips-targetbuilder.xml" target="dist"/>
@@ -56,7 +59,7 @@
     <!-- ============================================= -->
     <!-- Compiles Java classes                         -->
     <!-- ============================================= -->    
-    <target name="java">
+    <target name="java" depends="check">
     	<ant antfile="build-core.xml" target="java"/>
     	<ant antfile="build-wolips.xml" target="java"/>
 		<ant antfile="build-wolips-targetbuilder.xml" target="java"/>
@@ -112,4 +115,12 @@
 		<!-- This must be the last task, since it would copy all the folders. -->
 	    <ant antfile="build-core.xml" target="deploy-web"/>
     </target>
+    
+    <!-- ========================================== -->
+    <!-- Check properties.                            -->
+    <!-- ========================================== -->
+    <target name="check">
+		<ant antfile="build-user-home-wobuild-properties.xml" target="check"/>
+    </target>
+    
 </project>

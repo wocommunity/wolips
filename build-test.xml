@@ -19,7 +19,7 @@
   			<include name="*.jar" /> 
   		</fileset>
   		
-  		<fileset dir="${next.root}/Library/Frameworks">
+  		<fileset dir="${wo.woroot}/Library/Frameworks">
             <include name="JavaFoundation.framework/Resources/Java/*.jar"/>
         </fileset>
     </path>

@@ -8,9 +8,7 @@
     <property file="${user.home}/build.properties" />
     <property file="default.properties" />
     <property file="src/wolips/plugin.properties"/>
-    <property environment="env"/>
     <property name="output" value="output"/>
-    <property name="next.root" value="${env.NEXT_ROOT}"/>
             
     <!-- ============================================= -->
     <!-- Derived Properties.                           -->
@@ -39,7 +37,7 @@
                 <include name="*.jar"/>
 	            <include name="eclipse/**/*.jar"/>
             </fileset>
-            <fileset dir="${next.root}/Library/Frameworks">
+            <fileset dir="${wo.woroot}/Library/Frameworks">
                 <include name="JavaFoundation.framework/Resources/Java/*.jar"/>
             </fileset>
              <!-- Depends on WOProject core. -->

@@ -12,13 +12,7 @@
     <!-- Define CLASSPATH settings.                    -->
     <!-- ============================================= -->
     <target name="define-classpath">
-        <condition property="next.root" value="/System">
-        	<and>
-             	<os family="mac" />
-            	 <os family="unix" />
-        	</and>
-    	</condition>
-    	<path id="classpath">
+        <path id="classpath">
         	<fileset dir="${ant.home}/lib">
             	<include name="ant.jar"/>
         	</fileset>
@@ -26,7 +20,7 @@
             	<include name="**/*.jar"/>
 	        	<exclude name="eclipse/**/*.jar"/>
         	</fileset>
-        	<fileset dir="${next.root}/Library/Frameworks">
+        	<fileset dir="${wo.woroot}/Library/Frameworks">
             	<include name="JavaEOAccess.framework/Resources/Java/*.jar"/>
             	<include name="JavaEOControl.framework/Resources/Java/*.jar"/>
             	<include name="JavaFoundation.framework/Resources/Java/*.jar"/>

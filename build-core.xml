@@ -6,10 +6,9 @@
 <project name="woproject-core" default="java" basedir=".">
 	<property file="build.properties" />
     <property file="${user.home}/build.properties" />
-    <property file="default.properties" />
-    <property environment="env"/>
-    <property name="next.root" value="${env.NEXT_ROOT}"/>
-	      
+    <property file="${user.home}/wobuild.properties"/>
+<property file="default.properties" />
+         
 
     <!-- ============================================= -->
     <!-- Derived Properties. These properties are      -->

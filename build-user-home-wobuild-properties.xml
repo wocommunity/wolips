@@ -1,0 +1,53 @@
+<!-- ======================================================== -->
+<!--              sets up the build properties in the         -->
+<!--                user home directoy.                       -->
+<!-- ======================================================== -->
+
+<project name="woproject" default="check" basedir=".">
+	
+	<target name="check" depends="check_file,set_other,check_env,set_mac">
+		<fail message="Could not find ${user.home}/wobuild.properties. There should now be a generated one. Just launch ant again" if="wo.properties.ckeck.failed"/>
+	</target>
+	
+	<target name="check_file">
+		<condition property="wo.properties.ckeck.failed">
+			<not>
+    			<and>
+      				<isset property="wo.woroot"/>
+      				<isset property="wo.wolocalroot"/>
+    			</and>
+    		</not>
+  		</condition>
+	</target>
+	
+	<target name="set_other" if="wo.properties.ckeck.failed">
+	
+		<property environment="env"/>
+		
+		<propertyfile file="${user.home}/wobuild.properties" comment="This file stores the wo specific properties">
+  			<entry  key="wo.woroot" value="${env.NEXT_ROOT}"/>
+ 			<entry  key="wo.wolocalroot" value="${env.NEXT_ROOT}/Local"/>
+		</propertyfile>
+
+	</target>
+	
+	<target name="set_mac" if="env.ckeck.failed">
+		<propertyfile file="${user.home}/wobuild.properties" comment="This file stores the wo specific properties">
+  			<entry  key="wo.woroot" value="/System"/>
+ 			<entry  key="wo.wolocalroot" value="/"/>
+		</propertyfile>
+	</target>
+		
+	<target name="check_env" if="wo.properties.ckeck.failed">
+		<property environment="env"/>
+		 <condition property="env.ckeck.failed">
+		 	<not>
+    			<and>
+      				<isset property="env"/>
+      				<isset property="env.NEXT_ROOT"/>
+    			</and>
+    		</not>
+  		</condition>
+	</target>
+	
+</project>
