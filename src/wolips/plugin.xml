@@ -2,7 +2,7 @@
 <plugin
    id="org.objectstyle.wolips"
    name="WOLips Plug-in"
-   version="1.0.0"
+   version="0.8.6"
    provider-name="objectstyle.org parts Assense Software Solutions GmbH"
    class="org.objectstyle.wolips.WOLipsPlugin">
 
