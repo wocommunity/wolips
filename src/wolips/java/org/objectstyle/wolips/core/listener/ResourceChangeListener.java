@@ -54,7 +54,6 @@
  *
  */
 package org.objectstyle.wolips.core.listener;
-import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -71,7 +70,6 @@ import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.jdt.core.JavaCore;
 import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
 import org.objectstyle.wolips.core.preferences.Preferences;
@@ -88,10 +86,10 @@ public class ResourceChangeListener
 	implements IResourceChangeListener, IWOLipsPluginConstants
 {
 
-  private StringListMatcher woappResourcesIncludeMatcher = null;
-  private StringListMatcher woappResourcesExcludeMatcher = null;
-  private StringListMatcher classesIncludeMatcher = null;
-  private StringListMatcher classesExcludeMatcher = null;
+  StringListMatcher woappResourcesIncludeMatcher = null;
+  StringListMatcher woappResourcesExcludeMatcher = null;
+  StringListMatcher classesIncludeMatcher = null;
+  StringListMatcher classesExcludeMatcher = null;
 
 	/**
 	 * Constructor for ResourceChangeListener.
@@ -315,8 +313,6 @@ public class ResourceChangeListener
 					return true;
 				case IResource.FILE :
 					if (needsProjectFileUpdate(kindOfChange)) {
-						// this file must be an webobjects project file
-						QualifiedName resourceQualifier = null;
 						// files with java extension are located in src folders
 						// the relating project file is determined through the
 						// name of the src folder containing the java file
@@ -449,22 +445,6 @@ public class ResourceChangeListener
 				if (woappResourcesIncludeMatcher.match(string))
 					return true;
 			return false;
-		}
-		/**
-		 * @param resource
-		 */
-		private void deleteTeamPrivateMembers(IFolder folder) {
-			try {
-				File file =
-					new File(
-						folder.getLocation().toOSString()
-							+ System.getProperty("path.separator")
-							+ "CVS");
-				if (file.exists() && file.isDirectory())
-					file.delete();
-			} catch (Exception exception) {
-				WOLipsLog.log(exception);
-			}
 		}
 		/**
 		 * Method needsProjectFileUpdate.

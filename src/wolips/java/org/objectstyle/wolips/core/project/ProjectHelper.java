@@ -66,6 +66,7 @@ import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -232,16 +233,13 @@ public class ProjectHelper implements IWOLipsPluginConstants {
 		IProgressMonitor aMonitor)
 		throws CoreException {
 		IFolder folder = null;
-		IPath path = null;
 		try {
 			folder = aProject.getFolder(aFolderName);
-			path = folder.getFullPath();
 			if (!folder.exists()) {
 				CoreUtility.createFolder(folder, true, true, aMonitor);
 			}
 		} finally {
 			folder = null;
-			path = null;
 		}
 	}
 	/**
@@ -474,7 +472,6 @@ public class ProjectHelper implements IWOLipsPluginConstants {
 		// add source classpath entry for project
 		IJavaProject actualJavaProject = null;
 		IClasspathEntry[] oldClassPathEntries = null;
-		;
 		IClasspathEntry[] newClassPathEntries = null;
 		try {
 			actualJavaProject = JavaCore.create(newSourceFolder.getProject());
@@ -730,7 +727,7 @@ public class ProjectHelper implements IWOLipsPluginConstants {
 		while ((findFolder.findMember(IWOLipsPluginConstants.PROJECT_FILE_NAME)
 			== null)
 			&& (findFolder.getParent() != null)
-			&& (findFolder.getParent().getType() != IProject.PROJECT)) {
+			&& (findFolder.getParent().getType() != IResource.PROJECT)) {
 			findFolder = (IFolder) findFolder.getParent();
 		}
 		if (findFolder.getParent() == null)

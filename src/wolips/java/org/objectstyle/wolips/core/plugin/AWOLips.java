@@ -58,8 +58,6 @@ package org.objectstyle.wolips.core.plugin;
 
 import java.util.ArrayList;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -92,7 +90,6 @@ import org.objectstyle.woproject.env.WOVariables;
  */
 public abstract class AWOLips implements IWOLipsPluginConstants {
 
-	private static Log log = LogFactory.getLog(AWOLips.class);
 	/**
 	 * Utility method with conventions
 	 */

@@ -406,7 +406,7 @@ public class Preferences {
 		String value =
 			Preferences.LaunchInfoToString(parameter, arguments, enabled);
 		Preferences.setString(key, value);
-	};
+	}
 	private static class IncludeInfo implements IIncludeInfo {
 		private String pattern;
 
@@ -416,7 +416,7 @@ public class Preferences {
 		public String getPattern() {
 			return pattern;
 		}
-	};
+	}
 
 	private static class LaunchInfo implements ILaunchInfo {
 		public String parameter;

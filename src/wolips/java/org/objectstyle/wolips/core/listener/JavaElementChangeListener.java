@@ -73,7 +73,6 @@ import org.objectstyle.wolips.core.preferences.Preferences;
 import org.objectstyle.wolips.core.project.PBProjectUpdater;
 import org.objectstyle.wolips.core.project.WOLipsProject;
 import org.objectstyle.wolips.logging.WOLipsLog;
-import org.objectstyle.woproject.pb.PBProject;
 /**
  * Tracking changes in classpath and synchronizes webobjects project file
  */
@@ -293,8 +292,6 @@ public class JavaElementChangeListener implements IElementChangedListener {
 		HashMap addedFrameworksProjectDict,
 		HashMap removedFrameworksProjectDict) {
 		IProject currentProject;
-		PBProject currentPBProject;
-		List frameworks;
 		List changedFrameworks;
 		Object[] allAddedKeys = addedFrameworksProjectDict.keySet().toArray();
 		for (int i = 0; i < allAddedKeys.length; i++) {

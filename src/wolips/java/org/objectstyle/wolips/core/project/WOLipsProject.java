@@ -115,7 +115,7 @@ public class WOLipsProject implements IWOLipsPluginConstants {
    * @param name Name of a build command
    * @return boolean whether this is one of ours
    */
-  private static boolean isWOLBuilder (String name) {
+  static boolean isWOLBuilder (String name) {
     return (
       name.equals (INCREMENTAL_BUILDER_ID)
       || name.equals (ANT_BUILDER_ID)
@@ -126,7 +126,7 @@ public class WOLipsProject implements IWOLipsPluginConstants {
    * @param natureID
    * @return boolean
    */
-  private static boolean isWOLipsNature(String natureID) {
+  static boolean isWOLipsNature(String natureID) {
     for (int i = 0; i < WOLIPS_NATURES.length; i++) {
       if (WOLIPS_NATURES[i].equals(natureID))
         return true;
@@ -789,7 +789,7 @@ public class WOLipsProject implements IWOLipsPluginConstants {
 				.findMember(IWOLipsPluginConstants.PROJECT_FILE_NAME)
 				== null)
 				&& (findFolder.getParent() != null)
-				&& (findFolder.getParent().getType() != IProject.PROJECT)) {
+				&& (findFolder.getParent().getType() != IResource.PROJECT)) {
 				findFolder = (IFolder) findFolder.getParent();
 			}
 			if (findFolder.getParent() == null)

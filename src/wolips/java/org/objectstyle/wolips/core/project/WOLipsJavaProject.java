@@ -79,7 +79,7 @@ import org.objectstyle.wolips.logging.WOLipsLog;
  * Window>Preferences>Java>Code Generation>Code Template
  */
 public class WOLipsJavaProject extends WOLipsProject {
-	private IJavaProject javaProject;
+	IJavaProject javaProject;
 	private ClasspathAccessor classpathAccessor;
 
 	/**
@@ -165,7 +165,6 @@ public class WOLipsJavaProject extends WOLipsProject {
 			// add source classpath entry for project
 			IJavaProject actualJavaProject = null;
 			IClasspathEntry[] oldClassPathEntries = null;
-			;
 			IClasspathEntry[] newClassPathEntries = null;
 			try {
 				actualJavaProject =

@@ -69,7 +69,7 @@ import com.webobjects.foundation.NSNotificationCenter;
  * Window>Preferences>Java>Code Generation.
  */
 public class PBProjectNotifications {
-
+	/*
 	private static String PBProjectWillUpgradeNotification =
 		"Project Will Upgrade";
 	private static String PBProjectDidUpgradeNotification = "Project Upgraded";
@@ -78,12 +78,13 @@ public class PBProjectNotifications {
 	private static String PBProjectDidSaveNotification = "Project Saved";
 	private static String PBProjectSaveDidFailNotification =
 		"Project Save Failed";
+		*/
 	private static String PBFileAddedToProjectNotification =
 		"File Added to Project";
-	private static String PBFileRemovedFromProjectNotification =
-		"File Removed from Project";
+	/*private static String PBFileRemovedFromProjectNotification =
+		"File Removed from Project";*/
 	private static NSNotificationCenter notificationCenter = null;
-	private static boolean loadedFoundationClasses = false;
+
 
 	//postNotification(notification, dict);
 
