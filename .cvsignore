@@ -6,3 +6,4 @@ build.properties
 bin
 velocity.log
 output
+.DS_Store
