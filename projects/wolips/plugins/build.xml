@@ -112,6 +112,8 @@
 	    <ant dir="org.objectstyle.wolips.about" target="all"/>
 	    <ant dir="org.objectstyle.wolips.jdom" target="all"/>
 	    <ant dir="org.objectstyle.wolips.tests" target="all"/>
+	    <ant dir="org.objectstyle.wolips.goodies.core.mac" target="all"/>
+	    <ant dir="org.objectstyle.wolips.goodies.ui.mac" target="all"/>
     </target>
     <!-- ========================================== -->
     <!-- Build dist.                                -->
@@ -146,6 +148,8 @@
 	    <ant dir="org.objectstyle.wolips.about" target="dist"/>
 	    <ant dir="org.objectstyle.wolips.jdom" target="dist"/>
 	    <ant dir="org.objectstyle.wolips.tests" target="dist"/>
+	    <ant dir="org.objectstyle.wolips.goodies.core.mac" target="dist"/>
+	    <ant dir="org.objectstyle.wolips.goodies.ui.mac" target="dist"/>
 	</target>
 
     <!-- ========================================== -->
