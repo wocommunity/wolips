@@ -53,9 +53,7 @@
  * <http://objectstyle.org/>.
  *
  */
- 
- package org.objectstyle.wolips.wizards;
-
+package org.objectstyle.wolips.wizards;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -68,7 +66,6 @@ import org.eclipse.ui.wizards.newresource.BasicNewProjectResourceWizard;
 import org.objectstyle.wolips.WOLipsPlugin;
 import org.objectstyle.wolips.images.WOLipsPluginImages;
 import org.objectstyle.wolips.project.ProjectHelper;
-
 /**
  * @author mnolte
  * @author uli
@@ -79,10 +76,9 @@ import org.objectstyle.wolips.project.ProjectHelper;
  * Window>Preferences>Java>Code Generation.
  */
 public class WOFrameworkCreationWizard extends BasicNewProjectResourceWizard {
-
 	private IWorkbench workbench;
 	private WOFrameworkCreationPage mainPage;
-
+	
 	/** (non-Javadoc)
 	 * Method declared on Wizard.
 	 */
@@ -90,7 +86,7 @@ public class WOFrameworkCreationWizard extends BasicNewProjectResourceWizard {
 		mainPage = new WOFrameworkCreationPage("createWOFrameworkPage1");
 		addPage(mainPage);
 	}
-
+	
 	/** (non-Javadoc)
 	 * Method declared on INewWizard
 	 */
@@ -99,50 +95,27 @@ public class WOFrameworkCreationWizard extends BasicNewProjectResourceWizard {
 		this.workbench = workbench;
 		//this.selection = selection;
 		setWindowTitle(Messages.getString("WOFrameworkCreationWizard.title"));
-		setDefaultPageImageDescriptor(WOLipsPluginImages.WOPROJECT_WIZARD_BANNER);
+		setDefaultPageImageDescriptor(
+			WOLipsPluginImages.WOPROJECT_WIZARD_BANNER);
 	}
-
+	
 	/** (non-Javadoc)
 	 * Method declared on IWizard
 	 */
 	public boolean performFinish() {
 		boolean creationSuccessful = mainPage.createProject();
-		if (creationSuccessful){
+		if (creationSuccessful) {
 			try {
-				ProjectHelper.installBuilder(mainPage.getProjectHandle(), ProjectHelper.WOFRAMEWORK_BUILDER_ID);
-				//ProjectHelper.removeBuilder(mainPage.getProjectHandle(), ProjectHelper.JAVA_BUILDER_ID);
-				openResource(mainPage.getElementToOpen());
-			}
-			catch (Exception anException) {
+				ProjectHelper.installBuilder(
+					mainPage.getProjectHandle(),
+					ProjectHelper.WOFRAMEWORK_BUILDER_ID);
+				
+			} catch (Exception anException) {
 				WOLipsPlugin.log(anException);
 				creationSuccessful = false;
 			}
-		}	
+		}
 		return creationSuccessful;
 	}
-
-	private void openResource(final IResource resource) {
-
-		if (resource == null || resource.getType() != IResource.FILE) {
-			return;
-		}
-		IWorkbenchWindow window = WOLipsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow();
-		if (window == null) {
-			return;
-		}
-		final IWorkbenchPage activePage = window.getActivePage();
-		if (activePage != null) {
-			final Display display = getShell().getDisplay();
-			display.asyncExec(new Runnable() {
-				public void run() {
-					try {
-						activePage.openEditor((IFile) resource);
-					} catch (PartInitException e) {
-						WOLipsPlugin.log(e);
-					}
-				}
-			});
-			selectAndReveal(resource);
-		}
-	}
+	
 }

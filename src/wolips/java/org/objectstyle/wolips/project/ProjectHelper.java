@@ -54,13 +54,13 @@
  *
  */
 package org.objectstyle.wolips.project;
+import java.awt.peer.FramePeer;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFolder;
@@ -70,13 +70,17 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jdt.internal.core.ClasspathEntry;
 import org.eclipse.jdt.internal.ui.util.CoreUtility;
 import org.objectstyle.wolips.IWOLipsPluginConstants;
 import org.objectstyle.wolips.WOLipsPlugin;
+import org.objectstyle.wolips.env.Environment;
+import org.objectstyle.wolips.wo.WOVariables;
 /**
  * @author uli
  *
@@ -85,7 +89,7 @@ import org.objectstyle.wolips.WOLipsPlugin;
  * To enable and disable the creation of type comments go to
  * Window>Preferences>Java>Code Generation.
  */
-public class ProjectHelper implements IWOLipsPluginConstants{
+public class ProjectHelper implements IWOLipsPluginConstants {
 	public static String WOFRAMEWORK_BUILDER_ID =
 		"org.objectstyle.wolips.woframeworkbuilder";
 	public static String WOAPPLICATION_BUILDER_ID =
@@ -242,7 +246,6 @@ public class ProjectHelper implements IWOLipsPluginConstants{
 		// project is source container
 		return project;
 	}
-	
 	/**
 	 * Method getSubprojectSourceFolder. Searches classpath source entries for correspondending
 	 * subproject source folder (subprojectFolder.getName().[IWOLipsPluginConstants.EXT_SRC]
@@ -342,7 +345,6 @@ public class ProjectHelper implements IWOLipsPluginConstants{
 			throw new InvocationTargetException(e);
 		}
 	}
-	
 	public static boolean isWOProjectResource(IResource aResource) {
 		if (aResource != null) {
 			try {
@@ -352,7 +354,6 @@ public class ProjectHelper implements IWOLipsPluginConstants{
 							WO_APPLICATION_NATURE)
 							|| ((IProject) aResource).hasNature(
 								WO_FRAMEWORK_NATURE);
-
 					default :
 						return aResource.getProject() != null
 							&& (aResource
@@ -369,6 +370,109 @@ public class ProjectHelper implements IWOLipsPluginConstants{
 		}
 	}
 	
+	public static IClasspathEntry[] addFrameworkListToClasspathEntries(
+		List frameworkList,
+		IJavaProject projectToUpdate)
+		throws JavaModelException {
+			
+		IClasspathEntry[] oldClasspathEntries =
+			projectToUpdate.getResolvedClasspath(true);
+		IPath nextRootAsPath = new Path(WOVariables.nextRoot());
+		ArrayList classpathEntries = new ArrayList(frameworkList.size());
+		IPath frameworkPath;
+		String jarName;
+		String frameworkName;
+		int frameworkExtIndex;
+		for (int i = 0; i < frameworkList.size(); i++) {
+			frameworkName = (String) frameworkList.get(i);
+			// check for framework extentsion
+			frameworkExtIndex = frameworkName.indexOf(EXT_FRAMEWORK);
+			if (frameworkExtIndex == -1 || frameworkExtIndex == 0) {
+				// invalid framework name
+				continue;
+			}
+			
+			jarName = frameworkName.substring(0, frameworkExtIndex - 1).toLowerCase() + ".jar";
+			
+			// check for root
+			frameworkPath = new Path(WOVariables.libraryDir());
+			frameworkPath = frameworkPath.append("Frameworks");
+			frameworkPath = frameworkPath.append(frameworkName);
+			if (!frameworkPath.toFile().isDirectory()) {
+				frameworkPath = new Path(WOVariables.localLibraryDir());
+				frameworkPath = frameworkPath.append("Frameworks");
+				frameworkPath = frameworkPath.append(frameworkName);
+			}
+			if (!frameworkPath.toFile().isDirectory()) {
+				// invalid path
+				continue;
+			}
+			
+			// check for jar existance
+			int j = 0;
+			frameworkPath = frameworkPath.append("Resources/Java/");
+			String[] frameJarDirContent = frameworkPath.toFile().list();
+			for (j = 0; j < frameJarDirContent.length; j++) {
+				if (jarName.equals(frameJarDirContent[j].toLowerCase())){
+					// get case sensitive jar name
+					jarName = frameJarDirContent[j];
+					break;
+				}
+			}
+			if (j == frameJarDirContent.length) {
+				// jar doesn't exists
+				continue;
+			}
+			
+			// add case-sensitive jar name
+			frameworkPath = frameworkPath.append(jarName);
+			
+			// check for existing classpath entries
+			for (j = 0; j < oldClasspathEntries.length; j++) {
+				if (oldClasspathEntries[j].getPath().equals(frameworkPath)) {
+					break;
+				}
+			}
+			if (j != oldClasspathEntries.length) {
+				// entry already set
+				continue;
+			}
+
+			// determine if new class path begins with next root
+			if ((frameworkPath.segmentCount() > nextRootAsPath.segmentCount())
+				&& frameworkPath
+					.removeLastSegments(
+						frameworkPath.segmentCount()
+							- nextRootAsPath.segmentCount())
+					.equals(nextRootAsPath)) {
+				// replace beginning of class path with next root
+				frameworkPath =
+					new Path(Environment.NEXT_ROOT).append(
+						frameworkPath.removeFirstSegments(
+							nextRootAsPath.segmentCount()));
+				// set path as variable entry			
+				classpathEntries.add(
+					JavaCore.newVariableEntry(frameworkPath, null, null));
+			} else {
+				classpathEntries.add(
+					JavaCore.newLibraryEntry(frameworkPath, null, null));
+			}
+		}
+		// build new class path entry array
+		oldClasspathEntries = projectToUpdate.getRawClasspath();
+		IClasspathEntry[] newClasspathEntries =
+			new IClasspathEntry[classpathEntries.size() + oldClasspathEntries.length];
+		for (int i = 0; i < oldClasspathEntries.length; i++) {
+			newClasspathEntries[i] = oldClasspathEntries[i];
+		}
+		for (int i = 0; i < classpathEntries.size(); i++) {
+			newClasspathEntries[i + oldClasspathEntries.length] = (IClasspathEntry) classpathEntries.get(i);
+		}
+		
+		return newClasspathEntries;
+	}
+	
+	///////////////////////////////// builder stuff ////////////////////////
 	public static int positionForBuilder(IProject aProject, String aBuilder)
 		throws CoreException {
 		IProjectDescription desc = aProject.getDescription();

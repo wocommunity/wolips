@@ -108,7 +108,7 @@ public class WOProjectCreationPage extends WizardNewProjectCreationPage {
 
 		IRunnableWithProgress op =
 			new WorkspaceModifyDelegatingOperation(
-				new WOProjectCreator(newProject, projectTemplateID));
+				new WOProjectCreator(newProject, projectTemplateID,getLocationPath()));
 
 		try {
 

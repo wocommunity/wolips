@@ -53,9 +53,7 @@
  * <http://objectstyle.org/>.
  *
  */
- 
- package org.objectstyle.wolips.wizards;
-
+package org.objectstyle.wolips.wizards;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -78,10 +76,10 @@ import org.objectstyle.wolips.project.ProjectHelper;
  * Window>Preferences>Java>Code Generation.
  */
 public class WOProjectCreationWizard extends BasicNewProjectResourceWizard {
+	
 	//private IStructuredSelection selection;
 	private IWorkbench workbench;
 	private WOProjectCreationPage mainPage;
-
 	/** (non-Javadoc)
 	 * Method declared on Wizard.
 	 */
@@ -89,56 +87,55 @@ public class WOProjectCreationWizard extends BasicNewProjectResourceWizard {
 		mainPage = new WOProjectCreationPage("createWOProjectPage1");
 		addPage(mainPage);
 	}
-
+	
 	/** (non-Javadoc)
 	 * Method declared on INewWizard
 	 */
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
-		super.init(workbench,selection);
+		super.init(workbench, selection);
 		this.workbench = workbench;
 		//this.selection = selection;
-		setWindowTitle(
-			Messages.getString("WOProjectCreationWizard.title"));
+		setWindowTitle(Messages.getString("WOProjectCreationWizard.title"));
 		setDefaultPageImageDescriptor(
 			WOLipsPluginImages.WOPROJECT_WIZARD_BANNER);
 	}
-
-
+	
 	/** (non-Javadoc)
 	 * Method declared on IWizard
 	 */
 	public boolean performFinish() {
 		boolean creationSuccessful = mainPage.createProject();
-		if (creationSuccessful){
+		if (creationSuccessful) {
 			try {
-				ProjectHelper.installBuilder(mainPage.getProjectHandle(), ProjectHelper.WOAPPLICATION_BUILDER_ID);
-				//ProjectHelper.removeBuilder(mainPage.getProjectHandle(), ProjectHelper.JAVA_BUILDER_ID);
+				ProjectHelper.installBuilder(
+					mainPage.getProjectHandle(),
+					ProjectHelper.WOAPPLICATION_BUILDER_ID);
+				
 				openResource(mainPage.getElementToOpen());
-			}
-			catch (Exception anException) {
+			} catch (Exception anException) {
 				WOLipsPlugin.log(anException);
 				creationSuccessful = false;
 			}
-		}	
+		}
 		return creationSuccessful;
 	}
 	
 	private void openResource(final IResource resource) {
-
-		if (resource==null || resource.getType() != IResource.FILE) {
+		if (resource == null || resource.getType() != IResource.FILE) {
 			return;
 		}
-		IWorkbenchWindow window= WOLipsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow();
+		IWorkbenchWindow window =
+			WOLipsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow();
 		if (window == null) {
 			return;
 		}
-		final IWorkbenchPage activePage= window.getActivePage();
+		final IWorkbenchPage activePage = window.getActivePage();
 		if (activePage != null) {
-			final Display display= getShell().getDisplay();
+			final Display display = getShell().getDisplay();
 			display.asyncExec(new Runnable() {
 				public void run() {
 					try {
-						activePage.openEditor((IFile)resource);
+						activePage.openEditor((IFile) resource);
 					} catch (PartInitException e) {
 						WOLipsPlugin.log(e);
 					}
@@ -146,5 +143,5 @@ public class WOProjectCreationWizard extends BasicNewProjectResourceWizard {
 			});
 			selectAndReveal(resource);
 		}
-	}	
+	}
 }
