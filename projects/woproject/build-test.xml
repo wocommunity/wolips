@@ -7,7 +7,7 @@
 <project name="woproject-tests" default="test" basedir=".">
 
     <path id="classpath-tests-run">
-        <fileset dir="../${build.output.build.dir}/woproject/lib">
+        <fileset dir="../${build.output.build.dir}/woproject_${build.version}/lib">
             <include name="*.jar"/>
         </fileset>
 
@@ -109,7 +109,7 @@
         <mkdir dir="${test.results}/functional"/>
         
         <copy todir="tests/wo/lib">
-        	<fileset dir="../${build.output.build.dir}/woproject/lib">
+        	<fileset dir="../${build.output.build.dir}/woproject_${build.version}/lib">
         		<include name="${lib.log4j}"/>
         		<include name="${project.name}.jar"/>
         		<include name="${lib.cayenne}"/>
