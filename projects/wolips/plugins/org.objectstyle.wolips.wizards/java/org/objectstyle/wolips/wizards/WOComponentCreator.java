@@ -55,10 +55,12 @@
  */
 package org.objectstyle.wolips.wizards;
 import java.lang.reflect.InvocationTargetException;
+
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jdt.core.JavaCore;
@@ -66,8 +68,7 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.objectstyle.wolips.core.logging.WOLipsLog;
 import org.objectstyle.wolips.datasets.project.WOLipsJavaProject;
 import org.objectstyle.wolips.datasets.resources.IWOLipsModel;
-import org.objectstyle.wolips.templateengine.TemplateDefinition;
-import org.objectstyle.wolips.templateengine.TemplateEngine;
+import org.objectstyle.wolips.templateengine.ComponentEngine;
 /**
  * @author mnolte
  * @author uli
@@ -109,7 +110,7 @@ public class WOComponentCreator implements IRunnableWithProgress {
 	public void createWOComponent(IProgressMonitor monitor)
 			throws CoreException, InvocationTargetException {
 		IFolder componentFolder = null;
-		String componentJavaPath = null;
+		IPath componentJavaPath = null;
 		WOLipsJavaProject wolipsJavaProject = null;
 		switch (parentResource.getType()) {
 			case IResource.PROJECT :
@@ -119,7 +120,7 @@ public class WOComponentCreator implements IRunnableWithProgress {
 				wolipsJavaProject = new WOLipsJavaProject(JavaCore
 						.create((IProject) parentResource));
 				componentJavaPath = wolipsJavaProject.getClasspathAccessor()
-						.getProjectSourceFolder().getLocation().toOSString();
+						.getProjectSourceFolder().getLocation();
 				break;
 			case IResource.FOLDER :
 				componentFolder = ((IFolder) parentResource)
@@ -129,7 +130,7 @@ public class WOComponentCreator implements IRunnableWithProgress {
 						.create(parentResource.getProject()));
 				componentJavaPath = wolipsJavaProject.getClasspathAccessor()
 						.getSubprojectSourceFolder((IFolder) parentResource,
-								true).getLocation().toOSString();
+								true).getLocation();
 				break;
 			default :
 				throw new InvocationTargetException(new Exception(
@@ -137,40 +138,25 @@ public class WOComponentCreator implements IRunnableWithProgress {
 		}
 		componentFolder.create(false, true, monitor);
 		String projectName = parentResource.getProject().getName();
-		String path = componentFolder.getLocation().toOSString();
-		String projectPath = parentResource.getProject().getLocation()
-				.toOSString();
-		TemplateEngine templateEngine = new TemplateEngine();
+		IPath path = componentFolder.getLocation();
+		IPath projectPath = parentResource.getProject().getLocation();
+		ComponentEngine componentEngine = new ComponentEngine();
 		try {
-			templateEngine.init();
+			componentEngine.init();
 		} catch (Exception e) {
 			WOLipsLog.log(e);
 			throw new InvocationTargetException(e);
 		}
-		templateEngine.getWolipsContext().setProjectName(projectName);
-		templateEngine.getWolipsContext().setCreateBodyTag(createBodyTag);
-		templateEngine.getWolipsContext().setComponentName(componentName);
-		templateEngine.addTemplate(new TemplateDefinition(
-				"wocomponent/wocomponent.html.vm", path, componentName + "."
-						+ IWOLipsModel.EXT_HTML, IWOLipsModel.EXT_HTML));
-		templateEngine.addTemplate(new TemplateDefinition(
-				"wocomponent/wocomponent.wod.vm", path, componentName + "."
-						+ IWOLipsModel.EXT_WOD, IWOLipsModel.EXT_WOD));
-		if (createWooFile)
-			templateEngine.addTemplate(new TemplateDefinition(
-					"wocomponent/wocomponent.woo.vm", path, componentName + "."
-							+ IWOLipsModel.EXT_WOO, IWOLipsModel.EXT_WOO));
-		templateEngine.addTemplate(new TemplateDefinition(
-				"wocomponent/wocomponent.java.vm", componentJavaPath,
-				componentName + "." + IWOLipsModel.EXT_JAVA,
-				IWOLipsModel.EXT_JAVA));
-		if (createApiFile)
-			templateEngine.addTemplate(new TemplateDefinition(
-					"wocomponent/wocomponent.api.vm", projectPath,
-					componentName + "." + IWOLipsModel.EXT_API,
-					IWOLipsModel.EXT_API));
+		//TODO: select template in the user interface
+		componentEngine.setSelectedTemplateName(componentEngine.names()[0]);
+		componentEngine.setProjectName(projectName);
+		componentEngine.setCreateBodyTag(createBodyTag);
+		componentEngine.setComponentName(componentName);
+		componentEngine.setComponentPath(path);
+		componentEngine.setApiPath(projectPath);
+		componentEngine.setJavaPath(componentJavaPath);
 		try {
-			templateEngine.run(new NullProgressMonitor());
+			componentEngine.run(new NullProgressMonitor());
 			parentResource.getProject().refreshLocal(IResource.DEPTH_INFINITE,
 					monitor);
 		} catch (Exception e) {

@@ -111,6 +111,15 @@ public class TemplatesDocument {
 	}
 
 	/**
+	 * @return Returns the name
+	 */
+	public String getName() {
+		if(document == null)
+			return null;
+		return document.getRootElement().getChildText("name");
+	}
+
+	/**
 	 * @return
 	 */
 	public TemplateDefinition[] getTemplateDefinitions() {

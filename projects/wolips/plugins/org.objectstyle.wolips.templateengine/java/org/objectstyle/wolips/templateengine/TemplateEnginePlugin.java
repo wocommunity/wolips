@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 The ObjectStyle Group 
+ * Copyright (c) 2004 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -67,8 +67,10 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IPluginDescriptor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.objectstyle.wolips.datasets.DataSetsPlugin;
 
@@ -76,6 +78,7 @@ import org.objectstyle.wolips.datasets.DataSetsPlugin;
  * The main plugin class to be used in the desktop.
  */
 public class TemplateEnginePlugin extends AbstractUIPlugin {
+	private final static String PLUGIN_ID = "org.objectstyle.wolips.templateengine";
 	//The shared instance.
 	private static TemplateEnginePlugin plugin;
 	//Resource bundle.
@@ -101,13 +104,60 @@ public class TemplateEnginePlugin extends AbstractUIPlugin {
 		}
 	}
 
-	/**
+		/**
 	 * Returns the shared instance.
-	 * @return
 	 */
 	public static TemplateEnginePlugin getDefault() {
+		if (plugin == null) {
+			// ensure plugin instance is always available using id
+			return new TemplateEnginePlugin(
+				Platform.getPlugin(TemplateEnginePlugin.PLUGIN_ID).getDescriptor());
+		}
 		return plugin;
 	}
+	
+	
+	/**
+	 * Returns the PluginID.
+	 * @return
+	 */
+	public static String getPluginId() {
+		if (plugin != null) {
+			return getDefault().getDescriptor().getUniqueIdentifier();
+		} else
+			return TemplateEnginePlugin.PLUGIN_ID;
+	}
+
+	/**
+	 * Prints a Status.
+	 * @param e
+	 */
+	public static void log(IStatus status) {
+		TemplateEnginePlugin.getDefault().getLog().log(status);
+	}
+
+	/**
+	 * Prints a Throwable.
+	 * @param e
+	 */
+	public static void log(Throwable e) {
+		TemplateEnginePlugin.log(new Status(IStatus.ERROR, DataSetsPlugin.getPluginId(), IStatus.ERROR, "Internal Error", e)); //$NON-NLS-1$
+	}
+	
+	/**
+	 * Prints a message.
+	 * @param message
+	 */
+	public static void log(String message) {
+		TemplateEnginePlugin.log(
+			new Status(
+				IStatus.ERROR,
+				DataSetsPlugin.getPluginId(),
+				IStatus.ERROR,
+				message,
+				null));
+	}
+
 
 	/**
 	 * Returns the workspace instance.
