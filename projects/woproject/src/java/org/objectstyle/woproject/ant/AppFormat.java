@@ -157,16 +157,19 @@ public class AppFormat extends ProjectFormat {
 	 */
 	protected String buildAppPaths() {
 		FileSet fs = null;
-		PatternSet.NameEntry include = null;
+		//include zips and jars
+		//http://objectstyle.org/jira/secure/ViewIssue.jspa?key=WOL-47
+		PatternSet.NameEntry includeJar = null, includeZip = null;
 		DirectoryScanner ds = null;
 		String[] files = null;
 		StringBuffer buf = null;
 		try {
 			fs = new FileSet();
 			fs.setDir(getApplicatonTask().contentsDir());
-			include = fs.createInclude();
-			include.setName("**/Resources/Java/**/*.jar");
-			include.setName("**/Resources/Java/**/*.zip");
+			includeJar = fs.createInclude();
+			includeJar.setName("**/Resources/Java/**/*.jar");
+			includeZip = fs.createInclude();
+			includeZip.setName("**/Resources/Java/**/*.zip");
 			ds = fs.getDirectoryScanner(task.getProject());
 			files = ds.getIncludedFiles();
 			buf = new StringBuffer();
@@ -190,7 +193,8 @@ public class AppFormat extends ProjectFormat {
 			log(anException.getMessage(), Project.MSG_WARN);
 		} finally {
 			fs = null;
-			include = null;
+			includeJar = null;
+			includeZip = null;
 			ds = null;
 			files = null;
 			buf = null;
