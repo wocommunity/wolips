@@ -15,7 +15,7 @@
       </library>
       <library name="lib/woproject.jar">
          <export name="*"/>
-         <packages prefixes="org.objectstyle.woproject.ant,org.objectstyle.woproject.log4j,org.objectstyle.woproject.pb,org.objectstyle.woproject.util,org.objectstyle.woproject.wo"/>
+         <packages prefixes="org.objectstyle.woproject.ant,org.objectstyle.woproject.log4j,org.objectstyle.woproject.pb,org.objectstyle.woproject.util,org.objectstyle.woproject.wo,org.objectstyle.woproject.env"/>
       </library>
       <library name="lib/cayenne.jar">
          <export name="*"/>
