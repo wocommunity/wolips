@@ -61,6 +61,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.action.IAction;
 import org.objectstyle.wolips.datasets.adaptable.Project;
+import org.objectstyle.wolips.datasets.adaptable.ProjectPatternsets;
 import org.objectstyle.wolips.templateengine.TemplateDefinition;
 import org.objectstyle.wolips.templateengine.TemplateEngine;
 import org.objectstyle.wolips.wizards.WizardsPlugin;
@@ -86,6 +87,7 @@ public class UpgradeBuildXML extends ActionOnIResource {
 		try {
 			templateEngine.init();
 			templateEngine.getWolipsContext().setProjectName(projectName);
+			templateEngine.getWolipsContext().setAntFolderName(ProjectPatternsets.ANT_FOLDER_NAME);
 			if (project.isApplication()) {
 				templateEngine.addTemplate(new TemplateDefinition(
 						"woapplication/build.xml.vm", path, "build.xml",
