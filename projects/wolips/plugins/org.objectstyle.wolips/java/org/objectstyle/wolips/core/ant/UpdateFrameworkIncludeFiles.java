@@ -109,118 +109,113 @@ public class UpdateFrameworkIncludeFiles extends UpdateIncludeFiles {
 				this.getIProject().getFile(
 					INCLUDES_FILE_PREFIX + "." + rootPaths[i]);
 
-			if (currentFrameworkListFile.exists()) {
-				// delete old include file
-				//try {
-				//	if (false)
-				//		currentFrameworkListFile.delete(true, null);
-				//	
-				//} catch (CoreException e) {
-				//	WOLipsLog.log(e.getMessage());
-				//	return;
-				//}
+			//if (currentFrameworkListFile.exists()) {
+			// delete old include file
+			//try {
+			//	if (false)
+			//		currentFrameworkListFile.delete(true, null);
+			//	
+			//} catch (CoreException e) {
+			//	WOLipsLog.log(e.getMessage());
+			//	return;
+			//}
 
-				StringBuffer newFrameworkEntries = new StringBuffer();
-				String resolvedEntry;
-				for (int j = 0; j < classPaths.length; j++) {
-					IClasspathEntry thisEntry = classPaths[j];
-					if (thisEntry.getEntryKind() == IClasspathEntry.CPE_LIBRARY
-						|| thisEntry.getEntryKind()
-							== IClasspathEntry.CPE_VARIABLE) {
+			StringBuffer newFrameworkEntries = new StringBuffer();
+			String resolvedEntry;
+			for (int j = 0; j < classPaths.length; j++) {
+				IClasspathEntry thisEntry = classPaths[j];
+				if (thisEntry.getEntryKind() == IClasspathEntry.CPE_LIBRARY
+					|| thisEntry.getEntryKind() == IClasspathEntry.CPE_VARIABLE) {
 
-						if (!resolvedEntries.contains(thisEntry)) {
-							// convert classpath entries to woproject
-							// acceptable paths
-							resolvedEntry =
-								classpathEntryToFrameworkEntry(
-									thisEntry,
-									thisPath);
+					if (!resolvedEntries.contains(thisEntry)) {
+						// convert classpath entries to woproject
+						// acceptable paths
+						resolvedEntry =
+							classpathEntryToFrameworkEntry(thisEntry, thisPath);
 
-							//Uk was sorted
-							if (resolvedEntry != null) {
-								if (!generatedEntries
-									.contains(resolvedEntry)) {
-									generatedEntries.add(resolvedEntry);
-									newFrameworkEntries.append(resolvedEntry);
+						//Uk was sorted
+						if (resolvedEntry != null) {
+							if (!generatedEntries.contains(resolvedEntry)) {
+								generatedEntries.add(resolvedEntry);
+								newFrameworkEntries.append(resolvedEntry);
+								newFrameworkEntries.append("\n");
+							}
+							resolvedEntries.add(thisEntry);
+						}
+					}
+				}
+			}
+			if (thisPath.toString().equals(this.getWOLocalRoot())) {
+				IProject[] referencedProjects;
+				try {
+					referencedProjects = getIProject().getReferencedProjects();
+				} catch (CoreException e1) {
+					WOLipsLog.log(e1);
+					referencedProjects = null;
+				}
+				if (referencedProjects != null) {
+					for (int j = 0; j < referencedProjects.length; j++) {
+						if (referencedProjects[j].isAccessible()
+							&& referencedProjects[j].isOpen()) {
+							try {
+								IWOLipsProject referencedWOLipsProject =
+									WOLipsCore.createProject(
+										referencedProjects[j]);
+								if (referencedWOLipsProject != null
+									&& referencedWOLipsProject
+										.getNaturesAccessor()
+										.hasWOLipsNature()
+									&& referencedWOLipsProject
+										.getNaturesAccessor()
+										.isFramework()) {
+									newFrameworkEntries.append(
+										"Library/Frameworks/");
+									newFrameworkEntries.append(
+										referencedWOLipsProject
+											.getProject()
+											.getName());
+									newFrameworkEntries.append(".");
+									newFrameworkEntries.append(
+										IWOLipsModel.EXT_FRAMEWORK);
 									newFrameworkEntries.append("\n");
 								}
-								resolvedEntries.add(thisEntry);
+							} catch (CoreException e1) {
+								WOLipsLog.log(e1);
 							}
 						}
 					}
 				}
-				if (thisPath.toString().equals(this.getWOLocalRoot())) {
-					IProject[] referencedProjects;
-					try {
-						referencedProjects =
-							getIProject().getReferencedProjects();
-					} catch (CoreException e1) {
-						WOLipsLog.log(e1);
-						referencedProjects = null;
-					}
-					if (referencedProjects != null) {
-						for (int j = 0; j < referencedProjects.length; j++) {
-							if (referencedProjects[j].isAccessible()
-								&& referencedProjects[j].isOpen()) {
-								try {
-									IWOLipsProject referencedWOLipsProject =
-										WOLipsCore.createProject(
-											referencedProjects[j]);
-									if (referencedWOLipsProject != null
-										&& referencedWOLipsProject
-											.getNaturesAccessor()
-											.hasWOLipsNature()
-										&& referencedWOLipsProject
-											.getNaturesAccessor()
-											.isFramework()) {
-										newFrameworkEntries.append(
-											"Library/Frameworks/");
-										newFrameworkEntries.append(
-											referencedWOLipsProject
-												.getProject()
-												.getName());
-										newFrameworkEntries.append(".");
-										newFrameworkEntries.append(
-											IWOLipsModel.EXT_FRAMEWORK);
-										newFrameworkEntries.append("\n");
-									}
-								} catch (CoreException e1) {
-									WOLipsLog.log(e1);
-								}
-							}
-						}
-					}
+			}
+			if (newFrameworkEntries.length() == 0) {
+				newFrameworkEntries.append(
+					"An empty file result in a full filesystem scan");
+				newFrameworkEntries.append("\n");
+			}
+			try {
+				if (currentFrameworkListFile.exists()) {
+					// file may be created by WOBuilder in the meantime
+					// no update needed
+					currentFrameworkListFile.setContents(
+						new ByteArrayInputStream(
+							newFrameworkEntries.toString().getBytes()),
+						true,
+						true,
+						null);
+				} else {
+					// create list file if any entries found
+					currentFrameworkListFile.create(
+						new ByteArrayInputStream(
+							newFrameworkEntries.toString().getBytes()),
+						true,
+						null);
 				}
-				if (newFrameworkEntries.length() == 0) {
-					newFrameworkEntries.append(
-						"An empty file result in a full filesystem scan");
-					newFrameworkEntries.append("\n");
-				}
-				try {
-					if (currentFrameworkListFile.exists()) {
-						// file may be created by WOBuilder in the meantime
-						// no update needed
-						currentFrameworkListFile.setContents(
-							new ByteArrayInputStream(
-								newFrameworkEntries.toString().getBytes()),
-							true,
-							true,
-							null);
-					} else {
-						// create list file if any entries found
-						currentFrameworkListFile.create(
-							new ByteArrayInputStream(
-								newFrameworkEntries.toString().getBytes()),
-							true,
-							null);
-					}
-				} catch (CoreException e) {
-					WOLipsLog.log(e.getMessage());
-					return;
-				}
+			} catch (CoreException e) {
+				WOLipsLog.log(e.getMessage());
+				return;
 			}
 		}
 	}
+
 	/**
 	 * Method classpathEntryToFrameworkEntry.
 	 * 
@@ -262,7 +257,7 @@ public class UpdateFrameworkIncludeFiles extends UpdateIncludeFiles {
 
 			//pathToConvert =
 			//	pathToConvert.removeFirstSegments(rootDir.segmentCount());
-			result = pathToConvert.toString();
+			result = pathToConvert.toOSString();
 			result = result.substring(rootDir.length());
 			if (result.startsWith("/") || result.startsWith("\\"))
 				result = result.substring(1);
@@ -271,5 +266,4 @@ public class UpdateFrameworkIncludeFiles extends UpdateIncludeFiles {
 		return result;
 	}
 
-	
 }
