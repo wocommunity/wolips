@@ -9,6 +9,21 @@
     <body>        
         <!-- Welcome section -->
         <section name="Welcome to WOProject and WOLips">
+        
+        <p><i>September 16, 2003.</i> <b>WOProject release 1.0.7.23 is out.</b></p>
+        <p>Download a new <a href="compatibilty_matrix.html">release</a> of WOProject.
+        <hr/>
+        </p>
+        
+        <p><i>September 16, 2003.</i> <b>WOLips 1.0.7.23 released.</b></p>
+        <p>WOLips is a plugin for <a href="http://eclipse.org">Eclipse IDE</a> that
+        support development of WebObjects applications and frameworks.
+        <ul>
+            <li>To find the correct version <a href="compatibilty_matrix.html">click</a> here.</li>
+            <li><a href="wolips_install.html">How to install via Update Manager.</a></li>
+        </ul>
+        <hr/>
+        </p>
 
         <p><i>September 12, 2003.</i> <b>Patched org.eclipse.core.ant plugin.</b></p>
         <p>Find out <a href="patched_ant_plugin.html">more</a>.
@@ -17,21 +32,6 @@
 
         <p><i>September 12, 2003.</i> <b>New snapshots in the WOLips gallery.</b></p>
         <p>Visit the WOLips <a href="gallery.html">gallery</a>.
-        <hr/>
-        </p>
-        
-        <p><i>August 7, 2003.</i> <b>WOProject release 1.0.6 is out.</b></p>
-        <p>Download a new <a href="compatibilty_matrix.html">release</a> of WOProject.
-        <hr/>
-        </p>
-        
-        <p><i>August 7, 2003.</i> <b>WOLips 1.0.6 released.</b></p>
-        <p>WOLips is a plugin for <a href="http://eclipse.org">Eclipse IDE</a> that
-        support development of WebObjects applications and frameworks.
-        <ul>
-            <li>To find the correct version <a href="compatibilty_matrix.html">click</a> here.</li>
-            <li><a href="wolips_install.html">How to install via Update Manager.</a></li>
-        </ul>
         <hr/>
         </p>
                        
