@@ -54,74 +54,105 @@
  *
  */
 package org.objectstyle.wolips.actions;
-
+import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
+import org.objectstyle.wolips.IWOLipsPluginConstants;
 import org.objectstyle.wolips.WOLipsPlugin;
 import org.objectstyle.wolips.project.ProjectHelper;
-
+import org.objectstyle.wolips.wo.WOVariables;
 /**
  * @author uli
  *
  * Action for adding and removing the WOBuilder
  */
 public class WOBuilderAction extends ActionOnIProject {
-
 	private static String WOBuilderRemoveID = "WOBuilder.Remove.ID";
 	private static String WOFrameworkBuilderSetID = "WOFrameworkBuilder.Set.ID";
-	private static String WOApplicationBuilderSetID = "WOApplicationBuilder.Set.ID";
-	
+	private static String WOApplicationBuilderSetID =
+		"WOApplicationBuilder.Set.ID";
 	/**
 	 * The constructor.
 	 */
 	public WOBuilderAction() {
 		super();
 	}
-
 	/**
 	 * Runs the action.
 	 */
 	public void run(IAction action) {
-		if ( project() != null ){
+		if (project() != null) {
 			try {
-			if ( action.getId().equals(WOBuilderAction.WOBuilderRemoveID) ) {	
-				ProjectHelper.removeBuilder(project(), ProjectHelper.WOAPPLICATION_BUILDER_ID);
-				ProjectHelper.removeBuilder(project(), ProjectHelper.WOFRAMEWORK_BUILDER_ID);
+				if (action.getId().equals(WOBuilderAction.WOBuilderRemoveID)) {
+					ProjectHelper.removeBuilder(
+						project(),
+						ProjectHelper.WOAPPLICATION_BUILDER_ID);
+					ProjectHelper.removeBuilder(
+						project(),
+						ProjectHelper.WOFRAMEWORK_BUILDER_ID);
+				} else {
+					if (action
+						.getId()
+						.equals(WOBuilderAction.WOFrameworkBuilderSetID))
+						ProjectHelper.installBuilder(
+							project(),
+							ProjectHelper.WOFRAMEWORK_BUILDER_ID);
+					else {
+						ProjectHelper.installBuilder(
+							project(),
+							ProjectHelper.WOAPPLICATION_BUILDER_ID);
+					}
 				}
-			else {
-				if ( action.getId().equals(WOBuilderAction.WOFrameworkBuilderSetID) )
-				ProjectHelper.installBuilder(project(), ProjectHelper.WOFRAMEWORK_BUILDER_ID);
-				else {
-				ProjectHelper.installBuilder(project(), ProjectHelper.WOAPPLICATION_BUILDER_ID);
-				}
-			}
-			}
-			catch (CoreException ex) {
+			} catch (CoreException ex) {
 				WOLipsPlugin.log(ex);
 			}
-		}				
+		}
 	}
-
 	/**
 	 * Disables and enables the menus for adding and removing WOBuilder.
 	 */
 	public void selectionChanged(IAction action, ISelection selection) {
 		super.selectionChanged(action, selection);
-		if ( project() != null) {
-			if ( action.getId().equals(WOBuilderAction.WOFrameworkBuilderSetID) ) {
-					action.setEnabled(!ProjectHelper.isWOFwBuilderInstalled(project()));
+		if (project() != null) {
+			boolean isWOFramework = false;
+			boolean isWOApplication = false;
+			IProjectDescription projectDescription = null;
+			try {
+				projectDescription = project().getDescription();
+			} catch (CoreException e) {
+			}
+			if (projectDescription != null) {
+				if (projectDescription
+					.hasNature(IWOLipsPluginConstants.WO_APPLICATION_NATURE)) {
+					isWOApplication = true;
+					isWOFramework = false;
+				} else if (
+					projectDescription.hasNature(
+						IWOLipsPluginConstants.WO_FRAMEWORK_NATURE)) {
+					isWOFramework = true;
+					isWOApplication = false;
 				}
-				if ( action.getId().equals(WOBuilderAction.WOApplicationBuilderSetID) ) {
-					action.setEnabled(!ProjectHelper.isWOAppBuilderInstalled(project()));
-				}
-				if ( action.getId().equals(WOBuilderAction.WOBuilderRemoveID) ) {
-					action.setEnabled(ProjectHelper.isWOAppBuilderInstalled(project()) || ProjectHelper.isWOFwBuilderInstalled(project()));
-				}
-		}
-		else {
+			}
+			if (action.getId().equals(
+					WOBuilderAction.WOFrameworkBuilderSetID)) {
+				action.setEnabled(isWOFramework &&
+					!ProjectHelper.isWOFwBuilderInstalled(project()));
+			}
+			if (action.getId().equals(
+					WOBuilderAction.WOApplicationBuilderSetID)) {
+				action.setEnabled(isWOApplication &&
+					!ProjectHelper.isWOAppBuilderInstalled(project()));
+			}
+			if (action.getId().equals(WOBuilderAction.WOBuilderRemoveID)) {
+				action.setEnabled(
+					ProjectHelper.isWOAppBuilderInstalled(project())
+						|| ProjectHelper.isWOFwBuilderInstalled(project()));
+			}
+		} else {
 			action.setEnabled(false);
 		}
 	}
-
 }
