@@ -58,7 +58,10 @@ import java.io.File;
 import java.io.FileWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -160,6 +163,7 @@ public class TemplateEngine implements IRunnableWithProgress {
 	 * @see org.eclipse.jface.operation.IRunnableWithProgress#run(org.eclipse.core.runtime.IProgressMonitor)
 	 */
 	public void run(IProgressMonitor monitor) throws InvocationTargetException {
+		setDateInContext();
 		try {
 			for (int i = 0; i < this.templates.size(); i++) {
 				TemplateDefinition templateDefinition = (TemplateDefinition) this.templates
@@ -199,5 +203,19 @@ public class TemplateEngine implements IRunnableWithProgress {
 	 */
 	public WOLipsContext getWolipsContext() {
 		return this.wolipsContext;
+	}
+	
+
+	
+	/**
+	 * sets the date in the context
+	 */
+	private void setDateInContext() {
+		DateFormat dateFormat = DateFormat.getDateInstance();
+		DateFormat timeFormat = DateFormat.getTimeInstance();
+		Date currentDate = Calendar.getInstance().getTime();
+		String date = dateFormat.format(currentDate) + " " + timeFormat.format(currentDate);
+		this.setPropertyForKey(date, "Date");
+		
 	}
 }

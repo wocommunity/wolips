@@ -59,7 +59,11 @@ import java.io.File;
 import java.io.FileWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
@@ -211,5 +215,17 @@ public abstract class AbstractEngine implements IRunnableWithProgress {
 	 */
 	public String getPluginName() {
 		return TemplateEnginePlugin.getPluginId();
+	}
+	
+	/**
+	 * sets the date in the context
+	 */
+	public void setDateInContext() {
+		DateFormat dateFormat = DateFormat.getDateInstance();
+		DateFormat timeFormat = DateFormat.getTimeInstance();
+		Date currentDate = Calendar.getInstance().getTime();
+		String date = dateFormat.format(currentDate) + " " + timeFormat.format(currentDate);
+		this.setPropertyForKey(date, "Date");
+		
 	}
 }

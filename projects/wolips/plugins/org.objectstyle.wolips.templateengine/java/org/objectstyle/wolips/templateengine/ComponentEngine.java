@@ -57,9 +57,6 @@
 package org.objectstyle.wolips.templateengine;
 
 import java.lang.reflect.InvocationTargetException;
-import java.text.DateFormat;
-import java.util.Date;
-import java.util.GregorianCalendar;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -194,11 +191,7 @@ public class ComponentEngine extends AbstractEngine {
 		}
 		if(this.getCreateBodyTag())
 			this.setPropertyForKey(this.getCreateBodyTag() + "", "CreateBodyTag");
-		DateFormat dateFormat = DateFormat.getDateInstance();
-		DateFormat timeFormat = DateFormat.getTimeInstance();
-		Date currentDate = GregorianCalendar.getInstance().getTime();
-		String date = dateFormat.format(currentDate) + " " + timeFormat.format(currentDate);
-		this.setPropertyForKey(date, "Date");
+		setDateInContext();
 		this.addTemplate(new TemplateDefinition(
 				"wocomponent/wocomponent.html.vm", this.getComponentPath().toOSString(), this.componentName + "."
 						+ IWOLipsModel.EXT_HTML, IWOLipsModel.EXT_HTML));
