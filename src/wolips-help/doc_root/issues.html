@@ -22,10 +22,6 @@
     <td>?</td>
   </tr>
   <tr> 
-    <td>No imgages in the Eclipse WOLips help.</td>
-    <td>?</td>
-  </tr>
-  <tr> 
     <td> 
       <p><span
      lang=EN-GB style='mso-fareast-font-family:"MS Mincho";mso-ansi-language:
@@ -59,13 +55,27 @@ style='mso-fareast-font-family:"MS Mincho";mso-ansi-language:EN-GB'><o:p></o:p><
     </td>
   </tr>
   <tr> 
-    <td>Add Local Framework doesn't work. You get three versions</td>
-    <td>&nbsp;</td>
-  </tr>
-  <tr>
     <td>Importing projects with java code organised in packages doesn't work properly. 
       Either the java files are not found or they may be put in the wrong directory.</td>
     <td>Adding them manually is not a big task!</td>
+  </tr>
+  <tr> 
+    <td>When you add a jar file (library, corresponding to framework cuurently 
+      under development in eclipse) to a project's java build path it is not included 
+      in the classpath of the built application.</td>
+    <td>Install a copy of the framework in question, and do 'Add Local Framework'. 
+    </td>
+  </tr>
+  <tr> 
+    <td>Doing 'Add Local Framework' gives different results (in .classpath) on 
+      Windows and Macintosh - none of which works when you move the project to 
+      the other platform.</td>
+    <td>?</td>
+  </tr>
+  <tr> 
+    <td>When building on Macintosh the CLSSPATH.TXT (for Windows deployemnt) file 
+      frequently contains path like this: *.framewor\Versions\A\Resources\Java\*.jar</td>
+    <td>Build on Windows or clean up CLSSPATH.TXT manually.</td>
   </tr>
 </table>
 <h2><a name="issues"></a>Issues</h2>
