@@ -50,6 +50,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
@@ -250,7 +251,7 @@ public class UpdateFrameworkIncludeFiles extends UpdateIncludeFiles {
 			//pathToConvert =
 			//	pathToConvert.removeFirstSegments(rootDir.segmentCount());
 			result = pathToConvert.toOSString();
-			result = result.substring(rootDir.length());
+			result = result.substring(new Path(rootDir).setDevice(null).toOSString().length());
 			if (result.startsWith("/") || result.startsWith("\\"))
 				result = result.substring(1);
 		}
