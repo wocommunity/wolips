@@ -2,9 +2,9 @@
 <?eclipse version="3.0"?>
 <plugin
    id="org.objectstyle.wolips.jdom"
-   name="%WOLips.jdom.pluginName"
+   name="WOLips jdom"
    version="1.0.6"
-   provider-name="%WOLips.providerName">
+   provider-name="objectstyle.org">
 
    <runtime>
       <library name="lib/jdom-b9.jar">
