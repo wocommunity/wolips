@@ -281,7 +281,7 @@ public class ProjectHelper implements IWOLipsPluginConstants {
 			if (((IFolder) subprojectFolders.get(i))
 				.getFullPath()
 				.removeLastSegments(1)
-				.equals(subprojectFolder)) {
+				.equals(subprojectFolder.getFullPath())) {
 				return (IFolder) subprojectFolders.get(i);
 			}
 		} // no folder found - create new source folder
