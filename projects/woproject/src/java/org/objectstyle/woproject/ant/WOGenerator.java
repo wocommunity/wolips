@@ -1,8 +1,8 @@
 /* ====================================================================
- * 
- * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 The ObjectStyle Group 
+ * The ObjectStyle Group Software License, Version 1.0
+ *
+ * Copyright (c) 2002 The ObjectStyle Group
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,15 +18,15 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution, if
- *    any, must include the following acknowlegement:  
- *       "This product includes software developed by the 
+ *    any, must include the following acknowlegement:
+ *       "This product includes software developed by the
  *        ObjectStyle Group (http://objectstyle.org/)."
  *    Alternately, this acknowlegement may appear in the software itself,
  *    if and wherever such third-party acknowlegements normally appear.
  *
- * 4. The names "ObjectStyle Group" and "Cayenne" 
+ * 4. The names "ObjectStyle Group" and "Cayenne"
  *    must not be used to endorse or promote products derived
- *    from this software without prior written permission. For written 
+ *    from this software without prior written permission. For written
  *    permission, please contact andrus@objectstyle.org.
  *
  * 5. Products derived from this software may not be called "ObjectStyle"
@@ -65,35 +65,50 @@ import org.objectstyle.cayenne.map.DataMap;
 import org.objectstyle.cayenne.tools.CayenneGenerator;
 
 /**
-  * Ant task to generate EOEnterpriseObjects from EOModel. 
-  * For detailed instructions go to the  
-  * <a href="../../../../../ant/wogen.html">manual page</a>. 
-  * 
+  * Ant task to generate EOEnterpriseObjects from EOModel.
+  * For detailed instructions go to the
+  * <a href="../../../../../ant/wogen.html">manual page</a>.
+  *
   * @ant.task category="packaging"
   * @author Andrei Adamchik
   */
 public class WOGenerator extends CayenneGenerator {
+
+    // flag whether client java class should be created or not.
+    protected boolean javaclient = false;
+
 	/**
 	  * Wrapper of the superclass <code>setMap</code>
-	  * method to provide WebObjects-friendly name. 
+	  * method to provide WebObjects-friendly name.
 	  */
 	public void setModel(File model) {
 		super.setMap(model);
 	}
 
-	/** 
+    /**
+     * Added Attribute for WOGen Ant task. Sets the flag whether client Java class
+     * should be created or not. If set to true Java client classes will be created.
+     * @param b
+     */
+    public void setJavaclient(boolean b) {
+       javaclient = b;
+    }
+
+	/**
 	 * Overrides superclass implementation to create DataMap
-	 * from EOModel instead of Cayenne DataMap XML file. 
+	 * from EOModel instead of Cayenne DataMap XML file.
 	 */
 	protected DataMap loadDataMap() throws Exception {
-		return new EOModelReader().loadEOModel(map.getCanonicalPath());
+		return new EOModelReader().loadEOModel(map.getCanonicalPath(), javaclient);
 	}
+
 
 	protected DefaultClassGenerator createGenerator() {
 		WOAntClassGenerator gen = new WOAntClassGenerator();
 		gen.setParentTask(this);
 		return gen;
 	}
+
 
 	final class WOAntClassGenerator extends AntClassGenerator {
 		private final String SUPERCLASS_TEMPLATE = "wogen/superclass.vm";

@@ -89,6 +89,11 @@
 					ignoring their package.</td>
 					<td valign="top" align="center">No</td>
 				</tr>
+				<tr>
+					<td valign="top">javaclient</td>
+					<td valign="top">If set to "true", will generate classes for JavaClient. "false" is default.</td>
+					<td valign="top" align="center">No</td>
+				</tr>
 			</table>
 			
 			<h3>Examples</h3>
