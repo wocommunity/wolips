@@ -165,8 +165,7 @@ public class Preferences {
 			|| Preferences.SET_DEFAULTS_STRING.equals(
 				IWOLipsPluginConstants.PREF_PBWO_PROJECT_UPDATE))
 			store.setDefault(
-				IWOLipsPluginConstants.PREF_PBWO_PROJECT_UPDATE,
-				PreferencesMessages.getString(Preferences.trueString));
+				IWOLipsPluginConstants.PREF_PBWO_PROJECT_UPDATE, Preferences.trueString);
 		if (Preferences.SET_DEFAULTS_STRING == null
 			|| Preferences.SET_DEFAULTS_STRING.equals(
 				IWOLipsPluginConstants.PREF_PBWO_PROJECT_INCLUDED_CLASSES))
