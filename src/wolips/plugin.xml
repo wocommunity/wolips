@@ -44,6 +44,10 @@
 	   		id = "org.objectstyle.wolips.wizards.webobjects.5.1"
 	   		name="%WOLips.webobjects.5.1.categoryName">
 		</category>
+		<category
+	   		id = "org.objectstyle.wolips.wizards.webobjects.5.1.experimental"
+	   		name="%WOLips.webobjects.5.1.categoryName.experimental">
+		</category>
 		<wizard
             		name="%WOLips.Component"
             		icon="icons/wobuilder/wocomponent_wiz.gif"
@@ -81,7 +85,7 @@
    			<wizard
             		name="%WOLips.Subproject"
             		icon="icons/woproject/wosubproject_wiz.gif"
-            		category="org.objectstyle.wolips.wizards.webobjects.5.1"
+            		category="org.objectstyle.wolips.wizards.webobjects.5.1.experimental"
             		class="org.objectstyle.wolips.wizards.WOSubprojectCreationWizard"
             		id="org.objectstyle.wolips.wizards.new.wo.5.1.subproject">
          	<description>
