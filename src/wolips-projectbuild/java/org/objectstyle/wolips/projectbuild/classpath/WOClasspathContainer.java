@@ -80,7 +80,6 @@ public class WOClasspathContainer
   
 	public static final String WOCP_IDENTITY 
 	  = "org.objectstyle.wolips.WO_CLASSPATH";
-	  // de.thecode.eclipse.wosupport.WO_CLASSPATH
 
 	public static final String WOCP_OLD_IDENTITY 
 	  = "de.thecode.eclipse.wosupport.WO_CLASSPATH";
@@ -127,6 +126,9 @@ public class WOClasspathContainer
    * @see org.eclipse.jdt.core.IClasspathContainer#getDescription()
    */
   public String getDescription() {
+    if (null != getPath() && getPath().segment(0).startsWith(WOCP_OLD_IDENTITY)) {
+      return ("WO Frameworks (theCo.de)"); 
+    }
     return "WebObjects Frameworks";
   }
 

@@ -34,7 +34,7 @@
    <extension
          point="org.eclipse.jdt.ui.classpathContainerPage">
       <classpathContainerPage
-            name="WebObjects Classpath"
+            name="WebObjects Frameworks"
             class="org.objectstyle.wolips.projectbuild.classpath.WOClassPathContainerPage"
             id="org.objectstyle.wolips.WO_CLASSPATH">
       </classpathContainerPage>
@@ -42,7 +42,7 @@
    <extension
          point="org.eclipse.jdt.ui.classpathContainerPage">
       <classpathContainerPage
-            name="WebObjects Classpath"
+            name="WO Frameworks (theCo.de)"
             class="org.objectstyle.wolips.projectbuild.classpath.WOClassPathContainerPage"
             id="de.thecode.eclipse.wosupport.WO_CLASSPATH">
       </classpathContainerPage>

@@ -167,7 +167,7 @@ public class WOClassPathContainerPage
     _selection = containerEntry;
     
     if (null == _selection) {
-      IPath path = new Path (WOClasspathContainer.WOCP_IDENTITY+System.identityHashCode(this));
+      IPath path = new Path (WOClasspathContainer.WOCP_IDENTITY);
 
       if (true /*WOSupportPlugin.shouldIncludeDefaultFrameworks()*/) {      
         path = path.append("JavaEOAccess");

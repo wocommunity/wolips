@@ -62,12 +62,17 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.objectstyle.wolips.core.plugin.logging.WOLipsLog;
@@ -75,13 +80,19 @@ import org.objectstyle.wolips.core.project.WOLipsProject;
 
 public class ProjectNaturePage extends PropertyPage implements IAdaptable {
 
-	private static final String PATH_TITLE = "Path:";
+  private static final String BUILD_STYLE_TITLE = " Build style";
+  private static final String PROJECT_KIND_TITLE = " Project kind";
+  private static final String PROJECT_KIND_NOTE_TITLE = "Note: ";
+  private static final String PROJECT_KIND_NOTE = "This setting will only affect the incremental build style.";
+  
 
-	private static final String WO_NATURE_TITLE = "Is a WebObjects Project";
+	private static final String WO_NATURE_TITLE = "Is a WebObjects Project   (options below apply only if this is checked)";
 
-	private static final String WO_IS_FRAMEWORK_TITLE = "Is a framework";
+  private static final String WO_IS_FRAMEWORK_TITLE = "Framework";
+  private static final String WO_IS_APP_TITLE = "Application";
 
-	private static final String WO_IS_INCREMENTAL_TITLE = "Use incremental builder";
+  private static final String WO_USE_INCREMENTAL_TITLE = "Incremental";
+  private static final String WO_USE_ANT_TITLE = "Use Ant (build.xml)";
 
 	private static final int TEXT_FIELD_WIDTH = 50;
 	/**
@@ -130,19 +141,51 @@ public class ProjectNaturePage extends PropertyPage implements IAdaptable {
    * @param woLipsProject
    * @throws CoreException
    */
-  private void _addSecondSection(
+  private void _addProjectKindSection(
     Composite parent,
     WOLipsProject woLipsProject)
     throws CoreException {
-    Composite group = _createDefaultComposite(parent);
+    Composite group = _createLabelledComposite(parent, PROJECT_KIND_TITLE);
 
     // project kind field (is framework?)
-    _woIsFrameworkCheck = new Button(group, SWT.CHECK | SWT.LEFT);
-    _woIsFrameworkCheck.setText(WO_IS_FRAMEWORK_TITLE);
-    _woIsFrameworkCheck.setEnabled(true);
+    Button appButton = new Button(group, SWT.RADIO | SWT.LEFT);
+    appButton.setText(WO_IS_APP_TITLE);
+    appButton.setEnabled(true);
 
-    _woIsFrameworkCheck.setSelection(
-      woLipsProject.getNaturesAccessor().isFramework());
+    FormData fd = new FormData ();
+    fd.left = new FormAttachment (0, 0);
+    appButton.setLayoutData(fd);    
+
+
+    _woIsFrameworkButton = new Button(group, SWT.RADIO | SWT.LEFT);
+    _woIsFrameworkButton.setText(WO_IS_FRAMEWORK_TITLE);
+    _woIsFrameworkButton.setEnabled(true);
+    
+    fd = new FormData ();
+    fd.left = new FormAttachment (appButton, 0);
+    _woIsFrameworkButton.setLayoutData(fd);
+    
+    boolean isFramework = woLipsProject.getNaturesAccessor().isFramework();
+
+    _woIsFrameworkButton.setSelection(isFramework);
+    appButton.setSelection(!isFramework);
+    
+    Label noteTitle = new Label (group, SWT.BOLD);
+    noteTitle.setText(PROJECT_KIND_NOTE_TITLE);
+    noteTitle.setFont(JFaceResources.getBannerFont());
+    
+    fd = new FormData ();
+    fd.left = new FormAttachment (0, 0);
+    fd.top = new FormAttachment (appButton, 5);
+    noteTitle.setLayoutData(fd);
+
+    Label note = new Label (group, SWT.NULL);
+    note.setText(PROJECT_KIND_NOTE);
+
+    fd = new FormData ();
+    fd.left = new FormAttachment (noteTitle, 0);
+    fd.top = new FormAttachment (appButton, 5);
+    note.setLayoutData(fd);
   }
 
 	/**
@@ -150,19 +193,35 @@ public class ProjectNaturePage extends PropertyPage implements IAdaptable {
 	 * @param woLipsProject
 	 * @throws CoreException
 	 */
-	private void _addThirdSection (
+	private void _addBuildStyleSection (
 		Composite parent,
 		WOLipsProject woLipsProject)
 		throws CoreException {
-		Composite group = _createDefaultComposite(parent);
+		Composite group = _createLabelledComposite(parent, BUILD_STYLE_TITLE);
 
 		// project kind field (is framework?)
-		_woIsIncrementalCheck = new Button(group, SWT.CHECK | SWT.LEFT);
-		_woIsIncrementalCheck.setText(WO_IS_INCREMENTAL_TITLE);
-		_woIsIncrementalCheck.setEnabled(true);
+    _woIsIncrementalButton = new Button(group, SWT.RADIO | SWT.LEFT);
+    _woIsIncrementalButton.setText(WO_USE_INCREMENTAL_TITLE);
+    _woIsIncrementalButton.setEnabled(true);
+    
+    FormData fd = new FormData ();
+    fd.left = new FormAttachment (0, 0);
+    
+    _woIsIncrementalButton.setLayoutData(fd);
 
-		_woIsIncrementalCheck.setSelection(
-			woLipsProject.getNaturesAccessor().isIncremental());
+    Button antButton = new Button(group, SWT.RADIO | SWT.LEFT);
+    antButton.setText(WO_USE_ANT_TITLE);
+    antButton.setEnabled(true);
+    
+    fd = new FormData ();
+    fd.left = new FormAttachment (_woIsIncrementalButton, 0);
+    antButton.setLayoutData(fd);
+
+
+    boolean isIncremental = woLipsProject.getNaturesAccessor().isIncremental();
+
+		_woIsIncrementalButton.setSelection(isIncremental);
+    antButton.setSelection (!isIncremental);
 	}
 	/**
 	 * @see PreferencePage#createContents(Composite)
@@ -177,10 +236,10 @@ public class ProjectNaturePage extends PropertyPage implements IAdaptable {
 		try {
 			WOLipsProject woLipsProject = this.getWOLipsProject();
 			_addFirstSection(composite, woLipsProject);
-			_addSeparator(composite);
-			_addSecondSection(composite, woLipsProject);
-			_addSeparator(composite);
-			_addThirdSection(composite, woLipsProject);
+			//_addSeparator(composite);
+			_addBuildStyleSection(composite, woLipsProject);
+      //_addSeparator(composite);
+      _addProjectKindSection(composite, woLipsProject);
 		} catch (CoreException exception) {
 			WOLipsLog.log(exception);
 		}
@@ -205,6 +264,26 @@ public class ProjectNaturePage extends PropertyPage implements IAdaptable {
 		return composite;
 	}
 
+  private Composite _createLabelledComposite(Composite parent, String label) {
+    Group composite = new Group(parent, SWT.NULL);
+    FormLayout layout = new FormLayout();
+    //layout.numColumns = 2;
+    layout.marginHeight = 5;
+    layout.marginWidth = 5;
+    composite.setLayout(layout);
+
+    GridData data = new GridData();
+    data.verticalAlignment = GridData.FILL;
+    data.horizontalAlignment = GridData.FILL;
+    composite.setLayoutData(data);
+    
+    if (null != label) {
+      composite.setText (label);
+    }
+
+    return composite;
+  }
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.preference.PreferencePage#performDefaults()
 	 */
@@ -220,10 +299,10 @@ public class ProjectNaturePage extends PropertyPage implements IAdaptable {
 		try {
 			woLipsProject = this.getWOLipsProject();
 			if (_woNatureCheck.getSelection()) {
-				if (_woIsIncrementalCheck.getSelection()) {
-					woLipsProject.getNaturesAccessor().setIncrementalNature(_woIsFrameworkCheck.getSelection(), false);
+				if (_woIsIncrementalButton.getSelection()) {
+					woLipsProject.getNaturesAccessor().setIncrementalNature(_woIsFrameworkButton.getSelection(), false);
 				} else {
-					woLipsProject.getNaturesAccessor().setAntNature(_woIsFrameworkCheck.getSelection(), false);
+					woLipsProject.getNaturesAccessor().setAntNature(_woIsFrameworkButton.getSelection(), false);
 				}
 			} else {
         woLipsProject.getNaturesAccessor().removeWOLipsNatures();
@@ -274,6 +353,6 @@ public class ProjectNaturePage extends PropertyPage implements IAdaptable {
 		return new WOLipsProject(this._getProject());
 	}
 	private Button _woNatureCheck;
-	private Button _woIsIncrementalCheck;
-	private Button _woIsFrameworkCheck;
+	private Button _woIsIncrementalButton;
+	private Button _woIsFrameworkButton;
 }
