@@ -56,83 +56,39 @@
 
 package org.objectstyle.wolips.templateengine;
 
-import java.net.URL;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
-
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.IPluginDescriptor;
-import org.eclipse.ui.plugin.AbstractUIPlugin;
+import java.io.File;
 
 /**
- * The main plugin class to be used in the desktop.
+ * @author ulrich
+ *
+ * To change the template for this generated type comment go to
+ * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public class TemplateEnginePlugin extends AbstractUIPlugin {
-	//The shared instance.
-	private static TemplateEnginePlugin plugin;
-	//Resource bundle.
-	private ResourceBundle resourceBundle;
+public class TemplateDefinition {
+
+	private String templateName;
+	private String destination;
+	private String finalName;
 	
-	/**
-	 * The constructor.
-	 * @param descriptor
-	 */
-	public TemplateEnginePlugin(IPluginDescriptor descriptor) {
-		super(descriptor);
-		plugin = this;
-		try {
-			resourceBundle= ResourceBundle.getBundle("org.objectstyle.wolips.templateengine.TemplateenginePluginResources");
-		} catch (MissingResourceException x) {
-			resourceBundle = null;
-		}
+	public TemplateDefinition(String templateName, String destination, String finalName) {
+		super();
+		this.templateName = templateName;
+		this.destination = destination;
+		this.finalName = finalName;
 	}
 
 	/**
-	 * Returns the shared instance.
 	 * @return
 	 */
-	public static TemplateEnginePlugin getDefault() {
-		return plugin;
+	public String getTemplateName() {
+		return templateName;
 	}
 
 	/**
-	 * Returns the workspace instance.
 	 * @return
 	 */
-	public static IWorkspace getWorkspace() {
-		return ResourcesPlugin.getWorkspace();
+	public String getDestinationPath() {
+		String returnValue = destination + File.separator +finalName;
+		return returnValue;
 	}
-
-	/**
-	 * Returns the string from the plugin's resource bundle,
-	 * or 'key' if not found.
-	 * @param key
-	 * @return
-	 */
-	public static String getResourceString(String key) {
-		ResourceBundle bundle= TemplateEnginePlugin.getDefault().getResourceBundle();
-		try {
-			return bundle.getString(key);
-		} catch (MissingResourceException e) {
-			return key;
-		}
-	}
-
-	/**
-	 * Returns the plugin's resource bundle,
-	 * @return
-	 */
-	public ResourceBundle getResourceBundle() {
-		return resourceBundle;
-	}
-
-	/**
-	 * Method baseURL.
-	 * @return URL
-	 */
-	public static URL baseURL() {
-		return TemplateEnginePlugin.getDefault().getDescriptor().getInstallURL();
-	}
-	
 }
