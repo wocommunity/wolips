@@ -150,7 +150,7 @@ public class DirectAction extends WODirectAction {
     PDO_UNIX_INSTALLDIR = "$(LOCAL_LIBRARY_DIR)/Frameworks"; 
     PDO_UNIX_JAVA_COMPILER = "$(JDKBINDIR)/javac"; 
     PDO_UNIX_OBJCPLUS_COMPILER = "$(NEXTDEV_BIN)/gcc"; 
-    PROJECTNAME = ${PROJECT_NAME};; 
+    PROJECTNAME = ${PROJECT_NAME};
     PROJECTTYPE = JavaWebObjectsFramework; 
     PROJECTVERSION = 2.8; 
     WINDOWS_BUILDTOOL = $NEXT_ROOT/Developer/Executables/make; 
@@ -186,18 +186,40 @@ public class DirectAction extends WODirectAction {
 </plist>]]></template>
 	<template name="ant file woapplication" id="woapplication.ant.build" variables="PROJECT_NAME" enabled="true"><![CDATA[<project name="${PROJECT_NAME}" default="build" basedir=".">
 
-	<property file="build.properties"/>
+	<target name="setProps">
+		<property file="build.properties"/>
 	
+		<!-- determine os depending properties -->
+		<property environment="env"/>
+		<property name="wo.woroot" value="${env.NEXT_ROOT}"/>
+    	<condition property="wo.woroot" value="/System">
+            <and>
+                <os family="mac" />
+                <os family="unix" />
+            </and>
+        </condition>
+
+		<property name="wo.wolocalroot" value="${wo.woroot}/Local"/>
+		<condition property= "wo.wolocalroot" value="/">
+            <and>
+                <os family="mac" />
+                <os family="unix" />
+            </and>
+     	</condition>
+
+		<property name="install.dir" value="${wo.wolocalroot}/Library/Webobjects/Applications"/>
+	</target>
+
     <!-- ============================================= -->
-    <!-- Subproject Support            .                                               -->
+    <!-- Subproject Support                            -->
     <!-- ============================================= -->
     <target name="subproj"> 
-    	<ant antfile="build-subproj.xml" target="copy.resources"/>
+    	<ant antfile="build-subproj.xml" target="copy.resources.application"/>
     </target>
     
-	<target name="build" depends="init.build,subproj,build.woapp"/>
+	<target name="build" depends="setProps,init.build,subproj,build.woapp"/>
 
-	<target name="install" depends="init.install,subproj,build.woapp"/>
+	<target name="install" depends="setProps,init.install,subproj,build.woapp"/>
 		
 	<target name="init.install">
 		 <tstamp/>
@@ -215,7 +237,7 @@ public class DirectAction extends WODirectAction {
 	</target>
 	  
 	<target name="build.woapp">
-		<updateframeworksets projectname="${project.name}" frameworkincludesfile="${framework.includesfile}"/>
+		<updateframeworksets projectname="${project.name}"/>
 		<woapplication name="${project.name}"  stdFrameworks="false" destDir="${dest.dir}">
    			<classes dir="${classes.dir}">
    			</classes>
@@ -225,8 +247,18 @@ public class DirectAction extends WODirectAction {
        			<include name="*.api"/>
        		</resources>
 			<frameworks root="${wo.woroot}">
-      				<patternset>
-  					<includesfile name="${framework.includesfile}"/> 
+      			<patternset>
+  					<includesfile name="ant.frameworks.wo.woroot"/> 
+				</patternset>
+   			</frameworks>
+   			<frameworks root="${wo.wolocalroot}">
+      			<patternset>
+  					<includesfile name="ant.frameworks.wo.wolocalroot"/> 
+				</patternset>
+   			</frameworks>
+   			<frameworks root="${user.home}">
+      			<patternset>
+  					<includesfile name="ant.frameworks.user.home"/> 
 				</patternset>
    			</frameworks>
    		</woapplication>
@@ -235,27 +267,47 @@ public class DirectAction extends WODirectAction {
 		
 </project>]]></template>
 	<template name="ant properties woapplication" id="woapplication.ant.properties" variables="BUILD_DIR,PROJECT_NAME,NEXT_ROOT" enabled="true"><![CDATA[
-wo.woroot = ${NEXT_ROOT}
-library.java = ${NEXT_ROOT}/Library/Java
 classes.dir = ${BUILD_DIR}
 dest.dir = .
-install.dir = ${NEXT_ROOT}/Local/Library/Webobjects/Applications
-framework.includesfile = frameworks.ant
 project.name = ${PROJECT_NAME}
 ]]></template>
-	<template name="ant file woframework" id="woframework.ant.build" variables="PROJECT_NAME" enabled="true"><![CDATA[<project name="${PROJECT_NAME,}" default="build" basedir=".">
+	<template name="ant file woframework" id="woframework.ant.build" variables="PROJECT_NAME" enabled="true"><![CDATA[<project name="${PROJECT_NAME}" default="build" basedir=".">
 
-	<property file="build.properties"/>
+	<target name="setProps">
+		<property file="build.properties"/>
+	
+		<!-- determine os depending properties -->
+		<property environment="env"/>
+		<property name="wo.woroot" value="${env.NEXT_ROOT}"/>
+    	<condition property="wo.woroot" value="/System">
+            <and>
+                <os family="mac" />
+                <os family="unix" />
+            </and>
+        </condition>
 
-	<target name="build" depends="init.build,subproj,build.woframework"/>
+		<property name="wo.wolocalroot" value="${wo.woroot}/Local"/>
+		<condition property= "wo.wolocalroot" value="/">
+            <and>
+                <os family="mac" />
+                <os family="unix" />
+            </and>
+     	</condition>
 
-	<target name="install" depends="init.install,subproj,build.woframework"/>
+		<property name="install.dir" value="${wo.wolocalroot}/Library/Frameworks"/>
+	</target>
+
+
+
+	<target name="build" depends="setProps,init.build,subproj,build.woframework"/>
+
+	<target name="install" depends="setProps,init.install,subproj,build.woframework"/>
 	
     <!-- ============================================= -->
     <!-- Subproject Support            .                                               -->
     <!-- ============================================= -->
     <target name="subproj"> 
-    	<ant antfile="build-subproj.xml" target="copy.resources"/>
+    	<ant antfile="build-subproj.xml" target="copy.resources.framework"/>
     </target>
     
 
@@ -270,12 +322,11 @@ project.name = ${PROJECT_NAME}
 	</target>
 
 	<target name="clean">
-	  <delete dir="${framework.name}.woa"/>
+	  <delete dir="${framework.name}.framework"/>
 	<refreshview projectname="${framework.name}"/>
 	</target>
 	  
-	<target name="build.woframework">
-		<updateframeworksets projectname="${framework.name}" frameworkincludesfile="${framework.includesfile}"/>	
+	<target name="build.woframework">	
 		<woframework name="${framework.name}" destDir="${dest.dir}">
    			<classes dir="${classes.dir}">
    			</classes>
@@ -283,22 +334,14 @@ project.name = ${PROJECT_NAME}
        			<include name="**/*.eomodeld/"/>
        			<include name="**/*.wo/"/>
    			</resources>
-			<frameworks root="${wo.woroot}">
-      				<patternset>
-  					<includesfile name="${framework.includesfile}"/> 
-				</patternset>
-   			</frameworks>
    		</woframework>
    		<refreshview projectname="${framework.name}"/>
 	</target>
 		
 </project>]]></template>
-	<template name="ant properties woframework" id="woframework.ant.properties" variables="BUILD_DIR,PROJECT_NAME,NEXT_ROOT" enabled="true"><![CDATA[
-wo.woroot = ${NEXT_ROOT}
+	<template name="ant properties woframework" id="woframework.ant.properties" variables="BUILD_DIR,PROJECT_NAME" enabled="true"><![CDATA[
 classes.dir =  ${BUILD_DIR}
 dest.dir = .
-install.dir = ${NEXT_ROOT}/Local/Library/Frameworks
-framework.includesfile = frameworks.ant
 framework.name = ${PROJECT_NAME}
 ]]></template>
 	<template name="ant helper" id="ant.helper" enabled="true"><![CDATA[<?xml version="1.0"?>
@@ -306,7 +349,14 @@ framework.name = ${PROJECT_NAME}
 <project name="${project.name}" default="copy.resources" basedir=".">
 
 	<property file="build.properties"/>
-
+	
+	<target name="copy.resources.framework">
+		<property name="toDir" value="${dest.dir}/${framework.name}.framework/Contents/Resources"/>
+	</target>
+	<target name="copy.resources.application">
+		<property name="toDir" value="${dest.dir}/${project.name}.woa/Contents/Resources"/>
+	</target>
+	
 	<target name="copy.resources">
 	
 		<!-- copy api files (all) -->

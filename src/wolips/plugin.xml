@@ -176,12 +176,17 @@
       <antTask
             library="lib/wolips.jar"
             name="updateframeworksets"
-            class="org.objectstyle.wolips.ant.UpdateFrameworksets">
+            class="org.objectstyle.wolips.ant.UpdateFrameworkIncludeFiles">
       </antTask>
       <antTask
             library="lib/wolips.jar"
             name="refreshview"
             class="org.objectstyle.wolips.ant.RefreshEclipse">
+      </antTask>
+      <antTask
+            library="lib/wolips.jar"
+            name="updateotherclasspaths"
+            class="org.objectstyle.wolips.ant.UpdateOtherClasspathIncludeFiles">
       </antTask>
    </extension>
 <!-- =================================================================================== -->
@@ -318,9 +323,9 @@
          point="org.eclipse.ui.perspectives">
       <perspective
             name="WOLips"
+            icon="icons/wolips/WOLips-icon.gif"
             class="org.objectstyle.wolips.ui.PerspectiveFactory"
-            id="org.objectstyle.wolips.ui.Perspective"
-            icon="icons/wolips/WOLips-icon.gif">
+            id="org.objectstyle.wolips.ui.Perspective">
       </perspective>
    </extension>
 <!-- =================================================================================== -->
