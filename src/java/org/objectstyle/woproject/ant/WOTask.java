@@ -63,6 +63,7 @@ import java.util.Vector;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
+import org.apache.tools.ant.Location;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.taskdefs.Copy;
 import org.apache.tools.ant.taskdefs.Jar;
@@ -207,9 +208,10 @@ public abstract class WOTask extends Task {
 
     protected void jarClasses() throws BuildException {
         Jar jar = subtaskFactory.getJar();
-        File taskJar =
-                new File(resourcesDir(), "Java" + File.separator + getJarName() + ".jar");
-        jar.setJarfile(taskJar);
+        //File taskJar =
+        //        new File(resourcesDir(), "Java" + File.separator + getJarName() + ".jar");
+        //jar.setJarfile(taskJar);
+        jar.setLocation(new Location(resourcesDir() + "Java" + File.separator + getJarName() + ".jar"));
 
         if (hasClasses()) {
             Enumeration en = classes.elements();

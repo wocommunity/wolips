@@ -70,6 +70,7 @@ import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.FilterSet;
 import org.apache.tools.ant.types.FilterSetCollection;
 import org.apache.tools.ant.types.PatternSet;
+import org.objectstyle.woproject.wo.WOVersion;
 
 /**
  * Subclass of ProjectFormat that defines file copying 
@@ -126,12 +127,12 @@ public class AppFormat extends ProjectFormat {
 	 * Prepares all path values needed for substitutions.
 	 */
 	private void prepare52() {
-		if(is52()) {
+		if(WOVersion.wo52(this.getApplicatonTask().getProject())) {
 			Copy cp = new Copy();
 			//cp.setOwningTarget(getApplicatonTask().getProject().getDefaultTarget());
 			cp.setProject(getApplicatonTask().getProject());
 			cp.setTaskName("copy bootstrap");
-			cp.setFile(bootstrap());
+			cp.setFile(WOVersion.bootstrap(this.getApplicatonTask().getProject()));
 			cp.setTodir(getApplicatonTask().taskDir());
 			cp.execute();
 		}
@@ -226,6 +227,10 @@ public class AppFormat extends ProjectFormat {
 		return buf.toString();
 	}
 
+	/**
+	 * Method buildOtherClassPaths.
+	 * @return String
+	 */
 	protected String buildOtherClassPaths() {
 		StringBuffer buf = new StringBuffer();
 
@@ -350,10 +355,20 @@ public class AppFormat extends ProjectFormat {
 		return filter;
 	}
 
+	/**
+	 * Method getAppClass.
+	 * @return String
+	 */
 	private String getAppClass() {
 		return task.getPrincipalClass();
 	}
 
+	/**
+	 * Method createMappings.
+	 * @param fileName
+	 * @param template
+	 * @param filter
+	 */
 	private void createMappings(
 		String fileName,
 		String template,
@@ -363,10 +378,21 @@ public class AppFormat extends ProjectFormat {
 		createMappings(fileName, template, new FilterSetCollection(filter));
 	}
 
+	/**
+	 * Method createMappings.
+	 * @param fileName
+	 * @param template
+	 */
 	private void createMappings(String fileName, String template) {
 		createMappings(fileName, template, (FilterSetCollection) null);
 	}
 
+	/**
+	 * Method createMappings.
+	 * @param fileName
+	 * @param template
+	 * @param filter
+	 */
 	private void createMappings(
 		String fileName,
 		String template,
@@ -375,14 +401,24 @@ public class AppFormat extends ProjectFormat {
 		filterMap.put(fileName, filter);
 	}
 
+	/**
+	 * Method getApplicatonTask.
+	 * @return WOApplication
+	 */
 	private WOApplication getApplicatonTask() {
 		return (WOApplication) task;
 	}
 
+	/**
+	 * @see org.objectstyle.woproject.ant.ProjectFormat#fileIterator()
+	 */
 	public Iterator fileIterator() {
 		return templateMap.keySet().iterator();
 	}
 
+	/**
+	 * @see org.objectstyle.woproject.ant.ProjectFormat#templateForTarget(java.lang.String)
+	 */
 	public String templateForTarget(String targetName) throws BuildException {
 		String template = (String) templateMap.get(targetName);
 		if (template == null) {
@@ -392,6 +428,9 @@ public class AppFormat extends ProjectFormat {
 		return template;
 	}
 
+	/**
+	 * @see org.objectstyle.woproject.ant.ProjectFormat#filtersForTarget(java.lang.String)
+	 */
 	public FilterSetCollection filtersForTarget(String targetName)
 		throws BuildException {
 
@@ -400,37 +439,13 @@ public class AppFormat extends ProjectFormat {
 		}
 		return (FilterSetCollection) filterMap.get(targetName);
 	}
-	
-	public boolean is52() {
-		if (woversion().equals("_52")) return true;
-		return false;
-	}
-	
-	public String woversion() {
-		if(bootstrap() != null) return "_52";
-		return "";
-	}
-	
+	/**
+	 * Method woappPlusVersion returns the template name.
+	 * @return String
+	 */
 	public String woappPlusVersion() {
-		return "woapp" + woversion();
-	}
-	
-	public File bootstrap() {
-		File mac = null;
-		File unix = null;
-		File win = null;
-		try {
-			mac = new File ("/System/Library/WebObjects/JavaApplications/wotaskd.woa/WOBootstrap.jar");
-			WOPropertiesHandler aHandler = new WOPropertiesHandler(this.getApplicatonTask().getProject());
-			unix = new File(aHandler.getWORootPath() + "/Library/WebObjects/JavaApplications/wotaskd.woa/WOBootstrap.jar");
-			win = new File(aHandler.getWORootPath() + "\\Library\\WebObjects\\JavaApplications\\wotaskd.woa\\WOBootstrap.jar");
-		}
-		catch (Exception anException) {
-			System.out.println(anException);
-		}
-		if((mac != null) && (mac.exists())) return mac;
-		if((unix != null) && (unix.exists())) return unix;
-		if((win != null) && (win.exists())) return win;
-		return null;
+		if(WOVersion.wo5or51(this.getApplicatonTask().getProject()))
+		return "woapp";
+		return "woapp_5.2";
 	}
 }
