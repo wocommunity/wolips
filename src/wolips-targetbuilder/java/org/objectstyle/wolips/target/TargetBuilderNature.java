@@ -87,7 +87,7 @@ import org.objectstyle.wolips.project.ProjectHelper;
  */
 public class TargetBuilderNature implements IProjectNature
 {
-	public static String ID = "org.objectstyle.wolips.target.targetbuildernature";
+	public static String ID = "org.objectstyle.wolips.targetbuilder.targetbuildernature";
 	public static String NAME = "name";
 	public static String OUTPUT = "output";
 	public static String SOURCE = "source";

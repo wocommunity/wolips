@@ -83,7 +83,7 @@ import org.eclipse.jdt.internal.core.builder.State;
 
 public class TargetBuilder extends JavaBuilder
 {
-	public static String ID = "org.objectstyle.wolips.target.targetbuilder";
+	public static String ID = "org.objectstyle.wolips.targetbuilder.targetbuilder";
 	public static String RESOURCE = "resource";
 	public static String ATTRIBUTES = "attributes";
 
