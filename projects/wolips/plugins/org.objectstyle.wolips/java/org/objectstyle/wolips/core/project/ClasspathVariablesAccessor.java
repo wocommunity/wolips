@@ -74,12 +74,12 @@ public final class ClasspathVariablesAccessor
 
 	private final String[] classpathVariables =
 		new String[] {
+			IClasspathVariablesAccessor.ProjectWonderHomeClasspathVariable,
 			IClasspathVariablesAccessor.UserHomeClasspathVariable,
 			"NEXT_LOCAL_ROOT",
-			"NEXT_SYSTEM_ROOT",
-			IClasspathVariablesAccessor.ProjectWonderHomeClasspathVariable };
+			"NEXT_SYSTEM_ROOT" };
 	private final String[] classpathVariablesNames =
-		new String[] { "User Home", "Local", "System", "Project Wonder" };
+		new String[] {"Project Wonder", "User Home", "Local", "System" };
 
 	protected ClasspathVariablesAccessor() {
 		super();
