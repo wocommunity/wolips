@@ -59,7 +59,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
-import org.objectstyle.wolips.logging.WOLipsLog;
+import org.objectstyle.wolips.core.logging.WOLipsLog;
 
 /**
  * @author ulrich

@@ -58,8 +58,6 @@ package org.objectstyle.wolips.core.plugin;
 
 import java.net.URL;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -72,6 +70,7 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.objectstyle.wolips.core.listener.JavaElementChangeListener;
 import org.objectstyle.wolips.core.listener.ResourceChangeListener;
+import org.objectstyle.wolips.core.logging.WOLipsLog;
 import org.objectstyle.wolips.core.preferences.Preferences;
 import org.objectstyle.wolips.core.project.WOLipsCore;
 import org.objectstyle.wolips.core.project.ant.RunAnt;
@@ -91,7 +90,7 @@ public final class EarlyStartup {
 			+ EarlyStartup.build_user_home_properties
 			+ " from the woproject/projects/buildscripts to wolips.";
 
-	private Log log = LogFactory.getLog(EarlyStartup.class);
+	private WOLipsLog log = new WOLipsLog(EarlyStartup.class.getName(), WOLipsLog.ERROR);
 
 	public EarlyStartup() {
 	}

@@ -68,11 +68,11 @@ import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.objectstyle.wolips.core.logging.WOLipsLog;
 import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
 import org.objectstyle.wolips.core.preferences.Preferences;
 import org.objectstyle.wolips.core.project.ant.BuildMessages;
 import org.objectstyle.wolips.core.project.ant.RunAnt;
-import org.objectstyle.wolips.logging.WOLipsLog;
 import org.objectstyle.wolips.projectbuild.WOProjectBuildConstants;
 
 /**

@@ -62,7 +62,8 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jdt.core.IJavaProject;
 import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
-import org.objectstyle.wolips.core.resources.*;
+import org.objectstyle.wolips.core.resources.IWOLipsModel;
+import org.objectstyle.wolips.core.resources.WOLipsModel;
 
 /**
  * @author ulrich

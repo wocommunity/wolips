@@ -59,8 +59,6 @@ package org.objectstyle.wolips.ui.view;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -75,10 +73,10 @@ import org.eclipse.ui.dialogs.FileSelectionDialog;
 import org.eclipse.ui.dialogs.FileSystemElement;
 import org.eclipse.ui.wizards.datatransfer.FileSystemStructureProvider;
 import org.eclipse.ui.wizards.datatransfer.SelectFilesOperation;
+import org.objectstyle.wolips.core.logging.WOLipsLog;
 import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
 import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
 import org.objectstyle.wolips.core.project.PBProjectUpdater;
-import org.objectstyle.wolips.logging.WOLipsLog;
 
 /**
  * Wrapper of FileSelectionDialog to select jars from given
@@ -89,7 +87,6 @@ import org.objectstyle.wolips.logging.WOLipsLog;
  */
 public class WOFrameworkDialogWrapper {
 
-	public static Log log = LogFactory.getLog(WOFrameworkDialogWrapper.class);
 	//private static Path nextRootAsPath = new Path(WOVariables.nextRoot());
 
 	private FileSelectionDialog dialog;

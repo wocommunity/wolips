@@ -3,6 +3,7 @@
 	<name>org.objectstyle.wolips.woproject</name>
 	<comment></comment>
 	<projects>
+		<project>org.objectstyle.wolips.cayenne</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

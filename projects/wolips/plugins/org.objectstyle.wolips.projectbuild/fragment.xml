@@ -14,6 +14,11 @@
       </library>
    </runtime>
 
+   <requires>
+      <import plugin="org.objectstyle.wolips.cayenne"/>
+      <import plugin="org.eclipse.jdt.ui"/>
+   </requires>
+
 
 <!-- =================================================================================== -->
 <!-- Extension: Classpath container                                                                      -->
@@ -32,22 +37,22 @@
             id="de.thecode.eclipse.wosupport.WO_CLASSPATH">
       </classpathContainerInitializer>
    </extension>
-
-	<extension point="org.eclipse.jdt.launching.runtimeClasspathEntryResolvers">
-		<runtimeClasspathEntryResolver 
-			id="org.objectstyle.wolips.projectbuild.classpath.WORuntimeClasspathContainerResolver"
-			class="org.objectstyle.wolips.projectbuild.classpath.WORuntimeClasspathContainerResolver"
-			container="org.objectstyle.wolips.WO_CLASSPATH"
-		/>
-	</extension>
-	<extension point="org.eclipse.jdt.launching.runtimeClasspathEntryResolvers">
-		<runtimeClasspathEntryResolver 
-			id="org.objectstyle.wolips.projectbuild.classpath.WORuntimeClasspathContainerResolver"
-			class="org.objectstyle.wolips.projectbuild.classpath.WORuntimeClasspathContainerResolver"
-			container="de.thecode.eclipse.wosupport.WO_CLASSPATH"
-		/>
-	</extension>
-
+   <extension
+         point="org.eclipse.jdt.launching.runtimeClasspathEntryResolvers">
+      <runtimeClasspathEntryResolver
+            container="org.objectstyle.wolips.WO_CLASSPATH"
+            class="org.objectstyle.wolips.projectbuild.classpath.WORuntimeClasspathContainerResolver"
+            id="org.objectstyle.wolips.projectbuild.classpath.WORuntimeClasspathContainerResolver">
+      </runtimeClasspathEntryResolver>
+   </extension>
+   <extension
+         point="org.eclipse.jdt.launching.runtimeClasspathEntryResolvers">
+      <runtimeClasspathEntryResolver
+            container="de.thecode.eclipse.wosupport.WO_CLASSPATH"
+            class="org.objectstyle.wolips.projectbuild.classpath.WORuntimeClasspathContainerResolver"
+            id="org.objectstyle.wolips.projectbuild.classpath.WORuntimeClasspathContainerResolver">
+      </runtimeClasspathEntryResolver>
+   </extension>
    <extension
          point="org.eclipse.jdt.ui.classpathContainerPage">
       <classpathContainerPage
@@ -64,44 +69,47 @@
             id="de.thecode.eclipse.wosupport.WO_CLASSPATH">
       </classpathContainerPage>
    </extension>
-   
 <!-- =================================================================================== -->
 <!-- Extension: WOLips projectbuild problem marker                                       -->
 <!-- =================================================================================== -->
    <extension
-      	id="projectbuild.taskmarker"
-      	name="WOLips Task Marker"
-      	point="org.eclipse.core.resources.markers"
-   >
-      <super type="org.eclipse.core.resources.taskmarker"/>
+         id="projectbuild.taskmarker"
+         name="WOLips Task Marker"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="org.eclipse.core.resources.taskmarker">
+      </super>
    </extension>
-
    <extension
-      	id="projectbuild.marker"
-      	name="WOLips Build Marker"
-      	point="org.eclipse.core.resources.markers"
-   >
-      <super type="org.eclipse.core.resources.problemmarker"/>
+         id="projectbuild.marker"
+         name="WOLips Build Marker"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="org.eclipse.core.resources.problemmarker">
+      </super>
    </extension>
-
    <extension
-      	id="projectbuild.problem"
-      	name="WOLips Build Problem Marker"
-      	point="org.eclipse.core.resources.markers"
-   >
-      <persistent value="true"/>
-      <super type="org.objectstyle.wolips.projectbuild.marker"/>
+         id="projectbuild.problem"
+         name="WOLips Build Problem Marker"
+         point="org.eclipse.core.resources.markers">
+      <persistent
+            value="true">
+      </persistent>
+      <super
+            type="org.objectstyle.wolips.projectbuild.marker">
+      </super>
    </extension>
-
    <extension
-      	id="projectbuild.duplicate"
-      	name="WOLips Build Duplicate Marker"
-      	point="org.eclipse.core.resources.markers"
-   >
-      <persistent value="true"/>
-      <super type="org.objectstyle.wolips.projectbuild.marker"/>
+         id="projectbuild.duplicate"
+         name="WOLips Build Duplicate Marker"
+         point="org.eclipse.core.resources.markers">
+      <persistent
+            value="true">
+      </persistent>
+      <super
+            type="org.objectstyle.wolips.projectbuild.marker">
+      </super>
    </extension>
-
 <!-- =================================================================================== -->
 <!-- Extension: WOLips projectbuild property page                                                                      -->
 <!-- =================================================================================== -->
@@ -184,7 +192,7 @@
             id="org.eclipse.jdt.core.javanature">
       </requires-nature>
    </extension>
-<!-- Simple nature that runs ant -->  
+<!-- Simple nature that runs ant -->
    <extension
          id="antnature"
          name="org.objectstyle.wolips.projectbuild.wolipsantnature"

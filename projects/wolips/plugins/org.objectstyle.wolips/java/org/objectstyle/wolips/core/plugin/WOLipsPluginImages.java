@@ -60,7 +60,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.objectstyle.wolips.logging.WOLipsLog;
+import org.objectstyle.wolips.core.logging.WOLipsLog;
 
 /**
  * @author mnolte

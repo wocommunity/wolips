@@ -67,8 +67,6 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.ILaunchConfigurationDialog;
-import org.eclipse.jdt.internal.debug.ui.JDIDebugUIPlugin;
-import org.eclipse.jdt.internal.debug.ui.JavaDebugImages;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.InputDialog;
@@ -85,11 +83,11 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
+import org.objectstyle.wolips.core.logging.WOLipsLog;
 import org.objectstyle.wolips.core.preferences.ILaunchInfo;
 import org.objectstyle.wolips.core.preferences.Preferences;
 import org.objectstyle.wolips.core.preferences.PreferencesMessages;
 import org.objectstyle.wolips.core.util.ArrayUtilities;
-import org.objectstyle.wolips.logging.WOLipsLog;
 /**
  * @author uli
  *
@@ -353,7 +351,7 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 			this.fillTable(Preferences.getLaunchInfoFrom(string));
 		} catch (CoreException e) {
 			setErrorMessage(LaunchingMessages.getString("WOArgumentsTab.Exception_occurred_reading_configuration___15") + e.getStatus().getMessage()); //$NON-NLS-1$
-			JDIDebugUIPlugin.log(e);
+			WOLipsLog.log(e);
 		}
 	}
 
@@ -423,7 +421,9 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 	 * @see ILaunchConfigurationTab#getImage()
 	 */
 	public Image getImage() {
-		return JavaDebugImages.get(JavaDebugImages.IMG_VIEW_ARGUMENTS_TAB);
+		//TODO: return image
+		return null;
+		//return JavaDebugImages.get(JavaDebugImages.IMG_VIEW_ARGUMENTS_TAB);
 	}
 
 	/**

@@ -3,7 +3,6 @@
 	<name>org.objectstyle.wolips.devstudio</name>
 	<comment></comment>
 	<projects>
-		<project>org.objectstyle.wolips</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

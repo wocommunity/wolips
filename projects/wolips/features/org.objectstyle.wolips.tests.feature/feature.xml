@@ -4,8 +4,8 @@
       label="%featureName"
       version="1.0.6"
       provider-name="%providerName"
-      image="%image"
-      plugin="org.objectstyle.wolips.tests.about">
+      plugin="org.objectstyle.wolips.tests.about"
+      image="%image">
 
    <description url="http://www.objectstyle.org/woproject/index.html">
       This feature manages the tests plug-in only. It will allow you to run WOLips unit tests. When/if you file a bug report the WOLips developers may ask you to run these. You do not need this plug-in &amp;quot;use&amp;quot; WOLips.
@@ -81,20 +81,10 @@
    <requires>
       <import plugin="org.objectstyle.wolips"/>
       <import plugin="org.junit"/>
-      <import plugin="org.apache.xerces"/>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.ui"/>
-      <import plugin="org.eclipse.search"/>
-      <import plugin="org.eclipse.ant.core"/>
-      <import plugin="org.eclipse.ui.externaltools"/>
       <import plugin="org.eclipse.jdt.core"/>
-      <import plugin="org.eclipse.jdt.ui"/>
-      <import plugin="org.eclipse.jdt.debug.ui"/>
-      <import plugin="org.eclipse.jdt.launching"/>
-      <import plugin="org.eclipse.debug.core"/>
-      <import plugin="org.eclipse.debug.ui"/>
-      <import plugin="org.apache.ant"/>
    </requires>
 
    <plugin

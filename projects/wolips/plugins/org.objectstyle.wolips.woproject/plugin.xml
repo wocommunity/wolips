@@ -11,13 +11,8 @@
          <packages prefixes="org.objectstyle.woenvironment"/>
       </library>
    </runtime>
-
-<!-- =================================================================================== -->
-<!-- Required Plugins                                                                    -->
-<!-- =================================================================================== -->   
    <requires>
       <import plugin="org.objectstyle.wolips.cayenne"/>
-      <import plugin="org.objectstyle.wolips.logging"/>
    </requires>
 
 

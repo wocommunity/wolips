@@ -80,8 +80,8 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.objectstyle.woenvironment.env.WOEnvironment;
 import org.objectstyle.woenvironment.env.WOVariables;
+import org.objectstyle.wolips.core.logging.WOLipsLog;
 import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
-import org.objectstyle.wolips.logging.WOLipsLog;
 
 /**
  * @author ulrich

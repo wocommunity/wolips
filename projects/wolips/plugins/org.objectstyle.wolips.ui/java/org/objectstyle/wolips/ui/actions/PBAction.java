@@ -58,9 +58,9 @@ package org.objectstyle.wolips.ui.actions;
 
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
+import org.objectstyle.wolips.core.logging.WOLipsLog;
 import org.objectstyle.wolips.core.project.IWOLipsProject;
 import org.objectstyle.wolips.core.project.WOLipsCore;
-import org.objectstyle.wolips.logging.WOLipsLog;
 
 /**
  * @author uli

@@ -56,8 +56,8 @@
 package org.objectstyle.wolips.core.ant;
 
 import org.eclipse.core.resources.IProject;
-import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
 import org.objectstyle.woenvironment.env.WOVariables;
+import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
 
 /**
  * @author mnolte

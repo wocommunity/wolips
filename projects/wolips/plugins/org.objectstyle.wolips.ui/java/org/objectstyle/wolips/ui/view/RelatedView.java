@@ -37,9 +37,9 @@ import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
+import org.objectstyle.wolips.core.logging.WOLipsLog;
 import org.objectstyle.wolips.core.project.WOLipsCore;
 import org.objectstyle.wolips.core.resources.IWOLipsResource;
-import org.objectstyle.wolips.logging.WOLipsLog;
 
 /**
  * @author ulrich

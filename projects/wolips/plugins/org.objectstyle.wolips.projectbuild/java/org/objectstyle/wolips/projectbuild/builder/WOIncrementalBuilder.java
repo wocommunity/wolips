@@ -57,7 +57,6 @@
 package org.objectstyle.wolips.projectbuild.builder;
 
 import java.io.ByteArrayInputStream;
-//import java.io.File;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -85,7 +84,6 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
-
 import org.objectstyle.cayenne.wocompat.PropertyListSerialization;
 import org.objectstyle.wolips.core.util.ExcludeIncludeMatcher;
 import org.objectstyle.wolips.core.util.IStringMatcher;

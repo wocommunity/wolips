@@ -4,8 +4,6 @@
 	<comment></comment>
 	<projects>
 		<project>org.objectstyle.wolips</project>
-		<project>org.objectstyle.wolips.cayenne</project>
-		<project>org.objectstyle.wolips.logging</project>
 		<project>org.objectstyle.wolips.woproject</project>
 	</projects>
 	<buildSpec>

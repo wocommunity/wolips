@@ -56,8 +56,6 @@
 package org.objectstyle.wolips.core.plugin;
 import java.net.MalformedURLException;
 import java.net.URL;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPluginDescriptor;
 import org.eclipse.core.runtime.IStatus;
@@ -68,10 +66,9 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IStartup;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.objectstyle.wolips.core.preferences.Preferences;
-import org.objectstyle.wolips.logging.WOLipsLog;
-import org.objectstyle.wolips.logging.WOLipsLogFactory;
 import org.objectstyle.woenvironment.env.WOEnvironment;
+import org.objectstyle.wolips.core.logging.WOLipsLog;
+import org.objectstyle.wolips.core.preferences.Preferences;
 /**
  * The main plugin class to be used in the desktop.
  * 
@@ -79,7 +76,6 @@ import org.objectstyle.woenvironment.env.WOEnvironment;
  * @author markus
  */
 public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
-	public static Log log;
 	//The plugin.
 	private static WOLipsPlugin plugin;
 	private WOEnvironment woEnvironment;
@@ -88,8 +84,9 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 	public static final String WO_TEMPLATE_FILES = "/wo_file_templates.xml";
 	public static final String WO_TEMPLATE_PROJECT =
 		"/wo_project_templates.xml";
-
 	public static final boolean DEBUG = true;
+	private static WOLipsLog log =
+		new WOLipsLog(WOLipsPlugin.class.getName(), WOLipsLog.ERROR);
 	/**
 	 * The constructor.
 	 */
@@ -101,11 +98,6 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 		try {
 			// set up missing preferences
 			Preferences.setDefaults();
-			LogFactory.getFactory().setAttribute(
-				WOLipsLogFactory.ATTR_GLOBAL_LOG_LEVEL,
-				new Integer(Preferences.getPREF_LOG_LEVEL()));
-			// set own logger
-			log = LogFactory.getLog(WOLipsPlugin.class);
 		} catch (Exception exception) {
 			System.out.println(
 				"Exception in WOLips constructor: " + exception.getMessage());

@@ -61,8 +61,8 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
+import org.objectstyle.wolips.core.logging.WOLipsLog;
 import org.objectstyle.wolips.core.util.WorkbenchUtilities;
-import org.objectstyle.wolips.logging.WOLipsLog;
 /**
  * @author mnolte
  * @author uli

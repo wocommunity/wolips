@@ -104,7 +104,7 @@ public class PerspectiveFactory implements IPerspectiveFactory {
 		outputfolder.addView(IPageLayout.ID_TASK_LIST);
 		outputfolder.addView(IDebugUIConstants.ID_CONSOLE_VIEW);
 		outputfolder.addPlaceholder(SearchUI.SEARCH_RESULT_VIEW_ID);
-		//outputfolder.addPlaceholder(IDebugUIConstants.ID_CONSOLE_VIEW);
+		outputfolder.addPlaceholder(IDebugUIConstants.ID_CONSOLE_VIEW);
 		outputfolder.addPlaceholder(IPageLayout.ID_BOOKMARKS);
 		outputfolder = null;
 

@@ -3,11 +3,9 @@
    id="org.objectstyle.wolips.profiling.about"
    name="%WOLips.pluginName"
    version="1.0.6"
-   provider-name="%WOLips.providerName"
-  >
+   provider-name="%WOLips.providerName">
 
-   <requires>
-      <import plugin="org.objectstyle.wolips"/>
-   </requires>
-   
+   <runtime>
+   </runtime>
+
 </plugin>

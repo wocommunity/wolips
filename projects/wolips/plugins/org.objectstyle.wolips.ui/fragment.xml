@@ -15,7 +15,10 @@
    </runtime>
 
    <requires>
-  </requires>
+      <import plugin="org.eclipse.jdt.ui"/>
+      <import plugin="org.eclipse.search"/>
+   </requires>
+
 
 <!-- =================================================================================== -->
 <!-- Extension: Project actions                                                          -->
@@ -23,9 +26,9 @@
    <extension
          point="org.eclipse.ui.popupMenus">
       <objectContribution
-      		id="org.objectstyle.wolips.core.actions"
             objectClass="org.eclipse.core.resources.IProject"
-            adaptable="true">
+            adaptable="true"
+            id="org.objectstyle.wolips.core.actions">
          <filter
                name="nature"
                value="org.eclipse.jdt.core.javanature">
@@ -156,8 +159,8 @@
             default="false"
             icon="icons/wobuilder/webobjects_builder.gif"
             extensions="api,wod,woo"
-            class="org.eclipse.ui.editors.text.TextEditor"
             contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
+            class="org.eclipse.ui.editors.text.TextEditor"
             id="org.objectstyle.wolips.internal.wod.editor">
       </editor>
       <editor
@@ -165,8 +168,8 @@
             default="false"
             icon="icons/wobuilder/webobjects_builder.gif"
             extensions="html"
-            class="org.eclipse.ui.editors.text.TextEditor"
             contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
+            class="org.eclipse.ui.editors.text.TextEditor"
             id="org.objectstyle.wolips.internal.html.editor">
       </editor>
       <editor
@@ -202,28 +205,28 @@
             id="org.objectstyle.wolips.ui.icns">
       </editor>
       <editor
-           id ="org.objectstyle.wolips.ui.DefaultMakefileEditor"
-           icon="icons/files/text_file.gif"
-           name="MakefileEditor"
-           extensions="Makefile,postamble,preamble"
-           class="org.eclipse.ui.editors.text.TextEditor"
-           contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor">     
+            name="MakefileEditor"
+            icon="icons/files/text_file.gif"
+            extensions="Makefile,postamble,preamble"
+            contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
+            class="org.eclipse.ui.editors.text.TextEditor"
+            id="org.objectstyle.wolips.ui.DefaultMakefileEditor">
       </editor>
       <editor
-           id ="org.objectstyle.wolips.ui.DefaultPropertyListEditor"
-           icon="icons/files/text_file.gif"
-           name="PropertyListEditor"
-           extensions="plist"
-           class="org.eclipse.ui.editors.text.TextEditor"
-           contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor">     
+            name="PropertyListEditor"
+            icon="icons/files/text_file.gif"
+            extensions="plist"
+            contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
+            class="org.eclipse.ui.editors.text.TextEditor"
+            id="org.objectstyle.wolips.ui.DefaultPropertyListEditor">
       </editor>
       <editor
-           id ="org.objectstyle.wolips.ui.DefaultAntIncludesFileEditor"
-           icon="icons/files/ant_buildfile.gif"
-           name="AntIncludesFileEditor"
-           extensions="home,wosystemroot,wolocalroot"
-           class="org.eclipse.ui.editors.text.TextEditor"
-           contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor">     
+            name="AntIncludesFileEditor"
+            icon="icons/files/ant_buildfile.gif"
+            extensions="home,wosystemroot,wolocalroot"
+            contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
+            class="org.eclipse.ui.editors.text.TextEditor"
+            id="org.objectstyle.wolips.ui.DefaultAntIncludesFileEditor">
       </editor>
    </extension>
 <!-- =================================================================================== -->
@@ -354,5 +357,4 @@
          </action>
       </actionSet>
    </extension>
-      
 </fragment>

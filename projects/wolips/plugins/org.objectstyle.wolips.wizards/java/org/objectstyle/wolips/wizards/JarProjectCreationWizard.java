@@ -57,10 +57,10 @@ package org.objectstyle.wolips.wizards;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbench;
+import org.objectstyle.wolips.core.logging.WOLipsLog;
 import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
 import org.objectstyle.wolips.core.project.IWOLipsProject;
 import org.objectstyle.wolips.core.project.WOLipsCore;
-import org.objectstyle.wolips.logging.WOLipsLog;
 /**
  * @author uli
  *

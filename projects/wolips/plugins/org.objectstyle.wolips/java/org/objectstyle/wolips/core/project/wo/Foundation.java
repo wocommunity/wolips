@@ -4,8 +4,8 @@ import java.net.URL;
 
 import org.eclipse.core.internal.boot.URLContentFilter;
 import org.eclipse.core.internal.plugins.PluginClassLoader;
+import org.objectstyle.wolips.core.logging.WOLipsLog;
 import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
-import org.objectstyle.wolips.logging.WOLipsLog;
 
 /**
  * @author uli

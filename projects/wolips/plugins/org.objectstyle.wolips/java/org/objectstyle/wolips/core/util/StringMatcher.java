@@ -14,7 +14,7 @@
 
 package org.objectstyle.wolips.core.util;
 
-import java.util.*;
+import java.util.Vector;
 
 /**
  * A string pattern matcher, suppporting * and ? wildcards.

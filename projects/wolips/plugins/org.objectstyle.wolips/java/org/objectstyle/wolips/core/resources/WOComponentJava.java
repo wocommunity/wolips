@@ -63,8 +63,8 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jdt.core.JavaModelException;
+import org.objectstyle.wolips.core.logging.WOLipsLog;
 import org.objectstyle.wolips.core.util.WorkbenchUtilities;
-import org.objectstyle.wolips.logging.WOLipsLog;
 
 /**
  * @author ulrich
