@@ -111,53 +111,52 @@ public class WOLipsProject implements IWOLipsPluginConstants, IWOLipsProject {
 		return project;
 	}
 
-  /**
-   * @param name Name of a build command
-   * @return boolean whether this is one of ours
-   */
-  static boolean isWOLBuilder (String name) {
-    return (
-      name.equals (INCREMENTAL_BUILDER_ID)
-      || name.equals (ANT_BUILDER_ID)
-    );
-  }
+	/**
+	 * @param name Name of a build command
+	 * @return boolean whether this is one of ours
+	 */
+	static boolean isWOLBuilder(String name) {
+		return (
+			name.equals(INCREMENTAL_BUILDER_ID) || name.equals(ANT_BUILDER_ID));
+	}
 
-  /**
-   * @param natureID
-   * @return boolean
-   */
-  static boolean isWOLipsNature(String natureID) {
-    for (int i = 0; i < WOLIPS_NATURES.length; i++) {
-      if (WOLIPS_NATURES[i].equals(natureID))
-        return true;
-    }
-    return false;
-  }
+	/**
+	 * @param natureID
+	 * @return boolean
+	 */
+	static boolean isWOLipsNature(String natureID) {
+		for (int i = 0; i < WOLIPS_NATURES.length; i++) {
+			if (WOLIPS_NATURES[i].equals(natureID))
+				return true;
+		}
+		return false;
+	}
 
 	/**
 	 * @return WOLipsProjectNatures
 	 */
 	public NaturesAccessor getNaturesAccessor() {
 		if (naturesAccessor == null)
-		naturesAccessor = new NaturesAccessor(this);
+			naturesAccessor = new NaturesAccessor(this);
 		return naturesAccessor;
 	}
 	/**
 	 * @return BuilderAccessor
 	 */
-	public BuilderAccessor getBuilderAccessor() {
+	public IBuilderAccessor getBuilderAccessor() {
 		if (builderAccessor == null)
 			builderAccessor = new BuilderAccessor(this);
 		return builderAccessor;
 	}
 	/**
-	 * @return PBProjectFilesHandler
+	 * @return PBProjectFilesAccessor
 	 */
 	public PBProjectFilesAccessor getPBProjectFilesAccessor() {
 		if (pbProjectFilesAccessor == null)
 			pbProjectFilesAccessor = new PBProjectFilesAccessor(this);
 		return pbProjectFilesAccessor;
 	}
+
 	/**
 	 * Method isWOProjectResource.
 	 * @param aResource
@@ -211,12 +210,53 @@ public class WOLipsProject implements IWOLipsPluginConstants, IWOLipsProject {
 	 */
 	public class NaturesAccessor
 		extends WOLipsProjectInnerClass
-		implements IWOLipsPluginConstants {
+		implements IWOLipsPluginConstants, INaturesAccessor {
+		private String TargetBuilderNatureID =
+			"org.objectstyle.wolips.targetbuilder.targetbuildernature";
+
 		/**
 		 * @param woLipsProject
 		 */
 		protected NaturesAccessor(WOLipsProject woLipsProject) {
 			super(woLipsProject);
+		}
+		private void addTargetBuilder() throws CoreException {
+			if (this.isTargetBuilderInstalled())
+				return;
+			IProjectDescription description = project.getDescription();
+			String[] natures = description.getNatureIds();
+			String[] newNatures = new String[natures.length + 1];
+			System.arraycopy(natures, 0, newNatures, 0, natures.length);
+			newNatures[natures.length] = TargetBuilderNatureID;
+			description.setNatureIds(newNatures);
+			project.setDescription(description, null);
+		}
+
+		private void removeTargetBuilder() throws CoreException {
+			if (!this.isTargetBuilderInstalled())
+				return;
+			IProjectDescription description = project.getDescription();
+			ArrayList natureList = new ArrayList();
+			natureList.addAll(Arrays.asList(description.getNatureIds()));
+			for (int i = 0; i < natureList.size(); i++)
+				if (natureList.get(i).equals(TargetBuilderNatureID))
+					natureList.remove(i);
+			String[] newNatures = new String[natureList.size()];
+			for (int i = 0; i < natureList.size(); i++)
+				newNatures[i] = (String) natureList.get(i);
+			description.setNatureIds(newNatures);
+			project.setDescription(description, null);
+		}
+
+		public boolean isTargetBuilderInstalled() throws CoreException {
+			return (this.getProject().hasNature(TargetBuilderNatureID));
+		}
+
+		public void useTargetBuilder(boolean value) throws CoreException {
+			this.removeTargetBuilder();
+			if (value)
+				this.addTargetBuilder();
+
 		}
 		/**
 		 * @param nature
@@ -240,8 +280,8 @@ public class WOLipsProject implements IWOLipsPluginConstants, IWOLipsProject {
 		public boolean isApplication() throws CoreException {
 			return (
 				projectHasNature(ANT_APPLICATION_NATURE_ID)
-				|| projectHasNature(INCREMENTAL_APPLICATION_NATURE_ID)
-				|| projectHasNature(WO_APPLICATION_NATURE_OLD));
+					|| projectHasNature(INCREMENTAL_APPLICATION_NATURE_ID)
+					|| projectHasNature(WO_APPLICATION_NATURE_OLD));
 		}
 		/**
 		 * @return true only if one of the WOLips framework natures is installed. False does not mean that this is an application.
@@ -280,166 +320,173 @@ public class WOLipsProject implements IWOLipsPluginConstants, IWOLipsProject {
 		 */
 		public void setAntNature(boolean isFramework, boolean useTargetBuilder)
 			throws CoreException {
-			//TODO : add targetbuilder support
 			if (isFramework) {
 				this.setWONature(ANT_FRAMEWORK_NATURE_ID, ANT_BUILDER_ID, null);
 			} else {
-				this.setWONature(ANT_APPLICATION_NATURE_ID, ANT_BUILDER_ID, null);
+				this.setWONature(
+					ANT_APPLICATION_NATURE_ID,
+					ANT_BUILDER_ID,
+					null);
 			}
 		}
 		/**
 		 * @param isFramework
 		 * @param useTargetBuilder currently does nothing
-     * Replaces any currently set WOLips natures with the incremental Nature for Framework or Application.
+		* Replaces any currently set WOLips natures with the incremental Nature for Framework or Application.
 		 * @throws CoreException
 		 */
 		public void setIncrementalNature(
 			boolean isFramework,
 			boolean useTargetBuilder,
-      Map buildArgs
-    )
-			throws CoreException 
-    {
-			//TODO : add targetbuilder support
+			Map buildArgs)
+			throws CoreException {
 			if (isFramework) {
-				this.setWONature(INCREMENTAL_FRAMEWORK_NATURE_ID, INCREMENTAL_BUILDER_ID, buildArgs);
+				this.setWONature(
+					INCREMENTAL_FRAMEWORK_NATURE_ID,
+					INCREMENTAL_BUILDER_ID,
+					buildArgs);
 			} else {
-				this.setWONature(INCREMENTAL_APPLICATION_NATURE_ID, INCREMENTAL_BUILDER_ID, buildArgs);
+				this.setWONature(
+					INCREMENTAL_APPLICATION_NATURE_ID,
+					INCREMENTAL_BUILDER_ID,
+					buildArgs);
 			}
 		}
-    
-    private void setWONature (String natureID, String builderID, Map args) throws CoreException {
-      IProject project = this.getProject();
-      
-      if (null == args) {
-        args = Collections.EMPTY_MAP;
-      }
 
-      System.out.println("configure - " + project);
+		private void setWONature(String natureID, String builderID, Map args)
+			throws CoreException {
+			IProject project = this.getProject();
 
-      IProjectDescription desc = project.getDescription();
+			if (null == args) {
+				args = Collections.EMPTY_MAP;
+			}
 
-      boolean setDesc = false;
+			System.out.println("configure - " + project);
 
-      // add / remove natures as needed, avoid setting the project description more than once
-      {
-        List naturesList = new ArrayList(Arrays.asList(desc.getNatureIds()));
-        
-        if (!naturesList.contains(natureID)) {
-          Iterator iter = naturesList.iterator();
-          while (iter.hasNext()) {
-            if (isWOLipsNature((String)iter.next())) {
-              iter.remove();
-            }
-          }
-          naturesList.add(natureID);
-          desc.setNatureIds(
-            (String[]) naturesList.toArray(new String[naturesList.size()])
-          );
-          setDesc = true;
-        }
-      }
+			IProjectDescription desc = project.getDescription();
 
-      // add / remove builder -- used to be done in ...Nature.configure / deconfigure 
-      {
-        List buildCommands = new ArrayList(Arrays.asList(desc.getBuildSpec()));
-  
-        boolean found = false;
-        boolean mustSetBS = false;
+			boolean setDesc = false;
 
-        Iterator iter = buildCommands.iterator ();
-        while (iter.hasNext()) {
-          ICommand thisOne = (ICommand)iter.next();        
-          String bName = thisOne.getBuilderName();
-          if (bName.equals(builderID)) {
-            if (!thisOne.getArguments().equals(args)) {
-              thisOne.setArguments(args);
-              mustSetBS = true;
-              setDesc = true;
-            }
-            found = true;
-          } else if (isWOLBuilder(bName)) {
-            iter.remove();            
-            mustSetBS = true;
-          }
-        }
-  
-        if (!found) {
-          ICommand newCommand = desc.newCommand();
-          newCommand.setBuilderName(builderID);
-          newCommand.setArguments(args);
-          buildCommands.add(newCommand);
-          mustSetBS = true;
-          setDesc = true;
-        }
-        if (mustSetBS) {
-          desc.setBuildSpec(
-            (ICommand[]) buildCommands.toArray(
-              new ICommand[buildCommands.size()]));
-        }
+			// add / remove natures as needed, avoid setting the project description more than once
+			{
+				List naturesList =
+					new ArrayList(Arrays.asList(desc.getNatureIds()));
 
-      }
-      if (setDesc) {
-        _setDescription(project, desc);
-      }
-    }
-    
-//		/**
-//		 * @param natureID
-//		 * @throws CoreException
-//		 */
-//		private void addNature(String natureID) throws CoreException {
-//			String[] projectNatures = this.getProjectNatures();
-//			List naturesList = new ArrayList(Arrays.asList(projectNatures));
-//      
-//      if (!naturesList.contains(natureID)) {
-//        naturesList.add(natureID);
-//        IProjectDescription desc = this.getProject().getDescription();
-//
-//        desc.setNatureIds(
-//          (String[]) naturesList.toArray(new String[naturesList.size()])
-//        );
-//        _setDescription (this.getProject(), desc);
-//      }
-//		}
-    
-    private void _setDescription(
-      final IProject f_project,
-      final IProjectDescription f_desc) {
-      _showProgress(new IRunnableWithProgress() {
-        public void run(IProgressMonitor pm) {
-          try {
-            f_project.setDescription(f_desc, pm);
-          } catch (CoreException up) {
-            pm.done();
-          }
-        }
-      });
-    }
+				if (!naturesList.contains(natureID)) {
+					Iterator iter = naturesList.iterator();
+					while (iter.hasNext()) {
+						if (isWOLipsNature((String) iter.next())) {
+							iter.remove();
+						}
+					}
+					naturesList.add(natureID);
+					desc.setNatureIds(
+						(String[]) naturesList.toArray(
+							new String[naturesList.size()]));
+					setDesc = true;
+				}
+			}
 
-    private void _showProgress(IRunnableWithProgress rwp) {
-      IWorkbench workbench = PlatformUI.getWorkbench();
-      Shell shell = null;
-      if (null != workbench) {
-        IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-        if (null != window) {
-          shell = window.getShell();
-        }
-      }
+			// add / remove builder -- used to be done in ...Nature.configure / deconfigure 
+			{
+				List buildCommands =
+					new ArrayList(Arrays.asList(desc.getBuildSpec()));
 
-      ProgressMonitorDialog pmd = new ProgressMonitorDialog(shell);
+				boolean found = false;
+				boolean mustSetBS = false;
 
-      try {
-        pmd.run(true, true, rwp);
-      } catch (InvocationTargetException e) {
-        // handle exception
-        e.printStackTrace();
-      } catch (InterruptedException e) {
-        // handle cancelation
-        e.printStackTrace();
-      }
-    }
-        
+				Iterator iter = buildCommands.iterator();
+				while (iter.hasNext()) {
+					ICommand thisOne = (ICommand) iter.next();
+					String bName = thisOne.getBuilderName();
+					if (bName.equals(builderID)) {
+						if (!thisOne.getArguments().equals(args)) {
+							thisOne.setArguments(args);
+							mustSetBS = true;
+							setDesc = true;
+						}
+						found = true;
+					} else if (isWOLBuilder(bName)) {
+						iter.remove();
+						mustSetBS = true;
+					}
+				}
+
+				if (!found) {
+					ICommand newCommand = desc.newCommand();
+					newCommand.setBuilderName(builderID);
+					newCommand.setArguments(args);
+					buildCommands.add(newCommand);
+					mustSetBS = true;
+					setDesc = true;
+				}
+				if (mustSetBS) {
+					desc.setBuildSpec(
+						(ICommand[]) buildCommands.toArray(
+							new ICommand[buildCommands.size()]));
+				}
+
+			}
+			if (setDesc) {
+				_setDescription(project, desc);
+			}
+		}
+
+		//		/**
+		//		 * @param natureID
+		//		 * @throws CoreException
+		//		 */
+		//		private void addNature(String natureID) throws CoreException {
+		//			String[] projectNatures = this.getProjectNatures();
+		//			List naturesList = new ArrayList(Arrays.asList(projectNatures));
+		//      
+		//      if (!naturesList.contains(natureID)) {
+		//        naturesList.add(natureID);
+		//        IProjectDescription desc = this.getProject().getDescription();
+		//
+		//        desc.setNatureIds(
+		//          (String[]) naturesList.toArray(new String[naturesList.size()])
+		//        );
+		//        _setDescription (this.getProject(), desc);
+		//      }
+		//		}
+
+		private void _setDescription(
+			final IProject f_project,
+			final IProjectDescription f_desc) {
+			_showProgress(new IRunnableWithProgress() {
+				public void run(IProgressMonitor pm) {
+					try {
+						f_project.setDescription(f_desc, pm);
+					} catch (CoreException up) {
+						pm.done();
+					}
+				}
+			});
+		}
+
+		private void _showProgress(IRunnableWithProgress rwp) {
+			IWorkbench workbench = PlatformUI.getWorkbench();
+			Shell shell = null;
+			if (null != workbench) {
+				IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+				if (null != window) {
+					shell = window.getShell();
+				}
+			}
+
+			ProgressMonitorDialog pmd = new ProgressMonitorDialog(shell);
+
+			try {
+				pmd.run(true, true, rwp);
+			} catch (InvocationTargetException e) {
+				// handle exception
+				e.printStackTrace();
+			} catch (InterruptedException e) {
+				// handle cancelation
+				e.printStackTrace();
+			}
+		}
 
 		/**
 		 * @return IProjectNature[]
@@ -467,9 +514,9 @@ public class WOLipsProject implements IWOLipsPluginConstants, IWOLipsProject {
 		}
 
 		/**
-     * Remove all WOLips Natures 
-     * and in consequence, their builders -- the Natures do that in .deconfigure
-     * 
+		* Remove all WOLips Natures 
+		* and in consequence, their builders -- the Natures do that in .deconfigure
+		* 
 		 * @throws CoreException
 		 */
 		public void removeWOLipsNatures() throws CoreException {
@@ -482,49 +529,48 @@ public class WOLipsProject implements IWOLipsPluginConstants, IWOLipsProject {
 			}
 			projectNatures = new String[naturesList.size()];
 			projectNatures = (String[]) naturesList.toArray(projectNatures);
-      IProjectDescription desc = this.getProject().getDescription();
-      desc.setNatureIds(projectNatures);
-      _setDescription(this.getProject(), desc);
+			IProjectDescription desc = this.getProject().getDescription();
+			desc.setNatureIds(projectNatures);
+			_setDescription(this.getProject(), desc);
 		}
 
 		/**
 		 * Calls configure on all WOLips natures.
 		 * @throws CoreException
-     * @deprecated this should not be necessary, if the normal 
-     * Eclipse APIs are used correctly, unfortunately, the Project creation
-     * Wizard calls it and I'm unable to figure out what's going on there (hn3000)
-     * -- maybe someone can explain it to me?
+		* @deprecated this should not be necessary, if the normal 
+		* Eclipse APIs are used correctly, unfortunately, the Project creation
+		* Wizard calls it and I'm unable to figure out what's going on there (hn3000)
+		* -- maybe someone can explain it to me?
 		 */
 		public void callConfigure() throws CoreException {
 			//This is needed by the project wizard
-            IProjectNature[] projectNatures = this.getWOLipsNatures();
+			IProjectNature[] projectNatures = this.getWOLipsNatures();
 			for (int i = 0; i < projectNatures.length; i++) {
 				projectNatures[i].configure();
 			}
 		}
 
+		//		/**
+		//		 * Calls deconfigure on all WOLips natures.
+		//		 * @throws CoreException
+		//		 */
+		//		public void callDeconfigure() throws CoreException {
+		//			/*
+		//                        IProjectNature[] projectNatures = this.getWOLipsNatures();
+		//			for (int i = 0; i < projectNatures.length; i++) {
+		//				projectNatures[i].deconfigure();
+		//			}
+		//                        */
+		//		}
 
-//		/**
-//		 * Calls deconfigure on all WOLips natures.
-//		 * @throws CoreException
-//		 */
-//		public void callDeconfigure() throws CoreException {
-//			/*
-//                        IProjectNature[] projectNatures = this.getWOLipsNatures();
-//			for (int i = 0; i < projectNatures.length; i++) {
-//				projectNatures[i].deconfigure();
-//			}
-//                        */
-//		}
-
-//		/**
-//		 * @param natures
-//		 * @throws CoreException
-//		 */
-//		private void setProjectNatures(String[] natures) throws CoreException {
-//			this.getProject().getDescription().setNatureIds(natures);
-//
-//		}
+		//		/**
+		//		 * @param natures
+		//		 * @throws CoreException
+		//		 */
+		//		private void setProjectNatures(String[] natures) throws CoreException {
+		//			this.getProject().getDescription().setNatureIds(natures);
+		//
+		//		}
 	}
 
 	/**
@@ -533,43 +579,44 @@ public class WOLipsProject implements IWOLipsPluginConstants, IWOLipsProject {
 	 * To change this generated comment go to 
 	 * Window>Preferences>Java>Code Generation>Code Template
 	 */
-	public class BuilderAccessor extends WOLipsProjectInnerClass {
-		public static final int BuilderNotFound = -1;
+	protected class BuilderAccessor
+		extends WOLipsProjectInnerClass
+		implements IBuilderAccessor {
 		/**
 		 * @param wolipsProject
 		 */
 		protected BuilderAccessor(WOLipsProject wolipsProject) {
 			super(wolipsProject);
 		}
-    
-    public Map getBuilderArgs () {
-      Map result = null;
-      
-      try {
-        IProjectDescription desc = this.getProject().getDescription();
-        List cmdList = Arrays.asList(desc.getBuildSpec());
-        Iterator iter = cmdList.iterator();
-        while (iter.hasNext()) {
-          ICommand cmd = (ICommand)iter.next();
-          if (isWOLBuilder(cmd.getBuilderName())) {
-            result = cmd.getArguments();
-            break;
-          }
-        }
-      } catch (Exception up) {
-        // if anything went wrong, we simply don't have any args (yet)
-        // might wanna log the exception, though
-      }
 
-      if (null == result) {
-        // this doesn't exist pre-JDK1.3, is that a problem?
-        result = Collections.EMPTY_MAP;
-        //result = new HashMap();
-      }
-      
-      return (result);
-    }
-    
+		public Map getBuilderArgs() {
+			Map result = null;
+
+			try {
+				IProjectDescription desc = this.getProject().getDescription();
+				List cmdList = Arrays.asList(desc.getBuildSpec());
+				Iterator iter = cmdList.iterator();
+				while (iter.hasNext()) {
+					ICommand cmd = (ICommand) iter.next();
+					if (isWOLBuilder(cmd.getBuilderName())) {
+						result = cmd.getArguments();
+						break;
+					}
+				}
+			} catch (Exception up) {
+				// if anything went wrong, we simply don't have any args (yet)
+				// might wanna log the exception, though
+			}
+
+			if (null == result) {
+				// this doesn't exist pre-JDK1.3, is that a problem?
+				result = Collections.EMPTY_MAP;
+				//result = new HashMap();
+			}
+
+			return (result);
+		}
+
 		/**
 		 * Method removeJavaBuilder.
 		 * @param project
@@ -744,7 +791,9 @@ public class WOLipsProject implements IWOLipsPluginConstants, IWOLipsProject {
 	 * To change this generated comment go to 
 	 * Window>Preferences>Java>Code Generation>Code Template
 	 */
-	public class PBProjectFilesAccessor extends WOLipsProjectInnerClass {
+	public class PBProjectFilesAccessor
+		extends WOLipsProjectInnerClass
+		implements IPBProjectFilesAccessor {
 		private Hashtable pbProjectFileAccessors = new Hashtable();
 		/**
 		 * @param wolipsProject
@@ -757,11 +806,16 @@ public class WOLipsProject implements IWOLipsPluginConstants, IWOLipsProject {
 		 * @return PBProjectFileAccessor
 		 */
 		public PBProjectFileAccessor getPBProjectFileAccessor(IResource resource) {
-			if (resource == null) return null;
+			if (resource == null)
+				return null;
 			IFolder folder = this.getParentFolderWithPBProject(resource);
-			if(folder == null) return null;
-			PBProjectFileAccessor pbProjectFileAccessor = (PBProjectFileAccessor)pbProjectFileAccessors.get(folder.getFullPath().toOSString());
-			if(pbProjectFileAccessor != null) return pbProjectFileAccessor;
+			if (folder == null)
+				return null;
+			PBProjectFileAccessor pbProjectFileAccessor =
+				(PBProjectFileAccessor) pbProjectFileAccessors.get(
+					folder.getFullPath().toOSString());
+			if (pbProjectFileAccessor != null)
+				return pbProjectFileAccessor;
 			return new PBProjectFileAccessor(this, folder);
 		}
 		/**
@@ -769,12 +823,13 @@ public class WOLipsProject implements IWOLipsPluginConstants, IWOLipsProject {
 		 * @return IFolder
 		 */
 		protected IFolder getParentFolderWithPBProject(IResource resource) {
-			if(resource.getType() == IResource.FILE)
-			return getParentFolderWithPBProject((IFolder)resource.getParent());
-			if(resource.getType() == IResource.FOLDER)
-			return getParentFolderWithPBProject((IFolder)resource);
-			if(resource.getType() == IResource.PROJECT)
-			return getParentFolderWithPBProject((IFolder)resource);
+			if (resource.getType() == IResource.FILE)
+				return getParentFolderWithPBProject(
+					(IFolder) resource.getParent());
+			if (resource.getType() == IResource.FOLDER)
+				return getParentFolderWithPBProject((IFolder) resource);
+			if (resource.getType() == IResource.PROJECT)
+				return getParentFolderWithPBProject((IFolder) resource);
 			return null;
 		}
 		/**
@@ -799,10 +854,12 @@ public class WOLipsProject implements IWOLipsPluginConstants, IWOLipsProject {
 				return findFolder;
 			return null;
 		}
-		
+
 		public class PBProjectFileAccessor {
 			private PBProjectFilesAccessor pbProjectFilesAccessor;
-			public PBProjectFileAccessor(PBProjectFilesAccessor pbProjectFilesAccessor, IFolder folder) {
+			public PBProjectFileAccessor(
+				PBProjectFilesAccessor pbProjectFilesAccessor,
+				IFolder folder) {
 				this.pbProjectFilesAccessor = pbProjectFilesAccessor;
 			}
 			/**
@@ -817,14 +874,18 @@ public class WOLipsProject implements IWOLipsPluginConstants, IWOLipsProject {
 		 * 
 		 */
 		public void cleanAllFileTables() throws IOException {
-		ArrayList arrayList = new ArrayList();
-		WOLipsUtils woLipsUtils = new WOLipsUtils();
-		woLipsUtils.findFilesInResourceByName(arrayList,this.getProject(),IWOLipsPluginConstants.PROJECT_FILE_NAME);
-		for(int i = 0; i < arrayList.size(); i++) {
-			IResource resource = (IResource)arrayList.get(i);
-			PBProjectUpdater pbProjectUpdater = PBProjectUpdater.instance(resource.getParent());
-			pbProjectUpdater.cleanTables();
-		}
+			ArrayList arrayList = new ArrayList();
+			WOLipsUtils woLipsUtils = new WOLipsUtils();
+			woLipsUtils.findFilesInResourceByName(
+				arrayList,
+				this.getProject(),
+				IWOLipsPluginConstants.PROJECT_FILE_NAME);
+			for (int i = 0; i < arrayList.size(); i++) {
+				IResource resource = (IResource) arrayList.get(i);
+				PBProjectUpdater pbProjectUpdater =
+					PBProjectUpdater.instance(resource.getParent());
+				pbProjectUpdater.cleanTables();
+			}
 		}
 	}
 

@@ -83,14 +83,16 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
+import org.objectstyle.woenvironment.pb.PBProject;
 import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
 import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
 import org.objectstyle.wolips.core.plugin.WOLipsUtils;
+import org.objectstyle.wolips.core.project.IWOLipsProject;
 import org.objectstyle.wolips.core.project.ProjectHelper;
+import org.objectstyle.wolips.core.project.WOLipsCore;
 import org.objectstyle.wolips.core.project.WOLipsProject;
 import org.objectstyle.wolips.logging.WOLipsLog;
 import org.objectstyle.wolips.wizards.templates.XercesDocumentBuilder;
-import org.objectstyle.woenvironment.pb.PBProject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -392,8 +394,9 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 				// add wo classpath entries
 				IJavaProject myJavaProject = JavaCore.create(newProjectHandle);
 				try {
-					ProjectHelper.installBuilder(
-						myJavaProject.getProject(),
+					IWOLipsProject wolipsProject =
+						WOLipsCore.createProject(myJavaProject.getProject());
+					wolipsProject.getBuilderAccessor().installBuilder(
 						JavaCore.BUILDER_ID);
 				} catch (Exception anException) {
 					WOLipsLog.log(anException);

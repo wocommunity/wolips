@@ -76,6 +76,7 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.objectstyle.cayenne.wocompat.PropertyListSerialization;
+import org.objectstyle.wolips.core.project.IBuilderAccessor;
 import org.objectstyle.wolips.core.project.WOLipsProject;
 /**
  * @author uwe
@@ -197,9 +198,9 @@ public class TargetBuilderNature implements IProjectNature
 		IProject project = getProject();
 		WOLipsProject woLipsProject = new WOLipsProject(project);
 		installPosition = woLipsProject.getBuilderAccessor().positionForBuilder("org.eclipse.jdt.core.javabuilder");
-		if(installPosition == WOLipsProject.BuilderAccessor.BuilderNotFound)
+		if(installPosition == IBuilderAccessor.BuilderNotFound)
 			installPosition = woLipsProject.getBuilderAccessor().positionForBuilder(TargetBuilder.ID);
-		if(installPosition == WOLipsProject.BuilderAccessor.BuilderNotFound)
+		if(installPosition == IBuilderAccessor.BuilderNotFound)
 			installPosition = 0;
 			
 		woLipsProject.getBuilderAccessor().removeBuilder("org.eclipse.jdt.core.javabuilder");
@@ -215,7 +216,7 @@ public class TargetBuilderNature implements IProjectNature
 		WOLipsProject woLipsProject = new WOLipsProject(getProject());
 		
 		installPosition = woLipsProject.getBuilderAccessor().positionForBuilder(TargetBuilder.ID);
-		if(installPosition == WOLipsProject.BuilderAccessor.BuilderNotFound)
+		if(installPosition == IBuilderAccessor.BuilderNotFound)
 			return;
 		woLipsProject.getBuilderAccessor().removeBuilder(TargetBuilder.ID);
 		woLipsProject.getBuilderAccessor().installBuilderAtPosition("org.eclipse.jdt.core.javabuilder", installPosition, null);

@@ -40,39 +40,7 @@
          </run>
       </builder>
    </extension>
-<!-- project actions -->
-   <extension
-         point="org.eclipse.ui.popupMenus">
-      <objectContribution
-            id="org.objectstyle.wolips.target.actions"
-            objectClass="org.eclipse.core.resources.IProject"
-            adaptable="true">
-         <filter
-               name="nature"
-               value="org.eclipse.jdt.core.javanature">
-         </filter>
-         <menu
-               label="&amp;WOlips"
-               path="additions"
-               id="org.objectstyle.wolips">
-            <separator
-                  name="wobuilder">
-            </separator>
-         </menu>
-         <action
-               label="%TargetBuilderNature.Update"
-               class="org.objectstyle.wolips.target.TargetBuilderNatureAction"
-               menubarPath="org.objectstyle.wolips/wobuilder"
-               id="TargetBuilderNatureAction.Update.ID">
-         </action>
-         <action
-               label="%TargetBuilderNature.Remove"
-               class="org.objectstyle.wolips.target.TargetBuilderNatureAction"
-               menubarPath="org.objectstyle.wolips/wobuilder"
-               id="TargetBuilderNatureAction.Remove.ID">
-         </action>
-      </objectContribution>
-   </extension>
+
    <extension
          id="targetbuildernature"
          name="TargetBuilderNature"

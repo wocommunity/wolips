@@ -53,90 +53,15 @@
  * <http://objectstyle.org/>.
  *
  */
- 
- package org.objectstyle.wolips.target;
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.ui.IActionDelegate;
+package org.objectstyle.wolips.core.project;
 
 /**
- * @author Uwe
+ * @author ulrich
  *
- * Action for adding and removing the WOBuilder
+ * To change the template for this generated type comment go to
+ * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public class TargetBuilderNatureAction implements IActionDelegate
-{
-	private static String UpdateID = "TargetBuilderNatureAction.Update.ID";
-	private static String RemoveID = "TargetBuilderNatureAction.Remove.ID";
-
-	private IProject _project;
-
-	public TargetBuilderNatureAction()
-	{
-		super();
-	}
-
-	public void run(IAction action)
-	{
-		if (project() != null)
-		{
-			try
-			{
-				if (action.getId().equals(TargetBuilderNatureAction.UpdateID))
-					TargetBuilderNature.update(project());
-				if (action.getId().equals(TargetBuilderNatureAction.RemoveID))
-					TargetBuilderNature.remove(project());
-			}
-			catch (CoreException ex)
-			{
-				System.out.println("run:" + ex);
-			}
-		}
-	}
-
-	private void setProject(ISelection selection)
-	{
-		Object obj = (((IStructuredSelection) selection).getFirstElement());
-		_project = null;
-		if (obj != null && obj instanceof IProject)
-			_project = ((IProject) obj).getProject();
-		if (obj != null && obj instanceof IJavaProject)
-			_project = ((IJavaProject) obj).getProject();
-
-	}
-
-	public IProject project()
-	{
-		return _project;
-	}
-
-	public void selectionChanged(IAction action, ISelection selection)
-	{
-		setProject(selection);
-		try
-		{
-			if (project() != null)
-			{
-				if (action.getId().equals(TargetBuilderNatureAction.RemoveID))
-					action.setEnabled(project().hasNature(TargetBuilderNature.ID));
-				if (action.getId().equals(TargetBuilderNatureAction.UpdateID))
-					action.setEnabled(true);
-			}
-			else
-			{
-				action.setEnabled(false);
-			}
-		}
-		catch (Exception e)
-		{
-			action.setEnabled(false);
-			System.out.println("selectionChanged:" + e);
-		}
-	}
+public interface INaturesAccessor {
 
 }

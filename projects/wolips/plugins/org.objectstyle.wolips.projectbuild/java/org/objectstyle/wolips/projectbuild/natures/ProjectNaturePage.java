@@ -103,6 +103,7 @@ public class ProjectNaturePage
 
   private static final String WO_USE_INCREMENTAL_TITLE = "Incremental";
   private static final String WO_USE_ANT_TITLE = "Use Ant (build.xml)";
+  private static final String WO_USE_TARGET_BUILDET_TITLE = "Use TargetBuilder";
 
 	/**
 	 * Constructor for WOLipsProjectNaturePage.
@@ -283,6 +284,30 @@ public class ProjectNaturePage
     _wsresIncludes.setText(_getArg(args, WSRES_INCLUDES, WSRES_INCLUDES_DEFAULT));
   }
 
+  /**
+   * @param parent
+   * @param woLipsProject
+   * @throws CoreException
+   */
+  private void _addTargetBuilderSection(
+	  Composite parent,
+	  WOLipsProject woLipsProject
+)
+  throws CoreException
+{
+  Composite group = new Composite(parent, SWT.NONE);
+  GridLayout layout = new GridLayout();
+  layout.numColumns = 3;
+  group.setLayout(layout);
+  group.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+ 
+  _woTargetBuilderCheck = new Button(group, SWT.CHECK | SWT.LEFT);
+  _woTargetBuilderCheck.setText(WO_USE_TARGET_BUILDET_TITLE);
+  _woTargetBuilderCheck.setEnabled(true);
+
+  _woTargetBuilderCheck.setSelection(
+  woLipsProject.getNaturesAccessor().isTargetBuilderInstalled());
+  }
 
 	/**
 	 * @see PreferencePage#createContents(Composite)
@@ -303,6 +328,7 @@ public class ProjectNaturePage
       _addProjectKindSection(composite, woLipsProject);
       // --
       _addPatternSection(composite, woLipsProject);
+	  _addTargetBuilderSection(composite, woLipsProject);
 		} catch (CoreException exception) {
 			WOLipsLog.log(exception);
 		}
@@ -360,7 +386,7 @@ public class ProjectNaturePage
 			} else {
         woLipsProject.getNaturesAccessor().removeWOLipsNatures();
 			}
-
+		woLipsProject.getNaturesAccessor().useTargetBuilder(_woTargetBuilderCheck.getSelection());
 		} catch (CoreException up) {
 			WOLipsLog.log(up);
 
@@ -405,6 +431,7 @@ public class ProjectNaturePage
 	public WOLipsProject getWOLipsProject() throws CoreException {
 		return new WOLipsProject(this._getProject());
 	}
+	private Button _woTargetBuilderCheck;
 	private Button _woNatureCheck;
 	private Button _woIsIncrementalButton;
 	private Button _woIsFrameworkButton;
