@@ -275,6 +275,12 @@ public class ProjectHelper implements IWOLipsPluginConstants {
 	 * @return IFolder
 	 */
 	public static IFolder getSubprojectSourceFolder(IFolder subprojectFolder) {
+		//Make sure that the folder is a subproject
+		IFolder parentFolder = getParentFolderWithPBProject(subprojectFolder);
+		//this belongs to the project and not a subproject
+		if(parentFolder == null)
+			return subprojectFolder.getProject().getFolder(ProjectHelper.getProjectSourceFolder(subprojectFolder.getProject()).getProjectRelativePath());
+		subprojectFolder = parentFolder;
 		List subprojectFolders =
 			getSubProjectsSourceFolder(subprojectFolder.getProject());
 		for (int i = 0; i < subprojectFolders.size(); i++) {
@@ -304,7 +310,6 @@ public class ProjectHelper implements IWOLipsPluginConstants {
 		}
 		return subprojectSourceFolder;
 	}
-	
 	/**
 	 * Method getSubProjectsSourceFolder. Searches classpath source entries for all source
 	 * folders who's parents are NOT project.
@@ -544,5 +549,27 @@ public class ProjectHelper implements IWOLipsPluginConstants {
 		}
 		desc.setBuildSpec(newIc);
 		aProject.setDescription(desc, null);
+	}
+	
+	
+	/**
+	 * Method getParentFolderWithPBProject.
+	 * @param aFolder
+	 * @return IFolder or one the parents with PB.project if one is found. Null
+	 * is returned when Projects PB.project is found
+	 */
+	public static IFolder getParentFolderWithPBProject(IFolder aFolder) {
+		IFolder findFolder = aFolder;
+		while ((findFolder.findMember(IWOLipsPluginConstants.PROJECT_FILE_NAME)
+			== null)
+			&& (findFolder.getParent() != null) && (findFolder.getParent().getType() != IProject.PROJECT)) {
+			findFolder = (IFolder) findFolder.getParent();
+		}
+		if (findFolder.getParent() == null)
+			return null;
+		if (findFolder.findMember(IWOLipsPluginConstants.PROJECT_FILE_NAME)
+			!= null)
+			return findFolder;
+		return null;
 	}
 }
