@@ -112,6 +112,7 @@ public class Preferences {
 	public static final String PREF_LAUNCH_GLOBAL =
 		"org.objectstyle.wolips.Preference.Launch_Global";
 
+	public static boolean FLAG_INCLUDE_EXCLUDE_RULES_CHANGED = false;
 	public static final String trueString = "true";
 	public static final String falseString = "false";
 	//set this sting to a preferences key and call set defaults to set the default value for this preferences key

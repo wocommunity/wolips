@@ -57,7 +57,6 @@ package org.objectstyle.wolips.core.listener;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -80,8 +79,7 @@ import org.objectstyle.wolips.core.util.StringListMatcher;
 /**
  * Tracking changes in resources and synchronizes webobjects project file
  */
-public class ResourceChangeListener
-	implements IResourceChangeListener {
+public class ResourceChangeListener implements IResourceChangeListener {
 	StringListMatcher woappResourcesIncludeMatcher = null;
 	StringListMatcher woappResourcesExcludeMatcher = null;
 	StringListMatcher classesIncludeMatcher = null;
@@ -91,6 +89,9 @@ public class ResourceChangeListener
 	 */
 	public ResourceChangeListener() {
 		super();
+		this.setUpMatcher();
+	}
+	private void setUpMatcher() {
 		woappResourcesIncludeMatcher =
 			new StringListMatcher(
 				Preferences.getPREF_PBWO_PROJECT_INCLUDED_WOAPP_RESOURCES());
@@ -114,6 +115,10 @@ public class ResourceChangeListener
 	public final void resourceChanged(IResourceChangeEvent event) {
 		if (!Preferences.getPREF_PBWO_PROJECT_UPDATE())
 			return;
+		if (Preferences.FLAG_INCLUDE_EXCLUDE_RULES_CHANGED) {
+			this.setUpMatcher();
+			Preferences.FLAG_INCLUDE_EXCLUDE_RULES_CHANGED = false;
+		}
 		//System.out.println("******* resourceChanged begin ");
 		ProjectFileResourceValidator resourceValidator =
 			new ProjectFileResourceValidator();
@@ -137,7 +142,6 @@ public class ResourceChangeListener
 				(HashMap) resourceValidator.getAddedResourcesProjectDict().get(
 					projectFileToUpdate),
 				IResourceDelta.ADDED);
-
 		}
 		Object[] allRemovedKeys =
 			resourceValidator
@@ -229,15 +233,19 @@ public class ResourceChangeListener
 				case IResource.FOLDER :
 					//is this really required?
 					// what if this delta has no changes but a child of it?
-					if (IWOLipsModel.EXT_FRAMEWORK.equals(resource.getFileExtension())
-						|| IWOLipsModel.EXT_WOA.equals(resource.getFileExtension())
+					if (IWOLipsModel
+						.EXT_FRAMEWORK
+						.equals(resource.getFileExtension())
+						|| IWOLipsModel.EXT_WOA.equals(
+							resource.getFileExtension())
 						|| "build".equals(resource.getName())
 						|| "dist".equals(resource.getName())) {
 						// no further examination needed
 						return false;
 					}
 					if (needsProjectFileUpdate(kindOfChange)) {
-						if (IWOLipsModel.EXT_COMPONENT
+						if (IWOLipsModel
+							.EXT_COMPONENT
 							.equals(resource.getFileExtension())) {
 							updateProjectFile(
 								kindOfChange,
@@ -253,21 +261,21 @@ public class ResourceChangeListener
 								resource.getParent().getFile(
 									new Path(IWOLipsModel.PROJECT_FILE_NAME)));
 						} /*else if (
-																																																	EXT_EOMODEL.equals(resource.getFileExtension())) {
-																																																	updateProjectFile(
-																																																		kindOfChange,
-																																																		resource,
-																																																		RESOURCES_ID,
-																																																		resource.getParent().getFile(
-																																																			new Path(PROJECT_FILE_NAME)));
-																																																} */
+																																																																			EXT_EOMODEL.equals(resource.getFileExtension())) {
+																																																																			updateProjectFile(
+																																																																				kindOfChange,
+																																																																				resource,
+																																																																				RESOURCES_ID,
+																																																																				resource.getParent().getFile(
+																																																																					new Path(PROJECT_FILE_NAME)));
+																																																																		} */
 						/*else if (
 							EXT_EOMODEL_BACKUP.equals(
 								resource.getFileExtension())) {
 							deleteTeamPrivateMembers((IFolder) resource);
 						}*/
 						else if (
-						IWOLipsModel.EXT_SUBPROJECT.equals(
+							IWOLipsModel.EXT_SUBPROJECT.equals(
 								resource.getFileExtension())) {
 							updateProjectFile(
 								kindOfChange,
@@ -338,14 +346,14 @@ public class ResourceChangeListener
 							updateProjectFile(
 								kindOfChange,
 								resource,
-							IWOLipsModel.RESOURCES_ID,
+								IWOLipsModel.RESOURCES_ID,
 								resource.getParent().getFile(
 									new Path(IWOLipsModel.PROJECT_FILE_NAME)));
 						} else if (matchClassesPattern(resource)) {
 							updateProjectFile(
 								kindOfChange,
 								resource,
-							IWOLipsModel.CLASSES_ID,
+								IWOLipsModel.CLASSES_ID,
 								resource.getParent().getFile(
 									new Path(IWOLipsModel.PROJECT_FILE_NAME)));
 						}

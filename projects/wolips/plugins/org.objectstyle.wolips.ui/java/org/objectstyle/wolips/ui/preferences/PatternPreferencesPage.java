@@ -203,9 +203,7 @@ public abstract class PatternPreferencesPage
 		Preferences.setIncludeInfoForKey(patterns, preferencesKey);
 
 		Preferences.save();
-
-		//Team.setAllIgnores(patterns, enabled);
-		//TeamUIPlugin.broadcastPropertyChange(new PropertyChangeEvent(this, TeamUI.GLOBAL_IGNORES_CHANGED, null, null));
+		Preferences.FLAG_INCLUDE_EXCLUDE_RULES_CHANGED = true;
 		return true;
 	}
 
