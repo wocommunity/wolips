@@ -93,9 +93,10 @@ public class AntNature implements IProjectNature, WOProjectBuildConstants {
 	  * @see org.eclipse.core.resources.IProjectNature#configure()
 	  */
 	 public void configure() throws CoreException {
-	 	WOLipsProject woLipsProject = new WOLipsProject(this.getProject());
-	 	if(!woLipsProject.getBuilderAccessor().isBuilderInstalled(ANT_BUILDER_ID))
-		woLipsProject.getBuilderAccessor().installBuilder(ANT_BUILDER_ID);
+     // moved to WOLipsProject.NatureAccessor.setAntNature
+//	 	WOLipsProject woLipsProject = new WOLipsProject(this.getProject());
+//	 	if(!woLipsProject.getBuilderAccessor().isBuilderInstalled(ANT_BUILDER_ID))
+//		woLipsProject.getBuilderAccessor().installBuilder(ANT_BUILDER_ID);
 	}
 
 	 /**

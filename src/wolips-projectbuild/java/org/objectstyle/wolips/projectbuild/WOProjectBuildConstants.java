@@ -61,16 +61,24 @@ import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
 /*
  * Created on 16.02.2003
  *
- * To change this generated comment go to 
- * Window>Preferences>Java>Code Generation>Code Template
  */
 
 /**
- * @author Harald
+ * @author Harald Niesche
  *
- * To change this generated comment go to 
- * Window>Preferences>Java>Code Generation>Code Template
+ * constants used throughout the project build fragment
  */
 public interface WOProjectBuildConstants extends IWOLipsPluginConstants {
+  static final String RES_EXCLUDES = "res.exclude.patterns";
+  static final String RES_EXCLUDES_DEFAULT = "*/Thumbs.db,*/.*,*/CVS/*,CustomInfo.plist";
+  
+  static final String RES_INCLUDES = "res.include.patterns";
+  static final String RES_INCLUDES_DEFAULT = "Properties,*.api,*.d2wmodel,*.xml,*.plist,*.strings,/Resources/*,*/*.wo/*,*/*.eomodeld/*";
+  
+  static final String WSRES_EXCLUDES = "webserver.res.exclude.patterns";
+  static final String WSRES_EXCLUDES_DEFAULT = "*/Thumbs.db,*/.*,*/CVS/*,CustomInfo.plist,*/*.wo/*,*/*.eomodeld/*";
+
+  static final String WSRES_INCLUDES = "webserver.res.include.patterns";
+  static final String WSRES_INCLUDES_DEFAULT = "*.js,*.css,*.jpg,*.jpeg,*.png,*.gif,*.html,/WebResources/*";
 
 }

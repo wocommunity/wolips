@@ -80,7 +80,8 @@ import org.objectstyle.wolips.projectbuild.WOProjectBuildConstants;
  * 
  */
 public class IncrementalNature
-	implements IProjectNature, WOProjectBuildConstants {
+	implements IProjectNature, WOProjectBuildConstants 
+{
 
 	/**
 	 * Constructor for WebObjectsNature.
@@ -93,31 +94,10 @@ public class IncrementalNature
 	 * @see org.eclipse.core.resources.IProjectNature#configure()
 	 */
 	public void configure() throws CoreException {
-		IProject project = getProject();
+    IProject project = getProject();
 
-		System.out.println("configure - " + project);
+    System.out.println("configure(i) - " + project);
 
-		IProjectDescription desc = project.getDescription();
-
-		ICommand bc[] = desc.getBuildSpec();
-
-		boolean found = false;
-
-		for (int i = 0; i < bc.length; i++) {
-			if (bc[i].getBuilderName().equals(INCREMENTAL_BUILDER_ID)) {
-				found = true;
-			}
-		}
-		if (!found) {
-			List buildCommands = new ArrayList(Arrays.asList(bc));
-			ICommand newCommand = desc.newCommand();
-			newCommand.setBuilderName(INCREMENTAL_BUILDER_ID);
-			buildCommands.add(newCommand);
-			desc.setBuildSpec(
-				(ICommand[]) buildCommands.toArray(
-					new ICommand[buildCommands.size()]));
-			project.setDescription(desc, null);
-		}
 		IFolder buildFolder = project.getFolder("build");
 		if (!buildFolder.exists()) {
 			buildFolder.create(IFolder.FORCE, true, null);
@@ -138,7 +118,7 @@ public class IncrementalNature
 	public void deconfigure() throws CoreException {
 		IProject project = getProject();
 
-		System.out.println("deconfigure - " + project);
+		System.out.println("deconfigure(i) - " + project);
 		IProjectDescription desc = project.getDescription();
 
 		ICommand bc[] = desc.getBuildSpec();
@@ -165,6 +145,7 @@ public class IncrementalNature
 			buildFolder.delete(true, false, null);
 		}
 	}
+
 	/**
 	 * @see org.eclipse.core.resources.IProjectNature#getProject()
 	 */
@@ -313,31 +294,31 @@ public class IncrementalNature
 
 	/* ************************************************************************ */
 
-	public IPath getDestinationPath(IResource res) {
-
-		IPath fullPath = res.getFullPath();
-
-		if (getBuildPath().isPrefixOf(fullPath)) {
-			return (null);
-		}
-
-		try {
-			if (!getJavaProject()
-				.getOutputLocation()
-				.equals(getJavaProject().getPath())
-				&& getJavaProject().getOutputLocation().isPrefixOf(fullPath)) {
-				return (null);
-			}
-		} catch (CoreException up) {
-			up.printStackTrace();
-		}
-
-		IPath result = asResourcePath(fullPath, res);
-		if (null == result)
-			result = asWebResourcePath(fullPath, res);
-
-		return (result);
-	}
+//	public IPath getDestinationPath(IResource res) {
+//
+//		IPath fullPath = res.getFullPath();
+//
+//		if (getBuildPath().isPrefixOf(fullPath)) {
+//			return (null);
+//		}
+//
+//		try {
+//			if (!getJavaProject()
+//				.getOutputLocation()
+//				.equals(getJavaProject().getPath())
+//				&& getJavaProject().getOutputLocation().isPrefixOf(fullPath)) {
+//				return (null);
+//			}
+//		} catch (CoreException up) {
+//			up.printStackTrace();
+//		}
+//
+//		IPath result = asResourcePath(fullPath, res);
+//		if (null == result)
+//			result = asWebResourcePath(fullPath, res);
+//
+//		return (result);
+//	}
 
 	private IPath _appendSpecial(IPath p1, IPath p2) {
 		String segments[] = p2.segments();
@@ -368,12 +349,8 @@ public class IncrementalNature
 		if (IResource.FILE == res.getType()) {
 			String lastSegment = path.lastSegment();
 			if (
-        lastSegment.equals("Properties")
-				|| lastSegment.endsWith(".api")
-				|| lastSegment.endsWith(".d2wmodel")
-        || lastSegment.endsWith(".xml")
-        || lastSegment.endsWith(".plist") && (-1 == path.toString().indexOf(".eomodeld/"))
-        || lastSegment.endsWith(".strings") && (-1 == path.toString().indexOf(".wo/"))
+        (-1 == path.toString().indexOf(".eomodeld/"))
+        && (-1 == path.toString().indexOf(".wo/"))
 			) {
 				return (_appendSpecial(getResourceOutputPath(), path));
 			}
@@ -396,14 +373,7 @@ public class IncrementalNature
 
 	public IPath asWebResourcePath(IPath path, IResource res) {
 		if (IResource.FILE == res.getType()) {
-			String lastSegment = path.lastSegment();
-			if (lastSegment.endsWith(".js")
-				|| lastSegment.endsWith(".css")
-				|| lastSegment.endsWith(".gif")
-				|| lastSegment.endsWith(".jpg")
-				|| lastSegment.endsWith(".png")) {
-				return _appendSpecial(getWebResourceOutputPath(), path);
-			}
+			return _appendSpecial(getWebResourceOutputPath(), path);
 		}
 
 		return (null);

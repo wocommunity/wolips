@@ -112,6 +112,21 @@ public class ResourceUtilities {
     return (result);
   }
 
+  public static boolean checkDerivedDir (IPath path, IProgressMonitor m) 
+    throws CoreException 
+  {
+    boolean result = true;
+    
+    IFolder f = getWorkspaceRoot().getFolder (path);
+    if (!f.exists()) {
+      createFolder (f, m);
+      f.setDerived(true);
+      result = false;
+    }
+    
+    return (result);
+  }
+
   /**
    * checks if a path is fit to be used as destination for a copy operation
    * if not, the destination is prepared to be used as destination
