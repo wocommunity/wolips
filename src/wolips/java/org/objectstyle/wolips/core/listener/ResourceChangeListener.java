@@ -182,6 +182,9 @@ public class ResourceChangeListener
 			IResource resource,
 			int kindOfChange)
 			throws CoreException {
+			//see bugreport #708385 
+			if (!resource.isAccessible())
+				return false;
 			// reset project file to update
 			projectFile = null;
 			switch (resource.getType()) {
