@@ -53,27 +53,72 @@
  * <http://objectstyle.org/>.
  *
  */
- 
-package org.objectstyle.wolips.builder;
+ package org.objectstyle.wolips.ant;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
+import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Task;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 
 /**
- * @author uli
+ * @author mnolte
+ *
  */
-public class WOApplicationBuilder extends WOBuilder {
+public class RefreshEclipse extends Task {
+	
+	private String projectName;
 
 	/**
-	 * Constructor for WOApplicationBuilder.
+	 * Constructor for RefreshEclipse.
 	 */
-	public WOApplicationBuilder() {
+	public RefreshEclipse() {
 		super();
-		String regexpMatcherPropertyName = "ant.regexp.regexpimpl";
-		System.out.println("ant.regexp.regexpimpl: " + System.getProperty(regexpMatcherPropertyName));
 	}
-	
-	public String buildFile() {
-		return "build.xml";
+
+	public void execute() throws BuildException {
+		validateAttributes();
+		
+		IProject actualProject =
+			ResourcesPlugin.getWorkspace().getRoot().getProject(getProjectName());
+		if (actualProject.exists()) {
+			try {
+				System.out.println("Refreshing view...");
+				actualProject.refreshLocal(IProject.DEPTH_INFINITE, null);
+				System.out.println("done");
+			} catch (CoreException e) {
+				System.out.println("Exception while trying to refresh project");
+				return;
+			}
+		} else {
+			System.out.println(
+				"Project " + actualProject.getName() + " does not exist");
+		}
 	}
+
+	/**
+	 * Method validateAttributes.
+	 */
+	private void validateAttributes() throws BuildException {
+		if (projectName == null) {
+			throw new BuildException("'projectName' attribute is missing.");
+		}
+	}
+
+	/**
+	 * Returns the projectName.
+	 * @return Object
+	 */
+	public String getProjectName() {
+		return projectName;
+	}
+
+	/**
+	 * Sets the projectName.
+	 * @param projectName The projectName to set
+	 */
+	public void setProjectName(String projectName) {
+		this.projectName = projectName;
+	}
+
 }

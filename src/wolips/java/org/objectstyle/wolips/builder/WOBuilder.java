@@ -55,8 +55,6 @@
  */
  package org.objectstyle.wolips.builder;
 
-import java.util.Hashtable;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.Vector;
 
@@ -67,16 +65,16 @@ import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.objectstyle.wolips.WOLipsPlugin;
-import org.objectstyle.wolips.wo.WOVariables;
 
 /**
  * @author uli
  */
-public class WOBuilder extends IncrementalProjectBuilder {
+public abstract class WOBuilder extends IncrementalProjectBuilder {
+	
 	
 	private static Vector marker = new Vector();
 	
-	public static String WOLIPS_NEXT_ROOT = "wolips.next.root";
+//	public static String WOLIPS_NEXT_ROOT = "wolips.next.root";
 	/**
 	 * Constructor for WOBuilder.
 	 */
@@ -97,10 +95,11 @@ public class WOBuilder extends IncrementalProjectBuilder {
 				//WOLipsBuild.initWithProject(getProject());
 				AntRunner anAntRunner = new AntRunner();
 				anAntRunner.setBuildFileLocation(getProject().getFile(aBuildFile).getLocation().toOSString());
-				Hashtable aHashtable = this.properties();
-				anAntRunner.addUserProperties(aHashtable);
+				//Hashtable aHashtable = this.properties();
+				//anAntRunner.addUserProperties(aHashtable);
+				anAntRunner.addUserProperties(args);
 				anAntRunner.run(monitor);
-				getProject().refreshLocal(getProject().DEPTH_INFINITE, monitor);
+				//getProject().refreshLocal(getProject().DEPTH_INFINITE, monitor);
 			}
 		} 
 		catch(Exception e) {
@@ -116,6 +115,7 @@ public class WOBuilder extends IncrementalProjectBuilder {
 			WOLipsPlugin.log(e);
 			}
 		}
+		
 		return new IProject[0];
 	}
 
@@ -136,15 +136,14 @@ public class WOBuilder extends IncrementalProjectBuilder {
 		}
 		return false;
 	}
-			
+	
+	/*	
 	public Hashtable properties() {
 		Hashtable aHashtable = new Hashtable();
 		aHashtable.put(WOBuilder.WOLIPS_NEXT_ROOT, WOVariables.nextRoot());
 		return aHashtable;
 	}
-	
-	public String buildFile() {
-		return "";
-	}
+	*/
+	public abstract String buildFile();
 		
 }
