@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2004 The ObjectStyle Group 
+ * Copyright (c) 2004 - 2005 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -81,17 +81,18 @@ import org.objectstyle.wolips.datasets.pattern.PatternsetWriter;
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
 public class ProjectPatternsets extends AbstractProjectAdapterType {
+	
 	/**
-	 * Comment for <code>EXTENSION</code>
+	 * EXTENSION file extension for patternset files
 	 */
 	public final static String EXTENSION = "patternset";
 
 	/**
-	 * Comment for <code>ANT_FOLDER_NAME</code>
+	 * name of the woproject folder
 	 */
 	public final static String ANT_FOLDER_NAME = "woproject";
 
-	public final static String LEGACY_ANT_FOLDER_NAME = "ant";
+	protected final static String LEGACY_ANT_FOLDER_NAME = "ant";
 
 	private PatternsetMatcher woappResourcesIncludeMatcher = null;
 
@@ -175,7 +176,7 @@ public class ProjectPatternsets extends AbstractProjectAdapterType {
 
 		private String[] defaultPattern;
 
-		public PatternsetWorkspaceRunnable(IFile patternset,
+		PatternsetWorkspaceRunnable(IFile patternset,
 				String[] defaultPattern) {
 			super();
 			this.patternset = patternset;
@@ -197,10 +198,10 @@ public class ProjectPatternsets extends AbstractProjectAdapterType {
 
 		}
 
-		public PatternsetMatcher getMatcher() {
+		protected PatternsetMatcher getMatcher() {
 			return matcher;
 		}
-	};
+	}
 
 	/**
 	 * @return Returns the classesExcludeMatcher.
@@ -347,7 +348,7 @@ public class ProjectPatternsets extends AbstractProjectAdapterType {
 
 	/**
 	 * @param resource
-	 * @return
+	 * @return true if the resource matches the classes pattern
 	 */
 	public boolean matchesClassesPattern(IResource resource) {
 		String[] strings = this.toProjectRelativePaths(resource);
@@ -360,7 +361,7 @@ public class ProjectPatternsets extends AbstractProjectAdapterType {
 
 	/**
 	 * @param resource
-	 * @return
+	 * @return true if the resource matches the WOAppResources pattern
 	 */
 	public boolean matchesWOAppResourcesPattern(IResource resource) {
 		String[] strings = this.toProjectRelativePaths(resource);
@@ -373,7 +374,7 @@ public class ProjectPatternsets extends AbstractProjectAdapterType {
 
 	/**
 	 * @param resource
-	 * @return
+	 * @return true if the resource matches the Resources pattern
 	 */
 	public boolean matchesResourcesPattern(IResource resource) {
 		String[] strings = this.toProjectRelativePaths(resource);
@@ -410,7 +411,7 @@ public class ProjectPatternsets extends AbstractProjectAdapterType {
 
 	/**
 	 * @param string
-	 * @return
+	 * @return true is the pattern allready exists
 	 */
 	public boolean hasClassesIncludePattern(String string) {
 		return this.getClassesIncludeMatcher().hasPattern(string);
@@ -418,7 +419,7 @@ public class ProjectPatternsets extends AbstractProjectAdapterType {
 
 	/**
 	 * @param string
-	 * @return
+	 * @return true is the pattern allready exists
 	 */
 	public boolean hasClassesExcludePattern(String string) {
 		return this.getClassesExcludeMatcher().hasPattern(string);
@@ -426,7 +427,7 @@ public class ProjectPatternsets extends AbstractProjectAdapterType {
 
 	/**
 	 * @param string
-	 * @return
+	 * @return true is the pattern allready exists
 	 */
 	public boolean hasWOAppResourcesIncludePattern(String string) {
 		return this.getWoappResourcesIncludeMatcher().hasPattern(string);
@@ -434,7 +435,7 @@ public class ProjectPatternsets extends AbstractProjectAdapterType {
 
 	/**
 	 * @param string
-	 * @return
+	 * @return true is the pattern allready exists
 	 */
 	public boolean hasWOAppResourcesExcludePattern(String string) {
 		return this.getWoappResourcesExcludeMatcher().hasPattern(string);
@@ -442,7 +443,7 @@ public class ProjectPatternsets extends AbstractProjectAdapterType {
 
 	/**
 	 * @param string
-	 * @return
+	 * @return true is the pattern allready exists
 	 */
 	public boolean hasResourcesIncludePattern(String string) {
 		return this.getResourcesIncludeMatcher().hasPattern(string);
@@ -450,7 +451,7 @@ public class ProjectPatternsets extends AbstractProjectAdapterType {
 
 	/**
 	 * @param string
-	 * @return
+	 * @return true is the pattern allready exists
 	 */
 	public boolean hasResourcesExcludePattern(String string) {
 		return this.getResourcesExcludeMatcher().hasPattern(string);

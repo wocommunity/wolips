@@ -96,6 +96,9 @@ public class ProjectBuilder extends ProjectFiles {
 
 	private static final String ANT_BUILDER_ID = "org.objectstyle.wolips.antbuilder";
 
+	/**
+	 * indicates a full build is required
+	 */
 	public boolean fullBuildRequired = false;
 
 	/**
@@ -476,6 +479,8 @@ public class ProjectBuilder extends ProjectFiles {
 
 	private void setBuildProperties(Properties properties)
 			throws CoreException, IOException {
+		if (this.getBuildProperties().equals(properties))
+			return;
 		IFile file = this.getIProject().getFile("build.properties");
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 		properties.store(byteArrayOutputStream, null);
@@ -505,16 +510,16 @@ public class ProjectBuilder extends ProjectFiles {
 	}
 
 	/**
-	 * generate webxml
+	 * @param webXML
+	 *            generate webxml
 	 */
 	public void setWebXML(boolean webXML) {
 		try {
 			Properties properties = this.getBuildProperties();
 			if (!webXML) {
-				properties.remove("webXML");
+				properties.put("webXML", "false");
 			} else {
-				properties
-						.put("webXML", "true");
+				properties.put("webXML", "true");
 			}
 			this.setBuildProperties(properties);
 		} catch (CoreException e) {
@@ -523,37 +528,38 @@ public class ProjectBuilder extends ProjectFiles {
 			DataSetsPlugin.getDefault().getPluginLogger().log(e);
 		}
 	}
-	
+
 	/**
+	 * @param convertNullValueToEmptyString
 	 * @return webxml custom content
 	 */
-	public String getWebXML_CustomContent() {
+	public String getWebXML_CustomContent(boolean convertNullValueToEmptyString) {
 		String returnValue = null;
 		try {
-			returnValue = (String) this.getBuildProperties().get("webXML_CustomContent");
+			returnValue = (String) this.getBuildProperties().get(
+					"webXML_CustomContent");
 		} catch (CoreException e) {
 			DataSetsPlugin.getDefault().getPluginLogger().log(e);
 		} catch (IOException e) {
 			DataSetsPlugin.getDefault().getPluginLogger().log(e);
 		}
-		if(returnValue == null) {
+		if (convertNullValueToEmptyString && returnValue == null) {
 			return "";
 		}
 		return returnValue;
 	}
 
 	/**
-	 * webxml custom content
+	 * @param webXML_CustomContent
+	 *            webxml custom content
 	 */
-	public void setWebXML_CustomContent(String  webXML_CustomContent) {
+	public void setWebXML_CustomContent(String webXML_CustomContent) {
 		try {
 			Properties properties = this.getBuildProperties();
-			if (webXML_CustomContent == null
-					|| webXML_CustomContent.length() == 0) {
-				properties.remove("webXML_CustomContent");
+			if (webXML_CustomContent == null) {
+				properties.put("webXML_CustomContent", "");
 			} else {
-				properties
-						.put("webXML_CustomContent", webXML_CustomContent);
+				properties.put("webXML_CustomContent", webXML_CustomContent);
 			}
 			this.setBuildProperties(properties);
 		} catch (CoreException e) {
@@ -564,39 +570,34 @@ public class ProjectBuilder extends ProjectFiles {
 	}
 
 	/**
-	 * Method getPrincipalClass.
-	 * 
-	 * @return String
-	 * @throws IOException
-	 * @throws CoreException
+	 * @param convertNullValueToEmptyString
+	 * @return principalClass.
 	 */
-	public String getPrincipalClass() {
+	public String getPrincipalClass(boolean convertNullValueToEmptyString) {
 		String returnValue = null;
 		try {
-			returnValue = (String) this.getBuildProperties().get("principalClass");
+			returnValue = (String) this.getBuildProperties().get(
+					"principalClass");
 		} catch (CoreException e) {
 			DataSetsPlugin.getDefault().getPluginLogger().log(e);
 		} catch (IOException e) {
 			DataSetsPlugin.getDefault().getPluginLogger().log(e);
 		}
-		if(returnValue == null) {
+		if (convertNullValueToEmptyString && returnValue == null) {
 			return "";
 		}
 		return returnValue;
 	}
 
 	/**
-	 * Method setPrincipalClass.
-	 * 
 	 * @param principalClass
-	 * @throws IOException
-	 * @throws CoreException
+	 *            the principalClass for the Info.plist
 	 */
 	public void setPrincipalClass(String principalClass) {
 		try {
 			Properties properties = this.getBuildProperties();
-			if (principalClass == null || principalClass.length() == 0) {
-				properties.remove("principalClass");
+			if (principalClass == null) {
+				properties.put("principalClass", "");
 			} else {
 				properties.put("principalClass", principalClass);
 			}
@@ -609,11 +610,11 @@ public class ProjectBuilder extends ProjectFiles {
 	}
 
 	/**
+	 * @param convertNullValueToEmptyString
 	 * @return The CustomContent for the Info.plist
-	 * @throws IOException
-	 * @throws CoreException
 	 */
-	public String getCustomInfoPListContent() {
+	public String getCustomInfoPListContent(
+			boolean convertNullValueToEmptyString) {
 		String returnValue = null;
 		try {
 			returnValue = (String) this.getBuildProperties().get(
@@ -623,23 +624,21 @@ public class ProjectBuilder extends ProjectFiles {
 		} catch (IOException e) {
 			DataSetsPlugin.getDefault().getPluginLogger().log(e);
 		}
-		if(returnValue == null) {
+		if (convertNullValueToEmptyString && returnValue == null) {
 			return "";
 		}
 		return returnValue;
 	}
 
 	/**
-	 * @return The CustomContent for the Info.plist
-	 * @throws IOException
-	 * @throws CoreException
+	 * @param customInfoPListContent
+	 *            The CustomContent for the Info.plist
 	 */
 	public void setCustomInfoPListContent(String customInfoPListContent) {
 		try {
 			Properties properties = this.getBuildProperties();
-			if (customInfoPListContent == null
-					|| customInfoPListContent.length() == 0) {
-				properties.remove("customInfoPListContent");
+			if (customInfoPListContent == null) {
+				properties.put("customInfoPListContent", "");
 			} else {
 				properties
 						.put("customInfoPListContent", customInfoPListContent);
@@ -653,35 +652,34 @@ public class ProjectBuilder extends ProjectFiles {
 	}
 
 	/**
-	 * @return The CustomContent for the Info.plist
-	 * @throws IOException
-	 * @throws CoreException
+	 * @param convertNullValueToEmptyString
+	 * @return The EOAdaptorClassName for the Info.plist
 	 */
-	public String getEOAdaptorClassName() {
+	public String getEOAdaptorClassName(boolean convertNullValueToEmptyString) {
 		String returnValue = null;
 		try {
-			returnValue =  (String) this.getBuildProperties().get("eoAdaptorClassName");
+			returnValue = (String) this.getBuildProperties().get(
+					"eoAdaptorClassName");
 		} catch (CoreException e) {
 			DataSetsPlugin.getDefault().getPluginLogger().log(e);
 		} catch (IOException e) {
 			DataSetsPlugin.getDefault().getPluginLogger().log(e);
 		}
-		if(returnValue == null) {
+		if (convertNullValueToEmptyString && returnValue == null) {
 			return "";
 		}
 		return returnValue;
 	}
 
 	/**
-	 * @return The CustomContent for the Info.plist
-	 * @throws IOException
-	 * @throws CoreException
+	 * @param eoAdaptorClassName
+	 *            the eoadaptorclassname for the Info.plist
 	 */
 	public void setEOAdaptorClassName(String eoAdaptorClassName) {
 		try {
 			Properties properties = this.getBuildProperties();
-			if (eoAdaptorClassName == null || eoAdaptorClassName.length() == 0) {
-				properties.remove("eoAdaptorClassName");
+			if (eoAdaptorClassName == null) {
+				properties.put("eoAdaptorClassName", "");
 			} else {
 				properties.put("eoAdaptorClassName", eoAdaptorClassName);
 			}
