@@ -18,4 +18,17 @@
    <requires>
   </requires>
 
+<!-- =================================================================================== -->
+<!-- Extension: View                                                                     -->
+<!-- =================================================================================== -->
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            name="%WOLips.Support.View.Name"
+            icon="icons/wolips/WOLips-icon.gif"
+            category="org.objectstyle.wolips.ui"
+            class="org.objectstyle.wolips.support.SupportView"
+            id="org.objectstyle.wolips.support.SupportView">
+      </view>
+	</extension>
 </fragment>
