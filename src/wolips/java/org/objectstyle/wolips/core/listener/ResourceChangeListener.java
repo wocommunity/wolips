@@ -57,7 +57,6 @@ package org.objectstyle.wolips.core.listener;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
-
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -72,10 +71,11 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.QualifiedName;
+import org.eclipse.jdt.core.JavaCore;
 import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
 import org.objectstyle.wolips.core.plugin.logging.WOLipsLog;
 import org.objectstyle.wolips.core.project.PBProjectUpdater;
-import org.objectstyle.wolips.core.project.ProjectHelper;
+import org.objectstyle.wolips.core.project.WOLipsJavaProject;
 import org.objectstyle.wolips.core.project.WOLipsProject;
 /**
  * Tracking changes in resources and synchronizes webobjects project file
@@ -139,7 +139,6 @@ public class ResourceChangeListener
 			}
 		}
 	}
-
 	private final class ProjectFileResourceValidator
 		implements IResourceDeltaVisitor {
 		//private QualifiedName resourceQualifier;
@@ -194,7 +193,8 @@ public class ResourceChangeListener
 						// project deleted no further investigation needed
 						return false;
 					}
-					WOLipsProject wolipsProject = new WOLipsProject((IProject) resource);
+					WOLipsProject wolipsProject =
+						new WOLipsProject((IProject) resource);
 					if (wolipsProject.getNaturesAccessor().hasWOLipsNature()) {
 						// resource change concerns to webobjects project
 						// -> visit childs
@@ -237,9 +237,15 @@ public class ResourceChangeListener
 								// remove project's source folder from
 								// classpathentries
 								try {
-									ProjectHelper
+									WOLipsJavaProject woLipsJavaProject =
+										new WOLipsJavaProject(
+											JavaCore.create(
+												resource.getProject()));
+									woLipsJavaProject
+										.getClasspathAccessor()
 										.removeSourcefolderFromClassPath(
-										ProjectHelper
+										woLipsJavaProject
+											.getClasspathAccessor()
 											.getSubprojectSourceFolder(
 											(IFolder) resource,
 											false),

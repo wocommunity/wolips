@@ -115,7 +115,8 @@ public class PBProjectUpdater {
 	 */
 	public static PBProjectUpdater instance(IContainer aProjectContainer) {
 		PBProjectUpdater returnValue =
-			(PBProjectUpdater) PBProjectUpdater.projectUpdater.get(aProjectContainer);
+			(PBProjectUpdater) PBProjectUpdater.projectUpdater.get(
+				aProjectContainer);
 		if (returnValue == null) {
 			returnValue = new PBProjectUpdater(aProjectContainer);
 			PBProjectUpdater.projectUpdater.put(aProjectContainer, returnValue);
@@ -129,13 +130,12 @@ public class PBProjectUpdater {
 	public void updatePBProject() throws CoreException {
 		syncPBProjectWithProject();
 		if (projectContainer != null)
-		try{
-			PBProjectNotifications.postPBProjectDidUpgradeNotification(
-				projectContainer.getName());
-		}
-		catch(Exception exception) {
-			WOLipsLog.log(exception);
-		}
+			try {
+				PBProjectNotifications.postPBProjectDidUpgradeNotification(
+					projectContainer.getName());
+			} catch (Exception exception) {
+				WOLipsLog.log(exception);
+			}
 	}
 	/**
 	 * On MacOSX the EOModeler converts the PB.project file to xml.
@@ -168,11 +168,12 @@ public class PBProjectUpdater {
 		fixEOModelerMacOSXBug(aFile);
 		try {
 			boolean sync = !aFile.exists();
+			WOLipsProject wolipsProject =
+				new WOLipsProject((IProject) aProject.getProject());
 			pbProject =
 				new PBProject(
 					aFile,
-					!ProjectHelper.isWOAppBuilderInstalled(
-						(IProject) aProject.getProject()));
+					wolipsProject.getNaturesAccessor().isFramework());
 			if (sync)
 				syncPBProjectWithProject();
 		} catch (Exception anException) {
