@@ -66,8 +66,8 @@ import java.util.Map;
 import org.objectstyle.cayenne.wocompat.PropertyListSerialization;
 
 /**
- * A <b>PBProject</b> represents a ProjectBuilder project file
- * traditionally called <code>PB.project</code>.
+ * A <b>PBProject </b> represents a ProjectBuilder project file traditionally
+ * called <code>PB.project</code>.
  * 
  * 
  * @author uli
@@ -75,45 +75,63 @@ import org.objectstyle.cayenne.wocompat.PropertyListSerialization;
  */
 public class PBProject {
 	public static final String DEFAULT_APP_PROJECT = "pbindex/woapp/PB.project";
-	public static final String DEFAULT_FRAMEWORK_PROJECT =
-		"pbindex/woframework/PB.project";
+
+	public static final String DEFAULT_FRAMEWORK_PROJECT = "pbindex/woframework/PB.project";
 
 	public static final String DYNAMIC_CODE_GEN = "DYNAMIC_CODE_GEN";
+
 	public static final String FILESTABLE = "FILESTABLE";
+
 	public static final String CLASSES = "CLASSES";
+
 	public static final String FRAMEWORKS = "FRAMEWORKS";
+
 	public static final String FRAMEWORKSEARCH = "FRAMEWORKSEARCH";
+
 	public static final String OTHER_LINKED = "OTHER_LINKED";
+
 	public static final String OTHER_SOURCES = "OTHER_SOURCES";
+
 	public static final String WOAPP_RESOURCES = "WOAPP_RESOURCES";
+
 	public static final String WOCOMPONENTS = "WO_COMPONENTS";
+
 	public static final String WEB_SERVER_RESOURCES = "WEBSERVER_RESOURCES";
+
 	public static final String PROJECTNAME = "PROJECTNAME";
+
 	public static final String PROJECTTYPE = "PROJECTTYPE";
+
 	public static final String PROJECTVERSION = "PROJECTVERSION";
+
 	public static final String SUBPROJECTS = "SUBPROJECTS";
+
 	public static final String YES = "YES";
+
 	public static final String NO = "NO";
 
 	protected boolean isFramework;
+
 	protected File projectFile;
+
 	protected Map pbProject;
+
 	protected Map filesTable;
 
+	private boolean hasUnsavedChanges = false;;
+
 	/**
-	 * Creates a new PBProject object
-	 * with an associated project file assumed to be called "PB.project"
-	 * and located in the current directory. If file does not exist,
-	 * PBProject object is initialized using default template.
+	 * Creates a new PBProject object with an associated project file assumed to
+	 * be called "PB.project" and located in the current directory. If file does
+	 * not exist, PBProject object is initialized using default template.
 	 */
 	public PBProject(boolean isFramework) throws IOException {
 		this(new File("PB.project"), isFramework);
 	}
 
 	/**
-	 * Creates a new PBProject object
-	 * with an associated project file. If file does not exist,
-	 * PBProject object is initialized using default template.
+	 * Creates a new PBProject object with an associated project file. If file
+	 * does not exist, PBProject object is initialized using default template.
 	 */
 	public PBProject(File projectFile, boolean isFramework) throws IOException {
 		this.projectFile = projectFile;
@@ -131,32 +149,33 @@ public class PBProject {
 	}
 
 	/**
-	 * Updates itself from the underlying <code>PB.project</code> file.
-	 * If the file does not exist, uses a default template to load a 
-	 * skeleton project.
+	 * Updates itself from the underlying <code>PB.project</code> file. If the
+	 * file does not exist, uses a default template to load a skeleton project.
 	 */
 	public void update() throws IOException {
 		if (projectFile == null || !projectFile.exists()) {
-			InputStream in =
-				this.getClass().getClassLoader().getResourceAsStream(
-					getDefaultTemplate());
-			pbProject = (Map) PropertyListSerialization.propertyListFromStream(in);
+			InputStream in = this.getClass().getClassLoader()
+					.getResourceAsStream(getDefaultTemplate());
+			pbProject = (Map) PropertyListSerialization
+					.propertyListFromStream(in);
 			in = null;
 		} else {
-			pbProject = (Map) PropertyListSerialization.propertyListFromFile(projectFile);
+			pbProject = (Map) PropertyListSerialization
+					.propertyListFromFile(projectFile);
 		}
-		
-		if(pbProject == null) {
+
+		if (pbProject == null) {
 			throw new IOException("Error reading project file: " + projectFile);
 		}
 
 		readFilesTable();
+		hasUnsavedChanges = false;
 	}
 
 	/**
 	 * Stores changes made to this object in the underlying PB.project file.
 	 */
-	public void saveChanges() throws IOException {
+	public void saveChanges() {
 		this.saveFilesTable();
 		PropertyListSerialization.propertyListToFile(projectFile, pbProject);
 	}
@@ -186,6 +205,23 @@ public class PBProject {
 		getFilesTable().put(PBProject.WEB_SERVER_RESOURCES, anArray);
 	}
 
+	public List getWebServerResources(String language) {
+		if (language == null) {
+			return getWebServerResources();
+		}
+		return (List) getFilesTable().get(
+				language + "_" + PBProject.WEB_SERVER_RESOURCES);
+	}
+
+	public void setWebServerResources(List anArray, String language) {
+		if (language == null) {
+			setWebServerResources(anArray);
+			return;
+		}
+		getFilesTable().put(language + "_" + PBProject.WEB_SERVER_RESOURCES,
+				anArray);
+	}
+
 	public List getFrameworkSearch() {
 		return (List) pbProject.get(PBProject.FRAMEWORKSEARCH);
 	}
@@ -201,6 +237,7 @@ public class PBProject {
 	public void setFrameworks(List anArray) {
 		getFilesTable().put(PBProject.FRAMEWORKS, anArray);
 	}
+
 	public List getSubprojects() {
 		return (List) getFilesTable().get(PBProject.SUBPROJECTS);
 	}
@@ -233,12 +270,45 @@ public class PBProject {
 		getFilesTable().put(PBProject.WOAPP_RESOURCES, anArray);
 	}
 
+	public List getWoAppResources(String language) {
+		if (language == null) {
+			return getWoAppResources();
+		}
+		return (List) getFilesTable().get(
+				language + "_" + PBProject.WOAPP_RESOURCES);
+	}
+
+	public void setWoAppResources(List anArray, String language) {
+		if (language == null) {
+			setWoAppResources(anArray);
+			return;
+		}
+		getFilesTable()
+				.put(language + "_" + PBProject.WOAPP_RESOURCES, anArray);
+	}
+
 	public List getWoComponents() {
 		return (List) getFilesTable().get(PBProject.WOCOMPONENTS);
 	}
 
 	public void setWoComponents(List anArray) {
 		getFilesTable().put(PBProject.WOCOMPONENTS, anArray);
+	}
+
+	public List getWoComponents(String language) {
+		if (language == null) {
+			return getWoComponents();
+		}
+		return (List) getFilesTable().get(
+				language + "_" + PBProject.WOCOMPONENTS);
+	}
+
+	public void setWoComponents(List anArray, String language) {
+		if (language == null) {
+			setWoComponents(anArray);
+			return;
+		}
+		getFilesTable().put(language + "_" + PBProject.WOCOMPONENTS, anArray);
 	}
 
 	public String getProjectName() {
@@ -279,6 +349,7 @@ public class PBProject {
 
 	/**
 	 * Returns the projectFile.
+	 * 
 	 * @return File
 	 */
 	public File getProjectFile() {
@@ -287,11 +358,14 @@ public class PBProject {
 
 	/**
 	 * Sets the projectFile.
-	 * @param projectFile The projectFile to set
+	 * 
+	 * @param projectFile
+	 *            The projectFile to set
 	 */
 	public void setProjectFile(File projectFile) {
 		this.projectFile = projectFile;
 	}
+
 	/**
 	 * Method forgetAll deletes all classes, other linked, other sources,
 	 * webserver resources and wocomponent entries.

@@ -56,8 +56,11 @@
 package org.objectstyle.woenvironment.pb;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Comparator;
+import java.util.TreeMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -69,10 +72,19 @@ import org.objectstyle.cayenne.wocompat.PropertyListSerialization;
  * (<code>*.pbproj</code>).
  * 
  * @author Jonathan 'Wolf' Rentzsch
+ * @author Anjo Krank
  */
 public class PBXProject {
+	public void addSourceReference( String path ) {
+		_sourceRefs.add( path );
+	}
+	
 	public void addFileReference( String path ) {
 		_fileRefs.add( path );
+	}
+	
+	public void addFolderReference( String path ) {
+		_folderRefs.add( path );
 	}
 	
 	public void addFrameworkReference( String path ) {
@@ -80,43 +92,96 @@ public class PBXProject {
 	}
 	
 	public void save( File projectFile ) {
-		ObjectsTable objectsTable = new ObjectsTable();
+	    ObjectsTable objectsTable = new ObjectsTable();
+	    String projectPath;
+	    try {
+	        projectPath = projectFile.getCanonicalPath();
+	    } catch (IOException ex) {
+	        throw new RuntimeException("Can't get path of project file: " + projectFile);
+	    }
+	    int last = projectPath.lastIndexOf(File.separator);
+	    if(last != -1) {
+	        projectPath = projectPath.substring(0, last);
+	    }
+	    last = projectPath.lastIndexOf(File.separator);
+	    if(last != -1) {
+	        projectPath = projectPath.substring(0, last);
+	    }
+	    
+	    ArrayList sourceBuildFileIDs = new ArrayList();
+	    ArrayList resourceBuildFileIDs = new ArrayList();
+	    ArrayList frameworkBuildFileIDs = new ArrayList();
+	    
+	    ArrayList sourceFileIDs = new ArrayList();
+	    ArrayList resourceFileIDs = new ArrayList();
+	    ArrayList frameworkFileIDs = new ArrayList();
+	    
+	    //	Walk refs, creating the appropriate reference type and an associated
+	    //  build file for each and adding it to the objects table and group children list.
+	    String path;
+	    Iterator it;
 		
-		ArrayList groupChildIDs = new ArrayList();
-		ArrayList buildFileIDs = new ArrayList();
-		
-		//	Walk file refs, creating a PBXFileReference for each and adding it
-		//	to the objects table and group children list.
-		String path;
-		Iterator it = _fileRefs.iterator();
+		it = _sourceRefs.iterator();
 		while( it.hasNext() ) {
-			path = (String) it.next();
-			groupChildIDs.add(
-				objectsTable.insert(
-					newFileReference(
-						(new File(path)).getName(),
-						path )));
+		    path = (String) it.next();
+		    if(path.indexOf(projectPath) == 0) {
+		        path = path.substring(projectPath.length()+1);
+		    }
+		    File file = new File(path);
+		    Map reference = newFileReference(file.getName(), path);
+			ObjectsTable.ID refID = objectsTable.insert(reference);
+			sourceFileIDs.add(refID);
+			sourceBuildFileIDs.add(objectsTable.insert(newBuildFile(refID)));
 		}
-		
-		//	Walk framework refs, creating a PBXFrameworkReference and
-		//	PBXBuildFile for each, and adding it to the objects table and
-		//	group children list.
+
+		it = _fileRefs.iterator();
+		while( it.hasNext() ) {
+		    path = (String) it.next();
+		    if(path.indexOf(projectPath) == 0) {
+		        path = path.substring(projectPath.length()+1);
+		    }
+		    File file = new File(path);
+		    Map reference = newFileReference(file.getName(), path);
+			ObjectsTable.ID refID = objectsTable.insert(reference);
+			resourceFileIDs.add(refID);
+			resourceBuildFileIDs.add(objectsTable.insert(newBuildFile(refID)));
+		}
+
+		it = _folderRefs.iterator();
+		while( it.hasNext() ) {
+		    path = (String) it.next();
+		    if(path.indexOf(projectPath) == 0) {
+		        path = path.substring(projectPath.length()+1);
+		    }
+		    File file = new File(path);
+		    Map reference = newFolderReference(file.getName(), path);
+			ObjectsTable.ID refID = objectsTable.insert(reference);
+			resourceFileIDs.add(refID);
+			resourceBuildFileIDs.add(objectsTable.insert(newBuildFile(refID)));
+		}
+
 		it = _frameworkRefs.iterator();
 		while( it.hasNext() ) {
 			path = (String) it.next();
-			ObjectsTable.ID frameworkRefID = objectsTable.insert(
-				newFrameworkReference((new File(path)).getName(), path ));
-			groupChildIDs.add( frameworkRefID );
-			
-			buildFileIDs.add( objectsTable.insert( newBuildFile( frameworkRefID )));
+		    Map reference = newFrameworkReference((new File(path)).getName(), path );
+			ObjectsTable.ID refID = objectsTable.insert(reference);
+			frameworkFileIDs.add(refID);
+			frameworkBuildFileIDs.add(objectsTable.insert(newBuildFile(refID)));
 		}
 		
+		ArrayList childrenIDs = new ArrayList();
+	    childrenIDs.add(objectsTable.insert(newGroup( "Sources", sourceFileIDs)));
+		childrenIDs.add(objectsTable.insert(newGroup( "Resources", resourceFileIDs)));
+		childrenIDs.add(objectsTable.insert(newGroup( "Frameworks", frameworkFileIDs)));
+		
 		//	Create the PBXGroup and add it to the objects table.
-		ObjectsTable.ID groupID = objectsTable.insert( newGroup( groupChildIDs ) );
+		ObjectsTable.ID mainGroupID = objectsTable.insert( newGroup( "Root", childrenIDs) );
 		
 		//	Create the PBXBuildPhase and add it to the objects table.
 		ArrayList buildPhaseIDs = new ArrayList( 1 );
-		buildPhaseIDs.add( objectsTable.insert( newBuildPhase( buildFileIDs)));
+		buildPhaseIDs.add( objectsTable.insert( newSourcesBuildPhase( sourceBuildFileIDs)));
+		buildPhaseIDs.add( objectsTable.insert( newResourcesBuildPhase( resourceBuildFileIDs)));
+		buildPhaseIDs.add( objectsTable.insert( newFrameworkBuildPhase( frameworkBuildFileIDs)));
 		
 		//	Create the PBXToolTarget and add it to the objects table and
 		//	the targets list.
@@ -124,10 +189,10 @@ public class PBXProject {
 		targetIDs.add( objectsTable.insert( newAppServerTarget(buildPhaseIDs)));
 		
 		//	Create the PBXProject and add it to the objects table.
-		ObjectsTable.ID projectID = objectsTable.insert( newProject( groupID, targetIDs ));
+		ObjectsTable.ID projectID = objectsTable.insert( newProject( mainGroupID, targetIDs ));
 		
 		//	Create the root dictionary.
-		Map pbxproj = newPBXProj( objectsTable, projectID );
+		Map pbxproj = newPBXProj( objectsTable, projectID);
 		
 		PropertyListSerialization.propertyListToFile( projectFile, pbxproj );
 	}
@@ -135,26 +200,36 @@ public class PBXProject {
 	//---------------------------------------------------------------
 	//	Implementation stuff.
 	
+	protected ArrayList _folderRefs = new ArrayList();
 	protected ArrayList _fileRefs = new ArrayList();
 	protected ArrayList _frameworkRefs = new ArrayList();
+	protected ArrayList _sourceRefs = new ArrayList();
 	
-	protected static Map map( Object[] keyValues ) {
-		Map result = new HashMap( keyValues.length/2 );
+	protected Map map( Object[] keyValues ) {
+		Map result = new TreeMap();
 		for( int i = 0; i < keyValues.length; i += 2 ) {
 			result.put( keyValues[i], keyValues[i+1] );
 		}
 		return result;
 	}
 
-	protected static Map newFileReference( String name, String path ) {
+	protected Map newFileReference( String name, String path ) {
 		return map( new Object[] {
 			"isa",		"PBXFileReference",
-			"refType",	"0",
+			"refType",	(new File(path)).isAbsolute() ? "0" : "2",
 			"name",		name,
 			"path",		path });
 	}
 
-	protected static Map newFrameworkReference( String name, String path ) {
+        protected Map newFolderReference( String name, String path ) {
+		return map( new Object[] {
+			"isa",		"PBXFolderReference",
+			"refType",	(new File(path)).isAbsolute() ? "0" : "2",
+			"name",		name,
+			"path",		path });
+        }
+
+        protected Map newFrameworkReference( String name, String path ) {
 		return map( new Object[] {
 			"isa",		"PBXFrameworkReference",
 			"refType",	"0",
@@ -162,26 +237,39 @@ public class PBXProject {
 			"path",		path });
 	}
 
-	protected static Map newBuildFile( ObjectsTable.ID fileRefID ) {
+	protected Map newBuildFile( ObjectsTable.ID fileRefID ) {
 		return map( new Object[] {
 			"isa",		"PBXBuildFile",
 			"fileRef",	fileRefID });
 	}
 
-	protected static Map newBuildPhase( List buildFileIDs ) {
+	protected Map newFrameworkBuildPhase( List buildFileIDs ) {
 		return map( new Object[] {
 			"isa",		"PBXFrameworksBuildPhase",
 			"files",	buildFileIDs });
 	}
 
-	protected static Map newGroup( List fileAndFrameworkReferenceIDs ) {
+	protected Map newResourcesBuildPhase( List buildFileIDs ) {
+		return map( new Object[] {
+			"isa",		"PBXResourcesBuildPhase",
+			"files",	buildFileIDs });
+	}
+
+	protected Map newSourcesBuildPhase( List buildFileIDs ) {
+		return map( new Object[] {
+			"isa",		"PBXSourcesBuildPhase",
+			"files",	buildFileIDs });
+	}
+
+	protected Map newGroup( String name, List childrenIDs ) {
 		return map( new Object[] {
 			"isa",		"PBXGroup",
 			"refType",	"4",
-			"children",	fileAndFrameworkReferenceIDs });
+			"name",	name,
+			"children",	childrenIDs });
 	}
 
-	protected static Map newAppServerTarget( List buildPhaseIDs ) {
+	protected Map newAppServerTarget( List buildPhaseIDs ) {
 		return map( new Object[] {
 			"isa",				"PBXToolTarget",
 			"buildSettings",	new HashMap(),
@@ -189,7 +277,7 @@ public class PBXProject {
 			"buildPhases",		buildPhaseIDs });
 	}
 	
-	protected static Map newProject( ObjectsTable.ID groupID, List targetIDs ) {
+	protected Map newProject( ObjectsTable.ID groupID, List targetIDs ) {
 		return map( new Object[] {
 			"isa",						"PBXProject",
 			"hasScannedForEncodings",	"1",
@@ -198,7 +286,7 @@ public class PBXProject {
 			"targets",					targetIDs });
 	}
 	
-	protected static Map newPBXProj( Map objectsTable, ObjectsTable.ID rootObject ) {
+	protected Map newPBXProj( Map objectsTable, ObjectsTable.ID rootObject) {
 		return map( new Object[] {
 			"archiveVersion",	"1",
 			"objectVersion",	"38",
@@ -206,7 +294,7 @@ public class PBXProject {
 			"objects",			objectsTable });
 	}
 	
-	protected static class ObjectsTable extends HashMap {
+	protected static class ObjectsTable extends TreeMap {
 		public static class ID extends Number {
 			int _value;
 			protected ID( int value ) {
@@ -237,7 +325,14 @@ public class PBXProject {
 		}
 		
 		public ObjectsTable() {
-			super();
+                    super(new Comparator() {
+                        public int compare(Object a, Object b) {
+                            if(a == b) return 0;
+                            if(a == null) return -1;
+                            if(b == null) return 1;
+                            return a.toString().compareTo(b.toString());
+                        }
+                    });
 		}
 		
 		public ID insert( Object object ) {

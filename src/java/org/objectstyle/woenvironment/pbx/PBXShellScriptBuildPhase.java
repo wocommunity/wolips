@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 - 2004 The ObjectStyle Group 
+ * Copyright (c) 2002 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -53,22 +53,57 @@
  * <http://objectstyle.org/>.
  *
  */
-
-package org.objectstyle.woenvironment.env;
-
+package org.objectstyle.woenvironment.pbx;
+import java.util.Collection;
+import java.util.Vector;
 /**
- * @author uli
- *
- * To change this generated comment go to 
- * Window>Preferences>Java>Code Generation>Code Template
+ * @author tlg
+ * 
+ * To change the template for this generated type comment go to Window -
+ * Preferences - Java - Code Generation - Code and Comments
  */
-public class WOBuildPropertiesNotFoundException extends Throwable {
-
+public class PBXShellScriptBuildPhase extends PBXBuildPhase {
+	public final static String _KNEEDEDFILENAMES = "neededFileNames";
+	public final static String _KSHELLPATH = "shellPath";
+	public final static String _KSHELLSCRIPT = "shellScript";
+	public final static String _KGENERATEDFILENAMES = "generatedFileNames";
+	protected Collection neededFileNames;
+	protected String shellPath;
+	protected String shellScript;
+	protected Collection generatedFileNames;
 	/**
-	 * Default Constrcutor
+	 * @param ref
+	 * @param coder
 	 */
-	public WOBuildPropertiesNotFoundException() {
-		super("Could not find wobuild.properties. Run the buildfile: woproperties.xml first.");
+	public PBXShellScriptBuildPhase(Object ref) {
+		super(ref);
+		this.neededFileNames = new Vector();
+		this.shellPath = null;
+		this.shellScript = null;
+		this.generatedFileNames = new Vector();
 	}
-
+	public void addNeededFileNames(Object neededFileName) {
+		this.neededFileNames.add(neededFileName);
+	}
+	public Collection getNeededFileNames() {
+		return this.neededFileNames;
+	}
+	public void setShellPath(Object shellPath) {
+		this.shellPath = (String) shellPath;
+	}
+	public String getShellPath() {
+		return this.shellPath;
+	}
+	public void setShellScript(Object shellScript) {
+		this.shellScript = (String) shellScript;
+	}
+	public String getShellScript() {
+		return this.shellScript;
+	}
+	public void addGeneratedFileNames(Object generatedFileName) {
+		this.generatedFileNames.add(generatedFileName);
+	}
+	public Collection getGeneratedFileNames() {
+		return this.generatedFileNames;
+	}
 }

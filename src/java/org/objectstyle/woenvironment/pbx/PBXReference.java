@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 - 2004 The ObjectStyle Group 
+ * Copyright (c) 2002 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -53,22 +53,100 @@
  * <http://objectstyle.org/>.
  *
  */
-
-package org.objectstyle.woenvironment.env;
-
+package org.objectstyle.woenvironment.pbx;
+import java.util.Collection;
+import java.util.Vector;
 /**
- * @author uli
- *
- * To change this generated comment go to 
- * Window>Preferences>Java>Code Generation>Code Template
+ * @author tlg
+ * 
+ * To change the template for this generated type comment go to Window -
+ * Preferences - Java - Code Generation - Code and Comments
  */
-public class WOBuildPropertiesNotFoundException extends Throwable {
-
-	/**
-	 * Default Constrcutor
-	 */
-	public WOBuildPropertiesNotFoundException() {
-		super("Could not find wobuild.properties. Run the buildfile: woproperties.xml first.");
+public class PBXReference extends PBXItem {
+	public static final String _KNAME = "name";
+	public static final String _KPATH = "path";
+	public static final String _KREFTYPE = "refType";
+	protected Collection children;
+	protected String name;
+	protected String path;
+	protected int refType;
+	private PBXReference parent;
+	public PBXReference(Object ref) {
+		super(ref);
+		children = new Vector();
+		parent = null;
 	}
-
+	public void addChildren(Object child) {
+		((PBXReference) child).setParent(this);
+		this.children.add(child);
+	}
+	public void setChildren(Object child) {
+		System.out.println(child.getClass());
+	}
+	public Collection getChildren() {
+		return this.children;
+	}
+	public void setName(Object name) {
+		this.name = (String) name;
+	}
+	public String getName() {
+		return this.name;
+	}
+	public void setPath(Object path) {
+		this.path = (String) path;
+	}
+	public String getPath() {
+		return this.path;
+	}
+	public void setRefType(Object refType) {
+		this.refType = Integer.parseInt(refType.toString());
+	}
+	public int getRefType() {
+		return this.refType;
+	}
+	protected void setParent(PBXReference parent) {
+		this.parent = parent;
+	}
+	protected String fileSeparator() {
+		return (this.path == null || this.path.equals("")) ? "" : "/";
+	}
+	/**
+	 * @return
+	 */
+	public String realPath() {
+		String realPath = "";
+		switch (this.refType) {
+			case 0 :
+				realPath = (this.path == null)
+						? ""
+						: (this.path + fileSeparator());
+				break;
+			case 1 :
+				realPath = (this.path == null)
+						? ""
+						: (this.path + fileSeparator());
+				break;
+			case 2 :
+				realPath = (this.path == null)
+						? ""
+						: (this.path + fileSeparator());
+				break;
+			case 3 :
+				realPath = (this.path == null)
+						? ""
+						: (this.path + fileSeparator());
+				break;
+			case 4 :
+				realPath = ((parent == null) ? "" : parent.realPath())
+						+ ((this.path == null)
+								? ""
+								: (this.path + fileSeparator()));
+				break;
+			default :
+				realPath = (this.path == null)
+						? ""
+						: (this.path + fileSeparator());
+		}
+		return realPath;
+	}
 }

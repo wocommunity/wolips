@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 - 2004 The ObjectStyle Group 
+ * Copyright (c) 2002 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -53,22 +53,44 @@
  * <http://objectstyle.org/>.
  *
  */
-
-package org.objectstyle.woenvironment.env;
-
+package org.objectstyle.woenvironment.pbx;
+import java.util.Collection;
+import java.util.Vector;
 /**
- * @author uli
- *
- * To change this generated comment go to 
- * Window>Preferences>Java>Code Generation>Code Template
+ * @author tlg
+ * 
+ * To change the template for this generated type comment go to Window -
+ * Preferences - Java - Code Generation - Code and Comments
  */
-public class WOBuildPropertiesNotFoundException extends Throwable {
-
-	/**
-	 * Default Constrcutor
-	 */
-	public WOBuildPropertiesNotFoundException() {
-		super("Could not find wobuild.properties. Run the buildfile: woproperties.xml first.");
+public class PBXBuildPhase extends PBXItem {
+	public static final String _KBUILDACTIONMASK = "buildActionMask";
+	public static final String _KFILES = "files";
+	public static final String _KRUNONLYFORDEPLOYPOSTPRO = "runOnlyForDeploymentPostprocessing";
+	protected int buildActionMask;
+	protected Collection files;
+	protected int runOnlyForDeploymentPostprocessing;
+	public PBXBuildPhase(Object ref) {
+		super(ref);
+		files = new Vector();
 	}
-
+	public void setBuildActionMask(Object buildActionMask) {
+		this.buildActionMask = Integer.parseInt(buildActionMask.toString());
+	}
+	public int getBuildActionMask() {
+		return this.buildActionMask;
+	}
+	public void addFiles(Object file) {
+		this.files.add(file);
+	}
+	public Collection getFiles() {
+		return this.files;
+	}
+	public void setRunOnlyForDeploymentPostprocessing(
+			Object runOnlyForDeploymentPostprocessing) {
+		this.runOnlyForDeploymentPostprocessing = Integer
+				.parseInt(runOnlyForDeploymentPostprocessing.toString());
+	}
+	public int getRunOnlyForDeploymentPostprocessing() {
+		return this.runOnlyForDeploymentPostprocessing;
+	}
 }

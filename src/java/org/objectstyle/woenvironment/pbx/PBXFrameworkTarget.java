@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 - 2004 The ObjectStyle Group 
+ * Copyright (c) 2002 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -53,22 +53,20 @@
  * <http://objectstyle.org/>.
  *
  */
-
-package org.objectstyle.woenvironment.env;
-
+package org.objectstyle.woenvironment.pbx;
 /**
- * @author uli
- *
- * To change this generated comment go to 
- * Window>Preferences>Java>Code Generation>Code Template
+ * @author tlg
+ * 
+ * To change the template for this generated type comment go to Window -
+ * Preferences - Java - Code Generation - Code and Comments
  */
-public class WOBuildPropertiesNotFoundException extends Throwable {
-
+public class PBXFrameworkTarget extends PBXTarget {
 	/**
-	 * Default Constrcutor
+	 * @param ref
+	 * @param coder
 	 */
-	public WOBuildPropertiesNotFoundException() {
-		super("Could not find wobuild.properties. Run the buildfile: woproperties.xml first.");
+	public PBXFrameworkTarget(Object ref) {
+		super(ref);
+		// TODO Auto-generated constructor stub
 	}
-
 }

@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 - 2004 The ObjectStyle Group 
+ * Copyright (c) 2002 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -53,22 +53,47 @@
  * <http://objectstyle.org/>.
  *
  */
-
-package org.objectstyle.woenvironment.env;
-
+package org.objectstyle.woenvironment.pbx;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Vector;
 /**
- * @author uli
- *
- * To change this generated comment go to 
- * Window>Preferences>Java>Code Generation>Code Template
+ * @author tlg
+ * 
+ * To change the template for this generated type comment go to Window -
+ * Preferences - Java - Code Generation - Code and Comments
  */
-public class WOBuildPropertiesNotFoundException extends Throwable {
-
+public class PBXBuildStyle extends PBXItem {
+	public final static String _KBUILDRULES = "buildRules";
+	public final static String _KBUILDSETTINGS = "buildSettings";
+	public final static String _KNAME = "name";
+	protected Collection buildRules;
+	protected Map buildSettings;
+	protected String name;
 	/**
-	 * Default Constrcutor
+	 * @param object
+	 * @param coder
 	 */
-	public WOBuildPropertiesNotFoundException() {
-		super("Could not find wobuild.properties. Run the buildfile: woproperties.xml first.");
+	public PBXBuildStyle(Object ref) {
+		super(ref);
+		buildRules = new Vector();
 	}
-
+	public void addBuildRules(Object rule) {
+		this.buildRules.add(rule);
+	}
+	public Collection getBuildRules() {
+		return this.buildRules;
+	}
+	public void setBuildSettings(Object buildSettings) {
+		this.buildSettings = (Map) buildSettings;
+	}
+	public Map getBuildSettings() {
+		return this.buildSettings;
+	}
+	public void setName(Object name) {
+		this.name = (String) name;
+	}
+	public String getName() {
+		return this.name;
+	}
 }
