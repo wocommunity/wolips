@@ -56,16 +56,10 @@
 
 package org.objectstyle.wolips.wizards;
 
-import org.eclipse.jdt.internal.ui.packageview.PackageExplorerPart;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
-import org.eclipse.ui.IViewPart;
-import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.objectstyle.wolips.WOLipsPlugin;
 import org.objectstyle.wolips.images.WOLipsPluginImages;
 
 /**
@@ -103,6 +97,9 @@ public class WOComponentCreationWizard extends Wizard implements INewWizard {
 	 * Method declared on IWizard
 	 */
 	public boolean performFinish() {
+		return mainPage.createComponent();
+		/*
+		moved to WizardNewWOResourcePage.sledgeHammer()
 		boolean returnValue = mainPage.createComponent();
 		IWorkbenchWindow a[] =
 			WOLipsPlugin.getDefault().getWorkbench().getWorkbenchWindows();
@@ -118,5 +115,6 @@ public class WOComponentCreationWizard extends Wizard implements INewWizard {
 			}
 		}
 		return returnValue;
+		*/
 	}
 }
