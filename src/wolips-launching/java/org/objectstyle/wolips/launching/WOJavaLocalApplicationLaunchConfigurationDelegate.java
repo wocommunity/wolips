@@ -85,6 +85,9 @@ import org.objectstyle.wolips.workbench.WorkbenchHelper;
 public class WOJavaLocalApplicationLaunchConfigurationDelegate
 	extends AbstractJavaLaunchConfigurationDelegate {
 
+	/** The launch configuration attribute for stack trace depth */
+	public static final String ATTR_WOLIPS_LAUNCH_WOARGUMENTS =
+		"wolips.launch.woarguments";
 	/**
 	 * @see ILaunchConfigurationDelegate#launch(ILaunchConfiguration, String, ILaunch, IProgressMonitor)
 	 */
@@ -125,7 +128,13 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 		}
 
 		// Program & VM args
-		String pgmArgs = getProgramArguments(configuration);
+		String pgmArgs =
+			getProgramArguments(configuration)
+				+ " "
+				+ configuration.getAttribute(
+					WOJavaLocalApplicationLaunchConfigurationDelegate
+						.ATTR_WOLIPS_LAUNCH_WOARGUMENTS,
+					"");
 		String vmArgs = getVMArguments(configuration);
 		ExecutionArguments execArgs = new ExecutionArguments(vmArgs, pgmArgs);
 
@@ -178,7 +187,17 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 
 		monitor.done();
 	}
-
+	/**
+	 * @see org.eclipse.jdt.launching.AbstractJavaLaunchConfigurationDelegate#verifyWorkingDirectory(org.eclipse.debug.core.ILaunchConfiguration)
+	 */
+	public File verifyWorkingDirectory(ILaunchConfiguration configuration)
+		throws CoreException {
+		File aFile = super.verifyWorkingDirectory(configuration);
+		if ((aFile == null) || (aFile.toString().indexOf(".woa") < 0)) {
+			abort(MessageFormat.format(LaunchingMessages.getString("WOJavaLocalApplicationLaunchConfigurationDelegate.Working_directory_is_not_a_woa__{0}_12"), new String[] { aFile.toString()}), null, IJavaLaunchConfigurationConstants.ERR_WORKING_DIRECTORY_DOES_NOT_EXIST); //$NON-NLS-1$
+		}
+		return aFile;
+	}
 	/**
 	 * Method replaceGeneratedByWOLips.
 	 * @param args
@@ -196,6 +215,17 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 				args[i] = replaceInArgumentGeneratedByWOLips(argument);
 		}
 		return args;
+	}
+	/**
+	 * Method addVMArguments does nothing.
+	 * @param vmArgs
+	 * @param configuration
+	 * @param hprofPort
+	 */
+	protected void addVMArguments(
+		StringBuffer vmArgs,
+		ILaunchConfiguration configuration,
+		int hprofPort) {
 	}
 	/**
 	 * Method replaceInArgumentGeneratedByWOLips.
@@ -236,7 +266,7 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 	 * @param aString
 	 * @return String
 	 */
-	private String addPreferencesValue(String aString) {
+	protected String addPreferencesValue(String aString) {
 		if (aString == null)
 			return aString;
 		String nsProjectSarchPath =

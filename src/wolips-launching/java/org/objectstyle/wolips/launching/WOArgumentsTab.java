@@ -55,8 +55,13 @@
  */
 
 package org.objectstyle.wolips.launching;
- 
+
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.ILaunchConfigurationDialog;
@@ -86,31 +91,40 @@ import org.objectstyle.wolips.io.WOLipsLog;
  * Window>Preferences>Java>Code Generation.
  */
 public class WOArgumentsTab extends JavaLaunchConfigurationTab {
-		
+
 	// Program arguments widgets
 	protected Label fPrgmArgumentsLabel;
 	protected Text fPrgmArgumentsText;
 
 	protected static final String EMPTY_STRING = ""; //$NON-NLS-1$
-		
+
 	/**
 	 * @see ILaunchConfigurationTab#createControl(Composite)
 	 */
 	public void createControl(Composite parent) {
-		
+
 		Composite comp = new Composite(parent, SWT.NONE);
 		setControl(comp);
-		WorkbenchHelp.setHelp(getControl(), IJavaDebugHelpContextIds.LAUNCH_CONFIGURATION_DIALOG_ARGUMENTS_TAB);
+		WorkbenchHelp.setHelp(
+			getControl(),
+			IJavaDebugHelpContextIds.LAUNCH_CONFIGURATION_DIALOG_ARGUMENTS_TAB);
 		GridLayout topLayout = new GridLayout();
-		comp.setLayout(topLayout);		
+		comp.setLayout(topLayout);
 		GridData gd;
-		
+
 		createVerticalSpacer(comp, 1);
-				
+
 		fPrgmArgumentsLabel = new Label(comp, SWT.NONE);
 		fPrgmArgumentsLabel.setText(LaunchingMessages.getString("WOArgumentsTab.&Program_arguments__5")); //$NON-NLS-1$
-						
-		fPrgmArgumentsText = new Text(comp, SWT.MULTI | SWT.WRAP | SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL );
+
+		fPrgmArgumentsText =
+			new Text(
+				comp,
+				SWT.MULTI
+					| SWT.WRAP
+					| SWT.BORDER
+					| SWT.V_SCROLL
+					| SWT.H_SCROLL);
 		gd = new GridData(GridData.FILL_BOTH);
 		gd.heightHint = 80;
 		fPrgmArgumentsText.setLayoutData(gd);
@@ -120,13 +134,13 @@ public class WOArgumentsTab extends JavaLaunchConfigurationTab {
 			}
 		});
 	}
-			
+
 	/**
 	 * @see ILaunchConfigurationTab#dispose()
 	 */
 	public void dispose() {
 	}
-		
+
 	/**
 	 * @see ILaunchConfigurationTab#isValid(ILaunchConfiguration)
 	 */
@@ -140,7 +154,10 @@ public class WOArgumentsTab extends JavaLaunchConfigurationTab {
 	 * @see ILaunchConfigurationTab#setDefaults(ILaunchConfigurationWorkingCopy)
 	 */
 	public void setDefaults(ILaunchConfigurationWorkingCopy config) {
-		config.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROGRAM_ARGUMENTS, this.getDefaultArguments(config));
+		config.setAttribute(
+			WOJavaLocalApplicationLaunchConfigurationDelegate
+				.ATTR_WOLIPS_LAUNCH_WOARGUMENTS,
+			this.getDefaultArguments(config));
 	}
 
 	/**
@@ -148,7 +165,7 @@ public class WOArgumentsTab extends JavaLaunchConfigurationTab {
 	 */
 	public void initializeFrom(ILaunchConfiguration configuration) {
 		try {
-			fPrgmArgumentsText.setText(configuration.getAttribute(IJavaLaunchConfigurationConstants.ATTR_PROGRAM_ARGUMENTS, "")); //$NON-NLS-1$
+			fPrgmArgumentsText.setText(configuration.getAttribute(WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_WOARGUMENTS, "")); //$NON-NLS-1$
 		} catch (CoreException e) {
 			setErrorMessage(LaunchingMessages.getString("WOArgumentsTab.Exception_occurred_reading_configuration___15") + e.getStatus().getMessage()); //$NON-NLS-1$
 			JDIDebugUIPlugin.log(e);
@@ -159,7 +176,10 @@ public class WOArgumentsTab extends JavaLaunchConfigurationTab {
 	 * @see ILaunchConfigurationTab#performApply(ILaunchConfigurationWorkingCopy)
 	 */
 	public void performApply(ILaunchConfigurationWorkingCopy configuration) {
-		configuration.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROGRAM_ARGUMENTS, getAttributeValueFrom(fPrgmArgumentsText));
+		configuration.setAttribute(
+			WOJavaLocalApplicationLaunchConfigurationDelegate
+				.ATTR_WOLIPS_LAUNCH_WOARGUMENTS,
+			getAttributeValueFrom(fPrgmArgumentsText));
 	}
 
 	/**
@@ -174,20 +194,20 @@ public class WOArgumentsTab extends JavaLaunchConfigurationTab {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * @see ILaunchConfigurationTab#getName()
 	 */
 	public String getName() {
 		return LaunchingMessages.getString("WOArgumentsTab.&Arguments_16"); //$NON-NLS-1$
-	}	
-	
+	}
+
 	/**
 	 * @see ILaunchConfigurationTab#setLaunchConfigurationDialog(ILaunchConfigurationDialog)
 	 */
 	public void setLaunchConfigurationDialog(ILaunchConfigurationDialog dialog) {
 		super.setLaunchConfigurationDialog(dialog);
-	}	
+	}
 	/**
 	 * @see ILaunchConfigurationTab#getErrorMessage()
 	 */
@@ -201,33 +221,58 @@ public class WOArgumentsTab extends JavaLaunchConfigurationTab {
 	public String getMessage() {
 		return super.getMessage();
 	}
-	
+
 	/**
 	 * @see ILaunchConfigurationTab#getImage()
 	 */
 	public Image getImage() {
 		return JavaDebugImages.get(JavaDebugImages.IMG_VIEW_ARGUMENTS_TAB);
-	}	
+	}
 
 	/**
 	 * Method getDefaultArguments.
 	 * @return String
 	 */
 	private String getDefaultArguments(ILaunchConfigurationWorkingCopy config) {
+		try {
+			String path = config.getAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, (String)null);
+			IPath aPath = null;
+			if (path != null) {
+				aPath = new Path(path);
+			}
+			IResource res =
+				ResourcesPlugin.getWorkspace().getRoot().findMember(path);
+			if (res instanceof IContainer && res.exists()) {
+				IResource aRes =
+					((IContainer) res).findMember(aPath.toString() + ".woa");
+				if (aRes != null) {
+					if (aRes instanceof IContainer && aRes.exists()) {
+					config.setAttribute(
+						IJavaLaunchConfigurationConstants
+							.ATTR_WORKING_DIRECTORY,
+						((IContainer) aRes).getFullPath().toString().substring(1));
+					}
+				}
+			}
+
+		} catch (Exception anException) {
+			WOLipsLog.log(anException);
+		}
 		return this.getWOApplicationPlatformSpecificArguments()
-		+ this.getWOApplicationClassNameArgument(config)
-		+ this.getCommonWOApplicationArguments();
+			+ this.getWOApplicationClassNameArgument(config)
+			+ this.getCommonWOApplicationArguments();
 	}
-	
+
 	/**
 	 * Method getWOApplicationPlatformSpecificArguments.
 	 * @return String
 	 */
 	private String getWOApplicationPlatformSpecificArguments() {
-		if(!Environment.isNextRootSet()) return "";
+		if (!Environment.isNextRootSet())
+			return "";
 		return "-DWORoot = " + Environment.nextRoot() + " ";
 	}
-	
+
 	/**
 	 * Method getWOApplicationClassNameArgument.
 	 * @return String
@@ -235,16 +280,19 @@ public class WOArgumentsTab extends JavaLaunchConfigurationTab {
 	private String getWOApplicationClassNameArgument(ILaunchConfigurationWorkingCopy config) {
 		String main = null;
 		try {
-			main = config.getAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, "");
-		}
-		catch (Exception anException) {
+			main =
+				config.getAttribute(
+					IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME,
+					"");
+		} catch (Exception anException) {
 			WOLipsLog.log(anException);
 			return "";
 		}
-		if("".equals(main)) return "";
+		if ("".equals(main))
+			return "";
 		return "WOApplicationClass=" + main + " ";
 	}
-	
+
 	/**
 	 * Method getCommonWOApplicationArguments.
 	 * @return String
@@ -254,4 +302,3 @@ public class WOArgumentsTab extends JavaLaunchConfigurationTab {
 	}
 
 }
-
