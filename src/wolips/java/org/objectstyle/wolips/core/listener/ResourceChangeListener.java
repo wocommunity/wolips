@@ -185,7 +185,7 @@ public class ResourceChangeListener
 			int kindOfChange)
 			throws CoreException {
 			//see bugreport #708385 
-			if (!resource.isAccessible())
+			if (!resource.isAccessible() && kindOfChange != IResourceDelta.REMOVED)
 				return false;
 			// reset project file to update
 			projectFile = null;
@@ -194,7 +194,7 @@ public class ResourceChangeListener
 					// further investigation of resource delta needed
 					return true;
 				case IResource.PROJECT :
-					if (!resource.exists()) {
+					if (!resource.exists() || !resource.isAccessible()) {
 						// project deleted no further investigation needed
 						return false;
 					}
