@@ -60,6 +60,7 @@ import java.util.TreeMap;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 
 /**
@@ -91,10 +92,10 @@ public abstract class UpdateIncludeFiles extends Task {
 		// IMPROVE ME this poor algorithm is as result of the programmer's bad cold
 		if (sortedRootPaths == null) {
 			TreeMap map = new TreeMap();
-			Path currentRootPath = null;
+			IPath currentRootPath = null;
 			int offSet = 0;
 			for (int i = 0; i < ROOT_PATHS.length; i++) {
-				currentRootPath = new Path(project.getProperty(ROOT_PATHS[i]));
+				currentRootPath = this.getROOTPATHProperty(ROOT_PATHS[i]);
 				if (map
 					.get(
 						new Integer(
@@ -115,6 +116,10 @@ public abstract class UpdateIncludeFiles extends Task {
 				map.remove(map.lastKey());
 			}
 		}
+		System.out.println("sortedRootPaths: " + sortedRootPaths.toString());
+		for(int x=0;x<sortedRootPaths.length;x++) {
+			System.out.println("sortedRootPaths" + x + ": " + sortedRootPaths[x]);
+		}
 		return sortedRootPaths;
 	}
 
@@ -132,5 +137,15 @@ public abstract class UpdateIncludeFiles extends Task {
 	 */
 	public void setProjectName(String projectName) {
 		this.projectName = projectName;
+	}
+	
+	protected IPath getROOTPATHProperty(String aProperty) {
+		//Workaround for MacOSX otherwise any jar seems to be under the wolocalroot
+		IPath currentRootPath = new Path(project.getProperty(aProperty));
+		System.out.println("currentRootPath: " + currentRootPath.toOSString());
+		if(currentRootPath != null && "/".equals(currentRootPath.toOSString()))
+			currentRootPath = currentRootPath.append("Library/");
+		System.out.println("currentRootPath: " + currentRootPath.toOSString());
+		return currentRootPath;
 	}
 }

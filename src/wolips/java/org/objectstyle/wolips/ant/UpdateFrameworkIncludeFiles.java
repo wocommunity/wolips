@@ -63,7 +63,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
@@ -141,7 +140,7 @@ public class UpdateFrameworkIncludeFiles extends UpdateIncludeFiles {
 				}
 			}
 
-			if (project.getProperty(sortedRootPaths()[i]) == null) {
+			if (this.getROOTPATHProperty(sortedRootPaths()[i]) == null) {
 				System.out.println(
 					"Property " + sortedRootPaths()[i] + " doesn't exists");
 				continue;
@@ -158,8 +157,7 @@ public class UpdateFrameworkIncludeFiles extends UpdateIncludeFiles {
 					resolvedEntry =
 						classpathEntryToFrameworkEntry(
 							classPaths[j],
-							new Path(
-								project.getProperty(sortedRootPaths()[i])));
+							this.getROOTPATHProperty(sortedRootPaths()[i]));
 
 					if (resolvedEntry != null
 						&& !resolvedEntries.contains(classPaths[j])) {
@@ -213,7 +211,7 @@ public class UpdateFrameworkIncludeFiles extends UpdateIncludeFiles {
 	 */
 	private String classpathEntryToFrameworkEntry(
 		IClasspathEntry entry,
-		Path rootDir) {
+		IPath rootDir) {
 		String toReturn = null;
 		IPath pathToConvert;
 		// determine if entry's path begins with rootDir

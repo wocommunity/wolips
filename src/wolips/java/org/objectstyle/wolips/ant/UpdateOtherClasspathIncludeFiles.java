@@ -63,7 +63,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
@@ -129,7 +128,7 @@ public class UpdateOtherClasspathIncludeFiles extends UpdateIncludeFiles {
 			currentClasspathListFile =
 				actualProject.getFile(
 					INCLUDES_FILE_PREFIX + "." + ROOT_PATHS[i]);
-
+			System.out.println("currentClasspathListFile: " + currentClasspathListFile.toString());
 			if (currentClasspathListFile.exists()) {
 				// delete old include file
 				try {
@@ -143,7 +142,7 @@ public class UpdateOtherClasspathIncludeFiles extends UpdateIncludeFiles {
 				}
 			}
 
-			if (project.getProperty(ROOT_PATHS[i]) == null) {
+			if (this.getROOTPATHProperty(ROOT_PATHS[i]) == null) {
 				System.out.println(
 					"Property " + ROOT_PATHS[i] + " doesn't exists");
 				continue;
@@ -160,7 +159,7 @@ public class UpdateOtherClasspathIncludeFiles extends UpdateIncludeFiles {
 					resolvedEntry =
 						classpathEntryToOtherClasspathEntry(
 							classPaths[j],
-							new Path(project.getProperty(ROOT_PATHS[i])));
+							this.getROOTPATHProperty(ROOT_PATHS[i]));
 
 					if (resolvedEntry != null
 						&& !resolvedEntries.contains(classPaths[j])) {
@@ -214,7 +213,10 @@ public class UpdateOtherClasspathIncludeFiles extends UpdateIncludeFiles {
 	 */
 	private String classpathEntryToOtherClasspathEntry(
 		IClasspathEntry entry,
-		Path rootDir) {
+		IPath rootDir) {
+			System.out.println("classpathEntryToOtherClasspathEntry");
+			System.out.println("entry: " + entry);
+			System.out.println("rootDir" + rootDir);
 		String toReturn = null;
 		IPath pathToConvert;
 		if (entry.getPath().matchingFirstSegments(rootDir)
@@ -236,6 +238,8 @@ public class UpdateOtherClasspathIncludeFiles extends UpdateIncludeFiles {
 			}
 			toReturn = pathToConvert.toOSString();
 		}
+		System.out.println("toReturn: " + toReturn);
+		System.out.println("classpathEntryToOtherClasspathEntry return");
 		return toReturn;
 	}
 }
