@@ -74,7 +74,8 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.actions.WorkspaceModifyDelegatingOperation;
-import org.objectstyle.wolips.wo.WOVariables;
+import org.objectstyle.woproject.env.WOVariables;
+
 /**
  * @author mnolte
  * @author uli

@@ -99,6 +99,7 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 	 */
 	public void earlyStartup() {
 		EarlyStartup.earlyStartup();
+
 	}
 	/**
 	 * Returns an ImageDescriptor.

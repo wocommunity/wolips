@@ -65,7 +65,8 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.IWorkbenchPart;
 import org.objectstyle.wolips.ui.WOFrameworkDialogWrapper;
 import org.objectstyle.wolips.wizards.Messages;
-import org.objectstyle.wolips.wo.WOVariables;
+import org.objectstyle.woproject.env.WOVariables;
+
 
 /**
  * Adding WOFrameworks

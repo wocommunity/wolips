@@ -54,7 +54,9 @@
  *
  */
 package org.objectstyle.wolips.plugin;
-import org.objectstyle.wolips.env.Environment;
+
+import org.objectstyle.woproject.env.Environment;
+
 /**
  * @author mnolte
  */

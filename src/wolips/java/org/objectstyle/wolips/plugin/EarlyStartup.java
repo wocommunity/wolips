@@ -69,12 +69,14 @@ import org.eclipse.jdt.core.IElementChangedListener;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.objectstyle.wolips.builder.RunAnt;
-import org.objectstyle.wolips.env.Environment;
 import org.objectstyle.wolips.io.WOLipsLog;
 import org.objectstyle.wolips.listener.JavaElementChangeListener;
 import org.objectstyle.wolips.listener.ResourceChangeListener;
 import org.objectstyle.wolips.preferences.Preferences;
 import org.objectstyle.wolips.workbench.WorkbenchHelper;
+import org.objectstyle.woproject.env.Environment;
+import org.objectstyle.woproject.env.WOVariables;
+
 
 /**
  * @author uli
@@ -146,18 +148,39 @@ public class EarlyStartup {
 						false);
 					} finally {
 				relativeBuildFile = null; buildFile = null; monitor = null; }
-	} /**
+	}
+	
+	 /**
 	 * Method validateMandatoryAttributes.
 	 */
 	private static void validateMandatoryAttributes() {
 		if (JavaCore.getClasspathVariable(Environment.NEXT_ROOT) == null) {
 			try {
 				JavaCore.setClasspathVariable(
-					Environment.NEXT_ROOT,
-					new Path(Environment.nextRoot()),
+				Environment.NEXT_ROOT,
+					new Path(WOVariables.nextRoot()),
 					null);
 					} catch (JavaModelException e) {
 				WOLipsLog.log(e); }
 		}
+		if (JavaCore.getClasspathVariable(Environment.NEXT_LOCAL_ROOT) == null) {
+			try {
+				JavaCore.setClasspathVariable(
+				Environment.NEXT_LOCAL_ROOT,
+					new Path(WOVariables.localRoot()),
+					null);
+					} catch (JavaModelException e) {
+				WOLipsLog.log(e); }
+		}
+		if (JavaCore.getClasspathVariable(Environment.NEXT_SYSTEM_ROOT) == null) {
+					try {
+						JavaCore.setClasspathVariable(
+						Environment.NEXT_SYSTEM_ROOT,
+							new Path(WOVariables.systemRoot()),
+							null);
+							} catch (JavaModelException e) {
+						WOLipsLog.log(e); }
+				}
+		
 	}
 }

@@ -58,7 +58,9 @@ package org.objectstyle.wolips.utils;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
+import org.objectstyle.wolips.io.WOLipsLog;
 import org.objectstyle.wolips.plugin.IWOLipsPluginConstants;
+import org.objectstyle.woproject.env.WOVariables;
 
 /**
  * @author mnolte
@@ -89,6 +91,22 @@ public class WOLipsUtils implements IWOLipsPluginConstants {
 		}
 		return resultList;
 	}
+	
+	/**
+	 * Method classPathVariableToExpand.
+	 * @param aString
+	 * @return String
+	 */
+	public static String classPathVariableToExpand(String aString) {
+			if (aString == null)
+				return null;
+			if (aString.equals("webobjects.next.root"))
+				return WOVariables.nextRoot();
+			if (aString.equals("webobjects.system.library.dir"))
+				return WOVariables.libraryDir();
+			WOLipsLog.log("Can not resolve classpath variable: " + aString);
+			return null;
+		}
 
 	// mn: not deleted yet
 	// possible to use this class in future

@@ -59,6 +59,7 @@ import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Hashtable;
+
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -71,11 +72,11 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.objectstyle.wolips.env.Environment;
 import org.objectstyle.wolips.plugin.WOLipsPlugin;
 import org.objectstyle.wolips.utils.WOLipsUtils;
 import org.objectstyle.wolips.wizards.Messages;
 import org.objectstyle.wolips.workbench.WorkbenchHelper;
+import org.objectstyle.woproject.env.WOVariables;
 import org.w3c.dom.Element;
 /**
  * FileFromTemplateCreator creates files from templates and given file handles.
@@ -336,7 +337,7 @@ public class FileFromTemplateCreator extends _FileFromTemplateCreator {
 				expandedValue = this.getExpandedValueForBuildDir(expandedValue);
 				break;
 			case NEXT_ROOT :
-				expandedValue = Environment.nextRoot();
+				expandedValue = WOVariables.nextRoot();
 				break;
 		}
 		return expandedValue;

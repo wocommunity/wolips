@@ -72,9 +72,10 @@ import org.eclipse.ui.dialogs.FileSelectionDialog;
 import org.eclipse.ui.dialogs.FileSystemElement;
 import org.eclipse.ui.wizards.datatransfer.FileSystemStructureProvider;
 import org.eclipse.ui.wizards.datatransfer.SelectFilesOperation;
-import org.objectstyle.wolips.env.Environment;
 import org.objectstyle.wolips.plugin.WOLipsPlugin;
 import org.objectstyle.wolips.wizards.Messages;
+import org.objectstyle.woproject.env.Environment;
+import org.objectstyle.woproject.env.WOVariables;
 
 /**
  * Wrapper of FileSelectionDialog to select jars from given
@@ -85,7 +86,7 @@ import org.objectstyle.wolips.wizards.Messages;
  */
 public class WOFrameworkDialogWrapper {
 
-	private static Path nextRootAsPath = new Path(Environment.nextRoot());
+	private static Path nextRootAsPath = new Path(WOVariables.nextRoot());
 
 	private FileSelectionDialog dialog;
 	private IJavaProject projectToUpdate;

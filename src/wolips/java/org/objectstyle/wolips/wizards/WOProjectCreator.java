@@ -64,6 +64,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.apache.tools.ant.DirectoryScanner;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -89,7 +90,6 @@ import org.objectstyle.wolips.plugin.IWOLipsPluginConstants;
 import org.objectstyle.wolips.plugin.WOLipsPlugin;
 import org.objectstyle.wolips.project.ProjectHelper;
 import org.objectstyle.wolips.utils.WOLipsUtils;
-import org.objectstyle.wolips.wo.WOVariables;
 import org.objectstyle.woproject.pb.PBProject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -631,7 +631,7 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 	 * @return found value or null
 	 */
 	private String expandVariable(String variableToExpand) {
-		return WOVariables.classPathVariableToExpand(variableToExpand);
+		return WOLipsUtils.classPathVariableToExpand(variableToExpand);
 	}
 	/**
 	 * Method variableList. List of variables to expand from templates

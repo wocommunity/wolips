@@ -60,6 +60,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFolder;
@@ -75,10 +76,11 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.internal.ui.util.CoreUtility;
-import org.objectstyle.wolips.env.Environment;
 import org.objectstyle.wolips.io.WOLipsLog;
 import org.objectstyle.wolips.plugin.IWOLipsPluginConstants;
-import org.objectstyle.wolips.wo.WOVariables;
+import org.objectstyle.woproject.env.Environment;
+import org.objectstyle.woproject.env.WOVariables;
+
 /**
  * @author uli
  *
@@ -590,7 +592,7 @@ public class ProjectHelper implements IWOLipsPluginConstants {
 		throws JavaModelException {
 		IClasspathEntry[] oldClasspathEntries =
 			projectToUpdate.getResolvedClasspath(true);
-		IPath nextRootAsPath = new Path(Environment.nextRoot());
+		IPath nextRootAsPath = new Path(WOVariables.nextRoot());
 		ArrayList classpathEntries = new ArrayList(frameworkList.size());
 		IPath frameworkPath;
 		String jarName;
