@@ -78,6 +78,11 @@ public class Preferences {
 	public static final String PREF_RUN_WOBUILDER_ON_BUILD =
 		"org.objectstyle.wolips.preference.RunWOBuilderOnBuild";
 	/**
+	 * Comment for <code>PREF_CAPTURE_ANT_OUTPUT</code>
+	 */
+	public static final String PREF_CAPTURE_ANT_OUTPUT =
+		"org.objectstyle.wolips.preference.CapureAntOutput";
+	/**
 	 * Comment for <code>PREF_OPEN_WOCOMPONENT_ACTION_INCLUDES_OPEN_HTML</code>
 	 */
 	public static final String PREF_OPEN_WOCOMPONENT_ACTION_INCLUDES_OPEN_HTML =
@@ -143,11 +148,17 @@ public class Preferences {
 	public static void setDefaults() {
 		IPreferenceStore store = getPreferenceStore();
 		if (Preferences.SET_DEFAULTS_STRING == null
-			|| Preferences.SET_DEFAULTS_STRING.equals(
-				Preferences.PREF_RUN_WOBUILDER_ON_BUILD))
-			store.setDefault(
-				Preferences.PREF_RUN_WOBUILDER_ON_BUILD,
-				Preferences.trueString);
+				|| Preferences.SET_DEFAULTS_STRING.equals(
+					Preferences.PREF_CAPTURE_ANT_OUTPUT))
+				store.setDefault(
+					Preferences.PREF_CAPTURE_ANT_OUTPUT,
+					Preferences.falseString);
+		if (Preferences.SET_DEFAULTS_STRING == null
+				|| Preferences.SET_DEFAULTS_STRING.equals(
+					Preferences.PREF_RUN_WOBUILDER_ON_BUILD))
+				store.setDefault(
+					Preferences.PREF_RUN_WOBUILDER_ON_BUILD,
+					Preferences.trueString);
 		if (Preferences.SET_DEFAULTS_STRING == null
 			|| Preferences.SET_DEFAULTS_STRING.equals(
 				Preferences.PREF_OPEN_WOCOMPONENT_ACTION_INCLUDES_OPEN_HTML))
@@ -332,21 +343,21 @@ public class Preferences {
 		 * @return
 		 */
 		public String getArgument() {
-			return argument;
+			return this.argument;
 		}
 
 		/**
 		 * @return
 		 */
 		public boolean isEnabled() {
-			return enabled;
+			return this.enabled;
 		}
 
 		/**
 		 * @return
 		 */
 		public String getParameter() {
-			return parameter;
+			return this.parameter;
 		}
 
 	}
@@ -379,6 +390,13 @@ public class Preferences {
 	public static boolean getPREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH() {
 		return Preferences.getBoolean(
 			Preferences.PREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH);
+	}
+
+	/**
+	 * @return
+	 */
+	public static boolean getPREF_CAPTURE_ANT_OUTPUT() {
+		return Preferences.getBoolean(Preferences.PREF_CAPTURE_ANT_OUTPUT);
 	}
 
 	/**
@@ -426,6 +444,13 @@ public class Preferences {
 		Preferences.setBoolean(
 			Preferences.PREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH,
 			value);
+	}
+
+	/**
+	 * @param value
+	 */
+	public static void setPREF_CAPTURE_ANT_OUTPUT(boolean value) {
+		Preferences.setBoolean(Preferences.PREF_CAPTURE_ANT_OUTPUT, value);
 	}
 
 	/**

@@ -3,7 +3,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0
  * 
- * Copyright (c) 2002,2004 The ObjectStyle Group and individual authors of the
+ * Copyright (c) 2002 - 2004 The ObjectStyle Group and individual authors of the
  * software. All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -64,7 +64,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.variables.VariablesPlugin;
 import org.eclipse.debug.core.DebugPlugin;
-import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
@@ -151,16 +150,6 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 		//if (projectNeedsClean())
 		//TODO:handle clean
 		this.launchAntInExternalVM(getProject().getFile(aBuildFile), monitor);
-	}
-	/**
-	 * Method projectNeedsClean.
-	 * 
-	 * @return boolean
-	 */
-	private boolean projectNeedsClean() {
-		//currently we get an an exception on clean
-		//return this.getDelta(this.getProject()) == null;
-		return false;
 	}
 	/**
 	 * Method projectNeedsAnUpdate.
@@ -298,7 +287,7 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 						// project deleted no further investigation needed
 						return false;
 					}
-					project = (Project)resource.getAdapter(Project.class);
+					this.project = (Project) resource.getAdapter(Project.class);
 				case IResource.FOLDER :
 					if (IWOLipsModel.EXT_FRAMEWORK.equals(resource
 							.getFileExtension())
@@ -318,11 +307,17 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 								|| ".classpath".equals(resource.getName())
 								|| "Makefile".equals(resource.getName())
 								|| resource.getName().startsWith("ant.")) {
-						} else
-							if(resource.getName().endsWith(".java") || project.matchesResourcesPattern(resource) || project.matchesWOAppResourcesPattern(resource) || project.matchesClassesPattern(resource)) {
-								buildRequired = true;
-								return false;
-							}
+							this.buildRequired = true;
+							return false;
+						} else if (resource.getName().endsWith(".java")
+								|| this.project
+										.matchesResourcesPattern(resource)
+								|| this.project
+										.matchesWOAppResourcesPattern(resource)
+								|| this.project.matchesClassesPattern(resource)) {
+							this.buildRequired = true;
+							return false;
+						}
 					}
 			}
 			return false;
@@ -340,7 +335,7 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 		 * @return
 		 */
 		public boolean isBuildRequired() {
-			return buildRequired;
+			return this.buildRequired;
 		}
 	}
 	/**
@@ -366,9 +361,11 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 		}
 		try {
 			//config= ExternalToolMigration.migrateRunInBackground(config);
-			ILaunch launch = config.launch(ILaunchManager.RUN_MODE, monitor);
-			ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
-			//manager.removeLaunch(launch);	
+			//ILaunch launch =
+			config.launch(ILaunchManager.RUN_MODE, monitor);
+			//ILaunchManager manager = DebugPlugin.getDefault()
+			//		.getLaunchManager();
+			//manager.removeLaunch(launch);
 		} finally {
 			config = null;
 		}
@@ -400,19 +397,23 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 		workingCopy.setAttribute(
 				IJavaLaunchConfigurationConstants.ATTR_CLASSPATH_PROVIDER,
 				"org.eclipse.ant.ui.AntClasspathProvider"); //$NON-NLS-1$
-		IVMInstall defaultInstall= null;
-		defaultInstall= JavaRuntime.getDefaultVMInstall();
+		IVMInstall defaultInstall = null;
+		defaultInstall = JavaRuntime.getDefaultVMInstall();
 		//try {
-			//defaultInstall = JavaRuntime.computeVMInstall(workingCopy);
+		//defaultInstall = JavaRuntime.computeVMInstall(workingCopy);
 		//} catch (CoreException e) {
-			//core exception thrown for non-Java project
-			//defaultInstall= JavaRuntime.getDefaultVMInstall();
+		//core exception thrown for non-Java project
+		//defaultInstall= JavaRuntime.getDefaultVMInstall();
 		//}
 		if (defaultInstall != null) {
 			String vmName = defaultInstall.getName();
-			String vmTypeID = defaultInstall.getVMInstallType().getId();					
-			workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_INSTALL_NAME, vmName);
-			workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_VM_INSTALL_TYPE, vmTypeID);
+			String vmTypeID = defaultInstall.getVMInstallType().getId();
+			workingCopy.setAttribute(
+					IJavaLaunchConfigurationConstants.ATTR_VM_INSTALL_NAME,
+					vmName);
+			workingCopy.setAttribute(
+					IJavaLaunchConfigurationConstants.ATTR_VM_INSTALL_TYPE,
+					vmTypeID);
 		}
 		workingCopy.setAttribute(
 				IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME,
@@ -425,10 +426,20 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 		workingCopy.setAttribute(
 				IJavaLaunchConfigurationConstants.ATTR_PROGRAM_ARGUMENTS,
 				(String) null);
-		
-		workingCopy.setAttribute("org.eclipse.ui.externaltools.ATTR_SHOW_CONSOLE", false);
-		workingCopy.setAttribute("org.eclipse.debug.ui.ATTR_LAUNCH_IN_BACKGROUND", false);
-		workingCopy.setAttribute("org.eclipse.ui.externaltools.ATTR_CAPTURE_OUTPUT", false);
+
+		workingCopy.setAttribute(
+				"org.eclipse.debug.ui.ATTR_LAUNCH_IN_BACKGROUND", false);
+		if (Preferences.getPREF_CAPTURE_ANT_OUTPUT()) {
+			workingCopy.setAttribute(
+					"org.eclipse.ui.externaltools.ATTR_SHOW_CONSOLE", true);
+			workingCopy.setAttribute(
+					"org.eclipse.ui.externaltools.ATTR_CAPTURE_OUTPUT", true);
+		} else {
+			workingCopy.setAttribute(
+					"org.eclipse.ui.externaltools.ATTR_SHOW_CONSOLE", false);
+			workingCopy.setAttribute(
+					"org.eclipse.ui.externaltools.ATTR_CAPTURE_OUTPUT", false);
+		}
 		workingCopy.setAttribute(IDebugUIConstants.ATTR_PRIVATE, true);
 		return workingCopy.doSave();
 	}

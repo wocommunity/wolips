@@ -385,7 +385,7 @@
          point="org.eclipse.ui.actionSets">
       <actionSet
             label="WOLips"
-            description="WOLips Wizards"
+            description="WOLips Actions"
             visible="false"
             id="org.objectstyle.wolips.ui.BuildActionSet">
          <action
@@ -394,8 +394,17 @@
                icon="icons/wobuild/toggle_build.gif"
                tooltip="Toggle WOBuild"
                class="org.objectstyle.wolips.ui.actions.WOBuildToggleAction"
-               toolbarPath="Normal/WOLipsWizards"
+               toolbarPath="Normal/WOLipsActions"
                id="org.objectstyle.wolips.ui.actions.WOBuildToggleAction">
+         </action>
+         <action
+               label="Toggle Ant Output"
+               style="toggle"
+               icon="icons/wobuild/toggle_ant_output.gif"
+               tooltip="Toggle Ant Output"
+               class="org.objectstyle.wolips.ui.actions.ToggleAntOutputAction"
+               toolbarPath="Normal/WOLipsActions"
+               id="org.objectstyle.wolips.ui.actions.ToggleAntOutputAction">
          </action>
       </actionSet>
    </extension>
