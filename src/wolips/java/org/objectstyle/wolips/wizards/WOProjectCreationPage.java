@@ -87,48 +87,18 @@ public class WOProjectCreationPage extends WizardNewProjectCreationPage {
 		setInitialProjectName(
 			Messages.getString("WOProjectCreationPage.newProject.defaultName"));
 	}
+	
 	public boolean createProject() {
 		IProject newProject = getProjectHandle();
 		String projectTemplateID =
-			Messages.getString("webobjects.projectType.java.application");
-			
-		IPath locationPath = getLocationPath().makeAbsolute().toFile().isDirectory()?getLocationPath():null;
-		/*
-		if (getLocationPath().matchingFirstSegments(Platform.getLocation())
-			== Platform.getLocation().segmentCount()
-			&& getLocationPath().getDevice() != null
-			&& getLocationPath().getDevice().equals(
-				Platform.getLocation().getDevice())) {
-			// getLocationPath() starts with Platform.getLocation()
-			// no import
-			locationPath = null;
-		} else {
-			locationPath = getLocationPath();
-		}
-		*/
-		
-		/*
-		WOProjectCreator aWOProjectCreator = null;
-		if (this.useDefaults())
-			aWOProjectCreator =
-				new WOProjectCreator(
-					newProject,
-					projectTemplateID,
-					locationPath);
-		else
-			aWOProjectCreator =
-				new WOProjectCreator(
-					newProject,
-					projectTemplateID,
-					getLocationPath());
-					*/
+			Messages.getString("webobjects.projectType.java.application");	
 					
 		IRunnableWithProgress op =
 			new WorkspaceModifyDelegatingOperation(
 				new WOProjectCreator(
 					newProject,
 					projectTemplateID,
-					locationPath));
+					getLocationPath()));
 		try {
 			getContainer().run(false, false, op);
 		} catch (InvocationTargetException e) {

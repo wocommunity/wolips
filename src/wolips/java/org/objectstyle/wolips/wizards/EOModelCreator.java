@@ -53,8 +53,8 @@
  * <http://objectstyle.org/>.
  *
  */
- 
- package org.objectstyle.wolips.wizards;
+
+package org.objectstyle.wolips.wizards;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Hashtable;
@@ -74,34 +74,55 @@ import org.objectstyle.wolips.io.FileFromTemplateCreator;
  * <br>
  * @see com.neusta.webobjects.eclipse.wizards.EOModelCreationPage
  */
+
 public class EOModelCreator extends WOProjectResourceCreator {
 
 	private String modelName;
+
 	private String adaptorName;
 
 	/**
 	 * Constructor for EOModelCreator.
 	 */
-	public EOModelCreator(IResource parentResource, String modelName, String adaptorName) {
+
+	public EOModelCreator(
+		IResource parentResource,
+		String modelName,
+		String adaptorName) {
+
 		super(parentResource);
+
 		this.modelName = modelName;
+
 		this.adaptorName = adaptorName;
+
 	}
 
 	protected int getType() {
+
 		return EOMODEL_CREATOR;
+
 	}
 
 	/**
 	 * @see WOProjectResourceCreator#run(IProgressMonitor)
 	 */
-	public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+
+	public void run(IProgressMonitor monitor)
+		throws InvocationTargetException, InterruptedException {
+
 		super.run(monitor);
+
 		try {
+
 			createEOModel(monitor);
+
 		} catch (CoreException e) {
+
 			throw new InvocationTargetException(e);
+
 		}
+
 	}
 
 	/**
@@ -117,36 +138,57 @@ public class EOModelCreator extends WOProjectResourceCreator {
 	 * @throws CoreException
 	 * @throws InvocationTargetException
 	 */
-	public void createEOModel(IProgressMonitor monitor) throws CoreException, InvocationTargetException {
+
+	public void createEOModel(IProgressMonitor monitor)
+		throws CoreException, InvocationTargetException {
 
 		// create the new file resources
+
 		if (fileCreator == null) {
+
 			Hashtable adaptorNameTranslation = new Hashtable(1);
+
 			adaptorNameTranslation.put("ADAPTOR_NAME", adaptorName);
+
 			fileCreator = new FileFromTemplateCreator(adaptorNameTranslation);
+
 		}
 
 		IFolder modelFolder = null;
 
 		switch (parentResource.getType()) {
+
 			case IResource.PROJECT :
-				modelFolder = ((IProject) parentResource).getFolder(modelName + "." + EXT_EOMODEL);
+
+				modelFolder =
+					((IProject) parentResource).getFolder(
+						modelName + "." + EXT_EOMODEL);
 
 				break;
+
 			case IResource.FOLDER :
-				modelFolder = ((IFolder) parentResource).getFolder(modelName + "." + EXT_EOMODEL);
+
+				modelFolder =
+					((IFolder) parentResource).getFolder(
+						modelName + "." + EXT_EOMODEL);
 
 				break;
+
 			default :
-				throw new InvocationTargetException(new Exception("Wrong parent resource - check validation"));
+
+				throw new InvocationTargetException(
+					new Exception("Wrong parent resource - check validation"));
+
 		}
 
 		IFile modelIndexFile = modelFolder.getFile("index." + EXT_EOMODEL);
+
 		IFile modelDiagramLayoutFile = modelFolder.getFile("DiagramLayout");
 
 		createResourceFolderInProject(modelFolder, monitor);
 
 		fileCreator.create(modelIndexFile, monitor);
+
 		fileCreator.create(modelDiagramLayoutFile, "diagram", monitor);
 
 	}

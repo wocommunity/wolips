@@ -181,8 +181,10 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 		String templateID,
 		IPath locationPath) {
 		this(newProject, templateID);
-		this.locationPath = locationPath;
+		// validate location path
+		this.locationPath = locationPath.makeAbsolute().toFile().isDirectory()?locationPath:null;
 	}
+	
 	protected int getType() {
 		return PROJECT_CREATOR;
 	}
@@ -240,13 +242,7 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 		componentCreator.setFileCreator(fileCreator);
 		NodeList fileNodeList = elementForTemplate.getElementsByTagName("file");
 		try {
-			//create src folder
-			/*
-						((IProject) parentResource).getFolder("src").create(
-							true,
-							true,
-							monitor);
-							*/
+			
 			String currentFileTemplateId = null;
 			String currentFileName = null;
 			for (int i = 0; i < fileNodeList.getLength(); i++) {

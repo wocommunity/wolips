@@ -136,25 +136,22 @@ public class ResourceChangeListener
 					.getRemovedResourcesProjectDict()
 					.allKeys()
 					.objectAtIndex(i);
-			projectUpdater =
-				new PBProjectUpdater(projectFileToUpdate.getParent());
-			projectUpdater.syncFilestable(
-				(NSDictionary) resourceValidator
-					.getRemovedResourcesProjectDict()
-					.objectForKey(
-					projectFileToUpdate),
-				IResourceDelta.REMOVED);
+			// ensure project file container exists
+			// if no container exists the whole project is deleted
+			if (projectFileToUpdate.getParent().exists()) {
+				projectUpdater =
+					new PBProjectUpdater(projectFileToUpdate.getParent());
+				projectUpdater.syncFilestable(
+					(NSDictionary) resourceValidator
+						.getRemovedResourcesProjectDict()
+						.objectForKey(
+						projectFileToUpdate),
+					IResourceDelta.REMOVED);
+			}
 		}
-		/*
-				System.out.println(
-					"******* resource added "
-						+ resourceValidator.getAddedResourcesProjectDict());
-				System.out.println(
-					"******* resource removed "
-						+ resourceValidator.getRemovedResourcesProjectDict());
-				System.out.println("******* resourceChanged end ");
-				*/
+		
 	}
+	
 	private class ProjectFileResourceValidator
 		implements IResourceDeltaVisitor {
 		//private QualifiedName resourceQualifier;
@@ -200,6 +197,10 @@ public class ResourceChangeListener
 					// further investigation of resource delta needed
 					return true;
 				case IResource.PROJECT :
+					if (!resource.exists()) {
+						// project deleted no further investigation needed
+						return false;
+					}
 					if (((IProject) resource).hasNature(WO_APPLICATION_NATURE)
 						|| ((IProject) resource).hasNature(WO_FRAMEWORK_NATURE)) {
 						// resource change concerns to webobjects project
@@ -318,7 +319,6 @@ public class ResourceChangeListener
 							EXT_API.equals(resource.getFileExtension())
 								|| EXT_STRINGS.equals(
 									resource.getFileExtension())) {
-
 							updateProjectFile(
 								kindOfChange,
 								resource,

@@ -987,12 +987,6 @@ DSTROOT = $(NEXT_ROOT)
 	{
 }
 ]]></template>
-	<template name="eomodel index" id="eomodeld" variables="ADAPTOR_NAME" enabled="true"><![CDATA[{
-    EOModelVersion = 2.1; 
-    adaptorName = ${ADAPTOR_NAME}; 
-    connectionDictionary = {URL = ""; driver = ""; password = ""; plugin = ""; username = ""; }; 
-    entities = (); 
-}]]></template>
-	<template name="eomodel diagram layout" id="diagram" enabled="true"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-{}]]></template>
+	<template name="eomodel index" id="eomodeld" variables="ADAPTOR_NAME" enabled="true"><![CDATA[{EOModelVersion = 2.1; adaptorName = ${ADAPTOR_NAME}; entities = (); }]]></template>
+	<template name="eomodel diagram layout" id="diagram" enabled="true"><![CDATA[{}]]></template>
 </templates>

@@ -201,7 +201,7 @@ public class EOModelCreationPage extends WizardNewWOResourcePage {
 		buttonText = "None";
 		currentAdaptorButton.setText(buttonText);
 		currentAdaptorButton.setSelection(true);
-		availableAdaptors.put(currentAdaptorButton, "");
+		availableAdaptors.put(currentAdaptorButton, "None");
 		for (int i = 0; i < adaptorFilter.getAdaptorNames().size(); i++) {
 			currentAdaptorButton = new Button(group, SWT.RADIO);
 			buttonText = (String) adaptorFilter.getAdaptorNames().elementAt(i);
