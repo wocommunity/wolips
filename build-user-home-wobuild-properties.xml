@@ -24,6 +24,8 @@
       				<isset property="wo.dir.local"/>
       				<isset property="wo.dir.local.library"/>
       				<isset property="wo.dir.local.library.frameworks"/>
+      				<isset property="wo.dir.user.home.library"/>
+      				<isset property="wo.dir.user.home.frameworks"/>
       			</and>
     		</not>
   		</condition>
@@ -54,6 +56,8 @@
  			<entry  key="wo.dir.local" value="${env.NEXT_ROOT}/Local"/>
  			<entry  key="wo.dir.local.library" value="${env.NEXT_ROOT}/Local/Library"/>
  			<entry  key="wo.dir.local.library.frameworks" value="${env.NEXT_ROOT}/Local/Library/Frameworks"/>
+ 			<entry  key="wo.dir.user.home.library" value="${user.home}/Local/Library"/>
+ 			<entry  key="wo.dir.user.home.library.frameworks" value="${user.home}/Local/Library/Frameworks"/>
 		</propertyfile>
 		
 		<condition property="correct.win">
@@ -80,6 +84,8 @@
  			<entry  key="wo.dir.local" value="/"/>
  			<entry  key="wo.dir.local.library" value="/Library"/>
  			<entry  key="wo.dir.local.library.frameworks" value="/Library/Frameworks"/>
+ 			<entry  key="wo.dir.user.home.library" value="${user.home}/Library"/>
+ 			<entry  key="wo.dir.user.home.library.frameworks" value="${user.home}/Library/Frameworks"/>
  		</propertyfile>
 	</target>
 		
