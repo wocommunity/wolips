@@ -413,6 +413,22 @@ public final class PBProjectUpdater {
 								actualResources));
 						break;
 				}
+			} else if (IWOLipsModel.WS_RESOURCES_ID.equals(currentKey)) {
+				actualResources = pbProject.getWebServerResources();
+				switch (kindOfChange) {
+					case IResourceDelta.ADDED :
+						pbProject.setWebServerResources(
+							addResources(
+								(List) changedResources.get(currentKey),
+								actualResources));
+						break;
+					case IResourceDelta.REMOVED :
+						pbProject.setWebServerResources(
+							removeResources(
+								(List) changedResources.get(currentKey),
+								actualResources));
+						break;
+				}
 			} else if (IWOLipsModel.CLASSES_ID.equals(currentKey)) {
 				actualResources = pbProject.getClasses();
 				switch (kindOfChange) {

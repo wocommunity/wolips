@@ -39,23 +39,25 @@
 	
 	<!-- woproject tasks -->
 	<target name="build.woapp">
-	    <!-- add webXML="true" to generate a web.xml file -->
+	    
+	    <taskdef name="woapplication" classname="org.objectstyle.woproject.ant.WOApplication">
+    	</taskdef>
+
+		<!-- add webXML="true" to generate a web.xml file -->
 		<woapplication name="${project.name}"  stdFrameworks="false" destDir="${dest.dir}">
    			<classes dir="${classes.dir}">
    			</classes>
    			<wsresources dir=".">
-   				<include name="addYourWebServerResourcesHere"/>
-				<exclude name="**/*.woa/**"/>
+      			<patternset>
+  					<includesfile name="wsresources.include.patternset"/> 
+					<excludesfile name="wsresources.exclude.patternset"/> 
+				</patternset>
 			</wsresources>
    			<resources dir=".">
-				<include name="Properties"/>
-   				<include name="**/*.eomodeld/"/>
-   				<include name="**/*.d2wmodel"/>
-       			<include name="**/*.wo/"/>
-       			<include name="**/*.api"/>
-       			<include name="**/*.strings"/>
-       			<exclude name="**/*.eomodeld~/"/>
-       			<exclude name="**/*.woa/**"/>
+      			<patternset>
+  					<includesfile name="resources.include.patternset"/> 
+					<excludesfile name="resources.exclude.patternset"/> 
+				</patternset>
        		</resources>
 			<frameworks root="${wo.wosystemroot}">
       				<patternset>

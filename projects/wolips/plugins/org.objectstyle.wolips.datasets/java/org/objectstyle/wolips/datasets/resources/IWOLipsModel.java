@@ -87,6 +87,7 @@ public interface IWOLipsModel {
 	 public static final String EXT_DIST = "dist";
 	 // webobjects project file lists
 	 public static final String RESOURCES_ID = "WOAPP_RESOURCES";
+	 public static final String WS_RESOURCES_ID = "WEBSERVER_RESOURCES";
 	 public static final String CLASSES_ID = "CLASSES";
 	 public static final String COMPONENTS_ID = "WO_COMPONENTS";
 	 public static final String SUBPROJECTS_ID = "SUBPROJECTS";

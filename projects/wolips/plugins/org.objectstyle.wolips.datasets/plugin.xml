@@ -27,6 +27,7 @@
       <import plugin="org.objectstyle.wolips.variables"/>
       <import plugin="org.objectstyle.wolips.woproject"/>
       <import plugin="org.objectstyle.wolips.workbenchutilities"/>
+      <import plugin="org.apache.ant"/>
    </requires>
 
 

@@ -103,6 +103,22 @@
       </fileTypes>
       <fileTypes
             type="text"
+            extension="resources.include.patternset">
+      </fileTypes>
+      <fileTypes
+            type="text"
+            extension="resources.exclude.patternset">
+      </fileTypes>
+      <fileTypes
+            type="text"
+            extension="wsresources.include.patternset">
+      </fileTypes>
+      <fileTypes
+            type="text"
+            extension="wsresources.exclude.patternset">
+      </fileTypes>
+      <fileTypes
+            type="text"
             extension="build.launch">
       </fileTypes>
    </extension>
