@@ -63,7 +63,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Hashtable;
-
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -117,35 +116,11 @@ import org.xml.sax.SAXException;
  * @author mnolte
  *
  */
-public class FileFromTemplateCreator {
-	// translate expected variable strings to int 
-	// for switch case in expandVariable
-	private static final int PLUGIN_NAME = 0;
-	private static final int CLASS = 1;
-	private static final int DATE = 2;
-	private static final int PROJECT_NAME = 3;
-	private static final int PACKAGE_NAME = 4;
-	private static final int ADAPTOR_NAME = 5;
-	private static final int BUILD_DIR = 6;
-	private static final int NEXT_ROOT = 7;
-	private static final String[] ALL_KEYS =
-		{
-			"PLUGIN_NAME",
-			"CLASS",
-			"DATE",
-			"PROJECT_NAME",
-			"PACKAGE_NAME",
-			"ADAPTOR_NAME",
-			"BUILD_DIR",
-			"NEXT_ROOT" };
-	private static Hashtable keyToIntegerDict;
+public class FileFromTemplateCreator extends _FileFromTemplateCreator {
 	/////////////////////////////////////////////
 	private IFile fileToCreate;
 	private String fileNameWithoutExtension;
 	private String templateID;
-	private static Document templateDocument;
-	private static Hashtable variableInfo;
-	//private static Properties templateProperties;
 	/**
 	 * Standard constructor
 	 */
@@ -197,7 +172,7 @@ public class FileFromTemplateCreator {
 				// ask for overwriting existing file
 				if (MessageDialog
 					.openQuestion(
-					WorkbenchHelper.getActiveWorkbenchShell(),
+						WorkbenchHelper.getActiveWorkbenchShell(),
 						Messages.getString("QuestionDialog.title"),
 						e.getMessage()
 							+ "\n"
@@ -312,130 +287,105 @@ public class FileFromTemplateCreator {
 		Integer valueFromDict =
 			(Integer) getKeyToIntegerDict().get(variableToExpand);
 		// default value
+		if (valueFromDict == null)
+			return variableToExpand;
 		String expandedValue = variableToExpand;
-		IContainer parentResource;
-		if (valueFromDict != null) {
-			switch (valueFromDict.intValue()) {
-				case PLUGIN_NAME :
-					expandedValue =
-						WOLipsPlugin.getDefault().getDescriptor().getLabel();
-					break;
-				case CLASS :
-					expandedValue = fileNameWithoutExtension;
-					break;
-				case DATE :
-					expandedValue = (new java.util.Date()).toString();
-					break;
-				case PROJECT_NAME :
-					parentResource = fileToCreate.getParent();
-					if (parentResource instanceof IProject) {
-						expandedValue = ((IProject) parentResource).getName();
-					} else if (parentResource instanceof IFolder) {
-						expandedValue = ((IFolder) parentResource).getName();
-					}
-					break;
-				case PACKAGE_NAME :
-					if (fileToCreate.getProjectRelativePath().segmentCount()
-						> 2) {
-						// source folders are non hierachical -> segment[0]
-						// if file is at least in segment[1] it must be a package
-						parentResource = fileToCreate.getParent();
-						StringBuffer packageNameBuffer =
-							new StringBuffer("package ");
-						IPath folderPath =
-							((IFolder) parentResource).getProjectRelativePath();
-						for (int i = 1; i < folderPath.segmentCount(); i++) {
-							packageNameBuffer.append(folderPath.segment(i));
-							packageNameBuffer.append(".");
-						}
-						packageNameBuffer.deleteCharAt(
-							packageNameBuffer.length() - 1);
-						packageNameBuffer.append(";");
-						expandedValue = packageNameBuffer.toString();
-					} else {
-						// no package declaration needed
-						expandedValue = "";
-					}
-					break;
-				case ADAPTOR_NAME :
-					if (variableInfo != null
-						&& variableInfo.get(variableToExpand) != null) {
-						expandedValue =
-							(String) variableInfo.get(variableToExpand);
-					}
-					break;
-				case BUILD_DIR :
-					// relativ path to output location
-					IJavaProject actualJavaProject =
-						JavaCore.create(fileToCreate.getProject());
-					IPath outputLocation;
-					try {
-						outputLocation = actualJavaProject.getOutputLocation();
-					} catch (JavaModelException e) {
-						break;
-					}
-					expandedValue =
-						outputLocation
-							.makeRelative()
-							.removeFirstSegments(1)
-							.toString();
-					for (int i = 0;
-						i
-							< fileToCreate
-								.getProjectRelativePath()
-								.segmentCount()
-								- 1;
-						i++) {
-						expandedValue = "../" + expandedValue;
-					}
-					break;
-				case NEXT_ROOT :
-					expandedValue = Environment.nextRoot();
-					break;
-			}
+		switch (valueFromDict.intValue()) {
+			case PLUGIN_NAME :
+				expandedValue =
+					WOLipsPlugin.getDefault().getDescriptor().getLabel();
+				break;
+			case CLASS :
+				expandedValue = fileNameWithoutExtension;
+				break;
+			case DATE :
+				expandedValue = (new java.util.Date()).toString();
+				break;
+			case PROJECT_NAME :
+				expandedValue =
+					this.getExpandedValueForProjectName(expandedValue);
+				break;
+			case PACKAGE_NAME :
+				expandedValue =
+					this.getExpandedValueForPackageName(expandedValue);
+				break;
+			case ADAPTOR_NAME :
+				if (variableInfo != null
+					&& variableInfo.get(variableToExpand) != null) {
+					expandedValue = (String) variableInfo.get(variableToExpand);
+				}
+				break;
+			case BUILD_DIR :
+				expandedValue = this.getExpandedValueForBuildDir(expandedValue);
+				break;
+			case NEXT_ROOT :
+				expandedValue = Environment.nextRoot();
+				break;
 		}
 		return expandedValue;
 	}
 	/**
-	 * The file template document is a parsed xml file resource containing
-	 * all file templates.
-	 * <p> 
-	 * @return the templateDocument
+	 * Method getExpandedValueForProjectName.
+	 * @param expandedValue
+	 * @return String
 	 */
-	private static synchronized Document getFileTemplateDocument()
-		throws InvocationTargetException {
-		if (templateDocument == null) {
-			IPath templatePath;
-			File templateFile;
-			try {
-				InputStream input =
-					(new URL(WOLipsPlugin.baseURL(),
-						WOVariables.woTemplateDirectory()
-							+ WOVariables.woTemplateFiles()))
-						.openStream();
-				templateDocument = XercesDocumentBuilder.documentBuilder().parse(input);
-			} catch (java.util.MissingResourceException e) {
-				throw new InvocationTargetException(e);
-			} catch (MalformedURLException e) {
-				throw new InvocationTargetException(e);
-			} catch (SAXException e) {
-				throw new InvocationTargetException(e);
-			} catch (IOException e) {
-				throw new InvocationTargetException(e);
-			} catch (NullPointerException e) {
-				throw new InvocationTargetException(e);
-			}
-		}
-		return templateDocument;
+	private String getExpandedValueForProjectName(String expandedValue) {
+		IContainer parentResource = fileToCreate.getParent();
+		if (parentResource instanceof IProject)
+			return ((IProject) parentResource).getName();
+		if (parentResource instanceof IFolder)
+			return ((IFolder) parentResource).getName();
+		return expandedValue;
 	}
-	private static Hashtable getKeyToIntegerDict() {
-		if (keyToIntegerDict == null) {
-			// build keyToIntegerDict
-			keyToIntegerDict = new Hashtable(ALL_KEYS.length);
-			for (int i = 0; i < ALL_KEYS.length; i++) {
-				keyToIntegerDict.put(ALL_KEYS[i], new Integer(i));
+	/**
+	 * Method getExpandedValueForPackageName.
+	 * @param expandedValue
+	 * @param parentResource
+	 * @return String
+	 */
+	private String getExpandedValueForPackageName(String expandedValue) {
+		if (fileToCreate.getProjectRelativePath().segmentCount() > 2) {
+			// source folders are non hierachical -> segment[0]
+			// if file is at least in segment[1] it must be a package
+			IContainer parentResource = fileToCreate.getParent();
+			StringBuffer packageNameBuffer = new StringBuffer("package ");
+			IPath folderPath =
+				((IFolder) parentResource).getProjectRelativePath();
+			for (int i = 1; i < folderPath.segmentCount(); i++) {
+				packageNameBuffer.append(folderPath.segment(i));
+				packageNameBuffer.append(".");
 			}
+			packageNameBuffer.deleteCharAt(packageNameBuffer.length() - 1);
+			packageNameBuffer.append(";");
+			expandedValue = packageNameBuffer.toString();
+		} else {
+			// no package declaration needed
+			expandedValue = "";
 		}
-		return keyToIntegerDict;
+		return expandedValue;
+	}
+	/**
+	 * Method getExpandedValueForBuildDir.
+	 * @param expandedValue
+	 * @return String
+	 */
+	private String getExpandedValueForBuildDir(String expandedValue) {
+		//		relativ path to output location
+		IJavaProject actualJavaProject =
+			JavaCore.create(fileToCreate.getProject());
+		IPath outputLocation;
+		try {
+			outputLocation = actualJavaProject.getOutputLocation();
+		} catch (JavaModelException e) {
+			return expandedValue;
+		}
+		expandedValue =
+			outputLocation.makeRelative().removeFirstSegments(1).toString();
+		for (int i = 0;
+			i < fileToCreate.getProjectRelativePath().segmentCount() - 1;
+			i++) {
+			expandedValue = "../" + expandedValue;
+		}
+		return expandedValue;
 	}
 }

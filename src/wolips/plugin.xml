@@ -445,34 +445,34 @@
    <extension
          point="org.eclipse.ui.views">
       <category
-            name="%WOLipsCategoryName"
-            id="org.eclipse.wolips.ui">
+            name="%WOLips.View.Category.Name"
+            id="org.objectstyle.wolips.ui">
       </category>
       <view
             name="%WOLips.NavigatorViewName"
             icon="icons/wolips/WOLips-icon.gif"
-            category="org.eclipse.wolips.ui"
+            category="org.objectstyle.wolips.ui"
             class="org.objectstyle.wolips.ui.Navigator"
             id="org.objectstyle.wolips.ui.Navigator">
       </view>
       <view
             name="%WOLips.WONavigatorViewName"
             icon="icons/wolips/WOLips-icon.gif"
-            category="org.eclipse.wolips.ui"
+            category="org.objectstyle.wolips.ui"
             class="org.objectstyle.wolips.ui.WONavigator"
             id="org.objectstyle.wolips.ui.WONavigator">
       </view>
       <view
             name="%WOLips.ModelNavigatorViewName"
             icon="icons/wolips/WOLips-icon.gif"
-            category="org.eclipse.wolips.ui"
+            category="org.objectstyle.wolips.ui"
             class="org.objectstyle.wolips.ui.ModelNavigator"
             id="org.objectstyle.wolips.ui.ModelNavigator">
       </view>
       <view
             name="%WOLips.ProductNavigatorViewName"
             icon="icons/wolips/WOLips-icon.gif"
-            category="org.eclipse.wolips.ui"
+            category="org.objectstyle.wolips.ui"
             class="org.objectstyle.wolips.ui.ProductNavigator"
             id="org.objectstyle.wolips.ui.ProductNavigator">
       </view>
