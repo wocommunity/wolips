@@ -42,9 +42,12 @@
                 optimize="${compile.optimize}">
             <classpath refid="classpath"/>
         </javac>
-
+         
         <jar jarfile="${dist-wolips}/lib/${project.name}-wolips.jar">
-            <fileset dir="${build}/wolips"/>           
+            <fileset dir="${build}/wolips"/>
+            <fileset dir="src/wolips/java">
+          	    <include name="**/*.properties"/>
+             </fileset>         
             <metainf dir="doc">
                 <include name="LICENSE*"/>
             </metainf>
