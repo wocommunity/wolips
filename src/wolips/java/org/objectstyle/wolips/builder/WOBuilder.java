@@ -64,6 +64,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.SubProgressMonitor;
 import org.objectstyle.wolips.WOLipsPlugin;
 
 /**
@@ -74,6 +75,7 @@ public abstract class WOBuilder extends IncrementalProjectBuilder {
 	private static AntRunner antRunner = null;
 	private static Vector marker = new Vector();
 	private static final boolean cacheAntRunner = false;
+	private static final String ANT_LOGGER_CLASS = "org.eclipse.ui.externaltools.internal.ui.ant.AntBuildLogger";
 	
 	/**
 	 * Constructor for WOBuilder.
@@ -99,8 +101,9 @@ public abstract class WOBuilder extends IncrementalProjectBuilder {
 			if(checkIfBuildfileExist(aBuildFile)) {
 				getProject().getFile(aBuildFile).deleteMarkers(IMarker.TASK, false, getProject().DEPTH_ONE);
 				antRunner().setBuildFileLocation(getProject().getFile(aBuildFile).getLocation().toOSString());
+				antRunner.addBuildLogger(ANT_LOGGER_CLASS);
 				antRunner().addUserProperties(args);
-				antRunner().run(monitor);
+				antRunner().run(new SubProgressMonitor(monitor, 1));
 				if(!WOBuilder.cacheAntRunner) WOBuilder.antRunner = null;
 			}
 		} 
