@@ -9,6 +9,16 @@
     <body>        
         <!-- Welcome section -->
         <section name="Welcome to WOProject and WOLips">
+
+        <p><i>December 01, 2003.</i> <b>WOLips 1.0.7.40 for Eclipse 2.1.2 released.</b></p>
+        <p>WOLips is a plugin for <a href="http://eclipse.org">Eclipse IDE</a> that
+        support development of WebObjects applications and frameworks.
+        <ul>
+            <li>To find the correct version <a href="compatibilty_matrix.html">click</a> here.</li>
+            <li><a href="wolips_install.html">How to install via Update Manager.</a></li>
+        </ul>
+        <hr/>
+        </p>
         
         <p><i>November 28, 2003.</i> <b>WOLips 1.0.7.37 for Eclipse 3.0.0 M5 released.</b></p>
         <p>WOLips is a plugin for <a href="http://eclipse.org">Eclipse IDE</a> that
@@ -20,15 +30,6 @@
         <hr/>
         </p>
 
-        <p><i>November 28, 2003.</i> <b>WOLips 1.0.7.38 for Eclipse 2.1.2 released.</b></p>
-        <p>WOLips is a plugin for <a href="http://eclipse.org">Eclipse IDE</a> that
-        support development of WebObjects applications and frameworks.
-        <ul>
-            <li>To find the correct version <a href="compatibilty_matrix.html">click</a> here.</li>
-            <li><a href="wolips_install.html">How to install via Update Manager.</a></li>
-        </ul>
-        <hr/>
-        </p>
 
         <p><i>November 25, 2003.</i> <b>WO 5.2.2 on Panther</b></p>
         <p>Read <a href="wolips.html">more</a>.
