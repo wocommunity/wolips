@@ -15,8 +15,6 @@
     <property file="default.properties"/>
     <property file="${project.lib.dir}/lib.properties"/>
     <property name="build.version.to.replace" value="1.0.6"/>
-    <property file="buildserver.version"/>
-	<property name="build.version" value="${eclipse_3_0_0}"/>
     
     <!-- ========================================== -->
     <!-- Print help.                                -->
@@ -40,9 +38,17 @@
     </target>
     
     <!-- ========================================== -->
+    <!-- Load version provided by buidserver.                            -->
+    <!-- ========================================== -->
+    <target name="load.version.file">
+	    <loadfile property="build.version"
+            srcFile="buildserver.version"/>
+    </target>
+    	
+    <!-- ========================================== -->
     <!-- Print environment.                         -->
     <!-- ========================================== -->
-    <target name="print.environment">
+    <target name="print.environment" depends="load.version.file">
         <echo>
         ****************************************
         * java.home = ${java.home}
