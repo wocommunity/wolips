@@ -59,9 +59,14 @@ package org.objectstyle.wolips.core.resources;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jdt.core.JavaModelException;
 import org.objectstyle.wolips.core.logging.WOLipsLog;
+import org.objectstyle.wolips.core.util.WorkbenchUtilities;
 
 /**
  * @author ulrich
@@ -99,42 +104,43 @@ public final class EOEntityJava
 	 * @see org.objectstyle.wolips.core.resources.IWOLipsResource#getRelatedResources()
 	 */
 	public final List getRelatedResources() {
-		return new ArrayList();
-		/*List plists = new ArrayList();
 		List list = new ArrayList();
+		List plists = new ArrayList();
 		if (this.getCorrespondingCompilationUnit() != null) {
 			try {
 				IProject[] projects =
 					WorkbenchUtilities.getWorkspace().getRoot().getProjects();
 				String fileName =
 					this
-						.getCorrespondingCompilationUnit()
-						.getCorrespondingResource()
-						.getName();
-				fileName = fileName.substring(0, fileName.length() - 5);
+					.getCorrespondingCompilationUnit()
+					.getCorrespondingResource()
+					.getName();
+				fileName = fileName.substring(0, 
+						fileName.length() - WOLipsModel.EOENTITY_PLIST_EXTENSION.length());
 				String[] extensions =
 					new String[] {
 						WOLipsModel.EOENTITY_PLIST_EXTENSION };
 				plists =
 					WorkbenchUtilities
-						.findResourcesInResourcesByNameAndExtensions(
-						projects,
-						fileName,
-						extensions);
+					.findResourcesInResourcesByNameAndExtensions(
+							projects,
+							fileName,
+							extensions);
 				for(int i = 0; i < plists.size(); i++) {
 					IResource resource = (IResource)plists.get(i);
 					if(resource != null) {
 						IContainer parent = resource.getParent();
-						if(parent != null && parent.getName().endsWith(WOLipsModel.EOMODEL_EXTENSION))
-						list.add(parent);		
+						if(parent != null && parent.getName().endsWith(WOLipsModel.EOMODEL_EXTENSION)) {
+							list.add(parent);		
+						}
 					}
 				}
-
+				
 			} catch (Exception e) {
 				WOLipsLog.log(e);
 			}
 		}
-		return list;*/
+		return list;
 	}
 
 	/**
@@ -142,7 +148,9 @@ public final class EOEntityJava
 	 * @param If forceToOpenIntextEditor is set to true the resource opens in a texteditor.
 	 */
 	public final void open(boolean forceToOpenIntextEditor) {
-		/*WorkbenchUtilities.open((IFile)this.getCorrespondingResource(), forceToOpenIntextEditor, "org.objectstyle.wolips.internal.wod.editor");*/
+		String fileName = this.getCorrespondingResource().getName();
+		IFile index = (IFile) ((IFolder) this.getCorrespondingResource()).findMember("index.eomodeld");
+		WorkbenchUtilities.open(index);
 	}
 
 }

@@ -59,6 +59,10 @@ package org.objectstyle.wolips.core.resources;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.objectstyle.wolips.core.util.WorkbenchUtilities;
+
 /**
  * @author ulrich
  *
@@ -116,25 +120,8 @@ public final class EOModel
 	 * @param If forceToOpenIntextEditor is set to true the resource opens in a texteditor.
 	 */
 	public final void open(boolean forceToOpenIntextEditor) {
-		/*String fileName = this.getCorrespondingResource().getName();
-		fileName = fileName.substring(0, fileName.length() - 3);
-		if (forceToOpenIntextEditor) {
-			WorkbenchUtilities.open(
-				(IFile) ((IFolder) this.getCorrespondingResource()).findMember(
-					fileName + "." + WOLipsModel.WOCOMPONENT_WOD_EXTENSION),
-				forceToOpenIntextEditor,
-				"org.objectstyle.wolips.internal.wod.editor");
-			WorkbenchUtilities.open(
-				(IFile) ((IFolder) this.getCorrespondingResource()).findMember(
-					fileName + "." + WOLipsModel.WOCOMPONENT_HTML_EXTENSION),
-				forceToOpenIntextEditor,
-				"org.objectstyle.wolips.internal.html.editor");
-		} else {
-			WorkbenchUtilities.open(
-				(IFile) ((IFolder) this.getCorrespondingResource()).findMember(
-					fileName + "." + WOLipsModel.WOCOMPONENT_WOD_EXTENSION),
-				forceToOpenIntextEditor,
-				"org.objectstyle.wolips.internal.wod.editor");
-		}*/
+		String fileName = this.getCorrespondingResource().getName();
+		IFile index = (IFile) ((IFolder) this.getCorrespondingResource()).findMember("index.eomodeld");
+		WorkbenchUtilities.open(index);
 	}
 }
