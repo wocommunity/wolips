@@ -393,6 +393,27 @@
             class="org.objectstyle.wolips.ui.Navigator"
             id="org.objectstyle.wolips.ui.Navigator">
       </view>
+      <view
+            name="%WOLips.WONavigatorViewName"
+            icon="icons/wolips/WOLips-icon.gif"
+            category="org.eclipse.wolips.ui"
+            class="org.objectstyle.wolips.ui.WONavigator"
+            id="org.objectstyle.wolips.ui.WONavigator">
+      </view>
+      <view
+            name="%WOLips.ModelNavigatorViewName"
+            icon="icons/wolips/WOLips-icon.gif"
+            category="org.eclipse.wolips.ui"
+            class="org.objectstyle.wolips.ui.ModelNavigator"
+            id="org.objectstyle.wolips.ui.ModelNavigator">
+      </view>
+      <view
+            name="%WOLips.ProductNavigatorViewName"
+            icon="icons/wolips/WOLips-icon.gif"
+            category="org.eclipse.wolips.ui"
+            class="org.objectstyle.wolips.ui.ProductNavigator"
+            id="org.objectstyle.wolips.ui.ProductNavigator">
+      </view>
    </extension>
 <!-- =================================================================================== -->
 <!-- Extension: Preferences                                                              -->

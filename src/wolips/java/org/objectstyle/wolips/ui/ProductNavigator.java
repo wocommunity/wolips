@@ -58,7 +58,7 @@
 
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.ui.views.navigator.ResourceNavigator;
-import org.objectstyle.wolips.ui.filters.ModelNavigatorFilter;
+import org.objectstyle.wolips.ui.filters.ProductNavigatorFilter;
 
 /**
  * @author uli
@@ -71,7 +71,7 @@ import org.objectstyle.wolips.ui.filters.ModelNavigatorFilter;
 public class ProductNavigator extends ResourceNavigator {
 
 
-	private ModelNavigatorFilter patternFilter = new ModelNavigatorFilter();
+	private ProductNavigatorFilter patternFilter = new ProductNavigatorFilter();
 
 	/**
 	 * Adds the filters to the viewer.
