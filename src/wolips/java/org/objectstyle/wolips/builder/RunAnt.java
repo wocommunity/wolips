@@ -57,7 +57,6 @@
 package org.objectstyle.wolips.builder;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Hashtable;
 
 import org.eclipse.ant.core.AntRunner;
 import org.eclipse.core.resources.IFile;
@@ -91,7 +90,6 @@ import org.objectstyle.wolips.workbench.WorkbenchHelper;
  */
 public class RunAnt {
 
-	private static Hashtable launchConfigurations = new Hashtable();
 	/**
 	 * Method asAnt.
 	 * @param buildFile
@@ -150,7 +148,12 @@ public class RunAnt {
 			return;
 		}
 		try {
-			RunAnt.launch(config, ILaunchManager.RUN_MODE);
+			final ILaunchConfiguration finalConfig = config;
+			Display.getDefault().syncExec(new Runnable() {
+				public void run() {
+					RunAnt.launch(finalConfig, ILaunchManager.RUN_MODE);
+				}
+			});
 		} finally {
 			config = null;
 		}
@@ -200,7 +203,7 @@ public class RunAnt {
 				t = targetException;
 			}
 			WorkbenchHelper.errorDialog(
-			WorkbenchHelper.getShell(),
+				WorkbenchHelper.getShell(),
 				"Error",
 				"Exception occurred during launch",
 				t);
@@ -208,33 +211,6 @@ public class RunAnt {
 			// cancelled
 		}
 	}
-
-	/**
-	 * Method getCachedILaunchConfigurationWorkingCopy.
-	 * @param file
-	 * @param target
-	 * @return ILaunchConfigurationWorkingCopy
-	 */
-	private static ILaunchConfigurationWorkingCopy getCachedILaunchConfigurationWorkingCopy(
-		IFile file,
-		String target) {
-		return (
-			ILaunchConfigurationWorkingCopy) RunAnt.launchConfigurations.get(
-			file.toString() + target);
-	}
-	/**
-	 * Method setCachedILaunchConfigurationWorkingCopy.
-	 * @param file
-	 * @param target
-	 * @param workingCopy
-	 */
-	private static void setCachedILaunchConfigurationWorkingCopy(
-		IFile file,
-		String target,
-		ILaunchConfigurationWorkingCopy workingCopy) {
-		RunAnt.launchConfigurations.put(file.toString() + target, workingCopy);
-	}
-
 	/**
 	 * Creates and returns a default launch configuration for the given file.
 	 * 
@@ -245,49 +221,44 @@ public class RunAnt {
 		IFile file,
 		String target)
 		throws CoreException {
-		ILaunchConfigurationWorkingCopy workingCopy =
-			RunAnt.getCachedILaunchConfigurationWorkingCopy(file, target);
-		if (workingCopy == null) {
-			ILaunchManager manager =
-				DebugPlugin.getDefault().getLaunchManager();
-			ILaunchConfigurationType type =
-				manager.getLaunchConfigurationType(
-					IExternalToolConstants.ID_ANT_LAUNCH_CONFIGURATION_TYPE);
-			IPath path = file.getFullPath();
-			if (path.segmentCount() > 2) {
-				path = path.removeFirstSegments(path.segmentCount() - 2);
-			}
-			StringBuffer buffer = new StringBuffer();
-			String[] segments = path.segments();
-			for (int i = 0; i < segments.length; i++) {
-				String string = segments[i];
-				buffer.append(string);
-				buffer.append(" "); //$NON-NLS-1$
-			}
-			String name = buffer.toString().trim();
-			name = manager.generateUniqueLaunchConfigurationNameFrom(name);
-			workingCopy = type.newInstance(null, name);
-			// set default for common settings
-			CommonTab tab = new CommonTab();
-			tab.setDefaults(workingCopy);
-			tab.dispose();
-			StringBuffer buf = new StringBuffer();
-			ToolUtil.buildVariableTag(
-				IExternalToolConstants.VAR_WORKSPACE_LOC,
-				file.getFullPath().toString(),
-				buf);
+		ILaunchConfigurationWorkingCopy workingCopy = null;
+		ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
+		ILaunchConfigurationType type =
+			manager.getLaunchConfigurationType(
+				IExternalToolConstants.ID_ANT_LAUNCH_CONFIGURATION_TYPE);
+		IPath path = file.getFullPath();
+		if (path.segmentCount() > 2) {
+			path = path.removeFirstSegments(path.segmentCount() - 2);
+		}
+		StringBuffer buffer = new StringBuffer();
+		String[] segments = path.segments();
+		for (int i = 0; i < segments.length; i++) {
+			String string = segments[i];
+			buffer.append(string);
+			buffer.append(" "); //$NON-NLS-1$
+		}
+		String name = buffer.toString().trim();
+		name = manager.generateUniqueLaunchConfigurationNameFrom(name);
+		workingCopy = type.newInstance(null, name);
+		// set default for common settings
+		CommonTab tab = new CommonTab();
+		tab.setDefaults(workingCopy);
+		tab.dispose();
+		StringBuffer buf = new StringBuffer();
+		ToolUtil.buildVariableTag(
+			IExternalToolConstants.VAR_WORKSPACE_LOC,
+			file.getFullPath().toString(),
+			buf);
+		workingCopy.setAttribute(
+			IExternalToolConstants.ATTR_LOCATION,
+			buf.toString());
+		workingCopy.setAttribute(
+			IExternalToolConstants.ATTR_RUN_IN_BACKGROUND,
+			true);
+		if (target != null) {
 			workingCopy.setAttribute(
-				IExternalToolConstants.ATTR_LOCATION,
-				buf.toString());
-			workingCopy.setAttribute(
-				IExternalToolConstants.ATTR_RUN_IN_BACKGROUND,
-				true);
-			if (target != null) {
-				workingCopy.setAttribute(
-					IExternalToolConstants.ATTR_ANT_TARGETS,
-					target);
-			}
-			setCachedILaunchConfigurationWorkingCopy(file, target, workingCopy);
+				IExternalToolConstants.ATTR_ANT_TARGETS,
+				target);
 		}
 		if (Preferences
 			.getBoolean(IWOLipsPluginConstants.PREF_SHOW_BUILD_OUTPUT)) {
@@ -312,7 +283,6 @@ public class RunAnt {
 				IExternalToolConstants.ATTR_TOOL_ARGUMENTS,
 				quiet);
 		}
-
 		return workingCopy;
 	}
 }
