@@ -25,14 +25,15 @@
         ****************************************
         * TARGETS (also you can use "-projecthelp" ant flag):
         *
-        *  1. help          - prints this message.
-        *  2. all           - build all projects.
-        *  3. dist          - build distribution.
-        *  4. clean         - cleans temporary directories.
-        *  5. test          - Run JUnit tests.
-        *  6. check         - Stores the wo specific properties in a file.
-        *  7. .ds_store     - delete .DS_store files
-        *  8. buildserver   - Target for the buildserver
+        *  1. help                  - prints this message.
+        *  2. all                   - build all projects.
+        *  3. dist                  - build distribution.
+        *  4. clean                 - cleans temporary directories.
+        *  5. test                  - Run JUnit tests.
+        *  6. check                 - Stores the wo specific properties in a file.
+        *  7. .ds_store             - delete .DS_store files
+        *  8. buildserver           - Target for the buildserver
+        *  9. buildserver.publish   - Target for the buildserver to publish
         ****************************************
         </echo>
     </target>
@@ -63,6 +64,7 @@
         * build.output.build.dir = ${build.output.build.dir}
         * build.output.dist.dir = ${build.output.dist.dir}
         * build.output.homepage.dir = ${build.output.homepage.dir}
+        * deploy.dir = ${deploy.dir} (set by the buildserver)
         * eclipse.home = ${eclipse.home}
         * no.clean = ${no.clean}
         * compile options
