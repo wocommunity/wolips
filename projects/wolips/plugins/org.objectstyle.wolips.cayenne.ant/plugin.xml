@@ -15,7 +15,8 @@
    <extension
          point="org.eclipse.ant.core.extraClasspathEntries">
       <extraClasspathEntry
-            library="lib/cayenne.jar">
+            library="lib/cayenne.jar"
+            eclipseRuntime="false">
       </extraClasspathEntry>
    </extension>
 

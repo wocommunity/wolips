@@ -158,16 +158,6 @@ public class SupportContentProvider extends AbstractTreeContentProvider {
 		preferencesNode.addChild(
 			createNode(
 				PreferencesMessages.getString(
-					"Preferences.ShowBuildOutput.Label"),
-				Preferences.getPREF_SHOW_BUILD_OUTPUT() + ""));
-		preferencesNode.addChild(
-			createNode(
-				PreferencesMessages.getString(
-					"Preferences.RunAntAsExternalTool.Label"),
-				Preferences.getPREF_RUN_ANT_AS_EXTERNAL_TOOL() + ""));
-		preferencesNode.addChild(
-			createNode(
-				PreferencesMessages.getString(
 					"Preferences.NSProjectSearchPath.Label"),
 				Preferences.getPREF_NS_PROJECT_SEARCH_PATH()));
 	}

@@ -74,16 +74,10 @@ import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
  */
 public class Preferences {
 
-	public static final String PREF_ANT_BUILD_FILE =
-		"org.objectstyle.wolips.preference.AntBuildFile";
 	public static final String PREF_RUN_WOBUILDER_ON_BUILD =
 		"org.objectstyle.wolips.preference.RunWOBuilderOnBuild";
 	public static final String PREF_OPEN_WOCOMPONENT_ACTION_INCLUDES_OPEN_HTML =
 		"org.objectstyle.wolips.Preference.OpenWOComponentActionIncludesOpenHTML";
-	public static final String PREF_SHOW_BUILD_OUTPUT =
-		"org.objectstyle.wolips.Preference.ShowBuildOutput";
-	public static final String PREF_RUN_ANT_AS_EXTERNAL_TOOL =
-		"org.objectstyle.wolips.Preference.RunAntAsExternalTool";
 	public static final String PREF_NS_PROJECT_SEARCH_PATH =
 		"org.objectstyle.wolips.Preference.NSProjectSearch";
 	public static final String PREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH =
@@ -122,33 +116,15 @@ public class Preferences {
 		IPreferenceStore store = getPreferenceStore();
 		if (Preferences.SET_DEFAULTS_STRING == null
 			|| Preferences.SET_DEFAULTS_STRING.equals(
-				Preferences.PREF_ANT_BUILD_FILE))
-			store.setDefault(
-				Preferences.PREF_ANT_BUILD_FILE,
-				"build.xml");
-		if (Preferences.SET_DEFAULTS_STRING == null
-			|| Preferences.SET_DEFAULTS_STRING.equals(
 				Preferences.PREF_RUN_WOBUILDER_ON_BUILD))
 			store.setDefault(
 				Preferences.PREF_RUN_WOBUILDER_ON_BUILD,
 				Preferences.trueString);
 		if (Preferences.SET_DEFAULTS_STRING == null
 			|| Preferences.SET_DEFAULTS_STRING.equals(
-				Preferences.PREF_RUN_ANT_AS_EXTERNAL_TOOL))
-			store.setDefault(
-				Preferences.PREF_RUN_ANT_AS_EXTERNAL_TOOL,
-				Preferences.falseString);
-		if (Preferences.SET_DEFAULTS_STRING == null
-			|| Preferences.SET_DEFAULTS_STRING.equals(
 				Preferences.PREF_OPEN_WOCOMPONENT_ACTION_INCLUDES_OPEN_HTML))
 			store.setDefault(
 				Preferences.PREF_OPEN_WOCOMPONENT_ACTION_INCLUDES_OPEN_HTML,
-				Preferences.falseString);
-		if (Preferences.SET_DEFAULTS_STRING == null
-			|| Preferences.SET_DEFAULTS_STRING.equals(
-				Preferences.PREF_SHOW_BUILD_OUTPUT))
-			store.setDefault(
-				Preferences.PREF_SHOW_BUILD_OUTPUT,
 				Preferences.falseString);
 		if (Preferences.SET_DEFAULTS_STRING == null
 			|| Preferences.SET_DEFAULTS_STRING.equals(
@@ -322,13 +298,6 @@ public class Preferences {
 	/**
 	 * @return
 	 */
-	public static String getPREF_ANT_BUILD_FILE() {
-		return Preferences.getString(Preferences.PREF_ANT_BUILD_FILE);
-	}
-
-	/**
-	 * @return
-	 */
 	public static String getPREF_LAUNCH_GLOBAL() {
 		return Preferences.getString(Preferences.PREF_LAUNCH_GLOBAL);
 	}
@@ -359,23 +328,8 @@ public class Preferences {
 	/**
 	 * @return
 	 */
-	public static boolean getPREF_RUN_ANT_AS_EXTERNAL_TOOL() {
-		return Preferences.getBoolean(
-			Preferences.PREF_RUN_ANT_AS_EXTERNAL_TOOL);
-	}
-
-	/**
-	 * @return
-	 */
 	public static boolean getPREF_RUN_WOBUILDER_ON_BUILD() {
 		return Preferences.getBoolean(Preferences.PREF_RUN_WOBUILDER_ON_BUILD);
-	}
-
-	/**
-	 * @return
-	 */
-	public static boolean getPREF_SHOW_BUILD_OUTPUT() {
-		return Preferences.getBoolean(Preferences.PREF_SHOW_BUILD_OUTPUT);
 	}
 
 	/**
@@ -384,13 +338,6 @@ public class Preferences {
 	public static String getPREF_WOLIPS_VERSION_EARLY_STARTUP() {
 		return Preferences.getString(
 			Preferences.PREF_WOLIPS_VERSION_EARLY_STARTUP);
-	}
-
-	/**
-	 * @param string
-	 */
-	public static void setPREF_ANT_BUILD_FILE(String string) {
-		Preferences.setString(Preferences.PREF_ANT_BUILD_FILE, string);
 	}
 
 	/**
@@ -428,24 +375,8 @@ public class Preferences {
 	/**
 	 * @param string
 	 */
-	public static void setPREF_RUN_ANT_AS_EXTERNAL_TOOL(boolean value) {
-		Preferences.setBoolean(
-			Preferences.PREF_RUN_ANT_AS_EXTERNAL_TOOL,
-			value);
-	}
-
-	/**
-	 * @param string
-	 */
 	public static void setPREF_RUN_WOBUILDER_ON_BUILD(boolean value) {
 		Preferences.setBoolean(Preferences.PREF_RUN_WOBUILDER_ON_BUILD, value);
-	}
-
-	/**
-	 * @param string
-	 */
-	public static void setPREF_SHOW_BUILD_OUTPUT(boolean value) {
-		Preferences.setBoolean(Preferences.PREF_SHOW_BUILD_OUTPUT, value);
 	}
 
 	/**
