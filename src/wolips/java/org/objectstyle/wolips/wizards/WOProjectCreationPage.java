@@ -61,6 +61,7 @@ import java.lang.reflect.InvocationTargetException;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.ui.actions.WorkspaceModifyDelegatingOperation;
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
@@ -106,10 +107,10 @@ public class WOProjectCreationPage extends WizardNewProjectCreationPage {
 		String projectTemplateID =
 			Messages.getString("webobjects.projectType.java.application");
 
-		IRunnableWithProgress op =
-			new WorkspaceModifyDelegatingOperation(
-				new WOProjectCreator(newProject, projectTemplateID,getLocationPath()));
-
+		WOProjectCreator aWOProjectCreator = null;
+		if(this.useDefaults()) aWOProjectCreator = new WOProjectCreator(newProject, projectTemplateID,Platform.getLocation());
+		else aWOProjectCreator = new WOProjectCreator(newProject, projectTemplateID,getLocationPath());
+		IRunnableWithProgress op = new WorkspaceModifyDelegatingOperation(aWOProjectCreator);
 		try {
 
 			getContainer().run(false, false, op);
