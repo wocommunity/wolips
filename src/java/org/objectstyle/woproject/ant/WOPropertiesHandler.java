@@ -58,7 +58,7 @@ package org.objectstyle.woproject.ant;
 import java.util.*;
 
 import org.apache.tools.ant.Project;
-import org.apache.tools.ant.Task;
+import org.apache.tools.ant.ProjectComponent;
 import org.apache.tools.ant.taskdefs.Execute;
 
 /**
@@ -67,59 +67,122 @@ import org.apache.tools.ant.taskdefs.Execute;
  *
  * @author Andrei Adamchik
  */
-public class WOPropertiesHandler {
+public class WOPropertiesHandler extends ProjectComponent {
+	public static final String WO_ROOT = "wo.woroot";
+	public static final String LOCAL_ROOT = "wo.localroot";
+	public static final String HOME_ROOT = "wo.homeroot";
+
+	static Properties env;
+	static final Object envLock = new Object();
+
 	protected String defaultWORoot;
 	protected String defaultLocalRoot;
 	protected String defaultHomeRoot;
 
-	protected Properties env;
-	
-	protected Task parentTask;
-
 	/** 
-	 * Creates new WOPropertiesHandler and sets its parent Task.
+	 * Creates new WOPropertiesHandler and 
+	 * sets its parent Project.
 	 */
-	public WOPropertiesHandler(Task parentTask) {
-		this.parentTask = parentTask;
+	public WOPropertiesHandler(Project project) {
+		super.setProject(project);
 	}
 
+	/** 
+	 * Returns the value of "wo.woroot" property. Search algorithm is the following:
+	 * <ul>
+	 *    <li>Project <code>wo.woroot</code> property value.</li>
+	 *    <li>NEXT_ROOT environment variable.</li>
+	 *    <li>"/" directory.</li>
+	 * </ul>
+	 */
 	public String getWORoot() {
 		if (defaultWORoot == null) {
+			defaultWORoot = getProject().getProperty(WO_ROOT);
 
+			if (defaultWORoot == null) {
+				defaultWORoot = getEnvironmentProperty(WO_ROOT);
+
+				if (defaultWORoot == null) {
+					defaultWORoot = "/";
+				}
+			}
 		}
 
 		return defaultWORoot;
 	}
 
+	/** 
+	 * Returns the value of "wo.localroot" property. Search algorithm is the following:
+	 * <ul>
+	 *    <li>Project <code>wo.localroot</code> property value.</li>
+	 *    <li><code>${wo.woroot}/Local</code>.</li>
+	 * </ul>
+	 */
 	public String getLocalRoot() {
-		return null;
+		if (defaultLocalRoot == null) {
+			defaultLocalRoot = getProject().getProperty(LOCAL_ROOT);
+
+			if (defaultLocalRoot == null) {
+				defaultLocalRoot = getWORoot() + "/Local";
+			}
+		}
+
+		return defaultLocalRoot;
 	}
 
+	/** 
+	 * Returns the value of "wo.homeroot" property. Search algorithm is the following:
+	 * <ul>
+	 *    <li>Project <code>wo.homeroot</code> property value.</li>
+	 *    <li><code>user.home</code> system property.</li>
+	 * </ul>
+	 */
 	public String getHomeRoot() {
-		return null;
+		if (defaultHomeRoot == null) {
+			defaultHomeRoot = getProject().getProperty(HOME_ROOT);
+
+			if (defaultHomeRoot == null) {
+				defaultHomeRoot = System.getProperty("user.home");
+			}
+		}
+
+		return defaultHomeRoot;
 	}
 
-    /** 
-     * Reads environment properties, initializes internal
-     * collection using "env.*" prefix.
-     */
-	protected void loadEnvironment() {
+	/** 
+	 * Returns a value of environment variable. The environment
+	 * will be loaded from WOPropertyHandler only once during a 
+	 * project lifecycle. All environment variables will be cached 
+	 * in a project under "woenv.*" keys. 
+	 */
+	public String getEnvironmentProperty(String name) {
+		synchronized (envLock) {
+			if (env == null) {
+				loadEnvironment();
+			}
+		}
+		return env.getProperty(name);
+	}
+
+	/** 
+	 * Reads environment properties, initializes internal
+	 * collection using "woenv.*" prefix.
+	 */
+	private void loadEnvironment() {
 		Properties props = new Properties();
 
-		parentTask.log("Loading Environment", Project.MSG_VERBOSE);
+		log("Loading Environment", Project.MSG_VERBOSE);
 		Vector osEnv = Execute.getProcEnvironment();
 		for (Enumeration e = osEnv.elements(); e.hasMoreElements();) {
 			String entry = (String) e.nextElement();
 			int pos = entry.indexOf('=');
 			if (pos == -1) {
-				parentTask.log("Ignoring: " + entry, Project.MSG_WARN);
+				log("Ignoring: " + entry, Project.MSG_WARN);
 			} else {
-				props.put(
-					"env." + entry.substring(0, pos),
-					entry.substring(pos + 1));
+				props.put(entry.substring(0, pos), entry.substring(pos + 1));
 			}
 		}
-		
+
 		env = props;
 	}
 }
