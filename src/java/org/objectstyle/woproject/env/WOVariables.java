@@ -185,7 +185,7 @@ public class WOVariables {
 	 * @return String
 	 */
 	public static String systemRoot() {
-		return wobuildProperties.getProperty("wo.systemroot");
+		return wobuildProperties.getProperty("wo.wosystemroot");
 	}
 	/**
 	 * Method developerDir.
