@@ -1,0 +1,10 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<HTML>
+    <WEBOBJECT NAME=Head></WEBOBJECT>
+   <BODY>
+      <WEBOBJECT NAME=Header></WEBOBJECT>
+      <CENTER>
+         <WEBOBJECT NAME=Body></WEBOBJECT>
+      </CENTER>
+   </BODY>
+</HTML>
