@@ -75,6 +75,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.help.WorkbenchHelp;
+import org.objectstyle.wolips.env.Environment;
+import org.objectstyle.wolips.io.WOLipsLog;
 /**
  * @author uli
  *
@@ -138,7 +140,7 @@ public class WOArgumentsTab extends JavaLaunchConfigurationTab {
 	 * @see ILaunchConfigurationTab#setDefaults(ILaunchConfigurationWorkingCopy)
 	 */
 	public void setDefaults(ILaunchConfigurationWorkingCopy config) {
-		config.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROGRAM_ARGUMENTS, (String)null);
+		config.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROGRAM_ARGUMENTS, this.getDefaultArguments(config));
 	}
 
 	/**
@@ -206,6 +208,50 @@ public class WOArgumentsTab extends JavaLaunchConfigurationTab {
 	public Image getImage() {
 		return JavaDebugImages.get(JavaDebugImages.IMG_VIEW_ARGUMENTS_TAB);
 	}	
+
+	/**
+	 * Method getDefaultArguments.
+	 * @return String
+	 */
+	private String getDefaultArguments(ILaunchConfigurationWorkingCopy config) {
+		return this.getWOApplicationPlatformSpecificArguments()
+		+ this.getWOApplicationClassNameArgument(config)
+		+ this.getCommonWOApplicationArguments();
+	}
+	
+	/**
+	 * Method getWOApplicationPlatformSpecificArguments.
+	 * @return String
+	 */
+	private String getWOApplicationPlatformSpecificArguments() {
+		if(!Environment.isNextRootSet()) return "";
+		return "-DWORoot = " + Environment.nextRoot() + " ";
+	}
+	
+	/**
+	 * Method getWOApplicationClassNameArgument.
+	 * @return String
+	 */
+	private String getWOApplicationClassNameArgument(ILaunchConfigurationWorkingCopy config) {
+		String main = null;
+		try {
+			main = config.getAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, "");
+		}
+		catch (Exception anException) {
+			WOLipsLog.log(anException);
+			return "";
+		}
+		if("".equals(main)) return "";
+		return "WOApplicationClass=" + main + " ";
+	}
+	
+	/**
+	 * Method getCommonWOApplicationArguments.
+	 * @return String
+	 */
+	private String getCommonWOApplicationArguments() {
+		return LaunchingMessages.getString("WOArguments.common");
+	}
 
 }
 
