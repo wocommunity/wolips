@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 - 2004 The ObjectStyle Group 
+ * Copyright (c) 2004 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -53,73 +53,86 @@
  * <http://objectstyle.org/>.
  *
  */
-
 package org.objectstyle.wolips.ui.actions;
 
+import java.lang.reflect.InvocationTargetException;
+
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 import org.objectstyle.wolips.datasets.adaptable.Project;
-import org.objectstyle.wolips.ui.UIPlugin;
 
 /**
- * @author uli
- * 
- * The Action for updating the PB.project file.
+ * @author ulrich
  */
-public class PBAction extends ActionOnIResource {
-
-	private static String UpdatePBProjectID = "org.objectstyle.wolips.ui.actions.PBAction";
+public abstract class AbstractPatternsetAction extends ActionOnIResource {
 
 	/**
-	 * Contructor for the PBAction
+	 * @return
 	 */
-	public PBAction() {
-		super();
+	public Project getProject() {
+		return (Project) this.project().getAdapter(Project.class);
 	}
+
 	/**
-	 * Method dispose.
+	 * @return
 	 */
-	public void dispose() {
-		super.dispose();
+	public String getPattern() {
+		String name = this.actionResource().getName();
+		String extension = this.actionResource().getFileExtension();
+		if (name != null && name.length() == 0)
+			name = null;
+		if (extension != null && extension.length() == 0)
+			extension = null;
+		if (name == null && extension == null) {
+			return null;
+		}
+		if(name != null && extension != null && name.equals("." +extension))
+			extension = null;
+		String pattern = null;
+		if (name != null && extension != null) {
+			MessageDialogWithToggle messageDialogWithToggle = MessageDialogWithToggle
+					.openOkCancelConfirm(this.part.getSite().getShell(),
+							"Add pattern", "Add all resources with extension "
+									+ extension,
+							"add by extension (otherwise by name)", true, null,
+							null);
+			if (messageDialogWithToggle.getReturnCode() == Dialog.CANCEL)
+				return null;
+			if (messageDialogWithToggle.getToggleState()) {
+				if (this.actionResource() instanceof IContainer)
+					pattern = "**/*." + extension + "/**";
+				pattern = "**/*." + extension;
+			} else {
+				if (this.actionResource() instanceof IContainer)
+					pattern = "**/" + name + "." + extension + "/**";
+				pattern = "**/" + name + "." + extension;
+			}
+		}
+		if (name != null) {
+			if (this.actionResource() instanceof IContainer)
+				pattern = "**/" + name + "/**";
+			pattern = "**/" + name;
+		}
+		if (extension != null) {
+			if (this.actionResource() instanceof IContainer)
+				pattern = "**/*." + extension + "/**";
+			pattern = "**/*." + extension;
+		}
+		return pattern;
 	}
-	/**
-	 * Updates the PB.project file. Will be invoked by the popup menu.
-	 * @param action
-	 */
 	public void run(IAction action) {
-		if (project() != null) {
-			try {
-				if (action.getId().equals(PBAction.UpdatePBProjectID)) {
-					TouchAllFilesOperation touchAllFilesOperation = new TouchAllFilesOperation(
-							project());
-					touchAllFilesOperation.run(new NullProgressMonitor());
-				}
-			} catch (Exception ex) {
-				UIPlugin.getDefault().getPluginLogger().log(ex);
-			}
+		TouchAllFilesOperation touchAllFilesOperation = new TouchAllFilesOperation(
+				this.project());
+		try {
+			touchAllFilesOperation.run(new NullProgressMonitor());
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
 		}
+		super.run(action);
 	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action.IAction, org.eclipse.jface.viewers.ISelection)
-	 */
-	public void selectionChanged(IAction action, ISelection selection) {
-		super.selectionChanged(action, selection);
-		if (project() != null) {
-			if (action.getId().equals(PBAction.UpdatePBProjectID)) {
-				action.setEnabled(true);
-				try {
-					Project project = (Project) (project())
-							.getAdapter(Project.class);
-					action.setEnabled(project.hasWOLipsNature());
-				} catch (Exception exception) {
-					UIPlugin.getDefault().getPluginLogger().log(exception);
-				}
-			}
-		} else {
-			action.setEnabled(false);
-		}
-	}
-
 }

@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 - 2004 The ObjectStyle Group 
+ * Copyright (c) 2004 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -53,73 +53,20 @@
  * <http://objectstyle.org/>.
  *
  */
-
 package org.objectstyle.wolips.ui.actions;
 
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.viewers.ISelection;
-import org.objectstyle.wolips.datasets.adaptable.Project;
-import org.objectstyle.wolips.ui.UIPlugin;
 
 /**
- * @author uli
- * 
- * The Action for updating the PB.project file.
+ * @author ulrich
  */
-public class PBAction extends ActionOnIResource {
+public class AddToResourcesIncludePatternsetAction extends AbstractPatternsetAction {
 
-	private static String UpdatePBProjectID = "org.objectstyle.wolips.ui.actions.PBAction";
-
-	/**
-	 * Contructor for the PBAction
-	 */
-	public PBAction() {
-		super();
-	}
-	/**
-	 * Method dispose.
-	 */
-	public void dispose() {
-		super.dispose();
-	}
-	/**
-	 * Updates the PB.project file. Will be invoked by the popup menu.
-	 * @param action
-	 */
+	
 	public void run(IAction action) {
-		if (project() != null) {
-			try {
-				if (action.getId().equals(PBAction.UpdatePBProjectID)) {
-					TouchAllFilesOperation touchAllFilesOperation = new TouchAllFilesOperation(
-							project());
-					touchAllFilesOperation.run(new NullProgressMonitor());
-				}
-			} catch (Exception ex) {
-				UIPlugin.getDefault().getPluginLogger().log(ex);
-			}
-		}
+		String pattern = this.getPattern();
+		if(pattern != null)
+			this.getProject().addResourcesIncludePattern(pattern);
+		super.run(action);
 	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action.IAction, org.eclipse.jface.viewers.ISelection)
-	 */
-	public void selectionChanged(IAction action, ISelection selection) {
-		super.selectionChanged(action, selection);
-		if (project() != null) {
-			if (action.getId().equals(PBAction.UpdatePBProjectID)) {
-				action.setEnabled(true);
-				try {
-					Project project = (Project) (project())
-							.getAdapter(Project.class);
-					action.setEnabled(project.hasWOLipsNature());
-				} catch (Exception exception) {
-					UIPlugin.getDefault().getPluginLogger().log(exception);
-				}
-			}
-		} else {
-			action.setEnabled(false);
-		}
-	}
-
 }

@@ -70,45 +70,48 @@ import org.objectstyle.wolips.ui.UIPlugin;
 
 /**
  * @author ulrich
- *
+ * 
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
 public class TouchAllFilesOperation extends WorkspaceModifyOperation {
 	private IProject iProject;
-	
+
 	/**
 	 * @param iProject
 	 */
-	public TouchAllFilesOperation (IProject iProject) {
+	public TouchAllFilesOperation(IProject iProject) {
 		this.iProject = iProject;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ui.actions.WorkspaceModifyOperation#execute(org.eclipse.core.runtime.IProgressMonitor)
 	 */
-	protected void execute(IProgressMonitor monitor) throws CoreException, InvocationTargetException, InterruptedException {
-		Project project =
-			project = (Project) (iProject)
-			.getAdapter(Project.class);
+	protected void execute(IProgressMonitor monitor) throws CoreException,
+			InvocationTargetException, InterruptedException {
+		Project project = project = (Project) this.iProject
+				.getAdapter(Project.class);
 		try {
 			//remove all existing entries
 			project.cleanAllFileTables();
 		} catch (IOException e) {
 			UIPlugin.getDefault().getPluginLogger().log(e);
 		}
-		this.touch(iProject, monitor);
+		this.touch(this.iProject, monitor);
 	}
-	
-	private void touch(IResource resource, IProgressMonitor monitor) throws CoreException {
-		if(resource.getType() == IResource.FILE)
+
+	private void touch(IResource resource, IProgressMonitor monitor)
+			throws CoreException {
+		if (resource.getType() == IResource.FILE)
 			resource.touch(monitor);
 		IResource[] members = null;
-		if(resource.getType() == IResource.FOLDER)
-			members = ((IFolder)resource).members();
-		if(resource.getType() == IResource.PROJECT)
-			members = ((IProject)resource).members();
-		if(members != null) {
+		if (resource.getType() == IResource.FOLDER)
+			members = ((IFolder) resource).members();
+		if (resource.getType() == IResource.PROJECT)
+			members = ((IProject) resource).members();
+		if (members != null) {
 			for (int i = 0; i < members.length; i++) {
 				this.touch(members[i], monitor);
 			}

@@ -91,29 +91,30 @@ public class ActionOnIResource implements IObjectActionDelegate {
 	 * @return Returns the IProject
 	 */
 	protected IProject project() {
-		return project;
+		return this.project;
 	}
 
 	/**
 	 * @return Returns the IProject
 	 */
 	protected IResource actionResource() {
-		return actionResource;
+		return this.actionResource;
 	}
 
 	/**
 	 * Method dispose.
 	 */
 	public void dispose() {
-		project = null;
-		actionResource = null;
-		part = null;
+		this.project = null;
+		this.actionResource = null;
+		this.part = null;
 	}
 
 	/**
 	 * Has to be implemented in the subclass.
 	 */
 	public void run(IAction action) {
+		//Has to be implemented in the subclass.
 	}
 
 	/**
@@ -121,27 +122,29 @@ public class ActionOnIResource implements IObjectActionDelegate {
 	 */
 	public void selectionChanged(IAction action, ISelection selection) {
 		Object obj = (((IStructuredSelection) selection).getFirstElement());
-		project = null;
-		actionResource = null;
+		this.project = null;
+		this.actionResource = null;
 		if (obj != null && obj instanceof IResource) {
-			actionResource = (IResource) obj;
-			project = actionResource.getProject();
+			this.actionResource = (IResource) obj;
+			this.project = this.actionResource.getProject();
 		}
 		if (obj != null && obj instanceof ICompilationUnit) {
-			actionResource = ((ICompilationUnit) obj).getResource();
-			project = actionResource.getProject();
+			this.actionResource = ((ICompilationUnit) obj).getResource();
+			this.project = this.actionResource.getProject();
 		}
 		if (obj != null && obj instanceof IProject) {
-			actionResource = (IProject) obj;
-			project = (IProject) actionResource;
+			this.actionResource = (IProject) obj;
+			this.project = (IProject) this.actionResource;
 		}
 		if (obj != null && obj instanceof IJavaProject) {
-			actionResource = ((IJavaProject) obj).getProject();
-			project = (IProject) actionResource;
+			this.actionResource = ((IJavaProject) obj).getProject();
+			this.project = (IProject) this.actionResource;
 		}
 	}
 	/** (non-Javadoc)
 	 * Method declared on IObjectActionDelegate
+	 * @param action
+	 * @param targetPart
 	 */
 	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
 		this.part = targetPart;

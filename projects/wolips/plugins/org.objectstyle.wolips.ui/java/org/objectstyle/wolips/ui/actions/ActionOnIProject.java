@@ -70,6 +70,9 @@ import org.eclipse.ui.IWorkbenchPart;
 public class ActionOnIProject implements IObjectActionDelegate {
 	private IProject project;
 	protected IWorkbenchPart part;
+	/**
+	 * 
+	 */
 	public ActionOnIProject() {
 		super();
 	}
@@ -77,30 +80,32 @@ public class ActionOnIProject implements IObjectActionDelegate {
 	 * @return Returns the IProject
 	 */
 	protected IProject project() {
-		return project;
+		return this.project;
 	}
 	/**
 	 * Method dispose.
 	 */
 	public void dispose() {
-		part = null;
-		project = null;
+		this.part = null;
+		this.project = null;
 	}
 	/**
+	 * @param action
 	 * Has to be implemented in the subclass.
 	 */
 	public void run(IAction action) {
+		//Has to be implemented in the subclass.
 	}
 	/**
 	 * Resets the project when the selection is changed.
 	 */
 	public void selectionChanged(IAction action, ISelection selection) {
 		Object obj = (((IStructuredSelection) selection).getFirstElement());
-		project = null;
+		this.project = null;
 		if (obj != null && obj instanceof IProject)
-			project = ((IProject) obj).getProject();
+			this.project = ((IProject) obj).getProject();
 		if (obj != null && obj instanceof IJavaProject)
-			project = ((IJavaProject) obj).getProject();
+			this.project = ((IJavaProject) obj).getProject();
 	}
 	/** (non-Javadoc)
 	 * Method declared on IObjectActionDelegate

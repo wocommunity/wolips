@@ -72,12 +72,16 @@ public class WOBuildToggleAction extends ActionDelegate
 			IWorkbenchWindowActionDelegate,
 			IActionDelegate2 {
 	
+	/* (non-Javadoc)
+	 * @see org.eclipse.ui.IActionDelegate2#init(org.eclipse.jface.action.IAction)
+	 */
 	public void init(IAction action) {
 		super.init(action);
 		updateChecked(action);
 	}
 	
 	public void init(IWorkbenchWindow window) {
+		//do nothing
 	}
 	
 	public void run(IAction action) {

@@ -57,6 +57,9 @@
             <separator
                   name="group2">
             </separator>
+            <separator
+                  name="group3">
+            </separator>
          </menu>
       </objectContribution>
 <!-- =================================================================================== -->
@@ -131,6 +134,78 @@
                menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group0"
                enablesFor="1"
                id="org.objectstyle.wolips.ui.actions.OpenEOModelIndexAction">
+         </action>
+      </objectContribution>
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IResource"
+            adaptable="true"
+            id="org.objectstyle.wolips.ui.actions.AddToWOAppResourcesIncludePatternsetAction">
+         <action
+               label="include as wsresource"
+               class="org.objectstyle.wolips.ui.actions.AddToWOAppResourcesIncludePatternsetAction"
+               menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group3"
+               enablesFor="1"
+               id="org.objectstyle.wolips.ui.actions.AddToWOAppResourcesIncludePatternsetAction">
+         </action>
+      </objectContribution>
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IResource"
+            adaptable="true"
+            id="org.objectstyle.wolips.ui.actions.AddToWOAppResourcesExcludePatternsetAction">
+         <action
+               label="exclude as wsresource"
+               class="org.objectstyle.wolips.ui.actions.AddToWOAppResourcesExcludePatternsetAction"
+               menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group3"
+               enablesFor="1"
+               id="org.objectstyle.wolips.ui.actions.AddToWOAppResourcesExcludePatternsetAction">
+         </action>
+      </objectContribution>
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IResource"
+            adaptable="true"
+            id="org.objectstyle.wolips.ui.actions.AddToResourcesIncludePatternsetAction">
+         <action
+               label="include as resource"
+               class="org.objectstyle.wolips.ui.actions.AddToResourcesIncludePatternsetAction"
+               menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group3"
+               enablesFor="1"
+               id="org.objectstyle.wolips.ui.actions.AddToResourcesIncludePatternsetAction">
+         </action>
+      </objectContribution>
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IResource"
+            adaptable="true"
+            id="org.objectstyle.wolips.ui.actions.AddToResourcesExcludePatternsetAction">
+         <action
+               label="exclude as resource"
+               class="org.objectstyle.wolips.ui.actions.AddToResourcesExcludePatternsetAction"
+               menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group3"
+               enablesFor="1"
+               id="org.objectstyle.wolips.ui.actions.AddToResourcesExcludePatternsetAction">
+         </action>
+      </objectContribution>
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IResource"
+            adaptable="true"
+            id="org.objectstyle.wolips.ui.actions.AddToClassesIncludePatternsetAction">
+         <action
+               label="include as class"
+               class="org.objectstyle.wolips.ui.actions.AddToClassesIncludePatternsetAction"
+               menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group3"
+               enablesFor="1"
+               id="org.objectstyle.wolips.ui.actions.AddToClassesIncludePatternsetAction">
+         </action>
+      </objectContribution>
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IResource"
+            adaptable="true"
+            id="org.objectstyle.wolips.ui.actions.AddToClassesExcludePatternsetAction">
+         <action
+               label="exclude as class"
+               class="org.objectstyle.wolips.ui.actions.AddToClassesExcludePatternsetAction"
+               menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group3"
+               enablesFor="1"
+               id="org.objectstyle.wolips.ui.actions.AddToClassesExcludePatternsetAction">
          </action>
       </objectContribution>
    </extension>
