@@ -57,6 +57,31 @@
 			<file templateId="woapplication.icon" name="WOAfile.icns"/>
 		</files>
 	</projectType>
+	<projectType name="Java WebObjects Application Import" id="JavaWebObjectsApplicationImport">
+		<nature id="org.eclipse.jdt.core.javanature"/>
+		<nature id="org.objectstyle.wolips.applicationnature"/>
+		<classpath>
+			<classpathentry kind="src" path="${project.name}.proj"/>
+			<classpathentry kind="var" path="NEXT_ROOT/Library/Frameworks/JavaWebObjects.framework/Resources/Java/javawebobjects.jar"/>
+			<classpathentry kind="var" path="NEXT_ROOT/Library/Frameworks/JavaFoundation.framework/Resources/Java/javafoundation.jar"/>
+			<classpathentry kind="var" path="NEXT_ROOT/Library/Frameworks/JavaXML.framework/Resources/Java/javaxml.jar"/>
+			<classpathentry kind="var" path="NEXT_ROOT/Library/Frameworks/JavaWOExtensions.framework/Resources/Java/JavaWOExtensions.jar"/>
+			<classpathentry kind="var" path="NEXT_ROOT/Library/Frameworks/JavaEOAccess.framework/Resources/Java/javaeoaccess.jar"/>
+			<classpathentry kind="var" path="NEXT_ROOT/Library/Frameworks/JavaEOControl.framework/Resources/Java/javaeocontrol.jar"/>
+			<classpathentry kind="var" path="JRE_LIB" rootpath="JRE_SRCROOT" sourcepath="JRE_SRC"/>
+		</classpath>
+		<files>
+			<file templateId="properties" name="Properties"/>
+			<file templateId="applicationproject" name="PB.project"/>
+			<file templateId="woapplication.ant.build" name="build.xml"/>
+			<file templateId="woapplication.ant.properties" name="build.properties"/>
+			<file templateId="woapplication.makefile.preamble" name="Makefile.preamble"/>
+			<file templateId="woapplication.makefile" name="Makefile"/>
+			<file templateId="woapplication.makefile.postamble" name="Makefile.postamble"/>
+			<file templateId="woapplication.custominfo.plist" name="CustomInfo.plist"/>
+			<file templateId="woapplication.icon" name="WOAfile.icns"/>
+		</files>
+	</projectType>
 	<projectType name="Java WebObjects Framework" id="JavaWebObjectsFramework">
 		<nature id="org.eclipse.jdt.core.javanature"/>
 		<nature id="org.objectstyle.wolips.frameworknature"/>

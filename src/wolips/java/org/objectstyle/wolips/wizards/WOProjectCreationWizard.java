@@ -77,7 +77,6 @@ import org.objectstyle.wolips.project.ProjectHelper;
  */
 public class WOProjectCreationWizard extends BasicNewProjectResourceWizard {
 	
-	//private IStructuredSelection selection;
 	private IWorkbench workbench;
 	private WOProjectCreationPage mainPage;
 	/** (non-Javadoc)
