@@ -67,6 +67,8 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.objectstyle.woenvironment.pb.PBProject;
 import org.objectstyle.woenvironment.util.FileStringScanner;
 import org.objectstyle.wolips.datasets.DataSetsPlugin;
@@ -147,9 +149,20 @@ public final class PBProjectUpdater {
 
 	private final void handleException(Throwable throwable) {
 		this.addProjectMarker();
-		WorkbenchUtilitiesPlugin.handleException(null, throwable,
-				"An error occured while saving the PB.project in project: "
-						+ this.projectContainer.getProject().getName());
+		class RunnableExceptionHandler implements Runnable
+		 {
+			public IContainer projectContainer;
+			public Throwable throwable;
+			public void run() {
+		WorkbenchUtilitiesPlugin.handleException(new Shell(), throwable,
+				"An error occured while reading/saving the PB.project in project: "
+						+ projectContainer.getProject().getName());
+			}
+		};
+		RunnableExceptionHandler runnable = new RunnableExceptionHandler();
+		runnable.projectContainer = this.projectContainer;
+		runnable.throwable = throwable;
+		Display.getDefault().asyncExec(runnable);
 	}
 
 	/**
