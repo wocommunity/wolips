@@ -81,15 +81,22 @@ public class ProjectPatternsets extends AbstractProjectAdapterType {
 	 * Comment for <code>EXTENSION</code>
 	 */
 	public final static String EXTENSION = "patternset";
+
 	/**
 	 * Comment for <code>ANT_FOLDER_NAME</code>
 	 */
 	public final static String ANT_FOLDER_NAME = "ant";
+
 	private PatternsetMatcher woappResourcesIncludeMatcher = null;
+
 	private PatternsetMatcher woappResourcesExcludeMatcher = null;
+
 	private PatternsetMatcher resourcesIncludeMatcher = null;
+
 	private PatternsetMatcher resourcesExcludeMatcher = null;
+
 	private PatternsetMatcher classesIncludeMatcher = null;
+
 	private PatternsetMatcher classesExcludeMatcher = null;
 
 	/**
@@ -107,7 +114,8 @@ public class ProjectPatternsets extends AbstractProjectAdapterType {
 		File file = new File(string);
 		file.mkdirs();
 		try {
-			this.getAntFolder().refreshLocal(IResource.DEPTH_ZERO, new NullProgressMonitor());
+			this.getAntFolder().refreshLocal(IResource.DEPTH_ZERO,
+					new NullProgressMonitor());
 		} catch (CoreException e) {
 			DataSetsPlugin.getDefault().getPluginLogger().log(e);
 		}
@@ -119,6 +127,7 @@ public class ProjectPatternsets extends AbstractProjectAdapterType {
 	public IFolder getAntFolder() {
 		return this.getIProject().getFolder("ant");
 	}
+
 	/**
 	 * @return Returns the classesExcludeMatcher.
 	 */
@@ -131,7 +140,7 @@ public class ProjectPatternsets extends AbstractProjectAdapterType {
 				"classes.exclude.patternset");
 		if (!classesExcludePatternset.exists())
 			PatternsetWriter.create(classesExcludePatternset,
-					new String[]{"build.properties"});
+					new String[] { "build.properties" });
 		this.classesExcludeMatcher = new PatternsetMatcher(
 				classesExcludePatternset);
 		try {
@@ -142,6 +151,7 @@ public class ProjectPatternsets extends AbstractProjectAdapterType {
 		}
 		return this.classesExcludeMatcher;
 	}
+
 	/**
 	 * @return Returns the classesIncludeMatcher.
 	 */
@@ -153,8 +163,8 @@ public class ProjectPatternsets extends AbstractProjectAdapterType {
 		IFile classesIncludePatternset = this.getAntFolder().getFile(
 				"classes.include.patternset");
 		if (!classesIncludePatternset.exists())
-			PatternsetWriter.create(classesIncludePatternset, new String[]{
-					"**/*.class", "*.properties"});
+			PatternsetWriter.create(classesIncludePatternset, new String[] {
+					"**/*.class", "*.properties" });
 		this.classesIncludeMatcher = new PatternsetMatcher(
 				classesIncludePatternset);
 		try {
@@ -165,6 +175,7 @@ public class ProjectPatternsets extends AbstractProjectAdapterType {
 		}
 		return this.classesIncludeMatcher;
 	}
+
 	/**
 	 * @return Returns the resourcesExcludeMatcher.
 	 */
@@ -176,8 +187,8 @@ public class ProjectPatternsets extends AbstractProjectAdapterType {
 		IFile resourcesExcludePatternset = this.getAntFolder().getFile(
 				"resources.exclude.patternset");
 		if (!resourcesExcludePatternset.exists())
-			PatternsetWriter.create(resourcesExcludePatternset, new String[]{
-					"**/*.eomodeld~/", "**/*.woa/**", "**/*.framework/**"});
+			PatternsetWriter.create(resourcesExcludePatternset, new String[] {
+					"**/*.eomodeld~/", "**/*.woa/**", "**/*.framework/**" });
 		this.resourcesExcludeMatcher = new PatternsetMatcher(
 				resourcesExcludePatternset);
 		try {
@@ -188,6 +199,7 @@ public class ProjectPatternsets extends AbstractProjectAdapterType {
 		}
 		return this.resourcesExcludeMatcher;
 	}
+
 	/**
 	 * @return Returns the resourcesIncludeMatcher.
 	 */
@@ -199,9 +211,9 @@ public class ProjectPatternsets extends AbstractProjectAdapterType {
 		IFile resourcesIncludePatternset = this.getAntFolder().getFile(
 				"resources.include.patternset");
 		if (!resourcesIncludePatternset.exists())
-			PatternsetWriter.create(resourcesIncludePatternset, new String[]{
+			PatternsetWriter.create(resourcesIncludePatternset, new String[] {
 					"Properties", "**/*.eomodeld/", "**/*.d2wmodel",
-					"**/*.wo/", "**/*.api", "**/*.strings"});
+					"**/*.wo/", "**/*.api", "**/*.strings" });
 		this.resourcesIncludeMatcher = new PatternsetMatcher(
 				resourcesIncludePatternset);
 		try {
@@ -212,6 +224,7 @@ public class ProjectPatternsets extends AbstractProjectAdapterType {
 		}
 		return this.resourcesIncludeMatcher;
 	}
+
 	/**
 	 * @return Returns the woappResourcesExcludeMatcher.
 	 */
@@ -223,8 +236,8 @@ public class ProjectPatternsets extends AbstractProjectAdapterType {
 		IFile wsresourcesExcludePatternset = this.getAntFolder().getFile(
 				"wsresources.exclude.patternset");
 		if (!wsresourcesExcludePatternset.exists())
-			PatternsetWriter.create(wsresourcesExcludePatternset, new String[]{
-					"**/*.woa/**", "**/*.framework/**"});
+			PatternsetWriter.create(wsresourcesExcludePatternset, new String[] {
+					"**/*.woa/**", "**/*.framework/**" });
 		this.woappResourcesExcludeMatcher = new PatternsetMatcher(
 				wsresourcesExcludePatternset);
 		try {
@@ -235,6 +248,7 @@ public class ProjectPatternsets extends AbstractProjectAdapterType {
 		}
 		return this.woappResourcesExcludeMatcher;
 	}
+
 	/**
 	 * @return Returns the woappResourcesIncludeMatcher.
 	 */
@@ -246,8 +260,9 @@ public class ProjectPatternsets extends AbstractProjectAdapterType {
 		IFile wsresourcesIncludePatternset = this.getAntFolder().getFile(
 				"wsresources.include.patternset");
 		if (!wsresourcesIncludePatternset.exists())
-			PatternsetWriter.create(wsresourcesIncludePatternset,
-					new String[]{"**/*.gif"});
+			PatternsetWriter.create(wsresourcesIncludePatternset, new String[] {
+					"**/*.gif", "**/*.xsl", "**/*.css", "**/*.png", "**/*.jpg",
+					"**/*.js" });
 		this.woappResourcesIncludeMatcher = new PatternsetMatcher(
 				wsresourcesIncludePatternset);
 		try {
@@ -258,10 +273,12 @@ public class ProjectPatternsets extends AbstractProjectAdapterType {
 		}
 		return this.woappResourcesIncludeMatcher;
 	}
+
 	private String toProjectRelativePath(IResource resource) {
 		IPath path = resource.getProjectRelativePath();
 		return path.toString();
 	}
+
 	/**
 	 * @param resource
 	 * @return
@@ -272,6 +289,7 @@ public class ProjectPatternsets extends AbstractProjectAdapterType {
 			return false;
 		return this.getClassesIncludeMatcher().match(string);
 	}
+
 	/**
 	 * @param resource
 	 * @return
@@ -282,6 +300,7 @@ public class ProjectPatternsets extends AbstractProjectAdapterType {
 			return false;
 		return this.getWoappResourcesIncludeMatcher().match(string);
 	}
+
 	/**
 	 * @param resource
 	 * @return
@@ -292,6 +311,7 @@ public class ProjectPatternsets extends AbstractProjectAdapterType {
 			return false;
 		return this.getResourcesIncludeMatcher().match(string);
 	}
+
 	/**
 	 * Sets up the *.patternset files in the case they don't exist.
 	 */
@@ -303,6 +323,7 @@ public class ProjectPatternsets extends AbstractProjectAdapterType {
 		this.getWoappResourcesExcludeMatcher();
 		this.getWoappResourcesIncludeMatcher();
 	}
+
 	/**
 	 * Releases the patternset cache
 	 */
