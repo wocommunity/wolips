@@ -89,13 +89,13 @@ public abstract class PatternPreferencesPage
 	private Table includeTable;
 	private Button addButton;
 	private Button removeButton;
-	private String preferencesKey;
+	private String patternPreferencesKey;
 	public void init(
 		IWorkbench workbench,
 		String description,
 		String preferencesKey) {
 		setDescription(description); //$NON-NLS-1$
-		this.preferencesKey = preferencesKey;
+		this.patternPreferencesKey = preferencesKey;
 	}
 
 	/**
@@ -182,7 +182,7 @@ public abstract class PatternPreferencesPage
 				removeIgnore();
 			}
 		});
-		fillTable(Preferences.getIncludeInfoForKey(preferencesKey));
+		fillTable(Preferences.getIncludeInfoForKey(patternPreferencesKey));
 		Dialog.applyDialogFont(ancestor);
 		return parent;
 	}
@@ -200,7 +200,7 @@ public abstract class PatternPreferencesPage
 			patterns[i] = items[i].getText();
 			//enabled[i] = items[i].getChecked();
 		}
-		Preferences.setIncludeInfoForKey(patterns, preferencesKey);
+		Preferences.setIncludeInfoForKey(patterns, patternPreferencesKey);
 
 		Preferences.save();
 		Preferences.FLAG_INCLUDE_EXCLUDE_RULES_CHANGED = true;
@@ -210,9 +210,9 @@ public abstract class PatternPreferencesPage
 	protected void performDefaults() {
 		super.performDefaults();
 		includeTable.removeAll();
-		String string = PreferencesMessages.getString(preferencesKey);
-		Preferences.setString(preferencesKey, string);
-		fillTable(Preferences.getIncludeInfoForKey(preferencesKey));
+		String string = PreferencesMessages.getString(patternPreferencesKey);
+		Preferences.setString(patternPreferencesKey, string);
+		fillTable(Preferences.getIncludeInfoForKey(patternPreferencesKey));
 	}
 
 	/**
