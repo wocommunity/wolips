@@ -197,8 +197,16 @@
         </anakia>
 
         <!-- copy images -->
-        <copy todir="${dist}/doc/images" filtering="no">
-            <fileset dir="xdocs/images">
+        <copy todir="${dist}/doc/images/wolips" filtering="no">
+            <fileset dir="src/wolips/xdocs/images">
+                <include name="**/*.gif"/>
+                <include name="**/*.jpeg"/>
+                <include name="**/*.jpg"/>
+                <include name="**/*.css"/>
+            </fileset>
+        </copy>
+        <copy todir="${dist-wolips}/doc/images" filtering="no">
+            <fileset dir="src/wolips/xdocs/images">
                 <include name="**/*.gif"/>
                 <include name="**/*.jpeg"/>
                 <include name="**/*.jpg"/>
