@@ -160,8 +160,7 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 								.getWOVariables()
 								.systemRoot();
 						spaceBetweenParameterAndArgument = false;
-					} else
-						continue;
+					}
 					if ("-DWORootDirectory=".equals(parameter)
 						&& this.isOnMacOSX()) {
 						argument =
@@ -171,15 +170,11 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 								.getWOVariables()
 								.systemRoot();
 						spaceBetweenParameterAndArgument = false;
-					} else
-						continue;
-				}
-				if ("-NSProjectSearchPath".equals(parameter)) {
-					spaceBetweenParameterAndArgument = false;
-					argument =
-						this.replaceInArgumentGeneratedByWOLips(
-							argument,
-							configuration);
+					}
+					if ("-NSProjectSearchPath".equals(parameter)) {
+						argument = this.getGeneratedByWOLips(configuration);
+					}
+
 				}
 
 				launchArgument.append(parameter);
@@ -271,32 +266,21 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 		return vmArgs;
 	}
 	/**
-	 * Method replaceInArgumentGeneratedByWOLips.
-	 * @param anArgument
-	 * @return String
-	 */
-	private String replaceInArgumentGeneratedByWOLips(
-		String anArgument,
-		ILaunchConfiguration configuration) {
-		return FileStringScanner.replace(
-			anArgument,
-			LaunchingMessages.getString("WOArguments.GeneratedByWOLips"),
-			this.getGeneratedByWOLips(configuration));
-	}
-	/**
 	 * Method getGeneratedByWOLips.
 	 * @return String
 	 */
 	private String getGeneratedByWOLips(ILaunchConfiguration configuration) {
+		boolean moreThenOne = false;
 		String returnValue = "";
 		IProject[] projects =
 			ResourcesPlugin.getWorkspace().getRoot().getProjects();
 		for (int i = 0; i < projects.length; i++) {
 			if (isValidProjectPath(projects[i], configuration)) {
 				if (isAFramework(projects[i], configuration)) {
-					if (returnValue.length() > 0)
+					if (returnValue.length() > 0) {
+						moreThenOne = true;
 						returnValue = returnValue + ",";
-
+					}
 					returnValue =
 						returnValue
 							+ "\""
@@ -304,17 +288,27 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 							+ "\"";
 				}
 				if (isTheLaunchApp(projects[i], configuration)) {
-					if (returnValue.length() > 0)
+					if (returnValue.length() > 0) {
+						moreThenOne = true;
 						returnValue = returnValue + ",";
-
-					returnValue = returnValue + "\"" + ".." + "\"";
+					}
+					/*returnValue =
+						returnValue
+							+ "\""
+							+ projects[i].getLocation().toOSString()
+							+ "\"";*/
+					returnValue = returnValue + "\"" + ".." + "\"" + "," + "\"" + "../.." + "\"";
 				}
 			}
 		}
 		returnValue = FileStringScanner.replace(returnValue, "\\", "/");
 		returnValue = this.addPreferencesValue(returnValue);
-		/*if ("".equals(returnValue))
-			returnValue = "\"..\"";*/
+		if ("".equals(returnValue))
+			returnValue = "\"" + ".." + "\"";
+		if (moreThenOne)
+		/*	returnValue = "\"(" + returnValue + ")\"";
+			else */
+		returnValue = "(" + returnValue + ")";
 		return returnValue;
 	}
 	/**
