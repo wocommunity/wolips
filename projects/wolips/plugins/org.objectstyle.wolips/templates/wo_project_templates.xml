@@ -50,6 +50,7 @@
 			<file templateId="woapplication.makefile.postamble" name="Makefile.postamble"/>
 			<file templateId="woapplication.custominfo.plist" name="CustomInfo.plist"/>
 			<file templateId="woapplication.icon" name="WOAfile.icns"/>
+			<file templateId="woframework.project.pbxproject" name="projectname.pbproject/project.pbxproj"/>
 		</files>
 	</projectType>
 	<projectType name="Java WebObjects Application Import" id="JavaWebObjectsApplicationImport">
@@ -70,6 +71,7 @@
 			<file templateId="woapplication.makefile.postamble" name="Makefile.postamble"/>
 			<file templateId="woapplication.custominfo.plist" name="CustomInfo.plist"/>
 			<file templateId="woapplication.icon" name="WOAfile.icns"/>
+			<file templateId="woframework.project.pbxproject" name="projectname.pbproject/project.pbxproj"/>
 		</files>
 	</projectType>
 	<projectType name="Java WebObjects Framework" id="JavaWebObjectsFramework">
@@ -89,6 +91,7 @@
 			<file templateId="woframework.makefile" name="Makefile"/>
 			<file templateId="woframework.makefile.postamble" name="Makefile.postamble"/>
 			<file templateId="woframework.custominfo.plist" name="CustomInfo.plist"/>
+			<file templateId="woframework.project.pbxproject" name="projectname.pbproject/project.pbxproj"/>
 		</files>
 	</projectType>
 	<projectType name="Java Ant jar" id="JavaAntJar">
