@@ -93,7 +93,9 @@ public final class WOComponentBundle
 		if (this.getCorrespondingResource() != null) {
 			try {
 				String fileName = this.getCorrespondingResource().getName();
-				fileName = fileName.substring(0, fileName.length() - 3);
+                            int length = fileName.length();
+                            if(length > 3) {
+				fileName = fileName.substring(0,length - 3);
 				String[] extensions =
 					new String[] {
 						WOLipsModel.WOCOMPONENT_WOD_EXTENSION,
@@ -107,6 +109,7 @@ public final class WOComponentBundle
 						fileName,
 						extensions,
 						true);
+                            }
 			} catch (Exception e) {
 				DataSetsPlugin.getDefault().getPluginLogger().log(e);
 			}
