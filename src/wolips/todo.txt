@@ -6,6 +6,7 @@ This is our list of open items.
 - wo view implementation
 - handle packages on import
 - handle .lproj folder on import
+- handle webserver resources on import
 - add WO icon to the WOApplication(currently the file is empty)
 - dynamically resolve the src folder
 - add a field to the project wizards to enter the src folder name
