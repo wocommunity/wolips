@@ -327,7 +327,7 @@
 <!-- Extension: WOFramework Builder                                                      -->
 <!-- =================================================================================== -->
    <extension
-         id="org.objectstyle.wolips.woframeworkbuilder"
+         id="woframeworkbuilder"
          name="%WOFrameworkBuilderName"
          point="org.eclipse.core.resources.builders">
       <builder>
@@ -340,7 +340,7 @@
 <!-- Extension: WOApplication Builder                                                    -->
 <!-- =================================================================================== -->
    <extension
-         id="org.objectstyle.wolips.woapplicationbuilder"
+         id="woapplicationbuilder"
          name="%WOApplicationBuilderName"
          point="org.eclipse.core.resources.builders">
       <builder>
