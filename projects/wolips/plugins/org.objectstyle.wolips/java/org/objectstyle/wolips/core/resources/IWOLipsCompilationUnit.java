@@ -68,6 +68,7 @@ import org.eclipse.jdt.core.ICompilationUnit;
  */
 public interface IWOLipsCompilationUnit extends IWOLipsResource {
 	public static final int WOCOMPONENT_JAVA = 0;
+	public static final int EOENTITY_JAVA = 1;
 	/**
 	 * @return Returns the IResource;
 	 */

@@ -56,9 +56,12 @@
 
 package org.objectstyle.wolips.core.resources;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.resources.IResource;
+import org.eclipse.jdt.core.JavaModelException;
+import org.objectstyle.wolips.core.logging.WOLipsLog;
 
 /**
  * @author ulrich
@@ -66,28 +69,80 @@ import org.eclipse.core.resources.IResource;
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public interface IWOLipsResource {
-	public static final int WOCOMPONENT_BUNDLE = 0;
-	public static final int WOCOMPONENT_WOD = 1;
-	public static final int WOCOMPONENT_HTML = 2;
-	public static final int WOCOMPONENT_WOO = 3;
-	public static final int WOCOMPONENT_API = 4;
-	public static final int EOMODEL = 5;
+public final class EOEntityJava
+	extends WOLipsCompilationUnit
+	implements IEOEntityJava {
+
+	protected EOEntityJava() {
+		super();
+	}
 	/**
-	 * @return Returns the IResource;
+	 * @return Returns the IResource.
 	 */
-	public abstract IResource getCorrespondingResource();
-	/**
-	 * @return Returns the type.
+	public final IResource getCorrespondingResource() {
+		IResource resource = null;
+		try {
+			this.getCorrespondingCompilationUnit().getCorrespondingResource();
+		} catch (JavaModelException e) {
+			WOLipsLog.log(e);
+		}
+		return resource;
+	}
+	/* (non-Javadoc)
+	 * @see org.objectstyle.wolips.core.resources.IWOLipsResource#getType()
 	 */
-	public abstract int getType();
-	/**
-	 * @return Returns a List of related IWOLipsResource s.
+	public final int getType() {
+		return IWOLipsCompilationUnit.EOENTITY_JAVA;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.objectstyle.wolips.core.resources.IWOLipsResource#getRelatedResources()
 	 */
-	public abstract List getRelatedResources();
+	public final List getRelatedResources() {
+		return new ArrayList();
+		/*List plists = new ArrayList();
+		List list = new ArrayList();
+		if (this.getCorrespondingCompilationUnit() != null) {
+			try {
+				IProject[] projects =
+					WorkbenchUtilities.getWorkspace().getRoot().getProjects();
+				String fileName =
+					this
+						.getCorrespondingCompilationUnit()
+						.getCorrespondingResource()
+						.getName();
+				fileName = fileName.substring(0, fileName.length() - 5);
+				String[] extensions =
+					new String[] {
+						WOLipsModel.EOENTITY_PLIST_EXTENSION };
+				plists =
+					WorkbenchUtilities
+						.findResourcesInResourcesByNameAndExtensions(
+						projects,
+						fileName,
+						extensions);
+				for(int i = 0; i < plists.size(); i++) {
+					IResource resource = (IResource)plists.get(i);
+					if(resource != null) {
+						IContainer parent = resource.getParent();
+						if(parent != null && parent.getName().endsWith(WOLipsModel.EOMODEL_EXTENSION))
+						list.add(parent);		
+					}
+				}
+
+			} catch (Exception e) {
+				WOLipsLog.log(e);
+			}
+		}
+		return list;*/
+	}
+
 	/**
 	 * Opens the resource in a Editor.
 	 * @param If forceToOpenIntextEditor is set to true the resource opens in a texteditor.
 	 */
-	public abstract void open(boolean forceToOpenIntextEditor);
+	public final void open(boolean forceToOpenIntextEditor) {
+		/*WorkbenchUtilities.open((IFile)this.getCorrespondingResource(), forceToOpenIntextEditor, "org.objectstyle.wolips.internal.wod.editor");*/
+	}
+
 }

@@ -56,9 +56,8 @@
 
 package org.objectstyle.wolips.core.resources;
 
+import java.util.ArrayList;
 import java.util.List;
-
-import org.eclipse.core.resources.IResource;
 
 /**
  * @author ulrich
@@ -66,28 +65,76 @@ import org.eclipse.core.resources.IResource;
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public interface IWOLipsResource {
-	public static final int WOCOMPONENT_BUNDLE = 0;
-	public static final int WOCOMPONENT_WOD = 1;
-	public static final int WOCOMPONENT_HTML = 2;
-	public static final int WOCOMPONENT_WOO = 3;
-	public static final int WOCOMPONENT_API = 4;
-	public static final int EOMODEL = 5;
-	/**
-	 * @return Returns the IResource;
+public final class EOModel
+	extends WOLipsResource
+	implements IEOModel {
+
+	protected EOModel() {
+		super();
+	}
+
+	/* (non-Javadoc)
+	 * @see org.objectstyle.wolips.core.resources.IWOLipsResource#getType()
 	 */
-	public abstract IResource getCorrespondingResource();
-	/**
-	 * @return Returns the type.
+	public final int getType() {
+		return IWOLipsResource.EOMODEL;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.objectstyle.wolips.core.resources.IWOLipsResource#getRelatedResources()
 	 */
-	public abstract int getType();
-	/**
-	 * @return Returns a List of related IWOLipsResource s.
-	 */
-	public abstract List getRelatedResources();
+	public final List getRelatedResources() {
+		List list = new ArrayList();
+		/*if (this.getCorrespondingResource() != null) {
+			try {
+				IProject[] projects =
+					WorkbenchUtilities.getWorkspace().getRoot().getProjects();
+				String fileName = this.getCorrespondingResource().getName();
+				fileName = fileName.substring(0, fileName.length() - 3);
+				String[] extensions =
+					new String[] {
+						WOLipsModel.WOCOMPONENT_WOD_EXTENSION,
+						WOLipsModel.WOCOMPONENT_HTML_EXTENSION,
+						WOLipsModel.WOCOMPONENT_WOO_EXTENSION,
+						WOLipsModel.WOCOMPONENT_API_EXTENSION };
+				list =
+					WorkbenchUtilities
+						.findResourcesInResourcesByNameAndExtensions(
+						projects,
+						fileName,
+						extensions);
+
+			} catch (Exception e) {
+				WOLipsLog.log(e);
+			}
+		}*/
+		return list;
+	}
+
 	/**
 	 * Opens the resource in a Editor.
 	 * @param If forceToOpenIntextEditor is set to true the resource opens in a texteditor.
 	 */
-	public abstract void open(boolean forceToOpenIntextEditor);
+	public final void open(boolean forceToOpenIntextEditor) {
+		/*String fileName = this.getCorrespondingResource().getName();
+		fileName = fileName.substring(0, fileName.length() - 3);
+		if (forceToOpenIntextEditor) {
+			WorkbenchUtilities.open(
+				(IFile) ((IFolder) this.getCorrespondingResource()).findMember(
+					fileName + "." + WOLipsModel.WOCOMPONENT_WOD_EXTENSION),
+				forceToOpenIntextEditor,
+				"org.objectstyle.wolips.internal.wod.editor");
+			WorkbenchUtilities.open(
+				(IFile) ((IFolder) this.getCorrespondingResource()).findMember(
+					fileName + "." + WOLipsModel.WOCOMPONENT_HTML_EXTENSION),
+				forceToOpenIntextEditor,
+				"org.objectstyle.wolips.internal.html.editor");
+		} else {
+			WorkbenchUtilities.open(
+				(IFile) ((IFolder) this.getCorrespondingResource()).findMember(
+					fileName + "." + WOLipsModel.WOCOMPONENT_WOD_EXTENSION),
+				forceToOpenIntextEditor,
+				"org.objectstyle.wolips.internal.wod.editor");
+		}*/
+	}
 }

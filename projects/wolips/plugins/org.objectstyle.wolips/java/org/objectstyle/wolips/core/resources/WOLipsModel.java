@@ -57,9 +57,13 @@ package org.objectstyle.wolips.core.resources;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jdt.core.ICompilationUnit;
+import org.eclipse.jdt.core.IRegion;
 import org.eclipse.jdt.core.IType;
+import org.eclipse.jdt.core.ITypeHierarchy;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.objectstyle.wolips.core.logging.WOLipsLog;
+import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
 
 /**
  * @author ulrich
@@ -83,10 +87,16 @@ public final class WOLipsModel implements IWOLipsModel {
 	public final static String WOCOMPONENT_HTML_EXTENSION = "html";
 	public final static String WOCOMPONENT_WOO_EXTENSION = "woo";
 	public final static String WOCOMPONENT_API_EXTENSION = "api";
+	public final static String EOMODEL_EXTENSION = "eomodeld";
+	public final static String EOENTITY_PLIST_EXTENSION = "plist";
 	public final static String[] BUNDLE_TYPES =
-		new String[] { WOLipsModel.WOCOMPONENT_BUNDLE_EXTENSION };
+		new String[] {
+			WOLipsModel.WOCOMPONENT_BUNDLE_EXTENSION,
+			WOLipsModel.EOMODEL_EXTENSION };
 	public final static int[] BUNDLE_TYPES_TO_RESOURCE_TYPE_MAPPING =
-		new int[] { IWOLipsResource.WOCOMPONENT_BUNDLE };
+		new int[] {
+			IWOLipsResource.WOCOMPONENT_BUNDLE,
+			IWOLipsResource.EOMODEL };
 	public final static String[] FILE_TYPES =
 		new String[] {
 			WOLipsModel.WOCOMPONENT_WOD_EXTENSION,
@@ -100,9 +110,17 @@ public final class WOLipsModel implements IWOLipsModel {
 			IWOLipsResource.WOCOMPONENT_WOO,
 			IWOLipsResource.WOCOMPONENT_API };
 	private static final String[] COMPILATION_UNITS =
-		new String[] { WOComponentJava.class.getName()};
+		new String[] {
+			WOComponentJava.class.getName(),
+			EOEntityJava.class.getName(),
+			EOEntityJava.class.getName(),
+			EOEntityJava.class.getName()};
 	private static final String[] COMPILATION_UNIT_SUPER_TYPES =
-		new String[] { "WOComponent" };
+		new String[] {
+			"WOComponent",
+			"EOGenericRecord",
+			"EOEnterpriseObject",
+			"EOCustomObject" };
 
 	private WOLipsModel() {
 		super();
@@ -207,7 +225,7 @@ public final class WOLipsModel implements IWOLipsModel {
 				if (resource.getName().endsWith(WOLipsModel.BUNDLE_TYPES[i])) {
 					resourceType =
 						WOLipsModel.BUNDLE_TYPES_TO_RESOURCE_TYPE_MAPPING[i];
-					continue;
+					break;
 				}
 			}
 		} else if (resource.getType() == IResource.FILE) {
@@ -215,7 +233,7 @@ public final class WOLipsModel implements IWOLipsModel {
 				if (resource.getName().endsWith(WOLipsModel.FILE_TYPES[i])) {
 					resourceType =
 						WOLipsModel.FILE_TYPES_TO_RESOURCE_TYPE_MAPPING[i];
-					continue;
+					break;
 				}
 			}
 		}
@@ -226,8 +244,30 @@ public final class WOLipsModel implements IWOLipsModel {
 		IType[] types = null;
 		int compilationUnitType = WOLipsModel.UNKNOWN_COMPILATION_UNIT_TYPE;
 		try {
-			types = compilationUnit.getAllTypes();
+			//types = compilationUnit.getAllTypes();
+			String resourceName =
+				compilationUnit.getCorrespondingResource().getName();
+			String typeName =
+				resourceName.substring(
+					0,
+					resourceName.length()
+						- IWOLipsPluginConstants.EXT_JAVA.length()
+						- 1);
+			IType type = compilationUnit.getType(typeName);
+			IRegion region = JavaCore.newRegion();
+			region.add(compilationUnit);
+			ITypeHierarchy typeHierarchy =
+				compilationUnit.getJavaProject().newTypeHierarchy(
+					type,
+					region,
+					null);
+			types = typeHierarchy.getAllSuperclasses(type);
 			compilationUnitType = this.getWOLipsCompilationUnitType(types);
+			if (compilationUnitType
+				== WOLipsModel.UNKNOWN_COMPILATION_UNIT_TYPE) {
+				types = typeHierarchy.getAllSuperInterfaces(type);
+				compilationUnitType = this.getWOLipsCompilationUnitType(types);
+			}
 		} catch (JavaModelException e) {
 			WOLipsLog.log(e);
 		}
@@ -240,27 +280,22 @@ public final class WOLipsModel implements IWOLipsModel {
 			compilationUnitType = this.getWOLipsCompilationUnitType(types[i]);
 			if (compilationUnitType
 				!= WOLipsModel.UNKNOWN_COMPILATION_UNIT_TYPE)
-				continue;
+				break;
 		}
 		return compilationUnitType;
 	}
 
 	public final int getWOLipsCompilationUnitType(IType type) {
 		int compilationUnitType = WOLipsModel.UNKNOWN_COMPILATION_UNIT_TYPE;
-		try {
-			for (int i = 0;
-				i < WOLipsModel.COMPILATION_UNIT_SUPER_TYPES.length;
-				i++) {
-				if (WOLipsModel
-					.COMPILATION_UNIT_SUPER_TYPES[i]
-					.equals(type.getSuperclassName())) {
-					compilationUnitType = i;
-					continue;
-				}
-
+		for (int i = 0;
+			i < WOLipsModel.COMPILATION_UNIT_SUPER_TYPES.length;
+			i++) {
+			String elementName = type.getElementName();
+			String supertypeName = WOLipsModel.COMPILATION_UNIT_SUPER_TYPES[i];
+			if (supertypeName.equals(elementName)) {
+				compilationUnitType = i;
+				break;
 			}
-		} catch (JavaModelException e) {
-			WOLipsLog.log(e);
 		}
 		return compilationUnitType;
 	}

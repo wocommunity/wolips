@@ -56,38 +56,12 @@
 
 package org.objectstyle.wolips.core.resources;
 
-import java.util.List;
-
-import org.eclipse.core.resources.IResource;
-
 /**
  * @author ulrich
  *
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public interface IWOLipsResource {
-	public static final int WOCOMPONENT_BUNDLE = 0;
-	public static final int WOCOMPONENT_WOD = 1;
-	public static final int WOCOMPONENT_HTML = 2;
-	public static final int WOCOMPONENT_WOO = 3;
-	public static final int WOCOMPONENT_API = 4;
-	public static final int EOMODEL = 5;
-	/**
-	 * @return Returns the IResource;
-	 */
-	public abstract IResource getCorrespondingResource();
-	/**
-	 * @return Returns the type.
-	 */
-	public abstract int getType();
-	/**
-	 * @return Returns a List of related IWOLipsResource s.
-	 */
-	public abstract List getRelatedResources();
-	/**
-	 * Opens the resource in a Editor.
-	 * @param If forceToOpenIntextEditor is set to true the resource opens in a texteditor.
-	 */
-	public abstract void open(boolean forceToOpenIntextEditor);
+public interface IEOModel {
+
 }
