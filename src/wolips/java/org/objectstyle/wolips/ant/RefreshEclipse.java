@@ -68,6 +68,7 @@ import org.eclipse.core.runtime.CoreException;
 public class RefreshEclipse extends Task {
 	
 	private String projectName;
+	private boolean forceFullGarbageCollection = false;
 
 	/**
 	 * Constructor for RefreshEclipse.
@@ -123,19 +124,21 @@ public class RefreshEclipse extends Task {
 	}
 	
 	public void forceFullGarbageCollection() {
-        Runtime runtime = Runtime.getRuntime();
-         System.out.println("Forcing full garbage collection... " );
-        long isFree = runtime.freeMemory();
-        long total = runtime.totalMemory();
-        long wasFree;
-        System.out.println( "Was free    : " + isFree + "\t Was used    : " + ( total - isFree ) );
-        wasFree = isFree;
-        runtime.gc();
-        isFree = runtime.freeMemory();
-        runtime.runFinalization();
-        total = runtime.totalMemory();
-        System.out.println( "Is now free : " + isFree + "\t Is now used : " + ( total - isFree ) );
-        System.out.println( "...done" );
+		if (forceFullGarbageCollection) {
+        	Runtime runtime = Runtime.getRuntime();
+        	System.out.println("Forcing full garbage collection... " );
+        	long isFree = runtime.freeMemory();
+        	long total = runtime.totalMemory();
+        	long wasFree;
+        	System.out.println( "Was free    : " + isFree + "\t Was used    : " + ( total - isFree ) );
+        	wasFree = isFree;
+        	runtime.gc();
+        	isFree = runtime.freeMemory();
+        	runtime.runFinalization();
+        	total = runtime.totalMemory();
+        	System.out.println( "Is now free : " + isFree + "\t Is now used : " + ( total - isFree ) );
+        	System.out.println( "...done" );
+        }
     }
 
 }
