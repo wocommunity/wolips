@@ -55,13 +55,11 @@
  */
 
 package org.objectstyle.wolips.wizards.templates;
-import java.io.File;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.Hashtable;
 
-import org.eclipse.core.runtime.IPath;
 import org.objectstyle.wolips.core.plugin.AWOLips;
 import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
 import org.objectstyle.wolips.core.plugin.WOLipsUtils;
@@ -108,8 +106,6 @@ public abstract class _FileFromTemplateCreator extends AWOLips {
 	protected static synchronized Document getFileTemplateDocument()
 		throws InvocationTargetException {
 		if (templateDocument == null) {
-			IPath templatePath;
-			File templateFile;
 			try {
 				URL url =
 					new URL(
@@ -122,8 +118,6 @@ public abstract class _FileFromTemplateCreator extends AWOLips {
 			} catch (Exception e) {
 				throw new InvocationTargetException(e);
 			} finally {
-				templatePath = null;
-				templateFile = null;
 			}
 		}
 		return templateDocument;

@@ -78,8 +78,6 @@ import org.eclipse.ui.actions.WorkspaceModifyDelegatingOperation;
  *
  */
 public class WOComponentCreationPage extends WizardNewWOResourcePage {
-	private IWorkbench workbench;
-	private Composite parentComposite;
 	// widgets
 	private Button bodyCheckbox;
 	/**
@@ -95,18 +93,15 @@ public class WOComponentCreationPage extends WizardNewWOResourcePage {
 		this.setTitle(Messages.getString("WOComponentCreationPage.title"));
 		this.setDescription(
 			Messages.getString("WOComponentCreationPage.description"));
-		this.workbench = workbench;
 	}
 	/** (non-Javadoc)
 	 * Method declared on IDialogPage.
 	 */
 	public void createControl(Composite parent) {
-		parentComposite = parent;
 		// inherit default container and name specification widgets
 		super.createControl(parent);
 		Composite composite = (Composite) getControl();
 		//WorkbenchHelp.setHelp(composite, IReadmeConstants.CREATION_WIZARD_PAGE_CONTEXT);
-		GridData data = (GridData) composite.getLayoutData();
 		this.setFileName(
 			Messages.getString(
 				"WOComponentCreationPage.newComponent.defaultName"));

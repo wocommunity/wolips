@@ -96,7 +96,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-;
+
 /**
  * @author mnolte
  * @author uli
@@ -313,7 +313,6 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 		IFile fileToCreate = null;
 		switch (parentResource.getType()) {
 			case IResource.PROJECT :
-				IProject project = (IProject) parentResource;
 				if (isJavaFile) {
 					// add java file to source folder
 					fileToCreate =
@@ -339,7 +338,6 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 				}
 				break;
 			case IResource.FOLDER :
-				IFolder subproject = (IFolder) parentResource;
 				if (isJavaFile) {
 					// add java file to source folder
 					fileToCreate =
@@ -671,8 +669,6 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 		throws InvocationTargetException {
 		if (templateDocument != null)
 			return templateDocument;
-		IPath templatePath;
-		File templateFile;
 		try {
 			InputStream input =
 				(new URL(WOLipsPlugin.baseURL(),

@@ -92,11 +92,11 @@ public abstract class WOProjectCreationPage
 	extends WizardNewProjectCreationPage {
 
 	// widgets
-	private boolean importPBProject;
-	private Text importPBProjectPathField;
-	private Label importPBProjectLabel;
-	private Button importPBProjectBrowseButton;
-	private String importPBProjectPathFieldValue;
+	boolean importPBProject;
+	Text importPBProjectPathField;
+	Label importPBProjectLabel;
+	Button importPBProjectBrowseButton;
+	String importPBProjectPathFieldValue;
 	// constants
 	private static final int IMPORT_TEXT_FIELD_WIDTH = 250;
 	/**
@@ -128,7 +128,6 @@ public abstract class WOProjectCreationPage
 
 	private final void createProjectCreationOptionsGroup(Composite parent) {
 		Composite composite = (Composite) getControl();
-		GridData data = (GridData) composite.getLayoutData();
 		// section generation group
 		Group optionsGroup = new Group(composite, SWT.NONE);
 		GridLayout layout = new GridLayout();
@@ -206,7 +205,7 @@ public abstract class WOProjectCreationPage
 	 *
 	 * @return the project import location directory in the field
 	 */
-	private String getImportPBProjectPathFieldValue() {
+	String getImportPBProjectPathFieldValue() {
 		if (importPBProjectPathField == null)
 			return ""; //$NON-NLS-1$
 		else
@@ -215,7 +214,7 @@ public abstract class WOProjectCreationPage
 	/**
 	 *	Open an appropriate directory browser
 	 */
-	private void handleImportBrowseButtonPressed() {
+	protected void handleImportBrowseButtonPressed() {
 		DirectoryDialog dialog =
 			new DirectoryDialog(importPBProjectPathField.getShell());
 		dialog.setMessage(Messages.getString("WOProjectCreationPage.creationOptions.directoryDialogLabel")); //$NON-NLS-1$

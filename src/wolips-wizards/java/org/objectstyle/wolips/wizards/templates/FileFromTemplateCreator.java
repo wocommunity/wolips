@@ -112,7 +112,6 @@ public class FileFromTemplateCreator extends _FileFromTemplateCreator {
 	/////////////////////////////////////////////
 	private IFile fileToCreate;
 	private String fileNameWithoutExtension;
-	private String templateID;
 	/**
 	 * Standard constructor
 	 */
@@ -126,7 +125,7 @@ public class FileFromTemplateCreator extends _FileFromTemplateCreator {
 	 */
 	public FileFromTemplateCreator(Hashtable variableInfo) {
 		this();
-		FileFromTemplateCreator.variableInfo = variableInfo;
+		_FileFromTemplateCreator.variableInfo = variableInfo;
 	}
 	/**
 	 * Creates new file resource.
@@ -143,12 +142,10 @@ public class FileFromTemplateCreator extends _FileFromTemplateCreator {
 		throws InvocationTargetException {
 		this.fileToCreate = fileToCreate;
 		String fileName = fileToCreate.getName();
-		String fileExtension = null;
 		int extIndex = fileName.indexOf(".");
 		if (extIndex != -1 && extIndex < fileName.length() - 1) {
 			// fileNameWithoutExtension is used to resolve CLASS template key
 			fileNameWithoutExtension = fileName.substring(0, extIndex);
-			fileExtension = fileName.substring(extIndex + 1);
 		}
 		SubProgressMonitor subMonitor = null;
 		if (monitor != null) {
@@ -191,7 +188,6 @@ public class FileFromTemplateCreator extends _FileFromTemplateCreator {
 			}
 		} finally {
 			fileName = null;
-			fileExtension = null;
 		}
 	}
 	/**

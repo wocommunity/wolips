@@ -6,14 +6,6 @@
  */
 package org.objectstyle.wolips.wounit.prepare;
 
-import java.net.URL;
-
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Platform;
-import org.objectstyle.wolips.core.project.ant.RunAnt;
-import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
-import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
 /**
  * @author uli
  *
@@ -23,28 +15,25 @@ import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
 public class PrepareWOUnit {
 	private PrepareWOUnit() {
 	}
-
-	/**
-	 * Method writePropertiesFileToUserHome.
-	 */
-	private static void buildWOUnit() throws Exception {
-		URL relativeBuildFile = null;
-		URL buildFile = null;
-		IProgressMonitor monitor = null;
-		try {
-			relativeBuildFile =
-				new URL(
-					WOLipsPlugin.baseURL(),
-					IWOLipsPluginConstants.build_user_home_properties);
-			buildFile = Platform.asLocalURL(relativeBuildFile);
-			monitor = new NullProgressMonitor();
-			RunAnt runAnt = new RunAnt();
-			runAnt.asAnt(buildFile.getFile().toString(), monitor, null);
-		} finally {
-			relativeBuildFile = null;
-			buildFile = null;
-			monitor = null;
+	/*
+		private static void buildWOUnit() throws Exception {
+			URL relativeBuildFile = null;
+			URL buildFile = null;
+			IProgressMonitor monitor = null;
+			try {
+				relativeBuildFile =
+					new URL(
+						WOLipsPlugin.baseURL(),
+						IWOLipsPluginConstants.build_user_home_properties);
+				buildFile = Platform.asLocalURL(relativeBuildFile);
+				monitor = new NullProgressMonitor();
+				RunAnt runAnt = new RunAnt();
+				runAnt.asAnt(buildFile.getFile().toString(), monitor, null);
+			} finally {
+				relativeBuildFile = null;
+				buildFile = null;
+				monitor = null;
+			}
 		}
-	}
-
+	*/
 }
