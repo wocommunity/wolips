@@ -66,12 +66,6 @@
          fragment="true"/>
          
    <plugin
-         id="org.objectstyle.wolips.profiling"
-         download-size="0"
-         install-size="0"
-         version="0.9.9"/>
-
-   <plugin
          id="org.objectstyle.wolips.projectbuild"
          download-size="0"
          install-size="0"
