@@ -58,6 +58,7 @@
         *  4. clean      - cleans temporary directories.
         *  5. doc        - creates documentation including Javadoc.
         *  6. dist       - creates WOProject distribution.
+        *  7. test       - Run JUnit tests.
         *
         *
         * Build environment:
@@ -76,9 +77,19 @@
     <!-- Creates WOProject distribution.               -->
     <!-- ============================================= -->
     <target name="dist" depends="prepare,java,doc,api">
-         <mkdir dir="${dist}/src"/>
+    
+         <!-- Copy source code -->
          <copy todir="${dist}/src">
              <fileset dir="src"/>
+         </copy>
+         
+         <!-- Copy examples code -->
+         <copy todir="${dist}/examples">
+             <fileset dir="tests/wo">
+             	<exclude name="**/build/**"/>
+             	<exclude name="**/dist/**"/>
+             	<exclude name="**/auto/**"/>
+             </fileset>
          </copy>
 
          <tar tarfile="${dist.base}/${project.name}-src-${project.version}.tar">
@@ -178,6 +189,13 @@
         <!-- clean-build test cases using woproject -->
         <delete dir="tests/wo/dist"/>
         
+        <!-- delete auto-generated superclasses -->
+        <delete includeEmptyDirs="true">
+        	<fileset dir="tests/wo/frameworks">
+        		<include name="**/auto/*.java"/>
+        	</fileset>
+        </delete>
+        
         <echo>****** Building tests: start</echo>
 		
 		<ant dir="tests/wo/frameworks/art" target="clean">
@@ -205,7 +223,9 @@
         <mkdir dir="build/main"/>
         <mkdir dir="build/tests"/>
         <mkdir dir="${dist}"/>
+        <mkdir dir="${dist}/src"/>
         <mkdir dir="${dist}/lib"/>
+        <mkdir dir="${dist}/examples"/>
         <mkdir dir="${dist}/doc"/>
         <mkdir dir="${dist}/doc/api"/>
     </target>
