@@ -70,13 +70,12 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.objectstyle.wolips.datasets.listener.DefaultDeltaVisitor;
 
 /**
  * @author Harald Niesche
  *
  */
-public class ResourceUtilities extends DefaultDeltaVisitor {
+public class ResourceUtilities {
 
   /** 
    * create a Folder recursively 
