@@ -212,10 +212,16 @@ public class TargetBuilder extends JavaBuilder
 		{
 			//if (isResourceTargetMember(problemMarkers[i].getResource()))
 			{
-				String hashKey =
-					problemMarkers[i].getResource().getFullPath()
-						+ problemMarkers[i].getAttribute(IMarker.LINE_NUMBER).toString()
-						+ problemMarkers[i].getAttribute(IMarker.MESSAGE);
+				String hashKey = "";
+				
+				if(problemMarkers[i].getResource().getFullPath() != null)
+					hashKey = hashKey + problemMarkers[i].getResource().getFullPath().toString();
+				
+				if(problemMarkers[i].getAttribute(IMarker.LINE_NUMBER) != null)
+					hashKey = hashKey + problemMarkers[i].getAttribute(IMarker.LINE_NUMBER).toString();
+					
+				if(problemMarkers[i].getAttribute(IMarker.MESSAGE) != null)
+					hashKey = hashKey + problemMarkers[i].getAttribute(IMarker.MESSAGE);
 
 				if (!_problemMarkers.containsKey(hashKey))
 				{
