@@ -56,6 +56,7 @@
 package org.objectstyle.wolips.wizards;
 import java.io.ByteArrayInputStream;
 import java.lang.reflect.InvocationTargetException;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -63,7 +64,9 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jdt.core.JavaCore;
 import org.objectstyle.wolips.core.project.ProjectHelper;
+import org.objectstyle.wolips.core.project.WOLipsJavaProject;
 /**
  * @author mnolte
  * @author uli
@@ -122,9 +125,15 @@ public class WOComponentCreator extends WOProjectResourceCreator {
 				componentFolder =
 					((IProject) parentResource).getFolder(
 						componentName + "." + EXT_COMPONENT);
+				WOLipsJavaProject wolipsJavaProject =
+					new WOLipsJavaProject(
+						JavaCore.create((IProject) parentResource));
+
 				componentJavaFile =
-					ProjectHelper.getProjectSourceFolder(
-						(IProject) parentResource).getFile(
+					wolipsJavaProject
+						.getClasspathAccessor()
+						.getProjectSourceFolder()
+						.getFile(
 						new Path(componentName + "." + EXT_JAVA));
 				componentApiFile =
 					((IProject) parentResource).getFile(

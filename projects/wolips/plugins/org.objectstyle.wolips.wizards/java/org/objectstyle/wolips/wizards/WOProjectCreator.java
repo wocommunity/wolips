@@ -90,6 +90,7 @@ import org.objectstyle.wolips.core.plugin.WOLipsUtils;
 import org.objectstyle.wolips.core.project.IWOLipsProject;
 import org.objectstyle.wolips.core.project.ProjectHelper;
 import org.objectstyle.wolips.core.project.WOLipsCore;
+import org.objectstyle.wolips.core.project.WOLipsJavaProject;
 import org.objectstyle.wolips.core.project.WOLipsProject;
 import org.objectstyle.wolips.logging.WOLipsLog;
 import org.objectstyle.wolips.wizards.templates.XercesDocumentBuilder;
@@ -315,9 +316,14 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 			case IResource.PROJECT :
 				if (isJavaFile) {
 					// add java file to source folder
+					WOLipsJavaProject wolipsJavaProject =
+						new WOLipsJavaProject(
+							JavaCore.create((IProject) parentResource));
 					fileToCreate =
-						ProjectHelper.getProjectSourceFolder(
-							(IProject) parentResource).getFile(
+						wolipsJavaProject
+							.getClasspathAccessor()
+							.getProjectSourceFolder()
+							.getFile(
 							new Path(fileName));
 				} else {
 					// add wo resource file
@@ -707,10 +713,13 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 			IJavaProject newJavaProject =
 				JavaCore.create((IProject) parentResource);
 			try {
+				WOLipsJavaProject wolipsJavaProject =
+					new WOLipsJavaProject(newJavaProject);
 				IClasspathEntry[] newClasspathEntries =
-					ProjectHelper.addFrameworkListToClasspathEntries(
-						pbProject.getFrameworks(),
-						newJavaProject);
+					wolipsJavaProject
+						.getClasspathAccessor()
+						.addFrameworkListToClasspathEntries(
+						pbProject.getFrameworks());
 				newJavaProject.setRawClasspath(newClasspathEntries, monitor);
 			} catch (JavaModelException e) {
 				WOLipsLog.log(e);
@@ -871,9 +880,14 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 			IContainer sourceFolder = null;
 			switch (parentContainer.getType()) {
 				case IResource.PROJECT :
+					WOLipsJavaProject wolipsJavaProject =
+						new WOLipsJavaProject(
+							JavaCore.create((IProject) parentContainer));
+
 					sourceFolder =
-						ProjectHelper.getProjectSourceFolder(
-							(IProject) parentContainer);
+						wolipsJavaProject
+							.getClasspathAccessor()
+							.getProjectSourceFolder();
 					break;
 				case IResource.FOLDER :
 					sourceFolder =

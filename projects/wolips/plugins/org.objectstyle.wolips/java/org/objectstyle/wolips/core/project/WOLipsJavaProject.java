@@ -68,17 +68,18 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
+import org.objectstyle.woenvironment.util.FileStringScanner;
 import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
 import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
 import org.objectstyle.wolips.core.preferences.Preferences;
 import org.objectstyle.wolips.logging.WOLipsLog;
-import org.objectstyle.woenvironment.util.FileStringScanner;
 
 /**
  * @author uli
@@ -432,6 +433,102 @@ public class WOLipsJavaProject extends WOLipsProject implements IWOLipsJavaProje
 					}
 				}
 			}
+		}
+		/**
+		 * Method addFrameworkListToClasspathEntries.
+		 * @param frameworkList
+		 * @param projectToUpdate
+		 * @return IClasspathEntry[]
+		 * @throws JavaModelException
+		 */
+		public IClasspathEntry[] addFrameworkListToClasspathEntries(
+			List frameworkList)
+			throws JavaModelException {
+			IClasspathEntry[] oldClasspathEntries =
+			this.getJavaProject().getResolvedClasspath(true);
+			IPath nextRootAsPath = new Path(WOLipsPlugin.getDefault().getWOEnvironment().getWOVariables().systemRoot());
+			ArrayList classpathEntries = new ArrayList(frameworkList.size());
+			IPath frameworkPath;
+			String jarName;
+			String frameworkName;
+			int frameworkExtIndex;
+			for (int i = 0; i < frameworkList.size(); i++) {
+				frameworkName = (String) frameworkList.get(i);
+				// check for framework extentsion
+				frameworkExtIndex = frameworkName.indexOf(EXT_FRAMEWORK);
+				if (frameworkExtIndex == -1
+					|| frameworkExtIndex == 0) { // invalid framework name
+					continue;
+				}
+				jarName =
+					frameworkName.substring(0, frameworkExtIndex - 1).toLowerCase()
+						+ ".jar";
+				// check for root
+				frameworkPath = new Path(WOLipsPlugin.getDefault().getWOEnvironment().getWOVariables().libraryDir());
+				frameworkPath = frameworkPath.append("Frameworks");
+				frameworkPath = frameworkPath.append(frameworkName);
+				if (!frameworkPath.toFile().isDirectory()) {
+					frameworkPath = new Path(WOLipsPlugin.getDefault().getWOEnvironment().getWOVariables().localLibraryDir());
+					frameworkPath = frameworkPath.append("Frameworks");
+					frameworkPath = frameworkPath.append(frameworkName);
+				}
+				if (!frameworkPath.toFile().isDirectory()) { // invalid path
+					continue;
+				} // check for jar existance
+				int j = 0;
+				frameworkPath = frameworkPath.append("Resources/Java/");
+				String[] frameJarDirContent = frameworkPath.toFile().list();
+				for (j = 0; j < frameJarDirContent.length; j++) {
+					if (jarName.equals(frameJarDirContent[j].toLowerCase())) {
+						// get case sensitive jar name
+						jarName = frameJarDirContent[j];
+						break;
+					}
+				}
+				if (j == frameJarDirContent.length) { // jar doesn't exists
+					continue;
+				} // add case-sensitive jar name
+				frameworkPath = frameworkPath.append(jarName);
+				// check for existing classpath entries
+				for (j = 0; j < oldClasspathEntries.length; j++) {
+					if (oldClasspathEntries[j].getPath().equals(frameworkPath)) {
+						break;
+					}
+				}
+				if (j != oldClasspathEntries.length) { // entry already set
+					continue;
+				} // determine if new class path begins with next root
+				if ((frameworkPath.segmentCount() > nextRootAsPath.segmentCount())
+					&& frameworkPath
+						.removeLastSegments(
+							frameworkPath.segmentCount()
+								- nextRootAsPath.segmentCount())
+						.equals(nextRootAsPath)) {
+					// replace beginning of class path with next root
+					frameworkPath =
+						new Path(WOLipsPlugin.getDefault().getWOEnvironment().getNEXT_ROOT()).append(
+							frameworkPath.removeFirstSegments(
+								nextRootAsPath.segmentCount()));
+					// set path as variable entry			
+					classpathEntries.add(
+						JavaCore.newVariableEntry(frameworkPath, null, null));
+				} else {
+					classpathEntries.add(
+						JavaCore.newLibraryEntry(frameworkPath, null, null));
+				}
+			} // build new class path entry array
+			oldClasspathEntries = this.getJavaProject().getRawClasspath();
+			IClasspathEntry[] newClasspathEntries =
+				new IClasspathEntry[classpathEntries.size()
+					+ oldClasspathEntries.length];
+			for (int i = 0; i < oldClasspathEntries.length; i++) {
+				newClasspathEntries[i] = oldClasspathEntries[i];
+			}
+			for (int i = 0; i < classpathEntries.size(); i++) {
+				newClasspathEntries[i + oldClasspathEntries.length] =
+					(IClasspathEntry) classpathEntries.get(i);
+			}
+			return newClasspathEntries;
 		}
 	}
 

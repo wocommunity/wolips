@@ -56,7 +56,8 @@
 package org.objectstyle.wolips.wizards;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Path;
-import org.objectstyle.wolips.core.project.ProjectHelper;
+import org.eclipse.jdt.core.JavaCore;
+import org.objectstyle.wolips.core.project.WOLipsJavaProject;
 /**
  * @author mnolte
  * @author uli
@@ -132,10 +133,13 @@ public class WOApplicationCreationPage extends WOProjectCreationPage {
 		}
 		*/
 		if (super.createProject()) {
-
+			WOLipsJavaProject wolipsJavaProject =
+				new WOLipsJavaProject(JavaCore.create(getProjectHandle()));
 			IResource fileToOpen =
-				ProjectHelper.getProjectSourceFolder(
-					getProjectHandle()).getFile(
+				wolipsJavaProject
+					.getClasspathAccessor()
+					.getProjectSourceFolder()
+					.getFile(
 					new Path("Application.java"));
 			if (fileToOpen != null) {
 				elementToOpen = fileToOpen;

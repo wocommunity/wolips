@@ -68,7 +68,7 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
-import org.objectstyle.wolips.core.project.ProjectHelper;
+import org.objectstyle.wolips.core.project.WOLipsJavaProject;
 import org.objectstyle.wolips.wizards.templates.FileFromTemplateCreator;
 /**
  * @author mnolte
@@ -78,7 +78,6 @@ import org.objectstyle.wolips.wizards.templates.FileFromTemplateCreator;
  * @see com.neusta.webobjects.eclipse.wizards.EOModelCreationPage
  */
 public class EOModelCreator extends WOProjectResourceCreator {
-
 	private String modelName;
 	private String adaptorName;
 	/**
@@ -97,10 +96,10 @@ public class EOModelCreator extends WOProjectResourceCreator {
 	 */
 	protected FileFromTemplateCreator fileCreator() {
 		if (fileCreator == null) {
-					Hashtable adaptorNameTranslation = new Hashtable(1);
-					adaptorNameTranslation.put("ADAPTOR_NAME", adaptorName);
-					fileCreator = new FileFromTemplateCreator(adaptorNameTranslation);
-				}
+			Hashtable adaptorNameTranslation = new Hashtable(1);
+			adaptorNameTranslation.put("ADAPTOR_NAME", adaptorName);
+			fileCreator = new FileFromTemplateCreator(adaptorNameTranslation);
+		}
 		return fileCreator;
 	}
 	/**
@@ -161,22 +160,21 @@ public class EOModelCreator extends WOProjectResourceCreator {
 		if (!"None".equals(adaptorName)) {
 			IJavaProject projectToUpdate =
 				JavaCore.create(parentResource.getProject());
-
 			Vector newAdaptorFrameworkList = new Vector();
 			newAdaptorFrameworkList.add(
 				"Java" + adaptorName + "Adaptor." + EXT_FRAMEWORK);
-
+			WOLipsJavaProject wolipsJavaProject =
+				new WOLipsJavaProject(projectToUpdate);
 			IClasspathEntry[] newClasspathEntries =
-				ProjectHelper.addFrameworkListToClasspathEntries(
-					newAdaptorFrameworkList,
-					projectToUpdate);
-
+				wolipsJavaProject
+					.getClasspathAccessor()
+					.addFrameworkListToClasspathEntries(
+					newAdaptorFrameworkList);
 			try {
 				projectToUpdate.setRawClasspath(newClasspathEntries, null);
 			} catch (JavaModelException e) {
 				throw new InvocationTargetException(e);
-			}
-			finally {
+			} finally {
 				projectToUpdate = null;
 				newAdaptorFrameworkList = null;
 				newClasspathEntries = null;
