@@ -59,17 +59,25 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Properties;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 /**
  * @author uli
  * Utility for the environment.
  */
 public class Environment {
+	public static Log log = LogFactory.getLog(Environment.class);
 	/**
 	 * The String NEXT_ROOT.
 	 */
 	public static final String NEXT_ROOT = "NEXT_ROOT";
 	public static final String NEXT_LOCAL_ROOT = "NEXT_LOCAL_ROOT";
 	public static final String NEXT_SYSTEM_ROOT = "NEXT_SYSTEM_ROOT";
+	/**
+	 * Key for setting wobuild.properties path by environment
+	 * @see WOVariables
+	 */
+	public static final String WOBUILD_PROPERTIES = "WOBUILD_PROPERTIES";
 	private static Properties envVars;
 	private static String nextRoot;
 	private static String localRoot;
@@ -94,7 +102,7 @@ public class Environment {
 		try {
 			p = Environment.osProcess();
 		} catch (InvocationTargetException e) {
-			// TODO log
+			log.warn("getEnvVars -> unable to load environment variables", e);
 		}
 		Environment.envVars = new Properties();
 		br = new BufferedReader(new InputStreamReader(p.getInputStream()));
@@ -106,8 +114,9 @@ public class Environment {
 				Environment.envVars.setProperty(key, value);
 			}
 		} catch (IOException e) {
-			// TODO log
+			log.warn("getEnvVars -> unable to load environment variables", e);
 		}
+
 		p = null;
 		br = null;
 		line = null;
@@ -148,9 +157,8 @@ public class Environment {
 	 * @return String with path to the foundation.jar
 	 */
 	public static String foundationJarPath() {
-		if (foundationJarPath != null)
-			return foundationJarPath;
-		try {
+		if (foundationJarPath == null) {
+
 			if (Environment.isNextRootSet()) {
 				foundationJarPath =
 					"file:///"
@@ -170,10 +178,20 @@ public class Environment {
 				foundationJarPath =
 					"file:///System/Library/Frameworks/JavaFoundation.framework/Resources/Java/javafoundation.jar";
 			}
-		} catch (Exception anException) {
-			//WOLipsLog.log(anException);
 		}
 		return foundationJarPath;
+	}
+	
+	public static String userHome() {
+		if (System.getProperty("user.home") != null) {
+			return System.getProperty("user.home");
+		} else if (
+			Environment.getEnvVars().getProperty("USERPROFILE") != null) {
+			return Environment.getEnvVars().getProperty("USERPROFILE");
+		} else {
+			log.warn("userHome -> no user home found");
+			return null;
+		}
 	}
 	/**
 	 * @return Returns the NEXT_ROOT
@@ -216,18 +234,11 @@ public class Environment {
 		return Environment.localRoot;
 	}
 	*/
-
 	/**
 	 * Method isNextRootSet.
 	 * @return boolean
 	 */
 	public static boolean isNextRootSet() {
-		try {
-			if (Environment.getEnvVars().containsKey(Environment.NEXT_ROOT))
-				return true;
-		} catch (Exception anException) {
-			//WOLipsLog.log(anException);
-		}
-		return false;
+		return Environment.getEnvVars().containsKey(Environment.NEXT_ROOT);
 	}
 }

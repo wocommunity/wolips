@@ -21,6 +21,10 @@
          <export name="*"/>
          <packages prefixes="org.objectstyle.cayenne"/>
       </library>
+       <library name="lib/commons-logging.jar">
+         <export name="*"/>
+         <packages prefixes="org.apache.commons.logging"/>
+      </library>
    </runtime>
 <!-- =================================================================================== -->
 <!-- Required Plugins                                                                    -->

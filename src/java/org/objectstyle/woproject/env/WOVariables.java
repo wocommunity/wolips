@@ -59,43 +59,109 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 /**
  * @author uli
  *
  */
 public class WOVariables {
+	public static Log log = LogFactory.getLog(WOVariables.class);
+	/**
+	 * WOBUILD_PROPERTIES java system property to determine wobuild.properties file
+	 * path
+	 */
 	public static final String WOBUILD_PROPERTIES = "wobuild.properties";
 	private static Properties wobuildProperties;
+	private static File wobuildPropertiesFile;
 	static {
-		// load properties
-		wobuildProperties = new Properties();
-		// first try system property
-		String propertyFileName = System.getProperty(WOBUILD_PROPERTIES);
-		if (propertyFileName == null) {
-			// set default path
-			propertyFileName =
-				Environment.getEnvVars().getProperty("user.home")
-					+ File.separator
-					+ "Library"
-					+ File.separator
-					+ WOBUILD_PROPERTIES;
-		}
-		File propertyFile = new File(propertyFileName);
-		if (!propertyFile.exists() || propertyFile.isDirectory()) {
-			// log
-		} else {
-			try {
-				wobuildProperties.load(new FileInputStream(propertyFileName));
-			} catch (FileNotFoundException e) {
-			} catch (IOException e) {
-			}
-		}
+		init();
 	}
 	/**
 	 * Constructor for WOVariables.
 	 */
 	private WOVariables() {
 		super();
+	}
+	/**
+	 * Method init.Tries to load wobuild.properties file in the following way
+	 * <ul>
+	 * <li>looking for a java system property with key
+	 * <code>WOBUILD_PROPERTIES</code></li>
+	 * <li>looking for an environment variable
+	 * <code>Environment.WOBUILD_PROPERTIES</code></li>
+	 * <li>try to find wobuild.properties in user.home</li>
+	 * This method is invoked when the class is loaded.
+	 */
+	public static void init() {
+		// load properties
+		wobuildProperties = new Properties();
+		// first try system property
+		if (!validateWobuildPropertiesFile(System
+			.getProperty(WOVariables.WOBUILD_PROPERTIES))) {
+			if (log.isInfoEnabled()) {
+				log.info(
+					"init -> no wobuild.properties in java system properties found");
+			}
+			// try environment variable
+			if (!validateWobuildPropertiesFile(Environment
+				.getEnvVars()
+				.getProperty(Environment.WOBUILD_PROPERTIES))) {
+				if (log.isInfoEnabled()) {
+					log.info(
+						"init -> no wobuild.properties in environment found");
+				}
+				// try user home
+				if (!validateWobuildPropertiesFile(Environment.userHome()
+					+ File.separator
+					+ "Library"
+					+ File.separator
+					+ WOVariables.WOBUILD_PROPERTIES)) {
+					if (log.isInfoEnabled()) {
+						log.info(
+							"init -> no wobuild.properties in user home found");
+					}
+				}
+			}
+		}
+		if (wobuildPropertiesFile == null) {
+			log.warn("init -> no wobuild.properties found");
+		} else {
+			boolean loadingSuccess = false;
+			try {
+				wobuildProperties.load(
+					new FileInputStream(wobuildPropertiesFile));
+				loadingSuccess = true;
+			} catch (FileNotFoundException e) {
+				log.error(
+					"init -> unable to load "
+						+ wobuildPropertiesFile.getAbsolutePath(),
+					e);
+				loadingSuccess = false;
+			} catch (IOException e) {
+				log.error(
+					"init -> unable to load "
+						+ wobuildPropertiesFile.getAbsolutePath(),
+					e);
+				loadingSuccess = false;
+			}
+			if (loadingSuccess && log.isInfoEnabled()) {
+				log.info(
+					"init -> loaded wobuild.properties from "
+						+ wobuildPropertiesFile.getAbsolutePath());
+			}
+		}
+	}
+	private static boolean validateWobuildPropertiesFile(String fileName) {
+		if (fileName != null) {
+			wobuildPropertiesFile = new File(fileName);
+			if (wobuildPropertiesFile.exists()
+				&& !wobuildPropertiesFile.isDirectory()) {
+				return true;
+			}
+		}
+		wobuildPropertiesFile = null;
+		return false;
 	}
 	/**
 	 * Method nextRoot. NEXT_ROOT defined in wobuild.properties (key: <code>wo.
@@ -121,7 +187,6 @@ public class WOVariables {
 	public static String systemRoot() {
 		return wobuildProperties.getProperty("wo.wosystemroot");
 	}
-
 	/**
 	 * Method developerDir.
 	 * @return String
