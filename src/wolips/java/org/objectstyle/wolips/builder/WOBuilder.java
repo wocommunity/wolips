@@ -104,50 +104,17 @@ public abstract class WOBuilder extends IncrementalProjectBuilder {
 				IMarker.TASK,
 				false,
 				IResource.DEPTH_ONE);
-			if(!projectNeedsAnUpdate() && kind != WOBuilder.FULL_BUILD) {
+			if (!projectNeedsAnUpdate() && kind != WOBuilder.FULL_BUILD) {
 				monitor.done();
 				return null;
-				} 
+			}
 			String aBuildFile = this.buildFile();
 			if (checkIfBuildfileExist(aBuildFile)) {
 				getProject().getFile(aBuildFile).deleteMarkers(
 					IMarker.TASK,
 					false,
 					IProject.DEPTH_ONE);
-				if (Preferences
-					.getBoolean(
-						IWOLipsPluginConstants
-							.PREF_RUN_ANT_AS_EXTERNAL_TOOL)) {
-					if(this.getDelta(this.getProject()) == null)
-					RunAnt.asExternalTool(
-									getProject().getFile(aBuildFile),
-									kind,
-									monitor,
-									this.cleanTarget());			
-					RunAnt.asExternalTool(
-						getProject().getFile(aBuildFile),
-						kind,
-						monitor,
-						this.defaultTarget());
-
-				} else {
-					if(this.getDelta(this.getProject()) == null)
-					RunAnt.asAnt(
-											getProject()
-												.getFile(aBuildFile)
-												.getLocation()
-												.toOSString(),
-											monitor,
-											this.cleanTarget());
-					RunAnt.asAnt(
-						getProject()
-							.getFile(aBuildFile)
-							.getLocation()
-							.toOSString(),
-						monitor,
-						this.defaultTarget());
-				}
-
+				this.execute(kind, args, monitor, aBuildFile);
 			}
 		} catch (Exception e) {
 			this.handleException(e);
@@ -155,22 +122,85 @@ public abstract class WOBuilder extends IncrementalProjectBuilder {
 		monitor.done();
 		return null;
 	}
-	
+	/**
+	 * Method execute.
+	 * @param kind
+	 * @param args
+	 * @param monitor
+	 * @param aBuildFile
+	 * @throws Exception
+	 */
+	private void execute(
+		int kind,
+		Map args,
+		IProgressMonitor monitor,
+		String aBuildFile)
+		throws Exception {
+		if (Preferences
+			.getBoolean(IWOLipsPluginConstants.PREF_RUN_ANT_AS_EXTERNAL_TOOL)) {
+			if (projectNeedsClean())
+				RunAnt.asExternalTool(
+					getProject().getFile(aBuildFile),
+					kind,
+					monitor,
+					this.cleanTarget());
+			RunAnt.asExternalTool(
+				getProject().getFile(aBuildFile),
+				kind,
+				monitor,
+				this.defaultTarget());
+
+		} else {
+			if (projectNeedsClean())
+				RunAnt.asAnt(
+					getProject().getFile(aBuildFile).getLocation().toOSString(),
+					monitor,
+					this.cleanTarget());
+			RunAnt.asAnt(
+				getProject().getFile(aBuildFile).getLocation().toOSString(),
+				monitor,
+				this.defaultTarget());
+		}
+	}
+	/**
+	 * Method projectNeedsClean.
+	 * @return boolean
+	 */
+	private boolean projectNeedsClean() {
+		//currently we get an an exception on clean
+		//return this.getDelta(this.getProject()) == null;
+		return false;
+	}
+	/**
+	 * Method projectNeedsAnUpdate.
+	 * @return boolean
+	 */
 	private boolean projectNeedsAnUpdate() {
 		IResourceDelta aDelta = this.getDelta(this.getProject());
-		if(aDelta == null) return true;
-		IResourceDelta[] children = aDelta.getAffectedChildren();
-		for(int i = 0;i < children.length;i++) {
-			if(!isIgnoredPath(children[i].getProjectRelativePath()))
+		if (aDelta == null)
 			return true;
+		IResourceDelta[] children = aDelta.getAffectedChildren();
+		for (int i = 0; i < children.length; i++) {
+			if (!isIgnoredPath(children[i].getProjectRelativePath()))
+				return true;
 		}
 		return false;
 	}
-	
+	/**
+	 * Method isIgnoredPath.
+	 * @param aPath
+	 * @return boolean
+	 */
 	private boolean isIgnoredPath(IPath aPath) {
-		if(aPath.isEmpty()) return false;
+		if (aPath.isEmpty())
+			return false;
 		String aString = aPath.toString();
-		return (aString.indexOf(".woa")> 0 || aString.indexOf(".framework")> 0 || aString.indexOf("ant.")> 0 || aString.indexOf("PB.project")> 0 || aString.indexOf("make")> 0);
+		return (
+			aString.indexOf(".woa") > 0
+				|| aString.indexOf(".framework") > 0
+				|| aString.indexOf("ant.") > 0
+				|| aString.indexOf("PB.project") > 0
+				|| aString.indexOf("make") > 0);
 	}
 	/**
 	 * Method handleException.
