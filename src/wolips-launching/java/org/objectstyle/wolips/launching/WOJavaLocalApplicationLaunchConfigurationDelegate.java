@@ -267,7 +267,7 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 		IProject[] projects =
 			ResourcesPlugin.getWorkspace().getRoot().getProjects();
 		for (int i = 0; i < projects.length; i++) {
-			if (isTheLaunchAppOrAFramework(projects[i], configuration)) {
+			if (isAFramework(projects[i], configuration)) {
 				if (returnValue.length() > 0)
 					returnValue = returnValue + ",";
 
@@ -275,6 +275,19 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 					returnValue
 						+ "\""
 						+ projects[i].getLocation().toOSString()
+						+ "\"";
+			}
+			if (isTheLaunchApp(projects[i], configuration)) {
+				if (returnValue.length() > 0)
+					returnValue = returnValue + ",";
+
+				returnValue =
+					returnValue
+						+ "\""
+						//TODO: only add this when the app is not on the top level
+						//+ projects[i].getLocation().toOSString()
+						//otherwise
+						+ ".."
 						+ "\"";
 			}
 		}
@@ -290,7 +303,27 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 	 * @param configuration
 	 * @return boolean
 	 */
-	private boolean isTheLaunchAppOrAFramework(
+	private boolean isTheLaunchApp(
+		IProject project,
+		ILaunchConfiguration configuration) {
+		IJavaProject buildProject = null;
+		try {
+			buildProject = this.getJavaProject(configuration);
+			if (project.equals(buildProject.getProject()))
+				return true;
+		} catch (Exception anException) {
+			WOLipsLog.log(anException);
+			return false;
+		}
+		return false;
+	}
+	/**
+	 * Method isTheLaunchAppOrFramework.
+	 * @param project
+	 * @param configuration
+	 * @return boolean
+	 */
+	private boolean isAFramework(
 		IProject project,
 		ILaunchConfiguration configuration) {
 		IJavaProject buildProject = null;
@@ -300,8 +333,6 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 			if(woLipsProject.getNaturesAccessor().isFramework() && projectISReferencedByProject(
 			project,
 			buildProject.getProject())) return true;
-			if (project.equals(buildProject.getProject()))
-				return true;
 		} catch (Exception anException) {
 			WOLipsLog.log(anException);
 			return false;
