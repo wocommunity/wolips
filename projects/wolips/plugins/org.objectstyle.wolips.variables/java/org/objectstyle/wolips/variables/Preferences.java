@@ -186,7 +186,7 @@ public class Preferences {
 	}
 
 	/**
-	 * @return
+	 * @return rebuild wobuild properties on next launch
 	 */
 	public static boolean getPREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH() {
 		return Preferences.getBoolean(
@@ -194,7 +194,7 @@ public class Preferences {
 	}
 
 	/**
-	 * @return
+	 * @return the previous version of WOLips
 	 */
 	public static String getPREF_WOLIPS_VERSION_EARLY_STARTUP() {
 		return Preferences.getString(

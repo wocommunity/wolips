@@ -171,20 +171,16 @@ public class VariablesPlugin extends AbstractUIPlugin {
 	}
 
 	/**
-	 * Returns the shared instance.
-	 * 
-	 * @return
+	 * @return the shared instance
 	 */
 	public static VariablesPlugin getDefault() {
 		return plugin;
 	}
 
 	/**
-	 * Returns the string from the plugin's resource bundle, or 'key' if not
-	 * found.
-	 * 
 	 * @param key
-	 * @return
+	 * @return the string from the plugin's resource bundle, or 'key' if not
+	 * found.
 	 */
 	public static String getResourceString(String key) {
 		ResourceBundle bundle = VariablesPlugin.getDefault()
@@ -197,9 +193,7 @@ public class VariablesPlugin extends AbstractUIPlugin {
 	}
 
 	/**
-	 * Returns the plugin's resource bundle,
-	 * 
-	 * @return
+	 * @return the plugin's resource bundle
 	 */
 	public ResourceBundle getResourceBundle() {
 		return this.resourceBundle;
@@ -282,9 +276,7 @@ public class VariablesPlugin extends AbstractUIPlugin {
 	}
 
 	/**
-	 * Returns the PluginID.
-	 * 
-	 * @return
+	 * @return the plugin id
 	 */
 	public static String getPluginId() {
 		if (plugin != null) {
