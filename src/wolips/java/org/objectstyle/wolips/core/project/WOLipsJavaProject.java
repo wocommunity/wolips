@@ -56,6 +56,7 @@
 
 package org.objectstyle.wolips.core.project;
 
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
@@ -63,14 +64,21 @@ import java.util.List;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
+import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
+import org.objectstyle.wolips.core.preferences.Preferences;
 import org.objectstyle.wolips.logging.WOLipsLog;
+import org.objectstyle.woproject.util.FileStringScanner;
 
 /**
  * @author uli
@@ -81,6 +89,7 @@ import org.objectstyle.wolips.logging.WOLipsLog;
 public class WOLipsJavaProject extends WOLipsProject {
 	IJavaProject javaProject;
 	private ClasspathAccessor classpathAccessor;
+	private LaunchParameterAccessor launchParameterAccessor;
 
 	/**
 	 * @param javaProject
@@ -103,6 +112,15 @@ public class WOLipsJavaProject extends WOLipsProject {
 		if (classpathAccessor == null)
 			classpathAccessor = new ClasspathAccessor(this);
 		return classpathAccessor;
+	}
+
+	/**
+	 * @return ClasspathAccessor
+	 */
+	public LaunchParameterAccessor getLaunchParameterAccessor() {
+		if (launchParameterAccessor == null)
+			launchParameterAccessor = new LaunchParameterAccessor(this);
+		return launchParameterAccessor;
 	}
 
 	/**
@@ -417,4 +435,229 @@ public class WOLipsJavaProject extends WOLipsProject {
 		}
 	}
 
+	/**
+	 * @author uli
+	 *
+	 * To change this generated comment go to 
+	 * Window>Preferences>Java>Code Generation>Code Template
+	 */
+	public class LaunchParameterAccessor extends WOLipsJavaProjectInnerClass {
+
+		/**
+		 * @param wolipsProject
+		 */
+		protected LaunchParameterAccessor(WOLipsJavaProject wolipsJavaProject) {
+			super(wolipsJavaProject);
+		}
+		
+		/**
+		 * Method getWOApplicationClassNameArgument.
+		 * @return String
+		 */
+		public String getWOApplicationClassNameArgument(ILaunchConfiguration config) {
+			String main = null;
+			try {
+				main =
+					config.getAttribute(
+						IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME,
+						"");
+			} catch (Exception anException) {
+				WOLipsLog.log(anException);
+				return "";
+			}
+			if ("".equals(main))
+				return "";
+			return main;
+		}
+
+		public boolean isOnMacOSX() {
+			return WOLipsPlugin
+				.getDefault()
+				.getWOEnvironment()
+				.getWOVariables()
+				.systemRoot()
+				.startsWith("/System");
+		}
+
+
+
+		/**
+		 * Method projectISReferencedByProject.
+		 * @param child
+		 * @param mother
+		 * @return boolean
+		 */
+		public boolean projectISReferencedByProject(
+			IProject child,
+			IProject mother) {
+			IProject[] projects = null;
+			try {
+				projects = mother.getReferencedProjects();
+			} catch (Exception anException) {
+				WOLipsLog.log(anException);
+				return false;
+			}
+			for (int i = 0; i < projects.length; i++) {
+				if (projects[i].equals(child))
+					return true;
+			}
+			return false;
+		}
+
+		/**
+		 * Method isTheLaunchAppOrFramework.
+		 * @param project
+		 * @param configuration
+		 * @return boolean
+		 */
+		public boolean isAFramework(
+			IProject project,
+			ILaunchConfiguration configuration) {
+			IJavaProject buildProject = null;
+			try {
+				buildProject = this.getJavaProject();
+				WOLipsProject woLipsProject = new WOLipsProject(project);
+				if (woLipsProject.getNaturesAccessor().isFramework()
+					&& projectISReferencedByProject(
+						project,
+						buildProject.getProject()))
+					return true;
+			} catch (Exception anException) {
+				WOLipsLog.log(anException);
+				return false;
+			}
+			return false;
+		}
+
+		/**
+		 * Method isTheLaunchAppOrFramework.
+		 * @param project
+		 * @param configuration
+		 * @return boolean
+		 */
+		public boolean isTheLaunchApp(
+			IProject project,
+			ILaunchConfiguration configuration) {
+			IJavaProject buildProject = null;
+			try {
+				buildProject = this.getJavaProject();
+				if (project.equals(buildProject.getProject()))
+					return true;
+			} catch (Exception anException) {
+				WOLipsLog.log(anException);
+			}
+			return false;
+		}
+
+		/**
+		 * Method isValidProjectPath.
+		 * @param project
+		 * @param configuration
+		 * @return boolean
+		 */
+		public boolean isValidProjectPath(
+			IProject project,
+			ILaunchConfiguration configuration) {
+			try {
+				return project.getLocation().toOSString().indexOf("-") == -1;
+			} catch (Exception anException) {
+				WOLipsLog.log(anException);
+				return false;
+			}
+		}
+
+		/**
+		 * Method getGeneratedByWOLips.
+		 * @return String
+		 */
+		public String getGeneratedByWOLips(ILaunchConfiguration configuration) {
+			String returnValue = "";
+			IProject[] projects =
+				ResourcesPlugin.getWorkspace().getRoot().getProjects();
+			for (int i = 0; i < projects.length; i++) {
+				if (isValidProjectPath(projects[i], configuration)) {
+					if (isAFramework(projects[i], configuration)) {
+						if (returnValue.length() > 0) {
+							returnValue = returnValue + ",";
+						}
+						returnValue =
+							returnValue
+								+ "\""
+								+ projects[i].getLocation().toOSString()
+								+ "\"";
+					}
+					if (isTheLaunchApp(projects[i], configuration)) {
+						if (returnValue.length() > 0) {
+							returnValue = returnValue + ",";
+						}
+						returnValue =
+							returnValue
+								+ "\""
+								+ ".."
+								+ "\""
+								+ ","
+								+ "\""
+								+ "../.."
+								+ "\"";
+					}
+				}
+			}
+			returnValue = FileStringScanner.replace(returnValue, "\\", "/");
+			returnValue = this.addPreferencesValue(returnValue);
+			if ("".equals(returnValue))
+				returnValue = "\"" + ".." + "\"";
+
+			returnValue = "(" + returnValue + ")";
+
+			return returnValue;
+		}
+
+		/**
+		 * Method addPreferencesValue.
+		 * @param aString
+		 * @return String
+		 */
+		private String addPreferencesValue(String aString) {
+			if (aString == null)
+				return aString;
+			String nsProjectSarchPath =
+				Preferences.getString(
+					IWOLipsPluginConstants.PREF_NS_PROJECT_SEARCH_PATH);
+			if (nsProjectSarchPath == null || nsProjectSarchPath.length() == 0)
+				return aString;
+			if (aString.length() > 0)
+				aString = aString + ",";
+			return aString + nsProjectSarchPath;
+		}
+
+		public File getWDFolder(IProject theProject, IPath wd) throws CoreException {
+			WOLipsProject wolipsProject = new WOLipsProject(theProject);
+			WOLipsProject.NaturesAccessor na = wolipsProject.getNaturesAccessor();
+
+			File wdFile = null;
+			if (wd == null) {
+				IFolder wdFolder;
+				if (na.isAnt()) {
+					wdFolder =
+						theProject.getFolder(
+							"dist/" + theProject.getName() + ".woa");
+				} else {
+					wdFolder =
+						theProject.getFolder(
+							"build/" + theProject.getName() + ".woa");
+				}
+				if (wdFolder == null || !wdFolder.exists()) {
+					wdFolder = theProject.getFolder(theProject.getName() + ".woa");
+				}
+				if (wdFolder != null && !wdFolder.exists()) {
+					wdFolder = null;
+				} else {
+					wdFile = wdFolder.getLocation().toFile();
+				}
+			}
+			return wdFile;
+		}
+
+
+	}
 }
