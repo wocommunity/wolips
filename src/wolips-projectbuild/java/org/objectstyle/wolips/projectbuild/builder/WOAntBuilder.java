@@ -58,6 +58,7 @@ package org.objectstyle.wolips.projectbuild.builder;
 
 import java.util.Map;
 
+import org.eclipse.ant.core.AntCorePlugin;
 import org.eclipse.ant.core.AntRunner;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
@@ -68,7 +69,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
-import org.objectstyle.wolips.core.plugin.CheckAntCorePatch;
 import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
 import org.objectstyle.wolips.core.preferences.Preferences;
 import org.objectstyle.wolips.core.project.ant.BuildMessages;
@@ -80,12 +80,27 @@ import org.objectstyle.wolips.logging.WOLipsLog;
  */
 public class WOAntBuilder extends IncrementalProjectBuilder {
 	private static final int TOTAL_WORK_UNITS = 1;
+	private String informUserString =
+		"WOLips: "
+			+ "To avoid frequent crashes don't forget to install the patched org.eclipse.core.ant plugin. "
+			+ "It's available as a separate download and from the optional folder in the download.";
+
 	/**
 	 * Constructor for WOBuilder.
 	 */
 	public WOAntBuilder() {
 		super();
 	}
+
+	private boolean isPatchInstalled() {
+		String string =
+			AntCorePlugin.getPlugin().getDescriptor().getProviderName();
+		WOLipsLog.log(
+			"AntCorePlugin.getPlugin().getDescriptor().getProviderName(); "
+				+ string);
+		return string.endsWith("objectstyle.org");
+	}
+
 	private void waitForAnt(IProgressMonitor monitor) {
 		monitor.subTask(BuildMessages.getString("Build.Waiting.Name"));
 		IProgressMonitor subProgressMonitor =
@@ -112,7 +127,6 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 			monitor.done();
 			return null;
 		}
-		new CheckAntCorePatch().check();
 		monitor.beginTask(
 			BuildMessages.getString("Build.Monitor.Title"),
 			WOAntBuilder.TOTAL_WORK_UNITS);
@@ -149,7 +163,7 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 		/*monitor.beginTask(
 					BuildMessages.getString("Build.Refresh.Title"),
 					WOAntBuilder.TOTAL_WORK_UNITS);*/
-		this.forgetLastBuiltState();
+		//this.forgetLastBuiltState();
 		//getProject().refreshLocal(IProject.DEPTH_INFINITE, monitor);
 		monitor.done();
 		return null;
@@ -169,6 +183,18 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 		IProgressMonitor monitor,
 		String aBuildFile)
 		throws Exception {
+		if (!this.isPatchInstalled()) {
+			IMarker aMarker = null;
+			try {
+				aMarker = this.getBuildfileMarker();
+				aMarker.setAttribute(IMarker.MESSAGE, informUserString);
+			} catch (Exception e) {
+				WOLipsLog.log(e);
+			} finally {
+				aMarker = null;
+			}
+		}
+
 		RunAnt runAnt = new RunAnt();
 		if (Preferences
 			.getBoolean(IWOLipsPluginConstants.PREF_RUN_ANT_AS_EXTERNAL_TOOL)) {
@@ -250,18 +276,28 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 			if (anException == null) {
 				throw new NullPointerException("WOBuilder.handleException called without an exception.");
 			}
-			aMarker =
-				getProject().getFile(this.buildFile()).createMarker(
-					IMarker.TASK);
+			aMarker = this.getBuildfileMarker();
 			aMarker.setAttribute(
 				IMarker.MESSAGE,
 				"WOLips: " + anException.getMessage());
-			aMarker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
 		} catch (Exception e) {
 			WOLipsLog.log(e);
 		} finally {
 			aMarker = null;
 		}
+	}
+
+	private IMarker getBuildfileMarker() {
+		IMarker aMarker = null;
+		try {
+			aMarker =
+				getProject().getFile(this.buildFile()).createMarker(
+					IMarker.TASK);
+			aMarker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
+		} catch (CoreException e) {
+			WOLipsLog.log(e);
+		}
+		return aMarker;
 	}
 	/**
 	 * Checks if the build file exists.
