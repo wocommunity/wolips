@@ -100,7 +100,17 @@ public class ProjectPatternsets extends AbstractProjectAdapterType {
 	private PatternsetMatcher classesIncludeMatcher = null;
 
 	private PatternsetMatcher classesExcludeMatcher = null;
-
+	
+	private final static PatternsetMatcher DEFAULT_EXCLUDE_MATCHER = new PatternsetMatcher(new String[] {
+	        "**/.svn", 
+	        "**/.svn/**",
+	        "**/CVS", 
+	        "**.*~/**", 
+	        "**/CVS/**", 
+	        "**/build/**", 
+	        "**/dist/**"
+	});
+	
 	/**
 	 * @param project
 	 */
@@ -311,6 +321,8 @@ public class ProjectPatternsets extends AbstractProjectAdapterType {
 		String[] strings = this.toProjectRelativePaths(resource);
 		if (this.getClassesExcludeMatcher().match(strings))
 			return false;
+		if (DEFAULT_EXCLUDE_MATCHER.match(strings))
+			return false;
 		return this.getClassesIncludeMatcher().match(strings);
 	}
 
@@ -322,6 +334,8 @@ public class ProjectPatternsets extends AbstractProjectAdapterType {
 		String[] strings = this.toProjectRelativePaths(resource);
 		if (this.getWoappResourcesExcludeMatcher().match(strings))
 			return false;
+		if (DEFAULT_EXCLUDE_MATCHER.match(strings))
+			return false;
 		return this.getWoappResourcesIncludeMatcher().match(strings);
 	}
 
@@ -332,6 +346,8 @@ public class ProjectPatternsets extends AbstractProjectAdapterType {
 	public boolean matchesResourcesPattern(IResource resource) {
 		String[] strings = this.toProjectRelativePaths(resource);
 		if (this.getResourcesExcludeMatcher().match(strings))
+			return false;
+		if (DEFAULT_EXCLUDE_MATCHER.match(strings))
 			return false;
 		return this.getResourcesIncludeMatcher().match(strings);
 	}
