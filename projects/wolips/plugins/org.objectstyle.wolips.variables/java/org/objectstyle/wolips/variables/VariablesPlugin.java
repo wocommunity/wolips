@@ -205,8 +205,8 @@ public class VariablesPlugin extends AbstractUIPlugin {
 		return this.resourceBundle;
 	}
 
-	private IPath fixMissingSpearatorAfterDevice(String string) {
-		if (string.length() > 0 && string.charAt(1) == ':') {
+	private IPath fixMissingSeparatorAfterDevice(String string) {
+		if (string.length() > 1 && string.charAt(1) == ':') {
 			return new Path(string.substring(2)).setDevice(string.substring(0,
 					2));
 		}
@@ -217,7 +217,7 @@ public class VariablesPlugin extends AbstractUIPlugin {
 	 * @return the path to the local root
 	 */
 	public IPath getLocalRoot() {
-		return this.fixMissingSpearatorAfterDevice(this.getWOEnvironment()
+		return this.fixMissingSeparatorAfterDevice(this.getWOEnvironment()
 				.getWOVariables().localRoot());
 	}
 
@@ -225,7 +225,7 @@ public class VariablesPlugin extends AbstractUIPlugin {
 	 * @return the path to the system root
 	 */
 	public IPath getSystemRoot() {
-		return this.fixMissingSpearatorAfterDevice(this.getWOEnvironment()
+		return this.fixMissingSeparatorAfterDevice(this.getWOEnvironment()
 				.getWOVariables().systemRoot());
 	}
 
@@ -233,7 +233,7 @@ public class VariablesPlugin extends AbstractUIPlugin {
 	 * @return the path to the user home
 	 */
 	public IPath getUserHome() {
-		return this.fixMissingSpearatorAfterDevice(this.getWOVariables()
+		return this.fixMissingSeparatorAfterDevice(this.getWOVariables()
 				.userHome());
 	}
 
@@ -241,7 +241,7 @@ public class VariablesPlugin extends AbstractUIPlugin {
 	 * @return the path to external build root
 	 */
 	public IPath getExternalBuildRoot() {
-		return this.fixMissingSpearatorAfterDevice(this.getWOVariables()
+		return this.fixMissingSeparatorAfterDevice(this.getWOVariables()
 				.userHome()
 				+ "/Roots");
 	}
