@@ -62,11 +62,13 @@ import java.util.ResourceBundle;
 
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPluginDescriptor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.objectstyle.wolips.ide.WOClasspathUpdater;
 
 /**
  * The main plugin class to be used in the desktop.
@@ -97,6 +99,11 @@ public class WOLipsPlugin extends AbstractUIPlugin {
 		return plugin;
 	}
 
+	public void startup() throws CoreException {
+		super.startup();
+		WOClasspathUpdater.update();
+	}
+	
 	/**
 	 * Returns the workspace instance.
 	 */
