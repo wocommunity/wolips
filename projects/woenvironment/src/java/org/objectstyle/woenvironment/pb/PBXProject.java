@@ -56,8 +56,10 @@
 package org.objectstyle.woenvironment.pb;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.TreeMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -81,8 +83,21 @@ public class PBXProject {
 	
 	public void save( File projectFile ) {
 		ObjectsTable objectsTable = new ObjectsTable();
-		
-		ArrayList groupChildIDs = new ArrayList();
+                String projectPath;
+                try {
+                    projectPath = projectFile.getCanonicalPath();
+                } catch (IOException ex) {
+                    throw new RuntimeException("Can't get path of project file: " + projectFile);
+                }
+                int last = projectPath.lastIndexOf(File.separator);
+                if(last != -1) {
+                    projectPath = projectPath.substring(0, last);
+                }
+                last = projectPath.lastIndexOf(File.separator);
+                if(last != -1) {
+                    projectPath = projectPath.substring(0, last);
+                }
+            	ArrayList groupChildIDs = new ArrayList();
 		ArrayList buildFileIDs = new ArrayList();
 		
 		//	Walk file refs, creating a PBXFileReference for each and adding it
@@ -91,11 +106,17 @@ public class PBXProject {
 		Iterator it = _fileRefs.iterator();
 		while( it.hasNext() ) {
 			path = (String) it.next();
-			groupChildIDs.add(
-				objectsTable.insert(
-					newFileReference(
-						(new File(path)).getName(),
-						path )));
+			if(path.indexOf(projectPath) == 0) {
+                            path = path.substring(projectPath.length()+1);
+			}
+			File file = new File(path);
+                        Map reference;
+                        if(file.isDirectory() && file.getName().endsWith(".wo")) {
+                            reference = newFolderReference(file.getName(), path);
+                        } else {
+                            reference = newFileReference(file.getName(), path);
+                        }
+			groupChildIDs.add(objectsTable.insert(reference));
 		}
 		
 		//	Walk framework refs, creating a PBXFrameworkReference and
@@ -139,7 +160,7 @@ public class PBXProject {
 	protected ArrayList _frameworkRefs = new ArrayList();
 	
 	protected static Map map( Object[] keyValues ) {
-		Map result = new HashMap( keyValues.length/2 );
+		Map result = new TreeMap();
 		for( int i = 0; i < keyValues.length; i += 2 ) {
 			result.put( keyValues[i], keyValues[i+1] );
 		}
@@ -149,12 +170,20 @@ public class PBXProject {
 	protected static Map newFileReference( String name, String path ) {
 		return map( new Object[] {
 			"isa",		"PBXFileReference",
-			"refType",	"0",
+			"refType",	(new File(path)).isAbsolute() ? "0" : "2",
 			"name",		name,
 			"path",		path });
 	}
 
-	protected static Map newFrameworkReference( String name, String path ) {
+        protected static Map newFolderReference( String name, String path ) {
+		return map( new Object[] {
+			"isa",		"PBXFolderReference",
+			"refType",	(new File(path)).isAbsolute() ? "0" : "2",
+			"name",		name,
+			"path",		path });
+        }
+
+        protected static Map newFrameworkReference( String name, String path ) {
 		return map( new Object[] {
 			"isa",		"PBXFrameworkReference",
 			"refType",	"0",
