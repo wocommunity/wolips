@@ -186,9 +186,9 @@ public class DirectAction extends WODirectAction {
 
 	<!-- main targets  -->
 	<!-- add optional targets to depends list if needed -->
-	<target name="build" depends="setProps,init.build,build.woapp"/>
+	<target name="build" depends="setProps,init.build,build.woapp,ssdd"/>
 
-	<target name="install" depends="setProps,init.install,build.woapp"/>
+	<target name="install" depends="setProps,init.install,build.woapp,ssdd"/>
 	
 	<target name="clean" depends="setProps">
 	  	<delete dir="${project.name}.woa"/>
@@ -268,6 +268,26 @@ public class DirectAction extends WODirectAction {
 	</target>
 
 	<!-- optional targets -->
+	
+	<!-- ssdd target--> 
+    <!-- To use this target remove the if="${never}" statement and create the LICENSE   
+         and web.xml files in your project.--> 
+    <target name="ssdd" if="${never}"> 
+        <war destfile="${project.name}.war" 
+            webxml="web.xml"> 
+            <fileset dir="."> 
+                <include name="${project.name}.woa/**"/> 
+                <include name="LICENSE"/> 
+            </fileset> 
+            <lib dir="${wo.wosystemroot}/Library/Frameworks/JavaWOJSPServlet.framework/WebServerResources/Java/"> 
+                <include name="JavaWOJSPServlet_client.jar"/> 
+            </lib> 
+            <zipfileset dir="${wo.wosystemroot}/Library/Frameworks/JavaWOJSPServlet.framework/Resources/" prefix="tlds"> 
+                <include name="WOtaglib_1_0.tld"/> 
+             </zipfileset> 
+         </war> 
+     </target> 
+	
 	<!-- copy strings files -->	
 	<target name="copy.strings">
    		 <copy todir="${dest.dir}/${project.name}.woa/Contents/Resources">
