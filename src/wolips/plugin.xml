@@ -253,7 +253,6 @@
             id="org.objectstyle.wolips.actions.OpenComponentAction">
          <action
                label="%WOLips.PopupMenu.OpenComponentAction"
-               tooltip="%WOLips.PopupMenu.OpenComponentActionTip"
                class="org.objectstyle.wolips.actions.OpenComponentAction"
                menubarPath="additions"
                enablesFor="1"
@@ -267,7 +266,6 @@
             id="org.objectstyle.wolips.actions.OpenSourceAction">
          <action
                label="%WOLips.PopupMenu.OpenSourceAction"
-               tooltip="%WOLips.PopupMenu.OpenSourceActionTip"
                class="org.objectstyle.wolips.actions.OpenSourceAction"
                menubarPath="additions"
                enablesFor="1"
@@ -281,7 +279,6 @@
             id="org.objectstyle.wolips.actions.OpenSourceAction">
          <action
                label="%WOLips.PopupMenu.OpenSourceAction"
-               tooltip="%WOLips.PopupMenu.OpenSourceActionTip"
                class="org.objectstyle.wolips.actions.OpenSourceAction"
                menubarPath="additions"
                enablesFor="1"
@@ -289,7 +286,6 @@
          </action>
          <action
                label="%WOLips.PopupMenu.DeleteComponent"
-               tooltip="%WOLips.PopupMenu.DeleteComponentTip"
                class="org.objectstyle.wolips.actions.DeleteComponentAction"
                menubarPath="additions"
                enablesFor="1"
@@ -303,8 +299,7 @@
             id="org.objectstyle.wolips.actions.EnableEOGeneration">
          <action
                label="%WOLips.PopupMenu.EnableEOGeneration.label"
-               tooltip="%WOLips.PopupMenu.EnableEOGeneration.tooltip"
-               class="org.objectstyle.wolips.actions.EnableEOGeneration"
+              class="org.objectstyle.wolips.actions.EnableEOGeneration"
                menubarPath="additions"
                enablesFor="1"
                id="org.objectstyle.wolips.actions.EnableEOGeneration">
@@ -317,7 +312,6 @@
             id="org.objectstyle.wolips.actions.EnableEOGeneration">
          <action
                label="%WOLips.PopupMenu.EnableEOGeneration.label"
-               tooltip="%WOLips.PopupMenu.EnableEOGeneration.tooltip"
                class="org.objectstyle.wolips.actions.EnableEOGeneration"
                menubarPath="additions"
                enablesFor="1"
