@@ -220,6 +220,18 @@ public class SupportContentProvider extends AbstractTreeContentProvider {
 					"Preferences.ProductNavigatorFilter.Label"),
 				Preferences.getString(
 					IWOLipsPluginConstants.PREF_PRODUCT_NAVIGATOR_FILTER)));
+		preferencesNode.addChild(
+			createNode(
+				PreferencesMessages.getString(
+					"Preferences.RunAntAsExternalTool.Label"),
+				Preferences.getString(
+					IWOLipsPluginConstants.PREF_RUN_ANT_AS_EXTERNAL_TOOL)));
+		preferencesNode.addChild(
+			createNode(
+				PreferencesMessages.getString(
+					"Preferences.NSProjectSearchPath.Label"),
+				Preferences.getString(
+					IWOLipsPluginConstants.PREF_NS_PROJECT_SEARCH_PATH)));
 	}
 
 	/**
