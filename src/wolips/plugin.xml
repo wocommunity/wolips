@@ -58,6 +58,11 @@
             category="org.objectstyle.wolips.wizards.webobjects.5.1"
             class="org.objectstyle.wolips.wizards.WOComponentCreationWizard"
             id="org.objectstyle.wolips.wizards.new.wo.5.1.component">
+            <description>
+         	</description>
+            <selection
+				class="org.eclipse.core.resources.IResource">
+			</selection>
       </wizard>
       <wizard
             name="%WOLips.Subproject"
@@ -65,6 +70,11 @@
             category="org.objectstyle.wolips.wizards.webobjects.5.1"
             class="org.objectstyle.wolips.wizards.WOSubprojectCreationWizard"
             id="org.objectstyle.wolips.wizards.new.wo.5.1.subproject">
+            <description>
+         	</description>
+            <selection
+				class="org.eclipse.core.resources.IResource">
+			</selection>
       </wizard>
       <wizard
             name="%WOLips.Application"
@@ -94,6 +104,9 @@
             id="org.objectstyle.wolips.wizards.new.wo.5.1.eomodel">
          <description>
          </description>
+         <selection
+				class="org.eclipse.core.resources.IResource">
+			</selection>
       </wizard>
    </extension>
 <!-- action set -->
