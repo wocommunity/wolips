@@ -201,6 +201,9 @@
                path="additions"
                id="org.objectstyle.wolips">
             <separator
+                  name="project">
+            </separator>
+            <separator
                   name="wobuilder">
             </separator>
             <separator
@@ -208,12 +211,18 @@
             </separator>
          </menu>
          <action
+               label="%UpdatePB.Project"
+               class="org.objectstyle.wolips.actions.PBAction"
+               menubarPath="org.objectstyle.wolips/project"
+               id="%UpdatePB.Project.ID">
+         </action>
+          <action
                label="%WOBuilder.Remove"
                class="org.objectstyle.wolips.actions.WOBuilderAction"
                menubarPath="org.objectstyle.wolips/wobuilder"
                id="%WOBuilder.Remove.ID">
          </action>
-         <action
+        <action
                label="%WOApplicationBuilder.Set"
                class="org.objectstyle.wolips.actions.WOBuilderAction"
                menubarPath="org.objectstyle.wolips/wobuilder"

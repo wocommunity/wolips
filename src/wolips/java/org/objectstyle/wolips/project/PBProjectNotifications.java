@@ -56,6 +56,8 @@
 
 package org.objectstyle.wolips.project;
 
+import org.objectstyle.wolips.io.WOLipsLog;
+
 import com.webobjects.foundation.NSNotificationCenter;
 
 /**
@@ -68,19 +70,19 @@ import com.webobjects.foundation.NSNotificationCenter;
  */
 public class PBProjectNotifications {
 
-	public static String PBProjectWillUpgradeNotification =
+	private static String PBProjectWillUpgradeNotification =
 		"Project Will Upgrade";
-	public static String PBProjectDidUpgradeNotification = "Project Upgraded";
-	public static String PBProjectDidChangeNotification = "Project Changed";
-	public static String PBProjectWillSaveNotification = "Project Will Save";
-	public static String PBProjectDidSaveNotification = "Project Saved";
-	public static String PBProjectSaveDidFailNotification =
+	private static String PBProjectDidUpgradeNotification = "Project Upgraded";
+	private static String PBProjectDidChangeNotification = "Project Changed";
+	private static String PBProjectWillSaveNotification = "Project Will Save";
+	private static String PBProjectDidSaveNotification = "Project Saved";
+	private static String PBProjectSaveDidFailNotification =
 		"Project Save Failed";
-	public static String PBFileAddedToProjectNotification =
+	private static String PBFileAddedToProjectNotification =
 		"File Added to Project";
-	public static String PBFileRemovedFromProjectNotification =
+	private static String PBFileRemovedFromProjectNotification =
 		"File Removed from Project";
-	public static NSNotificationCenter notificationCenter =
+	private static NSNotificationCenter notificationCenter =
 		NSNotificationCenter.defaultCenter();
 
 	//postNotification(notification, dict);
@@ -88,13 +90,18 @@ public class PBProjectNotifications {
 	/**
 	 * Constructor for PBProjectNotifications.
 	 */
-	public PBProjectNotifications() {
+	private PBProjectNotifications() {
 		super();
 	}
 
 	public static void postPBProjectDidUpgradeNotification(String aProjectName) {
+		try {
 		PBProjectNotifications.notificationCenter.postNotification(
 			PBProjectNotifications.PBFileAddedToProjectNotification,
 			aProjectName);
+		}
+		catch (Exception anException) {
+			WOLipsLog.log(anException);
+		}
 	}
 }

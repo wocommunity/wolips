@@ -69,7 +69,7 @@ import org.objectstyle.wolips.project.ProjectHelper;
  */
 public class PBAction extends ActionOnIProject {
 
-	private static String UpdatePBProjectSetID = "UpdatePB.Project.Set.ID";
+	private static String UpdatePBProjectID = "UpdatePB.Project.ID";
 
 	/**
 	 * Contructor for the PBAction
@@ -91,9 +91,9 @@ public class PBAction extends ActionOnIProject {
 		if (project() != null) {
 			PBProjectUpdater projectUpdater = null;
 			try {
-				if (action.getId().equals(PBAction.UpdatePBProjectSetID)) {
+				if (action.getId().equals(PBAction.UpdatePBProjectID)) {
 					projectUpdater = PBProjectUpdater.instance(project());
-					projectUpdater.updatePBProject();
+					projectUpdater.forceRebuild();
 				}
 			} catch (Exception ex) {
 				WOLipsLog.log(ex);
@@ -110,7 +110,7 @@ public class PBAction extends ActionOnIProject {
 	public void selectionChanged(IAction action, ISelection selection) {
 		super.selectionChanged(action, selection);
 		if (project() != null) {
-			if (action.getId().equals(PBAction.UpdatePBProjectSetID)) {
+			if (action.getId().equals(PBAction.UpdatePBProjectID)) {
 				action.setEnabled(
 					ProjectHelper.isWOFwBuilderInstalled(project())
 						|| ProjectHelper.isWOAppBuilderInstalled(project()));
