@@ -54,9 +54,9 @@
 			<file templateId="properties" name="Properties"/>
 			<file templateId="applicationproject" name="PB.project"/>
 			<file templateId="antwoapplication" name="build.xml"/>
-			<file templateId="woapplication.makefile.preamble" name="makefile.preamble"/>
-			<file templateId="woapplication.makefile" name="makefile"/>
-			<file templateId="woapplication.makefile.postamble" name="makefile.postamble"/>
+			<file templateId="woapplication.makefile.preamble" name="Makefile.preamble"/>
+			<file templateId="woapplication.makefile" name="Makefile"/>
+			<file templateId="woapplication.makefile.postamble" name="Makefile.postamble"/>
 			<file templateId="woapplication.custominfo.plist" name="CustomInfo.plist"/>
 			<file templateId="woapplication.icon" name="WOAfile.icns"/>
 		</files>
@@ -81,9 +81,9 @@
 		<files>
 			<file templateId="frameworkproject" name="PB.project"/>
 			<file templateId="antwoframework" name="build.xml"/>
-			<file templateId="woframework.makefile.preamble" name="makefile.preamble"/>
-			<file templateId="woframework.makefile" name="makefile"/>
-			<file templateId="woframework.makefile.postamble" name="makefile.postamble"/>
+			<file templateId="woframework.makefile.preamble" name="Makefile.preamble"/>
+			<file templateId="woframework.makefile" name="Makefile"/>
+			<file templateId="woframework.makefile.postamble" name="Makefile.postamble"/>
 			<file templateId="woframework.custominfo.plist" name="CustomInfo.plist"/>
 		</files>
 	</projectType>
