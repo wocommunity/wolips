@@ -6,17 +6,33 @@
 
 <body bgcolor="#FFFFFF">
 <h1>Building WebObjects Applications</h1>
-<p>....</p>
-<h2><a name="ant"></a>Using Ant</h2>
-<p>...</p>
-<h3><a name="internally"></a>Internally</h3>
-<p>...</p>
-<h3><a name="externally"></a>Externally</h3>
-<p>...</p>
-<h2><a name="incrementally"></a>Incrementally</h2>
-<p>Shortest possible How-to use documentation for the incremental build: </p>
+<p>WOLips is built on WOProject. That means the WebObjects frameworks and applications 
+  are built using Ant scripts. These scripts may be executed internally (to Eclipse) 
+  or as an External Tool. WOLips also contains an <a href="#incrementalbuilder">IncrementalBuilder</a> 
+  and a <a href="#targetbuilder">TargetBuilder</a>. These where originally developed 
+  outside the WOProject/WOLips project, but are now integral parts.</p>
+<p>&nbsp;</p>
+<h2><a name="incrementalbuilder"></a>Using IncrementalBuilder</h2>
+<p>Developing a WebObjects &quot;project&quot; often involves developing a number 
+  of framework:s and woa:s simultaneously. When you run or debug applications 
+  you do, of course, want to make sure you always use the latest version of every 
+  single piece of code. Executing the Ant script for a framework (re-building 
+  the entire framework) everytime anything in that framework changed soon becomes 
+  impractical.</p>
+<p>Eclipse always (and incrementally) keeps all Java code compiled and ready to 
+  be executed and/or used by other Eclipse projects. WO projects are more than 
+  just Java projects - so this &quot;always ready&quot; mechanism needs to be 
+  extended to work with WO projects. This is what IncrementalBuilder does. During 
+  development IncrementalBuilder replaces the Ant scripts. It does however not 
+  produce installable frameworks or applications. You still need the Ant scripts 
+  for that. The main (only) advantage of replacing the Ant scripts with IncrementalBuilder 
+  during development is speed.</p>
+<h3>Setting Things Up</h3>
+<p>How to reconfigure existing WOLips projects to use IncrementalBuilder.</p>
 <ol>
-  <li>make sure that WOLips is properly installed and the build.properties file 
+  <li>M</li>
+  <li>...</li>
+  <li>Make sure that WOLips is properly installed and the build.properties file 
     exists</li>
   <li>create Java Projects for your WebObjects Projects</li>
   <li>add a filter to the Package Explorer filtering out things called build (and 
@@ -44,23 +60,13 @@
     (or better: set this folder as the working directory for the application) 
     and -DWORootDirectory=&gt;$NEXT_ROOT&lt; (replacing &gt;$NEXT_ROOT&lt; with 
     the installation path of your WebObjects installation)</li>
-  <li>turn on reloading of templates with -WODebuggingEnabled true (this may not be exactly what is needed for template reloading ...)</li>
-  <li>[don't turn on rapid-turnaround mode with -NSProjectSearchPath ("../..") ]</li>
+  <li>turn on reloading of templates with -WODebuggingEnabled true (this may not 
+    be exactly what is needed for template reloading ...)</li>
+  <li>[don't turn on rapid-turnaround mode with -NSProjectSearchPath ("../..") 
+    ]</li>
   <li>optional: set the port the application listens on with (e.g.) -WOPort 6666</li>
   <li>run the application</li>
 </ol>
-<p> &lt;&lt;re incremental builder...&gt;&gt;</p>
-<p>&lt;&lt;is this based on work you did independant of woproject/wolips?&gt;&gt; 
-  Yes -- this also means that the set of resources and web-server resources is for the moment hard-coded in the IncrementalBuilder
-</p><p>&lt;&lt;building incrementally is an alternative to building with ant?>> 
-Yes
-</p><p> &lt;&lt;what are the pros and cons?&gt;&gt; 
-  Pro: Speed Con: less flexible (see above)<br>
-  Sorry for being so short. You can check the (tiny) 
-  documentation snip I checked into CVS Harald (which is the list above)</p>
-<p>&nbsp;</p>
-<p>Hi, the cvs version has an option to choose the builder. WOBuild in the project 
-  properties. Ulrich </p>
 <h2><a name="targetbuilder"></a>Using TargetBuilder</h2>
 <p>When you build JavaClient or Direct2JavaClient applications you build two separate 
   targets, one client and one server. These two targets need separate classpaths. 

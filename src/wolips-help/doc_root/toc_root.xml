@@ -43,7 +43,15 @@
 	</topic>
 	
 	<topic label="FAQ" href="./doc_root/faq.html"/>
-	<topic label="Reference" href="./doc_root/reference/index.html"/>
+	
+	<topic label="Reference" href="./doc_root/reference/index.html">
+				
+		<topic label="Preferences" href="./doc_root/reference/preferences.html"/>
+		<topic label="Perspectives and Views" href="./doc_root/reference/perspectives_views.html"/>
+		<topic label="Plug-ins, Features and Fragments" href="./doc_root/reference/plugins_features.html"/>
+		
+	</topic>
+	
 	<topic label="What's New" href="./doc_root/history.html"/>
 
 	<topic label="Bugs, Issues and Other Things" href="./doc_root/issues.html">
