@@ -105,4 +105,11 @@ public final class WOClasspathContainerInitializer
       }
     }
 
+    /* (non-Javadoc)
+     * @see org.eclipse.jdt.core.ClasspathContainerInitializer#getComparisonID(org.eclipse.core.runtime.IPath, org.eclipse.jdt.core.IJavaProject)
+     */
+    public Object getComparisonID(IPath containerPath, IJavaProject project) {
+        // we want every WO container to show up
+        return containerPath;
+    }
 }
