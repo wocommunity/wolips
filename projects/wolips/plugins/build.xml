@@ -88,18 +88,17 @@
     		<ant dir="org.objectstyle.wolips.commons" target="all"/>
     		<ant dir="org.objectstyle.wolips" target="all"/>
     	    	<ant dir="org.objectstyle.wolips.variables" target="all"/>
-        <ant dir="org.objectstyle.wolips.workbenchutilities" target="all"/>
-        <ant dir="org.objectstyle.wolips.datasets" target="all"/>
-        <ant dir="org.objectstyle.wolips.jdt" target="all"/>
+    		<ant dir="org.objectstyle.wolips.workbenchutilities" target="all"/>
+    		<ant dir="org.objectstyle.wolips.datasets" target="all"/>
+    		<ant dir="org.objectstyle.wolips.ant" target="all"/>
+    	    <ant dir="org.objectstyle.wolips.jdt" target="all"/>
         <ant dir="org.objectstyle.wolips.templateengine" target="all"/>
         <ant dir="org.objectstyle.wolips.preferences" target="all"/>
 	    <ant dir="org.objectstyle.wolips.documentation" target="all"/>
 	    <ant dir="org.objectstyle.wolips.targetbuilder" target="all"/>
 	    <ant dir="org.objectstyle.wolips.launching" target="all"/>
 	    <ant dir="org.objectstyle.wolips.profiling" target="all"/>
-	    <ant dir="org.objectstyle.wolips.profiling.about" target="all"/>
 	    <ant dir="org.objectstyle.wolips.projectbuild" target="all"/>
-	    <ant dir="org.objectstyle.wolips.tests.about" target="all"/>
 	    <ant dir="org.objectstyle.wolips.wounit" target="all"/>
 	    <ant dir="org.objectstyle.wolips.wounit.about" target="all"/>
 	    <ant dir="org.objectstyle.wolips.ui" target="all"/>
@@ -109,7 +108,6 @@
 	    <ant dir="org.objectstyle.wolips.cayenne" target="all"/>
 	    <ant dir="org.objectstyle.wolips.cayenne.ant" target="all"/>
 	    <ant dir="org.objectstyle.wolips.team" target="all"/>
-	    <ant dir="org.objectstyle.wolips.about" target="all"/>
 	    <ant dir="org.objectstyle.wolips.jdom" target="all"/>
 	    <ant dir="org.objectstyle.wolips.tests" target="all"/>
 	    <ant dir="org.objectstyle.wolips.goodies.core.mac" target="all"/>
@@ -125,17 +123,16 @@
     		<ant dir="org.objectstyle.wolips" target="dist"/>
         <ant dir="org.objectstyle.wolips.variables" target="dist"/>
         <ant dir="org.objectstyle.wolips.workbenchutilities" target="dist"/>
-        <ant dir="org.objectstyle.wolips.datasets" target="dist"/>
-        <ant dir="org.objectstyle.wolips.jdt" target="dist"/>
+    	    <ant dir="org.objectstyle.wolips.datasets" target="dist"/>
+    	    <ant dir="org.objectstyle.wolips.ant" target="dist"/>
+    	    <ant dir="org.objectstyle.wolips.jdt" target="dist"/>
         <ant dir="org.objectstyle.wolips.templateengine" target="dist"/>
     		<ant dir="org.objectstyle.wolips.preferences" target="dist"/>
 	    <ant dir="org.objectstyle.wolips.documentation" target="dist"/>
 	    <ant dir="org.objectstyle.wolips.targetbuilder" target="dist"/>
 	    <ant dir="org.objectstyle.wolips.launching" target="dist"/>
 	    <ant dir="org.objectstyle.wolips.profiling" target="dist"/>
-	    <ant dir="org.objectstyle.wolips.profiling.about" target="dist"/>
 	    <ant dir="org.objectstyle.wolips.projectbuild" target="dist"/>
-	    <ant dir="org.objectstyle.wolips.tests.about" target="dist"/>
 	    <ant dir="org.objectstyle.wolips.wounit" target="dist"/>
 	    <ant dir="org.objectstyle.wolips.wounit.about" target="dist"/>
 	    <ant dir="org.objectstyle.wolips.ui" target="dist"/>
@@ -145,7 +142,6 @@
 	    <ant dir="org.objectstyle.wolips.cayenne" target="dist"/>
 	    <ant dir="org.objectstyle.wolips.cayenne.ant" target="dist"/>
 	    <ant dir="org.objectstyle.wolips.team" target="dist"/>
-	    <ant dir="org.objectstyle.wolips.about" target="dist"/>
 	    <ant dir="org.objectstyle.wolips.jdom" target="dist"/>
 	    <ant dir="org.objectstyle.wolips.tests" target="dist"/>
 	    <ant dir="org.objectstyle.wolips.goodies.core.mac" target="dist"/>
