@@ -55,11 +55,12 @@
  */
 package org.objectstyle.wolips.tests.suite;
 
-import org.objectstyle.wolips.core.project.ProjectsTestSuite;
-
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+
+import org.objectstyle.wolips.core.project.ProjectsTestSuite;
+import org.objectstyle.wolips.datasets.DataSetsPluginTestSuite;
 
 /**
  * Run all compiler regression tests
@@ -72,6 +73,7 @@ public class AutomatedSuite extends TestCase {
 	public static Test suite() throws Exception {
 		TestSuite suite = new TestSuite();
 		suite.addTestSuite(CheckWorkspaceTest.class);
+		suite.addTest(DataSetsPluginTestSuite.suite());
 		suite.addTest(ProjectsTestSuite.suite());
 		suite.addTestSuite(CheckWorkspaceTest.class);
 		return suite;

@@ -60,7 +60,6 @@ import junit.framework.TestCase;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
-import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.IJavaProject;
@@ -74,7 +73,6 @@ import org.eclipse.jdt.core.JavaCore;
  */
 public class WOLipsCoreTest extends TestCase {
 
-	private IWorkspace workspace = null;
 	/**
 	 * Constructor for CheckWorkspaceTest.
 	 * @param arg0
@@ -88,7 +86,6 @@ public class WOLipsCoreTest extends TestCase {
 	 */
 	protected void setUp() throws Exception {
 		super.setUp();
-		workspace = ResourcesPlugin.getWorkspace();
 	}
 
 	/*
@@ -96,7 +93,6 @@ public class WOLipsCoreTest extends TestCase {
 	 */
 	protected void tearDown() throws Exception {
 		super.tearDown();
-		workspace = null;
 	}
 
 	public void testCreateProjectNull() {
