@@ -243,7 +243,11 @@ public class JavaElementChangeListener extends WorkspaceJob {
 	 */
 	private final boolean searchDeltas(IJavaElementDelta[] deltasToExamine,
 			int changeFlagToSearch, ArrayList foundElements) {
-		for (int i = 0; i < deltasToExamine.length; i++) {
+	    int oldSize = 0;
+	    if (null != foundElements) {
+	        oldSize = foundElements.size();
+	    }
+	    for (int i = 0; i < deltasToExamine.length; i++) {
 			if (deltasToExamine[i].getFlags() == IJavaElementDelta.F_CHILDREN) {
 				// further examination needed
 				while (searchDeltas(deltasToExamine[i].getChangedChildren(),
@@ -257,7 +261,7 @@ public class JavaElementChangeListener extends WorkspaceJob {
 			    }
 			}
 		}
-		return (foundElements != null && foundElements.size() > 0);
+		return (foundElements != null && (foundElements.size() != oldSize));
 	}
 
 	/**
