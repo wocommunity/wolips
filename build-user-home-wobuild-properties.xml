@@ -19,7 +19,7 @@
     			</and>
     		</not>
   		</condition>
-	</target>
+  	</target>
 	
 	<target name="set_other" if="wo.properties.ckeck.failed">
 	
@@ -48,10 +48,7 @@
 		<property environment="env"/>
 		 <condition property="env.ckeck.failed">
 		 	<not>
-    			<and>
-      				<isset property="env"/>
-      				<isset property="env.NEXT_ROOT"/>
-    			</and>
+    			<isset property="env.NEXT_ROOT"/>
     		</not>
   		</condition>
 	</target>
