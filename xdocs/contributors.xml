@@ -99,6 +99,12 @@
                 <td><a href="http://theco.de">http://theco.de</a></td>
                 <td>WOLips Classpath Container, Incremental Builder and bug fixes</td>
             </tr>
+             <tr>
+                <td>Jonathan 'Wolf' Rentzsch</td>
+                <td>jon at redshed dot net</td>
+                <td><a href="http://rentzsch.com">http://rentzsch.com</a></td>
+                <td>PBIndex framework support, PBXIndex, documentation.</td>
+            </tr>
             </table>
             </subsection>
         </section>
