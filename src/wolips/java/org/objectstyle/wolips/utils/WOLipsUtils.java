@@ -58,7 +58,7 @@ package org.objectstyle.wolips.utils;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
-import org.objectstyle.wolips.io.WOLipsLog;
+import org.objectstyle.wolips.logging.WOLipsLog;
 import org.objectstyle.wolips.plugin.IWOLipsPluginConstants;
 import org.objectstyle.woproject.env.WOVariables;
 
@@ -91,22 +91,44 @@ public class WOLipsUtils implements IWOLipsPluginConstants {
 		}
 		return resultList;
 	}
-	
+
 	/**
 	 * Method classPathVariableToExpand.
 	 * @param aString
 	 * @return String
 	 */
 	public static String classPathVariableToExpand(String aString) {
-			if (aString == null)
-				return null;
-			if (aString.equals("webobjects.next.root"))
-				return WOVariables.nextRoot();
-			if (aString.equals("webobjects.system.library.dir"))
-				return WOVariables.libraryDir();
-			WOLipsLog.log("Can not resolve classpath variable: " + aString);
+		if (aString == null)
 			return null;
-		}
+		if (aString.equals("webobjects.next.root"))
+			return WOVariables.nextRoot();
+		if (aString.equals("webobjects.system.library.dir"))
+			return WOVariables.libraryDir();
+		WOLipsLog.log("Can not resolve classpath variable: " + aString);
+		return null;
+	}
+
+	/**
+	 * Method woTemplateDirectory.
+	 * @return String
+	 */
+	public static String woTemplateDirectory() {
+		return "templates";
+	}
+	/**
+	 * Method woTemplateFiles.
+	 * @return String
+	 */
+	public static String woTemplateFiles() {
+		return "/wo_file_templates.xml";
+	}
+	/**
+	 * Method woTemplateProject.
+	 * @return String
+	 */
+	public static String woTemplateProject() {
+		return "/wo_project_templates.xml";
+	}
 
 	// mn: not deleted yet
 	// possible to use this class in future
