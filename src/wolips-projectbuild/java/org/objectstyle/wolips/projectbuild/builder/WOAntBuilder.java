@@ -107,7 +107,7 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 	 */
 	protected IProject[] build(int kind, Map args, IProgressMonitor monitor)
 		throws CoreException {
-		if (AntRunner.isBuildRunning()) {
+		if (AntRunner.isBuildRunning() || !this.projectNeedsAnUpdate()) {
 			monitor.done();
 			return null;
 		}
@@ -143,11 +143,12 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 			this.handleException(e);
 		}
 		aBuildFile = null;
-		//this.forgetLastBuiltState();
-		monitor.beginTask(
+
+		/*monitor.beginTask(
 					BuildMessages.getString("Build.Refresh.Title"),
-					WOAntBuilder.TOTAL_WORK_UNITS);
-		getProject().refreshLocal(IProject.DEPTH_INFINITE, null);
+					WOAntBuilder.TOTAL_WORK_UNITS);*/
+		this.forgetLastBuiltState();
+		//getProject().refreshLocal(IProject.DEPTH_INFINITE, monitor);
 		monitor.done();
 		return null;
 	}
@@ -208,15 +209,16 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 	 * @return boolean
 	 */
 	private boolean projectNeedsAnUpdate() {
+		boolean returnValue = false;
 		IResourceDelta aDelta = this.getDelta(this.getProject());
 		if (aDelta == null)
-			return true;
+			return false;
 		IResourceDelta[] children = aDelta.getAffectedChildren();
 		for (int i = 0; i < children.length; i++) {
 			if (!isIgnoredPath(children[i].getProjectRelativePath()))
-				return true;
+				returnValue = true;
 		}
-		return false;
+		return returnValue;
 	}
 	/**
 	 * Method isIgnoredPath.
@@ -225,14 +227,16 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 	 */
 	private boolean isIgnoredPath(IPath aPath) {
 		if (aPath.isEmpty())
-			return false;
+			return true;
 		String aString = aPath.toString();
 		return (
 			aString.indexOf(".woa") > 0
 				|| aString.indexOf(".framework") > 0
+				|| aString.indexOf(".project") > 0
 				|| aString.indexOf("ant.") > 0
+				|| aString.indexOf(".classpath") > 0
 				|| aString.indexOf("PB.project") > 0
-				|| aString.indexOf("make") > 0);
+				|| aString.indexOf("Makefile") > 0);
 	}
 	/**
 	 * Method handleException.
