@@ -233,11 +233,12 @@ public class DirectAction extends WODirectAction {
 
 	<target name="clean">
 	  	<delete dir="${project.name}.woa"/>
-	 	<refreshview projectname="${project.name}"/>
+		<eclipse.refreshLocal resource="${project.name}" depth="infinite"/>
 	</target>
 	  
 	<target name="build.woapp">
 		<updateframeworksets projectname="${project.name}"/>
+		<updateotherclasspaths projectname="${project.name}"/>
 		<woapplication name="${project.name}"  stdFrameworks="false" destDir="${dest.dir}">
    			<classes dir="${classes.dir}">
    			</classes>
@@ -261,14 +262,18 @@ public class DirectAction extends WODirectAction {
   					<includesfile name="ant.frameworks.user.home"/> 
 				</patternset>
    			</frameworks>
+			<otherclasspath root="${wo.woroot}">
+   				<patternset>
+  					<includesfile name="ant.classpaths.wo.woroot"/> 
+				</patternset>
+			</otherclasspath>
    		</woapplication>
-   		<refreshview projectname="${project.name}"/>
+		<eclipse.refreshLocal resource="${project.name}" depth="infinite"/>
 	</target>
 		
 </project>]]></template>
 	<template name="ant properties woapplication" id="woapplication.ant.properties" variables="BUILD_DIR,PROJECT_NAME,NEXT_ROOT" enabled="true"><![CDATA[
 classes.dir = ${BUILD_DIR}
-dest.dir = .
 project.name = ${PROJECT_NAME}
 ]]></template>
 	<template name="ant file woframework" id="woframework.ant.build" variables="PROJECT_NAME" enabled="true"><![CDATA[<project name="${PROJECT_NAME}" default="build" basedir=".">
@@ -322,8 +327,8 @@ project.name = ${PROJECT_NAME}
 	</target>
 
 	<target name="clean">
-	  <delete dir="${framework.name}.framework"/>
-	<refreshview projectname="${framework.name}"/>
+	  	<delete dir="${framework.name}.framework"/>
+		<eclipse.refreshLocal resource="${framework.name}" depth="infinite"/>
 	</target>
 	  
 	<target name="build.woframework">	
@@ -335,13 +340,12 @@ project.name = ${PROJECT_NAME}
        			<include name="**/*.wo/"/>
    			</resources>
    		</woframework>
-   		<refreshview projectname="${framework.name}"/>
+		<eclipse.refreshLocal resource="${framework.name}" depth="infinite"/>
 	</target>
 		
 </project>]]></template>
 	<template name="ant properties woframework" id="woframework.ant.properties" variables="BUILD_DIR,PROJECT_NAME" enabled="true"><![CDATA[
 classes.dir =  ${BUILD_DIR}
-dest.dir = .
 framework.name = ${PROJECT_NAME}
 ]]></template>
 	<template name="ant helper" id="ant.helper" enabled="true"><![CDATA[<?xml version="1.0"?>
