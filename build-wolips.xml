@@ -44,8 +44,7 @@
         </javac>
 
         <jar jarfile="${dist-wolips}/lib/${project.name}-wolips.jar">
-            <fileset dir="${build}/wolips" />
-            <fileset dir="src/wolips/resources"/>            
+            <fileset dir="${build}/wolips"/>           
             <metainf dir="doc">
                 <include name="LICENSE*"/>
             </metainf>
@@ -72,14 +71,14 @@
          </copy>
          
 	     <!-- make wolips dist -->
-         <tar tarfile="${dist.base}/${wolips-name}.tar">
+         <tar tarfile="${dist-wolips}.tar">
              <tarfileset dir="${dist-wolips}">
             </tarfileset>
          </tar>
          
-         <gzip src="${dist.base}/${wolips-name}.tar"
-              zipfile="${dist.base}/${wolips-name}.tar.gz"/>
-         <delete file="${dist.base}/${wolips-name}.tar"/>
+         <gzip src="${dist-wolips}.tar"
+              zipfile="${dist-wolips}.tar.gz"/>
+         <delete file="${dist-wolips}.tar"/>
     </target>
          
          
