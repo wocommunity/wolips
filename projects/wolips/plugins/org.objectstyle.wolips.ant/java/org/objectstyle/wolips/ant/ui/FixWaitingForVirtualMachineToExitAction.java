@@ -112,6 +112,7 @@ public class FixWaitingForVirtualMachineToExitAction implements IActionDelegate 
 	 *      org.eclipse.jface.viewers.ISelection)
 	 */
 	public void selectionChanged(IAction action, ISelection selection) {
+		//can be ignored
 	}
 
 }
