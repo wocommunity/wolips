@@ -160,6 +160,44 @@
          </action>
       </actionSet>
    </extension>
+<!-- project actions -->
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IProject"
+            adaptable="true">
+         <filter
+               name="nature"
+               value="org.eclipse.jdt.core.javanature">
+         </filter>
+         <menu
+               label="&amp;WOLips"
+               path="additions"
+               id="org.objectstyle.wolips">
+            <separator
+                  name="wobuilder">
+            </separator>
+         </menu>
+         <action
+               label="%WOBuilder.Remove"
+               class="org.objectstyle.wolips.actions.WOBuilderAction"
+               menubarPath="org.objectstyle.wolips/wobuilder"
+               id="%WOBuilder.Remove.ID">
+         </action>
+         <action
+               label="%WOApplicationBuilder.Set"
+               class="org.objectstyle.wolips.actions.WOBuilderAction"
+               menubarPath="org.objectstyle.wolips/wobuilder"
+               id="%WOApplicationBuilder.Set.ID">
+         </action>
+         <action
+               label="%WOFrameworkBuilder.Set"
+               class="org.objectstyle.wolips.actions.WOBuilderAction"
+               menubarPath="org.objectstyle.wolips/wobuilder"
+               id="%WOFrameworkBuilder.Set.ID">
+         </action>
+      </objectContribution>
+   </extension>
 <!-- ant -->
    <extension
          point="org.eclipse.ant.core.extraClasspathEntries">
