@@ -68,7 +68,9 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
+import org.objectstyle.wolips.core.plugin.AWOLips;
 import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
+import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
 import org.objectstyle.wolips.core.plugin.logging.WOLipsLog;
 import org.objectstyle.woproject.pb.PBProject;
 import org.objectstyle.woproject.util.FileStringScanner;
@@ -80,7 +82,7 @@ import org.objectstyle.woproject.util.FileStringScanner;
  * To enable and disable the creation of type comments go to
  * Window>Preferences>Java>Code Generation.
  */
-public class PBProjectUpdater {
+public class PBProjectUpdater extends AWOLips {
 	//do not cache PB.projects see bug #693046
 	//private static Hashtable projectUpdater = new Hashtable();
 	//public static String PBProject = "PB.projectContainer"; moved to IWOLipsPluginConstants.PROJECT_FILE_NAME (mn)
@@ -147,8 +149,17 @@ public class PBProjectUpdater {
 		try {
 			if ((aFile != null) && (aFile.exists())) {
 				file = FileStringScanner.stringFromFile(aFile);
-				if (file.startsWith(PBProjectUpdater.dirtyPBProject))
-					aFile.delete();
+				if (file.startsWith(PBProjectUpdater.dirtyPBProject)) {
+					WOLipsProject wolipsProject =
+						new WOLipsProject(projectContainer.getProject());
+					boolean isFramework =
+						wolipsProject.getNaturesAccessor().isFramework();
+					pbProject = new PBProject(aFile, isFramework);
+					String message =
+						projectContainer.getProject().getName()
+							+ ": The EOModeler has converted your PB.project to an XML file. Please select Update PB.project from the WOLips context menu.";
+					WOLipsPlugin.informUser(null, message);
+				}
 			}
 		} catch (Exception anException) {
 			WOLipsLog.log(anException);

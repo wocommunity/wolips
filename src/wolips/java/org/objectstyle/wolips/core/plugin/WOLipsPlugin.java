@@ -179,6 +179,18 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 		log.error(message, target);
 	}
 	/**
+	 * Method informUser.
+	 * @param shell
+	 * @param target
+	 * @param message
+	 */
+	public static void informUser(
+		Shell shell,
+		String message) {
+		String title = "Error";
+		MessageDialog.openError(shell, title, message);
+	}
+	/**
 	 * Returns the PluginID.
 	 */
 	public static String getPluginId() {
