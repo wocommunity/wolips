@@ -229,16 +229,22 @@ public class WOFrameworkDialogWrapper {
 			if (fileSystemObject != null) {
 
 				File fileToAdd = (File) fileSystemObject;
+				String parentDirName;
+				String parentParentDirName;
 
 				if (fileToAdd.isFile()
 					&& "jar".equals(getExtensionFor(fileToAdd.getName()))) {
+						
+						parentDirName = fileToAdd.getParentFile().getName();
+						parentParentDirName = fileToAdd.getParentFile().getParentFile().getName();
 
 					// must be jar (see above), ensure no web server resources are added
-					if (fileToAdd
-						.getParentFile()
-						.getParentFile()
-						.getName()
-						.equals(WOVariables.webServerResourcesDirName())) {
+					if (parentParentDirName.equals(WOVariables.webServerResourcesDirName())) {
+						return null;
+					}
+					
+					// ensure "jar" is in "Resources/Java"
+					if(!"Java".equals(parentDirName) || !"Resources".equals(parentParentDirName)){
 						return null;
 					}
 
