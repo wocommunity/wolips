@@ -55,7 +55,9 @@
             <property name="param.plugin.dir" value="."/>
             <property name="param.build.output.build.dir" value="../../../${build.output.build.dir}"/>
             <property name="param.plugin.name" value="${plugin.name}"/>
-	</ant>
+		</ant>
+        <copy file="../../../${project.buildscripts.dir}/woproperties.xml"
+              todir="../../../${build.output.build.dir}/plugins/${plugin.name}_${build.version}"/>
     </target>
 
     <!-- ========================================== -->
