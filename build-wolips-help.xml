@@ -1,0 +1,160 @@
+<?xml version="1.0"?>
+
+<!-- ======================================================== -->
+<!--                 WOLips Ant file.                         -->
+<!-- ======================================================== -->
+<project name="woproject-wolips-help" default="java" basedir=".">
+
+    <!-- ============================================= -->
+    <!-- Define CLASSPATH settings.                    -->
+    <!-- ============================================= -->
+    <target name="defineClasspath" if="wolips.build.help">
+        <path id="classpath">
+            <fileset dir="${ant.home}/lib">
+                <include name="ant.jar"/>
+            </fileset>
+            <fileset dir="lib">
+                <include name="*.jar"/>
+	            <include name="eclipse/**/*.jar"/>
+            </fileset>
+	    <fileset dir="${wo.woroot}/Library/Frameworks">
+                <include name="JavaEOAccess.framework/Resources/Java/*.jar"/>
+                <include name="JavaEOControl.framework/Resources/Java/*.jar"/>
+                <include name="JavaFoundation.framework/Resources/Java/*.jar"/>
+                <include name="JavaWebObjects.framework/Resources/Java/*.jar"/>
+                <include name="JavaJDBCAdaptor.framework/Resources/Java/*.jar"/>
+            </fileset>
+         </path>
+    </target>
+
+    <target name="java" depends="prepare" if="wolips.build.support">
+        <javac srcdir="src/wolips-help/java"
+                destdir="${build}/wolips-help"
+                deprecation="${compile.deprecation}"
+                debug="${compile.debug}"
+                optimize="${compile.optimize}">
+            <classpath refid="classpath"/>
+        </javac>
+         
+        <jar jarfile="${wolips.help.dist}/lib/wolips-help.jar">
+            <fileset dir="${build}/wolips-help"/>
+            <fileset dir="src/wolips-help/java">
+          	    <include name="**/*.properties"/>
+             </fileset>         
+            <metainf dir="doc">
+                <include name="LICENSE*"/>
+            </metainf>
+        </jar>
+        
+    </target>
+
+    <target name="dist" depends="prepare,java,doc,api" if="wolips.build.help">
+         <copy todir="${wolips.help.dist}">
+             <fileset dir="src/wolips-help">
+             	<exclude name="**/java/**"/>
+             	<exclude name="**/lib/**"/>
+             	<exclude name="**/xdocs/**"/>
+             	<exclude name="**/docs/**"/>
+             	<exclude name=".project"/>
+             	<exclude name=".classpath"/>
+             </fileset>
+         </copy>
+         
+    </target>
+         
+         
+         
+    <!-- ============================================= -->
+    <!-- Sets up build and distribution directories.   -->
+    <!-- ============================================= -->
+    <target name="prepare" depends="defineClasspath" if="wolips.build.help">
+        <mkdir dir="${build}/wolips-help"/>
+        <mkdir dir="${wolips.help.dist}/lib"/>
+    </target>
+
+
+    <!-- ============================================= -->
+    <!-- Deletes temporary files.                      -->
+    <!-- ============================================= -->
+    <target name="clean">
+        <delete dir="${build}/wolips-help"/>
+        <delete dir="${wolips.help.dist}"/>
+    </target>
+    
+    
+    <!-- ============================================= -->
+    <!-- Deploys WOLips web site files in a local      -->
+    <!-- directory.                                    -->
+    <!-- ============================================= -->
+    <target name="deploy-web" depends="prepare,site-doc" if="deploy.web"/>
+    
+    
+    <!-- ========================================== -->
+    <!-- Builds API documenatation.                 -->
+    <!-- ========================================== -->
+    <target name="api" depends="prepare" if="wolips.build.help">
+        <copy todir="${wolips.help.dist}/doc">
+            <fileset dir="doc">
+                <include name="**/LICENSE*"/>
+            </fileset>
+        </copy>
+    </target>
+    
+    
+    <target name="doc" depends="prepare" if="wolips.build.help">
+        <!-- copy all licenses inclusing ours -->
+        <copy todir="${wolips.help.dist}/doc">
+            <fileset dir="doc">
+               <include name="LICENSE*"/>
+            </fileset>
+        </copy>
+
+        <taskdef name="anakia" classname="org.apache.velocity.anakia.AnakiaTask">
+            <classpath refid="classpath"/>
+        </taskdef>
+        
+       <!-- Build site in Plugin docs directory -->
+        <anakia basedir="src/wolips-help/xdocs/wolips" destdir="${wolips.help.dist}/doc"
+             extension=".html" style="wolips.vsl"
+             excludes="**/stylesheets/**"
+             includes="**/*.xml"
+             lastModifiedCheck="true"
+             templatePath="src/wolips-help/xdocs/stylesheets">
+        </anakia>
+
+        <!-- copy images -->
+        <copy todir="${wolips.help.dist}/doc/images/wolips" filtering="no">
+            <fileset dir="src/wolips-help/xdocs/images">
+                <include name="**/*.gif"/>
+                <include name="**/*.jpeg"/>
+                <include name="**/*.jpg"/>
+                <include name="**/*.css"/>
+            </fileset>
+        </copy>
+    </target>
+    
+    <target name="site-doc" depends="prepare" if="wolips.build.help">
+        <taskdef name="anakia" classname="org.apache.velocity.anakia.AnakiaTask">
+            <classpath refid="classpath"/>
+        </taskdef>
+
+        <anakia basedir="src/wolips-help/xdocs" destdir="${woproject.dist}/doc"
+     		extension=".html" style="woproject.vsl"
+     		projectFile="../../../xdocs/stylesheets/project.xml"
+     		excludes="**/stylesheets/**"
+     		includes="**/*.xml"
+     		lastModifiedCheck="true"
+     		templatePath="xdocs/stylesheets">
+		</anakia>
+
+        <!-- copy images -->
+        <copy todir="${woproject.dist}/doc/images/wolips" filtering="no">
+            <fileset dir="src/wolips-help/xdocs/images">
+                <include name="**/*.gif"/>
+                <include name="**/*.jpeg"/>
+                <include name="**/*.jpg"/>
+                <include name="**/*.css"/>
+            </fileset>
+        </copy>
+    </target>
+</project>

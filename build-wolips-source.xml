@@ -35,67 +35,23 @@
     </target>
 
     <target name="java" depends="prepare">
-        <javac srcdir="src/wolips/java"
-                destdir="${build}/wolips"
-                deprecation="${compile.deprecation}"
-                debug="${compile.debug}"
-                optimize="${compile.optimize}">
-            <classpath refid="classpath"/>
-        </javac>
-         
-        <jar jarfile="${wolips.dist}/lib/wolips.jar">
-            <fileset dir="${build}/wolips"/>
-            <fileset dir="src/wolips/java">
-          	    <include name="**/*.properties"/>
-             </fileset>
-             <fileset dir="src/wolips/java">
-          	    <include name="**/*.gif"/>
-             </fileset>         
-            <metainf dir="doc">
-                <include name="LICENSE*"/>
-            </metainf>
-        </jar>
-        
-        <!-- Copy WOProject JAR's -->
-        <copy todir="${wolips.dist}/lib">
-             <fileset dir="${woproject.dist}/lib">
-             	<exclude name="${lib.junit}"/>
-             	<exclude name="${lib.log4j}"/>
-             	<exclude name="${lib.cayenne}"/>
-             	<exclude name="ant.jar"/>
-             	<exclude name="woproject-tests.jar"/>
-             </fileset>
-         </copy>
-         <copy file="${woproject.dist}/lib/${lib.cayenne}" tofile="${wolips.dist}/lib/cayenne.jar"/>
     </target>
 
     <target name="dist" depends="prepare,java,doc,api">
-    	
-    	<copyfile src="build-user-home-wobuild-properties.xml" dest="${wolips.dist}/build-user-home-wobuild-properties.xml"/>
-    	     
-         <copy todir="${wolips.dist}">
-             <fileset dir="src/wolips">
-             	<exclude name="**/java/**"/>
-             	<exclude name="**/lib/**"/>
-             	<exclude name="**/xdocs/**"/>
-             	<exclude name="**/docs/**"/>
-             	<exclude name=".project"/>
-             	<exclude name=".classpath"/>
-             	<exclude name="*.html"/>
+	<zip zipfile="${wolips.source.dist}/src.zip">
+             <fileset dir="${wolips.source.dist}/src">
              </fileset>
-         </copy>
-         
-         <copy todir="${wolips.dist.base}">
-             <fileset dir="src/wolips">
-             	<include name="*.html"/>
+        </zip>
+
+        <delete dir="${wolips.source.dist}/src"/>
+
+	<zip zipfile="${wolips.source.dist}/javadoc.zip">
+             <fileset dir="${wolips.source.dist}/api">
              </fileset>
-         </copy>
-         
-		 <copy todir="${wolips.dist.base}">
-             <fileset dir="${wolips.dist}/doc">
-             	<include name="**/install.html"/>
-             </fileset>
-         </copy> 
+        </zip>
+
+        <delete dir="${wolips.source.dist}/api"/>
+
     </target>
          
          
@@ -104,8 +60,27 @@
     <!-- Sets up build and distribution directories.   -->
     <!-- ============================================= -->
     <target name="prepare" depends="defineClasspath">
-        <mkdir dir="${build}/wolips"/>
-        <mkdir dir="${wolips.dist}/lib"/>
+	
+        <!-- make feature -->
+        <mkdir dir="${wolips.source.dist}"/>
+    
+        <copy todir="${wolips.source.dist}">
+            <fileset dir="src/wolips-source">
+        	<exclude name=".project"/>
+		<exclude name=".classpath"/>
+            </fileset>
+        </copy>
+  
+        <!-- Copy source code -->
+         <copy todir="${wolips.source.dist}/src">
+             <fileset dir="src/java"/>
+             <fileset dir="src/wolips/java"/>
+             <fileset dir="src/wolips-help/java"/>
+             <fileset dir="src/wolips-targetbuilder/java"/>
+             <fileset dir="src/wolips-support/java"/>
+             <fileset dir="src/wolips-launching/java"/>
+         </copy>
+
     </target>
 
 
@@ -113,8 +88,6 @@
     <!-- Deletes temporary files.                      -->
     <!-- ============================================= -->
     <target name="clean">
-        <delete dir="${build}/wolips"/>
-        <delete dir="${wolips.dist}"/>
     </target>
     
     
@@ -129,16 +102,25 @@
     <!-- Builds API documenatation.                 -->
     <!-- ========================================== -->
     <target name="api" depends="prepare">
+        <javadoc   packagenames="org.objectstyle.*"
+                   defaultexcludes="yes"
+                   destdir="${wolips.source.dist}/api"
+                   author="true"
+                   version="true"
+                   use="true"
+                   windowtitle="WOLips API">
+
+        <classpath refid="classpath"/>
+        <sourcepath>
+            <pathelement path="${wolips.source.dist}/src"/>
+        </sourcepath>
+        <doctitle><![CDATA[<h2>WOLips API Documentation</h2>]]></doctitle>
+        <link href="http://developer.java.sun.com/developer/products/xml/docs/api/"/>
+        </javadoc>
     </target>
     
     
     <target name="doc" depends="prepare">
-        <!-- copy all licenses inclusing ours -->
-        <copy todir="${wolips.dist}/doc">
-            <fileset dir="doc">
-               <include name="LICENSE*"/>
-            </fileset>
-        </copy>
     </target>
     
     

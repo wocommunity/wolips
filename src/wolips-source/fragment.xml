@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fragment
+   id="org.objectstyle.wolips.source"
+   name="%WOLips.source.fragmentName"
+   version="0.9.4"
+   provider-name="%WOLips.providerName"
+   plugin-id="org.objectstyle.wolips"
+   plugin-version="0.9.4"
+   match="compatible">
+
+   <runtime>
+   </runtime>
+
+   <requires>
+   </requires>
+</fragment>

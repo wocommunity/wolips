@@ -24,10 +24,16 @@
     <property name="wolips.features.folder" value="${wolips.dist.base}/features"/>
     <property name="wolips.dist" value="${wolips.plugins.folder}/${wolips.plugin.name}"/>
     <property name="wolips.dist.filename" value="${dist.base}/WOLips_${WOLips.version}"/>
+    <property name="wolips.source.name" value="org.objectstyle.wolips.source _${WOLips.version}"/>
+    <property name="wolips.source.dist" value="${wolips.plugins.folder}/${wolips.source.name}"/>
+    <property name="wolips.help.name" value="org.objectstyle.wolips.help_${WOLips.version}"/>
+    <property name="wolips.help.dist" value="${wolips.plugins.folder}/${wolips.help.name}"/>
     <property name="wolips.targetbuilder.name" value="org.objectstyle.wolips.targetbuilder_${WOLips.version}"/>
     <property name="wolips.targetbuilder.dist" value="${wolips.plugins.folder}/${wolips.targetbuilder.name}"/>
     <property name="wolips.support.name" value="org.objectstyle.wolips.support_${WOLips.version}"/>
     <property name="wolips.support.dist" value="${wolips.plugins.folder}/${wolips.support.name}"/>
+    <property name="wolips.launching.name" value="org.objectstyle.wolips.launching_${WOLips.version}"/>
+    <property name="wolips.launching.dist" value="${wolips.plugins.folder}/${wolips.launching.name}"/>
     <property name="wolips.feature.dist" value="${wolips.features.folder}/org.objectstyle.wolips.feature_${WOLips.version}"/>
     <property name="wolips.help.dist" value="${wolips.plugins.folder}/org.objectstyle.wolips.help_${WOLips.version}"/>
         
@@ -65,8 +71,11 @@
     <target name="dist" depends=".ds_store,check"> 
     	<ant antfile="build-core.xml" target="dist"/>
     	<ant antfile="build-wolips.xml" target="dist"/>
+	<ant antfile="build-wolips-help.xml" target="dist"/>
 	<ant antfile="build-wolips-targetbuilder.xml" target="dist"/>
 	<ant antfile="build-wolips-support.xml" target="dist"/>
+	<ant antfile="build-wolips-launching.xml" target="dist"/>
+	<ant antfile="build-wolips-source.xml" target="dist"/>
 	<ant antfile="build-wolips-dist.xml" target="dist"/>
     </target>
 
@@ -76,8 +85,11 @@
     <target name="java" depends="check">
     	<ant antfile="build-core.xml" target="java"/>
     	<ant antfile="build-wolips.xml" target="java"/>
+	<ant antfile="build-wolips-help.xml" target="java"/>
 	<ant antfile="build-wolips-targetbuilder.xml" target="java"/>
 	<ant antfile="build-wolips-support.xml" target="java"/>
+	<ant antfile="build-wolips-launching.xml" target="java"/>
+	<ant antfile="build-wolips-source.xml" target="java"/>
     </target>
 
     <!-- ============================================= -->
@@ -104,8 +116,11 @@
     <target name="doc">
 	<ant antfile="build-core.xml" target="doc"/>
 	<ant antfile="build-wolips.xml" target="doc"/>
+	<ant antfile="build-wolips-help.xml" target="doc"/>
 	<ant antfile="build-wolips-targetbuilder.xml" target="doc"/>
 	<ant antfile="build-wolips-support.xml" target="doc"/>
+	<ant antfile="build-wolips-launching.xml" target="doc"/>
+	<ant antfile="build-wolips-source.xml" target="doc"/>
     </target>
 
 
@@ -115,8 +130,10 @@
     <target name="api">
 	<ant antfile="build-core.xml" target="api"/>
 	<ant antfile="build-wolips.xml" target="api"/>
+	<ant antfile="build-wolips-help.xml" target="api"/>
 	<ant antfile="build-wolips-targetbuilder.xml" target="api"/>
 	<ant antfile="build-wolips-support.xml" target="api"/>
+	<ant antfile="build-wolips-source.xml" target="api"/>
     </target>
     
     
@@ -126,8 +143,11 @@
     <!-- ============================================= -->
     <target name="deploy-web" depends="java,doc,api" if="deploy.web">
         <ant antfile="build-wolips.xml" target="deploy-web"/>
+        <ant antfile="build-wolips-help.xml" target="deploy-web"/>
         <ant antfile="build-wolips-targetbuilder.xml" target="deploy-web"/>
         <ant antfile="build-wolips-support.xml" target="deploy-web"/>
+        <ant antfile="build-wolips-launching.xml" target="deploy-web"/>
+        <ant antfile="build-wolips-source.xml" target="deploy-web"/>
 	<!-- This must be the last task, since it would copy all the folders. -->
 	<ant antfile="build-core.xml" target="deploy-web"/>
     </target>

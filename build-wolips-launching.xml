@@ -3,12 +3,12 @@
 <!-- ======================================================== -->
 <!--                 WOLips Ant file.                         -->
 <!-- ======================================================== -->
-<project name="woproject-wolips-targetbuilder" default="java" basedir=".">
+<project name="woproject-wolips-launching" default="java" basedir=".">
 
     <!-- ============================================= -->
     <!-- Define CLASSPATH settings.                    -->
     <!-- ============================================= -->
-    <target name="defineClasspath" if="wolips.build.targetbuilder">
+    <target name="defineClasspath" if="wolips.build.launching">
         <condition property="next.root" value="/System">
             <and>
                 <os family="mac" />
@@ -34,18 +34,18 @@
         </path>
     </target>
 
-    <target name="java" depends="prepare" if="wolips.build.targetbuilder">
-        <javac srcdir="src/wolips-targetbuilder/java"
-                destdir="${build}/wolips-targetbuilder"
+    <target name="java" depends="prepare" if="wolips.build.support">
+        <javac srcdir="src/wolips-launching/java"
+                destdir="${build}/wolips-launching"
                 deprecation="${compile.deprecation}"
                 debug="${compile.debug}"
                 optimize="${compile.optimize}">
             <classpath refid="classpath"/>
         </javac>
          
-        <jar jarfile="${wolips.targetbuilder.dist}/lib/wolips-targetbuilder.jar">
-            <fileset dir="${build}/wolips-targetbuilder"/>
-            <fileset dir="src/wolips-targetbuilder/java">
+        <jar jarfile="${wolips.launching.dist}/lib/wolips-launching.jar">
+            <fileset dir="${build}/wolips-launching"/>
+            <fileset dir="src/wolips-launching/java">
           	    <include name="**/*.properties"/>
              </fileset>         
             <metainf dir="doc">
@@ -55,9 +55,9 @@
         
     </target>
 
-    <target name="dist" depends="prepare,java,doc,api" if="wolips.build.targetbuilder">
-         <copy todir="${wolips.targetbuilder.dist}">
-             <fileset dir="src/wolips-targetbuilder">
+    <target name="dist" depends="prepare,java,doc,api" if="wolips.build.launching">
+        <copy todir="${wolips.launching.dist}">
+             <fileset dir="src/wolips-launching">
              	<exclude name="**/java/**"/>
              	<exclude name="**/lib/**"/>
              	<exclude name="**/xdocs/**"/>
@@ -74,9 +74,9 @@
     <!-- ============================================= -->
     <!-- Sets up build and distribution directories.   -->
     <!-- ============================================= -->
-    <target name="prepare" depends="defineClasspath" if="wolips.build.targetbuilder">
-        <mkdir dir="${build}/wolips-targetbuilder"/>
-        <mkdir dir="${wolips.targetbuilder.dist}/lib"/>
+    <target name="prepare" depends="defineClasspath" if="wolips.build.launching">
+        <mkdir dir="${build}/wolips-launching"/>
+        <mkdir dir="${wolips.launching.dist}/lib"/>
     </target>
 
 
@@ -84,8 +84,8 @@
     <!-- Deletes temporary files.                      -->
     <!-- ============================================= -->
     <target name="clean">
-        <delete dir="${build}/wolips-targetbuilder"/>
-        <delete dir="${wolips.targetbuilder.dist}"/>
+        <delete dir="${build}/wolips-launching"/>
+        <delete dir="${wolips.launching.dist}"/>
     </target>
     
     
@@ -99,20 +99,13 @@
     <!-- ========================================== -->
     <!-- Builds API documenatation.                 -->
     <!-- ========================================== -->
-    <target name="api" depends="prepare" if="wolips.build.targetbuilder">
+    <target name="api" depends="prepare" if="wolips.build.launching">
     </target>
     
     
-    <target name="doc" depends="prepare" if="wolips.build.targetbuilder">
-        <!-- copy all licenses inclusing ours -->
-        <copy todir="${wolips.targetbuilder.dist}/doc">
-            <fileset dir="doc">
-               <include name="LICENSE*"/>
-            </fileset>
-        </copy>
+    <target name="doc" depends="prepare" if="wolips.build.launching">
     </target>
     
-    <target name="site-doc" depends="prepare" if="wolips.build.targetbuilder">
-
+    <target name="site-doc" depends="prepare" if="wolips.build.launching">
     </target>
 </project>

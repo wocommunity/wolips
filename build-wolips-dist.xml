@@ -4,17 +4,8 @@
 <!--                 WOLips Ant file.                         -->
 <!-- ======================================================== -->
 <project name="woproject-wolips-dist" default="dist" basedir=".">
-    <target name="dist">
-    
-    <!-- make help -->
-    <mkdir dir="${wolips.help.dist}"/>
-    <copy todir="${wolips.help.dist}">
-        <fileset dir="src/wolips-help">
-        	<exclude name=".project"/>
-        	<exclude name=".classpath"/>
-        </fileset>
-    </copy>
-    
+
+   <target name="dist">
     <!-- make feature -->
     <mkdir dir="${wolips.feature.dist}"/>
     <copy todir="${wolips.feature.dist}">

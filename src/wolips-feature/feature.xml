@@ -29,7 +29,6 @@
       <import plugin="org.eclipse.ui.externaltools"/>
    </requires>
 
-
    <plugin
          id="org.objectstyle.wolips"
          download-size="0"
@@ -38,11 +37,10 @@
    </plugin>
 
    <plugin
-         id="org.objectstyle.wolips.target"
+         id="org.objectstyle.wolips.targetbuilder"
          download-size="0"
          install-size="0"
          version="0.9.4">
    </plugin>
-   
-   
+      
 </feature>
