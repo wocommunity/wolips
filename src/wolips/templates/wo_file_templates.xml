@@ -242,8 +242,8 @@ public class DirectAction extends WODirectAction {
    			<resources dir=".">
 				<include name="Properties"/>
    				<include name="**/*.eomodeld/"/>
-       				<include name="**/*.wo/"/>
-       				<include name="**/*.api"/>
+       			<include name="**/*.wo/"/>
+       			<include name="**/*.api"/>
        		</resources>
 			<frameworks root="${wo.woroot}">
       				<patternset>
@@ -346,8 +346,9 @@ project.name = ${PROJECT_NAME}
    			<classes dir="${classes.dir}">
    			</classes>
    			<resources dir=".">
-       				<include name="**/*.eomodeld/"/>
-       				<include name="**/*.wo/"/>
+				<include name="Properties"/>
+       			<include name="**/*.eomodeld/"/>
+       			<include name="**/*.wo/"/>
 				<include name="**/*.api"/>
    			</resources>
    		</woframework>
@@ -362,7 +363,7 @@ project.name = ${PROJECT_NAME}
 	 <!-- copy strings files -->	
 	<target name="copy.strings">
    		 <copy todir="${dest.dir}/${framework.name}.framework/Resources">
-       			<fileset dir="." casesensitive="yes">
+       		<fileset dir="." casesensitive="yes">
 				<include name="*.strings"/>
         			<include name="**/*.strings"/>
     			</fileset>

@@ -71,6 +71,7 @@
 			<classpathentry kind="var" path="JRE_LIB" rootpath="JRE_SRCROOT" sourcepath="JRE_SRC"/>
 		</classpath>
 		<files>
+			<file templateId="properties" name="Properties"/>
 			<file templateId="frameworkproject" name="PB.project"/>
 			<file templateId="woframework.ant.build" name="build.xml"/>
 			<file templateId="woframework.ant.properties" name="build.properties"/>
