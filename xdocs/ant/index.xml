@@ -8,8 +8,9 @@
 
     <body>
  		<section name="Ant Tasks">
- 			<p>Currently WOProject supports the following Ant tasks (to get more information about Ant, go to <a href="http://jakarta.apache.org/ant/index.html"
- 			>Jakarta Ant Site</a>):
+ 			<p>Currently WOProject supports the following Ant tasks (for more 
+ 			information about Ant, go to <a href="http://jakarta.apache.org/ant/index.html">Jakarta 
+ 			Ant Site</a>):
  				<ul>
                 <li><font color="red"><i>[Coming Soon]</i></font> <a href="woapplication.html">WOApplication</a>: Allows you to build WebObjects applications
  				 without using ProjectBuilder.</li>
@@ -27,6 +28,14 @@
  				<li><code>[WOProject_installdir]/lib/cayenne.jar</code> <i>(needed for WOGen task only)</i></li>
  			</ul>
  			</p>
+ 		</section>
+ 		
+ 		<section name="Localization Issues">
+ 		     <p>WOApplication and WOFramework tasks are dealing 
+ 		     with resources (for instance WOComponents, images, etc.). Resources of the 
+ 		     applications that have a multilingual audience require localization.
+ 		     For the discussion of how localized resources are handled by WOProject,
+ 		     follow <a href="localized.html">this link</a>.</p>
  		</section>
  	</body>
  </document>

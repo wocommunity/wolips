@@ -165,10 +165,11 @@ public abstract class BuildTestCase extends TestCase {
             File wo = new File(resourceDir, wos[i] + ".wo");
             Assert.assertTrue("WO directory is missing: " + wo, wo.isDirectory());
 
-            File wod = new File(wo, wos[i] + ".wod");
+            String compName = new File(wos[i]).getName();
+            File wod = new File(wo, compName + ".wod");
             Assert.assertTrue(".wod file is missing: " + wod, wod.isFile());
 
-            File html = new File(wo, wos[i] + ".html");
+            File html = new File(wo, compName + ".html");
             Assert.assertTrue(".html file is missing: " + html, html.isFile());
         }
     }

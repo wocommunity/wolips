@@ -65,50 +65,111 @@ import org.apache.tools.ant.util.FileNameMapper;
 import org.apache.tools.ant.util.IdentityMapper;
 
 /** 
- * Mapper that allows to flatten copied resources. 
+ * Mapper that handles WebObjects resource copying.
+ * It handles issues like localization, flattening of WOComponents
+ * paths, etc. 
  * 
  * @author Andrei Adamchik
  */
 public class WOMapper extends Mapper {
+	public static final String LPROJ_SUFFIX = ".lproj";
+	public static final String NON_LOCALIZED = "Nonlocalized" + LPROJ_SUFFIX;
 
-    public WOMapper(Project project) {
-        super(project);
-    }
+	public WOMapper(Project project) {
+		super(project);
+	}
 
-    public FileNameMapper getImplementation() throws BuildException {
-        return new WOFileNameMapper();
-    }
-    
-    class WOFileNameMapper extends IdentityMapper {
-        /**
-         * Returns an one-element array containing the source file name
-         * without any leading directory information.
-         */
-        public String[] mapFileName(String sourceFileName) {
-            File f = new File(sourceFileName);
-            
-            // WOComponent directory
-            if (sourceFileName.endsWith(".wo")) {
-                return flatten(f);
-            }
+	public FileNameMapper getImplementation() throws BuildException {
+		return new WOFileNameMapper();
+	}
 
-            // File in WOComponent directory
-            String parent = f.getParent();
-            if (parent != null && parent.endsWith(".wo")) {
-                return flattenWithParent(f);
-            }
+	class WOFileNameMapper extends IdentityMapper {
 
-            return super.mapFileName(sourceFileName);
-        }
+		/**
+		 * Returns an one-element array containing the source file name
+		 * with a path rewritten using localization rules.
+		 */
+		public String[] mapFileName(String sourceFileName) {
+			// check for default exclusions
+			if (NON_LOCALIZED.equals(sourceFileName)) {
+				return null;
+			}
 
-        private String[] flatten(File f) {
-            return new String[] { f.getName()};
-        }
+			// apply filters
+			String localizedPath = localizationFilter(sourceFileName);
+			String finalPath = wocompFilter(localizedPath);
 
-        private String[] flattenWithParent(File f) {
-            String name = f.getName();
-            String parentName = f.getParentFile().getName();
-            return new String[] { parentName + File.separator + name };
-        }
-    }
+			return new String[] { finalPath };
+		}
+
+		/** 
+		 * Returns destination path based on source file path applying
+		 * WOComponent rules to <code>path</code> if applicable. 
+		 */
+		private final String wocompFilter(String path) {
+			File f = new File(path);
+
+			// WOComponent directory
+			if (path.endsWith(".wo")) {
+				return flatten(f);
+			}
+
+			// File in WOComponent directory
+			String parent = f.getParent();
+			if (parent != null && parent.endsWith(".wo")) {
+				return flattenWithParent(f);
+			}
+
+			// skip the filter
+			return path;
+		}
+
+		/** 
+		 * Returns destination path based on source file path applying
+		 * localization rules to <code>path</code>. 
+		 */
+		private String localizationFilter(String path) {
+			String startPattern = NON_LOCALIZED + File.separator;
+
+			return (path.startsWith(startPattern))
+				? path.substring(startPattern.length())
+				: path;
+		}
+
+		/** 
+		 * Flatten path, taking localization into account. No need to check for 
+		 * Nonlocalized.lproj here, since it should've been stripped by localization
+		 * filter already.
+		 */
+		private String flatten(File f) {
+			File p1 = f.getParentFile();
+
+			// check for localization
+			File p2 = null;
+			while (p1 != null) {
+				p2 = p1;
+				p1 = p1.getParentFile();
+			}
+
+			if (p2 != null) {
+				String topmostParent = p2.getName();
+				if (topmostParent.endsWith(LPROJ_SUFFIX)) {
+					return topmostParent + File.separator + f.getName();
+				}
+			}
+
+			return f.getName();
+		} 
+		
+		/** 
+		  * Flatten parent path, taking localization into account. No need to check for 
+		  * Nonlocalized.lproj here, since it should've been stripped by localization
+		  * filter already.
+		  */
+		private String flattenWithParent(File f) {
+			String name = f.getName();
+			String parentName = flatten(f.getParentFile());
+			return parentName + File.separator + name;
+		}
+	}
 }

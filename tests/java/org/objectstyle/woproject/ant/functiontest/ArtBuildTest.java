@@ -90,9 +90,44 @@ public class ArtBuildTest extends BuildTestCase {
 
         FrameworkStructure artFrwk = new FrameworkStructure("art");
         artFrwk.setJars(new String[] { "art", "cayenne", "woproject" });
-        artFrwk.setWocomps(new String[] { "PaintingSearch" });
-        artFrwk.setWsResources(new String[] { "images/spacer.gif" });
-
-        assertStructure(artFrwk);
+        configLocalizationTests(artFrwk);
+        
+        assertStructure(artFrwk);        
+    }
+    
+    /** Add tests for localized resources. */
+    private void configLocalizationTests(FrameworkStructure artFrwk) {
+    	// test WOComponents
+    	// 1. Source: Top level, non localized
+    	artFrwk.addToWocomps("Comp5");
+    	
+    	// 2. Source: Sub directory, non localized
+    	artFrwk.addToWocomps("Comp2");
+    	
+    	// 3. Source: Sub directory, localized, but lproj is not top directory
+    	artFrwk.addToWocomps("Comp1");
+    	
+    	// 4. Source: Sub directory, localized, but lproj is Nonlocalized.lproj directory
+    	artFrwk.addToWocomps("Comp3");
+    	
+    	// 5. Source: Sub directory, localized
+    	artFrwk.addToWocomps("English.lproj/Comp4");
+    	
+    	
+    	// test other resources
+    	// 1. Source: Top level, non localized
+    	artFrwk.addToWsResources("spacer1.gif");
+    	
+    	// 2. Source: Sub directory, non localized
+    	artFrwk.addToWsResources("images/spacer2.gif");
+    	
+    	// 3. Source: Sub directory, localized, but lproj is not top directory
+    	artFrwk.addToWsResources("images/NotALproj.lproj/spacer3.gif");
+    	
+    	// 4. Source: Sub directory, localized
+    	artFrwk.addToWsResources("English.lproj/spacer5.gif");
+    	
+    	// 5. Source: Sub directory, localized, but lproj is Nonlocalized.lproj directory
+    	artFrwk.addToWsResources("spacer4.gif");
     }
 }

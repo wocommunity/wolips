@@ -114,6 +114,10 @@ public abstract class ProjectStructure {
     public void setJars(String[] jars) {
         this.jars = jars;
     }
+    
+    public void addToJars(String jar) {
+    	this.jars = addToArray(jars, jar);
+    }
 
     public String[] getWocomps() {
         return wocomps;
@@ -122,7 +126,10 @@ public abstract class ProjectStructure {
     public void setWocomps(String[] wocomps) {
         this.wocomps = wocomps;
     }
-
+    
+    public void addToWocomps(String wocomp) {
+    	this.wocomps = addToArray(wocomps, wocomp);
+    }
 
     public String[] getWsResources() {
         return wsResources;
@@ -131,5 +138,20 @@ public abstract class ProjectStructure {
     public void setWsResources(String[] wsres) {
         this.wsResources = wsres;
     }
+    
+    public void addToWsResources(String wsResource) {
+    	this.wsResources = addToArray(wsResources, wsResource);
+    }
 
+    /** Grows String array by one element, adds the element at the end. */
+    public static String[] addToArray(String[] array, String element) {
+    	if(array == null || array.length == 0) {
+    		return new String[] {element};
+    	}
+    	
+    	String[] grown = new String[array.length + 1];
+    	System.arraycopy(array, 0, grown, 0, array.length);
+    	grown[array.length] = element;
+    	return grown;
+    }
 }

@@ -48,13 +48,16 @@
 			<p>The nested <code>resources</code> element specifies a <a
 			href="http://jakarta.apache.org/ant/manual/CoreTypes/fileset.html">FileSet</a>.
 			All files included in this fileset will
-			end up in the <code>Resources</code> directory of the framework. </p>
+			end up in the <code>Resources</code> directory of the framework. For the discussion
+			of resource localization issues follow <a href="localized.html">this link</a>.</p>
 
 			<h4>wsresources</h4>
 			<p>The nested <code>wsresources</code> element specifies a <a
 			href="http://jakarta.apache.org/ant/manual/CoreTypes/fileset.html">FileSet</a>.
 			All files included in this fileset will
-			end up in the <code>WebServerResources</code> directory of the framework. </p>
+			end up in the <code>WebServerResources</code> directory of the framework. For 
+			the discussion
+			of resource localization issues follow <a href="localized.html">this link</a>.</p>
 
             <h4>lib</h4>
 			<p>The nested <code>lib</code> element specifies a <a
