@@ -417,17 +417,20 @@ public class AppFormat extends ProjectFormat {
 	
 	public File bootstrap() {
 		File mac = null;
-		File other = null;
+		File unix = null;
+		File win = null;
 		try {
 			mac = new File ("/System/Library/WebObjects/JavaApplications/wotaskd.woa/WOBootstrap.jar");
 			WOPropertiesHandler aHandler = new WOPropertiesHandler(this.getApplicatonTask().getProject());
-			other = new File(aHandler.getWORootPath() + "/WebObjects/JavaApplications/wotaskd.woa/WOBootstrap.jar");
+			unix = new File(aHandler.getWORootPath() + "/Library/WebObjects/JavaApplications/wotaskd.woa/WOBootstrap.jar");
+			win = new File(aHandler.getWORootPath() + "\\Library\\WebObjects\\JavaApplications\\wotaskd.woa\\WOBootstrap.jar");
 		}
 		catch (Exception anException) {
 			System.out.println(anException);
 		}
 		if((mac != null) && (mac.exists())) return mac;
-		if((other != null) && (other.exists())) return other;
+		if((unix != null) && (unix.exists())) return unix;
+		if((win != null) && (win.exists())) return win;
 		return null;
 	}
 }
