@@ -8,7 +8,12 @@
 
     <body>        
         <!-- Welcome section -->
-        <section name="Welcome to WOProject">        
+        <section name="Welcome to WOProject">
+        <p><i>September 24, 2002.</i> <b>WOLips 0.8.8 released.</b></p>
+        <p>Read <a href="wolips/toc.html">this</a> to get started with WOLips. WOLips <a href="http://sourceforge.net/project/showfiles.php?group_id=50507">download</a>.
+        <hr/>
+        </p>
+                
         <p><i>September 2, 2002.</i> <b>Start-Script Lobotomy.</b></p>
         <p>Read <a href="articles/WOFLobotomy1/index.html">an article</a> by Reimer Mellin on an easy way 
         to deploy WebObjects 5.x applications. To download WOStart code discussed in the
