@@ -137,7 +137,7 @@ public abstract class WOBuilder extends IncrementalProjectBuilder {
 		IProgressMonitor monitor,
 		String aBuildFile)
 		throws Exception {
-/*		if (Preferences
+		if (Preferences
 			.getBoolean(IWOLipsPluginConstants.PREF_RUN_ANT_AS_EXTERNAL_TOOL)) {
 			if (projectNeedsClean())
 				RunAnt.asExternalTool(
@@ -151,7 +151,7 @@ public abstract class WOBuilder extends IncrementalProjectBuilder {
 				monitor,
 				this.defaultTarget());
 
-		} else {*/
+		} else {
 			if (projectNeedsClean())
 				RunAnt.asAnt(
 					getProject().getFile(aBuildFile).getLocation().toOSString(),
@@ -161,7 +161,7 @@ public abstract class WOBuilder extends IncrementalProjectBuilder {
 				getProject().getFile(aBuildFile).getLocation().toOSString(),
 				monitor,
 				this.defaultTarget());
-		//}
+		}
 	}
 	/**
 	 * Method projectNeedsClean.

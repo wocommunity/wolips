@@ -63,7 +63,12 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.debug.ui.IDebugUIConstants;
 import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -198,5 +203,44 @@ public class WorkbenchHelper {
 		}
 		return result;
 	}
-
-}
+	/**
+	 * Method getShell.
+	 * @return Shell
+	 */
+	public static Shell getShell() {
+		if (WorkbenchHelper.getActiveWorkbenchWindow() != null) {
+			return WorkbenchHelper.getActiveWorkbenchWindow().getShell();
+		}
+		return null;
+	}
+	/**
+	 * Utility method with conventions
+	 */
+	public static void errorDialog(Shell shell, String title, String message, IStatus s) {
+		WOLipsLog.log(s);
+		// if the 'message' resource string and the IStatus' message are the same,
+		// don't show both in the dialog
+		if (s != null && message.equals(s.getMessage())) {
+			message= null;
+		}
+		ErrorDialog.openError(shell, title, message, s);
+	}
+	
+	/**
+	 * Utility method with conventions
+	 */
+	public static void errorDialog(Shell shell, String title, String message, Throwable t) {
+		WOLipsLog.log(t);
+		IStatus status;
+		if (t instanceof CoreException) {
+			status= ((CoreException)t).getStatus();
+			// if the 'message' resource string and the IStatus' message are the same,
+			// don't show both in the dialog
+			if (status != null && message.equals(status.getMessage())) {
+				message= null;
+			}
+		} else {
+			status= new Status(IStatus.ERROR, WOLipsPlugin.getPluginId(), IDebugUIConstants.INTERNAL_ERROR, "Error within Debug UI: ", t); //$NON-NLS-1$	
+		}
+		ErrorDialog.openError(shell, title, message, status);
+	}}
