@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 The ObjectStyle Group 
+ * Copyright (c) 2002 - 2005 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -56,30 +56,51 @@
 
 package org.objectstyle.woproject.ant;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
+import org.apache.tools.ant.Task;
 import org.apache.tools.ant.types.Mapper;
+import org.apache.tools.ant.types.selectors.SelectorUtils;
 import org.apache.tools.ant.util.FileNameMapper;
 import org.apache.tools.ant.util.IdentityMapper;
 
-/** 
- * Mapper that handles WebObjects resource copying.
- * It handles issues like localization, flattening of WOComponents
- * paths, etc. 
+/**
+ * Mapper that handles WebObjects resource copying. It handles issues like
+ * localization, flattening of WOComponents paths, etc.
  * 
  * @author Andrei Adamchik
  */
 public class WOMapper extends Mapper {
 	private final String LPROJ_SUFFIX = ".lproj";
+
 	private final String SUBPROJ_SUFFIX = ".subproj";
+
 	private final String NON_LOCALIZED = "Nonlocalized" + LPROJ_SUFFIX;
 
-	public WOMapper(Project project) {
+	WOTask wotask;
+	String[] pattern;
+	
+	
+	/**
+	 * @param project
+	 * @param parent
+	 * 
+	 * The default constructor.
+	 */
+	public WOMapper(Project project, Task parent) {
 		super(project);
+		if(parent != null && parent instanceof WOTask) {
+			wotask = (WOTask)parent;
+		}
 	}
-
+	
 	public FileNameMapper getImplementation() throws BuildException {
 		return new WOFileNameMapper();
 	}
@@ -87,8 +108,8 @@ public class WOMapper extends Mapper {
 	class WOFileNameMapper extends IdentityMapper {
 
 		/**
-		 * Returns an one-element array containing the source file name
-		 * with a path rewritten using localization rules.
+		 * Returns an one-element array containing the source file name with a
+		 * path rewritten using localization rules.
 		 */
 		public String[] mapFileName(String sourceFileName) {
 			// check for default exclusions
@@ -102,14 +123,16 @@ public class WOMapper extends Mapper {
 
 			String wocompPath = wocompFilter(localizedPath);
 			String miscFilter = miscFilter(wocompPath);
-			String finalPath = eomodelFilter(miscFilter);
+			String flattenfilesFilter = applyFlattenfiles(miscFilter);
+			String finalPath = eomodelFilter(flattenfilesFilter);
 			return new String[] { finalPath };
 		}
+
 		/**
-		* Returns destination path based on source file path applying
-		* miscancellous rules, like *.strings to <code>path</code> if
-		* applicable.
-		*/
+		 * Returns destination path based on source file path applying
+		 * miscancellous rules, like *.strings to <code>path</code> if
+		 * applicable.
+		 */
 		private final String miscFilter(String path) {
 			File f = new File(path);
 			// add other file extensions here!
@@ -120,9 +143,9 @@ public class WOMapper extends Mapper {
 			return path;
 		}
 
-		/** 
+		/**
 		 * Returns destination path based on source file path applying
-		 * WOComponent rules to <code>path</code> if applicable. 
+		 * WOComponent rules to <code>path</code> if applicable.
 		 */
 		private final String wocompFilter(String path) {
 			File f = new File(path);
@@ -146,8 +169,7 @@ public class WOMapper extends Mapper {
 			File f = new File(path);
 
 			// EOModel directory
-			if (path.endsWith(".eomodeld")
-				&& !path.endsWith("index.eomodeld")) {
+			if (path.endsWith(".eomodeld") && !path.endsWith("index.eomodeld")) {
 				return flatten(f);
 			}
 
@@ -161,9 +183,9 @@ public class WOMapper extends Mapper {
 			return path;
 		}
 
-		/** 
-		 * Returns destination path based on source file path applying
-		 * subproj rules to <code>path</code>. 
+		/**
+		 * Returns destination path based on source file path applying subproj
+		 * rules to <code>path</code>.
 		 */
 		private String subprojFilter(String path) {
 			File f = new File(path);
@@ -183,22 +205,22 @@ public class WOMapper extends Mapper {
 			}
 			return path;
 		}
-		/** 
+
+		/**
 		 * Returns destination path based on source file path applying
-		 * localization rules to <code>path</code>. 
+		 * localization rules to <code>path</code>.
 		 */
 		private String localizationFilter(String path) {
 			String startPattern = NON_LOCALIZED + File.separator;
 
-			return (path.startsWith(startPattern))
-				? path.substring(startPattern.length())
-				: path;
+			return (path.startsWith(startPattern)) ? path
+					.substring(startPattern.length()) : path;
 		}
 
-		/** 
-		 * Flatten path, taking localization into account. No need to check for 
-		 * Nonlocalized.lproj here, since it should've been stripped by localization
-		 * filter already.
+		/**
+		 * Flatten path, taking localization into account. No need to check for
+		 * Nonlocalized.lproj here, since it should've been stripped by
+		 * localization filter already.
 		 */
 		private String flatten(File f) {
 			File p1 = f.getParentFile();
@@ -220,11 +242,66 @@ public class WOMapper extends Mapper {
 			return f.getName();
 		}
 
-		/** 
-		  * Flatten parent path, taking localization into account. No need to check for 
-		  * Nonlocalized.lproj here, since it should've been stripped by localization
-		  * filter already.
-		  */
+		/*
+		 * Pattern extracted from the Flattenfiles
+		 */
+		private String[] pattern() {
+			if(wotask != null) {
+				ArrayList arrayList = new ArrayList();
+				Iterator iterator = wotask.getFlattenfileNames();
+				while(iterator.hasNext()) {
+					String fileName = (String)iterator.next();
+					addPattern(fileName, arrayList);
+				}
+				pattern = (String[])arrayList.toArray(new String[arrayList.size()]);
+			}
+			return pattern;
+		}
+		
+		private void addPattern(String fileName, ArrayList arrayList) {
+			BufferedReader patternReader = null;
+			try {
+				patternReader = new BufferedReader(new FileReader(new File(fileName)));
+				String line = patternReader.readLine();
+				while (line != null) {
+					if (line.length() > 0) {
+						arrayList.add(line);
+					}
+					line = patternReader.readLine();
+				}
+			} catch (IOException ioe) {
+				WOMapper.this.log("Error while reading file: " + ioe.getMessage());
+			} finally {
+				if (null != patternReader) {
+					try {
+						patternReader.close();
+					} catch (IOException ioe) {
+						// Ignore exception
+					}
+				}
+			}
+		}
+		/*
+		 * Apply Flattenfiles
+		 */
+		private String applyFlattenfiles(String path) {
+			if(pattern() == null)
+				return path;
+			File f = new File(path);
+			for(int i = 0; i < pattern.length; i++) {
+				if(SelectorUtils.matchPath(pattern[i], path)) {
+					return flatten(f);
+				}
+			}
+			// skip the filter
+			return path;
+			
+		}
+		/**
+		 * Flatten parent path, taking localization into account. No need to
+		 * check for Nonlocalized.lproj here, since it should've been stripped
+		 * by localization filter already.
+		 */
 		private String flattenWithParent(File f) {
 			String name = f.getName();
 			String parentName = flatten(f.getParentFile());

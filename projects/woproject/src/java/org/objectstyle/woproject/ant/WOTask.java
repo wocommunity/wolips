@@ -2,7 +2,7 @@
  *
  * The ObjectStyle Group Software License, Version 1.0
  *
- * Copyright (c) 2002, 2004 The ObjectStyle Group
+ * Copyright (c) 2002- 2005 The ObjectStyle Group
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -70,7 +70,7 @@ import org.apache.tools.ant.taskdefs.Mkdir;
 import org.apache.tools.ant.types.FileSet;
 
 /**
- * A <b>WOTask</b> is a common superclass of WOApplication and WOFramework that 
+ * A <b>WOTask</b> is a common superclass of WOApplication and WOFramework that
  * implements common build functionality.
  * 
  * @author Emily Bache
@@ -78,390 +78,474 @@ import org.apache.tools.ant.types.FileSet;
  */
 public abstract class WOTask extends Task {
 
-    protected Vector classes = new Vector();
-    protected String name;
-    protected String destDir;
-    protected String wsDestDir;
-    protected String principalClass;
-    protected String jarName;
-    protected String customInfoPListContent;
-    protected Vector sources = new Vector();
-    protected Vector resources = new Vector();
-    protected Vector wsresources = new Vector();
-    protected Vector lib = new Vector();
-    private SubtaskFactory subtaskFactory;
-    //this leaks
-    //public Log log;
+	protected Vector classes = new Vector();
 
-    public WOTask() {
-        super();
-    }
-    /**
-     * Method setName.
-     * @param name
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
+	protected String name;
 
-    /**
-     * Method getName.
-     * @return String
-     */
-    public String getName() {
-        return name;
-    }
+	protected String destDir;
 
-    /**
-     * Method setJarName.
-     * @param jarName
-     */
-    public void setJarName(String jarName) {
-        this.jarName = jarName;
-    }
+	protected String wsDestDir;
 
-    /**
-     * Method getJarName.
-     * @return String
-     */
-    public String getJarName() {
-        if (jarName == null)
-            jarName = getName().toLowerCase();
-        return jarName;
-    }
+	protected String principalClass;
 
-    /**
-     * Method setPrincipalClass.
-     * @param principalClass
-     */
-    public void setPrincipalClass(String principalClass) {
-        this.principalClass = principalClass;
-    }
+	protected String jarName;
 
-    public void setWsDestDir(String wsDestDir) {
-        this.wsDestDir = wsDestDir;
-    }
+	protected String customInfoPListContent;
 
-    /**
-     * Method getPrincipalClass.
-     * @return String
-     */
-    public String getPrincipalClass() {
-        return principalClass;
-    }
+	protected Vector sources = new Vector();
 
-    /**
+	protected Vector resources = new Vector();
+
+	protected Vector wsresources = new Vector();
+
+	protected Vector flattenfiles = new Vector();
+
+	protected Vector lib = new Vector();
+
+	private SubtaskFactory subtaskFactory;
+
+	// this leaks
+	// public Log log;
+
+	public WOTask() {
+		super();
+	}
+
+	/**
+	 * Method setName.
+	 * 
+	 * @param name
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	/**
+	 * Method getName.
+	 * 
+	 * @return String
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * Method setJarName.
+	 * 
+	 * @param jarName
+	 */
+	public void setJarName(String jarName) {
+		this.jarName = jarName;
+	}
+
+	/**
+	 * Method getJarName.
+	 * 
+	 * @return String
+	 */
+	public String getJarName() {
+		if (jarName == null)
+			jarName = getName().toLowerCase();
+		return jarName;
+	}
+
+	/**
+	 * Method setPrincipalClass.
+	 * 
+	 * @param principalClass
+	 */
+	public void setPrincipalClass(String principalClass) {
+		this.principalClass = principalClass;
+	}
+
+	public void setWsDestDir(String wsDestDir) {
+		this.wsDestDir = wsDestDir;
+	}
+
+	/**
+	 * Method getPrincipalClass.
+	 * 
+	 * @return String
+	 */
+	public String getPrincipalClass() {
+		return principalClass;
+	}
+
+	/**
 	 * @return The CustomContent for the Info.plist
 	 */
 	public String getCustomInfoPListContent() {
 		return customInfoPListContent;
 	}
+
 	/**
 	 * @return The CustomContent for the Info.plist
 	 */
 	public void setCustomInfoPListContent(String customInfoPListContent) {
 		this.customInfoPListContent = customInfoPListContent;
 	}
-    /**
-     * Method setDestDir.
-     * @param destDir
-     */
-    public void setDestDir(String destDir) {
-        this.destDir = destDir;
-    }
 
-    /**
-     * Method addClasses.
-     * @param set
-     */
-    public void addClasses(FileSet set) {
-        classes.addElement(set);
-    }
+	/**
+	 * Method setDestDir.
+	 * 
+	 * @param destDir
+	 */
+	public void setDestDir(String destDir) {
+		this.destDir = destDir;
+	}
 
-    /**
-     * Method addResources.
-     * @param set
-     */
-    public void addSources(FileSet set) {
-        sources.addElement(set);
-    }
+	/**
+	 * Method addClasses.
+	 * 
+	 * @param set
+	 */
+	public void addClasses(FileSet set) {
+		classes.addElement(set);
+	}
 
+	/**
+	 * Method addResources.
+	 * 
+	 * @param set
+	 */
+	public void addSources(FileSet set) {
+		sources.addElement(set);
+	}
 
-    /**
-     * Method addResources.
-     * @param set
-     */
-    public void addResources(FileSet set) {
-        resources.addElement(set);
-    }
+	/**
+	 * Method addResources.
+	 * 
+	 * @param set
+	 */
+	public void addResources(FileSet set) {
+		resources.addElement(set);
+	}
 
-    /**
-     * Method addLib.
-     * @param set
-     */
-    public void addLib(FileSet set) {
-        lib.addElement(set);
-    }
+	/**
+	 * Method addLib.
+	 * 
+	 * @param set
+	 */
+	public void addLib(FileSet set) {
+		lib.addElement(set);
+	}
 
-    /**
-     * Method addWsresources.
-     * @param set
-     */
-    public void addWsresources(FileSet set) {
-        wsresources.addElement(set);
-    }
+	/**
+	 * Method addWsresources.
+	 * 
+	 * @param set
+	 */
+	public void addWsresources(FileSet set) {
+		wsresources.addElement(set);
+	}
 
-    /**
-     * Returns web server root directory.
-     */
-    protected File webServerDir() {
-        return getProject().resolveFile(wsDestDir);
-    }
+	/**
+	 * Method addFlattenfiles.
+	 * 
+	 * @param set
+	 */
+	public void addFlattenfiles(FileSet set) {
+		flattenfiles.addElement(set);
+	}
 
-    /**
-     * Returns a location where WOTask is being built up.
-     * For instance the <code>.woa</code> dir or the </code>.framework</code> dir.
-     */
-    protected abstract File taskDir();
+	/**
+	 * Returns web server root directory.
+	 */
+	protected File webServerDir() {
+		return getProject().resolveFile(wsDestDir);
+	}
 
-    /**
-     * Returns a location where resources should be put.
-     * For instance this can be WOComponents, EOModels etc.
-     */
-    protected abstract File resourcesDir();
+	/**
+	 * Returns a location where WOTask is being built up. For instance the
+	 * <code>.woa</code> dir or the </code>.framework</code> dir.
+	 */
+	protected abstract File taskDir();
 
-    /**
-     * Returns a location where web server resources should be copied.
-     * WebServerResources are normally images, JavaScript files,
-     * stylesheets, etc.
-     */
-    protected abstract File wsresourcesDir();
+	/**
+	 * Returns a location where resources should be put. For instance this can
+	 * be WOComponents, EOModels etc.
+	 */
+	protected abstract File resourcesDir();
 
-    /**
-     * Returns a location where web server resources should be copied
-     * during split install.
-     */
-    protected abstract File wsresourcesDestDir();
+	/**
+	 * Returns a location where web server resources should be copied.
+	 * WebServerResources are normally images, JavaScript files, stylesheets,
+	 * etc.
+	 */
+	protected abstract File wsresourcesDir();
 
-    /**
-     * Ensure we have a consistent and legal set of attributes, and set any
-     * internal flags necessary based on different combinations of attributes.
-     *
-     * @throws BuildException if task attributes are inconsistent or missing.
-     */
-    protected void validateAttributes() throws BuildException {
-        if (name == null) {
-            throw new BuildException("'name' attribute is missing.");
-        }
+	/**
+	 * Returns a location where web server resources should be copied during
+	 * split install.
+	 */
+	protected abstract File wsresourcesDestDir();
 
-        if (destDir == null) {
-            throw new BuildException("'destDir' attribute is missing.");
-        }
-    }
+	/**
+	 * Ensure we have a consistent and legal set of attributes, and set any
+	 * internal flags necessary based on different combinations of attributes.
+	 * 
+	 * @throws BuildException
+	 *             if task attributes are inconsistent or missing.
+	 */
+	protected void validateAttributes() throws BuildException {
+		if (name == null) {
+			throw new BuildException("'name' attribute is missing.");
+		}
 
-    /**
-     * Method createDirectories.
-     * @throws BuildException
-     */
-    protected void createDirectories() throws BuildException {
-        Mkdir mkdir = this.getSubtaskFactory().getMkdir();
+		if (destDir == null) {
+			throw new BuildException("'destDir' attribute is missing.");
+		}
+	}
 
-        File taskDir = taskDir();
+	/**
+	 * Method createDirectories.
+	 * 
+	 * @throws BuildException
+	 */
+	protected void createDirectories() throws BuildException {
+		Mkdir mkdir = this.getSubtaskFactory().getMkdir();
 
-        mkdir.setDir(taskDir);
-        mkdir.execute();
+		File taskDir = taskDir();
 
-        File resourceDir = resourcesDir();
-        mkdir.setDir(resourceDir);
-        mkdir.execute();
+		mkdir.setDir(taskDir);
+		mkdir.execute();
 
-        mkdir.setDir(new File(resourceDir, "Java"));
-        mkdir.execute();
+		File resourceDir = resourcesDir();
+		mkdir.setDir(resourceDir);
+		mkdir.execute();
 
-        if (hasWs()) {
-            mkdir.setDir(wsresourcesDir());
-            mkdir.execute();
-        }
-    }
+		mkdir.setDir(new File(resourceDir, "Java"));
+		mkdir.execute();
 
-    /**
-     * Method hasWs.
-     * @return boolean
-     */
-    public boolean hasWs() {
-        return wsresources.size() > 0;
-    }
+		if (hasWs()) {
+			mkdir.setDir(wsresourcesDir());
+			mkdir.execute();
+		}
+	}
 
-    /**
-     * Returns true if split install of WebServerResources is required
-     * and possible.
-     */
-    public boolean doingSplitInstall() {
-        return wsDestDir != null && hasWs();
-    }
+	/**
+	 * Method hasWs.
+	 * 
+	 * @return boolean
+	 */
+	public boolean hasWs() {
+		return wsresources.size() > 0;
+	}
 
-    /**
-     * Method hasResources.
-     * @return boolean
-     */
-    public boolean hasResources() {
-        return resources.size() > 0;
-    }
+	/**
+	 * Method hasFlattenfiles.
+	 * 
+	 * @return boolean
+	 */
+	public boolean hasFlattenfiles() {
+		return flattenfiles.size() > 0;
+	}
 
-    /**
-     * Method hasSources.
-     * @return boolean
-     */
-    public boolean hasSources() {
-        return sources.size() > 0;
-    }
+	/**
+	 * Returns true if split install of WebServerResources is required and
+	 * possible.
+	 */
+	public boolean doingSplitInstall() {
+		return wsDestDir != null && hasWs();
+	}
 
-    /**
-     * Method hasClasses.
-     * @return boolean
-     */
-    public boolean hasClasses() {
-        return classes.size() > 0;
-    }
+	/**
+	 * Method hasResources.
+	 * 
+	 * @return boolean
+	 */
+	public boolean hasResources() {
+		return resources.size() > 0;
+	}
 
-    /**
-     * Method jarSources
-     * @throws BuildException
-     */
-    protected void jarSources() throws BuildException {
-        Jar jar = this.getSubtaskFactory().getJar();
-        File taskJar = new File(resourcesDir(), "Java" + File.separator + "src.jar");
-        //jar.setJarfile(taskJar);
-        //jar.setLocation(new Location(resourcesDir() + "Java" + File.separator + getJarName() + ".jar"));
-        jar.setDestFile(taskJar);
-        if (hasSources()) {
-            Enumeration en = sources.elements();
-            while (en.hasMoreElements()) {
-                jar.addFileset((FileSet) en.nextElement());
-            }
-        }
+	/**
+	 * Method hasSources.
+	 * 
+	 * @return boolean
+	 */
+	public boolean hasSources() {
+		return sources.size() > 0;
+	}
 
-        jar.execute();
-    }
+	/**
+	 * Method hasClasses.
+	 * 
+	 * @return boolean
+	 */
+	public boolean hasClasses() {
+		return classes.size() > 0;
+	}
 
-    /**
-     * Method jarClasses.
-     * @throws BuildException
-     */
-    protected void jarClasses() throws BuildException {
-        Jar jar = this.getSubtaskFactory().getJar();
-        File taskJar =
-            new File(resourcesDir(), "Java" + File.separator + getJarName() + ".jar");
-        //jar.setJarfile(taskJar);
-        //jar.setLocation(new Location(resourcesDir() + "Java" + File.separator + getJarName() + ".jar"));
-        jar.setDestFile(taskJar);
-        if (hasClasses()) {
-            Enumeration en = classes.elements();
-            while (en.hasMoreElements()) {
-                jar.addFileset((FileSet) en.nextElement());
-            }
-        }
+	/**
+	 * Method jarSources
+	 * 
+	 * @throws BuildException
+	 */
+	protected void jarSources() throws BuildException {
+		Jar jar = this.getSubtaskFactory().getJar();
+		File taskJar = new File(resourcesDir(), "Java" + File.separator
+				+ "src.jar");
+		// jar.setJarfile(taskJar);
+		// jar.setLocation(new Location(resourcesDir() + "Java" + File.separator
+		// + getJarName() + ".jar"));
+		jar.setDestFile(taskJar);
+		if (hasSources()) {
+			Enumeration en = sources.elements();
+			while (en.hasMoreElements()) {
+				jar.addFileset((FileSet) en.nextElement());
+			}
+		}
 
-        jar.execute();
-    }
+		jar.execute();
+	}
 
-    /**
-     * Method copyResources.
-     * @throws BuildException
-     */
-    protected void copyResources() throws BuildException {
-        Copy cp = this.getSubtaskFactory().getResourceCopy();
+	/**
+	 * Method jarClasses.
+	 * 
+	 * @throws BuildException
+	 */
+	protected void jarClasses() throws BuildException {
+		Jar jar = this.getSubtaskFactory().getJar();
+		File taskJar = new File(resourcesDir(), "Java" + File.separator
+				+ getJarName() + ".jar");
+		// jar.setJarfile(taskJar);
+		// jar.setLocation(new Location(resourcesDir() + "Java" + File.separator
+		// + getJarName() + ".jar"));
+		jar.setDestFile(taskJar);
+		if (hasClasses()) {
+			Enumeration en = classes.elements();
+			while (en.hasMoreElements()) {
+				jar.addFileset((FileSet) en.nextElement());
+			}
+		}
 
-        cp.setTodir(resourcesDir());
-        Enumeration en = resources.elements();
-        while (en.hasMoreElements()) {
-            cp.addFileset((FileSet) en.nextElement());
-        }
-        cp.execute();
-    }
+		jar.execute();
+	}
 
-    /**
-     * Copies WebServerResources to the target location.
-     * Performs split install if requested.
-     * 
-     * @throws BuildException
-     */
-    protected void copyWsresources() throws BuildException {
-        Copy cp = this.getSubtaskFactory().getResourceCopy();
-        cp.setTodir(wsresourcesDir());
+	/**
+	 * Method copyResources.
+	 * 
+	 * @throws BuildException
+	 */
+	protected void copyResources() throws BuildException {
+		Copy cp = this.getSubtaskFactory().getResourceCopy();
 
-        Enumeration en = wsresources.elements();
-        while (en.hasMoreElements()) {
-            cp.addFileset((FileSet) en.nextElement());
-        }
-        cp.execute();
+		cp.setTodir(resourcesDir());
+		Enumeration en = resources.elements();
+		while (en.hasMoreElements()) {
+			cp.addFileset((FileSet) en.nextElement());
+		}
+		cp.execute();
+	}
 
-        // do split install
-        if (doingSplitInstall()) {
-            log("Split install WebServerResources of " + name + " in " + wsDestDir);
-            cp.setTodir(wsresourcesDestDir());
-            cp.execute();
-        }
-    }
+	/**
+	 * Copies WebServerResources to the target location. Performs split install
+	 * if requested.
+	 * 
+	 * @throws BuildException
+	 */
+	protected void copyWsresources() throws BuildException {
+		Copy cp = this.getSubtaskFactory().getResourceCopy();
+		cp.setTodir(wsresourcesDir());
 
-    /**
-     * Method copyLibs.
-     * @throws BuildException
-     */
-    protected void copyLibs() throws BuildException {
-        Copy cp = this.getSubtaskFactory().getResourceCopy();
-        cp.setTodir(new File(resourcesDir(), "Java"));
+		Enumeration en = wsresources.elements();
+		while (en.hasMoreElements()) {
+			cp.addFileset((FileSet) en.nextElement());
+		}
+		cp.execute();
 
-        Enumeration en = lib.elements();
-        while (en.hasMoreElements()) {
-            cp.addFileset((FileSet) en.nextElement());
-        }
-        cp.execute();
-    }
+		// do split install
+		if (doingSplitInstall()) {
+			log("Split install WebServerResources of " + name + " in "
+					+ wsDestDir);
+			cp.setTodir(wsresourcesDestDir());
+			cp.execute();
+		}
+	}
 
-    /**
-     * Method hasLib.
-     * @return boolean
-     */
-    protected boolean hasLib() {
-        return lib.size() > 0;
-    }
+	/**
+	 * Method copyLibs.
+	 * 
+	 * @throws BuildException
+	 */
+	protected void copyLibs() throws BuildException {
+		Copy cp = this.getSubtaskFactory().getResourceCopy();
+		cp.setTodir(new File(resourcesDir(), "Java"));
 
-    /**
-     * Method hasJava.
-     * @return boolean
-     */
-    protected boolean hasJava() {
-        return classes.size() > 0 || lib.size() > 0;
-    }
+		Enumeration en = lib.elements();
+		while (en.hasMoreElements()) {
+			cp.addFileset((FileSet) en.nextElement());
+		}
+		cp.execute();
+	}
 
-    /**
-        * Returns an Iterator over the file names of the library files
-     * included in the lib nested element.
-     */
-    public Iterator getLibNames() {
-        ArrayList libNames = new ArrayList();
-        Enumeration en = lib.elements();
-        while (en.hasMoreElements()) {
-            FileSet fs = (FileSet) en.nextElement();
-            DirectoryScanner scanner = fs.getDirectoryScanner(getProject());
-            String[] libs = scanner.getIncludedFiles();
-            for (int i = 0; i < libs.length; i++) {
-                File libFile = new File(libs[i]);
-                libNames.add(libFile.getName());
-            }
-        }
-        return libNames.iterator();
-    }
+	/**
+	 * Method hasLib.
+	 * 
+	 * @return boolean
+	 */
+	protected boolean hasLib() {
+		return lib.size() > 0;
+	}
 
-    public SubtaskFactory getSubtaskFactory() {
-        if (subtaskFactory == null)
-            subtaskFactory = new SubtaskFactory(this);
-        return subtaskFactory;
-    }
+	/**
+	 * Method hasJava.
+	 * 
+	 * @return boolean
+	 */
+	protected boolean hasJava() {
+		return classes.size() > 0 || lib.size() > 0;
+	}
 
-    public void release() {
-        subtaskFactory.release();
-        subtaskFactory = null;
-    }
+	/**
+	 * Returns an Iterator over the file names of the library files included in
+	 * the lib nested element.
+	 */
+	public Iterator getLibNames() {
+		ArrayList libNames = new ArrayList();
+		Enumeration en = lib.elements();
+		while (en.hasMoreElements()) {
+			FileSet fs = (FileSet) en.nextElement();
+			DirectoryScanner scanner = fs.getDirectoryScanner(getProject());
+			String[] libs = scanner.getIncludedFiles();
+			for (int i = 0; i < libs.length; i++) {
+				File libFile = new File(libs[i]);
+				libNames.add(libFile.getName());
+			}
+		}
+		return libNames.iterator();
+	}
+
+	public SubtaskFactory getSubtaskFactory() {
+		if (subtaskFactory == null)
+			subtaskFactory = new SubtaskFactory(this);
+		return subtaskFactory;
+	}
+
+	/**
+	 * 
+	 */
+	public void release() {
+		subtaskFactory.release();
+		subtaskFactory = null;
+	}
+
+	/**
+	 * @return Returns an Iterator over the file names of the mapper files
+	 *         included in the mapperfiles nested element.
+	 */
+	public Iterator getFlattenfileNames() {
+		ArrayList flattenfilesNames = new ArrayList();
+		Enumeration en = flattenfiles.elements();
+		while (en.hasMoreElements()) {
+			FileSet fs = (FileSet) en.nextElement();
+			DirectoryScanner scanner = fs.getDirectoryScanner(getProject());
+			String[] files = scanner.getIncludedFiles();
+			for (int i = 0; i < files.length; i++) {
+				flattenfilesNames.add(files[i]);
+			}
+		}
+		return flattenfilesNames.iterator();
+	}
+
 }

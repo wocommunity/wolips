@@ -172,6 +172,13 @@
 			For the discussion
 			of resource localization issues follow <a href="localized.html">this link</a>.</p>
 
+            <h4>flattenfiles</h4>
+			<p>The nested <code>flattenfiles</code> element specifies a <a
+			href="http://jakarta.apache.org/ant/manual/CoreTypes/fileset.html">FileSet</a>.
+			All files included in this fileset will be loaded.
+			The content of a file should be a list of carriage return separated pattern.
+			If a pattern is matched for a given resource or wsresource the file will be flatened.</p>
+
             <h4>frameworks</h4>
 			<p>The nested <code>frameworks</code> is a <a
 			href="frameworkset.html">FrameworkSet</a>
