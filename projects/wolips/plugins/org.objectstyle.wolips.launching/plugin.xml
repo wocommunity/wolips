@@ -14,15 +14,15 @@
       </library>
    </runtime>
    <requires>
+      <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.jdt.core"/>
       <import plugin="org.eclipse.jdt.launching"/>
       <import plugin="org.eclipse.debug.core"/>
+      <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.jface"/>
-      <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.debug.ui"/>
       <import plugin="org.eclipse.jdt.debug.ui"/>
-      <import plugin="org.eclipse.ui"/>
       <import plugin="org.objectstyle.wolips.variables"/>
       <import plugin="org.objectstyle.wolips.jdt"/>
       <import plugin="org.objectstyle.wolips.datasets"/>
@@ -37,10 +37,10 @@
    <extension
          point="org.eclipse.debug.core.launchConfigurationTypes">
       <launchConfigurationType
-            name="WOApplication"
             delegate="org.objectstyle.wolips.launching.WOJavaLocalApplicationLaunchConfigurationDelegate"
-            modes="run, debug"
-            id="org.objectstyle.wolips.launching.WOLocalJavaApplication">
+            name="WOApplication"
+            id="org.objectstyle.wolips.launching.WOLocalJavaApplication"
+            modes="run, debug">
       </launchConfigurationType>
    </extension>
 <!-- =================================================================================== -->
@@ -62,6 +62,7 @@
       <launchConfigurationTabGroup
             type="org.objectstyle.wolips.launching.WOLocalJavaApplication"
             class="org.objectstyle.wolips.launching.WOLocalJavaApplicationTabGroup"
+            description="Launches a local WebObjects Application"
             id="org.objectstyle.wolips.launching.WOLocalJavaApplicationTabGroup">
       </launchConfigurationTabGroup>
    </extension>
