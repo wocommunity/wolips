@@ -236,7 +236,7 @@ public class WOFrameworkDialogWrapper {
 		 */
 		public FrameworkRootOperation(File fileRoot) {
 			super(fileRoot, FileSystemStructureProvider.INSTANCE);
-			String[] extArray = { "jar" };
+			String[] extArray = { "jar", "zip" };
 			setDesiredExtensions(extArray);
 
 		}
@@ -258,9 +258,9 @@ public class WOFrameworkDialogWrapper {
 			File javaDir = null;
 			File resourcesDir = null;
 			File frameworkDir = null;
-
+			String fileExtensionToAdd = getExtensionFor(fileToAdd.getName());
 			if (fileToAdd.isFile()
-				&& "jar".equals(getExtensionFor(fileToAdd.getName()))) {
+				&& ("jar".equals(fileExtensionToAdd) || "zip".equals(fileExtensionToAdd))) {
 
 				// ensure correct framework path
 				boolean isValidPath = false;

@@ -2,7 +2,7 @@
 <plugin
    id="org.objectstyle.wolips"
    name="%WOLips.pluginName"
-   version="1.0.0"
+   version="1.0.1"
    provider-name="%WOLips.providerName"
    class="org.objectstyle.wolips.core.plugin.WOLipsPlugin">
 
@@ -42,98 +42,6 @@
 <!-- =================================================================================== -->
    <extension
          point="org.eclipse.ui.startup">
-   </extension>
-<!-- =================================================================================== -->
-<!-- Extension: Team file types                                                          -->
-<!-- =================================================================================== -->
-   <extension
-         point="org.eclipse.team.core.fileTypes">
-      <fileTypes
-            type="text"
-            extension="wod">
-      </fileTypes>
-      <fileTypes
-            type="text"
-            extension="woo">
-      </fileTypes>
-      <fileTypes
-            type="text"
-            extension="plist">
-      </fileTypes>
-      <fileTypes
-            type="text"
-            extension="eomodeld">
-      </fileTypes>
-      <fileTypes
-            type="text"
-            extension="api">
-      </fileTypes>
-      <fileTypes
-            type="text"
-            extension="postamble">
-      </fileTypes>
-      <fileTypes
-            type="text"
-            extension="preamble">
-      </fileTypes>
-      <fileTypes
-            type="text"
-            extension="d2wmodel">
-      </fileTypes>
-      <fileTypes
-            type="text"
-            extension="pbxuser">
-      </fileTypes>
-      <fileTypes
-            type="text"
-            extension="pbxproj">
-      </fileTypes>
-      <fileTypes
-            type="text"
-            extension="ini">
-      </fileTypes>
-      <fileTypes
-            type="text"
-            extension="mappings">
-      </fileTypes>
-   </extension>
-<!-- =================================================================================== -->
-<!-- Extension: Ignored team file types                                                          -->
-<!-- =================================================================================== -->
-   <extension
-         point="org.eclipse.team.core.ignore">
-      <ignore
-            enabled="true"
-            pattern="*.woa">
-      </ignore>
-      <ignore
-            enabled="true"
-            pattern="*.framework">
-      </ignore>
-      <ignore
-            enabled="true"
-            pattern="*.eomodeld~">
-      </ignore>
-      <ignore
-            enabled="true"
-            pattern=".DS_Store">
-      </ignore>
-      <ignore
-            enabled="true"
-            pattern="ant.frameworks.wo.woroot">
-      </ignore>
-      <ignore
-            enabled="true"
-            pattern="ant.frameworks.wo.wolocalroot">
-      </ignore>
-      <ignore
-            enabled="true"
-            pattern="ant.frameworks.user.home">
-      </ignore>
-      <ignore
-            enabled="true"
-            pattern="ant.classpaths.wo.woroot">
-      </ignore>
    </extension>
 <!-- =================================================================================== -->
 <!-- Extension: Resource filter                                                          -->
