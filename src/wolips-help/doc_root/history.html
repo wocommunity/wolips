@@ -6,6 +6,16 @@
 
 <body bgcolor="#FFFFFF">
 <h1>What's New</h1>
+<h2>0.9.1</h2>
+<ul>
+  <li>Update PC.project is back in the context menu.</li>
+  <li>Delete WOComponent currently does nothing.</li>
+  <li>To use existing projects with 0.9.8 there some steps to make it work.</li>
+  <li>Step 1. Go to the preferences and select rebuild wobuild.properties on next launch. Restart Eclipse.</li>
+  <li>Step 2. Open all .classpath files and replace NEXT_ROOT with NEXT_SYSTEM_ROOT and paths to the Library dir with NEXT_LOCAL_ROOT.</li>
+  <li>Step 3. Modify your build files. You have to replace wo.woroot with wo.wosystemroot. Make sure that you replace all occurencies.</li> 
+  <li>Step 4. Have fun!</li>
+</ul>
 <h2>0.9.7</h2>
 <ul>
   <li>The launch configuration assistent will add the -WORootDirectory for you. The NSProjectSearchPath will only include the frameworks that are refered as a project by the application project.</li>

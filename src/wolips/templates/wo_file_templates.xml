@@ -196,7 +196,7 @@ public class DirectAction extends WODirectAction {
 		<condition property="wo.properties.check.failed">
 			<not>
     			<and>
-      				<isset property="wo.woroot"/>
+      				<isset property="wo.wosystemroot"/>
       				<isset property="wo.wolocalroot"/>
     			</and>
     		</not>
@@ -236,7 +236,7 @@ public class DirectAction extends WODirectAction {
        			<exclude name="**/*.eomodeld~/"/>
        			<exclude name="**/*.woa/**"/>
        		</resources>
-			<frameworks root="${wo.woroot}">
+			<frameworks root="${wo.wosystemroot}">
       				<patternset>
   					<includesfile name="ant.frameworks.wo.wosystemroot"/> 
 				</patternset>
@@ -251,9 +251,9 @@ public class DirectAction extends WODirectAction {
   					<includesfile name="ant.frameworks.user.home"/> 
 				</patternset>
    			</frameworks>
-			<otherclasspath root="${wo.woroot}">
+			<otherclasspath root="${wo.wosystemroot}">
    				<patternset>
-  					<includesfile name="ant.classpaths.wo.woroot"/> 
+  					<includesfile name="ant.classpaths.wo.wosystemroot"/> 
 				</patternset>
 			</otherclasspath>
 			<lib dir=".">
@@ -262,10 +262,10 @@ public class DirectAction extends WODirectAction {
 			</lib>
    		</woapplication>
 		<!-- delete include files -->
-		<delete file="ant.frameworks.wo.woroot"/>
+		<delete file="ant.frameworks.wo.wosystemroot"/>
 		<delete file="ant.frameworks.wo.wolocalroot"/>
 		<delete file="ant.frameworks.user.home"/>
-		<delete file="ant.classpaths.wo.woroot"/>
+		<delete file="ant.classpaths.wo.wosystemroot"/>
 	</target>
 
 	<target name="refreshView" if="eclipse.running">
@@ -309,7 +309,7 @@ project.name = ${PROJECT_NAME}
 		<condition property="wo.properties.check.failed">
 			<not>
     			<and>
-      				<isset property="wo.woroot"/>
+      				<isset property="wo.wosystemroot"/>
       				<isset property="wo.wolocalroot"/>
     			</and>
     		</not>
