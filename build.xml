@@ -27,7 +27,11 @@
             <include name="JavaJDBCAdaptor.framework/Resources/Java/*.jar"/>
         </fileset>
     </path>
-
+    
+    <path id="classpath-tests">
+    	<path refid="classpath"/>
+    	<pathelement path="${dist}/lib/${project.name}.jar"/>
+    </path>
 
     <!-- ============================================= -->
     <!-- Derived Properties. These properties are      -->
@@ -112,9 +116,11 @@
     <!-- ============================================= -->
     <!-- Compiles Java classes                         -->
     <!-- ============================================= -->
-    <target name="java" depends="prepare">
+    <target name="java" depends="java-main,java-tests"/>
+    
+    <target name="java-main" depends="prepare">
        <javac srcdir="src/java"
-                destdir="build"
+                destdir="build/main"
                 deprecation="${compile.deprecation}"
                 debug="${compile.debug}"
                 optimize="${compile.optimize}">
@@ -122,7 +128,7 @@
         </javac>
 
         <jar jarfile="${dist}/lib/${project.name}.jar">
-            <fileset dir="build" />
+            <fileset dir="build/main" />
             <fileset dir="src/resources">
                 <include name="Info.plist"/>
                 <include name="**/*.vm"/>
@@ -134,13 +140,32 @@
 
         <copy todir="${dist}/lib" file="lib/cayenne.jar"/>
     </target>
+    
+    
+    <target name="java-tests" depends="prepare">
+       <javac srcdir="tests/java"
+                destdir="build/tests"
+                deprecation="${compile.deprecation}"
+                debug="${compile.debug}"
+                optimize="${compile.optimize}">
+            <classpath refid="classpath-tests"/>
+        </javac>
+
+        <jar jarfile="${dist}/lib/${project.name}-tests.jar">
+            <fileset dir="build/tests" />
+            <metainf dir="doc">
+                <include name="LICENSE*"/>
+            </metainf>
+        </jar>
+    </target>
 
 
     <!-- ============================================= -->
     <!-- Sets up build and distribution directories.   -->
     <!-- ============================================= -->
     <target name="prepare">
-        <mkdir dir="build"/>
+        <mkdir dir="build/main"/>
+        <mkdir dir="build/tests"/>
         <mkdir dir="${dist}"/>
         <mkdir dir="${dist}/lib"/>
         <mkdir dir="${dist}/doc"/>
@@ -159,7 +184,7 @@
 
 
     <!-- ========================================== -->
-    <!-- Builds Cayenne documenatation.             -->
+    <!-- Builds WOProject documenatation.          -->
     <!-- ========================================== -->
     <target name="doc" depends="prepare">
         <!-- copy all licenses inclusing ours -->
