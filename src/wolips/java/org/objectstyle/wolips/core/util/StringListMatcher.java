@@ -18,6 +18,10 @@ public class StringListMatcher implements IStringMatcher {
     set(patterns);
   }
 
+  public StringListMatcher (String patterns) {
+    set(StringUtilities.smartSplit(patterns,','));
+  }
+
   private StringMatcher _getMatcher (String pattern) {
     // we might wanna have a way of creating case-sensitive matchers
     return new StringMatcher(pattern, true, false);

@@ -17,8 +17,8 @@ public class ExcludeIncludeMatcher implements IStringMatcher {
   }
 
   public ExcludeIncludeMatcher (String excludes, String includes) {
-    _excludes = new StringListMatcher (StringUtilities.smartSplit(excludes, ','));
-    _includes = new StringListMatcher (StringUtilities.smartSplit(includes, ','));
+    _excludes = new StringListMatcher (excludes);
+    _includes = new StringListMatcher (includes);
   }
 
   public boolean match (String txt) {
