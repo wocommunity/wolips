@@ -10,7 +10,7 @@
    <runtime>
       <library name="lib/wolips-datasets.jar">
          <export name="*"/>
-         <packages prefixes="org.objectstyle.wolips.datasets,org.objectstyle.wolips.datasets.internal"/>
+         <packages prefixes="org.objectstyle.wolips.datasets,org.objectstyle.wolips.datasets.internal,org.objectstyle.wolips.datasets.listener,org.objectstyle.wolips.datasets.pattern,org.objectstyle.wolips.datasets.project,org.objectstyle.wolips.datasets.resources"/>
       </library>
    </runtime>
    <requires>
@@ -19,7 +19,22 @@
       <import plugin="org.eclipse.jdt.core"/>
       <import plugin="org.objectstyle.wolips.tests.core"/>
       <import plugin="org.eclipse.core.runtime.compatibility"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.jdt.core"/>
+      <import plugin="org.eclipse.jface"/>
+      <import plugin="org.eclipse.ui.workbench"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.objectstyle.wolips.variables"/>
+      <import plugin="org.objectstyle.wolips.woproject"/>
+      <import plugin="org.objectstyle.wolips.workbenchutilities"/>
    </requires>
 
+
+<!-- =================================================================================== -->
+<!-- Extension: Startup                                                                  -->
+<!-- =================================================================================== -->
+   <extension
+         point="org.eclipse.ui.startup">
+   </extension>
 
 </plugin>

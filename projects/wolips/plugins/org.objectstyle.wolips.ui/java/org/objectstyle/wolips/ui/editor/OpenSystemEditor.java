@@ -51,7 +51,7 @@ import org.eclipse.ui.IEditorRegistry;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.FileEditorInput;
 import org.objectstyle.wolips.core.logging.WOLipsLog;
-import org.objectstyle.wolips.core.util.WorkbenchUtilities;
+import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 
 /**
  * @author uli
@@ -74,7 +74,7 @@ public class OpenSystemEditor implements IEditorLauncher {
 	 */
 	public void open(IFile file) {
 		try {
-			WorkbenchUtilities.getActivePage().openEditor(
+			WorkbenchUtilitiesPlugin.getActivePage().openEditor(
 				new FileEditorInput(file),
 				IEditorRegistry.SYSTEM_EXTERNAL_EDITOR_ID);
 		} catch (PartInitException e) {
@@ -89,7 +89,7 @@ public class OpenSystemEditor implements IEditorLauncher {
 	 */
 	public void open(IPath file) {
 		IFile input =
-			WorkbenchUtilities.getWorkspace().getRoot().getFileForLocation(
+			WorkbenchUtilitiesPlugin.getWorkspace().getRoot().getFileForLocation(
 				file);
 		this.open(input);
 	}

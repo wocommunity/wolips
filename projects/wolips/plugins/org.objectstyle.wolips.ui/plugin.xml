@@ -26,6 +26,8 @@
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.objectstyle.wolips"/>
       <import plugin="org.objectstyle.wolips.variables"/>
+      <import plugin="org.objectstyle.wolips.workbenchutilities"/>
+      <import plugin="org.objectstyle.wolips.datasets"/>
    </requires>
 
 
@@ -45,15 +47,15 @@
          <menu
                label="&amp;WOLips Tools"
                id="org.objectstyle.wolips.ui">
-			<separator
-                 name="group1">
-           </separator>
+            <separator
+                  name="group1">
+            </separator>
          </menu>
          <action
                label="Update PB.project"
                class="org.objectstyle.wolips.ui.actions.PBAction"
+               menubarPath="org.objectstyle.wolips.ui/group1"
                enablesFor="1"
-			   menubarPath="org.objectstyle.wolips.ui/group1"
                id="org.objectstyle.wolips.ui.actions.PBAction">
          </action>
       </objectContribution>
@@ -68,15 +70,15 @@
          <menu
                label="&amp;WOLips Tools"
                id="org.objectstyle.wolips.ui">
-			<separator
-                 name="group0">
-           </separator>
+            <separator
+                  name="group0">
+            </separator>
          </menu>
          <action
                label="Open WOComponent"
                class="org.objectstyle.wolips.ui.actions.OpenComponentAction"
+               menubarPath="org.objectstyle.wolips.ui/group0"
                enablesFor="1"
-			   menubarPath="org.objectstyle.wolips.ui/group0"
                id="org.objectstyle.wolips.ui.actions.OpenComponentAction">
          </action>
       </objectContribution>
@@ -88,15 +90,15 @@
          <menu
                label="&amp;WOLips Tools"
                id="org.objectstyle.wolips.ui">
-			<separator
-                 name="group0">
-           </separator>
+            <separator
+                  name="group0">
+            </separator>
          </menu>
          <action
                label="Open .java"
                class="org.objectstyle.wolips.ui.actions.OpenSourceAction"
+               menubarPath="org.objectstyle.wolips.ui/group0"
                enablesFor="1"
-			   menubarPath="org.objectstyle.wolips.ui/group0"
                id="org.objectstyle.wolips.ui.actions.OpenSourceAction">
          </action>
       </objectContribution>
@@ -108,15 +110,15 @@
          <menu
                label="&amp;WOLips Tools"
                id="org.objectstyle.wolips.ui">
-			<separator
-                 name="group0">
-           </separator>
+            <separator
+                  name="group0">
+            </separator>
          </menu>
          <action
                label="Open .java"
                class="org.objectstyle.wolips.ui.actions.OpenSourceAction"
+               menubarPath="org.objectstyle.wolips.ui/group0"
                enablesFor="1"
-			   menubarPath="org.objectstyle.wolips.ui/group0"
                id="org.objectstyle.wolips.ui.actions.OpenSourceAction">
          </action>
       </objectContribution>
@@ -128,15 +130,15 @@
          <menu
                label="&amp;WOLips Tools"
                id="org.objectstyle.wolips.ui">
-			<separator
-                 name="group0">
-           </separator>
+            <separator
+                  name="group0">
+            </separator>
          </menu>
          <action
                label="Open EOModel"
                class="org.objectstyle.wolips.ui.actions.OpenEOModelIndexAction"
+               menubarPath="org.objectstyle.wolips.ui/group0"
                enablesFor="1"
-			   menubarPath="org.objectstyle.wolips.ui/group0"
                id="org.objectstyle.wolips.ui.actions.OpenEOModelIndexAction">
          </action>
       </objectContribution>
@@ -287,36 +289,6 @@
             category="org.objectstyle.wolips.preferences.PreferencesPage"
             class="org.objectstyle.wolips.ui.preferences.LaunchPreferencesPage"
             id="org.objectstyle.wolips.preferences.LaunchPreferencesPage">
-      </page>
-      <page
-            name="ProjectBuilder"
-            category="org.objectstyle.wolips.preferences.PreferencesPage"
-            class="org.objectstyle.wolips.ui.preferences.ProjectBuilderPreferencesPage"
-            id="org.objectstyle.wolips.preferences.ProjectBuilderPreferencesPage">
-      </page>
-      <page
-            name="PB Woappresources Include"
-            category="org.objectstyle.wolips.preferences.PreferencesPage/org.objectstyle.wolips.preferences.ProjectBuilderPreferencesPage"
-            class="org.objectstyle.wolips.ui.preferences.ProjectBuilderWOAppResourcesIncludePreferencesPage"
-            id="org.objectstyle.wolips.preferences.ProjectBuilderWOAppResourcesIncludePreferencesPage">
-      </page>
-      <page
-            name="PB Woappresources Exclude"
-            category="org.objectstyle.wolips.preferences.PreferencesPage/org.objectstyle.wolips.preferences.ProjectBuilderPreferencesPage"
-            class="org.objectstyle.wolips.ui.preferences.ProjectBuilderWOAppResourcesExcludePreferencesPage"
-            id="org.objectstyle.wolips.ui.preferences.ProjectBuilderWOAppResourcesExcludePreferencesPage">
-      </page>
-      <page
-            name="PB Classes Include"
-            category="org.objectstyle.wolips.preferences.PreferencesPage/org.objectstyle.wolips.preferences.ProjectBuilderPreferencesPage"
-            class="org.objectstyle.wolips.ui.preferences.ProjectBuilderClassesIncludePreferencesPage"
-            id="org.objectstyle.wolips.ui.preferences.ProjectBuilderClassesIncludePreferencesPage">
-      </page>
-      <page
-            name="PB Classes Exclude"
-            category="org.objectstyle.wolips.preferences.PreferencesPage/org.objectstyle.wolips.preferences.ProjectBuilderPreferencesPage"
-            class="org.objectstyle.wolips.ui.preferences.ProjectBuilderClassesExcludePreferencesPage"
-            id="org.objectstyle.wolips.ui.preferences.ProjectBuilderClassesExcludePreferencesPage">
       </page>
    </extension>
 <!-- =================================================================================== -->

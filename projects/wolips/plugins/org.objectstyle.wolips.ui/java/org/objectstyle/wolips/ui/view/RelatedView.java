@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 The ObjectStyle Group 
+ * Copyright (c) 2002, 2004 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -98,8 +98,8 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.objectstyle.wolips.core.logging.WOLipsLog;
-import org.objectstyle.wolips.core.project.WOLipsCore;
-import org.objectstyle.wolips.core.resources.IWOLipsResource;
+import org.objectstyle.wolips.datasets.project.WOLipsCore;
+import org.objectstyle.wolips.datasets.resources.IWOLipsResource;
 
 /**
  * @author ulrich

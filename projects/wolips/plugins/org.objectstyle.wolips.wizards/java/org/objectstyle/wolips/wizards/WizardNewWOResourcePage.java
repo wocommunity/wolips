@@ -72,7 +72,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.WizardNewFileCreationPage;
 import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
-import org.objectstyle.wolips.core.resources.IWOLipsModel;
+import org.objectstyle.wolips.datasets.resources.IWOLipsModel;
 /**
  * @author mnolte
  * @author uli Basic wizard page for all project file manipulating webobjects

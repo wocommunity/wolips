@@ -59,8 +59,8 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.launching.IRuntimeClasspathEntry;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.jdt.launching.StandardClasspathProvider;
-import org.objectstyle.wolips.core.project.IWOLipsJavaProject;
-import org.objectstyle.wolips.core.project.WOLipsCore;
+import org.objectstyle.wolips.datasets.project.IWOLipsJavaProject;
+import org.objectstyle.wolips.datasets.project.WOLipsCore;
 
 /**
  * @author hn3000

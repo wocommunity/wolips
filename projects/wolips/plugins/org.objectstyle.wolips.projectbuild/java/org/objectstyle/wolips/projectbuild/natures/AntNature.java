@@ -59,8 +59,8 @@ package org.objectstyle.wolips.projectbuild.natures;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.runtime.CoreException;
-import org.objectstyle.wolips.core.project.IWOLipsProject;
-import org.objectstyle.wolips.core.project.WOLipsCore;
+import org.objectstyle.wolips.datasets.project.IWOLipsProject;
+import org.objectstyle.wolips.datasets.project.WOLipsCore;
 
 /**
  * @author mnolte

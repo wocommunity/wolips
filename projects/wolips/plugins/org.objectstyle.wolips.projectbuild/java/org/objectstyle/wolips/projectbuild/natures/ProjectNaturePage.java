@@ -65,6 +65,7 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
@@ -82,11 +83,10 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.objectstyle.wolips.core.logging.WOLipsLog;
-import org.objectstyle.wolips.core.project.INaturesAccessor;
-import org.objectstyle.wolips.core.project.IWOLipsProject;
-import org.objectstyle.wolips.core.project.WOLipsCore;
+import org.objectstyle.wolips.datasets.project.INaturesAccessor;
+import org.objectstyle.wolips.datasets.project.IWOLipsProject;
+import org.objectstyle.wolips.datasets.project.WOLipsCore;
 import org.objectstyle.wolips.projectbuild.WOProjectBuildConstants;
-import org.omg.CORBA._PolicyStub;
 
 public class ProjectNaturePage 
 extends PropertyPage 

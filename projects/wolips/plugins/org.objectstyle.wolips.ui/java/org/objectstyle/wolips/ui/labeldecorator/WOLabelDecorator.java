@@ -64,8 +64,8 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.Point;
-import org.objectstyle.wolips.core.project.WOLipsProject;
-import org.objectstyle.wolips.core.resources.IWOLipsModel;
+import org.objectstyle.wolips.datasets.project.WOLipsProject;
+import org.objectstyle.wolips.datasets.resources.IWOLipsModel;
 /**
  * @author mnolte
  *

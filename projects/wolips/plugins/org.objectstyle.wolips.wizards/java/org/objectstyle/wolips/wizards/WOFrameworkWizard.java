@@ -62,7 +62,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.objectstyle.wolips.ant.runner.RunAnt;
 import org.objectstyle.wolips.core.logging.WOLipsLog;
-import org.objectstyle.wolips.core.resources.IWOLipsModel;
+import org.objectstyle.wolips.datasets.resources.IWOLipsModel;
 import org.objectstyle.wolips.templateengine.TemplateDefinition;
 import org.objectstyle.wolips.templateengine.TemplateEngine;
 import org.objectstyle.wolips.templateengine.TemplateEnginePlugin;

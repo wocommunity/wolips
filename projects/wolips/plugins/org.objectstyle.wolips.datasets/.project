@@ -4,6 +4,9 @@
 	<comment></comment>
 	<projects>
 		<project>org.objectstyle.wolips.tests.core</project>
+		<project>org.objectstyle.wolips.variables</project>
+		<project>org.objectstyle.wolips.woproject</project>
+		<project>org.objectstyle.wolips.workbenchutilities</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

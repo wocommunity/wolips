@@ -10,7 +10,7 @@
    <runtime>
       <library name="lib/wolips-jdt.jar">
          <export name="*"/>
-         <packages prefixes="org.objectstyle.wolips.jdt,org.objectstyle.wolips.jdt.classpath,org.objectstyle.wolips.jdt.ui"/>
+         <packages prefixes="org.objectstyle.wolips.jdt,org.objectstyle.wolips.jdt.classpath,org.objectstyle.wolips.jdt.ui,org.objectstyle.wolips.jdt.ant,org.objectstyle.wolips.jdt.listener"/>
       </library>
    </runtime>
    <requires>
@@ -22,6 +22,8 @@
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.objectstyle.wolips.variables"/>
       <import plugin="org.eclipse.jdt.ui"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.objectstyle.wolips.datasets"/>
    </requires>
 
 
@@ -45,6 +47,12 @@
             class="org.objectstyle.wolips.jdt.ui.WOClassPathContainerPage"
             id="org.objectstyle.wolips.WO_CLASSPATH">
       </classpathContainerPage>
+   </extension>
+<!-- =================================================================================== -->
+<!-- Extension: Startup                                                                  -->
+<!-- =================================================================================== -->
+   <extension
+         point="org.eclipse.ui.startup">
    </extension>
 
 </plugin>

@@ -102,7 +102,7 @@ public class PluginImages {
 			URL url = new URL(JdtPlugin.baseURL(), path);
 			return ImageDescriptor.createFromURL(url);
 		} catch (MalformedURLException e) {
-			JdtPlugin.getDefault().logError(" " + e.getStackTrace());
+			JdtPlugin.log(e);
 		}
 		return ImageDescriptor.getMissingImageDescriptor();
 	}

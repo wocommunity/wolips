@@ -63,8 +63,6 @@ import java.util.Vector;
 import org.eclipse.jface.preference.IPersistentPreferenceStore;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
-import org.objectstyle.wolips.core.resources.IWOLipsModel;
-import org.objectstyle.wolips.core.util.QuotedStringTokenizer;
 
 /**
  * @author uli
@@ -92,16 +90,6 @@ public class Preferences {
 		"org.objectstyle.wolips.Preference.RebuildWOBuildPropertiesOnNextLaunch";
 	public static final String PREF_WOLIPS_VERSION_EARLY_STARTUP =
 		"org.objectstyle.wolips.Preference.WOLipsVersionEarlyStartup";
-	public static final String PREF_PBWO_PROJECT_UPDATE =
-		"org.objectstyle.wolips.Preference.Update_PBWO_Project";
-	public static final String PREF_PBWO_PROJECT_INCLUDED_WOAPP_RESOURCES =
-		"org.objectstyle.wolips.Preference.PBWO_Project_Included_WOAPP_Resources";
-	public static final String PREF_PBWO_PROJECT_EXCLUDED_WOAPP_RESOURCES =
-		"org.objectstyle.wolips.Preference.PBWO_Project_Excluded_WOAPP_Resources";
-	public static final String PREF_PBWO_PROJECT_INCLUDED_CLASSES =
-		"org.objectstyle.wolips.Preference.PBWO_Project_Included_Classes";
-	public static final String PREF_PBWO_PROJECT_EXCLUDED_CLASSES =
-		"org.objectstyle.wolips.Preference.PBWO_Project_Excluded_Classes";
 	public static final String PREF_LAUNCH_GLOBAL =
 		"org.objectstyle.wolips.Preference.Launch_Global";
 
@@ -137,7 +125,7 @@ public class Preferences {
 				Preferences.PREF_ANT_BUILD_FILE))
 			store.setDefault(
 				Preferences.PREF_ANT_BUILD_FILE,
-				IWOLipsModel.DEFAULT_BUILD_FILENAME);
+				"build.xml");
 		if (Preferences.SET_DEFAULTS_STRING == null
 			|| Preferences.SET_DEFAULTS_STRING.equals(
 				Preferences.PREF_RUN_WOBUILDER_ON_BUILD))
@@ -178,40 +166,6 @@ public class Preferences {
 			store.setDefault(
 				Preferences.PREF_WOLIPS_VERSION_EARLY_STARTUP,
 				"0.0.0");
-		if (Preferences.SET_DEFAULTS_STRING == null
-			|| Preferences.SET_DEFAULTS_STRING.equals(
-				Preferences.PREF_PBWO_PROJECT_UPDATE))
-			store.setDefault(
-				Preferences.PREF_PBWO_PROJECT_UPDATE,
-				Preferences.trueString);
-		if (Preferences.SET_DEFAULTS_STRING == null
-			|| Preferences.SET_DEFAULTS_STRING.equals(
-				Preferences.PREF_PBWO_PROJECT_INCLUDED_CLASSES))
-			store.setDefault(
-				Preferences.PREF_PBWO_PROJECT_INCLUDED_CLASSES,
-				PreferencesMessages.getString(
-					Preferences.PREF_PBWO_PROJECT_INCLUDED_CLASSES));
-		if (Preferences.SET_DEFAULTS_STRING == null
-			|| Preferences.SET_DEFAULTS_STRING.equals(
-				Preferences.PREF_PBWO_PROJECT_EXCLUDED_CLASSES))
-			store.setDefault(
-				Preferences.PREF_PBWO_PROJECT_EXCLUDED_CLASSES,
-				PreferencesMessages.getString(
-					Preferences.PREF_PBWO_PROJECT_EXCLUDED_CLASSES));
-		if (Preferences.SET_DEFAULTS_STRING == null
-			|| Preferences.SET_DEFAULTS_STRING.equals(
-				Preferences.PREF_PBWO_PROJECT_INCLUDED_WOAPP_RESOURCES))
-			store.setDefault(
-				Preferences.PREF_PBWO_PROJECT_INCLUDED_WOAPP_RESOURCES,
-				PreferencesMessages.getString(
-					Preferences.PREF_PBWO_PROJECT_INCLUDED_WOAPP_RESOURCES));
-		if (Preferences.SET_DEFAULTS_STRING == null
-			|| Preferences.SET_DEFAULTS_STRING.equals(
-				Preferences.PREF_PBWO_PROJECT_EXCLUDED_WOAPP_RESOURCES))
-			store.setDefault(
-				Preferences.PREF_PBWO_PROJECT_EXCLUDED_WOAPP_RESOURCES,
-				PreferencesMessages.getString(
-					Preferences.PREF_PBWO_PROJECT_EXCLUDED_WOAPP_RESOURCES));
 		store.setDefault(
 			Preferences.PREF_LAUNCH_GLOBAL,
 			PreferencesMessages.getString(Preferences.PREF_LAUNCH_GLOBAL));
@@ -272,40 +226,6 @@ public class Preferences {
 		return WOLipsPlugin.getDefault().getPreferenceStore();
 	}
 
-	public static IIncludeInfo[] getIncludeInfoForKey(String key) {
-		String string = Preferences.getString(key);
-		if (string == null)
-			return new IIncludeInfo[0];
-		QuotedStringTokenizer stringTokenizer =
-			new QuotedStringTokenizer(string, ',');
-		Vector vector = new Vector();
-		while (stringTokenizer.hasMoreTokens()) {
-			vector.add(stringTokenizer.nextToken());
-		}
-		IIncludeInfo[] includeInfo = new IIncludeInfo[vector.size()];
-		for (int i = 0; i < vector.size(); i++) {
-			includeInfo[i] = new IncludeInfo((String) vector.elementAt(i));
-		}
-		return includeInfo;
-	}
-
-	private static String[] getStringArrayForKey(String key) {
-		String string = Preferences.getString(key);
-		if (string == null)
-			return new String[0];
-		QuotedStringTokenizer stringTokenizer =
-			new QuotedStringTokenizer(string, ',');
-		Vector vector = new Vector();
-		while (stringTokenizer.hasMoreTokens()) {
-			vector.add(stringTokenizer.nextToken());
-		}
-		String[] stringArray = new String[vector.size()];
-		for (int i = 0; i < vector.size(); i++) {
-			stringArray[i] = (String) vector.elementAt(i);
-		}
-		return stringArray;
-	}
-
 	public static ILaunchInfo[] getLaunchInfoForKey(String key) {
 		String string = Preferences.getString(key);
 		return Preferences.getLaunchInfoFrom(string);
@@ -333,27 +253,6 @@ public class Preferences {
 		return launchInfo;
 	}
 	
-	public static void setIncludeInfoForKey(
-		String[] includeInfo,
-		String key) {
-		StringBuffer value = new StringBuffer();
-		for (int i = 0; i < includeInfo.length; i++) {
-			String thisOne = includeInfo[i];
-			if (null != thisOne) {
-				if (-1 != thisOne.indexOf(',')) {
-					value.append("\"");
-					value.append(thisOne);
-					value.append("\"");
-				} else {
-					value.append(thisOne);
-				}
-				if (i != (includeInfo.length - 1))
-					value.append(",");
-			}
-		}
-		Preferences.setString(key, value.toString());
-	}
-
 	public static String LaunchInfoToString(
 		String[] parameter,
 		String[] arguments,
@@ -385,17 +284,7 @@ public class Preferences {
 			Preferences.LaunchInfoToString(parameter, arguments, enabled);
 		Preferences.setString(key, value);
 	}
-	private static class IncludeInfo implements IIncludeInfo {
-		private String pattern;
-
-		public IncludeInfo(String pattern) {
-			this.pattern = pattern;
-		}
-		public String getPattern() {
-			return pattern;
-		}
-	}
-
+	
 	private static class LaunchInfo implements ILaunchInfo {
 		public String parameter;
 		public String argument;
@@ -457,45 +346,6 @@ public class Preferences {
 	public static String getPREF_OPEN_WOCOMPONENT_ACTION_INCLUDES_OPEN_HTML() {
 		return Preferences.getString(
 			Preferences.PREF_OPEN_WOCOMPONENT_ACTION_INCLUDES_OPEN_HTML);
-	}
-
-	/**
-	 * @return
-	 */
-	public static String[] getPREF_PBWO_PROJECT_EXCLUDED_CLASSES() {
-		return Preferences.getStringArrayForKey(
-			Preferences.PREF_PBWO_PROJECT_EXCLUDED_CLASSES);
-	}
-
-	/**
-	 * @return
-	 */
-	public static String[] getPREF_PBWO_PROJECT_EXCLUDED_WOAPP_RESOURCES() {
-		return Preferences.getStringArrayForKey(
-			Preferences.PREF_PBWO_PROJECT_EXCLUDED_WOAPP_RESOURCES);
-	}
-
-	/**
-	 * @return
-	 */
-	public static String[] getPREF_PBWO_PROJECT_INCLUDED_CLASSES() {
-		return Preferences.getStringArrayForKey(
-			Preferences.PREF_PBWO_PROJECT_INCLUDED_CLASSES);
-	}
-
-	/**
-	 * @return
-	 */
-	public static String[] getPREF_PBWO_PROJECT_INCLUDED_WOAPP_RESOURCES() {
-		return Preferences.getStringArrayForKey(
-			Preferences.PREF_PBWO_PROJECT_INCLUDED_WOAPP_RESOURCES);
-	}
-
-	/**
-	 * @return
-	 */
-	public static boolean getPREF_PBWO_PROJECT_UPDATE() {
-		return Preferences.getBoolean(Preferences.PREF_PBWO_PROJECT_UPDATE);
 	}
 
 	/**
@@ -564,49 +414,6 @@ public class Preferences {
 		Preferences.setBoolean(
 			Preferences.PREF_OPEN_WOCOMPONENT_ACTION_INCLUDES_OPEN_HTML,
 			value);
-	}
-
-	/**
-	 * @param string
-	 */
-	public static void setPREF_PBWO_PROJECT_EXCLUDED_CLASSES(String string) {
-		Preferences.setString(
-			Preferences.PREF_PBWO_PROJECT_EXCLUDED_CLASSES,
-			string);
-	}
-
-	/**
-	 * @param string
-	 */
-	public static void setPREF_PBWO_PROJECT_EXCLUDED_WOAPP_RESOURCES(String string) {
-		Preferences.setString(
-			Preferences.PREF_PBWO_PROJECT_EXCLUDED_WOAPP_RESOURCES,
-			string);
-	}
-
-	/**
-	 * @param string
-	 */
-	public static void setPREF_PBWO_PROJECT_INCLUDED_CLASSES(String string) {
-		Preferences.setString(
-			Preferences.PREF_PBWO_PROJECT_INCLUDED_CLASSES,
-			string);
-	}
-
-	/**
-	 * @param string
-	 */
-	public static void setPREF_PBWO_PROJECT_INCLUDED_WOAPP_RESOURCES(String string) {
-		Preferences.setString(
-			Preferences.PREF_PBWO_PROJECT_INCLUDED_WOAPP_RESOURCES,
-			string);
-	}
-
-	/**
-	 * @param string
-	 */
-	public static void setPREF_PBWO_PROJECT_UPDATE(boolean value) {
-		Preferences.setBoolean(Preferences.PREF_PBWO_PROJECT_UPDATE, value);
 	}
 
 	/**

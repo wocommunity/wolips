@@ -74,8 +74,8 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.objectstyle.cayenne.wocompat.PropertyListSerialization;
-import org.objectstyle.wolips.core.project.IWOLipsProject;
-import org.objectstyle.wolips.core.project.WOLipsCore;
+import org.objectstyle.wolips.datasets.project.IWOLipsProject;
+import org.objectstyle.wolips.datasets.project.WOLipsCore;
 /**
  * @author uwe
  *

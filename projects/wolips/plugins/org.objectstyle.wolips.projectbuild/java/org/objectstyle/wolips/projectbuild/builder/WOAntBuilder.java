@@ -60,6 +60,7 @@ import java.util.Map;
 
 import org.eclipse.ant.core.AntCorePlugin;
 import org.eclipse.ant.core.AntRunner;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -68,11 +69,12 @@ import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.QualifiedName;
 import org.objectstyle.wolips.ant.runner.BuildMessages;
 import org.objectstyle.wolips.ant.runner.RunAnt;
 import org.objectstyle.wolips.core.logging.WOLipsLog;
 import org.objectstyle.wolips.core.preferences.Preferences;
-import org.objectstyle.wolips.core.resources.IWOLipsModel;
+import org.objectstyle.wolips.datasets.resources.IWOLipsModel;
 import org.objectstyle.wolips.projectbuild.WOProjectBuildConstants;
 
 /**

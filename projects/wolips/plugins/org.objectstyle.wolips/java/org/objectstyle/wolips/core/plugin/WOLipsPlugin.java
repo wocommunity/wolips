@@ -56,32 +56,23 @@
 package org.objectstyle.wolips.core.plugin;
 import java.net.URL;
 
-import org.eclipse.core.resources.IResourceChangeEvent;
-import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPluginDescriptor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.jdt.core.ElementChangedEvent;
-import org.eclipse.jdt.core.IElementChangedListener;
-import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IStartup;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.objectstyle.wolips.core.listener.JavaElementChangeListener;
-import org.objectstyle.wolips.core.listener.ResourceChangeListener;
 import org.objectstyle.wolips.core.logging.WOLipsLog;
 import org.objectstyle.wolips.core.preferences.Preferences;
-import org.objectstyle.wolips.core.util.WorkbenchUtilities;
 /**
  * The main plugin class to be used in the desktop.
  * 
  * @author uli
  * @author markus
  */
-public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
+public class WOLipsPlugin extends AbstractUIPlugin {
 	//The plugin.
 	private static WOLipsPlugin plugin;
 	private static final String PLUGIN_ID = "org.objectstyle.wolips";
@@ -108,25 +99,6 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 			System.out.println(
 				"Exception in WOLips constructor: " + exception.getMessage());
 		}
-	}
-	/**
-	 * Calls EarlyStartup.earlyStartup().
-	 * <br>
-	 * @see org.eclipse.ui.IStartup#earlyStartup()
-	 */
-	public void earlyStartup() {
-//		 add resource change listener to update project file on resource changes
-		IResourceChangeListener resourceChangeListener =
-			new ResourceChangeListener();
-		WorkbenchUtilities.getWorkspace().addResourceChangeListener(
-			resourceChangeListener,
-			IResourceChangeEvent.PRE_AUTO_BUILD);
-		// add element change listener to update project file on classpath changes
-		IElementChangedListener javaElementChangeListener =
-			new JavaElementChangeListener();
-		JavaCore.addElementChangedListener(
-			javaElementChangeListener,
-			ElementChangedEvent.POST_CHANGE);
 	}
 	/**
 	 * Returns the shared instance.

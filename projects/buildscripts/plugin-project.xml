@@ -62,14 +62,14 @@
         
         <condition property="stringToReplace" value="I hope we have never a string like this in the plugin.xml">
         	<contains string="${param.plugin.name}" substring="test"/>
-		</condition>
+	</condition>
         
         <condition property="stringToReplace" value="${TestsCorePluginReferenceToReplace}">
         	<not>
 	        	<contains string="${param.plugin.name}" substring="test"/>
 	        </not>
-		</condition>
-        
+	</condition>
+
         <replace dir="${param.build.output.build.dir}/plugins/${param.plugin.name}_${build.version}/" token="${stringToReplace}" value="">
             <include name="plugin.xml"/>
             <include name="fragment.xml"/>

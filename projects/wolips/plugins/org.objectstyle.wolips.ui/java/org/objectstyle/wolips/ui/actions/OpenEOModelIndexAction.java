@@ -59,7 +59,7 @@ package org.objectstyle.wolips.ui.actions;
 import java.util.ArrayList;
 
 import org.eclipse.jface.action.IAction;
-import org.objectstyle.wolips.core.util.WorkbenchUtilities;
+import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 
 /**
  * @author ulrich
@@ -79,8 +79,8 @@ public void run(IAction action) {
 		fileName = fileName.substring(0, fileName.length() - eoModelExtension.length());
 
 		ArrayList list = new ArrayList();
-		WorkbenchUtilities.findFilesInResourceByName(list, actionResource(), "index" + eoModelExtension);
-		WorkbenchUtilities.open(list);
+		WorkbenchUtilitiesPlugin.findFilesInResourceByName(list, actionResource(), "index" + eoModelExtension);
+		WorkbenchUtilitiesPlugin.open(list);
 	}
 }
 /**

@@ -4,7 +4,9 @@
 	<comment></comment>
 	<projects>
 		<project>org.objectstyle.wolips</project>
+		<project>org.objectstyle.wolips.datasets</project>
 		<project>org.objectstyle.wolips.variables</project>
+		<project>org.objectstyle.wolips.workbenchutilities</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

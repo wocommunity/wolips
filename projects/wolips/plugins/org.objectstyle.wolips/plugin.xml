@@ -10,7 +10,7 @@
    <runtime>
       <library name="lib/wolips.jar">
          <export name="*"/>
-         <packages prefixes="org.objectstyle.wolips.core.ant,org.objectstyle.wolips.core.listener,org.objectstyle.wolips.core.logging,org.objectstyle.wolips.core.plugin,org.objectstyle.wolips.core.preferences,org.objectstyle.wolips.core.project,org.objectstyle.wolips.core.resources,org.objectstyle.wolips.core.util"/>
+         <packages prefixes="org.objectstyle.wolips.core.logging,org.objectstyle.wolips.core.plugin,org.objectstyle.wolips.core.preferences,org.objectstyle.wolips.core.util"/>
       </library>
    </runtime>
    <requires>
@@ -25,12 +25,5 @@
       <import plugin="org.objectstyle.wolips.woproject"/>
    </requires>
 
-
-<!-- =================================================================================== -->
-<!-- Extension: Startup                                                                  -->
-<!-- =================================================================================== -->
-   <extension
-         point="org.eclipse.ui.startup">
-   </extension>
 
 </plugin>

@@ -77,7 +77,7 @@ import org.eclipse.jdt.launching.IVMRunner;
 import org.eclipse.jdt.launching.VMRunnerConfiguration;
 import org.objectstyle.wolips.core.preferences.ILaunchInfo;
 import org.objectstyle.wolips.core.preferences.Preferences;
-import org.objectstyle.wolips.core.project.WOLipsJavaProject;
+import org.objectstyle.wolips.datasets.project.WOLipsJavaProject;
 import org.objectstyle.wolips.variables.VariablesPlugin;
 
 /**
@@ -187,7 +187,7 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 						argument =
 							woLipsJavaProject
 								.getLaunchParameterAccessor()
-								.getGeneratedByWOLips();
+								.getGeneratedByWOLips(Preferences.getPREF_NS_PROJECT_SEARCH_PATH());
 					}
 
 				}

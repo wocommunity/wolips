@@ -64,8 +64,8 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.objectstyle.wolips.core.logging.WOLipsLog;
-import org.objectstyle.wolips.core.project.WOLipsJavaProject;
-import org.objectstyle.wolips.core.resources.IWOLipsModel;
+import org.objectstyle.wolips.datasets.project.WOLipsJavaProject;
+import org.objectstyle.wolips.datasets.resources.IWOLipsModel;
 import org.objectstyle.wolips.templateengine.TemplateDefinition;
 import org.objectstyle.wolips.templateengine.TemplateEngine;
 /**

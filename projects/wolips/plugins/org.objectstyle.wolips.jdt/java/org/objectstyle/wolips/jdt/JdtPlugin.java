@@ -7,13 +7,18 @@ import java.util.ResourceBundle;
 import org.eclipse.core.runtime.IPluginDescriptor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jdt.core.ElementChangedEvent;
+import org.eclipse.jdt.core.IElementChangedListener;
+import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.ui.IStartup;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.objectstyle.wolips.variables.VariablesPlugin;
+import org.objectstyle.wolips.jdt.listener.JavaElementChangeListener;
 
 /**
  * The main plugin class to be used in the desktop.
  */
-public class JdtPlugin extends AbstractUIPlugin {
+public class JdtPlugin extends AbstractUIPlugin implements IStartup {
+	private final static String PLUGIN_ID = "org.objectstyle.wolips.jdt.JdtPlugin";
 	//The shared instance.
 	private static JdtPlugin plugin;
 	//Resource bundle.
@@ -38,12 +43,45 @@ public class JdtPlugin extends AbstractUIPlugin {
 	public static JdtPlugin getDefault() {
 		return plugin;
 	}
-	public void logError(String string) {
-		this.getLog().log(		new Status(
+
+	/**
+	 * Returns the PluginID.
+	 * @return
+	 */
+	public static String getPluginId() {
+		if (plugin != null) {
+			return getDefault().getDescriptor().getUniqueIdentifier();
+		} else
+			return JdtPlugin.PLUGIN_ID;
+	}
+
+	/**
+	 * Prints a Status.
+	 * @param e
+	 */
+	public static void log(IStatus status) {
+		JdtPlugin.getDefault().getLog().log(status);
+	}
+
+	/**
+	 * Prints a Throwable.
+	 * @param e
+	 */
+	public static void log(Throwable e) {
+		JdtPlugin.log(new Status(IStatus.ERROR, JdtPlugin.getPluginId(), IStatus.ERROR, "Internal Error", e)); //$NON-NLS-1$
+	}
+	
+	/**
+	 * Prints a message.
+	 * @param message
+	 */
+	public static void log(String message) {
+		JdtPlugin.log(
+			new Status(
 				IStatus.ERROR,
-				VariablesPlugin.getPluginId(),
+				JdtPlugin.getPluginId(),
 				IStatus.ERROR,
-				string,
+				message,
 				null));
 	}
 	
@@ -73,5 +111,19 @@ public class JdtPlugin extends AbstractUIPlugin {
 	public static URL baseURL() {
 		return JdtPlugin.getDefault().getDescriptor().getInstallURL();
 	}
-		
+	
+
+	/**
+	 * Calls EarlyStartup.earlyStartup().
+	 * <br>
+	 * @see org.eclipse.ui.IStartup#earlyStartup()
+	 */
+	public void earlyStartup() {
+		// add element change listener to update project file on classpath changes
+		IElementChangedListener javaElementChangeListener =
+			new JavaElementChangeListener();
+		JavaCore.addElementChangedListener(
+			javaElementChangeListener,
+			ElementChangedEvent.POST_CHANGE);
+	}
 }
