@@ -90,7 +90,7 @@ public abstract class WOProjectCreationWizard
 		super.init(workbench, selection);
 		this.workbench = workbench;
 		setDefaultPageImageDescriptor(
-			WOLipsPluginImages.WOPROJECT_WIZARD_BANNER);
+			WOLipsPluginImages.WOPROJECT_WIZARD_BANNER());
 	}
 
 	public final void invokeBuildAndRefresh(IProject aProject, IProgressMonitor progressMonitor) {

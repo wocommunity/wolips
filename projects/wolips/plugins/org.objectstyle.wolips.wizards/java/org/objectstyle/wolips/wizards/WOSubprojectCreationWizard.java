@@ -90,7 +90,7 @@ public class WOSubprojectCreationWizard extends BasicNewFolderResourceWizard {
 		this.selection = selection;
 		setWindowTitle(Messages.getString("WOSubprojectCreationWizard.title"));
 		setDefaultPageImageDescriptor(
-			WOLipsPluginImages.WOCOMPONENT_WIZARD_BANNER);
+			WOLipsPluginImages.WOCOMPONENT_WIZARD_BANNER());
 	}
 
 	/** (non-Javadoc)

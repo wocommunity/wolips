@@ -54,15 +54,14 @@
  *
  */
 package org.objectstyle.wolips.core.plugin;
-import java.net.MalformedURLException;
 import java.net.URL;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPluginDescriptor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IStartup;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -112,19 +111,6 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 	public void earlyStartup() {
 		EarlyStartup earlyStartup = new EarlyStartup();
 		earlyStartup.earlyStartup();
-	}
-	/**
-	 * Returns an ImageDescriptor.
-	 * @param name
-	 * @return
-	 */
-	public ImageDescriptor getImageDescriptor(String name) {
-		try {
-			URL url = new URL(getDescriptor().getInstallURL(), name);
-			return ImageDescriptor.createFromURL(url);
-		} catch (MalformedURLException e) {
-			return ImageDescriptor.getMissingImageDescriptor();
-		}
 	}
 	/**
 	 * Returns the shared instance.

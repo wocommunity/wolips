@@ -91,7 +91,7 @@ public class WOComponentCreationWizard extends Wizard implements INewWizard {
 		this.selection = selection;
 		setWindowTitle(Messages.getString("WOComponentCreationWizard.title"));
 		setDefaultPageImageDescriptor(
-			WOLipsPluginImages.WOCOMPONENT_WIZARD_BANNER);
+			WOLipsPluginImages.WOCOMPONENT_WIZARD_BANNER());
 	}
 	/** (non-Javadoc)
 	 * Method declared on IWizard

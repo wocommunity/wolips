@@ -87,13 +87,7 @@ public final class WOClasspathContainerPath
 	private CheckboxTreeViewer checkboxTreeViewer;
 	protected ArrayList allEntries = new ArrayList();
 	private boolean isExported = false;
-	private final Image framworkRootImage =
-		WOLipsPluginImages.WOFRAMEWORK_ROOT_IMAGE.createImage(false);
-	private final Image framworkImage =
-		WOLipsPluginImages.WOFRAMEWORK_IMAGE.createImage(false);
-	private final Image standardFramworkImage =
-		WOLipsPluginImages.WOSTANDARD_FRAMEWORK_IMAGE.createImage(false);
-
+	
 	public WOClasspathContainerPath(IClasspathEntry containerEntry) {
 		IPath path = null;
 		if (containerEntry == null || containerEntry.getPath() == null) {
@@ -396,7 +390,7 @@ public final class WOClasspathContainerPath
 	 */
 	public Image getImage(Object element) {
 		if (element instanceof WOClasspathContainerRoot)
-			return this.framworkRootImage;
+			return WOLipsPluginImages.WOFRAMEWORK_ROOT_IMAGE();
 		if (element instanceof WOClasspathContainerEntry) {
 			for (int i = 0;
 				i
@@ -407,9 +401,9 @@ public final class WOClasspathContainerPath
 				if (WOClasspathContainer
 					.WOLIPS_CLASSPATH_STANDARD_FRAMEWORKS[i]
 					.equals(((WOClasspathContainerEntry) element).getName()))
-					return this.standardFramworkImage;
+					return WOLipsPluginImages.WOSTANDARD_FRAMEWORK_IMAGE();
 			}
-			return this.framworkImage;
+			return WOLipsPluginImages.WOFRAMEWORK_IMAGE();
 		}
 		return null;
 	}

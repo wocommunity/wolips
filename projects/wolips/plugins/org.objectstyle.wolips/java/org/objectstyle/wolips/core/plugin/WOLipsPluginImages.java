@@ -60,6 +60,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.graphics.Image;
 import org.objectstyle.wolips.core.logging.WOLipsLog;
 
 /**
@@ -68,27 +69,42 @@ import org.objectstyle.wolips.core.logging.WOLipsLog;
  */
 public class WOLipsPluginImages {
 
-	public static final ImageDescriptor WOCOMPONENT_WIZARD_BANNER;
-	public static final ImageDescriptor WOPROJECT_WIZARD_BANNER;
-	public static final ImageDescriptor WOFRAMEWORK_ROOT_IMAGE;
-	public static final ImageDescriptor WOFRAMEWORK_IMAGE;
-	public static final ImageDescriptor WOSTANDARD_FRAMEWORK_IMAGE;
-
-	static {
-		String iconPath = "icons/";
-		String prefix = iconPath + "wizban/";
-		WOCOMPONENT_WIZARD_BANNER =
-			createImageDescriptor(prefix + "webobjects_wiz.gif");
-		WOPROJECT_WIZARD_BANNER =
-			createImageDescriptor(prefix + "webobjects_wiz.gif");
-		prefix = iconPath + "frameworks/";
-		WOFRAMEWORK_ROOT_IMAGE =
-			createImageDescriptor(prefix + "framework_root.gif");
-		WOFRAMEWORK_IMAGE =
-			createImageDescriptor(prefix + "framework.gif");
-		WOSTANDARD_FRAMEWORK_IMAGE =
-		createImageDescriptor(prefix + "standard_framework.gif");
+	private static ImageDescriptor WOCOMPONENT_WIZARD_BANNER;
+	private static ImageDescriptor WOPROJECT_WIZARD_BANNER;
+	private static Image WOFRAMEWORK_ROOT_IMAGE;
+	private static Image WOFRAMEWORK_IMAGE;
+	private static Image WOSTANDARD_FRAMEWORK_IMAGE;
+	
+	public static ImageDescriptor WOCOMPONENT_WIZARD_BANNER() {
+		if(WOCOMPONENT_WIZARD_BANNER == null)
+			WOCOMPONENT_WIZARD_BANNER = createImageDescriptor("icons/wizban/webobjects_wiz.gif");
+		return WOCOMPONENT_WIZARD_BANNER;
 	}
+	
+	public static final ImageDescriptor WOPROJECT_WIZARD_BANNER() {
+		if(WOPROJECT_WIZARD_BANNER == null)
+			WOPROJECT_WIZARD_BANNER = createImageDescriptor("icons/wizban/webobjects_wiz.gif");
+		return WOPROJECT_WIZARD_BANNER;
+	}
+	
+	public static final Image WOFRAMEWORK_ROOT_IMAGE() {
+		if(WOFRAMEWORK_ROOT_IMAGE == null)
+			WOFRAMEWORK_ROOT_IMAGE = createImageDescriptor("icons/frameworks/framework_root.gif").createImage(false);
+		return WOFRAMEWORK_ROOT_IMAGE;
+	}
+	
+	public static final Image WOFRAMEWORK_IMAGE() {
+		if(WOFRAMEWORK_IMAGE == null)
+			WOFRAMEWORK_IMAGE = createImageDescriptor("icons/frameworks/framework.gif").createImage(false);
+		return WOFRAMEWORK_IMAGE;
+	}
+	
+	public static final Image WOSTANDARD_FRAMEWORK_IMAGE() {
+		if(WOSTANDARD_FRAMEWORK_IMAGE == null)
+			WOSTANDARD_FRAMEWORK_IMAGE = createImageDescriptor("icons/frameworks/standard_framework.gif").createImage(false);
+		return WOSTANDARD_FRAMEWORK_IMAGE;
+	}
+	
 
 	/**
 	 * Utility method to create an <code>ImageDescriptor</code>

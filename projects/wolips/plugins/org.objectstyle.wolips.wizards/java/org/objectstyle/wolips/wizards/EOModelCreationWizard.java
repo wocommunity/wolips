@@ -103,7 +103,7 @@ public class EOModelCreationWizard extends Wizard implements INewWizard {
 		this.selection = selection;
 		setWindowTitle(Messages.getString("EOModelCreationWizard.title"));
 		setDefaultPageImageDescriptor(
-			WOLipsPluginImages.WOCOMPONENT_WIZARD_BANNER);
+			WOLipsPluginImages.WOCOMPONENT_WIZARD_BANNER());
 	}
 
 }
