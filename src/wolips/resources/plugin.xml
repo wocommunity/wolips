@@ -7,7 +7,7 @@
    class="org.objectstyle.woproject.wolips.WOLipsPlugin">
 
    <runtime>
-      <library name="lib/woproject.jar">
+      <library name="lib/woproject-wolips.jar">
       	<export name="*"/>
       </library>
    </runtime>
