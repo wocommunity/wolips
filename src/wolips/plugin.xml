@@ -329,6 +329,9 @@
       <extraClasspathEntry
             library="lib/cayenne.jar">
       </extraClasspathEntry>
+      <extraClasspathEntry
+            library="lib/commons-logging.jar">
+      </extraClasspathEntry>
    </extension>
    <extension
          point="org.eclipse.ant.core.antTasks">

@@ -17,6 +17,7 @@
         	<fileset dir="lib">
             	<include name="**/*.jar"/>
 	        	<exclude name="eclipse/**/*.jar"/>
+	        	<exclude name="${lib.jmechanic}"/>
         	</fileset>
         	<fileset dir="${wo.woroot}/Library/Frameworks">
             	<include name="JavaEOAccess.framework/Resources/Java/*.jar"/>
@@ -80,6 +81,7 @@
         	<fileset dir="lib">
         		<include name="${lib.log4j}"/>
         		<include name="${lib.junit}"/>
+        		<include name="${lib.commons-logging}"/>
         	</fileset>
         	<fileset dir="${ant.home}/lib">
         		<include name="ant.jar"/>
