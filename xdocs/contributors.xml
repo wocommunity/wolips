@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<document>
+    <title>Contributors</title>
+
+    <properties>
+        <author>Andrei Adamchik</author>
+    </properties>
+
+    <body>
+        <!-- Contributors section -->
+        <section name="WOProject Contributors">
+
+            <p>The people listed below have made significant contributions to WOProject.</p>
+
+            <subsection name="Core Team">
+            <p></p> 
+            <table>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Web</th>
+                <th>Role</th>
+            </tr>
+            <tr>
+                <td>Andrei Adamchik</td>
+                <td>andrus at objectstyle dot org</td>
+                <td><a href="http://adamchik.org">adamchik.org</a></td>
+                <td>Original idea, framework code</td>
+            </tr>
+            <tr>
+                <td>Emily Bache</td>
+                <td>emily dot bache at astrakan dot se</td>
+                <td>-</td>
+                <td>WOApplication idea, framework code, unit and functional tests</td>
+            </tr>
+            </table>
+            </subsection>
+        </section>
+    </body>
+</document>
+
