@@ -6,15 +6,26 @@
 
 <body bgcolor="#FFFFFF">
 <h1>What's New</h1>
-<h2>0.9.1</h2>
+<h2>0.9.8</h2>
 <ul>
-  <li>Update PC.project is back in the context menu.</li>
+  <li>Update PB.project is back in the context menu.</li>
   <li>Delete WOComponent currently does nothing.</li>
-  <li>To use existing projects with 0.9.8 there some steps to make it work.</li>
-  <li>Step 1. Go to the preferences and select rebuild wobuild.properties on next launch. Restart Eclipse.</li>
-  <li>Step 2. Open all .classpath files and replace NEXT_ROOT with NEXT_SYSTEM_ROOT and paths to the Library dir with NEXT_LOCAL_ROOT.</li>
-  <li>Step 3. Modify your build files. You have to replace wo.woroot with wo.wosystemroot. Make sure that you replace all occurencies.</li> 
-  <li>Step 4. Have fun!</li>
+  <li>To use existing projects with 0.9.8 there some steps to make it work.
+    <ol>
+      <li>Step 1. Go to the preferences and select rebuild wobuild.properties 
+        on next launch, and then restart eclipse. (If you're on Windows you should 
+        then open the newly created wobuild.properties file and replace all single 
+        '\' with double '\\' - if there are any.)</li>
+      <li>Step 2. Open all .classpath files and replace NEXT_ROOT with NEXT_SYSTEM_ROOT 
+        and paths to the Library dir with NEXT_LOCAL_ROOT. (eclipse now has three 
+        class path variables related to WOLips: NEXT_ROOT, NEXT_LOCAL_ROOT and 
+        NEXT_SYSTEM_ROOT. Regardless of what NEXT_ROOT points to it cannot be 
+        used in the .classpath files.)</li>
+      <li>Step 3. Modify your build files. You have to replace wo.woroot with 
+        wo.wosystemroot. Make sure that you replace all occurencies.</li>
+      <li>Step 4. Have fun!</li>
+    </ol>
+  </li>
 </ul>
 <h2>0.9.7</h2>
 <ul>
@@ -41,11 +52,5 @@
   <li>Can't remember</li>
   <li>...</li>
 </ul>
-<h2>0.9.3</h2>
-<ul>
-  <li>Can't remember</li>
-  <li>...</li>
-</ul>
-<h1>&nbsp;</h1>
 </body>
 </html>
