@@ -150,7 +150,7 @@ public final class WOClasspathContainer
 								+ "/" + archives[j]);
 						//IClasspathEntry entry =
 						// JavaCore.newLibraryEntry(archivePath, null, null);
-						if(!archives.equals("src.jar")) {
+						if(!archives[j].equals("src.jar")) {
 						    IClasspathEntry entry = JavaCore.newLibraryEntry(
 						            archivePath, source, null, false);
 						    _path.add(entry);
@@ -169,6 +169,6 @@ public final class WOClasspathContainer
 		}
 	}
 	
-	private IPath _id;
+    private IPath _id;
 	private ArrayList _path = new ArrayList();
 }
