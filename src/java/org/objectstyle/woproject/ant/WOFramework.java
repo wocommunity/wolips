@@ -58,8 +58,7 @@ package org.objectstyle.woproject.ant;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Enumeration;
-import java.util.Vector;
+import java.util.*;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
@@ -125,11 +124,11 @@ public class WOFramework extends WOTask {
     }
 
     /**
-     * returns a vector of Strings - the file names of the library files
+     * Returns an Iterator over the file names of the library files
      * included in the lib nested element.
      */
-    public Vector getLibFiles() {
-        Vector answer = new Vector();
+    public Iterator getLibNames() {
+        ArrayList libNames = new ArrayList();
         Enumeration en = lib.elements();
         while (en.hasMoreElements()) {
             FileSet fs = (FileSet) en.nextElement();
@@ -137,10 +136,10 @@ public class WOFramework extends WOTask {
             String[] libs = scanner.getIncludedFiles();
             for (int i = 0; i < libs.length; i++) {
                 File libFile = new File(libs[i]);
-                answer.add(libFile.getName());
+                libNames.add(libFile.getName());
             }
         }
-        return answer;
+        return libNames.iterator();
     }
 
     /**

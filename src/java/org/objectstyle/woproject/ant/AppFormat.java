@@ -55,67 +55,60 @@
  */
 package org.objectstyle.woproject.ant;
 
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.util.Enumeration;
+import java.util.Iterator;
+
+import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.types.FilterSet;
+import org.apache.tools.ant.types.FilterSetCollection;
 
 /**
- * Class that knows how to write an Info.plist file for a framework.
- * Needs a suitable template, and some information about the contents of the framework
- * to be given to the constructor.
+ * Subclass of ProjectFormat that defines file copying 
+ * strategy for WOApplications.
  *
- * @author Emily Bache, Andrei Adamchik
+ * @author Andrei Adamchik
  */
-public class InfoBuilder extends TemplateProcessor {
-    private Vector libFiles;
+public class AppFormat extends ProjectFormat {
+	public static final String INFO_TEMPLATE = "woapp/Info.plist";
 
-    public InfoBuilder(WOTask task, Vector libFiles) {
-        super(task);
-        this.libFiles = libFiles;
-    }
-    
+	/** 
+	 * Creates new AppFormat and initializes it with the name
+	 * of the project being built.
+	 */
+	public AppFormat(WOTask task) {
+		super(task);
+	}
 
-    /**
-     * Substitutes a single occurance of "@NAME@" with the value of <code>name</code>
-     * instance variable and a single occurrance of "@LOWERC_NAME@" with the
-     * lowercase value of <code>name</code>. <p>
-     * Substitutes a single occurance of "@JAR_ARRAY@" with a list of
-     * jar files enclosed in appropriate tags.
-     *
-     * TODO: use some regular expressions package to do this.</p>
-     *
-     */
-    protected String replaceTokens(String line) {
-        String nameToken = "@NAME@";
-        int tokInd = line.indexOf(nameToken);
-        if (tokInd >= 0) {
-            return replace(nameToken, line, getName());
-        }
+	private WOApplication getApplicatonTask() {
+		return (WOApplication) task;
+	}
 
-        String lowerCaseNameToken = "@LOWERC_NAME@";
-        int lctokInd = line.indexOf(lowerCaseNameToken);
-        if (lctokInd >= 0) {
-            return replace(lowerCaseNameToken, line, getName().toLowerCase());
-        }
+	public Iterator fileIterator() {
+		String infoFile = new File(getApplicatonTask().contentsDir(), "Info.plist").getPath();
+		return stringIterator(infoFile);
+	}
 
-        String jarArrayToken = "@JAR_ARRAY@";
-        int jarArrayIndex = line.indexOf(jarArrayToken);
-        if (jarArrayIndex >= 0) {
-            StringBuffer toInsert = new StringBuffer();
-            toInsert.append("<array>");
-            if (task.hasClasses()) {
-                toInsert.append(endLine).append("\t\t<string>");
-                toInsert.append(getName().toLowerCase() + ".jar");
-                toInsert.append("</string>");
-            }
-            for (Iterator it = libFiles.iterator(); it.hasNext();) {
-                String libFile = (String)it.next();
-                toInsert.append(endLine).append("\t\t<string>");
-                toInsert.append(libFile);
-                toInsert.append("</string>");
-            }
-            toInsert.append(endLine).append("\t</array>");
-            return replace(jarArrayToken, line, toInsert.toString());
-        }
-        return line;
-    }
+	public String templateForTarget(String targetName) throws BuildException {
+		if (targetName.endsWith("Info.plist")) {
+			return INFO_TEMPLATE;
+		} else {
+			throw new BuildException("Invalid target: " + targetName);
+		}
+	}
+
+	public FilterSetCollection filtersForTarget(String targetName)
+		throws BuildException {
+		if (targetName.endsWith("Info.plist")) {
+			FilterSet filter = new FilterSet();
+
+			filter.addFilter("NAME", getName());
+			filter.addFilter("LOWERC_NAME", getName().toLowerCase());
+            filter.addFilter("JAR_ARRAY", libString(null));
+            
+			return new FilterSetCollection(filter);
+		} else {
+			throw new BuildException("Invalid target: " + targetName);
+		}
+	}
 }

@@ -64,7 +64,7 @@ import org.apache.tools.ant.types.FilterSet;
 import org.apache.tools.ant.types.FilterSetCollection;
 
 /**
- * Subclass of TemplateFilter that defines file copying 
+ * Subclass of ProjectFormat that defines file copying 
  * strategy for WOFrameworks.
  *
  * @author Andrei Adamchik
@@ -73,7 +73,7 @@ public class FrameworkFormat extends ProjectFormat {
 	public static final String INFO_TEMPLATE = "woframework/Info.plist";
 
 	/** 
-	 * Creates new FrameTemplateFilter and initializes it with the name
+	 * Creates new FrameworkFormat and initializes it with the name
 	 * of the project being built.
 	 */
 	public FrameworkFormat(WOTask task) {
@@ -104,34 +104,11 @@ public class FrameworkFormat extends ProjectFormat {
 
 			filter.addFilter("NAME", getName());
 			filter.addFilter("LOWERC_NAME", getName().toLowerCase());
-			filter.addFilter("JAR_ARRAY", libsString());
+			filter.addFilter("JAR_ARRAY", libString(getFrameworkTask().getLibNames()));
 
 			return new FilterSetCollection(filter);
 		} else {
 			throw new BuildException("Invalid target: " + targetName);
 		}
-	}
-
-	private String libsString() {
-		StringBuffer buf = new StringBuffer();
-
-		buf.append("<array>");
-		if (task.hasClasses()) {
-			buf
-				.append(endLine)
-				.append("\t\t<string>")
-				.append(getName().toLowerCase() + ".jar")
-				.append("</string>");
-		}
-
-		Enumeration en = getFrameworkTask().getLibFiles().elements();
-		while (en.hasMoreElements()) {
-			String libFile = (String) en.nextElement();
-			buf.append(endLine).append("\t\t<string>");
-			buf.append(libFile);
-			buf.append("</string>");
-		}
-		buf.append(endLine).append("\t</array>");
-		return buf.toString();
 	}
 }

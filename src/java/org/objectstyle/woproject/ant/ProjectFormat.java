@@ -78,8 +78,9 @@ import org.apache.tools.ant.types.FilterSetCollection;
  * @author Andrei Adamchik
  */
 public abstract class ProjectFormat {
-	protected static final String endLine = System.getProperty("line.separator");
-	
+	protected static final String endLine =
+		System.getProperty("line.separator");
+
 	protected WOTask task;
 
 	/** 
@@ -96,7 +97,6 @@ public abstract class ProjectFormat {
 	public String getName() {
 		return task.getName();
 	}
-	
 
 	/** 
 	 * Creates all needed files based on WOProject templates. 
@@ -112,7 +112,7 @@ public abstract class ProjectFormat {
 
 			InputStream template =
 				this.getClass().getClassLoader().getResourceAsStream(templName);
-		    File target = new File(targetName);
+			File target = new File(targetName);
 			copyFile(template, target, filters);
 		}
 	}
@@ -128,13 +128,15 @@ public abstract class ProjectFormat {
 	 * Returns a path to the template that should be used to
 	 * build a target file.
 	 */
-	public abstract String templateForTarget(String targetName) throws BuildException;
+	public abstract String templateForTarget(String targetName)
+		throws BuildException;
 
 	/** 
 	 * Returns a FilterSetCollection that should be applied when
 	 * generating a target file.
 	 */
-	public abstract FilterSetCollection filtersForTarget(String targetName) throws BuildException;
+	public abstract FilterSetCollection filtersForTarget(String targetName)
+		throws BuildException;
 
 	/**
 	 * Convienence method to copy a file from a source to a
@@ -197,25 +199,53 @@ public abstract class ProjectFormat {
 			out.close();
 		}
 	}
-	
+
 	/** 
 	 * Returns an iterator over a String array.
 	 */
 	public Iterator stringArrayIterator(String[] strs) {
 		ArrayList list = new ArrayList(strs.length);
-		for(int i = 0; i < strs.length; i++) {
+		for (int i = 0; i < strs.length; i++) {
 			list.add(strs[i]);
 		}
-		
+
 		return list.iterator();
 	}
-	
-    /** 
+
+	/** 
 	 * Returns an iterator with a single String element.
 	 */
 	public Iterator stringIterator(String str) {
 		ArrayList list = new ArrayList(1);
-		list.add(str);		
+		list.add(str);
 		return list.iterator();
+	}
+
+	/** 
+	 * Returns a string that can be used in Info.plist
+	 * file to indicate JARs required by the project.
+	 */
+	public String libString(Iterator extLibs) {
+		StringBuffer buf = new StringBuffer();
+
+		buf.append("<array>");
+		if (task.hasClasses()) {
+			buf
+				.append(endLine)
+				.append("\t\t<string>")
+				.append(getName().toLowerCase() + ".jar")
+				.append("</string>");
+		}
+
+		if (extLibs != null) {
+			while (extLibs.hasNext()) {
+				String libFile = (String) extLibs.next();
+				buf.append(endLine).append("\t\t<string>");
+				buf.append(libFile);
+				buf.append("</string>");
+			}
+		}
+		buf.append(endLine).append("\t</array>");
+		return buf.toString();
 	}
 }

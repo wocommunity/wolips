@@ -86,9 +86,7 @@ public class WOApplication extends WOTask {
 		}
 
 		// create all needed scripts
-		buildScripts();
-
-		// @todo - create web.xml and/or classpath files
+		formatProject();
 	}
 
 	/**
@@ -112,18 +110,17 @@ public class WOApplication extends WOTask {
 		return new File(contentsDir(), "WebServerResources");
 	}
 
-	protected void buildScripts() throws BuildException {
-		try {
-			// build Info.plist
-			new InfoBuilder(this, new Vector()).fileFromTemplate(
-				"woapp/Info.plist",
-				new File(contentsDir(), "Info.plist"));
-
-			// build script files
+    protected void formatProject() throws BuildException {
+        try {
+            new AppFormat(this).processTemplates();
+            
+            // build script files
 			new AppScriptBuilder(this).buildScripts();
-
-		} catch (IOException ioex) {
-			throw new BuildException("Error copying Info.plist", ioex);
-		}
-	}
+			
+		    // @todo - create web.xml and/or classpath files
+		    
+        } catch (IOException ioex) {
+            throw new BuildException("Error doing project formatting.", ioex);
+        }
+    }
 }
