@@ -100,13 +100,19 @@ public class WORuntimeClasspathProvider extends StandardClasspathProvider {
 
 		// used for duplicate removal
 		Set allEntries = new HashSet();
+		
+		// looks like we need to let super do it's thing before
+		// we start tinkering with things ourselves
 
-		// resolve WO framework projects ourselves, let super do the rest
+		entries = super.resolveClasspath(entries, configuration);
+
+		// resolve WO framework/application projects ourselves, let super do the rest
 		for (int i = 0; i < entries.length; ++i) {
 			IRuntimeClasspathEntry entry = entries[i];
 			IPath archive = _getWOJavaArchive(entry);
 			if (null != archive) {
-				resolved.add(entry);
+				// I think this line here breaks things: (hn3000)
+				//resolved.add(entry);
 				if (!allEntries.contains(archive.toString())) {
 					resolved.add(
 						JavaRuntime.newArchiveRuntimeClasspathEntry(archive));
@@ -123,10 +129,9 @@ public class WORuntimeClasspathProvider extends StandardClasspathProvider {
 		// classpath ...
 		if (others.size() != 0) {
 			IRuntimeClasspathEntry oe[] =
-				super.resolveClasspath(
-					(IRuntimeClasspathEntry[]) others.toArray(
-						new IRuntimeClasspathEntry[others.size()]),
-					configuration);
+				(IRuntimeClasspathEntry[]) others.toArray(
+						new IRuntimeClasspathEntry[others.size()]
+				);
 
 			for (int i = 0; i < oe.length; ++i) {
 				IRuntimeClasspathEntry entry = oe[i];

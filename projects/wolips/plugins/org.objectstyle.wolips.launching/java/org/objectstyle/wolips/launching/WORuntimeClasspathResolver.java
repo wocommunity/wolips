@@ -119,7 +119,7 @@ public class WORuntimeClasspathResolver implements IRuntimeClasspathEntryResolve
 				}
 			}
 		}
-		
+
 		IPath resultPath = new Path (path.segment(0));
 		
 		for (int i = 1; i < path.segmentCount(); ++i) {
