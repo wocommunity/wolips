@@ -2,9 +2,9 @@
 <?eclipse version="3.0"?>
 <plugin
    id="org.objectstyle.wolips.targetbuilder"
-   name="%WOLips.pluginName"
+   name="WOLips TargetBuilde"
    version="1.0.6"
-   provider-name="%WOLips.providerName"
+   provider-name="objectstyle.org"
    class="org.objectstyle.wolips.target.TargetBuilderPlugin">
 
    <runtime>
@@ -27,7 +27,7 @@
 <!-- =================================================================================== -->
    <extension
          id="targetbuilder"
-         name="%TargetBuilderName"
+         name="Target Builder"
          point="org.eclipse.core.resources.builders">
       <builder>
          <run
