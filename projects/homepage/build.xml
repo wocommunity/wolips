@@ -124,12 +124,14 @@
                 <pathelement path="../wolips/plugins/org.objectstyle.wolips.targetbuilder/java"/>
                 <pathelement path="../wolips/plugins/org.objectstyle.wolips.datasets/java"/>
                 <pathelement path="../wolips/plugins/org.objectstyle.wolips.launching/java"/>
-	            <pathelement path="../wolips/plugins/org.objectstyle.wolips.profiling/java"/>
-	            <pathelement path="../wolips/plugins/org.objectstyle.wolips.projectbuild/java"/>
-	            <pathelement path="../wolips/plugins/org.objectstyle.wolips.wounit/java"/>
-	            <pathelement path="../wolips/plugins/org.objectstyle.wolips.ui/java"/>
-	            <pathelement path="../wolips/plugins/org.objectstyle.wolips.wizards/java"/>
-	            <pathelement path="../wolips/plugins/org.objectstyle.wolips.templateengine/java"/>
+	        <pathelement path="../wolips/plugins/org.objectstyle.wolips.profiling/java"/>
+	        <pathelement path="../wolips/plugins/org.objectstyle.wolips.projectbuild/java"/>
+	        <pathelement path="../wolips/plugins/org.objectstyle.wolips.wounit/java"/>
+	        <pathelement path="../wolips/plugins/org.objectstyle.wolips.ui/java"/>
+	        <pathelement path="../wolips/plugins/org.objectstyle.wolips.wizards/java"/>
+	        <pathelement path="../wolips/plugins/org.objectstyle.wolips.templateengine/java"/>
+	        <pathelement path="../wolips/plugins/org.objectstyle.wolips.tests/java"/>
+	        <pathelement path="../wolips/plugins/org.objectstyle.wolips.tests.core/java"/>
             </sourcepath>
             <doctitle><![CDATA[<h2>WOProject API Documentation</h2>]]></doctitle>
         </javadoc>
