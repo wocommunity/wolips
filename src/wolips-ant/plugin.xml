@@ -39,9 +39,6 @@
             library="lib/wolips-ant.jar">
       </extraClasspathEntry>
      <extraClasspathEntry
-            library="lib/commons-logging.jar">
-      </extraClasspathEntry>
-       <extraClasspathEntry
             library="lib/log4j.jar">
       </extraClasspathEntry>
    </extension>
