@@ -10,18 +10,18 @@
         <!-- Welcome section -->
         <section name="Welcome to WOProject and WOLips">
         
-        <p><i>June 18, 2003.</i> <b>WOProject release 1.0.3 is out. This release fixes a classpath problem in 1.0.2.</b></p>
-        <p>Download a new <a href="compatibilty_matrix.html">release</a> of WOProject.
-        <hr/>
-        </p>
-
-        <p><i>June 16, 2003.</i> <b>WOLips 1.0.2 released.</b></p>
+        <p><i>June 18, 2003.</i> <b>WOLips 1.0.3 released. This is bugfix release to solve a classpath problem in 1.0.2.</b></p>
         <p>WOLips is a plugin for <a href="http://eclipse.org">Eclipse IDE</a> that
         support development of WebObjects applications and frameworks.
         <ul>
             <li>To find the correct version <a href="compatibilty_matrix.html">click</a> here.</li>
             <li><a href="wolips_install.html">How to install via Update Manager.</a></li>
         </ul>
+        <hr/>
+        </p>
+
+        <p><i>June 16, 2003.</i> <b>WOProject release 1.0.2 is out.</b></p>
+        <p>Download a new <a href="compatibilty_matrix.html">release</a> of WOProject.
         <hr/>
         </p>
                        
