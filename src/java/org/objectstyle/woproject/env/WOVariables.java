@@ -112,7 +112,7 @@ public class WOVariables {
 			+ File.separator
 			+ WOVariables.WOBUILD_PROPERTIES_FILE_NAME)) {
 			if (log.isInfoEnabled()) {
-				log.info("init -> no wobuild.properties in user home found");
+				log.info("init -> no wobuild.properties in $user.home/Library/ found");
 			}
 			// try system property
 			if (!validateWobuildPropertiesFile(System
