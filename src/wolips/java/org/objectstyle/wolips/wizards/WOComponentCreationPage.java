@@ -120,7 +120,7 @@ public class WOComponentCreationPage extends WizardNewWOResourcePage {
 		group.setLayoutData(
 			new GridData(
 				GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
-		// sample section generation checkboxes
+		// section generation checkboxes
 		bodyCheckbox = new Button(group, SWT.CHECK);
 		bodyCheckbox.setText(
 			Messages.getString(

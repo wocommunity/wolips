@@ -91,7 +91,7 @@ public class JavaElementChangeListener implements IElementChangedListener {
 	 * <br>
 	 * @see org.eclipse.jdt.core.IElementChangedListener#elementChanged(ElementChangedEvent)
 	 */
-	public void elementChanged(ElementChangedEvent event) {
+	public final void elementChanged(ElementChangedEvent event) {
 		NSMutableDictionary addedFrameworksProjectDict =
 			new NSMutableDictionary();
 		NSMutableDictionary removedFrameworksProjectDict =
@@ -217,7 +217,7 @@ public class JavaElementChangeListener implements IElementChangedListener {
 	 * @param foundElements
 	 * @return boolean
 	 */
-	private boolean searchDeltas(
+	private final boolean searchDeltas(
 		IJavaElementDelta[] deltasToExamine,
 		int changeFlagToSearch,
 		ArrayList foundElements) {
@@ -240,7 +240,7 @@ public class JavaElementChangeListener implements IElementChangedListener {
 	 * @param addedFrameworksProjectDict
 	 * @param removedFrameworksProjectDict
 	 */
-	private void updateProjects(
+	private final void updateProjects(
 		NSDictionary addedFrameworksProjectDict,
 		NSDictionary removedFrameworksProjectDict) {
 		IProject currentProject;

@@ -54,66 +54,79 @@
  *
  */
 package org.objectstyle.wolips.wizards;
-import java.lang.reflect.InvocationTargetException;
-import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.eclipse.ui.actions.WorkspaceModifyDelegatingOperation;
-import org.objectstyle.wolips.WOLipsPlugin;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PartInitException;
+import org.objectstyle.wolips.io.WOLipsLog;
+import org.objectstyle.wolips.project.ProjectHelper;
+import org.objectstyle.wolips.workbench.WorkbenchHelper;
 /**
  * @author mnolte
  * @author uli
  *
+ * To change this generated comment edit the template variable "typecomment":
+ * Window>Preferences>Java>Templates.
+ * To enable and disable the creation of type comments go to
+ * Window>Preferences>Java>Code Generation.
  */
-public class WOFrameworkCreationPage extends WOProjectCreationPage {
-	private IResource elementToOpen;
-	/**
-	 * Constructor for WOFrameworkCreationPage.
-	 * @param pageName
+public class WOApplicationCreationWizard extends WOProjectCreationWizard {
+	private WOApplicationCreationPage mainPage;
+	/** (non-Javadoc)
+	 * Method declared on Wizard.
 	 */
-	public WOFrameworkCreationPage(String pageName) {
-		super(pageName);
-		setTitle(Messages.getString("WOFrameworkCreationWizard.title"));
-		setDescription(
-			Messages.getString("WOFrameworkCreationWizard.description"));
-		setInitialProjectName(
-			Messages.getString(
-				"WOFrameworkCreationWizard.newProject.defaultName"));
+	public void addPages() {
+		mainPage = new WOApplicationCreationPage("createWOProjectPage1");
+		addPage(mainPage);
 	}
-	public boolean createProject() {
-		IProject newProject = getProjectHandle();
-		String projectTemplateID =
-			Messages.getString("webobjects.projectType.java.framework");
-		IRunnableWithProgress op =
-			new WorkspaceModifyDelegatingOperation(
-				new WOProjectCreator(
-					newProject,
-					projectTemplateID,
-					getLocationPath(),
-					getImportPath()));
-		try {
-			getContainer().run(false, true, op);
-		} catch (InvocationTargetException e) {
-			WOLipsPlugin.handleException(
-				getShell(),
-				e.getTargetException(),
-				null);
-			return false;
-		} catch (InterruptedException e) {
-			//WOLipsUtils.handleException(getShell(), e, null);
-			return false;
+	/** (non-Javadoc)
+	 * Method declared on INewWizard
+	 */
+	public void init(IWorkbench workbench, IStructuredSelection selection) {
+		super.init(workbench, selection);
+		setWindowTitle(Messages.getString("WOApplicationCreationWizard.title"));
+	}
+	/** (non-Javadoc)
+	 * Method declared on IWizard
+	 */
+	public boolean performFinish() {
+		boolean creationSuccessful = mainPage.createProject();
+		if (creationSuccessful) {
+			try {
+				ProjectHelper.installBuilder(
+					mainPage.getProjectHandle(),
+					ProjectHelper.WOAPPLICATION_BUILDER_ID);
+				openResource(mainPage.getElementToOpen());
+			} catch (Exception anException) {
+				WOLipsLog.log(anException);
+				creationSuccessful = false;
+			}
 		}
-		IResource resourceToOpen = newProject;
-		if (resourceToOpen != null) {
-			elementToOpen = resourceToOpen;
-		}
-		return true;
+		return creationSuccessful;
 	}
 	/**
-	 * Method getElementToOpen.
-	 * @return resource to open on successful project creation
+	 * Method openResource.
+	 * @param resource
 	 */
-	public IResource getElementToOpen() {
-		return elementToOpen;
+	private void openResource(final IResource resource) {
+		if (resource == null || resource.getType() != IResource.FILE)
+			return;
+		final IWorkbenchPage activePage = WorkbenchHelper.getActivePage();
+		if (activePage == null)
+			return;
+		final Display display = getShell().getDisplay();
+		display.asyncExec(new Runnable() {
+			public void run() {
+				try {
+					activePage.openEditor((IFile) resource);
+				} catch (PartInitException e) {
+					WOLipsLog.log(e);
+				}
+			}
+		});
+		selectAndReveal(resource);
 	}
 }

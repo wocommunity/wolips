@@ -54,109 +54,91 @@
  *
  */
 package org.objectstyle.wolips.wizards;
-import java.io.ByteArrayInputStream;
 import java.lang.reflect.InvocationTargetException;
-
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.ui.actions.WorkspaceModifyDelegatingOperation;
+import org.objectstyle.wolips.WOLipsPlugin;
 import org.objectstyle.wolips.project.ProjectHelper;
 /**
  * @author mnolte
  * @author uli
+ *
  */
-public class WOComponentCreator extends WOProjectResourceCreator {
-	private String componentName;
-	private boolean createBodyTag;
+public class WOApplicationCreationPage extends WOProjectCreationPage {
+	private IResource elementToOpen;
+
 	/**
-	 * Constructor for WOComponentCreator.
+	 * Constructor for WOApplicationCreationPage.
+	 * @param pageName
 	 */
-	public WOComponentCreator(
-		IResource parentResource,
-		String componentName,
-		boolean createBodyTag) {
-		super(parentResource);
-		this.componentName = componentName;
-		this.createBodyTag = createBodyTag;
+	public WOApplicationCreationPage(String pageName) {
+		super(pageName);
+		setTitle(Messages.getString("WOApplicationCreationPage.title"));
+		setDescription(
+			Messages.getString("WOApplicationCreationPage.description"));
+		setInitialProjectName(
+			Messages.getString(
+				"WOApplicationCreationPage.newProject.defaultName"));
 	}
 	/**
-	 * @see org.objectstyle.wolips.wizards.WOProjectResourceCreator#getType()
+	 * Method getProjectTemplateID.
+	 * @return String
 	 */
-	protected int getType() {
-		return COMPONENT_CREATOR;
+	private String getProjectTemplateID() {
+		String projectTemplateID =
+			Messages.getString("webobjects.projectType.java.application");
+		if (!useDefaults()
+			&& (getLocationPath() != null)
+			&& (getLocationPath().makeAbsolute().toFile().isDirectory())
+			&& (getLocationPath().makeAbsolute().toFile().list().length > 0))
+			projectTemplateID =
+				Messages.getString(
+					"webobjects.projectType.java.application.import");
+		return projectTemplateID;
 	}
 	/**
-	 * @see WOProjectResourceCreator#run(IProgressMonitor)
+	 * Method createProject.
+	 * @return boolean
 	 */
-	public void run(IProgressMonitor monitor)
-		throws InvocationTargetException, InterruptedException {
-		super.run(monitor);
+	public boolean createProject() {
+		IProject newProject = getProjectHandle();
+		String projectTemplateID = this.getProjectTemplateID();
+		IRunnableWithProgress op =
+			new WorkspaceModifyDelegatingOperation(
+				new WOProjectCreator(
+					newProject,
+					projectTemplateID,
+					getLocationPath(),
+					getImportPath()));
 		try {
-			createWOComponent(monitor);
-		} catch (CoreException e) {
-			throw new InvocationTargetException(e);
+			getContainer().run(false, false, op);
+		} catch (InvocationTargetException e) {
+			WOLipsPlugin.handleException(
+				getShell(),
+				e.getTargetException(),
+				null);
+			return false;
+		} catch (InterruptedException e) {
+			//WOLipsUtils.handleException(getShell(), e, null);
+			return false;
 		}
+		IResource fileToOpen =
+			ProjectHelper.getProjectSourceFolder(newProject).getFile(
+				new Path("Application.java"));
+		if (fileToOpen != null) {
+			elementToOpen = fileToOpen;
+		}
+		return true;
 	}
 	/**
-	 * Method createWOComponent.
-	 * @param monitor
-	 * @throws CoreException
-	 * @throws InvocationTargetException
+	 * Method getElementToOpen.
+	 * @return resource to open on successful project creation
 	 */
-	public void createWOComponent(IProgressMonitor monitor)
-		throws CoreException, InvocationTargetException {
-		IFolder componentFolder = null;
-		IFile componentJavaFile = null;
-		IFile componentApiFile = null;
-		switch (parentResource.getType()) {
-			case IResource.PROJECT :
-				componentFolder =
-					((IProject) parentResource).getFolder(
-						componentName + "." + EXT_COMPONENT);
-				componentJavaFile =
-					ProjectHelper.getProjectSourceFolder(
-						(IProject) parentResource).getFile(
-						new Path(componentName + "." + EXT_JAVA));
-				componentApiFile =
-					((IProject) parentResource).getFile(
-						componentName + "." + EXT_API);
-				break;
-			case IResource.FOLDER :
-				componentFolder =
-					((IFolder) parentResource).getFolder(
-						componentName + "." + EXT_COMPONENT);
-				componentJavaFile =
-					ProjectHelper.getSubprojectSourceFolder(
-						(IFolder) parentResource,true).getFile(
-						componentName + "." + EXT_JAVA);
-				componentApiFile =
-					((IFolder) parentResource).getFile(
-						componentName + "." + EXT_API);
-				break;
-			default :
-				throw new InvocationTargetException(
-					new Exception("Wrong parent resource - check validation"));
-		}
-		IFile componentDescription =
-			componentFolder.getFile(componentName + "." + EXT_WOD);
-		IFile componentHTMLTemplate =
-			componentFolder.getFile(componentName + "." + EXT_HTML);
-		createResourceFolderInProject(componentFolder, monitor);
-		fileCreator().create(componentDescription, monitor);
-		if (createBodyTag) {
-			fileCreator().create(componentHTMLTemplate, monitor);
-		} else {
-			// create empty file
-			componentHTMLTemplate.create(
-				new ByteArrayInputStream("".getBytes()),
-				false,
-				null);
-		}
-		fileCreator().create(componentJavaFile, "wocomponent", monitor);
-		fileCreator().create(componentApiFile, monitor);
+	public IResource getElementToOpen() {
+		return elementToOpen;
 	}
+
 }

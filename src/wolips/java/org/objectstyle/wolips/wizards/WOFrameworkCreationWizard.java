@@ -56,8 +56,6 @@
 package org.objectstyle.wolips.wizards;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.wizards.newresource.BasicNewProjectResourceWizard;
-import org.objectstyle.wolips.images.WOLipsPluginImages;
 import org.objectstyle.wolips.io.WOLipsLog;
 import org.objectstyle.wolips.project.ProjectHelper;
 /**
@@ -69,8 +67,8 @@ import org.objectstyle.wolips.project.ProjectHelper;
  * To enable and disable the creation of type comments go to
  * Window>Preferences>Java>Code Generation.
  */
-public class WOFrameworkCreationWizard extends BasicNewProjectResourceWizard {
-	private IWorkbench workbench;
+public class WOFrameworkCreationWizard extends WOProjectCreationWizard {
+
 	private WOFrameworkCreationPage mainPage;
 
 	/** (non-Javadoc)
@@ -86,11 +84,7 @@ public class WOFrameworkCreationWizard extends BasicNewProjectResourceWizard {
 	 */
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
 		super.init(workbench, selection);
-		this.workbench = workbench;
-		//this.selection = selection;
 		setWindowTitle(Messages.getString("WOFrameworkCreationWizard.title"));
-		setDefaultPageImageDescriptor(
-			WOLipsPluginImages.WOPROJECT_WIZARD_BANNER);
 	}
 
 	/** (non-Javadoc)

@@ -58,7 +58,7 @@ package org.objectstyle.wolips.actions;
 
 import org.eclipse.jdt.internal.ui.wizards.AbstractOpenWizardAction;
 import org.eclipse.jface.wizard.Wizard;
-import org.objectstyle.wolips.wizards.WOProjectCreationWizard;
+import org.objectstyle.wolips.wizards.WOApplicationCreationWizard;
 
 /**
  * @author uli
@@ -75,7 +75,7 @@ public class OpenWOProjectCreationWizard extends AbstractOpenWizardAction {
 	}
 
 	protected Wizard createWizard() {
-		return new WOProjectCreationWizard();
+		return new WOApplicationCreationWizard();
 	}
 
 }

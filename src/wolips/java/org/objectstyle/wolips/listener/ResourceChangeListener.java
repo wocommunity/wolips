@@ -94,7 +94,7 @@ public class ResourceChangeListener
 	 * @see ProjectFileResourceValidator
 	 * @see org.eclipse.core.resources.IResourceChangeListener#resourceChanged(IResourceChangeEvent)
 	 */
-	public void resourceChanged(IResourceChangeEvent event) {
+	public final void resourceChanged(IResourceChangeEvent event) {
 		//System.out.println("******* resourceChanged begin ");
 		ProjectFileResourceValidator resourceValidator =
 			new ProjectFileResourceValidator();
@@ -159,7 +159,7 @@ public class ResourceChangeListener
 	 * the creation of type comments go to Window>Preferences>Java>Code
 	 * Generation.
 	 */
-	private class ProjectFileResourceValidator
+	private final class ProjectFileResourceValidator
 		implements IResourceDeltaVisitor {
 		//private QualifiedName resourceQualifier;
 		private IFile projectFile;
@@ -179,7 +179,7 @@ public class ResourceChangeListener
 		/**
 		 * @see org.eclipse.core.resources.IResourceDeltaVisitor#visit(IResourceDelta)
 		 */
-		public boolean visit(IResourceDelta delta) {
+		public final boolean visit(IResourceDelta delta) {
 			IResource resource = delta.getResource();
 			try {
 				return examineResource(resource, delta.getKind());
@@ -198,7 +198,7 @@ public class ResourceChangeListener
 		 * @return boolean
 		 * @throws CoreException
 		 */
-		private boolean examineResource(IResource resource, int kindOfChange)
+		private final boolean examineResource(IResource resource, int kindOfChange)
 			throws CoreException {
 			// reset project file to update
 			projectFile = null;
@@ -370,7 +370,7 @@ public class ResourceChangeListener
 		 * @param kindOfChange
 		 * @return boolean
 		 */
-		private boolean needsProjectFileUpdate(int kindOfChange) {
+		private final boolean needsProjectFileUpdate(int kindOfChange) {
 			return IResourceDelta.ADDED == kindOfChange
 				|| IResourceDelta.REMOVED == kindOfChange;
 		}
@@ -383,7 +383,7 @@ public class ResourceChangeListener
 		* @param kind of change - resource added or removed
 		* @param resource to update
 		*/
-		private void updateProjectFile(
+		private final void updateProjectFile(
 			int kindOfChange,
 			IResource resourceToUpdate,
 			String fileStableId,
@@ -420,7 +420,7 @@ public class ResourceChangeListener
 		 * @param projectFileToUpdate
 		 * @return NSMutableArray
 		 */
-		private NSMutableArray getChangedResourcesArray(
+		private final NSMutableArray getChangedResourcesArray(
 			NSMutableDictionary projectDict,
 			String fileStableId,
 			IFile projectFileToUpdate) {
@@ -454,14 +454,14 @@ public class ResourceChangeListener
 		 * Returns the addedResourcesProjectDict.
 		 * @return NSMutableDictionary
 		 */
-		public NSMutableDictionary getAddedResourcesProjectDict() {
+		public final NSMutableDictionary getAddedResourcesProjectDict() {
 			return addedResourcesProjectDict;
 		}
 		/**
 		 * Returns the removedResourcesProjectDict.
 		 * @return NSMutableDictionary
 		 */
-		public NSMutableDictionary getRemovedResourcesProjectDict() {
+		public final NSMutableDictionary getRemovedResourcesProjectDict() {
 			return removedResourcesProjectDict;
 		}
 	}

@@ -72,6 +72,8 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -167,6 +169,7 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 	private String templateID;
 	private ArrayList variableList;
 	private IPath locationPath;
+	private IPath importPath;
 	/**
 	 * Constructor for WOProjectCreator.
 	 */
@@ -180,13 +183,21 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 	public WOProjectCreator(
 		IResource newProject,
 		String templateID,
-		IPath locationPath) {
+		IPath locationPath,
+		IPath importPath) {
 		this(newProject, templateID);
 		// validate location path
 		this.locationPath =
 			locationPath.makeAbsolute().toFile().isDirectory()
 				? locationPath
 				: null;
+		if (importPath != null) {
+			// validate import path
+			this.importPath =
+				importPath.makeAbsolute().toFile().isDirectory()
+					? importPath
+					: null;
+		}
 	}
 	/**
 	 * @see org.objectstyle.wolips.wizards.WOProjectResourceCreator#getType()
@@ -222,8 +233,8 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 			}
 			configNewProject(natureIds, monitor);
 			createProjectContents(monitor);
-			if (locationPath != null
-				&& !this.locationPath.equals(
+			if (importPath != null
+				&& !importPath.equals(
 					parentResource.getLocation().removeLastSegments(1))) {
 				// project content path is no default
 				// add additional project resources from location path
@@ -232,9 +243,9 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 				addAdditionalContents(
 					monitor,
 					(IContainer) this.parentResource,
-					locationPath.toFile());
+					importPath.toFile());
 				// try to add any existing classpath entries
-				addAdditionalFrameworks(monitor, locationPath.toFile());
+				addAdditionalFrameworks(monitor, importPath.toFile());
 			}
 		} finally {
 			monitor.done();
@@ -361,22 +372,29 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 		switch (parentResource.getType()) {
 			// application project or framework project
 			case IResource.PROJECT :
-				IProject newProject = (IProject) parentResource;
+				final IProject newProjectHandle = (IProject) parentResource;
 				try {
-					if (!newProject.exists()) {
-						newProject.create(null);
+					
+					IWorkspace workspace = ResourcesPlugin.getWorkspace();
+					final IProjectDescription description =
+						workspace.newProjectDescription(newProjectHandle.getName());
+					description.setLocation(locationPath);
+					description.setNatureIds(natureIds);							
+					
+					if (!newProjectHandle.exists()) {
+						// set description only in this way
+						// to ensure project location is set
+						newProjectHandle.create(description,new SubProgressMonitor(monitor,1000));
 					}
-					if (!newProject.isOpen()) {
-						newProject.open(null);
+					if (!newProjectHandle.isOpen()) {
+						newProjectHandle.open(null);
 					}
-					IProjectDescription desc = newProject.getDescription();
-					desc.setNatureIds(natureIds);
-					newProject.setDescription(desc, monitor);
+
 				} catch (CoreException e) {
 					throw new InvocationTargetException(e);
 				}
 				// add wo classpath entries
-				IJavaProject myJavaProject = JavaCore.create(newProject);
+				IJavaProject myJavaProject = JavaCore.create(newProjectHandle);
 				NodeList classpathNodeList =
 					elementForTemplate.getElementsByTagName("classpathentry");
 				ArrayList allClasspathEntriesResolved =
@@ -464,7 +482,7 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 							}
 							sourcePath = new Path(currentRawPath);
 							IFolder sourceFolder;
-							sourceFolder = newProject.getFolder(sourcePath);
+							sourceFolder = newProjectHandle.getFolder(sourcePath);
 							if (!sourceFolder.exists()) {
 								// create source folder
 								try {
@@ -946,8 +964,10 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 		 * @throws CoreException
 		 */
 		public void execute() throws CoreException {
-			if (resourceFileToCreate == null)
+			if (resourceFileToCreate == null) {
 				this.executeWithNOResourceFileToCreate();
+				return;
+			}
 			BufferedInputStream resourceFileInputStream = null;
 			try {
 				resourceFileInputStream =
