@@ -59,7 +59,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -200,7 +199,7 @@ public final class PBProjectUpdater {
 		this.syncClasses(new ArrayList());
 		this.syncWOAppResources(new ArrayList());
 		this.syncWOComponents(new ArrayList());
-		_saveChanges();
+		this._saveChanges();
 	}
 	private void _saveChanges() throws IOException {
 		pbProject.saveChanges();
@@ -322,8 +321,19 @@ public final class PBProjectUpdater {
 	 * Method syncProjectName.
 	 */
 	public void syncProjectName() {
-		if (!projectContainer.getName().equals(pbProject.getProjectName()))
+		WOLipsLog.log(
+			"projectContainer.getName() + pbProject.getProjectName(): "
+				+ projectContainer.getName()
+				+ " "
+				+ pbProject.getProjectName());
+		if (!projectContainer.getName().equals(pbProject.getProjectName())) {
 			pbProject.setProjectName(projectContainer.getName());
+			try {
+				this._saveChanges();
+			} catch (IOException e) {
+				WOLipsLog.log(e);
+			}
+		}
 	}
 	/**
 	 * Method syncClasses.

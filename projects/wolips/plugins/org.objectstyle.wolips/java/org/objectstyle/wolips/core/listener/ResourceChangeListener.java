@@ -130,7 +130,7 @@ public class ResourceChangeListener
 			projectFileToUpdate = (IFile) allAddedKeys[i];
 			projectUpdater =
 				PBProjectUpdater.instance(projectFileToUpdate.getParent());
-			if (projectFileToUpdate.getParent().getParent() == null)
+			if (projectFileToUpdate.getParent().getType() == IResource.PROJECT)
 				projectUpdater.syncProjectName();
 			projectUpdater.syncFilestable(
 				(HashMap) resourceValidator.getAddedResourcesProjectDict().get(
