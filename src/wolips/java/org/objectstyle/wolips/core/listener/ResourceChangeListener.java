@@ -204,7 +204,8 @@ public class ResourceChangeListener
 				case IResource.FOLDER :
 					if (needsProjectFileUpdate(kindOfChange)) {
 						if (EXT_FRAMEWORK.equals(resource.getFileExtension())
-							|| EXT_WOA.equals(resource.getFileExtension())) {
+							|| EXT_WOA.equals(resource.getFileExtension())
+							|| EXT_BUILD.equals(resource.getFileExtension())) {
 							// no further examination needed
 							return false;
 						}
