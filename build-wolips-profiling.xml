@@ -15,7 +15,8 @@
             </fileset>
             <fileset dir="lib">
                 <include name="*.jar"/>
-	            <include name="eclipse/**/*.jar"/>
+	        <include name="eclipse/**/*.jar"/>
+		<include name="jmechanic/**/*.jar"/>
             </fileset>
 	    <fileset dir="${wolips.dist}">
 			<include name="**/wolips.jar"/>
