@@ -48,11 +48,9 @@ public class InfoBuilderTest extends TestCase {
     }
 
     public void testLibsAndClasses() throws Exception {
-        String lib1 =  "jar1.jar";
-        String lib2 = "jar2.zip";
+        String lib = "jar1.jar";
         Vector libs = new Vector();
-        libs.add(lib1);
-        libs.add(lib2);
+        libs.add(lib);
         InfoBuilder infoBuilder = new InfoBuilder(getName(), libs, true);
         infoBuilder.writeInfoText(bin, bout);
 
@@ -60,8 +58,29 @@ public class InfoBuilderTest extends TestCase {
         String nsJavaPath = output.substring(output.indexOf(NS_JAVA_PATH_BEGIN) + NS_JAVA_PATH_BEGIN.length(), output.indexOf(NS_JAVA_PATH_END));
         assertEquals("\n\t<array>\n"
             + "\t\t<string>" + getName().toLowerCase() + ".jar</string>\n"
+            + "\t\t<string>" + lib + "</string>\n"
+            + "\t</array>\n\t"
+            , nsJavaPath);
+
+    }
+
+    public void testJustLibs() throws Exception {
+        String lib1 = "jar1.jar";
+        String lib2 = "jar2.zip";
+        String lib3 = "jar3.jar";
+        Vector libs = new Vector();
+        libs.add(lib1);
+        libs.add(lib2);
+        libs.add(lib3);
+        InfoBuilder infoBuilder = new InfoBuilder(getName(), libs, false);
+        infoBuilder.writeInfoText(bin, bout);
+
+        String output = sout.toString();
+        String nsJavaPath = output.substring(output.indexOf(NS_JAVA_PATH_BEGIN) + NS_JAVA_PATH_BEGIN.length(), output.indexOf(NS_JAVA_PATH_END));
+        assertEquals("\n\t<array>\n"
             + "\t\t<string>" + lib1 + "</string>\n"
             + "\t\t<string>" + lib2 + "</string>\n"
+            + "\t\t<string>" + lib3 + "</string>\n"
             + "\t</array>\n\t"
             , nsJavaPath);
 

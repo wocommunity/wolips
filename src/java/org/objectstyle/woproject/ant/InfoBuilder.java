@@ -3,6 +3,11 @@ package org.objectstyle.woproject.ant;
 import java.io.*;
 import java.util.*;
 
+/**
+ * Class that knows how to write an Info.plist file for a framework.
+ * Needs a suitable template, and some information about the contents of the framework
+ * to be given to the constructor.
+ */
 public class InfoBuilder {
 
     private String name;
@@ -48,24 +53,50 @@ public class InfoBuilder {
      * Substitutes a single occurance of "@NAME@" with the value of <code>name</code>
      * instance variable and a single occurrance of "@LOWERC_NAME@" with the
      * lowercase value of <code>name</code>. <p>
+     * Substitutes a single occurance of "@JAR_ARRAY@" with a list of
+     * jar files enclosed in appropriate tags.
      *
      * TODO: use some regular expressions package to do this.</p>
      *
-     * @param line Description of the Parameter
-     * @return Description of the Return Value
      */
     private String subsToken(String line) {
-        int tokInd = line.indexOf("@NAME@");
+        String nameToken = "@NAME@";
+        int tokInd = line.indexOf(nameToken);
         if (tokInd >= 0) {
-            return line.substring(0, tokInd) + name + line.substring(tokInd + 6);
+            return replace(nameToken, line, name);
         }
 
-        int lctokInd = line.indexOf("@LOWERC_NAME@");
-        return (lctokInd >= 0)
-                 ? line.substring(0, lctokInd)
-                 + name.toLowerCase()
-                 + line.substring(lctokInd + 13)
-                 : line;
+        String lowerCaseNameToken = "@LOWERC_NAME@";
+        int lctokInd = line.indexOf(lowerCaseNameToken);
+        if (lctokInd >= 0) {
+            return replace(lowerCaseNameToken, line, name.toLowerCase());
+        }
+
+        String jarArrayToken = "@JAR_ARRAY@";
+        int jarArrayIndex = line.indexOf(jarArrayToken);
+        if (jarArrayIndex >= 0) {
+            StringBuffer toInsert = new StringBuffer();
+            toInsert.append("<array>");
+            if (this.hasOwnClasses) {
+                toInsert.append("\n\t\t<string>");
+                toInsert.append(name.toLowerCase() + ".jar");
+                toInsert.append("</string>");
+            }
+            for (Iterator it = libFiles.iterator(); it.hasNext();) {
+                String libFile = (String)it.next();
+                toInsert.append("\n\t\t<string>");
+                toInsert.append(libFile);
+                toInsert.append("</string>");
+            }
+            toInsert.append("\n\t</array>");
+            return replace(jarArrayToken, line, toInsert.toString());
+        }
+        return line;
+    }
+
+    private String replace(String token, String line, String toInsert) {
+        int tokenIndex = line.indexOf(token);
+        return line.substring(0, tokenIndex) + toInsert + line.substring(tokenIndex + token.length());
     }
 
 }

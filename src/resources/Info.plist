@@ -18,9 +18,7 @@
 	<key>NSExecutable</key>
 	<string>@NAME@</string>
 	<key>NSJavaPath</key>
-	<array>
-		<string>@LOWERC_NAME@.jar</string>
-	</array>
+	@JAR_ARRAY@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>NOTE</key>
