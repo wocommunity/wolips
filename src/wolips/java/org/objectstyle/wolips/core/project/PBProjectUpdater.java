@@ -57,7 +57,6 @@ package org.objectstyle.wolips.core.project;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
@@ -82,7 +81,8 @@ import org.objectstyle.woproject.util.FileStringScanner;
  * Window>Preferences>Java>Code Generation.
  */
 public class PBProjectUpdater {
-	private static Hashtable projectUpdater = new Hashtable();
+	//do not cache PB.projects see bug #693046
+	//private static Hashtable projectUpdater = new Hashtable();
 	//public static String PBProject = "PB.projectContainer"; moved to IWOLipsPluginConstants.PROJECT_FILE_NAME (mn)
 	private PBProject pbProject;
 	private IContainer projectContainer;
@@ -114,14 +114,16 @@ public class PBProjectUpdater {
 	 * @return PBProjectUpdater
 	 */
 	public static PBProjectUpdater instance(IContainer aProjectContainer) {
-		PBProjectUpdater returnValue =
+		//		do not cache PB.projects see bug #693046
+		/*PBProjectUpdater returnValue =
 			(PBProjectUpdater) PBProjectUpdater.projectUpdater.get(
 				aProjectContainer);
 		if (returnValue == null) {
 			returnValue = new PBProjectUpdater(aProjectContainer);
 			PBProjectUpdater.projectUpdater.put(aProjectContainer, returnValue);
 		}
-		return returnValue;
+		return returnValue;*/
+		return new PBProjectUpdater(aProjectContainer);
 	}
 	/**
 	 * Method updatePBProject.
