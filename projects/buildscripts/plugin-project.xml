@@ -39,10 +39,10 @@
     <target name="copy.resources">
          <mkdir dir="${param.build.output.build.dir}/plugins/${param.plugin.name}_${build.version}"/>
          <copy todir="${param.build.output.build.dir}/plugins/${param.plugin.name}_${build.version}">
-            <fileset dir="">
-        	<exclude name="build.xml"/>
+            <fileset dir="${param.plugin.dir}">
+        	    <exclude name="build.xml"/>
                 <exclude name="default.properties"/>
-        	<exclude name=".project"/>
+        	    <exclude name=".project"/>
                 <exclude name=".classpath"/>
                 <exclude name="**/java/**"/>
             </fileset>
@@ -64,15 +64,56 @@
     <!-- param.classes.patternset.refid the classes    -->
     <!-- param.jar.file the jar file                   -->
     <!-- param.plugin.name the plugin name             -->
+    <!-- param.plugin.dir                              -->           
     <!-- param.build.output.build.dir the output dir   -->
     <!-- ============================================= -->
     <target name="jar">
-	<mkdir dir="${param.build.output.build.dir}/plugins/${param.plugin.name}_${build.version}/lib"/>
-	<jar jarfile="${param.build.output.build.dir}/plugins/${param.plugin.name}_${build.version}/lib/${param.jar.file}">
-        <fileset dir="${param.classes.dir}">
-		    <patternset refid="param.classes.patternset.refid"/>
-	    </fileset>
-	</jar>
+	    <mkdir dir="${param.build.output.build.dir}/plugins/${param.plugin.name}_${build.version}/lib"/>
+	    <jar jarfile="${param.build.output.build.dir}/plugins/${param.plugin.name}_${build.version}/lib/${param.jar.file}">
+            <fileset dir="${param.classes.dir}">
+		        <patternset refid="param.classes.patternset.refid"/>
+	        </fileset>
+	        <fileset dir="${param.plugin.dir}/java">
+                <include name="**/*.properties"/>
+            </fileset>
+            <fileset dir="${param.plugin.dir}/java">
+                <include name="**/*.gif"/>
+            </fileset>         
+            <metainf dir="../../../homepage/doc">
+                <include name="LICENSE*"/>
+            </metainf>
+	    </jar>
+    </target>
+
+    <!-- ============================================= -->
+    <!-- Jars Java classes from a project              -->
+    <!-- Required parameters                           -->
+    <!-- param.classes.dir                             -->
+    <!-- param.classes.patternset.refid the classes    -->
+    <!-- param.jar.file the jar file                   -->
+    <!-- param.project.dir                             -->
+    <!-- param.plugin.name                             -->           
+    <!-- param.build.output.build.dir the output dir   -->
+    <!-- ============================================= -->
+    <target name="jar.from.project">
+	    <mkdir dir="${param.build.output.build.dir}/plugins/${param.plugin.name}_${build.version}/lib"/>
+	    <jar jarfile="${param.build.output.build.dir}/plugins/${param.plugin.name}_${build.version}/lib/${param.jar.file}">
+            <fileset dir="${param.classes.dir}">
+		        <patternset refid="param.classes.patternset.refid"/>
+	        </fileset>
+	        <fileset dir="${param.project.dir}/java">
+                <include name="**/*.properties"/>
+            </fileset>
+            <fileset dir="${param.project.dir}/java">
+                <include name="**/*.gif"/>
+            </fileset>         
+            <fileset dir="${param.project.dir}">
+                <include name="**/resources/**"/>
+            </fileset>         
+            <metainf dir="../../../homepage/doc">
+                <include name="LICENSE*"/>
+            </metainf>
+	    </jar>
     </target>
 
     <!-- ============================================= -->

@@ -43,13 +43,32 @@
     <!-- Jars Java classes                             -->
     <!-- Required parameters                           -->
     <!-- param.classes.dir                             -->
+    <!-- param.resources.dir                             -->
     <!-- param.classes.patternset.refid the classes    -->
     <!-- param.jar.file the jar file                   -->
     <!-- ============================================= -->
     <target name="jar">
 	<jar jarfile="${param.jar.file}">
-            <fileset dir="${param.classes.dir}">
-		<patternset refid="param.classes.patternset.refid"/>
+        <fileset dir="${param.classes.dir}">
+		     <patternset refid="param.classes.patternset.refid"/>
+	    </fileset>
+    </jar>
+    </target>
+
+    <!-- ============================================= -->
+    <!-- Jars Java classes with resources              -->
+    <!-- Required parameters                           -->
+    <!-- param.classes.dir                             -->
+    <!-- param.resources.dir                           -->
+    <!-- param.classes.patternset.refid the classes    -->
+    <!-- param.jar.file the jar file                   -->
+    <!-- ============================================= -->
+    <target name="jar.with.resources">
+	<jar jarfile="${param.jar.file}">
+        <fileset dir="${param.classes.dir}">
+		     <patternset refid="param.classes.patternset.refid"/>
+	    </fileset>
+        <fileset dir="${param.resources.dir}">
 	    </fileset>
 	</jar>
     </target>

@@ -16,20 +16,15 @@
             <property name="param.plugin.dir" value="."/>
             <property name="param.build.output.build.dir" value="../../../${build.output.build.dir}"/>
             <property name="param.plugin.name" value="${plugin.name}"/>
-	</ant>
+	    </ant>
     </target>
 
     <!-- ========================================== -->
     <!-- Build copy jars.                           -->
     <!-- ========================================== -->
     <target name="lib">
-	<mkdir dir="../../../${build.output.build.dir}/plugins/${plugin.name}_${build.version}/lib"/>
-
-	<copy todir="../../../${build.output.build.dir}/plugins/${plugin.name}_${build.version}/lib">
-            <fileset dir="../../../lib">
-                <include name="${lib.cayenne}"/>
-            </fileset>
-        </copy>
+	    <mkdir dir="../../../${build.output.build.dir}/plugins/${plugin.name}_${build.version}/lib"/>
+	    <copy file="../../../lib/${lib.cayenne}" tofile="../../../${build.output.build.dir}/plugins/${plugin.name}_${build.version}/lib/cayenne.jar"/>
     </target>
 
     <!-- ========================================== -->

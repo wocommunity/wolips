@@ -28,15 +28,15 @@
                 <include name="**/org/objectstyle/woproject/**"/>
         </patternset>
             
-	<ant dir="." antfile="../../../${project.buildscripts.dir}/plugin-project.xml" target="jar">
+	<ant dir="." antfile="../../../${project.buildscripts.dir}/plugin-project.xml" target="jar.from.project">
+            <property name="param.project.dir" value="../../../woproject/src"/>
             <property name="param.classes.dir" value="../../../${build.output.java.dir}"/>
             <property name="param.jar.file" value="woproject.jar"/>
-            <reference refid="param.classes.patternset.refid"/>
             <property name="param.plugin.name" value="${plugin.name}"/>
+            <reference refid="param.classes.patternset.refid"/>
             <property name="param.build.output.build.dir" value="../../../${build.output.build.dir}"/>
         </ant>
     </target>
-
 
     <!-- ========================================== -->
     <!-- Build all.                                 -->

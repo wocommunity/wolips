@@ -37,6 +37,7 @@
         </patternset>
             
 	<ant dir="." antfile="../../../${project.buildscripts.dir}/plugin-project.xml" target="jar">
+            <property name="param.plugin.dir" value="."/>
             <property name="param.classes.dir" value="../../../${build.output.java.dir}"/>
             <property name="param.jar.file" value="wolips-projectbuild.jar"/>
             <reference refid="param.classes.patternset.refid"/>

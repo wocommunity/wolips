@@ -67,8 +67,9 @@
                 <exclude name="**/*Test.class"/>
             </patternset>
             
-	<ant dir="." antfile="../${project.buildscripts.dir}/ant-style-project.xml" target="jar">
+	<ant dir="." antfile="../${project.buildscripts.dir}/ant-style-project.xml" target="jar.with.resources">
             <property name="param.classes.dir" value="../${build.output.java.dir}"/>
+            <property name="param.resources.dir" value="src/resources"/>
             <property name="param.jar.file" value="../${build.output.build.dir}/woproject_${build.version}/lib/woproject.jar"/>
             <reference refid="param.classes.patternset.refid"/>
         </ant>

@@ -48,6 +48,7 @@
         </patternset>
             
 	<ant dir="." antfile="../../../${project.buildscripts.dir}/plugin-project.xml" target="jar">
+            <property name="param.plugin.dir" value="."/>
             <property name="param.classes.dir" value="../../../${build.output.java.dir}"/>
             <property name="param.jar.file" value="wolips-logging.jar"/>
             <reference refid="param.classes.patternset.refid"/>
@@ -60,13 +61,13 @@
     <!-- Build copy jars.                           -->
     <!-- ========================================== -->
     <target name="lib">
-	<mkdir dir="../../../${build.output.build.dir}/plugins/${plugin.name}/lib"/>
+	    <mkdir dir="../../../${build.output.build.dir}/plugins/${plugin.name}_${build.version}/lib"/>
 
-	<copy todir="../../../${build.output.build.dir}/plugins/${plugin.name}/lib">
+	    <copy todir="../../../${build.output.build.dir}/plugins/${plugin.name}_${build.version}/lib">
             <fileset dir="../../../lib">
                 <include name="${lib.log4j}"/>
                 <include name="${lib.commons-logging}"/>
-	    </fileset>
+	        </fileset>
         </copy>
     </target>
 

@@ -4,7 +4,7 @@
 <!--        Main WOLips plugins Ant build file                -->
 <!-- Serves as a facade for different helper build files.     -->
 <!-- ======================================================== -->
-<project name="org.objectstyle.woproject.ant" default="" basedir=".">
+<project name="org.objectstyle.wolips.woproject.ant" default="" basedir=".">
  
     <property file="default.properties"/>
 
@@ -19,21 +19,21 @@
 	</ant>
     </target>
 
-
     <!-- ========================================== -->
     <!-- Build jar.                                 -->
     <!-- ========================================== -->
     <target name="jar">
 	    <patternset id="param.classes.patternset.refid">
-                <include name="**/org/objectstyle/wolips/woenvironment/**"/>
-                <include name="**/org/objectstyle/wolips/woproject/**"/>
+                <include name="**/org/objectstyle/woenvironment/**"/>
+                <include name="**/org/objectstyle/woproject/**"/>
         </patternset>
             
-	<ant dir="." antfile="../../../${project.buildscripts.dir}/plugin-project.xml" target="jar">
+	<ant dir="." antfile="../../../${project.buildscripts.dir}/plugin-project.xml" target="jar.from.project">
+            <property name="param.project.dir" value="../../../woproject/src"/>
             <property name="param.classes.dir" value="../../../${build.output.java.dir}"/>
             <property name="param.jar.file" value="woproject.jar"/>
-            <reference refid="param.classes.patternset.refid"/>
             <property name="param.plugin.name" value="${plugin.name}"/>
+            <reference refid="param.classes.patternset.refid"/>
             <property name="param.build.output.build.dir" value="../../../${build.output.build.dir}"/>
         </ant>
     </target>
