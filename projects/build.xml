@@ -30,6 +30,7 @@
         *  5. test          - Run JUnit tests.
         *  6. check         - Stores the wo specific properties in a file.
         *  7. .ds_store     - delete .DS_store files
+        *  8. buildserver   - Target for the buildserver
         * Build environment:
         *
         * java.home = ${java.home}
@@ -82,6 +83,12 @@
 	<ant dir="${project.woenvironment.dir}" target="dist"/>
 	<ant dir="${project.woproject.dir}" target="dist"/>
 	<ant dir="${project.wolips.dir}" target="dist"/>
+    </target>
+
+    <!-- ========================================== -->
+    <!-- Build buildserver.                         -->
+    <!-- ========================================== -->
+    <target name="buildserver">
     </target>
 
     <!-- ============================================= -->
