@@ -100,7 +100,6 @@
 	    <ant dir="org.objectstyle.wolips.profiling" target="all"/>
 	    <ant dir="org.objectstyle.wolips.projectbuild" target="all"/>
 	    <ant dir="org.objectstyle.wolips.wounit" target="all"/>
-	    <ant dir="org.objectstyle.wolips.wounit.about" target="all"/>
 	    <ant dir="org.objectstyle.wolips.ui" target="all"/>
 	    <ant dir="org.objectstyle.wolips.wizards" target="all"/>
 	    <ant dir="org.objectstyle.wolips.woproject" target="all"/>
@@ -134,7 +133,6 @@
 	    <ant dir="org.objectstyle.wolips.profiling" target="dist"/>
 	    <ant dir="org.objectstyle.wolips.projectbuild" target="dist"/>
 	    <ant dir="org.objectstyle.wolips.wounit" target="dist"/>
-	    <ant dir="org.objectstyle.wolips.wounit.about" target="dist"/>
 	    <ant dir="org.objectstyle.wolips.ui" target="dist"/>
 	    <ant dir="org.objectstyle.wolips.wizards" target="dist"/>
 	    <ant dir="org.objectstyle.wolips.woproject" target="dist"/>
