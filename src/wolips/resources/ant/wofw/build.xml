@@ -1,0 +1,16 @@
+<project name="${projectname}" default="build" basedir="${basedir}">
+
+	<target name="build">
+		<woframework name="${frameworkname}" destDir="${destdir}">
+   			<classes dir="bin">
+   			</classes>
+   			<resources dir="resources">
+       			<include name="*.eomodeld/**"/>
+   			</resources>
+   			<wsresources dir="WSResources">
+       			<include name="Images/**"/>
+   			</wsresources>
+		</woframework>
+	</target>
+	
+</project>
