@@ -70,6 +70,7 @@ import org.objectstyle.wolips.datasets.DataSetsPlugin;
 import org.objectstyle.wolips.datasets.adaptable.JavaProject;
 import org.objectstyle.wolips.datasets.adaptable.Project;
 import org.objectstyle.wolips.datasets.project.PBProjectUpdater;
+import org.objectstyle.wolips.datasets.project.WOLipsCore;
 import org.objectstyle.wolips.datasets.resources.IWOLipsModel;
 /**
  * Tracking changes in resources and synchronizes webobjects project file
@@ -101,15 +102,15 @@ public class ResourceChangeListener extends Job {
 				.getAddedResourcesProjectDict().keySet().toArray();
 		for (int i = 0; i < allAddedKeys.length; i++) {
 			projectFileToUpdate = (IFile) allAddedKeys[i];
-                    projectUpdater = PBProjectUpdater.instance(projectFileToUpdate
-                                                               .getParent());
-                    if(projectUpdater != null) {
-			if (projectFileToUpdate.getParent().getType() == IResource.PROJECT)
-                            projectUpdater.syncProjectName();
-			projectUpdater.syncFilestable((HashMap) resourceValidator
-                                                      .getAddedResourcesProjectDict().get(projectFileToUpdate),
-                                                      IResourceDelta.ADDED);
-                    }
+			projectUpdater = PBProjectUpdater.instance(projectFileToUpdate
+			        .getParent());
+			if(projectUpdater != null) {
+			    if (projectFileToUpdate.getParent().getType() == IResource.PROJECT)
+			        projectUpdater.syncProjectName();
+			    projectUpdater.syncFilestable((HashMap) resourceValidator
+			            .getAddedResourcesProjectDict().get(projectFileToUpdate),
+			            IResourceDelta.ADDED);
+			}
 		}
 		Object[] allRemovedKeys = resourceValidator
 				.getRemovedResourcesProjectDict().keySet().toArray();
@@ -120,11 +121,11 @@ public class ResourceChangeListener extends Job {
 			if (projectFileToUpdate.getParent().exists()) {
 				projectUpdater = PBProjectUpdater.instance(projectFileToUpdate
 						.getParent());
-                            if(projectUpdater != null) {
-				projectUpdater.syncFilestable((HashMap) resourceValidator
-						.getRemovedResourcesProjectDict().get(
-								projectFileToUpdate), IResourceDelta.REMOVED);
-                            }
+				if(projectUpdater != null) {
+				    projectUpdater.syncFilestable((HashMap) resourceValidator
+				            .getRemovedResourcesProjectDict().get(
+				                    projectFileToUpdate), IResourceDelta.REMOVED);
+				}
 			}
 		}
 		return new Status(IStatus.OK, DataSetsPlugin.getPluginId(), IStatus.OK,
@@ -345,6 +346,7 @@ public class ResourceChangeListener extends Job {
 		private final void updateProjectFile(int kindOfChange,
 				IResource resourceToUpdate, String fileStableId,
 				IFile projectFileToUpdate) {
+		    System.err.println(resourceToUpdate);
 			if (projectFileToUpdate == null) {
 				return;
 			}
