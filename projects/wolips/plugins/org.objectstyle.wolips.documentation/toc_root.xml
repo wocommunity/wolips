@@ -17,7 +17,8 @@
 		<topic label="Building" href="doc_root/tasks/build.html"/>
 		<topic label="Testing" href="doc_root/tasks/test.html"/>
 		<topic label="Launching" href="doc_root/tasks/launch.html"/>
-		<topic label="Profiling" href="doc_root/tasks/profile.html"/>  
+		<topic label="Profiling" href="doc_root/tasks/profile.html"/>
+		<topic label="Coding" href="doc_root/tasks/coding.html"/>
 	</topic>
 	<topic label="Tips and Tricks" href="doc_root/tips/index.html">
 		<topic label="Manipulating the Build Process" href="doc_root/tips/building.html"/>

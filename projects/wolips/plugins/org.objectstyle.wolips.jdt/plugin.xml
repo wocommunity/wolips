@@ -54,5 +54,36 @@
    <extension
          point="org.eclipse.ui.startup">
    </extension>
-
+<!-- =================================================================================== -->
+<!-- Extension: templates                                                                  -->
+<!-- =================================================================================== -->
+<extension point="org.eclipse.ui.editors.templates">
+		<template
+    			name="action"
+        		icon="icons/template.gif"
+        		description="action to return a page"
+        		contextTypeId="java"
+        		id="org.objectstyle.wolips.jdt.ui.templates.action">
+        		<pattern>
+        		public ${return_type} ${name}() {
+				${return_type} page = (${return_type})this.pageWithName(${return_type}.class.getName());
+				${cursor}
+			return page;
+			}
+			</pattern>
+		</template>
+		<template
+    			name="action.this"
+        		icon="icons/template.gif"
+        		description="action to return this page"
+        		contextTypeId="java"
+        		id="org.objectstyle.wolips.jdt.ui.templates.action.this">
+        		<pattern>
+        		public ${primary_type_name} ${name}() {
+        		${cursor}
+			return (${primary_type_name})this.context().page();
+			}
+			</pattern>${primary_type_name}
+		</template>
+	</extension>
 </plugin>
