@@ -44,14 +44,6 @@
 					<td valign="top" align="center">Yes</td>
 				</tr>
 				<tr>
-					<td valign="top">superDestDir</td>
-					<td valign="top">Destination directory for Java superclasses
-					<i>(ignoring their package names)</i>. If ommitted, "destDir" is used.
-					Ignored unless "makepairs" set to "true".
-					</td>
-					<td valign="top" align="center">No</td>
-				</tr>
-				<tr>
 					<td valign="top">overwrite</td>
 					<td valign="top">If set to "true", will overwrite older versions of
 					generated classes. Ignored unless makepairs is set to "false".</td>
@@ -75,6 +67,26 @@
 					<td valign="top">Location of Velocity template file for Java superclass 
 					generation. Ignored unless "makepairs" set to "true".
 					If ommitted, default template is used.</td>
+					<td valign="top" align="center">No</td>
+				</tr>
+				<tr>
+					<td valign="top">superpkg</td>
+					<td valign="top">Java package name of generated superclasses.
+					Ignored unless "makepairs" set to "true". If omitted,
+					each superclass will be assigned the same package as subclass.
+					<i>Note that having superclass in a different package
+					would only make sense when "usepkgpath" is set to "true". 
+					Otherwise classes from different packages will end up in the same 
+					directory.</i></td>
+					<td valign="top" align="center">No</td>
+				</tr>
+				<tr>
+					<td valign="top">usepkgpath</td>
+					<td valign="top">If set to "true" (default), 
+					a directory tree will be generated
+					in "destDir" corresponding to the class package structure,
+					if set to "false", classes will be generated in "destDir"
+					ignoring their package.</td>
 					<td valign="top" align="center">No</td>
 				</tr>
 			</table>

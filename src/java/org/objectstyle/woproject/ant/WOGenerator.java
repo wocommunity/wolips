@@ -75,6 +75,9 @@ public class WOGenerator extends CayenneGenerator {
     public static final String SUBCLASS_TEMPLATE = "wogen/subclass.vm";
     public static final String SINGLE_CLASS_TEMPLATE = "wogen/singleclass.vm";
     
+    /** Wrapper of the superclass <code>setMap</code>
+     *  method to provide WebObjects-friendly name. 
+     */
     public void setModel(File model) {
         super.setMap(model);
     }
