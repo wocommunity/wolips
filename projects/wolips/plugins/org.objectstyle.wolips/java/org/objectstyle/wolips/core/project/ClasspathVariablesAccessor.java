@@ -198,9 +198,9 @@ public final class ClasspathVariablesAccessor
 				classpathVariable)
 			|| WOLipsPlugin.getDefault().getWOEnvironment().getNEXT_ROOT().equals(
 				classpathVariable)
-			|| ClasspathVariablesAccessor.UserHomeClasspathVariable.equals(
+			|| IClasspathVariablesAccessor.UserHomeClasspathVariable.equals(
 				classpathVariable)
-			|| ClasspathVariablesAccessor
+			|| IClasspathVariablesAccessor
 				.ProjectWonderHomeClasspathVariable
 				.equals(
 				classpathVariable);
