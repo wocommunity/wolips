@@ -110,7 +110,7 @@ public class WOArgumentsTab extends JavaLaunchConfigurationTab {
 		fPrgmArgumentsLabel = new Label(comp, SWT.NONE);
 		fPrgmArgumentsLabel.setText(LaunchingMessages.getString("WOArgumentsTab.&Program_arguments__5")); //$NON-NLS-1$
 						
-		fPrgmArgumentsText = new Text(comp, SWT.MULTI | SWT.WRAP | SWT.BORDER | SWT.V_SCROLL);
+		fPrgmArgumentsText = new Text(comp, SWT.MULTI | SWT.WRAP | SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL );
 		gd = new GridData(GridData.FILL_BOTH);
 		gd.heightHint = 80;
 		fPrgmArgumentsText.setLayoutData(gd);
