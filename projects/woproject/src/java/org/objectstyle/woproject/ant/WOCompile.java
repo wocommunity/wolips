@@ -56,7 +56,9 @@
 package org.objectstyle.woproject.ant;
 
 import java.io.File;
+import java.util.Iterator;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Vector;
 
 import org.apache.tools.ant.BuildException;
@@ -83,30 +85,38 @@ public class WOCompile extends Javac {
         Project project = getProject();
 
         // track included jar files to avoid double entries
-        Vector jarSet = new Vector();		
+        Vector jarSet = new Vector();
+        HashSet processedFrameworks = new HashSet();
 
         int size = frameworkSets.size();
         for (int i = 0; i < size; i++) {
             FrameworkSet fs = (FrameworkSet) frameworkSets.get(i);
+            HashSet frameworksToSkip = new HashSet();
 
             try {
-                DirectoryScanner ds = fs.getDirectoryScanner(project);
-                String[] dirs = ds.getIncludedDirectories();
+                String[] frameworks = fs.getFrameworks();
 
-                for (int j = 0; j < dirs.length; j++) {
-                    File[] jars = fs.findJars(dirs[j]);
+                for (int j = 0; j < frameworks.length; j++) {
+                    String frameworkName = frameworks[j];
+                    File[] jars = fs.findJars(frameworkName);
 
                     if (jars == null || jars.length == 0) {
-                        log("No Jars in " + dirs[j] + ", ignoring.",
+                        log("No Jars in " + fs.getDir(project).getPath() + "/" + frameworkName + ", ignoring.",
                             Project.MSG_VERBOSE);
                         continue;
                     }
 
-                    int jsize = jars.length;
-                    for (int k = 0; k < jsize; k++) {
-                        if(!jarSet.contains(jars[k]))
-                            jarSet.add(jars[k]);
+                    if(!processedFrameworks.contains(frameworkName)) {
+                        int jsize = jars.length;
+                        for (int k = 0; k < jsize; k++) {
+                            if (!jarSet.contains(jars[k])) {
+                                jarSet.add(jars[k]);
+                            } else {
+                                log("Skipped " + jars[k].getPath(), Project.MSG_VERBOSE);
+                            }
+                        }
                     }
+                    processedFrameworks.add(frameworkName);
                 }
             } catch (BuildException be) {
                 // directory doesn't exist or is not readable

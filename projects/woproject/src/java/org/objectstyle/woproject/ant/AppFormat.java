@@ -212,56 +212,56 @@ public class AppFormat extends ProjectFormat {
 
 		// track included jar files to avoid double entries
 		Vector jarSet = new Vector();
+                HashSet processedFrameworks = new HashSet();
 
-		for (int i = 0; i < frameworkSets.size(); i++) {
+                int size = frameworkSets.size();
+                for (int i = 0; i < size; i++) {
+                    FrameworkSet fs = (FrameworkSet) frameworkSets.get(i);
 
-			FrameworkSet fs = null;
-			DirectoryScanner ds = null;
-			String[] dirs = null;
-			try {
-				fs = (FrameworkSet) frameworkSets.get(i);
-				// Don't bother checking if it's embedded.
-				if (!fs.isReference()) {
-					log(
-						"fs.createPatternSet().getIncludePatterns(project) "
-							+ fs.createPatternSet().getIncludePatterns(project),
-						Project.MSG_VERBOSE);
-					log(
-						"fs.createPatternSet().getExcludePatterns(project) "
-							+ fs.createPatternSet().getExcludePatterns(project),
-						Project.MSG_VERBOSE);
-				}
-				if (fs.getEmbed()) {
-					continue;
-				}
-				ds = fs.getDirectoryScanner(project);
-				dirs = ds.getIncludedDirectories();
+                    try {
+                        String[] frameworks = fs.getFrameworks();
+                        if (!fs.isReference()) {
+                            log(
+                                "fs.createPatternSet().getIncludePatterns(project) "
+                                + fs.createPatternSet().getIncludePatterns(project),
+                                Project.MSG_VERBOSE);
+                            log(
+                                "fs.createPatternSet().getExcludePatterns(project) "
+                                + fs.createPatternSet().getExcludePatterns(project),
+                                Project.MSG_VERBOSE);
+                        }
+                        if (fs.getEmbed()) {
+                            continue;
+                        }
+                        for (int j = 0; j < frameworks.length; j++) {
+                            String frameworkName = frameworks[j];
+                            File[] jars = fs.findJars(frameworkName);
 
-				for (int j = 0; j < dirs.length; j++) {
-					File[] jars = fs.findJars(dirs[j]);
+                            if (jars == null || jars.length == 0) {
+                                log("No Jars in " + fs.getDir(project).getPath() + "/" + frameworkName + ", ignoring.",
+                                    Project.MSG_VERBOSE);
+                                continue;
+                            }
 
-					if (jars == null || jars.length == 0) {
-						log(
-							"No Jars in " + dirs[j] + ", ignoring.",
-							Project.MSG_VERBOSE);
-						continue;
-					}
-
-					int jsize = jars.length;
-					for (int k = 0; k < jsize; k++) {
-						if (!jarSet.contains(jars[k]))
-							jarSet.add(jars[k]);
-					}
-				}
-			} catch (Exception anException) {
-				// directory doesn't exist or is not readable
-				log(anException.getMessage(), Project.MSG_WARN);
-			} finally {
-				fs = null;
-				ds = null;
-				dirs = null;
-			}
-		}
+                            if(!processedFrameworks.contains(frameworkName)) {
+                                int jsize = jars.length;
+                                for (int k = 0; k < jsize; k++) {
+                                    if (!jarSet.contains(jars[k])) {
+                                        jarSet.add(jars[k]);
+                                    } else {
+                                        log("Skipped " + jars[k].getPath(), Project.MSG_VERBOSE);
+                                    }
+                                }
+                            }
+                            processedFrameworks.add(frameworkName);
+                        }
+                    } catch (BuildException be) {
+                        // directory doesn't exist or is not readable
+                        log(be.getMessage(), Project.MSG_WARN);
+                    } finally {
+                        fs = null;
+                    }
+                }
 		File aFile = null;
 		try {
 			for (int i = 0; i < jarSet.size(); i++) {

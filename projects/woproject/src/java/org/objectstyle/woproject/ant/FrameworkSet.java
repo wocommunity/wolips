@@ -61,6 +61,7 @@ import java.io.FilenameFilter;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.ProjectHelper;
 import org.apache.tools.ant.types.FileSet;
+import org.apache.tools.ant.DirectoryScanner;
 
 /**
  * Customized subclass of FileSet used to locate frameworks.
@@ -130,7 +131,12 @@ public class FrameworkSet extends FileSet {
 		return getProject().getProperty(string) != null;
 	}
 
-	public File[] findJars(String frameworkDir) {
+        public String[] getFrameworks() {
+            String[] files = getDirectoryScanner(getProject()).getIncludedDirectories();
+            return files;
+        }
+
+        public File[] findJars(String frameworkDir) {
 		if (!testIfCondition())
 			return new File[] {
 		};
