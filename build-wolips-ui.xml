@@ -42,6 +42,9 @@
             <fileset dir="src/wolips-ui/java">
           	    <include name="**/*.properties"/>
              </fileset>         
+             <fileset dir="src/wolips-ui/java">
+          	    <include name="**/*.gif"/>
+             </fileset>         
             <metainf dir="doc">
                 <include name="LICENSE*"/>
             </metainf>
