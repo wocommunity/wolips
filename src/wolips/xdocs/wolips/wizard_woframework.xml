@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<document>
+<title>WOLips: Wizards WOFramework</title>
+    
+<body>      
+	<section name="Wizards WOFramework">
+		<p><a href="wizard_woapplication.html">WOApplication</a> <a href="wizard_woframework.html">WOFramework</a> <a href="wizard_wocomponent.html">WOComponent</a></p>
+	
+	<subsection name="WOFramework">
+		<p>In the menu navigate to File-New-Project.</p>
+		<img src="/images/wolips/project_step_1.jpg"/>
+		<p>The new project wizard appears. The available options under WO 5.* are a WOFramework or a WOApplication. Please Select WOFramework and continue with clicking the next button.</p>
+		<img src="/images/wolips/project_step_2.jpg"/>
+		<p>Give your project a name. Continue with clicking the next button.</p>
+		<img src="/images/wolips/project_step_3.jpg"/>
+		<p>Select use source folder in project. Continue with new folder.</p>
+		<img src="/images/wolips/project_step_4.jpg"/>
+		<p>A dialog appears.</p>
+		<img src="/images/wolips/project_step_5.jpg"/>
+		<p>Enter src. This have to be src. Close The dialog with ok.</p>
+		<img src="/images/wolips/project_step_6.jpg"/>
+		<p>Answer this dialog with yes.</p>
+		<img src="/images/wolips/project_step_7.jpg"/>
+		<p>Finish the wizard.</p>
+		<img src="/images/wolips/project_step_8.jpg"/>
+	</subsection>
+	</section>
+	
+</body>
+</document>

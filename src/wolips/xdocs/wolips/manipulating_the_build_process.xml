@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<document>
+<title>WOLips: Manipulating the Build Process</title>
+    
+<body>      
+	<section name="Manipulating the Build Process">
+		<p>If you add a file named WOLipsBuild.properties in your project root you can manipulate the build process.</p>
+		<p>A later version should have a preferences dialog for that.</p>
+		<p>The available keys are:</p>
+		<p>basedir</p> 
+		<p>destdir -> Where to install your framework c:/foo/bar default ../../framework-export</p>
+		<p>frameworkname</p>
+		<p>projectname</p>
+	</section>
+</body>
+</document>

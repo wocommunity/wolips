@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<document>
+<title>WOLips: Wizards</title>
+    
+<body>      
+	<section name="Wizards">
+		<p><a href="wizard_woapplication.html">WOApplication</a> <a href="wizard_woframework.html">WOFramework</a> <a href="wizard_wocomponent.html">WOComponent</a></p>
+	</section>
+	
+</body>
+</document>
