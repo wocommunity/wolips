@@ -9,7 +9,7 @@
     <body>        
         <!-- Bugs section -->
         <section name="Bugs">
-        	<p>Report your bugs at <a href="http://sourceforge.net/projects/woproject/">Sourceforge</a></p>
+        	<p>Report your <a href="http://objectstyle.org/jira/">bug</a>.</p>
  			<p>Please provide as much information as possible.</p>
  			<ul>
             	<li><p>WOLips/Eclipse version</p></li>
@@ -20,9 +20,9 @@
  		</section> 
         <!-- FRC section -->
         <section name="Feature requests">
-        	<p>Post your request at <a href="http://sourceforge.net/projects/woproject/">Sourceforge</a></p>
+        	<p>Post your request <a href="http://objectstyle.org/jira/">request</a>.</p>
  		</section>
-        <!-- Bugs section -->
+        <!-- jMechanic section -->
         <section name="Profiling">   
         <p>To profile your WOApps give jMechanic a try:</p>
         <p><a href="http://sourceforge.net/projects/jmechanic/">jMechanic homepage</a></p>
