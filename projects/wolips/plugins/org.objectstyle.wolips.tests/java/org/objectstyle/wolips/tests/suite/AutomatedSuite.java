@@ -58,8 +58,10 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.objectstyle.wolips.datasets.DataSetsPluginTestSuite;
+import org.objectstyle.wolips.datasets.DataSetsTestSuite;
+import org.objectstyle.wolips.templateengine.TemplatesTestSuite;
 import org.objectstyle.wolips.tests.core.TestsCorePluginTestSuite;
+import org.objectstyle.wolips.wizards.WizardsTestSuite;
 /**
  * Run all compiler regression tests
  */
@@ -74,7 +76,11 @@ public class AutomatedSuite extends TestCase {
 		suite.addTestSuite(CheckWorkspaceTest.class);
 		suite.addTest(TestsCorePluginTestSuite.suite());
 		suite.addTestSuite(CheckWorkspaceTest.class);
-		suite.addTest(DataSetsPluginTestSuite.suite());
+		suite.addTest(TemplatesTestSuite.suite());
+		suite.addTestSuite(CheckWorkspaceTest.class);
+		suite.addTest(DataSetsTestSuite.suite());
+		suite.addTestSuite(CheckWorkspaceTest.class);
+		suite.addTest(WizardsTestSuite.suite());
 		suite.addTestSuite(CheckWorkspaceTest.class);
 		return suite;
 	}
