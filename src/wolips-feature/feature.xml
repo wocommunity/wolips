@@ -4,10 +4,7 @@
       label="%featureName"
       version="0.9.2"
       image="%image"
-      provider-name="%providerName"
-      os="%os"
-      ws="%ws"
-      nl="%nl">
+      provider-name="%providerName">
 
    <description>
       %description
