@@ -194,24 +194,6 @@ public class WOSubprojectCreationPage extends WizardNewWOResourcePage {
 			new WorkspaceModifyDelegatingOperation(subprojectCreator);
 
 		return createResourceOperation(op);
-
-		/*
-			String projectTemplateID =
-				WebObjectsEclipsePlugin.getDefault().getResourceString("webobjects.projectType.java.subproject");
-			IRunnableWithProgress op =
-				new WorkspaceModifyDelegatingOperation(new WOProjectCreator(projectFolder, projectTemplateID));
-			try {
-				getContainer().run(false, true, op);
-			} catch (InvocationTargetException e) {
-				WOLipsUtils.handleException(getShell(), e.getTargetException(), null);
-				return false;
-			} catch (InterruptedException e) {
-				//WOLipsUtils.handleException(getShell(), e, null);
-				return false;
-			}
-		
-			return true;
-			*/
 	}
 
 	/** (non-Javadoc)

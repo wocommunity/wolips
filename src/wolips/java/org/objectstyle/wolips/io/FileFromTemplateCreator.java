@@ -63,7 +63,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Hashtable;
-
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -75,7 +74,9 @@ import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.objectstyle.wolips.WOLipsPlugin;
+import org.objectstyle.wolips.wizards.Messages;
 import org.objectstyle.wolips.wo.WOVariables;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -174,33 +175,50 @@ public class FileFromTemplateCreator {
 		String fileExtension = null;
 		int extIndex = fileName.indexOf(".");
 		if (extIndex != -1 && extIndex < fileName.length() - 1) {
+			// fileNameWithoutExtension is used to resolve CLASS template key
 			fileNameWithoutExtension = fileName.substring(0, extIndex);
 			fileExtension = fileName.substring(extIndex + 1);
 		}
+		SubProgressMonitor subMonitor = null;
+		if (monitor != null) {
+			subMonitor = new SubProgressMonitor(monitor, 1);
+		}
 		try {
-			SubProgressMonitor subMonitor = null;
-			if (monitor != null) {
-				subMonitor = new SubProgressMonitor(monitor, 1);
-			}
 			fileToCreate.create(
 				createInputStream(templateId),
 				false,
 				subMonitor);
 		} catch (CoreException e) {
-			throw new InvocationTargetException(e);
-		}
-		/*
-				if (fileExtension != null) {
-					QualifiedName resourceQualifier = WOLipsUtils.qualifierFromResourceIdentifier(fileExtension);
-					String listId = (String) WOLipsUtils.getResourceQualifierToListIdDict().get(resourceQualifier);
+			if (fileToCreate.exists()) {
+				// ask for overwriting existing file
+				if (MessageDialog
+					.openQuestion(
+						WOLipsPlugin.getDefault().getActiveWorkbenchShell(),
+						Messages.getString("QuestionDialog.title"),
+						e.getMessage()
+							+ "\n"
+							+ Messages.getString(
+								"QuestionDialog.overwrite.file"))) {
 					try {
-						// mark resource as project depending
-						fileToCreate.setPersistentProperty(resourceQualifier, listId);
-					} catch (CoreException e) {
-						throw new InvocationTargetException(e);
+						fileToCreate.delete(true, monitor);
+					} catch (CoreException e2) {
+						throw new InvocationTargetException(e2);
 					}
+					create(fileToCreate, templateId, monitor);
 				}
-				*/
+			} else {
+				// ask for continuing execution of process
+				if (!MessageDialog
+					.openQuestion(
+						WOLipsPlugin.getDefault().getActiveWorkbenchShell(),
+						Messages.getString("QuestionDialog.title"),
+						e.getMessage()
+							+ "\n"
+							+ Messages.getString("QuestionDialog.continue"))) {
+					throw new InvocationTargetException(e);
+				}
+			}
+		}
 	}
 	/**
 	 * Creates new file resource, the initial contents are
