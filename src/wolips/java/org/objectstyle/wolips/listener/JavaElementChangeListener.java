@@ -81,11 +81,13 @@ import com.webobjects.foundation.NSMutableDictionary;
 /**
  * Tracking changes in classpath and synchronizes webobjects project file
  */
+
 public class JavaElementChangeListener implements IElementChangedListener {
 
 	/**
 	 * Constructor for JavaElementChangeListener.
 	 */
+
 	public JavaElementChangeListener() {
 		super();
 	}
@@ -96,32 +98,42 @@ public class JavaElementChangeListener implements IElementChangedListener {
 	 * <br>
 	 * @see org.eclipse.jdt.core.IElementChangedListener#elementChanged(ElementChangedEvent)
 	 */
+
 	public void elementChanged(ElementChangedEvent event) {
 
 		NSMutableDictionary addedFrameworksProjectDict =
 			new NSMutableDictionary();
+
 		NSMutableDictionary removedFrameworksProjectDict =
 			new NSMutableDictionary();
 
 		if (event.getDelta().getElement().getElementType()
 			== IJavaElement.JAVA_MODEL) {
+
 			IJavaElementDelta elementDeltaToExamine = event.getDelta();
+
 			// java model has changed - get affected webobjects projects
+
 			for (int i = 0;
 				i < elementDeltaToExamine.getChangedChildren().length;
 				i++) {
+
 				// examine changed children if they are webobjects projects
+
 				if (elementDeltaToExamine
 					.getChangedChildren()[i]
 					.getElement()
 					.getElementType()
 					== IJavaElement.JAVA_PROJECT) {
+
 					IProject projectToExamine =
 						((IJavaProject) elementDeltaToExamine
 							.getChangedChildren()[i]
 							.getElement())
 							.getProject();
+
 					try {
+
 						if (projectToExamine
 							.hasNature(
 								IWOLipsPluginConstants.WO_APPLICATION_NATURE)
@@ -137,9 +149,11 @@ public class JavaElementChangeListener implements IElementChangedListener {
 								projectToExamine);
 
 							// webobjects project changed 
+
 							ArrayList foundElements = new ArrayList();
 
 							// search deltas for classpath changes
+
 							searchDeltas(
 								elementDeltaToExamine
 									.getChangedChildren()[i]
@@ -150,6 +164,7 @@ public class JavaElementChangeListener implements IElementChangedListener {
 							IPackageFragmentRoot currentPackageFragmentRoot;
 
 							for (int j = 0; j < foundElements.size(); j++) {
+
 								currentPackageFragmentRoot =
 									(IPackageFragmentRoot) foundElements.get(j);
 
@@ -180,6 +195,7 @@ public class JavaElementChangeListener implements IElementChangedListener {
 							foundElements = new ArrayList();
 
 							// search deltas for classpath changes
+
 							searchDeltas(
 								elementDeltaToExamine
 									.getChangedChildren()[i]
@@ -188,6 +204,7 @@ public class JavaElementChangeListener implements IElementChangedListener {
 								foundElements);
 
 							for (int j = 0; j < foundElements.size(); j++) {
+
 								currentPackageFragmentRoot =
 									(IPackageFragmentRoot) foundElements.get(j);
 
@@ -215,18 +232,27 @@ public class JavaElementChangeListener implements IElementChangedListener {
 								*/
 
 							}
+
 						}
+
 					} catch (CoreException e) {
+
 						WOLipsPlugin.log(e);
+
 					}
+
 				}
+
 			}
+
 		}
 
 		// update project files
+
 		updateProjects(
 			addedFrameworksProjectDict,
 			removedFrameworksProjectDict);
+
 	}
 
 	/**
@@ -238,24 +264,35 @@ public class JavaElementChangeListener implements IElementChangedListener {
 	 * @param foundElements
 	 * @return boolean
 	 */
+
 	private boolean searchDeltas(
 		IJavaElementDelta[] deltasToExamine,
 		int changeFlagToSearch,
 		ArrayList foundElements) {
 
 		for (int i = 0; i < deltasToExamine.length; i++) {
+
 			if (deltasToExamine[i].getFlags()
 				== IJavaElementDelta.F_CHILDREN) {
+
 				// further examination needed
+
 				while (searchDeltas(deltasToExamine[i].getChangedChildren(),
 					changeFlagToSearch,
 					foundElements));
+
 			} else if (deltasToExamine[i].getFlags() == changeFlagToSearch) {
+
 				// element found 
+
 				foundElements.add(deltasToExamine[i].getElement());
+
 			}
+
 		}
+
 		return false;
+
 	}
 
 	private void updateProjects(
@@ -263,8 +300,11 @@ public class JavaElementChangeListener implements IElementChangedListener {
 		NSDictionary removedFrameworksProjectDict) {
 
 		IProject currentProject;
+
 		PBProject currentPBProject;
+
 		List frameworks;
+
 		NSArray changedFrameworks;
 
 		for (int i = 0;
@@ -274,15 +314,20 @@ public class JavaElementChangeListener implements IElementChangedListener {
 			currentProject =
 				(IProject) addedFrameworksProjectDict.allKeys().objectAtIndex(
 					i);
+
 			changedFrameworks =
 				(NSArray) addedFrameworksProjectDict.objectForKey(
 					currentProject);
 
 			if (changedFrameworks.count() > 0) {
+
 				PBProjectUpdater projectUpdater =
 					new PBProjectUpdater(currentProject);
+
 				projectUpdater.addFrameworks(changedFrameworks);
+
 			}
+
 		}
 
 		for (int i = 0;
@@ -300,12 +345,16 @@ public class JavaElementChangeListener implements IElementChangedListener {
 					currentProject);
 
 			if (changedFrameworks.count() > 0) {
+
 				PBProjectUpdater projectUpdater =
 					new PBProjectUpdater(currentProject);
+
 				projectUpdater.removeFrameworks(changedFrameworks);
+
 			}
 
 		}
+
 	}
 
 }

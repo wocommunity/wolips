@@ -53,9 +53,10 @@
  * <http://objectstyle.org/>.
  *
  */
- package org.objectstyle.wolips.ant;
+package org.objectstyle.wolips.ant;
 
 import java.io.ByteArrayInputStream;
+import java.util.HashSet;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
@@ -76,19 +77,15 @@ import org.objectstyle.wolips.wo.WOVariables;
  * @author mnolte
  *
  */
-public class UpdateFrameworksets extends Task {
+public class UpdateFrameworkIncludeFiles extends UpdateIncludeFiles {
 
-	private static Path nextRoot;
-	private String projectName;
-	private String frameworkIncludesfile;
-	private IProject actualProject;
-	private IFile frameworkListFile;
 
 	/**
-	 * Constructor for UpdateFrameworksets.
+	 * Constructor for UpdateFrameworkIncludeFiles.
 	 */
-	public UpdateFrameworksets() {
+	public UpdateFrameworkIncludeFiles() {
 		super();
+		INCLUDES_FILE_PREFIX = "ant.frameworks";
 	}
 
 	public void execute() throws BuildException {
@@ -97,59 +94,9 @@ public class UpdateFrameworksets extends Task {
 			ResourcesPlugin.getWorkspace().getRoot().getProject(
 				getProjectName());
 
-		frameworkListFile = actualProject.getFile(getFrameworkIncludesfile());
-
 		if (actualProject.exists()) {
-			System.out.println("Building framework sets...");
-
-			if (!frameworkListFile.exists()) {
-				try {
-					frameworkListFile.create(
-						new ByteArrayInputStream("".getBytes()),
-						true,
-						null);
-				} catch (CoreException e) {
-					System.out.println(
-						"Exception while trying to create framework list file: "
-							+ e.getMessage());
-				}
-			}
-
-			// add wo classpath entries
-			IJavaProject myJavaProject = JavaCore.create(actualProject);
-			IClasspathEntry[] classPaths;
-			try {
-				classPaths = myJavaProject.getRawClasspath();
-			} catch (JavaModelException e) {
-				System.out.println(
-					"Exception while trying to get classpath entries: "
-						+ e.getMessage());
-				return;
-			}
-			StringBuffer newFrameworkEntries = new StringBuffer();
-			for (int i = 0; i < classPaths.length; i++) {
-				if (classPaths[i].getEntryKind()
-					== IClasspathEntry.CPE_LIBRARY) {
-					// remove next root from path
-					newFrameworkEntries.append(
-						classpathEntryToFrameworkEntry(classPaths[i]));
-					newFrameworkEntries.append("\n");
-				}
-			}
-
-			try {
-				frameworkListFile.setContents(
-					new ByteArrayInputStream(
-						newFrameworkEntries.toString().getBytes()),
-					true,
-					true,
-					null);
-			} catch (CoreException e) {
-				System.out.println(
-					"Exception while trying to write framework file: "
-						+ e.getMessage());
-				return;
-			}
+			System.out.println("Building framework sets include files ...");
+			buildIncludeFiles();
 			System.out.println("done");
 
 		} else {
@@ -158,87 +105,137 @@ public class UpdateFrameworksets extends Task {
 		}
 	}
 
+	protected synchronized void buildIncludeFiles() throws BuildException {
+		// void double entries
+		HashSet resolvedEntries = new HashSet();
+		// add wo classpath entries
+		IJavaProject myJavaProject = JavaCore.create(actualProject);
+		IClasspathEntry[] classPaths;
+		try {
+			classPaths = myJavaProject.getResolvedClasspath(true);
+		} catch (JavaModelException e) {
+			System.out.println(
+				"Exception while trying to get classpath entries: "
+					+ e.getMessage());
+			return;
+		}
+
+		IFile currentFrameworkListFile;
+
+		for (int i = 0; i < ROOT_PATHS.length; i++) {
+
+			currentFrameworkListFile =
+				actualProject.getFile(
+					INCLUDES_FILE_PREFIX + "." + ROOT_PATHS[i]);
+
+			if (currentFrameworkListFile.exists()) {
+				// delete old include file
+				try {
+					currentFrameworkListFile.delete(true, null);
+				} catch (CoreException e) {
+					throw new BuildException(
+						"Exception while trying to delete "
+							+ currentFrameworkListFile.getName()
+							+ ": "
+							+ e.getMessage());
+				}
+			}
+
+			if (project.getProperty(ROOT_PATHS[i]) == null) {
+				System.out.println(
+					"Property " + ROOT_PATHS[i] + " doesn't exists");
+				continue;
+			}
+
+			StringBuffer newFrameworkEntries = new StringBuffer();
+			String resolvedEntry;
+			for (int j = 0; j < classPaths.length; j++) {
+				if (classPaths[j].getEntryKind()
+					== IClasspathEntry.CPE_LIBRARY || classPaths[j].getEntryKind()
+					== IClasspathEntry.CPE_VARIABLE) {
+
+					// convert classpath entries to woproject acceptable paths
+					resolvedEntry =
+						classpathEntryToFrameworkEntry(
+							classPaths[j],
+							new Path(project.getProperty(ROOT_PATHS[i])));
+
+					if (resolvedEntry != null
+						&& !resolvedEntries.contains(classPaths[j])) {
+						resolvedEntries.add(classPaths[j]);
+						newFrameworkEntries.append(resolvedEntry);
+						newFrameworkEntries.append("\n");
+					}
+				}
+			}
+
+			if (newFrameworkEntries.length() > 0) {
+				try {
+					if (currentFrameworkListFile.exists()){
+						// file may be created by WOBuilder in the meantime
+						// no update needed
+						return;
+					}else{
+					// create list file if any entries found
+					currentFrameworkListFile.create(
+						new ByteArrayInputStream(
+							newFrameworkEntries.toString().getBytes()),
+						true,
+						null);
+					}
+				} catch (CoreException e) {
+					throw new BuildException(
+						"Exception while trying to create "
+							+ currentFrameworkListFile.getName()
+							+ ": "
+							+ e.getMessage());
+				}
+			}
+		}
+	}
 	/**
 	 * Method validateAttributes.
 	 */
-	private void validateAttributes() throws BuildException {
-		if (projectName == null) {
-			throw new BuildException("'projectName' attribute is missing.");
+	protected void validateAttributes() throws BuildException {
+		if (project == null) {
+			throw new BuildException("no project set");
 		}
-
-		if (frameworkIncludesfile == null) {
-			throw new BuildException("'frameworkIncludesfile' attribute is missing.");
+		if (getProjectName() == null) {
+			throw new BuildException("'projectName' attribute is missing.");
 		}
 	}
 
-	private String classpathEntryToFrameworkEntry(IClasspathEntry entry) {
-		IPath toReturn = null;
-		if (entry.getPath().matchingFirstSegments(nextRoot())
-			== nextRoot().segmentCount()) {
+	private String classpathEntryToFrameworkEntry(
+		IClasspathEntry entry,
+		Path rootDir) {
+		String toReturn = null;
+		IPath pathToConvert;
+		if (entry.getPath().matchingFirstSegments(rootDir)
+			== rootDir.segmentCount()) {
 
 			// remove next root from path, remove device and make relative
-			toReturn =
+			pathToConvert =
 				entry
 					.getPath()
-					.removeFirstSegments(nextRoot().segmentCount())
+					.removeFirstSegments(rootDir.segmentCount())
 					.setDevice(null)
 					.makeRelative();
 
-			for (int i = 0; i < toReturn.segmentCount(); i++) {
-				if (toReturn.segment(i).endsWith(".framework")) {
+			for (int i = 0; i < pathToConvert.segmentCount(); i++) {
+				if (pathToConvert.segment(i).endsWith(".framework")) {
 					// remove segments after framework
-					toReturn =
-						toReturn.removeLastSegments(
-							toReturn.segmentCount() - i - 1);
-					return toReturn.toOSString();
+					pathToConvert =
+						pathToConvert.removeLastSegments(
+							pathToConvert.segmentCount() - i - 1);
+					toReturn = pathToConvert.toOSString();
+					break;
 				}
 			}
 
 		}
-		return toReturn.toOSString();
+		return toReturn;
 	}
 
-	/**
-	 * Method nextRoot. Converts next root to Path
-	 * @return Path nextRoot as Path
-	 */
-	private static Path nextRoot() {
-		if (nextRoot == null) {
-			nextRoot = new Path(WOVariables.nextRoot());
-		}
-		return nextRoot;
-	}
-
-	/**
-	 * Returns the frameworkIncludesfile.
-	 * @return String
-	 */
-	public String getFrameworkIncludesfile() {
-		return frameworkIncludesfile;
-	}
-
-	/**
-	 * Returns the projectName.
-	 * @return String
-	 */
-	public String getProjectName() {
-		return projectName;
-	}
-
-	/**
-	 * Sets the frameworkIncludesfile.
-	 * @param frameworkIncludesfile The frameworkIncludesfile to set
-	 */
-	public void setFrameworkIncludesfile(String frameworkIncludesfile) {
-		this.frameworkIncludesfile = frameworkIncludesfile;
-	}
-
-	/**
-	 * Sets the projectName.
-	 * @param projectName The projectName to set
-	 */
-	public void setProjectName(String projectName) {
-		this.projectName = projectName;
-	}
+	
 
 }

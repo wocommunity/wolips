@@ -83,9 +83,11 @@ import com.webobjects.foundation.NSDictionary;
  * Window>Preferences>Java>Code Generation.
  */
 public class PBProjectUpdater {
+	
 	//public static String PBProject = "PB.projectContainer"; moved to IWOLipsPluginConstants.PROJECT_FILE_NAME (mn)
 	private PBProject pbProject;
 	private IContainer projectContainer;
+	
 	/**
 	 * Constructor for PBProjectUpdater.
 	 */
@@ -94,12 +96,14 @@ public class PBProjectUpdater {
 		pbProject = getPBProject(aProjectContainer);
 		projectContainer = aProjectContainer;
 	}
+	
 	public void updatePBProject() throws CoreException {
 		syncPBProjectWithProject();
 		if (projectContainer != null)
 			PBProjectNotifications.postPBProjectDidUpgradeNotification(
 				projectContainer.getName());
 	}
+	
 	private PBProject getPBProject(IContainer aProject) {
 		IFile aPBProject =
 			aProject.getFile(
@@ -151,6 +155,7 @@ public class PBProjectUpdater {
 			return null;
 		}
 	}
+	
 	private void syncPBProjectWithProject() {
 		try {
 			pbProject.update();
@@ -161,6 +166,7 @@ public class PBProjectUpdater {
 			WOLipsPlugin.log(ioex);
 		}
 	}
+	
 	private void syncFilestable() {
 		ArrayList aClassesList = new ArrayList();
 		ArrayList aWOComponentsList = new ArrayList();
@@ -187,6 +193,7 @@ public class PBProjectUpdater {
 		this.syncWOComponents(aWOComponentsList);
 		this.syncWOAppResources(aWOAppResourcesList);
 	}
+	
 	private void proceedResource(
 		IResource aResource,
 		List aClassesList,
@@ -243,6 +250,7 @@ public class PBProjectUpdater {
 	private void syncWOAppResources(List list) {
 		pbProject.setWoAppResources(list);
 	}
+	
 	//////////// removing adding filestable resources
 	public void syncFilestable(
 		NSDictionary changedResources,
