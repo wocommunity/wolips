@@ -57,15 +57,29 @@
  
 package org.objectstyle.wolips.target;
 
-import java.util.*;
-import java.io.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import org.eclipse.core.resources.*;
-import org.eclipse.core.runtime.*;
-import org.eclipse.jdt.core.*;
-import org.eclipse.jdt.internal.core.builder.*;
-import org.objectstyle.wolips.target.*;
-import org.eclipse.jdt.internal.core.*;
+import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.jdt.core.IClasspathEntry;
+import org.eclipse.jdt.core.IJavaModelMarker;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jdt.internal.core.JavaModelManager;
+import org.eclipse.jdt.internal.core.builder.JavaBuilder;
+import org.eclipse.jdt.internal.core.builder.State;
 
 public class TargetBuilder extends JavaBuilder
 {
@@ -177,7 +191,8 @@ public class TargetBuilder extends JavaBuilder
 
 	private void updateProblemMarkers() throws CoreException
 	{
-		JavaBuilder.removeProblemsFor(getProject());
+		//JavaBuilder.removeProblemsFor(getProject());
+		JavaBuilder.removeProblemsAndTasksFor(getProject());
 		Set problemAttributes = _problemMarkers.entrySet();
 		for (Iterator iter = problemAttributes.iterator(); iter.hasNext();)
 		{
