@@ -15,6 +15,11 @@
              	<exclude name="**/wolips*/**"/>
              </fileset>
          </copy>
+         <copy todir="${woproject.dist}">
+             <fileset dir=".">
+             	<include name="build-user-home-wobuild-properties.xml"/>
+             </fileset>
+         </copy>
 
          <!-- Copy examples code -->
          <copy todir="${woproject.dist}/examples">
