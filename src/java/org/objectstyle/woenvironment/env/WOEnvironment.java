@@ -58,9 +58,6 @@ package org.objectstyle.woenvironment.env;
 
 import java.io.File;
 
-import org.apache.tools.ant.Project;
-import org.objectstyle.woenvironment.env.WOVariables;
-
 /**
  * @author uli
  *
@@ -86,30 +83,30 @@ public final class WOEnvironment extends Environment {
 	 * Method wo5or51 returns true if the installe WO version is 5.0 or 5.1.
 	 * @return boolean
 	 */
-	public boolean wo5or51(Project project) {
-		return (this.bootstrap(project) == null);
+	public boolean wo5or51() {
+		return (this.bootstrap() == null);
 	}
 	/**
 	 * Method wo52 returns true if the installe WO version is 5.2.
 	 * @return boolean
 	 */
-	public boolean wo52(Project project) {
-		return !this.wo5or51(project);
+	public boolean wo52() {
+		return !this.wo5or51();
 	}
 	/**
 	 * Method bootstrap returns the bootstrap.jar if it exists.
 	 * @param project
 	 * @return File
 	 */
-	public File bootstrap(Project project) {
+	public File bootstrap() {
 		File aFile = null;
-		aFile = this.macBootstrap(project);
+		aFile = this.macBootstrap();
 		if ((aFile != null) && (aFile.exists()))
 			return aFile;
-		aFile = this.winBootstrap(project);
+		aFile = this.winBootstrap();
 		if ((aFile != null) && (aFile.exists()))
 			return aFile;
-		aFile = this.otherBootstrap(project);
+		aFile = this.otherBootstrap();
 		if ((aFile != null) && (aFile.exists()))
 			return aFile;
 		return null;
@@ -119,7 +116,7 @@ public final class WOEnvironment extends Environment {
 	 * @param project
 	 * @return File
 	 */
-	private File macBootstrap(Project project) {
+	private File macBootstrap() {
 		File aFile = null;
 		try {
 			aFile =
@@ -136,7 +133,7 @@ public final class WOEnvironment extends Environment {
 	 * @param project
 	 * @return File
 	 */
-	private File winBootstrap(Project project) {
+	private File winBootstrap() {
 		File aFile = null;
 		try {
 			aFile =
@@ -155,7 +152,7 @@ public final class WOEnvironment extends Environment {
 	 * @param project
 	 * @return File
 	 */
-	private File otherBootstrap(Project project) {
+	private File otherBootstrap() {
 		File aFile = null;
 		try {
 			aFile =
