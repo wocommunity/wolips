@@ -63,48 +63,19 @@ import java.util.*;
  * Needs a suitable template, and some information about the contents of the framework
  * to be given to the constructor.
  *
- * @author Emily Bache
+ * @author Emily Bache, Andrei Adamchik
  */
-public class InfoBuilder {
+public class InfoBuilder extends TemplateProcessor {
 
-    private String name;
     private Vector libFiles;
     private boolean hasOwnClasses;
 
 
-    public InfoBuilder(String fwName, Vector libFiles, boolean hasOwnClasses) {
-        this.name = fwName;
+    public InfoBuilder(String name, Vector libFiles, boolean hasOwnClasses) {
+        super(name);
         this.libFiles = libFiles;
         this.hasOwnClasses = hasOwnClasses;
     }
-
-    /**
-     * @param templateResourceName name of Info.plist template file, to be found
-     * on the classpath.
-     * @param infoFile the file to write the output to
-     */
-    public void writeInfo(String templateResourceName, File infoFile) throws IOException {
-
-        InputStream templateStream = this.getClass().getClassLoader().getResourceAsStream(templateResourceName);
-
-        BufferedWriter out = new BufferedWriter(new FileWriter(infoFile));
-        BufferedReader in = new BufferedReader(new InputStreamReader(templateStream));
-        writeInfoText(in, out);
-    }
-
-    void writeInfoText(BufferedReader in, BufferedWriter out) throws IOException {
-        String line = null;
-
-        while ((line = in.readLine()) != null) {
-            out.write(subsToken(line));
-            out.write("\n");
-        }
-
-        out.flush();
-        out.close();
-        in.close();
-    }
-
 
     /**
      * Substitutes a single occurance of "@NAME@" with the value of <code>name</code>
@@ -116,7 +87,7 @@ public class InfoBuilder {
      * TODO: use some regular expressions package to do this.</p>
      *
      */
-    private String subsToken(String line) {
+    protected String replaceTokens(String line) {
         String nameToken = "@NAME@";
         int tokInd = line.indexOf(nameToken);
         if (tokInd >= 0) {
@@ -150,10 +121,4 @@ public class InfoBuilder {
         }
         return line;
     }
-
-    private String replace(String token, String line, String toInsert) {
-        int tokenIndex = line.indexOf(token);
-        return line.substring(0, tokenIndex) + toInsert + line.substring(tokenIndex + token.length());
-    }
-
 }

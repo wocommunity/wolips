@@ -56,15 +56,15 @@
 
 package org.objectstyle.woproject.ant;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Vector;
 
 import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.Task;
-import org.apache.tools.ant.taskdefs.*;
-import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.DirectoryScanner;
+import org.apache.tools.ant.taskdefs.Copy;
+import org.apache.tools.ant.types.FileSet;
 
 /**
  * Ant task to build WebObjects framework. For detailed instructions go to the
@@ -119,7 +119,7 @@ public class WOFramework extends WOTask {
         Vector libs = getLibFiles();
         InfoBuilder infoBuilder = new InfoBuilder(name, libs, hasClasses());
         try {
-            infoBuilder.writeInfo("woframework/Info.plist", new File(resourcesDir(), "Info.plist"));
+            infoBuilder.fileFromTemplate("woframework/Info.plist", new File(resourcesDir(), "Info.plist"));
         } catch (IOException ioex) {
             throw new BuildException("Error copying Info.plist", ioex);
         }

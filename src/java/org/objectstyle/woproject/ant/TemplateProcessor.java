@@ -55,75 +55,86 @@
  */
 package org.objectstyle.woproject.ant;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Vector;
-
-import org.apache.tools.ant.BuildException;
+import java.io.*;
+import java.util.*;
 
 /**
- * Ant task to build WebObjects application. For detailed instructions go to the
- * <a href="../../../../../ant/woapplication.html">manual page</a> .
+ * Superclass of helper classes that allow creation of files
+ * from templates during the build process.
  *
- *
- * @ant.task category="packaging"
- * 
- * @author Emily Bache
+ * @author Andrei Adamchik
  */
-public class WOApplication extends WOTask {
+public abstract class TemplateProcessor {
+	protected String name;
 
-	public void execute() throws BuildException {
-		validateAttributes();
-		createDirectories();
-		if (hasClasses()) {
-			jarClasses();
-		}
-		if (hasResources()) {
-			copyResources();
-		}
-		if (hasWs()) {
-			copyWsresources();
-		}
+	/** 
+	 * Creates new TemplateProcessor and initializes it with the name
+	 * of the project being built.
+	 */
+	public TemplateProcessor(String name) {
+		this.name = name;
+	}
 
-		// create all needed scripts
-		buildScripts();
+	/** 
+	 * Utility method to substitute tokens in a string. 
+	 */
+	public static final String replace(
+		String token,
+		String line,
+		String toInsert) {
+		int tokenIndex = line.indexOf(token);
+		return line.substring(0, tokenIndex)
+			+ toInsert
+			+ line.substring(tokenIndex + token.length());
+	}
 
-		// @todo - create web.xml and/or classpath files
+	/** 
+	 * Returns a name of WebObjects project being built. */
+	public String getName() {
+		return name;
 	}
 
 	/**
-	 * Returns location where WOTask is being built up: ie the .woa dir 
-	 * or the .framework dir. In this case, the .woa dir.
+	 * Creates a file from a template, substituting all tokens
+	 * with real values. Relies on abstract <code>replaceTokens</code> method.
+	 * 
+	 * @param template name of a template file, to be found in the classpath.
+	 * @param destFile the file to write the output to.
 	 */
-	protected File taskDir() {
-		return getProject().resolveFile(
-			destDir + File.separator + name + ".woa");
+	public void fileFromTemplate(String template, File destFile)
+		throws IOException {
+
+		InputStream templateStream =
+			this.getClass().getClassLoader().getResourceAsStream(template);
+
+		BufferedWriter out = new BufferedWriter(new FileWriter(destFile));
+		BufferedReader in =
+			new BufferedReader(new InputStreamReader(templateStream));
+
+		writeText(in, out);
 	}
 
-	protected File contentsDir() {
-		return new File(taskDir(), "Contents");
-	}
+	protected void writeText(BufferedReader in, BufferedWriter out)
+		throws IOException {
+		String line = null;
 
-	protected File resourcesDir() {
-		return new File(contentsDir(), "Resources");
-	}
-
-	protected File wsresourcesDir() {
-		return new File(contentsDir(), "WebServerResources");
-	}
-
-	protected void buildScripts() throws BuildException {
 		try {
-			// build Info.plist
-			new InfoBuilder(name, new Vector(), true).fileFromTemplate(
-				"woapp/Info.plist",
-				new File(contentsDir(), "Info.plist"));
+			while ((line = in.readLine()) != null) {
+				out.write(replaceTokens(line));
 				
-		    // build script files
-		    new AppScriptBuilder(name).buildScripts(taskDir());
-		
-		} catch (IOException ioex) {
-			throw new BuildException("Error copying Info.plist", ioex);
+				// make it UNIX style
+				out.write('\n');
+			}
+		} finally {
+			out.flush();
+			out.close();
+			in.close();
 		}
 	}
+
+	/**
+	 * Replaces all tokens found in the template <code>line</code> so that the 
+	 * resulting line can be written to the output file.
+	 */
+	protected abstract String replaceTokens(String line);
 }

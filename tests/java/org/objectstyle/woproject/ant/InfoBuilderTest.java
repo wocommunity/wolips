@@ -91,7 +91,7 @@ public class InfoBuilderTest extends TestCase {
 
     public void testNoLibs() throws Exception {
         InfoBuilder infoBuilder = new InfoBuilder(getName(), new Vector(), true);
-        infoBuilder.writeInfoText(bin, bout);
+        infoBuilder.writeText(bin, bout);
 
         String output = sout.toString();
         assertTrue(output.length() > 0);
@@ -107,7 +107,7 @@ public class InfoBuilderTest extends TestCase {
         Vector libs = new Vector();
         libs.add(lib);
         InfoBuilder infoBuilder = new InfoBuilder(getName(), libs, true);
-        infoBuilder.writeInfoText(bin, bout);
+        infoBuilder.writeText(bin, bout);
 
         String output = sout.toString();
         String nsJavaPath = output.substring(output.indexOf(NS_JAVA_PATH_BEGIN) + NS_JAVA_PATH_BEGIN.length(), output.indexOf(NS_JAVA_PATH_END));
@@ -128,7 +128,7 @@ public class InfoBuilderTest extends TestCase {
         libs.add(lib2);
         libs.add(lib3);
         InfoBuilder infoBuilder = new InfoBuilder(getName(), libs, false);
-        infoBuilder.writeInfoText(bin, bout);
+        infoBuilder.writeText(bin, bout);
 
         String output = sout.toString();
         String nsJavaPath = output.substring(output.indexOf(NS_JAVA_PATH_BEGIN) + NS_JAVA_PATH_BEGIN.length(), output.indexOf(NS_JAVA_PATH_END));

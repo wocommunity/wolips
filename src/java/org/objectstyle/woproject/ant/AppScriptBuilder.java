@@ -55,6 +55,7 @@
  */
 package org.objectstyle.woproject.ant;
 
+import java.io.File;
 
 /**
  * Helper class that creates all necessary run scripts to start a
@@ -62,13 +63,17 @@ package org.objectstyle.woproject.ant;
  *
  * @author Andrei Adamchik
  */
-public class AppScriptBuilder {
+public class AppScriptBuilder extends TemplateProcessor {
 
-    private String name;
+	public AppScriptBuilder(String name) {
+		super(name);
+	}
 
-
-    public AppScriptBuilder(String name) {
-        this.name = name;
-    }
-
+	protected String replaceTokens(String line) {
+		return line;
+	}
+	
+	public void buildScripts(File appDir) {
+  
+	}
 }
