@@ -59,6 +59,7 @@ package org.objectstyle.woproject.pb;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -282,5 +283,16 @@ public class PBProject {
 	 */
 	public void setProjectFile(File projectFile) {
 		this.projectFile = projectFile;
+	}
+	/**
+	 * Method forgetAll deletes all classes, other linked, other sources,
+	 * webserver resources and wocomponent entries.
+	 */
+	public void forgetAllFiles() {
+		this.setClasses(new ArrayList());
+		this.setOtherLinked(new ArrayList());
+		this.setOtherSources(new ArrayList());
+		this.setWebServerResources(new ArrayList());
+		this.setWoComponents(new ArrayList());
 	}
 }
