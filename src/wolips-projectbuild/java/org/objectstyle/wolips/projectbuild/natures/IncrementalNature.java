@@ -368,13 +368,14 @@ public class IncrementalNature
 		} else */
 		if (IResource.FILE == res.getType()) {
 			String lastSegment = path.lastSegment();
-			if (lastSegment.equals("Properties")
+			if (
+        lastSegment.equals("Properties")
 				|| lastSegment.endsWith(".api")
 				|| lastSegment.endsWith(".d2wmodel")
-				|| lastSegment.endsWith(".plist")
         || lastSegment.endsWith(".xml")
+        || lastSegment.endsWith(".plist") && (-1 == path.toString().indexOf(".eomodeld/"))
         || lastSegment.endsWith(".strings") && (-1 == path.toString().indexOf(".wo/"))
-				&& (-1 == path.toString().indexOf(".eomodeld/"))) {
+			) {
 				return (_appendSpecial(getResourceOutputPath(), path));
 			}
 
