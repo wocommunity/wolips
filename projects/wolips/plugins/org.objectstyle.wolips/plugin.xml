@@ -18,13 +18,11 @@
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.ant.core"/>
       <import plugin="org.eclipse.jdt.core"/>
-      <import plugin="org.eclipse.jdt.launching"/>
-      <import plugin="org.eclipse.debug.core"/>
-      <import plugin="org.eclipse.debug.ui"/>
       <import plugin="org.eclipse.jface"/>
       <import plugin="org.objectstyle.wolips.woproject"/>
-      <import plugin="org.eclipse.ui.ide"/>
       <import plugin="org.eclipse.core.runtime.compatibility"/>
+      <import plugin="org.eclipse.jdt.launching"/>
+      <import plugin="org.eclipse.ui.ide"/>
    </requires>
 
 
