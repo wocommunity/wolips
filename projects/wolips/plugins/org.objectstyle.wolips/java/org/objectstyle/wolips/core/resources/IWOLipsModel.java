@@ -92,6 +92,7 @@ public interface IWOLipsModel {
 	 public static final String SUBPROJECTS_ID = "SUBPROJECTS";
 	 public static final String FRAMEWORKS_ID = "FRAMEWORKS";
 	 public static final String PROJECT_FILE_NAME = "PB.project";
+	 public static final String DEFAULT_BUILD_FILENAME = "build.xml";
 	 public static final String[] RESOURCE_IDENTIFIERS =
 		 {
 			 EXT_JAVA,

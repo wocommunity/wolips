@@ -63,6 +63,7 @@ import java.util.Vector;
 import org.eclipse.jface.preference.IPersistentPreferenceStore;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
+import org.objectstyle.wolips.core.resources.IWOLipsModel;
 import org.objectstyle.wolips.core.util.QuotedStringTokenizer;
 
 /**
@@ -144,7 +145,7 @@ public class Preferences {
 				Preferences.PREF_ANT_BUILD_FILE))
 			store.setDefault(
 				Preferences.PREF_ANT_BUILD_FILE,
-				org.apache.tools.ant.Main.DEFAULT_BUILD_FILENAME);
+				IWOLipsModel.DEFAULT_BUILD_FILENAME);
 		if (Preferences.SET_DEFAULTS_STRING == null
 			|| Preferences.SET_DEFAULTS_STRING.equals(
 				Preferences.PREF_RUN_WOBUILDER_ON_BUILD))

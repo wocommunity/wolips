@@ -58,15 +58,14 @@ package org.objectstyle.wolips.core.ant;
 import java.io.ByteArrayInputStream;
 import java.util.HashSet;
 
-import org.apache.tools.ant.BuildException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
+import org.objectstyle.wolips.core.logging.WOLipsLog;
 
 /**
  * @author mnolte
@@ -99,9 +98,7 @@ public class UpdateOtherClasspathIncludeFiles extends UpdateIncludeFiles {
 		try {
 			classPaths = myJavaProject.getResolvedClasspath(true);
 		} catch (JavaModelException e) {
-			System.out.println(
-				"Exception while trying to get java project classpath entries: "
-					+ e.getMessage());
+			WOLipsLog.log(e.getMessage());
 			return;
 		}
 
@@ -119,11 +116,8 @@ public class UpdateOtherClasspathIncludeFiles extends UpdateIncludeFiles {
 					if (false)
 						currentClasspathListFile.delete(true, null);
 				} catch (CoreException e) {
-					throw new BuildException(
-						"Exception while trying to delete "
-							+ currentClasspathListFile.getName()
-							+ ": "
-							+ e.getMessage());
+					WOLipsLog.log(e.getMessage());
+					return;
 				}
 			}
 
@@ -138,7 +132,7 @@ public class UpdateOtherClasspathIncludeFiles extends UpdateIncludeFiles {
 					resolvedEntry =
 						classpathEntryToOtherClasspathEntry(
 							classPaths[j],
-							new Path(getPaths()[i]));
+							getPaths()[i]);
 
 					if (resolvedEntry != null
 						&& !resolvedEntries.contains(classPaths[j])) {
@@ -171,11 +165,8 @@ public class UpdateOtherClasspathIncludeFiles extends UpdateIncludeFiles {
 						null);
 				}
 			} catch (CoreException e) {
-				throw new BuildException(
-					"Exception while trying to create "
-						+ currentClasspathListFile.getName()
-						+ ": "
-						+ e.getMessage());
+				WOLipsLog.log(e.getMessage());
+				return;
 			}
 		}
 	}
@@ -187,22 +178,21 @@ public class UpdateOtherClasspathIncludeFiles extends UpdateIncludeFiles {
 	 */
 	private String classpathEntryToOtherClasspathEntry(
 		IClasspathEntry entry,
-		IPath rootDir) {
+		String rootDir) {
 		//System.out.println("classpathEntryToOtherClasspathEntry");
 		//System.out.println("entry: " + entry);
 		//System.out.println("rootDir" + rootDir);
 		String toReturn = null;
 		IPath pathToConvert;
-		if (entry.getPath().matchingFirstSegments(rootDir)
-			== rootDir.segmentCount()) {
+		if (entry.getPath().toOSString().startsWith(rootDir)) {
 
 			// remove root dir from path, remove device and make relative
 			pathToConvert =
 				entry
-					.getPath()
-					.removeFirstSegments(rootDir.segmentCount())
+					.getPath();
+					/*.removeFirstSegments(rootDir.segmentCount())
 					.setDevice(null)
-					.makeRelative();
+					.makeRelative();*/
 
 			// avoid framework entries
 			for (int i = 0; i < pathToConvert.segmentCount(); i++) {
@@ -210,7 +200,7 @@ public class UpdateOtherClasspathIncludeFiles extends UpdateIncludeFiles {
 					return toReturn;
 				}
 			}
-			toReturn = pathToConvert.toOSString();
+			toReturn = pathToConvert.toOSString().substring(rootDir.length());
 		}
 		//System.out.println("toReturn: " + toReturn);
 		//System.out.println("classpathEntryToOtherClasspathEntry return");
