@@ -123,7 +123,7 @@ public class FileStringScanner {
 			fis.close();
 		} finally {
 			fis = null;
-			data = null;
+			//data = null;
 		}
 		return new String(data);
 	}
