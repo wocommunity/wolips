@@ -101,46 +101,6 @@ public class WOFramework extends WOTask {
         buildInfo();
     }
 
-    protected void createDirectories() throws BuildException {
-        Mkdir mkdir = new Mkdir();
-        initChildTask(mkdir);
-
-        File frameworkDir = frameworkDir();
-        File resourceDir = new File(frameworkDir, "Resources");
-
-        mkdir.setDir(frameworkDir);
-        mkdir.execute();
-
-        mkdir.setDir(resourceDir);
-        mkdir.execute();
-
-        mkdir.setDir(new File(resourceDir, "Java"));
-        mkdir.execute();
-
-        if (hasWs()) {
-            mkdir.setDir(new File(frameworkDir, "WebServerResources"));
-            mkdir.execute();
-        }
-    }
-
-
-    protected void jarClasses() throws BuildException {
-        Jar jar = new Jar();
-        initChildTask(jar);
-
-        File frameworkJar =
-                new File(resourcesDir(), "Java" + File.separator + name.toLowerCase() + ".jar");
-        jar.setJarfile(frameworkJar);
-
-        if (hasClasses()) {
-            Enumeration en = classes.elements();
-            while (en.hasMoreElements()) {
-                jar.addFileset((FileSet) en.nextElement());
-            }
-        }
-
-        jar.execute();
-    }
 
 
     protected void copyLibs() throws BuildException {
@@ -157,17 +117,6 @@ public class WOFramework extends WOTask {
     }
 
 
-    protected void copyResources() throws BuildException {
-        WOCompCopy cp = new WOCompCopy();
-        initChildTask(cp);
-
-        cp.setTodir(resourcesDir());
-        Enumeration en = resources.elements();
-        while (en.hasMoreElements()) {
-            cp.addFileset((FileSet) en.nextElement());
-        }
-        cp.execute();
-    }
 
 
     protected void copyWsresources() throws BuildException {
@@ -213,37 +162,24 @@ public class WOFramework extends WOTask {
         return answer;
     }
 
-    protected File frameworkDir() {
+    /**
+     * location where WOTask is being built up: ie the .woa dir or the .framework dir.
+     * In this case, the .framework dir.
+     */
+    protected File taskDir() {
         return getProject().resolveFile(destDir + File.separator + name + ".framework");
     }
 
 
     protected File resourcesDir() {
-        return new File(frameworkDir(), "Resources");
+        return new File(taskDir(), "Resources");
     }
 
 
     protected File wsresourcesDir() {
-        return new File(frameworkDir(), "WebServerResources");
+        return new File(taskDir(), "WebServerResources");
     }
 
-
-    protected void initChildTask(Task t) {
-        t.setOwningTarget(this.getOwningTarget());
-        t.setProject(this.getProject());
-        t.setTaskName(this.getTaskName());
-        t.setLocation(this.getLocation());
-    }
-
-
-    protected boolean hasResources() {
-        return resources.size() > 0;
-    }
-
-
-    protected boolean hasClasses() {
-        return classes.size() > 0;
-    }
 
 
     protected boolean hasLib() {
@@ -256,9 +192,6 @@ public class WOFramework extends WOTask {
     }
 
 
-    protected boolean hasWs() {
-        return wsresources.size() > 0;
-    }
 
 
     /**

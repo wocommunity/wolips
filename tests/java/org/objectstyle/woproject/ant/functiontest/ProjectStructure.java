@@ -1,8 +1,8 @@
 /* ====================================================================
- * 
- * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 The ObjectStyle Group 
+ * The ObjectStyle Group Software License, Version 1.0
+ *
+ * Copyright (c) 2002 The ObjectStyle Group
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,15 +18,15 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution, if
- *    any, must include the following acknowlegement:  
- *       "This product includes software developed by the 
+ *    any, must include the following acknowlegement:
+ *       "This product includes software developed by the
  *        ObjectStyle Group (http://objectstyle.org/)."
  *    Alternately, this acknowlegement may appear in the software itself,
  *    if and wherever such third-party acknowlegements normally appear.
  *
- * 4. The names "ObjectStyle Group" and "Cayenne" 
+ * 4. The names "ObjectStyle Group" and "Cayenne"
  *    must not be used to endorse or promote products derived
- *    from this software without prior written permission. For written 
+ *    from this software without prior written permission. For written
  *    permission, please contact andrus@objectstyle.org.
  *
  * 5. Products derived from this software may not be called "ObjectStyle"
@@ -52,24 +52,84 @@
  * information on the ObjectStyle Group, please see
  * <http://objectstyle.org/>.
  *
- */ 
+ */
 
-package org.objectstyle.woproject.ant;
+package org.objectstyle.woproject.ant.functiontest;
 
-import junit.framework.TestSuite;
+import java.io.File;
 
-/** Combines test cases from org.objectstyle.woproject.ant package to 
-  * a test suite. 
-  *
-  * @author Andrei Adamchik
-  */
-public class AllTests {
-	public static TestSuite suite() {
-		TestSuite suite = new TestSuite("Ant Tasks (org.objectstyle.woproject.ant)");
-		
-		// add all test suites from this package
-        suite.addTestSuite(ArtBuildTest.class);
-        
-		return suite;
-	}
+/**
+ * Java bean that keeps information about WebObjects
+ * project structure.
+ *
+ * @author Andrei Adamchik
+ */
+public abstract class ProjectStructure {
+    protected String name;
+    protected String[] jars;
+    protected String[] wocomps;
+    protected String[] wsResources;
+
+    public ProjectStructure(String name) {
+        this.name = name;
+    }
+
+    /**
+     * Subclasses must implement that to return either framework
+     * or application directory name relative to tests distribution
+     * directory.
+     */
+    public abstract String getDirectoryPath();
+
+    public abstract String getRelativeResourcesPath();
+
+    public abstract String getRelativeWSResourcesPath();
+
+    public abstract String getRelativeInfoPath();
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public boolean hasWebServerResources() {
+        return wsResources != null && wsResources.length > 0;
+    }
+
+    public boolean hasJava() {
+        return jars != null && jars.length > 0;
+    }
+
+    public boolean hasWos() {
+        return wocomps != null && wocomps.length > 0;
+    }
+
+    public String[] getJars() {
+        return jars;
+    }
+
+    public void setJars(String[] jars) {
+        this.jars = jars;
+    }
+
+    public String[] getWocomps() {
+        return wocomps;
+    }
+
+    public void setWocomps(String[] wocomps) {
+        this.wocomps = wocomps;
+    }
+
+
+    public String[] getWsResources() {
+        return wsResources;
+    }
+
+    public void setWsResources(String[] wsres) {
+        this.wsResources = wsres;
+    }
+
 }

@@ -53,53 +53,36 @@
  * <http://objectstyle.org/>.
  *
  */
-package org.objectstyle.woproject.ant;
 
-import junit.framework.TestCase;
+package org.objectstyle.woproject.ant.functiontest;
 
 import java.io.File;
-import org.apache.tools.ant.*;
 
 /**
- * A test case that builds the MailJava and MailUtilities frameworks
- * then does various assertions about what ant produced.
+ * Java bean that keeps information about WebObjects
+ * project structure.
  *
- * @author Emily Bache
+ * @author Andrei Adamchik
  */
-public class MailJavaBuildTest extends BuildTestCase {
+public class FrameworkStructure extends ProjectStructure {
 
-    Project project;
-
-    public MailJavaBuildTest(String name) {
+    public FrameworkStructure(String name) {
         super(name);
     }
 
-
-    public void testBuildMailJava() throws Exception {
-        String projectDir = "tests/wo/frameworks/MailJava";
-        Project project = getProject(new File(projectDir), new File(projectDir, "build.xml"));
-        String defaultTarget = project.getDefaultTarget();
-        project.executeTarget(defaultTarget);
-
-        FrameworkStructure fw = new FrameworkStructure("MailJava");
-        fw.setJars(new String[]{"activation", "mail"});
-
-        assertStructure(fw);
+    public String getDirectoryPath() {
+        return "Frameworks/" + name + ".framework";
     }
 
-    public void testBuildMailUtilities() throws Exception {
-        String projectDir = "tests/wo/frameworks/MailUtilities";
-        Project project = getProject(new File(projectDir), new File(projectDir, "build.xml"));
-        String defaultTarget = project.getDefaultTarget();
-        project.executeTarget(defaultTarget);
-
-        FrameworkStructure fw = new FrameworkStructure("MailUtilities");
-        fw.setJars(new String[]{"mailutilities"});
-
-        assertStructure(fw);
+    public String getRelativeResourcesPath() {
+        return "Resources";
     }
 
-    public static void main(String[] args) {
-        junit.textui.TestRunner.main(new String[]{MailJavaBuildTest.class.getName()});
+    public String getRelativeWSResourcesPath() {
+        return "WebServerResources";
+    }
+
+    public String getRelativeInfoPath() {
+        return "Resources";
     }
 }

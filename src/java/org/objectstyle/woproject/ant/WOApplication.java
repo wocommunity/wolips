@@ -55,11 +55,18 @@
  */
 package org.objectstyle.woproject.ant;
 
+import java.io.File;
+
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.taskdefs.*;
 import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.DirectoryScanner;
+
+
+import org.apache.log4j.Category;
+
+
 
 /**
  * Ant task to build WebObjects application. For detailed instructions go to the
@@ -69,8 +76,38 @@ import org.apache.tools.ant.DirectoryScanner;
  * @ant.task category="packaging"
  */
 public class WOApplication extends WOTask {
+    private static Category logger = Category.getInstance(WOApplication.class.getName());
+    private static boolean DEBUG = logger.isDebugEnabled();
 
     public void execute() throws BuildException {
         validateAttributes();
+        createDirectories();
+        if (hasClasses()) {
+            jarClasses();
+        }
+        if (hasResources()) {
+            copyResources();
+        }
+    }
+
+    /**
+     * location where WOTask is being built up: ie the .woa dir or the .framework dir.
+     * In this case, the .woa dir.
+     */
+    protected File taskDir() {
+        return getProject().resolveFile(destDir + File.separator + name + ".woa");
+    }
+
+    protected File contentsDir() {
+        return new File(taskDir(), "Contents");
+    }
+
+    protected File resourcesDir() {
+        return new File(contentsDir(), "Resources");
+    }
+
+
+    protected File wsresourcesDir() {
+        return new File(contentsDir(), "WebServerResources");
     }
 }

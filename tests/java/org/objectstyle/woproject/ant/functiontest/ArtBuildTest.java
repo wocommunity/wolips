@@ -1,8 +1,8 @@
 /* ====================================================================
- * 
- * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 The ObjectStyle Group 
+ * The ObjectStyle Group Software License, Version 1.0
+ *
+ * Copyright (c) 2002 The ObjectStyle Group
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,15 +18,15 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution, if
- *    any, must include the following acknowlegement:  
- *       "This product includes software developed by the 
+ *    any, must include the following acknowlegement:
+ *       "This product includes software developed by the
  *        ObjectStyle Group (http://objectstyle.org/)."
  *    Alternately, this acknowlegement may appear in the software itself,
  *    if and wherever such third-party acknowlegements normally appear.
  *
- * 4. The names "ObjectStyle Group" and "Cayenne" 
+ * 4. The names "ObjectStyle Group" and "Cayenne"
  *    must not be used to endorse or promote products derived
- *    from this software without prior written permission. For written 
+ *    from this software without prior written permission. For written
  *    permission, please contact andrus@objectstyle.org.
  *
  * 5. Products derived from this software may not be called "ObjectStyle"
@@ -54,76 +54,51 @@
  *
  */
 
-package org.objectstyle.woproject.ant;
+package org.objectstyle.woproject.ant.functiontest;
 
 import java.io.File;
+import org.apache.tools.ant.*;
 
-/** 
- * Java bean that keeps information about WebObjects 
- * project structure.
- * 
- * @author Andrei Adamchik
+/**
+ * A test case that builds the art framework using its ant buildfile
+ * then does various assertions about what ant produced.
+ *
+ * @author Andrei Adamchik, Emily Bache
  */
-public abstract class ProjectStructure {
-    protected String name;
-    protected String[] jars;
-    protected String[] wocomps;
-    protected String[] wsResources;
+public class ArtBuildTest extends BuildTestCase {
 
-    public ProjectStructure(String name) {
-        this.name = name;
+    protected Project project;
+
+    public ArtBuildTest(String name) {
+        super(name);
     }
 
-    /** 
-     * Subclasses must implement that to return either framework
-     * or application directory name relative to tests distribution
-     * directory.
-     */
-    public abstract String getDirectoryPath();
+    public void setUp() throws Exception {
+        super.setUp();
 
-    public String getName() {
-        return name;
+        String projectDir = "tests/wo/frameworks/art";
+        project = getProject(new File(projectDir), new File(projectDir, "build.xml"));
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void tearDown() throws Exception {
+
+        super.tearDown();
     }
 
-    public boolean hasWebServerResources() {
-        return wsResources != null && wsResources.length > 0;
+    public void testFilesPresent() throws Exception {
+        String defaultTarget = project.getDefaultTarget();
+        project.executeTarget(defaultTarget);
+
+        FrameworkStructure artFrwk = new FrameworkStructure("art");
+        artFrwk.setJars(new String[] { "art", "cayenne", "woproject" });
+        artFrwk.setWocomps(new String[] { "PaintingSearch" });
+        artFrwk.setWsResources(new String[] { "images/spacer.gif" });
+
+        assertStructure(artFrwk);
+
     }
 
-    public boolean hasJava() {
-        return jars != null && jars.length > 0;
+    public static void main(String[] args) {
+        junit.textui.TestRunner.main(new String[]{ArtBuildTest.class.getName()});
     }
-
-    public boolean hasWos() {
-        return wocomps != null && wocomps.length > 0;
-    }
-
-    public String[] getJars() {
-        return jars;
-    }
-
-    public void setJars(String[] jars) {
-        this.jars = jars;
-    }
-
-    public String[] getWocomps() {
-        return wocomps;
-    }
-
-    public void setWocomps(String[] wocomps) {
-        this.wocomps = wocomps;
-    }
-
-
-    public String[] getWsResources() {
-        return wsResources;
-    }
-
-    public void setWsResources(String[] wsres) {
-        this.wsResources = wsres;
-    }
-
 }

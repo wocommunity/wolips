@@ -53,7 +53,7 @@
  * <http://objectstyle.org/>.
  *
  */
-package org.objectstyle.woproject.ant;
+package org.objectstyle.woproject.ant.functiontest;
 
 import java.io.File;
 import java.io.IOException;
@@ -112,14 +112,14 @@ public abstract class BuildTestCase extends TestCase {
         File projDir = resolveDistPath(path);
         Assert.assertTrue("Project directory is missing: " + projDir, projDir.isDirectory());
 
-        File res = new File(projDir, "Resources");
+        File res = new File(projDir, struct.getRelativeResourcesPath());
         Assert.assertTrue("Resources directory is missing: " + res, res.isDirectory());
 
-        File info = new File(res, "Info.plist");
+        File info = new File(projDir, struct.getRelativeInfoPath() + "/Info.plist");
         Assert.assertTrue("Info.plist is missing: " + info, info.isFile());
 
         if (struct.hasWebServerResources()) {
-            File wsres = new File(projDir, "WebServerResources");
+            File wsres = new File(projDir, struct.getRelativeWSResourcesPath());
             Assert.assertTrue(
                 "WebServerResources directory is missing: " + wsres,
                 wsres.isDirectory());
@@ -127,7 +127,7 @@ public abstract class BuildTestCase extends TestCase {
         }
 
         if (struct.hasJava()) {
-            File javaDir = new File(projDir, "Resources/Java");
+            File javaDir = new File(projDir, struct.getRelativeResourcesPath() + "/Java");
             Assert.assertTrue("Java directory is missing: " + javaDir, javaDir.isDirectory());
             assertJars(javaDir, struct.getJars());
         }

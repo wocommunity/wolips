@@ -1,0 +1,86 @@
+<project name="HelloWorld" default="all" >
+
+
+
+    <target name="setProps" unless="setProps"
+                          description="setup the properites.">
+        <property environment="env"/>
+        <property name="next_root" value="${env.NEXT_ROOT}"/>
+        <property name="local_fw_root" value="${next_root}/Local/Library/Frameworks"/>
+        <property name="fw_root" value="${next_root}/Library/Frameworks"/>
+        <property name="app_install_dir" value="../../dist/WebObjects/Applications"/>
+        <property name="app_name" value="${ant.project.name}"/>
+        <property name="outdir" value="./output" />
+
+        <property name="deploy_tomcat" value="${app_install_dir}/tomcat" />
+
+    </target>
+
+
+    <target name="init" depends="setProps"
+                          description="initialize the properties.">
+        <tstamp/>
+	    <property name="local_outdir" value="${outdir}/webapps" />
+	    <property name="build" value="${local_outdir}/classes" />
+    </target>
+
+    <target name="clean_deploy" >
+        <delete dir="${app_install_dir}/${app_name}.woa"/>
+        <delete file="${deploy_tomcat}/${app_name}.war"/>
+    </target>
+
+    <target name="clean" depends="init,clean_deploy"
+                          description="clean up the output directories.">
+        <delete dir="${local_outdir}" />
+
+    </target>
+
+
+    <target name="prepare" depends="init"
+                          description="prepare the output directory.">
+        <mkdir dir="${build}" />
+    </target>
+
+
+
+    <target name="compile" depends="prepare"
+                          description="compile the Java source.">
+        <javac srcdir="./src" destdir="${build}">
+            <classpath >
+
+                <pathelement location="${fw_root}/JavaFoundation.framework/Resources/Java/javafoundation.jar"/>
+                <pathelement location="${fw_root}/JavaEOControl.framework/Resources/Java/javaeocontrol.jar"/>
+                <pathelement location="${fw_root}/JavaEOAccess.framework/Resources/Java/javaeoaccess.jar"/>
+                <pathelement location="${fw_root}/JavaWebObjects.framework/Resources/Java/javawebobjects.jar"/>
+
+            </classpath>
+        </javac>
+
+    </target>
+
+    <target name="package" depends="compile">
+        <echo message="installing to dir ${app_install_dir}"/>
+        <taskdef name="woapplication" classname="org.objectstyle.woproject.ant.WOApplication"/>
+        <woapplication name="${ant.project.name}" destDir="${app_install_dir}">
+            <classes dir="${build}"/>
+			<resources dir="Resources">
+				<include name="**/*.wo/**"/>
+			</resources>
+        </woapplication>
+
+   </target>
+
+    <target name="deploy" depends="package">
+
+    </target>
+
+    <target name="all" depends="clean,deploy"
+                          description="perform all targets."/>
+
+</project>
+
+
+
+
+
+

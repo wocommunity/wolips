@@ -1,8 +1,8 @@
 /* ====================================================================
- * 
- * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 The ObjectStyle Group 
+ * The ObjectStyle Group Software License, Version 1.0
+ *
+ * Copyright (c) 2002 The ObjectStyle Group
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,15 +18,15 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution, if
- *    any, must include the following acknowlegement:  
- *       "This product includes software developed by the 
+ *    any, must include the following acknowlegement:
+ *       "This product includes software developed by the
  *        ObjectStyle Group (http://objectstyle.org/)."
  *    Alternately, this acknowlegement may appear in the software itself,
  *    if and wherever such third-party acknowlegements normally appear.
  *
- * 4. The names "ObjectStyle Group" and "Cayenne" 
+ * 4. The names "ObjectStyle Group" and "Cayenne"
  *    must not be used to endorse or promote products derived
- *    from this software without prior written permission. For written 
+ *    from this software without prior written permission. For written
  *    permission, please contact andrus@objectstyle.org.
  *
  * 5. Products derived from this software may not be called "ObjectStyle"
@@ -53,39 +53,53 @@
  * <http://objectstyle.org/>.
  *
  */
+package org.objectstyle.woproject.ant.functiontest;
 
-package org.objectstyle.woproject.ant;
+import junit.framework.TestCase;
 
 import java.io.File;
-
 import org.apache.tools.ant.*;
 
-/** 
- * Helper class to prepare ant tasks from Java code.
- * 
- * @author Andrei Adamchik
+/**
+ * A test case that builds the MailJava and MailUtilities frameworks
+ * then does various assertions about what ant produced.
+ *
+ * @author Emily Bache
  */
-public class TaskBuilder {
-    protected Project project;
+public class MailJavaBuildTest extends BuildTestCase {
 
-    public TaskBuilder(String baseDir) {
-        project = new Project();
-        project.setBaseDir(new File(baseDir));
-        project.setJavaVersionProperty();
-        project.addTaskDefinition("property", org.apache.tools.ant.taskdefs.Property.class);
+    Project project;
+
+    public MailJavaBuildTest(String name) {
+        super(name);
     }
 
-    /**
-     * Returns default project associated with this TaskBuilder.
-     */
-    public Project getProject() {
-        return project;
+
+    public void testBuildMailJava() throws Exception {
+        String projectDir = "tests/wo/frameworks/MailJava";
+        Project project = getProject(new File(projectDir), new File(projectDir, "build.xml"));
+        String defaultTarget = project.getDefaultTarget();
+        project.executeTarget(defaultTarget);
+
+        FrameworkStructure fw = new FrameworkStructure("MailJava");
+        fw.setJars(new String[]{"activation", "mail"});
+
+        assertStructure(fw);
     }
 
-    /** Performs new task initialization. */
-    public void prepareTask(Task t) {
-        t.setProject(project);
-        t.setTaskName("Test");
-        t.setLocation(Location.UNKNOWN_LOCATION);
+    public void testBuildMailUtilities() throws Exception {
+        String projectDir = "tests/wo/frameworks/MailUtilities";
+        Project project = getProject(new File(projectDir), new File(projectDir, "build.xml"));
+        String defaultTarget = project.getDefaultTarget();
+        project.executeTarget(defaultTarget);
+
+        FrameworkStructure fw = new FrameworkStructure("MailUtilities");
+        fw.setJars(new String[]{"mailutilities"});
+
+        assertStructure(fw);
+    }
+
+    public static void main(String[] args) {
+        junit.textui.TestRunner.main(new String[]{MailJavaBuildTest.class.getName()});
     }
 }

@@ -65,11 +65,16 @@ import org.apache.tools.ant.taskdefs.*;
 import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.DirectoryScanner;
 
+import org.apache.log4j.Category;
+
 /**
  * common superclass for WOApplication and WOFramework that looks
  * after common functionality.
  */
 public abstract class WOTask extends MatchingTask {
+
+    private static Category logger = Category.getInstance(WOTask.class.getName());
+    private static boolean DEBUG = logger.isDebugEnabled();
 
     protected Vector classes = new Vector();
     protected String name;
@@ -100,6 +105,21 @@ public abstract class WOTask extends MatchingTask {
     }
 
     /**
+     * location where WOTask is being built up: ie the .woa dir or the .framework dir.
+     */
+    protected abstract File taskDir();
+
+    /**
+     * where resources should be put: WOComponents, EOModels etc
+     */
+    protected abstract File resourcesDir();
+
+    /**
+     * where web server resources should be put: images etc
+     */
+    protected abstract File wsresourcesDir();
+
+    /**
      * Ensure we have a consistent and legal set of attributes, and set any
      * internal flags necessary based on different combinations of attributes.
      *
@@ -115,5 +135,77 @@ public abstract class WOTask extends MatchingTask {
         }
     }
 
+    protected void createDirectories() throws BuildException {
+        Mkdir mkdir = new Mkdir();
+        initChildTask(mkdir);
+
+        File taskDir = taskDir();
+
+        mkdir.setDir(taskDir);
+        mkdir.execute();
+
+        File resourceDir = resourcesDir();
+        mkdir.setDir(resourceDir);
+        mkdir.execute();
+
+        mkdir.setDir(new File(resourceDir, "Java"));
+        mkdir.execute();
+
+        if (hasWs()) {
+            mkdir.setDir(wsresourcesDir());
+            mkdir.execute();
+        }
+    }
+
+    protected boolean hasWs() {
+        return wsresources.size() > 0;
+    }
+
+    protected boolean hasResources() {
+        return resources.size() > 0;
+    }
+
+
+    protected boolean hasClasses() {
+        return classes.size() > 0;
+    }
+
+
+    protected void initChildTask(Task t) {
+        t.setOwningTarget(this.getOwningTarget());
+        t.setProject(this.getProject());
+        t.setTaskName(this.getTaskName());
+        t.setLocation(this.getLocation());
+    }
+
+    protected void jarClasses() throws BuildException {
+        Jar jar = new Jar();
+        initChildTask(jar);
+
+        File taskJar =
+                new File(resourcesDir(), "Java" + File.separator + name.toLowerCase() + ".jar");
+        jar.setJarfile(taskJar);
+
+        if (hasClasses()) {
+            Enumeration en = classes.elements();
+            while (en.hasMoreElements()) {
+                jar.addFileset((FileSet) en.nextElement());
+            }
+        }
+
+        jar.execute();
+    }
+
+    protected void copyResources() throws BuildException {
+        WOCompCopy cp = new WOCompCopy();
+        initChildTask(cp);
+
+        cp.setTodir(resourcesDir());
+        Enumeration en = resources.elements();
+        while (en.hasMoreElements()) {
+            cp.addFileset((FileSet) en.nextElement());
+        }
+        cp.execute();
+    }
 
 }

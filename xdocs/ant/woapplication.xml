@@ -45,6 +45,11 @@
                                      <i>(no war will be created if this parameter is omitted)</i></td>
 					<td valign="top" align="center">No</td>
 				</tr>
+                <tr>
+					<td valign="top">webXmlTemplate</td>
+					<td valign="top">The file to use as a template when generating <code>web.xml</code></td>
+					<td valign="top" align="center">No</td>
+				</tr>
 			</table>
 
 			<h3>Nested elements:</h3>
@@ -67,6 +72,22 @@
 			href="http://jakarta.apache.org/ant/manual/CoreTypes/fileset.html">FileSet</a>.
 			All files included in this fileset will
 			end up in the <code>Contents/WebServerResources</code> directory of the application. </p>
+
+            <h4>worameworks</h4>
+			<p>The nested <code>woframeworks</code> element specifies the names of the
+            WOFrameworks that this application is dependant on. This task
+            will search the <code>frameworksPath</code> to find them. The jar files from
+            these frameworks will be included on the build classpath, and specified
+            in the web.xml classpath if you deploy as a servlet. Note that if you
+            also define classpath elements in <code>classes</code>, they will be used as well.
+			 </p>
+
+            <h4>frameworksPath</h4>
+			<p>The nested <code>frameworksPath</code> element specifies a <a
+			href="http://jakarta.apache.org/ant/manual/using.html#path">Path</a>.
+			All path elements included in this path will
+			be searched in order to locate the frameworks specified in the frameworks nested element. </p>
+
 
 			<h4>Examples:</h4>
 

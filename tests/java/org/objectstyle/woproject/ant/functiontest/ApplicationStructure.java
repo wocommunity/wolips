@@ -54,51 +54,35 @@
  *
  */
 
-package org.objectstyle.woproject.ant;
+package org.objectstyle.woproject.ant.functiontest;
 
 import java.io.File;
-import org.apache.tools.ant.*;
 
 /**
- * A test case that builds the art framework using its ant buildfile
- * then does various assertions about what ant produced.
+ * Java bean that keeps information about WebObjects
+ * project structure.
  *
- * @author Andrei Adamchik, Emily Bache
+ * @author Andrei Adamchik
  */
-public class ArtBuildTest extends BuildTestCase {
+public class ApplicationStructure extends ProjectStructure {
 
-    protected Project project;
-
-    public ArtBuildTest(String name) {
+    public ApplicationStructure(String name) {
         super(name);
     }
 
-    public void setUp() throws Exception {
-        super.setUp();
-
-        String projectDir = "tests/wo/frameworks/art";
-        project = getProject(new File(projectDir), new File(projectDir, "build.xml"));
+    public String getDirectoryPath() {
+        return "WebObjects/Applications/" + name + ".woa";
     }
 
-    public void tearDown() throws Exception {
-
-        super.tearDown();
+    public String getRelativeResourcesPath() {
+        return "Contents/Resources";
     }
 
-    public void testFilesPresent() throws Exception {
-        String defaultTarget = project.getDefaultTarget();
-        project.executeTarget(defaultTarget);
-
-        FrameworkStructure artFrwk = new FrameworkStructure("art");
-        artFrwk.setJars(new String[] { "art", "cayenne", "woproject" });
-        artFrwk.setWocomps(new String[] { "PaintingSearch" });
-        artFrwk.setWsResources(new String[] { "images/spacer.gif" });
-
-        assertStructure(artFrwk);
-
+    public String getRelativeWSResourcesPath() {
+        return "Contents/WebServerResources";
     }
 
-    public static void main(String[] args) {
-        junit.textui.TestRunner.main(new String[]{ArtBuildTest.class.getName()});
+    public String getRelativeInfoPath() {
+        return "Contents";
     }
 }
