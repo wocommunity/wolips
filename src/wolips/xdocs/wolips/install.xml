@@ -35,6 +35,12 @@
 		<subsection name="Update">
 			<p>Please reset the WOLips perspective after an update.</p>
 		</subsection>
+		<subsection name="How to proceed">
+			<p>Launch Eclipse</p>
+			<p>It's normal that you have to launch Eclipse.app twice after changes to the plugins and features.</p>
+			<p>The update manager should occur. Please activate. On the mac say when Eclipse ask to relaunch and quit restart the application by hand.On other platforms just say yes.</p>
+			<p>If the welcome to WOLips doesn't open you can view the welcome under Help->Welcome.</p>
+		</subsection>
 	</section>
 </body>
 </document>
