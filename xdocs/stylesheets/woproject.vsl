@@ -298,5 +298,10 @@
             <input name="q" type="hidden"><input size="16" id="query" type="text"></td></tr>
     </table>
     </form>
+    <table bgcolor="#ffffff" border="0" cellpadding="3" cellspacing="2">
+        <tr>
+            <td bgcolor="#ffffff" align=center class="normal-menu" width="137"><A href="http://sourceforge.net/projects/woproject/"> <IMG  src="http://sourceforge.net/sflogo.php?group_id=50507&amp;type=5" width="105" height="31" border="0" alt="SourceForge.net Logo"></A></td>
+            </tr>
+    </table>
 #end
 
