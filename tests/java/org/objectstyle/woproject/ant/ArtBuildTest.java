@@ -58,7 +58,7 @@ package org.objectstyle.woproject.ant;
 
 import junit.framework.TestCase;
 
-import org.apache.tools.ant.taskdefs.Ant;
+import org.apache.tools.ant.taskdefs.Java;
 
 /** 
  * A test case that attempts to build art framework and does
@@ -75,8 +75,6 @@ public class ArtBuildTest extends TestCase {
 
     public void setUp() throws Exception {
         super.setUp();
-        builder = new TaskBuilder(".");
-        buildFramework();
     }
 
     public void tearDown() throws Exception {
@@ -84,12 +82,5 @@ public class ArtBuildTest extends TestCase {
     }
 
     public void testMe() throws Exception {
-    }
-
-    /** Runs full build on "art" framework. */
-    public void buildFramework() throws Exception {
-        Ant t = new Ant();
-        builder.prepareTask(t);
-        t.execute();
     }
 }

@@ -174,10 +174,28 @@
     <!-- Runs Unit tests.                              -->
     <!-- ============================================= -->
     <target name="test" depends="java-tests">
+        <!-- clean-build test cases using woproject -->
+        <delete dir="tests/wo/dist"/>
+        
+        <echo>****** Building tests: start</echo>
+		
+		<ant dir="tests/wo/frameworks/art" target="clean">
+			<property name="dist" value="../../dist"/>
+			<property name="project.name" value="art"/>
+		</ant>
+        <ant dir="tests/wo/frameworks/art">
+        	<property name="dist" value="../../dist"/>
+			<property name="project.name" value="art"/>
+	    </ant>
+	    
+        <echo>****** Building tests: done</echo>
+		        
+        <!-- run tests on built stuff -->
     	<java classname="org.objectstyle.woproject.TestsMain" fork="yes" failonerror="yes">
     		<classpath refid="classpath-tests-run"/>
         </java>
     </target>
+    
 
     <!-- ============================================= -->
     <!-- Sets up build and distribution directories.   -->
