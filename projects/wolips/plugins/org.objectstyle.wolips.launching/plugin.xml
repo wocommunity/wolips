@@ -84,5 +84,35 @@
             id="org.objectstyle.wolips.launching.WORuntimeClasspathProvider">
       </runtimeClasspathEntryResolver>
    </extension>
-
+<!-- =================================================================================== -->
+<!-- Extension: Launch shortcuts                                                         -->
+<!-- =================================================================================== -->
+   <extension
+         point="org.eclipse.debug.ui.launchShortcuts">
+      <shortcut
+            label="WOApplication"
+            icon="icons/launching/WOLips-launching.gif"
+            modes="run, debug"
+            class="org.objectstyle.wolips.launching.WOJavaApplicationLaunchShortcut"
+            id="org.objectstyle.wolips.launching.WOJavaApplicationLaunchShortcut">
+         <perspective
+               id="org.eclipse.jdt.ui.JavaPerspective">
+         </perspective>
+         <perspective
+               id="org.eclipse.jdt.ui.JavaHierarchyPerspective">
+         </perspective>
+         <perspective
+               id="org.eclipse.jdt.ui.JavaBrowsingPerspective">
+         </perspective>
+         <perspective
+               id="org.eclipse.debug.ui.DebugPerspective">
+         </perspective>
+         <perspective
+               id="org.eclipse.pde.PDEPerspective">
+         </perspective>
+         <perspective
+               id="org.objectstyle.wolips.ui.Perspective">
+         </perspective>
+      </shortcut>
+   </extension>
 </plugin>
