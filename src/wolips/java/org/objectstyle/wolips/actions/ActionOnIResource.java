@@ -59,6 +59,7 @@ package org.objectstyle.wolips.actions;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jdt.core.ICompilationUnit;
+import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -122,12 +123,22 @@ public class ActionOnIResource implements IObjectActionDelegate {
 		Object obj = (((IStructuredSelection) selection).getFirstElement());
 		project = null;
 		actionResource = null;
-		if (obj != null && obj instanceof IResource)
+		if (obj != null && obj instanceof IResource) {
 			actionResource = (IResource) obj;
-		if (obj != null && obj instanceof ICompilationUnit)
-			actionResource = (IResource) ((ICompilationUnit) obj).getResource();
-		if (obj != null)
 			project = actionResource.getProject();
+		}
+		if (obj != null && obj instanceof ICompilationUnit) {
+			actionResource = (IResource) ((ICompilationUnit) obj).getResource();
+			project = actionResource.getProject();
+		}
+		if (obj != null && obj instanceof IProject) {
+			actionResource = (IProject) obj;
+			project = (IProject) actionResource;
+		}
+		if (obj != null && obj instanceof IJavaProject) {
+			actionResource = ((IJavaProject) obj).getProject();
+			project = (IProject) actionResource;
+		}
 	}
 	/** (non-Javadoc)
 	 * Method declared on IObjectActionDelegate
