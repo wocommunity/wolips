@@ -196,7 +196,7 @@ public class UpdateFrameworkIncludeFiles extends UpdateIncludeFiles {
 	 * Method validateAttributes.
 	 */
 	protected void validateAttributes() throws BuildException {
-		if (project == null) {
+		if (getProject() == null) {
 			throw new BuildException("no project set");
 		}
 		if (getProjectName() == null) {

@@ -148,7 +148,7 @@ public abstract class UpdateIncludeFiles extends Task {
 	
 	protected IPath getROOTPATHProperty(String aProperty) {
 		//Workaround for MacOSX otherwise any jar seems to be under the wolocalroot
-		IPath currentRootPath = new Path(project.getProperty(aProperty));
+		IPath currentRootPath = new Path(getProject().getProperty(aProperty));
 		//System.out.println("currentRootPath: " + currentRootPath.toOSString());
 //		if(currentRootPath != null && "/".equals(currentRootPath.toOSString()))
 //			currentRootPath = currentRootPath.append("Library/");

@@ -5,27 +5,29 @@
    version="0.9.8"
    provider-name="%WOLips.providerName"
    class="org.objectstyle.wolips.plugin.WOLipsPlugin">
-<!-- =================================================================================== -->
-<!-- runtime                                                                             -->
-<!-- =================================================================================== -->
+
    <runtime>
       <library name="lib/wolips.jar">
          <export name="*"/>
-         <packages prefixes="org.objectstyle.wolips.actions,org.objectstyle.wolips.ant,org.objectstyle.wolips.builder,org.objectstyle.wolips.editor,org.objectstyle.wolips.ide,org.objectstyle.wolips.images,org.objectstyle.wolips.io,org.objectstyle.wolips.listener,org.objectstyle.wolips.logging,org.objectstyle.wolips.natures,org.objectstyle.wolips.plugin,org.objectstyle.wolips.preferences,org.objectstyle.wolips.project,org.objectstyle.wolips.resources,org.objectstyle.wolips.ui,org.objectstyle.wolips.utils,org.objectstyle.wolips.wizards,org.objectstyle.wolips.workbench"/>
+         <packages prefixes="org.objectstyle.wolips.actions,org.objectstyle.wolips.ant,org.objectstyle.wolips.builder"/>
+         <packages prefixes="org.objectstyle.wolips.editor,org.objectstyle.wolips.ide,org.objectstyle.wolips.images"/>
+         <packages prefixes="org.objectstyle.wolips.io,org.objectstyle.wolips.listener,org.objectstyle.wolips.logging"/>
+         <packages prefixes="org.objectstyle.wolips.natures,org.objectstyle.wolips.plugin,org.objectstyle.wolips.preferences"/>
+         <packages prefixes="org.objectstyle.wolips.project,org.objectstyle.wolips.resources,org.objectstyle.wolips.ui"/>
+         <packages prefixes="org.objectstyle.wolips.utils,org.objectstyle.wolips.wizards,org.objectstyle.wolips.workbench"/>
       </library>
       <library name="lib/woproject.jar">
-         <packages prefixes="org.objectstyle.woproject.ant,org.objectstyle.woproject.env,org.objectstyle.woproject.log4j,org.objectstyle.woproject.pb,org.objectstyle.woproject.util,org.objectstyle.woproject.wo"/>
+         <export name="*"/>
+         <packages prefixes="org.objectstyle.woproject.ant,org.objectstyle.woproject.env,org.objectstyle.woproject.log4j"/>
+         <packages prefixes="org.objectstyle.woproject.pb,org.objectstyle.woproject.util,org.objectstyle.woproject.wo"/>
       </library>
       <library name="lib/cayenne.jar">
          <packages prefixes="org.objectstyle.cayenne"/>
       </library>
-       <library name="lib/commons-logging.jar">
+      <library name="lib/commons-logging.jar">
          <packages prefixes="org.apache.commons.logging"/>
       </library>
    </runtime>
-<!-- =================================================================================== -->
-<!-- Required Plugins                                                                    -->
-<!-- =================================================================================== -->   
    <requires>
       <import plugin="org.apache.xerces"/>
       <import plugin="org.eclipse.core.runtime"/>
@@ -41,7 +43,10 @@
       <import plugin="org.eclipse.debug.core"/>
       <import plugin="org.eclipse.debug.ui"/>
       <import plugin="org.eclipse.ui.externaltools"/>
+      <import plugin="org.apache.ant"/>
    </requires>
+
+
 <!-- =================================================================================== -->
 <!-- Extension: Project Wizards                                                          -->
 <!-- =================================================================================== -->
@@ -208,13 +213,13 @@
                menubarPath="org.objectstyle.wolips/project"
                id="%UpdatePB.Project.ID">
          </action>
-          <action
+         <action
                label="%WOBuilder.Remove"
                class="org.objectstyle.wolips.actions.WOBuilderAction"
                menubarPath="org.objectstyle.wolips/wobuilder"
                id="%WOBuilder.Remove.ID">
          </action>
-        <action
+         <action
                label="%WOApplicationBuilder.Set"
                class="org.objectstyle.wolips.actions.WOBuilderAction"
                menubarPath="org.objectstyle.wolips/wobuilder"
@@ -295,7 +300,7 @@
                id="org.objectstyle.wolips.actions.DeleteComponentAction">
          </action>
       </objectContribution>
-            <objectContribution
+      <objectContribution
             objectClass="org.eclipse.core.resources.IFile"
             adaptable="true"
             nameFilter="*.eomodeld"
@@ -563,27 +568,27 @@
       </page>
       <page
             name="%WOLips.preferences.build.viewName"
+            category="org.objectstyle.wolips.preferences.PreferencesPage"
             class="org.objectstyle.wolips.preferences.BuildPreferencesPage"
-            id="org.objectstyle.wolips.preferences.BuildPreferencesPage"
-            category="org.objectstyle.wolips.preferences.PreferencesPage">
+            id="org.objectstyle.wolips.preferences.BuildPreferencesPage">
       </page>
       <page
             name="%WOLips.preferences.ui.viewName"
+            category="org.objectstyle.wolips.preferences.PreferencesPage"
             class="org.objectstyle.wolips.preferences.UIPreferencesPage"
-            id="org.objectstyle.wolips.preferences.UIPreferencesPage"
-            category="org.objectstyle.wolips.preferences.PreferencesPage">
+            id="org.objectstyle.wolips.preferences.UIPreferencesPage">
       </page>
       <page
             name="%WOLips.preferences.log.viewName"
+            category="org.objectstyle.wolips.preferences.PreferencesPage"
             class="org.objectstyle.wolips.preferences.LogPreferencesPage"
-            id="org.objectstyle.wolips.preferences.LogPreferencesPage"
-            category="org.objectstyle.wolips.preferences.PreferencesPage">
+            id="org.objectstyle.wolips.preferences.LogPreferencesPage">
       </page>
       <page
             name="%WOLips.preferences.launch.viewName"
+            category="org.objectstyle.wolips.preferences.PreferencesPage"
             class="org.objectstyle.wolips.preferences.LaunchPreferencesPage"
-            id="org.objectstyle.wolips.preferences.LaunchPreferencesPage"
-            category="org.objectstyle.wolips.preferences.PreferencesPage">
+            id="org.objectstyle.wolips.preferences.LaunchPreferencesPage">
       </page>
    </extension>
 <!-- =================================================================================== -->

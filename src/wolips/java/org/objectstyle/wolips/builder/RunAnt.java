@@ -56,30 +56,11 @@
 
 package org.objectstyle.wolips.builder;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Hashtable;
 
 import org.eclipse.ant.core.AntRunner;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
-import org.eclipse.debug.core.DebugPlugin;
-import org.eclipse.debug.core.ILaunchConfiguration;
-import org.eclipse.debug.core.ILaunchConfigurationType;
-import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
-import org.eclipse.debug.core.ILaunchManager;
-import org.eclipse.debug.internal.ui.DebugUIPlugin;
-import org.eclipse.debug.ui.CommonTab;
-import org.eclipse.jface.dialogs.ProgressMonitorDialog;
-import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.externaltools.model.IExternalToolConstants;
-import org.eclipse.ui.externaltools.model.ToolUtil;
-import org.objectstyle.wolips.plugin.IWOLipsPluginConstants;
-import org.objectstyle.wolips.plugin.WOLipsPlugin;
-import org.objectstyle.wolips.preferences.Preferences;
 
 /**
  * @author uli
@@ -91,7 +72,6 @@ import org.objectstyle.wolips.preferences.Preferences;
  */
 public class RunAnt {
 
-	private static Hashtable launchConfigurations = new Hashtable();
 	private static Hashtable cachedAntRunner = new Hashtable();
 	
 	/**
@@ -140,196 +120,5 @@ public class RunAnt {
 		} finally {
 			runner = null;
 		}
-	}
-
-	/**
-	 * Method asExternalTool.
-	 * @param buildFile
-	 * @param kind
-	 * @param monitor
-	 * @throws Exception
-	 */
-	public static void asExternalTool(
-		IFile buildFile,
-		int kind,
-		IProgressMonitor monitor,
-		String target)
-		throws Exception {
-		ILaunchConfiguration config = null;
-		try {
-			config = RunAnt.createDefaultLaunchConfiguration(buildFile, target);
-		} catch (CoreException e) {
-			config = null;
-			WOLipsPlugin.handleException(
-				Display.getCurrent().getActiveShell(),
-				e,
-				BuildMessages.getString("Build.Exception"));
-			return;
-		}
-		try {
-			RunAnt.launch(config, ILaunchManager.RUN_MODE);
-		} finally {
-			config = null;
-		}
-		/*if (kind == IncrementalProjectBuilder.AUTO_BUILD)
-			config.setAttribute(
-				IExternalToolConstants.VAR_BUILD_TYPE,
-				IExternalToolConstants.BUILD_TYPE_AUTO);
-		if (kind == IncrementalProjectBuilder.FULL_BUILD)
-			config.setAttribute(
-				IExternalToolConstants.VAR_BUILD_TYPE,
-				IExternalToolConstants.BUILD_TYPE_FULL);
-		if (kind == IncrementalProjectBuilder.INCREMENTAL_BUILD)
-			config.setAttribute(
-				IExternalToolConstants.VAR_BUILD_TYPE,
-				IExternalToolConstants.BUILD_TYPE_INCREMENTAL);
-		config.setAttribute(IExternalToolConstants.ATTR_LOCATION, buildFile);*/
-	}
-
-	/**
-	 * Launches the given launch configuration in the specified mode with a
-	 * progress dialog. Reports any exceptions that occurr in an error dilaog.
-	 * 
-	 * @param configuration the configuration to launch
-	 * @param mode launch mode - run or debug
-	 */
-	private static void launch(
-		final ILaunchConfiguration configuration,
-		final String mode) {
-		ProgressMonitorDialog dialog =
-			new ProgressMonitorDialog(DebugUIPlugin.getShell());
-		IRunnableWithProgress runnable = new IRunnableWithProgress() {
-			public void run(IProgressMonitor monitor)
-				throws InvocationTargetException, InterruptedException {
-				try {
-					configuration.launch(mode, monitor);
-				} catch (CoreException e) {
-					throw new InvocationTargetException(e);
-				}
-			}
-		};
-		try {
-			dialog.run(true, true, runnable);
-		} catch (InvocationTargetException e) {
-			Throwable targetException = e.getTargetException();
-			Throwable t = e;
-			if (targetException instanceof CoreException) {
-				t = targetException;
-			}
-			DebugUIPlugin.errorDialog(
-				DebugUIPlugin.getShell(),
-				"Error",
-				"Exception occurred during launch",
-				t);
-		} catch (InterruptedException e) {
-			// cancelled
-		}
-	}
-
-	/**
-	 * Method getCachedILaunchConfigurationWorkingCopy.
-	 * @param file
-	 * @param target
-	 * @return ILaunchConfigurationWorkingCopy
-	 */
-	private static ILaunchConfigurationWorkingCopy getCachedILaunchConfigurationWorkingCopy(
-		IFile file,
-		String target) {
-		return (
-			ILaunchConfigurationWorkingCopy) RunAnt.launchConfigurations.get(
-			file.toString() + target);
-	}
-	/**
-	 * Method setCachedILaunchConfigurationWorkingCopy.
-	 * @param file
-	 * @param target
-	 * @param workingCopy
-	 */
-	private static void setCachedILaunchConfigurationWorkingCopy(
-		IFile file,
-		String target,
-		ILaunchConfigurationWorkingCopy workingCopy) {
-		RunAnt.launchConfigurations.put(file.toString() + target, workingCopy);
-	}
-
-	/**
-	 * Creates and returns a default launch configuration for the given file.
-	 * 
-	 * @param file
-	 * @return default launch configuration
-	 */
-	private static ILaunchConfiguration createDefaultLaunchConfiguration(
-		IFile file,
-		String target)
-		throws CoreException {
-		ILaunchConfigurationWorkingCopy workingCopy =
-			RunAnt.getCachedILaunchConfigurationWorkingCopy(file, target);
-		if (workingCopy == null) {
-			ILaunchManager manager =
-				DebugPlugin.getDefault().getLaunchManager();
-			ILaunchConfigurationType type =
-				manager.getLaunchConfigurationType(
-					IExternalToolConstants.ID_ANT_LAUNCH_CONFIGURATION_TYPE);
-			IPath path = file.getFullPath();
-			if (path.segmentCount() > 2) {
-				path = path.removeFirstSegments(path.segmentCount() - 2);
-			}
-			StringBuffer buffer = new StringBuffer();
-			String[] segments = path.segments();
-			for (int i = 0; i < segments.length; i++) {
-				String string = segments[i];
-				buffer.append(string);
-				buffer.append(" "); //$NON-NLS-1$
-			}
-			String name = buffer.toString().trim();
-			name = manager.generateUniqueLaunchConfigurationNameFrom(name);
-			workingCopy = type.newInstance(null, name);
-			// set default for common settings
-			CommonTab tab = new CommonTab();
-			tab.setDefaults(workingCopy);
-			tab.dispose();
-			StringBuffer buf = new StringBuffer();
-			ToolUtil.buildVariableTag(
-				IExternalToolConstants.VAR_WORKSPACE_LOC,
-				file.getFullPath().toString(),
-				buf);
-			workingCopy.setAttribute(
-				IExternalToolConstants.ATTR_LOCATION,
-				buf.toString());
-			workingCopy.setAttribute(
-				IExternalToolConstants.ATTR_RUN_IN_BACKGROUND,
-				true);
-			if (target != null) {
-				workingCopy.setAttribute(
-					IExternalToolConstants.ATTR_ANT_TARGETS,
-					target);
-			}
-			setCachedILaunchConfigurationWorkingCopy(file, target, workingCopy);
-		}
-		if (Preferences
-			.getBoolean(IWOLipsPluginConstants.PREF_SHOW_BUILD_OUTPUT)) {
-			workingCopy.setAttribute(
-				IExternalToolConstants.ATTR_CAPTURE_OUTPUT,
-				true);
-			workingCopy.setAttribute(
-				IExternalToolConstants.ATTR_SHOW_CONSOLE,
-				true);
-			workingCopy.setAttribute(
-				IExternalToolConstants.ATTR_TOOL_ARGUMENTS,
-				(String) null);
-		} else {
-			workingCopy.setAttribute(
-				IExternalToolConstants.ATTR_SHOW_CONSOLE,
-				(String) null);
-			workingCopy.setAttribute(
-				IExternalToolConstants.ATTR_CAPTURE_OUTPUT,
-				(String) null);
-			String quiet = "-quiet";
-			workingCopy.setAttribute(
-				IExternalToolConstants.ATTR_TOOL_ARGUMENTS,
-				quiet);
-		}
-
-		return workingCopy;
 	}
 }
