@@ -93,8 +93,8 @@ public class WOFrameworkDialogWrapper {
 	//private static Path nextRootAsPath = new Path(WOVariables.nextRoot());
 
 	private FileSelectionDialog dialog;
-	private IJavaProject projectToUpdate;
-	private IWorkbenchPart part;
+	IJavaProject projectToUpdate;
+	IWorkbenchPart part;
 	private IClasspathEntry[] oldClasspathEntries;
 	private IPath frameworkRootPath;
 	private IPath expandedClassPathVariable;

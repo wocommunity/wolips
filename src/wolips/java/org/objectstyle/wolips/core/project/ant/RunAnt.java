@@ -189,7 +189,7 @@ public class RunAnt extends AWOLips {
 	 * @param configuration the configuration to launch
 	 * @param mode launch mode - run or debug
 	 */
-	private void launch(
+	void launch(
 		final ILaunchConfiguration configuration,
 		final String mode) {
 		ProgressMonitorDialog dialog =

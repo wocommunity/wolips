@@ -130,10 +130,10 @@ public class DeleteFilesDialogWrapper {
 			return;
 		result = dialog.getResult();
 		try {
-		FileSystemElement currentFileElement;
+		//FileSystemElement currentFileElement;
 		for (int i = 0; i < result.length; i++) {
-			currentFileElement = (FileSystemElement) result[i];
-			IResource resource = (IResource) currentFileElement.getFileSystemObject();
+			//currentFileElement = (FileSystemElement) result[i];
+			//IResource resource = (IResource) currentFileElement.getFileSystemObject();
 			//resource.delete(true, null);
 		}
 	} catch (Exception e) {
