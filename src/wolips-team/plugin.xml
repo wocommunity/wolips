@@ -34,6 +34,10 @@
       </fileTypes>
       <fileTypes
             type="text"
+            extension="fspec">
+      </fileTypes>
+      <fileTypes
+            type="text"
             extension="api">
       </fileTypes>
       <fileTypes
@@ -43,6 +47,10 @@
       <fileTypes
             type="text"
             extension="preamble">
+      </fileTypes>
+      <fileTypes
+            type="text"
+            extension="makefile">
       </fileTypes>
       <fileTypes
             type="text"
@@ -109,6 +117,14 @@
       <ignore
             selected="true"
             pattern=".DS_Store">
+      </ignore>
+            <ignore
+            selected="false"
+            pattern=".woo">
+      </ignore>
+            <ignore
+            selected="false"
+            pattern=".api">
       </ignore>
    </extension>
 
