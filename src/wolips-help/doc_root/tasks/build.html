@@ -5,15 +5,57 @@
 </head>
 
 <body bgcolor="#FFFFFF">
-<h1>Building</h1>
+<h1>Building WebObjects Applications</h1>
 <p>....</p>
-<h2>Using Ant</h2>
+<h2><a name="ant"></a>Using Ant</h2>
 <p>...</p>
-<h3>Internally</h3>
+<h3><a name="internally"></a>Internally</h3>
 <p>...</p>
-<h3>Externally</h3>
+<h3><a name="externally"></a>Externally</h3>
 <p>...</p>
-<h2>Incrementally</h2>
+<h2><a name="incrementally"></a>Incrementally</h2>
+<p>How-to use documentation: </p>
+<ol>
+  <li>make sure that WOLips is properly installed and the build.properties file 
+    exists</li>
+  <li>create Java Projects for the WebObjects Projects</li>
+  <li>add a filter to the Package Explorer filtering out things called build (and 
+    eg. WebComponents.*, for theCMSFramework)</li>
+  <li>add a WebObjects Classpath container to the buildpath (Project Properties 
+    / Build Path / Libraries / Advanced) and choose all the WebObjects Frameworks 
+    you wish to use. (This step can be omitted on applications that use a common 
+    framework if that framework exports the WebObjects classpath and if the application 
+    doesn't need additional WO frameworks.)</li>
+  <li>add all the .jar-files that are needed by the project (as "Internal Jar" 
+    if they are in CVS, via add Variable if they are not). 
+  <li>fix all the compilation problems (like wrong package names in classes)</li>
+  <li>edit the Project Properties and check the "Is a WebObjects Project" checkbox 
+    (also check "Is a Framework" for frameworks).</li>
+  <li>create a launch configuration using the Run... menu</li>
+  <li>change the runtime classpath and the source path to not be the default paths 
+    (uncheck both checkboxes)</li>
+  <li>(do this only after unchecking both checkboxes in the step above:) change 
+    the Runtime Classpath by adding the build/&lt;projectname&gt;.woa/Contents/Resources/Java 
+    Folder to the classpath <b>before</b> or instead of the Project itself</li>
+  <li>(do the same for all WO-Frameworks in your Workspace, using the appropriate 
+    Resources/Java folders).</li>
+  <li>add the parameters -Duser.dir=&lt;path to the .woa directory under build&gt; 
+    (or better: set this folder as the working directory for the application) 
+    and -DWORootDirectory=&gt;$NEXT_ROOT&lt; (replacing &gt;$NEXT_ROOT&lt; with 
+    the installation path of your WebObjects installation)</li>
+  <li>turn on reloading of templates with -WODebuggingEnabled true</li>
+  <li>turn on rapid-turnaround mode with -NSProjectSearchPath ("../..") </li>
+  <li>optional: set the port the application listens on with (e.g.) -WOPort 6666</li>
+  <li>run the application</li>
+</ol>
+<p> <<re incremental builder...>> <<is this based on work you did independant of woproject/wolips?>> 
+  Yes <<building incrementally is an alternative to building with ant?>> Yes <<what are the pros and cons?>> 
+  Pro: Speed Con: less flexible Sorry for being so short. You can check the (tiny) 
+  documentation snip I checked into CVS Harald </p>
+<p>&nbsp;</p>
+<p>Hi, the cvs version has an option to choose the builder. WOBuild in the project 
+  properties. Ulrich </p>
+<h2><a name="targetbuilder"></a>Using TargetBuilder</h2>
 <p>...</p>
 </body>
 </html>
