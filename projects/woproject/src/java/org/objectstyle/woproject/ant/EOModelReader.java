@@ -94,6 +94,9 @@ public class EOModelReader extends EOModelProcessor {
             if (type.equals("NSCalendarDate")) {
                 return "com.webobjects.foundation.NSTimestamp";
             }
+            if (type.equals("NSNumber")) {
+                return "java.lang.Number";
+            }
             if (type.equals("NSData")) {
                 return "com.webobjects.foundation.NSData";
             }
