@@ -89,29 +89,7 @@ public final class EOModel
 	 */
 	public final List getRelatedResources() {
 		List list = new ArrayList();
-		/*if (this.getCorrespondingResource() != null) {
-			try {
-				IProject[] projects =
-					WorkbenchUtilities.getWorkspace().getRoot().getProjects();
-				String fileName = this.getCorrespondingResource().getName();
-				fileName = fileName.substring(0, fileName.length() - 3);
-				String[] extensions =
-					new String[] {
-						WOLipsModel.WOCOMPONENT_WOD_EXTENSION,
-						WOLipsModel.WOCOMPONENT_HTML_EXTENSION,
-						WOLipsModel.WOCOMPONENT_WOO_EXTENSION,
-						WOLipsModel.WOCOMPONENT_API_EXTENSION };
-				list =
-					WorkbenchUtilities
-						.findResourcesInResourcesByNameAndExtensions(
-						projects,
-						fileName,
-						extensions);
-
-			} catch (Exception e) {
-				WOLipsLog.log(e);
-			}
-		}*/
+		list.add(this.getCorrespondingResource());
 		return list;
 	}
 
@@ -120,7 +98,7 @@ public final class EOModel
 	 * @param forceToOpenIntextEditor If forceToOpenIntextEditor is set to true the resource opens in a texteditor.
 	 */
 	public final void open(boolean forceToOpenIntextEditor) {
-		IFile index = (IFile) ((IFolder) this.getCorrespondingResource()).findMember("index.eomodeld");
+	    IFile index = (IFile) ((IFolder) this.getCorrespondingResource()).findMember("index.eomodeld");
 		WorkbenchUtilitiesPlugin.open(index);
 	}
 }

@@ -132,7 +132,8 @@ public final class WOLipsModel implements IWOLipsModel {
 			WOLipsModel.WOCOMPONENT_WOD_EXTENSION,
 			WOLipsModel.WOCOMPONENT_HTML_EXTENSION,
 			WOLipsModel.WOCOMPONENT_WOO_EXTENSION,
-			WOLipsModel.WOCOMPONENT_API_EXTENSION };
+			WOLipsModel.WOCOMPONENT_API_EXTENSION,
+			WOLipsModel.EOMODEL_EXTENSION };
 	/**
 	 * Comment for <code>FILE_TYPES_TO_RESOURCE_TYPE_MAPPING</code>
 	 */
@@ -141,7 +142,8 @@ public final class WOLipsModel implements IWOLipsModel {
 			IWOLipsResource.WOCOMPONENT_WOD,
 			IWOLipsResource.WOCOMPONENT_HTML,
 			IWOLipsResource.WOCOMPONENT_WOO,
-			IWOLipsResource.WOCOMPONENT_API };
+			IWOLipsResource.WOCOMPONENT_API,
+			IWOLipsResource.EOMODEL };
 	private static final String[] COMPILATION_UNITS =
 		new String[] {
 			WOComponentJava.class.getName(),
