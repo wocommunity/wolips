@@ -56,63 +56,32 @@
 
 package org.objectstyle.wolips.wizards.actions;
 
-import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.action.IAction;
 import org.objectstyle.wolips.datasets.adaptable.Project;
-import org.objectstyle.wolips.datasets.adaptable.ProjectPatternsets;
-import org.objectstyle.wolips.templateengine.TemplateDefinition;
-import org.objectstyle.wolips.templateengine.TemplateEngine;
 import org.objectstyle.wolips.wizards.WizardsPlugin;
-import org.objectstyle.wolips.workbenchutilities.actions.AbstractActionOnIResource;
+import org.objectstyle.wolips.workbenchutilities.actions.AbstractActionOnIProjects;
 
 /**
  * @author ulrich
  */
-public class UpgradeBuildXML extends AbstractActionOnIResource {
+public class UpgradeAllBuildXML extends AbstractActionOnIProjects {
 
 	public void run(IAction action) {
-		Project project = (Project) this.getIProject()
-				.getAdapter(Project.class);
-		try {
-			if (!project.isWOLipsProject()) {
-				return;
+		IProject[] projects = this.getIProjects();
+		if (projects == null)
+			return;
+		for (int i = 0; i < projects.length; i++) {
+			Project project = (Project) projects[i].getAdapter(Project.class);
+			try {
+				if (!project.isWOLipsProject()) {
+					return;
+				}
+			} catch (CoreException e) {
+				WizardsPlugin.getDefault().getPluginLogger().log(e);
 			}
-		} catch (CoreException e) {
-			WizardsPlugin.getDefault().getPluginLogger().log(e);
+			UpgradeBuildXML.upgradeBuildXml(project);
 		}
-		UpgradeBuildXML.upgradeBuildXml(project);
-	}
-
-	/**
-	 * Upgrades the build.xml of a given project
-	 * @param project
-	 */
-	public static void upgradeBuildXml(Project project) {
-		String projectName = project.getIProject().getName();
-		String path = project.getIProject().getLocation().toOSString();
-		TemplateEngine templateEngine = new TemplateEngine();
-		try {
-			templateEngine.init();
-			templateEngine.getWolipsContext().setProjectName(projectName);
-			templateEngine.getWolipsContext().setAntFolderName(
-					ProjectPatternsets.ANT_FOLDER_NAME);
-			if (project.isApplication()) {
-				templateEngine.addTemplate(new TemplateDefinition(
-						"woapplication/build.xml.vm", path, "build.xml",
-						"build.xml"));
-			} else {
-				templateEngine.addTemplate(new TemplateDefinition(
-						"woframework/build.xml.vm", path, "build.xml",
-						"build.xml"));
-			}
-			templateEngine.run(new NullProgressMonitor());
-			project.getIProject().refreshLocal(IResource.DEPTH_INFINITE,
-					new NullProgressMonitor());
-		} catch (Exception e) {
-			WizardsPlugin.getDefault().getPluginLogger().log(e);
-		}
-
 	}
 }

@@ -194,10 +194,23 @@
             id="org.objectstyle.wolips.wizards.actions.UpgradeBuildXML">
          <action
                label="Upgrade to 1.1.0"
+               icon="icons/action/ant_buildfile.gif"
                class="org.objectstyle.wolips.wizards.actions.UpgradeBuildXML"
                menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group4"
                enablesFor="1"
                id="org.objectstyle.wolips.wizards.actions.UpgradeBuildXML">
+         </action>
+      </objectContribution>
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IProject"
+            adaptable="true"
+            id="org.objectstyle.wolips.wizards.actions.UpgradeAllBuildXML">
+         <action
+               label="Upgrade build.xml to 1.1.0"
+               icon="icons/action/ant_buildfile.gif"
+               class="org.objectstyle.wolips.wizards.actions.UpgradeAllBuildXML"
+               menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group4"
+               id="org.objectstyle.wolips.wizards.actions.UpgradeAllBuildXML">
          </action>
       </objectContribution>
    </extension>
