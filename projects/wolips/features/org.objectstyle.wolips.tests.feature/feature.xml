@@ -4,7 +4,6 @@
       label="%featureName"
       version="1.0.6"
       provider-name="%providerName"
-      plugin="org.objectstyle.wolips.tests.about"
       image="%image">
 
    <description url="http://www.objectstyle.org/woproject/index.html">
