@@ -137,12 +137,12 @@ public class FileFromTemplateCreator extends _FileFromTemplateCreator {
 	 * @throws java.lang.reflect.InvocationTargetException
 	 */
 	public synchronized void create(
-		IFile fileToCreate,
+		IFile aFileToCreate,
 		String templateId,
 		IProgressMonitor monitor)
 		throws InvocationTargetException {
-		this.fileToCreate = fileToCreate;
-		String fileName = fileToCreate.getName();
+		this.fileToCreate = aFileToCreate;
+		String fileName = aFileToCreate.getName();
 		int extIndex = fileName.indexOf(".");
 		if (extIndex != -1 && extIndex < fileName.length() - 1) {
 			// fileNameWithoutExtension is used to resolve CLASS template key
@@ -153,12 +153,12 @@ public class FileFromTemplateCreator extends _FileFromTemplateCreator {
 			subMonitor = new SubProgressMonitor(monitor, 1);
 		}
 		try {
-			fileToCreate.create(
+			aFileToCreate.create(
 				createInputStream(templateId),
 				false,
 				subMonitor);
 		} catch (CoreException e) {
-			if (fileToCreate.exists()) {
+			if (aFileToCreate.exists()) {
 				// ask for overwriting existing file
 				if (MessageDialog
 					.openQuestion(
@@ -169,11 +169,11 @@ public class FileFromTemplateCreator extends _FileFromTemplateCreator {
 							+ Messages.getString(
 								"QuestionDialog.overwrite.file"))) {
 					try {
-						fileToCreate.delete(true, monitor);
+						aFileToCreate.delete(true, monitor);
 					} catch (CoreException e2) {
 						throw new InvocationTargetException(e2);
 					}
-					create(fileToCreate, templateId, monitor);
+					create(aFileToCreate, templateId, monitor);
 				}
 			} else {
 				// ask for continuing execution of process
@@ -200,19 +200,19 @@ public class FileFromTemplateCreator extends _FileFromTemplateCreator {
 	 * @throws java.lang.reflect.InvocationTargetException
 	 */
 	public synchronized void create(
-		IFile fileToCreate,
+		IFile aFileToCreate,
 		IProgressMonitor monitor)
 		throws InvocationTargetException {
 		String fileName = null;
 		String fileExtension = null;
 		try {
-			fileName = fileToCreate.getName();
+			fileName = aFileToCreate.getName();
 			fileExtension = null;
 			int extIndex = fileName.indexOf(".");
 			if (extIndex != -1 && extIndex < fileName.length() - 1) {
 				fileExtension = fileName.substring(extIndex + 1);
 			}
-			create(fileToCreate, fileExtension, monitor);
+			create(aFileToCreate, fileExtension, monitor);
 		} finally {
 			fileName = null;
 			fileExtension = null;
