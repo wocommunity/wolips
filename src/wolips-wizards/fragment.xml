@@ -125,20 +125,20 @@
                id="org.objectstyle.wolips.OpenWOSubprojectCreationWizard">
          </action>
          <action
-               label="%OpenWOFrameworkCreationWizard.label"
-               icon="icons/woproject/woframework_wiz.gif"
-               tooltip="%OpenWOFrameworkCreationWizard.tooltip"
-               class="org.objectstyle.wolips.wizards.actions.OpenWOFrameworkCreationWizard"
-               toolbarPath="Normal/WOLipsWizards"
-               id="org.objectstyle.wolips.OpenWOFrameworkCreationWizard">
-         </action>
-         <action
                label="%OpenJarProjectCreationWizard.label"
                icon="icons/woproject/jar_project_wiz.gif"
                tooltip="%OpenJarProjectCreationWizard.tooltip"
                class="org.objectstyle.wolips.wizards.actions.OpenJarProjectCreationWizard"
                toolbarPath="Normal/WOLipsWizards"
                id="org.objectstyle.wolips.OpenJarProjectCreationWizard">
+         </action>
+         <action
+               label="%OpenWOFrameworkCreationWizard.label"
+               icon="icons/woproject/woframework_wiz.gif"
+               tooltip="%OpenWOFrameworkCreationWizard.tooltip"
+               class="org.objectstyle.wolips.wizards.actions.OpenWOFrameworkCreationWizard"
+               toolbarPath="Normal/WOLipsWizards"
+               id="org.objectstyle.wolips.OpenWOFrameworkCreationWizard">
          </action>
          <action
                label="%OpenWOApplicationCreationWizard.label"
