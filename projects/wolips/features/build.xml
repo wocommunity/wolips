@@ -4,23 +4,28 @@
 <!--        Main WOLips features Ant build file               -->
 <!-- Serves as a facade for different helper build files.     -->
 <!-- ======================================================== -->
-<project name="wolips" default="" basedir=".">
+<project name="wolips.features" default="" basedir=".">
 
     <!-- ========================================== -->
     <!-- Build all.                                 -->
     <!-- ========================================== -->
     <target name="all">
-	<ant dir="org.objectstyle.wolips.feature" target="all"/>
-	<ant dir="org.objectstyle.wolips.profiling.feature" target="all"/>
-	<ant dir="org.objectstyle.wolips.tests.feature" target="all"/>
+	    <ant dir="org.objectstyle.wolips.feature" target="all"/>
+	    <ant dir="org.objectstyle.wolips.profiling.feature" target="all"/>
+	    <ant dir="org.objectstyle.wolips.tests.feature" target="all"/>
+	    <ant dir="org.objectstyle.wolips.wounit.feature" target="all"/>
+	    <ant dir="org.objectstyle.wolips.devstudio.feature" target="all"/>
     </target>
     <!-- ========================================== -->
     <!-- Build dist.                                -->
     <!-- ========================================== -->
     <target name="dist">
-	<ant dir="org.objectstyle.wolips.feature" target="dist"/>
-	<ant dir="org.objectstyle.wolips.profiling.feature" target="dist"/>
-	<ant dir="org.objectstyle.wolips.tests.feature" target="dist"/>
+        <mkdir dir="../../${build.output.dist.dir}/features"/>
+	    <ant dir="org.objectstyle.wolips.feature" target="dist"/>
+	    <ant dir="org.objectstyle.wolips.profiling.feature" target="dist"/>
+	    <ant dir="org.objectstyle.wolips.tests.feature" target="dist"/>
+	    <ant dir="org.objectstyle.wolips.wounit.feature" target="dist"/>
+	    <ant dir="org.objectstyle.wolips.devstudio.feature" target="dist"/>
     </target>
 
 </project>
