@@ -14,8 +14,11 @@
     <!-- don't want to redefine them.                  -->
     <!-- ============================================= -->
     <property name="dist" value="${dist.base}/${project.name}-${project.version}"/>
-    
-    
+    <property name="output" value="output"/>
+    <property name="build" value="${output}/build"/>
+    <property name="test_results" value="${output}/test_results"/>
+
+
     <!-- ============================================= -->
     <!-- Define CLASSPATH settings.                    -->
     <!-- ============================================= -->
@@ -34,12 +37,12 @@
             <include name="JavaJDBCAdaptor.framework/Resources/Java/*.jar"/>
         </fileset>
     </path>
-    
+
     <path id="classpath-tests">
     	<path refid="classpath"/>
     	<pathelement path="${dist}/lib/${project.name}.jar"/>
     </path>
-    
+
     <path id="classpath-tests-run">
         <fileset dir="${dist}/lib">
             <include name="*.jar"/>
@@ -77,12 +80,12 @@
     <!-- Creates WOProject distribution.               -->
     <!-- ============================================= -->
     <target name="dist" depends="prepare,java,doc,api">
-    
+
          <!-- Copy source code -->
          <copy todir="${dist}/src">
              <fileset dir="src"/>
          </copy>
-         
+
          <!-- Copy examples code -->
          <copy todir="${dist}/examples">
              <fileset dir="tests/wo">
@@ -134,10 +137,10 @@
     <!-- Compiles Java classes                         -->
     <!-- ============================================= -->
     <target name="java" depends="java-main,java-tests"/>
-    
+
     <target name="java-main" depends="prepare">
        <javac srcdir="src/java"
-                destdir="build/main"
+                destdir="${build}/main"
                 deprecation="${compile.deprecation}"
                 debug="${compile.debug}"
                 optimize="${compile.optimize}">
@@ -145,7 +148,7 @@
         </javac>
 
         <jar jarfile="${dist}/lib/${project.name}.jar">
-            <fileset dir="build/main" />
+            <fileset dir="${build}/main" />
             <fileset dir="src/resources">
                 <include name="Info.plist"/>
                 <include name="**/*.vm"/>
@@ -157,11 +160,11 @@
 
         <copy todir="${dist}/lib" file="lib/cayenne.jar"/>
     </target>
-    
-    
+
+
     <target name="java-tests" depends="prepare,java-main">
        <javac srcdir="tests/java"
-                destdir="build/tests"
+                destdir="${build}/tests"
                 deprecation="${compile.deprecation}"
                 debug="${compile.debug}"
                 optimize="${compile.optimize}">
@@ -169,12 +172,12 @@
         </javac>
 
         <jar jarfile="${dist}/lib/${project.name}-tests.jar">
-            <fileset dir="build/tests" />
+            <fileset dir="${build}/tests" />
             <metainf dir="doc">
                 <include name="LICENSE*"/>
             </metainf>
         </jar>
-        
+
         <copy todir="${dist}/lib">
         	<fileset dir="lib">
         		<include name="log4j*"/>
@@ -184,7 +187,7 @@
         		<include name="ant.jar"/>
         	</fileset>
         </copy>
-        
+
         <copy todir="tests/wo/frameworks/art/lib" file="${dist}/lib/${project.name}.jar"/>
         <copy todir="tests/wo/frameworks/art/lib" file="${dist}/lib/cayenne.jar"/>
     </target>
@@ -193,19 +196,33 @@
     <!-- ============================================= -->
     <!-- Runs Unit tests.                              -->
     <!-- ============================================= -->
-    <target name="test" depends="java-tests">
+    <target name="execute-unit-tests" depends="java-tests">
+
+        <junit fork="yes" haltonfailure="no" errorProperty="unit-tests-failed"
+                failureProperty="unit-tests-failed">
+            <classpath refid="classpath-tests-run"/>
+            <formatter type="plain" usefile="true"/>
+            <batchtest todir="${test_results}">
+                <fileset dir="${build}/tests">
+                    <include name="**/*Test.class"/>
+                </fileset>
+            </batchtest>
+        </junit>
+    </target>
+
+    <target name="execute-functional-tests" depends="java-tests">
         <!-- clean-build test cases using woproject -->
         <delete dir="tests/wo/dist"/>
-        
+
         <!-- delete auto-generated superclasses -->
         <delete includeEmptyDirs="true">
         	<fileset dir="tests/wo/frameworks">
         		<include name="**/auto/*.java"/>
         	</fileset>
         </delete>
-        
-        <echo>****** Building tests: start</echo>
-		
+
+        <echo>****** functional test build: start</echo>
+
 		<ant dir="tests/wo/frameworks/art" target="clean">
 			<property name="dist" value="../../dist"/>
 			<property name="project.name" value="art"/>
@@ -214,22 +231,38 @@
         	<property name="dist" value="../../dist"/>
 			<property name="project.name" value="art"/>
 	    </ant>
-	    
-        <echo>****** Building tests: done</echo>
-		        
+
+        <echo>****** functional test build: done</echo>
+
         <!-- run tests on built stuff -->
     	<java classname="org.objectstyle.woproject.TestsMain" fork="yes" failonerror="yes">
     		<classpath refid="classpath-tests-run"/>
         </java>
     </target>
-    
+
+    <!-- ============================================= -->
+    <!-- reports on unit tests.                        -->
+    <!-- [emily] We could make this much more fancy and produce html reports. -->
+    <!-- ============================================= -->
+    <target name="unit-test-report" description="report on unit test results"
+            depends = "execute-unit-tests" if = "unit-tests-failed">
+        <fail message="unit tests failed, see files in ${test_results} for details"/>
+    </target>
+
+    <!-- ============================================= -->
+    <!-- runs and reports on tests.                    -->
+    <!-- ============================================= -->
+    <target name="test" depends="unit-test-report,execute-functional-tests">
+
+    </target>
 
     <!-- ============================================= -->
     <!-- Sets up build and distribution directories.   -->
     <!-- ============================================= -->
     <target name="prepare">
-        <mkdir dir="build/main"/>
-        <mkdir dir="build/tests"/>
+        <mkdir dir="${build}/main"/>
+        <mkdir dir="${build}/tests"/>
+        <mkdir dir="${test_results}"/>
         <mkdir dir="${dist}"/>
         <mkdir dir="${dist}/src"/>
         <mkdir dir="${dist}/lib"/>
@@ -244,7 +277,7 @@
     <!-- ============================================= -->
     <target name="clean">
         <delete dir="${dist.base}"/>
-        <delete dir="build"/>
+        <delete dir="${output}"/>
     </target>
 
 
