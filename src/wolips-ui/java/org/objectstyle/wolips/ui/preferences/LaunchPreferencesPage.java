@@ -80,6 +80,7 @@ import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
 import org.objectstyle.wolips.core.preferences.ILaunchInfo;
 import org.objectstyle.wolips.core.preferences.Preferences;
 import org.objectstyle.wolips.core.preferences.PreferencesMessages;
+import org.objectstyle.wolips.core.util.ArrayUtilities;
 
 /**
  * @author uli
@@ -290,15 +291,20 @@ public class LaunchPreferencesPage
 	private void removeIgnore() {
 		int[] selection = includeTable.getSelectionIndices();
 		includeTable.remove(selection);
-		String remove = "WOLips_Remove_request";
-		
-		for (int i = 0; i < selection.length; i++) {
-			allParameter.setElementAt(remove, i);
-			allArguments.setElementAt(remove, i);
-		}
-		for (int i = 0; i < selection.length; i++) {
-			allParameter.remove(remove);
-			allArguments.remove(remove);
+		if (selection == null)
+			return;
+		int[] newIndices = new int[selection.length];
+		System.arraycopy(selection, 0, newIndices, 0, selection.length);
+		ArrayUtilities.sort(selection);
+		int last = -1;
+		for (int i = 0; i < newIndices.length; i++) {
+			int index = newIndices[i];
+			if (index != last || i == 0) {
+				allParameter.remove(index);
+				allArguments.remove(index);
+			}
+
+			last = index;
 		}
 	}
 
