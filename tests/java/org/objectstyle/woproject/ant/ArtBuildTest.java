@@ -1,8 +1,8 @@
 /* ====================================================================
- * 
- * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 The ObjectStyle Group 
+ * The ObjectStyle Group Software License, Version 1.0
+ *
+ * Copyright (c) 2002 The ObjectStyle Group
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,15 +18,15 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution, if
- *    any, must include the following acknowlegement:  
- *       "This product includes software developed by the 
+ *    any, must include the following acknowlegement:
+ *       "This product includes software developed by the
  *        ObjectStyle Group (http://objectstyle.org/)."
  *    Alternately, this acknowlegement may appear in the software itself,
  *    if and wherever such third-party acknowlegements normally appear.
  *
- * 4. The names "ObjectStyle Group" and "Cayenne" 
+ * 4. The names "ObjectStyle Group" and "Cayenne"
  *    must not be used to endorse or promote products derived
- *    from this software without prior written permission. For written 
+ *    from this software without prior written permission. For written
  *    permission, please contact andrus@objectstyle.org.
  *
  * 5. Products derived from this software may not be called "ObjectStyle"
@@ -58,10 +58,10 @@ package org.objectstyle.woproject.ant;
 
 import java.io.File;
 
-/** 
- * A test case that does various assertions about 
- * build results of art framework. 
- * 
+/**
+ * A test case that does various assertions about
+ * build results of art framework.
+ *
  * @author Andrei Adamchik
  */
 public class ArtBuildTest extends StructureTestCase {
@@ -70,12 +70,13 @@ public class ArtBuildTest extends StructureTestCase {
         super(name);
     }
 
+
     public void testFilesPresent() throws Exception {
         FrameworkStructure artFrwk = new FrameworkStructure("art");
         artFrwk.setJars(new String[] { "art", "cayenne", "woproject" });
         artFrwk.setWocomps(new String[] { "PaintingSearch" });
         artFrwk.setWsResources(new String[] { "images/spacer.gif" });
-                
+
         assertStructure(artFrwk);
     }
 }
