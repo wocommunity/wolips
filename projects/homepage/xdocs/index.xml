@@ -10,6 +10,16 @@
         <!-- Welcome section -->
         <section name="Welcome to WOProject and WOLips">
 
+        <p><i>September 12, 2003.</i> <b>Patched org.eclipse.core.ant plugin.</b></p>
+        <p>Find out <a href="patched_ant_plugin.html">more</a>.
+        <hr/>
+        </p>
+
+        <p><i>September 12, 2003.</i> <b>New snapshots in the WOLips gallery.</b></p>
+        <p>Visit the WOLips <a href="patched_ant_plugin.html">gallery</a>.
+        <hr/>
+        </p>
+        
         <p><i>August 7, 2003.</i> <b>WOProject release 1.0.6 is out.</b></p>
         <p>Download a new <a href="compatibilty_matrix.html">release</a> of WOProject.
         <hr/>

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <document>
-    <title>Overview</title>
+    <title>WOLips Gallery</title>
 
     <properties>
         <author>Ulrich Koester</author>
@@ -8,14 +8,16 @@
 
     <body>        
         <!-- Gallery section -->
-        <section name="WOLips Gallery">
-	    <p><a href="images/gallery1.gif">Create a new WOApplication.</a></p>
-	    <p><a href="images/gallery2.gif">Debugger.</a></p>
-	    <p><a href="images/gallery3.gif">Code completion.</a></p>
-	    <p><a href="images/gallery4.gif">Profiler.</a></p>
-	    <p><a href="images/gallery5.gif">Add framework.</a></p>
-	    <p><a href="images/gallery6.gif">Open WOComponent shortcut.</a></p>
+        <section name="Content">
+	    <p><a href="gallery/gallery1.html">WOLips perspective.</a></p>
+	    <p><a href="gallery/gallery2.html">Create a new WOApplication.</a></p>
+	    <p><a href="gallery/gallery3.html">Set up launch configuration.</a></p>
+	    <p><a href="gallery/gallery4.html">Debugger.</a></p>
+	    <p><a href="gallery/gallery5.html">Code completion.</a></p>
+	    <p><a href="gallery/gallery6.html">Profiler.</a></p>
+	    <p><a href="gallery/gallery7.html">Manage frameworks.</a></p>
+	    <p><a href="gallery/gallery8.html">Open WOComponent shortcut.</a></p>
 	    <p>Be sure to read the built-in on-line help for a more complete understanding of WOLips' features!</p>
- 	</section>
+ 	    </section>
     </body>
 </document>
