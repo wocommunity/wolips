@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+ 
+<!-- ======================================================== -->
+<!--        Main WOLips plugins Ant build file                -->
+<!-- Serves as a facade for different helper build files.     -->
+<!-- ======================================================== -->
+<project name="wolips" default="" basedir=".">
+
+    <!-- ========================================== -->
+    <!-- Build all.                                 -->
+    <!-- ========================================== -->
+    <target name="all">
+	<ant dir="org.objectstyle.wolips.logging" target="all"/>
+	<ant dir="org.objectstyle.wolips" target="all"/>
+	<ant dir="org.objectstyle.wolips.help" target="all"/>
+	<ant dir="org.objectstyle.wolips.targetbuilder" target="all"/>
+	<ant dir="org.objectstyle.wolips.support" target="all"/>
+	<ant dir="org.objectstyle.wolips.launching" target="all"/>
+	<ant dir="org.objectstyle.wolips.profiling" target="all"/>
+	<ant dir="org.objectstyle.wolips.devstudio" target="all"/>
+	<ant dir="org.objectstyle.wolips.projectbuild" target="all"/>
+	<ant dir="org.objectstyle.wolips.tests" target="all"/>
+	<ant dir="org.objectstyle.wolips.wounit" target="all"/>
+	<ant dir="org.objectstyle.wolips.ui" target="all"/>
+	<ant dir="org.objectstyle.wolips.wizard" target="all"/>
+	<ant dir="org.objectstyle.wolips.source" target="all"/>
+	<ant dir="org.objectstyle.wolips.woproject" target="all"/>
+	<ant dir="org.objectstyle.wolips.woproject.ant" target="all"/>
+	<ant dir="org.objectstyle.wolips.cayenne" target="all"/>
+	<ant dir="org.objectstyle.wolips.cayenne.ant" target="all"/>
+	<ant dir="org.objectstyle.wolips.team" target="all"/>
+    </target>
+    <!-- ========================================== -->
+    <!-- Build dist.                                -->
+    <!-- ========================================== -->
+    <target name="dist">
+	<ant dir="org.objectstyle.wolips.logging" target="dist"/>
+	<ant dir="org.objectstyle.wolips" target="dist"/>
+	<ant dir="org.objectstyle.wolips.help" target="dist"/>
+	<ant dir="org.objectstyle.wolips.targetbuilder" target="dist"/>
+	<ant dir="org.objectstyle.wolips.support" target="dist"/>
+	<ant dir="org.objectstyle.wolips.launching" target="dist"/>
+	<ant dir="org.objectstyle.wolips.profiling" target="dist"/>
+	<ant dir="org.objectstyle.wolips.devstudio" target="dist"/>
+	<ant dir="org.objectstyle.wolips.projectbuild" target="dist"/>
+	<ant dir="org.objectstyle.wolips.tests" target="dist"/>
+	<ant dir="org.objectstyle.wolips.wounit" target="dist"/>
+	<ant dir="org.objectstyle.wolips.ui" target="dist"/>
+	<ant dir="org.objectstyle.wolips.wizard" target="dist"/>
+	<ant dir="org.objectstyle.wolips.source" target="dist"/>
+	<ant dir="org.objectstyle.wolips.woproject" target="dist"/>
+	<ant dir="org.objectstyle.wolips.woproject.ant" target="dist"/>
+	<ant dir="org.objectstyle.wolips.cayenne" target="dist"/>
+	<ant dir="org.objectstyle.wolips.cayenne.ant" target="dist"/>
+	<ant dir="org.objectstyle.wolips.team" target="dist"/>
+    </target>
+
+</project>

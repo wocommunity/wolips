@@ -21,6 +21,9 @@
             </fileset>
 	</delete>
 
+<!-- woenvironment -->
+        <delete dir="woenvironment/src"/>
+
 <!-- woproject -->
         <delete dir="woproject/src"/>
         <delete dir="woproject/tests"/>
@@ -28,12 +31,24 @@
 <!-- wolips -->
         <delete>
 	    <fileset dir="wolips/lib">
-        	<include name="*.jar"/>
+        	<include name="**/*.jar"/>
             </fileset>
 	</delete>
-        <delete dir="wolips/features"/>
-        <delete dir="wolips/plugins"/>
+        <delete>
+	    <fileset dir="wolips/features">
+        	<include name="org.objectstyle.*/**"/>
+        	<exclude name="**/build.xml"/>
+            </fileset>
+	</delete>
+        <delete>
+	    <fileset dir="wolips/plugins">
+        	<include name="org.objectstyle.*/**"/>
+        	<exclude name="**/build.xml"/>
+            </fileset>
+	</delete>
         <delete dir="wolips/update"/>
+        <delete dir="wolips/lib/eclipse"/>
+        <delete dir="wolips/lib/jmechanic"/>
    </target>
 
    <target name="migrate" depends="clean">
@@ -55,12 +70,27 @@
             </fileset>
         </copy>
 
+<!-- woenvironment -->
+	<mkdir dir="woenvironment/src"/>
+        <copy todir="woenvironment/src">
+            <fileset dir="../../woproject/src">
+        	<include name="java/**"/>
+        	<exclude name="resources/**"/>
+                <exclude name="**/ant/**"/>
+                <exclude name="**/log4j/**"/>
+                <exclude name="**/pb/**"/>
+            </fileset>
+        </copy>
+
 <!-- woproject -->
 	<mkdir dir="woproject/src"/>
         <copy todir="woproject/src">
             <fileset dir="../../woproject/src">
         	<include name="java/**"/>
         	<include name="resources/**"/>
+                <exclude name="**/env/**"/>
+                <exclude name="**/logging/**"/>
+                <exclude name="**/util/**"/>
             </fileset>
         </copy>
         <copy todir="woproject">
@@ -78,9 +108,6 @@
             </fileset>
         </copy>
 
-        <mkdir dir="wolips/features"/>
-        <mkdir dir="wolips/plugins"/>
-
         <copy todir="wolips/features/org.objectstyle.wolips.feature">
             <fileset dir="../../woproject/src/wolips-feature">
             </fileset>
@@ -89,7 +116,7 @@
             <fileset dir="../../woproject/src/wolips-profiling-feature">
             </fileset>
         </copy>
-        <copy todir="wolips/features/org.objectstyle.wolips.tests-feature">
+        <copy todir="wolips/features/org.objectstyle.wolips.tests.feature">
             <fileset dir="../../woproject/src/wolips-tests-feature">
             </fileset>
         </copy>
@@ -116,10 +143,12 @@
         </copy>
         <copy todir="wolips/plugins/org.objectstyle.wolips.devstudio">
             <fileset dir="../../woproject/src/wolips-devstudio">
-             </fileset>
+        	<exclude name="**/build.xml"/>
+            </fileset>
         </copy>
         <copy todir="wolips/plugins/org.objectstyle.wolips.wounit">
             <fileset dir="../../woproject/src/wolips-wounit">
+        	<exclude name="**/build.xml"/>
              </fileset>
         </copy>
         <copy todir="wolips/plugins/org.objectstyle.wolips.projectbuild">
@@ -138,7 +167,7 @@
             <fileset dir="../../woproject/src/wolips-woproject">
              </fileset>
         </copy>
-        <copy todir="wolips/plugins/org.objectstyle.wolips.woproject-ant">
+        <copy todir="wolips/plugins/org.objectstyle.wolips.woproject.ant">
             <fileset dir="../../woproject/src/wolips-woproject-ant">
              </fileset>
         </copy>
@@ -146,7 +175,7 @@
             <fileset dir="../../woproject/src/wolips-cayenne">
              </fileset>
         </copy>
-        <copy todir="wolips/plugins/org.objectstyle.wolips.cayenne-ant">
+        <copy todir="wolips/plugins/org.objectstyle.wolips.cayenne.ant">
             <fileset dir="../../woproject/src/wolips-cayenne-ant">
              </fileset>
         </copy>
@@ -168,6 +197,10 @@
         </copy>
        <copy todir="wolips/plugins/org.objectstyle.wolips.tests">
             <fileset dir="../../woproject/src/wolips-tests">
+             </fileset>
+        </copy>
+       <copy todir="wolips/plugins/org.objectstyle.wolips.support">
+            <fileset dir="../../woproject/src/wolips-support">
              </fileset>
         </copy>
 

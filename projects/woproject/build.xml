@@ -27,9 +27,8 @@
             	<include name="JavaWebObjects.framework/Resources/Java/*.jar"/>
             	<include name="JavaJDBCAdaptor.framework/Resources/Java/*.jar"/>
             </fileset>
+            <pathelement path="${build.output.java.dir}"/>
     	</path>
-
-	<mkdir dir="../${build.output.java.dir}/woproject"/>
 
 	<ant dir="." antfile="../${project.buildscripts.dir}/ant-style-project.xml" target="java">
             <property name="param.src.dir" value="src/java"/>
