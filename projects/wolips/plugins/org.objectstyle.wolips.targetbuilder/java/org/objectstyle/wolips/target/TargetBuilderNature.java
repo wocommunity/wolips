@@ -58,13 +58,11 @@
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -227,39 +225,4 @@ public class TargetBuilderNature implements IProjectNature
 		return null;
 	}
 
-	public static void add(IProject project) throws CoreException
-	{
-		if (project.hasNature(TargetBuilderNature.ID))
-			return;
-		IProjectDescription description = project.getDescription();
-		String[] natures = description.getNatureIds();
-		String[] newNatures = new String[natures.length + 1];
-		System.arraycopy(natures, 0, newNatures, 0, natures.length);
-		newNatures[natures.length] = TargetBuilderNature.ID;
-		description.setNatureIds(newNatures);
-		project.setDescription(description, null);
-	}
-
-	public static void remove(IProject project) throws CoreException
-	{
-		if (!project.hasNature(TargetBuilderNature.ID))
-			return;
-		IProjectDescription description = project.getDescription();
-		ArrayList natureList = new ArrayList();
-		natureList.addAll(Arrays.asList(description.getNatureIds()));
-		for (int i = 0; i < natureList.size(); i++)
-			if (natureList.get(i).equals(TargetBuilderNature.ID))
-				natureList.remove(i);
-		String[] newNatures = new String[natureList.size()];
-		for (int i = 0; i < natureList.size(); i++)
-			newNatures[i] = (String) natureList.get(i);
-		description.setNatureIds(newNatures);
-		project.setDescription(description, null);
-	}
-
-	public static void update(IProject project) throws CoreException
-	{
-		remove(project);
-		add(project);
-	}
 }
