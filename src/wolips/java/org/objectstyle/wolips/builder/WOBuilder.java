@@ -148,7 +148,7 @@ public abstract class WOBuilder extends IncrementalProjectBuilder {
 					Class a = Class.forName(WOBuilder.ANT_LOGGER_CLASS);
 					antRunner.addBuildLogger(WOBuilder.ANT_LOGGER_CLASS);
 				} catch (Exception aLoggerException) {
-					WOLipsPlugin.log(aLoggerException);
+					WOLipsPlugin.debug(aLoggerException);
 				}
 				antRunner().addUserProperties(args);
 				antRunner().run(new SubProgressMonitor(monitor, 1));
