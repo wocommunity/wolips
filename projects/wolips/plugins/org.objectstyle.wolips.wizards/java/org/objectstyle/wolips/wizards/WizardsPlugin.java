@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 The ObjectStyle Group 
+ * Copyright (c) 2002 -2004 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -64,6 +64,7 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPluginDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.objectstyle.wolips.commons.logging.PluginLogger;
 
 /**
  * The main plugin class to be used in the desktop.
@@ -73,6 +74,10 @@ public class WizardsPlugin extends AbstractUIPlugin {
 	private static WizardsPlugin plugin;
 	//Resource bundle.
 	private ResourceBundle resourceBundle;
+	
+	private static final String PLUGIN_ID = "org.objectstyle.wolips.ui";
+	
+	private PluginLogger pluginLogger = new PluginLogger(WizardsPlugin.PLUGIN_ID, false);
 	/**
 	 * The constructor.
 	 * @param descriptor
@@ -134,4 +139,10 @@ public class WizardsPlugin extends AbstractUIPlugin {
 		return WizardsPlugin.getDefault().getDescriptor().getInstallURL();
 	}
 	
+	/**
+	 * @return Returns the pluginLogger.
+	 */
+	public PluginLogger getPluginLogger() {
+		return pluginLogger;
+	}
 }

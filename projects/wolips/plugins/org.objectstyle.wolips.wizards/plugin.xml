@@ -25,6 +25,8 @@
       <import plugin="org.objectstyle.wolips.ant"/>
       <import plugin="org.objectstyle.wolips.variables"/>
       <import plugin="org.objectstyle.wolips.datasets"/>
+      <import plugin="org.objectstyle.wolips.commons"/>
+      <import plugin="org.objectstyle.wolips.workbenchutilities"/>
    </requires>
 
 

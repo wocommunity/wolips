@@ -26,6 +26,7 @@
       <import plugin="org.eclipse.ant.core"/>
       <import plugin="org.objectstyle.wolips.ant"/>
       <import plugin="org.objectstyle.wolips.templateengine"/>
+      <import plugin="org.objectstyle.wolips.workbenchutilities"/>
    </requires>
 
 <!-- =================================================================================== -->
@@ -75,8 +76,8 @@
    <extension
          point="org.eclipse.ui.propertyPages">
       <page
-            adaptable="true"
             objectClass="org.eclipse.core.resources.IProject"
+            adaptable="true"
             name="WOLips build"
             class="org.objectstyle.wolips.projectbuild.natures.ProjectNaturePage"
             id="org.objectstyle.wolips.projectbuild.natures.ProjectNaturePage">

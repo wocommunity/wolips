@@ -3,7 +3,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0
  * 
- * Copyright (c) 2002 The ObjectStyle Group and individual authors of the
+ * Copyright (c) 2004 The ObjectStyle Group and individual authors of the
  * software. All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -47,26 +47,25 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.core.plugin;
+package org.objectstyle.wolips.launching;
 import java.net.URL;
 
 import org.eclipse.core.runtime.IPluginDescriptor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.objectstyle.wolips.commons.logging.PluginLogger;
-import org.objectstyle.wolips.core.preferences.Preferences;
 /**
  * The main plugin class to be used in the desktop.
  * 
  * @author uli
  * @author markus
  */
-public class WOLipsPlugin extends AbstractUIPlugin {
+public class LaunchingPlugin extends AbstractUIPlugin {
 	//The plugin.
-	private static WOLipsPlugin plugin;
-	private static final String PLUGIN_ID = "org.objectstyle.wolips";
+	private static LaunchingPlugin plugin;
+	private static final String PLUGIN_ID = "org.objectstyle.wolips.launching";
 	private PluginLogger pluginLogger = new PluginLogger(
-			WOLipsPlugin.PLUGIN_ID, false);
+			LaunchingPlugin.PLUGIN_ID, false);
 	/**
 	 * The constructor.
 	 * 
@@ -74,25 +73,19 @@ public class WOLipsPlugin extends AbstractUIPlugin {
 	 */
 	//The constructur is very sensitive. Make sure that your stuff works.
 	//If this cunstructor fails, the whole plugin will be disabled.
-	public WOLipsPlugin(IPluginDescriptor descriptor) {
+	public LaunchingPlugin(IPluginDescriptor descriptor) {
 		super(descriptor);
 		plugin = this;
-		try {
-			// set up missing preferences
-			Preferences.setDefaults();
-		} catch (Exception exception) {
-			pluginLogger.log("Exception in WOLips constructor: ", exception);
-		}
 	}
 	/**
 	 * Returns the shared instance.
 	 * 
 	 * @return
 	 */
-	public static WOLipsPlugin getDefault() {
+	public static LaunchingPlugin getDefault() {
 		if (plugin == null) {
 			// ensure plugin instance is always available using id
-			return new WOLipsPlugin(Platform.getPlugin(WOLipsPlugin.PLUGIN_ID)
+			return new LaunchingPlugin(Platform.getPlugin(LaunchingPlugin.PLUGIN_ID)
 					.getDescriptor());
 		}
 		return plugin;
@@ -103,7 +96,7 @@ public class WOLipsPlugin extends AbstractUIPlugin {
 	 * @return URL
 	 */
 	public static URL baseURL() {
-		return WOLipsPlugin.getDefault().getDescriptor().getInstallURL();
+		return LaunchingPlugin.getDefault().getDescriptor().getInstallURL();
 	}
 	/**
 	 * Returns the PluginID.
@@ -114,7 +107,7 @@ public class WOLipsPlugin extends AbstractUIPlugin {
 		if (plugin != null) {
 			return getDefault().getDescriptor().getUniqueIdentifier();
 		} else
-			return WOLipsPlugin.PLUGIN_ID;
+			return LaunchingPlugin.PLUGIN_ID;
 	}
 	/**
 	 * @return Returns the pluginLogger.

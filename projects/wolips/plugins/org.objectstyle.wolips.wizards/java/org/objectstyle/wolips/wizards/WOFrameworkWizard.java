@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 The ObjectStyle Group 
+ * Copyright (c) 2002 - 2004 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -61,7 +61,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.objectstyle.wolips.ant.runner.RunAnt;
-import org.objectstyle.wolips.core.logging.WOLipsLog;
 import org.objectstyle.wolips.datasets.resources.IWOLipsModel;
 import org.objectstyle.wolips.templateengine.TemplateDefinition;
 import org.objectstyle.wolips.templateengine.TemplateEngine;
@@ -114,7 +113,7 @@ public class WOFrameworkWizard extends AbstractProjectWizard {
 				try {
 					templateEngine.init();
 				} catch (Exception e) {
-					WOLipsLog.log(e);
+					WizardsPlugin.getDefault().getPluginLogger().log(e);
 					throw new InvocationTargetException(e);
 				}
 				templateEngine.getWolipsContext().setProjectName(projectName);
@@ -162,7 +161,7 @@ public class WOFrameworkWizard extends AbstractProjectWizard {
 				project.refreshLocal(IResource.DEPTH_INFINITE,
 						nullProgressMonitor);
 			} catch (Exception e) {
-				WOLipsLog.log(e);
+				WizardsPlugin.getDefault().getPluginLogger().log(e);
 				success = false;
 			}
 		}

@@ -64,7 +64,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
-import org.objectstyle.wolips.core.logging.WOLipsLog;
+import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
 import org.objectstyle.wolips.datasets.project.IWOLipsProject;
 import org.objectstyle.wolips.datasets.project.WOLipsCore;
 import org.objectstyle.wolips.projectbuild.WOProjectBuildConstants;
@@ -189,7 +189,7 @@ public class IncrementalNature
 								WOLipsCore.createProject(this.getProject());
       return (woLipsProject.getNaturesAccessor().isFramework());
     } catch (CoreException up) {
-      WOLipsLog.log(up.getStatus());
+    		WOLipsPlugin.getDefault().getPluginLogger().log(up.getStatus());
     }
     
     return false;

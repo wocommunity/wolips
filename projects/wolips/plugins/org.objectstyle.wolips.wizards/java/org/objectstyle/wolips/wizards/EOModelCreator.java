@@ -68,7 +68,6 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.objectstyle.wolips.core.logging.WOLipsLog;
 import org.objectstyle.wolips.datasets.project.WOLipsJavaProject;
 import org.objectstyle.wolips.datasets.resources.IWOLipsModel;
 import org.objectstyle.wolips.templateengine.TemplateDefinition;
@@ -139,7 +138,7 @@ public class EOModelCreator implements IRunnableWithProgress {
 		try {
 			templateEngine.init();
 		} catch (Exception e) {
-			WOLipsLog.log(e);
+			WizardsPlugin.getDefault().getPluginLogger().log(e);
 			throw new InvocationTargetException(e);
 		}
 		templateEngine.getWolipsContext().setProjectName(projectName);
@@ -151,7 +150,7 @@ public class EOModelCreator implements IRunnableWithProgress {
 		try {
 			templateEngine.run(new NullProgressMonitor());
 		} catch (Exception e) {
-			WOLipsLog.log(e);
+			WizardsPlugin.getDefault().getPluginLogger().log(e);
 			throw new InvocationTargetException(e);
 		}
 		modelFolder.refreshLocal(IResource.DEPTH_INFINITE, monitor);

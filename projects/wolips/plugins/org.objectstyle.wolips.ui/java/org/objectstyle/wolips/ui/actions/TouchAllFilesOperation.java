@@ -65,9 +65,9 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
-import org.objectstyle.wolips.core.logging.WOLipsLog;
 import org.objectstyle.wolips.datasets.project.IWOLipsProject;
 import org.objectstyle.wolips.datasets.project.WOLipsCore;
+import org.objectstyle.wolips.ui.UIPlugin;
 
 /**
  * @author ulrich
@@ -91,7 +91,7 @@ public class TouchAllFilesOperation extends WorkspaceModifyOperation {
 				.getPBProjectFilesAccessor()
 				.cleanAllFileTables();
 		} catch (IOException e) {
-			WOLipsLog.log(e);
+			UIPlugin.getDefault().getPluginLogger().log(e);
 		}
 		this.touch(project, monitor);
 	}

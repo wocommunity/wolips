@@ -2,7 +2,7 @@
  *
  * The ObjectStyle Group Software License, Version 1.0
  *
- * Copyright (c) 2002 The ObjectStyle Group
+ * Copyright (c) 2002 - 2004 The ObjectStyle Group
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -68,6 +68,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.ILaunchConfigurationDialog;
+import org.eclipse.debug.ui.ILaunchConfigurationTab;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.InputDialog;
@@ -84,7 +85,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
-import org.objectstyle.wolips.core.logging.WOLipsLog;
 import org.objectstyle.wolips.core.preferences.ILaunchInfo;
 import org.objectstyle.wolips.core.preferences.Preferences;
 import org.objectstyle.wolips.core.preferences.PreferencesMessages;
@@ -388,7 +388,7 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 					.ATTR_WOLIPS_LAUNCH_DEBUG_GROUPS, ""));
 		} catch (CoreException e) {
 			setErrorMessage(LaunchingMessages.getString("WOArgumentsTab.Exception_occurred_reading_configuration___15") + e.getStatus().getMessage()); //$NON-NLS-1$
-			WOLipsLog.log(e);
+			LaunchingPlugin.getDefault().getPluginLogger().log(e);
 		}
 	}
 
@@ -517,7 +517,7 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 			}
 
 		} catch (Exception anException) {
-			WOLipsLog.log(anException);
+			LaunchingPlugin.getDefault().getPluginLogger().log(anException);
 		}
 		return Preferences.getPREF_LAUNCH_GLOBAL();
 	}

@@ -70,12 +70,12 @@ import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.swt.widgets.Display;
 import org.objectstyle.wolips.ant.runner.BuildMessages;
 import org.objectstyle.wolips.ant.runner.RunAnt;
-import org.objectstyle.wolips.core.logging.WOLipsLog;
 import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
 import org.objectstyle.wolips.core.preferences.Preferences;
 import org.objectstyle.wolips.datasets.resources.IWOLipsModel;
 import org.objectstyle.wolips.projectbuild.WOProjectBuildConstants;
 import org.objectstyle.wolips.templateengine.BuildLaunchEngine;
+import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 /**
  * @author uli
  */
@@ -161,7 +161,7 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 				aMarker = this.getBuildfileMarker();
 				aMarker.setAttribute(IMarker.MESSAGE, informUserString);
 			} catch (Exception e) {
-				WOLipsLog.log(e);
+				WOLipsPlugin.getDefault().getPluginLogger().log(e);
 			} finally {
 				aMarker = null;
 			}
@@ -194,7 +194,7 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 		try {
 			this.getDelta(this.getProject()).accept(resourceValidator);
 		} catch (CoreException e) {
-			WOLipsLog.log(e);
+			WOLipsPlugin.getDefault().getPluginLogger().log(e);
 			return false;
 		}
 		return resourceValidator.isBuildRequired();
@@ -215,7 +215,7 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 			aMarker.setAttribute(IMarker.MESSAGE, "WOLips: "
 					+ anException.getMessage());
 		} catch (Exception e) {
-			WOLipsLog.log(e);
+			WOLipsPlugin.getDefault().getPluginLogger().log(e);
 		} finally {
 			aMarker = null;
 		}
@@ -227,7 +227,7 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 					WOProjectBuildConstants.MARKER_TASK_GENERIC);
 			aMarker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
 		} catch (CoreException e) {
-			WOLipsLog.log(e);
+			WOLipsPlugin.getDefault().getPluginLogger().log(e);
 		}
 		return aMarker;
 	}
@@ -242,7 +242,7 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 			if (getProject().getFile(aBuildFile).exists())
 				return true;
 		} catch (Exception anException) {
-			WOLipsLog.log(anException);
+			WOLipsPlugin.getDefault().getPluginLogger().log(anException);
 		}
 		IMarker aMarker = null;
 		try {
@@ -252,7 +252,7 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 					+ this.buildFile());
 			aMarker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
 		} catch (Exception anException) {
-			WOLipsLog.log(anException);
+			WOLipsPlugin.getDefault().getPluginLogger().log(anException);
 		} finally {
 			aMarker = null;
 		}
@@ -374,7 +374,7 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 			config = this.createDefaultLaunchConfiguration(buildFile, monitor);
 		} catch (CoreException e) {
 			config = null;
-			WOLipsPlugin.handleException(Display.getCurrent().getActiveShell(),
+			WorkbenchUtilitiesPlugin.handleException(Display.getCurrent().getActiveShell(),
 					e, BuildMessages.getString("Build.Exception"));
 			return;
 		}
@@ -411,7 +411,7 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 				buildLaunchEngine.setVmInstallTypeId(vmInstall.getId());
 				buildLaunchEngine.run(monitor);
 			} catch (Exception e) {
-				WOLipsLog.log(e);
+				WOLipsPlugin.getDefault().getPluginLogger().log(e);
 			}
 			persistentLaunchConfigFile.refreshLocal(IResource.DEPTH_ONE, monitor);
 		}

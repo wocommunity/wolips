@@ -61,7 +61,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.objectstyle.wolips.ant.runner.RunAnt;
-import org.objectstyle.wolips.core.logging.WOLipsLog;
 import org.objectstyle.wolips.datasets.resources.IWOLipsModel;
 import org.objectstyle.wolips.templateengine.TemplateDefinition;
 import org.objectstyle.wolips.templateengine.TemplateEngine;
@@ -116,7 +115,7 @@ public class WOApplicationWizard extends AbstractProjectWizard {
 				try {
 					templateEngine.init();
 				} catch (Exception e) {
-					WOLipsLog.log(e);
+					WizardsPlugin.getDefault().getPluginLogger().log(e);
 					throw new InvocationTargetException(e);
 				}
 				templateEngine.getWolipsContext().setProjectName(projectName);
@@ -214,7 +213,7 @@ public class WOApplicationWizard extends AbstractProjectWizard {
 				project.refreshLocal(IResource.DEPTH_INFINITE,
 						nullProgressMonitor);
 			} catch (Exception e) {
-				WOLipsLog.log(e);
+				WizardsPlugin.getDefault().getPluginLogger().log(e);
 				success = false;
 			}
 		}

@@ -50,12 +50,7 @@ import jmechanic.eclipse.profiler.launching.ProfilingLaunchSupport;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
-import org.objectstyle.wolips.core.logging.WOLipsLog;
-import org
-	.objectstyle
-	.wolips
-	.launching
-	.WOJavaLocalApplicationLaunchConfigurationDelegate;
+import org.objectstyle.wolips.launching.WOJavaLocalApplicationLaunchConfigurationDelegate;
 
 /**
  * Launches a local VM.
@@ -85,7 +80,7 @@ public class ProfiledWOJavaLocalApplicationLaunchConfigurationDelegate
 			hprofPort =
 				ProfilingLaunchSupport.getProfilerPortNumber(configuration);
 		} catch (CoreException e) {
-			WOLipsLog.log(e);
+			ProfilingPlugin.getDefault().getPluginLogger().log(e);
 			return vmArgs;
 		}
 		if (hprofPort != -1) {
@@ -96,7 +91,7 @@ public class ProfiledWOJavaLocalApplicationLaunchConfigurationDelegate
 						configuration,
 						hprofPort));
 			} catch (CoreException e) {
-				WOLipsLog.log(e);
+				ProfilingPlugin.getDefault().getPluginLogger().log(e);
 				return vmArgs;
 			}
 

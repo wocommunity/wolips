@@ -4,7 +4,8 @@
    id="org.objectstyle.wolips.launching"
    name="WOLips Launching"
    version="1.0.6"
-   provider-name="objectstyle.org">
+   provider-name="objectstyle.org"
+   class="org.objectstyle.wolips.launching.LaunchingPlugin">
 
    <runtime>
       <library name="lib/wolips-launching.jar">
@@ -18,7 +19,6 @@
       <import plugin="org.eclipse.jdt.launching"/>
       <import plugin="org.eclipse.debug.core"/>
       <import plugin="org.eclipse.jface"/>
-      <import plugin="org.objectstyle.wolips"/>
       <import plugin="org.eclipse.core.runtime.compatibility"/>
       <import plugin="org.eclipse.debug.ui"/>
       <import plugin="org.eclipse.jdt.debug.ui"/>
@@ -26,6 +26,8 @@
       <import plugin="org.objectstyle.wolips.variables"/>
       <import plugin="org.objectstyle.wolips.jdt"/>
       <import plugin="org.objectstyle.wolips.datasets"/>
+      <import plugin="org.objectstyle.wolips.commons"/>
+      <import plugin="org.objectstyle.wolips"/>
    </requires>
 
 

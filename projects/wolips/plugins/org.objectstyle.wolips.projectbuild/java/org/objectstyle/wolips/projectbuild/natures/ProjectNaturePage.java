@@ -82,7 +82,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.PropertyPage;
-import org.objectstyle.wolips.core.logging.WOLipsLog;
+import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
 import org.objectstyle.wolips.datasets.project.INaturesAccessor;
 import org.objectstyle.wolips.datasets.project.IWOLipsProject;
 import org.objectstyle.wolips.datasets.project.WOLipsCore;
@@ -353,7 +353,7 @@ implements IAdaptable, WOProjectBuildConstants
 			setDefaults(woLipsProject);
 			enableWidgets(_woIsIncrementalButton.getSelection());
 		} catch (CoreException exception) {
-			WOLipsLog.log(exception);
+			WOLipsPlugin.getDefault().getPluginLogger().log(exception);
 		}
 		return composite;
 	}
@@ -434,7 +434,7 @@ implements IAdaptable, WOProjectBuildConstants
 			boolean selection = _woTargetBuilderCheck.getSelection();
 			naturesAccessor.useTargetBuilder(selection);
 		} catch (CoreException up) {
-			WOLipsLog.log(up);
+			WOLipsPlugin.getDefault().getPluginLogger().log(up);
 			
 			return false;
 		}

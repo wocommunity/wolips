@@ -72,6 +72,7 @@ import org.eclipse.core.runtime.IPluginDescriptor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IEditorInput;
@@ -80,16 +81,19 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.objectstyle.wolips.commons.logging.PluginLogger;
 
 /**
  * The main plugin class to be used in the desktop.
  */
 public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
-	private static final String PLUGIN_ID = "org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin";
+	private static final String PLUGIN_ID = "org.objectstyle.wolips.workbenchutilities";
 	//The shared instance.
 	private static WorkbenchUtilitiesPlugin plugin;
 	//Resource bundle.
 	private ResourceBundle resourceBundle;
+	
+	private PluginLogger pluginLogger = new PluginLogger(WorkbenchUtilitiesPlugin.PLUGIN_ID, false);
 	
 	/**
 	 * The constructor.
@@ -512,5 +516,36 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 				}
 			}
 		}
+	}
+	/**
+	 * Method handleException.
+	 * 
+	 * @param shell
+	 * @param target
+	 * @param message
+	 */
+	public static void handleException(Shell shell, Throwable target,
+			String message) {
+		WorkbenchUtilitiesPlugin.getDefault().getPluginLogger().debug(target);
+		String title = "Error";
+		if (message == null) {
+			message = target.getMessage();
+		}
+		if (target instanceof CoreException) {
+			IStatus status = ((CoreException) target).getStatus();
+			ErrorDialog.openError(shell, title, message, status);
+			//WOLipsLog.log(status);
+		} else {
+			MessageDialog.openError(shell, title, target.getMessage());
+			//WOLipsLog.log(target);
+		}
+		WorkbenchUtilitiesPlugin.getDefault().getPluginLogger().log(message, target);
+	}
+	
+	/**
+	 * @return Returns the pluginLogger.
+	 */
+	public PluginLogger getPluginLogger() {
+		return pluginLogger;
 	}
 }

@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 The ObjectStyle Group 
+ * Copyright (c) 2002 - 2004 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -58,7 +58,6 @@ package org.objectstyle.wolips.ui.support;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.util.SafeRunnable;
-import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
 import org.objectstyle.wolips.core.preferences.Preferences;
 import org.objectstyle.wolips.core.preferences.PreferencesMessages;
 import org.objectstyle.wolips.variables.VariablesPlugin;
@@ -85,33 +84,12 @@ public class SupportContentProvider extends AbstractTreeContentProvider {
 	protected void extractInfo() {
 		getRootNode().addChild(
 			createNode(SupportMessages.getString("WOLips.support.start")));
-		extractWOLipsUtilsInfo();
 		extractWOVariablesInfo();
 		extractEnvironmentInfo();
 		extractPersistentProperties();
 		getRootNode().addChild(createNode(SupportMessages.getString("WOLips.support.end"))); //$NON-NLS-1$
 	}
 
-	protected void extractWOLipsUtilsInfo() {
-		TreeContentProviderNode wolipsutilsNode =
-			createNode(SupportMessages.getString("WOLips.support.WOLipsUtils"));
-		getRootNode().addChild(wolipsutilsNode);
-		wolipsutilsNode.addChild(
-			createNode(
-				SupportMessages.getString(
-					"WOLips.support.WOLipsUtils.woTemplateDirectory"),
-				WOLipsPlugin.WO_TEMPLATE_DIRECTORY));
-		wolipsutilsNode.addChild(
-			createNode(
-				SupportMessages.getString(
-					"WOLips.support.WOLipsUtils.woTemplateFiles"),
-				WOLipsPlugin.WO_TEMPLATE_FILES));
-		wolipsutilsNode.addChild(
-			createNode(
-				SupportMessages.getString(
-					"WOLips.support.WOLipsUtils.woTemplateProject"),
-				WOLipsPlugin.WO_TEMPLATE_PROJECT));
-	}
 	/**
 	 * Extracts WOVariables info.
 	 * 

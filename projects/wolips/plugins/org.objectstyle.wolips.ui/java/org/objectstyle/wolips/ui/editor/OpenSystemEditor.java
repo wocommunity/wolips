@@ -3,7 +3,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0
  * 
- * Copyright (c) 2002 The ObjectStyle Group and individual authors of the
+ * Copyright (c) 2002 - 2004 The ObjectStyle Group and individual authors of the
  * software. All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -50,7 +50,7 @@ import org.eclipse.ui.IEditorLauncher;
 import org.eclipse.ui.IEditorRegistry;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.FileEditorInput;
-import org.objectstyle.wolips.core.logging.WOLipsLog;
+import org.objectstyle.wolips.ui.UIPlugin;
 import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 
 /**
@@ -78,7 +78,7 @@ public class OpenSystemEditor implements IEditorLauncher {
 				new FileEditorInput(file),
 				IEditorRegistry.SYSTEM_EXTERNAL_EDITOR_ID);
 		} catch (PartInitException e) {
-			WOLipsLog.log(e);
+			UIPlugin.getDefault().getPluginLogger().log(e);
 		}
 	}
 

@@ -97,9 +97,9 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
-import org.objectstyle.wolips.core.logging.WOLipsLog;
 import org.objectstyle.wolips.datasets.project.WOLipsCore;
 import org.objectstyle.wolips.datasets.resources.IWOLipsResource;
+import org.objectstyle.wolips.ui.UIPlugin;
 
 /**
  * @author ulrich
@@ -145,7 +145,7 @@ public final class RelatedView extends ViewPart implements ISelectionListener, I
 					result.addAll(list);
 
 				} catch (Exception e) {
-					WOLipsLog.log(e);
+					UIPlugin.getDefault().getPluginLogger().log(e);
 				}
 			}
 			return result.toArray();

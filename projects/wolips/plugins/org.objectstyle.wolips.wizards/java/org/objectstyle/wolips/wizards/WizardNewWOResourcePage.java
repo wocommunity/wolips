@@ -71,8 +71,8 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.WizardNewFileCreationPage;
-import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
 import org.objectstyle.wolips.datasets.resources.IWOLipsModel;
+import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 /**
  * @author mnolte
  * @author uli Basic wizard page for all project file manipulating webobjects
@@ -120,7 +120,7 @@ public abstract class WizardNewWOResourcePage extends WizardNewFileCreationPage 
 					creationOperation);
 			//getContainer().run(false, false, creationOperation);
 		} catch (InvocationTargetException e) {
-			WOLipsPlugin.handleException(getShell(), e.getTargetException(),
+			WorkbenchUtilitiesPlugin.handleException(getShell(), e.getTargetException(),
 					null);
 			return false;
 		} catch (InterruptedException e) {

@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 The ObjectStyle Group 
+ * Copyright (c) 2002 - 2004 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -65,7 +65,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.objectstyle.wolips.core.logging.WOLipsLog;
 import org.objectstyle.wolips.datasets.project.WOLipsJavaProject;
 import org.objectstyle.wolips.datasets.resources.IWOLipsModel;
 import org.objectstyle.wolips.templateengine.ComponentEngine;
@@ -144,7 +143,7 @@ public class WOComponentCreator implements IRunnableWithProgress {
 		try {
 			componentEngine.init();
 		} catch (Exception e) {
-			WOLipsLog.log(e);
+			WizardsPlugin.getDefault().getPluginLogger().log(e);
 			throw new InvocationTargetException(e);
 		}
 		//TODO: select template in the user interface
@@ -160,7 +159,7 @@ public class WOComponentCreator implements IRunnableWithProgress {
 			parentResource.getProject().refreshLocal(IResource.DEPTH_INFINITE,
 					monitor);
 		} catch (Exception e) {
-			WOLipsLog.log(e);
+			WizardsPlugin.getDefault().getPluginLogger().log(e);
 			throw new InvocationTargetException(e);
 		}
 	}
