@@ -56,8 +56,6 @@
 
 package org.objectstyle.wolips.projectbuild.natures;
 
-import java.org.objectstyle.wolips.logging.WOLipsLog;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
@@ -78,6 +76,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.objectstyle.wolips.core.project.WOLipsProject;
+import org.objectstyle.wolips.logging.WOLipsLog;
 
 public class ProjectNaturePage extends PropertyPage implements IAdaptable {
 

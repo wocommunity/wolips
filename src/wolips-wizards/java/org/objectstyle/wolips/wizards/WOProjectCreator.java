@@ -62,9 +62,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
-import java.org.objectstyle.wolips.logging.WOLipsLog;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.apache.tools.ant.DirectoryScanner;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -89,6 +89,7 @@ import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
 import org.objectstyle.wolips.core.plugin.WOLipsUtils;
 import org.objectstyle.wolips.core.project.ProjectHelper;
 import org.objectstyle.wolips.core.project.WOLipsProject;
+import org.objectstyle.wolips.logging.WOLipsLog;
 import org.objectstyle.wolips.wizards.templates.XercesDocumentBuilder;
 import org.objectstyle.woproject.pb.PBProject;
 import org.w3c.dom.Document;

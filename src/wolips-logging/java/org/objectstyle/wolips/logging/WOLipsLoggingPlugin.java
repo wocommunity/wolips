@@ -53,7 +53,7 @@
  * <http://objectstyle.org/>.
  *
  */
-package java.org.objectstyle.wolips.logging;
+package org.objectstyle.wolips.logging;
 import java.net.URL;
 
 import org.apache.commons.logging.Log;

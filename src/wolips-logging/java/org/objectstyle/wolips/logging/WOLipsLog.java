@@ -54,7 +54,7 @@
  *
  */
 
-package java.org.objectstyle.wolips.logging;
+package org.objectstyle.wolips.logging;
 
 import java.util.Date;
 import java.util.Hashtable;

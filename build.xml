@@ -95,25 +95,25 @@
     <!-- ============================================= -->
     <target name="dist" depends=".ds_store,check"> 
     	<ant antfile="build-core.xml" target="dist"/>
-    	<ant antfile="build-wolips.xml" target="dist"/>
-	<ant antfile="build-wolips-help.xml" target="dist"/>
-	<ant antfile="build-wolips-targetbuilder.xml" target="dist"/>
-	<ant antfile="build-wolips-support.xml" target="dist"/>
-	<ant antfile="build-wolips-launching.xml" target="dist"/>
-	<ant antfile="build-wolips-profiling.xml" target="dist"/>
-	<ant antfile="build-wolips-devstudio.xml" target="dist"/>
-	<ant antfile="build-wolips-projectbuild.xml" target="dist"/>
-	<ant antfile="build-wolips-tests.xml" target="dist"/>
-	<ant antfile="build-wolips-wounit.xml" target="dist"/>
-	<ant antfile="build-wolips-source.xml" target="dist"/>
-	<ant antfile="build-wolips-ui.xml" target="dist"/>
-	<ant antfile="build-wolips-wizards.xml" target="dist"/>
-	<ant antfile="build-wolips-ant.xml" target="dist"/>
-	<ant antfile="build-wolips-woproject.xml" target="dist"/>
-	<ant antfile="build-wolips-woproject-ant.xml" target="dist"/>
-	<ant antfile="build-wolips-cayenne.xml" target="dist"/>
-	<ant antfile="build-wolips-cayenne-ant.xml" target="dist"/>
-        <ant antfile="build-wolips-logging.xml" target="dist"/>
+    	<ant antfile="build-wolips-logging.xml" target="dist"/>
+        <ant antfile="build-wolips.xml" target="dist"/>
+        <ant antfile="build-wolips-help.xml" target="dist"/>
+        <ant antfile="build-wolips-targetbuilder.xml" target="dist"/>
+        <ant antfile="build-wolips-support.xml" target="dist"/>
+        <ant antfile="build-wolips-launching.xml" target="dist"/>
+        <ant antfile="build-wolips-profiling.xml" target="dist"/>
+        <ant antfile="build-wolips-devstudio.xml" target="dist"/>
+        <ant antfile="build-wolips-projectbuild.xml" target="dist"/>
+        <ant antfile="build-wolips-tests.xml" target="dist"/>
+        <ant antfile="build-wolips-wounit.xml" target="dist"/>
+        <ant antfile="build-wolips-source.xml" target="dist"/>
+        <ant antfile="build-wolips-ui.xml" target="dist"/>
+        <ant antfile="build-wolips-wizards.xml" target="dist"/>
+        <ant antfile="build-wolips-ant.xml" target="dist"/>
+        <ant antfile="build-wolips-woproject.xml" target="dist"/>
+        <ant antfile="build-wolips-woproject-ant.xml" target="dist"/>
+        <ant antfile="build-wolips-cayenne.xml" target="dist"/>
+        <ant antfile="build-wolips-cayenne-ant.xml" target="dist"/>
         <ant antfile="build-wolips-dist.xml" target="dist"/>
     </target>
 
@@ -122,25 +122,25 @@
     <!-- ============================================= -->    
     <target name="java" depends="check">
     	<ant antfile="build-core.xml" target="java"/>
-    	<ant antfile="build-wolips.xml" target="java"/>
-	<ant antfile="build-wolips-help.xml" target="java"/>
-	<ant antfile="build-wolips-targetbuilder.xml" target="java"/>
-	<ant antfile="build-wolips-support.xml" target="java"/>
-	<ant antfile="build-wolips-launching.xml" target="java"/>
-	<ant antfile="build-wolips-profiling.xml" target="java"/>
-	<ant antfile="build-wolips-devstudio.xml" target="java"/>
-	<ant antfile="build-wolips-projectbuild.xml" target="java"/>
-	<ant antfile="build-wolips-tests.xml" target="java"/>
-	<ant antfile="build-wolips-wounit.xml" target="java"/>
-	<ant antfile="build-wolips-ui.xml" target="java"/>
-	<ant antfile="build-wolips-source.xml" target="java"/>
-	<ant antfile="build-wolips-ant.xml" target="java"/>
-	<ant antfile="build-wolips-woproject.xml" target="java"/>
-	<ant antfile="build-wolips-woproject-ant.xml" target="java"/>
-	<ant antfile="build-wolips-cayenne.xml" target="java"/>
-	<ant antfile="build-wolips-cayenne-ant.xml" target="java"/>
-	<ant antfile="build-wolips-logging.xml" target="java"/>
-	<ant antfile="build-wolips-wizards.xml" target="java"/>
+    	<ant antfile="build-wolips-logging.xml" target="java"/>
+	    <ant antfile="build-wolips.xml" target="java"/>
+	    <ant antfile="build-wolips-help.xml" target="java"/>
+	    <ant antfile="build-wolips-targetbuilder.xml" target="java"/>
+	    <ant antfile="build-wolips-support.xml" target="java"/>
+	    <ant antfile="build-wolips-launching.xml" target="java"/>
+	    <ant antfile="build-wolips-profiling.xml" target="java"/>
+	    <ant antfile="build-wolips-devstudio.xml" target="java"/>
+	    <ant antfile="build-wolips-projectbuild.xml" target="java"/>
+	    <ant antfile="build-wolips-tests.xml" target="java"/>
+	    <ant antfile="build-wolips-wounit.xml" target="java"/>
+	    <ant antfile="build-wolips-ui.xml" target="java"/>
+	    <ant antfile="build-wolips-source.xml" target="java"/>
+	    <ant antfile="build-wolips-ant.xml" target="java"/>
+	    <ant antfile="build-wolips-woproject.xml" target="java"/>
+	    <ant antfile="build-wolips-woproject-ant.xml" target="java"/>
+	    <ant antfile="build-wolips-cayenne.xml" target="java"/>
+	    <ant antfile="build-wolips-cayenne-ant.xml" target="java"/>
+	    <ant antfile="build-wolips-wizards.xml" target="java"/>
     </target>
 
     <!-- ============================================= -->

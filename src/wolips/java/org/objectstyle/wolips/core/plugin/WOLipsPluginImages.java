@@ -58,9 +58,9 @@ package org.objectstyle.wolips.core.plugin;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.org.objectstyle.wolips.logging.WOLipsLog;
 
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.objectstyle.wolips.logging.WOLipsLog;
 
 /**
  * @author mnolte

@@ -54,10 +54,10 @@
  *
  */
 package org.objectstyle.wolips.core.listener;
-import java.org.objectstyle.wolips.logging.WOLipsLog;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
@@ -69,6 +69,7 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
 import org.objectstyle.wolips.core.project.PBProjectUpdater;
+import org.objectstyle.wolips.logging.WOLipsLog;
 import org.objectstyle.woproject.pb.PBProject;
 /**
  * Tracking changes in classpath and synchronizes webobjects project file

@@ -55,9 +55,10 @@
  */
 package org.objectstyle.wolips.core.plugin;
 
-import java.org.objectstyle.wolips.logging.WOLipsLog;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
+
+import org.objectstyle.wolips.logging.WOLipsLog;
 
 
 /**

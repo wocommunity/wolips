@@ -56,7 +56,6 @@
 package org.objectstyle.wolips.core.project;
 import java.io.File;
 import java.io.IOException;
-import java.org.objectstyle.wolips.logging.WOLipsLog;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -72,6 +71,7 @@ import org.eclipse.core.runtime.Path;
 import org.objectstyle.wolips.core.plugin.AWOLips;
 import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
 import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
+import org.objectstyle.wolips.logging.WOLipsLog;
 import org.objectstyle.woproject.pb.PBProject;
 import org.objectstyle.woproject.util.FileStringScanner;
 /**

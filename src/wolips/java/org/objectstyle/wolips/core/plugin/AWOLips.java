@@ -56,7 +56,6 @@
 
 package org.objectstyle.wolips.core.plugin;
 
-import java.org.objectstyle.wolips.logging.WOLipsLog;
 import java.util.ArrayList;
 
 import org.apache.commons.logging.Log;
@@ -81,6 +80,7 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
+import org.objectstyle.wolips.logging.WOLipsLog;
 import org.objectstyle.woproject.env.Environment;
 import org.objectstyle.woproject.env.WOEnvironment;
 import org.objectstyle.woproject.env.WOVariables;

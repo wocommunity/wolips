@@ -9,7 +9,20 @@
     <!-- Define CLASSPATH settings.                    -->
     <!-- ============================================= -->
     <target name="defineClasspath" if="wolips.build.logging">
-	</target>
+       <path id="classpath">
+            <fileset dir="${ant.home}/lib">
+                <include name="ant.jar"/>
+            </fileset>
+            <fileset dir="lib">
+                <include name="*.jar"/>
+	            <include name="eclipse/**/*.jar"/>
+            </fileset>
+            <fileset dir="${wo.dir.library.frameworks}">
+                <include name="JavaFoundation.framework/Resources/Java/*.jar"/>
+            </fileset>
+             <!-- Depends on WOProject core. -->
+            <pathelement path="${build}/main"/>
+        </path>	</target>
 
     <target name="java" depends="prepare" if="wolips.build.logging">
        <javac srcdir="src/wolips-logging/java"

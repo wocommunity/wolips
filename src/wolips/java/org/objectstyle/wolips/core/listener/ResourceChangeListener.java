@@ -56,9 +56,9 @@
 package org.objectstyle.wolips.core.listener;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
-import java.org.objectstyle.wolips.logging.WOLipsLog;
 import java.util.ArrayList;
 import java.util.HashMap;
+
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -78,6 +78,7 @@ import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
 import org.objectstyle.wolips.core.project.PBProjectUpdater;
 import org.objectstyle.wolips.core.project.WOLipsJavaProject;
 import org.objectstyle.wolips.core.project.WOLipsProject;
+import org.objectstyle.wolips.logging.WOLipsLog;
 /**
  * Tracking changes in resources and synchronizes webobjects project file
  */

@@ -1,11 +1,11 @@
 package org.objectstyle.wolips.core.project.wo;
 
 import java.net.URL;
-import java.org.objectstyle.wolips.logging.WOLipsLog;
 
 import org.eclipse.core.internal.boot.URLContentFilter;
 import org.eclipse.core.internal.plugins.PluginClassLoader;
 import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
+import org.objectstyle.wolips.logging.WOLipsLog;
 
 /**
  * @author uli

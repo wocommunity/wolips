@@ -83,8 +83,8 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
-import org.objectstyle.wolips.projectbuild.natures.*;
-import org.objectstyle.wolips.projectbuild.util.*;
+import org.objectstyle.wolips.projectbuild.natures.IncrementalNature;
+import org.objectstyle.wolips.projectbuild.util.ResourceUtilities;
 
 /**
  * @author Harald Niesche

@@ -69,6 +69,7 @@
 	     <fileset dir="src/wolips-ui/java"/>
 	     <fileset dir="src/wolips-tests/java"/>
 	     <fileset dir="src/wolips-wizards/java"/>
+	     <fileset dir="src/wolips-logging/java"/>
          </copy>
 
     </target>

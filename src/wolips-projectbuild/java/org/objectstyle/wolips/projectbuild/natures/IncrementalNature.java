@@ -56,10 +56,6 @@
 
 package org.objectstyle.wolips.projectbuild.natures;
 
-import org.objectstyle.wolips.core.project.WOLipsProject;
-import org.objectstyle.wolips.projectbuild.WOProjectBuildConstants;
-
-import java.org.objectstyle.wolips.logging.WOLipsLog;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -74,6 +70,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
+import org.objectstyle.wolips.core.project.WOLipsProject;
+import org.objectstyle.wolips.logging.WOLipsLog;
+import org.objectstyle.wolips.projectbuild.WOProjectBuildConstants;
 
 /**
  * @author Harald Niesche

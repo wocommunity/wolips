@@ -7,7 +7,7 @@
    class="org.objectstyle.wolips.logging.WOLipsLoggingPlugin">
 
    <runtime>
-      <library name="wolips-logging.jar">
+      <library name="lib/wolips-logging.jar">
          <export name="*"/>
          <packages prefixes="org.objectstyle.wolips.logging"/>
       </library>

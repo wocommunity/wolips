@@ -57,7 +57,6 @@
 package org.objectstyle.wolips.launching;
 
 import java.io.File;
-import java.org.objectstyle.wolips.logging.WOLipsLog;
 import java.text.MessageFormat;
 import java.util.Map;
 
@@ -79,6 +78,7 @@ import org.eclipse.jdt.launching.VMRunnerConfiguration;
 import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
 import org.objectstyle.wolips.core.preferences.Preferences;
 import org.objectstyle.wolips.core.project.WOLipsProject;
+import org.objectstyle.wolips.logging.WOLipsLog;
 import org.objectstyle.woproject.util.FileStringScanner;
 
 /**
