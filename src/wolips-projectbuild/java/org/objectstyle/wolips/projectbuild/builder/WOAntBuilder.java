@@ -95,9 +95,6 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 	private boolean isPatchInstalled() {
 		String string =
 			AntCorePlugin.getPlugin().getDescriptor().getProviderName();
-		WOLipsLog.log(
-			"AntCorePlugin.getPlugin().getDescriptor().getProviderName(); "
-				+ string);
 		return string.endsWith("objectstyle.org");
 	}
 
