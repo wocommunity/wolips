@@ -149,7 +149,7 @@ public class ResourcesLabelDecorator implements ILabelDecorator {
 	 * @see org.eclipse.jface.viewers.IBaseLabelProvider#addListener(ILabelProviderListener)
 	 */
 	public void addListener(ILabelProviderListener listener) {
-		return;
+	    return;
 	}
 
 	/**
