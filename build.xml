@@ -257,7 +257,8 @@
     <!-- ============================================= -->
     <!-- runs and reports on tests.                    -->
     <!-- ============================================= -->
-    <target name="test" depends="unit-test-report,functional-test-report">
+    <target name="test" 
+       depends="execute-unit-tests,execute-functional-tests,unit-test-report,functional-test-report">
 
     </target>
 

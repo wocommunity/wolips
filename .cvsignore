@@ -5,3 +5,4 @@ dist
 build.properties
 bin
 velocity.log
+output
