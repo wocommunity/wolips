@@ -58,7 +58,6 @@ import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
-
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -185,7 +184,8 @@ public class ResourceChangeListener
 			int kindOfChange)
 			throws CoreException {
 			//see bugreport #708385 
-			if (!resource.isAccessible() && kindOfChange != IResourceDelta.REMOVED)
+			if (!resource.isAccessible()
+				&& kindOfChange != IResourceDelta.REMOVED)
 				return false;
 			// reset project file to update
 			projectFile = null;
@@ -352,6 +352,14 @@ public class ResourceChangeListener
 							EXT_API.equals(resource.getFileExtension())
 								|| EXT_STRINGS.equals(
 									resource.getFileExtension())) {
+							updateProjectFile(
+								kindOfChange,
+								resource,
+								RESOURCES_ID,
+								resource.getParent().getFile(
+									new Path(PROJECT_FILE_NAME)));
+						} else if (
+							EXT_D2WMODEL.equals(resource.getFileExtension())) {
 							updateProjectFile(
 								kindOfChange,
 								resource,
