@@ -78,59 +78,49 @@ import org.objectstyle.wolips.core.preferences.Preferences;
 import org.objectstyle.wolips.core.project.PBProjectUpdater;
 import org.objectstyle.wolips.core.project.WOLipsJavaProject;
 import org.objectstyle.wolips.core.project.WOLipsProject;
+import org.objectstyle.wolips.core.util.StringListMatcher;
 import org.objectstyle.wolips.logging.WOLipsLog;
-import org.eclipse.ui.internal.misc.StringMatcher;
+
 /**
  * Tracking changes in resources and synchronizes webobjects project file
  */
 public class ResourceChangeListener
-	implements IResourceChangeListener, IWOLipsPluginConstants {
-	private StringMatcher[] woappResourcesIncludeMatcher = null;
-	private StringMatcher[] woappResourcesExcludeMatcher = null;
-	private StringMatcher[] classesIncludeMatcher = null;
-	private StringMatcher[] classesExcludeMatcher = null;
+	implements IResourceChangeListener, IWOLipsPluginConstants
+{
+
+  private StringListMatcher woappResourcesIncludeMatcher = null;
+  private StringListMatcher woappResourcesExcludeMatcher = null;
+  private StringListMatcher classesIncludeMatcher = null;
+  private StringListMatcher classesExcludeMatcher = null;
+
 	/**
 	 * Constructor for ResourceChangeListener.
 	 */
 	public ResourceChangeListener() {
 		super();
-		String[] patterns =
-			Preferences.getStringArrayForKey(
-				IWOLipsPluginConstants
-					.PREF_PBWO_PROJECT_INCLUDED_WOAPP_RESOURCES,
-				",");
-		woappResourcesIncludeMatcher = new StringMatcher[patterns.length];
-		for (int i = 0; i < patterns.length; i++) {
-			woappResourcesIncludeMatcher[i] =
-				new StringMatcher(patterns[i], true, false);
-		}
-		patterns =
-			Preferences.getStringArrayForKey(
-				IWOLipsPluginConstants
-					.PREF_PBWO_PROJECT_EXCLUDED_WOAPP_RESOURCES,
-				",");
-		woappResourcesExcludeMatcher = new StringMatcher[patterns.length];
-		for (int i = 0; i < patterns.length; i++) {
-			woappResourcesExcludeMatcher[i] =
-				new StringMatcher(patterns[i], true, false);
-		}
-		patterns =
-			Preferences.getStringArrayForKey(
-				IWOLipsPluginConstants.PREF_PBWO_PROJECT_INCLUDED_CLASSES,
-				",");
-		classesIncludeMatcher = new StringMatcher[patterns.length];
-		for (int i = 0; i < patterns.length; i++) {
-			classesIncludeMatcher[i] =
-				new StringMatcher(patterns[i], true, false);
-		}
-		patterns =
-			Preferences.getStringArrayForKey(
-				IWOLipsPluginConstants.PREF_PBWO_PROJECT_EXCLUDED_CLASSES, ",");
-		classesExcludeMatcher = new StringMatcher[patterns.length];
-		for (int i = 0; i < patterns.length; i++) {
-			classesExcludeMatcher[i] =
-				new StringMatcher(patterns[i], true, false);
-		}
+    woappResourcesIncludeMatcher = new StringListMatcher(
+      Preferences.getStringArrayForKey(
+        IWOLipsPluginConstants
+          .PREF_PBWO_PROJECT_INCLUDED_WOAPP_RESOURCES
+      )
+    );
+    woappResourcesExcludeMatcher = new StringListMatcher(
+      Preferences.getStringArrayForKey(
+        IWOLipsPluginConstants
+          .PREF_PBWO_PROJECT_EXCLUDED_WOAPP_RESOURCES
+      )
+    );
+		classesIncludeMatcher = new StringListMatcher(
+      Preferences.getStringArrayForKey(
+        IWOLipsPluginConstants.PREF_PBWO_PROJECT_INCLUDED_CLASSES
+      )
+    );
+
+		classesExcludeMatcher = new StringListMatcher(
+      Preferences.getStringArrayForKey(
+        IWOLipsPluginConstants.PREF_PBWO_PROJECT_EXCLUDED_CLASSES
+      )
+    );
 	}
 	/**
 	 * Adds instance of inner class ProjectFileResourceValidator to events
@@ -446,26 +436,18 @@ public class ResourceChangeListener
 		}
 		private boolean matchClassesPattern(IResource resource) {
 			String string = resource.getFullPath().toString();
-			for (int i = 0; i < classesExcludeMatcher.length; i++) {
-				if (classesExcludeMatcher[i].match(string))
-					return false;
-			}
-			for (int i = 0; i < classesIncludeMatcher.length; i++) {
-				if (classesIncludeMatcher[i].match(string))
-					return true;
-			}
+			if (classesExcludeMatcher.match(string))
+				return false;
+			if (classesIncludeMatcher.match(string))
+				return true;
 			return false;
 		}
 		private boolean matchWOAppResourcesPattern(IResource resource) {
 			String string = resource.getFullPath().toString();
-			for (int i = 0; i < woappResourcesExcludeMatcher.length; i++) {
-				if (woappResourcesExcludeMatcher[i].match(string))
+				if (woappResourcesExcludeMatcher.match(string))
 					return false;
-			}
-			for (int i = 0; i < woappResourcesIncludeMatcher.length; i++) {
-				if (woappResourcesIncludeMatcher[i].match(string))
+				if (woappResourcesIncludeMatcher.match(string))
 					return true;
-			}
 			return false;
 		}
 		/**
