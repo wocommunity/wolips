@@ -52,24 +52,24 @@
  * information on the ObjectStyle Group, please see
  * <http://objectstyle.org/>.
  *
- */ 
+ */
 
 package org.objectstyle.woproject.ant;
 
-import junit.framework.TestSuite;
+import junit.framework.TestCase;
 
-/** Combines test cases from org.objectstyle.woproject.ant package to 
-  * a test suite. 
-  *
-  * @author Andrei Adamchik
-  */
-public class AllTests {
-	public static TestSuite suite() {
-		TestSuite suite = new TestSuite("Ant Tasks (org.objectstyle.woproject.ant)");
-		
-		// add all test suites from this package
-        suite.addTestSuite(ArtBuildTest.class);
+/** 
+ * A test case that attempts to build art framework and does
+ * various assertions about build results. 
+ * 
+ * @author Andrei Adamchik
+ */
+public class ArtBuildTest extends TestCase {
+    public ArtBuildTest(String name) {
+        super(name);
+    }
+    
+    public void testMe() throws Exception {
         
-		return suite;
-	}
+    }
 }

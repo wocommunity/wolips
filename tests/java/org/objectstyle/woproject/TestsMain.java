@@ -1,4 +1,3 @@
-package org.objectstyle.woproject;
 /* ====================================================================
  * 
  * The ObjectStyle Group Software License, Version 1.0 
@@ -54,6 +53,8 @@ package org.objectstyle.woproject;
  * <http://objectstyle.org/>.
  *
  */
+
+package org.objectstyle.woproject;
 
 import org.objectstyle.woproject.WOProjectRunner;
 
