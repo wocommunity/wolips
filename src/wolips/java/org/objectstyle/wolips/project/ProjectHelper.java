@@ -60,7 +60,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFolder;
@@ -80,7 +79,6 @@ import org.objectstyle.wolips.logging.WOLipsLog;
 import org.objectstyle.wolips.plugin.IWOLipsPluginConstants;
 import org.objectstyle.woproject.env.Environment;
 import org.objectstyle.woproject.env.WOVariables;
-
 /**
  * @author uli
  *
@@ -90,9 +88,8 @@ import org.objectstyle.woproject.env.WOVariables;
  * Window>Preferences>Java>Code Generation.
  */
 public class ProjectHelper implements IWOLipsPluginConstants {
-	public static String WOGENERATOR_ID =
-		"org.objectstyle.wolips.wogenerator";
-		public static String WOFRAMEWORK_BUILDER_ID =
+	public static String WOGENERATOR_ID = "org.objectstyle.wolips.wogenerator";
+	public static String WOFRAMEWORK_BUILDER_ID =
 		"org.objectstyle.wolips.woframeworkbuilder";
 	public static String WOAPPLICATION_BUILDER_ID =
 		"org.objectstyle.wolips.woapplicationbuilder";
@@ -643,7 +640,33 @@ public class ProjectHelper implements IWOLipsPluginConstants {
 			}
 			if (j != oldClasspathEntries.length) { // entry already set
 				continue;
-			} // determine if new class path begins with next root
+			}
+			boolean beginsWithNextSystemRoot =
+				pathBeginsWithNextSystemRoot(frameworkPath);
+			boolean beginsWithNextLocalRoot =
+				pathBeginsWithNextLocalRoot(frameworkPath);
+			if (beginsWithNextSystemRoot && !beginsWithNextLocalRoot) {
+				// replace beginning of class path with next system root
+				frameworkPath =
+					new Path(Environment.NEXT_SYSTEM_ROOT).append(
+						frameworkPath.removeFirstSegments(
+							new Path(WOVariables.systemRoot())
+								.segmentCount()));
+				// set path as variable entry			
+				classpathEntries.add(
+					JavaCore.newVariableEntry(frameworkPath, null, null));
+			} else if (beginsWithNextLocalRoot) {
+				// replace beginning of class path with next local root
+				frameworkPath =
+					new Path(Environment.NEXT_LOCAL_ROOT).append(
+						frameworkPath.removeFirstSegments(
+							new Path(WOVariables.localRoot())
+								.segmentCount()));
+				// set path as variable entry			
+				classpathEntries.add(
+					JavaCore.newVariableEntry(frameworkPath, null, null));
+			}/*
+			// determine if new class path begins with next root
 			if ((frameworkPath.segmentCount() > nextRootAsPath.segmentCount())
 				&& frameworkPath
 					.removeLastSegments(
@@ -658,7 +681,7 @@ public class ProjectHelper implements IWOLipsPluginConstants {
 				// set path as variable entry			
 				classpathEntries.add(
 					JavaCore.newVariableEntry(frameworkPath, null, null));
-			} else {
+			} */else {
 				classpathEntries.add(
 					JavaCore.newLibraryEntry(frameworkPath, null, null));
 			}
@@ -767,5 +790,27 @@ public class ProjectHelper implements IWOLipsPluginConstants {
 			!= null)
 			return findFolder;
 		return null;
+	}
+	public static boolean pathBeginsWithNextSystemRoot(IPath aPath) {
+		IPath nextSystemRootPath = new Path(WOVariables.systemRoot());
+		if ((aPath.segmentCount() > nextSystemRootPath.segmentCount())
+			&& aPath
+				.removeLastSegments(
+					aPath.segmentCount() - nextSystemRootPath.segmentCount())
+				.equals(nextSystemRootPath)) {
+			return true;
+		}
+		return false;
+	}
+	public static boolean pathBeginsWithNextLocalRoot(IPath aPath) {
+		IPath nextLocalRootPath = new Path(WOVariables.localRoot());
+		if ((aPath.segmentCount() > nextLocalRootPath.segmentCount())
+			&& aPath
+				.removeLastSegments(
+					aPath.segmentCount() - nextLocalRootPath.segmentCount())
+				.equals(nextLocalRootPath)) {
+			return true;
+		}
+		return false;
 	}
 }
