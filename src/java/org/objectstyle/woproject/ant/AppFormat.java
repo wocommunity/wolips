@@ -446,6 +446,6 @@ public class AppFormat extends ProjectFormat {
 	public String woappPlusVersion() {
 		if(WOVersion.wo5or51(this.getApplicatonTask().getProject()))
 		return "woapp";
-		return "woapp_5.2";
+		return "woapp_52";
 	}
 }
