@@ -87,9 +87,12 @@
     <!-- make wolips dist -->
     <tar tarfile="${wolips.dist.filename}.tar">
         <tarfileset dir="${wolips.dist.base}">
-        	<exclude name="**/plugins/*.jar"/>
-        	<exclude name="**/features/*.jar"/>
-		<exclude name="site.xml"/>
+        <include name="**/plugins/*.jar"/>
+        <include name="**/features/*.jar"/>
+		<include name="README.html"/>
+		<include name="site.xml"/>
+		<include name="about.html"/>
+		<include name="optional/**"/>		
 	</tarfileset>
      </tar>
          
