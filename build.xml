@@ -129,6 +129,8 @@
                 <include name="LICENSE*"/>
             </metainf>
         </jar>
+        
+        <copy todir="${dist}/lib" file="lib/cayenne.jar"/>
     </target>
     
     

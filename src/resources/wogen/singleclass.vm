@@ -1,51 +1,67 @@
-#if( $classGen.isUsingPackage() )
-package $classGen.packageName;
+#* comment
+WOGen Template for EO Java superclass. 
+Refer to http://jakarta.apache.org/velocity/ for template syntax.
+*#
+#if( ${classGen.isUsingPackage()} )
+package ${classGen.packageName};
 #end
 
-import java.util.List;
-import org.objectstyle.cayenne.*;
+import com.webobjects.foundation.*;
+import com.webobjects.eocontrol.*;
+import java.util.*;
 
-public class $classGen.className extends CayenneDataObject {
 
+/** ${classGen.className} */
+public class ${classGen.className} extends EOGenericRecord {
+
+    public ${classGen.className}() {
+        super();
+    }
+    
 ## Create attribute set/get methods
 #foreach( $attr in ${classGen.Entity.AttributeList} )
 #set( $classGen.Prop = $attr.Name )## let controller know about current property
     public void set${classGen.cappedProp}(${attr.Type} ${attr.Name}) {
-        writeProperty("${attr.Name}", ${attr.Name});
+        takeStoredValueForKey(${attr.Name}, "${attr.Name}");
     }
-    public ${attr.Type} get${classGen.cappedProp}() {
-        return (${attr.Type})readProperty("${attr.Name}");
+    public ${attr.Type} ${attr.Name}() {
+        return (${attr.Type})storedValueForKey("${attr.Name}");
     }
-    
     
 #end
-##
+
 ## Create list add/remove/get methods
 #foreach( $rel in ${classGen.Entity.RelationshipList} )
 #set( $classGen.Prop = $rel.Name )## let controller know about current property
 #if( $rel.ToMany )
-    public void addTo${classGen.cappedProp}(${rel.TargetEntity.ClassName} obj) {
-        addToManyTarget("${rel.name}", obj, true);
-    }
-    public void removeFrom${classGen.cappedProp}(${rel.TargetEntity.ClassName} obj) {
-        removeToManyTarget("${rel.name}", obj, true);
-    }
-    public List get${classGen.cappedProp}() {
-        return (List)readProperty("${rel.name}");
-    }
-#else
-    public void set${classGen.cappedProp}(${rel.TargetEntity.ClassName} ${rel.name}) {
-        setToOneTarget("${rel.name}", ${rel.name}, true);
+    public void set${classGen.cappedProp}(NSMutableArray aValue) {
+        takeStoredValueForKey(aValue, "${rel.name}");
     }
     
-    public ${rel.TargetEntity.ClassName} get${classGen.cappedProp}() {
-        return (${rel.TargetEntity.ClassName})readProperty("${rel.name}");
+    public void addTo${classGen.cappedProp}(${rel.TargetEntity.ClassName} obj) {
+        NSMutableArray array = (NSMutableArray)${rel.name}();
+
+        willChange();
+        array.addObject(obj);
+    }
+    public void removeFrom${classGen.cappedProp}(${rel.TargetEntity.ClassName} obj) {
+        NSMutableArray array = (NSMutableArray)${rel.name}();
+
+        willChange();
+        array.removeObject(obj);
+    }
+    public NSArray ${rel.name}() {
+        return (NSArray)storedValueForKey("${rel.name}");
+    }
+#else
+    public void set${classGen.cappedProp}(${rel.TargetEntity.ClassName} aValue) {
+        takeStoredValueForKey(aValue, "${rel.name}");
+    }
+    
+    public ${rel.TargetEntity.ClassName} ${rel.name}() {
+        return (${rel.TargetEntity.ClassName})storedValueForKey("${rel.name}");
     } 
 #end
     
-    
 #end
 }
-
-
-
