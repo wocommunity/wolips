@@ -69,7 +69,6 @@ import org.eclipse.jdt.internal.ui.JavaPlugin;
 import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor;
 import org.eclipse.jdt.internal.ui.viewsupport.StorageLabelProvider;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.DecoratingLabelProvider;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -138,9 +137,6 @@ public final class RelatedView extends ViewPart implements ISelectionListener, I
 				wolipsResource =
 					WOLipsCore.getWOLipsModel().getWOLipsCompilationUnit(
 						(ICompilationUnit) parent);
-			} else {
-				if(parent != null)
-					WOLipsLog.log(parent.getClass().getName());
 			}
 			List result = new LinkedList();
 			if (wolipsResource != null) {
@@ -343,18 +339,12 @@ public final class RelatedView extends ViewPart implements ISelectionListener, I
 	}
 
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-		if (selection instanceof ITextSelection) {
-			ITextSelection sel = (ITextSelection) selection;
-			
-		} else if (selection instanceof IStructuredSelection) {
+		if (selection instanceof IStructuredSelection) {
 
 			IStructuredSelection sel = (IStructuredSelection) selection;
 
 			Object selectedElement = sel.getFirstElement();
 			viewer.setInput(selectedElement);
-
-		} else {
-			WOLipsLog.log(selection.getClass().getName());
 		}
 	}
 
