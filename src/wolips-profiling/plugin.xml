@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin
+   id="org.objectstyle.wolips.profiling"
+   name="%WOLips.profiling.fragmentName"
+   version="0.9.8"
+   provider-name="%WOLips.providerName">
+
+   <runtime>
+      <library name="lib/wolips-profiling.jar">
+         <export name="*"/>
+         <packages prefixes="org.objectstyle.wolips.profiling"/>
+      </library>
+   </runtime>
+
+<!-- =================================================================================== -->
+<!-- Required Plugins                                                                    -->
+<!-- =================================================================================== -->   
+   <requires>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.apache.ant"/>
+      <import plugin="org.eclipse.ant.core"/>
+      <import plugin="org.eclipse.jdt.core"/>
+      <import plugin="org.eclipse.jdt.ui"/>
+      <import plugin="org.apache.xerces"/>
+      <import plugin="org.eclipse.jdt.core"/>
+      <import plugin="org.eclipse.search"/>
+      <import plugin="org.eclipse.debug.core"/>
+      <import plugin="org.eclipse.debug.ui"/>
+      <import plugin="org.eclipse.jdt.debug"/>
+      <import plugin="org.eclipse.jdt.debug.ui"/>
+      <import plugin="org.eclipse.jdt.launching"/>
+      <import plugin="org.eclipse.compare"/>
+      <import plugin="org.apache.lucene"/>
+      <import plugin="org.eclipse.ui.externaltools"/>
+      <import plugin="org.eclipse.pde.runtime"/>
+      <import plugin="org.objectstyle.wolips"/>
+      <import plugin="jmechanic"/>
+   </requires>
+<!-- =================================================================================== -->
+<!-- Extension: Launch configuration types                                                -->
+<!-- =================================================================================== -->
+   <extension point = "org.eclipse.debug.core.launchConfigurationTypes">
+   		<launchConfigurationType
+   	   		id="org.objectstyle.wolips.profiling.ProfiledWOLocalJavaApplication"
+	   		name="Profiled WOApplication"
+	   		delegate="org.objectstyle.wolips.profiling.ProfiledWOJavaLocalApplicationLaunchConfigurationDelegate"
+	   		modes= "run, debug">
+	    </launchConfigurationType>
+   </extension>
+<!-- =================================================================================== -->
+<!-- Extension: Launch configuration images                                               -->
+<!-- =================================================================================== -->
+   <extension
+
+         point="org.eclipse.debug.ui.launchConfigurationTypeImages">
+
+      <launchConfigurationTypeImage
+
+            icon="icons/launching/WOLips-launching.gif"
+
+            configTypeID="org.objectstyle.wolips.profiling.ProfiledWOLocalJavaApplication"
+
+            id="org.objectstyle.wolips.profiling.ProfiledWOLocalJavaApplicationImage">
+
+      </launchConfigurationTypeImage>
+
+   </extension>
+<!-- =================================================================================== -->
+<!-- Extension: Launch configuration tab groups                                           -->
+<!-- =================================================================================== -->
+   <extension
+
+         point="org.eclipse.debug.ui.launchConfigurationTabGroups">
+
+      <launchConfigurationTabGroup
+
+            type="org.objectstyle.wolips.profiling.ProfiledWOLocalJavaApplication"
+
+            class="org.objectstyle.wolips.profiling.ProfiledWOLocalJavaApplicationTabGroup"
+
+            id="org.objectstyle.wolips.profiling.ProfiledWOLocalJavaApplicationTabGroup">
+
+      </launchConfigurationTabGroup>
+
+   </extension>
+<!-- =================================================================================== -->
+<!-- Extension: Launch shortcuts                                                         -->
+<!-- =================================================================================== -->
+   <extension
+
+         point="org.eclipse.debug.ui.launchShortcuts">
+
+      <shortcut
+
+            label="WOApplication"
+
+            icon="icons/launching/WOLips-launching.gif"
+
+            modes="run, debug"
+
+            class="org.objectstyle.wolips.profiling.ProfiledWOJavaApplicationLaunchShortcut"
+
+            id="org.objectstyle.wolips.profiling.ProfiledWOJavaApplicationLaunchShortcut">
+
+         <perspective
+
+               id="org.eclipse.jdt.ui.JavaPerspective">
+
+         </perspective>
+
+         <perspective
+
+               id="org.eclipse.jdt.ui.JavaHierarchyPerspective">
+
+         </perspective>
+
+         <perspective
+
+               id="org.eclipse.jdt.ui.JavaBrowsingPerspective">
+
+         </perspective>
+
+         <perspective
+
+               id="org.eclipse.debug.ui.DebugPerspective">
+
+         </perspective>
+
+         <perspective
+
+               id="org.eclipse.pde.PDEPerspective">
+
+         </perspective>
+         
+         <perspective
+
+               id="org.objectstyle.wolips.ui.Perspective">
+
+         </perspective>
+
+      </shortcut>
+
+   </extension>
+
+</fragment>
