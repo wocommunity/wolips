@@ -261,14 +261,14 @@ public class ResourceChangeListener implements IResourceChangeListener {
 								resource.getParent().getFile(
 									new Path(IWOLipsModel.PROJECT_FILE_NAME)));
 						} /*else if (
-																																																																			EXT_EOMODEL.equals(resource.getFileExtension())) {
-																																																																			updateProjectFile(
-																																																																				kindOfChange,
-																																																																				resource,
-																																																																				RESOURCES_ID,
-																																																																				resource.getParent().getFile(
-																																																																					new Path(PROJECT_FILE_NAME)));
-																																																																		} */
+																																																																																											EXT_EOMODEL.equals(resource.getFileExtension())) {
+																																																																																											updateProjectFile(
+																																																																																												kindOfChange,
+																																																																																												resource,
+																																																																																												RESOURCES_ID,
+																																																																																												resource.getParent().getFile(
+																																																																																													new Path(PROJECT_FILE_NAME)));
+																																																																																										} */
 						/*else if (
 							EXT_EOMODEL_BACKUP.equals(
 								resource.getFileExtension())) {
@@ -309,39 +309,48 @@ public class ResourceChangeListener implements IResourceChangeListener {
 					// further examination of resource delta needed
 					return true;
 				case IResource.FILE :
+					if (IResourceDelta.CHANGED == kindOfChange) {
+						if (".project".equals(resource.getName())) {
+							ArrayList addedFrameworks = new ArrayList();
+							IProject[] referencedProjects =
+								resource.getProject().getReferencedProjects();
+							for (int j = 0;
+								j < referencedProjects.length;
+								j++) {
+								if (referencedProjects[j].isAccessible()
+									&& referencedProjects[j].isOpen()) {
+									IWOLipsProject referencedWOLipsProject =
+										WOLipsCore.createProject(
+											referencedProjects[j]);
+									if (referencedWOLipsProject != null
+										&& referencedWOLipsProject
+											.getNaturesAccessor()
+											.hasWOLipsNature()
+										&& referencedWOLipsProject
+											.getNaturesAccessor()
+											.isFramework())
+										addedFrameworks.add(
+											new Path(
+												referencedWOLipsProject
+													.getProject()
+													.getName()
+													+ "."
+													+ IWOLipsModel
+														.EXT_FRAMEWORK));
+								}
+							}
+							if (addedFrameworks.size() > 0) {
+								PBProjectUpdater projectUpdater =
+									PBProjectUpdater.instance(
+										resource.getProject());
+								projectUpdater.addFrameworks(addedFrameworks);
+							}
+						}
+					}
 					if (needsProjectFileUpdate(kindOfChange)) {
 						// files with java extension are located in src folders
 						// the relating project file is determined through the
 						// name of the src folder containing the java file
-						//if (EXT_JAVA.equals(resource.getFileExtension())) {
-						/*if (EXT_JAVA.equals(resource.getFileExtension())) {
-							updateProjectFile(
-								kindOfChange,
-								resource,
-								CLASSES_ID,
-								resource.getParent().getFile(
-									new Path(PROJECT_FILE_NAME)));
-						} */
-						/* else if (
-																			EXT_API.equals(resource.getFileExtension())
-																				|| EXT_STRINGS.equals(
-																					resource.getFileExtension())) {
-																			updateProjectFile(
-																				kindOfChange,
-																				resource,
-																				RESOURCES_ID,
-																				resource.getParent().getFile(
-																					new Path(PROJECT_FILE_NAME)));
-																		}*/
-						/*else if (
-							EXT_D2WMODEL.equals(resource.getFileExtension())) {
-							updateProjectFile(
-								kindOfChange,
-								resource,
-								RESOURCES_ID,
-								resource.getParent().getFile(
-									new Path(PROJECT_FILE_NAME)));
-						} */
 						if (matchWOAppResourcesPattern(resource)) {
 							updateProjectFile(
 								kindOfChange,

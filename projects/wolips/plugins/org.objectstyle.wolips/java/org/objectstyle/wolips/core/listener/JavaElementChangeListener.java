@@ -171,24 +171,6 @@ public class JavaElementChangeListener implements IElementChangedListener {
 										.getRawClasspathEntry()
 										.getPath());
 							}
-							/*
-							IProject[] referencedProjects =
-								projectToExamine.getReferencedProjects();
-							for (int j = 0;
-								j < referencedProjects.length;
-								j++) {
-								IWOLipsProject referencedWOLipsProject =
-									WOLipsCore.createProject(
-										referencedProjects[j]);
-								if (referencedWOLipsProject != null
-									&& referencedWOLipsProject
-										.getNaturesAccessor()
-										.hasWOLipsNature()
-									&& referencedWOLipsProject
-										.getNaturesAccessor()
-										.isFramework())
-									addedFrameworks.add(new Path(referencedWOLipsProject.getProject().getName() + "." + IWOLipsPluginConstants.EXT_FRAMEWORK));
-							}*/
 							foundElements = new ArrayList();
 							// search deltas for classpath changes
 							searchDeltas(
