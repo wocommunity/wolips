@@ -12,8 +12,8 @@
     <!-- param.feature.name the feature name           -->
     <!-- ============================================= -->
     <target name="copy.resources">
-	<mkdir dir="${param.build.output.build.dir}/features/${param.feature.name}"/>
-        <copy todir="${param.build.output.build.dir}/features/${param.feature.name}">
+	    <mkdir dir="${param.build.output.build.dir}/features/${param.feature.name}_${build.version}"/>
+        <copy todir="${param.build.output.build.dir}/features/${param.feature.name}_${build.version}">
             <fileset dir="">
         	<exclude name="build.xml"/>
                 <exclude name="default.properties"/>
@@ -21,6 +21,7 @@
                 <exclude name=".classpath"/>
             </fileset>
         </copy>
+        <replace file="${param.build.output.build.dir}/features/${param.feature.name}_${build.version}/feature.xml" token="${build.version.to.replace}" value="${build.version}"/>
     </target>
 
     <!-- ============================================= -->

@@ -39,6 +39,8 @@
     <!-- Build all.                                 -->
     <!-- ========================================== -->
     <target name="all" depends="verify,all_children,inform_user">
+    	<copy file="update/local/site.xml" todir="../${build.output.build.dir}"/>
+        <replace file="../${build.output.build.dir}/site.xml" token="${build.version.to.replace}" value="${build.version}"/>
     </target>
 
     <!-- ========================================== -->

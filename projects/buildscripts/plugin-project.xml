@@ -37,8 +37,8 @@
     <!-- param.plugin.name the plugin name             -->
     <!-- ============================================= -->
     <target name="copy.resources">
-         <mkdir dir="${param.build.output.build.dir}/plugins/${param.plugin.name}"/>
-         <copy todir="${param.build.output.build.dir}/plugins/${param.plugin.name}">
+         <mkdir dir="${param.build.output.build.dir}/plugins/${param.plugin.name}_${build.version}"/>
+         <copy todir="${param.build.output.build.dir}/plugins/${param.plugin.name}_${build.version}">
             <fileset dir="">
         	<exclude name="build.xml"/>
                 <exclude name="default.properties"/>
@@ -47,6 +47,14 @@
                 <exclude name="**/java/**"/>
             </fileset>
         </copy>
+        <replace dir="${param.build.output.build.dir}/plugins/${param.plugin.name}_${build.version}/" token="${build.version.to.replace}" value="${build.version}">
+            <include name="plugin.xml"/>
+            <include name="fragment.xml"/>
+            <include name="README.html"/>
+            <include name="about.properties"/>
+            <include name="plugin.properties"/>
+            <include name="scripts/test.properties"/>
+        </replace>    
     </target>
 
     <!-- ============================================= -->
@@ -55,11 +63,14 @@
     <!-- param.classes.dir                             -->
     <!-- param.classes.patternset.refid the classes    -->
     <!-- param.jar.file the jar file                   -->
+    <!-- param.plugin.name the plugin name             -->
+    <!-- param.build.output.build.dir the output dir   -->
     <!-- ============================================= -->
     <target name="jar">
-	<jar jarfile="${param.jar.file}">
-            <fileset dir="${param.classes.dir}">
-		<patternset refid="param.classes.patternset.refid"/>
+	<mkdir dir="${param.build.output.build.dir}/plugins/${param.plugin.name}_${build.version}/lib"/>
+	<jar jarfile="${param.build.output.build.dir}/plugins/${param.plugin.name}_${build.version}/lib/${param.jar.file}">
+        <fileset dir="${param.classes.dir}">
+		    <patternset refid="param.classes.patternset.refid"/>
 	    </fileset>
 	</jar>
     </target>

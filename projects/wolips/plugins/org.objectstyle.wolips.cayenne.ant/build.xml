@@ -23,9 +23,9 @@
     <!-- Build copy jars.                           -->
     <!-- ========================================== -->
     <target name="lib">
-	<mkdir dir="../../../${build.output.build.dir}/plugins/${plugin.name}/lib"/>
+	<mkdir dir="../../../${build.output.build.dir}/plugins/${plugin.name}_${build.version}/lib"/>
 
-	<copy todir="../../../${build.output.build.dir}/plugins/${plugin.name}/lib">
+	<copy todir="../../../${build.output.build.dir}/plugins/${plugin.name}_${build.version}/lib">
             <fileset dir="../../../lib">
                 <include name="${lib.cayenne}"/>
             </fileset>

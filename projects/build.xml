@@ -14,7 +14,8 @@
     <property file="${user.home}${file.separator}Library${file.separator}wobuild.properties"/>
     <property file="default.properties"/>
     <property file="${project.lib.dir}/lib.properties"/>
-
+    <property name="build.version.to.replace" value="1.0.6"/>
+    
 	
     <!-- ========================================== -->
     <!-- Print help.                                -->
@@ -36,18 +37,26 @@
         </echo>
     </target>
     
+    <!-- ========================================== -->
+    <!-- Build homepage.                            -->
+    <!-- ========================================== -->
+    <target name="load.version.file">
+	<loadfile property="build.version"
+            srcFile="buildserver.version"/>
+    </target>
     	
     <!-- ========================================== -->
     <!-- Print environment.                         -->
     <!-- ========================================== -->
-    <target name="print.environment">
+    <target name="print.environment" depends="load.version.file">
         <echo>
         ****************************************
         * java.home = ${java.home}
         * build.compiler = ${build.compiler}
         * ant.home = ${ant.home}
         * user.home = ${user.home}
-        *
+        * build.version = ${build.version}
+        * build.version.to.replace = ${build.version.to.replace}
         ****************************************
         </echo>
     </target>
@@ -84,7 +93,7 @@
     <!-- ========================================== -->
     <!-- Build all.                                 -->
     <!-- ========================================== -->
-    <target name="all" depends="prepare,homepage,woenvironment,woproject,wolips">
+    <target name="all" depends="print.environment,prepare,homepage,woenvironment,woproject,wolips">
     </target>
 
     <!-- ========================================== -->
@@ -106,7 +115,7 @@
     <!-- ========================================== -->
     <!-- Build buildserver.                         -->
     <!-- ========================================== -->
-    <target name="buildserver" depends="print.environment,build_migrate,dist,test">
+    <target name="buildserver" depends="build_migrate,dist,test">
     </target>
 
     <!-- ============================================= -->

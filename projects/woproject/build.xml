@@ -30,17 +30,16 @@
     <!-- Build copy.resources.                      -->
     <!-- ========================================== -->
     <target name="copy.resources">
-	<mkdir dir="../${build.output.build.dir}/woproject"/>
+	<mkdir dir="../${build.output.build.dir}/woproject_${build.version}"/>
 
-	<mkdir dir="../${build.output.build.dir}/woproject/examples"/>
-        <copy todir="../${build.output.build.dir}/woproject/examples">
+	<mkdir dir="../${build.output.build.dir}/woproject_${build.version}/examples"/>
+        <copy todir="../${build.output.build.dir}/woproject_${build.version}/examples">
             <fileset dir="tests/wo">
 	    </fileset>
         </copy>
 
-	<mkdir dir="../${build.output.build.dir}/woproject"/>
-	<mkdir dir="../${build.output.build.dir}/woproject/doc"/>
-        <copy todir="../${build.output.build.dir}/woproject/doc">
+	<mkdir dir="../${build.output.build.dir}/woproject_${build.version}/doc"/>
+        <copy todir="../${build.output.build.dir}/woproject_${build.version}/doc">
             <fileset dir="../${build.output.homepage.dir}/">
 	    </fileset>
         </copy>
@@ -61,7 +60,7 @@
     <!-- Build jar.                                 -->
     <!-- ========================================== -->
     <target name="jar">
-	<mkdir dir="../${build.output.build.dir}/woproject/lib"/>
+	<mkdir dir="../${build.output.build.dir}/woproject_${build.version}/lib"/>
         <patternset id="param.classes.patternset.refid">
                 <include name="**/org/objectstyle/woenvironment/**"/>
                 <include name="**/org/objectstyle/woproject/**"/>
@@ -70,7 +69,7 @@
             
 	<ant dir="." antfile="../${project.buildscripts.dir}/ant-style-project.xml" target="jar">
             <property name="param.classes.dir" value="../${build.output.java.dir}"/>
-            <property name="param.jar.file" value="../${build.output.build.dir}/woproject/lib/woproject.jar"/>
+            <property name="param.jar.file" value="../${build.output.build.dir}/woproject_${build.version}/lib/woproject.jar"/>
             <reference refid="param.classes.patternset.refid"/>
         </ant>
     </target>
@@ -79,9 +78,9 @@
     <!-- Build copy jars.                           -->
     <!-- ========================================== -->
     <target name="lib">
-	    <mkdir dir="../${build.output.build.dir}/woproject/lib"/>
+	    <mkdir dir="../${build.output.build.dir}/woproject_${build.version}/lib"/>
 
-	    <copy todir="../${build.output.build.dir}/woproject/lib">
+	    <copy todir="../${build.output.build.dir}/woproject_${build.version}/lib">
             <fileset dir="../lib">
                 <include name="${lib.cayenne}"/>
                 <include name="${lib.log4j}"/>
@@ -102,7 +101,7 @@
     	<property environment="env"/>
     	
     	<path id="classpath-tests-run">
-        	<fileset dir="../${build.output.build.dir}/woproject/lib">
+        	<fileset dir="../${build.output.build.dir}/woproject_${build.version}/lib">
             	<include name="*.jar"/>
         	</fileset>
 			
@@ -118,7 +117,7 @@
         </path>
         <path id="classpath-tests">
     		<path refid="classpath"/>
-    		<pathelement path="../${build.output.build.dir}/woproject/lib/woproject.jar"/>
+    		<pathelement path="../${build.output.build.dir}/woproject_${build.version}/lib/woproject.jar"/>
     	</path>
     	<mkdir dir="../${build.output.java.test.dir}"/>
     	<ant dir="." antfile="../${project.buildscripts.dir}/ant-style-project.xml" target="java.tests">
