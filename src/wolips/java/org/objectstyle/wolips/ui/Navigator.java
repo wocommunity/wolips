@@ -2,6 +2,8 @@ package org.objectstyle.wolips.ui;
 
 import org.eclipse.jdt.internal.ui.packageview.PackageExplorerPart;
 
+
+
 /**
  * @author uli
  *
