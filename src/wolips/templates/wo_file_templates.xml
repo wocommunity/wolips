@@ -193,7 +193,7 @@ public class DirectAction extends WODirectAction {
 	<target name="setProps">
 		<property file="build.properties"/>
 		<property file="${user.home}${file.separator}Library${file.separator}wobuild.properties"/>
-		<condition property="wo.properties.ckeck.failed">
+		<condition property="wo.properties.check.failed">
 			<not>
     			<and>
       				<isset property="wo.woroot"/>
@@ -201,7 +201,7 @@ public class DirectAction extends WODirectAction {
     			</and>
     		</not>
   		</condition>
-  		<fail message="Could not find ${user.home}${file.separator}Library${file.separator}wobuild.properties." if="wo.properties.ckeck.failed"/>
+  		<fail message="Could not find ${user.home}${file.separator}Library${file.separator}wobuild.properties." if="wo.properties.check.failed"/>
 		<property name="install.dir" value="${wo.wolocalroot}/Library/Webobjects/Applications"/>
 	</target>
 		
@@ -232,6 +232,7 @@ public class DirectAction extends WODirectAction {
    				<include name="**/*.eomodeld/"/>
        			<include name="**/*.wo/"/>
        			<include name="**/*.api"/>
+       			<include name="**/*.strings"/>
        			<exclude name="**/*.eomodeld~/"/>
        			<exclude name="**/*.woa/**"/>
        		</resources>
@@ -301,7 +302,7 @@ project.name = ${PROJECT_NAME}
 	<target name="setProps">
 		<property file="build.properties"/>
 		<property file="${user.home}${file.separator}Library${file.separator}wobuild.properties"/>
-		<condition property="wo.properties.ckeck.failed">
+		<condition property="wo.properties.check.failed">
 			<not>
     			<and>
       				<isset property="wo.woroot"/>
@@ -309,7 +310,7 @@ project.name = ${PROJECT_NAME}
     			</and>
     		</not>
   		</condition>
-  		<fail message="Could not find ${user.home}${file.separator}Library${file.separator}wobuild.properties." if="wo.properties.ckeck.failed"/>
+  		<fail message="Could not find ${user.home}${file.separator}Library${file.separator}wobuild.properties." if="wo.properties.check.failed"/>
 		<property name="install.dir" value="${wo.wolocalroot}/Library/Frameworks"/>
 	</target>
 
@@ -338,6 +339,7 @@ project.name = ${PROJECT_NAME}
        			<include name="**/*.eomodeld/"/>
        			<include name="**/*.wo/"/>
 				<include name="**/*.api"/>
+				<include name="**/*.strings"/>
 				<exclude name="**/*.eomodeld~/"/>
 				<exclude name="**/*.framework/**"/>
    			</resources>
