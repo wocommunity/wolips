@@ -119,8 +119,7 @@ public abstract class WizardNewWOResourcePage extends WizardNewFileCreationPage 
 					creationOperation);
 			//getContainer().run(false, false, creationOperation);
 		} catch (InvocationTargetException e) {
-			WorkbenchUtilitiesPlugin.handleException(getShell(), e.getTargetException(),
-					null);
+			WorkbenchUtilitiesPlugin.errorDialog(getShell(),"Error", "Error while creating resource", e.getTargetException());
 			return false;
 		} catch (InterruptedException e) {
 			// cancelling is disabled

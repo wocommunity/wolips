@@ -48,6 +48,7 @@
  *  
  */
 package org.objectstyle.wolips.projectbuild.builder;
+
 import java.util.Map;
 
 import org.eclipse.ant.core.AntRunner;
@@ -64,17 +65,20 @@ import org.objectstyle.wolips.datasets.adaptable.Project;
 import org.objectstyle.wolips.preferences.Preferences;
 import org.objectstyle.wolips.projectbuild.ProjectBuildPlugin;
 import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
+
 /**
  * @author uli
  */
 public class WOAntBuilder extends AbstractIncrementalProjectBuilder {
 	private static final int TOTAL_WORK_UNITS = 1;
+
 	/**
 	 * Constructor for WOBuilder.
 	 */
 	public WOAntBuilder() {
 		super();
 	}
+
 	/**
 	 * Runs the build with the ant runner.
 	 * 
@@ -116,11 +120,12 @@ public class WOAntBuilder extends AbstractIncrementalProjectBuilder {
 		 * monitor.beginTask( BuildMessages.getString("Build.Refresh.Title"),
 		 * WOAntBuilder.TOTAL_WORK_UNITS);
 		 */
-		//this.forgetLastBuiltState();
-		//getProject().refreshLocal(IProject.DEPTH_INFINITE, monitor);
+		// this.forgetLastBuiltState();
+		// getProject().refreshLocal(IProject.DEPTH_INFINITE, monitor);
 		monitor.done();
 		return null;
 	}
+
 	/**
 	 * Method execute.
 	 * 
@@ -130,13 +135,14 @@ public class WOAntBuilder extends AbstractIncrementalProjectBuilder {
 	 */
 	private void execute(IProgressMonitor monitor, String aBuildFile)
 			throws Exception {
-		//RunAnt runAnt = new RunAnt();
-		//if (projectNeedsClean())
-		//TODO:handle clean
-		Project project = (Project)this.getProject().getAdapter(Project.class);
+		// RunAnt runAnt = new RunAnt();
+		// if (projectNeedsClean())
+		// TODO:handle clean
+		Project project = (Project) this.getProject().getAdapter(Project.class);
 		project.setUpPatternsetFiles();
 		this.launchAntInExternalVM(getProject().getFile(aBuildFile), monitor);
 	}
+
 	/**
 	 * Method handleException.
 	 * 
@@ -158,6 +164,7 @@ public class WOAntBuilder extends AbstractIncrementalProjectBuilder {
 			aMarker = null;
 		}
 	}
+
 	private IMarker getBuildfileMarker() {
 		IMarker aMarker = null;
 		try {
@@ -169,6 +176,7 @@ public class WOAntBuilder extends AbstractIncrementalProjectBuilder {
 		}
 		return aMarker;
 	}
+
 	/**
 	 * Checks if the build file exists.
 	 * 
@@ -196,24 +204,28 @@ public class WOAntBuilder extends AbstractIncrementalProjectBuilder {
 		}
 		return false;
 	}
+
 	/**
 	 * @return String
 	 */
 	public String buildFile() {
 		return "build.xml";
 	}
+
 	/**
 	 * @return String
 	 */
 	public String defaultTarget() {
 		return null;
 	}
+
 	/**
 	 * @return String
 	 */
 	public String cleanTarget() {
 		return "clean";
 	}
+
 	/**
 	 * Method inExternalVM.
 	 * 
@@ -222,11 +234,12 @@ public class WOAntBuilder extends AbstractIncrementalProjectBuilder {
 	 */
 	private void launchAntInExternalVM(IFile buildFile, IProgressMonitor monitor) {
 		try {
-			LaunchAntInExternalVM.launchAntInExternalVM(buildFile, monitor, Preferences.getPREF_CAPTURE_ANT_OUTPUT(), null);
+			LaunchAntInExternalVM.launchAntInExternalVM(buildFile, monitor,
+					Preferences.getPREF_CAPTURE_ANT_OUTPUT(), null);
 		} catch (CoreException e) {
-			WorkbenchUtilitiesPlugin.handleException(Display.getCurrent()
-					.getActiveShell(), e, AntBuildMessages
-					.getString("Build.Exception"));
+			WorkbenchUtilitiesPlugin.errorDialog(Display.getCurrent()
+					.getActiveShell(), "WOLips", AntBuildMessages
+					.getString("Build.Exception"), e);
 			return;
 		}
 	}

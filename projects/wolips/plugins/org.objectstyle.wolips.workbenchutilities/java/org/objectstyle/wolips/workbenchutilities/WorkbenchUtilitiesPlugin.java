@@ -54,10 +54,12 @@
  *
  */
 package org.objectstyle.wolips.workbenchutilities;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -68,7 +70,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IEditorInput;
@@ -79,17 +80,22 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.objectstyle.wolips.commons.logging.ILogger;
 import org.objectstyle.wolips.commons.logging.PluginLogger;
+
 /**
  * The main plugin class to be used in the desktop.
  */
 public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 	private static final String PLUGIN_ID = "org.objectstyle.wolips.workbenchutilities";
-	//The shared instance.
+
+	// The shared instance.
 	private static WorkbenchUtilitiesPlugin plugin;
-	//Resource bundle.
+
+	// Resource bundle.
 	private ResourceBundle resourceBundle;
+
 	private ILogger pluginLogger = new PluginLogger(
 			WorkbenchUtilitiesPlugin.PLUGIN_ID, false);
+
 	/**
 	 * The constructor.
 	 */
@@ -103,12 +109,14 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 			this.resourceBundle = null;
 		}
 	}
+
 	/**
 	 * @return Returns the shared instance.
 	 */
 	public static WorkbenchUtilitiesPlugin getDefault() {
 		return plugin;
 	}
+
 	/**
 	 * @return Returns the string from the plugin's resource bundle, or 'key' if
 	 *         not found.
@@ -123,12 +131,14 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 			return key;
 		}
 	}
+
 	/**
 	 * @return Returns the plugin's resource bundle,
 	 */
 	public ResourceBundle getResourceBundle() {
 		return this.resourceBundle;
 	}
+
 	/**
 	 * Prints a Status.
 	 * 
@@ -138,6 +148,7 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 	public static void log(IStatus status) {
 		WorkbenchUtilitiesPlugin.getDefault().getLog().log(status);
 	}
+
 	/**
 	 * Prints a Throwable.
 	 * 
@@ -148,6 +159,7 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 				WorkbenchUtilitiesPlugin.PLUGIN_ID, IStatus.ERROR,
 				"Internal Error", e)); //$NON-NLS-1$
 	}
+
 	/**
 	 * Utility method with conventions
 	 * 
@@ -167,6 +179,7 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 		}
 		ErrorDialog.openError(shell, title, message, s);
 	}
+
 	/**
 	 * Utility method with conventions
 	 * 
@@ -194,6 +207,7 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 		}
 		ErrorDialog.openError(shell, title, message, status);
 	}
+
 	/**
 	 * Method projectISReferencedByProject.
 	 * 
@@ -206,7 +220,7 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 		IProject[] projects = null;
 		try {
 			if (!mother.isOpen() || !mother.isAccessible())
-				//return maybe;
+				// return maybe;
 				return false;
 			projects = mother.getReferencedProjects();
 		} catch (Exception anException) {
@@ -219,6 +233,7 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 		}
 		return false;
 	}
+
 	/**
 	 * @param project
 	 * @param name
@@ -257,11 +272,12 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 				.findResourcesInResourcesByNameAndExtensions(searchScope, name,
 						extensions);
 	}
+
 	/**
 	 * @param resources
 	 * @param name
 	 * @param extensions
-	 * @return
+	 * @return List of IResource
 	 */
 	public final static List findResourcesInResourcesByNameAndExtensions(
 			IResource[] resources, String name, String[] extensions) {
@@ -272,11 +288,12 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 							name, extensions));
 		return list;
 	}
+
 	/**
 	 * @param resource
 	 * @param name
 	 * @param extensions
-	 * @return
+	 * @return List of IResource
 	 */
 	public final static List findResourcesInResourceByNameAndExtensions(
 			IResource resource, String name, String[] extensions) {
@@ -299,6 +316,7 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 		}
 		return list;
 	}
+
 	private final static void findResourcesInResourceByNameAndExtensionsAndAddToArrayList(
 			IResource[] resources, String name, String[] extensions,
 			ArrayList list) {
@@ -326,6 +344,7 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 			}
 		}
 	}
+
 	/**
 	 * Method findFilesInResourceByName.
 	 * 
@@ -349,6 +368,7 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 			}
 		}
 	}
+
 	/**
 	 * Method findFilesInResourceByName.
 	 * 
@@ -368,6 +388,7 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 						memberResource, aFileName);
 		}
 	}
+
 	/**
 	 * Returns the ActiveEditor.
 	 * 
@@ -380,6 +401,7 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 		}
 		return null;
 	}
+
 	/**
 	 * Method getEditorInput.
 	 * 
@@ -392,6 +414,7 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 		}
 		return null;
 	}
+
 	/**
 	 * @return Returns the active page.
 	 */
@@ -399,18 +422,20 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 		return WorkbenchUtilitiesPlugin.getActiveWorkbenchWindow()
 				.getActivePage();
 	}
+
 	/**
 	 * @return Returns the active workbench shell.
 	 */
 	public final static Shell getActiveWorkbenchShell() {
-	  IWorkbenchWindow win = 
-	    WorkbenchUtilitiesPlugin.getActiveWorkbenchWindow();
-	  Shell shell = null;
-	  if (null != win) {
-	    shell = win.getShell();
-	  }
-      return shell;
+		IWorkbenchWindow win = WorkbenchUtilitiesPlugin
+				.getActiveWorkbenchWindow();
+		Shell shell = null;
+		if (null != win) {
+			shell = win.getShell();
+		}
+		return shell;
 	}
+
 	/**
 	 * @return Returns the the active workbench window.
 	 */
@@ -425,6 +450,7 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 	public final static IWorkspace getWorkspace() {
 		return ResourcesPlugin.getWorkspace();
 	}
+
 	/**
 	 * Method members.
 	 * 
@@ -440,6 +466,7 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 		}
 		return members;
 	}
+
 	/**
 	 * Method open.
 	 * 
@@ -452,6 +479,7 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 				WorkbenchUtilitiesPlugin.open((IFile) resource);
 		}
 	}
+
 	/**
 	 * Method open.
 	 * 
@@ -461,6 +489,7 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 	public final static void open(IFile file) {
 		WorkbenchUtilitiesPlugin.open(file, false, null);
 	}
+
 	/**
 	 * Method open.
 	 * 
@@ -498,42 +527,7 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 			}
 		}
 	}
-	/**
-	 * Method handleException.
-	 * 
-	 * If you don't provide a shell, the one from the active is used.
-	 * @param shell
-	 * @param target
-	 * @param message
-	 */
-	public static void handleException(Shell shell, Throwable target,
-			String message
-    ) {
-        ILogger logger = WorkbenchUtilitiesPlugin.getDefault().getPluginLogger();
 
-        if (message == null) {
-          message = target.getMessage();
-        }
-
-        logger.log(message, target);
-
-//        if(shell == null)
-//            shell = WorkbenchUtilitiesPlugin.getActiveWorkbenchShell();
-//
-//        if (shell == null) {
-//            logger.log("No active workbench shell found handling", target);
-//		} else {
-//    		String title = "Error";
-//    		if (target instanceof CoreException) {
-//    			IStatus status = ((CoreException) target).getStatus();
-//    			ErrorDialog.openError(shell, title, message, status);
-//    			//WOLipsLog.log(status);
-//    		} else {
-//    			MessageDialog.openError(shell, title, target.getMessage());
-//    			//WOLipsLog.log(target);
-//    		}
-//		}
-    }
 	/**
 	 * @return Returns the pluginLogger.
 	 */

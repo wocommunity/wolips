@@ -84,16 +84,16 @@ import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
  * comments go to Window>Preferences>Java>Code Generation.
  */
 public final class PBProjectUpdater {
-	//	local framework search for PB.project
+	// local framework search for PB.project
 	private static final String DefaultLocalFrameworkSearch = "$(NEXT_ROOT)$(LOCAL_LIBRARY_DIR)/Frameworks";
 
 	private static final String MARKER_ID = "org.objectstyle.wolips.datasets.pbproject.warning";
 
 	private boolean saveRequired = false;
 
-	//do not cache PB.projects see bug #693046
-	//private static Hashtable projectUpdater = new Hashtable();
-	//public static String PBProject = "PB.projectContainer"; moved to
+	// do not cache PB.projects see bug #693046
+	// private static Hashtable projectUpdater = new Hashtable();
+	// public static String PBProject = "PB.projectContainer"; moved to
 	// IWOLipsPluginConstants.PROJECT_FILE_NAME (mn)
 	private PBProject pbProject;
 
@@ -111,7 +111,7 @@ public final class PBProjectUpdater {
 		this.projectContainer = aProjectContainer;
 		this.removeProjectMarker();
 		this.getPBProject(this.projectContainer);
-		//projectContainer = aProjectContainer;
+		// projectContainer = aProjectContainer;
 	}
 
 	private final void removeProjectMarker() {
@@ -155,13 +155,12 @@ public final class PBProjectUpdater {
 			public Throwable throwable;
 
 			public void run() {
-				WorkbenchUtilitiesPlugin.handleException(new Shell(),
-						throwable,
+				WorkbenchUtilitiesPlugin.errorDialog(Display.getCurrent().getActiveShell(), "WOLips",
 						"An error occured while reading/saving the PB.project in project: "
-								+ projectContainer.getProject().getName());
+								+ projectContainer.getProject().getName(),
+						throwable);
 			}
 		}
-		;
 		RunnableExceptionHandler runnable = new RunnableExceptionHandler();
 		runnable.projectContainer = this.projectContainer;
 		runnable.throwable = throwable;
@@ -196,20 +195,20 @@ public final class PBProjectUpdater {
 		return updater;
 	}
 
-	//	/**
-	//	 * Method updatePBProject.
-	//	 * @throws CoreException
-	//	 */
-	//	public void updatePBProject() throws CoreException {
-	//		syncPBProjectWithProject();
-	//		if (projectContainer != null)
-	//			try {
-	//				PBProjectNotifications.postPBProjectDidUpgradeNotification(
-	//					projectContainer.getName());
-	//			} catch (Exception exception) {
-	//				WOLipsLog.log(exception);
-	//			}
-	//	}
+	// /**
+	// * Method updatePBProject.
+	// * @throws CoreException
+	// */
+	// public void updatePBProject() throws CoreException {
+	// syncPBProjectWithProject();
+	// if (projectContainer != null)
+	// try {
+	// PBProjectNotifications.postPBProjectDidUpgradeNotification(
+	// projectContainer.getName());
+	// } catch (Exception exception) {
+	// WOLipsLog.log(exception);
+	// }
+	// }
 	/**
 	 * On MacOSX the EOModeler converts the PB.project file to xml.
 	 * 
@@ -254,7 +253,7 @@ public final class PBProjectUpdater {
 					.getAdapter(Project.class);
 			this.pbProject = new PBProject(aFile, project.isFramework());
 			if (sync) {
-				//TODO: uli
+				// TODO: uli
 			}
 		} catch (Exception anException) {
 			this.handleException(anException);
@@ -303,7 +302,7 @@ public final class PBProjectUpdater {
 
 	/**
 	 * Method syncProjectName.
-	 *  
+	 * 
 	 */
 	public void syncProjectName() {
 		if (!this.projectContainer.getName().equals(
@@ -337,7 +336,8 @@ public final class PBProjectUpdater {
 					if (j < languages.length) {
 						language = languages[j];
 					}
-					actualResources = this.pbProject.getWoAppResources(language);
+					actualResources = this.pbProject
+							.getWoAppResources(language);
 					switch (kindOfChange) {
 					case IResourceDelta.ADDED:
 						this.pbProject.setWoAppResources(addResources(
@@ -357,7 +357,8 @@ public final class PBProjectUpdater {
 					if (j < languages.length) {
 						language = languages[j];
 					}
-					actualResources = this.pbProject.getWebServerResources(language);
+					actualResources = this.pbProject
+							.getWebServerResources(language);
 					switch (kindOfChange) {
 					case IResourceDelta.ADDED:
 						this.pbProject.setWebServerResources(addResources(
@@ -448,10 +449,12 @@ public final class PBProjectUpdater {
 			String parentExtension = resource.getParent().getFileExtension();
 			String parentName = resource.getParent().getName();
 			if ((language == null && parentExtension == null)
-					|| (language == null && !IWOLipsModel.EXT_LPROJ.equals(parentExtension))
+					|| (language == null && !IWOLipsModel.EXT_LPROJ
+							.equals(parentExtension))
 					|| (language != null && parentName.equals(language + "."
 							+ IWOLipsModel.EXT_LPROJ))) {
-				relativResourcePath = relativResourcePath(resource, projectFile, language);
+				relativResourcePath = relativResourcePath(resource,
+						projectFile, language);
 				if (relativResourcePath != null
 						&& !actualResources.contains(relativResourcePath)) {
 					this.saveRequired = true;
@@ -475,10 +478,12 @@ public final class PBProjectUpdater {
 			String parentExtension = resource.getParent().getFileExtension();
 			String parentName = resource.getParent().getName();
 			if ((language == null && parentExtension == null)
-					|| (language == null &&  !IWOLipsModel.EXT_LPROJ.equals(parentExtension))
+					|| (language == null && !IWOLipsModel.EXT_LPROJ
+							.equals(parentExtension))
 					|| (language != null && parentName.equals(language + "."
 							+ IWOLipsModel.EXT_LPROJ))) {
-				relativResourcePath = relativResourcePath(resource, projectFile, language);
+				relativResourcePath = relativResourcePath(resource,
+						projectFile, language);
 				if (relativResourcePath != null
 						&& actualResources.contains(relativResourcePath)) {
 					this.saveRequired = true;
@@ -496,7 +501,8 @@ public final class PBProjectUpdater {
 	 * @param projectFile
 	 * @return String
 	 */
-	private String relativResourcePath(IResource resource, IFile projectFile, String language) {
+	private String relativResourcePath(IResource resource, IFile projectFile,
+			String language) {
 		// determine relativ path to resource
 		String resourcePath;
 		if (projectFile.getParent().equals(resource.getParent())) {
@@ -518,8 +524,9 @@ public final class PBProjectUpdater {
 				resourcePath = "../" + resourcePath;
 			}
 		}
-		if(language != null) {
-			if(resourcePath.startsWith(language + "." + IWOLipsModel.EXT_LPROJ)) {
+		if (language != null) {
+			if (resourcePath
+					.startsWith(language + "." + IWOLipsModel.EXT_LPROJ)) {
 				resourcePath = resourcePath.substring(language.length() + 7);
 			}
 		}
@@ -527,7 +534,7 @@ public final class PBProjectUpdater {
 	}
 
 	/**
-	 *  
+	 * 
 	 */
 	public void addLocalFrameworkSectionToPBProject() {
 		try {
