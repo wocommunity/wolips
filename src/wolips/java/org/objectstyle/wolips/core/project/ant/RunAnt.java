@@ -75,10 +75,10 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.externaltools.internal.model.IExternalToolConstants;
 import org.eclipse.ui.externaltools.internal.model.ToolUtil;
+import org.objectstyle.wolips.core.plugin.AWOLips;
 import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
 import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
 import org.objectstyle.wolips.core.preferences.Preferences;
-import org.objectstyle.wolips.core.workbench.WorkbenchHelper;
 
 /**
  * @author uli
@@ -88,7 +88,7 @@ import org.objectstyle.wolips.core.workbench.WorkbenchHelper;
  * To enable and disable the creation of type comments go to
  * Window>Preferences>Java>Code Generation.
  */
-public class RunAnt {
+public class RunAnt extends AWOLips {
 
 	/**
 	 * Method asAnt.
@@ -151,7 +151,7 @@ public class RunAnt {
 			final ILaunchConfiguration finalConfig = config;
 			Display.getDefault().syncExec(new Runnable() {
 				public void run() {
-					RunAnt.launch(finalConfig, ILaunchManager.RUN_MODE);
+					new RunAnt().launch(finalConfig, ILaunchManager.RUN_MODE);
 				}
 			});
 		} finally {
@@ -179,11 +179,11 @@ public class RunAnt {
 	 * @param configuration the configuration to launch
 	 * @param mode launch mode - run or debug
 	 */
-	private static void launch(
+	private void launch(
 		final ILaunchConfiguration configuration,
 		final String mode) {
 		ProgressMonitorDialog dialog =
-			new ProgressMonitorDialog(WorkbenchHelper.getShell());
+			new ProgressMonitorDialog(this.getShell());
 		IRunnableWithProgress runnable = new IRunnableWithProgress() {
 			public void run(IProgressMonitor monitor)
 				throws InvocationTargetException, InterruptedException {
@@ -202,8 +202,8 @@ public class RunAnt {
 			if (targetException instanceof CoreException) {
 				t = targetException;
 			}
-			WorkbenchHelper.errorDialog(
-				WorkbenchHelper.getShell(),
+			this.errorDialog(
+				this.getShell(),
 				"Error",
 				"Exception occurred during launch",
 				t);
