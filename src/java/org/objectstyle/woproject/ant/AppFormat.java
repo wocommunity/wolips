@@ -136,16 +136,15 @@ public class AppFormat extends ProjectFormat {
 	protected String buildFrameworkPaths() {
 		StringBuffer buf = new StringBuffer();
 
-      
 		List frameworkSets = getApplicatonTask().getFrameworkSets();
 		Project project = task.getProject();
-		
+
 		// track included frameworks to avoid double entries
 		HashMap frameworkMap = new HashMap();
-		
+
 		int size = frameworkSets.size();
 		for (int i = 0; i < size; i++) {
-			
+
 			FrameworkSet fs = (FrameworkSet) frameworkSets.get(i);
 			String root = fs.getRootPrefix();
 			try {
@@ -154,12 +153,12 @@ public class AppFormat extends ProjectFormat {
 
 				for (int j = 0; j < dirs.length; j++) {
 					// see if it is already included
-					if(root.equals(frameworkMap.get(dirs[j]))) {
+					if (root.equals(frameworkMap.get(dirs[j]))) {
 						continue;
 					}
-					
+
 					frameworkMap.put(dirs[j], root);
-					
+
 					String[] jars = fs.findJars(project, dirs[j]);
 					if (jars == null || jars.length == 0) {
 						log(
@@ -170,7 +169,10 @@ public class AppFormat extends ProjectFormat {
 
 					int jsize = jars.length;
 					for (int k = 0; k < jsize; k++) {
-						
+						log(
+							root + ": Framework JAR " + jars[k],
+							Project.MSG_VERBOSE);
+
 						// using Windows line ending, since all templates have it anyway.
 						// Please report any problems with that on other platforms
 						buf.append(root).append(File.separatorChar).append(

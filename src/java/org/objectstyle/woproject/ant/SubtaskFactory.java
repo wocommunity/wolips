@@ -57,21 +57,102 @@
 package org.objectstyle.woproject.ant;
 
 import org.apache.tools.ant.Project;
-import org.apache.tools.ant.taskdefs.Copy;
+import org.apache.tools.ant.Task;
+import org.apache.tools.ant.taskdefs.*;
 
-public class WOCompCopy extends Copy {
+/** 
+ * Factory of standard ant tasks that are used as 
+ * subtasks in other parts of WOProject. This class
+ * customizes certain things of returned tasks, like logging
+ * levels, etc.
+ * 
+ * @author Andrei Adamchik
+ */
+public class SubtaskFactory extends Copy {
+	protected Task parent;
 
-	public WOCompCopy() {
-		super.mapperElement = new WOMapper(project);
+	public SubtaskFactory(Task parent) {
+		this.parent = parent;
 	}
 
-	/** Reduces log priority by one. */
-	public void log(String msg) {
-		super.log(msg, Project.MSG_INFO + 1);
+	/** 
+	 * Modifies log level to avoid log flood 
+	 * when using subtasks within a main task.
+	 */
+	public static int subtaskLogLevel(int level) {
+		if (level == Project.MSG_INFO) {
+			return Project.MSG_VERBOSE;
+		} else {
+			return level;
+		}
 	}
 
-	/** Reduces log priority by one. */
-	public void log(String msg, int msgLevel) {
-		super.log(msg, msgLevel + 1);
+	protected void initChildTask(Task t) {
+		t.setOwningTarget(parent.getOwningTarget());
+		t.setProject(parent.getProject());
+		t.setTaskName(parent.getTaskName());
+		t.setLocation(parent.getLocation());
+	}
+
+	/** 
+	 * Returns Copy task configured to copy WebObjects resources.
+	 */
+	public Copy getResourceCopy() {
+		ResourcesCopy task = new ResourcesCopy();
+		initChildTask(task);
+		return task;
+	}
+
+	/** 
+	 * Returns Jar task.
+	 */
+	public Jar getJar() {
+		WOJar task = new WOJar();
+		initChildTask(task);
+		return task;
+	}
+	
+	/** 
+	 * Returns Mkdir task.
+	 */
+	public Mkdir getMkdir() {
+		WOMkdir task = new WOMkdir();
+		initChildTask(task);
+		return task;
+	}
+
+	class ResourcesCopy extends Copy {
+
+		public ResourcesCopy() {
+			super.mapperElement = new WOMapper(super.project);
+		}
+
+		public void log(String msg) {
+			super.log(msg, subtaskLogLevel(Project.MSG_INFO));
+		}
+
+		public void log(String msg, int msgLevel) {
+			super.log(msg, subtaskLogLevel(msgLevel));
+		}
+	}
+
+	class WOJar extends Jar {
+		public void log(String msg) {
+			super.log(msg, subtaskLogLevel(Project.MSG_INFO));
+		}
+
+		public void log(String msg, int msgLevel) {
+			super.log(msg, subtaskLogLevel(msgLevel));
+		}
+	}
+
+	class WOMkdir extends Mkdir {
+		public void log(String msg) {
+			super.log(msg, subtaskLogLevel(Project.MSG_INFO));
+		}
+
+		public void log(String msg, int msgLevel) {
+			super.log(msg, subtaskLogLevel(msgLevel));
+		}
 	}
 }

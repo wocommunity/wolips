@@ -81,7 +81,7 @@ public class WOFramework extends WOTask {
     public void execute() throws BuildException {
         validateAttributes();
         
-        log("Installing " + name + " in " + destDir + ".");
+        log("Installing " + name + " in " + destDir);
         createDirectories();
 
         if (hasClasses()) {
@@ -104,9 +104,7 @@ public class WOFramework extends WOTask {
     }
 
     protected void copyLibs() throws BuildException {
-        Copy cp = new Copy();
-        initChildTask(cp);
-
+        Copy cp = subtaskFactory.getResourceCopy();
         cp.setTodir(new File(resourcesDir(), "Java"));
 
         Enumeration en = lib.elements();

@@ -55,7 +55,7 @@
  */
 package org.objectstyle.woproject.ant;
 
-import java.io.*;
+import java.io.File;
 import java.util.Enumeration;
 import java.util.Vector;
 
@@ -63,7 +63,6 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.taskdefs.*;
 import org.apache.tools.ant.types.FileSet;
-import org.apache.tools.ant.DirectoryScanner;
 
 /**
  * Common superclass for WOApplication and WOFramework that looks
@@ -78,6 +77,7 @@ public abstract class WOTask extends MatchingTask {
     protected String destDir;
     protected Vector resources = new Vector();
     protected Vector wsresources = new Vector();
+    protected SubtaskFactory subtaskFactory = new SubtaskFactory(this);
 
     public void setName(String name) {
         this.name = name;
@@ -141,9 +141,8 @@ public abstract class WOTask extends MatchingTask {
     }
 
     protected void createDirectories() throws BuildException {
-        Mkdir mkdir = new WOMkdir();
-        initChildTask(mkdir);
-
+    	Mkdir mkdir = subtaskFactory.getMkdir();
+ 
         File taskDir = taskDir();
 
         mkdir.setDir(taskDir);
@@ -175,18 +174,8 @@ public abstract class WOTask extends MatchingTask {
         return classes.size() > 0;
     }
 
-
-    public void initChildTask(Task t) {
-        t.setOwningTarget(this.getOwningTarget());
-        t.setProject(this.getProject());
-        t.setTaskName(this.getTaskName());
-        t.setLocation(this.getLocation());
-    }
-
     protected void jarClasses() throws BuildException {
-        Jar jar = new Jar();
-        initChildTask(jar);
-
+        Jar jar = subtaskFactory.getJar();
         File taskJar =
                 new File(resourcesDir(), "Java" + File.separator + name.toLowerCase() + ".jar");
         jar.setJarfile(taskJar);
@@ -202,8 +191,7 @@ public abstract class WOTask extends MatchingTask {
     }
 
     protected void copyResources() throws BuildException {
-        WOCompCopy cp = new WOCompCopy();
-        initChildTask(cp);
+        Copy cp = subtaskFactory.getResourceCopy();
 
         cp.setTodir(resourcesDir());
         Enumeration en = resources.elements();
@@ -214,9 +202,7 @@ public abstract class WOTask extends MatchingTask {
     }
 
     protected void copyWsresources() throws BuildException {
-        WOCompCopy cp = new WOCompCopy();
-        initChildTask(cp);
-
+        Copy cp = subtaskFactory.getResourceCopy();
         cp.setTodir(wsresourcesDir());
 
         Enumeration en = wsresources.elements();
