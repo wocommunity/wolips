@@ -13,13 +13,9 @@
     	<replace file="${basedir}/src/wolips/DEVELOPER_README.html" token="${WOLips.previous.version}" value="${WOLips.version}"/>
     	<replace file="${basedir}/src/wolips-feature/feature.properties" token="${WOLips.previous.version}" value="${WOLips.version}"/>
     	<replace file="${basedir}/src/wolips-feature/feature.xml" token="${WOLips.previous.version}" value="${WOLips.version}"/>
-    	<replace file="${basedir}/src/wolips-help/fragment.properties" token="${WOLips.previous.version}" value="${WOLips.version}"/>
     	<replace file="${basedir}/src/wolips-help/fragment.xml" token="${WOLips.previous.version}" value="${WOLips.version}"/>
-    	<replace file="${basedir}/src/wolips-launching/fragment.properties" token="${WOLips.previous.version}" value="${WOLips.version}"/>
     	<replace file="${basedir}/src/wolips-launching/fragment.xml" token="${WOLips.previous.version}" value="${WOLips.version}"/>
-    	<replace file="${basedir}/src/wolips-source/fragment.properties" token="${WOLips.previous.version}" value="${WOLips.version}"/>
     	<replace file="${basedir}/src/wolips-source/fragment.xml" token="${WOLips.previous.version}" value="${WOLips.version}"/>
-    	<replace file="${basedir}/src/wolips-support/fragment.properties" token="${WOLips.previous.version}" value="${WOLips.version}"/>
     	<replace file="${basedir}/src/wolips-support/fragment.xml" token="${WOLips.previous.version}" value="${WOLips.version}"/>
     	<replace file="${basedir}/src/wolips-targetbuilder/plugin.properties" token="${WOLips.previous.version}" value="${WOLips.version}"/>
     	<replace file="${basedir}/src/wolips-targetbuilder/plugin.xml" token="${WOLips.previous.version}" value="${WOLips.version}"/>
