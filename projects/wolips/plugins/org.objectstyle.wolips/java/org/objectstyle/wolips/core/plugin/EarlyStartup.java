@@ -118,7 +118,7 @@ public final class EarlyStartup {
 				new JavaElementChangeListener();
 			JavaCore.addElementChangedListener(
 				javaElementChangeListener,
-				ElementChangedEvent.PRE_AUTO_BUILD);
+				ElementChangedEvent.POST_CHANGE);
 		} catch (Exception anException) {
 			log.fatal(
 				EarlyStartup.build_user_home_properties_pde_info,
