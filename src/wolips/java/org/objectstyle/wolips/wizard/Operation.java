@@ -86,6 +86,9 @@ import org.objectstyle.wolips.io.FileStringScanner;
  */
 public class Operation {
 
+	/**
+	 * Imports file from the plugin to a project.
+	 */
 	protected void importFilesFromDirectory(String pluginRelativePath, IPath destPath, IProgressMonitor monitor, IOverwriteQuery aOverwriteQuery) throws InvocationTargetException, InterruptedException, CoreException {		
 		File file;
 		try {
@@ -103,27 +106,10 @@ public class Operation {
 		op.run(monitor);
 	}
 	
-	/*protected void renameNewWOComponentTo(String aString, String aFullyQualifiedComponentName, File aResourcesPath) throws IOException{
-		FileSystemStructureProvider aProvider = FileSystemStructureProvider.INSTANCE;
-		List aList = aProvider.getChildren(aResourcesPath);
-		ListIterator aListIterator = aList.listIterator();
-		while(aListIterator.hasNext()) {
-			Object aFile = aListIterator.next();
-			String aAbsolutPath = ((File)aFile).getAbsolutePath();
-			String aNewPath = FileStringScanner.replace(aAbsolutPath, "wocomponent", aString);
-			if(aNewPath != null) {
-				File aNewFile = new File(aNewPath);
-				((File)aFile).renameTo(aNewFile);
-				if(aNewFile.isDirectory()) {
-					this.renameNewWOComponentTo(aString, aFullyQualifiedComponentName, aNewFile);
-				}
-				else if(aNewPath.endsWith(".api"))
-						FileStringScanner.FileOpenReplaceWith(aNewPath, "wocomponenttemplate", aFullyQualifiedComponentName);
-			}
-			
-		}
-	}*/ 
-	
+	/**
+	 * Renames the directory WOComponent.wo and the related files to the given string.
+	 * The given IProject is uses.
+	 */
 	protected void renameNewWOComponentTo(IProject project, String aComponentName, String aFullyQualifiedComponentName, File aResourcesPath, IProgressMonitor monitor) throws CoreException, IOException {
 		IFolder resources = project.getFolder("Resources");
 		IFile aApiFile = resources.getFile("wocomponent.api");
