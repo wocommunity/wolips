@@ -2,7 +2,7 @@
 <feature
       id="org.objectstyle.wolips"
       label="%featureName"
-      version="0.9.3"
+      version="0.9.4"
       image="%image"
       provider-name="%providerName">
 
@@ -34,14 +34,14 @@
          id="org.objectstyle.wolips.core"
          download-size="0"
          install-size="0"
-         version="0.9.3">
+         version="0.9.4">
    </plugin>
 
    <plugin
          id="org.objectstyle.wolips.target"
          download-size="0"
          install-size="0"
-         version="0.9.3">
+         version="0.9.4">
    </plugin>
    
    
