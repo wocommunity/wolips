@@ -48,9 +48,11 @@
  *  
  */
 package org.objectstyle.wolips.profiling;
-import java.net.URL;
+
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.objectstyle.wolips.commons.logging.PluginLogger;
+import org.osgi.framework.BundleContext;
+
 /**
  * The main plugin class to be used in the desktop.
  * 
@@ -60,9 +62,11 @@ import org.objectstyle.wolips.commons.logging.PluginLogger;
 public class ProfilingPlugin extends AbstractUIPlugin {
 	//The plugin.
 	private static ProfilingPlugin plugin;
+
 	private static final String PLUGIN_ID = "org.objectstyle.wolips.profiling";
-	private PluginLogger pluginLogger = new PluginLogger(
-			ProfilingPlugin.PLUGIN_ID, false);
+
+	private PluginLogger pluginLogger;
+
 	/**
 	 * The constructor.
 	 * 
@@ -74,6 +78,7 @@ public class ProfilingPlugin extends AbstractUIPlugin {
 		super();
 		plugin = this;
 	}
+
 	/**
 	 * Returns the shared instance.
 	 * 
@@ -82,29 +87,31 @@ public class ProfilingPlugin extends AbstractUIPlugin {
 	public static ProfilingPlugin getDefault() {
 		return plugin;
 	}
-	/**
-	 * Method baseURL.
-	 * 
-	 * @return URL
-	 */
-	public static URL baseURL() {
-		return ProfilingPlugin.getDefault().getDescriptor().getInstallURL();
-	}
-	/**
-	 * Returns the PluginID.
-	 * 
-	 * @return
-	 */
-	public static String getPluginId() {
-		if (plugin != null) {
-			return getDefault().getDescriptor().getUniqueIdentifier();
-		} else
-			return ProfilingPlugin.PLUGIN_ID;
-	}
+
 	/**
 	 * @return Returns the pluginLogger.
 	 */
 	public PluginLogger getPluginLogger() {
 		return pluginLogger;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
+	 */
+	public void start(BundleContext context) throws Exception {
+		super.start(context);
+		pluginLogger = new PluginLogger(ProfilingPlugin.PLUGIN_ID, false);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
+	 */
+	public void stop(BundleContext context) throws Exception {
+		super.stop(context);
+		this.pluginLogger = null;
 	}
 }
