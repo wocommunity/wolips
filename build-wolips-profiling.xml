@@ -15,18 +15,21 @@
             </fileset>
             <fileset dir="lib">
                 <include name="*.jar"/>
-	        <include name="eclipse/**/*.jar"/>
-		<include name="jmechanic/**/*.jar"/>
+	            <include name="eclipse/**/*.jar"/>
+		        <include name="jmechanic/**/*.jar"/>
             </fileset>
-	    <fileset dir="${wolips.dist}">
-			<include name="**/wolips.jar"/>
-	    </fileset>
+	        <fileset dir="${wolips.dist}">
+		    	<include name="**/wolips.jar"/>
+	        </fileset>
+	        <fileset dir="${wolips.launching.dist}">
+		    	<include name="**/wolips-launching.jar"/>
+	        </fileset>
             <fileset dir="${wo.woroot}/Library/Frameworks">
                 <include name="JavaFoundation.framework/Resources/Java/*.jar"/>
             </fileset>
-             <!-- Depends on WOProject core. -->
+            <!-- Depends on WOProject core. -->
             <pathelement path="${build}/main"/>
-        </path>
+            </path>
     </target>
 
     <target name="java" depends="prepare" if="wolips.build.support">
