@@ -53,62 +53,46 @@
  * <http://objectstyle.org/>.
  *
  */
-
 package org.objectstyle.woproject.ant;
 
-import java.io.File;
-
-import org.objectstyle.cayenne.gen.AntClassGenerator;
-import org.objectstyle.cayenne.gen.DefaultClassGenerator;
-import org.objectstyle.cayenne.map.DataMap;
-import org.objectstyle.cayenne.tools.CayenneGenerator;
+import org.objectstyle.cayenne.wocompat.EOModelHelper;
 
 /**
-  * Ant task to generate EOEnterpriseObjects from EOModel. 
-  * For detailed instructions go to the  
-  * <a href="../../../../../ant/wogen.html">manual page</a>. 
-  * 
-  * @ant.task category="packaging"
-  * @author Andrei Adamchik
-  */
-public class WOGenerator extends CayenneGenerator {
-    public static final String SUPERCLASS_TEMPLATE = "wogen/superclass.vm";
-    public static final String SUBCLASS_TEMPLATE = "wogen/subclass.vm";
-    public static final String SINGLE_CLASS_TEMPLATE = "wogen/singleclass.vm";
+ * Special wo-friendly subclass of Cayenne EOModelProcessor.
+ * 
+ * @author Andrei Adamchik
+ */
+public class EOModelProcessor extends org.objectstyle.cayenne.wocompat.EOModelProcessor {
 
     /**
-     * Wrapper of the superclass <code>setMap</code>
-     * method to provide WebObjects-friendly name. 
+     * Constructor for EOModelProcessor.
      */
-    public void setModel(File model) {
-        super.setMap(model);
+    public EOModelProcessor() {
+        super();
     }
 
-    /** 
-     * Overrides superclass implementation to create DataMap
-     * from EOModel instead of Cayenne DataMap XML file. 
+    /**
+     * @see org.objectstyle.cayenne.wocompat.EOModelProcessor#makeHelper(String)
      */
-    protected DataMap loadDataMap() throws Exception {
-        return new EOModelProcessor().loadEOModel(map.getCanonicalPath());
+    protected EOModelHelper makeHelper(String arg0) throws Exception {
+        return new WOFriendlyHelper(arg0);
     }
 
-    protected DefaultClassGenerator createGenerator() {
-        WOAntClassGenerator gen = new WOAntClassGenerator();
-        gen.setParentTask(this);
-        return gen;
-    }
+    class WOFriendlyHelper extends EOModelHelper {
 
-    final class WOAntClassGenerator extends AntClassGenerator {
-        protected String defaultSingleClassTemplate() {
-            return WOGenerator.SINGLE_CLASS_TEMPLATE;
+        public WOFriendlyHelper(String path) throws Exception {
+            super(path);
         }
 
-        protected String defaultSubclassTemplate() {
-            return WOGenerator.SUBCLASS_TEMPLATE;
-        }
-
-        protected String defaultSuperclassTemplate() {
-            return WOGenerator.SUPERCLASS_TEMPLATE;
+        /**
+         * Returns WO common Java types.
+         */
+        public String javaTypeForEOModelerType(String type) {
+            if (type.equals("NSCalendarDate")) {
+                return "com.webobjects.foundation.NSTimestamp";
+            } else {
+                return super.javaTypeForEOModelerType(type);
+            }
         }
     }
 }
