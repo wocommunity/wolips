@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin
-   id="org.objectstyle.woproject.wolips"
+   id="org.objectstyle.wolips"
    name="WOLips Plug-in"
    version="1.0.0"
    provider-name="objectstyle.org parts Assense Software Solutions GmbH"
-   class="org.objectstyle.woproject.wolips.WOLipsPlugin">
+   class="org.objectstyle.wolips.WOLipsPlugin">
 
    <runtime>
       <library name="lib/woproject-wolips.jar">
@@ -18,6 +18,8 @@
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.apache.ant"/>
       <import plugin="org.eclipse.ant.core"/>
+      <import plugin="org.eclipse.jdt.core"/>
+      <import plugin="org.eclipse.jdt.ui"/>
    </requires>
 
    <!-- help -->
@@ -32,49 +34,32 @@
 	<extension 
 		point="org.eclipse.ui.newWizards">
 		<category
-	   		id = "org.objectstyle.woproject.wolips.projects"
+	   		id = "org.objectstyle.wolips.wizard"
 	   		name="%WOLips.categoryName">
 		</category>
-
-		<wizard 
-			id="org.objectstyle.woproject.wolips.projects.woframework.WOFrameworkProjectCreationWizard"
-			name="%WOFrameworkProjectCreationWizard.title"
-			class="org.objectstyle.woproject.wolips.projects.woframework.WOFrameworkProjectCreationWizard"
-			category="org.objectstyle.woproject.wolips.projects"
+    	
+    	<wizard 
+			id="org.objectstyle.wolips.wizard.NewWOFwProjectCreationWizard"
+			name="%WOFwProjectCreationWizard.title"
+			class="org.objectstyle.wolips.wizard.NewWOFwProjectCreationWizard"
+			category="org.objectstyle.wolips.wizard"
 			project="true"
 			finalPerspective="org.eclipse.jdt.ui.JavaPerspective"
-			icon="icons/full/ctool16/newjprjex_wiz.gif"
-			banner="icons/full/wizban/newjprjex_wiz.gif">
-			<description>%WOFrameworkProjectCreationWizard.description</description>
-	    	<projectsetup
-        		pagetitle="%WOFrameworkProjectCreationWizard.pagetitle"
-        		pagedescription="%WOFrameworkProjectCreationWizard.pagedescription"
-         		label="%WOFrameworkProjectCreationWizard.label"
-        		name="WOFramework">
-           		<nature id="org.eclipse.jdt.core.javanature"/>
-           		<import dest="" src="templates/woframework"/>
-        	</projectsetup>
-      	</wizard>
-      	
-      	<wizard 
-			id="org.objectstyle.woproject.wolips.projects.woapplication.WOApplicationProjectCreationWizard"
-			name="%WOApplicationProjectCreationWizard.title"
-			class="org.objectstyle.woproject.wolips.projects.woapplication.WOApplicationProjectCreationWizard"
-			category="org.objectstyle.woproject.wolips.projects"
+			icon="icons/full/ctool16/newjprjex_wiz.gif">
+			<description>%WOFwProjectCreationWizard.description</description>
+    	</wizard>
+  
+    	<wizard 
+			id="org.objectstyle.wolips.wizard.NewWOAppProjectCreationWizard"
+			name="%WOAppProjectCreationWizard.title"
+			class="org.objectstyle.wolips.wizard.NewWOAppProjectCreationWizard"
+			category="org.objectstyle.wolips.wizard"
 			project="true"
 			finalPerspective="org.eclipse.jdt.ui.JavaPerspective"
-			icon="icons/full/ctool16/newjprjex_wiz.gif"
-			banner="icons/full/wizban/newjprjex_wiz.gif">
-			<description>%WOApplicationProjectCreationWizard.description</description>
-	    	<projectsetup
-        		pagetitle="%WOApplicationProjectCreationWizard.pagetitle"
-        		pagedescription="%WOApplicationProjectCreationWizard.pagedescription"
-         		label="%WOApplicationProjectCreationWizard.label"
-        		name="WOApplication">
-           		<nature id="org.eclipse.jdt.core.javanature"/>
-           		<import dest="" src="templates/woapplication"/>
-        	</projectsetup>
-      	</wizard>	
+			icon="icons/full/ctool16/newjprjex_wiz.gif">
+			<description>%WOAppProjectCreationWizard.description</description>
+    	</wizard>
+ 
 	</extension>  
 
 	<!-- ant -->
@@ -107,5 +92,72 @@
          	library="lib/woproject.jar">
       	</antTask>
    	</extension>
+
+<!-- =================================================================================== -->
+<!-- Extension: WOFramework Builder                                                      -->
+<!-- =================================================================================== -->
+
+<extension 
+	point="org.eclipse.core.resources.builders" 
+	id="woframeworkbuilder"
+	name="%WOFrameworkBuilderName">
+	<builder>
+		<run class="org.objectstyle.wolips.builder.WOFrameworkBuilder">
+		</run>
+	</builder>
+</extension>
+
+<!-- =================================================================================== -->
+<!-- Extension: WOApplication Builder                                                      -->
+<!-- =================================================================================== -->
+
+<extension 
+	point="org.eclipse.core.resources.builders" 
+	id="woapplicationbuilder"
+	name="%WOApplicationBuilderName">
+	<builder>
+		<run class="org.objectstyle.wolips.builder.WOApplicationBuilder">
+		</run>
+	</builder>
+</extension>
+
+<!-- project actions -->
+<extension
+    point="org.eclipse.ui.popupMenus">
+    <objectContribution
+        objectClass="org.eclipse.core.resources.IProject"
+        adaptable="true">
+        <filter
+            name="nature"
+            value="org.eclipse.jdt.core.javanature">
+        </filter>
+        <menu
+            label="&amp;WOLips"
+            path="additions"
+            id="org.objectstyle.wolips">
+            <separator
+                name="wobuilder">
+            </separator>
+        </menu>
+        <action
+            label="%WOBuilder.Remove"
+            class="org.objectstyle.wolips.actions.WOBuilderAction"
+            menubarPath="org.objectstyle.wolips/wobuilder"
+            id="%WOBuilder.Remove.ID">
+        </action>
+        <action
+            label="%WOApplicationBuilder.Set"
+            class="org.objectstyle.wolips.actions.WOBuilderAction"
+            menubarPath="org.objectstyle.wolips/wobuilder"
+            id="%WOApplicationBuilder.Set.ID">
+        </action>
+        <action
+            label="%WOFrameworkBuilder.Set"
+            class="org.objectstyle.wolips.actions.WOBuilderAction"
+            menubarPath="org.objectstyle.wolips/wobuilder"
+            id="%WOFrameworkBuilder.Set.ID">
+        </action>
+	</objectContribution>
+</extension>
 
 </plugin>
