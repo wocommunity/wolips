@@ -122,7 +122,7 @@ public class WOClassPathContainerPage
 		if (roots != null)
 			for (int i = 0; i < roots.length; i++) {
 				WOClasspathContainerEntry[] entries =
-					((WOClasspathContainerRoot) roots[i]).getEntries();
+					roots[i].getEntries();
 				if (entries != null)
 					for (int j = 0; j < entries.length; j++) {
 						if(entries[j].isChecked())
