@@ -13,15 +13,12 @@
     <!-- ========================================== -->
     <target name="java">
        <path id="classpath">
-            <fileset dir="${ant.home}/lib">
-                <include name="ant.jar"/>
-            </fileset>
             <fileset dir="../../lib">
                 <include name="**/*.jar"/>
-	    </fileset>
+	        </fileset>
             <fileset dir="../../../lib">
                 <include name="**/*.jar"/>
-	    </fileset>
+	        </fileset>
             <fileset dir="${wo.dir.library.frameworks}">
             	<include name="JavaEOAccess.framework/Resources/Java/*.jar"/>
             	<include name="JavaEOControl.framework/Resources/Java/*.jar"/>
@@ -31,10 +28,10 @@
             </fileset>
     	    <pathelement path="../../../${build.output.java.dir}"/>
         </path>
-	<ant dir="." antfile="../../../${project.buildscripts.dir}/plugin-project.xml" target="java">
+	    <ant dir="." antfile="../../../${project.buildscripts.dir}/plugin-project.xml" target="java">
             <property name="param.plugin.dir" value="."/>
             <property name="param.java.dest.dir" value="../../../${build.output.java.dir}"/>
-            <reference refid="classpath" torefid="classpath"/>
+        <reference refid="classpath" torefid="classpath"/>
 	</ant>
     </target>
 
