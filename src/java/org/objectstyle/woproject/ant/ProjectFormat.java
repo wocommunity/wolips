@@ -161,7 +161,7 @@ public abstract class ProjectFormat {
 	 * API doesn't allow InputStreams for the source file.</i></p>
 	 *  
 	 * @throws IOException
-	 * Returns true when a file is copied. 
+	 * Returns true when a .sh file is copied. 
 	 */
 	public boolean copyFile(
 		InputStream src,
@@ -169,11 +169,17 @@ public abstract class ProjectFormat {
 		FilterSetCollection filters)
 		throws IOException {
 
-		if (destFile.exists() && destFile.isFile()) {
+		if (destFile.exists()
+			&& destFile.isFile()
+			&& destFile.toString().endsWith(".sh")) {
 			//these files only need an update when a new Version of WO is installed.
 			//A clean in that case is better.
 			//destFile.delete();
+			src.close();
 			return false;
+		}
+		if (destFile.exists() && destFile.isFile()) {
+			destFile.delete();
 		}
 
 		// ensure that parent dir of dest file exists!
@@ -216,7 +222,7 @@ public abstract class ProjectFormat {
 			src.close();
 			out.close();
 		}
-		return true;
+		return destFile.toString().endsWith(".sh");
 	}
 
 	/** 
