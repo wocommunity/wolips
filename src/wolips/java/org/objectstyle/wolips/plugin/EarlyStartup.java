@@ -122,30 +122,31 @@ public class EarlyStartup {
 		if (!Preferences
 			.getBoolean(
 				IWOLipsPluginConstants
-					.PREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH))
+					.PREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH)
+			&& !Preferences
+				.getString(
+					IWOLipsPluginConstants
+						.PREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH)
+				.equals(""))
 			return;
-		URL relativeBuildFile = null;
-		URL buildFile = null;
-		IProgressMonitor monitor = null;
-		try {
-			relativeBuildFile =
-				new URL(
-					WOLipsPlugin.baseURL(),
-					IWOLipsPluginConstants.build_user_home_properties);
-			buildFile = Platform.asLocalURL(relativeBuildFile);
-			monitor = new NullProgressMonitor();
-			RunAnt.asAnt(buildFile.getFile().toString(), monitor, null);
-			Preferences.setBoolean(
-				IWOLipsPluginConstants
-					.PREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH,
-				false);
-		} finally {
-			relativeBuildFile = null;
-			buildFile = null;
-			monitor = null;
-		}
-	}
-	/**
+			URL relativeBuildFile = null;
+			URL buildFile = null;
+			IProgressMonitor monitor = null;
+			try {
+				relativeBuildFile =
+					new URL(
+						WOLipsPlugin.baseURL(),
+						IWOLipsPluginConstants.build_user_home_properties);
+					buildFile = Platform.asLocalURL(relativeBuildFile);
+					monitor = new NullProgressMonitor();
+					RunAnt.asAnt(buildFile.getFile().toString(), monitor, null);
+					Preferences.setBoolean(
+						IWOLipsPluginConstants
+							.PREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH,
+						false);
+					} finally {
+				relativeBuildFile = null; buildFile = null; monitor = null; }
+	} /**
 	 * Method validateMandatoryAttributes.
 	 */
 	private static void validateMandatoryAttributes() {
@@ -155,9 +156,8 @@ public class EarlyStartup {
 					Environment.NEXT_ROOT,
 					new Path(Environment.nextRoot()),
 					null);
-			} catch (JavaModelException e) {
-				WOLipsLog.log(e);
-			}
+					} catch (JavaModelException e) {
+				WOLipsLog.log(e); }
 		}
 	}
 }
