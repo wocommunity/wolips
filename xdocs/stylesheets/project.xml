@@ -25,6 +25,7 @@
 
     <menu name="Developer">
         <item name="CVS" href="http://sourceforge.net/cvs/?group_id=50507"/>
+        <item name="Mailing Lists"  href="http://objectstyle.org/woproject/lists.html"/>
     </menu>
     
     <menu name="Other">
