@@ -34,6 +34,7 @@
 		</subsection>
 		<subsection name="Update">
 			<p>Please reset the WOLips perspective after an update.</p>
+			<p>Replace "${user.home}/wobuild.properties" with "${user.home}/Library/wobuild.properties" in your build.xml files.</p>
 		</subsection>
 		<subsection name="How to proceed">
 			<p>Launch Eclipse</p>
