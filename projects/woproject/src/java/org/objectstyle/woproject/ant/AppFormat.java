@@ -166,7 +166,7 @@ public class AppFormat extends ProjectFormat {
 			fs.setDir(getApplicatonTask().contentsDir());
 			include = fs.createInclude();
 			include.setName("**/Resources/Java/**/*.jar");
-
+			include.setName("**/Resources/Java/**/*.zip");
 			ds = fs.getDirectoryScanner(task.getProject());
 			files = ds.getIncludedFiles();
 			buf = new StringBuffer();
