@@ -65,8 +65,8 @@
       <shortcut
             label="WOApplication (profiled)"
             icon="icons/profiling/WOLips-profiling.gif"
-            class="org.objectstyle.wolips.profiling.ProfiledWOJavaApplicationLaunchShortcut"
             modes="run, debug"
+            class="org.objectstyle.wolips.profiling.ProfiledWOJavaApplicationLaunchShortcut"
             id="org.objectstyle.wolips.profiling.ProfiledWOJavaApplicationLaunchShortcut">
          <perspective
                id="org.eclipse.jdt.ui.JavaPerspective">

@@ -70,8 +70,8 @@
       <shortcut
             label="WOApplication"
             icon="icons/launching/WOLips-launching.gif"
-            modes="run, debug"
             class="org.objectstyle.wolips.launching.WOJavaApplicationLaunchShortcut"
+            modes="run, debug"
             id="org.objectstyle.wolips.launching.WOJavaApplicationLaunchShortcut">
          <perspective
                id="org.eclipse.jdt.ui.JavaPerspective">
