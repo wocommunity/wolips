@@ -18,6 +18,7 @@
             <fileset dir="${eclipse.home}/plugins">
                 <include name="**/*.jar"/>
                 <exclude name="**/org.objectstyle.*/**"/>
+		<exclude name="**/org.eclipse.core.runtime/**"/>
             </fileset>
         </path>
 
@@ -55,6 +56,7 @@
             <include name="about.properties"/>
             <include name="plugin.properties"/>
             <include name="scripts/test.properties"/>
+            <include name="META-INF/MANIFEST.MF"/>
         </replace>    
     </target>
 
@@ -98,7 +100,7 @@
     <!-- ============================================= -->
     <target name="jar.from.project">
 	    <mkdir dir="${param.build.output.build.dir}/plugins/${param.plugin.name}_${build.version}/lib"/>
-	    <jar jarfile="${param.build.output.build.dir}/plugins/${param.plugin.name}_${build.version}/lib/${param.jar.file}">
+	    <jar jarfile="${param.build.output.build.dir}/plugins/${param.plugin.name}_${build.version}/lib/${param.jar.file}" compress="false">
             <fileset dir="${param.classes.dir}">
 		        <patternset refid="param.classes.patternset.refid"/>
 	        </fileset>
@@ -124,10 +126,10 @@
     <!-- param.build.dist.build.dir the dist directory -->
     <!-- ============================================= -->
     <target name="dist">
-        <jar jarfile="${param.build.dist.build.dir}/plugins/${param.plugin.name}_${build.version}.jar">
+        <zip zipfile="${param.build.dist.build.dir}/plugins/${param.plugin.name}_${build.version}.jar" compress="true">
      	    <fileset dir="${param.build.output.build.dir}/plugins/${param.plugin.name}_${build.version}">
      	    </fileset>
-        </jar>    
+        </zip>    
     </target>
 
 </project>
