@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="Cayenne" href="http://objectstyle.org/cayenne/">
+
+    <title>Cayenne</title>
+    <author>Andrei Adamchik</author>
+    
+    <spacer href="/images/spacer.gif"/>
+    <logo href="/images/logo.jpg"/>
+    <oslogo href="/images/os_logo.gif"/>
+    <css href="/images/objectstyle.css"/>
+    
+    <menu name="About">
+        <item name="Overview"       href="/index.html"/>
+        <item name="Download"       href="/download.html"/>
+        <item name="Contributors"   href="/contributors.html"/>
+        <item name="License"        href="/LICENSE"/>
+    </menu>
+
+
+    <menu name="Documentation">
+        <item name="Ant Tasks"         href="/ant/index.html"/>
+        <item name="Javadoc API"        href="/api/index.html"/>
+    </menu>
+
+
+    <menu name="Developer">
+        <item name="CVS"  href="http://sourceforge.net/cvs/?group_id=50507"/>
+    </menu>
+    
+    <menu name="Other">
+        <item name="Search"         href="http://objectstyle.org/cgi-bin/htsearch"/>
+    </menu>
+
+</project>

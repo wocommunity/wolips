@@ -26,6 +26,7 @@
         </fileset>
     </path>
     
+    
     <!-- ============================================= -->
     <!-- Derived Properties. These properties are      -->
     <!-- derived from other properties. You probably   -->
@@ -62,7 +63,7 @@
     <!-- ============================================= -->
     <!-- Creates WOProject distribution.               -->
     <!-- ============================================= -->
-    <target name="dist" depends="prepare,java,doc">
+    <target name="dist" depends="prepare,java,doc,api">
          <mkdir dir="${dist}/src"/>
          <copy todir="${dist}/src">
              <fileset dir="src"/>
@@ -77,6 +78,7 @@
               zipfile="${dist.base}/${project.name}-src-${project.version}.tar.gz"/>  
         <delete file="${dist.base}/${project.name}-src-${project.version}.tar"/>
     </target>
+    
 
 
     <!-- ============================================= -->
@@ -122,10 +124,48 @@
     </target>
 
 
+
+    <!-- ========================================== -->
+    <!-- Builds Cayenne documenatation.             -->
+    <!-- ========================================== -->
+    <target name="doc" depends="prepare">
+        <!-- copy all licenses inclusing ours -->
+        <copy todir="${dist}/doc">
+            <fileset dir="doc">
+               <include name="LICENSE*"/>
+            </fileset>
+        </copy>
+
+        <taskdef name="anakia" classname="org.apache.velocity.anakia.AnakiaTask">
+            <classpath refid="classpath"/>
+        </taskdef>
+        
+        <!-- Build site -->
+        <anakia basedir="xdocs" destdir="${dist}/doc"
+             extension=".html" style="woproject.vsl"
+             projectFile="stylesheets/project.xml"
+             excludes="**/stylesheets/**"
+             includes="**/*.xml"
+             lastModifiedCheck="true"
+             templatePath="xdocs/stylesheets">
+        </anakia>
+
+        <!-- copy images -->
+        <copy todir="${dist}/doc/images" filtering="no">
+            <fileset dir="xdocs/images">
+                <include name="**/*.gif"/>
+                <include name="**/*.jpeg"/>
+                <include name="**/*.jpg"/>
+                <include name="**/*.css"/>
+            </fileset>
+        </copy>
+    </target>
+
+
     <!-- ========================================== -->
     <!-- Builds API documenatation.                 -->
     <!-- ========================================== -->
-    <target name="doc" depends="prepare">
+    <target name="api" depends="prepare">
         <copy todir="${dist}/doc">
             <fileset dir="doc">
                 <include name="**/*.html"/>

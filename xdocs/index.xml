@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<document>
+    <title>Overview</title>
+
+    <properties>
+        <author>Andrei Adamchik</author>
+    </properties>
+
+    <body>        
+        <!-- Welcome section -->
+        <section name="Welcome to WOProject">
+        <p>Welcome to WOProject project page.</p>
+ 		</section>
+    </body>
+</document>
