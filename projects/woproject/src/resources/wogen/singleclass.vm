@@ -8,6 +8,7 @@ package ${classGen.packageName};
 
 import com.webobjects.foundation.*;
 import com.webobjects.eocontrol.*;
+import com.webobjects.eoaccess.*;
 import java.util.*;
 
 
@@ -17,6 +18,20 @@ public class ${classGen.className} extends EOGenericRecord {
     public ${classGen.className}() {
         super();
     }
+
+## EOFetchSpecifications
+#foreach( $query in ${classGen.Entity.EOQueries} )
+    public static NSArray objectsWith${classGen.capitalized(${query.EOName})}(EOEditingContext context#foreach( $bind in ${query.BindingNames} ), ${classGen.formatJavaType($query.bindingClass($bind))} $bind#end) {
+        NSMutableDictionary bindings = new NSMutableDictionary();
+#foreach( $bind in ${query.BindingNames} )
+        if($bind != null) {
+            bindings.setObjectForKey(${bind}, "${bind}");
+        }
+#end
+        return EOUtilities.objectsWithFetchSpecificationAndBindings(context, "${classGen.Entity.Name}", "${query.EOName}", bindings);
+    }
+    
+#end
     
 ## Create attribute set/get methods
 #foreach( $attr in ${classGen.Entity.Attributes} )
