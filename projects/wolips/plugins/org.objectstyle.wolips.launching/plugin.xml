@@ -27,6 +27,7 @@
       <import plugin="org.objectstyle.wolips.datasets"/>
       <import plugin="org.objectstyle.wolips.commons"/>
       <import plugin="org.objectstyle.wolips.preferences"/>
+      <import plugin="org.objectstyle.wolips.workbenchutilities"/>
    </requires>
 
 
@@ -72,7 +73,7 @@
          point="org.eclipse.jdt.launching.classpathProviders">
       <classpathProvider
             class="org.objectstyle.wolips.launching.WORuntimeClasspathProvider"
-            id="org.objectstyle.wolips.launching.WORuntimeClasspath">
+            id="org.objectstyle.wolips.launching.WORuntimeClasspathProvider">
       </classpathProvider>
    </extension>
    <extension
@@ -80,7 +81,7 @@
       <runtimeClasspathEntryResolver
             container="org.objectstyle.wolips.WO_CLASSPATH"
             class="org.objectstyle.wolips.launching.WORuntimeClasspathResolver"
-            id="org.objectstyle.wolips.launching.WORuntimeClasspathProvider">
+            id="org.objectstyle.wolips.launching.WORuntimeClasspathResolver">
       </runtimeClasspathEntryResolver>
    </extension>
 <!-- =================================================================================== -->

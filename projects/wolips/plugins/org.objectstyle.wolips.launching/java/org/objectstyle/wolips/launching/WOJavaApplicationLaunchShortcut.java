@@ -56,18 +56,49 @@
 
 package org.objectstyle.wolips.launching;
 
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
+import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
+import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.internal.debug.ui.launcher.JavaApplicationLaunchShortcut;
+import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
+
 /**
  * @author uli
  */
-public class WOJavaApplicationLaunchShortcut extends JavaApplicationLaunchShortcut {
-	
+public class WOJavaApplicationLaunchShortcut extends
+		JavaApplicationLaunchShortcut {
+
 	/**
 	 * Returns the local wo java launch config type
 	 */
 	protected ILaunchConfigurationType getJavaLaunchConfigType() {
-		return getLaunchManager().getLaunchConfigurationType(WOJavaLocalApplicationLaunchConfigurationDelegate.WOJavaLocalApplicationID);		
+		ILaunchConfigurationType launchConfigurationType = getLaunchManager()
+				.getLaunchConfigurationType(
+						WOJavaLocalApplicationLaunchConfigurationDelegate.WOJavaLocalApplicationID);
+		return launchConfigurationType;
 	}
-		
+
+	protected ILaunchConfiguration createConfiguration(IType type) {
+		ILaunchConfiguration config = null;
+		ILaunchConfigurationWorkingCopy wc = null;
+		try {
+			ILaunchConfigurationType configType = getJavaLaunchConfigType();
+			wc = configType.newInstance(null, getLaunchManager().generateUniqueLaunchConfigurationNameFrom(type.getElementName()));
+		} catch (CoreException exception) {
+			reportCreatingConfiguration(exception);
+			return null;		
+		} 
+		wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME, type.getFullyQualifiedName());
+		wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, type.getJavaProject().getElementName());
+		WOJavaLocalApplicationLaunchConfigurationDelegate
+		.initConfiguration(wc);
+		try {
+			config = wc.doSave();		
+		} catch (CoreException exception) {
+			reportCreatingConfiguration(exception);			
+		}
+		return config;
+	}
 }

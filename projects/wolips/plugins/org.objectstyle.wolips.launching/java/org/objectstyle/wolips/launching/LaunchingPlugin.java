@@ -59,7 +59,7 @@ import org.objectstyle.wolips.commons.logging.PluginLogger;
 public class LaunchingPlugin extends AbstractUIPlugin {
 	//The plugin.
 	private static LaunchingPlugin plugin;
-	private static final String PLUGIN_ID = "org.objectstyle.wolips.launching";
+	public static final String PLUGIN_ID = "org.objectstyle.wolips.launching";
 	private PluginLogger pluginLogger = new PluginLogger(
 			LaunchingPlugin.PLUGIN_ID, false);
 	/**

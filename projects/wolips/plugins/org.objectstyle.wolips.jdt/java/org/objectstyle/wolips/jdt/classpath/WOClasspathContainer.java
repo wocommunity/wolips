@@ -65,7 +65,6 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathContainer;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.jdt.launching.IRuntimeContainerComparator;
 import org.eclipse.jdt.ui.JavaUI;
 import org.objectstyle.wolips.variables.VariablesPlugin;
 /**
@@ -74,8 +73,7 @@ import org.objectstyle.wolips.variables.VariablesPlugin;
  */
 public final class WOClasspathContainer
 		implements
-			IClasspathContainer,
-			IRuntimeContainerComparator {
+			IClasspathContainer {
 	public static final String WOLIPS_CLASSPATH_CONTAINER_IDENTITY = "org.objectstyle.wolips.WO_CLASSPATH";
 	public static final String[] WOLIPS_CLASSPATH_STANDARD_FRAMEWORKS = new String[]{
 			"JavaWebObjects", "JavaFoundation", "JavaXML", "JavaWOExtensions",
@@ -84,19 +82,12 @@ public final class WOClasspathContainer
 	private IClasspathEntry[] classpathEntries = null;
 	/**
 	 * Constructor for WOClassPathContainer.
+	 * @param id 
 	 */
 	public WOClasspathContainer(IPath id) {
 		super();
 		_id = id;
 		_initPath();
-	}
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.jdt.launching.IRuntimeContainerComparator#isDuplicate(org.eclipse.core.runtime.IPath)
-	 */
-	public boolean isDuplicate(IPath containerPath) {
-		return _id.equals(containerPath);
 	}
 	/**
 	 * @see org.eclipse.jdt.core.IClasspathContainer#getClasspathEntries()
