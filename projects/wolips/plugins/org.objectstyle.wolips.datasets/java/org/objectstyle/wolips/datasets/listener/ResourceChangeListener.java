@@ -101,13 +101,15 @@ public class ResourceChangeListener extends Job {
 				.getAddedResourcesProjectDict().keySet().toArray();
 		for (int i = 0; i < allAddedKeys.length; i++) {
 			projectFileToUpdate = (IFile) allAddedKeys[i];
-			projectUpdater = PBProjectUpdater.instance(projectFileToUpdate
-					.getParent());
+                    projectUpdater = PBProjectUpdater.instance(projectFileToUpdate
+                                                               .getParent());
+                    if(projectUpdater != null) {
 			if (projectFileToUpdate.getParent().getType() == IResource.PROJECT)
-				projectUpdater.syncProjectName();
+                            projectUpdater.syncProjectName();
 			projectUpdater.syncFilestable((HashMap) resourceValidator
-					.getAddedResourcesProjectDict().get(projectFileToUpdate),
-					IResourceDelta.ADDED);
+                                                      .getAddedResourcesProjectDict().get(projectFileToUpdate),
+                                                      IResourceDelta.ADDED);
+                    }
 		}
 		Object[] allRemovedKeys = resourceValidator
 				.getRemovedResourcesProjectDict().keySet().toArray();
@@ -118,9 +120,11 @@ public class ResourceChangeListener extends Job {
 			if (projectFileToUpdate.getParent().exists()) {
 				projectUpdater = PBProjectUpdater.instance(projectFileToUpdate
 						.getParent());
+                            if(projectUpdater != null) {
 				projectUpdater.syncFilestable((HashMap) resourceValidator
 						.getRemovedResourcesProjectDict().get(
 								projectFileToUpdate), IResourceDelta.REMOVED);
+                            }
 			}
 		}
 		return new Status(IStatus.OK, DataSetsPlugin.getPluginId(), IStatus.OK,

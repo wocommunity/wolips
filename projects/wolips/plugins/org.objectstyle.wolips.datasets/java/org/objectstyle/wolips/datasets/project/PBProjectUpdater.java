@@ -97,17 +97,7 @@ public final class PBProjectUpdater {
 	 */
 	private PBProjectUpdater(IContainer aProjectContainer) {
 		super();
-		//check if theres a PB.project in the Container. If not go to the
-		// parent
-		IContainer findContainer = aProjectContainer;
-		while ((findContainer.findMember(IWOLipsModel.PROJECT_FILE_NAME) == null)
-				&& (findContainer.getParent() != null)) {
-			findContainer = findContainer.getParent();
-		}
-		if (findContainer.getParent() == null)
-			this.projectContainer = findContainer.getProject();
-		if (findContainer.findMember(IWOLipsModel.PROJECT_FILE_NAME) != null)
-			this.projectContainer = findContainer;
+                this.projectContainer = aProjectContainer;
 		this.removeProjectMarker();
 		this.getPBProject(this.projectContainer);
 		//projectContainer = aProjectContainer;
@@ -159,7 +149,23 @@ public final class PBProjectUpdater {
 		 * PBProjectUpdater.projectUpdater.put(aProjectContainer, returnValue); }
 		 * return returnValue;
 		 */
-		return new PBProjectUpdater(aProjectContainer);
+            //check if theres a PB.project in the Container. If not go to the
+            // parent
+            IContainer findContainer = aProjectContainer;
+            IContainer container = null;
+            while ((findContainer.findMember(IWOLipsModel.PROJECT_FILE_NAME) == null)
+                   && (findContainer.getParent() != null)) {
+                findContainer = findContainer.getParent();
+            }
+            if (findContainer.getParent() == null)
+               container = findContainer.getProject();
+            if (findContainer.findMember(IWOLipsModel.PROJECT_FILE_NAME) != null)
+                container = findContainer;
+            PBProjectUpdater updater = null;
+            if(container != null) {
+                new PBProjectUpdater(container);
+            }
+            return updater;
 	}
 	//	/**
 	//	 * Method updatePBProject.
