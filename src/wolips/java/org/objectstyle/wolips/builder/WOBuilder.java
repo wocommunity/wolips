@@ -65,8 +65,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.jdt.internal.core.builder.JavaBuilder;
 import org.objectstyle.wolips.WOLipsPlugin;
 
 /**
@@ -100,6 +98,8 @@ public class WOBuilder extends IncrementalProjectBuilder {
 			Hashtable aHashtable = this.properties();
 			//anAntRunner.addUserProperties(aHashtable);
 			anAntRunner.run(monitor);
+			WOLipsPlugin.debug("refresh");
+			getProject().refreshLocal(getProject().DEPTH_INFINITE, monitor);
 		} 
 		catch(Exception e) {
 				WOLipsPlugin.log(e);
