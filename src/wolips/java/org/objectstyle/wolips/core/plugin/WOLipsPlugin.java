@@ -110,6 +110,7 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 			System.out.println("Exception in WOLips constructor: " + exception.getMessage());
 		}
 	}
+
 	/**
 	 * Calls EarlyStartup.earlyStartup().
 	 * <br>

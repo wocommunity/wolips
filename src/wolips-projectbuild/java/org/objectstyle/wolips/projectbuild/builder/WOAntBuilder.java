@@ -68,6 +68,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
+import org.objectstyle.wolips.core.plugin.CheckAntCorePatch;
 import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
 import org.objectstyle.wolips.core.preferences.Preferences;
 import org.objectstyle.wolips.core.project.ant.BuildMessages;
@@ -111,6 +112,7 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 			monitor.done();
 			return null;
 		}
+		new CheckAntCorePatch().check();
 		monitor.beginTask(
 			BuildMessages.getString("Build.Monitor.Title"),
 			WOAntBuilder.TOTAL_WORK_UNITS);
