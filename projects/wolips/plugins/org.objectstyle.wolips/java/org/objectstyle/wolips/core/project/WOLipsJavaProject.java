@@ -633,16 +633,6 @@ public final class WOLipsJavaProject
 					path = WOLipsCore.getClasspathVariablesAccessor().getExternalBuildRootClassPathVariable().append(projectName + ".woa/Contents/Resources/Java/" + projectName + ".jar");
 				}
 			}
-
-			// check if folder exists, otherwise let Eclipse to its default thing
-			if ((null == path) || (!path.toFile().exists())) {
-				WOLipsLog.log(
-					"expected resource is not there: "
-						+ path + " - " + path.toFile());
-				path = null;
-			} else {
-				// WOLipsLog.log( "Found file: " + path);
-			}
 			return path;
 		}
 	}
