@@ -24,7 +24,7 @@
         <section name="Via Eclipse update manager">
 		<p><a href="compatibilty_matrix.html">Compatibilty matrix.</a></p>
         	<p>After download and successful install of 'WOLips 1.0.0 final' there will be an item WOLips in the update perspective.</p>
-        	<p>To install WOLips trough the Update Manager create a UpdateSite bookmark for http://woproject.sourceforge.net/update/ and install WOLips.</p>
+        	<p>To install WOLips trough the Update Manager create a UpdateSite bookmark for http://www.objectstyle.org/woproject/update/ and install WOLips.</p>
  		</section> 
         <!-- source section -->
         <section name="Build from source">
