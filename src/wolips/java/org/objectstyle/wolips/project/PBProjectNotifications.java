@@ -88,4 +88,7 @@ public class PBProjectNotifications {
 		super();
 	}
 
+	public static void postPBProjectDidUpgradeNotification(String aProjectName) {
+		PBProjectNotifications.notificationCenter.postNotification(PBProjectNotifications.PBFileAddedToProjectNotification, aProjectName);
+	}
 }

@@ -96,6 +96,8 @@ public class PBProjectUpdater {
 
 	public void updatePBProject() throws CoreException {
 		syncPBProjectWithProject();
+		if(project != null)
+			PBProjectNotifications.postPBProjectDidUpgradeNotification(project.getName());
 	}
 	
 	private PBProject getPBProject(IProject aProject) {
