@@ -201,14 +201,16 @@ public abstract class ProjectFormat {
 		if (filters != null && filters.hasFilters()) {
 			BufferedReader in = new BufferedReader(new InputStreamReader(src));
 			BufferedWriter out = new BufferedWriter(new FileWriter(destFile));
-
+			log("filters: " + filters, Project.MSG_VERBOSE);
 			String newline = null;
 			String line = in.readLine();
 			while (line != null) {
 				if (line.length() == 0) {
 					out.newLine();
 				} else {
+					log("line: " + line, Project.MSG_VERBOSE);
 					newline = filters.replaceTokens(line);
+					log("newline: " + newline, Project.MSG_VERBOSE);
 					out.write(newline);
 					out.newLine();
 				}

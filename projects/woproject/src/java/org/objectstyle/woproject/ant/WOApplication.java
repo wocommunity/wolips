@@ -101,11 +101,11 @@ public class WOApplication extends WOTask {
 
 	//web.xml stuff
 	protected boolean webXML = false;
-	protected String webXML_WOROOT;
-	protected String webXML_LOCALROOT;
-	protected String webXML_WOAINSTALLROOT;
-	protected String webXML_WOAppMode;
-	protected String webXML_WOtaglib;
+	protected String webXML_WOROOT = null;
+	protected String webXML_LOCALROOT = null;
+	protected String webXML_WOAINSTALLROOT = null;
+	protected String webXML_WOAppMode = null;
+	protected String webXML_WOtaglib = null;
 
 	public void release() {
 		super.release();
@@ -113,6 +113,7 @@ public class WOApplication extends WOTask {
 		otherClasspathSets = null;
 		woEnvironment = null;
 	}
+
 	public String getPrincipalClass() {
 		String principalClass = super.getPrincipalClass();
 		if (principalClass == null) {
@@ -348,6 +349,10 @@ public class WOApplication extends WOTask {
 	 * @return
 	 */
 	public String getWebXML_WOROOT() {
+		log(
+			" WOApplication.getWebXML_WOROOT() webXML_WOROOT: "
+				+ webXML_WOROOT,
+			Project.MSG_VERBOSE);
 		return webXML_WOROOT;
 	}
 
@@ -513,6 +518,14 @@ public class WOApplication extends WOTask {
 	  * @throws BuildException if task attributes are inconsistent or missing.
 	  */
 	protected void validateAttributes() throws BuildException {
+		log(
+			" this.getName().validateAttributes(): "
+				+ this.getName()
+				+ " webXML: "
+				+ webXML
+				+ " webXML_WOROOT: "
+				+ webXML_WOROOT,
+			Project.MSG_VERBOSE);
 		if (webXML) {
 			if (webXML_WOROOT == null) {
 				webXML_WOROOT =
@@ -526,11 +539,11 @@ public class WOApplication extends WOTask {
 				if (webXML_LOCALROOT == null)
 					throw new BuildException("'webXML_LOCALROOT' attribute is missing.");
 			}
-			if (webXML_LOCALROOT == null) {
+			if (webXML_WOAINSTALLROOT == null) {
 				webXML_WOAINSTALLROOT =
 					this.getWOEnvironment().getWOVariables().localLibraryDir()
 						+ "/WebObjects/Applications";
-				if (webXML_LOCALROOT == null)
+				if (webXML_WOAINSTALLROOT == null)
 					throw new BuildException("'webXML_WOAINSTALLROOT' attribute is missing.");
 			}
 			if (webXML_WOAppMode == null) {

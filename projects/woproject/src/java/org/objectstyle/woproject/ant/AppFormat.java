@@ -99,14 +99,13 @@ public class AppFormat extends ProjectFormat {
 	 * maps them to templates and filters. 
 	 */
 	private void prepare() {
+		log("AppFormat prepare", Project.MSG_VERBOSE);
 		preparePaths();
 
 		prepare52();
 		prepareWindows();
 		prepareUnix();
 		prepareMac();
-
-		// @todo - create web.xml and/or classpath files
 
 		// add Info.plist
 		String infoFile =
@@ -122,7 +121,7 @@ public class AppFormat extends ProjectFormat {
 					.getPath();
 			createMappings(
 				webXMLFile,
-				woappPlusVersion() + "/ServletEnv_web.xml",
+				woappPlusVersion() + "/web.xml",
 				webXMLFilter());
 		}
 	}
@@ -232,39 +231,26 @@ public class AppFormat extends ProjectFormat {
 							+ fs.createPatternSet().getExcludePatterns(project),
 						Project.MSG_VERBOSE);
 				}
-				if (true /*
-																	|| fs.hasSelectors()
-																	|| (fs.hasPatterns()
-																		&& fs.createPatternSet() != null
-																		&& (fs.createPatternSet().createInclude() != null
-																			&& fs.createPatternSet().createExclude() != null
-																			&& (fs.createPatternSet().getIncludePatterns(project)
-																				!= null
-																				|| fs.createPatternSet().getExcludePatterns(
-																					project)
-																					!= null)))*/
-					) {
-					if (fs.getEmbed()) {
+				if (fs.getEmbed()) {
+					continue;
+				}
+				ds = fs.getDirectoryScanner(project);
+				dirs = ds.getIncludedDirectories();
+
+				for (int j = 0; j < dirs.length; j++) {
+					File[] jars = fs.findJars(dirs[j]);
+
+					if (jars == null || jars.length == 0) {
+						log(
+							"No Jars in " + dirs[j] + ", ignoring.",
+							Project.MSG_VERBOSE);
 						continue;
 					}
-					ds = fs.getDirectoryScanner(project);
-					dirs = ds.getIncludedDirectories();
 
-					for (int j = 0; j < dirs.length; j++) {
-						File[] jars = fs.findJars(dirs[j]);
-
-						if (jars == null || jars.length == 0) {
-							log(
-								"No Jars in " + dirs[j] + ", ignoring.",
-								Project.MSG_VERBOSE);
-							continue;
-						}
-
-						int jsize = jars.length;
-						for (int k = 0; k < jsize; k++) {
-							if (!jarSet.contains(jars[k]))
-								jarSet.add(jars[k]);
-						}
+					int jsize = jars.length;
+					for (int k = 0; k < jsize; k++) {
+						if (!jarSet.contains(jars[k]))
+							jarSet.add(jars[k]);
 					}
 				}
 			} catch (Exception anException) {
@@ -319,18 +305,7 @@ public class AppFormat extends ProjectFormat {
 			for (int i = 0; i < size; i++) {
 
 				OtherClasspathSet cs = (OtherClasspathSet) classpathSets.get(i);
-				if (true /*cs.hasSelectors()
-																	|| (cs.hasPatterns()
-																		&& cs.createPatternSet() != null
-																		&& (cs.createPatternSet().createInclude() != null
-																			&& cs.createPatternSet().createExclude() != null
-																			&& (cs.createPatternSet().getIncludePatterns(project)
-																				!= null
-																				|| cs.createPatternSet().getExcludePatterns(
-																					project)
-																					!= null)))*/
-					)
-					cs.collectClassPaths(project, pathSet);
+				cs.collectClassPaths(project, pathSet);
 			}
 		} catch (BuildException be) {
 			// paths doesn't exist or are not readable
@@ -605,15 +580,18 @@ public class AppFormat extends ProjectFormat {
 		}
 
 		WOApplication woappTask = (WOApplication) this.task;
-		filter.addFilter("%WOROOT%", woappTask.getWebXML_WOROOT());
-		filter.addFilter("%LOCALROOT%", woappTask.getWebXML_LOCALROOT());
+		log(
+			" AppFormat.webXMLFilter().woappTask: " + woappTask,
+			Project.MSG_VERBOSE);
+		filter.addFilter("WOROOT", woappTask.getWebXML_WOROOT());
+		filter.addFilter("LOCALROOT", woappTask.getWebXML_LOCALROOT());
 		filter.addFilter(
-			"%WOAINSTALLROOT%",
+			"WOAINSTALLROOT",
 			woappTask.getWebXML_WOAINSTALLROOT());
-		filter.addFilter("%WOAppMode%", woappTask.getWebXML_WOAppMode());
-		filter.addFilter("%WOClassPath%", paths);
-		filter.addFilter("%WOApplicationClass%", this.getAppClass());
-		filter.addFilter("%WOtaglib%", woappTask.getWebXML_WOtaglib());
+		filter.addFilter("WOAppMode", woappTask.getWebXML_WOAppMode());
+		filter.addFilter("WOClasspath", paths);
+		filter.addFilter("WOApplicationClass", this.getAppClass());
+		filter.addFilter("WOTagLib", woappTask.getWebXML_WOtaglib());
 
 		return new FilterSetCollection(filter);
 	}

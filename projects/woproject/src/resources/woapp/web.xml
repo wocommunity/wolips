@@ -28,7 +28,7 @@
        for example), the value indicated here is ignored. -->
   <context-param>
     <param-name>WOROOT</param-name>
-    <param-value>%WOROOT%</param-value>
+    <param-value>@WOROOT@</param-value>
   </context-param>
 
   <!-- Indicates the root where local frameworks are installed. In Mac OS X,
@@ -39,7 +39,7 @@
        for example), the value indicated here is ignored. -->
   <context-param>
     <param-name>LOCALROOT</param-name>
-    <param-value>%LOCALROOT%</param-value>
+    <param-value>@LOCALROOT@</param-value>
   </context-param>
 
   <!-- Indicates the root where WebObjects applications are installed. In Mac OS X
@@ -50,7 +50,7 @@
        indicated here is ignored. -->
   <context-param>
     <param-name>WOAINSTALLROOT</param-name>
-    <param-value>%WOAINSTALLROOT%</param-value>
+    <param-value>@WOAINSTALLROOT@</param-value>
   </context-param>
 
   <!-- Indicates if application is development or deployment mode. In development
@@ -58,7 +58,7 @@
        deployment mode, images are vended by the webserver. -->
   <context-param>
     <param-name>WOAppMode</param-name>
-    <param-value>%WOAppMode%</param-value>
+    <param-value>@WOAppMode@</param-value>
   </context-param>
   
   <!-- This parameter points to the WebObjects directories required for
@@ -72,14 +72,14 @@
   <context-param>
     <param-name>WOClasspath</param-name>
     <param-value>
-    %WOClasspath%</param-value>
+    @WOClasspath@</param-value>
   </context-param>
 
   <!-- Class name of the WOApplication subclass that defines the
        WebObjects application. -->
   <context-param>
     <param-name>WOApplicationClass</param-name>
-    <param-value>%WOApplicationClass%</param-value>
+    <param-value>@WOApplicationClass@</param-value>
   </context-param>
 
   <!-- The WebObjects Servlet that interfaces between the Servlet container
@@ -109,7 +109,7 @@
   <!-- This tag library allows the use of WOComponents within JSPs. -->
   <taglib>
     <taglib-uri>/WOtaglib</taglib-uri>
-    <taglib-location>/WEB-INF/tlds/%WOTagLib%</taglib-location>
+    <taglib-location>/WEB-INF/tlds/@WOTagLib@</taglib-location>
   </taglib>
 
 </web-app>
