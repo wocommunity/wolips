@@ -85,7 +85,7 @@ public class WOLocalJavaApplicationTabGroup extends AbstractLaunchConfigurationT
 			new JavaMainTab(),
 			new JavaArgumentsTab(),
 			new CommonWOArgumentsTab(),
-			new AdvancedWOArgumentsTab(),
+			//new AdvancedWOArgumentsTab(),
 			new JavaJRETab(),
 			new JavaClasspathTab(),
 			new JavaSourceLookupTab(),

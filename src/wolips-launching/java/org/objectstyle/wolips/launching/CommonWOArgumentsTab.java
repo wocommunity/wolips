@@ -305,7 +305,7 @@ public class CommonWOArgumentsTab extends JavaLaunchConfigurationTab {
 	private String getWOApplicationPlatformSpecificArguments() {
 		if (!Environment.isNextRootSet())
 			return "";
-		return "-DWORoot = " + WOVariables.nextRoot() + " ";
+		return "-DWORoot = " + WOVariables.nextRoot() + " " + "-DWORootDirectory = " + WOVariables.nextRoot() + " ";
 	}
 
 	/**
