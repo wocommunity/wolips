@@ -53,13 +53,11 @@
  * <http://objectstyle.org/>.
  *
  */
-
 package org.objectstyle.wolips.wizards;
-
 import java.lang.reflect.InvocationTargetException;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -67,7 +65,6 @@ import org.eclipse.ui.actions.WorkspaceModifyDelegatingOperation;
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
 import org.objectstyle.wolips.WOLipsPlugin;
 import org.objectstyle.wolips.project.ProjectHelper;
-
 /**
  * @author mnolte
  * @author uli
@@ -77,82 +74,86 @@ import org.objectstyle.wolips.project.ProjectHelper;
  * To enable and disable the creation of type comments go to
  * Window>Preferences>Java>Code Generation.
  */
-
 public class WOProjectCreationPage extends WizardNewProjectCreationPage {
-
 	private IResource elementToOpen;
-
 	/**
 	 * Constructor for WOProjectCreationPage.
 	 * @param pageName
 	 */
-
 	public WOProjectCreationPage(String pageName) {
-
 		super(pageName);
-
 		setTitle(Messages.getString("WOProjectCreationPage.title"));
-
 		setDescription(Messages.getString("WOProjectCreationPage.description"));
-
 		setInitialProjectName(
 			Messages.getString("WOProjectCreationPage.newProject.defaultName"));
-
 	}
-
 	public boolean createProject() {
-
 		IProject newProject = getProjectHandle();
-
 		String projectTemplateID =
 			Messages.getString("webobjects.projectType.java.application");
-
+			
+		IPath locationPath = getLocationPath().makeAbsolute().toFile().isDirectory()?getLocationPath():null;
+		/*
+		if (getLocationPath().matchingFirstSegments(Platform.getLocation())
+			== Platform.getLocation().segmentCount()
+			&& getLocationPath().getDevice() != null
+			&& getLocationPath().getDevice().equals(
+				Platform.getLocation().getDevice())) {
+			// getLocationPath() starts with Platform.getLocation()
+			// no import
+			locationPath = null;
+		} else {
+			locationPath = getLocationPath();
+		}
+		*/
+		
+		/*
 		WOProjectCreator aWOProjectCreator = null;
-		if(this.useDefaults()) aWOProjectCreator = new WOProjectCreator(newProject, projectTemplateID,Platform.getLocation());
-		else aWOProjectCreator = new WOProjectCreator(newProject, projectTemplateID,getLocationPath());
-		IRunnableWithProgress op = new WorkspaceModifyDelegatingOperation(aWOProjectCreator);
+		if (this.useDefaults())
+			aWOProjectCreator =
+				new WOProjectCreator(
+					newProject,
+					projectTemplateID,
+					locationPath);
+		else
+			aWOProjectCreator =
+				new WOProjectCreator(
+					newProject,
+					projectTemplateID,
+					getLocationPath());
+					*/
+					
+		IRunnableWithProgress op =
+			new WorkspaceModifyDelegatingOperation(
+				new WOProjectCreator(
+					newProject,
+					projectTemplateID,
+					locationPath));
 		try {
-
 			getContainer().run(false, false, op);
-
 		} catch (InvocationTargetException e) {
-
 			WOLipsPlugin.handleException(
 				getShell(),
 				e.getTargetException(),
 				null);
-
 			return false;
-
 		} catch (InterruptedException e) {
-
 			//WOLipsUtils.handleException(getShell(), e, null);
-
 			return false;
-
 		}
-
-		IResource fileToOpen =  ProjectHelper.getProjectSourceFolder(newProject).getFile(new Path("Application.java"));
-
+		IResource fileToOpen =
+			ProjectHelper.getProjectSourceFolder(newProject).getFile(
+				new Path("Application.java"));
 		if (fileToOpen != null) {
-
 			elementToOpen = fileToOpen;
-
 		}
-
 		return true;
-
 	}
-
 	/**
 	 * Method getElementToOpen.
 	 * @return resource to open on successful project creation
 	 */
-
 	public IResource getElementToOpen() {
-
 		return elementToOpen;
-
 	}
-
 }
