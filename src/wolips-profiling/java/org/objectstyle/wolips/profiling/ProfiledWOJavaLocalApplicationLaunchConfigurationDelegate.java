@@ -56,16 +56,12 @@
 
 package org.objectstyle.wolips.profiling;
 
-import jmechanic.eclipse.profiler.launching.JavaProfilingLaunchConfigDelegate;
+import jmechanic.eclipse.profiler.launching.ProfilingLaunchSupport;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
-import org
-	.objectstyle
-	.wolips
-	.launching
-	.WOJavaLocalApplicationLaunchConfigurationDelegate;
+import org.objectstyle.wolips.launching.WOJavaLocalApplicationLaunchConfigurationDelegate;
 
 /**
  * Launches a local VM.
@@ -88,13 +84,19 @@ public class ProfiledWOJavaLocalApplicationLaunchConfigurationDelegate
 		vmArgs = super.addVMArguments(vmArgs, configuration, launch, mode);
 		// Set things up for profiling only if this is
 		// debug mode
+		// Set things up for profiling
+		int hprofPort = 
+			ProfilingLaunchSupport.getProfilerPortNumber(configuration);
+		if (hprofPort != -1) {
+			// Calculate the arguments
+			vmArgs.append(ProfilingLaunchSupport.getHProfVMArguments(
+				configuration, 
+				hprofPort));
+			
+			// Fire up the listener thread
+			ProfilingLaunchSupport.launchHprofListener(launch, hprofPort);
+		}
 		return vmArgs;
-		//when jmechanic 0.4.1 is released this can be uncommented
-		/*		return JavaProfilingLaunchConfigDelegate.addProfilingVMArgments(
-					configuration,
-					mode,
-					launch,
-					vmArgs);*/
 	}
 
 }

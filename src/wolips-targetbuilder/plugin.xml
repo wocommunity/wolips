@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin
    id="org.objectstyle.wolips.targetbuilder"
-   name="Target Builder Additions for WOLips"
+   name="org.objectstyle.wolips.targetbuilder"
    version="0.9.8"
-   provider-name="objectstyle.org"
+   provider-name="www.objectstyle.org"
    class="org.objectstyle.wolips.target.TargetBuilderPlugin">
 
    <runtime>
