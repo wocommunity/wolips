@@ -26,6 +26,7 @@ WOApplication
 
 Don't use it.
 
+The action for Updating the PB.project file is currently a dummy.
 
 Working with WOLips in the PDE.
 

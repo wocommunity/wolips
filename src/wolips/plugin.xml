@@ -166,6 +166,12 @@
             menubarPath="org.objectstyle.wolips/wobuilder"
             id="%WOFrameworkBuilder.Set.ID">
         </action>
+        <action
+            label="%UpdatePB.Project.Set"
+            class="org.objectstyle.wolips.actions.PBAction"
+            menubarPath="org.objectstyle.wolips/wobuilder"
+            id="%UpdatePB.Project.Set.ID">
+        </action>
 	</objectContribution>
 </extension>
 
