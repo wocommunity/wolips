@@ -96,10 +96,10 @@
              <tarfileset dir="${dist.base}">
                 <include name="${project.name}-${project.version}/**"/>
             </tarfileset>
-        </tar>
-        <gzip src="${dist.base}/${project.name}-src-${project.version}.tar"
+         </tar>
+         <gzip src="${dist.base}/${project.name}-src-${project.version}.tar"
               zipfile="${dist.base}/${project.name}-src-${project.version}.tar.gz"/>
-        <delete file="${dist.base}/${project.name}-src-${project.version}.tar"/>
+         <delete file="${dist.base}/${project.name}-src-${project.version}.tar"/>
     </target>
 
 
@@ -175,8 +175,16 @@
             </metainf>
         </jar>
         
-        <copy todir="${dist}/lib" file="lib/junit.jar"/>
-        <copy todir="${dist}/lib" file="${ant.home}/lib/ant.jar"/>
+        <copy todir="${dist}/lib">
+        	<fileset dir="lib">
+        		<include name="log4j*"/>
+        		<include name="junit.jar"/>
+        	</fileset>
+        	<fileset dir="${ant.home}/lib">
+        		<include name="ant.jar"/>
+        	</fileset>
+        </copy>
+        
         <copy todir="tests/wo/frameworks/art/lib" file="${dist}/lib/${project.name}.jar"/>
         <copy todir="tests/wo/frameworks/art/lib" file="${dist}/lib/cayenne.jar"/>
     </target>

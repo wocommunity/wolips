@@ -57,21 +57,84 @@
 package org.objectstyle.woproject.ant;
 
 import java.io.File;
+import java.io.IOException;
+
+import junit.framework.TestCase;
+
+import org.apache.log4j.Logger;
 
 /** 
- * A test case that does various assertions about 
- * build results of art framework. 
+ * Superclass of Ant task test cases that implements common
+ * functionality, like path resolution, etc.
  * 
  * @author Andrei Adamchik
  */
-public class ArtBuildTest extends AntTestCase {
+public class AntTestCase extends TestCase {
+    static Logger logger = Logger.getLogger(AntTestCase.class);
 
-    public ArtBuildTest(String name) {
+    private static File testDist;
+
+    static {
+        // initialize base directory
+        try {
+            testDist =
+                new File("tests" + File.separator + "wo" + File.separator + "dist")
+                    .getCanonicalFile();
+        }
+        catch (IOException ioex) {
+            logger.warn("Error creation distribution directory object.", ioex);
+            throw new RuntimeException("Error creation distribution directory object.");
+        }
+    }
+
+    public AntTestCase(String name) {
         super(name);
     }
 
-    public void testFilesPresent() throws Exception {
-        FrameworkStructure artFrwk = new FrameworkStructure("art");
-        assertStructure(artFrwk);
+    /** 
+     * Returns a "canonical" file located at <code>path</code>
+     * relative to tests distribution directory. Note that
+     * when building a path, forward slash can be used as path
+     * separator even on Windows. This method will do all needed
+     * replacements.
+     */
+    protected File resolveDistPath(String path) {
+        if (File.separator != "/") {
+            path = path.replace(File.separatorChar, '/');
+        }
+
+        return new File(testDist, path);
+    }
+
+    protected void assertStructure(ProjectStructure struct) throws Exception {
+        String path = struct.getDirectoryPath();
+        File projDir = resolveDistPath(path);
+        assertTrue("Project directory is missing: " + projDir, projDir.isDirectory());
+
+        if (struct.hasResources()) {
+            File res = new File(projDir, "Resources");
+            assertTrue("Resources directory is missing: " + res, res.isDirectory());
+
+            File info = new File(res, "Info.plist");
+            assertTrue("Info.plist is missing: " + info, info.isFile());
+        }
+
+        if (struct.hasWebServerResources()) {
+            File wsres = new File(projDir, "WebServerResources");
+            assertTrue(
+                "WebServerResources directory is missing: " + wsres,
+                wsres.isDirectory());
+        }
+
+        if (struct.hasJava()) {
+            File javaDir = new File(projDir, "Resources/Java");
+            assertTrue("Java directory is missing: " + javaDir, javaDir.isDirectory());
+
+            String[] jars = struct.getJars();
+            for (int i = 0; i < jars.length; i++) {
+                File jar = new File(javaDir, jars[i] + ".jar");
+                assertTrue("Jar file missing: " + jar, jar.isFile());
+            }
+        }
     }
 }

@@ -59,19 +59,18 @@ package org.objectstyle.woproject.ant;
 import java.io.File;
 
 /** 
- * A test case that does various assertions about 
- * build results of art framework. 
+ * Java bean that keeps information about WebObjects 
+ * project structure.
  * 
  * @author Andrei Adamchik
  */
-public class ArtBuildTest extends AntTestCase {
-
-    public ArtBuildTest(String name) {
+public class ApplicationStructure extends ProjectStructure {
+    
+    public ApplicationStructure(String name) {
         super(name);
     }
 
-    public void testFilesPresent() throws Exception {
-        FrameworkStructure artFrwk = new FrameworkStructure("art");
-        assertStructure(artFrwk);
+    public String getDirectoryPath() {
+        return "WebObjects/Applications/" + name + ".woa";
     }
 }
