@@ -11,15 +11,19 @@
 <h2>Move and/or Rename Enterprise Objects</h2>
 <ol>
   <li>Move/Rename the java file with the Eclipse built-in Java refactoring functionality.</li>
-  <li>Open EOModeler and set the entity's class to be the new fully qualified 
-    class name (or edit the entity's *.plist to do the same thing).</li>
+  <li>(You have to know the name of the entity linked to this class.) Open EOModeler 
+    and set the entity's class to be the new fully qualified class name (or edit 
+    the entity's *.plist to do the same thing).</li>
 </ol>
 <h2>Move Components</h2>
 <ol>
   <li>Move the java file with the Eclipse built-in Java refactoring functionality.</li>
 </ol>
 <p>If the component used to be in the default (no) package and its accessor mothods 
-  are protected, you have a problem. This problem has a <a href="http://developer.apple.com/techpubs/webobjects/Reference/API/com/webobjects/foundation/NSKeyValueCoding.ValueAccessor.html">solution</a>.</p>
+  are protected, you have a problem. This problem has a <a href="http://developer.apple.com/techpubs/webobjects/Reference/API/com/webobjects/foundation/NSKeyValueCoding.ValueAccessor.html">solution</a>. 
+</p>
+<p>WOBuilder likes to add (sub) components with their fully qualified names. This 
+  is not necessary. Using just the class name works fine.</p>
 <h2>Rename Components</h2>
 <ol>
   <li>Rename the java file with the Eclipse built-in Java refactoring functionality.</li>
