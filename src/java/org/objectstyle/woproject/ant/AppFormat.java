@@ -276,11 +276,17 @@ public class AppFormat extends ProjectFormat {
 
 		return filter;
 	}
+	
+	private String getAppClass() {
+        return task.getPrincipalClass();
+	}
 
 	private void createMappings(
 		String fileName,
 		String template,
 		FilterSet filter) {
+		filter.addFilter("APP_CLASS", getAppClass());
+		filter.addFilter("JAR_NAME", getJarName());
 		createMappings(fileName, template, new FilterSetCollection(filter));
 	}
 

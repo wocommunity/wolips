@@ -71,6 +71,7 @@ public class WOPropertiesHandler extends ProjectComponent {
 	public static final String WO_ROOT = "wo.woroot";
 	public static final String LOCAL_ROOT = "wo.localroot";
 	public static final String HOME_ROOT = "wo.homeroot";
+	public static final String ABSOLUTE_ROOT = "wo.absoluteroot";
 
 	static Properties env;
 	static final Object envLock = new Object();

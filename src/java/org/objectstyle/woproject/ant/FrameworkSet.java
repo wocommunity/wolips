@@ -93,6 +93,8 @@ public class FrameworkSet extends FileSet {
 			return "HOMEROOT";
 		} else if (isLocalRoot()) {
 			return "LOCALROOT";
+		} else if (isAbsoluteRoot()) {
+			return getRoot();
 		} else {
 			throw new BuildException("Unrecognized or indefined root: " + root);
 		}
@@ -108,6 +110,10 @@ public class FrameworkSet extends FileSet {
 
 	public boolean isLocalRoot() {
 		return WOPropertiesHandler.LOCAL_ROOT.equals(root);
+	}
+
+	public boolean isAbsoluteRoot() {
+		return root.charAt(0) == '/';
 	}
 
 	/** 
@@ -138,6 +144,8 @@ public class FrameworkSet extends FileSet {
 			super.setDir(new File(propsHandler.getLocalRoot()));
 		} else if (isHomeRoot()) {
 			super.setDir(new File(propsHandler.getHomeRoot()));
+		} else if (isAbsoluteRoot()) {
+			super.setDir(new File(root));
 		} else {
 			throw new BuildException("Unrecognized root: " + root);
 		}

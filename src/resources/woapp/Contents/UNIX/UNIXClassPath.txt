@@ -2,6 +2,6 @@
 # JVMOptions       == 
 # JDB              == jdb
 # JDBOptions       == 
-# ApplicationClass == Application
+# ApplicationClass == @APP_CLASS@
 @APP_JAR@
 @FRAMEWORK_JAR@
