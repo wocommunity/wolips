@@ -294,16 +294,19 @@ public class IncrementalNature
 //		return (result);
 //	}
 
-	private IPath _appendSpecial(IPath p1, IPath p2) {
-		String segments[] = p2.segments();
+	private IPath _appendSpecial(IPath destinationPrefix, IPath source) {
+		String segments[] = source.segments();
 
 		int n = segments.length - 1;
 		for (int i = n; i >= 0; --i) {
 			if (segments[i].endsWith(".lproj")) {
 				n = i;
+				if(segments[i].toLowerCase().startsWith("nonlocalized")) {
+					n = i+1;
+				}
 			}
 		}
-		IPath tmp = p1;
+		IPath tmp = destinationPrefix;
 		while (n < segments.length) {
 			tmp = tmp.append(segments[n++]);
 		}

@@ -87,6 +87,8 @@ public interface WOProjectBuildConstants {
   static final String MARKER_BUILD_GENERIC   = "org.objectstyle.wolips.projectbuild.marker";
   static final String MARKER_BUILD_PROBLEM   = "org.objectstyle.wolips.projectbuild.problem";
   static final String MARKER_BUILD_DUPLICATE = "org.objectstyle.wolips.projectbuild.duplicate";
+
+  static final String NS_PRINCIPAL_CLASS = "nsprincipalclass";
 }
 
 
