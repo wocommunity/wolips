@@ -84,7 +84,8 @@
     <!-- Build all.                                 -->
     <!-- ========================================== -->
     <target name="all">
-	    <ant dir="org.objectstyle.wolips" target="all"/>
+        <ant dir="org.objectstyle.wolips.templateengine" target="all"/>
+        <ant dir="org.objectstyle.wolips" target="all"/>
 	    <ant dir="org.objectstyle.wolips.help" target="all"/>
 	    <ant dir="org.objectstyle.wolips.targetbuilder" target="all"/>
 	    <ant dir="org.objectstyle.wolips.support" target="all"/>
@@ -107,14 +108,14 @@
 	    <ant dir="org.objectstyle.wolips.cayenne.ant" target="all"/>
 	    <ant dir="org.objectstyle.wolips.team" target="all"/>
 	    <ant dir="org.objectstyle.wolips.about" target="all"/>
-            <ant dir="org.objectstyle.wolips.templateengine" target="all"/>
     </target>
     <!-- ========================================== -->
     <!-- Build dist.                                -->
     <!-- ========================================== -->
     <target name="dist">
 	    <mkdir dir="../../${build.output.dist.dir}/plugins"/>
-	    <ant dir="org.objectstyle.wolips" target="dist"/>
+	    <ant dir="org.objectstyle.wolips.templateengine" target="dist"/>
+    	<ant dir="org.objectstyle.wolips" target="dist"/>
 	    <ant dir="org.objectstyle.wolips.help" target="dist"/>
 	    <ant dir="org.objectstyle.wolips.targetbuilder" target="dist"/>
 	    <ant dir="org.objectstyle.wolips.support" target="dist"/>
@@ -137,8 +138,7 @@
 	    <ant dir="org.objectstyle.wolips.cayenne.ant" target="dist"/>
 	    <ant dir="org.objectstyle.wolips.team" target="dist"/>
 	    <ant dir="org.objectstyle.wolips.about" target="dist"/>
-	    <ant dir="org.objectstyle.wolips.templateengine" target="dist"/>
-    </target>
+	</target>
 
     <!-- ========================================== -->
     <!-- Build test prepare.                        -->
