@@ -75,7 +75,6 @@ import org.eclipse.ui.wizards.datatransfer.SelectFilesOperation;
 import org.objectstyle.wolips.WOLipsPlugin;
 import org.objectstyle.wolips.env.Environment;
 import org.objectstyle.wolips.wizards.Messages;
-import org.objectstyle.wolips.wo.WOVariables;
 
 /**
  * Wrapper of FileSelectionDialog to select jars from given
@@ -235,28 +234,32 @@ public class WOFrameworkDialogWrapper {
 				return toReturn;
 
 			File fileToAdd = (File) fileSystemObject;
-			String parentDirName;
-			String parentParentDirName;
+
+			File javaDir = null;
+			File resourcesDir = null;
+			File frameworkDir = null;
 
 			if (fileToAdd.isFile()
 				&& "jar".equals(getExtensionFor(fileToAdd.getName()))) {
 
-				parentDirName = fileToAdd.getParentFile().getName();
-				parentParentDirName =
-					fileToAdd.getParentFile().getParentFile().getName();
-
-				// must be jar (see above), ensure no web server resources are added
-				if (parentParentDirName
-					.equals(WOVariables.webServerResourcesDirName())) {
+				// ensure correct framework path
+				boolean isValidPath = false;
+				javaDir = fileToAdd.getParentFile();
+				if (javaDir != null && "Java".equals(javaDir.getName())) {
+					resourcesDir = javaDir.getParentFile();
+					if (resourcesDir != null
+						&& "Resources".equals(resourcesDir.getName())) {
+						frameworkDir = resourcesDir.getParentFile();
+						if (frameworkDir != null
+							&& frameworkDir.getName().endsWith(".framework")) {
+							isValidPath = true;
+						}
+					}
+				}
+				if (!isValidPath) {
 					return null;
 				}
-
-				// ensure "jar" is in "Resources/Java"
-				if (!"Java".equals(parentDirName)
-					|| !"Resources".equals(parentParentDirName)) {
-					return null;
-				}
-
+				
 				IClasspathEntry[] resolvedOldClasspathEntries;
 				try {
 					resolvedOldClasspathEntries =
@@ -267,9 +270,7 @@ public class WOFrameworkDialogWrapper {
 						e,
 						null);
 					return null;
-				}
-
-				// now look through resolved old class path entries and deny entries already set
+				} // now look through resolved old class path entries and deny entries already set
 				for (int i = 0; i < resolvedOldClasspathEntries.length; i++) {
 					if (resolvedOldClasspathEntries[i]
 						.getPath()
