@@ -3,9 +3,6 @@
 	<name>org.objectstyle.wolips.launching</name>
 	<comment></comment>
 	<projects>
-		<project>org.objectstyle.wolips</project>
-		<project>org.objectstyle.wolips.jdt</project>
-		<project>org.objectstyle.wolips.variables</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

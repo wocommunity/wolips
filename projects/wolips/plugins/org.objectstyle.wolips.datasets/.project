@@ -3,7 +3,6 @@
 	<name>org.objectstyle.wolips.datasets</name>
 	<comment></comment>
 	<projects>
-		<project>org.objectstyle.wolips.tests.core</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

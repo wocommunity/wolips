@@ -3,18 +3,10 @@
 	<name>org.objectstyle.wolips.tests</name>
 	<comment></comment>
 	<projects>
-		<project>org.eclipse.ant.core</project>
 		<project>org.objectstyle.wolips.datasets</project>
-		<project>org.objectstyle.wolips.devstudio</project>
-		<project>org.objectstyle.wolips.help</project>
-		<project>org.objectstyle.wolips.launching</project>
-		<project>org.objectstyle.wolips.projectbuild</project>
-		<project>org.objectstyle.wolips.support</project>
 		<project>org.objectstyle.wolips.templateengine</project>
 		<project>org.objectstyle.wolips.tests.core</project>
-		<project>org.objectstyle.wolips.ui</project>
 		<project>org.objectstyle.wolips.wizards</project>
-		<project>org.objectstyle.wolips.wounit</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

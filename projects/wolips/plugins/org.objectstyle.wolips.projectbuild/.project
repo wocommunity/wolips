@@ -3,11 +3,6 @@
 	<name>org.objectstyle.wolips.projectbuild</name>
 	<comment></comment>
 	<projects>
-		<project>org.objectstyle.wolips</project>
-		<project>org.objectstyle.wolips.ant</project>
-		<project>org.objectstyle.wolips.cayenne</project>
-		<project>org.objectstyle.wolips.variables</project>
-		<project>org.objectstyle.wolips.woproject</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
