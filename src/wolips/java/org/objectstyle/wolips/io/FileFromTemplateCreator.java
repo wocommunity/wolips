@@ -283,7 +283,6 @@ public class FileFromTemplateCreator extends _FileFromTemplateCreator {
 			}
 		} finally {
 			elementForTemplate = null;
-			content = null;
 			templateContent = null;
 			variablesToExpand = null;
 			variableList = null;
