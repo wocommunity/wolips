@@ -57,18 +57,8 @@
 package org.objectstyle.wolips.builder;
 
 import org.eclipse.ant.core.AntRunner;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
-import org.eclipse.debug.core.DebugPlugin;
-import org.eclipse.debug.core.ILaunchConfigurationType;
-import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
-import org.eclipse.debug.core.ILaunchManager;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.externaltools.model.IExternalToolConstants;
-import org.objectstyle.wolips.IWOLipsPluginConstants;
-import org.objectstyle.wolips.WOLipsPlugin;
-import org.objectstyle.wolips.preferences.Preferences;
 
 /**
  * @author uli
@@ -89,7 +79,7 @@ public class RunAnt {
 		runner.run(new SubProgressMonitor(monitor, 1));
 	}
 
-	public static void asExternalTool(
+	/*public static void asExternalTool(
 		String buildFile,
 		String buildDirectory,
 		int kind,
@@ -117,10 +107,10 @@ public class RunAnt {
 		config.setAttribute(IExternalToolConstants.ATTR_LOCATION, buildFile);
 		config.setAttribute(
 			IExternalToolConstants.ATTR_ANT_PROPERTY_FILES,
-			buildDirectory + "/build.properties");
+			buildDirectory + "/build.properties");*/
 		/*config.setAttribute(
 					IExternalToolConstants.ATTR_WORKING_DIRECTORY, buildDirectory);*/
-		config.setAttribute(
+		/*config.setAttribute(
 			IExternalToolConstants.ATTR_RUN_IN_BACKGROUND,
 			false);
 		if (Preferences
@@ -140,7 +130,7 @@ public class RunAnt {
 		monitor.subTask(BuildMessages.getString("Build.SubTask.Name"));
 		config.launch(
 			ILaunchManager.RUN_MODE,
-			new SubProgressMonitor(monitor, 1));
+			new SubProgressMonitor(monitor, 1));*/
 		/*
 		if (kind == IncrementalProjectBuilder.AUTO_BUILD)
 			config.setAttribute(
@@ -155,7 +145,5 @@ public class RunAnt {
 				IExternalToolConstants.VAR_BUILD_TYPE,
 				IExternalToolConstants.BUILD_TYPE_INCREMENTAL);
 		config.setAttribute(IExternalToolConstants.ATTR_LOCATION, buildFile);*/
-
-	}
-
+	//}
 }
