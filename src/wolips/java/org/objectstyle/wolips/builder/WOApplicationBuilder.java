@@ -54,7 +54,7 @@
  *
  */
  
- package org.objectstyle.wolips.builder;
+package org.objectstyle.wolips.builder;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -66,11 +66,6 @@ import org.objectstyle.wolips.WOLipsPlugin;
 
 /**
  * @author uli
- *
- * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates.
- * To enable and disable the creation of type comments go to
- * Window>Preferences>Java>Code Generation.
  */
 public class WOApplicationBuilder extends WOBuilder {
 
