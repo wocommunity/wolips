@@ -117,7 +117,7 @@ public class WOFramework extends WOTask {
 
     protected void buildInfo() throws BuildException {
         Vector libs = getLibFiles();
-        InfoBuilder infoBuilder = new InfoBuilder(name, libs, hasClasses());
+        InfoBuilder infoBuilder = new InfoBuilder(this, libs);
         try {
             infoBuilder.fileFromTemplate("woframework/Info.plist", new File(resourcesDir(), "Info.plist"));
         } catch (IOException ioex) {

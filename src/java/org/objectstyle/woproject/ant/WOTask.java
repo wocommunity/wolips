@@ -83,6 +83,9 @@ public abstract class WOTask extends MatchingTask {
         this.name = name;
     }
 
+    public String getName() {
+    	return name;
+    }
 
     public void setDestDir(String destDir) {
         this.destDir = destDir;
@@ -159,21 +162,21 @@ public abstract class WOTask extends MatchingTask {
         }
     }
 
-    protected boolean hasWs() {
+    public boolean hasWs() {
         return wsresources.size() > 0;
     }
 
-    protected boolean hasResources() {
+    public boolean hasResources() {
         return resources.size() > 0;
     }
 
 
-    protected boolean hasClasses() {
+    public boolean hasClasses() {
         return classes.size() > 0;
     }
 
 
-    protected void initChildTask(Task t) {
+    public void initChildTask(Task t) {
         t.setOwningTarget(this.getOwningTarget());
         t.setProject(this.getProject());
         t.setTaskName(this.getTaskName());

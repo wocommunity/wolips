@@ -66,16 +66,13 @@ import java.util.*;
  * @author Emily Bache, Andrei Adamchik
  */
 public class InfoBuilder extends TemplateProcessor {
-
     private Vector libFiles;
-    private boolean hasOwnClasses;
 
-
-    public InfoBuilder(String name, Vector libFiles, boolean hasOwnClasses) {
-        super(name);
+    public InfoBuilder(WOTask task, Vector libFiles) {
+        super(task);
         this.libFiles = libFiles;
-        this.hasOwnClasses = hasOwnClasses;
     }
+    
 
     /**
      * Substitutes a single occurance of "@NAME@" with the value of <code>name</code>
@@ -91,13 +88,13 @@ public class InfoBuilder extends TemplateProcessor {
         String nameToken = "@NAME@";
         int tokInd = line.indexOf(nameToken);
         if (tokInd >= 0) {
-            return replace(nameToken, line, name);
+            return replace(nameToken, line, getName());
         }
 
         String lowerCaseNameToken = "@LOWERC_NAME@";
         int lctokInd = line.indexOf(lowerCaseNameToken);
         if (lctokInd >= 0) {
-            return replace(lowerCaseNameToken, line, name.toLowerCase());
+            return replace(lowerCaseNameToken, line, getName().toLowerCase());
         }
 
         String jarArrayToken = "@JAR_ARRAY@";
@@ -105,9 +102,9 @@ public class InfoBuilder extends TemplateProcessor {
         if (jarArrayIndex >= 0) {
             StringBuffer toInsert = new StringBuffer();
             toInsert.append("<array>");
-            if (this.hasOwnClasses) {
+            if (task.hasClasses()) {
                 toInsert.append("\n\t\t<string>");
-                toInsert.append(name.toLowerCase() + ".jar");
+                toInsert.append(getName().toLowerCase() + ".jar");
                 toInsert.append("</string>");
             }
             for (Iterator it = libFiles.iterator(); it.hasNext();) {

@@ -65,14 +65,14 @@ import java.util.*;
  * @author Andrei Adamchik
  */
 public abstract class TemplateProcessor {
-	protected String name;
+	protected WOTask task;
 
 	/** 
 	 * Creates new TemplateProcessor and initializes it with the name
 	 * of the project being built.
 	 */
-	public TemplateProcessor(String name) {
-		this.name = name;
+	public TemplateProcessor(WOTask task) {
+		this.task = task;
 	}
 
 	/** 
@@ -81,18 +81,26 @@ public abstract class TemplateProcessor {
 	public static final String replace(
 		String token,
 		String line,
-		String toInsert) {
+		String subst) {
+			
 		int tokenIndex = line.indexOf(token);
 		return line.substring(0, tokenIndex)
-			+ toInsert
+			+ subst
 			+ line.substring(tokenIndex + token.length());
 	}
+
+	/**
+	 * Replaces all tokens found in the template <code>line</code> so that the 
+	 * resulting line can be written to the output file.
+	 */
+	protected abstract String replaceTokens(String line);
 
 	/** 
 	 * Returns a name of WebObjects project being built. */
 	public String getName() {
-		return name;
+		return task.getName();
 	}
+	
 
 	/**
 	 * Creates a file from a template, substituting all tokens
@@ -110,9 +118,9 @@ public abstract class TemplateProcessor {
 		BufferedWriter out = new BufferedWriter(new FileWriter(destFile));
 		BufferedReader in =
 			new BufferedReader(new InputStreamReader(templateStream));
-
 		writeText(in, out);
 	}
+
 
 	protected void writeText(BufferedReader in, BufferedWriter out)
 		throws IOException {
@@ -121,7 +129,7 @@ public abstract class TemplateProcessor {
 		try {
 			while ((line = in.readLine()) != null) {
 				out.write(replaceTokens(line));
-				
+
 				// make it UNIX style
 				out.write('\n');
 			}
@@ -131,10 +139,4 @@ public abstract class TemplateProcessor {
 			in.close();
 		}
 	}
-
-	/**
-	 * Replaces all tokens found in the template <code>line</code> so that the 
-	 * resulting line can be written to the output file.
-	 */
-	protected abstract String replaceTokens(String line);
 }

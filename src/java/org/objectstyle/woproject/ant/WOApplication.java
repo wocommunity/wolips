@@ -115,13 +115,13 @@ public class WOApplication extends WOTask {
 	protected void buildScripts() throws BuildException {
 		try {
 			// build Info.plist
-			new InfoBuilder(name, new Vector(), true).fileFromTemplate(
+			new InfoBuilder(this, new Vector()).fileFromTemplate(
 				"woapp/Info.plist",
 				new File(contentsDir(), "Info.plist"));
-				
-		    // build script files
-		    new AppScriptBuilder(name).buildScripts(taskDir());
-		
+
+			// build script files
+			new AppScriptBuilder(this).buildScripts(taskDir());
+
 		} catch (IOException ioex) {
 			throw new BuildException("Error copying Info.plist", ioex);
 		}

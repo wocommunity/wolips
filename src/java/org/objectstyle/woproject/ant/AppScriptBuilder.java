@@ -65,15 +65,27 @@ import java.io.File;
  */
 public class AppScriptBuilder extends TemplateProcessor {
 
-	public AppScriptBuilder(String name) {
-		super(name);
+	public AppScriptBuilder(WOTask task) {
+		super(task);
 	}
 
 	protected String replaceTokens(String line) {
 		return line;
 	}
-	
+
 	public void buildScripts(File appDir) {
-  
+		buildWindows(appDir);
+		buildUnix(appDir);
+		buildMac(appDir);
+	}
+
+	protected void buildWindows(File appDir) {
+		
+	}
+
+	protected void buildUnix(File appDir) {
+	}
+
+	protected void buildMac(File appDir) {
 	}
 }

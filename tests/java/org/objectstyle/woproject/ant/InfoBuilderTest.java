@@ -53,90 +53,142 @@
  * <http://objectstyle.org/>.
  *
  */
- package org.objectstyle.woproject.ant;
+package org.objectstyle.woproject.ant;
 
 import java.io.*;
 import java.util.*;
 import junit.framework.TestCase;
 
+/** 
+ * Test cases for InfoBuilder class.
+ * 
+ * @author Emily Bache, Andrei Adamchik
+ */
 public class InfoBuilderTest extends TestCase {
 
-    private final static String NS_JAVA_PATH_BEGIN = "NSJavaPath</key>";
-    private final static String NS_JAVA_PATH_END = "<key>CFBundleInfoDictionaryVersion";
+	private final static String NS_JAVA_PATH_BEGIN = "NSJavaPath</key>";
+	private final static String NS_JAVA_PATH_END =
+		"<key>CFBundleInfoDictionaryVersion";
 
-    FileReader fin;
-    StringWriter sout;
-    BufferedWriter bout;
-    BufferedReader bin;
+	protected FileReader fin;
+	protected StringWriter sout;
+	protected BufferedWriter bout;
+	protected BufferedReader bin;
+	protected TestTask parentTask;
 
-    public InfoBuilderTest(String name) {
-        super(name);
-    }
+	public InfoBuilderTest(String name) {
+		super(name);
+	}
 
-    public void setUp() throws Exception {
-        super.setUp();
-        fin = new FileReader("src/resources/woframework/Info.plist");
-        bin = new BufferedReader(fin);
-        sout = new StringWriter();
-        bout = new BufferedWriter(sout);
-    }
+	public void setUp() throws Exception {
+		super.setUp();
+		fin = new FileReader("src/resources/woframework/Info.plist");
+		bin = new BufferedReader(fin);
+		sout = new StringWriter();
+		bout = new BufferedWriter(sout);
+		parentTask = new TestTask();
+		parentTask.setName(this.getName());
+	}
 
-    public void tearDown() throws Exception {
-        bout.close();
-        bin.close();
-        fin.close();
-        sout.close();
-        super.tearDown();
-    }
+	public void tearDown() throws Exception {
+		bout.close();
+		bin.close();
+		fin.close();
+		sout.close();
+		super.tearDown();
+	}
 
-    public void testNoLibs() throws Exception {
-        InfoBuilder infoBuilder = new InfoBuilder(getName(), new Vector(), true);
-        infoBuilder.writeText(bin, bout);
+	public void testNoLibs() throws Exception {
+		parentTask.setHasClasses(true);
+		InfoBuilder infoBuilder = new InfoBuilder(parentTask, new Vector());
+		infoBuilder.writeText(bin, bout);
 
-        String output = sout.toString();
-        assertTrue(output.length() > 0);
-        String nsJavaPath = output.substring(output.indexOf(NS_JAVA_PATH_BEGIN) + NS_JAVA_PATH_BEGIN.length(), output.indexOf(NS_JAVA_PATH_END));
-        assertEquals("\n\t<array>\n"
-            + "\t\t<string>"+ getName().toLowerCase() + ".jar</string>\n"
-            + "\t</array>\n\t"
-            , nsJavaPath);
-    }
+		String output = sout.toString();
+		assertTrue(output.length() > 0);
+		String nsJavaPath =
+			output.substring(
+				output.indexOf(NS_JAVA_PATH_BEGIN)
+					+ NS_JAVA_PATH_BEGIN.length(),
+				output.indexOf(NS_JAVA_PATH_END));
+		assertEquals(
+			"\n\t<array>\n"
+				+ "\t\t<string>"
+				+ getName().toLowerCase()
+				+ ".jar</string>\n"
+				+ "\t</array>\n\t",
+			nsJavaPath);
+	}
 
-    public void testLibsAndClasses() throws Exception {
-        String lib = "jar1.jar";
-        Vector libs = new Vector();
-        libs.add(lib);
-        InfoBuilder infoBuilder = new InfoBuilder(getName(), libs, true);
-        infoBuilder.writeText(bin, bout);
+	public void testLibsAndClasses() throws Exception {
+		parentTask.setHasClasses(true);
+		String lib = "jar1.jar";
+		Vector libs = new Vector();
+		libs.add(lib);
+		InfoBuilder infoBuilder = new InfoBuilder(parentTask, libs);
+		infoBuilder.writeText(bin, bout);
 
-        String output = sout.toString();
-        String nsJavaPath = output.substring(output.indexOf(NS_JAVA_PATH_BEGIN) + NS_JAVA_PATH_BEGIN.length(), output.indexOf(NS_JAVA_PATH_END));
-        assertEquals("\n\t<array>\n"
-            + "\t\t<string>" + getName().toLowerCase() + ".jar</string>\n"
-            + "\t\t<string>" + lib + "</string>\n"
-            + "\t</array>\n\t"
-            , nsJavaPath);
+		String output = sout.toString();
+		String nsJavaPath =
+			output.substring(
+				output.indexOf(NS_JAVA_PATH_BEGIN)
+					+ NS_JAVA_PATH_BEGIN.length(),
+				output.indexOf(NS_JAVA_PATH_END));
+		assertEquals(
+			"\n\t<array>\n"
+				+ "\t\t<string>"
+				+ getName().toLowerCase()
+				+ ".jar</string>\n"
+				+ "\t\t<string>"
+				+ lib
+				+ "</string>\n"
+				+ "\t</array>\n\t",
+			nsJavaPath);
 
-    }
+	}
 
-    public void testJustLibs() throws Exception {
-        String lib1 = "jar1.jar";
-        String lib2 = "jar2.zip";
-        String lib3 = "jar3.jar";
-        Vector libs = new Vector();
-        libs.add(lib1);
-        libs.add(lib2);
-        libs.add(lib3);
-        InfoBuilder infoBuilder = new InfoBuilder(getName(), libs, false);
-        infoBuilder.writeText(bin, bout);
+	public void testJustLibs() throws Exception {
+		parentTask.setHasClasses(false);
+		String lib1 = "jar1.jar";
+		String lib2 = "jar2.zip";
+		String lib3 = "jar3.jar";
+		Vector libs = new Vector();
+		libs.add(lib1);
+		libs.add(lib2);
+		libs.add(lib3);
+		InfoBuilder infoBuilder = new InfoBuilder(parentTask, libs);
+		infoBuilder.writeText(bin, bout);
 
-        String output = sout.toString();
-        String nsJavaPath = output.substring(output.indexOf(NS_JAVA_PATH_BEGIN) + NS_JAVA_PATH_BEGIN.length(), output.indexOf(NS_JAVA_PATH_END));
-        assertEquals("\n\t<array>\n"
-            + "\t\t<string>" + lib1 + "</string>\n"
-            + "\t\t<string>" + lib2 + "</string>\n"
-            + "\t\t<string>" + lib3 + "</string>\n"
-            + "\t</array>\n\t"
-            , nsJavaPath);
-    }
+		String output = sout.toString();
+		String nsJavaPath =
+			output.substring(
+				output.indexOf(NS_JAVA_PATH_BEGIN)
+					+ NS_JAVA_PATH_BEGIN.length(),
+				output.indexOf(NS_JAVA_PATH_END));
+		assertEquals(
+			"\n\t<array>\n"
+				+ "\t\t<string>"
+				+ lib1
+				+ "</string>\n"
+				+ "\t\t<string>"
+				+ lib2
+				+ "</string>\n"
+				+ "\t\t<string>"
+				+ lib3
+				+ "</string>\n"
+				+ "\t</array>\n\t",
+			nsJavaPath);
+	}
+
+	static class TestTask extends WOFramework {
+		protected boolean hasClasses;
+
+		public boolean hasClasses() {
+			return hasClasses;
+		}
+
+		public void setHasClasses(boolean flag) {
+			hasClasses = flag;
+		}
+	};
+
 }
