@@ -112,6 +112,8 @@ public class Environment {
 		p = null;
 		br = null;
 		line = null;
+		if(p != null)
+			p.destroy();
 		return envVars;
 	}
 	/**
