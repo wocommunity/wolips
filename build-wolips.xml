@@ -7,16 +7,17 @@
 	<property file="build.properties" />
     <property file="${user.home}/build.properties" />
     <property file="default.properties" />
+    <property file="src/wolips/plugin.properties"/>
     <property environment="env"/>
     <property name="output" value="output"/>
     <property name="next.root" value="${env.NEXT_ROOT}"/>
-    <property name="wolips.project.version" value="0.8.7"/>
+    
     
     <!-- ============================================= -->
     <!-- Derived Properties.                           -->
     <!-- ============================================= -->
     <property name="build" value="${output}/build"/>
-    <property name="wolips.name" value="org.objectstyle.wolips_${wolips.project.version}"/>
+    <property name="wolips.name" value="org.objectstyle.wolips_${WOLips.version}"/>
     <property name="wolips.dist" value="${dist.base}/${wolips.name}"/>
     <!-- main distribution. -->
     <property name="dist" value="${dist.base}/${project.name}-${project.version}"/>
@@ -70,6 +71,7 @@
         <copy todir="${wolips.dist}/lib">
              <fileset dir="${dist}/lib">
              	<exclude name="junit.jar"/>
+             	<exclude name="log4j-1.2.beta4.jar"/>
              	<exclude name="ant.jar"/>
              	<exclude name="woproject-tests.jar"/>
              </fileset>
