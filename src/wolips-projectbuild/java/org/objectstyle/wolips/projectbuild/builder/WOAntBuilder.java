@@ -261,7 +261,9 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 				|| aString.indexOf("ant.") > 0
 				|| aString.indexOf(".classpath") > 0
 				|| aString.indexOf("PB.project") > 0
-				|| aString.indexOf("Makefile") > 0);
+				|| aString.indexOf("Makefile") > 0
+				|| aString.indexOf("build") > 0
+				|| aString.indexOf("dist") > 0);
 	}
 	/**
 	 * Method handleException.
