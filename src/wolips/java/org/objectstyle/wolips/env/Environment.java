@@ -53,28 +53,26 @@
  * <http://objectstyle.org/>.
  *
  */
- 
 package org.objectstyle.wolips.env;
-
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStreamReader;
 import java.util.Properties;
 
 import org.objectstyle.wolips.WOLipsPlugin;
 import org.objectstyle.wolips.io.FileStringScanner;
-
 /**
  * @author uli
  * Utility for the environment.
  */
 public class Environment {
-	
 	/**
 	 * The String NEXT_ROOT.
 	 */
 	public static final String NEXT_ROOT = "NEXT_ROOT";
 	private static Properties envVars;
 	private static String nextRoot;
+	private static String localRoot;
 	private static String foundationJarPath;
 	
 	/**
@@ -90,77 +88,95 @@ public class Environment {
 	 * @throws Exception
 	 */
 	public static Properties getEnvVars() throws Exception {
-		if(envVars != null) return envVars;
-  		Process p = null;
-  		Environment.envVars = new Properties();
- 		Runtime r = Runtime.getRuntime();
-  		String OS = System.getProperty("os.name").toLowerCase();
-  		if (OS.indexOf("windows 9") > -1) {
-    		p = r.exec( "command.com /c set" );
-    	}
-  		else if ( (OS.indexOf("nt") > -1) || (OS.indexOf("windows 2000") > -1) ) {
-    		p = r.exec( "cmd.exe /c set" );
-    	}
-  		else {  
-    		p = r.exec( "env" );
-    	}
-  		BufferedReader br = new BufferedReader( new InputStreamReader( p.getInputStream() ) );
-  		String line;
-  		while( (line = br.readLine()) != null ) {
-  			int idx = line.indexOf( '=' );
-   			String key = line.substring( 0, idx );
-  			String value = line.substring( idx+1 );
-   			Environment.envVars.setProperty( key, value );
-   		}
-  	return Environment.envVars;
-  }
-  
-  /**
-   * @return String with path to the foundation.jar
-   */
-  public static String foundationJarPath() {
-  	if(foundationJarPath != null) return foundationJarPath;
-  	try {
-		if(Environment.isNextRootSet())
-			foundationJarPath = "file:///" + 
-			FileStringScanner.replace(Environment.nextRoot(), "/", "\\") +
-			"\\Library\\Frameworks\\JavaFoundation.framework\\Resources\\Java\\javafoundation.jar"; 
-		else
-			foundationJarPath = "file:///System/Library/Frameworks/JavaFoundation.framework/Resources/Java/javafoundation.jar";
+		if (envVars != null)
+			return envVars;
+		Process p = null;
+		Environment.envVars = new Properties();
+		Runtime r = Runtime.getRuntime();
+		String OS = System.getProperty("os.name").toLowerCase();
+		if (OS.indexOf("windows 9") > -1) {
+			p = r.exec("command.com /c set");
+		} else if (
+			(OS.indexOf("nt") > -1) || (OS.indexOf("windows 2000") > -1)) {
+			p = r.exec("cmd.exe /c set");
+		} else {
+			p = r.exec("env");
+		}
+		BufferedReader br =
+			new BufferedReader(new InputStreamReader(p.getInputStream()));
+		String line;
+		while ((line = br.readLine()) != null) {
+			int idx = line.indexOf('=');
+			String key = line.substring(0, idx);
+			String value = line.substring(idx + 1);
+			Environment.envVars.setProperty(key, value);
+		}
+		return Environment.envVars;
 	}
-  	catch (Exception anException) {
-  		WOLipsPlugin.log(anException);
-  	}
-  	return foundationJarPath;
-  }
-
+	
+	/**
+	 * @return String with path to the foundation.jar
+	 */
+	public static String foundationJarPath() {
+		if (foundationJarPath != null)
+			return foundationJarPath;
+		try {
+			if (Environment.isNextRootSet())
+				foundationJarPath =
+					"file:///"
+						+ FileStringScanner.replace(
+							Environment.nextRoot(),
+							"/",
+							"\\")
+						+ "\\Library\\Frameworks\\JavaFoundation.framework\\Resources\\Java\\javafoundation.jar";
+			else
+				foundationJarPath =
+					"file:///System/Library/Frameworks/JavaFoundation.framework/Resources/Java/javafoundation.jar";
+		} catch (Exception anException) {
+			WOLipsPlugin.log(anException);
+		}
+		return foundationJarPath;
+	}
+	
 	/**
 	 * @return Returns the NEXT_ROOT
 	 */
 	public static String nextRoot() {
-		if(Environment.nextRoot != null) return Environment.nextRoot;
+		if (Environment.nextRoot != null)
+			return Environment.nextRoot;
 		try {
 			Properties aEnv = Environment.getEnvVars();
-			if(aEnv.containsKey(Environment.NEXT_ROOT)) {
+			if (aEnv.containsKey(Environment.NEXT_ROOT)) {
 				Environment.nextRoot = aEnv.getProperty(Environment.NEXT_ROOT);
 				return Environment.nextRoot;
 			}
+		} catch (Exception anException) {
+			WOLipsPlugin.log(anException);
 		}
-  		catch (Exception anException) {
-  			WOLipsPlugin.log(anException);
-  		}
-  		Environment.nextRoot = "/System";
-  		return Environment.nextRoot;
-  	}
-  
-  	public static boolean isNextRootSet() {
-  		try {
-			if(Environment.getEnvVars().containsKey(Environment.NEXT_ROOT)) return true;
+		Environment.nextRoot = "/System";
+		return Environment.nextRoot;
+	}
+	
+	public static String localRoot() {
+		if (Environment.localRoot == null) {
+			if (isNextRootSet()) {
+				// windows
+				Environment.localRoot = nextRoot() + File.separator + "Local";
+			} else {
+				// mac
+				Environment.localRoot = "";
+			}
 		}
-  		catch (Exception anException) {
-  			WOLipsPlugin.log(anException);
-  		}
-  		return false;
-  	}
-  	
+		return Environment.localRoot;
+	}
+	
+	public static boolean isNextRootSet() {
+		try {
+			if (Environment.getEnvVars().containsKey(Environment.NEXT_ROOT))
+				return true;
+		} catch (Exception anException) {
+			WOLipsPlugin.log(anException);
+		}
+		return false;
+	}
 }

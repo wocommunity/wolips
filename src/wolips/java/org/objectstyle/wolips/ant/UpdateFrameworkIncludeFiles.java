@@ -79,7 +79,6 @@ import org.objectstyle.wolips.wo.WOVariables;
  */
 public class UpdateFrameworkIncludeFiles extends UpdateIncludeFiles {
 
-
 	/**
 	 * Constructor for UpdateFrameworkIncludeFiles.
 	 */
@@ -150,9 +149,9 @@ public class UpdateFrameworkIncludeFiles extends UpdateIncludeFiles {
 			StringBuffer newFrameworkEntries = new StringBuffer();
 			String resolvedEntry;
 			for (int j = 0; j < classPaths.length; j++) {
-				if (classPaths[j].getEntryKind()
-					== IClasspathEntry.CPE_LIBRARY || classPaths[j].getEntryKind()
-					== IClasspathEntry.CPE_VARIABLE) {
+				if (classPaths[j].getEntryKind() == IClasspathEntry.CPE_LIBRARY
+					|| classPaths[j].getEntryKind()
+						== IClasspathEntry.CPE_VARIABLE) {
 
 					// convert classpath entries to woproject acceptable paths
 					resolvedEntry =
@@ -171,17 +170,17 @@ public class UpdateFrameworkIncludeFiles extends UpdateIncludeFiles {
 
 			if (newFrameworkEntries.length() > 0) {
 				try {
-					if (currentFrameworkListFile.exists()){
+					if (currentFrameworkListFile.exists()) {
 						// file may be created by WOBuilder in the meantime
 						// no update needed
 						return;
-					}else{
-					// create list file if any entries found
-					currentFrameworkListFile.create(
-						new ByteArrayInputStream(
-							newFrameworkEntries.toString().getBytes()),
-						true,
-						null);
+					} else {
+						// create list file if any entries found
+						currentFrameworkListFile.create(
+							new ByteArrayInputStream(
+								newFrameworkEntries.toString().getBytes()),
+							true,
+							null);
 					}
 				} catch (CoreException e) {
 					throw new BuildException(
@@ -210,10 +209,18 @@ public class UpdateFrameworkIncludeFiles extends UpdateIncludeFiles {
 		Path rootDir) {
 		String toReturn = null;
 		IPath pathToConvert;
-		if (entry.getPath().matchingFirstSegments(rootDir)
+		// determine if entry's path begins with rootDir
+		if ((entry.getPath().segmentCount() > rootDir.segmentCount())
+			&& entry
+				.getPath()
+				.removeLastSegments(
+					entry.getPath().segmentCount() - rootDir.segmentCount())
+				.equals(rootDir)) {
+			/*
+			if (entry.getPath().matchingFirstSegments(rootDir)
 			== rootDir.segmentCount()) {
-
-			// remove next root from path, remove device and make relative
+			*/
+			// remove root dir from path, remove device and make relative
 			pathToConvert =
 				entry
 					.getPath()
@@ -235,7 +242,5 @@ public class UpdateFrameworkIncludeFiles extends UpdateIncludeFiles {
 		}
 		return toReturn;
 	}
-
-	
 
 }
