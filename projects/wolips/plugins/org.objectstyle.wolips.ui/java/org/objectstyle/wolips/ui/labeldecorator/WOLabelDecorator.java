@@ -231,21 +231,26 @@ public class WOLabelDecorator
 		 * @param overlayImageFilename
 		 */
 		public WOImageDescriptor(Image image, String overlayImageFilename) {
-			baseImageData = image.getImageData();
-			size = new Point(baseImageData.width, baseImageData.height);
+			if(image != null) {
+				baseImageData = image.getImageData();
+				size = new Point(baseImageData.width, baseImageData.height);
+			}
 			overlayImageData =
 				ImageDescriptor
 					.createFromFile(
 						WOLabelDecorator.class,
 						overlayImageFilename)
 					.getImageData();
+			if(size == null)
+				size = new Point(overlayImageData.width, overlayImageData.height);
 		}
 		/**
 		 * @see org.eclipse.jface.resource.CompositeImageDescriptor#drawCompositeImage(int, int)
 		 */
 		protected void drawCompositeImage(int width, int height) {
 			// draw base image
-			drawImage(baseImageData, 0, 0);
+			if(baseImageData != null)
+				drawImage(baseImageData, 0, 0);
 			int x = getSize().x;
 			x -= overlayImageData.width;
 			drawImage(overlayImageData, x, 0);
