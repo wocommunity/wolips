@@ -34,9 +34,18 @@
     <!-- Required parameters                           -->
     <!-- param.plugin.dir the plugin directory         -->
     <!-- param.build.output.build.dir the output dir   -->
+    <!-- param.plugin.name the plugin name             -->
     <!-- ============================================= -->
     <target name="copy.resources">
-
+         <mkdir dir="${param.build.output.build.dir}/plugins/${param.plugin.name}"/>
+         <copy todir="${param.build.output.build.dir}/plugins/${param.plugin.name}">
+            <fileset dir="">
+        	<exclude name="build.xml"/>
+                <exclude name="default.properties"/>
+        	<exclude name=".project"/>
+                <exclude name=".classpath"/>
+            </fileset>
+        </copy>
     </target>
 
     <!-- ============================================= -->

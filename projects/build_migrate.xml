@@ -38,12 +38,14 @@
 	    <fileset dir="wolips/features">
         	<include name="org.objectstyle.*/**"/>
         	<exclude name="**/build.xml"/>
+        	<exclude name="**/default.properties"/>
             </fileset>
 	</delete>
         <delete>
 	    <fileset dir="wolips/plugins">
         	<include name="org.objectstyle.*/**"/>
         	<exclude name="**/build.xml"/>
+        	<exclude name="**/default.properties"/>
             </fileset>
 	</delete>
         <delete dir="wolips/update"/>

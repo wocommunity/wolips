@@ -9,8 +9,18 @@
     <!-- Required parameters                           -->
     <!-- param.plugin.dir the plugin directory         -->
     <!-- param.build.output.build.dir the output dir   -->
+    <!-- param.feature.name the feature name           -->
     <!-- ============================================= -->
     <target name="copy.resources">
+	<mkdir dir="${param.build.output.build.dir}/features/${param.feature.name}"/>
+        <copy todir="${param.build.output.build.dir}/features/${param.feature.name}">
+            <fileset dir="">
+        	<exclude name="build.xml"/>
+                <exclude name="default.properties"/>
+        	<exclude name=".project"/>
+                <exclude name=".classpath"/>
+            </fileset>
+        </copy>
     </target>
 
     <!-- ============================================= -->

@@ -6,6 +6,8 @@
 <!-- ======================================================== -->
 <project name="org.objectstyle.wolips.tests.feature" default="" basedir=".">
 
+    <property file="default.properties"/>
+
     <!-- ========================================== -->
     <!-- Build copy resources.                      -->
     <!-- ========================================== -->
@@ -13,6 +15,7 @@
         <ant dir="." antfile="../../../${project.buildscripts.dir}/feature-project.xml" target="copy.resources">
             <property name="param.plugin.dir" value="."/>
             <property name="param.build.output.build.dir" value="../../../${build.output.build.dir}"/>
+            <property name="param.feature.name" value="${feature.name}"/>
 	</ant>
     </target>
 
