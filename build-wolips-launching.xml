@@ -9,12 +9,6 @@
     <!-- Define CLASSPATH settings.                    -->
     <!-- ============================================= -->
     <target name="defineClasspath" if="wolips.build.launching">
-        <condition property="next.root" value="/System">
-            <and>
-                <os family="mac" />
-                <os family="unix" />
-            </and>
-        </condition>
         <path id="classpath">
             <fileset dir="${ant.home}/lib">
                 <include name="ant.jar"/>
@@ -67,6 +61,10 @@
              	<exclude name="build.properties"/>
              </fileset>
          </copy>
+      <jar jarfile="${wolips.launching.dist}.jar">
+     	<fileset dir="${wolips.launching.dist}">
+     	</fileset>
+     </jar>
          
     </target>
          

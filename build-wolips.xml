@@ -96,7 +96,12 @@
              <fileset dir="${wolips.dist}/doc">
              	<include name="**/install.html"/>
              </fileset>
-         </copy> 
+         </copy>
+        <jar jarfile="${wolips.dist}.jar">
+     		<fileset dir="${wolips.dist}">
+     	</fileset>
+     </jar>
+  
     </target>
          
          

@@ -3,19 +3,13 @@
 <!-- ======================================================== -->
 <!--                 WOLips Ant file.                         -->
 <!-- ======================================================== -->
-<project name="woproject-wolips-support" default="java" basedir=".">
+<project name="woproject-wolips-devstudio" default="java" basedir=".">
 
     <!-- ============================================= -->
     <!-- Define CLASSPATH settings.                    -->
     <!-- ============================================= -->
-    <target name="defineClasspath" if="wolips.build.support">
-        <condition property="next.root" value="/System">
-            <and>
-                <os family="mac" />
-                <os family="unix" />
-            </and>
-        </condition>
-        <path id="classpath">
+    <target name="defineClasspath" if="wolips.build.devstudio">
+       <path id="classpath">
             <fileset dir="${ant.home}/lib">
                 <include name="ant.jar"/>
             </fileset>
@@ -35,17 +29,17 @@
     </target>
 
     <target name="java" depends="prepare" if="wolips.build.support">
-        <javac srcdir="src/wolips-support/java"
-                destdir="${build}/wolips-support"
+        <javac srcdir="src/wolips-devstudio/java"
+                destdir="${build}/wolips-devstudio"
                 deprecation="${compile.deprecation}"
                 debug="${compile.debug}"
                 optimize="${compile.optimize}">
             <classpath refid="classpath"/>
         </javac>
          
-        <jar jarfile="${wolips.support.dist}/lib/wolips-support.jar">
-            <fileset dir="${build}/wolips-support"/>
-            <fileset dir="src/wolips-support/java">
+        <jar jarfile="${wolips.devstudio.dist}/lib/wolips-devstudio.jar">
+            <fileset dir="${build}/wolips-devstudio"/>
+            <fileset dir="src/wolips-devstudio/java">
           	    <include name="**/*.properties"/>
              </fileset>         
             <metainf dir="doc">
@@ -55,9 +49,9 @@
         
     </target>
 
-    <target name="dist" depends="prepare,java,doc,api" if="wolips.build.support">
-         <copy todir="${wolips.support.dist}">
-             <fileset dir="src/wolips-support">
+    <target name="dist" depends="prepare,java,doc,api" if="wolips.build.devstudio">
+        <copy todir="${wolips.devstudio.dist}">
+             <fileset dir="src/wolips-devstudio">
              	<exclude name="**/java/**"/>
              	<exclude name="**/lib/**"/>
              	<exclude name="**/xdocs/**"/>
@@ -67,11 +61,11 @@
              	<exclude name="build.properties"/>
              </fileset>
          </copy>
-     <jar jarfile="${wolips.support.dist}.jar">
-     	<fileset dir="${wolips.support.dist}">
+      <jar jarfile="${wolips.devstudio.dist}.jar">
+     	<fileset dir="${wolips.devstudio.dist}">
      	</fileset>
      </jar>
-          
+         
     </target>
          
          
@@ -79,9 +73,9 @@
     <!-- ============================================= -->
     <!-- Sets up build and distribution directories.   -->
     <!-- ============================================= -->
-    <target name="prepare" depends="defineClasspath" if="wolips.build.support">
-        <mkdir dir="${build}/wolips-support"/>
-        <mkdir dir="${wolips.support.dist}/lib"/>
+    <target name="prepare" depends="defineClasspath" if="wolips.build.devstudio">
+        <mkdir dir="${build}/wolips-devstudio"/>
+        <mkdir dir="${wolips.devstudio.dist}/lib"/>
     </target>
 
 
@@ -89,8 +83,8 @@
     <!-- Deletes temporary files.                      -->
     <!-- ============================================= -->
     <target name="clean">
-        <delete dir="${build}/wolips-support"/>
-        <delete dir="${wolips.support.dist}"/>
+        <delete dir="${build}/wolips-devstudio"/>
+        <delete dir="${wolips.devstudio.dist}"/>
     </target>
     
     
@@ -104,13 +98,13 @@
     <!-- ========================================== -->
     <!-- Builds API documenatation.                 -->
     <!-- ========================================== -->
-    <target name="api" depends="prepare" if="wolips.build.support">
+    <target name="api" depends="prepare" if="wolips.build.devstudio">
     </target>
     
     
-    <target name="doc" depends="prepare" if="wolips.build.support">
+    <target name="doc" depends="prepare" if="wolips.build.devstudio">
     </target>
     
-    <target name="site-doc" depends="prepare" if="wolips.build.support">
+    <target name="site-doc" depends="prepare" if="wolips.build.devstudio">
     </target>
 </project>

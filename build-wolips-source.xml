@@ -48,7 +48,11 @@
         </zip>
 
         <delete dir="${wolips.source.dist}/api"/>
-
+     <jar jarfile="${wolips.source.dist}.jar">
+     	<fileset dir="${wolips.source.dist}">
+     	</fileset>
+     </jar>
+ 
     </target>
          
          

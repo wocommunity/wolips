@@ -66,7 +66,11 @@
              	<exclude name=".classpath"/>
              </fileset>
          </copy>
-         
+     <jar jarfile="${wolips.targetbuilder.dist}.jar">
+     	<fileset dir="${wolips.targetbuilder.dist}">
+     	</fileset>
+     </jar>
+          
     </target>
          
          

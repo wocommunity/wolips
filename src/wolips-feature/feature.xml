@@ -58,4 +58,18 @@
          version="0.9.7"
          fragment="true"/>
 
+   <plugin
+         id="org.objectstyle.wolips.devstudio"
+         download-size="0"
+         install-size="0"
+         version="0.9.7"
+         fragment="true"/>
+         
+   <plugin
+         id="org.objectstyle.wolips.profiling"
+         download-size="0"
+         install-size="0"
+         version="0.9.7"
+         fragment="true"/>
+                  
 </feature>

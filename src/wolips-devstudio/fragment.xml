@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fragment
+   id="org.objectstyle.wolips.devstudio"
+   name="%WOLips.devstudio.fragmentName"
+   version="0.9.7"
+   provider-name="%WOLips.providerName"
+   plugin-id="org.objectstyle.wolips"
+   plugin-version="0.9.7"
+   match="compatible">
+
+   <runtime>
+      <library name="lib/wolips-devstudio.jar">
+         <export name="*"/>
+         <packages prefixes="org.objectstyle.wolips.devstudio"/>
+      </library>
+   </runtime>
+
+   <requires>
+  </requires>
+
+</fragment>

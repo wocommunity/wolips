@@ -60,7 +60,11 @@
              	<exclude name="build.properties"/>
              </fileset>
          </copy>
-         
+        <jar jarfile="${wolips.help.dist}.jar">
+     		<fileset dir="${wolips.help.dist}">
+     	</fileset>
+     </jar>
+ 
     </target>
          
          
