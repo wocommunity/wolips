@@ -122,17 +122,18 @@ public class RunAnt {
 		try {
 			config = RunAnt.createDefaultLaunchConfiguration(buildFile);
 		} catch (CoreException e) {
+			config = null;
 			WOLipsPlugin.handleException(
 				Display.getCurrent().getActiveShell(),
 				e,
 				BuildMessages.getString("Build.Exception"));
 			return;
 		}
-		//monitor.subTask(BuildMessages.getString("Build.SubTask.Name"));
-		/*config.launch(
-			ILaunchManager.RUN_MODE,
-			new SubProgressMonitor(monitor, 1));*/
-		RunAnt.launch(config, ILaunchManager.RUN_MODE);
+		try {
+			RunAnt.launch(config, ILaunchManager.RUN_MODE);
+		} finally {
+			config = null;
+		}
 		/*if (kind == IncrementalProjectBuilder.AUTO_BUILD)
 			config.setAttribute(
 				IExternalToolConstants.VAR_BUILD_TYPE,
