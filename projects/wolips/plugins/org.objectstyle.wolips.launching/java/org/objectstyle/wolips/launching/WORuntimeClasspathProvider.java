@@ -67,11 +67,11 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.debug.core.ILaunchConfiguration;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.launching.IRuntimeClasspathEntry;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.jdt.launching.StandardClasspathProvider;
-import org.objectstyle.wolips.core.project.INaturesAccessor;
-import org.objectstyle.wolips.core.project.IWOLipsProject;
+import org.objectstyle.wolips.core.project.IWOLipsJavaProject;
 import org.objectstyle.wolips.core.project.WOLipsCore;
 
 /**
@@ -80,8 +80,7 @@ import org.objectstyle.wolips.core.project.WOLipsCore;
  * To change this generated comment go to 
  * Window>Preferences>Java>Code Generation>Code Template
  */
-public class WORuntimeClasspathProvider
-	extends StandardClasspathProvider {
+public class WORuntimeClasspathProvider extends StandardClasspathProvider {
 	public final static String ID =
 		"org.objectstyle.wolips.launching.WORuntimeClasspath";
 
@@ -150,61 +149,13 @@ public class WORuntimeClasspathProvider
 
 	IResource _getWOJavaArchive(IRuntimeClasspathEntry entry)
 		throws CoreException {
-		IResource result = null;
-
 		if (IRuntimeClasspathEntry.PROJECT == entry.getType()) {
 			IProject project = (IProject) entry.getResource();
 
-			IWOLipsProject wop = WOLipsCore.createProject(project);
-			INaturesAccessor na = wop.getNaturesAccessor();
-
-			String projectName = project.getName();
-			String projectNameLC = projectName.toLowerCase();
-
-			// I'd rather use the knowledge from the IncrementalNature, but that fragment is not
-			// visible here (so I can't use the class, I think) [hn3000]
-			if (na.isFramework()) {
-				if (na.isAnt()) {
-					result =
-						project.getFile(
-							"dist/"
-								+ projectName
-								+ ".framework/Resources/Java/"
-								+ projectNameLC
-								+ ".jar");
-				} else if (na.isIncremental()) {
-					result =
-						project.getFolder(
-							"build/"
-								+ projectName
-								+ ".framework/Resources/Java");
-				}
-			} else if (na.isApplication()) { // must be application
-				if (na.isAnt()) {
-					result =
-						project.getFile(
-							"dist/"
-								+ projectName
-								+ ".woa/Contents/Resources/Java/"
-								+ projectNameLC
-								+ ".jar");
-				} else if (na.isIncremental()) {
-					result =
-						project.getFolder(
-							"build/"
-								+ projectName
-								+ ".woa/Contents/Resources/Java");
-				}
-			}
-
-			// check if folder exists, otherwise let Eclipse to its default thing
-			if ((null != result) && (!result.exists())) {
-				System.out.println(
-					"expected resource is not there: "
-						+ result.getLocation().toOSString());
-				result = null;
-			}
+			IWOLipsJavaProject wolipsJavaProject =
+				WOLipsCore.createJavaProject(JavaCore.create(project));
+			return wolipsJavaProject.getClasspathAccessor().getWOJavaArchive();
 		}
-		return result;
+		return null;
 	}
 }
