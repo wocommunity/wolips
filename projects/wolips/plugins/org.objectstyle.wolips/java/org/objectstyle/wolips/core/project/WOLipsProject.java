@@ -537,10 +537,6 @@ public class WOLipsProject implements IWOLipsPluginConstants, IWOLipsProject {
 		/**
 		 * Calls configure on all WOLips natures.
 		 * @throws CoreException
-		* @deprecated this should not be necessary, if the normal 
-		* Eclipse APIs are used correctly, unfortunately, the Project creation
-		* Wizard calls it and I'm unable to figure out what's going on there (hn3000)
-		* -- maybe someone can explain it to me?
 		 */
 		public void callConfigure() throws CoreException {
 			//This is needed by the project wizard
@@ -550,27 +546,6 @@ public class WOLipsProject implements IWOLipsPluginConstants, IWOLipsProject {
 			}
 		}
 
-		//		/**
-		//		 * Calls deconfigure on all WOLips natures.
-		//		 * @throws CoreException
-		//		 */
-		//		public void callDeconfigure() throws CoreException {
-		//			/*
-		//                        IProjectNature[] projectNatures = this.getWOLipsNatures();
-		//			for (int i = 0; i < projectNatures.length; i++) {
-		//				projectNatures[i].deconfigure();
-		//			}
-		//                        */
-		//		}
-
-		//		/**
-		//		 * @param natures
-		//		 * @throws CoreException
-		//		 */
-		//		private void setProjectNatures(String[] natures) throws CoreException {
-		//			this.getProject().getDescription().setNatureIds(natures);
-		//
-		//		}
 	}
 
 	/**
