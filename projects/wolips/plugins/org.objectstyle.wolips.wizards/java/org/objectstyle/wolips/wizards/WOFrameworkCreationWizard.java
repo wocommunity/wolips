@@ -54,6 +54,7 @@
  *
  */
 package org.objectstyle.wolips.wizards;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbench;
 /**
@@ -89,6 +90,7 @@ public class WOFrameworkCreationWizard extends WOProjectCreationWizard {
 	 * Method declared on IWizard
 	 */
 	public boolean performFinish() {
+		this.invokeBuildAndRefresh(mainPage.getProjectHandle(), new NullProgressMonitor());
 		return mainPage.createProject();
 	}
 

@@ -56,11 +56,9 @@
 package org.objectstyle.wolips.wizards;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.PartInitException;
 import org.objectstyle.wolips.core.logging.WOLipsLog;
 import org.objectstyle.wolips.core.util.WorkbenchUtilities;
 /**
@@ -96,6 +94,7 @@ public class WOApplicationCreationWizard extends WOProjectCreationWizard {
 		if (creationSuccessful) {
 			try {
 				openResource(mainPage.getElementToOpen());
+				this.invokeBuildAndRefresh(mainPage.getProjectHandle(), new NullProgressMonitor());
 			} catch (Exception anException) {
 				WOLipsLog.log(anException);
 				creationSuccessful = false;
@@ -110,20 +109,7 @@ public class WOApplicationCreationWizard extends WOProjectCreationWizard {
 	private void openResource(final IResource resource) {
 		if (resource == null || resource.getType() != IResource.FILE)
 			return;
-			
-		final IWorkbenchPage activePage = WorkbenchUtilities.getActivePage();
-		if (activePage == null)
-			return;
-		final Display display = getShell().getDisplay();
-		display.asyncExec(new Runnable() {
-			public void run() {
-				try {
-					activePage.openEditor((IFile) resource);
-				} catch (PartInitException e) {
-					WOLipsLog.log(e);
-				}
-			}
-		});
+		WorkbenchUtilities.open((IFile)resource);	
 		selectAndReveal(resource);
 	}
 }

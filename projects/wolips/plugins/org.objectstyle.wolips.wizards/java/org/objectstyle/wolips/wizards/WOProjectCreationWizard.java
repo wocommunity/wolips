@@ -56,9 +56,15 @@
 
 package org.objectstyle.wolips.wizards;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.wizards.newresource.BasicNewProjectResourceWizard;
+import org.objectstyle.wolips.core.logging.WOLipsLog;
 import org.objectstyle.wolips.core.plugin.WOLipsPluginImages;
 
 /**
@@ -87,4 +93,14 @@ public abstract class WOProjectCreationWizard
 			WOLipsPluginImages.WOPROJECT_WIZARD_BANNER);
 	}
 
+	public final void invokeBuildAndRefresh(IProject aProject, IProgressMonitor progressMonitor) {
+		IFile aFile = aProject.getFile("build.xml");
+		if(aFile != null)
+			try {
+				aFile.touch(progressMonitor);
+				aProject.refreshLocal(IResource.DEPTH_INFINITE, progressMonitor);
+			} catch (CoreException e) {
+				WOLipsLog.log(e);
+			}
+	}
 }
