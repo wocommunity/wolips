@@ -172,7 +172,7 @@ public class FrameworkSet extends FileSet {
     class JarFilter implements FilenameFilter {
 
         public boolean accept(File dir, String name) {
-            return name.endsWith(".jar") || name.endsWith(".zip");
+            return (name.endsWith(".jar") || name.endsWith(".zip")) && !name.equals("src.jar");
         }
     }
 }
