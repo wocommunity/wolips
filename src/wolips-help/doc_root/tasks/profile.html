@@ -5,21 +5,27 @@
 </head>
 
 <body bgcolor="#FFFFFF">
-<h1>Profiling WOLips applications</h1>
-<p>WOLips integrates with <a href="http://jmechanic.sourceforge.net/">jMechanic</a>. 
-  If the <a href="http://jmechanic.sourceforge.net/">jMechanic</a> plugin is present 
-  when you install or update WOLips you get an additional launch configuration 
-  - 'Profiled WOApplication'. This configuration can be used just like the ordinary 
-  'WOApplication' launch cinfiguration. The 'Profiled WOApplication' configuration 
-  simply has an additional tab for profiling. Profiling only occurs when you debug, 
-  not when you run.</p>
-<p>If jMechanic is not present when you install or update WOLips there will be 
-  a line in the .log file saying that the plugin org.objectstyle.wolips.profiling 
-  could not be loaded. </p>
-<p>In the future there will be additional views for profiling WO specific stuff. 
-</p>
-<p>All questions about <a href="http://jmechanic.sourceforge.net/">jMechanic</a> 
-  should go to <a href="http://jmechanic.sourceforge.net/">jMechanic</a>. The 
-  hompage is: jmechanic.sourceforge.net. </p>
+<h1>Profiling WebObjects Applications</h1>
+<p>WOLips integrates with <a href="http://jmechanic.sourceforge.net/">jMechanic</a> 
+  ( <a href="http://jmechanic.sourceforge.net/">http://jmechanic.sourceforge.net/</a> 
+  ).</p>
+<p>jMechanic has nothing to do with WebObjects or WOLips. It is an eclipse Java 
+  IDE plugin providing profiling capabilities. As such, you as a WOLips user, 
+  can use it.</p>
+<p>WOLips includes a <a href="../reference/plugins_features.html#profiling">profiling 
+  plugin</a> that extends jMechanic. Unless the actual jMechanic plugin is also 
+  installed this profiling plugin will do nothing. When both the jMechanic and 
+  the WOLips profiling plugins are present there will be an additional launch 
+  configuration type - Profiled WOApplication. (As well the standard jMechanic 
+  features.) You can use this the same way you use plain WOApplication configurations. 
+  Running applications based on Profiled WOApplication templates is the same as 
+  running applications based on WOApplication templates. Debugging is different. 
+  Only when you debug do you get the jMechanic features (or use the extra memory 
+  and CPU resources). It should be feasible to base all WOLips launch configurations 
+  on the Profiled WOApplication template.</p>
+<p>You may want to read about <a href="debug.html">debugging...</a></p>
+<p>Please direct all your questions regarding jMechanic to <a href="http://jmechanic.sourceforge.net/">jMechanic</a> 
+  ( <a href="http://jmechanic.sourceforge.net/">http://jmechanic.sourceforge.net/</a> 
+  ).</p>
 </body>
 </html>
