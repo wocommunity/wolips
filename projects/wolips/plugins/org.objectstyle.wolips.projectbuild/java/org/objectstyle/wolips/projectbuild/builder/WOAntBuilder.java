@@ -319,7 +319,7 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 								|| "Makefile".equals(resource.getName())
 								|| resource.getName().startsWith("ant.")) {
 						} else
-							if(project.matchesResourcesPattern(resource) || project.matchesWOAppResourcesPattern(resource) || project.matchesClassesPattern(resource)) {
+							if(resource.getName().endsWith(".java") || project.matchesResourcesPattern(resource) || project.matchesWOAppResourcesPattern(resource) || project.matchesClassesPattern(resource)) {
 								buildRequired = true;
 								return false;
 							}
