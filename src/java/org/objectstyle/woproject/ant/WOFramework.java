@@ -1,4 +1,4 @@
-package org.objectstyle.woproject;
+package org.objectstyle.woproject.ant;
 /* ====================================================================
  * 
  * The ObjectStyle Group Software License, Version 1.0 

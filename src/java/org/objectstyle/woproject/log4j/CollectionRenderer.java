@@ -1,4 +1,4 @@
-package org.objectstyle.woproject;
+package org.objectstyle.woproject.log4j;
 /* ====================================================================
  * 
  * The ObjectStyle Group Software License, Version 1.0 
@@ -53,13 +53,26 @@ package org.objectstyle.woproject;
  * information on the ObjectStyle Group, please see
  * <http://objectstyle.org/>.
  *
- */  
+ */
 
-import org.apache.tools.ant.taskdefs.Copy;
 
-public class WOCompCopy extends Copy {
+import org.apache.log4j.Hierarchy;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.or.ObjectRenderer;
+import org.apache.log4j.or.RendererMap;
 
-    public WOCompCopy() {
-        super.mapperElement = new WOMapper(project);
+
+/** Log4J renderer for collections. Superclass of concrete
+  * renderers. 
+  *
+  * @author Andrei Adamchik
+  */
+public abstract class CollectionRenderer implements ObjectRenderer {
+    protected static final RendererMap rendererMap =
+        ((Hierarchy) LogManager.getLoggerRepository()).getRendererMap();
+
+    protected static final String renderObject(Object o) {
+        ObjectRenderer r = rendererMap.get(o);
+        return (r != null) ? r.doRender(o) : o.toString();
     }
 }

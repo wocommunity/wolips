@@ -1,4 +1,4 @@
-package org.objectstyle.woproject;
+package org.objectstyle.woproject.log4j;
 /* ====================================================================
  * 
  * The ObjectStyle Group Software License, Version 1.0 
@@ -55,54 +55,69 @@ package org.objectstyle.woproject;
  *
  */
 
-import java.io.File;
 
-import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.Project;
-import org.apache.tools.ant.types.Mapper;
-import org.apache.tools.ant.util.FileNameMapper;
-import org.apache.tools.ant.util.IdentityMapper;
+import com.webobjects.foundation.NSLog;
 
-public class WOMapper extends Mapper {
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 
-    public WOMapper(Project project) {
-        super(project);
+
+/** Adapter class that allows NSLog to use Log4J. 
+  *
+  * @author Andrei Adamchik
+  */
+public class Log4JAdapter extends NSLog.Logger {
+    static final Logger logger = Logger.getLogger(Log4JAdapter.class);
+
+    protected Level logLevel;
+
+    /** Sets an instance of Log4JAdapter as logger for all NSLog levels. */
+    public static void replaceNSLog() {
+        NSLog.err = new Log4JAdapter(Level.ERROR);
+        NSLog.out = new Log4JAdapter(Level.INFO);
+        NSLog.debug = new Log4JAdapter(Level.DEBUG);
     }
 
-    public FileNameMapper getImplementation() throws BuildException {
-        return new WOFileNameMapper();
+    public Log4JAdapter(Level logLevel) {
+        this.logLevel = logLevel;
     }
-    
-    class WOFileNameMapper extends IdentityMapper {
-        /**
-         * Returns an one-element array containing the source file name
-         * without any leading directory information.
-         */
-        public String[] mapFileName(String sourceFileName) {
-            File f = new File(sourceFileName);
-            
-            // WOComponent directory
-            if (sourceFileName.endsWith(".wo")) {
-                return flatten(f);
-            }
 
-            // File in WOComponent directory
-            String parent = f.getParent();
-            if (parent != null && parent.endsWith(".wo")) {
-                return flattenWithParent(f);
-            }
+    /**
+     * @see Logger#appendln()
+     */
+    public void appendln() {
+        logger.log(logLevel, "");
+    }
 
-            return super.mapFileName(sourceFileName);
-        }
+    /**
+     * @see Logger#appendln(Object)
+     */
+    public void appendln(Object arg0) {
+        logger.log(logLevel, arg0);
+    }
 
-        private String[] flatten(File f) {
-            return new String[] { f.getName()};
-        }
+    public void appendln(Throwable th) {
+        logger.log(logLevel, "wo exception", th);
+    }
 
-        private String[] flattenWithParent(File f) {
-            String name = f.getName();
-            String parentName = f.getParentFile().getName();
-            return new String[] { parentName + File.separator + name };
-        }
+    /**
+     * @see Logger#flush()
+     */
+    public void flush() {}
+
+    /**
+     * Gets the logLevel.
+     * @return Returns a Level
+     */
+    public Level getLogLevel() {
+        return logLevel;
+    }
+
+    /**
+     * Sets the logLevel.
+     * @param logLevel The logLevel to set
+     */
+    public void setLogLevel(Level logLevel) {
+        this.logLevel = logLevel;
     }
 }

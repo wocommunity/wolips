@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
 <!-- Main WOProject build file -->
-<project name="jamfo" default="dist" basedir=".">
+<project name="woproject" default="dist" basedir=".">
     <property file="${user.home}/build.properties" />
     <property file="build.properties" />
     <property file="default.properties" />
@@ -13,6 +13,16 @@
     <path id="classpath">
         <fileset dir="${ant.home}/lib">
             <include name="ant.jar"/>
+        </fileset>
+        <fileset dir="lib">
+            <include name="*.jar"/>
+        </fileset>
+        <fileset dir="${next.root}/Library/Frameworks">           
+            <include name="JavaEOAccess.framework/Resources/Java/*.jar"/>
+            <include name="JavaEOControl.framework/Resources/Java/*.jar"/>
+            <include name="JavaFoundation.framework/Resources/Java/*.jar"/>
+            <include name="JavaWebObjects.framework/Resources/Java/*.jar"/>
+            <include name="JavaJDBCAdaptor.framework/Resources/Java/*.jar"/>
         </fileset>
     </path>
     
@@ -34,7 +44,7 @@
         *  3. java       - compiles java and webapp subprojects.
         *  4. clean      - cleans temporary directories.
         *  5. doc        - creates documentation including Javadoc.
-        *  6. dist       - creates Jamfo distribution.
+        *  6. dist       - creates WOProject distribution.
         *
         *
         * Build environment:
