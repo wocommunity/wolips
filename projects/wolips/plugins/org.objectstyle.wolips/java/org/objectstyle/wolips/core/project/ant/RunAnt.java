@@ -62,6 +62,7 @@ import org.eclipse.ant.core.AntRunner;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
@@ -112,6 +113,8 @@ public final class RunAnt {
 		IProgressMonitor monitor,
 		String target)
 		throws Exception {
+		if(monitor == null) 
+			monitor = new NullProgressMonitor();
 		AntRunner runner = null;
 		try {
 			runner = new AntRunner();
