@@ -86,7 +86,7 @@ public class WOApplication extends WOTask {
 		}
 
 		// create all needed scripts
-		formatProject();
+		new AppFormat(this).processTemplates();
 	}
 
 	/**
@@ -109,12 +109,4 @@ public class WOApplication extends WOTask {
 	protected File wsresourcesDir() {
 		return new File(contentsDir(), "WebServerResources");
 	}
-
-    protected void formatProject() throws BuildException {
-        try {
-            new AppFormat(this).processTemplates();		    
-        } catch (IOException ioex) {
-            throw new BuildException("Error doing project formatting.", ioex);
-        }
-    }
 }

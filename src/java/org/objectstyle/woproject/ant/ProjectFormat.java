@@ -95,18 +95,23 @@ public abstract class ProjectFormat {
 	 * Creates all needed files based on WOProject templates. 
 	 * This is a main worker method. 
 	 */
-	public void processTemplates() throws IOException {
+	public void processTemplates() throws BuildException {
 		Iterator it = fileIterator();
 
-		while (it.hasNext()) {
-			String targetName = (String) it.next();
-			String templName = templateForTarget(targetName);
-			FilterSetCollection filters = filtersForTarget(targetName);
+		try {
+			while (it.hasNext()) {
+				String targetName = (String) it.next();
+				String templName = templateForTarget(targetName);
+				FilterSetCollection filters = filtersForTarget(targetName);
 
-			InputStream template =
-				this.getClass().getClassLoader().getResourceAsStream(templName);
-			File target = new File(targetName);
-			copyFile(template, target, filters);
+				InputStream template =
+					this.getClass().getClassLoader().getResourceAsStream(
+						templName);
+				File target = new File(targetName);
+				copyFile(template, target, filters);
+			}
+		} catch (IOException ioex) {
+			throw new BuildException("Error doing project formatting.", ioex);
 		}
 	}
 
@@ -221,16 +226,16 @@ public abstract class ProjectFormat {
 		return buf.toString();
 	}
 
-    /** 
-     * Returns a FilterSet that can be used to build Info.plist file. 
-     */
+	/** 
+	 * Returns a FilterSet that can be used to build Info.plist file. 
+	 */
 	public FilterSetCollection infoFilter(Iterator extLibs) {
 		FilterSet filter = new FilterSet();
 
 		filter.addFilter("NAME", getName());
 		filter.addFilter("LOWERC_NAME", getName().toLowerCase());
 		filter.addFilter("JAR_ARRAY", libString(extLibs));
-		
+
 		return new FilterSetCollection(filter);
 	}
 }

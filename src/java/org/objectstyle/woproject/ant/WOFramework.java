@@ -98,7 +98,7 @@ public class WOFramework extends WOTask {
             copyWsresources();
         }
 
-        formatProject();
+        new FrameworkFormat(this).processTemplates();
     }
 
     protected void copyLibs() throws BuildException {
@@ -114,14 +114,6 @@ public class WOFramework extends WOTask {
         cp.execute();
     }
 
-
-    protected void formatProject() throws BuildException {
-        try {
-            new FrameworkFormat(this).processTemplates();
-        } catch (IOException ioex) {
-            throw new BuildException("Error doing file autogeneration.", ioex);
-        }
-    }
 
     /**
      * Returns an Iterator over the file names of the library files
