@@ -123,6 +123,7 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 	public static final boolean debug = false;
 	public static final String ID_ELEMENT_CREATION_ACTION_SET =
 		"org.objectstyle.wolips.ElementCreationActionSet";
+	public static final String ID_Finder = "org.objectstyle.wolips.ui.Finder"; //$NON-NLS-1$
 	/**
 	 * The constructor.
 	 */
