@@ -144,6 +144,10 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 		}
 		aBuildFile = null;
 		//this.forgetLastBuiltState();
+		monitor.beginTask(
+					BuildMessages.getString("Build.Refresh.Title"),
+					WOAntBuilder.TOTAL_WORK_UNITS);
+		getProject().refreshLocal(IProject.DEPTH_INFINITE, null);
 		monitor.done();
 		return null;
 	}

@@ -57,7 +57,6 @@ package org.objectstyle.wolips.core.listener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
@@ -67,6 +66,8 @@ import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaElementDelta;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
+import org.objectstyle.wolips.core.ant.UpdateFrameworkIncludeFiles;
+import org.objectstyle.wolips.core.ant.UpdateOtherClasspathIncludeFiles;
 import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
 import org.objectstyle.wolips.core.project.PBProjectUpdater;
 import org.objectstyle.wolips.logging.WOLipsLog;
@@ -194,6 +195,17 @@ public class JavaElementChangeListener implements IElementChangedListener {
 								null);
 								*/
 							}
+							UpdateOtherClasspathIncludeFiles updateOtherClasspathIncludeFiles =
+								new UpdateOtherClasspathIncludeFiles();
+							updateOtherClasspathIncludeFiles.setIProject(
+								projectToExamine);
+							updateOtherClasspathIncludeFiles.execute();
+							UpdateFrameworkIncludeFiles updateFrameworkIncludeFiles =
+								new UpdateFrameworkIncludeFiles();
+							updateFrameworkIncludeFiles.setIProject(
+								projectToExamine);
+							updateFrameworkIncludeFiles.execute();
+
 						}
 					} catch (CoreException e) {
 						WOLipsLog.log(e);
