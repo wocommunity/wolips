@@ -14,7 +14,7 @@
 	</section>
 	      
 	<section name="Manipulating the Build Process">
-		<p>WOLips runs the build.xml file in your project to build the target. Please refer to the <a href="http://objectstyle.org/woproject/">woproject documentation</a>.</p>
+		<p>WOLips runs the build.xml file in your project to build the target. Please refer to the <a href="http://objectstyle.org/woproject/ant/index.html">woproject documentation</a>.</p>
 	</section>
 </body>
 </document>
