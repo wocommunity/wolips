@@ -293,7 +293,7 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 		if (selection.length != 1)
 			return;
 		int index = selection[0];
-		InputDialog argumentDialog = new InputDialog(getShell(), PreferencesMessages.getString("LaunchPreferencesPage.enterArgumentShort"), Preferences.getString("IgnorePreferencePage.enterPatternLong"), null, null); //$NON-NLS-1$ //$NON-NLS-2$
+		InputDialog argumentDialog = new InputDialog(getShell(), PreferencesMessages.getString("LaunchPreferencesPage.enterArgumentShort"), Preferences.getString("IgnorePreferencePage.enterPatternLong"), (String) allArguments.elementAt(index), null); //$NON-NLS-1$ //$NON-NLS-2$
 		argumentDialog.open();
 		if (argumentDialog.getReturnCode() != Window.OK)
 			return;
