@@ -27,7 +27,7 @@
     <menu name="WOLips">
     	<item name="Inside" href="/wolips.html"/>
     	<item name="Gallery" href="/gallery.html"/>
-    	<item name="Install" href="/wolips-install.html"/>
+    	<item name="Install" href="/wolips_install.html"/>
 	</menu>
     
     <menu name="Developer">
