@@ -72,7 +72,6 @@ import org.apache.tools.ant.types.FileSet;
  * @ant.task category="packaging"
  */
 public class WOFramework extends WOTask {
-    private Vector lib = new Vector();
 
     public void addLib(FileSet set) {
         lib.addElement(set);
@@ -103,37 +102,6 @@ public class WOFramework extends WOTask {
         new FrameworkFormat(this).processTemplates();
     }
 
-    protected void copyLibs() throws BuildException {
-        Copy cp = subtaskFactory.getResourceCopy();
-        cp.setTodir(new File(resourcesDir(), "Java"));
-
-        Enumeration en = lib.elements();
-        while (en.hasMoreElements()) {
-            cp.addFileset((FileSet) en.nextElement());
-        }
-        cp.execute();
-    }
-
-
-    /**
-     * Returns an Iterator over the file names of the library files
-     * included in the lib nested element.
-     */
-    public Iterator getLibNames() {
-        ArrayList libNames = new ArrayList();
-        Enumeration en = lib.elements();
-        while (en.hasMoreElements()) {
-            FileSet fs = (FileSet) en.nextElement();
-            DirectoryScanner scanner = fs.getDirectoryScanner(project);
-            String[] libs = scanner.getIncludedFiles();
-            for (int i = 0; i < libs.length; i++) {
-                File libFile = new File(libs[i]);
-                libNames.add(libFile.getName());
-            }
-        }
-        return libNames.iterator();
-    }
-
     /**
      * location where WOTask is being built up: ie the .woa dir or the .framework dir.
      * In this case, the .framework dir.
@@ -151,16 +119,6 @@ public class WOFramework extends WOTask {
     protected File wsresourcesDir() {
         return new File(taskDir(), "WebServerResources");
     }
-
-    protected boolean hasLib() {
-        return lib.size() > 0;
-    }
-
-
-    protected boolean hasJava() {
-        return classes.size() > 0 || lib.size() > 0;
-    }
-
 
     /**
      * Do any clean up necessary to allow this instance to be used again.

@@ -56,10 +56,10 @@
 package org.objectstyle.woproject.ant;
 
 import java.io.File;
-import java.util.Enumeration;
-import java.util.Vector;
+import java.util.*;
 
 import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.taskdefs.Copy;
 import org.apache.tools.ant.taskdefs.Jar;
@@ -82,6 +82,7 @@ public abstract class WOTask extends Task {
     protected String jarName;
     protected Vector resources = new Vector();
     protected Vector wsresources = new Vector();
+    protected Vector lib = new Vector();
     protected SubtaskFactory subtaskFactory = new SubtaskFactory(this);
 
     public void setName(String name) {
@@ -122,7 +123,11 @@ public abstract class WOTask extends Task {
         resources.addElement(set);
     }
 
+    public void addLib(FileSet set) {
+        lib.addElement(set);
+    }
 
+    
     public void addWsresources(FileSet set) {
         wsresources.addElement(set);
     }
@@ -235,5 +240,45 @@ public abstract class WOTask extends Task {
         cp.execute();
     }
 
+    protected void copyLibs() throws BuildException {
+        Copy cp = subtaskFactory.getResourceCopy();
+        cp.setTodir(new File(resourcesDir(), "Java"));
 
+        Enumeration en = lib.elements();
+        while (en.hasMoreElements()) {
+            cp.addFileset((FileSet) en.nextElement());
+        }
+        cp.execute();
+    }
+
+    protected boolean hasLib() {
+        return lib.size() > 0;
+    }
+
+
+    protected boolean hasJava() {
+        return classes.size() > 0 || lib.size() > 0;
+    }
+
+    
+    /**
+        * Returns an Iterator over the file names of the library files
+     * included in the lib nested element.
+     */
+    public Iterator getLibNames() {
+        ArrayList libNames = new ArrayList();
+        Enumeration en = lib.elements();
+        while (en.hasMoreElements()) {
+            FileSet fs = (FileSet) en.nextElement();
+            DirectoryScanner scanner = fs.getDirectoryScanner(project);
+            String[] libs = scanner.getIncludedFiles();
+            for (int i = 0; i < libs.length; i++) {
+                File libFile = new File(libs[i]);
+                libNames.add(libFile.getName());
+            }
+        }
+        return libNames.iterator();
+    }
+
+    
 }

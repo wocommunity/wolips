@@ -92,13 +92,8 @@ public class WOApplication extends WOTask {
 
 	protected ArrayList frameworkSets = new ArrayList();
 	protected ArrayList otherClasspathSets = new ArrayList();
-	protected Vector lib = new Vector();
 	protected boolean stdFrameworks = true;
 	protected boolean embedStdFrameworks = false;
-
-	public void addLib(FileSet set) {
-		lib.addElement(set);
-	}
 
 	public String getPrincipalClass() {
 		String principalClass = super.getPrincipalClass();
@@ -211,17 +206,6 @@ public class WOApplication extends WOTask {
 
 				cp.addFileset(newFs);
 			}
-		}
-		cp.execute();
-	}
-
-	protected void copyLibs() throws BuildException {
-		Copy cp = subtaskFactory.getResourceCopy();
-		cp.setTodir(new File(resourcesDir(), "Java"));
-
-		Enumeration en = lib.elements();
-		while (en.hasMoreElements()) {
-			cp.addFileset((FileSet) en.nextElement());
 		}
 		cp.execute();
 	}
