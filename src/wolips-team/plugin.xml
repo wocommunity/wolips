@@ -64,6 +64,30 @@
             type="text"
             extension="mappings">
       </fileTypes>
+      <fileTypes
+            type="text"
+            extension="ant.classpaths.user.home">
+      </fileTypes>
+      <fileTypes
+            type="text"
+            extension="ant.classpaths.wo.wolocalroot">
+      </fileTypes>
+      <fileTypes
+            type="text"
+            extension="ant.classpaths.wo.wosystemwoot">
+      </fileTypes>
+      <fileTypes
+            type="text"
+            extension="ant.frameworks.user.home">
+      </fileTypes>
+      <fileTypes
+            type="text"
+            extension="ant.frameworks.wo.wolocalroot">
+      </fileTypes>
+      <fileTypes
+            type="text"
+            extension="ant.frameworks.wo.wosystemroot">
+      </fileTypes>
    </extension>
 <!-- =================================================================================== -->
 <!-- Extension: Ignored team file types                                                          -->
@@ -85,22 +109,6 @@
       <ignore
             selected="true"
             pattern=".DS_Store">
-      </ignore>
-      <ignore
-            selected="true"
-            pattern="ant.frameworks.wo.woroot">
-      </ignore>
-      <ignore
-            selected="true"
-            pattern="ant.frameworks.wo.wolocalroot">
-      </ignore>
-      <ignore
-            selected="true"
-            pattern="ant.frameworks.user.home">
-      </ignore>
-      <ignore
-            selected="true"
-            pattern="ant.classpaths.wo.woroot">
       </ignore>
    </extension>
 
