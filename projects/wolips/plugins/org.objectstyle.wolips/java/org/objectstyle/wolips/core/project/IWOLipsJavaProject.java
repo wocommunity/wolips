@@ -66,4 +66,6 @@ import org.eclipse.jdt.core.IJavaProject;
 public interface IWOLipsJavaProject {
 
 	public IJavaProject getJavaProject();
+	public abstract IClasspathAccessor getClasspathAccessor();
+	
 }

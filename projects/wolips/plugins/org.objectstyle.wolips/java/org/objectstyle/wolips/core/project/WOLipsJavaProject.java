@@ -64,6 +64,7 @@ import java.util.List;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -87,7 +88,9 @@ import org.objectstyle.wolips.core.resources.IWOLipsModel;
  * To change this generated comment go to 
  * Window>Preferences>Java>Code Generation>Code Template
  */
-public final class WOLipsJavaProject extends WOLipsProject implements IWOLipsJavaProject {
+public final class WOLipsJavaProject
+	extends WOLipsProject
+	implements IWOLipsJavaProject {
 	IJavaProject javaProject;
 	private ClasspathAccessor classpathAccessor;
 	private LaunchParameterAccessor launchParameterAccessor;
@@ -109,7 +112,7 @@ public final class WOLipsJavaProject extends WOLipsProject implements IWOLipsJav
 	/**
 	 * @return ClasspathAccessor
 	 */
-	public ClasspathAccessor getClasspathAccessor() {
+	public IClasspathAccessor getClasspathAccessor() {
 		if (classpathAccessor == null)
 			classpathAccessor = new ClasspathAccessor(this);
 		return classpathAccessor;
@@ -163,7 +166,7 @@ public final class WOLipsJavaProject extends WOLipsProject implements IWOLipsJav
 	 * To change this generated comment go to 
 	 * Window>Preferences>Java>Code Generation>Code Template
 	 */
-	public class ClasspathAccessor extends WOLipsJavaProjectInnerClass {
+	public class ClasspathAccessor extends WOLipsJavaProjectInnerClass implements IClasspathAccessor {
 
 		/**
 		 * @param wolipsProject
@@ -225,7 +228,9 @@ public final class WOLipsJavaProject extends WOLipsProject implements IWOLipsJav
 			IFolder subprojectFolder,
 			boolean forceCreation) {
 			//ensure that the folder is a subproject
-			if (!IWOLipsModel.EXT_SUBPROJECT.equals(subprojectFolder.getFileExtension())) {
+			if (!IWOLipsModel
+				.EXT_SUBPROJECT
+				.equals(subprojectFolder.getFileExtension())) {
 				IFolder parentFolder =
 					this
 						.getWOLipsJavaProject()
@@ -441,12 +446,17 @@ public final class WOLipsJavaProject extends WOLipsProject implements IWOLipsJav
 		 * @return IClasspathEntry[]
 		 * @throws JavaModelException
 		 */
-		public IClasspathEntry[] addFrameworkListToClasspathEntries(
-			List frameworkList)
+		public IClasspathEntry[] addFrameworkListToClasspathEntries(List frameworkList)
 			throws JavaModelException {
 			IClasspathEntry[] oldClasspathEntries =
-			this.getJavaProject().getResolvedClasspath(true);
-			IPath nextRootAsPath = new Path(WOLipsPlugin.getDefault().getWOEnvironment().getWOVariables().systemRoot());
+				this.getJavaProject().getResolvedClasspath(true);
+			IPath nextRootAsPath =
+				new Path(
+					WOLipsPlugin
+						.getDefault()
+						.getWOEnvironment()
+						.getWOVariables()
+						.systemRoot());
 			ArrayList classpathEntries = new ArrayList(frameworkList.size());
 			IPath frameworkPath;
 			String jarName;
@@ -455,20 +465,35 @@ public final class WOLipsJavaProject extends WOLipsProject implements IWOLipsJav
 			for (int i = 0; i < frameworkList.size(); i++) {
 				frameworkName = (String) frameworkList.get(i);
 				// check for framework extentsion
-				frameworkExtIndex = frameworkName.indexOf(IWOLipsModel.EXT_FRAMEWORK);
+				frameworkExtIndex =
+					frameworkName.indexOf(IWOLipsModel.EXT_FRAMEWORK);
 				if (frameworkExtIndex == -1
 					|| frameworkExtIndex == 0) { // invalid framework name
 					continue;
 				}
 				jarName =
-					frameworkName.substring(0, frameworkExtIndex - 1).toLowerCase()
+					frameworkName
+						.substring(0, frameworkExtIndex - 1)
+						.toLowerCase()
 						+ ".jar";
 				// check for root
-				frameworkPath = new Path(WOLipsPlugin.getDefault().getWOEnvironment().getWOVariables().libraryDir());
+				frameworkPath =
+					new Path(
+						WOLipsPlugin
+							.getDefault()
+							.getWOEnvironment()
+							.getWOVariables()
+							.libraryDir());
 				frameworkPath = frameworkPath.append("Frameworks");
 				frameworkPath = frameworkPath.append(frameworkName);
 				if (!frameworkPath.toFile().isDirectory()) {
-					frameworkPath = new Path(WOLipsPlugin.getDefault().getWOEnvironment().getWOVariables().localLibraryDir());
+					frameworkPath =
+						new Path(
+							WOLipsPlugin
+								.getDefault()
+								.getWOEnvironment()
+								.getWOVariables()
+								.localLibraryDir());
 					frameworkPath = frameworkPath.append("Frameworks");
 					frameworkPath = frameworkPath.append(frameworkName);
 				}
@@ -491,14 +516,17 @@ public final class WOLipsJavaProject extends WOLipsProject implements IWOLipsJav
 				frameworkPath = frameworkPath.append(jarName);
 				// check for existing classpath entries
 				for (j = 0; j < oldClasspathEntries.length; j++) {
-					if (oldClasspathEntries[j].getPath().equals(frameworkPath)) {
+					if (oldClasspathEntries[j]
+						.getPath()
+						.equals(frameworkPath)) {
 						break;
 					}
 				}
 				if (j != oldClasspathEntries.length) { // entry already set
 					continue;
 				} // determine if new class path begins with next root
-				if ((frameworkPath.segmentCount() > nextRootAsPath.segmentCount())
+				if ((frameworkPath.segmentCount()
+					> nextRootAsPath.segmentCount())
 					&& frameworkPath
 						.removeLastSegments(
 							frameworkPath.segmentCount()
@@ -506,7 +534,12 @@ public final class WOLipsJavaProject extends WOLipsProject implements IWOLipsJav
 						.equals(nextRootAsPath)) {
 					// replace beginning of class path with next root
 					frameworkPath =
-						new Path(WOLipsPlugin.getDefault().getWOEnvironment().getNEXT_ROOT()).append(
+						new Path(
+							WOLipsPlugin
+								.getDefault()
+								.getWOEnvironment()
+								.getNEXT_ROOT())
+								.append(
 							frameworkPath.removeFirstSegments(
 								nextRootAsPath.segmentCount()));
 					// set path as variable entry			
@@ -529,6 +562,75 @@ public final class WOLipsJavaProject extends WOLipsProject implements IWOLipsJav
 					(IClasspathEntry) classpathEntries.get(i);
 			}
 			return newClasspathEntries;
+		}
+
+		public IResource getWOJavaArchive() throws CoreException {
+			IResource result = null;
+
+			INaturesAccessor na =
+				this.getWOLipsJavaProject().getNaturesAccessor();
+
+			String projectName = this.getProject().getName();
+			String projectNameLC = projectName.toLowerCase();
+
+			// I'd rather use the knowledge from the IncrementalNature, but that fragment is not
+			// visible here (so I can't use the class, I think) [hn3000]
+			if (na.isFramework()) {
+				if (na.isAnt()) {
+					result =
+						this.getProject().getFile(
+							"dist/"
+								+ projectName
+								+ ".framework/Resources/Java/"
+								+ projectNameLC
+								+ ".jar");
+					if (!result.exists())
+						result =
+							this.getProject().getFile(
+								projectName
+									+ ".framework/Resources/Java/"
+									+ projectNameLC
+									+ ".jar");
+				} else if (na.isIncremental()) {
+					result =
+						this.getProject().getFolder(
+							"build/"
+								+ projectName
+								+ ".framework/Resources/Java");
+				}
+			} else if (na.isApplication()) { // must be application
+				if (na.isAnt()) {
+					result =
+						this.getProject().getFile(
+							"dist/"
+								+ projectName
+								+ ".woa/Contents/Resources/Java/"
+								+ projectNameLC
+								+ ".jar");
+					if (!result.exists())
+						result =
+							this.getProject().getFile(
+								projectName
+									+ ".woa/Contents/Resources/Java/"
+									+ projectNameLC
+									+ ".jar");
+				} else if (na.isIncremental()) {
+					result =
+						this.getProject().getFolder(
+							"build/"
+								+ projectName
+								+ ".woa/Contents/Resources/Java");
+				}
+			}
+
+			// check if folder exists, otherwise let Eclipse to its default thing
+			if ((null != result) && (!result.exists())) {
+				WOLipsLog.log(
+					"expected resource is not there: "
+						+ result.getLocation().toOSString());
+				result = null;
+			}
+			return result;
 		}
 	}
 
@@ -605,8 +707,7 @@ public final class WOLipsJavaProject extends WOLipsProject implements IWOLipsJav
 		 * @param configuration
 		 * @return boolean
 		 */
-		public boolean isAFramework(
-			IProject project) {
+		public boolean isAFramework(IProject project) {
 			IJavaProject buildProject = null;
 			try {
 				buildProject = this.getJavaProject();
@@ -629,8 +730,7 @@ public final class WOLipsJavaProject extends WOLipsProject implements IWOLipsJav
 		 * @param configuration
 		 * @return boolean
 		 */
-		public boolean isTheLaunchApp(
-			IProject project) {
+		public boolean isTheLaunchApp(IProject project) {
 			IJavaProject buildProject = null;
 			try {
 				buildProject = this.getJavaProject();
@@ -648,8 +748,7 @@ public final class WOLipsJavaProject extends WOLipsProject implements IWOLipsJav
 		 * @param configuration
 		 * @return boolean
 		 */
-		public boolean isValidProjectPath(
-			IProject project) {
+		public boolean isValidProjectPath(IProject project) {
 			try {
 				return project.getLocation().toOSString().indexOf("-") == -1;
 			} catch (Exception anException) {
@@ -724,8 +823,7 @@ public final class WOLipsJavaProject extends WOLipsProject implements IWOLipsJav
 		public File getWDFolder(IProject theProject, IPath wd)
 			throws CoreException {
 			WOLipsProject wolipsProject = new WOLipsProject(theProject);
-			INaturesAccessor na =
-				wolipsProject.getNaturesAccessor();
+			INaturesAccessor na = wolipsProject.getNaturesAccessor();
 
 			File wdFile = null;
 			if (wd == null) {
