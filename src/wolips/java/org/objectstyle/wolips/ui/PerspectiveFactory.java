@@ -105,7 +105,8 @@ public class PerspectiveFactory implements IPerspectiveFactory {
 		layout.addActionSet(IDebugUIConstants.LAUNCH_ACTION_SET);
 		layout.addActionSet(JavaUI.ID_ACTION_SET);
 		layout.addActionSet(JavaUI.ID_ELEMENT_CREATION_ACTION_SET);
-		layout.addActionSet(IWOLipsPluginConstants.ID_ELEMENT_CREATION_ACTION_SET);
+		layout.addActionSet(
+			IWOLipsPluginConstants.ID_ELEMENT_CREATION_ACTION_SET);
 
 		// views - java
 		//layout.addShowViewShortcut(WOLipsPlugin.ID_Finder);
@@ -130,11 +131,11 @@ public class PerspectiveFactory implements IPerspectiveFactory {
 		layout.addNewWizardShortcut("org.eclipse.jdt.ui.wizards.NewSnippetFileCreationWizard"); //$NON-NLS-1$
 		layout.addNewWizardShortcut("org.eclipse.ui.wizards.new.folder"); //$NON-NLS-1$
 		layout.addNewWizardShortcut("org.eclipse.ui.wizards.new.file"); //$NON-NLS-1$
-		layout.addNewWizardShortcut("org.objectstyle.wolips.wizards.new.wo.5.1.component"); //$NON-NLS-1$
-		layout.addNewWizardShortcut("org.objectstyle.wolips.wizards.new.wo.5.1.subproject"); //$NON-NLS-1$
 		layout.addNewWizardShortcut("org.objectstyle.wolips.wizards.new.wo.5.1.application"); //$NON-NLS-1$
 		layout.addNewWizardShortcut("org.objectstyle.wolips.wizards.new.wo.5.1.framework"); //$NON-NLS-1$
 		layout.addNewWizardShortcut("org.objectstyle.wolips.wizards.new.wo.5.1.eomodel"); //$NON-NLS-1$
+		layout.addNewWizardShortcut("org.objectstyle.wolips.wizards.new.wo.5.1.component"); //$NON-NLS-1$
+		layout.addNewWizardShortcut("org.objectstyle.wolips.wizards.new.wo.5.1.subproject"); //$NON-NLS-1$
 	}
 
 }

@@ -125,6 +125,30 @@
             visible="false"
             id="org.objectstyle.wolips.ElementCreationActionSet">
          <action
+               label="%EnableWOBuild.label"
+               icon="icons/wobuild/enable_build.gif"
+               tooltip="%EnableWOBuild.tooltip"
+               class="org.objectstyle.wolips.actions.WOBuildEnableAction"
+               toolbarPath="Normal/WOLipsWizards"
+               id="WOBuild.Enable.ID">
+         </action>
+         <action
+               label="%DisableWOBuild.label"
+               icon="icons/wobuild/disable_build.gif"
+               tooltip="%DisableWOBuild.tooltip"
+               class="org.objectstyle.wolips.actions.WOBuildDisableAction"
+               toolbarPath="Normal/WOLipsWizards"
+               id="WOBuild.Disable.ID">
+         </action>
+         <action
+               label="%OpenEOModelCreationWizard.label"
+               icon="icons/woproject/eomodel_wiz.gif"
+               tooltip="%OpenEOModelCreationWizard.tooltip"
+               class="org.objectstyle.wolips.actions.OpenEOModelCreationWizard"
+               toolbarPath="Normal/WOLipsWizards"
+               id="org.objectstyle.wolips.OpenEOModelCreationWizard">
+         </action>
+         <action
                label="%OpenWOComponentCreationWizard.label"
                icon="icons/wobuilder/wocomponent_wiz.gif"
                tooltip="%OpenWOComponentCreationWizard.tooltip"
@@ -141,14 +165,6 @@
                id="org.objectstyle.wolips.OpenWOSubprojectCreationWizard">
          </action>
          <action
-               label="%OpenWOProjectCreationWizard.label"
-               icon="icons/woproject/woapplication_wiz.gif"
-               tooltip="%OpenWOProjectCreationWizard.tooltip"
-               class="org.objectstyle.wolips.actions.OpenWOProjectCreationWizard"
-               toolbarPath="Normal/WOLipsWizards"
-               id="org.objectstyle.wolips.OpenWOProjectCreationWizard">
-         </action>
-         <action
                label="%OpenWOFrameworkCreationWizard.label"
                icon="icons/woproject/woframework_wiz.gif"
                tooltip="%OpenWOFrameworkCreationWizard.tooltip"
@@ -157,28 +173,12 @@
                id="org.objectstyle.wolips.OpenWOFrameworkCreationWizard">
          </action>
          <action
-               label="%OpenEOModelCreationWizard.label"
-               icon="icons/woproject/eomodel_wiz.gif"
-               tooltip="%OpenEOModelCreationWizard.tooltip"
-               class="org.objectstyle.wolips.actions.OpenEOModelCreationWizard"
+               label="%OpenWOProjectCreationWizard.label"
+               icon="icons/woproject/woapplication_wiz.gif"
+               tooltip="%OpenWOProjectCreationWizard.tooltip"
+               class="org.objectstyle.wolips.actions.OpenWOProjectCreationWizard"
                toolbarPath="Normal/WOLipsWizards"
-               id="org.objectstyle.wolips.OpenEOModelCreationWizard">
-         </action>
-         <action
-               label="%EnableWOBuild.label"
-               icon="icons/wobuild/enable_build.gif"
-               tooltip="%EnableWOBuild.tooltip"
-               class="org.objectstyle.wolips.actions.WOBuildEnableAction"
-               toolbarPath="Normal/WOLipsWizards"
-               id="WOBuild.Enable.ID">
-         </action>
-         <action
-               label="%DisableWOBuild.label"
-               icon="icons/wobuild/disable_build.gif"
-               tooltip="%DisableWOBuild.tooltip"
-               class="org.objectstyle.wolips.actions.WOBuildDisableAction"
-               toolbarPath="Normal/WOLipsWizards"
-               id="WOBuild.Disable.ID">
+               id="org.objectstyle.wolips.OpenWOProjectCreationWizard">
          </action>
       </actionSet>
    </extension>
