@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
 <plugin
    id="org.objectstyle.wolips"
    name="%WOLips.pluginName"
@@ -13,21 +14,17 @@
       </library>
    </runtime>
    <requires>
-      <import plugin="org.apache.xerces"/>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.ant.core"/>
-      <import plugin="org.eclipse.ui.externaltools"/>
       <import plugin="org.eclipse.jdt.core"/>
       <import plugin="org.eclipse.jdt.launching"/>
       <import plugin="org.eclipse.debug.core"/>
       <import plugin="org.eclipse.debug.ui"/>
-      <import plugin="org.eclipse.ui.externaltools"/>
       <import plugin="org.apache.ant"/>
       <import plugin="org.eclipse.jface"/>
       <import plugin="org.objectstyle.wolips.woproject"/>
-      <import plugin="org.eclipse.jface.text"/>
       <import plugin="org.eclipse.ui.ide"/>
    </requires>
 

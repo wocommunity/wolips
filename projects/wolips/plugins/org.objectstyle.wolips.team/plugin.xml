@@ -1,15 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
 <plugin
    id="org.objectstyle.wolips.team"
    name="%WOLips.team.pluginName"
    version="1.0.6"
    provider-name="%WOLips.providerName">
 
+   <runtime>
+   </runtime>
 <!-- =================================================================================== -->
 <!-- Required Plugins                                                                    -->
-<!-- =================================================================================== -->   
+<!-- =================================================================================== -->
    <requires>
+      <import plugin="org.eclipse.team.core"/>
    </requires>
+
 
 <!-- =================================================================================== -->
 <!-- Extension: Team file types                                                          -->

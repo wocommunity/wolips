@@ -17,6 +17,7 @@
       <import plugin="org.eclipse.debug.ui"/>
       <import plugin="org.objectstyle.wolips"/>
       <import plugin="jmechanic.eclipse.profiler"/>
+      <import plugin="org.eclipse.jdt.launching"/>
    </requires>
 
 
@@ -62,8 +63,8 @@
       <shortcut
             label="WOApplication (profiled)"
             icon="icons/profiling/WOLips-profiling.gif"
-            modes="run, debug"
             class="org.objectstyle.wolips.profiling.ProfiledWOJavaApplicationLaunchShortcut"
+            modes="run, debug"
             id="org.objectstyle.wolips.profiling.ProfiledWOJavaApplicationLaunchShortcut">
          <perspective
                id="org.eclipse.jdt.ui.JavaPerspective">

@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
 <fragment
    id="org.objectstyle.wolips.launching"
    name="%WOLips.launching.fragmentName"
@@ -62,8 +63,8 @@
       <shortcut
             label="WOApplication"
             icon="icons/launching/WOLips-launching.gif"
-            modes="run, debug"
             class="org.objectstyle.wolips.launching.WOJavaApplicationLaunchShortcut"
+            modes="run, debug"
             id="org.objectstyle.wolips.launching.WOJavaApplicationLaunchShortcut">
          <perspective
                id="org.eclipse.jdt.ui.JavaPerspective">

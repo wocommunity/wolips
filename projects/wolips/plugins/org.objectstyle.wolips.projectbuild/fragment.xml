@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
 <fragment
    id="org.objectstyle.wolips.projectbuild"
    name="%WOLips.projectbuild.fragmentName"
@@ -15,8 +16,8 @@
    </runtime>
 
    <requires>
-      <import plugin="org.objectstyle.wolips.cayenne"/>
       <import plugin="org.eclipse.jdt.ui"/>
+      <import plugin="org.objectstyle.wolips.cayenne"/>
    </requires>
 
 
@@ -101,8 +102,8 @@
    <extension
          point="org.eclipse.ui.propertyPages">
       <page
-            objectClass="org.eclipse.core.resources.IProject"
             adaptable="true"
+            objectClass="org.eclipse.core.resources.IProject"
             name="WOLips build"
             class="org.objectstyle.wolips.projectbuild.natures.ProjectNaturePage"
             id="org.objectstyle.wolips.projectbuild.natures.ProjectNaturePage">

@@ -3,7 +3,6 @@
 	<name>org.objectstyle.wolips.wounit</name>
 	<comment></comment>
 	<projects>
-		<project>org.objectstyle.wolips</project>
 		<project>org.objectstyle.wolips.help</project>
 		<project>org.objectstyle.wolips.launching</project>
 		<project>org.objectstyle.wolips.projectbuild</project>

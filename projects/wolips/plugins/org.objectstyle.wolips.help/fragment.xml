@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
 <fragment
    id="org.objectstyle.wolips.help"
    name="%WOLips.help.fragmentName"
@@ -14,12 +15,15 @@
       </library>
    </runtime>
 
+
 <!-- ============================================== -->
 <!-- Define the main book                           -->
 <!-- ============================================== -->
-
-    <extension point="org.eclipse.help.toc">
-        <toc file="toc_root.xml" primary="true" />
-    </extension>
-       	
+   <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="toc_root.xml"
+            primary="true">
+      </toc>
+   </extension>
 </fragment>
