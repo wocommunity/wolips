@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin
+   id="org.objectstyle.wolips.doctor.ui"
+   name="WOLips Doctor Ui Plug-in"
+   version="1.0.6"
+   provider-name="objectstyle.org"
+   class="org.objectstyle.wolips.doctor.ui.DoctorUiPlugin">
+
+   <runtime>
+      <library name="wolips-doctor-ui.jar">
+         <export name="*"/>
+      </library>
+   </runtime>
+
+   <requires>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.objectstyle.wolips.doctor.core"/>
+      <import plugin="org.objectstyle.wolips.commons"/>
+   </requires>
+
+</plugin>

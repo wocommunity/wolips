@@ -120,6 +120,8 @@
                 <pathelement path="../woenvironment/src/java"/>
                 <pathelement path="../woproject/src/java"/>
                 <pathelement path="../wolips/plugins/org.objectstyle.wolips.preferences/java"/>
+                <pathelement path="../wolips/plugins/org.objectstyle.wolips.doctor.core/java"/>
+                <pathelement path="../wolips/plugins/org.objectstyle.wolips.doctor.ui/java"/>
             	<pathelement path="../wolips/plugins/org.objectstyle.wolips.ant/java"/>
            	<pathelement path="../wolips/plugins/org.objectstyle.wolips/java"/>
             	<pathelement path="../wolips/plugins/org.objectstyle.wolips.commons/java"/>
