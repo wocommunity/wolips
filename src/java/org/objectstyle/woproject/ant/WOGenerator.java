@@ -60,6 +60,7 @@ import java.io.File;
 
 import org.objectstyle.cayenne.gen.AntClassGenerator;
 import org.objectstyle.cayenne.gen.DefaultClassGenerator;
+import org.objectstyle.cayenne.gen.MapClassGenerator;
 import org.objectstyle.cayenne.map.DataMap;
 import org.objectstyle.cayenne.tools.CayenneGenerator;
 
@@ -75,6 +76,9 @@ public class WOGenerator extends CayenneGenerator {
     public static final String SUPERCLASS_TEMPLATE = "wogen/superclass.vm";
     public static final String SUBCLASS_TEMPLATE = "wogen/subclass.vm";
     public static final String SINGLE_CLASS_TEMPLATE = "wogen/singleclass.vm";
+
+    public static final String[] RESERVED_CLASS_NAMES =
+        new String[] { "EOGenericRecord", "EOCustomObject" };
 
     /**
      * Wrapper of the superclass <code>setMap</code>
@@ -110,5 +114,41 @@ public class WOGenerator extends CayenneGenerator {
         protected String defaultSuperclassTemplate() {
             return WOGenerator.SUPERCLASS_TEMPLATE;
         }
+
+        protected File fileForClass(String packageName, String className)
+            throws Exception {
+
+            if (isReservedName(className)) {
+                return null;
+            }
+
+            return super.fileForClass(packageName, className);
+        }
+
+        protected File fileForSuperclass(String packageName, String className)
+            throws Exception {
+
+            if (isReservedName(className)) {
+                return null;
+            }
+            return super.fileForSuperclass(packageName, className);
+        }
+
+        protected boolean isReservedName(String className) {
+            if (className.startsWith(MapClassGenerator.SUPERCLASS_PREFIX)) {
+                className =
+                    className.substring(
+                        MapClassGenerator.SUPERCLASS_PREFIX.length());
+            }
+
+            for (int i = 0; i < RESERVED_CLASS_NAMES.length; i++) {
+                if (RESERVED_CLASS_NAMES[i].equals(className)) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
     }
 }
