@@ -70,6 +70,7 @@ import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.FilterSet;
 import org.apache.tools.ant.types.FilterSetCollection;
 import org.apache.tools.ant.types.PatternSet;
+import org.objectstyle.woproject.util.FileStringScanner;
 
 /**
  * Subclass of ProjectFormat that defines file copying 
@@ -114,6 +115,13 @@ public class AppFormat extends ProjectFormat {
 			infoFile,
 			woappPlusVersion() + "/Info.plist",
 			infoFilter(null));
+		// add Info.plist
+		String webXMLFile =
+			new File(getApplicatonTask().contentsDir(), "web.xml").getPath();
+		createMappings(
+			webXMLFile,
+			woappPlusVersion() + "/ServletEnv_web.xml",
+			webXMLFilter());
 	}
 
 	/**
@@ -227,16 +235,16 @@ public class AppFormat extends ProjectFormat {
 						Project.MSG_VERBOSE);
 				}
 				if (true /*
-									|| fs.hasSelectors()
-									|| (fs.hasPatterns()
-										&& fs.createPatternSet() != null
-										&& (fs.createPatternSet().createInclude() != null
-											&& fs.createPatternSet().createExclude() != null
-											&& (fs.createPatternSet().getIncludePatterns(project)
-												!= null
-												|| fs.createPatternSet().getExcludePatterns(
-													project)
-													!= null)))*/
+													|| fs.hasSelectors()
+													|| (fs.hasPatterns()
+														&& fs.createPatternSet() != null
+														&& (fs.createPatternSet().createInclude() != null
+															&& fs.createPatternSet().createExclude() != null
+															&& (fs.createPatternSet().getIncludePatterns(project)
+																!= null
+																|| fs.createPatternSet().getExcludePatterns(
+																	project)
+																	!= null)))*/
 					) {
 					if (fs.getEmbed()) {
 						continue;
@@ -314,15 +322,15 @@ public class AppFormat extends ProjectFormat {
 
 				OtherClasspathSet cs = (OtherClasspathSet) classpathSets.get(i);
 				if (true /*cs.hasSelectors()
-									|| (cs.hasPatterns()
-										&& cs.createPatternSet() != null
-										&& (cs.createPatternSet().createInclude() != null
-											&& cs.createPatternSet().createExclude() != null
-											&& (cs.createPatternSet().getIncludePatterns(project)
-												!= null
-												|| cs.createPatternSet().getExcludePatterns(
-													project)
-													!= null)))*/
+													|| (cs.hasPatterns()
+														&& cs.createPatternSet() != null
+														&& (cs.createPatternSet().createInclude() != null
+															&& cs.createPatternSet().createExclude() != null
+															&& (cs.createPatternSet().getIncludePatterns(project)
+																!= null
+																|| cs.createPatternSet().getExcludePatterns(
+																	project)
+																	!= null)))*/
 					)
 					cs.collectClassPaths(project, pathSet);
 			}
@@ -347,9 +355,11 @@ public class AppFormat extends ProjectFormat {
 			}
 		}
 		return buf.toString();
-	} /** 
-							 * Prepare mappings for Windows subdirectory. 
-							 */
+	}
+
+	/** 
+	 * Prepare mappings for Windows subdirectory. 
+	 */
 	private void prepareWindows() {
 		File winDir = new File(getApplicatonTask().contentsDir(), "Windows");
 		String cp = new File(winDir, "CLSSPATH.TXT").getPath();
@@ -372,9 +382,11 @@ public class AppFormat extends ProjectFormat {
 		createMappings(
 			topRunScript,
 			woappPlusVersion() + "/Contents/Windows/appstart.cmd");
-	} /** 
-							 * Prepare mappings for UNIX subdirectory. 
-							 */
+	}
+
+	/** 
+	 * Prepare mappings for UNIX subdirectory. 
+	 */
 	private void prepareUnix() {
 		File dir = new File(getApplicatonTask().contentsDir(), "UNIX");
 		String cp = new File(dir, "UNIXClassPath.txt").getPath();
@@ -382,9 +394,11 @@ public class AppFormat extends ProjectFormat {
 			cp,
 			woappPlusVersion() + "/Contents/UNIX/UNIXClassPath.txt",
 			classpathFilter('/'));
-	} /** 
-							 * Prepare mappings for MacOS subdirectory. 
-							 */
+	}
+
+	/** 
+	 * Prepare mappings for MacOS subdirectory. 
+	 */
 	private void prepareMac() {
 		File macDir = new File(getApplicatonTask().contentsDir(), "MacOS");
 		String cp = new File(macDir, "MacOSClassPath.txt").getPath();
@@ -409,9 +423,11 @@ public class AppFormat extends ProjectFormat {
 		createMappings(
 			topRunScript,
 			woappPlusVersion() + "/Contents/MacOS/appstart");
-	} /** 
-							 * Creates a filter for Classpath helper files.
-							 */
+	}
+
+	/** 
+	 * Creates a filter for Classpath helper files.
+	 */
 	private FilterSet classpathFilter(char pathSeparator) {
 		FilterSet filter = new FilterSet();
 		if (pathSeparator == File.separatorChar) {
@@ -431,18 +447,22 @@ public class AppFormat extends ProjectFormat {
 		}
 
 		return filter;
-	} /**
-							 * Method getAppClass.
-							 * @return String
-							 */
+	}
+
+	/**
+	 * Method getAppClass.
+	 * @return String
+	 */
 	private String getAppClass() {
 		return task.getPrincipalClass();
-	} /**
-							 * Method createMappings.
-							 * @param fileName
-							 * @param template
-							 * @param filter
-							 */
+	}
+
+	/**
+	 * Method createMappings.
+	 * @param fileName
+	 * @param template
+	 * @param filter
+	 */
 	private void createMappings(
 		String fileName,
 		String template,
@@ -460,39 +480,48 @@ public class AppFormat extends ProjectFormat {
 
 		createMappings(fileName, template, fsCollection);
 	}
+
 	/**
-						 * Method createMappings.
-						 * @param fileName
-						 * @param template
-						 */
+	 * Method createMappings.
+	 * @param fileName
+	 * @param template
+	 */
 	private void createMappings(String fileName, String template) {
 		createMappings(fileName, template, (FilterSetCollection) null);
-	} /**
-							 * Method createMappings.
-							 * @param fileName
-							 * @param template
-							 * @param filter
-							 */
+	}
+
+	/**
+	 * Method createMappings.
+	 * @param fileName
+	 * @param template
+	 * @param filter
+	 */
 	private void createMappings(
 		String fileName,
 		String template,
 		FilterSetCollection filter) {
 		templateMap.put(fileName, template);
 		filterMap.put(fileName, filter);
-	} /**
-							 * Method getApplicatonTask.
-							 * @return WOApplication
-							 */
+	}
+
+	/**
+	 * Method getApplicatonTask.
+	 * @return WOApplication
+	 */
 	private WOApplication getApplicatonTask() {
 		return (WOApplication) task;
-	} /**
-							 * @see org.objectstyle.woproject.ant.ProjectFormat#fileIterator()
-							 */
+	}
+
+	/**
+	 * @see org.objectstyle.woproject.ant.ProjectFormat#fileIterator()
+	 */
 	public Iterator fileIterator() {
 		return templateMap.keySet().iterator();
-	} /**
-							 * @see org.objectstyle.woproject.ant.ProjectFormat#templateForTarget(java.lang.String)
-							 */
+	}
+
+	/**
+	 * @see org.objectstyle.woproject.ant.ProjectFormat#templateForTarget(java.lang.String)
+	 */
 	public String templateForTarget(String targetName) throws BuildException {
 		String template = (String) templateMap.get(targetName);
 		if (template == null) {
@@ -500,9 +529,11 @@ public class AppFormat extends ProjectFormat {
 				"Invalid target, no template found: " + targetName);
 		}
 		return template;
-	} /**
-							 * @see org.objectstyle.woproject.ant.ProjectFormat#filtersForTarget(java.lang.String)
-							 */
+	}
+
+	/**
+	 * @see org.objectstyle.woproject.ant.ProjectFormat#filtersForTarget(java.lang.String)
+	 */
 	public FilterSetCollection filtersForTarget(String targetName)
 		throws BuildException {
 
@@ -510,10 +541,12 @@ public class AppFormat extends ProjectFormat {
 			throw new BuildException("Invalid target: " + targetName);
 		}
 		return (FilterSetCollection) filterMap.get(targetName);
-	} /**
-							 * Method woappPlusVersion returns the template name.
-							 * @return String
-							 */
+	}
+
+	/**
+	 * Method woappPlusVersion returns the template name.
+	 * @return String
+	 */
 	public String woappPlusVersion() {
 		if (this
 			.getApplicatonTask()
@@ -532,5 +565,61 @@ public class AppFormat extends ProjectFormat {
 		}
 
 		return null;
+	}
+
+	/**
+	 * 
+	 */
+	public void release() {
+		super.release();
+	}
+
+	/** 
+	 * Returns a FilterSet that can be used to build web.xml file. 
+	 */
+	public FilterSetCollection webXMLFilter() {
+		FilterSet filter = new FilterSet();
+		String WEBINFROOT = "WEBINFROOT";
+		String paths = "";
+		if (appPaths != null && appPaths.length() > 0) {
+			paths = paths + WEBINFROOT;
+			paths =
+				paths
+					+ FileStringScanner.replace(
+						appPaths,
+						"\n",
+						"\n" + WEBINFROOT);
+		}
+		if (frameworkPaths != null && frameworkPaths.length() > 0) {
+			paths = paths + WEBINFROOT;
+			paths =
+				paths
+					+ FileStringScanner.replace(
+						frameworkPaths,
+						"\n",
+						"\n" + WEBINFROOT);
+		}
+		if (otherClasspaths != null && otherClasspaths.length() > 0) {
+			paths = paths + WEBINFROOT;
+			paths =
+				paths
+					+ FileStringScanner.replace(
+						otherClasspaths,
+						"\n",
+						"\n" + WEBINFROOT);
+		}
+
+		WOApplication woappTask = (WOApplication) this.task;
+		filter.addFilter("WOROOT", woappTask.getWebXML_WOROOT());
+		filter.addFilter("LOCALROOT", woappTask.getWebXML_LOCALROOT());
+		filter.addFilter(
+			"WOAINSTALLROOT",
+			woappTask.getWebXML_WOAINSTALLROOT());
+		filter.addFilter("WOAppMode", woappTask.getWebXML_WOAppMode());
+		filter.addFilter("WOClassPath", paths);
+		filter.addFilter("WOApplicationClass", this.getAppClass());
+		filter.addFilter("WOtaglib", woappTask.getWebXML_WOtaglib());
+
+		return new FilterSetCollection(filter);
 	}
 }

@@ -112,15 +112,15 @@ public abstract class ProjectFormat {
 		Iterator it = fileIterator();
 		boolean returnValue = false;
 		try {
+			ClassLoader cl = this.task.getClass().getClassLoader();
+			if (cl == null) {
+				//cl = ClassLoader.getSystemClassLoader();
+				throw new BuildException("Could not load classloader");
+			}
 			while (it.hasNext()) {
 				String targetName = (String) it.next();
 				String templName = templateForTarget(targetName);
 				FilterSetCollection filters = filtersForTarget(targetName);
-
-				ClassLoader cl = this.getClass().getClassLoader();
-				if(cl == null) {
-					cl = ClassLoader.getSystemClassLoader();
-				}
 
 				InputStream template = cl.getResourceAsStream(templName);
 				File target = new File(targetName);
@@ -172,7 +172,12 @@ public abstract class ProjectFormat {
 		File destFile,
 		FilterSetCollection filters)
 		throws IOException {
-			log("destFile.getName(): " + destFile.getName() + " this.getName(): " + this.getName(), Project.MSG_VERBOSE);
+		log(
+			"destFile.getName(): "
+				+ destFile.getName()
+				+ " this.getName(): "
+				+ this.getName(),
+			Project.MSG_VERBOSE);
 		if (destFile.exists()
 			&& destFile.isFile()
 			&& destFile.getName().equals(this.getName())) {
@@ -292,5 +297,9 @@ public abstract class ProjectFormat {
 
 	public void log(String msg, int msgLevel) {
 		task.log(msg, msgLevel);
+	}
+
+	public void release() {
+		task = null;
 	}
 }

@@ -99,6 +99,36 @@
 					<td valign="top">String for the JVM options in the classpath.</td>
 					<td valign="top" align="center">NO</td>
 				</tr>
+				<tr>
+					<td valign="top">webXML</td>
+					<td valign="top">Generate web.xml</td>
+					<td valign="top" align="center">NO</td>
+				</tr>
+				<tr>
+					<td valign="top">webXML_WOROOT</td>
+					<td valign="top">Optional parameter for the web.xml</td>
+					<td valign="top" align="center">NO</td>
+				</tr>
+				<tr>
+					<td valign="top">webXML_LOCALROOT</td>
+					<td valign="top">Optional parameter for the web.xml</td>
+					<td valign="top" align="center">NO</td>
+				</tr>
+				<tr>
+					<td valign="top">webXML_WOAINSTALLROOT</td>
+					<td valign="top">Optional parameter for the web.xml</td>
+					<td valign="top" align="center">NO</td>
+				</tr>
+				<tr>
+					<td valign="top">webXML_WOAppMode</td>
+					<td valign="top">Optional parameter for the web.xml</td>
+					<td valign="top" align="center">NO</td>
+				</tr>
+				<tr>
+					<td valign="top">webXML_WOtaglib</td>
+					<td valign="top">Optional parameter for the web.xml</td>
+					<td valign="top" align="center">NO</td>
+				</tr>
 			</table>
 
 			<h3>Nested elements:</h3>
