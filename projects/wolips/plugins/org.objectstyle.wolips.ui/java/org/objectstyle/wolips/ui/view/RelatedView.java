@@ -33,8 +33,12 @@ import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.ISelectionListener;
+import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.objectstyle.wolips.core.logging.WOLipsLog;
@@ -241,12 +245,20 @@ public final class RelatedView extends ViewPart implements ISelectionListener {
 			.addResourceChangeListener(new IResourceChangeListener() {
 
 			public void resourceChanged(IResourceChangeEvent event) {
-
-				getViewSite()
-					.getWorkbenchWindow()
-					.getShell()
-					.getDisplay()
-					.asyncExec(new Runnable() {
+				IViewSite viewSite = getViewSite();
+				if (viewSite == null)
+					return;
+				IWorkbenchWindow workbenchWindow =
+					viewSite.getWorkbenchWindow();
+				if (workbenchWindow == null)
+					return;
+				Shell shell = workbenchWindow.getShell();
+				if (shell == null)
+					return;
+				Display display = shell.getDisplay();
+				if (display == null)
+					return;
+				display.asyncExec(new Runnable() {
 
 					public void run() {
 
