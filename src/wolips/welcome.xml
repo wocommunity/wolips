@@ -1,8 +1,135 @@
 <?xml version="1.0" encoding="UTF-8" ?> 
 <welcomePage 
  title="WOLips">
- <intro>This page will help familiarize you with WOLips.
+ <intro><b>First steps with WOLips.</b>
+This page will help familiarize you with WOLips.
 To get started, read the sections below and click on the related links. </intro>
+
+ <item><b></b></item> 
+
+<item><b>What is WOLips?</b>
+WOLips is a plugin for eclipse that support development of WebObjects applications and
+frameworks. WOLips is a part of WOProject.
+Eclipse is a kind of universal tool platform - an open extensible IDE for anything and
+nothing in particular.
+WOProject is a set of OS and IDE independent tools (based on Ant) for working with
+WebObjects.
+Ant is a Java-based build tool.</item>
+<item><b>Audience and Scope</b>
+Are you familiar with WebObjects, and curious about Ant, WOProject and WOLips? Would you
+like to use eclipse to develop WebObjects applications? Then this document is for you. It aims to
+get you started using WOLips. There will be no detailed technical discussions, and larger subjects
+like Ant, WOProject or plugin develepment for eclipse are not discussed.
+This document describes how to do things using WOLips on Windows. If there are differences
+regarding how things work on Macintosh, notes reagrding these will be added later.
+The author of this document is not a WOLips or WOProject developer, and it contains no API or
+reference documentation. It's not even a user manual. It's simply something to get you started.</item>
+<item><b>Using eclipse without WOLips</b>
+If you are not yet familiar with eclipse; spend some time with it before continuing. Make certain to
+have a look at the Windows > Open Perspective and Windows > Show View menu alternatives,
+and don't miss the Refactor menu. Bring yourself to a level where you can create projects and
+run/debug applications before continuing.
+You can turn an existing WO project into an eclipse project by simply running the New Project
+wizard. select Java Project and point the project content path to the already existing WO project
+folder. (Remember that this is without using WOLips.) Doing this you'll get warnings related to all
+the WO specific imports. You need to add all relevant jar files to the Build Path of the project. If
+you have many WO projects, that all need the same libraries, this can be tedious. To make this
+easier, create a new empty project, call it WO5 or something similar. Add all the relevant libraries
+to this project, build path, and mark them to be exported. Then all you need to add to all the WO
+projects is this new project.
+This way you can use eclipse to edit existing java files. Doing this could be worthwhile (As a Java
+IDE eclipse is superior to ProjectBuilder.) but eclipse has no notion of WO specifics. Here's a list
+of what eclipse can't do with this setup:
+You need to maintain the original ProjectBuilder project in parallel. Eclipse will only be
+aware of the *.java files, and even these files can't be moved or renamed without confusing
+ProjectBuilder.
+Invoking WOBuilder and EOModeler from within ProjectBuilder is not the same thing as
+invoking them from Finder/Explorer. Invoking them from eclipse will be equivalent to the
+Finder/Explorer alternative.
+Eclipse cannot build a WO framework or application.
+What does WOLips bring to the table?
+WOLips aims to overcome the problems listed above.
+WOLips incorporates the ideas of WOProject (using Ant).
+WOLips will extend eclipse features, like refactoring, to work with WO specific files. This
+is not yet possible, but will be in future releases.</item>
+
+<item><b>Installing WOLips</b>
+1. If you have any previous version of WOLips installed then uninstall that first. (This
+document, and more specifically these instructions, assumes that you are new to WOLips,
+and that you are installing it for the first time.)
+2. Quit eclipse if you have it running.
+3. Download the latest release from SourceForge.
+4. Unpack the downloaded file. You should end up with a folder named something like
+org.objectstyle.wolips_x.y.z.tar.gz. This folder should in turn contain two folders: features
+and plugings.
+5. Locate the eclipse folder (where eclipse is installed on your disk). Among other things this
+folder does also contain a features and a plugins folder.
+6. Copy whatever you downloaded from org.objectstyle.wolips_x.y.z\features and
+org.objectstyle.wolips_x.y.z\pluins to eclipse\features and eclipse\plugins
+respectively.
+7. Currently you have to this as well: Replace the ant.jar and the jakarta-ant-1.4.1-optional.jar
+in the ant plugin with ant.jar and optional.jar(rename it to jakarta-ant-1.4.1-optional.jar)
+from the ant 1.5.* distribution.
+8. Restart eclipse. When you start eclipse with a new or updated feature you have to activate it
+with the Update Manager. It should appear automatically when eclipse is started. If not;
+you’ll find it under Help > Software Updates > Update Manager.</item>
+
+<item><b>HelloWOrld</b>
+It is very easy to create and run a basic WO application using WOLips. Here’s how to do it:
+1. Select the menu option File > New > Other...
+2. Select WOLips WO 5.1 and then Application press next.
+3. Name the project HelloWOrld press Finish.
+4. Open the Navigator view and expand the HelloWOrld node. (There is a WOLips
+perspective and a WOLips Navigator view. This is not the one referred to here.) Inside
+you’ll find four folders, and a number of files. They are:
+bin contains all the *.class files.
+HelloWOrld.proj.src contains all the *.java files.
+HelloWOrld.woa is the executable application. eclipse keeps all code compiled at all
+times (as soon as you save changes). Among other things this folder contains the
+application start script HelloWOrld.cmd.
+Main.wo contain the *.html, *.wod and *.woo files for the Main component as
+expected. The *.api file is stored directly under the project root (as in ProjectBuilder)
+and the *.java file is stored in the *.proj.src folder (as we saw before). If/when you add
+more components; their files will be stored accordingly.
+.classpath and .project are eclipse project files.
+build.properties, build.xml and build-subproj.xml are Ant/WOProject files.
+CustomInfo.plist, Makefile, Makefile.postamble, Makefile.preamble and
+PB.project are ProjectBuilder files.
+Properties is a WOLips specific file.
+WOAfile.icns is the application icon set.
+5. Double-click PB.project and ProjectBuilder opens... (Return to eclipse.)
+6. Double-click Main.wod and WOBuilder opens... (Modify it to be a simple HelloWOrld
+component.)
+7. Double-click HelloWOrld.cmd and the application is launched...
+That's it!</item>
+
+<item><b>ProjectBuilder: Why PBWO and not PBX?</b>
+In this document, when referring to ProjectBuilder, it is the Windows and/or old Macintosh version
+(PBWO) that is intended not the new, Macintosh only, version (PBX).
+WOLips needs to maintain either the PBWO PB.project file or the PBX .pbproj file in order to
+have WOBuilder and EOModeler function as desired. The PBWO file is apparently much easier to
+maintain than the PBX file. Working in parallel with PBWO and eclipse/WOLips is possible, but is
+not the primary reason for maintaining the project files.
+Moving things around - using packages
+...</item>
+
+<item><b>What you can and can't do.</b>
+WO frameworks
+...</item>
+
+<item><b>How to link to a framework to get access to all resources - not just the java code.</b>
+Importing existing projects
+...
+Probably different for applications and frameworks and depending on if it a PBWO or PBX
+project.</item>
+
+<item><b>Using the eclipse Debugger</b>
+...</item>
+
+<item><b>Getting help</b>
+If you'd like to ask question regarding WOLips or to get in contact with the developers use the
+WOProject mailing list. Suggestions on improving this document are also best discussed on that
+list.</item>
 
  <item><b>The WOLips Perspective </b>
 To do WO development open to the WOLips Perspective by selecting
