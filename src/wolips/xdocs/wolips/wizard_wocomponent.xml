@@ -2,15 +2,23 @@
 <document>
 <title>WOLips: Wizards WOComponent</title>
     
-<body>      
+<body>
+	<section name="WOLips">
+		<p>wizards
+		<a href="popup.html">popup</a>
+		<a href="manipulating_the_build_process.html">manipulating the build process</a>
+		<a href="bugs_and_known_issues.html">bugs and known issues</a>
+		<a href="inside_wolips.html">inside WOLips</a></p>
+	</section>
+	      
 	<section name="Wizards WOComponent">
-		<p><a href="wizard_woapplication.html">WOApplication</a> <a href="wizard_woframework.html">WOFramework</a> <a href="wizard_wocomponent.html">WOComponent</a></p>
+		<p><a href="wizard_woapplication.html">WOApplication</a> <a href="wizard_woframework.html">WOFramework</a>WOComponent</p>
 	
 	<subsection name="WOComponent">
 		<p>Right click on your project root and select new-other</p>
 		<img src="/images/wolips/component_step_1.jpg"/>
-		<p>In the wizard please select WO Version 5.* and WOComponent. Continue with next.</p>
-		<img src="/images/wolips/component_step_2.jpg"/>
+		<p>In the /wizard please select WO Version 5.* and WOComponent. Continue with next.</p>
+		<img src="images/wolips/component_step_2.jpg"/>
 		<p>Enter a name for your new component and finish the dialog.</p>
 		<img src="/images/wolips/component_step_3.jpg"/>
 	</subsection>

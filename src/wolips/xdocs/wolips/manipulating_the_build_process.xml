@@ -2,7 +2,15 @@
 <document>
 <title>WOLips: Manipulating the Build Process</title>
     
-<body>      
+<body>
+	<section name="WOLips">
+		<p><a href="wizards.html">wizards</a>
+		<a href="popup.html">popup</a>
+		manipulating the build process
+		<a href="bugs_and_known_issues.html">bugs and known issues</a>
+		<a href="inside_wolips.html">inside WOLips</a></p>
+	</section>
+	      
 	<section name="Manipulating the Build Process">
 		<p>If you add a file named WOLipsBuild.properties in your project root you can manipulate the build process.</p>
 		<p>A later version should have a preferences dialog for that.</p>

@@ -2,9 +2,17 @@
 <document>
 <title>WOLips: Wizards WOApplication</title>
     
-<body>      
+<body>
+	<section name="WOLips">
+		<p>wizards
+		<a href="popup.html">popup</a>
+		<a href="manipulating_the_build_process.html">manipulating the build process</a>
+		<a href="bugs_and_known_issues.html">bugs and known issues</a>
+		<a href="inside_wolips.html">inside WOLips</a></p>
+	</section>
+	      
 	<section name="Wizards WOApplication">
-		<p><a href="wizard_woapplication.html">WOApplication</a> <a href="wizard_woframework.html">WOFramework</a> <a href="wizard_wocomponent.html">WOComponent</a></p>
+		<p>WOApplication<a href="wizard_woframework.html">WOFramework</a> <a href="wizard_wocomponent.html">WOComponent</a></p>
 		
 	<subsection name="WOApplication">
 		<p>In the menu navigate to File-New-Project.</p>
