@@ -149,7 +149,7 @@
             </fileset>
         </copy>
 
-        <javadoc   packagenames="org.objectstyle.wolips.targetbuilder.*"
+        <javadoc   packagenames="org.objectstyle.wolips.target.*"
                    defaultexcludes="yes"
                    destdir="${wolips.targetbuilder.dist}/doc/api"
                    author="true"
@@ -160,8 +160,7 @@
         <classpath refid="classpath"/>
         <sourcepath>
             <pathelement path="src/wolips-targetbuilder/java"/>
-	    <pathelement path="src/wolips/java"/>
-        </sourcepath>
+	    </sourcepath>
         <doctitle><![CDATA[<h2>WOLips API Documentation</h2>]]></doctitle>
         <link href="http://developer.java.sun.com/developer/products/xml/docs/api/"/>
         </javadoc>
