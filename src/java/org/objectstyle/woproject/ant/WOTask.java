@@ -63,7 +63,6 @@ import java.util.Vector;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
-import org.apache.tools.ant.Location;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.taskdefs.Copy;
 import org.apache.tools.ant.taskdefs.Jar;
@@ -89,50 +88,94 @@ public abstract class WOTask extends Task {
     protected Vector lib = new Vector();
     protected SubtaskFactory subtaskFactory = new SubtaskFactory(this);
 
-    public void setName(String name) {
+    /**
+	 * Method setName.
+	 * @param name
+	 */
+	public void setName(String name) {
         this.name = name;
     }
 
-    public String getName() {
+    /**
+	 * Method getName.
+	 * @return String
+	 */
+	public String getName() {
     	return name;
     }
 
-    public void setJarName(String jarName) {
+    /**
+	 * Method setJarName.
+	 * @param jarName
+	 */
+	public void setJarName(String jarName) {
         this.jarName = jarName;
     }
 
-    public String getJarName() {
+    /**
+	 * Method getJarName.
+	 * @return String
+	 */
+	public String getJarName() {
         if(jarName == null)
             jarName = getName().toLowerCase();
         return jarName;
     }
 
-    public void setPrincipalClass(String principalClass) {
+    /**
+	 * Method setPrincipalClass.
+	 * @param principalClass
+	 */
+	public void setPrincipalClass(String principalClass) {
         this.principalClass = principalClass;
     }
 
-    public String getPrincipalClass() {
+    /**
+	 * Method getPrincipalClass.
+	 * @return String
+	 */
+	public String getPrincipalClass() {
     	return principalClass;
     }
 
-    public void setDestDir(String destDir) {
+    /**
+	 * Method setDestDir.
+	 * @param destDir
+	 */
+	public void setDestDir(String destDir) {
         this.destDir = destDir;
     }
 
-    public void addClasses(FileSet set) {
+    /**
+	 * Method addClasses.
+	 * @param set
+	 */
+	public void addClasses(FileSet set) {
         classes.addElement(set);
     }
 
-    public void addResources(FileSet set) {
+    /**
+	 * Method addResources.
+	 * @param set
+	 */
+	public void addResources(FileSet set) {
         resources.addElement(set);
     }
 
-    public void addLib(FileSet set) {
+    /**
+	 * Method addLib.
+	 * @param set
+	 */
+	public void addLib(FileSet set) {
         lib.addElement(set);
     }
 
     
-    public void addWsresources(FileSet set) {
+    /**
+	 * Method addWsresources.
+	 * @param set
+	 */
+	public void addWsresources(FileSet set) {
         wsresources.addElement(set);
     }
 
@@ -172,7 +215,11 @@ public abstract class WOTask extends Task {
         }
     }
 
-    protected void createDirectories() throws BuildException {
+    /**
+	 * Method createDirectories.
+	 * @throws BuildException
+	 */
+	protected void createDirectories() throws BuildException {
     	Mkdir mkdir = subtaskFactory.getMkdir();
  
         File taskDir = taskDir();
@@ -193,26 +240,42 @@ public abstract class WOTask extends Task {
         }
     }
 
-    public boolean hasWs() {
+    /**
+	 * Method hasWs.
+	 * @return boolean
+	 */
+	public boolean hasWs() {
         return wsresources.size() > 0;
     }
 
-    public boolean hasResources() {
+    /**
+	 * Method hasResources.
+	 * @return boolean
+	 */
+	public boolean hasResources() {
         return resources.size() > 0;
     }
 
 
-    public boolean hasClasses() {
+    /**
+	 * Method hasClasses.
+	 * @return boolean
+	 */
+	public boolean hasClasses() {
         return classes.size() > 0;
     }
 
-    protected void jarClasses() throws BuildException {
+    /**
+	 * Method jarClasses.
+	 * @throws BuildException
+	 */
+	protected void jarClasses() throws BuildException {
         Jar jar = subtaskFactory.getJar();
-        //File taskJar =
-        //        new File(resourcesDir(), "Java" + File.separator + getJarName() + ".jar");
+        File taskJar =
+                new File(resourcesDir(), "Java" + File.separator + getJarName() + ".jar");
         //jar.setJarfile(taskJar);
-        jar.setLocation(new Location(resourcesDir() + "Java" + File.separator + getJarName() + ".jar"));
-
+        //jar.setLocation(new Location(resourcesDir() + "Java" + File.separator + getJarName() + ".jar"));
+		jar.setDestFile(taskJar);
         if (hasClasses()) {
             Enumeration en = classes.elements();
             while (en.hasMoreElements()) {
@@ -223,7 +286,11 @@ public abstract class WOTask extends Task {
         jar.execute();
     }
 
-    protected void copyResources() throws BuildException {
+    /**
+	 * Method copyResources.
+	 * @throws BuildException
+	 */
+	protected void copyResources() throws BuildException {
         Copy cp = subtaskFactory.getResourceCopy();
 
         cp.setTodir(resourcesDir());
@@ -234,7 +301,11 @@ public abstract class WOTask extends Task {
         cp.execute();
     }
 
-    protected void copyWsresources() throws BuildException {
+    /**
+	 * Method copyWsresources.
+	 * @throws BuildException
+	 */
+	protected void copyWsresources() throws BuildException {
         Copy cp = subtaskFactory.getResourceCopy();
         cp.setTodir(wsresourcesDir());
 
@@ -245,7 +316,11 @@ public abstract class WOTask extends Task {
         cp.execute();
     }
 
-    protected void copyLibs() throws BuildException {
+    /**
+	 * Method copyLibs.
+	 * @throws BuildException
+	 */
+	protected void copyLibs() throws BuildException {
         Copy cp = subtaskFactory.getResourceCopy();
         cp.setTodir(new File(resourcesDir(), "Java"));
 
@@ -256,12 +331,20 @@ public abstract class WOTask extends Task {
         cp.execute();
     }
 
-    protected boolean hasLib() {
+    /**
+	 * Method hasLib.
+	 * @return boolean
+	 */
+	protected boolean hasLib() {
         return lib.size() > 0;
     }
 
 
-    protected boolean hasJava() {
+    /**
+	 * Method hasJava.
+	 * @return boolean
+	 */
+	protected boolean hasJava() {
         return classes.size() > 0 || lib.size() > 0;
     }
 
