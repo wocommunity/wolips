@@ -107,8 +107,7 @@
             <fileset dir="${param.project.dir}/java">
                 <include name="**/*.gif"/>
             </fileset>         
-            <fileset dir="${param.project.dir}">
-                <include name="**/resources/**"/>
+            <fileset dir="${param.project.dir}/resources">
             </fileset>         
             <metainf dir="../../../homepage/doc">
                 <include name="LICENSE*"/>

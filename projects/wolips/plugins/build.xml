@@ -7,6 +7,27 @@
 <project name="wolips" default="" basedir=".">
 
     <!-- ========================================== -->
+    <!-- Verify test.eclipse.home.                  -->
+    <!-- ========================================== -->
+    <target name="verify">
+        <condition property="test.eclipse.home.set">
+            <isset property="test.eclipse.home"/>
+        </condition>
+        <condition property="test.eclipse.home.not.set">
+            <not>
+                <isset property="test.eclipse.home"/>
+            </not>
+        </condition>
+    </target>
+
+    <!-- ========================================== -->
+    <!-- Inform user.                               -->
+    <!-- ========================================== -->
+    <target name="inform_user" if="test.eclipse.home.not.set">
+        <echo message="Please set the property test.eclipse.home in your build.properties to run wolips unit tests."/>
+    </target>
+
+    <!-- ========================================== -->
     <!-- Build all.                                 -->
     <!-- ========================================== -->
     <target name="all">
@@ -58,5 +79,34 @@
 	<ant dir="org.objectstyle.wolips.ant" target="dist"/>
 	<ant dir="org.objectstyle.wolips.feature" target="dist"/>
     </target>
+
+    <!-- ========================================== -->
+    <!-- Build test prepare.                        -->
+    <!-- ========================================== -->
+    <target name="test.prepare" if="test.eclipse.home.set">
+        <copy todir="${test.eclipse.home}/plugins">
+            <fileset dir="../../${build.output.build.dir}/plugins">
+          	</fileset>
+         </copy> 
+	    <copy todir="${test.eclipse.home}/features">
+            <fileset dir="../../${build.output.build.dir}/features">
+          	</fileset>
+         </copy> 
+    </target>
+
+    <!-- ========================================== -->
+    <!-- Build test run.                            -->
+    <!-- ========================================== -->
+    <target name="test.run" if="test.eclipse.home.set">
+	    <ant dir="org.objectstyle.wolips.tests" target="test">
+	        <property name="param.eclipse.home" value="${test.eclipse.home}"/>
+	    </ant>
+    </target>
+
+    <!-- ========================================== -->
+    <!-- Build test.                                -->
+    <!-- ========================================== -->
+    <target name="test" depends="verify,inform_user,test.prepare,test.run">
+	</target>
 
 </project>

@@ -24,7 +24,7 @@
     <!-- Inform user.                               -->
     <!-- ========================================== -->
     <target name="inform_user" if="eclipse.home.not.set">
-        <echo message="Please set the property eclipse.home in your build.properties to build wolips."/>
+        <echo message="Please set the property eclipse.home in your build.properties to build wolips and run unit tests against it."/>
     </target>
 
     <!-- ========================================== -->
@@ -47,15 +47,22 @@
     <!-- Build dist children.                       -->
     <!-- ========================================== -->
     <target name="dist_children" if="EclipseHomeSet">
-	<ant dir="plugins" target="dist"/>
-	<ant dir="features" target="dist"/>
+	    <ant dir="plugins" target="dist"/>
+	    <ant dir="features" target="dist"/>
     </target>
 
     <!-- ============================================= -->
     <!-- Run tests.                                    -->
     <!-- ============================================= -->
-    <target name="test">
+    <target name="test" depends="verify,test.launch">
     </target>
+
+    <!-- ============================================= -->
+    <!-- Run tests.                                    -->
+    <!-- ============================================= -->
+    <target name="test.launch"  if="eclipse.home.set">
+        <ant dir="plugins" target="test"/>
+	</target>
 
     <!-- ========================================== -->
     <!-- Build dist.                                -->

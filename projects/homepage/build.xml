@@ -16,8 +16,8 @@
         </fileset>
     </path>
     <path id="classpath_javadoc">
-        <fileset dir="${ant.home}/lib">
-            <include name="ant.jar"/>
+        <fileset dir="${ant.home}">
+            <include name="**/ant.jar"/>
         </fileset>
         <fileset dir="../lib">
             <include name="*.jar"/>

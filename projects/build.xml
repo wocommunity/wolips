@@ -57,6 +57,15 @@
         * user.home = ${user.home}
         * build.version = ${build.version}
         * build.version.to.replace = ${build.version.to.replace}
+        * build.output.dir = ${build.output.dir}
+        * build.output.java.dir = ${build.output.java.dir}
+        * build.output.java.test.dir = ${build.output.java.test.dir}
+        * build.output.build.dir = ${build.output.build.dir}
+        * build.output.dist.dir = ${build.output.dist.dir}
+        * build.output.homepage.dir = ${build.output.homepage.dir}
+        * build.output.test.dir = ${build.output.test.dir}
+        * eclipse.home = ${eclipse.home}
+        * test.eclipse.home = ${test.eclipse.home}                
         ****************************************
         </echo>
     </target>
@@ -139,7 +148,7 @@
     <!-- ============================================= -->
     <!-- Run tests.                                    -->
     <!-- ============================================= -->
-    <target name="test" depends="woenvironment.test,woproject.test,wolips.test">
+    <target name="test" depends="print.environment,prepare,woenvironment.test,woproject.test,wolips.test">
     </target>
 
     <!-- ========================================== -->
