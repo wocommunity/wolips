@@ -43,19 +43,19 @@
          </menu>
          <action
                label="%UpdatePB.Project"
-               class="org.objectstyle.wolips.core.actions.PBAction"
+               class="org.objectstyle.wolips.ui.actions.PBAction"
                menubarPath="org.objectstyle.wolips/project"
                id="%UpdatePB.Project.ID">
          </action>
          <action
                label="%WOSystemFramework.Add"
-               class="org.objectstyle.wolips.core.actions.WOFrameworkAction"
+               class="org.objectstyle.wolips.ui.actions.WOFrameworkAction"
                menubarPath="org.objectstyle.wolips/woframeworks"
                id="%WOSystemFramework.Add.ID">
          </action>
          <action
                label="%WOLocalFramework.Add"
-               class="org.objectstyle.wolips.core.actions.WOFrameworkAction"
+               class="org.objectstyle.wolips.ui.actions.WOFrameworkAction"
                menubarPath="org.objectstyle.wolips/woframeworks"
                id="%WOLocalFramework.Add.ID">
          </action>
