@@ -61,8 +61,8 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.IWorkbenchPart;
+import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
 import org.objectstyle.wolips.ui.view.WOFrameworkDialogWrapper;
-import org.objectstyle.woproject.env.Environment;
 
 /**
  * Adding WOFrameworks
@@ -98,14 +98,14 @@ public class WOFrameworkAction extends ActionOnIProject {
 			WOFrameworkAction.frameworkDialog(
 				this.part,
 				javaProject,
-				Environment.NEXT_SYSTEM_ROOT,
+				WOLipsPlugin.getDefault().getWOEnvironment().getNEXT_SYSTEM_ROOT(),
 				false);
 			return;
 		} else if (action.getId().equals(WOLocalFrameworkAddID)) {
 			WOFrameworkAction.frameworkDialog(
 				this.part,
 				javaProject,
-				Environment.NEXT_LOCAL_ROOT,
+			WOLipsPlugin.getDefault().getWOEnvironment().getNEXT_LOCAL_ROOT(),
 				true);
 			return;
 		}

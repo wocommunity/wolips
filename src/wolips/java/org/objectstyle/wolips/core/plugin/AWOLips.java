@@ -81,7 +81,6 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.objectstyle.wolips.logging.WOLipsLog;
-import org.objectstyle.woproject.env.Environment;
 import org.objectstyle.woproject.env.WOEnvironment;
 import org.objectstyle.woproject.env.WOVariables;
 
@@ -264,19 +263,19 @@ public abstract class AWOLips implements IWOLipsPluginConstants {
 	 * @return IPath from NextLocalRoot Classpath variable if it exists.
 	 */
 	public IPath getNextLocalRootClassPathVariable() {
-		return JavaCore.getClasspathVariable(Environment.NEXT_LOCAL_ROOT);
+		return JavaCore.getClasspathVariable(this.getWOEnvironment().getNEXT_LOCAL_ROOT());
 	}
 	/**
 	 * @return IPath from NextRoot Classpath variable if it exists.
 	 */
 	public IPath getNextRootClassPathVariable() {
-		return JavaCore.getClasspathVariable(Environment.NEXT_ROOT);
+		return JavaCore.getClasspathVariable(this.getWOEnvironment().getNEXT_ROOT());
 	}
 	/**
 	 * @return IPath from NextSystemRoot Classpath variable if it exists.
 	 */
 	public IPath getNextSystemRootClassPathVariable() {
-		return JavaCore.getClasspathVariable(Environment.NEXT_SYSTEM_ROOT);
+		return JavaCore.getClasspathVariable(this.getWOEnvironment().getNEXT_SYSTEM_ROOT());
 	}
 	/**
 	 * Method getShell.

@@ -78,7 +78,6 @@ import org.eclipse.jdt.internal.ui.util.CoreUtility;
 import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
 import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
 import org.objectstyle.wolips.logging.WOLipsLog;
-import org.objectstyle.woproject.env.Environment;
 /**
  * @author uli
  *
@@ -625,7 +624,7 @@ public class ProjectHelper implements IWOLipsPluginConstants {
 					.equals(nextRootAsPath)) {
 				// replace beginning of class path with next root
 				frameworkPath =
-					new Path(Environment.NEXT_ROOT).append(
+					new Path(WOLipsPlugin.getDefault().getWOEnvironment().getNEXT_ROOT()).append(
 						frameworkPath.removeFirstSegments(
 							nextRootAsPath.segmentCount()));
 				// set path as variable entry			

@@ -54,7 +54,6 @@
  *
  */
 package org.objectstyle.wolips.core.plugin;
-import org.objectstyle.woproject.env.Environment;
 /**
  * @author mnolte
  */
@@ -157,8 +156,6 @@ public interface IWOLipsPluginConstants {
 			ANT_APPLICATION_NATURE_ID,
 			WO_APPLICATION_NATURE_OLD,
 			WO_FRAMEWORK_NATURE_OLD };
-	public static final String[] MANDATORY_CLASSPATH_VARIABLES =
-		{ Environment.NEXT_ROOT };
 	public static final String PLUGIN_ID = "org.objectstyle.wolips";
 	public static final String build_user_home_properties =
 		"build-user-home-wobuild-properties.xml";

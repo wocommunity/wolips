@@ -74,7 +74,6 @@ import org.objectstyle.wolips.core.listener.JavaElementChangeListener;
 import org.objectstyle.wolips.core.listener.ResourceChangeListener;
 import org.objectstyle.wolips.core.preferences.Preferences;
 import org.objectstyle.wolips.core.project.ant.RunAnt;
-import org.objectstyle.woproject.env.Environment;
 
 /**
  * @author uli
@@ -188,7 +187,7 @@ public class EarlyStartup extends AWOLips {
 		if (this.getNextRootClassPathVariable() == null) {
 			try {
 				JavaCore.setClasspathVariable(
-					Environment.NEXT_ROOT,
+				this.getWOEnvironment().getNEXT_ROOT(),
 					new Path(this.getWOVariables().systemRoot()),
 					null);
 			} catch (JavaModelException e) {
@@ -200,7 +199,7 @@ public class EarlyStartup extends AWOLips {
 		if (this.getNextLocalRootClassPathVariable() == null) {
 			try {
 				JavaCore.setClasspathVariable(
-					Environment.NEXT_LOCAL_ROOT,
+				this.getWOEnvironment().getNEXT_LOCAL_ROOT(),
 					new Path(this.getWOVariables().localRoot()),
 					null);
 			} catch (JavaModelException e) {
@@ -212,7 +211,7 @@ public class EarlyStartup extends AWOLips {
 		if (this.getNextSystemRootClassPathVariable() == null) {
 			try {
 				JavaCore.setClasspathVariable(
-					Environment.NEXT_SYSTEM_ROOT,
+				this.getWOEnvironment().getNEXT_SYSTEM_ROOT(),
 					new Path(this.getWOVariables().systemRoot()),
 					null);
 			} catch (JavaModelException e) {
