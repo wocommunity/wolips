@@ -62,7 +62,8 @@ import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.ui.IActionDelegate;
+import org.eclipse.ui.IObjectActionDelegate;
+import org.eclipse.ui.IWorkbenchPart;
 
 /**
  * @author uli
@@ -72,10 +73,11 @@ import org.eclipse.ui.IActionDelegate;
  * To enable and disable the creation of type comments go to
  * Window>Preferences>Java>Code Generation.
  */
-public class ActionOnIResource implements IActionDelegate {
+public class ActionOnIResource implements IObjectActionDelegate {
 
 	private IProject project;
 	private IResource actionResource;
+	protected IWorkbenchPart part;
 
 	/**
 	 * @see java.lang.Object#Object()
@@ -104,6 +106,7 @@ public class ActionOnIResource implements IActionDelegate {
 	public void dispose() {
 		project = null;
 		actionResource = null;
+		part = null;
 	}
 
 	/**
@@ -125,5 +128,11 @@ public class ActionOnIResource implements IActionDelegate {
 			actionResource = (IResource) ((ICompilationUnit) obj).getResource();
 		if (obj != null)
 			project = actionResource.getProject();
+	}
+	/** (non-Javadoc)
+	 * Method declared on IObjectActionDelegate
+	 */
+	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
+		this.part = targetPart;
 	}
 }
