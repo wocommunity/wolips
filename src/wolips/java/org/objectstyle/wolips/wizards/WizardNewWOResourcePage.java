@@ -54,6 +54,7 @@
  *
  */
 package org.objectstyle.wolips.wizards;
+
 import java.lang.reflect.InvocationTargetException;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -64,6 +65,17 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.dialogs.WizardNewFileCreationPage;
 import org.objectstyle.wolips.IWOLipsPluginConstants;
 import org.objectstyle.wolips.WOLipsPlugin;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.dialogs.IDialogSettings;
+import org.eclipse.jface.viewers.*;
+import org.eclipse.jface.wizard.WizardDialog;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.*;
+import org.eclipse.ui.help.WorkbenchHelp;
+import org.eclipse.ui.internal.*;
+import org.eclipse.ui.internal.dialogs.NewWizard;
+
 /**
  * @author mnolte
  * @author uli
@@ -79,8 +91,30 @@ public abstract class WizardNewWOResourcePage
 	public WizardNewWOResourcePage(
 		String pageName,
 		IStructuredSelection selection) {
-		super(pageName, selection);
+		super(pageName, WizardNewWOResourcePage.selection(selection));
 	}
+	
+	private static IStructuredSelection selection(IStructuredSelection aSelection) {
+		if(aSelection != null) return aSelection;
+		IWorkbench workbench = PlatformUI.getWorkbench();
+		ISelection selection = workbench.getActiveWorkbenchWindow().getSelectionService().getSelection();
+		IStructuredSelection selectionToPass = StructuredSelection.EMPTY;
+		if (selection instanceof IStructuredSelection) {
+			selectionToPass = (IStructuredSelection) selection;
+			} 	
+		else {
+			// Build the selection from the IFile of the editor
+			IWorkbenchPart part = workbench.getActiveWorkbenchWindow().getPartService().getActivePart();
+			if (part instanceof IEditorPart) {
+				IEditorInput input = ((IEditorPart)part).getEditorInput();
+			if (input instanceof IFileEditorInput) {
+				selectionToPass = new StructuredSelection(((IFileEditorInput)input).getFile());
+				}	
+			}
+		}
+		return selectionToPass;
+	}
+	
 	protected boolean createResourceOperation(IRunnableWithProgress creationOperation) {
 		try {
 			new ProgressMonitorDialog(getShell()).run(
