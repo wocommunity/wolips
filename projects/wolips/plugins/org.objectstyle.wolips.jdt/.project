@@ -3,6 +3,7 @@
 	<name>org.objectstyle.wolips.jdt</name>
 	<comment></comment>
 	<projects>
+		<project>org.objectstyle.wolips.variables</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

@@ -3,6 +3,8 @@
 	<name>org.objectstyle.wolips</name>
 	<comment></comment>
 	<projects>
+		<project>org.objectstyle.wolips.variables</project>
+		<project>org.objectstyle.wolips.woproject</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

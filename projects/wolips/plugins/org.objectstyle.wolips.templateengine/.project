@@ -3,6 +3,9 @@
 	<name>org.objectstyle.wolips.templateengine</name>
 	<comment></comment>
 	<projects>
+		<project>org.objectstyle.wolips.datasets</project>
+		<project>org.objectstyle.wolips.jdom</project>
+		<project>org.objectstyle.wolips.tests.core</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
