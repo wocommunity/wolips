@@ -26,7 +26,7 @@
     <echo message="Run library xml dir ${param.eclipse.home}"/>
     <echo message="library-file ${library-file}"/>
     
-    <ant target="ui-test" antfile="${library-file}" dir="${param.eclipse.home}">
+    <ant target="core-test" antfile="${library-file}" dir="${param.eclipse.home}">
       <property name="data-dir" value="${wolips-folder}"/>
       <property name="plugin-name" value="${plugin-name}"/>
       <property name="classname" 
