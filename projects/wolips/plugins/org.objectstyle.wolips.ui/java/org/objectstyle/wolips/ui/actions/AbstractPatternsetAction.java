@@ -71,14 +71,14 @@ import org.objectstyle.wolips.workbenchutilities.actions.ActionOnIResource;
 public abstract class AbstractPatternsetAction extends ActionOnIResource {
 
 	/**
-	 * @return
+	 * @return the project
 	 */
 	public Project getProject() {
 		return (Project) this.getIProject().getAdapter(Project.class);
 	}
 
 	/**
-	 * @return
+	 * @return the pattern
 	 */
 	public String getPattern() {
 		String name = this.getActionResource().getName();

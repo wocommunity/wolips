@@ -70,20 +70,10 @@ public class UIPlugin extends AbstractUIPlugin {
 		plugin = this;
 	}
 	/**
-	 * Returns the shared instance.
-	 * 
-	 * @return
+	 * @return the shared instance
 	 */
 	public static UIPlugin getDefault() {
 		return plugin;
-	}
-	/**
-	 * Returns the PluginID.
-	 * 
-	 * @return
-	 */
-	public static String getPluginId() {
-		return UIPlugin.PLUGIN_ID;
 	}
 	/**
 	 * @return Returns the pluginLogger.

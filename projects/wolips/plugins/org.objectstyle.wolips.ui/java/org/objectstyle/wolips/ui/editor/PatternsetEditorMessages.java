@@ -55,7 +55,6 @@
  */
 package org.objectstyle.wolips.ui.editor;
 
-import java.text.MessageFormat;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
@@ -64,10 +63,11 @@ import java.util.ResourceBundle;
  */
 public class PatternsetEditorMessages {
 
-	private static final String RESOURCE_BUNDLE =
-		PatternsetEditorMessages.class.getName();
-	private static ResourceBundle fgResourceBundle =
-		ResourceBundle.getBundle(RESOURCE_BUNDLE);
+	private static final String RESOURCE_BUNDLE = PatternsetEditorMessages.class
+			.getName();
+
+	private static ResourceBundle fgResourceBundle = ResourceBundle
+			.getBundle(RESOURCE_BUNDLE);
 
 	private PatternsetEditorMessages() {
 		super();
@@ -75,7 +75,7 @@ public class PatternsetEditorMessages {
 
 	/**
 	 * @param key
-	 * @return
+	 * @return the value from the patternset editor messages
 	 */
 	public static String getString(String key) {
 		try {
@@ -84,26 +84,4 @@ public class PatternsetEditorMessages {
 			return '!' + key + '!';
 		}
 	}
-
-	/**
-	 * Gets a string from the resource bundle and formats it with the argument
-	 *
-	 * @param key	the string used to get the bundle value, must not be null
-	 * @param arg
-	 * @return
-	 */
-	public static String getFormattedString(String key, Object arg) {
-		return MessageFormat.format(getString(key), new Object[] { arg });
-	}
-
-	/**
-	 * Gets a string from the resource bundle and formats it with arguments
-	 * @param key
-	 * @param args
-	 * @return
-	 */
-	public static String getFormattedString(String key, Object[] args) {
-		return MessageFormat.format(getString(key), args);
-	}
-
 }

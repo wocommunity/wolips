@@ -58,7 +58,6 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.jdt.internal.ui.preferences.formatter.BlankLinesTabPage;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
@@ -242,6 +241,7 @@ public class ProjectNaturePage extends PropertyPage implements IAdaptable {
 
 	/**
 	 * @param parent
+	 * @param project 
 	 */
 	private void _addPatternSection(Composite parent, Project project) {
 		Composite group = _createLabelledComposite(parent, BUILD_PARAMS_TITLE);

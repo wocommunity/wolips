@@ -347,7 +347,7 @@ public final class RelatedView extends ViewPart
 		return this.viewer;
 	}
 	/**
-	 * @return
+	 * @return force open in text editor
 	 */
 	protected boolean isForceOpenInTextEditor() {
 		return this.forceOpenInTextEditor;
@@ -361,7 +361,7 @@ public final class RelatedView extends ViewPart
 	}
 
 	/**
-	 * @return
+	 * @return the double click action
 	 */
 	protected Action getDoubleClickAction() {
 		return this.doubleClickAction;
