@@ -105,8 +105,7 @@ public class CommonWOArgumentsTab extends JavaLaunchConfigurationTab {
 	private Table includeTable;
 	private Button addButton;
 	private Button removeButton;
-	private String preferencesKey = IWOLipsPluginConstants.PREF_LAUNCH_GLOBAL;
-
+	
 	private Vector allParameter;
 	private Vector allArguments;
 	protected static final String EMPTY_STRING = ""; //$NON-NLS-1$
@@ -291,7 +290,7 @@ public class CommonWOArgumentsTab extends JavaLaunchConfigurationTab {
 	 */
 	public void initializeFrom(ILaunchConfiguration configuration) {
 		try {
-			String string = configuration.getAttribute(WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_WOARGUMENTS, ""); //$NON-NLS-1$
+			String string = configuration.getAttribute(WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_WOARGUMENTS, Preferences.getString(IWOLipsPluginConstants.PREF_LAUNCH_GLOBAL)); //$NON-NLS-1$
 			this.fillTable(Preferences.getLaunchInfoFrom(string));
 		} catch (CoreException e) {
 			setErrorMessage(LaunchingMessages.getString("WOArgumentsTab.Exception_occurred_reading_configuration___15") + e.getStatus().getMessage()); //$NON-NLS-1$
@@ -407,7 +406,7 @@ public class CommonWOArgumentsTab extends JavaLaunchConfigurationTab {
 		/*return this.getWOApplicationPlatformSpecificArguments()
 			+ this.getWOApplicationClassNameArgument(config)
 			+ this.getCommonWOApplicationArguments();*/
-		return Preferences.getString(preferencesKey);
+		return Preferences.getString(IWOLipsPluginConstants.PREF_LAUNCH_GLOBAL);
 	}
 
 	/**

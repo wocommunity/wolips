@@ -91,7 +91,7 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 		"org.objectstyle.wolips.launching.WOLocalJavaApplication";
 	/** The launch configuration attribute for stack trace depth */
 	public static final String ATTR_WOLIPS_LAUNCH_WOARGUMENTS =
-		"wolips.launch.woarguments";
+		"org.objectstyle.wolips.launchinfo";
 	/**
 	 * @see ILaunchConfigurationDelegate#launch(ILaunchConfiguration, String, ILaunch, IProgressMonitor)
 	 */
@@ -134,7 +134,7 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 			configuration.getAttribute(
 				WOJavaLocalApplicationLaunchConfigurationDelegate
 					.ATTR_WOLIPS_LAUNCH_WOARGUMENTS,
-				"");
+				Preferences.getString(IWOLipsPluginConstants.PREF_LAUNCH_GLOBAL));
 		ILaunchInfo[] launchInfo = Preferences.getLaunchInfoFrom(launchArguments);
 		StringBuffer launchArgument = new StringBuffer();
 		for (int i = 0; i < launchInfo.length; i++) {
