@@ -84,7 +84,7 @@ import org.objectstyle.wolips.core.project.WOLipsCore;
 public final class WOClasspathContainerPath
 	implements ITreeContentProvider, ILabelProvider {
 	private WOClasspathContainerRoot[] roots;
-	private CheckboxTreeViewer viewer;
+	private CheckboxTreeViewer checkboxTreeViewer;
 	protected ArrayList allEntries = new ArrayList();
 	private boolean isExported = false;
 	private final Image framworkRootImage =
@@ -305,7 +305,7 @@ public final class WOClasspathContainerPath
 				if (root.getEntries() != null)
 					for (int j = 0; j < root.getEntries().length; j++) {
 						if (root.getEntries() != null
-							&& viewer.getChecked(root.getEntries()[j])) {
+							&& checkboxTreeViewer.getChecked(root.getEntries()[j])) {
 							//path = path.append(root.root);
 							path = path.append(root.getEntries()[j].getName());
 						}
@@ -388,7 +388,7 @@ public final class WOClasspathContainerPath
 	 * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
 	 */
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-		this.viewer = (CheckboxTreeViewer) viewer;
+		this.checkboxTreeViewer = (CheckboxTreeViewer) viewer;
 	}
 
 	/* (non-Javadoc)
