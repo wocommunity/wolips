@@ -7,7 +7,6 @@
     <!-- ============================================= -->
     <!-- Copies the resources                          -->
     <!-- Required parameters                           -->
-    <!-- param.plugin.dir the plugin directory         -->
     <!-- param.build.output.build.dir the output dir   -->
     <!-- param.feature.name the feature name           -->
     <!-- ============================================= -->
@@ -27,11 +26,15 @@
     <!-- ============================================= -->
     <!-- Dist                                          -->
     <!-- Required parameters                           -->
-    <!-- param.plugin.dir the plugin directory         -->
+    <!-- param.feature.name the plugin directory         -->
     <!-- param.build.output.build.dir the output dir   -->
     <!-- param.build.dist.build.dir the dist directory -->
     <!-- ============================================= -->
     <target name="dist">
+        <jar jarfile="${param.build.dist.build.dir}/features/${param.feature.name}_${build.version}.jar">
+     	    <fileset dir="${param.build.output.build.dir}/features/${param.feature.name}_${build.version}">
+     	    </fileset>
+        </jar>    
     </target>
 
 </project>

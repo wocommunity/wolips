@@ -4,12 +4,13 @@
 <!--              Script to build a plugin               -->
 <!-- ======================================================== -->
 <project name="build-plugin" default="" basedir=".">
+
     <!-- ============================================= -->
     <!-- Compiles Java classes                         -->
     <!-- Required parameters                           -->
     <!-- param.plugin.dir the plugin directory         -->
-    <!-- param.java.dest.dir the javac output directory     -->
-    <!-- classpath the classpath refid     -->
+    <!-- param.java.dest.dir the javac output directory-->
+    <!-- classpath the classpath refid                 -->
     <!-- ============================================= -->
     <target name="java">
         <path id="full.classpath">
@@ -118,10 +119,15 @@
     <!-- ============================================= -->
     <!-- Dist                                          -->
     <!-- Required parameters                           -->
-    <!-- param.plugin.dir the plugin directory         -->
+    <!-- param.plugin.name the plugin directory        -->
     <!-- param.build.output.build.dir the output dir   -->
     <!-- param.build.dist.build.dir the dist directory -->
     <!-- ============================================= -->
     <target name="dist">
+        <jar jarfile="${param.build.dist.build.dir}/plugins/${param.plugin.name}_${build.version}.jar">
+     	    <fileset dir="${param.build.output.build.dir}/plugins/${param.plugin.name}_${build.version}">
+     	    </fileset>
+        </jar>    
     </target>
+
 </project>
