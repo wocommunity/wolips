@@ -85,6 +85,7 @@ public class WOClasspathContainerPath
 	private WOClasspathContainerRoot[] roots;
 	private CheckboxTreeViewer viewer;
 	private ArrayList allEntries = new ArrayList();
+	private boolean isExported = false;
 	private Image framworkRootImage =
 		WOLipsPluginImages.WOFRAMEWORK_ROOT_IMAGE.createImage(false);
 	private Image framworkImage =
@@ -97,8 +98,10 @@ public class WOClasspathContainerPath
 			path =
 				new Path(
 					WOClasspathContainer.WOLIPS_CLASSPATH_CONTAINER_IDENTITY);
-		else
+		else {
+			isExported = containerEntry.isExported();
 			path = containerEntry.getPath();
+		}
 		String[] classpathVariables =
 			WOLipsCore.getClasspathVariablesAccessor().classpathVariables();
 		roots = new WOClasspathContainerRoot[classpathVariables.length];
@@ -283,7 +286,7 @@ public class WOClasspathContainerPath
 						}
 					}
 			}
-		return JavaCore.newContainerEntry(path, false);
+		return JavaCore.newContainerEntry(path, isExported);
 	}
 
 	/**
