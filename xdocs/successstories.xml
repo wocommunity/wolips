@@ -20,6 +20,43 @@
 				In short, WOLips staved off developer revolt, and allowed me to pursue a
 				WebObjects strategy unimpeded by Apple's lagging IDE.</p>
         	</subsection>
+        	<subsection name="Ian McDougall">
+        		I've been working with WebObjects since 1997.  My development platform has
+				primarily been Windows, and I was disappointed year after year that the
+				Project Builder was not keeping up with modern IDE's.  After Debugging was
+				removed in WO5, I decided to stick with 4.5 until a decent IDE was released.
+
+				Then along came WOProject and WOLips and I decided to take the leap from
+				Project Builder to Eclipse.  The transition was quite easy, with the switch
+				from 4.5 to 5.1 being the most difficult part.  Now I've moved all
+				developers here over to Eclipse and WOLips, and things couldn't be better.
+				I haven't come across a single reason to fire up PBWO since switching.
+
+				Thank you from everyone here for your effort in this area.  You've filled a
+				gap that WebObjects developers have had for years!
+        	</subsection>
+        	<subsection name="Colin Clark">
+        		I thought I'd share my WOProject success story with you. Here goes:
+
+				As the technical lead for the University of Toronto's CourseView Project, a 
+				large institutional service tasked with the collection and distribution of 
+				information about all our course offerings, I chose WebObjects 5 for its fantastic
+				persistence framework and its elegant use of design patterns. However, I wasn't 
+				well-prepared for the abysmal state of the WO development tools on Windows. One 
+				of the fundamental requirements of the project has been to support flexible, 
+				cross-platform development in a Java-centric environment. This goal was virtually 
+				impossible to achieve using the out-of-the-box WebObjects tools on Windows.
+
+				In order to work around these problems and to introduce the use of continuous 
+				integration and agile development techniques, we decided to write our own set 
+				of build scripts using Ant. The WOProject tasks for Ant have become a central 
+				aspect of our build environment from unit testing to development to final deployment. 
+				This change to our development process has enabled us to respond more effectively to 
+				the constant change inherent in software projects. It has also ensured that development
+				on Windows continues to be a viable option for our developers,
+				fully independently of  ProjectBuilder!
+        	
+        	</subsection>
         </section>
     </body>
 </document>
