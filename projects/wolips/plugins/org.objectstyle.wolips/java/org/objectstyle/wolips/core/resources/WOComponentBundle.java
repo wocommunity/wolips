@@ -61,7 +61,6 @@ import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
 import org.objectstyle.wolips.core.logging.WOLipsLog;
 import org.objectstyle.wolips.core.util.WorkbenchUtilities;
 
@@ -93,8 +92,6 @@ public final class WOComponentBundle
 		List list = new ArrayList();
 		if (this.getCorrespondingResource() != null) {
 			try {
-				IProject[] projects =
-					WorkbenchUtilities.getWorkspace().getRoot().getProjects();
 				String fileName = this.getCorrespondingResource().getName();
 				fileName = fileName.substring(0, fileName.length() - 3);
 				String[] extensions =
@@ -105,11 +102,11 @@ public final class WOComponentBundle
 						WOLipsModel.WOCOMPONENT_API_EXTENSION };
 				list =
 					WorkbenchUtilities
-						.findResourcesInResourcesByNameAndExtensions(
-						projects,
+						.findResourcesInProjectByNameAndExtensions(
+						this.getCorrespondingResource().getProject(),
 						fileName,
-						extensions);
-
+						extensions,
+						true);
 			} catch (Exception e) {
 				WOLipsLog.log(e);
 			}

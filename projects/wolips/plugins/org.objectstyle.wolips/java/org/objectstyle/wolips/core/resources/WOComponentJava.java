@@ -60,7 +60,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jdt.core.JavaModelException;
 import org.objectstyle.wolips.core.logging.WOLipsLog;
@@ -105,8 +104,6 @@ public final class WOComponentJava
 		List list = new ArrayList();
 		if (this.getCorrespondingCompilationUnit() != null) {
 			try {
-				IProject[] projects =
-					WorkbenchUtilities.getWorkspace().getRoot().getProjects();
 				String fileName =
 					this
 						.getCorrespondingCompilationUnit()
@@ -122,10 +119,11 @@ public final class WOComponentJava
 						WOLipsModel.WOCOMPONENT_API_EXTENSION };
 				list =
 					WorkbenchUtilities
-						.findResourcesInResourcesByNameAndExtensions(
-						projects,
+						.findResourcesInProjectByNameAndExtensions(
+						this.getCorrespondingCompilationUnit().getJavaProject().getProject(),
 						fileName,
-						extensions);
+						extensions,
+						true);
 
 			} catch (Exception e) {
 				WOLipsLog.log(e);
@@ -139,7 +137,10 @@ public final class WOComponentJava
 	 * @param If forceToOpenIntextEditor is set to true the resource opens in a texteditor.
 	 */
 	public final void open(boolean forceToOpenIntextEditor) {
-		WorkbenchUtilities.open((IFile)this.getCorrespondingResource(), forceToOpenIntextEditor, "org.objectstyle.wolips.internal.wod.editor");
+		WorkbenchUtilities.open(
+			(IFile) this.getCorrespondingResource(),
+			forceToOpenIntextEditor,
+			"org.objectstyle.wolips.internal.wod.editor");
 	}
 
 }

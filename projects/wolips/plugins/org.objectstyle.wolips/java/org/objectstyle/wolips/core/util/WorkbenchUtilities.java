@@ -131,6 +131,63 @@ public final class WorkbenchUtilities {
 		ErrorDialog.openError(shell, title, message, status);
 	}
 
+	/**
+			 * Method projectISReferencedByProject.
+			 * @param child
+			 * @param mother
+			 * @return boolean
+			 */
+	private static boolean projectISReferencedByProject(
+		IProject child,
+		IProject mother) {
+		IProject[] projects = null;
+		try {
+			projects = mother.getReferencedProjects();
+		} catch (Exception anException) {
+			WOLipsLog.log(anException);
+			return false;
+		}
+		for (int i = 0; i < projects.length; i++) {
+			if (projects[i].equals(child))
+				return true;
+		}
+		return false;
+	}
+
+	public final static List findResourcesInProjectByNameAndExtensions(
+		IProject project,
+		String name,
+		String[] extensions,
+		boolean includesReferencedProjects) {
+		if (includesReferencedProjects) {
+			IProject[] projects =
+				WorkbenchUtilities.getWorkspace().getRoot().getProjects();
+			ArrayList referencedProjects = new ArrayList();
+			for (int i = 0; i < projects.length; i++) {
+				if (WorkbenchUtilities
+					.projectISReferencedByProject(projects[i], project))
+					referencedProjects.add(projects[i]);
+			}
+			int numReferencedProjects = referencedProjects.size();
+			IProject[] searchScope = new IProject[numReferencedProjects + 1];
+			for (int i = 0; i < numReferencedProjects; i++) {
+				searchScope[i] = (IProject) referencedProjects.get(i);
+			}
+			searchScope[numReferencedProjects] = project;
+			return WorkbenchUtilities
+				.findResourcesInResourcesByNameAndExtensions(
+				searchScope,
+				name,
+				extensions);
+		}
+		IProject[] searchScope = new IProject[1];
+		searchScope[0] = project;
+		return WorkbenchUtilities.findResourcesInResourcesByNameAndExtensions(
+			searchScope,
+			name,
+			extensions);
+	}
+
 	public final static List findResourcesInResourcesByNameAndExtensions(
 		IResource[] resources,
 		String name,
@@ -144,6 +201,7 @@ public final class WorkbenchUtilities {
 					extensions));
 		return list;
 	}
+
 	public final static List findResourcesInResourceByNameAndExtensions(
 		IResource resource,
 		String name,
@@ -427,7 +485,8 @@ public final class WorkbenchUtilities {
 								.getDefault()
 								.getWorkbench()
 								.getEditorRegistry()
-								.getDefaultEditor(file);
+								.getDefaultEditor(
+								file);
 						workbenchPage.openEditor(file, editor);
 						WOLipsPlugin
 							.getDefault()
