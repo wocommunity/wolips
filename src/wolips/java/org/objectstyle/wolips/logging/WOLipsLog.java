@@ -56,6 +56,9 @@
 
 package org.objectstyle.wolips.logging;
 
+import java.util.Date;
+import java.util.Hashtable;
+
 import org.apache.commons.logging.Log;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -67,12 +70,33 @@ import org.objectstyle.wolips.plugin.WOLipsPlugin;
  */
 public class WOLipsLog implements Log {
 
+public static final String MSG_SEP = " ";
 	public static final int TRACE = 0;
 	public static final int DEBUG = 1;
 	public static final int INFO = 2;
 	public static final int WARN = 3;
 	public static final int ERROR = 4;
 	public static final int FATAL = 5;
+
+	private static final String[] levelNames =
+		{ "TRACE", "DEBUG", "INFO", "WARN", "ERROR", "FATAL" };
+	private static final Integer[] levelValues =
+		{
+			new Integer(TRACE),
+			new Integer(DEBUG),
+			new Integer(INFO),
+			new Integer(WARN),
+			new Integer(ERROR),
+			new Integer(FATAL)};
+
+	private static Hashtable levelToStringDict;
+
+	static {
+		levelToStringDict = new Hashtable();
+		for (int i = 0; i < levelValues.length; i++) {
+			levelToStringDict.put(levelValues[i], levelNames[i]);
+		}
+	}
 
 	private String name;
 	private int level;
@@ -126,56 +150,141 @@ public class WOLipsLog implements Log {
 	 * @see org.apache.commons.logging.Log#debug(java.lang.Object, java.lang.Throwable)
 	 */
 	public void debug(Object message, Throwable t) {
-		WOLipsLog.log(new Status(IStatus.WARNING, WOLipsPlugin.getPluginId(), IStatus.WARNING, message.toString(), t)); //$NON-NLS-1$
+		if (isDebugEnabled()) {
+			System.err.println(
+				new Date()
+					+ MSG_SEP
+					+ DEBUG
+					+ MSG_SEP
+					+ name
+					+ MSG_SEP
+					+ message);
+			t.printStackTrace(System.err);
+		}
+		WOLipsLog.log(new Status(IStatus.WARNING, WOLipsPlugin.getPluginId(), IStatus.WARNING, name + MSG_SEP + message, t)); //$NON-NLS-1$
 	}
 
 	/**
 	 * @see org.apache.commons.logging.Log#debug(java.lang.Object)
 	 */
 	public void debug(Object message) {
-		WOLipsLog.log(new Status(IStatus.WARNING, WOLipsPlugin.getPluginId(), IStatus.WARNING, message.toString(), null)); //$NON-NLS-1$
+		if (isDebugEnabled()) {
+			System.err.println(
+				new Date()
+					+ MSG_SEP
+					+ DEBUG
+					+ MSG_SEP
+					+ name
+					+ MSG_SEP
+					+ message);
+		}
+		WOLipsLog.log(new Status(IStatus.WARNING, WOLipsPlugin.getPluginId(), IStatus.WARNING, name + MSG_SEP + message, null)); //$NON-NLS-1$
 	}
 
 	/**
 	 * @see org.apache.commons.logging.Log#error(java.lang.Object, java.lang.Throwable)
 	 */
 	public void error(Object message, Throwable t) {
-		WOLipsLog.log(new Status(IStatus.ERROR, WOLipsPlugin.getPluginId(), IStatus.ERROR, message.toString(), t)); //$NON-NLS-1$
+		if (isDebugEnabled()) {
+			System.err.println(
+				new Date()
+					+ MSG_SEP
+					+ ERROR
+					+ MSG_SEP
+					+ name
+					+ MSG_SEP
+					+ message);
+			t.printStackTrace(System.err);
+		}
+		WOLipsLog.log(new Status(IStatus.ERROR, WOLipsPlugin.getPluginId(), IStatus.ERROR, name + MSG_SEP + message, t)); //$NON-NLS-1$
 	}
 
 	/**
 	 * @see org.apache.commons.logging.Log#error(java.lang.Object)
 	 */
 	public void error(Object message) {
-		WOLipsLog.log(new Status(IStatus.ERROR, WOLipsPlugin.getPluginId(), IStatus.ERROR, message.toString(), null)); //$NON-NLS-1$
+		if (isDebugEnabled()) {
+			System.err.println(
+				new Date()
+					+ MSG_SEP
+					+ ERROR
+					+ MSG_SEP
+					+ name
+					+ MSG_SEP
+					+ message);
+		}
+		WOLipsLog.log(new Status(IStatus.ERROR, WOLipsPlugin.getPluginId(), IStatus.ERROR, name + MSG_SEP + message, null)); //$NON-NLS-1$
 	}
 
 	/**
 	 * @see org.apache.commons.logging.Log#fatal(java.lang.Object, java.lang.Throwable)
 	 */
 	public void fatal(Object message, Throwable t) {
-		WOLipsLog.log(new Status(IStatus.ERROR, WOLipsPlugin.getPluginId(), IStatus.ERROR, message.toString(), t)); //$NON-NLS-1$
+		if (isDebugEnabled()) {
+			System.err.println(
+				new Date()
+					+ MSG_SEP
+					+ FATAL
+					
+					+ MSG_SEP
+					+ name
+					+ MSG_SEP
+					+ message);
+			t.printStackTrace(System.err);
+		}
+		WOLipsLog.log(new Status(IStatus.ERROR, WOLipsPlugin.getPluginId(), IStatus.ERROR, name + MSG_SEP + message, t)); //$NON-NLS-1$
 	}
 
 	/**
 	 * @see org.apache.commons.logging.Log#fatal(java.lang.Object)
 	 */
 	public void fatal(Object message) {
-		WOLipsLog.log(new Status(IStatus.ERROR, WOLipsPlugin.getPluginId(), IStatus.ERROR, message.toString(), null)); //$NON-NLS-1$
+		if (isDebugEnabled()) {
+			System.err.println(
+				new Date()
+					+ MSG_SEP
+					+ FATAL
+					+ MSG_SEP
+					+ name
+					+ MSG_SEP
+					+ message);
+		}
+		WOLipsLog.log(new Status(IStatus.ERROR, WOLipsPlugin.getPluginId(), IStatus.ERROR, name + MSG_SEP + message, null)); //$NON-NLS-1$
 	}
 
 	/**
 	 * @see org.apache.commons.logging.Log#info(java.lang.Object, java.lang.Throwable)
 	 */
 	public void info(Object message, Throwable t) {
-		WOLipsLog.log(new Status(IStatus.WARNING, WOLipsPlugin.getPluginId(), IStatus.WARNING, message.toString(), t)); //$NON-NLS-1$
+		if (isDebugEnabled()) {
+			System.err.println(
+				new Date()
+					+ MSG_SEP
+					+ INFO
+					+ MSG_SEP
+					+ name
+					+ MSG_SEP
+					+ message);
+			t.printStackTrace(System.err);
+		}
+		WOLipsLog.log(new Status(IStatus.WARNING, WOLipsPlugin.getPluginId(), IStatus.WARNING, name + MSG_SEP + message, t)); //$NON-NLS-1$
 	}
 
 	/**
 	 * @see org.apache.commons.logging.Log#info(java.lang.Object)
 	 */
 	public void info(Object message) {
-		WOLipsLog.log(new Status(IStatus.WARNING, WOLipsPlugin.getPluginId(), IStatus.WARNING, message.toString(), null)); //$NON-NLS-1$
+		if (isDebugEnabled()) {
+			System.err.println(
+				new Date()
+					+ MSG_SEP
+					+ INFO
+					+ MSG_SEP
+					+ name
+					+ MSG_SEP
+					+ message);
+		}
+		WOLipsLog.log(new Status(IStatus.WARNING, WOLipsPlugin.getPluginId(), IStatus.WARNING, name + MSG_SEP + message, null)); //$NON-NLS-1$
 	}
 
 	/**
@@ -183,70 +292,112 @@ public class WOLipsLog implements Log {
 	 * Throwable)
 	 */
 	public void trace(Object message, Throwable t) {
-		WOLipsLog.log(new Status(IStatus.WARNING, WOLipsPlugin.getPluginId(), IStatus.WARNING, message.toString(), t)); //$NON-NLS-1$
+		if (isDebugEnabled()) {
+			System.err.println(
+				new Date()
+					+ MSG_SEP
+					+ TRACE
+					+ MSG_SEP
+					+ name
+					+ MSG_SEP
+					+ message);
+			t.printStackTrace(System.err);
+		}
+		WOLipsLog.log(new Status(IStatus.WARNING, WOLipsPlugin.getPluginId(), IStatus.WARNING, name + MSG_SEP + message, t)); //$NON-NLS-1$
 	}
 
 	/**
 	 * @see org.apache.commons.logging.Log#trace(java.lang.Object)
 	 */
 	public void trace(Object message) {
-		WOLipsLog.log(new Status(IStatus.WARNING, WOLipsPlugin.getPluginId(), IStatus.WARNING, message.toString(), null)); //$NON-NLS-1$
+		if (isDebugEnabled()) {
+			System.err.println(
+				new Date()
+					+ MSG_SEP
+					+ TRACE
+					+ MSG_SEP
+					+ name
+					+ MSG_SEP
+					+ message);
+		}
+		WOLipsLog.log(new Status(IStatus.WARNING, WOLipsPlugin.getPluginId(), IStatus.WARNING, name + MSG_SEP + message, null)); //$NON-NLS-1$
 	}
 
 	/**
 	 * @see org.apache.commons.logging.Log#warn(java.lang.Object, java.lang.Throwable)
 	 */
 	public void warn(Object message, Throwable t) {
-		WOLipsLog.log(new Status(IStatus.WARNING, WOLipsPlugin.getPluginId(), IStatus.WARNING, message.toString(), t)); //$NON-NLS-1$
+		if (isDebugEnabled()) {
+			System.err.println(
+				new Date()
+					+ MSG_SEP
+					+ WARN
+					+ MSG_SEP
+					+ name
+					+ MSG_SEP
+					+ message);
+			t.printStackTrace(System.err);
+		}
+		WOLipsLog.log(new Status(IStatus.WARNING, WOLipsPlugin.getPluginId(), IStatus.WARNING, name + MSG_SEP + message, t)); //$NON-NLS-1$
 	}
 
 	/**
 	 * @see org.apache.commons.logging.Log#warn(java.lang.Object)
 	 */
 	public void warn(Object message) {
-		WOLipsLog.log(new Status(IStatus.WARNING, WOLipsPlugin.getPluginId(), IStatus.WARNING, message.toString(), null)); //$NON-NLS-1$
+		if (isDebugEnabled()) {
+			System.err.println(
+				new Date()
+					+ MSG_SEP
+					+ WARN
+					+ MSG_SEP
+					+ name
+					+ MSG_SEP
+					+ message);
+		}
+		WOLipsLog.log(new Status(IStatus.WARNING, WOLipsPlugin.getPluginId(), IStatus.WARNING, name + MSG_SEP + message, null)); //$NON-NLS-1$
 	}
 
 	/**
 	 * @see org.apache.commons.logging.Log#isDebugEnabled()
 	 */
 	public boolean isDebugEnabled() {
-		return level<=DEBUG;
+		return level <= DEBUG;
 	}
 
 	/**
 	 * @see org.apache.commons.logging.Log#isErrorEnabled()
 	 */
 	public boolean isErrorEnabled() {
-		return level<=ERROR;
+		return level <= ERROR;
 	}
 
 	/**
 	 * @see org.apache.commons.logging.Log#isFatalEnabled()
 	 */
 	public boolean isFatalEnabled() {
-		return level==FATAL;
+		return level == FATAL;
 	}
 
 	/**
 	 * @see org.apache.commons.logging.Log#isInfoEnabled()
 	 */
 	public boolean isInfoEnabled() {
-		return level<=INFO;
+		return level <= INFO;
 	}
 
 	/**
 	 * @see org.apache.commons.logging.Log#isTraceEnabled()
 	 */
 	public boolean isTraceEnabled() {
-		return level<=TRACE;
+		return level <= TRACE;
 	}
 
 	/**
 	 * @see org.apache.commons.logging.Log#isWarnEnabled()
 	 */
 	public boolean isWarnEnabled() {
-		return level>=WARN;
+		return level <= WARN;
 	}
 
 	/**

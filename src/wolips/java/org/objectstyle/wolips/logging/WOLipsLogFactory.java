@@ -13,6 +13,7 @@ import org.apache.commons.logging.LogFactory;
 public class WOLipsLogFactory extends LogFactory {
 
 	public static final String ATTR_LOG_LEVEL = "log.level";
+	public static final String ATTR_GLOBAL_LOG_LEVEL = "global.log.level";
 	public static final int DEFAULT_LOG_LEVEL = WOLipsLog.INFO;
 
 	public static Log log;
@@ -104,8 +105,26 @@ public class WOLipsLogFactory extends LogFactory {
 	 * @see org.apache.commons.logging.LogFactory#setAttribute(java.lang.String, java.lang.Object)
 	 */
 	public void setAttribute(String key, Object object) {
-		if (object != null)
+		if (object != null){
+			if(ATTR_GLOBAL_LOG_LEVEL.equals(key) && object instanceof Integer){
+				setGlobalLogLevel(((Integer)object).intValue());
+			}		
 			attributes.put(key.trim().toLowerCase(), object);
+		}
+	}
+	
+	private void setGlobalLogLevel(int newLevel){
+		if(newLevel>=WOLipsLog.TRACE && newLevel<=WOLipsLog.FATAL){
+			setAttribute(ATTR_LOG_LEVEL,new Integer(newLevel));
+			Object[] allLoggerNames = logger.keySet().toArray();
+			WOLipsLog currentLogger;
+			for (int i = 0; i < allLoggerNames.length; i++) {
+				currentLogger = (WOLipsLog)logger.get(allLoggerNames[i]);
+				currentLogger.setLevel(newLevel);
+			}
+		}else{
+			log.warn("setGlobalLogLevel -> unable to set level " + newLevel);
+		}
 	}
 
 }

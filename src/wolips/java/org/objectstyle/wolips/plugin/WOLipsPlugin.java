@@ -56,6 +56,8 @@
 package org.objectstyle.wolips.plugin;
 import java.net.MalformedURLException;
 import java.net.URL;
+
+import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPluginDescriptor;
 import org.eclipse.core.runtime.IStatus;
@@ -67,8 +69,10 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IStartup;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.objectstyle.wolips.logging.WOLipsLog;
+import org.objectstyle.wolips.logging.WOLipsLogFactory;
 import org.objectstyle.wolips.preferences.Preferences;
 import org.objectstyle.wolips.wo.Foundation;
+import org.objectstyle.woproject.env.WOVariables;
 /**
  * The main plugin class to be used in the desktop.
  * 
@@ -92,6 +96,8 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 		System.setProperty(
 			"org.apache.commons.logging.LogFactory",
 			"org.objectstyle.wolips.logging.WOLipsLogFactory");
+		LogFactory.getFactory().setAttribute(WOLipsLogFactory.ATTR_GLOBAL_LOG_LEVEL,new Integer(WOLipsLog.TRACE));
+		WOVariables.log.debug("test");
 		Foundation.loadFoundationClasses();
 		Preferences.setDefaults();
 	}
