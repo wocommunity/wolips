@@ -85,7 +85,6 @@ import org.eclipse.jdt.core.JavaCore;
 import org.objectstyle.cayenne.wocompat.PropertyListSerialization;
 import org.objectstyle.wolips.commons.logging.PluginLogger;
 import org.objectstyle.wolips.datasets.adaptable.Project;
-import org.objectstyle.wolips.datasets.listener.PatternsetDeltaVisitor;
 import org.objectstyle.wolips.datasets.pattern.IStringMatcher;
 import org.objectstyle.wolips.datasets.pattern.PatternsetMatcher;
 import org.objectstyle.wolips.datasets.pattern.StringUtilities;
