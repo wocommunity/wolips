@@ -316,9 +316,9 @@
 		</category>
 		<view
 			id="org.objectstyle.wolips.ui.Navigator"
-			name="%packagesViewName"
-			icon="icons/full/cview16/package.gif"
-			category="org.eclipse.jdt.ui.java"
+			name="%WOLips.NavigatorViewName"
+			icon="icons/wolips/WOLips-icon.gif"
+			category="org.eclipse.wolips.ui"
 			class="org.objectstyle.wolips.ui.Navigator">
 		</view>
 	</extension>
