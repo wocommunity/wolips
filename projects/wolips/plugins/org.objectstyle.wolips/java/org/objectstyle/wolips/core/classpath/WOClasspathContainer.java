@@ -66,7 +66,6 @@ import org.eclipse.jdt.core.IClasspathContainer;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.launching.IRuntimeContainerComparator;
-import org.objectstyle.wolips.core.logging.WOLipsLog;
 import org.objectstyle.wolips.core.project.WOLipsCore;
 
 /**
