@@ -146,7 +146,7 @@ public abstract class AbstractDataSetTest extends TestCase {
 		Assert.assertEquals("the dataset should return the same type", type, dataSet.getType());
 	}
 	
-	private IDataSet getDataSet(IResource resource) {
+	public IDataSet getDataSet(IResource resource) {
 		return DataSetsPlugin.getDefault().getDataSet(resource);
 	}
 	

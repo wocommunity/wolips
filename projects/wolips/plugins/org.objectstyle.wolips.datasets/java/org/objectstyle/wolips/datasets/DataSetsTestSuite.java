@@ -55,13 +55,22 @@
  */
 package org.objectstyle.wolips.datasets;
 
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+
 /**
- * @author ulrich
- *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
+ * Run all compiler regression tests
  */
-public interface IApi extends IDataSet {
-	
-	
+public class DataSetsTestSuite extends TestCase {
+
+	public DataSetsTestSuite(String testName) {
+		super(testName);
+	}
+	public static Test suite() throws Exception {
+		TestSuite suite = new TestSuite();
+		suite.addTestSuite(DataSetsPluginTest.class);
+		suite.addTestSuite(IApiTest.class);
+		return suite;
+	}
 }

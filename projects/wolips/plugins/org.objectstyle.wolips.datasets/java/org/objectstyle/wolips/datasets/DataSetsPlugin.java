@@ -59,7 +59,9 @@ import java.util.ResourceBundle;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IPluginDescriptor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.objectstyle.wolips.datasets.internal.Api;
@@ -189,4 +191,15 @@ public class DataSetsPlugin extends Plugin implements IDataSetTypes {
 		}
 		return -1;
 	}
+	
+	/**
+	 * @return The path to user settings.
+	 */
+	public static IPath UserHomeLibrayWOLipsPath() {
+		IPath path = new Path(System.getProperty("user.home"));
+		path = path.append("Library");
+		path = path.append("WOLips");
+		return path;
+	}
+	
 }
