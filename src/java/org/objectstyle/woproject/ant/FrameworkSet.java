@@ -67,8 +67,7 @@ import org.apache.tools.ant.types.FileSet;
  * @author Andrei Adamchik
  */
 public class FrameworkSet extends FileSet {
-	protected String base;
-	
+
 	/** 
 	 * Creates new FrameworkSet.
 	 */
@@ -77,25 +76,33 @@ public class FrameworkSet extends FileSet {
 	}
 
 	/** 
-	 * Creates new FrameworkSet.
-	 */
-	public FrameworkSet(FileSet fileSet) {
-		super(fileSet);
-	}
-
-	/** 
 	 * Overrides parent to discard the value. A warning 
 	 * will be printed if log level is high enough.
 	 */
 	public void setDir(File dir) throws BuildException {
 		// noop
-
 		log(
 			"FrameworkSet does not support 'dir' attribute, ignoring.",
 			Project.MSG_WARN);
 	}
-	
-	public void setBase(String base) {
-		this.base = base;
+
+    /** 
+     * Sets root directory of this FileSet based on a symbolic name, 
+     * that can be "wo.homeroot", "wo.woroot", "wo.localroot". Throws
+     * BuildException if an invalid root is specified.
+     */
+	public void setRoot(String root) {
+		WOPropertiesHandler propsHandler =
+			new WOPropertiesHandler(this.getProject());
+
+		if (WOPropertiesHandler.WO_ROOT.equals(root)) {
+			super.setDir(new File(propsHandler.getWORoot()));
+		} else if (WOPropertiesHandler.WO_ROOT.equals(root)) {
+			super.setDir(new File(propsHandler.getWORoot()));
+		} else if (WOPropertiesHandler.WO_ROOT.equals(root)) {
+			super.setDir(new File(propsHandler.getWORoot()));
+		} else {
+			throw new BuildException("Unrecognized root specifier: " + root);
+		}
 	}
 }

@@ -55,13 +55,13 @@
  */
 package org.objectstyle.woproject.ant;
 
-import java.io.File;
-import java.util.Iterator;
-
 import junit.framework.TestCase;
 
+import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Project;
+
 /**
- * TestCase for FrameworkSetTest class.
+ * TestCase for FrameworkSet class.
  *
  * @author Andrei Adamchik
  */
@@ -75,10 +75,15 @@ public class FrameworkSetTest extends TestCase {
 	public void setUp() throws Exception {
 		super.setUp();
 		set = new FrameworkSet();
+		set.setProject(new Project());
 	}
 
-	public void testSetBase() throws Exception {
-		set.setBase("base");
-		assertEquals("base", set.base);
+	public void testSetRootInvalid() throws Exception {
+		try {
+			set.setRoot("invalidroot");
+			fail("Invalid root must generate exception.");
+		} catch (BuildException ex) {
+            // exception expected
+		}
 	}
 }

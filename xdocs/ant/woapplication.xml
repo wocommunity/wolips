@@ -132,9 +132,10 @@
 					<th align="center" valign="top"><b>Required</b></th>
 				</tr>
 				<tr>
-					<td valign="top">base</td>
+					<td valign="top">root</td>
 					<td valign="top">Logical base location of the framework. Allowed values are 
-					"home", "wo", "local"</td>
+					"wo.homeroot", "wo.woroot", "wo.localroot" (these are string values,
+					don't include them in <code>${}</code>)</td>
 					<td valign="top" align="center">Yes</td>
 				</tr>
 			</table>
@@ -170,7 +171,7 @@
 <source>
 &amp;lt;woapplication name="MyApp" stdFrameworks="false" destDir="${dist}/Applications"&amp;gt;
    ...
-   &amp;lt;frameworks base="home"&amp;gt;
+   &amp;lt;frameworks root="home"&amp;gt;
       &amp;lt;include name="**/*.framework"/&amp;gt;
    &amp;lt;/frameworks&amp;gt;
 &amp;lt;/woapplication&amp;gt;
