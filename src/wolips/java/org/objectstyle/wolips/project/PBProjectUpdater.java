@@ -53,15 +53,12 @@
  * <http://objectstyle.org/>.
  *
  */
-
 package org.objectstyle.wolips.project;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -75,10 +72,8 @@ import org.objectstyle.wolips.IWOLipsPluginConstants;
 import org.objectstyle.wolips.WOLipsPlugin;
 import org.objectstyle.wolips.io.FileStringScanner;
 import org.objectstyle.woproject.pb.PBProject;
-
 import com.webobjects.foundation.NSArray;
 import com.webobjects.foundation.NSDictionary;
-
 /**
  * @author uli
  *
@@ -88,11 +83,9 @@ import com.webobjects.foundation.NSDictionary;
  * Window>Preferences>Java>Code Generation.
  */
 public class PBProjectUpdater {
-
 	//public static String PBProject = "PB.projectContainer"; moved to IWOLipsPluginConstants.PROJECT_FILE_NAME (mn)
 	private PBProject pbProject;
 	private IContainer projectContainer;
-
 	/**
 	 * Constructor for PBProjectUpdater.
 	 */
@@ -101,14 +94,12 @@ public class PBProjectUpdater {
 		pbProject = getPBProject(aProjectContainer);
 		projectContainer = aProjectContainer;
 	}
-
 	public void updatePBProject() throws CoreException {
 		syncPBProjectWithProject();
 		if (projectContainer != null)
 			PBProjectNotifications.postPBProjectDidUpgradeNotification(
 				projectContainer.getName());
 	}
-
 	private PBProject getPBProject(IContainer aProject) {
 		IFile aPBProject =
 			aProject.getFile(
@@ -127,11 +118,9 @@ public class PBProjectUpdater {
 			// if IContainer is an instanceof IFolder it contains only subprojects
 			isWOApp = false;
 		}
-
 		if (!aFile.exists()) {
 			try {
 				aFile.createNewFile();
-
 				String contents;
 				URL aStarterURL =
 					WOLipsPlugin.getDefault().getDescriptor().getInstallURL();
@@ -151,12 +140,10 @@ public class PBProjectUpdater {
 				contents =
 					FileStringScanner.stringFromFile(new File(aPBProjectFile));
 				FileStringScanner.stringToFile(aFile, contents);
-
 			} catch (Exception anException) {
 				WOLipsPlugin.log(anException);
 			}
 		}
-
 		try {
 			return new PBProject(aFile, !isWOApp);
 		} catch (Exception anException) {
@@ -164,7 +151,6 @@ public class PBProjectUpdater {
 			return null;
 		}
 	}
-
 	private void syncPBProjectWithProject() {
 		try {
 			pbProject.update();
@@ -174,21 +160,16 @@ public class PBProjectUpdater {
 		} catch (Exception ioex) {
 			WOLipsPlugin.log(ioex);
 		}
-
 	}
-
 	private void syncFilestable() {
 		ArrayList aClassesList = new ArrayList();
 		ArrayList aWOComponentsList = new ArrayList();
 		ArrayList aWOAppResourcesList = new ArrayList();
-
 		IResource[] resources;
 		try {
 			resources = projectContainer.members();
-
 		} catch (Exception anException) {
 			WOLipsPlugin.log(anException);
-
 			return;
 		}
 		int lastResource = resources.length;
@@ -202,12 +183,10 @@ public class PBProjectUpdater {
 				aWOComponentsList,
 				aWOAppResourcesList);
 		}
-
 		this.syncClasses(aClassesList);
 		this.syncWOComponents(aWOComponentsList);
 		this.syncWOAppResources(aWOAppResourcesList);
 	}
-
 	private void proceedResource(
 		IResource aResource,
 		List aClassesList,
@@ -221,11 +200,9 @@ public class PBProjectUpdater {
 				aFolder =
 					projectContainer.getFolder(
 						aResource.getProjectRelativePath());
-
 			if (aFolder != null) {
 				if (aPath.endsWith(".wo"))
 					aWOComponentsList.add(aPath);
-
 				else if (
 					!aPath.endsWith(".woa")
 						&& !aPath.endsWith(".build")
@@ -247,45 +224,33 @@ public class PBProjectUpdater {
 			} else {
 				if (aPath.endsWith(".java"))
 					aClassesList.add(aPath);
-
 				if (aPath.endsWith(".api"))
 					aWOAppResourcesList.add(aPath);
 			}
-
 		} catch (Exception anException) {
 			WOLipsPlugin.log(anException);
-
 		}
 	}
-
 	private void syncProjectName() {
 		pbProject.setProjectName(projectContainer.getName());
 	}
-
 	private void syncClasses(List list) {
 		pbProject.setClasses(list);
 	}
-
 	private void syncWOComponents(List list) {
 		pbProject.setWoComponents(list);
 	}
-
 	private void syncWOAppResources(List list) {
 		pbProject.setWoAppResources(list);
 	}
-
 	//////////// removing adding filestable resources
-
 	public void syncFilestable(
 		NSDictionary changedResources,
 		int kindOfChange) {
-
 		List actualResources;
 		String currentKey;
-
 		for (int i = 0; i < changedResources.allKeys().count(); i++) {
 			currentKey = (String) changedResources.allKeys().objectAtIndex(i);
-
 			if (IWOLipsPluginConstants.RESOURCES_ID.equals(currentKey)) {
 				actualResources = pbProject.getWoAppResources();
 				switch (kindOfChange) {
@@ -296,7 +261,6 @@ public class PBProjectUpdater {
 									currentKey),
 								actualResources));
 						break;
-
 					case IResourceDelta.REMOVED :
 						pbProject.setWoAppResources(
 							removeResources(
@@ -315,7 +279,6 @@ public class PBProjectUpdater {
 									currentKey),
 								actualResources));
 						break;
-
 					case IResourceDelta.REMOVED :
 						pbProject.setClasses(
 							removeResources(
@@ -326,18 +289,17 @@ public class PBProjectUpdater {
 				}
 			} else if (
 				IWOLipsPluginConstants.SUBPROJECTS_ID.equals(currentKey)) {
-				actualResources = pbProject.getClasses();
+				actualResources = pbProject.getSubprojects();
 				switch (kindOfChange) {
 					case IResourceDelta.ADDED :
-						pbProject.setClasses(
+						pbProject.setSubprojects(
 							addResources(
 								(NSArray) changedResources.objectForKey(
 									currentKey),
 								actualResources));
 						break;
-
 					case IResourceDelta.REMOVED :
-						pbProject.setClasses(
+						pbProject.setSubprojects(
 							removeResources(
 								(NSArray) changedResources.objectForKey(
 									currentKey),
@@ -355,7 +317,6 @@ public class PBProjectUpdater {
 									currentKey),
 								actualResources));
 						break;
-
 					case IResourceDelta.REMOVED :
 						pbProject.setWoComponents(
 							removeResources(
@@ -371,10 +332,11 @@ public class PBProjectUpdater {
 		} catch (IOException e) {
 			WOLipsPlugin.log(e);
 		}
-
 	}
-
 	private List addResources(NSArray newResources, List actualResources) {
+		if (actualResources == null) {
+			actualResources = new ArrayList();
+		}
 		String relativResourcePath;
 		IFile projectFile =
 			projectContainer.getFile(
@@ -391,10 +353,12 @@ public class PBProjectUpdater {
 		}
 		return actualResources;
 	}
-
 	private List removeResources(
 		NSArray removedResources,
 		List actualResources) {
+		if (actualResources == null) {
+			return new ArrayList();
+		}
 		String relativResourcePath;
 		IFile projectFile =
 			projectContainer.getFile(
@@ -411,7 +375,6 @@ public class PBProjectUpdater {
 		}
 		return actualResources;
 	}
-
 	private String relativResourcePath(IResource resource, IFile projectFile) {
 		// determine relativ path to resource
 		String resourcePath;
@@ -420,7 +383,6 @@ public class PBProjectUpdater {
 			resourcePath = resource.getName();
 		} else {
 			resourcePath = resource.getProjectRelativePath().toString();
-
 			for (int i = 0;
 				i < projectFile.getProjectRelativePath().segmentCount() - 1;
 				i++) {
@@ -429,7 +391,6 @@ public class PBProjectUpdater {
 		}
 		return resourcePath;
 	}
-
 	////////// framework adding/removing
 	public void addFrameworks(NSArray newFrameworks) {
 		List actualFrameworks = pbProject.getFrameworks();
@@ -438,7 +399,6 @@ public class PBProjectUpdater {
 			frameworkName =
 				frameworkIdentifierFromPath(
 					(Path) newFrameworks.objectAtIndex(j));
-
 			if (frameworkName != null
 				&& !actualFrameworks.contains(frameworkName)) {
 				actualFrameworks.add(frameworkName);
@@ -450,7 +410,6 @@ public class PBProjectUpdater {
 			WOLipsPlugin.log(e);
 		}
 	}
-
 	public void removeFrameworks(NSArray removedFrameworks) {
 		List actualFrameworks = pbProject.getFrameworks();
 		String frameworkName = null;
@@ -458,7 +417,6 @@ public class PBProjectUpdater {
 			frameworkName =
 				frameworkIdentifierFromPath(
 					(Path) removedFrameworks.objectAtIndex(j));
-
 			if (frameworkName != null
 				&& actualFrameworks.contains(frameworkName)) {
 				actualFrameworks.remove(frameworkName);
@@ -470,7 +428,6 @@ public class PBProjectUpdater {
 			WOLipsPlugin.log(e);
 		}
 	}
-
 	private String frameworkIdentifierFromPath(Path frameworkPath) {
 		String frameworkName = null;
 		// search framework segment in path
@@ -485,5 +442,4 @@ public class PBProjectUpdater {
 		}
 		return frameworkName;
 	}
-
 }
