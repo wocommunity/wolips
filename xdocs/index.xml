@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <document>
-    <title>Overview</title>
+    <title>Welcome to WOProject and WOLips</title>
 
     <properties>
         <author>Andrei Adamchik</author>
@@ -10,12 +10,12 @@
         <!-- Welcome section -->
         <section name="Welcome to WOProject and WOLips">
 
-        <p><i>July 8, 2003.</i> <b>WOProject release 1.0.4 is out.</b></p>
+        <p><i>August 4, 2003.</i> <b>WOProject release 1.0.5 is out.</b></p>
         <p>Download a new <a href="compatibilty_matrix.html">release</a> of WOProject.
         <hr/>
         </p>
         
-        <p><i>July 8, 2003.</i> <b>WOLips 1.0.4 released.</b></p>
+        <p><i>August 4, 2003.</i> <b>WOLips 1.0.5 released.</b></p>
         <p>WOLips is a plugin for <a href="http://eclipse.org">Eclipse IDE</a> that
         support development of WebObjects applications and frameworks.
         <ul>
