@@ -113,6 +113,8 @@ public final class WOLipsModel implements IWOLipsModel {
 	 * @return
 	 */
 	public final IWOLipsResource getWOLipsResource(IResource resource) {
+		if (resource == null || !resource.isAccessible())
+			return null;
 		final int resourceType = this.getWOLipsResourceType(resource);
 		if (resourceType == WOLipsModel.UNKNOWN_RESOURCE_TYPE)
 			return null;
@@ -152,6 +154,15 @@ public final class WOLipsModel implements IWOLipsModel {
 	 * @return
 	 */
 	public final IWOLipsCompilationUnit getWOLipsCompilationUnit(ICompilationUnit compilationUnit) {
+		try {
+			if (compilationUnit == null
+				|| compilationUnit.getCorrespondingResource() == null
+				|| !compilationUnit.getCorrespondingResource().isAccessible())
+				return null;
+		} catch (JavaModelException e) {
+			WOLipsLog.log(e);
+			return null;
+		}
 		final int compilationUnitType =
 			this.getWOLipsCompilationUnitType(compilationUnit);
 		if (compilationUnitType == WOLipsModel.UNKNOWN_COMPILATION_UNIT_TYPE)
