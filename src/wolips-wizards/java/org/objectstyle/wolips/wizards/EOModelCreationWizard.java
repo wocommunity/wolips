@@ -1,8 +1,8 @@
 /* ====================================================================
+ * 
+ * The ObjectStyle Group Software License, Version 1.0 
  *
- * The ObjectStyle Group Software License, Version 1.0
- *
- * Copyright (c) 2002 The ObjectStyle Group
+ * Copyright (c) 2002 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,15 +18,15 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution, if
- *    any, must include the following acknowlegement:
- *       "This product includes software developed by the
+ *    any, must include the following acknowlegement:  
+ *       "This product includes software developed by the 
  *        ObjectStyle Group (http://objectstyle.org/)."
  *    Alternately, this acknowlegement may appear in the software itself,
  *    if and wherever such third-party acknowlegements normally appear.
  *
- * 4. The names "ObjectStyle Group" and "Cayenne"
+ * 4. The names "ObjectStyle Group" and "Cayenne" 
  *    must not be used to endorse or promote products derived
- *    from this software without prior written permission. For written
+ *    from this software without prior written permission. For written 
  *    permission, please contact andrus@objectstyle.org.
  *
  * 5. Products derived from this software may not be called "ObjectStyle"
@@ -54,74 +54,56 @@
  *
  */
 
-package org.objectstyle.wolips.ui.actions;
+package org.objectstyle.wolips.wizards;
 
-import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.ui.IWorkbenchPart;
-import org.objectstyle.wolips.ui.view.WOFrameworkDialogWrapper;
-import org.objectstyle.woproject.env.Environment;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.ui.INewWizard;
+import org.eclipse.ui.IWorkbench;
+import org.objectstyle.wolips.core.plugin.WOLipsPluginImages;
 
 /**
- * Adding WOFrameworks
- * 
  * @author mnolte
- *
+ * @author uli
+ * Wizard to create new eo model in selected webobjects java project
  */
-public class WOFrameworkAction extends ActionOnIProject {
+public class EOModelCreationWizard extends Wizard implements INewWizard {
 
-	private static String WOSystemFrameworkAddID = "WOSystemFramework.Add.ID";
-	private static String WOLocalFrameworkAddID = "WOLocalFramework.Add.ID";
+	private IStructuredSelection selection;
+	private IWorkbench workbench;
+	private EOModelCreationPage mainPage;
 
 	/**
-	 * Constructor for WOFrameworkAction.
+	 * Constructor for EOModelCreationWizard.
 	 */
-	public WOFrameworkAction() {
+	public EOModelCreationWizard() {
 		super();
 	}
+
 	/**
-	 * Method dispose.
+	 * @see org.eclipse.jface.wizard.IWizard#addPages()
 	 */
-	public void dispose() {
-		super.dispose();
-	}
-	/**
-	 * Runs the action.
-	 */
-	public void run(IAction action) {
-		if (project() == null)
-			return;
-		IJavaProject javaProject = JavaCore.create(project());
-		if (action.getId().equals(WOSystemFrameworkAddID)) {
-			WOFrameworkAction.frameworkDialog(
-				this.part,
-				javaProject,
-				Environment.NEXT_SYSTEM_ROOT);
-			return;
-		} else if (action.getId().equals(WOLocalFrameworkAddID)) {
-			WOFrameworkAction.frameworkDialog(
-				this.part,
-				javaProject,
-				Environment.NEXT_LOCAL_ROOT);
-			return;
-		}
-		MessageDialog.openInformation(
-			this.part.getSite().getShell(),
-			Messages.getString("ErrorDialog.title"),
-			Messages.getString("ErrorDialog.invalid.selection"));
+	public void addPages() {
+		mainPage = new EOModelCreationPage(workbench, selection);
+		addPage(mainPage);
 	}
 
-	private static void frameworkDialog(
-		IWorkbenchPart aPart,
-		IJavaProject aProject,
-		String classPathVariableName) {
-		WOFrameworkDialogWrapper frameworkDialog =
-			new WOFrameworkDialogWrapper(
-				aPart,
-				aProject,
-				classPathVariableName);
-		frameworkDialog.executeDialog();
+	/**
+	 * @see org.eclipse.jface.wizard.IWizard#performFinish()
+	 */
+	public boolean performFinish() {
+		return mainPage.createEOModel();
 	}
+
+	/**
+	 * @see org.eclipse.ui.IWorkbenchWizard#init(IWorkbench, IStructuredSelection)
+	 */
+	public void init(IWorkbench workbench, IStructuredSelection selection) {
+		this.workbench = workbench;
+		this.selection = selection;
+		setWindowTitle(Messages.getString("EOModelCreationWizard.title"));
+		setDefaultPageImageDescriptor(
+			WOLipsPluginImages.WOCOMPONENT_WIZARD_BANNER);
+	}
+
 }

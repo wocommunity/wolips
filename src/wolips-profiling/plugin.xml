@@ -90,7 +90,7 @@
 
             label="WOApplication"
 
-            icon="icons/launching/WOLips-launching.gif"
+            icon="icons/profiling/WOLips-profiling.gif"
 
             modes="run, debug"
 

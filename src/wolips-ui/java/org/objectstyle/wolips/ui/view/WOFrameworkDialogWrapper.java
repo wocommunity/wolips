@@ -75,7 +75,6 @@ import org.eclipse.ui.dialogs.FileSystemElement;
 import org.eclipse.ui.wizards.datatransfer.FileSystemStructureProvider;
 import org.eclipse.ui.wizards.datatransfer.SelectFilesOperation;
 import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
-import org.objectstyle.wolips.core.wizards.Messages;
 
 /**
  * Wrapper of FileSelectionDialog to select jars from given

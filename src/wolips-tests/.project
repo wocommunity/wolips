@@ -11,6 +11,7 @@
 		<project>wolips-projectbuild</project>
 		<project>wolips-support</project>
 		<project>wolips-ui</project>
+		<project>wolips-wizards</project>
 		<project>wolips-wounit</project>
 	</projects>
 	<buildSpec>

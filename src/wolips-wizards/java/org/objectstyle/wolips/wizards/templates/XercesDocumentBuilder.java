@@ -54,92 +54,40 @@
  *
  */
 
-package org.objectstyle.wolips.ui.view;
+package org.objectstyle.wolips.wizards.templates;
 
-import java.util.ArrayList;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.FactoryConfigurationError;
+import javax.xml.parsers.ParserConfigurationException;
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.jface.window.Window;
-import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.dialogs.FileSelectionDialog;
-import org.eclipse.ui.dialogs.FileSystemElement;
-import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
+import org.objectstyle.wolips.core.plugin.logging.WOLipsLog;
 
 /**
- * Wrapper of FileSelectionDialog to select jars from given
- * file root object. The FileSelectionDialog displays only jars
- * not already added to classpath.
- * <br>
  * @author uli
+ *
+ * To change this generated comment edit the template variable "typecomment":
+ * Window>Preferences>Java>Templates.
+ * To enable and disable the creation of type comments go to
+ * Window>Preferences>Java>Code Generation.
  */
-public class DeleteFilesDialogWrapper {
-
-	private FileSelectionDialog dialog;
-	private IWorkbenchPart part;
+public class XercesDocumentBuilder {
 
 	/**
-	 * Method DeleteFilesDialogWrapper.
-	 * @param part
-	 * @param resourcesToDelete
-	 * @param project
+	 * Method documentBuilder.
+	 * @return DocumentBuilder
 	 */
-	public DeleteFilesDialogWrapper(
-		IWorkbenchPart part,
-		ArrayList resourcesToDelete,
-		IProject project) {
-		super();
-		this.part = part;
-		//MessageDialog.openInformation(this.part.getSite().getShell(), "Error", "Selection is not a folder!");
-		FileSystemElement elem = this.element(resourcesToDelete, project);
-
-		dialog =
-			new FileSelectionDialog(
-				part.getSite().getShell(),
-				elem,
-				Messages.getString("WOFrameworkDialogWrapper.message"));
-
-		dialog.setTitle(Messages.getString("WOFrameworkDialogWrapper.title"));
-	}
-	/**
-	 * Method element.
-	 * @param aList
-	 * @param aProject
-	 * @return FileSystemElement
-	 */
-	private FileSystemElement element(ArrayList aList, IProject aProject) {
-		FileSystemElement parentElement =
-			new FileSystemElement(aProject.getName(), null, false);
-		parentElement.setFileSystemObject(aProject);
-		for (int i = 0; i < aList.size(); i++) {
-			IResource resource = (IResource) aList.get(i);
-			FileSystemElement child =
-				new FileSystemElement(resource.getName(), parentElement, (resource.getType() == IResource.FOLDER));
-			child.setFileSystemObject(resource);
-		}
-		return parentElement;
-	}
-	/**
-	 * Method executeDialog.
-	 */
-	public void executeDialog() {
-		Object[] result = null;
-		dialog.open();
-
-		if (dialog.getReturnCode() != Window.OK)
-			return;
-		result = dialog.getResult();
+	public static DocumentBuilder documentBuilder() {
 		try {
-		FileSystemElement currentFileElement;
-		for (int i = 0; i < result.length; i++) {
-			currentFileElement = (FileSystemElement) result[i];
-			IResource resource = (IResource) currentFileElement.getFileSystemObject();
-			//resource.delete(true, null);
+			DocumentBuilderFactory builderFactory =
+				DocumentBuilderFactory.newInstance();
+			return builderFactory.newDocumentBuilder();
+		} catch (ParserConfigurationException pce) {
+			WOLipsLog.log("ParserConfigurationException: " + pce);
+		} catch (FactoryConfigurationError fce) {
+			WOLipsLog.log("FactoryConfigurationError: " + fce);
 		}
-	} catch (Exception e) {
-			WOLipsPlugin.handleException(part.getSite().getShell(), e, null);
-		}
-
+		return null;
 	}
 
 }
