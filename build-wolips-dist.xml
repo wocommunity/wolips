@@ -23,6 +23,10 @@
         	<include name="WOLips-medium.gif"/>
         </fileset>
     </copy>
+     <jar jarfile="${wolips.feature.dist}.jar">
+     	<fileset dir="${wolips.feature.dist}">
+     	</fileset>
+     </jar>
 
     <mkdir dir="${wolips.profiling.feature.dist}"/>
     <copy todir="${wolips.profiling.feature.dist}">
@@ -40,7 +44,11 @@
         	<include name="WOLips-medium.gif"/>
         </fileset>
     </copy>
-  
+     <jar jarfile="${wolips.profiling.feature.dist}.jar">
+     	<fileset dir="${wolips.profiling.feature.dist}">
+     	</fileset>
+     </jar>
+ 
     <mkdir dir="${wolips.tests.feature.dist}"/>
     <copy todir="${wolips.tests.feature.dist}">
         <fileset dir="src/wolips-tests-feature">
@@ -57,7 +65,11 @@
         	<include name="WOLips-medium.gif"/>
         </fileset>
     </copy>
-  
+     <jar jarfile="${wolips.tests.feature.dist}.jar">
+     	<fileset dir="${wolips.tests.feature.dist}">
+     	</fileset>
+     </jar>
+
     <!-- make wolips dist -->
     <tar tarfile="${wolips.dist.filename}.tar">
         <tarfileset dir="${wolips.dist.base}">
