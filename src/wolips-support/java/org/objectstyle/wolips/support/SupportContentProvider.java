@@ -63,6 +63,7 @@ import org.objectstyle.wolips.plugin.IWOLipsPluginConstants;
 import org.objectstyle.wolips.preferences.Preferences;
 import org.objectstyle.wolips.preferences.PreferencesMessages;
 import org.objectstyle.woproject.env.WOVariables;
+import org.objectstyle.wolips.utils.WOLipsUtils;
 
 /**
  * @author uli
@@ -86,12 +87,33 @@ public class SupportContentProvider extends AbstractTreeContentProvider {
 	protected void extractInfo() {
 		getRootNode().addChild(
 			createNode(SupportMessages.getString("WOLips.support.start")));
+		extractWOLipsUtilsInfo();
 		extractWOVariablesInfo();
 		extractEnvironmentInfo();
 		extractPersistentProperties();
 		getRootNode().addChild(createNode(SupportMessages.getString("WOLips.support.end"))); //$NON-NLS-1$
 	}
 
+	protected void extractWOLipsUtilsInfo() {
+		TreeContentProviderNode wolipsutilsNode =
+			createNode(SupportMessages.getString("WOLips.support.WOLipsUtils"));
+		getRootNode().addChild(wolipsutilsNode);
+		wolipsutilsNode.addChild(
+			createNode(
+				SupportMessages.getString(
+					"WOLips.support.WOLipsUtils.woTemplateDirectory"),
+				WOLipsUtils.woTemplateDirectory()));
+		wolipsutilsNode.addChild(
+			createNode(
+				SupportMessages.getString(
+					"WOLips.support.WOLipsUtils.woTemplateFiles"),
+				WOLipsUtils.woTemplateFiles()));
+		wolipsutilsNode.addChild(
+			createNode(
+				SupportMessages.getString(
+					"WOLips.support.WOLipsUtils.woTemplateProject"),
+				WOLipsUtils.woTemplateProject()));
+	}
 	/**
 	 * Extracts WOVariables info.
 	 * 
@@ -135,21 +157,24 @@ public class SupportContentProvider extends AbstractTreeContentProvider {
 				SupportMessages.getString(
 					"WOLips.support.WOVariables.woProjectFileName"),
 				WOVariables.woProjectFileName()));
+		/*
+		  moved to WOLipsUtils
 		wovariablesNode.addChild(
-			createNode(
-				SupportMessages.getString(
-					"WOLips.support.WOVariables.woTemplateDirectory"),
-				WOVariables.woTemplateDirectory()));
+		createNode(
+		SupportMessages.getString(
+			"WOLips.support.WOVariables.woTemplateDirectory"),
+		WOVariables.woTemplateDirectory()));
 		wovariablesNode.addChild(
-			createNode(
-				SupportMessages.getString(
-					"WOLips.support.WOVariables.woTemplateFiles"),
-				WOVariables.woTemplateFiles()));
+		createNode(
+		SupportMessages.getString(
+			"WOLips.support.WOVariables.woTemplateFiles"),
+		WOVariables.woTemplateFiles()));
 		wovariablesNode.addChild(
-			createNode(
-				SupportMessages.getString(
-					"WOLips.support.WOVariables.woTemplateProject"),
-				WOVariables.woTemplateProject()));
+		createNode(
+		SupportMessages.getString(
+			"WOLips.support.WOVariables.woTemplateProject"),
+		WOVariables.woTemplateProject()));
+		*/
 	}
 
 	/**
