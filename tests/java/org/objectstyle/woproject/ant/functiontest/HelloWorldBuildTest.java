@@ -73,6 +73,7 @@ public class HelloWorldBuildTest extends BuildTestCase {
         project.executeTarget(defaultTarget);
 
         ApplicationStructure app = new ApplicationStructure("HelloWorld");
+        app.setWocomps(new String[] { "Main" });
         assertStructure(app);
     }
 

@@ -56,6 +56,9 @@
 package org.objectstyle.woproject.ant;
 
 import java.io.File;
+import java.io.IOException;
+
+import java.util.Vector;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
@@ -65,7 +68,6 @@ import org.apache.tools.ant.DirectoryScanner;
 
 
 import org.apache.log4j.Category;
-
 
 
 /**
@@ -88,6 +90,8 @@ public class WOApplication extends WOTask {
         if (hasResources()) {
             copyResources();
         }
+        buildInfo();
+        // @todo - create web.xml and/or classpath files
     }
 
     /**
@@ -110,4 +114,14 @@ public class WOApplication extends WOTask {
     protected File wsresourcesDir() {
         return new File(contentsDir(), "WebServerResources");
     }
+
+    protected void buildInfo() throws BuildException {
+        InfoBuilder infoBuilder = new InfoBuilder(name, new Vector(), true);
+        try {
+            infoBuilder.writeInfo("Info_app.plist", new File(contentsDir(), "Info.plist"));
+        } catch (IOException ioex) {
+            throw new BuildException("Error copying Info.plist", ioex);
+        }
+    }
+
 }

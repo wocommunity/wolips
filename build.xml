@@ -163,6 +163,7 @@
             <fileset dir="${build}/main" />
             <fileset dir="src/resources">
                 <include name="Info.plist"/>
+                <include name="Info_app.plist"/>
                 <include name="**/*.vm"/>
             </fileset>
             <metainf dir="doc">
@@ -266,7 +267,7 @@
     <!-- ============================================= -->
     <!-- runs and reports on tests.                    -->
     <!-- ============================================= -->
-    <target name="test" 
+    <target name="test"
        depends="execute-unit-tests,execute-functional-tests,unit-test-report,functional-test-report">
 
     </target>
