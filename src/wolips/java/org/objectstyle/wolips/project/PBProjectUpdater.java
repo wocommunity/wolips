@@ -62,15 +62,22 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
+import org.objectstyle.wolips.IWOLipsPluginConstants;
 import org.objectstyle.wolips.WOLipsPlugin;
 import org.objectstyle.wolips.io.FileStringScanner;
 import org.objectstyle.woproject.pb.PBProject;
+
+import com.webobjects.foundation.NSArray;
+import com.webobjects.foundation.NSDictionary;
 
 /**
  * @author uli
@@ -82,29 +89,45 @@ import org.objectstyle.woproject.pb.PBProject;
  */
 public class PBProjectUpdater {
 
-	public static String PBProject = "PB.project";
+	//public static String PBProject = "PB.projectContainer"; moved to IWOLipsPluginConstants.PROJECT_FILE_NAME (mn)
 	private PBProject pbProject;
-	private IProject project;
+	private IContainer projectContainer;
 
 	/**
 	 * Constructor for PBProjectUpdater.
 	 */
-	public PBProjectUpdater(IProject aProject) {
+	public PBProjectUpdater(IContainer aProjectContainer) {
 		super();
-		pbProject = getPBProject(aProject);
-		project = aProject;
+		pbProject = getPBProject(aProjectContainer);
+		projectContainer = aProjectContainer;
 	}
 
 	public void updatePBProject() throws CoreException {
 		syncPBProjectWithProject();
-		if (project != null)
-			PBProjectNotifications.postPBProjectDidUpgradeNotification(project.getName());
+		if (projectContainer != null)
+			PBProjectNotifications.postPBProjectDidUpgradeNotification(
+				projectContainer.getName());
 	}
 
-	private PBProject getPBProject(IProject aProject) {
-		IFile aPBProject = aProject.getFile(PBProjectUpdater.PBProject);
+	private PBProject getPBProject(IContainer aProject) {
+		IFile aPBProject =
+			aProject.getFile(
+				new Path(IWOLipsPluginConstants.PROJECT_FILE_NAME));
 		File aFile = aPBProject.getLocation().toFile();
-		boolean isWOApp = ProjectHelper.isWOAppBuilderInstalled(aProject);
+		boolean isWOApp;
+		if (aProject instanceof IProject) {
+			try {
+				isWOApp =
+					((IProject) aProject).hasNature(
+						IWOLipsPluginConstants.WO_APPLICATION_NATURE);
+			} catch (CoreException e) {
+				isWOApp = false;
+			}
+		} else {
+			// if IContainer is an instanceof IFolder it contains only subprojects
+			isWOApp = false;
+		}
+
 		if (!aFile.exists()) {
 			try {
 				aFile.createNewFile();
@@ -114,12 +137,19 @@ public class PBProjectUpdater {
 					WOLipsPlugin.getDefault().getDescriptor().getInstallURL();
 				URL aURL;
 				if (isWOApp) {
-					aURL = new URL(aStarterURL, "templates/woapplication/PB.project");
+					aURL =
+						new URL(
+							aStarterURL,
+							"templates/woapplication/PB.projectContainer");
 				} else {
-					aURL = new URL(aStarterURL, "templates/woframework/PB.project");
+					aURL =
+						new URL(
+							aStarterURL,
+							"templates/woframework/PB.projectContainer");
 				}
 				String aPBProjectFile = Platform.asLocalURL(aURL).getFile();
-				contents = FileStringScanner.stringFromFile(new File(aPBProjectFile));
+				contents =
+					FileStringScanner.stringFromFile(new File(aPBProjectFile));
 				FileStringScanner.stringToFile(aFile, contents);
 
 			} catch (Exception anException) {
@@ -154,7 +184,7 @@ public class PBProjectUpdater {
 
 		IResource[] resources;
 		try {
-			resources = project.members();
+			resources = projectContainer.members();
 
 		} catch (Exception anException) {
 			WOLipsPlugin.log(anException);
@@ -188,14 +218,18 @@ public class PBProjectUpdater {
 			File aFile = new File(aResource.getLocation().toOSString());
 			IFolder aFolder = null;
 			if (aFile.isDirectory())
-				aFolder = project.getFolder(aResource.getProjectRelativePath());
+				aFolder =
+					projectContainer.getFolder(
+						aResource.getProjectRelativePath());
 
 			if (aFolder != null) {
 				if (aPath.endsWith(".wo"))
 					aWOComponentsList.add(aPath);
 
-				else 
-					if(!aPath.endsWith(".woa") && !aPath.endsWith(".build") && !aPath.endsWith(".framework")) {
+				else if (
+					!aPath.endsWith(".woa")
+						&& !aPath.endsWith(".build")
+						&& !aPath.endsWith(".framework")) {
 					IResource[] resources;
 					resources = aFolder.members();
 					int lastResource = resources.length;
@@ -225,7 +259,7 @@ public class PBProjectUpdater {
 	}
 
 	private void syncProjectName() {
-		pbProject.setProjectName(project.getName());
+		pbProject.setProjectName(projectContainer.getName());
 	}
 
 	private void syncClasses(List list) {
@@ -239,4 +273,217 @@ public class PBProjectUpdater {
 	private void syncWOAppResources(List list) {
 		pbProject.setWoAppResources(list);
 	}
+
+	//////////// removing adding filestable resources
+
+	public void syncFilestable(
+		NSDictionary changedResources,
+		int kindOfChange) {
+
+		List actualResources;
+		String currentKey;
+
+		for (int i = 0; i < changedResources.allKeys().count(); i++) {
+			currentKey = (String) changedResources.allKeys().objectAtIndex(i);
+
+			if (IWOLipsPluginConstants.RESOURCES_ID.equals(currentKey)) {
+				actualResources = pbProject.getWoAppResources();
+				switch (kindOfChange) {
+					case IResourceDelta.ADDED :
+						pbProject.setWoAppResources(
+							addResources(
+								(NSArray) changedResources.objectForKey(
+									currentKey),
+								actualResources));
+						break;
+
+					case IResourceDelta.REMOVED :
+						pbProject.setWoAppResources(
+							removeResources(
+								(NSArray) changedResources.objectForKey(
+									currentKey),
+								actualResources));
+						break;
+				}
+			} else if (IWOLipsPluginConstants.CLASSES_ID.equals(currentKey)) {
+				actualResources = pbProject.getClasses();
+				switch (kindOfChange) {
+					case IResourceDelta.ADDED :
+						pbProject.setClasses(
+							addResources(
+								(NSArray) changedResources.objectForKey(
+									currentKey),
+								actualResources));
+						break;
+
+					case IResourceDelta.REMOVED :
+						pbProject.setClasses(
+							removeResources(
+								(NSArray) changedResources.objectForKey(
+									currentKey),
+								actualResources));
+						break;
+				}
+			} else if (
+				IWOLipsPluginConstants.SUBPROJECTS_ID.equals(currentKey)) {
+				actualResources = pbProject.getClasses();
+				switch (kindOfChange) {
+					case IResourceDelta.ADDED :
+						pbProject.setClasses(
+							addResources(
+								(NSArray) changedResources.objectForKey(
+									currentKey),
+								actualResources));
+						break;
+
+					case IResourceDelta.REMOVED :
+						pbProject.setClasses(
+							removeResources(
+								(NSArray) changedResources.objectForKey(
+									currentKey),
+								actualResources));
+						break;
+				}
+			} else if (
+				IWOLipsPluginConstants.COMPONENTS_ID.equals(currentKey)) {
+				actualResources = pbProject.getWoComponents();
+				switch (kindOfChange) {
+					case IResourceDelta.ADDED :
+						pbProject.setWoComponents(
+							addResources(
+								(NSArray) changedResources.objectForKey(
+									currentKey),
+								actualResources));
+						break;
+
+					case IResourceDelta.REMOVED :
+						pbProject.setWoComponents(
+							removeResources(
+								(NSArray) changedResources.objectForKey(
+									currentKey),
+								actualResources));
+						break;
+				}
+			}
+		}
+		try {
+			pbProject.saveChanges();
+		} catch (IOException e) {
+			WOLipsPlugin.log(e);
+		}
+
+	}
+
+	private List addResources(NSArray newResources, List actualResources) {
+		String relativResourcePath;
+		IFile projectFile =
+			projectContainer.getFile(
+				new Path(IWOLipsPluginConstants.PROJECT_FILE_NAME));
+		for (int i = 0; i < newResources.count(); i++) {
+			relativResourcePath =
+				relativResourcePath(
+					(IResource) newResources.objectAtIndex(i),
+					projectFile);
+			if (relativResourcePath != null
+				&& !actualResources.contains(relativResourcePath)) {
+				actualResources.add(relativResourcePath);
+			}
+		}
+		return actualResources;
+	}
+
+	private List removeResources(
+		NSArray removedResources,
+		List actualResources) {
+		String relativResourcePath;
+		IFile projectFile =
+			projectContainer.getFile(
+				new Path(IWOLipsPluginConstants.PROJECT_FILE_NAME));
+		for (int i = 0; i < removedResources.count(); i++) {
+			relativResourcePath =
+				relativResourcePath(
+					(IResource) removedResources.objectAtIndex(i),
+					projectFile);
+			if (relativResourcePath != null
+				&& actualResources.contains(relativResourcePath)) {
+				actualResources.remove(relativResourcePath);
+			}
+		}
+		return actualResources;
+	}
+
+	private String relativResourcePath(IResource resource, IFile projectFile) {
+		// determine relativ path to resource
+		String resourcePath;
+		if (projectFile.getParent().equals(resource.getParent())) {
+			// same folder
+			resourcePath = resource.getName();
+		} else {
+			resourcePath = resource.getProjectRelativePath().toString();
+
+			for (int i = 0;
+				i < projectFile.getProjectRelativePath().segmentCount() - 1;
+				i++) {
+				resourcePath = "../" + resourcePath;
+			}
+		}
+		return resourcePath;
+	}
+
+	////////// framework adding/removing
+	public void addFrameworks(NSArray newFrameworks) {
+		List actualFrameworks = pbProject.getFrameworks();
+		String frameworkName = null;
+		for (int j = 0; j < newFrameworks.count(); j++) {
+			frameworkName =
+				frameworkIdentifierFromPath(
+					(Path) newFrameworks.objectAtIndex(j));
+
+			if (frameworkName != null
+				&& !actualFrameworks.contains(frameworkName)) {
+				actualFrameworks.add(frameworkName);
+			}
+		}
+		try {
+			pbProject.saveChanges();
+		} catch (IOException e) {
+			WOLipsPlugin.log(e);
+		}
+	}
+
+	public void removeFrameworks(NSArray removedFrameworks) {
+		List actualFrameworks = pbProject.getFrameworks();
+		String frameworkName = null;
+		for (int j = 0; j < removedFrameworks.count(); j++) {
+			frameworkName =
+				frameworkIdentifierFromPath(
+					(Path) removedFrameworks.objectAtIndex(j));
+
+			if (frameworkName != null
+				&& actualFrameworks.contains(frameworkName)) {
+				actualFrameworks.remove(frameworkName);
+			}
+		}
+		try {
+			pbProject.saveChanges();
+		} catch (IOException e) {
+			WOLipsPlugin.log(e);
+		}
+	}
+
+	private String frameworkIdentifierFromPath(Path frameworkPath) {
+		String frameworkName = null;
+		// search framework segment in path
+		for (int i = 0; i < frameworkPath.segmentCount(); i++) {
+			frameworkName = frameworkPath.segment(i);
+			if (frameworkName
+				.endsWith("." + IWOLipsPluginConstants.FRAMEWORK)) {
+				break;
+			} else {
+				frameworkName = null;
+			}
+		}
+		return frameworkName;
+	}
+
 }

@@ -89,20 +89,8 @@ public class DirectAction extends WODirectAction {
 	<template name="webobjects application project file" id="applicationproject" description="basic project file with main component and application class" variables="PROJECT_NAME" enabled="true"><![CDATA[{
     DYNAMIC_CODE_GEN = YES; 
     FILESTABLE = {
-        CLASSES = (
-             src/Application.java,
-             src/DirectAction.java, 
-             src/Session.java, 
-             src/Main.java
-        ); 
-        FRAMEWORKS = (
-            JavaWebObjects.framework, 
-            JavaWOExtensions.framework, 
-            JavaEOAccess.framework,
-            JavaEOControl.framework,
-            JavaXML.framework, 
-            JavaFoundation.framework
-        ); 
+        CLASSES = ( ); 
+        FRAMEWORKS = ( ); 
         OTHER_LINKED = (); 
         OTHER_SOURCES = (
             Makefile.preamble, 
@@ -110,12 +98,8 @@ public class DirectAction extends WODirectAction {
             Makefile.postamble, 
             CustomInfo.plist 
         ); 
-        WOAPP_RESOURCES = (
-            Main.api
-        ); 
-        WO_COMPONENTS = (
-            Main.wo
-        ); 
+        WOAPP_RESOURCES = ( ); 
+        WO_COMPONENTS = ( ); 
     }; 
     LANGUAGE = English; 
     LOCALIZABLE_FILES = {}; 
@@ -143,14 +127,7 @@ public class DirectAction extends WODirectAction {
     DEPLOY_WITH_VERSION_NAME = A; 
     DYNAMIC_CODE_GEN = YES; 
     FILESTABLE = {
-        FRAMEWORKS = (
-            JavaEOAccess.framework, 
-            JavaEOControl.framework, 
-            JavaFoundation.framework, 
-            JavaWebObjects.framework, 
-            JavaWOExtensions.framework, 
-            JavaXML.framework
-        ); 
+        FRAMEWORKS = ( ); 
         OTHER_SOURCES = (
             CustomInfo.plist, 
             java.template, 
@@ -182,6 +159,31 @@ public class DirectAction extends WODirectAction {
     WINDOWS_OBJCPLUS_COMPILER = "$(DEVDIR)/gcc"; 
 }
 ]]></template>
+<template name="webobjects subproject file " id="subproject" description="basic subproject file" variables="PROJECT_NAME" enabled="true"><![CDATA[{
+    DYNAMIC_CODE_GEN = YES; 
+    English_RESOURCES = {}; 
+    FILESTABLE = {
+        CLASSES = (  ); 
+        OTHER_LINKED = (); 
+        OTHER_SOURCES = (); 
+        SUBPROJECTS = (); 
+        WOAPP_RESOURCES = ( ); 
+        WO_COMPONENTS = ( );  
+    }; 
+    LANGUAGE = English; 
+    PROJECTNAME = ${PROJECT_NAME}; 
+    PROJECTTYPE = JavaWebObjectsSubproject; 
+    PROJECTVERSION = 2.8; 
+}]]></template>
+	<template name="project info plist" id="project.plist" variables="PROJECT_NAME" enabled="true"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<plist version="0.9">
+<dict>
+        <key>NSExecutable</key>
+        <string>${PROJECT_NAME}</string>
+        <key>CFBundlePackageType</key>
+	 <string>APPL</string>
+</dict>
+</plist>]]></template>
 	<template name="ant file woapplication" id="antwoapplication" description="basic project file with main component and application class" variables="PROJECT_NAME" enabled="true"><![CDATA[<project name="${PROJECT_NAME}" default="build" basedir=".">
 
 	<target name="init">
@@ -205,7 +207,7 @@ public class DirectAction extends WODirectAction {
 	
 </project>
 ]]></template>
-		<template name="ant file woframework" id="antwoframework" description="basic project file with main component and application class" variables="PROJECT_NAME" enabled="true"><![CDATA[<project name="${projectname}" default="build" basedir=".">
+	<template name="ant file woframework" id="antwoframework" description="basic project file with main component and application class" variables="PROJECT_NAME" enabled="true"><![CDATA[<project name="${projectname}" default="build" basedir=".">
 
 	<target name="init">
 		<property name="wo.woroot" value="${wolips.next.root}"/>
@@ -778,10 +780,7 @@ DSTROOT = $(NEXT_ROOT)
 	{
 }
 ]]></template>
-<template name="webobjects woframework custominfo.plist" id="woframework.custominfo.plist" description="basic custominfo.plist" enabled="true">
-<![CDATA[]]>
-</template>
-<template name="eomodel index" id="eomodeld" variables="ADAPTOR_NAME" enabled="true"><![CDATA[{
+	<template name="eomodel index" id="eomodeld" variables="ADAPTOR_NAME" enabled="true"><![CDATA[{
     EOModelVersion = 2.1; 
     adaptorName = ${ADAPTOR_NAME}; 
     connectionDictionary = {URL = ""; driver = ""; password = ""; plugin = ""; username = ""; }; 

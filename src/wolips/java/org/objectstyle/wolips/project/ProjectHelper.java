@@ -56,18 +56,25 @@
  
 package org.objectstyle.wolips.project;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.core.resources.ICommand;
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jdt.core.IClasspathEntry;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.internal.ui.util.CoreUtility;
+import org.objectstyle.wolips.IWOLipsPluginConstants;
 import org.objectstyle.wolips.WOLipsPlugin;
 
 /**
@@ -191,6 +198,153 @@ public class ProjectHelper {
 		}
 		return false; 	
 	}
+	
+	
+	////////////////// source folder stuff
+	
+	/**
+	 * Method getProjectSourceFolder. Searches classpath source entries for project source folder.
+	 * The project source folder is the first found source folder without subproject extension
+	 * (.[IWOLipsPluginConstants.SUBPROJECT].[IWOLipsPluginConstants.SRC])
+	 * @param project
+	 * @return IContainer found source folder
+	 */
+	public static IContainer getProjectSourceFolder(IProject project) {
+		IClasspathEntry[] classpathEntries;
+		IJavaProject javaProject;
+
+		try {
+			javaProject = JavaCore.create(project);
+
+			classpathEntries = javaProject.getRawClasspath();
+		} catch (JavaModelException e) {
+			WOLipsPlugin.log(e);
+			return null;
+		}
+
+		for (int i = 0; i < classpathEntries.length; i++) {
+			if (IClasspathEntry.CPE_SOURCE
+				== classpathEntries[i].getEntryKind()) {
+				// source entry found
+				if (classpathEntries[i].getPath() != null
+					&& classpathEntries[i].getPath().toString().indexOf(
+						"." + IWOLipsPluginConstants.SUBPROJECT + "." + IWOLipsPluginConstants.SRC)
+						== -1) {
+					// non subproject entry found
+					if (classpathEntries[i].getPath().segmentCount() > 1) {
+						return project.getWorkspace().getRoot().getFolder(
+							classpathEntries[i].getPath());
+					}
+					break;
+				}
+			}
+		}
+		// project is source container
+		return project;
+	}
+
+	/**
+	 * Method getSubprojectSourceFolder. Searches classpath source entries for correspondending
+	 * subproject source folder (subprojectFolder.getName().[IWOLipsPluginConstants.SRC]
+	 * @param subprojectFolder
+	 * @return IFolder
+	 */
+	public static IFolder getSubprojectSourceFolder(IFolder subprojectFolder) {
+		List subprojectFolders =
+			getSubProjectsSourceFolder(subprojectFolder.getProject());
+		for (int i = 0; i < subprojectFolders.size(); i++) {
+			if (((IFolder) subprojectFolders.get(i))
+				.getName()
+				.equals(subprojectFolder.getName() + "." + IWOLipsPluginConstants.SRC)) {
+				return (IFolder) subprojectFolders.get(i);
+			}
+		}
+		// no folder found - create new source folder
+		IFolder subprojectSourceFolder =
+			subprojectFolder.getProject().getFolder(
+				subprojectFolder.getName() + "." + IWOLipsPluginConstants.SRC);
+		if (!subprojectSourceFolder.exists()) {
+			try {
+				subprojectSourceFolder.create(true, true, null);
+			} catch (CoreException e) {
+				WOLipsPlugin.log(e);
+			}
+		}
+		// add
+		try {
+			addNewSourcefolderToClassPath(subprojectSourceFolder, null);
+		} catch (InvocationTargetException e) {
+			WOLipsPlugin.log(e);
+		}
+		return subprojectSourceFolder;
+	}
+
+	public static List getSubProjectsSourceFolder(IProject project) {
+		IClasspathEntry[] classpathEntries;
+		IJavaProject javaProject;
+		ArrayList foundFolders = new ArrayList();
+		try {
+			javaProject = JavaCore.create(project);
+
+			classpathEntries = javaProject.getRawClasspath();
+		} catch (JavaModelException e) {
+			WOLipsPlugin.log(e);
+			return null;
+		}
+
+		for (int i = 0; i < classpathEntries.length; i++) {
+			if (IClasspathEntry.CPE_SOURCE
+				== classpathEntries[i].getEntryKind()) {
+				// source entry found
+				if (classpathEntries[i].getPath() != null
+					&& classpathEntries[i].getPath().toString().indexOf(
+						"." + IWOLipsPluginConstants.SUBPROJECT + "." + IWOLipsPluginConstants.SRC)
+						!= -1) {
+					foundFolders.add(
+						project.getWorkspace().getRoot().getFolder(
+							classpathEntries[i].getPath()));
+				}
+			}
+		}
+		return foundFolders;
+	}
+
+	public static void addNewSourcefolderToClassPath(
+		IFolder newSourceFolder,
+		IProgressMonitor monitor)
+		throws InvocationTargetException {
+		// add source classpath entry for project
+		IJavaProject actualJavaProject =
+			JavaCore.create(newSourceFolder.getProject());
+
+		IClasspathEntry[] oldClassPathEntries;
+		try {
+			oldClassPathEntries = actualJavaProject.getRawClasspath();
+		} catch (JavaModelException e) {
+			throw new InvocationTargetException(e);
+		}
+
+		IClasspathEntry[] newClassPathEntries =
+			new IClasspathEntry[oldClassPathEntries.length + 1];
+
+		System.arraycopy(
+			oldClassPathEntries,
+			0,
+			newClassPathEntries,
+			1,
+			oldClassPathEntries.length);
+		newClassPathEntries[0] =
+			JavaCore.newSourceEntry(newSourceFolder.getFullPath());
+
+		try {
+			actualJavaProject.setRawClasspath(newClassPathEntries, monitor);
+		} catch (JavaModelException e) {
+			throw new InvocationTargetException(e);
+		}
+
+	}
+
+
 	
 }
 

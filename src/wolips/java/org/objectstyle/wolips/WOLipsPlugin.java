@@ -72,6 +72,8 @@ import org.eclipse.core.internal.plugins.PluginClassLoader;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -79,6 +81,8 @@ import org.eclipse.core.runtime.IPluginDescriptor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jdt.core.ElementChangedEvent;
+import org.eclipse.jdt.core.IElementChangedListener;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.dialogs.ErrorDialog;
@@ -87,12 +91,15 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IStartup;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.objectstyle.wolips.env.Environment;
 import org.objectstyle.wolips.ide.WOClasspathUpdater;
 import org.objectstyle.wolips.io.FileStringScanner;
+import org.objectstyle.wolips.listener.JavaElementChangeListener;
+import org.objectstyle.wolips.listener.ResourceChangeListener;
 import org.objectstyle.wolips.project.PBProjectUpdater;
 
 /**
@@ -100,9 +107,12 @@ import org.objectstyle.wolips.project.PBProjectUpdater;
  * 
  * @author uli
  */
-public class WOLipsPlugin extends AbstractUIPlugin {
+public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 	private static WOLipsPlugin plugin;
 	private Hashtable projectUpdater;
+	private static IResourceChangeListener resourceChangeListener;
+	private static IElementChangedListener javaElementChangeListener;
+	
 	//Resource bundle.
 	private static DocumentBuilder documentBuilder;
 	/**
@@ -117,6 +127,27 @@ public class WOLipsPlugin extends AbstractUIPlugin {
 		super(descriptor);
 		plugin = this;
 		this.loadFoundationClasses();
+	}
+	
+	/**
+	 * Adds listeners for resource and java classpath changes to keep
+	 * webobjects project file synchronized.
+	 * <br>
+	 * @see org.eclipse.ui.IStartup#earlyStartup()
+	 */
+	public void earlyStartup() {
+
+		// add resource change listener to update project file on resource changes
+		resourceChangeListener = new ResourceChangeListener();
+		getWorkspace().addResourceChangeListener(
+			resourceChangeListener,
+			IResourceChangeEvent.PRE_AUTO_BUILD);
+
+		// add element change listener to update project file on classpath changes
+		javaElementChangeListener = new JavaElementChangeListener();
+		JavaCore.addElementChangedListener(
+			javaElementChangeListener,
+			ElementChangedEvent.PRE_AUTO_BUILD);
 	}
 	
 	private void loadFoundationClasses() {

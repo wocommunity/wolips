@@ -65,6 +65,7 @@ import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.dialogs.WizardNewFileCreationPage;
+import org.objectstyle.wolips.IWOLipsPluginConstants;
 import org.objectstyle.wolips.WOLipsPlugin;
 
 /**
@@ -108,8 +109,7 @@ public abstract class WizardNewWOResourcePage extends WizardNewFileCreationPage 
 
 		if (super.validatePage()) {
 			IProject actualProject;
-			String projectFileName =
-				Messages.getString("webobjects.projectFile.name");
+			
 			switch (getContainerFullPath().segmentCount()) {
 				case 0 :
 					// no project selected
@@ -122,7 +122,7 @@ public abstract class WizardNewWOResourcePage extends WizardNewFileCreationPage 
 				case 1 :
 					actualProject =
 						ResourcesPlugin.getWorkspace().getRoot().getProject(getContainerFullPath().segment(0));
-					if (!actualProject.getFile(projectFileName).exists()) {
+					if (!actualProject.getFile(IWOLipsPluginConstants.PROJECT_FILE_NAME).exists()) {
 						// no webobjects project selected
 						setErrorMessage(
 							Messages.getString("WizardNewWOResourcePage.errorMessage.containerNoWOProject"));
@@ -134,7 +134,7 @@ public abstract class WizardNewWOResourcePage extends WizardNewFileCreationPage 
 				default :
 					actualProject =
 						ResourcesPlugin.getWorkspace().getRoot().getProject(getContainerFullPath().segment(0));
-					if (!actualProject.getFile(projectFileName).exists()) {
+					if (!actualProject.getFile(IWOLipsPluginConstants.PROJECT_FILE_NAME).exists()) {
 						// no webobjects project selected
 						setErrorMessage(
 							Messages.getString("WizardNewWOResourcePage.errorMessage.containerNoWOProject"));
@@ -142,7 +142,7 @@ public abstract class WizardNewWOResourcePage extends WizardNewFileCreationPage 
 						return false;
 					} else {
 						// project is selected and wo project - now check for subproject
-						IPath projectFilePath = getContainerFullPath().removeFirstSegments(1).append(projectFileName);
+						IPath projectFilePath = getContainerFullPath().removeFirstSegments(1).append(IWOLipsPluginConstants.PROJECT_FILE_NAME);
 
 						if (!actualProject.getFile(projectFilePath).exists()) {
 							// no webobjects subproject selected

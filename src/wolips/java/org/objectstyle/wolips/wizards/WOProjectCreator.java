@@ -53,8 +53,8 @@
  * <http://objectstyle.org/>.
  *
  */
- 
- package org.objectstyle.wolips.wizards;
+
+package org.objectstyle.wolips.wizards;
 
 import java.io.File;
 import java.io.IOException;
@@ -64,6 +64,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
@@ -82,6 +83,7 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.objectstyle.wolips.IWOLipsPluginConstants;
 import org.objectstyle.wolips.WOLipsPlugin;
 import org.objectstyle.wolips.io.FileFromTemplateCreator;
+import org.objectstyle.wolips.project.ProjectHelper;
 import org.objectstyle.wolips.wo.WOVariables;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -170,7 +172,7 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 		super(newProject);
 		this.templateID = templateID;
 	}
-	
+
 	protected int getType() {
 		return PROJECT_CREATOR;
 	}
@@ -178,24 +180,30 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 	/**
 	 * @see org.eclipse.jface.operation.IRunnableWithProgress#run(IProgressMonitor)
 	 */
-	public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+	public void run(IProgressMonitor monitor)
+		throws InvocationTargetException, InterruptedException {
 		if (monitor == null) {
 			monitor = new NullProgressMonitor();
 		}
 
 		try {
-			monitor.beginTask(Messages.getString("WOProjectCreator.progress.title"), 1);
+			monitor.beginTask(
+				Messages.getString("WOProjectCreator.progress.title"),
+				1);
 
 			if (elementForTemplate == null) {
-				elementForTemplate = getProjectTemplateDocument().getElementById(templateID);
+				elementForTemplate =
+					getProjectTemplateDocument().getElementById(templateID);
 			}
 
 			// search for project natures in project template
-			NodeList natureNodeList = elementForTemplate.getElementsByTagName("nature");
+			NodeList natureNodeList =
+				elementForTemplate.getElementsByTagName("nature");
 			String[] natureIds = new String[natureNodeList.getLength()];
 			Node currentNatureIdAttribute = null;
 			for (int i = 0; i < natureNodeList.getLength(); i++) {
-				currentNatureIdAttribute = natureNodeList.item(i).getAttributes().getNamedItem("id");
+				currentNatureIdAttribute =
+					natureNodeList.item(i).getAttributes().getNamedItem("id");
 				natureIds[i] = currentNatureIdAttribute.getNodeValue();
 			}
 			configNewProject(natureIds, monitor);
@@ -206,26 +214,46 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 		}
 	}
 
-	private void createProjectContents(IProgressMonitor monitor) throws InvocationTargetException {
+	private void createProjectContents(IProgressMonitor monitor)
+		throws InvocationTargetException {
 
 		fileCreator = new FileFromTemplateCreator();
 
-		WOComponentCreator componentCreator = new WOComponentCreator(parentResource,"Main",true);
+		WOComponentCreator componentCreator =
+			new WOComponentCreator(parentResource, "Main", true);
 		componentCreator.setFileCreator(fileCreator);
 
 		NodeList fileNodeList = elementForTemplate.getElementsByTagName("file");
 		try {
-				
-			//create src folder
 
-			((IProject) parentResource).getFolder("src").create(true,true,monitor);
+			//create src folder
+/*
+			((IProject) parentResource).getFolder("src").create(
+				true,
+				true,
+				monitor);
+				*/
 			String currentFileTemplateId = null;
 			String currentFileName = null;
 			for (int i = 0; i < fileNodeList.getLength(); i++) {
-				currentFileTemplateId = fileNodeList.item(i).getAttributes().getNamedItem("templateId").getNodeValue();
-				currentFileName = fileNodeList.item(i).getAttributes().getNamedItem("name").getNodeValue();
+				currentFileTemplateId =
+					fileNodeList
+						.item(i)
+						.getAttributes()
+						.getNamedItem("templateId")
+						.getNodeValue();
+				currentFileName =
+					fileNodeList
+						.item(i)
+						.getAttributes()
+						.getNamedItem("name")
+						.getNodeValue();
 
-				createNewProjectResource(currentFileName, currentFileTemplateId, parentResource, monitor);
+				createNewProjectResource(
+					currentFileName,
+					currentFileTemplateId,
+					parentResource,
+					monitor);
 
 			}
 			if (Messages
@@ -248,31 +276,67 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 		IProgressMonitor monitor)
 		throws InvocationTargetException {
 
+		boolean isJavaFile =
+			fileName != null
+				&& fileName.endsWith("." + IWOLipsPluginConstants.CLASS);
+		IFile fileToCreate = null;
+
 		switch (parentResource.getType()) {
 			case IResource.PROJECT :
 				IProject project = (IProject) parentResource;
+				
+				if (isJavaFile) {
+					// add java file to source folder
+					fileToCreate =
+						ProjectHelper.getProjectSourceFolder(
+							(IProject) parentResource).getFile(
+							new Path(fileName));
+				} else {
+					// add wo resource file
+					fileToCreate =
+						((IProject) parentResource).getFile(fileName);
+				}
 				try {
-					fileCreator.create(project.getFile(fileName), fileTemplateId, new SubProgressMonitor(monitor, 1));
+					fileCreator.create(
+						fileToCreate,
+						fileTemplateId,
+						new SubProgressMonitor(monitor, 1));
 				} catch (InvocationTargetException e) {
 					// a this stage of project creation no project file exists
 					// throw only non-missing project file exceptions
 					//if (!(e.getTargetException() instanceof WOProjectFileUpdater.MissingProjectFileException)) {
-						throw e;
+					throw e;
 					//}
 				}
 				break;
 
 			case IResource.FOLDER :
 				IFolder subproject = (IFolder) parentResource;
-				fileCreator.create(subproject.getFile(fileName), fileTemplateId, new SubProgressMonitor(monitor, 1));
+				if (isJavaFile) {
+					// add java file to source folder
+					fileToCreate =
+						ProjectHelper.getSubprojectSourceFolder(
+							(IFolder) parentResource).getFile(
+							fileName);
+				} else {
+					// add wo resource file
+					fileToCreate = ((IFolder) parentResource).getFile(fileName);
+				}
+				fileCreator.create(
+					fileToCreate,
+					fileTemplateId,
+					new SubProgressMonitor(monitor, 1));
 				break;
 
+
 			default :
-				throw new InvocationTargetException(new Exception("Wrong parent resource - check validation"));
+				throw new InvocationTargetException(
+					new Exception("Wrong parent resource - check validation"));
 		}
 	}
 
-	private void configNewProject(String[] natureIds, IProgressMonitor monitor) throws InvocationTargetException {
+	private void configNewProject(String[] natureIds, IProgressMonitor monitor)
+		throws InvocationTargetException {
 
 		switch (parentResource.getType()) {
 			// application project or framework project
@@ -298,36 +362,40 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 
 				// add wo classpath entries
 				IJavaProject myJavaProject = JavaCore.create(newProject);
-				NodeList classpathNodeList = elementForTemplate.getElementsByTagName("classpathentry");
-
-				int existentClasspathEntriesCnt = 0;
-				IClasspathEntry[] existentClasspathEntries;
-
-				try {
-					existentClasspathEntries = myJavaProject.getRawClasspath();
-					existentClasspathEntriesCnt = myJavaProject.getRawClasspath().length;
-					for (int x = 0; x < existentClasspathEntriesCnt; x++) {
-
-					IClasspathEntry anIClasspathEntry = existentClasspathEntries[x];
-
-					if(anIClasspathEntry.getEntryKind() == IClasspathEntry.CPE_SOURCE) {
-
-						existentClasspathEntries[x] = JavaCore.newSourceEntry(anIClasspathEntry.getPath().addTrailingSeparator().append("src"));
-
-					}
-
-				}
-				} catch (JavaModelException e) {
-					throw new InvocationTargetException(e);
-				}
-
+				NodeList classpathNodeList =
+					elementForTemplate.getElementsByTagName("classpathentry");
+				/*
+								int existentClasspathEntriesCnt = 0;
+								IClasspathEntry[] existentClasspathEntries;
+				
+								try {
+									existentClasspathEntries = myJavaProject.getRawClasspath();
+									existentClasspathEntriesCnt = myJavaProject.getRawClasspath().length;
+									for (int x = 0; x < existentClasspathEntriesCnt; x++) {
+				
+									IClasspathEntry anIClasspathEntry = existentClasspathEntries[x];
+				
+									if(anIClasspathEntry.getEntryKind() == IClasspathEntry.CPE_SOURCE) {
+				
+										existentClasspathEntries[x] = JavaCore.newSourceEntry(anIClasspathEntry.getPath().addTrailingSeparator().append("src"));
+				
+									}
+				
+								}
+								} catch (JavaModelException e) {
+									throw new InvocationTargetException(e);
+								}
+				
+								ArrayList allClasspathEntriesResolved =
+									new ArrayList(existentClasspathEntriesCnt + classpathNodeList.getLength());
+				
+								// copy existant classpath entries
+								for (int i = 0; i < existentClasspathEntriesCnt; i++) {
+									allClasspathEntriesResolved.add(existentClasspathEntries[i]);
+								}
+				*/
 				ArrayList allClasspathEntriesResolved =
-					new ArrayList(existentClasspathEntriesCnt + classpathNodeList.getLength());
-
-				// copy existant classpath entries
-				for (int i = 0; i < existentClasspathEntriesCnt; i++) {
-					allClasspathEntriesResolved.add(existentClasspathEntries[i]);
-				}
+					new ArrayList(classpathNodeList.getLength());
 
 				if (classpathNodeList.getLength() > 0) {
 
@@ -345,42 +413,131 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 
 					for (int i = 0; i < classpathNodeList.getLength(); i++) {
 
-						classpathKind = classpathNodeList.item(i).getAttributes().getNamedItem("kind").getNodeValue();
+						classpathKind =
+							classpathNodeList
+								.item(i)
+								.getAttributes()
+								.getNamedItem("kind")
+								.getNodeValue();
 
-						currentRawPath = classpathNodeList.item(i).getAttributes().getNamedItem("path").getNodeValue();
+						currentRawPath =
+							classpathNodeList
+								.item(i)
+								.getAttributes()
+								.getNamedItem("path")
+								.getNodeValue();
 
-						if (classpathNodeList.item(i).getAttributes().getNamedItem("sourcepath") != null) {
+						if (classpathNodeList
+							.item(i)
+							.getAttributes()
+							.getNamedItem("sourcepath")
+							!= null) {
 							currentRawSourcePath =
-								classpathNodeList.item(i).getAttributes().getNamedItem("sourcepath").getNodeValue();
+								classpathNodeList
+									.item(i)
+									.getAttributes()
+									.getNamedItem("sourcepath")
+									.getNodeValue();
 						}
 
-						if (classpathNodeList.item(i).getAttributes().getNamedItem("rootpath") != null) {
+						if (classpathNodeList
+							.item(i)
+							.getAttributes()
+							.getNamedItem("rootpath")
+							!= null) {
 							currentRawRootPath =
-								classpathNodeList.item(i).getAttributes().getNamedItem("rootpath").getNodeValue();
+								classpathNodeList
+									.item(i)
+									.getAttributes()
+									.getNamedItem("rootpath")
+									.getNodeValue();
+						}
+
+						////////////////// kind "src"
+						if (IWOLipsPluginConstants.SRC.equals(classpathKind)) {
+
+							// set source path extension
+							if (!".".equals(currentRawPath)) {
+								currentRawPath += "."
+									+ IWOLipsPluginConstants.SRC;
+							} else {
+								// source path must be folder to create
+								// non-nested source path folder for subprojects
+								currentRawPath =
+									parentResource.getName()
+										+ "."
+										+ IWOLipsPluginConstants.SRC;
+							}
+							IPath sourcePath;
+							// is path project name depending
+							if (currentRawPath.indexOf("${project.name}")
+								!= -1) {
+								while ((index =
+									currentRawPath.indexOf("${project.name}"))
+									!= -1) {
+									StringBuffer resolvedOutputPath =
+										new StringBuffer(currentRawPath);
+									resolvedOutputPath.replace(
+										index,
+										index + "${project.name}".length(),
+										parentResource.getName());
+
+									currentRawPath =
+										resolvedOutputPath.toString();
+								}
+
+							}
+							sourcePath = new Path(currentRawPath);
+
+							IFolder sourceFolder;
+
+							sourceFolder = newProject.getFolder(sourcePath);
+							if (!sourceFolder.exists()) {
+								// create source folder
+								try {
+									sourceFolder.create(true, true, monitor);
+								} catch (CoreException e) {
+									throw new InvocationTargetException(e);
+								}
+							}
+							allClasspathEntriesResolved.add(
+								JavaCore.newSourceEntry(
+									sourceFolder.getFullPath()));
 						}
 
 						////////////////// kind "lib"
 						if ("lib".equals(classpathKind)) {
 
-							currentResolvedClassPath = new StringBuffer(currentRawPath);
+							currentResolvedClassPath =
+								new StringBuffer(currentRawPath);
 
 							for (int j = 0; j < variableList().size(); j++) {
-								variableToExpand = (String) variableList().get(j);
+								variableToExpand =
+									(String) variableList().get(j);
 
 								// replace all occurences of "${" + variableToExpand + "}"
-								while ((index = currentRawPath.indexOf("${" + variableToExpand + "}")) != -1) {
+								while ((index =
+									currentRawPath.indexOf(
+										"${" + variableToExpand + "}"))
+									!= -1) {
 									currentResolvedClassPath.replace(
 										index,
 										index + variableToExpand.length() + 3,
 										expandVariable(variableToExpand));
 
-									currentRawPath = currentResolvedClassPath.toString();
+									currentRawPath =
+										currentResolvedClassPath.toString();
 
 								}
 							}
 
-							newClasspath = new Path(currentResolvedClassPath.toString());
-							allClasspathEntriesResolved.add(JavaCore.newLibraryEntry(newClasspath, null, null));
+							newClasspath =
+								new Path(currentResolvedClassPath.toString());
+							allClasspathEntriesResolved.add(
+								JavaCore.newLibraryEntry(
+									newClasspath,
+									null,
+									null));
 						}
 
 						////////////////// kind "var"
@@ -397,30 +554,42 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 							}
 
 							allClasspathEntriesResolved.add(
-								JavaCore.newVariableEntry(newClasspath, newSourcepath, newRootpath));
+								JavaCore.newVariableEntry(
+									newClasspath,
+									newSourcepath,
+									newRootpath));
 						}
 
 						////////////////// kind "output
 						else if ("output".equals(classpathKind)) {
 							IPath absoluteOutputPath = null;
 							// is path project name depending
-							if (currentRawPath.indexOf("${project.name}") != -1) {
-								while ((index = currentRawPath.indexOf("${project.name}")) != -1) {
-									StringBuffer resolvedOutputPath = new StringBuffer(currentRawPath);
+							if (currentRawPath.indexOf("${project.name}")
+								!= -1) {
+								while ((index =
+									currentRawPath.indexOf("${project.name}"))
+									!= -1) {
+									StringBuffer resolvedOutputPath =
+										new StringBuffer(currentRawPath);
 									resolvedOutputPath.replace(
 										index,
 										index + "${project.name}".length(),
 										parentResource.getName());
 
-									currentRawPath = resolvedOutputPath.toString();
+									currentRawPath =
+										resolvedOutputPath.toString();
 								}
-								absoluteOutputPath = parentResource.getFullPath().append(currentRawPath);
+								absoluteOutputPath =
+									parentResource.getFullPath().append(
+										currentRawPath);
 							} else {
 								absoluteOutputPath = new Path(currentRawPath);
 							}
 							if (absoluteOutputPath.isAbsolute()) {
 								try {
-									myJavaProject.setOutputLocation(absoluteOutputPath, monitor);
+									myJavaProject.setOutputLocation(
+										absoluteOutputPath,
+										monitor);
 								} catch (JavaModelException e) {
 									throw new InvocationTargetException(e);
 								}
@@ -431,10 +600,13 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 
 				}
 				try {
-					Object[] classPathEntriesAsObjects = allClasspathEntriesResolved.toArray();
-					IClasspathEntry[] classPathEntries = new IClasspathEntry[classPathEntriesAsObjects.length];
+					Object[] classPathEntriesAsObjects =
+						allClasspathEntriesResolved.toArray();
+					IClasspathEntry[] classPathEntries =
+						new IClasspathEntry[classPathEntriesAsObjects.length];
 					for (int i = 0; i < classPathEntries.length; i++) {
-						classPathEntries[i] = (IClasspathEntry) classPathEntriesAsObjects[i];
+						classPathEntries[i] =
+							(IClasspathEntry) classPathEntriesAsObjects[i];
 					}
 					myJavaProject.setRawClasspath(classPathEntries, monitor);
 				} catch (JavaModelException e) {
@@ -444,31 +616,34 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 				break;
 
 			case IResource.FOLDER :
-				// subproject
+			// subproject
 				IFolder newSubproject = (IFolder) parentResource;
+				IFolder newSubprojectSourceFolder =
+					newSubproject.getProject().getFolder(
+						new Path(newSubproject.getName() + "." + IWOLipsPluginConstants.SRC));
+
 				try {
-					if (!newSubproject.exists()) {
-						createResourceFolderInProject(newSubproject,monitor);
+					if (!parentResource.exists()) {
+						createResourceFolderInProject(newSubproject, monitor);
 					}
-
+					if (!newSubprojectSourceFolder.exists()) {
+						newSubprojectSourceFolder.create(false, true, monitor);
+					}
 				} catch (CoreException e) {
 					throw new InvocationTargetException(e);
 				}
 
-				// subprojects don't have an extension -> add resource qualifier to subproject 
-				QualifiedName subprojectQualifier =
-					new QualifiedName(WOLipsPlugin.getId(), IWOLipsPluginConstants.SUBPROJECT);
-
-				try {
-					newSubproject.setPersistentProperty(subprojectQualifier, IWOLipsPluginConstants.SUBPROJECT);
-				} catch (CoreException e) {
-					throw new InvocationTargetException(e);
-				}
+				ProjectHelper.addNewSourcefolderToClassPath(
+					newSubprojectSourceFolder,
+					monitor);
+				// subproject
+				
 
 				break;
 
 			default :
-				throw new InvocationTargetException(new Exception("Wrong parent resource - check validation"));
+				throw new InvocationTargetException(
+					new Exception("Wrong parent resource - check validation"));
 		}
 
 	}
@@ -508,7 +683,8 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 
 	}
 
-	private static synchronized Document getProjectTemplateDocument() throws InvocationTargetException {
+	private static synchronized Document getProjectTemplateDocument()
+		throws InvocationTargetException {
 		if (templateDocument == null) {
 			IPath templatePath;
 			File templateFile;

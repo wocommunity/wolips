@@ -2,22 +2,21 @@
 <plugin
    id="org.objectstyle.wolips"
    name="%WOLips.pluginName"
-   version="0.8.8"
+   version="0.8.9"
    provider-name="%WOLips.providerName"
    class="org.objectstyle.wolips.WOLipsPlugin">
 
    <runtime>
       <library name="lib/wolips.jar">
-      	<export name="*"/>
+         <export name="*"/>
       </library>
       <library name="lib/woproject.jar">
-      	<export name="*"/>
+         <export name="*"/>
       </library>
       <library name="lib/cayenne.jar">
-      	<export name="*"/>
+         <export name="*"/>
       </library>
    </runtime>
-   
    <requires>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.core.resources"/>
@@ -29,162 +28,166 @@
       <import plugin="org.apache.xerces"/>
    </requires>
 
-   <!-- help -->
-   <extension point="org.eclipse.help.toc">
+
+<!-- help -->
+   <extension
+         point="org.eclipse.help.toc">
       <toc
             file="toc.xml"
             primary="true">
       </toc>
    </extension>
-
- 	<!-- Project Wizard -->
-	<extension 
-		point="org.eclipse.ui.newWizards">
-		<category
-	   		id = "org.objectstyle.wolips.wizards.webobjects.5.1"
-	   		name="%WOLips.webobjects.5.1.categoryName">
-		</category>
-		<wizard
-            		name="%WOLips.Component"
-            		icon="icons/wobuilder/wocomponent_wiz.gif"
-            		category="org.objectstyle.wolips.wizards.webobjects.5.1"
-            		class="org.objectstyle.wolips.wizards.WOComponentCreationWizard"
-            		id="org.objectstyle.wolips.wizards.new.wo.5.1.component">
-      		</wizard>
-      		<wizard
-            		name="%WOLips.Application"
-            		icon="icons/woproject/woapplication_wiz.gif"
-            		category="org.objectstyle.wolips.wizards.webobjects.5.1"
-            		class="org.objectstyle.wolips.wizards.WOProjectCreationWizard"
-            		id="org.objectstyle.wolips.wizards.new.wo.5.1.application">
-         	<description>
-         	</description>
-      		</wizard>
-			<wizard
-            		name="%WOLips.Framework"
-            		icon="icons/woproject/woframework_wiz.gif"
-            		category="org.objectstyle.wolips.wizards.webobjects.5.1"
-            		class="org.objectstyle.wolips.wizards.WOFrameworkCreationWizard"
-            		id="org.objectstyle.wolips.wizards.new.wo.5.1.framework">
-         	<description>
-         	</description>
-   			</wizard>
-			<wizard
-            		name="%WOLips.EOModel"
-            		icon="icons/woproject/eomodel_wiz.gif"
-            		category="org.objectstyle.wolips.wizards.webobjects.5.1"
-            		class="org.objectstyle.wolips.wizards.EOModelCreationWizard"
-            		id="org.objectstyle.wolips.wizards.new.wo.5.1.eomodel">
-         	<description>
-         	</description>
-   			</wizard>
-  	</extension>  
-
-	<!-- ant -->
-     
-	<extension point="org.eclipse.ant.core.extraClasspathEntries">
-		<extraClasspathEntry library="lib/woproject.jar">
-		</extraClasspathEntry>
-		<extraClasspathEntry library="lib/cayenne.jar">
-		</extraClasspathEntry>
-		<extraClasspathEntry library="lib/log4j-1.2beta4.jar">
-		</extraClasspathEntry>
-	</extension>
-	
-   	<extension point="org.eclipse.ant.core.antTasks">
-      	<antTask
-         	name="woapplication"
-         	class="org.objectstyle.woproject.ant.WOApplication"
-         	library="lib/woproject.jar">
-      	</antTask>
-      	
-     	<antTask
-         	name="woframework"
-         	class="org.objectstyle.woproject.ant.WOFramework"
-         	library="lib/woproject.jar">
-      	</antTask>
-
-      	<antTask
-         	name="wogenerator"
-         	class="org.objectstyle.woproject.ant.WOGenerator"
-         	library="lib/woproject.jar">
-      	</antTask>
-   	</extension>
-
+<!-- Project Wizard -->
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            name="%WOLips.webobjects.5.1.categoryName"
+            id="org.objectstyle.wolips.wizards.webobjects.5.1">
+      </category>
+      <wizard
+            name="%WOLips.Component"
+            icon="icons/wobuilder/wocomponent_wiz.gif"
+            category="org.objectstyle.wolips.wizards.webobjects.5.1"
+            class="org.objectstyle.wolips.wizards.WOComponentCreationWizard"
+            id="org.objectstyle.wolips.wizards.new.wo.5.1.component">
+      </wizard>
+      <wizard
+            name="%WOLips.Subproject"
+            icon="icons/woproject/wosubproject_wiz.gif"
+            category="org.objectstyle.wolips.wizards.webobjects.5.1"
+            class="org.objectstyle.wolips.wizards.WOSubprojectCreationWizard"
+            id="org.objectstyle.wolips.wizards.new.wo.5.1.subproject">
+      </wizard>
+      <wizard
+            name="%WOLips.Application"
+            icon="icons/woproject/woapplication_wiz.gif"
+            category="org.objectstyle.wolips.wizards.webobjects.5.1"
+            class="org.objectstyle.wolips.wizards.WOProjectCreationWizard"
+            id="org.objectstyle.wolips.wizards.new.wo.5.1.application">
+         <description>
+         </description>
+      </wizard>
+      <wizard
+            name="%WOLips.Framework"
+            icon="icons/woproject/woframework_wiz.gif"
+            category="org.objectstyle.wolips.wizards.webobjects.5.1"
+            class="org.objectstyle.wolips.wizards.WOFrameworkCreationWizard"
+            id="org.objectstyle.wolips.wizards.new.wo.5.1.framework">
+         <description>
+         </description>
+      </wizard>
+      <wizard
+            name="%WOLips.EOModel"
+            icon="icons/woproject/eomodel_wiz.gif"
+            category="org.objectstyle.wolips.wizards.webobjects.5.1"
+            class="org.objectstyle.wolips.wizards.EOModelCreationWizard"
+            id="org.objectstyle.wolips.wizards.new.wo.5.1.eomodel">
+         <description>
+         </description>
+      </wizard>
+   </extension>
+<!-- ant -->
+   <extension
+         point="org.eclipse.ant.core.extraClasspathEntries">
+      <extraClasspathEntry
+            library="lib/woproject.jar">
+      </extraClasspathEntry>
+      <extraClasspathEntry
+            library="lib/cayenne.jar">
+      </extraClasspathEntry>
+      <extraClasspathEntry
+            library="lib/log4j-1.2beta4.jar">
+      </extraClasspathEntry>
+   </extension>
+   <extension
+         point="org.eclipse.ant.core.antTasks">
+      <antTask
+            library="lib/woproject.jar"
+            name="woapplication"
+            class="org.objectstyle.woproject.ant.WOApplication">
+      </antTask>
+      <antTask
+            library="lib/woproject.jar"
+            name="woframework"
+            class="org.objectstyle.woproject.ant.WOFramework">
+      </antTask>
+      <antTask
+            library="lib/woproject.jar"
+            name="wogenerator"
+            class="org.objectstyle.woproject.ant.WOGenerator">
+      </antTask>
+   </extension>
 <!-- =================================================================================== -->
 <!-- Extension: WOFramework Builder                                                      -->
 <!-- =================================================================================== -->
-
-<extension 
-	point="org.eclipse.core.resources.builders" 
-	id="woframeworkbuilder"
-	name="%WOFrameworkBuilderName">
-	<builder>
-		<run class="org.objectstyle.wolips.builder.WOFrameworkBuilder">
-		</run>
-	</builder>
-</extension>
-
+   <extension
+         id="woframeworkbuilder"
+         name="%WOFrameworkBuilderName"
+         point="org.eclipse.core.resources.builders">
+      <builder>
+         <run
+               class="org.objectstyle.wolips.builder.WOFrameworkBuilder">
+         </run>
+      </builder>
+   </extension>
 <!-- =================================================================================== -->
 <!-- Extension: WOApplication Builder                                                      -->
 <!-- =================================================================================== -->
-
-<extension 
-	point="org.eclipse.core.resources.builders" 
-	id="woapplicationbuilder"
-	name="%WOApplicationBuilderName">
-	<builder>
-		<run class="org.objectstyle.wolips.builder.WOApplicationBuilder">
-		</run>
-	</builder>
-</extension>
-
+   <extension
+         id="woapplicationbuilder"
+         name="%WOApplicationBuilderName"
+         point="org.eclipse.core.resources.builders">
+      <builder>
+         <run
+               class="org.objectstyle.wolips.builder.WOApplicationBuilder">
+         </run>
+      </builder>
+   </extension>
 <!-- project actions -->
-<extension
-    point="org.eclipse.ui.popupMenus">
-    <objectContribution
-        objectClass="org.eclipse.core.resources.IProject"
-        adaptable="true">
-        <filter
-            name="nature"
-            value="org.eclipse.jdt.core.javanature">
-        </filter>
-        <menu
-            label="&amp;WOLips"
-            path="additions"
-            id="org.objectstyle.wolips">
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IProject"
+            adaptable="true">
+         <filter
+               name="nature"
+               value="org.eclipse.jdt.core.javanature">
+         </filter>
+         <menu
+               label="&amp;WOLips"
+               path="additions"
+               id="org.objectstyle.wolips">
             <separator
-                name="wobuilder">
+                  name="wobuilder">
             </separator>
-        </menu>
-        <action
-            label="%WOBuilder.Remove"
-            class="org.objectstyle.wolips.actions.WOBuilderAction"
-            menubarPath="org.objectstyle.wolips/wobuilder"
-            id="%WOBuilder.Remove.ID">
-        </action>
-        <action
-            label="%WOApplicationBuilder.Set"
-            class="org.objectstyle.wolips.actions.WOBuilderAction"
-            menubarPath="org.objectstyle.wolips/wobuilder"
-            id="%WOApplicationBuilder.Set.ID">
-        </action>
-        <action
-            label="%WOFrameworkBuilder.Set"
-            class="org.objectstyle.wolips.actions.WOBuilderAction"
-            menubarPath="org.objectstyle.wolips/wobuilder"
-            id="%WOFrameworkBuilder.Set.ID">
-        </action>
-        <action
-            label="%UpdatePB.Project.Set"
-            class="org.objectstyle.wolips.actions.PBAction"
-            menubarPath="org.objectstyle.wolips/wobuilder"
-            id="%UpdatePB.Project.Set.ID">
-        </action>
-	</objectContribution>
-</extension>
-
-<extension
+         </menu>
+         <action
+               label="%WOBuilder.Remove"
+               class="org.objectstyle.wolips.actions.WOBuilderAction"
+               menubarPath="org.objectstyle.wolips/wobuilder"
+               id="%WOBuilder.Remove.ID">
+         </action>
+         <action
+               label="%WOApplicationBuilder.Set"
+               class="org.objectstyle.wolips.actions.WOBuilderAction"
+               menubarPath="org.objectstyle.wolips/wobuilder"
+               id="%WOApplicationBuilder.Set.ID">
+         </action>
+         <action
+               label="%WOFrameworkBuilder.Set"
+               class="org.objectstyle.wolips.actions.WOBuilderAction"
+               menubarPath="org.objectstyle.wolips/wobuilder"
+               id="%WOFrameworkBuilder.Set.ID">
+         </action>
+         <action
+               label="%UpdatePB.Project.Set"
+               class="org.objectstyle.wolips.actions.PBAction"
+               menubarPath="org.objectstyle.wolips/wobuilder"
+               id="%UpdatePB.Project.Set.ID">
+         </action>
+      </objectContribution>
+   </extension>
+   <extension
          id="org.objectstyle.wolips.editors"
          point="org.eclipse.ui.editors">
       <editor
@@ -212,5 +215,40 @@
             id="org.objectstyle.wolips.external.eomodeld.projectbuilderwo">
       </editor>
    </extension>
-	
+   	<!-- =================================================================================== -->
+	<!-- Extension: Project Natures                                                     -->
+	<!-- =================================================================================== -->
+   <extension
+         id="applicationnature"
+         name="org.eclipse.core.resources.natures"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run
+               class="org.objectstyle.wolips.natures.WOApplicationNature">
+         </run>
+      </runtime>
+      <requires-nature
+            id="org.eclipse.jdt.core.javanature">
+      </requires-nature>
+   </extension>
+   <extension
+         id="frameworknature"
+         name="org.eclipse.core.resources.natures"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run
+               class="org.objectstyle.wolips.natures.WOFrameworkNature">
+         </run>
+      </runtime>
+      <requires-nature
+            id="org.eclipse.jdt.core.javanature">
+      </requires-nature>
+   </extension>
+   <!-- =================================================================================== -->
+	<!-- Extension: Startup                                                    -->
+	<!-- =================================================================================== -->
+   <extension
+         point="org.eclipse.ui.startup">
+   </extension>
+
 </plugin>

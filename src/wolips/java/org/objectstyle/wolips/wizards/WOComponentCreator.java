@@ -53,8 +53,8 @@
  * <http://objectstyle.org/>.
  *
  */
- 
- package org.objectstyle.wolips.wizards;
+
+package org.objectstyle.wolips.wizards;
 
 import java.io.ByteArrayInputStream;
 import java.lang.reflect.InvocationTargetException;
@@ -65,45 +65,50 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.objectstyle.wolips.io.FileFromTemplateCreator;
-
+import org.objectstyle.wolips.project.ProjectHelper;
 
 /**
  * @author mnolte
  * @author uli
  */
 public class WOComponentCreator extends WOProjectResourceCreator {
-	
+
 	private String componentName;
 	private boolean createBodyTag;
 
 	/**
 	 * Constructor for WOComponentCreator.
 	 */
-	public WOComponentCreator(IResource parentResource,String componentName, boolean createBodyTag) {
+	public WOComponentCreator(
+		IResource parentResource,
+		String componentName,
+		boolean createBodyTag) {
 		super(parentResource);
 		this.componentName = componentName;
 		this.createBodyTag = createBodyTag;
 	}
-	
+
 	protected int getType() {
 		return COMPONENT_CREATOR;
 	}
-	
+
 	/**
 	 * @see WOProjectResourceCreator#run(IProgressMonitor)
 	 */
-	public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+	public void run(IProgressMonitor monitor)
+		throws InvocationTargetException, InterruptedException {
 		super.run(monitor);
 		try {
 			createWOComponent(monitor);
 		} catch (CoreException e) {
 			throw new InvocationTargetException(e);
-		} 
+		}
 	}
 
 	public void createWOComponent(IProgressMonitor monitor)
-		throws CoreException, InvocationTargetException {		
+		throws CoreException, InvocationTargetException {
 
 		// create the new file resources
 		if (fileCreator == null) {
@@ -116,23 +121,40 @@ public class WOComponentCreator extends WOProjectResourceCreator {
 
 		switch (parentResource.getType()) {
 			case IResource.PROJECT :
-				componentFolder = ((IProject) parentResource).getFolder(componentName + "." + COMPONENT);
-				componentJavaFile = ((IProject) parentResource).getFolder("src").getFile(componentName + "." + CLASS);
-				componentApiFile = ((IProject) parentResource).getFile(componentName + "." + API);
+				componentFolder =
+					((IProject) parentResource).getFolder(
+						componentName + "." + COMPONENT);
+				componentJavaFile =
+					ProjectHelper.getProjectSourceFolder(
+						(IProject) parentResource).getFile(
+						new Path(componentName + "." + CLASS));
+				componentApiFile =
+					((IProject) parentResource).getFile(
+						componentName + "." + API);
 
 				break;
 			case IResource.FOLDER :
-				componentFolder = ((IFolder) parentResource).getFolder(componentName + "." + COMPONENT);
-				componentJavaFile = ((IFolder) parentResource).getFolder("src").getFile(componentName + "." + CLASS);
-				componentApiFile = ((IFolder) parentResource).getFile(componentName + "." + API);
+				componentFolder =
+					((IFolder) parentResource).getFolder(
+						componentName + "." + COMPONENT);
+				componentJavaFile =
+					ProjectHelper.getSubprojectSourceFolder(
+						(IFolder) parentResource).getFile(
+						componentName + "." + CLASS);
+				componentApiFile =
+					((IFolder) parentResource).getFile(
+						componentName + "." + API);
 
 				break;
 			default :
-				throw new InvocationTargetException(new Exception("Wrong parent resource - check validation"));
+				throw new InvocationTargetException(
+					new Exception("Wrong parent resource - check validation"));
 		}
 
-		IFile componentDescription = componentFolder.getFile(componentName + "." + WOD);
-		IFile componentHTMLTemplate = componentFolder.getFile(componentName + "." + HTML);
+		IFile componentDescription =
+			componentFolder.getFile(componentName + "." + WOD);
+		IFile componentHTMLTemplate =
+			componentFolder.getFile(componentName + "." + HTML);
 
 		createResourceFolderInProject(componentFolder, monitor);
 
@@ -142,7 +164,10 @@ public class WOComponentCreator extends WOProjectResourceCreator {
 			fileCreator.create(componentHTMLTemplate, monitor);
 		} else {
 			// create empty file
-			componentHTMLTemplate.create(new ByteArrayInputStream("".getBytes()), false, null);
+			componentHTMLTemplate.create(
+				new ByteArrayInputStream("".getBytes()),
+				false,
+				null);
 		}
 
 		fileCreator.create(componentJavaFile, "wocomponent", monitor);
@@ -150,5 +175,4 @@ public class WOComponentCreator extends WOProjectResourceCreator {
 
 	}
 
-	
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE projectTypes [
 	<!ELEMENT projectTypes (projectType+)>
-	<!ELEMENT projectType (nature+, classpath, files)>
+	<!ELEMENT projectType (nature*, classpath?, files)>
 	<!ATTLIST projectType
 	name CDATA #REQUIRED
 		id ID #REQUIRED
@@ -24,33 +24,28 @@
 	<!ELEMENT files (file+)>
 	<!ELEMENT file EMPTY>
 	<!ATTLIST file
-	templateId (application | session | directAction | project | properties | makefile | makefile.preamble | makefile.postamble) #REQUIRED
-		name CDATA #REQUIRED
+	templateId (application | session | directAction | project | properties | makefile | makefile.preamble | makefile.postamble | applicationproject | frameworkproject | subproject | antwoapplication | antwoframework | woapplication.makefile.preamble | woapplication.makefile.postamble | woapplication.makefile | woapplication.custominfo.plist | woapplication.icon | woframework.makefile.preamble | woframework.makefile.postamble | woframework.makefile | woframework.custominfo.plist ) #REQUIRED
+		name CDATA #REQUIRED 
 >
 ]>
 <projectTypes>
 	<projectType name="Java WebObjects Application" id="JavaWebObjectsApplication">
 		<nature id="org.eclipse.jdt.core.javanature"/>
+		<nature id="org.objectstyle.wolips.applicationnature"/>
 		<classpath variables="webobjects.system.library.dir">
+			<classpathentry kind="src" path="${project.name}.proj"/>
 			<classpathentry kind="lib" path="${webobjects.system.library.dir}/Frameworks/JavaWebObjects.framework/Resources/Java/javawebobjects.jar"/>
-
 			<classpathentry kind="lib" path="${webobjects.system.library.dir}/Frameworks/JavaFoundation.framework/Resources/Java/javafoundation.jar"/>
-
 			<classpathentry kind="lib" path="${webobjects.system.library.dir}/Frameworks/JavaXML.framework/Resources/Java/javaxml.jar"/>
-
 			<classpathentry kind="lib" path="${webobjects.system.library.dir}/Frameworks/JavaWOExtensions.framework/Resources/Java/JavaWOExtensions.jar"/>
-
 			<classpathentry kind="lib" path="${webobjects.system.library.dir}/Frameworks/JavaEOAccess.framework/Resources/Java/javaeoaccess.jar"/>
-
 			<classpathentry kind="lib" path="${webobjects.system.library.dir}/Frameworks/JavaEOControl.framework/Resources/Java/javaeocontrol.jar"/>
-
 			<classpathentry kind="var" path="JRE_LIB" rootpath="JRE_SRCROOT" sourcepath="JRE_SRC"/>
-			
 		</classpath>
 		<files>
-			<file templateId="application" name="src/Application.java"/>
-			<file templateId="session" name="src/Session.java"/>
-			<file templateId="directAction" name="src/DirectAction.java"/>
+			<file templateId="application" name="Application.java"/>
+			<file templateId="session" name="Session.java"/>
+			<file templateId="directAction" name="DirectAction.java"/>
 			<file templateId="properties" name="Properties"/>
 			<file templateId="applicationproject" name="PB.project"/>
 			<file templateId="antwoapplication" name="build.xml"/>
@@ -63,18 +58,14 @@
 	</projectType>
 	<projectType name="Java WebObjects Framework" id="JavaWebObjectsFramework">
 		<nature id="org.eclipse.jdt.core.javanature"/>
+		<nature id="org.objectstyle.wolips.frameworknature"/>
 		<classpath variables="webobjects.system.library.dir">
-
+			<classpathentry kind="src" path="${project.name}.proj"/>
 			<classpathentry kind="lib" path="${webobjects.system.library.dir}/Frameworks/JavaWebObjects.framework/Resources/Java/javawebobjects.jar"/>
-
 			<classpathentry kind="lib" path="${webobjects.system.library.dir}/Frameworks/JavaFoundation.framework/Resources/Java/javafoundation.jar"/>
-
 			<classpathentry kind="lib" path="${webobjects.system.library.dir}/Frameworks/JavaXML.framework/Resources/Java/javaxml.jar"/>
-
 			<classpathentry kind="lib" path="${webobjects.system.library.dir}/Frameworks/JavaWOExtensions.framework/Resources/Java/JavaWOExtensions.jar"/>
-
 			<classpathentry kind="lib" path="${webobjects.system.library.dir}/Frameworks/JavaEOAccess.framework/Resources/Java/javaeoaccess.jar"/>
-
 			<classpathentry kind="lib" path="${webobjects.system.library.dir}/Frameworks/JavaEOControl.framework/Resources/Java/javaeocontrol.jar"/>
 			<classpathentry kind="var" path="JRE_LIB" rootpath="JRE_SRCROOT" sourcepath="JRE_SRC"/>
 		</classpath>
@@ -85,6 +76,11 @@
 			<file templateId="woframework.makefile" name="Makefile"/>
 			<file templateId="woframework.makefile.postamble" name="Makefile.postamble"/>
 			<file templateId="woframework.custominfo.plist" name="CustomInfo.plist"/>
+		</files>
+	</projectType>
+	<projectType name="WebObjects Subproject" id="JavaWebObjectsSubproject">
+		<files>
+			<file templateId="subproject" name="PB.project"/>
 		</files>
 	</projectType>
 </projectTypes>
