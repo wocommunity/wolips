@@ -85,7 +85,15 @@ public class DirectAction extends WODirectAction {
     FRAMEWORKSEARCH = ("$(NEXT_ROOT)$(LOCAL_LIBRARY_DIR)/Frameworks");  
     FILESTABLE = {
         CLASSES = ( ); 
-        FRAMEWORKS = ( ); 
+        FRAMEWORKS = 
+        (
+           JavaEOAccess.framework, 
+           JavaEOControl.framework, 
+           JavaFoundation.framework, 
+           JavaWebObjects.framework, 
+           JavaWOExtensions.framework, 
+           JavaXML.framework
+        ); 
         OTHER_LINKED = (); 
         OTHER_SOURCES = (
             Makefile.preamble, 
@@ -125,7 +133,15 @@ public class DirectAction extends WODirectAction {
     DYNAMIC_CODE_GEN = YES; 
     FRAMEWORKSEARCH = ("$(NEXT_ROOT)$(LOCAL_LIBRARY_DIR)/Frameworks"); 
     FILESTABLE = {
-        FRAMEWORKS = ( ); 
+        FRAMEWORKS = 
+        (
+           JavaEOAccess.framework, 
+           JavaEOControl.framework, 
+           JavaFoundation.framework, 
+           JavaWebObjects.framework, 
+           JavaWOExtensions.framework, 
+           JavaXML.framework
+        ); 
         OTHER_SOURCES = (
             CustomInfo.plist, 
             java.template, 
