@@ -81,7 +81,8 @@ public class DirectAction extends WODirectAction {
 
 }]]></template>
 	<template name="webobjects application project file" id="applicationproject" description="basic project file with main component and application class" variables="PROJECT_NAME" enabled="true"><![CDATA[{
-    DYNAMIC_CODE_GEN = YES; 
+    DYNAMIC_CODE_GEN = YES;
+    FRAMEWORKSEARCH = ("$(NEXT_ROOT)$(LOCAL_LIBRARY_DIR)/Frameworks");  
     FILESTABLE = {
         CLASSES = ( ); 
         FRAMEWORKS = ( ); 
@@ -122,6 +123,7 @@ public class DirectAction extends WODirectAction {
     CURRENTLY_ACTIVE_VERSION = YES; 
     DEPLOY_WITH_VERSION_NAME = A; 
     DYNAMIC_CODE_GEN = YES; 
+    FRAMEWORKSEARCH = ("$(NEXT_ROOT)$(LOCAL_LIBRARY_DIR)/Frameworks"); 
     FILESTABLE = {
         FRAMEWORKS = ( ); 
         OTHER_SOURCES = (
