@@ -394,7 +394,7 @@ project.name = ${PROJECT_NAME}
    			</resources>
    			<lib dir=".">
 				<include name="Add .jar's that should be copied in the framework."/>
-				<exclude name="**/*.woa/**"/>
+				<exclude name="**/*.framework/**"/>
 			</lib>
    		</woframework>
 	</target>
