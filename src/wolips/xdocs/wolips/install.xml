@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<document>
+<title>WOLips: Install</title>
+    
+<body>
+	<section name="WOLips">
+		<p><a href="download.html">download</a>
+		install
+		<a href="wizards.html">wizards</a>
+		<a href="popup.html">popup</a>
+		<a href="manipulating_the_build_process.html">manipulating the build process</a>
+		<a href="bugs_and_known_issues.html">bugs and known issues</a>
+		<a href="inside_wolips.html">inside WOLips</a></p>
+	</section>       
+	<section name="Install">
+		<subsection name="Mac">
+			<p>Right click on Eclipse.app. Select show package contents. Navigate to Contens/Resources/Java"</p>
+			<p>Proceed with common section</p>
+		</subsection>
+		<subsection name="common">
+			<p>Delete your current WOLips plugin.</p>
+			<p>Expand your download. You should now have a folder named com.objectstyle.woproject.wolips-1.0b. The version may differ.</p>
+			<p>Move the folder in the plugin folder.</p>
+		</subsection>
+	</section>
+</body>
+</document>
