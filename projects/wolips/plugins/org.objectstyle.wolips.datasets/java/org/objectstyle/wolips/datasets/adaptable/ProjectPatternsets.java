@@ -141,7 +141,7 @@ public class ProjectPatternsets extends AbstractProjectAdapterType {
 				"classes.include.patternset");
 		if (!classesIncludePatternset.exists())
 			PatternsetWriter.create(classesIncludePatternset, new String[]{
-					"*.class", "*.properties"});
+					"**/*.class", "*.properties"});
 		this.classesIncludeMatcher = new PatternsetMatcher(
 				classesIncludePatternset);
 		try {
