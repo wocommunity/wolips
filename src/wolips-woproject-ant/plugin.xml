@@ -41,5 +41,20 @@
             name="wogen"
             class="org.objectstyle.woproject.ant.WOGenerator">
       </antTask>
+      <antTask
+            library="lib/woproject.jar"
+            name="wocompile"
+            class="org.objectstyle.woproject.ant.WOCompile">
+      </antTask>
+      <antTask
+            library="lib/woproject.jar"
+            name="pbindex"
+            class="org.objectstyle.woproject.ant.PBIndex">
+      </antTask>
+      <antTask
+            library="lib/woproject.jar"
+            name="pbxindex"
+            class="org.objectstyle.woproject.ant.PBXIndex">
+      </antTask>
    </extension>
 </plugin>
