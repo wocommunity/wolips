@@ -100,7 +100,7 @@ public class StructureTestCase extends TestCase {
      */
     protected File resolveDistPath(String path) {
         if (File.separator != "/") {
-            path = path.replace(File.separatorChar, '/');
+            path = path.replace('/', File.separatorChar);
         }
 
         return new File(testDist, path);
@@ -112,19 +112,18 @@ public class StructureTestCase extends TestCase {
         File projDir = resolveDistPath(path);
         assertTrue("Project directory is missing: " + projDir, projDir.isDirectory());
 
-        if (struct.hasResources()) {
-            File res = new File(projDir, "Resources");
-            assertTrue("Resources directory is missing: " + res, res.isDirectory());
+        File res = new File(projDir, "Resources");
+        assertTrue("Resources directory is missing: " + res, res.isDirectory());
 
-            File info = new File(res, "Info.plist");
-            assertTrue("Info.plist is missing: " + info, info.isFile());
-        }
+        File info = new File(res, "Info.plist");
+        assertTrue("Info.plist is missing: " + info, info.isFile());
 
         if (struct.hasWebServerResources()) {
             File wsres = new File(projDir, "WebServerResources");
             assertTrue(
                 "WebServerResources directory is missing: " + wsres,
                 wsres.isDirectory());
+            assertWsResources(wsres, struct.getWsResources());
         }
 
         if (struct.hasJava()) {
@@ -134,8 +133,7 @@ public class StructureTestCase extends TestCase {
         }
 
         if (struct.hasWos()) {
-            File woDir = new File(projDir, "Resources");
-            assertWos(woDir, struct.getWocomps());
+            assertWos(res, struct.getWocomps());
         }
     }
 
@@ -156,6 +154,14 @@ public class StructureTestCase extends TestCase {
 
             File html = new File(wo, wos[i] + ".html");
             assertTrue(".html file is missing: " + html, html.isFile());
+        }
+    }
+
+    protected void assertWsResources(File resDir, String[] res) throws Exception {
+        for (int i = 0; i < res.length; i++) {
+            String path = res[i].replace('/', File.separatorChar);
+            File wsfile = new File(resDir, path);
+            assertTrue("WebServer file is missing: " + wsfile, wsfile.isFile());
         }
     }
 }

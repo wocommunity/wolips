@@ -89,7 +89,7 @@
 				<include name="**/*.class"/>
 			</classes>
 			<resources dir="src/wocomp">
-				<include name="*.wo/**"/>
+				<include name="**/*.wo/**"/>
 			</resources>
 			<resources dir="src">
 				<include name="*.eomodeld/**"/>

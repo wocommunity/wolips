@@ -66,10 +66,9 @@ import java.io.File;
  */
 public abstract class ProjectStructure {
     protected String name;
-    protected boolean hasWebServerResources;
-    protected boolean hasResources;
     protected String[] jars;
     protected String[] wocomps;
+    protected String[] wsResources;
 
     public ProjectStructure(String name) {
         this.name = name;
@@ -91,19 +90,7 @@ public abstract class ProjectStructure {
     }
 
     public boolean hasWebServerResources() {
-        return hasWebServerResources;
-    }
-
-    public void setHasWebServerResources(boolean hasWebServerResources) {
-        this.hasWebServerResources = hasWebServerResources;
-    }
-
-    public boolean hasResources() {
-        return hasResources;
-    }
-
-    public void setHasResources(boolean hasResources) {
-        this.hasResources = hasResources;
+        return wsResources != null && wsResources.length > 0;
     }
 
     public boolean hasJava() {
@@ -129,4 +116,14 @@ public abstract class ProjectStructure {
     public void setWocomps(String[] wocomps) {
         this.wocomps = wocomps;
     }
+
+
+    public String[] getWsResources() {
+        return wsResources;
+    }
+
+    public void setWsResources(String[] wsres) {
+        this.wsResources = wsres;
+    }
+
 }

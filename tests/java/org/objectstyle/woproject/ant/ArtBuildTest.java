@@ -72,11 +72,10 @@ public class ArtBuildTest extends StructureTestCase {
 
     public void testFilesPresent() throws Exception {
         FrameworkStructure artFrwk = new FrameworkStructure("art");
-        artFrwk.setHasResources(true);
-        artFrwk.setHasWebServerResources(false);
         artFrwk.setJars(new String[] { "art", "cayenne", "woproject" });
         artFrwk.setWocomps(new String[] { "PaintingSearch" });
-        
+        artFrwk.setWsResources(new String[] { "images/spacer.gif" });
+                
         assertStructure(artFrwk);
     }
 }
