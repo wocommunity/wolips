@@ -22,10 +22,6 @@
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.jdt.core"/>
       <import plugin="org.eclipse.jdt.launching"/>
-      <import plugin="org.eclipse.jdt.debug"/>
-      <import plugin="org.eclipse.jdt.ui"/>
-      <import plugin="org.eclipse.jdt.debug.ui"/>
-      <import plugin="org.eclipse.jdt"/>
       <import plugin="org.eclipse.debug.core"/>
       <import plugin="org.eclipse.ant.core"/>
       <import plugin="org.objectstyle.wolips.ant"/>
@@ -79,8 +75,8 @@
    <extension
          point="org.eclipse.ui.propertyPages">
       <page
-            objectClass="org.eclipse.core.resources.IProject"
             adaptable="true"
+            objectClass="org.eclipse.core.resources.IProject"
             name="WOLips build"
             class="org.objectstyle.wolips.projectbuild.natures.ProjectNaturePage"
             id="org.objectstyle.wolips.projectbuild.natures.ProjectNaturePage">
