@@ -46,7 +46,6 @@
         * java.home = ${java.home}
         * build.compiler = ${build.compiler}
         * ant.home = ${ant.home}
-        * anthill.ant.home = ${anthill.ant.home}
         * user.home = ${user.home}
         *
         ****************************************
@@ -108,7 +107,6 @@
     <!-- Build buildserver.                         -->
     <!-- ========================================== -->
     <target name="buildserver" depends="print.environment,build_migrate,dist,test">
-    	<property name="ant.home" value="${anthill.ant.home}"/>
     </target>
 
     <!-- ============================================= -->
