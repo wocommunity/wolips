@@ -20,8 +20,10 @@
  				<li><a href="wogen.html">WOGen</a>: Generates and maintains EOEnterprsieObjects
  				based on EOModel. Ant-based analog of EOGenerator, using "generation gap" design pattern.
  				</li>
- 				<li><i><font color="red">[New]</font></i> <a href="pbindex.html">PBIndex</a>: Maintains
- 				PB.project file needed for WebObjects tools, even when ProjectBuilder is not used.</li>
+ 				<li><a href="pbxindex.html">PBIndex</a>: Maintains
+ 				PB.project file needed for WebObjects tools, even when ProjectBuilderWO is not used.</li>
+				<li><i><font color="red">[New]</font></i> <a href="pbxindex.html">PBXIndex</a>: Maintains
+ 				.pbproj file needed for WebObjects tools, even when ProjectBuilder is not used.</li>
  				</ul>
  			</p>
 
@@ -29,7 +31,6 @@
  			two ".jar" files from WOProject distribution:
  			<ul>
  				<li><code>[WOProject_installdir]/lib/woproject.jar</code> <i>(needed for all tasks)</i></li>
- 				<li><code>[WOProject_installdir]/lib/commons-logging.jar</code> <i>(needed for all tasks)</i></li>
  				<li><code>[WOProject_installdir]/lib/cayenne.jar</code> <i>(needed for WOGen task only)</i></li>
  			</ul>
  			</p>

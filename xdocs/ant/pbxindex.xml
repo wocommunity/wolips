@@ -1,21 +1,21 @@
 <?xml version="1.0"?>
 <document>
-    <title>PBIndex Task Manual</title>
+    <title>PBXIndex Task Manual</title>
 
     <body>
- 		<section name="PBIndex Task Manual">
+ 		<section name="PBXIndex Task Manual">
 			<h3>Description:</h3>
 
-			<p><code>PBIndex</code> is an Ant task to maintain a ProjectBuilderWO PB.project
-			file. This file is needed even when ProjectBuilderWO is not used, since other
+			<p><code>PBXIndex</code> is an Ant task to maintain a ProjectBuilder PB.project
+			file. This file is needed even when ProjectBuilder is not used, since other
 			WebObjects tools, like WebObjectsBuilder, use it to obtain the information
 			about the project.</p>
 			
-			<p>PBIndex should be run after adding or removing classes, WOComponents and resources
+			<p>PBXIndex should be run after adding or removing classes, WOComponents and resources
 			to/from the project to make WOBuilder aware of such changes. Another possible use of 
-			PBIndex is to avoid PB.project merge problems when changes are done to the 
+			PBXIndex is to avoid PB.project merge problems when changes are done to the 
 			project simultaneously by multiple developers. It should also be helpful when developing
-			in an environment where ProjectBuilderWO is used together with other IDE's.			
+			in an environment where ProjectBuilder is used together with other IDE's.			
 			</p>
 
 			<h3>Parameters:</h3>
@@ -79,10 +79,10 @@ where the task is run. If PB.project does not exist, it is automatically created
 </p>
 
 <source>
-&amp;lt;taskdef name="pbindex" classname="org.objectstyle.woproject.ant.PBIndex"&amp;gt;
+&amp;lt;taskdef name="PBXIndex" classname="org.objectstyle.woproject.ant.PBXIndex"&amp;gt;
      &amp;lt;classpath refid="classpath"/&amp;gt;
 &amp;lt;/taskdef&amp;gt;
-&amp;lt;pbindex name="MyFramework"&amp;gt;
+&amp;lt;PBXIndex name="MyFramework"&amp;gt;
    &amp;lt;src dir="java"&amp;gt;
       &amp;lt;exclude name="*.properties"/&amp;gt;
    &amp;lt;/src&amp;gt;
@@ -100,7 +100,7 @@ where the task is run. If PB.project does not exist, it is automatically created
    &amp;lt;wocomponents dir="."&amp;gt;
        &amp;lt;include name="*.wo"/&amp;gt;
    &amp;lt;/wocomponents&amp;gt;
-&amp;lt;/pbindex&amp;gt;
+&amp;lt;/PBXIndex&amp;gt;
 </source>
     	</section>
     </body>
