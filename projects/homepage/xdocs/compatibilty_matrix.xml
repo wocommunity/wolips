@@ -29,10 +29,6 @@
 				<td valign="top"><a href="http://ant.apache.org/">1.5.3</a></td>
 				<td valign="top"><a href="http://prdownloads.sourceforge.net/woproject/woproject-src-1.0.4.tar.gz?download">1.0.4</a></td>
 			</tr>
-			<tr>
-				<td valign="top"><a href="http://ant.apache.org/">1.5.3</a></td>
-				<td valign="top"><a href="http://prdownloads.sourceforge.net/woproject/woproject-src-1.0.2.tar.gz?download">1.0.2</a></td>
-			</tr>
 		</table>
     </section>
  	<section name="WOLips">
@@ -45,6 +41,10 @@
 			<tr>
 				<th valign="top"><b><a href="http://www.eclipse.org/">Eclipse</a></b></th>
 				<th valign="top"><b>WOLips</b></th>
+			</tr>
+			<tr>
+				<td valign="top"><a href="http://www.eclipse.org/downloads/index.php">2.1.1</a></td>
+				<td valign="top"><a href="http://prdownloads.sourceforge.net/woproject/WOLips_1.0.7.27.tar.gz?download">1.0.7.27</a></td>
 			</tr>
 			<tr>
 				<td valign="top"><a href="http://www.eclipse.org/downloads/index.php">2.1.1</a></td>
@@ -61,18 +61,6 @@
 			<tr>
 				<td valign="top"><a href="http://www.eclipse.org/downloads/index.php">2.1.1</a></td>
 				<td valign="top"><a href="http://prdownloads.sourceforge.net/woproject/WOLips_1.0.4.tar.gz?download">1.0.4</a></td>
-			</tr>
-			<tr>
-				<td valign="top"><a href="http://www.eclipse.org/downloads/index.php">2.1.1</a></td>
-				<td valign="top"><a href="http://prdownloads.sourceforge.net/woproject/WOLips_1.0.3.tar.gz?download">1.0.3</a></td>
-			</tr>
-			<tr>
-				<td valign="top"><a href="http://www.eclipse.org/downloads/index.php">2.1.1</a></td>
-				<td valign="top"><a href="http://prdownloads.sourceforge.net/woproject/WOLips_1.0.2.tar.gz?download">1.0.2</a></td>
-			</tr>
-			<tr>
-				<td valign="top"><a href="http://www.eclipse.org/downloads/index.php">2.1.0</a></td>
-				<td valign="top"><a href="http://prdownloads.sourceforge.net/woproject/WOLips_1.0.1.tar.gz?download">1.0.1</a></td>
 			</tr>
 		</table>
     </section>
