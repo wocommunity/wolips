@@ -289,5 +289,14 @@
         </tr>
     </table>
     #end
+    <form onsubmit="q.value = query.value + ' site:objectstyle.org'" action="http://www.google.com/search" method="get">
+    <table bgcolor="#ffffff" border="0" cellpadding="3" cellspacing="2">
+        <tr>
+            <td bgcolor="#ffffff" class="normal-menu" width="137">Search:</td></tr>
+        <tr>
+            <td bgcolor="#ffffff" class="normal-menu" width="137" align="right" nowrap>
+            <input name="q" type="hidden"><input size="16" id="query" type="text"></td></tr>
+    </table>
+    </form>
 #end
 
