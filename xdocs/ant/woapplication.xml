@@ -44,6 +44,14 @@
 					<td valign="top">The file to use as a template when generating <code>web.xml</code></td>
 					<td valign="top" align="center">No</td>
 				</tr>
+				<tr>
+					<td valign="top">stdFrameworks</td>
+					<td valign="top">If set to <i>true</i>, a set of standard frameworks will be 
+					associated with the deployed application (default is <i>true</i>). "Standard"
+					frameworks are: JavaWebObjects, JavaWOExtensions, JavaEOAccess, JavaEOControl,
+					JavaFoundation.</td>
+					<td valign="top" align="center">No</td>
+				</tr>
 			</table>
 
 			<h3>Nested elements:</h3>
@@ -71,24 +79,65 @@
 			For the discussion
 			of resource localization issues follow <a href="localized.html">this link</a>.</p>
 
-            <h4>worameworks</h4>
-			<p>The nested <code>woframeworks</code> element specifies the names of the
-            WOFrameworks that this application is dependant on. This task
-            will search the <code>frameworksPath</code> to find them. The jar files from
-            these frameworks will be included on the build classpath, and specified
-            in the web.xml classpath if you deploy as a servlet. Note that if you
-            also define classpath elements in <code>classes</code>, they will be used as well.
-			 </p>
+            <h4>framework</h4>
+			<p>The nested <code>framework</code> element specifies the names of the
+            WebObjects Frameworks that this application is dependant upon. The jar files from
+            these frameworks will be referenced in varios platform-specific depoyment files 
+            (such as CLASSPATH.TXT), and specified in the web.xml classpath if an application 
+            is deployed as a servlet. Nested "framework" can be used in two forms: standalone and
+            <a
+			href="http://jakarta.apache.org/ant/manual/CoreTypes/fileset.html">FileSet</a> form. </p>
+            
+            <h4>Standalone Nested "framework" Parameters:</h4>
+            <table border="1" cellpadding="2" cellspacing="0">
+				<tr>
+					<th valign="top"><b>Attribute</b></th>
+					<th valign="top"><b>Description</b></th>
+					<th align="center" valign="top"><b>Required</b></th>
+				</tr>
+				<tr>
+					<td valign="top">name</td>
+					<td valign="top">Name of the framework (without <i>.framework</i> extension).</td>
+					<td valign="top" align="center">Yes</td>
+				</tr>
+				<tr>
+					<td valign="top">base</td>
+					<td valign="top">Logical base location of the framework. Allowed values are 
+					"home", "wo", "local"</td>
+					<td valign="top" align="center">No</td>
+				</tr>
+				<tr>
+					<td valign="top">path</td>
+					<td valign="top">Path to the framework relative to the "base"
+					directory. If ommitted, "Library/Frameworks" is used.</td>
+					<td valign="top" align="center">No</td>
+				</tr>
+			</table>
 
-            <h4>frameworksPath</h4>
-			<p>The nested <code>frameworksPath</code> element specifies a <a
-			href="http://jakarta.apache.org/ant/manual/using.html#path">Path</a>.
-			All path elements included in this path will
-			be searched in order to locate the frameworks specified in the frameworks nested element. </p>
+			<h4>FileSet Nested "framework" Parameters:</h4>
+            <table border="1" cellpadding="2" cellspacing="0">
+				<tr>
+					<th valign="top"><b>Attribute</b></th>
+					<th valign="top"><b>Description</b></th>
+					<th align="center" valign="top"><b>Required</b></th>
+				</tr>
+				<tr>
+					<td valign="top">base</td>
+					<td valign="top">Logical base location of the framework. Allowed values are 
+					"home", "wo", "local"</td>
+					<td valign="top" align="center">Yes</td>
+				</tr>
+				<tr>
+					<td valign="top">dir</td>
+					<td valign="top">Base path to look for the frameworks. Must correspond 
+					to the logical path specified in "base" parameter.</td>
+					<td valign="top" align="center">Yes</td>
+				</tr>
+			</table>
+			
+			<h3>Examples:</h3>
 
-
-			<h4>Examples:</h4>
-
+			<p>Create an application "MyApp" with a set of standard frameworks:</p>
 <source>
 &amp;lt;taskdef name="woapplication" classname="org.objectstyle.woproject.ant.WOApplication"&amp;gt;
      &amp;lt;classpath refid="classpath"/&amp;gt;
@@ -107,6 +156,27 @@
    &amp;lt;wsresources dir="src/frameworks/WSResources"&amp;gt;
        &amp;lt;include name="Images/**"/&amp;gt;
    &amp;lt;/wsresources&amp;gt;
+&amp;lt;/woapplication&amp;gt;
+</source>
+
+			<p>Create an application "MyApp" with no implicit standard frameworks
+			and a custom framework located at HOMEROOT/Library/Frameworks:</p>
+<source>
+&amp;lt;woapplication name="MyApp" stdFrameworks="false" destDir="${dist}/Applications"&amp;gt;
+   ...
+   &amp;lt;framework name="CustFramework" base="home"/&amp;gt;
+&amp;lt;/woapplication&amp;gt;
+</source>
+
+			<p>Create an application "MyApp" with implicit standard frameworks
+			and a set of custom frameworks located under HOMEROOT that
+			resolves on developer machine to the user home directory:</p>
+<source>
+&amp;lt;woapplication name="MyApp" stdFrameworks="false" destDir="${dist}/Applications"&amp;gt;
+   ...
+   &amp;lt;framework base="home" dir="${user.home}"&amp;gt;
+      &amp;lt;include name="**/*.framework"/&amp;gt;
+   &amp;lt;/framework&amp;gt;
 &amp;lt;/woapplication&amp;gt;
 </source>
     	</section>
