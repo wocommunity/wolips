@@ -121,7 +121,7 @@ public class FrameworkSet extends FileSet {
             String string
                 = ProjectHelper.replaceProperties(getProject(), ifCondition,
                                                   getProject().getProperties());
-            return project.getProperty(string) != null;
+            return getProject().getProperty(string) != null;
         }
 
         public File[] findJars(Project project, String frameworkDir) {

@@ -136,7 +136,7 @@ public class SubtaskFactory {
 	class ResourcesCopy extends Copy {
 
 		public ResourcesCopy() {
-			super.mapperElement = new WOMapper(super.project);
+			super.mapperElement = new WOMapper(super.getProject());
 		}
 
 		public void log(String msg) {

@@ -358,7 +358,7 @@ public abstract class WOTask extends Task {
         Enumeration en = lib.elements();
         while (en.hasMoreElements()) {
             FileSet fs = (FileSet) en.nextElement();
-            DirectoryScanner scanner = fs.getDirectoryScanner(project);
+            DirectoryScanner scanner = fs.getDirectoryScanner(getProject());
             String[] libs = scanner.getIncludedFiles();
             for (int i = 0; i < libs.length; i++) {
                 File libFile = new File(libs[i]);
