@@ -97,7 +97,7 @@ public class RunAnt {
 	 * @param target
 	 * @throws Exception
 	 */
-	public static void asAnt(
+	public void asAnt(
 		String buildFile,
 		IProgressMonitor monitor,
 		String target)
@@ -130,7 +130,7 @@ public class RunAnt {
 	 * @param monitor
 	 * @throws Exception
 	 */
-	public static void asExternalTool(
+	public void asExternalTool(
 		IFile buildFile,
 		int kind,
 		IProgressMonitor monitor,

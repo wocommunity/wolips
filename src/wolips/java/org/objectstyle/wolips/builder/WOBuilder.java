@@ -64,6 +64,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.objectstyle.wolips.logging.WOLipsLog;
@@ -119,6 +120,7 @@ public abstract class WOBuilder extends IncrementalProjectBuilder {
 		} catch (Exception e) {
 			this.handleException(e);
 		}
+		this.forgetLastBuiltState();
 		monitor.done();
 		return null;
 	}
@@ -137,15 +139,16 @@ public abstract class WOBuilder extends IncrementalProjectBuilder {
 		IProgressMonitor monitor,
 		String aBuildFile)
 		throws Exception {
+		RunAnt runAnt = new RunAnt();
 		if (Preferences
 			.getBoolean(IWOLipsPluginConstants.PREF_RUN_ANT_AS_EXTERNAL_TOOL)) {
 			if (projectNeedsClean())
-				RunAnt.asExternalTool(
+				runAnt.asExternalTool(
 					getProject().getFile(aBuildFile),
 					kind,
 					monitor,
 					this.cleanTarget());
-			RunAnt.asExternalTool(
+			runAnt.asExternalTool(
 				getProject().getFile(aBuildFile),
 				kind,
 				monitor,
@@ -153,11 +156,11 @@ public abstract class WOBuilder extends IncrementalProjectBuilder {
 
 		} else {
 			if (projectNeedsClean())
-				RunAnt.asAnt(
+				runAnt.asAnt(
 					getProject().getFile(aBuildFile).getLocation().toOSString(),
 					monitor,
 					this.cleanTarget());
-			RunAnt.asAnt(
+			runAnt.asAnt(
 				getProject().getFile(aBuildFile).getLocation().toOSString(),
 				monitor,
 				this.defaultTarget());
@@ -267,4 +270,13 @@ public abstract class WOBuilder extends IncrementalProjectBuilder {
 	 * @return String
 	 */
 	public abstract String cleanTarget();
+	
+	public void setInitializationData(IConfigurationElement element, String string, Object object) throws CoreException {
+		WOLipsLog.log("setInitializationData");
+		super.setInitializationData(element, string, object);
+	}
+	public void startupOnInitialize() {
+		WOLipsLog.log("startupOnInitialize");
+//		super.startupOnInitialize();
+	}
 }
