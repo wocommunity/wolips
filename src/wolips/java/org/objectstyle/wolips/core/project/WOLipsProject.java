@@ -56,6 +56,7 @@
 
 package org.objectstyle.wolips.core.project;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -70,6 +71,13 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
 import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
 import org.objectstyle.wolips.core.plugin.logging.WOLipsLog;
 
@@ -203,9 +211,9 @@ public class WOLipsProject implements IWOLipsPluginConstants {
 		 */
 		public boolean isApplication() throws CoreException {
 			return (
-				this.projectHasNature(ANT_APPLICATION_NATURE_ID)
-					|| this.projectHasNature(INCREMENTAL_APPLICATION_NATURE_ID)
-					|| this.projectHasNature(WO_APPLICATION_NATURE_OLD));
+				projectHasNature(ANT_APPLICATION_NATURE_ID)
+				|| projectHasNature(INCREMENTAL_APPLICATION_NATURE_ID)
+				|| projectHasNature(WO_APPLICATION_NATURE_OLD));
 		}
 		/**
 		 * @return true only if one of the WOLips framework natures is installed. False does not mean that this is an application.
@@ -265,7 +273,7 @@ public class WOLipsProject implements IWOLipsPluginConstants {
 			boolean useTargetBuilder)
 			throws CoreException {
 			//TODO : add targetbuilder support
-			this.callDeconfigure();
+			//this.callDeconfigure();
 			this.removeWOLipsNatures();
 			if (isFramework) {
 				this.addNature(INCREMENTAL_FRAMEWORK_NATURE_ID);
@@ -280,14 +288,57 @@ public class WOLipsProject implements IWOLipsPluginConstants {
 		 */
 		private void addNature(String natureID) throws CoreException {
 			String[] projectNatures = this.getProjectNatures();
-			Vector projectNaturesVector = new Vector();
-			for (int i = 0; i < projectNatures.length; i++) {
-				projectNaturesVector.add(projectNatures[i]);
-			}
-			projectNaturesVector.add(natureID);
-			this.getProject().getDescription().setNatureIds(
-				(String[]) projectNaturesVector.toArray());
+			List naturesList = new ArrayList(Arrays.asList(projectNatures));
+      
+      if (!naturesList.contains(natureID)) {
+        naturesList.add(natureID);
+        IProjectDescription desc = this.getProject().getDescription();
+
+        desc.setNatureIds(
+          (String[]) naturesList.toArray(new String[naturesList.size()])
+        );
+        _setDescription (this.getProject(), desc);
+      }
 		}
+    
+    private void _setDescription(
+      final IProject f_project,
+      final IProjectDescription f_desc) {
+      _showProgress(new IRunnableWithProgress() {
+        public void run(IProgressMonitor pm) {
+          try {
+            f_project.setDescription(f_desc, pm);
+          } catch (CoreException up) {
+            pm.done();
+          }
+        }
+      });
+    }
+
+    private void _showProgress(IRunnableWithProgress rwp) {
+      IWorkbench workbench = PlatformUI.getWorkbench();
+      Shell shell = null;
+      if (null != workbench) {
+        IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+        if (null != window) {
+          shell = window.getShell();
+        }
+      }
+
+      ProgressMonitorDialog pmd = new ProgressMonitorDialog(shell);
+
+      try {
+        pmd.run(true, true, rwp);
+      } catch (InvocationTargetException e) {
+        // handle exception
+        e.printStackTrace();
+      } catch (InterruptedException e) {
+        // handle cancelation
+        e.printStackTrace();
+      }
+    }
+        
+
 		/**
 		 * @return IProjectNature[]
 		 * @throws CoreException
@@ -317,16 +368,17 @@ public class WOLipsProject implements IWOLipsPluginConstants {
 		 */
 		public void removeWOLipsNatures() throws CoreException {
 			String[] projectNatures = this.getProjectNatures();
-			Vector naturesVector = new Vector();
+			List naturesList = new ArrayList(Arrays.asList(projectNatures));
 			for (int i = 0; i < projectNatures.length; i++) {
-				if (!this.isWOLipsNature(projectNatures[i])) {
-					naturesVector.add(
-						this.getProject().getNature(WOLIPS_NATURES[i]));
+				if (isWOLipsNature(projectNatures[i])) {
+					naturesList.remove(projectNatures[i]);
 				}
 			}
-			projectNatures = new String[naturesVector.size()];
-			projectNatures = (String[]) naturesVector.toArray(projectNatures);
-			this.getProject().getDescription().setNatureIds(projectNatures);
+			projectNatures = new String[naturesList.size()];
+			projectNatures = (String[]) naturesList.toArray(projectNatures);
+      IProjectDescription desc = this.getProject().getDescription();
+      desc.setNatureIds(projectNatures);
+      _setDescription(this.getProject(), desc);
 		}
 		/**
 		 * @param natureID
@@ -344,20 +396,24 @@ public class WOLipsProject implements IWOLipsPluginConstants {
 		 * @throws CoreException
 		 */
 		public void callConfigure() throws CoreException {
+                        /*
 			IProjectNature[] projectNatures = this.getWOLipsNatures();
 			for (int i = 0; i < projectNatures.length; i++) {
 				projectNatures[i].configure();
 			}
+                        */
 		}
 		/**
 		 * Calls deconfigure on all WOLips natures.
 		 * @throws CoreException
 		 */
 		public void callDeconfigure() throws CoreException {
-			IProjectNature[] projectNatures = this.getWOLipsNatures();
+			/*
+                        IProjectNature[] projectNatures = this.getWOLipsNatures();
 			for (int i = 0; i < projectNatures.length; i++) {
 				projectNatures[i].deconfigure();
 			}
+                        */
 		}
 
 		/**

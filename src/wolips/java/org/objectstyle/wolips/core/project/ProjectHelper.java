@@ -86,7 +86,7 @@ import org.objectstyle.woproject.env.Environment;
  * Window>Preferences>Java>Templates.
  * To enable and disable the creation of type comments go to
  * Window>Preferences>Java>Code Generation.
- * @deprecated
+ * @deprecated use WOLipsProject's methods instead
  */
 public class ProjectHelper implements IWOLipsPluginConstants {
 	public static String WOGENERATOR_ID =
