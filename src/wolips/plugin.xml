@@ -10,10 +10,10 @@
       <library name="lib/wolips.jar">
          <export name="*"/>
       </library>
-      <library name="lib/woproject.jar">
+      <library name="lib/woproject.jar" export="true">
          <export name="*"/>
       </library>
-      <library name="lib/cayenne.jar">
+      <library name="lib/cayenne.jar" export="true">
          <export name="*"/>
       </library>
    </runtime>
