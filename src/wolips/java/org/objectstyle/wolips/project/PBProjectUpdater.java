@@ -377,7 +377,23 @@ public class PBProjectUpdater {
 		if (projectFile.getParent().equals(resource.getParent())) {
 			// same folder
 			resourcePath = resource.getName();
+		} else if (
+			projectFile.getParent().getFullPath().matchingFirstSegments(
+				resource.getFullPath())
+				== projectFile.getParent().getFullPath().segmentCount()) {
+			// resource is deeper in directory structure 
+			resourcePath =
+				resource
+					.getFullPath()
+					.removeFirstSegments(
+						projectFile
+							.getParent()
+							.getFullPath()
+							.matchingFirstSegments(
+							resource.getFullPath()))
+					.toString();
 		} else {
+			// resource is higher or paralell in directory structure
 			resourcePath = resource.getProjectRelativePath().toString();
 			for (int i = 0;
 				i < projectFile.getProjectRelativePath().segmentCount() - 1;
