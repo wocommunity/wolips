@@ -56,6 +56,8 @@
 package org.objectstyle.woproject.ant;
 
 import java.io.File;
+import java.io.FilenameFilter;
+import java.util.List;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
@@ -138,6 +140,36 @@ public class FrameworkSet extends FileSet {
 			super.setDir(new File(propsHandler.getHomeRoot()));
 		} else {
 			throw new BuildException("Unrecognized root: " + root);
+		}
+	}
+
+	public String[] findJars(Project project, String frameworkDir) {
+		String jarDirName =
+			frameworkDir
+				+ File.separator
+				+ "Resources"
+				+ File.separator
+				+ "Java";
+
+		File jarDir = new File(getDir(project), jarDirName);
+		if (!jarDir.isDirectory()) {
+			return null;
+		}
+
+		String[] files = jarDir.list(new JarFilter());
+		
+		// prepend path
+		String[] finalFiles = new String[files.length];
+		for(int i = 0; i < finalFiles.length; i++) {
+			finalFiles[i] = jarDirName + File.separator + files[i];
+		}
+		
+		return finalFiles;
+	}
+
+	class JarFilter implements FilenameFilter {
+		public boolean accept(File dir, String name) {
+			return name.endsWith(".jar");
 		}
 	}
 }

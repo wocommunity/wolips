@@ -10,10 +10,11 @@
     <target name="setProps" unless="setProps"
                           description="setup the properites.">
         <property environment="env"/>
+        <property name="dist" value="../../dist"/>
         <property name="next_root" value="${env.NEXT_ROOT}"/>
         <property name="local_fw_root" value="${next_root}/Local/Library/Frameworks"/>
         <property name="fw_root" value="${next_root}/Library/Frameworks"/>
-        <property name="app_install_dir" value="../../dist/WebObjects/Applications"/>
+        <property name="app_install_dir" value="${dist}/WebObjects/Applications"/>
         <property name="app_name" value="${ant.project.name}"/>
         <property name="outdir" value="./output" />
 
@@ -62,12 +63,15 @@
 
     </target>
 
+
     <target name="package" depends="compile">
         <echo message="installing to dir ${app_install_dir}"/>
         
         <taskdef name="woapplication" classname="org.objectstyle.woproject.ant.WOApplication">
         	<classpath refid="classpath"/>
         </taskdef>
+        
+        <property name="wo.localroot" value="${dist}"/>
         
         <woapplication name="${ant.project.name}" 
                        destDir="${app_install_dir}">
@@ -81,9 +85,13 @@
 			<frameworks root="wo.woroot">
 				<include name="Library/Frameworks/JavaWebObjects.framework"/>
 			</frameworks>
+			<frameworks root="wo.localroot">
+				<include name="**/MailJava.framework"/>
+			</frameworks>
         </woapplication>
 
    </target>
+
 
     <target name="deploy" depends="package">
 

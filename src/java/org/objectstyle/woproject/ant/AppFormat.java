@@ -120,6 +120,8 @@ public class AppFormat extends ProjectFormat {
 		String name = getApplicatonTask().getName().toLowerCase() + ".jar";
 		return "APPROOT"
 			+ File.separator
+			+ "Contents"
+			+ File.separator
 			+ "Resources"
 			+ File.separator
 			+ "Java"
@@ -137,20 +139,35 @@ public class AppFormat extends ProjectFormat {
 		StringBuffer buf = new StringBuffer();
 
 		List frameworkSets = getApplicatonTask().getFrameworkSets();
+		Project project = task.getProject();
+		
 		int size = frameworkSets.size();
 		for (int i = 0; i < size; i++) {
+			
 			FrameworkSet fs = (FrameworkSet) frameworkSets.get(i);
 			String root = fs.getRootPrefix();
 			try {
-				DirectoryScanner ds = fs.getDirectoryScanner(task.getProject());
+				DirectoryScanner ds = fs.getDirectoryScanner(project);
 				String[] dirs = ds.getIncludedDirectories();
 
 				for (int j = 0; j < dirs.length; j++) {
-					// using Windows line ending, since all templates have it anyway.
-					// Please report any problems with that on other platforms
-					buf.append(root).append(File.separatorChar).append(
-						dirs[i]).append(
-						"\r\n");
+					String[] jars = fs.findJars(project, dirs[j]);
+					if (jars == null || jars.length == 0) {
+						log(
+							"No Jars found in " + dirs[j] + ", ignoring.",
+							Project.MSG_WARN);
+						continue;
+					}
+
+					int jsize = jars.length;
+					for (int k = 0; k < jsize; k++) {
+						
+						// using Windows line ending, since all templates have it anyway.
+						// Please report any problems with that on other platforms
+						buf.append(root).append(File.separatorChar).append(
+							jars[k]).append(
+							"\r\n");
+					}
 				}
 			} catch (BuildException be) {
 				// directory doesn't exist or is not readable
