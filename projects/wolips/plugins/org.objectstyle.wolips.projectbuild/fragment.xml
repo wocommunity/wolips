@@ -2,9 +2,9 @@
 <?eclipse version="3.0"?>
 <fragment
    id="org.objectstyle.wolips.projectbuild"
-   name="%WOLips.projectbuild.fragmentName"
+   name="WOLips Project Build"
    version="1.0.6"
-   provider-name="%WOLips.providerName"
+   provider-name="objectstyle.org"
    plugin-id="org.objectstyle.wolips"
    plugin-version="1.0.6"
    match="compatible">
@@ -80,24 +80,11 @@
       </page>
    </extension>
 <!-- =================================================================================== -->
-<!-- Extension: WOGenerator                                                              -->
-<!-- =================================================================================== -->
-   <extension
-         id="wogenerator"
-         name="%WOGenerator.Name"
-         point="org.eclipse.core.resources.builders">
-      <builder>
-         <run
-               class="org.objectstyle.wolips.projectbuild.builder.WOGenerator">
-         </run>
-      </builder>
-   </extension>
-<!-- =================================================================================== -->
 <!-- Extension: WOProject Builder                                                      -->
 <!-- =================================================================================== -->
    <extension
          id="incrementalbuilder"
-         name="%WOIncrementalProjectBuilderName"
+         name="WOLips Incremental Builder"
          point="org.eclipse.core.resources.builders">
       <builder>
          <run
@@ -107,7 +94,7 @@
    </extension>
    <extension
          id="antbuilder"
-         name="%WOAntBuilderName"
+         name="WOLips Ant Builder"
          point="org.eclipse.core.resources.builders">
       <builder>
          <run
