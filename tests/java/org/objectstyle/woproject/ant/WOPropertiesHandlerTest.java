@@ -93,7 +93,7 @@ public class WOPropertiesHandlerTest extends TestCase {
 	public void testWORoot2() throws Exception {
 		String woroot = "abc_next_root";
 		handler.env = new Properties();
-		handler.env.setProperty(WOPropertiesHandler.WO_ROOT, woroot);
+		handler.env.setProperty("NEXT_ROOT", woroot);
 
 		// no project level settings - must use environment
 		assertEquals(woroot, handler.getWORoot());
@@ -103,7 +103,7 @@ public class WOPropertiesHandlerTest extends TestCase {
 		String wrong = "abc_next_root";
 		String right = "abc";
 		handler.env = new Properties();
-		handler.env.setProperty(WOPropertiesHandler.WO_ROOT, wrong);
+		handler.env.setProperty("NEXT_ROOT", wrong);
 		project.setProperty(WOPropertiesHandler.WO_ROOT, right);
 		
 		// project level properties must take precedence over the environment
@@ -121,7 +121,7 @@ public class WOPropertiesHandlerTest extends TestCase {
 	public void testLocalRoot2() throws Exception {
 		String right = "abc_next_root";
 		handler.env = new Properties();
-		handler.env.setProperty(WOPropertiesHandler.WO_ROOT, right);
+		handler.env.setProperty("NEXT_ROOT", right);
 
         // no project-level setting, must be derived from WORoot
 		assertEquals(handler.getWORoot() + "/Local", handler.getLocalRoot());

@@ -75,9 +75,9 @@ public class WOPropertiesHandler extends ProjectComponent {
 	static Properties env;
 	static final Object envLock = new Object();
 
-	protected String defaultWORoot;
-	protected String defaultLocalRoot;
-	protected String defaultHomeRoot;
+	protected String woRoot;
+	protected String localRoot;
+	protected String homeRoot;
 
 	/** 
 	 * Creates new WOPropertiesHandler and 
@@ -96,19 +96,19 @@ public class WOPropertiesHandler extends ProjectComponent {
 	 * </ul>
 	 */
 	public String getWORoot() {
-		if (defaultWORoot == null) {
-			defaultWORoot = getProject().getProperty(WO_ROOT);
+		if (woRoot == null) {
+			woRoot = getProject().getProperty(WO_ROOT);
 
-			if (defaultWORoot == null) {
-				defaultWORoot = getEnvironmentProperty(WO_ROOT);
+			if (woRoot == null) {
+				woRoot = getEnvironmentProperty("NEXT_ROOT");
 
-				if (defaultWORoot == null) {
-					defaultWORoot = "/";
+				if (woRoot == null) {
+					woRoot = "/";
 				}
 			}
 		}
 
-		return defaultWORoot;
+		return woRoot;
 	}
 
 	/** 
@@ -119,15 +119,15 @@ public class WOPropertiesHandler extends ProjectComponent {
 	 * </ul>
 	 */
 	public String getLocalRoot() {
-		if (defaultLocalRoot == null) {
-			defaultLocalRoot = getProject().getProperty(LOCAL_ROOT);
+		if (localRoot == null) {
+			localRoot = getProject().getProperty(LOCAL_ROOT);
 
-			if (defaultLocalRoot == null) {
-				defaultLocalRoot = getWORoot() + "/Local";
+			if (localRoot == null) {
+				localRoot = getWORoot() + "/Local";
 			}
 		}
 
-		return defaultLocalRoot;
+		return localRoot;
 	}
 
 	/** 
@@ -138,15 +138,15 @@ public class WOPropertiesHandler extends ProjectComponent {
 	 * </ul>
 	 */
 	public String getHomeRoot() {
-		if (defaultHomeRoot == null) {
-			defaultHomeRoot = getProject().getProperty(HOME_ROOT);
+		if (homeRoot == null) {
+			homeRoot = getProject().getProperty(HOME_ROOT);
 
-			if (defaultHomeRoot == null) {
-				defaultHomeRoot = System.getProperty("user.home");
+			if (homeRoot == null) {
+				homeRoot = System.getProperty("user.home");
 			}
 		}
 
-		return defaultHomeRoot;
+		return homeRoot;
 	}
 
 	/** 
@@ -182,7 +182,6 @@ public class WOPropertiesHandler extends ProjectComponent {
 				props.put(entry.substring(0, pos), entry.substring(pos + 1));
 			}
 		}
-
 		env = props;
 	}
 }

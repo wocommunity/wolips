@@ -81,17 +81,16 @@ public class AppFormat extends ProjectFormat {
 		prepare();
 
        // temporary debugging stuff
-       /* log("Check framework sets: ", Project.MSG_ERR);
+      /*  System.out.println("Check framework sets.");
 		List frameworkSets = getApplicatonTask().getFrameworkSets();
 		for (int i = 0; i < frameworkSets.size(); i++) {
 			FileSet fs = (FileSet) frameworkSets.get(i);
 			try {
-				log("Looking for dirs", Project.MSG_ERR);
+				System.out.println("Looking for dirs: " + fs.getDir(task.getProject()));
 				DirectoryScanner ds = fs.getDirectoryScanner(task.getProject());
-				String[] files = ds.getIncludedFiles();
 				String[] dirs = ds.getIncludedDirectories();
 				for(int j = 0; j < dirs.length; j++) {
-					log("Dir found: " + dirs[i], Project.MSG_ERR);
+					System.out.println("Dir found: " + dirs[i]);
 				}
 			} catch (BuildException be) {
 				// directory doesn't exist or is not readable
