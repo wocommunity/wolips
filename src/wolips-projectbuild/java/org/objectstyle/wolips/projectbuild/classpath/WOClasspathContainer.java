@@ -56,6 +56,11 @@
  
 package org.objectstyle.wolips.projectbuild.classpath;
 
+import java.io.File;
+import java.io.FilenameFilter;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathContainer;
@@ -63,13 +68,7 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
-import org.objectstyle.woproject.env.WOVariables;
-
-import java.util.List;
-import java.util.ArrayList;
-
-import java.io.File;
-import java.io.FilenameFilter;
+import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
 
 /**
  * @author Harald Niesche
@@ -210,7 +209,7 @@ public class WOClasspathContainer
   static File _getFrameworkBase () {
 	File result = null;
 	
-	result = new File (WOVariables.libraryDir()+"/Frameworks");
+	result = new File (WOLipsPlugin.getDefault().getWOEnvironment().getWOVariables().libraryDir()+"/Frameworks");
 	
 	return result;
   }
@@ -218,7 +217,7 @@ public class WOClasspathContainer
   static File _getLocalFrameworkBase () {
 	File result = null;
 
-	result = new File (WOVariables.localLibraryDir()+"/Frameworks");
+	result = new File (WOLipsPlugin.getDefault().getWOEnvironment().getWOVariables().localLibraryDir()+"/Frameworks");
 	
 	return result;
 //	File fwBase = new File (WOSupportPlugin.getWORoot(), "Library/Frameworks");

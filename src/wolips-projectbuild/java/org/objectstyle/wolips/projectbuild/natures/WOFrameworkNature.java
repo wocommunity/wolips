@@ -53,24 +53,87 @@
  * <http://objectstyle.org/>.
  *
  */
- 
-package org.objectstyle.wolips.projectbuild;
 
-import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
+package org.objectstyle.wolips.projectbuild.natures;
 
-/*
- * Created on 16.02.2003
- *
- * To change this generated comment go to 
- * Window>Preferences>Java>Code Generation>Code Template
- */
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import org.eclipse.core.resources.ICommand;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
+import org.eclipse.core.resources.IProjectNature;
+import org.eclipse.core.runtime.CoreException;
+import org.objectstyle.wolips.projectbuild.WOProjectBuildConstants;
 
 /**
- * @author Harald
- *
- * To change this generated comment go to 
- * Window>Preferences>Java>Code Generation>Code Template
+ * @author mnolte
+ * @deprecated
  */
-public interface WOProjectBuildConstants extends IWOLipsPluginConstants {
+public class WOFrameworkNature
+	implements IProjectNature, WOProjectBuildConstants {
+
+	/**
+	 * Constructor for WOFrameworkNature.
+	 */
+	public WOFrameworkNature() {
+		super();
+	}
+
+	/**
+	 * @see org.eclipse.core.resources.IProjectNature#configure()
+	 */
+	public void configure() throws CoreException {
+		// set your builder here!
+	}
+
+	/**
+	 * @see org.eclipse.core.resources.IProjectNature#deconfigure()
+	 */
+	public void deconfigure() throws CoreException {
+		IProject project = getProject();
+
+		System.out.println("deconfigure - " + project);
+		IProjectDescription desc = project.getDescription();
+
+		ICommand bc[] = desc.getBuildSpec();
+
+		ICommand found = null;
+
+		for (int i = 0; i < bc.length; i++) {
+			if (bc[i].getBuilderName().equals(WOFRAMEWORK_BUILDER_ID)) {
+				found = bc[i];
+			}
+		}
+
+		if (null != found) {
+			List buildCommands = new ArrayList(Arrays.asList(bc));
+			buildCommands.remove(found);
+			desc.setBuildSpec(
+				(ICommand[]) buildCommands.toArray(
+					new ICommand[buildCommands.size()]));
+			project.setDescription(desc, null);
+		}
+
+		IFolder buildFolder = project.getFolder("build");
+		if (buildFolder.exists() && buildFolder.isDerived()) {
+			buildFolder.delete(true, false, null);
+		}
+	}
+
+	/**
+	 * @see org.eclipse.core.resources.IProjectNature#getProject()
+	 */
+	public IProject getProject() {
+		return null;
+	}
+
+	/**
+	 * @see org.eclipse.core.resources.IProjectNature#setProject(IProject)
+	 */
+	public void setProject(IProject project) {
+	}
 
 }

@@ -14,7 +14,9 @@
       </library>
    </runtime>
 
-
+<!-- =================================================================================== -->
+<!-- Extension: Classpath container                                                                      -->
+<!-- =================================================================================== -->
    <extension
          point="org.eclipse.jdt.core.classpathContainerInitializer">
       <classpathContainerInitializer
@@ -45,27 +47,69 @@
             id="de.thecode.eclipse.wosupport.WO_CLASSPATH">
       </classpathContainerPage>
    </extension>
+<!-- =================================================================================== -->
+<!-- Extension: WOLips projectbuild property page                                                                      -->
+<!-- =================================================================================== -->
    <extension
          point="org.eclipse.ui.propertyPages">
       <page
             objectClass="org.eclipse.core.resources.IProject"
             adaptable="true"
             name="WOLips build"
-            class="org.objectstyle.wolips.projectbuild.nature.WOLipsProjectNaturePage"
-            id="org.objectstyle.wolips.projectbuild.nature.WOLipsProjectNaturePage">
+            class="org.objectstyle.wolips.projectbuild.natures.ProjectNaturePage"
+            id="org.objectstyle.wolips.projectbuild.natures.ProjectNaturePage">
          <filter
                name="nature"
                value="org.eclipse.jdt.core.javanature">
          </filter>
       </page>
    </extension>
+<!-- =================================================================================== -->
+<!-- Extension: WOGenerator                                                              -->
+<!-- =================================================================================== -->
    <extension
-         id="incrementalnature"
-         name="WO Lips incremental build Nature"
+         id="wogenerator"
+         name="%WOGenerator.Name"
+         point="org.eclipse.core.resources.builders">
+      <builder>
+         <run
+               class="org.objectstyle.wolips.builder.WOGenerator">
+         </run>
+      </builder>
+   </extension>
+<!-- =================================================================================== -->
+<!-- Extension: WOProject Builder                                                      -->
+<!-- =================================================================================== -->
+   <extension
+         id="incrementalbuilder"
+         name="%WOIncrementalProjectBuilderName"
+         point="org.eclipse.core.resources.builders">
+      <builder>
+         <run
+               class="org.objectstyle.wolips.projectbuild.builder.WOIncrementalBuilder">
+         </run>
+      </builder>
+   </extension>
+   <extension
+         id="antbuilder"
+         name="%WOAntBuilderName"
+         point="org.eclipse.core.resources.builders">
+      <builder>
+         <run
+               class="org.objectstyle.wolips.projectbuild.builder.WOAntBuilder">
+         </run>
+      </builder>
+   </extension>
+<!-- =================================================================================== -->
+<!-- Extension: Project Natures                                                          -->
+<!-- =================================================================================== -->
+   <extension
+         id="incrementalframeworknature"
+         name="org.objectstyle.wolips.projectbuild.WOIncrementalNature"
          point="org.eclipse.core.resources.natures">
       <runtime>
          <run
-               class="org.objectstyle.wolips.projectbuild.nature.WOIncrementalBuildNature">
+               class="org.objectstyle.wolips.projectbuild.natures.IncrementalNature">
          </run>
       </runtime>
       <requires-nature
@@ -73,13 +117,98 @@
       </requires-nature>
    </extension>
    <extension
-         id="incrementalbuilder"
-         name="WebObjects build-support"
+         id="incrementalapplicationnature"
+         name="org.objectstyle.wolips.projectbuild.WOIncrementalNature"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run
+               class="org.objectstyle.wolips.projectbuild.natures.IncrementalNature">
+         </run>
+      </runtime>
+      <requires-nature
+            id="org.eclipse.jdt.core.javanature">
+      </requires-nature>
+   </extension>
+   <extension
+         id="antframeworknature"
+         name="org.objectstyle.wolips.projectbuild.wolipsantnature"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run
+               class="org.objectstyle.wolips.projectbuild.natures.AntNature">
+         </run>
+      </runtime>
+      <requires-nature
+            id="org.eclipse.jdt.core.javanature">
+      </requires-nature>
+   </extension>   
+   <extension
+         id="antapplicationnature"
+         name="org.objectstyle.wolips.projectbuild.wolipsantnature"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run
+               class="org.objectstyle.wolips.projectbuild.natures.AntNature">
+         </run>
+      </runtime>
+      <requires-nature
+            id="org.eclipse.jdt.core.javanature">
+      </requires-nature>
+   </extension>
+<!-- =================================================================================== -->
+<!-- Extension: WOFramework Builder deprecated                                                     -->
+<!-- =================================================================================== -->
+   <extension
+         id="woframeworkbuilder"
+         name="%WOFrameworkBuilderName"
          point="org.eclipse.core.resources.builders">
       <builder>
          <run
-               class="org.objectstyle.wolips.projectbuild.WOProjectBuilder">
+               class="org.objectstyle.wolips.projectbuild.builder.WOFrameworkBuilder">
          </run>
       </builder>
    </extension>
+<!-- =================================================================================== -->
+<!-- Extension: WOApplication Builder deprecated                                                    -->
+<!-- =================================================================================== -->
+   <extension
+         id="woapplicationbuilder"
+         name="%WOApplicationBuilderName"
+         point="org.eclipse.core.resources.builders">
+      <builder>
+         <run
+               class="org.objectstyle.wolips.projectbuild.builder.WOApplicationBuilder">
+         </run>
+      </builder>
+   </extension>
+ <!-- =================================================================================== -->
+<!-- Extension: Project Natures deprecated                                                         -->
+<!-- =================================================================================== -->
+   <extension
+         id="applicationnature"
+         name="org.objectstyle.wolips.applicationnature"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run
+               class="org.objectstyle.wolips.projectbuild.natures.WOApplicationNature">
+         </run>
+      </runtime>
+      <requires-nature
+            id="org.eclipse.jdt.core.javanature">
+      </requires-nature>
+   </extension>
+   <extension
+         id="frameworknature"
+         name="org.objectstyle.wolips.frameworknature"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run
+               class="org.objectstyle.wolips.projectbuild.natures.WOFrameworkNature">
+         </run>
+      </runtime>
+      <requires-nature
+            id="org.eclipse.jdt.core.javanature">
+      </requires-nature>
+   </extension>
+      
 </fragment>

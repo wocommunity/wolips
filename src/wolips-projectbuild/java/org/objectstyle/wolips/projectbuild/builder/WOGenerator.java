@@ -53,24 +53,42 @@
  * <http://objectstyle.org/>.
  *
  */
- 
-package org.objectstyle.wolips.projectbuild;
 
-import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
-
-/*
- * Created on 16.02.2003
- *
- * To change this generated comment go to 
- * Window>Preferences>Java>Code Generation>Code Template
- */
+package org.objectstyle.wolips.projectbuild.builder;
 
 /**
- * @author Harald
+ * @author uli
  *
- * To change this generated comment go to 
- * Window>Preferences>Java>Code Generation>Code Template
+ * To change this generated comment edit the template variable "typecomment":
+ * Window>Preferences>Java>Templates.
+ * To enable and disable the creation of type comments go to
+ * Window>Preferences>Java>Code Generation.
  */
-public interface WOProjectBuildConstants extends IWOLipsPluginConstants {
+public class WOGenerator extends WOAntBuilder {
 
+	/**
+	 * Constructor for WOGenerator.
+	 */
+	public WOGenerator() {
+		super();
+	}
+
+	/**
+	 * @see org.objectstyle.wolips.builder.WOBuilder#buildFile()
+	 */
+	public String buildFile() {
+		return "buildeos.xml";
+	}
+	/**
+	 * @see org.objectstyle.wolips.builder.WOBuilder#defaultTarget()
+	 */
+	public String defaultTarget() {
+		return "generate";
+	}
+	/**
+	 * @see org.objectstyle.wolips.builder.WOBuilder#cleanTarget()
+	 */
+	public String cleanTarget() {
+		return "clean";
+	}
 }

@@ -54,7 +54,7 @@
  *
  */
  
-package org.objectstyle.wolips.projectbuild;
+package org.objectstyle.wolips.projectbuild.builder;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -83,7 +83,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
-import org.objectstyle.wolips.projectbuild.nature.*;
+import org.objectstyle.wolips.projectbuild.natures.*;
 import org.objectstyle.wolips.projectbuild.util.*;
 
 /**
@@ -94,12 +94,12 @@ import org.objectstyle.wolips.projectbuild.util.*;
  * To enable and disable the creation of type comments go to
  * Window>Preferences>Java>Code Generation.
  */
-public class WOProjectBuilder extends IncrementalProjectBuilder {
+public class WOIncrementalBuilder extends IncrementalProjectBuilder {
 
   /**
    * Constructor for WOProjectBuilder.
    */
-  public WOProjectBuilder() {
+  public WOIncrementalBuilder() {
     super();
   }
 
@@ -221,7 +221,7 @@ public class WOProjectBuilder extends IncrementalProjectBuilder {
   }
   
   private void _createInfoPlist () throws CoreException {
-    WOIncrementalBuildNature won = WOIncrementalBuildNature.s_getNature(getProject());
+    IncrementalNature won = IncrementalNature.s_getNature(getProject());
     String infoPlist;
     
     if (won.isFramework()) {
@@ -445,7 +445,7 @@ public class WOProjectBuilder extends IncrementalProjectBuilder {
     {
       _monitor = monitor;
       _project = project;
-      _woNature = WOIncrementalBuildNature.s_getNature(project);
+      _woNature = IncrementalNature.s_getNature(project);
     }
 
     /**
@@ -506,7 +506,7 @@ public class WOProjectBuilder extends IncrementalProjectBuilder {
 
     protected IProgressMonitor _monitor;
     protected IProject _project;
-    protected WOIncrementalBuildNature _woNature = null;
+    protected IncrementalNature _woNature = null;
     private List _buildTasks = new ArrayList ();
     private int  _buildWork = 0;
 

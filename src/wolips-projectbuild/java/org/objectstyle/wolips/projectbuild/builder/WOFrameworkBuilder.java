@@ -53,24 +53,22 @@
  * <http://objectstyle.org/>.
  *
  */
- 
-package org.objectstyle.wolips.projectbuild;
-
-import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
-
-/*
- * Created on 16.02.2003
- *
- * To change this generated comment go to 
- * Window>Preferences>Java>Code Generation>Code Template
- */
+package org.objectstyle.wolips.projectbuild.builder;
 
 /**
- * @author Harald
+ * @author uli
  *
  * To change this generated comment go to 
  * Window>Preferences>Java>Code Generation>Code Template
+ * @deprecated
  */
-public interface WOProjectBuildConstants extends IWOLipsPluginConstants {
+public class WOFrameworkBuilder extends WOAntBuilder {
+
+	/**
+	 * Constructor for WOFrameworkBuilder.
+	 */
+	public WOFrameworkBuilder() {
+		super();
+	}
 
 }

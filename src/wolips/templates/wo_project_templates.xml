@@ -31,7 +31,7 @@
 <projectTypes>
 	<projectType name="Java WebObjects Application" id="JavaWebObjectsApplication">
 		<nature id="org.eclipse.jdt.core.javanature"/>
-		<nature id="org.objectstyle.wolips.applicationnature"/>
+		<nature id="org.objectstyle.wolips.antapplicationnature"/>
 		<classpath>
 			<classpathentry kind="src" path="src"/>
 			<classpathentry kind="var" path="NEXT_SYSTEM_ROOT/Library/Frameworks/JavaWebObjects.framework/Resources/Java/javawebobjects.jar"/>
@@ -59,7 +59,7 @@
 	</projectType>
 	<projectType name="Java WebObjects Application Import" id="JavaWebObjectsApplicationImport">
 		<nature id="org.eclipse.jdt.core.javanature"/>
-		<nature id="org.objectstyle.wolips.applicationnature"/>
+		<nature id="org.objectstyle.wolips.antapplicationnature"/>
 		<classpath>
 			<classpathentry kind="src" path="src"/>
 			<classpathentry kind="var" path="NEXT_SYSTEM_ROOT/Library/Frameworks/JavaWebObjects.framework/Resources/Java/javawebobjects.jar"/>
@@ -84,7 +84,7 @@
 	</projectType>
 	<projectType name="Java WebObjects Framework" id="JavaWebObjectsFramework">
 		<nature id="org.eclipse.jdt.core.javanature"/>
-		<nature id="org.objectstyle.wolips.frameworknature"/>
+		<nature id="org.objectstyle.wolips.antframeworknature"/>
 		<classpath>
 			<classpathentry kind="src" path="src"/>
 			<classpathentry kind="var" path="NEXT_SYSTEM_ROOT/Library/Frameworks/JavaWebObjects.framework/Resources/Java/javawebobjects.jar"/>

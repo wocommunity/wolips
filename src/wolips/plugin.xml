@@ -4,16 +4,16 @@
    name="%WOLips.pluginName"
    version="1.0.0"
    provider-name="%WOLips.providerName"
-   class="org.objectstyle.wolips.plugin.WOLipsPlugin">
+   class="org.objectstyle.wolips.core.plugin.WOLipsPlugin">
 
    <runtime>
       <library name="lib/wolips.jar">
          <export name="*"/>
-         <packages prefixes="org.objectstyle.wolips.actions,org.objectstyle.wolips.ant,org.objectstyle.wolips.builder,org.objectstyle.wolips.editor,org.objectstyle.wolips.ide,org.objectstyle.wolips.images,org.objectstyle.wolips.io,org.objectstyle.wolips.listener,org.objectstyle.wolips.logging,org.objectstyle.wolips.natures,org.objectstyle.wolips.plugin,org.objectstyle.wolips.preferences,org.objectstyle.wolips.project,org.objectstyle.wolips.resources,org.objectstyle.wolips.ui,org.objectstyle.wolips.utils,org.objectstyle.wolips.wizards,org.objectstyle.wolips.workbench"/>
+         <packages prefixes="org.objectstyle.wolips.core"/>
       </library>
       <library name="lib/woproject.jar">
          <export name="*"/>
-         <packages prefixes="org.objectstyle.woproject.ant,org.objectstyle.woproject.env,org.objectstyle.woproject.log4j,org.objectstyle.woproject.pb,org.objectstyle.woproject.util,org.objectstyle.woproject.wo"/>
+         <packages prefixes="org.objectstyle.woproject"/>
       </library>
       <library name="lib/cayenne.jar">
          <export name="*"/>
@@ -56,7 +56,7 @@
             name="%WOLips.Component"
             icon="icons/wobuilder/wocomponent_wiz.gif"
             category="org.objectstyle.wolips.wizards.webobjects.5.1"
-            class="org.objectstyle.wolips.wizards.WOComponentCreationWizard"
+            class="org.objectstyle.wolips.core.wizards.WOComponentCreationWizard"
             id="org.objectstyle.wolips.wizards.new.wo.5.1.component">
          <description>
          </description>
@@ -68,7 +68,7 @@
             name="%WOLips.Subproject"
             icon="icons/woproject/wosubproject_wiz.gif"
             category="org.objectstyle.wolips.wizards.webobjects.5.1"
-            class="org.objectstyle.wolips.wizards.WOSubprojectCreationWizard"
+            class="org.objectstyle.wolips.core.wizards.WOSubprojectCreationWizard"
             id="org.objectstyle.wolips.wizards.new.wo.5.1.subproject">
          <description>
          </description>
@@ -80,7 +80,7 @@
             name="%WOLips.Application"
             icon="icons/woproject/woapplication_wiz.gif"
             category="org.objectstyle.wolips.wizards.webobjects.5.1"
-            class="org.objectstyle.wolips.wizards.WOApplicationCreationWizard"
+            class="org.objectstyle.wolips.core.wizards.WOApplicationCreationWizard"
             project="true"
             id="org.objectstyle.wolips.wizards.new.wo.5.1.application">
          <description>
@@ -90,7 +90,7 @@
             name="%WOLips.Framework"
             icon="icons/woproject/woframework_wiz.gif"
             category="org.objectstyle.wolips.wizards.webobjects.5.1"
-            class="org.objectstyle.wolips.wizards.WOFrameworkCreationWizard"
+            class="org.objectstyle.wolips.core.wizards.WOFrameworkCreationWizard"
             project="true"
             id="org.objectstyle.wolips.wizards.new.wo.5.1.framework">
          <description>
@@ -100,7 +100,7 @@
             name="%WOLips.EOModel"
             icon="icons/woproject/eomodel_wiz.gif"
             category="org.objectstyle.wolips.wizards.webobjects.5.1"
-            class="org.objectstyle.wolips.wizards.EOModelCreationWizard"
+            class="org.objectstyle.wolips.core.wizards.EOModelCreationWizard"
             id="org.objectstyle.wolips.wizards.new.wo.5.1.eomodel">
          <description>
          </description>
@@ -123,7 +123,7 @@
                label="%EnableWOBuild.label"
                icon="icons/wobuild/enable_build.gif"
                tooltip="%EnableWOBuild.tooltip"
-               class="org.objectstyle.wolips.actions.WOBuildEnableAction"
+               class="org.objectstyle.wolips.core.actions.WOBuildEnableAction"
                toolbarPath="Normal/WOLipsWizards"
                id="WOBuild.Enable.ID">
          </action>
@@ -131,7 +131,7 @@
                label="%DisableWOBuild.label"
                icon="icons/wobuild/disable_build.gif"
                tooltip="%DisableWOBuild.tooltip"
-               class="org.objectstyle.wolips.actions.WOBuildDisableAction"
+               class="org.objectstyle.wolips.core.actions.WOBuildDisableAction"
                toolbarPath="Normal/WOLipsWizards"
                id="WOBuild.Disable.ID">
          </action>
@@ -139,7 +139,7 @@
                label="%OpenEOModelCreationWizard.label"
                icon="icons/woproject/eomodel_wiz.gif"
                tooltip="%OpenEOModelCreationWizard.tooltip"
-               class="org.objectstyle.wolips.actions.OpenEOModelCreationWizard"
+               class="org.objectstyle.wolips.core.actions.OpenEOModelCreationWizard"
                toolbarPath="Normal/WOLipsWizards"
                id="org.objectstyle.wolips.OpenEOModelCreationWizard">
          </action>
@@ -147,7 +147,7 @@
                label="%OpenWOComponentCreationWizard.label"
                icon="icons/wobuilder/wocomponent_wiz.gif"
                tooltip="%OpenWOComponentCreationWizard.tooltip"
-               class="org.objectstyle.wolips.actions.OpenWOComponentCreationWizard"
+               class="org.objectstyle.wolips.core.actions.OpenWOComponentCreationWizard"
                toolbarPath="Normal/WOLipsWizards"
                id="org.objectstyle.wolips.OpenWOComponentCreationWizard">
          </action>
@@ -155,7 +155,7 @@
                label="%OpenWOSubprojectCreationWizard.label"
                icon="icons/woproject/wosubproject_wiz.gif"
                tooltip="%OpenWOSubprojectCreationWizard.tooltip"
-               class="org.objectstyle.wolips.actions.OpenWOSubprojectCreationWizard"
+               class="org.objectstyle.wolips.core.actions.OpenWOSubprojectCreationWizard"
                toolbarPath="Normal/WOLipsWizards"
                id="org.objectstyle.wolips.OpenWOSubprojectCreationWizard">
          </action>
@@ -163,7 +163,7 @@
                label="%OpenWOFrameworkCreationWizard.label"
                icon="icons/woproject/woframework_wiz.gif"
                tooltip="%OpenWOFrameworkCreationWizard.tooltip"
-               class="org.objectstyle.wolips.actions.OpenWOFrameworkCreationWizard"
+               class="org.objectstyle.wolips.core.actions.OpenWOFrameworkCreationWizard"
                toolbarPath="Normal/WOLipsWizards"
                id="org.objectstyle.wolips.OpenWOFrameworkCreationWizard">
          </action>
@@ -171,7 +171,7 @@
                label="%OpenWOProjectCreationWizard.label"
                icon="icons/woproject/woapplication_wiz.gif"
                tooltip="%OpenWOProjectCreationWizard.tooltip"
-               class="org.objectstyle.wolips.actions.OpenWOProjectCreationWizard"
+               class="org.objectstyle.wolips.core.actions.OpenWOProjectCreationWizard"
                toolbarPath="Normal/WOLipsWizards"
                id="org.objectstyle.wolips.OpenWOProjectCreationWizard">
          </action>
@@ -197,45 +197,24 @@
                   name="project">
             </separator>
             <separator
-                  name="wobuilder">
-            </separator>
-            <separator
                   name="woframeworks">
             </separator>
          </menu>
          <action
                label="%UpdatePB.Project"
-               class="org.objectstyle.wolips.actions.PBAction"
+               class="org.objectstyle.wolips.core.actions.PBAction"
                menubarPath="org.objectstyle.wolips/project"
                id="%UpdatePB.Project.ID">
          </action>
          <action
-               label="%WOBuilder.Remove"
-               class="org.objectstyle.wolips.actions.WOBuilderAction"
-               menubarPath="org.objectstyle.wolips/wobuilder"
-               id="%WOBuilder.Remove.ID">
-         </action>
-         <action
-               label="%WOApplicationBuilder.Set"
-               class="org.objectstyle.wolips.actions.WOBuilderAction"
-               menubarPath="org.objectstyle.wolips/wobuilder"
-               id="%WOApplicationBuilder.Set.ID">
-         </action>
-         <action
-               label="%WOFrameworkBuilder.Set"
-               class="org.objectstyle.wolips.actions.WOBuilderAction"
-               menubarPath="org.objectstyle.wolips/wobuilder"
-               id="%WOFrameworkBuilder.Set.ID">
-         </action>
-         <action
                label="%WOSystemFramework.Add"
-               class="org.objectstyle.wolips.actions.WOFrameworkAction"
+               class="org.objectstyle.wolips.core.actions.WOFrameworkAction"
                menubarPath="org.objectstyle.wolips/woframeworks"
                id="%WOSystemFramework.Add.ID">
          </action>
          <action
                label="%WOLocalFramework.Add"
-               class="org.objectstyle.wolips.actions.WOFrameworkAction"
+               class="org.objectstyle.wolips.core.actions.WOFrameworkAction"
                menubarPath="org.objectstyle.wolips/woframeworks"
                id="%WOLocalFramework.Add.ID">
          </action>
@@ -253,7 +232,7 @@
             id="org.objectstyle.wolips.actions.OpenComponentAction">
          <action
                label="%WOLips.PopupMenu.OpenComponentAction"
-               class="org.objectstyle.wolips.actions.OpenComponentAction"
+               class="org.objectstyle.wolips.core.actions.OpenComponentAction"
                menubarPath="additions"
                enablesFor="1"
                id="org.objectstyle.wolips.actions.OpenComponentAction">
@@ -266,7 +245,7 @@
             id="org.objectstyle.wolips.actions.OpenSourceAction">
          <action
                label="%WOLips.PopupMenu.OpenSourceAction"
-               class="org.objectstyle.wolips.actions.OpenSourceAction"
+               class="org.objectstyle.wolips.core.actions.OpenSourceAction"
                menubarPath="additions"
                enablesFor="1"
                id="org.objectstyle.wolips.actions.OpenSourceAction">
@@ -279,14 +258,14 @@
             id="org.objectstyle.wolips.actions.OpenSourceAction">
          <action
                label="%WOLips.PopupMenu.OpenSourceAction"
-               class="org.objectstyle.wolips.actions.OpenSourceAction"
+               class="org.objectstyle.wolips.core.actions.OpenSourceAction"
                menubarPath="additions"
                enablesFor="1"
                id="org.objectstyle.wolips.actions.OpenSourceAction">
          </action>
          <action
                label="%WOLips.PopupMenu.DeleteComponent"
-               class="org.objectstyle.wolips.actions.DeleteComponentAction"
+               class="org.objectstyle.wolips.core.actions.DeleteComponentAction"
                menubarPath="additions"
                enablesFor="1"
                id="org.objectstyle.wolips.actions.DeleteComponentAction">
@@ -299,7 +278,7 @@
             id="org.objectstyle.wolips.actions.EnableEOGeneration">
          <action
                label="%WOLips.PopupMenu.EnableEOGeneration.label"
-              class="org.objectstyle.wolips.actions.EnableEOGeneration"
+              class="org.objectstyle.wolips.core.actions.EnableEOGeneration"
                menubarPath="additions"
                enablesFor="1"
                id="org.objectstyle.wolips.actions.EnableEOGeneration">
@@ -312,102 +291,12 @@
             id="org.objectstyle.wolips.actions.EnableEOGeneration">
          <action
                label="%WOLips.PopupMenu.EnableEOGeneration.label"
-               class="org.objectstyle.wolips.actions.EnableEOGeneration"
+               class="org.objectstyle.wolips.core.actions.EnableEOGeneration"
                menubarPath="additions"
                enablesFor="1"
                id="org.objectstyle.wolips.actions.EnableEOGeneration">
          </action>
       </objectContribution>
-   </extension>
-<!-- =================================================================================== -->
-<!-- Extension: Ant                                                                      -->
-<!-- =================================================================================== -->
-   <extension
-         point="org.eclipse.ant.core.extraClasspathEntries">
-      <extraClasspathEntry
-            library="lib/wolips.jar">
-      </extraClasspathEntry>
-      <extraClasspathEntry
-            library="lib/woproject.jar">
-      </extraClasspathEntry>
-      <extraClasspathEntry
-            library="lib/cayenne.jar">
-      </extraClasspathEntry>
-      <extraClasspathEntry
-            library="lib/commons-logging.jar">
-      </extraClasspathEntry>
-   </extension>
-   <extension
-         point="org.eclipse.ant.core.antTasks">
-      <antTask
-            library="lib/woproject.jar"
-            name="woapplication"
-            class="org.objectstyle.woproject.ant.WOApplication">
-      </antTask>
-      <antTask
-            library="lib/woproject.jar"
-            name="woframework"
-            class="org.objectstyle.woproject.ant.WOFramework">
-      </antTask>
-      <antTask
-            library="lib/woproject.jar"
-            name="wogen"
-            class="org.objectstyle.woproject.ant.WOGenerator">
-      </antTask>
-      <antTask
-            library="lib/wolips.jar"
-            name="updateframeworksets"
-            class="org.objectstyle.wolips.ant.UpdateFrameworkIncludeFiles">
-      </antTask>
-      <antTask
-            library="lib/wolips.jar"
-            name="refreshview"
-            class="org.objectstyle.wolips.ant.RefreshEclipse">
-      </antTask>
-      <antTask
-            library="lib/wolips.jar"
-            name="updateotherclasspaths"
-            class="org.objectstyle.wolips.ant.UpdateOtherClasspathIncludeFiles">
-      </antTask>
-   </extension>
-<!-- =================================================================================== -->
-<!-- Extension: WOGenerator                                                              -->
-<!-- =================================================================================== -->
-   <extension
-         id="wogenerator"
-         name="%WOGenerator.Name"
-         point="org.eclipse.core.resources.builders">
-      <builder>
-         <run
-               class="org.objectstyle.wolips.builder.WOGenerator">
-         </run>
-      </builder>
-   </extension>
-<!-- =================================================================================== -->
-<!-- Extension: WOFramework Builder                                                      -->
-<!-- =================================================================================== -->
-   <extension
-         id="woframeworkbuilder"
-         name="%WOFrameworkBuilderName"
-         point="org.eclipse.core.resources.builders">
-      <builder>
-         <run
-               class="org.objectstyle.wolips.builder.WOFrameworkBuilder">
-         </run>
-      </builder>
-   </extension>
-<!-- =================================================================================== -->
-<!-- Extension: WOApplication Builder                                                    -->
-<!-- =================================================================================== -->
-   <extension
-         id="woapplicationbuilder"
-         name="%WOApplicationBuilderName"
-         point="org.eclipse.core.resources.builders">
-      <builder>
-         <run
-               class="org.objectstyle.wolips.builder.WOApplicationBuilder">
-         </run>
-      </builder>
    </extension>
 <!-- =================================================================================== -->
 <!-- Extension: Editors                                                                  -->
@@ -449,35 +338,6 @@
       </editor>
    </extension>
 <!-- =================================================================================== -->
-<!-- Extension: Project Natures                                                          -->
-<!-- =================================================================================== -->
-   <extension
-         id="applicationnature"
-         name="org.objectstyle.wolips.applicationnature"
-         point="org.eclipse.core.resources.natures">
-      <runtime>
-         <run
-               class="org.objectstyle.wolips.natures.WOApplicationNature">
-         </run>
-      </runtime>
-      <requires-nature
-            id="org.eclipse.jdt.core.javanature">
-      </requires-nature>
-   </extension>
-   <extension
-         id="frameworknature"
-         name="org.objectstyle.wolips.frameworknature"
-         point="org.eclipse.core.resources.natures">
-      <runtime>
-         <run
-               class="org.objectstyle.wolips.natures.WOFrameworkNature">
-         </run>
-      </runtime>
-      <requires-nature
-            id="org.eclipse.jdt.core.javanature">
-      </requires-nature>
-   </extension>
-<!-- =================================================================================== -->
 <!-- Extension: Perspective                                                              -->
 <!-- =================================================================================== -->
    <extension
@@ -485,7 +345,7 @@
       <perspective
             name="WOLips"
             icon="icons/wolips/WOLips-icon.gif"
-            class="org.objectstyle.wolips.ui.PerspectiveFactory"
+            class="org.objectstyle.wolips.core.ui.PerspectiveFactory"
             id="org.objectstyle.wolips.ui.Perspective">
       </perspective>
    </extension>
@@ -504,7 +364,7 @@
             objectClass="org.eclipse.core.resources.IFolder"
             label="WebObjects"
             state="true"
-            class="org.objectstyle.wolips.utils.WOLabelDecorator"
+            class="org.objectstyle.wolips.core.utils.WOLabelDecorator"
             id="org.objectstyle.wolips.utils.decorator">
       </decorator>
    </extension>
@@ -521,28 +381,28 @@
             name="%WOLips.NavigatorViewName"
             icon="icons/wolips/WOLips-icon.gif"
             category="org.objectstyle.wolips.ui"
-            class="org.objectstyle.wolips.ui.Navigator"
+            class="org.objectstyle.wolips.core.ui.Navigator"
             id="org.objectstyle.wolips.ui.Navigator">
       </view>
       <view
             name="%WOLips.WONavigatorViewName"
             icon="icons/wolips/WOLips-icon.gif"
             category="org.objectstyle.wolips.ui"
-            class="org.objectstyle.wolips.ui.WONavigator"
+            class="org.objectstyle.wolips.core.ui.WONavigator"
             id="org.objectstyle.wolips.ui.WONavigator">
       </view>
       <view
             name="%WOLips.ModelNavigatorViewName"
             icon="icons/wolips/WOLips-icon.gif"
             category="org.objectstyle.wolips.ui"
-            class="org.objectstyle.wolips.ui.ModelNavigator"
+            class="org.objectstyle.wolips.core.ui.ModelNavigator"
             id="org.objectstyle.wolips.ui.ModelNavigator">
       </view>
       <view
             name="%WOLips.ProductNavigatorViewName"
             icon="icons/wolips/WOLips-icon.gif"
             category="org.objectstyle.wolips.ui"
-            class="org.objectstyle.wolips.ui.ProductNavigator"
+            class="org.objectstyle.wolips.core.ui.ProductNavigator"
             id="org.objectstyle.wolips.ui.ProductNavigator">
       </view>
    </extension>
@@ -553,31 +413,31 @@
          point="org.eclipse.ui.preferencePages">
       <page
             name="%WOLips.preferences.viewName"
-            class="org.objectstyle.wolips.preferences.PreferencesPage"
+            class="org.objectstyle.wolips.core.preferences.PreferencesPage"
             id="org.objectstyle.wolips.preferences.PreferencesPage">
       </page>
       <page
             name="%WOLips.preferences.build.viewName"
             category="org.objectstyle.wolips.preferences.PreferencesPage"
-            class="org.objectstyle.wolips.preferences.BuildPreferencesPage"
+            class="org.objectstyle.wolips.core.preferences.BuildPreferencesPage"
             id="org.objectstyle.wolips.preferences.BuildPreferencesPage">
       </page>
       <page
             name="%WOLips.preferences.ui.viewName"
             category="org.objectstyle.wolips.preferences.PreferencesPage"
-            class="org.objectstyle.wolips.preferences.UIPreferencesPage"
+            class="org.objectstyle.wolips.core.preferences.UIPreferencesPage"
             id="org.objectstyle.wolips.preferences.UIPreferencesPage">
       </page>
       <page
             name="%WOLips.preferences.log.viewName"
             category="org.objectstyle.wolips.preferences.PreferencesPage"
-            class="org.objectstyle.wolips.preferences.LogPreferencesPage"
+            class="org.objectstyle.wolips.core.preferences.LogPreferencesPage"
             id="org.objectstyle.wolips.preferences.LogPreferencesPage">
       </page>
       <page
             name="%WOLips.preferences.launch.viewName"
             category="org.objectstyle.wolips.preferences.PreferencesPage"
-            class="org.objectstyle.wolips.preferences.LaunchPreferencesPage"
+            class="org.objectstyle.wolips.core.preferences.LaunchPreferencesPage"
             id="org.objectstyle.wolips.preferences.LaunchPreferencesPage">
       </page>
    </extension>
@@ -739,5 +599,55 @@
             pattern="*.subproj">
       </filter>
    </extension>
-
+<!-- =================================================================================== -->
+<!-- Extension: Ant                                                                      -->
+<!-- =================================================================================== -->
+   <extension
+         point="org.eclipse.ant.core.extraClasspathEntries">
+      <extraClasspathEntry
+            library="lib/wolips.jar">
+      </extraClasspathEntry>
+      <extraClasspathEntry
+            library="lib/woproject.jar">
+      </extraClasspathEntry>
+      <extraClasspathEntry
+            library="lib/cayenne.jar">
+      </extraClasspathEntry>
+      <extraClasspathEntry
+            library="lib/commons-logging.jar">
+      </extraClasspathEntry>
+   </extension>
+   <extension
+         point="org.eclipse.ant.core.antTasks">
+      <antTask
+            library="lib/woproject.jar"
+            name="woapplication"
+            class="org.objectstyle.woproject.ant.WOApplication">
+      </antTask>
+      <antTask
+            library="lib/woproject.jar"
+            name="woframework"
+            class="org.objectstyle.woproject.ant.WOFramework">
+      </antTask>
+      <antTask
+            library="lib/woproject.jar"
+            name="wogen"
+            class="org.objectstyle.woproject.ant.WOGenerator">
+      </antTask>
+      	  <antTask
+            library="lib/wolips.jar"
+            name="updateframeworksets"
+            class="org.objectstyle.wolips.core.project.ant.UpdateFrameworkIncludeFiles">
+      </antTask>
+      <antTask
+            library="lib/wolips.jar"
+            name="refreshview"
+            class="org.objectstyle.wolips.core.project.ant.RefreshEclipse">
+      </antTask>
+      <antTask
+            library="lib/wolips.jar"
+            name="updateotherclasspaths"
+            class="org.objectstyle.wolips.core.project.ant.UpdateOtherClasspathIncludeFiles">
+      </antTask>
+   </extension>
 </plugin>
