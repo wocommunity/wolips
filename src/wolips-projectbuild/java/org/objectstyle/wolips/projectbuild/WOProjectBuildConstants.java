@@ -56,6 +56,7 @@
  
 package org.objectstyle.wolips.projectbuild;
 
+//import org.eclipse.core.resources.IMarker;
 import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
 
 /*
@@ -81,4 +82,7 @@ public interface WOProjectBuildConstants extends IWOLipsPluginConstants {
   static final String WSRES_INCLUDES = "webserver.res.include.patterns";
   static final String WSRES_INCLUDES_DEFAULT = "*.js,*.css,*.jpg,*.jpeg,*.png,*.gif,*.html,/WebResources/*";
 
+  static final String MARKER_BUILD_GENERIC   = "org.objectstyle.wolips.projectbuild.marker";
+  static final String MARKER_BUILD_PROBLEM   = "org.objectstyle.wolips.projectbuild.problem";
+  static final String MARKER_BUILD_DUPLICATE = "org.objectstyle.wolips.projectbuild.duplicate";
 }

@@ -14,6 +14,7 @@
       </library>
    </runtime>
 
+
 <!-- =================================================================================== -->
 <!-- Extension: Classpath container                                                                      -->
 <!-- =================================================================================== -->
@@ -47,6 +48,36 @@
             id="de.thecode.eclipse.wosupport.WO_CLASSPATH">
       </classpathContainerPage>
    </extension>
+   
+<!-- =================================================================================== -->
+<!-- Extension: WOLips projectbuild problem marker                                       -->
+<!-- =================================================================================== -->
+   <extension
+      	id="projectbuild.marker"
+      	name="WOLips Build Marker"
+      	point="org.eclipse.core.resources.markers"
+   >
+      <super type="org.eclipse.core.resources.problemmarker"/>
+   </extension>
+
+   <extension
+      	id="projectbuild.problem"
+      	name="WOLips Build Problem Marker"
+      	point="org.eclipse.core.resources.markers"
+   >
+      <persistent value="true"/>
+      <super type="org.objectstyle.wolips.projectbuild.marker"/>
+   </extension>
+
+   <extension
+      	id="projectbuild.duplicate"
+      	name="WOLips Build Duplicate Marker"
+      	point="org.eclipse.core.resources.markers"
+   >
+      <persistent value="true"/>
+      <super type="org.objectstyle.wolips.projectbuild.marker"/>
+   </extension>
+
 <!-- =================================================================================== -->
 <!-- Extension: WOLips projectbuild property page                                                                      -->
 <!-- =================================================================================== -->
@@ -141,7 +172,7 @@
       <requires-nature
             id="org.eclipse.jdt.core.javanature">
       </requires-nature>
-   </extension>   
+   </extension>
    <extension
          id="antapplicationnature"
          name="org.objectstyle.wolips.projectbuild.wolipsantnature"
@@ -156,7 +187,7 @@
       </requires-nature>
    </extension>
 <!-- =================================================================================== -->
-<!-- Extension: WOFramework Builder deprecated                                                     -->
+<!-- Extension: WOFramework Builder deprecated                                           -->
 <!-- =================================================================================== -->
    <extension
          id="woframeworkbuilder"
@@ -169,7 +200,7 @@
       </builder>
    </extension>
 <!-- =================================================================================== -->
-<!-- Extension: WOApplication Builder deprecated                                                    -->
+<!-- Extension: WOApplication Builder deprecated                                         -->
 <!-- =================================================================================== -->
    <extension
          id="woapplicationbuilder"
@@ -181,7 +212,7 @@
          </run>
       </builder>
    </extension>
- <!-- =================================================================================== -->
+<!-- =================================================================================== -->
 <!-- Extension: Project Natures deprecated                                                         -->
 <!-- =================================================================================== -->
    <extension
@@ -210,5 +241,4 @@
             id="org.eclipse.jdt.core.javanature">
       </requires-nature>
    </extension>
-      
 </fragment>

@@ -56,6 +56,8 @@
  
 package org.objectstyle.wolips.projectbuild.util;
 
+import java.io.File;
+
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
@@ -135,13 +137,44 @@ public class ResourceUtilities {
    * @param path the candidate destination path
    * @param m a ProgressMonitor
    */
-  public static void checkDestination (IPath path, IProgressMonitor m) throws CoreException {
+  public static IResource checkDestination (IPath path, IProgressMonitor m) throws CoreException {
     if (checkDir (path.removeLastSegments(1), m)) {
       IResource res  = getWorkspaceRoot().findMember(path);
       if (null != res && res.exists()) {
-        res.delete(true, m);
+        try {
+          res.delete(true, m);
+//        } catch (org.eclipse.core.internal.resources.ResourceException e) {
+        } catch (CoreException ce) {
+          ce.printStackTrace();
+          
+//          IPath trashFolder = res.getProject().getFullPath().append("build/.trash");
+//          IPath trashPath = trashFolder.append(res.getName()+(_uniqifier++));
+//          checkDir (trashFolder, m);
+//          res.move(trashPath, true, null);
+
+          IPath newName = res.getLocation().removeLastSegments(1);
+          newName = newName.append(res.getName()+_getUniqifier());
+          File resFile = res.getLocation().toFile();
+          if (!resFile.renameTo(newName.toFile())) {
+            throw ce;
+          }          
+        }
         //res.refreshLocal(IResource.DEPTH_ONE, m);
       }
+      return res;
+    }
+    return null;
+  }
+  
+  private static synchronized int _getUniqifier () {
+    return _uniqifier++;
+  }
+  
+  public static void copyDerived (IResource res, IPath dest, IProgressMonitor m) throws CoreException  {
+    IResource rdest = checkDestination (dest, m);
+    res.copy(dest, true, null);
+    if (null != rdest) {
+      rdest.setDerived(true);
     }
   }
 
@@ -154,4 +187,6 @@ public class ResourceUtilities {
   }
   
   protected ResourceUtilities () {}
+  
+  private static int _uniqifier = 1;
 }
