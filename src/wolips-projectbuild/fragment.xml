@@ -53,6 +53,14 @@
 <!-- Extension: WOLips projectbuild problem marker                                       -->
 <!-- =================================================================================== -->
    <extension
+      	id="projectbuild.taskmarker"
+      	name="WOLips Task Marker"
+      	point="org.eclipse.core.resources.markers"
+   >
+      <super type="org.eclipse.core.resources.taskmarker"/>
+   </extension>
+
+   <extension
       	id="projectbuild.marker"
       	name="WOLips Build Marker"
       	point="org.eclipse.core.resources.markers"

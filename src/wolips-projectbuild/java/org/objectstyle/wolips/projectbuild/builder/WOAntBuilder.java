@@ -73,6 +73,7 @@ import org.objectstyle.wolips.core.preferences.Preferences;
 import org.objectstyle.wolips.core.project.ant.BuildMessages;
 import org.objectstyle.wolips.core.project.ant.RunAnt;
 import org.objectstyle.wolips.logging.WOLipsLog;
+import org.objectstyle.wolips.projectbuild.WOProjectBuildConstants;
 
 /**
  * @author uli
@@ -121,7 +122,7 @@ public class WOAntBuilder extends IncrementalProjectBuilder implements IWOLipsPl
 		String aBuildFile = null;
 		try {
 			getProject().deleteMarkers(
-				IMarker.TASK,
+        WOProjectBuildConstants.MARKER_TASK_GENERIC,
 				false,
 				IResource.DEPTH_ONE);
 			if (!projectNeedsAnUpdate()
@@ -132,7 +133,7 @@ public class WOAntBuilder extends IncrementalProjectBuilder implements IWOLipsPl
 			aBuildFile = this.buildFile();
 			if (checkIfBuildfileExist(aBuildFile)) {
 				getProject().getFile(aBuildFile).deleteMarkers(
-					IMarker.TASK,
+          WOProjectBuildConstants.MARKER_TASK_GENERIC,
 					false,
 					IResource.DEPTH_ONE);
 				this.execute(kind, args, monitor, aBuildFile);
@@ -257,7 +258,7 @@ public class WOAntBuilder extends IncrementalProjectBuilder implements IWOLipsPl
 		try {
 			aMarker =
 				getProject().getFile(this.buildFile()).createMarker(
-					IMarker.TASK);
+        WOProjectBuildConstants.MARKER_TASK_GENERIC);
 			aMarker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
 		} catch (CoreException e) {
 			WOLipsLog.log(e);
@@ -278,7 +279,7 @@ public class WOAntBuilder extends IncrementalProjectBuilder implements IWOLipsPl
 		}
 		IMarker aMarker = null;
 		try {
-			aMarker = getProject().createMarker(IMarker.TASK);
+			aMarker = getProject().createMarker(WOProjectBuildConstants.MARKER_TASK_GENERIC);
 			aMarker.setAttribute(
 				IMarker.MESSAGE,
 				"WOLips: Can not find: " + this.buildFile());
