@@ -74,6 +74,7 @@ import org.eclipse.jdt.launching.IVMInstall;
 import org.eclipse.jdt.launching.IVMRunner;
 import org.eclipse.jdt.launching.VMRunnerConfiguration;
 import org.objectstyle.wolips.io.FileStringScanner;
+import org.objectstyle.wolips.io.WOLipsLog;
 import org.objectstyle.wolips.plugin.IWOLipsPluginConstants;
 import org.objectstyle.wolips.preferences.Preferences;
 import org.objectstyle.wolips.workbench.WorkbenchHelper;
@@ -130,7 +131,16 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate extends AbstractJ
 		
 		// Create VM config
 		VMRunnerConfiguration runConfig = new VMRunnerConfiguration(mainTypeName, classpath);
-		runConfig.setProgramArguments(this.replaceGeneratedByWOLips(execArgs.getProgramArgumentsArray()));
+		//There may be a NullPointerException
+		//In this case we use the program arguments without replacing
+		try {
+			runConfig.setProgramArguments(this.replaceGeneratedByWOLips(execArgs.getProgramArgumentsArray()));
+		}
+		catch(Exception anException){
+			//May we should show a dialog
+			WOLipsLog.log(anException);
+			runConfig.setProgramArguments(execArgs.getProgramArgumentsArray());
+		}
 		runConfig.setVMArguments(execArgs.getVMArgumentsArray());
 		runConfig.setWorkingDirectory(workingDirName);
 		runConfig.setVMSpecificAttributesMap(vmAttributesMap);
