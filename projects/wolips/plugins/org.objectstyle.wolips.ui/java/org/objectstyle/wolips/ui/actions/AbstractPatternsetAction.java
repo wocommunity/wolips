@@ -63,6 +63,7 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 import org.eclipse.jface.window.Window;
 import org.objectstyle.wolips.datasets.adaptable.Project;
+import org.objectstyle.wolips.workbenchutilities.actions.ActionOnIResource;
 
 /**
  * @author ulrich
@@ -73,15 +74,15 @@ public abstract class AbstractPatternsetAction extends ActionOnIResource {
 	 * @return
 	 */
 	public Project getProject() {
-		return (Project) this.project().getAdapter(Project.class);
+		return (Project) this.getIProject().getAdapter(Project.class);
 	}
 
 	/**
 	 * @return
 	 */
 	public String getPattern() {
-		String name = this.actionResource().getName();
-		String extension = this.actionResource().getFileExtension();
+		String name = this.getActionResource().getName();
+		String extension = this.getActionResource().getFileExtension();
 		if (name != null && name.length() == 0)
 			name = null;
 		if (extension != null && extension.length() == 0)
@@ -102,22 +103,22 @@ public abstract class AbstractPatternsetAction extends ActionOnIResource {
 			if (messageDialogWithToggle.getReturnCode() == Window.CANCEL)
 				return null;
 			if (messageDialogWithToggle.getToggleState()) {
-				if (this.actionResource() instanceof IContainer)
+				if (this.getActionResource() instanceof IContainer)
 					pattern = "**/*." + extension + "/**";
 				pattern = "**/*." + extension;
 			} else {
-				if (this.actionResource() instanceof IContainer)
+				if (this.getActionResource() instanceof IContainer)
 					pattern = "**/" + name + "." + extension + "/**";
 				pattern = "**/" + name + "." + extension;
 			}
 		}
 		if (name != null) {
-			if (this.actionResource() instanceof IContainer)
+			if (this.getActionResource() instanceof IContainer)
 				pattern = "**/" + name + "/**";
 			pattern = "**/" + name;
 		}
 		if (extension != null) {
-			if (this.actionResource() instanceof IContainer)
+			if (this.getActionResource() instanceof IContainer)
 				pattern = "**/*." + extension + "/**";
 			pattern = "**/*." + extension;
 		}
@@ -125,7 +126,7 @@ public abstract class AbstractPatternsetAction extends ActionOnIResource {
 	}
 	public void run(IAction action) {
 		TouchAllFilesOperation touchAllFilesOperation = new TouchAllFilesOperation(
-				this.project());
+				this.getIProject());
 		try {
 			touchAllFilesOperation.run(new NullProgressMonitor());
 		} catch (InvocationTargetException e) {

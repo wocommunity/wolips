@@ -61,6 +61,7 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.objectstyle.wolips.datasets.adaptable.Project;
 import org.objectstyle.wolips.ui.UIPlugin;
+import org.objectstyle.wolips.workbenchutilities.actions.ActionOnIResource;
 
 /**
  * @author uli
@@ -88,11 +89,11 @@ public class PBAction extends ActionOnIResource {
 	 * @param action
 	 */
 	public void run(IAction action) {
-		if (project() != null) {
+		if (getIProject() != null) {
 			try {
 				if (action.getId().equals(PBAction.UpdatePBProjectID)) {
 					TouchAllFilesOperation touchAllFilesOperation = new TouchAllFilesOperation(
-							project());
+							getIProject());
 					touchAllFilesOperation.run(new NullProgressMonitor());
 				}
 			} catch (Exception ex) {
@@ -106,11 +107,11 @@ public class PBAction extends ActionOnIResource {
 	 */
 	public void selectionChanged(IAction action, ISelection selection) {
 		super.selectionChanged(action, selection);
-		if (project() != null) {
+		if (getIProject() != null) {
 			if (action.getId().equals(PBAction.UpdatePBProjectID)) {
 				action.setEnabled(true);
 				try {
-					Project project = (Project) (project())
+					Project project = (Project) (getIProject())
 							.getAdapter(Project.class);
 					action.setEnabled(project.hasWOLipsNature());
 				} catch (Exception exception) {

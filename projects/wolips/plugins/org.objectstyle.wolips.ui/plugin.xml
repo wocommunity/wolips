@@ -60,6 +60,9 @@
             <separator
                   name="group3">
             </separator>
+            <separator
+                  name="group4">
+            </separator>
          </menu>
       </objectContribution>
 <!-- =================================================================================== -->

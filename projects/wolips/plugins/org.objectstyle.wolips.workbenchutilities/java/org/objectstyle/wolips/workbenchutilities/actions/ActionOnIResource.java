@@ -54,7 +54,7 @@
  *
  */
 
-package org.objectstyle.wolips.ui.actions;
+package org.objectstyle.wolips.workbenchutilities.actions;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -90,14 +90,14 @@ public class ActionOnIResource implements IObjectActionDelegate {
 	/**
 	 * @return Returns the IProject
 	 */
-	protected IProject project() {
+	protected IProject getIProject() {
 		return this.project;
 	}
 
 	/**
-	 * @return Returns the IProject
+	 * @return Returns the IResource the action was invoked on
 	 */
-	protected IResource actionResource() {
+	protected IResource getActionResource() {
 		return this.actionResource;
 	}
 
