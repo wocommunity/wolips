@@ -108,13 +108,8 @@
              	<include name="*.html"/>
              </fileset>
          </copy>
-         <copy todir="${dist.base}/stuff">
-             <fileset dir="src/wolips/stuff">
-             	<include name="**/Info.plist"/>
-             </fileset>
-         </copy>
          
-         <copy todir="${dist.base}">
+		 <copy todir="${dist.base}">
              <fileset dir="${wolips.dist}/doc">
              	<include name="**/install.html"/>
              </fileset>

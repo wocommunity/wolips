@@ -16,21 +16,16 @@
 			<p><a href="http://www.eclipse.org/download">Eclipse 2.1.0</a> or above.</p>
 			<p>WO 5.1 or above. (<a href="http://www.tetlabors.de/wo/setup_webobjects_on_windows.html">Setup WebObjects on Windows</a>.)</p>
 			<p>In the case you are on a Mac: 10.2.*.</p>
-			<p>JDK 1.3.1 to launch Eclipse, otherwise you can not use the wizards. You can use 1.4.1 to develop.</p>
+			<p>WOLips is JDK 1.3.1 and  1.4.1 compatible.</p>
 		</subsection>
 		<subsection name="Expand">
-			<p>Expand com.objectstyle.wolips_*.*.*.tar.gz. The expanded folder contains 3 subfolder and this document.</p>
-			<p>The features folder contains 1 feature. There are two plugins in the plugins. The stuff folder may be empty.</p>
+			<p>Expand com.objectstyle.wolips_*.*.*.tar.gz. The expanded folder contains 2 subfolder and this document.</p>
+			<p>The features folder contains 1 feature. There are two plugins in the plugins.</p>
 		</subsection>
 		<subsection name="Install">
 			<p>Copy the content of the features folder in the Eclipse features folder and the content of the plugins folder in the Eclipse plugins folder.</p>
 			<p>On the Mac right click on Eclipse.app. Select show package contents. Navigate to Contens/Resources/Java</p>
 			<p>On Windows the feature and plugins are located in the same folder as the Eclipse.exe.</p>
-		</subsection>
-		<subsection name="Mac">
-			<p>Replace the Info.plist with the one from the stuff folder. (Ctrl click on the App and select show package Contents)</p>
-			<p>To use JDK 1.4.1 replace the Eclipse file in the folder Contents/MacOS with /System/Library/Frameworks/JavaVM.framework/Versions/A/Resources/MacOS/JavaApplicationStub</p>
-			<p>Take care that there is only the new JavaApplicationStub renamed to Eclipse in your MacOS folder. No other files! Otherwise you won`t be able to launch or debug in Eclipse</p>
 		</subsection>
 		<subsection name="Update">
 			<p>Please reset the WOLips perspective after an update.</p>
@@ -38,7 +33,7 @@
 		</subsection>
 		<subsection name="How to proceed">
 			<p>Launch Eclipse</p>
-			<p>It's normal that you have to launch Eclipse.app twice after changes to the plugins and features.</p>
+			<p>On the Mac it's normal that you have to launch Eclipse.app twice after changes to the plugins and features.</p>
 			<p>The update manager should occur. Please activate. On the mac say when Eclipse ask to relaunch and quit restart the application by hand.On other platforms just say yes.</p>
 			<p>If the welcome to WOLips doesn't open you can view the welcome under Help->Welcome.</p>
 		</subsection>
