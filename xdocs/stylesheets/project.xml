@@ -6,6 +6,7 @@
     
     <spacer href="/images/spacer.gif"/>
     <logo href="/images/logo.jpg"/>
+    <wolipslogo href="/images/wolips_logo.gif"/>
     <oslogo href="/images/os_logo.gif"/>
     <css href="/images/objectstyle.css"/>
     
@@ -14,16 +15,22 @@
         <item name="Download" href="http://sourceforge.net/project/showfiles.php?group_id=50507"/>
         <item name="Contributors" href="/contributors.html"/>
         <item name="License" href="/LICENSE"/>
+	<item name="Success Stories" href="/successstories.html"/>
     </menu>
 
 
     <menu name="Documentation">
         <item name="Ant Tasks" href="/ant/index.html"/>
-        <item name="WOLips Plugin" href="/wolips/toc.html"/>
         <item name="Javadoc API" href="/api/index.html"/>
     </menu>
 
-
+    <menu name="WOLips">
+	<item name="Download" href="http://sourceforge.net/project/showfiles.php?group_id=50507"/>
+	<item name="Gallery" href="/gallery.html"/>
+	<item name="jMechanic" href="http://sourceforge.net/projects/jmechanic/"/>
+	<item name="Eclipse" href="http://www.eclipse.org"/>
+    </menu>
+    
     <menu name="Developer">
         <item name="CVS" href="http://sourceforge.net/cvs/?group_id=50507"/>
         <item name="Mailing Lists"  href="http://objectstyle.org/woproject/lists.html"/>

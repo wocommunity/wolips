@@ -12,23 +12,6 @@
     <!-- Define CLASSPATH settings.                    -->
     <!-- ============================================= -->
     <target name="defineClasspath">
-
-    <path id="classpath">
-        <fileset dir="${ant.home}/lib">
-            <include name="ant.jar"/>
-        </fileset>
-        <fileset dir="lib">
-            <include name="*.jar"/>
-        </fileset>
-        <fileset dir="${wo.dir.library.frameworks}">
-            <include name="JavaEOAccess.framework/Resources/Java/*.jar"/>
-            <include name="JavaEOControl.framework/Resources/Java/*.jar"/>
-            <include name="JavaFoundation.framework/Resources/Java/*.jar"/>
-            <include name="JavaWebObjects.framework/Resources/Java/*.jar"/>
-            <include name="JavaJDBCAdaptor.framework/Resources/Java/*.jar"/>
-        </fileset>
-    </path>
-
     </target>
 
     <target name="java" depends="prepare">
@@ -39,20 +22,18 @@
              <fileset dir="${wolips.source.dist}/src">
              </fileset>
         </zip>
-
         <delete dir="${wolips.source.dist}/src"/>
 
 	<zip zipfile="${wolips.source.dist}/javadoc.zip">
-             <fileset dir="${wolips.source.dist}/api">
+             <fileset dir="${woproject.dist}/doc/api">
              </fileset>
         </zip>
 
-        <delete dir="${wolips.source.dist}/api"/>
-     <jar jarfile="${wolips.source.dist}.jar">
-     	<fileset dir="${wolips.source.dist}">
-     	</fileset>
-     </jar>
- 
+        <jar jarfile="${wolips.source.dist}.jar">
+            <fileset dir="${wolips.source.dist}">
+            </fileset>
+       </jar>
+
     </target>
          
          
@@ -81,6 +62,8 @@
              <fileset dir="src/wolips-targetbuilder/java"/>
              <fileset dir="src/wolips-support/java"/>
              <fileset dir="src/wolips-launching/java"/>
+	     <fileset dir="src/wolips-profiling/java"/>
+	     <fileset dir="src/wolips-devstudio/java"/>
          </copy>
 
     </target>
@@ -104,26 +87,11 @@
     <!-- Builds API documenatation.                 -->
     <!-- ========================================== -->
     <target name="api" depends="prepare">
-        <javadoc   packagenames="org.objectstyle.*"
-                   defaultexcludes="yes"
-                   destdir="${wolips.source.dist}/api"
-                   author="true"
-                   version="true"
-                   use="true"
-                   windowtitle="WOLips API">
-
-        <classpath refid="classpath"/>
-        <sourcepath>
-            <pathelement path="${wolips.source.dist}/src"/>
-        </sourcepath>
-        <doctitle><![CDATA[<h2>WOLips API Documentation</h2>]]></doctitle>
-        </javadoc>
     </target>
     
     
     <target name="doc" depends="prepare">
     	<mkdir dir="${wolips.source.dist}/src"/>
-    	<mkdir dir="${wolips.source.dist}/api"/>
     </target>
     
     

@@ -113,53 +113,8 @@
                <include name="LICENSE*"/>
             </fileset>
         </copy>
-
-        <taskdef name="anakia" classname="org.apache.velocity.anakia.AnakiaTask">
-            <classpath refid="classpath"/>
-        </taskdef>
-        
-       <!-- Build site in Plugin docs directory -->
-        <anakia basedir="src/wolips-help/xdocs/wolips" destdir="${wolips.help.dist}/doc"
-             extension=".html" style="wolips.vsl"
-             excludes="**/stylesheets/**"
-             includes="**/*.xml"
-             lastModifiedCheck="true"
-             templatePath="src/wolips-help/xdocs/stylesheets">
-        </anakia>
-
-        <!-- copy images -->
-        <copy todir="${wolips.help.dist}/doc/images/wolips" filtering="no">
-            <fileset dir="src/wolips-help/xdocs/images">
-                <include name="**/*.gif"/>
-                <include name="**/*.jpeg"/>
-                <include name="**/*.jpg"/>
-                <include name="**/*.css"/>
-            </fileset>
-        </copy>
     </target>
     
     <target name="site-doc" depends="prepare" if="wolips.build.help">
-        <taskdef name="anakia" classname="org.apache.velocity.anakia.AnakiaTask">
-            <classpath refid="classpath"/>
-        </taskdef>
-
-        <anakia basedir="src/wolips-help/xdocs" destdir="${woproject.dist}/doc"
-     		extension=".html" style="woproject.vsl"
-     		projectFile="../../../xdocs/stylesheets/project.xml"
-     		excludes="**/stylesheets/**"
-     		includes="**/*.xml"
-     		lastModifiedCheck="true"
-     		templatePath="xdocs/stylesheets">
-		</anakia>
-
-        <!-- copy images -->
-        <copy todir="${woproject.dist}/doc/images/wolips" filtering="no">
-            <fileset dir="src/wolips-help/xdocs/images">
-                <include name="**/*.gif"/>
-                <include name="**/*.jpeg"/>
-                <include name="**/*.jpg"/>
-                <include name="**/*.css"/>
-            </fileset>
-        </copy>
     </target>
 </project>

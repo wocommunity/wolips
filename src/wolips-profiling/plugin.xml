@@ -34,7 +34,6 @@
       <import plugin="org.eclipse.compare"/>
       <import plugin="org.apache.lucene"/>
       <import plugin="org.eclipse.ui.externaltools"/>
-      <import plugin="org.eclipse.pde.runtime"/>
       <import plugin="org.objectstyle.wolips"/>
       <import plugin="jmechanic.eclipse.profiler"/>
    </requires>

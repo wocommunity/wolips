@@ -16,6 +16,13 @@
         <fileset dir="lib">
             <include name="*.jar"/>
         </fileset>
+        <fileset dir="lib/eclipse">
+            <include name="*.jar"/>
+        </fileset>
+        <fileset dir="lib/jmechanic">
+            <include name="*.jar"/>
+        </fileset>
+
         <fileset dir="${wo.dir.library.frameworks}">
             <include name="JavaEOAccess.framework/Resources/Java/*.jar"/>
             <include name="JavaEOControl.framework/Resources/Java/*.jar"/>
@@ -148,6 +155,14 @@
         <classpath refid="classpath"/>
         <sourcepath>
             <pathelement path="src/java"/>
+             <pathelement path="src/java"/>
+             <pathelement path="src/wolips/java"/>
+             <pathelement path="src/wolips-help/java"/>
+             <pathelement path="src/wolips-targetbuilder/java"/>
+             <pathelement path="src/wolips-support/java"/>
+             <pathelement path="src/wolips-launching/java"/>
+	     <pathelement path="src/wolips-profiling/java"/>
+	     <pathelement path="src/wolips-devstudio/java"/>
         </sourcepath>
         <doctitle><![CDATA[<h2>WOProject API Documentation</h2>]]></doctitle>
         </javadoc>

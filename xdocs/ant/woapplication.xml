@@ -139,6 +139,13 @@
 					<td valign="top" align="center">Not applicable, leave it out when you want to include the framework by default.</td>
 				</tr>
 			</table>
+            <h4>lib</h4>
+			<p>The nested <code>lib</code> element specifies a <a
+			href="http://jakarta.apache.org/ant/manual/CoreTypes/fileset.html">FileSet</a>.
+			This should be a fileset of jar libraries required by your application. All files
+            in this fileset will end up in the <code>Resources/Java</code> folder of the application,
+            and will be included on the classpath for this application.</p>
+
 			
 			<h3>Examples:</h3>
 
