@@ -95,18 +95,23 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 	public WOLipsPlugin(IPluginDescriptor descriptor) {
 		super(descriptor);
 		plugin = this;
+		try {
 		// set up missing preferences
 		Preferences.setDefaults();
 		// set log factory
 		System.setProperty(
 			"org.apache.commons.logging.LogFactory",
-			"org.objectstyle.wolips.logging.WOLipsLogFactory");
+			"org.objectstyle.wolips.core.plugin.logging.WOLipsLogFactory");
 		LogFactory.getFactory().setAttribute(
 			WOLipsLogFactory.ATTR_GLOBAL_LOG_LEVEL,
 			new Integer(
 				Preferences.getString(IWOLipsPluginConstants.PREF_LOG_LEVEL)));
 		// set own logger
 		log = LogFactory.getLog(WOLipsPlugin.class);
+		}
+		catch(Exception exception) {
+			System.out.println("Exception in WOLips constructor: " + exception.getMessage());
+		}
 	}
 	/**
 	 * Calls EarlyStartup.earlyStartup().

@@ -151,21 +151,30 @@ public class EarlyStartup extends AWOLips {
 	/**
 	 * Method writePropertiesFileToUserHome.
 	 */
-	private void writePropertiesFileToUserHome() throws Exception {
+	private void writePropertiesFileToUserHome() throws Exception
+	 {
 		if (!Preferences
 			.getBoolean(PREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH))
 			return;
 		URL relativeBuildFile = null;
 		URL buildFile = null;
 		IProgressMonitor monitor = null;
-		try {
 			relativeBuildFile =
 				new URL(WOLipsPlugin.baseURL(), build_user_home_properties);
 			buildFile = Platform.asLocalURL(relativeBuildFile);
 			monitor = new NullProgressMonitor();
 			RunAnt runAnt = new RunAnt();
+		try {
 			runAnt.asAnt(buildFile.getFile().toString(), monitor, null);
-		} finally {
+		}
+		catch(Throwable throwable) {
+			//this will allways fail for the first time
+		}
+		finally {
+					relativeBuildFile = null;
+			buildFile = null;
+			monitor = null;
+			runAnt = null;
 			relativeBuildFile = null;
 			buildFile = null;
 			monitor = null;
