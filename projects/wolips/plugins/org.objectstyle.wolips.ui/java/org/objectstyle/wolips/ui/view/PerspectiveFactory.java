@@ -98,6 +98,7 @@ public class PerspectiveFactory implements IPerspectiveFactory {
 		folder = null;
 
 		IFolderLayout outputfolder = layout.createFolder("bottom", IPageLayout.BOTTOM, (float) 0.75, editorArea); //$NON-NLS-1$
+		outputfolder.addView(IPageLayout.ID_PROBLEM_VIEW);
 		outputfolder.addView(IPageLayout.ID_TASK_LIST);
 		outputfolder.addView(IConsoleConstants.ID_CONSOLE_VIEW);
 		outputfolder.addPlaceholder(SearchUI.SEARCH_RESULT_VIEW_ID);
@@ -115,7 +116,7 @@ public class PerspectiveFactory implements IPerspectiveFactory {
 		layout.addActionSet(JavaUI.ID_ELEMENT_CREATION_ACTION_SET);
 		layout.addActionSet(PerspectiveFactory.ID_BUILD_ACTION_SET);
 		layout.addActionSet(PerspectiveFactory.ID_ELEMENT_CREATION_ACTION_SET);
-
+		layout.addActionSet(IPageLayout.ID_NAVIGATE_ACTION_SET);
 		// views - java
 		//layout.addShowViewShortcut(WOLipsPlugin.ID_Finder);
 		layout.addShowViewShortcut(JavaUI.ID_PACKAGES);
@@ -127,6 +128,7 @@ public class PerspectiveFactory implements IPerspectiveFactory {
 		layout.addShowViewShortcut(IConsoleConstants.ID_CONSOLE_VIEW);
 
 		// views - standard workbench
+		layout.addShowViewShortcut(IPageLayout.ID_PROBLEM_VIEW);
 		layout.addShowViewShortcut(IPageLayout.ID_OUTLINE);
 		layout.addShowViewShortcut(IPageLayout.ID_TASK_LIST);
 		layout.addShowViewShortcut(IPageLayout.ID_RES_NAV);
