@@ -386,6 +386,7 @@ public class WOIncrementalBuilder extends IncrementalProjectBuilder {
 		//}
 		//super.startupOnInitialize();
 	}
+	
 	WOBuildVisitor _buildVisitor = null;
 	static abstract class WOBuildHelper 
 	    extends ResourceUtilities
@@ -578,6 +579,9 @@ public class WOIncrementalBuilder extends IncrementalProjectBuilder {
 		 * @see org.eclipse.core.resources.IResourceDeltaVisitor#visit(IResourceDelta)
 		 */
 		public boolean visit(IResourceDelta delta) throws CoreException {
+			if(!super.visit(delta)) {
+				return false;
+			}
 			return _visitResource(delta.getResource(), delta);
 		}
 		/**
