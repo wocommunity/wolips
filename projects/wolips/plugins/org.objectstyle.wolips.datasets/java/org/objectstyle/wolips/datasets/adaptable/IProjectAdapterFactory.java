@@ -56,6 +56,7 @@
 package org.objectstyle.wolips.datasets.adaptable;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IAdapterFactory;
+import org.objectstyle.wolips.datasets.DataSetsPlugin;
 /**
  * @author ulrich
  * 
@@ -75,8 +76,20 @@ public class IProjectAdapterFactory implements IAdapterFactory {
 	 * @return Returns the adapter.
 	 */
 	public Object getAdapter(Object adaptableObject, Class adapterType) {
-		if (adaptableObject instanceof IProject)
-			return new Project((IProject) adaptableObject);
+		AdapterCache adapterCache = DataSetsPlugin.getDefault()
+				.getAdapterCache();
+		if (adaptableObject instanceof IProject) {
+			if (adapterCache != null) {
+				Object objectFromCache = adapterCache
+						.getProject(adaptableObject);
+				if (objectFromCache != null)
+					return objectFromCache;
+			}
+			Project project = new Project((IProject) adaptableObject);
+			if (adapterCache != null)
+				adapterCache.setProject(adaptableObject, project);
+			return project;
+		}
 		return null;
 	}
 	/*

@@ -68,6 +68,7 @@ import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
+import org.objectstyle.wolips.datasets.adaptable.AdapterCache;
 import org.objectstyle.wolips.datasets.internal.Api;
 import org.objectstyle.wolips.datasets.listener.MasterResourceChangeListener;
 import org.osgi.framework.BundleContext;
@@ -80,6 +81,8 @@ public class DataSetsPlugin extends Plugin implements IDataSetTypes {
 	private static DataSetsPlugin plugin;
 	//Resource bundle.
 	private ResourceBundle resourceBundle;
+	
+	private AdapterCache adapterCache;
 	//	DataSets based on files
 	protected final static String API_EXTENSION = "api";
 	protected final static String WOD_EXTENSION = "wod";
@@ -256,6 +259,7 @@ public class DataSetsPlugin extends Plugin implements IDataSetTypes {
 	 */
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
+		adapterCache = new AdapterCache();
 		//add resource change listener to update project file on resource
 		// changes
 		resourceChangeListener = new MasterResourceChangeListener();
@@ -270,6 +274,14 @@ public class DataSetsPlugin extends Plugin implements IDataSetTypes {
 	public void stop(BundleContext context) throws Exception {
 		ResourcesPlugin.getWorkspace().removeResourceChangeListener(
 				resourceChangeListener);
+		adapterCache.clean();
+		adapterCache = null;
 		super.stop(context);
+	}
+	/**
+	 * @return Returns the adapterCache.
+	 */
+	public AdapterCache getAdapterCache() {
+		return adapterCache;
 	}
 }
