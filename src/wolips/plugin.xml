@@ -169,9 +169,9 @@
                id="org.objectstyle.wolips.OpenWOFrameworkCreationWizard">
          </action>
          <action
-               label="%OpenWOProjectCreationWizard.label"
+               label="%OpenWOApplicationCreationWizard.label"
                icon="icons/woproject/woapplication_wiz.gif"
-               tooltip="%OpenWOProjectCreationWizard.tooltip"
+               tooltip="%OpenWOApplicationCreationWizard.tooltip"
                class="org.objectstyle.wolips.core.actions.OpenWOProjectCreationWizard"
                toolbarPath="Normal/WOLipsWizards"
                id="org.objectstyle.wolips.OpenWOProjectCreationWizard">
@@ -264,13 +264,6 @@
                menubarPath="additions"
                enablesFor="1"
                id="org.objectstyle.wolips.actions.OpenSourceAction">
-         </action>
-         <action
-               label="%WOLips.PopupMenu.DeleteComponent"
-               class="org.objectstyle.wolips.core.actions.DeleteComponentAction"
-               menubarPath="additions"
-               enablesFor="1"
-               id="org.objectstyle.wolips.actions.DeleteComponentAction">
          </action>
       </objectContribution>
    </extension>
