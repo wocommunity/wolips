@@ -63,6 +63,7 @@ import java.util.Hashtable;
 
 import org.eclipse.core.runtime.IPath;
 import org.objectstyle.wolips.plugin.WOLipsPlugin;
+import org.objectstyle.wolips.utils.WOLipsUtils;
 import org.objectstyle.woproject.env.WOVariables;
 import org.w3c.dom.Document;
 /**
@@ -112,8 +113,8 @@ public abstract class _FileFromTemplateCreator {
 			try {
 				InputStream input =
 					(new URL(WOLipsPlugin.baseURL(),
-						WOVariables.woTemplateDirectory()
-							+ WOVariables.woTemplateFiles()))
+						WOLipsUtils.woTemplateDirectory()
+							+ WOLipsUtils.woTemplateFiles()))
 						.openStream();
 				templateDocument =
 					XercesDocumentBuilder.documentBuilder().parse(input);
