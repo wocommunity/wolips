@@ -471,8 +471,8 @@ public class WOApplication extends WOTask {
 	public WOEnvironment getWOEnvironment() {
 		if (woEnvironment != null)
 			return woEnvironment;
-		woEnvironment = new WOEnvironment();
-		if (!woEnvironment.getWOVariables().foundWOBuildProperties())
+		woEnvironment = new WOEnvironment(this.getProject().getProperties());
+		if (!woEnvironment.variablesConfigured())
 			this.getProject().fireBuildFinished(
 				new WOBuildPropertiesNotFoundException());
 		return woEnvironment;
