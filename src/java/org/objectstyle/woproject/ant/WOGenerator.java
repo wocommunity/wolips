@@ -89,7 +89,7 @@ public class WOGenerator extends CayenneGenerator {
      * from EOModel instead of Cayenne DataMap XML file. 
      */
     protected DataMap loadDataMap() throws Exception {
-        return new EOModelProcessor().loadEOModel(map.getCanonicalPath());
+        return new EOModelReader().loadEOModel(map.getCanonicalPath());
     }
 
     protected DefaultClassGenerator createGenerator() {

@@ -56,18 +56,21 @@
 package org.objectstyle.woproject.ant;
 
 import org.objectstyle.cayenne.wocompat.EOModelHelper;
+import org.objectstyle.cayenne.wocompat.EOModelProcessor;
 
 /**
- * Special wo-friendly subclass of Cayenne EOModelProcessor.
+ * WebObjects-friendly subclass of Cayenne EOModelProcessor.
+ * Unlike Cayenne version, this processor uses data types
+ * specific to WebObjects.
  * 
  * @author Andrei Adamchik
  */
-public class EOModelProcessor extends org.objectstyle.cayenne.wocompat.EOModelProcessor {
+public class EOModelReader extends EOModelProcessor {
 
     /**
      * Constructor for EOModelProcessor.
      */
-    public EOModelProcessor() {
+    public EOModelReader() {
         super();
     }
 
