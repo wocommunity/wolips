@@ -1,9 +1,9 @@
 package org.objectstyle.woproject.ant;
 /* ====================================================================
- * 
- * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 The ObjectStyle Group 
+ * The ObjectStyle Group Software License, Version 1.0
+ *
+ * Copyright (c) 2002 The ObjectStyle Group
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -11,7 +11,7 @@ package org.objectstyle.woproject.ant;
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -19,15 +19,15 @@ package org.objectstyle.woproject.ant;
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution, if
- *    any, must include the following acknowlegement:  
- *       "This product includes software developed by the 
+ *    any, must include the following acknowlegement:
+ *       "This product includes software developed by the
  *        ObjectStyle Group (http://objectstyle.org/)."
  *    Alternately, this acknowlegement may appear in the software itself,
  *    if and wherever such third-party acknowlegements normally appear.
  *
- * 4. The names "ObjectStyle Group" and "Cayenne" 
+ * 4. The names "ObjectStyle Group" and "Cayenne"
  *    must not be used to endorse or promote products derived
- *    from this software without prior written permission. For written 
+ *    from this software without prior written permission. For written
  *    permission, please contact andrus@objectstyle.org.
  *
  * 5. Products derived from this software may not be called "ObjectStyle"
@@ -54,7 +54,6 @@ package org.objectstyle.woproject.ant;
  * <http://objectstyle.org/>.
  *
  */
-
 import java.io.*;
 import java.util.Enumeration;
 import java.util.Vector;
@@ -65,12 +64,12 @@ import org.apache.tools.ant.taskdefs.*;
 import org.apache.tools.ant.types.FileSet;
 
 /**
-  * Ant task to build WebObjects framework. For detailed 
-  * instructions go to the  
-  * <a href="../../../../../ant/woframework.html">manual page</a>. 
-  * 
-  * @ant.task category="packaging"
-  */
+ * Ant task to build WebObjects framework. For detailed instructions go to the
+ * <a href="../../../../../ant/woframework.html">manual page</a> .
+ *
+ *
+ * @ant.task category="packaging"
+ */
 public class WOFramework extends MatchingTask {
     private String name;
     private String destDir;
@@ -79,34 +78,48 @@ public class WOFramework extends MatchingTask {
     private Vector resources = new Vector();
     private Vector wsresources = new Vector();
 
+
     public void setName(String name) {
         this.name = name;
     }
+
 
     public void setDestDir(String destDir) {
         this.destDir = destDir;
     }
 
+
     public void addClasses(FileSet set) {
         classes.addElement(set);
     }
+
 
     public void addLib(FileSet set) {
         lib.addElement(set);
     }
 
+
     public void addResources(FileSet set) {
         resources.addElement(set);
     }
+
 
     public void addWsresources(FileSet set) {
         wsresources.addElement(set);
     }
 
+
     public void execute() throws BuildException {
         validateAttributes();
         createDirectories();
-        jarClasses();
+
+        if (hasClasses()) {
+            jarClasses();
+        }
+
+        if (hasLib()) {
+            copyLibs();
+        }
 
         if (hasResources()) {
             copyResources();
@@ -119,10 +132,12 @@ public class WOFramework extends MatchingTask {
         buildInfo();
     }
 
+
     /**
-     * Ensure we have a consistent and legal set of attributes, and set
-     * any internal flags necessary based on different combinations
-     * of attributes.
+     * Ensure we have a consistent and legal set of attributes, and set any
+     * internal flags necessary based on different combinations of attributes.
+     *
+     * @throws BuildException Description of the Exception
      */
     protected void validateAttributes() throws BuildException {
         if (name == null) {
@@ -133,6 +148,7 @@ public class WOFramework extends MatchingTask {
             throw new BuildException("'destDir' attribute is missing.");
         }
     }
+
 
     protected void createDirectories() throws BuildException {
         Mkdir mkdir = new Mkdir();
@@ -156,12 +172,13 @@ public class WOFramework extends MatchingTask {
         }
     }
 
+
     protected void jarClasses() throws BuildException {
         Jar jar = new Jar();
         initChildTask(jar);
 
         File frameworkJar =
-            new File(resourcesDir(), "Java" + File.separator + name.toLowerCase() + ".jar");
+                new File(resourcesDir(), "Java" + File.separator + name.toLowerCase() + ".jar");
         jar.setJarfile(frameworkJar);
 
         if (hasClasses()) {
@@ -174,6 +191,10 @@ public class WOFramework extends MatchingTask {
         jar.execute();
     }
 
+
+    protected void copyLibs() throws BuildException { }
+
+
     protected void copyResources() throws BuildException {
         WOCompCopy cp = new WOCompCopy();
         initChildTask(cp);
@@ -185,6 +206,7 @@ public class WOFramework extends MatchingTask {
         }
         cp.execute();
     }
+
 
     protected void copyWsresources() throws BuildException {
         Copy cp = new Copy();
@@ -199,65 +221,30 @@ public class WOFramework extends MatchingTask {
         cp.execute();
     }
 
+
     protected void buildInfo() throws BuildException {
-        // copy template Info.plist
-        InputStream rin =
-            WOFramework.class.getClassLoader().getResourceAsStream("Info.plist");
-        File info = new File(resourcesDir(), "Info.plist");
-
+        InfoBuilder infoBuilder = new InfoBuilder(name);
         try {
-            BufferedWriter out = new BufferedWriter(new FileWriter(info));
-            BufferedReader in = new BufferedReader(new InputStreamReader(rin));
-            String line = null;
-
-            while ((line = in.readLine()) != null) {
-                out.write(subsToken(line));
-                out.write("\n");
-            }
-
-            out.flush();
-            out.close();
-            in.close();
-        }
-        catch (IOException ioex) {
+            infoBuilder.writeInfo("Info.plist", new File(resourcesDir(), "Info.plist"));
+        } catch (IOException ioex) {
             throw new BuildException("Error copying Info.plist", ioex);
         }
     }
-    
-
-    /** Substitutes a single occurance of "@NAME@" with
-      * the value of <code>name</code> instance variable
-      * and a single occurrance of "@LOWERC_NAME@" with 
-      * the lowercase value of  <code>name</code>. 
-      * 
-      * <p>TODO: use some regular expressions package to do this.</p>
-      */
-    private String subsToken(String line) {
-        int tokInd = line.indexOf("@NAME@");
-        if (tokInd >= 0) {
-            return line.substring(0, tokInd) + name + line.substring(tokInd + 6);
-        }
-
-        int lctokInd = line.indexOf("@LOWERC_NAME@");
-        return (lctokInd >= 0)
-            ? line.substring(0, lctokInd)
-                + name.toLowerCase()
-                + line.substring(lctokInd + 13)
-            : line;
-    }
-    
 
     protected File frameworkDir() {
         return getProject().resolveFile(destDir + File.separator + name + ".framework");
     }
 
+
     protected File resourcesDir() {
         return new File(frameworkDir(), "Resources");
     }
 
+
     protected File wsresourcesDir() {
         return new File(frameworkDir(), "WebServerResources");
     }
+
 
     protected void initChildTask(Task t) {
         t.setOwningTarget(this.getOwningTarget());
@@ -266,25 +253,31 @@ public class WOFramework extends MatchingTask {
         t.setLocation(this.getLocation());
     }
 
+
     protected boolean hasResources() {
         return resources.size() > 0;
     }
+
 
     protected boolean hasClasses() {
         return classes.size() > 0;
     }
 
+
     protected boolean hasLib() {
         return lib.size() > 0;
     }
+
 
     protected boolean hasJava() {
         return classes.size() > 0 || lib.size() > 0;
     }
 
+
     protected boolean hasWs() {
         return wsresources.size() > 0;
     }
+
 
     /**
      * Do any clean up necessary to allow this instance to be used again.
@@ -295,4 +288,7 @@ public class WOFramework extends MatchingTask {
         resources.clear();
         wsresources.clear();
     }
+
+
+
 }
