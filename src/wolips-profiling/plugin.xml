@@ -58,7 +58,7 @@
 
       <launchConfigurationTypeImage
 
-            icon="icons/launching/WOLips-launching.gif"
+            icon="icons/profiling/WOLips-profiling.gif"
 
             configTypeID="org.objectstyle.wolips.profiling.ProfiledWOLocalJavaApplication"
 
