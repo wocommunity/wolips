@@ -5,6 +5,8 @@
 <toc>
 
 	<topic label="Inside WOLips" href="./doc_root/programmer/pde.html"/>
+	
+	<topic label="Building from source" href="./doc_root/programmer/build.html"/>
 
 	<topic label="API Reference" href="./doc_root/programmer/api/index.html"/>
 

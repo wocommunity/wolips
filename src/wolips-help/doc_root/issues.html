@@ -7,7 +7,7 @@
 <body bgcolor="#FFFFFF">
 <h1>Bugs, Issues and Other Things</h1>
 <h2><a name="bugs"></a>Bugs</h2>
-<p>...roblems with documented features.</p>
+<p>...problems with documented features.</p>
 <table width="100%">
   <tr> 
     <td> 
@@ -25,33 +25,16 @@
     <td> 
       <p><span
      lang=EN-GB style='mso-fareast-font-family:"MS Mincho";mso-ansi-language:
-     EN-GB'>When you start eclipse for the first time with WOLips installed a 
-        file ~\Library\<span class=SpellE>wobuild.properties</span> should be 
-        created in your user home directory. Make sure this actually did happen! 
-        </span><span lang=EN-GB
-style='mso-fareast-font-family:"MS Mincho";mso-ansi-language:EN-GB'><o:p></o:p></span></p>
+     EN-GB'>On Windows the ~\Library\<span class=SpellE>wobuild.properties is 
+        created with paths using single '\' instead of double '\\'. This will 
+        cause some WOProject Ant scripts to fail. In particular it is not possible 
+        to build WOProject and/or WOLips from source.</span></span></p>
     </td>
     <td> 
-      <p><span
+      <p>Edit the file, and replace all <span lang=EN-GB
+style='mso-fareast-font-family:"MS Mincho";mso-ansi-language:EN-GB'><o:p></o:p></span><span
      lang=EN-GB style='mso-fareast-font-family:"MS Mincho";mso-ansi-language:
-     EN-GB'>If not you’ll have to create it yourself. It should contain this:<o:p></o:p></span></p>
-      <p><span lang=EN-GB style='mso-fareast-font-family:"MS Mincho";
-mso-ansi-language:EN-GB'>#<span class=GramE>This</span> file stores the <span
-class=SpellE>wo</span> specific properties<o:p></o:p><br>
-        </span><span lang=EN-GB style='mso-fareast-font-family:"MS Mincho";
-mso-ansi-language:EN-GB'>#Mon Nov 18 </span><st1:time minute="7" hour="16"><span
- lang=EN-GB style='mso-fareast-font-family:"MS Mincho";mso-ansi-language:EN-GB'>16:07:32</span></st1:time><span
-lang=EN-GB style='mso-fareast-font-family:"MS Mincho";mso-ansi-language:EN-GB'><span class=SpellE>CET</span> 
-        2002<o:p></o:p><br>
-        </span><span class=SpellE><span lang=EN-GB style='mso-fareast-font-family:
-"MS Mincho";mso-ansi-language:EN-GB'>wo.wolocalroot</span></span><span
-lang=EN-GB style='mso-fareast-font-family:"MS Mincho";mso-ansi-language:EN-GB'>=C:\\Apple\\Local<o:p></o:p><br>
-        </span><span class=SpellE><span lang=EN-GB style='mso-fareast-font-family:
-"MS Mincho";mso-ansi-language:EN-GB'>wo.woroot</span></span><span lang=EN-GB
-style='mso-fareast-font-family:"MS Mincho";mso-ansi-language:EN-GB'>=C:\\Apple<o:p></o:p></span></p>
-      <p><span lang=EN-GB style='mso-fareast-font-family:"MS Mincho";
-mso-ansi-language:EN-GB'>Take note of the double back-slashes “\\”.<o:p></o:p></span><span lang=EN-GB
-style='mso-fareast-font-family:"MS Mincho";mso-ansi-language:EN-GB'><o:p></o:p></span></p>
+     EN-GB'><span class=SpellE>single '\' with double '\\'.</span></span></p>
     </td>
   </tr>
   <tr> 
@@ -60,22 +43,21 @@ style='mso-fareast-font-family:"MS Mincho";mso-ansi-language:EN-GB'><o:p></o:p><
     <td>Adding them manually is not a big task!</td>
   </tr>
   <tr> 
-    <td>When you add a jar file (library, corresponding to framework cuurently 
-      under development in eclipse) to a project's java build path it is not included 
-      in the classpath of the built application.</td>
-    <td>Install a copy of the framework in question, and do 'Add Local Framework'. 
+    <td>In some situations eclipse freezes or throws an OutOfMemoryError.</td>
+    <td>Try turning off &quot;Build after JavaBuilder&quot; in the WOLips preferences.</td>
+  </tr>
+  <tr>
+    <td>
+      <p>WOLips adds this to the PB.project file:</p>
+      <p>FRAMEWORKSEARCH = ( <br>
+        C:\Apple\Local\Library\Frameworks<br>
+        ); </p>
+      <p>While PBWO adds this: </p>
+      <p>FRAMEWORKSEARCH = ("C:\\Apple\\Local\\Library\\Frameworks");</p>
+      <p> The WOLips version does not work - ProjectBuilder, WOBuilder and other 
+        tools can't parse the PB.project file! </p>
     </td>
-  </tr>
-  <tr> 
-    <td height="41">Doing 'Add Local Framework' gives different results (in .classpath) 
-      on Windows and Macintosh - none of which works when you move the project 
-      to the other platform.</td>
-    <td height="41">?</td>
-  </tr>
-  <tr> 
-    <td>When building on Macintosh the CLSSPATH.TXT (for Windows deployemnt) file 
-      frequently contains path like this: *.framewor\Versions\A\Resources\Java\*.jar</td>
-    <td>Build on Windows or clean up CLSSPATH.TXT manually.</td>
+    <td>Manually fix the PB.project file each time this happens.</td>
   </tr>
 </table>
 <h2><a name="issues"></a>Issues</h2>
@@ -105,21 +87,22 @@ style='mso-fareast-font-family:"MS Mincho";mso-ansi-language:EN-GB'><o:p></o:p><
         <li>Copy all necessary files from the old PBX project to the new WOLips 
           project</li>
         <li>Do Refresh, Close and Open - and you have fully functional WOLips 
-          project !) Do not use the import wizard</li>
+          project</li>
+        <li>Do not use the import wizard</li>
       </ol>
     </td>
   </tr>
   <tr> 
-    <td>Decline it if the EOModeler on MacOSX asks you to add the files to the 
-      project. Otherwise your PB.project is converted to a XML file.</td>
-    <td>Don't do it!</td>
+    <td> 
+      <p>EOModeler on Macintosh may convert the PB.project file to XML.</p>
+    </td>
+    <td> 
+      <p>When EOModeler asks you if you want to add the file(s) to to the project 
+        - decline.</p>
+    </td>
   </tr>
-  <tr>
-    <td>Working with PBX simultaneously. <span lang=EN-GB style='mso-fareast-font-family:"MS Mincho";
-mso-ansi-language:EN-GB'>In this document, when referring to <span
-class=SpellE>ProjectBuilder</span>, it is the Windows and/or old Macintosh version 
-      (<span class=SpellE>PBWO</span>) that is intended – not the new, Macintosh 
-      only, version (PBX).<o:p></o:p> </span><span lang=EN-GB style='mso-fareast-font-family:"MS Mincho";
+  <tr> 
+    <td><span lang=EN-GB style='mso-fareast-font-family:"MS Mincho";
 mso-ansi-language:EN-GB'>WOLips needs to maintain either the <span
 class=SpellE>PBWO</span> ‘<span class=SpellE>PB.project</span>’ file or the PBX 
       ‘*.<span class=SpellE>pbproj</span>’ file in order to have <span class=SpellE>WOBuilder</span> 
@@ -128,6 +111,12 @@ class=SpellE>PBWO</span> file is apparently much easier to maintain than the PBX
       file. Working in parallel with <span class=SpellE>PBWO</span> and eclipse/WOLips 
       is possible, but is not the primary reason for maintaining the project files.</span></td>
     <td>&nbsp;</td>
+  </tr>
+  <tr>
+    <td>WObuilder wont display component members correctly if the import statements 
+      of its class are too tight.</td>
+    <td>In Windows &gt; Preferences &gt; Java &gt; Organize Imports set &quot;Number 
+      of imports needed for .*&quot; to 2.</td>
   </tr>
 </table>
 <h2><a name="other"></a>Other Things</h2>

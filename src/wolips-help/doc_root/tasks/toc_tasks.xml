@@ -18,5 +18,7 @@
 	</topic>
 	
 	<topic label="Debugging" href="./doc_root/tasks/debug.html"/>
+	
+	<topic label="Profiling" href="./doc_root/tasks/profile.html"/>
       
 </toc>
