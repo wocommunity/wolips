@@ -63,9 +63,13 @@
         * build.output.build.dir = ${build.output.build.dir}
         * build.output.dist.dir = ${build.output.dist.dir}
         * build.output.homepage.dir = ${build.output.homepage.dir}
-        * build.output.test.dir = ${build.output.test.dir}
         * eclipse.home = ${eclipse.home}
+        * test environment
+        * build.output.test.dir = ${build.output.test.dir}
         * test.eclipse.home = ${test.eclipse.home}                
+        * os = ${os}
+        * ws = ${ws}
+        * test.java.library.path = ${test.java.library.path}
         ****************************************
         </echo>
     </target>

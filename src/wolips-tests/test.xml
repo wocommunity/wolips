@@ -31,6 +31,7 @@
       <property name="plugin-name" value="${plugin-name}"/>
       <property name="classname" 
                 value="org.objectstyle.wolips.tests.suite.AutomatedSuite"/>
+      <property name="vmargs" value="-Djava.library.path=${test.java.library.path}"/>          
     </ant>
   </target>
 

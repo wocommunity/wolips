@@ -18,13 +18,66 @@
                 <isset property="test.eclipse.home"/>
             </not>
         </condition>
+        <condition property="os.set">
+            <isset property="os"/>
+        </condition>
+        <condition property="os.not.set">
+            <not>
+                <isset property="os"/>
+            </not>
+        </condition>
+        <condition property="ws.set">
+            <isset property="ws"/>
+        </condition>
+        <condition property="ws.not.set">
+            <not>
+                <isset property="ws"/>
+            </not>
+        </condition>
+        <condition property="test.java.library.path.set">
+            <isset property="test.java.library.path"/>
+        </condition>
+        <condition property="test.java.library.path.not.set">
+            <not>
+                <isset property="test.java.library.path"/>
+            </not>
+        </condition>
+        <condition property="test.properties.set">
+            <and>
+                <isset property="test.eclipse.home"/>
+                <isset property="os"/>
+                <isset property="ws"/>
+                <isset property="test.java.library.path"/>
+            </and>
+        </condition>
     </target>
 
     <!-- ========================================== -->
     <!-- Inform user.                               -->
     <!-- ========================================== -->
     <target name="inform_user" if="test.eclipse.home.not.set">
-        <echo message="Please set the property test.eclipse.home in your build.properties to run wolips unit tests."/>
+        <echo message="Please set the property test.eclipse.home in your build.properties to run wolips unit tests." />
+   </target>
+
+    <!-- ========================================== -->
+    <!-- Inform user.                               -->
+    <!-- ========================================== -->
+    <target name="inform_user_os" if="os.not.set">
+        <echo message="Please set the property os in your build.properties to run wolips unit tests."/>
+    </target>
+
+    <!-- ========================================== -->
+    <!-- Inform user.                               -->
+    <!-- ========================================== -->
+    <target name="inform_user_ws" if="ws.not.set">
+        <echo message="Please set the property ws in your build.properties to run wolips unit tests."/>
+    </target>
+
+    <!-- ========================================== -->
+    <!-- Inform user.                               -->
+    <!-- ========================================== -->
+    <target name="inform_user_test_java_library_path" if="test.java.library.path.not.set">
+        <echo message="Please set the property test.java.library.path in your build.properties to run wolips unit tests."/>
     </target>
 
     <!-- ========================================== -->
@@ -97,7 +150,7 @@
     <!-- ========================================== -->
     <!-- Build test run.                            -->
     <!-- ========================================== -->
-    <target name="test.run" if="test.eclipse.home.set">
+    <target name="test.run" if="test.properties.set">
 	    <ant dir="org.objectstyle.wolips.tests" target="test">
 	        <property name="param.eclipse.home" value="${test.eclipse.home}"/>
 	    </ant>
@@ -106,7 +159,7 @@
     <!-- ========================================== -->
     <!-- Build test.                                -->
     <!-- ========================================== -->
-    <target name="test" depends="verify,inform_user,test.prepare,test.run">
+    <target name="test" depends="verify,inform_user,inform_user_os,inform_user_ws,inform_user_test_java_library_path,test.prepare,test.run">
 	</target>
 
 </project>
