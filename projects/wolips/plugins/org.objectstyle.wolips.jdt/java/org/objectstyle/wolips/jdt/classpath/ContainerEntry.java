@@ -178,6 +178,10 @@ public class ContainerEntry implements Comparable {
 		path = path.append(PathCoder.encode(new Path(this.name)));
 		path = path.append(PathCoder.encode(this.srcPath));
 		path = path.append(PathCoder.encode(this.javaDocPath));
+		if(this.order == null) {
+		    JdtPlugin.getDefault().getPluginLogger().log(this.name + ": null order, setting to '0'");
+		    this.order= "0";
+		}
 		path = path.append(PathCoder.encode(new Path(this.order)));
 		if (this.isExported()) {
 			path = path.append(PathCoder.encode(new Path("true")));
