@@ -56,7 +56,6 @@
 
 package org.objectstyle.wolips.ui.preferences;
 
-import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
@@ -90,31 +89,13 @@ public class PreferencesPage
 	 * @see org.eclipse.jface.preference.FieldEditorPreferencePage#createFieldEditors()
 	 */
 	public void createFieldEditors() {
-		addField(
-			new BooleanFieldEditor(
-				Preferences.PREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH,
-				PreferencesMessages.getString(
-					"Preferences.RebuildWOBuildProperties.Label"),
-				getFieldEditorParent()));
-
-		/*addField(
-			new StringFieldEditor(
-				IWOLipsPluginConstants
-					.PREF_OPEN_WOCOMPONENT_ACTION_INCLUDES_OPEN_HTML,
-				PreferencesMessages.getString(
-					"Preferences.OpenWOComponentActionIncludesOpenHTML.Label"),
-				getFieldEditorParent()));*/
 	}
 	/**
 	 * Method performOK.
 	 * @return boolean
 	 */
 	public boolean performOk() {
-		if (super.performOk()) {
-			//do some stuff	
-			return true;
-		}
-		return false;
+		return super.performOk();
 	}
 	/**
 	 * @see org.eclipse.ui.IWorkbenchPreferencePage#init(IWorkbench)

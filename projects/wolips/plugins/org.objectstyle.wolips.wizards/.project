@@ -4,9 +4,10 @@
 	<comment></comment>
 	<projects>
 		<project>org.objectstyle.wolips</project>
+		<project>org.objectstyle.wolips.ant</project>
 		<project>org.objectstyle.wolips.templateengine</project>
 		<project>org.objectstyle.wolips.tests.core</project>
-		<project>org.objectstyle.wolips.woproject</project>
+		<project>org.objectstyle.wolips.variables</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

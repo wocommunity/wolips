@@ -10,6 +10,7 @@
    <runtime>
       <library name="lib/wolips-testscore.jar">
          <export name="*"/>
+         <packages prefixes="org.objectstyle.wolips.tests.core"/>
       </library>
    </runtime>
    <requires>

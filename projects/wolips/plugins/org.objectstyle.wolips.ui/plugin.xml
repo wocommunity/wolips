@@ -1,33 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
-<fragment
+<plugin
    id="org.objectstyle.wolips.ui"
    name="WOLips User Interface"
    version="1.0.6"
-   provider-name="objectstyle.org"
-   plugin-id="org.objectstyle.wolips"
-   plugin-version="1.0.6"
-   match="compatible">
+   provider-name="objectstyle.org">
 
    <runtime>
       <library name="lib/wolips-ui.jar">
-         <packages prefixes="org.objectstyle.wolips.ui"/>
+         <packages prefixes="org.objectstyle.wolips.ui.actions,org.objectstyle.wolips.ui.editor,org.objectstyle.wolips.ui.labeldecorator,org.objectstyle.wolips.ui.preferences,org.objectstyle.wolips.ui.support,org.objectstyle.wolips.ui.view"/>
       </library>
    </runtime>
-
    <requires>
-      <import plugin="org.eclipse.jdt.ui"/>
       <import plugin="org.eclipse.search"/>
       <import plugin="org.eclipse.ui.console"/>
       <import plugin="org.eclipse.jface.text"/>
       <import plugin="org.eclipse.core.runtime.compatibility"/>
       <import plugin="org.eclipse.debug.ui"/>
-      <import plugin="org.eclipse.ui.workbench.texteditor"/>
-      <import plugin="org.eclipse.ui.editors"/>
       <import plugin="org.eclipse.ui.ide"/>
       <import plugin="org.eclipse.ui"/>
-      <import plugin="org.eclipse.ui.views"/>
+      <import plugin="org.eclipse.ui.workbench.texteditor"/>
+      <import plugin="org.eclipse.ui.editors"/>
+      <import plugin="org.eclipse.jdt.ui"/>
+      <import plugin="org.eclipse.jdt.core"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.objectstyle.wolips"/>
+      <import plugin="org.objectstyle.wolips.variables"/>
    </requires>
+
 
 <!-- =================================================================================== -->
 <!-- Extension: Project actions                                                          -->
@@ -37,20 +37,26 @@
       <objectContribution
             objectClass="org.eclipse.core.resources.IProject"
             adaptable="true"
-            id="org.objectstyle.wolips.core.actions">
+            id="org.objectstyle.wolips.ui">
          <filter
                name="nature"
                value="org.eclipse.jdt.core.javanature">
          </filter>
          <menu
-               label="&amp;WOLips"
-               path="additions"
-               id="org.objectstyle.wolips">
+               label="&amp;WOLips Tools"
+               id="org.objectstyle.wolips.ui">
+			<separator
+                 name="group0">
+           </separator>
+           <separator
+                 name="group1">
+           </separator>
          </menu>
          <action
                label="Update PB.project"
                class="org.objectstyle.wolips.ui.actions.PBAction"
-               menubarPath="org.objectstyle.wolips"
+               enablesFor="1"
+			   menubarPath="org.objectstyle.wolips.ui/group0"
                id="org.objectstyle.wolips.ui.actions.PBAction">
          </action>
       </objectContribution>
@@ -65,8 +71,8 @@
          <action
                label="Open WOComponent"
                class="org.objectstyle.wolips.ui.actions.OpenComponentAction"
-               menubarPath="additions"
                enablesFor="1"
+			   menubarPath="org.objectstyle.wolips.ui/group1"
                id="org.objectstyle.wolips.ui.actions.OpenComponentAction">
          </action>
       </objectContribution>
@@ -78,8 +84,8 @@
          <action
                label="Open .java"
                class="org.objectstyle.wolips.ui.actions.OpenSourceAction"
-               menubarPath="additions"
                enablesFor="1"
+			   menubarPath="org.objectstyle.wolips.ui/group1"
                id="org.objectstyle.wolips.ui.actions.OpenSourceAction">
          </action>
       </objectContribution>
@@ -91,8 +97,8 @@
          <action
                label="Open .java"
                class="org.objectstyle.wolips.ui.actions.OpenSourceAction"
-               menubarPath="additions"
                enablesFor="1"
+			   menubarPath="org.objectstyle.wolips.ui/group1"
                id="org.objectstyle.wolips.ui.actions.OpenSourceAction">
          </action>
       </objectContribution>
@@ -104,8 +110,8 @@
          <action
                label="Open EOModel"
                class="org.objectstyle.wolips.ui.actions.OpenEOModelIndexAction"
-               menubarPath="additions"
                enablesFor="1"
+			   menubarPath="org.objectstyle.wolips.ui/group1"
                id="org.objectstyle.wolips.ui.actions.OpenEOModelIndexAction">
          </action>
       </objectContribution>
@@ -116,7 +122,7 @@
    <extension
          id="org.objectstyle.wolips.editors"
          point="org.eclipse.ui.editors">
-     <editor
+      <editor
             name="WOBuilder"
             default="true"
             icon="icons/wobuilder/webobjects_builder.gif"
@@ -322,17 +328,6 @@
          </action>
       </actionSet>
    </extension>
-<!-- =================================================================================== -->
-<!-- Extension: Classpath container page                                                 -->
-<!-- =================================================================================== -->
-   <extension
-         point="org.eclipse.jdt.ui.classpathContainerPage">
-      <classpathContainerPage
-            name="WO Frameworks"
-            class="org.objectstyle.wolips.ui.classpath.WOClassPathContainerPage"
-            id="org.objectstyle.wolips.WO_CLASSPATH">
-      </classpathContainerPage>
-   </extension>
 <!-- =========================================================================== -->
 <!-- Filter Support                                                              -->
 <!-- =========================================================================== -->
@@ -417,4 +412,5 @@
             pattern="build.xml">
       </filter>
    </extension>
-</fragment>
+
+</plugin>

@@ -330,6 +330,7 @@ public final class RelatedView extends ViewPart implements ISelectionListener, I
 
 		getViewSite().getPage().addSelectionListener(this);
 		getViewSite().getPage().addPartListener(this);
+		this.selectionChanged(null, getViewSite().getPage().getSelection());
 	}
 
 	public void setFocus() {
@@ -339,7 +340,7 @@ public final class RelatedView extends ViewPart implements ISelectionListener, I
 	}
 
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-		if (selection instanceof IStructuredSelection) {
+		if (selection != null && selection instanceof IStructuredSelection) {
 
 			IStructuredSelection sel = (IStructuredSelection) selection;
 
@@ -388,5 +389,13 @@ public final class RelatedView extends ViewPart implements ISelectionListener, I
 	public void partDeactivated(IWorkbenchPart part) {
 	}
 	public void partBroughtToTop(IWorkbenchPart part) {
+	}
+	/* (non-Javadoc)
+	 * @see org.eclipse.ui.IWorkbenchPart#dispose()
+	 */
+	public void dispose() {
+		getViewSite().getPage().removeSelectionListener(this);
+		getViewSite().getPage().removePartListener(this);
+		super.dispose();
 	}
 }

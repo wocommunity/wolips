@@ -59,6 +59,7 @@ import java.io.FilenameFilter;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Vector;
+
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -72,7 +73,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.actions.WorkspaceModifyDelegatingOperation;
-import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
+import org.objectstyle.wolips.variables.VariablesPlugin;
 /**
  * @author mnolte
  * @author uli The one and only page in the eo model creation wizard
@@ -175,8 +176,7 @@ public class EOModelCreationPage extends WizardNewWOResourcePage {
 	 * @param group
 	 */
 	private void createAvailableAdaptorButtons(Group group) {
-		File systemFrameworkDir = new File(WOLipsPlugin.getDefault()
-				.getWOEnvironment().getWOVariables().libraryDir(), "Frameworks");
+		File systemFrameworkDir = new File(VariablesPlugin.getDefault().getSystemRoot().append("Library").append("Frameworks").toOSString());
 		AdaptorFilter adaptorFilter = new AdaptorFilter();
 		systemFrameworkDir.listFiles(adaptorFilter);
 		availableAdaptors = new HashMap(
