@@ -74,7 +74,6 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
 import org.objectstyle.wolips.core.plugin.WOLipsUtils;
-import org.objectstyle.wolips.core.workbench.WorkbenchHelper;
 import org.objectstyle.wolips.wizards.Messages;
 import org.w3c.dom.Element;
 /**
@@ -165,7 +164,7 @@ public class FileFromTemplateCreator extends _FileFromTemplateCreator {
 				// ask for overwriting existing file
 				if (MessageDialog
 					.openQuestion(
-						WorkbenchHelper.getActiveWorkbenchShell(),
+						this.getActiveWorkbenchShell(),
 						Messages.getString("QuestionDialog.title"),
 						e.getMessage()
 							+ "\n"
@@ -182,7 +181,7 @@ public class FileFromTemplateCreator extends _FileFromTemplateCreator {
 				// ask for continuing execution of process
 				if (!MessageDialog
 					.openQuestion(
-						WorkbenchHelper.getActiveWorkbenchShell(),
+						this.getActiveWorkbenchShell(),
 						Messages.getString("QuestionDialog.title"),
 						e.getMessage()
 							+ "\n"
