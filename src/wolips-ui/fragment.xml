@@ -298,4 +298,17 @@
             id="org.objectstyle.wolips.preferences.LaunchPreferencesPage">
       </page>
    </extension>
+<!-- =================================================================================== -->
+<!-- Extension: Decorators                                                               -->
+<!-- =================================================================================== -->
+   <extension
+         point="org.eclipse.ui.decorators">
+      <decorator
+            objectClass="org.eclipse.core.resources.IFolder"
+            label="WebObjects"
+            state="true"
+            class="org.objectstyle.wolips.ui.labeldecorator.WOLabelDecorator"
+            id="org.objectstyle.wolips.utils.decorator">
+      </decorator>
+   </extension>
 </fragment>

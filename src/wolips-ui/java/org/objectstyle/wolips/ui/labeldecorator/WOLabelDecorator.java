@@ -53,7 +53,7 @@
  * <http://objectstyle.org/>.
  *
  */
-package org.objectstyle.wolips.core.utils;
+package org.objectstyle.wolips.ui.labeldecorator;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;

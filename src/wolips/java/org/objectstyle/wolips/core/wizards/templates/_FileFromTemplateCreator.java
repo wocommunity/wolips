@@ -63,7 +63,7 @@ import java.util.Hashtable;
 
 import org.eclipse.core.runtime.IPath;
 import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
-import org.objectstyle.wolips.core.utils.WOLipsUtils;
+import org.objectstyle.wolips.core.plugin.WOLipsUtils;
 import org.w3c.dom.Document;
 /**
  * @author uli

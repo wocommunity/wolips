@@ -60,9 +60,9 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.util.SafeRunnable;
 import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
 import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
+import org.objectstyle.wolips.core.plugin.WOLipsUtils;
 import org.objectstyle.wolips.core.preferences.Preferences;
 import org.objectstyle.wolips.core.preferences.PreferencesMessages;
-import org.objectstyle.wolips.core.utils.WOLipsUtils;
 import org.objectstyle.woproject.env.WOVariables;
 
 /**

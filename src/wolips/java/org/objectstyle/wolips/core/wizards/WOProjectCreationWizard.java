@@ -59,7 +59,7 @@ package org.objectstyle.wolips.core.wizards;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.wizards.newresource.BasicNewProjectResourceWizard;
-import org.objectstyle.wolips.core.images.WOLipsPluginImages;
+import org.objectstyle.wolips.core.plugin.WOLipsPluginImages;
 
 /**
  * @author mnolte

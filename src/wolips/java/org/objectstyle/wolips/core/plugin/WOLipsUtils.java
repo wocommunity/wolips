@@ -53,14 +53,12 @@
  * <http://objectstyle.org/>.
  *
  */
-package org.objectstyle.wolips.core.utils;
+package org.objectstyle.wolips.core.plugin;
 
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
 import org.objectstyle.wolips.core.plugin.logging.WOLipsLog;
-import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
-import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
 
 /**
  * @author mnolte

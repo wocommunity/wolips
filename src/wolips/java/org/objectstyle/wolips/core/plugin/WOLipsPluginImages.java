@@ -54,14 +54,13 @@
  *
  */
 
-package org.objectstyle.wolips.core.images;
+package org.objectstyle.wolips.core.plugin;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.objectstyle.wolips.core.plugin.logging.WOLipsLog;
-import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
 
 /**
  * @author mnolte

@@ -73,7 +73,7 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
-import org.objectstyle.wolips.core.utils.WOLipsUtils;
+import org.objectstyle.wolips.core.plugin.WOLipsUtils;
 import org.objectstyle.wolips.core.wizards.Messages;
 import org.objectstyle.wolips.core.workbench.WorkbenchHelper;
 import org.w3c.dom.Element;
