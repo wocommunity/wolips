@@ -121,7 +121,7 @@ public interface IWOLipsPluginConstants {
 	// mandatory eclipse classpath variables
 	public static final String[] MANDATORY_CLASSPATH_VARIABLES =
 		{ Environment.NEXT_ROOT };
-	public static final String PLUGIN_ID = "org.objectstyle.wolips";
+	public static final String PLUGIN_ID = "org.objectstyle.wolips.core";
 	public static final String build_user_home_properties =
 		"build-user-home-wobuild-properties.xml";
 	public static final String build_user_home_properties_pde_info =

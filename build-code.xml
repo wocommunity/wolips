@@ -6,9 +6,7 @@
 <!--       Normally is called from the main build.xml.        -->
 <!-- ======================================================== -->
 <project name="woproject-code" default="java" basedir=".">
-    <property name="build" value="${output}/build"/>
-
-  	<!-- ============================================= -->
+     	<!-- ============================================= -->
     <!-- Define CLASSPATH settings.                    -->
     <!-- ============================================= -->
     <target name="define-classpath">
@@ -31,7 +29,7 @@
 
 		<path id="classpath-tests">
     		<path refid="classpath"/>
-    		<pathelement path="${dist}/lib/${project.name}.jar"/>
+    		<pathelement path="${woproject.dist}/lib/${woproject.name}.jar"/>
     	</path>
     </target>
 
@@ -49,7 +47,7 @@
             <classpath refid="classpath"/>
         </javac>
 
-        <jar jarfile="${dist}/lib/${project.name}.jar">
+        <jar jarfile="${woproject.dist}/lib/${woproject.name}.jar">
             <fileset dir="${build}/main" />
             <fileset dir="src/resources"/>
             
@@ -58,7 +56,7 @@
             </metainf>
         </jar>
 
-        <copy todir="${dist}/lib" file="lib/${lib.cayenne}"/>
+        <copy todir="${woproject.dist}/lib" file="lib/${lib.cayenne}"/>
     </target>
 
 
@@ -71,14 +69,14 @@
             <classpath refid="classpath-tests"/>
         </javac>
 
-        <jar jarfile="${dist}/lib/${project.name}-tests.jar">
+        <jar jarfile="${woproject.dist}/lib/${woproject.name}-tests.jar">
             <fileset dir="${build}/tests" />
             <metainf dir="doc">
                 <include name="LICENSE*"/>
             </metainf>
         </jar>
 
-        <copy todir="${dist}/lib">
+        <copy todir="${woproject.dist}/lib">
         	<fileset dir="lib">
         		<include name="${lib.log4j}"/>
         		<include name="${lib.junit}"/>
@@ -95,7 +93,7 @@
     <target name="prepare">
         <mkdir dir="${build}/main"/>
         <mkdir dir="${build}/tests"/>
-        <mkdir dir="${dist}/lib"/>
+        <mkdir dir="${woproject.dist}/lib"/>
     </target>
 
 
@@ -103,7 +101,7 @@
     <!-- Deletes temporary files.                      -->
     <!-- ============================================= -->
     <target name="clean">
-        <delete dir="${dist}/lib"/>
+        <delete dir="${woproject.dist}/lib"/>
         <delete dir="${build}"/>
     </target>
 </project>

@@ -4,7 +4,7 @@
    name="%WOLips.help.fragmentName"
    version="0.9.3"
    provider-name="%WOLips.providerName"
-   plugin-id="org.objectstyle.wolips"
+   plugin-id="org.objectstyle.wolips.core"
    plugin-version="0.9.3"
    match="compatible">
 

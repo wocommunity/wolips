@@ -31,17 +31,17 @@
 
 
    <plugin
-         id="org.objectstyle.wolips"
+         id="org.objectstyle.wolips.core"
          download-size="0"
          install-size="0"
-         version="0.9.2">
+         version="0.9.3">
    </plugin>
 
    <plugin
          id="org.objectstyle.wolips.target"
          download-size="0"
          install-size="0"
-         version="0.9.2">
+         version="0.9.3">
    </plugin>
    
    

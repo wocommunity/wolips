@@ -5,18 +5,31 @@
 <!-- Serves as a facade for different helper build files.     -->
 <!-- ======================================================== -->
 <project name="woproject" default="java" basedir=".">
-	<property file="build.properties"/>
+    <property file="build.properties"/>
     <property file="${user.home}${file.separator}build.properties"/>
     <property file="${user.home}${file.separator}Library${file.separator}wobuild.properties"/>
     <property file="default.properties"/>
     <property file="lib/lib.properties"/>
+    <property file="src/wolips/plugin.properties"/>
 
     <!-- ============================================= -->
     <!-- Derived Properties. These properties are      -->
     <!-- derived from other properties. You probably   -->
     <!-- don't want to redefine them.                  -->
     <!-- ============================================= -->
-    <property name="output" value="output"/>
+    <property name="woproject.dist" value="${dist.base}/${woproject.name}-${woproject.version}"/>
+    <property name="wolips.plugin.name" value="org.objectstyle.wolips.core_${WOLips.version}"/>
+    <property name="wolips.dist.base" value="${dist.base}/WOLips_${WOLips.version}"/>
+    <property name="wolips.plugins.folder" value="${wolips.dist.base}/plugins"/>
+    <property name="wolips.features.folder" value="${wolips.dist.base}/features"/>
+    <property name="wolips.dist" value="${wolips.plugins.folder}/${wolips.plugin.name}"/>
+    <property name="wolips.dist.filename" value="${dist.base}/WOLips_${WOLips.version}"/>
+    <property name="wolips.targetbuilder.name" value="org.objectstyle.wolips.targetbuilder_${WOLips.version}"/>
+    <property name="wolips.targetbuilder.dist" value="${wolips.plugins.folder}/${wolips.targetbuilder.name}"/>
+    <property name="wolips.support.name" value="org.objectstyle.wolips.support_${WOLips.version}"/>
+    <property name="wolips.support.dist" value="${wolips.plugins.folder}/${wolips.support.name}"/>
+    <property name="wolips.feature.dist" value="${wolips.features.folder}/org.objectstyle.wolips_${WOLips.version}"/>
+    <property name="wolips.help.dist" value="${wolips.plugins.folder}/org.objectstyle.wolips.help_${WOLips.version}"/>
         
     <target name="help">
         <echo>
@@ -32,8 +45,8 @@
         *  7. test       - Run JUnit tests.
         *  8. set        - Stores the wo specific properties in a file.
         *  9. set_mac    - Stores the wo specific properties in a file on a mac.
-        *
-        *
+        * 10. version    - keeps the wolips version common
+        * 11. .ds_store  - delete important files
         * Build environment:
         *
         * java.home = ${java.home}
@@ -49,11 +62,12 @@
     <!-- ============================================= -->
     <!-- Creates WOProject distribution.               -->
     <!-- ============================================= -->
-    <target name="dist" depends="check"> 
+    <target name="dist" depends=".ds_store,check"> 
     	<ant antfile="build-core.xml" target="dist"/>
     	<ant antfile="build-wolips.xml" target="dist"/>
-		<ant antfile="build-wolips-targetbuilder.xml" target="dist"/>
-		<ant antfile="build-wolips-dist.xml" target="dist"/>
+	<ant antfile="build-wolips-targetbuilder.xml" target="dist"/>
+	<ant antfile="build-wolips-support.xml" target="dist"/>
+	<ant antfile="build-wolips-dist.xml" target="dist"/>
     </target>
 
     <!-- ============================================= -->
@@ -62,9 +76,9 @@
     <target name="java" depends="check">
     	<ant antfile="build-core.xml" target="java"/>
     	<ant antfile="build-wolips.xml" target="java"/>
-		<ant antfile="build-wolips-targetbuilder.xml" target="java"/>
+	<ant antfile="build-wolips-targetbuilder.xml" target="java"/>
+	<ant antfile="build-wolips-support.xml" target="java"/>
     </target>
-
 
     <!-- ============================================= -->
     <!-- Runs Unit tests.                              -->
@@ -88,9 +102,10 @@
     <!-- Builds WOProject documenatation.          -->
     <!-- ========================================== -->
     <target name="doc">
-		<ant antfile="build-core.xml" target="doc"/>
-		<ant antfile="build-wolips.xml" target="doc"/>
-		<ant antfile="build-wolips-targetbuilder.xml" target="doc"/>
+	<ant antfile="build-core.xml" target="doc"/>
+	<ant antfile="build-wolips.xml" target="doc"/>
+	<ant antfile="build-wolips-targetbuilder.xml" target="doc"/>
+	<ant antfile="build-wolips-support.xml" target="doc"/>
     </target>
 
 
@@ -98,9 +113,10 @@
     <!-- Builds API documenatation.                 -->
     <!-- ========================================== -->
     <target name="api">
-		<ant antfile="build-core.xml" target="api"/>
-		<ant antfile="build-wolips.xml" target="api"/>
-		<ant antfile="build-wolips-targetbuilder.xml" target="api"/>
+	<ant antfile="build-core.xml" target="api"/>
+	<ant antfile="build-wolips.xml" target="api"/>
+	<ant antfile="build-wolips-targetbuilder.xml" target="api"/>
+	<ant antfile="build-wolips-support.xml" target="api"/>
     </target>
     
     
@@ -110,17 +126,34 @@
     <!-- ============================================= -->
     <target name="deploy-web" depends="java,doc,api" if="deploy.web">
         <ant antfile="build-wolips.xml" target="deploy-web"/>
-		<ant antfile="build-wolips-targetbuilder.xml" target="deploy-web"/>
-		
-		<!-- This must be the last task, since it would copy all the folders. -->
-	    <ant antfile="build-core.xml" target="deploy-web"/>
+        <ant antfile="build-wolips-targetbuilder.xml" target="deploy-web"/>
+        <ant antfile="build-wolips-support.xml" target="deploy-web"/>
+	<!-- This must be the last task, since it would copy all the folders. -->
+	<ant antfile="build-core.xml" target="deploy-web"/>
     </target>
     
     <!-- ========================================== -->
     <!-- Check properties.                            -->
     <!-- ========================================== -->
     <target name="check">
-		<ant antfile="build-user-home-wobuild-properties.xml" target="check"/>
+	<ant antfile="build-user-home-wobuild-properties.xml" target="check"/>
+    </target>
+
+    <!-- ========================================== -->
+    <!-- WOLips version.                            -->
+    <!-- ========================================== -->
+    <target name="version">
+	<ant antfile="build-wolips-version.xml" target="version"/>
+    </target>
+    
+
+    <!-- ========================================== -->
+    <!-- Delete .DS_Store files.                            -->
+    <!-- ========================================== -->
+    <target name=".ds_store">
+        <delete>
+            <fileset dir="." includes="**/.DS_Store"/>
+        </delete>
     </target>
     
 </project>

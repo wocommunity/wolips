@@ -3,35 +3,21 @@
 <!-- ======================================================== -->
 <!--              Main core WOProject Ant build file          -->
 <!-- ======================================================== -->
-<project name="woproject-core" default="java" basedir=".">
-	<property file="build.properties" />
-    <property file="${user.home}${file.separator}build.properties" />
-    <property file="${user.home}${file.separator}Library${file.separator}wobuild.properties"/>
-<property file="default.properties" />
-         
-
-    <!-- ============================================= -->
-    <!-- Derived Properties. These properties are      -->
-    <!-- derived from other properties. You probably   -->
-    <!-- don't want to redefine them.                  -->
-    <!-- ============================================= -->
-    <property name="dist" value="${dist.base}/${project.name}-${project.version}"/>
-    <property name="output" value="output"/>
-
+<project name="woproject-core" default="java" basedir=".">      
 
     <!-- ============================================= -->
     <!-- Creates WOProject distribution.               -->
     <!-- ============================================= -->
     <target name="dist" depends="prepare,java,doc,api">
          <!-- Copy source code -->
-         <copy todir="${dist}/src">
+         <copy todir="${woproject.dist}/src">
              <fileset dir="src">
              	<exclude name="**/wolips*/**"/>
              </fileset>
          </copy>
 
          <!-- Copy examples code -->
-         <copy todir="${dist}/examples">
+         <copy todir="${woproject.dist}/examples">
              <fileset dir="tests/wo">
              	<exclude name="**/build/**"/>
              	<exclude name="**/dist/**"/>
@@ -39,18 +25,18 @@
              </fileset>
          </copy>
 
-         <tar tarfile="${dist.base}/${project.name}-src-${project.version}.tar">
+         <tar tarfile="${dist.base}/${woproject.name}-src-${woproject.version}.tar">
              <tarfileset dir="${dist.base}">
-                <include name="${project.name}-${project.version}/**"/>
+                <include name="${woproject.name}-${woproject.version}/**"/>
                 <exclude name="**/examples/**"/>
                 <exclude name="**/lib/ant.jar"/>
                 <exclude name="**/lib/${lib.junit}"/>
             </tarfileset>
          </tar>
          
-         <gzip src="${dist.base}/${project.name}-src-${project.version}.tar"
-              zipfile="${dist.base}/${project.name}-src-${project.version}.tar.gz"/>
-         <delete file="${dist.base}/${project.name}-src-${project.version}.tar"/>
+         <gzip src="${dist.base}/${woproject.name}-src-${woproject.version}.tar"
+              zipfile="${dist.base}/${woproject.name}-src-${woproject.version}.tar.gz"/>
+         <delete file="${dist.base}/${woproject.name}-src-${woproject.version}.tar"/>
     </target>
 
 
@@ -73,9 +59,9 @@
     <!-- Sets up build and distribution directories.   -->
     <!-- ============================================= -->
     <target name="prepare">
-        <mkdir dir="${dist}"/>
-        <mkdir dir="${dist}/src"/>
-        <mkdir dir="${dist}/examples"/>
+        <mkdir dir="${woproject.dist}"/>
+        <mkdir dir="${woproject.dist}/src"/>
+        <mkdir dir="${woproject.dist}/examples"/>
     </target>
 
 
@@ -87,8 +73,8 @@
         <ant antfile="build-code.xml" target="clean"/>
         <ant antfile="build-doc.xml" target="clean"/>
                 
-        <delete dir="${dist}"/>
-        <delete dir="${output}/build/main"/>
+        <delete dir="${woproject.dist}"/>
+        <delete dir="${build}/main"/>
     </target>
     
     

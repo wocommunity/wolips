@@ -36,14 +36,14 @@
 
          <!-- copy all but HTML -->
          <copy todir="${deploy.web}/woproject">
-             <fileset dir="${dist}/doc">
+             <fileset dir="${woproject.dist}/doc">
              	<exclude name="**/*.html"/>
              </fileset>
          </copy>
 
          <!-- do replacement in HTML files -->
          <copy todir="${deploy.web}/woproject" overwrite="true">
-             <fileset dir="${dist}/doc">
+             <fileset dir="${woproject.dist}/doc">
              	<include name="**/*.html"/>
              </fileset>
 
@@ -58,8 +58,8 @@
     <!-- Sets up build and distribution directories.   -->
     <!-- ============================================= -->
     <target name="prepare">
-        <mkdir dir="${dist}/doc"/>
-        <mkdir dir="${dist}/doc/api"/>
+        <mkdir dir="${woproject.dist}/doc"/>
+        <mkdir dir="${woproject.dist}/doc/api"/>
     </target>
 
 
@@ -67,7 +67,7 @@
     <!-- Different clean targets.                      -->
     <!-- ============================================= -->
     <target name="clean">
-        <delete dir="${dist}/doc"/>
+        <delete dir="${woproject.dist}/doc"/>
     </target>
 
 
@@ -77,7 +77,7 @@
     <!-- ========================================== -->
     <target name="doc" depends="prepare">
         <!-- copy all licenses inclusing ours -->
-        <copy todir="${dist}/doc">
+        <copy todir="${woproject.dist}/doc">
             <fileset dir="doc">
                <include name="LICENSE*"/>
             </fileset>
@@ -88,7 +88,7 @@
         </taskdef>
 
         <!-- Build site -->
-        <anakia basedir="xdocs" destdir="${dist}/doc"
+        <anakia basedir="xdocs" destdir="${woproject.dist}/doc"
              extension=".html" style="woproject.vsl"
              projectFile="stylesheets/project.xml"
              excludes="**/stylesheets/**"
@@ -98,7 +98,7 @@
         </anakia>
 
         <!-- copy images -->
-        <copy todir="${dist}/doc/images" filtering="no">
+        <copy todir="${woproject.dist}/doc/images" filtering="no">
             <fileset dir="xdocs/images">
                 <include name="**/*.gif"/>
                 <include name="**/*.jpeg"/>
@@ -108,14 +108,14 @@
         </copy>
 
         <!-- copy templates -->
-        <copy todir="${dist}/doc/templates" filtering="no">
+        <copy todir="${woproject.dist}/doc/templates" filtering="no">
             <fileset dir="src/resources/wogen">
                 <include name="**/*.vm"/>
             </fileset>
         </copy>
         
         <!-- Copy articles -->
-        <copy todir="${dist}/doc/articles">
+        <copy todir="${woproject.dist}/doc/articles">
              <fileset dir="doc/articles">
              	<include name="**/*.html"/>
              	<include name="**/*.gif"/>
@@ -131,7 +131,7 @@
     <!-- Builds API documenatation.                 -->
     <!-- ========================================== -->
     <target name="api" depends="prepare">
-        <copy todir="${dist}/doc">
+        <copy todir="${woproject.dist}/doc">
             <fileset dir="doc">
                 <include name="**/LICENSE*"/>
             </fileset>
@@ -139,7 +139,7 @@
 
         <javadoc   packagenames="org.objectstyle.*"
                    defaultexcludes="yes"
-                   destdir="${dist}/doc/api"
+                   destdir="${woproject.dist}/doc/api"
                    author="true"
                    version="true"
                    use="true"

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin
-   id="org.objectstyle.wolips"
+   id="org.objectstyle.wolips.core"
    name="%WOLips.pluginName"
    version="0.9.3"
    provider-name="%WOLips.providerName"

@@ -4,21 +4,10 @@
 <!--                 WOLips Ant file.                         -->
 <!-- ======================================================== -->
 <project name="woproject-wolips" default="java" basedir=".">
-	<property file="build.properties" />
-    <property file="${user.home}${file.separator}build.properties" />
-    <property file="default.properties" />
-    <property file="src/wolips/plugin.properties"/>
-    <property name="output" value="output"/>
-            
-    <!-- ============================================= -->
-    <!-- Derived Properties.                           -->
-    <!-- ============================================= -->
-    <property name="build" value="${output}/build"/>
-    <property name="wolips.name" value="org.objectstyle.wolips_${WOLips.version}"/>
-    <property name="wolips.dist" value="${dist.base}/plugins/${wolips.name}"/>
+	
+                
     <!-- main distribution. -->
-    <property name="dist" value="${dist.base}/${project.name}-${project.version}"/>
-
+    
     <!-- ============================================= -->
     <!-- Define CLASSPATH settings.                    -->
     <!-- ============================================= -->
@@ -69,7 +58,7 @@
         
         <!-- Copy WOProject JAR's -->
         <copy todir="${wolips.dist}/lib">
-             <fileset dir="${dist}/lib">
+             <fileset dir="${woproject.dist}/lib">
              	<exclude name="${lib.junit}"/>
              	<exclude name="${lib.log4j}"/>
              	<exclude name="${lib.cayenne}"/>
@@ -77,7 +66,7 @@
              	<exclude name="woproject-tests.jar"/>
              </fileset>
          </copy>
-         <copy file="${dist}/lib/${lib.cayenne}" tofile="${wolips.dist}/lib/cayenne.jar"/>
+         <copy file="${woproject.dist}/lib/${lib.cayenne}" tofile="${wolips.dist}/lib/cayenne.jar"/>
     </target>
 
     <target name="dist" depends="prepare,java,doc,api">
@@ -101,13 +90,13 @@
              </fileset>
          </copy>
          
-         <copy todir="${dist.base}">
+         <copy todir="${wolips.dist.base}">
              <fileset dir="src/wolips">
              	<include name="*.html"/>
              </fileset>
          </copy>
          
-		 <copy todir="${dist.base}">
+		 <copy todir="${wolips.dist.base}">
              <fileset dir="${wolips.dist}/doc">
              	<include name="**/install.html"/>
              </fileset>
@@ -215,7 +204,7 @@
             <classpath refid="classpath"/>
         </taskdef>
 
-        <anakia basedir="src/wolips/xdocs" destdir="${dist}/doc"
+        <anakia basedir="src/wolips/xdocs" destdir="${woproject.dist}/doc"
      		extension=".html" style="woproject.vsl"
      		projectFile="../../../xdocs/stylesheets/project.xml"
      		excludes="**/stylesheets/**"
@@ -225,7 +214,7 @@
 		</anakia>
 
         <!-- copy images -->
-        <copy todir="${dist}/doc/images/wolips" filtering="no">
+        <copy todir="${woproject.dist}/doc/images/wolips" filtering="no">
             <fileset dir="src/wolips/xdocs/images">
                 <include name="**/*.gif"/>
                 <include name="**/*.jpeg"/>

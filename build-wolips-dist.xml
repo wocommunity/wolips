@@ -4,18 +4,7 @@
 <!--                 WOLips Ant file.                         -->
 <!-- ======================================================== -->
 <project name="woproject-wolips-dist" default="dist" basedir=".">
-	<target name="dist">
-	<property file="src/wolips/plugin.properties"/>
-    
-    <property name="build" value="${output}/build"/>
-    <property name="wolips.name" value="org.objectstyle.wolips_${WOLips.version}"/>
-    <property name="wolips.targetbuilder.name" value="org.objectstyle.wolips.targetbuilder_${WOLips.version}"/>
-    <property name="wolips.dist" value="${dist.base}/${wolips.name}"/>
-    <property name="wolips.feature.dist" value="${dist.base}/features/${wolips.name}"/>
-    <property name="wolips.help.dist" value="${dist.base}/plugins/org.objectstyle.wolips.help_${WOLips.version}"/>
-    
-    <!-- main distribution. -->
-    <property name="dist" value="${dist.base}/${project.name}-${project.version}"/>
+    <target name="dist">
     
     <!-- make help -->
     <mkdir dir="${wolips.help.dist}"/>
@@ -35,17 +24,14 @@
     </copy>
     
     <!-- make wolips dist -->
-    <tar tarfile="${wolips.dist}.tar">
-        <tarfileset dir="${dist.base}">
-         	<include name="plugins/**"/>
-           	<include name="features/**"/>
-           	<include name="*.html"/>
-            </tarfileset>
-        </tar>
+    <tar tarfile="${wolips.dist.filename}.tar">
+        <tarfileset dir="${wolips.dist.base}">
+        </tarfileset>
+     </tar>
          
-         <gzip src="${wolips.dist}.tar"
-              zipfile="${wolips.dist}.tar.gz"/>
-         <delete file="${wolips.dist}.tar"/>
+         <gzip src="${wolips.dist.filename}.tar"
+              zipfile="${wolips.dist.filename}.tar.gz"/>
+         <delete file="${wolips.dist.filename}.tar"/>
     </target>
 
 </project>

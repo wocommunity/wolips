@@ -3,7 +3,7 @@
 <!-- ======================================================== -->
 <!--                 WOLips Ant file.                         -->
 <!-- ======================================================== -->
-<project name="woproject-wolips-targetbuilder" default="java" basedir=".">
+<project name="woproject-wolips-support" default="java" basedir=".">
 
     <!-- ============================================= -->
     <!-- Define CLASSPATH settings.                    -->
@@ -35,17 +35,17 @@
     </target>
 
     <target name="java" depends="prepare">
-        <javac srcdir="src/wolips-targetbuilder/java"
-                destdir="${build}/wolips-targetbuilder"
+        <javac srcdir="src/wolips-support/java"
+                destdir="${build}/wolips-support"
                 deprecation="${compile.deprecation}"
                 debug="${compile.debug}"
                 optimize="${compile.optimize}">
             <classpath refid="classpath"/>
         </javac>
          
-        <jar jarfile="${wolips.targetbuilder.dist}/lib/wolips-targetbuilder.jar">
-            <fileset dir="${build}/wolips-targetbuilder"/>
-            <fileset dir="src/wolips-targetbuilder/java">
+        <jar jarfile="${wolips.support.dist}/lib/wolips-support.jar">
+            <fileset dir="${build}/wolips-support"/>
+            <fileset dir="src/wolips-support/java">
           	    <include name="**/*.properties"/>
              </fileset>         
             <metainf dir="doc">
@@ -57,12 +57,12 @@
 
     <target name="dist" depends="prepare,java,doc,api">
          <!-- Copy source code -->
-         <copy todir="${wolips.targetbuilder.dist}/src">
-             <fileset dir="src/wolips-targetbuilder/java"/>
+         <copy todir="${wolips.support.dist}/src">
+             <fileset dir="src/wolips-support/java"/>
          </copy>
          
-         <copy todir="${wolips.targetbuilder.dist}">
-             <fileset dir="src/wolips-targetbuilder">
+         <copy todir="${wolips.support.dist}">
+             <fileset dir="src/wolips-support">
              	<exclude name="**/java/**"/>
              	<exclude name="**/lib/**"/>
              	<exclude name="**/xdocs/**"/>
@@ -80,9 +80,9 @@
     <!-- Sets up build and distribution directories.   -->
     <!-- ============================================= -->
     <target name="prepare" depends="defineClasspath">
-        <mkdir dir="${build}/wolips-targetbuilder"/>
-        <mkdir dir="${wolips.targetbuilder.dist}/lib"/>
-        <mkdir dir="${wolips.targetbuilder.dist}/doc/api"/>
+        <mkdir dir="${build}/wolips-support"/>
+        <mkdir dir="${wolips.support.dist}/lib"/>
+        <mkdir dir="${wolips.support.dist}/doc/api"/>
     </target>
 
 
@@ -90,8 +90,8 @@
     <!-- Deletes temporary files.                      -->
     <!-- ============================================= -->
     <target name="clean">
-        <delete dir="${build}/wolips-targetbuilder"/>
-        <delete dir="${wolips.targetbuilder.dist}"/>
+        <delete dir="${build}/wolips-support"/>
+        <delete dir="${wolips.support.dist}"/>
     </target>
     
     
@@ -106,15 +106,15 @@
     <!-- Builds API documenatation.                 -->
     <!-- ========================================== -->
     <target name="api" depends="prepare">
-        <copy todir="${wolips.targetbuilder.dist}/doc">
+        <copy todir="${wolips.support.dist}/doc">
             <fileset dir="doc">
                 <include name="**/LICENSE*"/>
             </fileset>
         </copy>
 
-        <javadoc   packagenames="org.objectstyle.wolips.target.*"
+        <javadoc   packagenames="org.objectstyle.wolips.support.*"
                    defaultexcludes="yes"
-                   destdir="${wolips.targetbuilder.dist}/doc/api"
+                   destdir="${wolips.support.dist}/doc/api"
                    author="true"
                    version="true"
                    use="true"
@@ -122,7 +122,7 @@
 
         <classpath refid="classpath"/>
         <sourcepath>
-            <pathelement path="src/wolips-targetbuilder/java"/>
+            <pathelement path="src/wolips-support/java"/>
 	    </sourcepath>
         <doctitle><![CDATA[<h2>WOLips API Documentation</h2>]]></doctitle>
         <link href="http://developer.java.sun.com/developer/products/xml/docs/api/"/>
@@ -132,7 +132,7 @@
     
     <target name="doc" depends="prepare">
         <!-- copy all licenses inclusing ours -->
-        <copy todir="${wolips.targetbuilder.dist}/doc">
+        <copy todir="${wolips.support.dist}/doc">
             <fileset dir="doc">
                <include name="LICENSE*"/>
             </fileset>
@@ -143,17 +143,17 @@
         </taskdef>
         
        <!-- Build site in Plugin docs directory -->
-        <anakia basedir="src/wolips-targetbuilder/xdocs/wolips-targetbuilder" destdir="${wolips.targetbuilder.dist}/doc"
-             extension=".html" style="wolips-targetbuilder.vsl"
+        <anakia basedir="src/wolips-support/xdocs/wolips-support" destdir="${wolips.support.dist}/doc"
+             extension=".html" style="wolips-support.vsl"
              excludes="**/stylesheets/**"
              includes="**/*.xml"
              lastModifiedCheck="true"
-             templatePath="src/wolips-targetbuilder/xdocs/stylesheets">
+             templatePath="src/wolips-support/xdocs/stylesheets">
         </anakia>
 
         <!-- copy images -->
-        <copy todir="${wolips.targetbuilder.dist}/doc/images/wolips-targetbuilder" filtering="no">
-            <fileset dir="src/wolips-targetbuilder/xdocs/images">
+        <copy todir="${wolips.support.dist}/doc/images/wolips-support" filtering="no">
+            <fileset dir="src/wolips-support/xdocs/images">
                 <include name="**/*.gif"/>
                 <include name="**/*.jpeg"/>
                 <include name="**/*.jpg"/>
@@ -164,7 +164,7 @@
     
     <target name="site-doc" depends="prepare">
         <!-- copy all licenses inclusing ours -->
-        <copy todir="${wolips.targetbuilder.dist}/doc">
+        <copy todir="${wolips.support.dist}/doc">
             <fileset dir="doc">
                <include name="LICENSE*"/>
             </fileset>
@@ -174,7 +174,7 @@
             <classpath refid="classpath"/>
         </taskdef>
 
-        <anakia basedir="src/wolips-targetbuilder/xdocs" destdir="${woproject.dist}/doc"
+        <anakia basedir="src/wolips-support/xdocs" destdir="${woproject.dist}/doc"
      		extension=".html" style="woproject.vsl"
      		projectFile="../../../xdocs/stylesheets/project.xml"
      		excludes="**/stylesheets/**"
@@ -184,7 +184,7 @@
 		</anakia>
 
         <!-- copy images -->
-        <copy todir="${woproject.dist}/doc/images/wolips-targetbuilder" filtering="no">
+        <copy todir="${woproject.dist}/doc/images/wolips-support" filtering="no">
             <fileset dir="src/wolips/xdocs/images">
                 <include name="**/*.gif"/>
                 <include name="**/*.jpeg"/>

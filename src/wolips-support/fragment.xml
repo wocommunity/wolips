@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fragment
+   id="org.objectstyle.wolips.support"
+   name="%WOLips.support.fragmentName"
+   version="0.9.3"
+   provider-name="%WOLips.providerName"
+   plugin-id="org.objectstyle.wolips.core"
+   plugin-version="0.9.3"
+   match="compatible">
+
+   <runtime>
+      <library name="lib/wolips-support.jar">
+         <export name="*"/>
+      </library>
+   </runtime>
+
+   <requires>
+  </requires>
+
+</fragment>

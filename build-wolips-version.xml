@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+
+<!-- ======================================================== -->
+<!--                 WOLips Ant file.                         -->
+<!--           Takes the WOLips version from the              -->
+<!--           and populates it to all files refering it.     -->
+<!-- ======================================================== -->
+<project name="build-wolips-version" default="version" basedir=".">
+    <target name="version">
+    </target>
+
+</project>
