@@ -152,9 +152,9 @@ public class PBIndex extends Task {
 	 */
 	public void execute() throws BuildException {
 		validateAttributes();
-
+		PBProject proj = null;
 		try {
-			PBProject proj =
+			proj =
 				(projectFile != null)
 					? new PBProject(projectFile, framework)
 					: new PBProject(framework);
@@ -173,6 +173,8 @@ public class PBIndex extends Task {
 		} catch (IOException ioex) {
 			log("Error saving project file", Project.MSG_ERR);
 			throw new BuildException("Error saving project file", ioex);
+		} finally {
+			proj = null;
 		}
 	}
 
@@ -220,11 +222,11 @@ public class PBIndex extends Task {
 		Iterator it = filesets.iterator();
 		while (it.hasNext()) {
 			FileSet fs = (FileSet) it.next();
-			
+
 			// for now exclude subprojects, 
 			// later we must create a better support for subprojects
 			fs.createExclude().setName("*.subproj/**");
-			
+
 			DirectoryScanner ds = fs.getDirectoryScanner(getProject());
 			ds.scan();
 			String[] allFiles = ds.getIncludedFiles();

@@ -85,12 +85,12 @@ public class Environment {
 	 * @throws Exception
 	 */
 	public static Properties getEnvVars() throws Exception {
+		if (Environment.envVars != null)
+			return Environment.envVars;
 		Process p = null;
 		BufferedReader br = null;
 		String line = null;
 		try {
-			if (envVars != null)
-				return envVars;
 			p = Environment.osProcess();
 			Environment.envVars = new Properties();
 			br = new BufferedReader(new InputStreamReader(p.getInputStream()));
@@ -128,12 +128,12 @@ public class Environment {
 			} else {
 				p = r.exec("env");
 			}
+			return p;
 		} finally {
 			p = null;
 			r = null;
 			OS = null;
 		}
-		return p;
 	}
 	/**
 	 * @return String with path to the foundation.jar

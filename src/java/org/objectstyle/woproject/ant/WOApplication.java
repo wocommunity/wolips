@@ -139,18 +139,27 @@ public class WOApplication extends WOTask {
 	 */
 	protected void chmodScripts() throws BuildException {
 		if (System.getProperty("os.name").toLowerCase().indexOf("win") < 0) {
-			File dir = taskDir();
-			super.log("chmod scripts in " + dir, Project.MSG_VERBOSE);
+			File dir = null;
+			FileSet fs = null;
+			Chmod chmod = null;
+			try {
+				dir = taskDir();
+				super.log("chmod scripts in " + dir, Project.MSG_VERBOSE);
 
-			FileSet fs = new FileSet();
-			fs.setDir(dir);
-			fs.createInclude().setName("**/" + name);
-			fs.createInclude().setName("**/*.sh");
+				fs = new FileSet();
+				fs.setDir(dir);
+				fs.createInclude().setName("**/" + name);
+				fs.createInclude().setName("**/*.sh");
 
-			Chmod chmod = subtaskFactory.getChmod();
-			chmod.setPerm("gu+x");
-			chmod.addFileset(fs);
-			chmod.execute();
+				chmod = subtaskFactory.getChmod();
+				chmod.setPerm("gu+x");
+				chmod.addFileset(fs);
+				chmod.execute();
+			} finally {
+				dir = null;
+				fs = null;
+				chmod = null;
+			}
 		} else {
 			super.log(
 				"'"
@@ -159,6 +168,10 @@ public class WOApplication extends WOTask {
 		}
 	}
 
+	/**
+	 * Method copyEmbeddedFrameworks.
+	 * @throws BuildException
+	 */
 	protected void copyEmbeddedFrameworks() throws BuildException {
 		Copy cp = new Copy();
 		cp.setOwningTarget(getOwningTarget());
@@ -212,10 +225,11 @@ public class WOApplication extends WOTask {
 	 * Returns a list of standard frameworks as a FrameworkSet. */
 	public FrameworkSet standardSet() {
 		FrameworkSet set = new FrameworkSet();
-		WOPropertiesHandler aHandler = new WOPropertiesHandler(this.getProject());
+		WOPropertiesHandler aHandler =
+			new WOPropertiesHandler(this.getProject());
 
 		set.setProject(this.getProject());
-		set.setRoot( new File(aHandler.getWORootPath() + "/Library/Frameworks"));
+		set.setRoot(new File(aHandler.getWORootPath() + "/Library/Frameworks"));
 
 		for (int i = 0; i < stdFrameworkNames.length; i++) {
 			String path =
@@ -255,7 +269,8 @@ public class WOApplication extends WOTask {
 	 * For WebObjects applications this is a <code>.woa</code> directory.
 	 */
 	protected File taskDir() {
-		return getProject().resolveFile(destDir + File.separator + name + ".woa");
+		return getProject().resolveFile(
+			destDir + File.separator + name + ".woa");
 	}
 
 	protected File contentsDir() {
@@ -301,7 +316,7 @@ public class WOApplication extends WOTask {
 		frameworkSets.add(frameSet);
 		return frameSet;
 	}
-	
+
 	public List getFrameworkSets() {
 		if (stdFrameworks) {
 			ArrayList fullList = new ArrayList(frameworkSets.size() + 1);
@@ -312,7 +327,7 @@ public class WOApplication extends WOTask {
 			return frameworkSets;
 		}
 	}
-	
+
 	/**
 	 * Create a nested OtherClasspath.
 	 */
@@ -321,8 +336,8 @@ public class WOApplication extends WOTask {
 		otherClasspathSets.add(otherClasspathSet);
 		return otherClasspathSet;
 	}
-	
-	public List getOtherClasspath(){
+
+	public List getOtherClasspath() {
 		return otherClasspathSets;
 	}
 }

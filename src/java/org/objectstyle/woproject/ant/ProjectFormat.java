@@ -125,6 +125,9 @@ public abstract class ProjectFormat {
 		} catch (IOException ioex) {
 			throw new BuildException("Error doing project formatting.", ioex);
 		}
+		finally {
+			it = null;
+		}
 	}
 
 	/** 
