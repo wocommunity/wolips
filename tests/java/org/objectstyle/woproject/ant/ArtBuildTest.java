@@ -57,26 +57,59 @@
 package org.objectstyle.woproject.ant;
 
 import java.io.File;
+import org.apache.tools.ant.*;
 
 /**
- * A test case that does various assertions about
- * build results of art framework.
+ * A test case that builds the art framework using its ant buildfile
+ * then does various assertions about what ant produced.
  *
- * @author Andrei Adamchik
+ * @author Andrei Adamchik, Emily Bache
  */
 public class ArtBuildTest extends StructureTestCase {
+
+    protected Project project;
 
     public ArtBuildTest(String name) {
         super(name);
     }
 
+    // move this into a common superclass for all ant test cases?
+    public void setUp() throws Exception {
+        super.setUp();
+
+        project = new Project();
+        String projectDir = "tests/wo/frameworks/art";
+        project.setBaseDir(new File(projectDir));
+
+        project.init();
+        project.setUserProperty("ant.version", Main.getAntVersion());
+
+        File buildFile = new File(projectDir, "build.xml");
+        project.setUserProperty("ant.file" , buildFile.getAbsolutePath() );
+
+        Class.forName("javax.xml.parsers.SAXParserFactory");
+        ProjectHelper.configureProject(project, buildFile);
+    }
+
+    public void tearDown() throws Exception {
+
+        super.tearDown();
+    }
 
     public void testFilesPresent() throws Exception {
+        String defaultTarget = project.getDefaultTarget();
+        project.executeTarget(defaultTarget);
+
         FrameworkStructure artFrwk = new FrameworkStructure("art");
         artFrwk.setJars(new String[] { "art", "cayenne", "woproject" });
         artFrwk.setWocomps(new String[] { "PaintingSearch" });
         artFrwk.setWsResources(new String[] { "images/spacer.gif" });
 
         assertStructure(artFrwk);
+
+    }
+
+    public static void main(String[] args) {
+        junit.textui.TestRunner.main(new String[]{ArtBuildTest.class.getName()});
     }
 }

@@ -47,6 +47,9 @@
         <fileset dir="${dist}/lib">
             <include name="*.jar"/>
         </fileset>
+        <fileset dir="${env.JAVA_HOME}/lib">
+            <include name="*.jar"/>
+        </fileset>
     </path>
 
 
@@ -202,7 +205,7 @@
                 failureProperty="unit-tests-failed">
             <classpath refid="classpath-tests-run"/>
             <formatter type="plain" usefile="true"/>
-            <batchtest todir="${test_results}">
+            <batchtest todir="${test_results}/unit">
                 <fileset dir="${build}/tests">
                     <include name="**/*Test.class"/>
                     <exclude name="**/*BuildTest.class"/>
@@ -222,23 +225,16 @@
         	</fileset>
         </delete>
 
-        <echo>****** functional test build: start</echo>
-
-		<ant dir="tests/wo/frameworks/art" target="clean">
-			<property name="dist" value="../../dist"/>
-			<property name="project.name" value="art"/>
-		</ant>
-        <ant dir="tests/wo/frameworks/art">
-        	<property name="dist" value="../../dist"/>
-			<property name="project.name" value="art"/>
-	    </ant>
-
-        <echo>****** functional test build: done</echo>
-
-        <!-- run tests on built stuff -->
-    	<java classname="org.objectstyle.woproject.TestsMain" fork="yes" failonerror="yes">
-    		<classpath refid="classpath-tests-run"/>
-        </java>
+        <junit fork="yes" haltonfailure="no" errorProperty="functional-tests-failed"
+                failureProperty="functional-tests-failed">
+            <classpath refid="classpath-tests-run"/>
+            <formatter type="plain" usefile="true"/>
+            <batchtest todir="${test_results}/functional">
+                <fileset dir="${build}/tests">
+                    <include name="**/*BuildTest.class"/>
+                </fileset>
+            </batchtest>
+        </junit>
     </target>
 
     <!-- ============================================= -->
@@ -247,13 +243,21 @@
     <!-- ============================================= -->
     <target name="unit-test-report" description="report on unit test results"
             depends = "execute-unit-tests" if = "unit-tests-failed">
-        <fail message="unit tests failed, see files in ${test_results} for details"/>
+        <fail message="unit tests failed, see files in ${test_results}/unit for details"/>
+    </target>
+
+    <!-- ============================================= -->
+    <!-- reports on functional tests.                  -->
+    <!-- ============================================= -->
+    <target name="functional-test-report" description="report on functional test results"
+            depends = "execute-functional-tests" if = "functional-tests-failed">
+        <fail message="functional tests failed, see files in ${test_results}/functional for details"/>
     </target>
 
     <!-- ============================================= -->
     <!-- runs and reports on tests.                    -->
     <!-- ============================================= -->
-    <target name="test" depends="unit-test-report,execute-functional-tests">
+    <target name="test" depends="unit-test-report,functional-test-report">
 
     </target>
 
@@ -263,7 +267,8 @@
     <target name="prepare">
         <mkdir dir="${build}/main"/>
         <mkdir dir="${build}/tests"/>
-        <mkdir dir="${test_results}"/>
+        <mkdir dir="${test_results}/unit"/>
+        <mkdir dir="${test_results}/functional"/>
         <mkdir dir="${dist}"/>
         <mkdir dir="${dist}/src"/>
         <mkdir dir="${dist}/lib"/>
