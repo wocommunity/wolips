@@ -53,9 +53,7 @@
  * <http://objectstyle.org/>.
  *
  */
-
 package org.objectstyle.wolips.io;
-
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -74,12 +72,14 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.core.JavaModelException;
 import org.objectstyle.wolips.WOLipsPlugin;
 import org.objectstyle.wolips.wo.WOVariables;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
-
 /**
  * FileFromTemplateCreator creates files from templates and given file handles.
  * The templates are identified by an unique id. Predefined variables mentioned 
@@ -113,7 +113,6 @@ import org.xml.sax.SAXException;
  *
  */
 public class FileFromTemplateCreator {
-
 	// translate expected variable strings to int 
 	// for switch case in expandVariable
 	private static final int PLUGIN_NAME = 0;
@@ -122,25 +121,32 @@ public class FileFromTemplateCreator {
 	private static final int PROJECT_NAME = 3;
 	private static final int PACKAGE_NAME = 4;
 	private static final int ADAPTOR_NAME = 5;
+	private static final int BUILD_DIR = 6;
+	private static final int NEXT_ROOT = 7;
 	private static final String[] ALL_KEYS =
-		{ "PLUGIN_NAME", "CLASS", "DATE", "PROJECT_NAME", "PACKAGE_NAME", "ADAPTOR_NAME" };
+		{
+			"PLUGIN_NAME",
+			"CLASS",
+			"DATE",
+			"PROJECT_NAME",
+			"PACKAGE_NAME",
+			"ADAPTOR_NAME",
+			"BUILD_DIR",
+			"NEXT_ROOT" };
 	private static Hashtable keyToIntegerDict;
 	/////////////////////////////////////////////
-
 	private IFile fileToCreate;
 	private String fileNameWithoutExtension;
 	private String templateID;
 	private static Document templateDocument;
 	private static Hashtable variableInfo;
 	//private static Properties templateProperties;
-
 	/**
 	 * Standard constructor
 	 */
 	public FileFromTemplateCreator() {
 		super();
 	}
-
 	/**
 	 * Constructor providing additional info.
 	 * @param variableInfo dictionary containing about template variables which non-resolvable by keyToIntegerDict.
@@ -150,7 +156,6 @@ public class FileFromTemplateCreator {
 		this();
 		this.variableInfo = variableInfo;
 	}
-
 	/**
 	 * Creates new file resource.
 	 * <p>
@@ -159,9 +164,11 @@ public class FileFromTemplateCreator {
 	 * @param monitor progress monitor or null
 	 * @throws java.lang.reflect.InvocationTargetException
 	 */
-	public synchronized void create(IFile fileToCreate, String templateId, IProgressMonitor monitor)
+	public synchronized void create(
+		IFile fileToCreate,
+		String templateId,
+		IProgressMonitor monitor)
 		throws InvocationTargetException {
-
 		this.fileToCreate = fileToCreate;
 		String fileName = fileToCreate.getName();
 		String fileExtension = null;
@@ -170,31 +177,31 @@ public class FileFromTemplateCreator {
 			fileNameWithoutExtension = fileName.substring(0, extIndex);
 			fileExtension = fileName.substring(extIndex + 1);
 		}
-
 		try {
 			SubProgressMonitor subMonitor = null;
 			if (monitor != null) {
 				subMonitor = new SubProgressMonitor(monitor, 1);
 			}
-			fileToCreate.create(createInputStream(templateId), false, subMonitor);
+			fileToCreate.create(
+				createInputStream(templateId),
+				false,
+				subMonitor);
 		} catch (CoreException e) {
 			throw new InvocationTargetException(e);
 		}
-/*
-		if (fileExtension != null) {
-			QualifiedName resourceQualifier = WOPluginUtils.qualifierFromResourceIdentifier(fileExtension);
-			String listId = (String) WOPluginUtils.getResourceQualifierToListIdDict().get(resourceQualifier);
-			try {
-				// mark resource as project depending
-				fileToCreate.setPersistentProperty(resourceQualifier, listId);
-			} catch (CoreException e) {
-				throw new InvocationTargetException(e);
-			}
-		}
-		*/
-
+		/*
+				if (fileExtension != null) {
+					QualifiedName resourceQualifier = WOPluginUtils.qualifierFromResourceIdentifier(fileExtension);
+					String listId = (String) WOPluginUtils.getResourceQualifierToListIdDict().get(resourceQualifier);
+					try {
+						// mark resource as project depending
+						fileToCreate.setPersistentProperty(resourceQualifier, listId);
+					} catch (CoreException e) {
+						throw new InvocationTargetException(e);
+					}
+				}
+				*/
 	}
-
 	/**
 	 * Creates new file resource, the initial contents are
 	 * based on the file names' extension which is also the template id.
@@ -203,7 +210,10 @@ public class FileFromTemplateCreator {
 	 * @param monitor progress monitor or null
 	 * @throws java.lang.reflect.InvocationTargetException
 	 */
-	public synchronized void create(IFile fileToCreate, IProgressMonitor monitor) throws InvocationTargetException {
+	public synchronized void create(
+		IFile fileToCreate,
+		IProgressMonitor monitor)
+		throws InvocationTargetException {
 		String fileName = fileToCreate.getName();
 		String fileExtension = null;
 		int extIndex = fileName.indexOf(".");
@@ -211,9 +221,7 @@ public class FileFromTemplateCreator {
 			fileExtension = fileName.substring(extIndex + 1);
 		}
 		create(fileToCreate, fileExtension, monitor);
-
 	}
-
 	/**
 	 * Helper method to create an input stream containing content definded by
 	 * template xml file and expanding all mentioned expanded variables.<br>
@@ -226,50 +234,48 @@ public class FileFromTemplateCreator {
 	 * @return InputStream of new file
 	 * @throws InvocationTargetException
 	 */
-	private InputStream createInputStream(String templateID) throws InvocationTargetException {
-
-		Element elementForTemplate = getFileTemplateDocument().getElementById(templateID);
+	private InputStream createInputStream(String templateID)
+		throws InvocationTargetException {
+		Element elementForTemplate =
+			getFileTemplateDocument().getElementById(templateID);
 		StringBuffer content = new StringBuffer("");
-		
-		if (elementForTemplate != null && (new Boolean(elementForTemplate.getAttribute("enabled")).booleanValue())  && elementForTemplate.getFirstChild() != null) {
-
-			String templateContent = elementForTemplate.getFirstChild().getNodeValue();
+		if (elementForTemplate != null
+			&& (new Boolean(elementForTemplate.getAttribute("enabled"))
+				.booleanValue())
+			&& elementForTemplate.getFirstChild() != null) {
+			String templateContent =
+				elementForTemplate.getFirstChild().getNodeValue();
 			if (templateContent != null) {
 				// assign initial content
 				content.append(templateContent);
 				// build list of variables to expand
-				String variablesToExpand = elementForTemplate.getAttribute("variables");
-
-				ArrayList variableList = WOLipsPlugin.arrayListFromCSV(variablesToExpand);
-
+				String variablesToExpand =
+					elementForTemplate.getAttribute("variables");
+				ArrayList variableList =
+					WOLipsPlugin.arrayListFromCSV(variablesToExpand);
 				if (variablesToExpand != null && !variableList.isEmpty()) {
-
 					// expand variables
 					String variableToExpand = null;
 					int index = -1;
 					for (int i = 0; i < variableList.size(); i++) {
 						variableToExpand = (String) variableList.get(i);
-
 						// replace all occurences of "${" + variableToExpand + "}"
-						while ((index = templateContent.indexOf("${" + variableToExpand + "}")) != -1) {
+						while ((index =
+							templateContent.indexOf(
+								"${" + variableToExpand + "}"))
+							!= -1) {
 							content.replace(
 								index,
 								index + variableToExpand.length() + 3,
 								expandVariable(variableToExpand));
-
 							templateContent = content.toString();
-
 						}
-
 					}
 				}
 			}
-
 		}
 		return new ByteArrayInputStream(content.toString().getBytes());
 	}
-
-
 	/**
 	 * Method expandVariable, expands found variable (${[variable]}) to the
 	 * appropiate value.
@@ -281,48 +287,44 @@ public class FileFromTemplateCreator {
 	 * @return found value or null
 	 */
 	private String expandVariable(String variableToExpand) {
-
-		Integer valueFromDict = (Integer) getKeyToIntegerDict().get(variableToExpand);
+		Integer valueFromDict =
+			(Integer) getKeyToIntegerDict().get(variableToExpand);
 		// default value
 		String expandedValue = variableToExpand;
 		IContainer parentResource;
-
 		if (valueFromDict != null) {
 			switch (valueFromDict.intValue()) {
 				case PLUGIN_NAME :
-					expandedValue = WOLipsPlugin.getDefault().getDescriptor().getLabel();
+					expandedValue =
+						WOLipsPlugin.getDefault().getDescriptor().getLabel();
 					break;
-
 				case CLASS :
 					expandedValue = fileNameWithoutExtension;
 					break;
-
 				case DATE :
 					expandedValue = (new java.util.Date()).toString();
 					break;
-
 				case PROJECT_NAME :
 					parentResource = fileToCreate.getParent();
-
 					if (parentResource instanceof IProject) {
 						expandedValue = ((IProject) parentResource).getName();
-
 					} else if (parentResource instanceof IFolder) {
 						expandedValue = ((IFolder) parentResource).getName();
 					}
 					break;
-
 				case PACKAGE_NAME :
 					parentResource = fileToCreate.getParent();
 					if (parentResource instanceof IFolder) {
-						StringBuffer packageNameBuffer = new StringBuffer("package ");
-
-						IPath folderPath = ((IFolder) parentResource).getProjectRelativePath();
+						StringBuffer packageNameBuffer =
+							new StringBuffer("package ");
+						IPath folderPath =
+							((IFolder) parentResource).getProjectRelativePath();
 						for (int i = 0; i < folderPath.segmentCount(); i++) {
 							packageNameBuffer.append(folderPath.segment(i));
 							packageNameBuffer.append(".");
 						}
-						packageNameBuffer.deleteCharAt(packageNameBuffer.length() - 1);
+						packageNameBuffer.deleteCharAt(
+							packageNameBuffer.length() - 1);
 						packageNameBuffer.append(";");
 						expandedValue = packageNameBuffer.toString();
 					} else {
@@ -330,38 +332,63 @@ public class FileFromTemplateCreator {
 						expandedValue = "";
 					}
 					break;
-
 				case ADAPTOR_NAME :
-					if (variableInfo != null && variableInfo.get(variableToExpand) != null) {
-						expandedValue = (String) variableInfo.get(variableToExpand);
+					if (variableInfo != null
+						&& variableInfo.get(variableToExpand) != null) {
+						expandedValue =
+							(String) variableInfo.get(variableToExpand);
 					}
 					break;
-
+				case BUILD_DIR :
+					// relativ path to output location
+					IJavaProject actualJavaProject =
+						JavaCore.create(fileToCreate.getProject());
+					IPath outputLocation;
+					try {
+						outputLocation = actualJavaProject.getOutputLocation();
+					} catch (JavaModelException e) {
+						break;
+					}
+					expandedValue =
+						outputLocation
+							.makeRelative()
+							.removeFirstSegments(1)
+							.toString();
+					for (int i = 0;
+						i
+							< fileToCreate
+								.getProjectRelativePath()
+								.segmentCount()
+								- 1;
+						i++) {
+						expandedValue = "../" + expandedValue;
+					}
+					break;
+				case NEXT_ROOT :
+					expandedValue = WOVariables.nextRoot();
+					break;
 			}
 		}
-
 		return expandedValue;
 	}
-
 	/**
 	 * The file template document is a parsed xml file resource containing
 	 * all file templates.
 	 * <p> 
 	 * @return the templateDocument
 	 */
-	private static synchronized Document getFileTemplateDocument() throws InvocationTargetException {
+	private static synchronized Document getFileTemplateDocument()
+		throws InvocationTargetException {
 		if (templateDocument == null) {
 			IPath templatePath;
 			File templateFile;
-
 			try {
 				InputStream input =
-					(new URL(WOLipsPlugin.baseURL(), WOVariables.woTemplateDirectory()
-						+ WOVariables.woTemplateFiles()))
+					(new URL(WOLipsPlugin.baseURL(),
+						WOVariables.woTemplateDirectory()
+							+ WOVariables.woTemplateFiles()))
 						.openStream();
-
 				templateDocument = WOLipsPlugin.documentBuilder().parse(input);
-
 			} catch (java.util.MissingResourceException e) {
 				throw new InvocationTargetException(e);
 			} catch (MalformedURLException e) {
@@ -376,7 +403,6 @@ public class FileFromTemplateCreator {
 		}
 		return templateDocument;
 	}
-
 	private static Hashtable getKeyToIntegerDict() {
 		if (keyToIntegerDict == null) {
 			// build keyToIntegerDict
@@ -387,5 +413,4 @@ public class FileFromTemplateCreator {
 		}
 		return keyToIntegerDict;
 	}
-
 }
