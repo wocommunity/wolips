@@ -59,7 +59,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -293,13 +292,13 @@ public class PBProjectUpdater {
 					case IResourceDelta.ADDED :
 						pbProject.setWoAppResources(
 							addResources(
-								(Vector) changedResources.get(currentKey),
+								(List) changedResources.get(currentKey),
 								actualResources));
 						break;
 					case IResourceDelta.REMOVED :
 						pbProject.setWoAppResources(
 							removeResources(
-								(Vector) changedResources.get(currentKey),
+								(List) changedResources.get(currentKey),
 								actualResources));
 						break;
 				}
@@ -309,13 +308,13 @@ public class PBProjectUpdater {
 					case IResourceDelta.ADDED :
 						pbProject.setClasses(
 							addResources(
-								(Vector) changedResources.get(currentKey),
+								(List) changedResources.get(currentKey),
 								actualResources));
 						break;
 					case IResourceDelta.REMOVED :
 						pbProject.setClasses(
 							removeResources(
-								(Vector) changedResources.get(currentKey),
+								(List) changedResources.get(currentKey),
 								actualResources));
 						break;
 				}
@@ -326,13 +325,13 @@ public class PBProjectUpdater {
 					case IResourceDelta.ADDED :
 						pbProject.setSubprojects(
 							addResources(
-								(Vector) changedResources.get(currentKey),
+								(List) changedResources.get(currentKey),
 								actualResources));
 						break;
 					case IResourceDelta.REMOVED :
 						pbProject.setSubprojects(
 							removeResources(
-								(Vector) changedResources.get(currentKey),
+								(List) changedResources.get(currentKey),
 								actualResources));
 						break;
 				}
@@ -343,13 +342,13 @@ public class PBProjectUpdater {
 					case IResourceDelta.ADDED :
 						pbProject.setWoComponents(
 							addResources(
-								(Vector) changedResources.get(currentKey),
+								(List) changedResources.get(currentKey),
 								actualResources));
 						break;
 					case IResourceDelta.REMOVED :
 						pbProject.setWoComponents(
 							removeResources(
-								(Vector) changedResources.get(currentKey),
+								(List) changedResources.get(currentKey),
 								actualResources));
 						break;
 				}
