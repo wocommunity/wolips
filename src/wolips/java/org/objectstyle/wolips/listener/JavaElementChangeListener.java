@@ -55,6 +55,7 @@
  */
 package org.objectstyle.wolips.listener;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
@@ -70,11 +71,6 @@ import org.objectstyle.wolips.IWOLipsPluginConstants;
 import org.objectstyle.wolips.io.WOLipsLog;
 import org.objectstyle.wolips.project.PBProjectUpdater;
 import org.objectstyle.woproject.pb.PBProject;
-
-import com.webobjects.foundation.NSArray;
-import com.webobjects.foundation.NSDictionary;
-import com.webobjects.foundation.NSMutableArray;
-import com.webobjects.foundation.NSMutableDictionary;
 /**
  * Tracking changes in classpath and synchronizes webobjects project file
  */
@@ -92,10 +88,10 @@ public class JavaElementChangeListener implements IElementChangedListener {
 	 * @see org.eclipse.jdt.core.IElementChangedListener#elementChanged(ElementChangedEvent)
 	 */
 	public final void elementChanged(ElementChangedEvent event) {
-		NSMutableDictionary addedFrameworksProjectDict =
-			new NSMutableDictionary();
-		NSMutableDictionary removedFrameworksProjectDict =
-			new NSMutableDictionary();
+		HashMap addedFrameworksProjectDict =
+			new HashMap();
+		HashMap removedFrameworksProjectDict =
+			new HashMap();
 		if (event.getDelta().getElement().getElementType()
 			== IJavaElement.JAVA_MODEL) {
 			IJavaElementDelta elementDeltaToExamine = event.getDelta();
@@ -125,12 +121,8 @@ public class JavaElementChangeListener implements IElementChangedListener {
 								IWOLipsPluginConstants.WO_APPLICATION_NATURE)
 							|| projectToExamine.hasNature(
 								IWOLipsPluginConstants.WO_FRAMEWORK_NATURE)) {
-							addedFrameworksProjectDict.setObjectForKey(
-								new NSMutableArray(),
-								projectToExamine);
-							removedFrameworksProjectDict.setObjectForKey(
-								new NSMutableArray(),
-								projectToExamine);
+							addedFrameworksProjectDict.put(projectToExamine,new ArrayList());
+							removedFrameworksProjectDict.put(projectToExamine,new ArrayList());
 							// webobjects project changed 
 							ArrayList foundElements = new ArrayList();
 							// search deltas for classpath changes
@@ -144,12 +136,9 @@ public class JavaElementChangeListener implements IElementChangedListener {
 							for (int j = 0; j < foundElements.size(); j++) {
 								currentPackageFragmentRoot =
 									(IPackageFragmentRoot) foundElements.get(j);
-								NSMutableArray addedFrameworks =
-									(
-										NSMutableArray) addedFrameworksProjectDict
-											.objectForKey(
-										projectToExamine);
-								addedFrameworks.addObject(
+								ArrayList addedFrameworks =
+									(ArrayList) addedFrameworksProjectDict.get(projectToExamine);
+								addedFrameworks.add(
 									currentPackageFragmentRoot
 										.getRawClasspathEntry()
 										.getPath());
@@ -175,12 +164,9 @@ public class JavaElementChangeListener implements IElementChangedListener {
 							for (int j = 0; j < foundElements.size(); j++) {
 								currentPackageFragmentRoot =
 									(IPackageFragmentRoot) foundElements.get(j);
-								NSMutableArray removedFrameworks =
-									(
-										NSMutableArray) removedFrameworksProjectDict
-											.objectForKey(
-										projectToExamine);
-								removedFrameworks.addObject(
+								ArrayList removedFrameworks =
+									(ArrayList) removedFrameworksProjectDict.get(projectToExamine);
+								removedFrameworks.add(
 									new Path(
 										currentPackageFragmentRoot
 											.getElementName()));
@@ -241,39 +227,31 @@ public class JavaElementChangeListener implements IElementChangedListener {
 	 * @param removedFrameworksProjectDict
 	 */
 	private final void updateProjects(
-		NSDictionary addedFrameworksProjectDict,
-		NSDictionary removedFrameworksProjectDict) {
+		HashMap addedFrameworksProjectDict,
+	HashMap removedFrameworksProjectDict) {
 		IProject currentProject;
 		PBProject currentPBProject;
 		List frameworks;
-		NSArray changedFrameworks;
-		for (int i = 0;
-			i < addedFrameworksProjectDict.allKeys().count();
-			i++) {
+		List changedFrameworks;
+		Object[] allAddedKeys = addedFrameworksProjectDict.keySet().toArray();
+		for (int i = 0;i < allAddedKeys.length;i++) {
 			currentProject =
-				(IProject) addedFrameworksProjectDict.allKeys().objectAtIndex(
-					i);
+				(IProject)allAddedKeys[i];
 			changedFrameworks =
-				(NSArray) addedFrameworksProjectDict.objectForKey(
-					currentProject);
-			if (changedFrameworks.count() > 0) {
+				(ArrayList) addedFrameworksProjectDict.get(currentProject);
+			if (changedFrameworks.size() > 0) {
 				PBProjectUpdater projectUpdater =
 					new PBProjectUpdater(currentProject);
 				projectUpdater.addFrameworks(changedFrameworks);
 			}
 		}
-		for (int i = 0;
-			i < removedFrameworksProjectDict.allKeys().count();
-			i++) {
+		Object[] allRemovedKeys = removedFrameworksProjectDict.keySet().toArray();
+		for (int i = 0;i < allRemovedKeys.length;i++) {
 			currentProject =
-				(IProject) removedFrameworksProjectDict
-					.allKeys()
-					.objectAtIndex(
-					i);
+				(IProject)allRemovedKeys[i];
 			changedFrameworks =
-				(NSArray) removedFrameworksProjectDict.objectForKey(
-					currentProject);
-			if (changedFrameworks.count() > 0) {
+				(List) removedFrameworksProjectDict.get(currentProject);
+			if (changedFrameworks.size() > 0) {
 				PBProjectUpdater projectUpdater =
 					new PBProjectUpdater(currentProject);
 				projectUpdater.removeFrameworks(changedFrameworks);

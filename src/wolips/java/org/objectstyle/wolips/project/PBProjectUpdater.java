@@ -58,6 +58,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Vector;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -71,9 +73,6 @@ import org.objectstyle.wolips.IWOLipsPluginConstants;
 import org.objectstyle.wolips.io.FileStringScanner;
 import org.objectstyle.wolips.io.WOLipsLog;
 import org.objectstyle.woproject.pb.PBProject;
-
-import com.webobjects.foundation.NSArray;
-import com.webobjects.foundation.NSDictionary;
 /**
  * @author uli
  *
@@ -282,28 +281,25 @@ public class PBProjectUpdater {
 	 * @param changedResources
 	 * @param kindOfChange
 	 */
-	public void syncFilestable(
-		NSDictionary changedResources,
-		int kindOfChange) {
+	public void syncFilestable(Map changedResources, int kindOfChange) {
 		List actualResources;
 		String currentKey;
-		for (int i = 0; i < changedResources.allKeys().count(); i++) {
-			currentKey = (String) changedResources.allKeys().objectAtIndex(i);
+		Object[] allKeys = changedResources.keySet().toArray();
+		for (int i = 0; i < allKeys.length; i++) {
+			currentKey = (String) allKeys[i];
 			if (IWOLipsPluginConstants.RESOURCES_ID.equals(currentKey)) {
 				actualResources = pbProject.getWoAppResources();
 				switch (kindOfChange) {
 					case IResourceDelta.ADDED :
 						pbProject.setWoAppResources(
 							addResources(
-								(NSArray) changedResources.objectForKey(
-									currentKey),
+								(Vector) changedResources.get(currentKey),
 								actualResources));
 						break;
 					case IResourceDelta.REMOVED :
 						pbProject.setWoAppResources(
 							removeResources(
-								(NSArray) changedResources.objectForKey(
-									currentKey),
+								(Vector) changedResources.get(currentKey),
 								actualResources));
 						break;
 				}
@@ -313,15 +309,13 @@ public class PBProjectUpdater {
 					case IResourceDelta.ADDED :
 						pbProject.setClasses(
 							addResources(
-								(NSArray) changedResources.objectForKey(
-									currentKey),
+								(Vector) changedResources.get(currentKey),
 								actualResources));
 						break;
 					case IResourceDelta.REMOVED :
 						pbProject.setClasses(
 							removeResources(
-								(NSArray) changedResources.objectForKey(
-									currentKey),
+								(Vector) changedResources.get(currentKey),
 								actualResources));
 						break;
 				}
@@ -332,15 +326,13 @@ public class PBProjectUpdater {
 					case IResourceDelta.ADDED :
 						pbProject.setSubprojects(
 							addResources(
-								(NSArray) changedResources.objectForKey(
-									currentKey),
+								(Vector) changedResources.get(currentKey),
 								actualResources));
 						break;
 					case IResourceDelta.REMOVED :
 						pbProject.setSubprojects(
 							removeResources(
-								(NSArray) changedResources.objectForKey(
-									currentKey),
+								(Vector) changedResources.get(currentKey),
 								actualResources));
 						break;
 				}
@@ -351,15 +343,13 @@ public class PBProjectUpdater {
 					case IResourceDelta.ADDED :
 						pbProject.setWoComponents(
 							addResources(
-								(NSArray) changedResources.objectForKey(
-									currentKey),
+								(Vector) changedResources.get(currentKey),
 								actualResources));
 						break;
 					case IResourceDelta.REMOVED :
 						pbProject.setWoComponents(
 							removeResources(
-								(NSArray) changedResources.objectForKey(
-									currentKey),
+								(Vector) changedResources.get(currentKey),
 								actualResources));
 						break;
 				}
@@ -377,7 +367,7 @@ public class PBProjectUpdater {
 	 * @param actualResources
 	 * @return List
 	 */
-	private List addResources(NSArray newResources, List actualResources) {
+	private List addResources(List newResources, List actualResources) {
 		if (actualResources == null) {
 			actualResources = new ArrayList();
 		}
@@ -385,10 +375,10 @@ public class PBProjectUpdater {
 		IFile projectFile =
 			projectContainer.getFile(
 				new Path(IWOLipsPluginConstants.PROJECT_FILE_NAME));
-		for (int i = 0; i < newResources.count(); i++) {
+		for (int i = 0; i < newResources.size(); i++) {
 			relativResourcePath =
 				relativResourcePath(
-					(IResource) newResources.objectAtIndex(i),
+					(IResource) newResources.get(i),
 					projectFile);
 			if (relativResourcePath != null
 				&& !actualResources.contains(relativResourcePath)) {
@@ -397,9 +387,7 @@ public class PBProjectUpdater {
 		}
 		return actualResources;
 	}
-	private List removeResources(
-		NSArray removedResources,
-		List actualResources) {
+	private List removeResources(List removedResources, List actualResources) {
 		if (actualResources == null) {
 			return new ArrayList();
 		}
@@ -407,10 +395,10 @@ public class PBProjectUpdater {
 		IFile projectFile =
 			projectContainer.getFile(
 				new Path(IWOLipsPluginConstants.PROJECT_FILE_NAME));
-		for (int i = 0; i < removedResources.count(); i++) {
+		for (int i = 0; i < removedResources.size(); i++) {
 			relativResourcePath =
 				relativResourcePath(
-					(IResource) removedResources.objectAtIndex(i),
+					(IResource) removedResources.get(i),
 					projectFile);
 			if (relativResourcePath != null
 				&& actualResources.contains(relativResourcePath)) {
@@ -461,13 +449,13 @@ public class PBProjectUpdater {
 	 * Method addFrameworks.
 	 * @param newFrameworks
 	 */
-	public void addFrameworks(NSArray newFrameworks) {
+	public void addFrameworks(List newFrameworks) {
 		List actualFrameworks = pbProject.getFrameworks();
 		String frameworkName = null;
-		for (int j = 0; j < newFrameworks.count(); j++) {
+		for (int j = 0; j < newFrameworks.size(); j++) {
 			frameworkName =
 				frameworkIdentifierFromPath(
-					(Path) newFrameworks.objectAtIndex(j));
+					(Path) newFrameworks.get(j));
 			if (frameworkName != null
 				&& !actualFrameworks.contains(frameworkName)) {
 				actualFrameworks.add(frameworkName);
@@ -483,13 +471,13 @@ public class PBProjectUpdater {
 	 * Method removeFrameworks.
 	 * @param removedFrameworks
 	 */
-	public void removeFrameworks(NSArray removedFrameworks) {
+	public void removeFrameworks(List removedFrameworks) {
 		List actualFrameworks = pbProject.getFrameworks();
 		String frameworkName = null;
-		for (int j = 0; j < removedFrameworks.count(); j++) {
+		for (int j = 0; j < removedFrameworks.size(); j++) {
 			frameworkName =
 				frameworkIdentifierFromPath(
-					(Path) removedFrameworks.objectAtIndex(j));
+					(Path) removedFrameworks.get(j));
 			if (frameworkName != null
 				&& actualFrameworks.contains(frameworkName)) {
 				actualFrameworks.remove(frameworkName);

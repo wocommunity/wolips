@@ -55,6 +55,9 @@
  */
 package org.objectstyle.wolips.listener;
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.ArrayList;
+
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -73,9 +76,6 @@ import org.objectstyle.wolips.IWOLipsPluginConstants;
 import org.objectstyle.wolips.io.WOLipsLog;
 import org.objectstyle.wolips.project.PBProjectUpdater;
 import org.objectstyle.wolips.project.ProjectHelper;
-import com.webobjects.foundation.NSDictionary;
-import com.webobjects.foundation.NSMutableArray;
-import com.webobjects.foundation.NSMutableDictionary;
 /**
  * Tracking changes in resources and synchronizes webobjects project file
  */
@@ -106,65 +106,42 @@ public class ResourceChangeListener
 		// update project files
 		IFile projectFileToUpdate;
 		PBProjectUpdater projectUpdater;
-		for (int i = 0;
-			i
-				< resourceValidator
-					.getAddedResourcesProjectDict()
-					.allKeys()
-					.count();
-			i++) {
+		Object[] allAddedKeys = resourceValidator.getAddedResourcesProjectDict().keySet().toArray();
+		for (int i = 0;i< allAddedKeys.length;i++) {
 			projectFileToUpdate =
-				(IFile) resourceValidator
-					.getAddedResourcesProjectDict()
-					.allKeys()
-					.objectAtIndex(i);
+				(IFile) allAddedKeys[i];
 			projectUpdater =
 				new PBProjectUpdater(projectFileToUpdate.getParent());
 			projectUpdater.syncFilestable(
-				(NSDictionary) resourceValidator
-					.getAddedResourcesProjectDict()
-					.objectForKey(
-					projectFileToUpdate),
+				(HashMap) resourceValidator.getAddedResourcesProjectDict()
+					.get(projectFileToUpdate),
 				IResourceDelta.ADDED);
 		}
-		for (int i = 0;
-			i
-				< resourceValidator
-					.getRemovedResourcesProjectDict()
-					.allKeys()
-					.count();
-			i++) {
+		Object[] allRemovedKeys = resourceValidator.getRemovedResourcesProjectDict().keySet().toArray();
+		for (int i = 0;i< allRemovedKeys.length;i++) {
 			projectFileToUpdate =
-				(IFile) resourceValidator
-					.getRemovedResourcesProjectDict()
-					.allKeys()
-					.objectAtIndex(i);
+				(IFile) allRemovedKeys[i];
 			// ensure project file container exists
 			// if no container exists the whole project is deleted
 			if (projectFileToUpdate.getParent().exists()) {
 				projectUpdater =
 					new PBProjectUpdater(projectFileToUpdate.getParent());
 				projectUpdater.syncFilestable(
-					(NSDictionary) resourceValidator
+					(HashMap) resourceValidator
 						.getRemovedResourcesProjectDict()
-						.objectForKey(
+						.get(
 						projectFileToUpdate),
 					IResourceDelta.REMOVED);
 			}
 		}
 	}
-	/**
-	 * @author uli To change this generated comment edit the template variable
-	 * "typecomment": Window>Preferences>Java>Templates. To enable and disable
-	 * the creation of type comments go to Window>Preferences>Java>Code
-	 * Generation.
-	 */
+	
 	private final class ProjectFileResourceValidator
 		implements IResourceDeltaVisitor {
 		//private QualifiedName resourceQualifier;
 		private IFile projectFile;
-		private NSMutableDictionary addedResourcesProjectDict;
-		private NSMutableDictionary removedResourcesProjectDict;
+		private HashMap addedResourcesProjectDict;
+		private HashMap removedResourcesProjectDict;
 		/**
 		 * @see java.lang.Object#Object()
 		 */
@@ -173,8 +150,8 @@ public class ResourceChangeListener
 		 */
 		public ProjectFileResourceValidator() {
 			super();
-			addedResourcesProjectDict = new NSMutableDictionary();
-			removedResourcesProjectDict = new NSMutableDictionary();
+			addedResourcesProjectDict = new HashMap();
+			removedResourcesProjectDict = new HashMap();
 		}
 		/**
 		 * @see org.eclipse.core.resources.IResourceDeltaVisitor#visit(IResourceDelta)
@@ -391,7 +368,7 @@ public class ResourceChangeListener
 			if (projectFileToUpdate == null) {
 				return;
 			}
-			NSMutableArray changedResourcesArray = null;
+			ArrayList changedResourcesArray = null;
 			// let's examine the type of change
 			switch (kindOfChange) {
 				case IResourceDelta.ADDED :
@@ -410,7 +387,7 @@ public class ResourceChangeListener
 					break;
 			}
 			if (changedResourcesArray != null) {
-				changedResourcesArray.addObject(resourceToUpdate);
+				changedResourcesArray.add(resourceToUpdate);
 			}
 		}
 		/**
@@ -420,33 +397,27 @@ public class ResourceChangeListener
 		 * @param projectFileToUpdate
 		 * @return NSMutableArray
 		 */
-		private final NSMutableArray getChangedResourcesArray(
-			NSMutableDictionary projectDict,
+		private final ArrayList getChangedResourcesArray(
+			HashMap projectDict,
 			String fileStableId,
 			IFile projectFileToUpdate) {
-			NSMutableDictionary fileStableIdDict;
-			NSMutableArray changedResourcesArray;
-			if (projectDict.objectForKey(projectFileToUpdate) == null) {
+			HashMap fileStableIdDict;
+			ArrayList changedResourcesArray;
+			if (projectDict.get(projectFileToUpdate) == null) {
 				// new project found add file stable dict
-				fileStableIdDict = new NSMutableDictionary();
-				projectDict.setObjectForKey(
-					fileStableIdDict,
-					projectFileToUpdate);
+				fileStableIdDict = new HashMap();
+				projectDict.put(projectFileToUpdate,fileStableIdDict);
 			} else {
 				fileStableIdDict =
-					(NSMutableDictionary) projectDict.objectForKey(
-						projectFileToUpdate);
+					(HashMap) projectDict.get(projectFileToUpdate);
 			}
-			if (fileStableIdDict.objectForKey(fileStableId) == null) {
+			if (fileStableIdDict.get(fileStableId) == null) {
 				// add changedResourcesArray of type fileStableId
-				changedResourcesArray = new NSMutableArray();
-				fileStableIdDict.setObjectForKey(
-					changedResourcesArray,
-					fileStableId);
+				changedResourcesArray = new ArrayList();
+				fileStableIdDict.put(fileStableId,changedResourcesArray);
 			} else {
 				changedResourcesArray =
-					(NSMutableArray) fileStableIdDict.objectForKey(
-						fileStableId);
+					(ArrayList) fileStableIdDict.get(fileStableId);
 			}
 			return changedResourcesArray;
 		}
@@ -454,14 +425,14 @@ public class ResourceChangeListener
 		 * Returns the addedResourcesProjectDict.
 		 * @return NSMutableDictionary
 		 */
-		public final NSMutableDictionary getAddedResourcesProjectDict() {
+		public final HashMap getAddedResourcesProjectDict() {
 			return addedResourcesProjectDict;
 		}
 		/**
 		 * Returns the removedResourcesProjectDict.
 		 * @return NSMutableDictionary
 		 */
-		public final NSMutableDictionary getRemovedResourcesProjectDict() {
+		public final HashMap getRemovedResourcesProjectDict() {
 			return removedResourcesProjectDict;
 		}
 	}
