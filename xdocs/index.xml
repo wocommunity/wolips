@@ -9,7 +9,7 @@
     <body>        
         <!-- Welcome section -->
         <section name="Welcome to WOProject">
-        <p><i>September 24, 2002.</i> <b>WOLips 0.8.8 released.</b></p>
+        <p><i>October 16, 2002.</i> <b>WOLips 0.8.9 released.</b></p>
         <p>WOLips is a plugin for <a href="http://eclipse.org">Eclipse IDE</a> that
         support development of WebObjects applications and frameworks.
         <ul>
