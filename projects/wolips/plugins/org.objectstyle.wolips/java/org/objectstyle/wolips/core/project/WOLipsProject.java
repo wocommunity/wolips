@@ -224,32 +224,32 @@ public class WOLipsProject implements IWOLipsProject {
 			}
 			return false;
 		}
-
+		
 		private void addTargetBuilder() throws CoreException {
-			if (this.isTargetBuilderInstalled())
-				return;
 			IProjectDescription description = this.getProject().getDescription();
-			String[] natures = description.getNatureIds();
-			String[] newNatures = new String[natures.length + 1];
-			System.arraycopy(natures, 0, newNatures, 0, natures.length);
-			newNatures[natures.length] = TargetBuilderNatureID;
-			description.setNatureIds(newNatures);
+			if (!this.isTargetBuilderInstalled()) {
+				String[] natures = description.getNatureIds();
+				String[] newNatures = new String[natures.length + 1];
+				System.arraycopy(natures, 0, newNatures, 0, natures.length);
+				newNatures[natures.length] = TargetBuilderNatureID;
+				description.setNatureIds(newNatures);
+			}
 			this.getProject().setDescription(description, null);
 		}
-
+		
 		private void removeTargetBuilder() throws CoreException {
-			if (!this.isTargetBuilderInstalled())
-				return;
 			IProjectDescription description = this.getProject().getDescription();
-			ArrayList natureList = new ArrayList();
-			natureList.addAll(Arrays.asList(description.getNatureIds()));
-			for (int i = 0; i < natureList.size(); i++)
-				if (natureList.get(i).equals(TargetBuilderNatureID))
-					natureList.remove(i);
-			String[] newNatures = new String[natureList.size()];
-			for (int i = 0; i < natureList.size(); i++)
-				newNatures[i] = (String) natureList.get(i);
-			description.setNatureIds(newNatures);
+			if (this.isTargetBuilderInstalled()) {
+				ArrayList natureList = new ArrayList();
+				natureList.addAll(Arrays.asList(description.getNatureIds()));
+				for (int i = 0; i < natureList.size(); i++)
+					if (natureList.get(i).equals(TargetBuilderNatureID))
+						natureList.remove(i);
+				String[] newNatures = new String[natureList.size()];
+				for (int i = 0; i < natureList.size(); i++)
+					newNatures[i] = (String) natureList.get(i);
+				description.setNatureIds(newNatures);
+			}
 			this.getProject().setDescription(description, null);
 		}
 
@@ -261,7 +261,6 @@ public class WOLipsProject implements IWOLipsProject {
 			this.removeTargetBuilder();
 			if (value)
 				this.addTargetBuilder();
-
 		}
 		/**
 		 * @param nature
@@ -372,6 +371,15 @@ public class WOLipsProject implements IWOLipsProject {
 						(String[]) naturesList.toArray(
 							new String[naturesList.size()]));
 					_setDescription(this.getProject(), desc);
+				}
+				List buildersList = 
+					new ArrayList(Arrays.asList(desc.getBuildSpec()));
+				for (Iterator builders = buildersList.iterator(); builders.hasNext();) {
+					ICommand command = (ICommand) builders.next();
+					String name = command.getBuilderName();
+					if(name.equals(BuilderAccessor.INCREMENTAL_BUILDER_ID)) {
+						command.setArguments(args);
+					}
 				}
 			}
 		}

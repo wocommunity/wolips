@@ -80,6 +80,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.objectstyle.wolips.core.logging.WOLipsLog;
+import org.objectstyle.wolips.core.project.INaturesAccessor;
 import org.objectstyle.wolips.core.project.IWOLipsProject;
 import org.objectstyle.wolips.core.project.WOLipsCore;
 import org.objectstyle.wolips.projectbuild.WOProjectBuildConstants;
@@ -369,27 +370,31 @@ public class ProjectNaturePage
 		IWOLipsProject woLipsProject;
 		try {
 			woLipsProject = this.getWOLipsProject();
+			
+			INaturesAccessor naturesAccessor = woLipsProject.getNaturesAccessor();
+			
 			if (_woNatureCheck.getSelection()) {
 				if (_woIsIncrementalButton.getSelection()) {
-          Map args = new HashMap ();
-
-          args.put(RES_EXCLUDES, _resExcludes.getText());
-          args.put(RES_INCLUDES, _resIncludes.getText());
-          args.put(WSRES_EXCLUDES, _wsresExcludes.getText());
-          args.put(WSRES_INCLUDES, _wsresIncludes.getText());
-
-					woLipsProject.getNaturesAccessor().setIncrementalNature(_woIsFrameworkButton.getSelection(), args);
-          
+					Map args = new HashMap ();
+					
+					args.put(RES_EXCLUDES, _resExcludes.getText());
+					args.put(RES_INCLUDES, _resIncludes.getText());
+					args.put(WSRES_EXCLUDES, _wsresExcludes.getText());
+					args.put(WSRES_INCLUDES, _wsresIncludes.getText());
+					
+					naturesAccessor.setIncrementalNature(_woIsFrameworkButton.getSelection(), args);
+					
 				} else {
-					woLipsProject.getNaturesAccessor().setAntNature(_woIsFrameworkButton.getSelection());
+					naturesAccessor.setAntNature(_woIsFrameworkButton.getSelection());
 				}
 			} else {
-        woLipsProject.getNaturesAccessor().removeWOLipsNatures();
+				naturesAccessor.removeWOLipsNatures();
 			}
-		woLipsProject.getNaturesAccessor().useTargetBuilder(_woTargetBuilderCheck.getSelection());
+			boolean selection = _woTargetBuilderCheck.getSelection();
+			naturesAccessor.useTargetBuilder(selection);
 		} catch (CoreException up) {
 			WOLipsLog.log(up);
-
+			
 			return false;
 		}
 		finally {
