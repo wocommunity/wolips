@@ -23,8 +23,6 @@
       <import plugin="org.eclipse.core.runtime.compatibility"/>
       <import plugin="org.objectstyle.wolips.tests.core"/>
       <import plugin="org.objectstyle.wolips.datasets"/>
-      <import plugin="org.apache.xerces"/>
    </requires>
-
 
 </plugin>
