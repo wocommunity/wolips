@@ -1,0 +1,14 @@
+ArtistNameSearch: WOTextField {
+	value = artistNameSearch;
+}
+
+GalleryDropdown: WOPopUpButton {
+	displayString = gallery.name;
+	item = gallery;
+	list = allGalleries;
+	selection = selectedGallery;
+}
+
+PaintTitleSearch: WOTextField {
+	value = paintTitleSearch;
+}
