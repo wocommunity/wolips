@@ -63,6 +63,11 @@
     <!-- Creates WOProject distribution.               -->
     <!-- ============================================= -->
     <target name="dist" depends="prepare,java,doc">
+         <mkdir dir="${dist}/src"/>
+         <copy todir="${dist}/src">
+             <fileset dir="src"/>
+         </copy>
+         
          <tar tarfile="${dist.base}/${project.name}-src-${project.version}.tar">
              <tarfileset dir="${dist.base}">
                 <include name="${project.name}-${project.version}/**"/>
