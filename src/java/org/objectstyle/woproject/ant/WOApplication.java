@@ -86,6 +86,14 @@ public class WOApplication extends WOTask {
 	protected ArrayList frameworkSets = new ArrayList();
 	protected boolean stdFrameworks = true;
 
+    public String getPrincipalClass() {
+    	String principalClass = super.getPrincipalClass();
+    	if(principalClass == null) {
+    	    principalClass = "Application";
+    	}
+    	return principalClass;
+    }
+
 	/** 
 	 * Runs WOApplication task. Main worker method that would validate
 	 * all task settings and create a WOApplication.

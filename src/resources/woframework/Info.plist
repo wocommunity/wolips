@@ -2,7 +2,7 @@
 <plist version="0.9">
 <dict>
 	<key>NSJavaPathClient</key>
-	<string>@LOWERC_NAME@.jar</string>
+	<string>@JAR_NAME@</string>
 	<key>CFBundleIconFile</key>
 	<string>WOAfile.icns</string>
 	<key>CFBundleExecutable</key>
@@ -33,5 +33,6 @@
 	<string></string>
 	<key>CFBundlePackageType</key>
 	<string>FMWK</string>
+	@PRINCIPAL_CLASS@
 </dict>
 </plist>

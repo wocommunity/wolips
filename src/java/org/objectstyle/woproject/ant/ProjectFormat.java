@@ -91,7 +91,14 @@ public abstract class ProjectFormat {
 		return task.getName();
 	}
 
-	/** 
+        /**
+            * Returns a name of the jar WebObjects project being built with ".jar" appended.
+         */
+        public String getJarName() {
+            return task.getJarName() + ".jar";
+        }
+
+        /** 
 	 * Creates all needed files based on WOProject templates. 
 	 * This is a main worker method. 
 	 */
@@ -210,7 +217,7 @@ public abstract class ProjectFormat {
 			buf
 				.append(endLine)
 				.append("\t\t<string>")
-				.append(getName().toLowerCase() + ".jar")
+				.append(getJarName())
 				.append("</string>");
 		}
 
@@ -225,15 +232,27 @@ public abstract class ProjectFormat {
 		buf.append(endLine).append("\t</array>");
 		return buf.toString();
 	}
-
+        /**
+         * Returns a string that can be used in Info.plist
+         * file to indicate the principal class for the framework or app.
+         */
+        private String principalClassString() {
+            StringBuffer buf = new StringBuffer();
+            if(task.getPrincipalClass() != null && task.getPrincipalClass().length() > 0) {
+                buf.append("<key>NSPrincipalClass</key>").append(endLine);
+                buf.append("\t<string>").append(task.getPrincipalClass()).append("</string>").append(endLine);
+            }
+            return buf.toString();
+        }
 	/** 
 	 * Returns a FilterSet that can be used to build Info.plist file. 
 	 */
 	public FilterSetCollection infoFilter(Iterator extLibs) {
 		FilterSet filter = new FilterSet();
 
-		filter.addFilter("NAME", getName());
-		filter.addFilter("LOWERC_NAME", getName().toLowerCase());
+            filter.addFilter("PRINCIPAL_CLASS", principalClassString());
+            filter.addFilter("NAME", getName());
+		filter.addFilter("JAR_NAME", getJarName());
 		filter.addFilter("JAR_ARRAY", libString(extLibs));
 
 		return new FilterSetCollection(filter);

@@ -75,6 +75,8 @@ public abstract class WOTask extends MatchingTask {
     protected Vector classes = new Vector();
     protected String name;
     protected String destDir;
+    protected String principalClass;
+    protected String jarName;
     protected Vector resources = new Vector();
     protected Vector wsresources = new Vector();
     protected SubtaskFactory subtaskFactory = new SubtaskFactory(this);
@@ -85,6 +87,24 @@ public abstract class WOTask extends MatchingTask {
 
     public String getName() {
     	return name;
+    }
+
+    public void setJarName(String jarName) {
+        this.jarName = jarName;
+    }
+
+    public String getJarName() {
+        if(jarName == null)
+            jarName = getName().toLowerCase();
+        return jarName;
+    }
+
+    public void setPrincipalClass(String principalClass) {
+        this.principalClass = principalClass;
+    }
+
+    public String getPrincipalClass() {
+    	return principalClass;
     }
 
     public void setDestDir(String destDir) {
@@ -177,7 +197,7 @@ public abstract class WOTask extends MatchingTask {
     protected void jarClasses() throws BuildException {
         Jar jar = subtaskFactory.getJar();
         File taskJar =
-                new File(resourcesDir(), "Java" + File.separator + name.toLowerCase() + ".jar");
+                new File(resourcesDir(), "Java" + File.separator + getJarName() + ".jar");
         jar.setJarfile(taskJar);
 
         if (hasClasses()) {
