@@ -89,7 +89,7 @@ public class WOLabelDecorator
 	 * @see org.eclipse.jface.viewers.ILabelDecorator#decorateImage(Image, Object)
 	 */
 	public Image decorateImage(Image image, Object element) {
-	
+
 		if (element instanceof IFolder
 			&& ProjectHelper.isWOProjectResource((IResource) element)) {
 			String extension = ((IFolder) element).getFileExtension();

@@ -1,8 +1,8 @@
 /* ====================================================================
- * 
- * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 The ObjectStyle Group 
+ * The ObjectStyle Group Software License, Version 1.0
+ *
+ * Copyright (c) 2002 The ObjectStyle Group
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,15 +18,15 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution, if
- *    any, must include the following acknowlegement:  
- *       "This product includes software developed by the 
+ *    any, must include the following acknowlegement:
+ *       "This product includes software developed by the
  *        ObjectStyle Group (http://objectstyle.org/)."
  *    Alternately, this acknowlegement may appear in the software itself,
  *    if and wherever such third-party acknowlegements normally appear.
  *
- * 4. The names "ObjectStyle Group" and "Cayenne" 
+ * 4. The names "ObjectStyle Group" and "Cayenne"
  *    must not be used to endorse or promote products derived
- *    from this software without prior written permission. For written 
+ *    from this software without prior written permission. For written
  *    permission, please contact andrus@objectstyle.org.
  *
  * 5. Products derived from this software may not be called "ObjectStyle"
@@ -53,15 +53,17 @@
  * <http://objectstyle.org/>.
  *
  */
-package org.objectstyle.wolips.wizards;
-import org.eclipse.jface.viewers.IStructuredSelection;
+
+package org.objectstyle.wolips.preferences;
+
+import org.eclipse.jface.preference.BooleanFieldEditor;
+import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.wizards.newresource.BasicNewProjectResourceWizard;
-import org.objectstyle.wolips.WOLipsPlugin;
-import org.objectstyle.wolips.images.WOLipsPluginImages;
-import org.objectstyle.wolips.project.ProjectHelper;
+import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.objectstyle.wolips.IWOLipsPluginConstants;
+
 /**
- * @author mnolte
  * @author uli
  *
  * To change this generated comment edit the template variable "typecomment":
@@ -69,47 +71,51 @@ import org.objectstyle.wolips.project.ProjectHelper;
  * To enable and disable the creation of type comments go to
  * Window>Preferences>Java>Code Generation.
  */
-public class WOFrameworkCreationWizard extends BasicNewProjectResourceWizard {
-	private IWorkbench workbench;
-	private WOFrameworkCreationPage mainPage;
+public class PreferencesPage
+	extends FieldEditorPreferencePage
+	implements IWorkbenchPreferencePage {
 
-	/** (non-Javadoc)
-	 * Method declared on Wizard.
+	/**
+	 * Constructor
 	 */
-	public void addPages() {
-		mainPage = new WOFrameworkCreationPage("createWOFrameworkPage1");
-		addPage(mainPage);
+	public PreferencesPage() {
+		super(GRID);
+		setPreferenceStore(Preferences.getPreferenceStore());
+		setDescription(
+			PreferencesMessages.getString("Preferences.PageDescription"));
+		Preferences.setDefaults();
 	}
 
-	/** (non-Javadoc)
-	 * Method declared on INewWizard
+	/**
+	 * @see org.eclipse.jface.preference.FieldEditorPreferencePage#createFieldEditors()
 	 */
-	public void init(IWorkbench workbench, IStructuredSelection selection) {
-		super.init(workbench, selection);
-		this.workbench = workbench;
-		//this.selection = selection;
-		setWindowTitle(Messages.getString("WOFrameworkCreationWizard.title"));
-		setDefaultPageImageDescriptor(
-			WOLipsPluginImages.WOPROJECT_WIZARD_BANNER);
+	public void createFieldEditors() {
+		addField(
+			new StringFieldEditor(
+				IWOLipsPluginConstants.PREF_ANT_BUILD_FILE,
+				PreferencesMessages.getString("Preferences.AntBuildFile.Label"),
+				getFieldEditorParent()));
+		addField(
+			new BooleanFieldEditor(
+				IWOLipsPluginConstants.PREF_RUN_WOBUILDER_ON_BUILD,
+				PreferencesMessages.getString(
+					"Preferences.RunWOBuilderOnBuild.Label"),
+				getFieldEditorParent()));
 	}
-
-	/** (non-Javadoc)
-	 * Method declared on IWizard
+	/**
+	 * Method performOK.
+	 * @return boolean
 	 */
-	public boolean performFinish() {
-		boolean creationSuccessful = mainPage.createProject();
-		if (creationSuccessful) {
-			try {
-				ProjectHelper.installBuilder(
-					mainPage.getProjectHandle(),
-					ProjectHelper.WOFRAMEWORK_BUILDER_ID);
-
-			} catch (Exception anException) {
-				WOLipsPlugin.log(anException);
-				creationSuccessful = false;
-			}
+	public boolean performOk() {
+		if (super.performOk()) {
+			//do some stuff	
+			return true;
 		}
-		return creationSuccessful;
+		return false;
 	}
-
+	/**
+	 * @see org.eclipse.ui.IWorkbenchPreferencePage#init(IWorkbench)
+	 */
+	public void init(IWorkbench workbench) {
+	}
 }

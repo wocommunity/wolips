@@ -53,8 +53,8 @@
  * <http://objectstyle.org/>.
  *
  */
- 
- package org.objectstyle.wolips.actions;
+
+package org.objectstyle.wolips.actions;
 
 import org.eclipse.jdt.internal.ui.wizards.AbstractOpenWizardAction;
 import org.eclipse.jface.wizard.Wizard;
@@ -69,13 +69,13 @@ import org.objectstyle.wolips.wizards.WOFrameworkCreationWizard;
  * Window>Preferences>Java>Code Generation.
  */
 public class OpenWOFrameworkCreationWizard extends AbstractOpenWizardAction {
-	
+
 	protected boolean checkWorkspaceNotEmpty() {
 		return true;
 	}
-	
-	protected Wizard createWizard() { 
-		return new WOFrameworkCreationWizard(); 
+
+	protected Wizard createWizard() {
+		return new WOFrameworkCreationWizard();
 	}
 
 }

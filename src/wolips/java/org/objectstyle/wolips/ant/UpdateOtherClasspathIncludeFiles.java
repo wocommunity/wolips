@@ -75,7 +75,6 @@ import org.eclipse.jdt.core.JavaModelException;
  */
 public class UpdateOtherClasspathIncludeFiles extends UpdateIncludeFiles {
 
-
 	/**
 	 * Constructor for UpdateOtherClasspathIncludeFiles.
 	 */
@@ -170,17 +169,17 @@ public class UpdateOtherClasspathIncludeFiles extends UpdateIncludeFiles {
 
 			if (newClasspathEntries.length() > 0) {
 				try {
-					if (currentClasspathListFile.exists()){
+					if (currentClasspathListFile.exists()) {
 						// file may be created by WOBuilder in the meantime
 						// no update needed
 						return;
-					}else{
-					// create list file if any entries found
-					currentClasspathListFile.create(
-						new ByteArrayInputStream(
-							newClasspathEntries.toString().getBytes()),
-						true,
-						null);
+					} else {
+						// create list file if any entries found
+						currentClasspathListFile.create(
+							new ByteArrayInputStream(
+								newClasspathEntries.toString().getBytes()),
+							true,
+							null);
 					}
 				} catch (CoreException e) {
 					throw new BuildException(
@@ -230,6 +229,5 @@ public class UpdateOtherClasspathIncludeFiles extends UpdateIncludeFiles {
 		}
 		return toReturn;
 	}
-
 
 }

@@ -86,15 +86,18 @@ public class WOProjectCreationPage extends WizardNewProjectCreationPage {
 		setInitialProjectName(
 			Messages.getString("WOProjectCreationPage.newProject.defaultName"));
 	}
-	
+
 	public boolean createProject() {
 		IProject newProject = getProjectHandle();
-		String projectTemplateID = Messages.getString("webobjects.projectType.java.application");
-		if(!useDefaults() && 
-			(getLocationPath() != null) &&
-			(getLocationPath().makeAbsolute().toFile().isDirectory()) &&
-			(getLocationPath().makeAbsolute().toFile().list().length > 0))	
-			projectTemplateID = Messages.getString("webobjects.projectType.java.application.import");			
+		String projectTemplateID =
+			Messages.getString("webobjects.projectType.java.application");
+		if (!useDefaults()
+			&& (getLocationPath() != null)
+			&& (getLocationPath().makeAbsolute().toFile().isDirectory())
+			&& (getLocationPath().makeAbsolute().toFile().list().length > 0))
+			projectTemplateID =
+				Messages.getString(
+					"webobjects.projectType.java.application.import");
 		IRunnableWithProgress op =
 			new WorkspaceModifyDelegatingOperation(
 				new WOProjectCreator(

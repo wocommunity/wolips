@@ -83,12 +83,12 @@ import com.webobjects.foundation.NSDictionary;
  * Window>Preferences>Java>Code Generation.
  */
 public class PBProjectUpdater {
-	
+
 	//public static String PBProject = "PB.projectContainer"; moved to IWOLipsPluginConstants.PROJECT_FILE_NAME (mn)
 	private PBProject pbProject;
 	private IContainer projectContainer;
 	private static final String dirtyPBProject = "<?xml";
-	
+
 	/**
 	 * Constructor for PBProjectUpdater.
 	 */
@@ -98,31 +98,30 @@ public class PBProjectUpdater {
 		getPBProject(aProjectContainer);
 		projectContainer = aProjectContainer;
 	}
-	
+
 	public void updatePBProject() throws CoreException {
 		syncPBProjectWithProject();
 		if (projectContainer != null)
 			PBProjectNotifications.postPBProjectDidUpgradeNotification(
 				projectContainer.getName());
 	}
-	
-	
+
 	/**
 	 * On MacOSX the EOModeler converts the PB.project file to xml.
 	 */
 	private void fixEOModelerMacOSXBug(File aFile) {
 		try {
-			if((aFile != null) && (aFile.exists())) {
+			if ((aFile != null) && (aFile.exists())) {
 				String file = FileStringScanner.stringFromFile(aFile);
-				if(file.startsWith(PBProjectUpdater.dirtyPBProject)) aFile.delete();	
+				if (file.startsWith(PBProjectUpdater.dirtyPBProject))
+					aFile.delete();
 			}
-		}
-		catch (Exception anException) {
+		} catch (Exception anException) {
 			WOLipsPlugin.log(anException);
 		}
 	}
-	
-	private void  getPBProject(IContainer aProject) {
+
+	private void getPBProject(IContainer aProject) {
 		IFile aPBProject =
 			aProject.getFile(
 				new Path(IWOLipsPluginConstants.PROJECT_FILE_NAME));
@@ -130,15 +129,19 @@ public class PBProjectUpdater {
 		pbProject = null;
 		fixEOModelerMacOSXBug(aFile);
 		try {
-			boolean sync = !aFile.exists();	
-			pbProject = new PBProject(aFile, !ProjectHelper.isWOAppBuilderInstalled((IProject)aProject));
-			if(sync) syncPBProjectWithProject();
-		}
-		catch (Exception anException) {
+			boolean sync = !aFile.exists();
+			pbProject =
+				new PBProject(
+					aFile,
+					!ProjectHelper.isWOAppBuilderInstalled(
+						(IProject) aProject));
+			if (sync)
+				syncPBProjectWithProject();
+		} catch (Exception anException) {
 			WOLipsPlugin.log(anException);
 		}
 	}
-	
+
 	private void syncPBProjectWithProject() {
 		try {
 			pbProject.update();
@@ -149,7 +152,7 @@ public class PBProjectUpdater {
 			WOLipsPlugin.log(ioex);
 		}
 	}
-	
+
 	private void syncFilestable() {
 		ArrayList aClassesList = new ArrayList();
 		ArrayList aWOComponentsList = new ArrayList();
@@ -176,7 +179,7 @@ public class PBProjectUpdater {
 		this.syncWOComponents(aWOComponentsList);
 		this.syncWOAppResources(aWOAppResourcesList);
 	}
-	
+
 	private void proceedResource(
 		IResource aResource,
 		List aClassesList,
@@ -233,7 +236,7 @@ public class PBProjectUpdater {
 	private void syncWOAppResources(List list) {
 		pbProject.setWoAppResources(list);
 	}
-	
+
 	//////////// removing adding filestable resources
 	public void syncFilestable(
 		NSDictionary changedResources,

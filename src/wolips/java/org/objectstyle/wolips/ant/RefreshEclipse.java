@@ -53,7 +53,7 @@
  * <http://objectstyle.org/>.
  *
  */
- package org.objectstyle.wolips.ant;
+package org.objectstyle.wolips.ant;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
@@ -66,7 +66,7 @@ import org.eclipse.core.runtime.CoreException;
  *
  */
 public class RefreshEclipse extends Task {
-	
+
 	private String projectName;
 	private boolean forceFullGarbageCollection = false;
 
@@ -79,9 +79,10 @@ public class RefreshEclipse extends Task {
 
 	public void execute() throws BuildException {
 		validateAttributes();
-		
+
 		IProject actualProject =
-			ResourcesPlugin.getWorkspace().getRoot().getProject(getProjectName());
+			ResourcesPlugin.getWorkspace().getRoot().getProject(
+				getProjectName());
 		if (actualProject.exists()) {
 			try {
 				System.out.println("Refreshing view...");
@@ -122,23 +123,31 @@ public class RefreshEclipse extends Task {
 	public void setProjectName(String projectName) {
 		this.projectName = projectName;
 	}
-	
+
 	public void forceFullGarbageCollection() {
 		if (forceFullGarbageCollection) {
-        	Runtime runtime = Runtime.getRuntime();
-        	System.out.println("Forcing full garbage collection... " );
-        	long isFree = runtime.freeMemory();
-        	long total = runtime.totalMemory();
-        	long wasFree;
-        	System.out.println( "Was free    : " + isFree + "\t Was used    : " + ( total - isFree ) );
-        	wasFree = isFree;
-        	runtime.gc();
-        	isFree = runtime.freeMemory();
-        	runtime.runFinalization();
-        	total = runtime.totalMemory();
-        	System.out.println( "Is now free : " + isFree + "\t Is now used : " + ( total - isFree ) );
-        	System.out.println( "...done" );
-        }
-    }
+			Runtime runtime = Runtime.getRuntime();
+			System.out.println("Forcing full garbage collection... ");
+			long isFree = runtime.freeMemory();
+			long total = runtime.totalMemory();
+			long wasFree;
+			System.out.println(
+				"Was free    : "
+					+ isFree
+					+ "\t Was used    : "
+					+ (total - isFree));
+			wasFree = isFree;
+			runtime.gc();
+			isFree = runtime.freeMemory();
+			runtime.runFinalization();
+			total = runtime.totalMemory();
+			System.out.println(
+				"Is now free : "
+					+ isFree
+					+ "\t Is now used : "
+					+ (total - isFree));
+			System.out.println("...done");
+		}
+	}
 
 }

@@ -55,9 +55,8 @@
  */
 package org.objectstyle.wolips.builder;
 
-
 public class WOFrameworkBuilder extends WOBuilder {
-	
+
 	public String buildFile() {
 		return "build.xml";
 	}

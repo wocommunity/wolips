@@ -74,14 +74,14 @@ public class Environment {
 	private static String nextRoot;
 	private static String localRoot;
 	private static String foundationJarPath;
-	
+
 	/**
 	 * Constructor for Environment.
 	 */
 	private Environment() {
 		super();
 	}
-	
+
 	/**
 	 * The values are cached.
 	 * @return environment variables as Properties.
@@ -113,7 +113,7 @@ public class Environment {
 		}
 		return Environment.envVars;
 	}
-	
+
 	/**
 	 * @return String with path to the foundation.jar
 	 */
@@ -137,7 +137,7 @@ public class Environment {
 		}
 		return foundationJarPath;
 	}
-	
+
 	/**
 	 * @return Returns the NEXT_ROOT
 	 */
@@ -156,7 +156,7 @@ public class Environment {
 		Environment.nextRoot = "/System";
 		return Environment.nextRoot;
 	}
-	
+
 	public static String localRoot() {
 		if (Environment.localRoot == null) {
 			if (isNextRootSet()) {
@@ -169,7 +169,7 @@ public class Environment {
 		}
 		return Environment.localRoot;
 	}
-	
+
 	public static boolean isNextRootSet() {
 		try {
 			if (Environment.getEnvVars().containsKey(Environment.NEXT_ROOT))

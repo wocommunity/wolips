@@ -53,9 +53,7 @@
  * <http://objectstyle.org/>.
  *
  */
-
 package org.objectstyle.wolips.wizards;
-
 import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.resources.IProject;
@@ -64,7 +62,6 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.ui.actions.WorkspaceModifyDelegatingOperation;
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
 import org.objectstyle.wolips.WOLipsPlugin;
-
 /**
  * @author mnolte
  * @author uli
@@ -74,84 +71,54 @@ import org.objectstyle.wolips.WOLipsPlugin;
  * To enable and disable the creation of type comments go to
  * Window>Preferences>Java>Code Generation.
  */
-
 public class WOFrameworkCreationPage extends WizardNewProjectCreationPage {
-
 	private IResource elementToOpen;
-
 	/**
 	 * Constructor for WOFrameworkCreationPage.
 	 * @param pageName
 	 */
-
 	public WOFrameworkCreationPage(String pageName) {
-
 		super(pageName);
-
 		setTitle(Messages.getString("WOFrameworkCreationWizard.title"));
-
 		setDescription(
 			Messages.getString("WOFrameworkCreationWizard.description"));
-
 		setInitialProjectName(
 			Messages.getString(
 				"WOFrameworkCreationWizard.newProject.defaultName"));
-
 	}
-
 	public boolean createProject() {
-
 		IProject newProject = getProjectHandle();
-
 		String projectTemplateID =
 			Messages.getString("webobjects.projectType.java.framework");
-
 		IRunnableWithProgress op =
 			new WorkspaceModifyDelegatingOperation(
-				new WOProjectCreator(newProject, projectTemplateID,getLocationPath()));
-
+				new WOProjectCreator(
+					newProject,
+					projectTemplateID,
+					getLocationPath()));
 		try {
-
 			getContainer().run(false, true, op);
-
 		} catch (InvocationTargetException e) {
-
 			WOLipsPlugin.handleException(
 				getShell(),
 				e.getTargetException(),
 				null);
-
 			return false;
-
 		} catch (InterruptedException e) {
-
 			//WOLipsUtils.handleException(getShell(), e, null);
-
 			return false;
-
 		}
-
 		IResource resourceToOpen = newProject;
-
 		if (resourceToOpen != null) {
-
 			elementToOpen = resourceToOpen;
-
 		}
-
 		return true;
-
 	}
-
 	/**
 	 * Method getElementToOpen.
 	 * @return resource to open on successful project creation
 	 */
-
 	public IResource getElementToOpen() {
-
 		return elementToOpen;
-
 	}
-
 }

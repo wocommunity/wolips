@@ -53,8 +53,8 @@
  * <http://objectstyle.org/>.
  *
  */
- 
- package org.objectstyle.wolips.ui;
+
+package org.objectstyle.wolips.ui;
 
 import org.eclipse.debug.ui.IDebugUIConstants;
 import org.eclipse.jdt.ui.JavaUI;
@@ -73,40 +73,44 @@ import org.objectstyle.wolips.WOLipsPlugin;
  * Window>Preferences>Java>Code Generation.
  */
 public class PerspectiveFactory implements IPerspectiveFactory {
-	private final static String ID_ANT_CONSOLE = "org.eclipse.ui.externaltools.LogConsoleView";
+	private final static String ID_ANT_CONSOLE =
+		"org.eclipse.ui.externaltools.LogConsoleView";
 
 	public void createInitialLayout(IPageLayout layout) {
 		String editorArea = layout.getEditorArea();
-		
-		IFolderLayout folder= layout.createFolder("left", IPageLayout.LEFT, (float)0.25, editorArea); //$NON-NLS-1$
+
+		IFolderLayout folder = layout.createFolder("left", IPageLayout.LEFT, (float) 0.25, editorArea); //$NON-NLS-1$
 		folder.addView(WOLipsPlugin.ID_Navigator);
 		folder.addView(JavaUI.ID_PACKAGES);
 		folder.addView(JavaUI.ID_TYPE_HIERARCHY);
 		folder.addPlaceholder(IPageLayout.ID_RES_NAV);
-		
-		IFolderLayout outputfolder= layout.createFolder("bottom", IPageLayout.BOTTOM, (float)0.75, editorArea); //$NON-NLS-1$
+
+		IFolderLayout outputfolder = layout.createFolder("bottom", IPageLayout.BOTTOM, (float) 0.75, editorArea); //$NON-NLS-1$
 		outputfolder.addView(IPageLayout.ID_TASK_LIST);
 		outputfolder.addView(IDebugUIConstants.ID_CONSOLE_VIEW);
 		outputfolder.addView(PerspectiveFactory.ID_ANT_CONSOLE);
 		outputfolder.addPlaceholder(SearchUI.SEARCH_RESULT_VIEW_ID);
 		//outputfolder.addPlaceholder(IDebugUIConstants.ID_CONSOLE_VIEW);
 		outputfolder.addPlaceholder(IPageLayout.ID_BOOKMARKS);
-		
-		layout.addView(IPageLayout.ID_OUTLINE, IPageLayout.RIGHT, (float)0.75, editorArea);
-		
+
+		layout.addView(
+			IPageLayout.ID_OUTLINE,
+			IPageLayout.RIGHT,
+			(float) 0.75,
+			editorArea);
+
 		layout.addActionSet(IDebugUIConstants.LAUNCH_ACTION_SET);
 		layout.addActionSet(JavaUI.ID_ACTION_SET);
 		layout.addActionSet(JavaUI.ID_ELEMENT_CREATION_ACTION_SET);
 		layout.addActionSet(WOLipsPlugin.ID_ELEMENT_CREATION_ACTION_SET);
-		
+
 		// views - java
 		//layout.addShowViewShortcut(WOLipsPlugin.ID_Finder);
 		layout.addShowViewShortcut(JavaUI.ID_PACKAGES);
 		layout.addShowViewShortcut(JavaUI.ID_TYPE_HIERARCHY);
 
-
 		layout.addShowViewShortcut(SearchUI.SEARCH_RESULT_VIEW_ID);
-		
+
 		// views - debugging
 		layout.addShowViewShortcut(IDebugUIConstants.ID_CONSOLE_VIEW);
 
@@ -114,20 +118,20 @@ public class PerspectiveFactory implements IPerspectiveFactory {
 		layout.addShowViewShortcut(IPageLayout.ID_OUTLINE);
 		layout.addShowViewShortcut(IPageLayout.ID_TASK_LIST);
 		layout.addShowViewShortcut(IPageLayout.ID_RES_NAV);
-				
+
 		// new actions - Java project creation wizard
 		layout.addNewWizardShortcut("org.eclipse.jdt.ui.wizards.NewPackageCreationWizard"); //$NON-NLS-1$
 		layout.addNewWizardShortcut("org.eclipse.jdt.ui.wizards.NewClassCreationWizard"); //$NON-NLS-1$
 		layout.addNewWizardShortcut("org.eclipse.jdt.ui.wizards.NewInterfaceCreationWizard"); //$NON-NLS-1$
-		layout.addNewWizardShortcut("org.eclipse.jdt.ui.wizards.NewSourceFolderCreationWizard");	 //$NON-NLS-1$
+		layout.addNewWizardShortcut("org.eclipse.jdt.ui.wizards.NewSourceFolderCreationWizard"); //$NON-NLS-1$
 		layout.addNewWizardShortcut("org.eclipse.jdt.ui.wizards.NewSnippetFileCreationWizard"); //$NON-NLS-1$
-		layout.addNewWizardShortcut("org.eclipse.ui.wizards.new.folder");//$NON-NLS-1$
-		layout.addNewWizardShortcut("org.eclipse.ui.wizards.new.file");//$NON-NLS-1$
-		layout.addNewWizardShortcut("org.objectstyle.wolips.wizards.new.wo.5.1.component");//$NON-NLS-1$
-		layout.addNewWizardShortcut("org.objectstyle.wolips.wizards.new.wo.5.1.subproject");//$NON-NLS-1$
-		layout.addNewWizardShortcut("org.objectstyle.wolips.wizards.new.wo.5.1.application");//$NON-NLS-1$
-		layout.addNewWizardShortcut("org.objectstyle.wolips.wizards.new.wo.5.1.framework");//$NON-NLS-1$
-		layout.addNewWizardShortcut("org.objectstyle.wolips.wizards.new.wo.5.1.eomodel");//$NON-NLS-1$
+		layout.addNewWizardShortcut("org.eclipse.ui.wizards.new.folder"); //$NON-NLS-1$
+		layout.addNewWizardShortcut("org.eclipse.ui.wizards.new.file"); //$NON-NLS-1$
+		layout.addNewWizardShortcut("org.objectstyle.wolips.wizards.new.wo.5.1.component"); //$NON-NLS-1$
+		layout.addNewWizardShortcut("org.objectstyle.wolips.wizards.new.wo.5.1.subproject"); //$NON-NLS-1$
+		layout.addNewWizardShortcut("org.objectstyle.wolips.wizards.new.wo.5.1.application"); //$NON-NLS-1$
+		layout.addNewWizardShortcut("org.objectstyle.wolips.wizards.new.wo.5.1.framework"); //$NON-NLS-1$
+		layout.addNewWizardShortcut("org.objectstyle.wolips.wizards.new.wo.5.1.eomodel"); //$NON-NLS-1$
 	}
 
 }

@@ -70,59 +70,65 @@ import java.io.IOException;
  * Window>Preferences>Java>Code Generation.
  */
 public class FileStringScanner {
-	
-    public FileStringScanner() {
-        super();
-    }
 
-    public static void fileOpenReplaceWith(String file, String replace, String with) throws IOException {
-        String stringFromFile = FileStringScanner.stringFromFile(new File(file));
-        String replacedString = FileStringScanner.replace(stringFromFile, replace, with);
-        //if nothing replaced
-        if(replacedString != null)
-        	FileStringScanner.stringToFile(new File(file), replacedString);
-    }
+	public FileStringScanner() {
+		super();
+	}
 
-    public static String stringFromFile(File aFile) throws IOException {
-		int size = (int)aFile.length();
-                FileInputStream 	fis = new FileInputStream(aFile);
-                byte [] 		data = new byte[size];
-                int 		bytesRead = 0;
-                while(bytesRead < size) {
-                    bytesRead += fis.read(data, bytesRead, size - bytesRead);
-                }
-                fis.close();
-                return new String(data);
-    }
- 
- 	public static void stringToFile(File aFile, String aString) throws IOException {
- 		int length = aString.length();
- 		FileOutputStream 	fos = new FileOutputStream(aFile);
-		fos.write(aString.getBytes(), 0 , length);
-        fos.close();
- 	}
+	public static void fileOpenReplaceWith(
+		String file,
+		String replace,
+		String with)
+		throws IOException {
+		String stringFromFile =
+			FileStringScanner.stringFromFile(new File(file));
+		String replacedString =
+			FileStringScanner.replace(stringFromFile, replace, with);
+		//if nothing replaced
+		if (replacedString != null)
+			FileStringScanner.stringToFile(new File(file), replacedString);
+	}
 
-    public static String replace(String text, String replace, String with) {
-        if (text != null) {
-            int	li = 0;
-            int	l = replace.length();
-            int	i = text.indexOf(replace, li);
-            if(i>=0) {
-                StringBuffer aWorkString = new StringBuffer(text.length()+1);
-                while (i >= 0) {
-                    if (i>li)
-                        aWorkString.append(text.substring(li,i));
-                    aWorkString.append(with);
-                    li = i+l;
-                    i = text.indexOf(replace, li);
-                }
-                aWorkString.append(text.substring(li));
-                return aWorkString.toString();
-            }
-            return null;
-        }
-        return null;
-    }
+	public static String stringFromFile(File aFile) throws IOException {
+		int size = (int) aFile.length();
+		FileInputStream fis = new FileInputStream(aFile);
+		byte[] data = new byte[size];
+		int bytesRead = 0;
+		while (bytesRead < size) {
+			bytesRead += fis.read(data, bytesRead, size - bytesRead);
+		}
+		fis.close();
+		return new String(data);
+	}
+
+	public static void stringToFile(File aFile, String aString)
+		throws IOException {
+		int length = aString.length();
+		FileOutputStream fos = new FileOutputStream(aFile);
+		fos.write(aString.getBytes(), 0, length);
+		fos.close();
+	}
+
+	public static String replace(String text, String replace, String with) {
+		if (text != null) {
+			int li = 0;
+			int l = replace.length();
+			int i = text.indexOf(replace, li);
+			if (i >= 0) {
+				StringBuffer aWorkString = new StringBuffer(text.length() + 1);
+				while (i >= 0) {
+					if (i > li)
+						aWorkString.append(text.substring(li, i));
+					aWorkString.append(with);
+					li = i + l;
+					i = text.indexOf(replace, li);
+				}
+				aWorkString.append(text.substring(li));
+				return aWorkString.toString();
+			}
+			return null;
+		}
+		return null;
+	}
 
 }
-

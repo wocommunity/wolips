@@ -116,7 +116,8 @@ public class ResourceChangeListener
 					.getAddedResourcesProjectDict()
 					.allKeys()
 					.objectAtIndex(i);
-			projectUpdater = new PBProjectUpdater(projectFileToUpdate.getParent());
+			projectUpdater =
+				new PBProjectUpdater(projectFileToUpdate.getParent());
 			projectUpdater.syncFilestable(
 				(NSDictionary) resourceValidator
 					.getAddedResourcesProjectDict()
@@ -139,7 +140,8 @@ public class ResourceChangeListener
 			// ensure project file container exists
 			// if no container exists the whole project is deleted
 			if (projectFileToUpdate.getParent().exists()) {
-				projectUpdater = new PBProjectUpdater(projectFileToUpdate.getParent());
+				projectUpdater =
+					new PBProjectUpdater(projectFileToUpdate.getParent());
 				projectUpdater.syncFilestable(
 					(NSDictionary) resourceValidator
 						.getRemovedResourcesProjectDict()
@@ -148,9 +150,9 @@ public class ResourceChangeListener
 					IResourceDelta.REMOVED);
 			}
 		}
-		
+
 	}
-	
+
 	private class ProjectFileResourceValidator
 		implements IResourceDeltaVisitor {
 		//private QualifiedName resourceQualifier;

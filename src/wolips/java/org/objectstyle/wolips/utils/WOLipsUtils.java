@@ -69,170 +69,170 @@ public class WOLipsUtils implements IWOLipsPluginConstants {
 	private WOLipsUtils() {
 		super();
 	}
-	
+
 	// mn: not deleted yet
 	// possible to use this class in future
 	// e.g.
 	// public static void handleException
 	// public static DocumentBuilder documentBuilder()
+
+	/*
+		public static IContainer getProjectSourceFolder(IProject project) {
+			IClasspathEntry[] classpathEntries;
+			IJavaProject javaProject;
 	
-/*
-	public static IContainer getProjectSourceFolder(IProject project) {
-		IClasspathEntry[] classpathEntries;
-		IJavaProject javaProject;
-
-		try {
-			javaProject = JavaCore.create(project);
-
-			classpathEntries = javaProject.getRawClasspath();
-		} catch (JavaModelException e) {
-			WOLipsPlugin.log(e);
-			return null;
-		}
-
-		for (int i = 0; i < classpathEntries.length; i++) {
-			if (IClasspathEntry.CPE_SOURCE
-				== classpathEntries[i].getEntryKind()) {
-				// source entry found
-				if (classpathEntries[i].getPath() != null
-					&& classpathEntries[i].getPath().toString().indexOf(
-						"."
-							+ IWOLipsPluginConstants.EXT_SUBPROJECT
-							+ "."
-							+ IWOLipsPluginConstants.EXT_SRC)
-						== -1) {
-					// non subproject entry found
-					if (classpathEntries[i].getPath().segmentCount() > 1) {
-						return project.getWorkspace().getRoot().getFolder(
-							classpathEntries[i].getPath());
+			try {
+				javaProject = JavaCore.create(project);
+	
+				classpathEntries = javaProject.getRawClasspath();
+			} catch (JavaModelException e) {
+				WOLipsPlugin.log(e);
+				return null;
+			}
+	
+			for (int i = 0; i < classpathEntries.length; i++) {
+				if (IClasspathEntry.CPE_SOURCE
+					== classpathEntries[i].getEntryKind()) {
+					// source entry found
+					if (classpathEntries[i].getPath() != null
+						&& classpathEntries[i].getPath().toString().indexOf(
+							"."
+								+ IWOLipsPluginConstants.EXT_SUBPROJECT
+								+ "."
+								+ IWOLipsPluginConstants.EXT_SRC)
+							== -1) {
+						// non subproject entry found
+						if (classpathEntries[i].getPath().segmentCount() > 1) {
+							return project.getWorkspace().getRoot().getFolder(
+								classpathEntries[i].getPath());
+						}
+						break;
 					}
-					break;
 				}
 			}
+			// project is source container
+			return project;
 		}
-		// project is source container
-		return project;
-	}
-
-	public static IFolder getSubprojectSourceFolder(IFolder subprojectFolder) {
-		List subprojectFolders =
-			getSubProjectsSourceFolder(subprojectFolder.getProject());
-		for (int i = 0; i < subprojectFolders.size(); i++) {
-			if (((IFolder) subprojectFolders.get(i))
-				.getName()
-				.equals(subprojectFolder.getName() + "." + EXT_SRC)) {
-				return (IFolder) subprojectFolders.get(i);
+	
+		public static IFolder getSubprojectSourceFolder(IFolder subprojectFolder) {
+			List subprojectFolders =
+				getSubProjectsSourceFolder(subprojectFolder.getProject());
+			for (int i = 0; i < subprojectFolders.size(); i++) {
+				if (((IFolder) subprojectFolders.get(i))
+					.getName()
+					.equals(subprojectFolder.getName() + "." + EXT_SRC)) {
+					return (IFolder) subprojectFolders.get(i);
+				}
 			}
-		}
-		// no folder found - create new source folder
-		IFolder subprojectSourceFolder =
-			subprojectFolder.getProject().getFolder(
-				subprojectFolder.getName() + "." + EXT_SRC);
-		if (!subprojectSourceFolder.exists()) {
+			// no folder found - create new source folder
+			IFolder subprojectSourceFolder =
+				subprojectFolder.getProject().getFolder(
+					subprojectFolder.getName() + "." + EXT_SRC);
+			if (!subprojectSourceFolder.exists()) {
+				try {
+					subprojectSourceFolder.create(true, true, null);
+				} catch (CoreException e) {
+					WOLipsPlugin.log(e);
+				}
+			}
+			// add
 			try {
-				subprojectSourceFolder.create(true, true, null);
-			} catch (CoreException e) {
+				addNewSourcefolderToClassPath(subprojectSourceFolder, null);
+			} catch (InvocationTargetException e) {
 				WOLipsPlugin.log(e);
 			}
+			return subprojectSourceFolder;
 		}
-		// add
-		try {
-			addNewSourcefolderToClassPath(subprojectSourceFolder, null);
-		} catch (InvocationTargetException e) {
-			WOLipsPlugin.log(e);
-		}
-		return subprojectSourceFolder;
-	}
-
-	public static List getSubProjectsSourceFolder(IProject project) {
-		IClasspathEntry[] classpathEntries;
-		IJavaProject javaProject;
-		ArrayList foundFolders = new ArrayList();
-		try {
-			javaProject = JavaCore.create(project);
-
-			classpathEntries = javaProject.getRawClasspath();
-		} catch (JavaModelException e) {
-			WOLipsPlugin.log(e);
-			return null;
-		}
-
-		for (int i = 0; i < classpathEntries.length; i++) {
-			if (IClasspathEntry.CPE_SOURCE
-				== classpathEntries[i].getEntryKind()) {
-				// source entry found
-				if (classpathEntries[i].getPath() != null
-					&& classpathEntries[i].getPath().toString().indexOf(
-						"." + EXT_SUBPROJECT + "." + EXT_SRC)
-						!= -1) {
-					foundFolders.add(
-						project.getWorkspace().getRoot().getFolder(
-							classpathEntries[i].getPath()));
+	
+		public static List getSubProjectsSourceFolder(IProject project) {
+			IClasspathEntry[] classpathEntries;
+			IJavaProject javaProject;
+			ArrayList foundFolders = new ArrayList();
+			try {
+				javaProject = JavaCore.create(project);
+	
+				classpathEntries = javaProject.getRawClasspath();
+			} catch (JavaModelException e) {
+				WOLipsPlugin.log(e);
+				return null;
+			}
+	
+			for (int i = 0; i < classpathEntries.length; i++) {
+				if (IClasspathEntry.CPE_SOURCE
+					== classpathEntries[i].getEntryKind()) {
+					// source entry found
+					if (classpathEntries[i].getPath() != null
+						&& classpathEntries[i].getPath().toString().indexOf(
+							"." + EXT_SUBPROJECT + "." + EXT_SRC)
+							!= -1) {
+						foundFolders.add(
+							project.getWorkspace().getRoot().getFolder(
+								classpathEntries[i].getPath()));
+					}
 				}
 			}
+			return foundFolders;
 		}
-		return foundFolders;
-	}
-
-	public static void addNewSourcefolderToClassPath(
-		IFolder newSourceFolder,
-		IProgressMonitor monitor)
-		throws InvocationTargetException {
-		// add source classpath entry for project
-		IJavaProject actualJavaProject =
-			JavaCore.create(newSourceFolder.getProject());
-
-		IClasspathEntry[] oldClassPathEntries;
-		try {
-			oldClassPathEntries = actualJavaProject.getRawClasspath();
-		} catch (JavaModelException e) {
-			throw new InvocationTargetException(e);
-		}
-
-		IClasspathEntry[] newClassPathEntries =
-			new IClasspathEntry[oldClassPathEntries.length + 1];
-
-		System.arraycopy(
-			oldClassPathEntries,
-			0,
-			newClassPathEntries,
-			1,
-			oldClassPathEntries.length);
-		newClassPathEntries[0] =
-			JavaCore.newSourceEntry(newSourceFolder.getFullPath());
-
-		try {
-			actualJavaProject.setRawClasspath(newClassPathEntries, monitor);
-		} catch (JavaModelException e) {
-			throw new InvocationTargetException(e);
-		}
-
-	}
-
-	public static boolean isWOProjectResource(IResource aResource) {
-		if (aResource != null) {
+	
+		public static void addNewSourcefolderToClassPath(
+			IFolder newSourceFolder,
+			IProgressMonitor monitor)
+			throws InvocationTargetException {
+			// add source classpath entry for project
+			IJavaProject actualJavaProject =
+				JavaCore.create(newSourceFolder.getProject());
+	
+			IClasspathEntry[] oldClassPathEntries;
 			try {
-				switch (aResource.getType()) {
-					case IResource.PROJECT :
-						return ((IProject) aResource).hasNature(
-							WO_APPLICATION_NATURE)
-							|| ((IProject) aResource).hasNature(
-								WO_FRAMEWORK_NATURE);
-
-					default :
-						return aResource.getProject() != null
-							&& (aResource
-								.getProject()
-								.hasNature(WO_APPLICATION_NATURE)
-								|| aResource.getProject().hasNature(
-									WO_FRAMEWORK_NATURE));
+				oldClassPathEntries = actualJavaProject.getRawClasspath();
+			} catch (JavaModelException e) {
+				throw new InvocationTargetException(e);
+			}
+	
+			IClasspathEntry[] newClassPathEntries =
+				new IClasspathEntry[oldClassPathEntries.length + 1];
+	
+			System.arraycopy(
+				oldClassPathEntries,
+				0,
+				newClassPathEntries,
+				1,
+				oldClassPathEntries.length);
+			newClassPathEntries[0] =
+				JavaCore.newSourceEntry(newSourceFolder.getFullPath());
+	
+			try {
+				actualJavaProject.setRawClasspath(newClassPathEntries, monitor);
+			} catch (JavaModelException e) {
+				throw new InvocationTargetException(e);
+			}
+	
+		}
+	
+		public static boolean isWOProjectResource(IResource aResource) {
+			if (aResource != null) {
+				try {
+					switch (aResource.getType()) {
+						case IResource.PROJECT :
+							return ((IProject) aResource).hasNature(
+								WO_APPLICATION_NATURE)
+								|| ((IProject) aResource).hasNature(
+									WO_FRAMEWORK_NATURE);
+	
+						default :
+							return aResource.getProject() != null
+								&& (aResource
+									.getProject()
+									.hasNature(WO_APPLICATION_NATURE)
+									|| aResource.getProject().hasNature(
+										WO_FRAMEWORK_NATURE));
+					}
+				} catch (CoreException e) {
+					return false;
 				}
-			} catch (CoreException e) {
+			} else {
 				return false;
 			}
-		} else {
-			return false;
 		}
-	}
-*/
+	*/
 }

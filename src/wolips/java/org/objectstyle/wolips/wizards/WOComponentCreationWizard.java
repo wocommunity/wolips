@@ -53,8 +53,8 @@
  * <http://objectstyle.org/>.
  *
  */
- 
- package org.objectstyle.wolips.wizards;
+
+package org.objectstyle.wolips.wizards;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
@@ -69,14 +69,12 @@ import org.objectstyle.wolips.images.WOLipsPluginImages;
   * This class implements the interface required by the desktop
  * for all 'New' wizards.  This wizard creates WOComponent folders and files.
  */
-public class WOComponentCreationWizard
-	extends Wizard
-	implements INewWizard{
+public class WOComponentCreationWizard extends Wizard implements INewWizard {
 
 	private IStructuredSelection selection;
 	private IWorkbench workbench;
 	private WOComponentCreationPage mainPage;
-	
+
 	/** (non-Javadoc)
 	 * Method declared on Wizard.
 	 */
@@ -84,7 +82,7 @@ public class WOComponentCreationWizard
 		mainPage = new WOComponentCreationPage(workbench, selection);
 		addPage(mainPage);
 	}
-	
+
 	/** (non-Javadoc)
 	 * Method declared on INewWizard
 	 */

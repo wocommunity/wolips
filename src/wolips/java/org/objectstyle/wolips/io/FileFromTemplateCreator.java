@@ -318,10 +318,8 @@ public class FileFromTemplateCreator {
 						// source folders are non hierachical -> segment[0]
 						// if file is at least in segment[1] it must be a package
 						parentResource = fileToCreate.getParent();
-
 						StringBuffer packageNameBuffer =
 							new StringBuffer("package ");
-
 						IPath folderPath =
 							((IFolder) parentResource).getProjectRelativePath();
 						for (int i = 1; i < folderPath.segmentCount(); i++) {
@@ -332,13 +330,11 @@ public class FileFromTemplateCreator {
 							packageNameBuffer.length() - 1);
 						packageNameBuffer.append(";");
 						expandedValue = packageNameBuffer.toString();
-
 					} else {
 						// no package declaration needed
 						expandedValue = "";
 					}
 					break;
-
 				case ADAPTOR_NAME :
 					if (variableInfo != null
 						&& variableInfo.get(variableToExpand) != null) {

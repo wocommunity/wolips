@@ -78,7 +78,7 @@ import org.objectstyle.wolips.project.ProjectHelper;
  * @see com.neusta.webobjects.eclipse.wizards.EOModelCreationPage
  */
 public class EOModelCreator extends WOProjectResourceCreator {
-	
+
 	private String modelName;
 	private String adaptorName;
 	/**
@@ -153,16 +153,16 @@ public class EOModelCreator extends WOProjectResourceCreator {
 		if (!"None".equals(adaptorName)) {
 			IJavaProject projectToUpdate =
 				JavaCore.create(parentResource.getProject());
-				
+
 			Vector newAdaptorFrameworkList = new Vector();
 			newAdaptorFrameworkList.add(
 				"Java" + adaptorName + "Adaptor." + EXT_FRAMEWORK);
-				
+
 			IClasspathEntry[] newClasspathEntries =
 				ProjectHelper.addFrameworkListToClasspathEntries(
 					newAdaptorFrameworkList,
 					projectToUpdate);
-			
+
 			try {
 				projectToUpdate.setRawClasspath(newClasspathEntries, null);
 			} catch (JavaModelException e) {

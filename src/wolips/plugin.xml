@@ -158,6 +158,22 @@
                toolbarPath="Normal/WOLipsWizards"
                id="org.objectstyle.wolips.OpenEOModelCreationWizard">
          </action>
+         <action
+               label="%EnableWOBuild.label"
+               icon="icons/wobuild/enable_build.gif"
+               tooltip="%EnableWOBuild.tooltip"
+               class="org.objectstyle.wolips.actions.WOBuildEnableAction"
+               toolbarPath="Normal/WOLipsWizards"
+               id="WOBuild.Enable.ID">
+         </action>
+         <action
+               label="%DisableWOBuild.label"
+               icon="icons/wobuild/disable_build.gif"
+               tooltip="%DisableWOBuild.tooltip"
+               class="org.objectstyle.wolips.actions.WOBuildDisableAction"
+               toolbarPath="Normal/WOLipsWizards"
+               id="WOBuild.Disable.ID">
+         </action>
       </actionSet>
    </extension>
 <!-- project actions -->
@@ -374,6 +390,18 @@
             class="org.objectstyle.wolips.ui.Navigator"
             id="org.objectstyle.wolips.ui.Navigator">
       </view>
+   </extension>
+<!-- =================================================================================== -->
+<!-- Extension: Preferences                                                    -->
+<!-- =================================================================================== -->
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            name="%WOLips.preferences.viewName"
+            category="%WOLipsCategoryName"
+            class="org.objectstyle.wolips.preferences.PreferencesPage"
+            id="org.objectstyle.wolips.preferences.PreferencesPage">
+      </page>
    </extension>
 
 </plugin>

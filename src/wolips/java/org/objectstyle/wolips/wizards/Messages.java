@@ -58,14 +58,14 @@ package org.objectstyle.wolips.wizards;
 import java.text.MessageFormat;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
-
 /**
  * @author uli
  */
 public class Messages {
 
-	private static final String RESOURCE_BUNDLE= Messages.class.getName();
-	private static ResourceBundle fgResourceBundle= ResourceBundle.getBundle(RESOURCE_BUNDLE);
+	private static final String RESOURCE_BUNDLE = Messages.class.getName();
+	private static ResourceBundle fgResourceBundle =
+		ResourceBundle.getBundle(RESOURCE_BUNDLE);
 
 	private Messages() {
 	}
@@ -77,7 +77,7 @@ public class Messages {
 			return '!' + key + '!';
 		}
 	}
-	
+
 	/**
 	 * Gets a string from the resource bundle and formats it with the argument
 	 * 
@@ -87,13 +87,11 @@ public class Messages {
 		return MessageFormat.format(getString(key), new Object[] { arg });
 	}
 
-
 	/**
 	 * Gets a string from the resource bundle and formats it with arguments
-	 */	
+	 */
 	public static String getFormattedString(String key, Object[] args) {
 		return MessageFormat.format(getString(key), args);
 	}
-
 
 }

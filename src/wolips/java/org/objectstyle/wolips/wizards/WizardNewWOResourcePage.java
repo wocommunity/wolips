@@ -54,7 +54,6 @@
  *
  */
 package org.objectstyle.wolips.wizards;
-
 import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.resources.IProject;
@@ -74,7 +73,6 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.WizardNewFileCreationPage;
 import org.objectstyle.wolips.IWOLipsPluginConstants;
 import org.objectstyle.wolips.WOLipsPlugin;
-
 /**
  * @author mnolte
  * @author uli
@@ -92,28 +90,38 @@ public abstract class WizardNewWOResourcePage
 		IStructuredSelection selection) {
 		super(pageName, WizardNewWOResourcePage.selection(selection));
 	}
-	
+
 	private static IStructuredSelection selection(IStructuredSelection aSelection) {
-		if(aSelection != null) return aSelection;
+		if (aSelection != null)
+			return aSelection;
 		IWorkbench workbench = PlatformUI.getWorkbench();
-		ISelection selection = workbench.getActiveWorkbenchWindow().getSelectionService().getSelection();
+		ISelection selection =
+			workbench
+				.getActiveWorkbenchWindow()
+				.getSelectionService()
+				.getSelection();
 		IStructuredSelection selectionToPass = StructuredSelection.EMPTY;
 		if (selection instanceof IStructuredSelection) {
 			selectionToPass = (IStructuredSelection) selection;
-			} 	
-		else {
+		} else {
 			// Build the selection from the IFile of the editor
-			IWorkbenchPart part = workbench.getActiveWorkbenchWindow().getPartService().getActivePart();
+			IWorkbenchPart part =
+				workbench
+					.getActiveWorkbenchWindow()
+					.getPartService()
+					.getActivePart();
 			if (part instanceof IEditorPart) {
-				IEditorInput input = ((IEditorPart)part).getEditorInput();
-			if (input instanceof IFileEditorInput) {
-				selectionToPass = new StructuredSelection(((IFileEditorInput)input).getFile());
-				}	
+				IEditorInput input = ((IEditorPart) part).getEditorInput();
+				if (input instanceof IFileEditorInput) {
+					selectionToPass =
+						new StructuredSelection(
+							((IFileEditorInput) input).getFile());
+				}
 			}
 		}
 		return selectionToPass;
 	}
-	
+
 	protected boolean createResourceOperation(IRunnableWithProgress creationOperation) {
 		try {
 			new ProgressMonitorDialog(getShell()).run(
@@ -139,14 +147,14 @@ public abstract class WizardNewWOResourcePage
 	 * @see org.eclipse.ui.dialogs.WizardNewFileCreationPage#validatePage()
 	 */
 	protected boolean validatePage() {
-		
+
 		if (super.validatePage()) {
-			
+
 			if (getContainerFullPath().segmentCount() > 0) {
 				IProject actualProject =
 					ResourcesPlugin.getWorkspace().getRoot().getProject(
 						getContainerFullPath().segment(0));
-						
+
 				switch (getContainerFullPath().segmentCount()) {
 					case 0 :
 						// no project selected
@@ -155,7 +163,7 @@ public abstract class WizardNewWOResourcePage
 								"WizardNewWOResourcePage.errorMessage.containerNoProject"));
 						return false;
 					case 1 :
-						
+
 						if (!actualProject
 							.getFile(IWOLipsPluginConstants.PROJECT_FILE_NAME)
 							.exists()) {
@@ -167,7 +175,7 @@ public abstract class WizardNewWOResourcePage
 						}
 						break;
 					default :
-						
+
 						if (!actualProject
 							.getFile(IWOLipsPluginConstants.PROJECT_FILE_NAME)
 							.exists()) {
@@ -208,5 +216,4 @@ public abstract class WizardNewWOResourcePage
 			return false;
 		}
 	}
-
 }

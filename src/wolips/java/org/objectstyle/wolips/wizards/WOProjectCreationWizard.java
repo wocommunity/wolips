@@ -76,7 +76,7 @@ import org.objectstyle.wolips.project.ProjectHelper;
  * Window>Preferences>Java>Code Generation.
  */
 public class WOProjectCreationWizard extends BasicNewProjectResourceWizard {
-	
+
 	private IWorkbench workbench;
 	private WOProjectCreationPage mainPage;
 	/** (non-Javadoc)
@@ -86,7 +86,7 @@ public class WOProjectCreationWizard extends BasicNewProjectResourceWizard {
 		mainPage = new WOProjectCreationPage("createWOProjectPage1");
 		addPage(mainPage);
 	}
-	
+
 	/** (non-Javadoc)
 	 * Method declared on INewWizard
 	 */
@@ -98,7 +98,7 @@ public class WOProjectCreationWizard extends BasicNewProjectResourceWizard {
 		setDefaultPageImageDescriptor(
 			WOLipsPluginImages.WOPROJECT_WIZARD_BANNER);
 	}
-	
+
 	/** (non-Javadoc)
 	 * Method declared on IWizard
 	 */
@@ -109,7 +109,7 @@ public class WOProjectCreationWizard extends BasicNewProjectResourceWizard {
 				ProjectHelper.installBuilder(
 					mainPage.getProjectHandle(),
 					ProjectHelper.WOAPPLICATION_BUILDER_ID);
-				
+
 				openResource(mainPage.getElementToOpen());
 			} catch (Exception anException) {
 				WOLipsPlugin.log(anException);
@@ -118,7 +118,7 @@ public class WOProjectCreationWizard extends BasicNewProjectResourceWizard {
 		}
 		return creationSuccessful;
 	}
-	
+
 	private void openResource(final IResource resource) {
 		if (resource == null || resource.getType() != IResource.FILE) {
 			return;

@@ -114,12 +114,11 @@ public class JavaElementChangeListener implements IElementChangedListener {
 							.getChangedChildren()[i]
 							.getElement())
 							.getProject();
-
 					if (!projectToExamine.exists()) {
 						// project deleted no further investigatin needed
 						continue;
 					}
-					
+
 					try {
 						if (projectToExamine
 							.hasNature(
@@ -253,7 +252,8 @@ public class JavaElementChangeListener implements IElementChangedListener {
 				(NSArray) addedFrameworksProjectDict.objectForKey(
 					currentProject);
 			if (changedFrameworks.count() > 0) {
-				PBProjectUpdater projectUpdater = new PBProjectUpdater(currentProject);
+				PBProjectUpdater projectUpdater =
+					new PBProjectUpdater(currentProject);
 				projectUpdater.addFrameworks(changedFrameworks);
 			}
 		}
@@ -269,7 +269,8 @@ public class JavaElementChangeListener implements IElementChangedListener {
 				(NSArray) removedFrameworksProjectDict.objectForKey(
 					currentProject);
 			if (changedFrameworks.count() > 0) {
-				PBProjectUpdater projectUpdater = new PBProjectUpdater(currentProject);
+				PBProjectUpdater projectUpdater =
+					new PBProjectUpdater(currentProject);
 				projectUpdater.removeFrameworks(changedFrameworks);
 			}
 		}

@@ -53,8 +53,8 @@
  * <http://objectstyle.org/>.
  *
  */
- 
- package org.objectstyle.wolips.wizards;
+
+package org.objectstyle.wolips.wizards;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -72,7 +72,8 @@ import org.objectstyle.wolips.io.FileFromTemplateCreator;
  * @author mnolte
  * @author uli
  */
-public abstract class WOProjectResourceCreator implements IWOLipsPluginConstants, IRunnableWithProgress {
+public abstract class WOProjectResourceCreator
+	implements IWOLipsPluginConstants, IRunnableWithProgress {
 
 	// define types of creators
 	protected static final int COMPONENT_CREATOR = 1;
@@ -98,48 +99,51 @@ public abstract class WOProjectResourceCreator implements IWOLipsPluginConstants
 	/**
 	 * @see org.eclipse.jface.operation.IRunnableWithProgress#run(IProgressMonitor)
 	 */
-	public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+	public void run(IProgressMonitor monitor)
+		throws InvocationTargetException, InterruptedException {
 		if (monitor == null) {
 			monitor = new NullProgressMonitor();
 		}
 
 	}
 
-	protected void createResourceFolderInProject(IFolder folderToCreate, IProgressMonitor monitor)
+	protected void createResourceFolderInProject(
+		IFolder folderToCreate,
+		IProgressMonitor monitor)
 		throws CoreException, InvocationTargetException {
-			folderToCreate.create(false, true, monitor);
-/*
-		String identifier = null;
-		switch (getType()) {
-
-			case COMPONENT_CREATOR :
-				identifier = EXT_COMPONENT;
-				break;
-
-			case EOMODEL_CREATOR :
-				identifier = EXT_EOMODEL;
-				break;
-
-			case SUBPROJECT_CREATOR :
-				identifier = EXT_SUBPROJECT;
-				break;
-
-		}
-
-		if (identifier != null) {
-
-			QualifiedName resourceQualifier = WOLipsUtils.qualifierFromResourceIdentifier(identifier);
-			String listId = (String) WOLipsUtils.getResourceQualifierToListIdDict().get(resourceQualifier);
-			setCurrentlyCreatedResourceQualifier(resourceQualifier);
-			aboutToCreateProperty = true;
-			folderToCreate.create(false, true, monitor);
-			// mark resource as project depending
-			WOProjectFileUpdater.addNewResourceToPBFile(folderToCreate, resourceQualifier, null, monitor);
-			//folderToCreate.setPersistentProperty(resourceQualifier, listId);
-			setCurrentlyCreatedResourceQualifier(null);
-			aboutToCreateProperty = false;
-		}
-*/
+		folderToCreate.create(false, true, monitor);
+		/*
+				String identifier = null;
+				switch (getType()) {
+		
+					case COMPONENT_CREATOR :
+						identifier = EXT_COMPONENT;
+						break;
+		
+					case EOMODEL_CREATOR :
+						identifier = EXT_EOMODEL;
+						break;
+		
+					case SUBPROJECT_CREATOR :
+						identifier = EXT_SUBPROJECT;
+						break;
+		
+				}
+		
+				if (identifier != null) {
+		
+					QualifiedName resourceQualifier = WOLipsUtils.qualifierFromResourceIdentifier(identifier);
+					String listId = (String) WOLipsUtils.getResourceQualifierToListIdDict().get(resourceQualifier);
+					setCurrentlyCreatedResourceQualifier(resourceQualifier);
+					aboutToCreateProperty = true;
+					folderToCreate.create(false, true, monitor);
+					// mark resource as project depending
+					WOProjectFileUpdater.addNewResourceToPBFile(folderToCreate, resourceQualifier, null, monitor);
+					//folderToCreate.setPersistentProperty(resourceQualifier, listId);
+					setCurrentlyCreatedResourceQualifier(null);
+					aboutToCreateProperty = false;
+				}
+		*/
 	}
 
 	/**
@@ -180,7 +184,8 @@ public abstract class WOProjectResourceCreator implements IWOLipsPluginConstants
 	 * @param currentlyCreatedResourceQualifier The currentlyCreatedResourceQualifier to set
 	 */
 	public static void setCurrentlyCreatedResourceQualifier(QualifiedName currentlyCreatedResourceQualifier) {
-		WOProjectResourceCreator.currentlyCreatedResourceQualifier = currentlyCreatedResourceQualifier;
+		WOProjectResourceCreator.currentlyCreatedResourceQualifier =
+			currentlyCreatedResourceQualifier;
 	}
 
 }

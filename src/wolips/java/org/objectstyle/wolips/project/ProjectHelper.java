@@ -368,12 +368,12 @@ public class ProjectHelper implements IWOLipsPluginConstants {
 			return false;
 		}
 	}
-	
+
 	public static IClasspathEntry[] addFrameworkListToClasspathEntries(
 		List frameworkList,
 		IJavaProject projectToUpdate)
 		throws JavaModelException {
-			
+
 		IClasspathEntry[] oldClasspathEntries =
 			projectToUpdate.getResolvedClasspath(true);
 		IPath nextRootAsPath = new Path(WOVariables.nextRoot());
@@ -390,9 +390,11 @@ public class ProjectHelper implements IWOLipsPluginConstants {
 				// invalid framework name
 				continue;
 			}
-			
-			jarName = frameworkName.substring(0, frameworkExtIndex - 1).toLowerCase() + ".jar";
-			
+
+			jarName =
+				frameworkName.substring(0, frameworkExtIndex - 1).toLowerCase()
+					+ ".jar";
+
 			// check for root
 			frameworkPath = new Path(WOVariables.libraryDir());
 			frameworkPath = frameworkPath.append("Frameworks");
@@ -406,13 +408,13 @@ public class ProjectHelper implements IWOLipsPluginConstants {
 				// invalid path
 				continue;
 			}
-			
+
 			// check for jar existance
 			int j = 0;
 			frameworkPath = frameworkPath.append("Resources/Java/");
 			String[] frameJarDirContent = frameworkPath.toFile().list();
 			for (j = 0; j < frameJarDirContent.length; j++) {
-				if (jarName.equals(frameJarDirContent[j].toLowerCase())){
+				if (jarName.equals(frameJarDirContent[j].toLowerCase())) {
 					// get case sensitive jar name
 					jarName = frameJarDirContent[j];
 					break;
@@ -422,10 +424,10 @@ public class ProjectHelper implements IWOLipsPluginConstants {
 				// jar doesn't exists
 				continue;
 			}
-			
+
 			// add case-sensitive jar name
 			frameworkPath = frameworkPath.append(jarName);
-			
+
 			// check for existing classpath entries
 			for (j = 0; j < oldClasspathEntries.length; j++) {
 				if (oldClasspathEntries[j].getPath().equals(frameworkPath)) {
@@ -436,7 +438,6 @@ public class ProjectHelper implements IWOLipsPluginConstants {
 				// entry already set
 				continue;
 			}
-
 			// determine if new class path begins with next root
 			if ((frameworkPath.segmentCount() > nextRootAsPath.segmentCount())
 				&& frameworkPath
@@ -460,17 +461,19 @@ public class ProjectHelper implements IWOLipsPluginConstants {
 		// build new class path entry array
 		oldClasspathEntries = projectToUpdate.getRawClasspath();
 		IClasspathEntry[] newClasspathEntries =
-			new IClasspathEntry[classpathEntries.size() + oldClasspathEntries.length];
+			new IClasspathEntry[classpathEntries.size()
+				+ oldClasspathEntries.length];
 		for (int i = 0; i < oldClasspathEntries.length; i++) {
 			newClasspathEntries[i] = oldClasspathEntries[i];
 		}
 		for (int i = 0; i < classpathEntries.size(); i++) {
-			newClasspathEntries[i + oldClasspathEntries.length] = (IClasspathEntry) classpathEntries.get(i);
+			newClasspathEntries[i + oldClasspathEntries.length] =
+				(IClasspathEntry) classpathEntries.get(i);
 		}
-		
+
 		return newClasspathEntries;
 	}
-	
+
 	///////////////////////////////// builder stuff ////////////////////////
 	public static int positionForBuilder(IProject aProject, String aBuilder)
 		throws CoreException {

@@ -53,7 +53,7 @@
  * <http://objectstyle.org/>.
  *
  */
- 
+
 package org.objectstyle.wolips.editor;
 
 import org.eclipse.core.resources.IFile;
@@ -72,16 +72,21 @@ import org.objectstyle.wolips.WOLipsPlugin;
  * This class may be instantiated; it is not intended to be subclassed.
  * </p>
  */
-public class OpenSystemEditor  implements IEditorLauncher  {
+public class OpenSystemEditor implements IEditorLauncher {
 
-/**
- * Opens a system editor on the given file resource.
- *
- * @param file the file resource
- */
+	/**
+	 * Opens a system editor on the given file resource.
+	 *
+	 * @param file the file resource
+	 */
 	public void open(IFile file) {
 		try {
-			WorkbenchPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().openSystemEditor(file);
+			WorkbenchPlugin
+				.getDefault()
+				.getWorkbench()
+				.getActiveWorkbenchWindow()
+				.getActivePage()
+				.openSystemEditor(file);
 		} catch (Exception e) {
 			WOLipsPlugin.log(e);
 		}

@@ -53,8 +53,8 @@
  * <http://objectstyle.org/>.
  *
  */
- 
- package org.objectstyle.wolips.project;
+
+package org.objectstyle.wolips.project;
 
 import com.webobjects.foundation.NSNotificationCenter;
 
@@ -68,17 +68,22 @@ import com.webobjects.foundation.NSNotificationCenter;
  */
 public class PBProjectNotifications {
 
-	public static String PBProjectWillUpgradeNotification = "Project Will Upgrade";
-    public static String PBProjectDidUpgradeNotification = "Project Upgraded";
-    public static String PBProjectDidChangeNotification = "Project Changed";
-    public static String PBProjectWillSaveNotification = "Project Will Save";
-    public static String PBProjectDidSaveNotification = "Project Saved";
-    public static String PBProjectSaveDidFailNotification = "Project Save Failed";
-    public static String PBFileAddedToProjectNotification = "File Added to Project";
-    public static String PBFileRemovedFromProjectNotification = "File Removed from Project";
-    public static NSNotificationCenter notificationCenter = NSNotificationCenter.defaultCenter();
+	public static String PBProjectWillUpgradeNotification =
+		"Project Will Upgrade";
+	public static String PBProjectDidUpgradeNotification = "Project Upgraded";
+	public static String PBProjectDidChangeNotification = "Project Changed";
+	public static String PBProjectWillSaveNotification = "Project Will Save";
+	public static String PBProjectDidSaveNotification = "Project Saved";
+	public static String PBProjectSaveDidFailNotification =
+		"Project Save Failed";
+	public static String PBFileAddedToProjectNotification =
+		"File Added to Project";
+	public static String PBFileRemovedFromProjectNotification =
+		"File Removed from Project";
+	public static NSNotificationCenter notificationCenter =
+		NSNotificationCenter.defaultCenter();
 
-//postNotification(notification, dict);
+	//postNotification(notification, dict);
 
 	/**
 	 * Constructor for PBProjectNotifications.
@@ -88,6 +93,8 @@ public class PBProjectNotifications {
 	}
 
 	public static void postPBProjectDidUpgradeNotification(String aProjectName) {
-		PBProjectNotifications.notificationCenter.postNotification(PBProjectNotifications.PBFileAddedToProjectNotification, aProjectName);
+		PBProjectNotifications.notificationCenter.postNotification(
+			PBProjectNotifications.PBFileAddedToProjectNotification,
+			aProjectName);
 	}
 }

@@ -53,8 +53,8 @@
  * <http://objectstyle.org/>.
  *
  */
- 
- package org.objectstyle.wolips.wizards;
+
+package org.objectstyle.wolips.wizards;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbench;
@@ -72,7 +72,7 @@ import org.objectstyle.wolips.images.WOLipsPluginImages;
  */
 public class WOSubprojectCreationWizard extends BasicNewFolderResourceWizard {
 
-private IStructuredSelection selection;
+	private IStructuredSelection selection;
 	private IWorkbench workbench;
 	private WOSubprojectCreationPage mainPage;
 	/**
@@ -81,7 +81,7 @@ private IStructuredSelection selection;
 	public WOSubprojectCreationWizard() {
 		super();
 	}
-	
+
 	/** (non-Javadoc)
 	 * Method declared on INewWizard
 	 */
@@ -92,20 +92,20 @@ private IStructuredSelection selection;
 		setDefaultPageImageDescriptor(
 			WOLipsPluginImages.WOCOMPONENT_WIZARD_BANNER);
 	}
-	
+
 	/** (non-Javadoc)
 	 * Method declared on Wizard.
 	 */
 	public void addPages() {
-		mainPage = new WOSubprojectCreationPage(workbench,selection);
+		mainPage = new WOSubprojectCreationPage(workbench, selection);
 		addPage(mainPage);
 	}
 
-/** (non-Javadoc)
-	 * Method declared on IWizard
-	 */
+	/** (non-Javadoc)
+		 * Method declared on IWizard
+		 */
 	public boolean performFinish() {
 		return mainPage.createSubproject();
 	}
-	
+
 }

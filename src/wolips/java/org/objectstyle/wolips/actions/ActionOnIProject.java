@@ -53,7 +53,7 @@
  * <http://objectstyle.org/>.
  *
  */
- 
+
 package org.objectstyle.wolips.actions;
 
 import org.eclipse.core.resources.IProject;
@@ -69,10 +69,10 @@ import org.eclipse.ui.IActionDelegate;
  * The superclass for all Actions
  */
 public class ActionOnIProject implements IActionDelegate {
-	
+
 	private IProject project;
 	private IJavaProject javaProject;
-	
+
 	public ActionOnIProject() {
 		super();
 	}
@@ -83,26 +83,26 @@ public class ActionOnIProject implements IActionDelegate {
 	protected IProject project() {
 		return project;
 	}
-		
+
 	public void dispose() {
 	}
-	
+
 	/**
 	 * Has to be implemented in the subclass.
 	 */
 	public void run(IAction action) {
 	}
-	
+
 	/**
 	 * Resets the project when the selection is changed.
 	 */
 	public void selectionChanged(IAction action, ISelection selection) {
 		Object obj = (((IStructuredSelection) selection).getFirstElement());
 		project = null;
-		if ( obj != null && obj instanceof IProject )
-			project = ((IProject)obj).getProject();
-		if ( obj != null && obj instanceof IJavaProject )
-			project = ((IJavaProject)obj).getProject();
+		if (obj != null && obj instanceof IProject)
+			project = ((IProject) obj).getProject();
+		if (obj != null && obj instanceof IJavaProject)
+			project = ((IJavaProject) obj).getProject();
 	}
 
 }

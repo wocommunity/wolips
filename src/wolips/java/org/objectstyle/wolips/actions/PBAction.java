@@ -68,29 +68,29 @@ import org.objectstyle.wolips.project.ProjectHelper;
  *The Action for updating the PB.project file.
  */
 public class PBAction extends ActionOnIProject {
-	
+
 	private static String UpdatePBProjectSetID = "UpdatePB.Project.Set.ID";
-	
+
 	/**
 	 * Contructor for the PBAction
 	 */
 	public PBAction() {
 		super();
 	}
-	
+
 	/**
 	 * Updates the PB.project file.
 	 * Will be invoked by the popup menu.
 	 */
 	public void run(IAction action) {
-		if ( project() != null ){
+		if (project() != null) {
 			try {
-				if ( action.getId().equals(PBAction.UpdatePBProjectSetID) ) {
-					PBProjectUpdater projectUpdater = new PBProjectUpdater(project());
+				if (action.getId().equals(PBAction.UpdatePBProjectSetID)) {
+					PBProjectUpdater projectUpdater =
+						new PBProjectUpdater(project());
 					projectUpdater.updatePBProject();
 				}
-			}
-			catch (Exception ex) {
+			} catch (Exception ex) {
 				WOLipsPlugin.log(ex);
 			}
 		}
@@ -102,12 +102,13 @@ public class PBAction extends ActionOnIProject {
 	 */
 	public void selectionChanged(IAction action, ISelection selection) {
 		super.selectionChanged(action, selection);
-		if ( project() != null) {
-			if ( action.getId().equals(PBAction.UpdatePBProjectSetID) ) {
-					action.setEnabled(ProjectHelper.isWOFwBuilderInstalled(project()) || ProjectHelper.isWOAppBuilderInstalled(project()));
-				}
-		}
-		else {
+		if (project() != null) {
+			if (action.getId().equals(PBAction.UpdatePBProjectSetID)) {
+				action.setEnabled(
+					ProjectHelper.isWOFwBuilderInstalled(project())
+						|| ProjectHelper.isWOAppBuilderInstalled(project()));
+			}
+		} else {
 			action.setEnabled(false);
 		}
 	}

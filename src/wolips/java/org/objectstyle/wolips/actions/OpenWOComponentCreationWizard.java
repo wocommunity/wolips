@@ -53,8 +53,8 @@
  * <http://objectstyle.org/>.
  *
  */
- 
- package org.objectstyle.wolips.actions;
+
+package org.objectstyle.wolips.actions;
 
 import org.eclipse.jdt.internal.ui.wizards.AbstractOpenWizardAction;
 import org.eclipse.jface.wizard.Wizard;
@@ -69,9 +69,9 @@ import org.objectstyle.wolips.wizards.WOComponentCreationWizard;
  * Window>Preferences>Java>Code Generation.
  */
 public class OpenWOComponentCreationWizard extends AbstractOpenWizardAction {
-	
+
 	protected Wizard createWizard() {
-		return new WOComponentCreationWizard(); 
+		return new WOComponentCreationWizard();
 	}
 
 }

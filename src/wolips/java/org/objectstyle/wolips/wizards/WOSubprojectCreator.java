@@ -53,8 +53,8 @@
  * <http://objectstyle.org/>.
  *
  */
- 
- package org.objectstyle.wolips.wizards;
+
+package org.objectstyle.wolips.wizards;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -82,9 +82,12 @@ public class WOSubprojectCreator extends WOProjectResourceCreator {
 	/**
 	 * Constructor for WOSubprojectCreator.
 	 */
-	public WOSubprojectCreator(IResource parentResource, String subprojectName) {
+	public WOSubprojectCreator(
+		IResource parentResource,
+		String subprojectName) {
 		super(parentResource);
-		this.subprojectName = subprojectName + "." + IWOLipsPluginConstants.EXT_SUBPROJECT;
+		this.subprojectName =
+			subprojectName + "." + IWOLipsPluginConstants.EXT_SUBPROJECT;
 	}
 
 	protected int getType() {
@@ -94,7 +97,8 @@ public class WOSubprojectCreator extends WOProjectResourceCreator {
 	/**
 	 * @see WOProjectResourceCreator#run(IProgressMonitor)
 	 */
-	public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+	public void run(IProgressMonitor monitor)
+		throws InvocationTargetException, InterruptedException {
 		super.run(monitor);
 		try {
 			createSubproject(monitor);
@@ -115,14 +119,17 @@ public class WOSubprojectCreator extends WOProjectResourceCreator {
 
 		switch (parentResource.getType()) {
 			case IResource.PROJECT :
-				subprojectFolder = ((IProject) parentResource).getFolder(subprojectName);
+				subprojectFolder =
+					((IProject) parentResource).getFolder(subprojectName);
 				break;
 			case IResource.FOLDER :
-				subprojectFolder = ((IFolder) parentResource).getFolder(subprojectName);
+				subprojectFolder =
+					((IFolder) parentResource).getFolder(subprojectName);
 
 				break;
 			default :
-				throw new InvocationTargetException(new Exception("Wrong parent resource - check validation"));
+				throw new InvocationTargetException(
+					new Exception("Wrong parent resource - check validation"));
 		}
 
 		createResourceFolderInProject(subprojectFolder, monitor);
@@ -131,7 +138,8 @@ public class WOSubprojectCreator extends WOProjectResourceCreator {
 			Messages.getString("webobjects.projectType.java.subproject");
 
 		// delegate subproject resource file creation to project creator
-		WOProjectCreator projectCreator = new WOProjectCreator(subprojectFolder, projectTemplateID);
+		WOProjectCreator projectCreator =
+			new WOProjectCreator(subprojectFolder, projectTemplateID);
 		projectCreator.run(monitor);
 	}
 

@@ -53,8 +53,8 @@
  * <http://objectstyle.org/>.
  *
  */
- 
- package org.objectstyle.wolips.images;
+
+package org.objectstyle.wolips.images;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -68,27 +68,29 @@ import org.objectstyle.wolips.WOLipsPlugin;
  */
 public class WOLipsPluginImages {
 
-public static final ImageDescriptor WOCOMPONENT_WIZARD_BANNER;
-public static final ImageDescriptor WOPROJECT_WIZARD_BANNER;
+	public static final ImageDescriptor WOCOMPONENT_WIZARD_BANNER;
+	public static final ImageDescriptor WOPROJECT_WIZARD_BANNER;
 
-static {
+	static {
 		String iconPath = "icons/";
-		String prefix = iconPath + "wizban/"; 
-		WOCOMPONENT_WIZARD_BANNER = createImageDescriptor(prefix + "webobjects_wiz.gif"); 
-		WOPROJECT_WIZARD_BANNER = createImageDescriptor(prefix + "webobjects_wiz.gif"); 
+		String prefix = iconPath + "wizban/";
+		WOCOMPONENT_WIZARD_BANNER =
+			createImageDescriptor(prefix + "webobjects_wiz.gif");
+		WOPROJECT_WIZARD_BANNER =
+			createImageDescriptor(prefix + "webobjects_wiz.gif");
 	}
-	
-/**
- * Utility method to create an <code>ImageDescriptor</code>
- * from a path to a file.
- */
-private static ImageDescriptor createImageDescriptor(String path) {
-	try {
-		URL url = new URL(WOLipsPlugin.baseURL(), path);
-		return ImageDescriptor.createFromURL(url);
-	} catch (MalformedURLException e) {
-		WOLipsPlugin.log(e);
+
+	/**
+	 * Utility method to create an <code>ImageDescriptor</code>
+	 * from a path to a file.
+	 */
+	private static ImageDescriptor createImageDescriptor(String path) {
+		try {
+			URL url = new URL(WOLipsPlugin.baseURL(), path);
+			return ImageDescriptor.createFromURL(url);
+		} catch (MalformedURLException e) {
+			WOLipsPlugin.log(e);
+		}
+		return ImageDescriptor.getMissingImageDescriptor();
 	}
-	return ImageDescriptor.getMissingImageDescriptor();
-}
 }

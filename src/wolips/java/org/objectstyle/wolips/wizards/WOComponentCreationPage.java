@@ -53,9 +53,7 @@
  * <http://objectstyle.org/>.
  *
  */
-
 package org.objectstyle.wolips.wizards;
-
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -70,7 +68,6 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.actions.WorkspaceModifyDelegatingOperation;
-
 /**
  * @author mnolte
  * @author uli
@@ -80,95 +77,59 @@ import org.eclipse.ui.actions.WorkspaceModifyDelegatingOperation;
  * but use only the provided component name for the file resource creation functionality.
  *
  */
-
 public class WOComponentCreationPage extends WizardNewWOResourcePage {
-
 	private IWorkbench workbench;
-
 	private Composite parentComposite;
-
 	// widgets
-
 	private Button bodyCheckbox;
-
 	/**
 	 * Creates the page for the wocomponent creation wizard.
 	 *
 	 * @param workbench  the workbench on which the page should be created
 	 * @param selection  the current selection
 	 */
-
 	public WOComponentCreationPage(
 		IWorkbench workbench,
 		IStructuredSelection selection) {
-
 		super("createWOComponentPage1", selection);
-
 		this.setTitle(Messages.getString("WOComponentCreationPage.title"));
-
 		this.setDescription(
 			Messages.getString("WOComponentCreationPage.description"));
-
 		this.workbench = workbench;
-
 	}
-
 	/** (non-Javadoc)
 	 * Method declared on IDialogPage.
 	 */
-
 	public void createControl(Composite parent) {
-
 		parentComposite = parent;
-
 		// inherit default container and name specification widgets
-
 		super.createControl(parent);
-
 		Composite composite = (Composite) getControl();
-
 		//WorkbenchHelp.setHelp(composite, IReadmeConstants.CREATION_WIZARD_PAGE_CONTEXT);
-
 		GridData data = (GridData) composite.getLayoutData();
-
 		this.setFileName(
 			Messages.getString(
 				"WOComponentCreationPage.newComponent.defaultName"));
-
 		new Label(composite, SWT.NONE); // vertical spacer
-
 		// section generation group
-
 		Group group = new Group(composite, SWT.NONE);
-
 		group.setLayout(new GridLayout());
-
 		group.setText(
 			Messages.getString(
 				"WOComponentCreationPage.creationOptions.title"));
-
 		group.setLayoutData(
 			new GridData(
 				GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
-
 		// sample section generation checkboxes
-
 		bodyCheckbox = new Button(group, SWT.CHECK);
-
 		bodyCheckbox.setText(
 			Messages.getString(
 				"WOComponentCreationPage.creationOptions.bodyTag"));
-
 		bodyCheckbox.setSelection(true);
-
 		bodyCheckbox.addListener(SWT.Selection, this);
-
 		new Label(composite, SWT.NONE); // vertical spacer
-
 		setPageComplete(validatePage());
-
 	}
-
 	/**
 	 * Creates a new file resource as requested by the user. If everything
 	 * is OK then answer true. If not, false will cause the dialog
@@ -177,70 +138,44 @@ public class WOComponentCreationPage extends WizardNewWOResourcePage {
 	 * @return whether creation was successful
 	 * @see WOComponentCreationWizard#performFinish()
 	 */
-
 	public boolean createComponent() {
-
 		WOComponentCreator componentCreator;
-
 		String componentName = getFileName();
-
 		IProject actualProject =
 			ResourcesPlugin.getWorkspace().getRoot().getProject(
 				getContainerFullPath().segment(0));
-
 		switch (getContainerFullPath().segmentCount()) {
-
 			case 0 :
-
 				// not possible ( see validatePage() )
-
 				setErrorMessage("unknown error");
-
 				return false;
-
 			case 1 :
-
 				componentCreator =
 					new WOComponentCreator(
 						actualProject,
 						componentName,
 						bodyCheckbox.getSelection());
-
 				break;
-
 			default :
-
 				// determine parent resource for component creator by removing first element (workspace) from full path
-
 				IFolder subprojectFolder =
 					actualProject.getFolder(
 						getContainerFullPath().removeFirstSegments(1));
-
 				componentCreator =
 					new WOComponentCreator(
 						subprojectFolder,
 						componentName,
 						bodyCheckbox.getSelection());
-
 				break;
-
 		}
-
 		IRunnableWithProgress op =
 			new WorkspaceModifyDelegatingOperation(componentCreator);
-
 		return createResourceOperation(op);
-
 	}
-
 	/** (non-Javadoc)
 	 * Method declared on WizardNewFileCreationPage.
 	 */
-
 	protected String getNewFileLabel() {
-
 		return Messages.getString("WOComponentCreationPage.newComponent.label");
-
 	}
-
 }

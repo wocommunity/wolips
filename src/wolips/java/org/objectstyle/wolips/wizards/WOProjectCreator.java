@@ -183,9 +183,12 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 		IPath locationPath) {
 		this(newProject, templateID);
 		// validate location path
-		this.locationPath = locationPath.makeAbsolute().toFile().isDirectory()?locationPath:null;
+		this.locationPath =
+			locationPath.makeAbsolute().toFile().isDirectory()
+				? locationPath
+				: null;
 	}
-	
+
 	protected int getType() {
 		return PROJECT_CREATOR;
 	}
@@ -243,7 +246,7 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 		componentCreator.setFileCreator(fileCreator);
 		NodeList fileNodeList = elementForTemplate.getElementsByTagName("file");
 		try {
-			
+
 			String currentFileTemplateId = null;
 			String currentFileName = null;
 			for (int i = 0; i < fileNodeList.getLength(); i++) {
@@ -882,7 +885,6 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 		private IFolder resourceFolderToCreate;
 		private File sourceFile;
 		private IProgressMonitor monitor;
-
 		/**
 		 * Constructor for CopyFileToResource.
 		 */
@@ -905,9 +907,7 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 			}
 			this.monitor = monitor;
 		}
-
 		public void execute() throws CoreException {
-
 			if (resourceFileToCreate != null) {
 				BufferedInputStream resourceFileInputStream = null;
 				try {

@@ -56,7 +56,6 @@
 
 package org.objectstyle.wolips.builder;
 
-
 /**
  * @author uli
  */

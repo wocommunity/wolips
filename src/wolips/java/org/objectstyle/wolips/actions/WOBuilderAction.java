@@ -56,14 +56,11 @@
 package org.objectstyle.wolips.actions;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.objectstyle.wolips.IWOLipsPluginConstants;
 import org.objectstyle.wolips.WOLipsPlugin;
 import org.objectstyle.wolips.project.ProjectHelper;
-import org.objectstyle.wolips.wo.WOVariables;
 /**
  * @author uli
  *
@@ -136,15 +133,19 @@ public class WOBuilderAction extends ActionOnIProject {
 					isWOApplication = false;
 				}
 			}
-			if (action.getId().equals(
-					WOBuilderAction.WOFrameworkBuilderSetID)) {
-				action.setEnabled(isWOFramework &&
-					!ProjectHelper.isWOFwBuilderInstalled(project()));
+			if (action
+				.getId()
+				.equals(WOBuilderAction.WOFrameworkBuilderSetID)) {
+				action.setEnabled(
+					isWOFramework
+						&& !ProjectHelper.isWOFwBuilderInstalled(project()));
 			}
-			if (action.getId().equals(
-					WOBuilderAction.WOApplicationBuilderSetID)) {
-				action.setEnabled(isWOApplication &&
-					!ProjectHelper.isWOAppBuilderInstalled(project()));
+			if (action
+				.getId()
+				.equals(WOBuilderAction.WOApplicationBuilderSetID)) {
+				action.setEnabled(
+					isWOApplication
+						&& !ProjectHelper.isWOAppBuilderInstalled(project()));
 			}
 			if (action.getId().equals(WOBuilderAction.WOBuilderRemoveID)) {
 				action.setEnabled(

@@ -1,8 +1,8 @@
 /* ====================================================================
- * 
- * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 The ObjectStyle Group 
+ * The ObjectStyle Group Software License, Version 1.0
+ *
+ * Copyright (c) 2002 The ObjectStyle Group
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,15 +18,15 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution, if
- *    any, must include the following acknowlegement:  
- *       "This product includes software developed by the 
+ *    any, must include the following acknowlegement:
+ *       "This product includes software developed by the
  *        ObjectStyle Group (http://objectstyle.org/)."
  *    Alternately, this acknowlegement may appear in the software itself,
  *    if and wherever such third-party acknowlegements normally appear.
  *
- * 4. The names "ObjectStyle Group" and "Cayenne" 
+ * 4. The names "ObjectStyle Group" and "Cayenne"
  *    must not be used to endorse or promote products derived
- *    from this software without prior written permission. For written 
+ *    from this software without prior written permission. For written
  *    permission, please contact andrus@objectstyle.org.
  *
  * 5. Products derived from this software may not be called "ObjectStyle"
@@ -53,63 +53,47 @@
  * <http://objectstyle.org/>.
  *
  */
-package org.objectstyle.wolips.wizards;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.wizards.newresource.BasicNewProjectResourceWizard;
-import org.objectstyle.wolips.WOLipsPlugin;
-import org.objectstyle.wolips.images.WOLipsPluginImages;
-import org.objectstyle.wolips.project.ProjectHelper;
+package org.objectstyle.wolips.preferences;
+
+import java.text.MessageFormat;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
+
 /**
- * @author mnolte
  * @author uli
- *
- * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates.
- * To enable and disable the creation of type comments go to
- * Window>Preferences>Java>Code Generation.
  */
-public class WOFrameworkCreationWizard extends BasicNewProjectResourceWizard {
-	private IWorkbench workbench;
-	private WOFrameworkCreationPage mainPage;
+public class PreferencesMessages {
 
-	/** (non-Javadoc)
-	 * Method declared on Wizard.
-	 */
-	public void addPages() {
-		mainPage = new WOFrameworkCreationPage("createWOFrameworkPage1");
-		addPage(mainPage);
+	private static final String RESOURCE_BUNDLE =
+		PreferencesMessages.class.getName();
+	private static ResourceBundle fgResourceBundle =
+		ResourceBundle.getBundle(RESOURCE_BUNDLE);
+
+	private PreferencesMessages() {
 	}
 
-	/** (non-Javadoc)
-	 * Method declared on INewWizard
-	 */
-	public void init(IWorkbench workbench, IStructuredSelection selection) {
-		super.init(workbench, selection);
-		this.workbench = workbench;
-		//this.selection = selection;
-		setWindowTitle(Messages.getString("WOFrameworkCreationWizard.title"));
-		setDefaultPageImageDescriptor(
-			WOLipsPluginImages.WOPROJECT_WIZARD_BANNER);
-	}
-
-	/** (non-Javadoc)
-	 * Method declared on IWizard
-	 */
-	public boolean performFinish() {
-		boolean creationSuccessful = mainPage.createProject();
-		if (creationSuccessful) {
-			try {
-				ProjectHelper.installBuilder(
-					mainPage.getProjectHandle(),
-					ProjectHelper.WOFRAMEWORK_BUILDER_ID);
-
-			} catch (Exception anException) {
-				WOLipsPlugin.log(anException);
-				creationSuccessful = false;
-			}
+	public static String getString(String key) {
+		try {
+			return fgResourceBundle.getString(key);
+		} catch (MissingResourceException e) {
+			return '!' + key + '!';
 		}
-		return creationSuccessful;
+	}
+
+	/**
+	 * Gets a string from the resource bundle and formats it with the argument
+	 *
+	 * @param key	the string used to get the bundle value, must not be null
+	 */
+	public static String getFormattedString(String key, Object arg) {
+		return MessageFormat.format(getString(key), new Object[] { arg });
+	}
+
+	/**
+	 * Gets a string from the resource bundle and formats it with arguments
+	 */
+	public static String getFormattedString(String key, Object[] args) {
+		return MessageFormat.format(getString(key), args);
 	}
 
 }
