@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.objectstyle.wolips"
+      label="%featureName"
+      version="0.9.0"
+      image="wolips"
+      provider-name="%providerName">
+
+   <description>
+      %description
+   </description>
+
+   <requires>
+      <import plugin="org.objectstyle.wolips" version="0.9.0" match="compatible"/>
+      <import plugin="org.objectstyle.wolips.targetbuilder" version="0.9.0" match="compatible"/>
+   </requires>
+
+   <plugin
+         id="org.objectstyle.wolips"
+         download-size="0"
+         install-size="0"
+         version="0.9.0">
+   </plugin>
+
+   <plugin
+         id="org.objectstyle.wolips.targetbuilder"
+         download-size="0"
+         install-size="0"
+         version="0.9.0">
+   </plugin>
+
+
+</feature>

@@ -33,6 +33,7 @@
       <import plugin="org.eclipse.jdt.debug"/>
       <import plugin="org.eclipse.jdt.launching"/>
       <import plugin="org.eclipse.compare"/>
+      <import plugin="org.apache.lucene"/>
    </requires>
 
 
@@ -308,18 +309,19 @@
 <!-- =================================================================================== -->
 <!-- Extension: View                                                    -->
 <!-- =================================================================================== -->
-	<extension 
-		point="org.eclipse.ui.views">
-		<category 
-			id="org.eclipse.wolips.ui"
-			name="%WOLipsCategoryName">
-		</category>
-		<view
-			id="org.objectstyle.wolips.ui.Navigator"
-			name="%WOLips.NavigatorViewName"
-			icon="icons/wolips/WOLips-icon.gif"
-			category="org.eclipse.wolips.ui"
-			class="org.objectstyle.wolips.ui.Navigator">
-		</view>
-	</extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="%WOLipsCategoryName"
+            id="org.eclipse.wolips.ui">
+      </category>
+      <view
+            name="%WOLips.NavigatorViewName"
+            icon="icons/wolips/WOLips-icon.gif"
+            category="org.eclipse.wolips.ui"
+            class="org.objectstyle.wolips.ui.Navigator"
+            id="org.objectstyle.wolips.ui.Navigator">
+      </view>
+   </extension>
+
 </plugin>
