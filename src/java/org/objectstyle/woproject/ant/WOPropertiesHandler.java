@@ -94,40 +94,51 @@ public class WOPropertiesHandler extends ProjectComponent {
 	}
 
 	/**
-	 *
+	 * Method encodePathForFile.
+	 * @param aFile
+	 * @return String
 	 */
 	public String encodePathForFile(File aFile) {
+		String aPrefix = null;
+		String aPath = null;
 		try {
-			String aPrefix;
-			String aPath = aFile.getCanonicalPath();
+			aPath = aFile.getCanonicalPath();
 
 			//            aPrefix = this.getAppRootPath();
 			//            if((aPrefix != null) && (aPrefix.length() > 1) && (aPath.startsWith(aPrefix))) {
 			//            	return "APPROOT" + aPath.substring(aPrefix.length());
 			//            }
 			aPrefix = this.getLocalRootPath();
-			log("aPrefix + aPath " + aPrefix + " " + aPath, Project.MSG_VERBOSE);
+			log(
+				"aPrefix + aPath " + aPrefix + " " + aPath,
+				Project.MSG_VERBOSE);
 			if ((aPrefix != null)
 				&& (aPrefix.length() > 1)
 				&& (aPath.startsWith(aPrefix))) {
 				return "LOCALROOT" + aPath.substring(aPrefix.length());
 			}
 			aPrefix = this.getHomeRootPath();
-			log("aPrefix + aPath " + aPrefix + " " + aPath, Project.MSG_VERBOSE);
+			log(
+				"aPrefix + aPath " + aPrefix + " " + aPath,
+				Project.MSG_VERBOSE);
 			if ((aPrefix != null)
 				&& (aPrefix.length() > 1)
 				&& (aPath.startsWith(aPrefix))) {
 				return "HOMEROOT" + aPath.substring(aPrefix.length());
 			}
 			aPrefix = this.getWORootPath();
-			log("aPrefix + aPath " + aPrefix + " " + aPath, Project.MSG_VERBOSE);
+			log(
+				"aPrefix + aPath " + aPrefix + " " + aPath,
+				Project.MSG_VERBOSE);
 			if ((aPrefix != null)
 				&& (aPrefix.length() > 1)
 				&& (aPath.startsWith(aPrefix))) {
 				return "WOROOT" + aPath.substring(aPrefix.length());
 			}
 			aPrefix = this.getLocalRootPath();
-			log("aPrefix + aPath " + aPrefix + " " + aPath, Project.MSG_VERBOSE);
+			log(
+				"aPrefix + aPath " + aPrefix + " " + aPath,
+				Project.MSG_VERBOSE);
 			// (anjo) if this is OSX, then we simply try again with "/" as the local root.
 			if (isMacOSX()
 				&& ((aPrefix != null)
@@ -137,8 +148,12 @@ public class WOPropertiesHandler extends ProjectComponent {
 			}
 			return aPath;
 		} catch (Exception anException) {
-			return null;
+			log("Exception " + anException, Project.MSG_VERBOSE);
+		} finally {
+			aPrefix = null;
+			aPath = null;
 		}
+		return null;
 	}
 	/**
 	 * Returns the value of "wo.woroot" property. Search algorithm is the following:

@@ -111,7 +111,10 @@ public class AppFormat extends ProjectFormat {
 		// add Info.plist
 		String infoFile =
 			new File(getApplicatonTask().contentsDir(), "Info.plist").getPath();
-		createMappings(infoFile, woappPlusVersion() + "/Info.plist", infoFilter(null));
+		createMappings(
+			infoFile,
+			woappPlusVersion() + "/Info.plist",
+			infoFilter(null));
 	}
 
 	/**
@@ -127,12 +130,13 @@ public class AppFormat extends ProjectFormat {
 	 * Prepares all path values needed for substitutions.
 	 */
 	private void prepare52() {
-		if(WOVersion.wo52(this.getApplicatonTask().getProject())) {
+		if (WOVersion.wo52(this.getApplicatonTask().getProject())) {
 			Copy cp = new Copy();
 			//cp.setOwningTarget(getApplicatonTask().getProject().getDefaultTarget());
 			cp.setProject(getApplicatonTask().getProject());
 			cp.setTaskName("copy bootstrap");
-			cp.setFile(WOVersion.bootstrap(this.getApplicatonTask().getProject()));
+			cp.setFile(
+				WOVersion.bootstrap(this.getApplicatonTask().getProject()));
 			cp.setTodir(getApplicatonTask().taskDir());
 			cp.execute();
 		}
@@ -144,19 +148,29 @@ public class AppFormat extends ProjectFormat {
 	 * platforms.
 	 */
 	protected String buildAppPaths() {
-		FileSet fs = new FileSet();
+		FileSet fs = null;
+		PatternSet.NameEntry include = null;
+		DirectoryScanner ds = null;
+		String[] files = null;
+		StringBuffer buf = null;
+		try {
+		fs = new FileSet();
 		fs.setDir(getApplicatonTask().contentsDir());
-		PatternSet.NameEntry include = fs.createInclude();
+		include = fs.createInclude();
 		include.setName("**/Resources/Java/**/*.jar");
 
-		DirectoryScanner ds = fs.getDirectoryScanner(task.getProject());
-		String[] files = ds.getIncludedFiles();
-		StringBuffer buf = new StringBuffer();
+		ds = fs.getDirectoryScanner(task.getProject());
+		files = ds.getIncludedFiles();
+		buf = new StringBuffer();
 
 		// prepend the path with Resources/Java (for CompilerProxy support)
-		buf.append("APPROOT").append(File.separatorChar)
-			.append("Resources").append(File.separatorChar)
-			.append("Java").append(File.separatorChar)
+		buf
+			.append("APPROOT")
+			.append(File.separatorChar)
+			.append("Resources")
+			.append(File.separatorChar)
+			.append("Java")
+			.append(File.separatorChar)
 			.append("\r\n");
 		for (int i = 0; i < files.length; i++) {
 			buf.append("APPROOT").append(File.separatorChar).append(
@@ -164,6 +178,18 @@ public class AppFormat extends ProjectFormat {
 				"\r\n");
 		}
 		return buf.toString();
+		}
+		catch  (Exception anException) {
+		log(anException.getMessage(), Project.MSG_WARN);			
+		}
+		finally {
+			fs = null;
+			include = null;
+			ds = null;
+			files = null;
+			buf = null;
+		}
+		return "";
 	}
 
 	/** 
@@ -180,21 +206,21 @@ public class AppFormat extends ProjectFormat {
 		WOPropertiesHandler aHandler = new WOPropertiesHandler(project);
 
 		// track included jar files to avoid double entries
-		Vector jarSet = new Vector();		
+		Vector jarSet = new Vector();
 
-		int size = frameworkSets.size();
-		for (int i = 0; i < size; i++) {
+		for (int i = 0; i < frameworkSets.size(); i++) {
 
-			FrameworkSet fs = (FrameworkSet) frameworkSets.get(i);
-
-			// Don't bother checking if it's embedded.
-			if (fs.getEmbed()) {
-				continue;
-			}
-
+			FrameworkSet fs = null;
+			DirectoryScanner ds = null;
+			String[] dirs = null;
 			try {
-				DirectoryScanner ds = fs.getDirectoryScanner(project);
-				String[] dirs = ds.getIncludedDirectories();
+				fs = (FrameworkSet) frameworkSets.get(i);
+				// Don't bother checking if it's embedded.
+				if (fs.getEmbed()) {
+					continue;
+				}
+				ds = fs.getDirectoryScanner(project);
+				dirs = ds.getIncludedDirectories();
 
 				for (int j = 0; j < dirs.length; j++) {
 					File[] jars = fs.findJars(project, dirs[j]);
@@ -208,23 +234,34 @@ public class AppFormat extends ProjectFormat {
 
 					int jsize = jars.length;
 					for (int k = 0; k < jsize; k++) {
-						if(!jarSet.contains(jars[k]))
+						if (!jarSet.contains(jars[k]))
 							jarSet.add(jars[k]);
 					}
 				}
-			} catch (BuildException be) {
+			} catch (Exception anException) {
 				// directory doesn't exist or is not readable
-				log(be.getMessage(), Project.MSG_WARN);
+				log(anException.getMessage(), Project.MSG_WARN);
+			} finally {
+				fs = null;
+				ds = null;
+				dirs = null;
 			}
 		}
-		Object someFiles[] = jarSet.toArray();
-		size = someFiles.length;
-		for (int i = 0; i < size; i++) {
-			log(": Framework JAR " + (File) someFiles[i], Project.MSG_VERBOSE);
-			buf.append(aHandler.encodePathForFile((File) someFiles[i])).append(
-				"\r\n");
+		File aFile = null;
+		try {
+			for (int i = 0; i < jarSet.size(); i++) {
+				aFile = (File) jarSet.elementAt(i);
+				log(": Framework JAR " + aFile, Project.MSG_VERBOSE);
+				buf.append(aHandler.encodePathForFile(aFile)).append("\r\n");
+			}
+			return buf.toString();
+		} catch (Exception anException) {
+			// directory doesn't exist or is not readable
+			log(anException.getMessage(), Project.MSG_WARN);
+		} finally {
+			aFile = null;
 		}
-		return buf.toString();
+		return "";
 	}
 
 	/**
@@ -276,16 +313,22 @@ public class AppFormat extends ProjectFormat {
 			classpathFilter('\\'));
 
 		String subp = new File(winDir, "SUBPATHS.TXT").getPath();
-		createMappings(subp, woappPlusVersion() + "/Contents/Windows/SUBPATHS.TXT");
+		createMappings(
+			subp,
+			woappPlusVersion() + "/Contents/Windows/SUBPATHS.TXT");
 
 		// add run script to Win. directory
 		String runScript = new File(winDir, getName() + ".cmd").getPath();
-		createMappings(runScript, woappPlusVersion() + "/Contents/Windows/appstart.cmd");
+		createMappings(
+			runScript,
+			woappPlusVersion() + "/Contents/Windows/appstart.cmd");
 
 		// add run script to top-level directory
 		File taskDir = getApplicatonTask().taskDir();
 		String topRunScript = new File(taskDir, getName() + ".cmd").getPath();
-		createMappings(topRunScript, woappPlusVersion() + "/Contents/Windows/appstart.cmd");
+		createMappings(
+			topRunScript,
+			woappPlusVersion() + "/Contents/Windows/appstart.cmd");
 	}
 
 	/** 
@@ -322,12 +365,16 @@ public class AppFormat extends ProjectFormat {
 
 		// add run script to Mac directory
 		String runScript = new File(macDir, getName()).getPath();
-		createMappings(runScript, woappPlusVersion() + "/Contents/MacOS/appstart");
+		createMappings(
+			runScript,
+			woappPlusVersion() + "/Contents/MacOS/appstart");
 
 		// add run script to top-level directory
 		File taskDir = getApplicatonTask().taskDir();
 		String topRunScript = new File(taskDir, getName()).getPath();
-		createMappings(topRunScript, woappPlusVersion() + "/Contents/MacOS/appstart");
+		createMappings(
+			topRunScript,
+			woappPlusVersion() + "/Contents/MacOS/appstart");
 	}
 
 	/** 
@@ -444,8 +491,8 @@ public class AppFormat extends ProjectFormat {
 	 * @return String
 	 */
 	public String woappPlusVersion() {
-		if(WOVersion.wo5or51(this.getApplicatonTask().getProject()))
-		return "woapp";
+		if (WOVersion.wo5or51(this.getApplicatonTask().getProject()))
+			return "woapp";
 		return "woapp_52";
 	}
 }
