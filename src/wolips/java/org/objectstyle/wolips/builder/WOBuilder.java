@@ -56,13 +56,13 @@
  package org.objectstyle.wolips.builder;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.Map;
 import java.util.Vector;
 
 import org.eclipse.ant.core.AntRunner;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -118,12 +118,18 @@ public abstract class WOBuilder extends IncrementalProjectBuilder {
 			return new IProject[0];
 		Exception anException = null;
 		try {
-			getProject().deleteMarkers(IMarker.TASK, false, getProject().DEPTH_ONE);
+			getProject().deleteMarkers(IMarker.TASK, false, IResource.DEPTH_ONE);
 			String aBuildFile = this.buildFile();
 			if(checkIfBuildfileExist(aBuildFile) && isFirstRequest(monitor)) {
-				getProject().getFile(aBuildFile).deleteMarkers(IMarker.TASK, false, getProject().DEPTH_ONE);
+				getProject().getFile(aBuildFile).deleteMarkers(IMarker.TASK, false, IProject.DEPTH_ONE);
 				antRunner().setBuildFileLocation(getProject().getFile(aBuildFile).getLocation().toOSString());
-				antRunner.addBuildLogger(ANT_LOGGER_CLASS);
+				//if we dont get a logger the stuff goes to the console
+				try {
+					antRunner.addBuildLogger(ANT_LOGGER_CLASS);
+				}
+				catch (Exception aLoggerException) {
+					WOLipsPlugin.log(aLoggerException);				
+				}
 				antRunner().addUserProperties(args);
 				antRunner().run(new SubProgressMonitor(monitor, 1));
 				if(!WOBuilder.cacheAntRunner) WOBuilder.antRunner = null;
