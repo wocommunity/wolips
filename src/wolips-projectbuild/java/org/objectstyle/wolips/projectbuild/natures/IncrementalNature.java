@@ -372,6 +372,8 @@ public class IncrementalNature
 				|| lastSegment.endsWith(".api")
 				|| lastSegment.endsWith(".d2wmodel")
 				|| lastSegment.endsWith(".plist")
+        || lastSegment.endsWith(".xml")
+        || lastSegment.endsWith(".strings") && (-1 == path.toString().indexOf(".wo/"))
 				&& (-1 == path.toString().indexOf(".eomodeld/"))) {
 				return (_appendSpecial(getResourceOutputPath(), path));
 			}
