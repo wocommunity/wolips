@@ -3,6 +3,9 @@
     <title>Compatibilty matrix</title>
 
     <body>
+ 	<section name="introduction">
+		<p>The tables below lists the combination we've tested.</p>
+	</section>
  	<section name="woproject">
 		<p></p>
 		<table border="1" cellpadding="2" cellspacing="0">
@@ -17,7 +20,7 @@
 		</table>
     	</section>
  	<section name="WOLips">
-		<p></p>
+		<p>Don't forget to install the patched org.eclipse.ant.core plugin. <a href="wolips_install">Read more about it.</a></p>
 		<table border="1" cellpadding="2" cellspacing="0">
 			<tr>
 				<th valign="top"><b><a href="http://www.eclipse.org/">Eclipse</a></b></th>
