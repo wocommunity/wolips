@@ -36,28 +36,8 @@
    <extension
          point="org.eclipse.ant.core.extraClasspathEntries">
       <extraClasspathEntry
-            library="lib/wolips-ant.jar">
-      </extraClasspathEntry>
-     <extraClasspathEntry
             library="lib/log4j.jar">
       </extraClasspathEntry>
    </extension>
-   <extension
-         point="org.eclipse.ant.core.antTasks">
-    <antTask
-            library="lib/wolips-ant.jar"
-            name="updateframeworksets"
-            class="org.objectstyle.wolips.ant.UpdateFrameworkIncludeFiles">
-      </antTask>
-      <antTask
-            library="lib/wolips-ant.jar"
-            name="refreshview"
-            class="org.objectstyle.wolips.ant.RefreshEclipse">
-      </antTask>
-      <antTask
-            library="lib/wolips-ant.jar"
-            name="updateotherclasspaths"
-            class="org.objectstyle.wolips.ant.UpdateOtherClasspathIncludeFiles">
-      </antTask>
-   </extension>
+   
 </plugin>
