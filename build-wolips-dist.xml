@@ -79,7 +79,7 @@
 
 
      <copy todir="${wolips.dist.base}">
-        <fileset dir="doc/update">
+        <fileset dir="doc/update/local">
         	<include name="site.xml"/>
         </fileset>
     </copy>
