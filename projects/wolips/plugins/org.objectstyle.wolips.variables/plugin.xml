@@ -18,8 +18,8 @@
       <import plugin="org.objectstyle.wolips.woproject"/>
       <import plugin="org.eclipse.jface"/>
       <import plugin="org.eclipse.ui"/>
-      <import plugin="org.objectstyle.wolips.ant"/>
       <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.ant.core"/>
    </requires>
 
 

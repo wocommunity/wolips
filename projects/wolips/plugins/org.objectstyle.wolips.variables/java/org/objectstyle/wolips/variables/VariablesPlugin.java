@@ -58,7 +58,7 @@ package org.objectstyle.wolips.variables;
 import java.net.URL;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
-
+import org.eclipse.ant.core.AntRunner;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IPluginDescriptor;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -70,7 +70,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.objectstyle.woenvironment.env.WOEnvironment;
 import org.objectstyle.woenvironment.env.WOVariables;
-import org.objectstyle.wolips.ant.runner.RunAnt;
 /**
  * The main plugin class to be used in the desktop.
  */
@@ -162,16 +161,17 @@ public class VariablesPlugin extends AbstractUIPlugin {
 					VariablesPlugin.build_user_home_properties);
 		buildFile = Platform.asLocalURL(relativeBuildFile);
 		monitor = new NullProgressMonitor();
-		RunAnt runAnt = new RunAnt();
+		AntRunner runner = null;
 		try {
-			runAnt.asAnt(buildFile.getFile().toString(), monitor, null);
-		} catch (Throwable throwable) {
-			//this will allways fail for the first time
+			runner = new AntRunner();
+			runner.setBuildFileLocation(buildFile.getPath());
+			runner.setArguments("-quiet");
+			runner.run(monitor);
 		} finally {
+			runner = null;
 			relativeBuildFile = null;
 			buildFile = null;
 			monitor = null;
-			runAnt = null;
 			relativeBuildFile = null;
 			buildFile = null;
 			monitor = null;
