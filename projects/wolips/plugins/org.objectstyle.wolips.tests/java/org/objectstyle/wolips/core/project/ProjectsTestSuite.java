@@ -53,7 +53,7 @@
  * <http://objectstyle.org/>.
  *
  */
-package org.objectstyle.wolips.tests.core.project;
+package org.objectstyle.wolips.core.project;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

@@ -55,7 +55,7 @@
  */
 package org.objectstyle.wolips.tests.suite;
 
-import org.objectstyle.wolips.tests.core.project.ProjectsTestSuite;
+import org.objectstyle.wolips.core.project.ProjectsTestSuite;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

@@ -33,7 +33,9 @@
     <!-- ========================================== -->
     <target name="jar">
 	    <patternset id="param.classes.patternset.refid">
-                <include name="**/org/objectstyle/wolips/tests/**"/>
+            <include name="**/org/objectstyle/wolips/tests/**"/>
+            <include name="**/org/objectstyle/wolips/**/*Test.class"/>
+            <include name="**/org/objectstyle/wolips/**/*TestSuite.class"/>
         </patternset>
             
 	    <ant dir="." antfile="../../../${project.buildscripts.dir}/plugin-project.xml" target="jar">

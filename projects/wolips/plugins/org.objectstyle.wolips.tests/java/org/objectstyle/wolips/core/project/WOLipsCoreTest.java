@@ -54,7 +54,7 @@
  *
  */
 
-package org.objectstyle.wolips.tests.core.project;
+package org.objectstyle.wolips.core.project;
 
 import junit.framework.TestCase;
 
