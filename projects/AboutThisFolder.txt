@@ -1,4 +1,3 @@
-
 Files:
 .project: Required to get the branches within Eclipse.
 buildserver.version: Maintained by the buildserver.
