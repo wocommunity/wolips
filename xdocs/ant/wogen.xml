@@ -92,7 +92,7 @@
 			</table>
 			
 			<h3>Examples</h3>
-			<p>Here is an example of a using <code>WOGen</code> to generate EOEnterpriseObject
+			<p>1. Generating EOEnterpriseObject
 			subclass/superclass pairs from EOModel located in "src/test.eomodeld". All generated
 			subclasses and superclasses will be saved in the same directory "src/java/eo" regardless
 			of their package names:</p>
@@ -100,7 +100,23 @@
 &amp;lt;taskdef name="wogen" classname="org.objectstyle.woproject.ant.WOGenerator"&amp;gt;
      &amp;lt;classpath refid="classpath"/&amp;gt;
 &amp;lt;/taskdef&amp;gt;
-&amp;lt;wogen map="src/test.eomodeld" destDir="src/java/eo"/&amp;gt;
+&amp;lt;wogen map="src/test.eomodeld" destDir="src/java/eo" usepkgpath="false"/&amp;gt;
+</source>
+
+			<p>2. Generating EOEnterpriseObject
+			subclass/superclass pairs using (and creating if needed) package directories. 
+			If an entity "Artist" maps to Java class "org.objectstyle.art.Artist", the following
+			files will be generated for this entity: 
+			<ul>
+				<li><code>src/java/org/objectstyle/art/Artist.java</code></li>
+				<li><code>src/java/org/objectstyle/art/_Artist.java</code></li>
+			</ul>
+			</p>
+<source>
+&amp;lt;taskdef name="wogen" classname="org.objectstyle.woproject.ant.WOGenerator"&amp;gt;
+     &amp;lt;classpath refid="classpath"/&amp;gt;
+&amp;lt;/taskdef&amp;gt;
+&amp;lt;wogen map="src/test.eomodeld" destDir="src/java"/&amp;gt;
 </source>
     </section>
 </body>
