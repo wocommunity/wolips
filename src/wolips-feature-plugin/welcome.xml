@@ -8,20 +8,14 @@ To learn more you can browse the <topic id="/org.objectstyle.wolips/toc_root.xml
 </item>
 
 <item><b>What's new?</b>
-Option to set the JVMOption in the WOApplication.
-Include/exclude patterns for the CLASSES and WOAPP_RESOURCES arrays in the PB.project.
-Enable/disable the update of the PB.project.
-Bugfix to prevent an update of the PB.project whenever you open or close a .java file.
-Javadoc in the help.
-Entry in the tips and tricks list.
-Welcome page.
-The WOLips perspective is the default welcome perspective.
-Preferences page for the launch config.
-New tab for the launch config.
-Action to add a framework from the user home.
-Action to add a framework from a expanded classpath variable.
-Patterns for the incremental builder.
-Optional ssdd target in the application build file.
+To solve the problem with foo.eomodeld/index.eomodeld entries in the PB.project:
+1. Open the preferences. Window->Preferences
+2. Restore the defaults of the WOLips->ProjectBuilder->WOAppResources exclude page.
+3. Save the preferences.
+4. Restart Eclipse.
+5. Open your PB.project files with the text editor. 
+6. If there entries like foo.eomodeld/index.eomodeld right click on the project root and select WOLips->Update PB.project 
+
 </item>	
 
 <item><b>Learn More</b>
