@@ -84,6 +84,7 @@ public class DataSetsPlugin extends Plugin implements IDataSetTypes, IStartup {
 	private static DataSetsPlugin plugin;
 	//Resource bundle.
 	private ResourceBundle resourceBundle;
+	
 	//	DataSets based on files
 	protected final static String API_EXTENSION = "api";
 	protected final static String WOD_EXTENSION = "wod";

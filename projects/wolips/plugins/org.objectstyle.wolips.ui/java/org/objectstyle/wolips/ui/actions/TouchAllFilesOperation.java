@@ -54,21 +54,20 @@
  *
  */
 
-package org.objectstyle.wolips.ui.editor;
+package org.objectstyle.wolips.ui.actions;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 
-import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IFileEditorInput;
-import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.forms.editor.FormEditor;
-import org.objectstyle.wolips.datasets.pattern.PatternsetReader;
-import org.objectstyle.wolips.datasets.pattern.PatternsetWriter;
-import org.objectstyle.wolips.ui.actions.TouchAllFilesOperation;
+import org.eclipse.ui.actions.WorkspaceModifyOperation;
+import org.objectstyle.wolips.core.logging.WOLipsLog;
+import org.objectstyle.wolips.datasets.project.IWOLipsProject;
+import org.objectstyle.wolips.datasets.project.WOLipsCore;
 
 /**
  * @author ulrich
@@ -76,82 +75,39 @@ import org.objectstyle.wolips.ui.actions.TouchAllFilesOperation;
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public class PatternsetEditor extends FormEditor {
-	private ArrayList patternList;
-	private boolean isDirty = false;
-	/**
-	 *  
-	 */
-	public PatternsetEditor() {
+public class TouchAllFilesOperation extends WorkspaceModifyOperation {
+	private IProject project;
+	
+	public TouchAllFilesOperation (IProject project) {
+		this.project = project;
+	}
+
+	protected void execute(IProgressMonitor monitor) throws CoreException, InvocationTargetException, InterruptedException {
+		IWOLipsProject woLipsProject =
+			WOLipsCore.createProject(project);
+		try {
+			//remove all existing entries
+			woLipsProject
+				.getPBProjectFilesAccessor()
+				.cleanAllFileTables();
+		} catch (IOException e) {
+			WOLipsLog.log(e);
+		}
+		this.touch(project, monitor);
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.forms.editor.FormEditor#addPages()
-	 */
-	protected void addPages() {
-		IEditorInput editorInput = getEditorInput();
-		IFile inputFile = ((IFileEditorInput)editorInput).getFile();
-		PatternsetReader patternsetReader = new PatternsetReader(inputFile);
-		String[] pattern = patternsetReader.getPattern();
-		patternList = new ArrayList();
-		for(int i = 0; i < pattern.length; i++) {
-			patternList.add(pattern[i]);
+	private void touch(IResource resource, IProgressMonitor monitor) throws CoreException {
+		if(resource.getType() == IResource.FILE)
+			resource.touch(monitor);
+		IResource[] members = null;
+		if(resource.getType() == IResource.FOLDER)
+			members = ((IFolder)resource).members();
+		if(resource.getType() == IResource.PROJECT)
+			members = ((IProject)resource).members();
+		if(members != null) {
+			for (int i = 0; i < members.length; i++) {
+				this.touch(members[i], monitor);
+			}
 		}
-		try {
-		addPage(new PatternsetPage(this, patternList));
-		}
-		catch (PartInitException e) {
-			//
-		}
-	}
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.ISaveablePart#doSave(org.eclipse.core.runtime.IProgressMonitor)
-	 */
-	public void doSave(IProgressMonitor monitor) {
-		IEditorInput editorInput = getEditorInput();
-		IFile inputFile = ((IFileEditorInput)editorInput).getFile();
-		String[] pattern = (String[])patternList.toArray(new String[patternList.size()]);
-		PatternsetWriter.create(inputFile, pattern);
-		this.setDirty(false);
-		TouchAllFilesOperation touchAllFilesOperation = new TouchAllFilesOperation(inputFile.getProject());
-		try {
-			touchAllFilesOperation.run(new NullProgressMonitor());
-		} catch (InvocationTargetException e) {
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-	}
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.ISaveablePart#doSaveAs()
-	 */
-	public void doSaveAs() {
-	}
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.ISaveablePart#isSaveAsAllowed()
-	 */
-	public boolean isSaveAsAllowed() {
-		return false;
-	}
-	/**
-	 * @return Returns the isDirty.
-	 */
-	public boolean isDirty() {
-		return isDirty;
-	}
-	/**
-	 * @param isDirty The isDirty to set.
-	 */
-	public void setDirty(boolean isDirty) {
-		this.isDirty = isDirty;
-		this.firePropertyChange(PatternsetEditor.PROP_DIRTY);
 	}
 }

@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 The ObjectStyle Group 
+ * Copyright (c) 2002 - 2004 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -56,6 +56,7 @@
 
 package org.objectstyle.wolips.ui.actions;
 
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.objectstyle.wolips.core.logging.WOLipsLog;
@@ -69,7 +70,7 @@ import org.objectstyle.wolips.datasets.project.WOLipsCore;
  */
 public class PBAction extends ActionOnIResource {
 
-	private static String UpdatePBProjectID = "UpdatePB.Project.ID";
+	private static String UpdatePBProjectID = "org.objectstyle.wolips.ui.actions.PBAction";
 
 	/**
 	 * Contructor for the PBAction
@@ -91,20 +92,8 @@ public class PBAction extends ActionOnIResource {
 		if (project() != null) {
 			try {
 				if (action.getId().equals(PBAction.UpdatePBProjectID)) {
-					IWOLipsProject woLipsProject =
-						WOLipsCore.createProject(project());
-					//remove all existing entries
-					woLipsProject
-						.getPBProjectFilesAccessor()
-						.cleanAllFileTables();
-					this.project().close(null);
-					//invokes the ResoureChangeListener indirectly
-					this.project().open(null);
-					this.project().findMember(".classpath").touch(null);
-					/*IJavaProject javaProject = JavaCore.create(project());
-					javaProject.setRawClasspath(
-						javaProject.getRawClasspath(),
-						null);*/
+					TouchAllFilesOperation touchAllFilesOperation = new TouchAllFilesOperation(project());
+					touchAllFilesOperation.run(new NullProgressMonitor());
 				}
 			} catch (Exception ex) {
 				WOLipsLog.log(ex);

@@ -456,7 +456,8 @@ public class ResourceChangeListener implements IResourceChangeListener {
 		 */
 		private final boolean needsProjectFileUpdate(int kindOfChange) {
 			return IResourceDelta.ADDED == kindOfChange
-					|| IResourceDelta.REMOVED == kindOfChange;
+					|| IResourceDelta.REMOVED == kindOfChange
+					|| IResourceDelta.CHANGED == kindOfChange;
 		}
 		/**
 		 * Method updateProjectFile adds or removes resources from project file
@@ -476,6 +477,11 @@ public class ResourceChangeListener implements IResourceChangeListener {
 			ArrayList changedResourcesArray = null;
 			// let's examine the type of change
 			switch (kindOfChange) {
+				case IResourceDelta.CHANGED :
+					changedResourcesArray = getChangedResourcesArray(
+							addedResourcesProjectDict, fileStableId,
+							projectFileToUpdate);
+					break;
 				case IResourceDelta.ADDED :
 					changedResourcesArray = getChangedResourcesArray(
 							addedResourcesProjectDict, fileStableId,
