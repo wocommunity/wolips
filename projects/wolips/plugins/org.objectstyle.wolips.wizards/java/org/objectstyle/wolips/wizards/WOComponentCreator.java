@@ -54,7 +54,6 @@
  *
  */
 package org.objectstyle.wolips.wizards;
-import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
