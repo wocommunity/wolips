@@ -56,46 +56,29 @@
 package org.objectstyle.woproject.ant;
 
 import java.io.File;
+import java.util.Iterator;
 
-import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.Project;
-import org.apache.tools.ant.types.FileSet;
+import junit.framework.TestCase;
 
 /**
- * Customized subclass of FileSet used to locate frameworks.
+ * TestCase for FrameworkSetTest class.
  *
  * @author Andrei Adamchik
  */
-public class FrameworkSet extends FileSet {
-	protected String base;
-	
-	/** 
-	 * Creates new FrameworkSet.
-	 */
-	public FrameworkSet() {
-		super();
+public class FrameworkSetTest extends TestCase {
+	protected FrameworkSet set;
+
+	public FrameworkSetTest(String name) {
+		super(name);
 	}
 
-	/** 
-	 * Creates new FrameworkSet.
-	 */
-	public FrameworkSet(FileSet fileSet) {
-		super(fileSet);
+	public void setUp() throws Exception {
+		super.setUp();
+		set = new FrameworkSet();
 	}
 
-	/** 
-	 * Overrides parent to discard the value. A warning 
-	 * will be printed if log level is high enough.
-	 */
-	public void setDir(File dir) throws BuildException {
-		// noop
-
-		log(
-			"FrameworkSet does not support 'dir' attribute, ignoring.",
-			Project.MSG_WARN);
-	}
-	
-	public void setBase(String base) {
-		this.base = base;
+	public void testSetBase() throws Exception {
+		set.setBase("base");
+		assertEquals("base", set.base);
 	}
 }
