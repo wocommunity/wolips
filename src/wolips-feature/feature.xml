@@ -2,7 +2,7 @@
 <feature
       id="org.objectstyle.wolips.feature"
       label="%featureName"
-      version="1.0.2"
+      version="1.0.3"
       provider-name="%providerName"
       image="%image">
 
@@ -101,117 +101,117 @@
          id="org.objectstyle.wolips.targetbuilder"
          download-size="0"
          install-size="0"
-         version="1.0.2"/>
+         version="1.0.3"/>
 
    <plugin
          id="org.objectstyle.wolips.help"
          download-size="0"
          install-size="0"
-         version="1.0.2"
+         version="1.0.3"
          fragment="true"/>
 
    <plugin
          id="org.objectstyle.wolips.launching"
          download-size="0"
          install-size="0"
-         version="1.0.2"
+         version="1.0.3"
          fragment="true"/>
 
    <plugin
          id="org.objectstyle.wolips.source"
          download-size="0"
          install-size="0"
-         version="1.0.2"
+         version="1.0.3"
          fragment="true"/>
 
    <plugin
          id="org.objectstyle.wolips.support"
          download-size="0"
          install-size="0"
-         version="1.0.2"
+         version="1.0.3"
          fragment="true"/>
 
    <plugin
          id="org.objectstyle.wolips.devstudio"
          download-size="0"
          install-size="0"
-         version="1.0.2"
+         version="1.0.3"
          fragment="true"/>
 
    <plugin
          id="org.objectstyle.wolips.wounit"
          download-size="0"
          install-size="0"
-         version="1.0.2"
+         version="1.0.3"
          fragment="true"/>
 
    <plugin
          id="org.objectstyle.wolips.projectbuild"
          download-size="0"
          install-size="0"
-         version="1.0.2"
+         version="1.0.3"
          fragment="true"/>
 
    <plugin
          id="org.objectstyle.wolips.ui"
          download-size="0"
          install-size="0"
-         version="1.0.2"
+         version="1.0.3"
          fragment="true"/>
 
    <plugin
          id="org.objectstyle.wolips.wizards"
          download-size="0"
          install-size="0"
-         version="1.0.2"
+         version="1.0.3"
          fragment="true"/>
 
    <plugin
          id="org.objectstyle.wolips"
          download-size="0"
          install-size="0"
-         version="1.0.2"/>
+         version="1.0.3"/>
 
    <plugin
          id="org.objectstyle.wolips.ant"
          download-size="0"
          install-size="0"
-         version="1.0.2"/>
+         version="1.0.3"/>
 
    <plugin
          id="org.objectstyle.wolips.woproject"
          download-size="0"
          install-size="0"
-         version="1.0.2"/>
+         version="1.0.3"/>
 
    <plugin
          id="org.objectstyle.wolips.woproject.ant"
          download-size="0"
          install-size="0"
-         version="1.0.2"/>
+         version="1.0.3"/>
 
    <plugin
          id="org.objectstyle.wolips.cayenne"
          download-size="0"
          install-size="0"
-         version="1.0.2"/>
+         version="1.0.3"/>
 
    <plugin
          id="org.objectstyle.wolips.cayenne.ant"
          download-size="0"
          install-size="0"
-         version="1.0.2"/>
+         version="1.0.3"/>
 
    <plugin
          id="org.objectstyle.wolips.logging"
          download-size="0"
          install-size="0"
-         version="1.0.2"/>
+         version="1.0.3"/>
 
    <plugin
          id="org.objectstyle.wolips.team"
          download-size="0"
          install-size="0"
-         version="1.0.2"/>
+         version="1.0.3"/>
 
 </feature>

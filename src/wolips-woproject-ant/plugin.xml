@@ -2,7 +2,7 @@
 <plugin
    id="org.objectstyle.wolips.woproject.ant"
    name="%WOLips.woproject.ant.pluginName"
-   version="1.0.2"
+   version="1.0.3"
    provider-name="%WOLips.providerName">
 
    <runtime>
