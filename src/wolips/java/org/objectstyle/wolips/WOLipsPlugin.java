@@ -58,7 +58,9 @@ package org.objectstyle.wolips;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.StringTokenizer;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -337,5 +339,21 @@ public class WOLipsPlugin extends AbstractUIPlugin {
 			WOLipsPlugin.log(anException);
 		}
 		return "";
+	}
+	
+	public static synchronized ArrayList arrayListFromCSV(String csvString) {
+		if (csvString == null || csvString.length() == 0) {
+			return new ArrayList();
+		}
+		StringTokenizer valueTokenizer = new StringTokenizer(csvString, ",");
+		ArrayList resultList = new ArrayList(valueTokenizer.countTokens());
+		while (valueTokenizer.hasMoreElements()) {
+			resultList.add(valueTokenizer.nextElement());
+		}
+		return resultList;
+	}
+	
+	public static String getId() {
+		return getDefault().getDescriptor().getUniqueIdentifier();
 	}
 }

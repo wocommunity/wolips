@@ -56,118 +56,55 @@
  
  package org.objectstyle.wolips.wizards;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.wizards.newresource.BasicNewProjectResourceWizard;
-import org.objectstyle.wolips.WOLipsPlugin;
 import org.objectstyle.wolips.images.WOLipsPluginImages;
+
 /**
  * @author mnolte
  * @author uli
+ * Wizard to create new eo model in selected webobjects java project
  */
-public class NewWOProjectWizard extends BasicNewProjectResourceWizard {
-	private static NewWOProjectWizard runningWizard;
-	private IStructuredSelection selection;
-	private IWorkbench workbench;
-	private NewWOProjectPage mainPage;
-	/**
-	 * Set this variable to a valid value in your subclass.
-	 */
-	public String projectTemplateID = "";
-	/** (non-Javadoc)
-	 * Method declared on Wizard.
-	 */
+public class EOModelCreationWizard extends Wizard implements INewWizard {
 
-	/**
-	 * Returns the the running wizard. May return null.
-	 */
-	public static NewWOProjectWizard runningWizard() {
-		return NewWOProjectWizard.runningWizard;
-	} 
-	/**
-	 * Return true if the wizard should create a Main Component.
-	 */
+private IStructuredSelection selection;
+	private IWorkbench workbench;
+	private EOModelCreationPage mainPage;
 	
-	public boolean createMainComponent() {
-		return false;
+	/**
+	 * Constructor for EOModelCreationWizard.
+	 */
+	public EOModelCreationWizard() {
+		super();
 	}
 	
+	
+	/**
+	 * @see org.eclipse.jface.wizard.IWizard#addPages()
+	 */
 	public void addPages() {
-		mainPage = new NewWOProjectPage("createWOProjectPage1");
-		mainPage.projectTemplateID = projectTemplateID;
+		mainPage = new EOModelCreationPage(workbench, selection);
 		addPage(mainPage);
 	}
 
-	/** (non-Javadoc)
-	 * Method declared on INewWizard
-	 */
-	public void init(IWorkbench workbench, IStructuredSelection selection) {
-		super.init(workbench,selection);
-		this.workbench = workbench;
-		this.selection = selection;
-		setWindowTitle(
-			NewWOProjectMessages.getString("WOProjectCreationWizard.title"));
-		setDefaultPageImageDescriptor(
-			WOLipsPluginImages.WOPROJECT_WIZARD_BANNER);
-			NewWOProjectWizard.runningWizard = this;
-	}
-
-
-	/** (non-Javadoc)
-	 * Method declared on IWizard
+	/**
+	 * @see org.eclipse.jface.wizard.IWizard#performFinish()
 	 */
 	public boolean performFinish() {
-		boolean creationSuccessful = mainPage.createProject();
-		if (creationSuccessful){
-			try {
-				this.installBuilder(mainPage.getProjectHandle());
-				//ProjectHelper.removeBuilder(mainPage.getProjectHandle(), ProjectHelper.JAVA_BUILDER_ID);
-				openResource(mainPage.getElementToOpen());
-			}
-			catch (Exception anException) {
-				WOLipsPlugin.log(anException);
-				creationSuccessful = false;
-			}
-		}
-		return creationSuccessful;
+		return mainPage.createEOModel();
 	}
-	
-	/**
-	 * Implement it in your subclass.
-	 */
-	public void installBuilder(IProject aProject) throws CoreException {
-	}
-	
-	private void openResource(final IResource resource) {
 
-		if (resource==null || resource.getType() != IResource.FILE) {
-			return;
-		}
-		IWorkbenchWindow window= WOLipsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow();
-		if (window == null) {
-			return;
-		}
-		final IWorkbenchPage activePage= window.getActivePage();
-		if (activePage != null) {
-			final Display display= getShell().getDisplay();
-			display.asyncExec(new Runnable() {
-				public void run() {
-					try {
-						activePage.openEditor((IFile)resource);
-					} catch (PartInitException e) {
-						WOLipsPlugin.log(e);
-					}
-				}
-			});
-			selectAndReveal(resource);
-		}
-	}	
+	/**
+	 * @see org.eclipse.ui.IWorkbenchWizard#init(IWorkbench, IStructuredSelection)
+	 */
+	public void init(IWorkbench workbench, IStructuredSelection selection) {
+			this.workbench = workbench;
+		this.selection = selection;
+		setWindowTitle(Messages.getString("EOModelCreationWizard.title"));
+		setDefaultPageImageDescriptor(
+			WOLipsPluginImages.WOCOMPONENT_WIZARD_BANNER);
+	}
+
 }

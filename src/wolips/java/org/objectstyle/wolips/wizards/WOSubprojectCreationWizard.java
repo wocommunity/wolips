@@ -53,47 +53,59 @@
  * <http://objectstyle.org/>.
  *
  */
-package org.objectstyle.wolips.wizards;
+ 
+ package org.objectstyle.wolips.wizards;
 
-import java.text.MessageFormat;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.wizards.newresource.BasicNewFolderResourceWizard;
+import org.objectstyle.wolips.images.WOLipsPluginImages;
 
 /**
+ * @author mnolte
  * @author uli
+ *
+ * To change this generated comment edit the template variable "typecomment":
+ * Window>Preferences>Java>Templates.
+ * To enable and disable the creation of type comments go to
+ * Window>Preferences>Java>Code Generation.
  */
-public class NewWOProjectMessages {
+public class WOSubprojectCreationWizard extends BasicNewFolderResourceWizard {
 
-	private static final String RESOURCE_BUNDLE= NewWOProjectMessages.class.getName();
-	private static ResourceBundle fgResourceBundle= ResourceBundle.getBundle(RESOURCE_BUNDLE);
-
-	private NewWOProjectMessages() {
-	}
-
-	public static String getString(String key) {
-		try {
-			return fgResourceBundle.getString(key);
-		} catch (MissingResourceException e) {
-			return '!' + key + '!';
-		}
+private IStructuredSelection selection;
+	private IWorkbench workbench;
+	private WOSubprojectCreationPage mainPage;
+	/**
+	 * Constructor for WOSubprojectCreationWizard.
+	 */
+	public WOSubprojectCreationWizard() {
+		super();
 	}
 	
-	/**
-	 * Gets a string from the resource bundle and formats it with the argument
-	 * 
-	 * @param key	the string used to get the bundle value, must not be null
+	/** (non-Javadoc)
+	 * Method declared on INewWizard
 	 */
-	public static String getFormattedString(String key, Object arg) {
-		return MessageFormat.format(getString(key), new Object[] { arg });
+	public void init(IWorkbench workbench, IStructuredSelection selection) {
+		this.workbench = workbench;
+		this.selection = selection;
+		setWindowTitle(Messages.getString("WOSubprojectCreationWizard.title"));
+		setDefaultPageImageDescriptor(
+			WOLipsPluginImages.WOCOMPONENT_WIZARD_BANNER);
+	}
+	
+	/** (non-Javadoc)
+	 * Method declared on Wizard.
+	 */
+	public void addPages() {
+		mainPage = new WOSubprojectCreationPage(workbench,selection);
+		addPage(mainPage);
 	}
 
-
-	/**
-	 * Gets a string from the resource bundle and formats it with arguments
-	 */	
-	public static String getFormattedString(String key, Object[] args) {
-		return MessageFormat.format(getString(key), args);
+/** (non-Javadoc)
+	 * Method declared on IWizard
+	 */
+	public boolean performFinish() {
+		return mainPage.createSubproject();
 	}
-
-
+	
 }

@@ -54,48 +54,71 @@
  *
  */
  
-package org.objectstyle.wolips.wizards;
+ package org.objectstyle.wolips.wizards;
 
-import java.text.MessageFormat;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
+import java.lang.reflect.InvocationTargetException;
+
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.ui.actions.WorkspaceModifyDelegatingOperation;
+import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
+import org.objectstyle.wolips.WOLipsPlugin;
 
 /**
  * @author mnolte
  * @author uli
+ *
+ * To change this generated comment edit the template variable "typecomment":
+ * Window>Preferences>Java>Templates.
+ * To enable and disable the creation of type comments go to
+ * Window>Preferences>Java>Code Generation.
  */
-public class NewWOComponentMessages {
+public class WOFrameworkCreationPage extends WizardNewProjectCreationPage {
 
-	private static final String RESOURCE_BUNDLE= NewWOComponentMessages.class.getName();
-	private static ResourceBundle fgResourceBundle= ResourceBundle.getBundle(RESOURCE_BUNDLE);
+	private IResource elementToOpen;
 
-	private NewWOComponentMessages() {
-	}
-
-	public static String getString(String key) {
-		try {
-			return fgResourceBundle.getString(key);
-		} catch (MissingResourceException e) {
-			return '!' + key + '!';
-		}
-	}
-	
 	/**
-	 * Gets a string from the resource bundle and formats it with the argument
-	 * 
-	 * @param key	the string used to get the bundle value, must not be null
+	 * Constructor for WOFrameworkCreationPage.
+	 * @param pageName
 	 */
-	public static String getFormattedString(String key, Object arg) {
-		return MessageFormat.format(getString(key), new Object[] { arg });
+	public WOFrameworkCreationPage(String pageName) {
+		super(pageName);
+		setTitle(Messages.getString("WOFrameworkCreationWizard.title"));
+		setDescription(Messages.getString("WOFrameworkCreationWizard.description"));
+		setInitialProjectName(Messages.getString("WOFrameworkCreationWizard.newProject.defaultName"));
 	}
 
+	public boolean createProject() {
+		IProject newProject = getProjectHandle();
+
+		String projectTemplateID =
+			Messages.getString("webobjects.projectType.java.framework");
+		IRunnableWithProgress op =
+			new WorkspaceModifyDelegatingOperation(new WOProjectCreator(newProject, projectTemplateID));
+		try {
+			getContainer().run(false, true, op);
+		} catch (InvocationTargetException e) {
+			WOLipsPlugin.handleException(getShell(), e.getTargetException(), null);
+			return false;
+		} catch (InterruptedException e) {
+			//WOPluginUtils.handleException(getShell(), e, null);
+			return false;
+		}
+		IResource resourceToOpen = newProject;
+		if (resourceToOpen != null) {
+			elementToOpen = resourceToOpen;
+		}
+
+		return true;
+	}
 
 	/**
-	 * Gets a string from the resource bundle and formats it with arguments
-	 */	
-	public static String getFormattedString(String key, Object[] args) {
-		return MessageFormat.format(getString(key), args);
+	 * Method getElementToOpen.
+	 * @return resource to open on successful project creation
+	 */
+	public IResource getElementToOpen() {
+		return elementToOpen;
 	}
-
 
 }

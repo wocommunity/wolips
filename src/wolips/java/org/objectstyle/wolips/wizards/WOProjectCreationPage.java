@@ -54,27 +54,71 @@
  *
  */
  
-package org.objectstyle.wolips.wizards;
+ package org.objectstyle.wolips.wizards;
+
+import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
-import org.objectstyle.wolips.project.ProjectHelper;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.ui.actions.WorkspaceModifyDelegatingOperation;
+import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
+import org.objectstyle.wolips.WOLipsPlugin;
 
 /**
  * @author mnolte
  * @author uli
+ *
+ * To change this generated comment edit the template variable "typecomment":
+ * Window>Preferences>Java>Templates.
+ * To enable and disable the creation of type comments go to
+ * Window>Preferences>Java>Code Generation.
  */
-public class NewWO51FrameworkWizard extends NewWOProjectWizard{
+public class WOProjectCreationPage extends WizardNewProjectCreationPage {
+
+	private IResource elementToOpen;
 
 	/**
-	 * Constructor for NewWOFrameworkWizard.
+	 * Constructor for WOProjectCreationPage.
+	 * @param pageName
 	 */
-	public NewWO51FrameworkWizard() {
-		super();
-		projectTemplateID = "JavaWebObjectsFramework.5.1";
+	public WOProjectCreationPage(String pageName) {
+		super(pageName);
+		setTitle(Messages.getString("WOProjectCreationPage.title"));
+		setDescription(Messages.getString("WOProjectCreationPage.description"));
+		setInitialProjectName(Messages.getString("WOProjectCreationPage.newProject.defaultName"));
 	}
 
-public void installBuilder(IProject aProject) throws CoreException {
-		ProjectHelper.installBuilder(aProject, ProjectHelper.WOFRAMEWORK_BUILDER_ID);
+	public boolean createProject() {
+		IProject newProject = getProjectHandle();
+
+		String projectTemplateID =
+			Messages.getString("webobjects.projectType.java.application");
+		IRunnableWithProgress op =
+			new WorkspaceModifyDelegatingOperation(new WOProjectCreator(newProject, projectTemplateID));
+		try {
+			getContainer().run(false, false, op);
+		} catch (InvocationTargetException e) {
+			WOLipsPlugin.handleException(getShell(), e.getTargetException(), null);
+			return false;
+		} catch (InterruptedException e) {
+			//WOPluginUtils.handleException(getShell(), e, null);
+			return false;
+		}
+		IResource fileToOpen = newProject.getFile("Application.java");
+		if (fileToOpen != null) {
+			elementToOpen = fileToOpen;
+		}
+
+		return true;
 	}
+
+	/**
+	 * Method getElementToOpen.
+	 * @return resource to open on successful project creation
+	 */
+	public IResource getElementToOpen() {
+		return elementToOpen;
+	}
+
 }

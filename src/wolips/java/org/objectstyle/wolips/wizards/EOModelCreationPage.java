@@ -56,57 +56,48 @@
  
  package org.objectstyle.wolips.wizards;
 
-import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.dialogs.WizardNewFileCreationPage;
-import org.eclipse.ui.internal.misc.ContainerSelectionGroup;
-import org.objectstyle.wolips.WOLipsPlugin;
-import org.objectstyle.wolips.io.FileFromTemplateCreator;
-import org.objectstyle.wolips.wo.WOVariables;
+import org.eclipse.ui.actions.WorkspaceModifyDelegatingOperation;
 
 /**
  * @author mnolte
  * @author uli
+ * The one and only page in the eo model creation wizard
  */
+public class EOModelCreationPage extends WizardNewWOResourcePage {
 
-public class NewWOComponentPage
-	extends WizardNewFileCreationPage {
 	private IWorkbench workbench;
 	private Composite parentComposite;
 
 	// widgets
-	private Button bodyCheckbox;
+	private Button adaptorJDBCCheckbox;
+	private Button adaptorJDBCPatchedCheckbox;
 
 	/**
-	 * Creates the page for the readme creation wizard.
+	 * Creates the page for the eomodel creation wizard.
 	 *
 	 * @param workbench  the workbench on which the page should be created
 	 * @param selection  the current selection
 	 */
-	public NewWOComponentPage(
-		IWorkbench workbench,
-		IStructuredSelection selection) {
-		super("createWOComponentPage1", selection);
-		this.setTitle(
-			NewWOComponentMessages.getString("WOComponentCreationPage.title"));
-		this.setDescription(
-			NewWOComponentMessages.getString("WOComponentCreationPage.description"));
+	public EOModelCreationPage(IWorkbench workbench, IStructuredSelection selection) {
+		super("createEOModelPage1", selection);
+		this.setTitle(Messages.getString("EOModelCreationPage.title"));
+		this.setDescription(Messages.getString("EOModelCreationPage.description"));
 		this.workbench = workbench;
 	}
+
 	/** (non-Javadoc)
 	 * Method declared on IDialogPage.
 	 */
@@ -119,125 +110,84 @@ public class NewWOComponentPage
 		//WorkbenchHelp.setHelp(composite, IReadmeConstants.CREATION_WIZARD_PAGE_CONTEXT);
 
 		GridData data = (GridData) composite.getLayoutData();
-		this.setFileName(
-			NewWOComponentMessages.getString(
-				"WOComponentCreationPage.newComponent.defaultName"));
+		this.setFileName(Messages.getString("EOModelCreationPage.newEOModel.defaultName"));
 
 		new Label(composite, SWT.NONE); // vertical spacer
 
-		// sample section generation group
+		// section generation group
 		Group group = new Group(composite, SWT.NONE);
 		group.setLayout(new GridLayout());
-		group.setText(
-			NewWOComponentMessages.getString(
-				"WOComponentCreationPage.creationOptions.title"));
-		group.setLayoutData(
-			new GridData(
-				GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
+		group.setText(Messages.getString("EOModelCreationPage.creationOptions.title"));
+		group.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
 
-		// sample section generation checkboxes
-		bodyCheckbox = new Button(group, SWT.CHECK);
-		bodyCheckbox.setText(
-			NewWOComponentMessages.getString(
-				"WOComponentCreationPage.creationOptions.bodyTag"));
-		bodyCheckbox.setSelection(true);
-		bodyCheckbox.addListener(SWT.Selection, this);
+		// adaptor name checkboxes
+		adaptorJDBCCheckbox = new Button(group, SWT.RADIO);
+		adaptorJDBCCheckbox.setText(Messages.getString("EOModelCreationPage.creationOptions.adaptorJDBC"));
+		adaptorJDBCCheckbox.setSelection(true);
+		adaptorJDBCCheckbox.addListener(SWT.Selection, this);
+
+		adaptorJDBCPatchedCheckbox = new Button(group, SWT.RADIO);
+		adaptorJDBCPatchedCheckbox.setText(
+			Messages.getString("EOModelCreationPage.creationOptions.adaptorJDBCPatched"));
+		adaptorJDBCPatchedCheckbox.setSelection(false);
+		adaptorJDBCPatchedCheckbox.addListener(SWT.Selection, this);
 
 		new Label(composite, SWT.NONE); // vertical spacer
 
 		setPageComplete(validatePage());
-		validatePath();
 	}
+
 	/**
-	 * Creates a new file resource as requested by the user. If everything
+	 * Creates a new eomodel as requested by the user. If everything
 	 * is OK then answer true. If not, false will cause the dialog
 	 * to stay open and the appropiate error message is shown
 	 *
 	 * @return whether creation was successful
-	 * @see ReadmeCreationWizard#performFinish()
+	 * @see EOModelCreationWizard#performFinish()
 	 */
-	public boolean finish() {
+	public boolean createEOModel() {
 
-		String componentName = getFileName();
-		IPath fullPath = getContainerFullPath();
-		String projectName = fullPath.segment(0);
+		EOModelCreator modelCreator;
+		String modelName = getFileName();
+		IProject actualProject = ResourcesPlugin.getWorkspace().getRoot().getProject(getContainerFullPath().segment(0));
 
-		IProject actualProject =
-			ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
-
-		NewWOComponentCreator componentCreator =
-			new NewWOComponentCreator(actualProject);
-		try {
-			componentCreator.createWOComponentNamed(
-				componentName,
-				bodyCheckbox.getSelection(),
-				null);
-		} catch (CoreException e) {
-			WOLipsPlugin.handleException(getShell(), e, null);
-			//setErrorMessage(e.getMessage());
-			//WebObjectsEclipsePlugin.log(e.getStatus());
-			return false;
-		} catch (FileFromTemplateCreator.FileCreationException e) {
-			WOLipsPlugin.handleException(getShell(), e, null);
-			//setErrorMessage(e.getMessage());
-			//WebObjectsEclipsePlugin.log(e);
-			return false;
+		// determine adaptor
+		String adaptorName = "";
+		if (adaptorJDBCCheckbox.getSelection()) {
+			adaptorName = "JDBC";
+		} else {
+			adaptorName = "JDBCPatched";
 		}
 
-		return true;
+		// determine parent resource
+		switch (getContainerFullPath().segmentCount()) {
+
+			case 0 :
+				// not possible ( see validatePage() )
+				setErrorMessage("unknown error");
+				return false;
+
+			case 1 :
+				modelCreator = new EOModelCreator(actualProject, modelName, adaptorName);
+				break;
+
+			default :
+				IFolder subprojectFolder = actualProject.getFolder(getContainerFullPath().removeFirstSegments(1));
+				modelCreator = new EOModelCreator(subprojectFolder, modelName, adaptorName);
+				break;
+
+		}
+
+		IRunnableWithProgress op = new WorkspaceModifyDelegatingOperation(modelCreator);
+
+		return createResourceOperation(op);
+
 	}
 
 	/** (non-Javadoc)
 	 * Method declared on WizardNewFileCreationPage.
 	 */
 	protected String getNewFileLabel() {
-		return NewWOComponentMessages.getString(
-			"WOComponentCreationPage.newComponent.label");
+		return Messages.getString("EOModelCreationPage.newEOModel.label");
 	}
-
-	/** (non-Javadoc)
-	* Method declared on WizardNewFileCreationPage.
-	*/
-	public void handleEvent(Event e) {
-		super.handleEvent(e);
-
-		Widget source = e.widget;
-
-		if (source instanceof ContainerSelectionGroup
-			|| source instanceof org.eclipse.swt.widgets.Tree) {
-			validatePath();
-
-		}
-
-	}
-
-	/**
-	 * Method validatePath. Checks if container selection is an project.
-	 * All new added WebObjects resource folder must be exact in this hierachy.
-	 */
-	private void validatePath() {
-		IPath currentPath = getContainerFullPath();
-		String projectName = currentPath.segment(0);
-
-		IProject actualProject =
-			ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
-		IFile projectFile =
-			actualProject.getFile(
-				WOVariables.woProjectFileName());
-		if (!actualProject.exists()) {
-			// only projects are allowed as selection
-			setErrorMessage(
-				NewWOComponentMessages.getString(
-					"WOComponentCreationPage.errorMessage.containerNoProject"));
-			setPageComplete(false);
-		}
-		if (!projectFile.exists()) {
-			// only projects are allowed as selection
-			setErrorMessage(
-				NewWOComponentMessages.getString(
-					"WOComponentCreationPage.errorMessage.containerNoWOProject"));
-			setPageComplete(false);
-		}
-	}
-
 }

@@ -54,7 +54,7 @@
  *
  */
  
- package org.objectstyle.wolips.project;
+package org.objectstyle.wolips.project;
 
 import java.util.ArrayList;
 import java.util.Arrays;

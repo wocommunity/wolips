@@ -57,84 +57,98 @@
  package org.objectstyle.wolips.wizards;
 
 import java.io.ByteArrayInputStream;
+import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.objectstyle.wolips.io.FileFromTemplateCreator;
+
 
 /**
  * @author mnolte
  * @author uli
  */
-public class NewWOComponentCreator {
-	private FileFromTemplateCreator fileCreator;
-	private IProject project;
+public class WOComponentCreator extends WOProjectResourceCreator {
+	
 	private String componentName;
 	private boolean createBodyTag;
 
 	/**
 	 * Constructor for WOComponentCreator.
 	 */
-	public NewWOComponentCreator(IProject project) {
-		super();
-		this.project = project;
-	}
-
-	public void createWOComponentNamed(
-		String componentName,
-		boolean createBodyTag,
-		IProgressMonitor monitor)
-		throws CoreException, FileFromTemplateCreator.FileCreationException {
-			
+	public WOComponentCreator(IResource parentResource,String componentName, boolean createBodyTag) {
+		super(parentResource);
 		this.componentName = componentName;
 		this.createBodyTag = createBodyTag;
-		IFolder componentFolder = project.getFolder(componentName + ".wo");
+	}
+	
+	protected int getType() {
+		return COMPONENT_CREATOR;
+	}
+	
+	/**
+	 * @see WOProjectResourceCreator#run(IProgressMonitor)
+	 */
+	public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+		super.run(monitor);
+		try {
+			createWOComponent(monitor);
+		} catch (CoreException e) {
+			throw new InvocationTargetException(e);
+		} 
+	}
+
+	public void createWOComponent(IProgressMonitor monitor)
+		throws CoreException, InvocationTargetException {		
 
 		// create the new file resources
-if (fileCreator==null){
-		fileCreator = new FileFromTemplateCreator();
-}
-		IFile componentDescription =
-			componentFolder.getFile(componentName + ".wod");
-		IFile componentHTMLTemplate =
-			componentFolder.getFile(componentName + ".html");
-		IFile componentJavaFile = project.getFolder("src").getFile(componentName + ".java");
-		IFile componentApiFile = project.getFile(componentName + ".api");
+		if (fileCreator == null) {
+			fileCreator = new FileFromTemplateCreator();
+		}
 
-		componentFolder.create(false, true, null);
-		fileCreator.create(componentDescription,null);
+		IFolder componentFolder = null;
+		IFile componentJavaFile = null;
+		IFile componentApiFile = null;
+
+		switch (parentResource.getType()) {
+			case IResource.PROJECT :
+				componentFolder = ((IProject) parentResource).getFolder(componentName + "." + COMPONENT);
+				componentJavaFile = ((IProject) parentResource).getFolder("src").getFile(componentName + "." + CLASS);
+				componentApiFile = ((IProject) parentResource).getFile(componentName + "." + API);
+
+				break;
+			case IResource.FOLDER :
+				componentFolder = ((IFolder) parentResource).getFolder(componentName + "." + COMPONENT);
+				componentJavaFile = ((IFolder) parentResource).getFolder("src").getFile(componentName + "." + CLASS);
+				componentApiFile = ((IFolder) parentResource).getFile(componentName + "." + API);
+
+				break;
+			default :
+				throw new InvocationTargetException(new Exception("Wrong parent resource - check validation"));
+		}
+
+		IFile componentDescription = componentFolder.getFile(componentName + "." + WOD);
+		IFile componentHTMLTemplate = componentFolder.getFile(componentName + "." + HTML);
+
+		createResourceFolderInProject(componentFolder, monitor);
+
+		fileCreator.create(componentDescription, monitor);
 
 		if (createBodyTag) {
-			fileCreator.create(componentHTMLTemplate,null);
+			fileCreator.create(componentHTMLTemplate, monitor);
 		} else {
 			// create empty file
-			componentHTMLTemplate.create(
-				new ByteArrayInputStream("".getBytes()),
-				false,
-				null);
+			componentHTMLTemplate.create(new ByteArrayInputStream("".getBytes()), false, null);
 		}
-		fileCreator.create(componentJavaFile, "wocomponent",null);
-		fileCreator.create(componentApiFile,null);
+
+		fileCreator.create(componentJavaFile, "wocomponent", monitor);
+		fileCreator.create(componentApiFile, monitor);
 
 	}
 
-	/**
-	 * Returns the fileCreator.
-	 * @return FileFromTemplateCreator
-	 */
-	public FileFromTemplateCreator getFileCreator() {
-		return fileCreator;
-	}
-
-	/**
-	 * Sets the fileCreator.
-	 * @param fileCreator The fileCreator to set
-	 */
-	public void setFileCreator(FileFromTemplateCreator fileCreator) {
-		this.fileCreator = fileCreator;
-	}
-
+	
 }

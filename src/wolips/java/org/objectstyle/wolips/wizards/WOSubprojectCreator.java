@@ -54,12 +54,19 @@
  *
  */
  
- package org.objectstyle.wolips.wo;
+ package org.objectstyle.wolips.wizards;
 
-import org.objectstyle.wolips.WOLipsPlugin;
-import org.objectstyle.wolips.env.Environment;
+import java.lang.reflect.InvocationTargetException;
+
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.objectstyle.wolips.io.FileFromTemplateCreator;
 
 /**
+ * @author mnolte
  * @author uli
  *
  * To change this generated comment edit the template variable "typecomment":
@@ -67,79 +74,64 @@ import org.objectstyle.wolips.env.Environment;
  * To enable and disable the creation of type comments go to
  * Window>Preferences>Java>Code Generation.
  */
-public class WOVariables {
+public class WOSubprojectCreator extends WOProjectResourceCreator {
+
+	private String subprojectName;
 
 	/**
-	 * Constructor for WOVariables.
+	 * Constructor for WOSubprojectCreator.
 	 */
-	private WOVariables() {
-		super();
-	}
-	
-	public static String nextRoot() {
-		return Environment.nextRoot();
-	}
-	
-	public static String developerDir() {
-		String returnValue = "";
-		if (Environment.isNextRootSet()) returnValue = WOVariables.nextRoot();
-		returnValue = returnValue + "/Developer";
-		return returnValue;
-	}
-	
-	public static String developerAppsDir() {
-		String returnValue = "";
-		if (Environment.isNextRootSet()) returnValue = WOVariables.nextRoot();
-		returnValue = returnValue + "/Developer/Applications";
-		return returnValue;
-	}
-	
-	public static String libraryDir() {
-		String returnValue = "";
-		returnValue = WOVariables.nextRoot() + "/Library";
-		return returnValue;
-	}
-	
-	public static String localDeveloperDir() {
-		String returnValue = "";
-		if (Environment.isNextRootSet()) returnValue = WOVariables.nextRoot();
-		returnValue = returnValue + "/Developer";
-		return returnValue;
-	}
-	
-	public static String localLibraryDir() {
-		String returnValue = "";
-		if (Environment.isNextRootSet()) returnValue = WOVariables.nextRoot();
-		returnValue = returnValue + "/Library";
-		return returnValue;
+	public WOSubprojectCreator(IResource parentResource, String subprojectName) {
+		super(parentResource);
+		this.subprojectName = subprojectName;
 	}
 
-	public static String woTemplateDirectory() {
-		return "templates";
+	protected int getType() {
+		return SUBPROJECT_CREATOR;
 	}
-	
-	public static String woTemplateFiles() {
-		return "/wo_file_templates.xml";
-	}
-	
-	public static String woTemplateProject() {
-		return "/wo_project_templates.xml";
-	}
-	
-	public static String woProjectFileName() {
-		return "PB.project";
-	}
-	
-	public static String classPathVariableToExpand(String aString) {
-		String returnValue = "";
-		if (aString != null) {
-			if(aString.equals("webobjects.next.root"))
-				returnValue = WOVariables.nextRoot();
-			if(aString.equals("webobjects.system.library.dir"))
-				returnValue = WOVariables.libraryDir();
+
+	/**
+	 * @see WOProjectResourceCreator#run(IProgressMonitor)
+	 */
+	public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+		super.run(monitor);
+		try {
+			createSubproject(monitor);
+		} catch (CoreException e) {
+			throw new InvocationTargetException(e);
 		}
-		if ((returnValue == null) || (returnValue.equals("")))
-			WOLipsPlugin.log("Can not resolve classpath variable: " + aString);
-		return returnValue;
 	}
+
+	public void createSubproject(IProgressMonitor monitor)
+		throws CoreException, InvocationTargetException, InterruptedException {
+
+		// create the new file resources
+		if (fileCreator == null) {
+			fileCreator = new FileFromTemplateCreator();
+		}
+
+		IFolder subprojectFolder = null;
+
+		switch (parentResource.getType()) {
+			case IResource.PROJECT :
+				subprojectFolder = ((IProject) parentResource).getFolder(subprojectName);
+				break;
+			case IResource.FOLDER :
+				subprojectFolder = ((IFolder) parentResource).getFolder(subprojectName);
+
+				break;
+			default :
+				throw new InvocationTargetException(new Exception("Wrong parent resource - check validation"));
+		}
+
+		createResourceFolderInProject(subprojectFolder, monitor);
+
+		String projectTemplateID =
+			Messages.getString("webobjects.projectType.java.subproject");
+
+		// delegate subproject resource file creation to project creator
+		WOProjectCreator projectCreator = new WOProjectCreator(subprojectFolder, projectTemplateID);
+		projectCreator.run(monitor);
+	}
+
 }

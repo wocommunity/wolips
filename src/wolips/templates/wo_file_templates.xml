@@ -781,4 +781,12 @@ DSTROOT = $(NEXT_ROOT)
 <template name="webobjects woframework custominfo.plist" id="woframework.custominfo.plist" description="basic custominfo.plist" enabled="true">
 <![CDATA[]]>
 </template>
+<template name="eomodel index" id="eomodeld" variables="ADAPTOR_NAME" enabled="true"><![CDATA[{
+    EOModelVersion = 2.1; 
+    adaptorName = ${ADAPTOR_NAME}; 
+    connectionDictionary = {URL = ""; driver = ""; password = ""; plugin = ""; username = ""; }; 
+    entities = (); 
+}]]></template>
+	<template name="eomodel diagram layout" id="diagram" enabled="true"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+{}]]></template>
 </templates>

@@ -53,79 +53,47 @@
  * <http://objectstyle.org/>.
  *
  */
- 
- package org.objectstyle.wolips.wizards;
+package org.objectstyle.wolips.wizards;
 
-import java.lang.reflect.InvocationTargetException;
-
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.internal.ui.wizards.buildpaths.BuildPathsBlock;
-import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.eclipse.ui.actions.WorkspaceModifyDelegatingOperation;
-import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
-import org.objectstyle.wolips.WOLipsPlugin;
+import java.text.MessageFormat;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 
 /**
- * @author mnolte
  * @author uli
  */
-public class NewWOProjectPage extends WizardNewProjectCreationPage {
+public class Messages {
 
-	public String projectTemplateID;
+	private static final String RESOURCE_BUNDLE= Messages.class.getName();
+	private static ResourceBundle fgResourceBundle= ResourceBundle.getBundle(RESOURCE_BUNDLE);
+
+	private Messages() {
+	}
+
+	public static String getString(String key) {
+		try {
+			return fgResourceBundle.getString(key);
+		} catch (MissingResourceException e) {
+			return '!' + key + '!';
+		}
+	}
 	
-	private IResource elementToOpen;
+	/**
+	 * Gets a string from the resource bundle and formats it with the argument
+	 * 
+	 * @param key	the string used to get the bundle value, must not be null
+	 */
+	public static String getFormattedString(String key, Object arg) {
+		return MessageFormat.format(getString(key), new Object[] { arg });
+	}
+
 
 	/**
-	 * Constructor for WOProjectCreationPage.
-	 * @param pageName
-	 */
-	public NewWOProjectPage(String pageName) {
-		super(pageName);
-		setTitle(NewWOProjectMessages.getString("WOProjectCreationPage.title"));
-		setDescription(
-			NewWOProjectMessages.getString("WOProjectCreationPage.description"));
-		setInitialProjectName(
-			NewWOProjectMessages.getString(
-				"WOProjectCreationPage.newProject.defaultName"));
+	 * Gets a string from the resource bundle and formats it with arguments
+	 */	
+	public static String getFormattedString(String key, Object[] args) {
+		return MessageFormat.format(getString(key), args);
 	}
 
-	public boolean createProject() {
-		IProject newProject = getProjectHandle();
-		try {
-			if(this.getLocationPath() != null)
-				BuildPathsBlock.createProject(newProject, this.getLocationPath(), null);
-		} catch (CoreException e) {
-			WOLipsPlugin.handleException(getShell(), e, null);
-			return false;
-		}
-		IRunnableWithProgress op =
-			new WorkspaceModifyDelegatingOperation(
-				new NewWOProjectCreator(newProject));
-		try {
-			getContainer().run(false, true, op);
-		} catch (InvocationTargetException e) {
-			WOLipsPlugin.handleException(getShell(), e, null);
-			return false;
-		} catch (InterruptedException e) {
-			return false;
-		}
-		IResource fileToOpen =
-			newProject.getFolder("src").getFile("Application.java");
-		if (fileToOpen != null) {
-			elementToOpen = fileToOpen;
-		}
-
-		return true;
-	}
-
-	/**
-	 * Method getElementToOpen.
-	 * @return resource to open on successful project creation
-	 */
-	public IResource getElementToOpen() {
-		return elementToOpen;
-	}
 
 }

@@ -48,28 +48,45 @@
             		name="%WOLips.Component"
             		icon="icons/wobuilder/wocomponent_wiz.gif"
             		category="org.objectstyle.wolips.wizards.webobjects.5.1"
-            		class="org.objectstyle.wolips.wizards.NewWO51ComponentWizard"
+            		class="org.objectstyle.wolips.wizards.WOComponentCreationWizard"
             		id="org.objectstyle.wolips.wizards.new.wo.5.1.component">
       		</wizard>
       		<wizard
             		name="%WOLips.Application"
-            		icon="icons/woproject/woproject_wiz.gif"
+            		icon="icons/woproject/woapplication_wiz.gif"
             		category="org.objectstyle.wolips.wizards.webobjects.5.1"
-            		class="org.objectstyle.wolips.wizards.NewWO51ApplicationWizard"
+            		class="org.objectstyle.wolips.wizards.WOProjectCreationWizard"
             		id="org.objectstyle.wolips.wizards.new.wo.5.1.application">
          	<description>
          	</description>
       		</wizard>
 			<wizard
             		name="%WOLips.Framework"
-            		icon="icons/woproject/woproject_wiz.gif"
+            		icon="icons/woproject/woframework_wiz.gif"
             		category="org.objectstyle.wolips.wizards.webobjects.5.1"
-            		class="org.objectstyle.wolips.wizards.NewWO51FrameworkWizard"
+            		class="org.objectstyle.wolips.wizards.WOFrameworkCreationWizard"
             		id="org.objectstyle.wolips.wizards.new.wo.5.1.framework">
          	<description>
          	</description>
    			</wizard>
-		
+			<wizard
+            		name="%WOLips.EOModel"
+            		icon="icons/woproject/eomodel_wiz.gif"
+            		category="org.objectstyle.wolips.wizards.webobjects.5.1"
+            		class="org.objectstyle.wolips.wizards.EOModelCreationWizard"
+            		id="org.objectstyle.wolips.wizards.new.wo.5.1.eomodel">
+         	<description>
+         	</description>
+   			</wizard>
+   			<wizard
+            		name="%WOLips.Subproject"
+            		icon="icons/woproject/wosubproject_wiz.gif"
+            		category="org.objectstyle.wolips.wizards.webobjects.5.1"
+            		class="org.objectstyle.wolips.wizards.WOSubprojectCreationWizard"
+            		id="org.objectstyle.wolips.wizards.new.wo.5.1.subproject">
+         	<description>
+         	</description>
+   			</wizard>
   	</extension>  
 
 	<!-- ant -->
