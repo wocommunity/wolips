@@ -98,7 +98,6 @@ public final class RelatedView extends ViewPart implements ISelectionListener {
 		 * @see org.eclipse.jface.viewers.ITreeContentProvider#getChildren(java.lang.Object)
 		 */
 		public Object[] getChildren(Object parentElement) {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
@@ -106,7 +105,6 @@ public final class RelatedView extends ViewPart implements ISelectionListener {
 		 * @see org.eclipse.jface.viewers.ITreeContentProvider#getParent(java.lang.Object)
 		 */
 		public Object getParent(Object element) {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
@@ -114,7 +112,6 @@ public final class RelatedView extends ViewPart implements ISelectionListener {
 		 * @see org.eclipse.jface.viewers.ITreeContentProvider#hasChildren(java.lang.Object)
 		 */
 		public boolean hasChildren(Object element) {
-			// TODO Auto-generated method stub
 			return false;
 		}
 	}
