@@ -129,17 +129,6 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 		return resourceBundle;
 	}
 	/**
-	 * Returns the PluginID.
-	 * 
-	 * @return
-	 */
-	public static String getPluginId() {
-		if (plugin != null) {
-			return getDefault().getDescriptor().getUniqueIdentifier();
-		} else
-			return WorkbenchUtilitiesPlugin.PLUGIN_ID;
-	}
-	/**
 	 * Prints a Status.
 	 * 
 	 * @param status
@@ -155,7 +144,7 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 	 */
 	public static void log(Throwable e) {
 		WorkbenchUtilitiesPlugin.log(new Status(IStatus.ERROR,
-				WorkbenchUtilitiesPlugin.getPluginId(), IStatus.ERROR,
+				WorkbenchUtilitiesPlugin.PLUGIN_ID, IStatus.ERROR,
 				"Internal Error", e)); //$NON-NLS-1$
 	}
 	/**
@@ -198,8 +187,9 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 				message = null;
 			}
 		} else {
-			status = new Status(IStatus.ERROR, WorkbenchUtilitiesPlugin
-					.getPluginId(), IStatus.ERROR, "Error within Debug UI: ", t); //$NON-NLS-1$	
+			status = new Status(IStatus.ERROR,
+					WorkbenchUtilitiesPlugin.PLUGIN_ID, IStatus.ERROR,
+					"Error within Debug UI: ", t); //$NON-NLS-1$	
 		}
 		ErrorDialog.openError(shell, title, message, status);
 	}
