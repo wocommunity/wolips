@@ -644,6 +644,9 @@ public final class PBProjectUpdater {
 				frameworkNames,
 				0,
 				frameworkNames.length);
+				for(int i = 0; i < frameworkNames.length; i++) {
+					frameworkNames[i] = frameworkNames[i] + "." + IWOLipsModel.EXT_FRAMEWORK;
+				}
 			return frameworkNames;
 		} else {
 			String frameworkName = null;

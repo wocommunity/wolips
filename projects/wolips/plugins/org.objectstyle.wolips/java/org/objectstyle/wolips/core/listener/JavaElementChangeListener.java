@@ -60,7 +60,7 @@ import java.util.List;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.ElementChangedEvent;
 import org.eclipse.jdt.core.IElementChangedListener;
 import org.eclipse.jdt.core.IJavaElement;
@@ -165,7 +165,6 @@ public class JavaElementChangeListener implements IElementChangedListener {
 							for (int j = 0; j < foundElements.size(); j++) {
 								currentPackageFragmentRoot =
 									(IPackageFragmentRoot) foundElements.get(j);
-
 								addedFrameworks.add(
 									currentPackageFragmentRoot
 										.getRawClasspathEntry()
@@ -198,18 +197,16 @@ public class JavaElementChangeListener implements IElementChangedListener {
 								IJavaElementDelta.F_REMOVED_FROM_CLASSPATH,
 								foundElements);
 							ArrayList removedFrameworks =
-																(
-																	ArrayList) removedFrameworksProjectDict
-																		.get(
-																	projectToExamine);
+								(ArrayList) removedFrameworksProjectDict.get(
+									projectToExamine);
 							for (int j = 0; j < foundElements.size(); j++) {
 								currentPackageFragmentRoot =
 									(IPackageFragmentRoot) foundElements.get(j);
-								
-								removedFrameworks.add(
-									new Path(
-										currentPackageFragmentRoot
-											.getElementName()));
+								IPath rawClasspathEntryPath =
+									currentPackageFragmentRoot.getPath();
+										//.getRawClasspathEntry()
+										//.getPath();
+								removedFrameworks.add(rawClasspathEntryPath);
 							}
 						}
 					}
