@@ -51,8 +51,6 @@ package org.objectstyle.wolips.projectbuild.builder;
 import java.util.Map;
 
 import org.eclipse.ant.core.AntRunner;
-import org.eclipse.ant.internal.ui.launchConfigurations.IAntLaunchConfigurationConstants;
-import org.eclipse.ant.internal.ui.model.IAntUIConstants;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
@@ -60,19 +58,8 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.variables.VariablesPlugin;
-import org.eclipse.debug.core.DebugPlugin;
-import org.eclipse.debug.core.ILaunch;
-import org.eclipse.debug.core.ILaunchConfiguration;
-import org.eclipse.debug.core.ILaunchConfigurationType;
-import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
-import org.eclipse.debug.core.ILaunchManager;
-import org.eclipse.debug.ui.IDebugUIConstants;
-import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
-import org.eclipse.jdt.launching.IVMInstall;
-import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.externaltools.internal.model.IExternalToolConstants;
+import org.objectstyle.wolips.ant.launching.LaunchAntInExternalVM;
 import org.objectstyle.wolips.datasets.adaptable.Project;
 import org.objectstyle.wolips.preferences.Preferences;
 import org.objectstyle.wolips.projectbuild.ProjectBuildPlugin;
@@ -81,7 +68,6 @@ import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
  * @author uli
  */
 public class WOAntBuilder extends AbstractIncrementalProjectBuilder {
-	private static final String MAIN_TYPE_NAME = "org.eclipse.ant.internal.ui.antsupport.InternalAntRunner";
 	private static final int TOTAL_WORK_UNITS = 1;
 	/**
 	 * Constructor for WOBuilder.
@@ -237,107 +223,13 @@ public class WOAntBuilder extends AbstractIncrementalProjectBuilder {
 	 */
 	private void launchAntInExternalVM(IFile buildFile, IProgressMonitor monitor)
 			throws CoreException {
-		ILaunchConfiguration config = null;
 		try {
-			//config = this.createDefaultLaunchConfiguration(buildFile,
-			// monitor);
-			config = this.createDefaultLaunchConfiguration(buildFile);
+			LaunchAntInExternalVM.launchAntInExternalVM(buildFile, monitor, Preferences.getPREF_CAPTURE_ANT_OUTPUT(), null);
 		} catch (CoreException e) {
-			config = null;
 			WorkbenchUtilitiesPlugin.handleException(Display.getCurrent()
 					.getActiveShell(), e, AntBuildMessages
 					.getString("Build.Exception"));
 			return;
 		}
-		try {
-			//config= ExternalToolMigration.migrateRunInBackground(config);
-			ILaunch launch = config.launch(ILaunchManager.RUN_MODE, monitor);
-			if (!Preferences.getPREF_CAPTURE_ANT_OUTPUT()) {
-				ILaunchManager manager = DebugPlugin.getDefault()
-						.getLaunchManager();
-				manager.removeLaunch(launch);
-			}
-		} finally {
-			config = null;
-		}
 	}
-	/**
-	 * Creates and returns a default launch configuration for the given file.
-	 * 
-	 * @param file
-	 * @return default launch configuration
-	 * @throws CoreException
-	 */
-	private ILaunchConfiguration createDefaultLaunchConfiguration(IFile file)
-			throws CoreException {
-		ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
-		ILaunchConfigurationType type = manager
-				.getLaunchConfigurationType(IAntLaunchConfigurationConstants.ID_ANT_LAUNCH_CONFIGURATION_TYPE);
-		StringBuffer buffer = new StringBuffer(file.getProject().getName());
-		buffer.append(' ');
-		buffer.append(file.getName());
-		buffer.append(" (WOLips)");
-		String name = buffer.toString().trim();
-		name = manager.generateUniqueLaunchConfigurationNameFrom(name);
-		ILaunchConfigurationWorkingCopy workingCopy = type.newInstance(null,
-				name);
-		workingCopy.setAttribute(IExternalToolConstants.ATTR_LOCATION,
-				VariablesPlugin.getDefault().getStringVariableManager()
-						.generateVariableExpression("workspace_loc",
-								file.getFullPath().toString())); //$NON-NLS-1$
-		workingCopy.setAttribute("org.eclipse.jdt.launching.WORKING_DIRECTORY",
-				file.getProject().getLocation().toOSString());
-		workingCopy.setAttribute(
-				IJavaLaunchConfigurationConstants.ATTR_CLASSPATH_PROVIDER,
-				"org.eclipse.ant.ui.AntClasspathProvider"); //$NON-NLS-1$
-		IVMInstall defaultInstall = null;
-		defaultInstall = JavaRuntime.getDefaultVMInstall();
-		//try {
-		//defaultInstall = JavaRuntime.computeVMInstall(workingCopy);
-		//} catch (CoreException e) {
-		//core exception thrown for non-Java project
-		//defaultInstall= JavaRuntime.getDefaultVMInstall();
-		//}
-		if (defaultInstall != null) {
-			String vmName = defaultInstall.getName();
-			String vmTypeID = defaultInstall.getVMInstallType().getId();
-			workingCopy.setAttribute(
-					IJavaLaunchConfigurationConstants.ATTR_VM_INSTALL_NAME,
-					vmName);
-			workingCopy.setAttribute(
-					IJavaLaunchConfigurationConstants.ATTR_VM_INSTALL_TYPE,
-					vmTypeID);
-		}
-		workingCopy.setAttribute(
-				IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME,
-				MAIN_TYPE_NAME);
-		workingCopy.setAttribute(DebugPlugin.ATTR_PROCESS_FACTORY_ID,
-				IAntUIConstants.REMOTE_ANT_PROCESS_FACTORY_ID);
-		workingCopy.setAttribute(
-				IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME,
-				"org.eclipse.ant.internal.ui.antsupport.InternalAntRunner");
-		workingCopy.setAttribute(
-				IJavaLaunchConfigurationConstants.ATTR_PROGRAM_ARGUMENTS,
-				(String) null);
-
-		workingCopy.setAttribute(
-				"org.eclipse.debug.ui.ATTR_LAUNCH_IN_BACKGROUND", false);
-		if (Preferences.getPREF_CAPTURE_ANT_OUTPUT()) {
-			workingCopy.setAttribute(
-					"org.eclipse.ui.externaltools.ATTR_SHOW_CONSOLE", true);
-			workingCopy.setAttribute(
-					"org.eclipse.ui.externaltools.ATTR_CAPTURE_OUTPUT", true);
-		} else {
-			workingCopy.setAttribute(
-					"org.eclipse.ui.externaltools.ATTR_SHOW_CONSOLE", false);
-			workingCopy.setAttribute(
-					"org.eclipse.ui.externaltools.ATTR_CAPTURE_OUTPUT", false);
-		}
-		workingCopy.setAttribute(IDebugUIConstants.ATTR_PRIVATE, true);
-		workingCopy.setAttribute(
-				IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, file
-						.getProject().getName());
-		return workingCopy.doSave();
-	}
-
 }
