@@ -5,26 +5,28 @@
 This page will help familiarize you with WOLips.
 To get started, read the sections below and click on the related links. </intro>
 
- <item><b></b></item> 
-
 <item><b>What is WOLips?</b>
-WOLips is a plugin for eclipse that support development of WebObjects applications and
-frameworks. WOLips is a part of WOProject.
-Eclipse is a kind of universal tool platform - an open extensible IDE for anything and
-nothing in particular.
-WOProject is a set of OS and IDE independent tools (based on Ant) for working with
-WebObjects.
-Ant is a Java-based build tool.</item>
+WOLips is a plugin for <topic href="http://eclipse.org/">eclipse</topic> that support development
+of <a href="http://www.apple.com/webobjects/">WebObjects</a> applications and frameworks.
+WOLips is a part of <a href="http://objectstyle.org/woproject/">WOProject</a>. <a href="http://eclipse.org/">eclipse</a> is a kind of universal tool platform - an
+open extensible IDE for anything and nothing in particular. <a href="http://objectstyle.org/woproject/">WOProject</a>
+is a set of OS and IDE independent tools (based on <a href="http://jakarta.apache.org/ant/">Ant</a>)
+for working with <a href="http://www.apple.com/webobjects/">WebObjects</a>.
+<a href="http://jakarta.apache.org/ant/">Ant</a> is a Java-based build tool.
+</item>
 
 <item><b>Audience and Scope</b>
-Are you familiar with WebObjects, and curious about Ant, WOProject and WOLips? Would you
-like to use eclipse to develop WebObjects applications? Then this document is for you. It aims to
-get you started using WOLips. There will be no detailed technical discussions, and larger subjects
-like Ant, WOProject or plugin develepment for eclipse are not discussed.
-This document describes how to do things using WOLips on Windows. If there are differences
-regarding how things work on Macintosh, notes reagrding these will be added later.
-The author of this document is not a WOLips or WOProject developer, and it contains no API or
-reference documentation. It's not even a user manual. It's simply something to get you started.</item>
+Are you familiar with WebObjects, and
+curious about Ant, WOProject and WOLips? Would you like to use eclipse to
+develop WebObjects applications? Then this document is for you. It aims to get
+you started using WOLips. There will be no detailed technical discussions, and
+larger subjects like Ant, WOProject or plugin develepment for eclipse are not
+discussed.
+
+The author of this document is not a WOLips
+or WOProject developer, and it contains no API or reference documentation. It's
+not even a user manual. It's simply something to get you started.
+</item>
 
 <item><b>Using eclipse without WOLips</b>
 If you are not yet familiar with eclipse; spend some time with it before continuing. Make certain to
