@@ -21,6 +21,10 @@
 	</BODY>
 </HTML>]]></template>
 	<template name="webobjects wod template" id="wod" description="empty wod file" enabled="true"/>
+	<template name="webobjects woo template" id="woo" description="woo file" enabled="true"><![CDATA[{
+"WebObjects Release" = "WebObjects 5.1"; 
+encoding = NSUnicodeStringEncoding; 
+}]]></template>
 	<template name="webobjects api template" id="api" description="api file" variables="CLASS" enabled="true"><![CDATA[<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <wodefinitions>
         <wo wocomponentcontent="false" class="${CLASS}">

@@ -56,7 +56,6 @@
 package org.objectstyle.wolips.wizards;
 import java.io.ByteArrayInputStream;
 import java.lang.reflect.InvocationTargetException;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -131,7 +130,8 @@ public class WOComponentCreator extends WOProjectResourceCreator {
 						componentName + "." + EXT_COMPONENT);
 				componentJavaFile =
 					ProjectHelper.getSubprojectSourceFolder(
-						(IFolder) parentResource,true).getFile(
+						(IFolder) parentResource,
+						true).getFile(
 						componentName + "." + EXT_JAVA);
 				componentApiFile =
 					((IFolder) parentResource).getFile(
@@ -143,6 +143,8 @@ public class WOComponentCreator extends WOProjectResourceCreator {
 		}
 		IFile componentDescription =
 			componentFolder.getFile(componentName + "." + EXT_WOD);
+		IFile componentWoo =
+			componentFolder.getFile(componentName + "." + EXT_WOO);
 		IFile componentHTMLTemplate =
 			componentFolder.getFile(componentName + "." + EXT_HTML);
 		createResourceFolderInProject(componentFolder, monitor);
@@ -158,5 +160,6 @@ public class WOComponentCreator extends WOProjectResourceCreator {
 		}
 		fileCreator().create(componentJavaFile, "wocomponent", monitor);
 		fileCreator().create(componentApiFile, monitor);
+		fileCreator().create(componentWoo, monitor);
 	}
 }
