@@ -79,11 +79,10 @@
          version="1.0.6"/>
 
    <plugin
-         id="org.objectstyle.wolips.help"
+         id="org.objectstyle.wolips.documentation"
          download-size="2200"
          install-size="2300"
-         version="1.0.6"
-         fragment="true"/>
+         version="1.0.6"/>
 
    <plugin
          id="org.objectstyle.wolips.launching"

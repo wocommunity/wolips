@@ -91,7 +91,7 @@
         <ant dir="org.objectstyle.wolips.datasets" target="all"/>
         <ant dir="org.objectstyle.wolips.templateengine" target="all"/>
         <ant dir="org.objectstyle.wolips" target="all"/>
-	    <ant dir="org.objectstyle.wolips.help" target="all"/>
+	    <ant dir="org.objectstyle.wolips.documentation" target="all"/>
 	    <ant dir="org.objectstyle.wolips.targetbuilder" target="all"/>
 	    <ant dir="org.objectstyle.wolips.launching" target="all"/>
 	    <ant dir="org.objectstyle.wolips.profiling" target="all"/>
@@ -124,7 +124,7 @@
         <ant dir="org.objectstyle.wolips.datasets" target="dist"/>
         <ant dir="org.objectstyle.wolips.templateengine" target="dist"/>
     	<ant dir="org.objectstyle.wolips" target="dist"/>
-	    <ant dir="org.objectstyle.wolips.help" target="dist"/>
+	    <ant dir="org.objectstyle.wolips.documentation" target="dist"/>
 	    <ant dir="org.objectstyle.wolips.targetbuilder" target="dist"/>
 	    <ant dir="org.objectstyle.wolips.launching" target="dist"/>
 	    <ant dir="org.objectstyle.wolips.profiling" target="dist"/>
