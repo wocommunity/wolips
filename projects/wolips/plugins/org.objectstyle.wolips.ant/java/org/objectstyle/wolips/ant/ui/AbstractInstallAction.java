@@ -76,9 +76,7 @@ public abstract class AbstractInstallAction extends ActionOnIResource {
 
 	protected void install(IProject[] projects) {
 		ProgressMonitorDialog progressMonitorDialog = new ProgressMonitorDialog(
-				new Shell()) {
-
-		};
+				new Shell());
 		Runnable runnable = new Runnable();
 		runnable.projectsToBuild = projects;
 		try {
