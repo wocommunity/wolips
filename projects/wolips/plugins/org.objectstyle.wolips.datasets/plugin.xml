@@ -45,5 +45,12 @@
            <adapter type="org.objectstyle.wolips.datasets.adaptable.LProjFolder"/>
        </factory>
    </extension>
+   <extension
+         id="pbproject.warning"
+         name="PBProject Generation"
+         point="org.eclipse.core.resources.markers">
+      <super type="org.eclipse.core.resources.taskmarker"/>
+      <persistent value="false"/>
+   </extension>
 
 </plugin>

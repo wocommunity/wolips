@@ -83,10 +83,13 @@ import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
  */
 public final class PBProjectUpdater {
 	//	local framework search for PB.project
-	private static final String DefaultLocalFrameworkSearch = "$(NEXT_ROOT)$(LOCAL_LIBRARY_DIR)/Frameworks";
+	private static final String DefaultLocalFrameworkSearch =
+		"$(NEXT_ROOT)$(LOCAL_LIBRARY_DIR)/Frameworks";
+	
+	private static final String MARKER_ID = 
+		"org.objectstyle.wolips.datasets.pbproject.warning";
 
 	private boolean saveRequired = false;
-
 	//do not cache PB.projects see bug #693046
 	//private static Hashtable projectUpdater = new Hashtable();
 	//public static String PBProject = "PB.projectContainer"; moved to
@@ -112,12 +115,15 @@ public final class PBProjectUpdater {
 
 	private final void removeProjectMarker() {
 		try {
-			IFile aFile = this.projectContainer.getFile(new Path(
-					IWOLipsModel.PROJECT_FILE_NAME));
-			if (aFile.exists())
-				aFile
-						.deleteMarkers(IMarker.PROBLEM, false,
-								IResource.DEPTH_ONE);
+			IFile aFile =
+				projectContainer.getFile(
+					new Path(IWOLipsModel.PROJECT_FILE_NAME));
+			if (aFile.exists()) {
+				// these old markers were making it impossible to launch in E-3.0m9
+				aFile.deleteMarkers(IMarker.PROBLEM,false,IResource.DEPTH_ONE);
+				// we also have to get rid of our own (new) markers
+				aFile.deleteMarkers(MARKER_ID, true, IResource.DEPTH_ONE);
+			}
 		} catch (Exception e) {
 			DataSetsPlugin.getDefault().getPluginLogger().log(e);
 		}
@@ -128,9 +134,11 @@ public final class PBProjectUpdater {
 			IFile aFile = this.projectContainer.getFile(new Path(
 					IWOLipsModel.PROJECT_FILE_NAME));
 			if (aFile.exists()) {
-				IMarker marker = aFile.createMarker(IMarker.PROBLEM);
-				marker.setAttribute(IMarker.MESSAGE,
-						"Error while updating PB.project");
+				IMarker marker = aFile.createMarker(MARKER_ID);
+				marker.setAttribute(
+					IMarker.MESSAGE,
+					"Error while updating PB.project");
+				marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
 			}
 		} catch (Exception e) {
 			DataSetsPlugin.getDefault().getPluginLogger().log(e);
