@@ -3,6 +3,7 @@
 	<name>wolips-tests</name>
 	<comment></comment>
 	<projects>
+		<project>org.eclipse.ant.core</project>
 		<project>wolips</project>
 	</projects>
 	<buildSpec>

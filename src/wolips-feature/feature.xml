@@ -84,7 +84,7 @@
          fragment="true"/>
          
    <plugin
-         id="org.objectstyle.wolipsui"
+         id="org.objectstyle.wolips.ui"
          download-size="0"
          install-size="0"
          version="1.0.0"
