@@ -55,8 +55,6 @@
  */
 package org.objectstyle.wolips.ui.labeldecorator;
 
-import java.util.Hashtable;
-
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.resource.CompositeImageDescriptor;
@@ -79,7 +77,6 @@ public class WOLabelDecorator
 	private static Image componentImage;
 	private static Image buildImage;
 	private static Image eomodelImage;
-	private Hashtable decoratedResources = new Hashtable();
 
 	/**
 	 * Constructor for WOLabelDecorator.
@@ -160,15 +157,6 @@ public class WOLabelDecorator
 			return buildImage(image);
 		return image;
 	}
-	private boolean isDecorated(IFolder element) {
-		String elementKey = element.getLocation().toString();
-		return (decoratedResources.containsKey(elementKey) && decoratedResources.get(elementKey).equals(element.getModificationStamp() + ""));
-	}
-	private void addToDecorated(IFolder element) {
-		String elementKey = element.getLocation().toString();
-		decoratedResources.put(elementKey, element.getModificationStamp() + "");
-	}
-
 	/**
 	 * @see org.eclipse.jface.viewers.ILabelDecorator#decorateImage(Image, Object)
 	 */
@@ -177,10 +165,7 @@ public class WOLabelDecorator
 			return image;
 		if (!WOLipsProject.isWOProjectResource((IResource) element))
 			return image;
-		//avoid memory leak
-		if (this.isDecorated((IFolder) element))
-			return image;
-		this.addToDecorated((IFolder) element);
+		//TODO: avoid memory leak
 		String extension = ((IFolder) element).getFileExtension();
 		return this.imageForExtension(image, extension);
 	}
