@@ -66,6 +66,7 @@ import java.io.InputStreamReader;
 import java.util.Iterator;
 
 import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Project;
 import org.apache.tools.ant.types.FilterSet;
 import org.apache.tools.ant.types.FilterSetCollection;
 
@@ -168,10 +169,10 @@ public abstract class ProjectFormat {
 		File destFile,
 		FilterSetCollection filters)
 		throws IOException {
-
+			log("destFile.getName(): " + destFile.getName() + " this.getName(): " + this.getName(), Project.MSG_VERBOSE);
 		if (destFile.exists()
 			&& destFile.isFile()
-			&& destFile.toString().endsWith(".sh")) {
+			&& destFile.getName().equals(this.getName())) {
 			//these files only need an update when a new Version of WO is installed.
 			//A clean in that case is better.
 			//destFile.delete();
@@ -222,7 +223,7 @@ public abstract class ProjectFormat {
 			src.close();
 			out.close();
 		}
-		return destFile.toString().endsWith(".sh");
+		return destFile.getName().equals(this.getName());
 	}
 
 	/** 
