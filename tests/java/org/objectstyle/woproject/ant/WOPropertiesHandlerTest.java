@@ -55,6 +55,7 @@
  */
 package org.objectstyle.woproject.ant;
 
+import java.io.File;
 import java.util.Properties;
 
 import junit.framework.TestCase;
@@ -67,74 +68,74 @@ import org.apache.tools.ant.Project;
  * @author Andrei Adamchik
  */
 public class WOPropertiesHandlerTest extends TestCase {
-	protected WOPropertiesHandler handler;
-	protected Project project;
+    protected WOPropertiesHandler handler;
+    protected Project project;
 
-	public WOPropertiesHandlerTest(String name) {
-		super(name);
-	}
+    public WOPropertiesHandlerTest(String name) {
+        super(name);
+    }
 
-	public void setUp() throws Exception {
-		super.setUp();
-		project = new Project();
-		handler = new WOPropertiesHandler(project);
-	}
+    public void setUp() throws Exception {
+        super.setUp();
+        project = new Project();
+        handler = new WOPropertiesHandler(project);
+    }
 
-	public void testProject() throws Exception {
-		assertSame(project, handler.getProject());
-	}
+    public void testProject() throws Exception {
+        assertSame(project, handler.getProject());
+    }
 
-	public void testWORoot1() throws Exception {
-		String woroot = "abc";
-		project.setProperty(WOPropertiesHandler.WO_ROOT, woroot);
-		assertEquals(woroot, handler.getWORoot());
-	}
+    // most of these tests are meaningless as they test a specific environment and
+    // platform .....
+    //
+    public void testWORoot1() throws Exception {
+        String woroot = "abc";
+        project.setProperty(WOPropertiesHandler.WO_ROOT, woroot);
+        assertTrue(handler.getWORootPath().endsWith(File.separator + woroot));
+    }
 
-	public void testWORoot2() throws Exception {
-		String woroot = "abc_next_root";
-		handler.env = new Properties();
-		handler.env.setProperty("NEXT_ROOT", woroot);
+    public void testWORoot2() throws Exception {
+        String woroot = "abc_next_root";
+        handler.env = new Properties();
+        handler.env.setProperty("NEXT_ROOT", woroot);
 
-		// no project level settings - must use environment
-		assertEquals(woroot, handler.getWORoot());
-	}
-	
+        // no project level settings - must use environment
+        assertTrue(handler.getWORootPath().endsWith(File.separator + woroot));
+    }
+
     public void testWORoot3() throws Exception {
-		String wrong = "abc_next_root";
-		String right = "abc";
-		handler.env = new Properties();
-		handler.env.setProperty("NEXT_ROOT", wrong);
-		project.setProperty(WOPropertiesHandler.WO_ROOT, right);
-		
-		// project level properties must take precedence over the environment
-		assertEquals(right, handler.getWORoot());
-	}
+        String wrong = "abc_next_root";
+        String right = "abc";
+        handler.env = new Properties();
+        handler.env.setProperty("NEXT_ROOT", wrong);
+        project.setProperty(WOPropertiesHandler.WO_ROOT, right);
 
+        // project level properties must take precedence over the environment
+        assertTrue(handler.getWORootPath().endsWith(File.separator + right));
+    }
 
-	public void testLocalRoot1() throws Exception {
-		String localRoot = "xyz";
-		project.setProperty(WOPropertiesHandler.LOCAL_ROOT, localRoot);
-		assertEquals(localRoot, handler.getLocalRoot());
-	}
-	
+    public void testLocalRoot1() throws Exception {
+        String localRoot = "xyz";
+        project.setProperty(WOPropertiesHandler.LOCAL_ROOT, localRoot);
+        assertTrue(handler.getLocalRootPath().endsWith(File.separator + localRoot));
+    }
 
-	public void testLocalRoot2() throws Exception {
-		String right = "abc_next_root";
-		handler.env = new Properties();
-		handler.env.setProperty("NEXT_ROOT", right);
+    public void testLocalRoot2() throws Exception {
+        String right = "abc_next_root";
+        handler.env = new Properties();
+        handler.env.setProperty("NEXT_ROOT", right);
 
         // no project-level setting, must be derived from WORoot
-		assertEquals(handler.getWORoot() + "/Local", handler.getLocalRoot());
-	}
+        assertEquals(handler.getWORootPath() + File.separator + "Local", handler.getLocalRootPath());
+    }
 
+    public void testHomeRoot1() throws Exception {
+        String homeRoot = "123";
+        project.setProperty(WOPropertiesHandler.HOME_ROOT, homeRoot);
+        assertTrue(handler.getHomeRootPath().endsWith(File.separator + homeRoot));
+    }
 
-	public void testHomeRoot1() throws Exception {
-		String homeRoot = "123";
-		project.setProperty(WOPropertiesHandler.HOME_ROOT, homeRoot);
-		assertEquals(homeRoot, handler.getHomeRoot());
-	}
-
-	public void testHomeRoot2() throws Exception {
-		assertEquals(System.getProperty("user.home"), handler.getHomeRoot());
-	}
+    public void testHomeRoot2() throws Exception {
+        assertEquals(System.getProperty("user.home"), handler.getHomeRootPath());
+    }
 }

@@ -122,7 +122,7 @@ public class AppFormat extends ProjectFormat {
 		FileSet fs = new FileSet();
 		fs.setDir(getApplicatonTask().contentsDir());
 		PatternSet.NameEntry include = fs.createInclude();
-		include.setName("**/Resources/Java/*.jar");
+		include.setName("**/Resources/Java/**/*.jar");
 
 		DirectoryScanner ds = fs.getDirectoryScanner(task.getProject());
 		String[] files = ds.getIncludedFiles();
@@ -145,9 +145,10 @@ public class AppFormat extends ProjectFormat {
 
 		List frameworkSets = getApplicatonTask().getFrameworkSets();
 		Project project = task.getProject();
+        WOPropertiesHandler aHandler = new WOPropertiesHandler(project);
 
-		// track included frameworks to avoid double entries
-		HashMap frameworkMap = new HashMap();
+		// track included jar files to avoid double entries
+		HashSet jarSet = new HashSet();
 
 		int size = frameworkSets.size();
 		for (int i = 0; i < size; i++) {
@@ -159,20 +160,13 @@ public class AppFormat extends ProjectFormat {
 			    continue;
 			}
 
-			String root = fs.getRootPrefix();
 			try {
 				DirectoryScanner ds = fs.getDirectoryScanner(project);
 				String[] dirs = ds.getIncludedDirectories();
 
 				for (int j = 0; j < dirs.length; j++) {
-					// see if it is already included
-					if (root.equals(frameworkMap.get(dirs[j]))) {
-						continue;
-					}
+					File[] jars = fs.findJars(project, dirs[j]);
 
-					frameworkMap.put(dirs[j], root);
-
-					String[] jars = fs.findJars(project, dirs[j]);
 					if (jars == null || jars.length == 0) {
 						log(
 							"No Jars in " + dirs[j] + ", ignoring.",
@@ -182,15 +176,7 @@ public class AppFormat extends ProjectFormat {
 
 					int jsize = jars.length;
 					for (int k = 0; k < jsize; k++) {
-						log(
-							root + ": Framework JAR " + jars[k],
-							Project.MSG_VERBOSE);
-
-						// using Windows line ending, since all templates have it anyway.
-						// Please report any problems with that on other platforms
-						buf.append(root).append(File.separatorChar).append(
-							jars[k]).append(
-							"\r\n");
+						jarSet.add(jars[k]);
 					}
 				}
 			} catch (BuildException be) {
@@ -198,7 +184,12 @@ public class AppFormat extends ProjectFormat {
 				log(be.getMessage(), Project.MSG_WARN);
 			}
 		}
-
+		Object someFiles[] = jarSet.toArray();
+		size = someFiles.length;
+		for (int i = 0; i < size; i++) {
+			log(": Framework JAR " + (File)someFiles[i], Project.MSG_VERBOSE);
+			buf.append( aHandler.encodePathForFile((File)someFiles[i])).append("\r\n");
+        }
 		return buf.toString();
 	}
 

@@ -69,8 +69,8 @@ import org.apache.tools.ant.types.FileSet;
  * @author Andrei Adamchik
  */
 public class FrameworkSet extends FileSet {
-	protected String root;
-	protected boolean embed = false;
+	protected File 		aDirectory;
+	protected boolean 	embed = false;
 
 	/** 
 	 * Creates new FrameworkSet.
@@ -79,63 +79,18 @@ public class FrameworkSet extends FileSet {
 		super();
 	}
 
-	public String getRoot() {
-		return root;
-	}
-
 	/** 
 	 * Returns a symbolic root prefix that can be used in
 	 * classpath files (like CLASSPATH.TXT).
 	 */
-	public String getRootPrefix() throws BuildException {
-		if (isWORoot()) {
-			return AntStringUtils.replace(
-				root,
-				WOPropertiesHandler.WO_ROOT,
-				"WOROOT");
-		} else if (isHomeRoot()) {
-			return AntStringUtils.replace(
-				root,
-				WOPropertiesHandler.HOME_ROOT,
-				"HOMEROOT");
-		} else if (isLocalRoot()) {
-			return AntStringUtils.replace(
-				root,
-				WOPropertiesHandler.LOCAL_ROOT,
-				"LOCALROOT");
-		} else if (isAbsoluteRoot()) {
-			return getRoot();
-		} else {
-			throw new BuildException("Unrecognized or indefined root: " + root);
-		}
-	}
-
-	public boolean isWORoot() {
-		return root.startsWith(WOPropertiesHandler.WO_ROOT);
-	}
-
-	public boolean isHomeRoot() {
-		return root.startsWith(WOPropertiesHandler.HOME_ROOT);
-	}
-
-	public boolean isLocalRoot() {
-		return root.startsWith(WOPropertiesHandler.LOCAL_ROOT);
-	}
-
-	public boolean isAbsoluteRoot() {
-		return root.charAt(0) == '/'
-			|| (root.length() >= 3 && root.substring(1, 3).equals(":/"));
-	}
 
 	/** 
 	 * Overrides parent to discard the value. A warning 
 	 * will be printed if log level is high enough.
 	 */
 	public void setDir(File dir) throws BuildException {
-		// noop
-		log(
-			"FrameworkSet does not support 'dir' attribute, ignoring.",
-			Project.MSG_WARN);
+		aDirectory = dir;
+        super.setDir(this.aDirectory);
 	}
 
 	/** 
@@ -143,37 +98,9 @@ public class FrameworkSet extends FileSet {
 	 * that can be "wo.homeroot", "wo.woroot", "wo.localroot". Throws
 	 * BuildException if an invalid root is specified.
 	 */
-	public void setRoot(String root) throws BuildException {
-		this.root = root;
-
-		WOPropertiesHandler propsHandler =
-			new WOPropertiesHandler(this.getProject());
-
-		if (isWORoot()) {
-			String newRoot =
-				AntStringUtils.replace(
-					root,
-					WOPropertiesHandler.WO_ROOT,
-					propsHandler.getWORoot());
-			super.setDir(new File(newRoot));
-		} else if (isLocalRoot()) {
-			String newRoot =
-				AntStringUtils.replace(
-					root,
-					WOPropertiesHandler.LOCAL_ROOT,
-					propsHandler.getLocalRoot());
-			super.setDir(new File(newRoot));
-		} else if (isHomeRoot()) {
-			String newRoot =
-				AntStringUtils.replace(
-					root,
-					WOPropertiesHandler.HOME_ROOT,
-					propsHandler.getHomeRoot());
-		} else if (isAbsoluteRoot()) {
-			super.setDir(new File(root));
-		} else {
-			throw new BuildException("Unrecognized root: " + root);
-		}
+	public void setRoot(File aRoot) throws BuildException {
+		aDirectory = aRoot;
+		super.setDir(this.aDirectory);
 	}
 
 	public void setEmbed(boolean flag) {
@@ -184,9 +111,8 @@ public class FrameworkSet extends FileSet {
 		return this.embed;
 	}
 
-	public String[] findJars(Project project, String frameworkDir) {
-		String jarDirName =
-			frameworkDir
+	public File[] findJars(Project project, String frameworkDir) {
+		String jarDirName = frameworkDir
 				+ File.separator
 				+ "Resources"
 				+ File.separator
@@ -197,14 +123,7 @@ public class FrameworkSet extends FileSet {
 			return null;
 		}
 
-		String[] files = jarDir.list(new JarFilter());
-
-		// prepend path
-		String[] finalFiles = new String[files.length];
-		for (int i = 0; i < finalFiles.length; i++) {
-			finalFiles[i] = jarDirName + File.separator + files[i];
-		}
-
+		File[] finalFiles = jarDir.listFiles(new JarFilter());
 		return finalFiles;
 	}
 

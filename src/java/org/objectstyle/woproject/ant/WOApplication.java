@@ -229,9 +229,10 @@ public class WOApplication extends WOTask {
 	 * Returns a list of standard frameworks as a FrameworkSet. */
 	public FrameworkSet standardSet() {
 		FrameworkSet set = new FrameworkSet();
+		WOPropertiesHandler aHandler = new WOPropertiesHandler(this.getProject());
+
 		set.setProject(this.getProject());
-		set.setRoot(WOPropertiesHandler.WO_ROOT + "/Library/Frameworks");
-		//		set.setRoot(WOPropertiesHandler.WO_ROOT);
+		set.setRoot( new File(aHandler.getWORootPath() + "/Library/Frameworks"));
 
 		for (int i = 0; i < stdFrameworkNames.length; i++) {
 			String path =

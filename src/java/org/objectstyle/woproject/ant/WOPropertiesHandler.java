@@ -60,6 +60,7 @@ import java.util.*;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.ProjectComponent;
 import org.apache.tools.ant.taskdefs.Execute;
+import java.io.File;
 
 /**
  * Handles properties specific to WOProject tasks,
@@ -76,9 +77,9 @@ public class WOPropertiesHandler extends ProjectComponent {
 	static Properties env;
 	static final Object envLock = new Object();
 
-	protected String woRoot;
-	protected String localRoot;
-	protected String homeRoot;
+	protected File woRoot;
+	protected File localRoot;
+	protected File homeRoot;
 
 	/** 
 	 * Creates new WOPropertiesHandler and 
@@ -88,7 +89,39 @@ public class WOPropertiesHandler extends ProjectComponent {
 		super.setProject(project);
 	}
 
-	/** 
+	/**
+     *
+     */
+    public String encodePathForFile(File aFile) {
+        try {
+            String aPrefix;
+			String aPath = aFile.getCanonicalPath();
+
+//            aPrefix = this.getAppRootPath();
+//            if((aPrefix != null) && (aPrefix.length() > 1) && (aPath.startsWith(aPrefix))) {
+//            	return "APPROOT" + aPath.substring(aPrefix.length());
+//            }
+            aPrefix = this.getLocalRootPath();
+System.err.println("aPrefix + aPath "+ aPrefix + " " + aPath);
+            if((aPrefix != null) && (aPrefix.length() > 1) && (aPath.startsWith(aPrefix))) {
+            	return "LOCALROOT" + aPath.substring(aPrefix.length());
+            }
+            aPrefix = this.getHomeRootPath();
+System.err.println("aPrefix + aPath "+ aPrefix + " " + aPath);
+            if((aPrefix != null) && (aPrefix.length() > 1) && (aPath.startsWith(aPrefix))) {
+            	return "HOMEROOT" + aPath.substring(aPrefix.length());
+            }
+            aPrefix = this.getWORootPath();
+System.err.println("aPrefix + aPath "+ aPrefix + " " + aPath);
+            if((aPrefix != null) && (aPrefix.length() > 1) && (aPath.startsWith(aPrefix))) {
+            	return "WOROOT" + aPath.substring(aPrefix.length());
+            }
+	        return aPath;
+        } catch (Exception anException) {
+		return null;
+        }
+    }
+	/**
 	 * Returns the value of "wo.woroot" property. Search algorithm is the following:
 	 * <ul>
 	 *    <li>Project <code>wo.woroot</code> property value.</li>
@@ -96,47 +129,73 @@ public class WOPropertiesHandler extends ProjectComponent {
 	 *    <li>"/" directory.</li>
 	 * </ul>
 	 */
-	public String getWORoot() {
-		if (woRoot == null) {
-			woRoot = getProject().getProperty(WO_ROOT);
+	public File getWORoot() {
+        String aPath;
+		if (this.woRoot == null) {
+			aPath = this.getProject().getProperty(WO_ROOT);
 
-			if (woRoot == null) {
-				woRoot = getEnvironmentProperty("NEXT_ROOT");
-
-				if (woRoot == null) {
-					woRoot = "/";
-				}
+			if (aPath == null) {
+				aPath = getEnvironmentProperty("NEXT_ROOT");
 			}
+			if (aPath == null) {
+				aPath = "/";
+			}
+            this.woRoot = new File(aPath);
 		}
-
-		return woRoot;
+        return this.woRoot;
 	}
 
-	/** 
+    public String getWORootPath() {
+        	try {
+				return this.getWORoot().getCanonicalPath();
+        	} catch(Exception anException) {
+            	return "???";
+        	}
+    }
+
+    public File getAppRoot() {
+            	return null;
+    }
+
+    public String getAppRootPath() {
+		return "cczxczc";
+    }
+
+	/**
 	 * Returns the value of "wo.localroot" property. Search algorithm is the following:
 	 * <ul>
 	 *    <li>Project <code>wo.localroot</code> property value.</li>
 	 *    <li><code>${wo.woroot}/Local</code>.</li>
 	 * </ul>
 	 */
-	public String getLocalRoot() {
-		if (localRoot == null) {
-			localRoot = getProject().getProperty(LOCAL_ROOT);
+	public File getLocalRoot() {
+        String aPath;
+        if (this.localRoot == null) {
+			aPath = this.getProject().getProperty(LOCAL_ROOT);
 
-			if (localRoot == null) {
+			if (aPath == null) {
 				String osName = System.getProperty("os.name");
 
 				// This should really be "Darwin"
 				if ( osName.equals("Mac OS X") ) {
-				    localRoot = "";
+				    aPath = "/";
 				} else {
-				    localRoot = getWORoot() + "/Local";
+				    aPath = getWORoot() + File.separator + "Local";
 				}
 			}
+            this.localRoot = new File(aPath);
 		}
 
-		return localRoot;
+		return this.localRoot;
 	}
+
+        public String getLocalRootPath() {
+        	try {
+				return this.getLocalRoot().getCanonicalPath();
+        	} catch(Exception anException) {
+            	return null;
+        	}
+    }
 
 	/** 
 	 * Returns the value of "wo.homeroot" property. Search algorithm is the following:
@@ -145,17 +204,28 @@ public class WOPropertiesHandler extends ProjectComponent {
 	 *    <li><code>user.home</code> system property.</li>
 	 * </ul>
 	 */
-	public String getHomeRoot() {
-		if (homeRoot == null) {
-			homeRoot = getProject().getProperty(HOME_ROOT);
+	public File getHomeRoot() {
+        String aPath;
+		if (this.homeRoot == null) {
+			aPath = this.getProject().getProperty(HOME_ROOT);
 
-			if (homeRoot == null) {
-				homeRoot = System.getProperty("user.home");
+			if (aPath == null) {
+				aPath = System.getProperty("user.home");
 			}
+            this.homeRoot = new File(aPath);
 		}
 
-		return homeRoot;
+		return this.homeRoot;
 	}
+
+        public String getHomeRootPath() {
+        	try {
+				return this.getHomeRoot().getCanonicalPath();
+        	} catch(Exception anException) {
+            	return "???";
+        	}
+    }
+
 
 	/** 
 	 * Returns a value of environment variable. The environment
