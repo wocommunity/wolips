@@ -57,7 +57,6 @@
 package org.objectstyle.wolips.profiling;
 
 import org.eclipse.debug.core.ILaunchConfigurationType;
-import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.objectstyle.wolips.launching.WOJavaApplicationLaunchShortcut;
 /**
  * @author uli
@@ -73,7 +72,7 @@ public class ProfiledWOJavaApplicationLaunchShortcut extends WOJavaApplicationLa
 	 * Returns the local java launch config type
 	 */
 	protected ILaunchConfigurationType getJavaLaunchConfigType() {
-		return getLaunchManager().getLaunchConfigurationType(IJavaLaunchConfigurationConstants.ID_JAVA_APPLICATION);		
+		return getLaunchManager().getLaunchConfigurationType(ProfiledWOJavaLocalApplicationLaunchConfigurationDelegate.ProfiledWOJavaLocalApplicationID);		
 	}
 
 }

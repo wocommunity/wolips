@@ -254,7 +254,7 @@ public class WOJavaApplicationLaunchShortcut implements ILaunchShortcut {
 	 * Returns the local java launch config type
 	 */
 	protected ILaunchConfigurationType getJavaLaunchConfigType() {
-		return getLaunchManager().getLaunchConfigurationType(IJavaLaunchConfigurationConstants.ID_JAVA_APPLICATION);		
+		return getLaunchManager().getLaunchConfigurationType(WOJavaLocalApplicationLaunchConfigurationDelegate.WOJavaLocalApplicationID);		
 	}
 	
 	protected ILaunchManager getLaunchManager() {

@@ -56,22 +56,16 @@
 
 package org.objectstyle.wolips.profiling;
 
-import java.io.IOException;
-import java.net.ServerSocket;
-
-import jmechanic.eclipse.profiler.ProfilerPlugin;
 import jmechanic.eclipse.profiler.launching.JavaProfilingLaunchConfigDelegate;
-import jmechanic.eclipse.profiler.ui.AbstractProfilerView;
-import jmechanic.hprof.ProfilerConnection;
-import jmechanic.hprof.ProfilerConnectionMap;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
-import org.eclipse.debug.core.ILaunchManager;
-import org.eclipse.jdt.launching.SocketUtil;
-import org.objectstyle.wolips.launching.WOJavaLocalApplicationLaunchConfigurationDelegate;
+import org
+	.objectstyle
+	.wolips
+	.launching
+	.WOJavaLocalApplicationLaunchConfigurationDelegate;
 
 /**
  * Launches a local VM.
@@ -79,7 +73,13 @@ import org.objectstyle.wolips.launching.WOJavaLocalApplicationLaunchConfiguratio
 public class ProfiledWOJavaLocalApplicationLaunchConfigurationDelegate
 	extends WOJavaLocalApplicationLaunchConfigurationDelegate {
 
-	protected void addVMArguments(
+	public static final String ProfiledWOJavaLocalApplicationID =
+		"org.objectstyle.wolips.profiling.ProfiledWOLocalJavaApplication";
+
+	/**
+	 * @see org.objectstyle.wolips.launching.WOJavaLocalApplicationLaunchConfigurationDelegate#addVMArguments(java.lang.StringBuffer, org.eclipse.debug.core.ILaunchConfiguration, org.eclipse.debug.core.ILaunch, java.lang.String)
+	 */
+	protected StringBuffer addVMArguments(
 		StringBuffer vmArgs,
 		ILaunchConfiguration configuration,
 		ILaunch launch,
@@ -88,126 +88,11 @@ public class ProfiledWOJavaLocalApplicationLaunchConfigurationDelegate
 		super.addVMArguments(vmArgs, configuration, launch, mode);
 		// Set things up for profiling only if this is
 		// debug mode
-		if (mode.equals(ILaunchManager.DEBUG_MODE)) {
-			int hprofPort = getProfilerPortNumber(configuration);
-			if (hprofPort != -1) {
-				// Calculate the arguments
-				addHProfVMArguments(vmArgs, configuration, hprofPort);
-
-				// Fire up the listener thread
-				launchHprofListener(launch, hprofPort);
-			}
-		}
-	}
-	/**
-	 * Add the VM arguments for the HPROF connection.
-	 */
-	protected void addHProfVMArguments(
-		StringBuffer vmArgs,
-		ILaunchConfiguration configuration,
-		int hprofPort)
-		throws CoreException {
-		boolean doe =
-			configuration.getAttribute(
-				JavaProfilingLaunchConfigDelegate.ATTR_PROFILER_HEAP_DOE,
-				false);
-		String sitesString =
-			configuration.getAttribute(
-				JavaProfilingLaunchConfigDelegate
-					.ATTR_PROFILER_SITES_SAMPLE_START,
-				false)
-				? ",heap=sites"
-				: "";
-		int stackDepth =
-			configuration.getAttribute(
-				JavaProfilingLaunchConfigDelegate.ATTR_PROFILER_STACK_DEPTH,
-				4);
-
-		String cutoffString =
-			configuration.getAttribute(
-				JavaProfilingLaunchConfigDelegate.ATTR_PROFILER_CUTOFF_RATIO,
-				"0.0001");
-		float cutoffRatio = 0.0001f;
-		try {
-			cutoffRatio = Float.parseFloat(cutoffString);
-		} catch (NumberFormatException e) {
-		}
-
-		vmArgs
-			.append(" ")
-			.append("-Xrunhprof:cpu=samples,format=b")
-			.append(sitesString)
-			.append(",depth=")
-			.append(stackDepth)
-			.append(",cutoff=")
-			.append(cutoffRatio)
-			.append(",doe=")
-			.append(doe ? "y" : "n")
-			.append(",net=localhost:")
-			.append(hprofPort);
+		return JavaProfilingLaunchConfigDelegate.addProfilingVMArgments(
+			configuration,
+			mode,
+			launch,
+			vmArgs);
 	}
 
-	/**
-	 * Get the port number for the specified launch configuration
-	 * based on user settings.
-	 */
-	private int getProfilerPortNumber(ILaunchConfiguration configuration)
-		throws CoreException {
-		int port = -1;
-
-		if (configuration
-			.getAttribute(
-				JavaProfilingLaunchConfigDelegate.ATTR_PROFILER_PORT_AUTO,
-				true)) {
-			port = SocketUtil.findUnusedLocalPort("localhost", 1025, 65533); //$NON-NLS-1$
-		} else {
-			port =
-				configuration.getAttribute(
-					JavaProfilingLaunchConfigDelegate.ATTR_PROFILER_PORT_VALUE,
-					12000);
-		}
-
-		return port;
-	}
-
-	/**
-	 * Launch a new listener for incoming HPROF connections.
-	 */
-	private void launchHprofListener(ILaunch launch, int hprofPort) {
-		final ILaunch theLaunch = launch;
-		final int thePort = hprofPort;
-
-		Runnable runnable = new Runnable() {
-			public void run() {
-				try {
-						// Wait for a connection on the specified
-		// port
-	ServerSocket listeningSocket = new ServerSocket(thePort);
-
-					// Incoming connection arrived... build
-					// a profiler connection
-					ProfilerConnection connection =
-						new ProfilerConnection(
-							listeningSocket.accept(),
-							theLaunch);
-
-					// Save the connection
-					ProfilerConnectionMap.registerProfilerConnection(
-						theLaunch,
-						connection);
-
-					// Kick the viewers
-					AbstractProfilerView.updateProfilerViews();
-
-				} catch (IOException e) {
-					ProfilerPlugin.log(IStatus.WARNING, "launchHprofListener - Runnable", e); //$NON-NLS-1$
-				}
-			}
-		};
-
-		// Launch the wait into a new thread
-		Thread newThread = new Thread(runnable, "HPROF Connection Listener " + hprofPort); //$NON-NLS-1$
-		newThread.setDaemon(true);
-		newThread.start();
-	}
 }

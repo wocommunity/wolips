@@ -86,7 +86,7 @@ import org.objectstyle.wolips.workbench.WorkbenchHelper;
  */
 public class WOJavaLocalApplicationLaunchConfigurationDelegate
 	extends AbstractJavaLaunchConfigurationDelegate {
-
+	public static final String WOJavaLocalApplicationID = "org.objectstyle.wolips.launching.WOLocalJavaApplication";
 	/** The launch configuration attribute for stack trace depth */
 	public static final String ATTR_WOLIPS_LAUNCH_WOARGUMENTS =
 		"wolips.launch.woarguments";
@@ -226,17 +226,18 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 		return args;
 	}
 	/**
-	 * Method addVMArguments does nothing.
+	 * Method addVMArgument return the vmArgs.
 	 * @param vmArgs
 	 * @param configuration
 	 * @param hprofPort
 	 */
-	protected void addVMArguments(
+	protected StringBuffer addVMArguments(
 		StringBuffer vmArgs,
 		ILaunchConfiguration configuration,
 		ILaunch launch,
 		String mode)
 		throws CoreException {
+			return vmArgs;
 	}
 	/**
 	 * Method replaceInArgumentGeneratedByWOLips.
