@@ -55,14 +55,11 @@
  */
 package org.objectstyle.wolips.io;
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Hashtable;
+
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -79,11 +76,8 @@ import org.objectstyle.wolips.WOLipsPlugin;
 import org.objectstyle.wolips.env.Environment;
 import org.objectstyle.wolips.utils.WOLipsUtils;
 import org.objectstyle.wolips.wizards.Messages;
-import org.objectstyle.wolips.wo.WOVariables;
 import org.objectstyle.wolips.workbench.WorkbenchHelper;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
 /**
  * FileFromTemplateCreator creates files from templates and given file handles.
  * The templates are identified by an unique id. Predefined variables mentioned 
