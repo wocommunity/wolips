@@ -47,9 +47,10 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.projectbuild.natures;
+package org.objectstyle.wolips.ui.propertypages;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
@@ -77,6 +78,7 @@ import org.objectstyle.wolips.datasets.project.INaturesAccessor;
 import org.objectstyle.wolips.datasets.project.IWOLipsProject;
 import org.objectstyle.wolips.datasets.project.WOLipsCore;
 import org.objectstyle.wolips.projectbuild.ProjectBuildPlugin;
+import org.objectstyle.wolips.ui.UIPlugin;
 
 /**
  * @author ulrich
@@ -273,7 +275,7 @@ public class ProjectNaturePage extends PropertyPage
 			setDefaults(woLipsProject);
 			enableWidgets(_woIsIncrementalButton.getSelection());
 		} catch (CoreException exception) {
-			ProjectBuildPlugin.getDefault().getPluginLogger().log(exception);
+			UIPlugin.getDefault().getPluginLogger().log(exception);
 		}
 		return composite;
 	}
@@ -340,7 +342,7 @@ public class ProjectNaturePage extends PropertyPage
 			boolean selection = _woTargetBuilderCheck.getSelection();
 			naturesAccessor.useTargetBuilder(selection);
 		} catch (CoreException up) {
-			ProjectBuildPlugin.getDefault().getPluginLogger().log(up);
+			UIPlugin.getDefault().getPluginLogger().log(up);
 			return false;
 		} finally {
 			woLipsProject = null;
@@ -358,7 +360,6 @@ public class ProjectNaturePage extends PropertyPage
 	}
 	/**
 	 * @return IProject
-	 * @throws CoreException
 	 */
 	public IProject _getProject() {
 		IProject project = (IProject) (this.getElement()

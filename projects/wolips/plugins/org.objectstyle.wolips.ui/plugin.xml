@@ -9,7 +9,7 @@
 
    <runtime>
       <library name="lib/wolips-ui.jar">
-         <packages prefixes="org.objectstyle.wolips.ui.actions,org.objectstyle.wolips.ui.editor,org.objectstyle.wolips.ui.labeldecorator,org.objectstyle.wolips.ui.preferences,org.objectstyle.wolips.ui.support,org.objectstyle.wolips.ui.view,org.objectstyle.wolips.ui"/>
+         <packages prefixes="org.objectstyle.wolips.ui.actions,org.objectstyle.wolips.ui.editor,org.objectstyle.wolips.ui.labeldecorator,org.objectstyle.wolips.ui.preferences,org.objectstyle.wolips.ui.propertypages,org.objectstyle.wolips.ui.support,org.objectstyle.wolips.ui.view,org.objectstyle.wolips.ui"/>
       </library>
    </runtime>
    <requires>
@@ -33,6 +33,7 @@
       <import plugin="org.eclipse.ui.forms"/>
       <import plugin="org.eclipse.team.cvs.ui"/>
       <import plugin="org.eclipse.team.ui"/>
+      <import plugin="org.objectstyle.wolips.projectbuild"/>
    </requires>
 
 
@@ -403,6 +404,24 @@
             description="Hide all *.build.launch files"
             pattern="*.build.launch">
       </filter>
+   </extension>
+
+<!-- =================================================================================== -->
+<!-- Extension: WOLips projectbuild property page                                        -->
+<!-- =================================================================================== -->
+   <extension
+         point="org.eclipse.ui.propertyPages">
+      <page
+            adaptable="true"
+            objectClass="org.eclipse.core.resources.IProject"
+            name="WOLips build"
+            class="org.objectstyle.wolips.ui.propertypages.ProjectNaturePage"
+            id="org.objectstyle.wolips.ui.propertypages.ProjectNaturePage">
+         <filter
+               name="nature"
+               value="org.eclipse.jdt.core.javanature">
+         </filter>
+      </page>
    </extension>
 
 </plugin>
