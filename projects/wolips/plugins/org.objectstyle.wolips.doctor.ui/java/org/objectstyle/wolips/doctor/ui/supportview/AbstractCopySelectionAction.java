@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 The ObjectStyle Group 
+ * Copyright (c) 2002 - 2004 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -54,7 +54,16 @@
  *
  */
  
-package org.objectstyle.wolips.ui.support;
+package org.objectstyle.wolips.doctor.ui.supportview;
+
+
+import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.swt.dnd.Clipboard;
+import org.eclipse.swt.dnd.TextTransfer;
+import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.actions.ActionFactory;
 
 /**
  * @author uli
@@ -64,13 +73,45 @@ package org.objectstyle.wolips.ui.support;
  * To enable and disable the creation of type comments go to
  * Window>Preferences>Java>Code Generation.
  */
-public interface ITreeNodeVisitor {
-	/** 
-	 * Visits the given node.
-	 *
-	 * @param node the node to visit
-	 * @return <code>true</code> if the node's child nodes  should  be visited;
-	 * <code>false</code> if they should be skipped
+public abstract class AbstractCopySelectionAction extends GlobalAction {
+
+	/**
+	 * The selection provider.
 	 */
-	public boolean visit(TreeContentProviderNode node);
+	protected ISelectionProvider selectionProvider;
+
+	/**
+	 * Sets action's text and tool tip text.
+	 * 
+	 * @param selectionProvider the selection provider
+	 */
+	public AbstractCopySelectionAction(ISelectionProvider selectionProvider) {
+		super("Copy");
+		this.selectionProvider = selectionProvider;
+	}
+
+	/**
+	 * Copies the currently selected contents to the clipboard. The meaning of the 
+	 * currently selected contents is defined by overriding the getContents() 
+	 * method.
+	 * 
+	 * @see org.eclipse.jface.action.IAction#run()
+	 */
+	public void run() {
+		// puts that content in the clipboard
+		Clipboard clipboard = new Clipboard(Display.getCurrent());
+		clipboard.setContents(new Object[] { getContents()}, new Transfer[] { TextTransfer.getInstance()});
+		clipboard.dispose();
+	}
+
+	public void registerAsGlobalAction(IActionBars actionBars) {
+		actionBars.setGlobalActionHandler(ActionFactory.COPY.getId(), this);
+	}
+
+	/**
+	 * Returns the currently selected contents as a String object.
+	 * 
+	 * @return the selected contents as string.
+	 */
+	protected abstract String getContents();
 }

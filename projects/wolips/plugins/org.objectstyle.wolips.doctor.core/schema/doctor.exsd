@@ -3,7 +3,7 @@
 <schema targetNamespace="org.objectstyle.wolips.doctor.core">
 <annotation>
       <appInfo>
-         <meta.schema plugin="org.objectstyle.wolips.doctor.core" id="issueProvider" name="Issue Provider"/>
+         <meta.schema plugin="org.objectstyle.wolips.doctor.core" id="doctor" name="Doctor"/>
       </appInfo>
       <documentation>
          This extension point allows to add a provider for issues.
@@ -13,7 +13,7 @@
    <element name="extension">
       <complexType>
          <sequence>
-            <element ref="issueProvider" minOccurs="0" maxOccurs="unbounded"/>
+            <element ref="doctor" minOccurs="0" maxOccurs="unbounded"/>
          </sequence>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -42,7 +42,7 @@
       </complexType>
    </element>
 
-   <element name="issueProvider">
+   <element name="doctor">
       <complexType>
          <attribute name="id" type="string" use="required">
             <annotation>
@@ -70,7 +70,7 @@ class must be public and implement
 with a public 0-argument constructor.
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn="org.objectstyle.wolips.doctor.core.issueprovider.IIssueProvider"/>
+                  <meta.attribute kind="java" basedOn="org.objectstyle.wolips.doctor.core.IDoctor"/>
                </appInfo>
             </annotation>
          </attribute>
@@ -86,12 +86,12 @@ with a public 0-argument constructor.
 
 &lt;p&gt;
 &lt;pre&gt;
- &lt;extension point=&quot;org.objectstyle.wolips.doctor.core.issueProvider&quot;&gt;
-  &lt;issueProvider
+ &lt;extension point=&quot;org.objectstyle.wolips.doctor.core.doctor&quot;&gt;
+  &lt;doctor
    id=&quot;com.example.myplugin.myIssueProviderId&quot;
    name=&quot;Foo&quot;
    class=&quot;com.example.NewIssueProvider&quot;&gt;
-  &lt;/issueProvider&gt;
+  &lt;/doctor&gt;
  &lt;/extension&gt;
 &lt;/pre&gt;
 &lt;/p&gt;

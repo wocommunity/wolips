@@ -134,6 +134,7 @@ public class PerspectiveFactory implements IPerspectiveFactory {
 		layout.addShowViewShortcut(IPageLayout.ID_RES_NAV);
 		layout.addShowViewShortcut("org.objectstyle.wolips.ui.view.RelatedView");
 		layout.addShowViewShortcut("org.objectstyle.wolips.ui.support.SupportView");
+		layout.addShowViewShortcut("org.objectstyle.wolips.doctor.ui.view.DoctorView");
 
 		// new actions - Java project creation wizard
 		layout.addNewWizardShortcut("org.eclipse.jdt.ui.wizards.NewPackageCreationWizard"); //$NON-NLS-1$

@@ -53,11 +53,14 @@
  * <http://objectstyle.org/>.
  *
  */
- 
-package org.objectstyle.wolips.ui.support;
 
-import org.eclipse.jface.text.ITextOperationTarget;
-import org.eclipse.ui.IActionBars;
+package org.objectstyle.wolips.doctor.ui.supportview;
+
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.jface.util.SafeRunnable;
+import org.objectstyle.wolips.preferences.Preferences;
+import org.objectstyle.wolips.preferences.PreferencesMessages;
+import org.objectstyle.wolips.variables.VariablesPlugin;
 
 /**
  * @author uli
@@ -67,27 +70,96 @@ import org.eclipse.ui.IActionBars;
  * To enable and disable the creation of type comments go to
  * Window>Preferences>Java>Code Generation.
  */
-public class SelectAllAction extends GlobalAction {
 
-	private ITextOperationTarget target;
-
+/**
+ * Constructs a tree made of <code>TreeContentProviderNode</code>, representing
+ * several details about WOLips.
+ * 
+ */
+public class SupportContentProvider extends AbstractTreeContentProvider {
 	/**
-	 * @param target
-	 */
-	public SelectAllAction(ITextOperationTarget target) {
-		super("Select all");
-		this.target = target;
+		 * Collects resource info. Calls all other <code>extract...</code> methods. 
+		 *
+		 */
+	protected void extractInfo() {
+		getRootNode().addChild(
+			createNode(SupportMessages.getString("WOLips.support.start")));
+		extractWOVariablesInfo();
+		extractEnvironmentInfo();
+		extractPersistentProperties();
+		getRootNode().addChild(createNode(SupportMessages.getString("WOLips.support.end"))); //$NON-NLS-1$
 	}
 
-	public void registerAsGlobalAction(IActionBars actionBars) {
-		actionBars.setGlobalActionHandler(org.eclipse.ui.actions.ActionFactory.SELECT_ALL.getId(), this);
+	/**
+	 * Extracts WOVariables info.
+	 * 
+	*/
+	protected void extractWOVariablesInfo() {
+		TreeContentProviderNode wovariablesNode =
+			createNode(SupportMessages.getString("WOLips.support.WOVariables"));
+		getRootNode().addChild(wovariablesNode);
 	}
 
 	/**
-	 * @see org.eclipse.jface.action.Action#run()
+	 * Extracts Environment info.
+	 * 
+	*/
+	protected void extractEnvironmentInfo() {
+		TreeContentProviderNode environmentNode =
+			createNode(SupportMessages.getString("WOLips.support.Environment"));
+		getRootNode().addChild(environmentNode);
+		environmentNode.addChild(
+			createNode(
+				SupportMessages.getString(
+					"WOLips.support.Environment.localRoot"),
+					VariablesPlugin.getDefault().getLocalRoot().toOSString()));
+		environmentNode.addChild(
+			createNode(
+				SupportMessages.getString(
+					"WOLips.support.Environment.nextRoot"),
+					VariablesPlugin.getDefault().getSystemRoot().toOSString()));
+	}
+
+	/**
+	 * Collects persistent properties information.
+	 * 
 	 */
-	public void run() {
-		this.target.doOperation(ITextOperationTarget.SELECT_ALL);
+	protected void extractPersistentProperties() {
+		TreeContentProviderNode preferencesNode =
+			createNode(SupportMessages.getString("WOLips.support.Preferences"));
+		getRootNode().addChild(preferencesNode);
+		preferencesNode.addChild(
+			createNode(
+				PreferencesMessages.getString(
+					"Preferences.RunWOBuilderOnBuild.Label"),
+				Preferences.getPREF_RUN_WOBUILDER_ON_BUILD() + ""));
+		preferencesNode.addChild(
+			createNode(
+				PreferencesMessages.getString(
+					"Preferences.NSProjectSearchPath.Label"),
+				Preferences.getPREF_NS_PROJECT_SEARCH_PATH()));
+	}
+
+	/**
+	 * Reconstructs this content provider data model upon the provided input object.
+	 *  
+	 * @param input the new input object - must not be null
+	 */
+	protected void rebuild(Object input) {
+		Platform.run(new SafeRunnable() {
+			public void run() throws Exception {
+				extractInfo();
+			}
+		});
+	}
+
+	/**
+	 * Returns true if the input is a resource.
+	 * 
+	 * @param input an input object
+	 */
+	protected boolean acceptInput(Object input) {
+		return input instanceof SupportContentProvider;
 	}
 
 }

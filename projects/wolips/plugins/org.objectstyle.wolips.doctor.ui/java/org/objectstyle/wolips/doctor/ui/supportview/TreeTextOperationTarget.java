@@ -54,12 +54,10 @@
  *
  */
  
-package org.objectstyle.wolips.ui.support;
+package org.objectstyle.wolips.doctor.ui.supportview;
 
-import java.util.Iterator;
-
-import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.text.ITextOperationTarget;
+import org.eclipse.swt.widgets.Tree;
 
 /**
  * @author uli
@@ -69,24 +67,31 @@ import org.eclipse.jface.viewers.IStructuredSelection;
  * To enable and disable the creation of type comments go to
  * Window>Preferences>Java>Code Generation.
  */
-public class CopyStructuredSelectionAction extends AbstractCopySelectionAction {
+public class TreeTextOperationTarget implements ITextOperationTarget {
+
+	private Tree tree;
 
 	/**
-	 * @param selectionProvider
+	 * @param tree
 	 */
-	public CopyStructuredSelectionAction(ISelectionProvider selectionProvider) {
-		super(selectionProvider);
+	public TreeTextOperationTarget(Tree tree) {
+		this.tree = tree;
 	}
 
-	public String getContents() {
-		// retrieves the selected contents from the selection provider
-		IStructuredSelection selection = (IStructuredSelection) this.selectionProvider.getSelection();
-		StringBuffer content = new StringBuffer();
-		for (Iterator selectionIter = selection.iterator(); selectionIter.hasNext();) {
-			content.append(selectionIter.next());
-			content.append('\n');
+	/**
+	 * @see org.eclipse.jface.text.ITextOperationTarget#canDoOperation(int)
+	 */
+	public boolean canDoOperation(int operation) {
+		return true;
+	}
+
+	/**
+	 * @see org.eclipse.jface.text.ITextOperationTarget#doOperation(int)
+	 */
+	public void doOperation(int operation) {
+		switch (operation) {
+			case ITextOperationTarget.SELECT_ALL :
+				this.tree.selectAll();
 		}
-		return content.toString();
 	}
-
 }

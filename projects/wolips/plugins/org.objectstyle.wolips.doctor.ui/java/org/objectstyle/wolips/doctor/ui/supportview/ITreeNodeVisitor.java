@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 - 2004 The ObjectStyle Group 
+ * Copyright (c) 2002 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -54,10 +54,7 @@
  *
  */
  
-package org.objectstyle.wolips.ui.support;
-
-import org.eclipse.jface.text.ITextOperationTarget;
-import org.eclipse.swt.widgets.Tree;
+package org.objectstyle.wolips.doctor.ui.supportview;
 
 /**
  * @author uli
@@ -67,31 +64,13 @@ import org.eclipse.swt.widgets.Tree;
  * To enable and disable the creation of type comments go to
  * Window>Preferences>Java>Code Generation.
  */
-public class TreeTextOperationTarget implements ITextOperationTarget {
-
-	private Tree tree;
-
-	/**
-	 * @param tree
+public interface ITreeNodeVisitor {
+	/** 
+	 * Visits the given node.
+	 *
+	 * @param node the node to visit
+	 * @return <code>true</code> if the node's child nodes  should  be visited;
+	 * <code>false</code> if they should be skipped
 	 */
-	public TreeTextOperationTarget(Tree tree) {
-		this.tree = tree;
-	}
-
-	/**
-	 * @see org.eclipse.jface.text.ITextOperationTarget#canDoOperation(int)
-	 */
-	public boolean canDoOperation(int operation) {
-		return true;
-	}
-
-	/**
-	 * @see org.eclipse.jface.text.ITextOperationTarget#doOperation(int)
-	 */
-	public void doOperation(int operation) {
-		switch (operation) {
-			case ITextOperationTarget.SELECT_ALL :
-				this.tree.selectAll();
-		}
-	}
+	public boolean visit(TreeContentProviderNode node);
 }

@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 - 2004 The ObjectStyle Group 
+ * Copyright (c) 2005 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -54,41 +54,27 @@
  *
  */
 
-package org.objectstyle.wolips.ui.support;
+package org.objectstyle.wolips.doctor.ui.view;
 
-import org.eclipse.jface.action.IMenuListener;
-import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.viewers.AbstractTreeViewer;
-import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.Tree;
-import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.part.ViewPart;
+import org.objectstyle.wolips.doctor.core.DoctorCorePlugin;
+import org.objectstyle.wolips.doctor.core.IIssue;
+import org.objectstyle.wolips.doctor.core.IIssueListener;
 
 /**
  * @author uli
- * 
- * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates. To enable and disable the creation of type
- * comments go to Window>Preferences>Java>Code Generation.
  */
-public class SupportView extends ViewPart {
-
-	/** JFace's tree component used to present resource details. */
-	private AbstractTreeViewer viewer;
-
-	/** The content provider for this view's TreeViewer. */
-	private SupportContentProvider supportContentProvider;
+public class DoctorView extends ViewPart implements IIssueListener {
 
 	/**
 	 * Constructs a resource view object, registering a resource change
 	 * listener.
 	 */
-	public SupportView() {
+	public DoctorView() {
 		super();
+		DoctorCorePlugin.getDefault().addIssueListener(this);
 	}
 
 	/**
@@ -99,56 +85,7 @@ public class SupportView extends ViewPart {
 	 * @see IWorkbenchPart#createPartControl(org.eclipse.swt.widgets.Composite)
 	 */
 	public void createPartControl(Composite parent) {
-		this.viewer = new TreeViewer(parent);
-		this.supportContentProvider = new SupportContentProvider();
-		this.viewer.setContentProvider(this.supportContentProvider);
-		this.start(this.supportContentProvider);
-		createActions();
-	}
-
-	private void start(SupportContentProvider contentProvider) {
-		if (this.viewer.getControl().isDisposed()) {
-			return;
-		}
-
-		// turn redraw off so the UI will reflect changes only after we are done
-		this.viewer.getControl().setRedraw(false);
-
-		// fires viewer update
-		this.viewer.setInput(contentProvider);
-
-		// shows all nodes in the resource tree
-		this.viewer.expandAll();
-
-		// we are done, turn redraw on
-		this.viewer.getControl().setRedraw(true);
-	}
-
-	/**
-	 * Creates and publishes this view's actions.
-	 */
-	private void createActions() {
-		IActionBars actionBars = this.getViewSite().getActionBars();
-
-		final GlobalAction copyAction = new CopyStructuredSelectionAction(
-				new TreeSelectionProviderDecorator(this.viewer));
-		copyAction.registerAsGlobalAction(actionBars);
-
-		final GlobalAction selectAllAction = new SelectAllAction(
-				new TreeTextOperationTarget((Tree) this.viewer.getControl()));
-		selectAllAction.registerAsGlobalAction(actionBars);
-
-		actionBars.updateActionBars();
-
-		final MenuManager menuMgr = new MenuManager();
-		menuMgr.setRemoveAllWhenShown(true);
-		menuMgr.addMenuListener(new IMenuListener() {
-			public void menuAboutToShow(IMenuManager manager) {
-				manager.add(copyAction);
-			}
-		});
-		Menu menu = menuMgr.createContextMenu(this.viewer.getControl());
-		this.viewer.getControl().setMenu(menu);
+		return;
 	}
 
 	/**
@@ -158,12 +95,20 @@ public class SupportView extends ViewPart {
 	 */
 	public void dispose() {
 		super.dispose();
+		DoctorCorePlugin.getDefault().removeIssueListener(this);
 	}
 
 	/**
 	 * Asks this part to take focus within the workbench. Does nothing.
 	 */
 	public void setFocus() {
+		return;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.objectstyle.wolips.doctor.core.IIssueListener#issuesChanged(org.objectstyle.wolips.doctor.core.IIssue[])
+	 */
+	public void issuesChanged(IIssue[] issues) {
 		return;
 	}
 }

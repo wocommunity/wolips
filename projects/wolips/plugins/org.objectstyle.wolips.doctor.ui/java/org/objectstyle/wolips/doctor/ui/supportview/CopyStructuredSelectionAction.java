@@ -53,14 +53,13 @@
  * <http://objectstyle.org/>.
  *
  */
+ 
+package org.objectstyle.wolips.doctor.ui.supportview;
 
-package org.objectstyle.wolips.ui.support;
+import java.util.Iterator;
 
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.jface.util.SafeRunnable;
-import org.objectstyle.wolips.preferences.Preferences;
-import org.objectstyle.wolips.preferences.PreferencesMessages;
-import org.objectstyle.wolips.variables.VariablesPlugin;
+import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
 
 /**
  * @author uli
@@ -70,96 +69,24 @@ import org.objectstyle.wolips.variables.VariablesPlugin;
  * To enable and disable the creation of type comments go to
  * Window>Preferences>Java>Code Generation.
  */
-
-/**
- * Constructs a tree made of <code>TreeContentProviderNode</code>, representing
- * several details about WOLips.
- * 
- */
-public class SupportContentProvider extends AbstractTreeContentProvider {
-	/**
-		 * Collects resource info. Calls all other <code>extract...</code> methods. 
-		 *
-		 */
-	protected void extractInfo() {
-		getRootNode().addChild(
-			createNode(SupportMessages.getString("WOLips.support.start")));
-		extractWOVariablesInfo();
-		extractEnvironmentInfo();
-		extractPersistentProperties();
-		getRootNode().addChild(createNode(SupportMessages.getString("WOLips.support.end"))); //$NON-NLS-1$
-	}
+public class CopyStructuredSelectionAction extends AbstractCopySelectionAction {
 
 	/**
-	 * Extracts WOVariables info.
-	 * 
-	*/
-	protected void extractWOVariablesInfo() {
-		TreeContentProviderNode wovariablesNode =
-			createNode(SupportMessages.getString("WOLips.support.WOVariables"));
-		getRootNode().addChild(wovariablesNode);
-	}
-
-	/**
-	 * Extracts Environment info.
-	 * 
-	*/
-	protected void extractEnvironmentInfo() {
-		TreeContentProviderNode environmentNode =
-			createNode(SupportMessages.getString("WOLips.support.Environment"));
-		getRootNode().addChild(environmentNode);
-		environmentNode.addChild(
-			createNode(
-				SupportMessages.getString(
-					"WOLips.support.Environment.localRoot"),
-					VariablesPlugin.getDefault().getLocalRoot().toOSString()));
-		environmentNode.addChild(
-			createNode(
-				SupportMessages.getString(
-					"WOLips.support.Environment.nextRoot"),
-					VariablesPlugin.getDefault().getSystemRoot().toOSString()));
-	}
-
-	/**
-	 * Collects persistent properties information.
-	 * 
+	 * @param selectionProvider
 	 */
-	protected void extractPersistentProperties() {
-		TreeContentProviderNode preferencesNode =
-			createNode(SupportMessages.getString("WOLips.support.Preferences"));
-		getRootNode().addChild(preferencesNode);
-		preferencesNode.addChild(
-			createNode(
-				PreferencesMessages.getString(
-					"Preferences.RunWOBuilderOnBuild.Label"),
-				Preferences.getPREF_RUN_WOBUILDER_ON_BUILD() + ""));
-		preferencesNode.addChild(
-			createNode(
-				PreferencesMessages.getString(
-					"Preferences.NSProjectSearchPath.Label"),
-				Preferences.getPREF_NS_PROJECT_SEARCH_PATH()));
+	public CopyStructuredSelectionAction(ISelectionProvider selectionProvider) {
+		super(selectionProvider);
 	}
 
-	/**
-	 * Reconstructs this content provider data model upon the provided input object.
-	 *  
-	 * @param input the new input object - must not be null
-	 */
-	protected void rebuild(Object input) {
-		Platform.run(new SafeRunnable() {
-			public void run() throws Exception {
-				extractInfo();
-			}
-		});
-	}
-
-	/**
-	 * Returns true if the input is a resource.
-	 * 
-	 * @param input an input object
-	 */
-	protected boolean acceptInput(Object input) {
-		return input instanceof SupportContentProvider;
+	public String getContents() {
+		// retrieves the selected contents from the selection provider
+		IStructuredSelection selection = (IStructuredSelection) this.selectionProvider.getSelection();
+		StringBuffer content = new StringBuffer();
+		for (Iterator selectionIter = selection.iterator(); selectionIter.hasNext();) {
+			content.append(selectionIter.next());
+			content.append('\n');
+		}
+		return content.toString();
 	}
 
 }

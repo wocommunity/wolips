@@ -247,12 +247,12 @@ public class ProjectNaturePage extends PropertyPage implements IAdaptable {
 		Composite group = _createLabelledComposite(parent, BUILD_PARAMS_TITLE);
 		group.setLayout(new GridLayout(2, false));
 		this.principalClass = _addTextField(group, "Principal Class");
-		this.principalClass.setText(project.getPrincipalClass());
+		this.principalClass.setText(project.getPrincipalClass(true));
 		this.eoAdaptorClassName = _addTextField(group, "EOAdaptorClassName");
-		this.eoAdaptorClassName.setText(project.getEOAdaptorClassName());
+		this.eoAdaptorClassName.setText(project.getEOAdaptorClassName(true));
 		this.customInfoPListContent = _addTextArea(group,
 				"Custom Info.plist content");
-		this.customInfoPListContent.setText(project.getCustomInfoPListContent());
+		this.customInfoPListContent.setText(project.getCustomInfoPListContent(true));
 	}
 
 	/**
@@ -287,7 +287,7 @@ public class ProjectNaturePage extends PropertyPage implements IAdaptable {
 		textLabel.setText("");
 		this.webXMLCustomContent = _addTextArea(group,
 		"Custom web.xml content");
-		this.webXMLCustomContent.setText(project.getWebXML_CustomContent());
+		this.webXMLCustomContent.setText(project.getWebXML_CustomContent(true));
 	}
 
 	void enableWidgets(boolean enabled) {
@@ -376,17 +376,17 @@ public class ProjectNaturePage extends PropertyPage implements IAdaptable {
 		Map args = project.getBuilderArgs();
 		String string = _getArg(args, ProjectBuildPlugin.NS_PRINCIPAL_CLASS, "");
 		if (string == null || string.length() == 0) {
-			string = project.getPrincipalClass();
+			string = project.getPrincipalClass(true);
 		}
 		if (string != null) {
 			this.principalClass.setText(string);
 		}
-		string = project.getCustomInfoPListContent();
+		string = project.getCustomInfoPListContent(true);
 
 		if (string != null) {
 			this.customInfoPListContent.setText(string);
 		}
-		string = project.getEOAdaptorClassName();
+		string = project.getEOAdaptorClassName(true);
 
 		if (string != null) {
 			this.eoAdaptorClassName.setText(string);

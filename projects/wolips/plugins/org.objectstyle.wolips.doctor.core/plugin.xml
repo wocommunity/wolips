@@ -16,7 +16,14 @@
    <requires>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.objectstyle.wolips.commons"/>
+      <import plugin="org.eclipse.core.resources"/>
    </requires>
-   <extension-point id="issueProvider" name="Issue Provider" schema="schema/issueProvider.exsd"/>
+   <extension-point id="doctor" name="doctor" schema="schema/doctor.exsd"/>
+   <extension point="org.objectstyle.wolips.doctor.core.doctor">
+   	<doctor id="Test"
+   		name="Test"
+   		class="org.objectstyle.wolips.doctor.core.doctor.TestDoctor">
+   	</doctor>
+   </extension>
 
 </plugin>

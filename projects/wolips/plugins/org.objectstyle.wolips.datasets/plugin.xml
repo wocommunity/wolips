@@ -25,6 +25,7 @@
       <import plugin="org.objectstyle.wolips.workbenchutilities"/>
       <import plugin="org.objectstyle.wolips.tests.core"/>
       <import plugin="org.objectstyle.wolips.commons"/>
+      <import plugin="org.objectstyle.wolips.doctor.core"/>
    </requires>
 
 <!-- =================================================================================== -->
@@ -51,5 +52,5 @@
       <super type="org.eclipse.core.resources.taskmarker"/>
       <persistent value="false"/>
    </extension>
-
+   
 </plugin>

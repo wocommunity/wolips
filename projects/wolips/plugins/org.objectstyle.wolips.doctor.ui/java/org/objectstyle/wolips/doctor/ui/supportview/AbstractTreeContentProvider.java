@@ -54,7 +54,7 @@
  *
  */
 
-package org.objectstyle.wolips.ui.support;
+package org.objectstyle.wolips.doctor.ui.supportview;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;

@@ -116,7 +116,7 @@ public final class EOEntityJava
 					.getCorrespondingResource()
 					.getName();
 				fileName = fileName.substring(0, 
-						fileName.length() - WOLipsModel.EXT_JAVA.length() - 1 );
+						fileName.length() - IWOLipsModel.EXT_JAVA.length() - 1 );
 				String[] extensions =
 					new String[] {
 						WOLipsModel.EOENTITY_PLIST_EXTENSION };

@@ -158,13 +158,13 @@ public class WOIncrementalBuilder extends AbstractIncrementalProjectBuilder {
 			if (oldPrincipalClass.length() == 0) {
 				oldPrincipalClass = null;
 			}
-			principalClass = project.getPrincipalClass();
+			principalClass = project.getPrincipalClass(true);
 			if (principalClass == null && oldPrincipalClass != null) {
 				principalClass = oldPrincipalClass;
 				project.setPrincipalClass(principalClass);
 			}
-			customInfoPListContent = project.getCustomInfoPListContent();
-			eoAdaptorClassName = project.getEOAdaptorClassName();
+			customInfoPListContent = project.getCustomInfoPListContent(true);
+			eoAdaptorClassName = project.getEOAdaptorClassName(true);
 			if (buildVisitor == null) {
 				buildVisitor = new BuildVisitor();
 			}

@@ -54,16 +54,10 @@
  *
  */
  
-package org.objectstyle.wolips.ui.support;
+package org.objectstyle.wolips.doctor.ui.supportview;
 
-
-import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.swt.dnd.Clipboard;
-import org.eclipse.swt.dnd.TextTransfer;
-import org.eclipse.swt.dnd.Transfer;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.jface.text.ITextOperationTarget;
 import org.eclipse.ui.IActionBars;
-import org.eclipse.ui.actions.ActionFactory;
 
 /**
  * @author uli
@@ -73,45 +67,27 @@ import org.eclipse.ui.actions.ActionFactory;
  * To enable and disable the creation of type comments go to
  * Window>Preferences>Java>Code Generation.
  */
-public abstract class AbstractCopySelectionAction extends GlobalAction {
+public class SelectAllAction extends GlobalAction {
+
+	private ITextOperationTarget target;
 
 	/**
-	 * The selection provider.
+	 * @param target
 	 */
-	protected ISelectionProvider selectionProvider;
-
-	/**
-	 * Sets action's text and tool tip text.
-	 * 
-	 * @param selectionProvider the selection provider
-	 */
-	public AbstractCopySelectionAction(ISelectionProvider selectionProvider) {
-		super("Copy");
-		this.selectionProvider = selectionProvider;
-	}
-
-	/**
-	 * Copies the currently selected contents to the clipboard. The meaning of the 
-	 * currently selected contents is defined by overriding the getContents() 
-	 * method.
-	 * 
-	 * @see org.eclipse.jface.action.IAction#run()
-	 */
-	public void run() {
-		// puts that content in the clipboard
-		Clipboard clipboard = new Clipboard(Display.getCurrent());
-		clipboard.setContents(new Object[] { getContents()}, new Transfer[] { TextTransfer.getInstance()});
-		clipboard.dispose();
+	public SelectAllAction(ITextOperationTarget target) {
+		super("Select all");
+		this.target = target;
 	}
 
 	public void registerAsGlobalAction(IActionBars actionBars) {
-		actionBars.setGlobalActionHandler(ActionFactory.COPY.getId(), this);
+		actionBars.setGlobalActionHandler(org.eclipse.ui.actions.ActionFactory.SELECT_ALL.getId(), this);
 	}
 
 	/**
-	 * Returns the currently selected contents as a String object.
-	 * 
-	 * @return the selected contents as string.
+	 * @see org.eclipse.jface.action.Action#run()
 	 */
-	protected abstract String getContents();
+	public void run() {
+		this.target.doOperation(ITextOperationTarget.SELECT_ALL);
+	}
+
 }

@@ -18,6 +18,27 @@
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.objectstyle.wolips.doctor.core"/>
       <import plugin="org.objectstyle.wolips.commons"/>
+      <import plugin="org.eclipse.jface.text"/>
+      <import plugin="org.objectstyle.wolips.variables"/>
+      <import plugin="org.objectstyle.wolips.preferences"/>
    </requires>
-
+<!-- =================================================================================== -->
+<!-- Extension: View                                                                     -->
+<!-- =================================================================================== -->
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="WOLips"
+            id="org.objectstyle.wolips.ui">
+      </category>
+      <view
+            name="Support"
+            icon="icons/wolips/WOLips-icon.gif"
+            category="org.objectstyle.wolips.ui"
+            class="org.objectstyle.wolips.doctor.ui.supportview.SupportView"
+            id="org.objectstyle.wolips.ui.support.SupportView">
+      </view>
+   </extension>
+   
+ 
 </plugin>
