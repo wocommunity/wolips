@@ -130,10 +130,13 @@ public class ResourceChangeListener
 			projectFileToUpdate = (IFile) allAddedKeys[i];
 			projectUpdater =
 				PBProjectUpdater.instance(projectFileToUpdate.getParent());
+			if (projectFileToUpdate.getParent().getParent() == null)
+				projectUpdater.syncProjectName();
 			projectUpdater.syncFilestable(
 				(HashMap) resourceValidator.getAddedResourcesProjectDict().get(
 					projectFileToUpdate),
 				IResourceDelta.ADDED);
+
 		}
 		Object[] allRemovedKeys =
 			resourceValidator
@@ -249,14 +252,14 @@ public class ResourceChangeListener
 								resource.getParent().getFile(
 									new Path(PROJECT_FILE_NAME)));
 						} /*else if (
-																																					EXT_EOMODEL.equals(resource.getFileExtension())) {
-																																					updateProjectFile(
-																																						kindOfChange,
-																																						resource,
-																																						RESOURCES_ID,
-																																						resource.getParent().getFile(
-																																							new Path(PROJECT_FILE_NAME)));
-																																				} */
+																																																	EXT_EOMODEL.equals(resource.getFileExtension())) {
+																																																	updateProjectFile(
+																																																		kindOfChange,
+																																																		resource,
+																																																		RESOURCES_ID,
+																																																		resource.getParent().getFile(
+																																																			new Path(PROJECT_FILE_NAME)));
+																																																} */
 						/*else if (
 							EXT_EOMODEL_BACKUP.equals(
 								resource.getFileExtension())) {

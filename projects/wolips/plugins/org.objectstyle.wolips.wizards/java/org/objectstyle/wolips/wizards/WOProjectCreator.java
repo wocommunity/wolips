@@ -64,6 +64,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.apache.tools.ant.DirectoryScanner;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -86,10 +87,10 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.objectstyle.woenvironment.pb.PBProject;
 import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
 import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
-import org.objectstyle.wolips.core.plugin.WOLipsUtils;
 import org.objectstyle.wolips.core.project.IWOLipsProject;
 import org.objectstyle.wolips.core.project.WOLipsCore;
 import org.objectstyle.wolips.core.project.WOLipsJavaProject;
+import org.objectstyle.wolips.core.util.StringUtilities;
 import org.objectstyle.wolips.logging.WOLipsLog;
 import org.objectstyle.wolips.wizards.templates.XercesDocumentBuilder;
 import org.w3c.dom.Document;
@@ -651,7 +652,7 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 	 * @return found value or null
 	 */
 	private String expandVariable(String variableToExpand) {
-		return WOLipsUtils.classPathVariableToExpand(variableToExpand);
+		return WOLipsCore.getClasspathVariablesAccessor().classPathVariableToExpand(variableToExpand);
 	}
 	/**
 	 * Method variableList. List of variables to expand from templates
@@ -669,7 +670,7 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 					.getAttributes()
 					.getNamedItem("variables")
 					.getNodeValue();
-			variableList = WOLipsUtils.arrayListFromCSV(variablesToExpand);
+			variableList = StringUtilities.arrayListFromCSV(variablesToExpand);
 		}
 		return variableList;
 	}

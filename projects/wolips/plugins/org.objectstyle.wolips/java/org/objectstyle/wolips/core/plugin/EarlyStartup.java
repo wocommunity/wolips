@@ -75,6 +75,7 @@ import org.objectstyle.wolips.core.listener.ResourceChangeListener;
 import org.objectstyle.wolips.core.preferences.Preferences;
 import org.objectstyle.wolips.core.project.WOLipsCore;
 import org.objectstyle.wolips.core.project.ant.RunAnt;
+import org.objectstyle.wolips.core.util.WorkbenchUtilities;
 
 /**
  * @author uli
@@ -82,7 +83,7 @@ import org.objectstyle.wolips.core.project.ant.RunAnt;
 * Adds listeners for resource and java classpath changes to keep
 * webobjects project file synchronized.
 */
-public class EarlyStartup extends AWOLips {
+public final class EarlyStartup {
 
 	private static final String build_user_home_properties = "woproperties.xml";
 	private static final String build_user_home_properties_pde_info =
@@ -109,7 +110,7 @@ public class EarlyStartup extends AWOLips {
 			// add resource change listener to update project file on resource changes
 			IResourceChangeListener resourceChangeListener =
 				new ResourceChangeListener();
-			this.getWorkspace().addResourceChangeListener(
+			WorkbenchUtilities.getWorkspace().addResourceChangeListener(
 				resourceChangeListener,
 				IResourceChangeEvent.PRE_AUTO_BUILD);
 			// add element change listener to update project file on classpath changes
@@ -129,8 +130,8 @@ public class EarlyStartup extends AWOLips {
 	 */
 	private void setUpPreferencesForPropertiesFile() {
 		String currentVersion =
-			this
-				.getWOLipsPlugin()
+			WOLipsPlugin
+				.getDefault()
 				.getDescriptor()
 				.getVersionIdentifier()
 				.toString();
@@ -145,8 +146,8 @@ public class EarlyStartup extends AWOLips {
 	private void setUpPreferencesAfterPropertiesFile() {
 		Preferences.setPREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH(false);
 		Preferences.setPREF_WOLIPS_VERSION_EARLY_STARTUP(
-			this
-				.getWOLipsPlugin()
+			WOLipsPlugin
+				.getDefault()
 				.getDescriptor()
 				.getVersionIdentifier()
 				.toString());
@@ -186,50 +187,77 @@ public class EarlyStartup extends AWOLips {
 	* Method validateMandatoryAttributes.
 	*/
 	private void validateMandatoryAttributes() {
-		if (WOLipsCore.getClasspathVariablesAccessor().getNextRootClassPathVariable() == null) {
+		if (WOLipsCore
+			.getClasspathVariablesAccessor()
+			.getNextRootClassPathVariable()
+			== null) {
 			try {
-				WOLipsCore.getClasspathVariablesAccessor().setNextRootClassPathVariable(
-					new Path(this.getWOVariables().systemRoot()));
+				WOLipsCore
+					.getClasspathVariablesAccessor()
+					.setNextRootClassPathVariable(
+					new Path(WorkbenchUtilities.getWOVariables().systemRoot()));
 			} catch (JavaModelException e) {
 				log.fatal(e);
 			} catch (Exception e) {
 				log.fatal(e);
 			}
 		}
-		if (WOLipsCore.getClasspathVariablesAccessor().getNextLocalRootClassPathVariable() == null) {
+		if (WOLipsCore
+			.getClasspathVariablesAccessor()
+			.getNextLocalRootClassPathVariable()
+			== null) {
 			try {
-				WOLipsCore.getClasspathVariablesAccessor().setNextLocalRootClassPathVariable(
-					new Path(this.getWOVariables().localRoot()));
+				WOLipsCore
+					.getClasspathVariablesAccessor()
+					.setNextLocalRootClassPathVariable(
+					new Path(WorkbenchUtilities.getWOVariables().localRoot()));
 			} catch (JavaModelException e) {
 				log.fatal(e);
 			} catch (Exception e) {
 				log.fatal(e);
 			}
 		}
-		if (WOLipsCore.getClasspathVariablesAccessor().getNextSystemRootClassPathVariable() == null) {
+		if (WOLipsCore
+			.getClasspathVariablesAccessor()
+			.getNextSystemRootClassPathVariable()
+			== null) {
 			try {
-				WOLipsCore.getClasspathVariablesAccessor().setNextSystemRootClassPathVariable(
-					new Path(this.getWOVariables().systemRoot()));
+				WOLipsCore
+					.getClasspathVariablesAccessor()
+					.setNextSystemRootClassPathVariable(
+					new Path(WorkbenchUtilities.getWOVariables().systemRoot()));
 			} catch (JavaModelException e) {
 				log.fatal(e);
 			} catch (Exception e) {
 				log.fatal(e);
 			}
 		}
-		if (WOLipsCore.getClasspathVariablesAccessor().getUserHomeClassPathVariable() == null) {
+		if (WOLipsCore
+			.getClasspathVariablesAccessor()
+			.getUserHomeClassPathVariable()
+			== null) {
 			try {
-				WOLipsCore.getClasspathVariablesAccessor().setUserHomeClassPathVariable(
-					new Path(this.getWOVariables().userHome()));
+				WOLipsCore
+					.getClasspathVariablesAccessor()
+					.setUserHomeClassPathVariable(
+					new Path(WorkbenchUtilities.getWOVariables().userHome()));
 			} catch (JavaModelException e) {
 				log.fatal(e);
 			} catch (Exception e) {
 				log.fatal(e);
 			}
 		}
-		if (WOLipsCore.getClasspathVariablesAccessor().getProjectWonderHomeClassPathVariable() == null) {
+		if (WOLipsCore
+			.getClasspathVariablesAccessor()
+			.getProjectWonderHomeClassPathVariable()
+			== null) {
 			try {
-				WOLipsCore.getClasspathVariablesAccessor().setProjectWonderHomeClassPathVariable(
-					new Path(this.getWOVariables().userHome() + "/Roots"));
+				WOLipsCore
+					.getClasspathVariablesAccessor()
+					.setProjectWonderHomeClassPathVariable(
+						new Path(
+							WorkbenchUtilities.getWOVariables().userHome()
+								+ "/Roots"));
 			} catch (JavaModelException e) {
 				log.fatal(e);
 			} catch (Exception e) {

@@ -61,6 +61,7 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.objectstyle.woenvironment.env.WOEnvironment;
 import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
+import org.objectstyle.wolips.logging.WOLipsLog;
 
 /**
  * @author ulrich
@@ -196,4 +197,19 @@ public final class ClasspathVariablesAccessor
 				classpathVariable);
 	}
 
+	/**
+	 * Method classPathVariableToExpand.
+	 * @param aString
+	 * @return String
+	 */
+	public String classPathVariableToExpand(String aString) {
+		if (aString == null)
+			return null;
+		if (aString.equals("webobjects.next.root"))
+			return WOLipsPlugin.getDefault().getWOEnvironment().getWOVariables().systemRoot();
+		if (aString.equals("webobjects.system.library.dir"))
+			return WOLipsPlugin.getDefault().getWOEnvironment().getWOVariables().libraryDir();
+		WOLipsLog.log("Can not resolve classpath variable: " + aString);
+		return null;
+	}
 }

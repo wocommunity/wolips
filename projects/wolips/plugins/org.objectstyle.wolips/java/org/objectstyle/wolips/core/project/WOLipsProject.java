@@ -84,7 +84,7 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
-import org.objectstyle.wolips.core.plugin.WOLipsUtils;
+import org.objectstyle.wolips.core.util.WorkbenchUtilities;
 import org.objectstyle.wolips.logging.WOLipsLog;
 
 /**
@@ -200,7 +200,7 @@ public class WOLipsProject implements IWOLipsPluginConstants, IWOLipsProject {
 		protected NaturesAccessor(WOLipsProject woLipsProject) {
 			super(woLipsProject);
 		}
-		
+
 		/**
 		 * @param natureID
 		 * @return boolean
@@ -212,7 +212,7 @@ public class WOLipsProject implements IWOLipsPluginConstants, IWOLipsProject {
 			}
 			return false;
 		}
-		
+
 		private void addTargetBuilder() throws CoreException {
 			if (this.isTargetBuilderInstalled())
 				return;
@@ -896,8 +896,7 @@ public class WOLipsProject implements IWOLipsPluginConstants, IWOLipsProject {
 		 */
 		public void cleanAllFileTables() throws IOException {
 			ArrayList arrayList = new ArrayList();
-			WOLipsUtils woLipsUtils = new WOLipsUtils();
-			woLipsUtils.findFilesInResourceByName(
+			WorkbenchUtilities.findFilesInResourceByName(
 				arrayList,
 				this.getProject(),
 				IWOLipsPluginConstants.PROJECT_FILE_NAME);

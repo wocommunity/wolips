@@ -60,9 +60,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.Hashtable;
 
-import org.objectstyle.wolips.core.plugin.AWOLips;
 import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
-import org.objectstyle.wolips.core.plugin.WOLipsUtils;
 import org.w3c.dom.Document;
 /**
  * @author uli
@@ -72,7 +70,7 @@ import org.w3c.dom.Document;
  * To enable and disable the creation of type comments go to
  * Window>Preferences>Java>Code Generation.
  */
-public abstract class _FileFromTemplateCreator extends AWOLips {
+public abstract class _FileFromTemplateCreator {
 	//	translate expected variable strings to int 
 	// for switch case in expandVariable
 	protected static final int PLUGIN_NAME = 0;
@@ -110,8 +108,8 @@ public abstract class _FileFromTemplateCreator extends AWOLips {
 				URL url =
 					new URL(
 						WOLipsPlugin.baseURL(),
-						WOLipsUtils.woTemplateDirectory()
-							+ WOLipsUtils.woTemplateFiles());
+						WOLipsPlugin.WO_TEMPLATE_DIRECTORY
+							+ WOLipsPlugin.WO_TEMPLATE_FILES);
 				InputStream input = (url).openStream();
 				templateDocument =
 					XercesDocumentBuilder.documentBuilder().parse(input);

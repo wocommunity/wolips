@@ -75,49 +75,66 @@ public interface IClasspathVariablesAccessor {
 	 * @return IPath from NextLocalRoot Classpath variable if it exists.
 	 */
 	public abstract IPath getNextLocalRootClassPathVariable();
+
 	/**
 	 * @return IPath from NextRoot Classpath variable if it exists.
 	 */
 	public abstract IPath getNextRootClassPathVariable();
+
 	/**
 	 * @return IPath from NextSystemRoot Classpath variable if it exists.
 	 */
 	public abstract IPath getNextSystemRootClassPathVariable();
+
 	/**
 	 * @return IPath from UserHome Classpath variable if it exists.
 	 */
 	public abstract IPath getUserHomeClassPathVariable();
+
 	/**
 	 * @return IPath from UserHome Classpath variable if it exists.
 	 */
 	public abstract IPath getProjectWonderHomeClassPathVariable();
+
 	/**
 	 *set IPath for NextLocalRoot Classpath variable.
 	 */
 	public abstract void setNextLocalRootClassPathVariable(IPath path)
 		throws JavaModelException;
+
 	/**
 	 * set IPath for NextRoot Classpath variable.
 	 */
 	public abstract void setNextRootClassPathVariable(IPath path)
 		throws JavaModelException;
+
 	/**
 	 * set IPath for NextSystemRoot Classpath variable.
 	 */
 	public abstract void setNextSystemRootClassPathVariable(IPath path)
 		throws JavaModelException;
+
 	/**
 	 * set IPath for UserHome Classpath variable.
 	 */
 	public abstract void setUserHomeClassPathVariable(IPath path)
 		throws JavaModelException;
+
 	/**
 	 * set IPath for UserHome Classpath variable.
 	 */
 	public abstract void setProjectWonderHomeClassPathVariable(IPath path)
 		throws JavaModelException;
+
 	/**
 	 * @return Returns true if the named classpath variable is controlled by WOLips.
 	 */
 	public abstract boolean isUnderWOLipsControl(String classpathVariable);
+
+	/**
+	 * Method classPathVariableToExpand.
+	 * @param aString
+	 * @return String
+	 */
+	public abstract String classPathVariableToExpand(String aString);
 }

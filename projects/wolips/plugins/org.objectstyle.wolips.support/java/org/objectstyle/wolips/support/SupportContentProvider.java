@@ -58,11 +58,10 @@ package org.objectstyle.wolips.support;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.util.SafeRunnable;
+import org.objectstyle.woenvironment.env.WOVariables;
 import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
-import org.objectstyle.wolips.core.plugin.WOLipsUtils;
 import org.objectstyle.wolips.core.preferences.Preferences;
 import org.objectstyle.wolips.core.preferences.PreferencesMessages;
-import org.objectstyle.woenvironment.env.WOVariables;
 
 /**
  * @author uli
@@ -101,17 +100,17 @@ public class SupportContentProvider extends AbstractTreeContentProvider {
 			createNode(
 				SupportMessages.getString(
 					"WOLips.support.WOLipsUtils.woTemplateDirectory"),
-				WOLipsUtils.woTemplateDirectory()));
+				WOLipsPlugin.WO_TEMPLATE_DIRECTORY));
 		wolipsutilsNode.addChild(
 			createNode(
 				SupportMessages.getString(
 					"WOLips.support.WOLipsUtils.woTemplateFiles"),
-				WOLipsUtils.woTemplateFiles()));
+				WOLipsPlugin.WO_TEMPLATE_FILES));
 		wolipsutilsNode.addChild(
 			createNode(
 				SupportMessages.getString(
 					"WOLips.support.WOLipsUtils.woTemplateProject"),
-				WOLipsUtils.woTemplateProject()));
+				WOLipsPlugin.WO_TEMPLATE_PROJECT));
 	}
 	/**
 	 * Extracts WOVariables info.

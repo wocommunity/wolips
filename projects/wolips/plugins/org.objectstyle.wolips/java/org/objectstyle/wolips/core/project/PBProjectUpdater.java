@@ -59,20 +59,19 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
-//import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
-import org.objectstyle.wolips.core.plugin.AWOLips;
+import org.objectstyle.woenvironment.pb.PBProject;
+import org.objectstyle.woenvironment.util.FileStringScanner;
 import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
 import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
 import org.objectstyle.wolips.logging.WOLipsLog;
-import org.objectstyle.woenvironment.pb.PBProject;
-import org.objectstyle.woenvironment.util.FileStringScanner;
 /**
  * @author uli
  *
@@ -81,7 +80,7 @@ import org.objectstyle.woenvironment.util.FileStringScanner;
  * To enable and disable the creation of type comments go to
  * Window>Preferences>Java>Code Generation.
  */
-public class PBProjectUpdater extends AWOLips {
+public final class PBProjectUpdater {
 	//	local framework search for PB.project
 	private static final String DefaultLocalFrameworkSearch =
 		"$(NEXT_ROOT)$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -322,8 +321,9 @@ public class PBProjectUpdater extends AWOLips {
 	/**
 	 * Method syncProjectName.
 	 */
-	private void syncProjectName() {
-		pbProject.setProjectName(projectContainer.getName());
+	public void syncProjectName() {
+		if (!projectContainer.getName().equals(pbProject.getProjectName()))
+			pbProject.setProjectName(projectContainer.getName());
 	}
 	/**
 	 * Method syncClasses.

@@ -54,7 +54,7 @@
  *
  */
 
-package org.objectstyle.wolips.core.plugin;
+package org.objectstyle.wolips.core.util;
 
 import java.util.ArrayList;
 
@@ -78,20 +78,21 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.objectstyle.woenvironment.env.WOEnvironment;
 import org.objectstyle.woenvironment.env.WOVariables;
+import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
 import org.objectstyle.wolips.logging.WOLipsLog;
 
 /**
- * @author uli
+ * @author ulrich
  *
- * This class should be used as base for more concrete base classes.
- * Take care that this class can only be used after the logging system is set up.	
+ * To change the template for this generated type comment go to
+ * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public abstract class AWOLips implements IWOLipsPluginConstants {
+public final class WorkbenchUtilities {
 
 	/**
 	 * Utility method with conventions
 	 */
-	public void errorDialog(
+	public final static void errorDialog(
 		Shell shell,
 		String title,
 		String message,
@@ -108,7 +109,7 @@ public abstract class AWOLips implements IWOLipsPluginConstants {
 	/**
 	 * Utility method with conventions
 	 */
-	public void errorDialog(
+	public final static void errorDialog(
 		Shell shell,
 		String title,
 		String message,
@@ -133,7 +134,7 @@ public abstract class AWOLips implements IWOLipsPluginConstants {
 	 * @param aResource
 	 * @param aFileName
 	 */
-	public void findFilesInResourceByName(
+	public final static void findFilesInResourceByName(
 		ArrayList anArrayList,
 		IResource aResource,
 		String aFileName) {
@@ -144,8 +145,11 @@ public abstract class AWOLips implements IWOLipsPluginConstants {
 					((IContainer) aResource).findMember(aFileName);
 				if ((resource != null) && (resource instanceof IFile))
 					anArrayList.add(resource);
-				IResource[] members = this.members(aResource);
-				this.findFilesInResourceByName(anArrayList, members, aFileName);
+				IResource[] members = WorkbenchUtilities.members(aResource);
+				WorkbenchUtilities.findFilesInResourceByName(
+					anArrayList,
+					members,
+					aFileName);
 			}
 		}
 	}
@@ -155,7 +159,7 @@ public abstract class AWOLips implements IWOLipsPluginConstants {
 	 * @param aResource
 	 * @param aFileName
 	 */
-	private void findFilesInResourceByName(
+	private final static void findFilesInResourceByName(
 		ArrayList anArrayList,
 		IResource[] aResource,
 		String aFileName) {
@@ -165,7 +169,7 @@ public abstract class AWOLips implements IWOLipsPluginConstants {
 				&& (memberResource instanceof IContainer)
 				&& (!memberResource.toString().endsWith(".framework"))
 				&& (!memberResource.toString().endsWith(".woa")))
-				this.findFilesInResourceByName(
+				WorkbenchUtilities.findFilesInResourceByName(
 					anArrayList,
 					memberResource,
 					aFileName);
@@ -175,8 +179,8 @@ public abstract class AWOLips implements IWOLipsPluginConstants {
 	 * Returns the ActiveEditor.
 	 * @return IEditorPart
 	 */
-	public IEditorPart getActiveEditor() {
-		IWorkbenchPage page = this.getActivePage();
+	public final static IEditorPart getActiveEditor() {
+		IWorkbenchPage page = WorkbenchUtilities.getActivePage();
 		if (page != null) {
 			return page.getActiveEditor();
 		}
@@ -186,8 +190,8 @@ public abstract class AWOLips implements IWOLipsPluginConstants {
 	 * Method getEditorInput.
 	 * @return IEditorInput
 	 */
-	public IEditorInput getActiveEditorInput() {
-		IEditorPart part = this.getActiveEditor();
+	public final static IEditorInput getActiveEditorInput() {
+		IEditorPart part = WorkbenchUtilities.getActiveEditor();
 		if (part != null) {
 			return part.getEditorInput();
 		}
@@ -196,14 +200,16 @@ public abstract class AWOLips implements IWOLipsPluginConstants {
 	/**
 	 * @return Returns the active editor java input.
 	 */
-	public IJavaElement getActiveEditorJavaInput() {
-		IJavaElement result = this.getActiveJavaElement();
+	public final static IJavaElement getActiveEditorJavaInput() {
+		IJavaElement result = WorkbenchUtilities.getActiveJavaElement();
 		if (result == null) {
 			IResource nonjava =
-				(IResource) this.getActiveEditorInput().getAdapter(
+				(IResource) WorkbenchUtilities
+					.getActiveEditorInput()
+					.getAdapter(
 					IResource.class);
 			if (nonjava != null) {
-				result = this.getJavaParent(nonjava);
+				result = WorkbenchUtilities.getJavaParent(nonjava);
 			}
 		}
 		return result;
@@ -212,8 +218,8 @@ public abstract class AWOLips implements IWOLipsPluginConstants {
 	 * Method getActiveJavaElement.
 	 * @return IJavaElement
 	 */
-	public IJavaElement getActiveJavaElement() {
-		IEditorInput editorInput = this.getActiveEditorInput();
+	public final static IJavaElement getActiveJavaElement() {
+		IEditorInput editorInput = WorkbenchUtilities.getActiveEditorInput();
 		if (editorInput != null) {
 			return (IJavaElement) editorInput.getAdapter(IJavaElement.class);
 		}
@@ -222,27 +228,27 @@ public abstract class AWOLips implements IWOLipsPluginConstants {
 	/**
 	 * @return Returns the active page.
 	 */
-	public IWorkbenchPage getActivePage() {
-		return this.getActiveWorkbenchWindow().getActivePage();
+	public final static IWorkbenchPage getActivePage() {
+		return WorkbenchUtilities.getActiveWorkbenchWindow().getActivePage();
 	}
 	/**
 	 * @return Returns the active workbench shell.
 	 */
-	public Shell getActiveWorkbenchShell() {
-		return this.getActiveWorkbenchWindow().getShell();
+	public final static Shell getActiveWorkbenchShell() {
+		return WorkbenchUtilities.getActiveWorkbenchWindow().getShell();
 	}
 	/**
 	 * @return Returns the the active workbench window.
 	 */
-	public IWorkbenchWindow getActiveWorkbenchWindow() {
-		return this.getWorkbench().getActiveWorkbenchWindow();
+	public final static IWorkbenchWindow getActiveWorkbenchWindow() {
+		return WorkbenchUtilities.getWorkbench().getActiveWorkbenchWindow();
 	}
 	/**
 	 * Method getJavaParent.
 	 * @param aResource
 	 * @return IJavaElement
 	 */
-	public IJavaElement getJavaParent(IResource aResource) {
+	public final static IJavaElement getJavaParent(IResource aResource) {
 		IJavaElement result = null;
 		IContainer parent = aResource.getParent();
 		while (parent != null) {
@@ -259,49 +265,43 @@ public abstract class AWOLips implements IWOLipsPluginConstants {
 	 * Method getShell.
 	 * @return Shell
 	 */
-	public Shell getShell() {
-		if (this.getActiveWorkbenchWindow() != null) {
-			return this.getActiveWorkbenchWindow().getShell();
+	public final static Shell getShell() {
+		if (WorkbenchUtilities.getActiveWorkbenchWindow() != null) {
+			return WorkbenchUtilities.getActiveWorkbenchWindow().getShell();
 		}
 		return null;
 	}
 	/**
 	 * @return WOEnvironment
 	 */
-	public WOEnvironment getWOEnvironment() {
-		return this.getWOLipsPlugin().getWOEnvironment();
+	public final static WOEnvironment getWOEnvironment() {
+		return WOLipsPlugin.getDefault().getWOEnvironment();
 	}
 
 	/**
-	 * @return WOLipsPlugin
-	 */
-	public WOLipsPlugin getWOLipsPlugin() {
-		return WOLipsPlugin.getDefault();
-	}
-	/**
 	 * @return IWorkbench
 	 */
-	public IWorkbench getWorkbench() {
-		return this.getWOLipsPlugin().getWorkbench();
+	public final static IWorkbench getWorkbench() {
+		return WOLipsPlugin.getDefault().getWorkbench();
 	}
 	/**
 	 * Returns the workspace instance.
 	 */
-	public IWorkspace getWorkspace() {
+	public final static IWorkspace getWorkspace() {
 		return ResourcesPlugin.getWorkspace();
 	}
 	/**
 	 * @return WOVariables
 	 */
-	public WOVariables getWOVariables() {
-		return this.getWOEnvironment().getWOVariables();
+	public final static WOVariables getWOVariables() {
+		return WorkbenchUtilities.getWOEnvironment().getWOVariables();
 	}
 	/**
 	 * Method members.
 	 * @param aResource
 	 * @return IResource[]
 	 */
-	private IResource[] members(IResource aResource) {
+	private final static IResource[] members(IResource aResource) {
 		IResource[] members = null;
 		try {
 			members = ((IContainer) aResource).members();
@@ -314,18 +314,18 @@ public abstract class AWOLips implements IWOLipsPluginConstants {
 	 * Method open.
 	 * @param anArrayList
 	 */
-	public void open(ArrayList anArrayList) {
+	public final static void open(ArrayList anArrayList) {
 		for (int i = 0; i < anArrayList.size(); i++) {
 			IResource resource = (IResource) anArrayList.get(i);
 			if ((resource != null) && (resource.getType() == IResource.FILE))
-				this.open((IFile) resource);
+				WorkbenchUtilities.open((IFile) resource);
 		}
 	}
 	/**
 	 * Method open.
 	 * @param aFile
 	 */
-	public void open(IFile aFile) {
+	public final static void open(IFile aFile) {
 		IWorkbenchWindow workbenchWindow =
 			WOLipsPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow();
 		if (workbenchWindow != null) {

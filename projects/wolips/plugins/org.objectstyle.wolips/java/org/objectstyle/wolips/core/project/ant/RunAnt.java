@@ -75,9 +75,9 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.externaltools.internal.model.IExternalToolConstants;
 import org.eclipse.ui.externaltools.internal.model.ToolUtil;
-import org.objectstyle.wolips.core.plugin.AWOLips;
 import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
 import org.objectstyle.wolips.core.preferences.Preferences;
+import org.objectstyle.wolips.core.util.WorkbenchUtilities;
 
 /**
  * @author uli
@@ -87,7 +87,7 @@ import org.objectstyle.wolips.core.preferences.Preferences;
  * To enable and disable the creation of type comments go to
  * Window>Preferences>Java>Code Generation.
  */
-public class RunAnt extends AWOLips {
+public final class RunAnt {
 
 	public void waitUntilAntFinished() {
 		/*while (AntRunner.isBuildRunning()) {
@@ -186,7 +186,7 @@ public class RunAnt extends AWOLips {
 	 */
 	void launch(final ILaunchConfiguration configuration, final String mode) {
 		ProgressMonitorDialog dialog =
-			new ProgressMonitorDialog(this.getShell());
+			new ProgressMonitorDialog(WorkbenchUtilities.getShell());
 		IRunnableWithProgress runnable = new IRunnableWithProgress() {
 			public void run(IProgressMonitor monitor)
 				throws InvocationTargetException, InterruptedException {
@@ -205,8 +205,8 @@ public class RunAnt extends AWOLips {
 			if (targetException instanceof CoreException) {
 				t = targetException;
 			}
-			this.errorDialog(
-				this.getShell(),
+			WorkbenchUtilities.errorDialog(
+				WorkbenchUtilities.getShell(),
 				"Error",
 				"Exception occurred during launch",
 				t);

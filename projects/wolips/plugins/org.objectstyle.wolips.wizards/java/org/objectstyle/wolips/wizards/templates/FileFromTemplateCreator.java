@@ -59,7 +59,6 @@ import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Hashtable;
-
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -73,7 +72,8 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
-import org.objectstyle.wolips.core.plugin.WOLipsUtils;
+import org.objectstyle.wolips.core.util.StringUtilities;
+import org.objectstyle.wolips.core.util.WorkbenchUtilities;
 import org.objectstyle.wolips.wizards.Messages;
 import org.w3c.dom.Element;
 /**
@@ -161,7 +161,7 @@ public class FileFromTemplateCreator extends _FileFromTemplateCreator {
 				// ask for overwriting existing file
 				if (MessageDialog
 					.openQuestion(
-						this.getActiveWorkbenchShell(),
+						WorkbenchUtilities.getActiveWorkbenchShell(),
 						Messages.getString("QuestionDialog.title"),
 						e.getMessage()
 							+ "\n"
@@ -178,7 +178,7 @@ public class FileFromTemplateCreator extends _FileFromTemplateCreator {
 				// ask for continuing execution of process
 				if (!MessageDialog
 					.openQuestion(
-						this.getActiveWorkbenchShell(),
+						WorkbenchUtilities.getActiveWorkbenchShell(),
 						Messages.getString("QuestionDialog.title"),
 						e.getMessage()
 							+ "\n"
@@ -254,7 +254,7 @@ public class FileFromTemplateCreator extends _FileFromTemplateCreator {
 					variablesToExpand =
 						elementForTemplate.getAttribute("variables");
 					variableList =
-						WOLipsUtils.arrayListFromCSV(variablesToExpand);
+						StringUtilities.arrayListFromCSV(variablesToExpand);
 					if (variablesToExpand != null && !variableList.isEmpty()) {
 						// expand variables
 						variableToExpand = null;
@@ -331,7 +331,12 @@ public class FileFromTemplateCreator extends _FileFromTemplateCreator {
 				expandedValue = this.getExpandedValueForBuildDir(expandedValue);
 				break;
 			case NEXT_SYSTEM_ROOT :
-				expandedValue = WOLipsPlugin.getDefault().getWOEnvironment().getWOVariables().systemRoot();
+				expandedValue =
+					WOLipsPlugin
+						.getDefault()
+						.getWOEnvironment()
+						.getWOVariables()
+						.systemRoot();
 				break;
 		}
 		return expandedValue;

@@ -63,6 +63,7 @@ package org.objectstyle.wolips.core.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 
 /**
  * @author Harald Niesche
@@ -70,45 +71,65 @@ import java.util.List;
  */
 public class StringUtilities {
 
-  /**
-   * replace every occurence of oldPart with newPart in origin
-   * returns changed origin (since String is immutable...)
-   */
+	/**
+	 * replace every occurence of oldPart with newPart in origin
+	 * returns changed origin (since String is immutable...)
+	 */
 
-  static public String replace(String origin, String oldPart, String newPart) {
-    if ((origin == null) || (origin.length() == 0)) {
-      return origin;
-    }
+	static public String replace(
+		String origin,
+		String oldPart,
+		String newPart) {
+		if ((origin == null) || (origin.length() == 0)) {
+			return origin;
+		}
 
-    StringBuffer buffer = new StringBuffer (origin);
+		StringBuffer buffer = new StringBuffer(origin);
 
-    //start replacing from the end so we can use indexOf on the original string
+		//start replacing from the end so we can use indexOf on the original string
 
-    int index;
-    int end = origin.length();
-    int oldLength = oldPart.length();
+		int index;
+		int end = origin.length();
+		int oldLength = oldPart.length();
 
-    while (end >= 0) {
-      index = origin.lastIndexOf(oldPart, end);
-      // no more occurences of oldPart
-      if (index== -1)
-          break;
+		while (end >= 0) {
+			index = origin.lastIndexOf(oldPart, end);
+			// no more occurences of oldPart
+			if (index == -1)
+				break;
 
-      end = index-oldLength;
+			end = index - oldLength;
 
-      buffer.replace(index,  index+oldLength, newPart);
-    }
-    return buffer.toString();
-  }
+			buffer.replace(index, index + oldLength, newPart);
+		}
+		return buffer.toString();
+	}
 
-  public static String[] smartSplit (String string, char sep) {
-    QuotedStringTokenizer tok = new QuotedStringTokenizer (string, sep);
-    List tmp = new ArrayList ();
-    while (tok.hasNext()) {
-      tmp.add(tok.nextToken());
-    }
-    
-    return ((String[])tmp.toArray(new String[tmp.size()]));
-  }
+	public static String[] smartSplit(String string, char sep) {
+		QuotedStringTokenizer tok = new QuotedStringTokenizer(string, sep);
+		List tmp = new ArrayList();
+		while (tok.hasNext()) {
+			tmp.add(tok.nextToken());
+		}
+
+		return ((String[]) tmp.toArray(new String[tmp.size()]));
+	}
+
+	/**
+	 * Method arrayListFromCSV.
+	 * @param csvString
+	 * @return ArrayList
+	 */
+	public static synchronized ArrayList arrayListFromCSV(String csvString) {
+		if (csvString == null || csvString.length() == 0) {
+			return new ArrayList();
+		}
+		StringTokenizer valueTokenizer = new StringTokenizer(csvString, ",");
+		ArrayList resultList = new ArrayList(valueTokenizer.countTokens());
+		while (valueTokenizer.hasMoreElements()) {
+			resultList.add(valueTokenizer.nextElement());
+		}
+		return resultList;
+	}
 
 }

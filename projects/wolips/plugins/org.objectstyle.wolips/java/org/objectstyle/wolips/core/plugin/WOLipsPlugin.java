@@ -56,7 +56,6 @@
 package org.objectstyle.wolips.core.plugin;
 import java.net.MalformedURLException;
 import java.net.URL;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.runtime.CoreException;
@@ -85,11 +84,12 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 	private static WOLipsPlugin plugin;
 	private WOEnvironment woEnvironment;
 	private static final String PLUGIN_ID = "org.objectstyle.wolips";
-	
-	/**
-	 * Set this variable to true to get debug output
-	 */
-	public static final boolean debug = true;
+	public static final String WO_TEMPLATE_DIRECTORY = "templates";
+	public static final String WO_TEMPLATE_FILES = "/wo_file_templates.xml";
+	public static final String WO_TEMPLATE_PROJECT =
+		"/wo_project_templates.xml";
+
+	public static final boolean DEBUG = true;
 	/**
 	 * The constructor.
 	 */
@@ -99,19 +99,18 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 		super(descriptor);
 		plugin = this;
 		try {
-		// set up missing preferences
-		Preferences.setDefaults();
-		LogFactory.getFactory().setAttribute(
-			WOLipsLogFactory.ATTR_GLOBAL_LOG_LEVEL,
-			new Integer(Preferences.getPREF_LOG_LEVEL()));
-		// set own logger
-		log = LogFactory.getLog(WOLipsPlugin.class);
-		}
-		catch(Exception exception) {
-			System.out.println("Exception in WOLips constructor: " + exception.getMessage());
+			// set up missing preferences
+			Preferences.setDefaults();
+			LogFactory.getFactory().setAttribute(
+				WOLipsLogFactory.ATTR_GLOBAL_LOG_LEVEL,
+				new Integer(Preferences.getPREF_LOG_LEVEL()));
+			// set own logger
+			log = LogFactory.getLog(WOLipsPlugin.class);
+		} catch (Exception exception) {
+			System.out.println(
+				"Exception in WOLips constructor: " + exception.getMessage());
 		}
 	}
-
 	/**
 	 * Calls EarlyStartup.earlyStartup().
 	 * <br>
@@ -139,9 +138,7 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 		if (plugin == null) {
 			// ensure plugin instance is always available using id
 			return new WOLipsPlugin(
-				Platform
-					.getPlugin(WOLipsPlugin.PLUGIN_ID)
-					.getDescriptor());
+				Platform.getPlugin(WOLipsPlugin.PLUGIN_ID).getDescriptor());
 		}
 		return plugin;
 	}
@@ -183,9 +180,7 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 	 * @param target
 	 * @param message
 	 */
-	public static void informUser(
-		Shell shell,
-		String message) {
+	public static void informUser(Shell shell, String message) {
 		String title = "Error";
 		MessageDialog.openError(shell, title, message);
 	}
