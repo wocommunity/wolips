@@ -57,6 +57,7 @@ package org.objectstyle.wolips.core.listener;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -68,6 +69,8 @@ import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.JavaCore;
+import org.objectstyle.wolips.core.ant.UpdateFrameworkIncludeFiles;
+import org.objectstyle.wolips.core.ant.UpdateOtherClasspathIncludeFiles;
 import org.objectstyle.wolips.core.logging.WOLipsLog;
 import org.objectstyle.wolips.core.preferences.Preferences;
 import org.objectstyle.wolips.core.project.IWOLipsProject;
@@ -311,6 +314,17 @@ public class ResourceChangeListener implements IResourceChangeListener {
 				case IResource.FILE :
 					if (IResourceDelta.CHANGED == kindOfChange) {
 						if (".project".equals(resource.getName()) || ".classpath".equals(resource.getName())) {
+							UpdateOtherClasspathIncludeFiles updateOtherClasspathIncludeFiles =
+							new UpdateOtherClasspathIncludeFiles();
+							updateOtherClasspathIncludeFiles.setIProject(
+									resource.getProject());
+							updateOtherClasspathIncludeFiles.execute();
+							UpdateFrameworkIncludeFiles updateFrameworkIncludeFiles =
+							new UpdateFrameworkIncludeFiles();
+							updateFrameworkIncludeFiles.setIProject(
+									resource.getProject());
+							updateFrameworkIncludeFiles.execute();
+							
 							ArrayList addedFrameworks = new ArrayList();
 							IProject[] referencedProjects =
 								resource.getProject().getReferencedProjects();
