@@ -95,105 +95,105 @@
 
    <plugin
          id="org.objectstyle.wolips.targetbuilder"
-         download-size="0"
-         install-size="0"
+         download-size="8"
+         install-size="12"
          version="1.0.6"/>
 
    <plugin
          id="org.objectstyle.wolips.about"
-         download-size="0"
-         install-size="0"
+         download-size="8"
+         install-size="36"
          version="1.0.6"/>
 
    <plugin
          id="org.objectstyle.wolips.help"
-         download-size="0"
-         install-size="0"
+         download-size="2200"
+         install-size="2300"
          version="1.0.6"
          fragment="true"/>
 
    <plugin
          id="org.objectstyle.wolips.launching"
-         download-size="0"
-         install-size="0"
+         download-size="28"
+         install-size="40"
          version="1.0.6"
          fragment="true"/>
 
    <plugin
          id="org.objectstyle.wolips.source"
-         download-size="0"
-         install-size="0"
+         download-size="4"
+         install-size="4"
          version="1.0.6"
          fragment="true"/>
 
    <plugin
          id="org.objectstyle.wolips.support"
-         download-size="0"
-         install-size="0"
+         download-size="20"
+         install-size="28"
          version="1.0.6"
          fragment="true"/>
 
    <plugin
          id="org.objectstyle.wolips.projectbuild"
-         download-size="0"
-         install-size="0"
+         download-size="48"
+         install-size="64"
          version="1.0.6"
          fragment="true"/>
 
    <plugin
          id="org.objectstyle.wolips.ui"
-         download-size="0"
-         install-size="0"
+         download-size="64"
+         install-size="124"
          version="1.0.6"
          fragment="true"/>
 
    <plugin
          id="org.objectstyle.wolips.wizards"
-         download-size="0"
-         install-size="0"
+         download-size="60"
+         install-size="100"
          version="1.0.6"
          fragment="true"/>
 
    <plugin
          id="org.objectstyle.wolips"
-         download-size="0"
-         install-size="0"
+         download-size="160"
+         install-size="300"
          version="1.0.6"/>
 
    <plugin
          id="org.objectstyle.wolips.ant"
-         download-size="0"
-         install-size="0"
+         download-size="12"
+         install-size="20"
          version="1.0.6"/>
 
    <plugin
          id="org.objectstyle.wolips.woproject"
-         download-size="0"
-         install-size="0"
+         download-size="92"
+         install-size="112"
          version="1.0.6"/>
 
    <plugin
          id="org.objectstyle.wolips.woproject.ant"
-         download-size="0"
-         install-size="0"
+         download-size="92"
+         install-size="112"
          version="1.0.6"/>
 
    <plugin
          id="org.objectstyle.wolips.cayenne"
-         download-size="0"
-         install-size="0"
+         download-size="1300"
+         install-size="1500"
          version="1.0.6"/>
 
    <plugin
          id="org.objectstyle.wolips.cayenne.ant"
-         download-size="0"
-         install-size="0"
+         download-size="1300"
+         install-size="1500"
          version="1.0.6"/>
 
    <plugin
          id="org.objectstyle.wolips.team"
-         download-size="0"
-         install-size="0"
+         download-size="4"
+         install-size="8"
          version="1.0.6"/>
 
 </feature>

@@ -80,14 +80,14 @@
 
    <plugin
          id="org.objectstyle.wolips.devstudio"
-         download-size="0"
-         install-size="0"
+         download-size="8"
+         install-size="12"
          version="1.0.6"/>
 
    <plugin
          id="org.objectstyle.wolips.devstudio.about"
-         download-size="0"
-         install-size="0"
+         download-size="8"
+         install-size="36"
          version="1.0.6"/>
 
 </feature>
