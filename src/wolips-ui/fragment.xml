@@ -48,16 +48,28 @@
                id="%UpdatePB.Project.ID">
          </action>
          <action
-               label="%WOSystemFramework.Add"
+               label="%WOOtherFramework.Add"
                class="org.objectstyle.wolips.ui.actions.WOFrameworkAction"
                menubarPath="org.objectstyle.wolips/woframeworks"
-               id="%WOSystemFramework.Add.ID">
+               id="%WOOtherFramework.Add.ID">
+         </action>
+         <action
+               label="%WOUserHomeFramework.Add"
+               class="org.objectstyle.wolips.ui.actions.WOFrameworkAction"
+               menubarPath="org.objectstyle.wolips/woframeworks"
+               id="%WOUserHomeFramework.Add.ID">
          </action>
          <action
                label="%WOLocalFramework.Add"
                class="org.objectstyle.wolips.ui.actions.WOFrameworkAction"
                menubarPath="org.objectstyle.wolips/woframeworks"
                id="%WOLocalFramework.Add.ID">
+         </action>
+         <action
+               label="%WOSystemFramework.Add"
+               class="org.objectstyle.wolips.ui.actions.WOFrameworkAction"
+               menubarPath="org.objectstyle.wolips/woframeworks"
+               id="%WOSystemFramework.Add.ID">
          </action>
       </objectContribution>
    </extension>

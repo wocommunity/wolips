@@ -150,27 +150,24 @@ public class EarlyStartup extends AWOLips {
 	/**
 	 * Method writePropertiesFileToUserHome.
 	 */
-	private void writePropertiesFileToUserHome() throws Exception
-	 {
+	private void writePropertiesFileToUserHome() throws Exception {
 		if (!Preferences
 			.getBoolean(PREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH))
 			return;
 		URL relativeBuildFile = null;
 		URL buildFile = null;
 		IProgressMonitor monitor = null;
-			relativeBuildFile =
-				new URL(WOLipsPlugin.baseURL(), build_user_home_properties);
-			buildFile = Platform.asLocalURL(relativeBuildFile);
-			monitor = new NullProgressMonitor();
-			RunAnt runAnt = new RunAnt();
+		relativeBuildFile =
+			new URL(WOLipsPlugin.baseURL(), build_user_home_properties);
+		buildFile = Platform.asLocalURL(relativeBuildFile);
+		monitor = new NullProgressMonitor();
+		RunAnt runAnt = new RunAnt();
 		try {
 			runAnt.asAnt(buildFile.getFile().toString(), monitor, null);
-		}
-		catch(Throwable throwable) {
+		} catch (Throwable throwable) {
 			//this will allways fail for the first time
-		}
-		finally {
-					relativeBuildFile = null;
+		} finally {
+			relativeBuildFile = null;
 			buildFile = null;
 			monitor = null;
 			runAnt = null;
@@ -187,7 +184,7 @@ public class EarlyStartup extends AWOLips {
 		if (this.getNextRootClassPathVariable() == null) {
 			try {
 				JavaCore.setClasspathVariable(
-				this.getWOEnvironment().getNEXT_ROOT(),
+					this.getWOEnvironment().getNEXT_ROOT(),
 					new Path(this.getWOVariables().systemRoot()),
 					null);
 			} catch (JavaModelException e) {
@@ -199,7 +196,7 @@ public class EarlyStartup extends AWOLips {
 		if (this.getNextLocalRootClassPathVariable() == null) {
 			try {
 				JavaCore.setClasspathVariable(
-				this.getWOEnvironment().getNEXT_LOCAL_ROOT(),
+					this.getWOEnvironment().getNEXT_LOCAL_ROOT(),
 					new Path(this.getWOVariables().localRoot()),
 					null);
 			} catch (JavaModelException e) {
@@ -211,7 +208,7 @@ public class EarlyStartup extends AWOLips {
 		if (this.getNextSystemRootClassPathVariable() == null) {
 			try {
 				JavaCore.setClasspathVariable(
-				this.getWOEnvironment().getNEXT_SYSTEM_ROOT(),
+					this.getWOEnvironment().getNEXT_SYSTEM_ROOT(),
 					new Path(this.getWOVariables().systemRoot()),
 					null);
 			} catch (JavaModelException e) {
@@ -220,6 +217,17 @@ public class EarlyStartup extends AWOLips {
 				log.fatal(e);
 			}
 		}
-
+		if (this.getUserHomeClassPathVariable() == null) {
+			try {
+				JavaCore.setClasspathVariable(
+					IWOLipsPluginConstants.UserHomeClasspathVariable,
+					new Path(this.getWOVariables().userHome()),
+					null);
+			} catch (JavaModelException e) {
+				log.fatal(e);
+			} catch (Exception e) {
+				log.fatal(e);
+			}
+		}
 	}
 }

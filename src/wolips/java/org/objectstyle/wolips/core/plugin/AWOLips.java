@@ -263,19 +263,29 @@ public abstract class AWOLips implements IWOLipsPluginConstants {
 	 * @return IPath from NextLocalRoot Classpath variable if it exists.
 	 */
 	public IPath getNextLocalRootClassPathVariable() {
-		return JavaCore.getClasspathVariable(this.getWOEnvironment().getNEXT_LOCAL_ROOT());
+		return JavaCore.getClasspathVariable(
+			this.getWOEnvironment().getNEXT_LOCAL_ROOT());
 	}
 	/**
 	 * @return IPath from NextRoot Classpath variable if it exists.
 	 */
 	public IPath getNextRootClassPathVariable() {
-		return JavaCore.getClasspathVariable(this.getWOEnvironment().getNEXT_ROOT());
+		return JavaCore.getClasspathVariable(
+			this.getWOEnvironment().getNEXT_ROOT());
 	}
 	/**
 	 * @return IPath from NextSystemRoot Classpath variable if it exists.
 	 */
 	public IPath getNextSystemRootClassPathVariable() {
-		return JavaCore.getClasspathVariable(this.getWOEnvironment().getNEXT_SYSTEM_ROOT());
+		return JavaCore.getClasspathVariable(
+			this.getWOEnvironment().getNEXT_SYSTEM_ROOT());
+	}
+	/**
+		 * @return IPath from UserHome Classpath variable if it exists.
+		 */
+	public IPath getUserHomeClassPathVariable() {
+		return JavaCore.getClasspathVariable(
+			IWOLipsPluginConstants.UserHomeClasspathVariable);
 	}
 	/**
 	 * Method getShell.

@@ -105,15 +105,17 @@ public class WOFrameworkDialogWrapper {
 	 * Constructor for WOFrameworkDialogWrapper.
 	 * @param part actual workbench part
 	 * @param projectToUpdate selected webobjects project to update
-	 * @param fileRoot file root for framework selection
+	 * @param classPathVariableName file root for framework selection
 	 */
 	public WOFrameworkDialogWrapper(
 		IWorkbenchPart part,
 		IJavaProject projectToUpdate,
 		String classPathVariableName,
-		boolean addLocalFrameworkSectionToPBProject) {
+		boolean addLocalFrameworkSectionToPBProject,
+		boolean addLibraryFrameworks) {
 		super();
-		this.addLocalFrameworkSectionToPBProject = addLocalFrameworkSectionToPBProject;
+		this.addLocalFrameworkSectionToPBProject =
+			addLocalFrameworkSectionToPBProject;
 		this.part = part;
 		this.classPathVariableName = classPathVariableName;
 		// expand class path	
@@ -129,7 +131,11 @@ public class WOFrameworkDialogWrapper {
 					+ classPathVariableName);
 			return;
 		}
-		frameworkRootPath = expandedClassPathVariable.append("Library/Frameworks");
+		if (addLibraryFrameworks)
+			frameworkRootPath =
+				expandedClassPathVariable.append("Library/Frameworks");
+		else
+			frameworkRootPath = expandedClassPathVariable;
 		// get old class path values to limit selection on FileSystemElement (see below)
 		this.projectToUpdate = projectToUpdate;
 		try {
@@ -226,17 +232,19 @@ public class WOFrameworkDialogWrapper {
 		} catch (JavaModelException e) {
 			WOLipsPlugin.handleException(part.getSite().getShell(), e, null);
 		}
-		if(addLocalFrameworkSectionToPBProject) {
-		try {
-			IResource pbproject = projectToUpdate.getProject().findMember(IWOLipsPluginConstants.PROJECT_FILE_NAME);
-			if(pbproject != null) {
-				PBProjectUpdater pbProjectUpdater = PBProjectUpdater.instance(pbproject.getParent());
-				pbProjectUpdater.addLocalFrameworkSectionToPBProject();
-		}
-		}
-		catch (Exception exception) {
-			WOLipsLog.log(exception);
-		}
+		if (addLocalFrameworkSectionToPBProject) {
+			try {
+				IResource pbproject =
+					projectToUpdate.getProject().findMember(
+						IWOLipsPluginConstants.PROJECT_FILE_NAME);
+				if (pbproject != null) {
+					PBProjectUpdater pbProjectUpdater =
+						PBProjectUpdater.instance(pbproject.getParent());
+					pbProjectUpdater.addLocalFrameworkSectionToPBProject();
+				}
+			} catch (Exception exception) {
+				WOLipsLog.log(exception);
+			}
 		}
 	}
 	/**
@@ -278,7 +286,8 @@ public class WOFrameworkDialogWrapper {
 			File frameworkDir = null;
 			String fileExtensionToAdd = getExtensionFor(fileToAdd.getName());
 			if (fileToAdd.isFile()
-				&& ("jar".equals(fileExtensionToAdd) || "zip".equals(fileExtensionToAdd))) {
+				&& ("jar".equals(fileExtensionToAdd)
+					|| "zip".equals(fileExtensionToAdd))) {
 
 				// ensure correct framework path
 				boolean isValidPath = false;
