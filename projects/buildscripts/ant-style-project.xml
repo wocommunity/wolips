@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+ 
+<!-- ======================================================== -->
+<!--              Script to build an ant style project        -->
+<!-- ======================================================== -->
+<project name="build-ant-style-project" default="" basedir=".">
+    <!-- ============================================= -->
+    <!-- Compiles Java classes                         -->
+    <!-- Required parameters                           -->
+    <!-- param.src.dir the src directory               -->
+    <!-- param.dest.dir the javac output directory     -->
+    <!-- classpath the classpath refid     -->
+    <!-- ============================================= -->
+    <target name="java">
+       <javac srcdir="${param.src.dir}"
+                destdir="${param.dest.dir}"
+                deprecation="${compile.deprecation}"
+                debug="${compile.debug}"
+                optimize="${compile.optimize}">
+            <classpath refid="classpath"/>
+        </javac>
+    </target>
+</project>

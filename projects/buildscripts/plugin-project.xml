@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+ 
+<!-- ======================================================== -->
+<!--              Script to build a plugin               -->
+<!-- ======================================================== -->
+<project name="build-plugin" default="dist" basedir=".">
+</project>

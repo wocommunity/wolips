@@ -1,0 +1,119 @@
+<?xml version="1.0"?>
+ 
+<!-- ======================================================== -->
+<!--              Main Ant build file               -->
+<!-- Serves as a facade for different project build files.     -->
+<!-- ======================================================== -->
+<project name="all-projects" default="dist" basedir=".">
+
+    <!-- ========================================== -->
+    <!-- Load properties files.                     -->
+    <!-- ========================================== -->
+    <property file="build.properties"/>
+    <property file="${user.home}${file.separator}build.properties"/>
+    <property file="${user.home}${file.separator}Library${file.separator}wobuild.properties"/>
+    <property file="default.properties"/>
+    <property file="${project.lib.dir}/lib.properties"/>
+
+    <!-- ========================================== -->
+    <!-- Print help.                                -->
+    <!-- ========================================== -->
+    <target name="help">
+        <echo>
+        ****************************************
+        * TARGETS (also you can use "-projecthelp" ant flag):
+        *
+        *  1. help          - prints this message.
+        *  2. all           - build all projects.
+        *  3. dist          - build distribution.
+        *  4. clean         - cleans temporary directories.
+        *  5. test          - Run JUnit tests.
+        *  6. check         - Stores the wo specific properties in a file.
+        *  7. .ds_store     - delete .DS_store files
+        * Build environment:
+        *
+        * java.home = ${java.home}
+        * build.compiler = ${build.compiler}
+        * ant.home = ${ant.home}
+        * user.home = ${user.home}
+        *
+        ****************************************
+        </echo>
+    </target>
+
+    <!-- ========================================== -->
+    <!-- Build homepage.                            -->
+    <!-- ========================================== -->
+    <target name="homepage">
+	<ant dir="${project.homepage.dir}" target="all"/>
+    </target>
+
+    <!-- ========================================== -->
+    <!-- Build woenvironment.                       -->
+    <!-- ========================================== -->
+    <target name="woenvironment">
+	<ant dir="${project.woenvironment.dir}" target="all"/>
+    </target>
+
+    <!-- ========================================== -->
+    <!-- Build woproject.                           -->
+    <!-- ========================================== -->
+    <target name="woproject">
+	<ant dir="${project.woproject.dir}" target="all"/>
+    </target>
+
+    <!-- ========================================== -->
+    <!-- Build wolips.                              -->
+    <!-- ========================================== -->
+    <target name="wolips">
+	<ant dir="${project.wolips.dir}" target="all"/>
+    </target>
+
+    <!-- ========================================== -->
+    <!-- Build all.                                 -->
+    <!-- ========================================== -->
+    <target name="all" depends="prepare,homepage,woenvironment,woproject,wolips">
+    </target>
+
+    <!-- ========================================== -->
+    <!-- Build dist.                                -->
+    <!-- ========================================== -->
+    <target name="dist" depends="clean,all">
+	<ant dir="${project.woenvironment.dir}" target="dist"/>
+	<ant dir="${project.woproject.dir}" target="dist"/>
+	<ant dir="${project.wolips.dir}" target="dist"/>
+    </target>
+
+    <!-- ============================================= -->
+    <!-- Prepare.                                      -->
+    <!-- ============================================= -->
+    <target name="prepare" depends=".ds_store,check">
+        <mkdir dir="${build.output.java.dir}"/>
+        <mkdir dir="${build.output.build.dir}"/>
+        <mkdir dir="${build.output.dist.dir}"/>
+        <mkdir dir="${build.output.homepage.dir}"/>
+    </target>
+
+    <!-- ============================================= -->
+    <!-- Deletes temporary files.                      -->
+    <!-- ============================================= -->
+    <target name="clean">
+        <delete dir="${build.output.dir}"/>
+        <delete file="velocity.log"/>
+    </target>
+
+    <!-- ========================================== -->
+    <!-- Check properties.                          -->
+    <!-- ========================================== -->
+    <target name="check">
+	<ant antfile="${project.buildscripts.dir}/woproperties.xml" target="check"/>
+    </target>
+
+    <!-- ========================================== -->
+    <!-- Delete .DS_Store files.                    -->
+    <!-- ========================================== -->
+    <target name=".ds_store">
+   	<ant dir="." antfile="${project.buildscripts.dir}/delete_DS_store_files.xml" target=".ds_store"/>
+    </target>
+
+</project>

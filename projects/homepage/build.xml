@@ -1,0 +1,85 @@
+<?xml version="1.0"?>
+ 
+<!-- ======================================================== -->
+<!--              homepage Ant build file                     -->
+<!-- Serves as a facade for different helper build files.     -->
+<!-- ======================================================== -->
+<project name="homepage" default="all" basedir=".">
+
+    <!-- ============================================= -->
+    <!-- Define CLASSPATH settings.                    -->
+    <!-- ============================================= -->
+    <path id="classpath_anakia">
+        <fileset dir="../${project.lib.dir}">
+            <include name="${lib.cayenne}"/>
+            <include name="${lib.jdom}"/>
+        </fileset>
+    </path>
+
+    <!-- ========================================== -->
+    <!-- Build all.                                 -->
+    <!-- ========================================== -->
+    <target name="all" depends="deploy-web,doc">
+    </target>
+
+    <!-- ============================================= -->
+    <!-- Deploys WOProject web site in a local         -->
+    <!-- directory.                                    -->
+    <!-- ============================================= -->
+    <target name="deploy-web">
+         <!-- copy all but HTML -->
+         <copy todir="../${build.output.homepage.dir}">
+             <fileset dir="doc">
+             	<exclude name="**/*.html"/>
+             </fileset>
+         </copy>
+    </target>
+
+    <!-- ========================================== -->
+    <!-- Builds WOProject documenatation.          -->
+    <!-- ========================================== -->
+    <target name="doc">
+        <!-- copy all licenses inclusing ours -->
+        <copy todir="../${build.output.homepage.dir}">
+            <fileset dir="doc">
+               <include name="LICENSE*"/>
+            </fileset>
+        </copy>
+
+        <taskdef name="anakia" classname="org.apache.velocity.anakia.AnakiaTask">
+            <classpath refid="classpath_anakia"/>
+        </taskdef>
+
+        <!-- Build site -->
+        <anakia basedir="xdocs" destdir="../${build.output.homepage.dir}"
+             extension=".html" style="woproject.vsl"
+             projectFile="stylesheets/project.xml"
+             excludes="**/stylesheets/**"
+             includes="**/*.xml"
+             lastModifiedCheck="true"
+             templatePath="xdocs/stylesheets">
+        </anakia>
+
+        <!-- copy images -->
+        <copy todir="../${build.output.homepage.dir}/images" filtering="no">
+            <fileset dir="xdocs/images">
+                <include name="**/*.gif"/>
+                <include name="**/*.jpeg"/>
+                <include name="**/*.jpg"/>
+                <include name="**/*.css"/>
+            </fileset>
+        </copy>
+
+        <!-- Copy articles -->
+        <copy todir="../${build.output.homepage.dir}/articles">
+             <fileset dir="doc/articles">
+             	<include name="**/*.html"/>
+             	<include name="**/*.gif"/>
+                <include name="**/*.jpeg"/>
+                <include name="**/*.jpg"/>
+                <include name="**/*.css"/>
+             </fileset>
+         </copy>
+    </target>
+
+</project>

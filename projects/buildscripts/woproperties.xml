@@ -1,0 +1,100 @@
+<!-- ======================================================== -->
+<!--              sets up the build properties in the         -->
+<!--                user home directoy.                       -->
+<!-- ======================================================== -->
+
+<project name="woproject" default="check" basedir=".">
+	<property file="${user.home}${file.separator}Library${file.separator}wobuild.properties"/>
+	
+	<target name="check" depends="check_file,set_other,correct_win,check_env,set_mac">
+	    <fail message="Could not find ${user.home}${file.separator}Library${file.separator}wobuild.properties. There should now be a generated one. Just launch ant again" if="wo.properties.ckeck.failed"/>
+	</target>
+
+	<target name="check_file">
+	    <condition property="wo.properties.ckeck.failed">
+	        <not>
+                    <and>
+    		        <isset property="wo.woroot"/>
+      		        <isset property="wo.wolocalroot"/>
+      		        <isset property="wo.wosystemroot"/>
+      		        <isset property="wo.dir.root"/>
+      		        <isset property="wo.dir.system"/>
+      		        <isset property="wo.dir.library"/>
+      		        <isset property="wo.dir.library.frameworks"/>
+      		        <isset property="wo.dir.local"/>
+      		        <isset property="wo.dir.local.library"/>
+      		        <isset property="wo.dir.local.library.frameworks"/>
+      		        <isset property="wo.dir.user.home.library"/>
+      		        <isset property="wo.dir.user.home.library.frameworks"/>
+      	            </and>
+    		</not>
+  	    </condition>
+  	</target>
+	
+	<target name="correct_win" if="correct.win">
+		
+		<replaceregexp file="${user.home}${file.separator}Library${file.separator}wobuild.properties" match="\\:" replace=":" byline="false" flags="g"/>
+		<replaceregexp file="${user.home}${file.separator}Library${file.separator}wobuild.properties" match="\\\\" replace="/" byline="false" flags="g"/>
+				
+	</target>
+
+	<target name="set_other" if="wo.properties.ckeck.failed">
+	
+		<property environment="env"/>
+		
+		<mkdir dir="${user.home}${file.separator}Library"/>
+		
+		<propertyfile file="${user.home}${file.separator}Library${file.separator}wobuild.properties" comment="This file stores the wo specific properties">
+  			<entry  key="wo.woroot" value="${env.NEXT_ROOT}"/>
+ 			<entry  key="wo.wolocalroot" value="${env.NEXT_ROOT}/Local"/>
+ 			<entry  key="wo.wosystemroot" value="${env.NEXT_ROOT}"/>
+ 			<entry  key="wo.dir.root" value="${env.NEXT_ROOT}"/>
+ 			<entry  key="wo.dir.system" value="${env.NEXT_ROOT}"/>
+ 			<entry  key="wo.dir.library" value="${env.NEXT_ROOT}/Library"/>
+ 			<entry  key="wo.dir.library.frameworks" value="${env.NEXT_ROOT}/Library/Frameworks"/>
+ 			<entry  key="wo.dir.local" value="${env.NEXT_ROOT}/Local"/>
+ 			<entry  key="wo.dir.local.library" value="${env.NEXT_ROOT}/Local/Library"/>
+ 			<entry  key="wo.dir.local.library.frameworks" value="${env.NEXT_ROOT}/Local/Library/Frameworks"/>
+ 			<entry  key="wo.dir.user.home.library" value="${user.home}/Local/Library"/>
+ 			<entry  key="wo.dir.user.home.library.frameworks" value="${user.home}/Local/Library/Frameworks"/>
+		</propertyfile>
+		
+		<condition property="correct.win">
+			<and>
+				<os family="windows"/>
+				<istrue  value="${wo.properties.ckeck.failed}"/>
+			</and>
+		</condition> 
+		
+	</target>
+	
+	<target name="set_mac" if="env.ckeck.failed">
+	
+		<mkdir dir="${user.home}${file.separator}Library"/>
+	
+		<propertyfile file="${user.home}${file.separator}Library${file.separator}wobuild.properties" comment="This file stores the wo specific properties">
+  			<entry  key="wo.woroot" value="/"/>
+ 			<entry  key="wo.wolocalroot" value="/"/>
+ 			<entry  key="wo.wosystemroot" value="/System"/>
+ 			<entry  key="wo.dir.root" value="/"/>
+ 			<entry  key="wo.dir.system" value="/System"/>
+ 			<entry  key="wo.dir.library" value="/System/Library"/>
+ 			<entry  key="wo.dir.library.frameworks" value="/System/Library/Frameworks"/>
+ 			<entry  key="wo.dir.local" value="/"/>
+ 			<entry  key="wo.dir.local.library" value="/Library"/>
+ 			<entry  key="wo.dir.local.library.frameworks" value="/Library/Frameworks"/>
+ 			<entry  key="wo.dir.user.home.library" value="${user.home}/Library"/>
+ 			<entry  key="wo.dir.user.home.library.frameworks" value="${user.home}/Library/Frameworks"/>
+ 		</propertyfile>
+	</target>
+		
+	<target name="check_env" if="wo.properties.ckeck.failed">
+		<property environment="env"/>
+		 <condition property="env.ckeck.failed">
+		 	<not>
+    			<isset property="env.NEXT_ROOT"/>
+    		</not>
+  		</condition>
+	</target>
+	
+</project>

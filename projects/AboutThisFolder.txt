@@ -1,0 +1,15 @@
+If you have the time, it would be great if you can take a look at the new project structure.
+
+How to use it:
+The parent folder of projects should be woproject.
+
+1. At the command line cd to the projects folder.
+2. Call the migrate build script: 'ant -buildfile build_migrate.xml' This will copy the stuff from the woproject folder to the right places in the projects folder.
+3. Call the build script: 'ant'
+
+A clean target is available in both scripts 'build.xml' and 'build_migrate.xml'.
+
+At lot of things are still missing but the concept should be visible:
+- Different folders for the different projects. (homepage, woenvironment, woproject, wolips and maybe the other stuff in woproject like NSLog, the Sybase Plugin and so on)
+- One buildscript per project which can be called indirectly trough the build script in the projects folder.
+- Buildscripts to separate 'data and code'. Take a look at the woproject build script. It sets up the classpath and some properties and calls the script 'ant-style-project.xml' to compile the classes.

@@ -1,0 +1,14 @@
+    <!-- ========================================== -->
+    <!-- Delete .DS_Store files.                    -->
+    <!-- ========================================== -->
+
+<project name="woproject" default=".ds_store" basedir=".">
+    <!-- ========================================== -->
+    <!-- Delete .DS_Store files.                    -->
+    <!-- ========================================== -->
+    <target name=".ds_store">
+        <delete>
+            <fileset dir="." includes="**/.DS_Store"/>
+        </delete>
+    </target>	
+</project>
