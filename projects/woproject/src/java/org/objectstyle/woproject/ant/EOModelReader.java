@@ -1,8 +1,8 @@
 /* ====================================================================
- * 
- * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 The ObjectStyle Group 
+ * The ObjectStyle Group Software License, Version 1.0
+ *
+ * Copyright (c) 2002 The ObjectStyle Group
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,15 +18,15 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution, if
- *    any, must include the following acknowlegement:  
- *       "This product includes software developed by the 
+ *    any, must include the following acknowlegement:
+ *       "This product includes software developed by the
  *        ObjectStyle Group (http://objectstyle.org/)."
  *    Alternately, this acknowlegement may appear in the software itself,
  *    if and wherever such third-party acknowlegements normally appear.
  *
- * 4. The names "ObjectStyle Group" and "Cayenne" 
+ * 4. The names "ObjectStyle Group" and "Cayenne"
  *    must not be used to endorse or promote products derived
- *    from this software without prior written permission. For written 
+ *    from this software without prior written permission. For written
  *    permission, please contact andrus@objectstyle.org.
  *
  * 5. Products derived from this software may not be called "ObjectStyle"
@@ -62,22 +62,31 @@ import org.objectstyle.cayenne.wocompat.EOModelProcessor;
  * WebObjects-friendly subclass of Cayenne EOModelProcessor.
  * Unlike Cayenne version, this processor uses data types
  * specific to WebObjects.
- * 
+ *
  * @author Andrei Adamchik
  */
 public class EOModelReader extends EOModelProcessor {
+    protected boolean useValueType;
 
     /**
      * Constructor for EOModelProcessor.
      */
     public EOModelReader() {
-        super();
+        this(false);
+    }
+
+    /**
+     * Constructor for EOModelProcessor.
+     */
+    public EOModelReader(boolean useValueType) {
+        this.useValueType = useValueType;
     }
 
     /**
      * @see org.objectstyle.cayenne.wocompat.EOModelProcessor#makeHelper(String)
      */
-    protected EOModelHelper makeHelper(String arg0) throws Exception {
+    protected EOModelHelper makeHelper(String arg0, boolean genereateClientClass)
+        throws Exception {
         return new WOFriendlyHelper(arg0);
     }
 
@@ -89,13 +98,27 @@ public class EOModelReader extends EOModelProcessor {
 
         /**
          * Returns WO common Java types.
+         * 
+         * @deprecated Corresponding super method is deprecated. 
+         * Use {@link #javaTypeForEOModelerType(String, String)}
          */
         public String javaTypeForEOModelerType(String type) {
-            if (type.equals("NSCalendarDate")) {
+            return javaTypeForEOModelerType(type, null);
+        }
+
+        public String javaTypeForEOModelerType(String valueClassName, String valueType) {
+            if (valueClassName.equals("NSCalendarDate")) {
                 return "com.webobjects.foundation.NSTimestamp";
-            } else {
-                return super.javaTypeForEOModelerType(type);
             }
+
+            if (valueClassName.equals("NSData")) {
+                return "com.webobjects.foundation.NSData";
+            }
+
+            // hide valueType if we are configured to do so
+            return super.javaTypeForEOModelerType(
+                valueClassName,
+                useValueType ? valueType : null);
         }
     }
 }
