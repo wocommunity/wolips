@@ -61,7 +61,7 @@
          </copy>
     </target>
 
-    <target name="dist" depends="prepare,java">
+    <target name="dist" depends="prepare,java,api">
          <!-- Copy source code -->
          <copy todir="${dist-wolips}/src">
              <fileset dir="src/wolips"/>
@@ -90,6 +90,7 @@
     <target name="prepare">
         <mkdir dir="${build}/wolips"/>
         <mkdir dir="${dist-wolips}/lib"/>
+        <mkdir dir="${dist-wolips}/doc/api"/>
     </target>
 
 
@@ -141,7 +142,7 @@
 
         <javadoc   packagenames="org.objectstyle.woproject.wolips.*"
                    defaultexcludes="yes"
-                   destdir="${dist}/doc/api"
+                   destdir="${dist-wolips}/doc/api"
                    author="true"
                    version="true"
                    use="true"
