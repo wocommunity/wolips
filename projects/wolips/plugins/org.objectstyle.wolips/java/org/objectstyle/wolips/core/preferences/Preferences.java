@@ -76,12 +76,6 @@ import org.objectstyle.wolips.core.util.QuotedStringTokenizer;
  */
 public class Preferences {
 
-	public static final String PREF_MODEL_NAVIGATOR_FILTER =
-		"org.objectstyle.wolips.preference.ModelNavigatorFilter";
-	public static final String PREF_WO_NAVIGATOR_FILTER =
-		"org.objectstyle.wolips.preference.WONavigatorFilter";
-	public static final String PREF_PRODUCT_NAVIGATOR_FILTER =
-		"org.objectstyle.wolips.preference.ProductNavigatorFilter";
 	public static final String PREF_ANT_BUILD_FILE =
 		"org.objectstyle.wolips.preference.AntBuildFile";
 	public static final String PREF_RUN_WOBUILDER_ON_BUILD =
@@ -96,8 +90,6 @@ public class Preferences {
 		"org.objectstyle.wolips.Preference.NSProjectSearch";
 	public static final String PREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH =
 		"org.objectstyle.wolips.Preference.RebuildWOBuildPropertiesOnNextLaunch";
-	public static final String PREF_LOG_LEVEL =
-		"org.objectstyle.wolips.Preference.LogLevel";
 	public static final String PREF_WOLIPS_VERSION_EARLY_STARTUP =
 		"org.objectstyle.wolips.Preference.WOLipsVersionEarlyStartup";
 	public static final String PREF_PBWO_PROJECT_UPDATE =
@@ -160,27 +152,6 @@ public class Preferences {
 				Preferences.falseString);
 		if (Preferences.SET_DEFAULTS_STRING == null
 			|| Preferences.SET_DEFAULTS_STRING.equals(
-				Preferences.PREF_MODEL_NAVIGATOR_FILTER))
-			store.setDefault(
-				Preferences.PREF_MODEL_NAVIGATOR_FILTER,
-				PreferencesMessages.getString(
-					"Preferences.ModelNavigatorFilter.Default"));
-		if (Preferences.SET_DEFAULTS_STRING == null
-			|| Preferences.SET_DEFAULTS_STRING.equals(
-				Preferences.PREF_WO_NAVIGATOR_FILTER))
-			store.setDefault(
-				Preferences.PREF_WO_NAVIGATOR_FILTER,
-				PreferencesMessages.getString(
-					"Preferences.WONavigatorFilter.Default"));
-		if (Preferences.SET_DEFAULTS_STRING == null
-			|| Preferences.SET_DEFAULTS_STRING.equals(
-				Preferences.PREF_PRODUCT_NAVIGATOR_FILTER))
-			store.setDefault(
-				Preferences.PREF_PRODUCT_NAVIGATOR_FILTER,
-				PreferencesMessages.getString(
-					"Preferences.ProductNavigatorFilter.Default"));
-		if (Preferences.SET_DEFAULTS_STRING == null
-			|| Preferences.SET_DEFAULTS_STRING.equals(
 				Preferences.PREF_OPEN_WOCOMPONENT_ACTION_INCLUDES_OPEN_HTML))
 			store.setDefault(
 				Preferences.PREF_OPEN_WOCOMPONENT_ACTION_INCLUDES_OPEN_HTML,
@@ -207,11 +178,6 @@ public class Preferences {
 			store.setDefault(
 				Preferences.PREF_WOLIPS_VERSION_EARLY_STARTUP,
 				"0.0.0");
-		if (Preferences.SET_DEFAULTS_STRING == null
-			|| Preferences.SET_DEFAULTS_STRING.equals(Preferences.PREF_LOG_LEVEL))
-			store.setDefault(
-				Preferences.PREF_LOG_LEVEL,
-				PreferencesMessages.getString("Preferences.LogLevel.Default"));
 		if (Preferences.SET_DEFAULTS_STRING == null
 			|| Preferences.SET_DEFAULTS_STRING.equals(
 				Preferences.PREF_PBWO_PROJECT_UPDATE))
@@ -305,24 +271,6 @@ public class Preferences {
 	public static IPreferenceStore getPreferenceStore() {
 		return WOLipsPlugin.getDefault().getPreferenceStore();
 	}
-
-	/*	public static String[] getStringArrayForKey(String key, String separator) {
-			String string = Preferences.getString(key);
-			if (string == null)
-				return new String[0];
-			QuotedStringTokenizer stringTokenizer =
-				new QuotedStringTokenizer(string, separator);
-			Vector vector = new Vector();
-			while (stringTokenizer.hasMoreTokens()) {
-				vector.add(stringTokenizer.nextToken());
-			}
-			String[] stringArray = new String[vector.size()];
-			for (int i = 0; i < vector.size(); i++) {
-				stringArray[i] = (String) vector.elementAt(i);
-			}
-			return stringArray;
-		}
-	*/
 
 	public static IIncludeInfo[] getIncludeInfoForKey(String key) {
 		String string = Preferences.getString(key);
@@ -499,20 +447,6 @@ public class Preferences {
 	/**
 	 * @return
 	 */
-	public static String getPREF_LOG_LEVEL() {
-		return Preferences.getString(Preferences.PREF_LOG_LEVEL);
-	}
-
-	/**
-	 * @return
-	 */
-	public static String getPREF_MODEL_NAVIGATOR_FILTER() {
-		return Preferences.getString(Preferences.PREF_MODEL_NAVIGATOR_FILTER);
-	}
-
-	/**
-	 * @return
-	 */
 	public static String getPREF_NS_PROJECT_SEARCH_PATH() {
 		return Preferences.getString(Preferences.PREF_NS_PROJECT_SEARCH_PATH);
 	}
@@ -567,13 +501,6 @@ public class Preferences {
 	/**
 	 * @return
 	 */
-	public static String getPREF_PRODUCT_NAVIGATOR_FILTER() {
-		return Preferences.getString(Preferences.PREF_PRODUCT_NAVIGATOR_FILTER);
-	}
-
-	/**
-	 * @return
-	 */
 	public static boolean getPREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH() {
 		return Preferences.getBoolean(
 			Preferences.PREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH);
@@ -604,13 +531,6 @@ public class Preferences {
 	/**
 	 * @return
 	 */
-	public static String getPREF_WO_NAVIGATOR_FILTER() {
-		return Preferences.getString(Preferences.PREF_WO_NAVIGATOR_FILTER);
-	}
-
-	/**
-	 * @return
-	 */
 	public static String getPREF_WOLIPS_VERSION_EARLY_STARTUP() {
 		return Preferences.getString(
 			Preferences.PREF_WOLIPS_VERSION_EARLY_STARTUP);
@@ -628,20 +548,6 @@ public class Preferences {
 	 */
 	public static void setPREF_LAUNCH_GLOBAL(String string) {
 		Preferences.setString(Preferences.PREF_LAUNCH_GLOBAL, string);
-	}
-
-	/**
-	 * @param string
-	 */
-	public static void setPREF_LOG_LEVEL(String string) {
-		Preferences.setString(Preferences.PREF_LOG_LEVEL, string);
-	}
-
-	/**
-	 * @param string
-	 */
-	public static void setPREF_MODEL_NAVIGATOR_FILTER(String string) {
-		Preferences.setString(Preferences.PREF_MODEL_NAVIGATOR_FILTER, string);
 	}
 
 	/**
@@ -706,15 +612,6 @@ public class Preferences {
 	/**
 	 * @param string
 	 */
-	public static void setPREF_PRODUCT_NAVIGATOR_FILTER(String string) {
-		Preferences.setString(
-			Preferences.PREF_PRODUCT_NAVIGATOR_FILTER,
-			string);
-	}
-
-	/**
-	 * @param string
-	 */
 	public static void setPREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH(boolean value) {
 		Preferences.setBoolean(
 			Preferences.PREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH,
@@ -742,13 +639,6 @@ public class Preferences {
 	 */
 	public static void setPREF_SHOW_BUILD_OUTPUT(boolean value) {
 		Preferences.setBoolean(Preferences.PREF_SHOW_BUILD_OUTPUT, value);
-	}
-
-	/**
-	 * @param string
-	 */
-	public static void setPREF_WO_NAVIGATOR_FILTER(String string) {
-		Preferences.setString(Preferences.PREF_WO_NAVIGATOR_FILTER, string);
 	}
 
 	/**

@@ -163,21 +163,6 @@ public class SupportContentProvider extends AbstractTreeContentProvider {
 		preferencesNode.addChild(
 			createNode(
 				PreferencesMessages.getString(
-					"Preferences.ModelNavigatorFilter.Label"),
-				Preferences.getPREF_MODEL_NAVIGATOR_FILTER()));
-		preferencesNode.addChild(
-			createNode(
-				PreferencesMessages.getString(
-					"Preferences.WONavigatorFilter.Label"),
-				Preferences.getPREF_WO_NAVIGATOR_FILTER()));
-		preferencesNode.addChild(
-			createNode(
-				PreferencesMessages.getString(
-					"Preferences.ProductNavigatorFilter.Label"),
-				Preferences.getPREF_PRODUCT_NAVIGATOR_FILTER()));
-		preferencesNode.addChild(
-			createNode(
-				PreferencesMessages.getString(
 					"Preferences.RunAntAsExternalTool.Label"),
 				Preferences.getPREF_RUN_ANT_AS_EXTERNAL_TOOL() + ""));
 		preferencesNode.addChild(
