@@ -30,9 +30,9 @@
       <import plugin="org.eclipse.debug.ui"/>
       <import plugin="org.eclipse.ui.externaltools"/>
       <import plugin="org.objectstyle.wolips"/>
-      <import plugin="org.objectstyle.cayenne"/>
-      <import plugin="org.objectstyle.logging"/>
-      <import plugin="org.objectstyle.woproject"/>
+      <import plugin="org.objectstyle.wolips.cayenne"/>
+      <import plugin="org.objectstyle.wolips.logging"/>
+      <import plugin="org.objectstyle.wolips.woproject"/>
       <import plugin="jmechanic.eclipse.profiler"/>
    </requires>
 <!-- =================================================================================== -->
