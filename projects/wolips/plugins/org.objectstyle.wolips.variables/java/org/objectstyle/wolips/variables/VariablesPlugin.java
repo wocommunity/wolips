@@ -54,6 +54,7 @@
  *
  */
 package org.objectstyle.wolips.variables;
+
 import java.net.URL;
 import java.util.Dictionary;
 import java.util.MissingResourceException;
@@ -72,19 +73,25 @@ import org.objectstyle.woenvironment.env.WOEnvironment;
 import org.objectstyle.woenvironment.env.WOVariables;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
+
 /**
  * The main plugin class to be used in the desktop.
  */
 public class VariablesPlugin extends AbstractUIPlugin {
 	private static final String build_user_home_properties = "woproperties.xml";
+
 	private static final String build_user_home_properties_pde_info = "PDE User please copy "
 			+ VariablesPlugin.build_user_home_properties
 			+ " from the woproject/projects/buildscripts to the wolips variables plugin.";
+
 	//The shared instance.
 	private static VariablesPlugin plugin;
+
 	//Resource bundle.
 	private ResourceBundle resourceBundle;
+
 	private WOEnvironment woEnvironment;
+
 	/**
 	 * The constructor.
 	 */
@@ -98,32 +105,39 @@ public class VariablesPlugin extends AbstractUIPlugin {
 			this.resourceBundle = null;
 		}
 	}
+
 	private void logError(String string) {
 		this.getLog().log(
 				new Status(IStatus.ERROR, VariablesPlugin.getPluginId(),
 						IStatus.ERROR, string, null));
 	}
+
 	/**
 	 * Method setUpPreferencesForPropertiesFile.
 	 */
 	private void setUpPreferencesForPropertiesFile() {
-		Dictionary dictionary = VariablesPlugin.getDefault().getBundle().getHeaders();
-		String currentVersion = (String)dictionary.get(Constants.BUNDLE_VERSION);
+		Dictionary dictionary = VariablesPlugin.getDefault().getBundle()
+				.getHeaders();
+		String currentVersion = (String) dictionary
+				.get(Constants.BUNDLE_VERSION);
 		String preferencesVersion = Preferences
 				.getPREF_WOLIPS_VERSION_EARLY_STARTUP();
 		if (!currentVersion.equals(preferencesVersion))
 			Preferences.setPREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH(true);
 	}
+
 	/**
 	 * Method setUpPreferencesAfterPropertiesFile.
 	 */
 	private void setUpPreferencesAfterPropertiesFile() {
-		Dictionary dictionary = VariablesPlugin.getDefault().getBundle().getHeaders();
-		String currentVersion = (String)dictionary.get(Constants.BUNDLE_VERSION);
+		Dictionary dictionary = VariablesPlugin.getDefault().getBundle()
+				.getHeaders();
+		String currentVersion = (String) dictionary
+				.get(Constants.BUNDLE_VERSION);
 		Preferences.setPREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH(false);
-		Preferences
-				.setPREF_WOLIPS_VERSION_EARLY_STARTUP(currentVersion);
+		Preferences.setPREF_WOLIPS_VERSION_EARLY_STARTUP(currentVersion);
 	}
+
 	/**
 	 * Method writePropertiesFileToUserHome.
 	 * 
@@ -135,7 +149,8 @@ public class VariablesPlugin extends AbstractUIPlugin {
 		URL relativeBuildFile = null;
 		URL buildFile = null;
 		IProgressMonitor monitor = null;
-		relativeBuildFile = this.find(new Path(VariablesPlugin.build_user_home_properties));
+		relativeBuildFile = this.find(new Path(
+				VariablesPlugin.build_user_home_properties));
 		buildFile = Platform.asLocalURL(relativeBuildFile);
 		monitor = new NullProgressMonitor();
 		AntRunner runner = null;
@@ -154,16 +169,20 @@ public class VariablesPlugin extends AbstractUIPlugin {
 			monitor = null;
 		}
 	}
+
 	/**
 	 * Returns the shared instance.
+	 * 
 	 * @return
 	 */
 	public static VariablesPlugin getDefault() {
 		return plugin;
 	}
+
 	/**
 	 * Returns the string from the plugin's resource bundle, or 'key' if not
 	 * found.
+	 * 
 	 * @param key
 	 * @return
 	 */
@@ -176,44 +195,65 @@ public class VariablesPlugin extends AbstractUIPlugin {
 			return key;
 		}
 	}
+
 	/**
 	 * Returns the plugin's resource bundle,
+	 * 
 	 * @return
 	 */
 	public ResourceBundle getResourceBundle() {
 		return this.resourceBundle;
 	}
+
+	private IPath fixMissingSpearatorAfterDevice(String string) {
+		if (string.length() > 0 && string.charAt(1) == ':') {
+			return new Path(string.substring(2)).setDevice(string.substring(0,
+					2));
+		}
+		return new Path(string);
+	}
+
 	/**
 	 * @return the path to the local root
 	 */
 	public IPath getLocalRoot() {
-		return new Path(this.getWOEnvironment().getWOVariables().localRoot());
+		return this.fixMissingSpearatorAfterDevice(this.getWOEnvironment()
+				.getWOVariables().localRoot());
 	}
+
 	/**
 	 * @return the path to the system root
 	 */
 	public IPath getSystemRoot() {
-		return new Path(this.getWOEnvironment().getWOVariables().systemRoot());
+		return this.fixMissingSpearatorAfterDevice(this.getWOEnvironment()
+				.getWOVariables().systemRoot());
 	}
+
 	/**
 	 * @return the path to the user home
 	 */
 	public IPath getUserHome() {
-		return new Path(this.getWOVariables().userHome());
+		return this.fixMissingSpearatorAfterDevice(this.getWOVariables()
+				.userHome());
 	}
+
 	/**
 	 * @return the path to external build root
 	 */
 	public IPath getExternalBuildRoot() {
-		return new Path(this.getWOVariables().userHome() + "/Roots");
+		return this.fixMissingSpearatorAfterDevice(this.getWOVariables()
+				.userHome()
+				+ "/Roots");
 	}
+
 	/**
 	 * @return the names of the framework roots
 	 */
 	public String[] getFrameworkRootsNames() {
-		return new String[]{"External Build Root", "User Home", "Local",
-				"System"};
+		return new String[] { "External Build Root", "User Home", "Local",
+				"System" };
 	}
+
 	/**
 	 * @return the paths to the framework roots
 	 */
@@ -225,18 +265,22 @@ public class VariablesPlugin extends AbstractUIPlugin {
 		paths[3] = this.appendLibraryFrameworks(this.getSystemRoot());
 		return paths;
 	}
+
 	private IPath appendLibraryFrameworks(IPath path) {
 		return path.append("Library").append("Frameworks");
 	}
+
 	private WOVariables getWOVariables() {
 		return this.getWOEnvironment().getWOVariables();
 	}
+
 	private WOEnvironment getWOEnvironment() {
 		if (this.woEnvironment == null) {
 			this.woEnvironment = new WOEnvironment();
 		}
 		return this.woEnvironment;
 	}
+
 	/**
 	 * Returns the PluginID.
 	 * 
@@ -245,11 +289,12 @@ public class VariablesPlugin extends AbstractUIPlugin {
 	public static String getPluginId() {
 		if (plugin != null) {
 			Dictionary dictionary = plugin.getBundle().getHeaders();
-			String pluginID = (String)dictionary.get(Constants.BUNDLE_NAME);
+			String pluginID = (String) dictionary.get(Constants.BUNDLE_NAME);
 			return pluginID;
 		}
 		return null;
 	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
