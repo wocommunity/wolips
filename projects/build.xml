@@ -15,6 +15,7 @@
     <property file="default.properties"/>
     <property file="${project.lib.dir}/lib.properties"/>
 
+	
     <!-- ========================================== -->
     <!-- Print help.                                -->
     <!-- ========================================== -->
@@ -31,8 +32,17 @@
         *  6. check         - Stores the wo specific properties in a file.
         *  7. .ds_store     - delete .DS_store files
         *  8. buildserver   - Target for the buildserver
-        * Build environment:
-        *
+        ****************************************
+        </echo>
+    </target>
+    
+    	
+    <!-- ========================================== -->
+    <!-- Print environment.                         -->
+    <!-- ========================================== -->
+    <target name="print.environment">
+        <echo>
+        ****************************************
         * java.home = ${java.home}
         * build.compiler = ${build.compiler}
         * ant.home = ${ant.home}
@@ -60,7 +70,9 @@
     <!-- Build woproject.                           -->
     <!-- ========================================== -->
     <target name="woproject">
-	<ant dir="${project.woproject.dir}" target="all"/>
+	<ant dir="${project.woproject.dir}" target="all">
+		<property name="ant.home" value="${ant.home}"/>
+	</ant>
     </target>
 
     <!-- ========================================== -->
@@ -95,7 +107,7 @@
     <!-- ========================================== -->
     <!-- Build buildserver.                         -->
     <!-- ========================================== -->
-    <target name="buildserver" depends="build_migrate,dist,test">
+    <target name="buildserver" depends="print.environment,build_migrate,dist,test">
     </target>
 
     <!-- ============================================= -->
