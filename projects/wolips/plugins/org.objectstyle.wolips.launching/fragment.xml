@@ -18,6 +18,7 @@
 
    <requires>
       <import plugin="org.eclipse.jdt.debug.ui"/>
+      <import plugin="org.eclipse.core.runtime.compatibility"/>
    </requires>
 
 
@@ -63,8 +64,8 @@
       <shortcut
             label="WOApplication"
             icon="icons/launching/WOLips-launching.gif"
-            class="org.objectstyle.wolips.launching.WOJavaApplicationLaunchShortcut"
             modes="run, debug"
+            class="org.objectstyle.wolips.launching.WOJavaApplicationLaunchShortcut"
             id="org.objectstyle.wolips.launching.WOJavaApplicationLaunchShortcut">
          <perspective
                id="org.eclipse.jdt.ui.JavaPerspective">
@@ -86,7 +87,6 @@
          </perspective>
       </shortcut>
    </extension>
-   
    <extension
          point="org.eclipse.jdt.launching.classpathProviders">
       <classpathProvider
@@ -94,12 +94,12 @@
             id="org.objectstyle.wolips.launching.WORuntimeClasspath">
       </classpathProvider>
    </extension>
-   
-  	<extension point="org.eclipse.jdt.launching.runtimeClasspathEntryResolvers">
-		<runtimeClasspathEntryResolver 
-			id="org.objectstyle.wolips.launching.WORuntimeClasspathProvider"
-			class="org.objectstyle.wolips.launching.WORuntimeClasspathResolver"
-			container="org.objectstyle.wolips.WO_CLASSPATH">
-		</runtimeClasspathEntryResolver>
-	</extension>
+   <extension
+         point="org.eclipse.jdt.launching.runtimeClasspathEntryResolvers">
+      <runtimeClasspathEntryResolver
+            container="org.objectstyle.wolips.WO_CLASSPATH"
+            class="org.objectstyle.wolips.launching.WORuntimeClasspathResolver"
+            id="org.objectstyle.wolips.launching.WORuntimeClasspathProvider">
+      </runtimeClasspathEntryResolver>
+   </extension>
 </fragment>

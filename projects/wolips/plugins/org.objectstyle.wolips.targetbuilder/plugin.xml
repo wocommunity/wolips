@@ -19,6 +19,7 @@
       <import plugin="org.eclipse.jdt.core"/>
       <import plugin="org.objectstyle.wolips"/>
       <import plugin="org.objectstyle.wolips.cayenne"/>
+      <import plugin="org.eclipse.core.runtime.compatibility"/>
    </requires>
 
 

@@ -17,6 +17,7 @@
 
    <requires>
       <import plugin="org.eclipse.jface.text"/>
+      <import plugin="org.eclipse.core.runtime.compatibility"/>
    </requires>
 
 
