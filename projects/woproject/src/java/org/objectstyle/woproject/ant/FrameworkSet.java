@@ -61,7 +61,6 @@ import java.io.FilenameFilter;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.ProjectHelper;
 import org.apache.tools.ant.types.FileSet;
-import org.apache.tools.ant.DirectoryScanner;
 
 /**
  * Customized subclass of FileSet used to locate frameworks.

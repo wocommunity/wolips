@@ -56,13 +56,11 @@
 package org.objectstyle.woproject.ant;
 
 import java.io.File;
-import java.util.Iterator;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Vector;
 
 import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.Javac;
 import org.apache.tools.ant.types.Path;
@@ -91,7 +89,8 @@ public class WOCompile extends Javac {
         int size = frameworkSets.size();
         for (int i = 0; i < size; i++) {
             FrameworkSet fs = (FrameworkSet) frameworkSets.get(i);
-            HashSet frameworksToSkip = new HashSet();
+            //Never read locally
+            //HashSet frameworksToSkip = new HashSet();
 
             try {
                 String[] frameworks = fs.getFrameworks();
