@@ -61,7 +61,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IProjectNature;
@@ -73,6 +72,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
+import org.objectstyle.wolips.core.project.WOLipsProject;
 import org.objectstyle.wolips.projectbuild.WOProjectBuildConstants;
 
 
@@ -93,57 +93,19 @@ public class AntNature implements IProjectNature, WOProjectBuildConstants {
 	  * @see org.eclipse.core.resources.IProjectNature#configure()
 	  */
 	 public void configure() throws CoreException {
-	   IProject project = getProject();
-
-	   System.out.println("configure - "+project);
-    
-	   IProjectDescription desc = project.getDescription();
-    
-	   ICommand bc[] = desc.getBuildSpec();
-    
-	   boolean found = false;
-    
-	   for (int i = 0; i < bc.length; i++) {
-		 if (bc[i].getBuilderName().equals (ANT_BUILDER_ID)) {
-		   found = true;
-		 }
-	   }
-   if (!found) {
-		 List buildCommands = new ArrayList(Arrays.asList(bc));
-		 ICommand newCommand = desc.newCommand();
-		 newCommand.setBuilderName(ANT_BUILDER_ID);
-		 buildCommands.add(newCommand);
-		 desc.setBuildSpec((ICommand[])buildCommands.toArray(new ICommand[buildCommands.size()]));
-		 project.setDescription(desc, null);
-	   }
-   }
+	 	WOLipsProject woLipsProject = new WOLipsProject(this.getProject());
+	 	if(!woLipsProject.getBuilderAccessor().isBuilderInstalled(ANT_BUILDER_ID))
+		woLipsProject.getBuilderAccessor().installBuilder(ANT_BUILDER_ID);
+	}
 
 	 /**
 	  * @see org.eclipse.core.resources.IProjectNature#deconfigure()
 	  */
 	 public void deconfigure() throws CoreException {
-	   IProject project = getProject();
-    
-	   System.out.println("deconfigure - "+project);
-	   IProjectDescription desc = project.getDescription();
-    
-	   ICommand bc[] = desc.getBuildSpec();
-    
-	   ICommand found = null;
-    
-	   for (int i = 0; i < bc.length; i++) {
-		 if (bc[i].getBuilderName().equals (ANT_BUILDER_ID)) {
-		   found = bc[i];
-		 }
-	   }
-    
-	   if (null != found) {
-		 List buildCommands = new ArrayList(Arrays.asList(bc));
-		 buildCommands.remove(found);
-		 desc.setBuildSpec((ICommand[])buildCommands.toArray(new ICommand[buildCommands.size()]));
-		 project.setDescription(desc, null);
-	   }
-    }
+		WOLipsProject woLipsProject = new WOLipsProject(this.getProject());
+		if(woLipsProject.getBuilderAccessor().isBuilderInstalled(ANT_BUILDER_ID))
+		woLipsProject.getBuilderAccessor().removeBuilder(ANT_BUILDER_ID);
+	}
 	/**
 	 * @see org.eclipse.core.resources.IProjectNature#getProject()
 	 */

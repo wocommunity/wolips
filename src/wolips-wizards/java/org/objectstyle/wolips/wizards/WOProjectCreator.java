@@ -64,7 +64,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.tools.ant.DirectoryScanner;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -374,14 +373,12 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 			case IResource.PROJECT :
 				final IProject newProjectHandle = (IProject) parentResource;
 				try {
-
 					IWorkspace workspace = ResourcesPlugin.getWorkspace();
 					final IProjectDescription description =
 						workspace.newProjectDescription(
 							newProjectHandle.getName());
 					description.setLocation(locationPath);
 					description.setNatureIds(natureIds);
-
 					if (!newProjectHandle.exists()) {
 						// set description only in this way
 						// to ensure project location is set
@@ -392,12 +389,10 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 					if (!newProjectHandle.isOpen()) {
 						newProjectHandle.open(null);
 					}
-					WOLipsProject woLipsProject = new WOLipsProject(newProjectHandle);
-					woLipsProject.getNaturesAccessor().callConfigure();
 				} catch (CoreException e) {
 					throw new InvocationTargetException(e);
 				}
-								// add wo classpath entries
+				// add wo classpath entries
 				IJavaProject myJavaProject = JavaCore.create(newProjectHandle);
 				try {
 					ProjectHelper.installBuilder(
@@ -406,6 +401,16 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 				} catch (Exception anException) {
 					WOLipsLog.log(anException);
 				}
+				try {
+
+					//newProjectHandle.setDescription(newProjectHandle.getDescription(), new SubProgressMonitor(monitor, 1000));
+					WOLipsProject woLipsProject =
+						new WOLipsProject(newProjectHandle);
+					woLipsProject.getNaturesAccessor().callConfigure();
+				} catch (Exception anException) {
+					WOLipsLog.log(anException);
+				}
+
 				NodeList classpathNodeList =
 					elementForTemplate.getElementsByTagName("classpathentry");
 				ArrayList allClasspathEntriesResolved =

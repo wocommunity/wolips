@@ -397,12 +397,11 @@ public class WOLipsProject implements IWOLipsPluginConstants {
 		 * @throws CoreException
 		 */
 		public void callConfigure() throws CoreException {
-                        /*
-			IProjectNature[] projectNatures = this.getWOLipsNatures();
+			//This is needed by the project wizard
+            IProjectNature[] projectNatures = this.getWOLipsNatures();
 			for (int i = 0; i < projectNatures.length; i++) {
 				projectNatures[i].configure();
 			}
-                        */
 		}
 		/**
 		 * Calls deconfigure on all WOLips natures.
@@ -525,7 +524,7 @@ public class WOLipsProject implements IWOLipsPluginConstants {
 		 * @param anID
 		 * @return boolean
 		 */
-		private boolean isBuilderInstalled(String anID) {
+		public boolean isBuilderInstalled(String anID) {
 			try {
 				ICommand[] nids =
 					this.getProject().getDescription().getBuildSpec();
