@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<welcomePage 
+ title="WOLips">
+ <intro>This page will help familiarize you with WOLips.
+To get started, read the sections below and click on the related links. </intro>
+
+ <item><b>The WOLips Perspective </b>
+To do WO development open to the WOLips Perspective by selecting
+<action pluginId="org.objectstyle.wolips"  class="org.objectstyle.wolips.ui.PerspectiveFactory">Window > Open Perspective > other > WOLips</action>.</item> 
+
+ <item><b>Create New Application </b>
+To start create a <action pluginId="org.objectstyle.wolips" class="org.objectstyle.wolips.actions.OpenWOProjectCreationWizard">application project</action>.</item>
+
+<item><b>Learn more </b>
+To learn more you can browse the <topic id="/org.objectstyle.wolips/toc.xml">WOLips User Guide</topic>.</item>
+
+</welcomePage>
