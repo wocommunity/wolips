@@ -59,7 +59,6 @@ package org.objectstyle.wolips.ui.actions;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.objectstyle.wolips.core.plugin.logging.WOLipsLog;
-import org.objectstyle.wolips.core.project.PBProjectUpdater;
 
 /**
  * @author uli
@@ -88,16 +87,19 @@ public class PBAction extends ActionOnIProject {
 	 */
 	public void run(IAction action) {
 		if (project() != null) {
-			PBProjectUpdater projectUpdater = null;
+			//PBProjectUpdater projectUpdater = null;
 			try {
 				if (action.getId().equals(PBAction.UpdatePBProjectID)) {
+					//todo add progress monitor
+					this.project().close(null);
+					this.project().open(null);
 					//projectUpdater = PBProjectUpdater.instance(project());
 					//projectUpdater.forceRebuild();
 				}
 			} catch (Exception ex) {
 				WOLipsLog.log(ex);
 			} finally {
-				projectUpdater = null;
+				//projectUpdater = null;
 			}
 		}
 	}
