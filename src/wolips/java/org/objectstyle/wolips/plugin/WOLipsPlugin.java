@@ -96,7 +96,7 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 		System.setProperty(
 			"org.apache.commons.logging.LogFactory",
 			"org.objectstyle.wolips.logging.WOLipsLogFactory");
-		LogFactory.getFactory().setAttribute(WOLipsLogFactory.ATTR_GLOBAL_LOG_LEVEL,new Integer(WOLipsLog.TRACE));
+		LogFactory.getFactory().setAttribute(WOLipsLogFactory.ATTR_GLOBAL_LOG_LEVEL,new Integer(Preferences.getString(IWOLipsPluginConstants.PREF_LOG_LEVEL)));
 		WOVariables.log.debug("test");
 		Foundation.loadFoundationClasses();
 		Preferences.setDefaults();
