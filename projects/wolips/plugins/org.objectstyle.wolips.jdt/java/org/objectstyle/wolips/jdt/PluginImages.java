@@ -53,105 +53,57 @@
  * <http://objectstyle.org/>.
  *
  */
-package org.objectstyle.wolips.ant;
 
-import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.Task;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
+package org.objectstyle.wolips.jdt;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.graphics.Image;
 
 /**
  * @author mnolte
- *
+ * @author uli
  */
-public class RefreshEclipse extends Task {
+public class PluginImages {
 
-	private String projectName;
-	private boolean forceFullGarbageCollection = false;
-
-	/**
-	 * Constructor for RefreshEclipse.
-	 */
-	public RefreshEclipse() {
-		super();
+	private static Image WOFRAMEWORK_ROOT_IMAGE;
+	private static Image WOFRAMEWORK_IMAGE;
+	private static Image WOSTANDARD_FRAMEWORK_IMAGE;
+	
+	public static final Image WOFRAMEWORK_ROOT_IMAGE() {
+		if(WOFRAMEWORK_ROOT_IMAGE == null)
+			WOFRAMEWORK_ROOT_IMAGE = createImageDescriptor("icons/frameworks/framework_root.gif").createImage(false);
+		return WOFRAMEWORK_ROOT_IMAGE;
 	}
-	/**
-	 * @see org.apache.tools.ant.Task#execute()
-	 */
-	public void execute() throws BuildException {
-		validateAttributes();
+	
+	public static final Image WOFRAMEWORK_IMAGE() {
+		if(WOFRAMEWORK_IMAGE == null)
+			WOFRAMEWORK_IMAGE = createImageDescriptor("icons/frameworks/framework.gif").createImage(false);
+		return WOFRAMEWORK_IMAGE;
+	}
+	
+	public static final Image WOSTANDARD_FRAMEWORK_IMAGE() {
+		if(WOSTANDARD_FRAMEWORK_IMAGE == null)
+			WOSTANDARD_FRAMEWORK_IMAGE = createImageDescriptor("icons/frameworks/standard_framework.gif").createImage(false);
+		return WOSTANDARD_FRAMEWORK_IMAGE;
+	}
+	
 
-		IProject actualProject =
-			ResourcesPlugin.getWorkspace().getRoot().getProject(
-				getProjectName());
-		if (actualProject.exists()) {
-			try {
-				System.out.println("Refreshing view...");
-				actualProject.refreshLocal(IProject.DEPTH_INFINITE, null);
-				System.out.println("done");
-			} catch (CoreException e) {
-				System.out.println("Exception while trying to refresh project");
-				return;
-			}
-			finally {
-				actualProject = null;
-			}
-			forceFullGarbageCollection();
-		} else {
-			System.out.println(
-				"Project " + actualProject.getName() + " does not exist");
+	/**
+	 * Utility method to create an <code>ImageDescriptor</code>
+	 * from a path to a file.
+	 * @param path
+	 * @return
+	 */
+	private static ImageDescriptor createImageDescriptor(String path) {
+		try {
+			URL url = new URL(JdtPlugin.baseURL(), path);
+			return ImageDescriptor.createFromURL(url);
+		} catch (MalformedURLException e) {
+			JdtPlugin.getDefault().logError(" " + e.getStackTrace());
 		}
-	}
-
-	/**
-	 * Method validateAttributes.
-	 */
-	private void validateAttributes() throws BuildException {
-		if (projectName == null) {
-			throw new BuildException("'projectName' attribute is missing.");
-		}
-	}
-	/**
-	 * Returns the projectName.
-	 * @return Object
-	 */
-	public String getProjectName() {
-		return projectName;
-	}
-	/**
-	 * Sets the projectName.
-	 * @param projectName The projectName to set
-	 */
-	public void setProjectName(String projectName) {
-		this.projectName = projectName;
-	}
-	/**
-	 * Method forceFullGarbageCollection.
-	 */
-	public void forceFullGarbageCollection() {
-		if (forceFullGarbageCollection) {
-			Runtime runtime = Runtime.getRuntime();
-			System.out.println("Forcing full garbage collection... ");
-			long isFree = runtime.freeMemory();
-			long total = runtime.totalMemory();
-			long wasFree;
-			System.out.println(
-				"Was free    : "
-					+ isFree
-					+ "\t Was used    : "
-					+ (total - isFree));
-			wasFree = isFree;
-			runtime.gc();
-			isFree = runtime.freeMemory();
-			runtime.runFinalization();
-			total = runtime.totalMemory();
-			System.out.println(
-				"Is now free : "
-					+ isFree
-					+ "\t Is now used : "
-					+ (total - isFree));
-			System.out.println("...done");
-		}
+		return ImageDescriptor.getMissingImageDescriptor();
 	}
 }

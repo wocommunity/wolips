@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>org.objectstyle.wolips.ant</name>
+	<name>org.objectstyle.wolips.jdt</name>
 	<comment></comment>
 	<projects>
+		<project>org.objectstyle.wolips.variables</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
