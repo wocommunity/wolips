@@ -58,6 +58,7 @@ package org.objectstyle.wolips.ui.preferences;
 
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.jface.preference.RadioGroupFieldEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
@@ -101,19 +102,38 @@ public class BuildPreferencesPage
 				PreferencesMessages.getString(
 					"Preferences.RunWOBuilderOnBuild.Label"),
 				getFieldEditorParent()));
-		addField(
+		//String name, String labelText, int numColumns, String[][] labelAndValues, Composite parent
+		addField(new RadioGroupFieldEditor(
+			IWOLipsPluginConstants.PREF_RUN_ANT_AS_EXTERNAL_TOOL,
+			PreferencesMessages.getString("Preferences.RunAnt.Label"),
+			2,
+			new String[][] {
+				{
+					PreferencesMessages.getString(
+						"Preferences.RunAnt.Ant.Label"),Preferences.falseString
+					},
+				{
+					PreferencesMessages.getString(
+							"Preferences.RunAnt.ExternalTool.Label"), Preferences.trueString }
+		}, getFieldEditorParent()));
+		/*addField(
 			new BooleanFieldEditor(
 				IWOLipsPluginConstants.PREF_RUN_ANT_AS_EXTERNAL_TOOL,
 				PreferencesMessages.getString(
 					"Preferences.RunAntAsExternalTool.Label"),
-				getFieldEditorParent()));
+				getFieldEditorParent()));*/
 		addField(
 			new BooleanFieldEditor(
 				IWOLipsPluginConstants.PREF_SHOW_BUILD_OUTPUT,
 				PreferencesMessages.getString(
 					"Preferences.ShowBuildOutput.Label"),
 				getFieldEditorParent()));
-		
+
+	}
+	/**
+	 * @see org.eclipse.ui.IWorkbenchPreferencePage#init(IWorkbench)
+	 */
+	public void init(IWorkbench workbench) {
 	}
 	/**
 	 * Method performOK.
@@ -125,10 +145,5 @@ public class BuildPreferencesPage
 			return true;
 		}
 		return false;
-	}
-	/**
-	 * @see org.eclipse.ui.IWorkbenchPreferencePage#init(IWorkbench)
-	 */
-	public void init(IWorkbench workbench) {
 	}
 }

@@ -70,8 +70,8 @@ import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
  */
 public class Preferences {
 
-	private static final String trueString = "true";
-	private static final String falseString = "false";
+	public static final String trueString = "true";
+	public static final String falseString = "false";
 	//set this sting to a preferences key and call set defaults to set the default value for this preferences key
 	private static String SET_DEFAULTS_STRING = null;
 	/**
