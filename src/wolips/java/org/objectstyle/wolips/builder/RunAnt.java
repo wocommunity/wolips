@@ -92,6 +92,30 @@ import org.objectstyle.wolips.preferences.Preferences;
 public class RunAnt {
 
 	private static Hashtable launchConfigurations = new Hashtable();
+	private static Hashtable cachedAntRunner = new Hashtable();
+	
+	/**
+	 * Method antRunner.
+	 * @param buildFile
+	 * @param target
+	 * @return AntRunner
+	 */
+	private static AntRunner antRunner(String buildFile, String target) {
+		String key = buildFile+target;
+		if(cachedAntRunner.containsKey(key))
+		return (AntRunner)cachedAntRunner.get(key);
+		System.out.println("new runner");
+		AntRunner runner = new AntRunner();
+		runner.setBuildFileLocation(buildFile);
+		if (target != null) {
+			String[] targets = new String[1];
+			targets[1] = target;
+			runner.setExecutionTargets(targets);
+		}
+		runner.setArguments("-quiet");
+		cachedAntRunner.put(key, runner);
+		return runner;
+	}
 	/**
 	 * Method asAnt.
 	 * @param buildFile
@@ -106,14 +130,7 @@ public class RunAnt {
 		throws Exception {
 		AntRunner runner = null;
 		try {
-			runner = new AntRunner();
-			runner.setBuildFileLocation(buildFile);
-			if (target != null) {
-				String[] targets = new String[1];
-				targets[1] = target;
-				runner.setExecutionTargets(targets);
-			}
-			runner.setArguments("-quiet");
+			runner = antRunner(buildFile, target);
 			//runner.setArguments("-Dmessage=Building -verbose");
 			monitor.subTask(
 				BuildMessages.getString("Build.SubTask.Name")
