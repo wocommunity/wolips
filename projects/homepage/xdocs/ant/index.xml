@@ -12,20 +12,21 @@
  			information about Ant, go to <a href="http://jakarta.apache.org/ant/index.html">Jakarta 
  			Ant Site</a>):
  				<ul>
- 				<li><a href="wocompile.html">WOCompile</a>: Allows to compile by specifying the frameworks.</li>
-		        <li><a href="woapplication.html">WOApplication</a>: Allows to build WebObjects applications
- 				 without using ProjectBuilder.</li>
- 				<li><a href="woframework.html">WOFramework</a>: Allows to build WebObjects frameworks
- 				 without using ProjectBuilder.</li>
- 				<li><a href="wogen.html">WOGen</a>: Generates and maintains EOEnterprsieObjects
- 				based on EOModel. Ant-based analog of EOGenerator, using "generation gap" design pattern.
+ 				<li><a href="wocompile.html">WOCompile</a>: A Javac task extension that allows including
+ 				WOFrameworks in CLASSPATH.</li>
+		        <li><a href="woapplication.html">WOApplication</a>: A task for assembling WebObjects 
+		        applications.</li>
+ 				<li><a href="woframework.html">WOFramework</a>: A task for assembling WebObjects frameworks.</li>
+ 				<li><a href="wogen.html">WOGen</a>: A task for generating custom Java EO 
+ 				classes from EOModel. 
  				</li>
- 				<li><a href="eomodel.html">EOModel</a>: Maintains EOModel.
+ 				<li><a href="eomodel.html">EOModel</a>: A task for configuring custom connection dictionary 
+ 				for EOModels.
  				</li>
- 				<li><a href="pbxindex.html">PBIndex</a>: Maintains
+ 				<li><a href="pbindex.html">PBIndex</a>: Maintains
  				PB.project file needed for WebObjects tools, even when ProjectBuilderWO is not used.</li>
-				<li><i><font color="red">[New]</font></i> <a href="pbxindex.html">PBXIndex</a>: Maintains
- 				.pbproj file needed for WebObjects tools, even when ProjectBuilder is not used.</li>
+				<li><a href="pbxindex.html">PBXIndex</a>: Maintains
+ 				PBX.pbproj file needed for WebObjects tools, even when ProjectBuilder is not used.</li>
  				</ul>
  			</p>
 
@@ -35,6 +36,15 @@
  				<li><code>[WOProject_installdir]/lib/woproject.jar</code> <i>(needed for all tasks)</i></li>
  				<li><code>[WOProject_installdir]/lib/cayenne.jar</code> <i>(needed for WOGen task only)</i></li>
  			</ul>
+ 			</p>
+ 		</section>
+ 		
+ 		<section name="Ant Data Structures">
+ 			<p>
+ 				<ul>
+ 				<li><a href="frameworkset.html">FrameworkSet</a>: An extension of Ant FileSet to match 
+ 				WOFrameworks.</li>
+ 				</ul>
  			</p>
  		</section>
  		
