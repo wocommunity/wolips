@@ -7,11 +7,6 @@
 <body bgcolor="#FFFFFF">
 <h1>Plug-ins, Features and Fragments</h1>
 <p>Recommended reading: <a href="http://www.eclipse.org/whitepapers/eclipse-overview.pdf">http://www.Eclipse.org/whitepapers/Eclipse-overview.pdf</a></p>
-<p><i>&quot;The Eclipse Platform is an IDE for anything, and for nothing in particular.&quot;</i></p>
-<p><i>&quot;Although the Eclipse Platform has a lot of built-in functionality, 
-  most of that functionality is very generic. It takes additional tools to extend 
-  the Platform to work with new content types, to do new things with existing 
-  content types, and to focus the generic functionality on something specific.&quot;</i></p>
 <p><i>&quot;The Eclipse Platform is built on a mechanism for discovering, integrating, 
   and running modules called plug-ins. A tool provider writes a tool as a separate 
   plug-in that operates on files in the workspace and surfaces its tool-specific 
@@ -39,19 +34,24 @@
   from several separate fragments, each in their own directory or URL. This is 
   the mechanism used to deliver separate language packs for an internationalized 
   plug-in.&quot;</i></p>
-<p>Plug-ins provide functionality to Eclipse. Their code and other contents may 
-  be organised in fragments. Plug-ins are grouped and mangaged as features. Currently 
-  WOLips consists of 4 plug-ins, grouped as 3 features. The main plug-in is organised 
-  in 9 fragments.</p>
 <h2>Features &gt;&gt; Plug-ins &gt;&gt; Fragments</h2>
+<p>Plug-ins provide functionality to Eclipse. Their code and other contents may 
+  be organised in fragments. Fragments are very much like plug-ins (they reside 
+  in the plugins folder). The only difference is that by definition a fragment 
+  is a part of a plug-in. Plug-ins (and fragments) are grouped and managed as 
+  features. Features do not contribute functionality. It is possible, but not 
+  recommended, to skip installing the features.</p>
 <h2></h2>
 <ul>
-  <li><b>org.objectstyle.wolips.feature</b> - 
+  <li><b>org.objectstyle.wolips.feature</b> - This feature manages all the plug-ins 
+    that constitutes WOLips except for the profiling and tests plug-ins. Those 
+    two plug-ins are managed by separate features. If you do not install all the 
+    plug-ins managed by this feature WOLips will not function properly. 
     <ul>
       <li><b>org.objectstyle.wolips</b> - The core. 
         <ul>
           <li><b>org.objectstyle.wolips.devstudio</b> - Support for the devstudio 
-            from project wonder.</li>
+            from project</li>
           <li><b>org.objectstyle.wolips.help</b> - Help</li>
           <li><b>org.objectstyle.wolips.launching</b> - Launch WOApplications.</li>
           <li><b>org.objectstyle.wolips.projectbuild</b> - </li>
@@ -62,15 +62,25 @@
           <li><b>org.objectstyle.wolips.wounit</b> - Unit testing</li>
         </ul>
       </li>
+      <li><b>org.objectstyle.wolips.ant</b> - </li>
+      <li><b>org.objectstyle.wolips.cayenne</b> - </li>
+      <li><b>org.objectstyle.wolips.cayenne.ant</b> - </li>
+      <li><b>org.objectstyle.wolips.cayenne.woproject</b> - </li>
+      <li><b>org.objectstyle.wolips.cayenne.woproject.ant</b> - </li>
       <li><b>org.objectstyle.wolips.targetbuilder</b> - JavaClient support.</li>
     </ul>
   </li>
-  <li><b>org.objectstyle.wolips.profiling.feature</b> - 
+  <li><b>org.objectstyle.wolips.profiling.feature</b> - This feature manages the 
+    profiling plug-in only. If you don't have jMechanic (and WOLips) installed, 
+    this plug-in does nothing - no need to install it in that case. 
     <ul>
       <li><b>org.objectstyle.wolips.profiling</b> - Profile WOApplications.</li>
     </ul>
   </li>
-  <li><b>org.objectstyle.wolips.tests.feature</b> - 
+  <li><b>org.objectstyle.wolips.tests.feature</b> - This feature manages the tests 
+    plug-in only. It will allow you to run WOLips unit tests. When/if you file 
+    a bug report the WOLips developers may ask you to run these. You do not need 
+    this plug-in &quot;use&quot; WOLips. 
     <ul>
       <li><b>org.objectstyle.wolips.tests</b> -</li>
     </ul>
