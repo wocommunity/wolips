@@ -18,34 +18,19 @@
   to export - which may be more than just the source. A project can export anything 
   that is included in its own Java Build Path.</p>
 <p>Libraries come in various forms, and there are several ways to add them. Installed 
-  (Local or System) WebObjects frameworks can be added in the following ways:</p>
+  (External Root, User Home, Local or System) WebObjects frameworks can be added
+   with the WO Frameworks Classpath Container:</p>
+   <BR><BR><BR>
+<h2><a href="../images/container/container.jpg"><img src="../images/container/container.jpg" height="300" align="right" border="0"></a>Project's 
+  Java Build Path</h2>
+<p>What you should know about the WO Frameworks Classpath Container:</p>
 <ul>
-  <li> "Add Variable…", select NEXT_LOCAL_ROOT or NEXT_SYSTEM_ROOT and extend 
-    it to point at a framework's jar-file. (Selecting WOLips > Add Local Framework 
-    / Add System Framework from the project context menu does the same thing.) 
-    This is currently the recommended way!</li>
-  <li>"Add Library…", select WebObjects Classpath, press next and check/include 
-    all required frameworks.</li>
-  <li>If you build using the incremental builder you can do "Add Class Folder..".</li>
+  <li>The Container preserves only the Framework name. Due to this it can resolve
+   a framework path as long as it is installed under one of the supported roots.</li>
+  <li>The search order for frameworks is: External Root, User Home, Local and System.
+  If a framework is installed in the User Home and Local the one from the User Home is used.</li>
 </ul>
-<p>It seems there are many possibilities (there are more variants than we mentioned 
-  here) but if you want everything to work there is actually only one way to set 
-  things up:</p>
-<ul>
-  <li>If you want different projects currently being developed to be aware of 
-    each other you have to add the projects to the Java Build Paths.</li>
-  <li>If you want WOLips to correctly create and maintain the PB.project file, 
-    and the CLSSPATH:TXT file for applications, you must add references to the 
-    installed frameworks.</li>
-</ul>
-<p>Note that for everything to work you need to have both the Eclipse project 
-  and the built/installed framework on the Java Build Path. It is recommended 
-  to <a href="building.html#destdir">modify the Ant</a> script (build.xml) so 
-  that it installs frameworks in the correct location every time they are built, 
-  and you may want to check <a href="../reference/preferences.html#plugin_wolips_build">Build 
-  after JavaBuilder</a> in the WOLips workbench preferences. In future versions 
-  the <a href="../tasks/build.html#incrementalbuilder">incremental builder</a> 
-  will hopefully make the Java Build Path configuration more intuitive. </p>
+<BR><BR><BR><BR><BR><BR><BR><BR><BR>
 <h2><a href="../images/launch/classpath.jpg"><img src="../images/launch/classpath.jpg" height="300" align="right" border="0"></a>Launch 
   Configuration's Classpath</h2>
 <p>If you defined your projects' Java Build Paths as recommended above you can 
