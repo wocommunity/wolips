@@ -87,7 +87,7 @@ public class WOLipsPlugin extends AbstractUIPlugin {
 	private Hashtable projectUpdater;
 
 	private boolean classesLoaded = false;
-	
+	private static String NEXT_ROOT = "NEXT_ROOT";
 	/**
 	 * The constructor.
 	 */
@@ -110,7 +110,7 @@ public class WOLipsPlugin extends AbstractUIPlugin {
 		URL[] theUrls = new URL[2];
 		try {
 			theUrls[0] = new URL("file:///System/Library/Frameworks/JavaFoundation.framework/Resources/Java/javafoundation.jar");
-			theUrls[1] = new URL("file://%NEXT_ROOT%/Library/Frameworks/JavaFoundation.framework/Resources/Java/javafoundation.jar");
+			theUrls[1] = new URL("file://" + getResourceString(WOLipsPlugin.NEXT_ROOT) + "/Library/Frameworks/JavaFoundation.framework/Resources/Java/javafoundation.jar");
 			((PluginClassLoader)aClassLoader).addURLs(theUrls, theURLContentFilter, null, null);
 		}
 		catch (Exception anException) {
