@@ -124,9 +124,15 @@ public class WOPropertiesHandlerTest extends TestCase {
         String right = "abc_next_root";
         handler.env = new Properties();
         handler.env.setProperty("NEXT_ROOT", right);
-
+        
         // no project-level setting, must be derived from WORoot
-        assertEquals(handler.getWORootPath() + File.separator + "Local", handler.getLocalRootPath());
+        // we need to handle OSX differently, because there is no "real" prefix here
+        boolean isOSX = System.getProperty("os.name").equals("Mac OS X");
+
+        if(!isOSX)
+            assertEquals(handler.getWORootPath() + File.separator + "Local", handler.getLocalRootPath());
+        if(isOSX)
+            assertEquals(File.separator, handler.getLocalRootPath());
     }
 
     public void testHomeRoot1() throws Exception {
