@@ -77,6 +77,7 @@ public abstract class ProjectStructure {
      * Subclasses must implement that to return either framework
      * or application directory name relative to tests distribution
      * directory.
+     * @return
      */
     public abstract String getDirectoryPath();
 
@@ -142,7 +143,11 @@ public abstract class ProjectStructure {
     	this.wsResources = addToArray(wsResources, wsResource);
     }
 
-    /** Grows String array by one element, adds the element at the end. */
+    /** Grows String array by one element, adds the element at the end.
+     * @param array
+     * @param element
+     * @return
+     */
     public static String[] addToArray(String[] array, String element) {
     	if(array == null || array.length == 0) {
     		return new String[] {element};
