@@ -52,13 +52,44 @@ package org.objectstyle.wolips.commons.logging;
 /**
  * 
  * @author hn3000
- *
+ * 
  */
 public interface ILogger {
-  void log(Object msg);
-  void log(Throwable t);
-  void log(Object msg, Throwable t);
-  void debug(Object msg);
-  void debug(Throwable t);
-  void debug(Object msg, Throwable t);
+	/**
+	 * prints an Object
+	 * @param msg
+	 */
+	void log(Object msg);
+
+	/**
+	 * prints a Throwable
+	 * @param t
+	 */
+	void log(Throwable t);
+
+	/**
+	 * prints an Object and a Throwable
+	 * @param msg
+	 * @param t
+	 */
+	void log(Object msg, Throwable t);
+
+	/**
+	 * prints an Object
+	 * @param msg
+	 */
+	void debug(Object msg);
+
+	/**
+	 * prints a Throwable
+	 * @param t
+	 */
+	void debug(Throwable t);
+
+	/**
+	 * prints an Object and a Throwable
+	 * @param msg
+	 * @param t
+	 */
+	void debug(Object msg, Throwable t);
 }
