@@ -219,7 +219,7 @@
                 <include name="**/*.css"/>
             </fileset>
         </copy>
-        <copy todir="${dist-wolips}/doc/images" filtering="no">
+        <copy todir="${dist-wolips}/doc/images/wolips" filtering="no">
             <fileset dir="src/wolips/xdocs/images">
                 <include name="**/*.gif"/>
                 <include name="**/*.jpeg"/>
