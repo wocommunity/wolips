@@ -56,7 +56,6 @@
 package org.objectstyle.wolips.project;
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -68,7 +67,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
 import org.objectstyle.wolips.IWOLipsPluginConstants;
 import org.objectstyle.wolips.WOLipsPlugin;
 import org.objectstyle.wolips.io.FileStringScanner;
@@ -89,13 +87,15 @@ public class PBProjectUpdater {
 	//public static String PBProject = "PB.projectContainer"; moved to IWOLipsPluginConstants.PROJECT_FILE_NAME (mn)
 	private PBProject pbProject;
 	private IContainer projectContainer;
+	private static final String dirtyPBProject = "<?xml";
 	
 	/**
 	 * Constructor for PBProjectUpdater.
 	 */
 	public PBProjectUpdater(IContainer aProjectContainer) {
 		super();
-		pbProject = getPBProject(aProjectContainer);
+		//pbProject = 
+		getPBProject(aProjectContainer);
 		projectContainer = aProjectContainer;
 	}
 	
@@ -106,55 +106,36 @@ public class PBProjectUpdater {
 				projectContainer.getName());
 	}
 	
-	private PBProject getPBProject(IContainer aProject) {
+	
+	/**
+	 * On MacOSX the EOModeler converts the PB.project file to xml.
+	 */
+	private void fixEOModelerMacOSXBug(File aFile) {
+		try {
+			if((aFile != null) && (aFile.exists())) {
+				String file = FileStringScanner.stringFromFile(aFile);
+				if(file.startsWith(PBProjectUpdater.dirtyPBProject)) aFile.delete();	
+			}
+		}
+		catch (Exception anException) {
+			WOLipsPlugin.log(anException);
+		}
+	}
+	
+	private void  getPBProject(IContainer aProject) {
 		IFile aPBProject =
 			aProject.getFile(
 				new Path(IWOLipsPluginConstants.PROJECT_FILE_NAME));
 		File aFile = aPBProject.getLocation().toFile();
-		boolean isWOApp;
-		if (aProject instanceof IProject) {
-			try {
-				isWOApp =
-					((IProject) aProject).hasNature(
-						IWOLipsPluginConstants.WO_APPLICATION_NATURE);
-			} catch (CoreException e) {
-				isWOApp = false;
-			}
-		} else {
-			// if IContainer is an instanceof IFolder it contains only subprojects
-			isWOApp = false;
-		}
-		if (!aFile.exists()) {
-			try {
-				aFile.createNewFile();
-				String contents;
-				URL aStarterURL =
-					WOLipsPlugin.getDefault().getDescriptor().getInstallURL();
-				URL aURL;
-				if (isWOApp) {
-					aURL =
-						new URL(
-							aStarterURL,
-							"templates/woapplication/PB.projectContainer");
-				} else {
-					aURL =
-						new URL(
-							aStarterURL,
-							"templates/woframework/PB.projectContainer");
-				}
-				String aPBProjectFile = Platform.asLocalURL(aURL).getFile();
-				contents =
-					FileStringScanner.stringFromFile(new File(aPBProjectFile));
-				FileStringScanner.stringToFile(aFile, contents);
-			} catch (Exception anException) {
-				WOLipsPlugin.log(anException);
-			}
-		}
+		pbProject = null;
+		fixEOModelerMacOSXBug(aFile);
 		try {
-			return new PBProject(aFile, !isWOApp);
-		} catch (Exception anException) {
+			boolean sync = !aFile.exists();	
+			pbProject = new PBProject(aFile, !ProjectHelper.isWOAppBuilderInstalled((IProject)aProject));
+			if(sync) syncPBProjectWithProject();
+		}
+		catch (Exception anException) {
 			WOLipsPlugin.log(anException);
-			return null;
 		}
 	}
 	

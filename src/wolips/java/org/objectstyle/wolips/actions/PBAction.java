@@ -59,6 +59,7 @@ package org.objectstyle.wolips.actions;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.objectstyle.wolips.WOLipsPlugin;
+import org.objectstyle.wolips.project.PBProjectUpdater;
 import org.objectstyle.wolips.project.ProjectHelper;
 
 /**
@@ -84,8 +85,10 @@ public class PBAction extends ActionOnIProject {
 	public void run(IAction action) {
 		if ( project() != null ){
 			try {
-			if ( action.getId().equals(PBAction.UpdatePBProjectSetID) )
-				WOLipsPlugin.getDefault().getProjectUpdater(project()).updatePBProject();
+				if ( action.getId().equals(PBAction.UpdatePBProjectSetID) ) {
+					PBProjectUpdater projectUpdater = new PBProjectUpdater(project());
+					projectUpdater.updatePBProject();
+				}
 			}
 			catch (Exception ex) {
 				WOLipsPlugin.log(ex);

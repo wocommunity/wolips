@@ -70,7 +70,6 @@ import org.eclipse.ant.core.AntRunner;
 import org.eclipse.core.internal.boot.URLContentFilter;
 import org.eclipse.core.internal.plugins.PluginClassLoader;
 import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
@@ -102,7 +101,6 @@ import org.objectstyle.wolips.ide.WOClasspathUpdater;
 import org.objectstyle.wolips.io.FileStringScanner;
 import org.objectstyle.wolips.listener.JavaElementChangeListener;
 import org.objectstyle.wolips.listener.ResourceChangeListener;
-import org.objectstyle.wolips.project.PBProjectUpdater;
 import org.objectstyle.wolips.wo.WOVariables;
 /**
  * The main plugin class to be used in the desktop.
@@ -116,7 +114,6 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 	private static final String build_user_home_properties = "build-user-home-wobuild-properties.xml";
 	private static final String build_user_home_properties_pde_info = "PDE User please copy " + WOLipsPlugin.build_user_home_properties + " from woproject to wolips.";
 	private static WOLipsPlugin plugin;
-	private Hashtable projectUpdater;
 	private static IResourceChangeListener resourceChangeListener;
 	private static IElementChangedListener javaElementChangeListener;
 	//Resource bundle.
@@ -281,22 +278,6 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 	public static void debug(Throwable aThrowable) {
 		if (WOLipsPlugin.debug);
 		System.out.println("Exception: " + aThrowable);
-	}
-
-	/**
-	 * Returns a PBProjectUpdater for an given IProject. Never returns null;
-	 */
-	public PBProjectUpdater getProjectUpdater(IProject aProject) {
-		if (projectUpdater == null)
-			projectUpdater = new Hashtable();
-		String aProjectName = aProject.getName();
-		PBProjectUpdater aProjectUpdater =
-			(PBProjectUpdater) projectUpdater.get(aProjectName);
-		if (aProjectUpdater == null) {
-			aProjectUpdater = new PBProjectUpdater(aProject);
-			projectUpdater.put(aProjectName, aProjectUpdater);
-		}
-		return aProjectUpdater;
 	}
 
 	/**

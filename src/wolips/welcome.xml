@@ -15,6 +15,7 @@ nothing in particular.
 WOProject is a set of OS and IDE independent tools (based on Ant) for working with
 WebObjects.
 Ant is a Java-based build tool.</item>
+
 <item><b>Audience and Scope</b>
 Are you familiar with WebObjects, and curious about Ant, WOProject and WOLips? Would you
 like to use eclipse to develop WebObjects applications? Then this document is for you. It aims to
@@ -24,6 +25,7 @@ This document describes how to do things using WOLips on Windows. If there are d
 regarding how things work on Macintosh, notes reagrding these will be added later.
 The author of this document is not a WOLips or WOProject developer, and it contains no API or
 reference documentation. It's not even a user manual. It's simply something to get you started.</item>
+
 <item><b>Using eclipse without WOLips</b>
 If you are not yet familiar with eclipse; spend some time with it before continuing. Make certain to
 have a look at the Windows > Open Perspective and Windows > Show View menu alternatives,
@@ -71,8 +73,7 @@ respectively.
 in the ant plugin with ant.jar and optional.jar(rename it to jakarta-ant-1.4.1-optional.jar)
 from the ant 1.5.* distribution.
 8. Restart eclipse. When you start eclipse with a new or updated feature you have to activate it
-with the Update Manager. It should appear automatically when eclipse is started. If not;
-you’ll find it under Help > Software Updates > Update Manager.</item>
+with the Update Manager. It should appear automatically when eclipse is started. If not, you’ll find it under Help > Software Updates > Update Manager.</item>
 
 <item><b>HelloWOrld</b>
 It is very easy to create and run a basic WO application using WOLips. Here’s how to do it:
