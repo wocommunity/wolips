@@ -171,7 +171,7 @@ public final class PBProjectUpdater {
                 container = findContainer;
             PBProjectUpdater updater = null;
             if(container != null) {
-                new PBProjectUpdater(container);
+                updater = new PBProjectUpdater(container);
             }
             return updater;
 	}
