@@ -2,7 +2,7 @@
  *
  * The ObjectStyle Group Software License, Version 1.0
  *
- * Copyright (c) 2002 The ObjectStyle Group
+ * Copyright (c) 2004 The ObjectStyle Group,
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -53,56 +53,45 @@
  * <http://objectstyle.org/>.
  *
  */
-package org.objectstyle.wolips.projectbuild.builder;
-
-import java.text.MessageFormat;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
-
+package org.objectstyle.wolips.datasets.adaptable;
+import org.eclipse.core.runtime.IAdapterFactory;
+import org.eclipse.jdt.core.IJavaProject;
 /**
- * @author uli
+ * @author ulrich
+ * 
+ * To change the template for this generated type comment go to
+ * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public class AntBuildMessages {
-
-	private static final String RESOURCE_BUNDLE =
-	AntBuildMessages.class.getName();
-	private static ResourceBundle fgResourceBundle =
-		ResourceBundle.getBundle(RESOURCE_BUNDLE);
-
-	private AntBuildMessages() {
-	}
-
-	/**
-	 * @param key
-	 * @return
+public class IJavaProjectAdapterFactory implements IAdapterFactory {
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.core.runtime.IAdapterFactory#getAdapter(java.lang.Object,
+	 *      java.lang.Class)
 	 */
-	public static String getString(String key) {
-		try {
-			return fgResourceBundle.getString(key);
-		} catch (MissingResourceException e) {
-			return '!' + key + '!';
+	/**
+	 * @param adaptableObject
+	 * @param adapterType
+	 * @return Returns the adapter.
+	 */
+	public Object getAdapter(Object adaptableObject, Class adapterType) {
+		if (adaptableObject instanceof IJavaProject) {
+			IJavaProject iJavaProject = (IJavaProject) adaptableObject;
+			JavaProject javaProject = new JavaProject(iJavaProject.getProject());
+			javaProject.setIJavaProject(iJavaProject);
+			return javaProject;
 		}
+		return null;
 	}
-
-	/**
-	 * Gets a string from the resource bundle and formats it with the argument
-	 *
-	 * @param key	the string used to get the bundle value, must not be null
-	 * @param arg
-	 * @return
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.core.runtime.IAdapterFactory#getAdapterList()
 	 */
-	public static String getFormattedString(String key, Object arg) {
-		return MessageFormat.format(getString(key), new Object[] { arg });
-	}
-
 	/**
-	 * Gets a string from the resource bundle and formats it with arguments
-	 * @param key
-	 * @param args
-	 * @return
+	 * @return Returns null.
 	 */
-	public static String getFormattedString(String key, Object[] args) {
-		return MessageFormat.format(getString(key), args);
+	public Class[] getAdapterList() {
+		return null;
 	}
-
 }

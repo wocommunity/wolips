@@ -58,8 +58,8 @@ package org.objectstyle.wolips.ui.support;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.util.SafeRunnable;
-import org.objectstyle.wolips.core.preferences.Preferences;
-import org.objectstyle.wolips.core.preferences.PreferencesMessages;
+import org.objectstyle.wolips.preferences.Preferences;
+import org.objectstyle.wolips.preferences.PreferencesMessages;
 import org.objectstyle.wolips.variables.VariablesPlugin;
 
 /**

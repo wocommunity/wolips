@@ -76,7 +76,7 @@ public class CommonsPlugin extends Plugin {
 	}
 
 	/**
-	 * Returns the shared instance.
+	 * @return Returns the shared instance.
 	 */
 	public static CommonsPlugin getDefault() {
 		return plugin;
@@ -85,6 +85,8 @@ public class CommonsPlugin extends Plugin {
 	/**
 	 * Returns the string from the plugin's resource bundle,
 	 * or 'key' if not found.
+	 * @param key
+	 * @return
 	 */
 	public static String getResourceString(String key) {
 		ResourceBundle bundle = CommonsPlugin.getDefault().getResourceBundle();
@@ -96,7 +98,7 @@ public class CommonsPlugin extends Plugin {
 	}
 
 	/**
-	 * Returns the plugin's resource bundle,
+	 * @return Returns the plugin's resource bundle,
 	 */
 	public ResourceBundle getResourceBundle() {
 		return resourceBundle;

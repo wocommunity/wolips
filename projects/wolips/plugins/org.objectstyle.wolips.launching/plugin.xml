@@ -27,7 +27,7 @@
       <import plugin="org.objectstyle.wolips.jdt"/>
       <import plugin="org.objectstyle.wolips.datasets"/>
       <import plugin="org.objectstyle.wolips.commons"/>
-      <import plugin="org.objectstyle.wolips"/>
+      <import plugin="org.objectstyle.wolips.preferences"/>
    </requires>
 
 

@@ -89,7 +89,7 @@ import org.objectstyle.wolips.datasets.pattern.StringUtilities;
 import org.objectstyle.wolips.datasets.project.INaturesAccessor;
 import org.objectstyle.wolips.datasets.project.IWOLipsProject;
 import org.objectstyle.wolips.datasets.project.WOLipsCore;
-import org.objectstyle.wolips.projectbuild.WOProjectBuildConstants;
+import org.objectstyle.wolips.projectbuild.ProjectBuildPlugin;
 import org.objectstyle.wolips.projectbuild.natures.IncrementalNature;
 import org.objectstyle.wolips.projectbuild.util.ResourceUtilities;
 /**
@@ -99,9 +99,7 @@ import org.objectstyle.wolips.projectbuild.util.ResourceUtilities;
  * build/ProjectName.framework folder that contains an approximation of the
  * structure needed to run a WebObjects application or use a framework
  */
-public class WOIncrementalBuilder extends IncrementalProjectBuilder
-		implements
-			WOProjectBuildConstants {
+public class WOIncrementalBuilder extends IncrementalProjectBuilder {
 	/**
 	 * Constructor for WOProjectBuilder.
 	 */
@@ -144,7 +142,7 @@ public class WOIncrementalBuilder extends IncrementalProjectBuilder
 			} else {
 				fullBuild = true;
 			}
-			_principalClass = _getArg(args, NS_PRINCIPAL_CLASS, "");
+			_principalClass = _getArg(args, ProjectBuildPlugin.NS_PRINCIPAL_CLASS, "");
 			if (_principalClass.length() == 0) {
 				_principalClass = null;
 			}
@@ -246,12 +244,12 @@ public class WOIncrementalBuilder extends IncrementalProjectBuilder
 				if (o instanceof HashMap) {
 					customInfo = (HashMap) o;
 					ResourceUtilities
-							.unmarkResource(cipl, MARKER_BUILD_PROBLEM);
+							.unmarkResource(cipl, ProjectBuildPlugin.MARKER_BUILD_PROBLEM);
 				} else {
 					ResourceUtilities
 							.markResource(
 									cipl,
-									MARKER_BUILD_PROBLEM,
+									ProjectBuildPlugin.MARKER_BUILD_PROBLEM,
 									IMarker.SEVERITY_WARNING,
 									"Cayenne parser can't parse this file (comments are not supported for now)",
 									"unknown");
@@ -267,7 +265,7 @@ public class WOIncrementalBuilder extends IncrementalProjectBuilder
 			} catch (Throwable up) {
 				System.out.println("parsing CustomInfo.plist:");
 				up.printStackTrace();
-				ResourceUtilities.markResource(cipl, MARKER_BUILD_PROBLEM,
+				ResourceUtilities.markResource(cipl, ProjectBuildPlugin.MARKER_BUILD_PROBLEM,
 						IMarker.SEVERITY_WARNING, up.getMessage(), "unknown");
 			}
 		}
@@ -451,9 +449,9 @@ public class WOIncrementalBuilder extends IncrementalProjectBuilder
 				}
 				if (null == error) {
 					//_res.deleteMarkers(IMarker.PROBLEM, true, 1);
-					_res.deleteMarkers(MARKER_BUILD_PROBLEM, true, 0);
+					_res.deleteMarkers(ProjectBuildPlugin.MARKER_BUILD_PROBLEM, true, 0);
 				} else {
-					markResource(_res, MARKER_BUILD_PROBLEM,
+					markResource(_res, ProjectBuildPlugin.MARKER_BUILD_PROBLEM,
 							IMarker.SEVERITY_ERROR, error, _dest.toString());
 				}
 			}
@@ -694,7 +692,7 @@ public class WOIncrementalBuilder extends IncrementalProjectBuilder
 				IPath copyToPath) throws CoreException {
 			boolean result;
 			if (null == copyToPath) {
-				unmarkResource(res, MARKER_BUILD_DUPLICATE);
+				unmarkResource(res, ProjectBuildPlugin.MARKER_BUILD_DUPLICATE);
 				return false;
 			}
 			IResource src = (IResource) _destinations.get(copyToPath);
@@ -716,7 +714,7 @@ public class WOIncrementalBuilder extends IncrementalProjectBuilder
 					String message = "duplicate resource for destination .../"
 							+ shortened.toString();
 					System.out.println("** " + message);
-					markResource(res, MARKER_BUILD_DUPLICATE,
+					markResource(res, ProjectBuildPlugin.MARKER_BUILD_DUPLICATE,
 							IMarker.SEVERITY_ERROR, message, src.getFullPath()
 									.toString());
 					result = false; // ignore this one, it's a duplicate
@@ -725,7 +723,7 @@ public class WOIncrementalBuilder extends IncrementalProjectBuilder
 				}
 			}
 			if (result && !deleted) {
-				unmarkResource(res, MARKER_BUILD_DUPLICATE);
+				unmarkResource(res, ProjectBuildPlugin.MARKER_BUILD_DUPLICATE);
 			}
 			return result;
 		}
@@ -784,7 +782,7 @@ public class WOIncrementalBuilder extends IncrementalProjectBuilder
 			}
 			if (!handled) {
 				//System.out.println("//ignore: "+res);
-				unmarkResource(res, MARKER_BUILD_DUPLICATE);
+				unmarkResource(res, ProjectBuildPlugin.MARKER_BUILD_DUPLICATE);
 			}
 		}
 		/**

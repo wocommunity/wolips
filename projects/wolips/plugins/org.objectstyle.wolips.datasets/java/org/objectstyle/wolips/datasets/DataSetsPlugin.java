@@ -69,7 +69,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.objectstyle.wolips.datasets.internal.Api;
-import org.objectstyle.wolips.datasets.listener.ResourceChangeListener;
+import org.objectstyle.wolips.datasets.listener.MasterResourceChangeListener;
 import org.osgi.framework.BundleContext;
 /**
  * The main plugin class to be used in the desktop.
@@ -100,6 +100,8 @@ public class DataSetsPlugin extends Plugin implements IDataSetTypes {
 			HTML_EXTENSION, WOCOMPONENT_EXTENSION, SUBPROJECT_EXTENSION,
 			EOMODEL_EXTENSION, EOMODEL_BACKUP_EXTENSION, D2WMODEL_EXTENSION,
 			FRAMEWORK_EXTENSION, WOA_EXTENSION, BUILD_EXTENSION, DIST_EXTENSION};
+	
+	private IResourceChangeListener resourceChangeListener;
 	/**
 	 * The constructor.
 	 */
@@ -256,8 +258,18 @@ public class DataSetsPlugin extends Plugin implements IDataSetTypes {
 		super.start(context);
 		//add resource change listener to update project file on resource
 		// changes
-		IResourceChangeListener resourceChangeListener = new ResourceChangeListener();
+		resourceChangeListener = new MasterResourceChangeListener();
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(
 				resourceChangeListener, IResourceChangeEvent.PRE_AUTO_BUILD);
+	}
+	
+	
+	/* (non-Javadoc)
+	 * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
+	 */
+	public void stop(BundleContext context) throws Exception {
+		ResourcesPlugin.getWorkspace().removeResourceChangeListener(
+				resourceChangeListener);
+		super.stop(context);
 	}
 }

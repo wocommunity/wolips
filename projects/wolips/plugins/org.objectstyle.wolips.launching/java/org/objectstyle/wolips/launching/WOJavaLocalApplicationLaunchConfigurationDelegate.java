@@ -59,7 +59,6 @@ package org.objectstyle.wolips.launching;
 import java.io.File;
 import java.text.MessageFormat;
 import java.util.Map;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -69,15 +68,16 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
+import org.eclipse.debug.core.model.ILaunchConfigurationDelegate;
 import org.eclipse.jdt.launching.AbstractJavaLaunchConfigurationDelegate;
 import org.eclipse.jdt.launching.ExecutionArguments;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.jdt.launching.IVMInstall;
 import org.eclipse.jdt.launching.IVMRunner;
 import org.eclipse.jdt.launching.VMRunnerConfiguration;
-import org.objectstyle.wolips.core.preferences.ILaunchInfo;
-import org.objectstyle.wolips.core.preferences.Preferences;
 import org.objectstyle.wolips.datasets.project.WOLipsJavaProject;
+import org.objectstyle.wolips.preferences.ILaunchInfo;
+import org.objectstyle.wolips.preferences.Preferences;
 import org.objectstyle.wolips.variables.VariablesPlugin;
 
 /**

@@ -52,8 +52,8 @@ import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
-import org.objectstyle.wolips.core.preferences.Preferences;
-import org.objectstyle.wolips.core.preferences.PreferencesMessages;
+import org.objectstyle.wolips.preferences.Preferences;
+import org.objectstyle.wolips.preferences.PreferencesMessages;
 /**
  * @author uli
  * 

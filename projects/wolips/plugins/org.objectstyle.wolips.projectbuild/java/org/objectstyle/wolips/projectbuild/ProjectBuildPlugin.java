@@ -3,7 +3,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0
  * 
- * Copyright (c) 2002 - 2004 The ObjectStyle Group and individual authors of the
+ * Copyright (c) 2004 The ObjectStyle Group and individual authors of the
  * software. All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -47,93 +47,95 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.commons.logging;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.objectstyle.wolips.commons.CommonsPlugin;
+package org.objectstyle.wolips.projectbuild;
+import java.net.URL;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.objectstyle.wolips.commons.logging.PluginLogger;
+import org.osgi.framework.BundleContext;
 /**
+ * The main plugin class to be used in the desktop.
+ * 
  * @author uli
- * @author mnolte
+ * @author markus
  */
-public class PluginLogger {
-	private String pluginID = null;
-	private boolean debug;
+public class ProjectBuildPlugin extends AbstractUIPlugin {
 	/**
-	 * @param pluginID
-	 * @param debug
+	 * Comment for <code>MARKER_TASK_GENERIC</code>
 	 */
-	public PluginLogger(String pluginID, boolean debug) {
-		this.pluginID = pluginID;
-		this.debug = debug;
+	public static final String MARKER_TASK_GENERIC   = "org.objectstyle.wolips.projectbuild.taskmarker";
+	/**
+	 * Comment for <code>MARKER_BUILD_GENERIC</code>
+	 */
+	public static final String MARKER_BUILD_GENERIC   = "org.objectstyle.wolips.projectbuild.marker";
+	/**
+	 * Comment for <code>MARKER_BUILD_PROBLEM</code>
+	 */
+	public static final String MARKER_BUILD_PROBLEM   = "org.objectstyle.wolips.projectbuild.problem";
+	/**
+	 * Comment for <code>MARKER_BUILD_DUPLICATE</code>
+	 */
+	public static final String MARKER_BUILD_DUPLICATE = "org.objectstyle.wolips.projectbuild.duplicate";
+
+	/**
+	 * Comment for <code>NS_PRINCIPAL_CLASS</code>
+	 */
+	public static final String NS_PRINCIPAL_CLASS = "nsprincipalclass";
+//The plugin.
+	private static ProjectBuildPlugin plugin;
+	private PluginLogger pluginLogger = null;
+	/**
+	 * The constructor.
+	 */
+	//The constructur is very sensitive. Make sure that your stuff works.
+	//If this cunstructor fails, the whole plugin will be disabled.
+	public ProjectBuildPlugin() {
+		super();
+		plugin = this;
 	}
 	/**
-	 * Prints an IStatus.
+	 * Returns the shared instance.
 	 * 
-	 * @param status
+	 * @return
 	 */
-	public void log(IStatus status) {
-		CommonsPlugin.getDefault().getLog().log(status);
+	public static ProjectBuildPlugin getDefault() {
+		return plugin;
 	}
 	/**
-	 * Prints a message.
+	 * Method baseURL.
 	 * 
-	 * @param message
+	 * @return URL
 	 */
-	public void log(String message) {
-		this.log(new Status(IStatus.ERROR, pluginID, IStatus.ERROR, message,
-				null));
+	public static URL baseURL() {
+		return ProjectBuildPlugin.getDefault().getDescriptor().getInstallURL();
 	}
 	/**
-	 * Prints a Throwable.
+	 * Returns the PluginID.
 	 * 
-	 * @param e
+	 * @return
 	 */
-	public void log(Throwable e) {
-		this.log(new Status(IStatus.ERROR, pluginID, IStatus.ERROR,
-				"Internal Error", e)); //$NON-NLS-1$
+	public static String getPluginId() {
+		if (plugin != null) {
+			return getDefault().getDescriptor().getUniqueIdentifier();
+		} else
+			return null;
 	}
 	/**
-	 * Prints a Throwable.
-	 * @param message
-	 * @param e
+	 * @return Returns the pluginLogger.
 	 */
-	public void log(String message, Throwable e) {
-		this.log(new Status(IStatus.ERROR, pluginID, IStatus.ERROR,
-				message, e)); //$NON-NLS-1$
+	public PluginLogger getPluginLogger() {
+		return pluginLogger;
 	}
-	/**
-	 * If debug is true this method prints a String to the log.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param aString
+	 * @see org.eclipse.core.runtime.Plugin#start(org.osgi.framework.BundleContext)
 	 */
-	public void debug(String aString) {
-		if (debug)
-			this.log(aString);
-	}
 	/**
-	 * If debug is true this method prints an Exception to the log.
-	 * 
-	 * @param aThrowable
+	 * @param context
+	 * @throws Exception
 	 */
-	public void debug(Throwable aThrowable) {
-		if (debug)
-			this.log(aThrowable);
-	}
-	/**
-	 * @param message
-	 * @param t
-	 */
-	public void debug(Object message, Throwable t) {
-		if (debug)
-			this.log(new Status(IStatus.WARNING, pluginID, IStatus.WARNING,
-					message.toString(), t)); //$NON-NLS-1$
-	}
-	/**
-	 * @param message
-	 */
-	public void debug(Object message) {
-		if (debug)
-			this.log(new Status(IStatus.WARNING, pluginID, IStatus.WARNING,
-					message.toString(), null)); //$NON-NLS-1$
+	public void start(BundleContext context) throws Exception {
+		super.start(context);
+		pluginLogger = new PluginLogger(ProjectBuildPlugin.getPluginId(), false);
 	}
 }

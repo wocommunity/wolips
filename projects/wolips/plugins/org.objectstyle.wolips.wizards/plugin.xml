@@ -16,7 +16,6 @@
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.objectstyle.wolips.templateengine"/>
       <import plugin="org.objectstyle.wolips.tests.core"/>
-      <import plugin="org.objectstyle.wolips"/>
       <import plugin="org.eclipse.ui.workbench"/>
       <import plugin="org.eclipse.ui.ide"/>
       <import plugin="org.eclipse.ui"/>

@@ -57,7 +57,6 @@
 package org.objectstyle.wolips.ui.actions;
 
 import java.util.ArrayList;
-
 import org.eclipse.jface.action.IAction;
 import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 

@@ -135,6 +135,26 @@ public final class EOEntityJava
 						}
 					}
 				}
+				//try also for files starting with _
+				if(fileName.startsWith("_")) {
+					fileName = fileName.substring(1, 
+							fileName.length() - 1 );
+					plists =
+						WorkbenchUtilitiesPlugin
+						.findResourcesInResourcesByNameAndExtensions(
+								projects,
+								fileName,
+								extensions);
+					for(int i = 0; i < plists.size(); i++) {
+						IResource resource = (IResource)plists.get(i);
+						if(resource != null) {
+							IContainer parent = resource.getParent();
+							if(parent != null && parent.getName().endsWith(WOLipsModel.EOMODEL_EXTENSION)) {
+								list.add(parent);		
+							}
+						}
+					}
+				}
 				
 			} catch (Exception e) {
 				DataSetsPlugin.log(e);

@@ -54,22 +54,26 @@
  *
  */
 package org.objectstyle.wolips.datasets.adaptable;
-
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
-
 /**
  * @author ulrich
- *
+ * 
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
 public class AdaptableTestSuite extends TestCase {
-
+	/**
+	 * @param testName
+	 */
 	public AdaptableTestSuite(String testName) {
 		super(testName);
 	}
+	/**
+	 * @return Returns the test.
+	 * @throws Exception
+	 */
 	public static Test suite() throws Exception {
 		TestSuite suite = new TestSuite();
 		//suite.addTestSuite(DataSetsPluginTest.class);

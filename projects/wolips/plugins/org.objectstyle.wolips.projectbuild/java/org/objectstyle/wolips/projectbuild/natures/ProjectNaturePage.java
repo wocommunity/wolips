@@ -73,11 +73,10 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.PropertyPage;
-import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
 import org.objectstyle.wolips.datasets.project.INaturesAccessor;
 import org.objectstyle.wolips.datasets.project.IWOLipsProject;
 import org.objectstyle.wolips.datasets.project.WOLipsCore;
-import org.objectstyle.wolips.projectbuild.WOProjectBuildConstants;
+import org.objectstyle.wolips.projectbuild.ProjectBuildPlugin;
 
 /**
  * @author ulrich
@@ -87,8 +86,7 @@ import org.objectstyle.wolips.projectbuild.WOProjectBuildConstants;
  */
 public class ProjectNaturePage extends PropertyPage
 		implements
-			IAdaptable,
-			WOProjectBuildConstants {
+			IAdaptable {
 	private static final String BUILD_STYLE_TITLE = " Build style";
 	private static final String BUILD_PARAMS_TITLE = " Build parameters";
 	private static final String PROJECT_KIND_TITLE = " Project kind";
@@ -275,7 +273,7 @@ public class ProjectNaturePage extends PropertyPage
 			setDefaults(woLipsProject);
 			enableWidgets(_woIsIncrementalButton.getSelection());
 		} catch (CoreException exception) {
-			WOLipsPlugin.getDefault().getPluginLogger().log(exception);
+			ProjectBuildPlugin.getDefault().getPluginLogger().log(exception);
 		}
 		return composite;
 	}
@@ -312,7 +310,7 @@ public class ProjectNaturePage extends PropertyPage
 	 */
 	private void setDefaults(IWOLipsProject woLipsProject) {
 		Map args = woLipsProject.getBuilderAccessor().getBuilderArgs();
-		_principalClass.setText(_getArg(args, NS_PRINCIPAL_CLASS, ""));
+		_principalClass.setText(_getArg(args, ProjectBuildPlugin.NS_PRINCIPAL_CLASS, ""));
 	}
 	/*
 	 * (non-Javadoc)
@@ -329,7 +327,7 @@ public class ProjectNaturePage extends PropertyPage
 			if (_woNatureCheck.getSelection()) {
 				if (_woIsIncrementalButton.getSelection()) {
 					Map args = new HashMap();
-					args.put(NS_PRINCIPAL_CLASS, _principalClass.getText());
+					args.put(ProjectBuildPlugin.NS_PRINCIPAL_CLASS, _principalClass.getText());
 					naturesAccessor.setIncrementalNature(_woIsFrameworkButton
 							.getSelection(), args);
 				} else {
@@ -342,7 +340,7 @@ public class ProjectNaturePage extends PropertyPage
 			boolean selection = _woTargetBuilderCheck.getSelection();
 			naturesAccessor.useTargetBuilder(selection);
 		} catch (CoreException up) {
-			WOLipsPlugin.getDefault().getPluginLogger().log(up);
+			ProjectBuildPlugin.getDefault().getPluginLogger().log(up);
 			return false;
 		} finally {
 			woLipsProject = null;

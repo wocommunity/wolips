@@ -57,9 +57,9 @@
 package org.objectstyle.wolips.ui.support;
 
 import java.util.Iterator;
-
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.Viewer;
 
 /**
  * @author uli

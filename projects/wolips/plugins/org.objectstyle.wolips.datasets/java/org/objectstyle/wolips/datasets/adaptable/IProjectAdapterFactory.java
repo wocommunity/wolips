@@ -54,19 +54,20 @@
  *
  */
 package org.objectstyle.wolips.datasets.adaptable;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IAdapterFactory;
-
 /**
  * @author ulrich
- *
+ * 
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
 public class IProjectAdapterFactory implements IAdapterFactory {
-	/* (non-Javadoc)
-	 * @see org.eclipse.core.runtime.IAdapterFactory#getAdapter(java.lang.Object, java.lang.Class)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.core.runtime.IAdapterFactory#getAdapter(java.lang.Object,
+	 *      java.lang.Class)
 	 */
 	/**
 	 * @param adaptableObject
@@ -74,11 +75,13 @@ public class IProjectAdapterFactory implements IAdapterFactory {
 	 * @return Returns the adapter.
 	 */
 	public Object getAdapter(Object adaptableObject, Class adapterType) {
-		if(adaptableObject instanceof IProject)
-			return new Project((IProject)adaptableObject);
+		if (adaptableObject instanceof IProject)
+			return new Project((IProject) adaptableObject);
 		return null;
 	}
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.core.runtime.IAdapterFactory#getAdapterList()
 	 */
 	/**

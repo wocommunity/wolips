@@ -54,76 +54,33 @@
  *
  */
  
-package org.objectstyle.wolips.projectbuild;
-
-//import org.eclipse.core.resources.IMarker;
-
-/*
- * Created on 16.02.2003
- *
- */
+ package org.objectstyle.wolips.commons.util;
 
 /**
- * @author Harald Niesche
+ * @author ulrich
  *
- * constants used throughout the project build fragment
+ * To change the template for this generated type comment go to
+ * Window>Preferences>Java>Code Generation>Code and Comments
  */
+public class ArrayUtilities {
 
 
-public interface WOProjectBuildConstants {
-  static final String RES_EXCLUDES = "res.exclude.patterns";
-  static final String RES_EXCLUDES_DEFAULT = "*/Thumbs.db,*/.*,*~,*~/*,*/CVS/*,/CustomInfo.plist,/build.xml";
-  
-  static final String RES_INCLUDES = "res.include.patterns";
-  static final String RES_INCLUDES_DEFAULT = "/Properties,*.api,*.d2wmodel,*.xml,*.plist,*.strings,/Resources/*,*/*.wo/*,*/*.eomodeld/*";
-  
-  static final String WSRES_EXCLUDES = "webserver.res.exclude.patterns";
-  static final String WSRES_EXCLUDES_DEFAULT = "*/Thumbs.db,*/.*,*~,*~/*,*/CVS/*,/CustomInfo.plist,*/*.wo/*,*/*.eomodeld/*";
-
-  static final String WSRES_INCLUDES = "webserver.res.include.patterns";
-  static final String WSRES_INCLUDES_DEFAULT = "*.js,*.css,*.jpg,*.jpeg,*.png,*.gif,*.html,/WebResources/*";
-
-  static final String MARKER_TASK_GENERIC   = "org.objectstyle.wolips.projectbuild.taskmarker";
-  static final String MARKER_BUILD_GENERIC   = "org.objectstyle.wolips.projectbuild.marker";
-  static final String MARKER_BUILD_PROBLEM   = "org.objectstyle.wolips.projectbuild.problem";
-  static final String MARKER_BUILD_DUPLICATE = "org.objectstyle.wolips.projectbuild.duplicate";
-
-  static final String NS_PRINCIPAL_CLASS = "nsprincipalclass";
+	/**
+	 * @param items
+	 */
+	public static void sort(int[] items) {
+		/* Shell Sort from K&R, pg 108 */
+		int length = items.length;
+		for (int gap = length / 2; gap > 0; gap /= 2) {
+			for (int i = gap; i < length; i++) {
+				for (int j = i - gap; j >= 0; j -= gap) {
+					if (items[j] <= items[j + gap]) {
+						int swap = items[j];
+						items[j] = items[j + gap];
+						items[j + gap] = swap;
+					}
+				}
+			}
+		}
+	}
 }
-
-
-
-//Resources:
-//
-//*/Thumbs.db
-//*/.*
-//*/CVS/*
-//CustomInfo.plist
-//
-//Properties
-//*.api
-//*.d2wmodel
-//*.xml
-//*.plist
-//*.strings
-//*/*.wo/*
-//*/*.eomodeld/*
-///Resources/*
-//
-//
-//WebResources:
-//
-//*/Thumbs.db
-//*/.*
-//*/CVS/*
-//*/*.wo/*
-//*/*.eomodeld/*
-//
-//*.js
-//*.css
-//*.jpg
-//*.jpeg
-//*.png
-//*.gif
-//*.html
-///WebResources/*

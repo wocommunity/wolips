@@ -61,6 +61,7 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.objectstyle.wolips.commons.logging.PluginLogger;
 
@@ -72,13 +73,13 @@ public class WizardsPlugin extends AbstractUIPlugin {
 	private static WizardsPlugin plugin;
 	//Resource bundle.
 	private ResourceBundle resourceBundle;
+	private static ImageDescriptor WOCOMPONENT_WIZARD_BANNER;
+	private static ImageDescriptor WOPROJECT_WIZARD_BANNER;
+	private static String pluginID ="org.objectstyle.wolips.wizards";
 	
-	private static final String PLUGIN_ID = "org.objectstyle.wolips.ui";
-	
-	private PluginLogger pluginLogger = new PluginLogger(WizardsPlugin.PLUGIN_ID, false);
+	private PluginLogger pluginLogger = new PluginLogger(pluginID, false);
 	/**
 	 * The constructor.
-	 * @param descriptor
 	 */
 	public WizardsPlugin() {
 		super();
@@ -143,4 +144,37 @@ public class WizardsPlugin extends AbstractUIPlugin {
 	public PluginLogger getPluginLogger() {
 		return pluginLogger;
 	}
+	
+	/**
+	 * Utility method to create an <code>ImageDescriptor</code>
+	 * from a path to a file.
+	 * @param path
+	 * @return
+	 */
+	private static ImageDescriptor createImageDescriptor(String path) {
+		ImageDescriptor imageDescriptor = AbstractUIPlugin.imageDescriptorFromPlugin(pluginID, path);
+		if(imageDescriptor != null)
+			return imageDescriptor;
+		return ImageDescriptor.getMissingImageDescriptor();
+	}
+
+	/**
+	 * @return Returns the image descriptor.
+	 */
+	public static ImageDescriptor WOCOMPONENT_WIZARD_BANNER() {
+		if(WOCOMPONENT_WIZARD_BANNER == null)
+			WOCOMPONENT_WIZARD_BANNER = createImageDescriptor("icons/wizban/webobjects_wiz.gif");
+		return WOCOMPONENT_WIZARD_BANNER;
+	}
+	
+	/**
+	 * @return Returns the image descriptor.
+	 */
+	public static final ImageDescriptor WOPROJECT_WIZARD_BANNER() {
+		if(WOPROJECT_WIZARD_BANNER == null)
+			WOPROJECT_WIZARD_BANNER = createImageDescriptor("icons/wizban/webobjects_wiz.gif");
+		return WOPROJECT_WIZARD_BANNER;
+	}
+	
+	
 }

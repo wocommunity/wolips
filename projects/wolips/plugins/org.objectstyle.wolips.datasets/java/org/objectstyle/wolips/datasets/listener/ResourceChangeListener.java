@@ -56,11 +56,14 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
-import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jdt.core.JavaCore;
 import org.objectstyle.wolips.datasets.DataSetsPlugin;
 import org.objectstyle.wolips.datasets.adaptable.Project;
@@ -70,24 +73,20 @@ import org.objectstyle.wolips.datasets.resources.IWOLipsModel;
 /**
  * Tracking changes in resources and synchronizes webobjects project file
  */
-public class ResourceChangeListener implements IResourceChangeListener {
+public class ResourceChangeListener extends Job {
+	private IResourceChangeEvent event;
 	/**
 	 * Constructor for ResourceChangeListener.
 	 */
 	public ResourceChangeListener() {
-		super();
-		//	this.setUpMatcher();
+		super("WOLips Project Files Updates");
 	}
-	/**
-	 * Adds instance of inner class ProjectFileResourceValidator to events
-	 * resource delta. <br>
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param event
-	 * @see ProjectFileResourceValidator
-	 * @see org.eclipse.core.resources.IResourceChangeListener#resourceChanged(IResourceChangeEvent)
+	 * @see org.eclipse.core.runtime.jobs.Job#run(org.eclipse.core.runtime.IProgressMonitor)
 	 */
-	public final void resourceChanged(IResourceChangeEvent event) {
-		//System.out.println("******* resourceChanged begin ");
+	protected IStatus run(IProgressMonitor monitor) {
 		ProjectFileResourceValidator resourceValidator = new ProjectFileResourceValidator();
 		try {
 			event.getDelta().accept(resourceValidator);
@@ -123,6 +122,7 @@ public class ResourceChangeListener implements IResourceChangeListener {
 								projectFileToUpdate), IResourceDelta.REMOVED);
 			}
 		}
+		return new Status(IStatus.OK, DataSetsPlugin.getPluginId(), IStatus.OK, "Done", null);
 	}
 	private final class ProjectFileResourceValidator
 			implements
@@ -412,5 +412,11 @@ public class ResourceChangeListener implements IResourceChangeListener {
 		public final HashMap getRemovedResourcesProjectDict() {
 			return removedResourcesProjectDict;
 		}
+	}
+	/**
+	 * @param event The event to set.
+	 */
+	public void setEvent(IResourceChangeEvent event) {
+		this.event = event;
 	}
 }

@@ -25,7 +25,7 @@
       <import plugin="org.eclipse.jdt.ui"/>
       <import plugin="org.eclipse.jdt.core"/>
       <import plugin="org.eclipse.core.resources"/>
-      <import plugin="org.objectstyle.wolips"/>
+      <import plugin="org.objectstyle.wolips.preferences"/>
       <import plugin="org.objectstyle.wolips.commons"/>
       <import plugin="org.objectstyle.wolips.variables"/>
       <import plugin="org.objectstyle.wolips.workbenchutilities"/>

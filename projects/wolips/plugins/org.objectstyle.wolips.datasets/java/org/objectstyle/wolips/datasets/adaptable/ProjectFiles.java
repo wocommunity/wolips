@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2004 The ObjectStyle Group 
+ * Copyright (c) 2002 - 2004 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -53,104 +53,92 @@
  * <http://objectstyle.org/>.
  *
  */
-
-package org.objectstyle.wolips.ui.editor;
-
-import java.lang.reflect.InvocationTargetException;
+package org.objectstyle.wolips.datasets.adaptable;
+import java.io.IOException;
 import java.util.ArrayList;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IFileEditorInput;
-import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.forms.editor.FormEditor;
-import org.objectstyle.wolips.datasets.pattern.PatternsetReader;
-import org.objectstyle.wolips.datasets.pattern.PatternsetWriter;
-import org.objectstyle.wolips.ui.actions.TouchAllFilesOperation;
-
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.objectstyle.wolips.datasets.DataSetsPlugin;
+import org.objectstyle.wolips.datasets.project.PBProjectUpdater;
+import org.objectstyle.wolips.datasets.resources.IWOLipsModel;
+import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 /**
  * @author ulrich
- *
+ * 
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public class PatternsetEditor extends FormEditor {
-	private ArrayList patternList;
-	private boolean isDirty = false;
+public class ProjectFiles extends ProjectPatternsets {
+	/**
+	 * @param project
+	 */
+	protected ProjectFiles(IProject project) {
+		super(project);
+	}
+	/**
+	 * @param resource
+	 * @return IFolder
+	 */
+	public IFolder getParentFolderWithPBProject(IResource resource) {
+		if (resource.getType() == IResource.FILE)
+			return getParentFolderWithPBProject((IFolder) resource.getParent());
+		if (resource.getType() == IResource.FOLDER)
+			return getParentFolderWithPBProject((IFolder) resource);
+		if (resource.getType() == IResource.PROJECT)
+			return getParentFolderWithPBProject((IFolder) resource);
+		return null;
+	}
+	/**
+	 * Method getParentFolderWithPBProject.
+	 * 
+	 * @param aFolder
+	 * @return IFolder or one the parents with PB.project if one is found. Null
+	 *         is returned when Projects PB.project is found
+	 */
+	public IFolder getParentFolderWithPBProject(IFolder aFolder) {
+		IFolder findFolder = aFolder;
+		while ((findFolder.findMember(IWOLipsModel.PROJECT_FILE_NAME) == null)
+				&& (findFolder.getParent() != null)
+				&& (findFolder.getParent().getType() != IResource.PROJECT)) {
+			findFolder = (IFolder) findFolder.getParent();
+		}
+		if (findFolder.getParent() == null)
+			return null;
+		if (findFolder.findMember(IWOLipsModel.PROJECT_FILE_NAME) != null)
+			return findFolder;
+		return null;
+	}
+	/**
+	 * cleans all tables
+	 * 
+	 * @throws IOException
+	 */
+	public void cleanAllFileTables() throws IOException {
+		ArrayList arrayList = new ArrayList();
+		WorkbenchUtilitiesPlugin.findFilesInResourceByName(arrayList, this
+				.getIProject(), IWOLipsModel.PROJECT_FILE_NAME);
+		for (int i = 0; i < arrayList.size(); i++) {
+			IResource resource = (IResource) arrayList.get(i);
+			PBProjectUpdater pbProjectUpdater = PBProjectUpdater
+					.instance(resource.getParent());
+			pbProjectUpdater.cleanTables();
+		}
+	}
 	/**
 	 *  
 	 */
-	public PatternsetEditor() {
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.forms.editor.FormEditor#addPages()
-	 */
-	protected void addPages() {
-		IEditorInput editorInput = getEditorInput();
-		IFile inputFile = ((IFileEditorInput)editorInput).getFile();
-		PatternsetReader patternsetReader = new PatternsetReader(inputFile);
-		String[] pattern = patternsetReader.getPattern();
-		patternList = new ArrayList();
-		for(int i = 0; i < pattern.length; i++) {
-			patternList.add(pattern[i]);
-		}
+	public void addLocalFrameworkSectionToPBProject() {
 		try {
-		addPage(new PatternsetPage(this, patternList));
+			IResource pbproject = this.getIProject().findMember(
+					IWOLipsModel.PROJECT_FILE_NAME);
+			if (pbproject != null) {
+				PBProjectUpdater pbProjectUpdater = PBProjectUpdater
+						.instance(pbproject.getParent());
+				pbProjectUpdater.addLocalFrameworkSectionToPBProject();
+			}
+		} catch (Exception exception) {
+			DataSetsPlugin.log(exception);
 		}
-		catch (PartInitException e) {
-			//
-		}
-	}
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.ISaveablePart#doSave(org.eclipse.core.runtime.IProgressMonitor)
-	 */
-	public void doSave(IProgressMonitor monitor) {
-		IEditorInput editorInput = getEditorInput();
-		IFile inputFile = ((IFileEditorInput)editorInput).getFile();
-		String[] pattern = (String[])patternList.toArray(new String[patternList.size()]);
-		PatternsetWriter.create(inputFile, pattern);
-		this.setDirty(false);
-		TouchAllFilesOperation touchAllFilesOperation = new TouchAllFilesOperation(inputFile.getProject());
-		try {
-			touchAllFilesOperation.run(new NullProgressMonitor());
-		} catch (InvocationTargetException e) {
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-	}
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.ISaveablePart#doSaveAs()
-	 */
-	public void doSaveAs() {
-	}
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.ISaveablePart#isSaveAsAllowed()
-	 */
-	public boolean isSaveAsAllowed() {
-		return false;
-	}
-	/**
-	 * @return Returns the isDirty.
-	 */
-	public boolean isDirty() {
-		return isDirty;
-	}
-	/**
-	 * @param isDirty The isDirty to set.
-	 */
-	public void setDirty(boolean isDirty) {
-		this.isDirty = isDirty;
-		this.firePropertyChange(PatternsetEditor.PROP_DIRTY);
 	}
 }

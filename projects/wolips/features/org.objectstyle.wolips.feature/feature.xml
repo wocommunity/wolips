@@ -124,24 +124,10 @@
          version="1.0.6"/>
 
    <plugin
-         id="org.objectstyle.wolips.launching"
-         download-size="28"
-         install-size="40"
-         version="1.0.6"/>
-
-   <plugin
-         id="org.objectstyle.wolips.source"
-         download-size="4"
-         install-size="4"
-         version="1.0.6"
-         fragment="true"/>
-
-   <plugin
-         id="org.objectstyle.wolips.projectbuild"
+         id="org.objectstyle.wolips.preferences"
          download-size="48"
          install-size="64"
-         version="1.0.6"
-         fragment="true"/>
+         version="1.0.6"/>
 
    <plugin
          id="org.objectstyle.wolips.ui"

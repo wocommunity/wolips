@@ -60,7 +60,7 @@ import org.eclipse.ui.IActionDelegate2;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.actions.ActionDelegate;
-import org.objectstyle.wolips.core.preferences.Preferences;
+import org.objectstyle.wolips.preferences.Preferences;
 /**
  * @author ulrich
  * 

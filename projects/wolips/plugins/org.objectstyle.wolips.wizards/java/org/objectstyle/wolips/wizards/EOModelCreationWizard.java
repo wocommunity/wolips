@@ -57,7 +57,6 @@ package org.objectstyle.wolips.wizards;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
-import org.objectstyle.wolips.core.plugin.WOLipsPluginImages;
 import org.objectstyle.wolips.templateengine.TemplateEnginePlugin;
 /**
  * @author mnolte
@@ -92,7 +91,7 @@ public class EOModelCreationWizard extends AbstractResourceWizard implements INe
 		super.init(workbench, selection);
 		mainPage = new EOModelCreationPage(selection);
 		setWindowTitle(Messages.getString("EOModelCreationWizard.title"));
-		setDefaultPageImageDescriptor(WOLipsPluginImages
+		setDefaultPageImageDescriptor(WizardsPlugin
 				.WOCOMPONENT_WIZARD_BANNER());
 	}
 }

@@ -1,8 +1,8 @@
 /* ====================================================================
- * 
- * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 The ObjectStyle Group 
+ * The ObjectStyle Group Software License, Version 1.0
+ *
+ * Copyright (c) 2004 The ObjectStyle Group,
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,15 +18,15 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution, if
- *    any, must include the following acknowlegement:  
- *       "This product includes software developed by the 
+ *    any, must include the following acknowlegement:
+ *       "This product includes software developed by the
  *        ObjectStyle Group (http://objectstyle.org/)."
  *    Alternately, this acknowlegement may appear in the software itself,
  *    if and wherever such third-party acknowlegements normally appear.
  *
- * 4. The names "ObjectStyle Group" and "Cayenne" 
+ * 4. The names "ObjectStyle Group" and "Cayenne"
  *    must not be used to endorse or promote products derived
- *    from this software without prior written permission. For written 
+ *    from this software without prior written permission. For written
  *    permission, please contact andrus@objectstyle.org.
  *
  * 5. Products derived from this software may not be called "ObjectStyle"
@@ -53,38 +53,34 @@
  * <http://objectstyle.org/>.
  *
  */
-
-package org.objectstyle.wolips.datasets.pattern;
-
-
-
+package org.objectstyle.wolips.datasets.adaptable;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.jdt.core.IJavaProject;
 /**
- * @author Harald Niesche
- *
- * To change this generated comment go to 
- * Window>Preferences>Java>Code Generation>Code Template
+ * @author ulrich
+ * 
+ * To change the template for this generated type comment go to
+ * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public class ExcludeIncludeMatcher implements IStringMatcher {
-  public ExcludeIncludeMatcher (String excludes[], String includes[]) {
-    _excludes = new StringListMatcher (excludes);
-    _includes = new StringListMatcher (includes);
-  }
-
-  public ExcludeIncludeMatcher (String excludes, String includes) {
-    _excludes = new StringListMatcher (excludes);
-    _includes = new StringListMatcher (includes);
-  }
-
-  public boolean match (String txt) {
-    if (_excludes.match(txt)) {
-      return false;
-    }
-    if (_includes.match(txt)) {
-      return true;
-    }
-    return false;
-  }
-  
-  StringListMatcher _excludes;
-  StringListMatcher _includes;
+public abstract class AbstractJavaProjectAdapterType extends Project {
+	private IJavaProject iJavaProject;
+	/**
+	 * @param project
+	 */
+	protected AbstractJavaProjectAdapterType(IProject project) {
+		super(project);
+	}
+	/**
+	 * @return Returns the java project.
+	 */
+	public IJavaProject getIJavaProject() {
+		return iJavaProject;
+	}
+	/**
+	 * @param iJavaProject
+	 *            The javaProject to set.
+	 */
+	protected void setIJavaProject(IJavaProject iJavaProject) {
+		this.iJavaProject = iJavaProject;
+	}
 }

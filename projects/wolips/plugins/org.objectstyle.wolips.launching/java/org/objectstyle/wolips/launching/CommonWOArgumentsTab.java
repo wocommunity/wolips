@@ -58,7 +58,6 @@ package org.objectstyle.wolips.launching;
 
 import java.util.StringTokenizer;
 import java.util.Vector;
-
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -85,10 +84,10 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
-import org.objectstyle.wolips.core.preferences.ILaunchInfo;
-import org.objectstyle.wolips.core.preferences.Preferences;
-import org.objectstyle.wolips.core.preferences.PreferencesMessages;
-import org.objectstyle.wolips.core.util.ArrayUtilities;
+import org.objectstyle.wolips.commons.util.ArrayUtilities;
+import org.objectstyle.wolips.preferences.ILaunchInfo;
+import org.objectstyle.wolips.preferences.Preferences;
+import org.objectstyle.wolips.preferences.PreferencesMessages;
 /**
  * @author uli
  *

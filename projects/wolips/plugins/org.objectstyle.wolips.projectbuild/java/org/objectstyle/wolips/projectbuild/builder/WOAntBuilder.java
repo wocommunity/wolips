@@ -74,11 +74,10 @@ import org.eclipse.jdt.launching.IVMInstall;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.externaltools.internal.model.IExternalToolConstants;
-import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
-import org.objectstyle.wolips.core.preferences.Preferences;
+import org.objectstyle.wolips.preferences.Preferences;
 import org.objectstyle.wolips.datasets.adaptable.Project;
 import org.objectstyle.wolips.datasets.resources.IWOLipsModel;
-import org.objectstyle.wolips.projectbuild.WOProjectBuildConstants;
+import org.objectstyle.wolips.projectbuild.ProjectBuildPlugin;
 import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 /**
  * @author uli
@@ -122,7 +121,7 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 		String aBuildFile = null;
 		try {
 			getProject().deleteMarkers(
-					WOProjectBuildConstants.MARKER_TASK_GENERIC, false,
+					ProjectBuildPlugin.MARKER_TASK_GENERIC, false,
 					IResource.DEPTH_ONE);
 			if (!projectNeedsAnUpdate()
 					&& kind != IncrementalProjectBuilder.FULL_BUILD) {
@@ -132,7 +131,7 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 			aBuildFile = this.buildFile();
 			if (checkIfBuildfileExist(aBuildFile)) {
 				getProject().getFile(aBuildFile).deleteMarkers(
-						WOProjectBuildConstants.MARKER_TASK_GENERIC, false,
+						ProjectBuildPlugin.MARKER_TASK_GENERIC, false,
 						IResource.DEPTH_ONE);
 				this.execute(monitor, aBuildFile);
 			}
@@ -164,7 +163,7 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 				aMarker = this.getBuildfileMarker();
 				aMarker.setAttribute(IMarker.MESSAGE, informUserString);
 			} catch (Exception e) {
-				WOLipsPlugin.getDefault().getPluginLogger().log(e);
+				ProjectBuildPlugin.getDefault().getPluginLogger().log(e);
 			} finally {
 				aMarker = null;
 			}
@@ -197,7 +196,7 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 		try {
 			this.getDelta(this.getProject()).accept(resourceValidator);
 		} catch (CoreException e) {
-			WOLipsPlugin.getDefault().getPluginLogger().log(e);
+			ProjectBuildPlugin.getDefault().getPluginLogger().log(e);
 			return false;
 		}
 		return resourceValidator.isBuildRequired();
@@ -218,7 +217,7 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 			aMarker.setAttribute(IMarker.MESSAGE, "WOLips: "
 					+ anException.getMessage());
 		} catch (Exception e) {
-			WOLipsPlugin.getDefault().getPluginLogger().log(e);
+			ProjectBuildPlugin.getDefault().getPluginLogger().log(e);
 		} finally {
 			aMarker = null;
 		}
@@ -227,10 +226,10 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 		IMarker aMarker = null;
 		try {
 			aMarker = getProject().getFile(this.buildFile()).createMarker(
-					WOProjectBuildConstants.MARKER_TASK_GENERIC);
+					ProjectBuildPlugin.MARKER_TASK_GENERIC);
 			aMarker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
 		} catch (CoreException e) {
-			WOLipsPlugin.getDefault().getPluginLogger().log(e);
+			ProjectBuildPlugin.getDefault().getPluginLogger().log(e);
 		}
 		return aMarker;
 	}
@@ -245,17 +244,17 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 			if (getProject().getFile(aBuildFile).exists())
 				return true;
 		} catch (Exception anException) {
-			WOLipsPlugin.getDefault().getPluginLogger().log(anException);
+			ProjectBuildPlugin.getDefault().getPluginLogger().log(anException);
 		}
 		IMarker aMarker = null;
 		try {
 			aMarker = getProject().createMarker(
-					WOProjectBuildConstants.MARKER_TASK_GENERIC);
+					ProjectBuildPlugin.MARKER_TASK_GENERIC);
 			aMarker.setAttribute(IMarker.MESSAGE, "WOLips: Can not find: "
 					+ this.buildFile());
 			aMarker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
 		} catch (Exception anException) {
-			WOLipsPlugin.getDefault().getPluginLogger().log(anException);
+			ProjectBuildPlugin.getDefault().getPluginLogger().log(anException);
 		} finally {
 			aMarker = null;
 		}

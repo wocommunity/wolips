@@ -57,7 +57,6 @@ package org.objectstyle.wolips.wizards;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.wizards.newresource.BasicNewProjectResourceWizard;
-import org.objectstyle.wolips.core.plugin.WOLipsPluginImages;
 import org.objectstyle.wolips.templateengine.TemplateEnginePlugin;
 import org.objectstyle.wolips.templateengine.TemplateFolder;
 /**
@@ -95,7 +94,7 @@ public abstract class AbstractProjectWizard extends BasicNewProjectResourceWizar
 		if(this.displayPage()) {
 			this.addPage(selectTemplatePage);
 		}
-		setDefaultPageImageDescriptor(WOLipsPluginImages
+		setDefaultPageImageDescriptor(WizardsPlugin
 				.WOPROJECT_WIZARD_BANNER());
 		setWindowTitle(this.getWindowTitle());
 	}

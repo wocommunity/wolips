@@ -47,93 +47,34 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.commons.logging;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.objectstyle.wolips.commons.CommonsPlugin;
+package org.objectstyle.wolips.datasets.listener;
+
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
+
 /**
- * @author uli
- * @author mnolte
+ * @author ulrich
+ *
+ * To change the template for this generated type comment go to
+ * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public class PluginLogger {
-	private String pluginID = null;
-	private boolean debug;
+public class MasterResourceChangeListener implements IResourceChangeListener {
 	/**
-	 * @param pluginID
-	 * @param debug
+	 * Constructor for MasterResourceChangeListener.
 	 */
-	public PluginLogger(String pluginID, boolean debug) {
-		this.pluginID = pluginID;
-		this.debug = debug;
+	public MasterResourceChangeListener() {
+		super();
 	}
 	/**
-	 * Prints an IStatus.
+	 * Adds instance of inner class ProjectFileResourceValidator to events
+	 * resource delta. <br>
 	 * 
-	 * @param status
+	 * @param event
+	 * @see org.eclipse.core.resources.IResourceChangeListener#resourceChanged(IResourceChangeEvent)
 	 */
-	public void log(IStatus status) {
-		CommonsPlugin.getDefault().getLog().log(status);
-	}
-	/**
-	 * Prints a message.
-	 * 
-	 * @param message
-	 */
-	public void log(String message) {
-		this.log(new Status(IStatus.ERROR, pluginID, IStatus.ERROR, message,
-				null));
-	}
-	/**
-	 * Prints a Throwable.
-	 * 
-	 * @param e
-	 */
-	public void log(Throwable e) {
-		this.log(new Status(IStatus.ERROR, pluginID, IStatus.ERROR,
-				"Internal Error", e)); //$NON-NLS-1$
-	}
-	/**
-	 * Prints a Throwable.
-	 * @param message
-	 * @param e
-	 */
-	public void log(String message, Throwable e) {
-		this.log(new Status(IStatus.ERROR, pluginID, IStatus.ERROR,
-				message, e)); //$NON-NLS-1$
-	}
-	/**
-	 * If debug is true this method prints a String to the log.
-	 * 
-	 * @param aString
-	 */
-	public void debug(String aString) {
-		if (debug)
-			this.log(aString);
-	}
-	/**
-	 * If debug is true this method prints an Exception to the log.
-	 * 
-	 * @param aThrowable
-	 */
-	public void debug(Throwable aThrowable) {
-		if (debug)
-			this.log(aThrowable);
-	}
-	/**
-	 * @param message
-	 * @param t
-	 */
-	public void debug(Object message, Throwable t) {
-		if (debug)
-			this.log(new Status(IStatus.WARNING, pluginID, IStatus.WARNING,
-					message.toString(), t)); //$NON-NLS-1$
-	}
-	/**
-	 * @param message
-	 */
-	public void debug(Object message) {
-		if (debug)
-			this.log(new Status(IStatus.WARNING, pluginID, IStatus.WARNING,
-					message.toString(), null)); //$NON-NLS-1$
+	public final void resourceChanged(IResourceChangeEvent event) {
+		ResourceChangeListener resourceChangeListener = new ResourceChangeListener();
+		resourceChangeListener.setEvent(event);
+		resourceChangeListener.schedule();
 	}
 }

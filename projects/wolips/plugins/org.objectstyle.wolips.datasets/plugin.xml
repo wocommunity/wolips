@@ -28,7 +28,6 @@
       <import plugin="org.apache.ant"/>
    </requires>
 
-
 <!-- =================================================================================== -->
 <!-- Extension: Adapters                                                                 -->
 <!-- =================================================================================== -->
@@ -36,6 +35,10 @@
        <factory class="org.objectstyle.wolips.datasets.adaptable.IProjectAdapterFactory"
            adaptableType="org.eclipse.core.resources.IProject">
            <adapter type="org.objectstyle.wolips.datasets.adaptable.Project"/>
+       </factory>
+       <factory class="org.objectstyle.wolips.datasets.adaptable.IJavaProjectAdapterFactory"
+           adaptableType="org.eclipse.core.resources.IJavaProject">
+           <adapter type="org.objectstyle.wolips.datasets.adaptable.JavaProject"/>
        </factory>
    </extension>
 

@@ -77,7 +77,7 @@ import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
-import org.objectstyle.wolips.core.util.ArrayUtilities;
+import org.objectstyle.wolips.commons.util.ArrayUtilities;
 /**
  * @author ulrich
  * 

@@ -54,26 +54,25 @@
  *
  */
 package org.objectstyle.wolips.datasets.adaptable;
-
 import org.eclipse.core.resources.IProject;
-
 /**
  * @author ulrich
- *
+ * 
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
 public abstract class AbstractProjectAdapterType {
-	
-	IProject project;
-	
-	public AbstractProjectAdapterType(IProject project) {
+	private IProject project;
+	/**
+	 * @param project
+	 */
+	protected AbstractProjectAdapterType(IProject project) {
 		this.project = project;
 	}
 	/**
 	 * @return Returns the project.
 	 */
-	public IProject getProject() {
+	public IProject getIProject() {
 		return project;
 	}
 }
