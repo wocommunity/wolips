@@ -53,20 +53,23 @@
  * <http://objectstyle.org/>.
  *
  */
-
 package org.objectstyle.wolips.wizards;
-
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Hashtable;
-
+import java.util.Vector;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jdt.core.IClasspathEntry;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.core.JavaModelException;
 import org.objectstyle.wolips.io.FileFromTemplateCreator;
-
+import org.objectstyle.wolips.project.ProjectHelper;
 /**
  * @author mnolte
  * @author uli
@@ -74,57 +77,36 @@ import org.objectstyle.wolips.io.FileFromTemplateCreator;
  * <br>
  * @see com.neusta.webobjects.eclipse.wizards.EOModelCreationPage
  */
-
 public class EOModelCreator extends WOProjectResourceCreator {
-
+	
 	private String modelName;
-
 	private String adaptorName;
-
 	/**
 	 * Constructor for EOModelCreator.
 	 */
-
 	public EOModelCreator(
 		IResource parentResource,
 		String modelName,
 		String adaptorName) {
-
 		super(parentResource);
-
 		this.modelName = modelName;
-
 		this.adaptorName = adaptorName;
-
 	}
-
 	protected int getType() {
-
 		return EOMODEL_CREATOR;
-
 	}
-
 	/**
 	 * @see WOProjectResourceCreator#run(IProgressMonitor)
 	 */
-
 	public void run(IProgressMonitor monitor)
 		throws InvocationTargetException, InterruptedException {
-
 		super.run(monitor);
-
 		try {
-
 			createEOModel(monitor);
-
 		} catch (CoreException e) {
-
 			throw new InvocationTargetException(e);
-
 		}
-
 	}
-
 	/**
 	 * Method createEOModelNamed. Creates eo model file resources. All file resource
 	 * changes are registered in ResourceChangeListener where the project
@@ -138,59 +120,54 @@ public class EOModelCreator extends WOProjectResourceCreator {
 	 * @throws CoreException
 	 * @throws InvocationTargetException
 	 */
-
 	public void createEOModel(IProgressMonitor monitor)
 		throws CoreException, InvocationTargetException {
-
 		// create the new file resources
-
 		if (fileCreator == null) {
-
 			Hashtable adaptorNameTranslation = new Hashtable(1);
-
 			adaptorNameTranslation.put("ADAPTOR_NAME", adaptorName);
-
 			fileCreator = new FileFromTemplateCreator(adaptorNameTranslation);
-
 		}
-
 		IFolder modelFolder = null;
-
 		switch (parentResource.getType()) {
-
 			case IResource.PROJECT :
-
 				modelFolder =
 					((IProject) parentResource).getFolder(
 						modelName + "." + EXT_EOMODEL);
-
 				break;
-
 			case IResource.FOLDER :
-
 				modelFolder =
 					((IFolder) parentResource).getFolder(
 						modelName + "." + EXT_EOMODEL);
-
 				break;
-
 			default :
-
 				throw new InvocationTargetException(
 					new Exception("Wrong parent resource - check validation"));
-
 		}
-
 		IFile modelIndexFile = modelFolder.getFile("index." + EXT_EOMODEL);
-
 		IFile modelDiagramLayoutFile = modelFolder.getFile("DiagramLayout");
-
 		createResourceFolderInProject(modelFolder, monitor);
-
 		fileCreator.create(modelIndexFile, monitor);
-
 		fileCreator.create(modelDiagramLayoutFile, "diagram", monitor);
-
+		// add adaptor framework
+		if (!"None".equals(adaptorName)) {
+			IJavaProject projectToUpdate =
+				JavaCore.create(parentResource.getProject());
+				
+			Vector newAdaptorFrameworkList = new Vector();
+			newAdaptorFrameworkList.add(
+				"Java" + adaptorName + "Adaptor." + EXT_FRAMEWORK);
+				
+			IClasspathEntry[] newClasspathEntries =
+				ProjectHelper.addFrameworkListToClasspathEntries(
+					newAdaptorFrameworkList,
+					projectToUpdate);
+			
+			try {
+				projectToUpdate.setRawClasspath(newClasspathEntries, null);
+			} catch (JavaModelException e) {
+				throw new InvocationTargetException(e);
+			}
+		}
 	}
-
 }

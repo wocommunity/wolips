@@ -80,6 +80,7 @@ import org.objectstyle.wolips.wo.WOVariables;
  * The one and only page in the eo model creation wizard
  */
 public class EOModelCreationPage extends WizardNewWOResourcePage {
+
 	private IWorkbench workbench;
 	private HashMap availableAdaptors;
 	private Composite parentComposite;
@@ -122,9 +123,8 @@ public class EOModelCreationPage extends WizardNewWOResourcePage {
 		group.setLayoutData(
 			new GridData(
 				GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
-
 		createAvailableAdaptorButtons(group);
-		
+
 		new Label(composite, SWT.NONE); // vertical spacer
 		setPageComplete(validatePage());
 	}
@@ -142,7 +142,6 @@ public class EOModelCreationPage extends WizardNewWOResourcePage {
 		IProject actualProject =
 			ResourcesPlugin.getWorkspace().getRoot().getProject(
 				getContainerFullPath().segment(0));
-
 		// determine adaptor
 		String adaptorName = "";
 		Button currentButton;
@@ -154,7 +153,6 @@ public class EOModelCreationPage extends WizardNewWOResourcePage {
 				break;
 			}
 		}
-
 		// determine parent resource
 		switch (getContainerFullPath().segmentCount()) {
 			case 0 :
@@ -215,25 +213,31 @@ public class EOModelCreationPage extends WizardNewWOResourcePage {
 	protected String getNewFileLabel() {
 		return Messages.getString("EOModelCreationPage.newEOModel.label");
 	}
+
 	private class AdaptorFilter implements FilenameFilter {
+
 		private static final String ADAPTOR_PREFIX = "Java";
 		private static final String ADAPTOR_POSTFIX = "Adaptor.framework";
 		private Vector adaptorNames;
+
 		public AdaptorFilter() {
 			super();
 			adaptorNames = new Vector();
 		}
+
 		public boolean accept(File dir, String name) {
+			String adaptorName = null;
 			boolean isAdaptor =
 				(name.length()
 					> (ADAPTOR_PREFIX.length() + ADAPTOR_POSTFIX.length()))
 					&& name.startsWith(ADAPTOR_PREFIX)
 					&& name.endsWith(ADAPTOR_POSTFIX);
 			if (isAdaptor) {
-				adaptorNames.add(
+				adaptorName =
 					name.substring(
 						ADAPTOR_PREFIX.length(),
-						name.length() - ADAPTOR_POSTFIX.length()));
+						name.length() - ADAPTOR_POSTFIX.length());
+				adaptorNames.add(adaptorName);
 			}
 			return isAdaptor;
 		}
