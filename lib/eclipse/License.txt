@@ -1,1 +1,0 @@
-The jars in this folder are under the eclipse.org CPL. Please refer to http://www.eclipse.org/legal/cpl-v10.html for more information.
