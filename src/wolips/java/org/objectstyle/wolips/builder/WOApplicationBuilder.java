@@ -58,11 +58,6 @@ package org.objectstyle.wolips.builder;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Hashtable;
-
-import org.eclipse.core.runtime.Platform;
-import org.objectstyle.wolips.WOLipsPlugin;
 
 /**
  * @author uli
@@ -75,45 +70,8 @@ public class WOApplicationBuilder extends WOBuilder {
 	public WOApplicationBuilder() {
 		super();
 	}
-
-	
-	public Hashtable properties() {
-		Hashtable aHashtable = new Hashtable();
-		aHashtable.put(WOBuilder.basedirKey, this.basedir());
-		aHashtable.put(WOBuilder.destdirKey, this.destdir());
-		aHashtable.put(WOBuilder.projectnameKey, this.projectname());
-		return aHashtable;
-	}
 	
 	public String buildFileLocation() throws MalformedURLException, IOException {
-	//	WOLipsPlugin aPlugin = WOLipsPlugin.getDefault();
-	//	URL starterURL = new URL(WOLipsPlugin.getDefault().getDescriptor().getInstallURL(), WOBuilder.WOApplicationBuildFileLocation);
-	//	return Platform.asLocalURL(starterURL).getFile();
 		return getProject().getFile("build.xml").getLocation().toOSString();
 	}
-
-	public String basedir() {
-		String returnValue = super.basedir();
-		if (returnValue == null) return getProject().getFullPath().toOSString();
-		return returnValue;
-	}
-	
-	public String destdir() {
-		String returnValue = super.destdir();
-		if (returnValue == null) return "../../apps-export";
-		return returnValue;
-	}
-	
-	public String applicationname() {
-		String returnValue = super.applicationname();
-		if (returnValue == null) return getProject().getName();
-		return returnValue;
-	}
-	
-	public String projectname() {
-		String returnValue = super.projectname();
-		if (returnValue == null) return getProject().getName();
-		return returnValue;
-	}
-
 }

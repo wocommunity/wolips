@@ -13,11 +13,11 @@
 		<a href="inside_wolips.html">inside WOLips</a></p>
 	</section>      
 	<section name="Bugs">
-		<p>Coming soon...</p>
+		<p>Currently it is not possible to create projects with WOLips outside of the workspace.</p>
 	</section>
 	
 	<section name="Known Issues">
-		<p>Currently you can not build woapplications.</p>
+		<p>There seems to be some problems with Java 1.4.</p>
 		<p>Please use a 1.4* version of ant to build wolips. There is currently no support for ant1.5.* within Eclipse.</p>
 	</section>
 </body>

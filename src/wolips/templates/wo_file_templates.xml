@@ -182,18 +182,13 @@ public class DirectAction extends WODirectAction {
     WINDOWS_OBJCPLUS_COMPILER = "$(DEVDIR)/gcc"; 
 }
 ]]></template>
-	<template name="ant file woapplication" id="antwoapplication" description="basic project file with main component and application class" variables="PROJECT_NAME" enabled="true"><![CDATA[
-<project name="${PROJECT_NAME}" default="build" basedir=".">
+	<template name="ant file woapplication" id="antwoapplication" description="basic project file with main component and application class" variables="PROJECT_NAME" enabled="true"><![CDATA[<project name="${PROJECT_NAME}" default="build" basedir=".">
 
-	<target name="build">
-		<property environment="env"/>
-    	<property name="wo.woroot" value="${env.NEXT_ROOT}"/>
-		 <condition property="wo.root" value="/System">
-            <and>
-                <os family="mac" />
-                <os family="unix" />
-            </and>
-        </condition>
+	<target name="init">
+		<property name="wo.woroot" value="${wolips.next.root}"/>
+	</target>
+	
+	<target name="build" depends="init">
 		<woapplication name="${PROJECT_NAME}" destDir=".">
    			<classes dir="bin">
    			</classes>
@@ -210,18 +205,13 @@ public class DirectAction extends WODirectAction {
 	
 </project>
 ]]></template>
-		<template name="ant file woframework" id="antwoframework" description="basic project file with main component and application class" variables="PROJECT_NAME" enabled="true"><![CDATA[
-<project name="${projectname}" default="build" basedir=".">
+		<template name="ant file woframework" id="antwoframework" description="basic project file with main component and application class" variables="PROJECT_NAME" enabled="true"><![CDATA[<project name="${projectname}" default="build" basedir=".">
 
-	<target name="build">
-		<property environment="env"/>
-    	<property name="wo.woroot" value="${env.NEXT_ROOT}"/>
-		 <condition property="wo.root" value="/System">
-            <and>
-                <os family="mac" />
-                <os family="unix" />
-            </and>
-        </condition>
+	<target name="init">
+		<property name="wo.woroot" value="${wolips.next.root}"/>
+	</target>
+	
+	<target name="build" depends="init">
 		<woframework name="${PROJECT_NAME}" destDir=".">
    			<classes dir="bin">
    			</classes>

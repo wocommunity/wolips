@@ -60,6 +60,8 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.internal.ui.wizards.buildpaths.BuildPathsBlock;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.ui.actions.WorkspaceModifyDelegatingOperation;
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
@@ -91,6 +93,21 @@ public class NewWOProjectPage extends WizardNewProjectCreationPage {
 
 	public boolean createProject() {
 		IProject newProject = getProjectHandle();
+		try {
+			if(this.getLocationPath() != null)
+				BuildPathsBlock.createProject(newProject, this.getLocationPath(), null);
+		} catch (CoreException e) {
+			WOLipsPlugin.handleException(getShell(), e, null);
+			return false;
+		}
+
+		//if(this.getLocationPath() != null) {
+
+		//	IProjectDescription desc = newProject.
+
+		//	desc.setLocation(location);
+
+			//	newProject.setDescription(desc, monitor);
 		//String projectTemplateID = WOVariables.woProjectTypeJavaApplication();
 		IRunnableWithProgress op =
 			new WorkspaceModifyDelegatingOperation(

@@ -31,7 +31,7 @@
 <projectTypes>
 	<projectType name="Java WebObjects Application" id="JavaWebObjectsApplication">
 		<nature id="org.eclipse.jdt.core.javanature"/>
-		<classpath variables="webobjects.next.root,webobjects.system.library.dir">
+		<classpath variables="webobjects.system.library.dir">
 			<classpathentry kind="lib" path="${webobjects.system.library.dir}/Frameworks/JavaWebObjects.framework/Resources/Java/javawebobjects.jar"/>
 
 			<classpathentry kind="lib" path="${webobjects.system.library.dir}/Frameworks/JavaFoundation.framework/Resources/Java/javafoundation.jar"/>
@@ -63,7 +63,7 @@
 	</projectType>
 	<projectType name="Java WebObjects Framework" id="JavaWebObjectsFramework">
 		<nature id="org.eclipse.jdt.core.javanature"/>
-		<classpath variables="webobjects.next.root,webobjects.system.library.dir">
+		<classpath variables="webobjects.system.library.dir">
 
 			<classpathentry kind="lib" path="${webobjects.system.library.dir}/Frameworks/JavaWebObjects.framework/Resources/Java/javawebobjects.jar"/>
 

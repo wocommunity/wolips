@@ -61,25 +61,19 @@ import java.util.Hashtable;
 import java.util.Map;
 
 import org.eclipse.ant.core.AntRunner;
-import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.objectstyle.wolips.WOLipsPlugin;
+import org.objectstyle.wolips.wo.WOVariables;
 
 /**
  * @author uli
  */
 public class WOBuilder extends IncrementalProjectBuilder {
 	
-	public static String basedirKey = "basedir";
-	public static String destdirKey = "destdir";
-	public static String frameworknameKey = "frameworkname";
-	public static String applicationnameKey = "applicationname";
-	public static String projectnameKey = "projectname";
-	public static String WOFrameworkBuildFileLocation = "ant/wofw/build.xml";
-	public static String WOApplicationBuildFileLocation = "ant/woapp/build.xml";
+	public static String WOLIPS_NEXT_ROOT = "wolips.next.root";
 	/**
 	 * Constructor for WOBuilder.
 	 */
@@ -97,9 +91,8 @@ public class WOBuilder extends IncrementalProjectBuilder {
 			AntRunner anAntRunner = new AntRunner();
 			anAntRunner.setBuildFileLocation(this.buildFileLocation());
 			Hashtable aHashtable = this.properties();
-			//anAntRunner.addUserProperties(aHashtable);
+			anAntRunner.addUserProperties(aHashtable);
 			anAntRunner.run(monitor);
-			WOLipsPlugin.debug("refresh");
 			getProject().refreshLocal(getProject().DEPTH_INFINITE, monitor);
 		} 
 		catch(Exception e) {
@@ -111,57 +104,13 @@ public class WOBuilder extends IncrementalProjectBuilder {
 	}
 			
 	public Hashtable properties() {
-		return new Hashtable();
+		Hashtable aHashtable = new Hashtable();
+		aHashtable.put(WOBuilder.WOLIPS_NEXT_ROOT, WOVariables.nextRoot());
+		return aHashtable;
 	}
 	
 	public String buildFileLocation() throws MalformedURLException, IOException  {
 		return "";
 	}
 		
-							
-	public String basedir() {
-		try {
-			return WOLipsBuild.getString(WOBuilder.basedirKey);
-		}
-		catch(RuntimeException anException) {
-			return null;
-		}
-	}
-	
-	public String destdir() {
-		try {
-			return WOLipsBuild.getString(WOBuilder.destdirKey);
-		}
-		catch(RuntimeException anException) {
-			return null;
-		}
-	}
-	
-	public String frameworkname() {
-		try {
-			return WOLipsBuild.getString(WOBuilder.frameworknameKey);
-		}
-		catch(RuntimeException anException) {
-			return null;
-		}
-	}
-	
-	public String applicationname() {
-		try {
-			return WOLipsBuild.getString(WOBuilder.applicationnameKey);
-		}
-		catch(RuntimeException anException) {
-			return null;
-		}
-	}
-	
-	public String projectname() {
-		try {
-			return WOLipsBuild.getString(WOBuilder.projectnameKey);
-		}
-		catch(RuntimeException anException) {
-			return null;
-		}
-	}
-
 }

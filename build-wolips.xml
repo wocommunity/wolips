@@ -10,7 +10,7 @@
     <property environment="env"/>
     <property name="output" value="output"/>
     <property name="next.root" value="${env.NEXT_ROOT}"/>
-    <property name="wolips.project.version" value="0.8.6"/>
+    <property name="wolips.project.version" value="0.8.7"/>
     
     <!-- ============================================= -->
     <!-- Derived Properties.                           -->

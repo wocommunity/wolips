@@ -55,56 +55,12 @@
  */
 package org.objectstyle.wolips.builder;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Hashtable;
-
-import org.eclipse.core.internal.resources.Workspace;
-import org.eclipse.core.runtime.Platform;
-import org.objectstyle.wolips.WOLipsPlugin;
 
 public class WOFrameworkBuilder extends WOBuilder {
 	
-	public Hashtable properties() {
-		Hashtable aHashtable = new Hashtable();
-		aHashtable.put(WOBuilder.basedirKey, this.basedir());
-		aHashtable.put(WOBuilder.destdirKey, this.destdir());
-		aHashtable.put(WOBuilder.frameworknameKey, this.frameworkname());
-		aHashtable.put(WOBuilder.projectnameKey, this.projectname());
-		return aHashtable;
-	}
-	
 	public String buildFileLocation() throws MalformedURLException, IOException {
-		//WOLipsPlugin aPlugin = WOLipsPlugin.getDefault();
-		//URL starterURL = new URL(WOLipsPlugin.getDefault().getDescriptor().getInstallURL(), WOBuilder.WOFrameworkBuildFileLocation);
-		//return Platform.asLocalURL(starterURL).getFile();
 		return getProject().getFile("build.xml").getLocation().toOSString();
 	}
-
-	public String basedir() {
-		String returnValue = super.basedir();
-		if (returnValue == null) return getProject().getLocation().toOSString();
-		return returnValue;
-	}
-	
-	public String destdir() {
-		String returnValue = super.destdir();
-		if (returnValue == null) return "../../framework-export";
-		return returnValue;
-	}
-	
-	public String frameworkname() {
-		String returnValue = super.frameworkname();
-		if (returnValue == null) return getProject().getName();
-		return returnValue;
-	}
-	
-	public String projectname() {
-		String returnValue = super.projectname();
-		if (returnValue == null) return getProject().getName();
-		return returnValue;
-	}
-
 }

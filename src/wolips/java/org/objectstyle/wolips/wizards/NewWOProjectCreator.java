@@ -186,7 +186,7 @@ public class NewWOProjectCreator implements IRunnableWithProgress {
 
 	private void createProjectContents(IProgressMonitor monitor)
 		throws InvocationTargetException {
-		//configNewProject(String[] natureIds, IProgressMonitor monitor)
+		//configNewProject(String[] natureIds, IProgressMonitor monitor);
 		FileFromTemplateCreator fileCreator = new FileFromTemplateCreator();
 
 		NewWOComponentCreator componentCreator =
@@ -238,15 +238,13 @@ public class NewWOProjectCreator implements IRunnableWithProgress {
 
 		try {
 			if (!newProject.exists()) {
-				newProject.create(null);
+				newProject.create(monitor);
 			}
 			if (!newProject.isOpen()) {
-				newProject.open(null);
+				newProject.open(monitor);
 			}
 			IProjectDescription desc = newProject.getDescription();
-			//desc.setLocation(null);
 			desc.setNatureIds(natureIds);
-
 			newProject.setDescription(desc, monitor);
 		} catch (CoreException e) {
 			throw new InvocationTargetException(e);
@@ -267,13 +265,8 @@ public class NewWOProjectCreator implements IRunnableWithProgress {
 			existentClasspathEntries = myJavaProject.getRawClasspath();
 			existentClasspathEntriesCnt =
 				myJavaProject.getRawClasspath().length;
-				WOLipsPlugin.debug("existentClasspathEntries: " + existentClasspathEntries);
 				for (int x = 0; x < existentClasspathEntriesCnt; x++) {
 					IClasspathEntry anIClasspathEntry = existentClasspathEntries[x];
-					WOLipsPlugin.debug("IClasspathEntry.CPE_SOURCE: " + IClasspathEntry.CPE_SOURCE);
-					WOLipsPlugin.debug("ContentKind: " + existentClasspathEntries[x].getContentKind());
-					WOLipsPlugin.debug("EntryKind: " + existentClasspathEntries[x].getEntryKind());
-					WOLipsPlugin.debug("path: " + existentClasspathEntries[x].getPath());
 					if(anIClasspathEntry.getEntryKind() == IClasspathEntry.CPE_SOURCE) {
 						existentClasspathEntries[x] = JavaCore.newSourceEntry(anIClasspathEntry.getPath().addTrailingSeparator().append("src"));
 					}
