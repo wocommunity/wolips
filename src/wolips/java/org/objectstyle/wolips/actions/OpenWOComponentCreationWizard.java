@@ -70,7 +70,7 @@ import org.objectstyle.wolips.wizards.WOComponentCreationWizard;
  */
 public class OpenWOComponentCreationWizard extends AbstractOpenWizardAction {
 	
-	protected Wizard createWizard() { 
+	protected Wizard createWizard() {
 		return new WOComponentCreationWizard(); 
 	}
 
