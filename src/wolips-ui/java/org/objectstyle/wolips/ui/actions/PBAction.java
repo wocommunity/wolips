@@ -92,8 +92,10 @@ public class PBAction extends ActionOnIProject {
 				if (action.getId().equals(PBAction.UpdatePBProjectID)) {
 					//TODO: add progress monitor
 					WOLipsProject woLipsProject = new WOLipsProject(project());
+					//remove all existing entries
 					woLipsProject.getPBProjectFilesAccessor().cleanAllFileTables();
 					this.project().close(null);
+					//invokes the ResoureChangeListener indirectly
 					this.project().open(null);
 				}
 			} catch (Exception ex) {
