@@ -401,4 +401,12 @@ public class StringMatcher implements IStringMatcher
     
     return -1;
   }
+
+/* (non-Javadoc)
+ * @see org.objectstyle.wolips.datasets.pattern.IStringMatcher#hasPattern(java.lang.String)
+ */
+public boolean hasPattern(String string) {
+	// TODO Auto-generated method stub
+	return false;
+}
 }

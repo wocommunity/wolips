@@ -58,10 +58,19 @@ package org.objectstyle.wolips.datasets.pattern;
 
 /**
  * @author hn3000
- *
- * To change this generated comment go to 
- * Window>Preferences>Java>Code Generation>Code Template
+ * 
+ * To change this generated comment go to Window>Preferences>Java>Code
+ * Generation>Code Template
  */
 public interface IStringMatcher {
-  boolean match (String txt);
+	/**
+	 * @param txt
+	 * @return
+	 */
+	public boolean match(String txt);
+	/**
+	 * @param string
+	 * @return
+	 */
+	public boolean hasPattern(String string);
 }

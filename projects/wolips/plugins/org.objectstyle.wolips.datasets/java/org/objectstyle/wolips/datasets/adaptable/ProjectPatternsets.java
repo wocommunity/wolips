@@ -55,6 +55,8 @@
  */
 package org.objectstyle.wolips.datasets.adaptable;
 
+import java.util.ArrayList;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -65,11 +67,10 @@ import org.objectstyle.wolips.datasets.DataSetsPlugin;
 import org.objectstyle.wolips.datasets.pattern.IStringMatcher;
 import org.objectstyle.wolips.datasets.pattern.PatternsetMatcher;
 import org.objectstyle.wolips.datasets.pattern.PatternsetWriter;
-import org.objectstyle.wolips.datasets.pattern.StringListMatcher;
 
 /**
  * @author ulrich
- *
+ * 
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
@@ -78,23 +79,33 @@ public class ProjectPatternsets extends AbstractProjectAdapterType {
 	private PatternsetMatcher woappResourcesExcludeMatcher = null;
 	private PatternsetMatcher resourcesIncludeMatcher = null;
 	private PatternsetMatcher resourcesExcludeMatcher = null;
-	private StringListMatcher classesIncludeMatcher = null;
-	private StringListMatcher classesExcludeMatcher = null;
-	
+	private PatternsetMatcher classesIncludeMatcher = null;
+	private PatternsetMatcher classesExcludeMatcher = null;
+
 	/**
 	 * @param project
 	 */
 	protected ProjectPatternsets(IProject project) {
 		super(project);
 	}
-	
+
 	/**
 	 * @return Returns the classesExcludeMatcher.
 	 */
 	private IStringMatcher getClassesExcludeMatcher() {
 		if (classesExcludeMatcher != null)
 			return classesExcludeMatcher;
-		classesExcludeMatcher = new StringListMatcher("");
+		IFile classesExcludePatternset = this.getIProject().getFile(
+				"classes.exclude.patternset");
+		if (!classesExcludePatternset.exists())
+			PatternsetWriter.create(classesExcludePatternset, new String[]{});
+		classesExcludeMatcher = new PatternsetMatcher(classesExcludePatternset);
+		try {
+			classesExcludePatternset.refreshLocal(IResource.DEPTH_ONE,
+					new NullProgressMonitor());
+		} catch (CoreException e) {
+			DataSetsPlugin.log(e);
+		}
 		return classesExcludeMatcher;
 	}
 	/**
@@ -103,7 +114,17 @@ public class ProjectPatternsets extends AbstractProjectAdapterType {
 	private IStringMatcher getClassesIncludeMatcher() {
 		if (classesIncludeMatcher != null)
 			return classesIncludeMatcher;
-		classesIncludeMatcher = new StringListMatcher("*.java");
+		IFile classesIncludePatternset = this.getIProject().getFile(
+				"classes.include.patternset");
+		if (!classesIncludePatternset.exists())
+			PatternsetWriter.create(classesIncludePatternset, new String[]{"*.class", "*.properties"});
+		classesIncludeMatcher = new PatternsetMatcher(classesIncludePatternset);
+		try {
+			classesIncludePatternset.refreshLocal(IResource.DEPTH_ONE,
+					new NullProgressMonitor());
+		} catch (CoreException e) {
+			DataSetsPlugin.log(e);
+		}
 		return classesIncludeMatcher;
 	}
 	/**
@@ -233,4 +254,203 @@ public class ProjectPatternsets extends AbstractProjectAdapterType {
 		this.getWoappResourcesExcludeMatcher();
 		this.getWoappResourcesIncludeMatcher();
 	}
+
+	/**
+	 * @param string
+	 * @return
+	 */
+	public boolean hasClassesIncludePattern(String string) {
+		return this.getClassesIncludeMatcher().hasPattern(string);
+	}
+
+	/**
+	 * @param string
+	 * @return
+	 */
+	public boolean hasClassesExcludePattern(String string) {
+		return this.getClassesExcludeMatcher().hasPattern(string);
+	}
+
+	/**
+	 * @param string
+	 * @return
+	 */
+	public boolean hasWOAppResourcesIncludePattern(String string) {
+		return this.getWoappResourcesIncludeMatcher().hasPattern(string);
+	}
+
+	/**
+	 * @param string
+	 * @return
+	 */
+	public boolean hasWOAppResourcesExcludePattern(String string) {
+		return this.getWoappResourcesExcludeMatcher().hasPattern(string);
+	}
+
+	/**
+	 * @param string
+	 * @return
+	 */
+	public boolean hasResourcesIncludePattern(String string) {
+		return this.getResourcesIncludeMatcher().hasPattern(string);
+	}
+
+	/**
+	 * @param string
+	 * @return
+	 */
+	public boolean hasResourcesExcludePattern(String string) {
+		return this.getResourcesExcludeMatcher().hasPattern(string);
+	}
+
+	/**
+	 * @param string
+	 */
+	public void addClassesIncludePattern(String string) {
+		PatternsetMatcher patternsetMatcher = (PatternsetMatcher)this.getClassesIncludeMatcher();
+		String[] pattern = patternsetMatcher.getPattern();
+		ArrayList list = new ArrayList();
+		for(int i = 0; i < pattern.length; i++) {
+			list.add(pattern[i]);
+		}
+		list.add(string);
+		IFile classesIncludePatternset = this.getIProject().getFile(
+		"classes.include.patternset");
+		PatternsetWriter.create(classesIncludePatternset,
+				(String[])list.toArray(new String[list.size()]));
+		classesIncludeMatcher = new PatternsetMatcher(
+				classesIncludePatternset);
+		try {
+			classesIncludePatternset.refreshLocal(IResource.DEPTH_ONE,
+					new NullProgressMonitor());
+		} catch (CoreException e) {
+			DataSetsPlugin.log(e);
+		}
+	}
+
+	/**
+	 * @param string
+	 */
+	public void addClassesExcludePattern(String string) {
+		PatternsetMatcher patternsetMatcher = (PatternsetMatcher)this.getClassesExcludeMatcher();
+		String[] pattern = patternsetMatcher.getPattern();
+		ArrayList list = new ArrayList();
+		for(int i = 0; i < pattern.length; i++) {
+			list.add(pattern[i]);
+		}
+		list.add(string);
+		IFile classesExcludePatternset = this.getIProject().getFile(
+		"classes.exclude.patternset");
+		PatternsetWriter.create(classesExcludePatternset,
+				(String[])list.toArray(new String[list.size()]));
+		classesExcludeMatcher = new PatternsetMatcher(
+				classesExcludePatternset);
+		try {
+			classesExcludePatternset.refreshLocal(IResource.DEPTH_ONE,
+					new NullProgressMonitor());
+		} catch (CoreException e) {
+			DataSetsPlugin.log(e);
+		}
+	}
+
+	/**
+	 * @param string
+	 */
+	public void addWOAppResourcesIncludePattern(String string) {
+		PatternsetMatcher patternsetMatcher = (PatternsetMatcher)this.getWoappResourcesIncludeMatcher();
+		String[] pattern = patternsetMatcher.getPattern();
+		ArrayList list = new ArrayList();
+		for(int i = 0; i < pattern.length; i++) {
+			list.add(pattern[i]);
+		}
+		list.add(string);
+		IFile wsresourcesIncludePatternset = this.getIProject().getFile(
+		"wsresources.include.patternset");
+		PatternsetWriter.create(wsresourcesIncludePatternset,
+				(String[])list.toArray(new String[list.size()]));
+		woappResourcesIncludeMatcher = new PatternsetMatcher(
+				wsresourcesIncludePatternset);
+		try {
+			wsresourcesIncludePatternset.refreshLocal(IResource.DEPTH_ONE,
+					new NullProgressMonitor());
+		} catch (CoreException e) {
+			DataSetsPlugin.log(e);
+		}
+	}
+
+	/**
+	 * @param string
+	 */
+	public void addWOAppResourcesExcludePattern(String string) {
+		PatternsetMatcher patternsetMatcher = (PatternsetMatcher)this.getWoappResourcesExcludeMatcher();
+		String[] pattern = patternsetMatcher.getPattern();
+		ArrayList list = new ArrayList();
+		for(int i = 0; i < pattern.length; i++) {
+			list.add(pattern[i]);
+		}
+		list.add(string);
+		IFile wsresourcesExcludePatternset = this.getIProject().getFile(
+		"wsresources.exclude.patternset");
+		PatternsetWriter.create(wsresourcesExcludePatternset,
+				(String[])list.toArray(new String[list.size()]));
+		woappResourcesIncludeMatcher = new PatternsetMatcher(
+				wsresourcesExcludePatternset);
+		try {
+			wsresourcesExcludePatternset.refreshLocal(IResource.DEPTH_ONE,
+					new NullProgressMonitor());
+		} catch (CoreException e) {
+			DataSetsPlugin.log(e);
+		}
+	}
+
+	/**
+	 * @param string
+	 */
+	public void addResourcesIncludePattern(String string) {
+		PatternsetMatcher patternsetMatcher = (PatternsetMatcher)this.getResourcesIncludeMatcher();
+		String[] pattern = patternsetMatcher.getPattern();
+		ArrayList list = new ArrayList();
+		for(int i = 0; i < pattern.length; i++) {
+			list.add(pattern[i]);
+		}
+		list.add(string);
+		IFile resourcesIncludePatternset = this.getIProject().getFile(
+		"resources.exclude.patternset");
+		PatternsetWriter.create(resourcesIncludePatternset,
+				(String[])list.toArray(new String[list.size()]));
+		woappResourcesIncludeMatcher = new PatternsetMatcher(
+				resourcesIncludePatternset);
+		try {
+			resourcesIncludePatternset.refreshLocal(IResource.DEPTH_ONE,
+					new NullProgressMonitor());
+		} catch (CoreException e) {
+			DataSetsPlugin.log(e);
+		}
+	}
+
+	/**
+	 * @param string
+	 */
+	public void addResourcesExcludePattern(String string) {
+		PatternsetMatcher patternsetMatcher = (PatternsetMatcher)this.getResourcesExcludeMatcher();
+		String[] pattern = patternsetMatcher.getPattern();
+		ArrayList list = new ArrayList();
+		for(int i = 0; i < pattern.length; i++) {
+			list.add(pattern[i]);
+		}
+		list.add(string);
+		IFile resourcesexcludePatternset = this.getIProject().getFile(
+		"resources.exclude.patternset");
+		PatternsetWriter.create(resourcesexcludePatternset,
+				(String[])list.toArray(new String[list.size()]));
+		resourcesIncludeMatcher = new PatternsetMatcher(
+				resourcesexcludePatternset);
+		try {
+			resourcesexcludePatternset.refreshLocal(IResource.DEPTH_ONE,
+					new NullProgressMonitor());
+		} catch (CoreException e) {
+			DataSetsPlugin.log(e);
+		}
+	}
+
 }

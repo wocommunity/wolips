@@ -62,19 +62,33 @@ import org.eclipse.core.resources.IFile;
  */
 public class PatternsetMatcher extends PatternsetReader implements IStringMatcher {
 
+	/**
+	 * @param patternset
+	 */
 	public PatternsetMatcher(IFile patternset) {
 		super(patternset);
 	}
 	/**
 	 * match the given <code>text</code> with the pattern
+	 * @param string
 	 * 
 	 * @return true if matched eitherwise false
-	 * @param <code>text</code>, a String object
 	 */
 	public boolean match(String string) {
 		String[] pattern = this.getPattern();
 		for (int i = 0; i < pattern.length; i++) {
 			if (SelectorUtils.matchPath(pattern[i], string))
+				return true;
+		}
+		return false;
+	}
+	/* (non-Javadoc)
+	 * @see org.objectstyle.wolips.datasets.pattern.IStringMatcher#hasPattern(java.lang.String)
+	 */
+	public boolean hasPattern(String string) {
+		String[] pattern = this.getPattern();
+		for (int i = 0; i < pattern.length; i++) {
+			if (pattern[i].equals(string))
 				return true;
 		}
 		return false;

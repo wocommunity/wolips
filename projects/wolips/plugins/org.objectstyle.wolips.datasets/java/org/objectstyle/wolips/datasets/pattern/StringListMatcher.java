@@ -110,4 +110,12 @@ public class StringListMatcher implements IStringMatcher {
   }
 
   List _matchers = new ArrayList();
+
+/* (non-Javadoc)
+ * @see org.objectstyle.wolips.datasets.pattern.IStringMatcher#hasPattern(java.lang.String)
+ */
+public boolean hasPattern(String string) {
+	// TODO Auto-generated method stub
+	return false;
+}
 }
