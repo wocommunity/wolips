@@ -164,6 +164,7 @@
 	     <pathelement path="src/wolips-profiling/java"/>
 	     <pathelement path="src/wolips-devstudio/java"/>
 	     <pathelement path="src/wolips-projectbuild/java"/>
+	     <pathelement path="src/wolips-wounit/java"/>
         </sourcepath>
         <doctitle><![CDATA[<h2>WOProject API Documentation</h2>]]></doctitle>
         </javadoc>

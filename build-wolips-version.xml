@@ -22,5 +22,6 @@
     	<replace file="${basedir}/src/wolips-support/fragment.xml" token="${WOLips.previous.version}" value="${WOLips.version}"/>
     	<replace file="${basedir}/src/wolips-targetbuilder/plugin.properties" token="${WOLips.previous.version}" value="${WOLips.version}"/>
     	<replace file="${basedir}/src/wolips-targetbuilder/plugin.xml" token="${WOLips.previous.version}" value="${WOLips.version}"/>
+        <replace file="${basedir}/src/wolips-wounit/fragment.xml" token="${WOLips.previous.version}" value="${WOLips.version}"/>
     </target>
 </project>

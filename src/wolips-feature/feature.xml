@@ -66,6 +66,13 @@
          fragment="true"/>
          
    <plugin
+         id="org.objectstyle.wolips.wounit"
+         download-size="0"
+         install-size="0"
+         version="1.0.0"
+         fragment="true"/>
+         
+   <plugin
          id="org.objectstyle.wolips.projectbuild"
          download-size="0"
          install-size="0"
