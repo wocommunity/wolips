@@ -138,8 +138,12 @@ public class AppFormat extends ProjectFormat {
 	protected String buildFrameworkPaths() {
 		StringBuffer buf = new StringBuffer();
 
+      
 		List frameworkSets = getApplicatonTask().getFrameworkSets();
 		Project project = task.getProject();
+		
+		// track included frameworks to avoid double entries
+		HashMap frameworkMap = new HashMap();
 		
 		int size = frameworkSets.size();
 		for (int i = 0; i < size; i++) {
@@ -151,6 +155,13 @@ public class AppFormat extends ProjectFormat {
 				String[] dirs = ds.getIncludedDirectories();
 
 				for (int j = 0; j < dirs.length; j++) {
+					// see if it is already included
+					if(root.equals(frameworkMap.get(dirs[j]))) {
+						continue;
+					}
+					
+					frameworkMap.put(dirs[j], root);
+					
 					String[] jars = fs.findJars(project, dirs[j]);
 					if (jars == null || jars.length == 0) {
 						log(
