@@ -178,7 +178,7 @@ public class WOVariables {
 	 * @return String
 	 */
 	public String nextRoot() {
-		return wobuildProperties.getProperty("wo.woroot");
+		return wobuildProperties.getProperty(WO_ROOT);
 	}
 	/**
 	 * Method localRoot. NEXT_LOCAL_ROOT defined in wobuild.properties (key:
@@ -186,7 +186,7 @@ public class WOVariables {
 	 * @return String
 	 */
 	public String localRoot() {
-		return wobuildProperties.getProperty("wo.wolocalroot");
+		return wobuildProperties.getProperty(WO_WO_LOCAL_ROOT);
 	}
 	/**
 	 * Method systemRoot. NEXT_SYSTEM_ROOT defined in wobuild.properties (key:
@@ -194,9 +194,17 @@ public class WOVariables {
 	 * @return String
 	 */
 	public String systemRoot() {
-		return wobuildProperties.getProperty("wo.wosystemroot");
+		return wobuildProperties.getProperty(WO_WO_SYSTEM_ROOT);
 	}
-	/**
+
+        public String userHome() {
+            String userHome = wobuildProperties.getProperty(HOME_ROOT);
+            if (userHome == null) {
+                userHome = environment.userHome();
+            }
+            return userHome;
+        }
+        /**
 	 * Method developerDir.
 	 * @return String
 	 */
@@ -349,7 +357,7 @@ public class WOVariables {
 				&& (aPath.startsWith(aPrefix))) {
 				return "LOCALROOT" + aPath.substring(aPrefix.length());
 			}
-			aPrefix = environment.userHome();
+			aPrefix = userHome();
 			if (log.isInfoEnabled()) {
 				log.info("aPrefix + aPath " + aPrefix + " " + aPath);
 			}
@@ -369,9 +377,7 @@ public class WOVariables {
 			}
 			return aPath;
 		} catch (Exception anException) {
-			if (log.isInfoEnabled()) {
-				log.info("Exception " + anException);
-			}
+                        log.error("Exception occured during encoding of the path " + anException, anException);
 		} finally {
 			aPrefix = null;
 			aPath = null;
