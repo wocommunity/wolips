@@ -412,7 +412,7 @@ public class ProjectNaturePage
 	 * @return IProject
 	 * @throws CoreException
 	 */
-	public IProject _getProject() throws CoreException {
+	public IProject _getProject() {
 		IProject project =
 			(IProject) (this.getElement().getAdapter(IProject.class));
 		return (project);

@@ -82,7 +82,7 @@ public class SupportView extends ViewPart {
 
 
 	/** The content provider for this view's TreeViewer. */
-	private SupportContentProvider contentProvider;
+	private SupportContentProvider supportContentProvider;
 
 	/**
 	 * Constructs a resource view object, registering a resource change listener.
@@ -99,9 +99,9 @@ public class SupportView extends ViewPart {
 	public void createPartControl(Composite parent) {
 
 		viewer = new TreeViewer(parent);
-		contentProvider = new SupportContentProvider();
-		viewer.setContentProvider(contentProvider);
-		this.start(contentProvider);
+		supportContentProvider = new SupportContentProvider();
+		viewer.setContentProvider(supportContentProvider);
+		this.start(supportContentProvider);
 		createActions();
 
 	}

@@ -58,7 +58,6 @@ package org.objectstyle.wolips.support;
 
 import org.eclipse.jface.text.ITextOperationTarget;
 import org.eclipse.ui.IActionBars;
-import org.eclipse.ui.IWorkbenchActionConstants;
 
 /**
  * @author uli
@@ -85,7 +84,7 @@ public class SelectAllAction extends GlobalAction {
 	 * (org.eclipse.ui.IActionBars)
 	 */
 	public void registerAsGlobalAction(IActionBars actionBars) {
-		actionBars.setGlobalActionHandler(IWorkbenchActionConstants.SELECT_ALL, this);
+		actionBars.setGlobalActionHandler(org.eclipse.ui.actions.ActionFactory.SELECT_ALL.getId(), this);
 	}
 
 	/**

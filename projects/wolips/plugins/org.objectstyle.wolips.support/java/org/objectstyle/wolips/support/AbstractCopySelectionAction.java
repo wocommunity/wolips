@@ -63,7 +63,7 @@ import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IActionBars;
-import org.eclipse.ui.IWorkbenchActionConstants;
+import org.eclipse.ui.actions.ActionFactory;
 
 /**
  * @author uli
@@ -112,7 +112,7 @@ public abstract class AbstractCopySelectionAction extends GlobalAction {
 	 * org.eclipse.ui.IActionBars)
 	 */
 	public void registerAsGlobalAction(IActionBars actionBars) {
-		actionBars.setGlobalActionHandler(IWorkbenchActionConstants.COPY, this);
+		actionBars.setGlobalActionHandler(ActionFactory.COPY.getId(), this);
 	}
 
 	/**
