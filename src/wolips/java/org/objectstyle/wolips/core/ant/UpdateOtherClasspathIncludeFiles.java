@@ -116,7 +116,8 @@ public class UpdateOtherClasspathIncludeFiles extends UpdateIncludeFiles {
 			if (currentClasspathListFile.exists()) {
 				// delete old include file
 				try {
-					currentClasspathListFile.delete(true, null);
+					if (false)
+						currentClasspathListFile.delete(true, null);
 				} catch (CoreException e) {
 					throw new BuildException(
 						"Exception while trying to delete "
@@ -155,9 +156,12 @@ public class UpdateOtherClasspathIncludeFiles extends UpdateIncludeFiles {
 			}
 			try {
 				if (currentClasspathListFile.exists()) {
-					// file may be created by WOBuilder in the meantime
-					// no update needed
-					return;
+					currentClasspathListFile.setContents(
+						new ByteArrayInputStream(
+							newClasspathEntries.toString().getBytes()),
+						true,
+						true,
+						null);
 				} else {
 					// create list file if any entries found
 					currentClasspathListFile.create(

@@ -115,7 +115,9 @@ public class UpdateFrameworkIncludeFiles extends UpdateIncludeFiles {
 			if (currentFrameworkListFile.exists()) {
 				// delete old include file
 				try {
-					currentFrameworkListFile.delete(true, null);
+					if (false)
+						currentFrameworkListFile.delete(true, null);
+
 				} catch (CoreException e) {
 					throw new BuildException(
 						"Exception while trying to delete "
@@ -152,26 +154,31 @@ public class UpdateFrameworkIncludeFiles extends UpdateIncludeFiles {
 					"An empty file result in a full filesystem scan");
 				newFrameworkEntries.append("\n");
 			}
-				try {
-					if (currentFrameworkListFile.exists()) {
-						// file may be created by WOBuilder in the meantime
-						// no update needed
-						return;
-					} else {
-						// create list file if any entries found
-						currentFrameworkListFile.create(
-							new ByteArrayInputStream(
-								newFrameworkEntries.toString().getBytes()),
-							true,
-							null);
-					}
-				} catch (CoreException e) {
-					throw new BuildException(
-						"Exception while trying to create "
-							+ currentFrameworkListFile.getName()
-							+ ": "
-							+ e.getMessage());
+			try {
+				if (currentFrameworkListFile.exists()) {
+					// file may be created by WOBuilder in the meantime
+					// no update needed
+					currentFrameworkListFile.setContents(
+						new ByteArrayInputStream(
+							newFrameworkEntries.toString().getBytes()),
+						true,
+						true,
+						null);
+				} else {
+					// create list file if any entries found
+					currentFrameworkListFile.create(
+						new ByteArrayInputStream(
+							newFrameworkEntries.toString().getBytes()),
+						true,
+						null);
 				}
+			} catch (CoreException e) {
+				throw new BuildException(
+					"Exception while trying to create "
+						+ currentFrameworkListFile.getName()
+						+ ": "
+						+ e.getMessage());
+			}
 		}
 	}
 	/**
