@@ -140,8 +140,8 @@ public class FileStringScanner {
 		int li = 0;
 		int l = replace.length();
 		int i = text.indexOf(replace, li);
-		if (i > 0)
-			return null;
+		if (i < 0)
+			return text;
 		StringBuffer aWorkString = new StringBuffer(text.length() + 1);
 		while (i >= 0) {
 			if (i > li)
