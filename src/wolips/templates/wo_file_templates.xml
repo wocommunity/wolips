@@ -273,6 +273,7 @@ public class DirectAction extends WODirectAction {
 		<delete file="ant.frameworks.wo.wolocalroot"/>
 		<delete file="ant.frameworks.user.home"/>
 		<delete file="ant.classpaths.wo.wosystemroot"/>
+		<delete file="ant.classpaths.wo.wolocalroot"/>
 	</target>
 
 	<target name="refreshView" if="eclipse.running">
