@@ -114,7 +114,7 @@
       </wizard>
    </extension>
 <!-- =================================================================================== -->
-<!-- Extension: Avtion set in the perspective                                            -->
+<!-- Extension: Action set in the perspective                                            -->
 <!-- =================================================================================== -->
    <extension
          point="org.eclipse.ui.actionSets">
