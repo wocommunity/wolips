@@ -402,7 +402,13 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 	 * @return Returns the active workbench shell.
 	 */
 	public final static Shell getActiveWorkbenchShell() {
-		return WorkbenchUtilitiesPlugin.getActiveWorkbenchWindow().getShell();
+	  IWorkbenchWindow win = 
+	    WorkbenchUtilitiesPlugin.getActiveWorkbenchWindow();
+	  Shell shell = null;
+	  if (null != win) {
+	    shell = win.getShell();
+	  }
+      return shell;
 	}
 	/**
 	 * @return Returns the the active workbench window.
@@ -411,18 +417,7 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 		return WorkbenchUtilitiesPlugin.getDefault().getWorkbench()
 				.getActiveWorkbenchWindow();
 	}
-	/**
-	 * Method getShell.
-	 * 
-	 * @return Shell
-	 */
-	public final static Shell getShell() {
-		if (WorkbenchUtilitiesPlugin.getActiveWorkbenchWindow() != null) {
-			return WorkbenchUtilitiesPlugin.getActiveWorkbenchWindow()
-					.getShell();
-		}
-		return null;
-	}
+
 	/**
 	 * @return Returns the workspace instance.
 	 */
@@ -511,25 +506,33 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 	 * @param message
 	 */
 	public static void handleException(Shell shell, Throwable target,
-			String message) {
-		if(shell == null)
-			shell = WorkbenchUtilitiesPlugin.getActiveWorkbenchShell();
-		WorkbenchUtilitiesPlugin.getDefault().getPluginLogger().debug(target);
-		String title = "Error";
-		if (message == null) {
-			message = target.getMessage();
-		}
-		if (target instanceof CoreException) {
-			IStatus status = ((CoreException) target).getStatus();
-			ErrorDialog.openError(shell, title, message, status);
-			//WOLipsLog.log(status);
+			String message
+    ) {
+        PluginLogger logger = WorkbenchUtilitiesPlugin.getDefault().getPluginLogger();
+
+        if (message == null) {
+          message = target.getMessage();
+        }
+
+        logger.log(message, target);
+
+        if(shell == null)
+            shell = WorkbenchUtilitiesPlugin.getActiveWorkbenchShell();
+
+        if (shell == null) {
+            logger.log("No active workbench shell found handling", target);
 		} else {
-			MessageDialog.openError(shell, title, target.getMessage());
-			//WOLipsLog.log(target);
+    		String title = "Error";
+    		if (target instanceof CoreException) {
+    			IStatus status = ((CoreException) target).getStatus();
+    			ErrorDialog.openError(shell, title, message, status);
+    			//WOLipsLog.log(status);
+    		} else {
+    			MessageDialog.openError(shell, title, target.getMessage());
+    			//WOLipsLog.log(target);
+    		}
 		}
-		WorkbenchUtilitiesPlugin.getDefault().getPluginLogger().log(message,
-				target);
-	}
+    }
 	/**
 	 * @return Returns the pluginLogger.
 	 */
