@@ -67,6 +67,7 @@
             <fileset dir="../../woproject/lib">
         	<include name="cayenne*.jar"/>
         	<include name="jdom*.jar"/>
+		<include name="junit*.jar"/>
             </fileset>
         </copy>
 
