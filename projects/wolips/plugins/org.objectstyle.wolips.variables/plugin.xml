@@ -29,7 +29,7 @@
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
-            name="Build"
+            name="wobuild.properties"
             category="org.objectstyle.wolips.preferences.PreferencesPage"
             class="org.objectstyle.wolips.variables.VariablesPreferencesPage"
             id="org.objectstyle.wolips.variables.VariablesPreferencesPage">
