@@ -2,10 +2,10 @@
 <fragment
    id="org.objectstyle.wolips.help"
    name="%WOLips.help.fragmentName"
-   version="0.9.8"
+   version="0.9.9"
    provider-name="%WOLips.providerName"
    plugin-id="org.objectstyle.wolips"
-   plugin-version="0.9.8"
+   plugin-version="0.9.9"
    match="compatible">
 
    <runtime>
