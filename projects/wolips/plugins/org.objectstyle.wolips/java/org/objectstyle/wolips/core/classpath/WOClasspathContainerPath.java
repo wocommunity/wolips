@@ -72,6 +72,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.graphics.Image;
 import org.objectstyle.wolips.core.logging.WOLipsLog;
 import org.objectstyle.wolips.core.plugin.WOLipsPluginImages;
+import org.objectstyle.wolips.core.project.IClasspathVariablesAccessor;
 import org.objectstyle.wolips.core.project.WOLipsCore;
 
 /**
@@ -133,11 +134,13 @@ public final class WOClasspathContainerPath
 			String base = basePath.toOSString();
 			if (!basePath.toString().endsWith(IPath.SEPARATOR + ""))
 				base = base + new Path(IPath.SEPARATOR + "").toOSString();
-			base =
-				base
-					+ "Library"
-					+ new Path(IPath.SEPARATOR + "").toOSString()
-					+ "Frameworks";
+			if(root != IClasspathVariablesAccessor.ProjectWonderHomeClasspathVariable) {
+				base =
+					base
+						+ "Library"
+						+ new Path(IPath.SEPARATOR + "").toOSString()
+						+ "Frameworks";
+			}
 			File fwBase = new File(base);
 			if (fwBase.exists() && fwBase.isDirectory()) {
 				File frameworks[] = fwBase.listFiles(new WOFWFilenameFilter());

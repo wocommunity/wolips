@@ -67,9 +67,9 @@ import org.eclipse.jdt.core.JavaModelException;
  */
 public interface IClasspathVariablesAccessor {
 
-	public final static String UserHomeClasspathVariable = "USER.HOME";
+	public final static String UserHomeClasspathVariable = "USER_HOME";
 	public final static String ProjectWonderHomeClasspathVariable =
-		"PROJECT.WONDER.HOME";
+		"PROJECT_WONDER_HOME";
 
 	/**
 	 * @return IPath from NextLocalRoot Classpath variable if it exists.

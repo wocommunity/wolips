@@ -77,6 +77,7 @@ import org.eclipse.ui.dialogs.SelectionDialog;
 import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
 import org.objectstyle.wolips.core.project.IClasspathVariablesAccessor;
 import org.objectstyle.wolips.core.project.WOLipsCore;
+import org.objectstyle.wolips.core.util.WorkbenchUtilities;
 import org.objectstyle.wolips.ui.view.WOFrameworkDialogWrapper;
 
 /**
@@ -113,6 +114,9 @@ public class WOFrameworkAction extends ActionOnIProject {
 	 * Runs the action.
 	 */
 	public void run(IAction action) {
+		WOLipsPlugin.informUser(WorkbenchUtilities.getShell(), "Please use the WOLips Classpath Container instead.");
+		if (true)
+			return;
 		if (project() == null)
 			return;
 		IJavaProject javaProject = JavaCore.create(project());

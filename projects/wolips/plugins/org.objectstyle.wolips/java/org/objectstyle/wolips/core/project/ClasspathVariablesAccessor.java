@@ -74,10 +74,10 @@ public final class ClasspathVariablesAccessor
 
 	private final String[] classpathVariables =
 		new String[] {
-			"USER.HOME",
+			IClasspathVariablesAccessor.UserHomeClasspathVariable,
 			"NEXT_LOCAL_ROOT",
 			"NEXT_SYSTEM_ROOT",
-			"PROJECT.WONDER.HOME" };
+			IClasspathVariablesAccessor.ProjectWonderHomeClasspathVariable };
 	private final String[] classpathVariablesNames =
 		new String[] { "User Home", "Local", "System", "Project Wonder" };
 
@@ -113,7 +113,7 @@ public final class ClasspathVariablesAccessor
 			IClasspathVariablesAccessor.UserHomeClasspathVariable);
 	}
 	/**
-	 * @return IPath from UserHome Classpath variable if it exists.
+	 * @return IPath from ProjectWonder Classpath variable if it exists.
 	 */
 	public final IPath getProjectWonderHomeClassPathVariable() {
 		return JavaCore.getClasspathVariable(
