@@ -208,20 +208,22 @@ public abstract class WOBuilder extends IncrementalProjectBuilder {
 	 * @param anException
 	 */
 	private void handleException(Exception anException) {
-		if (anException == null)
-			return;
+		IMarker aMarker = null;
 		try {
-			IMarker aMarker =
+			if (anException == null) {
+				throw new NullPointerException("WOBuilder.handleException called without an exception.");
+			}
+			aMarker =
 				getProject().getFile(this.buildFile()).createMarker(
 					IMarker.TASK);
 			aMarker.setAttribute(
 				IMarker.MESSAGE,
-				"WOLips: "
-					+ anException.getMessage()
-					+ " Please visit the Eclipse log for mor details.");
+				"WOLips: " + anException.getMessage());
 			aMarker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
 		} catch (Exception e) {
 			WOLipsLog.log(e);
+		} finally {
+			aMarker = null;
 		}
 	}
 	/**
@@ -234,15 +236,19 @@ public abstract class WOBuilder extends IncrementalProjectBuilder {
 			if (getProject().getFile(aBuildFile).exists())
 				return true;
 		} catch (Exception anException) {
+			WOLipsLog.log(anException);
 		}
+		IMarker aMarker = null;
 		try {
-			IMarker aMarker = getProject().createMarker(IMarker.TASK);
+			aMarker = getProject().createMarker(IMarker.TASK);
 			aMarker.setAttribute(
 				IMarker.MESSAGE,
 				"WOLips: Can not find: " + this.buildFile());
 			aMarker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
 		} catch (Exception anException) {
 			WOLipsLog.log(anException);
+		} finally {
+			aMarker = null;
 		}
 		return false;
 	}
