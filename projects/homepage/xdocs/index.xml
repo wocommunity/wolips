@@ -10,7 +10,7 @@
         <!-- Welcome section -->
         <section name="Welcome to WOProject and WOLips">
         
-        <p><i>November 28, 2003.</i> <b>WOLips 1.0.7.37 for Eclipse 3.0.0 M5 released.</b></p>
+        <p><i>January 24, 2004.</i> <b>WOLips 1.0.7.50 for Eclipse 2.1.3 released.</b></p>
         <p>WOLips is a plugin for <a href="http://eclipse.org">Eclipse IDE</a> that
         support development of WebObjects applications and frameworks.
         <ul>
@@ -20,7 +20,7 @@
         <hr/>
         </p>
 
-        <p><i>November 28, 2003.</i> <b>WOLips 1.0.7.38 for Eclipse 2.1.2 released.</b></p>
+        <p><i>November 28, 2003.</i> <b>WOLips 1.0.7.37 for Eclipse 3.0.0 M5 released.</b></p>
         <p>WOLips is a plugin for <a href="http://eclipse.org">Eclipse IDE</a> that
         support development of WebObjects applications and frameworks.
         <ul>
