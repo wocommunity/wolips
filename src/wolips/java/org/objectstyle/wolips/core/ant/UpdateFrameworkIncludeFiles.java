@@ -202,13 +202,13 @@ public class UpdateFrameworkIncludeFiles extends UpdateIncludeFiles {
 		// remove root dir from path, remove device and make relative
 		pathToConvert = entry.getPath();
 
-		for (int i = 0; i < pathToConvert.segmentCount(); i++) {
-			if (pathToConvert.segment(i).endsWith(".framework")) {
+		for (int i = pathToConvert.segmentCount(); i > 0; i--) {
+			if (pathToConvert.segment(i -1).endsWith(".framework")) {
 				// remove segments after framework
 				pathToConvert =
 					pathToConvert.removeLastSegments(
-						pathToConvert.segmentCount() - i - 1);
-				toReturn = pathToConvert.toOSString();
+						pathToConvert.segmentCount() - i);
+				toReturn = pathToConvert.toString();
 				break;
 			}
 		}

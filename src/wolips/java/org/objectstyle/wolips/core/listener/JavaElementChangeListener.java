@@ -91,9 +91,6 @@ public class JavaElementChangeListener implements IElementChangedListener {
 	 * @see org.eclipse.jdt.core.IElementChangedListener#elementChanged(ElementChangedEvent)
 	 */
 	public final void elementChanged(ElementChangedEvent event) {
-		if (!Preferences
-			.getBoolean(IWOLipsPluginConstants.PREF_PBWO_PROJECT_UPDATE))
-			return;
 		/*if (ElementChangedEvent.POST_CHANGE != event.getType())
 			return;*/
 		if (event.getDelta().getElement().getElementType()
@@ -114,7 +111,6 @@ public class JavaElementChangeListener implements IElementChangedListener {
 				.getElement()
 				.getElementType()
 				== IJavaElement.JAVA_PROJECT) {
-
 				IProject projectToExamine =
 					((IJavaProject) elementDeltaToExamine
 						.getChangedChildren()[i]
@@ -136,92 +132,89 @@ public class JavaElementChangeListener implements IElementChangedListener {
 					new WOLipsProject(projectToExamine);
 				try {
 					if (woLipsProject.getNaturesAccessor().hasWOLipsNature()) {
-						addedFrameworksProjectDict.put(
-							projectToExamine,
-							new ArrayList());
-						removedFrameworksProjectDict.put(
-							projectToExamine,
-							new ArrayList());
-						// webobjects project changed 
-						ArrayList foundElements = new ArrayList();
-						// search deltas for classpath changes
-						searchDeltas(
-							elementDeltaToExamine
-								.getChangedChildren()[i]
-								.getChangedChildren(),
-							IJavaElementDelta.F_ADDED_TO_CLASSPATH,
-							foundElements);
-						IPackageFragmentRoot currentPackageFragmentRoot;
-						for (int j = 0; j < foundElements.size(); j++) {
-							currentPackageFragmentRoot =
-								(IPackageFragmentRoot) foundElements.get(j);
-							ArrayList addedFrameworks =
-								(ArrayList) addedFrameworksProjectDict.get(
-									projectToExamine);
-							addedFrameworks.add(
-								currentPackageFragmentRoot
-									.getRawClasspathEntry()
-									.getPath());
-							/*
-							WOProjectFileUpdater.addFrameworkToPBFile(
-								currentPackageFragmentRoot
-									.getRawClasspathEntry()
-									.getPath(),
+						UpdateOtherClasspathIncludeFiles updateOtherClasspathIncludeFiles =
+							new UpdateOtherClasspathIncludeFiles();
+						updateOtherClasspathIncludeFiles.setIProject(
+							projectToExamine);
+						updateOtherClasspathIncludeFiles.execute();
+						UpdateFrameworkIncludeFiles updateFrameworkIncludeFiles =
+							new UpdateFrameworkIncludeFiles();
+						updateFrameworkIncludeFiles.setIProject(
+							projectToExamine);
+						updateFrameworkIncludeFiles.execute();
+						if (!Preferences
+							.getBoolean(
+								IWOLipsPluginConstants
+									.PREF_PBWO_PROJECT_UPDATE)) {
+							addedFrameworksProjectDict.put(
+								projectToExamine,
+								new ArrayList());
+							removedFrameworksProjectDict.put(
+								projectToExamine,
+								new ArrayList());
+							// webobjects project changed 
+							ArrayList foundElements = new ArrayList();
+							// search deltas for classpath changes
+							searchDeltas(
+								elementDeltaToExamine
+									.getChangedChildren()[i]
+									.getChangedChildren(),
+								IJavaElementDelta.F_ADDED_TO_CLASSPATH,
+								foundElements);
+							IPackageFragmentRoot currentPackageFragmentRoot;
+							for (int j = 0; j < foundElements.size(); j++) {
+								currentPackageFragmentRoot =
+									(IPackageFragmentRoot) foundElements.get(j);
+								ArrayList addedFrameworks =
+									(ArrayList) addedFrameworksProjectDict.get(
+										projectToExamine);
+								addedFrameworks.add(
+									currentPackageFragmentRoot
+										.getRawClasspathEntry()
+										.getPath());
+								/*
+								WOProjectFileUpdater.addFrameworkToPBFile(
+									currentPackageFragmentRoot
+										.getRawClasspathEntry()
+										.getPath(),
+									WOProjectFileUpdater
+										.projectFileFromParentResource(
+										projectToExamine),
+									null);
+									*/
+							}
+							foundElements = new ArrayList();
+							// search deltas for classpath changes
+							searchDeltas(
+								elementDeltaToExamine
+									.getChangedChildren()[i]
+									.getChangedChildren(),
+								IJavaElementDelta.F_REMOVED_FROM_CLASSPATH,
+								foundElements);
+							for (int j = 0; j < foundElements.size(); j++) {
+								currentPackageFragmentRoot =
+									(IPackageFragmentRoot) foundElements.get(j);
+								ArrayList removedFrameworks =
+									(
+										ArrayList) removedFrameworksProjectDict
+											.get(
+										projectToExamine);
+								removedFrameworks.add(
+									new Path(
+										currentPackageFragmentRoot
+											.getElementName()));
+								/*
 								WOProjectFileUpdater
-									.projectFileFromParentResource(
-									projectToExamine),
+								.removeFrameworkFromPBFile(
+								new Path(
+								currentPackageFragmentRoot
+									.getElementName()),
+								WOProjectFileUpdater
+								.projectFileFromParentResource(
+								projectToExamine),
 								null);
 								*/
-						}
-						foundElements = new ArrayList();
-						// search deltas for classpath changes
-						searchDeltas(
-							elementDeltaToExamine
-								.getChangedChildren()[i]
-								.getChangedChildren(),
-							IJavaElementDelta.F_REMOVED_FROM_CLASSPATH,
-							foundElements);
-						for (int j = 0; j < foundElements.size(); j++) {
-							currentPackageFragmentRoot =
-								(IPackageFragmentRoot) foundElements.get(j);
-							ArrayList removedFrameworks =
-								(ArrayList) removedFrameworksProjectDict.get(
-									projectToExamine);
-							removedFrameworks.add(
-								new Path(
-									currentPackageFragmentRoot
-										.getElementName()));
-							/*
-							WOProjectFileUpdater
-							.removeFrameworkFromPBFile(
-							new Path(
-							currentPackageFragmentRoot
-								.getElementName()),
-							WOProjectFileUpdater
-							.projectFileFromParentResource(
-							projectToExamine),
-							null);
-							*/
-						}
-						ArrayList addedFrameworks =
-							(ArrayList) addedFrameworksProjectDict.get(
-								projectToExamine);
-						ArrayList removedFrameworks =
-							(ArrayList) removedFrameworksProjectDict.get(
-								projectToExamine);
-						if (woLipsProject.getNaturesAccessor().isApplication()
-							&& addedFrameworks.size() > 0
-							&& removedFrameworks.size() > 0) {
-							UpdateOtherClasspathIncludeFiles updateOtherClasspathIncludeFiles =
-								new UpdateOtherClasspathIncludeFiles();
-							updateOtherClasspathIncludeFiles.setIProject(
-								projectToExamine);
-							updateOtherClasspathIncludeFiles.execute();
-							UpdateFrameworkIncludeFiles updateFrameworkIncludeFiles =
-								new UpdateFrameworkIncludeFiles();
-							updateFrameworkIncludeFiles.setIProject(
-								projectToExamine);
-							updateFrameworkIncludeFiles.execute();
+							}
 						}
 					}
 				} catch (CoreException e) {
