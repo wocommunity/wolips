@@ -74,12 +74,12 @@ import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.jdt.launching.IVMInstall;
 import org.eclipse.jdt.launching.IVMRunner;
 import org.eclipse.jdt.launching.VMRunnerConfiguration;
-import org.objectstyle.wolips.io.FileStringScanner;
 import org.objectstyle.wolips.logging.WOLipsLog;
 import org.objectstyle.wolips.plugin.IWOLipsPluginConstants;
 import org.objectstyle.wolips.preferences.Preferences;
 import org.objectstyle.wolips.project.ProjectHelper;
 import org.objectstyle.wolips.workbench.WorkbenchHelper;
+import org.objectstyle.woproject.util.FileStringScanner;
 
 /**
  * Launches a local VM.
