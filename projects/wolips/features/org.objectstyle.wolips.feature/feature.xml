@@ -109,8 +109,7 @@
          id="org.objectstyle.wolips.wizards"
          download-size="60"
          install-size="100"
-         version="1.0.6"
-         fragment="true"/>
+         version="1.0.6"/>
 
    <plugin
          id="org.objectstyle.wolips"

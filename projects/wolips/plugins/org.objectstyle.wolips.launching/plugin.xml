@@ -14,17 +14,16 @@
    </runtime>
    <requires>
       <import plugin="org.eclipse.core.resources"/>
-      <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.jdt.core"/>
       <import plugin="org.eclipse.jdt.launching"/>
       <import plugin="org.eclipse.debug.core"/>
-      <import plugin="org.eclipse.debug.ui"/>
       <import plugin="org.eclipse.jface"/>
       <import plugin="org.objectstyle.wolips"/>
-      <import plugin="org.eclipse.ui.ide"/>
       <import plugin="org.eclipse.core.runtime.compatibility"/>
+      <import plugin="org.eclipse.debug.ui"/>
       <import plugin="org.eclipse.jdt.debug.ui"/>
       <import plugin="org.objectstyle.wolips.woproject"/>
+      <import plugin="org.eclipse.ui"/>
    </requires>
 
 
@@ -63,36 +62,8 @@
       </launchConfigurationTabGroup>
    </extension>
 <!-- =================================================================================== -->
-<!-- Extension: Launch shortcuts                                                         -->
+<!-- Extension: classpath provider                                                       -->
 <!-- =================================================================================== -->
-   <extension
-         point="org.eclipse.debug.ui.launchShortcuts">
-      <shortcut
-            label="WOApplication"
-            icon="icons/launching/WOLips-launching.gif"
-            class="org.objectstyle.wolips.launching.WOJavaApplicationLaunchShortcut"
-            modes="run, debug"
-            id="org.objectstyle.wolips.launching.WOJavaApplicationLaunchShortcut">
-         <perspective
-               id="org.eclipse.jdt.ui.JavaPerspective">
-         </perspective>
-         <perspective
-               id="org.eclipse.jdt.ui.JavaHierarchyPerspective">
-         </perspective>
-         <perspective
-               id="org.eclipse.jdt.ui.JavaBrowsingPerspective">
-         </perspective>
-         <perspective
-               id="org.eclipse.debug.ui.DebugPerspective">
-         </perspective>
-         <perspective
-               id="org.eclipse.pde.PDEPerspective">
-         </perspective>
-         <perspective
-               id="org.objectstyle.wolips.ui.Perspective">
-         </perspective>
-      </shortcut>
-   </extension>
    <extension
          point="org.eclipse.jdt.launching.classpathProviders">
       <classpathProvider

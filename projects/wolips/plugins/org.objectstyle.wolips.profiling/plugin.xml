@@ -57,36 +57,5 @@
             id="org.objectstyle.wolips.profiling.ProfiledWOLocalJavaApplicationTabGroup">
       </launchConfigurationTabGroup>
    </extension>
-<!-- =================================================================================== -->
-<!-- Extension: Launch shortcuts                                                         -->
-<!-- =================================================================================== -->
-   <extension
-         point="org.eclipse.debug.ui.launchShortcuts">
-      <shortcut
-            label="WOApplication (profiled)"
-            icon="icons/profiling/WOLips-profiling.gif"
-            modes="run, debug"
-            class="org.objectstyle.wolips.profiling.ProfiledWOJavaApplicationLaunchShortcut"
-            id="org.objectstyle.wolips.profiling.ProfiledWOJavaApplicationLaunchShortcut">
-         <perspective
-               id="org.eclipse.jdt.ui.JavaPerspective">
-         </perspective>
-         <perspective
-               id="org.eclipse.jdt.ui.JavaHierarchyPerspective">
-         </perspective>
-         <perspective
-               id="org.eclipse.jdt.ui.JavaBrowsingPerspective">
-         </perspective>
-         <perspective
-               id="org.eclipse.debug.ui.DebugPerspective">
-         </perspective>
-         <perspective
-               id="org.eclipse.pde.PDEPerspective">
-         </perspective>
-         <perspective
-               id="org.objectstyle.wolips.ui.Perspective">
-         </perspective>
-      </shortcut>
-   </extension>
 
 </plugin>
