@@ -29,6 +29,7 @@
  			two ".jar" files from WOProject distribution:
  			<ul>
  				<li><code>[WOProject_installdir]/lib/woproject.jar</code> <i>(needed for all tasks)</i></li>
+ 				<li><code>[WOProject_installdir]/lib/commons-logging.jar</code> <i>(needed for all tasks)</i></li>
  				<li><code>[WOProject_installdir]/lib/cayenne.jar</code> <i>(needed for WOGen task only)</i></li>
  			</ul>
  			</p>

@@ -12,6 +12,10 @@
     	<replace file="${basedir}/src/wolips/README.html" token="${WOLips.previous.version}" value="${WOLips.version}"/>
     	<replace file="${basedir}/src/wolips-feature/feature.properties" token="${WOLips.previous.version}" value="${WOLips.version}"/>
     	<replace file="${basedir}/src/wolips-feature/feature.xml" token="${WOLips.previous.version}" value="${WOLips.version}"/>
+    	<replace file="${basedir}/src/wolips-tests-feature/feature.properties" token="${WOLips.previous.version}" value="${WOLips.version}"/>
+    	<replace file="${basedir}/src/wolips-tests-feature/feature.xml" token="${WOLips.previous.version}" value="${WOLips.version}"/>
+    	<replace file="${basedir}/src/wolips-profiling-feature/feature.properties" token="${WOLips.previous.version}" value="${WOLips.version}"/>
+    	<replace file="${basedir}/src/wolips-profiling-feature/feature.xml" token="${WOLips.previous.version}" value="${WOLips.version}"/>
     	<replace file="${basedir}/src/wolips-help/fragment.xml" token="${WOLips.previous.version}" value="${WOLips.version}"/>
     	<replace file="${basedir}/src/wolips-launching/fragment.xml" token="${WOLips.previous.version}" value="${WOLips.version}"/>
     	<replace file="${basedir}/src/wolips-profiling/plugin.xml" token="${WOLips.previous.version}" value="${WOLips.version}"/>
@@ -26,5 +30,6 @@
         <replace file="${basedir}/src/wolips-tests/plugin.xml" token="${WOLips.previous.version}" value="${WOLips.version}"/>
         <replace file="${basedir}/src/wolips-tests/scripts/test.properties" token="${WOLips.previous.version}" value="${WOLips.version}"/>
     	<replace file="${basedir}/src/wolips-ui/fragment.xml" token="${WOLips.previous.version}" value="${WOLips.version}"/>
+    	<replace file="${basedir}/src/wolips-wizards/fragment.xml" token="${WOLips.previous.version}" value="${WOLips.version}"/>
     </target>
 </project>

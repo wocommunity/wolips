@@ -13,35 +13,33 @@
         	<exclude name=".project"/>
         </fileset>
     </copy>
-    <copy todir="${wolips.dist.base}">
-        <fileset dir="src/wolips-feature">
+
+    <mkdir dir="${wolips.profiling.feature.dist}"/>
+    <copy todir="${wolips.profiling.feature.dist}">
+        <fileset dir="src/wolips-profiling-feature">
         	<exclude name=".project"/>
         </fileset>
     </copy>
-    
+  
+    <mkdir dir="${wolips.tests.feature.dist}"/>
+    <copy todir="${wolips.tests.feature.dist}">
+        <fileset dir="src/tests">
+        	<exclude name=".project"/>
+        </fileset>
+    </copy>
+  
     <!-- make wolips dist -->
     <tar tarfile="${wolips.dist.filename}.tar">
         <tarfileset dir="${wolips.dist.base}">
         	<exclude name="**/plugins/*.jar"/>
         	<exclude name="**/features/*.jar"/>
-		<exclude name="feature.xml"/>
-		<exclude name="feature.properties"/>
-        </tarfileset>
+	</tarfileset>
      </tar>
          
      <gzip src="${wolips.dist.filename}.tar"
          zipfile="${wolips.dist.filename}.tar.gz"/>
      <delete file="${wolips.dist.filename}.tar"/>
      
-     <!-- make wolips update dist -->
-     <jar jarfile="${wolips.dist.filename}.jar">
-     	<fileset dir="${wolips.dist.base}">
-        	<include name="**/plugins/*.jar"/>
-		<include name="feature.xml"/>
-		<include name="feature.properties"/>
-        </fileset>
-    </jar>
-    
     </target>
 	
 </project>
