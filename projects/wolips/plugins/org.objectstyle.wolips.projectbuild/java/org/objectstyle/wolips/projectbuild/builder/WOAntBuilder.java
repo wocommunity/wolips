@@ -95,6 +95,7 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 		super();
 	}
 	private boolean isPatchInstalled() {
+		//TODO: No check needed ant runs in a external vm
 		String string = AntCorePlugin.getPlugin().getDescriptor()
 				.getProviderName();
 		return string.endsWith("objectstyle.org");
@@ -422,12 +423,13 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 				IJavaLaunchConfigurationConstants.ATTR_CLASSPATH_PROVIDER,
 				"org.eclipse.ant.ui.AntClasspathProvider"); //$NON-NLS-1$
 		IVMInstall defaultInstall= null;
-		try {
-			defaultInstall = JavaRuntime.computeVMInstall(workingCopy);
-		} catch (CoreException e) {
+		defaultInstall= JavaRuntime.getDefaultVMInstall();
+		//try {
+			//defaultInstall = JavaRuntime.computeVMInstall(workingCopy);
+		//} catch (CoreException e) {
 			//core exception thrown for non-Java project
-			defaultInstall= JavaRuntime.getDefaultVMInstall();
-		}
+			//defaultInstall= JavaRuntime.getDefaultVMInstall();
+		//}
 		if (defaultInstall != null) {
 			String vmName = defaultInstall.getName();
 			String vmTypeID = defaultInstall.getVMInstallType().getId();					
