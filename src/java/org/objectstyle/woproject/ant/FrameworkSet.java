@@ -106,9 +106,14 @@ public class FrameworkSet extends FileSet {
 	public void setEmbed(boolean flag) {
 		this.embed = flag;
 	}
-
+	
+	//from  "Jonathan 'Wolf' Rentzsch"
+	//to enable work with references
 	public boolean getEmbed() {
-		return this.embed;
+	  if (isReference() && getProject() != null) {
+		return ((FrameworkSet)getRef(getProject())).getEmbed();
+	  }
+	  return this.embed;
 	}
 
 	public void setIf(String string) {
