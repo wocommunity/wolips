@@ -71,10 +71,12 @@
              <fileset dir="${dist}/lib">
              	<exclude name="${lib.junit}"/>
              	<exclude name="${lib.log4j}"/>
+             	<exclude name="${lib.cayenne}"/>
              	<exclude name="ant.jar"/>
              	<exclude name="woproject-tests.jar"/>
              </fileset>
          </copy>
+         <copy file="${dist}/lib/${lib.cayenne}" tofile="${wolips.dist}/lib/cayenne.jar"/>
     </target>
 
     <target name="dist" depends="prepare,java,doc,api">
