@@ -7,7 +7,6 @@
 
    <runtime>
       <library name="lib/wolips-profiling.jar">
-         <export name="*"/>
          <packages prefixes="org.objectstyle.wolips.profiling"/>
       </library>
    </runtime>
@@ -16,23 +15,19 @@
 <!-- Required Plugins                                                                    -->
 <!-- =================================================================================== -->   
    <requires>
+      <import plugin="org.apache.xerces"/>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.ui"/>
-      <import plugin="org.apache.ant"/>
+      <import plugin="org.eclipse.search"/>
       <import plugin="org.eclipse.ant.core"/>
+      <import plugin="org.eclipse.ui.externaltools"/>
       <import plugin="org.eclipse.jdt.core"/>
       <import plugin="org.eclipse.jdt.ui"/>
-      <import plugin="org.apache.xerces"/>
-      <import plugin="org.eclipse.jdt.core"/>
-      <import plugin="org.eclipse.search"/>
-      <import plugin="org.eclipse.debug.core"/>
-      <import plugin="org.eclipse.debug.ui"/>
-      <import plugin="org.eclipse.jdt.debug"/>
       <import plugin="org.eclipse.jdt.debug.ui"/>
       <import plugin="org.eclipse.jdt.launching"/>
-      <import plugin="org.eclipse.compare"/>
-      <import plugin="org.apache.lucene"/>
+      <import plugin="org.eclipse.debug.core"/>
+      <import plugin="org.eclipse.debug.ui"/>
       <import plugin="org.eclipse.ui.externaltools"/>
       <import plugin="org.objectstyle.wolips"/>
       <import plugin="jmechanic.eclipse.profiler"/>

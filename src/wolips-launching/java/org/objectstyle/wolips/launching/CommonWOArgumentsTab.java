@@ -317,7 +317,7 @@ public class CommonWOArgumentsTab extends JavaLaunchConfigurationTab {
 		try {
 			main =
 				config.getAttribute(
-					IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME,
+					IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME,
 					"");
 		} catch (Exception anException) {
 			WOLipsLog.log(anException);
@@ -325,7 +325,7 @@ public class CommonWOArgumentsTab extends JavaLaunchConfigurationTab {
 		}
 		if ("".equals(main))
 			return "";
-		return "WOApplicationClass=" + main + " ";
+		return "-WOApplicationClassName " + main + " ";
 	}
 
 	/**

@@ -14,15 +14,12 @@
          <packages prefixes="org.objectstyle.wolips.actions,org.objectstyle.wolips.ant,org.objectstyle.wolips.builder,org.objectstyle.wolips.editor,org.objectstyle.wolips.ide,org.objectstyle.wolips.images,org.objectstyle.wolips.io,org.objectstyle.wolips.listener,org.objectstyle.wolips.logging,org.objectstyle.wolips.natures,org.objectstyle.wolips.plugin,org.objectstyle.wolips.preferences,org.objectstyle.wolips.project,org.objectstyle.wolips.resources,org.objectstyle.wolips.ui,org.objectstyle.wolips.utils,org.objectstyle.wolips.wizards,org.objectstyle.wolips.workbench"/>
       </library>
       <library name="lib/woproject.jar">
-         <export name="*"/>
          <packages prefixes="org.objectstyle.woproject.ant,org.objectstyle.woproject.env,org.objectstyle.woproject.log4j,org.objectstyle.woproject.pb,org.objectstyle.woproject.util,org.objectstyle.woproject.wo"/>
       </library>
       <library name="lib/cayenne.jar">
-         <export name="*"/>
          <packages prefixes="org.objectstyle.cayenne"/>
       </library>
        <library name="lib/commons-logging.jar">
-         <export name="*"/>
          <packages prefixes="org.apache.commons.logging"/>
       </library>
    </runtime>
@@ -30,23 +27,19 @@
 <!-- Required Plugins                                                                    -->
 <!-- =================================================================================== -->   
    <requires>
+      <import plugin="org.apache.xerces"/>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.ui"/>
-      <import plugin="org.apache.ant"/>
+      <import plugin="org.eclipse.search"/>
       <import plugin="org.eclipse.ant.core"/>
+      <import plugin="org.eclipse.ui.externaltools"/>
       <import plugin="org.eclipse.jdt.core"/>
       <import plugin="org.eclipse.jdt.ui"/>
-      <import plugin="org.apache.xerces"/>
-      <import plugin="org.eclipse.jdt.core"/>
-      <import plugin="org.eclipse.search"/>
-      <import plugin="org.eclipse.debug.core"/>
-      <import plugin="org.eclipse.debug.ui"/>
-      <import plugin="org.eclipse.jdt.debug"/>
       <import plugin="org.eclipse.jdt.debug.ui"/>
       <import plugin="org.eclipse.jdt.launching"/>
-      <import plugin="org.eclipse.compare"/>
-      <import plugin="org.apache.lucene"/>
+      <import plugin="org.eclipse.debug.core"/>
+      <import plugin="org.eclipse.debug.ui"/>
       <import plugin="org.eclipse.ui.externaltools"/>
    </requires>
 <!-- =================================================================================== -->
