@@ -56,10 +56,16 @@
 
 package org.objectstyle.wolips.wizards;
 
+import org.eclipse.jdt.internal.ui.packageview.PackageExplorerPart;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
+import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.objectstyle.wolips.WOLipsPlugin;
 import org.objectstyle.wolips.images.WOLipsPluginImages;
 
 /**
@@ -97,6 +103,20 @@ public class WOComponentCreationWizard extends Wizard implements INewWizard {
 	 * Method declared on IWizard
 	 */
 	public boolean performFinish() {
-		return mainPage.createComponent();
+		boolean returnValue = mainPage.createComponent();
+		IWorkbenchWindow a[] =
+			WOLipsPlugin.getDefault().getWorkbench().getWorkbenchWindows();
+		for (int i = 0; i < a.length; i++) {
+			IWorkbenchPage b[] = a[i].getPages();
+			for (int j = 0; j < b.length; j++) {
+				IViewReference c[] = b[j].getViewReferences();
+				for (int k = 0; k < c.length; k++) {
+					IViewPart d = c[k].getView(false); //maybe null
+					if ((d != null) && (d instanceof PackageExplorerPart))
+						 ((PackageExplorerPart) d).getTreeViewer().refresh();
+				}
+			}
+		}
+		return returnValue;
 	}
 }

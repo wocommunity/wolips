@@ -80,7 +80,8 @@ public class PerspectiveFactory implements IPerspectiveFactory {
 		String editorArea = layout.getEditorArea();
 
 		IFolderLayout folder = layout.createFolder("left", IPageLayout.LEFT, (float) 0.25, editorArea); //$NON-NLS-1$
-		folder.addView(IWOLipsPluginConstants.ID_Navigator);
+		//folder.addView(IWOLipsPluginConstants.ID_Navigator);
+		folder.addView(JavaUI.ID_PACKAGES);
 		folder.addView(IWOLipsPluginConstants.ID_WONavigator);
 		folder.addView(IWOLipsPluginConstants.ID_ModelNavigator);
 		folder.addView(IWOLipsPluginConstants.ID_AntNavigator);
