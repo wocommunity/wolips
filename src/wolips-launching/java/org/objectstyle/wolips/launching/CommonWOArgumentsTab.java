@@ -103,7 +103,8 @@ public class CommonWOArgumentsTab extends JavaLaunchConfigurationTab {
 	private Table includeTable;
 	private Button addButton;
 	private Button removeButton;
-	
+	private Button changeButton;
+
 	private Vector allParameter;
 	private Vector allArguments;
 	protected static final String EMPTY_STRING = ""; //$NON-NLS-1$
@@ -191,7 +192,27 @@ public class CommonWOArgumentsTab extends JavaLaunchConfigurationTab {
 				removeIgnore();
 			}
 		});
-		
+
+		changeButton = new Button(buttons, SWT.PUSH);
+		changeButton.setText(PreferencesMessages.getString("LaunchPreferencesPage.change")); //$NON-NLS-1$
+		data = new GridData();
+		data.horizontalAlignment = GridData.FILL;
+		data.heightHint = 20;
+		//Dialog.convertVerticalDLUsToPixels(new FontMetrics(), IDialogConstants.BUTTON_HEIGHT);
+		widthHint = 100;
+		//Dialog.convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
+		data.widthHint =
+			Math.max(
+				widthHint,
+				changeButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x);
+		changeButton.setLayoutData(data);
+		changeButton.setEnabled(false);
+		changeButton.addListener(SWT.Selection, new Listener() {
+			public void handleEvent(Event e) {
+				changeArgument();
+			}
+		});
+
 		Dialog.applyDialogFont(parent);
 		this.setControl(parent);
 	}
@@ -200,7 +221,8 @@ public class CommonWOArgumentsTab extends JavaLaunchConfigurationTab {
 	 * @param ignore
 	 */
 	private void fillTable(ILaunchInfo[] launchInfoArray) {
-		if(isTableFilled) return;
+		if (isTableFilled)
+			return;
 		isTableFilled = true;
 		allArguments = new Vector();
 		allParameter = new Vector();
@@ -241,19 +263,49 @@ public class CommonWOArgumentsTab extends JavaLaunchConfigurationTab {
 		allParameter.add(parameter);
 		allArguments.add(argument);
 		item.setChecked(true);
+		this.updateLaunchConfigurationDialog();
 	}
 
 	private void removeIgnore() {
 		int[] selection = includeTable.getSelectionIndices();
 		includeTable.remove(selection);
-		allParameter.remove(selection);
-		allArguments.remove(selection);
+		String remove = "WOLips_Remove_request";
+		
+		for (int i = 0; i < selection.length; i++) {
+			allParameter.setElementAt(remove, i);
+			allArguments.setElementAt(remove, i);
+		}
+		for (int i = 0; i < selection.length; i++) {
+			allParameter.remove(remove);
+			allArguments.remove(remove);
+		}
+		this.updateLaunchConfigurationDialog();
 	}
+
+	private void changeArgument() {
+		int[] selection = includeTable.getSelectionIndices();
+		if (selection.length != 1)
+			return;
+		int index = selection[0];
+		InputDialog argumentDialog = new InputDialog(getShell(), PreferencesMessages.getString("LaunchPreferencesPage.enterArgumentShort"), Preferences.getString("IgnorePreferencePage.enterPatternLong"), null, null); //$NON-NLS-1$ //$NON-NLS-2$
+		argumentDialog.open();
+		if (argumentDialog.getReturnCode() != InputDialog.OK)
+			return;
+		String argument = argumentDialog.getValue();
+		String parameter = (String) allParameter.elementAt(index);
+		TableItem item = includeTable.getItem(index);
+		item.setText(parameter + " " + argument);
+		allArguments.setElementAt(argument, index);
+		this.updateLaunchConfigurationDialog();
+	}
+	
 	private void handleSelection() {
 		if (includeTable.getSelectionCount() > 0) {
 			removeButton.setEnabled(true);
+			changeButton.setEnabled(true);
 		} else {
 			removeButton.setEnabled(false);
+			changeButton.setEnabled(false);
 		}
 	}
 
@@ -261,6 +313,7 @@ public class CommonWOArgumentsTab extends JavaLaunchConfigurationTab {
 	 * @see ILaunchConfigurationTab#dispose()
 	 */
 	public void dispose() {
+		super.dispose();
 	}
 
 	/**
