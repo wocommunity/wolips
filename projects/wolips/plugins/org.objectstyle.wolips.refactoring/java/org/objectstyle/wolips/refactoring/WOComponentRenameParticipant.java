@@ -106,46 +106,48 @@ public class WOComponentRenameParticipant extends RenameParticipant {
     }
     
     public Change createChange(IProgressMonitor _pm) throws CoreException, OperationCanceledException {
-        RenameArguments arguments = getArguments();
-        String oldName = mySourceType.getElementName();
-        String newName = arguments.getNewName();
-        IProject project = mySourceType.getJavaProject().getProject();
-        IFolder oldWoFolder = (IFolder) PluginUtils.findResource(project, oldName + ".wo");
-        IFile oldApiFile = (IFile) PluginUtils.findResource(project, oldName + ".api");
-        CompositeChange compositeChange;
-        if (oldWoFolder != null || oldApiFile != null) {
-            compositeChange = new CompositeChange("Rename WOComponent Files");
-            if (oldApiFile != null) {
-                // compositeChange.add(new RenameResourceChange(oldApiFile, newName + ".api"));
-                CompositeChange renameApiFileChange = new CompositeChange("Rename " + oldApiFile.getName() + ".");
-                renameApiFileChange.add(new CopyResourceChange(oldApiFile, oldApiFile.getParent(), new FixedNewNameQuery(newName + ".api")));
-                renameApiFileChange.add(new DeleteFileChange(oldApiFile));
-                compositeChange.add(renameApiFileChange);
-            }
-            if (oldWoFolder != null) {
-                IFolder newWoFolder = oldWoFolder.getParent().getFolder(new Path(newName + ".wo"));
-                CompositeChange renameWoFolderChange = new CompositeChange("Rename " + oldWoFolder.getName() + ".");
-
-                //compositeChange.add(createRenameChange(woFolder, newName + ".wo"));
-                renameWoFolderChange.add(new CreateFolderChange(newWoFolder));
-                String[] renameExtensions = { ".html", ".wod", ".woo" };
-                for (int i = 0; i < renameExtensions.length; i++) {
-                    IFile woFile = oldWoFolder.getFile(oldName + renameExtensions[i]);
-                    if (woFile.exists()) {
-                        //compositeChange.add(new RenameResourceChange(woFile, newName + renameExtensions[i]));
-                        CompositeChange renameWoFileChange = new CompositeChange("Rename " + woFile.getName() + ".");
-                        renameWoFileChange.add(new CopyResourceChange(woFile, newWoFolder, new FixedNewNameQuery(newName + renameExtensions[i])));
-                        renameWoFileChange.add(new DeleteFileChange(woFile));
-                        renameWoFolderChange.add(renameWoFileChange);
+        Change change = null;
+        if(mySourceType != null) {
+            RenameArguments arguments = getArguments();
+            String oldName = mySourceType.getElementName();
+            String newName = arguments.getNewName();
+            if(!oldName.equals(newName)) {
+                IProject project = mySourceType.getJavaProject().getProject();
+                IFolder oldWoFolder = (IFolder) PluginUtils.findResource(project, oldName + ".wo");
+                IFile oldApiFile = (IFile) PluginUtils.findResource(project, oldName + ".api");
+                if (oldWoFolder != null || oldApiFile != null) {
+                    CompositeChange compositeChange = new CompositeChange("Rename WOComponent Files");
+                    if (oldApiFile != null) {
+                        // compositeChange.add(new RenameResourceChange(oldApiFile, newName + ".api"));
+                        CompositeChange renameApiFileChange = new CompositeChange("Rename " + oldApiFile.getName() + ".");
+                        renameApiFileChange.add(new CopyResourceChange(oldApiFile, oldApiFile.getParent(), new FixedNewNameQuery(newName + ".api")));
+                        renameApiFileChange.add(new DeleteFileChange(oldApiFile));
+                        compositeChange.add(renameApiFileChange);
                     }
+                    if (oldWoFolder != null) {
+                        IFolder newWoFolder = oldWoFolder.getParent().getFolder(new Path(newName + ".wo"));
+                        CompositeChange renameWoFolderChange = new CompositeChange("Rename " + oldWoFolder.getName() + ".");
+                        
+                        //compositeChange.add(createRenameChange(woFolder, newName + ".wo"));
+                        renameWoFolderChange.add(new CreateFolderChange(newWoFolder));
+                        String[] renameExtensions = { ".html", ".wod", ".woo" };
+                        for (int i = 0; i < renameExtensions.length; i++) {
+                            IFile woFile = oldWoFolder.getFile(oldName + renameExtensions[i]);
+                            if (woFile.exists()) {
+                                //compositeChange.add(new RenameResourceChange(woFile, newName + renameExtensions[i]));
+                                CompositeChange renameWoFileChange = new CompositeChange("Rename " + woFile.getName() + ".");
+                                renameWoFileChange.add(new CopyResourceChange(woFile, newWoFolder, new FixedNewNameQuery(newName + renameExtensions[i])));
+                                renameWoFileChange.add(new DeleteFileChange(woFile));
+                                renameWoFolderChange.add(renameWoFileChange);
+                            }
+                        }
+                        renameWoFolderChange.add(new DeleteFolderChange(oldWoFolder));
+                        compositeChange.add(renameWoFolderChange);
+                    }
+                    change = compositeChange;
                 }
-                renameWoFolderChange.add(new DeleteFolderChange(oldWoFolder));
-                compositeChange.add(renameWoFolderChange);
             }
         }
-        else {
-            compositeChange = null;
-        }
-        return compositeChange;
+        return change;
     }
 }
