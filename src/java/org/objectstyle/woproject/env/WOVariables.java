@@ -78,11 +78,11 @@ public class WOVariables {
 	 * @see WOVariables
 	 */
 	public static final String WOBUILD_PROPERTIES = "WOBUILD_PROPERTIES";
-	public static final String WOBUILD_PROPERTIES_FILE_NAME = "wobuild.properties";
+	public static final String WOBUILD_PROPERTIES_FILE_NAME =
+		"wobuild.properties";
 	private Properties wobuildProperties;
 	private File wobuildPropertiesFile;
 	private Environment environment;
-
 	/**
 	 * Constructor for WOVariables.
 	 */
@@ -196,18 +196,17 @@ public class WOVariables {
 	public String systemRoot() {
 		return wobuildProperties.getProperty(WO_WO_SYSTEM_ROOT);
 	}
-
-        public String userHome() {
-            String userHome = wobuildProperties.getProperty(HOME_ROOT);
-            if (userHome == null) {
-                userHome = environment.userHome();
-            }
-            return userHome;
-        }
-        /**
-	 * Method developerDir.
-	 * @return String
-	 */
+	public String userHome() {
+		String userHome = wobuildProperties.getProperty(HOME_ROOT);
+		if (userHome == null) {
+			userHome = environment.userHome();
+		}
+		return userHome;
+	}
+	/**
+	* Method developerDir.
+	* @return String
+	*/
 	public String developerDir() {
 		/*
 		String returnValue = "";
@@ -337,9 +336,23 @@ public class WOVariables {
 		 * @return String
 		 */
 	public String encodePathForFile(File aFile) {
-		String aPrefix = null;
+		String userHome = null;
+		String systemRoot = null;
+		String localRoot = null;
 		String aPath = null;
 		try {
+			localRoot = localRoot();
+			userHome = userHome();
+			systemRoot = systemRoot();
+			int localRootLength = 0;
+			int userHomeLength = 0;
+			int systemRootLength = 0;
+			if (localRoot != null)
+				localRootLength = localRoot.length();
+			if (userHome != null)
+				userHomeLength = userHome.length();
+			if (systemRoot != null)
+				systemRootLength = systemRoot.length();
 			//aPath = aFile.getCanonicalPath();
 			//u.k. the CanonicalPath will resolve links this will
 			//result in path with /Versions/a in it
@@ -348,51 +361,56 @@ public class WOVariables {
 			//            if((aPrefix != null) && (aPrefix.length() > 1) && (aPath.startsWith(aPrefix))) {
 			//            	return "APPROOT" + aPath.substring(aPrefix.length());
 			//            }
-			aPrefix = localRoot();
 			if (log.isDebugEnabled()) {
-				log.debug("aPrefix + aPath " + aPrefix + " " + aPath);
+				log.debug("aPrefix + aPath " + localRoot + " " + aPath);
+				log.debug("aPrefix + aPath " + userHome + " " + aPath);
+				log.debug("aPrefix + aPath " + systemRoot + " " + aPath);
 			}
-			if ((aPrefix != null)
-				&& (aPrefix.length() > 1)
-				&& (aPath.startsWith(aPrefix))) {
-				return "LOCALROOT" + aPath.substring(aPrefix.length());
+			if (localRoot != null && aPath.startsWith(localRoot)) {
+				boolean otherRoot = false;
+				if (localRootLength < userHomeLength
+					&& aPath.startsWith(userHome))
+					otherRoot = true;
+				if (localRootLength < systemRootLength
+					&& aPath.startsWith(systemRoot))
+					otherRoot = true;
+				if (!otherRoot) {
+					if (localRootLength == 1) //MacOSX
+						return "LOCALROOT" + aPath;
+					return "LOCALROOT" + aPath.substring(localRootLength);
+				}
 			}
-			aPrefix = userHome();
-			if (log.isInfoEnabled()) {
-				log.info("aPrefix + aPath " + aPrefix + " " + aPath);
+			if (userHome != null && aPath.startsWith(userHome)) {
+				boolean otherRoot = false;
+				if (userHomeLength < systemRootLength
+					&& aPath.startsWith(systemRoot))
+					otherRoot = true;
+				if (!otherRoot)
+					return "HOMEROOT" + aPath.substring(userHomeLength);
 			}
-			if ((aPrefix != null)
-				&& (aPrefix.length() > 1)
-				&& (aPath.startsWith(aPrefix))) {
-				return "HOMEROOT" + aPath.substring(aPrefix.length());
-			}
-			aPrefix = systemRoot();
-			if (log.isInfoEnabled()) {
-				log.info("aPrefix + aPath " + aPrefix + " " + aPath);
-			}
-			if ((aPrefix != null)
-				&& (aPrefix.length() > 1)
-				&& (aPath.startsWith(aPrefix))) {
-				return "WOROOT" + aPath.substring(aPrefix.length());
+			if ((systemRoot != null) && (aPath.startsWith(systemRoot))) {
+				return "WOROOT" + aPath.substring(systemRootLength);
 			}
 			return aPath;
 		} catch (Exception anException) {
-                        log.error("Exception occured during encoding of the path " + anException, anException);
+			log.error(
+				"Exception occured during encoding of the path " + anException,
+				anException);
 		} finally {
-			aPrefix = null;
+			localRoot = null;
+			userHome = null;
+			systemRoot = null;
 			aPath = null;
 		}
 		return null;
-	}
-	/**
-	 * @return Properties
-	 */
+	} /**
+											 * @return Properties
+											 */
 	private Properties getWOBuildProperties() {
 		return wobuildProperties;
-	}
-	/**
-	 * @return boolean
-	 */
+	} /**
+											 * @return boolean
+											 */
 	public boolean foundWOBuildProperties() {
 		return (wobuildPropertiesFile != null);
 	}
