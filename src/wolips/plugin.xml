@@ -169,13 +169,4 @@
 	</objectContribution>
 </extension>
 
-<extension
-      point="org.eclipse.jdt.ui.classpathContainerPage">
-   <classpathContainerPage
-         id= "JAVA_WEBOBJECTS2"
-         class="org.objectstyle.wolips.wizards.ClasspathContainerPage"
-         name="Hallo">
-   </classpathContainerPage>
-</extension>
-
 </plugin>
