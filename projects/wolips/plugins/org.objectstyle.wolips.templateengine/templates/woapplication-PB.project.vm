@@ -3,7 +3,15 @@
     FRAMEWORKSEARCH = ("$(NEXT_ROOT)$(LOCAL_LIBRARY_DIR)/Frameworks");  
     FILESTABLE = {
         CLASSES = ( ); 
-        FRAMEWORKS = ( ); 
+        FRAMEWORKS = 
+        (
+           JavaEOAccess.framework, 
+           JavaEOControl.framework, 
+           JavaFoundation.framework, 
+           JavaWebObjects.framework, 
+           JavaWOExtensions.framework, 
+           JavaXML.framework
+        ); 
         OTHER_LINKED = (); 
         OTHER_SOURCES = (
             Makefile.preamble, 
