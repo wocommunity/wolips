@@ -3,6 +3,7 @@
 	<name>wolips</name>
 	<comment></comment>
 	<projects>
+		<project>wolips-feature</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
@@ -22,7 +23,7 @@
 		</buildCommand>
 	</buildSpec>
 	<natures>
-		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>org.eclipse.pde.PluginNature</nature>
+		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
 </projectDescription>

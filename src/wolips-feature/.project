@@ -3,7 +3,6 @@
 	<name>wolips-feature</name>
 	<comment></comment>
 	<projects>
-		<project>woproject</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
