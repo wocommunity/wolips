@@ -56,10 +56,10 @@
 
 package org.objectstyle.wolips.actions;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.objectstyle.wolips.WOLipsPlugin;
+import org.objectstyle.wolips.actions.ActionOnIProject;
 import org.objectstyle.wolips.project.ProjectHelper;
 
 /**
@@ -88,7 +88,7 @@ public class PBAction extends ActionOnIProject {
 			if ( action.getId().equals(PBAction.UpdatePBProjectSetID) )
 				WOLipsPlugin.getDefault().getProjectUpdater(project()).updatePBProject();
 			}
-			catch (CoreException ex) {
+			catch (Exception ex) {
 				WOLipsPlugin.log(ex);
 			}
 		}

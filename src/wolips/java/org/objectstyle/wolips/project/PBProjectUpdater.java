@@ -129,8 +129,8 @@ public class PBProjectUpdater {
 
 		try {
 			return new PBProject(aFile, !isWOApp);
-		} catch (IOException ioex) {
-			ioex.printStackTrace();
+		} catch (Exception anException) {
+			WOLipsPlugin.log(anException);
 			return null;
 		}
 	}
@@ -141,8 +141,8 @@ public class PBProjectUpdater {
 			this.syncFilestable();
 			this.syncProjectName();
 			pbProject.saveChanges();
-		} catch (IOException ioex) {
-			ioex.printStackTrace();
+		} catch (Exception ioex) {
+			WOLipsPlugin.log(ioex);
 		}
 
 	}
@@ -194,7 +194,8 @@ public class PBProjectUpdater {
 				if (aPath.endsWith(".wo"))
 					aWOComponentsList.add(aPath);
 
-				else {
+				else 
+					if(!aPath.endsWith(".woa") && !aPath.endsWith(".build") && !aPath.endsWith(".framework")) {
 					IResource[] resources;
 					resources = aFolder.members();
 					int lastResource = resources.length;

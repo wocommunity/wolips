@@ -13,6 +13,9 @@
       <library name="lib/woproject.jar">
       	<export name="*"/>
       </library>
+      <library name="lib/cayenne.jar">
+      	<export name="*"/>
+      </library>
    </runtime>
    
    <requires>
