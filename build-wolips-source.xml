@@ -122,6 +122,8 @@
     
     
     <target name="doc" depends="prepare">
+    	<mkdir dir="${wolips.source.dist}/src"/>
+    	<mkdir dir="${wolips.source.dist}/api"/>
     </target>
     
     
