@@ -376,7 +376,15 @@
             icon="icons/projectbuilder/projectbuilderwo.gif"
             extensions="project"
             launcher="org.objectstyle.wolips.editor.OpenSystemEditor"
-            id="org.objectstyle.wolips.external.eomodeld.projectbuilderwo">
+            id="org.objectstyle.wolips.external.projectbuilder.wo">
+      </editor>
+      <editor
+            name="RuleEditor"
+            default="true"
+            icon="icons/eomodeler/webobjects_eomodeler.gif"
+            extensions="d2wmodel"
+            launcher="org.objectstyle.wolips.editor.OpenSystemEditor"
+            id="org.objectstyle.wolips.external.d2w.model">
       </editor>
    </extension>
 <!-- =================================================================================== -->
