@@ -147,7 +147,11 @@ public class UpdateFrameworkIncludeFiles extends UpdateIncludeFiles {
 				}
 			}
 
-			if (newFrameworkEntries.length() > 0) {
+			if (newFrameworkEntries.length() == 0) {
+				newFrameworkEntries.append(
+					"An empty file result in a full filesystem scan");
+				newFrameworkEntries.append("\n");
+			}
 				try {
 					if (currentFrameworkListFile.exists()) {
 						// file may be created by WOBuilder in the meantime
@@ -168,7 +172,6 @@ public class UpdateFrameworkIncludeFiles extends UpdateIncludeFiles {
 							+ ": "
 							+ e.getMessage());
 				}
-			}
 		}
 	}
 	/**

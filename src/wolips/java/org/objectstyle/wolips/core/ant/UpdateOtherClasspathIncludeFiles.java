@@ -148,27 +148,30 @@ public class UpdateOtherClasspathIncludeFiles extends UpdateIncludeFiles {
 				}
 			}
 
-			if (newClasspathEntries.length() > 0) {
-				try {
-					if (currentClasspathListFile.exists()) {
-						// file may be created by WOBuilder in the meantime
-						// no update needed
-						return;
-					} else {
-						// create list file if any entries found
-						currentClasspathListFile.create(
-							new ByteArrayInputStream(
-								newClasspathEntries.toString().getBytes()),
-							true,
-							null);
-					}
-				} catch (CoreException e) {
-					throw new BuildException(
-						"Exception while trying to create "
-							+ currentClasspathListFile.getName()
-							+ ": "
-							+ e.getMessage());
+			if (newClasspathEntries.length() == 0) {
+				newClasspathEntries.append(
+					"An empty file result in a full filesystem scan");
+				newClasspathEntries.append("\n");
+			}
+			try {
+				if (currentClasspathListFile.exists()) {
+					// file may be created by WOBuilder in the meantime
+					// no update needed
+					return;
+				} else {
+					// create list file if any entries found
+					currentClasspathListFile.create(
+						new ByteArrayInputStream(
+							newClasspathEntries.toString().getBytes()),
+						true,
+						null);
 				}
+			} catch (CoreException e) {
+				throw new BuildException(
+					"Exception while trying to create "
+						+ currentClasspathListFile.getName()
+						+ ": "
+						+ e.getMessage());
 			}
 		}
 	}
@@ -181,9 +184,9 @@ public class UpdateOtherClasspathIncludeFiles extends UpdateIncludeFiles {
 	private String classpathEntryToOtherClasspathEntry(
 		IClasspathEntry entry,
 		IPath rootDir) {
-			//System.out.println("classpathEntryToOtherClasspathEntry");
-			//System.out.println("entry: " + entry);
-			//System.out.println("rootDir" + rootDir);
+		//System.out.println("classpathEntryToOtherClasspathEntry");
+		//System.out.println("entry: " + entry);
+		//System.out.println("rootDir" + rootDir);
 		String toReturn = null;
 		IPath pathToConvert;
 		if (entry.getPath().matchingFirstSegments(rootDir)
