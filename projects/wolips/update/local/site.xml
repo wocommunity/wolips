@@ -13,6 +13,9 @@
    <feature url="features/org.objectstyle.wolips.tests.feature_1.0.6.jar" id="org.objectstyle.wolips.tests.feature" version="1.0.6">
       <category name="tests"/>
    </feature>
+   <feature url="features/org.objectstyle.wolips.goodies.mac.feature_1.0.6.jar" id="org.objectstyle.wolips.goodies.mac.feature" version="1.0.6">
+      <category name="tests"/>
+   </feature>
 <category-def name="main" label="WOLips">
       <description>
          WOLips supports the development of WebObjects Applications and Frameworks.
@@ -26,6 +29,11 @@
 <category-def name="tests" label="Tests">
       <description>
          UnitTests from the WOLips source code.
+      </description>
+   </category-def>
+<category-def name="goodies.mac" label="Goodies Mac">
+      <description>
+         Goodies for the Mac.
       </description>
    </category-def>
 </site>
