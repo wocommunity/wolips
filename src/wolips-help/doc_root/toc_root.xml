@@ -29,9 +29,10 @@
 			
 		</topic>
 
+		<topic label="Building" href="./doc_root/tasks/build.html"/>
+		<topic label="Testing" href="./doc_root/tasks/test.html"/>
 		<topic label="Debugging" href="./doc_root/tasks/debug.html"/>
 		<topic label="Profiling" href="./doc_root/tasks/profile.html"/>  
-		<topic label="Use the Incremental Builder (and launch Applications)" href="./doc_root/tasks/incremental-builds.html"/>
 		
 	</topic>
 
