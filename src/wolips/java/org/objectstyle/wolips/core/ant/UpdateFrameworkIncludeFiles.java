@@ -193,7 +193,7 @@ public class UpdateFrameworkIncludeFiles extends UpdateIncludeFiles {
 		String toReturn = null;
 		IPath pathToConvert;
 		// determine if entry's path begins with rootDir
-		if (!entry.getPath().toOSString().startsWith(rootDir))
+		if (!entry.getPath().toString().startsWith(rootDir))
 			return null;
 		/*
 		if (entry.getPath().matchingFirstSegments(rootDir)
