@@ -116,10 +116,10 @@ public abstract class UpdateIncludeFiles extends Task {
 				map.remove(map.lastKey());
 			}
 		}
-		System.out.println("sortedRootPaths: " + sortedRootPaths.toString());
+		/*System.out.println("sortedRootPaths: " + sortedRootPaths.toString());
 		for(int x=0;x<sortedRootPaths.length;x++) {
 			System.out.println("sortedRootPaths" + x + ": " + sortedRootPaths[x]);
-		}
+		}*/
 		return sortedRootPaths;
 	}
 
@@ -142,10 +142,10 @@ public abstract class UpdateIncludeFiles extends Task {
 	protected IPath getROOTPATHProperty(String aProperty) {
 		//Workaround for MacOSX otherwise any jar seems to be under the wolocalroot
 		IPath currentRootPath = new Path(project.getProperty(aProperty));
-		System.out.println("currentRootPath: " + currentRootPath.toOSString());
+		//System.out.println("currentRootPath: " + currentRootPath.toOSString());
 		if(currentRootPath != null && "/".equals(currentRootPath.toOSString()))
 			currentRootPath = currentRootPath.append("Library/");
-		System.out.println("currentRootPath: " + currentRootPath.toOSString());
+		//System.out.println("currentRootPath: " + currentRootPath.toOSString());
 		return currentRootPath;
 	}
 }

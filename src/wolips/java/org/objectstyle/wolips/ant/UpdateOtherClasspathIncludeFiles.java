@@ -128,7 +128,7 @@ public class UpdateOtherClasspathIncludeFiles extends UpdateIncludeFiles {
 			currentClasspathListFile =
 				actualProject.getFile(
 					INCLUDES_FILE_PREFIX + "." + ROOT_PATHS[i]);
-			System.out.println("currentClasspathListFile: " + currentClasspathListFile.toString());
+			//System.out.println("currentClasspathListFile: " + currentClasspathListFile.toString());
 			if (currentClasspathListFile.exists()) {
 				// delete old include file
 				try {
@@ -214,9 +214,9 @@ public class UpdateOtherClasspathIncludeFiles extends UpdateIncludeFiles {
 	private String classpathEntryToOtherClasspathEntry(
 		IClasspathEntry entry,
 		IPath rootDir) {
-			System.out.println("classpathEntryToOtherClasspathEntry");
-			System.out.println("entry: " + entry);
-			System.out.println("rootDir" + rootDir);
+			//System.out.println("classpathEntryToOtherClasspathEntry");
+			//System.out.println("entry: " + entry);
+			//System.out.println("rootDir" + rootDir);
 		String toReturn = null;
 		IPath pathToConvert;
 		if (entry.getPath().matchingFirstSegments(rootDir)
@@ -238,8 +238,8 @@ public class UpdateOtherClasspathIncludeFiles extends UpdateIncludeFiles {
 			}
 			toReturn = pathToConvert.toOSString();
 		}
-		System.out.println("toReturn: " + toReturn);
-		System.out.println("classpathEntryToOtherClasspathEntry return");
+		//System.out.println("toReturn: " + toReturn);
+		//System.out.println("classpathEntryToOtherClasspathEntry return");
 		return toReturn;
 	}
 }
