@@ -113,6 +113,7 @@ public class RunAnt {
 				targets[1] = target;
 				runner.setExecutionTargets(targets);
 			}
+			runner.setArguments("-quiet");
 			//runner.setArguments("-Dmessage=Building -verbose");
 			monitor.subTask(
 				BuildMessages.getString("Build.SubTask.Name")
@@ -303,6 +304,7 @@ public class RunAnt {
 			workingCopy.setAttribute(
 				IExternalToolConstants.ATTR_CAPTURE_OUTPUT,
 				(String) null);
+			workingCopy.setAttribute(IExternalToolConstants.ATTR_TOOL_ARGUMENTS, "quiet");
 		}
 
 		return workingCopy;
