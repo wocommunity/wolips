@@ -495,6 +495,21 @@ public class PBProjectUpdater extends AWOLips {
 		}
 		return resourcePath;
 	}
+	public void addLocalFrameworkSectionToPBProject() {
+		try {
+		List actualFrameworkSearch = pbProject.getFrameworkSearch();
+		if(actualFrameworkSearch == null) {
+			pbProject.setFrameworkSearch(new ArrayList());
+			actualFrameworkSearch = pbProject.getFrameworkSearch();
+		}
+		if (!actualFrameworkSearch.contains(IWOLipsPluginConstants.DefaultLocalFrameworkSearch)) {
+			actualFrameworkSearch.add(IWOLipsPluginConstants.DefaultLocalFrameworkSearch);
+			}
+			pbProject.saveChanges();
+		} catch (IOException e) {
+			WOLipsLog.log(e);
+		}
+	}
 	/**
 	 * Method addFrameworks.
 	 * @param newFrameworks

@@ -176,4 +176,6 @@ public interface IWOLipsPluginConstants {
 	public static final String ID_ProductNavigator = "org.objectstyle.wolips.ui.ProductNavigator"; //$NON-NLS-1$
 	public static final String ID_AntNavigator = "org.eclipse.ui.externaltools.AntView"; //$NON-NLS-1$
 	public static final String build_file_wounit = "build-wounit.xml";
+	//local framework search for PB.project
+	public static final String DefaultLocalFrameworkSearch = "$(NEXT_ROOT)$(LOCAL_LIBRARY_DIR)/Frameworks";
 }

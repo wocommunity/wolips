@@ -82,6 +82,7 @@ public class PBProject {
 	public static final String FILESTABLE = "FILESTABLE";
 	public static final String CLASSES = "CLASSES";
 	public static final String FRAMEWORKS = "FRAMEWORKS";
+	public static final String FRAMEWORKSEARCH = "FRAMEWORKSEARCH";
 	public static final String OTHER_LINKED = "OTHER_LINKED";
 	public static final String OTHER_SOURCES = "OTHER_SOURCES";
 	public static final String WOAPP_RESOURCES = "WOAPP_RESOURCES";
@@ -185,6 +186,14 @@ public class PBProject {
 		getFilesTable().put(PBProject.WEB_SERVER_RESOURCES, anArray);
 	}
 
+	public List getFrameworkSearch() {
+		return (List) pbProject.get(PBProject.FRAMEWORKSEARCH);
+	}
+
+	public void setFrameworkSearch(List anArray) {
+		pbProject.put(PBProject.FRAMEWORKSEARCH, anArray);
+	}
+
 	public List getFrameworks() {
 		return (List) getFilesTable().get(PBProject.FRAMEWORKS);
 	}
@@ -192,7 +201,6 @@ public class PBProject {
 	public void setFrameworks(List anArray) {
 		getFilesTable().put(PBProject.FRAMEWORKS, anArray);
 	}
-
 	public List getSubprojects() {
 		return (List) getFilesTable().get(PBProject.SUBPROJECTS);
 	}

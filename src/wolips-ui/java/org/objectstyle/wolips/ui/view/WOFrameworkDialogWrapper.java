@@ -61,6 +61,7 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathEntry;
@@ -74,7 +75,10 @@ import org.eclipse.ui.dialogs.FileSelectionDialog;
 import org.eclipse.ui.dialogs.FileSystemElement;
 import org.eclipse.ui.wizards.datatransfer.FileSystemStructureProvider;
 import org.eclipse.ui.wizards.datatransfer.SelectFilesOperation;
+import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
 import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
+import org.objectstyle.wolips.core.project.PBProjectUpdater;
+import org.objectstyle.wolips.logging.WOLipsLog;
 
 /**
  * Wrapper of FileSelectionDialog to select jars from given
@@ -95,6 +99,7 @@ public class WOFrameworkDialogWrapper {
 	private IPath frameworkRootPath;
 	private IPath expandedClassPathVariable;
 	private String classPathVariableName;
+	private boolean addLocalFrameworkSectionToPBProject = false;
 
 	/**
 	 * Constructor for WOFrameworkDialogWrapper.
@@ -105,8 +110,10 @@ public class WOFrameworkDialogWrapper {
 	public WOFrameworkDialogWrapper(
 		IWorkbenchPart part,
 		IJavaProject projectToUpdate,
-		String classPathVariableName) {
+		String classPathVariableName,
+		boolean addLocalFrameworkSectionToPBProject) {
 		super();
+		this.addLocalFrameworkSectionToPBProject = addLocalFrameworkSectionToPBProject;
 		this.part = part;
 		this.classPathVariableName = classPathVariableName;
 		// expand class path	
@@ -219,7 +226,18 @@ public class WOFrameworkDialogWrapper {
 		} catch (JavaModelException e) {
 			WOLipsPlugin.handleException(part.getSite().getShell(), e, null);
 		}
-
+		if(addLocalFrameworkSectionToPBProject) {
+		try {
+			IResource pbproject = projectToUpdate.getProject().findMember(IWOLipsPluginConstants.PROJECT_FILE_NAME);
+			if(pbproject != null) {
+				PBProjectUpdater pbProjectUpdater = PBProjectUpdater.instance(pbproject.getParent());
+				pbProjectUpdater.addLocalFrameworkSectionToPBProject();
+		}
+		}
+		catch (Exception exception) {
+			WOLipsLog.log(exception);
+		}
+		}
 	}
 	/**
 	 * @author uli To change this generated comment edit the template variable

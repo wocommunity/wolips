@@ -98,13 +98,15 @@ public class WOFrameworkAction extends ActionOnIProject {
 			WOFrameworkAction.frameworkDialog(
 				this.part,
 				javaProject,
-				Environment.NEXT_SYSTEM_ROOT);
+				Environment.NEXT_SYSTEM_ROOT,
+				false);
 			return;
 		} else if (action.getId().equals(WOLocalFrameworkAddID)) {
 			WOFrameworkAction.frameworkDialog(
 				this.part,
 				javaProject,
-				Environment.NEXT_LOCAL_ROOT);
+				Environment.NEXT_LOCAL_ROOT,
+				true);
 			return;
 		}
 		MessageDialog.openInformation(
@@ -116,12 +118,14 @@ public class WOFrameworkAction extends ActionOnIProject {
 	private static void frameworkDialog(
 		IWorkbenchPart aPart,
 		IJavaProject aProject,
-		String classPathVariableName) {
+		String classPathVariableName,
+		boolean addLocalFrameworkSectionToPBProject) {
 		WOFrameworkDialogWrapper frameworkDialog =
 			new WOFrameworkDialogWrapper(
 				aPart,
 				aProject,
-				classPathVariableName);
+				classPathVariableName,
+			addLocalFrameworkSectionToPBProject);
 		frameworkDialog.executeDialog();
 	}
 }
