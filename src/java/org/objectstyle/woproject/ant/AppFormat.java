@@ -216,14 +216,16 @@ public class AppFormat extends ProjectFormat {
 			try {
 				fs = (FrameworkSet) frameworkSets.get(i);
 				// Don't bother checking if it's embedded.
-				log(
-					"fs.createPatternSet().getIncludePatterns(project) "
-						+ fs.createPatternSet().getIncludePatterns(project),
-					Project.MSG_VERBOSE);
-				log(
-					"fs.createPatternSet().getExcludePatterns(project) "
-						+ fs.createPatternSet().getExcludePatterns(project),
-					Project.MSG_VERBOSE);
+				if( !fs.isReference() ) {
+					log(
+						"fs.createPatternSet().getIncludePatterns(project) "
+							+ fs.createPatternSet().getIncludePatterns(project),
+						Project.MSG_VERBOSE);
+					log(
+						"fs.createPatternSet().getExcludePatterns(project) "
+							+ fs.createPatternSet().getExcludePatterns(project),
+						Project.MSG_VERBOSE);
+				}
 				if (true/*
 					|| fs.hasSelectors()
 					|| (fs.hasPatterns()
