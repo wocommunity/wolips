@@ -126,20 +126,13 @@ public class WOBuilderAction extends ActionOnIProject {
 	 */
 	public void selectionChanged(IAction action, ISelection selection) {
 		super.selectionChanged(action, selection);
-		if (project() == null) {
+		boolean isWOFramework = false;
+		boolean isWOApplication = false;
+		IProjectDescription projectDescription = this.projectDescription();
+		if (projectDescription == null) {
 			action.setEnabled(false);
 			return;
 		}
-		boolean isWOFramework = false;
-		boolean isWOApplication = false;
-		IProjectDescription projectDescription = null;
-		try {
-			projectDescription = project().getDescription();
-		} catch (CoreException e) {
-			WOLipsLog.log(e);
-		}
-		if (projectDescription == null)
-			return;
 		if (projectDescription
 			.hasNature(IWOLipsPluginConstants.WO_APPLICATION_NATURE)) {
 			isWOApplication = true;
@@ -148,6 +141,33 @@ public class WOBuilderAction extends ActionOnIProject {
 				IWOLipsPluginConstants.WO_FRAMEWORK_NATURE)) {
 			isWOFramework = true;
 		}
+		this.selectionChanged(action, isWOFramework, isWOApplication);
+	}
+	/**
+	 * Method projectDescription.
+	 * @return IProjectDescription
+	 */
+	private IProjectDescription projectDescription() {
+		if (project() == null)
+		return null;
+		IProjectDescription projectDescription = null;
+		try {
+			projectDescription = project().getDescription();
+		} catch (CoreException e) {
+			WOLipsLog.log(e);
+		}
+		return projectDescription;
+	}
+	/**
+	 * Method selectionChanged.
+	 * @param action
+	 * @param isWOFramework
+	 * @param isWOApplication
+	 */
+	private void selectionChanged(
+		IAction action,
+		boolean isWOFramework,
+		boolean isWOApplication) {
 		if (action.getId().equals(WOBuilderAction.WOFrameworkBuilderSetID)) {
 			action.setEnabled(
 				isWOFramework

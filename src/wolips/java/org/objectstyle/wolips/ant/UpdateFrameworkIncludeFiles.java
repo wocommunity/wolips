@@ -82,7 +82,9 @@ public class UpdateFrameworkIncludeFiles extends UpdateIncludeFiles {
 		super();
 		INCLUDES_FILE_PREFIX = "ant.frameworks";
 	}
-
+	/**
+	 * @see org.apache.tools.ant.Task#execute()
+	 */
 	public void execute() throws BuildException {
 		validateAttributes();
 		actualProject =
@@ -99,7 +101,9 @@ public class UpdateFrameworkIncludeFiles extends UpdateIncludeFiles {
 				"Project " + actualProject.getName() + " does not exist");
 		}
 	}
-
+	/**
+	 * @see org.objectstyle.wolips.ant.UpdateIncludeFiles#buildIncludeFiles()
+	 */
 	protected synchronized void buildIncludeFiles() throws BuildException {
 		// void double entries
 		HashSet resolvedEntries = new HashSet();
@@ -199,7 +203,12 @@ public class UpdateFrameworkIncludeFiles extends UpdateIncludeFiles {
 			throw new BuildException("'projectName' attribute is missing.");
 		}
 	}
-
+	/**
+	 * Method classpathEntryToFrameworkEntry.
+	 * @param entry
+	 * @param rootDir
+	 * @return String
+	 */
 	private String classpathEntryToFrameworkEntry(
 		IClasspathEntry entry,
 		Path rootDir) {

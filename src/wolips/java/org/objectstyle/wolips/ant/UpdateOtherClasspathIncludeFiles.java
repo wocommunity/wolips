@@ -82,7 +82,9 @@ public class UpdateOtherClasspathIncludeFiles extends UpdateIncludeFiles {
 		super();
 		INCLUDES_FILE_PREFIX = "ant.classpaths";
 	}
-
+	/**
+	 * @see org.apache.tools.ant.Task#execute()
+	 */
 	public void execute() throws BuildException {
 		validateAttributes();
 		actualProject =
@@ -102,7 +104,9 @@ public class UpdateOtherClasspathIncludeFiles extends UpdateIncludeFiles {
 				"Project " + actualProject.getName() + " does not exist");
 		}
 	}
-
+	/**
+	 * @see org.objectstyle.wolips.ant.UpdateIncludeFiles#buildIncludeFiles()
+	 */
 	protected void buildIncludeFiles() throws BuildException {
 		// avoid double entries
 		HashSet resolvedEntries = new HashSet();
@@ -202,7 +206,12 @@ public class UpdateOtherClasspathIncludeFiles extends UpdateIncludeFiles {
 			throw new BuildException("'projectName' attribute is missing.");
 		}
 	}
-
+	/**
+	 * Method classpathEntryToOtherClasspathEntry.
+	 * @param entry
+	 * @param rootDir
+	 * @return String
+	 */
 	private String classpathEntryToOtherClasspathEntry(
 		IClasspathEntry entry,
 		Path rootDir) {
@@ -229,5 +238,4 @@ public class UpdateOtherClasspathIncludeFiles extends UpdateIncludeFiles {
 		}
 		return toReturn;
 	}
-
 }
