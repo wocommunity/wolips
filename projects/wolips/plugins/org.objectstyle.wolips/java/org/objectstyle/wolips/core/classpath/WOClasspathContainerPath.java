@@ -174,7 +174,6 @@ public final class WOClasspathContainerPath
 
 	public final class WOClasspathContainerEntry {
 		private WOClasspathContainerRoot root;
-		private File framework;
 		private boolean checked = false;
 		private String name;
 		protected WOClasspathContainerEntry(
@@ -182,7 +181,6 @@ public final class WOClasspathContainerPath
 			IPath path,
 			File framework) {
 			this.root = root;
-			this.framework = framework;
 			if (path != null) {
 				String[] segments = path.segments();
 				name = framework.getName();
@@ -334,13 +332,13 @@ public final class WOClasspathContainerPath
 			return entries;
 		}
 		if (parentElement instanceof WOClasspathContainerPath) {
-			WOClasspathContainerRoot[] roots =
+			WOClasspathContainerRoot[] currentRoots =
 				((WOClasspathContainerPath) parentElement).getRoots();
 			/*
 			for (int i = 0; i < roots.length; i++) {
 			viewer.add(roots[i], this.getChildren(roots[i]));
 			}*/
-			return roots;
+			return currentRoots;
 		}
 		return new Object[0];
 	}
