@@ -11,6 +11,7 @@
    <runtime>
       <library name="lib/wolips-support.jar">
          <export name="*"/>
+         <packages prefixes="org.objectstyle.wolips.support"/>
       </library>
    </runtime>
 

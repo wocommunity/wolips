@@ -11,6 +11,7 @@
    <runtime>
       <library name="lib/wolips-launching.jar">
          <export name="*"/>
+         <packages prefixes="org.objectstyle.wolips.launching"/>
       </library>
    </runtime>
 

@@ -9,6 +9,7 @@
    <runtime>
       <library name="lib/wolips-targetbuilder.jar">
          <export name="*"/>
+         <packages prefixes="org.objectstyle.wolips.target"/>
       </library>
    </runtime>
    <requires>

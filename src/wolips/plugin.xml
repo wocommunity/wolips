@@ -4,19 +4,23 @@
    name="%WOLips.pluginName"
    version="0.9.5"
    provider-name="%WOLips.providerName"
-   class="org.objectstyle.wolips.WOLipsPlugin">
+   class="org.objectstyle.wolips.plugin.WOLipsPlugin">
 
    <runtime>
       <library name="lib/wolips.jar">
          <export name="*"/>
+         <packages prefixes="org.objectstyle.wolips.actions,org.objectstyle.wolips.ant,org.objectstyle.wolips.builder,org.objectstyle.wolips.editor,org.objectstyle.wolips.env,org.objectstyle.wolips.ide,org.objectstyle.wolips.images,org.objectstyle.wolips.io,org.objectstyle.wolips.listener,org.objectstyle.wolips.natures,org.objectstyle.wolips.plugin,org.objectstyle.wolips.preferences,org.objectstyle.wolips.project,org.objectstyle.wolips.resources,org.objectstyle.wolips.ui,org.objectstyle.wolips.ui.filters,org.objectstyle.wolips.utils,org.objectstyle.wolips.wizards,org.objectstyle.wolips.wo,org.objectstyle.wolips.workbench"/>
       </library>
       <library name="lib/woproject.jar">
          <export name="*"/>
+         <packages prefixes="org.objectstyle.woproject.ant,org.objectstyle.woproject.log4j,org.objectstyle.woproject.pb,org.objectstyle.woproject.util,org.objectstyle.woproject.wo"/>
       </library>
       <library name="lib/cayenne.jar">
          <export name="*"/>
+         <packages prefixes="org.objectstyle.cayenne"/>
       </library>
    </runtime>
+   
    <requires>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.core.resources"/>

@@ -9,6 +9,10 @@
    match="compatible">
 
    <runtime>
+      <library name="lib/wolips-help.jar">
+         <export name="*"/>
+         <packages prefixes="org.objectstyle.wolips.help"/>
+      </library>
    </runtime>
 
    <requires>
