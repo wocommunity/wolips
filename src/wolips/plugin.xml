@@ -286,6 +286,9 @@
          </run>
       </builder>
    </extension>
+<!-- =================================================================================== -->
+<!-- Extension: Editors                                                                  -->
+<!-- =================================================================================== -->
    <extension
          id="org.objectstyle.wolips.editors"
          point="org.eclipse.ui.editors">
@@ -420,4 +423,47 @@
 	  <fileTypes extension="ini" type="text"/>
 	  <fileTypes extension="mappings" type="text"/>
 	</extension>
+<!-- =================================================================================== -->
+<!-- Extension: Resource filter                                                          -->
+<!-- =================================================================================== -->    
+	<extension point= "org.eclipse.ui.resourceFilters">
+	<filter pattern = "*.woa" selected = "false" >
+	</filter>
+	<filter pattern = "*.framework" selected = "false" >
+	</filter>
+	<filter pattern = "*.java" selected = "false" >
+	</filter>
+	<filter pattern = "*.wod" selected = "false" >
+	</filter>
+	<filter pattern = "*.wod" selected = "false" >
+	</filter>
+	<filter pattern = "*.woo" selected = "false" >
+	</filter>
+	<filter pattern = "*.html" selected = "false" >
+	</filter>
+	<filter pattern = "*.api" selected = "false" >
+	</filter>
+	<filter pattern = "*.wo" selected = "false" >
+	</filter>
+	<filter pattern = "*.plist" selected = "false" >
+	</filter>
+	<filter pattern = "*.eomodeld" selected = "false" >
+	</filter>
+	<filter pattern = "*.d2wmodel" selected = "false" >
+	</filter>
+	<filter pattern = "*.pbxuser" selected = "false" >
+	</filter>
+	<filter pattern = "*.pbxuser" selected = "false" >
+	</filter>
+	<filter pattern = "PB.project" selected = "false" >
+	</filter>
+	<filter pattern = "*.postamble" selected = "false" >
+	</filter>
+	<filter pattern = "*.preamble" selected = "false" >
+	</filter>
+	<filter pattern = "makefile" selected = "false" >
+	</filter>
+	<filter pattern = "build.xml" selected = "false" >
+	</filter>
+</extension>
 </plugin>

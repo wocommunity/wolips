@@ -53,15 +53,12 @@
  * <http://objectstyle.org/>.
  *
  */
+ 
+ package org.objectstyle.wolips.ui;
 
-package org.objectstyle.wolips.preferences;
-
-import org.eclipse.jface.preference.BooleanFieldEditor;
-import org.eclipse.jface.preference.FieldEditorPreferencePage;
-import org.eclipse.jface.preference.StringFieldEditor;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchPreferencePage;
-import org.objectstyle.wolips.IWOLipsPluginConstants;
+import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.ui.views.navigator.ResourceNavigator;
+import org.objectstyle.wolips.ui.filters.ModelNavigatorFilter;
 
 /**
  * @author uli
@@ -71,69 +68,21 @@ import org.objectstyle.wolips.IWOLipsPluginConstants;
  * To enable and disable the creation of type comments go to
  * Window>Preferences>Java>Code Generation.
  */
-public class PreferencesPage
-	extends FieldEditorPreferencePage
-	implements IWorkbenchPreferencePage {
+public class ProductNavigator extends ResourceNavigator {
+
+
+	private ModelNavigatorFilter patternFilter = new ModelNavigatorFilter();
 
 	/**
-	 * Constructor
+	 * Adds the filters to the viewer.
+	 *
+	 * @param viewer the viewer
+	 * @since 2.0
 	 */
-	public PreferencesPage() {
-		super(GRID);
-		setPreferenceStore(Preferences.getPreferenceStore());
-		setDescription(
-			PreferencesMessages.getString("Preferences.PageDescription"));
-		Preferences.setDefaults();
+	protected void initFilters(TreeViewer viewer) {
+		super.initFilters(viewer);
+		viewer.addFilter(patternFilter);
 	}
 
-	/**
-	 * @see org.eclipse.jface.preference.FieldEditorPreferencePage#createFieldEditors()
-	 */
-	public void createFieldEditors() {
-		addField(
-			new StringFieldEditor(
-				IWOLipsPluginConstants.PREF_ANT_BUILD_FILE,
-				PreferencesMessages.getString("Preferences.AntBuildFile.Label"),
-				getFieldEditorParent()));
-		addField(
-			new BooleanFieldEditor(
-				IWOLipsPluginConstants.PREF_RUN_WOBUILDER_ON_BUILD,
-				PreferencesMessages.getString(
-					"Preferences.RunWOBuilderOnBuild.Label"),
-				getFieldEditorParent()));
-		addField(
-			new StringFieldEditor(
-				IWOLipsPluginConstants.PREF_MODEL_NAVIGATOR_FILTER,
-				PreferencesMessages.getString(
-					"Preferences.ModelNavigatorFilter.Label"),
-				getFieldEditorParent()));
-		addField(
-			new StringFieldEditor(
-				IWOLipsPluginConstants.PREF_WO_NAVIGATOR_FILTER,
-				PreferencesMessages.getString(
-					"Preferences.WONavigatorFilter.Label"),
-				getFieldEditorParent()));
-		addField(
-			new StringFieldEditor(
-				IWOLipsPluginConstants.PREF_PRODUCT_NAVIGATOR_FILTER,
-				PreferencesMessages.getString(
-					"Preferences.ProductNavigatorFilter.Label"),
-				getFieldEditorParent()));
-	}
-	/**
-	 * Method performOK.
-	 * @return boolean
-	 */
-	public boolean performOk() {
-		if (super.performOk()) {
-			//do some stuff	
-			return true;
-		}
-		return false;
-	}
-	/**
-	 * @see org.eclipse.ui.IWorkbenchPreferencePage#init(IWorkbench)
-	 */
-	public void init(IWorkbench workbench) {
-	}
+
 }

@@ -83,6 +83,18 @@ public class Preferences {
 		store.setDefault(
 			IWOLipsPluginConstants.PREF_RUN_WOBUILDER_ON_BUILD,
 			Preferences.trueString);
+		store.setDefault(
+			IWOLipsPluginConstants.PREF_MODEL_NAVIGATOR_FILTER,
+			PreferencesMessages.getString(
+				"Preferences.ModelNavigatorFilter.Default"));
+		store.setDefault(
+			IWOLipsPluginConstants.PREF_WO_NAVIGATOR_FILTER,
+			PreferencesMessages.getString(
+				"Preferences.WONavigatorFilter.Default"));
+		store.setDefault(
+			IWOLipsPluginConstants.PREF_PRODUCT_NAVIGATOR_FILTER,
+			PreferencesMessages.getString(
+				"Preferences.ProductNavigatorFilter.Default"));
 	}
 
 	/**

@@ -55,12 +55,17 @@
  */
 package org.objectstyle.wolips;
 import org.objectstyle.wolips.env.Environment;
-
 /**
  * @author mnolte
  */
 public interface IWOLipsPluginConstants {
 	//preferences
+	public static final String PREF_MODEL_NAVIGATOR_FILTER =
+		"org.objectstyle.wolips.preference.ModelNavigatorFilter";
+	public static final String PREF_WO_NAVIGATOR_FILTER =
+		"org.objectstyle.wolips.preference.WONavigatorFilter";
+	public static final String PREF_PRODUCT_NAVIGATOR_FILTER =
+		"org.objectstyle.wolips.preference.ProductNavigatorFilter";
 	public static final String PREF_ANT_BUILD_FILE =
 		"org.objectstyle.wolips.preference.AntBuildFile";
 	public static final String PREF_RUN_WOBUILDER_ON_BUILD =

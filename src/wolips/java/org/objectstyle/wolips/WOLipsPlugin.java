@@ -60,12 +60,10 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.StringTokenizer;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
-
 import org.eclipse.ant.core.AntRunner;
 import org.eclipse.core.internal.boot.URLContentFilter;
 import org.eclipse.core.internal.plugins.PluginClassLoader;
@@ -129,6 +127,10 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 	public static final String ID_ELEMENT_CREATION_ACTION_SET =
 		"org.objectstyle.wolips.ElementCreationActionSet";
 	public static final String ID_Navigator = "org.objectstyle.wolips.ui.Navigator"; //$NON-NLS-1$
+	public static final String ID_WONavigator = "org.objectstyle.wolips.ui.WONavigator"; //$NON-NLS-1$
+	public static final String ID_ModelNavigator = "org.objectstyle.wolips.ui.ModelNavigator"; //$NON-NLS-1$
+	public static final String ID_ProductNavigator = "org.objectstyle.wolips.ui.ProductNavigator"; //$NON-NLS-1$
+
 	/**
 	 * The constructor.
 	 */
@@ -145,7 +147,6 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 	 * @see org.eclipse.ui.IStartup#earlyStartup()
 	 */
 	public void earlyStartup() {
-
 		try {
 			WOLipsPlugin.writePropertiesFileToUserHome();
 		} catch (Exception anException) {
