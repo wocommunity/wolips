@@ -25,7 +25,9 @@
     <target name="dist" depends="prepare,java,doc,api">
          <!-- Copy source code -->
          <copy todir="${dist}/src">
-             <fileset dir="src"/>
+             <fileset dir="src">
+             	<exclude name="**/wolips*/**"/>
+             </fileset>
          </copy>
 
          <!-- Copy examples code -->
