@@ -66,7 +66,7 @@
 					<td valign="top">chmod</td>
 					<td valign="top">Optional value for the chmod command executed by the
 					WOApplication task. The default is "gu+x". The chmod command is only
-					executed on the first build of the application and only on "Unix" platforms.</td>
+					executed on the first build of the application and only on "Unix" platforms. The default is "750".</td>
 					<td valign="top" align="center">No</td>
 				</tr>
 				<tr>

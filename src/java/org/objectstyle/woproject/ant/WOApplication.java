@@ -95,7 +95,8 @@ public class WOApplication extends WOTask {
 	protected boolean stdFrameworks = true;
 	protected boolean embedStdFrameworks = false;
 	private WOEnvironment woEnvironment;
-	protected String chmod = "gu+x";
+	//was "gu+x"
+	protected String chmod = "750";
 	protected String jvmOptions = "";
 
 	//web.xml stuff
