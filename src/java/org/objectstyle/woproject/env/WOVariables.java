@@ -61,6 +61,7 @@ import java.io.IOException;
 import java.util.Properties;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.objectstyle.woproject.util.FileStringScanner;
 /**
  * @author uli
  *
@@ -341,9 +342,9 @@ public class WOVariables {
 		String localRoot = null;
 		String aPath = null;
 		try {
-			localRoot = localRoot();
-			userHome = userHome();
-			systemRoot = systemRoot();
+			localRoot = this.localRoot();
+			userHome = this.userHome();
+			systemRoot = this.systemRoot();
 			int localRootLength = 0;
 			int userHomeLength = 0;
 			int systemRootLength = 0;
@@ -356,7 +357,7 @@ public class WOVariables {
 			//aPath = aFile.getCanonicalPath();
 			//u.k. the CanonicalPath will resolve links this will
 			//result in path with /Versions/a in it
-			aPath = aFile.getPath();
+			aPath = this.convertWindowsPath(aFile.getPath());
 			//            aPrefix = this.getAppRootPath();
 			//            if((aPrefix != null) && (aPrefix.length() > 1) && (aPath.startsWith(aPrefix))) {
 			//            	return "APPROOT" + aPath.substring(aPrefix.length());
@@ -388,7 +389,7 @@ public class WOVariables {
 				if (!otherRoot)
 					return "HOMEROOT" + aPath.substring(userHomeLength);
 			}
-			if ((systemRoot != null) && (aPath.startsWith(systemRoot))) {
+			if (systemRoot != null && aPath.startsWith(systemRoot)) {
 				return "WOROOT" + aPath.substring(systemRootLength);
 			}
 			return aPath;
@@ -403,14 +404,21 @@ public class WOVariables {
 			aPath = null;
 		}
 		return null;
-	} /**
-											 * @return Properties
-											 */
+	}
+	private String convertWindowsPath(String path) {
+		if (path == null || path.length() == 0)
+			return null;
+		return FileStringScanner.replace(path, "\\", "/");
+	}
+	/**
+	 * @return Properties
+	 */
 	private Properties getWOBuildProperties() {
 		return wobuildProperties;
-	} /**
-											 * @return boolean
-											 */
+	}
+	/**
+	 * @return boolean
+	 */
 	public boolean foundWOBuildProperties() {
 		return (wobuildPropertiesFile != null);
 	}
