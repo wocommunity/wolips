@@ -555,12 +555,8 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 				// subproject
 				IFolder newSubproject = (IFolder) parentResource;
 				IFolder newSubprojectSourceFolder =
-					newSubproject.getProject().getFolder(
-						new Path(
-							newSubproject.getName()
-								//+ "/"
-								+ "/"
-								+ IWOLipsPluginConstants.EXT_SRC));
+					newSubproject.getFolder(
+						new Path(IWOLipsPluginConstants.EXT_SRC));
 				try {
 					if (!parentResource.exists()) {
 						createResourceFolderInProject(newSubproject, monitor);
