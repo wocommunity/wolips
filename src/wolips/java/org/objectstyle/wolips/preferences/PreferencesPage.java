@@ -112,18 +112,21 @@ public class PreferencesPage
 				IWOLipsPluginConstants.PREF_MODEL_NAVIGATOR_FILTER,
 				PreferencesMessages.getString(
 					"Preferences.ModelNavigatorFilter.Label"),
+				60,
 				getFieldEditorParent()));
 		addField(
 			new StringFieldEditor(
 				IWOLipsPluginConstants.PREF_WO_NAVIGATOR_FILTER,
 				PreferencesMessages.getString(
 					"Preferences.WONavigatorFilter.Label"),
+				60,
 				getFieldEditorParent()));
 		addField(
 			new StringFieldEditor(
 				IWOLipsPluginConstants.PREF_PRODUCT_NAVIGATOR_FILTER,
 				PreferencesMessages.getString(
 					"Preferences.ProductNavigatorFilter.Label"),
+				60,
 				getFieldEditorParent()));
 		/*addField(
 			new StringFieldEditor(
