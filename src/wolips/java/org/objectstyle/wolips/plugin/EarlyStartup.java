@@ -68,8 +68,6 @@ import org.eclipse.jdt.core.ElementChangedEvent;
 import org.eclipse.jdt.core.IElementChangedListener;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
-import org.objectstyle.wolips.IWOLipsPluginConstants;
-import org.objectstyle.wolips.WOLipsPlugin;
 import org.objectstyle.wolips.builder.RunAnt;
 import org.objectstyle.wolips.env.Environment;
 import org.objectstyle.wolips.io.WOLipsLog;

@@ -68,9 +68,9 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
-import org.objectstyle.wolips.IWOLipsPluginConstants;
 import org.objectstyle.wolips.io.FileStringScanner;
 import org.objectstyle.wolips.io.WOLipsLog;
+import org.objectstyle.wolips.plugin.IWOLipsPluginConstants;
 import org.objectstyle.woproject.pb.PBProject;
 /**
  * @author uli

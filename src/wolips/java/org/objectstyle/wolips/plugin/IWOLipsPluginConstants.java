@@ -53,7 +53,7 @@
  * <http://objectstyle.org/>.
  *
  */
-package org.objectstyle.wolips;
+package org.objectstyle.wolips.plugin;
 import org.objectstyle.wolips.env.Environment;
 /**
  * @author mnolte

@@ -58,7 +58,7 @@ package org.objectstyle.wolips.utils;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
-import org.objectstyle.wolips.IWOLipsPluginConstants;
+import org.objectstyle.wolips.plugin.IWOLipsPluginConstants;
 
 /**
  * @author mnolte

@@ -76,8 +76,8 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.WizardNewFileCreationPage;
-import org.objectstyle.wolips.IWOLipsPluginConstants;
-import org.objectstyle.wolips.WOLipsPlugin;
+import org.objectstyle.wolips.plugin.IWOLipsPluginConstants;
+import org.objectstyle.wolips.plugin.WOLipsPlugin;
 /**
  * @author mnolte
  * @author uli

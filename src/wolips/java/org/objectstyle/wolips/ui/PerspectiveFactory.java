@@ -62,7 +62,7 @@ import org.eclipse.search.ui.SearchUI;
 import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
-import org.objectstyle.wolips.IWOLipsPluginConstants;
+import org.objectstyle.wolips.plugin.IWOLipsPluginConstants;
 
 /**
  * @author uli

@@ -53,7 +53,7 @@
  * <http://objectstyle.org/>.
  *
  */
-package org.objectstyle.wolips;
+package org.objectstyle.wolips.plugin;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -68,7 +68,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IStartup;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.objectstyle.wolips.io.WOLipsLog;
-import org.objectstyle.wolips.plugin.EarlyStartup;
 import org.objectstyle.wolips.preferences.Preferences;
 import org.objectstyle.wolips.wo.Foundation;
 /**

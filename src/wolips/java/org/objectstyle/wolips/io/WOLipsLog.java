@@ -58,7 +58,7 @@ package org.objectstyle.wolips.io;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.objectstyle.wolips.WOLipsPlugin;
+import org.objectstyle.wolips.plugin.WOLipsPlugin;
 
 /**
  * @author uli

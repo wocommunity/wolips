@@ -60,7 +60,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.ui.actions.WorkspaceModifyDelegatingOperation;
-import org.objectstyle.wolips.WOLipsPlugin;
+import org.objectstyle.wolips.plugin.WOLipsPlugin;
 import org.objectstyle.wolips.project.ProjectHelper;
 /**
  * @author mnolte

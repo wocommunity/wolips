@@ -72,8 +72,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.QualifiedName;
-import org.objectstyle.wolips.IWOLipsPluginConstants;
 import org.objectstyle.wolips.io.WOLipsLog;
+import org.objectstyle.wolips.plugin.IWOLipsPluginConstants;
 import org.objectstyle.wolips.project.PBProjectUpdater;
 import org.objectstyle.wolips.project.ProjectHelper;
 /**

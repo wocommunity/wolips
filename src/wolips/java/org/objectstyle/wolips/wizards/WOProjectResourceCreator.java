@@ -65,8 +65,8 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.objectstyle.wolips.IWOLipsPluginConstants;
 import org.objectstyle.wolips.io.FileFromTemplateCreator;
+import org.objectstyle.wolips.plugin.IWOLipsPluginConstants;
 
 /**
  * @author mnolte

@@ -65,7 +65,7 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.ui.internal.misc.StringMatcher;
-import org.objectstyle.wolips.WOLipsPlugin;
+import org.objectstyle.wolips.plugin.WOLipsPlugin;
 /**
  * @author uli
  *

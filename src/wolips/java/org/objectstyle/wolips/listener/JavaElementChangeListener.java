@@ -67,8 +67,8 @@ import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaElementDelta;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
-import org.objectstyle.wolips.IWOLipsPluginConstants;
 import org.objectstyle.wolips.io.WOLipsLog;
+import org.objectstyle.wolips.plugin.IWOLipsPluginConstants;
 import org.objectstyle.wolips.project.PBProjectUpdater;
 import org.objectstyle.woproject.pb.PBProject;
 /**

@@ -56,7 +56,7 @@
 
 package org.objectstyle.wolips.ui.filters;
 
-import org.objectstyle.wolips.IWOLipsPluginConstants;
+import org.objectstyle.wolips.plugin.IWOLipsPluginConstants;
 
 /**
  * @author uli

@@ -61,7 +61,7 @@ import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
-import org.objectstyle.wolips.IWOLipsPluginConstants;
+import org.objectstyle.wolips.plugin.IWOLipsPluginConstants;
 
 /**
  * @author uli

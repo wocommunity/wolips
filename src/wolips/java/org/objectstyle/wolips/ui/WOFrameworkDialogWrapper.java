@@ -72,8 +72,8 @@ import org.eclipse.ui.dialogs.FileSelectionDialog;
 import org.eclipse.ui.dialogs.FileSystemElement;
 import org.eclipse.ui.wizards.datatransfer.FileSystemStructureProvider;
 import org.eclipse.ui.wizards.datatransfer.SelectFilesOperation;
-import org.objectstyle.wolips.WOLipsPlugin;
 import org.objectstyle.wolips.env.Environment;
+import org.objectstyle.wolips.plugin.WOLipsPlugin;
 import org.objectstyle.wolips.wizards.Messages;
 
 /**

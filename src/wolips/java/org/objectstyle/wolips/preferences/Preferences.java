@@ -57,8 +57,8 @@
 package org.objectstyle.wolips.preferences;
 
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.objectstyle.wolips.IWOLipsPluginConstants;
-import org.objectstyle.wolips.WOLipsPlugin;
+import org.objectstyle.wolips.plugin.IWOLipsPluginConstants;
+import org.objectstyle.wolips.plugin.WOLipsPlugin;
 
 /**
  * @author uli
