@@ -68,7 +68,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.debug.ui.IDebugUIConstants;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.swt.widgets.Shell;
@@ -127,7 +126,7 @@ public final class WorkbenchUtilities {
 				message = null;
 			}
 		} else {
-			status = new Status(IStatus.ERROR, WOLipsPlugin.getPluginId(), IDebugUIConstants.INTERNAL_ERROR, "Error within Debug UI: ", t); //$NON-NLS-1$	
+			status = new Status(IStatus.ERROR, WOLipsPlugin.getPluginId(), IStatus.ERROR, "Error within Debug UI: ", t); //$NON-NLS-1$	
 		}
 		ErrorDialog.openError(shell, title, message, status);
 	}
