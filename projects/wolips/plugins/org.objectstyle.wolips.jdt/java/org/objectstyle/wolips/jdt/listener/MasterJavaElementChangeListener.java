@@ -49,15 +49,12 @@
  */
 package org.objectstyle.wolips.jdt.listener;
 
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jdt.core.ElementChangedEvent;
 import org.eclipse.jdt.core.IElementChangedListener;
 import org.eclipse.jdt.core.IJavaElement;
-import org.eclipse.jdt.core.IJavaElementDelta;
 import org.eclipse.jdt.core.IJavaModel;
-import org.eclipse.jdt.core.JavaModelException;
 import org.objectstyle.wolips.jdt.JdtPlugin;
 
 /**
@@ -79,8 +76,6 @@ public class MasterJavaElementChangeListener implements IElementChangedListener 
 	 * @see org.eclipse.jdt.core.IElementChangedListener#elementChanged(org.eclipse.jdt.core.ElementChangedEvent)
 	 */
 	public void elementChanged(ElementChangedEvent event) {
-		JavaElementChangeListener javaElementChangeListener = new JavaElementChangeListener();
-		javaElementChangeListener.setEvent(event);
 
 		IJavaElement element = event.getDelta().getElement();
 		if(!(element instanceof IJavaModel)) {
@@ -88,11 +83,15 @@ public class MasterJavaElementChangeListener implements IElementChangedListener 
 		}
 		IResource rule = ResourcesPlugin.getWorkspace().getRoot();
 		if(rule != null) {
-			javaElementChangeListener.setRule(rule);
-			javaElementChangeListener.schedule();
-		}
-		else {
-			JdtPlugin.getDefault().getPluginLogger().log("No rule to create Java Change listener.");
+		    JavaElementChangeListener javaElementChangeListener = new JavaElementChangeListener();
+		    javaElementChangeListener.setEvent(event);
+		    javaElementChangeListener.setRule(rule);
+		    if(javaElementChangeListener.needsSchedule()) {
+			    //System.out.println("code: " + this.hashCode() + "   " + event);
+		        javaElementChangeListener.schedule();
+		    }
+		} else {
+		    JdtPlugin.getDefault().getPluginLogger().log("No rule to create Java Change listener.");
 		}
 	}
 }

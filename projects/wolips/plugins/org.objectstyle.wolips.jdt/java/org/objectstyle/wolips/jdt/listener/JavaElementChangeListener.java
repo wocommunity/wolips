@@ -102,41 +102,38 @@ public class JavaElementChangeListener extends WorkspaceJob {
 		 * if (ElementChangedEvent.POST_CHANGE != event.getType()) return;
 		 */
 		if (this.event.getDelta().getElement().getElementType() != IJavaElement.JAVA_MODEL)
-			return new Status(IStatus.OK, JdtPlugin.getPluginId(), IStatus.OK,
-					"Done", null);
+			return new Status(IStatus.OK, JdtPlugin.getPluginId(), IStatus.OK, "Done", null);
 		
 		IJavaElementDelta elementDeltaToExamine = this.event.getDelta();
 		Set foundChangedElements = new HashSet();
 		HashMap addedFrameworksProjectDict = new HashMap();
 		HashMap removedFrameworksProjectDict = new HashMap();
 		boolean javaProjectChanges = false;
+		
 		// java model has changed - get affected webobjects projects
-		for (int i = 0; i < elementDeltaToExamine.getChangedChildren().length; i++) {
+		IJavaElementDelta[] changedChildren = elementDeltaToExamine.getChangedChildren();
+        for (int i = 0; i < changedChildren.length; i++) {
 			// examine changed children if they are webobjects projects
-			if (elementDeltaToExamine.getChangedChildren()[i].getElement()
-					.getElementType() == IJavaElement.JAVA_PROJECT) {
-				IProject projectToExamine = ((IJavaProject) elementDeltaToExamine
-						.getChangedChildren()[i].getElement()).getProject();
-				if (!projectToExamine.exists()
-						|| !projectToExamine.isAccessible()) {
-					// project deleted no further investigatin needed
+			IJavaElementDelta changedChild = changedChildren[i];
+            if (changedChild.getElement().getElementType() == IJavaElement.JAVA_PROJECT) {
+				IProject projectToExamine = ((IJavaProject) changedChild.getElement()).getProject();
+				if (!projectToExamine.exists() || !projectToExamine.isAccessible()) {
+					// project deleted no further investigation needed
 					continue;
 				}
-				if (!searchDeltasForElementType(elementDeltaToExamine
-						.getChangedChildren()[i].getChangedChildren(),
+				if (!searchDeltasForElementType(changedChild.getChangedChildren(),
 						IJavaElement.PACKAGE_FRAGMENT_ROOT,
 						foundChangedElements))
 					continue;
 				javaProjectChanges = true;
-				UpdateOtherClasspathIncludeFiles updateOtherClasspathIncludeFiles = new UpdateOtherClasspathIncludeFiles();
-				updateOtherClasspathIncludeFiles
-						.setIProject(projectToExamine);
-				updateOtherClasspathIncludeFiles.execute();
-				UpdateFrameworkIncludeFiles updateFrameworkIncludeFiles = new UpdateFrameworkIncludeFiles();
-				updateFrameworkIncludeFiles
-						.setIProject(projectToExamine);
-				updateFrameworkIncludeFiles.execute();
 				
+				UpdateOtherClasspathIncludeFiles updateOtherClasspathIncludeFiles = new UpdateOtherClasspathIncludeFiles();
+				updateOtherClasspathIncludeFiles.setIProject(projectToExamine);
+				updateOtherClasspathIncludeFiles.execute();
+				
+				UpdateFrameworkIncludeFiles updateFrameworkIncludeFiles = new UpdateFrameworkIncludeFiles();
+				updateFrameworkIncludeFiles.setIProject(projectToExamine);
+				updateFrameworkIncludeFiles.execute();
 				
 				Project woLipsProject = null;
 				try {
@@ -151,7 +148,7 @@ public class JavaElementChangeListener extends WorkspaceJob {
 						Set foundElements = new HashSet();
 						// search deltas for classpath changes
 						searchDeltas(
-								elementDeltaToExamine.getChangedChildren()[i]
+								changedChild
 										.getChangedChildren(),
 								IJavaElementDelta.F_ADDED_TO_CLASSPATH,
 								foundElements);
@@ -166,7 +163,7 @@ public class JavaElementChangeListener extends WorkspaceJob {
 						foundElements = new HashSet();
 						// search deltas for classpath changes
 						searchDeltas(
-								elementDeltaToExamine.getChangedChildren()[i]
+								changedChild
 										.getChangedChildren(),
 								IJavaElementDelta.F_REMOVED_FROM_CLASSPATH,
 								foundElements);
@@ -329,4 +326,40 @@ public class JavaElementChangeListener extends WorkspaceJob {
 	public void setEvent(ElementChangedEvent event) {
 		this.event = event;
 	}
+
+    /**
+     * @return
+     */
+    public boolean needsSchedule() {
+        /*
+         * if (ElementChangedEvent.POST_CHANGE != event.getType()) return;
+         */
+        if (this.event.getDelta().getElement().getElementType() != IJavaElement.JAVA_MODEL)
+            return false;
+        
+        IJavaElementDelta elementDeltaToExamine = this.event.getDelta();
+        Set foundChangedElements = new HashSet();
+        HashMap addedFrameworksProjectDict = new HashMap();
+        HashMap removedFrameworksProjectDict = new HashMap();
+        boolean javaProjectChanges = false;
+        
+        // java model has changed - get affected webobjects projects
+        IJavaElementDelta[] changedChildren = elementDeltaToExamine.getChangedChildren();
+        for (int i = 0; i < changedChildren.length; i++) {
+            // examine changed children if they are webobjects projects
+            IJavaElementDelta changedChild = changedChildren[i];
+            if (changedChild.getElement().getElementType() == IJavaElement.JAVA_PROJECT) {
+                IProject projectToExamine = ((IJavaProject) changedChild.getElement()).getProject();
+                if (!projectToExamine.exists() || !projectToExamine.isAccessible()) {
+                    // project deleted no further investigation needed
+                    continue;
+                }
+                if (!searchDeltasForElementType(changedChild.getChangedChildren(),
+                        IJavaElement.PACKAGE_FRAGMENT_ROOT,
+                        foundChangedElements))
+                    continue;
+            }
+        }
+        return foundChangedElements.size() > 0;
+    }
 }
