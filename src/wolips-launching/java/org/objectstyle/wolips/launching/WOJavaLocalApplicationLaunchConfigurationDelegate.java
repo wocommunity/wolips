@@ -152,7 +152,7 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 						argument =
 							this.getWOApplicationClassNameArgument(
 								configuration);
-					if ("-DWORoot=".equals(parameter) && this.isOnMacOSX()) {
+					if ("-DWORoot=".equals(parameter)) {
 						argument =
 							WOLipsPlugin
 								.getDefault()
@@ -160,9 +160,12 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 								.getWOVariables()
 								.systemRoot();
 						spaceBetweenParameterAndArgument = false;
+						if (this.isOnMacOSX()) {
+							parameter = "";
+							argument = "";
+						}
 					}
-					if ("-DWORootDirectory=".equals(parameter)
-						&& this.isOnMacOSX()) {
+					if ("-DWORootDirectory=".equals(parameter)) {
 						argument =
 							WOLipsPlugin
 								.getDefault()
@@ -170,6 +173,10 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 								.getWOVariables()
 								.systemRoot();
 						spaceBetweenParameterAndArgument = false;
+						if (this.isOnMacOSX()) {
+							parameter = "";
+							argument = "";
+						}
 					}
 					if ("-NSProjectSearchPath".equals(parameter)) {
 						argument = this.getGeneratedByWOLips(configuration);
@@ -297,7 +304,15 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 							+ "\""
 							+ projects[i].getLocation().toOSString()
 							+ "\"";*/
-					returnValue = returnValue + "\"" + ".." + "\"" + "," + "\"" + "../.." + "\"";
+					returnValue =
+						returnValue
+							+ "\""
+							+ ".."
+							+ "\""
+							+ ","
+							+ "\""
+							+ "../.."
+							+ "\"";
 				}
 			}
 		}
