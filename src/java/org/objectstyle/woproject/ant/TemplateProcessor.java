@@ -66,6 +66,7 @@ import java.util.*;
  */
 public abstract class TemplateProcessor {
 	protected WOTask task;
+	protected String endLine = System.getProperty("line.separator");
 
 	/** 
 	 * Creates new TemplateProcessor and initializes it with the name
@@ -130,8 +131,8 @@ public abstract class TemplateProcessor {
 			while ((line = in.readLine()) != null) {
 				out.write(replaceTokens(line));
 
-				// make it UNIX style
-				out.write('\n');
+				// make it platform dependent
+				out.newLine();
 			}
 		} finally {
 			out.flush();

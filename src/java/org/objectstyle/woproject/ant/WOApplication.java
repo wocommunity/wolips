@@ -120,7 +120,7 @@ public class WOApplication extends WOTask {
 				new File(contentsDir(), "Info.plist"));
 
 			// build script files
-			new AppScriptBuilder(this).buildScripts(taskDir());
+			new AppScriptBuilder(this).buildScripts();
 
 		} catch (IOException ioex) {
 			throw new BuildException("Error copying Info.plist", ioex);

@@ -75,6 +75,7 @@ public class InfoBuilderTest extends TestCase {
 	protected BufferedWriter bout;
 	protected BufferedReader bin;
 	protected TestTask parentTask;
+	protected String endline = System.getProperty("line.separator");
 
 	public InfoBuilderTest(String name) {
 		super(name);
@@ -111,11 +112,15 @@ public class InfoBuilderTest extends TestCase {
 					+ NS_JAVA_PATH_BEGIN.length(),
 				output.indexOf(NS_JAVA_PATH_END));
 		assertEquals(
-			"\n\t<array>\n"
+			endline
+				+ "\t<array>" + endline
 				+ "\t\t<string>"
 				+ getName().toLowerCase()
-				+ ".jar</string>\n"
-				+ "\t</array>\n\t",
+				+ ".jar</string>"
+				+ endline
+				+ "\t</array>"
+				+ endline
+				+ "\t",
 			nsJavaPath);
 	}
 
@@ -134,14 +139,20 @@ public class InfoBuilderTest extends TestCase {
 					+ NS_JAVA_PATH_BEGIN.length(),
 				output.indexOf(NS_JAVA_PATH_END));
 		assertEquals(
-			"\n\t<array>\n"
+			endline
+				+ "\t<array>"
+				+ endline
 				+ "\t\t<string>"
 				+ getName().toLowerCase()
-				+ ".jar</string>\n"
+				+ ".jar</string>"
+				+ endline
 				+ "\t\t<string>"
 				+ lib
-				+ "</string>\n"
-				+ "\t</array>\n\t",
+				+ "</string>"
+				+ endline
+				+ "\t</array>"
+				+ endline
+				+ "\t",
 			nsJavaPath);
 
 	}
@@ -165,17 +176,24 @@ public class InfoBuilderTest extends TestCase {
 					+ NS_JAVA_PATH_BEGIN.length(),
 				output.indexOf(NS_JAVA_PATH_END));
 		assertEquals(
-			"\n\t<array>\n"
+			endline
+				+ "\t<array>"
+				+ endline
 				+ "\t\t<string>"
 				+ lib1
-				+ "</string>\n"
+				+ "</string>"
+				+ endline
 				+ "\t\t<string>"
 				+ lib2
-				+ "</string>\n"
+				+ "</string>"
+				+ endline
 				+ "\t\t<string>"
 				+ lib3
-				+ "</string>\n"
-				+ "\t</array>\n\t",
+				+ "</string>"
+				+ endline
+				+ "\t</array>"
+				+ endline
+				+ "\t",
 			nsJavaPath);
 	}
 

@@ -56,6 +56,9 @@
 package org.objectstyle.woproject.ant;
 
 import java.io.File;
+import java.io.IOException;
+
+import org.apache.tools.ant.taskdefs.Mkdir;
 
 /**
  * Helper class that creates all necessary run scripts to start a
@@ -64,28 +67,92 @@ import java.io.File;
  * @author Andrei Adamchik
  */
 public class AppScriptBuilder extends TemplateProcessor {
+	protected String pathSeparator = File.separator;
 
-	public AppScriptBuilder(WOTask task) {
+	public AppScriptBuilder(WOApplication task) {
 		super(task);
 	}
 
+	protected WOApplication getAppTask() {
+		return (WOApplication) task;
+	}
+
+	protected File getWindowsDir() {
+		return new File(getAppTask().contentsDir(), "Windows");
+	}
+
+	protected File getUnixDir() {
+		return new File(getAppTask().contentsDir(), "UNIX");
+	}
+
+	protected File getMacDir() {
+		return new File(getAppTask().contentsDir(), "MacOS");
+	}
+
 	protected String replaceTokens(String line) {
+		String tok1 = "@APP_JAR@";
+		int i1 = line.indexOf(tok1);
+		if (i1 >= 0) {
+			return replace(
+				tok1,
+				line,
+				"APPROOT"
+					+ pathSeparator
+					+ "Resources"
+					+ pathSeparator
+					+ "Java"
+					+ pathSeparator
+					+ getName().toLowerCase()
+					+ ".jar");
+		}
+
+		String tok2 = "@FRAMEWORK_JAR@";
+		int i2 = line.indexOf(tok2);
+		if (i2 >= 0) {
+			return replace(tok2, line, "# Framework goes here...");
+		}
+
 		return line;
 	}
 
-	public void buildScripts(File appDir) {
-		buildWindows(appDir);
-		buildUnix(appDir);
-		buildMac(appDir);
+	public void buildScripts() throws IOException {
+		buildWindows();
+		buildUnix();
+		buildMac();
 	}
 
-	protected void buildWindows(File appDir) {
-		
+	protected void buildWindows() throws IOException {
+		pathSeparator = "\\";
+
+		File dir = getWindowsDir();
+		File runScript = new File(dir, getName() + ".cmd");
+		mkdir(dir);
+
+		fileFromTemplate("woapp/Contents/Windows/appstart.cmd", runScript);
+		fileFromTemplate(
+			"woapp/Contents/Windows/CLSSPATH.TXT",
+			new File(dir, "CLSSPATH.TXT"));
+		fileFromTemplate(
+			"woapp/Contents/Windows/SUBPATHS.TXT",
+			new File(dir, "SUBPATHS.TXT"));
 	}
 
-	protected void buildUnix(File appDir) {
+	protected void buildUnix() throws IOException {
+		pathSeparator = "/";
+
+		mkdir(getUnixDir());
 	}
 
-	protected void buildMac(File appDir) {
+	protected void buildMac() throws IOException {
+		pathSeparator = "/";
+
+		mkdir(getMacDir());
+	}
+
+	protected void mkdir(File dir) {
+		Mkdir mkdir = new Mkdir();
+		task.initChildTask(mkdir);
+		mkdir.setDir(dir);
+		mkdir.execute();
 	}
 }

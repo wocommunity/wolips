@@ -103,17 +103,17 @@ public class InfoBuilder extends TemplateProcessor {
             StringBuffer toInsert = new StringBuffer();
             toInsert.append("<array>");
             if (task.hasClasses()) {
-                toInsert.append("\n\t\t<string>");
+                toInsert.append(endLine).append("\t\t<string>");
                 toInsert.append(getName().toLowerCase() + ".jar");
                 toInsert.append("</string>");
             }
             for (Iterator it = libFiles.iterator(); it.hasNext();) {
                 String libFile = (String)it.next();
-                toInsert.append("\n\t\t<string>");
+                toInsert.append(endLine).append("\t\t<string>");
                 toInsert.append(libFile);
                 toInsert.append("</string>");
             }
-            toInsert.append("\n\t</array>");
+            toInsert.append(endLine).append("\t</array>");
             return replace(jarArrayToken, line, toInsert.toString());
         }
         return line;
