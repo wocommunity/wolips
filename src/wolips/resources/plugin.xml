@@ -23,7 +23,7 @@
    <!-- help -->
    <extension point="org.eclipse.help.toc">
       <toc
-            file="oc.xml"
+            file="toc.xml"
             primary="true">
       </toc>
    </extension>
