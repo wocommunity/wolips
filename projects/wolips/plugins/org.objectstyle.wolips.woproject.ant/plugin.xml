@@ -50,6 +50,11 @@
             name="pbxindex"
             class="org.objectstyle.woproject.ant.PBXIndex">
       </antTask>
+      <antTask
+            library="lib/woproject.jar"
+            name="pbxindex2"
+            class="org.objectstyle.woproject.ant.WOPBXBuild">
+      </antTask>
    </extension>
 
 </plugin>
