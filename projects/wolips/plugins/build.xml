@@ -86,7 +86,6 @@
     <target name="all">
         <ant dir="org.objectstyle.wolips.tests.core" target="all"/>
         <ant dir="org.objectstyle.wolips.commons" target="all"/>
-        <ant dir="org.objectstyle.wolips.ant" target="all"/>
         <ant dir="org.objectstyle.wolips.variables" target="all"/>
         <ant dir="org.objectstyle.wolips.workbenchutilities" target="all"/>
         <ant dir="org.objectstyle.wolips.datasets" target="all"/>
@@ -121,7 +120,6 @@
 	<mkdir dir="../../${build.output.dist.dir}/plugins"/>
 	<ant dir="org.objectstyle.wolips.tests.core" target="dist"/>
 	<ant dir="org.objectstyle.wolips.commons" target="dist"/>
-        <ant dir="org.objectstyle.wolips.ant" target="dist"/>
         <ant dir="org.objectstyle.wolips.variables" target="dist"/>
         <ant dir="org.objectstyle.wolips.workbenchutilities" target="dist"/>
         <ant dir="org.objectstyle.wolips.datasets" target="dist"/>

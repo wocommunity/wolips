@@ -227,13 +227,6 @@
          unpacked="false"/>
 
    <plugin
-         id="org.objectstyle.wolips.ant"
-         download-size="0"
-         install-size="0"
-         version="1.0.6"
-         unpacked="false"/>
-
-   <plugin
          id="org.objectstyle.wolips.jdt"
          download-size="0"
          install-size="0"
