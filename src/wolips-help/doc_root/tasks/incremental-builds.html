@@ -1,0 +1,46 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+    
+        
+<!-- ======================================================= -->
+<!-- Main Page Section -->
+<!-- ======================================================= -->
+<html>
+<head>
+	    <title>Instructions for the WOLips incremental Builder</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+        <meta name="keywords" content="Eclipse Plugin, Eclipse IDE, WebObjects, OpenSource Development, Ant, buildtool, WebObjects 5.1, EOF, Enterprise Objects Framework">
+        <meta name="description" content="WebObjects 5.1 Eclipse Plugin">
+ 		<style type="text/css">
+p, table, td, th { font-family: arial, helvetica, geneva; font-size: 10pt}
+pre { font-family: "Courier New", Courier, mono; font-size: 10pt}
+h2 { font-family: arial, helvetica, geneva; font-size: 18pt; font-weight: bold ; line-height: 14px}
+code { font-family: "Courier New", Courier, mono; font-size: 10pt}
+sup { font-family: arial,helvetica,geneva; font-size: 10px}
+h3 { font-family: arial, helvetica, geneva; font-size: 14pt; font-weight: bold}
+li { font-family: arial, helvetica, geneva; font-size: 10pt}
+h1 { font-family: arial, helvetica, geneva; font-size: 28px; font-weight: bold}
+body { font-family: arial, helvetica, geneva; font-size: 10pt; clip: rect(   ); margin-top: 5mm; margin-left: 3mm}
+      </style>
+  </head>
+  <body bgcolor="#ffffff" leftmargin="0" marginwidth="0" topmargin="0" marginheight="0">
+  How-to use documentation:
+  <ol>
+  <li>make sure that WOLips is properly installed and the build.properties file exists</li>
+  <li>create Java Projects for the WebObjects Projects</li>
+  <li>add a filter to the Package Explorer filtering out things called build (and eg. WebComponents.*, for theCMSFramework)</li>
+  <li>add a WebObjects Classpath container to the buildpath (Project Properties / Build Path / Libraries / Advanced) and choose all the WebObjects Frameworks you wish to use. (This step can be omitted on applications that use a common framework if that framework exports the WebObjects classpath and if the application doesn't need additional WO frameworks.)</li>
+  <li>add all the .jar-files that are needed by the project (as "Internal Jar" if they are in CVS, via add Variable if they are not).
+  <li>fix all the compilation problems (like wrong package names in classes)</li>
+  <li>edit the Project Properties and check the "Is a WebObjects Project" checkbox (also check "Is a Framework" for frameworks).</li>
+  <li>create a launch configuration using the Run... menu</li>
+  <li>change the runtime classpath and the source path to not be the default paths (uncheck both checkboxes)</li>
+  <li>(do this only after unchecking both checkboxes in the step above:) change the Runtime Classpath by adding the build/&lt;projectname&gt;.woa/Contents/Resources/Java Folder to the classpath <b>before</b> or instead of the Project itself</li>
+  <li>(do the same for all WO-Frameworks in your Workspace, using the appropriate Resources/Java folders).</li>
+  <li>add the parameters -Duser.dir=&lt;path to the .woa directory under build&gt; (or better: set this folder as the working directory for the application) and -DWORootDirectory=&gt;$NEXT_ROOT&lt; (replacing &gt;$NEXT_ROOT&lt; with the installation path of your WebObjects installation)</li>
+  <li>turn on reloading of templates with -WODebuggingEnabled true</li>
+  <li>turn on rapid-turnaround mode with -NSProjectSearchPath ("../..") </li>
+  <li>optional: set the port the application listens on with (e.g.) -WOPort 6666</li>
+  <li>run the application</li>
+  </ol>
+  </body>
+</html>

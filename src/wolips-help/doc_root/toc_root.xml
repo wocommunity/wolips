@@ -28,9 +28,10 @@
 			<topic label="Add EO Model" href="./doc_root/tasks/wiz/add_eomodel.html"/>
 			
 		</topic>
-			
+
 		<topic label="Debugging" href="./doc_root/tasks/debug.html"/>
 		<topic label="Profiling" href="./doc_root/tasks/profile.html"/>  
+		<topic label="Use the Incremental Builder (and launch Applications)" href="./doc_root/tasks/incremental-builds.html"/>
 		
 	</topic>
 
