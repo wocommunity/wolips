@@ -55,7 +55,6 @@
  */
 package org.objectstyle.woproject.env;
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
@@ -158,7 +157,7 @@ public class Environment {
 				foundationJarPath =
 					"file:///"
 						+ FileStringScanner.replace(
-							Environment.nextRoot(),
+							WOVariables.nextRoot(),
 							"/",
 							"\\")
 						+ "\\Library\\Frameworks\\JavaFoundation.framework\\Resources\\Java\\javafoundation.jar";
@@ -173,6 +172,7 @@ public class Environment {
 	/**
 	 * @return Returns the NEXT_ROOT
 	 */
+	/* mn: moved to WOVariables
 	public static String nextRoot() {
 		if (Environment.nextRoot != null)
 			return Environment.nextRoot;
@@ -191,10 +191,12 @@ public class Environment {
 		Environment.nextRoot = "/System";
 		return Environment.nextRoot;
 	}
+*/
 	/**
 	 * Method localRoot.
 	 * @return String
 	 */
+	/* mn: moved to WOVariables
 	public static String localRoot() {
 		if (Environment.localRoot == null) {
 			if (isNextRootSet()) {
@@ -207,6 +209,8 @@ public class Environment {
 		}
 		return Environment.localRoot;
 	}
+	*/
+	
 	/**
 	 * Method isNextRootSet.
 	 * @return boolean

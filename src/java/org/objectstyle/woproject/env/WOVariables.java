@@ -59,26 +59,27 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
-
 /**
  * @author uli
  *
  */
 public class WOVariables {
-
 	public static final String WOBUILD_PROPERTIES = "wobuild.properties";
-
 	private static Properties wobuildProperties;
-
 	static {
 		// load properties
 		wobuildProperties = new Properties();
-		String propertyFileName =
-			Environment.getEnvVars().getProperty("user.home")
-				+ File.separator
-				+ "Library"
-				+ File.separator
-				+ WOBUILD_PROPERTIES;
+		// first try system property
+		String propertyFileName = System.getProperty(WOBUILD_PROPERTIES);
+		if (propertyFileName == null) {
+			// set default path
+			propertyFileName =
+				Environment.getEnvVars().getProperty("user.home")
+					+ File.separator
+					+ "Library"
+					+ File.separator
+					+ WOBUILD_PROPERTIES;
+		}
 		File propertyFile = new File(propertyFileName);
 		if (!propertyFile.exists() || propertyFile.isDirectory()) {
 			// log
@@ -96,7 +97,6 @@ public class WOVariables {
 	private WOVariables() {
 		super();
 	}
-
 	/**
 	 * Method nextRoot. NEXT_ROOT defined in wobuild.properties (key: <code>wo.
 	 * woroot</code>)
@@ -105,7 +105,6 @@ public class WOVariables {
 	public static String nextRoot() {
 		return wobuildProperties.getProperty("wo.woroot");
 	}
-
 	/**
 	 * Method localRoot. NEXT_LOCAL_ROOT defined in wobuild.properties (key:
 	 * <code>wo.localroot</code>)
@@ -114,7 +113,6 @@ public class WOVariables {
 	public static String localRoot() {
 		return wobuildProperties.getProperty("wo.wolocalroot");
 	}
-
 	/**
 	 * Method systemRoot. NEXT_SYSTEM_ROOT defined in wobuild.properties (key:
 	 * <code>wo.systemroot</code>)
@@ -123,7 +121,7 @@ public class WOVariables {
 	public static String systemRoot() {
 		return wobuildProperties.getProperty("wo.wosystemroot");
 	}
-	
+
 	/**
 	 * Method developerDir.
 	 * @return String
@@ -136,7 +134,7 @@ public class WOVariables {
 		returnValue = returnValue + File.separator + "Developer";
 		return returnValue;
 		*/
-		return nextRoot()+ File.separator + "Developer";
+		return nextRoot() + File.separator + "Developer";
 	}
 	/**
 	 * Method developerAppsDir.
@@ -155,10 +153,11 @@ public class WOVariables {
 				+ "Applications";
 		return returnValue;
 		*/
-		return nextRoot() + File.separator
-		+ "Developer"
-		+ File.separator
-		+ "Applications"; 
+		return nextRoot()
+			+ File.separator
+			+ "Developer"
+			+ File.separator
+			+ "Applications";
 	}
 	/**
 	 * Method libraryDir.
@@ -244,14 +243,16 @@ public class WOVariables {
 	 * @param aString
 	 * @return String
 	 */
+	/* mn: moved to 
 	public static String classPathVariableToExpand(String aString) {
 		if (aString == null)
 			return null;
 		if (aString.equals("webobjects.next.root"))
-			return Environment.nextRoot();
+			return WOVariables.nextRoot();
 		if (aString.equals("webobjects.system.library.dir"))
 			return WOVariables.libraryDir();
 		//WOLipsLog.log("Can not resolve classpath variable: " + aString);
 		return null;
 	}
+	*/
 }
