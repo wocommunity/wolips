@@ -251,7 +251,7 @@ public class AppFormat extends ProjectFormat {
 		try {
 			for (int i = 0; i < jarSet.size(); i++) {
 				aFile = (File) jarSet.elementAt(i);
-				log(": Framework JAR " + aFile, Project.MSG_VERBOSE);
+				//log(": Framework JAR " + aFile, Project.MSG_VERBOSE);
 				buf
 					.append(
 						this
