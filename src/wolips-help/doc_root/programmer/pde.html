@@ -25,15 +25,28 @@ body { font-family: arial, helvetica, geneva; font-size: 10pt; clip: rect(   ); 
 
 <body bgcolor="#ffffff" leftmargin="0" marginwidth="0" topmargin="0" marginheight="0">
 <h1>Working with WOLips in the PDE</h1>
+<p>This document is a short brief on how to check out WOLips within Eclipse and set up all things required to develop for it.</p>
 <ol>
-  <li>Check out the stuff at woproject/src/wolips</li>
+  <li>Make sure that you can use the pde classpath container.</li>
+  <p><img src="../images/pde/Step1.gif"></p>
+  <li>Enable all plugins for the pde.</li>
+  <p><img src="../images/pde/Step2.gif"></p>
+  <li>Add the woproject repository in the cvs view.</li>
+  <li>Check out woproject as project.</li>
+  <li>Check out all folders in the src folder starts with wolips including the folder wolips with the command check out as not as project.</li>
+  <p><img src="../images/pde/Step3.gif"></p>
+  <li>After this step there will be lot of errors in the task view. Open the plugin.xml file in the wolips project and add a plugin to the list of plugins.</li>
+  <p><img src="../images/pde/Step4.gif"></p>
+  <li>Replace the files plugin.xml and .classpath with the latest from the repository.</li>
+  <p><img src="../images/pde/Step5.gif"></p>
+  <li>Build woproject with ant on the commandline.</li>
   <li>Add cayenne.jar, log4j-1.2beta4.jar and woproject.jar from the woproject 
     distribution to the wolips/lib folder.</li>
-  <li>Go to preferences-&gt;java-&gt;classpath variables and add a variable JAVA_WO_FOUNDATION 
-    add let it point the foundation.jar.</li>
+  <li>Refresh the wolips project.</li>
+  <li>Rebuild all projects</li>
 </ol>
 <p>You should now be able to run it as a Runtime Workbench.</p>
-                            		</body>
+</body>
 </html>
 
 
