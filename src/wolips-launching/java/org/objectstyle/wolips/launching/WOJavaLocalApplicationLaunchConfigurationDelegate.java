@@ -60,6 +60,7 @@ import java.io.File;
 import java.text.MessageFormat;
 import java.util.Map;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -72,6 +73,10 @@ import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.jdt.launching.IVMInstall;
 import org.eclipse.jdt.launching.IVMRunner;
 import org.eclipse.jdt.launching.VMRunnerConfiguration;
+import org.objectstyle.wolips.io.FileStringScanner;
+import org.objectstyle.wolips.plugin.IWOLipsPluginConstants;
+import org.objectstyle.wolips.preferences.Preferences;
+import org.objectstyle.wolips.workbench.WorkbenchHelper;
 
 /**
  * Launches a local VM.
@@ -125,7 +130,7 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate extends AbstractJ
 		
 		// Create VM config
 		VMRunnerConfiguration runConfig = new VMRunnerConfiguration(mainTypeName, classpath);
-		runConfig.setProgramArguments(execArgs.getProgramArgumentsArray());
+		runConfig.setProgramArguments(this.replaceGeneratedByWOLips(execArgs.getProgramArgumentsArray()));
 		runConfig.setVMArguments(execArgs.getVMArgumentsArray());
 		runConfig.setWorkingDirectory(workingDirName);
 		runConfig.setVMSpecificAttributesMap(vmAttributesMap);
@@ -154,6 +159,57 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate extends AbstractJ
 		setDefaultSourceLocator(launch, configuration);
 		
 		monitor.done();
+	}
+	
+	/**
+	 * Method replaceGeneratedByWOLips.
+	 * @param args
+	 * @return returns the same String[] but the string GeneratedByWOLips is
+	 * replaced
+	 */
+	private String[] replaceGeneratedByWOLips(String[] args) {
+		for(int i=0;i<args.length;i++) {
+			String argument = args[i];
+			if(argument != null && argument.indexOf(LaunchingMessages.getString("WOArguments.GeneratedByWOLips")) > 0)
+			args[i] = replaceInArgumentGeneratedByWOLips(argument);
+		}
+		return args;
+	}
+	/**
+	 * Method replaceInArgumentGeneratedByWOLips.
+	 * @param anArgument
+	 * @return String
+	 */
+	private String replaceInArgumentGeneratedByWOLips(String anArgument) {
+		return FileStringScanner.replace(anArgument,LaunchingMessages.getString("WOArguments.GeneratedByWOLips") , this.getGeneratedByWOLips());
 	}	
+	/**
+	 * Method getGeneratedByWOLips.
+	 * @return String
+	 */
+	private String getGeneratedByWOLips() {
+		String returnValue = "";
+		IProject[] projects = WorkbenchHelper.getWorkspace().getRoot().getProjects();
+		for(int i=0;i<projects.length;i++) {
+			if(i>0) returnValue = returnValue + ",";
+			returnValue = returnValue + "\"" + projects[i].getLocation().toOSString() + "\"";
+		}
+		returnValue = this.addPreferencesValue(returnValue);
+		if("".equals(returnValue)) returnValue = "\"\"";
+		return returnValue;
+	}	
+	/**
+	 * Method addPreferencesValue.
+	 * @param aString
+	 * @return String
+	 */
+	private String addPreferencesValue(String aString) {
+		if(aString == null) return aString;
+		String nsProjectSarchPath = Preferences
+					.getString(IWOLipsPluginConstants.PREF_NS_PROJECT_SEARCH_PATH);
+		if(nsProjectSarchPath == null || nsProjectSarchPath.length() == 0) return aString;
+		if(aString.length() == 0) return aString;
+		return aString + "," + nsProjectSarchPath;
+	}
 }
 
