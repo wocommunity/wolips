@@ -1,0 +1,2 @@
+classes.dir = bin
+project.name = ${WOLipsContext.getProjectName()}
