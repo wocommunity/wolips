@@ -20,6 +20,7 @@
       <import plugin="org.eclipse.ant.core"/>
       <import plugin="org.eclipse.jdt.core"/>
       <import plugin="org.eclipse.jdt.ui"/>
+      <import plugin="org.apache.xerces"/>
    </requires>
 
    <!-- help -->
@@ -34,42 +35,36 @@
 	<extension 
 		point="org.eclipse.ui.newWizards">
 		<category
-	   		id = "org.objectstyle.wolips.wizard"
+	   		id = "org.objectstyle.wolips.wizards"
 	   		name="%WOLips.categoryName">
 		</category>
-    	
-    	<wizard 
-			id="org.objectstyle.wolips.wizard.NewWOFwProjectCreationWizard"
-			name="%WOFwProjectCreationWizard.title"
-			class="org.objectstyle.wolips.wizard.NewWOFwProjectCreationWizard"
-			category="org.objectstyle.wolips.wizard"
-			project="true"
-			finalPerspective="org.eclipse.jdt.ui.JavaPerspective"
-			icon="icons/full/ctool16/new_woframework_wizard.gif">
-			<description>%WOFwProjectCreationWizard.description</description>
-    	</wizard>
-  
-    	<wizard 
-			id="org.objectstyle.wolips.wizard.NewWOAppProjectCreationWizard"
-			name="%WOAppProjectCreationWizard.title"
-			class="org.objectstyle.wolips.wizard.NewWOAppProjectCreationWizard"
-			category="org.objectstyle.wolips.wizard"
-			project="true"
-			finalPerspective="org.eclipse.jdt.ui.JavaPerspective"
-			icon="icons/full/ctool16/new_woapplication_wizard.gif">
-			<description>%WOAppProjectCreationWizard.description</description>
-    	</wizard>
- 	    
- 	    <wizard
-		    id="org.objectstyle.wolips.wizard.NewWOComponentWizard"
-		    name="%NewWOComponentWizard.title"
-		    class="org.objectstyle.wolips.wizard.NewWOComponentWizard"
-		    category="org.objectstyle.wolips.wizard"
-		    icon="icons/full/ctool16/new_wocomponent_wizard.gif">
-		    <description>%NewWOComponentWizard.description</description>
-	    </wizard>
-	    
-	</extension>  
+		<wizard
+            		name="Component"
+            		icon="icons/wobuilder/wocomponent_wiz.gif"
+            		category="org.objectstyle.wolips.wizards"
+            		class="org.objectstyle.wolips.wizards.NewWOComponentWizard"
+            		id="org.objectstyle.wolips.wizards.new.wocomponent">
+      		</wizard>
+      		<wizard
+            		name="Application"
+            		icon="icons/woproject/woproject_wiz.gif"
+            		category="org.objectstyle.wolips.wizards"
+            		class="org.objectstyle.wolips.wizards.NewWOApplicationWizard"
+            		id="org.objectstyle.wolips.wizards.new.woapplication">
+         	<description>
+         	</description>
+      		</wizard>
+			<wizard
+            		name="Framework"
+            		icon="icons/woproject/woproject_wiz.gif"
+            		category="org.objectstyle.wolips.wizards"
+            		class="org.objectstyle.wolips.wizards.NewWOFrameworkWizard"
+            		id="org.objectstyle.wolips.wizards.new.woframework">
+         	<description>
+         	</description>
+   			</wizard>
+		
+  	</extension>  
 
 	<!-- ant -->
      
