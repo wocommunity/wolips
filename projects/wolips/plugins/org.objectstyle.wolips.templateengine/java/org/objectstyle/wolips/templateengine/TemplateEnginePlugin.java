@@ -16,6 +16,7 @@ public class TemplateEnginePlugin extends AbstractUIPlugin {
 	
 	/**
 	 * The constructor.
+	 * @param descriptor
 	 */
 	public TemplateEnginePlugin(IPluginDescriptor descriptor) {
 		super(descriptor);
@@ -29,6 +30,7 @@ public class TemplateEnginePlugin extends AbstractUIPlugin {
 
 	/**
 	 * Returns the shared instance.
+	 * @return
 	 */
 	public static TemplateEnginePlugin getDefault() {
 		return plugin;
@@ -36,6 +38,7 @@ public class TemplateEnginePlugin extends AbstractUIPlugin {
 
 	/**
 	 * Returns the workspace instance.
+	 * @return
 	 */
 	public static IWorkspace getWorkspace() {
 		return ResourcesPlugin.getWorkspace();
@@ -44,6 +47,8 @@ public class TemplateEnginePlugin extends AbstractUIPlugin {
 	/**
 	 * Returns the string from the plugin's resource bundle,
 	 * or 'key' if not found.
+	 * @param key
+	 * @return
 	 */
 	public static String getResourceString(String key) {
 		ResourceBundle bundle= TemplateEnginePlugin.getDefault().getResourceBundle();
@@ -56,6 +61,7 @@ public class TemplateEnginePlugin extends AbstractUIPlugin {
 
 	/**
 	 * Returns the plugin's resource bundle,
+	 * @return
 	 */
 	public ResourceBundle getResourceBundle() {
 		return resourceBundle;
