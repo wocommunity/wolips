@@ -273,7 +273,7 @@ public class DirectAction extends WODirectAction {
 	<!-- war target--> 
     <!-- To use this target remove the if="${never}" statement and create the LICENSE in your project  
          and create the web.xml file with the woapplication task.--> 
-    <target name="war"> 
+    <target name="war" if="${never}"> 
         <war destfile="${dest.dir}/${project.name}.war" 
             webxml="${dest.dir}/${project.name}.woa/Contents/web.xml"> 
             <fileset dir="${dest.dir}"> 
@@ -294,7 +294,7 @@ public class DirectAction extends WODirectAction {
 	<!-- ssdd target--> 
     <!-- To use this target remove the if="${never}" statement and create the LICENSE in your project  
          and create the web.xml file with the woapplication task.--> 
-    <target name="ssdd">
+    <target name="ssdd" if="${never}">
     	<mkdir dir="${dest.dir}/${project.name}/WEB_INF/tlds"/>
     	<copy todir="${dest.dir}/${project.name}/WEB_INF/">
             <fileset dir="${dest.dir}/${project.name}.woa/Contents/"> 
