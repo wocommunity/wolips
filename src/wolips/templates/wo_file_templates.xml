@@ -231,7 +231,7 @@ public class DirectAction extends WODirectAction {
 		<property name="dest.dir" value="."/>
 	</target>
 
-	<target name="clean">
+	<target name="clean" depends="setProps">
 	  	<delete dir="${project.name}.woa"/>
 		<eclipse.refreshLocal resource="${project.name}" depth="infinite"/>
 	</target>
@@ -326,7 +326,7 @@ project.name = ${PROJECT_NAME}
 		<property name="dest.dir" value="."/>
 	</target>
 
-	<target name="clean">
+	<target name="clean" depends="setProps">
 	  	<delete dir="${framework.name}.framework"/>
 		<eclipse.refreshLocal resource="${framework.name}" depth="infinite"/>
 	</target>
