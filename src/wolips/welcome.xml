@@ -80,9 +80,7 @@ It is very easy to create and run a basic WO application using WOLips. Here's ho
 1. Open the WOLips Perspective: <action pluginId="org.objectstyle.wolips"  class="org.objectstyle.wolips.ui.PerspectiveFactory">Window > Open Perspective > other > WOLips</action>
 2. Create a <action pluginId="org.objectstyle.wolips" class="org.objectstyle.wolips.actions.OpenWOProjectCreationWizard">application project</action>
 3. Name the project HelloWOrld press Finish.
-4. Open the Navigator view and expand the HelloWOrld node. (There is a WOLips
-perspective and a WOLips Navigator view. This is not the one referred to here.) Inside
-you'll find four folders, and a number of files. They are:
+On the left in WOLips Navigator you'll find four folders, and a number of files. They are:
 bin contains all the *.class files.
 HelloWOrld.proj.src contains all the *.java files.
 HelloWOrld.woa is the executable application. eclipse keeps all code compiled at all
