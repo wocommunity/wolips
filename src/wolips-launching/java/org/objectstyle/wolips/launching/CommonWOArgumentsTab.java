@@ -80,14 +80,12 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
-import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
 import org.objectstyle.wolips.core.preferences.ILaunchInfo;
 import org.objectstyle.wolips.core.preferences.Preferences;
 import org.objectstyle.wolips.core.preferences.PreferencesMessages;
@@ -403,74 +401,7 @@ public class CommonWOArgumentsTab extends JavaLaunchConfigurationTab {
 		} catch (Exception anException) {
 			WOLipsLog.log(anException);
 		}
-		/*return this.getWOApplicationPlatformSpecificArguments()
-			+ this.getWOApplicationClassNameArgument(config)
-			+ this.getCommonWOApplicationArguments();*/
 		return Preferences.getString(IWOLipsPluginConstants.PREF_LAUNCH_GLOBAL);
-	}
-
-	/**
-	 * Method getWOApplicationPlatformSpecificArguments.
-	 * @return String
-	 */
-	private String getWOApplicationPlatformSpecificArguments() {
-		if (WOLipsPlugin
-			.getDefault()
-			.getWOEnvironment()
-			.getWOVariables()
-			.systemRoot()
-			.startsWith("/System"))
-			return "";
-		return "-DWORoot="
-			+ WOLipsPlugin
-				.getDefault()
-				.getWOEnvironment()
-				.getWOVariables()
-				.systemRoot()
-			+ " "
-			+ "-DWORootDirectory="
-			+ WOLipsPlugin
-				.getDefault()
-				.getWOEnvironment()
-				.getWOVariables()
-				.systemRoot()
-			+ " ";
-	}
-
-	/**
-	 * Method getWOApplicationClassNameArgument.
-	 * @return String
-	 */
-	private String getWOApplicationClassNameArgument(ILaunchConfigurationWorkingCopy config) {
-		String main = null;
-		try {
-			main =
-				config.getAttribute(
-					IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME,
-					"");
-		} catch (Exception anException) {
-			WOLipsLog.log(anException);
-			return "";
-		}
-		if ("".equals(main))
-			return "";
-		return "-WOApplicationClassName " + main + " ";
-	}
-
-	/**
-	 * Method getCommonWOApplicationArguments.
-	 * @return String
-	 */
-	private String getCommonWOApplicationArguments() {
-		return LaunchingMessages.getString("WOArguments.common");
-	}
-
-	private GridData fillIntoGrid(Control control, int hspan, boolean grab) {
-		GridData gd = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
-		gd.horizontalSpan = hspan;
-		gd.grabExcessHorizontalSpace = grab;
-		control.setLayoutData(gd);
-		return gd;
 	}
 
 }

@@ -76,6 +76,7 @@ import org.eclipse.jdt.launching.IVMInstall;
 import org.eclipse.jdt.launching.IVMRunner;
 import org.eclipse.jdt.launching.VMRunnerConfiguration;
 import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
+import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
 import org.objectstyle.wolips.core.preferences.ILaunchInfo;
 import org.objectstyle.wolips.core.preferences.Preferences;
 import org.objectstyle.wolips.core.project.WOLipsProject;
@@ -134,16 +135,51 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 			configuration.getAttribute(
 				WOJavaLocalApplicationLaunchConfigurationDelegate
 					.ATTR_WOLIPS_LAUNCH_WOARGUMENTS,
-				Preferences.getString(IWOLipsPluginConstants.PREF_LAUNCH_GLOBAL));
-		ILaunchInfo[] launchInfo = Preferences.getLaunchInfoFrom(launchArguments);
+				Preferences.getString(
+					IWOLipsPluginConstants.PREF_LAUNCH_GLOBAL));
+		ILaunchInfo[] launchInfo =
+			Preferences.getLaunchInfoFrom(launchArguments);
 		StringBuffer launchArgument = new StringBuffer();
+		String automatic = "Automatic";
 		for (int i = 0; i < launchInfo.length; i++) {
-				if(launchInfo[i].isEnabled()) {
-					launchArgument.append(launchInfo[i].getParameter());
-					launchArgument.append(" ");
-					launchArgument.append(launchInfo[i].getArgument());
-					launchArgument.append(" ");	
+			boolean spaceBetweenParameterAndArgument = true;
+			if (launchInfo[i].isEnabled()) {
+				//-WOApplicationClassName
+				String parameter = launchInfo[i].getParameter();
+				String argument = launchInfo[i].getArgument();
+				if (automatic.equals(argument)) {
+					if ("-WOApplicationClassName".equals(parameter))
+						argument =
+							this.getWOApplicationClassNameArgument(
+								configuration);
+					if ("-DWORoot=".equals(parameter) && this.isOnMacOSX()) {
+						argument =
+							WOLipsPlugin
+								.getDefault()
+								.getWOEnvironment()
+								.getWOVariables()
+								.systemRoot();
+						spaceBetweenParameterAndArgument = false;
+					} else
+						continue;
+					if ("-DWORootDirectory=".equals(parameter)
+						&& this.isOnMacOSX()) {
+						argument =
+							WOLipsPlugin
+								.getDefault()
+								.getWOEnvironment()
+								.getWOVariables()
+								.systemRoot();
+						spaceBetweenParameterAndArgument = false;
+					} else
+						continue;
 				}
+				launchArgument.append(parameter);
+				if (spaceBetweenParameterAndArgument)
+					launchArgument.append(" ");
+				launchArgument.append(argument);
+				launchArgument.append(" ");
+			}
 		}
 		// Program & VM args
 		String pgmArgs =
@@ -407,5 +443,34 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 		if (aString.length() > 0)
 			aString = aString + ",";
 		return aString + nsProjectSarchPath;
+	}
+
+	private boolean isOnMacOSX() {
+		return WOLipsPlugin
+			.getDefault()
+			.getWOEnvironment()
+			.getWOVariables()
+			.systemRoot()
+			.startsWith("/System");
+	}
+
+	/**
+	 * Method getWOApplicationClassNameArgument.
+	 * @return String
+	 */
+	private String getWOApplicationClassNameArgument(ILaunchConfiguration config) {
+		String main = null;
+		try {
+			main =
+				config.getAttribute(
+					IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME,
+					"");
+		} catch (Exception anException) {
+			WOLipsLog.log(anException);
+			return "";
+		}
+		if ("".equals(main))
+			return "";
+		return main;
 	}
 }
