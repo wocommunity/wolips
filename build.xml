@@ -8,9 +8,16 @@
     <property environment="env"/>
     <property name="next.root" value="${env.NEXT_ROOT}"/>
 
-
     <!-- ============================================= -->
-    <!-- Define extra CLASSPATH                        -->
+    <!-- Derived Properties. These properties are      -->
+    <!-- derived from other properties. You probably   -->
+    <!-- don't want to redefine them.                  -->
+    <!-- ============================================= -->
+    <property name="dist" value="${dist.base}/${project.name}-${project.version}"/>
+    
+    
+    <!-- ============================================= -->
+    <!-- Define CLASSPATH settings.                    -->
     <!-- ============================================= -->
     <path id="classpath">
         <fileset dir="${ant.home}/lib">
@@ -32,13 +39,12 @@
     	<path refid="classpath"/>
     	<pathelement path="${dist}/lib/${project.name}.jar"/>
     </path>
-
-    <!-- ============================================= -->
-    <!-- Derived Properties. These properties are      -->
-    <!-- derived from other properties. You probably   -->
-    <!-- don't want to redefine them.                  -->
-    <!-- ============================================= -->
-    <property name="dist" value="${dist.base}/${project.name}-${project.version}"/>
+    
+    <path id="classpath-tests-run">
+        <fileset dir="${dist}/lib">
+            <include name="*.jar"/>
+        </fileset>
+    </path>
 
 
     <target name="help">
@@ -142,7 +148,7 @@
     </target>
     
     
-    <target name="java-tests" depends="prepare">
+    <target name="java-tests" depends="prepare,java-main">
        <javac srcdir="tests/java"
                 destdir="build/tests"
                 deprecation="${compile.deprecation}"
@@ -157,8 +163,19 @@
                 <include name="LICENSE*"/>
             </metainf>
         </jar>
+        
+        <copy todir="${dist}/lib" file="lib/junit.jar"/>
     </target>
 
+
+    <!-- ============================================= -->
+    <!-- Runs Unit tests.                              -->
+    <!-- ============================================= -->
+    <target name="test" depends="java-tests">
+    	<java classname="org.objectstyle.woproject.TestsMain" fork="yes" >
+    		<classpath refid="classpath-tests-run"/>
+        </java>
+    </target>
 
     <!-- ============================================= -->
     <!-- Sets up build and distribution directories.   -->
