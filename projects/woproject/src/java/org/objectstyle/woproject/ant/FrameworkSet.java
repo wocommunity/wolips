@@ -120,6 +120,7 @@ public class FrameworkSet extends FileSet {
 	}
 
 	private boolean testIfCondition() {
+		//TODO: Replace with PropertyHelper (Ant 1.6)
 		if ("".equals(ifCondition))
 			return true;
 		String string =
@@ -147,7 +148,7 @@ public class FrameworkSet extends FileSet {
 				+ File.separator
 				+ "Java";
 
-		File jarDir = new File(getDir(project), jarDirName);
+		File jarDir = new File(getDir(this.getProject()), jarDirName);
 		if (!jarDir.isDirectory()) {
 			return null;
 		}

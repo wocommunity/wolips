@@ -96,23 +96,23 @@ public class WOGenerator extends CayenneGenerator {
 	}
 
 	final class WOAntClassGenerator extends AntClassGenerator {
-		private final String SUPERCLASS_TEMPLATE = "wogen/superclass.vm";
-		private final String SUBCLASS_TEMPLATE = "wogen/subclass.vm";
-		private final String SINGLE_CLASS_TEMPLATE = "wogen/singleclass.vm";
+		private final String WOGEN_SUPERCLASS_TEMPLATE = "wogen/superclass.vm";
+		private final String WOGEN_SUBCLASS_TEMPLATE = "wogen/subclass.vm";
+		private final String WOGEN_SINGLE_CLASS_TEMPLATE = "wogen/singleclass.vm";
 
 		private final String[] RESERVED_CLASS_NAMES =
 			new String[] { "EOGenericRecord", "EOCustomObject" };
 
 		protected String defaultSingleClassTemplate() {
-			return SINGLE_CLASS_TEMPLATE;
+			return WOGEN_SINGLE_CLASS_TEMPLATE;
 		}
 
 		protected String defaultSubclassTemplate() {
-			return SUBCLASS_TEMPLATE;
+			return WOGEN_SUBCLASS_TEMPLATE;
 		}
 
 		protected String defaultSuperclassTemplate() {
-			return SUPERCLASS_TEMPLATE;
+			return WOGEN_SUPERCLASS_TEMPLATE;
 		}
 
 		protected File fileForClass(String packageName, String className)

@@ -80,7 +80,7 @@ public class WOCompile extends Javac {
     protected String buildFrameworkPaths() {
         StringBuffer buf = new StringBuffer();
 
-        Project project = getProject();
+        Project aProject = getProject();
 
         // track included jar files to avoid double entries
         Vector jarSet = new Vector();
@@ -100,7 +100,7 @@ public class WOCompile extends Javac {
                     File[] jars = fs.findJars(frameworkName);
 
                     if (jars == null || jars.length == 0) {
-                        log("No Jars in " + fs.getDir(project).getPath() + "/" + frameworkName + ", ignoring.",
+                        log("No Jars in " + fs.getDir(aProject).getPath() + "/" + frameworkName + ", ignoring.",
                             Project.MSG_VERBOSE);
                         continue;
                     }

@@ -115,11 +115,11 @@ public class WOApplication extends WOTask {
 	}
 
 	public String getPrincipalClass() {
-		String principalClass = super.getPrincipalClass();
-		if (principalClass == null) {
-			principalClass = "Application";
+		String aPrincipalClass = super.getPrincipalClass();
+		if (aPrincipalClass == null) {
+			aPrincipalClass = "Application";
 		}
-		return principalClass;
+		return aPrincipalClass;
 	}
 
 	/** 
@@ -169,7 +169,7 @@ public class WOApplication extends WOTask {
 		if (System.getProperty("os.name").toLowerCase().indexOf("win") < 0) {
 			File dir = null;
 			FileSet fs = null;
-			Chmod chmod = null;
+			Chmod aChmod = null;
 			try {
 				dir = taskDir();
 				super.log("chmod scripts in " + dir, Project.MSG_VERBOSE);
@@ -179,14 +179,14 @@ public class WOApplication extends WOTask {
 				fs.createInclude().setName("**/" + name);
 				fs.createInclude().setName("**/*.sh");
 
-				chmod = this.getSubtaskFactory().getChmod();
-				chmod.setPerm(this.getChmod());
-				chmod.addFileset(fs);
-				chmod.execute();
+				aChmod = this.getSubtaskFactory().getChmod();
+				aChmod.setPerm(this.getChmod());
+				aChmod.addFileset(fs);
+				aChmod.execute();
 			} finally {
 				dir = null;
 				fs = null;
-				chmod = null;
+				aChmod = null;
 			}
 		} else {
 			super.log(
@@ -214,11 +214,11 @@ public class WOApplication extends WOTask {
 		// WOApplication directory.  If we didn't do this, we'd
 		// have to append '/' or '/**' to the end of the includes
 		// in the <frameworks> tag.
-		List frameworkSets = getFrameworkSets();
-		int size = frameworkSets.size();
+		List theFrameworkSets = getFrameworkSets();
+		int size = theFrameworkSets.size();
                 boolean hasSet = false;
 		for (int i = 0; i < size; i++) {
-			FrameworkSet fs = (FrameworkSet) frameworkSets.get(i);
+			FrameworkSet fs = (FrameworkSet) theFrameworkSets.get(i);
 
 			if (fs.getEmbed() == false) {
 				continue;
@@ -419,11 +419,11 @@ public class WOApplication extends WOTask {
 	}
 
 	protected boolean hasEmbeddedFrameworks() {
-		List frameworkSets = getFrameworkSets();
-		int size = frameworkSets.size();
+		List theFrameworkSets = getFrameworkSets();
+		int size = theFrameworkSets.size();
 
 		for (int i = 0; i < size; i++) {
-			FrameworkSet fs = (FrameworkSet) frameworkSets.get(i);
+			FrameworkSet fs = (FrameworkSet) theFrameworkSets.get(i);
 
 			if (fs.getEmbed()) {
 				return true;

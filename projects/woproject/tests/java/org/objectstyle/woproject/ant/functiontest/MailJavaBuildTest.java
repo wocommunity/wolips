@@ -76,9 +76,9 @@ public class MailJavaBuildTest extends BuildTestCase {
 
     public void testBuildMailJava() throws Exception {
         String projectDir = "tests/wo/frameworks/MailJava";
-        Project project = getProject(new File(projectDir), new File(projectDir, "build.xml"));
-        String defaultTarget = project.getDefaultTarget();
-        project.executeTarget(defaultTarget);
+        Project aProject = getProject(new File(projectDir), new File(projectDir, "build.xml"));
+        String defaultTarget = aProject.getDefaultTarget();
+        aProject.executeTarget(defaultTarget);
 
         FrameworkStructure fw = new FrameworkStructure("MailJava");
         fw.setJars(new String[]{"activation", "mail"});
@@ -88,9 +88,9 @@ public class MailJavaBuildTest extends BuildTestCase {
 
     public void testBuildMailUtilities() throws Exception {
         String projectDir = "tests/wo/frameworks/MailUtilities";
-        Project project = getProject(new File(projectDir), new File(projectDir, "build.xml"));
-        String defaultTarget = project.getDefaultTarget();
-        project.executeTarget(defaultTarget);
+        Project aProject = getProject(new File(projectDir), new File(projectDir, "build.xml"));
+        String defaultTarget = aProject.getDefaultTarget();
+        aProject.executeTarget(defaultTarget);
 
         FrameworkStructure fw = new FrameworkStructure("MailUtilities");
         fw.setJars(new String[]{"mailutilities"});

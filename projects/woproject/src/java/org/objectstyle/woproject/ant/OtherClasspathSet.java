@@ -24,12 +24,12 @@ public class OtherClasspathSet extends FileSet {
 		super();
 	}
 
-	private File[] findPackages(Project project, String packageDir) {
+	private File[] findPackages(Project aProject, String packageDir) {
 
 		// scan directory for packages (zip or jar)
 		DirectoryScanner ds = new DirectoryScanner();
 		ds.setIncludes(new String[] { "**/*.jar", "**/*.zip" });
-		ds.setBasedir(getDir(project) + File.separator + packageDir);
+		ds.setBasedir(getDir(aProject) + File.separator + packageDir);
 		ds.setCaseSensitive(true);
 		ds.scan();
 
@@ -38,16 +38,16 @@ public class OtherClasspathSet extends FileSet {
 		File[] finalFiles = new File[size];
 		for (int i = 0; i < size; i++) {
 
-			finalFiles[i] = new File(getDir(project), foundPackages[i]);
+			finalFiles[i] = new File(getDir(aProject), foundPackages[i]);
 		}
 
 		return finalFiles;
 	}
 
-	public void collectClassPaths(Project project, HashSet pathSet)
+	public void collectClassPaths(Project aProject, HashSet pathSet)
 		throws BuildException {
 
-		DirectoryScanner ds = getDirectoryScanner(project);
+		DirectoryScanner ds = getDirectoryScanner(aProject);
 		String[] directories = ds.getIncludedDirectories();
 		String[] files = ds.getIncludedFiles();
 
@@ -55,7 +55,7 @@ public class OtherClasspathSet extends FileSet {
 		for (int i = 0; i < directories.length; i++) {
 			if (isPackagesOnly()) {
 				// don't add any dirs, search for packages in this dirs instead
-				File[] paths = findPackages(project, directories[i]);
+				File[] paths = findPackages(aProject, directories[i]);
 
 				if (paths == null || paths.length == 0) {
 					log(
@@ -69,7 +69,7 @@ public class OtherClasspathSet extends FileSet {
 					pathSet.add(paths[k]);
 				}
 			} else {
-				File directory = new File(getDir(project), directories[i]);
+				File directory = new File(getDir(aProject), directories[i]);
 				if (directory.exists()) {
 					pathSet.add(directory);
 				}
@@ -84,7 +84,7 @@ public class OtherClasspathSet extends FileSet {
 					Project.MSG_VERBOSE);
 				continue;
 			}
-			File packageFile = new File(getDir(project), files[i]);
+			File packageFile = new File(getDir(aProject), files[i]);
 			if (packageFile.exists()) {
 				pathSet.add(packageFile);
 			}

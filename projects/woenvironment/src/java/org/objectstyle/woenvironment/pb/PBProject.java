@@ -156,7 +156,7 @@ public class PBProject {
 	/**
 	 * Stores changes made to this object in the underlying PB.project file.
 	 */
-	public void saveChanges() throws IOException {
+	public void saveChanges() {
 		this.saveFilesTable();
 		PropertyListSerialization.propertyListToFile(projectFile, pbProject);
 	}

@@ -289,10 +289,10 @@ public class PBIndex extends Task {
 			String[] frameworkSubPaths = fs.getDirectoryScanner(
 				fs.getProject()).getIncludedDirectories();
 			for(int i = 0; i < frameworkSubPaths.length; i++ ) {
-				File framework = new File( fs.getDir(fs.getProject()),
+				File aFramework = new File( fs.getDir(fs.getProject()),
 					frameworkSubPaths[i] );
 				//projectFrameworkPaths.add( "../.."+framework );*/
-				projectFrameworkPaths.add( framework.getName() );
+				projectFrameworkPaths.add( aFramework.getName() );
 			}
 		}
 		

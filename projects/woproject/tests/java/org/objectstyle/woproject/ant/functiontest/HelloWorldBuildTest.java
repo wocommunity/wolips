@@ -69,10 +69,10 @@ public class HelloWorldBuildTest extends AppBuildTestCase {
 
 	public void testBuildHelloWorld() throws Exception {
 		String projectDir = "tests/wo/applications/HelloWorld";
-		Project project =
+		Project aProject =
 			getProject(new File(projectDir), new File(projectDir, "build.xml"));
-		String defaultTarget = project.getDefaultTarget();
-		project.executeTarget(defaultTarget);
+		String defaultTarget = aProject.getDefaultTarget();
+		aProject.executeTarget(defaultTarget);
 
 		ApplicationStructure app = new ApplicationStructure("HelloWorld");
 		app.setWocomps(new String[] { "Main" });
