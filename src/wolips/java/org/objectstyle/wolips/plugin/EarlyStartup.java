@@ -96,25 +96,63 @@ public class EarlyStartup {
 		 */
 	public static void earlyStartup() {
 		try {
+			EarlyStartup.setUpPreferencesForPropertiesFile();
 			EarlyStartup.writePropertiesFileToUserHome();
+			EarlyStartup.setUpPreferencesAfterPropertiesFile();
+			EarlyStartup.validateMandatoryAttributes();
+			// add resource change listener to update project file on resource changes
+			IResourceChangeListener resourceChangeListener =
+				new ResourceChangeListener();
+			WorkbenchHelper.getWorkspace().addResourceChangeListener(
+				resourceChangeListener,
+				IResourceChangeEvent.PRE_AUTO_BUILD);
+			// add element change listener to update project file on classpath changes
+			IElementChangedListener javaElementChangeListener =
+				new JavaElementChangeListener();
+			JavaCore.addElementChangedListener(
+				javaElementChangeListener,
+				ElementChangedEvent.PRE_AUTO_BUILD);
 		} catch (Exception anException) {
 			WOLipsLog.log(anException);
 			WOLipsLog.log(
 				IWOLipsPluginConstants.build_user_home_properties_pde_info);
 		}
-		EarlyStartup.validateMandatoryAttributes();
-		// add resource change listener to update project file on resource changes
-		IResourceChangeListener resourceChangeListener =
-			new ResourceChangeListener();
-		WorkbenchHelper.getWorkspace().addResourceChangeListener(
-			resourceChangeListener,
-			IResourceChangeEvent.PRE_AUTO_BUILD);
-		// add element change listener to update project file on classpath changes
-		IElementChangedListener javaElementChangeListener =
-			new JavaElementChangeListener();
-		JavaCore.addElementChangedListener(
-			javaElementChangeListener,
-			ElementChangedEvent.PRE_AUTO_BUILD);
+	}
+	/**
+	 * Method setUpPreferencesForPropertiesFile.
+	 */
+	private static void setUpPreferencesForPropertiesFile() {
+		String currentVersion =
+			WOLipsPlugin
+				.getDefault()
+				.getDescriptor()
+				.getVersionIdentifier()
+				.toString();
+		String preferencesVersion =
+			Preferences
+				.getString(
+					IWOLipsPluginConstants.PREF_WOLIPS_VERSION_EARLY_STARTUP);
+		if (!currentVersion.equals(preferencesVersion))
+			Preferences.setBoolean(
+				IWOLipsPluginConstants
+					.PREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH,
+				true);
+	}
+	/**
+	 * Method setUpPreferencesAfterPropertiesFile.
+	 */
+	private static void setUpPreferencesAfterPropertiesFile() {
+		Preferences.setBoolean(
+			IWOLipsPluginConstants
+				.PREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH,
+			false);
+		Preferences.setString(
+			IWOLipsPluginConstants.PREF_WOLIPS_VERSION_EARLY_STARTUP,
+			WOLipsPlugin
+				.getDefault()
+				.getDescriptor()
+				.getVersionIdentifier()
+				.toString());
 	}
 	/**
 	 * Method writePropertiesFileToUserHome.
@@ -123,12 +161,7 @@ public class EarlyStartup {
 		if (!Preferences
 			.getBoolean(
 				IWOLipsPluginConstants
-					.PREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH)
-			&& !Preferences
-				.getString(
-					IWOLipsPluginConstants
-						.PREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH)
-				.equals(""))
+					.PREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH))
 			return;
 		URL relativeBuildFile = null;
 		URL buildFile = null;
@@ -142,10 +175,6 @@ public class EarlyStartup {
 			monitor = new NullProgressMonitor();
 			RunAnt runAnt = new RunAnt();
 			runAnt.asAnt(buildFile.getFile().toString(), monitor, null);
-			Preferences.setBoolean(
-				IWOLipsPluginConstants
-					.PREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH,
-				false);
 		} finally {
 			relativeBuildFile = null;
 			buildFile = null;

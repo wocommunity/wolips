@@ -148,6 +148,12 @@ public class Preferences {
 				PreferencesMessages.getString(Preferences.falseString));
 		if (Preferences.SET_DEFAULTS_STRING == null
 			|| Preferences.SET_DEFAULTS_STRING.equals(
+				IWOLipsPluginConstants.PREF_WOLIPS_VERSION_EARLY_STARTUP))
+			store.setDefault(
+				IWOLipsPluginConstants.PREF_WOLIPS_VERSION_EARLY_STARTUP,
+				"0.0.0");
+		if (Preferences.SET_DEFAULTS_STRING == null
+			|| Preferences.SET_DEFAULTS_STRING.equals(
 				IWOLipsPluginConstants.PREF_LOG_LEVEL))
 			store.setDefault(
 				IWOLipsPluginConstants.PREF_LOG_LEVEL,
