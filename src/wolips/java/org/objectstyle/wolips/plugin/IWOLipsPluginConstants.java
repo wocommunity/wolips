@@ -73,8 +73,12 @@ public interface IWOLipsPluginConstants {
 	public static final String PREF_OPEN_WOCOMPONENT_ACTION_INCLUDES_OPEN_HTML =
 		"org.objectstyle.wolips.Preference.OpenWOComponentActionIncludesOpenHTML";
 	public static final String PREF_SHOW_BUILD_OUTPUT =
-			"org.objectstyle.wolips.Preference.ShowBuildOutput";
-	// file extensions and resource identifier
+		"org.objectstyle.wolips.Preference.ShowBuildOutput";
+	public static final String PREF_RUN_ANT_AS_EXTERNAL_TOOL =
+		"org.objectstyle.wolips.Preference.RunAntAsExternalTool";
+	public static final String PREF_NS_PROJECT_SEARCH_PATH =
+		"org.objectstyle.wolips.Preference.NSProjectSearch";
+	// flle extensions and resource identifier
 	public static final String EXT_PROJECT = "project";
 	public static final String EXT_SUBPROJECT = "subproj";
 	public static final String EXT_JAVA = "java";

@@ -84,6 +84,9 @@ public class Preferences {
 			IWOLipsPluginConstants.PREF_RUN_WOBUILDER_ON_BUILD,
 			Preferences.trueString);
 		store.setDefault(
+			IWOLipsPluginConstants.PREF_RUN_ANT_AS_EXTERNAL_TOOL,
+			Preferences.falseString);
+		store.setDefault(
 			IWOLipsPluginConstants.PREF_MODEL_NAVIGATOR_FILTER,
 			PreferencesMessages.getString(
 				"Preferences.ModelNavigatorFilter.Default"));
@@ -100,9 +103,11 @@ public class Preferences {
 				.PREF_OPEN_WOCOMPONENT_ACTION_INCLUDES_OPEN_HTML,
 			PreferencesMessages.getString(Preferences.falseString));
 		store.setDefault(
-			IWOLipsPluginConstants
-				.PREF_SHOW_BUILD_OUTPUT,
+			IWOLipsPluginConstants.PREF_SHOW_BUILD_OUTPUT,
 			PreferencesMessages.getString(Preferences.falseString));
+		store.setDefault(
+			IWOLipsPluginConstants.PREF_NS_PROJECT_SEARCH_PATH,
+			PreferencesMessages.getString(""));
 	}
 
 	/**

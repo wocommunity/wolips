@@ -103,6 +103,12 @@ public class PreferencesPage
 				getFieldEditorParent()));
 		addField(
 			new BooleanFieldEditor(
+				IWOLipsPluginConstants.PREF_RUN_ANT_AS_EXTERNAL_TOOL,
+				PreferencesMessages.getString(
+					"Preferences.RunAntAsExternalTool.Label"),
+				getFieldEditorParent()));
+		addField(
+			new BooleanFieldEditor(
 				IWOLipsPluginConstants.PREF_SHOW_BUILD_OUTPUT,
 				PreferencesMessages.getString(
 					"Preferences.ShowBuildOutput.Label"),
@@ -126,6 +132,13 @@ public class PreferencesPage
 				IWOLipsPluginConstants.PREF_PRODUCT_NAVIGATOR_FILTER,
 				PreferencesMessages.getString(
 					"Preferences.ProductNavigatorFilter.Label"),
+				60,
+				getFieldEditorParent()));
+		addField(
+			new StringFieldEditor(
+				IWOLipsPluginConstants.PREF_NS_PROJECT_SEARCH_PATH,
+				PreferencesMessages.getString(
+					"Preferences.NSProjectSearchPath.Label"),
 				60,
 				getFieldEditorParent()));
 		/*addField(
