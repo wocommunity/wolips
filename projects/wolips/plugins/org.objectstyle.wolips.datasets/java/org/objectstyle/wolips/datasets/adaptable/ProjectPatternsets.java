@@ -85,8 +85,10 @@ public class ProjectPatternsets extends AbstractProjectAdapterType {
 	/**
 	 * Comment for <code>ANT_FOLDER_NAME</code>
 	 */
-	public final static String ANT_FOLDER_NAME = "ant";
+	public final static String ANT_FOLDER_NAME = "woproject";
 
+	public final static String LEGACY_ANT_FOLDER_NAME = "ant";
+	
 	private PatternsetMatcher woappResourcesIncludeMatcher = null;
 
 	private PatternsetMatcher woappResourcesExcludeMatcher = null;
@@ -125,7 +127,10 @@ public class ProjectPatternsets extends AbstractProjectAdapterType {
 	 * @return the ant folder within the project
 	 */
 	public IFolder getAntFolder() {
-		return this.getIProject().getFolder("ant");
+		IFolder folder = this.getIProject().getFolder(ProjectPatternsets.LEGACY_ANT_FOLDER_NAME);
+		if(!folder.exists()) 
+			folder = this.getIProject().getFolder(ProjectPatternsets.ANT_FOLDER_NAME);
+		return folder;
 	}
 
 	/**
