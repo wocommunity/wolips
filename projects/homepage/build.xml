@@ -120,9 +120,9 @@
                 <pathelement path="../woenvironment/src/java"/>
                 <pathelement path="../woproject/src/java"/>
                 <pathelement path="../wolips/plugins/org.objectstyle.wolips.preferences/java"/>
-            		<pathelement path="../wolips/plugins/org.objectstyle.wolips.ant/java"/>
-            		<pathelement path="../wolips/plugins/org.objectstyle.wolips/java"/>
-            	    <pathelement path="../wolips/plugins/org.objectstyle.wolips.commons/java"/>
+            	<pathelement path="../wolips/plugins/org.objectstyle.wolips.ant/java"/>
+           	<pathelement path="../wolips/plugins/org.objectstyle.wolips/java"/>
+            	<pathelement path="../wolips/plugins/org.objectstyle.wolips.commons/java"/>
                 <pathelement path="../wolips/plugins/org.objectstyle.wolips.variables/java"/>
                 <pathelement path="../wolips/plugins/org.objectstyle.wolips.jdt/java"/>
                 <pathelement path="../wolips/plugins/org.objectstyle.wolips.documentation/java"/>
@@ -138,6 +138,8 @@
 	        <pathelement path="../wolips/plugins/org.objectstyle.wolips.tests/java"/>
 	        <pathelement path="../wolips/plugins/org.objectstyle.wolips.tests.core/java"/>
 	        <pathelement path="../wolips/plugins/org.objectstyle.wolips.workbenchutilities/java"/>
+	        <pathelement path="../wolips/plugins/org.objectstyle.wolips.goodies.core.mac/java"/>
+	        <pathelement path="../wolips/plugins/org.objectstyle.wolips.goodies.ui.mac/java"/>
             </sourcepath>
             <doctitle><![CDATA[<h2>WOProject API Documentation</h2>]]></doctitle>
         </javadoc>
