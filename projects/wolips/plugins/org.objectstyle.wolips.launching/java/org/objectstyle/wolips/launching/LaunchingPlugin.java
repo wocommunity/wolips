@@ -70,9 +70,7 @@ public class LaunchingPlugin extends AbstractUIPlugin {
 		plugin = this;
 	}
 	/**
-	 * Returns the shared instance.
-	 * 
-	 * @return
+	 * @return the shared instance.
 	 */
 	public static LaunchingPlugin getDefault() {
 		return plugin;

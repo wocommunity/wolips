@@ -65,12 +65,12 @@ import org.eclipse.debug.ui.CommonTab;
 import org.eclipse.debug.ui.ILaunchConfigurationDialog;
 import org.eclipse.debug.ui.ILaunchConfigurationTab;
 import org.eclipse.debug.ui.ILaunchConfigurationTabGroup;
+import org.eclipse.debug.ui.sourcelookup.SourceLookupTab;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.debug.ui.launchConfigurations.JavaArgumentsTab;
 import org.eclipse.jdt.debug.ui.launchConfigurations.JavaClasspathTab;
 import org.eclipse.jdt.debug.ui.launchConfigurations.JavaJRETab;
 import org.eclipse.jdt.debug.ui.launchConfigurations.JavaMainTab;
-import org.eclipse.jdt.debug.ui.launchConfigurations.JavaSourceLookupTab;
 import org.eclipse.jdt.internal.debug.ui.launcher.WorkingDirectoryBlock;
 import org.eclipse.jdt.launching.JavaRuntime;
 
@@ -121,7 +121,7 @@ public class WOLocalJavaApplicationTabGroup extends AbstractLaunchConfigurationT
 			//new AdvancedWOArgumentsTab(),
 			new JavaJRETab(),
 			new JavaClasspathTab(),
-			new JavaSourceLookupTab(),
+			new SourceLookupTab(),
 			new CommonTab()
 		};
 		setTabs(tabs);
