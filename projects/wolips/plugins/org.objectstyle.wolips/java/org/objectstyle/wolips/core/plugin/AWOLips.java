@@ -65,12 +65,10 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.ui.IDebugUIConstants;
 import org.eclipse.jdt.core.IJavaElement;
-import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
@@ -78,9 +76,9 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
-import org.objectstyle.wolips.logging.WOLipsLog;
 import org.objectstyle.woenvironment.env.WOEnvironment;
 import org.objectstyle.woenvironment.env.WOVariables;
+import org.objectstyle.wolips.logging.WOLipsLog;
 
 /**
  * @author uli
@@ -256,41 +254,7 @@ public abstract class AWOLips implements IWOLipsPluginConstants {
 		}
 		return result;
 	}
-	/**
-	 * @return IPath from NextLocalRoot Classpath variable if it exists.
-	 */
-	public IPath getNextLocalRootClassPathVariable() {
-		return JavaCore.getClasspathVariable(
-			this.getWOEnvironment().getNEXT_LOCAL_ROOT());
-	}
-	/**
-	 * @return IPath from NextRoot Classpath variable if it exists.
-	 */
-	public IPath getNextRootClassPathVariable() {
-		return JavaCore.getClasspathVariable(
-			this.getWOEnvironment().getNEXT_ROOT());
-	}
-	/**
-	 * @return IPath from NextSystemRoot Classpath variable if it exists.
-	 */
-	public IPath getNextSystemRootClassPathVariable() {
-		return JavaCore.getClasspathVariable(
-			this.getWOEnvironment().getNEXT_SYSTEM_ROOT());
-	}
-	/**
-		 * @return IPath from UserHome Classpath variable if it exists.
-		 */
-	public IPath getUserHomeClassPathVariable() {
-		return JavaCore.getClasspathVariable(
-			IWOLipsPluginConstants.UserHomeClasspathVariable);
-	}
-	/**
-		 * @return IPath from UserHome Classpath variable if it exists.
-		 */
-	public IPath getProjectWonderHomeClassPathVariable() {
-		return JavaCore.getClasspathVariable(
-			IWOLipsPluginConstants.ProjectWonderHomeClasspathVariable);
-	}
+
 	/**
 	 * Method getShell.
 	 * @return Shell

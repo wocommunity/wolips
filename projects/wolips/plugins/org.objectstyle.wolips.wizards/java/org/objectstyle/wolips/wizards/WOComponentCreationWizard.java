@@ -79,7 +79,7 @@ public class WOComponentCreationWizard extends Wizard implements INewWizard {
 	 * Method declared on Wizard.
 	 */
 	public void addPages() {
-		mainPage = new WOComponentCreationPage(workbench, selection);
+		mainPage = new WOComponentCreationPage(selection);
 		addPage(mainPage);
 	}
 

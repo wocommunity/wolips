@@ -66,8 +66,8 @@ import org.eclipse.core.resources.IProject;
  */
 public interface IWOLipsProject {
 
-	public IProject getProject();
-	//public INaturesAccessor getNaturesAccessor();
-	public IBuilderAccessor getBuilderAccessor();
-	//public IPBProjectFilesAccessor getPBProjectFilesAccessor();
+	public abstract IProject getProject();
+	public abstract INaturesAccessor getNaturesAccessor();
+	public abstract IBuilderAccessor getBuilderAccessor();
+	public abstract IPBProjectFilesAccessor getPBProjectFilesAccessor();
 }

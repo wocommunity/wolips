@@ -64,7 +64,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.tools.ant.DirectoryScanner;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -91,7 +90,6 @@ import org.objectstyle.wolips.core.plugin.WOLipsUtils;
 import org.objectstyle.wolips.core.project.IWOLipsProject;
 import org.objectstyle.wolips.core.project.WOLipsCore;
 import org.objectstyle.wolips.core.project.WOLipsJavaProject;
-import org.objectstyle.wolips.core.project.WOLipsProject;
 import org.objectstyle.wolips.logging.WOLipsLog;
 import org.objectstyle.wolips.wizards.templates.XercesDocumentBuilder;
 import org.w3c.dom.Document;
@@ -408,15 +406,14 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 				try {
 					IWOLipsProject wolipsProject =
 						WOLipsCore.createProject(myJavaProject.getProject());
-					wolipsProject.getBuilderAccessor().installBuilder(
-						JavaCore.BUILDER_ID);
+					wolipsProject.getBuilderAccessor().installJavaBuilder();
 				} catch (Exception anException) {
 					WOLipsLog.log(anException);
 				}
 				try {
 					//newProjectHandle.setDescription(newProjectHandle.getDescription(), new SubProgressMonitor(monitor, 1000));
-					WOLipsProject woLipsProject =
-						new WOLipsProject(newProjectHandle);
+					IWOLipsProject woLipsProject =
+						WOLipsCore.createProject(newProjectHandle);
 					woLipsProject.getNaturesAccessor().callConfigure();
 				} catch (Exception anException) {
 					WOLipsLog.log(anException);

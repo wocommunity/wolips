@@ -66,7 +66,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.actions.WorkspaceModifyDelegatingOperation;
 /**
  * @author mnolte
@@ -88,9 +87,7 @@ public class WOComponentCreationPage extends WizardNewWOResourcePage {
 	 * @param workbench  the workbench on which the page should be created
 	 * @param selection  the current selection
 	 */
-	public WOComponentCreationPage(
-		IWorkbench workbench,
-		IStructuredSelection selection) {
+	public WOComponentCreationPage(IStructuredSelection selection) {
 		super("createWOComponentPage1", selection);
 		this.setTitle(Messages.getString("WOComponentCreationPage.title"));
 		this.setDescription(

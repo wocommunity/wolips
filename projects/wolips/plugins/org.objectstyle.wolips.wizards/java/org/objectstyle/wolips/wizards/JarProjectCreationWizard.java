@@ -58,7 +58,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbench;
 import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
-import org.objectstyle.wolips.core.project.WOLipsProject;
+import org.objectstyle.wolips.core.project.IWOLipsProject;
+import org.objectstyle.wolips.core.project.WOLipsCore;
 import org.objectstyle.wolips.logging.WOLipsLog;
 /**
  * @author uli
@@ -92,18 +93,14 @@ public class JarProjectCreationWizard
 	public boolean performFinish() {
 		boolean success = mainPage.createProject();
 		if (success) {
-			WOLipsProject woLipsProject =
-				new WOLipsProject(mainPage.getProjectHandle());
-			if (!woLipsProject
-				.getBuilderAccessor()
-				.isBuilderInstalled(ANT_BUILDER_ID))
-				try {
-					woLipsProject.getBuilderAccessor().installBuilder(
-						ANT_BUILDER_ID);
-				} catch (CoreException e) {
-					WOLipsLog.log(e);
-					return false;
-				}
+			try {
+				IWOLipsProject woLipsProject =
+					WOLipsCore.createProject(mainPage.getProjectHandle());
+				woLipsProject.getBuilderAccessor().installAntBuilder();
+			} catch (CoreException e) {
+				WOLipsLog.log(e);
+				return false;
+			}
 		}
 		return success;
 	}

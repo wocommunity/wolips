@@ -57,7 +57,6 @@ package org.objectstyle.wolips.core.listener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
@@ -70,8 +69,9 @@ import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.objectstyle.wolips.core.ant.UpdateFrameworkIncludeFiles;
 import org.objectstyle.wolips.core.ant.UpdateOtherClasspathIncludeFiles;
 import org.objectstyle.wolips.core.preferences.Preferences;
+import org.objectstyle.wolips.core.project.IWOLipsProject;
 import org.objectstyle.wolips.core.project.PBProjectUpdater;
-import org.objectstyle.wolips.core.project.WOLipsProject;
+import org.objectstyle.wolips.core.project.WOLipsCore;
 import org.objectstyle.wolips.logging.WOLipsLog;
 /**
  * Tracking changes in classpath and synchronizes webobjects project file
@@ -127,9 +127,9 @@ public class JavaElementChangeListener implements IElementChangedListener {
 					foundChangedElements))
 					continue;
 				javaProjectChanges = true;
-				WOLipsProject woLipsProject =
-					new WOLipsProject(projectToExamine);
+				IWOLipsProject woLipsProject = null;
 				try {
+					woLipsProject = WOLipsCore.createProject(projectToExamine);
 					if (woLipsProject.getNaturesAccessor().hasWOLipsNature()) {
 						UpdateOtherClasspathIncludeFiles updateOtherClasspathIncludeFiles =
 							new UpdateOtherClasspathIncludeFiles();

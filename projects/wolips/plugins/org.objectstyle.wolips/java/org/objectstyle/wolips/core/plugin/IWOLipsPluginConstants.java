@@ -58,44 +58,6 @@ package org.objectstyle.wolips.core.plugin;
  * @author mnolte
  */
 public interface IWOLipsPluginConstants {
-	//preferences
-	/*
-	public static final String PREF_MODEL_NAVIGATOR_FILTER =
-		"org.objectstyle.wolips.preference.ModelNavigatorFilter";
-	public static final String PREF_WO_NAVIGATOR_FILTER =
-		"org.objectstyle.wolips.preference.WONavigatorFilter";
-	public static final String PREF_PRODUCT_NAVIGATOR_FILTER =
-		"org.objectstyle.wolips.preference.ProductNavigatorFilter";
-	public static final String PREF_ANT_BUILD_FILE =
-		"org.objectstyle.wolips.preference.AntBuildFile";
-	public static final String PREF_RUN_WOBUILDER_ON_BUILD =
-		"org.objectstyle.wolips.preference.RunWOBuilderOnBuild";
-	public static final String PREF_OPEN_WOCOMPONENT_ACTION_INCLUDES_OPEN_HTML =
-		"org.objectstyle.wolips.Preference.OpenWOComponentActionIncludesOpenHTML";
-	public static final String PREF_SHOW_BUILD_OUTPUT =
-		"org.objectstyle.wolips.Preference.ShowBuildOutput";
-	public static final String PREF_RUN_ANT_AS_EXTERNAL_TOOL =
-		"org.objectstyle.wolips.Preference.RunAntAsExternalTool";
-	public static final String PREF_NS_PROJECT_SEARCH_PATH =
-		"org.objectstyle.wolips.Preference.NSProjectSearch";
-	public static final String PREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH =
-		"org.objectstyle.wolips.Preference.RebuildWOBuildPropertiesOnNextLaunch";
-	public static final String PREF_LOG_LEVEL =
-		"org.objectstyle.wolips.Preference.LogLevel";
-	public static final String PREF_WOLIPS_VERSION_EARLY_STARTUP =
-		"org.objectstyle.wolips.Preference.WOLipsVersionEarlyStartup";
-	public static final String PREF_PBWO_PROJECT_UPDATE =
-		"org.objectstyle.wolips.Preference.Update_PBWO_Project";
-	public static final String PREF_PBWO_PROJECT_INCLUDED_WOAPP_RESOURCES =
-		"org.objectstyle.wolips.Preference.PBWO_Project_Included_WOAPP_Resources";
-	public static final String PREF_PBWO_PROJECT_EXCLUDED_WOAPP_RESOURCES =
-		"org.objectstyle.wolips.Preference.PBWO_Project_Excluded_WOAPP_Resources";
-	public static final String PREF_PBWO_PROJECT_INCLUDED_CLASSES =
-		"org.objectstyle.wolips.Preference.PBWO_Project_Included_Classes";
-	public static final String PREF_PBWO_PROJECT_EXCLUDED_CLASSES =
-		"org.objectstyle.wolips.Preference.PBWO_Project_Excluded_Classes";
-	public static final String PREF_LAUNCH_GLOBAL = "org.objectstyle.wolips.Preference.Launch_Global";
-	*/
 	// flle extensions and resource identifier
 	public static final String EXT_PROJECT = "project";
 	public static final String EXT_SUBPROJECT = "subproj";
@@ -140,10 +102,6 @@ public interface IWOLipsPluginConstants {
 			SUBPROJECTS_ID,
 			FRAMEWORKS_ID };
 	public static final String PROJECT_FILE_NAME = "PB.project";
-	public static final String INCREMENTAL_BUILDER_ID =
-		"org.objectstyle.wolips.incrementalbuilder";
-	public static final String ANT_BUILDER_ID =
-		"org.objectstyle.wolips.antbuilder";
 	public static final String INCREMENTAL_FRAMEWORK_NATURE_ID =
 		"org.objectstyle.wolips.incrementalframeworknature";
 	public static final String ANT_FRAMEWORK_NATURE_ID =
@@ -161,7 +119,7 @@ public interface IWOLipsPluginConstants {
 		"org.objectstyle.wolips.woframeworkbuilder";
 	public static String WOAPPLICATION_BUILDER_ID =
 		"org.objectstyle.wolips.woapplicationbuilder";
-	// mandatory eclipse classpath variables
+
 	public static final String[] WOLIPS_NATURES =
 		{
 			INCREMENTAL_FRAMEWORK_NATURE_ID,
@@ -170,21 +128,5 @@ public interface IWOLipsPluginConstants {
 			ANT_APPLICATION_NATURE_ID,
 			WO_APPLICATION_NATURE_OLD,
 			WO_FRAMEWORK_NATURE_OLD };
-	public static final String PLUGIN_ID = "org.objectstyle.wolips";
-	public static final String ID_ELEMENT_CREATION_ACTION_SET =
-		"org.objectstyle.wolips.wizards.ElementCreationActionSet";
-	public static final String ID_BUILD_ACTION_SET =
-		"org.objectstyle.wolips.ui.BuildActionSet";
-	public static final String ID_Navigator = "org.objectstyle.wolips.ui.Navigator"; //$NON-NLS-1$
-	public static final String ID_WONavigator = "org.objectstyle.wolips.ui.WONavigator"; //$NON-NLS-1$
-	public static final String ID_ModelNavigator = "org.objectstyle.wolips.ui.ModelNavigator"; //$NON-NLS-1$
-	public static final String ID_ProductNavigator = "org.objectstyle.wolips.ui.ProductNavigator"; //$NON-NLS-1$
-	public static final String ID_AntNavigator = "org.eclipse.ui.externaltools.AntView"; //$NON-NLS-1$
-	public static final String build_file_wounit = "build-wounit.xml";
-	//local framework search for PB.project
-	public static final String DefaultLocalFrameworkSearch =
-		"$(NEXT_ROOT)$(LOCAL_LIBRARY_DIR)/Frameworks";
-	public static String UserHomeClasspathVariable = "USER.HOME";
-	public static String ProjectWonderHomeClasspathVariable = "PROJECT.WONDER.HOME";	
 	
 }

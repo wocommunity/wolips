@@ -6,9 +6,9 @@
  */
 package org.objectstyle.wolips.launching;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.ArrayList;
 import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
@@ -16,13 +16,14 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-//import org.eclipse.core.runtime.IPath;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.jdt.launching.IRuntimeClasspathEntry;
 import org.eclipse.jdt.launching.IRuntimeClasspathProvider;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.jdt.launching.StandardClasspathProvider;
-import org.objectstyle.wolips.core.project.WOLipsProject;
+import org.objectstyle.wolips.core.project.INaturesAccessor;
+import org.objectstyle.wolips.core.project.IWOLipsProject;
+import org.objectstyle.wolips.core.project.WOLipsCore;
 
 /**
  * @author hn3000
@@ -114,8 +115,8 @@ public class WORuntimeClasspathProvider
 		if (IRuntimeClasspathEntry.PROJECT == entry.getType()) {
 			IProject project = (IProject) entry.getResource();
 
-			WOLipsProject wop = new WOLipsProject(project);
-			WOLipsProject.NaturesAccessor na = wop.getNaturesAccessor();
+			IWOLipsProject wop = WOLipsCore.createProject(project);
+			INaturesAccessor na = wop.getNaturesAccessor();
 
 			String projectName = project.getName();
 			String projectNameLC = projectName.toLowerCase();

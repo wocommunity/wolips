@@ -118,7 +118,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.actions.WorkspaceModifyDelegatingOperation;
 
 /**
@@ -137,9 +136,7 @@ public class WOSubprojectCreationPage extends WizardNewWOResourcePage {
 	 * @param pageName
 	 * @param selection
 	 */
-	public WOSubprojectCreationPage(
-		IWorkbench workbench,
-		IStructuredSelection selection) {
+	public WOSubprojectCreationPage(IStructuredSelection selection) {
 		super("createWOSubproject1", selection);
 		this.setTitle(Messages.getString("WOSubprojectCreationPage.title"));
 		this.setDescription(

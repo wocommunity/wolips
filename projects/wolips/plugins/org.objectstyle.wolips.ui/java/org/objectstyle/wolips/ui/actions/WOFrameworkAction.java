@@ -74,8 +74,9 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.dialogs.SelectionDialog;
-import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
 import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
+import org.objectstyle.wolips.core.project.IClasspathVariablesAccessor;
+import org.objectstyle.wolips.core.project.WOLipsCore;
 import org.objectstyle.wolips.ui.view.WOFrameworkDialogWrapper;
 
 /**
@@ -141,7 +142,7 @@ public class WOFrameworkAction extends ActionOnIProject {
 			WOFrameworkAction.frameworkDialog(
 				this.part,
 				javaProject,
-				IWOLipsPluginConstants.UserHomeClasspathVariable,
+				IClasspathVariablesAccessor.UserHomeClasspathVariable,
 				false,
 				true);
 			return;
@@ -149,7 +150,7 @@ public class WOFrameworkAction extends ActionOnIProject {
 			WOFrameworkAction.frameworkDialog(
 				this.part,
 				javaProject,
-				IWOLipsPluginConstants.ProjectWonderHomeClasspathVariable,
+				IClasspathVariablesAccessor.ProjectWonderHomeClasspathVariable,
 				false,
 				true);
 			return;
@@ -206,27 +207,9 @@ public class WOFrameworkAction extends ActionOnIProject {
 				List list = this.getInitialElementSelections();
 				for (int i = 0; i < list.size(); i++) {
 					String string = list.get(i).toString();
-					if (WOLipsPlugin
-						.getDefault()
-						.getWOEnvironment()
-						.getNEXT_LOCAL_ROOT()
-						.equals(string)
-						|| WOLipsPlugin
-							.getDefault()
-							.getWOEnvironment()
-							.getNEXT_SYSTEM_ROOT()
-							.equals(
-							string)
-						|| WOLipsPlugin
-							.getDefault()
-							.getWOEnvironment()
-							.getNEXT_ROOT()
-							.equals(
-							string)
-						|| IWOLipsPluginConstants
-							.UserHomeClasspathVariable
-							.equals(
-							string))
+					if (WOLipsCore
+						.getClasspathVariablesAccessor()
+						.isUnderWOLipsControl(string))
 						continue;
 					TableItem item = new TableItem(includeTable, SWT.NONE);
 					item.setText(string);

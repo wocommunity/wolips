@@ -93,7 +93,7 @@ public class TargetBuilder extends JavaBuilder
 		super();
 	}
 
-	private void cancelBuildOnErrors(IJavaProject javaProject) throws CoreException
+	private void cancelBuildOnErrors() throws CoreException
 	{
 		Integer severityError = new Integer(IMarker.SEVERITY_ERROR);
 
@@ -150,7 +150,7 @@ public class TargetBuilder extends JavaBuilder
 			javaProject.setOutputLocation(projectOutputLocation, monitor);
 			javaProject.setRawClasspath(projectClasspath, monitor);
 			updateProblemMarkers();
-			cancelBuildOnErrors(javaProject);
+			cancelBuildOnErrors();
 		}
 
 		return result;

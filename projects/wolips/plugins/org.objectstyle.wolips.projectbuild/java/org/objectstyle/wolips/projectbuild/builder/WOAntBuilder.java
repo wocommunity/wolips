@@ -137,7 +137,7 @@ public class WOAntBuilder
 					WOProjectBuildConstants.MARKER_TASK_GENERIC,
 					false,
 					IResource.DEPTH_ONE);
-				this.execute(kind, args, monitor, aBuildFile);
+				this.execute(monitor, aBuildFile);
 			}
 		} catch (Exception e) {
 			this.handleException(e);
@@ -162,8 +162,6 @@ public class WOAntBuilder
 	 * @throws Exception
 	 */
 	private void execute(
-		int kind,
-		Map args,
 		IProgressMonitor monitor,
 		String aBuildFile)
 		throws Exception {
@@ -184,13 +182,9 @@ public class WOAntBuilder
 			if (projectNeedsClean())
 				runAnt.asExternalTool(
 					getProject().getFile(aBuildFile),
-					kind,
-					monitor,
 					this.cleanTarget());
 			runAnt.asExternalTool(
 				getProject().getFile(aBuildFile),
-				kind,
-				monitor,
 				this.defaultTarget());
 
 		} else {

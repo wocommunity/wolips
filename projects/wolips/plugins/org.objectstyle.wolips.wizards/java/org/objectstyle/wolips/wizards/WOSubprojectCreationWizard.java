@@ -97,7 +97,7 @@ public class WOSubprojectCreationWizard extends BasicNewFolderResourceWizard {
 	 * Method declared on Wizard.
 	 */
 	public void addPages() {
-		mainPage = new WOSubprojectCreationPage(workbench, selection);
+		mainPage = new WOSubprojectCreationPage(selection);
 		addPage(mainPage);
 	}
 

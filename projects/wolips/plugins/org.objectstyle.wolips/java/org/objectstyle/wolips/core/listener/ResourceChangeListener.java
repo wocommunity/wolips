@@ -57,7 +57,6 @@ package org.objectstyle.wolips.core.listener;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -71,9 +70,10 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.JavaCore;
 import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
 import org.objectstyle.wolips.core.preferences.Preferences;
+import org.objectstyle.wolips.core.project.IWOLipsProject;
 import org.objectstyle.wolips.core.project.PBProjectUpdater;
+import org.objectstyle.wolips.core.project.WOLipsCore;
 import org.objectstyle.wolips.core.project.WOLipsJavaProject;
-import org.objectstyle.wolips.core.project.WOLipsProject;
 import org.objectstyle.wolips.core.util.StringListMatcher;
 import org.objectstyle.wolips.logging.WOLipsLog;
 /**
@@ -91,13 +91,17 @@ public class ResourceChangeListener
 	public ResourceChangeListener() {
 		super();
 		woappResourcesIncludeMatcher =
-			new StringListMatcher(Preferences.getPREF_PBWO_PROJECT_INCLUDED_WOAPP_RESOURCES());
+			new StringListMatcher(
+				Preferences.getPREF_PBWO_PROJECT_INCLUDED_WOAPP_RESOURCES());
 		woappResourcesExcludeMatcher =
-			new StringListMatcher(Preferences.getPREF_PBWO_PROJECT_EXCLUDED_WOAPP_RESOURCES());
+			new StringListMatcher(
+				Preferences.getPREF_PBWO_PROJECT_EXCLUDED_WOAPP_RESOURCES());
 		classesIncludeMatcher =
-			new StringListMatcher(Preferences.getPREF_PBWO_PROJECT_INCLUDED_CLASSES());
+			new StringListMatcher(
+				Preferences.getPREF_PBWO_PROJECT_INCLUDED_CLASSES());
 		classesExcludeMatcher =
-			new StringListMatcher(Preferences.getPREF_PBWO_PROJECT_EXCLUDED_CLASSES());
+			new StringListMatcher(
+				Preferences.getPREF_PBWO_PROJECT_EXCLUDED_CLASSES());
 	}
 	/**
 	 * Adds instance of inner class ProjectFileResourceValidator to events
@@ -210,8 +214,8 @@ public class ResourceChangeListener
 						// project deleted no further investigation needed
 						return false;
 					}
-					WOLipsProject wolipsProject =
-						new WOLipsProject((IProject) resource);
+					IWOLipsProject wolipsProject =
+						WOLipsCore.createProject((IProject) resource);
 					if (wolipsProject.getNaturesAccessor().hasWOLipsNature()) {
 						// resource change concerns to webobjects project
 						// -> visit childs
@@ -229,7 +233,6 @@ public class ResourceChangeListener
 						return false;
 					}
 					if (needsProjectFileUpdate(kindOfChange)) {
-
 						if (EXT_COMPONENT
 							.equals(resource.getFileExtension())) {
 							updateProjectFile(
@@ -246,14 +249,14 @@ public class ResourceChangeListener
 								resource.getParent().getFile(
 									new Path(PROJECT_FILE_NAME)));
 						} /*else if (
-																															EXT_EOMODEL.equals(resource.getFileExtension())) {
-																															updateProjectFile(
-																																kindOfChange,
-																																resource,
-																																RESOURCES_ID,
-																																resource.getParent().getFile(
-																																	new Path(PROJECT_FILE_NAME)));
-																														} */
+																																					EXT_EOMODEL.equals(resource.getFileExtension())) {
+																																					updateProjectFile(
+																																						kindOfChange,
+																																						resource,
+																																						RESOURCES_ID,
+																																						resource.getParent().getFile(
+																																							new Path(PROJECT_FILE_NAME)));
+																																				} */
 						/*else if (
 							EXT_EOMODEL_BACKUP.equals(
 								resource.getFileExtension())) {

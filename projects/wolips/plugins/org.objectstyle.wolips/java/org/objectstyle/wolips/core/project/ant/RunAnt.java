@@ -139,11 +139,7 @@ public class RunAnt extends AWOLips {
 	 * @param monitor
 	 * @throws Exception
 	 */
-	public void asExternalTool(
-		IFile buildFile,
-		int kind,
-		IProgressMonitor monitor,
-		String target)
+	public void asExternalTool(IFile buildFile, String target)
 		throws Exception {
 		ILaunchConfiguration config = null;
 		try {

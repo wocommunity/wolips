@@ -54,80 +54,70 @@
  *
  */
 
-package org.objectstyle.wolips.ui.actions;
+package org.objectstyle.wolips.core.project;
 
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.viewers.ISelection;
-import org.objectstyle.wolips.core.project.IWOLipsProject;
-import org.objectstyle.wolips.core.project.WOLipsCore;
-import org.objectstyle.wolips.logging.WOLipsLog;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.jdt.core.JavaModelException;
 
 /**
- * @author uli
+ * @author ulrich
  *
- *The Action for updating the PB.project file.
+ * To change the template for this generated type comment go to
+ * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public class PBAction extends ActionOnIProject {
+public interface IClasspathVariablesAccessor {
 
-	private static String UpdatePBProjectID = "UpdatePB.Project.ID";
-
-	/**
-	 * Contructor for the PBAction
-	 */
-	public PBAction() {
-		super();
-	}
-	/**
-	 * Method dispose.
-	 */
-	public void dispose() {
-		super.dispose();
-	}
-	/**
-	 * Updates the PB.project file.
-	 * Will be invoked by the popup menu.
-	 */
-	public void run(IAction action) {
-		if (project() != null) {
-			try {
-				if (action.getId().equals(PBAction.UpdatePBProjectID)) {
-					IWOLipsProject woLipsProject =
-						WOLipsCore.createProject(project());
-					//remove all existing entries
-					woLipsProject
-						.getPBProjectFilesAccessor()
-						.cleanAllFileTables();
-					this.project().close(null);
-					//invokes the ResoureChangeListener indirectly
-					this.project().open(null);
-				}
-			} catch (Exception ex) {
-				WOLipsLog.log(ex);
-			}
-		}
-	}
+	public final static String UserHomeClasspathVariable = "USER.HOME";
+	public final static String ProjectWonderHomeClasspathVariable =
+		"PROJECT.WONDER.HOME";
 
 	/**
-	 * Calls super.
-	 * Inactivates the Action if the project has no WOBuilder installed
+	 * @return IPath from NextLocalRoot Classpath variable if it exists.
 	 */
-	public void selectionChanged(IAction action, ISelection selection) {
-		super.selectionChanged(action, selection);
-		if (project() != null) {
-			if (action.getId().equals(PBAction.UpdatePBProjectID)) {
-				action.setEnabled(true);
-				try {
-					IWOLipsProject woLipsProject =
-						WOLipsCore.createProject(project());
-					action.setEnabled(
-						woLipsProject.getNaturesAccessor().hasWOLipsNature());
-				} catch (Exception exception) {
-					WOLipsLog.log(exception);
-				}
-			}
-		} else {
-			action.setEnabled(false);
-		}
-	}
-
+	public abstract IPath getNextLocalRootClassPathVariable();
+	/**
+	 * @return IPath from NextRoot Classpath variable if it exists.
+	 */
+	public abstract IPath getNextRootClassPathVariable();
+	/**
+	 * @return IPath from NextSystemRoot Classpath variable if it exists.
+	 */
+	public abstract IPath getNextSystemRootClassPathVariable();
+	/**
+	 * @return IPath from UserHome Classpath variable if it exists.
+	 */
+	public abstract IPath getUserHomeClassPathVariable();
+	/**
+	 * @return IPath from UserHome Classpath variable if it exists.
+	 */
+	public abstract IPath getProjectWonderHomeClassPathVariable();
+	/**
+	 *set IPath for NextLocalRoot Classpath variable.
+	 */
+	public abstract void setNextLocalRootClassPathVariable(IPath path)
+		throws JavaModelException;
+	/**
+	 * set IPath for NextRoot Classpath variable.
+	 */
+	public abstract void setNextRootClassPathVariable(IPath path)
+		throws JavaModelException;
+	/**
+	 * set IPath for NextSystemRoot Classpath variable.
+	 */
+	public abstract void setNextSystemRootClassPathVariable(IPath path)
+		throws JavaModelException;
+	/**
+	 * set IPath for UserHome Classpath variable.
+	 */
+	public abstract void setUserHomeClassPathVariable(IPath path)
+		throws JavaModelException;
+	/**
+	 * set IPath for UserHome Classpath variable.
+	 */
+	public abstract void setProjectWonderHomeClassPathVariable(IPath path)
+		throws JavaModelException;
+	/**
+	 * @return Returns true if the named classpath variable is controlled by WOLips.
+	 */
+	public abstract boolean isUnderWOLipsControl(String classpathVariable);
 }

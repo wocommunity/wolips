@@ -103,6 +103,9 @@ public class WOLipsCoreTest extends TestCase {
 		CoreException coreException = null;
 		try {
 			IWOLipsProject project = WOLipsCore.createProject(null);
+			assertNull(
+				"WOLipsCore.createJavaProject(null) should return null",
+				project);
 		} catch (CoreException e) {
 			coreException = e;
 		}
@@ -115,6 +118,9 @@ public class WOLipsCoreTest extends TestCase {
 		CoreException coreException = null;
 		try {
 			IWOLipsJavaProject project = WOLipsCore.createJavaProject(null);
+			assertNull(
+				"WOLipsCore.createJavaProject(null) should return null",
+				project);
 		} catch (CoreException e) {
 			coreException = e;
 		}
@@ -127,13 +133,15 @@ public class WOLipsCoreTest extends TestCase {
 		CoreException coreException = null;
 		String projectName = "Foo";
 		IProject project =
-			ResourcesPlugin.getWorkspace().getRoot().getProject(
-		projectName);
+			ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
 		assertNotNull("project handle should not be null", project);
 		try {
-			IProjectDescription projectDescription = ResourcesPlugin.getWorkspace().newProjectDescription("Foo");
-			assertNotNull("projectDescription should not be null", projectDescription);
-		projectDescription.setLocation(project.getLocation());
+			IProjectDescription projectDescription =
+				ResourcesPlugin.getWorkspace().newProjectDescription("Foo");
+			assertNotNull(
+				"projectDescription should not be null",
+				projectDescription);
+			projectDescription.setLocation(project.getLocation());
 			//org.objectstyle.wolips.antapplicationnature
 			projectDescription.setNatureIds(new String[0]);
 			String[] natures = projectDescription.getNatureIds();
@@ -142,9 +150,7 @@ public class WOLipsCoreTest extends TestCase {
 			if (!project.exists()) {
 				// set description only in this way
 				// to ensure project location is set
-				project.create(
-				projectDescription,
-					null);
+				project.create(projectDescription, null);
 			}
 			if (!project.isOpen()) {
 				project.open(null);
@@ -160,37 +166,41 @@ public class WOLipsCoreTest extends TestCase {
 			coreException);
 
 	}
-	
+
 	public void testCreateJavaProject() {
 		CoreException coreException = null;
 		String projectName = "FooJava";
 		IProject project =
-			ResourcesPlugin.getWorkspace().getRoot().getProject(
-		projectName);
+			ResourcesPlugin.getWorkspace().getRoot().getProject(projectName);
 		assertNotNull("project handle should not be null", project);
 		try {
-			IProjectDescription projectDescription = ResourcesPlugin.getWorkspace().newProjectDescription("Foo");
-			assertNotNull("projectDescription should not be null", projectDescription);
-		projectDescription.setLocation(project.getLocation());
+			IProjectDescription projectDescription =
+				ResourcesPlugin.getWorkspace().newProjectDescription("Foo");
+			assertNotNull(
+				"projectDescription should not be null",
+				projectDescription);
+			projectDescription.setLocation(project.getLocation());
 			//org.objectstyle.wolips.antapplicationnature
-			projectDescription.setNatureIds(new String[] {"org.eclipse.jdt.core.javanature"});
+			projectDescription.setNatureIds(
+				new String[] { "org.eclipse.jdt.core.javanature" });
 			String[] natures = projectDescription.getNatureIds();
 			assertNotNull("natures should not be null", natures);
 			assertEquals("expect one nature", natures.length, 1);
 			if (!project.exists()) {
 				// set description only in this way
 				// to ensure project location is set
-				project.create(
-				projectDescription,
-					null);
+				project.create(projectDescription, null);
 			}
 			if (!project.isOpen()) {
 				project.open(null);
 			}
 			IJavaProject javaProject = JavaCore.create(project);
 			assertNotNull("javaProject should not be null", javaProject);
-			IWOLipsJavaProject wolipsJavaProject = WOLipsCore.createJavaProject(javaProject);
-			assertNotNull("wolipsJavaProject should not be null", wolipsJavaProject);
+			IWOLipsJavaProject wolipsJavaProject =
+				WOLipsCore.createJavaProject(javaProject);
+			assertNotNull(
+				"wolipsJavaProject should not be null",
+				wolipsJavaProject);
 			IWOLipsJavaProjectTest.PROJECT = javaProject;
 		} catch (CoreException e) {
 			coreException = e;
@@ -200,5 +210,5 @@ public class WOLipsCoreTest extends TestCase {
 			coreException);
 
 	}
-	
+
 }

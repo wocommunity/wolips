@@ -80,7 +80,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.PropertyPage;
 import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
-import org.objectstyle.wolips.core.project.WOLipsProject;
+import org.objectstyle.wolips.core.project.IWOLipsProject;
+import org.objectstyle.wolips.core.project.WOLipsCore;
 import org.objectstyle.wolips.logging.WOLipsLog;
 import org.objectstyle.wolips.projectbuild.WOProjectBuildConstants;
 
@@ -119,7 +120,7 @@ public class ProjectNaturePage
 	 */
 	private void _addFirstSection(
 		Composite parent,
-		WOLipsProject woLipsProject
+		IWOLipsProject woLipsProject
   )
     throws CoreException
   {
@@ -144,7 +145,7 @@ public class ProjectNaturePage
    */
   private void _addBuildStyleSection (
     Composite parent,
-    WOLipsProject woLipsProject
+    IWOLipsProject woLipsProject
   )
     throws CoreException 
   {
@@ -199,7 +200,7 @@ public class ProjectNaturePage
    */
   private void _addProjectKindSection(
     Composite parent,
-    WOLipsProject woLipsProject)
+    IWOLipsProject woLipsProject)
     throws CoreException {
     Composite group = _createLabelledComposite(parent, PROJECT_KIND_TITLE);
 
@@ -263,7 +264,7 @@ public class ProjectNaturePage
    */
   private void _addPatternSection(
     Composite parent,
-    WOLipsProject woLipsProject
+    IWOLipsProject woLipsProject
   ) {
     Composite group = _createLabelledComposite(parent, BUILD_PARAMS_TITLE);
     
@@ -291,7 +292,7 @@ public class ProjectNaturePage
    */
   private void _addTargetBuilderSection(
 	  Composite parent,
-	  WOLipsProject woLipsProject
+	  IWOLipsProject woLipsProject
 )
   throws CoreException
 {
@@ -320,7 +321,7 @@ public class ProjectNaturePage
 		data.grabExcessHorizontalSpace = true;
 		composite.setLayoutData(data);
 		try {
-			WOLipsProject woLipsProject = this.getWOLipsProject();
+			IWOLipsProject woLipsProject = this.getWOLipsProject();
 			_addFirstSection(composite, woLipsProject);
       // --
 			_addBuildStyleSection(composite, woLipsProject);
@@ -366,7 +367,7 @@ public class ProjectNaturePage
 	 */
 	public boolean performOk() {
 		// store the value in the owner text field
-		WOLipsProject woLipsProject;
+		IWOLipsProject woLipsProject;
 		try {
 			woLipsProject = this.getWOLipsProject();
 			if (_woNatureCheck.getSelection()) {
@@ -378,10 +379,10 @@ public class ProjectNaturePage
           args.put(WSRES_EXCLUDES, _wsresExcludes.getText());
           args.put(WSRES_INCLUDES, _wsresIncludes.getText());
 
-					woLipsProject.getNaturesAccessor().setIncrementalNature(_woIsFrameworkButton.getSelection(), false, args);
+					woLipsProject.getNaturesAccessor().setIncrementalNature(_woIsFrameworkButton.getSelection(), args);
           
 				} else {
-					woLipsProject.getNaturesAccessor().setAntNature(_woIsFrameworkButton.getSelection(), false);
+					woLipsProject.getNaturesAccessor().setAntNature(_woIsFrameworkButton.getSelection());
 				}
 			} else {
         woLipsProject.getNaturesAccessor().removeWOLipsNatures();
@@ -428,8 +429,8 @@ public class ProjectNaturePage
 	 * @return WOLipsProject
 	 * @throws CoreException
 	 */
-	public WOLipsProject getWOLipsProject() throws CoreException {
-		return new WOLipsProject(this._getProject());
+	public IWOLipsProject getWOLipsProject() throws CoreException {
+		return WOLipsCore.createProject(this._getProject());
 	}
 	private Button _woTargetBuilderCheck;
 	private Button _woNatureCheck;

@@ -102,6 +102,7 @@ public static final String MSG_SEP = " ";
 
 	public WOLipsLog(String name, int level) {
 		this.name = name;
+		this.level = level;
 	}
 
 	/**

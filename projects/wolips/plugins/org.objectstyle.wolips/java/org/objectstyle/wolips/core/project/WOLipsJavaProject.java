@@ -87,7 +87,7 @@ import org.objectstyle.wolips.logging.WOLipsLog;
  * To change this generated comment go to 
  * Window>Preferences>Java>Code Generation>Code Template
  */
-public class WOLipsJavaProject extends WOLipsProject implements IWOLipsJavaProject {
+public final class WOLipsJavaProject extends WOLipsProject implements IWOLipsJavaProject {
 	IJavaProject javaProject;
 	private ClasspathAccessor classpathAccessor;
 	private LaunchParameterAccessor launchParameterAccessor;
@@ -606,8 +606,7 @@ public class WOLipsJavaProject extends WOLipsProject implements IWOLipsJavaProje
 		 * @return boolean
 		 */
 		public boolean isAFramework(
-			IProject project,
-			ILaunchConfiguration configuration) {
+			IProject project) {
 			IJavaProject buildProject = null;
 			try {
 				buildProject = this.getJavaProject();
@@ -631,8 +630,7 @@ public class WOLipsJavaProject extends WOLipsProject implements IWOLipsJavaProje
 		 * @return boolean
 		 */
 		public boolean isTheLaunchApp(
-			IProject project,
-			ILaunchConfiguration configuration) {
+			IProject project) {
 			IJavaProject buildProject = null;
 			try {
 				buildProject = this.getJavaProject();
@@ -651,8 +649,7 @@ public class WOLipsJavaProject extends WOLipsProject implements IWOLipsJavaProje
 		 * @return boolean
 		 */
 		public boolean isValidProjectPath(
-			IProject project,
-			ILaunchConfiguration configuration) {
+			IProject project) {
 			try {
 				return project.getLocation().toOSString().indexOf("-") == -1;
 			} catch (Exception anException) {
@@ -665,13 +662,13 @@ public class WOLipsJavaProject extends WOLipsProject implements IWOLipsJavaProje
 		 * Method getGeneratedByWOLips.
 		 * @return String
 		 */
-		public String getGeneratedByWOLips(ILaunchConfiguration configuration) {
+		public String getGeneratedByWOLips() {
 			String returnValue = "";
 			IProject[] projects =
 				ResourcesPlugin.getWorkspace().getRoot().getProjects();
 			for (int i = 0; i < projects.length; i++) {
-				if (isValidProjectPath(projects[i], configuration)) {
-					if (isAFramework(projects[i], configuration)) {
+				if (isValidProjectPath(projects[i])) {
+					if (isAFramework(projects[i])) {
 						if (returnValue.length() > 0) {
 							returnValue = returnValue + ",";
 						}
@@ -681,7 +678,7 @@ public class WOLipsJavaProject extends WOLipsProject implements IWOLipsJavaProje
 								+ projects[i].getLocation().toOSString()
 								+ "\"";
 					}
-					if (isTheLaunchApp(projects[i], configuration)) {
+					if (isTheLaunchApp(projects[i])) {
 						if (returnValue.length() > 0) {
 							returnValue = returnValue + ",";
 						}
@@ -727,7 +724,7 @@ public class WOLipsJavaProject extends WOLipsProject implements IWOLipsJavaProje
 		public File getWDFolder(IProject theProject, IPath wd)
 			throws CoreException {
 			WOLipsProject wolipsProject = new WOLipsProject(theProject);
-			WOLipsProject.NaturesAccessor na =
+			INaturesAccessor na =
 				wolipsProject.getNaturesAccessor();
 
 			File wdFile = null;

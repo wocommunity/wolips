@@ -76,8 +76,8 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.objectstyle.cayenne.wocompat.PropertyListSerialization;
-import org.objectstyle.wolips.core.project.IBuilderAccessor;
-import org.objectstyle.wolips.core.project.WOLipsProject;
+import org.objectstyle.wolips.core.project.IWOLipsProject;
+import org.objectstyle.wolips.core.project.WOLipsCore;
 /**
  * @author uwe
  *
@@ -190,36 +190,20 @@ public class TargetBuilderNature implements IProjectNature
 
 	public void configure() throws CoreException
 	{
-		int installPosition;
-		
 		// Add nature-specific information
 		// for the project, such as adding a builder
 		// to a project's build spec.*/
-		IProject project = getProject();
-		WOLipsProject woLipsProject = new WOLipsProject(project);
-		installPosition = woLipsProject.getBuilderAccessor().positionForBuilder("org.eclipse.jdt.core.javabuilder");
-		if(installPosition == IBuilderAccessor.BuilderNotFound)
-			installPosition = woLipsProject.getBuilderAccessor().positionForBuilder(TargetBuilder.ID);
-		if(installPosition == IBuilderAccessor.BuilderNotFound)
-			installPosition = 0;
-			
-		woLipsProject.getBuilderAccessor().removeBuilder("org.eclipse.jdt.core.javabuilder");
-		woLipsProject.getBuilderAccessor().removeBuilder(TargetBuilder.ID);
+		IWOLipsProject woLipsProject = WOLipsCore.createProject(this.getProject());
+		int position = woLipsProject.getBuilderAccessor().removeJavaBuilder();
 		synchronizeWithFile();
-		
-		woLipsProject.getBuilderAccessor().installBuilderAtPosition(TargetBuilder.ID, installPosition, null);
+		woLipsProject.getBuilderAccessor().installTargetBuilder(position);
 	}
 		
 	public void deconfigure() throws CoreException
 	{
-		int installPosition;
-		WOLipsProject woLipsProject = new WOLipsProject(getProject());
-		
-		installPosition = woLipsProject.getBuilderAccessor().positionForBuilder(TargetBuilder.ID);
-		if(installPosition == IBuilderAccessor.BuilderNotFound)
-			return;
-		woLipsProject.getBuilderAccessor().removeBuilder(TargetBuilder.ID);
-		woLipsProject.getBuilderAccessor().installBuilderAtPosition("org.eclipse.jdt.core.javabuilder", installPosition, null);
+		IWOLipsProject woLipsProject = WOLipsCore.createProject(this.getProject());
+		int position = woLipsProject.getBuilderAccessor().removeTargetBuilder();
+		woLipsProject.getBuilderAccessor().installJavaBuilder(position);
 	}
 
 	public IProject getProject()

@@ -84,6 +84,8 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 	//The plugin.
 	private static WOLipsPlugin plugin;
 	private WOEnvironment woEnvironment;
+	private static final String PLUGIN_ID = "org.objectstyle.wolips";
+	
 	/**
 	 * Set this variable to true to get debug output
 	 */
@@ -138,7 +140,7 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 			// ensure plugin instance is always available using id
 			return new WOLipsPlugin(
 				Platform
-					.getPlugin(IWOLipsPluginConstants.PLUGIN_ID)
+					.getPlugin(WOLipsPlugin.PLUGIN_ID)
 					.getDescriptor());
 		}
 		return plugin;
@@ -194,7 +196,7 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 		if (plugin != null) {
 			return getDefault().getDescriptor().getUniqueIdentifier();
 		} else
-			return IWOLipsPluginConstants.PLUGIN_ID;
+			return WOLipsPlugin.PLUGIN_ID;
 	}
 	/**
 	 * @return WOEnvironment

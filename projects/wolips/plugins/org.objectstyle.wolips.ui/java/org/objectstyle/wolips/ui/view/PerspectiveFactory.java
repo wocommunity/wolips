@@ -62,7 +62,6 @@ import org.eclipse.search.ui.SearchUI;
 import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
-import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
 
 /**
  * @author uli
@@ -73,6 +72,15 @@ import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
  * Window>Preferences>Java>Code Generation.
  */
 public class PerspectiveFactory implements IPerspectiveFactory {
+	private static final String ID_ELEMENT_CREATION_ACTION_SET =
+		"org.objectstyle.wolips.wizards.ElementCreationActionSet";
+	private static final String ID_BUILD_ACTION_SET =
+		"org.objectstyle.wolips.ui.BuildActionSet";
+	private static final String ID_WONavigator = "org.objectstyle.wolips.ui.WONavigator"; //$NON-NLS-1$
+	private static final String ID_ModelNavigator = "org.objectstyle.wolips.ui.ModelNavigator"; //$NON-NLS-1$
+	private static final String ID_ProductNavigator = "org.objectstyle.wolips.ui.ProductNavigator"; //$NON-NLS-1$
+	private static final String ID_AntNavigator = "org.eclipse.ui.externaltools.AntView"; //$NON-NLS-1$
+
 
 	public void createInitialLayout(IPageLayout layout) {
 		String editorArea = layout.getEditorArea();
@@ -80,10 +88,10 @@ public class PerspectiveFactory implements IPerspectiveFactory {
 		IFolderLayout folder = layout.createFolder("left", IPageLayout.LEFT, (float) 0.25, editorArea); //$NON-NLS-1$
 		//folder.addView(IWOLipsPluginConstants.ID_Navigator);
 		folder.addView(JavaUI.ID_PACKAGES);
-		folder.addView(IWOLipsPluginConstants.ID_WONavigator);
-		folder.addView(IWOLipsPluginConstants.ID_ModelNavigator);
-		folder.addView(IWOLipsPluginConstants.ID_AntNavigator);
-		folder.addView(IWOLipsPluginConstants.ID_ProductNavigator);
+		folder.addView(PerspectiveFactory.ID_WONavigator);
+		folder.addView(PerspectiveFactory.ID_ModelNavigator);
+		folder.addView(PerspectiveFactory.ID_AntNavigator);
+		folder.addView(PerspectiveFactory.ID_ProductNavigator);
 		folder.addPlaceholder(IPageLayout.ID_RES_NAV);
 		folder = null;
 
@@ -105,9 +113,9 @@ public class PerspectiveFactory implements IPerspectiveFactory {
 		layout.addActionSet(JavaUI.ID_ACTION_SET);
 		layout.addActionSet(JavaUI.ID_ELEMENT_CREATION_ACTION_SET);
 		layout.addActionSet(
-			IWOLipsPluginConstants.ID_BUILD_ACTION_SET);
+		PerspectiveFactory.ID_BUILD_ACTION_SET);
 		layout.addActionSet(
-					IWOLipsPluginConstants.ID_ELEMENT_CREATION_ACTION_SET);
+		PerspectiveFactory.ID_ELEMENT_CREATION_ACTION_SET);
 
 		// views - java
 		//layout.addShowViewShortcut(WOLipsPlugin.ID_Finder);

@@ -56,6 +56,11 @@
 
 package org.objectstyle.wolips.core.project;
 
+import java.util.Map;
+
+import org.eclipse.core.resources.IProjectNature;
+import org.eclipse.core.runtime.CoreException;
+
 /**
  * @author ulrich
  *
@@ -63,5 +68,74 @@ package org.objectstyle.wolips.core.project;
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
 public interface INaturesAccessor {
+
+	public abstract boolean isTargetBuilderInstalled() throws CoreException;
+
+	public abstract void useTargetBuilder(boolean value) throws CoreException;
+
+	/**
+	 * @return true if at least one of the WOLips natures is installed.
+	 * @throws CoreException
+	 */
+	public abstract boolean hasWOLipsNature() throws CoreException;
+	
+	/**
+	 * @return true only if one of the WOLips application natures is installed. False does not mean that this is a framework.
+	 * @throws CoreException
+	 */
+	public abstract boolean isApplication() throws CoreException;
+	
+	/**
+	 * @return true only if one of the WOLips framework natures is installed. False does not mean that this is an application.
+	 * @throws CoreException
+	 */
+	public abstract boolean isFramework() throws CoreException;
+	
+	/**
+	 * @return true only if one of the WOLips ant natures is installed. False does not mean that this is an incremental nature.
+	 * @throws CoreException
+	 */
+	public abstract boolean isAnt() throws CoreException;
+	
+	/**
+	 * @return true only if one of the WOLips incremental natures is installed. False does not mean that this is an ant nature.
+	 * @throws CoreException
+	 */
+	public abstract boolean isIncremental() throws CoreException;
+
+	/**
+	 * @param isFramework
+	 * Replaces any currently set WOLips natures with the Ant Nature for Framework or Application.
+	 * @throws CoreException
+	 */
+	public abstract void setAntNature(boolean isFramework) throws CoreException;
+	
+	/**
+	 * @param isFramework
+	 * @param useTargetBuilder currently does nothing
+	* Replaces any currently set WOLips natures with the incremental Nature for Framework or Application.
+	 * @throws CoreException
+	 */
+	public abstract void setIncrementalNature(boolean isFramework, Map buildArgs) throws CoreException;
+
+	/**
+	 * @return IProjectNature[]
+	 * @throws CoreException
+	 */
+	public abstract IProjectNature[] getWOLipsNatures() throws CoreException;
+
+	/**
+	* Remove all WOLips Natures 
+	* and in consequence, their builders -- the Natures do that in .deconfigure
+	* 
+	 * @throws CoreException
+	 */
+	public abstract void removeWOLipsNatures() throws CoreException;
+
+	/**
+	 * Calls configure on all WOLips natures.
+	 * @throws CoreException
+	 */
+	public abstract void callConfigure() throws CoreException;
 
 }

@@ -69,7 +69,7 @@ import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
 public final class WOLipsCore {
-
+	
 	public final static IWOLipsProject createProject(IProject project)
 		throws CoreException {
 		if (project == null)
@@ -98,4 +98,7 @@ public final class WOLipsCore {
 		return new WOLipsJavaProject(project);
 	}
 
+	public final static IClasspathVariablesAccessor getClasspathVariablesAccessor() {
+		return new ClasspathVariablesAccessor();
+	}
 }

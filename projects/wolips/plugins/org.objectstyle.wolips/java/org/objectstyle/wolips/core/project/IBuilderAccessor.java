@@ -66,16 +66,81 @@ import org.eclipse.core.runtime.CoreException;
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
+/**
+ * @author ulrich
+ *
+ * To change the template for this generated type comment go to
+ * Window>Preferences>Java>Code Generation>Code and Comments
+ */
 public interface IBuilderAccessor {
 	public static final int BuilderNotFound = -1;
-	public Map getBuilderArgs();
-	public void removeBuilder(String aBuilder) throws CoreException;
-	public void installBuilder(String aBuilder) throws CoreException;
-	public boolean isBuilderInstalled(String anID);
-	public int positionForBuilder(String aBuilder) throws CoreException;
-	public void installBuilderAtPosition(
-		String aBuilder,
-		int installPos,
-		Map arguments)
-		throws CoreException;
+		
+	/**
+	 * Installs the target builder.
+	 * @throws CoreException
+	 */
+	public abstract void installTargetBuilder(int position) throws CoreException;
+	/**
+	 * Removes the target builder.
+	 * @return postion of TargetBuilder. If not found IBuilderAccessor.BuilderNotFoundwill be returned.
+	 * @throws CoreException
+	 */
+	public abstract int removeTargetBuilder() throws CoreException;
+	/**
+	 * Installs the ant builder.
+	 * @throws CoreException
+	 */
+	public abstract void installAntBuilder() throws CoreException;
+	/**
+	 * Removes the ant builder.
+	 * @throws CoreException
+	 */
+	public abstract void removeAntBuilder() throws CoreException;
+	/**
+	 * Installs the incremetal builder.
+	 * @throws CoreException
+	 */
+	public abstract void installIncrementalBuilder() throws CoreException;
+	/**
+	 * Removes the incremental builder.
+	 * @throws CoreException
+	 */
+	public abstract void removeIncrementalBuilder() throws CoreException;
+	/**
+	 * Installs the java builder.
+	 * @throws CoreException
+	 */
+	public abstract void installJavaBuilder() throws CoreException;
+	/**
+	 * Installs the java builder.
+	 * @throws CoreException
+	 */
+	public abstract void installJavaBuilder(int position) throws CoreException;
+	/**
+	 * Removes the incremental builder.
+	 * @return postion of JavaBuilder if not found IBuilderAccessor.BuilderNotFoundwill be returned.
+	 * @throws CoreException
+	 */
+	public abstract int removeJavaBuilder() throws CoreException;
+	/**
+	 * Return true if the target builder is installed.
+	 */
+	public abstract boolean isTargetBuilderInstalled();
+	/**
+	 * Return true if the ant builder is installed.
+	 */
+	public abstract boolean isAntBuilderInstalled();
+	/**
+	 * Return true if the incremental builder is installed.
+	 */
+	public abstract boolean isIncrementalBuilderInstalled();
+	/**
+	 * Return true if the java builder is installed.
+	 */
+	public abstract boolean isJavaBuilderInstalled();
+
+	/**
+	 * @return the with the wolips builder args
+	 */
+	public abstract Map getBuilderArgs();
 }

@@ -56,6 +56,11 @@
 
 package org.objectstyle.wolips.core.project;
 
+import java.io.IOException;
+
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IResource;
+
 /**
  * @author ulrich
  *
@@ -64,4 +69,21 @@ package org.objectstyle.wolips.core.project;
  */
 public interface IPBProjectFilesAccessor {
 
+	/**
+	 * cleans all tables
+	 */
+	public abstract void cleanAllFileTables() throws IOException;
+
+	/**
+	 * @param resource
+	 * @return IFolder
+	 */
+	public abstract IFolder getParentFolderWithPBProject(IResource resource);
+	/**
+	 * Method getParentFolderWithPBProject.
+	 * @param aFolder
+	 * @return IFolder or one the parents with PB.project if one is found. Null
+	 * is returned when Projects PB.project is found
+	 */
+	public abstract IFolder getParentFolderWithPBProject(IFolder aFolder);
 }

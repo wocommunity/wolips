@@ -86,8 +86,8 @@ public class EOModelCreationPage extends WizardNewWOResourcePage {
 	private HashMap availableAdaptors;
 	private Composite parentComposite;
 	// widgets
-	private Button adaptorJDBCCheckbox;
-	private Button adaptorJDBCPatchedCheckbox;
+//	private Button adaptorJDBCCheckbox;
+//	private Button adaptorJDBCPatchedCheckbox;
 	/**
 	 * Creates the page for the eomodel creation wizard.
 	 *
@@ -112,7 +112,7 @@ public class EOModelCreationPage extends WizardNewWOResourcePage {
 		super.createControl(parent);
 		Composite composite = (Composite) getControl();
 		//WorkbenchHelp.setHelp(composite, IReadmeConstants.CREATION_WIZARD_PAGE_CONTEXT);
-		GridData data = (GridData) composite.getLayoutData();
+		//GridData data = (GridData) composite.getLayoutData();
 		this.setFileName(
 			Messages.getString("EOModelCreationPage.newEOModel.defaultName"));
 		new Label(composite, SWT.NONE); // vertical spacer
@@ -195,7 +195,7 @@ public class EOModelCreationPage extends WizardNewWOResourcePage {
 					.libraryDir(),
 				"Frameworks");
 		AdaptorFilter adaptorFilter = new AdaptorFilter();
-		File[] finalFiles = systemFrameworkDir.listFiles(adaptorFilter);
+		systemFrameworkDir.listFiles(adaptorFilter);
 		availableAdaptors =
 			new HashMap(adaptorFilter.getAdaptorNames().size() + 1);
 		Button currentAdaptorButton;

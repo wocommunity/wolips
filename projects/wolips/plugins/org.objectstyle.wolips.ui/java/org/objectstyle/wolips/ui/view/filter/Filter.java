@@ -65,7 +65,6 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.ui.internal.misc.StringMatcher;
-import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
 /**
  * @author uli
  *
@@ -111,7 +110,6 @@ public abstract class Filter extends ViewerFilter {
 	 * Initializes the filters from the preference store.
 	 */
 	private void initializeFromPreferences() {
-		WOLipsPlugin plugin = WOLipsPlugin.getDefault();
 		// get the filters that were saved by ResourceNavigator.setFiltersPreference
 		String storedPatterns = this.storedPatterns();
 

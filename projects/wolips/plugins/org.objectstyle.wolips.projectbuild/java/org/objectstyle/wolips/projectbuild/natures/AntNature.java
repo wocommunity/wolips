@@ -72,7 +72,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
-import org.objectstyle.wolips.core.project.WOLipsProject;
+import org.objectstyle.wolips.core.project.IWOLipsProject;
+import org.objectstyle.wolips.core.project.WOLipsCore;
 import org.objectstyle.wolips.projectbuild.WOProjectBuildConstants;
 
 /**
@@ -92,22 +93,18 @@ public class AntNature implements IProjectNature, WOProjectBuildConstants {
 	  * @see org.eclipse.core.resources.IProjectNature#configure()
 	  */
 	public void configure() throws CoreException {
-		WOLipsProject woLipsProject = new WOLipsProject(this.getProject());
-		if (!woLipsProject
-			.getBuilderAccessor()
-			.isBuilderInstalled(ANT_BUILDER_ID))
-			woLipsProject.getBuilderAccessor().installBuilder(ANT_BUILDER_ID);
+		IWOLipsProject woLipsProject =
+			WOLipsCore.createProject(this.getProject());
+		woLipsProject.getBuilderAccessor().installAntBuilder();
 	}
 
 	/**
 	 * @see org.eclipse.core.resources.IProjectNature#deconfigure()
 	 */
 	public void deconfigure() throws CoreException {
-		WOLipsProject woLipsProject = new WOLipsProject(this.getProject());
-		if (woLipsProject
-			.getBuilderAccessor()
-			.isBuilderInstalled(ANT_BUILDER_ID))
-			woLipsProject.getBuilderAccessor().removeBuilder(ANT_BUILDER_ID);
+		IWOLipsProject woLipsProject =
+			WOLipsCore.createProject(this.getProject());
+		woLipsProject.getBuilderAccessor().removeAntBuilder();
 	}
 	/**
 	 * @see org.eclipse.core.resources.IProjectNature#getProject()

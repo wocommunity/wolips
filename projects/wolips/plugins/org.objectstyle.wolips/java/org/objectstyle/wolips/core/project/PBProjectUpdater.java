@@ -59,7 +59,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -83,12 +82,14 @@ import org.objectstyle.woenvironment.util.FileStringScanner;
  * Window>Preferences>Java>Code Generation.
  */
 public class PBProjectUpdater extends AWOLips {
+	//	local framework search for PB.project
+	private static final String DefaultLocalFrameworkSearch =
+		"$(NEXT_ROOT)$(LOCAL_LIBRARY_DIR)/Frameworks";
 	//do not cache PB.projects see bug #693046
 	//private static Hashtable projectUpdater = new Hashtable();
 	//public static String PBProject = "PB.projectContainer"; moved to IWOLipsPluginConstants.PROJECT_FILE_NAME (mn)
 	private PBProject pbProject;
 	private IContainer projectContainer;
-
 	private static final String dirtyPBProject = "<?xml";
 	/**
 	 * Constructor for PBProjectUpdater.
@@ -128,20 +129,20 @@ public class PBProjectUpdater extends AWOLips {
 		return returnValue;*/
 		return new PBProjectUpdater(aProjectContainer);
 	}
-//	/**
-//	 * Method updatePBProject.
-//	 * @throws CoreException
-//	 */
-//	public void updatePBProject() throws CoreException {
-//		syncPBProjectWithProject();
-//		if (projectContainer != null)
-//			try {
-//				PBProjectNotifications.postPBProjectDidUpgradeNotification(
-//					projectContainer.getName());
-//			} catch (Exception exception) {
-//				WOLipsLog.log(exception);
-//			}
-//	}
+	//	/**
+	//	 * Method updatePBProject.
+	//	 * @throws CoreException
+	//	 */
+	//	public void updatePBProject() throws CoreException {
+	//		syncPBProjectWithProject();
+	//		if (projectContainer != null)
+	//			try {
+	//				PBProjectNotifications.postPBProjectDidUpgradeNotification(
+	//					projectContainer.getName());
+	//			} catch (Exception exception) {
+	//				WOLipsLog.log(exception);
+	//			}
+	//	}
 	/**
 	 * On MacOSX the EOModeler converts the PB.project file to xml.
 	 */
@@ -196,33 +197,31 @@ public class PBProjectUpdater extends AWOLips {
 			aFile = null;
 		}
 	}
-	
 	public void cleanTables() throws IOException {
 		this.syncClasses(new ArrayList());
 		this.syncWOAppResources(new ArrayList());
 		this.syncWOComponents(new ArrayList());
-    _saveChanges();
+		_saveChanges();
 	}
-  
-  private void _saveChanges () throws IOException {
-    pbProject.saveChanges();
-    _tryRefresh();
-  }
-  
-  /** attempt to refresh Eclipse' idea of the resource to avoid "out of synch warnings" to user */
-  private void _tryRefresh() {
-    if (null != projectContainer) {
-      try {
-        IResource res = projectContainer.findMember(IWOLipsPluginConstants.PROJECT_FILE_NAME);
-        if (null != res)
-        res.refreshLocal(IResource.DEPTH_ZERO, null);
-      } catch (CoreException up) {
-        // no idea how to handle this case, ignore for now (and log, of course
-        WOLipsLog.log(up);
-      }
-    }
-  }
-
+	private void _saveChanges() throws IOException {
+		pbProject.saveChanges();
+		_tryRefresh();
+	}
+	/** attempt to refresh Eclipse' idea of the resource to avoid "out of synch warnings" to user */
+	private void _tryRefresh() {
+		if (null != projectContainer) {
+			try {
+				IResource res =
+					projectContainer.findMember(
+						IWOLipsPluginConstants.PROJECT_FILE_NAME);
+				if (null != res)
+					res.refreshLocal(IResource.DEPTH_ZERO, null);
+			} catch (CoreException up) {
+				// no idea how to handle this case, ignore for now (and log, of course
+				WOLipsLog.log(up);
+			}
+		}
+	}
 	/**
 	 * Method syncPBProjectWithProject.
 	 */
@@ -518,13 +517,15 @@ public class PBProjectUpdater extends AWOLips {
 	}
 	public void addLocalFrameworkSectionToPBProject() {
 		try {
-		List actualFrameworkSearch = pbProject.getFrameworkSearch();
-		if(actualFrameworkSearch == null) {
-			pbProject.setFrameworkSearch(new ArrayList());
-			actualFrameworkSearch = pbProject.getFrameworkSearch();
-		}
-		if (!actualFrameworkSearch.contains(IWOLipsPluginConstants.DefaultLocalFrameworkSearch)) {
-			actualFrameworkSearch.add(IWOLipsPluginConstants.DefaultLocalFrameworkSearch);
+			List actualFrameworkSearch = pbProject.getFrameworkSearch();
+			if (actualFrameworkSearch == null) {
+				pbProject.setFrameworkSearch(new ArrayList());
+				actualFrameworkSearch = pbProject.getFrameworkSearch();
+			}
+			if (!actualFrameworkSearch
+				.contains(PBProjectUpdater.DefaultLocalFrameworkSearch)) {
+				actualFrameworkSearch.add(
+					PBProjectUpdater.DefaultLocalFrameworkSearch);
 			}
 			_saveChanges();
 		} catch (IOException e) {

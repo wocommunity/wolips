@@ -56,21 +56,16 @@
 
 package org.objectstyle.wolips.projectbuild.natures;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
-import org.objectstyle.wolips.core.project.WOLipsProject;
+import org.objectstyle.wolips.core.project.IWOLipsProject;
+import org.objectstyle.wolips.core.project.WOLipsCore;
 import org.objectstyle.wolips.logging.WOLipsLog;
 import org.objectstyle.wolips.projectbuild.WOProjectBuildConstants;
 
@@ -96,9 +91,10 @@ public class IncrementalNature
 	public void configure() throws CoreException {
     IProject project = getProject();
 
-    System.out.println("configure(i) - " + project);
+	IWOLipsProject wolipsProject = WOLipsCore.createProject(project);
+	wolipsProject.getBuilderAccessor().installIncrementalBuilder();
 
-		IFolder buildFolder = project.getFolder("build");
+ 		IFolder buildFolder = project.getFolder("build");
 		if (!buildFolder.exists()) {
 			buildFolder.create(IResource.FORCE, true, null);
 		}
@@ -118,27 +114,8 @@ public class IncrementalNature
 	public void deconfigure() throws CoreException {
 		IProject project = getProject();
 
-		System.out.println("deconfigure(i) - " + project);
-		IProjectDescription desc = project.getDescription();
-
-		ICommand bc[] = desc.getBuildSpec();
-
-		ICommand found = null;
-
-		for (int i = 0; i < bc.length; i++) {
-			if (bc[i].getBuilderName().equals(INCREMENTAL_BUILDER_ID)) {
-				found = bc[i];
-			}
-		}
-
-		if (null != found) {
-			List buildCommands = new ArrayList(Arrays.asList(bc));
-			buildCommands.remove(found);
-			desc.setBuildSpec(
-				(ICommand[]) buildCommands.toArray(
-					new ICommand[buildCommands.size()]));
-			project.setDescription(desc, null);
-		}
+		IWOLipsProject wolipsProject = WOLipsCore.createProject(project);
+		wolipsProject.getBuilderAccessor().removeIncrementalBuilder();
 
 		IFolder buildFolder = project.getFolder("build");
 		if (buildFolder.exists() && buildFolder.isDerived()) {
@@ -158,12 +135,7 @@ public class IncrementalNature
 	 */
 	public void setProject(IProject project) {
 		_project = project;
-    if (null != project) {
-      _woLipsProject = new WOLipsProject(_project);
-    } else {
-      _woLipsProject = null;
-    }
-	}
+   }
 
 	/* ************************************************************************ */
 
@@ -213,7 +185,9 @@ public class IncrementalNature
 	public boolean isFramework() {
 		//return (getBooleanProperty(FRAMEWORK_PROPERTY));
     try {
-      return (_woLipsProject.getNaturesAccessor().isFramework());
+		IWOLipsProject woLipsProject =
+								WOLipsCore.createProject(this.getProject());
+      return (woLipsProject.getNaturesAccessor().isFramework());
     } catch (CoreException up) {
       WOLipsLog.log(up.getStatus());
     }
@@ -477,7 +451,6 @@ public class IncrementalNature
 //	}
 
 	IProject _project = null;
-  WOLipsProject _woLipsProject = null;
 
 	private static final String APPINFO_PATH = "Contents";
 	private static final String RESOURCE_PATH = "Resources";

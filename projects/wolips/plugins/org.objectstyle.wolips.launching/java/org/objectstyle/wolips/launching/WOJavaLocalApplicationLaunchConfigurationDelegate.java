@@ -197,8 +197,7 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 						argument =
 							woLipsJavaProject
 								.getLaunchParameterAccessor()
-								.getGeneratedByWOLips(
-								configuration);
+								.getGeneratedByWOLips();
 					}
 
 				}
@@ -285,11 +284,11 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 		return wdFile;
 	}
 	/**
-		 * Method addVMArgument return the vmArgs.
-		 * @param vmArgs
-		 * @param configuration
-		 * @param hprofPort
-		 */
+	 * Method addVMArgument return the vmArgs.
+	 * @param vmArgs
+	 * @param configuration
+	 * @param hprofPort
+	 */
 	protected StringBuffer addVMArguments(
 		StringBuffer vmArgs,
 		ILaunchConfiguration configuration,
