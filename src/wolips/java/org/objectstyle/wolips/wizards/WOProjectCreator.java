@@ -64,7 +64,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.tools.ant.DirectoryScanner;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -374,27 +373,36 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 			case IResource.PROJECT :
 				final IProject newProjectHandle = (IProject) parentResource;
 				try {
-					
+
 					IWorkspace workspace = ResourcesPlugin.getWorkspace();
 					final IProjectDescription description =
-						workspace.newProjectDescription(newProjectHandle.getName());
+						workspace.newProjectDescription(
+							newProjectHandle.getName());
 					description.setLocation(locationPath);
-					description.setNatureIds(natureIds);							
-					
+					description.setNatureIds(natureIds);
+
 					if (!newProjectHandle.exists()) {
 						// set description only in this way
 						// to ensure project location is set
-						newProjectHandle.create(description,new SubProgressMonitor(monitor,1000));
+						newProjectHandle.create(
+							description,
+							new SubProgressMonitor(monitor, 1000));
 					}
 					if (!newProjectHandle.isOpen()) {
 						newProjectHandle.open(null);
 					}
-
 				} catch (CoreException e) {
 					throw new InvocationTargetException(e);
 				}
 				// add wo classpath entries
 				IJavaProject myJavaProject = JavaCore.create(newProjectHandle);
+				try {
+					ProjectHelper.installBuilder(
+						myJavaProject.getProject(),
+						JavaCore.BUILDER_ID);
+				} catch (Exception anException) {
+					WOLipsLog.log(anException);
+				}
 				NodeList classpathNodeList =
 					elementForTemplate.getElementsByTagName("classpathentry");
 				ArrayList allClasspathEntriesResolved =
@@ -482,7 +490,8 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 							}
 							sourcePath = new Path(currentRawPath);
 							IFolder sourceFolder;
-							sourceFolder = newProjectHandle.getFolder(sourcePath);
+							sourceFolder =
+								newProjectHandle.getFolder(sourcePath);
 							if (!sourceFolder.exists()) {
 								// create source folder
 								try {
