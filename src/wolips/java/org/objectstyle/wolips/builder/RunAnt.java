@@ -304,7 +304,14 @@ public class RunAnt {
 			workingCopy.setAttribute(
 				IExternalToolConstants.ATTR_CAPTURE_OUTPUT,
 				(String) null);
-			workingCopy.setAttribute(IExternalToolConstants.ATTR_TOOL_ARGUMENTS, "quiet");
+			String quiet =
+				"-quiet "
+					+ workingCopy.getAttribute(
+						IExternalToolConstants.ATTR_TOOL_ARGUMENTS,
+						"");
+			workingCopy.setAttribute(
+				IExternalToolConstants.ATTR_TOOL_ARGUMENTS,
+				quiet);
 		}
 
 		return workingCopy;
