@@ -57,7 +57,6 @@ package org.objectstyle.wolips.listener;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
-
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -138,7 +137,6 @@ public class ResourceChangeListener
 			}
 		}
 	}
-
 	private final class ProjectFileResourceValidator
 		implements IResourceDeltaVisitor {
 		//private QualifiedName resourceQualifier;
@@ -217,6 +215,14 @@ public class ResourceChangeListener
 									new Path(PROJECT_FILE_NAME)));
 						} else if (
 							EXT_EOMODEL.equals(resource.getFileExtension())) {
+							updateProjectFile(
+								kindOfChange,
+								resource,
+								RESOURCES_ID,
+								resource.getParent().getFile(
+									new Path(PROJECT_FILE_NAME)));
+						} else if (
+							EXT_D2WMODEL.equals(resource.getFileExtension())) {
 							updateProjectFile(
 								kindOfChange,
 								resource,
