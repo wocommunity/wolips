@@ -61,6 +61,7 @@ import java.io.File;
 import org.objectstyle.wolips.io.FileStringScanner;
 
 import com.webobjects.foundation.NSArray;
+import com.webobjects.foundation.NSDictionary;
 import com.webobjects.foundation.NSMutableDictionary;
 import com.webobjects.foundation.NSPropertyListSerialization;
 
@@ -76,6 +77,8 @@ public class PBProject {
 	
 	private File pbProjectFile;
 	private NSMutableDictionary pbProject;
+	private NSMutableDictionary filestable;
+	private boolean isWOFramework = true;
 	
 	public static String DYNAMIC_CODE_GEN = "DYNAMIC_CODE_GEN";
 	public static String FILESTABLE = "FILESTABLE";
@@ -84,7 +87,7 @@ public class PBProject {
 	public static String OTHER_LINKED = "OTHER_LINKED";
 	public static String OTHER_SOURCES = "OTHER_SOURCES";
 	public static String WOAPP_RESOURCES = "WOAPP_RESOURCES";
-	public static String WOCOMPONENTS = "WOCOMPONENTS";
+	public static String WOCOMPONENTS = "WO_COMPONENTS";
 	public static String PROJECTNAME = "PROJECTNAME";
 	public static String PROJECTTYPE = "PROJECTTYPE";
 	public static String PROJECTVERSION = "PROJECTVERSION";
@@ -95,9 +98,10 @@ public class PBProject {
 	/**
 	 * Constructor for PBProject.
 	 */
-	public PBProject(File aFile) {
+	public PBProject(File aFile, boolean isWOApp) {
 		super();
 		pbProjectFile = aFile;
+		isWOFramework = !isWOApp;
 		this.update();
 	}
 	
@@ -105,6 +109,9 @@ public class PBProject {
 		try {
 			String stringFromFile = FileStringScanner.stringFromFile(pbProjectFile);
 			pbProject = new NSMutableDictionary(NSPropertyListSerialization.dictionaryForString(stringFromFile));
+			filestable = null;
+			filestable = this.filestable();
+			
 		}
 		catch (Exception anException) {
 			System.out.println("update: " + anException.getMessage());
@@ -112,6 +119,7 @@ public class PBProject {
 	}
 	
 	public void saveChanges() {
+		this.setFilesable(filestable);
 		try {
 			FileStringScanner.stringToFile(pbProjectFile, pbProject.toString());
 		}
@@ -131,52 +139,52 @@ public class PBProject {
 	}
 
 	public NSArray classes(){
-		return (NSArray)pbProject.valueForKey(PBProject.CLASSES);
+		return (NSArray)filestable().valueForKey(PBProject.CLASSES);
 	}
 	
 	public void setClasses(NSArray anArray) {
-		pbProject.setObjectForKey(anArray, PBProject.CLASSES);
+		filestable().setObjectForKey(anArray, PBProject.CLASSES);
 	}
 
 	public NSArray frameworks(){
-		return (NSArray)pbProject.valueForKey(PBProject.FRAMEWORKS);
+		return (NSArray)filestable().valueForKey(PBProject.FRAMEWORKS);
 	}
 	
 	public void setFrameworks(NSArray anArray) {
-		pbProject.setObjectForKey(anArray, PBProject.FRAMEWORKS);
+		filestable().setObjectForKey(anArray, PBProject.FRAMEWORKS);
 	}
 
 	public NSArray otherLinked(){
-		return (NSArray)pbProject.valueForKey(PBProject.OTHER_LINKED);
+		return (NSArray)filestable().valueForKey(PBProject.OTHER_LINKED);
 	}
 	
 	public void setOtherLinked(NSArray anArray) {
-		pbProject.setObjectForKey(anArray, PBProject.OTHER_LINKED);
+		filestable().setObjectForKey(anArray, PBProject.OTHER_LINKED);
 	}
 
 	public NSArray otherSources(){
-		return (NSArray)pbProject.valueForKey(PBProject.OTHER_SOURCES);
+		return (NSArray)filestable().valueForKey(PBProject.OTHER_SOURCES);
 	}
 	
 	public void setOtherSources(NSArray anArray) {
-		pbProject.setObjectForKey(anArray, PBProject.OTHER_SOURCES);
+		filestable().setObjectForKey(anArray, PBProject.OTHER_SOURCES);
 	}
 
 
 	public NSArray woAppResources(){
-		return (NSArray)pbProject.valueForKey(PBProject.WOAPP_RESOURCES);
+		return (NSArray)filestable().valueForKey(PBProject.WOAPP_RESOURCES);
 	}
 	
 	public void setWoAppResources(NSArray anArray) {
-		pbProject.setObjectForKey(anArray, PBProject.WOAPP_RESOURCES);
+		filestable().setObjectForKey(anArray, PBProject.WOAPP_RESOURCES);
 	}
 
 	public NSArray woComponents(){
-		return (NSArray)pbProject.valueForKey(PBProject.WOCOMPONENTS);
+		return (NSArray)filestable().valueForKey(PBProject.WOCOMPONENTS);
 	}
 	
 	public void setWoComponents(NSArray anArray) {
-		pbProject.setObjectForKey(anArray, PBProject.WOCOMPONENTS);
+		filestable().setObjectForKey(anArray, PBProject.WOCOMPONENTS);
 	}
 
 	public String projectName(){
@@ -202,4 +210,14 @@ public class PBProject {
 	public void setProjectVersion(String aString) {
 		pbProject.setObjectForKey(aString, PBProject.PROJECTVERSION);
 	}
+	
+	private NSMutableDictionary filestable() {
+		if(filestable != null) return filestable;
+		return new NSMutableDictionary((NSDictionary)pbProject.valueForKey(PBProject.FILESTABLE));
+	}
+
+    private void setFilesable(NSDictionary aDictionary) {
+    	pbProject.setObjectForKey(aDictionary, PBProject.FILESTABLE);
+    }
+    
 }

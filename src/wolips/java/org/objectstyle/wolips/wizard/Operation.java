@@ -125,7 +125,7 @@ public class Operation {
 	}*/ 
 	
 	protected void renameNewWOComponentTo(IProject project, String aComponentName, String aFullyQualifiedComponentName, File aResourcesPath, IProgressMonitor monitor) throws CoreException, IOException {
-		IFolder resources = project.getFolder("resources");
+		IFolder resources = project.getFolder("Resources");
 		IFile aApiFile = resources.getFile("wocomponent.api");
 		IFile aNewApiFile = resources.getFile(aComponentName + ".api");
 		aApiFile.move(aNewApiFile.getFullPath(), true, monitor);

@@ -4,8 +4,10 @@
 		<woapplication name="${applicationname}" destDir="${destdir}">
    			<classes dir="bin">
    			</classes>
-   			<resources dir="resources">
+   			<resources dir="Resources">
        			<include name="*.eomodeld/**"/>
+       			<include name="*.wo/**"/>
+       			<include name="*.api"/>
    			</resources>
    			<wsresources dir="WSResources">
        			<include name="Images/**"/>

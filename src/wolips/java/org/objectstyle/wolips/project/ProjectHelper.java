@@ -162,7 +162,7 @@ public class ProjectHelper {
 	}
 	
 	private static void addCommonStuff(IProject aProject, IProgressMonitor aMonitor) throws CoreException {
-		ProjectHelper.createFolder("resources", aProject, aMonitor);
+		ProjectHelper.createFolder("Resources", aProject, aMonitor);
 		ProjectHelper.createFolder("WSResources", aProject, aMonitor);	
 	}
 	

@@ -60,8 +60,10 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IActionDelegate;
-import org.objectstyle.wolips.project.PBProjectUpdater;
+import org.objectstyle.wolips.WOLipsPlugin;
+import org.objectstyle.wolips.project.ProjectHelper;
 
 /**
  * @author uli
@@ -75,19 +77,21 @@ public class PBAction implements IActionDelegate {
 	
 	private IProject project;
 
+	
 	public PBAction() {
 		super();
 	}
-
-
+	
 	public void dispose() {
 	}
 	
 	public void run(IAction action) {
+		System.out.println("PBAction.run");
 		if ( project != null ){
 			try {
-			if ( action.getId().equals("UpdatePB.Project.Set.ID") )	
-				PBProjectUpdater.updatePBProject(project);
+			if ( action.getId().equals("UpdatePB.Project.Set.ID") )
+				System.out.println("PBProjectUpdater: " + project);	
+				WOLipsPlugin.getDefault().getProjectUpdater(project).updatePBProject();
 			}
 			catch (CoreException ex) {
 				System.out.println(ex.getMessage());
@@ -97,6 +101,16 @@ public class PBAction implements IActionDelegate {
 
 
 	public void selectionChanged(IAction action, ISelection selection) {
+				Object obj = (((IStructuredSelection) selection).getFirstElement());
+		if ( obj != null && obj instanceof IProject ) {
+			project = ((IProject)obj).getProject();
+				if ( action.getId().equals("UpdatePB.Project.Set.ID") ) {
+					action.setEnabled(ProjectHelper.isWOFwBuilderInstalled(project) || ProjectHelper.isWOAppBuilderInstalled(project));
+				}
+		}
+		else {
+			action.setEnabled(false);
+		}
 	}
 
 }

@@ -57,9 +57,14 @@ package org.objectstyle.wolips;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.Hashtable;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
+import org.eclipse.core.internal.boot.URLContentFilter;
+import org.eclipse.core.internal.plugins.PluginClassLoader;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -69,6 +74,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.objectstyle.wolips.ide.WOClasspathUpdater;
+import org.objectstyle.wolips.project.PBProjectUpdater;
 
 /**
  * The main plugin class to be used in the desktop.
@@ -78,6 +84,9 @@ public class WOLipsPlugin extends AbstractUIPlugin {
 	private static WOLipsPlugin plugin;
 	//Resource bundle.
 	private ResourceBundle resourceBundle;
+	private Hashtable projectUpdater;
+
+	private boolean classesLoaded = false;
 	
 	/**
 	 * The constructor.
@@ -90,8 +99,26 @@ public class WOLipsPlugin extends AbstractUIPlugin {
 		} catch (MissingResourceException x) {
 			resourceBundle = null;
 		}
+		this.loadFoundationClasses();
 	}
 
+	private void loadFoundationClasses() {
+		if(classesLoaded) return;
+		else classesLoaded = true;
+		ClassLoader aClassLoader = this.getClass().getClassLoader();
+		URLContentFilter[] theURLContentFilter = new URLContentFilter[2];
+		theURLContentFilter[0] = new URLContentFilter(true);
+		theURLContentFilter[1] = new URLContentFilter(true);
+		URL[] theUrls = new URL[2];
+		try {
+			theUrls[0] = new URL("file:///System/Library/Frameworks/JavaFoundation.framework/Resources/Java/javafoundation.jar");
+			theUrls[1] = new URL("file://${NEXT_ROOT}/Library/Frameworks/JavaFoundation.framework/Resources/Java/javafoundation.jar");
+			((PluginClassLoader)aClassLoader).addURLs(theUrls, theURLContentFilter, null, null);
+		}
+		catch (Exception anException) {
+			System.out.println("Error setting up ClassLoader for javafoundation: " + anException.getMessage() + "ex: " + anException);
+		}		
+	}
 	/**
 	 * Returns the shared instance.
 	 */
@@ -159,5 +186,15 @@ public class WOLipsPlugin extends AbstractUIPlugin {
 		log(new Status(IStatus.ERROR, getPluginId(), IStatus.ERROR, "Internal Error", e)); //$NON-NLS-1$
 	}
 
+	public PBProjectUpdater getProjectUpdater(IProject aProject) {
+		if(projectUpdater == null) projectUpdater = new Hashtable();
+		String aProjectName = aProject.getName();
+		PBProjectUpdater aProjectUpdater = (PBProjectUpdater)projectUpdater.get(aProjectName);
+		if(aProjectUpdater == null) {
+			aProjectUpdater = new PBProjectUpdater(aProject);
+			projectUpdater.put(aProjectName, aProjectUpdater);
+		}
+		return aProjectUpdater;	
+	}
 
 }

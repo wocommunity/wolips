@@ -8,6 +8,7 @@
     <property file="${user.home}/build.properties" />
     <property file="default.properties" />
     <property environment="env"/>
+    <property name="output" value="output"/>
     <property name="next.root" value="${env.NEXT_ROOT}"/>
     
     <!-- ============================================= -->
@@ -84,6 +85,8 @@
              <fileset dir="src/wolips">
              	<exclude name="**/java/**"/>
              	<exclude name="**/lib/**"/>
+             	<exclude name="**/xdocs/**"/>
+             	<exclude name="**/docs/**"/>
              	<exclude name=".project"/>
              	<exclude name=".classpath"/>
              </fileset>

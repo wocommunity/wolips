@@ -110,13 +110,14 @@ public class NewWOComponentOperation extends Operation implements IRunnableWithP
 	
 	private void performFinish(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 		try {
-			String aString = "resources";
-			IFolder resourcesFolder = project.getFolder(aString);
-			IFile aFile = project.getFile(aString);
-			IPath resouresPathRelative = resourcesFolder.getFullPath();
-			IPath resouresPath = resourcesFolder.getLocation();
-			this.importFilesFromDirectory("templates/wocomponent", resouresPathRelative, monitor, overwriteQuery);
-			renameNewWOComponentTo(project, componentName, fullyQualifiedComponentName, resouresPathRelative.toFile(), monitor);
+			//String aString = "";
+			//IFolder resourcesFolder = project.getFolder(aString);
+			//IFolder resourcesFolder = 
+			//IFile aFile = project.getFile(aString);
+			//IPath resouresPathRelative = resourcesFolder.getFullPath();
+			//IPath resouresPath = resourcesFolder.getLocation();
+			this.importFilesFromDirectory("templates/wocomponent", project.getFolder("Resources").getFullPath(), monitor, overwriteQuery);
+			renameNewWOComponentTo(project, componentName, fullyQualifiedComponentName, project.getFullPath().toFile(), monitor);
 		} catch (Exception e) {
 			System.out.println("ohje: " + e.getMessage());
 			throw new InvocationTargetException(e);

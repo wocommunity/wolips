@@ -55,7 +55,6 @@
  */
 package org.objectstyle.wolips.actions;
 
-import org.eclipse.core.internal.resources.Project;
 import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -100,8 +99,8 @@ public class WOBuilderAction implements IActionDelegate {
 
 	public void selectionChanged(IAction action, ISelection selection) {
 		Object obj = (((IStructuredSelection) selection).getFirstElement());
-		if ( obj != null && obj instanceof Project ) {
-			project = ((Project)obj).getProject();
+		if ( obj != null && obj instanceof IProject ) {
+			project = ((IProject)obj).getProject();
 				if ( action.getId().equals("WOFrameworkBuilder.Set.ID") ) {
 					action.setEnabled(!ProjectHelper.isWOFwBuilderInstalled(project));
 				}
