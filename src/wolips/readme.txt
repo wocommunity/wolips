@@ -25,3 +25,11 @@ projectname
 WOApplication
 
 Don't use it.
+
+
+Working with WOLips in the PDE.
+
+1. Check out the stuff at woproject/src/wolips
+2. Right click on your project and select Update Classpath...
+
+You should now be able to run it as a Runtime Workbench
