@@ -42,33 +42,52 @@
 			id="org.objectstyle.wolips.wizard.NewWOFwProjectCreationWizard"
 			name="%WOFwProjectCreationWizard.title"
 			class="org.objectstyle.wolips.wizard.NewWOFwProjectCreationWizard"
-			category="org.objectstyle.wolips.wizard"
+			category="%WOLips.categoryName"
 			project="true"
 			finalPerspective="org.eclipse.jdt.ui.JavaPerspective"
-			icon="icons/full/ctool16/new_woframework_wizard.gif">
+			icon="icons/full/ctool16/newjprjex_wiz.gif">
 			<description>%WOFwProjectCreationWizard.description</description>
     	</wizard>
-  
-    	<wizard 
-			id="org.objectstyle.wolips.wizard.NewWOAppProjectCreationWizard"
-			name="%WOAppProjectCreationWizard.title"
-			class="org.objectstyle.wolips.wizard.NewWOAppProjectCreationWizard"
+    	
+		<wizard 
+			id="org.objectstyle.wolips.wizard.wofw.WOFwProjectCreationWizard"
+			name="%WOFwProjectCreationWizard.title"
+			class="org.objectstyle.wolips.wizard.wofw.WOFwProjectCreationWizard"
 			category="org.objectstyle.wolips.wizard"
 			project="true"
 			finalPerspective="org.eclipse.jdt.ui.JavaPerspective"
-			icon="icons/full/ctool16/new_woapplication_wizard.gif">
+			icon="icons/full/ctool16/newjprjex_wiz.gif"
+			banner="icons/full/wizban/newjprjex_wiz.gif">
+			<description>%WOFwProjectCreationWizard.description</description>
+	    	<projectsetup
+        		pagetitle="%WOFwProjectCreationWizard.pagetitle"
+        		pagedescription="%WOFwProjectCreationWizard.pagedescription"
+         		label="%WOFwProjectCreationWizard.label"
+        		name="WOFramework">
+           		<nature id="org.eclipse.jdt.core.javanature"/>
+           		<import dest="" src="templates/woframework"/>
+        	</projectsetup>
+      	</wizard>
+      	
+      	<wizard 
+			id="org.objectstyle.wolips.wizard.woapp.WOAppProjectCreationWizard"
+			name="%WOAppProjectCreationWizard.title"
+			class="org.objectstyle.wolips.wizard.woapp.WOAppProjectCreationWizard"
+			category="org.objectstyle.wolips.wizard"
+			project="true"
+			finalPerspective="org.eclipse.jdt.ui.JavaPerspective"
+			icon="icons/full/ctool16/newjprjex_wiz.gif"
+			banner="icons/full/wizban/newjprjex_wiz.gif">
 			<description>%WOAppProjectCreationWizard.description</description>
-    	</wizard>
- 	    
- 	    <wizard
-		    id="org.objectstyle.wolips.wizard.NewWOComponentWizard"
-		    name="%NewWOComponentWizard.title"
-		    class="org.objectstyle.wolips.wizard.NewWOComponentWizard"
-		    category="org.objectstyle.wolips.wizard"
-		    icon="icons/full/ctool16/new_wocomponent_wizard.gif">
-		    <description>%NewWOComponentWizard.description</description>
-	    </wizard>
-	    
+	    	<projectsetup
+        		pagetitle="%WOAppProjectCreationWizard.pagetitle"
+        		pagedescription="%WOAppProjectCreationWizard.pagedescription"
+         		label="%WOAppProjectCreationWizard.label"
+        		name="WOApplication">
+           		<nature id="org.eclipse.jdt.core.javanature"/>
+           		<import dest="" src="templates/woapplication"/>
+        	</projectsetup>
+      	</wizard>	
 	</extension>  
 
 	<!-- ant -->

@@ -66,11 +66,13 @@
     <target name="dist" depends="prepare,java,api">
          <!-- Copy source code -->
          <copy todir="${dist-wolips}/src">
-             <fileset dir="src/wolips"/>
+             <fileset dir="src/wolips/java"/>
          </copy>
          
          <copy todir="${dist-wolips}">
-             <fileset dir="src/wolips/resources"/>
+             <fileset dir="src/wolips">
+             	<exclude name="src/wolips/java"/>
+             </fileset>
          </copy>
          
 	     <!-- make wolips dist -->
