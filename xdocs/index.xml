@@ -9,11 +9,22 @@
     <body>        
         <!-- Welcome section -->
         <section name="Welcome to WOProject">
-        <p><i>October 16, 2002.</i> <b>WOLips 0.8.9 released.</b></p>
+        
+        <p><i>November 14, 2002.</i> <b>New releases.</b></p>
+        <p>WOProject and WOLips announces support for WO 5.2. 
+        </p>
+        
+        <p><i>November 14, 2002.</i> <b>Release 1.0b is out.</b></p>
+        <p>Download a new release from <a 
+        href="http://sourceforge.net/project/showfiles.php?group_id=50507">SourceForge 
+        server</a>.
+        <hr/>
+        </p>
+        
+        <p><i>November 14, 2002.</i> <b>WOLips 0.9.1 released.</b></p>
         <p>WOLips is a plugin for <a href="http://eclipse.org">Eclipse IDE</a> that
         support development of WebObjects applications and frameworks.
         <ul>
-            <li><a href="wolips/toc.html">WOLips Documentation</a></li>
             <li><a href="http://sourceforge.net/project/showfiles.php?group_id=50507">Download</a></li>
         </ul>
         <hr/>
@@ -24,13 +35,6 @@
         to deploy WebObjects 5.x applications. To download WOStart code discussed in the
         article, use <a href="http://objectstyle.org/downloads/woproject/WOStart.zip">this 
         link</a>.
-        <hr/>
-        </p>
-        
-        <p><i>June 28, 2002.</i> <b>Release 1.0a1 is out.</b></p>
-        <p>Download new release from <a 
-        href="http://sourceforge.net/project/showfiles.php?group_id=50507">SourceForge 
-        server</a>.
         <hr/>
         </p>
         
