@@ -58,7 +58,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
 import java.util.Properties;
-
 import org.objectstyle.wolips.io.FileStringScanner;
 import org.objectstyle.wolips.io.WOLipsLog;
 /**
@@ -74,14 +73,12 @@ public class Environment {
 	private static String nextRoot;
 	private static String localRoot;
 	private static String foundationJarPath;
-
 	/**
 	 * Constructor for Environment.
 	 */
 	private Environment() {
 		super();
 	}
-
 	/**
 	 * The values are cached.
 	 * @return environment variables as Properties.
@@ -90,18 +87,8 @@ public class Environment {
 	public static Properties getEnvVars() throws Exception {
 		if (envVars != null)
 			return envVars;
-		Process p = null;
+		Process p = Environment.osProcess();
 		Environment.envVars = new Properties();
-		Runtime r = Runtime.getRuntime();
-		String OS = System.getProperty("os.name").toLowerCase();
-		if (OS.indexOf("windows 9") > -1) {
-			p = r.exec("command.com /c set");
-		} else if (
-			(OS.indexOf("nt") > -1) || (OS.indexOf("windows 2000") > -1)) {
-			p = r.exec("cmd.exe /c set");
-		} else {
-			p = r.exec("env");
-		}
 		BufferedReader br =
 			new BufferedReader(new InputStreamReader(p.getInputStream()));
 		String line;
@@ -113,7 +100,25 @@ public class Environment {
 		}
 		return Environment.envVars;
 	}
-
+	/**
+	 * Method osProcess.
+	 * @return Process
+	 * @throws Exception
+	 */
+	private static Process osProcess() throws Exception {
+		Process p = null;
+		Runtime r = Runtime.getRuntime();
+		String OS = System.getProperty("os.name").toLowerCase();
+		if (OS.indexOf("windows 9") > -1) {
+			p = r.exec("command.com /c set");
+		} else if (
+			(OS.indexOf("nt") > -1) || (OS.indexOf("windows 2000") > -1)) {
+			p = r.exec("cmd.exe /c set");
+		} else {
+			p = r.exec("env");
+		}
+		return p;
+	}
 	/**
 	 * @return String with path to the foundation.jar
 	 */
@@ -137,7 +142,6 @@ public class Environment {
 		}
 		return foundationJarPath;
 	}
-
 	/**
 	 * @return Returns the NEXT_ROOT
 	 */
@@ -156,7 +160,10 @@ public class Environment {
 		Environment.nextRoot = "/System";
 		return Environment.nextRoot;
 	}
-
+	/**
+	 * Method localRoot.
+	 * @return String
+	 */
 	public static String localRoot() {
 		if (Environment.localRoot == null) {
 			if (isNextRootSet()) {
@@ -169,7 +176,10 @@ public class Environment {
 		}
 		return Environment.localRoot;
 	}
-
+	/**
+	 * Method isNextRootSet.
+	 * @return boolean
+	 */
 	public static boolean isNextRootSet() {
 		try {
 			if (Environment.getEnvVars().containsKey(Environment.NEXT_ROOT))

@@ -89,10 +89,8 @@ public class Filter extends ViewerFilter {
 	 * them up.
 	 */
 	private StringMatcher[] getMatchers() {
-
 		if (this.matchers == null)
 			initializeFromPreferences();
-
 		return this.matchers;
 	}
 	/**
@@ -100,18 +98,17 @@ public class Filter extends ViewerFilter {
 	 * are any - if not look it up.
 	 */
 	public String[] getPatterns() {
-
 		if (this.patterns == null)
 			initializeFromPreferences();
-
 		return this.patterns;
-
 	}
-
+	/**
+	 * Method storedPatternsTag.
+	 * @return String
+	 */
 	public String storedPatternsTag() {
 		return null;
 	}
-
 	/**
 	 * Initializes the filters from the preference store.
 	 */
@@ -138,13 +135,30 @@ public class Filter extends ViewerFilter {
 		setPatterns(patternArray);
 
 	}
-	/* (non-Javadoc)
-	 * Method declared on ViewerFilter.
+	/**
+	 * @see org.eclipse.jface.viewers.ViewerFilter#select(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
 	 */
 	public boolean select(
 		Viewer viewer,
 		Object parentElement,
 		Object element) {
+		IResource resource = getResourceForElement(element);
+		if (resource == null)
+			return true;
+		String name = resource.getName();
+		StringMatcher[] testMatchers = getMatchers();
+		for (int i = 0; i < testMatchers.length; i++) {
+			if (testMatchers[i].match(name))
+				return false;
+		}
+		return true;
+	}
+	/**
+	 * Method getResourceForElement.
+	 * @param element
+	 * @return IResource
+	 */
+	private IResource getResourceForElement(Object element) {
 		IResource resource = null;
 		if (element instanceof IResource) {
 			resource = (IResource) element;
@@ -152,16 +166,7 @@ public class Filter extends ViewerFilter {
 			IAdaptable adaptable = (IAdaptable) element;
 			resource = (IResource) adaptable.getAdapter(IResource.class);
 		}
-		if (resource != null) {
-			String name = resource.getName();
-			StringMatcher[] testMatchers = getMatchers();
-			for (int i = 0; i < testMatchers.length; i++) {
-				if (testMatchers[i].match(name))
-					return false;
-			}
-			return true;
-		}
-		return true;
+		return resource;
 	}
 	/**
 	 * Sets the patterns to filter out for the receiver.

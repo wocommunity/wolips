@@ -147,11 +147,9 @@ public class WOFrameworkDialogWrapper {
 		Object[] result = null;
 		dialog.open();
 
-		if (dialog.getReturnCode() == Window.OK) {
-			result = dialog.getResult();
-		} else {
+		if (dialog.getReturnCode() != Window.OK)
 			return;
-		}
+		result = dialog.getResult();
 
 		FileSystemElement currentFileElement;
 		String currentFileName;
@@ -204,7 +202,12 @@ public class WOFrameworkDialogWrapper {
 		}
 
 	}
-
+	/**
+	 * @author uli To change this generated comment edit the template variable
+	 * "typecomment": Window>Preferences>Java>Templates. To enable and disable
+	 * the creation of type comments go to Window>Preferences>Java>Code
+	 * Generation.
+	 */
 	private class FrameworkRootOperation extends SelectFilesOperation {
 
 		/**
@@ -218,7 +221,9 @@ public class WOFrameworkDialogWrapper {
 			setDesiredExtensions(extArray);
 
 		}
-
+		/**
+		 * @see org.eclipse.ui.wizards.datatransfer.SelectFilesOperation#createElement(org.eclipse.ui.dialogs.FileSystemElement, java.lang.Object)
+		 */
 		protected FileSystemElement createElement(
 			FileSystemElement parent,
 			Object fileSystemObject)
@@ -226,55 +231,55 @@ public class WOFrameworkDialogWrapper {
 			FileSystemElement toReturn =
 				super.createElement(parent, fileSystemObject);
 
-			if (fileSystemObject != null) {
+			if (fileSystemObject == null)
+				return toReturn;
 
-				File fileToAdd = (File) fileSystemObject;
-				String parentDirName;
-				String parentParentDirName;
+			File fileToAdd = (File) fileSystemObject;
+			String parentDirName;
+			String parentParentDirName;
 
-				if (fileToAdd.isFile()
-					&& "jar".equals(getExtensionFor(fileToAdd.getName()))) {
-						
-						parentDirName = fileToAdd.getParentFile().getName();
-						parentParentDirName = fileToAdd.getParentFile().getParentFile().getName();
+			if (fileToAdd.isFile()
+				&& "jar".equals(getExtensionFor(fileToAdd.getName()))) {
 
-					// must be jar (see above), ensure no web server resources are added
-					if (parentParentDirName.equals(WOVariables.webServerResourcesDirName())) {
-						return null;
-					}
-					
-					// ensure "jar" is in "Resources/Java"
-					if(!"Java".equals(parentDirName) || !"Resources".equals(parentParentDirName)){
-						return null;
-					}
+				parentDirName = fileToAdd.getParentFile().getName();
+				parentParentDirName =
+					fileToAdd.getParentFile().getParentFile().getName();
 
-					IClasspathEntry[] resolvedOldClasspathEntries;
-					try {
-						resolvedOldClasspathEntries =
-							projectToUpdate.getResolvedClasspath(true);
-					} catch (JavaModelException e) {
-						WOLipsPlugin.handleException(
-							part.getSite().getShell(),
-							e,
-							null);
-						return null;
-					}
-
-					// now look through resolved old class path entries and deny entries already set
-					for (int i = 0;
-						i < resolvedOldClasspathEntries.length;
-						i++) {
-						if (resolvedOldClasspathEntries[i]
-							.getPath()
-							.toFile()
-							.equals(fileToAdd)) {
-							return null;
-						}
-					}
-
+				// must be jar (see above), ensure no web server resources are added
+				if (parentParentDirName
+					.equals(WOVariables.webServerResourcesDirName())) {
+					return null;
 				}
-			}
 
+				// ensure "jar" is in "Resources/Java"
+				if (!"Java".equals(parentDirName)
+					|| !"Resources".equals(parentParentDirName)) {
+					return null;
+				}
+
+				IClasspathEntry[] resolvedOldClasspathEntries;
+				try {
+					resolvedOldClasspathEntries =
+						projectToUpdate.getResolvedClasspath(true);
+				} catch (JavaModelException e) {
+					WOLipsPlugin.handleException(
+						part.getSite().getShell(),
+						e,
+						null);
+					return null;
+				}
+
+				// now look through resolved old class path entries and deny entries already set
+				for (int i = 0; i < resolvedOldClasspathEntries.length; i++) {
+					if (resolvedOldClasspathEntries[i]
+						.getPath()
+						.toFile()
+						.equals(fileToAdd)) {
+						return null;
+					}
+				}
+
+			}
 			return toReturn;
 		}
 	}
