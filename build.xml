@@ -44,6 +44,9 @@
     </path>
 
     <path id="classpath-tests-run">
+        <fileset dir="${ant.home}/lib">
+            <include name="*.jar"/>
+        </fileset>
         <fileset dir="${dist}/lib">
             <include name="*.jar"/>
         </fileset>
@@ -202,7 +205,7 @@
     <target name="execute-unit-tests" depends="java-tests">
 
         <junit fork="yes" haltonfailure="no" errorProperty="unit-tests-failed"
-                failureProperty="unit-tests-failed">
+                failureProperty="unit-tests-failed" dir="${basedir}">
             <classpath refid="classpath-tests-run"/>
             <formatter type="plain" usefile="true"/>
             <batchtest todir="${test_results}/unit">
@@ -226,7 +229,7 @@
         </delete>
 
         <junit fork="yes" haltonfailure="no" errorProperty="functional-tests-failed"
-                failureProperty="functional-tests-failed">
+                failureProperty="functional-tests-failed" dir="${basedir}">
             <classpath refid="classpath-tests-run"/>
             <formatter type="plain" usefile="true"/>
             <batchtest todir="${test_results}/functional">
