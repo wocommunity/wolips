@@ -9,8 +9,8 @@
 	<classpathentry kind="var" path="NEXT_SYSTEM_ROOT/Library/Frameworks/JavaEOControl.framework/Resources/Java/javaeocontrol.jar"/>
 	<classpathentry kind="var" path="NEXT_SYSTEM_ROOT/Library/Frameworks/JavaJDBCAdaptor.framework/Resources/Java/javajdbcadaptor.jar"/>
 	<classpathentry kind="lib" path="lib/junit-3.8.1.jar"/>
-	<classpathentry kind="lib" path="/Volumes/Programme/apache-ant-1.6.1/lib/ant-launcher.jar"/>
-	<classpathentry kind="lib" path="/Volumes/Programme/apache-ant-1.6.1/lib/ant.jar"/>
+	<classpathentry kind="var" path="ANT_HOME/lib/ant-launcher.jar"/>
+	<classpathentry kind="var" path="ANT_HOME/lib/ant.jar"/>
 	<classpathentry kind="lib" path="lib/cayenne-1.1M7-dev.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
