@@ -86,7 +86,6 @@ public class TreeTextOperationTarget implements ITextOperationTarget {
 	 * @see org.eclipse.jface.text.ITextOperationTarget#doOperation(int)
 	 */
 	public void doOperation(int operation) {
-		//TODO: add support to other operations
 		switch (operation) {
 			case ITextOperationTarget.SELECT_ALL :
 				tree.selectAll();
