@@ -319,9 +319,13 @@ public class WOIncrementalBuilder extends AbstractIncrementalProjectBuilder {
 					InputStream oldContent = resFile.getContents(false);
 					InputStream newContent = new ByteArrayInputStream(newBytes);
 					changed = streamsAreDifferent(oldContent, newContent);
+					newContent.close();
+					oldContent.close();
 				} catch (CoreException up) {
 					resFile.refreshLocal(1, null);
-				}
+				} catch (IOException e) {
+					resFile.refreshLocal(1, null);
+                }
 				retry = false;
 			}
 		}
