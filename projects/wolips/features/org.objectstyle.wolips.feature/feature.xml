@@ -192,8 +192,8 @@
 
    <plugin
          id="org.objectstyle.wolips.templateengine"
-         download-size="0"
-         install-size="0"
-         version="1.0.0"/>
+         download-size="1300"
+         install-size="1500"
+         version="1.0.6"/>
 
 </feature>
