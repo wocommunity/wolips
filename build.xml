@@ -94,6 +94,9 @@
         <jar jarfile="${dist}/lib/${project.name}.jar">
             <fileset dir="build" />
             <fileset dir="src/resources" includes="Info.plist"/>
+            <metainf dir="doc">
+                <include name="LICENSE*"/>
+            </metainf>
         </jar>
     </target>
     
@@ -126,6 +129,7 @@
         <copy todir="${dist}/doc">
             <fileset dir="doc">
                 <include name="**/*.html"/>
+                <include name="**/LICENSE*"/>
             </fileset>
         </copy>
         
