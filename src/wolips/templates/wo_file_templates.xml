@@ -186,12 +186,12 @@ public class DirectAction extends WODirectAction {
 
 	<!-- main targets  -->
 	<!-- add optional targets to depends list if needed -->
-	<target name="build" depends="setProps,init.build,build.woapp,ssdd"/>
+	<target name="build" depends="setProps,init.build,build.woapp,war,ssdd"/>
 
-	<target name="install" depends="setProps,init.install,build.woapp,ssdd"/>
+	<target name="install" depends="setProps,init.install,build.woapp,war,ssdd"/>
 	
 	<target name="clean" depends="setProps">
-	  	<delete dir="${project.name}.woa"/>
+	  	<delete dir="dist"/>
 	</target>
 
 	<!-- property determination  -->
@@ -218,11 +218,12 @@ public class DirectAction extends WODirectAction {
 	
 	<target name="init.build">
 	 	<tstamp/>
-		<property name="dest.dir" value="."/>
+		<property name="dest.dir" value="dist"/>
 	</target>
 	
 	<!-- woproject tasks -->
 	<target name="build.woapp">
+	    <!-- add webXML="true" to generate a web.xml file -->
 		<woapplication name="${project.name}"  stdFrameworks="false" destDir="${dest.dir}">
    			<classes dir="${classes.dir}">
    			</classes>
@@ -269,14 +270,16 @@ public class DirectAction extends WODirectAction {
 
 	<!-- optional targets -->
 	
-	<!-- ssdd target--> 
-    <!-- To use this target remove the if="${never}" statement and create the LICENSE   
-         and web.xml files in your project.--> 
-    <target name="ssdd" if="${never}"> 
-        <war destfile="${project.name}.war" 
-            webxml="web.xml"> 
-            <fileset dir="."> 
+	<!-- war target--> 
+    <!-- To use this target remove the if="${never}" statement and create the LICENSE in your project  
+         and create the web.xml file with the woapplication task.--> 
+    <target name="war"> 
+        <war destfile="${dest.dir}/${project.name}.war" 
+            webxml="${dest.dir}/${project.name}.woa/Contents/web.xml"> 
+            <fileset dir="${dest.dir}"> 
                 <include name="${project.name}.woa/**"/> 
+            </fileset> 
+            <fileset dir=".."> 
                 <include name="LICENSE"/> 
             </fileset> 
             <lib dir="${wo.wosystemroot}/Library/Frameworks/JavaWOJSPServlet.framework/WebServerResources/Java/"> 
@@ -288,6 +291,33 @@ public class DirectAction extends WODirectAction {
         </war> 
     </target> 
 	
+	<!-- ssdd target--> 
+    <!-- To use this target remove the if="${never}" statement and create the LICENSE in your project  
+         and create the web.xml file with the woapplication task.--> 
+    <target name="ssdd">
+    	<mkdir dir="${dest.dir}/${project.name}/WEB_INF/tlds"/>
+    	<copy todir="${dest.dir}/${project.name}/WEB_INF/">
+            <fileset dir="${dest.dir}/${project.name}.woa/Contents/"> 
+                <include name="web.xml"/> 
+            </fileset> 
+        </copy>
+    	<copy todir="${dest.dir}/${project.name}/WEB_INF/">
+            <fileset dir=".."> 
+                <include name="LICENSE"/> 
+            </fileset> 
+        </copy>
+        <copy todir="${dest.dir}/${project.name}/WEB_INF/">
+            <fileset dir="${dest.dir}"> 
+                <include name="${project.name}.woa/**"/> 
+            </fileset> 
+        </copy>    	 
+    	<copy todir="${dest.dir}/${project.name}/WEB_INF/tlds">
+            <fileset dir="${wo.wosystemroot}/Library/Frameworks/JavaWOJSPServlet.framework/Resources/"> 
+                <include name="WOtaglib_1_0.tld"/> 
+            </fileset> 
+        </copy>    	 
+     </target> 
+   
 	<!-- copy strings files -->	
 	<target name="copy.strings">
    		 <copy todir="${dest.dir}/${project.name}.woa/Contents/Resources">
