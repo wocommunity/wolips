@@ -51,16 +51,18 @@ package org.objectstyle.wolips.jdt.listener;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jdt.core.ElementChangedEvent;
 import org.eclipse.jdt.core.IElementChangedListener;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaElementDelta;
+import org.eclipse.jdt.core.IJavaModel;
 import org.eclipse.jdt.core.JavaModelException;
 import org.objectstyle.wolips.jdt.JdtPlugin;
 
 /**
  * @author ulrich
- *
+ * 
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
@@ -71,7 +73,9 @@ public class MasterJavaElementChangeListener implements IElementChangedListener 
 	public MasterJavaElementChangeListener() {
 		super();
 	}
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.jdt.core.IElementChangedListener#elementChanged(org.eclipse.jdt.core.ElementChangedEvent)
 	 */
 	public void elementChanged(ElementChangedEvent event) {
@@ -79,35 +83,10 @@ public class MasterJavaElementChangeListener implements IElementChangedListener 
 		javaElementChangeListener.setEvent(event);
 
 		IJavaElement element = event.getDelta().getElement();
-		IResource resource = null;
-		try {
-			resource = element.getCorrespondingResource();
-		} catch (JavaModelException e) {
-			JdtPlugin.getDefault().getPluginLogger().log(e);
+		if(!(element instanceof IJavaModel)) {
+			return;
 		}
-		IResource rule = null;
-		if(resource.getType() == IResource.ROOT) {
-			IJavaElementDelta[] resourceDelta = event.getDelta().getAffectedChildren();
-			if(resourceDelta.length > 1)
-			{
-				rule = resource;
-			}
-			if(resourceDelta.length == 1)
-			{
-				try {
-					rule = resourceDelta[0].getElement().getCorrespondingResource();
-				} catch (JavaModelException e1) {
-					JdtPlugin.getDefault().getPluginLogger().log(e1);
-				}
-			}
-		}
-		else
-		{
-		IProject iProject = null;
-		if(resource != null) {
-			rule = resource.getProject();
-		}
-		}
+		IResource rule = ResourcesPlugin.getWorkspace().getRoot();
 		if(rule != null) {
 			javaElementChangeListener.setRule(rule);
 			javaElementChangeListener.schedule();
