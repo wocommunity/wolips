@@ -60,6 +60,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.types.PatternSet;
 
 /**
  * Ant task to build WebObjects application. For detailed instructions go to the
@@ -72,7 +73,7 @@ import org.apache.tools.ant.BuildException;
  * @author Andrei Adamchik
  */
 public class WOApplication extends WOTask {
-	String[] frameworkNames =
+	public static final String[] stdFrameworkNames =
 		new String[] {
 			"JavaWebObjects",
 			"JavaWOExtensions",
@@ -81,26 +82,8 @@ public class WOApplication extends WOTask {
 			"JavaFoundation",
 			"JavaJDBCAdaptor" };
 
-    protected ArrayList frameworkSets = new ArrayList();
+	protected ArrayList frameworkSets = new ArrayList();
 	protected boolean stdFrameworks = true;
-
-	/** 
-	 * Creates a path to framework JAR file. The following
-	 * assumptions are made (may not always be true): framework 
-	 * is located in "Library/Frameworks" subdirectory, 
-	 * JAR file is named after the framework, in lowercase.
-	 */
-	public static String frameworkJar(String name) {
-		StringBuffer buf = new StringBuffer("Library/Frameworks/");
-		buf.append(name);
-		if (!name.endsWith(".framework")) {
-			buf.append(".framework");
-		}
-		buf.append("/Resources/Java/").append(name.toLowerCase()).append(
-			".jar");
-
-		return buf.toString();
-	}
 
 	/** 
 	 * Runs WOApplication task. Main worker method that would validate
@@ -121,6 +104,23 @@ public class WOApplication extends WOTask {
 
 		// create all needed scripts
 		new AppFormat(this).processTemplates();
+	}
+
+	/**
+	 * Returns a list of standard frameworks as a FrameworkSet. */
+	public FrameworkSet standardSet() {
+		FrameworkSet set = new FrameworkSet();
+		set.setProject(this.getProject());
+		set.setRoot(WOPropertiesHandler.WO_ROOT);
+
+		for (int i = 0; i < stdFrameworkNames.length; i++) {
+			String path =
+				"Library/Frameworks/" + stdFrameworkNames[i] + ".framework";
+			PatternSet.NameEntry include = set.createInclude();
+			include.setName(path);
+		}
+
+		return set;
 	}
 
 	/** 
@@ -153,17 +153,24 @@ public class WOApplication extends WOTask {
 	protected File wsresourcesDir() {
 		return new File(contentsDir(), "WebServerResources");
 	}
-	
+
 	/**
-     * Create a nested FrameworkSet.
-     */
-    public FrameworkSet createFrameworks() {
-        FrameworkSet frameSet = new FrameworkSet();
-        frameworkSets.add(frameSet);
-        return frameSet;
-    }
-    
-    public List getFrameworkSets() {
-    	return frameworkSets;
-    }
+	 * Create a nested FrameworkSet.
+	 */
+	public FrameworkSet createFrameworks() {
+		FrameworkSet frameSet = new FrameworkSet();
+		frameworkSets.add(frameSet);
+		return frameSet;
+	}
+
+	public List getFrameworkSets() {
+		if (stdFrameworks) {
+			ArrayList fullList = new ArrayList(frameworkSets.size() + 1);
+			fullList.add(standardSet());
+			fullList.addAll(frameworkSets);
+			return fullList;
+		} else {
+			return frameworkSets;
+		}
+	}
 }

@@ -60,6 +60,8 @@ import java.util.Iterator;
 
 import junit.framework.TestCase;
 
+import org.apache.tools.ant.Project;
+
 /**
  * TestCase for AppFormat class.
  *
@@ -76,6 +78,7 @@ public class AppFormatTest extends TestCase {
 	public void setUp() throws Exception {
 		super.setUp();
 		formatTask = new TestWOApplication();
+		formatTask.setProject(new Project());
 		formatTask.setName("somename");
 		format = new AppFormat(formatTask);
 	}

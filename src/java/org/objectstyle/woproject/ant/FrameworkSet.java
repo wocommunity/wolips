@@ -167,6 +167,7 @@ public class FrameworkSet extends FileSet {
 		return finalFiles;
 	}
 
+
 	class JarFilter implements FilenameFilter {
 		public boolean accept(File dir, String name) {
 			return name.endsWith(".jar");

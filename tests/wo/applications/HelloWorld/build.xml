@@ -83,7 +83,8 @@
 				<include name="**"/>
 			</wsresources>
 			<frameworks root="wo.woroot">
-				<include name="Library/Frameworks/JavaWebObjects.framework"/>
+				<include name="Library/Frameworks/Java*"/>
+				<exclude name="Library/Frameworks/JavaJNDI*"/>
 			</frameworks>
 			<frameworks root="wo.localroot">
 				<include name="**/MailJava.framework"/>

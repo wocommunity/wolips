@@ -154,7 +154,7 @@ public class AppFormat extends ProjectFormat {
 					String[] jars = fs.findJars(project, dirs[j]);
 					if (jars == null || jars.length == 0) {
 						log(
-							"No Jars found in " + dirs[j] + ", ignoring.",
+							"No Jars in " + dirs[j] + ", ignoring.",
 							Project.MSG_WARN);
 						continue;
 					}
