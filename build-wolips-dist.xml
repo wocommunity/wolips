@@ -29,6 +29,8 @@
         <tarfileset dir="${dist.base}">
          	<include name="plugins/**"/>
            	<include name="features/**"/>
+           	<include name="stuff/**"/>
+           	<include name="install.html"/>
             </tarfileset>
         </tar>
          

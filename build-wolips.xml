@@ -101,7 +101,18 @@
              	<exclude name=".classpath"/>
              </fileset>
          </copy>
-          
+         
+         <copy todir="${dist.base}/stuff">
+             <fileset dir="src/wolips/stuff">
+             	<include name="**/Info.plist"/>
+             </fileset>
+         </copy>
+         
+         <copy todir="${dist.base}">
+             <fileset dir="${wolips.dist}/doc">
+             	<include name="**/install.html"/>
+             </fileset>
+         </copy> 
     </target>
          
          
