@@ -238,7 +238,7 @@ public class DirectAction extends WODirectAction {
        		</resources>
 			<frameworks root="${wo.woroot}">
       				<patternset>
-  					<includesfile name="ant.frameworks.wo.woroot"/> 
+  					<includesfile name="ant.frameworks.wo.wosystemroot"/> 
 				</patternset>
    			</frameworks>
    			<frameworks root="${wo.wolocalroot}">

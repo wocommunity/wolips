@@ -70,8 +70,9 @@ import org.eclipse.core.runtime.Path;
 public abstract class UpdateIncludeFiles extends Task {
 
 	protected static final String[] ROOT_PATHS =
-		{ "user.home", "wo.wolocalroot", "wo.woroot" };
-
+	//	{ "user.home", "wo.wolocalroot", "wo.woroot" };
+	//uk changed to new root
+	{ "user.home", "wo.wolocalroot", "wo.wosystemroot" };
 	private static String[] sortedRootPaths;
 
 	protected String INCLUDES_FILE_PREFIX;
