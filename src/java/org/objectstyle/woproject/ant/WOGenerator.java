@@ -57,7 +57,9 @@ package org.objectstyle.woproject.ant;
 
 import java.io.File;
 
+import org.objectstyle.cayenne.map.DataMap;
 import org.objectstyle.cayenne.tools.CayenneGenerator;
+import org.objectstyle.cayenne.wocompat.EOModelProcessor;
 
 /**
   * Ant task to generate EOEnterpriseObjects from EOModel. 
@@ -70,4 +72,11 @@ public class WOGenerator extends CayenneGenerator {
     public void setModel(File model) {
         super.setMap(model);
     }
+    
+    /** Overrides superclass implementation to create DataMap
+      * from EOModel instead of Cayenne DataMap XML file. */
+    protected DataMap loadDataMap()throws Exception {
+        return new EOModelProcessor().loadEOModel(map.getCanonicalPath());
+    }
+
 }

@@ -17,6 +17,12 @@
 			overwritten. Subclasses are never overwritten and may be later customized by the user.
 			If "makepairs" is set to "false", a single class will be generated for each EOEntity.
 			</p>
+			
+			<p>WOGen is based on <a href="http://objectstyle.org/cayenne/">Cayenne</a> Cgen class
+			generator that is in turn based on <a href="http://jakarta.apache.org/velocity">Jakarta 
+			Velocity</a> template engine. Users can easily create new class templates using 
+			template language described on Velocity website.			
+			</p>
 
 			<h3>Parameters</h3>
 			
@@ -79,10 +85,10 @@
 			subclasses and superclasses will be saved in the same directory "src/java/dobj" regardless
 			of their package names:</p>
 <source>
-&amp;lt;taskdef name="cgen" classname="org.objectstyle.woproject.ant.WOGenerator"&amp;gt;
+&amp;lt;taskdef name="wogen" classname="org.objectstyle.woproject.ant.WOGenerator"&amp;gt;
      &amp;lt;classpath refid="classpath"/&amp;gt;
 &amp;lt;/taskdef&amp;gt;
-&amp;lt;cgen map="src/test.eomodeld" destDir="src/java/dobj"/&amp;gt;
+&amp;lt;wogen map="src/test.eomodeld" destDir="src/java/dobj"/&amp;gt;
 </source>
     </section>
 </body>
