@@ -59,20 +59,17 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Properties;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 /**
  * @author uli
  * Utility for the environment.
  */
 public class Environment {
-	public static Log log = LogFactory.getLog(Environment.class);
 	/**
 	 * The String NEXT_ROOT.
 	 */
-	public static final String NEXT_ROOT = "NEXT_ROOT";
-	public static final String NEXT_LOCAL_ROOT = "NEXT_LOCAL_ROOT";
-	public static final String NEXT_SYSTEM_ROOT = "NEXT_SYSTEM_ROOT";
+	private final String NEXT_ROOT = "NEXT_ROOT";
+	private final String NEXT_LOCAL_ROOT = "NEXT_LOCAL_ROOT";
+	private final String NEXT_SYSTEM_ROOT = "NEXT_SYSTEM_ROOT";
 
 	private Properties envVars;
 	/**
@@ -81,6 +78,7 @@ public class Environment {
 	protected Environment() {
 		super();
 	}
+	
 	/**
 	 * The values are cached.
 	 * @return environment variables as Properties.
@@ -95,7 +93,7 @@ public class Environment {
 		try {
 			p = Environment.osProcess();
 		} catch (InvocationTargetException e) {
-			log.warn("getEnvVars -> unable to load environment variables", e);
+			System.out.println("getEnvVars -> unable to load environment variables" + e);
 		}
 		envVars = new Properties();
 		br = new BufferedReader(new InputStreamReader(p.getInputStream()));
@@ -107,7 +105,7 @@ public class Environment {
 				envVars.setProperty(key, value);
 			}
 		} catch (IOException e) {
-			log.warn("getEnvVars -> unable to load environment variables", e);
+			System.out.println("getEnvVars -> unable to load environment variables" + e);
 		}
 		p = null;
 		br = null;
@@ -154,8 +152,29 @@ public class Environment {
 		} else if (this.getEnvVars().getProperty("USERPROFILE") != null) {
 			return this.getEnvVars().getProperty("USERPROFILE");
 		} else {
-			log.warn("userHome -> no user home found");
+			System.out.println("userHome -> no user home found");
 			return null;
 		}
 	}
+	/**
+	 * @return
+	 */
+	public String getNEXT_LOCAL_ROOT() {
+		return NEXT_LOCAL_ROOT;
+	}
+
+	/**
+	 * @return
+	 */
+	public String getNEXT_ROOT() {
+		return NEXT_ROOT;
+	}
+
+	/**
+	 * @return
+	 */
+	public String getNEXT_SYSTEM_ROOT() {
+		return NEXT_SYSTEM_ROOT;
+	}
+
 }

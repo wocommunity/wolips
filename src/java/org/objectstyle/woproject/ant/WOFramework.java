@@ -95,7 +95,7 @@ public class WOFramework extends WOTask {
             copyWsresources();
         }
 
-        new FrameworkFormat(this).processTemplates();
+        boolean changes = new FrameworkFormat(this).processTemplates();
     }
 
     /**

@@ -216,26 +216,28 @@ public class AppFormat extends ProjectFormat {
 			try {
 				fs = (FrameworkSet) frameworkSets.get(i);
 				// Don't bother checking if it's embedded.
-				if (fs.getEmbed()) {
-					continue;
-				}
-				ds = fs.getDirectoryScanner(project);
-				dirs = ds.getIncludedDirectories();
-
-				for (int j = 0; j < dirs.length; j++) {
-					File[] jars = fs.findJars(project, dirs[j]);
-
-					if (jars == null || jars.length == 0) {
-						log(
-							"No Jars in " + dirs[j] + ", ignoring.",
-							Project.MSG_VERBOSE);
+				if (fs.hasSelectors()) {
+					if (fs.getEmbed()) {
 						continue;
 					}
+					ds = fs.getDirectoryScanner(project);
+					dirs = ds.getIncludedDirectories();
 
-					int jsize = jars.length;
-					for (int k = 0; k < jsize; k++) {
-						if (!jarSet.contains(jars[k]))
-							jarSet.add(jars[k]);
+					for (int j = 0; j < dirs.length; j++) {
+						File[] jars = fs.findJars(project, dirs[j]);
+
+						if (jars == null || jars.length == 0) {
+							log(
+								"No Jars in " + dirs[j] + ", ignoring.",
+								Project.MSG_VERBOSE);
+							continue;
+						}
+
+						int jsize = jars.length;
+						for (int k = 0; k < jsize; k++) {
+							if (!jarSet.contains(jars[k]))
+								jarSet.add(jars[k]);
+						}
 					}
 				}
 			} catch (Exception anException) {
@@ -290,7 +292,8 @@ public class AppFormat extends ProjectFormat {
 			for (int i = 0; i < size; i++) {
 
 				OtherClasspathSet cs = (OtherClasspathSet) classpathSets.get(i);
-				cs.collectClassPaths(project, pathSet);
+				if (cs.hasSelectors())
+					cs.collectClassPaths(project, pathSet);
 
 			}
 		} catch (BuildException be) {

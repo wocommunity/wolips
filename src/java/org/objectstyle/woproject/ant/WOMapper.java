@@ -72,8 +72,8 @@ import org.apache.tools.ant.util.IdentityMapper;
  * @author Andrei Adamchik
  */
 public class WOMapper extends Mapper {
-	public static final String LPROJ_SUFFIX = ".lproj";
-	public static final String NON_LOCALIZED = "Nonlocalized" + LPROJ_SUFFIX;
+	private final String LPROJ_SUFFIX = ".lproj";
+	private final String NON_LOCALIZED = "Nonlocalized" + LPROJ_SUFFIX;
 
 	public WOMapper(Project project) {
 		super(project);
@@ -140,7 +140,6 @@ public class WOMapper extends Mapper {
 		return path;
 
 		}
-
 
 		/** 
 		 * Returns destination path based on source file path applying

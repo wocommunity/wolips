@@ -78,8 +78,6 @@ import org.apache.tools.ant.types.FilterSetCollection;
  * @author Andrei Adamchik
  */
 public abstract class ProjectFormat {
-	protected static final String endLine = System.getProperty("line.separator");
-
 	protected WOTask task;
 
 	/** 
@@ -106,11 +104,12 @@ public abstract class ProjectFormat {
 
 	/** 
 	* Creates all needed files based on WOProject templates. 
-	* This is a main worker method. 
+	* This is a main worker method.
+	* Returns true when a template is written. 
 	*/
-	public void processTemplates() throws BuildException {
+	public boolean processTemplates() throws BuildException {
 		Iterator it = fileIterator();
-
+		boolean returnValue = false;
 		try {
 			while (it.hasNext()) {
 				String targetName = (String) it.next();
@@ -118,16 +117,18 @@ public abstract class ProjectFormat {
 				FilterSetCollection filters = filtersForTarget(targetName);
 
 				InputStream template =
-					this.getClass().getClassLoader().getResourceAsStream(templName);
+					this.getClass().getClassLoader().getResourceAsStream(
+						templName);
 				File target = new File(targetName);
-				copyFile(template, target, filters);
+				if (copyFile(template, target, filters))
+					returnValue = true;
 			}
 		} catch (IOException ioex) {
 			throw new BuildException("Error doing project formatting.", ioex);
-		}
-		finally {
+		} finally {
 			it = null;
 		}
+		return returnValue;
 	}
 
 	/** 
@@ -141,7 +142,8 @@ public abstract class ProjectFormat {
 	 * Returns a path to the template that should be used to
 	 * build a target file.
 	 */
-	public abstract String templateForTarget(String targetName) throws BuildException;
+	public abstract String templateForTarget(String targetName)
+		throws BuildException;
 
 	/** 
 	 * Returns a FilterSetCollection that should be applied when
@@ -158,13 +160,20 @@ public abstract class ProjectFormat {
 	 * and simplifications. FileUtils can't be used directly, since its 
 	 * API doesn't allow InputStreams for the source file.</i></p>
 	 *  
-	 * @throws IOException 
+	 * @throws IOException
+	 * Returns true when a file is copied. 
 	 */
-	public void copyFile(InputStream src, File destFile, FilterSetCollection filters)
+	public boolean copyFile(
+		InputStream src,
+		File destFile,
+		FilterSetCollection filters)
 		throws IOException {
 
 		if (destFile.exists() && destFile.isFile()) {
-			destFile.delete();
+			//these files only need an update when a new Version of WO is installed.
+			//A clean in that case is better.
+			//destFile.delete();
+			return false;
 		}
 
 		// ensure that parent dir of dest file exists!
@@ -207,6 +216,7 @@ public abstract class ProjectFormat {
 			src.close();
 			out.close();
 		}
+		return true;
 	}
 
 	/** 
@@ -214,11 +224,13 @@ public abstract class ProjectFormat {
 	 * file to indicate JARs required by the project.
 	 */
 	private String libString(Iterator extLibs) {
+		String endLine = System.getProperty("line.separator");
 		StringBuffer buf = new StringBuffer();
 
 		buf.append("<array>");
 		if (task.hasClasses()) {
-			buf.append(endLine).append("\t\t<string>").append(getJarName()).append(
+			buf.append(endLine).append("\t\t<string>").append(
+				getJarName()).append(
 				"</string>");
 		}
 
@@ -238,12 +250,16 @@ public abstract class ProjectFormat {
 	 * file to indicate the principal class for the framework or app.
 	 */
 	private String principalClassString() {
+		String endLine = System.getProperty("line.separator");
 		StringBuffer buf = new StringBuffer();
-		if (task.getPrincipalClass() != null && task.getPrincipalClass().length() > 0) {
+		if (task.getPrincipalClass() != null
+			&& task.getPrincipalClass().length() > 0) {
 			buf.append("<key>NSPrincipalClass</key>").append(endLine);
-			buf.append("\t<string>").append(task.getPrincipalClass()).append(
-				"</string>").append(
-				endLine);
+			buf
+				.append("\t<string>")
+				.append(task.getPrincipalClass())
+				.append("</string>")
+				.append(endLine);
 		}
 		return buf.toString();
 	}

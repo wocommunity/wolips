@@ -78,6 +78,9 @@ public class SubtaskFactory {
 		this.parent = parent;
 	}
 
+	public void release() {
+		parent = null;
+	}
 	/** 
 	 * Modifies log level to avoid log flood 
 	 * when using subtasks within a main task.

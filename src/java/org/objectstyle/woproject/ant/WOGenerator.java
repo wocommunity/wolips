@@ -73,82 +73,82 @@ import org.objectstyle.cayenne.tools.CayenneGenerator;
   * @author Andrei Adamchik
   */
 public class WOGenerator extends CayenneGenerator {
-    public static final String SUPERCLASS_TEMPLATE = "wogen/superclass.vm";
-    public static final String SUBCLASS_TEMPLATE = "wogen/subclass.vm";
-    public static final String SINGLE_CLASS_TEMPLATE = "wogen/singleclass.vm";
+	/**
+	  * Wrapper of the superclass <code>setMap</code>
+	  * method to provide WebObjects-friendly name. 
+	  */
+	public void setModel(File model) {
+		super.setMap(model);
+	}
 
-    public static final String[] RESERVED_CLASS_NAMES =
-        new String[] { "EOGenericRecord", "EOCustomObject" };
+	/** 
+	 * Overrides superclass implementation to create DataMap
+	 * from EOModel instead of Cayenne DataMap XML file. 
+	 */
+	protected DataMap loadDataMap() throws Exception {
+		return new EOModelReader().loadEOModel(map.getCanonicalPath());
+	}
 
-    /**
-     * Wrapper of the superclass <code>setMap</code>
-     * method to provide WebObjects-friendly name. 
-     */
-    public void setModel(File model) {
-        super.setMap(model);
-    }
+	protected DefaultClassGenerator createGenerator() {
+		WOAntClassGenerator gen = new WOAntClassGenerator();
+		gen.setParentTask(this);
+		return gen;
+	}
 
-    /** 
-     * Overrides superclass implementation to create DataMap
-     * from EOModel instead of Cayenne DataMap XML file. 
-     */
-    protected DataMap loadDataMap() throws Exception {
-        return new EOModelReader().loadEOModel(map.getCanonicalPath());
-    }
+	final class WOAntClassGenerator extends AntClassGenerator {
+		private final String SUPERCLASS_TEMPLATE = "wogen/superclass.vm";
+		private final String SUBCLASS_TEMPLATE = "wogen/subclass.vm";
+		private final String SINGLE_CLASS_TEMPLATE = "wogen/singleclass.vm";
 
-    protected DefaultClassGenerator createGenerator() {
-        WOAntClassGenerator gen = new WOAntClassGenerator();
-        gen.setParentTask(this);
-        return gen;
-    }
+		private final String[] RESERVED_CLASS_NAMES =
+			new String[] { "EOGenericRecord", "EOCustomObject" };
 
-    final class WOAntClassGenerator extends AntClassGenerator {
-        protected String defaultSingleClassTemplate() {
-            return WOGenerator.SINGLE_CLASS_TEMPLATE;
-        }
+		protected String defaultSingleClassTemplate() {
+			return SINGLE_CLASS_TEMPLATE;
+		}
 
-        protected String defaultSubclassTemplate() {
-            return WOGenerator.SUBCLASS_TEMPLATE;
-        }
+		protected String defaultSubclassTemplate() {
+			return SUBCLASS_TEMPLATE;
+		}
 
-        protected String defaultSuperclassTemplate() {
-            return WOGenerator.SUPERCLASS_TEMPLATE;
-        }
+		protected String defaultSuperclassTemplate() {
+			return SUPERCLASS_TEMPLATE;
+		}
 
-        protected File fileForClass(String packageName, String className)
-            throws Exception {
+		protected File fileForClass(String packageName, String className)
+			throws Exception {
 
-            if (isReservedName(className)) {
-                return null;
-            }
+			if (isReservedName(className)) {
+				return null;
+			}
 
-            return super.fileForClass(packageName, className);
-        }
+			return super.fileForClass(packageName, className);
+		}
 
-        protected File fileForSuperclass(String packageName, String className)
-            throws Exception {
+		protected File fileForSuperclass(String packageName, String className)
+			throws Exception {
 
-            if (isReservedName(className)) {
-                return null;
-            }
-            return super.fileForSuperclass(packageName, className);
-        }
+			if (isReservedName(className)) {
+				return null;
+			}
+			return super.fileForSuperclass(packageName, className);
+		}
 
-        protected boolean isReservedName(String className) {
-            if (className.startsWith(MapClassGenerator.SUPERCLASS_PREFIX)) {
-                className =
-                    className.substring(
-                        MapClassGenerator.SUPERCLASS_PREFIX.length());
-            }
+		protected boolean isReservedName(String className) {
+			if (className.startsWith(MapClassGenerator.SUPERCLASS_PREFIX)) {
+				className =
+					className.substring(
+						MapClassGenerator.SUPERCLASS_PREFIX.length());
+			}
 
-            for (int i = 0; i < RESERVED_CLASS_NAMES.length; i++) {
-                if (RESERVED_CLASS_NAMES[i].equals(className)) {
-                    return true;
-                }
-            }
+			for (int i = 0; i < RESERVED_CLASS_NAMES.length; i++) {
+				if (RESERVED_CLASS_NAMES[i].equals(className)) {
+					return true;
+				}
+			}
 
-            return false;
-        }
+			return false;
+		}
 
-    }
+	}
 }

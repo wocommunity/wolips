@@ -67,9 +67,6 @@ import java.util.Vector;
  */
 public final class AntStringUtils {
 
-	/** the line separator for this OS */
-	public static final String LINE_SEP = System.getProperty("line.separator");
-
 	/**
 	 * Splits up a string into a list of lines. It is equivalent
 	 * to <tt>split(data, '\n')</tt>.

@@ -69,7 +69,7 @@ import org.apache.tools.ant.types.FilterSetCollection;
  * @author Andrei Adamchik
  */
 public class FrameworkFormat extends ProjectFormat {
-	public static final String INFO_TEMPLATE = "woframework/Info.plist";
+	public final String INFO_TEMPLATE = "woframework/Info.plist";
 
 	/** 
 	 * Creates new FrameworkFormat and initializes it with the name

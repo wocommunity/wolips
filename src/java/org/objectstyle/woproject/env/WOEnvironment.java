@@ -71,7 +71,7 @@ import org.objectstyle.woproject.env.WOVariables;
 public final class WOEnvironment extends Environment {
 	private Environment environment;
 	private WOVariables woVariables;
-
+	
 	public WOEnvironment() {
 		super();
 		woVariables = new WOVariables(this);

@@ -59,28 +59,24 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.objectstyle.woproject.util.FileStringScanner;
 /**
  * @author uli
  *
  */
 public class WOVariables {
-	public static final String WO_ROOT = "wo.woroot";
-	public static final String LOCAL_ROOT = "wo.localroot";
-	public static final String WO_WO_SYSTEM_ROOT = "wo.wosystemroot";
-	public static final String WO_WO_LOCAL_ROOT = "wo.wolocalroot";
-	public static final String HOME_ROOT = "wo.homeroot";
-	public static final String ABSOLUTE_ROOT = "wo.absoluteroot";
-	public static Log log = LogFactory.getLog(WOVariables.class);
+	private final String WO_ROOT = "wo.woroot";
+	private final String LOCAL_ROOT = "wo.localroot";
+	private final String WO_WO_SYSTEM_ROOT = "wo.wosystemroot";
+	private final String WO_WO_LOCAL_ROOT = "wo.wolocalroot";
+	private final String HOME_ROOT = "wo.homeroot";
+	private final String ABSOLUTE_ROOT = "wo.absoluteroot";
 	/**
 	 * Key for setting wobuild.properties path by environment
 	 * @see WOVariables
 	 */
-	public static final String WOBUILD_PROPERTIES = "WOBUILD_PROPERTIES";
-	public static final String WOBUILD_PROPERTIES_FILE_NAME =
-		"wobuild.properties";
+	private final String WOBUILD_PROPERTIES = "WOBUILD_PROPERTIES";
+	private final String WOBUILD_PROPERTIES_FILE_NAME = "wobuild.properties";
 	private Properties wobuildProperties;
 	private File wobuildPropertiesFile;
 	private Environment environment;
@@ -110,53 +106,27 @@ public class WOVariables {
 			+ File.separator
 			+ "Library"
 			+ File.separator
-			+ WOVariables.WOBUILD_PROPERTIES_FILE_NAME)) {
-			if (log.isInfoEnabled()) {
-				log.info("init -> no wobuild.properties in $user.home/Library/ found");
-			}
+			+ this.WOBUILD_PROPERTIES_FILE_NAME)) {
 			// try system property
 			if (!validateWobuildPropertiesFile(System
-				.getProperty(WOVariables.WOBUILD_PROPERTIES))) {
-				if (log.isInfoEnabled()) {
-					log.info(
-						"init -> no wobuild.properties in java system properties found");
-				}
+				.getProperty(this.WOBUILD_PROPERTIES))) {
 				// try environment variable
 				if (!validateWobuildPropertiesFile(environment
 					.getEnvVars()
-					.getProperty(WOVariables.WOBUILD_PROPERTIES))) {
-					if (log.isInfoEnabled()) {
-						log.info(
-							"init -> no wobuild.properties in environment found");
-					}
+					.getProperty(this.WOBUILD_PROPERTIES))) {
 				}
 			}
 		}
-		if (wobuildPropertiesFile == null) {
-			log.warn("init -> no wobuild.properties found");
-		} else {
+		if (wobuildPropertiesFile != null) {
 			boolean loadingSuccess = false;
 			try {
 				wobuildProperties.load(
 					new FileInputStream(wobuildPropertiesFile));
 				loadingSuccess = true;
 			} catch (FileNotFoundException e) {
-				log.error(
-					"init -> unable to load "
-						+ wobuildPropertiesFile.getAbsolutePath(),
-					e);
 				loadingSuccess = false;
 			} catch (IOException e) {
-				log.error(
-					"init -> unable to load "
-						+ wobuildPropertiesFile.getAbsolutePath(),
-					e);
 				loadingSuccess = false;
-			}
-			if (loadingSuccess && log.isInfoEnabled()) {
-				log.info(
-					"init -> loaded wobuild.properties from "
-						+ wobuildPropertiesFile.getAbsolutePath());
 			}
 		}
 	}
@@ -362,11 +332,6 @@ public class WOVariables {
 			//            if((aPrefix != null) && (aPrefix.length() > 1) && (aPath.startsWith(aPrefix))) {
 			//            	return "APPROOT" + aPath.substring(aPrefix.length());
 			//            }
-			if (log.isDebugEnabled()) {
-				log.debug("aPrefix + aPath " + localRoot + " " + aPath);
-				log.debug("aPrefix + aPath " + userHome + " " + aPath);
-				log.debug("aPrefix + aPath " + systemRoot + " " + aPath);
-			}
 			if (localRoot != null && aPath.startsWith(localRoot)) {
 				boolean otherRoot = false;
 				if (localRootLength < userHomeLength
@@ -394,9 +359,8 @@ public class WOVariables {
 			}
 			return aPath;
 		} catch (Exception anException) {
-			log.error(
-				"Exception occured during encoding of the path " + anException,
-				anException);
+			System.out.println(
+				"Exception occured during encoding of the path " + anException);
 		} finally {
 			localRoot = null;
 			userHome = null;

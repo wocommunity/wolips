@@ -80,7 +80,7 @@ import org.objectstyle.woproject.env.WOEnvironment;
  * @author Andrei Adamchik
  */
 public class WOApplication extends WOTask {
-	public static final String[] stdFrameworkNames =
+	private final String[] stdFrameworkNames =
 		new String[] {
 			"JavaWebObjects",
 			"JavaWOExtensions",
@@ -94,8 +94,12 @@ public class WOApplication extends WOTask {
 	protected ArrayList otherClasspathSets = new ArrayList();
 	protected boolean stdFrameworks = true;
 	protected boolean embedStdFrameworks = false;
-	protected WOEnvironment woEnvironment;
+	private WOEnvironment woEnvironment;
+	protected String chmod = "gu+x";
 
+	public void release() {
+		super.release();
+	}
 	public String getPrincipalClass() {
 		String principalClass = super.getPrincipalClass();
 		if (principalClass == null) {
@@ -109,6 +113,7 @@ public class WOApplication extends WOTask {
 	 * all task settings and create a WOApplication.
 	 */
 	public void execute() throws BuildException {
+		super.execute();
 		validateAttributes();
 
 		log("Installing " + name + " in " + destDir);
@@ -130,10 +135,15 @@ public class WOApplication extends WOTask {
 		}
 
 		// create all needed scripts
-		new AppFormat(this).processTemplates();
+		if (new AppFormat(this).processTemplates())
 
-		// chmod UNIX scripts
-		chmodScripts();
+			// chmod UNIX scripts
+			chmodScripts();
+
+		frameworkSets = new ArrayList();
+		otherClasspathSets = new ArrayList();
+		woEnvironment = null;
+		this.release();
 	}
 
 	/**
@@ -154,8 +164,8 @@ public class WOApplication extends WOTask {
 				fs.createInclude().setName("**/" + name);
 				fs.createInclude().setName("**/*.sh");
 
-				chmod = subtaskFactory.getChmod();
-				chmod.setPerm("gu+x");
+				chmod = this.getSubtaskFactory().getChmod();
+				chmod.setPerm(this.getChmod());
 				chmod.addFileset(fs);
 				chmod.execute();
 			} finally {
@@ -357,6 +367,20 @@ public class WOApplication extends WOTask {
 			this.getProject().fireBuildFinished(
 				new WOBuildPropertiesNotFoundException());
 		return woEnvironment;
+	}
+
+	/**
+	 * @return
+	 */
+	public String getChmod() {
+		return chmod;
+	}
+
+	/**
+	 * @param string
+	 */
+	public void setChmod(String string) {
+		chmod = string;
 	}
 
 }
