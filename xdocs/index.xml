@@ -15,7 +15,7 @@
         <hr/>
         </p>
         
-        <p><i>July 8, 2003.</i> <b>WOLips 1.0.4 released. This is bugfix release to solve a classpath problem in 1.0.2.</b></p>
+        <p><i>July 8, 2003.</i> <b>WOLips 1.0.4 released.</b></p>
         <p>WOLips is a plugin for <a href="http://eclipse.org">Eclipse IDE</a> that
         support development of WebObjects applications and frameworks.
         <ul>
