@@ -279,7 +279,7 @@ public class ProjectHelper implements IWOLipsPluginConstants {
 		IFolder subprojectFolder,
 		boolean forceCreation) {
 		//ensure that the folder is a subproject
-		if (!subprojectFolder.getFileExtension().equals(EXT_SUBPROJECT)) {
+		if (!EXT_SUBPROJECT.equals(subprojectFolder.getFileExtension())) {
 			IFolder parentFolder =
 				getParentFolderWithPBProject(subprojectFolder);
 			//this belongs to the project and not a subproject
