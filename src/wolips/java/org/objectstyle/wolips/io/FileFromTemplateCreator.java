@@ -80,6 +80,7 @@ import org.objectstyle.wolips.WOLipsPlugin;
 import org.objectstyle.wolips.utils.WOLipsUtils;
 import org.objectstyle.wolips.wizards.Messages;
 import org.objectstyle.wolips.wo.WOVariables;
+import org.objectstyle.wolips.workbench.WorkbenchHelper;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
@@ -195,7 +196,7 @@ public class FileFromTemplateCreator {
 				// ask for overwriting existing file
 				if (MessageDialog
 					.openQuestion(
-						WOLipsPlugin.getDefault().getActiveWorkbenchShell(),
+					WorkbenchHelper.getActiveWorkbenchShell(),
 						Messages.getString("QuestionDialog.title"),
 						e.getMessage()
 							+ "\n"
@@ -212,7 +213,7 @@ public class FileFromTemplateCreator {
 				// ask for continuing execution of process
 				if (!MessageDialog
 					.openQuestion(
-						WOLipsPlugin.getDefault().getActiveWorkbenchShell(),
+						WorkbenchHelper.getActiveWorkbenchShell(),
 						Messages.getString("QuestionDialog.title"),
 						e.getMessage()
 							+ "\n"

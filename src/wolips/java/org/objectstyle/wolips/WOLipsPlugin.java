@@ -57,24 +57,15 @@ package org.objectstyle.wolips;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPluginDescriptor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IStartup;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.objectstyle.wolips.io.WOLipsLog;
 import org.objectstyle.wolips.plugin.EarlyStartup;
@@ -122,30 +113,6 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 		}
 	}
 	/**
-	 * @return Returns the active page.
-	 */
-	public IWorkbenchPage getActivePage() {
-		return getActiveWorkbenchWindow().getActivePage();
-	}
-	/**
-	 * @return Returns the the active workbench window.
-	 */
-	public IWorkbenchWindow getActiveWorkbenchWindow() {
-		return getWorkbench().getActiveWorkbenchWindow();
-	}
-	/**
-	 * @return Returns the active workbench shell.
-	 */
-	public Shell getActiveWorkbenchShell() {
-		return getActiveWorkbenchWindow().getShell();
-	}
-	/**
-	 * Returns the workspace instance.
-	 */
-	public static IWorkspace getWorkspace() {
-		return ResourcesPlugin.getWorkspace();
-	}
-	/**
 	 * Returns the shared instance.
 	 */
 	public static WOLipsPlugin getDefault() {
@@ -157,41 +124,6 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 					.getDescriptor());
 		}
 		return plugin;
-	}
-	/**
-	 * @return Returns the active editor java input.
-	 */
-	public static IJavaElement getActiveEditorJavaInput() {
-		IWorkbenchPage page = getDefault().getActivePage();
-		if (page != null) {
-			IEditorPart part = page.getActiveEditor();
-			if (part != null) {
-				IEditorInput editorInput = part.getEditorInput();
-				if (editorInput != null) {
-					IJavaElement result =
-						(IJavaElement) editorInput.getAdapter(
-							IJavaElement.class);
-					if (result == null) {
-						IResource nonjava =
-							(IResource) editorInput.getAdapter(IResource.class);
-						if (nonjava != null) {
-							IContainer parent = nonjava.getParent();
-							while (parent != null) {
-								result =
-									(IJavaElement) parent.getAdapter(
-										IJavaElement.class);
-								if (result != null) {
-									break;
-								}
-								parent = parent.getParent();
-							}
-						}
-					}
-					return result;
-				}
-			}
-		}
-		return null;
 	}
 	/**
 	 * Method baseURL.

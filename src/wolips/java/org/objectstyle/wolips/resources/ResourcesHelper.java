@@ -54,69 +54,85 @@
  *
  */
 
-package org.objectstyle.wolips.actions;
+package org.objectstyle.wolips.resources;
 
-import java.io.File;
+import java.util.ArrayList;
 
-import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.ui.IWorkbenchPart;
-import org.objectstyle.wolips.ui.WOFrameworkDialogWrapper;
-import org.objectstyle.wolips.wizards.Messages;
-import org.objectstyle.wolips.wo.WOVariables;
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.objectstyle.wolips.io.WOLipsLog;
 
 /**
- * Adding WOFrameworks
- * 
- * @author mnolte
+ * @author uli
  *
+ * To change this generated comment edit the template variable "typecomment":
+ * Window>Preferences>Java>Templates.
+ * To enable and disable the creation of type comments go to
+ * Window>Preferences>Java>Code Generation.
  */
-public class WOFrameworkAction extends ActionOnIProject {
-
-	private static String WOSystemFrameworkAddID = "WOSystemFramework.Add.ID";
-	private static String WOLocalFrameworkAddID = "WOLocalFramework.Add.ID";
+public class ResourcesHelper {
 
 	/**
-	 * Constructor for WOFrameworkAction.
+	 * Method findFilesInResourceByName.
+	 * @param anArrayList
+	 * @param aResource
+	 * @param aFileName
 	 */
-	public WOFrameworkAction() {
-		super();
-	}
-
-	/**
-	 * Runs the action.
-	 */
-	public void run(IAction action) {
-		if (project() == null)
-			return;
-		IJavaProject javaProject = JavaCore.create(project());
-		if (action.getId().equals(WOSystemFrameworkAddID)) {
-			WOFrameworkAction.frameworkDialog(
-				this.part,
-				javaProject,
-				new File(WOVariables.libraryDir(), "Frameworks"));
-			return;
-		} else if (action.getId().equals(WOLocalFrameworkAddID)) {
-			WOFrameworkAction.frameworkDialog(
-				this.part,
-				javaProject,
-				new File(WOVariables.localLibraryDir(), "Frameworks"));
-			return;
+	public static void findFilesInResourceByName(
+		ArrayList anArrayList,
+		IResource aResource,
+		String aFileName) {
+		if ((aResource != null)) {
+			if ((aResource instanceof IContainer)
+				|| (aResource instanceof IProject)) {
+				IResource resource =
+					((IContainer) aResource).findMember(aFileName);
+				if ((resource != null) && (resource instanceof IFile))
+					anArrayList.add(resource);
+				IResource[] members = ResourcesHelper.members(aResource);
+				ResourcesHelper.findFilesInResourceByName(
+					anArrayList,
+					members,
+					aFileName);
+			}
 		}
-		MessageDialog.openInformation(
-			this.part.getSite().getShell(),
-			Messages.getString("ErrorDialog.title"),
-			Messages.getString("ErrorDialog.invalid.selection"));
 	}
-
-	private static void frameworkDialog(
-		IWorkbenchPart aPart,
-		IJavaProject aProject,
-		File aFile) {
-		WOFrameworkDialogWrapper frameworkDialog =
-			new WOFrameworkDialogWrapper(aPart, aProject, aFile);
-		frameworkDialog.executeDialog();
+	/**
+	 * Method findFilesInResourceByName.
+	 * @param anArrayList
+	 * @param aResource
+	 * @param aFileName
+	 */
+	private static void findFilesInResourceByName(
+		ArrayList anArrayList,
+		IResource[] aResource,
+		String aFileName) {
+		for (int i = 0; i < aResource.length; i++) {
+			IResource memberResource = aResource[i];
+			if ((memberResource != null)
+				&& (memberResource instanceof IContainer)
+				&& (!memberResource.toString().endsWith(".framework"))
+				&& (!memberResource.toString().endsWith(".woa")))
+				ResourcesHelper.findFilesInResourceByName(
+					anArrayList,
+					memberResource,
+					aFileName);
+		}
+	}
+	/**
+	 * Method members.
+	 * @param aResource
+	 * @return IResource[]
+	 */
+	private static IResource[] members(IResource aResource) {
+		IResource[] members = null;
+		try {
+			members = ((IContainer) aResource).members();
+		} catch (Exception anException) {
+			WOLipsLog.log(anException);
+		}
+		return members;
 	}
 }

@@ -58,9 +58,9 @@ package org.objectstyle.wolips.actions;
 
 import java.util.ArrayList;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.action.IAction;
+import org.objectstyle.wolips.resources.ResourcesHelper;
+import org.objectstyle.wolips.workbench.WorkbenchHelper;
 
 /**
  * @author uli
@@ -72,6 +72,9 @@ import org.eclipse.jface.action.IAction;
  */
 public class OpenSourceAction extends ActionOnIResource {
 
+	/**
+	 * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
+	 */
 	public void run(IAction action) {
 		if (actionResource() != null) {
 			String fileName = actionResource().getName();
@@ -81,13 +84,11 @@ public class OpenSourceAction extends ActionOnIResource {
 				fileName = fileName.substring(0, fileName.length() - 3);
 
 			ArrayList list = new ArrayList();
-			this.findFilesInResourceByName(list, project(), fileName + ".java");
-			for (int i = 0; i < list.size(); i++) {
-				IResource resource = (IResource) list.get(i);
-				if ((resource != null)
-					&& (resource.getType() == IResource.FILE))
-					open((IFile) resource);
-			}
+			ResourcesHelper.findFilesInResourceByName(
+				list,
+				project(),
+				fileName + ".java");
+			WorkbenchHelper.open(list);
 		}
 	}
 }

@@ -18,6 +18,7 @@ import org.objectstyle.wolips.io.WOLipsLog;
 import org.objectstyle.wolips.listener.JavaElementChangeListener;
 import org.objectstyle.wolips.listener.ResourceChangeListener;
 import org.objectstyle.wolips.wo.WOVariables;
+import org.objectstyle.wolips.workbench.WorkbenchHelper;
 
 /**
  * @author uli
@@ -47,7 +48,7 @@ public class EarlyStartup {
 		EarlyStartup.validateMandatoryAttributes();
 		// add resource change listener to update project file on resource changes
 		IResourceChangeListener resourceChangeListener = new ResourceChangeListener();
-		WOLipsPlugin.getWorkspace().addResourceChangeListener(
+		WorkbenchHelper.getWorkspace().addResourceChangeListener(
 			resourceChangeListener,
 			IResourceChangeEvent.PRE_AUTO_BUILD);
 		// add element change listener to update project file on classpath changes
