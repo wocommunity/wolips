@@ -105,8 +105,10 @@
     <!-- directory.                                    -->
     <!-- ============================================= -->
     <target name="deploy-web" depends="java,doc,api" if="deploy.web">
-		<ant antfile="build-core.xml" target="deploy-web"/>
         <ant antfile="build-wolips.xml" target="deploy-web"/>
 		<ant antfile="build-wolips-targetbuilder.xml" target="deploy-web"/>
+		
+		<!-- This must be the last task, since it would copy all the folders. -->
+	    <ant antfile="build-core.xml" target="deploy-web"/>
     </target>
 </project>

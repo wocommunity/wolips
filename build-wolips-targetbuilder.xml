@@ -19,6 +19,9 @@
     <property name="build" value="${output}/build"/>
     <property name="wolips.targetbuilder.name" value="org.objectstyle.wolips.targetbuilder_${WOLips.version}"/>
     <property name="wolips.targetbuilder.dist" value="${dist.base}/${wolips.targetbuilder.name}"/>
+    <property name="wolips.name" value="org.objectstyle.wolips_${WOLips.version}" /> 
+	<property name="wolips.dist" value="${dist.base}/${wolips.name}" /> 
+
     <!-- main distribution. -->
     <property name="dist" value="${dist.base}/${project.name}-${project.version}"/>
 
@@ -116,27 +119,7 @@
     <!-- Deploys WOLips web site files in a local      -->
     <!-- directory.                                    -->
     <!-- ============================================= -->
-    <target name="deploy-web" depends="prepare,doc,api" if="deploy.web">
-         <mkdir dir="${deploy.web}/woproject"/>
-
-         <!-- copy all but HTML -->
-         <copy todir="${deploy.web}/woproject">
-             <fileset dir="${wolips.dist}/doc">
-             	<exclude name="**/*.html"/>
-             </fileset>
-         </copy>
-
-         <!-- do replacement in HTML files -->
-         <copy todir="${deploy.web}/woproject" overwrite="true">
-             <fileset dir="${wolips.targetbuilder.dist}/doc">
-             	<include name="**/*.html"/>
-             </fileset>
-
-             <filterset begintoken="!--" endtoken="--">
-				<filter token="SFLOGO" value="${sf.logo}"/>
-			 </filterset>
-         </copy>
-    </target>
+    <target name="deploy-web" depends="prepare,site-doc" if="deploy.web"/>
     
     
     <!-- ========================================== -->
@@ -178,16 +161,6 @@
         <taskdef name="anakia" classname="org.apache.velocity.anakia.AnakiaTask">
             <classpath refid="classpath"/>
         </taskdef>
-
-        <!-- Build site in WOProject site directory -->
-        <anakia basedir="src/wolips-targetbuilder/xdocs" destdir="${dist}/doc"
-             extension=".html" style="woproject.vsl"
-             projectFile="../../../xdocs/stylesheets/project.xml"
-             excludes="**/stylesheets/**"
-             includes="**/*.xml"
-             lastModifiedCheck="true"
-             templatePath="xdocs/stylesheets">
-        </anakia>
         
        <!-- Build site in Plugin docs directory -->
         <anakia basedir="src/wolips-targetbuilder/xdocs/wolips-targetbuilder" destdir="${wolips.targetbuilder.dist}/doc"
@@ -199,7 +172,7 @@
         </anakia>
 
         <!-- copy images -->
-        <copy todir="${dist}/doc/images/wolips-targetbuilder" filtering="no">
+        <copy todir="${wolips.targetbuilder.dist}/doc/images/wolips-targetbuilder" filtering="no">
             <fileset dir="src/wolips-targetbuilder/xdocs/images">
                 <include name="**/*.gif"/>
                 <include name="**/*.jpeg"/>
@@ -207,8 +180,32 @@
                 <include name="**/*.css"/>
             </fileset>
         </copy>
-        <copy todir="${wolips.targetbuilder.dist}/doc/images/wolips-targetbuilder" filtering="no">
-            <fileset dir="src/wolips-targetbuilder/xdocs/images">
+    </target>
+    
+    <target name="site-doc" depends="prepare">
+        <!-- copy all licenses inclusing ours -->
+        <copy todir="${wolips.targetbuilder.dist}/doc">
+            <fileset dir="doc">
+               <include name="LICENSE*"/>
+            </fileset>
+        </copy>
+
+        <taskdef name="anakia" classname="org.apache.velocity.anakia.AnakiaTask">
+            <classpath refid="classpath"/>
+        </taskdef>
+
+        <anakia basedir="src/wolips-targetbuilder/xdocs" destdir="${dist}/doc"
+     		extension=".html" style="woproject.vsl"
+     		projectFile="../../../xdocs/stylesheets/project.xml"
+     		excludes="**/stylesheets/**"
+     		includes="**/*.xml"
+     		lastModifiedCheck="true"
+     		templatePath="xdocs/stylesheets">
+		</anakia>
+
+        <!-- copy images -->
+        <copy todir="${dist}/doc/images/wolips-targetbuilder" filtering="no">
+            <fileset dir="src/wolips/xdocs/images">
                 <include name="**/*.gif"/>
                 <include name="**/*.jpeg"/>
                 <include name="**/*.jpg"/>
