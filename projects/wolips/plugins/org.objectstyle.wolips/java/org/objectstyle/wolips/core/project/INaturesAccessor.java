@@ -137,5 +137,14 @@ public interface INaturesAccessor {
 	 * @throws CoreException
 	 */
 	public abstract void callConfigure() throws CoreException;
+	
+	/**
+	 * @return May return null.
+	 */
+	public abstract IProjectNature getIncrementalNature() throws CoreException ;
 
+	/**
+	 * @return May return null.
+	 */
+	public abstract IProjectNature getTargetbuilderNature() throws CoreException ;
 }

@@ -57,7 +57,6 @@
 package org.objectstyle.wolips.projectbuild;
 
 //import org.eclipse.core.resources.IMarker;
-import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
 
 /*
  * Created on 16.02.2003
@@ -71,7 +70,7 @@ import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
  */
 
 
-public interface WOProjectBuildConstants extends IWOLipsPluginConstants {
+public interface WOProjectBuildConstants {
   static final String RES_EXCLUDES = "res.exclude.patterns";
   static final String RES_EXCLUDES_DEFAULT = "*/Thumbs.db,*/.*,*/CVS/*,/CustomInfo.plist,/build.xml";
   

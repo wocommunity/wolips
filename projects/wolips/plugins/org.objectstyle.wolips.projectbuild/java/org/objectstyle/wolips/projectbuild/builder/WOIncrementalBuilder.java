@@ -85,6 +85,8 @@ import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.objectstyle.cayenne.wocompat.PropertyListSerialization;
+import org.objectstyle.wolips.core.project.IWOLipsProject;
+import org.objectstyle.wolips.core.project.WOLipsCore;
 import org.objectstyle.wolips.core.util.ExcludeIncludeMatcher;
 import org.objectstyle.wolips.core.util.IStringMatcher;
 import org.objectstyle.wolips.core.util.StringListMatcher;
@@ -253,7 +255,8 @@ public class WOIncrementalBuilder
   
   private void _createInfoPlist () throws CoreException {
     IProject project = getProject();
-    IncrementalNature won = IncrementalNature.s_getNature(project);
+    IWOLipsProject wolipsProject = WOLipsCore.createProject(project);
+    IncrementalNature won = (IncrementalNature)wolipsProject.getNaturesAccessor().getIncrementalNature();
 
     HashMap customInfo = null;
 
@@ -518,9 +521,9 @@ public class WOIncrementalBuilder
       throws CoreException
     {
       _monitor = monitor;
-      _project = project;
-      _woNature = IncrementalNature.s_getNature(project);
-      
+      IWOLipsProject wolipsProject = WOLipsCore.createProject(project);
+	  IncrementalNature _woNature = (IncrementalNature)wolipsProject.getNaturesAccessor().getIncrementalNature();
+
       _buildPath = _woNature.getBuildPath();
       _distPath = new Path ("dist");
       _resultMatcher = new StringListMatcher ("*.woa,*.framework");

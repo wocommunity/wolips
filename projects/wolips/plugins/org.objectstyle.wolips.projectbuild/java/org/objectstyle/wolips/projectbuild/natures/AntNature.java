@@ -56,31 +56,17 @@
 
 package org.objectstyle.wolips.projectbuild.natures;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.dialogs.ProgressMonitorDialog;
-import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PlatformUI;
 import org.objectstyle.wolips.core.project.IWOLipsProject;
 import org.objectstyle.wolips.core.project.WOLipsCore;
-import org.objectstyle.wolips.projectbuild.WOProjectBuildConstants;
 
 /**
  * @author mnolte
  *
  */
-public class AntNature implements IProjectNature, WOProjectBuildConstants {
+public class AntNature implements IProjectNature {
 	private IProject project;
 	/**
 	 * Constructor for WOApplicationNature.
@@ -119,79 +105,5 @@ public class AntNature implements IProjectNature, WOProjectBuildConstants {
 	public void setProject(IProject project) {
 		this.project = project;
 	}
-	public static String getNature(boolean isFramework) {
-		if (isFramework)
-			return ANT_FRAMEWORK_NATURE_ID;
-		return ANT_APPLICATION_NATURE_ID;
-	}
 
-	public static void s_addToProject(IProject project, boolean isFramework)
-		throws CoreException {
-		IProjectDescription desc = project.getDescription();
-
-		String natures_array[] = desc.getNatureIds();
-		List natures = new ArrayList(Arrays.asList(natures_array));
-		if (!natures.contains(getNature(isFramework))) {
-			natures.add(getNature(isFramework));
-			natures_array =
-				(String[]) natures.toArray(new String[natures.size()]);
-			desc.setNatureIds(natures_array);
-			s_setDescription(project, desc);
-		}
-	}
-
-	public static void s_removeFromProject(
-		IProject project,
-		boolean isFramework)
-		throws CoreException {
-		IProjectDescription desc = project.getDescription();
-
-		String natures_array[] = desc.getNatureIds();
-
-		List natures = new ArrayList(Arrays.asList(natures_array));
-
-		if (natures.contains(getNature(isFramework))) {
-			natures.remove(getNature(isFramework));
-			natures_array =
-				(String[]) natures.toArray(new String[natures.size()]);
-			desc.setNatureIds(natures_array);
-			s_setDescription(project, desc);
-		}
-	}
-
-	private static void s_setDescription(
-		final IProject f_project,
-		final IProjectDescription f_desc) {
-		s_showProgress(new IRunnableWithProgress() {
-			public void run(IProgressMonitor pm) {
-				try {
-					f_project.setDescription(f_desc, pm);
-				} catch (CoreException up) {
-					pm.done();
-				}
-			}
-		});
-	}
-	public static void s_showProgress(IRunnableWithProgress rwp) {
-		IWorkbench workbench = PlatformUI.getWorkbench();
-		Shell shell = null;
-		if (null != workbench) {
-			IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-			if (null != window) {
-				shell = window.getShell();
-			}
-		}
-
-		ProgressMonitorDialog pmd = new ProgressMonitorDialog(shell);
-
-		try {
-			pmd.run(true, true, rwp);
-		} catch (InvocationTargetException e) {
-			// handle exception
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// handle cancelation
-			e.printStackTrace();
-		}
-	}
 }

@@ -75,7 +75,7 @@ import org.objectstyle.wolips.projectbuild.WOProjectBuildConstants;
  * 
  */
 public class IncrementalNature
-	implements IProjectNature, WOProjectBuildConstants 
+	implements IProjectNature, WOProjectBuildConstants
 {
 
 	/**
@@ -354,23 +354,23 @@ public class IncrementalNature
 	}
 
 	/* ************************************************************************ */
-  public static IncrementalNature s_getNature(IProject project) {
-    try {
-      if (project.hasNature(INCREMENTAL_APPLICATION_NATURE_ID)) {
-        return (IncrementalNature) project.getNature(
-          INCREMENTAL_APPLICATION_NATURE_ID
-        );
-      } else if (project.hasNature(INCREMENTAL_FRAMEWORK_NATURE_ID)) {
-        return (IncrementalNature) project.getNature(
-          INCREMENTAL_FRAMEWORK_NATURE_ID
-        );
-      }
-
-    } catch (CoreException exception) {
-      WOLipsLog.log(exception);
-    }
-    return null;
-  }
+//  public static IncrementalNature s_getNature(IProject project) {
+//    try {
+//      if (project.hasNature(INCREMENTAL_APPLICATION_NATURE_ID)) {
+//        return (IncrementalNature) project.getNature(
+//          INCREMENTAL_APPLICATION_NATURE_ID
+//        );
+//      } else if (project.hasNature(INCREMENTAL_FRAMEWORK_NATURE_ID)) {
+//        return (IncrementalNature) project.getNature(
+//          INCREMENTAL_FRAMEWORK_NATURE_ID
+//        );
+//      }
+//
+//    } catch (CoreException exception) {
+//      WOLipsLog.log(exception);
+//    }
+//    return null;
+//  }
 
 //	public static String getNature(boolean isFramework) {
 //		if (isFramework)

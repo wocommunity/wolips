@@ -191,9 +191,24 @@ public class WOLipsProject implements IWOLipsPluginConstants, IWOLipsProject {
 	protected class NaturesAccessor
 		extends WOLipsProjectInnerClass
 		implements IWOLipsPluginConstants, INaturesAccessor {
-		private String TargetBuilderNatureID =
+		private final String TargetBuilderNatureID =
 			"org.objectstyle.wolips.targetbuilder.targetbuildernature";
-
+		private final String INCREMENTAL_FRAMEWORK_NATURE_ID =
+			"org.objectstyle.wolips.incrementalframeworknature";
+		private final String ANT_FRAMEWORK_NATURE_ID =
+			"org.objectstyle.wolips.antframeworknature";
+		private final String INCREMENTAL_APPLICATION_NATURE_ID =
+			"org.objectstyle.wolips.incrementalapplicationnature";
+		private final String ANT_APPLICATION_NATURE_ID =
+			"org.objectstyle.wolips.antapplicationnature";
+		private final String[] WOLIPS_NATURES =
+			{
+				INCREMENTAL_FRAMEWORK_NATURE_ID,
+				ANT_FRAMEWORK_NATURE_ID,
+				INCREMENTAL_APPLICATION_NATURE_ID,
+				ANT_APPLICATION_NATURE_ID,
+				WO_APPLICATION_NATURE_OLD,
+				WO_FRAMEWORK_NATURE_OLD };
 		/**
 		 * @param woLipsProject
 		 */
@@ -457,7 +472,24 @@ public class WOLipsProject implements IWOLipsPluginConstants, IWOLipsProject {
 				projectNatures[i].configure();
 			}
 		}
+		/**
+		 * @return May return null.
+		 */
+		public IProjectNature getIncrementalNature() throws CoreException {
+			if (project.hasNature(INCREMENTAL_APPLICATION_NATURE_ID)) {
+				return project.getNature(INCREMENTAL_APPLICATION_NATURE_ID);
+			} else if (project.hasNature(INCREMENTAL_FRAMEWORK_NATURE_ID)) {
+				return project.getNature(INCREMENTAL_FRAMEWORK_NATURE_ID);
 
+			}
+			return null;
+		}
+		/**
+		 * @return May return null.
+		 */
+		public IProjectNature getTargetbuilderNature() throws CoreException {
+			return this.getProject().getNature(TargetBuilderNatureID);
+		}
 	}
 
 	/**

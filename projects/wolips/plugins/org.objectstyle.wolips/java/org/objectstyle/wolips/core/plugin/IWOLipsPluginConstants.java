@@ -102,14 +102,6 @@ public interface IWOLipsPluginConstants {
 			SUBPROJECTS_ID,
 			FRAMEWORKS_ID };
 	public static final String PROJECT_FILE_NAME = "PB.project";
-	public static final String INCREMENTAL_FRAMEWORK_NATURE_ID =
-		"org.objectstyle.wolips.incrementalframeworknature";
-	public static final String ANT_FRAMEWORK_NATURE_ID =
-		"org.objectstyle.wolips.antframeworknature";
-	public static final String INCREMENTAL_APPLICATION_NATURE_ID =
-		"org.objectstyle.wolips.incrementalapplicationnature";
-	public static final String ANT_APPLICATION_NATURE_ID =
-		"org.objectstyle.wolips.antapplicationnature";
 	public static String WOGENERATOR_ID = "org.objectstyle.wolips.wogenerator";
 	public static final String WO_APPLICATION_NATURE_OLD =
 		"org.objectstyle.wolips.applicationnature";
@@ -119,14 +111,5 @@ public interface IWOLipsPluginConstants {
 		"org.objectstyle.wolips.woframeworkbuilder";
 	public static String WOAPPLICATION_BUILDER_ID =
 		"org.objectstyle.wolips.woapplicationbuilder";
-
-	public static final String[] WOLIPS_NATURES =
-		{
-			INCREMENTAL_FRAMEWORK_NATURE_ID,
-			ANT_FRAMEWORK_NATURE_ID,
-			INCREMENTAL_APPLICATION_NATURE_ID,
-			ANT_APPLICATION_NATURE_ID,
-			WO_APPLICATION_NATURE_OLD,
-			WO_FRAMEWORK_NATURE_OLD };
 	
 }
