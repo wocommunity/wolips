@@ -54,12 +54,7 @@
  *
  */
 package org.objectstyle.wolips.wizards;
-import java.lang.reflect.InvocationTargetException;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.eclipse.ui.actions.WorkspaceModifyDelegatingOperation;
-import org.objectstyle.wolips.plugin.WOLipsPlugin;
 /**
  * @author mnolte
  * @author uli
@@ -80,7 +75,17 @@ public class WOFrameworkCreationPage extends WOProjectCreationPage {
 			Messages.getString(
 				"WOFrameworkCreationWizard.newProject.defaultName"));
 	}
+	/*
 	public boolean createProject() {
+		
+		if (importPBWOProject()) {
+			MessageDialog.openInformation(
+				getShell(),
+				Messages.getString(
+					"WOProjectCreationPage.creationOptions.importWarning.title"),
+				Messages.getString(
+					"WOProjectCreationPage.creationOptions.importWarning.text"));
+		}
 		IProject newProject = getProjectHandle();
 		String projectTemplateID =
 			Messages.getString("webobjects.projectType.java.framework");
@@ -109,6 +114,7 @@ public class WOFrameworkCreationPage extends WOProjectCreationPage {
 		}
 		return true;
 	}
+	*/
 	/**
 	 * Method getElementToOpen.
 	 * @return resource to open on successful project creation
@@ -116,4 +122,11 @@ public class WOFrameworkCreationPage extends WOProjectCreationPage {
 	public IResource getElementToOpen() {
 		return elementToOpen;
 	}
+	/**
+	 * @see org.objectstyle.wolips.wizards.WOProjectCreationPage#getProjectTemplateID()
+	 */
+	protected String getProjectTemplateID() {
+		return Messages.getString("webobjects.projectType.java.framework");
+	}
+
 }

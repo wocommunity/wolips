@@ -54,13 +54,8 @@
  *
  */
 package org.objectstyle.wolips.wizards;
-import java.lang.reflect.InvocationTargetException;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.eclipse.ui.actions.WorkspaceModifyDelegatingOperation;
-import org.objectstyle.wolips.plugin.WOLipsPlugin;
 import org.objectstyle.wolips.project.ProjectHelper;
 /**
  * @author mnolte
@@ -69,7 +64,6 @@ import org.objectstyle.wolips.project.ProjectHelper;
  */
 public class WOApplicationCreationPage extends WOProjectCreationPage {
 	private IResource elementToOpen;
-
 	/**
 	 * Constructor for WOApplicationCreationPage.
 	 * @param pageName
@@ -87,7 +81,7 @@ public class WOApplicationCreationPage extends WOProjectCreationPage {
 	 * Method getProjectTemplateID.
 	 * @return String
 	 */
-	private String getProjectTemplateID() {
+	protected String getProjectTemplateID() {
 		String projectTemplateID =
 			Messages.getString("webobjects.projectType.java.application");
 		if (!useDefaults()
@@ -104,14 +98,25 @@ public class WOApplicationCreationPage extends WOProjectCreationPage {
 	 * @return boolean
 	 */
 	public boolean createProject() {
+		/*
+		if (importPBWOProject()) {
+			MessageDialog.openInformation(
+				getShell(),
+				Messages.getString(
+					"WOProjectCreationPage.creationOptions.importWarning.title"),
+				Messages.getString(
+					"WOProjectCreationPage.creationOptions.importWarning.text"));
+		}
 		IProject newProject = getProjectHandle();
 		String projectTemplateID = this.getProjectTemplateID();
+		IPath locationPath =
+			useDefaults() ? Platform.getLocation() : getLocationPath();
 		IRunnableWithProgress op =
 			new WorkspaceModifyDelegatingOperation(
 				new WOProjectCreator(
 					newProject,
 					projectTemplateID,
-					getLocationPath(),
+					locationPath,
 					getImportPath()));
 		try {
 			getContainer().run(false, false, op);
@@ -125,13 +130,20 @@ public class WOApplicationCreationPage extends WOProjectCreationPage {
 			//WOLipsUtils.handleException(getShell(), e, null);
 			return false;
 		}
-		IResource fileToOpen =
-			ProjectHelper.getProjectSourceFolder(newProject).getFile(
-				new Path("Application.java"));
-		if (fileToOpen != null) {
-			elementToOpen = fileToOpen;
+		*/
+		if (super.createProject()) {
+
+			IResource fileToOpen =
+				ProjectHelper.getProjectSourceFolder(
+					getProjectHandle()).getFile(
+					new Path("Application.java"));
+			if (fileToOpen != null) {
+				elementToOpen = fileToOpen;
+			}
+			return true;
+		} else {
+			return false;
 		}
-		return true;
 	}
 	/**
 	 * Method getElementToOpen.
@@ -140,5 +152,4 @@ public class WOApplicationCreationPage extends WOProjectCreationPage {
 	public IResource getElementToOpen() {
 		return elementToOpen;
 	}
-
 }

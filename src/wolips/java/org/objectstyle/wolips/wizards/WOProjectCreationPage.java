@@ -57,10 +57,14 @@
 package org.objectstyle.wolips.wizards;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -74,7 +78,9 @@ import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.actions.WorkspaceModifyDelegatingOperation;
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
+import org.objectstyle.wolips.plugin.WOLipsPlugin;
 
 /**
  * Base class for Application and Framework creation wizards page
@@ -86,11 +92,11 @@ public abstract class WOProjectCreationPage
 	extends WizardNewProjectCreationPage {
 
 	// widgets
-	private boolean importPBWOProject;
-	private Text importPBWOProjectPathField;
-	private Label importPBWOProjectLabel;
-	private Button importPBWOProjectBrowseButton;
-	private String importPBWOProjectPathFieldValue;
+	private boolean importPBProject;
+	private Text importPBProjectPathField;
+	private Label importPBProjectLabel;
+	private Button importPBProjectBrowseButton;
+	private String importPBProjectPathFieldValue;
 	// constants
 	private static final int IMPORT_TEXT_FIELD_WIDTH = 250;
 	/**
@@ -111,12 +117,14 @@ public abstract class WOProjectCreationPage
 	}
 
 	public IPath getImportPath() {
-		if (!importPBWOProject()) {
+		if (!importPBProject()) {
 			return null;
 		} else {
-			return new Path(getImportPBWOProjectPathFieldValue());
+			return new Path(getImportPBProjectPathFieldValue());
 		}
 	}
+
+	protected abstract String getProjectTemplateID();
 
 	private final void createProjectCreationOptionsGroup(Composite parent) {
 		Composite composite = (Composite) getControl();
@@ -133,65 +141,64 @@ public abstract class WOProjectCreationPage
 				GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
 		final Button importProjectButton =
 			new Button(optionsGroup, SWT.CHECK | SWT.RIGHT);
-		importProjectButton.setText(Messages.getString("WOProjectCreationPage.creationOptions.importPBWOProject")); //$NON-NLS-1$
-		importProjectButton.setSelection(importPBWOProject);
+		importProjectButton.setText(Messages.getString("WOProjectCreationPage.creationOptions.importPBProject")); //$NON-NLS-1$
+		importProjectButton.setSelection(importPBProject);
 		importProjectButton.setFont(parent.getFont());
 		GridData buttonData = new GridData();
 		buttonData.horizontalSpan = 3;
 		importProjectButton.setLayoutData(buttonData);
-		createImportPBWOProjectLocationGroup(optionsGroup, importPBWOProject);
+		createimportPBProjectLocationGroup(optionsGroup, importPBProject);
 
 		SelectionListener listener = new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
-				importPBWOProject = importProjectButton.getSelection();
-				importPBWOProjectBrowseButton.setEnabled(importPBWOProject);
-				importPBWOProjectPathField.setEnabled(importPBWOProject);
-				importPBWOProjectLabel.setEnabled(importPBWOProject);
-				if (!importPBWOProject) {
-					importPBWOProjectPathFieldValue =
-						importPBWOProjectPathField.getText();
-					importPBWOProjectPathField.setText("");
+				importPBProject = importProjectButton.getSelection();
+				importPBProjectBrowseButton.setEnabled(importPBProject);
+				importPBProjectPathField.setEnabled(importPBProject);
+				importPBProjectLabel.setEnabled(importPBProject);
+				if (!importPBProject) {
+					importPBProjectPathFieldValue =
+						importPBProjectPathField.getText();
+					importPBProjectPathField.setText("");
 					//setLocationForSelection();
 				} else {
-					importPBWOProjectPathField.setText(
-						importPBWOProjectPathFieldValue);
+					importPBProjectPathField.setText(getImportPBProjectPathFieldValue());
 				}
 			}
 		};
 		importProjectButton.addSelectionListener(listener);
 	}
-	private void createImportPBWOProjectLocationGroup(
+	private void createimportPBProjectLocationGroup(
 		Composite importGroup,
 		boolean enabled) {
 		Font font = importGroup.getFont();
 		// location label
-		importPBWOProjectLabel = new Label(importGroup, SWT.NONE);
-		importPBWOProjectLabel.setText(Messages.getString("WOProjectCreationPage.creationOptions.directoryLabel")); //$NON-NLS-1$
-		importPBWOProjectLabel.setEnabled(enabled);
-		importPBWOProjectLabel.setFont(font);
+		importPBProjectLabel = new Label(importGroup, SWT.NONE);
+		importPBProjectLabel.setText(Messages.getString("WOProjectCreationPage.creationOptions.directoryLabel")); //$NON-NLS-1$
+		importPBProjectLabel.setEnabled(enabled);
+		importPBProjectLabel.setFont(font);
 		// project location entry field
-		importPBWOProjectPathField = new Text(importGroup, SWT.BORDER);
+		importPBProjectPathField = new Text(importGroup, SWT.BORDER);
 		GridData data = new GridData(GridData.FILL_HORIZONTAL);
 		data.widthHint = IMPORT_TEXT_FIELD_WIDTH;
-		importPBWOProjectPathField.setLayoutData(data);
-		importPBWOProjectPathField.setEnabled(enabled);
-		importPBWOProjectPathField.setFont(font);
+		importPBProjectPathField.setLayoutData(data);
+		importPBProjectPathField.setEnabled(enabled);
+		importPBProjectPathField.setFont(font);
 		// browse button
-		importPBWOProjectBrowseButton = new Button(importGroup, SWT.PUSH);
-		importPBWOProjectBrowseButton.setText(Messages.getString("WOProjectCreationPage.creationOptions.browseLabel")); //$NON-NLS-1$
-		importPBWOProjectBrowseButton
+		importPBProjectBrowseButton = new Button(importGroup, SWT.PUSH);
+		importPBProjectBrowseButton.setText(Messages.getString("WOProjectCreationPage.creationOptions.browseLabel")); //$NON-NLS-1$
+		importPBProjectBrowseButton
 			.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent event) {
 				handleImportBrowseButtonPressed();
 			}
 		});
-		importPBWOProjectBrowseButton.setEnabled(enabled);
-		importPBWOProjectBrowseButton.setFont(font);
-		setButtonLayoutData(importPBWOProjectBrowseButton);
+		importPBProjectBrowseButton.setEnabled(enabled);
+		importPBProjectBrowseButton.setFont(font);
+		setButtonLayoutData(importPBProjectBrowseButton);
 		// Set the initial value first before listener
 		// to avoid handling an event during the creation.
-		importPBWOProjectPathField.setText("");
-		//importPBWOProjectPathField.addListener(SWT.Modify, locationModifyListener);
+		importPBProjectPathField.setText("");
+		//importPBProjectPathField.addListener(SWT.Modify, locationModifyListener);
 	}
 	/**
 	 * Returns the value of the project import
@@ -199,20 +206,20 @@ public abstract class WOProjectCreationPage
 	 *
 	 * @return the project import location directory in the field
 	 */
-	private String getImportPBWOProjectPathFieldValue() {
-		if (importPBWOProjectPathField == null)
+	private String getImportPBProjectPathFieldValue() {
+		if (importPBProjectPathField == null)
 			return ""; //$NON-NLS-1$
 		else
-			return importPBWOProjectPathField.getText().trim();
+			return importPBProjectPathField.getText().trim();
 	}
 	/**
 	 *	Open an appropriate directory browser
 	 */
 	private void handleImportBrowseButtonPressed() {
 		DirectoryDialog dialog =
-			new DirectoryDialog(importPBWOProjectPathField.getShell());
+			new DirectoryDialog(importPBProjectPathField.getShell());
 		dialog.setMessage(Messages.getString("WOProjectCreationPage.creationOptions.directoryDialogLabel")); //$NON-NLS-1$
-		String dirName = getImportPBWOProjectPathFieldValue();
+		String dirName = getImportPBProjectPathFieldValue();
 		if (!dirName.equals("")) { //$NON-NLS-1$
 			File path = new File(dirName);
 			if (path.exists())
@@ -220,16 +227,16 @@ public abstract class WOProjectCreationPage
 		}
 		String selectedDirectory = dialog.open();
 		if (selectedDirectory != null) {
-			importPBWOProjectPathFieldValue = selectedDirectory;
-			importPBWOProjectPathField.setText(importPBWOProjectPathFieldValue);
+			importPBProjectPathFieldValue = selectedDirectory;
+			importPBProjectPathField.setText(importPBProjectPathFieldValue);
 		}
 	}
 	/**
-	 * Returns the importPBWOProject.
+	 * Returns the importPBProject.
 	 * @return boolean
 	 */
-	public boolean importPBWOProject() {
-		return importPBWOProject;
+	public boolean importPBProject() {
+		return importPBProject;
 	}
 
 	/**
@@ -237,6 +244,47 @@ public abstract class WOProjectCreationPage
 	 */
 	public IProject getProjectHandle() {
 		return super.getProjectHandle();
+	}
+
+	/**
+	 * Method createProject.
+	 * @return boolean
+	 */
+	public boolean createProject() {
+		if (importPBProject()) {
+			MessageDialog.openInformation(
+				getShell(),
+				Messages.getString(
+					"WOProjectCreationPage.creationOptions.importWarning.title"),
+				Messages.getString(
+					"WOProjectCreationPage.creationOptions.importWarning.text"));
+		}
+		IProject newProject = getProjectHandle();
+		String projectTemplateID = this.getProjectTemplateID();
+		// attention getLocationPath is not updated by user input any more!!!!!
+		IPath locationPath =
+			useDefaults() ? Platform.getLocation().append(newProject.getName()) : getLocationPath();
+		IRunnableWithProgress op =
+			new WorkspaceModifyDelegatingOperation(
+				new WOProjectCreator(
+					newProject,
+					projectTemplateID,
+					locationPath,
+					getImportPath()));
+		try {
+			getContainer().run(false, false, op);
+		} catch (InvocationTargetException e) {
+			WOLipsPlugin.handleException(
+				getShell(),
+				e.getTargetException(),
+				null);
+			return false;
+		} catch (InterruptedException e) {
+			//WOLipsUtils.handleException(getShell(), e, null);
+			return false;
+		}
+
+		return true;
 	}
 
 }
