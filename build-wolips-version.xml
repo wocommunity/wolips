@@ -13,6 +13,7 @@
     	<replace file="${basedir}/src/wolips-feature/feature.properties" token="${WOLips.previous.version}" value="${WOLips.version}"/>
     	<replace file="${basedir}/src/wolips-feature/feature.xml" token="${WOLips.previous.version}" value="${WOLips.version}"/>
     	<replace file="${basedir}/src/wolips-feature-plugin/about.properties" token="${WOLips.previous.version}" value="${WOLips.version}"/>
+    	<replace file="${basedir}/src/wolips-feature-plugin/plugin.xml" token="${WOLips.previous.version}" value="${WOLips.version}"/>
     	<replace file="${basedir}/src/wolips-tests-feature/feature.properties" token="${WOLips.previous.version}" value="${WOLips.version}"/>
     	<replace file="${basedir}/src/wolips-tests-feature/feature.xml" token="${WOLips.previous.version}" value="${WOLips.version}"/>
     	<replace file="${basedir}/src/wolips-profiling-feature/feature.properties" token="${WOLips.previous.version}" value="${WOLips.version}"/>
