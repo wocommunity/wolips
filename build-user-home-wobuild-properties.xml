@@ -7,30 +7,28 @@
 	<property file="${user.home}${file.separator}Library${file.separator}wobuild.properties"/>
 	
 	<target name="check" depends="check_file,set_other,correct_win,check_env,set_mac">
-	
-		<fail message="Could not find ${user.home}${file.separator}Library${file.separator}wobuild.properties. There should now be a generated one. Just launch ant again" if="wo.properties.ckeck.failed"/>
-	
+	    <fail message="Could not find ${user.home}${file.separator}Library${file.separator}wobuild.properties. There should now be a generated one. Just launch ant again" if="wo.properties.ckeck.failed"/>
 	</target>
 
 	<target name="check_file">
-		<condition property="wo.properties.ckeck.failed">
-			<not>
-    			<and>
-    				<isset property="wo.woroot"/>
-      				<isset property="wo.wolocalroot"/>
-      				<isset property="wo.systemroot"/>
-      				<isset property="wo.dir.root"/>
-      				<isset property="wo.dir.system"/>
-      				<isset property="wo.dir.library"/>
-      				<isset property="wo.dir.library.frameworks"/>
-      				<isset property="wo.dir.local"/>
-      				<isset property="wo.dir.local.library"/>
-      				<isset property="wo.dir.local.library.frameworks"/>
-      				<isset property="wo.dir.user.home.library"/>
-      				<isset property="wo.dir.user.home.frameworks"/>
-      			</and>
+	    <condition property="wo.properties.ckeck.failed">
+	        <not>
+                    <and>
+    		        <isset property="wo.woroot"/>
+      		        <isset property="wo.wolocalroot"/>
+      		        <isset property="wo.systemroot"/>
+      		        <isset property="wo.dir.root"/>
+      		        <isset property="wo.dir.system"/>
+      		        <isset property="wo.dir.library"/>
+      		        <isset property="wo.dir.library.frameworks"/>
+      		        <isset property="wo.dir.local"/>
+      		        <isset property="wo.dir.local.library"/>
+      		        <isset property="wo.dir.local.library.frameworks"/>
+      		        <isset property="wo.dir.user.home.library"/>
+      		        <isset property="wo.dir.user.home.library.frameworks"/>
+      	            </and>
     		</not>
-  		</condition>
+  	    </condition>
   	</target>
 	
 	<target name="correct_win" if="correct.win">
