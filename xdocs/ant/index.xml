@@ -12,7 +12,7 @@
  			information about Ant, go to <a href="http://jakarta.apache.org/ant/index.html">Jakarta 
  			Ant Site</a>):
  				<ul>
-                <li><font color="red"><i>[Coming Soon]</i></font> <a href="woapplication.html">WOApplication</a>: Allows you to build WebObjects applications
+                <li><font color="red"><i>[New]</i></font> <a href="woapplication.html">WOApplication</a>: Allows you to build WebObjects applications
  				 without using ProjectBuilder.</li>
  				<li><a href="woframework.html">WOFramework</a>: Allows you to build WebObjects frameworks
  				 without using ProjectBuilder.</li>

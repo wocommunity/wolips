@@ -9,7 +9,7 @@
     <body>        
         <!-- Welcome section -->
         <section name="Welcome to WOProject">
-        <p><i>June 11, 2002.</i> <b><font color="red">Release 0.6.1 is out.</font></b>
+        <p><i>June 28, 2002.</i> <b><font color="red">Release 1.0a1 is out.</font></b>
         Download new release from <a 
         href="http://sourceforge.net/project/showfiles.php?group_id=50507">SourceForge 
         server</a>.
@@ -26,8 +26,12 @@
         technologies (namely 
         <a href="http://jakarta.apache.org/ant/index.html">Ant</a>). Even people using
         latest and greatest ProjectBuilder on Mac may find it useful to organize 
-        their code in a portable manner. This IDE independence is partially achieved in
-        current release of WOProject.</p>
+        their code in a portable manner, and speed up their build process.</p>
+        
+        <p>With 1.0 release of WOProject IDE independence is finally achieved. WebObjects 
+        developers can build both frameworks and applications, as well as generate Java 
+        classes using Ant. WOProject philosophy is to allow developers to use project 
+        structure compatible with ProjectBuilder, or any other structure they desire.</p>
         
         
          
