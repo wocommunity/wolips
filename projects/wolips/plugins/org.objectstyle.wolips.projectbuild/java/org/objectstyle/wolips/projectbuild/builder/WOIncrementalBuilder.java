@@ -85,6 +85,7 @@ import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.objectstyle.cayenne.wocompat.PropertyListSerialization;
+import org.objectstyle.wolips.core.project.INaturesAccessor;
 import org.objectstyle.wolips.core.project.IWOLipsProject;
 import org.objectstyle.wolips.core.project.WOLipsCore;
 import org.objectstyle.wolips.core.util.ExcludeIncludeMatcher;
@@ -521,8 +522,12 @@ public class WOIncrementalBuilder
       throws CoreException
     {
       _monitor = monitor;
+      _project = project;
+
       IWOLipsProject wolipsProject = WOLipsCore.createProject(project);
-	  IncrementalNature _woNature = (IncrementalNature)wolipsProject.getNaturesAccessor().getIncrementalNature();
+      INaturesAccessor na = wolipsProject.getNaturesAccessor();
+
+	    _woNature = (IncrementalNature)na.getIncrementalNature();
 
       _buildPath = _woNature.getBuildPath();
       _distPath = new Path ("dist");
