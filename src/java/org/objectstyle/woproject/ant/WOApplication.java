@@ -57,6 +57,7 @@ package org.objectstyle.woproject.ant;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.tools.ant.BuildException;
 
@@ -160,5 +161,9 @@ public class WOApplication extends WOTask {
         FrameworkSet frameSet = new FrameworkSet();
         frameworkSets.add(frameSet);
         return frameSet;
+    }
+    
+    public List getFrameworkSets() {
+    	return frameworkSets;
     }
 }

@@ -78,6 +78,9 @@
             <wsresources dir="WebServerResources">
 				<include name="**"/>
 			</wsresources>
+			<frameworks root="wo.woroot">
+				<include name="Library/Frameworks/JavaWebObjects.framework"/>
+			</frameworks>
         </woapplication>
 
    </target>

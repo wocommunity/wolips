@@ -238,4 +238,12 @@ public abstract class ProjectFormat {
 
 		return new FilterSetCollection(filter);
 	}
+
+	public void log(String msg) {
+		task.log(msg);
+	}
+
+	public void log(String msg, int msgLevel) {
+		task.log(msg, msgLevel);
+	}
 }

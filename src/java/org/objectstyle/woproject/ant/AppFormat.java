@@ -56,13 +56,10 @@
 package org.objectstyle.woproject.ant;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Iterator;
+import java.util.*;
 
-import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.types.FilterSet;
-import org.apache.tools.ant.types.FilterSetCollection;
+import org.apache.tools.ant.*;
+import org.apache.tools.ant.types.*;
 
 /**
  * Subclass of ProjectFormat that defines file copying 
@@ -82,6 +79,26 @@ public class AppFormat extends ProjectFormat {
 		super(task);
 
 		prepare();
+
+       // temporary debugging stuff
+       /* log("Check framework sets: ", Project.MSG_ERR);
+		List frameworkSets = getApplicatonTask().getFrameworkSets();
+		for (int i = 0; i < frameworkSets.size(); i++) {
+			FileSet fs = (FileSet) frameworkSets.get(i);
+			try {
+				log("Looking for dirs", Project.MSG_ERR);
+				DirectoryScanner ds = fs.getDirectoryScanner(task.getProject());
+				String[] files = ds.getIncludedFiles();
+				String[] dirs = ds.getIncludedDirectories();
+				for(int j = 0; j < dirs.length; j++) {
+					log("Dir found: " + dirs[i], Project.MSG_ERR);
+				}
+			} catch (BuildException be) {
+				// directory doesn't exist or is not readable
+
+				log(be.getMessage(), Project.MSG_WARN);
+			}
+		} */
 	}
 
 	/** 
@@ -93,7 +110,7 @@ public class AppFormat extends ProjectFormat {
 		prepareUnix();
 		prepareMac();
 
-        // @todo - create web.xml and/or classpath files
+		// @todo - create web.xml and/or classpath files
 
 		// add Info.plist
 		String infoFile =
@@ -168,10 +185,9 @@ public class AppFormat extends ProjectFormat {
 		createMappings(topRunScript, "woapp/Contents/MacOS/appstart");
 	}
 
-
-    /** 
-     * Creates a filter for Classpath helper files.
-     */
+	/** 
+	 * Creates a filter for Classpath helper files.
+	 */
 	private FilterSet classpathFilter(char pathSeparator) {
 		FilterSet filter = new FilterSet();
 
