@@ -130,18 +130,18 @@ public class EOModelCreator extends WOProjectResourceCreator {
 
 		switch (parentResource.getType()) {
 			case IResource.PROJECT :
-				modelFolder = ((IProject) parentResource).getFolder(modelName + "." + EOMODEL);
+				modelFolder = ((IProject) parentResource).getFolder(modelName + "." + EXT_EOMODEL);
 
 				break;
 			case IResource.FOLDER :
-				modelFolder = ((IFolder) parentResource).getFolder(modelName + "." + EOMODEL);
+				modelFolder = ((IFolder) parentResource).getFolder(modelName + "." + EXT_EOMODEL);
 
 				break;
 			default :
 				throw new InvocationTargetException(new Exception("Wrong parent resource - check validation"));
 		}
 
-		IFile modelIndexFile = modelFolder.getFile("index." + EOMODEL);
+		IFile modelIndexFile = modelFolder.getFile("index." + EXT_EOMODEL);
 		IFile modelDiagramLayoutFile = modelFolder.getFile("DiagramLayout");
 
 		createResourceFolderInProject(modelFolder, monitor);

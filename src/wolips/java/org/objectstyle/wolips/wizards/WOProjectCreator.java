@@ -278,7 +278,7 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 
 		boolean isJavaFile =
 			fileName != null
-				&& fileName.endsWith("." + IWOLipsPluginConstants.CLASS);
+				&& fileName.endsWith("." + IWOLipsPluginConstants.EXT_JAVA);
 		IFile fileToCreate = null;
 
 		switch (parentResource.getType()) {
@@ -454,19 +454,19 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 						}
 
 						////////////////// kind "src"
-						if (IWOLipsPluginConstants.SRC.equals(classpathKind)) {
+						if (IWOLipsPluginConstants.EXT_SRC.equals(classpathKind)) {
 
 							// set source path extension
 							if (!".".equals(currentRawPath)) {
 								currentRawPath += "."
-									+ IWOLipsPluginConstants.SRC;
+									+ IWOLipsPluginConstants.EXT_SRC;
 							} else {
 								// source path must be folder to create
 								// non-nested source path folder for subprojects
 								currentRawPath =
 									parentResource.getName()
 										+ "."
-										+ IWOLipsPluginConstants.SRC;
+										+ IWOLipsPluginConstants.EXT_SRC;
 							}
 							IPath sourcePath;
 							// is path project name depending
@@ -620,7 +620,7 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 				IFolder newSubproject = (IFolder) parentResource;
 				IFolder newSubprojectSourceFolder =
 					newSubproject.getProject().getFolder(
-						new Path(newSubproject.getName() + "." + IWOLipsPluginConstants.SRC));
+						new Path(newSubproject.getName() + "." + IWOLipsPluginConstants.EXT_SRC));
 
 				try {
 					if (!parentResource.exists()) {

@@ -113,15 +113,15 @@ public abstract class WOProjectResourceCreator implements IWOLipsPluginConstants
 		switch (getType()) {
 
 			case COMPONENT_CREATOR :
-				identifier = COMPONENT;
+				identifier = EXT_COMPONENT;
 				break;
 
 			case EOMODEL_CREATOR :
-				identifier = EOMODEL;
+				identifier = EXT_EOMODEL;
 				break;
 
 			case SUBPROJECT_CREATOR :
-				identifier = SUBPROJECT;
+				identifier = EXT_SUBPROJECT;
 				break;
 
 		}

@@ -208,7 +208,7 @@ public class ProjectHelper {
 	/**
 	 * Method getProjectSourceFolder. Searches classpath source entries for project source folder.
 	 * The project source folder is the first found source folder without subproject extension
-	 * (.[IWOLipsPluginConstants.SUBPROJECT].[IWOLipsPluginConstants.SRC])
+	 * (.[IWOLipsPluginConstants.EXT_SUBPROJECT].[IWOLipsPluginConstants.EXT_SRC])
 	 * @param project
 	 * @return IContainer found source folder
 	 */
@@ -231,7 +231,7 @@ public class ProjectHelper {
 				// source entry found
 				if (classpathEntries[i].getPath() != null
 					&& classpathEntries[i].getPath().toString().indexOf(
-						"." + IWOLipsPluginConstants.SUBPROJECT + "." + IWOLipsPluginConstants.SRC)
+						"." + IWOLipsPluginConstants.EXT_SUBPROJECT + "." + IWOLipsPluginConstants.EXT_SRC)
 						== -1) {
 					// non subproject entry found
 					if (classpathEntries[i].getPath().segmentCount() > 1) {
@@ -248,7 +248,7 @@ public class ProjectHelper {
 
 	/**
 	 * Method getSubprojectSourceFolder. Searches classpath source entries for correspondending
-	 * subproject source folder (subprojectFolder.getName().[IWOLipsPluginConstants.SRC]
+	 * subproject source folder (subprojectFolder.getName().[IWOLipsPluginConstants.EXT_SRC]
 	 * @param subprojectFolder
 	 * @return IFolder
 	 */
@@ -258,14 +258,14 @@ public class ProjectHelper {
 		for (int i = 0; i < subprojectFolders.size(); i++) {
 			if (((IFolder) subprojectFolders.get(i))
 				.getName()
-				.equals(subprojectFolder.getName() + "." + IWOLipsPluginConstants.SRC)) {
+				.equals(subprojectFolder.getName() + "." + IWOLipsPluginConstants.EXT_SRC)) {
 				return (IFolder) subprojectFolders.get(i);
 			}
 		}
 		// no folder found - create new source folder
 		IFolder subprojectSourceFolder =
 			subprojectFolder.getProject().getFolder(
-				subprojectFolder.getName() + "." + IWOLipsPluginConstants.SRC);
+				subprojectFolder.getName() + "." + IWOLipsPluginConstants.EXT_SRC);
 		if (!subprojectSourceFolder.exists()) {
 			try {
 				subprojectSourceFolder.create(true, true, null);
@@ -301,7 +301,7 @@ public class ProjectHelper {
 				// source entry found
 				if (classpathEntries[i].getPath() != null
 					&& classpathEntries[i].getPath().toString().indexOf(
-						"." + IWOLipsPluginConstants.SUBPROJECT + "." + IWOLipsPluginConstants.SRC)
+						"." + IWOLipsPluginConstants.EXT_SUBPROJECT + "." + IWOLipsPluginConstants.EXT_SRC)
 						!= -1) {
 					foundFolders.add(
 						project.getWorkspace().getRoot().getFolder(

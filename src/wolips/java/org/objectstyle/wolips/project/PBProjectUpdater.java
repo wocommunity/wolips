@@ -442,7 +442,7 @@ public class PBProjectUpdater {
 		for (int i = 0; i < frameworkPath.segmentCount(); i++) {
 			frameworkName = frameworkPath.segment(i);
 			if (frameworkName
-				.endsWith("." + IWOLipsPluginConstants.FRAMEWORK)) {
+				.endsWith("." + IWOLipsPluginConstants.EXT_FRAMEWORK)) {
 				break;
 			} else {
 				frameworkName = null;

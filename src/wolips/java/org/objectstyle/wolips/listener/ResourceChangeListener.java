@@ -213,16 +213,16 @@ public class ResourceChangeListener implements IResourceChangeListener {
 					if (needsProjectFileUpdate(kindOfChange)) {
 						
 						if (IWOLipsPluginConstants
-							.FRAMEWORK
+							.EXT_FRAMEWORK
 							.equals(resource.getFileExtension())
-							|| IWOLipsPluginConstants.WOA.equals(
+							|| IWOLipsPluginConstants.EXT_WOA.equals(
 								resource.getFileExtension())) {
 							// no further examination needed
 							return false;
 						}
 						
 						if (IWOLipsPluginConstants
-							.COMPONENT
+							.EXT_COMPONENT
 							.equals(resource.getFileExtension())) {
 							updateProjectFile(
 								kindOfChange,
@@ -233,7 +233,7 @@ public class ResourceChangeListener implements IResourceChangeListener {
 										IWOLipsPluginConstants
 											.PROJECT_FILE_NAME)));
 						} else if (
-							IWOLipsPluginConstants.EOMODEL.equals(
+							IWOLipsPluginConstants.EXT_EOMODEL.equals(
 								resource.getFileExtension())) {
 							updateProjectFile(
 								kindOfChange,
@@ -244,7 +244,7 @@ public class ResourceChangeListener implements IResourceChangeListener {
 										IWOLipsPluginConstants
 											.PROJECT_FILE_NAME)));
 						} else if (
-							IWOLipsPluginConstants.SUBPROJECT.equals(
+							IWOLipsPluginConstants.EXT_SUBPROJECT.equals(
 								resource.getFileExtension())) {
 							updateProjectFile(
 								kindOfChange,
@@ -266,7 +266,7 @@ public class ResourceChangeListener implements IResourceChangeListener {
 						// the relating project file is determined through the
 						// name of the src folder containing the java file
 						if (IWOLipsPluginConstants
-							.CLASS
+							.EXT_JAVA
 							.equals(resource.getFileExtension())) {
 							// determine project file
 							IResource parent = resource;
@@ -276,7 +276,7 @@ public class ResourceChangeListener implements IResourceChangeListener {
 							while ((parent = parent.getParent())
 								!= resource.getProject()) {
 								if (IWOLipsPluginConstants
-									.SRC
+									.EXT_SRC
 									.equals(parent.getFileExtension())
 									&& parent instanceof IContainer) {
 									// determine name of project file container
@@ -287,7 +287,7 @@ public class ResourceChangeListener implements IResourceChangeListener {
 											0,
 											parent.getName().length()
 												- (IWOLipsPluginConstants
-													.SRC
+													.EXT_SRC
 													.length()
 													+ 1));
 									// search for project file
@@ -341,7 +341,7 @@ public class ResourceChangeListener implements IResourceChangeListener {
 								IWOLipsPluginConstants.CLASSES_ID,
 								projectFile);
 						} else if (
-							IWOLipsPluginConstants.API.equals(
+							IWOLipsPluginConstants.EXT_API.equals(
 								resource.getFileExtension())) {
 							updateProjectFile(
 								kindOfChange,

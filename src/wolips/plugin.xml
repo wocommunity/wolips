@@ -290,5 +290,18 @@
    <extension
          point="org.eclipse.ui.startup">
    </extension>
+<!-- =================================================================================== -->
+<!-- Extension: Decorators                                                    -->
+<!-- =================================================================================== -->
+   <extension
+         point="org.eclipse.ui.decorators">
+      <decorator
+            objectClass="org.eclipse.core.resources.IFolder"
+            label="WebObjects"
+            state="true"
+            class="org.objectstyle.wolips.utils.WOLabelDecorator"
+            id="org.objectstyle.wolips.utils.decorator">
+      </decorator>
+   </extension>
 
 </plugin>

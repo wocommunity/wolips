@@ -1,5 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
     <classpathentry kind="src" path="java"/>
+    <classpathentry exported="true" kind="lib" path="lib/wolips.jar"/>
+    <classpathentry exported="true" kind="lib" path="lib/woproject.jar"/>
+    <classpathentry exported="true" kind="lib" path="lib/cayenne.jar"/>
+    <classpathentry kind="var"
+        path="ECLIPSE_HOME/plugins/org.eclipse.core.runtime_2.0.1/runtime.jar" sourcepath="_ORG_ECLIPSE_PLATFORM_SOURCE/org.eclipse.core.runtime_2.0.1/runtimesrc.zip"/>
+    <classpathentry kind="var"
+        path="ECLIPSE_HOME/plugins/org.eclipse.core.resources_2.0.1/resources.jar" sourcepath="_ORG_ECLIPSE_PLATFORM_SOURCE/org.eclipse.core.resources_2.0.1/resourcessrc.zip"/>
+    <classpathentry kind="var"
+        path="ECLIPSE_HOME/plugins/org.eclipse.ui_2.0.1/workbench.jar" sourcepath="_ORG_ECLIPSE_PLATFORM_SOURCE/org.eclipse.ui_2.0.1/workbenchsrc.zip"/>
+    <classpathentry kind="var"
+        path="ECLIPSE_HOME/plugins/org.eclipse.ui.win32_2.0.0/workbenchwin32.jar" sourcepath="_ORG_ECLIPSE_PLATFORM_WIN32_SOURCE/org.eclipse.ui.win32_2.0.0/workbenchwin32src.zip"/>
+    <classpathentry kind="var"
+        path="ECLIPSE_HOME/plugins/org.eclipse.swt.win32_2.0.1/ws/win32/swt.jar" sourcepath="_ORG_ECLIPSE_PLATFORM_WIN32_SOURCE/org.eclipse.swt.win32_2.0.1/ws/win32/swtsrc.zip"/>
+    <classpathentry kind="var"
+        path="ECLIPSE_HOME/plugins/org.apache.ant_1.4.1/ant.jar" sourcepath="_ORG_ECLIPSE_PLATFORM_SOURCE/org.apache.ant_1.4.1/antsrc.zip"/>
+    <classpathentry kind="var"
+        path="ECLIPSE_HOME/plugins/org.apache.ant_1.4.1/jakarta-ant-1.4.1-optional.jar" sourcepath="_ORG_ECLIPSE_PLATFORM_SOURCE/org.apache.ant_1.4.1/jakarta-ant-1.4.1-optionalsrc.zip"/>
+    <classpathentry kind="var"
+        path="ECLIPSE_HOME/plugins/org.eclipse.ant.core_2.0.1/antsupport.jar" sourcepath="_ORG_ECLIPSE_PLATFORM_SOURCE/org.eclipse.ant.core_2.0.1/antsupportsrc.zip"/>
+    <classpathentry kind="var"
+        path="ECLIPSE_HOME/plugins/org.eclipse.jdt.core_2.0.1/jdtcore.jar" sourcepath="_ORG_ECLIPSE_JDT_SOURCE/org.eclipse.jdt.core_2.0.1/jdtcoresrc.zip"/>
+    <classpathentry kind="var"
+        path="ECLIPSE_HOME/plugins/org.eclipse.jdt.ui_2.0.1/jdt.jar" sourcepath="_ORG_ECLIPSE_JDT_SOURCE/org.eclipse.jdt.ui_2.0.1/jdtsrc.zip"/>
+    <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.apache.xerces_4.0.5/xmlParserAPIs.jar"/>
+    <classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.apache.xerces_4.0.5/xercesImpl.jar"/>
+    <classpathentry kind="var"
+        path="ECLIPSE_HOME/plugins/org.eclipse.search_2.0.1/search.jar" sourcepath="_ORG_ECLIPSE_PLATFORM_SOURCE/org.eclipse.search_2.0.1/searchsrc.zip"/>
+    <classpathentry kind="var"
+        path="ECLIPSE_HOME/plugins/org.eclipse.debug.core_2.0.0/dtcore.jar" sourcepath="_ORG_ECLIPSE_PLATFORM_SOURCE/org.eclipse.debug.core_2.0.0/dtcoresrc.zip"/>
+    <classpathentry kind="var"
+        path="ECLIPSE_HOME/plugins/org.eclipse.debug.ui_2.0.0/dtui.jar" sourcepath="_ORG_ECLIPSE_PLATFORM_SOURCE/org.eclipse.debug.ui_2.0.0/dtuisrc.zip"/>
+    <classpathentry kind="var"
+        path="ECLIPSE_HOME/plugins/org.eclipse.jdt.debug_2.0.1/jdi.jar" sourcepath="_ORG_ECLIPSE_JDT_SOURCE/org.eclipse.jdt.debug_2.0.1/jdisrc.zip"/>
+    <classpathentry kind="var"
+        path="ECLIPSE_HOME/plugins/org.eclipse.jdt.debug_2.0.1/jdimodel.jar" sourcepath="_ORG_ECLIPSE_JDT_SOURCE/org.eclipse.jdt.debug_2.0.1/jdimodelsrc.zip"/>
+    <classpathentry kind="var"
+        path="ECLIPSE_HOME/plugins/org.eclipse.jdt.launching_2.0.1/launching.jar" sourcepath="_ORG_ECLIPSE_JDT_SOURCE/org.eclipse.jdt.launching_2.0.1/launchingsrc.zip"/>
+    <classpathentry kind="var"
+        path="ECLIPSE_HOME/plugins/org.eclipse.compare_2.0.0/compare.jar" sourcepath="_ORG_ECLIPSE_PLATFORM_SOURCE/org.eclipse.compare_2.0.0/comparesrc.zip"/>
+    <classpathentry kind="var"
+        path="ECLIPSE_HOME/plugins/org.eclipse.core.boot_2.0.1/boot.jar" sourcepath="_ORG_ECLIPSE_PLATFORM_SOURCE/org.eclipse.core.boot_2.0.1/bootsrc.zip"/>
+    <classpathentry kind="var" path="JRE_LIB" rootpath="JRE_SRCROOT" sourcepath="JRE_SRC"/>
+    <classpathentry kind="var" path="JAVA_WO_FOUNDATION"/>
     <classpathentry kind="output" path="bin"/>
 </classpath>

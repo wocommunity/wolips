@@ -84,7 +84,7 @@ public class WOSubprojectCreator extends WOProjectResourceCreator {
 	 */
 	public WOSubprojectCreator(IResource parentResource, String subprojectName) {
 		super(parentResource);
-		this.subprojectName = subprojectName + "." + IWOLipsPluginConstants.SUBPROJECT;
+		this.subprojectName = subprojectName + "." + IWOLipsPluginConstants.EXT_SUBPROJECT;
 	}
 
 	protected int getType() {

@@ -123,27 +123,27 @@ public class WOComponentCreator extends WOProjectResourceCreator {
 			case IResource.PROJECT :
 				componentFolder =
 					((IProject) parentResource).getFolder(
-						componentName + "." + COMPONENT);
+						componentName + "." + EXT_COMPONENT);
 				componentJavaFile =
 					ProjectHelper.getProjectSourceFolder(
 						(IProject) parentResource).getFile(
-						new Path(componentName + "." + CLASS));
+						new Path(componentName + "." + EXT_JAVA));
 				componentApiFile =
 					((IProject) parentResource).getFile(
-						componentName + "." + API);
+						componentName + "." + EXT_API);
 
 				break;
 			case IResource.FOLDER :
 				componentFolder =
 					((IFolder) parentResource).getFolder(
-						componentName + "." + COMPONENT);
+						componentName + "." + EXT_COMPONENT);
 				componentJavaFile =
 					ProjectHelper.getSubprojectSourceFolder(
 						(IFolder) parentResource).getFile(
-						componentName + "." + CLASS);
+						componentName + "." + EXT_JAVA);
 				componentApiFile =
 					((IFolder) parentResource).getFile(
-						componentName + "." + API);
+						componentName + "." + EXT_API);
 
 				break;
 			default :
@@ -152,9 +152,9 @@ public class WOComponentCreator extends WOProjectResourceCreator {
 		}
 
 		IFile componentDescription =
-			componentFolder.getFile(componentName + "." + WOD);
+			componentFolder.getFile(componentName + "." + EXT_WOD);
 		IFile componentHTMLTemplate =
-			componentFolder.getFile(componentName + "." + HTML);
+			componentFolder.getFile(componentName + "." + EXT_HTML);
 
 		createResourceFolderInProject(componentFolder, monitor);
 
