@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE feature SYSTEM "dtd/feature.dtd">
 <feature
       id="org.objectstyle.wolips.feature"
       label="%featureName"
@@ -7,12 +8,16 @@
       os="aix,hpux,linux,macosx,qnx,solaris,win32"
       ws="carbon,gtk,motif,photon,win32"
       nl="ar_AE,ar_BH,ar_DZ,ar_EG,ar_IQ,ar_JO,ar_KW,ar_LB,ar_LY,ar_MA,ar_OM,ar_QA,ar_SA,ar_SD,ar_SY,ar_TN,ar_YE,ar,be_BY,be,bg_BG,bg,ca_ES_EURO,ca_ES,ca,cs_CZ,cs,da_DK,da,de_AT_EURO,de_AT,de_CH,de_DE_EURO,de_DE,de_LU_EURO,de_LU,de,el_GR,el,en_AU,en_CA,en_GB,en_IE_EURO,en_IE,en_NZ,en_US,en_ZA,en,es_AR,es_BO,es_CL,es_CO,es_CR,es_DO,es_EC,es_ES_EURO,es_ES,es_GT,es_HN,es_MX,es_NI,es_PA,es_PE,es_PR,es_PY,es_SV,es_UY,es_VE,es,et_EE,et,fi_FI_EURO,fi_FI,fi,fr_BE_EURO,fr_BE,fr_CA,fr_CH,fr_FR_EURO,fr_FR,fr_LU_EURO,fr_LU,fr,hr_HR,hr,hu_HU,hu,is_IS,is,it_CH,it_IT_EURO,it_IT,it,iw_IL,iw,ja_JP,ja,ko_KR,ko,lt_LT,lt,lv_LV,lv,mk_MK,mk,nl_BE_EURO,nl_BE,nl_NL_EURO,nl_NL,nl,no_NO_NY,no_NO,no,pl_PL,pl,pt_BR,pt_PT_EURO,pt_PT,pt,ro_RO,ro,ru_RU,ru,sh_YU,sh,sk_SK,sk,sl_SI,sl,sq_AL,sq,sr_YU,sr,sv_SE,sv,th_TH,th,tr_TR,tr,uk_UA,uk,zh_CN,zh_HK,zh_TW,zh"
-      arch="PA_RISC,ppc,sparc,x86"
       image="%image">
 
    <description>
       %description
    </description>
+
+   <url>
+      <update label="WOLips update site" url="http://www.objectstyle.org/woproject/update"/>
+      <discovery label="WOLips discovery site" url="http://www.objectstyle.org/woproject/index.html"/>
+   </url>
 
    <plugin
          id="org.objectstyle.wolips"
@@ -25,5 +30,33 @@
          download-size="0"
          install-size="0"
          version="0.9.6"/>
+
+   <plugin
+         id="org.objectstyle.wolips.help"
+         download-size="0"
+         install-size="0"
+         version="0.9.6"
+         fragment="true"/>
+
+   <plugin
+         id="org.objectstyle.wolips.launching"
+         download-size="0"
+         install-size="0"
+         version="0.9.6"
+         fragment="true"/>
+
+   <plugin
+         id="org.objectstyle.wolips.source"
+         download-size="0"
+         install-size="0"
+         version="0.9.6"
+         fragment="true"/>
+
+   <plugin
+         id="org.objectstyle.wolips.support"
+         download-size="0"
+         install-size="0"
+         version="0.9.6"
+         fragment="true"/>
 
 </feature>
