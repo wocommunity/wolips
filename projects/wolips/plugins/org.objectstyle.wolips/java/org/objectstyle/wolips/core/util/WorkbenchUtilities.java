@@ -142,6 +142,9 @@ public final class WorkbenchUtilities {
 		IProject mother) {
 		IProject[] projects = null;
 		try {
+			if(!mother.isOpen() || !mother.isAccessible())
+				//return maybe;
+				return false;
 			projects = mother.getReferencedProjects();
 		} catch (Exception anException) {
 			WOLipsLog.log(anException);
