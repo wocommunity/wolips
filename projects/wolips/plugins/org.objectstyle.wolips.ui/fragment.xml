@@ -123,6 +123,19 @@
                id="org.objectstyle.wolips.ui.actions.OpenSourceAction">
          </action>
       </objectContribution>
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IContainer"
+            adaptable="true"
+            nameFilter="*.eomodeld"
+            id="org.objectstyle.wolips.ui.actions.OpenEOModelIndexAction">
+         <action
+               label="%WOLips.PopupMenu.OpenEOModelIndexAction"
+               class="org.objectstyle.wolips.ui.actions.OpenEOModelIndexAction"
+               menubarPath="additions"
+               enablesFor="1"
+               id="org.objectstyle.wolips.ui.actions.OpenEOModelIndexAction">
+         </action>
+      </objectContribution>
    </extension>
 <!-- =================================================================================== -->
 <!-- Extension: Editors                                                                  -->
