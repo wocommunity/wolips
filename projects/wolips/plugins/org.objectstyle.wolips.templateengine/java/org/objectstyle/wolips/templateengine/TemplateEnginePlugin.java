@@ -152,7 +152,7 @@ public class TemplateEnginePlugin extends AbstractUIPlugin {
 	 * @param e
 	 */
 	public static void log(Throwable e) {
-		TemplateEnginePlugin.log(new Status(IStatus.ERROR, DataSetsPlugin.getPluginId(), IStatus.ERROR, "Internal Error", e)); //$NON-NLS-1$
+		TemplateEnginePlugin.log(new Status(IStatus.ERROR, TemplateEnginePlugin.getPluginId(), IStatus.ERROR, "Internal Error", e)); //$NON-NLS-1$
 	}
 	
 	/**
@@ -163,7 +163,7 @@ public class TemplateEnginePlugin extends AbstractUIPlugin {
 		TemplateEnginePlugin.log(
 			new Status(
 				IStatus.ERROR,
-				DataSetsPlugin.getPluginId(),
+				TemplateEnginePlugin.getPluginId(),
 				IStatus.ERROR,
 				message,
 				null));
