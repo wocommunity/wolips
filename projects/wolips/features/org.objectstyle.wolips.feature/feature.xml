@@ -161,12 +161,6 @@
          version="1.0.6"/>
 
    <plugin
-         id="org.objectstyle.wolips.ant"
-         download-size="12"
-         install-size="20"
-         version="1.0.6"/>
-
-   <plugin
          id="org.objectstyle.wolips.woproject"
          download-size="92"
          install-size="112"
