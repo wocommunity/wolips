@@ -201,7 +201,7 @@ public final class ClasspathVariablesAccessor
 				classpathVariable)
 			|| IClasspathVariablesAccessor.UserHomeClasspathVariable.equals(
 				classpathVariable)
-			|| ClasspathVariablesAccessor
+			|| IClasspathVariablesAccessor
 				.ExternalBuildRootClasspathVariable
 				.equals(
 				classpathVariable);

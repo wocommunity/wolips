@@ -62,7 +62,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -76,7 +75,6 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
-import org.eclipse.jdt.internal.core.index.impl.IFileDocument;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.objectstyle.woenvironment.util.FileStringScanner;
 import org.objectstyle.wolips.core.logging.WOLipsLog;
@@ -596,7 +594,7 @@ public final class WOLipsJavaProject
 				this.getWOLipsJavaProject().getNaturesAccessor();
 
 			String projectName = this.getProject().getName();
-			String projectNameLC = projectName.toLowerCase();
+			//String projectNameLC = projectName.toLowerCase();
 
 			// I'd rather use the knowledge from the IncrementalNature, but that fragment is not
 			// visible here (so I can't use the class, I think) [hn3000]
