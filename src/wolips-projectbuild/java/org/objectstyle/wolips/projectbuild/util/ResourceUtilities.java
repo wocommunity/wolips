@@ -57,9 +57,12 @@
 package org.objectstyle.wolips.projectbuild.util;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
@@ -189,4 +192,37 @@ public class ResourceUtilities {
   protected ResourceUtilities () {}
   
   private static int _uniqifier = 1;
+
+
+	public static void unmarkResource(IResource res, String markerId) throws CoreException {
+	  if (res.exists()) {
+	    res.deleteMarkers(markerId, true, 0);
+	  }
+	}
+
+
+	public static IMarker markResource(IResource res, String markerId, int severity, String message, String location) throws CoreException {
+	  IMarker marker[] = res.findMarkers(markerId, true, 0);
+	  if (marker.length != 1) {
+	    if (marker.length > 1) {
+	      res.deleteMarkers(markerId, false, 0);
+	    }
+	    marker = new IMarker[1];
+	    marker[0] = res.createMarker(markerId);
+	  }
+	        
+	  if (!marker[0].exists()) {
+	    marker[0] = res.createMarker(markerId);
+	  }
+	  Map attr = new HashMap ();
+	
+	  attr.put(IMarker.PRIORITY, new Integer(IMarker.PRIORITY_HIGH));
+	  attr.put(IMarker.SEVERITY, new Integer(severity));
+	  attr.put(IMarker.MESSAGE, message);
+	  attr.put(IMarker.LOCATION, location);
+	
+	  marker[0].setAttributes (attr);
+    
+    return marker[0];
+	}
 }

@@ -263,14 +263,26 @@ public class WOIncrementalBuilder
     if (cipl.exists()) {
       try {
         Object o = PropertyListSerialization.propertyListFromFile(cipl.getLocation().toFile());
+        
         //HashMap hash =     
         //System.out.println ("PLS.pLFS: "+o);
         if (o instanceof HashMap) {
           customInfo = (HashMap)o;        
+          ResourceUtilities.unmarkResource(cipl, MARKER_BUILD_PROBLEM);
+        } else {
+          ResourceUtilities.markResource(cipl, MARKER_BUILD_PROBLEM, IMarker.SEVERITY_WARNING, "Cayenne parser can't parse this file (comments are not supported for now)", "unknown");
         }
+        
+//      } catch (ParseException pe) {
+//        System.out.println("parsing CustomInfo.plist:");
+//        
+//        pe.printStackTrace();
+//        int location = pe.currentToken.beginLine;
+//        IMarker marker = ResourceUtilities.markResource(cipl, MARKER_BUILD_PROBLEM, IMarker.SEVERITY_WARNING, pe.getMessage(), "unknown");
       } catch (Throwable up) {
         System.out.println("parsing CustomInfo.plist:");
         up.printStackTrace();
+        ResourceUtilities.markResource(cipl, MARKER_BUILD_PROBLEM, IMarker.SEVERITY_WARNING, up.getMessage(), "unknown");
       }
     }
     
@@ -288,7 +300,7 @@ public class WOIncrementalBuilder
     infoPlist = StringUtilities.replace (infoPlist, "$$res$$",      won.getResourceName().toString());
     infoPlist = StringUtilities.replace (infoPlist, "$$wsr$$",      won.getWebResourceName().toString());
     infoPlist = StringUtilities.replace (infoPlist, "$$type$$",     won.isFramework() ? "FMWK" : "APPL");
-    if (null != customInfo) {
+    if ((null != customInfo) && customInfo.containsKey("NSPrincipalClass")) {
       String principal = 
           "  <key>NSPrincipalClass</key>" + "\r\n"
         + "  <string>"+customInfo.get("NSPrincipalClass")+"</string>" + "\r\n"
@@ -437,7 +449,7 @@ public class WOIncrementalBuilder
           //_res.deleteMarkers(IMarker.PROBLEM, true, 1);
           _res.deleteMarkers(MARKER_BUILD_PROBLEM, true, 0);
         } else {
-          _markResource (_res, MARKER_BUILD_PROBLEM, IMarker.SEVERITY_ERROR, error, _dest.toString());
+          markResource (_res, MARKER_BUILD_PROBLEM, IMarker.SEVERITY_ERROR, error, _dest.toString());
         }
       }
       
@@ -548,45 +560,6 @@ public class WOIncrementalBuilder
       return true;
     }
 
-    public static void _unmarkResource (IResource res, String markerId) 
-      throws CoreException
-    {
-      if (res.exists()) {
-        res.deleteMarkers(markerId, true, 0);
-      }
-    }
-
-//    public static void _markResource (IResource res, String markerId, String message, String location) 
-//      throws CoreException
-//    {
-//      _markResource(res, markerId, IMarker.SEVERITY_WARNING, message, location);
-//    }
-    
-    public static void _markResource (IResource res, String markerId, int severity, String message, String location) 
-      throws CoreException
-    {
-      IMarker marker[] = res.findMarkers(markerId, true, 0);
-      if (marker.length != 1) {
-        if (marker.length > 1) {
-          res.deleteMarkers(markerId, false, 0);
-        }
-        marker = new IMarker[1];
-        marker[0] = res.createMarker(markerId);
-      }
-            
-      if (!marker[0].exists()) {
-        marker[0] = res.createMarker(markerId);
-      }
-      Map attr = new HashMap ();
-  
-      attr.put(IMarker.PRIORITY, new Integer(IMarker.PRIORITY_HIGH));
-      attr.put(IMarker.SEVERITY, new Integer(severity));
-      attr.put(IMarker.MESSAGE, message);
-      attr.put(IMarker.LOCATION, location);
-  
-      marker[0].setAttributes (attr);
-    }
-    
     public synchronized void addTask (Buildtask task) {
       _buildTasks.add(task);
       _buildWork += task.amountOfWork();
@@ -728,7 +701,7 @@ public class WOIncrementalBuilder
       boolean result;
       
       if (null == copyToPath) {
-        _unmarkResource(res, MARKER_BUILD_DUPLICATE);
+        unmarkResource(res, MARKER_BUILD_DUPLICATE);
         return false;
       } 
 
@@ -751,7 +724,7 @@ public class WOIncrementalBuilder
           IPath shortened = copyToPath.removeFirstSegments(2);
           String message = "duplicate resource for destination .../"+shortened.toString();
           System.out.println("** "+message);
-          _markResource (res, MARKER_BUILD_DUPLICATE, IMarker.SEVERITY_ERROR, message, src.getFullPath().toString());
+          markResource (res, MARKER_BUILD_DUPLICATE, IMarker.SEVERITY_ERROR, message, src.getFullPath().toString());
           result = false; // ignore this one, it's a duplicate
         } else {
           result = true;
@@ -759,7 +732,7 @@ public class WOIncrementalBuilder
       }
       
       if (result && !deleted) {
-        _unmarkResource(res, MARKER_BUILD_DUPLICATE);
+        unmarkResource(res, MARKER_BUILD_DUPLICATE);
       }
 
       return result;
@@ -825,7 +798,7 @@ public class WOIncrementalBuilder
 
       if (!handled) {
         //System.out.println("//ignore: "+res);
-        _unmarkResource(res, MARKER_BUILD_GENERIC);
+        unmarkResource(res, MARKER_BUILD_DUPLICATE);
       }
     }    
     
