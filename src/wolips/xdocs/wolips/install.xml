@@ -29,7 +29,7 @@
 		</subsection>
 		<subsection name="Mac">
 			<p>Replace the Info.plist with the one from the stuff folder. (Ctrl click on the App and select show package Contents)</p>
-			<p>Replace the Eclipse file in the folder Contents/MacOS with /System/Library/Frameworks/JavaVM.framework/Versions/A/Resources/MacOS/JavaApplicationStub</p>
+			<p>To use JDK 1.4.1 replace the Eclipse file in the folder Contents/MacOS with /System/Library/Frameworks/JavaVM.framework/Versions/A/Resources/MacOS/JavaApplicationStub</p>
 			<p>Take care that there is only the new JavaApplicationStub renamed to Eclipse in your MacOS folder. No other files! Otherwise you won`t be able to launch or debug in Eclipse</p>
 		</subsection>
 		<subsection name="Update">
