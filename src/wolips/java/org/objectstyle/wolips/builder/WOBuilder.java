@@ -75,7 +75,6 @@ public abstract class WOBuilder extends IncrementalProjectBuilder {
 	private static Vector marker = new Vector();
 	private static final boolean cacheAntRunner = false;
 	
-//	public static String WOLIPS_NEXT_ROOT = "wolips.next.root";
 	/**
 	 * Constructor for WOBuilder.
 	 */
@@ -99,15 +98,10 @@ public abstract class WOBuilder extends IncrementalProjectBuilder {
 			String aBuildFile = this.buildFile();
 			if(checkIfBuildfileExist(aBuildFile)) {
 				getProject().getFile(aBuildFile).deleteMarkers(IMarker.TASK, false, getProject().DEPTH_ONE);
-				//WOLipsBuild.initWithProject(getProject());
-				//AntRunner anAntRunner = new AntRunner();
 				antRunner().setBuildFileLocation(getProject().getFile(aBuildFile).getLocation().toOSString());
-				//Hashtable aHashtable = this.properties();
-				//anAntRunner.addUserProperties(aHashtable);
 				antRunner().addUserProperties(args);
 				antRunner().run(monitor);
-				//getProject().refreshLocal(getProject().DEPTH_INFINITE, monitor);
-			if(!WOBuilder.cacheAntRunner) WOBuilder.antRunner = null;
+				if(!WOBuilder.cacheAntRunner) WOBuilder.antRunner = null;
 			}
 		} 
 		catch(Exception e) {
@@ -145,13 +139,6 @@ public abstract class WOBuilder extends IncrementalProjectBuilder {
 		return false;
 	}
 	
-	/*	
-	public Hashtable properties() {
-		Hashtable aHashtable = new Hashtable();
-		aHashtable.put(WOBuilder.WOLIPS_NEXT_ROOT, WOVariables.nextRoot());
-		return aHashtable;
-	}
-	*/
 	public abstract String buildFile();
 		
 }
