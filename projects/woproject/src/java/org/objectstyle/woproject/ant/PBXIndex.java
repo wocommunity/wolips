@@ -106,7 +106,26 @@ public class PBXIndex extends Task {
 		validateAttributes();
 		
 		PBXProject proj = new PBXProject();
+		addToProject( proj );
 		
+		if( getProjectFile().exists() ) {
+			if( !getProjectFile().isDirectory() )
+				throw new BuildException("Specified PBX project package is not a directory.");
+		} else
+			getProjectFile().mkdir();
+		File pbxprojFile = new File( getProjectFile(), "project.pbxproj" );
+		if( !pbxprojFile.exists() ) {
+			try {
+				pbxprojFile.createNewFile();
+			} catch( IOException x ) {
+				throw new BuildException("Failed to create project.pbxproj PBX project package file: "+x);
+			}
+		}
+
+		proj.save( pbxprojFile );
+	}
+	
+	protected void addToProject( PBXProject proj ) {
 		//	Add resource file references.
 		File	dir;
 		Iterator it = resources.iterator();
@@ -142,22 +161,6 @@ public class PBXIndex extends Task {
 				proj.addFrameworkReference((new File(dir,fixPath(allDirs[i]))).getAbsolutePath());
 			}
 		}
-		
-		if( getProjectFile().exists() ) {
-			if( !getProjectFile().isDirectory() )
-				throw new BuildException("Specified PBX project package is not a directory.");
-		} else
-			getProjectFile().mkdir();
-		File pbxprojFile = new File( getProjectFile(), "project.pbxproj" );
-		if( !pbxprojFile.exists() ) {
-			try {
-				pbxprojFile.createNewFile();
-			} catch( IOException x ) {
-				throw new BuildException("Failed to create project.pbxproj PBX project package file: "+x);
-			}
-		}
-
-		proj.save( pbxprojFile );
 	}
 
 	/**
