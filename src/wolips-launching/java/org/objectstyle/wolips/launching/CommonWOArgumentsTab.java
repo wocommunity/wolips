@@ -73,6 +73,7 @@ import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
@@ -240,14 +241,14 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 		}
 	}
 
-	private void addIgnore() {
+	protected void addIgnore() {
 		InputDialog parameterDialog = new InputDialog(getShell(), PreferencesMessages.getString("LaunchPreferencesPage.enterParameterShort"), Preferences.getString("IgnorePreferencePage.enterPatternLong"), null, null); //$NON-NLS-1$ //$NON-NLS-2$
 		parameterDialog.open();
-		if (parameterDialog.getReturnCode() != InputDialog.OK)
+		if (parameterDialog.getReturnCode() != Window.OK)
 			return;
 		InputDialog argumentDialog = new InputDialog(getShell(), PreferencesMessages.getString("LaunchPreferencesPage.enterArgumentShort"), Preferences.getString("IgnorePreferencePage.enterPatternLong"), null, null); //$NON-NLS-1$ //$NON-NLS-2$
 		argumentDialog.open();
-		if (argumentDialog.getReturnCode() != InputDialog.OK)
+		if (argumentDialog.getReturnCode() != Window.OK)
 			return;
 		String parameter = parameterDialog.getValue();
 		String argument = argumentDialog.getValue();
@@ -269,7 +270,7 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 		this.updateLaunchConfigurationDialog();
 	}
 
-	private void removeIgnore() {
+	protected void removeIgnore() {
 		int[] selection = includeTable.getSelectionIndices();
 		includeTable.remove(selection);
 		if (selection == null)
@@ -290,14 +291,14 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 		this.updateLaunchConfigurationDialog();
 	}
 
-	private void changeArgument() {
+	protected void changeArgument() {
 		int[] selection = includeTable.getSelectionIndices();
 		if (selection.length != 1)
 			return;
 		int index = selection[0];
 		InputDialog argumentDialog = new InputDialog(getShell(), PreferencesMessages.getString("LaunchPreferencesPage.enterArgumentShort"), Preferences.getString("IgnorePreferencePage.enterPatternLong"), null, null); //$NON-NLS-1$ //$NON-NLS-2$
 		argumentDialog.open();
-		if (argumentDialog.getReturnCode() != InputDialog.OK)
+		if (argumentDialog.getReturnCode() != Window.OK)
 			return;
 		String argument = argumentDialog.getValue();
 		String parameter = (String) allParameter.elementAt(index);
@@ -307,7 +308,7 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 		this.updateLaunchConfigurationDialog();
 	}
 
-	private void handleSelection() {
+	protected void handleSelection() {
 		if (includeTable.getSelectionCount() > 0) {
 			removeButton.setEnabled(true);
 			changeButton.setEnabled(true);
@@ -365,7 +366,7 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 		String[] parameter = new String[count];
 		String[] arguments = new String[count];
 		boolean[] enabled = new boolean[count];
-		TableItem[] items = (TableItem[]) includeTable.getItems();
+		TableItem[] items = includeTable.getItems();
 		for (int i = 0; i < count; i++) {
 			parameter[i] = (String) allParameter.get(i);
 			arguments[i] = (String) allArguments.get(i);

@@ -320,7 +320,6 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 	private boolean isValidProjectPath(
 		IProject project,
 		ILaunchConfiguration configuration) {
-		IJavaProject buildProject = null;
 		try {
 			return project.getLocation().toOSString().indexOf("-") == -1;
 		} catch (Exception anException) {

@@ -74,7 +74,6 @@ public class WOLipsLogFactory extends LogFactory {
 
 	public static Log log;
 
-	private boolean initialized = false;
 	private Hashtable attributes;
 	private Hashtable logger;
 
