@@ -164,7 +164,7 @@ public class WOIncrementalBuilder extends AbstractIncrementalProjectBuilder {
 		if (!projectNeedsAnUpdate()
 					&& kind != IncrementalProjectBuilder.FULL_BUILD) {
 				monitor.done();
-				return null;
+				return new IProject[0];
 		}	
 		_getLogger().debug("<incremental build>");
 		monitor.beginTask("building WebObjects layout ...", 100);
@@ -263,7 +263,7 @@ public class WOIncrementalBuilder extends AbstractIncrementalProjectBuilder {
 			throw up;
 		}
 		_getLogger().debug("</incremental build>");
-		return null;
+		return new IProject[0];
 	}
 	private void _createInfoPlist() throws CoreException {
 		Project project = (Project) (getProject()).getAdapter(Project.class);
