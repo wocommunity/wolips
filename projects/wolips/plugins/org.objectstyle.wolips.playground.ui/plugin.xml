@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin
+   id="org.objectstyle.wolips.playground.ui"
+   name="WOLips Playground Ui Plug-in"
+   version="1.0.6"
+   provider-name=""
+   class="org.objectstyle.wolips.playground.ui.PlaygroundUiPlugin">
+
+   <runtime>
+      <library name="wolips-playground-ui.jar">
+         <export name="*"/>
+      </library>
+   </runtime>
+
+   <requires>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.objectstyle.wolips.datasets"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.objectstyle.wolips.ui"/>
+      <import plugin="org.objectstyle.wolips.commons"/>
+   </requires>
+<!-- =================================================================================== -->
+<!-- Extension: Decorators                                                               -->
+<!-- =================================================================================== -->
+   <extension
+         point="org.eclipse.ui.decorators">
+      <decorator
+            objectClass="org.eclipse.core.resources.IResource"
+            label="WebObjects Resources"
+            state="true"
+            class="org.objectstyle.wolips.playground.ui.ResourcesLabelDecorator"
+            id="org.objectstyle.wolips.playground.ui.ResourcesLabelDecorator">
+      </decorator>
+   </extension>
+
+</plugin>
