@@ -128,6 +128,8 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 	 */
 	public WOLipsPlugin(IPluginDescriptor descriptor) {
 		super(descriptor);
+		System.out.println("******** WOLipsPlugin Const. " + this);
+				System.out.println("******** WOLipsPlugin this class " + this.getClass());
 		plugin = this;
 		this.loadFoundationClasses();
 	}
