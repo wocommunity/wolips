@@ -3,20 +3,20 @@
     <title>WOFramework Task Manual</title>
 
     <properties>
-        <author>Andrei Adamchik</author>
+        <author>Andrei Adamchik, Emily Bache</author>
     </properties>
 
-    <body>        
- 		<section name="WOFramework Task Manual">        
+    <body>
+ 		<section name="WOFramework Task Manual">
 			<h3>Description:</h3>
-			
+
 			<p><code>WOFramework</code> is an Ant task to build WebObjects (5.1 or higher) frameworks
 			from a set of files. It does not enforce any particular project structure
-			and can be used to create frameworks without ProjectBuilder tool.
+			and can be used to create frameworks without using the ProjectBuilder tool.
 			</p>
 
 			<h3>Parameters:</h3>
-			
+
 			<table border="1" cellpadding="2" cellspacing="0">
 				<tr>
 					<th valign="top"><b>Attribute</b></th>
@@ -34,34 +34,42 @@
 					<td valign="top" align="center">Yes</td>
 				</tr>
 			</table>
-			
+
 			<h3>Nested elements:</h3>
 
 			<h4>classes</h4>
 			<p>The nested <code>classes</code> element specifies a <a
-			href="http://jakarta.apache.org/ant/manual/CoreTypes/fileset.html">FileSet</a>. 
+			href="http://jakarta.apache.org/ant/manual/CoreTypes/fileset.html">FileSet</a>.
 			All files included in this fileset will
 			end up in the <code>Resources/Java/*.jar</code> file of the framework.</p>
 
 
 			<h4>resources</h4>
 			<p>The nested <code>resources</code> element specifies a <a
-			href="http://jakarta.apache.org/ant/manual/CoreTypes/fileset.html">FileSet</a>. 
+			href="http://jakarta.apache.org/ant/manual/CoreTypes/fileset.html">FileSet</a>.
 			All files included in this fileset will
 			end up in the <code>Resources</code> directory of the framework. </p>
 
 			<h4>wsresources</h4>
 			<p>The nested <code>wsresources</code> element specifies a <a
-			href="http://jakarta.apache.org/ant/manual/CoreTypes/fileset.html">FileSet</a>. 
+			href="http://jakarta.apache.org/ant/manual/CoreTypes/fileset.html">FileSet</a>.
 			All files included in this fileset will
 			end up in the <code>WebServerResources</code> directory of the framework. </p>
 
+            <h4>lib</h4>
+			<p>The nested <code>lib</code> element specifies a <a
+			href="http://jakarta.apache.org/ant/manual/CoreTypes/fileset.html">FileSet</a>.
+			This should be a fileset of jar libraries required by your framework. All files
+            in this fileset will end up in the <code>Resources/Java</code> folder of the framework,
+            and will be included on the classpath for this framework.</p>
+
 			<h4>Examples:</h4>
+
 <source>
 &amp;lt;taskdef name="woframework" classname="org.objectstyle.woproject.ant.WOFramework"&amp;gt;
      &amp;lt;classpath refid="classpath"/&amp;gt;
 &amp;lt;/taskdef&amp;gt;
-&amp;lt;woframework name="aa" destDir="${dist}/Frameworks"&amp;gt;
+&amp;lt;woframework name="MyFramework" destDir="${dist}/Frameworks"&amp;gt;
    &amp;lt;classes dir="${build}/common"&amp;gt;
       &amp;lt;exclude name="*.properties"/&amp;gt;
    &amp;lt;/classes&amp;gt;
@@ -70,13 +78,33 @@
    &amp;lt;/classes&amp;gt;
    &amp;lt;resources dir="src/resources"&amp;gt;
        &amp;lt;include name="*.eomodeld/**"/&amp;gt;
+       &amp;lt;include name="*.wo/**"/&amp;gt;
    &amp;lt;/resources&amp;gt;
    &amp;lt;wsresources dir="src/frameworks/WSResources"&amp;gt;
        &amp;lt;include name="Images/**"/&amp;gt;
    &amp;lt;/wsresources&amp;gt;
+   &amp;lt;lib dir="lib"&amp;gt;
+       &amp;lt;include name="**/*.jar"/&amp;gt;
+   &amp;lt;/lib&amp;gt;
 &amp;lt;/woframework&amp;gt;
 </source>
-
+        <p>
+        Note that it can be useful to build a framework with only libraries -
+        what you get is a framework that is just a wrapper around one or more existing jar files.
+        For example this enables you to create a framework of a set of third party jar files that
+        your other WOFrameworks and WOApplications can include.
+        </p>
+<source>
+&amp;lt;taskdef name="woframework" classname="org.objectstyle.woproject.ant.WOFramework"&amp;gt;
+     &amp;lt;classpath refid="classpath"/&amp;gt;
+&amp;lt;/taskdef&amp;gt;
+&amp;lt;woframework name="JavaMail" destDir="${dist}/Frameworks"&amp;gt;
+   &amp;lt;lib dir="lib"&amp;gt;
+       &amp;lt;include name="activation.jar"/&amp;gt;
+       &amp;lt;include name="mail.jar"/&amp;gt;
+   &amp;lt;/lib&amp;gt;
+&amp;lt;/woframework&amp;gt;
+</source>
     	</section>
     </body>
 </document>
