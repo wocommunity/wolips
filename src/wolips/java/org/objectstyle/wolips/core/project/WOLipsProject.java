@@ -56,12 +56,22 @@
 
 package org.objectstyle.wolips.core.project;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
+import org.eclipse.core.resources.ICommand;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IProjectNature;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
+import org.objectstyle.wolips.core.plugin.logging.WOLipsLog;
 
 /**
  * @author uli
@@ -71,6 +81,8 @@ import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
 public class WOLipsProject implements IWOLipsPluginConstants {
 	private IProject project;
 	private WOLipsProjectNatures woLipsProjectNatures;
+	private BuilderAccessor builderAccessor;
+	private PBProjectFilesAccessor pbProjectFilesAccessor;
 
 	/**
 	 * @param project
@@ -94,26 +106,81 @@ public class WOLipsProject implements IWOLipsPluginConstants {
 			woLipsProjectNatures = new WOLipsProjectNatures(this);
 		return woLipsProjectNatures;
 	}
-
+	/**
+	 * @return BuilderAccessor
+	 */
+	public BuilderAccessor getBuilderAccessor() {
+		if (builderAccessor == null)
+			builderAccessor = new BuilderAccessor(this);
+		return builderAccessor;
+	}
+	/**
+	 * @return PBProjectFilesHandler
+	 */
+	public PBProjectFilesAccessor getPBProjectFilesAccessor() {
+		if (pbProjectFilesAccessor == null)
+			pbProjectFilesAccessor = new PBProjectFilesAccessor(this);
+		return pbProjectFilesAccessor;
+	}
+	/**
+	 * Method isWOProjectResource.
+	 * @param aResource
+	 * @return boolean
+	 */
+	public static boolean isWOProjectResource(IResource aResource) {
+		if (aResource == null)
+			return false;
+		try {
+			switch (aResource.getType()) {
+				case IResource.PROJECT :
+					return new WOLipsProject((IProject) aResource)
+						.getWOLipsProjectNatures()
+						.hasWOLipsNature();
+				default :
+					return aResource.getProject() != null
+						&& new WOLipsProject(aResource.getProject())
+							.getWOLipsProjectNatures()
+							.hasWOLipsNature();
+			}
+		} catch (CoreException e) {
+			return false;
+		}
+	}
 	/**
 	 * @author uli
 	 *
-	 * Add and remove WOLips natures.
+	 * To change this generated comment go to 
+	 * Window>Preferences>Java>Code Generation>Code Template
 	 */
-	public class WOLipsProjectNatures implements IWOLipsPluginConstants {
+	private class WOLipsProjectInnerClass {
 		private WOLipsProject woLipsProject;
-
 		/**
 		 * @param woLipsProject
 		 */
-		protected WOLipsProjectNatures(WOLipsProject woLipsProject) {
+		protected WOLipsProjectInnerClass(WOLipsProject woLipsProject) {
 			this.woLipsProject = woLipsProject;
 		}
 		/**
 		 * @return IProject
 		 */
-		private IProject getProject() {
+		protected IProject getProject() {
 			return woLipsProject.getProject();
+		}
+
+	}
+	/**
+	 * @author uli
+	 *
+	 * Add and remove WOLips natures.
+	 */
+	public class WOLipsProjectNatures
+		extends WOLipsProjectInnerClass
+		implements IWOLipsPluginConstants {
+		/**
+		 * @param woLipsProject
+		 */
+		protected WOLipsProjectNatures(WOLipsProject woLipsProject) {
+			super(woLipsProject);
 		}
 		/**
 		 * @param nature
@@ -218,7 +285,8 @@ public class WOLipsProject implements IWOLipsPluginConstants {
 				projectNaturesVector.add(projectNatures[i]);
 			}
 			projectNaturesVector.add(natureID);
-			this.getProject().getDescription().setNatureIds((String[])projectNaturesVector.toArray());
+			this.getProject().getDescription().setNatureIds(
+				(String[]) projectNaturesVector.toArray());
 		}
 		/**
 		 * @return IProjectNature[]
@@ -232,9 +300,10 @@ public class WOLipsProject implements IWOLipsPluginConstants {
 						this.getProject().getNature(WOLIPS_NATURES[i]));
 				}
 			}
-			if(naturesVector.size() == 0)
-			return new IProjectNature[0];
-			return (IProjectNature[])naturesVector.toArray(new IProjectNature[naturesVector.size()]);
+			if (naturesVector.size() == 0)
+				return new IProjectNature[0];
+			return (IProjectNature[]) naturesVector.toArray(
+				new IProjectNature[naturesVector.size()]);
 		}
 		/**
 		 * @return String[]
@@ -299,5 +368,227 @@ public class WOLipsProject implements IWOLipsPluginConstants {
 			this.getProject().getDescription().setNatureIds(natures);
 
 		}
+	}
+
+	/**
+	 * @author uli
+	 *
+	 * To change this generated comment go to 
+	 * Window>Preferences>Java>Code Generation>Code Template
+	 */
+	public class BuilderAccessor extends WOLipsProjectInnerClass {
+		public static final int BuilderNotFound = -1;
+		/**
+		 * @param wolipsProject
+		 */
+		protected BuilderAccessor(WOLipsProject wolipsProject) {
+			super(wolipsProject);
+		}
+		/**
+		 * Method removeJavaBuilder.
+		 * @param project
+		 */
+		public void removeBuilder(String aBuilder) throws CoreException {
+			IProjectDescription desc = null;
+			ICommand[] coms = null;
+			ArrayList comList = null;
+			List tmp = null;
+			ICommand[] newCom = null;
+			try {
+				desc = this.getProject().getDescription();
+				coms = desc.getBuildSpec();
+				comList = new ArrayList();
+				tmp = Arrays.asList(coms);
+				comList.addAll(tmp);
+				boolean foundJBuilder = false;
+				for (int i = 0; i < comList.size(); i++) {
+					if (((ICommand) comList.get(i))
+						.getBuilderName()
+						.equals(aBuilder)) {
+						comList.remove(i);
+						foundJBuilder = true;
+					}
+				}
+				if (foundJBuilder) {
+					newCom = new ICommand[comList.size()];
+					for (int i = 0; i < comList.size(); i++) {
+						newCom[i] = (ICommand) comList.get(i);
+					}
+					desc.setBuildSpec(newCom);
+					this.getProject().setDescription(desc, null);
+				}
+			} finally {
+				desc = null;
+				coms = null;
+				comList = null;
+				tmp = null;
+				newCom = null;
+			}
+		}
+		/**
+		 * Method installBuilder.
+		 * @param aProject
+		 * @param aBuilder
+		 * @throws CoreException
+		 */
+		public void installBuilder(String aBuilder) throws CoreException {
+			IProjectDescription desc = null;
+			ICommand[] coms = null;
+			ICommand[] newIc = null;
+			ICommand command = null;
+			try {
+				desc = this.getProject().getDescription();
+				coms = desc.getBuildSpec();
+				boolean foundJBuilder = false;
+				for (int i = 0; i < coms.length; i++) {
+					if (coms[i].getBuilderName().equals(aBuilder)) {
+						foundJBuilder = true;
+					}
+				}
+				if (!foundJBuilder) {
+					newIc = null;
+					command = desc.newCommand();
+					command.setBuilderName(aBuilder);
+					newIc = new ICommand[coms.length + 1];
+					System.arraycopy(coms, 0, newIc, 0, coms.length);
+					newIc[coms.length] = command;
+					desc.setBuildSpec(newIc);
+					this.getProject().setDescription(desc, null);
+				}
+			} finally {
+				desc = null;
+				coms = null;
+				newIc = null;
+				command = null;
+			}
+		}
+		/**
+		 * Method isBuilderInstalled.
+		 * @param aProject
+		 * @param anID
+		 * @return boolean
+		 */
+		private boolean isBuilderInstalled(String anID) {
+			try {
+				ICommand[] nids =
+					this.getProject().getDescription().getBuildSpec();
+				for (int i = 0; i < nids.length; i++) {
+					if (nids[i].getBuilderName().equals(anID))
+						return true;
+				}
+			} catch (Exception anException) {
+				WOLipsLog.log(anException);
+				return false;
+			}
+			return false;
+		}
+		/**
+			 * Method positionForBuilder.
+			 * @param aProject
+			 * @param aBuilder
+			 * @return int
+			 * @throws CoreException
+			 */
+		public int positionForBuilder(
+			String aBuilder)
+			throws CoreException {
+			IProjectDescription desc = null;
+			ICommand[] coms = null;
+			try {
+				desc = this.getProject().getDescription();
+				coms = desc.getBuildSpec();
+				for (int i = 0; i < coms.length; i++) {
+					if (coms[i].getBuilderName().equals(aBuilder))
+						return i;
+				}
+			} finally {
+				desc = null;
+				coms = null;
+			}
+			return BuilderNotFound;
+		}
+		/**
+		 * Method installBuilderAtPosition.
+		 * @param aProject
+		 * @param aBuilder
+		 * @param installPos
+		 * @param arguments
+		 * @throws CoreException
+		 */
+		public void installBuilderAtPosition(
+			String aBuilder,
+			int installPos,
+			Map arguments)
+			throws CoreException {
+			IProjectDescription desc = this.getProject().getDescription();
+			ICommand[] coms = desc.getBuildSpec();
+			if (arguments == null)
+				arguments = new HashMap();
+			for (int i = 0; i < coms.length; i++) {
+				if (coms[i].getBuilderName().equals(aBuilder)
+					&& coms[i].getArguments().equals(arguments))
+					return;
+			}
+			ICommand[] newIc = null;
+			ICommand command = desc.newCommand();
+			command.setBuilderName(aBuilder);
+			command.setArguments(arguments);
+			newIc = new ICommand[coms.length + 1];
+			if (installPos <= 0) {
+				System.arraycopy(coms, 0, newIc, 1, coms.length);
+				newIc[0] = command;
+			} else if (installPos >= coms.length) {
+				System.arraycopy(coms, 0, newIc, 0, coms.length);
+				newIc[coms.length] = command;
+			} else {
+				System.arraycopy(coms, 0, newIc, 0, installPos);
+				newIc[installPos] = command;
+				System.arraycopy(
+					coms,
+					installPos,
+					newIc,
+					installPos + 1,
+					coms.length - installPos);
+			}
+			desc.setBuildSpec(newIc);
+			this.getProject().setDescription(desc, null);
+		}
+	}
+	/**
+	 * @author uli
+	 *
+	 * To change this generated comment go to 
+	 * Window>Preferences>Java>Code Generation>Code Template
+	 */
+	public class PBProjectFilesAccessor extends WOLipsProjectInnerClass {
+
+		/**
+		 * @param wolipsProject
+		 */
+		protected PBProjectFilesAccessor(WOLipsProject wolipsProject) {
+			super(wolipsProject);
+		}
+		/**
+		 * Method getParentFolderWithPBProject.
+		 * @param aFolder
+		 * @return IFolder or one the parents with PB.project if one is found. Null
+		 * is returned when Projects PB.project is found
+		 */
+		protected IFolder getParentFolderWithPBProject(IFolder aFolder) {
+			IFolder findFolder = aFolder;
+			while ((findFolder.findMember(IWOLipsPluginConstants.PROJECT_FILE_NAME)
+				== null)
+				&& (findFolder.getParent() != null)
+				&& (findFolder.getParent().getType() != IProject.PROJECT)) {
+				findFolder = (IFolder) findFolder.getParent();
+			}
+			if (findFolder.getParent() == null)
+				return null;
+			if (findFolder.findMember(IWOLipsPluginConstants.PROJECT_FILE_NAME)
+				!= null)
+				return findFolder;
+			return null;
+		}
+
 	}
 }
