@@ -49,7 +49,7 @@
     <!-- ========================================== -->
     <!-- Build copy resources.                      -->
     <!-- ========================================== -->
-    <target name="copy.resources">
+    <target name="copy.resources" unless="no.docs">
         <ant dir="." antfile="../../../${project.buildscripts.dir}/plugin-project.xml" target="copy.resources">
             <property name="param.plugin.dir" value="."/>
             <property name="param.build.output.build.dir" value="../../../${build.output.build.dir}"/>

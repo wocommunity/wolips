@@ -61,10 +61,11 @@
         * deploy.dir = ${deploy.dir} (set by the buildserver)
         * eclipse.home = ${eclipse.home}
         * no.clean = ${no.clean}
+        * no.docs = ${no.docs}
         * compile options
         * compile.deprecation= ${compile.deprecation}
         * compile.debug= ${compile.debug}
-        * compile.optimize= "${compile.optimize}
+        * compile.optimize= ${compile.optimize}
         * test environment
         * build.output.test.dir = ${build.output.test.dir}
         * test.eclipse.home = ${test.eclipse.home}                
@@ -78,7 +79,7 @@
     <!-- ========================================== -->
     <!-- Build homepage.                            -->
     <!-- ========================================== -->
-    <target name="homepage">
+    <target name="homepage" unless="no.docs">
 	    <ant dir="${project.homepage.dir}" target="all"/>
     </target>
 
