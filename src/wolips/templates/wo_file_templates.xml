@@ -256,6 +256,10 @@ public class DirectAction extends WODirectAction {
   					<includesfile name="ant.classpaths.wo.woroot"/> 
 				</patternset>
 			</otherclasspath>
+			<lib dir=".">
+				<include name="Add .jar's that should be copied in the woa."/>
+				<exclude name="**/*.woa/**"/>
+			</lib>
    		</woapplication>
 		<!-- delete include files -->
 		<delete file="ant.frameworks.wo.woroot"/>
@@ -343,6 +347,10 @@ project.name = ${PROJECT_NAME}
 				<exclude name="**/*.eomodeld~/"/>
 				<exclude name="**/*.framework/**"/>
    			</resources>
+   			<lib dir=".">
+				<include name="Add .jar's that should be copied in the framework."/>
+				<exclude name="**/*.woa/**"/>
+			</lib>
    		</woframework>
 		<eclipse.refreshLocal resource="${framework.name}" depth="infinite"/>
 	</target>
