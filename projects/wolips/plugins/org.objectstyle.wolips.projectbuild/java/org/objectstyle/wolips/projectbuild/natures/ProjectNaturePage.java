@@ -67,6 +67,8 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
@@ -84,232 +86,240 @@ import org.objectstyle.wolips.core.project.INaturesAccessor;
 import org.objectstyle.wolips.core.project.IWOLipsProject;
 import org.objectstyle.wolips.core.project.WOLipsCore;
 import org.objectstyle.wolips.projectbuild.WOProjectBuildConstants;
+import org.omg.CORBA._PolicyStub;
 
 public class ProjectNaturePage 
-  extends PropertyPage 
-  implements IAdaptable, WOProjectBuildConstants
+extends PropertyPage 
+implements IAdaptable, WOProjectBuildConstants
 {
-
-  private static final String BUILD_STYLE_TITLE = " Build style";
-  private static final String BUILD_PARAMS_TITLE = " Build parameters";
-  private static final String PROJECT_KIND_TITLE = " Project kind";
-  private static final String PROJECT_KIND_NOTE_TITLE = "Note: ";
-  private static final String PROJECT_KIND_NOTE = "The settings below will only affect the incremental build style.";
-  
-
-	private static final String WO_NATURE_TITLE = "Is a WebObjects Project   (options below apply only if this is checked)";
-
-  private static final String WO_IS_FRAMEWORK_TITLE = "Framework";
-  private static final String WO_IS_APP_TITLE = "Application";
-
-  private static final String WO_USE_INCREMENTAL_TITLE = "Incremental";
-  private static final String WO_USE_ANT_TITLE = "Use Ant (build.xml)";
-  private static final String WO_USE_TARGET_BUILDET_TITLE = "Use TargetBuilder";
-
+	
+	private static final String BUILD_STYLE_TITLE = " Build style";
+	private static final String BUILD_PARAMS_TITLE = " Build parameters";
+	private static final String PROJECT_KIND_TITLE = " Project kind";
+	private static final String PROJECT_KIND_NOTE_TITLE = "Note: ";
+	private static final String PROJECT_KIND_NOTE = "The settings below will only affect the incremental build style.";
+	
+	
+	private static final String WO_NATURE_TITLE = "Is a WebObjects Project (options below apply only if this is checked)";
+	
+	private static final String WO_IS_FRAMEWORK_TITLE = "Framework";
+	private static final String WO_IS_APP_TITLE = "Application";
+	
+	private static final String WO_USE_INCREMENTAL_TITLE = "Incremental";
+	private static final String WO_USE_ANT_TITLE = "Use Ant (build.xml)";
+	private static final String WO_USE_TARGET_BUILDET_TITLE = "Use TargetBuilder";
+	
 	/**
 	 * Constructor for WOLipsProjectNaturePage.
 	 */
 	public ProjectNaturePage() {
 		super();
 	}
-
+	
 	/**
 	 * @param parent
 	 * @param woLipsProject
 	 * @throws CoreException
 	 */
 	private void _addFirstSection(
-		Composite parent,
-		IWOLipsProject woLipsProject
-  )
-    throws CoreException
-  {
-    Composite group = new Composite(parent, SWT.NONE);
-    GridLayout layout = new GridLayout();
-    layout.numColumns = 3;
-    group.setLayout(layout);
-    group.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-
-    _woNatureCheck = new Button(group, SWT.CHECK | SWT.LEFT);
-    _woNatureCheck.setText(WO_NATURE_TITLE);
-    _woNatureCheck.setEnabled(true);
-
-    _woNatureCheck.setSelection(
-    woLipsProject.getNaturesAccessor().hasWOLipsNature());
+			Composite parent,
+			IWOLipsProject woLipsProject
+	)
+	throws CoreException
+	{
+		Composite group = new Composite(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		layout.numColumns = 3;
+		group.setLayout(layout);
+		group.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		
+		_woNatureCheck = new Button(group, SWT.CHECK | SWT.LEFT);
+		_woNatureCheck.setText(WO_NATURE_TITLE);
+		_woNatureCheck.setEnabled(true);
+		
+		_woNatureCheck.setSelection(
+				woLipsProject.getNaturesAccessor().hasWOLipsNature());
 	}
-
+	
 	/**
-   * @param parent
-   * @param woLipsProject
-   * @throws CoreException
-   */
-  private void _addBuildStyleSection (
-    Composite parent,
-    IWOLipsProject woLipsProject
-  )
-    throws CoreException 
-  {
-    Composite group = _createLabelledComposite(parent, BUILD_STYLE_TITLE);
+	 * @param parent
+	 * @param woLipsProject
+	 * @throws CoreException
+	 */
+	private void _addBuildStyleSection (
+			Composite parent,
+			IWOLipsProject woLipsProject
+	)
+	throws CoreException 
+	{
+		Composite group = _createLabelledComposite(parent, BUILD_STYLE_TITLE);
+		
+		// project kind field (is framework?)
+		_woIsIncrementalButton = new Button(group, SWT.RADIO | SWT.LEFT);
+		_woIsIncrementalButton.setText(WO_USE_INCREMENTAL_TITLE);
+		_woIsIncrementalButton.setEnabled(true);
+		
+		FormData fd = new FormData ();
+		fd.left = new FormAttachment (0, 0);
+		
+		_woIsIncrementalButton.setLayoutData(fd);
+		
+		Button antButton = new Button(group, SWT.RADIO | SWT.LEFT);
+		antButton.setText(WO_USE_ANT_TITLE);
+		antButton.setEnabled(true);
+		
+		fd = new FormData ();
+		fd.left = new FormAttachment (_woIsIncrementalButton, 0);
+		antButton.setLayoutData(fd);
+		
+		
+		boolean isIncremental = woLipsProject.getNaturesAccessor().isIncremental();
+		
+		_woIsIncrementalButton.setSelection(isIncremental);
+		antButton.setSelection (!isIncremental);
+		
+		Label noteTitle = new Label (group, SWT.BOLD);
+		noteTitle.setText(PROJECT_KIND_NOTE_TITLE);
+		noteTitle.setFont(JFaceResources.getBannerFont());
+		
+		fd = new FormData ();
+		fd.left = new FormAttachment (0, 0);
+		fd.top = new FormAttachment (_woIsIncrementalButton, 5);
+		noteTitle.setLayoutData(fd);
+		
+		Label note = new Label (group, SWT.NULL);
+		note.setText(PROJECT_KIND_NOTE);
+		
+		fd = new FormData ();
+		fd.left = new FormAttachment (noteTitle, 0);
+		fd.top = new FormAttachment (_woIsIncrementalButton, 5);
+		note.setLayoutData(fd);
+	}
+	
+	/**
+	 * @param parent
+	 * @param woLipsProject
+	 * @throws CoreException
+	 */
+	private void _addProjectKindSection(
+			Composite parent,
+			IWOLipsProject woLipsProject)
+	throws CoreException {
+		Composite group = _createLabelledComposite(parent, PROJECT_KIND_TITLE);
+		
+		// project kind field (is framework?)
+		_woIsApplicationButton = new Button(group, SWT.RADIO | SWT.LEFT);
+		_woIsApplicationButton.setText(WO_IS_APP_TITLE);
+		_woIsApplicationButton.setEnabled(true);
+		
+		FormData fd = new FormData ();
+		fd.left = new FormAttachment (0, 0);
+		_woIsApplicationButton.setLayoutData(fd);    
+		
+		_woIsFrameworkButton = new Button(group, SWT.RADIO | SWT.LEFT);
+		_woIsFrameworkButton.setText(WO_IS_FRAMEWORK_TITLE);
+		_woIsFrameworkButton.setEnabled(true);
+		
+		fd = new FormData ();
+		fd.left = new FormAttachment (_woIsApplicationButton, 0);
+		_woIsFrameworkButton.setLayoutData(fd);
+		
+		boolean isFramework = woLipsProject.getNaturesAccessor().isFramework();
+		
+		_woIsFrameworkButton.setSelection(isFramework);
+		_woIsApplicationButton.setSelection(!isFramework);
+	}
+	
+	private Text _addTextField (Composite parent, String label) {
+		GridData gd = new GridData ();
+		
+		Label textLabel = new Label(parent, SWT.NONE);
+		textLabel.setText(label);
+		textLabel.setLayoutData(gd);
+		
+		gd = new GridData (GridData.FILL_HORIZONTAL);
+		gd.grabExcessHorizontalSpace = true;
+		
+		// Owner text field
+		Text text = new Text(parent, SWT.SINGLE | SWT.BORDER);
+		text.setLayoutData(gd);
+		
+		return (text);
+	}
+	
+	private static String _getArg (Map values, String key, String defVal) {
+		String result = null;
+		
+		try {
+			result = (String)values.get(key);
+		} catch (Exception up) {
+			// hmm, how did that get there?
+		}
+		
+		if (null == result) result = defVal;
+		
+		return result;
+	}
+	
+	/**
+	 * @param parent
+	 */
+	private void _addPatternSection(
+			Composite parent,
+			IWOLipsProject woLipsProject
+	) {
+		Composite group = _createLabelledComposite(parent, BUILD_PARAMS_TITLE);
+		
+		group.setLayout (new GridLayout(2, false));
+		
+		_resExcludes = _addTextField (group, "Excluded Resources");
+		_resIncludes = _addTextField (group, "Included Resources");
+		_wsresExcludes = _addTextField (group, "Excluded Webserver Resources");
+		_wsresIncludes = _addTextField (group, "Included Webserver Resources");
+		_principalClass = _addTextField (group, "Principal Class");
+		
+	}
+	
+	
+	/**
+	 * @param parent
+	 * @param woLipsProject
+	 * @throws CoreException
+	 */
+	private void _addTargetBuilderSection(
+			Composite parent,
+			IWOLipsProject woLipsProject
+	)
+	throws CoreException
+	{
+		Composite group = new Composite(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		layout.numColumns = 3;
+		group.setLayout(layout);
+		group.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		
+		_woTargetBuilderCheck = new Button(group, SWT.CHECK | SWT.LEFT);
+		_woTargetBuilderCheck.setText(WO_USE_TARGET_BUILDET_TITLE);
+		_woTargetBuilderCheck.setEnabled(true);
+		
+		_woTargetBuilderCheck.setSelection(
+				woLipsProject.getNaturesAccessor().isTargetBuilderInstalled());
+	}
+	
+	private void enableWidgets(boolean enabled) {
+		_woTargetBuilderCheck.setEnabled(enabled);
+		_woIsFrameworkButton.setEnabled(enabled);
+		_woIsApplicationButton.setEnabled(enabled);
 
-    // project kind field (is framework?)
-    _woIsIncrementalButton = new Button(group, SWT.RADIO | SWT.LEFT);
-    _woIsIncrementalButton.setText(WO_USE_INCREMENTAL_TITLE);
-    _woIsIncrementalButton.setEnabled(true);
-    
-    FormData fd = new FormData ();
-    fd.left = new FormAttachment (0, 0);
-    
-    _woIsIncrementalButton.setLayoutData(fd);
-
-    Button antButton = new Button(group, SWT.RADIO | SWT.LEFT);
-    antButton.setText(WO_USE_ANT_TITLE);
-    antButton.setEnabled(true);
-    
-    fd = new FormData ();
-    fd.left = new FormAttachment (_woIsIncrementalButton, 0);
-    antButton.setLayoutData(fd);
-
-
-    boolean isIncremental = woLipsProject.getNaturesAccessor().isIncremental();
-
-    _woIsIncrementalButton.setSelection(isIncremental);
-    antButton.setSelection (!isIncremental);
-
-    Label noteTitle = new Label (group, SWT.BOLD);
-    noteTitle.setText(PROJECT_KIND_NOTE_TITLE);
-    noteTitle.setFont(JFaceResources.getBannerFont());
-    
-    fd = new FormData ();
-    fd.left = new FormAttachment (0, 0);
-    fd.top = new FormAttachment (_woIsIncrementalButton, 5);
-    noteTitle.setLayoutData(fd);
-
-    Label note = new Label (group, SWT.NULL);
-    note.setText(PROJECT_KIND_NOTE);
-
-    fd = new FormData ();
-    fd.left = new FormAttachment (noteTitle, 0);
-    fd.top = new FormAttachment (_woIsIncrementalButton, 5);
-    note.setLayoutData(fd);
-  }
-
-  /**
-   * @param parent
-   * @param woLipsProject
-   * @throws CoreException
-   */
-  private void _addProjectKindSection(
-    Composite parent,
-    IWOLipsProject woLipsProject)
-    throws CoreException {
-    Composite group = _createLabelledComposite(parent, PROJECT_KIND_TITLE);
-
-    // project kind field (is framework?)
-    Button appButton = new Button(group, SWT.RADIO | SWT.LEFT);
-    appButton.setText(WO_IS_APP_TITLE);
-    appButton.setEnabled(true);
-
-    FormData fd = new FormData ();
-    fd.left = new FormAttachment (0, 0);
-    appButton.setLayoutData(fd);    
-
-
-    _woIsFrameworkButton = new Button(group, SWT.RADIO | SWT.LEFT);
-    _woIsFrameworkButton.setText(WO_IS_FRAMEWORK_TITLE);
-    _woIsFrameworkButton.setEnabled(true);
-    
-    fd = new FormData ();
-    fd.left = new FormAttachment (appButton, 0);
-    _woIsFrameworkButton.setLayoutData(fd);
-    
-    boolean isFramework = woLipsProject.getNaturesAccessor().isFramework();
-
-    _woIsFrameworkButton.setSelection(isFramework);
-    appButton.setSelection(!isFramework);
-  }
-
-  private Text _addTextField (Composite parent, String label) {
-    GridData gd = new GridData ();
-
-    Label textLabel = new Label(parent, SWT.NONE);
-    textLabel.setText(label);
-    textLabel.setLayoutData(gd);
-  
-    gd = new GridData (GridData.FILL_HORIZONTAL);
-    gd.grabExcessHorizontalSpace = true;
-
-    // Owner text field
-    Text text = new Text(parent, SWT.SINGLE | SWT.BORDER);
-    text.setLayoutData(gd);
-
-    return (text);
-  }
-
-  private static String _getArg (Map values, String key, String defVal) {
-    String result = null;
-    
-    try {
-      result = (String)values.get(key);
-    } catch (Exception up) {
-      // hmm, how did that get there?
-    }
-    
-    if (null == result) result = defVal;
-    
-    return result;
-  }
-
-  /**
-   * @param parent
-   */
-  private void _addPatternSection(
-    Composite parent,
-    IWOLipsProject woLipsProject
-  ) {
-    Composite group = _createLabelledComposite(parent, BUILD_PARAMS_TITLE);
-    
-    Map args = woLipsProject.getBuilderAccessor().getBuilderArgs();
-    
-    group.setLayout (new GridLayout(2, false));
-
-    _resExcludes = _addTextField (group, "resource excludes");
-    _resExcludes.setText(_getArg(args, RES_EXCLUDES, RES_EXCLUDES_DEFAULT));
-    
-    _resIncludes = _addTextField (group, "resource includes");
-    _resIncludes.setText(_getArg(args, RES_INCLUDES, RES_INCLUDES_DEFAULT));
-
-    _wsresExcludes = _addTextField (group, "webserver resource excludes");
-    _wsresExcludes.setText(_getArg(args, WSRES_EXCLUDES, WSRES_EXCLUDES_DEFAULT));
-
-    _wsresIncludes = _addTextField (group, "webserver resource includes");
-    _wsresIncludes.setText(_getArg(args, WSRES_INCLUDES, WSRES_INCLUDES_DEFAULT));
-  }
-
-  /**
-   * @param parent
-   * @param woLipsProject
-   * @throws CoreException
-   */
-  private void _addTargetBuilderSection(
-	  Composite parent,
-	  IWOLipsProject woLipsProject
-)
-  throws CoreException
-{
-  Composite group = new Composite(parent, SWT.NONE);
-  GridLayout layout = new GridLayout();
-  layout.numColumns = 3;
-  group.setLayout(layout);
-  group.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
- 
-  _woTargetBuilderCheck = new Button(group, SWT.CHECK | SWT.LEFT);
-  _woTargetBuilderCheck.setText(WO_USE_TARGET_BUILDET_TITLE);
-  _woTargetBuilderCheck.setEnabled(true);
-
-  _woTargetBuilderCheck.setSelection(
-  woLipsProject.getNaturesAccessor().isTargetBuilderInstalled());
-  }
-
+		_resExcludes.setEnabled(enabled);
+		_resExcludes.setEditable(enabled);
+		
+		_resIncludes.setEnabled(enabled);
+		_wsresExcludes.setEnabled(enabled);
+		_wsresIncludes.setEnabled(enabled);
+		_principalClass.setEnabled(enabled);
+	}
+	
 	/**
 	 * @see PreferencePage#createContents(Composite)
 	 */
@@ -323,43 +333,73 @@ public class ProjectNaturePage
 		try {
 			IWOLipsProject woLipsProject = this.getWOLipsProject();
 			_addFirstSection(composite, woLipsProject);
-      // --
+			// --
 			_addBuildStyleSection(composite, woLipsProject);
-      // --
-      _addProjectKindSection(composite, woLipsProject);
-      // --
-      _addPatternSection(composite, woLipsProject);
-	  _addTargetBuilderSection(composite, woLipsProject);
+			// --
+			_addProjectKindSection(composite, woLipsProject);
+			// --
+			_addPatternSection(composite, woLipsProject);
+			_addTargetBuilderSection(composite, woLipsProject);
+			
+			_woIsIncrementalButton.addSelectionListener(new SelectionListener() {
+				public void widgetSelected(SelectionEvent e) {
+					enableWidgets(_woIsIncrementalButton.getSelection());
+				}
+				
+				public void widgetDefaultSelected(SelectionEvent e) {
+					enableWidgets(_woIsIncrementalButton.getSelection());
+				}
+			});
+			setDefaults(woLipsProject);
+			enableWidgets(_woIsIncrementalButton.getSelection());
 		} catch (CoreException exception) {
 			WOLipsLog.log(exception);
 		}
 		return composite;
 	}
-
+	
 	private Composite _createLabelledComposite(Composite parent, String label) {
-    Group composite = new Group(parent, SWT.NULL);
-    FormLayout layout = new FormLayout();
-    //layout.numColumns = 2;
-    layout.marginHeight = 5;
-    layout.marginWidth = 5;
-    composite.setLayout(layout);
-
-    GridData data = new GridData();
-    data.verticalAlignment = GridData.FILL;
-    data.horizontalAlignment = GridData.FILL;
-    composite.setLayoutData(data);
-    
-    if (null != label) {
-      composite.setText (label);
-    }
-
-    return composite;
-  }
-
+		Group composite = new Group(parent, SWT.NULL);
+		FormLayout layout = new FormLayout();
+		//layout.numColumns = 2;
+		layout.marginHeight = 5;
+		layout.marginWidth = 5;
+		composite.setLayout(layout);
+		
+		GridData data = new GridData();
+		data.verticalAlignment = GridData.FILL;
+		data.horizontalAlignment = GridData.FILL;
+		composite.setLayoutData(data);
+		
+		if (null != label) {
+			composite.setText (label);
+		}
+		
+		return composite;
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.eclipse.jface.preference.PreferencePage#performDefaults()
 	 */
 	protected void performDefaults() {
+		try {
+			setDefaults(getWOLipsProject());
+		} catch (CoreException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * 
+	 */
+	private void setDefaults(IWOLipsProject woLipsProject) {
+		Map args = woLipsProject.getBuilderAccessor().getBuilderArgs();
+		
+		_resExcludes.setText(_getArg(args, RES_EXCLUDES, RES_EXCLUDES_DEFAULT));
+		_resIncludes.setText(_getArg(args, RES_INCLUDES, RES_INCLUDES_DEFAULT));
+		_wsresExcludes.setText(_getArg(args, WSRES_EXCLUDES, WSRES_EXCLUDES_DEFAULT));
+		_wsresIncludes.setText(_getArg(args, WSRES_INCLUDES, WSRES_INCLUDES_DEFAULT));
+		_principalClass.setText(_getArg(args, NS_PRINCIPAL_CLASS, ""));
 	}
 
 	/* (non-Javadoc)
@@ -381,6 +421,7 @@ public class ProjectNaturePage
 					args.put(RES_INCLUDES, _resIncludes.getText());
 					args.put(WSRES_EXCLUDES, _wsresExcludes.getText());
 					args.put(WSRES_INCLUDES, _wsresIncludes.getText());
+					args.put(NS_PRINCIPAL_CLASS, _principalClass.getText());
 					
 					naturesAccessor.setIncrementalNature(_woIsFrameworkButton.getSelection(), args);
 					
@@ -400,14 +441,14 @@ public class ProjectNaturePage
 		finally {
 			woLipsProject = null;
 		}
-
+		
 		return true;
 	}
 	/**
 	 * @return IJavaProject
 	 * @throws CoreException
 	 */
-
+	
 	public IJavaProject _getJavaProject() throws CoreException {
 		IProject project =
 			(IProject) (this.getElement().getAdapter(IProject.class));
@@ -422,7 +463,7 @@ public class ProjectNaturePage
 			(IProject) (this.getElement().getAdapter(IProject.class));
 		return (project);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
 	 */
@@ -436,13 +477,16 @@ public class ProjectNaturePage
 	public IWOLipsProject getWOLipsProject() throws CoreException {
 		return WOLipsCore.createProject(this._getProject());
 	}
+	
 	private Button _woTargetBuilderCheck;
 	private Button _woNatureCheck;
 	private Button _woIsIncrementalButton;
 	private Button _woIsFrameworkButton;
-  
-  private Text _resExcludes;
-  private Text _resIncludes;
-  private Text _wsresExcludes;
-  private Text _wsresIncludes;
+	private Button _woIsApplicationButton;
+	
+	private Text _resExcludes;
+	private Text _resIncludes;
+	private Text _wsresExcludes;
+	private Text _wsresIncludes;
+	private Text _principalClass;
 }

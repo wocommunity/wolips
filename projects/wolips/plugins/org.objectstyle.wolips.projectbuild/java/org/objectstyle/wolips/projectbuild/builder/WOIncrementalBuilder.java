@@ -157,7 +157,10 @@ public class WOIncrementalBuilder
       } else {
         fullBuild = true;
       }
-      
+      _principalClass = _getArg(args, NS_PRINCIPAL_CLASS, "");
+      if(_principalClass.length() == 0) {
+      	_principalClass = null;
+      }
       if ((null != _buildVisitor) && !fullBuild) {
         monitor.subTask("checking directory structure ...");
         
@@ -302,10 +305,12 @@ public class WOIncrementalBuilder
     infoPlist = StringUtilities.replace (infoPlist, "$$res$$",      won.getResourceName().toString());
     infoPlist = StringUtilities.replace (infoPlist, "$$wsr$$",      won.getWebResourceName().toString());
     infoPlist = StringUtilities.replace (infoPlist, "$$type$$",     won.isFramework() ? "FMWK" : "APPL");
-    if ((null != customInfo) && customInfo.containsKey("NSPrincipalClass")) {
+    String principalClass = (_principalClass == null && customInfo != null) 
+		? (String)customInfo.get("NSPrincipalClass") : _principalClass;
+    if (principalClass != null) {
       String principal = 
           "  <key>NSPrincipalClass</key>" + "\r\n"
-        + "  <string>"+customInfo.get("NSPrincipalClass")+"</string>" + "\r\n"
+        + "  <string>"+principalClass+"</string>" + "\r\n"
       ;
       infoPlist = StringUtilities.replace (infoPlist, "$$principalclass$$", principal);
     }
@@ -839,14 +844,15 @@ public class WOIncrementalBuilder
 
     IStringMatcher _resMatcher;
     IStringMatcher _wsresMatcher;
-    
+     
     int count = 0;
     
     // key: IPath/destination, value: IResource/source
     private Map _destinations = new HashMap ();
   }
 
-
+  String _principalClass = null;
+  
 
   static final String INFO_PLIST_APPLICATION = 
 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\r\n"
