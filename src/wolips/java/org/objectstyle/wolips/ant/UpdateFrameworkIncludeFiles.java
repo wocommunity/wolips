@@ -120,12 +120,13 @@ public class UpdateFrameworkIncludeFiles extends UpdateIncludeFiles {
 		}
 
 		IFile currentFrameworkListFile;
-
-		for (int i = 0; i < ROOT_PATHS.length; i++) {
+		// use sorted root paths to ensure correct replacement of 
+		// classpath entries with framework entries
+		for (int i = 0; i < sortedRootPaths().length; i++) {
 
 			currentFrameworkListFile =
 				actualProject.getFile(
-					INCLUDES_FILE_PREFIX + "." + ROOT_PATHS[i]);
+					INCLUDES_FILE_PREFIX + "." + sortedRootPaths()[i]);
 
 			if (currentFrameworkListFile.exists()) {
 				// delete old include file
@@ -140,9 +141,9 @@ public class UpdateFrameworkIncludeFiles extends UpdateIncludeFiles {
 				}
 			}
 
-			if (project.getProperty(ROOT_PATHS[i]) == null) {
+			if (project.getProperty(sortedRootPaths()[i]) == null) {
 				System.out.println(
-					"Property " + ROOT_PATHS[i] + " doesn't exists");
+					"Property " + sortedRootPaths()[i] + " doesn't exists");
 				continue;
 			}
 
@@ -157,7 +158,8 @@ public class UpdateFrameworkIncludeFiles extends UpdateIncludeFiles {
 					resolvedEntry =
 						classpathEntryToFrameworkEntry(
 							classPaths[j],
-							new Path(project.getProperty(ROOT_PATHS[i])));
+							new Path(
+								project.getProperty(sortedRootPaths()[i])));
 
 					if (resolvedEntry != null
 						&& !resolvedEntries.contains(classPaths[j])) {

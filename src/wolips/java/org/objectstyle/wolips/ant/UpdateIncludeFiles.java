@@ -55,9 +55,12 @@
  */
 package org.objectstyle.wolips.ant;
 
+import java.util.TreeMap;
+
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.Path;
 
 /**
  * @author mnolte
@@ -68,6 +71,8 @@ public abstract class UpdateIncludeFiles extends Task {
 	protected static final String[] ROOT_PATHS =
 		{ "user.home", "wo.wolocalroot", "wo.woroot" };
 
+	private static String[] sortedRootPaths;
+
 	protected String INCLUDES_FILE_PREFIX;
 
 	private String projectName;
@@ -76,6 +81,42 @@ public abstract class UpdateIncludeFiles extends Task {
 	protected abstract void buildIncludeFiles() throws BuildException;
 
 	protected abstract void validateAttributes() throws BuildException;
+
+	/**
+	 * Method sortedRootPaths. Array of root path keys ordered by the
+	 * segmentCount of the underlying <code>Path</code>
+	 * @return String[]
+	 */
+	protected String[] sortedRootPaths() {
+		// IMPROVE ME this poor algorithm is as result of the programmer's bad cold
+		if (sortedRootPaths == null) {
+			TreeMap map = new TreeMap();
+			Path currentRootPath = null;
+			int offSet = 0;
+			for (int i = 0; i < ROOT_PATHS.length; i++) {
+				currentRootPath = new Path(project.getProperty(ROOT_PATHS[i]));
+				if (map
+					.get(
+						new Integer(
+							currentRootPath.segmentCount() * 10 + offSet))
+					!= null) {
+					offSet++;
+				}
+				map.put(
+					new Integer(currentRootPath.segmentCount() * 10 + offSet),
+					ROOT_PATHS[i]);
+
+			}
+			sortedRootPaths = new String[ROOT_PATHS.length];
+			int sortedIndex = 0;
+			while (map.size() > 0) {
+				sortedRootPaths[sortedIndex++] =
+					(String) map.get(map.lastKey());
+				map.remove(map.lastKey());
+			}
+		}
+		return sortedRootPaths;
+	}
 
 	/**
 	 * Returns the projectName.
