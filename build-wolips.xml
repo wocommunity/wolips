@@ -10,13 +10,14 @@
     <property environment="env"/>
     <property name="output" value="output"/>
     <property name="next.root" value="${env.NEXT_ROOT}"/>
+    <property name="wolips.project.version" value="0.8.5"/>
     
     <!-- ============================================= -->
     <!-- Derived Properties.                           -->
     <!-- ============================================= -->
     <property name="build" value="${output}/build"/>
-    <property name="wolips-name" value="com.objectstyle.woproject.wolips-${project.version}"/>
-    <property name="dist-wolips" value="${dist.base}/${wolips-name}"/>
+    <property name="wolips.name" value="com.objectstyle.wolips_${wolips.project.version}"/>
+    <property name="wolips.dist" value="${dist.base}/${wolips.name}"/>
     <!-- main distribution. -->
     <property name="dist" value="${dist.base}/${project.name}-${project.version}"/>
 
@@ -55,7 +56,7 @@
             <classpath refid="classpath"/>
         </javac>
          
-        <jar jarfile="${dist-wolips}/lib/${project.name}-wolips.jar">
+        <jar jarfile="${wolips.dist}/lib/wolips.jar">
             <fileset dir="${build}/wolips"/>
             <fileset dir="src/wolips/java">
           	    <include name="**/*.properties"/>
@@ -66,7 +67,7 @@
         </jar>
         
         <!-- Copy WOProject JAR's -->
-        <copy todir="${dist-wolips}/lib">
+        <copy todir="${wolips.dist}/lib">
              <fileset dir="${dist}/lib">
              	<exclude name="junit.jar"/>
              	<exclude name="ant.jar"/>
@@ -77,11 +78,11 @@
 
     <target name="dist" depends="prepare,java,doc,api">
          <!-- Copy source code -->
-         <copy todir="${dist-wolips}/src">
+         <copy todir="${wolips.dist}/src">
              <fileset dir="src/wolips/java"/>
          </copy>
          
-         <copy todir="${dist-wolips}">
+         <copy todir="${wolips.dist}">
              <fileset dir="src/wolips">
              	<exclude name="**/java/**"/>
              	<exclude name="**/lib/**"/>
@@ -93,14 +94,14 @@
          </copy>
          
 	     <!-- make wolips dist -->
-         <tar tarfile="${dist-wolips}.tar">
-             <tarfileset dir="${dist-wolips}">
+         <tar tarfile="${wolips.dist}.tar">
+             <tarfileset dir="${wolips.dist}">
             </tarfileset>
          </tar>
          
-         <gzip src="${dist-wolips}.tar"
-              zipfile="${dist-wolips}.tar.gz"/>
-         <delete file="${dist-wolips}.tar"/>
+         <gzip src="${wolips.dist}.tar"
+              zipfile="${wolips.dist}.tar.gz"/>
+         <delete file="${wolips.dist}.tar"/>
     </target>
          
          
@@ -110,8 +111,8 @@
     <!-- ============================================= -->
     <target name="prepare" depends="defineClasspath">
         <mkdir dir="${build}/wolips"/>
-        <mkdir dir="${dist-wolips}/lib"/>
-        <mkdir dir="${dist-wolips}/doc/api"/>
+        <mkdir dir="${wolips.dist}/lib"/>
+        <mkdir dir="${wolips.dist}/doc/api"/>
     </target>
 
 
@@ -120,7 +121,7 @@
     <!-- ============================================= -->
     <target name="clean">
         <delete dir="${build}/wolips"/>
-        <delete dir="${dist-wolips}"/>
+        <delete dir="${wolips.dist}"/>
     </target>
     
     
@@ -133,14 +134,14 @@
 
          <!-- copy all but HTML -->
          <copy todir="${deploy.web}/woproject">
-             <fileset dir="${dist-wolips}/doc">
+             <fileset dir="${wolips.dist}/doc">
              	<exclude name="**/*.html"/>
              </fileset>
          </copy>
 
          <!-- do replacement in HTML files -->
          <copy todir="${deploy.web}/woproject" overwrite="true">
-             <fileset dir="${dist-wolips}/doc">
+             <fileset dir="${wolips.dist}/doc">
              	<include name="**/*.html"/>
              </fileset>
 
@@ -155,7 +156,7 @@
     <!-- Builds API documenatation.                 -->
     <!-- ========================================== -->
     <target name="api" depends="prepare">
-        <copy todir="${dist-wolips}/doc">
+        <copy todir="${wolips.dist}/doc">
             <fileset dir="doc">
                 <include name="**/LICENSE*"/>
             </fileset>
@@ -163,7 +164,7 @@
 
         <javadoc   packagenames="org.objectstyle.wolips.*"
                    defaultexcludes="yes"
-                   destdir="${dist-wolips}/doc/api"
+                   destdir="${wolips.dist}/doc/api"
                    author="true"
                    version="true"
                    use="true"
@@ -181,7 +182,7 @@
     
     <target name="doc" depends="prepare">
         <!-- copy all licenses inclusing ours -->
-        <copy todir="${dist-wolips}/doc">
+        <copy todir="${wolips.dist}/doc">
             <fileset dir="doc">
                <include name="LICENSE*"/>
             </fileset>
@@ -202,7 +203,7 @@
         </anakia>
         
        <!-- Build site in Plugin docs directory -->
-        <anakia basedir="src/wolips/xdocs/wolips" destdir="${dist-wolips}/doc"
+        <anakia basedir="src/wolips/xdocs/wolips" destdir="${wolips.dist}/doc"
              extension=".html" style="wolips.vsl"
              excludes="**/stylesheets/**"
              includes="**/*.xml"
@@ -219,7 +220,7 @@
                 <include name="**/*.css"/>
             </fileset>
         </copy>
-        <copy todir="${dist-wolips}/doc/images/wolips" filtering="no">
+        <copy todir="${wolips.dist}/doc/images/wolips" filtering="no">
             <fileset dir="src/wolips/xdocs/images">
                 <include name="**/*.gif"/>
                 <include name="**/*.jpeg"/>
