@@ -5,7 +5,7 @@
    name="WOLips Project Build"
    version="1.0.6"
    provider-name="objectstyle.org"
-   class="org.objectstyle.wolips.plugin.ProjectBuildPlugin">
+   class="org.objectstyle.wolips.projectbuild.ProjectBuildPlugin">
 
    <runtime>
       <library name="lib/wolips-projectbuild.jar">
