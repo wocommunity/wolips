@@ -74,8 +74,8 @@
    </license>
 
    <url>
-      <update label="WOLips" url="http://woproject.sourceforge.net/update/"/>
-      <discovery label="WOLips" url="http://woproject.sourceforge.net/update/"/>
+      <update label="WOLips" url="http://www.objectstyle.org/woproject/update/"/>
+      <discovery label="WOLips" url="http://www.objectstyle.org/woproject/update/"/>
    </url>
 
    <requires>
