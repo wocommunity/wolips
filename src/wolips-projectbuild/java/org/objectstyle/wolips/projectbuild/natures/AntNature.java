@@ -75,7 +75,6 @@ import org.eclipse.ui.PlatformUI;
 import org.objectstyle.wolips.core.project.WOLipsProject;
 import org.objectstyle.wolips.projectbuild.WOProjectBuildConstants;
 
-
 /**
  * @author mnolte
  *
@@ -92,20 +91,23 @@ public class AntNature implements IProjectNature, WOProjectBuildConstants {
 	/**
 	  * @see org.eclipse.core.resources.IProjectNature#configure()
 	  */
-	 public void configure() throws CoreException {
-     // moved to WOLipsProject.NatureAccessor.setAntNature
-//	 	WOLipsProject woLipsProject = new WOLipsProject(this.getProject());
-//	 	if(!woLipsProject.getBuilderAccessor().isBuilderInstalled(ANT_BUILDER_ID))
-//		woLipsProject.getBuilderAccessor().installBuilder(ANT_BUILDER_ID);
+	public void configure() throws CoreException {
+		WOLipsProject woLipsProject = new WOLipsProject(this.getProject());
+		if (!woLipsProject
+			.getBuilderAccessor()
+			.isBuilderInstalled(ANT_BUILDER_ID))
+			woLipsProject.getBuilderAccessor().installBuilder(ANT_BUILDER_ID);
 	}
 
-	 /**
-	  * @see org.eclipse.core.resources.IProjectNature#deconfigure()
-	  */
-	 public void deconfigure() throws CoreException {
+	/**
+	 * @see org.eclipse.core.resources.IProjectNature#deconfigure()
+	 */
+	public void deconfigure() throws CoreException {
 		WOLipsProject woLipsProject = new WOLipsProject(this.getProject());
-		if(woLipsProject.getBuilderAccessor().isBuilderInstalled(ANT_BUILDER_ID))
-		woLipsProject.getBuilderAccessor().removeBuilder(ANT_BUILDER_ID);
+		if (woLipsProject
+			.getBuilderAccessor()
+			.isBuilderInstalled(ANT_BUILDER_ID))
+			woLipsProject.getBuilderAccessor().removeBuilder(ANT_BUILDER_ID);
 	}
 	/**
 	 * @see org.eclipse.core.resources.IProjectNature#getProject()
@@ -121,72 +123,78 @@ public class AntNature implements IProjectNature, WOProjectBuildConstants {
 		this.project = project;
 	}
 	public static String getNature(boolean isFramework) {
-		if(isFramework)
-		return ANT_FRAMEWORK_NATURE_ID;
+		if (isFramework)
+			return ANT_FRAMEWORK_NATURE_ID;
 		return ANT_APPLICATION_NATURE_ID;
 	}
-	
-	public static void s_addToProject (IProject project, boolean isFramework) throws CoreException {
-	  IProjectDescription desc = project.getDescription();
-    
-	  String natures_array[] = desc.getNatureIds();
-      List natures = new ArrayList(Arrays.asList(natures_array));
-	  if (!natures.contains(getNature(isFramework))) {
-		natures.add (getNature(isFramework));
-		natures_array = (String[])natures.toArray(new String[natures.size()]);
-		desc.setNatureIds(natures_array);
-		s_setDescription (project, desc);
-	  }
-	}
-  
-	public static void s_removeFromProject (IProject project, boolean isFramework) throws CoreException {
-	  IProjectDescription desc = project.getDescription();
-    
-	  String natures_array[] = desc.getNatureIds();
-    
-	  List natures = new ArrayList(Arrays.asList(natures_array));
-    
-	  if (natures.contains(getNature(isFramework))) {
-		natures.remove (getNature(isFramework));
-		natures_array = (String[])natures.toArray(new String[natures.size()]);
-		desc.setNatureIds(natures_array);
-		s_setDescription (project, desc);
-	  }
+
+	public static void s_addToProject(IProject project, boolean isFramework)
+		throws CoreException {
+		IProjectDescription desc = project.getDescription();
+
+		String natures_array[] = desc.getNatureIds();
+		List natures = new ArrayList(Arrays.asList(natures_array));
+		if (!natures.contains(getNature(isFramework))) {
+			natures.add(getNature(isFramework));
+			natures_array =
+				(String[]) natures.toArray(new String[natures.size()]);
+			desc.setNatureIds(natures_array);
+			s_setDescription(project, desc);
+		}
 	}
 
-	private static void s_setDescription (final IProject f_project, final IProjectDescription f_desc) {
-	  s_showProgress(
-		new IRunnableWithProgress () {
-		  public void run(IProgressMonitor pm) {
-			try {
-			  f_project.setDescription(f_desc, pm);
-			} catch (CoreException up) {
-			  pm.done();
-			}
-		  }
+	public static void s_removeFromProject(
+		IProject project,
+		boolean isFramework)
+		throws CoreException {
+		IProjectDescription desc = project.getDescription();
+
+		String natures_array[] = desc.getNatureIds();
+
+		List natures = new ArrayList(Arrays.asList(natures_array));
+
+		if (natures.contains(getNature(isFramework))) {
+			natures.remove(getNature(isFramework));
+			natures_array =
+				(String[]) natures.toArray(new String[natures.size()]);
+			desc.setNatureIds(natures_array);
+			s_setDescription(project, desc);
 		}
-	  );
 	}
-	public static void  s_showProgress(IRunnableWithProgress rwp) {
-	  IWorkbench workbench = PlatformUI.getWorkbench();
-	  Shell shell = null;
-	  if (null != workbench) {
-		IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-		if (null != window) {
-		  shell = window.getShell();
+
+	private static void s_setDescription(
+		final IProject f_project,
+		final IProjectDescription f_desc) {
+		s_showProgress(new IRunnableWithProgress() {
+			public void run(IProgressMonitor pm) {
+				try {
+					f_project.setDescription(f_desc, pm);
+				} catch (CoreException up) {
+					pm.done();
+				}
+			}
+		});
+	}
+	public static void s_showProgress(IRunnableWithProgress rwp) {
+		IWorkbench workbench = PlatformUI.getWorkbench();
+		Shell shell = null;
+		if (null != workbench) {
+			IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+			if (null != window) {
+				shell = window.getShell();
+			}
 		}
-	  }
-    
-	  ProgressMonitorDialog pmd = new ProgressMonitorDialog(shell);
-    
-	  try {
-		pmd.run (true, true, rwp);
-	  } catch (InvocationTargetException e) {
-		// handle exception
-		e.printStackTrace ();
-	  } catch (InterruptedException e) {
-		// handle cancelation
-		e.printStackTrace ();
-	  }
+
+		ProgressMonitorDialog pmd = new ProgressMonitorDialog(shell);
+
+		try {
+			pmd.run(true, true, rwp);
+		} catch (InvocationTargetException e) {
+			// handle exception
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// handle cancelation
+			e.printStackTrace();
+		}
 	}
 }
