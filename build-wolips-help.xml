@@ -57,6 +57,7 @@
              	<exclude name="**/docs/**"/>
              	<exclude name=".project"/>
              	<exclude name=".classpath"/>
+             	<exclude name="build.properties"/>
              </fileset>
          </copy>
          

@@ -68,6 +68,7 @@
             <fileset dir="src/wolips-source">
         	<exclude name=".project"/>
 		<exclude name=".classpath"/>
+		<exclude name="build.properties"/>
             </fileset>
         </copy>
   

@@ -82,6 +82,7 @@
              	<exclude name=".project"/>
              	<exclude name=".classpath"/>
              	<exclude name="*.html"/>
+             	<exclude name="todo.txt"/>
              </fileset>
          </copy>
          
