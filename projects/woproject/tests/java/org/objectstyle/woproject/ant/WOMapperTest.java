@@ -75,7 +75,7 @@ public class WOMapperTest extends TestCase {
 
 	public void setUp() throws Exception {
 		super.setUp();
-		mapper = new WOMapper(null).getImplementation();
+		mapper = new WOMapper(null, null).getImplementation();
 	}
 
 	public void testOtherResource() throws Exception {
