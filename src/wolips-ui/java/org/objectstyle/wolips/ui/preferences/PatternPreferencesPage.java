@@ -60,6 +60,7 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.PreferencePage;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -228,10 +229,10 @@ public abstract class PatternPreferencesPage
 		}
 	}
 
-	private void addIgnore() {
+	void addIgnore() {
 		InputDialog dialog = new InputDialog(getShell(), PreferencesMessages.getString("PatternPreferencesPage.enterPatternShort"), Preferences.getString("IgnorePreferencePage.enterPatternLong"), null, null); //$NON-NLS-1$ //$NON-NLS-2$
 		dialog.open();
-		if (dialog.getReturnCode() != InputDialog.OK)
+		if (dialog.getReturnCode() != Window.OK)
 			return;
 		String pattern = dialog.getValue();
 		if (pattern.equals(""))
@@ -249,11 +250,11 @@ public abstract class PatternPreferencesPage
 		//item.setChecked(true);
 	}
 
-	private void removeIgnore() {
+	void removeIgnore() {
 		int[] selection = includeTable.getSelectionIndices();
 		includeTable.remove(selection);
 	}
-	private void handleSelection() {
+	void handleSelection() {
 		if (includeTable.getSelectionCount() > 0) {
 			removeButton.setEnabled(true);
 		} else {

@@ -124,8 +124,6 @@ public class TargetBuilderNature implements IProjectNature
 	{
 		Map targetMap;
 
-		IJavaProject javaProject = javaProject();
-
 		_buildTargets = new ArrayList();
 		File targetFile = filePath().toFile();
 		try
@@ -197,7 +195,6 @@ public class TargetBuilderNature implements IProjectNature
 		// for the project, such as adding a builder
 		// to a project's build spec.*/
 		IProject project = getProject();
-		IJavaProject javaProject = JavaCore.create(project);
 		WOLipsProject woLipsProject = new WOLipsProject(project);
 		installPosition = woLipsProject.getBuilderAccessor().positionForBuilder("org.eclipse.jdt.core.javabuilder");
 		if(installPosition == WOLipsProject.BuilderAccessor.BuilderNotFound)

@@ -152,7 +152,6 @@ public class TargetBuilderPersistenceStore implements ISaveParticipant, IResourc
 
 	protected void writeImportantState(File target) throws CoreException
 	{
-		TargetBuilderPlugin pluginInstance = TargetBuilderPlugin.getDefault();
 		try
 		{
 			DataOutputStream out = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(target)));
@@ -182,7 +181,6 @@ public class TargetBuilderPersistenceStore implements ISaveParticipant, IResourc
 
 	protected void readStateFrom(File target)
 	{
-		TargetBuilderPlugin pluginInstance = TargetBuilderPlugin.getDefault();
 		try
 		{
 			DataInputStream in = new DataInputStream(new BufferedInputStream(new FileInputStream(target)));

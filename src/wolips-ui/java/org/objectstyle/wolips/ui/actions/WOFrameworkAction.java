@@ -207,7 +207,7 @@ public class WOFrameworkAction extends ActionOnIProject {
 			}
 
 			protected void okPressed() {
-				TableItem[] items = (TableItem[]) includeTable.getItems();
+				TableItem[] items = includeTable.getItems();
 				ArrayList arrayList = new ArrayList();
 				for (int i = 0; i < items.length; i++) {
 					TableItem item = items[i];

@@ -129,7 +129,7 @@ public class ActionOnIResource extends AWOLips implements IObjectActionDelegate 
 			project = actionResource.getProject();
 		}
 		if (obj != null && obj instanceof ICompilationUnit) {
-			actionResource = (IResource) ((ICompilationUnit) obj).getResource();
+			actionResource = ((ICompilationUnit) obj).getResource();
 			project = actionResource.getProject();
 		}
 		if (obj != null && obj instanceof IProject) {

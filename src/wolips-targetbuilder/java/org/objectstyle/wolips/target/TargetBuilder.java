@@ -94,15 +94,6 @@ public class TargetBuilder extends JavaBuilder
 		super();
 	}
 
-	private boolean isResourceTargetMember(IResource resource) throws JavaModelException
-	{
-		IProject project = getProject();
-		IJavaProject javaProject = JavaCore.create(project);
-		if (javaProject.findElement(new Path(resource.getName())) == null)
-			return false;
-		return true;
-	}
-
 	private void cancelBuildOnErrors(IJavaProject javaProject) throws CoreException
 	{
 		Integer severityError = new Integer(IMarker.SEVERITY_ERROR);
