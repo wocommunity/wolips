@@ -279,25 +279,28 @@ public class PBIndex extends Task {
 		return files;
 	}
 	
-	/** Loads extra frameworks and inserts their /Library/Frameworks-relative paths. */
-	protected void extractFrameworks(PBProject proj) {
-		List projectFrameworkPaths = proj.getFrameworks();
-		
-		Iterator it = frameworkSets.iterator();
-		while(it.hasNext()) {
-			FrameworkSet fs = (FrameworkSet) it.next();
-			String[] frameworkSubPaths = fs.getDirectoryScanner(
-				fs.getProject()).getIncludedDirectories();
-			for(int i = 0; i < frameworkSubPaths.length; i++ ) {
-				File aFramework = new File( fs.getDir(fs.getProject()),
-					frameworkSubPaths[i] );
-				//projectFrameworkPaths.add( "../.."+framework );*/
-				projectFrameworkPaths.add( aFramework.getName() );
-			}
-		}
-		
-		proj.setFrameworks( projectFrameworkPaths );
-	}
+	/** 
+     * Loads extra frameworks and inserts their /Library/Frameworks-relative paths. 
+     */
+    protected void extractFrameworks(PBProject proj) {
+        List projectFrameworkPaths = proj.getFrameworks();
+
+        Iterator it = frameworkSets.iterator();
+        while (it.hasNext()) {
+            FrameworkSet fs = (FrameworkSet) it.next();
+            File baseDir = fs.getDir(fs.getProject());
+            String[] frameworkSubPaths =
+                fs.getDirectoryScanner(fs.getProject()).getIncludedDirectories();
+            for (int i = 0; i < frameworkSubPaths.length; i++) {
+                File aFramework = new File(baseDir, frameworkSubPaths[i]);
+
+                if (!projectFrameworkPaths.contains(aFramework.getName())) {
+                    // modifying the original list
+                    projectFrameworkPaths.add(aFramework.getName());
+                }
+            }
+        }
+    }
 
 	/** Replaces back slashes with forward slashes */
 	protected String fixPath(String path) {
