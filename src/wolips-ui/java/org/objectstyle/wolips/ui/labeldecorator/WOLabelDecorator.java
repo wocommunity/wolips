@@ -153,7 +153,19 @@ public class WOLabelDecorator
 			return componentImage(image);
 		if (EXT_EOMODEL.equals(aString))
 			return eomodelImage(image);
-		if (EXT_FRAMEWORK.equals(aString) || EXT_WOA.equals(aString))
+		if (EXT_FRAMEWORK.equals(aString) || EXT_WOA.equals(aString) || EXT_BUILD.equals(aString) || EXT_DIST.equals(aString))
+			return buildImage(image);
+		return image;
+	}
+	
+	/**
+	 * Method imageForName.
+	 * @param image
+	 * @param aString
+	 * @return Image
+	 */
+	private Image imageForName(Image image, String aString) {
+		if (EXT_BUILD.equals(aString) || EXT_DIST.equals(aString))
 			return buildImage(image);
 		return image;
 	}
@@ -165,9 +177,11 @@ public class WOLabelDecorator
 			return image;
 		if (!WOLipsProject.isWOProjectResource((IResource) element))
 			return image;
-		//TODO: avoid memory leak
 		String extension = ((IFolder) element).getFileExtension();
+		if(extension != null && extension.length() > 0)
 		return this.imageForExtension(image, extension);
+		extension = ((IFolder) element).getName();
+		return this.imageForName(image, extension);
 	}
 	/**
 	 * @see org.eclipse.jface.viewers.ILabelDecorator#decorateText(String, Object)

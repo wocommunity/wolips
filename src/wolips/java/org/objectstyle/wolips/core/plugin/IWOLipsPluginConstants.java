@@ -112,6 +112,7 @@ public interface IWOLipsPluginConstants {
 	public static final String EXT_FRAMEWORK = "framework";
 	public static final String EXT_WOA = "woa";
 	public static final String EXT_BUILD = "build";
+	public static final String EXT_DIST = "dist";
 	// webobjects project file lists
 	public static final String RESOURCES_ID = "WOAPP_RESOURCES";
 	public static final String CLASSES_ID = "CLASSES";

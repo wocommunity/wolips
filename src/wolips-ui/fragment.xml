@@ -156,6 +156,38 @@
             launcher="org.objectstyle.wolips.ui.editor.OpenSystemEditor"
             id="org.objectstyle.wolips.external.d2w.model">
       </editor>
+      <editor
+            name="GraphicEditor"
+            default="true"
+            icon="icons/files/icns.gif"
+            extensions="icns"
+            launcher="org.objectstyle.wolips.ui.editor.OpenSystemEditor"
+            id="org.objectstyle.wolips.ui.icns">
+      </editor>
+      <editor
+           id ="org.objectstyle.wolips.ui.DefaultMakefileEditor"
+           icon="icons/files/text_file.gif"
+           name="MakefileEditor"
+           extensions="Makefile,postamble,preamble"
+           class="org.eclipse.ui.editors.text.TextEditor"
+           contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor">     
+      </editor>
+      <editor
+           id ="org.objectstyle.wolips.ui.DefaultPropertyListEditor"
+           icon="icons/files/text_file.gif"
+           name="PropertyListEditor"
+           extensions="plist"
+           class="org.eclipse.ui.editors.text.TextEditor"
+           contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor">     
+      </editor>
+      <editor
+           id ="org.objectstyle.wolips.ui.DefaultAntIncludesFileEditor"
+           icon="icons/files/ant_buildfile.gif"
+           name="AntIncludesFileEditor"
+           extensions="home,wosystemroot,wolocalroot"
+           class="org.eclipse.ui.editors.text.TextEditor"
+           contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor">     
+      </editor>
    </extension>
 <!-- =================================================================================== -->
 <!-- Extension: Perspective                                                              -->
@@ -313,4 +345,5 @@
          </action>
       </actionSet>
    </extension>
+   
 </fragment>
