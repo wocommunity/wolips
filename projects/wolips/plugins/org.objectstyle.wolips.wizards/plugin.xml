@@ -25,6 +25,7 @@
       <import plugin="org.objectstyle.wolips.datasets"/>
       <import plugin="org.objectstyle.wolips.commons"/>
       <import plugin="org.objectstyle.wolips.workbenchutilities"/>
+      <import plugin="org.objectstyle.wolips.ant"/>
    </requires>
 
 
@@ -90,6 +91,18 @@
          </description>
       </wizard>
       <wizard
+            name="Subproject"
+            icon="icons/woproject/wosubproject_wiz.gif"
+            category="org.objectstyle.wolips.wizards"
+            class="org.objectstyle.wolips.wizards.WOSubprojectCreationWizard"
+            id="org.objectstyle.wolips.wizards.new.wo.5.1.subproject">
+         <description>
+         </description>
+         <selection
+               class="org.eclipse.core.resources.IResource">
+         </selection>
+      </wizard>
+      <wizard
             name="EOModel"
             icon="icons/woproject/eomodel_wiz.gif"
             category="org.objectstyle.wolips.wizards"
@@ -127,6 +140,14 @@
                tooltip="Opens the WOComponent wizard"
                toolbarPath="Normal/WOLipsWizards"
                id="org.objectstyle.wolips.wizards.actions.OpenWOComponentWizard">
+         </action>
+         <action
+               label="WOSubproject"
+               icon="icons/woproject/wosubproject_wiz.gif"
+               class="org.objectstyle.wolips.wizards.actions.OpenWOSubprojectCreationWizard"
+               tooltip="Opens the WOSubproject wizard"
+               toolbarPath="Normal/WOLipsWizards"
+               id="org.objectstyle.wolips.wizards.actions.OpenWOSubprojectCreationWizard">
          </action>
          <action
                label="Jar Project"
@@ -177,7 +198,7 @@
                class="org.objectstyle.wolips.wizards.actions.UpgradeBuildXML"
                menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group4"
                enablesFor="1"
-               id="oorg.objectstyle.wolips.wizards.actions.UpgradeBuildXML">
+               id="org.objectstyle.wolips.wizards.actions.UpgradeBuildXML">
          </action>
       </objectContribution>
    </extension>

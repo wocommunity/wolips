@@ -62,6 +62,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
@@ -113,18 +114,21 @@ public class WOComponentCreationPage extends WizardNewWOResourcePage {
 				.getString("WOComponentCreationPage.creationOptions.title"));
 		group.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
 				| GridData.HORIZONTAL_ALIGN_FILL));
+		Composite row = new Composite(group, SWT.NONE);
+		RowLayout rowLayout = new RowLayout();
+		row.setLayout(rowLayout);
 		// section generation checkboxes
-		bodyCheckbox = new Button(group, SWT.CHECK);
+		bodyCheckbox = new Button(row, SWT.CHECK);
 		bodyCheckbox.setText(Messages
 				.getString("WOComponentCreationPage.creationOptions.bodyTag"));
 		bodyCheckbox.setSelection(true);
 		bodyCheckbox.addListener(SWT.Selection, this);
-		wooCheckbox = new Button(group, SWT.CHECK);
+		wooCheckbox = new Button(row, SWT.CHECK);
 		wooCheckbox.setText(Messages
 				.getString("WOComponentCreationPage.creationOptions.wooFile"));
 		wooCheckbox.setSelection(true);
 		wooCheckbox.addListener(SWT.Selection, this);
-		apiCheckbox = new Button(group, SWT.CHECK);
+		apiCheckbox = new Button(row, SWT.CHECK);
 		apiCheckbox.setText(Messages
 				.getString("WOComponentCreationPage.creationOptions.apiFile"));
 		apiCheckbox.setSelection(true);

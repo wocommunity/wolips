@@ -67,6 +67,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
@@ -175,6 +176,9 @@ public class EOModelCreationPage extends WizardNewWOResourcePage {
 	 * @param group
 	 */
 	private void createAvailableAdaptorButtons(Group group) {
+		Composite row = new Composite(group, SWT.NONE);
+		RowLayout rowLayout = new RowLayout();
+		row.setLayout(rowLayout);
 		File systemFrameworkDir = new File(VariablesPlugin.getDefault().getSystemRoot().append("Library").append("Frameworks").toOSString());
 		AdaptorFilter adaptorFilter = new AdaptorFilter();
 		systemFrameworkDir.listFiles(adaptorFilter);
@@ -183,13 +187,13 @@ public class EOModelCreationPage extends WizardNewWOResourcePage {
 		Button currentAdaptorButton;
 		String buttonText;
 		// add none adaptor entry
-		currentAdaptorButton = new Button(group, SWT.RADIO);
+		currentAdaptorButton = new Button(row, SWT.RADIO);
 		buttonText = "None";
 		currentAdaptorButton.setText(buttonText);
 		currentAdaptorButton.setSelection(true);
 		availableAdaptors.put(currentAdaptorButton, "None");
 		for (int i = 0; i < adaptorFilter.getAdaptorNames().size(); i++) {
-			currentAdaptorButton = new Button(group, SWT.RADIO);
+			currentAdaptorButton = new Button(row, SWT.RADIO);
 			buttonText = (String) adaptorFilter.getAdaptorNames().elementAt(i);
 			currentAdaptorButton.setText(buttonText);
 			availableAdaptors.put(currentAdaptorButton, buttonText);
