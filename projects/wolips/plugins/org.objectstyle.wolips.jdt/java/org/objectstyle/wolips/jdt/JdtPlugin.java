@@ -143,7 +143,7 @@ public class JdtPlugin extends AbstractUIPlugin {
 		}
 	}
 	/**
-	 * Returns the plugin's resource bundle,
+	 * @return Returns the plugin's resource bundle,
 	 */
 	public ResourceBundle getResourceBundle() {
 		return resourceBundle;

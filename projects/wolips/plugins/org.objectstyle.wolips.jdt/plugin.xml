@@ -60,8 +60,8 @@
         		id="org.objectstyle.wolips.jdt.ui.templates.action">
         		<pattern>
         		public ${return_type} ${name}() {
-				${return_type} page = (${return_type})this.pageWithName(${return_type}.class.getName());
-				${cursor}
+			${return_type} page = (${return_type})this.pageWithName(${return_type}.class.getName());
+			${cursor}
 			return page;
 			}
 			</pattern>
@@ -77,8 +77,52 @@
         		${cursor}
 			return (${primary_type_name})this.context().page();
 			}
-			</pattern>${primary_type_name}
+			</pattern>
+		</template>
+		<template
+    			name="ec session default"
+        		icon="icons/template.gif"
+        		description="editing context from the session"
+        		contextTypeId="java"
+        		id="org.objectstyle.wolips.jdt.ui.templates.ec.session">
+        		<pattern>
+        		EOEditingContext ${name} = session().defaultEditingContext();
+        		${cursor}
+			</pattern>
+		</template>
+		<template
+    			name="ec new"
+        		icon="icons/template.gif"
+        		description="new editing context"
+        		contextTypeId="java"
+        		id="org.objectstyle.wolips.jdt.ui.templates.ec.new">
+        		<pattern>
+        		EOEditingContext ${name} = new EOEditingContext();
+        		${cursor}
+			</pattern>
+		</template>
+		<template
+    			name="new nsarray string"
+        		icon="icons/template.gif"
+        		description="new NSArray inititialised with a String array"
+        		contextTypeId="java"
+        		id="org.objectstyle.wolips.jdt.ui.templates.nsarray.string">
+        		<pattern>
+        		NSArray ${name} = new NSArray( new String[${cursor}]);
+        		${cursor}
+			</pattern>
+		</template>
+		<template
+    			name="new nsarray int"
+        		icon="icons/template.gif"
+        		description="new NSArray inititialised with an int array"
+        		contextTypeId="java"
+        		id="org.objectstyle.wolips.jdt.ui.templates.nsarray.int">
+        		<pattern>
+        		NSArray ${name} = new NSArray( new int[${cursor}]);
+        		${cursor}
+			</pattern>
 		</template>
 	</extension>
-
+  
 </plugin>
