@@ -271,32 +271,6 @@
                id="org.objectstyle.wolips.actions.DeleteComponentAction">
          </action>
       </objectContribution>
-      <objectContribution
-            objectClass="org.eclipse.core.resources.IFile"
-            adaptable="true"
-            nameFilter="*.eomodeld"
-            id="org.objectstyle.wolips.actions.EnableEOGeneration">
-         <action
-               label="%WOLips.PopupMenu.EnableEOGeneration.label"
-              class="org.objectstyle.wolips.core.actions.EnableEOGeneration"
-               menubarPath="additions"
-               enablesFor="1"
-               id="org.objectstyle.wolips.actions.EnableEOGeneration">
-         </action>
-      </objectContribution>
-      <objectContribution
-            objectClass="org.eclipse.core.resources.IContainer"
-            adaptable="true"
-            nameFilter="*.eomodeld"
-            id="org.objectstyle.wolips.actions.EnableEOGeneration">
-         <action
-               label="%WOLips.PopupMenu.EnableEOGeneration.label"
-               class="org.objectstyle.wolips.core.actions.EnableEOGeneration"
-               menubarPath="additions"
-               enablesFor="1"
-               id="org.objectstyle.wolips.actions.EnableEOGeneration">
-         </action>
-      </objectContribution>
    </extension>
 <!-- =================================================================================== -->
 <!-- Extension: Editors                                                                  -->

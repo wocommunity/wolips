@@ -3,6 +3,7 @@
 	<name>wolips</name>
 	<comment></comment>
 	<projects>
+		<project>org.eclipse.ant.core</project>
 		<project>wolips-feature</project>
 	</projects>
 	<buildSpec>
