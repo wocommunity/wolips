@@ -81,6 +81,6 @@ public class WOLipsPlugin extends Plugin {
 	 * @return Returns the pluginLogger.
 	 */
 	public PluginLogger getPluginLogger() {
-		return pluginLogger;
+		return this.pluginLogger;
 	}
 }
