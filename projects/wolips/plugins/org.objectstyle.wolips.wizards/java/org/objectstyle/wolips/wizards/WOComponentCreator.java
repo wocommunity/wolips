@@ -54,55 +54,45 @@
  *
  */
 package org.objectstyle.wolips.wizards;
-import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
-
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.objectstyle.wolips.core.logging.WOLipsLog;
 import org.objectstyle.wolips.core.project.WOLipsJavaProject;
 import org.objectstyle.wolips.core.resources.IWOLipsModel;
+import org.objectstyle.wolips.templateengine.TemplateDefinition;
+import org.objectstyle.wolips.templateengine.TemplateEngine;
 /**
  * @author mnolte
  * @author uli
  */
-public class WOComponentCreator extends WOProjectResourceCreator {
+public class WOComponentCreator implements IRunnableWithProgress {
 	private String componentName;
 	private boolean createBodyTag;
 	private boolean createApiFile;
 	private boolean createWooFile;
+	private IResource parentResource;
 	/**
 	 * Constructor for WOComponentCreator.
 	 */
-	public WOComponentCreator(
-		IResource parentResource,
-		String componentName,
-		boolean createBodyTag,
-		boolean createApiFile,
-		boolean createWooFile) {
-		super(parentResource);
+	public WOComponentCreator(IResource parentResource, String componentName,
+			boolean createBodyTag, boolean createApiFile, boolean createWooFile) {
+		this.parentResource = parentResource;
 		this.componentName = componentName;
 		this.createBodyTag = createBodyTag;
 		this.createApiFile = createApiFile;
 		this.createWooFile = createWooFile;
 	}
 	/**
-	 * @see org.objectstyle.wolips.wizards.WOProjectResourceCreator#getType()
-	 */
-	protected int getType() {
-		return COMPONENT_CREATOR;
-	}
-	/**
 	 * @see WOProjectResourceCreator#run(IProgressMonitor)
 	 */
-	public void run(IProgressMonitor monitor)
-		throws InvocationTargetException, InterruptedException {
-		super.run(monitor);
+	public void run(IProgressMonitor monitor) throws InvocationTargetException {
 		try {
 			createWOComponent(monitor);
 		} catch (CoreException e) {
@@ -111,77 +101,79 @@ public class WOComponentCreator extends WOProjectResourceCreator {
 	}
 	/**
 	 * Method createWOComponent.
+	 * 
 	 * @param monitor
 	 * @throws CoreException
 	 * @throws InvocationTargetException
 	 */
 	public void createWOComponent(IProgressMonitor monitor)
-		throws CoreException, InvocationTargetException {
+			throws CoreException, InvocationTargetException {
 		IFolder componentFolder = null;
-		IFile componentJavaFile = null;
-		IFile componentApiFile = null;
+		String componentJavaPath = null;
 		WOLipsJavaProject wolipsJavaProject = null;
 		switch (parentResource.getType()) {
 			case IResource.PROJECT :
-				componentFolder =
-					((IProject) parentResource).getFolder(
-						componentName + "." + IWOLipsModel.EXT_COMPONENT);
-				wolipsJavaProject =
-					new WOLipsJavaProject(
-						JavaCore.create((IProject) parentResource));
-				componentJavaFile =
-					wolipsJavaProject
-						.getClasspathAccessor()
-						.getProjectSourceFolder()
-						.getFile(
-						new Path(componentName + "." + IWOLipsModel.EXT_JAVA));
-				componentApiFile =
-					((IProject) parentResource).getFile(
-						componentName + "." + IWOLipsModel.EXT_API);
+				componentFolder = ((IProject) parentResource)
+						.getFolder(componentName + "."
+								+ IWOLipsModel.EXT_COMPONENT);
+				wolipsJavaProject = new WOLipsJavaProject(JavaCore
+						.create((IProject) parentResource));
+				componentJavaPath = wolipsJavaProject.getClasspathAccessor()
+						.getProjectSourceFolder().getLocation().toOSString();
 				break;
 			case IResource.FOLDER :
-				componentFolder =
-					((IFolder) parentResource).getFolder(
-						componentName + "." + IWOLipsModel.EXT_COMPONENT);
-				wolipsJavaProject =
-					new WOLipsJavaProject(
-						JavaCore.create(parentResource.getProject()));
-				componentJavaFile =
-					wolipsJavaProject
-						.getClasspathAccessor()
-						.getSubprojectSourceFolder(
-							(IFolder) parentResource,
-							true)
-						.getFile(componentName + "." + IWOLipsModel.EXT_JAVA);
-				componentApiFile =
-					((IFolder) parentResource).getFile(
-						componentName + "." + IWOLipsModel.EXT_API);
+				componentFolder = ((IFolder) parentResource)
+						.getFolder(componentName + "."
+								+ IWOLipsModel.EXT_COMPONENT);
+				wolipsJavaProject = new WOLipsJavaProject(JavaCore
+						.create(parentResource.getProject()));
+				componentJavaPath = wolipsJavaProject.getClasspathAccessor()
+						.getSubprojectSourceFolder((IFolder) parentResource,
+								true).getLocation().toOSString();
 				break;
 			default :
-				throw new InvocationTargetException(
-					new Exception("Wrong parent resource - check validation"));
+				throw new InvocationTargetException(new Exception(
+						"Wrong parent resource - check validation"));
 		}
-		IFile componentDescription =
-			componentFolder.getFile(componentName + "." + IWOLipsModel.EXT_WOD);
-		IFile componentWoo =
-			componentFolder.getFile(componentName + "." + IWOLipsModel.EXT_WOO);
-		IFile componentHTMLTemplate =
-			componentFolder.getFile(componentName + "." + IWOLipsModel.EXT_HTML);
-		createResourceFolderInProject(componentFolder, monitor);
-		fileCreator().create(componentDescription, monitor);
-		if (createBodyTag) {
-			fileCreator().create(componentHTMLTemplate, monitor);
-		} else {
-			// create empty file
-			componentHTMLTemplate.create(
-				new ByteArrayInputStream("".getBytes()),
-				false,
-				null);
+		componentFolder.create(false, true, monitor);
+		String projectName = parentResource.getProject().getName();
+		String path = componentFolder.getLocation().toOSString();
+		String projectPath = parentResource.getProject().getLocation()
+				.toOSString();
+		TemplateEngine templateEngine = new TemplateEngine();
+		try {
+			templateEngine.init();
+		} catch (Exception e) {
+			WOLipsLog.log(e);
+			throw new InvocationTargetException(e);
 		}
-		fileCreator().create(componentJavaFile, "wocomponent", monitor);
-		if (createApiFile)
-			fileCreator().create(componentApiFile, monitor);
+		templateEngine.getWolipsContext().setProjectName(projectName);
+		templateEngine.getWolipsContext().setCreateBodyTag(createBodyTag);
+		templateEngine.getWolipsContext().setComponentName(componentName);
+		templateEngine.addTemplate(new TemplateDefinition(
+				"wocomponent-wocomponent.html.vm", path, componentName + "."
+						+ IWOLipsModel.EXT_HTML));
+		templateEngine.addTemplate(new TemplateDefinition(
+				"wocomponent-wocomponent.wod.vm", path, componentName + "."
+						+ IWOLipsModel.EXT_WOD));
 		if (createWooFile)
-			fileCreator().create(componentWoo, monitor);
+			templateEngine.addTemplate(new TemplateDefinition(
+					"wocomponent-wocomponent.woo.vm", path, componentName + "."
+							+ IWOLipsModel.EXT_WOO));
+		templateEngine.addTemplate(new TemplateDefinition(
+				"wocomponent-wocomponent.java.vm", componentJavaPath,
+				componentName + "." + IWOLipsModel.EXT_JAVA));
+		if (createApiFile)
+			templateEngine.addTemplate(new TemplateDefinition(
+					"wocomponent-wocomponent.api.vm", projectPath,
+					componentName + "." + IWOLipsModel.EXT_API));
+		try {
+			templateEngine.run();
+			parentResource.getProject().refreshLocal(IResource.DEPTH_INFINITE,
+					monitor);
+		} catch (Exception e) {
+			WOLipsLog.log(e);
+			throw new InvocationTargetException(e);
+		}
 	}
 }

@@ -79,63 +79,53 @@ import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
 import org.objectstyle.wolips.core.resources.IWOLipsModel;
 /**
  * @author mnolte
- * @author uli
- * Basic wizard page for all project file manipulating webobjects wizard pages.
+ * @author uli Basic wizard page for all project file manipulating webobjects
+ *         wizard pages.
  */
-public abstract class WizardNewWOResourcePage
-	extends WizardNewFileCreationPage {
+public abstract class WizardNewWOResourcePage extends WizardNewFileCreationPage {
 	/**
 	 * Constructor for WizardNewWOResourcePage.
+	 * 
 	 * @param pageName
 	 * @param selection
 	 */
-	public WizardNewWOResourcePage(
-		String pageName,
-		IStructuredSelection selection) {
+	public WizardNewWOResourcePage(String pageName,
+			IStructuredSelection selection) {
 		super(pageName, WizardNewWOResourcePage.selection(selection));
 	}
-	private static IStructuredSelection selection(IStructuredSelection aSelection) {
+	private static IStructuredSelection selection(
+			IStructuredSelection aSelection) {
 		if (aSelection != null)
 			return aSelection;
 		IWorkbench workbench = PlatformUI.getWorkbench();
-		ISelection selection =
-			workbench
-				.getActiveWorkbenchWindow()
-				.getSelectionService()
-				.getSelection();
+		ISelection selection = workbench.getActiveWorkbenchWindow()
+				.getSelectionService().getSelection();
 		IStructuredSelection selectionToPass = StructuredSelection.EMPTY;
 		if (selection instanceof IStructuredSelection) {
 			selectionToPass = (IStructuredSelection) selection;
 		} else {
 			// Build the selection from the IFile of the editor
-			IWorkbenchPart part =
-				workbench
-					.getActiveWorkbenchWindow()
-					.getPartService()
-					.getActivePart();
+			IWorkbenchPart part = workbench.getActiveWorkbenchWindow()
+					.getPartService().getActivePart();
 			if (part instanceof IEditorPart) {
 				IEditorInput input = ((IEditorPart) part).getEditorInput();
 				if (input instanceof IFileEditorInput) {
-					selectionToPass =
-						new StructuredSelection(
+					selectionToPass = new StructuredSelection(
 							((IFileEditorInput) input).getFile());
 				}
 			}
 		}
 		return selectionToPass;
 	}
-	protected boolean createResourceOperation(IRunnableWithProgress creationOperation) {
+	protected boolean createResourceOperation(
+			IRunnableWithProgress creationOperation) {
 		try {
-			new ProgressMonitorDialog(getShell()).run(
-				false,
-				false,
-				creationOperation);
+			new ProgressMonitorDialog(getShell()).run(false, false,
+					creationOperation);
 			//getContainer().run(false, false, creationOperation);
 		} catch (InvocationTargetException e) {
-			WOLipsPlugin.handleException(
-				getShell(),
-				e.getTargetException(),
-				null);
+			WOLipsPlugin.handleException(getShell(), e.getTargetException(),
+					null);
 			return false;
 		} catch (InterruptedException e) {
 			// cancelling is disabled
@@ -148,8 +138,8 @@ public abstract class WizardNewWOResourcePage
 	 * Method sledgeHammer. Fixes eclipse refresh view bug
 	 */
 	private void sledgeHammer() {
-		IWorkbenchWindow a[] =
-			WOLipsPlugin.getDefault().getWorkbench().getWorkbenchWindows();
+		IWorkbenchWindow a[] = WOLipsPlugin.getDefault().getWorkbench()
+				.getWorkbenchWindows();
 		for (int i = 0; i < a.length; i++) {
 			IWorkbenchPage b[] = a[i].getPages();
 			for (int j = 0; j < b.length; j++) {
@@ -157,64 +147,57 @@ public abstract class WizardNewWOResourcePage
 				for (int k = 0; k < c.length; k++) {
 					IViewPart d = c[k].getView(false); //maybe null
 					if ((d != null) && (d instanceof PackageExplorerPart))
-						 ((PackageExplorerPart) d).getTreeViewer().refresh();
+						((PackageExplorerPart) d).getTreeViewer().refresh();
 				}
 			}
 		}
 	}
-
 	/**
-	 * Method validatePage. If super is true, checks if container selection is an project or subproject.
+	 * Method validatePage. If super is true, checks if container selection is
+	 * an project or subproject.
 	 * 
 	 * @see org.eclipse.ui.dialogs.WizardNewFileCreationPage#validatePage()
 	 */
 	protected boolean validatePage() {
 		if (super.validatePage()) {
 			if (getContainerFullPath().segmentCount() > 0) {
-				IProject actualProject =
-					ResourcesPlugin.getWorkspace().getRoot().getProject(
-						getContainerFullPath().segment(0));
+				IProject actualProject = ResourcesPlugin.getWorkspace()
+						.getRoot()
+						.getProject(getContainerFullPath().segment(0));
 				switch (getContainerFullPath().segmentCount()) {
 					case 0 :
 						// no project selected
-						setErrorMessage(
-							Messages.getString(
-								"WizardNewWOResourcePage.errorMessage.containerNoProject"));
+						setErrorMessage(Messages
+								.getString("WizardNewWOResourcePage.errorMessage.containerNoProject"));
 						return false;
 					case 1 :
-						if (!actualProject
-							.getFile(IWOLipsModel.PROJECT_FILE_NAME)
-							.exists()) {
+						if (!actualProject.getFile(
+								IWOLipsModel.PROJECT_FILE_NAME).exists()) {
 							// no webobjects project selected
-							setErrorMessage(
-								Messages.getString(
-									"WizardNewWOResourcePage.errorMessage.containerNoWOProject"));
+							setErrorMessage(Messages
+									.getString("WizardNewWOResourcePage.errorMessage.containerNoWOProject"));
 							return false;
 						}
 						break;
 					default :
 						if (false) {
-							if (!actualProject
-								.getFile(IWOLipsModel.PROJECT_FILE_NAME)
-								.exists()) {
+							if (!actualProject.getFile(
+									IWOLipsModel.PROJECT_FILE_NAME).exists()) {
 								// no webobjects project selected
-								setErrorMessage(
-									Messages.getString(
-										"WizardNewWOResourcePage.errorMessage.containerNoWOProject"));
+								setErrorMessage(Messages
+										.getString("WizardNewWOResourcePage.errorMessage.containerNoWOProject"));
 								return false;
 							} else {
-								// project is selected and wo project - now check for subproject
-								IPath projectFilePath =
-									getContainerFullPath().removeFirstSegments(
-										1).append(
-										IWOLipsModel.PROJECT_FILE_NAME);
-								if (!actualProject
-									.getFile(projectFilePath)
-									.exists()) {
+								// project is selected and wo project - now
+								// check for subproject
+								IPath projectFilePath = getContainerFullPath()
+										.removeFirstSegments(1).append(
+												IWOLipsModel.PROJECT_FILE_NAME);
+								if (!actualProject.getFile(projectFilePath)
+										.exists()) {
 									// no webobjects subproject selected
-									setErrorMessage(
-										Messages.getString(
-											"WizardNewWOResourcePage.errorMessage.containerNoWOSubproject"));
+									setErrorMessage(Messages
+											.getString("WizardNewWOResourcePage.errorMessage.containerNoWOSubproject"));
 									return false;
 								}
 							}
@@ -225,9 +208,8 @@ public abstract class WizardNewWOResourcePage
 				return true;
 			} else {
 				// no project selected (container path is < 1)
-				setErrorMessage(
-					Messages.getString(
-						"WizardNewWOResourcePage.errorMessage.containerNoWOProject"));
+				setErrorMessage(Messages
+						.getString("WizardNewWOResourcePage.errorMessage.containerNoWOProject"));
 				return false;
 			}
 		} else {

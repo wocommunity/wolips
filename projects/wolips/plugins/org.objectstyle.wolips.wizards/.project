@@ -4,6 +4,7 @@
 	<comment></comment>
 	<projects>
 		<project>org.objectstyle.wolips</project>
+		<project>org.objectstyle.wolips.templateengine</project>
 		<project>org.objectstyle.wolips.woproject</project>
 	</projects>
 	<buildSpec>

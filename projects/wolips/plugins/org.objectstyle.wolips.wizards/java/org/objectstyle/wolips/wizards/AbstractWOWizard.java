@@ -1,8 +1,8 @@
 /* ====================================================================
+ * 
+ * The ObjectStyle Group Software License, Version 1.0 
  *
- * The ObjectStyle Group Software License, Version 1.0
- *
- * Copyright (c) 2002 The ObjectStyle Group
+ * Copyright (c) 2002 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,15 +18,15 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution, if
- *    any, must include the following acknowlegement:
- *       "This product includes software developed by the
+ *    any, must include the following acknowlegement:  
+ *       "This product includes software developed by the 
  *        ObjectStyle Group (http://objectstyle.org/)."
  *    Alternately, this acknowlegement may appear in the software itself,
  *    if and wherever such third-party acknowlegements normally appear.
  *
- * 4. The names "ObjectStyle Group" and "Cayenne"
+ * 4. The names "ObjectStyle Group" and "Cayenne" 
  *    must not be used to endorse or promote products derived
- *    from this software without prior written permission. For written
+ *    from this software without prior written permission. For written 
  *    permission, please contact andrus@objectstyle.org.
  *
  * 5. Products derived from this software may not be called "ObjectStyle"
@@ -53,42 +53,31 @@
  * <http://objectstyle.org/>.
  *
  */
-
-package org.objectstyle.wolips.wizards.templates;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.FactoryConfigurationError;
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.objectstyle.wolips.core.logging.WOLipsLog;
-
-
+package org.objectstyle.wolips.wizards;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.wizards.newresource.BasicNewProjectResourceWizard;
+import org.objectstyle.wolips.core.plugin.WOLipsPluginImages;
 /**
- * @author uli
- *
- * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates.
- * To enable and disable the creation of type comments go to
- * Window>Preferences>Java>Code Generation.
+ * @author ulrich
+ *  
  */
-public class XercesDocumentBuilder {
-
+public abstract class AbstractWOWizard extends BasicNewProjectResourceWizard {
 	/**
-	 * Method documentBuilder.
-	 * @return DocumentBuilder
+	 * Constructor for WOProjectCreationWizard.
 	 */
-	public static DocumentBuilder documentBuilder() {
-		try {
-			DocumentBuilderFactory builderFactory =
-				DocumentBuilderFactory.newInstance();
-			return builderFactory.newDocumentBuilder();
-		} catch (ParserConfigurationException pce) {
-			WOLipsLog.log("ParserConfigurationException: " + pce);
-		} catch (FactoryConfigurationError fce) {
-			WOLipsLog.log("FactoryConfigurationError: " + fce);
-		}
-		return null;
+	public AbstractWOWizard() {
+		super();
 	}
-
+	public abstract String getWindowTitle();
+	/**
+	 * (non-Javadoc) Method declared on INewWizard
+	 */
+	public void init(IWorkbench workbench,
+			IStructuredSelection structuredSelection) {
+		super.init(workbench, structuredSelection);
+		setDefaultPageImageDescriptor(WOLipsPluginImages
+				.WOPROJECT_WIZARD_BANNER());
+		setWindowTitle(this.getWindowTitle());
+	}
 }

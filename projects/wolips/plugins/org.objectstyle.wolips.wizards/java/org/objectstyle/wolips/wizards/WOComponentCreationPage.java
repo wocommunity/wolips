@@ -69,12 +69,11 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.actions.WorkspaceModifyDelegatingOperation;
 /**
  * @author mnolte
- * @author uli
- * <br><br>
- * This class is the only page of the WOComponent file resource creation wizard.  
- * It subclasses the standard file resource creation page class, 
- * but use only the provided component name for the file resource creation functionality.
- *
+ * @author uli <br><br>This class is the only page of the WOComponent file
+ *         resource creation wizard. It subclasses the standard file resource
+ *         creation page class, but use only the provided component name for
+ *         the file resource creation functionality.
+ *  
  */
 public class WOComponentCreationPage extends WizardNewWOResourcePage {
 	// widgets
@@ -83,107 +82,96 @@ public class WOComponentCreationPage extends WizardNewWOResourcePage {
 	private Button apiCheckbox;
 	/**
 	 * Creates the page for the wocomponent creation wizard.
-	 *
-	 * @param workbench  the workbench on which the page should be created
-	 * @param selection  the current selection
+	 * 
+	 * @param workbench
+	 *            the workbench on which the page should be created
+	 * @param selection
+	 *            the current selection
 	 */
 	public WOComponentCreationPage(IStructuredSelection selection) {
 		super("createWOComponentPage1", selection);
 		this.setTitle(Messages.getString("WOComponentCreationPage.title"));
-		this.setDescription(
-			Messages.getString("WOComponentCreationPage.description"));
+		this.setDescription(Messages
+				.getString("WOComponentCreationPage.description"));
 	}
-	/** (non-Javadoc)
-	 * Method declared on IDialogPage.
+	/**
+	 * (non-Javadoc) Method declared on IDialogPage.
 	 */
 	public void createControl(Composite parent) {
 		// inherit default container and name specification widgets
 		super.createControl(parent);
 		Composite composite = (Composite) getControl();
-		//WorkbenchHelp.setHelp(composite, IReadmeConstants.CREATION_WIZARD_PAGE_CONTEXT);
-		this.setFileName(
-			Messages.getString(
-				"WOComponentCreationPage.newComponent.defaultName"));
+		//WorkbenchHelp.setHelp(composite,
+		// IReadmeConstants.CREATION_WIZARD_PAGE_CONTEXT);
+		this.setFileName(Messages
+				.getString("WOComponentCreationPage.newComponent.defaultName"));
 		new Label(composite, SWT.NONE); // vertical spacer
 		// section generation group
 		Group group = new Group(composite, SWT.NONE);
 		group.setLayout(new GridLayout());
-		group.setText(
-			Messages.getString(
-				"WOComponentCreationPage.creationOptions.title"));
-		group.setLayoutData(
-			new GridData(
-				GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
+		group.setText(Messages
+				.getString("WOComponentCreationPage.creationOptions.title"));
+		group.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
+				| GridData.HORIZONTAL_ALIGN_FILL));
 		// section generation checkboxes
 		bodyCheckbox = new Button(group, SWT.CHECK);
-		bodyCheckbox.setText(
-			Messages.getString(
-				"WOComponentCreationPage.creationOptions.bodyTag"));
+		bodyCheckbox.setText(Messages
+				.getString("WOComponentCreationPage.creationOptions.bodyTag"));
 		bodyCheckbox.setSelection(true);
 		bodyCheckbox.addListener(SWT.Selection, this);
 		wooCheckbox = new Button(group, SWT.CHECK);
-		wooCheckbox.setText(
-			Messages.getString(
-				"WOComponentCreationPage.creationOptions.wooFile"));
+		wooCheckbox.setText(Messages
+				.getString("WOComponentCreationPage.creationOptions.wooFile"));
 		wooCheckbox.setSelection(true);
 		wooCheckbox.addListener(SWT.Selection, this);
 		apiCheckbox = new Button(group, SWT.CHECK);
-		apiCheckbox.setText(
-			Messages.getString(
-				"WOComponentCreationPage.creationOptions.apiFile"));
+		apiCheckbox.setText(Messages
+				.getString("WOComponentCreationPage.creationOptions.apiFile"));
 		apiCheckbox.setSelection(true);
 		apiCheckbox.addListener(SWT.Selection, this);
 		new Label(composite, SWT.NONE); // vertical spacer
 		setPageComplete(validatePage());
 	}
 	/**
-	 * Creates a new file resource as requested by the user. If everything
-	 * is OK then answer true. If not, false will cause the dialog
-	 * to stay open and the appropiate error message is shown
-	 *
+	 * Creates a new file resource as requested by the user. If everything is
+	 * OK then answer true. If not, false will cause the dialog to stay open
+	 * and the appropiate error message is shown
+	 * 
 	 * @return whether creation was successful
 	 * @see WOComponentCreationWizard#performFinish()
 	 */
 	public boolean createComponent() {
 		WOComponentCreator componentCreator;
 		String componentName = getFileName();
-		IProject actualProject =
-			ResourcesPlugin.getWorkspace().getRoot().getProject(
-				getContainerFullPath().segment(0));
+		IProject actualProject = ResourcesPlugin.getWorkspace().getRoot()
+				.getProject(getContainerFullPath().segment(0));
 		switch (getContainerFullPath().segmentCount()) {
 			case 0 :
 				// not possible ( see validatePage() )
 				setErrorMessage("unknown error");
 				return false;
 			case 1 :
-				componentCreator =
-					new WOComponentCreator(
-						actualProject,
-						componentName,
-						bodyCheckbox.getSelection(),
-						apiCheckbox.getSelection(),
-						wooCheckbox.getSelection());
+				componentCreator = new WOComponentCreator(actualProject,
+						componentName, bodyCheckbox.getSelection(), apiCheckbox
+								.getSelection(), wooCheckbox.getSelection());
 				break;
 			default :
-				// determine parent resource for component creator by removing first element (workspace) from full path
-				IFolder subprojectFolder =
-					actualProject.getFolder(
-						getContainerFullPath().removeFirstSegments(1));
-				componentCreator =
-					new WOComponentCreator(
-						subprojectFolder,
-						componentName,
-						bodyCheckbox.getSelection(),
-						apiCheckbox.getSelection(),
-						wooCheckbox.getSelection());
+				// determine parent resource for component creator by removing
+				// first element (workspace) from full path
+				IFolder subprojectFolder = actualProject
+						.getFolder(getContainerFullPath()
+								.removeFirstSegments(1));
+				componentCreator = new WOComponentCreator(subprojectFolder,
+						componentName, bodyCheckbox.getSelection(), apiCheckbox
+								.getSelection(), wooCheckbox.getSelection());
 				break;
 		}
-		IRunnableWithProgress op =
-			new WorkspaceModifyDelegatingOperation(componentCreator);
+		IRunnableWithProgress op = new WorkspaceModifyDelegatingOperation(
+				componentCreator);
 		return createResourceOperation(op);
 	}
-	/** (non-Javadoc)
-	 * Method declared on WizardNewFileCreationPage.
+	/**
+	 * (non-Javadoc) Method declared on WizardNewFileCreationPage.
 	 */
 	protected String getNewFileLabel() {
 		return Messages.getString("WOComponentCreationPage.newComponent.label");

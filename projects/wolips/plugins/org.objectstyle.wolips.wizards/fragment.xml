@@ -18,7 +18,7 @@
    <requires>
       <import plugin="org.eclipse.jdt.ui"/>
       <import plugin="org.eclipse.core.runtime.compatibility"/>
-      <import plugin="org.apache.ant"/>
+      <import plugin="org.objectstyle.wolips.templateengine"/>
    </requires>
 
 
@@ -44,22 +44,10 @@
          </selection>
       </wizard>
       <wizard
-            name="%WOLips.Subproject"
-            icon="icons/woproject/wosubproject_wiz.gif"
-            category="org.objectstyle.wolips.wizards.webobjects.5.1"
-            class="org.objectstyle.wolips.wizards.WOSubprojectCreationWizard"
-            id="org.objectstyle.wolips.wizards.new.wo.5.1.subproject">
-         <description>
-         </description>
-         <selection
-               class="org.eclipse.core.resources.IResource">
-         </selection>
-      </wizard>
-      <wizard
             name="%WOLips.Application"
             icon="icons/woproject/woapplication_wiz.gif"
             category="org.objectstyle.wolips.wizards.webobjects.5.1"
-            class="org.objectstyle.wolips.wizards.WOApplicationCreationWizard"
+            class="org.objectstyle.wolips.wizards.WOApplicationWizard"
             project="true"
             id="org.objectstyle.wolips.wizards.new.wo.5.1.application">
          <description>
@@ -69,7 +57,7 @@
             name="%WOLips.Framework"
             icon="icons/woproject/woframework_wiz.gif"
             category="org.objectstyle.wolips.wizards.webobjects.5.1"
-            class="org.objectstyle.wolips.wizards.WOFrameworkCreationWizard"
+            class="org.objectstyle.wolips.wizards.WOFrameworkWizard"
             project="true"
             id="org.objectstyle.wolips.wizards.new.wo.5.1.framework">
          <description>
@@ -79,7 +67,7 @@
             name="%WOLips.JarProject"
             icon="icons/woproject/jar_project_wiz.gif"
             category="org.objectstyle.wolips.wizards.webobjects.5.1"
-            class="org.objectstyle.wolips.wizards.JarProjectCreationWizard"
+            class="org.objectstyle.wolips.wizards.JarProjectWizard"
             project="true"
             id="org.objectstyle.wolips.wizards.new.wo.5.1.jarproject">
          <description>
@@ -97,65 +85,5 @@
                class="org.eclipse.core.resources.IResource">
          </selection>
       </wizard>
-   </extension>
-<!-- =================================================================================== -->
-<!-- Extension: Action set in the perspective                                            -->
-<!-- =================================================================================== -->
-   <extension
-         point="org.eclipse.ui.actionSets">
-      <actionSet
-            label="%ElementCreationActionSet.label"
-            description="%ElementCreationActionSet.description"
-            visible="false"
-            id="org.objectstyle.wolips.wizards.ElementCreationActionSet">
-         <action
-               label="%OpenEOModelCreationWizard.label"
-               icon="icons/woproject/eomodel_wiz.gif"
-               class="org.objectstyle.wolips.wizards.actions.OpenEOModelCreationWizard"
-               tooltip="%OpenEOModelCreationWizard.tooltip"
-               toolbarPath="Normal/WOLipsWizards"
-               id="org.objectstyle.wolips.OpenEOModelCreationWizard">
-         </action>
-         <action
-               label="%OpenWOComponentCreationWizard.label"
-               icon="icons/wobuilder/wocomponent_wiz.gif"
-               class="org.objectstyle.wolips.wizards.actions.OpenWOComponentCreationWizard"
-               tooltip="%OpenWOComponentCreationWizard.tooltip"
-               toolbarPath="Normal/WOLipsWizards"
-               id="org.objectstyle.wolips.OpenWOComponentCreationWizard">
-         </action>
-         <action
-               label="%OpenWOSubprojectCreationWizard.label"
-               icon="icons/woproject/wosubproject_wiz.gif"
-               class="org.objectstyle.wolips.wizards.actions.OpenWOSubprojectCreationWizard"
-               tooltip="%OpenWOSubprojectCreationWizard.tooltip"
-               toolbarPath="Normal/WOLipsWizards"
-               id="org.objectstyle.wolips.OpenWOSubprojectCreationWizard">
-         </action>
-         <action
-               label="%OpenJarProjectCreationWizard.label"
-               icon="icons/woproject/jar_project_wiz.gif"
-               class="org.objectstyle.wolips.wizards.actions.OpenJarProjectCreationWizard"
-               tooltip="%OpenJarProjectCreationWizard.tooltip"
-               toolbarPath="Normal/WOLipsWizards"
-               id="org.objectstyle.wolips.OpenJarProjectCreationWizard">
-         </action>
-         <action
-               label="%OpenWOFrameworkCreationWizard.label"
-               icon="icons/woproject/woframework_wiz.gif"
-               class="org.objectstyle.wolips.wizards.actions.OpenWOFrameworkCreationWizard"
-               tooltip="%OpenWOFrameworkCreationWizard.tooltip"
-               toolbarPath="Normal/WOLipsWizards"
-               id="org.objectstyle.wolips.OpenWOFrameworkCreationWizard">
-         </action>
-         <action
-               label="%OpenWOApplicationCreationWizard.label"
-               icon="icons/woproject/woapplication_wiz.gif"
-               class="org.objectstyle.wolips.wizards.actions.OpenWOProjectCreationWizard"
-               tooltip="%OpenWOApplicationCreationWizard.tooltip"
-               toolbarPath="Normal/WOLipsWizards"
-               id="org.objectstyle.wolips.OpenWOProjectCreationWizard">
-         </action>
-      </actionSet>
    </extension>
 </fragment>

@@ -54,50 +54,78 @@
  *
  */
 package org.objectstyle.wolips.wizards;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.ui.IWorkbench;
+import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.objectstyle.wolips.core.logging.WOLipsLog;
-import org.objectstyle.wolips.core.project.IWOLipsProject;
-import org.objectstyle.wolips.core.project.WOLipsCore;
+import org.objectstyle.wolips.core.project.ant.RunAnt;
+import org.objectstyle.wolips.core.resources.IWOLipsModel;
+import org.objectstyle.wolips.templateengine.TemplateDefinition;
+import org.objectstyle.wolips.templateengine.TemplateEngine;
 /**
+ * @author mnolte
  * @author uli
- *
+ * 
  * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates.
- * To enable and disable the creation of type comments go to
- * Window>Preferences>Java>Code Generation.
+ * Window>Preferences>Java>Templates. To enable and disable the creation of
+ * type comments go to Window>Preferences>Java>Code Generation.
  */
-public class JarProjectCreationWizard
-	extends WOProjectCreationWizard {
-	private JarProjectCreationPage mainPage;
-	/** (non-Javadoc)
-	 * Method declared on Wizard.
+public class JarProjectWizard extends AbstractWOWizard {
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.objectstyle.wolips.wizards.AbstractWOWizard#getWindowTitle()
 	 */
-	public void addPages() {
-		mainPage = new JarProjectCreationPage("createJarProjectPage1");
-		addPage(mainPage);
+	public String getWindowTitle() {
+		return Messages.getString("JarProjectCreationWizard.title");
 	}
-	/** (non-Javadoc)
-	 * Method declared on INewWizard
-	 */
-	public void init(IWorkbench workbench, IStructuredSelection selection) {
-		super.init(workbench, selection);
-		setWindowTitle(Messages.getString("JarProjectCreationWizard.title"));
-	}
-	/** (non-Javadoc)
-	 * Method declared on IWizard
+	/**
+	 * (non-Javadoc) Method declared on IWizard
+	 * 
+	 * @return
 	 */
 	public boolean performFinish() {
-		boolean success = mainPage.createProject();
+		boolean success = super.performFinish();
 		if (success) {
+			IProject project = super.getNewProject();
+			String projectName = project.getName();
+			String path = project.getLocation().toOSString();
+			NullProgressMonitor nullProgressMonitor = new NullProgressMonitor();
 			try {
-				IWOLipsProject woLipsProject =
-					WOLipsCore.createProject(mainPage.getProjectHandle());
-				woLipsProject.getBuilderAccessor().installAntBuilder();
-			} catch (CoreException e) {
+				File src = new File(path + File.separator + "src");
+				src.mkdirs();
+				File bin = new File(path + File.separator + "bin");
+				bin.mkdirs();
+				project.close(nullProgressMonitor);
+				TemplateEngine templateEngine = new TemplateEngine();
+				try {
+					templateEngine.init();
+				} catch (Exception e) {
+					WOLipsLog.log(e);
+					throw new InvocationTargetException(e);
+				}
+				templateEngine.getWolipsContext().setProjectName(projectName);
+				templateEngine.addTemplate(new TemplateDefinition(
+						"jarproject-.classpath.vm", path, ".classpath"));
+				templateEngine.addTemplate(new TemplateDefinition(
+						"jarproject-.project.vm", path, ".project"));
+				templateEngine.addTemplate(new TemplateDefinition(
+						"jarproject-build.xml.vm", path, "build.xml"));
+				templateEngine.addTemplate(new TemplateDefinition(
+						"jarproject-build.properties.vm", path,
+						"build.properties"));
+				templateEngine.run();
+				project.open(nullProgressMonitor);
+				RunAnt runAnt = new RunAnt();
+				runAnt.asAnt(path + File.separator + IWOLipsModel.DEFAULT_BUILD_FILENAME, null, null);
+				project.refreshLocal(IResource.DEPTH_INFINITE,
+						nullProgressMonitor);
+			} catch (Exception e) {
 				WOLipsLog.log(e);
-				return false;
+				success = false;
 			}
 		}
 		return success;

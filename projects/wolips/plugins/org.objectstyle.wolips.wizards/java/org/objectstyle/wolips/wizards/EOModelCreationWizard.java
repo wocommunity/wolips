@@ -53,57 +53,45 @@
  * <http://objectstyle.org/>.
  *
  */
-
 package org.objectstyle.wolips.wizards;
-
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.objectstyle.wolips.core.plugin.WOLipsPluginImages;
-
 /**
  * @author mnolte
- * @author uli
- * Wizard to create new eo model in selected webobjects java project
+ * @author uli Wizard to create new eo model in selected webobjects java
+ *         project
  */
 public class EOModelCreationWizard extends Wizard implements INewWizard {
-
-	private IStructuredSelection selection;
-	private IWorkbench workbench;
 	private EOModelCreationPage mainPage;
-
 	/**
 	 * Constructor for EOModelCreationWizard.
 	 */
 	public EOModelCreationWizard() {
 		super();
 	}
-
 	/**
 	 * @see org.eclipse.jface.wizard.IWizard#addPages()
 	 */
 	public void addPages() {
-		mainPage = new EOModelCreationPage(workbench, selection);
 		addPage(mainPage);
 	}
-
 	/**
 	 * @see org.eclipse.jface.wizard.IWizard#performFinish()
 	 */
 	public boolean performFinish() {
 		return mainPage.createEOModel();
 	}
-
 	/**
-	 * @see org.eclipse.ui.IWorkbenchWizard#init(IWorkbench, IStructuredSelection)
+	 * @see org.eclipse.ui.IWorkbenchWizard#init(IWorkbench,
+	 *      IStructuredSelection)
 	 */
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
-		this.workbench = workbench;
-		this.selection = selection;
+		mainPage = new EOModelCreationPage(selection);
 		setWindowTitle(Messages.getString("EOModelCreationWizard.title"));
-		setDefaultPageImageDescriptor(
-			WOLipsPluginImages.WOCOMPONENT_WIZARD_BANNER());
+		setDefaultPageImageDescriptor(WOLipsPluginImages
+				.WOCOMPONENT_WIZARD_BANNER());
 	}
-
 }
