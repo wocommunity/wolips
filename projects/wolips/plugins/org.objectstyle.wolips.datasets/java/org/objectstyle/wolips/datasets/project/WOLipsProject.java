@@ -261,6 +261,9 @@ public class WOLipsProject implements IWOLipsProject {
 			this.removeTargetBuilder();
 			if (value)
 				this.addTargetBuilder();
+                        // HACK ak we need to call setDescription to update the .project files
+                        // so we just call it every time...
+                        this.getProject().setDescription(this.getProject().getDescription(), null);
 
 		}
 		/**
