@@ -69,8 +69,8 @@ import org.apache.log4j.Logger;
  * 
  * @author Andrei Adamchik
  */
-public class AntTestCase extends TestCase {
-    static Logger logger = Logger.getLogger(AntTestCase.class);
+public class StructureTestCase extends TestCase {
+    static Logger logger = Logger.getLogger(StructureTestCase.class);
 
     private static File testDist;
 
@@ -87,7 +87,7 @@ public class AntTestCase extends TestCase {
         }
     }
 
-    public AntTestCase(String name) {
+    public StructureTestCase(String name) {
         super(name);
     }
 
@@ -106,6 +106,7 @@ public class AntTestCase extends TestCase {
         return new File(testDist, path);
     }
 
+    /** Performs JUnit assertions about project structure <code>struct</code>. */
     protected void assertStructure(ProjectStructure struct) throws Exception {
         String path = struct.getDirectoryPath();
         File projDir = resolveDistPath(path);
@@ -129,12 +130,32 @@ public class AntTestCase extends TestCase {
         if (struct.hasJava()) {
             File javaDir = new File(projDir, "Resources/Java");
             assertTrue("Java directory is missing: " + javaDir, javaDir.isDirectory());
+            assertJars(javaDir, struct.getJars());
+        }
 
-            String[] jars = struct.getJars();
-            for (int i = 0; i < jars.length; i++) {
-                File jar = new File(javaDir, jars[i] + ".jar");
-                assertTrue("Jar file missing: " + jar, jar.isFile());
-            }
+        if (struct.hasWos()) {
+            File woDir = new File(projDir, "Resources");
+            assertWos(woDir, struct.getWocomps());
+        }
+    }
+
+    protected void assertJars(File javaDir, String[] jars) throws Exception {
+        for (int i = 0; i < jars.length; i++) {
+            File jar = new File(javaDir, jars[i] + ".jar");
+            assertTrue("Jar file is missing: " + jar, jar.isFile());
+        }
+    }
+
+    protected void assertWos(File resourceDir, String[] wos) throws Exception {
+        for (int i = 0; i < wos.length; i++) {
+            File wo = new File(resourceDir, wos[i] + ".wo");
+            assertTrue("WO directory is missing: " + wo, wo.isDirectory());
+
+            File wod = new File(wo, wos[i] + ".wod");
+            assertTrue(".wod file is missing: " + wod, wod.isFile());
+
+            File html = new File(wo, wos[i] + ".html");
+            assertTrue(".html file is missing: " + html, html.isFile());
         }
     }
 }

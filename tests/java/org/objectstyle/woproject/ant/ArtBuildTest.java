@@ -64,7 +64,7 @@ import java.io.File;
  * 
  * @author Andrei Adamchik
  */
-public class ArtBuildTest extends AntTestCase {
+public class ArtBuildTest extends StructureTestCase {
 
     public ArtBuildTest(String name) {
         super(name);
@@ -72,6 +72,11 @@ public class ArtBuildTest extends AntTestCase {
 
     public void testFilesPresent() throws Exception {
         FrameworkStructure artFrwk = new FrameworkStructure("art");
+        artFrwk.setHasResources(true);
+        artFrwk.setHasWebServerResources(false);
+        artFrwk.setJars(new String[] { "art", "cayenne", "woproject" });
+        artFrwk.setWocomps(new String[] { "PaintingSearch" });
+        
         assertStructure(artFrwk);
     }
 }

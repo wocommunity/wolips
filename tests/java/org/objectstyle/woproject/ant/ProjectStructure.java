@@ -69,6 +69,7 @@ public abstract class ProjectStructure {
     protected boolean hasWebServerResources;
     protected boolean hasResources;
     protected String[] jars;
+    protected String[] wocomps;
 
     public ProjectStructure(String name) {
         this.name = name;
@@ -80,7 +81,7 @@ public abstract class ProjectStructure {
      * directory.
      */
     public abstract String getDirectoryPath();
-    
+
     public String getName() {
         return name;
     }
@@ -109,6 +110,10 @@ public abstract class ProjectStructure {
         return jars != null && jars.length > 0;
     }
 
+    public boolean hasWos() {
+        return wocomps != null && wocomps.length > 0;
+    }
+
     public String[] getJars() {
         return jars;
     }
@@ -117,4 +122,11 @@ public abstract class ProjectStructure {
         this.jars = jars;
     }
 
+    public String[] getWocomps() {
+        return wocomps;
+    }
+
+    public void setWocomps(String[] wocomps) {
+        this.wocomps = wocomps;
+    }
 }
