@@ -74,6 +74,7 @@ public class PBXIndex extends Task {
 	protected Vector resources = new Vector();
 	protected Vector frameworkSets = new Vector();
 	protected SubtaskFactory subtaskFactory = new SubtaskFactory(this);
+	protected boolean xcode = false;
 
 	public void addResources(FileSet set) {
 		resources.addElement(set);
@@ -97,6 +98,14 @@ public class PBXIndex extends Task {
 	 */
 	public void setProjectFile(File projectFile) {
 		this.projectFile = projectFile;
+	}
+
+	/**
+	 * Sets Xcode output compatiblity (off by default)
+	 * @param projectFile The projectFile to set
+	 */
+	public void setXcode(boolean xcodeFlag) {
+		this.xcode = xcodeFlag;
 	}
 
 	/**
@@ -157,7 +166,7 @@ public class PBXIndex extends Task {
 			}
 		}
 
-		proj.save( pbxprojFile );
+		proj.save( pbxprojFile, xcode );
 	}
 
 	/**

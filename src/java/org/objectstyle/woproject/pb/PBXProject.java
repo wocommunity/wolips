@@ -80,6 +80,10 @@ public class PBXProject {
 	}
 	
 	public void save( File projectFile ) {
+		save( projectFile, false );
+	}
+	
+	public void save( File projectFile, boolean xcodeFormat ) {
 		ObjectsTable objectsTable = new ObjectsTable();
 		
 		ArrayList groupChildIDs = new ArrayList();
@@ -127,7 +131,9 @@ public class PBXProject {
 		ObjectsTable.ID projectID = objectsTable.insert( newProject( groupID, targetIDs ));
 		
 		//	Create the root dictionary.
-		Map pbxproj = newPBXProj( objectsTable, projectID );
+		Map pbxproj = xcodeFormat
+			? newXcodeProj( objectsTable, projectID )
+			: newPBXProj( objectsTable, projectID );
 		
 		PropertyListSerialization.propertyListToFile( projectFile, pbxproj );
 	}
@@ -202,6 +208,14 @@ public class PBXProject {
 		return map( new Object[] {
 			"archiveVersion",	"1",
 			"objectVersion",	"38",
+			"rootObject",		rootObject,
+			"objects",			objectsTable });
+	}
+	
+	protected static Map newXcodeProj( Map objectsTable, ObjectsTable.ID rootObject ) {
+		return map( new Object[] {
+			"archiveVersion",	"1",
+			"objectVersion",	"39",
 			"rootObject",		rootObject,
 			"objects",			objectsTable });
 	}

@@ -7,24 +7,24 @@
 			<h3>Description:</h3>
 
 			<p><code>PBXIndex</code> is an Ant task to maintain a Project Builder
-			(on Mac OS X, abbreviated PBX) PBX.pbproj file. It currently is not
-			a general solution -- it exists solely to allow EOModeler to find your
-			project's frameworks, which is required to make use of EOF's very cool
-			prototypes feature.</p>
+			(on Mac OS X, abbreviated PBX) or Xcode-compatible PBX.pbproj file.
+			It currently is not a general solution -- it exists solely to allow
+			EOModeler to find your project's frameworks, which is required to
+			make use of EOF's very cool prototypes feature.</p>
 
 			<p>The general usage is:</p>
 			<ol>
-				<li>Generate the PBX.proj file.
+				<li>Generate the PBX.pbproj file.
 				</li>
-				<li>Open the PBX.proj file in PBX.
+				<li>Open the PBX.pbproj file in PBX or Xcode.
 				</li>
-				<li>Double-click the <code>.eomodel</code> file in PBX to open
-				in EOModler.
+				<li>Double-click the <code>.eomodel</code> file in PBX/Xcode to
+				open in EOModler.
 				</li>
 			</ol>
 			
 			<p>It's not enough to simply open your project's <code>.eomodel</code>
-			file in the Finder -- you <b>must</b> open it in PBX for
+			file in the Finder -- you <b>must</b> open it in PBX/Xcode for
 			EOModeler to discover your project's frameworks.</p>
 
 			<h3>Parameters:</h3>
@@ -37,9 +37,15 @@
 				</tr>
 				<tr>
 					<td valign="top">projectFile</td>
-					<td valign="top">PBX.proj file location. If the file at
+					<td valign="top">PBX.pbproj file location. If the file at
 					the specified location does not exist, it is created.</td>
 					<td valign="top" align="center">Yes</td>
+				</tr>
+				<tr>
+					<td valign="top">xcode</td>
+					<td valign="top">Set to <code>"true"</code> to avoid Xcode
+					from offering to "update" the "old" PBX file upon opening.</td>
+					<td valign="top" align="center">No</td>
 				</tr>
 			</table>
 
