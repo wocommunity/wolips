@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+<toc label="WOLips User Guide" href="./doc_root/index.html">
+	<topic label="Getting Started" href="./doc_root/introduction.html"/>
+	<topic label="Concepts" href="./doc_root/concepts.html"/>
+	<topic label="Tasks" href="./doc_root/tasks/index.html">
+		<topic label="Installing" href="./doc_root/tasks/install.html"/>
+		<topic label="Wizards" href="./doc_root/tasks/wiz/index.html">
+			<topic label="New Application" href="./doc_root/tasks/wiz/new_application.html"/>
+			<topic label="New Framework" href="./doc_root/tasks/wiz/new_framework.html"/>
+			<topic label="Import Application" href="./doc_root/tasks/wiz/import_application.html"/>
+			<topic label="Import Framework" href="./doc_root/tasks/wiz/import_framework.html"/>
+			<topic label="Add Component" href="./doc_root/tasks/wiz/add_component.html"/>
+			<topic label="Add EO Model" href="./doc_root/tasks/wiz/add_eomodel.html"/>
+		</topic>
+		<topic label="Building" href="./doc_root/tasks/build.html"/>
+		<topic label="Testing" href="./doc_root/tasks/test.html"/>
+		<topic label="Launching" href="./doc_root/tasks/launch.html"/>
+		<topic label="Profiling" href="./doc_root/tasks/profile.html"/>  
+	</topic>
+	<topic label="Tips and Tricks" href="./doc_root/tips/index.html">
+		<topic label="Manipulating the Build Process" href="doc_root/tips/building.html"/>
+		<topic label="Defining Classpaths" href="doc_root/tips/classpath.html"/>
+		<topic label="Controlling the Launch Argumnet" href="doc_root/tips/launching.html"/>
+		<topic label="Organising Your Project" href="doc_root/tips/organising.html"/>
+		<topic label="Refactoring" href="doc_root/tips/refactoring.html"/>
+	</topic>
+	<topic label="FAQ" href="./doc_root/faq.html"/>
+	<topic label="Reference" href="./doc_root/reference/index.html">
+		<topic label="Preferences" href="./doc_root/reference/preferences.html"/>
+		<topic label="Project Context Menu" href="./doc_root/reference/project_context_menu.html"/>
+		<topic label="Perspectives and Views" href="./doc_root/reference/perspectives_views.html"/>
+		<topic label="Plug-ins, Features and Fragments" href="./doc_root/reference/plugins_features.html"/>
+	</topic>
+	<topic label="What's New" href="./doc_root/history.html"/>
+	<topic label="Bugs, Issues and Other Things" href="./doc_root/issues.html"/>
+	<topic label="Programmer's Guide" href="./doc_root/programmer/index.html">
+		<topic label="Inside WOLips" href="./doc_root/programmer/pde.html"/>
+		<topic label="Building From Source" href="./doc_root/programmer/build.html"/>
+		<topic label="API Reference" href="./doc_root/programmer/api/index.html"/>
+	</topic>
+	<topic label="About This Document" href="./doc_root/index.html"/>
+</toc>

@@ -27,24 +27,6 @@
   </tr>
   <tr> 
     <td align="left" valign="top"> 
-      <p><a href="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=693046&amp;group_id=50507&amp;atid=459967">693046</a></p>
-      <p>When you add local framework to using PBWO this is also added to the 
-        PB.project file: </p>
-      <p>FRAMEWORKSEARCH = ("C:\\Apple\\Local\\Library\\Frameworks");</p>
-      <p>If/when you do the same thing using WOLips this does not happen.</p>
-      <p>In addition WOLips keeps transforming the section to:</p>
-      <p>FRAMEWORKSEARCH = ( <br>
-        C:\Apple\Local\Library\Frameworks<br>
-        ); </p>
-      <p>This does not work! PBWO, EOModeler and WOBuilder all stop working.</p>
-    </td>
-    <td align="left" valign="top"> 
-      <p>Use PBWO to add local frameworks, manually fix the PB.project file each 
-        time WOLips screws it up.</p>
-    </td>
-  </tr>
-  <tr> 
-    <td align="left" valign="top"> 
       <p><a href="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=695129&amp;group_id=50507&amp;atid=459967">695129</a></p>
       <p>Importing projects with java code organised in packages doesn't work 
         properly. Either the java files are not found or they may be put in the 
@@ -82,16 +64,6 @@
           project</li>
         <li>Do not use the import wizard</li>
       </ol>
-    </td>
-  </tr>
-  <tr> 
-    <td align="left" valign="top"> 
-      <p><a href="http://sourceforge.net/tracker/index.php?func=detail&amp;aid=695157&amp;group_id=50507&amp;atid=459970">695157</a></p>
-      <p>EOModeler on Macintosh may convert the PB.project file to XML.</p>
-    </td>
-    <td align="left" valign="top"> 
-      <p>When EOModeler asks you if you want to add the file(s) to to the project 
-        - decline.</p>
     </td>
   </tr>
 </table>
@@ -133,27 +105,34 @@
       Imports set &quot;Number of imports needed for .*&quot; to 2. This should 
       be enough for most situations.</td>
   </tr>
-  <tr>
-    <td valign="top" align="left">
-      <p>Excessive use of Ant (internally) could cause Elipse to freeze and/or 
-        throw an OutOfMemoryError. This is a problem with the Ant plug-in currently 
-        shipping with Eclipse.</p>
+  <tr> 
+    <td valign="top" align="left"> 
+      <p>24448</p>
+      <p>Excessive use of Ant could cause Elipse to freeze and/or throw an OutOfMemoryError. 
+      </p>
       <p>With some late versions of Eclipse there has also been other problem 
         with the Ant plug-in.</p>
     </td>
     <td align="left" valign="top"> 
-      <p>These problems will undoubtedly be fixed by the Eclipse or the Ant team. 
-        Until then:</p>
+      <p>These problems will undoubtedly be fixed by the Ant, Eclipse or possibly 
+        WOLips team. Until then:</p>
       <ol>
-        <li>Try turning off &quot;Build after JavaBuilder&quot; in the WOLips 
-          preferences.</li>
+        <li>Try turning off &quot;<a href="reference/preferences.html#plugin_wolips_build">Build 
+          after JavaBuilder</a>&quot; in the WOLips preferences, or try &quot;<a href="reference/preferences.html#plugin_wolips_build">Run 
+          Ant as External Tool</a>&quot;.</li>
         <li>There is a <a href="http://xanthippe.dyndns.org/external/org.eclipse.ant.core_2.1.0.zip">patched 
-          org.eclipse.ant.core plug-in</a> you can try</li>
+          org.eclipse.ant.core plug-in</a> you can try. </li>
       </ol>
-      </td>
+    </td>
+  </tr>
+  <tr>
+    <td valign="top" align="left">If Xerces is on the classpath Eclipse wont start.</td>
+    <td align="left" valign="top">
+      <p>50% chance Xerces is in your classpath. If not it's probably in some 
+        jar that's in the classpath.</p>
+      <p>Please look in the Eclipse log: workspace/.metadata/.log.</p>
+    </td>
   </tr>
 </table>
-<p>&nbsp;</p>
-<p>&nbsp;</p>
 </body>
 </html>

@@ -24,14 +24,12 @@ body { font-family: arial, helvetica, geneva; font-size: 10pt; clip: rect(   ); 
 </head>
 
 <body bgcolor="#ffffff" leftmargin="0" marginwidth="0" topmargin="0" marginheight="0">
-<h1>Manipulating the Build Process</h1>
-<h2>General</h2>
+<h1>Manipulating the build process</h1>
 <p>WOLips runs the build.xml file in your project to build the target. Please 
   refer to the <a href="http://objectstyle.org/woproject/ant/index.html">woproject 
   documentation</a> and/or the <a href="http://jakarta.apache.org/ant/index.html">Ant</a> 
   documentation. You may alter this script to your liking.</p>
-<h2>Specific</h2>
-<h3><a name="destdir"></a>Change the destination directory</h3>
+<h2><a name="destdir"></a>Change the destination directory</h2>
 <p>Initially the init.build target contains this:</p>
 <blockquote> 
   <p>property name="dest.dir" value="."</p>
@@ -44,7 +42,7 @@ body { font-family: arial, helvetica, geneva; font-size: 10pt; clip: rect(   ); 
 <p>Now the build result ends up in C:\Apple\Local\Library\Frameworks (on Windows).</p>
 <p>Alternatively you could have executed the install target instead of the build 
   target. This would, in this case, already have the dest.dir property set correctly.</p>
-<h3><a name="webresource"></a>Adding web server resources</h3>
+<h2><a name="webresource"></a>Adding web server resources</h2>
 <p>The build.woframework and/or build.woapp targets contain a section like this:</p>
 <p>&lt;wsresources dir=&quot;.&quot;&gt;<br>
   &lt;include name=&quot;addYourWebServerResourcesHere&quot;&gt;<br>

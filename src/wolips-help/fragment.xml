@@ -19,7 +19,7 @@
 <!-- ============================================== -->
 
     <extension point="org.eclipse.help.toc">
-        <toc file="doc_root/toc_root.xml" primary="true" />
+        <toc file="toc_root.xml" primary="true" />
     </extension>
        	
 </fragment>
