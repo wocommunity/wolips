@@ -55,38 +55,34 @@
  */
 package org.objectstyle.wolips.actions;
 
-import org.eclipse.core.resources.ICommand;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.ui.IActionDelegate;
 import org.objectstyle.wolips.project.ProjectHelper;
 
-public class WOBuilderAction implements IActionDelegate {
-	private IProject project;
+public class WOBuilderAction extends ActionOnIProject {
 
+	private static String WOBuilderRemoveID = "WOBuilder.Remove.ID";
+	private static String WOFrameworkBuilderSetID = "WOFrameworkBuilder.Set.ID";
+	private static String WOApplicationBuilderSetID = "WOApplicationBuilder.Set.ID";
+	
 	public WOBuilderAction() {
 		super();
 	}
 
-
-	public void dispose() {
-	}
 	
 	public void run(IAction action) {
-		if ( project != null ){
+		if ( project() != null ){
 			try {
-			if ( action.getId().equals("WOBuilder.Remove.ID") ) {	
-				ProjectHelper.removeWOBuilder(project, ProjectHelper.WOAPPLICATION_BUILDER_ID);
-				ProjectHelper.removeWOBuilder(project, ProjectHelper.WOFRAMEWORK_BUILDER_ID);
+			if ( action.getId().equals(WOBuilderAction.WOBuilderRemoveID) ) {	
+				ProjectHelper.removeWOBuilder(project(), ProjectHelper.WOAPPLICATION_BUILDER_ID);
+				ProjectHelper.removeWOBuilder(project(), ProjectHelper.WOFRAMEWORK_BUILDER_ID);
 				}
 			else {
-				if ( action.getId().equals("WOFrameworkBuilder.Set.ID") )
-				ProjectHelper.installWOBuilder(project, ProjectHelper.WOFRAMEWORK_BUILDER_ID);
+				if ( action.getId().equals(WOBuilderAction.WOFrameworkBuilderSetID) )
+				ProjectHelper.installWOBuilder(project(), ProjectHelper.WOFRAMEWORK_BUILDER_ID);
 				else {
-				ProjectHelper.installWOBuilder(project, ProjectHelper.WOAPPLICATION_BUILDER_ID);
+				ProjectHelper.installWOBuilder(project(), ProjectHelper.WOAPPLICATION_BUILDER_ID);
 				}
 			}
 			}
@@ -98,17 +94,16 @@ public class WOBuilderAction implements IActionDelegate {
 
 
 	public void selectionChanged(IAction action, ISelection selection) {
-		Object obj = (((IStructuredSelection) selection).getFirstElement());
-		if ( obj != null && obj instanceof IProject ) {
-			project = ((IProject)obj).getProject();
-				if ( action.getId().equals("WOFrameworkBuilder.Set.ID") ) {
-					action.setEnabled(!ProjectHelper.isWOFwBuilderInstalled(project));
+		super.selectionChanged(action, selection);
+		if ( project() != null) {
+			if ( action.getId().equals(WOBuilderAction.WOFrameworkBuilderSetID) ) {
+					action.setEnabled(!ProjectHelper.isWOFwBuilderInstalled(project()));
 				}
-				if ( action.getId().equals("WOApplicationBuilder.Set.ID") ) {
-					action.setEnabled(!ProjectHelper.isWOAppBuilderInstalled(project));
+				if ( action.getId().equals(WOBuilderAction.WOApplicationBuilderSetID) ) {
+					action.setEnabled(!ProjectHelper.isWOAppBuilderInstalled(project()));
 				}
-				if ( action.getId().equals("WOBuilder.Remove.ID") ) {
-					action.setEnabled(ProjectHelper.isWOAppBuilderInstalled(project) || ProjectHelper.isWOFwBuilderInstalled(project));
+				if ( action.getId().equals(WOBuilderAction.WOBuilderRemoveID) ) {
+					action.setEnabled(ProjectHelper.isWOAppBuilderInstalled(project()) || ProjectHelper.isWOFwBuilderInstalled(project()));
 				}
 		}
 		else {

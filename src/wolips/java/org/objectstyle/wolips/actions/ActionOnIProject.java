@@ -53,14 +53,15 @@
  * <http://objectstyle.org/>.
  *
  */
+ 
+ package org.objectstyle.wolips.actions;
 
-package org.objectstyle.wolips.actions;
-
-import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
-import org.objectstyle.wolips.WOLipsPlugin;
-import org.objectstyle.wolips.project.ProjectHelper;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.ui.IActionDelegate;
 
 /**
  * @author uli
@@ -70,39 +71,34 @@ import org.objectstyle.wolips.project.ProjectHelper;
  * To enable and disable the creation of type comments go to
  * Window>Preferences>Java>Code Generation.
  */
-public class PBAction extends ActionOnIProject {
+public class ActionOnIProject implements IActionDelegate {
 	
-	private static String UpdatePBProjectSetID = "UpdatePB.Project.Set.ID";
+	private IProject project;
+	private IJavaProject javaProject;
 	
-	public PBAction() {
+	public ActionOnIProject() {
 		super();
 	}
-	
+
+	protected IProject project() {
+		return project;
+	}
+		
+	public void dispose() {
+	}
+
 	public void run(IAction action) {
-		System.out.println("PBAction.run");
-		if ( project() != null ){
-			try {
-			if ( action.getId().equals(PBAction.UpdatePBProjectSetID) )
-				System.out.println("PBProjectUpdater: " + project());	
-				WOLipsPlugin.getDefault().getProjectUpdater(project()).updatePBProject();
-			}
-			catch (CoreException ex) {
-				System.out.println(ex.getMessage());
-			}
-		}
 	}
-
-
+	
 	public void selectionChanged(IAction action, ISelection selection) {
-		super.selectionChanged(action, selection);
-		if ( project() != null) {
-			if ( action.getId().equals(PBAction.UpdatePBProjectSetID) ) {
-					action.setEnabled(ProjectHelper.isWOFwBuilderInstalled(project()) || ProjectHelper.isWOAppBuilderInstalled(project()));
-				}
-		}
-		else {
-			action.setEnabled(false);
-		}
+		Object obj = (((IStructuredSelection) selection).getFirstElement());
+		System.out.println("Instance of first element: " + obj.getClass());
+		project = null;
+		if ( obj != null && obj instanceof IProject )
+			project = ((IProject)obj).getProject();
+		if ( obj != null && obj instanceof IJavaProject )
+			project = ((IJavaProject)obj).getProject();
 	}
+
 
 }
