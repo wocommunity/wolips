@@ -216,7 +216,7 @@ public class AppFormat extends ProjectFormat {
 			try {
 				fs = (FrameworkSet) frameworkSets.get(i);
 				// Don't bother checking if it's embedded.
-				if( !fs.isReference() ) {
+				if (!fs.isReference()) {
 					log(
 						"fs.createPatternSet().getIncludePatterns(project) "
 							+ fs.createPatternSet().getIncludePatterns(project),
@@ -226,17 +226,18 @@ public class AppFormat extends ProjectFormat {
 							+ fs.createPatternSet().getExcludePatterns(project),
 						Project.MSG_VERBOSE);
 				}
-				if (true/*
-					|| fs.hasSelectors()
-					|| (fs.hasPatterns()
-						&& fs.createPatternSet() != null
-						&& (fs.createPatternSet().createInclude() != null
-							&& fs.createPatternSet().createExclude() != null
-							&& (fs.createPatternSet().getIncludePatterns(project)
-								!= null
-								|| fs.createPatternSet().getExcludePatterns(
-									project)
-									!= null)))*/) {
+				if (true /*
+									|| fs.hasSelectors()
+									|| (fs.hasPatterns()
+										&& fs.createPatternSet() != null
+										&& (fs.createPatternSet().createInclude() != null
+											&& fs.createPatternSet().createExclude() != null
+											&& (fs.createPatternSet().getIncludePatterns(project)
+												!= null
+												|| fs.createPatternSet().getExcludePatterns(
+													project)
+													!= null)))*/
+					) {
 					if (fs.getEmbed()) {
 						continue;
 					}
@@ -312,16 +313,17 @@ public class AppFormat extends ProjectFormat {
 			for (int i = 0; i < size; i++) {
 
 				OtherClasspathSet cs = (OtherClasspathSet) classpathSets.get(i);
-				if (true/*cs.hasSelectors()
-					|| (cs.hasPatterns()
-						&& cs.createPatternSet() != null
-						&& (cs.createPatternSet().createInclude() != null
-							&& cs.createPatternSet().createExclude() != null
-							&& (cs.createPatternSet().getIncludePatterns(project)
-								!= null
-								|| cs.createPatternSet().getExcludePatterns(
-									project)
-									!= null)))*/)
+				if (true /*cs.hasSelectors()
+									|| (cs.hasPatterns()
+										&& cs.createPatternSet() != null
+										&& (cs.createPatternSet().createInclude() != null
+											&& cs.createPatternSet().createExclude() != null
+											&& (cs.createPatternSet().getIncludePatterns(project)
+												!= null
+												|| cs.createPatternSet().getExcludePatterns(
+													project)
+													!= null)))*/
+					)
 					cs.collectClassPaths(project, pathSet);
 			}
 		} catch (BuildException be) {
@@ -346,8 +348,8 @@ public class AppFormat extends ProjectFormat {
 		}
 		return buf.toString();
 	} /** 
-						 * Prepare mappings for Windows subdirectory. 
-						 */
+							 * Prepare mappings for Windows subdirectory. 
+							 */
 	private void prepareWindows() {
 		File winDir = new File(getApplicatonTask().contentsDir(), "Windows");
 		String cp = new File(winDir, "CLSSPATH.TXT").getPath();
@@ -371,8 +373,8 @@ public class AppFormat extends ProjectFormat {
 			topRunScript,
 			woappPlusVersion() + "/Contents/Windows/appstart.cmd");
 	} /** 
-						 * Prepare mappings for UNIX subdirectory. 
-						 */
+							 * Prepare mappings for UNIX subdirectory. 
+							 */
 	private void prepareUnix() {
 		File dir = new File(getApplicatonTask().contentsDir(), "UNIX");
 		String cp = new File(dir, "UNIXClassPath.txt").getPath();
@@ -381,8 +383,8 @@ public class AppFormat extends ProjectFormat {
 			woappPlusVersion() + "/Contents/UNIX/UNIXClassPath.txt",
 			classpathFilter('/'));
 	} /** 
-						 * Prepare mappings for MacOS subdirectory. 
-						 */
+							 * Prepare mappings for MacOS subdirectory. 
+							 */
 	private void prepareMac() {
 		File macDir = new File(getApplicatonTask().contentsDir(), "MacOS");
 		String cp = new File(macDir, "MacOSClassPath.txt").getPath();
@@ -408,8 +410,8 @@ public class AppFormat extends ProjectFormat {
 			topRunScript,
 			woappPlusVersion() + "/Contents/MacOS/appstart");
 	} /** 
-						 * Creates a filter for Classpath helper files.
-						 */
+							 * Creates a filter for Classpath helper files.
+							 */
 	private FilterSet classpathFilter(char pathSeparator) {
 		FilterSet filter = new FilterSet();
 		if (pathSeparator == File.separatorChar) {
@@ -430,25 +432,35 @@ public class AppFormat extends ProjectFormat {
 
 		return filter;
 	} /**
-						 * Method getAppClass.
-						 * @return String
-						 */
+							 * Method getAppClass.
+							 * @return String
+							 */
 	private String getAppClass() {
 		return task.getPrincipalClass();
 	} /**
-						 * Method createMappings.
-						 * @param fileName
-						 * @param template
-						 * @param filter
-						 */
+							 * Method createMappings.
+							 * @param fileName
+							 * @param template
+							 * @param filter
+							 */
 	private void createMappings(
 		String fileName,
 		String template,
 		FilterSet filter) {
+		FilterSetCollection fsCollection = new FilterSetCollection(filter);
+		FilterSet additionalBuildSettingsFilter =
+			additionalBuildSettingsFilter();
+
 		filter.addFilter("APP_CLASS", getAppClass());
 		filter.addFilter("JAR_NAME", getJarName());
-		createMappings(fileName, template, new FilterSetCollection(filter));
-	} /**
+
+		if (additionalBuildSettingsFilter != null) {
+			fsCollection.addFilterSet(additionalBuildSettingsFilter);
+		}
+
+		createMappings(fileName, template, fsCollection);
+	}
+	/**
 						 * Method createMappings.
 						 * @param fileName
 						 * @param template
@@ -456,11 +468,11 @@ public class AppFormat extends ProjectFormat {
 	private void createMappings(String fileName, String template) {
 		createMappings(fileName, template, (FilterSetCollection) null);
 	} /**
-						 * Method createMappings.
-						 * @param fileName
-						 * @param template
-						 * @param filter
-						 */
+							 * Method createMappings.
+							 * @param fileName
+							 * @param template
+							 * @param filter
+							 */
 	private void createMappings(
 		String fileName,
 		String template,
@@ -468,19 +480,19 @@ public class AppFormat extends ProjectFormat {
 		templateMap.put(fileName, template);
 		filterMap.put(fileName, filter);
 	} /**
-						 * Method getApplicatonTask.
-						 * @return WOApplication
-						 */
+							 * Method getApplicatonTask.
+							 * @return WOApplication
+							 */
 	private WOApplication getApplicatonTask() {
 		return (WOApplication) task;
 	} /**
-						 * @see org.objectstyle.woproject.ant.ProjectFormat#fileIterator()
-						 */
+							 * @see org.objectstyle.woproject.ant.ProjectFormat#fileIterator()
+							 */
 	public Iterator fileIterator() {
 		return templateMap.keySet().iterator();
 	} /**
-						 * @see org.objectstyle.woproject.ant.ProjectFormat#templateForTarget(java.lang.String)
-						 */
+							 * @see org.objectstyle.woproject.ant.ProjectFormat#templateForTarget(java.lang.String)
+							 */
 	public String templateForTarget(String targetName) throws BuildException {
 		String template = (String) templateMap.get(targetName);
 		if (template == null) {
@@ -489,8 +501,8 @@ public class AppFormat extends ProjectFormat {
 		}
 		return template;
 	} /**
-						 * @see org.objectstyle.woproject.ant.ProjectFormat#filtersForTarget(java.lang.String)
-						 */
+							 * @see org.objectstyle.woproject.ant.ProjectFormat#filtersForTarget(java.lang.String)
+							 */
 	public FilterSetCollection filtersForTarget(String targetName)
 		throws BuildException {
 
@@ -499,9 +511,9 @@ public class AppFormat extends ProjectFormat {
 		}
 		return (FilterSetCollection) filterMap.get(targetName);
 	} /**
-						 * Method woappPlusVersion returns the template name.
-						 * @return String
-						 */
+							 * Method woappPlusVersion returns the template name.
+							 * @return String
+							 */
 	public String woappPlusVersion() {
 		if (this
 			.getApplicatonTask()
@@ -509,5 +521,16 @@ public class AppFormat extends ProjectFormat {
 			.wo5or51(this.getApplicatonTask().getProject()))
 			return "woapp";
 		return "woapp_52";
+	}
+
+	private FilterSet additionalBuildSettingsFilter() {
+		String jvmOptions = getApplicatonTask().getJvmOptions();
+		if (jvmOptions != null) {
+			FilterSet filter = new FilterSet();
+			filter.addFilter("JVM_OPTIONS", jvmOptions);
+			return filter;
+		}
+
+		return null;
 	}
 }

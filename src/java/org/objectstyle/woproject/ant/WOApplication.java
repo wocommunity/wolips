@@ -96,6 +96,7 @@ public class WOApplication extends WOTask {
     protected boolean embedStdFrameworks = false;
     private WOEnvironment woEnvironment;
     protected String chmod = "gu+x";
+	protected String jvmOptions;
 
     public void release() {
         super.release();
@@ -390,4 +391,23 @@ public class WOApplication extends WOTask {
         chmod = string;
     }
 
+
+	/**
+	* Method setJvmOptions.
+	* @param jvmOptions
+	*/
+	public void setJvmOptions(String jvmOptions) {
+		if(jvmOptions == null){
+			this.jvmOptions = "";
+		}
+		this.jvmOptions = jvmOptions;
+	}
+    
+	/**
+	* Method getJvmOptions.
+	* @return String
+	*/
+	public String getJvmOptions() {
+		return jvmOptions;
+	}
 }

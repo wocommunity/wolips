@@ -94,6 +94,11 @@
 					JavaFoundation, JavaJDBCAdaptor, JavaXML.</td>
 					<td valign="top" align="center">No</td>
 				</tr>
+				<tr>
+					<td valign="top">jvmOptions</td>
+					<td valign="top">String for the JVM options in the classpath.</td>
+					<td valign="top" align="center">NO</td>
+				</tr>
 			</table>
 
 			<h3>Nested elements:</h3>
