@@ -172,7 +172,11 @@ public final class PBProjectUpdater {
             PBProjectUpdater updater = null;
             if(container != null) {
                 updater = new PBProjectUpdater(container);
+                if (null == updater.pbProject) {
+                  updater = null;
+                }
             }
+            
             return updater;
 	}
 
