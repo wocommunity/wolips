@@ -41,6 +41,7 @@
    <extension
          point="org.eclipse.ui.popupMenus">
       <objectContribution
+            id="org.objectstyle.wolips.target.actions"
             objectClass="org.eclipse.core.resources.IProject"
             adaptable="true">
          <filter
