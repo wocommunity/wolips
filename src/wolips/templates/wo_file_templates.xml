@@ -233,6 +233,10 @@ public class DirectAction extends WODirectAction {
 		<woapplication name="${project.name}"  stdFrameworks="false" destDir="${dest.dir}">
    			<classes dir="${classes.dir}">
    			</classes>
+   			<wsresources dir=".">
+   				<include name="addYourWebServerResourcesHere"/>
+				<exclude name="**/*.woa/**"/>
+			</wsresources>
    			<resources dir=".">
 				<include name="Properties"/>
    				<include name="**/*.eomodeld/"/>
@@ -335,6 +339,10 @@ project.name = ${PROJECT_NAME}
 		<woframework name="${framework.name}" destDir="${dest.dir}">
    			<classes dir="${classes.dir}">
    			</classes>
+   			<wsresources dir=".">
+   				<include name="addYourWebServerResourcesHere"/>
+				<exclude name="**/*.framework/**"/>
+			</wsresources>
    			<resources dir=".">
 				<include name="Properties"/>
        			<include name="**/*.eomodeld/"/>
