@@ -1,16 +1,14 @@
 <project name="MailJava" default="all">
-<!-- generic build script for a jar framework. Requires one argument: FW_NAME, the framework name. -->
     <target name="setProps" unless="setProps" >
         <property environment="env"/>
         <property name="next_root" value="${env.NEXT_ROOT}"/>
-        <property name="local_fw_root" value="${next_root}/Local/Library/Frameworks"/>
         <property name="fw_install_dir" value="../../dist/Frameworks"/>
-        <property name="fw_name" value="MailJava"/>
+
     </target>
 
     <target name="init" depends="setProps" description="initialize properties">
         <tstamp/>
-        <property name="install_framework" value="${fw_install_dir}/${fw_name}.framework"/>
+        <property name="install_framework" value="${fw_install_dir}/${ant.project.name}.framework"/>
     </target>
 
     <target name="clean" depends="init" description="remove derived files and directories">
@@ -19,8 +17,8 @@
 
     <target name="package" depends="init" description="package jars as framework">
         <taskdef name="woframework" classname="org.objectstyle.woproject.ant.WOFramework"/>
-        <woframework name="${fw_name}" destDir="${fw_install_dir}">
-            <lib dir=".">
+        <woframework name="${ant.project.name}" destDir="${fw_install_dir}">
+            <lib dir="${basedir}">
                 <include name="*.jar"/>
             </lib>
         </woframework>

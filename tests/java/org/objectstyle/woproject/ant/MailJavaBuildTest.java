@@ -61,7 +61,7 @@ import java.io.File;
 import org.apache.tools.ant.*;
 
 /**
- * A test case that builds the MailJava framework using its ant buildfile
+ * A test case that builds the MailJava and MailUtilities frameworks
  * then does various assertions about what ant produced.
  *
  * @author Emily Bache
@@ -74,22 +74,27 @@ public class MailJavaBuildTest extends BuildTestCase {
         super(name);
     }
 
-    public void setUp() throws Exception {
-        super.setUp();
+
+    public void testBuildMailJava() throws Exception {
         String projectDir = "tests/wo/frameworks/MailJava";
-        project = getProject(new File(projectDir), new File(projectDir, "build.xml"));
-    }
-
-    public void tearDown() throws Exception {
-
-        super.tearDown();
-    }
-
-    public void testFilesPresent() throws Exception {
+        Project project = getProject(new File(projectDir), new File(projectDir, "build.xml"));
         String defaultTarget = project.getDefaultTarget();
         project.executeTarget(defaultTarget);
+
         FrameworkStructure fw = new FrameworkStructure("MailJava");
         fw.setJars(new String[]{"activation", "mail"});
+
+        assertStructure(fw);
+    }
+
+    public void testBuildMailUtilities() throws Exception {
+        String projectDir = "tests/wo/frameworks/MailUtilities";
+        Project project = getProject(new File(projectDir), new File(projectDir, "build.xml"));
+        String defaultTarget = project.getDefaultTarget();
+        project.executeTarget(defaultTarget);
+
+        FrameworkStructure fw = new FrameworkStructure("MailUtilities");
+        fw.setJars(new String[]{"mailutilities"});
 
         assertStructure(fw);
     }
