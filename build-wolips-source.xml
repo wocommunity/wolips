@@ -12,26 +12,23 @@
     <!-- Define CLASSPATH settings.                    -->
     <!-- ============================================= -->
     <target name="defineClasspath">
-        <condition property="next.root" value="/System">
-            <and>
-                <os family="mac" />
-                <os family="unix" />
-            </and>
-        </condition>
-        <path id="classpath">
-            <fileset dir="${ant.home}/lib">
-                <include name="ant.jar"/>
-            </fileset>
-            <fileset dir="lib">
-                <include name="*.jar"/>
-	            <include name="eclipse/**/*.jar"/>
-            </fileset>
-            <fileset dir="${wo.woroot}/Library/Frameworks">
-                <include name="JavaFoundation.framework/Resources/Java/*.jar"/>
-            </fileset>
-             <!-- Depends on WOProject core. -->
-            <pathelement path="${build}/main"/>
-        </path>
+
+    <path id="classpath">
+        <fileset dir="${ant.home}/lib">
+            <include name="ant.jar"/>
+        </fileset>
+        <fileset dir="lib">
+            <include name="*.jar"/>
+        </fileset>
+        <fileset dir="${wo.woroot}/Library/Frameworks">
+            <include name="JavaEOAccess.framework/Resources/Java/*.jar"/>
+            <include name="JavaEOControl.framework/Resources/Java/*.jar"/>
+            <include name="JavaFoundation.framework/Resources/Java/*.jar"/>
+            <include name="JavaWebObjects.framework/Resources/Java/*.jar"/>
+            <include name="JavaJDBCAdaptor.framework/Resources/Java/*.jar"/>
+        </fileset>
+    </path>
+
     </target>
 
     <target name="java" depends="prepare">
@@ -116,7 +113,6 @@
             <pathelement path="${wolips.source.dist}/src"/>
         </sourcepath>
         <doctitle><![CDATA[<h2>WOLips API Documentation</h2>]]></doctitle>
-        <link href="http://developer.java.sun.com/developer/products/xml/docs/api/"/>
         </javadoc>
     </target>
     
