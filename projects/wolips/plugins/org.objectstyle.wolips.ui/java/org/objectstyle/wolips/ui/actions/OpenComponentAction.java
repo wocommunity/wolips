@@ -61,7 +61,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.action.IAction;
 import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
-import org.objectstyle.wolips.workbenchutilities.actions.ActionOnIResource;
+import org.objectstyle.wolips.workbenchutilities.actions.AbstractActionOnIResource;
 
 /**
  * @author uli
@@ -71,7 +71,7 @@ import org.objectstyle.wolips.workbenchutilities.actions.ActionOnIResource;
  * To enable and disable the creation of type comments go to
  * Window>Preferences>Java>Code Generation.
  */
-public class OpenComponentAction extends ActionOnIResource {
+public class OpenComponentAction extends AbstractActionOnIResource {
 
 	/**
 	 * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)

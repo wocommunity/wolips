@@ -67,12 +67,12 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.widgets.Shell;
 import org.objectstyle.wolips.ant.AntPlugin;
 import org.objectstyle.wolips.ant.launching.LaunchAntInExternalVM;
-import org.objectstyle.wolips.workbenchutilities.actions.ActionOnIResource;
+import org.objectstyle.wolips.workbenchutilities.actions.AbstractActionOnIResource;
 
 /**
  * @author ulrich
  */
-public abstract class AbstractInstallAction extends ActionOnIResource {
+public abstract class AbstractInstallAction extends AbstractActionOnIResource {
 
 	protected void install(IProject[] projects) {
 		ProgressMonitorDialog progressMonitorDialog = new ProgressMonitorDialog(

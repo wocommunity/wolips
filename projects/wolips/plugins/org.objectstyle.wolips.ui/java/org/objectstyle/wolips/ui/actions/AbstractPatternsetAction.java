@@ -63,12 +63,12 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 import org.eclipse.jface.window.Window;
 import org.objectstyle.wolips.datasets.adaptable.Project;
-import org.objectstyle.wolips.workbenchutilities.actions.ActionOnIResource;
+import org.objectstyle.wolips.workbenchutilities.actions.AbstractActionOnIResource;
 
 /**
  * @author ulrich
  */
-public abstract class AbstractPatternsetAction extends ActionOnIResource {
+public abstract class AbstractPatternsetAction extends AbstractActionOnIResource {
 
 	/**
 	 * @return the project
@@ -134,6 +134,5 @@ public abstract class AbstractPatternsetAction extends ActionOnIResource {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		super.run(action);
 	}
 }

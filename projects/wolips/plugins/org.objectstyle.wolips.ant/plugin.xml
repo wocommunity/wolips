@@ -39,6 +39,7 @@
             id="org.objectstyle.wolips.ant.ui.FixWaitingForVirtualMachineToExitActions">
          <action
                label="Fix 'Waiting for virtual machine to exit' bug"
+               icon="icons/action/ant_buildfile.gif"
                class="org.objectstyle.wolips.ant.ui.FixWaitingForVirtualMachineToExitAction"
                menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group6"
                enablesFor="1"
@@ -51,6 +52,7 @@
             id="org.objectstyle.wolips.ant.ui.InstallActions">
          <action
                label="Install..."
+               icon="icons/action/ant_buildfile.gif"
                class="org.objectstyle.wolips.ant.ui.InstallWithSelectionDialogAction"
                menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group5"
                enablesFor="1"
@@ -58,6 +60,7 @@
          </action>
          <action
                label="Install"
+               icon="icons/action/ant_buildfile.gif"
                class="org.objectstyle.wolips.ant.ui.InstallAction"
                menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group5"
                enablesFor="1"

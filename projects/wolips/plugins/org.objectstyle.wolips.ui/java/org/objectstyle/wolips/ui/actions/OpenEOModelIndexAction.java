@@ -59,7 +59,7 @@ package org.objectstyle.wolips.ui.actions;
 import java.util.ArrayList;
 import org.eclipse.jface.action.IAction;
 import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
-import org.objectstyle.wolips.workbenchutilities.actions.ActionOnIResource;
+import org.objectstyle.wolips.workbenchutilities.actions.AbstractActionOnIResource;
 
 /**
  * @author ulrich
@@ -67,7 +67,7 @@ import org.objectstyle.wolips.workbenchutilities.actions.ActionOnIResource;
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public class OpenEOModelIndexAction extends ActionOnIResource {
+public class OpenEOModelIndexAction extends AbstractActionOnIResource {
 
 	private final String eoModelExtension = ".eomodeld";
 	/**

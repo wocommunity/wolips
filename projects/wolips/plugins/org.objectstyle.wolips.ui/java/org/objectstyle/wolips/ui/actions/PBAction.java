@@ -61,14 +61,14 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.objectstyle.wolips.datasets.adaptable.Project;
 import org.objectstyle.wolips.ui.UIPlugin;
-import org.objectstyle.wolips.workbenchutilities.actions.ActionOnIResource;
+import org.objectstyle.wolips.workbenchutilities.actions.AbstractActionOnIResource;
 
 /**
  * @author uli
  * 
  * The Action for updating the PB.project file.
  */
-public class PBAction extends ActionOnIResource {
+public class PBAction extends AbstractActionOnIResource {
 
 	private static String UpdatePBProjectID = "org.objectstyle.wolips.ui.actions.PBAction";
 
