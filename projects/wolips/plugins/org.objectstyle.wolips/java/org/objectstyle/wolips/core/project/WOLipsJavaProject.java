@@ -70,12 +70,10 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
-import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.objectstyle.woenvironment.util.FileStringScanner;
 import org.objectstyle.wolips.core.logging.WOLipsLog;
 import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
@@ -650,26 +648,6 @@ public final class WOLipsJavaProject
 		 */
 		protected LaunchParameterAccessor(WOLipsJavaProject wolipsJavaProject) {
 			super(wolipsJavaProject);
-		}
-
-		/**
-		 * Method getWOApplicationClassNameArgument.
-		 * @return String
-		 */
-		public String getWOApplicationClassNameArgument(ILaunchConfiguration config) {
-			String main = null;
-			try {
-				main =
-					config.getAttribute(
-						IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME,
-						"");
-			} catch (Exception anException) {
-				WOLipsLog.log(anException);
-				return "";
-			}
-			if ("".equals(main))
-				return "";
-			return main;
 		}
 
 		public boolean isOnMacOSX() {
