@@ -54,21 +54,27 @@
  *
  */
  
- package org.objectstyle.wolips.wizards;
+package org.objectstyle.wolips.wizards;
 
-import org.objectstyle.wolips.wo.WOVariables;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
+import org.objectstyle.wolips.project.ProjectHelper;
 
 /**
+ * @author mnolte
  * @author uli
- *
-*/
-public class NewWOApplicationWizard extends NewWOProjectWizard {
+ */
+public class NewWO51FrameworkWizard extends NewWOProjectWizard{
 
 	/**
-	 * Constructor for NewWOApplicationWizard.
+	 * Constructor for NewWOFrameworkWizard.
 	 */
-	public NewWOApplicationWizard() {
+	public NewWO51FrameworkWizard() {
 		super();
-		projectTemplateID = WOVariables.woProjectTypeJavaApplication();
+		projectTemplateID = "JavaWebObjectsFramework.5.1";
+	}
+
+public void installBuilder(IProject aProject) throws CoreException {
+		ProjectHelper.installBuilder(aProject, ProjectHelper.WOFRAMEWORK_BUILDER_ID);
 	}
 }

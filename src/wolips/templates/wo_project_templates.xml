@@ -29,7 +29,7 @@
 >
 ]>
 <projectTypes>
-	<projectType name="Java WebObjects Application" id="JavaWebObjectsApplication">
+	<projectType name="Java WebObjects Application" id="JavaWebObjectsApplication.5.1">
 		<nature id="org.eclipse.jdt.core.javanature"/>
 		<classpath variables="webobjects.system.library.dir">
 			<classpathentry kind="lib" path="${webobjects.system.library.dir}/Frameworks/JavaWebObjects.framework/Resources/Java/javawebobjects.jar"/>
@@ -61,7 +61,7 @@
 			<file templateId="woapplication.icon" name="WOAfile.icns"/>
 		</files>
 	</projectType>
-	<projectType name="Java WebObjects Framework" id="JavaWebObjectsFramework">
+	<projectType name="Java WebObjects Framework" id="JavaWebObjectsFramework.5.1">
 		<nature id="org.eclipse.jdt.core.javanature"/>
 		<classpath variables="webobjects.system.library.dir">
 

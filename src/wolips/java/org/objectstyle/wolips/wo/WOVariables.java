@@ -74,14 +74,6 @@ public class WOVariables {
 		return "PB.project";
 	}
 	
-	public static String woProjectTypeJavaApplication() {
-		return "JavaWebObjectsApplication";
-	}
-	
-	public static String woProjectTypeJavaFramework() {
-		return "JavaWebObjectsFramework";
-	}
-	
 	public static String classPathVariableToExpand(String aString) {
 		String returnValue = "";
 		if (aString != null) {

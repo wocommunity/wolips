@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin
    id="org.objectstyle.wolips"
-   name="WOLips Plug-in"
-   version="0.8.7"
-   provider-name="objectstyle.org parts Assense Software Solutions GmbH"
+   name="%WOLips.pluginName"
+   version="0.8.8"
+   provider-name="%WOLips.providerName"
    class="org.objectstyle.wolips.WOLipsPlugin">
 
    <runtime>
@@ -41,31 +41,31 @@
 	<extension 
 		point="org.eclipse.ui.newWizards">
 		<category
-	   		id = "org.objectstyle.wolips.wizards"
-	   		name="%WOLips.categoryName">
+	   		id = "org.objectstyle.wolips.wizards.webobjects.5.1"
+	   		name="%WOLips.webobjects.5.1.categoryName">
 		</category>
 		<wizard
-            		name="Component"
+            		name="%WOLips.Component"
             		icon="icons/wobuilder/wocomponent_wiz.gif"
-            		category="org.objectstyle.wolips.wizards"
-            		class="org.objectstyle.wolips.wizards.NewWOComponentWizard"
-            		id="org.objectstyle.wolips.wizards.new.wocomponent">
+            		category="org.objectstyle.wolips.wizards.webobjects.5.1"
+            		class="org.objectstyle.wolips.wizards.NewWO51ComponentWizard"
+            		id="org.objectstyle.wolips.wizards.new.wo.5.1.component">
       		</wizard>
       		<wizard
-            		name="Application"
+            		name="%WOLips.Application"
             		icon="icons/woproject/woproject_wiz.gif"
-            		category="org.objectstyle.wolips.wizards"
-            		class="org.objectstyle.wolips.wizards.NewWOApplicationWizard"
-            		id="org.objectstyle.wolips.wizards.new.woapplication">
+            		category="org.objectstyle.wolips.wizards.webobjects.5.1"
+            		class="org.objectstyle.wolips.wizards.NewWO51ApplicationWizard"
+            		id="org.objectstyle.wolips.wizards.new.wo.5.1.application">
          	<description>
          	</description>
       		</wizard>
 			<wizard
-            		name="Framework"
+            		name="%WOLips.Framework"
             		icon="icons/woproject/woproject_wiz.gif"
-            		category="org.objectstyle.wolips.wizards"
-            		class="org.objectstyle.wolips.wizards.NewWOFrameworkWizard"
-            		id="org.objectstyle.wolips.wizards.new.woframework">
+            		category="org.objectstyle.wolips.wizards.webobjects.5.1"
+            		class="org.objectstyle.wolips.wizards.NewWO51FrameworkWizard"
+            		id="org.objectstyle.wolips.wizards.new.wo.5.1.framework">
          	<description>
          	</description>
    			</wizard>
@@ -205,4 +205,21 @@
       </editor>
    </extension>
 
+	<extension point="org.eclipse.ui.importWizards">
+		<wizard
+		   id="org.objectstyle.wolips.wizards.ImportApplicationWizard"
+		   name="%ApplicationImportWizard.label"
+		   class="org.objectstyle.wolips.wizards.ImportApplicationWizard"
+		   icon="icons/full/ctool16/exportjar_wiz.gif">
+		   <description>%ApplicationImportWizard..description</description>
+		</wizard>
+		<wizard
+		   id="org.objectstyle.wolips.wizards.ImportFrameworkWizard"
+		   name="%FrameworkImportWizard.label"
+		   class="org.objectstyle.wolips.wizards.ImportFrameworkWizard"
+		   icon="icons/full/ctool16/exportjar_wiz.gif">
+		   <description>%FrameworkImportWizard..description</description>
+		</wizard>
+	</extension>
+	
 </plugin>

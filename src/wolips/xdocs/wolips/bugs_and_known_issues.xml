@@ -17,6 +17,7 @@
 	</section>
 	
 	<section name="Known Issues">
+		<p>Currently you can not use the ant scripts outside of Eclipse.</p>
 		<p>There seems to be some problems with Java 1.4.</p>
 		<p>Please use a 1.4* version of ant to build wolips. There is currently no support for ant1.5.* within Eclipse.</p>
 	</section>

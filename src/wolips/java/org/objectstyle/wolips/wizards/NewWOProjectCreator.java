@@ -65,7 +65,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.CoreException;
@@ -76,14 +75,9 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
-import org.eclipse.jdt.internal.ui.preferences.NewJavaProjectPreferencePage;
-import org.eclipse.jdt.internal.ui.util.CoreUtility;
-import org.eclipse.jdt.internal.ui.wizards.buildpaths.BuildPathsBlock;
 import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.eclipse.swt.widgets.Shell;
 import org.objectstyle.wolips.WOLipsPlugin;
 import org.objectstyle.wolips.io.FileFromTemplateCreator;
 import org.objectstyle.wolips.io.FileFromTemplateCreator.FileCreationException;
@@ -137,15 +131,13 @@ public class NewWOProjectCreator implements IRunnableWithProgress {
 	private IProject newProject;
 	private static Document templateDocument;
 	private Element elementForTemplate;
-	private String templateID;
 	private ArrayList variableList;
 	/**
 	 * Constructor for WOProjectCreator.
 	 */
-	public NewWOProjectCreator(IProject newProject, String templateID) {
+	public NewWOProjectCreator(IProject newProject) {
 		super();
 		this.newProject = newProject;
-		this.templateID = templateID;
 	}
 
 	/**
@@ -164,7 +156,7 @@ public class NewWOProjectCreator implements IRunnableWithProgress {
 
 			if (elementForTemplate == null) {
 				elementForTemplate =
-					getProjectTemplateDocument().getElementById(templateID);
+					getProjectTemplateDocument().getElementById(NewWOProjectWizard.runningWizard().projectTemplateID);
 			}
 
 			NodeList natureNodeList =
@@ -220,7 +212,7 @@ public class NewWOProjectCreator implements IRunnableWithProgress {
 					currentFileTemplateId,
 					new SubProgressMonitor(monitor, 1));
 			}
-			if (WOVariables.woProjectTypeJavaApplication().equals(templateID)) {
+			if (NewWOProjectWizard.runningWizard().createMainComponent()) {
 				// create main component
 				componentCreator.createWOComponentNamed("Main", true, monitor);
 			}
@@ -398,7 +390,6 @@ public class NewWOProjectCreator implements IRunnableWithProgress {
 		} catch (JavaModelException e) {
 			throw new InvocationTargetException(e);
 		}
-		//ICompilationUnit compilationUnit = JavaCore.createCompilationUnitFrom(newProject.getFile("Application.java"));
 	}
 
 	private ArrayList variableList() {
@@ -452,21 +443,5 @@ public class NewWOProjectCreator implements IRunnableWithProgress {
 		}
 		return templateDocument;
 	}
-
-
-	/*
-		public static class ProjectCreationException extends Exception {
-	
-			private Exception wrappedException;
-	
-			
-			public ProjectCreationException(Exception wrappedException) {
-				super(
-					"ProjectCreationException ("
-						+ wrappedException.getMessage()
-						+ ") while building project template");
-			}
-		}
-		*/
 
 }

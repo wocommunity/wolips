@@ -100,25 +100,15 @@ public class NewWOProjectPage extends WizardNewProjectCreationPage {
 			WOLipsPlugin.handleException(getShell(), e, null);
 			return false;
 		}
-
-		//if(this.getLocationPath() != null) {
-
-		//	IProjectDescription desc = newProject.
-
-		//	desc.setLocation(location);
-
-			//	newProject.setDescription(desc, monitor);
-		//String projectTemplateID = WOVariables.woProjectTypeJavaApplication();
 		IRunnableWithProgress op =
 			new WorkspaceModifyDelegatingOperation(
-				new NewWOProjectCreator(newProject, projectTemplateID));
+				new NewWOProjectCreator(newProject));
 		try {
 			getContainer().run(false, true, op);
 		} catch (InvocationTargetException e) {
 			WOLipsPlugin.handleException(getShell(), e, null);
 			return false;
 		} catch (InterruptedException e) {
-			//WOPluginUtils.handleException(getShell(), e, null);
 			return false;
 		}
 		IResource fileToOpen =

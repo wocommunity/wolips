@@ -57,7 +57,9 @@
  package org.objectstyle.wolips.wizards;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbench;
@@ -67,20 +69,37 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.wizards.newresource.BasicNewProjectResourceWizard;
 import org.objectstyle.wolips.WOLipsPlugin;
 import org.objectstyle.wolips.images.WOLipsPluginImages;
-import org.objectstyle.wolips.project.ProjectHelper;
-import org.objectstyle.wolips.wo.WOVariables;
 /**
  * @author mnolte
  * @author uli
  */
 public class NewWOProjectWizard extends BasicNewProjectResourceWizard {
+	private static NewWOProjectWizard runningWizard;
 	private IStructuredSelection selection;
 	private IWorkbench workbench;
 	private NewWOProjectPage mainPage;
-	public String projectTemplateID = WOVariables.woProjectTypeJavaApplication();
+	/**
+	 * Set this variable to a valid value in your subclass.
+	 */
+	public String projectTemplateID = "";
 	/** (non-Javadoc)
 	 * Method declared on Wizard.
 	 */
+
+	/**
+	 * Returns the the running wizard. May return null.
+	 */
+	public static NewWOProjectWizard runningWizard() {
+		return NewWOProjectWizard.runningWizard;
+	} 
+	/**
+	 * Return true if the wizard should create a Main Component.
+	 */
+	
+	public boolean createMainComponent() {
+		return false;
+	}
+	
 	public void addPages() {
 		mainPage = new NewWOProjectPage("createWOProjectPage1");
 		mainPage.projectTemplateID = projectTemplateID;
@@ -98,6 +117,7 @@ public class NewWOProjectWizard extends BasicNewProjectResourceWizard {
 			NewWOProjectMessages.getString("WOProjectCreationWizard.title"));
 		setDefaultPageImageDescriptor(
 			WOLipsPluginImages.WOPROJECT_WIZARD_BANNER);
+			NewWOProjectWizard.runningWizard = this;
 	}
 
 
@@ -108,11 +128,7 @@ public class NewWOProjectWizard extends BasicNewProjectResourceWizard {
 		boolean creationSuccessful = mainPage.createProject();
 		if (creationSuccessful){
 			try {
-				if (projectTemplateID.equals(WOVariables.woProjectTypeJavaFramework()))
-					ProjectHelper.installBuilder(mainPage.getProjectHandle(), ProjectHelper.WOFRAMEWORK_BUILDER_ID);
-				else {
-					ProjectHelper.installBuilder(mainPage.getProjectHandle(), ProjectHelper.WOAPPLICATION_BUILDER_ID);
-				}
+				this.installBuilder(mainPage.getProjectHandle());
 				//ProjectHelper.removeBuilder(mainPage.getProjectHandle(), ProjectHelper.JAVA_BUILDER_ID);
 				openResource(mainPage.getElementToOpen());
 			}
@@ -122,6 +138,12 @@ public class NewWOProjectWizard extends BasicNewProjectResourceWizard {
 			}
 		}
 		return creationSuccessful;
+	}
+	
+	/**
+	 * Implement it in your subclass.
+	 */
+	public void installBuilder(IProject aProject) throws CoreException {
 	}
 	
 	private void openResource(final IResource resource) {
