@@ -107,12 +107,14 @@ public static final String MSG_SEP = " ";
 
 	/**
 	 * Prints an IStatus.
+	 * @param status
 	 */
 	public static void log(IStatus status) {
 		WOLipsPlugin.getDefault().getLog().log(status);
 	}
 	/**
 	 * Prints a message.
+	 * @param message
 	 */
 	public static void log(String message) {
 		WOLipsLog.log(
@@ -125,12 +127,14 @@ public static final String MSG_SEP = " ";
 	}
 	/**
 	 * Prints a Throwable.
+	 * @param e
 	 */
 	public static void log(Throwable e) {
 		WOLipsLog.log(new Status(IStatus.ERROR, WOLipsPlugin.getPluginId(), IStatus.ERROR, "Internal Error", e)); //$NON-NLS-1$
 	}
 	/**
 	 * If WOLips.debug is true this method prints a String to the log.
+	 * @param aString
 	 */
 	public static void debug(String aString) {
 		if (WOLipsPlugin.DEBUG)
@@ -138,6 +142,7 @@ public static final String MSG_SEP = " ";
 	}
 	/**
 	 * If WOLips.debug is true this method prints an Exception to the log.
+	 * @param aThrowable
 	 */
 	public static void debug(Throwable aThrowable) {
 		if (WOLipsPlugin.DEBUG);
@@ -147,7 +152,8 @@ public static final String MSG_SEP = " ";
 	///////////////////// Log implementation ///////////////////////////////
 
 	/**
-	 * @see org.apache.commons.logging.Log#debug(java.lang.Object, java.lang.Throwable)
+	 * @param message
+	 * @param t
 	 */
 	public void debug(Object message, Throwable t) {
 		if (isDebugEnabled()) {
@@ -165,7 +171,7 @@ public static final String MSG_SEP = " ";
 	}
 
 	/**
-	 * @see org.apache.commons.logging.Log#debug(java.lang.Object)
+	 * @param message
 	 */
 	public void debug(Object message) {
 		if (isDebugEnabled()) {
@@ -182,7 +188,8 @@ public static final String MSG_SEP = " ";
 	}
 
 	/**
-	 * @see org.apache.commons.logging.Log#error(java.lang.Object, java.lang.Throwable)
+	 * @param message
+	 * @param t
 	 */
 	public void error(Object message, Throwable t) {
 		if (isDebugEnabled()) {
@@ -200,7 +207,7 @@ public static final String MSG_SEP = " ";
 	}
 
 	/**
-	 * @see org.apache.commons.logging.Log#error(java.lang.Object)
+	 * @param message
 	 */
 	public void error(Object message) {
 		if (isDebugEnabled()) {
@@ -217,8 +224,9 @@ public static final String MSG_SEP = " ";
 	}
 
 	/**
-	 * @see org.apache.commons.logging.Log#fatal(java.lang.Object, java.lang.Throwable)
-	 */
+	 * @param message
+	 * @param t
+	*/
 	public void fatal(Object message, Throwable t) {
 		if (isDebugEnabled()) {
 			System.err.println(
@@ -236,7 +244,7 @@ public static final String MSG_SEP = " ";
 	}
 
 	/**
-	 * @see org.apache.commons.logging.Log#fatal(java.lang.Object)
+	 * @param message
 	 */
 	public void fatal(Object message) {
 		if (isDebugEnabled()) {
@@ -253,7 +261,8 @@ public static final String MSG_SEP = " ";
 	}
 
 	/**
-	 * @see org.apache.commons.logging.Log#info(java.lang.Object, java.lang.Throwable)
+	 * @param message
+	 * @param t
 	 */
 	public void info(Object message, Throwable t) {
 		if (isDebugEnabled()) {
@@ -271,7 +280,7 @@ public static final String MSG_SEP = " ";
 	}
 
 	/**
-	 * @see org.apache.commons.logging.Log#info(java.lang.Object)
+	 * @param message
 	 */
 	public void info(Object message) {
 		if (isDebugEnabled()) {
@@ -288,9 +297,9 @@ public static final String MSG_SEP = " ";
 	}
 
 	/**
-	 * @see org.apache.commons.logging.Log#trace(java.lang.Object, java.lang.
-	 * Throwable)
-	 */
+	 * @param message
+	 * @param t
+	  */
 	public void trace(Object message, Throwable t) {
 		if (isDebugEnabled()) {
 			System.err.println(
@@ -307,7 +316,7 @@ public static final String MSG_SEP = " ";
 	}
 
 	/**
-	 * @see org.apache.commons.logging.Log#trace(java.lang.Object)
+	 * @param message
 	 */
 	public void trace(Object message) {
 		if (isDebugEnabled()) {
@@ -324,7 +333,8 @@ public static final String MSG_SEP = " ";
 	}
 
 	/**
-	 * @see org.apache.commons.logging.Log#warn(java.lang.Object, java.lang.Throwable)
+	 * @param message
+	 * @param t
 	 */
 	public void warn(Object message, Throwable t) {
 		if (isDebugEnabled()) {
@@ -342,7 +352,7 @@ public static final String MSG_SEP = " ";
 	}
 
 	/**
-	 * @see org.apache.commons.logging.Log#warn(java.lang.Object)
+	 * @param message
 	 */
 	public void warn(Object message) {
 		if (isDebugEnabled()) {
@@ -359,42 +369,42 @@ public static final String MSG_SEP = " ";
 	}
 
 	/**
-	 * @see org.apache.commons.logging.Log#isDebugEnabled()
+	 * @return
 	 */
 	public boolean isDebugEnabled() {
 		return level <= DEBUG;
 	}
 
 	/**
-	 * @see org.apache.commons.logging.Log#isErrorEnabled()
+	 * @return
 	 */
 	public boolean isErrorEnabled() {
 		return level <= ERROR;
 	}
 
 	/**
-	 * @see org.apache.commons.logging.Log#isFatalEnabled()
+	 * @return
 	 */
 	public boolean isFatalEnabled() {
 		return level == FATAL;
 	}
 
 	/**
-	 * @see org.apache.commons.logging.Log#isInfoEnabled()
+	 * @return
 	 */
 	public boolean isInfoEnabled() {
 		return level <= INFO;
 	}
 
 	/**
-	 * @see org.apache.commons.logging.Log#isTraceEnabled()
+	 * @return
 	 */
 	public boolean isTraceEnabled() {
 		return level <= TRACE;
 	}
 
 	/**
-	 * @see org.apache.commons.logging.Log#isWarnEnabled()
+	 * @return
 	 */
 	public boolean isWarnEnabled() {
 		return level <= WARN;

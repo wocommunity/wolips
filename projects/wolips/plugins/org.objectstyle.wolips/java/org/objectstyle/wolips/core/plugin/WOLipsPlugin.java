@@ -89,6 +89,7 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 		new WOLipsLog(WOLipsPlugin.class.getName(), WOLipsLog.ERROR);
 	/**
 	 * The constructor.
+	 * @param descriptor
 	 */
 	//The constructur is very sensitive. Make sure that your stuff works.
 	//If this cunstructor fails, the whole plugin will be disabled.
@@ -114,6 +115,8 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 	}
 	/**
 	 * Returns an ImageDescriptor.
+	 * @param name
+	 * @return
 	 */
 	public ImageDescriptor getImageDescriptor(String name) {
 		try {
@@ -125,6 +128,7 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 	}
 	/**
 	 * Returns the shared instance.
+	 * @return
 	 */
 	public static WOLipsPlugin getDefault() {
 		if (plugin == null) {
@@ -169,7 +173,6 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 	/**
 	 * Method informUser.
 	 * @param shell
-	 * @param target
 	 * @param message
 	 */
 	public static void informUser(Shell shell, String message) {
@@ -178,6 +181,7 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 	}
 	/**
 	 * Returns the PluginID.
+	 * @return
 	 */
 	public static String getPluginId() {
 		if (plugin != null) {

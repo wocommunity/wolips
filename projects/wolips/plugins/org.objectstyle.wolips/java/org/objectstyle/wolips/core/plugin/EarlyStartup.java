@@ -93,6 +93,7 @@ public final class EarlyStartup {
 	private WOLipsLog log = new WOLipsLog(EarlyStartup.class.getName(), WOLipsLog.ERROR);
 
 	public EarlyStartup() {
+		super();
 	}
 	/**
 		 * Adds listeners for resource and java classpath changes to keep
@@ -153,6 +154,7 @@ public final class EarlyStartup {
 	}
 	/**
 	 * Method writePropertiesFileToUserHome.
+	 * @throws Exception
 	 */
 	private void writePropertiesFileToUserHome() throws Exception {
 		if (!Preferences.getPREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH())

@@ -93,6 +93,8 @@ public class WOLipsPluginImages {
 	/**
 	 * Utility method to create an <code>ImageDescriptor</code>
 	 * from a path to a file.
+	 * @param path
+	 * @return
 	 */
 	private static ImageDescriptor createImageDescriptor(String path) {
 		try {
