@@ -1,10 +1,72 @@
 <html>
 <head>
-<title>Untitled Document</title>
+<title>Preferences</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 </head>
 
 <body bgcolor="#FFFFFF">
-<h1>Preferences </h1>
+<h1>Preferences</h1>
+<ul>
+  <li>Choose the menu option Windows &gt; Preferences and then select WOLips.</li>
+</ul>
+<p><img src="../images/preferences.jpg" width="604" height="472"></p>
+<table width="100%">
+  <tr> 
+    <td>Build after JavaBuilder</td>
+    <td>When this option is checked applications and frameworks are built everytime 
+      any java code is compiled (which is everytime you save any changes, or when 
+      you specifically do Project &gt; Rebuild Project). The '+' and '-' buttons 
+      in the perspective turns this option on/off.</td>
+  </tr>
+  <tr> 
+    <td>Run Ant as External Tool</td>
+    <td>There are two ways to build applications and frameworks: with the eclipse 
+      AntRunner and as an external tool. With this option checked the external 
+      tool alternative is used. Otherwise the eclipse AntRunner is used.</td>
+  </tr>
+  <tr> 
+    <td>Show Build Output</td>
+    <td>Currently does nothing.</td>
+  </tr>
+  <tr> 
+    <td>Models Filter</td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr> 
+    <td>Components Filter</td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr> 
+    <td>Products Filter</td>
+    <td>&nbsp;</td>
+  </tr>
+  <tr> 
+    <td>NSProjectSearchPath</td>
+    <td>The launching configuration wizard generates the NSProjectSearchPath for 
+      you to enable the rapid turnaround mode for frameworks. There are two ways 
+      to expand it: - in the preferences - in the launch configuration wizard 
+      Under the WOArguments tab you will find a list of default arguments including: 
+      "-NSProjectSearchPath (GeneratedByWOLips)" In the case of a launch WOLips 
+      replaces "GeneratedByWOLips" with a path to all your projects in the the 
+      workbench.(It does not matter if the projects are in folder workspace or 
+      not.) If you expand the NSProjectPath in the preferences WOLips takes care 
+      of the "," between the entires. If you expand it in the launch configuration 
+      wizard, you have to add "," between your entries and the "GenereatedByWOLips". 
+      How to add a launch configuration: - Select your project. - Select Run->Run...(Or 
+      Run->Debug...) - Choose WOApplication. - Click add. - Search for the Main 
+      class. - Click run. You can use this configuration to run and debug. In 
+      case your NextRoot has changed you need to update your wobuild.properties 
+      file. Select "Rebuild the wobuild.properties file on next launch" in the 
+      preferences. On the next launch the wobuild.properties file gets an update. 
+    </td>
+  </tr>
+  <tr>
+    <td>Rebuild the wobuild.properties file on the next launch</td>
+    <td>The Ant build script requires that this file exists, and is correct. It 
+      is normally created for you the first time you start eclipse with WOLips 
+      installed. If, for some reason, you need to recreate this file, check this 
+      option and restart eclipse.</td>
+  </tr>
+</table>
 </body>
 </html>

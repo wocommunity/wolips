@@ -25,7 +25,22 @@ body { font-family: arial, helvetica, geneva; font-size: 10pt; clip: rect(   ); 
 
 <body bgcolor="#ffffff" leftmargin="0" marginwidth="0" topmargin="0" marginheight="0">
 <h1>Debugging Applications</h1>
-<p>Nothing here yet.</p>
+<p>The launching configuration wizard generates the NSProjectSearchPath for you 
+  to enable the rapid turnaround mode for frameworks. There are two ways to expand 
+  it: - in the preferences - in the launch configuration wizard Under the WOArguments 
+  tab you will find a list of default arguments including: "-NSProjectSearchPath 
+  (GeneratedByWOLips)" In the case of a launch WOLips replaces "GeneratedByWOLips" 
+  with a path to all your projects in the the workbench.(It does not matter if 
+  the projects are in folder workspace or not.) If you expand the NSProjectPath 
+  in the preferences WOLips takes care of the "," between the entires. If you 
+  expand it in the launch configuration wizard, you have to add "," between your 
+  entries and the "GenereatedByWOLips". How to add a launch configuration: - Select 
+  your project. - Select Run->Run...(Or Run->Debug...) - Choose WOApplication. 
+  - Click add. - Search for the Main class. - Click run. You can use this configuration 
+  to run and debug. In case your NextRoot has changed you need to update your 
+  wobuild.properties file. Select "Rebuild the wobuild.properties file on next 
+  launch" in the preferences. On the next launch the wobuild.properties file gets 
+  an update. </p>
 </body>
 </html>
 
