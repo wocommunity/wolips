@@ -1,24 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
-<fragment
+<plugin
    id="org.objectstyle.wolips.wizards"
    name="WOLips Wizards"
    version="1.0.6"
-   provider-name="objectstyle.org"
-   plugin-id="org.objectstyle.wolips"
-   plugin-version="1.0.6"
-   match="compatible">
+   provider-name="objectstyle.org">
 
    <runtime>
       <library name="lib/wolips-wizards.jar">
          <packages prefixes="org.objectstyle.wolips.wizards"/>
       </library>
    </runtime>
-
    <requires>
       <import plugin="org.eclipse.jdt.ui"/>
       <import plugin="org.eclipse.core.runtime.compatibility"/>
       <import plugin="org.objectstyle.wolips.templateengine"/>
+      <import plugin="org.objectstyle.wolips.tests.core"/>
+      <import plugin="org.objectstyle.wolips"/>
+      <import plugin="org.eclipse.ui.workbench"/>
+      <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.jdt.core"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.objectstyle.wolips.woproject"/>
    </requires>
 
 
@@ -109,51 +113,52 @@
          <action
                label="EOModel"
                icon="icons/woproject/eomodel_wiz.gif"
-               tooltip="Opens the EOModel wizard"
                class="org.objectstyle.wolips.wizards.actions.OpenEOModelWizard"
+               tooltip="Opens the EOModel wizard"
                toolbarPath="Normal/WOLipsWizards"
                id="org.objectstyle.wolips.wizards.actions.OpenEOModelWizard">
          </action>
          <action
                label="WOComponent"
                icon="icons/wobuilder/wocomponent_wiz.gif"
-               tooltip="Opens the WOComponent wizard"
                class="org.objectstyle.wolips.wizards.actions.OpenWOComponentWizard"
+               tooltip="Opens the WOComponent wizard"
                toolbarPath="Normal/WOLipsWizards"
                id="org.objectstyle.wolips.wizards.actions.OpenWOComponentWizard">
          </action>
          <action
                label="Jar Project"
                icon="icons/woproject/jar_project_wiz.gif"
-               tooltip="Opens the Jar Project wizard"
                class="org.objectstyle.wolips.wizards.actions.OpenJarProjectWizard"
+               tooltip="Opens the Jar Project wizard"
                toolbarPath="Normal/WOLipsWizards"
                id="org.objectstyle.wolips.wizards.actions.OpenJarProjectWizard">
          </action>
          <action
                label="WOFramework"
                icon="icons/woproject/woframework_wiz.gif"
-               tooltip="Opens the WOFramework wizard"
                class="org.objectstyle.wolips.wizards.actions.OpenWOFrameworkWizard"
+               tooltip="Opens the WOFramework wizard"
                toolbarPath="Normal/WOLipsWizards"
                id="org.objectstyle.wolips.wizards.actions.OpenWOFrameworkWizard">
          </action>
          <action
                label="D2WApplication"
                icon="icons/woproject/d2wapplication_wiz.gif"
-               tooltip="Opens the D2WApplication wizard"
                class="org.objectstyle.wolips.wizards.actions.OpenD2WApplicationWizard"
+               tooltip="Opens the D2WApplication wizard"
                toolbarPath="Normal/WOLipsWizards"
                id="org.objectstyle.wolips.wizards.actions.OpenD2WApplicationWizard">
          </action>
          <action
                label="WOApplication"
                icon="icons/woproject/woapplication_wiz.gif"
-               tooltip="Opens the WOApplication wizard"
                class="org.objectstyle.wolips.wizards.actions.OpenWOApplicationWizard"
+               tooltip="Opens the WOApplication wizard"
                toolbarPath="Normal/WOLipsWizards"
                id="org.objectstyle.wolips.wizards.actions.OpenWOApplicationWizard">
          </action>
       </actionSet>
-	</extension>
-</fragment>
+   </extension>
+
+</plugin>

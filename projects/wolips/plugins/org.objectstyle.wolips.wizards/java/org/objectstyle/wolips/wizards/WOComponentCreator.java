@@ -60,6 +60,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.objectstyle.wolips.core.logging.WOLipsLog;
@@ -150,24 +151,26 @@ public class WOComponentCreator implements IRunnableWithProgress {
 		templateEngine.getWolipsContext().setCreateBodyTag(createBodyTag);
 		templateEngine.getWolipsContext().setComponentName(componentName);
 		templateEngine.addTemplate(new TemplateDefinition(
-				"wocomponent-wocomponent.html.vm", path, componentName + "."
-						+ IWOLipsModel.EXT_HTML));
+				"wocomponent/wocomponent.html.vm", path, componentName + "."
+						+ IWOLipsModel.EXT_HTML, IWOLipsModel.EXT_HTML));
 		templateEngine.addTemplate(new TemplateDefinition(
-				"wocomponent-wocomponent.wod.vm", path, componentName + "."
-						+ IWOLipsModel.EXT_WOD));
+				"wocomponent/wocomponent.wod.vm", path, componentName + "."
+						+ IWOLipsModel.EXT_WOD, IWOLipsModel.EXT_WOD));
 		if (createWooFile)
 			templateEngine.addTemplate(new TemplateDefinition(
-					"wocomponent-wocomponent.woo.vm", path, componentName + "."
-							+ IWOLipsModel.EXT_WOO));
+					"wocomponent/wocomponent.woo.vm", path, componentName + "."
+							+ IWOLipsModel.EXT_WOO, IWOLipsModel.EXT_WOO));
 		templateEngine.addTemplate(new TemplateDefinition(
-				"wocomponent-wocomponent.java.vm", componentJavaPath,
-				componentName + "." + IWOLipsModel.EXT_JAVA));
+				"wocomponent/wocomponent.java.vm", componentJavaPath,
+				componentName + "." + IWOLipsModel.EXT_JAVA,
+				IWOLipsModel.EXT_JAVA));
 		if (createApiFile)
 			templateEngine.addTemplate(new TemplateDefinition(
-					"wocomponent-wocomponent.api.vm", projectPath,
-					componentName + "." + IWOLipsModel.EXT_API));
+					"wocomponent/wocomponent.api.vm", projectPath,
+					componentName + "." + IWOLipsModel.EXT_API,
+					IWOLipsModel.EXT_API));
 		try {
-			templateEngine.run();
+			templateEngine.run(new NullProgressMonitor());
 			parentResource.getProject().refreshLocal(IResource.DEPTH_INFINITE,
 					monitor);
 		} catch (Exception e) {

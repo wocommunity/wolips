@@ -56,7 +56,6 @@
 package org.objectstyle.wolips.wizards;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -114,78 +113,96 @@ public class WOApplicationWizard extends AbstractWOWizard {
 				}
 				templateEngine.getWolipsContext().setProjectName(projectName);
 				templateEngine.addTemplate(new TemplateDefinition(
-						"woapplication-Main.html.vm", path + File.separator
-								+ "Main.wo", "Main.html"));
+						"woapplication/Main.html.vm", path + File.separator
+								+ "Main.wo", "Main.html", "Main.html"));
 				templateEngine.addTemplate(new TemplateDefinition(
-						"woapplication-Main.wod.vm", path + File.separator
-								+ "Main.wo", "Main.wod"));
+						"woapplication/Main.wod.vm", path + File.separator
+								+ "Main.wo", "Main.wod", "Main.wod"));
 				templateEngine.addTemplate(new TemplateDefinition(
-						"woapplication-Main.woo.vm", path + File.separator
-								+ "Main.wo", "Main.woo"));
+						"woapplication/Main.woo.vm", path + File.separator
+								+ "Main.wo", "Main.woo", "Main.woo"));
 				templateEngine.addTemplate(new TemplateDefinition(
-						"woapplication-Application.java.vm", path
-								+ File.separator + "src", "Application.java"));
+						"woapplication/Application.java.vm", path
+								+ File.separator + "src", "Application.java",
+						"Application.java"));
 				templateEngine.addTemplate(new TemplateDefinition(
-						"woapplication-DirectAction.java.vm", path
-								+ File.separator + "src", "DirectAction.java"));
+						"woapplication/DirectAction.java.vm", path
+								+ File.separator + "src", "DirectAction.java",
+						"DirectAction.java"));
 				templateEngine.addTemplate(new TemplateDefinition(
-						"woapplication-Main.java.vm", path + File.separator
-								+ "src", "Main.java"));
+						"woapplication/Main.java.vm", path + File.separator
+								+ "src", "Main.java", "Main.java"));
 				templateEngine.addTemplate(new TemplateDefinition(
-						"woapplication-Session.java.vm", path + File.separator
-								+ "src", "Session.java"));
+						"woapplication/Session.java.vm", path + File.separator
+								+ "src", "Session.java", "Session.java"));
 				templateEngine.addTemplate(new TemplateDefinition(
-						"woapplication-.classpath.vm", path, ".classpath"));
+						"woapplication/.classpath.vm", path, ".classpath",
+						".classpath"));
 				templateEngine.addTemplate(new TemplateDefinition(
-						"woapplication-.project.vm", path, ".project"));
+						"woapplication/.project.vm", path, ".project",
+						".project"));
+				templateEngine
+						.addTemplate(new TemplateDefinition(
+								"woapplication/ant.classpaths.user.home.vm",
+								path, "ant.classpaths.user.home",
+								"ant.classpaths.user.home"));
 				templateEngine.addTemplate(new TemplateDefinition(
-						"woapplication-ant.classpaths.user.home.vm", path,
-						"ant.classpaths.user.home"));
-				templateEngine.addTemplate(new TemplateDefinition(
-						"woapplication-ant.classpaths.wo.wolocalroot.vm", path,
+						"woapplication/ant.classpaths.wo.wolocalroot.vm", path,
+						"ant.classpaths.wo.wolocalroot",
 						"ant.classpaths.wo.wolocalroot"));
 				templateEngine.addTemplate(new TemplateDefinition(
-						"woapplication-ant.classpaths.wo.wosystemroot.vm",
-						path, "ant.classpaths.wo.wosystemroot"));
+						"woapplication/ant.classpaths.wo.wosystemroot.vm",
+						path, "ant.classpaths.wo.wosystemroot",
+						"ant.classpaths.wo.wosystemroot"));
+				templateEngine
+						.addTemplate(new TemplateDefinition(
+								"woapplication/ant.frameworks.user.home.vm",
+								path, "ant.frameworks.user.home",
+								"ant.frameworks.user.home"));
 				templateEngine.addTemplate(new TemplateDefinition(
-						"woapplication-ant.frameworks.user.home.vm", path,
-						"ant.frameworks.user.home"));
-				templateEngine.addTemplate(new TemplateDefinition(
-						"woapplication-ant.frameworks.wo.wolocalroot.vm", path,
+						"woapplication/ant.frameworks.wo.wolocalroot.vm", path,
+						"ant.frameworks.wo.wolocalroot",
 						"ant.frameworks.wo.wolocalroot"));
 				templateEngine.addTemplate(new TemplateDefinition(
-						"woapplication-ant.frameworks.wo.wosystemroot.vm",
-						path, "ant.frameworks.wo.wosystemroot"));
+						"woapplication/ant.frameworks.wo.wosystemroot.vm",
+						path, "ant.frameworks.wo.wosystemroot",
+						"ant.frameworks.wo.wosystemroot"));
 				templateEngine.addTemplate(new TemplateDefinition(
-						"woapplication-build.xml.vm", path, "build.xml"));
+						"woapplication/build.xml.vm", path, "build.xml",
+						"build.xml"));
 				templateEngine.addTemplate(new TemplateDefinition(
-						"woapplication-build.properties.vm", path,
-						"build.properties"));
+						"woapplication/build.properties.vm", path,
+						"build.properties", "build.properties"));
 				templateEngine.addTemplate(new TemplateDefinition(
-						"woapplication-CustomInfo.plist.vm", path,
-						"CustomInfo.plist"));
+						"woapplication/CustomInfo.plist.vm", path,
+						"CustomInfo.plist", "CustomInfo.plist"));
 				templateEngine.addTemplate(new TemplateDefinition(
-						"woapplication-Main.api.vm", path, "Main.api"));
+						"woapplication/Main.api.vm", path, "Main.api",
+						"Main.api"));
 				templateEngine.addTemplate(new TemplateDefinition(
-						"woapplication-Makefile.vm", path, "Makefile"));
+						"woapplication/Makefile.vm", path,
+						"Makefile.postamble", "Makefile.postamble"));
 				templateEngine.addTemplate(new TemplateDefinition(
-						"woapplication-Makefile.postamble.vm", path,
-						"Makefile.postamble"));
+						"woapplication/Makefile.postamble.vm", path,
+						"Makefile.postamble", "Makefile.postamble"));
 				templateEngine.addTemplate(new TemplateDefinition(
-						"woapplication-Makefile.preamble.vm", path,
-						"Makefile.preamble"));
+						"woapplication/Makefile.preamble.vm", path,
+						"Makefile.preamble", "Makefile.preamble"));
 				templateEngine.addTemplate(new TemplateDefinition(
-						"woapplication-PB.project.vm", path, "PB.project"));
+						"woapplication/PB.project.vm", path, "PB.project",
+						"PB.project"));
 				templateEngine.addTemplate(new TemplateDefinition(
-						"woapplication-Properties.vm", path, "Properties"));
+						"woapplication/Properties.vm", path, "Properties",
+						"Properties"));
 				templateEngine.addTemplate(new TemplateDefinition(
-						"woapplication-project.pbxproj.vm", path
+						"woapplication/project.pbxproj.vm", path
 								+ File.separator + projectName + ".xcode",
-						"project.pbxproj"));
-				templateEngine.run();
+						"project.pbxproj", "project.pbxproj"));
+				templateEngine.run(nullProgressMonitor);
 				project.open(nullProgressMonitor);
 				RunAnt runAnt = new RunAnt();
-				runAnt.asAnt(path + File.separator + IWOLipsModel.DEFAULT_BUILD_FILENAME, null, null);
+				runAnt.asAnt(path + File.separator
+						+ IWOLipsModel.DEFAULT_BUILD_FILENAME, null, null);
 				project.refreshLocal(IResource.DEPTH_INFINITE,
 						nullProgressMonitor);
 			} catch (Exception e) {

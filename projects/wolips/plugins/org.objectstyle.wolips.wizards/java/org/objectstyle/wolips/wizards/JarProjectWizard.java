@@ -56,7 +56,6 @@
 package org.objectstyle.wolips.wizards;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -109,18 +108,23 @@ public class JarProjectWizard extends AbstractWOWizard {
 				}
 				templateEngine.getWolipsContext().setProjectName(projectName);
 				templateEngine.addTemplate(new TemplateDefinition(
-						"jarproject-.classpath.vm", path, ".classpath"));
+						"jarproject/.classpath.vm", path, ".classpath",
+						".classpath"));
+				templateEngine
+						.addTemplate(new TemplateDefinition(
+								"jarproject/.project.vm", path, ".project",
+								".project"));
 				templateEngine.addTemplate(new TemplateDefinition(
-						"jarproject-.project.vm", path, ".project"));
+						"jarproject/build.xml.vm", path, "build.xml",
+						"build.xml"));
 				templateEngine.addTemplate(new TemplateDefinition(
-						"jarproject-build.xml.vm", path, "build.xml"));
-				templateEngine.addTemplate(new TemplateDefinition(
-						"jarproject-build.properties.vm", path,
-						"build.properties"));
-				templateEngine.run();
+						"jarproject/build.properties.vm", path,
+						"build.properties", "build.properties"));
+				templateEngine.run(new NullProgressMonitor());
 				project.open(nullProgressMonitor);
 				RunAnt runAnt = new RunAnt();
-				runAnt.asAnt(path + File.separator + IWOLipsModel.DEFAULT_BUILD_FILENAME, null, null);
+				runAnt.asAnt(path + File.separator
+						+ IWOLipsModel.DEFAULT_BUILD_FILENAME, null, null);
 				project.refreshLocal(IResource.DEPTH_INFINITE,
 						nullProgressMonitor);
 			} catch (Exception e) {

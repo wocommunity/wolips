@@ -56,11 +56,13 @@
 package org.objectstyle.wolips.wizards;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Vector;
+
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
@@ -143,11 +145,11 @@ public class EOModelCreator implements IRunnableWithProgress {
 		templateEngine.getWolipsContext().setProjectName(projectName);
 		templateEngine.getWolipsContext().setAdaptorName(adaptorName);
 		templateEngine.addTemplate(new TemplateDefinition(
-				"eomodel-index.eomodeld.vm", path, "index.eomodeld"));
+				"eomodel/index.eomodeld.vm", path, "index.eomodeld", "index.eomodeld"));
 		templateEngine.addTemplate(new TemplateDefinition(
-				"eomodel-DiagramLayout.vm", path, "DiagramLayout"));
+				"eomodel/DiagramLayout.vm", path, "DiagramLayout", "DiagramLayout"));
 		try {
-			templateEngine.run();
+			templateEngine.run(new NullProgressMonitor());
 		} catch (Exception e) {
 			WOLipsLog.log(e);
 			throw new InvocationTargetException(e);
