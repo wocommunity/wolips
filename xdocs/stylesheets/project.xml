@@ -15,7 +15,7 @@
         <item name="Download" href="http://sourceforge.net/project/showfiles.php?group_id=50507"/>
         <item name="Contributors" href="/contributors.html"/>
         <item name="License" href="/LICENSE"/>
-	<item name="Success Stories" href="/successstories.html"/>
+		<item name="Success Stories" href="/successstories.html"/>
     </menu>
 
 
@@ -25,11 +25,9 @@
     </menu>
 
     <menu name="WOLips">
-	<item name="Download" href="http://sourceforge.net/project/showfiles.php?group_id=50507"/>
-	<item name="Gallery" href="/gallery.html"/>
-	<item name="jMechanic" href="http://sourceforge.net/projects/jmechanic/"/>
-	<item name="Eclipse" href="http://www.eclipse.org"/>
-    </menu>
+    	<item name="Inside" href="/wolips.html"/>
+    	<item name="Gallery" href="/gallery.html"/>
+	</menu>
     
     <menu name="Developer">
         <item name="CVS" href="http://sourceforge.net/cvs/?group_id=50507"/>

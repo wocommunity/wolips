@@ -21,7 +21,7 @@
 				WebObjects strategy unimpeded by Apple's lagging IDE.</p>
         	</subsection>
         	<subsection name="Ian McDougall">
-        		I've been working with WebObjects since 1997.  My development platform has
+        		<p>I've been working with WebObjects since 1997.  My development platform has
 				primarily been Windows, and I was disappointed year after year that the
 				Project Builder was not keeping up with modern IDE's.  After Debugging was
 				removed in WO5, I decided to stick with 4.5 until a decent IDE was released.
@@ -33,10 +33,10 @@
 				I haven't come across a single reason to fire up PBWO since switching.
 
 				Thank you from everyone here for your effort in this area.  You've filled a
-				gap that WebObjects developers have had for years!
+				gap that WebObjects developers have had for years!</p>
         	</subsection>
         	<subsection name="Colin Clark">
-        		I thought I'd share my WOProject success story with you. Here goes:
+        		<p>I thought I'd share my WOProject success story with you. Here goes:
 
 				As the technical lead for the University of Toronto's CourseView Project, a 
 				large institutional service tasked with the collection and distribution of 
@@ -54,8 +54,17 @@
 				This change to our development process has enabled us to respond more effectively to 
 				the constant change inherent in software projects. It has also ensured that development
 				on Windows continues to be a viable option for our developers,
-				fully independently of  ProjectBuilder!
+				fully independently of  ProjectBuilder!</p>
         	
+        	</subsection>
+        	<subsection name="Anjo Krank and Patrice Gautier from the ProjectWonder team">
+        		<p>On Windows, WOLips' advantages are obvious, but even on OS X it is beneficial.
+        		Apple's pbxbuild may be sufficient for small projects, but <a href="http://wonder.sourceforge.net/">Project Wonder</a>
+        		consist of a large number of subprojects. Short turnaround times and reliable
+        		multi-stage interdependent builds are mandatory. Early tests with ant and woproject
+        		revealed that - with proper file layout - it is not only an order of magnititude
+        		faster, but also allows for template-based builds. Just drop your files in a certain
+        		structure and set a few flags and off you go. WOProject is a great way to build your WO apps!</p>
         	</subsection>
         </section>
     </body>
