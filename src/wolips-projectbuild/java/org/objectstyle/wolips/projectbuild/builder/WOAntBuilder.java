@@ -58,6 +58,7 @@ package org.objectstyle.wolips.projectbuild.builder;
 
 import java.util.Map;
 
+import org.eclipse.ant.core.AntRunner;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -66,10 +67,12 @@ import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.objectstyle.wolips.core.project.ant.*;
-import org.objectstyle.wolips.core.plugin.logging.WOLipsLog;
+import org.eclipse.core.runtime.SubProgressMonitor;
 import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
+import org.objectstyle.wolips.core.plugin.logging.WOLipsLog;
 import org.objectstyle.wolips.core.preferences.Preferences;
+import org.objectstyle.wolips.core.project.ant.BuildMessages;
+import org.objectstyle.wolips.core.project.ant.RunAnt;
 
 /**
  * @author uli
@@ -82,6 +85,21 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 	public WOAntBuilder() {
 		super();
 	}
+	private void waitForAnt(IProgressMonitor monitor) {
+		monitor.subTask(BuildMessages.getString("Build.Waiting.Name"));
+		IProgressMonitor subProgressMonitor =
+			new SubProgressMonitor(monitor, 1);
+		boolean exception = false;
+		while (AntRunner.isBuildRunning() || exception) {
+			try {
+				this.wait(100);
+				Thread.yield();
+			} catch (InterruptedException interruptedException) {
+				exception = true;
+			}
+		}
+		subProgressMonitor.done();
+	}
 	/**
 	 * Runs the build with the ant runner.
 	 * @see org.eclipse.core.internal.events.InternalBuilder#build(int, java.
@@ -89,6 +107,10 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 	 */
 	protected IProject[] build(int kind, Map args, IProgressMonitor monitor)
 		throws CoreException {
+		if (AntRunner.isBuildRunning()) {
+			monitor.done();
+			return null;
+		}
 		monitor.beginTask(
 			BuildMessages.getString("Build.Monitor.Title"),
 			WOAntBuilder.TOTAL_WORK_UNITS);
@@ -123,7 +145,6 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 		aBuildFile = null;
 		//this.forgetLastBuiltState();
 		monitor.done();
-		System.gc();
 		return null;
 	}
 

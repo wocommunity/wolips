@@ -264,7 +264,7 @@ public class RunAnt extends AWOLips {
 			buf.toString());
 		workingCopy.setAttribute(
 			IExternalToolConstants.ATTR_RUN_IN_BACKGROUND,
-			false);
+			true);
 		if (target != null) {
 			workingCopy.setAttribute(
 				IExternalToolConstants.ATTR_ANT_TARGETS,
