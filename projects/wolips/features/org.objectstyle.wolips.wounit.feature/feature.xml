@@ -49,12 +49,14 @@
          id="org.objectstyle.wolips.wounit"
          download-size="8"
          install-size="12"
-         version="1.0.6"/>
+         version="1.0.6"
+         unpacked="false"/>
 
    <plugin
          id="org.objectstyle.wolips.wounit.about"
          download-size="8"
          install-size="36"
-         version="1.0.6"/>
+         version="1.0.6"
+         unpacked="false"/>
 
 </feature>
