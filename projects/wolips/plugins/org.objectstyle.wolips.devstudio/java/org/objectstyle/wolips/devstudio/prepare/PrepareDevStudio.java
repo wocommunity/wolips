@@ -63,6 +63,7 @@ package org.objectstyle.wolips.devstudio.prepare;
  */
 public class PrepareDevStudio {
 	private PrepareDevStudio() {
+		super();
 	}
 
 /*
