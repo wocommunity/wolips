@@ -134,7 +134,8 @@ public class WOIncrementalBuilder extends IncrementalProjectBuilder {
 		monitor.beginTask("building WebObjects layout ...", 100);
 		try {
 			IResourceDelta delta = getDelta(getProject());
-			delta.accept(new PatternsetDeltaVisitor());
+                        if(delta != null)
+                            delta.accept(new PatternsetDeltaVisitor());
 			//System.out.println(delta);
 			boolean fullBuild = (null != delta) && (kind == FULL_BUILD);
 			if (null != _buildVisitor) {
