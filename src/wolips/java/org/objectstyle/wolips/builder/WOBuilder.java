@@ -118,6 +118,12 @@ public abstract class WOBuilder extends IncrementalProjectBuilder {
 					.getBoolean(
 						IWOLipsPluginConstants
 							.PREF_RUN_ANT_AS_EXTERNAL_TOOL)) {
+					if(this.getDelta(this.getProject()) == null)
+					RunAnt.asExternalTool(
+									getProject().getFile(aBuildFile),
+									kind,
+									monitor,
+									this.cleanTarget());			
 					RunAnt.asExternalTool(
 						getProject().getFile(aBuildFile),
 						kind,
@@ -125,6 +131,14 @@ public abstract class WOBuilder extends IncrementalProjectBuilder {
 						this.defaultTarget());
 
 				} else {
+					if(this.getDelta(this.getProject()) == null)
+					RunAnt.asAnt(
+											getProject()
+												.getFile(aBuildFile)
+												.getLocation()
+												.toOSString(),
+											monitor,
+											this.cleanTarget());
 					RunAnt.asAnt(
 						getProject()
 							.getFile(aBuildFile)
@@ -144,6 +158,7 @@ public abstract class WOBuilder extends IncrementalProjectBuilder {
 	
 	private boolean projectNeedsAnUpdate() {
 		IResourceDelta aDelta = this.getDelta(this.getProject());
+		if(aDelta == null) return true;
 		IResourceDelta[] children = aDelta.getAffectedChildren();
 		for(int i = 0;i < children.length;i++) {
 			if(!isIgnoredPath(children[i].getProjectRelativePath()))
@@ -210,4 +225,9 @@ public abstract class WOBuilder extends IncrementalProjectBuilder {
 	 * @return String
 	 */
 	public abstract String defaultTarget();
+	/**
+	 * Must be implemented in the subclass.
+	 * @return String
+	 */
+	public abstract String cleanTarget();
 }

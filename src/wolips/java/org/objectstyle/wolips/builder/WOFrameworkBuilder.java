@@ -69,4 +69,9 @@ public class WOFrameworkBuilder extends WOBuilder {
 	public String defaultTarget() {
 		return null;
 	}
-}
+	/**
+	 * @see org.objectstyle.wolips.builder.WOBuilder#cleanTarget()
+	 */
+	public String cleanTarget() {
+		return "clean";
+	}}

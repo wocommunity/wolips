@@ -85,4 +85,10 @@ public class WOGenerator extends WOBuilder {
 	public String defaultTarget() {
 		return "generate";
 	}
+	/**
+	 * @see org.objectstyle.wolips.builder.WOBuilder#cleanTarget()
+	 */
+	public String cleanTarget() {
+		return "clean";
+	}
 }
