@@ -50,7 +50,6 @@
 package org.objectstyle.wolips.ant.launching;
 
 import org.eclipse.ant.internal.ui.launchConfigurations.IAntLaunchConfigurationConstants;
-import org.eclipse.ant.internal.ui.model.IAntUIConstants;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -58,7 +57,6 @@ import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.core.variables.VariablesPlugin;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
-import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
@@ -73,16 +71,19 @@ import org.eclipse.ui.externaltools.internal.model.IExternalToolConstants;
  */
 public class LaunchAntInExternalVM {
 	private static final String MAIN_TYPE_NAME = "org.eclipse.ant.internal.ui.antsupport.InternalAntRunner";
+	private static final String REMOTE_ANT_PROCESS_FACTORY_ID= "org.eclipse.ant.ui.remoteAntProcessFactory";
 	/**
 	 * Method inExternalVM.
 	 * 
 	 * @param buildFile
 	 * @param monitor
+	 * @param captureOutput
+	 * @param targets
 	 * @throws CoreException
 	 */
 	public static void launchAntInExternalVM(IFile buildFile, IProgressMonitor monitor, boolean captureOutput, String targets)
 			throws CoreException {
-		ILaunchConfiguration config = null;
+		//ILaunchConfiguration config = null;
 		ILaunchConfigurationWorkingCopy workingCopy = null;
 		try {
 			//config = this.createDefaultLaunchConfiguration(buildFile,
@@ -97,7 +98,7 @@ public class LaunchAntInExternalVM {
 			}
 			//config.setAttribute(IExternalToolConstants.ATTR_LOCATION, null);
 		} finally {
-			config = null;
+			workingCopy = null;
 		}
 	}
 
@@ -105,6 +106,8 @@ public class LaunchAntInExternalVM {
 	 * Creates and returns a default launch configuration for the given file.
 	 * 
 	 * @param file
+	 * @param captureOutput
+	 * @param targets
 	 * @return default launch configuration
 	 * @throws CoreException
 	 */
@@ -152,10 +155,7 @@ public class LaunchAntInExternalVM {
 				IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME,
 				MAIN_TYPE_NAME);
 		workingCopy.setAttribute(DebugPlugin.ATTR_PROCESS_FACTORY_ID,
-				IAntUIConstants.REMOTE_ANT_PROCESS_FACTORY_ID);
-		workingCopy.setAttribute(
-				IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME,
-				"org.eclipse.ant.internal.ui.antsupport.InternalAntRunner");
+				REMOTE_ANT_PROCESS_FACTORY_ID);
 		workingCopy.setAttribute(
 				IJavaLaunchConfigurationConstants.ATTR_PROGRAM_ARGUMENTS,
 				(String) null);
