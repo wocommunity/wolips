@@ -110,7 +110,7 @@
 &amp;lt;taskdef name="wogen" classname="org.objectstyle.woproject.ant.WOGenerator"&amp;gt;
      &amp;lt;classpath refid="classpath"/&amp;gt;
 &amp;lt;/taskdef&amp;gt;
-&amp;lt;wogen map="src/test.eomodeld" destDir="src/java/eo" usepkgpath="false"/&amp;gt;
+&amp;lt;wogen model="src/test.eomodeld" destDir="src/java/eo" usepkgpath="false"/&amp;gt;
 </source>
 
 			<p>2. Generating EOEnterpriseObject
@@ -126,7 +126,7 @@
 &amp;lt;taskdef name="wogen" classname="org.objectstyle.woproject.ant.WOGenerator"&amp;gt;
      &amp;lt;classpath refid="classpath"/&amp;gt;
 &amp;lt;/taskdef&amp;gt;
-&amp;lt;wogen map="src/test.eomodeld" destDir="src/java"/&amp;gt;
+&amp;lt;wogen model="src/test.eomodeld" destDir="src/java"/&amp;gt;
 </source>
     </section>
 </body>
