@@ -161,9 +161,7 @@ public class WOAntBuilder
 	 * @param aBuildFile
 	 * @throws Exception
 	 */
-	private void execute(
-		IProgressMonitor monitor,
-		String aBuildFile)
+	private void execute(IProgressMonitor monitor, String aBuildFile)
 		throws Exception {
 		if (!this.isPatchInstalled()) {
 			IMarker aMarker = null;
@@ -190,11 +188,11 @@ public class WOAntBuilder
 		} else {
 			if (projectNeedsClean())
 				runAnt.asAnt(
-					getProject().getFile(aBuildFile).getLocation().toOSString(),
+					getProject().getFile(aBuildFile),
 					monitor,
 					this.cleanTarget());
 			runAnt.asAnt(
-				getProject().getFile(aBuildFile).getLocation().toOSString(),
+				getProject().getFile(aBuildFile),
 				monitor,
 				this.defaultTarget());
 		}

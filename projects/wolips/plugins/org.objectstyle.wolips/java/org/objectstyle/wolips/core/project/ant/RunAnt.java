@@ -106,6 +106,17 @@ public final class RunAnt {
 	 * @param target
 	 * @throws Exception
 	 */
+	public void asAnt(IFile buildFile, IProgressMonitor monitor, String target)
+		throws Exception {
+		this.asAnt(buildFile.getLocation().toOSString(), monitor, target);
+	}
+	/**
+	 * Method asAnt.
+	 * @param buildFile
+	 * @param monitor
+	 * @param target
+	 * @throws Exception
+	 */
 	public void asAnt(
 		String buildFile,
 		IProgressMonitor monitor,
@@ -131,7 +142,6 @@ public final class RunAnt {
 			runner = null;
 		}
 	}
-
 	/**
 	 * Method asExternalTool.
 	 * @param buildFile

@@ -247,6 +247,8 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 				// try to add any existing classpath entries
 				addAdditionalFrameworks(monitor, importPath.toFile());
 			}
+		} catch (Exception e) {
+			throw new InvocationTargetException(e);
 		} finally {
 			monitor.done();
 		}
@@ -652,7 +654,10 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 	 * @return found value or null
 	 */
 	private String expandVariable(String variableToExpand) {
-		return WOLipsCore.getClasspathVariablesAccessor().classPathVariableToExpand(variableToExpand);
+		return WOLipsCore
+			.getClasspathVariablesAccessor()
+			.classPathVariableToExpand(
+			variableToExpand);
 	}
 	/**
 	 * Method variableList. List of variables to expand from templates
@@ -989,7 +994,7 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 			throws FileNotFoundException {
 			super();
 			sourceFile = new File(baseDir, sourceFileName);
-			if (!"CVS".equals(sourceFile.getName())) {
+			if (!"CVS".equals(sourceFile.getName()) && !"Icon?".equals(sourceFile.getName())) {
 				if (sourceFile.isDirectory()) {
 					resourceFolderToCreate =
 						destContainer.getFolder(new Path(sourceFileName));

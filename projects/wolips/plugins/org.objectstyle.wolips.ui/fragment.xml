@@ -230,32 +230,10 @@
             id="org.objectstyle.wolips.ui">
       </category>
       <view
-            name="%WOLips.NavigatorViewName"
+            name="Related"
             icon="icons/wolips/WOLips-icon.gif"
-            category="org.objectstyle.wolips.ui"
-            class="org.objectstyle.wolips.ui.view.Navigator"
-            id="org.objectstyle.wolips.ui.Navigator">
-      </view>
-      <view
-            name="%WOLips.WONavigatorViewName"
-            icon="icons/wolips/WOLips-icon.gif"
-            category="org.objectstyle.wolips.ui"
-            class="org.objectstyle.wolips.ui.view.WONavigator"
-            id="org.objectstyle.wolips.ui.WONavigator">
-      </view>
-      <view
-            name="%WOLips.ModelNavigatorViewName"
-            icon="icons/wolips/WOLips-icon.gif"
-            category="org.objectstyle.wolips.ui"
-            class="org.objectstyle.wolips.ui.view.ModelNavigator"
-            id="org.objectstyle.wolips.ui.ModelNavigator">
-      </view>
-      <view
-            name="%WOLips.ProductNavigatorViewName"
-            icon="icons/wolips/WOLips-icon.gif"
-            category="org.objectstyle.wolips.ui"
-            class="org.objectstyle.wolips.ui.view.ProductNavigator"
-            id="org.objectstyle.wolips.ui.ProductNavigator">
+            class="org.objectstyle.wolips.ui.view.RelatedView"
+            id="org.objectstyle.wolips.ui.view.RelatedView">
       </view>
    </extension>
 <!-- =================================================================================== -->
@@ -273,12 +251,6 @@
             category="org.objectstyle.wolips.preferences.PreferencesPage"
             class="org.objectstyle.wolips.ui.preferences.BuildPreferencesPage"
             id="org.objectstyle.wolips.preferences.BuildPreferencesPage">
-      </page>
-      <page
-            name="%WOLips.preferences.ui.viewName"
-            category="org.objectstyle.wolips.preferences.PreferencesPage"
-            class="org.objectstyle.wolips.ui.preferences.UIPreferencesPage"
-            id="org.objectstyle.wolips.preferences.UIPreferencesPage">
       </page>
       <page
             name="%WOLips.preferences.log.viewName"
@@ -364,5 +336,5 @@
          </action>
       </actionSet>
    </extension>
-   
+      
 </fragment>
