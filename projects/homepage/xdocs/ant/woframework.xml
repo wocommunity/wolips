@@ -40,6 +40,11 @@
 					will be created under [wsDestDir]/WebObjects/Frameworks/FrameworkName.framework/.</td>
 					<td valign="top" align="center">No</td>
 				</tr>
+				<tr>
+					<td valign="top">principalClass</td>
+					<td valign="top">The value of the <code>NSPrincipal</code> class in the Info.plist to use.</td>
+					<td valign="top" align="center"><code>NO</code></td>
+				</tr>
 			</table>
 
 			<h3>Nested elements:</h3>
