@@ -64,7 +64,6 @@ import java.util.Hashtable;
 import org.eclipse.core.runtime.IPath;
 import org.objectstyle.wolips.plugin.WOLipsPlugin;
 import org.objectstyle.wolips.utils.WOLipsUtils;
-import org.objectstyle.woproject.env.WOVariables;
 import org.w3c.dom.Document;
 /**
  * @author uli
@@ -75,7 +74,7 @@ import org.w3c.dom.Document;
  * Window>Preferences>Java>Code Generation.
  */
 public abstract class _FileFromTemplateCreator {
-//	translate expected variable strings to int 
+	//	translate expected variable strings to int 
 	// for switch case in expandVariable
 	protected static final int PLUGIN_NAME = 0;
 	protected static final int CLASS = 1;
@@ -111,17 +110,17 @@ public abstract class _FileFromTemplateCreator {
 			IPath templatePath;
 			File templateFile;
 			try {
-				InputStream input =
-					(new URL(WOLipsPlugin.baseURL(),
+				URL url =
+					new URL(
+						WOLipsPlugin.baseURL(),
 						WOLipsUtils.woTemplateDirectory()
-							+ WOLipsUtils.woTemplateFiles()))
-						.openStream();
+							+ WOLipsUtils.woTemplateFiles());
+				InputStream input = (url).openStream();
 				templateDocument =
 					XercesDocumentBuilder.documentBuilder().parse(input);
 			} catch (Exception e) {
 				throw new InvocationTargetException(e);
-			}
-			finally {
+			} finally {
 				templatePath = null;
 				templateFile = null;
 			}
