@@ -252,7 +252,7 @@
             label="%ElementCreationActionSet.label"
             description="%ElementCreationActionSet.description"
             visible="false"
-            id="org.objectstyle.wolips.BuildActionSet">
+            id="org.objectstyle.wolips.ui.BuildActionSet">
          <action
                label="%EnableWOBuild.label"
                icon="icons/wobuild/enable_build.gif"

@@ -105,7 +105,9 @@ public class PerspectiveFactory implements IPerspectiveFactory {
 		layout.addActionSet(JavaUI.ID_ACTION_SET);
 		layout.addActionSet(JavaUI.ID_ELEMENT_CREATION_ACTION_SET);
 		layout.addActionSet(
-			IWOLipsPluginConstants.ID_ELEMENT_CREATION_ACTION_SET);
+			IWOLipsPluginConstants.ID_BUILD_ACTION_SET);
+		layout.addActionSet(
+					IWOLipsPluginConstants.ID_ELEMENT_CREATION_ACTION_SET);
 
 		// views - java
 		//layout.addShowViewShortcut(WOLipsPlugin.ID_Finder);
