@@ -11,6 +11,6 @@
 	<classpathentry kind="lib" path="lib/junit-3.8.1.jar"/>
 	<classpathentry kind="lib" path="/Volumes/Programme/apache-ant-1.6.1/lib/ant-launcher.jar"/>
 	<classpathentry kind="lib" path="/Volumes/Programme/apache-ant-1.6.1/lib/ant.jar"/>
-	<classpathentry kind="lib" path="lib/cayenne-1.1M6.jar"/>
+	<classpathentry kind="lib" path="lib/cayenne-1.1M7-dev.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
