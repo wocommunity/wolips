@@ -60,6 +60,7 @@ import java.util.HashSet;
 
 import org.apache.tools.ant.BuildException;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -67,6 +68,10 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
+import org.objectstyle.wolips.core.logging.WOLipsLog;
+import org.objectstyle.wolips.core.project.IWOLipsProject;
+import org.objectstyle.wolips.core.project.WOLipsCore;
+import org.objectstyle.wolips.core.resources.IWOLipsModel;
 
 /**
  * @author mnolte
@@ -91,12 +96,11 @@ public class UpdateFrameworkIncludeFiles extends UpdateIncludeFiles {
 	 * @see org.objectstyle.wolips.core.ant.UpdateIncludeFiles#buildIncludeFiles()
 	 */
 	protected synchronized void buildIncludeFiles() {
-    // avoid creating two entries for one classPath Entry
-    HashSet resolvedEntries = new HashSet();
-    
-    // avoid double entries
-    HashSet generatedEntries = new HashSet();
+		// avoid creating two entries for one classPath Entry
+		HashSet resolvedEntries = new HashSet();
 
+		// avoid double entries
+		HashSet generatedEntries = new HashSet();
 
 		// add wo classpath entries
 		IJavaProject myJavaProject = JavaCore.create(this.getIProject());
@@ -114,8 +118,8 @@ public class UpdateFrameworkIncludeFiles extends UpdateIncludeFiles {
 		// use sorted root paths to ensure correct replacement of 
 		// classpath entries with framework entries
 		for (int i = 0; i < this.getPaths().length; i++) {
-      
-      IPath thisPath = new Path(getPaths()[i]);
+
+			IPath thisPath = new Path(getPaths()[i]);
 
 			currentFrameworkListFile =
 				this.getIProject().getFile(
@@ -139,33 +143,68 @@ public class UpdateFrameworkIncludeFiles extends UpdateIncludeFiles {
 			StringBuffer newFrameworkEntries = new StringBuffer();
 			String resolvedEntry;
 			for (int j = 0; j < classPaths.length; j++) {
-        IClasspathEntry thisEntry = classPaths[j];
+				IClasspathEntry thisEntry = classPaths[j];
 				if (thisEntry.getEntryKind() == IClasspathEntry.CPE_LIBRARY
-					|| thisEntry.getEntryKind()
-						== IClasspathEntry.CPE_VARIABLE) {
+					|| thisEntry.getEntryKind() == IClasspathEntry.CPE_VARIABLE) {
 
-          if (!resolvedEntries.contains(thisEntry)) {
-            // convert classpath entries to woproject acceptable paths
-            resolvedEntry =
-              classpathEntryToFrameworkEntry(
-                thisEntry,
-                thisPath);
+					if (!resolvedEntries.contains(thisEntry)) {
+						// convert classpath entries to woproject acceptable paths
+						resolvedEntry =
+							classpathEntryToFrameworkEntry(thisEntry, thisPath);
 
-            //Uk was sorted
-            if (
-              resolvedEntry != null
-            ) {
-              if (!generatedEntries.contains(resolvedEntry)) {
-                generatedEntries.add(resolvedEntry);
-                newFrameworkEntries.append(resolvedEntry);
-                newFrameworkEntries.append("\n");
-              }
-              resolvedEntries.add(thisEntry);
-            }
-          }
+						//Uk was sorted
+						if (resolvedEntry != null) {
+							if (!generatedEntries.contains(resolvedEntry)) {
+								generatedEntries.add(resolvedEntry);
+								newFrameworkEntries.append(resolvedEntry);
+								newFrameworkEntries.append("\n");
+							}
+							resolvedEntries.add(thisEntry);
+						}
+					}
 				}
 			}
-
+			if (thisPath.toString().equals(this.getWOLocalRoot())) {
+				IProject[] referencedProjects;
+				try {
+					referencedProjects = getIProject().getReferencedProjects();
+				} catch (CoreException e1) {
+					WOLipsLog.log(e1);
+					referencedProjects = null;
+				}
+				if (referencedProjects != null) {
+					for (int j = 0; j < referencedProjects.length; j++) {
+						if (referencedProjects[j].isAccessible()
+							&& referencedProjects[j].isOpen()) {
+							try {
+								IWOLipsProject referencedWOLipsProject =
+									WOLipsCore.createProject(
+										referencedProjects[j]);
+								if (referencedWOLipsProject != null
+									&& referencedWOLipsProject
+										.getNaturesAccessor()
+										.hasWOLipsNature()
+									&& referencedWOLipsProject
+										.getNaturesAccessor()
+										.isFramework()) {
+									newFrameworkEntries.append(
+										"Library/Frameworks/");
+									newFrameworkEntries.append(
+										referencedWOLipsProject
+											.getProject()
+											.getName());
+									newFrameworkEntries.append(".");
+									newFrameworkEntries.append(
+										IWOLipsModel.EXT_FRAMEWORK);
+									newFrameworkEntries.append("\n");
+								}
+							} catch (CoreException e1) {
+								WOLipsLog.log(e1);
+							}
+						}
+					}
+				}
+			}
 			if (newFrameworkEntries.length() == 0) {
 				newFrameworkEntries.append(
 					"An empty file result in a full filesystem scan");
@@ -211,9 +250,9 @@ public class UpdateFrameworkIncludeFiles extends UpdateIncludeFiles {
 		IPath pathToConvert;
 
 		// determine if entry's path begins with rootDir
-    // Quoting the JavaDoc:
-    // "To be a prefix, this path's segments must appear 
-    // in the argument path in the same order, and their device ids must match."
+		// Quoting the JavaDoc:
+		// "To be a prefix, this path's segments must appear 
+		// in the argument path in the same order, and their device ids must match."
 		if (!rootDir.isPrefixOf(entry.getPath()))
 			return null;
 
@@ -221,7 +260,7 @@ public class UpdateFrameworkIncludeFiles extends UpdateIncludeFiles {
 		pathToConvert = entry.getPath();
 
 		for (int i = pathToConvert.segmentCount(); i > 0; i--) {
-			if (pathToConvert.segment(i -1).endsWith(".framework")) {
+			if (pathToConvert.segment(i - 1).endsWith(".framework")) {
 				// remove segments after framework
 				pathToConvert =
 					pathToConvert.removeLastSegments(
@@ -230,13 +269,14 @@ public class UpdateFrameworkIncludeFiles extends UpdateIncludeFiles {
 			}
 		}
 
-    String result = null;
+		String result = null;
 
 		if (pathToConvert != null) {
-      pathToConvert = pathToConvert.setDevice(null);
-      
-      pathToConvert = pathToConvert.removeFirstSegments(rootDir.segmentCount());
-      result = pathToConvert.toString();
+			pathToConvert = pathToConvert.setDevice(null);
+
+			pathToConvert =
+				pathToConvert.removeFirstSegments(rootDir.segmentCount());
+			result = pathToConvert.toString();
 			if (result.startsWith("/") || result.startsWith("\\"))
 				result = result.substring(1);
 		}

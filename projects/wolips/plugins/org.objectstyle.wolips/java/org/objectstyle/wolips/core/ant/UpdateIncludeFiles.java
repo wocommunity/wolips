@@ -92,6 +92,9 @@ public abstract class UpdateIncludeFiles {
 		}
 	}
 
+	protected String getWOLocalRoot() {
+		return woVariables.localRoot();
+	}
 	public String[] getPaths() {
 		return paths;
 	}

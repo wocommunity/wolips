@@ -310,7 +310,7 @@ public class ResourceChangeListener implements IResourceChangeListener {
 					return true;
 				case IResource.FILE :
 					if (IResourceDelta.CHANGED == kindOfChange) {
-						if (".project".equals(resource.getName())) {
+						if (".project".equals(resource.getName()) || ".classpath".equals(resource.getName())) {
 							ArrayList addedFrameworks = new ArrayList();
 							IProject[] referencedProjects =
 								resource.getProject().getReferencedProjects();
