@@ -56,6 +56,7 @@
 package org.objectstyle.wolips.listener;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
@@ -69,6 +70,7 @@ import org.objectstyle.wolips.IWOLipsPluginConstants;
 import org.objectstyle.wolips.WOLipsPlugin;
 import org.objectstyle.wolips.project.PBProjectUpdater;
 import org.objectstyle.woproject.pb.PBProject;
+
 import com.webobjects.foundation.NSArray;
 import com.webobjects.foundation.NSDictionary;
 import com.webobjects.foundation.NSMutableArray;

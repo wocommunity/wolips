@@ -54,10 +54,10 @@
  *
  */
 package org.objectstyle.wolips.wizards;
-import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Hashtable;
 import java.util.Vector;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;

@@ -154,7 +154,7 @@ public class FileFromTemplateCreator {
 	 */
 	public FileFromTemplateCreator(Hashtable variableInfo) {
 		this();
-		this.variableInfo = variableInfo;
+		FileFromTemplateCreator.variableInfo = variableInfo;
 	}
 	/**
 	 * Creates new file resource.

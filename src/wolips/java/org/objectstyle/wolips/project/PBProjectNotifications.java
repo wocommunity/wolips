@@ -56,7 +56,6 @@
  
  package org.objectstyle.wolips.project;
 
-import com.webobjects.foundation.NSMutableDictionary;
 import com.webobjects.foundation.NSNotificationCenter;
 
 /**

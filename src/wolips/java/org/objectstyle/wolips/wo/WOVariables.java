@@ -55,6 +55,7 @@
  */
 package org.objectstyle.wolips.wo;
 import java.io.File;
+
 import org.objectstyle.wolips.WOLipsPlugin;
 import org.objectstyle.wolips.env.Environment;
 /**

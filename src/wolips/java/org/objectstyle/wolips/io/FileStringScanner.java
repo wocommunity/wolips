@@ -56,7 +56,6 @@
 
 package org.objectstyle.wolips.io;
 
-import java.util.Hashtable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;

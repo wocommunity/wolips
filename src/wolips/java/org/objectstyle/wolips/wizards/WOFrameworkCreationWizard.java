@@ -54,14 +54,8 @@
  *
  */
 package org.objectstyle.wolips.wizards;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.wizards.newresource.BasicNewProjectResourceWizard;
 import org.objectstyle.wolips.WOLipsPlugin;
 import org.objectstyle.wolips.images.WOLipsPluginImages;

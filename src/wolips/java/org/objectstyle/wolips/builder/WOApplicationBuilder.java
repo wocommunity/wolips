@@ -56,8 +56,6 @@
 
 package org.objectstyle.wolips.builder;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
 
 /**
  * @author uli
