@@ -80,7 +80,8 @@ public final class WOLipsModel implements IWOLipsModel {
 			WOComponentDefinition.class.getName(),
 			WOComponentHtml.class.getName(),
 			WOComponentWoo.class.getName(),
-			WOComponentApi.class.getName()};
+			WOComponentApi.class.getName(),
+			EOModel.class.getName()};
 	public final static String WOCOMPONENT_BUNDLE_EXTENSION = "wo";
 	public final static String WOCOMPONENT_WOD_EXTENSION = "wod";
 	public final static String WOCOMPONENT_HTML_EXTENSION = "html";
