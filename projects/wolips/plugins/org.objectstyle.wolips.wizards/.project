@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>wolips-wizards</name>
+	<name>org.objectstyle.wolips.wizards</name>
 	<comment></comment>
 	<projects>
-		<project>wolips</project>
+		<project>org.objectstyle.wolips</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

@@ -3,7 +3,7 @@
 	<name>org.objectstyle.wolips.launching</name>
 	<comment></comment>
 	<projects>
-		<project>wolips</project>
+		<project>org.objectstyle.wolips</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
