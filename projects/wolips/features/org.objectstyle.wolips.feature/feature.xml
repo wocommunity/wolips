@@ -115,14 +115,14 @@
 
    <plugin
          id="org.objectstyle.wolips.cayenne"
-         download-size="1300"
-         install-size="1500"
+         download-size="2300"
+         install-size="2500"
          version="1.0.6"/>
 
    <plugin
          id="org.objectstyle.wolips.cayenne.ant"
-         download-size="1300"
-         install-size="1500"
+         download-size="2300"
+         install-size="2500"
          version="1.0.6"/>
 
    <plugin
