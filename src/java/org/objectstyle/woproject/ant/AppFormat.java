@@ -56,7 +56,9 @@
 package org.objectstyle.woproject.ant;
 
 import java.io.File;
-import java.util.*;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.types.FilterSet;
@@ -69,35 +71,131 @@ import org.apache.tools.ant.types.FilterSetCollection;
  * @author Andrei Adamchik
  */
 public class AppFormat extends ProjectFormat {
-	public static final String INFO_TEMPLATE = "woapp/Info.plist";
+	private HashMap templateMap = new HashMap();
+	private HashMap filterMap = new HashMap();
 
-    private HashMap templateMap = new HashMap();
-    private HashMap filterMap = new HashMap();
-    
 	/** 
 	 * Creates new AppFormat and initializes it with the name
 	 * of the project being built.
 	 */
 	public AppFormat(WOTask task) {
 		super(task);
-		
+
 		prepare();
 	}
-	
+
 	/** 
 	 * Builds a list of files for the application, 
 	 * maps them to templates and filters. 
 	 */
 	private void prepare() {
-	    String infoFile = new File(getApplicatonTask().contentsDir(), "Info.plist").getPath();
-	    createMappings(infoFile, INFO_TEMPLATE, infoFilter(null));
+		prepareWindows();
+		prepareUnix();
+		prepareMac();
+
+        // @todo - create web.xml and/or classpath files
+
+		// add Info.plist
+		String infoFile =
+			new File(getApplicatonTask().contentsDir(), "Info.plist").getPath();
+		createMappings(infoFile, "woapp/Info.plist", infoFilter(null));
 	}
-	
-	private void createMappings(String fileName, String template, FilterSet filter) {
+
+	/** 
+	 * Prepare mappings for Windows subdirectory. 
+	 */
+	private void prepareWindows() {
+		File winDir = new File(getApplicatonTask().contentsDir(), "Windows");
+
+		String cp = new File(winDir, "CLSSPATH.TXT").getPath();
+		createMappings(
+			cp,
+			"woapp/Contents/Windows/CLSSPATH.TXT",
+			classpathFilter('\\'));
+
+		String subp = new File(winDir, "SUBPATHS.TXT").getPath();
+		createMappings(subp, "woapp/Contents/Windows/SUBPATHS.TXT");
+
+		// add run script to Win. directory
+		String runScript = new File(winDir, getName() + ".cmd").getPath();
+		createMappings(runScript, "woapp/Contents/Windows/appstart.cmd");
+
+		// add run script to top-level directory
+		File taskDir = getApplicatonTask().taskDir();
+		String topRunScript = new File(taskDir, getName() + ".cmd").getPath();
+		createMappings(topRunScript, "woapp/Contents/Windows/appstart.cmd");
+	}
+
+	/** 
+	 * Prepare mappings for UNIX subdirectory. 
+	 */
+	private void prepareUnix() {
+		File dir = new File(getApplicatonTask().contentsDir(), "UNIX");
+
+		String cp = new File(dir, "UNIXClassPath.txt").getPath();
+		createMappings(
+			cp,
+			"woapp/Contents/UNIX/UNIXClassPath.txt",
+			classpathFilter('/'));
+	}
+
+	/** 
+	 * Prepare mappings for MacOS subdirectory. 
+	 */
+	private void prepareMac() {
+		File macDir = new File(getApplicatonTask().contentsDir(), "MacOS");
+
+		String cp = new File(macDir, "MacOSClassPath.txt").getPath();
+		createMappings(
+			cp,
+			"woapp/Contents/MacOS/MacOSClassPath.txt",
+			classpathFilter('/'));
+
+		String servercp =
+			new File(macDir, "MacOSXServerClassPath.txt").getPath();
+		createMappings(
+			servercp,
+			"woapp/Contents/MacOS/MacOSXServerClassPath.txt",
+			classpathFilter('/'));
+
+		// add run script to Mac directory
+		String runScript = new File(macDir, getName()).getPath();
+		createMappings(runScript, "woapp/Contents/MacOS/appstart");
+
+		// add run script to top-level directory
+		File taskDir = getApplicatonTask().taskDir();
+		String topRunScript = new File(taskDir, getName()).getPath();
+		createMappings(topRunScript, "woapp/Contents/MacOS/appstart");
+	}
+
+
+    /** 
+     * Creates a filter for Classpath helper files.
+     */
+	private FilterSet classpathFilter(char pathSeparator) {
+		FilterSet filter = new FilterSet();
+
+		filter.addFilter("APP_JAR", "# App JAR goes here...");
+		filter.addFilter("FRAMEWORK_JAR", "# Framework JAR goes here...");
+
+		return filter;
+	}
+
+	private void createMappings(
+		String fileName,
+		String template,
+		FilterSet filter) {
 		createMappings(fileName, template, new FilterSetCollection(filter));
 	}
-	
-    private void createMappings(String fileName, String template, FilterSetCollection filter) {
+
+	private void createMappings(String fileName, String template) {
+		createMappings(fileName, template, (FilterSetCollection) null);
+	}
+
+	private void createMappings(
+		String fileName,
+		String template,
+		FilterSetCollection filter) {
 		templateMap.put(fileName, template);
 		filterMap.put(fileName, filter);
 	}
@@ -111,19 +209,20 @@ public class AppFormat extends ProjectFormat {
 	}
 
 	public String templateForTarget(String targetName) throws BuildException {
-        String template = (String)templateMap.get(targetName);
-        if(template == null) {
-        	throw new BuildException("Invalid target, no template found: " + targetName);
-        }
-        return template;
+		String template = (String) templateMap.get(targetName);
+		if (template == null) {
+			throw new BuildException(
+				"Invalid target, no template found: " + targetName);
+		}
+		return template;
 	}
 
 	public FilterSetCollection filtersForTarget(String targetName)
 		throws BuildException {
-        
-        if(!filterMap.containsKey(targetName)) {
-        	throw new BuildException("Invalid target: " + targetName);
-        }
-        return (FilterSetCollection)filterMap.get(targetName);
+
+		if (!filterMap.containsKey(targetName)) {
+			throw new BuildException("Invalid target: " + targetName);
+		}
+		return (FilterSetCollection) filterMap.get(targetName);
 	}
 }

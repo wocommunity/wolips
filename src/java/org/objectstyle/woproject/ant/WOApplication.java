@@ -112,13 +112,7 @@ public class WOApplication extends WOTask {
 
     protected void formatProject() throws BuildException {
         try {
-            new AppFormat(this).processTemplates();
-            
-            // build script files
-			new AppScriptBuilder(this).buildScripts();
-			
-		    // @todo - create web.xml and/or classpath files
-		    
+            new AppFormat(this).processTemplates();		    
         } catch (IOException ioex) {
             throw new BuildException("Error doing project formatting.", ioex);
         }
