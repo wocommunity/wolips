@@ -13,13 +13,16 @@
 	</section>       
 	<section name="Install">
 		<subsection name="Mac">
-			<p>Right click on Eclipse.app. Select show package contents. Navigate to Contens/Resources/Java"</p>
+			<p>Right click on Eclipse.app. Select show package contents. Navigate to Contens/Resources/Java</p>
 			<p>Proceed with common section</p>
 		</subsection>
 		<subsection name="common">
 			<p>Delete your current WOLips plugin.</p>
 			<p>Expand your download. You should now have a folder named com.objectstyle.wolips_0.8.8. The version may differ.</p>
 			<p>Move the folder to the Eclipse plugin folder.</p>
+		</subsection>
+		<subsection name="ant">
+			<p>Replace the ant.jar and the jakarta-ant-1.4.1-optional.jar in the ant plugin with the jars from the ant 1.5.* distribution. (jakarta-ant-1.4.1-optional.jar should be replace with optional.jar)</p>
 		</subsection>
 	</section>
 </body>
