@@ -4,7 +4,7 @@
 <!--              Main WOProject Ant build file               -->
 <!-- Serves as a facade for different helper build files.     -->
 <!-- ======================================================== -->
-<project name="woproject" default="dist" basedir=".">
+<project name="woproject" default="deprecated" basedir=".">
     <property file="build.properties"/>
     <property file="${user.home}${file.separator}build.properties"/>
     <property file="${user.home}${file.separator}Library${file.separator}wobuild.properties"/>
@@ -92,7 +92,10 @@
         </echo>
     </target>
 
-
+<target name="deprecated">
+	<echo message="Please use the build file from the projects folder."/>
+</target>	
+	
     <!-- ============================================= -->
     <!-- Creates WOProject distribution.               -->
     <!-- ============================================= -->
