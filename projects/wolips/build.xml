@@ -5,6 +5,7 @@
 <!-- Serves as a facade for different helper build files.     -->
 <!-- ======================================================== -->
 <project name="wolips" default="" basedir=".">
+
     <!-- ========================================== -->
     <!-- Verify eclipse.home.                       -->
     <!-- ========================================== -->
@@ -18,12 +19,14 @@
             </not>
         </condition>
     </target>
+
     <!-- ========================================== -->
     <!-- Inform user.                               -->
     <!-- ========================================== -->
     <target name="inform_user" if="eclipse.home.not.set">
         <echo message="Please set the property eclipse.home in your build.properties to build wolips."/>
     </target>
+
     <!-- ========================================== -->
     <!-- Build all children.                        -->
     <!-- ========================================== -->
@@ -31,11 +34,13 @@
 	<ant dir="plugins" target="all"/>
 	<ant dir="features" target="all"/>
     </target>
+
     <!-- ========================================== -->
     <!-- Build all.                                 -->
     <!-- ========================================== -->
     <target name="all" depends="verify,all_children,inform_user">
     </target>
+
     <!-- ========================================== -->
     <!-- Build dist children.                       -->
     <!-- ========================================== -->
@@ -43,6 +48,13 @@
 	<ant dir="plugins" target="dist"/>
 	<ant dir="features" target="dist"/>
     </target>
+
+    <!-- ============================================= -->
+    <!-- Run tests.                                    -->
+    <!-- ============================================= -->
+    <target name="test">
+    </target>
+
     <!-- ========================================== -->
     <!-- Build dist.                                -->
     <!-- ========================================== -->
