@@ -9,15 +9,16 @@
 <p>WOLips is built on WOProject. That means the WebObjects frameworks and applications 
   are built using Ant scripts. These scripts may be executed internally (to Eclipse) 
   or as an External Tool. WOLips also contains an <a href="#incrementalbuilder">IncrementalBuilder</a> 
-  and a <a href="#targetbuilder">TargetBuilder</a>. These where originally developed 
+  and a <a href="#targetbuilder">TargetBuilder</a>. These were originally developed 
   outside the WOProject/WOLips project, but are now integral parts.</p>
+<p>Ant scripts are highly configurable</p>
 <p>&nbsp;</p>
 <h2><a name="incrementalbuilder"></a>Using IncrementalBuilder</h2>
 <p>Developing a WebObjects &quot;project&quot; often involves developing a number 
   of framework:s and woa:s simultaneously. When you run or debug applications 
   you do, of course, want to make sure you always use the latest version of every 
   single piece of code. Executing the Ant script for a framework (re-building 
-  the entire framework) everytime anything in that framework changed soon becomes 
+  the entire framework) everytime anything in that framework changed may become 
   impractical.</p>
 <p>Eclipse always (and incrementally) keeps all Java code compiled and ready to 
   be executed and/or used by other Eclipse projects. WO projects are more than 
