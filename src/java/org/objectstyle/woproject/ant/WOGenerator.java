@@ -56,8 +56,10 @@ package org.objectstyle.woproject.ant;
  */
 
 import java.io.File;
+import java.io.IOException;
 
 import org.objectstyle.cayenne.map.DataMap;
+import org.objectstyle.cayenne.map.MapClassGenerator;
 import org.objectstyle.cayenne.tools.CayenneGenerator;
 import org.objectstyle.cayenne.wocompat.EOModelProcessor;
 
@@ -69,6 +71,10 @@ import org.objectstyle.cayenne.wocompat.EOModelProcessor;
   * @ant.task category="packaging"
   */
 public class WOGenerator extends CayenneGenerator {
+    public static final String SUPERCLASS_TEMPLATE = "wogen/superclass.vm";
+    public static final String SUBCLASS_TEMPLATE = "wogen/subclass.vm";
+    public static final String SINGLE_CLASS_TEMPLATE = "wogen/singleclass.vm";
+    
     public void setModel(File model) {
         super.setMap(model);
     }
@@ -77,6 +83,38 @@ public class WOGenerator extends CayenneGenerator {
       * from EOModel instead of Cayenne DataMap XML file. */
     protected DataMap loadDataMap()throws Exception {
         return new EOModelProcessor().loadEOModel(map.getCanonicalPath());
+    }
+    
+    
+    /** 
+     *  Returns template file path for Java class 
+     *  when generating single classes. 
+     */
+    protected String getTemplateForSingles() throws IOException {
+        return (template != null)
+            ? template.getCanonicalPath()
+            : SINGLE_CLASS_TEMPLATE;
+    }
+    
+
+    /** 
+     *  Returns template file path for Java subclass 
+     *  when generating class pairs. 
+     */
+    protected String getTemplateForPairs() throws IOException {
+        return (template != null)
+            ? template.getCanonicalPath()
+            : SUBCLASS_TEMPLATE;
+    }
+
+    /** 
+     *  Returns template file path for Java superclass 
+     *  when generating class pairs. 
+     */
+    protected String getSupertemplateForPairs() throws IOException {
+        return (supertemplate != null)
+            ? supertemplate.getCanonicalPath()
+            : SUPERCLASS_TEMPLATE;
     }
 
 }

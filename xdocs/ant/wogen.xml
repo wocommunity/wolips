@@ -82,13 +82,13 @@
 			<h3>Examples</h3>
 			<p>Here is an example of a using <code>WOGen</code> to generate EOEnterpriseObject
 			subclass/superclass pairs from EOModel located in "src/test.eomodeld". All generated
-			subclasses and superclasses will be saved in the same directory "src/java/dobj" regardless
+			subclasses and superclasses will be saved in the same directory "src/java/eo" regardless
 			of their package names:</p>
 <source>
 &amp;lt;taskdef name="wogen" classname="org.objectstyle.woproject.ant.WOGenerator"&amp;gt;
      &amp;lt;classpath refid="classpath"/&amp;gt;
 &amp;lt;/taskdef&amp;gt;
-&amp;lt;wogen map="src/test.eomodeld" destDir="src/java/dobj"/&amp;gt;
+&amp;lt;wogen map="src/test.eomodeld" destDir="src/java/eo"/&amp;gt;
 </source>
     </section>
 </body>

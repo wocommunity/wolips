@@ -1,0 +1,12 @@
+#if( ${classGen.isUsingPackage()} )
+package ${classGen.packageName};
+#end
+
+import org.objectstyle.cayenne.*;
+
+public class ${classGen.className} extends ${classGen.superPrefix}${classGen.className} {
+
+}
+
+
+

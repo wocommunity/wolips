@@ -121,7 +121,10 @@
         
         <jar jarfile="${dist}/lib/${project.name}.jar">
             <fileset dir="build" />
-            <fileset dir="src/resources" includes="Info.plist"/>
+            <fileset dir="src/resources">
+                <include name="Info.plist"/>
+                <include name="**/*.vm"/>
+            </fileset>
             <metainf dir="doc">
                 <include name="LICENSE*"/>
             </metainf>
@@ -183,6 +186,13 @@
                 <include name="**/*.jpeg"/>
                 <include name="**/*.jpg"/>
                 <include name="**/*.css"/>
+            </fileset>
+        </copy>
+        
+        <!-- copy templates -->
+        <copy todir="${dist}/doc/templates" filtering="no">
+            <fileset dir="src/resources/wogen">
+                <include name="**/*.vm"/>
             </fileset>
         </copy>
     </target>
