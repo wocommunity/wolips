@@ -125,7 +125,7 @@ public class WOBuilder extends IncrementalProjectBuilder {
 		try {
 			return WOLipsBuild.getString(WOBuilder.basedirKey);
 		}
-		catch(Exception anException) {
+		catch(RuntimeException anException) {
 			return null;
 		}
 	}
@@ -134,7 +134,7 @@ public class WOBuilder extends IncrementalProjectBuilder {
 		try {
 			return WOLipsBuild.getString(WOBuilder.destdirKey);
 		}
-		catch(Exception anException) {
+		catch(RuntimeException anException) {
 			return null;
 		}
 	}
@@ -143,7 +143,7 @@ public class WOBuilder extends IncrementalProjectBuilder {
 		try {
 			return WOLipsBuild.getString(WOBuilder.frameworknameKey);
 		}
-		catch(Exception anException) {
+		catch(RuntimeException anException) {
 			return null;
 		}
 	}
@@ -152,7 +152,7 @@ public class WOBuilder extends IncrementalProjectBuilder {
 		try {
 			return WOLipsBuild.getString(WOBuilder.applicationnameKey);
 		}
-		catch(Exception anException) {
+		catch(RuntimeException anException) {
 			return null;
 		}
 	}
@@ -161,7 +161,7 @@ public class WOBuilder extends IncrementalProjectBuilder {
 		try {
 			return WOLipsBuild.getString(WOBuilder.projectnameKey);
 		}
-		catch(Exception anException) {
+		catch(RuntimeException anException) {
 			return null;
 		}
 	}
