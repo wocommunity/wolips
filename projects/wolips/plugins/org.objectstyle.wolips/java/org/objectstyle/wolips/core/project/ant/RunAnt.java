@@ -56,18 +56,11 @@
 
 package org.objectstyle.wolips.core.project.ant;
 
-import java.lang.reflect.InvocationTargetException;
-
 import org.eclipse.ant.core.AntRunner;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
-import org.eclipse.debug.core.ILaunchConfiguration;
-import org.eclipse.jface.dialogs.ProgressMonitorDialog;
-import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.objectstyle.wolips.core.util.WorkbenchUtilities;
 
 
 /**
@@ -188,7 +181,7 @@ public final class RunAnt {
 	 * @param configuration the configuration to launch
 	 * @param mode launch mode - run or debug
 	 */
-	void launch(final ILaunchConfiguration configuration, final String mode) {
+	/*void launch(final ILaunchConfiguration configuration, final String mode) {
 		ProgressMonitorDialog dialog =
 			new ProgressMonitorDialog(WorkbenchUtilities.getShell());
 		IRunnableWithProgress runnable = new IRunnableWithProgress() {
@@ -217,7 +210,7 @@ public final class RunAnt {
 		} catch (InterruptedException e) {
 			// cancelled
 		}
-	}
+	}*/
 	/**
 	 * Creates and returns a default launch configuration for the given file.
 	 * 
