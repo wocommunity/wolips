@@ -113,6 +113,17 @@
                 <include name="**/*.vm"/>
             </fileset>
         </copy>
+        
+        <!-- Copy articles -->
+        <copy todir="${dist}/doc/articles">
+             <fileset dir="doc/articles">
+             	<include name="**/*.html"/>
+             	<include name="**/*.gif"/>
+                <include name="**/*.jpeg"/>
+                <include name="**/*.jpg"/>
+                <include name="**/*.css"/>
+             </fileset>
+         </copy>
     </target>
 
 
