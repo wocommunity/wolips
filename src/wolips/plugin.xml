@@ -274,7 +274,7 @@
       </builder>
    </extension>
 <!-- =================================================================================== -->
-<!-- Extension: WOApplication Builder                                                      -->
+<!-- Extension: WOApplication Builder                                                    -->
 <!-- =================================================================================== -->
    <extension
          id="woapplicationbuilder"
@@ -315,7 +315,7 @@
       </editor>
    </extension>
 <!-- =================================================================================== -->
-<!-- Extension: Project Natures                                                     -->
+<!-- Extension: Project Natures                                                          -->
 <!-- =================================================================================== -->
    <extension
          id="applicationnature"
@@ -344,7 +344,7 @@
       </requires-nature>
    </extension>
 <!-- =================================================================================== -->
-<!-- Extension: Perspective                                                    -->
+<!-- Extension: Perspective                                                              -->
 <!-- =================================================================================== -->
    <extension
          point="org.eclipse.ui.perspectives">
@@ -356,13 +356,13 @@
       </perspective>
    </extension>
 <!-- =================================================================================== -->
-<!-- Extension: Startup                                                    -->
+<!-- Extension: Startup                                                                  -->
 <!-- =================================================================================== -->
    <extension
          point="org.eclipse.ui.startup">
    </extension>
 <!-- =================================================================================== -->
-<!-- Extension: Decorators                                                    -->
+<!-- Extension: Decorators                                                               -->
 <!-- =================================================================================== -->
    <extension
          point="org.eclipse.ui.decorators">
@@ -375,7 +375,7 @@
       </decorator>
    </extension>
 <!-- =================================================================================== -->
-<!-- Extension: View                                                    -->
+<!-- Extension: View                                                                     -->
 <!-- =================================================================================== -->
    <extension
          point="org.eclipse.ui.views">
@@ -392,7 +392,7 @@
       </view>
    </extension>
 <!-- =================================================================================== -->
-<!-- Extension: Preferences                                                    -->
+<!-- Extension: Preferences                                                              -->
 <!-- =================================================================================== -->
    <extension
          point="org.eclipse.ui.preferencePages">
@@ -403,5 +403,21 @@
             id="org.objectstyle.wolips.preferences.PreferencesPage">
       </page>
    </extension>
-
+<!-- =================================================================================== -->
+<!-- Extension: Team file types                                                          -->
+<!-- =================================================================================== -->    
+	<extension point="org.eclipse.team.core.fileTypes">
+	  <fileTypes extension="wod" type="text"/>
+	  <fileTypes extension="woo" type="text"/>
+	  <fileTypes extension="plist" type="text"/>
+	  <fileTypes extension="eomodeld" type="text"/>
+	  <fileTypes extension="api" type="text"/>
+	  <fileTypes extension="postamble" type="text"/>
+	  <fileTypes extension="preamble" type="text"/>
+	  <fileTypes extension="d2wmodel" type="text"/>
+	  <fileTypes extension="pbxuser" type="text"/>
+	  <fileTypes extension="pbxproj" type="text"/>
+	  <fileTypes extension="ini" type="text"/>
+	  <fileTypes extension="mappings" type="text"/>
+	</extension>
 </plugin>
