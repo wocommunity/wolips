@@ -82,7 +82,7 @@ public class Preferences {
 			org.apache.tools.ant.Main.DEFAULT_BUILD_FILENAME);
 		store.setDefault(
 			IWOLipsPluginConstants.PREF_RUN_WOBUILDER_ON_BUILD,
-			Preferences.falseString);
+			Preferences.trueString);
 	}
 
 	/**
