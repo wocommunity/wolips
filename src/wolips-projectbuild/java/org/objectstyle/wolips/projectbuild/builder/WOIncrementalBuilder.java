@@ -430,7 +430,7 @@ public class WOIncrementalBuilder
             dstShortened = _dest.removeFirstSegments(n);
           }
           
-          //m.subTask("create " + dstShortened);
+          m.subTask("create " + dstShortened);
           checkDestination(_dest, m);
           _res.copy(_dest, true, null);
         } catch (CoreException up) {
