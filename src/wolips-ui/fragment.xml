@@ -60,6 +60,12 @@
                id="%WOUserHomeFramework.Add.ID">
          </action>
          <action
+               label="%ProjectWonderHomeFramework.Add"
+               class="org.objectstyle.wolips.ui.actions.WOFrameworkAction"
+               menubarPath="org.objectstyle.wolips/woframeworks"
+               id="%ProjectWonderFramework.Add.ID">
+         </action>
+         <action
                label="%WOLocalFramework.Add"
                class="org.objectstyle.wolips.ui.actions.WOFrameworkAction"
                menubarPath="org.objectstyle.wolips/woframeworks"

@@ -285,6 +285,13 @@ public abstract class AWOLips implements IWOLipsPluginConstants {
 			IWOLipsPluginConstants.UserHomeClasspathVariable);
 	}
 	/**
+		 * @return IPath from UserHome Classpath variable if it exists.
+		 */
+	public IPath getProjectWonderHomeClassPathVariable() {
+		return JavaCore.getClasspathVariable(
+			IWOLipsPluginConstants.ProjectWonderHomeClasspathVariable);
+	}
+	/**
 	 * Method getShell.
 	 * @return Shell
 	 */

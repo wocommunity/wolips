@@ -229,5 +229,17 @@ public class EarlyStartup extends AWOLips {
 				log.fatal(e);
 			}
 		}
+		if (this.getProjectWonderHomeClassPathVariable() == null) {
+			try {
+				JavaCore.setClasspathVariable(
+					IWOLipsPluginConstants.ProjectWonderHomeClasspathVariable,
+					new Path(this.getWOVariables().userHome() + "/Roots"),
+					null);
+			} catch (JavaModelException e) {
+				log.fatal(e);
+			} catch (Exception e) {
+				log.fatal(e);
+			}
+		}
 	}
 }

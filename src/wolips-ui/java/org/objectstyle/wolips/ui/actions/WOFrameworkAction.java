@@ -90,6 +90,8 @@ public class WOFrameworkAction extends ActionOnIProject {
 	private static String WOLocalFrameworkAddID = "WOLocalFramework.Add.ID";
 	private static String WOUserHomeFrameworkAddID =
 		"WOUserHomeFramework.Add.ID";
+	private static String ProjectWonderHomeFrameworkAddID =
+		"ProjectWonderHomeFramework.Add.ID";
 	private static String WOOtherFrameworkAddID = "WOOtherFramework.Add.ID";
 	private static String SelectOneClasspathVariableKey =
 		"SelectOneClasspathVariable";
@@ -140,6 +142,14 @@ public class WOFrameworkAction extends ActionOnIProject {
 				this.part,
 				javaProject,
 				IWOLipsPluginConstants.UserHomeClasspathVariable,
+				false,
+				true);
+			return;
+		} else if (action.getId().equals(ProjectWonderHomeFrameworkAddID)) {
+			WOFrameworkAction.frameworkDialog(
+				this.part,
+				javaProject,
+				IWOLipsPluginConstants.ProjectWonderHomeClasspathVariable,
 				false,
 				true);
 			return;
@@ -196,8 +206,28 @@ public class WOFrameworkAction extends ActionOnIProject {
 				List list = this.getInitialElementSelections();
 				for (int i = 0; i < list.size(); i++) {
 					String string = list.get(i).toString();
-					if(WOLipsPlugin.getDefault().getWOEnvironment().getNEXT_LOCAL_ROOT().equals(string) || WOLipsPlugin.getDefault().getWOEnvironment().getNEXT_SYSTEM_ROOT().equals(string) || WOLipsPlugin.getDefault().getWOEnvironment().getNEXT_ROOT().equals(string) || IWOLipsPluginConstants.UserHomeClasspathVariable.equals(string))
-					continue;
+					if (WOLipsPlugin
+						.getDefault()
+						.getWOEnvironment()
+						.getNEXT_LOCAL_ROOT()
+						.equals(string)
+						|| WOLipsPlugin
+							.getDefault()
+							.getWOEnvironment()
+							.getNEXT_SYSTEM_ROOT()
+							.equals(
+							string)
+						|| WOLipsPlugin
+							.getDefault()
+							.getWOEnvironment()
+							.getNEXT_ROOT()
+							.equals(
+							string)
+						|| IWOLipsPluginConstants
+							.UserHomeClasspathVariable
+							.equals(
+							string))
+						continue;
 					TableItem item = new TableItem(includeTable, SWT.NONE);
 					item.setText(string);
 					item.setChecked(false);

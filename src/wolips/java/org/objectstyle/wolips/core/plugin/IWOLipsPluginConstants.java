@@ -188,6 +188,7 @@ public interface IWOLipsPluginConstants {
 	//local framework search for PB.project
 	public static final String DefaultLocalFrameworkSearch =
 		"$(NEXT_ROOT)$(LOCAL_LIBRARY_DIR)/Frameworks";
-	public static String UserHomeClasspathVariable = "USER.HOME";	
+	public static String UserHomeClasspathVariable = "USER.HOME";
+	public static String ProjectWonderHomeClasspathVariable = "PROJECT.WONDER.HOME";	
 	
 }
