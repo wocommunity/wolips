@@ -82,23 +82,29 @@ import org.objectstyle.wolips.workbench.WorkbenchHelper;
 /**
  * Launches a local VM.
  */
-public class WOJavaLocalApplicationLaunchConfigurationDelegate extends AbstractJavaLaunchConfigurationDelegate {
+public class WOJavaLocalApplicationLaunchConfigurationDelegate
+	extends AbstractJavaLaunchConfigurationDelegate {
 
 	/**
 	 * @see ILaunchConfigurationDelegate#launch(ILaunchConfiguration, String, ILaunch, IProgressMonitor)
 	 */
-	public void launch(ILaunchConfiguration configuration, String mode, ILaunch launch, IProgressMonitor monitor) throws CoreException {
-		
+	public void launch(
+		ILaunchConfiguration configuration,
+		String mode,
+		ILaunch launch,
+		IProgressMonitor monitor)
+		throws CoreException {
+
 		if (monitor == null) {
 			monitor = new NullProgressMonitor();
 		}
-		
+
 		monitor.beginTask(LaunchingMessages.getString("WOJavaLocalApplicationLaunchConfigurationDelegate.Launching..._1"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
 		// check for cancellation
 		if (monitor.isCanceled()) {
 			return;
 		}
-								
+
 		String mainTypeName = verifyMainTypeName(configuration);
 
 		IVMInstall vm = verifyVMInstall(configuration);
@@ -106,9 +112,9 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate extends AbstractJ
 		IVMRunner runner = vm.getVMRunner(mode);
 		if (runner == null) {
 			if (mode == ILaunchManager.DEBUG_MODE) {
-				abort(MessageFormat.format(LaunchingMessages.getString("WOJavaLocalApplicationLaunchConfigurationDelegate.JRE_{0}_does_not_support_debug_mode._1"), new String[]{vm.getName()}), null, IJavaLaunchConfigurationConstants.ERR_VM_RUNNER_DOES_NOT_EXIST);  //$NON-NLS-1$
+				abort(MessageFormat.format(LaunchingMessages.getString("WOJavaLocalApplicationLaunchConfigurationDelegate.JRE_{0}_does_not_support_debug_mode._1"), new String[] { vm.getName()}), null, IJavaLaunchConfigurationConstants.ERR_VM_RUNNER_DOES_NOT_EXIST); //$NON-NLS-1$
 			} else {
-				abort(MessageFormat.format(LaunchingMessages.getString("WOJavaLocalApplicationLaunchConfigurationDelegate.JRE_{0}_does_not_support_run_mode._2"), new String[]{vm.getName()}), null, IJavaLaunchConfigurationConstants.ERR_VM_RUNNER_DOES_NOT_EXIST);  //$NON-NLS-1$
+				abort(MessageFormat.format(LaunchingMessages.getString("WOJavaLocalApplicationLaunchConfigurationDelegate.JRE_{0}_does_not_support_run_mode._2"), new String[] { vm.getName()}), null, IJavaLaunchConfigurationConstants.ERR_VM_RUNNER_DOES_NOT_EXIST); //$NON-NLS-1$
 			}
 		}
 
@@ -117,26 +123,28 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate extends AbstractJ
 		if (workingDir != null) {
 			workingDirName = workingDir.getAbsolutePath();
 		}
-		
+
 		// Program & VM args
 		String pgmArgs = getProgramArguments(configuration);
 		String vmArgs = getVMArguments(configuration);
 		ExecutionArguments execArgs = new ExecutionArguments(vmArgs, pgmArgs);
-		
+
 		// VM-specific attributes
 		Map vmAttributesMap = getVMSpecificAttributesMap(configuration);
-		
+
 		// Classpath
 		String[] classpath = getClasspath(configuration);
-		
+
 		// Create VM config
-		VMRunnerConfiguration runConfig = new VMRunnerConfiguration(mainTypeName, classpath);
+		VMRunnerConfiguration runConfig =
+			new VMRunnerConfiguration(mainTypeName, classpath);
 		//There may be a NullPointerException
 		//In this case we use the program arguments without replacing
 		try {
-			runConfig.setProgramArguments(this.replaceGeneratedByWOLips(execArgs.getProgramArgumentsArray()));
-		}
-		catch(Exception anException){
+			runConfig.setProgramArguments(
+				this.replaceGeneratedByWOLips(
+					execArgs.getProgramArgumentsArray()));
+		} catch (Exception anException) {
 			//May we should show a dialog
 			WOLipsLog.log(anException);
 			runConfig.setProgramArguments(execArgs.getProgramArgumentsArray());
@@ -148,29 +156,29 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate extends AbstractJ
 		// Bootpath
 		String[] bootpath = getBootpath(configuration);
 		runConfig.setBootClassPath(bootpath);
-		
+
 		// check for cancellation
 		if (monitor.isCanceled()) {
 			return;
-		}		
-		
+		}
+
 		// stop in main
 		prepareStopInMain(configuration);
-		
+
 		// Launch the configuration
 		runner.run(runConfig, launch, monitor);
-		
+
 		// check for cancellation
 		if (monitor.isCanceled()) {
 			return;
-		}	
-		
+		}
+
 		// set the default source locator if required
 		setDefaultSourceLocator(launch, configuration);
-		
+
 		monitor.done();
 	}
-	
+
 	/**
 	 * Method replaceGeneratedByWOLips.
 	 * @param args
@@ -178,10 +186,14 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate extends AbstractJ
 	 * replaced
 	 */
 	private String[] replaceGeneratedByWOLips(String[] args) {
-		for(int i=0;i<args.length;i++) {
+		for (int i = 0; i < args.length; i++) {
 			String argument = args[i];
-			if(argument != null && argument.indexOf(LaunchingMessages.getString("WOArguments.GeneratedByWOLips")) > 0)
-			args[i] = replaceInArgumentGeneratedByWOLips(argument);
+			if (argument != null
+				&& argument.indexOf(
+					LaunchingMessages.getString(
+						"WOArguments.GeneratedByWOLips"))
+					> 0)
+				args[i] = replaceInArgumentGeneratedByWOLips(argument);
 		}
 		return args;
 	}
@@ -191,35 +203,49 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate extends AbstractJ
 	 * @return String
 	 */
 	private String replaceInArgumentGeneratedByWOLips(String anArgument) {
-		return FileStringScanner.replace(anArgument,LaunchingMessages.getString("WOArguments.GeneratedByWOLips") , this.getGeneratedByWOLips());
-	}	
+		return FileStringScanner.replace(
+			anArgument,
+			LaunchingMessages.getString("WOArguments.GeneratedByWOLips"),
+			this.getGeneratedByWOLips());
+	}
 	/**
 	 * Method getGeneratedByWOLips.
 	 * @return String
 	 */
 	private String getGeneratedByWOLips() {
 		String returnValue = "";
-		IProject[] projects = WorkbenchHelper.getWorkspace().getRoot().getProjects();
-		for(int i=0;i<projects.length;i++) {
-			if(i>0) returnValue = returnValue + ",";
-			returnValue = returnValue + "\"" + projects[i].getLocation().toOSString() + "\"";
+		IProject[] projects =
+			WorkbenchHelper.getWorkspace().getRoot().getProjects();
+		for (int i = 0; i < projects.length; i++) {
+			if (i > 0)
+				returnValue = returnValue + ",";
+			returnValue =
+				returnValue
+					+ "\""
+					+ projects[i].getLocation().toOSString()
+					+ "\"";
 		}
+		returnValue = FileStringScanner.replace(returnValue, "/", "\\");
 		returnValue = this.addPreferencesValue(returnValue);
-		if("".equals(returnValue)) returnValue = "\"\"";
+		if ("".equals(returnValue))
+			returnValue = "\"\"";
 		return returnValue;
-	}	
+	}
 	/**
 	 * Method addPreferencesValue.
 	 * @param aString
 	 * @return String
 	 */
 	private String addPreferencesValue(String aString) {
-		if(aString == null) return aString;
-		String nsProjectSarchPath = Preferences
-					.getString(IWOLipsPluginConstants.PREF_NS_PROJECT_SEARCH_PATH);
-		if(nsProjectSarchPath == null || nsProjectSarchPath.length() == 0) return aString;
-		if(aString.length() == 0) return aString;
+		if (aString == null)
+			return aString;
+		String nsProjectSarchPath =
+			Preferences.getString(
+				IWOLipsPluginConstants.PREF_NS_PROJECT_SEARCH_PATH);
+		if (nsProjectSarchPath == null || nsProjectSarchPath.length() == 0)
+			return aString;
+		if (aString.length() == 0)
+			return aString;
 		return aString + "," + nsProjectSarchPath;
 	}
 }
-
