@@ -1,0 +1,87 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Language" content="en-us">
+<title>WOFramework Task Manual</title>
+</head>
+
+<body>
+
+<h2><a name="woframework">WOFramework</a></h2>
+<h3>Description</h3>
+<p>WOFramework is an Ant task to build WebObjects (5.1 or higher) frameworks
+from a set of files. It does not enforce any particular project structure
+and can be used to create frameworks without ProjectBuilder tool.</p>
+
+<h3>Parameters</h3>
+<table border="1" cellpadding="2" cellspacing="0">
+<tr>
+<td valign="top"><b>Attribute</b></td>
+<td valign="top"><b>Description</b></td>
+<td align="center" valign="top"><b>Required</b></td>
+</tr>
+<tr>
+<td valign="top">name</td>
+<td valign="top">name of the framework (without <i>.framework</i> extension).</td>
+<td valign="top" align="center">Yes</td>
+</tr>
+<tr>
+<td valign="top">destDir</td>
+<td valign="top">Destination directory where the framework should be created.</td>
+<td valign="top" align="center">Yes</td>
+</tr>
+
+</table>
+<h3>Nested elements</h3>
+
+<h4>lib</h4>
+<p>The nested <code>lib</code> element specifies a <a
+href="http://jakarta.apache.org/ant/manual/CoreTypes/fileset.html">FileSet</a>. 
+All files included in this fileset will be unpacked and repackaged into 
+<code>Resources/Java/frameworkname.jar</code> file of the framework.</p>
+
+<h4>classes</h4>
+<p>The nested <code>classes</code> element specifies a <a
+href="http://jakarta.apache.org/ant/manual/CoreTypes/fileset.html">FileSet</a>. 
+All files included in this fileset will
+end up in the <code>Resources/Java/*.jar</code> file of the framework.</p>
+
+
+<h4>resources</h4>
+<p>The nested <code>resources</code> element specifies a <a
+href="http://jakarta.apache.org/ant/manual/CoreTypes/fileset.html">FileSet</a>. 
+All files included in this fileset will
+end up in the <code>Resources</code> directory of the framework. </p>
+
+<h4>wsresources</h4>
+<p>The nested <code>wsresources</code> element specifies a <a
+href="http://jakarta.apache.org/ant/manual/CoreTypes/fileset.html">FileSet</a>. 
+All files included in this fileset will
+end up in the <code>WebServerResources</code> directory of the framework. </p>
+
+<h4>Examples</h4>
+<pre>
+&lt;taskdef name="woframework" classname="org.objectstyle.woproject.WOFramework">
+     &lt;classpath refid="classpath"/>
+&lt;/taskdef>
+&lt;woframework name="aa" destDir="${dist}/Frameworks">
+   &lt;classes dir="${build}/common">
+      &lt;exclude name="*.properties"/>
+   &lt;/classes>
+   &lt;classes dir="${build}/business">
+       &lt;exclude name="*.properties"/>
+   &lt;/classes>
+   &lt;resources dir="src/resources">
+       &lt;include name="*.eomodeld/**"/>
+   &lt;/resources>
+   &lt;wsresources dir="src/frameworks/WSResources">
+       &lt;include name="Images/**"/>
+   &lt;/wsresources>
+&lt;/woframework>
+</pre>
+<hr>
+<p align="center">Copyright ©2002 ObjectStyle Group . All rights reserved.</p>
+
+</body>
+</html>
+

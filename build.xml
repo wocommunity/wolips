@@ -1,0 +1,133 @@
+<?xml version="1.0"?>
+
+<!-- Main WOProject build file -->
+<project name="jamfo" default="dist" basedir=".">
+    <property file="${user.home}/build.properties" />
+    <property file="build.properties" />
+    <property file="default.properties" />
+    
+    
+    <!-- ============================================= -->
+    <!-- Define extra CLASSPATH                        -->
+    <!-- ============================================= -->
+    <path id="classpath">
+        <fileset dir="${ant.home}/lib">
+            <include name="ant.jar"/>
+        </fileset>
+    </path>
+    
+    <!-- ============================================= -->
+    <!-- Derived Properties. These properties are      -->
+    <!-- derived from other properties. You probably   -->
+    <!-- don't want to redefine them.                  -->
+    <!-- ============================================= -->
+    <property name="dist" value="${dist.base}/${project.name}-${project.version}"/>
+
+    
+    <target name="help">
+        <echo>
+        ****************************************
+        * TARGETS (also you can use "-projecthelp" ant flag):
+        *
+        *  1. help       - prints this message. 
+        *  2. prepare    - creates directories needed for distribution.
+        *  3. java       - compiles java and webapp subprojects.
+        *  4. clean      - cleans temporary directories.
+        *  5. doc        - creates documentation including Javadoc.
+        *  6. dist       - creates Jamfo distribution.
+        *
+        *
+        * Build environment:
+        *
+        * java.home = ${java.home}
+        * build.compiler = ${build.compiler}
+        * ant.home = ${ant.home}
+        * user.home = ${user.home}
+        *
+        ****************************************
+        </echo>
+    </target>
+
+
+    <!-- ============================================= -->
+    <!-- Creates WOProject distribution.               -->
+    <!-- ============================================= -->
+    <target name="dist" depends="prepare,java,doc">
+         <tar tarfile="${dist.base}/${project.name}-src-${project.version}.tar">
+             <tarfileset dir="${dist.base}">
+                <include name="${project.name}-${project.version}/**"/>
+            </tarfileset>
+        </tar>
+        <gzip src="${dist.base}/${project.name}-src-${project.version}.tar" 
+              zipfile="${dist.base}/${project.name}-src-${project.version}.tar.gz"/>  
+        <delete file="${dist.base}/${project.name}-src-${project.version}.tar"/>
+    </target>
+
+
+    <!-- ============================================= -->
+    <!-- Compiles Java classes                         -->
+    <!-- ============================================= -->
+    <target name="java" depends="prepare">
+       <javac srcdir="src/java" 
+                destdir="build"
+                deprecation="${compile.deprecation}"
+                debug="${compile.debug}"
+                optimize="${compile.optimize}">
+            <classpath refid="classpath"/>
+        </javac>
+        
+        <jar jarfile="${dist}/lib/${project.name}.jar">
+            <fileset dir="build" />
+            <fileset dir="src/resources" includes="Info.plist"/>
+        </jar>
+    </target>
+    
+    
+    <!-- ============================================= -->
+    <!-- Sets up build and distribution directories.   -->
+    <!-- ============================================= -->
+    <target name="prepare">
+        <mkdir dir="build"/>
+        <mkdir dir="${dist}"/>
+        <mkdir dir="${dist}/lib"/>
+        <mkdir dir="${dist}/doc"/>
+        <mkdir dir="${dist}/doc/api"/>
+    </target>
+    
+    
+    <!-- ============================================= -->
+    <!-- Different clean targets.                      -->
+    <!-- ============================================= -->
+    <target name="clean">
+        <delete dir="${dist.base}"/>
+        <delete dir="build"/>
+    </target>
+
+
+    <!-- ========================================== -->
+    <!-- Builds API documenatation.                 -->
+    <!-- ========================================== -->
+    <target name="doc" depends="prepare">
+        <copy todir="${dist}/doc">
+            <fileset dir="doc">
+                <include name="**/*.html"/>
+            </fileset>
+        </copy>
+        
+        <javadoc   packagenames="org.objectstyle.*"
+                   defaultexcludes="yes"
+                   destdir="${dist}/doc/api"
+                   author="true"
+                   version="true"
+                   use="true"
+                   windowtitle="WOProject API">
+                
+        <classpath refid="classpath"/>
+        <sourcepath>
+            <pathelement path="src/java"/>
+        </sourcepath>
+        <doctitle><![CDATA[<h2>WOProject API Documentation</h2>]]></doctitle>
+        <link href="http://developer.java.sun.com/developer/products/xml/docs/api/"/>
+        </javadoc>
+    </target>
+</project>
