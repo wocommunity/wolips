@@ -277,12 +277,6 @@
             id="org.objectstyle.wolips.preferences.BuildPreferencesPage">
       </page>
       <page
-            name="%WOLips.preferences.log.viewName"
-            category="org.objectstyle.wolips.preferences.PreferencesPage"
-            class="org.objectstyle.wolips.ui.preferences.LogPreferencesPage"
-            id="org.objectstyle.wolips.preferences.LogPreferencesPage">
-      </page>
-      <page
             name="%WOLips.preferences.launch.viewName"
             category="org.objectstyle.wolips.preferences.PreferencesPage"
             class="org.objectstyle.wolips.ui.preferences.LaunchPreferencesPage"
