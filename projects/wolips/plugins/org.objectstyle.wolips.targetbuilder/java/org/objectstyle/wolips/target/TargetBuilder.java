@@ -88,7 +88,7 @@ public class TargetBuilder extends JavaBuilder
 
 	private HashMap _problemMarkers;
 
-	public TargetBuilder() throws CoreException
+	public TargetBuilder()
 	{
 		super();
 	}

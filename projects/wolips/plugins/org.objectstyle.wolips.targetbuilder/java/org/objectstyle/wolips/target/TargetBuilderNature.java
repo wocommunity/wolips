@@ -119,7 +119,7 @@ public class TargetBuilderNature implements IProjectNature
 		return getProject().getFile(TargetBuilderNature.TARGETFILE).getLocation();
 	}
 
-	public void synchronizeWithFile() throws CoreException
+	public void synchronizeWithFile()
 	{
 		Map targetMap;
 
