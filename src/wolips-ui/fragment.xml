@@ -308,7 +308,7 @@
             label="WebObjects"
             state="true"
             class="org.objectstyle.wolips.ui.labeldecorator.WOLabelDecorator"
-            id="org.objectstyle.wolips.utils.decorator">
+            id="org.objectstyle.wolips..ui.labeldecorator.WOLabelDecorator">
       </decorator>
    </extension>
 </fragment>
