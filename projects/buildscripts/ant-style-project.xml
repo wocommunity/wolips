@@ -4,6 +4,7 @@
 <!--              Script to build an ant style project        -->
 <!-- ======================================================== -->
 <project name="build-ant-style-project" default="" basedir=".">
+
     <!-- ============================================= -->
     <!-- Compiles Java classes                         -->
     <!-- Required parameters                           -->
@@ -20,4 +21,20 @@
             <classpath refid="classpath"/>
         </javac>
     </target>
+
+    <!-- ============================================= -->
+    <!-- Jars Java classes                             -->
+    <!-- Required parameters                           -->
+    <!-- param.classes.dir                             -->
+    <!-- param.classes.patternset.refid the classes    -->
+    <!-- param.jar.file the jar file                   -->
+    <!-- ============================================= -->
+    <target name="jar">
+	<jar jarfile="${param.jar.file}">
+            <fileset dir="${param.classes.dir}">
+		<patternset refid="param.classes.patternset.refid"/>
+	    </fileset>
+	</jar>
+    </target>
+
 </project>

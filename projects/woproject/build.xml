@@ -7,6 +7,26 @@
 <project name="woproject" default="all" basedir=".">
 
     <!-- ========================================== -->
+    <!-- Build copy.resources.                      -->
+    <!-- ========================================== -->
+    <target name="copy.resources">
+	<mkdir dir="../${build.output.build.dir}/woproject"/>
+
+	<mkdir dir="../${build.output.build.dir}/woproject/examples"/>
+        <copy todir="../${build.output.build.dir}/woproject/examples">
+            <fileset dir="tests/wo">
+	    </fileset>
+        </copy>
+
+	<mkdir dir="../${build.output.build.dir}/woproject"/>
+	<mkdir dir="../${build.output.build.dir}/woproject/doc"/>
+        <copy todir="../${build.output.build.dir}/woproject/doc">
+            <fileset dir="../${build.output.homepage.dir}/">
+	    </fileset>
+        </copy>
+    </target>
+
+    <!-- ========================================== -->
     <!-- Build java.                                -->
     <!-- ========================================== -->
     <target name="java">
@@ -38,9 +58,41 @@
     </target>
 
     <!-- ========================================== -->
+    <!-- Build jar.                                 -->
+    <!-- ========================================== -->
+    <target name="jar">
+	<mkdir dir="../${build.output.build.dir}/woproject/lib"/>
+        <patternset id="param.classes.patternset.refid">
+                <include name="**/org/objectstyle/woenvironment/**"/>
+                <include name="**/org/objectstyle/woproject/**"/>
+            </patternset>
+            
+	<ant dir="." antfile="../${project.buildscripts.dir}/ant-style-project.xml" target="jar">
+            <property name="param.classes.dir" value="../${build.output.java.dir}"/>
+            <property name="param.jar.file" value="../${build.output.build.dir}/woproject/lib/woproject.jar"/>
+            <reference refid="param.classes.patternset.refid"/>
+        </ant>
+    </target>
+
+    <!-- ========================================== -->
+    <!-- Build copy jars.                           -->
+    <!-- ========================================== -->
+    <target name="lib">
+	<mkdir dir="../${build.output.build.dir}/woproject/lib"/>
+
+	<copy todir="../${build.output.build.dir}/woproject/lib">
+            <fileset dir="../lib">
+                <include name="lib.cayenne"/>
+                <include name="lib.log4j"/>
+                <include name="lib.commons-logging"/>
+	    </fileset>
+        </copy>
+    </target>
+
+    <!-- ========================================== -->
     <!-- Build all.                                 -->
     <!-- ========================================== -->
-    <target name="all" depends="java">
+    <target name="all" depends="copy.resources,java,jar,lib">
     </target>
 
     <!-- ========================================== -->

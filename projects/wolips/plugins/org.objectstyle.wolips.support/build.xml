@@ -40,6 +40,22 @@
     </target>
 
     <!-- ========================================== -->
+    <!-- Build jar.                                 -->
+    <!-- ========================================== -->
+    <target name="jar">
+	<mkdir dir="../../../${build.output.build.dir}/plugins/${plugin.name}/lib"/>
+        <patternset id="param.classes.patternset.refid">
+                <include name="**/org/objectstyle/wolips/support/**"/>
+        </patternset>
+            
+	<ant dir="." antfile="../../../${project.buildscripts.dir}/plugin-project.xml" target="jar">
+            <property name="param.classes.dir" value="../../../${build.output.java.dir}"/>
+            <property name="param.jar.file" value="../../../${build.output.build.dir}/plugins/${plugin.name}/lib/wolips-support.jar"/>
+            <reference refid="param.classes.patternset.refid"/>
+        </ant>
+    </target>
+
+    <!-- ========================================== -->
     <!-- Build copy resources.                      -->
     <!-- ========================================== -->
     <target name="copy.resources">
@@ -53,7 +69,7 @@
     <!-- ========================================== -->
     <!-- Build all.                                 -->
     <!-- ========================================== -->
-    <target name="all" depends="java,copy.resources">
+    <target name="all" depends="copy.resources,java,jar">
     </target>
     <!-- ========================================== -->
     <!-- Build dist.                                -->

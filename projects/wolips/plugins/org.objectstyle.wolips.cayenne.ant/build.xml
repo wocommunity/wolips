@@ -20,9 +20,22 @@
     </target>
 
     <!-- ========================================== -->
+    <!-- Build copy jars.                           -->
+    <!-- ========================================== -->
+    <target name="lib">
+	<mkdir dir="../../../${build.output.build.dir}/plugins/${plugin.name}/lib"/>
+
+	<copy todir="../../../${build.output.build.dir}/plugins/${plugin.name}/lib">
+            <fileset dir="../../../lib">
+                <include name="${lib.cayenne}"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <!-- ========================================== -->
     <!-- Build all.                                 -->
     <!-- ========================================== -->
-    <target name="all" depends="copy.resources">
+    <target name="all" depends="copy.resources,lib">
     </target>
 
     <!-- ========================================== -->
