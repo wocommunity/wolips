@@ -66,6 +66,7 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
+//import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.objectstyle.wolips.core.plugin.AWOLips;
@@ -88,6 +89,7 @@ public class PBProjectUpdater extends AWOLips {
 	//public static String PBProject = "PB.projectContainer"; moved to IWOLipsPluginConstants.PROJECT_FILE_NAME (mn)
 	private PBProject pbProject;
 	private IContainer projectContainer;
+
 	private static final String dirtyPBProject = "<?xml";
 	/**
 	 * Constructor for PBProjectUpdater.
@@ -127,20 +129,20 @@ public class PBProjectUpdater extends AWOLips {
 		return returnValue;*/
 		return new PBProjectUpdater(aProjectContainer);
 	}
-	/**
-	 * Method updatePBProject.
-	 * @throws CoreException
-	 */
-	public void updatePBProject() throws CoreException {
-		syncPBProjectWithProject();
-		if (projectContainer != null)
-			try {
-				PBProjectNotifications.postPBProjectDidUpgradeNotification(
-					projectContainer.getName());
-			} catch (Exception exception) {
-				WOLipsLog.log(exception);
-			}
-	}
+//	/**
+//	 * Method updatePBProject.
+//	 * @throws CoreException
+//	 */
+//	public void updatePBProject() throws CoreException {
+//		syncPBProjectWithProject();
+//		if (projectContainer != null)
+//			try {
+//				PBProjectNotifications.postPBProjectDidUpgradeNotification(
+//					projectContainer.getName());
+//			} catch (Exception exception) {
+//				WOLipsLog.log(exception);
+//			}
+//	}
 	/**
 	 * On MacOSX the EOModeler converts the PB.project file to xml.
 	 */
@@ -200,8 +202,28 @@ public class PBProjectUpdater extends AWOLips {
 		this.syncClasses(new ArrayList());
 		this.syncWOAppResources(new ArrayList());
 		this.syncWOComponents(new ArrayList());
-		pbProject.saveChanges();
+    _saveChanges();
 	}
+  
+  private void _saveChanges () throws IOException {
+    pbProject.saveChanges();
+    _tryRefresh();
+  }
+  
+  /** attempt to refresh Eclipse' idea of the resource to avoid "out of synch warnings" to user */
+  private void _tryRefresh() {
+    if (null != projectContainer) {
+      try {
+        IResource res = projectContainer.findMember(IWOLipsPluginConstants.PROJECT_FILE_NAME);
+        if (null != res)
+        res.refreshLocal(IResource.DEPTH_ZERO, null);
+      } catch (CoreException up) {
+        // no idea how to handle this case, ignore for now (and log, of course
+        WOLipsLog.log(up);
+      }
+    }
+  }
+
 	/**
 	 * Method syncPBProjectWithProject.
 	 */
@@ -210,7 +232,7 @@ public class PBProjectUpdater extends AWOLips {
 			pbProject.update();
 			this.syncFilestable();
 			this.syncProjectName();
-			pbProject.saveChanges();
+			_saveChanges();
 		} catch (Exception ioex) {
 			WOLipsLog.log(ioex);
 		}
@@ -406,7 +428,7 @@ public class PBProjectUpdater extends AWOLips {
 			}
 		}
 		try {
-			pbProject.saveChanges();
+			_saveChanges();
 		} catch (IOException e) {
 			WOLipsLog.log(e);
 		}
@@ -505,7 +527,7 @@ public class PBProjectUpdater extends AWOLips {
 		if (!actualFrameworkSearch.contains(IWOLipsPluginConstants.DefaultLocalFrameworkSearch)) {
 			actualFrameworkSearch.add(IWOLipsPluginConstants.DefaultLocalFrameworkSearch);
 			}
-			pbProject.saveChanges();
+			_saveChanges();
 		} catch (IOException e) {
 			WOLipsLog.log(e);
 		}
@@ -526,7 +548,7 @@ public class PBProjectUpdater extends AWOLips {
 			}
 		}
 		try {
-			pbProject.saveChanges();
+			_saveChanges();
 		} catch (IOException e) {
 			WOLipsLog.log(e);
 		}
@@ -547,7 +569,7 @@ public class PBProjectUpdater extends AWOLips {
 			}
 		}
 		try {
-			pbProject.saveChanges();
+			_saveChanges();
 		} catch (IOException e) {
 			WOLipsLog.log(e);
 		}
