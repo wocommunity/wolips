@@ -99,7 +99,7 @@ import org.objectstyle.wolips.projectbuild.util.ResourceUtilities;
  * build/ProjectName.framework folder that contains an approximation of the
  * structure needed to run a WebObjects application or use a framework
  */
-public class WOIncrementalBuilder extends IncrementalProjectBuilder {
+public class WOIncrementalBuilder extends AbstractIncrementalProjectBuilder {
     private static interface ILogger {
       void log(String s);
       void log(Throwable t);
@@ -162,12 +162,18 @@ public class WOIncrementalBuilder extends IncrementalProjectBuilder {
 			monitor = new NullProgressMonitor();
 		}
 		monitor = new SubProgressMonitor (monitor, 100*1000);
+		if (!projectNeedsAnUpdate()
+					&& kind != IncrementalProjectBuilder.FULL_BUILD) {
+				monitor.done();
+				return null;
+		}	
 		_getLogger().debug("<incremental build>");
 		monitor.beginTask("building WebObjects layout ...", 100);
 		try {
 			IResourceDelta delta = getDelta(getProject());
-			if(delta != null)
-            	delta.accept(new PatternsetDeltaVisitor());
+			//if(delta != null)
+//			wird schon in projectNeedsAnUpdate() geprüft
+			//	delta.accept(new PatternsetDeltaVisitor());
 			//_getLogger().debug(delta);
 			boolean fullBuild = (null != delta) && (kind == FULL_BUILD);
 			if (null != _buildVisitor) {

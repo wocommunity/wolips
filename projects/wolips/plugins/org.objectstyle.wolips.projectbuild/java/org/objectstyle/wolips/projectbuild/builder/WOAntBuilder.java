@@ -57,7 +57,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -75,8 +74,6 @@ import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.externaltools.internal.model.IExternalToolConstants;
 import org.objectstyle.wolips.datasets.adaptable.Project;
-import org.objectstyle.wolips.datasets.listener.DefaultDeltaVisitor;
-import org.objectstyle.wolips.datasets.listener.PatternsetDeltaVisitor;
 import org.objectstyle.wolips.jdt.ant.UpdateFrameworkIncludeFiles;
 import org.objectstyle.wolips.jdt.ant.UpdateOtherClasspathIncludeFiles;
 import org.objectstyle.wolips.preferences.Preferences;
@@ -85,10 +82,9 @@ import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 /**
  * @author uli
  */
-public class WOAntBuilder extends IncrementalProjectBuilder {
+public class WOAntBuilder extends AbstractIncrementalProjectBuilder {
 	private static final String MAIN_TYPE_NAME = "org.eclipse.ant.internal.ui.antsupport.InternalAntRunner";
 	private static final int TOTAL_WORK_UNITS = 1;
-	private BuildResourceValidator buildResourceValidator = new BuildResourceValidator();
 	/**
 	 * Constructor for WOBuilder.
 	 */
@@ -167,26 +163,6 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 		this.launchAntInExternalVM(getProject().getFile(aBuildFile), monitor);
 	}
 	/**
-	 * Method projectNeedsAnUpdate.
-	 * 
-	 * @return boolean
-	 */
-	private boolean projectNeedsAnUpdate() {
-		PatternsetDeltaVisitor patternsetDeltaVisitor = new PatternsetDeltaVisitor();
-		this.buildResourceValidator.reset();
-		if(this.getProject() == null
-				|| this.getDelta(this.getProject()) == null)
-			return false;
-		try {
-			this.getDelta(this.getProject()).accept(patternsetDeltaVisitor);
-			this.getDelta(this.getProject()).accept(this.buildResourceValidator);
-		} catch (CoreException e) {
-			ProjectBuildPlugin.getDefault().getPluginLogger().log(e);
-			return false;
-		}
-		return this.buildResourceValidator.isBuildRequired();
-	}
-	/**
 	 * Method handleException.
 	 * 
 	 * @param anException
@@ -262,97 +238,6 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 	 */
 	public String cleanTarget() {
 		return "clean";
-	}
-	private final class BuildResourceValidator extends DefaultDeltaVisitor {
-		private boolean buildRequired = false;
-		private Project project;
-		/**
-		 * Constructor for ProjectFileResourceValidator.
-		 */
-		public BuildResourceValidator() {
-			super();
-		}
-		/**
-		 * 
-		 */
-		public void reset() {
-			this.buildRequired = false;
-		}
-		/**
-		 * @throws CoreException
-		 * @see org.eclipse.core.resources.IResourceDeltaVisitor#visit(IResourceDelta)
-		 */
-		public final boolean visit(IResourceDelta delta) throws CoreException {
-			if(this.buildRequired) {
-				return false;
-			}
-			if(!super.visit(delta)) {
-				return false;
-			}
-			IResource resource = delta.getResource();
-			return examineResource(resource, delta.getKind());
-		}
-		/**
-		 * Method examineResource. Examines changed resources for added and/or
-		 * removed webobjects project resources and synchronizes project file.
-		 * <br>
-		 * 
-		 * @param resource
-		 * @param kindOfChange
-		 * @return boolean
-		 */
-		private final boolean examineResource(IResource resource,
-				int kindOfChange) {
-			//see bugreport #708385
-			if (!resource.isAccessible()
-					&& kindOfChange != IResourceDelta.REMOVED)
-				return false;
-			// reset project file to update
-			switch (resource.getType()) {
-				case IResource.ROOT :
-					// further investigation of resource delta needed
-					return true;
-				case IResource.PROJECT :
-					this.project = (Project) resource.getAdapter(Project.class);
-				case IResource.FOLDER :
-					// further examination of resource delta needed
-					return true;
-				case IResource.FILE :
-					if (needsUpdate(kindOfChange)) {
-						if (".project".equals(resource.getName())
-								|| "PB.project".equals(resource.getName())
-								|| ".classpath".equals(resource.getName())
-								|| "Makefile".equals(resource.getName())
-								|| resource.getName().startsWith("ant.")) {
-							return false;
-						} else if (resource.getName().endsWith(".java")
-								|| this.project
-										.matchesResourcesPattern(resource)
-								|| this.project
-										.matchesWOAppResourcesPattern(resource)
-								|| this.project.matchesClassesPattern(resource)) {
-							this.buildRequired = true;
-							return false;
-						}
-					}
-			}
-			return false;
-		}
-		/** Method needsUpdate.
-		 * @ param kindOfChange
-		 * @ return boolean
-		 */
-		private final boolean needsUpdate(int kindOfChange) {
-			return IResourceDelta.ADDED == kindOfChange
-					|| IResourceDelta.REMOVED == kindOfChange
-					|| IResourceDelta.CHANGED == kindOfChange;
-		}
-		/**
-		 * @return
-		 */
-		public boolean isBuildRequired() {
-			return this.buildRequired;
-		}
 	}
 	/**
 	 * Method inExternalVM.
