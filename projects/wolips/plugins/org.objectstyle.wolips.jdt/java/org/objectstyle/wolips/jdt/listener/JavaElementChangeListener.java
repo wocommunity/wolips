@@ -220,10 +220,11 @@ public class JavaElementChangeListener extends WorkspaceJob {
 						elementType, foundElements)) {
 					continue;
 				}
-			} else if (deltasToExamine[i].getElement().getElementType() == elementType 
-			        && !foundElements.contains(deltasToExamine[i].getElement())) {
+			} else if (deltasToExamine[i].getElement().getElementType() == elementType) {
 				// element found
-				foundElements.add(deltasToExamine[i].getElement());
+			    if(!foundElements.contains(deltasToExamine[i].getElement())) {
+			        foundElements.add(deltasToExamine[i].getElement());
+			    }
 			}
 		}
 		return (foundElements != null && (foundElements.size() != oldSize));
@@ -250,8 +251,10 @@ public class JavaElementChangeListener extends WorkspaceJob {
 					continue;
 				}
 			} else if ((deltasToExamine[i].getFlags() & changeFlagToSearch) == 0) {
-				// element found
-				foundElements.add(deltasToExamine[i].getElement());
+			    // element found
+			    if(!foundElements.contains(deltasToExamine[i].getElement())) {
+			        foundElements.add(deltasToExamine[i].getElement());
+			    }
 			}
 		}
 		return (foundElements != null && foundElements.size() > 0);
