@@ -138,6 +138,10 @@ public final class WOClasspathContainer
 											.endsWith(".jar"));
 								}
 							});
+					IPath source = new Path(classpathVariable.toOSString() + "/" + framework + ".framework/Resources/Java/src.jar");
+					if(!source.toFile().exists()) {
+					    source = null;
+					}
 					for (int j = 0; j < archives.length; j++) {
 						//framework found under this root
 						h = paths.length;
@@ -146,16 +150,18 @@ public final class WOClasspathContainer
 								+ "/" + archives[j]);
 						//IClasspathEntry entry =
 						// JavaCore.newLibraryEntry(archivePath, null, null);
-						IClasspathEntry entry = JavaCore.newLibraryEntry(
-								archivePath, null, null, false);
-						_path.add(entry);
-						if(framework.indexOf("Java") == 0) {
-						    try {
-                                JavaUI.setLibraryJavadocLocation(archivePath, new URL("file:///Developer/Documentation/WebObjects/Reference/API/"));
-                            } catch (MalformedURLException e) {
-                                // TODO Auto-generated catch block
-                                e.printStackTrace();
-                            }
+						if(!archives.equals("src.jar")) {
+						    IClasspathEntry entry = JavaCore.newLibraryEntry(
+						            archivePath, source, null, false);
+						    _path.add(entry);
+						    if(framework.indexOf("Java") == 0) {
+						        try {
+						            JavaUI.setLibraryJavadocLocation(archivePath, new URL("file:///Developer/Documentation/WebObjects/Reference/API/"));
+						        } catch (MalformedURLException e) {
+						            // TODO Auto-generated catch block
+						            e.printStackTrace();
+						        }
+						    }
 						}
 					}
 				}

@@ -149,6 +149,12 @@
 			All files included in this fileset will end up in the 
 			<code>Contents/Resources/Java/*.jar</code> file of the application.</p>
 
+			<h4>sources</h4>
+			<p>The optional nested <code>sources</code> element specifies a <a
+			href="http://jakarta.apache.org/ant/manual/CoreTypes/fileset.html">FileSet</a>.
+			All files included in this fileset will
+			end up in the <code>Resources/Java/src.jar</code> file of the framework. <br />
+			This is useful when debugging with WOLips.</p>
 
 			<h4>resources</h4>
 			<p>The nested <code>resources</code> element specifies a <a

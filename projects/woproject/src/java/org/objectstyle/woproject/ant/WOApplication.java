@@ -143,6 +143,9 @@ public class WOApplication extends WOTask {
 		if (hasClasses()) {
 			jarClasses();
 		}
+		if (hasSources()) {
+			jarSources();
+		}
 		if (hasLib()) {
 			copyLibs();
 		}

@@ -85,6 +85,10 @@ public class WOFramework extends WOTask {
             jarClasses();
         }
 
+        if (hasSources()) {
+            jarSources();
+        }
+
         if (hasLib()) {
             copyLibs();
         }
@@ -133,6 +137,7 @@ public class WOFramework extends WOTask {
         lib.clear();
         resources.clear();
         wsresources.clear();
+        sources.clear();
     }
 	public String getEOAdaptorClassName() {
 		return eoAdaptorClassName;

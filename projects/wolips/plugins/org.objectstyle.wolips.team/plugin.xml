@@ -128,31 +128,31 @@
    <extension
          point="org.eclipse.team.core.ignore">
       <ignore
-            selected="true"
+            enabled="true"
             pattern="*.woa">
       </ignore>
       <ignore
-            selected="true"
+            enabled="true"
             pattern="*.framework">
       </ignore>
       <ignore
-            selected="true"
+            enabled="true"
             pattern="*.eomodeld~">
       </ignore>
       <ignore
-            selected="true"
+            enabled="true"
             pattern=".DS_Store">
       </ignore>
       <ignore
-            selected="false"
+             enabled="true"
             pattern=".woo">
       </ignore>
       <ignore
-            selected="false"
+            enabled="true"
             pattern=".api">
       </ignore>
       <ignore
-            selected="true"
+            enabled="true"
             pattern=".build.launch">
       </ignore>
    </extension>

@@ -85,6 +85,7 @@ public abstract class WOTask extends Task {
     protected String principalClass;
     protected String jarName;
     protected String customInfoPListContent;
+    protected Vector sources = new Vector();
     protected Vector resources = new Vector();
     protected Vector wsresources = new Vector();
     protected Vector lib = new Vector();
@@ -176,6 +177,15 @@ public abstract class WOTask extends Task {
     public void addClasses(FileSet set) {
         classes.addElement(set);
     }
+
+    /**
+     * Method addResources.
+     * @param set
+     */
+    public void addSources(FileSet set) {
+        sources.addElement(set);
+    }
+
 
     /**
      * Method addResources.
@@ -299,11 +309,39 @@ public abstract class WOTask extends Task {
     }
 
     /**
+     * Method hasSources.
+     * @return boolean
+     */
+    public boolean hasSources() {
+        return sources.size() > 0;
+    }
+
+    /**
      * Method hasClasses.
      * @return boolean
      */
     public boolean hasClasses() {
         return classes.size() > 0;
+    }
+
+    /**
+     * Method jarSources
+     * @throws BuildException
+     */
+    protected void jarSources() throws BuildException {
+        Jar jar = this.getSubtaskFactory().getJar();
+        File taskJar = new File(resourcesDir(), "Java" + File.separator + "src.jar");
+        //jar.setJarfile(taskJar);
+        //jar.setLocation(new Location(resourcesDir() + "Java" + File.separator + getJarName() + ".jar"));
+        jar.setDestFile(taskJar);
+        if (hasSources()) {
+            Enumeration en = sources.elements();
+            while (en.hasMoreElements()) {
+                jar.addFileset((FileSet) en.nextElement());
+            }
+        }
+
+        jar.execute();
     }
 
     /**
