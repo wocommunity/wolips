@@ -64,6 +64,7 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
@@ -141,25 +142,24 @@ public class PatternsetPage extends FormPage {
 			}
 		});
 		toolkit.paintBordersFor(client);
-		Button b = toolkit.createButton(client, PatternsetEditorMessages.getString("PaternsetEditor.add"), SWT.PUSH);
-		gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
-		b.setLayoutData(gd);
+		Composite row = new Composite(client, SWT.NONE);
+		RowLayout rowLayout = new RowLayout();
+		rowLayout.type = SWT.VERTICAL;
+		row.setLayout(rowLayout);
+		
+		Button b = toolkit.createButton(row, PatternsetEditorMessages.getString("PaternsetEditor.add"), SWT.PUSH);
 		b.addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event e) {
 				addPattern();
 			}
 		});
-		this.removeButton = toolkit.createButton(client, PatternsetEditorMessages.getString("PaternsetEditor.remove"), SWT.PUSH);
-		gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
-		this.removeButton.setLayoutData(gd);
+		this.removeButton = toolkit.createButton(row, PatternsetEditorMessages.getString("PaternsetEditor.remove"), SWT.PUSH);
 		this.removeButton.addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event e) {
 				removePattern();
 			}
 		});
-		this.changeButton = toolkit.createButton(client, PatternsetEditorMessages.getString("PaternsetEditor.change"), SWT.PUSH);
-		gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
-		this.changeButton.setLayoutData(gd);
+		this.changeButton = toolkit.createButton(row, PatternsetEditorMessages.getString("PaternsetEditor.change"), SWT.PUSH);
 		this.changeButton.addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event e) {
 				changePattern();
