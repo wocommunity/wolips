@@ -4,7 +4,9 @@
 	<comment></comment>
 	<projects>
 		<project>org.eclipse.ant.core</project>
+		<project>wolips-cayenne</project>
 		<project>wolips-feature</project>
+		<project>wolips-woproject</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
