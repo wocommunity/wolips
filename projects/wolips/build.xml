@@ -73,6 +73,9 @@
 	    <tar tarfile="../${build.output.dist.targz.dir}/WOLips_${build.version}.tar">
         	<tarfileset dir="../${build.output.dist.dir}">
             </tarfileset>
+            <tarfileset dir="..">
+            	<include name="optional/**"/>
+            </tarfileset>
          </tar>
          
          <gzip src="../${build.output.dist.targz.dir}/WOLips_${build.version}.tar"
