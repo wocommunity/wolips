@@ -120,6 +120,9 @@
                 <pathelement path="../woenvironment/src/java"/>
                 <pathelement path="../woproject/src/java"/>
                 <pathelement path="../wolips/plugins/org.objectstyle.wolips/java"/>
+                <pathelement path="../wolips/plugins/org.objectstyle.wolips.ant/java"/>
+                <pathelement path="../wolips/plugins/org.objectstyle.wolips.variables/java"/>
+                <pathelement path="../wolips/plugins/org.objectstyle.wolips.jdt/java"/>
                 <pathelement path="../wolips/plugins/org.objectstyle.wolips.help/java"/>
                 <pathelement path="../wolips/plugins/org.objectstyle.wolips.targetbuilder/java"/>
                 <pathelement path="../wolips/plugins/org.objectstyle.wolips.datasets/java"/>
