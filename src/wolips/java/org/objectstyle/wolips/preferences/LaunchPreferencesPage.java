@@ -56,8 +56,8 @@
 
 package org.objectstyle.wolips.preferences;
 
-import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.objectstyle.wolips.plugin.IWOLipsPluginConstants;
@@ -70,40 +70,31 @@ import org.objectstyle.wolips.plugin.IWOLipsPluginConstants;
  * To enable and disable the creation of type comments go to
  * Window>Preferences>Java>Code Generation.
  */
-public class PreferencesPage
+public class LaunchPreferencesPage
 	extends FieldEditorPreferencePage
 	implements IWorkbenchPreferencePage {
 
 	/**
 	 * Constructor
 	 */
-	public PreferencesPage() {
+	public LaunchPreferencesPage() {
 		super(GRID);
 		setPreferenceStore(Preferences.getPreferenceStore());
 		setDescription(
-			PreferencesMessages.getString("Preferences.PageDescription"));
+			PreferencesMessages.getString("Preferences.Launch.PageDescription"));
 		Preferences.setDefaults();
 	}
-
 	/**
-	 * @see org.eclipse.jface.preference.FieldEditorPreferencePage#createFieldEditors()
-	 */
+		 * @see org.eclipse.jface.preference.FieldEditorPreferencePage#createFieldEditors()
+		 */
 	public void createFieldEditors() {
 		addField(
-			new BooleanFieldEditor(
-				IWOLipsPluginConstants
-					.PREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH,
-				PreferencesMessages.getString(
-					"Preferences.RebuildWOBuildProperties.Label"),
-				getFieldEditorParent()));
-
-		/*addField(
 			new StringFieldEditor(
-				IWOLipsPluginConstants
-					.PREF_OPEN_WOCOMPONENT_ACTION_INCLUDES_OPEN_HTML,
+				IWOLipsPluginConstants.PREF_NS_PROJECT_SEARCH_PATH,
 				PreferencesMessages.getString(
-					"Preferences.OpenWOComponentActionIncludesOpenHTML.Label"),
-				getFieldEditorParent()));*/
+					"Preferences.NSProjectSearchPath.Label"),
+				60,
+				getFieldEditorParent()));
 	}
 	/**
 	 * Method performOK.

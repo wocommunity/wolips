@@ -56,8 +56,8 @@
 
 package org.objectstyle.wolips.preferences;
 
-import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.objectstyle.wolips.plugin.IWOLipsPluginConstants;
@@ -70,40 +70,45 @@ import org.objectstyle.wolips.plugin.IWOLipsPluginConstants;
  * To enable and disable the creation of type comments go to
  * Window>Preferences>Java>Code Generation.
  */
-public class PreferencesPage
+public class UIPreferencesPage
 	extends FieldEditorPreferencePage
 	implements IWorkbenchPreferencePage {
 
 	/**
 	 * Constructor
 	 */
-	public PreferencesPage() {
+	public UIPreferencesPage() {
 		super(GRID);
 		setPreferenceStore(Preferences.getPreferenceStore());
 		setDescription(
-			PreferencesMessages.getString("Preferences.PageDescription"));
+			PreferencesMessages.getString("Preferences.UI.PageDescription"));
 		Preferences.setDefaults();
 	}
-
 	/**
-	 * @see org.eclipse.jface.preference.FieldEditorPreferencePage#createFieldEditors()
-	 */
+		 * @see org.eclipse.jface.preference.FieldEditorPreferencePage#createFieldEditors()
+		 */
 	public void createFieldEditors() {
 		addField(
-			new BooleanFieldEditor(
-				IWOLipsPluginConstants
-					.PREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH,
-				PreferencesMessages.getString(
-					"Preferences.RebuildWOBuildProperties.Label"),
-				getFieldEditorParent()));
-
-		/*addField(
 			new StringFieldEditor(
-				IWOLipsPluginConstants
-					.PREF_OPEN_WOCOMPONENT_ACTION_INCLUDES_OPEN_HTML,
+				IWOLipsPluginConstants.PREF_MODEL_NAVIGATOR_FILTER,
 				PreferencesMessages.getString(
-					"Preferences.OpenWOComponentActionIncludesOpenHTML.Label"),
-				getFieldEditorParent()));*/
+					"Preferences.ModelNavigatorFilter.Label"),
+				60,
+				getFieldEditorParent()));
+		addField(
+			new StringFieldEditor(
+				IWOLipsPluginConstants.PREF_WO_NAVIGATOR_FILTER,
+				PreferencesMessages.getString(
+					"Preferences.WONavigatorFilter.Label"),
+				60,
+				getFieldEditorParent()));
+		addField(
+			new StringFieldEditor(
+				IWOLipsPluginConstants.PREF_PRODUCT_NAVIGATOR_FILTER,
+				PreferencesMessages.getString(
+					"Preferences.ProductNavigatorFilter.Label"),
+				60,
+				getFieldEditorParent()));
 	}
 	/**
 	 * Method performOK.

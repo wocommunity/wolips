@@ -56,10 +56,11 @@
 
 package org.objectstyle.wolips.preferences;
 
-import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.jface.preference.RadioGroupFieldEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
+import org.objectstyle.wolips.logging.WOLipsLog;
 import org.objectstyle.wolips.plugin.IWOLipsPluginConstants;
 
 /**
@@ -70,40 +71,55 @@ import org.objectstyle.wolips.plugin.IWOLipsPluginConstants;
  * To enable and disable the creation of type comments go to
  * Window>Preferences>Java>Code Generation.
  */
-public class PreferencesPage
+public class LogPreferencesPage
 	extends FieldEditorPreferencePage
 	implements IWorkbenchPreferencePage {
 
 	/**
 	 * Constructor
 	 */
-	public PreferencesPage() {
+	public LogPreferencesPage() {
 		super(GRID);
 		setPreferenceStore(Preferences.getPreferenceStore());
 		setDescription(
-			PreferencesMessages.getString("Preferences.PageDescription"));
+			PreferencesMessages.getString("Preferences.Log.PageDescription"));
 		Preferences.setDefaults();
 	}
-
 	/**
-	 * @see org.eclipse.jface.preference.FieldEditorPreferencePage#createFieldEditors()
-	 */
+		 * @see org.eclipse.jface.preference.FieldEditorPreferencePage#createFieldEditors()
+		 */
 	public void createFieldEditors() {
+		String[][] labelsAndValues =
+			new String[][] {
+				{
+					PreferencesMessages.getString(
+						"Preferences.LogLevel." + WOLipsLog.TRACE + ".Label"),
+					PreferencesMessages.getString(
+						"Preferences.LogLevel." + WOLipsLog.DEBUG + ".Label"),
+					PreferencesMessages.getString(
+						"Preferences.LogLevel." + WOLipsLog.INFO + ".Label"),
+					PreferencesMessages.getString(
+						"Preferences.LogLevel." + WOLipsLog.WARN + ".Label"),
+					PreferencesMessages.getString(
+						"Preferences.LogLevel." + WOLipsLog.ERROR + ".Label"),
+					PreferencesMessages.getString(
+						"Preferences.LogLevel." + WOLipsLog.FATAL + ".Label")},
+				{
+				WOLipsLog.TRACE + "",
+					WOLipsLog.DEBUG + "",
+					WOLipsLog.INFO + "",
+					WOLipsLog.WARN + "",
+					WOLipsLog.ERROR + "",
+					WOLipsLog.FATAL + "" }
+		};
 		addField(
-			new BooleanFieldEditor(
-				IWOLipsPluginConstants
-					.PREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH,
-				PreferencesMessages.getString(
-					"Preferences.RebuildWOBuildProperties.Label"),
-				getFieldEditorParent()));
-
-		/*addField(
-			new StringFieldEditor(
-				IWOLipsPluginConstants
-					.PREF_OPEN_WOCOMPONENT_ACTION_INCLUDES_OPEN_HTML,
-				PreferencesMessages.getString(
-					"Preferences.OpenWOComponentActionIncludesOpenHTML.Label"),
-				getFieldEditorParent()));*/
+			new RadioGroupFieldEditor(
+				IWOLipsPluginConstants.PREF_LOG_LEVEL,
+				PreferencesMessages.getString("Preferences.LogLevel.Label"),
+				1,
+				labelsAndValues,
+				getFieldEditorParent(),
+				true));
 	}
 	/**
 	 * Method performOK.

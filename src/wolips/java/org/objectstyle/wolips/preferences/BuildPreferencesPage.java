@@ -70,40 +70,48 @@ import org.objectstyle.wolips.plugin.IWOLipsPluginConstants;
  * To enable and disable the creation of type comments go to
  * Window>Preferences>Java>Code Generation.
  */
-public class PreferencesPage
+public class BuildPreferencesPage
 	extends FieldEditorPreferencePage
 	implements IWorkbenchPreferencePage {
 
 	/**
 	 * Constructor
 	 */
-	public PreferencesPage() {
+	public BuildPreferencesPage() {
 		super(GRID);
 		setPreferenceStore(Preferences.getPreferenceStore());
 		setDescription(
-			PreferencesMessages.getString("Preferences.PageDescription"));
+			PreferencesMessages.getString("Preferences.Build.PageDescription"));
 		Preferences.setDefaults();
 	}
-
 	/**
-	 * @see org.eclipse.jface.preference.FieldEditorPreferencePage#createFieldEditors()
-	 */
+		 * @see org.eclipse.jface.preference.FieldEditorPreferencePage#createFieldEditors()
+		 */
 	public void createFieldEditors() {
+		/*addField(
+					new StringFieldEditor(
+						IWOLipsPluginConstants.PREF_ANT_BUILD_FILE,
+						PreferencesMessages.getString("Preferences.AntBuildFile.Label"),
+						getFieldEditorParent()));*/
 		addField(
 			new BooleanFieldEditor(
-				IWOLipsPluginConstants
-					.PREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH,
+				IWOLipsPluginConstants.PREF_RUN_WOBUILDER_ON_BUILD,
 				PreferencesMessages.getString(
-					"Preferences.RebuildWOBuildProperties.Label"),
+					"Preferences.RunWOBuilderOnBuild.Label"),
 				getFieldEditorParent()));
-
-		/*addField(
-			new StringFieldEditor(
-				IWOLipsPluginConstants
-					.PREF_OPEN_WOCOMPONENT_ACTION_INCLUDES_OPEN_HTML,
+		addField(
+			new BooleanFieldEditor(
+				IWOLipsPluginConstants.PREF_RUN_ANT_AS_EXTERNAL_TOOL,
 				PreferencesMessages.getString(
-					"Preferences.OpenWOComponentActionIncludesOpenHTML.Label"),
-				getFieldEditorParent()));*/
+					"Preferences.RunAntAsExternalTool.Label"),
+				getFieldEditorParent()));
+		addField(
+			new BooleanFieldEditor(
+				IWOLipsPluginConstants.PREF_SHOW_BUILD_OUTPUT,
+				PreferencesMessages.getString(
+					"Preferences.ShowBuildOutput.Label"),
+				getFieldEditorParent()));
+		
 	}
 	/**
 	 * Method performOK.

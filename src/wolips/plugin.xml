@@ -569,6 +569,30 @@
             class="org.objectstyle.wolips.preferences.PreferencesPage"
             id="org.objectstyle.wolips.preferences.PreferencesPage">
       </page>
+      <page
+            name="%WOLips.preferences.build.viewName"
+            class="org.objectstyle.wolips.preferences.BuildPreferencesPage"
+            id="org.objectstyle.wolips.preferences.BuildPreferencesPage"
+            category="org.objectstyle.wolips.preferences.PreferencesPage">
+      </page>
+      <page
+            name="%WOLips.preferences.ui.viewName"
+            class="org.objectstyle.wolips.preferences.UIPreferencesPage"
+            id="org.objectstyle.wolips.preferences.UIPreferencesPage"
+            category="org.objectstyle.wolips.preferences.PreferencesPage">
+      </page>
+      <page
+            name="%WOLips.preferences.log.viewName"
+            class="org.objectstyle.wolips.preferences.LogPreferencesPage"
+            id="org.objectstyle.wolips.preferences.LogPreferencesPage"
+            category="org.objectstyle.wolips.preferences.PreferencesPage">
+      </page>
+      <page
+            name="%WOLips.preferences.launch.viewName"
+            class="org.objectstyle.wolips.preferences.LaunchPreferencesPage"
+            id="org.objectstyle.wolips.preferences.LaunchPreferencesPage"
+            category="org.objectstyle.wolips.preferences.PreferencesPage">
+      </page>
    </extension>
 <!-- =================================================================================== -->
 <!-- Extension: Team file types                                                          -->
