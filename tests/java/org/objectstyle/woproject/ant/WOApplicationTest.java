@@ -55,100 +55,39 @@
  */
 package org.objectstyle.woproject.ant;
 
-import java.io.File;
+import java.io.*;
+import java.util.Enumeration;
+import java.util.Vector;
 
 import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.types.FileList;
+import org.apache.tools.ant.Task;
+import org.apache.tools.ant.taskdefs.*;
+import org.apache.tools.ant.types.FileSet;
+
+import java.io.*;
+
+import junit.framework.TestCase;
 
 /**
- * Ant task to build WebObjects application. For detailed instructions go to the
- * <a href="../../../../../ant/woapplication.html">manual page</a> .
+ * Unit test for WOApplication
  *
- *
- * @ant.task category="packaging"
- * 
- * @author Emily Bache
  * @author Andrei Adamchik
  */
-public class WOApplication extends WOTask {
-	String[] frameworkNames =
-		new String[] {
-			"JavaWebObjects",
-			"JavaWOExtensions",
-			"JavaEOAccess",
-			"JavaEOControl",
-			"JavaFoundation",
-			"JavaJDBCAdaptor" };
+public class WOApplicationTest extends TestCase {
+	protected WOApplication appTask;
 
-	protected boolean stdFrameworks = true;
-
-	/** 
-	 * Creates a path to framework JAR file. The following
-	 * assumptions are made (may not always be true): framework 
-	 * is located in "Library/Frameworks" subdirectory, 
-	 * JAR file is named after the framework, in lowercase.
-	 */
-	public static String frameworkJar(String name) {
-		StringBuffer buf = new StringBuffer("Library/Frameworks/");
-		buf.append(name);
-		if (!name.endsWith(".framework")) {
-			buf.append(".framework");
-		}
-		buf.append("/Resources/Java/").append(name.toLowerCase()).append(
-			".jar");
-
-		return buf.toString();
+	public WOApplicationTest(String name) {
+		super(name);
 	}
 
-	/** 
-	 * Runs WOApplication task. Main worker method that would validate
-	 * all task settings and create a WOApplication.
-	 */
-	public void execute() throws BuildException {
-		validateAttributes();
-		createDirectories();
-		if (hasClasses()) {
-			jarClasses();
-		}
-		if (hasResources()) {
-			copyResources();
-		}
-		if (hasWs()) {
-			copyWsresources();
-		}
-
-		// create all needed scripts
-		new AppFormat(this).processTemplates();
+	public void setUp() throws Exception {
+		super.setUp();
+		appTask = new WOApplication();
 	}
 
-	/** 
-	 * Sets a flag indicating that standard frameworks,
-	 * namely JavaWebObjects, JavaWOExtensions, JavaEOAccess, JavaEOControl, 
-	 * JavaFoundation, JavaJDBCAdaptor should be automatically 
-	 * referenced in deployed application.
-	 */
-	public void setStdFrameworks(boolean flag) {
-		stdFrameworks = flag;
-	}
-
-	/**
-	 * Returns location where WOApplication is being built up. 
-	 * For WebObjects applications this is a <code>.woa</code> directory.
-	 */
-	protected File taskDir() {
-		return getProject().resolveFile(
-			destDir + File.separator + name + ".woa");
-	}
-
-	protected File contentsDir() {
-		return new File(taskDir(), "Contents");
-	}
-
-	protected File resourcesDir() {
-		return new File(contentsDir(), "Resources");
-	}
-
-	protected File wsresourcesDir() {
-		return new File(contentsDir(), "WebServerResources");
+	public void testSetStdFrameworks() throws Exception {
+        assertTrue(appTask.stdFrameworks);
+        appTask.setStdFrameworks(false);
+        assertTrue(!appTask.stdFrameworks);
 	}
 }
