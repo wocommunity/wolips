@@ -207,7 +207,12 @@ public class JavaElementChangeListener extends WorkspaceJob {
 	 */
 	private final boolean searchDeltasForElementType(
 			IJavaElementDelta[] deltasToExamine, int elementType,
-			ArrayList foundElements) {
+			ArrayList foundElements
+    ) {
+	    int oldSize = 0;
+	    if (null != foundElements) {
+	        oldSize = foundElements.size();
+	    }
 		for (int i = 0; i < deltasToExamine.length; i++) {
 			if ((deltasToExamine[i].getFlags() & IJavaElementDelta.F_CHILDREN) != 0) {
 				// further examination needed
@@ -220,7 +225,7 @@ public class JavaElementChangeListener extends WorkspaceJob {
 				foundElements.add(deltasToExamine[i].getElement());
 			}
 		}
-		return (foundElements != null && foundElements.size() > 0);
+		return (foundElements != null && (foundElements.size() != oldSize));
 	}
 
 	/**
