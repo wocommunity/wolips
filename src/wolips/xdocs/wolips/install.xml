@@ -22,7 +22,7 @@
 			<p>Move the folder to the Eclipse plugin folder.</p>
 		</subsection>
 		<subsection name="ant">
-			<p>Replace the ant.jar and the jakarta-ant-1.4.1-optional.jar in the ant plugin with the jars from the ant 1.5.* distribution. (jakarta-ant-1.4.1-optional.jar should be replace with optional.jar)</p>
+			<p>Replace the ant.jar and the jakarta-ant-1.4.1-optional.jar in the ant plugin with ant.jar and optional.jar(rename it to jakarta-ant-1.4.1-optional.jar) from the ant 1.5.* distribution. </p>
 		</subsection>
 	</section>
 </body>
