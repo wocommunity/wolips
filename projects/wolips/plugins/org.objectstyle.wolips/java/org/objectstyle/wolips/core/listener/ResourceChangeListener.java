@@ -109,6 +109,7 @@ public class ResourceChangeListener implements IResourceChangeListener {
 	 * Adds instance of inner class ProjectFileResourceValidator to events
 	 * resource delta.
 	 * <br>
+	 * @param event
 	 * @see ProjectFileResourceValidator
 	 * @see org.eclipse.core.resources.IResourceChangeListener#resourceChanged(IResourceChangeEvent)
 	 */
@@ -167,7 +168,6 @@ public class ResourceChangeListener implements IResourceChangeListener {
 	private final class ProjectFileResourceValidator
 		implements IResourceDeltaVisitor {
 		//private QualifiedName resourceQualifier;
-		private IFile projectFile;
 		private HashMap addedResourcesProjectDict;
 		private HashMap removedResourcesProjectDict;
 		/**
@@ -182,7 +182,9 @@ public class ResourceChangeListener implements IResourceChangeListener {
 			removedResourcesProjectDict = new HashMap();
 		}
 		/**
+		 * @param delta
 		 * @see org.eclipse.core.resources.IResourceDeltaVisitor#visit(IResourceDelta)
+		 * @return
 		 */
 		public final boolean visit(IResourceDelta delta) {
 			IResource resource = delta.getResource();
@@ -197,7 +199,7 @@ public class ResourceChangeListener implements IResourceChangeListener {
 		 * Method examineResource. Examines changed resources for added and/or removed webobjects project
 		 * resources and synchronizes project file.
 		 * <br>
-		 * @see #updateProjectFile(int, IResource, QualifiedName, IFile)
+		 * @see #updateProjectFile(int, IResource, String, IFile)
 		 * @param resource
 		 * @param kindOfChange
 		 * @return boolean
@@ -211,8 +213,6 @@ public class ResourceChangeListener implements IResourceChangeListener {
 			if (!resource.isAccessible()
 				&& kindOfChange != IResourceDelta.REMOVED)
 				return false;
-			// reset project file to update
-			projectFile = null;
 			switch (resource.getType()) {
 				case IResource.ROOT :
 					// further investigation of resource delta needed
@@ -390,11 +390,11 @@ public class ResourceChangeListener implements IResourceChangeListener {
 		/**
 		* Method updateProjectFile adds or removes resources from project file
 		* if the resources belongs to project file (determined in
-		*  @link WOProjectFileUpdater#isProjectResource(IResource))
-		* <br><br>
-		* 
-		* @param kind of change - resource added or removed
-		* @param resource to update
+		*  @param kindOfChange
+		 * @param resourceToUpdate
+		 * @param fileStableId
+		 * @param projectFileToUpdate
+		 * @link WOProjectFileUpdater#isProjectResource(IResource))
 		*/
 		private final void updateProjectFile(
 			int kindOfChange,

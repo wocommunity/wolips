@@ -88,6 +88,7 @@ public class JavaElementChangeListener implements IElementChangedListener {
 	 * Catches changed webobjects nature projects and updates frameworks in webobjects
 	 * project file.
 	 * <br>
+	 * @param event
 	 * @see org.eclipse.jdt.core.IElementChangedListener#elementChanged(ElementChangedEvent)
 	 */
 	public final void elementChanged(ElementChangedEvent event) {
