@@ -5,6 +5,7 @@
 	<projects>
 		<project>org.eclipse.swt</project>
 		<project>wolips</project>
+		<project>wolips-help</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
     <classpathentry kind="src" path="java"/>
-    <classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins/wolips-targetbuilder"/>
+    <classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
     <classpathentry kind="var" path="JRE_LIB" rootpath="JRE_SRCROOT" sourcepath="JRE_SRC"/>
     <classpathentry kind="lib" path="/wolips/lib/wolips.jar"/>
     <classpathentry kind="output" path="bin/"/>
