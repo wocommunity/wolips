@@ -135,6 +135,7 @@
 	        <pathelement path="../wolips/plugins/org.objectstyle.wolips.templateengine/java"/>
 	        <pathelement path="../wolips/plugins/org.objectstyle.wolips.tests/java"/>
 	        <pathelement path="../wolips/plugins/org.objectstyle.wolips.tests.core/java"/>
+	        <pathelement path="../wolips/plugins/org.objectstyle.wolips.workbenchutilities/java"/>
             </sourcepath>
             <doctitle><![CDATA[<h2>WOProject API Documentation</h2>]]></doctitle>
         </javadoc>

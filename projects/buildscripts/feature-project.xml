@@ -22,16 +22,16 @@
         </copy>
         
         <condition property="stringToReplace" value="I hope we have never a string like this in the plugin.xml">
-        	<contains string="${param.plugin.name}" substring="test"/>
+        	<contains string="${param.feature.name}" substring="test"/>
 	</condition>
         
         <condition property="stringToReplace" value="${TestsCorePluginReferenceToReplace}">
         	<not>
-	        	<contains string="${param.plugin.name}" substring="test"/>
+	        	<contains string="${param.feature.name}" substring="test"/>
 	        </not>
 	</condition>
 
-        <replace dir="${param.build.output.build.dir}/plugins/${param.plugin.name}_${build.version}/" token="${stringToReplace}" value="">
+        <replace dir="${param.build.output.build.dir}/features/${param.feature.name}_${build.version}/" token="${stringToReplace}" value="">
             <include name="feature.xml"/>
         </replace>
            
