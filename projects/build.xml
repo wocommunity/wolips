@@ -46,6 +46,7 @@
         * java.home = ${java.home}
         * build.compiler = ${build.compiler}
         * ant.home = ${ant.home}
+        * anthill.ant.home = ${anthill.ant.home}
         * user.home = ${user.home}
         *
         ****************************************
@@ -71,7 +72,6 @@
     <!-- ========================================== -->
     <target name="woproject">
 	<ant dir="${project.woproject.dir}" target="all">
-		<property name="ant.home" value="${ant.home}"/>
 	</ant>
     </target>
 
@@ -108,6 +108,7 @@
     <!-- Build buildserver.                         -->
     <!-- ========================================== -->
     <target name="buildserver" depends="print.environment,build_migrate,dist,test">
+    	<property name="ant.home" value="${anthill.ant.home}"/>
     </target>
 
     <!-- ============================================= -->
