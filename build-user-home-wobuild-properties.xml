@@ -6,7 +6,7 @@
 <project name="woproject" default="check" basedir=".">
 	<property file="${user.home}${file.separator}Library${file.separator}wobuild.properties"/>
 	
-	<target name="check" depends="check_file,set_other,check_env,set_mac">
+	<target name="check" depends="check_file,set_other,correct_win,check_env,set_mac">
 		<fail message="Could not find ${user.home}${file.separator}Library${file.separator}wobuild.properties. There should now be a generated one. Just launch ant again" if="wo.properties.ckeck.failed"/>
 	</target>
 	
@@ -21,6 +21,14 @@
   		</condition>
   	</target>
 	
+	<target name="correct_win" if="correct.win">
+		
+		<replaceregexp file="${user.home}${file.separator}Library${file.separator}wobuild.properties" match="\\" replace="" byline="false" flags="g"/> 
+		<replaceregexp file="${user.home}${file.separator}Library${file.separator}wobuild.properties" match="/" replace="\\\" byline="false" flags="g"/> 
+		
+
+	</target>
+
 	<target name="set_other" if="wo.properties.ckeck.failed">
 	
 		<property environment="env"/>
@@ -31,7 +39,14 @@
   			<entry  key="wo.woroot" value="${env.NEXT_ROOT}"/>
  			<entry  key="wo.wolocalroot" value="${env.NEXT_ROOT}/Local"/>
 		</propertyfile>
-
+		
+		<condition property="correct.win">
+			<and>
+				<os family="windows"/>
+				<istrue  value="${wo.properties.ckeck.failed}"/>
+			</and>
+		</condition> 
+		
 	</target>
 	
 	<target name="set_mac" if="env.ckeck.failed">
