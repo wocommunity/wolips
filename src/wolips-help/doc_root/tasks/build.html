@@ -14,11 +14,11 @@
 <h3><a name="externally"></a>Externally</h3>
 <p>...</p>
 <h2><a name="incrementally"></a>Incrementally</h2>
-<p>How-to use documentation: </p>
+<p>Shortest possible How-to use documentation for the incremental build: </p>
 <ol>
   <li>make sure that WOLips is properly installed and the build.properties file 
     exists</li>
-  <li>create Java Projects for the WebObjects Projects</li>
+  <li>create Java Projects for your WebObjects Projects</li>
   <li>add a filter to the Package Explorer filtering out things called build (and 
     eg. WebComponents.*, for theCMSFramework)</li>
   <li>add a WebObjects Classpath container to the buildpath (Project Properties 
@@ -39,19 +39,25 @@
     Folder to the classpath <b>before</b> or instead of the Project itself</li>
   <li>(do the same for all WO-Frameworks in your Workspace, using the appropriate 
     Resources/Java folders).</li>
+  <li>(this should in the future be done automatically by the Launch configuration)</li>
   <li>add the parameters -Duser.dir=&lt;path to the .woa directory under build&gt; 
     (or better: set this folder as the working directory for the application) 
     and -DWORootDirectory=&gt;$NEXT_ROOT&lt; (replacing &gt;$NEXT_ROOT&lt; with 
     the installation path of your WebObjects installation)</li>
-  <li>turn on reloading of templates with -WODebuggingEnabled true</li>
-  <li>turn on rapid-turnaround mode with -NSProjectSearchPath ("../..") </li>
+  <li>turn on reloading of templates with -WODebuggingEnabled true (this may not be exactly what is needed for template reloading ...)</li>
+  <li>[don't turn on rapid-turnaround mode with -NSProjectSearchPath ("../..") ]</li>
   <li>optional: set the port the application listens on with (e.g.) -WOPort 6666</li>
   <li>run the application</li>
 </ol>
-<p> <<re incremental builder...>> <<is this based on work you did independant of woproject/wolips?>> 
-  Yes <<building incrementally is an alternative to building with ant?>> Yes <<what are the pros and cons?>> 
-  Pro: Speed Con: less flexible Sorry for being so short. You can check the (tiny) 
-  documentation snip I checked into CVS Harald </p>
+<p> &lt;&lt;re incremental builder...&gt;&gt;</p>
+<p>&lt;&lt;is this based on work you did independant of woproject/wolips?&gt;&gt; 
+  Yes -- this also means that the set of resources and web-server resources is for the moment hard-coded in the IncrementalBuilder
+</p><p>&lt;&lt;building incrementally is an alternative to building with ant?>> 
+Yes
+</p><p> &lt;&lt;what are the pros and cons?&gt;&gt; 
+  Pro: Speed Con: less flexible (see above)<br>
+  Sorry for being so short. You can check the (tiny) 
+  documentation snip I checked into CVS Harald (which is the list above)</p>
 <p>&nbsp;</p>
 <p>Hi, the cvs version has an option to choose the builder. WOBuild in the project 
   properties. Ulrich </p>
