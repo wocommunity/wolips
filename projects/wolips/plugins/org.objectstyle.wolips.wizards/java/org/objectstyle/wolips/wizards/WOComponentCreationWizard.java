@@ -55,6 +55,7 @@
  */
 package org.objectstyle.wolips.wizards;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.objectstyle.wolips.core.plugin.WOLipsPluginImages;
 import org.objectstyle.wolips.templateengine.TemplateEnginePlugin;
@@ -65,7 +66,7 @@ import org.objectstyle.wolips.templateengine.TemplateEnginePlugin;
  * This class implements the interface required by the desktop for all 'New'
  * wizards. This wizard creates WOComponent folders and files.
  */
-public class WOComponentCreationWizard extends AbstractResourceWizard {
+public class WOComponentCreationWizard extends AbstractResourceWizard  implements INewWizard {
 	/**
 	 * @param templatesID
 	 */

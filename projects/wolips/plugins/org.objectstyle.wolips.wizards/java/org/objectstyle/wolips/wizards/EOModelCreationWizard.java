@@ -55,6 +55,7 @@
  */
 package org.objectstyle.wolips.wizards;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.objectstyle.wolips.core.plugin.WOLipsPluginImages;
 import org.objectstyle.wolips.templateengine.TemplateEnginePlugin;
@@ -63,7 +64,7 @@ import org.objectstyle.wolips.templateengine.TemplateEnginePlugin;
  * @author uli Wizard to create new eo model in selected webobjects java
  *         project
  */
-public class EOModelCreationWizard extends AbstractResourceWizard {
+public class EOModelCreationWizard extends AbstractResourceWizard implements INewWizard {
 	private EOModelCreationPage mainPage;
 	/**
 	 * Constructor for EOModelCreationWizard.
