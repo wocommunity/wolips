@@ -294,6 +294,14 @@
                enablesFor="1"
                id="org.objectstyle.wolips.actions.OpenSourceAction">
          </action>
+         <action
+               label="%WOLips.PopupMenu.DeleteComponent"
+               tooltip="%WOLips.PopupMenu.DeleteComponentTip"
+               class="org.objectstyle.wolips.actions.DeleteComponentAction"
+               menubarPath="additions"
+               enablesFor="1"
+               id="org.objectstyle.wolips.actions.DeleteComponentAction">
+         </action>
       </objectContribution>
             <objectContribution
             objectClass="org.eclipse.core.resources.IFile"
