@@ -87,27 +87,6 @@ public class JavaProjectLaunchParameter extends JavaProjectClasspath {
 	/**
 	 * Method isTheLaunchAppOrFramework.
 	 * 
-	 * @param iProject
-	 * @return boolean
-	 */
-	public boolean isAFramework(IProject iProject) {
-		IJavaProject buildProject = null;
-		try {
-			buildProject = this.getIJavaProject();
-			Project project = (Project)iProject.getAdapter(Project.class);
-			if (project.isFramework()
-					&& projectISReferencedByProject(iProject, buildProject
-							.getProject()))
-				return true;
-		} catch (Exception anException) {
-			DataSetsPlugin.getDefault().getPluginLogger().log(anException);
-			return false;
-		}
-		return false;
-	}
-	/**
-	 * Method isTheLaunchAppOrFramework.
-	 * 
 	 * @param project
 	 * @return boolean
 	 */
