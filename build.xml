@@ -18,6 +18,7 @@
     <!-- don't want to redefine them.                  -->
     <!-- ============================================= -->
     <property name="dist" value="${dist.base}/${project.name}-${project.version}"/>
+    <property name="dist-wolips" value="${dist.base}/com.objectstyle.woproject.wolips-${project.version}"/>
     <property name="output" value="output"/>
     
 
@@ -65,6 +66,18 @@
              </fileset>
          </copy>
 
+	<!-- Copy wolips stuff -->
+	<copy todir="${dist-wolips}">
+             <fileset dir="src/resources/wolips">
+             </fileset>
+         </copy>
+	<copy todir="${dist-wolips}/lib">
+             <fileset dir="${dist}/lib">
+          	<exclude name="junit.jar"/>
+             	<exclude name="ant.jar"/>
+             </fileset>
+         </copy>
+
          <tar tarfile="${dist.base}/${project.name}-src-${project.version}.tar">
              <tarfileset dir="${dist.base}">
                 <include name="${project.name}-${project.version}/**"/>
@@ -78,6 +91,17 @@
          <gzip src="${dist.base}/${project.name}-src-${project.version}.tar"
               zipfile="${dist.base}/${project.name}-src-${project.version}.tar.gz"/>
          <delete file="${dist.base}/${project.name}-src-${project.version}.tar"/>
+
+	<!-- make wolips dist -->
+         <tar tarfile="${dist.base}/wolips-src-${project.version}.tar">
+             <tarfileset dir="${dist-wolips}">
+            </tarfileset>
+         </tar>
+         
+         <gzip src="${dist.base}/wolips-src-${project.version}.tar"
+              zipfile="${dist.base}/wolips-src-${project.version}.tar.gz"/>
+         <delete file="${dist.base}/wolips-src-${project.version}.tar"/>
+
     </target>
 
 
@@ -104,6 +128,8 @@
         <mkdir dir="${dist}"/>
         <mkdir dir="${dist}/src"/>
         <mkdir dir="${dist}/examples"/>
+	<mkdir dir="${dist-wolips}"/>
+	<mkdir dir="${dist-wolips}/lib"/>
     </target>
 
 
