@@ -61,6 +61,7 @@ import java.text.MessageFormat;
 import java.util.Map;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -74,10 +75,9 @@ import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.jdt.launching.IVMInstall;
 import org.eclipse.jdt.launching.IVMRunner;
 import org.eclipse.jdt.launching.VMRunnerConfiguration;
-import org.objectstyle.wolips.core.plugin.logging.WOLipsLog;
 import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
+import org.objectstyle.wolips.core.plugin.logging.WOLipsLog;
 import org.objectstyle.wolips.core.preferences.Preferences;
-import org.objectstyle.wolips.core.workbench.WorkbenchHelper;
 import org.objectstyle.woproject.util.FileStringScanner;
 
 /**
@@ -85,7 +85,8 @@ import org.objectstyle.woproject.util.FileStringScanner;
  */
 public class WOJavaLocalApplicationLaunchConfigurationDelegate
 	extends AbstractJavaLaunchConfigurationDelegate {
-	public static final String WOJavaLocalApplicationID = "org.objectstyle.wolips.launching.WOLocalJavaApplication";
+	public static final String WOJavaLocalApplicationID =
+		"org.objectstyle.wolips.launching.WOLocalJavaApplication";
 	/** The launch configuration attribute for stack trace depth */
 	public static final String ATTR_WOLIPS_LAUNCH_WOARGUMENTS =
 		"wolips.launch.woarguments";
@@ -137,11 +138,11 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 						.ATTR_WOLIPS_LAUNCH_WOARGUMENTS,
 					"");
 		String vmArgs = getVMArguments(configuration);
-		StringBuffer vmArgsBuffer = 
-			new StringBuffer(vmArgs);
+		StringBuffer vmArgsBuffer = new StringBuffer(vmArgs);
 
 		this.addVMArguments(vmArgsBuffer, configuration, launch, mode);
-		ExecutionArguments execArgs = new ExecutionArguments(vmArgsBuffer.toString(), pgmArgs);
+		ExecutionArguments execArgs =
+			new ExecutionArguments(vmArgsBuffer.toString(), pgmArgs);
 
 		// VM-specific attributes
 		Map vmAttributesMap = getVMSpecificAttributesMap(configuration);
@@ -236,7 +237,7 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 		ILaunch launch,
 		String mode)
 		throws CoreException {
-			return vmArgs;
+		return vmArgs;
 	}
 	/**
 	 * Method replaceInArgumentGeneratedByWOLips.
@@ -258,7 +259,7 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 	private String getGeneratedByWOLips(ILaunchConfiguration configuration) {
 		String returnValue = "";
 		IProject[] projects =
-			WorkbenchHelper.getWorkspace().getRoot().getProjects();
+			ResourcesPlugin.getWorkspace().getRoot().getProjects();
 		for (int i = 0; i < projects.length; i++) {
 			if (isTheLaunchAppOrAFramework(projects[i], configuration)) {
 				if (returnValue.length() > 0)
@@ -289,7 +290,7 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 		IJavaProject buildProject = null;
 		try {
 			buildProject = this.getJavaProject(configuration);
-//			TODO: check if is application
+			//			TODO: check if is application
 			/*if (ProjectHelper.isWOFwBuilderInstalled(project)
 				&& projectISReferencedByProject(
 					project,
