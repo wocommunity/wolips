@@ -55,10 +55,10 @@
  */
 package org.objectstyle.wolips.wizards;
 import java.lang.reflect.InvocationTargetException;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.jdt.internal.ui.packageview.PackageExplorerPart;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.ISelection;
@@ -67,12 +67,8 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
-import org.eclipse.ui.IViewPart;
-import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.WizardNewFileCreationPage;
 import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
@@ -131,26 +127,7 @@ public abstract class WizardNewWOResourcePage extends WizardNewFileCreationPage 
 			// cancelling is disabled
 			return false;
 		}
-		sledgeHammer();
 		return true;
-	}
-	/**
-	 * Method sledgeHammer. Fixes eclipse refresh view bug
-	 */
-	private void sledgeHammer() {
-		IWorkbenchWindow a[] = WOLipsPlugin.getDefault().getWorkbench()
-				.getWorkbenchWindows();
-		for (int i = 0; i < a.length; i++) {
-			IWorkbenchPage b[] = a[i].getPages();
-			for (int j = 0; j < b.length; j++) {
-				IViewReference c[] = b[j].getViewReferences();
-				for (int k = 0; k < c.length; k++) {
-					IViewPart d = c[k].getView(false); //maybe null
-					if ((d != null) && (d instanceof PackageExplorerPart))
-						((PackageExplorerPart) d).getTreeViewer().refresh();
-				}
-			}
-		}
 	}
 	/**
 	 * Method validatePage. If super is true, checks if container selection is
