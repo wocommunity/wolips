@@ -56,7 +56,6 @@
 package org.objectstyle.wolips.core.plugin;
 import java.net.MalformedURLException;
 import java.net.URL;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.runtime.CoreException;
@@ -80,12 +79,10 @@ import org.objectstyle.woproject.env.WOEnvironment;
  * @author markus
  */
 public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
-	
 	public static Log log;
 	//The plugin.
 	private static WOLipsPlugin plugin;
-	private WOEnvironment woEnvironment = new WOEnvironment();
-
+	private WOEnvironment woEnvironment;
 	/**
 	 * Set this variable to true to get debug output
 	 */
@@ -104,9 +101,12 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 		System.setProperty(
 			"org.apache.commons.logging.LogFactory",
 			"org.objectstyle.wolips.logging.WOLipsLogFactory");
-		LogFactory.getFactory().setAttribute(WOLipsLogFactory.ATTR_GLOBAL_LOG_LEVEL,new Integer(Preferences.getString(IWOLipsPluginConstants.PREF_LOG_LEVEL)));
+		LogFactory.getFactory().setAttribute(
+			WOLipsLogFactory.ATTR_GLOBAL_LOG_LEVEL,
+			new Integer(
+				Preferences.getString(IWOLipsPluginConstants.PREF_LOG_LEVEL)));
 		// set own logger
-		log=LogFactory.getLog(WOLipsPlugin.class);	
+		log = LogFactory.getLog(WOLipsPlugin.class);
 	}
 	/**
 	 * Calls EarlyStartup.earlyStartup().
@@ -171,7 +171,7 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 			MessageDialog.openError(shell, title, target.getMessage());
 			//WOLipsLog.log(target);
 		}
-		log.error(message,target);
+		log.error(message, target);
 	}
 	/**
 	 * Returns the PluginID.
@@ -186,6 +186,8 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 	 * @return WOEnvironment
 	 */
 	public WOEnvironment getWOEnvironment() {
+		if (woEnvironment == null)
+			woEnvironment = new WOEnvironment();
 		return woEnvironment;
 	}
 }
