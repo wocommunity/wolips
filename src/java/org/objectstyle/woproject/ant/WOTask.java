@@ -65,16 +65,11 @@ import org.apache.tools.ant.taskdefs.*;
 import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.DirectoryScanner;
 
-import org.apache.log4j.Category;
-
 /**
  * common superclass for WOApplication and WOFramework that looks
  * after common functionality.
  */
 public abstract class WOTask extends MatchingTask {
-
-    private static Category logger = Category.getInstance(WOTask.class.getName());
-    private static boolean DEBUG = logger.isDebugEnabled();
 
     protected Vector classes = new Vector();
     protected String name;
