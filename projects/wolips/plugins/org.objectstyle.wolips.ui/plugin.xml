@@ -31,6 +31,8 @@
       <import plugin="org.objectstyle.wolips.workbenchutilities"/>
       <import plugin="org.objectstyle.wolips.datasets"/>
       <import plugin="org.eclipse.ui.forms"/>
+      <import plugin="org.eclipse.team.cvs.ui"/>
+      <import plugin="org.eclipse.team.ui"/>
    </requires>
 
 
@@ -43,8 +45,8 @@
 <!-- menu                                                                                -->
 <!-- =================================================================================== -->
       <objectContribution
-            objectClass="org.eclipse.core.resources.IResource"
             adaptable="true"
+            objectClass="org.eclipse.core.resources.IResource"
             id="org.objectstyle.wolips.ui.ResourceContributions">
          <menu
                label="&amp;WOLips Tools"
@@ -62,8 +64,8 @@
 <!-- project actions                                                                     -->
 <!-- =================================================================================== -->
       <objectContribution
-            adaptable="true"
             objectClass="org.eclipse.core.resources.IProject"
+            adaptable="true"
             id="org.objectstyle.wolips.ui">
          <filter
                name="nature"
@@ -81,8 +83,8 @@
 <!-- Extension: File actions                                                             -->
 <!-- =================================================================================== -->
       <objectContribution
-            adaptable="true"
             objectClass="org.eclipse.jdt.core.ICompilationUnit"
+            adaptable="true"
             nameFilter="*.java"
             id="org.objectstyle.wolips.ui.actions.OpenComponentAction">
          <action
@@ -94,8 +96,8 @@
          </action>
       </objectContribution>
       <objectContribution
-            adaptable="true"
             objectClass="org.eclipse.core.resources.IFile"
+            adaptable="true"
             nameFilter="*.wod"
             id="org.objectstyle.wolips.ui.actions.OpenSourceAction">
          <action
@@ -107,8 +109,8 @@
          </action>
       </objectContribution>
       <objectContribution
-            adaptable="true"
             objectClass="org.eclipse.core.resources.IContainer"
+            adaptable="true"
             nameFilter="*.wo"
             id="org.objectstyle.wolips.ui.actions.OpenSourceAction">
          <action
@@ -120,8 +122,8 @@
          </action>
       </objectContribution>
       <objectContribution
-            adaptable="true"
             objectClass="org.eclipse.core.resources.IContainer"
+            adaptable="true"
             nameFilter="*.eomodeld"
             id="org.objectstyle.wolips.ui.actions.OpenEOModelIndexAction">
          <action
@@ -140,92 +142,92 @@
          id="org.objectstyle.wolips.editors"
          point="org.eclipse.ui.editors">
       <editor
-            default="true"
             name="WOBuilder"
-            extensions="api,wod,woo"
+            default="true"
             icon="icons/wobuilder/webobjects_builder.gif"
-            id="org.objectstyle.wolips.external.wod.editor"
-            launcher="org.objectstyle.wolips.ui.editor.OpenSystemEditor">
+            extensions="api,wod,woo"
+            launcher="org.objectstyle.wolips.ui.editor.OpenSystemEditor"
+            id="org.objectstyle.wolips.external.wod.editor">
       </editor>
       <editor
-            default="false"
             name="WOComponent TextEditor"
-            extensions="api,wod,woo"
+            default="false"
             icon="icons/wobuilder/webobjects_builder.gif"
-            class="org.eclipse.ui.editors.text.TextEditor"
+            extensions="api,wod,woo"
             contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
+            class="org.eclipse.ui.editors.text.TextEditor"
             id="org.objectstyle.wolips.internal.wod.editor">
       </editor>
       <editor
-            default="false"
             name="HTML TextEditor"
-            extensions="html"
+            default="false"
             icon="icons/wobuilder/webobjects_builder.gif"
-            class="org.eclipse.ui.editors.text.TextEditor"
+            extensions="html"
             contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
+            class="org.eclipse.ui.editors.text.TextEditor"
             id="org.objectstyle.wolips.internal.html.editor">
       </editor>
       <editor
-            default="true"
             name="EOModeler"
+            default="true"
+            icon="icons/eomodeler/webobjects_eomodeler.gif"
             extensions="eomodeld"
-            icon="icons/eomodeler/webobjects_eomodeler.gif"
-            id="org.objectstyle.wolips.external.eomodeld.editor"
-            launcher="org.objectstyle.wolips.ui.editor.OpenSystemEditor">
+            launcher="org.objectstyle.wolips.ui.editor.OpenSystemEditor"
+            id="org.objectstyle.wolips.external.eomodeld.editor">
       </editor>
       <editor
-            default="false"
             name="ProjectBuilderWO"
-            extensions="project"
+            default="false"
             icon="icons/projectbuilder/projectbuilderwo.gif"
-            id="org.objectstyle.wolips.external.projectbuilder.wo"
-            launcher="org.objectstyle.wolips.ui.editor.OpenSystemEditor">
+            extensions="project"
+            launcher="org.objectstyle.wolips.ui.editor.OpenSystemEditor"
+            id="org.objectstyle.wolips.external.projectbuilder.wo">
       </editor>
       <editor
-            default="true"
             name="RuleEditor"
-            extensions="d2wmodel"
+            default="true"
             icon="icons/eomodeler/webobjects_eomodeler.gif"
-            id="org.objectstyle.wolips.external.d2w.model"
-            launcher="org.objectstyle.wolips.ui.editor.OpenSystemEditor">
+            extensions="d2wmodel"
+            launcher="org.objectstyle.wolips.ui.editor.OpenSystemEditor"
+            id="org.objectstyle.wolips.external.d2w.model">
       </editor>
       <editor
-            default="true"
             name="GraphicEditor"
-            extensions="icns"
+            default="true"
             icon="icons/files/icns.gif"
-            id="org.objectstyle.wolips.ui.icns"
-            launcher="org.objectstyle.wolips.ui.editor.OpenSystemEditor">
+            extensions="icns"
+            launcher="org.objectstyle.wolips.ui.editor.OpenSystemEditor"
+            id="org.objectstyle.wolips.ui.icns">
       </editor>
       <editor
             name="MakefileEditor"
-            extensions="Makefile,postamble,preamble"
             icon="icons/files/text_file.gif"
-            class="org.eclipse.ui.editors.text.TextEditor"
+            extensions="Makefile,postamble,preamble"
             contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
+            class="org.eclipse.ui.editors.text.TextEditor"
             id="org.objectstyle.wolips.ui.DefaultMakefileEditor">
       </editor>
       <editor
             name="PropertyListEditor"
-            extensions="plist"
             icon="icons/files/text_file.gif"
-            class="org.eclipse.ui.editors.text.TextEditor"
+            extensions="plist"
             contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
+            class="org.eclipse.ui.editors.text.TextEditor"
             id="org.objectstyle.wolips.ui.DefaultPropertyListEditor">
       </editor>
       <editor
             name="AntIncludesFileEditor"
-            extensions="home,wosystemroot,wolocalroot"
             icon="icons/files/ant_buildfile.gif"
-            class="org.eclipse.ui.editors.text.TextEditor"
+            extensions="home,wosystemroot,wolocalroot"
             contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
+            class="org.eclipse.ui.editors.text.TextEditor"
             id="org.objectstyle.wolips.ui.DefaultAntIncludesFileEditor">
       </editor>
       <editor
-            name="Pattern Set Editor"
             default="true"
-            extensions="patternset"
+            name="Pattern Set Editor"
             icon="icons/files/ant_buildfile.gif"
+            extensions="patternset"
             class="org.objectstyle.wolips.ui.editor.PatternsetEditor"
             id="org.objectstyle.wolips.ui.editor.PatternsetEditor">
       </editor>
@@ -297,8 +299,8 @@
       <decorator
             objectClass="org.eclipse.core.resources.IFolder"
             label="WebObjects"
-            class="org.objectstyle.wolips.ui.labeldecorator.WOLabelDecorator"
             state="true"
+            class="org.objectstyle.wolips.ui.labeldecorator.WOLabelDecorator"
             id="org.objectstyle.wolips.ui.labeldecorator.WOLabelDecorator">
       </decorator>
    </extension>
@@ -314,10 +316,10 @@
             id="org.objectstyle.wolips.ui.BuildActionSet">
          <action
                label="Toggle WOBuild"
-               icon="icons/wobuild/toggle_build.gif"
                style="toggle"
-               class="org.objectstyle.wolips.ui.actions.WOBuildToggleAction"
+               icon="icons/wobuild/toggle_build.gif"
                tooltip="Toggle WOBuild"
+               class="org.objectstyle.wolips.ui.actions.WOBuildToggleAction"
                toolbarPath="Normal/WOLipsWizards"
                id="org.objectstyle.wolips.ui.actions.WOBuildToggleAction">
          </action>
@@ -330,74 +332,74 @@
          point="org.eclipse.jdt.ui.javaElementFilters">
 <!-- Package Explorer -->
       <filter
-            enabled="true"
             name="PB makefiles (WOLips)"
+            enabled="true"
             description="Hide the makefiles required by PBWO"
             pattern="Makefil*">
       </filter>
       <filter
-            enabled="true"
             name="ant classpath files (WOLips)"
+            enabled="true"
             description="Hide the ant classpath files generated by WOLips"
             pattern="ant.classpaths.*">
       </filter>
       <filter
-            enabled="true"
             name="ant framework files (WOLips)"
+            enabled="true"
             description="Hide the ant framework files generated by WOLips"
             pattern="ant.frameworks.*">
       </filter>
       <filter
-            enabled="true"
             name="PB.project (WOLips)"
+            enabled="true"
             description="Hide the PBWO project file."
             pattern="PB.project">
       </filter>
       <filter
-            enabled="false"
             name="WOComponent api (WOLips)"
+            enabled="false"
             description="Hide all *.api files"
             pattern="*.api">
       </filter>
       <filter
-            enabled="false"
             name="woo (WOLips)"
+            enabled="false"
             description="Hide all *.woo files"
             pattern="*.woo">
       </filter>
       <filter
-            enabled="true"
             name="WOA Icon (WOLips)"
+            enabled="true"
             description="Hides the WOA Icon"
             pattern="WOAfile.icns">
       </filter>
       <filter
-            enabled="true"
             name="CustomInfo.plist (WOLips)"
+            enabled="true"
             description="Hide all CustomInfo.plist files"
             pattern="CustomInfo.Plist">
       </filter>
       <filter
-            enabled="true"
             name="Properties (WOLips)"
+            enabled="true"
             description="Hides files named Properties"
             pattern="Properties">
       </filter>
       <filter
-            enabled="true"
             name="build.properties (WOLips)"
+            enabled="true"
             description="Hide all build.properties files"
             pattern="build.properties">
       </filter>
       <filter
-            enabled="true"
             name="build.xml (WOLips)"
+            enabled="true"
             description="Hide all build.xml files"
             pattern="build.xml">
       </filter>
       <filter
-            enabled="true"
             name="build launch config (WOLips)"
+            enabled="true"
             description="Hide all *.build.launch files"
             pattern="*.build.launch">
       </filter>
