@@ -71,44 +71,12 @@ import org.apache.tools.ant.DirectoryScanner;
  *
  * @ant.task category="packaging"
  */
-public class WOFramework extends MatchingTask {
-    private String name;
-    private String destDir;
-    private Vector classes = new Vector();
+public class WOFramework extends WOTask {
     private Vector lib = new Vector();
-    private Vector resources = new Vector();
-    private Vector wsresources = new Vector();
-
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-
-    public void setDestDir(String destDir) {
-        this.destDir = destDir;
-    }
-
-
-    public void addClasses(FileSet set) {
-        classes.addElement(set);
-    }
-
 
     public void addLib(FileSet set) {
         lib.addElement(set);
     }
-
-
-    public void addResources(FileSet set) {
-        resources.addElement(set);
-    }
-
-
-    public void addWsresources(FileSet set) {
-        wsresources.addElement(set);
-    }
-
 
     public void execute() throws BuildException {
         validateAttributes();
@@ -132,24 +100,6 @@ public class WOFramework extends MatchingTask {
 
         buildInfo();
     }
-
-
-    /**
-     * Ensure we have a consistent and legal set of attributes, and set any
-     * internal flags necessary based on different combinations of attributes.
-     *
-     * @throws BuildException Description of the Exception
-     */
-    protected void validateAttributes() throws BuildException {
-        if (name == null) {
-            throw new BuildException("'name' attribute is missing.");
-        }
-
-        if (destDir == null) {
-            throw new BuildException("'destDir' attribute is missing.");
-        }
-    }
-
 
     protected void createDirectories() throws BuildException {
         Mkdir mkdir = new Mkdir();
