@@ -85,79 +85,79 @@ import org.eclipse.jdt.launching.JavaRuntime;
 public class WORuntimeClasspathContainerResolver
 	implements IRuntimeClasspathEntryResolver {
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jdt.launching.IRuntimeClasspathEntryResolver#resolveRuntimeClasspathEntry(org.eclipse.jdt.launching.IRuntimeClasspathEntry, org.eclipse.debug.core.ILaunchConfiguration)
-	 */
-	public IRuntimeClasspathEntry[] resolveRuntimeClasspathEntry(
-		IRuntimeClasspathEntry entry,
-		ILaunchConfiguration configuration
-  )
-		throws CoreException 
-  {    
-    IPath path = entry.getClasspathEntry().getPath();
-    IJavaProject prj = JavaRuntime.getJavaProject(configuration);
-    
-    List rawEntries = new ArrayList (Arrays.asList(prj.getRawClasspath()));
-    
-    IWorkspaceRoot wsRoot = ResourcesPlugin.getWorkspace().getRoot();
-    
-    Set referencedFrameworks = new HashSet();
-    while (!rawEntries.isEmpty()) {
-      IClasspathEntry thisOne = (IClasspathEntry)rawEntries.remove(0);
-      if (IClasspathEntry.CPE_PROJECT == thisOne.getEntryKind()) {
-        String name = thisOne.getPath().lastSegment();
-        if (!referencedFrameworks.contains(name)) {
-          referencedFrameworks.add(name);
-          try {
-            IJavaProject refPrj = JavaCore.create(wsRoot.getProject(name));
-            rawEntries.addAll (Arrays.asList(refPrj.getRawClasspath()));
-          } catch (CoreException up) {
-            // ignore, for now
-            System.out.println(up);
-          }
-        }
-      }
-    }
-    
-    IPath resultPath = new Path (path.segment(0));
-    
-    for (int i = 1; i < path.segmentCount(); ++i) {
-      String segment = path.segment(i);
-      if (!referencedFrameworks.contains(segment)) {
-        resultPath = resultPath.append(segment);
-      }
-    }
-    
-    WOClasspathContainer rcc = new WOClasspathContainer (resultPath, prj);
-    
-    IClasspathEntry re[] = rcc.getClasspathEntries();
-    IRuntimeClasspathEntry rrce[] = new IRuntimeClasspathEntry[re.length];
-    
-    for (int i = 0; i < re.length; ++i) {
-      rrce[i] = JavaRuntime.newArchiveRuntimeClasspathEntry(re[i].getPath());
-    }
-    
-		return rrce;
-	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jdt.launching.IRuntimeClasspathEntryResolver#resolveRuntimeClasspathEntry(org.eclipse.jdt.launching.IRuntimeClasspathEntry, org.eclipse.jdt.core.IJavaProject)
-	 */
-	public IRuntimeClasspathEntry[] resolveRuntimeClasspathEntry(
-		IRuntimeClasspathEntry entry,
-		IJavaProject project
-  )
+		/* (non-Javadoc)
+		 * @see org.eclipse.jdt.launching.IRuntimeClasspathEntryResolver#resolveRuntimeClasspathEntry(org.eclipse.jdt.launching.IRuntimeClasspathEntry, org.eclipse.debug.core.ILaunchConfiguration)
+		 */
+		public IRuntimeClasspathEntry[] resolveRuntimeClasspathEntry(
+				IRuntimeClasspathEntry entry,
+				ILaunchConfiguration configuration
+		)
 		throws CoreException 
-  {
-		return null;
-	}
+		{    
+			IJavaProject prj = JavaRuntime.getJavaProject(configuration);
+			return this.resolveRuntimeClasspathEntry(entry, prj);
+		}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.jdt.launching.IRuntimeClasspathEntryResolver#resolveVMInstall(org.eclipse.jdt.core.IClasspathEntry)
-	 */
-	public IVMInstall resolveVMInstall(IClasspathEntry entry)
+		/* (non-Javadoc)
+		 * @see org.eclipse.jdt.launching.IRuntimeClasspathEntryResolver#resolveRuntimeClasspathEntry(org.eclipse.jdt.launching.IRuntimeClasspathEntry, org.eclipse.jdt.core.IJavaProject)
+		 */
+		public IRuntimeClasspathEntry[] resolveRuntimeClasspathEntry(
+				IRuntimeClasspathEntry entry,
+				IJavaProject project
+		)
+		throws CoreException 
+		{
+			IPath path = entry.getClasspathEntry().getPath();
+		
+			List rawEntries = new ArrayList (Arrays.asList(project.getRawClasspath()));
+		
+			IWorkspaceRoot wsRoot = ResourcesPlugin.getWorkspace().getRoot();
+		
+			Set referencedFrameworks = new HashSet();
+			while (!rawEntries.isEmpty()) {
+				IClasspathEntry thisOne = (IClasspathEntry)rawEntries.remove(0);
+				if (IClasspathEntry.CPE_PROJECT == thisOne.getEntryKind()) {
+					String name = thisOne.getPath().lastSegment();
+					if (!referencedFrameworks.contains(name)) {
+						referencedFrameworks.add(name);
+						try {
+							IJavaProject refPrj = JavaCore.create(wsRoot.getProject(name));
+							rawEntries.addAll (Arrays.asList(refPrj.getRawClasspath()));
+						} catch (CoreException up) {
+							// ignore, for now
+							System.out.println(up);
+						}
+					}
+				}
+			}
+		
+			IPath resultPath = new Path (path.segment(0));
+		
+			for (int i = 1; i < path.segmentCount(); ++i) {
+				String segment = path.segment(i);
+				if (!referencedFrameworks.contains(segment)) {
+					resultPath = resultPath.append(segment);
+				}
+			}
+		
+			WOClasspathContainer rcc = new WOClasspathContainer (resultPath, project);
+		
+			IClasspathEntry re[] = rcc.getClasspathEntries();
+			IRuntimeClasspathEntry rrce[] = new IRuntimeClasspathEntry[re.length];
+		
+			for (int i = 0; i < re.length; ++i) {
+				rrce[i] = JavaRuntime.newArchiveRuntimeClasspathEntry(re[i].getPath());
+			}
+		
+			return rrce;
+		}
+
+		/* (non-Javadoc)
+		 * @see org.eclipse.jdt.launching.IRuntimeClasspathEntryResolver#resolveVMInstall(org.eclipse.jdt.core.IClasspathEntry)
+		 */
+		public IVMInstall resolveVMInstall(IClasspathEntry entry)
 		throws CoreException {
-		return null;
-	}
-
+			return null;
+		}
 }
