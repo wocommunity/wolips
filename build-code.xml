@@ -58,6 +58,7 @@
         </jar>
 
         <copy todir="${woproject.dist}/lib" file="lib/${lib.cayenne}"/>
+        <copy todir="${woproject.dist}/lib" file="lib/${lib.commons-logging}"/>
     </target>
 
 
