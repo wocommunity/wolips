@@ -22,21 +22,28 @@
     <!-- ============================================= -->
     <!-- Define CLASSPATH settings.                    -->
     <!-- ============================================= -->
-    <path id="classpath">
-        <fileset dir="${ant.home}/lib">
-            <include name="ant.jar"/>
-        </fileset>
-        <fileset dir="lib">
-            <include name="*.jar"/>
-	        <include name="eclipse/**/*.jar"/>
-        </fileset>
-        <fileset dir="${next.root}/Library/Frameworks">
-            <include name="JavaFoundation.framework/Resources/Java/*.jar"/>
-        </fileset>
-        <!-- Depends on WOProject core. -->
-        <pathelement path="${build}/main"/>
-    </path>
-    
+    <target name="defineClasspath">
+        <condition property="next.root" value="/System">
+            <and>
+                <os family="mac" />
+                <os family="unix" />
+            </and>
+        </condition>
+        <path id="classpath">
+            <fileset dir="${ant.home}/lib">
+                <include name="ant.jar"/>
+            </fileset>
+            <fileset dir="lib">
+                <include name="*.jar"/>
+	            <include name="eclipse/**/*.jar"/>
+            </fileset>
+            <fileset dir="${next.root}/Library/Frameworks">
+                <include name="JavaFoundation.framework/Resources/Java/*.jar"/>
+            </fileset>
+             <!-- Depends on WOProject core. -->
+            <pathelement path="${build}/main"/>
+        </path>
+    </target>
 
     <target name="java" depends="prepare">
         <javac srcdir="src/wolips/java"
@@ -98,7 +105,7 @@
     <!-- ============================================= -->
     <!-- Sets up build and distribution directories.   -->
     <!-- ============================================= -->
-    <target name="prepare">
+    <target name="prepare" depends="defineClasspath">
         <mkdir dir="${build}/wolips"/>
         <mkdir dir="${dist-wolips}/lib"/>
         <mkdir dir="${dist-wolips}/doc/api"/>
