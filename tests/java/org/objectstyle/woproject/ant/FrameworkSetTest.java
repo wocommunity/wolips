@@ -78,12 +78,30 @@ public class FrameworkSetTest extends TestCase {
 		set.setProject(new Project());
 	}
 
-	public void testSetRootInvalid() throws Exception {
+	public void testInvalidRoot() throws Exception {
 		try {
 			set.setRoot("invalidroot");
 			fail("Invalid root must generate exception.");
 		} catch (BuildException ex) {
-            // exception expected
+			// exception expected
 		}
+	}
+
+	public void testWORoot() throws Exception {
+		set.setRoot(WOPropertiesHandler.WO_ROOT);
+		assertEquals(WOPropertiesHandler.WO_ROOT, set.getRoot());
+		assertTrue(set.isWORoot());
+	}
+
+	public void testLocalRoot() throws Exception {
+		set.setRoot(WOPropertiesHandler.LOCAL_ROOT);
+		assertEquals(WOPropertiesHandler.LOCAL_ROOT, set.getRoot());
+		assertTrue(set.isLocalRoot());
+	}
+
+	public void testHomeRoot() throws Exception {
+		set.setRoot(WOPropertiesHandler.HOME_ROOT);
+		assertEquals(WOPropertiesHandler.HOME_ROOT, set.getRoot());
+		assertTrue(set.isHomeRoot());
 	}
 }

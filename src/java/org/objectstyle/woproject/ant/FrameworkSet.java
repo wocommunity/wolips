@@ -67,12 +67,29 @@ import org.apache.tools.ant.types.FileSet;
  * @author Andrei Adamchik
  */
 public class FrameworkSet extends FileSet {
+	protected String root;
 
 	/** 
 	 * Creates new FrameworkSet.
 	 */
 	public FrameworkSet() {
 		super();
+	}
+
+	public String getRoot() {
+		return root;
+	}
+
+	public boolean isWORoot() {
+		return WOPropertiesHandler.WO_ROOT.equals(root);
+	}
+
+	public boolean isHomeRoot() {
+		return WOPropertiesHandler.HOME_ROOT.equals(root);
+	}
+
+	public boolean isLocalRoot() {
+		return WOPropertiesHandler.LOCAL_ROOT.equals(root);
 	}
 
 	/** 
@@ -86,21 +103,23 @@ public class FrameworkSet extends FileSet {
 			Project.MSG_WARN);
 	}
 
-    /** 
-     * Sets root directory of this FileSet based on a symbolic name, 
-     * that can be "wo.homeroot", "wo.woroot", "wo.localroot". Throws
-     * BuildException if an invalid root is specified.
-     */
+	/** 
+	 * Sets root directory of this FileSet based on a symbolic name, 
+	 * that can be "wo.homeroot", "wo.woroot", "wo.localroot". Throws
+	 * BuildException if an invalid root is specified.
+	 */
 	public void setRoot(String root) {
+		this.root = root;
+
 		WOPropertiesHandler propsHandler =
 			new WOPropertiesHandler(this.getProject());
 
-		if (WOPropertiesHandler.WO_ROOT.equals(root)) {
+		if (isWORoot()) {
 			super.setDir(new File(propsHandler.getWORoot()));
-		} else if (WOPropertiesHandler.WO_ROOT.equals(root)) {
-			super.setDir(new File(propsHandler.getWORoot()));
-		} else if (WOPropertiesHandler.WO_ROOT.equals(root)) {
-			super.setDir(new File(propsHandler.getWORoot()));
+		} else if (isLocalRoot()) {
+			super.setDir(new File(propsHandler.getLocalRoot()));
+		} else if (isHomeRoot()) {
+			super.setDir(new File(propsHandler.getHomeRoot()));
 		} else {
 			throw new BuildException("Unrecognized root specifier: " + root);
 		}

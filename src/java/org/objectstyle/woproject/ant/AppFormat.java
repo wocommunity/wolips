@@ -68,8 +68,10 @@ import org.apache.tools.ant.types.*;
  * @author Andrei Adamchik
  */
 public class AppFormat extends ProjectFormat {
-	private HashMap templateMap = new HashMap();
-	private HashMap filterMap = new HashMap();
+	protected HashMap templateMap = new HashMap();
+	protected HashMap filterMap = new HashMap();
+	protected String unixFrameworks;
+	protected String winFrameworks;
 
 	/** 
 	 * Creates new AppFormat and initializes it with the name
@@ -77,27 +79,7 @@ public class AppFormat extends ProjectFormat {
 	 */
 	public AppFormat(WOTask task) {
 		super(task);
-
 		prepare();
-
-       // temporary debugging stuff
-      /*  System.out.println("Check framework sets.");
-		List frameworkSets = getApplicatonTask().getFrameworkSets();
-		for (int i = 0; i < frameworkSets.size(); i++) {
-			FileSet fs = (FileSet) frameworkSets.get(i);
-			try {
-				System.out.println("Looking for dirs: " + fs.getDir(task.getProject()));
-				DirectoryScanner ds = fs.getDirectoryScanner(task.getProject());
-				String[] dirs = ds.getIncludedDirectories();
-				for(int j = 0; j < dirs.length; j++) {
-					System.out.println("Dir found: " + dirs[i]);
-				}
-			} catch (BuildException be) {
-				// directory doesn't exist or is not readable
-
-				log(be.getMessage(), Project.MSG_WARN);
-			}
-		} */
 	}
 
 	/** 
@@ -105,6 +87,8 @@ public class AppFormat extends ProjectFormat {
 	 * maps them to templates and filters. 
 	 */
 	private void prepare() {
+		// prepareFrameworks();
+
 		prepareWindows();
 		prepareUnix();
 		prepareMac();
@@ -115,6 +99,66 @@ public class AppFormat extends ProjectFormat {
 		String infoFile =
 			new File(getApplicatonTask().contentsDir(), "Info.plist").getPath();
 		createMappings(infoFile, "woapp/Info.plist", infoFilter(null));
+	}
+
+	/** 
+	 * Extracts a list of included frameworks from the application 
+	 * task FrameworkSet.
+	 */
+	private void prepareFrameworks() {
+		List frameworkSets = getApplicatonTask().getFrameworkSets();
+		int size = frameworkSets.size();
+		
+		if (size > 0) {
+			
+			StringBuffer unixBuf = new StringBuffer();
+			StringBuffer winBuf = new StringBuffer();
+			
+			// depending on where the build is done,
+			// we will need to substitute either forward
+			// slashes for windows or backslashes for UNIX
+			
+			// newline character is always '\n' 
+			
+			StringBuffer subst = null;
+			StringBuffer noSubst = null;
+			char substFrom = 0;
+			char substTo = 0;
+
+			
+			if(System.getProperty("file.separator") == "/") {
+				subst = winBuf;
+				noSubst = unixBuf;
+				substFrom = '/';
+				substTo = '\\';
+			}
+			else {
+				subst = unixBuf;
+				noSubst = winBuf;
+				substFrom = '\\';
+				substTo = '/';
+			}
+			
+			for (int i = 0; i < size; i++) {
+				FileSet fs = (FileSet) frameworkSets.get(i);
+				try {
+					DirectoryScanner ds =
+						fs.getDirectoryScanner(task.getProject());
+					String[] dirs = ds.getIncludedDirectories();
+					for (int j = 0; j < dirs.length; j++) {
+						System.out.println("Dir found: " + dirs[i]);
+						
+					}
+					
+				} catch (BuildException be) {
+					// directory doesn't exist or is not readable
+					log(be.getMessage(), Project.MSG_WARN);
+				}
+			}
+			
+			unixFrameworks = unixBuf.toString();
+			winFrameworks = winBuf.toString();
+		}
 	}
 
 	/** 
