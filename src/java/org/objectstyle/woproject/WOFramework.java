@@ -64,6 +64,8 @@ import org.apache.tools.ant.Task;
 import org.apache.tools.ant.taskdefs.*;
 import org.apache.tools.ant.types.FileSet;
 
+
+
 /**
   * Ant task to build WebObjects framework.  
   * 
@@ -173,11 +175,10 @@ public class WOFramework extends MatchingTask {
     }
 
     protected void copyResources() throws BuildException {
-        Copy cp = new Copy();
+        WOCompCopy cp = new WOCompCopy();
         initChildTask(cp);
 
-        cp.setTodir(resourcesDir());
-
+        cp.setTodir(resourcesDir());        
         Enumeration en = resources.elements();
         while (en.hasMoreElements()) {
             cp.addFileset((FileSet) en.nextElement());
