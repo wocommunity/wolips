@@ -64,6 +64,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.variables.VariablesPlugin;
 import org.eclipse.debug.core.DebugPlugin;
+import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
@@ -361,11 +362,12 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 		}
 		try {
 			//config= ExternalToolMigration.migrateRunInBackground(config);
-			//ILaunch launch =
-			config.launch(ILaunchManager.RUN_MODE, monitor);
-			//ILaunchManager manager = DebugPlugin.getDefault()
-			//		.getLaunchManager();
-			//manager.removeLaunch(launch);
+			ILaunch launch = config.launch(ILaunchManager.RUN_MODE, monitor);
+			if (!Preferences.getPREF_CAPTURE_ANT_OUTPUT()) {
+				ILaunchManager manager = DebugPlugin.getDefault()
+						.getLaunchManager();
+				manager.removeLaunch(launch);
+			}
 		} finally {
 			config = null;
 		}
@@ -394,6 +396,8 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 				VariablesPlugin.getDefault().getStringVariableManager()
 						.generateVariableExpression("workspace_loc",
 								file.getFullPath().toString())); //$NON-NLS-1$
+		workingCopy.setAttribute("org.eclipse.jdt.launching.WORKING_DIRECTORY",
+				file.getProject().getLocation().toOSString());
 		workingCopy.setAttribute(
 				IJavaLaunchConfigurationConstants.ATTR_CLASSPATH_PROVIDER,
 				"org.eclipse.ant.ui.AntClasspathProvider"); //$NON-NLS-1$
@@ -441,6 +445,9 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 					"org.eclipse.ui.externaltools.ATTR_CAPTURE_OUTPUT", false);
 		}
 		workingCopy.setAttribute(IDebugUIConstants.ATTR_PRIVATE, true);
+		workingCopy.setAttribute(
+				IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, file
+						.getProject().getName());
 		return workingCopy.doSave();
 	}
 
