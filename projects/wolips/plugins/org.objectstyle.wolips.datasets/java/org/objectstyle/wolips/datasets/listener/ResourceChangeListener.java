@@ -295,19 +295,22 @@ public class ResourceChangeListener implements IResourceChangeListener {
 											.getFile(
 													new Path(
 															IWOLipsModel.PROJECT_FILE_NAME)));
-						} /*
-						   * else if (
-						   * EXT_EOMODEL.equals(resource.getFileExtension())) {
-						   * updateProjectFile( kindOfChange, resource,
-						   * RESOURCES_ID, resource.getParent().getFile( new
-						   * Path(PROJECT_FILE_NAME))); }
-						   */
-						/*
-						 * else if ( EXT_EOMODEL_BACKUP.equals(
-						 * resource.getFileExtension())) {
-						 * deleteTeamPrivateMembers((IFolder) resource); }
-						 */
-						else if (IWOLipsModel.EXT_SUBPROJECT.equals(resource
+						} else if (IWOLipsModel.EXT_EOMODEL.equals(resource
+								.getFileExtension())) {
+							updateProjectFile(
+									kindOfChange,
+									resource,
+									IWOLipsModel.RESOURCES_ID,
+									resource
+											.getParent()
+											.getFile(
+													new Path(
+															IWOLipsModel.PROJECT_FILE_NAME)));
+							return false;
+						} else if (IWOLipsModel.EXT_EOMODEL_BACKUP
+								.equals(resource.getFileExtension())) {
+							return false;
+						} else if (IWOLipsModel.EXT_SUBPROJECT.equals(resource
 								.getFileExtension())) {
 							updateProjectFile(
 									kindOfChange,
