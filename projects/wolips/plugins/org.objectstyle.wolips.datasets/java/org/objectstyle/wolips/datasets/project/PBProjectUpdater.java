@@ -105,7 +105,7 @@ public final class PBProjectUpdater {
 			findContainer = findContainer.getParent();
 		}
 		if (findContainer.getParent() == null)
-			this.projectContainer = this.projectContainer.getProject();
+			this.projectContainer = findContainer.getProject();
 		if (findContainer.findMember(IWOLipsModel.PROJECT_FILE_NAME) != null)
 			this.projectContainer = findContainer;
 		this.removeProjectMarker();
