@@ -91,7 +91,7 @@
         <ant dir="org.objectstyle.wolips.datasets" target="all"/>
         <ant dir="org.objectstyle.wolips.jdt" target="all"/>
         <ant dir="org.objectstyle.wolips.templateengine" target="all"/>
-        <ant dir="org.objectstyle.wolips" target="all"/>
+        <ant dir="org.objectstyle.wolips.preferences" target="all"/>
 	    <ant dir="org.objectstyle.wolips.documentation" target="all"/>
 	    <ant dir="org.objectstyle.wolips.targetbuilder" target="all"/>
 	    <ant dir="org.objectstyle.wolips.launching" target="all"/>
@@ -103,7 +103,6 @@
 	    <ant dir="org.objectstyle.wolips.wounit.about" target="all"/>
 	    <ant dir="org.objectstyle.wolips.ui" target="all"/>
 	    <ant dir="org.objectstyle.wolips.wizards" target="all"/>
-	    <ant dir="org.objectstyle.wolips.source" target="all"/>
 	    <ant dir="org.objectstyle.wolips.woproject" target="all"/>
 	    <ant dir="org.objectstyle.wolips.woproject.ant" target="all"/>
 	    <ant dir="org.objectstyle.wolips.cayenne" target="all"/>
@@ -125,7 +124,7 @@
         <ant dir="org.objectstyle.wolips.datasets" target="dist"/>
         <ant dir="org.objectstyle.wolips.jdt" target="dist"/>
         <ant dir="org.objectstyle.wolips.templateengine" target="dist"/>
-    	<ant dir="org.objectstyle.wolips" target="dist"/>
+    	<ant dir="org.objectstyle.wolips.preferences" target="dist"/>
 	    <ant dir="org.objectstyle.wolips.documentation" target="dist"/>
 	    <ant dir="org.objectstyle.wolips.targetbuilder" target="dist"/>
 	    <ant dir="org.objectstyle.wolips.launching" target="dist"/>
@@ -137,7 +136,6 @@
 	    <ant dir="org.objectstyle.wolips.wounit.about" target="dist"/>
 	    <ant dir="org.objectstyle.wolips.ui" target="dist"/>
 	    <ant dir="org.objectstyle.wolips.wizards" target="dist"/>
-	    <ant dir="org.objectstyle.wolips.source" target="dist"/>
 	    <ant dir="org.objectstyle.wolips.woproject" target="dist"/>
 	    <ant dir="org.objectstyle.wolips.woproject.ant" target="dist"/>
 	    <ant dir="org.objectstyle.wolips.cayenne" target="dist"/>
