@@ -19,7 +19,7 @@ public class ${classGen.superPrefix}${classGen.className} extends EOGenericRecor
     }
     
 ## Create attribute set/get methods
-#foreach( $attr in ${classGen.Entity.AttributeList} )
+#foreach( $attr in ${classGen.Entity.Attributes} )
 #set( $classGen.Prop = $attr.Name )## let controller know about current property
     public void set${classGen.cappedProp}(${attr.Type} ${attr.Name}) {
         takeStoredValueForKey(${attr.Name}, "${attr.Name}");
@@ -31,7 +31,7 @@ public class ${classGen.superPrefix}${classGen.className} extends EOGenericRecor
 #end
 
 ## Create list add/remove/get methods
-#foreach( $rel in ${classGen.Entity.RelationshipList} )
+#foreach( $rel in ${classGen.Entity.Relationships} )
 #set( $classGen.Prop = $rel.Name )## let controller know about current property
 #if( $rel.ToMany )
     public void set${classGen.cappedProp}(NSMutableArray aValue) {
