@@ -2,7 +2,7 @@
 <plugin
    id="org.objectstyle.wolips.tests"
    name="%WOLipsTestsName"
-   version="1.0.5"
+   version="1.0.6"
    provider-name="www.objectstyle.org"
    class="org.objectstyle.wolips.tests.WOLipsTestsPlugin">
 
