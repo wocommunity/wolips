@@ -122,6 +122,7 @@ public abstract class WOBuilder extends IncrementalProjectBuilder {
 		monitor.done();
 		return null;
 	}
+
 	/**
 	 * Method execute.
 	 * @param kind
