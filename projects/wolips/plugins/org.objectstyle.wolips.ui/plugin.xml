@@ -394,6 +394,13 @@
             description="Hide all build.xml files"
             pattern="build.xml">
       </filter>
+      <filter
+            viewId="org.eclipse.jdt.ui.PackageExplorer"
+            enabled="true"
+            name="build launch config (WOLips)"
+            description="Hide all *.build.launch files"
+            pattern="*.build.launch">
+      </filter>
    </extension>
 
 </plugin>
