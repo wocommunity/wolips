@@ -53,44 +53,49 @@
  * <http://objectstyle.org/>.
  *
  */
-package org.objectstyle.wolips.wizard.wofw;
+ 
+ package org.objectstyle.wolips.wizard;
 
-import java.text.MessageFormat;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.dialogs.IOverwriteQuery;
 
-public class WOFwProjectMessages {
-
-	private static final String RESOURCE_BUNDLE= WOFwProjectMessages.class.getName();
-	private static ResourceBundle fgResourceBundle= ResourceBundle.getBundle(RESOURCE_BUNDLE);
-
-	private WOFwProjectMessages() {
-	}
-
-	public static String getString(String key) {
-		try {
-			return fgResourceBundle.getString(key);
-		} catch (MissingResourceException e) {
-			return '!' + key + '!';
+/**
+ * @author uli
+ *
+ * To change this generated comment edit the template variable "typecomment":
+ * Window>Preferences>Java>Templates.
+ * To enable and disable the creation of type comments go to
+ * Window>Preferences>Java>Code Generation.
+ */
+public class ImportOverwriteQuery implements IOverwriteQuery {
+		private String title;
+		private String msg;
+		private Shell shell;
+		
+		public ImportOverwriteQuery(String aTitle, String aMsg, Shell aShell) {
+			super();
+			title = aTitle;
+			msg = aMsg;
+			shell = aShell;
 		}
-	}
-	
-	/**
-	 * Gets a string from the resource bundle and formats it with the argument
-	 * 
-	 * @param key	the string used to get the bundle value, must not be null
-	 */
-	public static String getFormattedString(String key, Object arg) {
-		return MessageFormat.format(getString(key), new Object[] { arg });
-	}
-
-
-	/**
-	 * Gets a string from the resource bundle and formats it with arguments
-	 */	
-	public static String getFormattedString(String key, Object[] args) {
-		return MessageFormat.format(getString(key), args);
-	}
-
-
-}
+			
+		public String queryOverwrite(String file) {
+			String[] returnCodes= { YES, NO, ALL, CANCEL};
+			int returnVal= openDialog(file);
+			return returnVal < 0 ? CANCEL : returnCodes[returnVal];
+		}	
+		
+		private int openDialog(final String file) {
+			final int[] result= { IDialogConstants.CANCEL_ID };
+			shell.getDisplay().syncExec(new Runnable() {
+				public void run() {
+					String[] options= {IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL, IDialogConstants.YES_TO_ALL_LABEL, IDialogConstants.CANCEL_LABEL};
+					MessageDialog dialog= new MessageDialog(shell, title, null, msg, MessageDialog.QUESTION, options, 0);
+					result[0]= dialog.open();
+				}
+			});
+			return result[0];
+		}
+	}		

@@ -53,44 +53,56 @@
  * <http://objectstyle.org/>.
  *
  */
-package org.objectstyle.wolips.wizard.woapp;
+package org.objectstyle.wolips.wizard;
 
-import java.text.MessageFormat;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
+import java.lang.reflect.InvocationTargetException;
 
-public class WOAppProjectMessages {
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.objectstyle.wolips.WOLipsPlugin;
+import org.objectstyle.wolips.project.ProjectHelper;
 
-	private static final String RESOURCE_BUNDLE= WOAppProjectMessages.class.getName();
-	private static ResourceBundle fgResourceBundle= ResourceBundle.getBundle(RESOURCE_BUNDLE);
-
-	private WOAppProjectMessages() {
+public class NewEOModelOperation extends Operation implements IRunnableWithProgress {
+	
+	private IProject project;
+	/**
+	 * Constructor for WOFwProjectCreationOperation
+	 */
+	public NewEOModelOperation(IProject aProject) {
+		project = aProject;
 	}
-
-	public static String getString(String key) {
+	
+	/*
+	 * @see IRunnableWithProgress#run(IProgressMonitor)
+	 */
+	public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+		if (monitor == null) {
+			monitor= new NullProgressMonitor();
+		}
 		try {
-			return fgResourceBundle.getString(key);
-		} catch (MissingResourceException e) {
-			return '!' + key + '!';
+			monitor.beginTask(WOAppProjectMessages.getString("WOAppProjectCreationOperation.op_desc"), 1); //$NON-NLS-1$
+			IWorkspaceRoot root= WOLipsPlugin.getWorkspace().getRoot();
+			
+			//do stuff
+			performFinish( new SubProgressMonitor(monitor, 1));
+		} finally {
+			monitor.done();
+		}
+	}		
+	
+
+	
+	private void performFinish(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+		try {
+			ProjectHelper.addWOApplicationStuffToJavaProject(project, monitor);
+			ProjectHelper.installWOBuilder(project, ProjectHelper.WOAPPLICATION_BUILDER_ID);
+		} catch (Exception e) {
+			throw new InvocationTargetException(e);
 		}
 	}
 	
-	/**
-	 * Gets a string from the resource bundle and formats it with the argument
-	 * 
-	 * @param key	the string used to get the bundle value, must not be null
-	 */
-	public static String getFormattedString(String key, Object arg) {
-		return MessageFormat.format(getString(key), new Object[] { arg });
-	}
-
-
-	/**
-	 * Gets a string from the resource bundle and formats it with arguments
-	 */	
-	public static String getFormattedString(String key, Object[] args) {
-		return MessageFormat.format(getString(key), args);
-	}
-
-
 }

@@ -53,104 +53,63 @@
  * <http://objectstyle.org/>.
  *
  */
-package org.objectstyle.wolips;
+ 
+ package org.objectstyle.wolips.wizard;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
+import java.lang.reflect.InvocationTargetException;
 
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.IPluginDescriptor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.jdt.internal.ui.util.ExceptionHandler;
+import org.eclipse.jdt.internal.ui.wizards.NewClassCreationWizard;
+import org.eclipse.jdt.ui.wizards.NewClassWizardPage;
+import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.ui.actions.WorkspaceModifyDelegatingOperation;
 
 /**
- * The main plugin class to be used in the desktop.
+ * @author uli
+ *
+ * To change this generated comment edit the template variable "typecomment":
+ * Window>Preferences>Java>Templates.
+ * To enable and disable the creation of type comments go to
+ * Window>Preferences>Java>Code Generation.
  */
-public class WOLipsPlugin extends AbstractUIPlugin {
-	//The shared instance.
-	private static WOLipsPlugin plugin;
-	//Resource bundle.
-	private ResourceBundle resourceBundle;
-	
-	/**
-	 * The constructor.
-	 */
-	public WOLipsPlugin(IPluginDescriptor descriptor) {
-		super(descriptor);
-		plugin = this;
-		try {
-			resourceBundle= ResourceBundle.getBundle("org.objectstyle.woproject.wolips.WOLipsPluginResources");
-		} catch (MissingResourceException x) {
-			resourceBundle = null;
+public class NewWOComponentWizard extends NewClassCreationWizard {
+
+/*
+String str= getPackageFragmentRootText();
+		if (str.length() == 0) {
+			status.setError(NewWizardMessages.getString("NewContainerWizardPage.error.EnterContainerName")); //$NON-NLS-1$
+			return status;
 		}
-	}
-
-	/**
-	 * Returns the shared instance.
-	 */
-	public static WOLipsPlugin getDefault() {
-		return plugin;
-	}
-
-	/**
-	 * Returns the workspace instance.
-	 */
-	public static IWorkspace getWorkspace() {
-		return ResourcesPlugin.getWorkspace();
-	}
-
-	/**
-	 * Returns the string from the plugin's resource bundle,
-	 * or 'key' if not found.
-	 */
-	public static String getResourceString(String key) {
-		ResourceBundle bundle= WOLipsPlugin.getDefault().getResourceBundle();
+		IPath path= new Path(str);
+		IResource res= fWorkspaceRoot.findMember(path);
+		if (res != null) {
+			int resType= res.getType();
+			if (resType == IResource.PROJECT || resType == IResource.FOLDER) {
+				IProject proj= res.getProject();
+*/				
+				
+				
+	public boolean performFinish() {
+		if(!super.performFinish()) return false;
+		NewClassWizardPage fMainPage = (NewClassWizardPage)this.getStartingPage();
+		IProject project= fMainPage.getCreatedType().getJavaProject().getProject();
+		Object anObject = (((IStructuredSelection) getSelection()).getFirstElement());
+		String aComponentName = fMainPage.getCreatedType().getElementName();
+		String aFullyQualifiedComponentName = fMainPage.getCreatedType().getFullyQualifiedName();
+		IRunnableWithProgress op= new WorkspaceModifyDelegatingOperation(new NewWOComponentOperation(project, getShell(), aComponentName, aFullyQualifiedComponentName));
 		try {
-			return bundle.getString(key);
-		} catch (MissingResourceException e) {
-			return key;
+			getContainer().run(false, true, op);
+		} catch (InvocationTargetException e) {
+			String title= NewWOComponentMessages.getString("NewWOComponentWizard.op_error.title"); //$NON-NLS-1$
+			String message= NewWOComponentMessages.getString("NewWOComponentWizard.op_error.message");			 //$NON-NLS-1$
+			ExceptionHandler.handle(e, getShell(), title, message);
+			return false;
+		} catch  (InterruptedException e) {
+			return false;
 		}
-	}
-
-	/**
-	 * Returns the plugin's resource bundle,
-	 */
-	public ResourceBundle getResourceBundle() {
-		return resourceBundle;
+		return true;
 	}
 	
-	public ImageDescriptor getImageDescriptor(String name) {
-		try {
-			URL url= new URL(getDescriptor().getInstallURL(), name);
-			return ImageDescriptor.createFromURL(url);
-		} catch (MalformedURLException e) {
-			return ImageDescriptor.getMissingImageDescriptor();
-		}
-	}	
-	
-	public static String getPluginId() {
-		return getDefault().getDescriptor().getUniqueIdentifier();
-	}	
-
-
-	public static void log(IStatus status) {
-		getDefault().getLog().log(status);
-	}
-
-
-	public static void log(String message) {
-		log(new Status(IStatus.ERROR, getPluginId(), IStatus.ERROR, message, null));
-	}
-
-
-	public static void log(Throwable e) {
-		log(new Status(IStatus.ERROR, getPluginId(), IStatus.ERROR, "Internal Error", e)); //$NON-NLS-1$
-	}
-
-
 }

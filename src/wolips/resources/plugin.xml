@@ -45,7 +45,7 @@
 			category="org.objectstyle.wolips.wizard"
 			project="true"
 			finalPerspective="org.eclipse.jdt.ui.JavaPerspective"
-			icon="icons/full/ctool16/newjprjex_wiz.gif">
+			icon="icons/full/ctool16/new_woframework_wizard.gif">
 			<description>%WOFwProjectCreationWizard.description</description>
     	</wizard>
   
@@ -56,10 +56,19 @@
 			category="org.objectstyle.wolips.wizard"
 			project="true"
 			finalPerspective="org.eclipse.jdt.ui.JavaPerspective"
-			icon="icons/full/ctool16/newjprjex_wiz.gif">
+			icon="icons/full/ctool16/new_woapplication_wizard.gif">
 			<description>%WOAppProjectCreationWizard.description</description>
     	</wizard>
- 
+ 	    
+ 	    <wizard
+		    id="org.objectstyle.wolips.wizard.NewWOComponentWizard"
+		    name="%NewWOComponentWizard.title"
+		    class="org.objectstyle.wolips.wizard.NewWOComponentWizard"
+		    category="org.objectstyle.wolips.wizard"
+		    icon="icons/full/ctool16/new_wocomponent_wizard.gif">
+		    <description>%NewWOComponentWizard.description</description>
+	    </wizard>
+	    
 	</extension>  
 
 	<!-- ant -->

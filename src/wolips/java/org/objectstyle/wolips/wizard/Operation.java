@@ -54,28 +54,25 @@
  *
  */
  
- package org.objectstyle.wolips.wizard.common;
+ package org.objectstyle.wolips.wizard;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
-import java.util.zip.ZipFile;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IProjectDescription;
-import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.ui.dialogs.IOverwriteQuery;
 import org.eclipse.ui.wizards.datatransfer.FileSystemStructureProvider;
 import org.eclipse.ui.wizards.datatransfer.ImportOperation;
-import org.eclipse.ui.wizards.datatransfer.ZipFileStructureProvider;
 import org.objectstyle.wolips.WOLipsPlugin;
 import org.objectstyle.wolips.io.FileStringScanner;
 
@@ -87,29 +84,8 @@ import org.objectstyle.wolips.io.FileStringScanner;
  * To enable and disable the creation of type comments go to
  * Window>Preferences>Java>Code Generation.
  */
-public class ProjectCreationOperation {
+public class Operation {
 
-	protected IProject configNewProject(IWorkspaceRoot root, String name, String[] natureIds, IProject[] referencedProjects, IProgressMonitor monitor) throws InvocationTargetException {
-		try {
-			IProject project= root.getProject(name);
-			if (!project.exists()) {
-				project.create(null);
-			}
-			if (!project.isOpen()) {
-				project.open(null);
-			}
-			IProjectDescription desc= project.getDescription();
-			desc.setLocation(null);
-			desc.setNatureIds(natureIds);
-			desc.setReferencedProjects(referencedProjects);
-			
-			project.setDescription(desc, new SubProgressMonitor(monitor, 1));
-
-			return project;
-		} catch (CoreException e) {
-			throw new InvocationTargetException(e);
-		}
-	}
 	protected void importFilesFromDirectory(String pluginRelativePath, IPath destPath, IProgressMonitor monitor, IOverwriteQuery aOverwriteQuery) throws InvocationTargetException, InterruptedException, CoreException {		
 		File file;
 		try {
@@ -127,37 +103,49 @@ public class ProjectCreationOperation {
 		op.run(monitor);
 	}
 	
-	protected ZipFile getZipFileFromPluginDir(String pluginRelativePath) throws CoreException {
-		try {
-			URL starterURL= new URL(WOLipsPlugin.getDefault().getDescriptor().getInstallURL(), pluginRelativePath);
-			return new ZipFile(Platform.asLocalURL(starterURL).getFile());
-		} catch (IOException e) {
-			String message= pluginRelativePath + ": " + e.getMessage(); //$NON-NLS-1$
-			Status status= new Status(IStatus.ERROR, WOLipsPlugin.getPluginId(), IStatus.ERROR, message, e);
-			throw new CoreException(status);
+	/*protected void renameNewWOComponentTo(String aString, String aFullyQualifiedComponentName, File aResourcesPath) throws IOException{
+		FileSystemStructureProvider aProvider = FileSystemStructureProvider.INSTANCE;
+		List aList = aProvider.getChildren(aResourcesPath);
+		ListIterator aListIterator = aList.listIterator();
+		while(aListIterator.hasNext()) {
+			Object aFile = aListIterator.next();
+			String aAbsolutPath = ((File)aFile).getAbsolutePath();
+			String aNewPath = FileStringScanner.replace(aAbsolutPath, "wocomponent", aString);
+			if(aNewPath != null) {
+				File aNewFile = new File(aNewPath);
+				((File)aFile).renameTo(aNewFile);
+				if(aNewFile.isDirectory()) {
+					this.renameNewWOComponentTo(aString, aFullyQualifiedComponentName, aNewFile);
+				}
+				else if(aNewPath.endsWith(".api"))
+						FileStringScanner.FileOpenReplaceWith(aNewPath, "wocomponenttemplate", aFullyQualifiedComponentName);
+			}
+			
 		}
-	}
+	}*/ 
 	
-	protected void importFilesFromZip(ZipFile srcZipFile, IPath destPath, IProgressMonitor monitor, IOverwriteQuery aOverwriteQuery) throws InvocationTargetException, InterruptedException {		
-		ZipFileStructureProvider structureProvider=	new ZipFileStructureProvider(srcZipFile);
-		ImportOperation op= new ImportOperation(destPath, structureProvider.getRoot(), structureProvider, aOverwriteQuery);
-		//op.setCreateContainerStructure(true);
-		op.run(monitor);
-	}
+	protected void renameNewWOComponentTo(IProject project, String aComponentName, String aFullyQualifiedComponentName, File aResourcesPath, IProgressMonitor monitor) throws CoreException, IOException {
+		IFolder resources = project.getFolder("resources");
+		IFile aApiFile = resources.getFile("wocomponent.api");
+		IFile aNewApiFile = resources.getFile(aComponentName + ".api");
+		aApiFile.move(aNewApiFile.getFullPath(), true, monitor);
+		FileStringScanner.FileOpenReplaceWith(aNewApiFile.getLocation().toOSString(), "wocomponenttemplate", aFullyQualifiedComponentName);
 	
-	protected void changeBuildScript(IProject project, String relativePath) throws CoreException {
-		//change name of framework and project
-		String path = project.getLocation().toOSString();
-		String file = path + relativePath;
-		try {	
-			FileStringScanner.FileOpenReplaceWith(file, "xxxxx", project.getName().toLowerCase());
-			FileStringScanner.FileOpenReplaceWith(file, "yyyyy", project.getName());
-				}		
-		 catch (IOException e) {
-			String message= path + ": " + e.getMessage(); //$NON-NLS-1$
-			Status status= new Status(IStatus.ERROR, WOLipsPlugin.getPluginId(), IStatus.ERROR, message, e);
-			throw new CoreException(status);
-		 }
-	}
-	
+		IFolder afolder = resources.getFolder("wocomponent.wo");
+		IFolder aNewFolder = resources.getFolder(aComponentName + ".wo");
+		afolder.move(aNewFolder.getFullPath(), true, monitor);
+		
+		
+		IFile aHtmlFile = aNewFolder.getFile("wocomponent.html");
+		IFile aNewHtmlFile = aNewFolder.getFile(aComponentName + ".html");
+		aHtmlFile.move(aNewHtmlFile.getFullPath(), true, monitor);
+		
+		IFile aWodFile = aNewFolder.getFile("wocomponent.wod");
+		IFile aNewWodFile = aNewFolder.getFile(aComponentName + ".wod");
+		aWodFile.move(aNewWodFile.getFullPath(), true, monitor);
+		
+		IFile aWooFile = aNewFolder.getFile("wocomponent.woo");
+		IFile aNewWooFile = aNewFolder.getFile(aComponentName + ".woo");
+		aWooFile.move(aNewWooFile.getFullPath(), true, monitor);
+	} 
 }

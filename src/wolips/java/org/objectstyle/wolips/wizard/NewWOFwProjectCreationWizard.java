@@ -59,10 +59,8 @@
 import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.internal.ui.util.ExceptionHandler;
 import org.eclipse.jdt.internal.ui.wizards.NewProjectCreationWizard;
-import org.eclipse.jdt.internal.ui.wizards.NewWizardMessages;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.ui.actions.WorkspaceModifyDelegatingOperation;
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
@@ -86,8 +84,8 @@ public class NewWOFwProjectCreationWizard extends NewProjectCreationWizard {
 		try {
 			getContainer().run(false, true, op);
 		} catch (InvocationTargetException e) {
-			String title= NewWizardMessages.getString("NewProjectCreationWizard.op_error.title"); //$NON-NLS-1$
-			String message= NewWizardMessages.getString("NewProjectCreationWizard.op_error.message");			 //$NON-NLS-1$
+			String title= WOFwProjectMessages.getString("NewWOFwProjectCreationWizard.op_error.title"); //$NON-NLS-1$
+			String message= WOFwProjectMessages.getString("NewWOFwProjectCreationWizard.op_error.message");			 //$NON-NLS-1$
 			ExceptionHandler.handle(e, getShell(), title, message);
 			return false;
 		} catch  (InterruptedException e) {

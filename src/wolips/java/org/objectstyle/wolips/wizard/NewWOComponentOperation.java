@@ -53,104 +53,74 @@
  * <http://objectstyle.org/>.
  *
  */
-package org.objectstyle.wolips;
+package org.objectstyle.wolips.wizard;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
+import java.lang.reflect.InvocationTargetException;
 
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.IPluginDescriptor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.SubProgressMonitor;
+import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.actions.RefreshAction;
+import org.objectstyle.wolips.WOLipsPlugin;
 
-/**
- * The main plugin class to be used in the desktop.
- */
-public class WOLipsPlugin extends AbstractUIPlugin {
-	//The shared instance.
-	private static WOLipsPlugin plugin;
-	//Resource bundle.
-	private ResourceBundle resourceBundle;
+public class NewWOComponentOperation extends Operation implements IRunnableWithProgress {
 	
+	private IProject project;
+	private ImportOverwriteQuery overwriteQuery;
+	private String componentName;
+	private String fullyQualifiedComponentName;
+	private Shell shell;
 	/**
-	 * The constructor.
+	 * Constructor for WOFwProjectCreationOperation
 	 */
-	public WOLipsPlugin(IPluginDescriptor descriptor) {
-		super(descriptor);
-		plugin = this;
-		try {
-			resourceBundle= ResourceBundle.getBundle("org.objectstyle.woproject.wolips.WOLipsPluginResources");
-		} catch (MissingResourceException x) {
-			resourceBundle = null;
-		}
-	}
-
-	/**
-	 * Returns the shared instance.
-	 */
-	public static WOLipsPlugin getDefault() {
-		return plugin;
-	}
-
-	/**
-	 * Returns the workspace instance.
-	 */
-	public static IWorkspace getWorkspace() {
-		return ResourcesPlugin.getWorkspace();
-	}
-
-	/**
-	 * Returns the string from the plugin's resource bundle,
-	 * or 'key' if not found.
-	 */
-	public static String getResourceString(String key) {
-		ResourceBundle bundle= WOLipsPlugin.getDefault().getResourceBundle();
-		try {
-			return bundle.getString(key);
-		} catch (MissingResourceException e) {
-			return key;
-		}
-	}
-
-	/**
-	 * Returns the plugin's resource bundle,
-	 */
-	public ResourceBundle getResourceBundle() {
-		return resourceBundle;
+	public NewWOComponentOperation(IProject aProject, Shell aShell, String aComponentName, String aFullyQualifiedComponentName) {
+		project = aProject;
+		overwriteQuery = new ImportOverwriteQuery("", "", aShell); //Strings schould come from properties file
+		componentName = aComponentName;
+		fullyQualifiedComponentName = aFullyQualifiedComponentName;
+		shell = aShell;
 	}
 	
-	public ImageDescriptor getImageDescriptor(String name) {
-		try {
-			URL url= new URL(getDescriptor().getInstallURL(), name);
-			return ImageDescriptor.createFromURL(url);
-		} catch (MalformedURLException e) {
-			return ImageDescriptor.getMissingImageDescriptor();
+	/*
+	 * @see IRunnableWithProgress#run(IProgressMonitor)
+	 */
+	public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+		if (monitor == null) {
+			monitor= new NullProgressMonitor();
 		}
-	}	
+		try {
+			monitor.beginTask(WOAppProjectMessages.getString("WOAppProjectCreationOperation.op_desc"), 1); //$NON-NLS-1$
+			IWorkspaceRoot root= WOLipsPlugin.getWorkspace().getRoot();
+			
+			//do stuff
+			performFinish( new SubProgressMonitor(monitor, 1));
+		} finally {
+			monitor.done();
+		}
+	}		
 	
-	public static String getPluginId() {
-		return getDefault().getDescriptor().getUniqueIdentifier();
-	}	
 
-
-	public static void log(IStatus status) {
-		getDefault().getLog().log(status);
+	
+	private void performFinish(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
+		try {
+			String aString = "resources";
+			IFolder resourcesFolder = project.getFolder(aString);
+			IFile aFile = project.getFile(aString);
+			IPath resouresPathRelative = resourcesFolder.getFullPath();
+			IPath resouresPath = resourcesFolder.getLocation();
+			this.importFilesFromDirectory("templates/wocomponent", resouresPathRelative, monitor, overwriteQuery);
+			renameNewWOComponentTo(project, componentName, fullyQualifiedComponentName, resouresPathRelative.toFile(), monitor);
+		} catch (Exception e) {
+			System.out.println("ohje: " + e.getMessage());
+			throw new InvocationTargetException(e);
+		}
 	}
-
-
-	public static void log(String message) {
-		log(new Status(IStatus.ERROR, getPluginId(), IStatus.ERROR, message, null));
-	}
-
-
-	public static void log(Throwable e) {
-		log(new Status(IStatus.ERROR, getPluginId(), IStatus.ERROR, "Internal Error", e)); //$NON-NLS-1$
-	}
-
-
+	
 }

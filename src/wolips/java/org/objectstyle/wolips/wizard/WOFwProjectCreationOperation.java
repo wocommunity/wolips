@@ -59,14 +59,12 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.objectstyle.wolips.WOLipsPlugin;
 import org.objectstyle.wolips.project.ProjectHelper;
-import org.objectstyle.wolips.wizard.common.ProjectCreationOperation;
 
 public class WOFwProjectCreationOperation extends ProjectCreationOperation implements IRunnableWithProgress {
 	
