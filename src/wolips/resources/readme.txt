@@ -12,6 +12,16 @@ Here is a short how to set up a WOFramework with WOLips:
 4. the woframework is build in a folder named framework-export which you should find in the same directory where your workspace is located
 
 
+If you add a file named WOLipsBuild.properties in your project root you can manipulate the build process. A later version should have a preferences dialog for that.
+
+The available keys are:
+
+basedir 
+destdir -> Where to install your framework c:/foo/bar default ../../framework-export
+frameworkname
+projectname
+
+
 WOApplication
 
 Don't use it.
