@@ -10,8 +10,29 @@
         <!-- Welcome section -->
         <section name="Welcome to WOProject">
         <p>Welcome to WOProject project page. WOProject provides a set of tools to work 
-        with WebObjects 5.1 independent from platform and IDE. 
-        Most of the tasks are based on Jakarta Ant. Also contains class libraries. </p>
+        with WebObjects 5.1 independent from platform and IDE. Even though Apple is doing a
+        great job maintaining cross-platform development tools, for obvious reasons support 
+        for such tools on platforms other than Mac has been declining over the years. At the
+        same time in Java world new technologies have emerged that allow to organize 
+        and build projects with code, resources and documentation in an IDE-independent 
+        fashion. WOProject includes all necessary support to take advantage of these 
+        technologies (namely 
+        <a href="http://jakarta.apache.org/ant/index.html">Ant</a>). Even people using
+        latest and greatest ProjectBuilder on Mac may find it useful to organize 
+        their code in a portable manner. This IDE independence is partially achieved in
+        current release of WOProject.</p>
+        
+        
+         
+        <p>Other aspects of WOProject are integration of WebObjects NSLog's with 
+        <a href="http://jakarta.apache.org/log4j/index.html">Log4J
+        logging framework</a>, database plugins and other WebObjects utilities.</p>
+        </section>
+        
+        <section name="Contribute to WOProject">
+        <p>WOProject is opensource and is shipped under apache-style <a href="LICENSE">license</a>. 
+        Code contributions, patches and other input from WebObjects developer community
+        are welcomed.</p>
  		</section>
     </body>
 </document>
