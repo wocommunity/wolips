@@ -64,7 +64,7 @@ import org.objectstyle.wolips.core.plugin.logging.WOLipsLog;
  * @author mnolte
  *
  */
-public class WOLipsUtils implements IWOLipsPluginConstants {
+public class WOLipsUtils extends AWOLips {
 
 	/**
 	 * Constructor for WOLipsUtils.
