@@ -2,7 +2,7 @@
 <plugin
    id="org.objectstyle.wolips.cayenne"
    name="%WOLips.cayenne.pluginName"
-   version="1.0.0"
+   version="1.0.1"
    provider-name="%WOLips.providerName">
 
    <runtime>
@@ -11,11 +11,5 @@
          <packages prefixes="org.objectstyle.cayenne"/>
       </library>
    </runtime>
-
-<!-- =================================================================================== -->
-<!-- Required Plugins                                                                    -->
-<!-- =================================================================================== -->   
-   <requires>
-</requires>
 
 </plugin>

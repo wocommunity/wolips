@@ -34,10 +34,16 @@
     	<replace file="${basedir}/src/wolips-ant/plugin.properties" token="${WOLips.previous.version}" value="${WOLips.version}"/>
     	<replace file="${basedir}/src/wolips-ant/plugin.xml" token="${WOLips.previous.version}" value="${WOLips.version}"/>
     	<replace file="${basedir}/src/wolips-woproject/plugin.properties" token="${WOLips.previous.version}" value="${WOLips.version}"/>
+    	<replace file="${basedir}/src/wolips-woproject/plugin.xml" token="${WOLips.previous.version}" value="${WOLips.version}"/>
+    	<replace file="${basedir}/src/wolips-woproject-ant/plugin.properties" token="${WOLips.previous.version}" value="${WOLips.version}"/>
     	<replace file="${basedir}/src/wolips-woproject-ant/plugin.xml" token="${WOLips.previous.version}" value="${WOLips.version}"/>
+    	<replace file="${basedir}/src/wolips-cayenne/plugin.xml" token="${WOLips.previous.version}" value="${WOLips.version}"/>
     	<replace file="${basedir}/src/wolips-cayenne/plugin.properties" token="${WOLips.previous.version}" value="${WOLips.version}"/>
     	<replace file="${basedir}/src/wolips-cayenne-ant/plugin.xml" token="${WOLips.previous.version}" value="${WOLips.version}"/>      
+    	<replace file="${basedir}/src/wolips-cayenne-ant/plugin.properties" token="${WOLips.previous.version}" value="${WOLips.version}"/>      
+    	<replace file="${basedir}/src/wolips-logging/plugin.xml" token="${WOLips.previous.version}" value="${WOLips.version}"/>
     	<replace file="${basedir}/src/wolips-logging/plugin.properties" token="${WOLips.previous.version}" value="${WOLips.version}"/>
     	<replace file="${basedir}/src/wolips-team/plugin.xml" token="${WOLips.previous.version}" value="${WOLips.version}"/>      
+    	<replace file="${basedir}/src/wolips-team/plugin.properties" token="${WOLips.previous.version}" value="${WOLips.version}"/>      
     </target>
 </project>
