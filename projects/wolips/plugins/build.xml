@@ -84,7 +84,6 @@
     <!-- Build all.                                 -->
     <!-- ========================================== -->
     <target name="all">
-	    <ant dir="org.objectstyle.wolips.logging" target="all"/>
 	    <ant dir="org.objectstyle.wolips" target="all"/>
 	    <ant dir="org.objectstyle.wolips.help" target="all"/>
 	    <ant dir="org.objectstyle.wolips.targetbuilder" target="all"/>
@@ -115,7 +114,6 @@
     <!-- ========================================== -->
     <target name="dist">
 	    <mkdir dir="../../${build.output.dist.dir}/plugins"/>
-	    <ant dir="org.objectstyle.wolips.logging" target="dist"/>
 	    <ant dir="org.objectstyle.wolips" target="dist"/>
 	    <ant dir="org.objectstyle.wolips.help" target="dist"/>
 	    <ant dir="org.objectstyle.wolips.targetbuilder" target="dist"/>
