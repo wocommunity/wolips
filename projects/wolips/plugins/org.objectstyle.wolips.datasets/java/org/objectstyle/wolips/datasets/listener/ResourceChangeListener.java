@@ -85,10 +85,13 @@ public class ResourceChangeListener extends WorkspaceJob {
 		super("WOLips Project Files Updates (Resources)");
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.core.resources.WorkspaceJob#runInWorkspace(org.eclipse.core.runtime.IProgressMonitor)
 	 */
-	public IStatus runInWorkspace(IProgressMonitor monitor) throws CoreException {
+	public IStatus runInWorkspace(IProgressMonitor monitor)
+			throws CoreException {
 		PatternsetDeltaVisitor patternsetDeltaVisitor = new PatternsetDeltaVisitor();
 		ProjectFileResourceValidator resourceValidator = new ProjectFileResourceValidator();
 		try {
@@ -159,8 +162,8 @@ public class ResourceChangeListener extends WorkspaceJob {
 		/**
 		 * @param delta
 		 * @see org.eclipse.core.resources.IResourceDeltaVisitor#visit(IResourceDelta)
-		 * @return @throws
-		 *         CoreException
+		 * @return
+		 * @throws CoreException
 		 */
 		public final boolean visit(IResourceDelta delta) throws CoreException {
 			if (!super.visit(delta)) {
@@ -222,6 +225,7 @@ public class ResourceChangeListener extends WorkspaceJob {
 										.getFile(
 												new Path(
 														IWOLipsModel.PROJECT_FILE_NAME)));
+						return false;
 					} else if (this.project
 							.matchesWOAppResourcesPattern(resource)) {
 						updateProjectFile(
