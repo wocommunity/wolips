@@ -318,12 +318,7 @@ public class WOAntBuilder
 		 */
 		public final boolean visit(IResourceDelta delta) {
 			IResource resource = delta.getResource();
-			try {
-				return examineResource(resource, delta.getKind());
-			} catch (CoreException e) {
-				WOLipsLog.log(e);
-				return false;
-			}
+			return examineResource(resource, delta.getKind());
 		}
 		/**
 		 * Method examineResource. Examines changed resources for added and/or removed webobjects project
@@ -337,8 +332,7 @@ public class WOAntBuilder
 		 */
 		private final boolean examineResource(
 			IResource resource,
-			int kindOfChange)
-			throws CoreException {
+			int kindOfChange) {
 			//see bugreport #708385 
 			if (!resource.isAccessible()
 				&& kindOfChange != IResourceDelta.REMOVED)
