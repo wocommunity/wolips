@@ -55,13 +55,16 @@
  */
 package org.objectstyle.wolips;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Hashtable;
 import java.util.MissingResourceException;
+import java.util.Properties;
 import java.util.ResourceBundle;
-import java.util.StringTokenizer;
 
+import org.apache.tools.ant.types.Environment;
 import org.eclipse.core.internal.boot.URLContentFilter;
 import org.eclipse.core.internal.plugins.PluginClassLoader;
 import org.eclipse.core.resources.IProject;
@@ -104,13 +107,16 @@ public class WOLipsPlugin extends AbstractUIPlugin {
 
 	private void loadFoundationClasses() {
 		ClassLoader aClassLoader = this.getClass().getClassLoader();
-		URLContentFilter[] theURLContentFilter = new URLContentFilter[2];
+		URLContentFilter[] theURLContentFilter = new URLContentFilter[1];
 		theURLContentFilter[0] = new URLContentFilter(true);
-		theURLContentFilter[1] = new URLContentFilter(true);
-		URL[] theUrls = new URL[2];
+		URL[] theUrls = new URL[1];
 		try {
-			theUrls[0] = new URL("file:///System/Library/Frameworks/JavaFoundation.framework/Resources/Java/javafoundation.jar");
-			theUrls[1] = new URL("file://" + getResourceString(WOLipsPlugin.NEXT_ROOT) + "/Library/Frameworks/JavaFoundation.framework/Resources/Java/javafoundation.jar");
+			String aPath = null;
+			Properties aEnv = WOLipsPlugin.getEnvVars();
+			if(aEnv.containsKey(WOLipsPlugin.NEXT_ROOT)) aPath = aEnv.getProperty(WOLipsPlugin.NEXT_ROOT); 
+			System.out.println("aPath" + aPath);
+			if(aPath == null) aPath = "/System";
+			theUrls[0] = new URL("file://" + aPath + "/Library/Frameworks/JavaFoundation.framework/Resources/Java/javafoundation.jar");
 			((PluginClassLoader)aClassLoader).addURLs(theUrls, theURLContentFilter, null, null);
 		}
 		catch (Exception anException) {
@@ -195,4 +201,31 @@ public class WOLipsPlugin extends AbstractUIPlugin {
 		return aProjectUpdater;	
 	}
 
+	public static Properties getEnvVars() throws Exception {
+  		Process p = null;
+  		Properties envVars = new Properties();
+ 		Runtime r = Runtime.getRuntime();
+  		String OS = System.getProperty("os.name").toLowerCase();
+  		// System.out.println(OS);
+  		if (OS.indexOf("windows 9") > -1) {
+    		p = r.exec( "command.com /c set" );
+    	}
+  		else if ( (OS.indexOf("nt") > -1) || (OS.indexOf("windows 2000") > -1) ) {
+    		p = r.exec( "cmd.exe /c set" );
+    	}
+  		else {  
+    		// our last hope, we assume Unix (thanks to H. Ware for the fix)
+    		p = r.exec( "env" );
+    	}
+  		BufferedReader br = new BufferedReader( new InputStreamReader( p.getInputStream() ) );
+  		String line;
+  		while( (line = br.readLine()) != null ) {
+  			int idx = line.indexOf( '=' );
+   			String key = line.substring( 0, idx );
+  			String value = line.substring( idx+1 );
+   			envVars.setProperty( key, value );
+   			// System.out.println( key + " = " + value );
+   		}
+  	return envVars;
+  }
 }
