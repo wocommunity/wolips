@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-    <classpathentry kind="src" path="java"/>
+    <classpathentry exported="true" kind="src" path="java"/>
     <classpathentry exported="true" kind="lib" path="lib/wolips.jar"/>
     <classpathentry exported="true" kind="lib" path="lib/woproject.jar"/>
     <classpathentry exported="true" kind="lib" path="lib/cayenne.jar"/>
-    <classpathentry kind="lib" path="lib/commons-logging.jar"/>
-    <classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
-    <classpathentry kind="var" path="JRE_LIB" sourcepath="JRE_SRC"/>
-    <classpathentry kind="var" path="JAVA_WO_FOUNDATION"/>
+    <classpathentry exported="true" kind="lib" path="lib/commons-logging.jar"/>
+    <classpathentry exported="true" kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+    <classpathentry exported="true" kind="var" path="JRE_LIB" sourcepath="JRE_SRC"/>
+    <classpathentry exported="true" kind="var" path="NEXT_SYSTEM_ROOT/Library/Frameworks/JavaFoundation.framework/Resources/Java/javafoundation.jar"/>
     <classpathentry kind="output" path="bin"/>
 </classpath>
