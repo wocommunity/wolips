@@ -73,7 +73,7 @@
          point="org.eclipse.core.resources.builders">
       <builder>
          <run
-               class="org.objectstyle.wolips.builder.WOGenerator">
+               class="org.objectstyle.wolips.projectbuild.builder.WOGenerator">
          </run>
       </builder>
    </extension>
