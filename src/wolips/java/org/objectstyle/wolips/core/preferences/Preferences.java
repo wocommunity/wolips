@@ -56,12 +56,15 @@
 
 package org.objectstyle.wolips.core.preferences;
 
+import java.io.IOException;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
+import org.eclipse.jface.preference.IPersistentPreferenceStore;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
 import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
+import org.objectstyle.wolips.core.util.QuotedStringTokenizer;
 
 /**
  * @author uli
@@ -77,6 +80,22 @@ public class Preferences {
 	public static final String falseString = "false";
 	//set this sting to a preferences key and call set defaults to set the default value for this preferences key
 	private static String SET_DEFAULTS_STRING = null;
+
+  public static void save() {
+    IPreferenceStore store = getPreferenceStore();
+    if (store instanceof IPersistentPreferenceStore) {
+      IPersistentPreferenceStore pstore = (IPersistentPreferenceStore)store;
+      if (pstore.needsSaving()) {
+        try {
+          pstore.save();
+        } catch (IOException up) {
+          // hmm, what should we do?
+        }
+      }
+    }
+    
+  }
+
 	/**
 	 * Method setDefaults.
 	 */
@@ -261,15 +280,15 @@ public class Preferences {
 		return WOLipsPlugin.getDefault().getPreferenceStore();
 	}
 
-	public static String[] getStringArrayForKey(String key, String separator) {
+/*	public static String[] getStringArrayForKey(String key, String separator) {
 		String string = Preferences.getString(key);
 		if (string == null)
 			return new String[0];
-		StringTokenizer stringTokenizer =
-			new StringTokenizer(string, separator);
+		QuotedStringTokenizer stringTokenizer =
+			new QuotedStringTokenizer(string, separator);
 		Vector vector = new Vector();
-		while (stringTokenizer.hasMoreElements()) {
-			vector.add(stringTokenizer.nextElement());
+		while (stringTokenizer.hasMoreTokens()) {
+			vector.add(stringTokenizer.nextToken());
 		}
 		String[] stringArray = new String[vector.size()];
 		for (int i = 0; i < vector.size(); i++) {
@@ -277,22 +296,40 @@ public class Preferences {
 		}
 		return stringArray;
 	}
+*/
 
-	public static IIncludeInfo[] getIncludeInfoForKey(String key) {
-		String string = Preferences.getString(key);
-		if (string == null)
-			return new IIncludeInfo[0];
-		StringTokenizer stringTokenizer = new StringTokenizer(string, ",");
-		Vector vector = new Vector();
-		while (stringTokenizer.hasMoreElements()) {
-			vector.add(stringTokenizer.nextElement());
-		}
-		IIncludeInfo[] includeInfo = new IIncludeInfo[vector.size()];
-		for (int i = 0; i < vector.size(); i++) {
-			includeInfo[i] = new IncludeInfo((String) vector.elementAt(i));
-		}
-		return includeInfo;
-	}
+  public static IIncludeInfo[] getIncludeInfoForKey(String key) {
+    String string = Preferences.getString(key);
+    if (string == null)
+      return new IIncludeInfo[0];
+    QuotedStringTokenizer stringTokenizer = new QuotedStringTokenizer(string, ',');
+    Vector vector = new Vector();
+    while (stringTokenizer.hasMoreTokens()) {
+      vector.add(stringTokenizer.nextToken());
+    }
+    IIncludeInfo[] includeInfo = new IIncludeInfo[vector.size()];
+    for (int i = 0; i < vector.size(); i++) {
+      includeInfo[i] = new IncludeInfo((String) vector.elementAt(i));
+    }
+    return includeInfo;
+  }
+
+  public static String[] getStringArrayForKey(String key) {
+    String string = Preferences.getString(key);
+    if (string == null)
+      return new String[0];
+    QuotedStringTokenizer stringTokenizer =
+      new QuotedStringTokenizer(string, ',');
+    Vector vector = new Vector();
+    while (stringTokenizer.hasMoreTokens()) {
+      vector.add(stringTokenizer.nextToken());
+    }
+    String[] stringArray = new String[vector.size()];
+    for (int i = 0; i < vector.size(); i++) {
+      stringArray[i] = (String) vector.elementAt(i);
+    }
+    return stringArray;
+  }
 
 	public static ILaunchInfo[] getLaunchInfoForKey(String key) {
 		String string = Preferences.getString(key);
@@ -321,13 +358,22 @@ public class Preferences {
 		return launchInfo;
 	}
 	public static void setIncludeInfoForKey(String[] includeInfo, String key) {
-		String value = "";
+		StringBuffer value = new StringBuffer();
 		for (int i = 0; i < includeInfo.length; i++) {
-			value += includeInfo[i];
-			if (i != (includeInfo.length - 1))
-				value += ",";
+      String thisOne = includeInfo[i];
+      if (null != thisOne) {
+        if (-1 != thisOne.indexOf(',')) {
+          value.append("\"");
+          value.append(thisOne);
+          value.append("\"");
+        } else {
+          value.append(thisOne);
+        }
+        if (i != (includeInfo.length - 1))
+          value.append(",");
+      }
 		}
-		Preferences.setString(key, value);
+		Preferences.setString(key, value.toString());
 	}
 
 	public static String LaunchInfoToString(
