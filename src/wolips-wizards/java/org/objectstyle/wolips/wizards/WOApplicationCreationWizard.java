@@ -54,6 +54,8 @@
  *
  */
 package org.objectstyle.wolips.wizards;
+import java.org.objectstyle.wolips.logging.WOLipsLog;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -62,7 +64,6 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.objectstyle.wolips.core.plugin.WOLipsUtils;
-import org.objectstyle.wolips.core.plugin.logging.WOLipsLog;
 /**
  * @author mnolte
  * @author uli

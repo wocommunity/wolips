@@ -12,8 +12,25 @@
 	</target>
 
     <target name="java" depends="prepare" if="wolips.build.logging">
-         <copy file="${woproject.dist}/lib/${lib.commons-logging}" tofile="${wolips.dist}/lib/commons-logging.jar"/>
-         <copy file="${woproject.dist}/lib/${lib.log4j}" tofile="${wolips.dist}/lib/log4j.jar"/>
+       <javac srcdir="src/wolips-logging/java"
+                destdir="${build}/wolips-logging"
+                deprecation="${compile.deprecation}"
+                debug="${compile.debug}"
+                optimize="${compile.optimize}">
+            <classpath refid="classpath"/>
+        </javac>
+         
+        <jar jarfile="${wolips.logging.dist}/lib/wolips-logging.jar">
+            <fileset dir="${build}/wolips-logging"/>
+            <fileset dir="src/wolips-logging/java">
+          	    <include name="**/*.properties"/>
+             </fileset>         
+            <metainf dir="doc">
+                <include name="LICENSE*"/>
+            </metainf>
+        </jar>
+         <copy file="${woproject.dist}/lib/${lib.commons-logging}" tofile="${wolips.logging.dist}/lib/commons-logging.jar"/>
+         <copy file="${woproject.dist}/lib/${lib.log4j}" tofile="${wolips.logging.dist}/lib/log4j.jar"/>
     </target>
 
     <target name="dist" depends="prepare,java,doc,api" if="wolips.build.logging">

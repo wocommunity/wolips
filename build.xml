@@ -57,7 +57,7 @@
     <property name="wolips.ui.dist" value="${wolips.plugins.folder}/${wolips.ui.name}"/>
     <property name="wolips.wizards.name" value="org.objectstyle.wolips.wizards_${WOLips.version}"/>
     <property name="wolips.wizards.dist" value="${wolips.plugins.folder}/${wolips.wizards.name}"/>
-    <property name="wolips.logging.name" value="org.objectstyle.logging.wizards_${WOLips.version}"/>
+    <property name="wolips.logging.name" value="org.objectstyle.wolips.logging_${WOLips.version}"/>
     <property name="wolips.logging.dist" value="${wolips.plugins.folder}/${wolips.logging.name}"/>
     <property name="wolips.feature.dist" value="${wolips.features.folder}/org.objectstyle.wolips.feature_${WOLips.version}"/>
     <property name="wolips.profiling.feature.dist" value="${wolips.features.folder}/org.objectstyle.wolips.profiling.feature_${WOLips.version}"/>

@@ -56,12 +56,13 @@
 
 package org.objectstyle.wolips.wizards.templates;
 
+import java.org.objectstyle.wolips.logging.WOLipsLog;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.objectstyle.wolips.core.plugin.logging.WOLipsLog;
 
 /**
  * @author uli

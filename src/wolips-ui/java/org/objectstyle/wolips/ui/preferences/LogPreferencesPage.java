@@ -56,11 +56,12 @@
 
 package org.objectstyle.wolips.ui.preferences;
 
+import java.org.objectstyle.wolips.logging.WOLipsLog;
+
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.RadioGroupFieldEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
-import org.objectstyle.wolips.core.plugin.logging.WOLipsLog;
 import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
 import org.objectstyle.wolips.core.preferences.Preferences;
 import org.objectstyle.wolips.core.preferences.PreferencesMessages;

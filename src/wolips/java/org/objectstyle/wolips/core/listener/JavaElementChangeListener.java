@@ -54,6 +54,7 @@
  *
  */
 package org.objectstyle.wolips.core.listener;
+import java.org.objectstyle.wolips.logging.WOLipsLog;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -66,7 +67,6 @@ import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaElementDelta;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
-import org.objectstyle.wolips.core.plugin.logging.WOLipsLog;
 import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
 import org.objectstyle.wolips.core.project.PBProjectUpdater;
 import org.objectstyle.woproject.pb.PBProject;

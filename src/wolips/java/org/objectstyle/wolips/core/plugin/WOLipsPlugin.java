@@ -56,6 +56,9 @@
 package org.objectstyle.wolips.core.plugin;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.org.objectstyle.wolips.logging.WOLipsLog;
+import java.org.objectstyle.wolips.logging.WOLipsLogFactory;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.runtime.CoreException;
@@ -68,8 +71,6 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IStartup;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.objectstyle.wolips.core.plugin.logging.WOLipsLog;
-import org.objectstyle.wolips.core.plugin.logging.WOLipsLogFactory;
 import org.objectstyle.wolips.core.preferences.Preferences;
 import org.objectstyle.woproject.env.WOEnvironment;
 /**
@@ -98,10 +99,6 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 		try {
 		// set up missing preferences
 		Preferences.setDefaults();
-		// set log factory
-		System.setProperty(
-			"org.apache.commons.logging.LogFactory",
-			"org.objectstyle.wolips.core.plugin.logging.WOLipsLogFactory");
 		LogFactory.getFactory().setAttribute(
 			WOLipsLogFactory.ATTR_GLOBAL_LOG_LEVEL,
 			new Integer(

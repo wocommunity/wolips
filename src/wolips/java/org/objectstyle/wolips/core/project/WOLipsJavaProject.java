@@ -57,6 +57,7 @@
 package org.objectstyle.wolips.core.project;
 
 import java.lang.reflect.InvocationTargetException;
+import java.org.objectstyle.wolips.logging.WOLipsLog;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,7 +71,6 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
-import org.objectstyle.wolips.core.plugin.logging.WOLipsLog;
 
 /**
  * @author uli

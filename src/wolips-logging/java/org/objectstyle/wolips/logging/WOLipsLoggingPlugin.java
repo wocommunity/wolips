@@ -53,44 +53,76 @@
  * <http://objectstyle.org/>.
  *
  */
-
-package org.objectstyle.wolips.core.plugin;
-
-import java.net.MalformedURLException;
+package java.org.objectstyle.wolips.logging;
 import java.net.URL;
-import java.org.objectstyle.wolips.logging.WOLipsLog;
 
-import org.eclipse.jface.resource.ImageDescriptor;
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.eclipse.core.runtime.IPluginDescriptor;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Plugin;
 /**
- * @author mnolte
+ * The main plugin class to be used in the desktop.
+ * 
  * @author uli
+ * @author markus
  */
-public class WOLipsPluginImages {
-
-	public static final ImageDescriptor WOCOMPONENT_WIZARD_BANNER;
-	public static final ImageDescriptor WOPROJECT_WIZARD_BANNER;
-
-	static {
-		String iconPath = "icons/";
-		String prefix = iconPath + "wizban/";
-		WOCOMPONENT_WIZARD_BANNER =
-			createImageDescriptor(prefix + "webobjects_wiz.gif");
-		WOPROJECT_WIZARD_BANNER =
-			createImageDescriptor(prefix + "webobjects_wiz.gif");
-	}
-
+public class WOLipsLoggingPlugin extends Plugin {
+	public static Log log;
+	//The plugin.
+	private static WOLipsLoggingPlugin plugin;
+	private static String PLUGIN_ID = "org.objectstyle.wolips.logging";
 	/**
-	 * Utility method to create an <code>ImageDescriptor</code>
-	 * from a path to a file.
+	 * Set this variable to true to get debug output
 	 */
-	private static ImageDescriptor createImageDescriptor(String path) {
+	public static final boolean debug = true;
+	/**
+	 * The constructor.
+	 */
+	//The constructur is very sensitive. Make sure that your stuff works.
+	//If this cunstructor fails, the whole plugin will be disabled.
+	public WOLipsLoggingPlugin(IPluginDescriptor descriptor) {
+		super(descriptor);
+		plugin = this;
 		try {
-			URL url = new URL(WOLipsPlugin.baseURL(), path);
-			return ImageDescriptor.createFromURL(url);
-		} catch (MalformedURLException e) {
-			WOLipsLog.log(e);
+		// set log factory
+		System.setProperty(
+			"org.apache.commons.logging.LogFactory",
+			"org.objectstyle.wolips.logging.WOLipsLogFactory");
+		// set own logger
+		log = LogFactory.getLog(WOLipsLoggingPlugin.class);
 		}
-		return ImageDescriptor.getMissingImageDescriptor();
+		catch(Exception exception) {
+			System.out.println("Exception in WOLips constructor: " + exception.getMessage());
+		}
+	}
+	/**
+	 * Returns the shared instance.
+	 */
+	public static WOLipsLoggingPlugin getDefault() {
+		if (plugin == null) {
+			// ensure plugin instance is always available using id
+			return new WOLipsLoggingPlugin(
+				Platform
+					.getPlugin(PLUGIN_ID)
+					.getDescriptor());
+		}
+		return plugin;
+	}
+	/**
+	 * Method baseURL.
+	 * @return URL
+	 */
+	public static URL baseURL() {
+		return WOLipsLoggingPlugin.getDefault().getDescriptor().getInstallURL();
+	}
+	/**
+	 * Returns the PluginID.
+	 */
+	public static String getPluginId() {
+		if (plugin != null) {
+			return getDefault().getDescriptor().getUniqueIdentifier();
+		} else
+			return PLUGIN_ID;
 	}
 }

@@ -54,7 +54,7 @@
  *
  */
 
-package org.objectstyle.wolips.core.plugin.logging;
+package java.org.objectstyle.wolips.logging;
 
 import java.util.Date;
 import java.util.Hashtable;
@@ -62,7 +62,6 @@ import java.util.Hashtable;
 import org.apache.commons.logging.Log;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
 
 /**
  * @author uli
@@ -109,7 +108,7 @@ public static final String MSG_SEP = " ";
 	 * Prints an IStatus.
 	 */
 	public static void log(IStatus status) {
-		WOLipsPlugin.getDefault().getLog().log(status);
+		WOLipsLoggingPlugin.getDefault().getLog().log(status);
 	}
 	/**
 	 * Prints a message.
@@ -118,7 +117,7 @@ public static final String MSG_SEP = " ";
 		WOLipsLog.log(
 			new Status(
 				IStatus.ERROR,
-				WOLipsPlugin.getPluginId(),
+		WOLipsLoggingPlugin.getPluginId(),
 				IStatus.ERROR,
 				message,
 				null));
@@ -127,20 +126,20 @@ public static final String MSG_SEP = " ";
 	 * Prints a Throwable.
 	 */
 	public static void log(Throwable e) {
-		WOLipsLog.log(new Status(IStatus.ERROR, WOLipsPlugin.getPluginId(), IStatus.ERROR, "Internal Error", e)); //$NON-NLS-1$
+		WOLipsLog.log(new Status(IStatus.ERROR, WOLipsLoggingPlugin.getPluginId(), IStatus.ERROR, "Internal Error", e)); //$NON-NLS-1$
 	}
 	/**
 	 * If WOLips.debug is true this method prints a String to the log.
 	 */
 	public static void debug(String aString) {
-		if (WOLipsPlugin.debug)
+		if (WOLipsLoggingPlugin.debug)
 			WOLipsLog.log(aString);
 	}
 	/**
 	 * If WOLips.debug is true this method prints an Exception to the log.
 	 */
 	public static void debug(Throwable aThrowable) {
-		if (WOLipsPlugin.debug);
+		if (WOLipsLoggingPlugin.debug);
 		WOLipsLog.log(aThrowable);
 	}
 
@@ -161,7 +160,7 @@ public static final String MSG_SEP = " ";
 					+ message);
 			t.printStackTrace(System.err);
 		}
-		WOLipsLog.log(new Status(IStatus.WARNING, WOLipsPlugin.getPluginId(), IStatus.WARNING, name + MSG_SEP + message, t)); //$NON-NLS-1$
+		WOLipsLog.log(new Status(IStatus.WARNING, WOLipsLoggingPlugin.getPluginId(), IStatus.WARNING, name + MSG_SEP + message, t)); //$NON-NLS-1$
 	}
 
 	/**
@@ -178,7 +177,7 @@ public static final String MSG_SEP = " ";
 					+ MSG_SEP
 					+ message);
 		}
-		WOLipsLog.log(new Status(IStatus.WARNING, WOLipsPlugin.getPluginId(), IStatus.WARNING, name + MSG_SEP + message, null)); //$NON-NLS-1$
+		WOLipsLog.log(new Status(IStatus.WARNING, WOLipsLoggingPlugin.getPluginId(), IStatus.WARNING, name + MSG_SEP + message, null)); //$NON-NLS-1$
 	}
 
 	/**
@@ -196,7 +195,7 @@ public static final String MSG_SEP = " ";
 					+ message);
 			t.printStackTrace(System.err);
 		}
-		WOLipsLog.log(new Status(IStatus.ERROR, WOLipsPlugin.getPluginId(), IStatus.ERROR, name + MSG_SEP + message, t)); //$NON-NLS-1$
+		WOLipsLog.log(new Status(IStatus.ERROR, WOLipsLoggingPlugin.getPluginId(), IStatus.ERROR, name + MSG_SEP + message, t)); //$NON-NLS-1$
 	}
 
 	/**
@@ -213,7 +212,7 @@ public static final String MSG_SEP = " ";
 					+ MSG_SEP
 					+ message);
 		}
-		WOLipsLog.log(new Status(IStatus.ERROR, WOLipsPlugin.getPluginId(), IStatus.ERROR, name + MSG_SEP + message, null)); //$NON-NLS-1$
+		WOLipsLog.log(new Status(IStatus.ERROR, WOLipsLoggingPlugin.getPluginId(), IStatus.ERROR, name + MSG_SEP + message, null)); //$NON-NLS-1$
 	}
 
 	/**
@@ -232,7 +231,7 @@ public static final String MSG_SEP = " ";
 					+ message);
 			t.printStackTrace(System.err);
 		}
-		WOLipsLog.log(new Status(IStatus.ERROR, WOLipsPlugin.getPluginId(), IStatus.ERROR, name + MSG_SEP + message, t)); //$NON-NLS-1$
+		WOLipsLog.log(new Status(IStatus.ERROR, WOLipsLoggingPlugin.getPluginId(), IStatus.ERROR, name + MSG_SEP + message, t)); //$NON-NLS-1$
 	}
 
 	/**
@@ -249,7 +248,7 @@ public static final String MSG_SEP = " ";
 					+ MSG_SEP
 					+ message);
 		}
-		WOLipsLog.log(new Status(IStatus.ERROR, WOLipsPlugin.getPluginId(), IStatus.ERROR, name + MSG_SEP + message, null)); //$NON-NLS-1$
+		WOLipsLog.log(new Status(IStatus.ERROR, WOLipsLoggingPlugin.getPluginId(), IStatus.ERROR, name + MSG_SEP + message, null)); //$NON-NLS-1$
 	}
 
 	/**
@@ -267,7 +266,7 @@ public static final String MSG_SEP = " ";
 					+ message);
 			t.printStackTrace(System.err);
 		}
-		WOLipsLog.log(new Status(IStatus.WARNING, WOLipsPlugin.getPluginId(), IStatus.WARNING, name + MSG_SEP + message, t)); //$NON-NLS-1$
+		WOLipsLog.log(new Status(IStatus.WARNING, WOLipsLoggingPlugin.getPluginId(), IStatus.WARNING, name + MSG_SEP + message, t)); //$NON-NLS-1$
 	}
 
 	/**
@@ -284,7 +283,7 @@ public static final String MSG_SEP = " ";
 					+ MSG_SEP
 					+ message);
 		}
-		WOLipsLog.log(new Status(IStatus.WARNING, WOLipsPlugin.getPluginId(), IStatus.WARNING, name + MSG_SEP + message, null)); //$NON-NLS-1$
+		WOLipsLog.log(new Status(IStatus.WARNING, WOLipsLoggingPlugin.getPluginId(), IStatus.WARNING, name + MSG_SEP + message, null)); //$NON-NLS-1$
 	}
 
 	/**
@@ -303,7 +302,7 @@ public static final String MSG_SEP = " ";
 					+ message);
 			t.printStackTrace(System.err);
 		}
-		WOLipsLog.log(new Status(IStatus.WARNING, WOLipsPlugin.getPluginId(), IStatus.WARNING, name + MSG_SEP + message, t)); //$NON-NLS-1$
+		WOLipsLog.log(new Status(IStatus.WARNING, WOLipsLoggingPlugin.getPluginId(), IStatus.WARNING, name + MSG_SEP + message, t)); //$NON-NLS-1$
 	}
 
 	/**
@@ -320,7 +319,7 @@ public static final String MSG_SEP = " ";
 					+ MSG_SEP
 					+ message);
 		}
-		WOLipsLog.log(new Status(IStatus.WARNING, WOLipsPlugin.getPluginId(), IStatus.WARNING, name + MSG_SEP + message, null)); //$NON-NLS-1$
+		WOLipsLog.log(new Status(IStatus.WARNING, WOLipsLoggingPlugin.getPluginId(), IStatus.WARNING, name + MSG_SEP + message, null)); //$NON-NLS-1$
 	}
 
 	/**
@@ -338,7 +337,7 @@ public static final String MSG_SEP = " ";
 					+ message);
 			t.printStackTrace(System.err);
 		}
-		WOLipsLog.log(new Status(IStatus.WARNING, WOLipsPlugin.getPluginId(), IStatus.WARNING, name + MSG_SEP + message, t)); //$NON-NLS-1$
+		WOLipsLog.log(new Status(IStatus.WARNING, WOLipsLoggingPlugin.getPluginId(), IStatus.WARNING, name + MSG_SEP + message, t)); //$NON-NLS-1$
 	}
 
 	/**
@@ -355,7 +354,7 @@ public static final String MSG_SEP = " ";
 					+ MSG_SEP
 					+ message);
 		}
-		WOLipsLog.log(new Status(IStatus.WARNING, WOLipsPlugin.getPluginId(), IStatus.WARNING, name + MSG_SEP + message, null)); //$NON-NLS-1$
+		WOLipsLog.log(new Status(IStatus.WARNING, WOLipsLoggingPlugin.getPluginId(), IStatus.WARNING, name + MSG_SEP + message, null)); //$NON-NLS-1$
 	}
 
 	/**

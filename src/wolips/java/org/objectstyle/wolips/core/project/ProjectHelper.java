@@ -55,6 +55,7 @@
  */
 package org.objectstyle.wolips.core.project;
 import java.lang.reflect.InvocationTargetException;
+import java.org.objectstyle.wolips.logging.WOLipsLog;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -77,7 +78,6 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.internal.ui.util.CoreUtility;
 import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
 import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
-import org.objectstyle.wolips.core.plugin.logging.WOLipsLog;
 import org.objectstyle.woproject.env.Environment;
 /**
  * @author uli

@@ -56,10 +56,10 @@
 
 package org.objectstyle.wolips.projectbuild.natures;
 
-import org.objectstyle.wolips.core.plugin.logging.WOLipsLog;
 import org.objectstyle.wolips.core.project.WOLipsProject;
 import org.objectstyle.wolips.projectbuild.WOProjectBuildConstants;
 
+import java.org.objectstyle.wolips.logging.WOLipsLog;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

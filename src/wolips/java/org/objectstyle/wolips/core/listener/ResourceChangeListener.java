@@ -56,6 +56,7 @@
 package org.objectstyle.wolips.core.listener;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
+import java.org.objectstyle.wolips.logging.WOLipsLog;
 import java.util.ArrayList;
 import java.util.HashMap;
 import org.eclipse.core.resources.IContainer;
@@ -74,7 +75,6 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.jdt.core.JavaCore;
 import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
-import org.objectstyle.wolips.core.plugin.logging.WOLipsLog;
 import org.objectstyle.wolips.core.project.PBProjectUpdater;
 import org.objectstyle.wolips.core.project.WOLipsJavaProject;
 import org.objectstyle.wolips.core.project.WOLipsProject;

@@ -56,6 +56,7 @@
 
 package org.objectstyle.wolips.projectbuild.builder;
 
+import java.org.objectstyle.wolips.logging.WOLipsLog;
 import java.util.Map;
 
 import org.eclipse.ant.core.AntRunner;
@@ -69,7 +70,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
-import org.objectstyle.wolips.core.plugin.logging.WOLipsLog;
 import org.objectstyle.wolips.core.preferences.Preferences;
 import org.objectstyle.wolips.core.project.ant.BuildMessages;
 import org.objectstyle.wolips.core.project.ant.RunAnt;

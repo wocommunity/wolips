@@ -56,7 +56,7 @@
 
 package org.objectstyle.wolips.core.project;
 
-import org.objectstyle.wolips.core.plugin.logging.WOLipsLog;
+import java.org.objectstyle.wolips.logging.WOLipsLog;
 
 import com.webobjects.foundation.NSNotificationCenter;
 
