@@ -159,5 +159,11 @@
          download-size="1300"
          install-size="1500"
          version="1.0.6"/>
+         
+   <plugin
+         id="org.objectstyle.wolips.jdom"
+         download-size="180"
+         install-size="192"
+         version="1.0.6"/>
 
 </feature>
