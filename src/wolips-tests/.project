@@ -5,6 +5,13 @@
 	<projects>
 		<project>org.eclipse.ant.core</project>
 		<project>wolips</project>
+		<project>wolips-devstudio</project>
+		<project>wolips-help</project>
+		<project>wolips-launching</project>
+		<project>wolips-projectbuild</project>
+		<project>wolips-support</project>
+		<project>wolips-ui</project>
+		<project>wolips-wounit</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
