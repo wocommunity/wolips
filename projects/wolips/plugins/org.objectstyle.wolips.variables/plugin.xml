@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin
+   id="org.objectstyle.wolips.variables"
+   name="Variables Plug-in"
+   version="1.0.6"
+   provider-name="objectstyle.org"
+   class="org.objectstyle.wolips.variables.VariablesPlugin">
+
+   <runtime>
+      <library name="lib/wolips-variables.jar">
+         <export name="*"/>
+         <packages prefixes="org.objectstyle.wolips.variables"/>
+      </library>
+   </runtime>
+   <requires>
+      <import plugin="org.eclipse.core.runtime.compatibility"/>
+      <import plugin="org.objectstyle.wolips.woproject"/>
+      <import plugin="org.eclipse.jface"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.objectstyle.wolips.ant"/>
+      <import plugin="org.eclipse.core.resources"/>
+   </requires>
+
+
+<!-- =================================================================================== -->
+<!-- Extension: Preferences                                                              -->
+<!-- =================================================================================== -->
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            name="Build"
+            category="org.objectstyle.wolips.preferences.PreferencesPage"
+            class="org.objectstyle.wolips.variables.VariablesPreferencesPage"
+            id="org.objectstyle.wolips.variables.VariablesPreferencesPage">
+      </page>
+   </extension>
+
+</plugin>
