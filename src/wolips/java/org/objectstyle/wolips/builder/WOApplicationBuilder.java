@@ -53,7 +53,7 @@
  * <http://objectstyle.org/>.
  *
  */
- 
+
 package org.objectstyle.wolips.builder;
 
 import java.io.IOException;
@@ -69,10 +69,8 @@ public class WOApplicationBuilder extends WOBuilder {
 	 */
 	public WOApplicationBuilder() {
 		super();
-		String regexpMatcherPropertyName = "ant.regexp.regexpimpl";
-		System.out.println("ant.regexp.regexpimpl: " + System.getProperty(regexpMatcherPropertyName));
 	}
-	
+
 	public String buildFile() {
 		return "build.xml";
 	}
