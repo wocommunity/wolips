@@ -71,17 +71,23 @@ import org.objectstyle.wolips.WOLipsPlugin;
  */
 public abstract class WOBuilder extends IncrementalProjectBuilder {
 	
-	
+	private static AntRunner antRunner = null;
 	private static Vector marker = new Vector();
 	
 //	public static String WOLIPS_NEXT_ROOT = "wolips.next.root";
 	/**
 	 * Constructor for WOBuilder.
 	 */
+	
 	public  WOBuilder() {
 		super();
 	}
 	
+	private AntRunner antRunner() {
+		if(WOBuilder.antRunner == null) WOBuilder.antRunner = new AntRunner();
+		return WOBuilder.antRunner;
+	}
+		
 	protected IProject[] build(int kind, Map args, IProgressMonitor monitor)
 		throws CoreException {									
 		if (getProject() == null || !getProject().exists()) 
@@ -93,12 +99,12 @@ public abstract class WOBuilder extends IncrementalProjectBuilder {
 			if(checkIfBuildfileExist(aBuildFile)) {
 				getProject().getFile(aBuildFile).deleteMarkers(IMarker.TASK, false, getProject().DEPTH_ONE);
 				//WOLipsBuild.initWithProject(getProject());
-				AntRunner anAntRunner = new AntRunner();
-				anAntRunner.setBuildFileLocation(getProject().getFile(aBuildFile).getLocation().toOSString());
+				//AntRunner anAntRunner = new AntRunner();
+				antRunner().setBuildFileLocation(getProject().getFile(aBuildFile).getLocation().toOSString());
 				//Hashtable aHashtable = this.properties();
 				//anAntRunner.addUserProperties(aHashtable);
-				anAntRunner.addUserProperties(args);
-				anAntRunner.run(monitor);
+				antRunner().addUserProperties(args);
+				antRunner().run(monitor);
 				//getProject().refreshLocal(getProject().DEPTH_INFINITE, monitor);
 			}
 		} 
