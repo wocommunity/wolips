@@ -186,13 +186,12 @@ public class DirectAction extends WODirectAction {
 
 	<!-- main targets  -->
 	<!-- add optional targets to depends list if needed -->
-	<target name="build" depends="setProps,init.build,build.woapp,refreshView"/>
+	<target name="build" depends="setProps,init.build,build.woapp"/>
 
-	<target name="install" depends="setProps,init.install,build.woapp,refreshView"/>
+	<target name="install" depends="setProps,init.install,build.woapp"/>
 	
 	<target name="clean" depends="setProps">
 	  	<delete dir="${project.name}.woa"/>
-		<eclipse.refreshLocal resource="${project.name}" depth="infinite"/>
 	</target>
 
 	<!-- property determination  -->
@@ -224,8 +223,6 @@ public class DirectAction extends WODirectAction {
 	
 	<!-- woproject tasks -->
 	<target name="build.woapp">
-		<updateframeworksets projectname="${project.name}"/>
-		<updateotherclasspaths projectname="${project.name}"/>
 		<woapplication name="${project.name}"  stdFrameworks="false" destDir="${dest.dir}">
    			<classes dir="${classes.dir}">
    			</classes>
@@ -268,20 +265,10 @@ public class DirectAction extends WODirectAction {
 				<exclude name="**/*.woa/**"/>
 			</lib>
    		</woapplication>
-		<!-- delete include files -->
-		<delete file="ant.frameworks.wo.wosystemroot"/>
-		<delete file="ant.frameworks.wo.wolocalroot"/>
-		<delete file="ant.frameworks.user.home"/>
-		<delete file="ant.classpaths.wo.wosystemroot"/>
-		<delete file="ant.classpaths.wo.wolocalroot"/>
 	</target>
 
-	<target name="refreshView" if="eclipse.running">
-		<refreshview projectName="${project.name}"/>
-	</target>
-
- 	<!-- optional targets -->
-	 <!-- copy strings files -->	
+	<!-- optional targets -->
+	<!-- copy strings files -->	
 	<target name="copy.strings">
    		 <copy todir="${dest.dir}/${project.name}.woa/Contents/Resources">
        			<fileset dir="." casesensitive="yes">
@@ -301,13 +288,12 @@ project.name = ${PROJECT_NAME}
 
 	<!-- main targets  -->
 	<!-- add optional targets to depends list if needed -->
-	<target name="build" depends="setProps,init.build,build.woframework,refreshView"/>
+	<target name="build" depends="setProps,init.build,build.woframework"/>
 
 	<target name="install" depends="setProps,init.install,build.woframework"/>
 	    
 	<target name="clean" depends="setProps">
 	  	<delete dir="${framework.name}.framework"/>
-		<eclipse.refreshLocal resource="${framework.name}" depth="infinite"/>
 	</target>
 
 	<!-- property determination  -->
@@ -361,15 +347,10 @@ project.name = ${PROJECT_NAME}
 				<exclude name="**/*.woa/**"/>
 			</lib>
    		</woframework>
-		<eclipse.refreshLocal resource="${framework.name}" depth="infinite"/>
 	</target>
 		
-	<target name="refreshView" if="eclipse.running">
-		<refreshview projectName="${framework.name}"/>
-	</target>
-
 	<!-- optional targets -->
-	 <!-- copy strings files -->	
+	<!-- copy strings files -->	
 	<target name="copy.strings">
    		 <copy todir="${dest.dir}/${framework.name}.framework/Resources">
        		<fileset dir="." casesensitive="yes">
