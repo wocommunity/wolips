@@ -115,13 +115,15 @@ public class AppFormat extends ProjectFormat {
 			infoFile,
 			woappPlusVersion() + "/Info.plist",
 			infoFilter(null));
-		// add Info.plist
+		// add web.xml
+		if(((WOApplication)this.task).webXML) {
 		String webXMLFile =
 			new File(getApplicatonTask().contentsDir(), "web.xml").getPath();
 		createMappings(
 			webXMLFile,
 			woappPlusVersion() + "/ServletEnv_web.xml",
 			webXMLFilter());
+		}
 	}
 
 	/**
