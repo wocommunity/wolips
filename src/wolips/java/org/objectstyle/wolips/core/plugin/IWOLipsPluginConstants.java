@@ -85,6 +85,14 @@ public interface IWOLipsPluginConstants {
 		"org.objectstyle.wolips.Preference.WOLipsVersionEarlyStartup";
 	public static final String PREF_PBWO_PROJECT_UPDATE =
 		"org.objectstyle.wolips.Preference.Update_PBWO_Project";
+	public static final String PREF_PBWO_PROJECT_INCLUDED_WOAPP_RESOURCES =
+		"org.objectstyle.wolips.Preference.PBWO_Project_Included_WOAPP_Resources";
+	public static final String PREF_PBWO_PROJECT_EXCLUDED_WOAPP_RESOURCES =
+		"org.objectstyle.wolips.Preference.PBWO_Project_Excluded_WOAPP_Resources";
+	public static final String PREF_PBWO_PROJECT_INCLUDED_CLASSES =
+		"org.objectstyle.wolips.Preference.PBWO_Project_Included_Classes";
+	public static final String PREF_PBWO_PROJECT_EXCLUDED_CLASSES =
+		"org.objectstyle.wolips.Preference.PBWO_Project_Excluded_Classes";
 	// flle extensions and resource identifier
 	public static final String EXT_PROJECT = "project";
 	public static final String EXT_SUBPROJECT = "subproj";

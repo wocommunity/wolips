@@ -58,7 +58,6 @@ import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
-
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -80,16 +79,55 @@ import org.objectstyle.wolips.core.project.PBProjectUpdater;
 import org.objectstyle.wolips.core.project.WOLipsJavaProject;
 import org.objectstyle.wolips.core.project.WOLipsProject;
 import org.objectstyle.wolips.logging.WOLipsLog;
+import org.eclipse.ui.internal.misc.StringMatcher;
 /**
  * Tracking changes in resources and synchronizes webobjects project file
  */
 public class ResourceChangeListener
 	implements IResourceChangeListener, IWOLipsPluginConstants {
+	private StringMatcher[] woappResourcesIncludeMatcher = null;
+	private StringMatcher[] woappResourcesExcludeMatcher = null;
+	private StringMatcher[] classesIncludeMatcher = null;
+	private StringMatcher[] classesExcludeMatcher = null;
 	/**
 	 * Constructor for ResourceChangeListener.
 	 */
 	public ResourceChangeListener() {
 		super();
+		String[] patterns =
+			Preferences.getStringArrayForKey(
+				IWOLipsPluginConstants
+					.PREF_PBWO_PROJECT_INCLUDED_WOAPP_RESOURCES);
+		woappResourcesIncludeMatcher = new StringMatcher[patterns.length];
+		for (int i = 0; i < patterns.length; i++) {
+			woappResourcesIncludeMatcher[i] =
+				new StringMatcher(patterns[i], true, false);
+		}
+		patterns =
+			Preferences.getStringArrayForKey(
+				IWOLipsPluginConstants
+					.PREF_PBWO_PROJECT_EXCLUDED_WOAPP_RESOURCES);
+		woappResourcesExcludeMatcher = new StringMatcher[patterns.length];
+		for (int i = 0; i < patterns.length; i++) {
+			woappResourcesExcludeMatcher[i] =
+				new StringMatcher(patterns[i], true, false);
+		}
+		patterns =
+			Preferences.getStringArrayForKey(
+				IWOLipsPluginConstants.PREF_PBWO_PROJECT_INCLUDED_CLASSES);
+		classesIncludeMatcher = new StringMatcher[patterns.length];
+		for (int i = 0; i < patterns.length; i++) {
+			classesIncludeMatcher[i] =
+				new StringMatcher(patterns[i], true, false);
+		}
+		patterns =
+			Preferences.getStringArrayForKey(
+				IWOLipsPluginConstants.PREF_PBWO_PROJECT_EXCLUDED_CLASSES);
+		classesExcludeMatcher = new StringMatcher[patterns.length];
+		for (int i = 0; i < patterns.length; i++) {
+			classesExcludeMatcher[i] =
+				new StringMatcher(patterns[i], true, false);
+		}
 	}
 	/**
 	 * Adds instance of inner class ProjectFileResourceValidator to events
@@ -227,19 +265,28 @@ public class ResourceChangeListener
 								COMPONENTS_ID,
 								resource.getParent().getFile(
 									new Path(PROJECT_FILE_NAME)));
-						} else if (
-							EXT_EOMODEL.equals(resource.getFileExtension())) {
+						} else if (matchWOAppResourcesPattern(resource)) {
 							updateProjectFile(
 								kindOfChange,
 								resource,
 								RESOURCES_ID,
 								resource.getParent().getFile(
 									new Path(PROJECT_FILE_NAME)));
-						} else if (
+						} /*else if (
+													EXT_EOMODEL.equals(resource.getFileExtension())) {
+													updateProjectFile(
+														kindOfChange,
+														resource,
+														RESOURCES_ID,
+														resource.getParent().getFile(
+															new Path(PROJECT_FILE_NAME)));
+												} */
+						/*else if (
 							EXT_EOMODEL_BACKUP.equals(
 								resource.getFileExtension())) {
 							deleteTeamPrivateMembers((IFolder) resource);
-						} else if (
+						}*/
+						else if (
 							EXT_SUBPROJECT.equals(
 								resource.getFileExtension())) {
 							updateProjectFile(
@@ -346,24 +393,26 @@ public class ResourceChangeListener
 								CLASSES_ID,
 								projectFile);
 						}
-						if (EXT_JAVA.equals(resource.getFileExtension())) {
+						/*if (EXT_JAVA.equals(resource.getFileExtension())) {
 							updateProjectFile(
 								kindOfChange,
 								resource,
 								CLASSES_ID,
 								resource.getParent().getFile(
 									new Path(PROJECT_FILE_NAME)));
-						} else if (
-							EXT_API.equals(resource.getFileExtension())
-								|| EXT_STRINGS.equals(
-									resource.getFileExtension())) {
-							updateProjectFile(
-								kindOfChange,
-								resource,
-								RESOURCES_ID,
-								resource.getParent().getFile(
-									new Path(PROJECT_FILE_NAME)));
-						} else if (
+						} */
+						/* else if (
+																			EXT_API.equals(resource.getFileExtension())
+																				|| EXT_STRINGS.equals(
+																					resource.getFileExtension())) {
+																			updateProjectFile(
+																				kindOfChange,
+																				resource,
+																				RESOURCES_ID,
+																				resource.getParent().getFile(
+																					new Path(PROJECT_FILE_NAME)));
+																		}*/
+						/*else if (
 							EXT_D2WMODEL.equals(resource.getFileExtension())) {
 							updateProjectFile(
 								kindOfChange,
@@ -371,9 +420,48 @@ public class ResourceChangeListener
 								RESOURCES_ID,
 								resource.getParent().getFile(
 									new Path(PROJECT_FILE_NAME)));
+						} */
+						else if (matchWOAppResourcesPattern(resource)) {
+							updateProjectFile(
+								kindOfChange,
+								resource,
+								RESOURCES_ID,
+								resource.getParent().getFile(
+									new Path(PROJECT_FILE_NAME)));
+						} else if (matchClassesPattern(resource)) {
+							updateProjectFile(
+								kindOfChange,
+								resource,
+								CLASSES_ID,
+								resource.getParent().getFile(
+									new Path(PROJECT_FILE_NAME)));
 						}
 						//return false;
 					}
+			}
+			return false;
+		}
+		private boolean matchClassesPattern(IResource resource) {
+			String string = resource.getFullPath().toString();
+			for (int i = 0; i < classesExcludeMatcher.length; i++) {
+				if (classesExcludeMatcher[i].match(string))
+					return false;
+			}
+			for (int i = 0; i < classesIncludeMatcher.length; i++) {
+				if (classesIncludeMatcher[i].match(string))
+					return true;
+			}
+			return false;
+		}
+		private boolean matchWOAppResourcesPattern(IResource resource) {
+			String string = resource.getFullPath().toString();
+			for (int i = 0; i < woappResourcesExcludeMatcher.length; i++) {
+				if (woappResourcesExcludeMatcher[i].match(string))
+					return false;
+			}
+			for (int i = 0; i < woappResourcesIncludeMatcher.length; i++) {
+				if (woappResourcesIncludeMatcher[i].match(string))
+					return true;
 			}
 			return false;
 		}

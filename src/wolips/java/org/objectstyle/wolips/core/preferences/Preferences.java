@@ -56,6 +56,9 @@
 
 package org.objectstyle.wolips.core.preferences;
 
+import java.util.StringTokenizer;
+import java.util.Vector;
+
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
 import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
@@ -164,6 +167,40 @@ public class Preferences {
 			store.setDefault(
 				IWOLipsPluginConstants.PREF_PBWO_PROJECT_UPDATE,
 				PreferencesMessages.getString(Preferences.trueString));
+		if (Preferences.SET_DEFAULTS_STRING == null
+			|| Preferences.SET_DEFAULTS_STRING.equals(
+				IWOLipsPluginConstants.PREF_PBWO_PROJECT_INCLUDED_CLASSES))
+			store.setDefault(
+				IWOLipsPluginConstants.PREF_PBWO_PROJECT_INCLUDED_CLASSES,
+				PreferencesMessages.getString(
+					IWOLipsPluginConstants.PREF_PBWO_PROJECT_INCLUDED_CLASSES));
+		if (Preferences.SET_DEFAULTS_STRING == null
+			|| Preferences.SET_DEFAULTS_STRING.equals(
+				IWOLipsPluginConstants.PREF_PBWO_PROJECT_EXCLUDED_CLASSES))
+			store.setDefault(
+				IWOLipsPluginConstants.PREF_PBWO_PROJECT_EXCLUDED_CLASSES,
+				PreferencesMessages.getString(
+					IWOLipsPluginConstants.PREF_PBWO_PROJECT_EXCLUDED_CLASSES));
+		if (Preferences.SET_DEFAULTS_STRING == null
+			|| Preferences.SET_DEFAULTS_STRING.equals(
+				IWOLipsPluginConstants
+					.PREF_PBWO_PROJECT_INCLUDED_WOAPP_RESOURCES))
+			store.setDefault(
+				IWOLipsPluginConstants
+					.PREF_PBWO_PROJECT_INCLUDED_WOAPP_RESOURCES,
+				PreferencesMessages.getString(
+					IWOLipsPluginConstants
+						.PREF_PBWO_PROJECT_INCLUDED_WOAPP_RESOURCES));
+		if (Preferences.SET_DEFAULTS_STRING == null
+			|| Preferences.SET_DEFAULTS_STRING.equals(
+				IWOLipsPluginConstants
+					.PREF_PBWO_PROJECT_EXCLUDED_WOAPP_RESOURCES))
+			store.setDefault(
+				IWOLipsPluginConstants
+					.PREF_PBWO_PROJECT_EXCLUDED_WOAPP_RESOURCES,
+				PreferencesMessages.getString(
+					IWOLipsPluginConstants
+						.PREF_PBWO_PROJECT_EXCLUDED_WOAPP_RESOURCES));
 		Preferences.SET_DEFAULTS_STRING = null;
 	}
 
@@ -220,4 +257,57 @@ public class Preferences {
 	public static IPreferenceStore getPreferenceStore() {
 		return WOLipsPlugin.getDefault().getPreferenceStore();
 	}
+
+	public static String[] getStringArrayForKey(String key) {
+		String string = Preferences.getString(key);
+		if (string == null)
+			return new String[0];
+		StringTokenizer stringTokenizer = new StringTokenizer(string, ",");
+		Vector vector = new Vector();
+		while (stringTokenizer.hasMoreElements()) {
+			vector.add(stringTokenizer.nextElement());
+		}
+		String[] stringArray = new String[vector.size()];
+		for (int i = 0; i < vector.size(); i++) {
+			stringArray[i] = (String) vector.elementAt(i);
+		}
+		return stringArray;
+	}
+
+	public static IIncludeInfo[] getIncludeInfoForKey(String key) {
+		String string = Preferences.getString(key);
+		if (string == null)
+			return new IIncludeInfo[0];
+		StringTokenizer stringTokenizer = new StringTokenizer(string, ",");
+		Vector vector = new Vector();
+		while (stringTokenizer.hasMoreElements()) {
+			vector.add(stringTokenizer.nextElement());
+		}
+		IIncludeInfo[] includeInfo = new IIncludeInfo[vector.size()];
+		for (int i = 0; i < vector.size(); i++) {
+			includeInfo[i] = new IncludeInfo((String) vector.elementAt(i));
+		}
+		return includeInfo;
+	}
+
+	public static void setIncludeInfoForKey(String[] includeInfo, String key) {
+		String value = "";
+		for (int i = 0; i < includeInfo.length; i++) {
+			value += includeInfo[i];
+			if (i != (includeInfo.length - 1))
+				value += ",";
+		}
+		Preferences.setString(key, value);
+	}
+
+	private static class IncludeInfo implements IIncludeInfo {
+		private String pattern;
+
+		public IncludeInfo(String pattern) {
+			this.pattern = pattern;
+		}
+		public String getPattern() {
+			return pattern;
+		}
+	};
 }

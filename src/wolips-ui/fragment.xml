@@ -235,6 +235,30 @@
             class="org.objectstyle.wolips.ui.preferences.ProjectBuilderPreferencesPage"
             id="org.objectstyle.wolips.preferences.ProjectBuilderPreferencesPage">
       </page>
+      <page
+            name="%WOLips.preferences.projectbuilder.woappresourcesincludeviewName"
+            category="org.objectstyle.wolips.preferences.PreferencesPage/org.objectstyle.wolips.preferences.ProjectBuilderPreferencesPage"
+            class="org.objectstyle.wolips.ui.preferences.ProjectBuilderWOAppResourcesIncludePreferencesPage"
+            id="org.objectstyle.wolips.preferences.ProjectBuilderWOAppResourcesIncludePreferencesPage">
+      </page>
+      <page
+            name="%WOLips.preferences.projectbuilder.woappresourcesexcludeviewName"
+            category="org.objectstyle.wolips.preferences.PreferencesPage/org.objectstyle.wolips.preferences.ProjectBuilderPreferencesPage"
+            class="org.objectstyle.wolips.ui.preferences.ProjectBuilderWOAppResourcesExcludePreferencesPage"
+            id="org.objectstyle.wolips.ui.preferences.ProjectBuilderWOAppResourcesExcludePreferencesPage">
+      </page>
+      <page
+            name="%WOLips.preferences.projectbuilder.classesincludeviewName"
+            category="org.objectstyle.wolips.preferences.PreferencesPage/org.objectstyle.wolips.preferences.ProjectBuilderPreferencesPage"
+            class="org.objectstyle.wolips.ui.preferences.ProjectBuilderClassesIncludePreferencesPage"
+            id="org.objectstyle.wolips.ui.preferences.ProjectBuilderClassesIncludePreferencesPage">
+      </page>
+      <page
+            name="%WOLips.preferences.projectbuilder.classesexcludeviewName"
+            category="org.objectstyle.wolips.preferences.PreferencesPage/org.objectstyle.wolips.preferences.ProjectBuilderPreferencesPage"
+            class="org.objectstyle.wolips.ui.preferences.ProjectBuilderClassesExcludePreferencesPage"
+            id="org.objectstyle.wolips.ui.preferences.ProjectBuilderClassesExcludePreferencesPage">
+      </page>
    </extension>
 <!-- =================================================================================== -->
 <!-- Extension: Decorators                                                               -->
