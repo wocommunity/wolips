@@ -79,7 +79,19 @@
         <delete file="${dist.base}/${project.name}-src-${project.version}.tar"/>
     </target>
     
-
+    
+    <!-- ============================================= -->
+    <!-- Deploys WOProject web site in a local         -->
+    <!-- directory.                                    -->
+    <!-- ============================================= -->
+    <target name="deploy-web" depends="prepare,java,doc,api" if="deploy.web">
+         <mkdir dir="${deploy.web}/woproject"/>
+             
+         <copy todir="${deploy.web}/woproject">
+             <fileset dir="${dist}/doc"/>
+         </copy>
+    </target>
+    
 
     <!-- ============================================= -->
     <!-- Compiles Java classes                         -->
