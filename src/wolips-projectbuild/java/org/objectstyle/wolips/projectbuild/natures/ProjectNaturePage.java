@@ -225,6 +225,8 @@ public class ProjectNaturePage extends PropertyPage implements IAdaptable {
 				} else {
 					woLipsProject.getNaturesAccessor().setAntNature(_woIsFrameworkCheck.getSelection(), false);
 				}
+			} else {
+        woLipsProject.getNaturesAccessor().removeWOLipsNatures();
 			}
 
 		} catch (CoreException up) {
