@@ -67,9 +67,8 @@ import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaElementDelta;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
-import org.objectstyle.wolips.datasets.project.IWOLipsProject;
+import org.objectstyle.wolips.datasets.adaptable.Project;
 import org.objectstyle.wolips.datasets.project.PBProjectUpdater;
-import org.objectstyle.wolips.datasets.project.WOLipsCore;
 import org.objectstyle.wolips.jdt.JdtPlugin;
 import org.objectstyle.wolips.jdt.ant.UpdateFrameworkIncludeFiles;
 import org.objectstyle.wolips.jdt.ant.UpdateOtherClasspathIncludeFiles;
@@ -128,10 +127,11 @@ public class JavaElementChangeListener implements IElementChangedListener {
 					foundChangedElements))
 					continue;
 				javaProjectChanges = true;
-				IWOLipsProject woLipsProject = null;
+				Project woLipsProject = null;
 				try {
-					woLipsProject = WOLipsCore.createProject(projectToExamine);
-					if (woLipsProject.getNaturesAccessor().hasWOLipsNature()) {
+					woLipsProject = (Project) ( projectToExamine)
+					.getAdapter(Project.class);
+					if (woLipsProject.hasWOLipsNature()) {
 						UpdateOtherClasspathIncludeFiles updateOtherClasspathIncludeFiles =
 							new UpdateOtherClasspathIncludeFiles();
 						updateOtherClasspathIncludeFiles.setIProject(

@@ -74,21 +74,17 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.PropertyPage;
-import org.objectstyle.wolips.datasets.project.INaturesAccessor;
-import org.objectstyle.wolips.datasets.project.IWOLipsProject;
-import org.objectstyle.wolips.datasets.project.WOLipsCore;
+import org.objectstyle.wolips.datasets.adaptable.Project;
 import org.objectstyle.wolips.projectbuild.ProjectBuildPlugin;
 import org.objectstyle.wolips.ui.UIPlugin;
 
 /**
  * @author ulrich
- *
+ * 
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public class ProjectNaturePage extends PropertyPage
-		implements
-			IAdaptable {
+public class ProjectNaturePage extends PropertyPage implements IAdaptable {
 	private static final String BUILD_STYLE_TITLE = " Build style";
 	private static final String BUILD_PARAMS_TITLE = " Build parameters";
 	private static final String PROJECT_KIND_TITLE = " Project kind";
@@ -111,7 +107,7 @@ public class ProjectNaturePage extends PropertyPage
 	 * @param woLipsProject
 	 * @throws CoreException
 	 */
-	private void _addFirstSection(Composite parent, IWOLipsProject woLipsProject)
+	private void _addFirstSection(Composite parent, Project project)
 			throws CoreException {
 		Composite group = new Composite(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
@@ -121,16 +117,15 @@ public class ProjectNaturePage extends PropertyPage
 		_woNatureCheck = new Button(group, SWT.CHECK | SWT.LEFT);
 		_woNatureCheck.setText(WO_NATURE_TITLE);
 		_woNatureCheck.setEnabled(true);
-		_woNatureCheck.setSelection(woLipsProject.getNaturesAccessor()
-				.hasWOLipsNature());
+		_woNatureCheck.setSelection(project.hasWOLipsNature());
 	}
 	/**
 	 * @param parent
 	 * @param woLipsProject
 	 * @throws CoreException
 	 */
-	private void _addBuildStyleSection(Composite parent,
-			IWOLipsProject woLipsProject) throws CoreException {
+	private void _addBuildStyleSection(Composite parent, Project project)
+			throws CoreException {
 		Composite group = _createLabelledComposite(parent, BUILD_STYLE_TITLE);
 		// project kind field (is framework?)
 		_woIsIncrementalButton = new Button(group, SWT.RADIO | SWT.LEFT);
@@ -145,8 +140,7 @@ public class ProjectNaturePage extends PropertyPage
 		fd = new FormData();
 		fd.left = new FormAttachment(_woIsIncrementalButton, 0);
 		antButton.setLayoutData(fd);
-		boolean isIncremental = woLipsProject.getNaturesAccessor()
-				.isIncremental();
+		boolean isIncremental = project.isIncremental();
 		_woIsIncrementalButton.setSelection(isIncremental);
 		antButton.setSelection(!isIncremental);
 		Label noteTitle = new Label(group, SWT.BOLD);
@@ -168,8 +162,8 @@ public class ProjectNaturePage extends PropertyPage
 	 * @param woLipsProject
 	 * @throws CoreException
 	 */
-	private void _addProjectKindSection(Composite parent,
-			IWOLipsProject woLipsProject) throws CoreException {
+	private void _addProjectKindSection(Composite parent, Project project)
+			throws CoreException {
 		Composite group = _createLabelledComposite(parent, PROJECT_KIND_TITLE);
 		// project kind field (is framework?)
 		_woIsApplicationButton = new Button(group, SWT.RADIO | SWT.LEFT);
@@ -184,7 +178,7 @@ public class ProjectNaturePage extends PropertyPage
 		fd = new FormData();
 		fd.left = new FormAttachment(_woIsApplicationButton, 0);
 		_woIsFrameworkButton.setLayoutData(fd);
-		boolean isFramework = woLipsProject.getNaturesAccessor().isFramework();
+		boolean isFramework = project.isFramework();
 		_woIsFrameworkButton.setSelection(isFramework);
 		_woIsApplicationButton.setSelection(!isFramework);
 	}
@@ -224,8 +218,8 @@ public class ProjectNaturePage extends PropertyPage
 	 * @param woLipsProject
 	 * @throws CoreException
 	 */
-	private void _addTargetBuilderSection(Composite parent,
-			IWOLipsProject woLipsProject) throws CoreException {
+	private void _addTargetBuilderSection(Composite parent, Project project)
+			throws CoreException {
 		Composite group = new Composite(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		layout.numColumns = 3;
@@ -234,8 +228,7 @@ public class ProjectNaturePage extends PropertyPage
 		_woTargetBuilderCheck = new Button(group, SWT.CHECK | SWT.LEFT);
 		_woTargetBuilderCheck.setText(WO_USE_TARGET_BUILDET_TITLE);
 		_woTargetBuilderCheck.setEnabled(true);
-		_woTargetBuilderCheck.setSelection(woLipsProject.getNaturesAccessor()
-				.isTargetBuilderInstalled());
+		_woTargetBuilderCheck.setSelection(project.isTargetBuilderInstalled());
 	}
 	private void enableWidgets(boolean enabled) {
 		_woTargetBuilderCheck.setEnabled(enabled);
@@ -254,15 +247,15 @@ public class ProjectNaturePage extends PropertyPage
 		data.grabExcessHorizontalSpace = true;
 		composite.setLayoutData(data);
 		try {
-			IWOLipsProject woLipsProject = this.getWOLipsProject();
-			_addFirstSection(composite, woLipsProject);
+			Project project = this.getProject();
+			_addFirstSection(composite, project);
 			// --
-			_addBuildStyleSection(composite, woLipsProject);
+			_addBuildStyleSection(composite, project);
 			// --
-			_addProjectKindSection(composite, woLipsProject);
+			_addProjectKindSection(composite, project);
 			// --
 			_addPatternSection(composite);
-			_addTargetBuilderSection(composite, woLipsProject);
+			_addTargetBuilderSection(composite, project);
 			_woIsIncrementalButton
 					.addSelectionListener(new SelectionListener() {
 						public void widgetSelected(SelectionEvent e) {
@@ -272,7 +265,7 @@ public class ProjectNaturePage extends PropertyPage
 							enableWidgets(_woIsIncrementalButton.getSelection());
 						}
 					});
-			setDefaults(woLipsProject);
+			setDefaults(project);
 			enableWidgets(_woIsIncrementalButton.getSelection());
 		} catch (CoreException exception) {
 			UIPlugin.getDefault().getPluginLogger().log(exception);
@@ -301,18 +294,15 @@ public class ProjectNaturePage extends PropertyPage
 	 * @see org.eclipse.jface.preference.PreferencePage#performDefaults()
 	 */
 	protected void performDefaults() {
-		try {
-			setDefaults(getWOLipsProject());
-		} catch (CoreException e) {
-			e.printStackTrace();
-		}
+		setDefaults(getProject());
 	}
 	/**
 	 *  
 	 */
-	private void setDefaults(IWOLipsProject woLipsProject) {
-		Map args = woLipsProject.getBuilderAccessor().getBuilderArgs();
-		_principalClass.setText(_getArg(args, ProjectBuildPlugin.NS_PRINCIPAL_CLASS, ""));
+	private void setDefaults(Project project) {
+		Map args = project.getBuilderArgs();
+		_principalClass.setText(_getArg(args,
+				ProjectBuildPlugin.NS_PRINCIPAL_CLASS, ""));
 	}
 	/*
 	 * (non-Javadoc)
@@ -321,31 +311,29 @@ public class ProjectNaturePage extends PropertyPage
 	 */
 	public boolean performOk() {
 		// store the value in the owner text field
-		IWOLipsProject woLipsProject;
+		Project project;
 		try {
-			woLipsProject = this.getWOLipsProject();
-			INaturesAccessor naturesAccessor = woLipsProject
-					.getNaturesAccessor();
+			project = this.getProject();
 			if (_woNatureCheck.getSelection()) {
 				if (_woIsIncrementalButton.getSelection()) {
 					Map args = new HashMap();
-					args.put(ProjectBuildPlugin.NS_PRINCIPAL_CLASS, _principalClass.getText());
-					naturesAccessor.setIncrementalNature(_woIsFrameworkButton
+					args.put(ProjectBuildPlugin.NS_PRINCIPAL_CLASS,
+							_principalClass.getText());
+					project.setIncrementalNature(_woIsFrameworkButton
 							.getSelection(), args);
 				} else {
-					naturesAccessor.setAntNature(_woIsFrameworkButton
-							.getSelection());
+					project.setAntNature(_woIsFrameworkButton.getSelection());
 				}
 			} else {
-				naturesAccessor.removeWOLipsNatures();
+				project.removeWOLipsNatures();
 			}
 			boolean selection = _woTargetBuilderCheck.getSelection();
-			naturesAccessor.useTargetBuilder(selection);
+			project.useTargetBuilder(selection);
 		} catch (CoreException up) {
 			UIPlugin.getDefault().getPluginLogger().log(up);
 			return false;
 		} finally {
-			woLipsProject = null;
+			project = null;
 		}
 		return true;
 	}
@@ -375,11 +363,10 @@ public class ProjectNaturePage extends PropertyPage
 		return (Platform.getAdapterManager().getAdapter(this, theClass));
 	}
 	/**
-	 * @return WOLipsProject
-	 * @throws CoreException
+	 * @return Project
 	 */
-	public IWOLipsProject getWOLipsProject() throws CoreException {
-		return WOLipsCore.createProject(this._getProject());
+	public Project getProject() {
+		return (Project) (this._getProject()).getAdapter(Project.class);
 	}
 	private Button _woTargetBuilderCheck;
 	private Button _woNatureCheck;

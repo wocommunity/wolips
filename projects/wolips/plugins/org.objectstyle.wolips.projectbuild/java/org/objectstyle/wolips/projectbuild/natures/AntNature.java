@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 The ObjectStyle Group 
+ * Copyright (c) 2002 - 2004 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -59,12 +59,11 @@ package org.objectstyle.wolips.projectbuild.natures;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.runtime.CoreException;
-import org.objectstyle.wolips.datasets.project.IWOLipsProject;
-import org.objectstyle.wolips.datasets.project.WOLipsCore;
+import org.objectstyle.wolips.datasets.adaptable.Project;
 
 /**
  * @author mnolte
- *
+ *  
  */
 public class AntNature implements IProjectNature {
 	private IProject project;
@@ -76,21 +75,21 @@ public class AntNature implements IProjectNature {
 	}
 
 	/**
-	  * @see org.eclipse.core.resources.IProjectNature#configure()
-	  */
+	 * @see org.eclipse.core.resources.IProjectNature#configure()
+	 */
 	public void configure() throws CoreException {
-		IWOLipsProject woLipsProject =
-			WOLipsCore.createProject(this.getProject());
-		woLipsProject.getBuilderAccessor().installAntBuilder();
+		Project project = (Project) (this.getProject())
+				.getAdapter(Project.class);
+		project.installAntBuilder();
 	}
 
 	/**
 	 * @see org.eclipse.core.resources.IProjectNature#deconfigure()
 	 */
 	public void deconfigure() throws CoreException {
-		IWOLipsProject woLipsProject =
-			WOLipsCore.createProject(this.getProject());
-		woLipsProject.getBuilderAccessor().removeAntBuilder();
+		Project project = (Project) (this.getProject())
+				.getAdapter(Project.class);
+		project.removeAntBuilder();
 	}
 	/**
 	 * @see org.eclipse.core.resources.IProjectNature#getProject()

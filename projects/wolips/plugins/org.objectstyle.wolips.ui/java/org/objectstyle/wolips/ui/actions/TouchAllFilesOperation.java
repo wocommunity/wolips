@@ -58,14 +58,14 @@ package org.objectstyle.wolips.ui.actions;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
-import org.objectstyle.wolips.datasets.project.IWOLipsProject;
-import org.objectstyle.wolips.datasets.project.WOLipsCore;
+import org.objectstyle.wolips.datasets.adaptable.Project;
 import org.objectstyle.wolips.ui.UIPlugin;
 
 /**
@@ -75,24 +75,29 @@ import org.objectstyle.wolips.ui.UIPlugin;
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
 public class TouchAllFilesOperation extends WorkspaceModifyOperation {
-	private IProject project;
+	private IProject iProject;
 	
-	public TouchAllFilesOperation (IProject project) {
-		this.project = project;
+	/**
+	 * @param iProject
+	 */
+	public TouchAllFilesOperation (IProject iProject) {
+		this.iProject = iProject;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.eclipse.ui.actions.WorkspaceModifyOperation#execute(org.eclipse.core.runtime.IProgressMonitor)
+	 */
 	protected void execute(IProgressMonitor monitor) throws CoreException, InvocationTargetException, InterruptedException {
-		IWOLipsProject woLipsProject =
-			WOLipsCore.createProject(project);
+		Project project =
+			project = (Project) (iProject)
+			.getAdapter(Project.class);
 		try {
 			//remove all existing entries
-			woLipsProject
-				.getPBProjectFilesAccessor()
-				.cleanAllFileTables();
+			project.cleanAllFileTables();
 		} catch (IOException e) {
 			UIPlugin.getDefault().getPluginLogger().log(e);
 		}
-		this.touch(project, monitor);
+		this.touch(iProject, monitor);
 	}
 	
 	private void touch(IResource resource, IProgressMonitor monitor) throws CoreException {

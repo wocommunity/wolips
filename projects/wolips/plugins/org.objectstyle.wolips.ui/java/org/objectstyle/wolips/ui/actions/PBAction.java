@@ -59,14 +59,13 @@ package org.objectstyle.wolips.ui.actions;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
-import org.objectstyle.wolips.datasets.project.IWOLipsProject;
-import org.objectstyle.wolips.datasets.project.WOLipsCore;
+import org.objectstyle.wolips.datasets.adaptable.Project;
 import org.objectstyle.wolips.ui.UIPlugin;
 
 /**
  * @author uli
- *
- *The Action for updating the PB.project file.
+ * 
+ * The Action for updating the PB.project file.
  */
 public class PBAction extends ActionOnIResource {
 
@@ -85,14 +84,14 @@ public class PBAction extends ActionOnIResource {
 		super.dispose();
 	}
 	/**
-	 * Updates the PB.project file.
-	 * Will be invoked by the popup menu.
+	 * Updates the PB.project file. Will be invoked by the popup menu.
 	 */
 	public void run(IAction action) {
 		if (project() != null) {
 			try {
 				if (action.getId().equals(PBAction.UpdatePBProjectID)) {
-					TouchAllFilesOperation touchAllFilesOperation = new TouchAllFilesOperation(project());
+					TouchAllFilesOperation touchAllFilesOperation = new TouchAllFilesOperation(
+							project());
 					touchAllFilesOperation.run(new NullProgressMonitor());
 				}
 			} catch (Exception ex) {
@@ -101,9 +100,12 @@ public class PBAction extends ActionOnIResource {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action.IAction, org.eclipse.jface.viewers.ISelection)
+	 */
 	/**
-	 * Calls super.
-	 * Inactivates the Action if the project has no WOBuilder installed
+	 * Calls super. Inactivates the Action if the project has no WOBuilder
+	 * installed
 	 */
 	public void selectionChanged(IAction action, ISelection selection) {
 		super.selectionChanged(action, selection);
@@ -111,10 +113,9 @@ public class PBAction extends ActionOnIResource {
 			if (action.getId().equals(PBAction.UpdatePBProjectID)) {
 				action.setEnabled(true);
 				try {
-					IWOLipsProject woLipsProject =
-						WOLipsCore.createProject(project());
-					action.setEnabled(
-						woLipsProject.getNaturesAccessor().hasWOLipsNature());
+					Project project = (Project) (project())
+							.getAdapter(Project.class);
+					action.setEnabled(project.hasWOLipsNature());
 				} catch (Exception exception) {
 					UIPlugin.getDefault().getPluginLogger().log(exception);
 				}

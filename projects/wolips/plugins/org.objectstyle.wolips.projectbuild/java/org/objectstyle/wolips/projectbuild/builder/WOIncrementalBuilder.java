@@ -62,6 +62,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -86,9 +87,6 @@ import org.objectstyle.wolips.datasets.adaptable.Project;
 import org.objectstyle.wolips.datasets.pattern.IStringMatcher;
 import org.objectstyle.wolips.datasets.pattern.StringListMatcher;
 import org.objectstyle.wolips.datasets.pattern.StringUtilities;
-import org.objectstyle.wolips.datasets.project.INaturesAccessor;
-import org.objectstyle.wolips.datasets.project.IWOLipsProject;
-import org.objectstyle.wolips.datasets.project.WOLipsCore;
 import org.objectstyle.wolips.projectbuild.ProjectBuildPlugin;
 import org.objectstyle.wolips.projectbuild.natures.IncrementalNature;
 import org.objectstyle.wolips.projectbuild.util.ResourceUtilities;
@@ -229,12 +227,11 @@ public class WOIncrementalBuilder extends IncrementalProjectBuilder {
 		return null;
 	}
 	private void _createInfoPlist() throws CoreException {
-		IProject project = getProject();
-		IWOLipsProject wolipsProject = WOLipsCore.createProject(project);
-		IncrementalNature won = (IncrementalNature) wolipsProject
-				.getNaturesAccessor().getIncrementalNature();
+		Project project = (Project) (this.getProject())
+		.getAdapter(Project.class);
+		IncrementalNature won = (IncrementalNature) project.getIncrementalNature();
 		HashMap customInfo = null;
-		IFile cipl = project.getFile("CustomInfo.plist");
+		IFile cipl = this.getProject().getFile("CustomInfo.plist");
 		if (cipl.exists()) {
 			try {
 				Object o = PropertyListSerialization.propertyListFromFile(cipl
@@ -526,9 +523,9 @@ public class WOIncrementalBuilder extends IncrementalProjectBuilder {
 				throws CoreException {
 			_monitor = monitor;
 			_project = project;
-			IWOLipsProject wolipsProject = WOLipsCore.createProject(project);
-			INaturesAccessor na = wolipsProject.getNaturesAccessor();
-			_woNature = (IncrementalNature) na.getIncrementalNature();
+			Project wolipsProject = (Project) (project)
+			.getAdapter(Project.class);
+			_woNature = (IncrementalNature) wolipsProject.getIncrementalNature();
 			_buildPath = _woNature.getBuildPath();
 			_distPath = new Path("dist");
 			_resultMatcher = new StringListMatcher("*.woa,*.framework");

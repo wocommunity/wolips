@@ -3,7 +3,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0
  * 
- * Copyright (c) 2002 The ObjectStyle Group and individual authors of the
+ * Copyright (c) 2002 - 2004 The ObjectStyle Group and individual authors of the
  * software. All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -54,8 +54,7 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
-import org.objectstyle.wolips.datasets.project.IWOLipsProject;
-import org.objectstyle.wolips.datasets.project.WOLipsCore;
+import org.objectstyle.wolips.datasets.adaptable.Project;
 import org.objectstyle.wolips.datasets.resources.IWOLipsModel;
 import org.objectstyle.wolips.jdt.JdtPlugin;
 import org.objectstyle.wolips.variables.VariablesPlugin;
@@ -159,21 +158,18 @@ public class UpdateFrameworkIncludeFiles extends UpdateIncludeFiles {
 						if (referencedProjects[j].isAccessible()
 							&& referencedProjects[j].isOpen()) {
 							try {
-								IWOLipsProject referencedWOLipsProject =
-									WOLipsCore.createProject(
-										referencedProjects[j]);
+								Project referencedWOLipsProject = (Project) (referencedProjects[j])
+								.getAdapter(Project.class);
 								if (referencedWOLipsProject != null
 									&& referencedWOLipsProject
-										.getNaturesAccessor()
 										.hasWOLipsNature()
 									&& referencedWOLipsProject
-										.getNaturesAccessor()
 										.isFramework()) {
 									newFrameworkEntries.append(
 										"Library/Frameworks/");
 									newFrameworkEntries.append(
 										referencedWOLipsProject
-											.getProject()
+											.getIProject()
 											.getName());
 									newFrameworkEntries.append(".");
 									newFrameworkEntries.append(
