@@ -56,16 +56,26 @@
 
 package org.objectstyle.wolips.builder;
 
+import java.lang.reflect.InvocationTargetException;
+
 import org.eclipse.ant.core.AntRunner;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.debug.core.DebugPlugin;
+import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
+import org.eclipse.debug.internal.ui.DebugUIPlugin;
+import org.eclipse.debug.ui.CommonTab;
+import org.eclipse.jface.dialogs.ProgressMonitorDialog;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.externaltools.model.IExternalToolConstants;
+import org.eclipse.ui.externaltools.model.ToolUtil;
 import org.objectstyle.wolips.plugin.IWOLipsPluginConstants;
 import org.objectstyle.wolips.plugin.WOLipsPlugin;
 import org.objectstyle.wolips.preferences.Preferences;
@@ -80,33 +90,37 @@ import org.objectstyle.wolips.preferences.Preferences;
  */
 public class RunAnt {
 
+	/**
+	 * Method asAnt.
+	 * @param buildFile
+	 * @param monitor
+	 * @throws Exception
+	 */
 	public static void asAnt(String buildFile, IProgressMonitor monitor)
 		throws Exception {
 		AntRunner runner = new AntRunner();
 		runner.setBuildFileLocation(buildFile);
 		//runner.setArguments("-Dmessage=Building -verbose");
-		monitor.subTask(BuildMessages.getString("Build.SubTask.Name") + " " + buildFile);
+		monitor.subTask(
+			BuildMessages.getString("Build.SubTask.Name") + " " + buildFile);
 		runner.run(new SubProgressMonitor(monitor, 1));
 	}
 
+	/**
+	 * Method asExternalTool.
+	 * @param buildFile
+	 * @param kind
+	 * @param monitor
+	 * @throws Exception
+	 */
 	public static void asExternalTool(
-		String buildFile,
-		String buildDirectory,
+		IFile buildFile,
 		int kind,
 		IProgressMonitor monitor)
 		throws Exception {
-		ILaunchConfigurationType type =
-			DebugPlugin
-				.getDefault()
-				.getLaunchManager()
-				.getLaunchConfigurationType(
-				IExternalToolConstants.ID_ANT_LAUNCH_CONFIGURATION_TYPE);
-		ILaunchConfigurationWorkingCopy config = null;
+		ILaunchConfiguration config = null;
 		try {
-			config =
-				type.newInstance(
-					null,
-					BuildMessages.getString("Build.ExternalTool.Name"));
+			config = RunAnt.createDefaultLaunchConfiguration(buildFile);
 		} catch (CoreException e) {
 			WOLipsPlugin.handleException(
 				Display.getCurrent().getActiveShell(),
@@ -114,35 +128,12 @@ public class RunAnt {
 				BuildMessages.getString("Build.Exception"));
 			return;
 		}
-		config.setAttribute(IExternalToolConstants.ATTR_LOCATION, buildFile);
-		config.setAttribute(
-			IExternalToolConstants.ATTR_ANT_PROPERTY_FILES,
-			buildDirectory + "/build.properties");
-		/*config.setAttribute(
-					IExternalToolConstants.ATTR_WORKING_DIRECTORY, buildDirectory);*/
-		config.setAttribute(
-			IExternalToolConstants.ATTR_RUN_IN_BACKGROUND,
-			true);
-		if (Preferences
-			.getBoolean(IWOLipsPluginConstants.PREF_SHOW_BUILD_OUTPUT)) {
-			config.setAttribute(
-				IExternalToolConstants.ATTR_CAPTURE_OUTPUT,
-				true);
-			config.setAttribute(IExternalToolConstants.ATTR_SHOW_CONSOLE, true);
-		} else {
-			config.setAttribute(
-				IExternalToolConstants.ATTR_CAPTURE_OUTPUT,
-				false);
-			config.setAttribute(
-				IExternalToolConstants.ATTR_SHOW_CONSOLE,
-				false);
-		}
-		monitor.subTask(BuildMessages.getString("Build.SubTask.Name"));
-		config.launch(
+		//monitor.subTask(BuildMessages.getString("Build.SubTask.Name"));
+		/*config.launch(
 			ILaunchManager.RUN_MODE,
-			new SubProgressMonitor(monitor, 1));
-		/*
-		if (kind == IncrementalProjectBuilder.AUTO_BUILD)
+			new SubProgressMonitor(monitor, 1));*/
+		RunAnt.launch(config, ILaunchManager.RUN_MODE);
+		/*if (kind == IncrementalProjectBuilder.AUTO_BUILD)
 			config.setAttribute(
 				IExternalToolConstants.VAR_BUILD_TYPE,
 				IExternalToolConstants.BUILD_TYPE_AUTO);
@@ -155,5 +146,108 @@ public class RunAnt {
 				IExternalToolConstants.VAR_BUILD_TYPE,
 				IExternalToolConstants.BUILD_TYPE_INCREMENTAL);
 		config.setAttribute(IExternalToolConstants.ATTR_LOCATION, buildFile);*/
+	}
+
+	/**
+	 * Launches the given launch configuration in the specified mode with a
+	 * progress dialog. Reports any exceptions that occurr in an error dilaog.
+	 * 
+	 * @param configuration the configuration to launch
+	 * @param mode launch mode - run or debug
+	 */
+	public static void launch(
+		final ILaunchConfiguration configuration,
+		final String mode) {
+		ProgressMonitorDialog dialog =
+			new ProgressMonitorDialog(DebugUIPlugin.getShell());
+		IRunnableWithProgress runnable = new IRunnableWithProgress() {
+			public void run(IProgressMonitor monitor)
+				throws InvocationTargetException, InterruptedException {
+				try {
+					configuration.launch(mode, monitor);
+				} catch (CoreException e) {
+					throw new InvocationTargetException(e);
+				}
+			}
+		};
+		try {
+			dialog.run(true, true, runnable);
+		} catch (InvocationTargetException e) {
+			Throwable targetException = e.getTargetException();
+			Throwable t = e;
+			if (targetException instanceof CoreException) {
+				t = targetException;
+			}
+			DebugUIPlugin.errorDialog(
+				DebugUIPlugin.getShell(),
+				"Error",
+				"Exception occurred during launch",
+				t);
+		} catch (InterruptedException e) {
+			// cancelled
+		}
+	}
+
+	/**
+	 * Creates and returns a default launch configuration for the given file.
+	 * 
+	 * @param file
+	 * @return default launch configuration
+	 */
+	protected static ILaunchConfiguration createDefaultLaunchConfiguration(IFile file)
+		throws CoreException {
+		ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
+		ILaunchConfigurationType type =
+			manager.getLaunchConfigurationType(
+				IExternalToolConstants.ID_ANT_LAUNCH_CONFIGURATION_TYPE);
+		IPath path = file.getFullPath();
+		if (path.segmentCount() > 2) {
+			path = path.removeFirstSegments(path.segmentCount() - 2);
+		}
+		StringBuffer buffer = new StringBuffer();
+		String[] segments = path.segments();
+		for (int i = 0; i < segments.length; i++) {
+			String string = segments[i];
+			buffer.append(string);
+			buffer.append(" "); //$NON-NLS-1$
+		}
+		String name = buffer.toString().trim();
+		name = manager.generateUniqueLaunchConfigurationNameFrom(name);
+		ILaunchConfigurationWorkingCopy workingCopy =
+			type.newInstance(null, name);
+		StringBuffer buf = new StringBuffer();
+		ToolUtil.buildVariableTag(
+			IExternalToolConstants.VAR_WORKSPACE_LOC,
+			file.getFullPath().toString(),
+			buf);
+		workingCopy.setAttribute(
+			IExternalToolConstants.ATTR_LOCATION,
+			buf.toString());
+		workingCopy.setAttribute(
+			IExternalToolConstants.ATTR_RUN_IN_BACKGROUND,
+			true);
+
+		// set default for common settings
+		CommonTab tab = new CommonTab();
+		tab.setDefaults(workingCopy);
+		tab.dispose();
+		if (Preferences
+			.getBoolean(IWOLipsPluginConstants.PREF_SHOW_BUILD_OUTPUT)) {
+			workingCopy.setAttribute(
+				IExternalToolConstants.ATTR_CAPTURE_OUTPUT,
+				true);
+			workingCopy.setAttribute(
+				IExternalToolConstants.ATTR_SHOW_CONSOLE,
+				true);
+		} else {
+			workingCopy.setAttribute(
+				IExternalToolConstants.ATTR_CAPTURE_OUTPUT,
+				false);
+			workingCopy.setAttribute(
+				IExternalToolConstants.ATTR_SHOW_CONSOLE,
+				false);
+		}
+
+		return workingCopy;
 	}
 }
