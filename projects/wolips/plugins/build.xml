@@ -107,6 +107,7 @@
 	    <ant dir="org.objectstyle.wolips.cayenne.ant" target="all"/>
 	    <ant dir="org.objectstyle.wolips.team" target="all"/>
 	    <ant dir="org.objectstyle.wolips.about" target="all"/>
+	    <ant dir="org.objectstyle.wolips.jdom" target="all"/>
     </target>
     <!-- ========================================== -->
     <!-- Build dist.                                -->
@@ -136,6 +137,7 @@
 	    <ant dir="org.objectstyle.wolips.cayenne.ant" target="dist"/>
 	    <ant dir="org.objectstyle.wolips.team" target="dist"/>
 	    <ant dir="org.objectstyle.wolips.about" target="dist"/>
+	    <ant dir="org.objectstyle.wolips.jdom" target="dist"/>
 	</target>
 
     <!-- ========================================== -->
