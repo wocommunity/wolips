@@ -1,0 +1,185 @@
+/**
+* Courtesy of Jeff Martin <reportmill@yahoo.com>  and Josh from Report Mill
+* http://www.reportmill.com/
+*/
+
+
+options {
+	STATIC = false;
+}
+
+PARSER_BEGIN(Parser)
+
+package org.objectstyle.woenvironment.util;
+import java.io.*; 
+import java.util.*;
+
+
+public class Parser {
+   public Hashtable parseStrings;
+   
+public Parser() {
+    this(System.in);
+    }
+
+public Parser(String filename) throws FileNotFoundException {
+    this(new FileInputStream(filename));
+    }
+
+public Parser(File f) throws FileNotFoundException {
+    this(new FileInputStream(f));
+    }
+
+public Object propertyList() {
+  try {
+    return object();
+    }
+  catch (ParseException pe) {
+    System.err.println("Error parsing property list file: "+pe);
+    return null;
+    }
+  }
+
+public static void main(String args[]) {
+  Parser r = new Parser();
+  Object o = r.propertyList();
+  System.out.println(o);
+  }
+
+}
+PARSER_END(Parser)
+
+
+/* WHITE SPACES */
+
+SKIP :
+{
+ 	" "
+|	"\r"
+|	"\n"
+|	"\t"
+|	"\f"
+|  <"//" (~["\n","\r"])* ("\n" | "\r" | "\r\n")>
+}
+
+
+TOKEN :
+{ 
+	< INT:	("-")?(["0"-"9"])+ >
+|	< FLOAT: ("-")?((["0"-"9"])*"."(["0"-"9"])+)(["e","E"](["-","+"])?(["0"-"9"])+)? >
+}
+
+TOKEN :
+{ 
+	"="
+|	"("
+|	")"
+|	"{"
+|	"}"
+|	","
+|   ";"
+}
+
+TOKEN :
+{
+	< STRING:  (~[" ","\t","\r","\n","=","(",")","{","}",",",";","\""])+ >
+}
+
+SKIP :
+{
+  "\"" {}: WithinQuotedString
+}
+
+
+<WithinQuotedString> MORE :
+{
+ < (~["\\","\""])+ > {}
+}
+
+<WithinQuotedString> MORE :
+{
+  "\\\\" { image.setLength(image.length()-1);  }
+| "\\a" { int len = image.length(); image.setCharAt(len-2,(char)7); image.setLength(len-1); }
+| "\\b" { len = image.length(); image.setCharAt(len-2,'\b'); image.setLength(len-1); }
+| "\\t" { len = image.length(); image.setCharAt(len-2,'\t'); image.setLength(len-1); }
+| "\\n" { len = image.length(); image.setCharAt(len-2,'\n'); image.setLength(len-1); }
+| "\\v" { len = image.length(); image.setCharAt(len-2, (char)11); image.setLength(len-1); }
+| "\\f" { len = image.length(); image.setCharAt(len-2,'\f'); image.setLength(len-1); }
+| "\\\"" { len = image.length(); image.setCharAt(len-2,'"'); image.setLength(len-1); }
+| <"\\"["0"-"7"]["0"-"7"]["0"-"7"]> {
+        int oct;
+        len = image.length();
+        oct = ((int)(image.charAt(len-1)-'0')) +
+              8 * ((int)(image.charAt(len-2)-'0')) +
+              64 * ((int)(image.charAt(len-3)-'0'));
+        image.setCharAt(len-4, (char)oct);
+        image.setLength(len-3);
+        }
+| <"\\U"["0"-"9","a"-"f","A"-"F"]["0"-"9","a"-"f","A"-"F"]
+        ["0"-"9","a"-"f","A"-"F"]["0"-"9","a"-"f","A"-"F"] > {
+        int dig,c, base=1,hex=0;
+        len = image.length();
+        for(int i=0; i<4; ++i) {
+          c=(int)image.charAt(len-(i+1));
+          if (c<='9') c-='0';
+            else if (c<='F') c = (c -'A') + 10;
+              else c =(c -'a') + 10;
+          hex += c*base;
+          base*=16;
+          }
+        image.setCharAt(len-6, (char)hex);
+        image.setLength(len-5);
+        }
+
+}
+
+<WithinQuotedString> TOKEN :
+{
+  < QUOTED_STRING: "\"" > { image.setLength(image.length()-1); matchedToken.image = image.toString(); } : DEFAULT
+}
+
+
+
+
+
+Object object() :
+{Object node;}
+{
+    node=array()
+	{ return node; }
+|   node=dictionary() 
+        { return node; }
+|   node=leaf()
+        { return node; }
+}
+
+Object leaf() :
+{}
+{ 
+  <INT> { return Integer.valueOf(token.image); }
+| <FLOAT> { return Double.valueOf(token.image); }
+| <QUOTED_STRING> { return token.image; }
+| <STRING> { return token.image; }
+}
+
+HashMap dictionary() : 
+{ HashMap h;
+  Object key, val;
+}
+{
+  "{" {h = new HashMap();} (
+    key=object() "=" val=object() ";" { h.put(key,val); }
+    )*
+  "}" { return h; }
+}
+
+ArrayList  array() : 
+{ ArrayList v;
+  Object o;
+}
+{
+   "(" { v = new ArrayList(); } (
+      o=object() { v.add(o); }(",")? 
+     )*
+   ")" {return v;}
+}
