@@ -54,6 +54,7 @@
  *
  */
 package org.objectstyle.wolips.datasets.adaptable;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -66,8 +67,10 @@ import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.JavaCore;
 import org.objectstyle.wolips.datasets.DataSetsPlugin;
+
 /**
  * @author ulrich
  * 
@@ -79,15 +82,20 @@ public class ProjectBuilder extends ProjectFiles {
 	 * Comment for <code>BuilderNotFound</code>
 	 */
 	public static final int BuilderNotFound = -1;
+
 	protected static final String TARGET_BUILDER_ID = "org.objectstyle.wolips.targetbuilder.targetbuilder";
+
 	protected static final String INCREMENTAL_BUILDER_ID = "org.objectstyle.wolips.incrementalbuilder";
+
 	private static final String ANT_BUILDER_ID = "org.objectstyle.wolips.antbuilder";
+
 	/**
 	 * @param project
 	 */
 	protected ProjectBuilder(IProject project) {
 		super(project);
 	}
+
 	/**
 	 * Installs the target builder.
 	 * 
@@ -99,6 +107,7 @@ public class ProjectBuilder extends ProjectFiles {
 			this.installBuilderAtPosition(ProjectBuilder.TARGET_BUILDER_ID,
 					position, null);
 	}
+
 	/**
 	 * Removes the target builder.
 	 * 
@@ -114,6 +123,7 @@ public class ProjectBuilder extends ProjectFiles {
 		this.removeBuilder(ProjectBuilder.TARGET_BUILDER_ID);
 		return returnValue;
 	}
+
 	/**
 	 * Installs the ant builder.
 	 * 
@@ -123,6 +133,7 @@ public class ProjectBuilder extends ProjectFiles {
 		if (!this.isAntBuilderInstalled())
 			this.installBuilder(ProjectBuilder.ANT_BUILDER_ID);
 	}
+
 	/**
 	 * Removes the ant builder.
 	 * 
@@ -132,6 +143,7 @@ public class ProjectBuilder extends ProjectFiles {
 		if (this.isAntBuilderInstalled())
 			this.removeBuilder(ProjectBuilder.ANT_BUILDER_ID);
 	}
+
 	/**
 	 * Installs the incremetal builder.
 	 * 
@@ -141,6 +153,7 @@ public class ProjectBuilder extends ProjectFiles {
 		if (!this.isIncrementalBuilderInstalled())
 			this.installBuilder(ProjectBuilder.INCREMENTAL_BUILDER_ID);
 	}
+
 	/**
 	 * Removes the incremental builder.
 	 * 
@@ -150,6 +163,7 @@ public class ProjectBuilder extends ProjectFiles {
 		if (this.isIncrementalBuilderInstalled())
 			this.removeBuilder(ProjectBuilder.INCREMENTAL_BUILDER_ID);
 	}
+
 	/**
 	 * Installs the java builder.
 	 * 
@@ -159,6 +173,7 @@ public class ProjectBuilder extends ProjectFiles {
 		if (!this.isJavaBuilderInstalled())
 			this.installBuilder(JavaCore.BUILDER_ID);
 	}
+
 	/**
 	 * Installs the java builder.
 	 * 
@@ -169,6 +184,7 @@ public class ProjectBuilder extends ProjectFiles {
 		if (!this.isJavaBuilderInstalled())
 			this.installBuilderAtPosition(JavaCore.BUILDER_ID, position, null);
 	}
+
 	/**
 	 * Removes the incremental builder.
 	 * 
@@ -183,30 +199,35 @@ public class ProjectBuilder extends ProjectFiles {
 		this.removeBuilder(JavaCore.BUILDER_ID);
 		return returnValue;
 	}
+
 	/**
 	 * @return Return true if the target builder is installed.
 	 */
 	public boolean isTargetBuilderInstalled() {
 		return this.isBuilderInstalled(ProjectBuilder.TARGET_BUILDER_ID);
 	}
+
 	/**
 	 * @return Return true if the ant builder is installed.
 	 */
 	public boolean isAntBuilderInstalled() {
 		return this.isBuilderInstalled(ProjectBuilder.ANT_BUILDER_ID);
 	}
+
 	/**
 	 * @return Return true if the incremental builder is installed.
 	 */
 	public boolean isIncrementalBuilderInstalled() {
 		return this.isBuilderInstalled(ProjectBuilder.INCREMENTAL_BUILDER_ID);
 	}
+
 	/**
 	 * @return Return true if the java builder is installed.
 	 */
 	public boolean isJavaBuilderInstalled() {
 		return this.isBuilderInstalled(JavaCore.BUILDER_ID);
 	}
+
 	/**
 	 * @return The builer args.
 	 */
@@ -234,6 +255,7 @@ public class ProjectBuilder extends ProjectFiles {
 		}
 		return (result);
 	}
+
 	/**
 	 * @param name
 	 *            Name of a build command
@@ -243,6 +265,7 @@ public class ProjectBuilder extends ProjectFiles {
 		return (name.equals(ProjectBuilder.INCREMENTAL_BUILDER_ID) || name
 				.equals(ProjectBuilder.ANT_BUILDER_ID));
 	}
+
 	/**
 	 * Method removeJavaBuilder.
 	 * 
@@ -285,6 +308,7 @@ public class ProjectBuilder extends ProjectFiles {
 			newCom = null;
 		}
 	}
+
 	/**
 	 * Method installBuilder.
 	 * 
@@ -322,6 +346,7 @@ public class ProjectBuilder extends ProjectFiles {
 			command = null;
 		}
 	}
+
 	/**
 	 * Method isBuilderInstalled.
 	 * 
@@ -342,6 +367,7 @@ public class ProjectBuilder extends ProjectFiles {
 		}
 		return false;
 	}
+
 	/**
 	 * Method positionForBuilder.
 	 * 
@@ -365,6 +391,7 @@ public class ProjectBuilder extends ProjectFiles {
 		}
 		return BuilderNotFound;
 	}
+
 	/**
 	 * Method installBuilderAtPosition.
 	 * 
@@ -376,10 +403,13 @@ public class ProjectBuilder extends ProjectFiles {
 	private void installBuilderAtPosition(String aBuilder, int installPos,
 			Map arguments) throws CoreException {
 		if (installPos == ProjectBuilder.BuilderNotFound) {
-			DataSetsPlugin.getDefault().getPluginLogger()
-					.log("Somebody tries to install builder: "
-							+ aBuilder
-							+ " at an illegal position. This may happen if the removed builder does not exist.");
+			DataSetsPlugin
+					.getDefault()
+					.getPluginLogger()
+					.log(
+							"Somebody tries to install builder: "
+									+ aBuilder
+									+ " at an illegal position. This may happen if the removed builder does not exist.");
 			return;
 		}
 		IProjectDescription desc = this.getIProject().getDescription();
@@ -410,5 +440,20 @@ public class ProjectBuilder extends ProjectFiles {
 		}
 		desc.setBuildSpec(newIc);
 		this.getIProject().setDescription(desc, null);
+	}
+
+	/**
+	 * @return null if the project is not an application othewise invokes the
+	 *         same method on ProjectBuilder
+	 */
+	public IPath getWorkingDir() {
+		IPath path = null;
+		if (this.isAntBuilderInstalled()) {
+			path = this.getIProject().getFolder("dist").getLocation();
+		} else {
+			path = this.getIProject().getFolder("build").getLocation();
+		}
+		path = path.append(this.getIProject().getName() + ".woa");
+		return path;
 	}
 }

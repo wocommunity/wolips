@@ -54,6 +54,7 @@
  *
  */
 package org.objectstyle.wolips.datasets.adaptable;
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -62,11 +63,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
+
 import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.ProgressMonitorDialog;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -74,6 +77,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
+import org.objectstyle.wolips.datasets.DataSetsPlugin;
+
 /**
  * @author ulrich
  * 
@@ -82,20 +87,27 @@ import org.eclipse.ui.PlatformUI;
  */
 public class ProjectNatures extends ProjectBuilder {
 	private final String TargetBuilderNatureID = "org.objectstyle.wolips.targetbuilder.targetbuildernature";
+
 	private final String INCREMENTAL_FRAMEWORK_NATURE_ID = "org.objectstyle.wolips.incrementalframeworknature";
+
 	private final String ANT_FRAMEWORK_NATURE_ID = "org.objectstyle.wolips.antframeworknature";
+
 	private final String INCREMENTAL_APPLICATION_NATURE_ID = "org.objectstyle.wolips.incrementalapplicationnature";
+
 	private final String ANT_APPLICATION_NATURE_ID = "org.objectstyle.wolips.antapplicationnature";
+
 	private final String[] WOLIPS_NATURES = {
 			this.INCREMENTAL_FRAMEWORK_NATURE_ID, this.ANT_FRAMEWORK_NATURE_ID,
 			this.INCREMENTAL_APPLICATION_NATURE_ID,
-			this.ANT_APPLICATION_NATURE_ID};
+			this.ANT_APPLICATION_NATURE_ID };
+
 	/**
 	 * @param project
 	 */
 	protected ProjectNatures(IProject project) {
 		super(project);
 	}
+
 	/**
 	 * @return Returns true is the project has a WOLips nature.
 	 * @throws CoreException
@@ -103,6 +115,7 @@ public class ProjectNatures extends ProjectBuilder {
 	public boolean isWOLipsProject() throws CoreException {
 		return this.hasWOLipsNature();
 	}
+
 	/**
 	 * @param natureID
 	 * @return boolean
@@ -115,6 +128,7 @@ public class ProjectNatures extends ProjectBuilder {
 		}
 		return false;
 	}
+
 	private void addTargetBuilder() throws CoreException {
 		if (this.isTargetBuilderInstalled())
 			return;
@@ -126,6 +140,7 @@ public class ProjectNatures extends ProjectBuilder {
 		description.setNatureIds(newNatures);
 		this.getIProject().setDescription(description, null);
 	}
+
 	/**
 	 * @param value
 	 * @throws CoreException
@@ -139,6 +154,7 @@ public class ProjectNatures extends ProjectBuilder {
 		this.getIProject().setDescription(this.getIProject().getDescription(),
 				null);
 	}
+
 	/**
 	 * @param nature
 	 * @return boolean
@@ -149,6 +165,7 @@ public class ProjectNatures extends ProjectBuilder {
 			return false;
 		return this.getIProject().hasNature(nature);
 	}
+
 	/**
 	 * @return true if at least one of the WOLips natures is installed.
 	 * @throws CoreException
@@ -158,6 +175,7 @@ public class ProjectNatures extends ProjectBuilder {
 			return false;
 		return (this.isApplication() || this.isFramework());
 	}
+
 	/**
 	 * @return true only if one of the WOLips application natures is installed.
 	 *         False does not mean that this is a framework.
@@ -166,6 +184,7 @@ public class ProjectNatures extends ProjectBuilder {
 	public boolean isApplication() throws CoreException {
 		return (projectHasNature(this.ANT_APPLICATION_NATURE_ID) || projectHasNature(this.INCREMENTAL_APPLICATION_NATURE_ID));
 	}
+
 	/**
 	 * @return true only if one of the WOLips framework natures is installed.
 	 *         False does not mean that this is an application.
@@ -175,6 +194,7 @@ public class ProjectNatures extends ProjectBuilder {
 		return (this.projectHasNature(this.ANT_FRAMEWORK_NATURE_ID) || this
 				.projectHasNature(this.INCREMENTAL_FRAMEWORK_NATURE_ID));
 	}
+
 	/**
 	 * @return true only if one of the WOLips ant natures is installed. False
 	 *         does not mean that this is an incremental nature.
@@ -184,6 +204,7 @@ public class ProjectNatures extends ProjectBuilder {
 		return (this.projectHasNature(this.ANT_FRAMEWORK_NATURE_ID) || this
 				.projectHasNature(this.ANT_APPLICATION_NATURE_ID));
 	}
+
 	/**
 	 * @return true only if one of the WOLips incremental natures is installed.
 	 *         False does not mean that this is an ant nature.
@@ -193,6 +214,7 @@ public class ProjectNatures extends ProjectBuilder {
 		return (this.projectHasNature(this.INCREMENTAL_APPLICATION_NATURE_ID) || this
 				.projectHasNature(this.INCREMENTAL_FRAMEWORK_NATURE_ID));
 	}
+
 	/**
 	 * @param isFramework
 	 *            Replaces any currently set WOLips natures with the Ant Nature
@@ -206,6 +228,7 @@ public class ProjectNatures extends ProjectBuilder {
 			this.setWONature(this.ANT_APPLICATION_NATURE_ID, null);
 		}
 	}
+
 	/**
 	 * @param isFramework
 	 * @param buildArgs
@@ -222,6 +245,7 @@ public class ProjectNatures extends ProjectBuilder {
 			this.setWONature(this.INCREMENTAL_APPLICATION_NATURE_ID, buildArgs);
 		}
 	}
+
 	private void setWONature(String natureID, Map args) throws CoreException {
 		if (null == args) {
 			args = Collections.EMPTY_MAP;
@@ -260,6 +284,7 @@ public class ProjectNatures extends ProjectBuilder {
 			}
 		}
 	}
+
 	private void _setDescription(final IProject f_project,
 			final IProjectDescription f_desc) {
 		_showProgress(new IRunnableWithProgress() {
@@ -272,6 +297,7 @@ public class ProjectNatures extends ProjectBuilder {
 			}
 		});
 	}
+
 	private void _showProgress(IRunnableWithProgress rwp) {
 		IWorkbench workbench = PlatformUI.getWorkbench();
 		Shell shell = null;
@@ -292,6 +318,7 @@ public class ProjectNatures extends ProjectBuilder {
 			e.printStackTrace();
 		}
 	}
+
 	/**
 	 * @return IProjectNature[]
 	 * @throws CoreException
@@ -309,6 +336,7 @@ public class ProjectNatures extends ProjectBuilder {
 		return (IProjectNature[]) naturesVector
 				.toArray(new IProjectNature[naturesVector.size()]);
 	}
+
 	/**
 	 * @return String[]
 	 * @throws CoreException
@@ -316,6 +344,7 @@ public class ProjectNatures extends ProjectBuilder {
 	private String[] getProjectNatures() throws CoreException {
 		return this.getIProject().getDescription().getNatureIds();
 	}
+
 	/**
 	 * Remove all WOLips Natures and in consequence, their builders -- the
 	 * Natures do that in .deconfigure
@@ -336,6 +365,7 @@ public class ProjectNatures extends ProjectBuilder {
 		desc.setNatureIds(projectNatures);
 		_setDescription(this.getIProject(), desc);
 	}
+
 	/**
 	 * Calls configure on all WOLips natures.
 	 * 
@@ -348,6 +378,7 @@ public class ProjectNatures extends ProjectBuilder {
 			projectNatures[i].configure();
 		}
 	}
+
 	/**
 	 * @return May return null.
 	 * @throws CoreException
@@ -364,11 +395,27 @@ public class ProjectNatures extends ProjectBuilder {
 		}
 		return null;
 	}
+
 	/**
 	 * @return May return null.
 	 * @throws CoreException
 	 */
 	public IProjectNature getTargetbuilderNature() throws CoreException {
 		return this.getIProject().getNature(this.TargetBuilderNatureID);
+	}
+
+	/**
+	 * @return null if the project is not an application othewise invokes the
+	 *         same method on ProjectBuilder
+	 */
+	public IPath getWorkingDir() {
+		try {
+			if (this.isApplication()) {
+				return super.getWorkingDir();
+			}
+		} catch (CoreException coreException) {
+			DataSetsPlugin.getDefault().getPluginLogger().log(coreException);
+		}
+		return null;
 	}
 }
