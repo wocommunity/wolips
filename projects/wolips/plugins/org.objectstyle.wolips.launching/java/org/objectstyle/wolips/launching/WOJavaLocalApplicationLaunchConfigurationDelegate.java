@@ -293,8 +293,7 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 		StringBuffer vmArgs,
 		ILaunchConfiguration configuration,
 		ILaunch launch,
-		String mode)
-		throws CoreException {
+		String mode) {
 		return vmArgs;
 	}
 
