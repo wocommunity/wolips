@@ -57,7 +57,6 @@ package org.objectstyle.woproject.ant;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.util.List;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;

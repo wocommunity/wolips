@@ -58,7 +58,10 @@ package org.objectstyle.woproject.ant;
 
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Task;
-import org.apache.tools.ant.taskdefs.*;
+import org.apache.tools.ant.taskdefs.Chmod;
+import org.apache.tools.ant.taskdefs.Copy;
+import org.apache.tools.ant.taskdefs.Jar;
+import org.apache.tools.ant.taskdefs.Mkdir;
 
 /** 
  * Factory of standard ant tasks that are used as 

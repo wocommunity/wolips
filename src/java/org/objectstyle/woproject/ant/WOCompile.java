@@ -56,15 +56,14 @@
 package org.objectstyle.woproject.ant;
 
 import java.io.File;
-import java.io.FilenameFilter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Vector;
 
-import org.apache.tools.ant.*;
 import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.Project;
-import org.apache.tools.ant.ProjectHelper;
-import org.apache.tools.ant.taskdefs.*;
-import org.apache.tools.ant.types.*;
+import org.apache.tools.ant.taskdefs.Javac;
+import org.apache.tools.ant.types.Path;
 
 /**
  * Customized subclass of Javac used to locate jars in frameworks.

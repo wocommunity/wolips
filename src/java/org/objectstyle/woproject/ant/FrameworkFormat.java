@@ -60,7 +60,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.types.FilterSet;
 import org.apache.tools.ant.types.FilterSetCollection;
 
 /**

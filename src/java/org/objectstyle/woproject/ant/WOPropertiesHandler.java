@@ -55,12 +55,14 @@
  */
 package org.objectstyle.woproject.ant;
 
-import java.util.*;
+import java.io.File;
+import java.util.Enumeration;
+import java.util.Properties;
+import java.util.Vector;
 
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.ProjectComponent;
 import org.apache.tools.ant.taskdefs.Execute;
-import java.io.File;
 
 /**
  * Handles properties specific to WOProject tasks,

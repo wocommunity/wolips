@@ -57,12 +57,8 @@
 package org.objectstyle.woproject.ant;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.*;
 
 import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.DirectoryScanner;
-import org.apache.tools.ant.taskdefs.Copy;
 import org.apache.tools.ant.types.FileSet;
 
 /**

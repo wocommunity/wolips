@@ -55,8 +55,8 @@
  */
 package org.objectstyle.woproject.ant;
 
-import java.io.StringWriter;
 import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.Vector;
 
 /**

@@ -57,9 +57,7 @@ package org.objectstyle.woproject.ant;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
-import java.util.Vector;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;

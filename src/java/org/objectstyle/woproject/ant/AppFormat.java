@@ -56,13 +56,19 @@
 package org.objectstyle.woproject.ant;
 
 import java.io.File;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Vector;
 
-import org.apache.tools.ant.*;
+import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.DirectoryScanner;
+import org.apache.tools.ant.Project;
 import org.apache.tools.ant.types.FileSet;
-import org.apache.tools.ant.types.PatternSet;
 import org.apache.tools.ant.types.FilterSet;
 import org.apache.tools.ant.types.FilterSetCollection;
+import org.apache.tools.ant.types.PatternSet;
 
 /**
  * Subclass of ProjectFormat that defines file copying 

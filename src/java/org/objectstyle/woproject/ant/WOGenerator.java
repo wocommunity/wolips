@@ -58,7 +58,8 @@ package org.objectstyle.woproject.ant;
 
 import java.io.File;
 
-import org.objectstyle.cayenne.gen.*;
+import org.objectstyle.cayenne.gen.AntClassGenerator;
+import org.objectstyle.cayenne.gen.DefaultClassGenerator;
 import org.objectstyle.cayenne.map.DataMap;
 import org.objectstyle.cayenne.tools.CayenneGenerator;
 import org.objectstyle.cayenne.wocompat.EOModelProcessor;
