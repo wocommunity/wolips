@@ -404,36 +404,40 @@ public class ProjectHelper implements IWOLipsPluginConstants {
 		IFolder folderToRemove,
 		IProgressMonitor monitor)
 		throws InvocationTargetException {
-		IJavaProject actualJavaProject =
-			JavaCore.create(folderToRemove.getProject());
-		IClasspathEntry[] oldClassPathEntries;
-		try {
-			oldClassPathEntries = actualJavaProject.getRawClasspath();
-		} catch (JavaModelException e) {
-			throw new InvocationTargetException(e);
-		}
-		IClasspathEntry[] newClassPathEntries =
-			new IClasspathEntry[oldClassPathEntries.length - 1];
-		int offSet = 0;
-		for (int i = 0; i < oldClassPathEntries.length; i++) {
-			if (IClasspathEntry.CPE_SOURCE
-				== oldClassPathEntries[i].getEntryKind()
-				&& oldClassPathEntries[i].getPath().equals(
-					folderToRemove.getFullPath())) {
-				offSet = 1;
-			} else {
-				newClassPathEntries[i - offSet] = oldClassPathEntries[i];
-			}
-		}
-		if (offSet != 0) {
+		if (folderToRemove != null) {
+			IJavaProject actualJavaProject =
+				JavaCore.create(folderToRemove.getProject());
+			IClasspathEntry[] oldClassPathEntries;
 			try {
-				actualJavaProject.setRawClasspath(newClassPathEntries, monitor);
+				oldClassPathEntries = actualJavaProject.getRawClasspath();
 			} catch (JavaModelException e) {
 				throw new InvocationTargetException(e);
 			}
+			IClasspathEntry[] newClassPathEntries =
+				new IClasspathEntry[oldClassPathEntries.length - 1];
+			int offSet = 0;
+			for (int i = 0; i < oldClassPathEntries.length; i++) {
+				if (IClasspathEntry.CPE_SOURCE
+					== oldClassPathEntries[i].getEntryKind()
+					&& oldClassPathEntries[i].getPath().equals(
+						folderToRemove.getFullPath())) {
+					offSet = 1;
+				} else {
+					newClassPathEntries[i - offSet] = oldClassPathEntries[i];
+				}
+			}
+			if (offSet != 0) {
+				try {
+					actualJavaProject.setRawClasspath(
+						newClassPathEntries,
+						monitor);
+				} catch (JavaModelException e) {
+					throw new InvocationTargetException(e);
+				}
+			}
 		}
 	}
-	
+
 	public static boolean isWOProjectResource(IResource aResource) {
 		if (aResource != null) {
 			try {

@@ -241,15 +241,20 @@ public class ResourceChangeListener
 								SUBPROJECTS_ID,
 								resource.getParent().getFile(
 									new Path(PROJECT_FILE_NAME)));
-							// remove project's source folder from
-							// classpathentries
-							try {
-								ProjectHelper.removeSourcefolderFromClassPath(
-									ProjectHelper.getSubprojectSourceFolder(
-										(IFolder) resource,false),
-									null);
-							} catch (InvocationTargetException e) {
-								WOLipsPlugin.log(e);
+							if (IResourceDelta.REMOVED == kindOfChange) {
+								// remove project's source folder from
+								// classpathentries
+								try {
+									ProjectHelper
+										.removeSourcefolderFromClassPath(
+										ProjectHelper
+											.getSubprojectSourceFolder(
+											(IFolder) resource,
+											false),
+										null);
+								} catch (InvocationTargetException e) {
+									WOLipsPlugin.log(e);
+								}
 							}
 						}
 					}
