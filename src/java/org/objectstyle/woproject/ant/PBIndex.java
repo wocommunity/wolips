@@ -81,6 +81,7 @@ public class PBIndex extends Task {
 	protected Vector wocomponents = new Vector();
 	protected Vector resources = new Vector();
 	protected Vector wsresources = new Vector();
+	protected Vector frameworkSets = new Vector();
 	protected SubtaskFactory subtaskFactory = new SubtaskFactory(this);
 
 	public void addWocomponents(FileSet set) {
@@ -97,6 +98,10 @@ public class PBIndex extends Task {
 
 	public void addWsresources(FileSet set) {
 		wsresources.addElement(set);
+	}
+
+	public void addFrameworks(FrameworkSet set) {
+		frameworkSets.addElement(set);
 	}
 
 	/**
@@ -165,6 +170,7 @@ public class PBIndex extends Task {
 			proj.setWoAppResources(
 				extractResources(resources, "**/*.eomodeld/index.eomodeld"));
 			proj.setWebServerResources(extractResources(wsresources, null));
+			extractFrameworks(proj);
 
 			proj.saveChanges();
 
@@ -271,6 +277,26 @@ public class PBIndex extends Task {
 			}
 		}
 		return files;
+	}
+	
+	/** Loads extra frameworks and inserts their /Library/Frameworks-relative paths. */
+	protected void extractFrameworks(PBProject proj) {
+		List projectFrameworkPaths = proj.getFrameworks();
+		
+		Iterator it = frameworkSets.iterator();
+		while(it.hasNext()) {
+			FrameworkSet fs = (FrameworkSet) it.next();
+			String[] frameworkSubPaths = fs.getDirectoryScanner(
+				fs.getProject()).getIncludedDirectories();
+			for(int i = 0; i < frameworkSubPaths.length; i++ ) {
+				File framework = new File( fs.getDir(fs.getProject()),
+					frameworkSubPaths[i] );
+				//projectFrameworkPaths.add( "../.."+framework );*/
+				projectFrameworkPaths.add( framework.getName() );
+			}
+		}
+		
+		proj.setFrameworks( projectFrameworkPaths );
 	}
 
 	/** Replaces back slashes with forward slashes */
