@@ -77,6 +77,8 @@ public final class WOClasspathContainer
 	public static final String[] WOLIPS_CLASSPATH_STANDARD_FRAMEWORKS = new String[]{
 			"JavaWebObjects", "JavaFoundation", "JavaXML", "JavaWOExtensions",
 			"JavaEOAccess", "JavaEOControl"};
+	
+	private IClasspathEntry[] classpathEntries = null;
 	/**
 	 * Constructor for WOClassPathContainer.
 	 */
@@ -97,13 +99,15 @@ public final class WOClasspathContainer
 	 * @see org.eclipse.jdt.core.IClasspathContainer#getClasspathEntries()
 	 */
 	public IClasspathEntry[] getClasspathEntries() {
-		if (_path.size() == 0) {
-			_path.clear();
-			_initPath();
+		if(classpathEntries == null) {
+			if (_path.size() == 0) {
+				_path.clear();
+				_initPath();
+			}
+			classpathEntries = (IClasspathEntry[]) _path
+					.toArray(new IClasspathEntry[_path.size()]);
 		}
-		IClasspathEntry[] cpes = (IClasspathEntry[]) _path
-				.toArray(new IClasspathEntry[_path.size()]);
-		return (cpes);
+		return classpathEntries;
 	}
 	/**
 	 * @see org.eclipse.jdt.core.IClasspathContainer#getDescription()
