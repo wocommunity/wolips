@@ -12,7 +12,8 @@
  				<ul>
  				<li><a href="woframework.html">WOFramework</a>: Allows to build WebObjects frameworks
  				out of unrelated resources, without using ProjectBuilder.</li>
- 				<li>More tasks are coming...</li>
+ 				<li><a href="wogen.html">WOGen</a>: Generates and maintains EOEnterprsieObjects
+ 				based on EOModel. Ant-based analog of EOGenerator.</li>
  				</ul>
  			</p>
  			

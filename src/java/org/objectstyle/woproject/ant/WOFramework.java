@@ -65,9 +65,9 @@ import org.apache.tools.ant.taskdefs.*;
 import org.apache.tools.ant.types.FileSet;
 
 /**
-  * Ant task to build WebObjects framework. For instructions how to
-  * use it go to the  
-  * <a href="../../../../../woframework.html">manual page</a>. 
+  * Ant task to build WebObjects framework. For detailed 
+  * instructions go to the  
+  * <a href="../../../../../ant/woframework.html">manual page</a>. 
   * 
   * @ant.task category="packaging"
   */

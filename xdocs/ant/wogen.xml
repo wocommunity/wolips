@@ -1,0 +1,89 @@
+<document>
+<title>WOGen Task Manual</title>
+
+    <properties>
+        <author>Andrei Adamchik</author>
+    </properties>
+    
+<body>
+    <section name="WOGen Task Manual">        
+			<h3>Description</h3>
+			
+			<p><code>WOGen</code> is an Ant task that generates and maintains
+			EOEnterpriseObjects 
+			source files based on EOModel. If "makepairs" is set to "true" (default), this task
+			will generate a pair of classes (superclass/subclass) for each EOEntity in the
+			EOModel. Superclasses should not be changed manually, since they are always 
+			overwritten. Subclasses are never overwritten and may be later customized by the user.
+			If "makepairs" is set to "false", a single class will be generated for each EOEntity.
+			</p>
+
+			<h3>Parameters</h3>
+			
+			<table border="1" cellpadding="2" cellspacing="0">
+				<tr>
+					<th valign="top"><b>Attribute</b></th>
+					<th valign="top"><b>Description</b></th>
+					<th align="center" valign="top"><b>Required</b></th>
+				</tr>
+				<tr>
+					<td valign="top">model</td>
+					<td valign="top">Directory of EOModel to use as a base for class generation.</td>
+					<td valign="top" align="center">Yes</td>
+				</tr>
+				<tr>
+					<td valign="top">destDir</td>
+					<td valign="top">Destination directory for Java classes
+					<i>(ignoring their package names)</i>.</td>
+					<td valign="top" align="center">Yes</td>
+				</tr>
+				<tr>
+					<td valign="top">superDestDir</td>
+					<td valign="top">Destination directory for Java superclasses
+					<i>(ignoring their package names)</i>. If ommitted, "destDir" is used.
+					Ignored unless "makepairs" set to "true".
+					</td>
+					<td valign="top" align="center">No</td>
+				</tr>
+				<tr>
+					<td valign="top">overwrite</td>
+					<td valign="top">If set to "true", will overwrite older versions of
+					generated classes. Ignored unless makepairs is set to "false".</td>
+					<td valign="top" align="center">No</td>
+				</tr>
+				<tr>
+					<td valign="top">makepairs</td>
+					<td valign="top">If set to "true", will generate subclass/superclass
+					pairs, with all generated code included in superclass
+					<i>(default is "true")</i>.</td>
+					<td valign="top" align="center">No</td>
+				</tr>
+				<tr>
+					<td valign="top">template</td>
+					<td valign="top">Location of Velocity template file for Java class
+					generation. If ommitted, default template is used.</td>
+					<td valign="top" align="center">No</td>
+				</tr>
+				<tr>
+					<td valign="top">supertemplate</td>
+					<td valign="top">Location of Velocity template file for Java superclass 
+					generation. Ignored unless "makepairs" set to "true".
+					If ommitted, default template is used.</td>
+					<td valign="top" align="center">No</td>
+				</tr>
+			</table>
+			
+			<h3>Examples</h3>
+			<p>Here is an example of a using <code>WOGen</code> to generate EOEnterpriseObject
+			subclass/superclass pairs from EOModel located in "src/test.eomodeld". All generated
+			subclasses and superclasses will be saved in the same directory "src/java/dobj" regardless
+			of their package names:</p>
+<source>
+&amp;lt;taskdef name="cgen" classname="org.objectstyle.woproject.ant.WOGenerator"&amp;gt;
+     &amp;lt;classpath refid="classpath"/&amp;gt;
+&amp;lt;/taskdef&amp;gt;
+&amp;lt;cgen map="src/test.eomodeld" destDir="src/java/dobj"/&amp;gt;
+</source>
+    </section>
+</body>
+</document>

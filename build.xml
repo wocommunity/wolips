@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
 <!-- Main WOProject build file -->
-<project name="woproject" default="dist" basedir=".">
+<project name="woproject" default="java" basedir=".">
     <property file="${user.home}/build.properties" />
     <property file="build.properties" />
     <property file="default.properties" />
