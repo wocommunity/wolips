@@ -157,10 +157,7 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 				String argument = launchInfo[i].getArgument();
 				if (automatic.equals(argument)) {
 					if ("-WOApplicationClassName".equals(parameter))
-						argument =
-							woLipsJavaProject
-								.getLaunchParameterAccessor()
-								.getWOApplicationClassNameArgument(configuration);
+						argument = mainTypeName;
 					if ("-DWORoot=".equals(parameter)) {
 						argument =
 							WOLipsPlugin
