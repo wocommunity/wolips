@@ -10,9 +10,22 @@
       %description
    </description>
 
-   <requires>
-      <import plugin="org.objectstyle.wolips" version="0.9.0" match="compatible"/>
-      <import plugin="org.objectstyle.wolips.targetbuilder" version="0.9.0" match="compatible"/>
+      <requires>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.apache.ant"/>
+      <import plugin="org.eclipse.ant.core"/>
+      <import plugin="org.eclipse.jdt.core"/>
+      <import plugin="org.eclipse.jdt.ui"/>
+      <import plugin="org.apache.xerces"/>
+      <import plugin="org.eclipse.search"/>
+      <import plugin="org.eclipse.debug.core"/>
+      <import plugin="org.eclipse.debug.ui"/>
+      <import plugin="org.eclipse.jdt.debug"/>
+      <import plugin="org.eclipse.jdt.launching"/>
+      <import plugin="org.eclipse.compare"/>
+      <import plugin="org.apache.lucene"/>
    </requires>
 
    <plugin
@@ -23,11 +36,11 @@
    </plugin>
 
    <plugin
-         id="org.objectstyle.wolips.targetbuilder"
+         id="org.objectstyle.wolips.target"
          download-size="0"
          install-size="0"
          version="0.9.0">
    </plugin>
-
-
+   
+   
 </feature>
