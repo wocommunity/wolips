@@ -128,7 +128,7 @@
             name="WOComponent Builder"
             default="true"
             icon="icons/wobuilder/webobjects_builder.gif"
-            extensions="wod"
+            extensions="api,wod,woo"
             launcher="org.objectstyle.wolips.ui.editor.OpenSystemEditor"
             id="org.objectstyle.wolips.external.wod.editor">
       </editor>
