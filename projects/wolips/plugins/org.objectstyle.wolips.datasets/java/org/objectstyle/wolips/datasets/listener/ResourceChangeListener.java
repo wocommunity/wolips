@@ -346,7 +346,6 @@ public class ResourceChangeListener extends Job {
 		private final void updateProjectFile(int kindOfChange,
 				IResource resourceToUpdate, String fileStableId,
 				IFile projectFileToUpdate) {
-		    System.err.println(resourceToUpdate);
 			if (projectFileToUpdate == null) {
 				return;
 			}
