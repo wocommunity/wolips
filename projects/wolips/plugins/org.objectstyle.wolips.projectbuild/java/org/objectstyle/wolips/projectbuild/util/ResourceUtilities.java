@@ -120,7 +120,13 @@ public class ResourceUtilities {
     return (result);
   }
 
-  public static boolean checkDerivedDir (IPath path, IProgressMonitor m) 
+  /**
+ * @param path
+ * @param m
+ * @return
+ * @throws CoreException
+ */
+public static boolean checkDerivedDir (IPath path, IProgressMonitor m) 
     throws CoreException 
   {
     boolean result = true;
@@ -178,7 +184,13 @@ public class ResourceUtilities {
     return _uniqifier++;
   }
   
-  public static void copyDerived (IResource res, IPath dest, IProgressMonitor m) throws CoreException  {
+  /**
+ * @param res
+ * @param dest
+ * @param m
+ * @throws CoreException
+ */
+public static void copyDerived (IResource res, IPath dest, IProgressMonitor m) throws CoreException  {
     IResource rdest = checkDestination (dest, m);
     res.copy(dest, true, null);
     if (null != rdest) {
@@ -186,11 +198,17 @@ public class ResourceUtilities {
     }
   }
 
-  public static IWorkspace getWorkspace () {
+  /**
+ * @return
+ */
+public static IWorkspace getWorkspace () {
     return ResourcesPlugin.getWorkspace();
   }
 
-  public static IWorkspaceRoot getWorkspaceRoot () {
+  /**
+ * @return
+ */
+public static IWorkspaceRoot getWorkspaceRoot () {
     return ResourcesPlugin.getWorkspace().getRoot();
   }
   
@@ -201,6 +219,11 @@ public class ResourceUtilities {
   private static int _uniqifier = 1;
 
 
+	/**
+	 * @param res
+	 * @param markerId
+	 * @throws CoreException
+	 */
 	public static void unmarkResource(IResource res, String markerId) throws CoreException {
 	  if (res.exists()) {
 	    res.deleteMarkers(markerId, true, 0);
@@ -208,6 +231,15 @@ public class ResourceUtilities {
 	}
 
 
+	/**
+	 * @param res
+	 * @param markerId
+	 * @param severity
+	 * @param message
+	 * @param location
+	 * @return
+	 * @throws CoreException
+	 */
 	public static IMarker markResource(IResource res, String markerId, int severity, String message, String location) throws CoreException {
 	  IMarker marker[] = res.findMarkers(markerId, true, 0);
 	  if (marker.length != 1) {

@@ -60,17 +60,11 @@ import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.JavaCore;
 import org.objectstyle.wolips.datasets.DataSetsPlugin;
-import org.objectstyle.wolips.datasets.pattern.PatternsetWriter;
-import org.objectstyle.wolips.datasets.pattern.PatternsetMatcher;
-import org.objectstyle.wolips.datasets.pattern.StringListMatcher;
-import org.objectstyle.wolips.datasets.project.IWOLipsProject;
+import org.objectstyle.wolips.datasets.adaptable.Project;
 import org.objectstyle.wolips.datasets.project.PBProjectUpdater;
-import org.objectstyle.wolips.datasets.project.WOLipsCore;
 import org.objectstyle.wolips.datasets.project.WOLipsJavaProject;
 import org.objectstyle.wolips.datasets.resources.IWOLipsModel;
 /**
@@ -136,12 +130,7 @@ public class ResourceChangeListener implements IResourceChangeListener {
 		//private QualifiedName resourceQualifier;
 		private HashMap addedResourcesProjectDict;
 		private HashMap removedResourcesProjectDict;
-		PatternsetMatcher woappResourcesIncludeMatcher = null;
-		PatternsetMatcher woappResourcesExcludeMatcher = null;
-		PatternsetMatcher resourcesIncludeMatcher = null;
-		PatternsetMatcher resourcesExcludeMatcher = null;
-		StringListMatcher classesIncludeMatcher = null;
-		StringListMatcher classesExcludeMatcher = null;
+		Project project = null;
 		/**
 		 * @see java.lang.Object#Object()
 		 */
@@ -152,65 +141,6 @@ public class ResourceChangeListener implements IResourceChangeListener {
 			super();
 			addedResourcesProjectDict = new HashMap();
 			removedResourcesProjectDict = new HashMap();
-		}
-		private void setUpMatcher(IProject project) {
-			IFile wsresourcesIncludePatternset = project
-					.getFile("wsresources.include.patternset");
-			if (!wsresourcesIncludePatternset.exists())
-				PatternsetWriter.create(wsresourcesIncludePatternset,
-						new String[]{"**/*.gif"});
-			woappResourcesIncludeMatcher = new PatternsetMatcher(
-					wsresourcesIncludePatternset);
-			try {
-				wsresourcesIncludePatternset.refreshLocal(IResource.DEPTH_ONE,
-						new NullProgressMonitor());
-			} catch (CoreException e) {
-				DataSetsPlugin.log(e);
-			}
-			IFile wsresourcesExcludePatternset = project
-					.getFile("wsresources.exclude.patternset");
-			if (!wsresourcesExcludePatternset.exists())
-				PatternsetWriter.create(wsresourcesExcludePatternset,
-						new String[]{"**/*.woa/**", "**/*.framework/**"});
-			woappResourcesExcludeMatcher = new PatternsetMatcher(
-					wsresourcesExcludePatternset);
-			try {
-				wsresourcesExcludePatternset.refreshLocal(IResource.DEPTH_ONE,
-						new NullProgressMonitor());
-			} catch (CoreException e) {
-				DataSetsPlugin.log(e);
-			}
-			IFile resourcesIncludePatternset = project
-					.getFile("resources.include.patternset");
-			if (!resourcesIncludePatternset.exists())
-				PatternsetWriter.create(resourcesIncludePatternset,
-						new String[]{"Properties", "**/*.eomodeld/",
-								"**/*.d2wmodel", "**/*.wo/", "**/*.api",
-								"**/*.strings"});
-			resourcesIncludeMatcher = new PatternsetMatcher(
-					resourcesIncludePatternset);
-			try {
-				resourcesIncludePatternset.refreshLocal(IResource.DEPTH_ONE,
-						new NullProgressMonitor());
-			} catch (CoreException e) {
-				DataSetsPlugin.log(e);
-			}
-			IFile resourcesExcludePatternset = project
-					.getFile("resources.exclude.patternset");
-			if (!resourcesExcludePatternset.exists())
-				PatternsetWriter.create(resourcesExcludePatternset,
-						new String[]{"**/*.eomodeld~/", "**/*.woa/**",
-								"**/*.framework/**"});
-			resourcesExcludeMatcher = new PatternsetMatcher(
-					resourcesExcludePatternset);
-			try {
-				resourcesExcludePatternset.refreshLocal(IResource.DEPTH_ONE,
-						new NullProgressMonitor());
-			} catch (CoreException e) {
-				DataSetsPlugin.log(e);
-			}
-			classesIncludeMatcher = new StringListMatcher("*.java");
-			classesExcludeMatcher = new StringListMatcher("");
 		}
 		/**
 		 * @param delta
@@ -252,12 +182,12 @@ public class ResourceChangeListener implements IResourceChangeListener {
 						// project deleted no further investigation needed
 						return false;
 					}
-					IWOLipsProject wolipsProject = WOLipsCore
-							.createProject((IProject) resource);
-					if (wolipsProject.getNaturesAccessor().hasWOLipsNature()) {
-						this.setUpMatcher((IProject) resource);
-						// resource change concerns to webobjects project
-						// -> visit childs
+					project = null;
+					project = (Project) ((IProject) resource)
+							.getAdapter(Project.class);
+					if (project == null)
+						return false;
+					if (project.isWOLipsProject()) {
 						return true;
 					} // no webobjects project
 					return false;
@@ -285,7 +215,8 @@ public class ResourceChangeListener implements IResourceChangeListener {
 											.getFile(
 													new Path(
 															IWOLipsModel.PROJECT_FILE_NAME)));
-						} else if (matchWOAppResourcesPattern(resource)) {
+						} else if (project
+								.matchesWOAppResourcesPattern(resource)) {
 							updateProjectFile(
 									kindOfChange,
 									resource,
@@ -346,48 +277,11 @@ public class ResourceChangeListener implements IResourceChangeListener {
 					// further examination of resource delta needed
 					return true;
 				case IResource.FILE :
-					if (IResourceDelta.CHANGED == kindOfChange) {
-						/*
-						 * if (".project".equals(resource.getName()) ||
-						 * ".classpath".equals(resource.getName())) {
-						 * UpdateOtherClasspathIncludeFiles
-						 * updateOtherClasspathIncludeFiles = new
-						 * UpdateOtherClasspathIncludeFiles();
-						 * updateOtherClasspathIncludeFiles.setIProject(
-						 * resource.getProject());
-						 * updateOtherClasspathIncludeFiles.execute();
-						 * UpdateFrameworkIncludeFiles
-						 * updateFrameworkIncludeFiles = new
-						 * UpdateFrameworkIncludeFiles();
-						 * updateFrameworkIncludeFiles.setIProject(
-						 * resource.getProject());
-						 * updateFrameworkIncludeFiles.execute();
-						 * 
-						 * ArrayList addedFrameworks = new ArrayList();
-						 * IProject[] referencedProjects =
-						 * resource.getProject().getReferencedProjects(); for
-						 * (int j = 0; j < referencedProjects.length; j++) { if
-						 * (referencedProjects[j].isAccessible() &&
-						 * referencedProjects[j].isOpen()) { IWOLipsProject
-						 * referencedWOLipsProject = WOLipsCore.createProject(
-						 * referencedProjects[j]); if (referencedWOLipsProject !=
-						 * null && referencedWOLipsProject .getNaturesAccessor()
-						 * .hasWOLipsNature() && referencedWOLipsProject
-						 * .getNaturesAccessor() .isFramework())
-						 * addedFrameworks.add( new Path(
-						 * referencedWOLipsProject .getProject() .getName() +
-						 * "." + IWOLipsModel .EXT_FRAMEWORK)); } } if
-						 * (addedFrameworks.size() > 0) { PBProjectUpdater
-						 * projectUpdater = PBProjectUpdater.instance(
-						 * resource.getProject());
-						 * projectUpdater.addFrameworks(addedFrameworks); } }
-						 */
-					}
 					if (needsProjectFileUpdate(kindOfChange)) {
 						// files with java extension are located in src folders
 						// the relating project file is determined through the
 						// name of the src folder containing the java file
-						if (matchResourcesPattern(resource)) {
+						if (project.matchesResourcesPattern(resource)) {
 							updateProjectFile(
 									kindOfChange,
 									resource,
@@ -397,7 +291,8 @@ public class ResourceChangeListener implements IResourceChangeListener {
 											.getFile(
 													new Path(
 															IWOLipsModel.PROJECT_FILE_NAME)));
-						} else if (matchWOAppResourcesPattern(resource)) {
+						} else if (project
+								.matchesWOAppResourcesPattern(resource)) {
 							updateProjectFile(
 									kindOfChange,
 									resource,
@@ -407,7 +302,7 @@ public class ResourceChangeListener implements IResourceChangeListener {
 											.getFile(
 													new Path(
 															IWOLipsModel.PROJECT_FILE_NAME)));
-						} else if (matchClassesPattern(resource)) {
+						} else if (project.matchesClassesPattern(resource)) {
 							updateProjectFile(
 									kindOfChange,
 									resource,
@@ -418,37 +313,8 @@ public class ResourceChangeListener implements IResourceChangeListener {
 													new Path(
 															IWOLipsModel.PROJECT_FILE_NAME)));
 						}
-						//return false;
 					}
 			}
-			return false;
-		}
-		private String toProjectRelativePath(IResource resource) {
-			IPath path = resource.getProjectRelativePath();
-			return path.toString();
-		}
-		private boolean matchClassesPattern(IResource resource) {
-			String string = this.toProjectRelativePath(resource);
-			if (classesExcludeMatcher.match(string))
-				return false;
-			if (classesIncludeMatcher.match(string))
-				return true;
-			return false;
-		}
-		private boolean matchWOAppResourcesPattern(IResource resource) {
-			String string = this.toProjectRelativePath(resource);
-			if (woappResourcesExcludeMatcher.match(string))
-				return false;
-			if (woappResourcesIncludeMatcher.match(string))
-				return true;
-			return false;
-		}
-		private boolean matchResourcesPattern(IResource resource) {
-			String string = this.toProjectRelativePath(resource);
-			if (resourcesExcludeMatcher.match(string))
-				return false;
-			if (resourcesIncludeMatcher.match(string))
-				return true;
 			return false;
 		}
 		/**

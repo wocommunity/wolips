@@ -54,21 +54,191 @@
  *
  */
 package org.objectstyle.wolips.datasets.adaptable;
-
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
-
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.objectstyle.wolips.datasets.DataSetsPlugin;
+import org.objectstyle.wolips.datasets.pattern.IStringMatcher;
+import org.objectstyle.wolips.datasets.pattern.PatternsetMatcher;
+import org.objectstyle.wolips.datasets.pattern.PatternsetWriter;
+import org.objectstyle.wolips.datasets.pattern.StringListMatcher;
+import org.objectstyle.wolips.datasets.project.IWOLipsProject;
+import org.objectstyle.wolips.datasets.project.WOLipsCore;
 /**
  * @author ulrich
- *
+ * 
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
 public class Project extends AbstractProjectAdapterType {
-
+	private PatternsetMatcher woappResourcesIncludeMatcher = null;
+	private PatternsetMatcher woappResourcesExcludeMatcher = null;
+	private PatternsetMatcher resourcesIncludeMatcher = null;
+	private PatternsetMatcher resourcesExcludeMatcher = null;
+	private StringListMatcher classesIncludeMatcher = null;
+	private StringListMatcher classesExcludeMatcher = null;
 	/**
 	 * @param project
 	 */
 	public Project(IProject project) {
 		super(project);
+	}
+	/**
+	 * @return Returns the classesExcludeMatcher.
+	 */
+	private IStringMatcher getClassesExcludeMatcher() {
+		if (classesExcludeMatcher != null)
+			return classesExcludeMatcher;
+		classesExcludeMatcher = new StringListMatcher("");
+		return classesExcludeMatcher;
+	}
+	/**
+	 * @return Returns the classesIncludeMatcher.
+	 */
+	private IStringMatcher getClassesIncludeMatcher() {
+		if (classesIncludeMatcher != null)
+			return classesIncludeMatcher;
+		classesIncludeMatcher = new StringListMatcher("*.java");
+		return classesIncludeMatcher;
+	}
+	/**
+	 * @return Returns the resourcesExcludeMatcher.
+	 */
+	private IStringMatcher getResourcesExcludeMatcher() {
+		if (resourcesExcludeMatcher != null)
+			return resourcesExcludeMatcher;
+		IFile resourcesExcludePatternset = project
+				.getFile("resources.exclude.patternset");
+		if (!resourcesExcludePatternset.exists())
+			PatternsetWriter.create(resourcesExcludePatternset, new String[]{
+					"**/*.eomodeld~/", "**/*.woa/**", "**/*.framework/**"});
+		resourcesExcludeMatcher = new PatternsetMatcher(
+				resourcesExcludePatternset);
+		try {
+			resourcesExcludePatternset.refreshLocal(IResource.DEPTH_ONE,
+					new NullProgressMonitor());
+		} catch (CoreException e) {
+			DataSetsPlugin.log(e);
+		}
+		return resourcesExcludeMatcher;
+	}
+	/**
+	 * @return Returns the resourcesIncludeMatcher.
+	 */
+	private IStringMatcher getResourcesIncludeMatcher() {
+		if (resourcesIncludeMatcher != null)
+			return resourcesIncludeMatcher;
+		IFile resourcesIncludePatternset = project
+				.getFile("resources.include.patternset");
+		if (!resourcesIncludePatternset.exists())
+			PatternsetWriter.create(resourcesIncludePatternset, new String[]{
+					"Properties", "**/*.eomodeld/", "**/*.d2wmodel",
+					"**/*.wo/", "**/*.api", "**/*.strings"});
+		resourcesIncludeMatcher = new PatternsetMatcher(
+				resourcesIncludePatternset);
+		try {
+			resourcesIncludePatternset.refreshLocal(IResource.DEPTH_ONE,
+					new NullProgressMonitor());
+		} catch (CoreException e) {
+			DataSetsPlugin.log(e);
+		}
+		return resourcesIncludeMatcher;
+	}
+	/**
+	 * @return Returns the woappResourcesExcludeMatcher.
+	 */
+	private IStringMatcher getWoappResourcesExcludeMatcher() {
+		if (woappResourcesExcludeMatcher != null)
+			return woappResourcesExcludeMatcher;
+		IFile wsresourcesExcludePatternset = project
+				.getFile("wsresources.exclude.patternset");
+		if (!wsresourcesExcludePatternset.exists())
+			PatternsetWriter.create(wsresourcesExcludePatternset, new String[]{
+					"**/*.woa/**", "**/*.framework/**"});
+		woappResourcesExcludeMatcher = new PatternsetMatcher(
+				wsresourcesExcludePatternset);
+		try {
+			wsresourcesExcludePatternset.refreshLocal(IResource.DEPTH_ONE,
+					new NullProgressMonitor());
+		} catch (CoreException e) {
+			DataSetsPlugin.log(e);
+		}
+		return woappResourcesExcludeMatcher;
+	}
+	/**
+	 * @return Returns the woappResourcesIncludeMatcher.
+	 */
+	private IStringMatcher getWoappResourcesIncludeMatcher() {
+		if (woappResourcesIncludeMatcher != null)
+			return woappResourcesIncludeMatcher;
+		IFile wsresourcesIncludePatternset = project
+				.getFile("wsresources.include.patternset");
+		if (!wsresourcesIncludePatternset.exists())
+			PatternsetWriter.create(wsresourcesIncludePatternset,
+					new String[]{"**/*.gif"});
+		woappResourcesIncludeMatcher = new PatternsetMatcher(
+				wsresourcesIncludePatternset);
+		try {
+			wsresourcesIncludePatternset.refreshLocal(IResource.DEPTH_ONE,
+					new NullProgressMonitor());
+		} catch (CoreException e) {
+			DataSetsPlugin.log(e);
+		}
+		return woappResourcesIncludeMatcher;
+	}
+	private String toProjectRelativePath(IResource resource) {
+		IPath path = resource.getProjectRelativePath();
+		return path.toString();
+	}
+	/**
+	 * @param resource
+	 * @return
+	 */
+	public boolean matchesClassesPattern(IResource resource) {
+		String string = this.toProjectRelativePath(resource);
+		return (!this.getClassesExcludeMatcher().match(string) && this
+				.getClassesIncludeMatcher().match(string));
+	}
+	/**
+	 * @param resource
+	 * @return
+	 */
+	public boolean matchesWOAppResourcesPattern(IResource resource) {
+		String string = this.toProjectRelativePath(resource);
+		return (!this.getWoappResourcesExcludeMatcher().match(string) && this
+				.getWoappResourcesIncludeMatcher().match(string));
+	}
+	/**
+	 * @param resource
+	 * @return
+	 */
+	public boolean matchesResourcesPattern(IResource resource) {
+		String string = this.toProjectRelativePath(resource);
+		return (!this.getResourcesExcludeMatcher().match(string) && this
+				.getResourcesIncludeMatcher().match(string));
+	}
+	
+	/**
+	 * Sets up the *.patternset files in the case they don't exist.
+	 */
+	public void setUpPatternsetFiles() {
+		this.getClassesExcludeMatcher();
+		this.getClassesIncludeMatcher();
+		this.getResourcesExcludeMatcher();
+		this.getResourcesIncludeMatcher();
+		this.getWoappResourcesExcludeMatcher();
+		this.getWoappResourcesIncludeMatcher();
+	}
+	/**
+	 * @return Returns true is the project has a WOLips nature.
+	 * @throws CoreException
+	 */
+	public boolean isWOLipsProject() throws CoreException {
+		IWOLipsProject wolipsProject = WOLipsCore.createProject(this
+				.getProject());
+		return wolipsProject.getNaturesAccessor().hasWOLipsNature();
 	}
 }

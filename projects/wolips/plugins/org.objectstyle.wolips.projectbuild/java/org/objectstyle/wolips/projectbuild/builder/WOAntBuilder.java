@@ -62,7 +62,6 @@ import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.variables.VariablesPlugin;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
@@ -77,6 +76,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.externaltools.internal.model.IExternalToolConstants;
 import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
 import org.objectstyle.wolips.core.preferences.Preferences;
+import org.objectstyle.wolips.datasets.adaptable.Project;
 import org.objectstyle.wolips.datasets.resources.IWOLipsModel;
 import org.objectstyle.wolips.projectbuild.WOProjectBuildConstants;
 import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
@@ -152,8 +152,6 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 	/**
 	 * Method execute.
 	 * 
-	 * @param kind
-	 * @param args
 	 * @param monitor
 	 * @param aBuildFile
 	 * @throws Exception
@@ -283,6 +281,7 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 	}
 	private final class BuildResourceValidator implements IResourceDeltaVisitor {
 		private boolean buildRequired = false;
+		private Project project;
 		/**
 		 * Constructor for ProjectFileResourceValidator.
 		 */
@@ -301,11 +300,9 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 		 * removed webobjects project resources and synchronizes project file.
 		 * <br>
 		 * 
-		 * @see #updateProjectFile(int, IResource, QualifiedName, IFile)
 		 * @param resource
 		 * @param kindOfChange
 		 * @return boolean
-		 * @throws CoreException
 		 */
 		private final boolean examineResource(IResource resource,
 				int kindOfChange) {
@@ -323,6 +320,7 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 						// project deleted no further investigation needed
 						return false;
 					}
+					project = (Project)resource.getAdapter(Project.class);
 				case IResource.FOLDER :
 					if (IWOLipsModel.EXT_FRAMEWORK.equals(resource
 							.getFileExtension())
@@ -343,7 +341,10 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 								|| "Makefile".equals(resource.getName())
 								|| resource.getName().startsWith("ant.")) {
 						} else
-							buildRequired = true;
+							if(project.matchesResourcesPattern(resource) || project.matchesWOAppResourcesPattern(resource) || project.matchesClassesPattern(resource)) {
+								buildRequired = true;
+								return false;
+							}
 					}
 			}
 			return false;
@@ -368,9 +369,8 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 	 * Method inExternalVM.
 	 * 
 	 * @param buildFile
-	 * @param kind
 	 * @param monitor
-	 * @throws Exception
+	 * @throws CoreException
 	 */
 	private void launchAntInExternalVM(IFile buildFile, IProgressMonitor monitor)
 			throws CoreException {
@@ -400,6 +400,7 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 	 * 
 	 * @param file
 	 * @return default launch configuration
+	 * @throws CoreException
 	 */
 	private ILaunchConfiguration createDefaultLaunchConfiguration(IFile file)
 			throws CoreException {

@@ -314,16 +314,7 @@ public class IncrementalNature
 	}
 
 	public IPath asResourcePath(IPath path, IResource res) {
-
-		/*if (IResource.FOLDER == res.getType()) {
-		  if (
-		    lastSegment.endsWith (".wo")
-		    || lastSegment.endsWith (".eomodeld")
-		  ) {
-		    return (getResourceOutputPath().append(lastSegment));
-		  }
-		} else */
-		if (IResource.FILE == res.getType()) {
+		if (IResource.FILE == res.getType() || IResource.FOLDER == res.getType()) {
 			String lastSegment = path.lastSegment();
 			if (
         (-1 == path.toString().indexOf(".eomodeld/"))

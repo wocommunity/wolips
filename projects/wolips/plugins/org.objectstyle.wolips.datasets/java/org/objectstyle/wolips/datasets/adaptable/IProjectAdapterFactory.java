@@ -68,6 +68,11 @@ public class IProjectAdapterFactory implements IAdapterFactory {
 	/* (non-Javadoc)
 	 * @see org.eclipse.core.runtime.IAdapterFactory#getAdapter(java.lang.Object, java.lang.Class)
 	 */
+	/**
+	 * @param adaptableObject
+	 * @param adapterType
+	 * @return Returns the adapter.
+	 */
 	public Object getAdapter(Object adaptableObject, Class adapterType) {
 		if(adaptableObject instanceof IProject)
 			return new Project((IProject)adaptableObject);
@@ -75,6 +80,9 @@ public class IProjectAdapterFactory implements IAdapterFactory {
 	}
 	/* (non-Javadoc)
 	 * @see org.eclipse.core.runtime.IAdapterFactory#getAdapterList()
+	 */
+	/**
+	 * @return Returns null.
 	 */
 	public Class[] getAdapterList() {
 		return null;
