@@ -127,4 +127,29 @@ public class Environment {
   	return aPath;
   }
 
+	/**
+	 * @return Returns the NEXT_ROOT
+	 */
+	public static String nextRoot() {
+		try {
+			Properties aEnv = Environment.getEnvVars();
+			if(aEnv.containsKey(Environment.NEXT_ROOT)) return aEnv.getProperty(Environment.NEXT_ROOT);
+		}
+  	catch (Exception anException) {
+  		WOLipsPlugin.log(anException);
+  	}
+  	return "/System";
+  }
+  
+  public static boolean isNextRootSet() {
+  	try {
+			Properties aEnv = Environment.getEnvVars();
+			if(aEnv.containsKey(Environment.NEXT_ROOT)) return true;
+		}
+  	catch (Exception anException) {
+  		WOLipsPlugin.log(anException);
+  	}
+  	return false;
+  }
+  	
 }

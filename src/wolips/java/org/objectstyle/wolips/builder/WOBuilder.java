@@ -65,6 +65,9 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.internal.core.builder.JavaBuilder;
+import org.objectstyle.wolips.WOLipsPlugin;
 
 /**
  * @author uli
@@ -85,22 +88,21 @@ public class WOBuilder extends IncrementalProjectBuilder {
 		super();
 	}
 	
-		protected IProject[] build(int kind, Map args, IProgressMonitor monitor)
+	protected IProject[] build(int kind, Map args, IProgressMonitor monitor)
 		throws CoreException {									
 		if (getProject() == null || !getProject().exists()) 
 			return new IProject[0];
 		
 		try {
-			
 			WOLipsBuild.initWithProject(getProject());
 			AntRunner anAntRunner = new AntRunner();
 			anAntRunner.setBuildFileLocation(this.buildFileLocation());
 			Hashtable aHashtable = this.properties();
-			anAntRunner.addUserProperties(aHashtable);
+			//anAntRunner.addUserProperties(aHashtable);
 			anAntRunner.run(monitor);
 		} 
 		catch(Exception e) {
-				e.printStackTrace();
+				WOLipsPlugin.log(e);
 		}
 		
 		return new IProject[0];

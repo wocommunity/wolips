@@ -99,7 +99,7 @@ public class NewEOModelOperation extends Operation implements IRunnableWithProgr
 	private void performFinish(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 		try {
 			ProjectHelper.addWOApplicationStuffToJavaProject(project, monitor);
-			ProjectHelper.installWOBuilder(project, ProjectHelper.WOAPPLICATION_BUILDER_ID);
+			ProjectHelper.installBuilder(project, ProjectHelper.WOAPPLICATION_BUILDER_ID);
 		} catch (Exception e) {
 			throw new InvocationTargetException(e);
 		}

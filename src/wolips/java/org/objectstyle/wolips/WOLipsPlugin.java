@@ -55,24 +55,43 @@
  */
 package org.objectstyle.wolips;
 
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Hashtable;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.FactoryConfigurationError;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.eclipse.core.internal.boot.URLContentFilter;
 import org.eclipse.core.internal.plugins.PluginClassLoader;
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPluginDescriptor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.objectstyle.wolips.env.Environment;
 import org.objectstyle.wolips.ide.WOClasspathUpdater;
+import org.objectstyle.wolips.io.FileStringScanner;
 import org.objectstyle.wolips.project.PBProjectUpdater;
-import org.eclipse.core.internal.boot.URLContentFilter;
 
 /**
  * The main plugin class to be used in the desktop.
@@ -82,10 +101,12 @@ import org.eclipse.core.internal.boot.URLContentFilter;
 public class WOLipsPlugin extends AbstractUIPlugin {
 	private static WOLipsPlugin plugin;
 	private Hashtable projectUpdater;
+	//Resource bundle.
+	private static DocumentBuilder documentBuilder;
 	/**
 	 * Set this variable to true to get debug output
 	 */
-	public static final boolean debug = false;
+	public static final boolean debug = true;
 
 	/**
 	 * The constructor.
@@ -95,7 +116,7 @@ public class WOLipsPlugin extends AbstractUIPlugin {
 		plugin = this;
 		this.loadFoundationClasses();
 	}
-
+	
 	private void loadFoundationClasses() {
 		ClassLoader aClassLoader = this.getClass().getClassLoader();
 		URLContentFilter[] theURLContentFilter = new URLContentFilter[1];
@@ -119,6 +140,14 @@ public class WOLipsPlugin extends AbstractUIPlugin {
 	public void startup() throws CoreException {
 		super.startup();
 		WOClasspathUpdater.update();
+		Hashtable options = JavaCore.getOptions();
+		WOLipsPlugin.debug("before options: " + options);
+		String aFilter = (String)options.get(JavaCore.CORE_JAVA_BUILD_RESOURCE_COPY_FILTER);
+		if((aFilter != null) && (aFilter.length() > 0)) aFilter = aFilter + ",";
+		aFilter = aFilter + WOLipsPlugin.getJavaBuildFilter();
+   		options.put(JavaCore.CORE_JAVA_BUILD_RESOURCE_COPY_FILTER, aFilter);
+   		JavaCore.setOptions(options);
+   		WOLipsPlugin.debug("after options: " + options);
 	}
 	
 	/**
@@ -176,6 +205,15 @@ public class WOLipsPlugin extends AbstractUIPlugin {
 	}
 	
 	/**
+	 * If WOLips.debug is true this method prints an Exception to the console.
+	 */
+	public static void debug(Throwable aThrowable) {
+		if(WOLipsPlugin.debug);
+		System.out.println("Exception: " + aThrowable);
+	}
+	
+	
+	/**
 	 * Returns a PBProjectUpdater for an given IProject. Never returns null;
 	 */
 	public PBProjectUpdater getProjectUpdater(IProject aProject) {
@@ -189,4 +227,122 @@ public class WOLipsPlugin extends AbstractUIPlugin {
 		return aProjectUpdater;	
 	}
 
+	/**
+	 * @return Returns the active page.
+	 */
+	public IWorkbenchPage getActivePage() {
+    	return getActiveWorkbenchWindow().getActivePage();
+  	}
+  	
+  	/**
+  	 * @return Returns the active workbench shell.
+  	 */
+  	public Shell getActiveWorkbenchShell() {
+    	return getActiveWorkbenchWindow().getShell();
+  	}
+
+	/**
+	 * @return Returns the the active workbench window.
+	 */
+  	public IWorkbenchWindow getActiveWorkbenchWindow() {
+    	return getWorkbench().getActiveWorkbenchWindow();
+  	}
+
+	/**
+	 * @return Returns the active editor java input.
+	 */
+	public static IJavaElement getActiveEditorJavaInput() {
+
+    IWorkbenchPage page = getDefault().getActivePage();
+
+    if (page != null) {
+      IEditorPart part = page.getActiveEditor();
+      if (part != null) {
+        IEditorInput editorInput = part.getEditorInput();
+        if (editorInput != null) {
+          IJavaElement result = (IJavaElement) editorInput.getAdapter(IJavaElement.class);
+          if (result == null) {
+            IResource nonjava = (IResource) editorInput.getAdapter(IResource.class);
+            if (nonjava != null) {
+              IContainer parent = nonjava.getParent();
+              while (parent != null) {
+                result = (IJavaElement) parent.getAdapter(IJavaElement.class);
+                if (result != null) {
+                  break;
+                }
+                parent = parent.getParent();
+              }
+            }
+          }
+          return result;
+        }
+
+      }
+    }
+    return null;
+  }
+
+	public static URL baseURL() {
+		return WOLipsPlugin.getDefault().getDescriptor().getInstallURL();
+	}
+	
+	public static void handleException(Shell shell, Throwable target, String message) {
+		WOLipsPlugin.debug(target);
+		String title = "Error";
+		if (message == null) {
+			message = target.getMessage();
+		}
+		if (target instanceof CoreException) {
+			IStatus status = ((CoreException) target).getStatus();
+			ErrorDialog.openError(shell, title, message, status);
+			WOLipsPlugin.log(status);
+		} else {
+			MessageDialog.openError(shell, title, target.getMessage());
+			WOLipsPlugin.log(target);
+		}
+	}
+	
+	public static DocumentBuilder documentBuilder() {
+		if (documentBuilder == null) {
+			try {
+				String jaxpPropertyName =
+					"javax.xml.parsers.DocumentBuilderFactory";
+				if (System.getProperty(jaxpPropertyName) == null) {
+					String apacheXercesPropertyValue =
+						"org.apache.xerces.jaxp.DocumentBuilderFactoryImpl";
+					System.setProperty(
+						jaxpPropertyName,
+						apacheXercesPropertyValue);
+				}
+
+				DocumentBuilderFactory builderFactory =
+					DocumentBuilderFactory.newInstance();
+				documentBuilder = builderFactory.newDocumentBuilder();
+
+			} catch (ParserConfigurationException pce) {
+				WOLipsPlugin.log(pce);
+				documentBuilder = null;
+			} catch (FactoryConfigurationError fce) {
+				WOLipsPlugin.log(fce);
+				documentBuilder = null;
+			}
+
+		}
+		return documentBuilder;
+	}
+	
+	public static String getJavaBuildFilter() {
+		try {
+			URL aStarterURL = WOLipsPlugin.getDefault().getDescriptor().getInstallURL();
+			URL aURL = new URL(aStarterURL, "JavaBuildFilter.txt");
+			String aJavaBuildFilterFile = Platform.asLocalURL(aURL).getFile();
+			String contents = FileStringScanner.stringFromFile(new File(aJavaBuildFilterFile));
+			WOLipsPlugin.debug("JavaBuildFilter.txt: " + contents);
+			return contents;
+		}
+		catch (Exception anException) {
+			WOLipsPlugin.log(anException);
+		}
+		return "";
+	}
 }

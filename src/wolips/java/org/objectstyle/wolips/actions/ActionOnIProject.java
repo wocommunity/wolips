@@ -54,7 +54,7 @@
  *
  */
  
- package org.objectstyle.wolips.actions;
+package org.objectstyle.wolips.actions;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jdt.core.IJavaProject;

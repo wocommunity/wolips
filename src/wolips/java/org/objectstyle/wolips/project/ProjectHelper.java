@@ -82,6 +82,7 @@ public class ProjectHelper {
 	
 	public static String WOFRAMEWORK_BUILDER_ID = "org.objectstyle.wolips.woframeworkbuilder";
 	public static String WOAPPLICATION_BUILDER_ID = "org.objectstyle.wolips.woapplicationbuilder";
+	public static String JAVA_BUILDER_ID = "org.eclipse.jdt.core.javabuilder";
 
 	/**
 	 * Constructor for ProjectHelper.
@@ -94,7 +95,7 @@ public class ProjectHelper {
 	 * Method removeJavaBuilder.
 	 * @param project
 	 */
-	public static void removeWOBuilder(IProject aProject, String aBuilder) throws CoreException{
+	public static void removeBuilder(IProject aProject, String aBuilder) throws CoreException{
 			IProjectDescription desc = aProject.getDescription();
 			ICommand[] coms = desc.getBuildSpec();
 			ArrayList comList = new ArrayList();
@@ -120,7 +121,7 @@ public class ProjectHelper {
 		}
 
 
-	public static void installWOBuilder(IProject aProject, String aBuilder) throws CoreException {
+	public static void installBuilder(IProject aProject, String aBuilder) throws CoreException {
 		IProjectDescription desc = aProject.getDescription();
 			ICommand[] coms = desc.getBuildSpec();
 

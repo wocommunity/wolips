@@ -86,14 +86,14 @@ public class WOBuilderAction extends ActionOnIProject {
 		if ( project() != null ){
 			try {
 			if ( action.getId().equals(WOBuilderAction.WOBuilderRemoveID) ) {	
-				ProjectHelper.removeWOBuilder(project(), ProjectHelper.WOAPPLICATION_BUILDER_ID);
-				ProjectHelper.removeWOBuilder(project(), ProjectHelper.WOFRAMEWORK_BUILDER_ID);
+				ProjectHelper.removeBuilder(project(), ProjectHelper.WOAPPLICATION_BUILDER_ID);
+				ProjectHelper.removeBuilder(project(), ProjectHelper.WOFRAMEWORK_BUILDER_ID);
 				}
 			else {
 				if ( action.getId().equals(WOBuilderAction.WOFrameworkBuilderSetID) )
-				ProjectHelper.installWOBuilder(project(), ProjectHelper.WOFRAMEWORK_BUILDER_ID);
+				ProjectHelper.installBuilder(project(), ProjectHelper.WOFRAMEWORK_BUILDER_ID);
 				else {
-				ProjectHelper.installWOBuilder(project(), ProjectHelper.WOAPPLICATION_BUILDER_ID);
+				ProjectHelper.installBuilder(project(), ProjectHelper.WOAPPLICATION_BUILDER_ID);
 				}
 			}
 			}

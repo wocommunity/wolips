@@ -77,9 +77,10 @@ public class WOFrameworkBuilder extends WOBuilder {
 	}
 	
 	public String buildFileLocation() throws MalformedURLException, IOException {
-		WOLipsPlugin aPlugin = WOLipsPlugin.getDefault();
-		URL starterURL = new URL(WOLipsPlugin.getDefault().getDescriptor().getInstallURL(), WOBuilder.WOFrameworkBuildFileLocation);
-		return Platform.asLocalURL(starterURL).getFile();
+		//WOLipsPlugin aPlugin = WOLipsPlugin.getDefault();
+		//URL starterURL = new URL(WOLipsPlugin.getDefault().getDescriptor().getInstallURL(), WOBuilder.WOFrameworkBuildFileLocation);
+		//return Platform.asLocalURL(starterURL).getFile();
+		return getProject().getFile("build.xml").getLocation().toOSString();
 	}
 
 	public String basedir() {

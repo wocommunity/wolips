@@ -99,7 +99,7 @@ public class WOFwProjectCreationOperation extends ProjectCreationOperation imple
 	private void performFinish(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
 		try {
 			ProjectHelper.addWOFrameworkStuffToJavaProject(project, monitor);
-		    ProjectHelper.installWOBuilder(project, ProjectHelper.WOFRAMEWORK_BUILDER_ID);
+		    ProjectHelper.installBuilder(project, ProjectHelper.WOFRAMEWORK_BUILDER_ID);
 		} catch (Exception e) {
 			throw new InvocationTargetException(e);
 		}
