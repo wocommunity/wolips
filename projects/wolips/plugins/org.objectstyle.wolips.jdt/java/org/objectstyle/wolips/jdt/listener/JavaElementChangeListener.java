@@ -220,7 +220,8 @@ public class JavaElementChangeListener extends WorkspaceJob {
 						elementType, foundElements)) {
 					continue;
 				}
-			} else if (deltasToExamine[i].getElement().getElementType() == elementType) {
+			} else if (deltasToExamine[i].getElement().getElementType() == elementType 
+			        && !foundElements.contains(deltasToExamine[i].getElement())) {
 				// element found
 				foundElements.add(deltasToExamine[i].getElement());
 			}
