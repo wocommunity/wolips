@@ -19,8 +19,8 @@
 		</subsection>
 		<subsection name="common">
 			<p>Delete your current WOLips plugin.</p>
-			<p>Expand your download. You should now have a folder named com.objectstyle.woproject.wolips-1.0b. The version may differ.</p>
-			<p>Move the folder in the plugin folder.</p>
+			<p>Expand your download. You should now have a folder named com.objectstyle.wolips_0.8.8. The version may differ.</p>
+			<p>Move the folder to the Eclipse plugin folder.</p>
 		</subsection>
 	</section>
 </body>
