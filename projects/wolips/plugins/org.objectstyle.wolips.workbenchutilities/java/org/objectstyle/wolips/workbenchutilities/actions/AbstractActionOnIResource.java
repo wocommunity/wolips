@@ -2,7 +2,7 @@
  *
  * The ObjectStyle Group Software License, Version 1.0
  *
- * Copyright (c) 2002 The ObjectStyle Group
+ * Copyright (c) 2002, 2004 The ObjectStyle Group
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -74,7 +74,7 @@ import org.eclipse.ui.IWorkbenchPart;
  * To enable and disable the creation of type comments go to
  * Window>Preferences>Java>Code Generation.
  */
-public class ActionOnIResource implements IObjectActionDelegate {
+public abstract class AbstractActionOnIResource implements IObjectActionDelegate {
 
 	private IProject project;
 	private IResource actionResource;
@@ -83,7 +83,7 @@ public class ActionOnIResource implements IObjectActionDelegate {
 	/**
 	 * @see java.lang.Object#Object()
 	 */
-	public ActionOnIResource() {
+	public AbstractActionOnIResource() {
 		super();
 	}
 
@@ -113,9 +113,7 @@ public class ActionOnIResource implements IObjectActionDelegate {
 	/**
 	 * Has to be implemented in the subclass.
 	 */
-	public void run(IAction action) {
-		//Has to be implemented in the subclass.
-	}
+	public abstract void run(IAction action);
 
 	/**
 	 * Resets the project when the selection is changed.
