@@ -56,14 +56,21 @@
 
 package org.objectstyle.wolips.templateengine;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IPluginDescriptor;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.objectstyle.wolips.datasets.DataSetsPlugin;
 
 /**
  * The main plugin class to be used in the desktop.
@@ -73,6 +80,12 @@ public class TemplateEnginePlugin extends AbstractUIPlugin {
 	private static TemplateEnginePlugin plugin;
 	//Resource bundle.
 	private ResourceBundle resourceBundle;
+	public static final String WOApplicationProject = "WOApplicationProject";
+	public static final String D2W_ApplicationProject = "D2W_ApplicationProject";
+	public static final String WOFrameworkProject = "WOFrameworkProject";
+	public static final String JarProject = "JarProject";
+	public static final String WOComponent = "WOComponent";
+	public static final String EOModel = "EOModel";
 	
 	/**
 	 * The constructor.
@@ -133,6 +146,80 @@ public class TemplateEnginePlugin extends AbstractUIPlugin {
 	 */
 	public static URL baseURL() {
 		return TemplateEnginePlugin.getDefault().getDescriptor().getInstallURL();
+	}
+
+	private static IPath templatesPath() {
+		URL url = null;
+		try {
+			url = Platform.resolve(TemplateEnginePlugin.baseURL());
+		} catch (IOException e) {
+			e.printStackTrace();
+			url = null;
+		}
+		if(url == null)
+			return null;
+		IPath path = new Path(url.getPath());
+		path = path.append("templates");
+		return path;
+	}
+	
+	private static IPath userTemplatesPath() {
+		IPath path = DataSetsPlugin.UserHomeLibrayWOLipsPath();
+		path = path.append("Templates");
+		return path;
+	}
+	/**
+	 * @return The roots.
+	 */
+	protected static TemplateFolderRoot[] getTemplateFolderRoots() {
+		TemplateFolderRoot[] templateFolderRoots = new TemplateFolderRoot[2];
+		templateFolderRoots[0] = new TemplateFolderRoot(TemplateEnginePlugin.templatesPath());
+		templateFolderRoots[1] = new TemplateFolderRoot(TemplateEnginePlugin.userTemplatesPath());
+		return templateFolderRoots;
+	}
+
+	private static TemplateFolder[] getTemplateFolder(TemplateFolderRoot templateFolderRoot) {
+		ArrayList templateFolderList = new ArrayList();
+		IPath root = templateFolderRoot.getPath();
+		File file = new File(root.toOSString());
+		if (file.exists() && file.isDirectory()) {
+			File[] files = file.listFiles();
+			for (int j = 0; j < files.length; j++) {
+				File fileInRootFolder = files[j];
+				if(fileInRootFolder.isDirectory()) {
+					IPath path = new Path(fileInRootFolder.getAbsolutePath());
+					TemplateFolder templateFolder = new TemplateFolder(path);
+					templateFolderList.add(templateFolder);
+				}
+			}
+		}
+		return (TemplateFolder[])templateFolderList.toArray(new TemplateFolder[templateFolderList.size()]);
+	}
+	/**
+	 * @param templateFolderRoots
+	 * @param string
+	 * @return The of templates folder array for the given type.
+	 */
+	protected static TemplateFolder[] getTemplateFolder(TemplateFolderRoot[] templateFolderRoots, String type) {
+		ArrayList templateFolderList = new ArrayList();
+		for(int i = 0; i < templateFolderRoots.length; i++) {
+			TemplateFolderRoot templateFolderRoot = templateFolderRoots[i];
+			TemplateFolder[] templateFolders = TemplateEnginePlugin.getTemplateFolder(templateFolderRoot);
+			for (int j = 0; j < templateFolders.length; j++) {
+				TemplateFolder templateFolder = templateFolders[j];
+				if(templateFolder.isOfType(type))
+					templateFolderList.add(templateFolder);	
+			}
+		}
+		return (TemplateFolder[])templateFolderList.toArray(new TemplateFolder[templateFolderList.size()]);
+	}
+	
+	/**
+	 * @param string
+	 * @return The of templates folder array for the given type.
+	 */
+	public static TemplateFolder[] getTemplateFolder(String type) {
+		return TemplateEnginePlugin.getTemplateFolder(TemplateEnginePlugin.getTemplateFolderRoots(), type);
 	}
 	
 }

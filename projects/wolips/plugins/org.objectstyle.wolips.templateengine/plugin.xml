@@ -22,6 +22,8 @@
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.apache.xerces"/>
       <import plugin="org.eclipse.core.runtime.compatibility"/>
+      <import plugin="org.objectstyle.wolips.tests.core"/>
+      <import plugin="org.objectstyle.wolips.datasets"/>
    </requires>
 
 

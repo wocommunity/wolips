@@ -1,8 +1,8 @@
 /* ====================================================================
- * 
- * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2004 The ObjectStyle Group 
+ * The ObjectStyle Group Software License, Version 1.0
+ *
+ * Copyright (c) 2004 The ObjectStyle Group,
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,15 +18,15 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution, if
- *    any, must include the following acknowlegement:  
- *       "This product includes software developed by the 
+ *    any, must include the following acknowlegement:
+ *       "This product includes software developed by the
  *        ObjectStyle Group (http://objectstyle.org/)."
  *    Alternately, this acknowlegement may appear in the software itself,
  *    if and wherever such third-party acknowlegements normally appear.
  *
- * 4. The names "ObjectStyle Group" and "Cayenne" 
+ * 4. The names "ObjectStyle Group" and "Cayenne"
  *    must not be used to endorse or promote products derived
- *    from this software without prior written permission. For written 
+ *    from this software without prior written permission. For written
  *    permission, please contact andrus@objectstyle.org.
  *
  * 5. Products derived from this software may not be called "ObjectStyle"
@@ -53,10 +53,16 @@
  * <http://objectstyle.org/>.
  *
  */
-
 package org.objectstyle.wolips.templateengine;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.eclipse.core.runtime.IPath;
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.input.SAXBuilder;
 
 /**
  * @author ulrich
@@ -64,64 +70,59 @@ import java.io.File;
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public class TemplateDefinition {
-
-	private String templateName;
-	private String destination;
-	private String finalName;
-	private String type;
+public class TemplatesDocument {
+	private Document document = null;
 	
-	public TemplateDefinition(String templateName, String destination, String finalName, String type) {
+	public TemplatesDocument(IPath location) {
 		super();
-		this.templateName = templateName;
-		this.destination = destination;
-		this.finalName = finalName;
-		this.type = type;
-	}
-
-	/**
-	 * @return
-	 */
-	public String getTemplateName() {
-		return templateName;
-	}
-
-	/**
-	 * @param finalName Sets the final name without the extension
-	 */
-	public void setFinalName(String finalName) {
-		this.finalName = finalName;
-	}
-	/**
-	 * @return
-	 */
-	public String getDestinationPath() {
-		
-		StringBuffer returnValue = new StringBuffer(destination);
-		returnValue.append(File.separator);
-		returnValue.append(finalName);
-		if(!finalName.equals(type) && !finalName.endsWith("." + type)) {
-			returnValue.append(".");
-			returnValue.append(type);
+		SAXBuilder builder;
+		try {
+			builder = new SAXBuilder();
+			document = builder.build(location.toOSString() + File.separator + "Templates.xml");
+		} catch (Exception ee) {
+			builder = null;
+			document = null;
 		}
-		return returnValue.toString();
 	}
+
 	/**
-	 * @return Returns the type.
+	 * @param string
+	 * @return
 	 */
-	public String getType() {
-		return type;
+	public boolean isOfType(String type) {
+		return type.equals(this.getType());
 	}
+
 	/**
-	 * @return Returns the destination.
+	 * @return
 	 */
-	public String getDestination() {
-		return destination;
+	public boolean isValid() {
+		if(document == null)
+			return false;
+		if(this.getType() == null)
+			return false;
+		return true;
 	}
+	
+	private String getType() {
+		if(document == null)
+			return null;
+		return document.getRootElement().getChildText("type");
+	}
+
 	/**
-	 * @param destination The destination to set.
+	 * @return
 	 */
-	public void setDestination(String destination) {
-		this.destination = destination;
+	public TemplateDefinition[] getTemplateDefinitions() {
+		if(!isValid())
+			return null; 
+		List templates = document.getRootElement().getChildren("templates");
+		ArrayList templateDefinitions = new ArrayList();
+		for (int i = 0; i < templates.size(); i++) {
+			Element child = (Element)templates.get(i);
+			TemplateDefinition templateDefinition = new TemplateDefinition(child.getChildText("templateName"), child.getChildText("destination"), child.getChildText("finalName"), child.getChildText("type"));
+			templateDefinitions.add(templateDefinition);
+		}
+		return (TemplateDefinition[])(templateDefinitions.toArray(new TemplateDefinition[templateDefinitions.size()]));
 	}
 }

@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2004 The ObjectStyle Group 
+ * Copyright (c) 2002 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -58,70 +58,23 @@ package org.objectstyle.wolips.templateengine;
 
 import java.io.File;
 
+import junit.framework.TestCase;
+
 /**
  * @author ulrich
  *
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public class TemplateDefinition {
-
-	private String templateName;
-	private String destination;
-	private String finalName;
-	private String type;
+public class TemplateDefinitionTest extends TestCase {
 	
-	public TemplateDefinition(String templateName, String destination, String finalName, String type) {
-		super();
-		this.templateName = templateName;
-		this.destination = destination;
-		this.finalName = finalName;
-		this.type = type;
+	public void testConstructor() {
+		TemplateDefinition templateDefinition = new TemplateDefinition("foo", "foo1", "foo2", "foo3");
+		assertNotNull(templateDefinition);
 	}
-
-	/**
-	 * @return
-	 */
-	public String getTemplateName() {
-		return templateName;
-	}
-
-	/**
-	 * @param finalName Sets the final name without the extension
-	 */
-	public void setFinalName(String finalName) {
-		this.finalName = finalName;
-	}
-	/**
-	 * @return
-	 */
-	public String getDestinationPath() {
-		
-		StringBuffer returnValue = new StringBuffer(destination);
-		returnValue.append(File.separator);
-		returnValue.append(finalName);
-		if(!finalName.equals(type) && !finalName.endsWith("." + type)) {
-			returnValue.append(".");
-			returnValue.append(type);
-		}
-		return returnValue.toString();
-	}
-	/**
-	 * @return Returns the type.
-	 */
-	public String getType() {
-		return type;
-	}
-	/**
-	 * @return Returns the destination.
-	 */
-	public String getDestination() {
-		return destination;
-	}
-	/**
-	 * @param destination The destination to set.
-	 */
-	public void setDestination(String destination) {
-		this.destination = destination;
+	
+	public void testGetDestinationPath() {
+		TemplateDefinition templateDefinition = new TemplateDefinition("foo", "foo1", "foo2", "foo2");
+		assertEquals("foo1" + File.separator + "foo2", templateDefinition);	
 	}
 }

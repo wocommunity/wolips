@@ -56,6 +56,7 @@
 package org.objectstyle.wolips.templateengine;
 import java.io.File;
 import java.io.FileWriter;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -63,8 +64,10 @@ import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.jdom.Document;
 import org.jdom.input.SAXBuilder;
 /**
@@ -73,12 +76,11 @@ import org.jdom.input.SAXBuilder;
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public class TemplateEngine {
+public class TemplateEngine implements IRunnableWithProgress {
 	private VelocityContext context = null;
 	private ArrayList templates = null;
 	private VelocityEngine velocityEngine = null;
 	private WOLipsContext wolipsContext;
-	
 	public void init() throws Exception {
 		/*
 		 * create a new instance of the engine
@@ -93,10 +95,11 @@ public class TemplateEngine {
 		/*
 		 * initialize the engine
 		 */
-		String userHomeWOLipsPath = System.getProperty("user.home") + File.separator + "Library" + File.separator  + "WOLips";
+		String userHomeWOLipsPath = System.getProperty("user.home")
+				+ File.separator + "Library" + File.separator + "WOLips";
 		URL url = null;
 		url = Platform.resolve(TemplateEnginePlugin.baseURL());
-		String templatePaths =  userHomeWOLipsPath + ", "; 
+		String templatePaths = userHomeWOLipsPath + ", ";
 		Path path = new Path(url.getPath());
 		templatePaths = templatePaths + path.append("templates").toOSString();
 		velocityEngine.setProperty("file.resource.loader.path", templatePaths);
@@ -107,34 +110,49 @@ public class TemplateEngine {
 		this.setPropertyForKey(wolipsContext, WOLipsContext.Key);
 		SAXBuilder builder;
 		Document myContext = null;
-
 		try {
 			builder = new SAXBuilder();
-			myContext = builder.build(userHomeWOLipsPath + File.separator + "MyContext.xml");
+			myContext = builder.build(userHomeWOLipsPath + File.separator
+					+ "MyContext.xml");
 		} catch (Exception ee) {
-			//We can ignore this exception, it`s thrown if the xml document is not found.
+			//We can ignore this exception, it`s thrown if the xml document is
+			// not found.
 			//Per default there is no such file
 			builder = null;
 			myContext = null;
 		}
-		if(myContext != null) {
+		if (myContext != null) {
 			this.setPropertyForKey(myContext, "MyContext");
 		}
 	}
-	
 	public void addTemplate(TemplateDefinition template) {
 		templates.add(template);
 	}
-	
+	public void addTemplates(TemplateDefinition[] templateDefinitions) {
+		if (templates == null)
+			return;
+		for (int i = 0; i < templateDefinitions.length; i++) {
+			TemplateDefinition templateDefinition = templateDefinitions[i];
+			templates.add(templateDefinition);
+		}
+	}
 	public void setPropertyForKey(Object property, String key) {
 		context.put(key, property);
 	}
-	
-	public void run() throws Exception {
-		for (int i = 0; i < templates.size(); i++) {
-			TemplateDefinition templateDefinition = (TemplateDefinition) templates
-					.get(i);
-			this.run(templateDefinition);
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.jface.operation.IRunnableWithProgress#run(org.eclipse.core.runtime.IProgressMonitor)
+	 */
+	public void run(IProgressMonitor monitor) throws InvocationTargetException {
+		try {
+			for (int i = 0; i < templates.size(); i++) {
+				TemplateDefinition templateDefinition = (TemplateDefinition) templates
+						.get(i);
+				this.run(templateDefinition);
+			}
+		} catch (Exception e) {
+			throw new InvocationTargetException(e);
 		}
 	}
 	

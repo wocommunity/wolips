@@ -1,8 +1,8 @@
 /* ====================================================================
- * 
- * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2004 The ObjectStyle Group 
+ * The ObjectStyle Group Software License, Version 1.0
+ *
+ * Copyright (c) 2004 The ObjectStyle Group,
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,15 +18,15 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution, if
- *    any, must include the following acknowlegement:  
- *       "This product includes software developed by the 
+ *    any, must include the following acknowlegement:
+ *       "This product includes software developed by the
  *        ObjectStyle Group (http://objectstyle.org/)."
  *    Alternately, this acknowlegement may appear in the software itself,
  *    if and wherever such third-party acknowlegements normally appear.
  *
- * 4. The names "ObjectStyle Group" and "Cayenne" 
+ * 4. The names "ObjectStyle Group" and "Cayenne"
  *    must not be used to endorse or promote products derived
- *    from this software without prior written permission. For written 
+ *    from this software without prior written permission. For written
  *    permission, please contact andrus@objectstyle.org.
  *
  * 5. Products derived from this software may not be called "ObjectStyle"
@@ -53,75 +53,27 @@
  * <http://objectstyle.org/>.
  *
  */
-
 package org.objectstyle.wolips.templateengine;
 
-import java.io.File;
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 /**
- * @author ulrich
- *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
+ * Run all compiler regression tests
  */
-public class TemplateDefinition {
+public class TemplatesTestSuite extends TestCase {
 
-	private String templateName;
-	private String destination;
-	private String finalName;
-	private String type;
-	
-	public TemplateDefinition(String templateName, String destination, String finalName, String type) {
-		super();
-		this.templateName = templateName;
-		this.destination = destination;
-		this.finalName = finalName;
-		this.type = type;
+	public TemplatesTestSuite(String testName) {
+		super(testName);
 	}
-
-	/**
-	 * @return
-	 */
-	public String getTemplateName() {
-		return templateName;
-	}
-
-	/**
-	 * @param finalName Sets the final name without the extension
-	 */
-	public void setFinalName(String finalName) {
-		this.finalName = finalName;
-	}
-	/**
-	 * @return
-	 */
-	public String getDestinationPath() {
-		
-		StringBuffer returnValue = new StringBuffer(destination);
-		returnValue.append(File.separator);
-		returnValue.append(finalName);
-		if(!finalName.equals(type) && !finalName.endsWith("." + type)) {
-			returnValue.append(".");
-			returnValue.append(type);
-		}
-		return returnValue.toString();
-	}
-	/**
-	 * @return Returns the type.
-	 */
-	public String getType() {
-		return type;
-	}
-	/**
-	 * @return Returns the destination.
-	 */
-	public String getDestination() {
-		return destination;
-	}
-	/**
-	 * @param destination The destination to set.
-	 */
-	public void setDestination(String destination) {
-		this.destination = destination;
+	public static Test suite() throws Exception {
+		TestSuite suite = new TestSuite();
+		suite.addTestSuite(TemplateEnginePluginTest.class);
+		suite.addTestSuite(TemplateFolderRootTest.class);
+		suite.addTestSuite(TemplateFolderTest.class);
+		suite.addTestSuite(TemplatesDocumentTest.class);
+		suite.addTestSuite(TemplateDefinitionTest.class);
+		return suite;
 	}
 }
