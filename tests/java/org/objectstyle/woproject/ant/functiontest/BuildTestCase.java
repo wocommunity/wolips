@@ -107,7 +107,7 @@ public abstract class BuildTestCase extends TestCase {
         return project;
     }
 
-    public static void assertStructure(ProjectStructure struct) throws AssertionFailedError {
+    public void assertStructure(ProjectStructure struct) throws AssertionFailedError {
         String path = struct.getDirectoryPath();
         File projDir = resolveDistPath(path);
         Assert.assertTrue("Project directory is missing: " + projDir, projDir.isDirectory());
@@ -153,14 +153,14 @@ public abstract class BuildTestCase extends TestCase {
     }
 
 
-    private static void assertJars(File javaDir, String[] jars) throws AssertionFailedError {
+    private void assertJars(File javaDir, String[] jars) throws AssertionFailedError {
         for (int i = 0; i < jars.length; i++) {
             File jar = new File(javaDir, jars[i] + ".jar");
             Assert.assertTrue("Jar file is missing: " + jar, jar.isFile());
         }
     }
 
-    private static void assertWos(File resourceDir, String[] wos) throws AssertionFailedError {
+    private void assertWos(File resourceDir, String[] wos) throws AssertionFailedError {
         for (int i = 0; i < wos.length; i++) {
             File wo = new File(resourceDir, wos[i] + ".wo");
             Assert.assertTrue("WO directory is missing: " + wo, wo.isDirectory());
@@ -174,7 +174,7 @@ public abstract class BuildTestCase extends TestCase {
         }
     }
 
-    private static void assertWsResources(File resDir, String[] res) throws AssertionFailedError {
+    private void assertWsResources(File resDir, String[] res) throws AssertionFailedError {
         for (int i = 0; i < res.length; i++) {
             String path = res[i].replace('/', File.separatorChar);
             File wsfile = new File(resDir, path);
