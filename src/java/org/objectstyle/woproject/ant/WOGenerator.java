@@ -1,4 +1,3 @@
-package org.objectstyle.woproject.ant;
 /* ====================================================================
  * 
  * The ObjectStyle Group Software License, Version 1.0 
@@ -55,13 +54,15 @@ package org.objectstyle.woproject.ant;
  *
  */
 
-import java.io.File;
-import java.io.IOException;
+package org.objectstyle.woproject.ant;
 
+import java.io.File;
+
+import org.objectstyle.cayenne.gen.*;
 import org.objectstyle.cayenne.map.DataMap;
-import org.objectstyle.cayenne.map.MapClassGenerator;
 import org.objectstyle.cayenne.tools.CayenneGenerator;
 import org.objectstyle.cayenne.wocompat.EOModelProcessor;
+
 
 /**
   * Ant task to generate EOEnterpriseObjects from EOModel. 
@@ -69,55 +70,46 @@ import org.objectstyle.cayenne.wocompat.EOModelProcessor;
   * <a href="../../../../../ant/wogen.html">manual page</a>. 
   * 
   * @ant.task category="packaging"
+  * @author Andrei Adamchik
   */
 public class WOGenerator extends CayenneGenerator {
     public static final String SUPERCLASS_TEMPLATE = "wogen/superclass.vm";
     public static final String SUBCLASS_TEMPLATE = "wogen/subclass.vm";
     public static final String SINGLE_CLASS_TEMPLATE = "wogen/singleclass.vm";
-    
-    /** Wrapper of the superclass <code>setMap</code>
-     *  method to provide WebObjects-friendly name. 
+
+    /**
+     * Wrapper of the superclass <code>setMap</code>
+     * method to provide WebObjects-friendly name. 
      */
     public void setModel(File model) {
         super.setMap(model);
     }
-    
-    /** Overrides superclass implementation to create DataMap
-      * from EOModel instead of Cayenne DataMap XML file. */
-    protected DataMap loadDataMap()throws Exception {
+
+    /** 
+     * Overrides superclass implementation to create DataMap
+     * from EOModel instead of Cayenne DataMap XML file. 
+     */
+    protected DataMap loadDataMap() throws Exception {
         return new EOModelProcessor().loadEOModel(map.getCanonicalPath());
     }
-    
-    
-    /** 
-     *  Returns template file path for Java class 
-     *  when generating single classes. 
-     */
-    protected String getTemplateForSingles() throws IOException {
-        return (template != null)
-            ? template.getCanonicalPath()
-            : SINGLE_CLASS_TEMPLATE;
-    }
-    
 
-    /** 
-     *  Returns template file path for Java subclass 
-     *  when generating class pairs. 
-     */
-    protected String getTemplateForPairs() throws IOException {
-        return (template != null)
-            ? template.getCanonicalPath()
-            : SUBCLASS_TEMPLATE;
+    protected DefaultClassGenerator createGenerator() {
+        WOAntClassGenerator gen = new WOAntClassGenerator();
+        gen.setParentTask(this);
+        return gen;
     }
 
-    /** 
-     *  Returns template file path for Java superclass 
-     *  when generating class pairs. 
-     */
-    protected String getSupertemplateForPairs() throws IOException {
-        return (supertemplate != null)
-            ? supertemplate.getCanonicalPath()
-            : SUPERCLASS_TEMPLATE;
-    }
+    final class WOAntClassGenerator extends AntClassGenerator {
+        protected String defaultSingleClassTemplate() {
+            return WOGenerator.SINGLE_CLASS_TEMPLATE;
+        }
 
+        protected String defaultSubclassTemplate() {
+            return WOGenerator.SUBCLASS_TEMPLATE;
+        }
+
+        protected String defaultSuperclassTemplate() {
+            return WOGenerator.SUPERCLASS_TEMPLATE;
+        }
+    }
 }
