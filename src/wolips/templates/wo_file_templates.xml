@@ -270,23 +270,23 @@ public class DirectAction extends WODirectAction {
 	<!-- optional targets -->
 	
 	<!-- ssdd target--> 
-    <!-- To use this target remove the if="${never}" statement and create the LICENSE   
+    <!-- To use this target remove the if="${never}" statement and create the LICENSE   
          and web.xml files in your project.--> 
-    <target name="ssdd" if="${never}"> 
-        <war destfile="${project.name}.war" 
+    <target name="ssdd" if="${never}"> 
+        <war destfile="${project.name}.war" 
             webxml="web.xml"> 
-            <fileset dir="."> 
-                <include name="${project.name}.woa/**"/> 
-                <include name="LICENSE"/> 
-            </fileset> 
-            <lib dir="${wo.wosystemroot}/Library/Frameworks/JavaWOJSPServlet.framework/WebServerResources/Java/"> 
-                <include name="JavaWOJSPServlet_client.jar"/> 
-            </lib> 
-            <zipfileset dir="${wo.wosystemroot}/Library/Frameworks/JavaWOJSPServlet.framework/Resources/" prefix="tlds"> 
-                <include name="WOtaglib_1_0.tld"/> 
-             </zipfileset> 
-         </war> 
-     </target> 
+            <fileset dir="."> 
+                <include name="${project.name}.woa/**"/> 
+                <include name="LICENSE"/> 
+            </fileset> 
+            <lib dir="${wo.wosystemroot}/Library/Frameworks/JavaWOJSPServlet.framework/WebServerResources/Java/"> 
+                <include name="JavaWOJSPServlet_client.jar"/> 
+            </lib> 
+            <zipfileset dir="${wo.wosystemroot}/Library/Frameworks/JavaWOJSPServlet.framework/Resources/" prefix="tlds"> 
+                <include name="WOtaglib_1_0.tld"/> 
+            </zipfileset> 
+        </war> 
+    </target> 
 	
 	<!-- copy strings files -->	
 	<target name="copy.strings">
