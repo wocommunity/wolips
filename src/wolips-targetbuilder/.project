@@ -3,6 +3,7 @@
 	<name>wolips-targetbuilder</name>
 	<comment></comment>
 	<projects>
+		<project>org.eclipse.swt</project>
 		<project>wolips</project>
 	</projects>
 	<buildSpec>
