@@ -104,7 +104,7 @@ public class WOAntBuilder extends IncrementalProjectBuilder implements IWOLipsPl
 	 */
 	protected IProject[] build(int kind, Map args, IProgressMonitor monitor)
 		throws CoreException {
-		if (AntRunner.isBuildRunning() || !this.projectNeedsAnUpdate()) {
+		if (AntRunner.isBuildRunning() || this.getProject() == null || !this.projectNeedsAnUpdate()) {
 			monitor.done();
 			return null;
 		}
@@ -220,6 +220,8 @@ public class WOAntBuilder extends IncrementalProjectBuilder implements IWOLipsPl
 	 */
 	private boolean projectNeedsAnUpdate() {
 		BuildResourceValidator resourceValidator = new BuildResourceValidator();
+		if(this.getProject() == null || this.getDelta(this.getProject()) == null)
+		return false;
 		try {
 			this.getDelta(this.getProject()).accept(resourceValidator);
 		} catch (CoreException e) {
