@@ -470,11 +470,14 @@ public class ProjectBuilder extends ProjectFiles {
 	}
 
 	private Properties getBuildProperties() throws CoreException, IOException {
-		IFile file = this.getIProject().getFile("build.properties");
-		InputStream inputStream = file.getContents();
-		Properties properties = new Properties();
-		properties.load(inputStream);
-		return properties;
+	    Properties properties = new Properties();
+	    IFile file = this.getIProject().getFile("build.properties");
+	    if(file.exists()) {
+	        InputStream inputStream = file.getContents();
+	        properties.load(inputStream);
+	        inputStream.close();
+	    }
+	    return properties;
 	}
 
 	private void setBuildProperties(Properties properties)
