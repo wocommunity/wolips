@@ -53,86 +53,60 @@
  * <http://objectstyle.org/>.
  *
  */
-package org.objectstyle.wolips.ui.actions;
+package org.objectstyle.wolips.jdt.classpath;
 
-import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 
-import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.dialogs.MessageDialogWithToggle;
-import org.eclipse.jface.window.Window;
-import org.objectstyle.wolips.datasets.adaptable.Project;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
+import org.objectstyle.wolips.jdt.JdtPlugin;
 
 /**
  * @author ulrich
  */
-public abstract class AbstractPatternsetAction extends ActionOnIResource {
+public class PathCoder {
 
 	/**
+	 * @param path
+	 *            Decodes paths within a path.
 	 * @return
 	 */
-	public Project getProject() {
-		return (Project) this.project().getAdapter(Project.class);
-	}
-
-	/**
-	 * @return
-	 */
-	public String getPattern() {
-		String name = this.actionResource().getName();
-		String extension = this.actionResource().getFileExtension();
-		if (name != null && name.length() == 0)
-			name = null;
-		if (extension != null && extension.length() == 0)
-			extension = null;
-		if (name == null && extension == null) {
-			return null;
-		}
-		if(name != null && extension != null && name.equals("." +extension))
-			extension = null;
-		String pattern = null;
-		if (name != null && extension != null) {
-			MessageDialogWithToggle messageDialogWithToggle = MessageDialogWithToggle
-					.openOkCancelConfirm(this.part.getSite().getShell(),
-							"Add pattern", "Add all resources with extension "
-									+ extension,
-							"add by extension (otherwise by name)", true, null,
-							null);
-			if (messageDialogWithToggle.getReturnCode() == Window.CANCEL)
-				return null;
-			if (messageDialogWithToggle.getToggleState()) {
-				if (this.actionResource() instanceof IContainer)
-					pattern = "**/*." + extension + "/**";
-				pattern = "**/*." + extension;
-			} else {
-				if (this.actionResource() instanceof IContainer)
-					pattern = "**/" + name + "." + extension + "/**";
-				pattern = "**/" + name + "." + extension;
+	public static IPath[] decode(IPath path) {
+		ArrayList arrayList = new ArrayList();
+		int segmentCount = path.segmentCount();
+		for (int i = 0; i < segmentCount;) {
+			boolean skip = false;
+			Integer integer = null;
+			try {
+				String string = path.segment(i);
+				integer = new Integer(string);
+			} catch (NumberFormatException e) {
+				JdtPlugin.getDefault().getPluginLogger().log(e);
+				skip = true;
+			}
+			if (!skip) {
+				IPath entryPath = path.removeFirstSegments(i + 1);
+				entryPath = entryPath.removeLastSegments(entryPath
+						.segmentCount()
+						- integer.intValue());
+				arrayList.add(entryPath);
+				i = i + integer.intValue() + 1;
 			}
 		}
-		if (name != null) {
-			if (this.actionResource() instanceof IContainer)
-				pattern = "**/" + name + "/**";
-			pattern = "**/" + name;
-		}
-		if (extension != null) {
-			if (this.actionResource() instanceof IContainer)
-				pattern = "**/*." + extension + "/**";
-			pattern = "**/*." + extension;
-		}
-		return pattern;
+		return (IPath[]) arrayList.toArray(new IPath[arrayList.size()]);
 	}
-	public void run(IAction action) {
-		TouchAllFilesOperation touchAllFilesOperation = new TouchAllFilesOperation(
-				this.project());
-		try {
-			touchAllFilesOperation.run(new NullProgressMonitor());
-		} catch (InvocationTargetException e) {
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+
+	/**
+	 * @param path
+	 *            Encodes paths from a path.
+	 * @return
+	 */
+	public static IPath encode(IPath path) {
+		if (path == null) {
+			path = new Path("nil");
 		}
-		super.run(action);
+		IPath returnValue = path.append(path.segmentCount() + "");
+		returnValue = returnValue.append(path);
+		return returnValue;
 	}
 }

@@ -57,6 +57,7 @@
 package org.objectstyle.wolips.ui.editor;
 
 import java.util.ArrayList;
+
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
@@ -74,6 +75,7 @@ import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.events.ExpansionAdapter;
 import org.eclipse.ui.forms.events.ExpansionEvent;
+import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
@@ -113,7 +115,7 @@ public class PatternsetPage extends FormPage {
 		Section section =
 			toolkit.createSection(
 				form.getBody(),
-				Section.TWISTIE | Section.DESCRIPTION);
+				ExpandableComposite.TWISTIE | Section.DESCRIPTION);
 		section.setActiveToggleColor(
 			toolkit.getHyperlinkGroup().getActiveForeground());
 		section.setToggleColor(

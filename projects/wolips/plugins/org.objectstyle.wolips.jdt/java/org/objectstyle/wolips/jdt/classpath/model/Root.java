@@ -53,86 +53,74 @@
  * <http://objectstyle.org/>.
  *
  */
-package org.objectstyle.wolips.ui.actions;
+package org.objectstyle.wolips.jdt.classpath.model;
 
-import java.lang.reflect.InvocationTargetException;
+import java.io.File;
+import java.util.ArrayList;
 
-import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.dialogs.MessageDialogWithToggle;
-import org.eclipse.jface.window.Window;
-import org.objectstyle.wolips.datasets.adaptable.Project;
+import org.eclipse.core.runtime.IPath;
 
 /**
  * @author ulrich
  */
-public abstract class AbstractPatternsetAction extends ActionOnIResource {
-
+public class Root {
+	private String name;
+	private IPath rootPath;
+	private Framework[] entries;
 	/**
-	 * @return
+	 * @param name
+	 * @param rootPath
 	 */
-	public Project getProject() {
-		return (Project) this.project().getAdapter(Project.class);
+	public Root(String name, IPath rootPath) {
+		this.name = name;
+		this.rootPath = rootPath;
 	}
 
 	/**
 	 * @return
 	 */
-	public String getPattern() {
-		String name = this.actionResource().getName();
-		String extension = this.actionResource().getFileExtension();
-		if (name != null && name.length() == 0)
-			name = null;
-		if (extension != null && extension.length() == 0)
-			extension = null;
-		if (name == null && extension == null) {
-			return null;
+	public Framework[] getEntries() {
+		if(this.entries == null) {
+			ArrayList frameworks = new ArrayList();
+			File fwBase = new File(this.rootPath.toOSString());
+			if (fwBase.exists() && fwBase.isDirectory()) {
+				FrameworkFilenameFilter frameworkFilenameFilter = new FrameworkFilenameFilter();
+				frameworkFilenameFilter.setRoot(this);
+				fwBase.listFiles(frameworkFilenameFilter);
+				frameworks.addAll(frameworkFilenameFilter.frameworks());
+			}
+			this.entries = (Framework[])frameworks.toArray(new Framework[frameworks.size()]);
 		}
-		if(name != null && extension != null && name.equals("." +extension))
-			extension = null;
-		String pattern = null;
-		if (name != null && extension != null) {
-			MessageDialogWithToggle messageDialogWithToggle = MessageDialogWithToggle
-					.openOkCancelConfirm(this.part.getSite().getShell(),
-							"Add pattern", "Add all resources with extension "
-									+ extension,
-							"add by extension (otherwise by name)", true, null,
-							null);
-			if (messageDialogWithToggle.getReturnCode() == Window.CANCEL)
-				return null;
-			if (messageDialogWithToggle.getToggleState()) {
-				if (this.actionResource() instanceof IContainer)
-					pattern = "**/*." + extension + "/**";
-				pattern = "**/*." + extension;
-			} else {
-				if (this.actionResource() instanceof IContainer)
-					pattern = "**/" + name + "." + extension + "/**";
-				pattern = "**/" + name + "." + extension;
+		return this.entries;
+	}
+
+	protected String getRoot() {
+		return this.name;
+	}
+
+	protected IPath getRootPath() {
+		return this.rootPath;
+	}
+
+	/**
+	 * @param string
+	 * @return
+	 */
+	public Framework getFrameworkWithName(String string) {
+		for(int i = 0; i < this.getEntries().length; i++) {
+			if(this.getEntries()[i].getName().equals(string)) {
+				return this.entries[i];
 			}
 		}
-		if (name != null) {
-			if (this.actionResource() instanceof IContainer)
-				pattern = "**/" + name + "/**";
-			pattern = "**/" + name;
-		}
-		if (extension != null) {
-			if (this.actionResource() instanceof IContainer)
-				pattern = "**/*." + extension + "/**";
-			pattern = "**/*." + extension;
-		}
-		return pattern;
+		return null;
 	}
-	public void run(IAction action) {
-		TouchAllFilesOperation touchAllFilesOperation = new TouchAllFilesOperation(
-				this.project());
-		try {
-			touchAllFilesOperation.run(new NullProgressMonitor());
-		} catch (InvocationTargetException e) {
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		super.run(action);
+
+
+
+	/**
+	 * @return Returns the name.
+	 */
+	public String getName() {
+		return this.name;
 	}
 }

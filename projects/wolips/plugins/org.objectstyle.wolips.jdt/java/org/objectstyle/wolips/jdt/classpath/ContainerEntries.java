@@ -53,86 +53,82 @@
  * <http://objectstyle.org/>.
  *
  */
-package org.objectstyle.wolips.ui.actions;
+package org.objectstyle.wolips.jdt.classpath;
 
-import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 
-import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.dialogs.MessageDialogWithToggle;
-import org.eclipse.jface.window.Window;
-import org.objectstyle.wolips.datasets.adaptable.Project;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.jdt.core.IClasspathEntry;
+import org.objectstyle.wolips.jdt.classpath.model.Framework;
 
 /**
  * @author ulrich
  */
-public abstract class AbstractPatternsetAction extends ActionOnIResource {
-
+public class ContainerEntries {
+	ArrayList entries = new ArrayList();
+	
+	private ContainerEntries() {
+		super();
+	}
+	
+	/**
+	 * @param path
+	 * @return a container with the entries from the path
+	 */
+	public static ContainerEntries initWithPath(IPath path) {
+		ContainerEntries containerEntries =  new ContainerEntries();
+		IPath[] entries = PathCoder.decode(path.removeFirstSegments(1));
+		for(int i = 0;i < entries.length; i++) {
+			ContainerEntry containerEntry = ContainerEntry.initWithPath(entries[i]);
+			containerEntries.add(containerEntry);
+		}
+		return containerEntries;
+	}
 	/**
 	 * @return
 	 */
-	public Project getProject() {
-		return (Project) this.project().getAdapter(Project.class);
+	public IClasspathEntry[] getEntries() {
+		ArrayList arrayList = new ArrayList();
+		for(int i = 0; i < this.entries.size(); i++) {
+			ContainerEntry containerEntry = (ContainerEntry)this.entries.get(i);
+			arrayList.addAll(containerEntry.getEntries());
+		}
+		return (IClasspathEntry[])arrayList.toArray(new IClasspathEntry[this.entries.size()]);
 	}
 
 	/**
 	 * @return
 	 */
-	public String getPattern() {
-		String name = this.actionResource().getName();
-		String extension = this.actionResource().getFileExtension();
-		if (name != null && name.length() == 0)
-			name = null;
-		if (extension != null && extension.length() == 0)
-			extension = null;
-		if (name == null && extension == null) {
-			return null;
+	public IPath getPath() {
+		IPath path = new Path("");
+		for(int i = 0; i < this.entries.size(); i++) {
+			ContainerEntry containerEntry = (ContainerEntry)this.entries.get(i);
+			IPath entryPath = containerEntry.getPath();
+			path = path.append(entryPath.segmentCount() + "");
+			path = path.append(entryPath);
 		}
-		if(name != null && extension != null && name.equals("." +extension))
-			extension = null;
-		String pattern = null;
-		if (name != null && extension != null) {
-			MessageDialogWithToggle messageDialogWithToggle = MessageDialogWithToggle
-					.openOkCancelConfirm(this.part.getSite().getShell(),
-							"Add pattern", "Add all resources with extension "
-									+ extension,
-							"add by extension (otherwise by name)", true, null,
-							null);
-			if (messageDialogWithToggle.getReturnCode() == Window.CANCEL)
-				return null;
-			if (messageDialogWithToggle.getToggleState()) {
-				if (this.actionResource() instanceof IContainer)
-					pattern = "**/*." + extension + "/**";
-				pattern = "**/*." + extension;
-			} else {
-				if (this.actionResource() instanceof IContainer)
-					pattern = "**/" + name + "." + extension + "/**";
-				pattern = "**/" + name + "." + extension;
+		return path;
+	}
+
+	/**
+	 * @param containerEntry
+	 */
+	public void add(ContainerEntry containerEntry) {
+		this.entries.add(containerEntry);
+	}
+
+	/**
+	 * @param framework
+	 * @return
+	 */
+	public boolean contains(Framework framework) {
+		for(int i = 0; i < this.entries.size(); i++) {
+			ContainerEntry containerEntry = (ContainerEntry)this.entries.get(i);
+			if(framework.getName().equals(containerEntry.getName())) {
+				return true;
 			}
 		}
-		if (name != null) {
-			if (this.actionResource() instanceof IContainer)
-				pattern = "**/" + name + "/**";
-			pattern = "**/" + name;
-		}
-		if (extension != null) {
-			if (this.actionResource() instanceof IContainer)
-				pattern = "**/*." + extension + "/**";
-			pattern = "**/*." + extension;
-		}
-		return pattern;
-	}
-	public void run(IAction action) {
-		TouchAllFilesOperation touchAllFilesOperation = new TouchAllFilesOperation(
-				this.project());
-		try {
-			touchAllFilesOperation.run(new NullProgressMonitor());
-		} catch (InvocationTargetException e) {
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		super.run(action);
+		return false;
 	}
 }

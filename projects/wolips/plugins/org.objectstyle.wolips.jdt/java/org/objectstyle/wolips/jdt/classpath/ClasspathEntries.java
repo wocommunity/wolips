@@ -53,86 +53,51 @@
  * <http://objectstyle.org/>.
  *
  */
-package org.objectstyle.wolips.ui.actions;
+package org.objectstyle.wolips.jdt.classpath;
 
-import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 
-import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.dialogs.MessageDialogWithToggle;
-import org.eclipse.jface.window.Window;
-import org.objectstyle.wolips.datasets.adaptable.Project;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.jdt.core.IClasspathEntry;
 
 /**
  * @author ulrich
  */
-public abstract class AbstractPatternsetAction extends ActionOnIResource {
-
+public class ClasspathEntries {
+	ArrayList entries = new ArrayList();
 	/**
 	 * @return
 	 */
-	public Project getProject() {
-		return (Project) this.project().getAdapter(Project.class);
+	public IClasspathEntry[] getEntries() {
+		ArrayList arrayList = new ArrayList();
+		for(int i = 0; i < this.entries.size(); i++) {
+			ClasspathEntry classpathEntry = (ClasspathEntry)this.entries.get(i);
+			arrayList.add(classpathEntry.getEntry());
+		}
+		return (IClasspathEntry[])arrayList.toArray(new IClasspathEntry[this.entries.size()]);
 	}
 
 	/**
 	 * @return
 	 */
-	public String getPattern() {
-		String name = this.actionResource().getName();
-		String extension = this.actionResource().getFileExtension();
-		if (name != null && name.length() == 0)
-			name = null;
-		if (extension != null && extension.length() == 0)
-			extension = null;
-		if (name == null && extension == null) {
-			return null;
+	public IPath getPath() {
+		IPath path = new Path("");
+		for(int i = 0; i < this.entries.size(); i++) {
+			ClasspathEntry classpathEntry = (ClasspathEntry)this.entries.get(i);
+			path = path.append(classpathEntry.getPath());
 		}
-		if(name != null && extension != null && name.equals("." +extension))
-			extension = null;
-		String pattern = null;
-		if (name != null && extension != null) {
-			MessageDialogWithToggle messageDialogWithToggle = MessageDialogWithToggle
-					.openOkCancelConfirm(this.part.getSite().getShell(),
-							"Add pattern", "Add all resources with extension "
-									+ extension,
-							"add by extension (otherwise by name)", true, null,
-							null);
-			if (messageDialogWithToggle.getReturnCode() == Window.CANCEL)
-				return null;
-			if (messageDialogWithToggle.getToggleState()) {
-				if (this.actionResource() instanceof IContainer)
-					pattern = "**/*." + extension + "/**";
-				pattern = "**/*." + extension;
-			} else {
-				if (this.actionResource() instanceof IContainer)
-					pattern = "**/" + name + "." + extension + "/**";
-				pattern = "**/" + name + "." + extension;
-			}
-		}
-		if (name != null) {
-			if (this.actionResource() instanceof IContainer)
-				pattern = "**/" + name + "/**";
-			pattern = "**/" + name;
-		}
-		if (extension != null) {
-			if (this.actionResource() instanceof IContainer)
-				pattern = "**/*." + extension + "/**";
-			pattern = "**/*." + extension;
-		}
-		return pattern;
+		return path;
 	}
-	public void run(IAction action) {
-		TouchAllFilesOperation touchAllFilesOperation = new TouchAllFilesOperation(
-				this.project());
-		try {
-			touchAllFilesOperation.run(new NullProgressMonitor());
-		} catch (InvocationTargetException e) {
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		super.run(action);
+
+	/**
+	 * @param path
+	 * @param name
+	 * @param order
+	 * @param exported
+	 */
+	public void add(IPath path, String name, String order, String exported) {
+		ClasspathEntry classpathEntry = new ClasspathEntry(path, name, order, exported);
+		this.entries.add(classpathEntry);
 	}
 }

@@ -58,54 +58,115 @@ package org.objectstyle.wolips.ui.editor;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.objectstyle.wolips.datasets.pattern.PatternsetReader;
 import org.objectstyle.wolips.datasets.pattern.PatternsetWriter;
+import org.objectstyle.wolips.ui.UIPlugin;
 import org.objectstyle.wolips.ui.actions.TouchAllFilesOperation;
 
 /**
  * @author ulrich
- *
+ * 
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
 public class PatternsetEditor extends FormEditor {
 	private ArrayList patternList;
+
 	private boolean isDirty = false;
+/*
+	private PatternsetListener pattersetListener;
+
+	private class PatternsetListener implements IResourceChangeListener {
+
+		public void resourceChanged(IResourceChangeEvent event) {
+			try {
+				event.getDelta().accept(new IResourceDeltaVisitor() {
+					private boolean done = false;
+
+					public boolean visit(IResourceDelta delta)
+							throws CoreException {
+						if (this.done) {
+							return false;
+						}
+						if (delta.getResource() == PatternsetEditor.this
+								.getInputFile()) {
+							PatternsetEditor.this.loadPatternList();
+							this.done = true;
+						}
+						return true;
+					}
+				});
+			} catch (CoreException e) {
+				UIPlugin.getDefault().getPluginLogger().log(e);
+			}
+		}
+
+	}
+*/
 	/**
 	 *  
 	 */
 	public PatternsetEditor() {
 		super();
 	}
-	
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ui.forms.editor.FormEditor#close(boolean)
+	 */
+	public void close(boolean save) {
+		super.close(save);
+	/*	if (this.pattersetListener == null) {
+			this.pattersetListener = new PatternsetListener();
+			ResourcesPlugin.getWorkspace().removeResourceChangeListener(
+					this.pattersetListener);
+		}*/
+	}
+
+	IFile getInputFile() {
+		IEditorInput editorInput = getEditorInput();
+		return ((IFileEditorInput) editorInput).getFile();
+	}
+
+	void loadPatternList() {
+		PatternsetReader patternsetReader = new PatternsetReader(this
+				.getInputFile());
+		String[] pattern = patternsetReader.getPattern();
+		this.patternList = new ArrayList();
+		for (int i = 0; i < pattern.length; i++) {
+			this.patternList.add(pattern[i]);
+		}
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see org.eclipse.ui.forms.editor.FormEditor#addPages()
 	 */
 	protected void addPages() {
-		IEditorInput editorInput = getEditorInput();
-		IFile inputFile = ((IFileEditorInput)editorInput).getFile();
-		PatternsetReader patternsetReader = new PatternsetReader(inputFile);
-		String[] pattern = patternsetReader.getPattern();
-		this.patternList = new ArrayList();
-		for(int i = 0; i < pattern.length; i++) {
-			this.patternList.add(pattern[i]);
-		}
+		/*if (this.pattersetListener == null) {
+			this.pattersetListener = new PatternsetListener();
+			ResourcesPlugin.getWorkspace().addResourceChangeListener(
+					this.pattersetListener);
+		}*/
+		this.loadPatternList();
 		try {
-		addPage(new PatternsetPage(this, this.patternList));
-		}
-		catch (PartInitException e) {
-			//
+			addPage(new PatternsetPage(this, this.patternList));
+		} catch (PartInitException e) {
+			UIPlugin.getDefault().getPluginLogger().log(e);
 		}
 	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -113,11 +174,13 @@ public class PatternsetEditor extends FormEditor {
 	 */
 	public void doSave(IProgressMonitor monitor) {
 		IEditorInput editorInput = getEditorInput();
-		IFile inputFile = ((IFileEditorInput)editorInput).getFile();
-		String[] pattern = (String[])this.patternList.toArray(new String[this.patternList.size()]);
+		IFile inputFile = ((IFileEditorInput) editorInput).getFile();
+		String[] pattern = (String[]) this.patternList
+				.toArray(new String[this.patternList.size()]);
 		PatternsetWriter.create(inputFile, pattern);
 		this.setDirty(false);
-		TouchAllFilesOperation touchAllFilesOperation = new TouchAllFilesOperation(inputFile.getProject());
+		TouchAllFilesOperation touchAllFilesOperation = new TouchAllFilesOperation(
+				inputFile.getProject());
 		try {
 			touchAllFilesOperation.run(new NullProgressMonitor());
 		} catch (InvocationTargetException e) {
@@ -126,6 +189,7 @@ public class PatternsetEditor extends FormEditor {
 			e.printStackTrace();
 		}
 	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -134,6 +198,7 @@ public class PatternsetEditor extends FormEditor {
 	public void doSaveAs() {
 		return;
 	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -142,17 +207,20 @@ public class PatternsetEditor extends FormEditor {
 	public boolean isSaveAsAllowed() {
 		return false;
 	}
+
 	/**
 	 * @return Returns the isDirty.
 	 */
 	public boolean isDirty() {
 		return this.isDirty;
 	}
+
 	/**
-	 * @param isDirty The isDirty to set.
+	 * @param isDirty
+	 *            The isDirty to set.
 	 */
 	public void setDirty(boolean isDirty) {
 		this.isDirty = isDirty;
-		this.firePropertyChange(PatternsetEditor.PROP_DIRTY);
+		this.firePropertyChange(IEditorPart.PROP_DIRTY);
 	}
 }

@@ -40,6 +40,10 @@
            adaptableType="org.eclipse.jdt.core.IJavaProject">
            <adapter type="org.objectstyle.wolips.datasets.adaptable.JavaProject"/>
        </factory>
+       <factory class="org.objectstyle.wolips.datasets.adaptable.IFolderAdapterFactory"
+           adaptableType="org.eclipse.core.resources.IFolder">
+           <adapter type="org.objectstyle.wolips.datasets.adaptable.LProjFolder"/>
+       </factory>
    </extension>
 
 </plugin>

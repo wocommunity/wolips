@@ -54,6 +54,7 @@
  *
  */
 package org.objectstyle.wolips.datasets.project;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +62,6 @@ import java.util.Map;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
@@ -73,6 +73,7 @@ import org.objectstyle.wolips.datasets.DataSetsPlugin;
 import org.objectstyle.wolips.datasets.adaptable.Project;
 import org.objectstyle.wolips.datasets.resources.IWOLipsModel;
 import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
+
 /**
  * @author uli
  * 
@@ -83,13 +84,19 @@ import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 public final class PBProjectUpdater {
 	//	local framework search for PB.project
 	private static final String DefaultLocalFrameworkSearch = "$(NEXT_ROOT)$(LOCAL_LIBRARY_DIR)/Frameworks";
+
+	private boolean saveRequired = false;
+
 	//do not cache PB.projects see bug #693046
 	//private static Hashtable projectUpdater = new Hashtable();
 	//public static String PBProject = "PB.projectContainer"; moved to
 	// IWOLipsPluginConstants.PROJECT_FILE_NAME (mn)
 	private PBProject pbProject;
+
 	private IContainer projectContainer;
+
 	private static final String dirtyPBProject = "<?xml";
+
 	/**
 	 * Constructor for PBProjectUpdater.
 	 * 
@@ -97,11 +104,12 @@ public final class PBProjectUpdater {
 	 */
 	private PBProjectUpdater(IContainer aProjectContainer) {
 		super();
-                this.projectContainer = aProjectContainer;
+		this.projectContainer = aProjectContainer;
 		this.removeProjectMarker();
 		this.getPBProject(this.projectContainer);
 		//projectContainer = aProjectContainer;
 	}
+
 	private final void removeProjectMarker() {
 		try {
 			IFile aFile = this.projectContainer.getFile(new Path(
@@ -114,6 +122,7 @@ public final class PBProjectUpdater {
 			DataSetsPlugin.getDefault().getPluginLogger().log(e);
 		}
 	}
+
 	private final void addProjectMarker() {
 		try {
 			IFile aFile = this.projectContainer.getFile(new Path(
@@ -127,12 +136,14 @@ public final class PBProjectUpdater {
 			DataSetsPlugin.getDefault().getPluginLogger().log(e);
 		}
 	}
+
 	private final void handleException(Throwable throwable) {
 		this.addProjectMarker();
 		WorkbenchUtilitiesPlugin.handleException(null, throwable,
 				"An error occured while saving the PB.project in project: "
 						+ this.projectContainer.getProject().getName());
 	}
+
 	/**
 	 * Method instance.
 	 * 
@@ -140,18 +151,7 @@ public final class PBProjectUpdater {
 	 * @return PBProjectUpdater
 	 */
 	public static PBProjectUpdater instance(IContainer aProjectContainer) {
-		//		do not cache PB.projects see bug #693046
-		/*
-		 * PBProjectUpdater returnValue = (PBProjectUpdater)
-		 * PBProjectUpdater.projectUpdater.get( aProjectContainer); if
-		 * (returnValue == null) { returnValue = new
-		 * PBProjectUpdater(aProjectContainer);
-		 * PBProjectUpdater.projectUpdater.put(aProjectContainer, returnValue); }
-		 * return returnValue;
-		 */
-            //check if theres a PB.project in the Container. If not go to the
-            // parent
-            IContainer findContainer = aProjectContainer;
+		IContainer findContainer = aProjectContainer;
             IContainer container = null;
             while ((findContainer.findMember(IWOLipsModel.PROJECT_FILE_NAME) == null)
                    && (findContainer.getParent() != null)) {
@@ -167,6 +167,7 @@ public final class PBProjectUpdater {
             }
             return updater;
 	}
+
 	//	/**
 	//	 * Method updatePBProject.
 	//	 * @throws CoreException
@@ -192,7 +193,7 @@ public final class PBProjectUpdater {
 			if ((aFile != null) && (aFile.exists())) {
 				file = FileStringScanner.stringFromFile(aFile);
 				if (file.startsWith(PBProjectUpdater.dirtyPBProject)) {
-					Project project = (Project)this.projectContainer
+					Project project = (Project) this.projectContainer
 							.getProject().getAdapter(Project.class);
 					boolean isFramework = project.isFramework();
 					this.pbProject = new PBProject(aFile, isFramework);
@@ -208,6 +209,7 @@ public final class PBProjectUpdater {
 			file = null;
 		}
 	}
+
 	/**
 	 * Method getPBProject.
 	 * 
@@ -220,29 +222,38 @@ public final class PBProjectUpdater {
 		fixEOModelerMacOSXBug(aFile);
 		try {
 			boolean sync = !aFile.exists();
-			Project project = (Project)this.projectContainer
-			.getProject().getAdapter(Project.class);
+			Project project = (Project) this.projectContainer.getProject()
+					.getAdapter(Project.class);
 			this.pbProject = new PBProject(aFile, project.isFramework());
-			if (sync)
-				syncPBProjectWithProject();
+			if (sync) {
+				//TODO: uli
+			}
 		} catch (Exception anException) {
 			this.handleException(anException);
 		} finally {
 			aFile = null;
 		}
 	}
+
 	/**
 	 */
 	public void cleanTables() {
-		this.syncClasses(new ArrayList());
-		this.syncWOAppResources(new ArrayList());
-		this.syncWOComponents(new ArrayList());
+		this.pbProject.setClasses(new ArrayList());
+		this.pbProject.setWebServerResources(new ArrayList());
+		this.pbProject.setWoAppResources(new ArrayList());
+		this.pbProject.setWoComponents(new ArrayList());
+		this.saveRequired = true;
 		this._saveChanges();
 	}
+
 	private void _saveChanges() {
-		this.pbProject.saveChanges();
-		_tryRefresh();
+		if (this.saveRequired) {
+			this.pbProject.saveChanges();
+			_tryRefresh();
+			this.saveRequired = false;
+		}
 	}
+
 	/**
 	 * attempt to refresh Eclipse' idea of the resource to avoid "out of synch
 	 * warnings" to user
@@ -261,130 +272,24 @@ public final class PBProjectUpdater {
 			}
 		}
 	}
-	/**
-	 * Method syncPBProjectWithProject.
-	 */
-	private void syncPBProjectWithProject() {
-		try {
-			this.pbProject.update();
-			this.syncFilestable();
-			this.syncProjectName();
-			_saveChanges();
-		} catch (Exception ioex) {
-			this.handleException(ioex);
-		}
-	}
-	/**
-	 * Method syncFilestable.
-	 */
-	private void syncFilestable() {
-		ArrayList aClassesList = new ArrayList();
-		ArrayList aWOComponentsList = new ArrayList();
-		ArrayList aWOAppResourcesList = new ArrayList();
-		IResource[] resources;
-		try {
-			resources = this.projectContainer.members();
-		} catch (Exception anException) {
-			this.handleException(anException);
-			aClassesList = null;
-			aWOComponentsList = null;
-			aWOAppResourcesList = null;
-			resources = null;
-			return;
-		}
-		int lastResource = resources.length;
-		int i = 0;
-		while (i < lastResource) {
-			IResource aResource = resources[i];
-			i++;
-			proceedResource(aResource, aClassesList, aWOComponentsList,
-					aWOAppResourcesList);
-		}
-		this.syncClasses(aClassesList);
-		this.syncWOComponents(aWOComponentsList);
-		this.syncWOAppResources(aWOAppResourcesList);
-	}
-	/**
-	 * Method proceedResource.
-	 * 
-	 * @param aResource
-	 * @param aClassesList
-	 * @param aWOComponentsList
-	 * @param aWOAppResourcesList
-	 */
-	private void proceedResource(IResource aResource, List aClassesList,
-			List aWOComponentsList, List aWOAppResourcesList) {
-		try {
-			String aPath = aResource.getProjectRelativePath().toString();
-			File aFile = new File(aResource.getLocation().toOSString());
-			IFolder aFolder = null;
-			if (aFile.isDirectory())
-				aFolder = this.projectContainer.getFolder(aResource
-						.getProjectRelativePath());
-			if (aFolder != null) {
-				if (aPath.endsWith(".wo"))
-					aWOComponentsList.add(aPath);
-				else if (!aPath.endsWith(".woa") && !aPath.endsWith(".build")
-						&& !aPath.endsWith(".framework")) {
-					IResource[] resources;
-					resources = aFolder.members();
-					int lastResource = resources.length;
-					int i = 0;
-					while (i < lastResource) {
-						IResource aFolderResource = resources[i];
-						i++;
-						this.proceedResource(aFolderResource, aClassesList,
-								aWOComponentsList, aWOAppResourcesList);
-					}
-				}
-			} else {
-				if (aPath.endsWith(".java"))
-					aClassesList.add(aPath);
-				if (aPath.endsWith(".api"))
-					aWOAppResourcesList.add(aPath);
-			}
-		} catch (Exception anException) {
-			this.handleException(anException);
-		}
-	}
+
 	/**
 	 * Method syncProjectName.
+	 *  
 	 */
 	public void syncProjectName() {
 		if (!this.projectContainer.getName().equals(
 				this.pbProject.getProjectName())) {
 			this.pbProject.setProjectName(this.projectContainer.getName());
 			try {
+				this.saveRequired = true;
 				this._saveChanges();
 			} catch (Throwable e) {
 				this.handleException(e);
 			}
 		}
 	}
-	/**
-	 * Method syncClasses.
-	 * 
-	 * @param list
-	 */
-	private void syncClasses(List list) {
-		this.pbProject.setClasses(list);
-	}
-	/**
-	 * Method syncWOComponents.
-	 * 
-	 * @param list
-	 */
-	private void syncWOComponents(List list) {
-		this.pbProject.setWoComponents(list);
-	}
-	/**
-	 * Method syncWOAppResources.
-	 * 
-	 * @param list
-	 */
-	private void syncWOAppResources(List list) {
-		this.pbProject.setWoAppResources(list);
-	}
+
 	/**
 	 * Method syncFilestable.
 	 * 
@@ -400,72 +305,72 @@ public final class PBProjectUpdater {
 			if (IWOLipsModel.RESOURCES_ID.equals(currentKey)) {
 				actualResources = this.pbProject.getWoAppResources();
 				switch (kindOfChange) {
-					case IResourceDelta.ADDED :
-						this.pbProject.setWoAppResources(addResources(
-								(List) changedResources.get(currentKey),
-								actualResources));
-						break;
-					case IResourceDelta.REMOVED :
-						this.pbProject.setWoAppResources(removeResources(
-								(List) changedResources.get(currentKey),
-								actualResources));
-						break;
+				case IResourceDelta.ADDED:
+					this.pbProject.setWoAppResources(addResources(
+							(List) changedResources.get(currentKey),
+							actualResources));
+					break;
+				case IResourceDelta.REMOVED:
+					this.pbProject.setWoAppResources(removeResources(
+							(List) changedResources.get(currentKey),
+							actualResources));
+					break;
 				}
 			} else if (IWOLipsModel.WS_RESOURCES_ID.equals(currentKey)) {
 				actualResources = this.pbProject.getWebServerResources();
 				switch (kindOfChange) {
-					case IResourceDelta.ADDED :
-						this.pbProject.setWebServerResources(addResources(
-								(List) changedResources.get(currentKey),
-								actualResources));
-						break;
-					case IResourceDelta.REMOVED :
-						this.pbProject.setWebServerResources(removeResources(
-								(List) changedResources.get(currentKey),
-								actualResources));
-						break;
+				case IResourceDelta.ADDED:
+					this.pbProject.setWebServerResources(addResources(
+							(List) changedResources.get(currentKey),
+							actualResources));
+					break;
+				case IResourceDelta.REMOVED:
+					this.pbProject.setWebServerResources(removeResources(
+							(List) changedResources.get(currentKey),
+							actualResources));
+					break;
 				}
 			} else if (IWOLipsModel.CLASSES_ID.equals(currentKey)) {
 				actualResources = this.pbProject.getClasses();
 				switch (kindOfChange) {
-					case IResourceDelta.ADDED :
-						this.pbProject.setClasses(addResources(
-								(List) changedResources.get(currentKey),
-								actualResources));
-						break;
-					case IResourceDelta.REMOVED :
-						this.pbProject.setClasses(removeResources(
-								(List) changedResources.get(currentKey),
-								actualResources));
-						break;
+				case IResourceDelta.ADDED:
+					this.pbProject.setClasses(addResources(
+							(List) changedResources.get(currentKey),
+							actualResources));
+					break;
+				case IResourceDelta.REMOVED:
+					this.pbProject.setClasses(removeResources(
+							(List) changedResources.get(currentKey),
+							actualResources));
+					break;
 				}
 			} else if (IWOLipsModel.SUBPROJECTS_ID.equals(currentKey)) {
 				actualResources = this.pbProject.getSubprojects();
 				switch (kindOfChange) {
-					case IResourceDelta.ADDED :
-						this.pbProject.setSubprojects(addResources(
-								(List) changedResources.get(currentKey),
-								actualResources));
-						break;
-					case IResourceDelta.REMOVED :
-						this.pbProject.setSubprojects(removeResources(
-								(List) changedResources.get(currentKey),
-								actualResources));
-						break;
+				case IResourceDelta.ADDED:
+					this.pbProject.setSubprojects(addResources(
+							(List) changedResources.get(currentKey),
+							actualResources));
+					break;
+				case IResourceDelta.REMOVED:
+					this.pbProject.setSubprojects(removeResources(
+							(List) changedResources.get(currentKey),
+							actualResources));
+					break;
 				}
 			} else if (IWOLipsModel.COMPONENTS_ID.equals(currentKey)) {
 				actualResources = this.pbProject.getWoComponents();
 				switch (kindOfChange) {
-					case IResourceDelta.ADDED :
-						this.pbProject.setWoComponents(addResources(
-								(List) changedResources.get(currentKey),
-								actualResources));
-						break;
-					case IResourceDelta.REMOVED :
-						this.pbProject.setWoComponents(removeResources(
-								(List) changedResources.get(currentKey),
-								actualResources));
-						break;
+				case IResourceDelta.ADDED:
+					this.pbProject.setWoComponents(addResources(
+							(List) changedResources.get(currentKey),
+							actualResources));
+					break;
+				case IResourceDelta.REMOVED:
+					this.pbProject.setWoComponents(removeResources(
+							(List) changedResources.get(currentKey),
+							actualResources));
+					break;
 				}
 			}
 		}
@@ -475,6 +380,7 @@ public final class PBProjectUpdater {
 			this.handleException(throwable);
 		}
 	}
+
 	/**
 	 * Method addResources.
 	 * 
@@ -494,11 +400,13 @@ public final class PBProjectUpdater {
 					.get(i), projectFile);
 			if (relativResourcePath != null
 					&& !actualResources.contains(relativResourcePath)) {
+				this.saveRequired = true;
 				actualResources.add(relativResourcePath);
 			}
 		}
 		return actualResources;
 	}
+
 	private List removeResources(List removedResources, List actualResources) {
 		if (actualResources == null) {
 			return new ArrayList();
@@ -511,11 +419,13 @@ public final class PBProjectUpdater {
 					(IResource) removedResources.get(i), projectFile);
 			if (relativResourcePath != null
 					&& actualResources.contains(relativResourcePath)) {
+				this.saveRequired = true;
 				actualResources.remove(relativResourcePath);
 			}
 		}
 		return actualResources;
 	}
+
 	/**
 	 * Method relativResourcePath.
 	 * 
@@ -547,6 +457,7 @@ public final class PBProjectUpdater {
 		}
 		return resourcePath;
 	}
+
 	/**
 	 *  
 	 */
@@ -567,100 +478,45 @@ public final class PBProjectUpdater {
 			this.handleException(throwable);
 		}
 	}
+
 	/**
 	 * Method addFrameworks.
 	 * 
 	 * @param newFrameworks
 	 */
 	public void addFrameworks(List newFrameworks) {
-		boolean saveRequired = false;
 		List actualFrameworks = this.pbProject.getFrameworks();
-		for (int j = 0; j < newFrameworks.size(); j++) {
-			String[] frameworkIdentifiers = frameworkIdentifiersFromPath((Path) newFrameworks
-					.get(j));
-			for (int k = 0; k < frameworkIdentifiers.length; k++) {
-				String frameworkName = frameworkIdentifiers[k];
-				if (frameworkName != null
-						&& !actualFrameworks.contains(frameworkName)) {
-					actualFrameworks.add(frameworkName);
-					saveRequired = true;
-				}
+		for (int i = 0; i < newFrameworks.size(); i++) {
+			if (!actualFrameworks.contains(newFrameworks.get(i))) {
+				actualFrameworks.add(newFrameworks.get(i));
+				this.saveRequired = true;
 			}
 		}
 		try {
-			if (saveRequired)
-				_saveChanges();
+			this._saveChanges();
 		} catch (Throwable throwable) {
 			this.handleException(throwable);
 		}
 	}
+
 	/**
 	 * Method removeFrameworks.
 	 * 
 	 * @param removedFrameworks
 	 */
 	public void removeFrameworks(List removedFrameworks) {
-		boolean saveRequired = false;
 		List actualFrameworks = this.pbProject.getFrameworks();
-		for (int j = 0; j < removedFrameworks.size(); j++) {
-			String[] frameworkIdentifiers = frameworkIdentifiersFromPath((Path) removedFrameworks
-					.get(j));
-			for (int k = 0; k < frameworkIdentifiers.length; k++) {
-				String frameworkName = frameworkIdentifiers[k];
-				if (frameworkName != null
-						&& actualFrameworks.contains(frameworkName)) {
-					actualFrameworks.remove(frameworkName);
-					saveRequired = true;
-				}
+		for (int i = 0; i < removedFrameworks.size(); i++) {
+			if (actualFrameworks.contains(removedFrameworks.get(i))) {
+				actualFrameworks.remove(removedFrameworks.get(i));
+				this.saveRequired = true;
 			}
 		}
 		try {
-			if (saveRequired)
-				_saveChanges();
+			_saveChanges();
 		} catch (Throwable throwable) {
 			this.handleException(throwable);
 		}
 	}
-	/**
-	 * Method frameworkIdentifierFromPath.
-	 * 
-	 * @param frameworkPath
-	 * @return String
-	 */
-	private String[] frameworkIdentifiersFromPath(Path frameworkPath) {
-		String[] frameworkNames = null;
-		// search framework segment in path
-		if (frameworkPath.segmentCount() > 0
-				&& "org.objectstyle.wolips.WO_CLASSPATH".equals(frameworkPath
-						.segment(0))) {
-			frameworkNames = new String[frameworkPath.segments().length - 1];
-			System.arraycopy(frameworkPath.segments(), 1, frameworkNames, 0,
-					frameworkNames.length);
-			for (int i = 0; i < frameworkNames.length; i++) {
-				frameworkNames[i] = frameworkNames[i] + "."
-						+ IWOLipsModel.EXT_FRAMEWORK;
-			}
-		} else {
-			String frameworkName = this.getFrameworkName(frameworkPath);
-			if (frameworkName == null)
-				frameworkNames = new String[]{};
-			else
-				frameworkNames = new String[]{frameworkName};
-		}
-		return frameworkNames;
-	}
 
-	private String getFrameworkName(Path frameworkPath) {
-		String frameworkName = null;
-		int i = 0;
-		int count = frameworkPath.segmentCount();
-		while (i < count && frameworkName == null) {
-			String segment = frameworkPath.segment(i);
-			if (segment.endsWith("." + IWOLipsModel.EXT_FRAMEWORK))
-				frameworkName = segment;
-			else
-				i++;
-		}
-		return frameworkName;
-	}
 }

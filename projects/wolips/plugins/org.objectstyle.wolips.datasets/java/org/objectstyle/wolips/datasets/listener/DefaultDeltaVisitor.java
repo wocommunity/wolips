@@ -47,48 +47,37 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.ui;
-import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.objectstyle.wolips.commons.logging.PluginLogger;
+package org.objectstyle.wolips.datasets.listener;
+
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.IResourceDeltaVisitor;
+import org.eclipse.core.runtime.CoreException;
+import org.objectstyle.wolips.datasets.resources.IWOLipsModel;
+
 /**
- * The main plugin class to be used in the desktop.
- * 
- * @author uli
- * @author markus
+ * @author ulrich
  */
-public class UIPlugin extends AbstractUIPlugin {
-	//The plugin.
-	private static UIPlugin plugin;
-	private static final String PLUGIN_ID = "org.objectstyle.wolips.ui";
-	private PluginLogger pluginLogger = new PluginLogger(
-			UIPlugin.PLUGIN_ID, false);
-	/**
-	 * The constructor.
+public abstract class DefaultDeltaVisitor implements IResourceDeltaVisitor {
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.core.resources.IResourceDeltaVisitor#visit(org.eclipse.core.resources.IResourceDelta)
 	 */
-	public UIPlugin() {
-		super();
-		plugin = this;
+	public boolean visit(IResourceDelta delta) throws CoreException {
+		IResource resource = delta.getResource();
+		if (!resource.exists() || !resource.isAccessible())
+			return false;
+		if (resource.getType() == IResource.FOLDER) {
+				if (IWOLipsModel.EXT_FRAMEWORK.equals(resource
+						.getFileExtension())
+						|| IWOLipsModel.EXT_WOA.equals(resource
+								.getFileExtension())
+						|| "build".equals(resource.getName())
+						|| "dist".equals(resource.getName())) {
+					return false;
+				}
+		}
+		return true;
 	}
-	/**
-	 * Returns the shared instance.
-	 * 
-	 * @return
-	 */
-	public static UIPlugin getDefault() {
-		return plugin;
-	}
-	/**
-	 * Returns the PluginID.
-	 * 
-	 * @return
-	 */
-	public static String getPluginId() {
-		return UIPlugin.PLUGIN_ID;
-	}
-	/**
-	 * @return Returns the pluginLogger.
-	 */
-	public PluginLogger getPluginLogger() {
-		return this.pluginLogger;
-	}
+
 }

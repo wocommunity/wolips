@@ -48,7 +48,6 @@
  *  
  */
 package org.objectstyle.wolips.preferences;
-import java.net.URL;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.objectstyle.wolips.commons.logging.PluginLogger;
 import org.osgi.framework.BundleContext;
@@ -59,6 +58,8 @@ import org.osgi.framework.BundleContext;
  * @author markus
  */
 public class PreferencesPlugin extends AbstractUIPlugin {
+	private final static String PLUGIN_ID = "org.objectstyle.wolips.preferences";
+	
 	//The plugin.
 	private static PreferencesPlugin plugin;
 	private PluginLogger pluginLogger = null;
@@ -80,29 +81,10 @@ public class PreferencesPlugin extends AbstractUIPlugin {
 		return plugin;
 	}
 	/**
-	 * Method baseURL.
-	 * 
-	 * @return URL
-	 */
-	public static URL baseURL() {
-		return PreferencesPlugin.getDefault().getDescriptor().getInstallURL();
-	}
-	/**
-	 * Returns the PluginID.
-	 * 
-	 * @return
-	 */
-	public static String getPluginId() {
-		if (plugin != null) {
-			return getDefault().getDescriptor().getUniqueIdentifier();
-		} else
-			return null;
-	}
-	/**
 	 * @return Returns the pluginLogger.
 	 */
 	public PluginLogger getPluginLogger() {
-		return pluginLogger;
+		return this.pluginLogger;
 	}
 	/*
 	 * (non-Javadoc)
@@ -115,12 +97,12 @@ public class PreferencesPlugin extends AbstractUIPlugin {
 	 */
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
-		pluginLogger = new PluginLogger(PreferencesPlugin.getPluginId(), false);
+		this.pluginLogger = new PluginLogger(PreferencesPlugin.PLUGIN_ID, false);
 		try {
 			// set up missing preferences
 			Preferences.setDefaults();
 		} catch (Exception exception) {
-			pluginLogger.log("Exception in WOLips constructor: ", exception);
+			this.pluginLogger.log("Exception in WOLips constructor: ", exception);
 		}
 	}
 }

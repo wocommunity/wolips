@@ -53,86 +53,82 @@
  * <http://objectstyle.org/>.
  *
  */
-package org.objectstyle.wolips.ui.actions;
+package org.objectstyle.wolips.jdt.classpath.model;
 
-import java.lang.reflect.InvocationTargetException;
-
-import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.dialogs.MessageDialogWithToggle;
-import org.eclipse.jface.window.Window;
-import org.objectstyle.wolips.datasets.adaptable.Project;
+import java.io.File;
+import java.io.FilenameFilter;
+import java.util.ArrayList;
 
 /**
  * @author ulrich
  */
-public abstract class AbstractPatternsetAction extends ActionOnIResource {
+public class FrameworkFilenameFilter implements FilenameFilter {
 
-	/**
-	 * @return
-	 */
-	public Project getProject() {
-		return (Project) this.project().getAdapter(Project.class);
+	private Root root;
+
+	private ArrayList arrayList = new ArrayList();
+
+	protected ArrayList frameworks() {
+		return this.arrayList;
 	}
 
 	/**
+	 * @param file
+	 * @param name
 	 * @return
 	 */
-	public String getPattern() {
-		String name = this.actionResource().getName();
-		String extension = this.actionResource().getFileExtension();
-		if (name != null && name.length() == 0)
-			name = null;
-		if (extension != null && extension.length() == 0)
-			extension = null;
-		if (name == null && extension == null) {
-			return null;
-		}
-		if(name != null && extension != null && name.equals("." +extension))
-			extension = null;
-		String pattern = null;
-		if (name != null && extension != null) {
-			MessageDialogWithToggle messageDialogWithToggle = MessageDialogWithToggle
-					.openOkCancelConfirm(this.part.getSite().getShell(),
-							"Add pattern", "Add all resources with extension "
-									+ extension,
-							"add by extension (otherwise by name)", true, null,
-							null);
-			if (messageDialogWithToggle.getReturnCode() == Window.CANCEL)
-				return null;
-			if (messageDialogWithToggle.getToggleState()) {
-				if (this.actionResource() instanceof IContainer)
-					pattern = "**/*." + extension + "/**";
-				pattern = "**/*." + extension;
-			} else {
-				if (this.actionResource() instanceof IContainer)
-					pattern = "**/" + name + "." + extension + "/**";
-				pattern = "**/" + name + "." + extension;
+	public boolean accept(File file, String name) {
+		/* name.startsWith("Java") && */
+		boolean candidate = name.endsWith(".framework");
+
+		boolean result = false;
+
+		if (candidate) {
+			File resDir = new File(file, name + "/Resources/Java");
+			if (resDir.exists()) {
+
+				String jarFiles[] = resDir.list(new WildcardFilenameFilter(
+						null, ".jar"));
+				String zipFiles[] = resDir.list(new WildcardFilenameFilter(
+						null, ".zip"));
+
+				result = (0 != jarFiles.length) || (0 != zipFiles.length);
+				Framework framework = new Framework(name.substring(0, name.length() - ".framework".length()), this.root, jarFiles,
+						zipFiles);
+				this.arrayList.add(framework);
 			}
+
 		}
-		if (name != null) {
-			if (this.actionResource() instanceof IContainer)
-				pattern = "**/" + name + "/**";
-			pattern = "**/" + name;
-		}
-		if (extension != null) {
-			if (this.actionResource() instanceof IContainer)
-				pattern = "**/*." + extension + "/**";
-			pattern = "**/*." + extension;
-		}
-		return pattern;
+
+		return (result);
 	}
-	public void run(IAction action) {
-		TouchAllFilesOperation touchAllFilesOperation = new TouchAllFilesOperation(
-				this.project());
-		try {
-			touchAllFilesOperation.run(new NullProgressMonitor());
-		} catch (InvocationTargetException e) {
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+
+	/**
+	 * @param root
+	 *            The root to set.
+	 */
+	protected void setRoot(Root root) {
+		this.root = root;
+		this.arrayList = new ArrayList();
+	}
+
+	private static final class WildcardFilenameFilter implements FilenameFilter {
+		WildcardFilenameFilter(String prefix, String suffix) {
+			this._prefix = prefix;
+			this._suffix = suffix;
 		}
-		super.run(action);
+
+		public boolean accept(File file, String name) {
+
+			String lowerName = name.toLowerCase();
+
+			return (((null == this._prefix) || lowerName
+					.startsWith(this._prefix)) && ((null == this._suffix) || lowerName
+					.endsWith(this._suffix)));
+		}
+
+		String _prefix;
+
+		String _suffix;
 	}
 }

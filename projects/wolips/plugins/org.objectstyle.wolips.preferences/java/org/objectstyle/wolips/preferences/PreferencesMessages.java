@@ -70,6 +70,7 @@ public class PreferencesMessages {
 		ResourceBundle.getBundle(RESOURCE_BUNDLE);
 
 	private PreferencesMessages() {
+		super();
 	}
 
 	/**

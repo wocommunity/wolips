@@ -32,6 +32,7 @@
       <import plugin="org.eclipse.swt"/>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.ui.externaltools"/>
+      <import plugin="org.objectstyle.wolips.jdt"/>
    </requires>
 
 

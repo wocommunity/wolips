@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2004 The ObjectStyle Group 
+ * Copyright (c) 2002 - 2004 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -53,86 +53,75 @@
  * <http://objectstyle.org/>.
  *
  */
-package org.objectstyle.wolips.ui.actions;
+package org.objectstyle.wolips.jdt.classpath;
 
-import java.lang.reflect.InvocationTargetException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.jdt.core.IClasspathEntry;
+import org.eclipse.jdt.core.JavaCore;
 
-import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.dialogs.MessageDialogWithToggle;
-import org.eclipse.jface.window.Window;
-import org.objectstyle.wolips.datasets.adaptable.Project;
+
 
 /**
  * @author ulrich
  */
-public abstract class AbstractPatternsetAction extends ActionOnIResource {
-
+public class ClasspathEntry {
+	private IClasspathEntry entry;
+	private String name;
+	private String order;
+	
+	/**
+	 * @param path
+	 * @param name
+	 * @param order
+	 * @param exported
+	 */
+	public ClasspathEntry(IPath path, String name, String order, String exported) {
+		super();
+		//TODO:set src and javadoc path
+		this.entry = JavaCore.newLibraryEntry(
+				path, null, null, "true".equals(exported));
+		this.name = name;
+		this.order = order;
+		if(this.order == null)
+			this.order = "0";
+	}
+	/**
+	 * @return Returns the name.
+	 */
+	public String getName() {
+		return this.name;
+	}
+	/**
+	 * @return Returns the order.
+	 */
+	public int getOrder() {
+		return Integer.parseInt(this.order);
+	}
+	/**
+	 * @param order The order to set.
+	 */
+	public void setOrder(int order) {
+		this.order = "" + order;
+	}
+	/**
+	 * @return Returns the entry.
+	 */
+	public IClasspathEntry getEntry() {
+		return this.entry;
+	}
 	/**
 	 * @return
 	 */
-	public Project getProject() {
-		return (Project) this.project().getAdapter(Project.class);
-	}
-
-	/**
-	 * @return
-	 */
-	public String getPattern() {
-		String name = this.actionResource().getName();
-		String extension = this.actionResource().getFileExtension();
-		if (name != null && name.length() == 0)
-			name = null;
-		if (extension != null && extension.length() == 0)
-			extension = null;
-		if (name == null && extension == null) {
-			return null;
-		}
-		if(name != null && extension != null && name.equals("." +extension))
-			extension = null;
-		String pattern = null;
-		if (name != null && extension != null) {
-			MessageDialogWithToggle messageDialogWithToggle = MessageDialogWithToggle
-					.openOkCancelConfirm(this.part.getSite().getShell(),
-							"Add pattern", "Add all resources with extension "
-									+ extension,
-							"add by extension (otherwise by name)", true, null,
-							null);
-			if (messageDialogWithToggle.getReturnCode() == Window.CANCEL)
-				return null;
-			if (messageDialogWithToggle.getToggleState()) {
-				if (this.actionResource() instanceof IContainer)
-					pattern = "**/*." + extension + "/**";
-				pattern = "**/*." + extension;
-			} else {
-				if (this.actionResource() instanceof IContainer)
-					pattern = "**/" + name + "." + extension + "/**";
-				pattern = "**/" + name + "." + extension;
-			}
-		}
-		if (name != null) {
-			if (this.actionResource() instanceof IContainer)
-				pattern = "**/" + name + "/**";
-			pattern = "**/" + name;
-		}
-		if (extension != null) {
-			if (this.actionResource() instanceof IContainer)
-				pattern = "**/*." + extension + "/**";
-			pattern = "**/*." + extension;
-		}
-		return pattern;
-	}
-	public void run(IAction action) {
-		TouchAllFilesOperation touchAllFilesOperation = new TouchAllFilesOperation(
-				this.project());
-		try {
-			touchAllFilesOperation.run(new NullProgressMonitor());
-		} catch (InvocationTargetException e) {
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		super.run(action);
+	public IPath getPath() {
+		IPath path = new Path("");
+		path = path.append(this.entry.getPath());
+		path = path.append(this.name);
+		path = path.append(this.order);
+		if(this.getEntry().isExported())
+			path = path.append("true");
+		else
+			path = path.append("false");
+		return path;
 	}
 }

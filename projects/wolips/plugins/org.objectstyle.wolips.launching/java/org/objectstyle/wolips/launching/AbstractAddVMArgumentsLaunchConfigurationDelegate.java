@@ -2,7 +2,7 @@
 *
 * The ObjectStyle Group Software License, Version 1.0
 *
-* Copyright (c) 2004 The ObjectStyle Group,
+* Copyright (c) 2004 The ObjectStyle Group
 * and individual authors of the software.  All rights reserved.
 *
 * Redistribution and use in source and binary forms, with or without
@@ -53,88 +53,18 @@
 * <http://objectstyle.org/>.
 *
 */
-package org.objectstyle.wolips.templateengine;
 
-import java.util.GregorianCalendar;
+package org.objectstyle.wolips.launching;
 
+import org.eclipse.debug.core.ILaunch;
+import org.eclipse.debug.core.ILaunchConfiguration;
+import org.eclipse.jdt.launching.AbstractJavaLaunchConfigurationDelegate;
 
 /**
  * @author ulrich
  */
-public class WOLipsContext {
-	/**
-	 * Comment for <code>Key</code>
-	 */
-	public final static String Key = "WOLipsContext";
-	
-	private String projectName;
-	private String adaptorName;
-	private String componentName;
-	private boolean createBodyTag = false;
-	
-	protected WOLipsContext() {
-		super();
-	}
-	/**
-	 * @return Returns the projectName.
-	 */
-	public String getProjectName() {
-		return this.projectName;
-	}
-	/**
-	 * @param projectName The projectName to set.
-	 */
-	public void setProjectName(String projectName) {
-		this.projectName = projectName;
-	}
-	
-	/**
-	 * @return
-	 */
-	public String getPluginName() {
-		return TemplateEnginePlugin.getPluginId();
-	}
-	/**
-	 * @return Returns the adaptorName.
-	 */
-	public String getAdaptorName() {
-		return this.adaptorName;
-	}
-	/**
-	 * @param adaptorName The adaptorName to set.
-	 */
-	public void setAdaptorName(String adaptorName) {
-		this.adaptorName = adaptorName;
-	}
-	/**
-	 * @return Returns the createBodyTag.
-	 */
-	public boolean getCreateBodyTag() {
-		return this.createBodyTag;
-	}
-	/**
-	 * @param createBodyTag The createBodyTag to set.
-	 */
-	public void setCreateBodyTag(boolean createBodyTag) {
-		this.createBodyTag = createBodyTag;
-	}
-	/**
-	 * @return Returns the componentName.
-	 */
-	public String getComponentName() {
-		return this.componentName;
-	}
-	/**
-	 * @param componentName The componentName to set.
-	 */
-	public void setComponentName(String componentName) {
-		this.componentName = componentName;
-	}
-	
-	/**
-	 * @return
-	 */
-	public String getDate() {
-		return new GregorianCalendar().toString();
-	}
+public abstract class AbstractAddVMArgumentsLaunchConfigurationDelegate extends
+		AbstractJavaLaunchConfigurationDelegate {
+	protected abstract StringBuffer addVMArguments(StringBuffer vmArgs,
+			ILaunchConfiguration configuration, ILaunch launch, String mode);
 }

@@ -3,7 +3,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0
  * 
- * Copyright (c) 2004 The ObjectStyle Group and individual authors of the
+ * Copyright (c) 2002 - 2004 The ObjectStyle Group and individual authors of the
  * software. All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -47,48 +47,30 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.ui;
-import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.objectstyle.wolips.commons.logging.PluginLogger;
+package org.objectstyle.wolips.jdt.listener;
+
+import org.eclipse.jdt.core.ElementChangedEvent;
+import org.eclipse.jdt.core.IElementChangedListener;
+
 /**
- * The main plugin class to be used in the desktop.
- * 
- * @author uli
- * @author markus
+ * @author ulrich
+ *
+ * To change the template for this generated type comment go to
+ * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public class UIPlugin extends AbstractUIPlugin {
-	//The plugin.
-	private static UIPlugin plugin;
-	private static final String PLUGIN_ID = "org.objectstyle.wolips.ui";
-	private PluginLogger pluginLogger = new PluginLogger(
-			UIPlugin.PLUGIN_ID, false);
+public class MasterJavaElementChangeListener implements IElementChangedListener {
 	/**
-	 * The constructor.
+	 * Constructor for MasterResourceChangeListener.
 	 */
-	public UIPlugin() {
+	public MasterJavaElementChangeListener() {
 		super();
-		plugin = this;
 	}
-	/**
-	 * Returns the shared instance.
-	 * 
-	 * @return
+	/* (non-Javadoc)
+	 * @see org.eclipse.jdt.core.IElementChangedListener#elementChanged(org.eclipse.jdt.core.ElementChangedEvent)
 	 */
-	public static UIPlugin getDefault() {
-		return plugin;
-	}
-	/**
-	 * Returns the PluginID.
-	 * 
-	 * @return
-	 */
-	public static String getPluginId() {
-		return UIPlugin.PLUGIN_ID;
-	}
-	/**
-	 * @return Returns the pluginLogger.
-	 */
-	public PluginLogger getPluginLogger() {
-		return this.pluginLogger;
+	public void elementChanged(ElementChangedEvent event) {
+		JavaElementChangeListener javaElementChangeListener = new JavaElementChangeListener();
+		javaElementChangeListener.setEvent(event);
+		javaElementChangeListener.schedule();
 	}
 }

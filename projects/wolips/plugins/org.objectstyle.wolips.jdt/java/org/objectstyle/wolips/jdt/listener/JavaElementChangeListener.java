@@ -54,6 +54,7 @@
  *
  */
 package org.objectstyle.wolips.jdt.listener;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -61,41 +62,46 @@ import java.util.List;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jdt.core.ElementChangedEvent;
-import org.eclipse.jdt.core.IElementChangedListener;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaElementDelta;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.objectstyle.wolips.datasets.adaptable.Project;
 import org.objectstyle.wolips.datasets.project.PBProjectUpdater;
+import org.objectstyle.wolips.datasets.resources.IWOLipsModel;
 import org.objectstyle.wolips.jdt.JdtPlugin;
-import org.objectstyle.wolips.jdt.ant.UpdateFrameworkIncludeFiles;
-import org.objectstyle.wolips.jdt.ant.UpdateOtherClasspathIncludeFiles;
+
 /**
  * Tracking changes in classpath and synchronizes webobjects project file
  */
-public class JavaElementChangeListener implements IElementChangedListener {
+public class JavaElementChangeListener extends Job {
+	private ElementChangedEvent event;
+
 	/**
 	 * Constructor for JavaElementChangeListener.
 	 */
 	public JavaElementChangeListener() {
-		super();
+		super("WOLips Project Files Updates (Java Elements)");
 	}
-	/**
-	 * Catches changed webobjects nature projects and updates frameworks in
-	 * webobjects project file. <br>
+
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param event
-	 * @see org.eclipse.jdt.core.IElementChangedListener#elementChanged(ElementChangedEvent)
+	 * @see org.eclipse.core.runtime.jobs.Job#run(org.eclipse.core.runtime.IProgressMonitor)
 	 */
-	public final void elementChanged(ElementChangedEvent event) {
+	protected IStatus run(IProgressMonitor monitor) {
 		/*
 		 * if (ElementChangedEvent.POST_CHANGE != event.getType()) return;
 		 */
-		if (event.getDelta().getElement().getElementType() != IJavaElement.JAVA_MODEL)
-			return;
-		IJavaElementDelta elementDeltaToExamine = event.getDelta();
+		if (this.event.getDelta().getElement().getElementType() != IJavaElement.JAVA_MODEL)
+			return new Status(IStatus.OK, JdtPlugin.getPluginId(), IStatus.OK,
+					"Done", null);
+		IJavaElementDelta elementDeltaToExamine = this.event.getDelta();
 		ArrayList foundChangedElements = new ArrayList();
 		HashMap addedFrameworksProjectDict = new HashMap();
 		HashMap removedFrameworksProjectDict = new HashMap();
@@ -123,14 +129,6 @@ public class JavaElementChangeListener implements IElementChangedListener {
 					woLipsProject = (Project) (projectToExamine)
 							.getAdapter(Project.class);
 					if (woLipsProject.hasWOLipsNature()) {
-						UpdateOtherClasspathIncludeFiles updateOtherClasspathIncludeFiles = new UpdateOtherClasspathIncludeFiles();
-						updateOtherClasspathIncludeFiles
-								.setIProject(projectToExamine);
-						updateOtherClasspathIncludeFiles.execute();
-						UpdateFrameworkIncludeFiles updateFrameworkIncludeFiles = new UpdateFrameworkIncludeFiles();
-						updateFrameworkIncludeFiles
-								.setIProject(projectToExamine);
-						updateFrameworkIncludeFiles.execute();
 						addedFrameworksProjectDict.put(projectToExamine,
 								new ArrayList());
 						removedFrameworksProjectDict.put(projectToExamine,
@@ -149,8 +147,9 @@ public class JavaElementChangeListener implements IElementChangedListener {
 						for (int j = 0; j < foundElements.size(); j++) {
 							currentPackageFragmentRoot = (IPackageFragmentRoot) foundElements
 									.get(j);
+							System.out.println(currentPackageFragmentRoot);
 							addedFrameworks.add(currentPackageFragmentRoot
-									.getRawClasspathEntry().getPath());
+									.getPath());
 						}
 						foundElements = new ArrayList();
 						// search deltas for classpath changes
@@ -180,7 +179,10 @@ public class JavaElementChangeListener implements IElementChangedListener {
 			// update project files
 			updateProjects(addedFrameworksProjectDict,
 					removedFrameworksProjectDict);
+		return new Status(IStatus.OK, JdtPlugin.getPluginId(), IStatus.OK,
+				"Done", null);
 	}
+
 	/**
 	 * Method searchDeltas. Recursive search in java element deltas for changed
 	 * elements matching the change flag to search for. The results are stored
@@ -209,6 +211,7 @@ public class JavaElementChangeListener implements IElementChangedListener {
 		}
 		return (foundElements != null && foundElements.size() > 0);
 	}
+
 	/**
 	 * Method searchDeltas. Recursive search in java element deltas for changed
 	 * elements matching the change flag to search for. The results are stored
@@ -236,6 +239,7 @@ public class JavaElementChangeListener implements IElementChangedListener {
 		}
 		return (foundElements != null && foundElements.size() > 0);
 	}
+
 	/**
 	 * Method updateProjects.
 	 * 
@@ -255,7 +259,8 @@ public class JavaElementChangeListener implements IElementChangedListener {
 			if (changedFrameworks.size() > 0) {
 				PBProjectUpdater projectUpdater = PBProjectUpdater
 						.instance(currentProject);
-				projectUpdater.removeFrameworks(changedFrameworks);
+				projectUpdater.removeFrameworks(this
+						.toFrameworkNames(changedFrameworks));
 			}
 		}
 		Object[] allAddedKeys = addedFrameworksProjectDict.keySet().toArray();
@@ -266,8 +271,40 @@ public class JavaElementChangeListener implements IElementChangedListener {
 			if (changedFrameworks.size() > 0) {
 				PBProjectUpdater projectUpdater = PBProjectUpdater
 						.instance(currentProject);
-				projectUpdater.addFrameworks(changedFrameworks);
+				projectUpdater.addFrameworks(this
+						.toFrameworkNames(changedFrameworks));
 			}
 		}
+	}
+
+	private List toFrameworkNames(List paths) {
+		ArrayList arrayList = new ArrayList();
+		for (int i = 0; i > paths.size(); i++) {
+			IPath path = (IPath) paths.get(i);
+			arrayList.add(this.getFrameworkName(path));
+		}
+		return arrayList;
+	}
+
+	private String getFrameworkName(IPath frameworkPath) {
+		String frameworkName = null;
+		int i = 0;
+		int count = frameworkPath.segmentCount();
+		while (i < count && frameworkName == null) {
+			String segment = frameworkPath.segment(i);
+			if (segment.endsWith("." + IWOLipsModel.EXT_FRAMEWORK))
+				frameworkName = segment;
+			else
+				i++;
+		}
+		return frameworkName;
+	}
+
+	/**
+	 * @param event
+	 *            The event to set.
+	 */
+	public void setEvent(ElementChangedEvent event) {
+		this.event = event;
 	}
 }

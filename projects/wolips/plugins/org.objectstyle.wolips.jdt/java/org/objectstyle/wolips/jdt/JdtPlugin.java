@@ -59,24 +59,29 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import org.eclipse.jdt.core.ElementChangedEvent;
-import org.eclipse.jdt.core.IElementChangedListener;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.objectstyle.wolips.commons.logging.PluginLogger;
 import org.objectstyle.wolips.jdt.classpath.model.ClasspathModel;
-import org.objectstyle.wolips.jdt.listener.JavaElementChangeListener;
+import org.objectstyle.wolips.jdt.listener.MasterJavaElementChangeListener;
 import org.osgi.framework.BundleContext;
+
 /**
  * The main plugin class to be used in the desktop.
  */
 public class JdtPlugin extends AbstractUIPlugin {
 	private final static String PLUGIN_ID = "org.objectstyle.wolips.jdt.JdtPlugin";
+
 	//The shared instance.
 	private static JdtPlugin plugin;
+
 	//Resource bundle.
 	private ResourceBundle resourceBundle;
+
 	private PluginLogger pluginLogger = null;
+
 	private ClasspathModel classpathModel = null;
+
 	/**
 	 * The constructor.
 	 */
@@ -90,6 +95,7 @@ public class JdtPlugin extends AbstractUIPlugin {
 			this.resourceBundle = null;
 		}
 	}
+
 	/**
 	 * @return the shared instance.
 	 */
@@ -110,12 +116,14 @@ public class JdtPlugin extends AbstractUIPlugin {
 			return key;
 		}
 	}
+
 	/**
 	 * @return Returns the plugin's resource bundle,
 	 */
 	public ResourceBundle getResourceBundle() {
 		return this.resourceBundle;
 	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -127,8 +135,8 @@ public class JdtPlugin extends AbstractUIPlugin {
 		this.classpathModel = new ClasspathModel();
 		// add element change listener to update project file on classpath
 		// changes
-		IElementChangedListener javaElementChangeListener = new JavaElementChangeListener();
-		JavaCore.addElementChangedListener(javaElementChangeListener,
+		MasterJavaElementChangeListener masterJavaElementChangeListener = new MasterJavaElementChangeListener();
+		JavaCore.addElementChangedListener(masterJavaElementChangeListener,
 				ElementChangedEvent.POST_CHANGE);
 	}
 
@@ -142,6 +150,7 @@ public class JdtPlugin extends AbstractUIPlugin {
 		this.classpathModel = null;
 		this.pluginLogger = null;
 	}
+
 	/**
 	 * @return Returns the pluginLogger.
 	 */
@@ -152,7 +161,14 @@ public class JdtPlugin extends AbstractUIPlugin {
 	/**
 	 * @return Returns the classpathModel.
 	 */
-	protected ClasspathModel getClasspathModel() {
+	public ClasspathModel getClasspathModel() {
 		return this.classpathModel;
+	}
+
+	/**
+	 * @return
+	 */
+	public static String getPluginId() {
+		return JdtPlugin.PLUGIN_ID;
 	}
 }

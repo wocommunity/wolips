@@ -53,86 +53,82 @@
  * <http://objectstyle.org/>.
  *
  */
-package org.objectstyle.wolips.ui.actions;
+package org.objectstyle.wolips.jdt.classpath;
 
-import java.lang.reflect.InvocationTargetException;
-
-import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.dialogs.MessageDialogWithToggle;
-import org.eclipse.jface.window.Window;
-import org.objectstyle.wolips.datasets.adaptable.Project;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.jdt.core.IClasspathContainer;
+import org.eclipse.jdt.core.IClasspathEntry;
+import org.objectstyle.wolips.jdt.classpath.model.Framework;
 
 /**
  * @author ulrich
  */
-public abstract class AbstractPatternsetAction extends ActionOnIResource {
+public class Container implements IClasspathContainer {
 
 	/**
-	 * @return
+	 * The ID of the container.
 	 */
-	public Project getProject() {
-		return (Project) this.project().getAdapter(Project.class);
+	public static final String CONTAINER_IDENTITY = "org.objectstyle.wolips.ContainerInitializer";
+
+	/**
+	 * Comment for <code>DEFAULT_PATH</code>
+	 */
+	public static final String DEFAULT_PATH = CONTAINER_IDENTITY + "/10/1/JavaWebObjects/1/nil/1/nil/1/0/1/nil/10/1/JavaFoundation/1/nil/1/nil/1/0/1/nil/10/1/JavaXML/1/nil/1/nil/1/0/1/nil/10/1/JavaWOExtensions/1/nil/1/nil/1/0/1/nil/10/1/JavaEOAccess/1/nil/1/nil/1/0/1/nil/10/1/JavaEOControl/1/nil/1/nil/1/0/1/nil";
+	/**
+	 * Names of the standard frameworks.
+	 */
+	public static final String[] STANDARD_FRAMEWORK_NAMES = new String[] {
+			"JavaWebObjects", "JavaFoundation", "JavaXML", "JavaWOExtensions",
+			"JavaEOAccess", "JavaEOControl" };
+
+	private ContainerEntries containerEntries = null;
+
+	/**
+	 * @param containerEntries
+	 */
+	public Container(ContainerEntries containerEntries) {
+		super();
+		this.containerEntries = containerEntries;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.jdt.core.IClasspathContainer#getClasspathEntries()
+	 */
+	public IClasspathEntry[] getClasspathEntries() {
+		return this.containerEntries.getEntries();
 	}
 
 	/**
+	 * @see org.eclipse.jdt.core.IClasspathContainer#getDescription()
+	 */
+	public String getDescription() {
+		return "WebObjects Frameworks";
+	}
+
+	/**
+	 * @see org.eclipse.jdt.core.IClasspathContainer#getKind()
+	 */
+	public int getKind() {
+		return IClasspathContainer.K_APPLICATION;
+	}
+
+	/**
+	 * @see org.eclipse.jdt.core.IClasspathContainer#getPath()
+	 */
+	public IPath getPath() {
+		IPath path = new Path(Container.CONTAINER_IDENTITY);
+		path = path.append(this.containerEntries.getPath());
+		return path;
+	}
+
+	/**
+	 * @param framework
 	 * @return
 	 */
-	public String getPattern() {
-		String name = this.actionResource().getName();
-		String extension = this.actionResource().getFileExtension();
-		if (name != null && name.length() == 0)
-			name = null;
-		if (extension != null && extension.length() == 0)
-			extension = null;
-		if (name == null && extension == null) {
-			return null;
-		}
-		if(name != null && extension != null && name.equals("." +extension))
-			extension = null;
-		String pattern = null;
-		if (name != null && extension != null) {
-			MessageDialogWithToggle messageDialogWithToggle = MessageDialogWithToggle
-					.openOkCancelConfirm(this.part.getSite().getShell(),
-							"Add pattern", "Add all resources with extension "
-									+ extension,
-							"add by extension (otherwise by name)", true, null,
-							null);
-			if (messageDialogWithToggle.getReturnCode() == Window.CANCEL)
-				return null;
-			if (messageDialogWithToggle.getToggleState()) {
-				if (this.actionResource() instanceof IContainer)
-					pattern = "**/*." + extension + "/**";
-				pattern = "**/*." + extension;
-			} else {
-				if (this.actionResource() instanceof IContainer)
-					pattern = "**/" + name + "." + extension + "/**";
-				pattern = "**/" + name + "." + extension;
-			}
-		}
-		if (name != null) {
-			if (this.actionResource() instanceof IContainer)
-				pattern = "**/" + name + "/**";
-			pattern = "**/" + name;
-		}
-		if (extension != null) {
-			if (this.actionResource() instanceof IContainer)
-				pattern = "**/*." + extension + "/**";
-			pattern = "**/*." + extension;
-		}
-		return pattern;
-	}
-	public void run(IAction action) {
-		TouchAllFilesOperation touchAllFilesOperation = new TouchAllFilesOperation(
-				this.project());
-		try {
-			touchAllFilesOperation.run(new NullProgressMonitor());
-		} catch (InvocationTargetException e) {
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		super.run(action);
+	public boolean contains(Framework framework) {
+		return this.containerEntries.contains(framework);
 	}
 }

@@ -32,6 +32,7 @@
       <import plugin="org.objectstyle.wolips.datasets"/>
       <import plugin="org.eclipse.ui.forms"/>
       <import plugin="org.objectstyle.wolips.projectbuild"/>
+      <import plugin="org.objectstyle.wolips.jdt"/>
    </requires>
 
 

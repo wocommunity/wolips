@@ -55,6 +55,9 @@
  */
 package org.objectstyle.wolips.jdt.classpath.model;
 
+import org.eclipse.core.runtime.IPath;
+import org.objectstyle.wolips.variables.VariablesPlugin;
+
 //import org.eclipse.core.runtime.IPath;
 //import org.objectstyle.wolips.variables.VariablesPlugin;
 
@@ -62,11 +65,12 @@ package org.objectstyle.wolips.jdt.classpath.model;
  * @author ulrich
  */
 public class ClasspathModel {
-	//private Root[] roots = null;
+
+	private Root[] roots = null;
 	/**
 	 * @return Returns the roots.
 	 */
-	/*protected Root[] getRoots() {
+	public Root[] getRoots() {
 		if (this.roots == null) {
 			String[] rootsNames = VariablesPlugin.getDefault()
 					.getFrameworkRootsNames();
@@ -78,5 +82,18 @@ public class ClasspathModel {
 			}
 		}
 		return this.roots;
-	}*/
+	}
+	/**
+	 * @param string
+	 * @return
+	 */
+	public Framework getFrameworkWithName(String string) {
+		for(int i = 0; i < this.getRoots().length; i++) {
+			Framework framework = this.getRoots()[i].getFrameworkWithName(string);
+			if(framework != null) {
+				return framework;
+			}
+		}
+		return null;
+	}
 }

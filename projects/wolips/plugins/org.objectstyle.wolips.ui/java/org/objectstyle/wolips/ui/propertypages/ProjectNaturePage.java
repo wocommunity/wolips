@@ -228,7 +228,7 @@ public class ProjectNaturePage extends PropertyPage implements IAdaptable {
 		this._woTargetBuilderCheck.setEnabled(true);
 		this._woTargetBuilderCheck.setSelection(project.isTargetBuilderInstalled());
 	}
-	private void enableWidgets(boolean enabled) {
+	void enableWidgets(boolean enabled) {
 		this._woTargetBuilderCheck.setEnabled(enabled);
 		this._woIsFrameworkButton.setEnabled(enabled);
 		this._woIsApplicationButton.setEnabled(enabled);

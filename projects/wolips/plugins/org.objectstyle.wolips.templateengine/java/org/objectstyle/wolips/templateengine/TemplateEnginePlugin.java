@@ -67,15 +67,13 @@ import java.util.ResourceBundle;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.osgi.framework.internal.core.Constants;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.objectstyle.wolips.commons.logging.PluginLogger;
 import org.objectstyle.wolips.datasets.DataSetsPlugin;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
 
 /**
  * The main plugin class to be used in the desktop.

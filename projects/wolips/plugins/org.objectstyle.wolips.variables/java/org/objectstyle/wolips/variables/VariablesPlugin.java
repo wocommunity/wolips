@@ -67,11 +67,11 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.osgi.framework.internal.core.Constants;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.objectstyle.woenvironment.env.WOEnvironment;
 import org.objectstyle.woenvironment.env.WOVariables;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
 /**
  * The main plugin class to be used in the desktop.
  */

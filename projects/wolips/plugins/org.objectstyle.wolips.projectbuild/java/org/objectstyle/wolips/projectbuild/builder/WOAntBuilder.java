@@ -58,7 +58,6 @@ import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
-import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -76,7 +75,10 @@ import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.externaltools.internal.model.IExternalToolConstants;
 import org.objectstyle.wolips.datasets.adaptable.Project;
-import org.objectstyle.wolips.datasets.resources.IWOLipsModel;
+import org.objectstyle.wolips.datasets.listener.DefaultDeltaVisitor;
+import org.objectstyle.wolips.datasets.listener.PatternsetDeltaVisitor;
+import org.objectstyle.wolips.jdt.ant.UpdateFrameworkIncludeFiles;
+import org.objectstyle.wolips.jdt.ant.UpdateOtherClasspathIncludeFiles;
 import org.objectstyle.wolips.preferences.Preferences;
 import org.objectstyle.wolips.projectbuild.ProjectBuildPlugin;
 import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
@@ -86,6 +88,7 @@ import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 public class WOAntBuilder extends IncrementalProjectBuilder {
 	private static final String MAIN_TYPE_NAME = "org.eclipse.ant.internal.ui.antsupport.InternalAntRunner";
 	private static final int TOTAL_WORK_UNITS = 1;
+	private BuildResourceValidator buildResourceValidator = new BuildResourceValidator();
 	/**
 	 * Constructor for WOBuilder.
 	 */
@@ -152,6 +155,15 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 		//TODO:handle clean
 		Project project = (Project)this.getProject().getAdapter(Project.class);
 		project.setUpPatternsetFiles();
+		UpdateOtherClasspathIncludeFiles updateOtherClasspathIncludeFiles = new UpdateOtherClasspathIncludeFiles();
+		updateOtherClasspathIncludeFiles
+				.setIProject(this.getProject());
+		updateOtherClasspathIncludeFiles.execute();
+		UpdateFrameworkIncludeFiles updateFrameworkIncludeFiles = new UpdateFrameworkIncludeFiles();
+		updateFrameworkIncludeFiles
+				.setIProject(this.getProject());
+		updateFrameworkIncludeFiles.execute();
+		
 		this.launchAntInExternalVM(getProject().getFile(aBuildFile), monitor);
 	}
 	/**
@@ -160,17 +172,19 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 	 * @return boolean
 	 */
 	private boolean projectNeedsAnUpdate() {
-		BuildResourceValidator resourceValidator = new BuildResourceValidator();
-		if (this.getProject() == null
+		PatternsetDeltaVisitor patternsetDeltaVisitor = new PatternsetDeltaVisitor();
+		this.buildResourceValidator.reset();
+		if(this.getProject() == null
 				|| this.getDelta(this.getProject()) == null)
 			return false;
 		try {
-			this.getDelta(this.getProject()).accept(resourceValidator);
+			this.getDelta(this.getProject()).accept(patternsetDeltaVisitor);
+			this.getDelta(this.getProject()).accept(this.buildResourceValidator);
 		} catch (CoreException e) {
 			ProjectBuildPlugin.getDefault().getPluginLogger().log(e);
 			return false;
 		}
-		return resourceValidator.isBuildRequired();
+		return this.buildResourceValidator.isBuildRequired();
 	}
 	/**
 	 * Method handleException.
@@ -249,7 +263,7 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 	public String cleanTarget() {
 		return "clean";
 	}
-	private final class BuildResourceValidator implements IResourceDeltaVisitor {
+	private final class BuildResourceValidator extends DefaultDeltaVisitor {
 		private boolean buildRequired = false;
 		private Project project;
 		/**
@@ -259,9 +273,22 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 			super();
 		}
 		/**
+		 * 
+		 */
+		public void reset() {
+			this.buildRequired = false;
+		}
+		/**
+		 * @throws CoreException
 		 * @see org.eclipse.core.resources.IResourceDeltaVisitor#visit(IResourceDelta)
 		 */
-		public final boolean visit(IResourceDelta delta) {
+		public final boolean visit(IResourceDelta delta) throws CoreException {
+			if(this.buildRequired) {
+				return false;
+			}
+			if(!super.visit(delta)) {
+				return false;
+			}
 			IResource resource = delta.getResource();
 			return examineResource(resource, delta.getKind());
 		}
@@ -286,21 +313,8 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 					// further investigation of resource delta needed
 					return true;
 				case IResource.PROJECT :
-					if (!resource.exists() || !resource.isAccessible()) {
-						// project deleted no further investigation needed
-						return false;
-					}
 					this.project = (Project) resource.getAdapter(Project.class);
 				case IResource.FOLDER :
-					if (IWOLipsModel.EXT_FRAMEWORK.equals(resource
-							.getFileExtension())
-							|| IWOLipsModel.EXT_WOA.equals(resource
-									.getFileExtension())
-							|| "build".equals(resource.getName())
-							|| "dist".equals(resource.getName())) {
-						// no further examination needed
-						return false;
-					}
 					// further examination of resource delta needed
 					return true;
 				case IResource.FILE :

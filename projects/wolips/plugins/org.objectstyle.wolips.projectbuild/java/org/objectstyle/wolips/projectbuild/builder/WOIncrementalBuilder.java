@@ -84,6 +84,7 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.objectstyle.cayenne.wocompat.PropertyListSerialization;
 import org.objectstyle.wolips.datasets.adaptable.Project;
+import org.objectstyle.wolips.datasets.listener.PatternsetDeltaVisitor;
 import org.objectstyle.wolips.datasets.pattern.IStringMatcher;
 import org.objectstyle.wolips.datasets.pattern.PatternsetMatcher;
 import org.objectstyle.wolips.datasets.pattern.StringUtilities;
@@ -133,6 +134,7 @@ public class WOIncrementalBuilder extends IncrementalProjectBuilder {
 		monitor.beginTask("building WebObjects layout ...", 100);
 		try {
 			IResourceDelta delta = getDelta(getProject());
+			delta.accept(new PatternsetDeltaVisitor());
 			//System.out.println(delta);
 			boolean fullBuild = (null != delta) && (kind == FULL_BUILD);
 			if (null != this._buildVisitor) {

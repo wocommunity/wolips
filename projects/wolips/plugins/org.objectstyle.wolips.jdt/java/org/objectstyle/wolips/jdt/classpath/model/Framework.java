@@ -53,86 +53,64 @@
  * <http://objectstyle.org/>.
  *
  */
-package org.objectstyle.wolips.ui.actions;
+package org.objectstyle.wolips.jdt.classpath.model;
 
-import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 
-import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.dialogs.MessageDialogWithToggle;
-import org.eclipse.jface.window.Window;
-import org.objectstyle.wolips.datasets.adaptable.Project;
+import org.eclipse.core.runtime.IPath;
 
 /**
  * @author ulrich
  */
-public abstract class AbstractPatternsetAction extends ActionOnIResource {
+public class Framework {
+	private String name;
+	private Root root;
+	private String jarFiles[];
+	private String zipFiles[];
 
-	/**
-	 * @return
-	 */
-	public Project getProject() {
-		return (Project) this.project().getAdapter(Project.class);
+	
+	protected Framework(String name, Root root, String jarFiles[], String zipFiles[]) {
+		this.name = name;
+		this.root = root;
+		this.jarFiles = jarFiles;
+		this.zipFiles = zipFiles;
 	}
 
 	/**
 	 * @return
 	 */
-	public String getPattern() {
-		String name = this.actionResource().getName();
-		String extension = this.actionResource().getFileExtension();
-		if (name != null && name.length() == 0)
-			name = null;
-		if (extension != null && extension.length() == 0)
-			extension = null;
-		if (name == null && extension == null) {
-			return null;
-		}
-		if(name != null && extension != null && name.equals("." +extension))
-			extension = null;
-		String pattern = null;
-		if (name != null && extension != null) {
-			MessageDialogWithToggle messageDialogWithToggle = MessageDialogWithToggle
-					.openOkCancelConfirm(this.part.getSite().getShell(),
-							"Add pattern", "Add all resources with extension "
-									+ extension,
-							"add by extension (otherwise by name)", true, null,
-							null);
-			if (messageDialogWithToggle.getReturnCode() == Window.CANCEL)
-				return null;
-			if (messageDialogWithToggle.getToggleState()) {
-				if (this.actionResource() instanceof IContainer)
-					pattern = "**/*." + extension + "/**";
-				pattern = "**/*." + extension;
-			} else {
-				if (this.actionResource() instanceof IContainer)
-					pattern = "**/" + name + "." + extension + "/**";
-				pattern = "**/" + name + "." + extension;
-			}
-		}
-		if (name != null) {
-			if (this.actionResource() instanceof IContainer)
-				pattern = "**/" + name + "/**";
-			pattern = "**/" + name;
-		}
-		if (extension != null) {
-			if (this.actionResource() instanceof IContainer)
-				pattern = "**/*." + extension + "/**";
-			pattern = "**/*." + extension;
-		}
-		return pattern;
+	public String getName() {
+		return this.name;
 	}
-	public void run(IAction action) {
-		TouchAllFilesOperation touchAllFilesOperation = new TouchAllFilesOperation(
-				this.project());
-		try {
-			touchAllFilesOperation.run(new NullProgressMonitor());
-		} catch (InvocationTargetException e) {
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+	
+	/**
+	 * @return
+	 */
+	public IPath[] getLibraryPaths() {
+		ArrayList arrayList = new ArrayList(this.jarFiles.length + this.zipFiles.length);
+		for(int i = 0; i < this.jarFiles.length; i++) {
+			arrayList.add(this.libraryPath(this.jarFiles[i]));
 		}
-		super.run(action);
+		for(int i = 0; i < this.zipFiles.length; i++) {
+			arrayList.add(this.libraryPath(this.zipFiles[i]));
+		}
+		return (IPath[])arrayList.toArray(new IPath[arrayList.size()]);
+	}
+
+	private IPath libraryPath(String string) {
+		return this.root.getRootPath().append(this.getName() + ".framework").append("Resources").append("Java").append(string);
+	}
+	/**
+	 * @return
+	 */
+	public IPath getPath() {
+		return this.root.getRootPath().append(this.name + ".framework");
+	}
+
+	/**
+	 * @return Returns the root.
+	 */
+	public Root getRoot() {
+		return this.root;
 	}
 }

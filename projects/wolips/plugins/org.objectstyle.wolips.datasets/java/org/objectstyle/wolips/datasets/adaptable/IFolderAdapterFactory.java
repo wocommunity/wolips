@@ -52,87 +52,45 @@
  * information on the ObjectStyle Group, please see
  * <http://objectstyle.org/>.
  *
- */
-package org.objectstyle.wolips.ui.actions;
+ */package org.objectstyle.wolips.datasets.adaptable;
 
-import java.lang.reflect.InvocationTargetException;
-
-import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.dialogs.MessageDialogWithToggle;
-import org.eclipse.jface.window.Window;
-import org.objectstyle.wolips.datasets.adaptable.Project;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.runtime.IAdapterFactory;
 
 /**
  * @author ulrich
  */
-public abstract class AbstractPatternsetAction extends ActionOnIResource {
-
-	/**
-	 * @return
-	 */
-	public Project getProject() {
-		return (Project) this.project().getAdapter(Project.class);
-	}
-
-	/**
-	 * @return
-	 */
-	public String getPattern() {
-		String name = this.actionResource().getName();
-		String extension = this.actionResource().getFileExtension();
-		if (name != null && name.length() == 0)
-			name = null;
-		if (extension != null && extension.length() == 0)
-			extension = null;
-		if (name == null && extension == null) {
+public class IFolderAdapterFactory implements IAdapterFactory {
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see org.eclipse.core.runtime.IAdapterFactory#getAdapter(java.lang.Object,
+		 *      java.lang.Class)
+		 */
+		/**
+		 * @param adaptableObject
+		 * @param adapterType
+		 * @return Returns the adapter.
+		 */
+		public Object getAdapter(Object adaptableObject, Class adapterType) {
+			if (adaptableObject instanceof IFolder) {
+				IFolder iFolder = (IFolder)adaptableObject;
+				if(LProjFolder.isLProjFolder(iFolder)) {
+				LProjFolder lProjFolder = new LProjFolder(iFolder);
+				return lProjFolder;
+				}
+			}
 			return null;
 		}
-		if(name != null && extension != null && name.equals("." +extension))
-			extension = null;
-		String pattern = null;
-		if (name != null && extension != null) {
-			MessageDialogWithToggle messageDialogWithToggle = MessageDialogWithToggle
-					.openOkCancelConfirm(this.part.getSite().getShell(),
-							"Add pattern", "Add all resources with extension "
-									+ extension,
-							"add by extension (otherwise by name)", true, null,
-							null);
-			if (messageDialogWithToggle.getReturnCode() == Window.CANCEL)
-				return null;
-			if (messageDialogWithToggle.getToggleState()) {
-				if (this.actionResource() instanceof IContainer)
-					pattern = "**/*." + extension + "/**";
-				pattern = "**/*." + extension;
-			} else {
-				if (this.actionResource() instanceof IContainer)
-					pattern = "**/" + name + "." + extension + "/**";
-				pattern = "**/" + name + "." + extension;
-			}
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see org.eclipse.core.runtime.IAdapterFactory#getAdapterList()
+		 */
+		/**
+		 * @return Returns null.
+		 */
+		public Class[] getAdapterList() {
+			return null;
 		}
-		if (name != null) {
-			if (this.actionResource() instanceof IContainer)
-				pattern = "**/" + name + "/**";
-			pattern = "**/" + name;
-		}
-		if (extension != null) {
-			if (this.actionResource() instanceof IContainer)
-				pattern = "**/*." + extension + "/**";
-			pattern = "**/*." + extension;
-		}
-		return pattern;
-	}
-	public void run(IAction action) {
-		TouchAllFilesOperation touchAllFilesOperation = new TouchAllFilesOperation(
-				this.project());
-		try {
-			touchAllFilesOperation.run(new NullProgressMonitor());
-		} catch (InvocationTargetException e) {
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		super.run(action);
-	}
 }

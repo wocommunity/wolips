@@ -210,6 +210,6 @@ public abstract class AbstractEngine implements IRunnableWithProgress {
 	 * @return Returns the plugin name.
 	 */
 	public String getPluginName() {
-		return TemplateEnginePlugin.getDefault().getDescriptor().getUniqueIdentifier();
+		return TemplateEnginePlugin.getPluginId();
 	}
 }

@@ -77,6 +77,14 @@ import org.objectstyle.wolips.datasets.pattern.PatternsetWriter;
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
 public class ProjectPatternsets extends AbstractProjectAdapterType {
+	/**
+	 * Comment for <code>EXTENSION</code>
+	 */
+	public final static String EXTENSION = "patternset";
+	/**
+	 * Comment for <code>ANT_FOLDER_NAME</code>
+	 */
+	public final static String ANT_FOLDER_NAME = "ant";
 	private PatternsetMatcher woappResourcesIncludeMatcher = null;
 	private PatternsetMatcher woappResourcesExcludeMatcher = null;
 	private PatternsetMatcher resourcesIncludeMatcher = null;
@@ -98,6 +106,11 @@ public class ProjectPatternsets extends AbstractProjectAdapterType {
 		String string = this.getAntFolder().getLocation().toOSString();
 		File file = new File(string);
 		file.mkdirs();
+		try {
+			this.getAntFolder().refreshLocal(IResource.DEPTH_ZERO, new NullProgressMonitor());
+		} catch (CoreException e) {
+			DataSetsPlugin.getDefault().getPluginLogger().log(e);
+		}
 	}
 
 	/**
@@ -289,6 +302,17 @@ public class ProjectPatternsets extends AbstractProjectAdapterType {
 		this.getResourcesIncludeMatcher();
 		this.getWoappResourcesExcludeMatcher();
 		this.getWoappResourcesIncludeMatcher();
+	}
+	/**
+	 * Releases the patternset cache
+	 */
+	public void releasePatternsetCache() {
+		this.woappResourcesIncludeMatcher = null;
+		this.woappResourcesExcludeMatcher = null;
+		this.resourcesIncludeMatcher = null;
+		this.resourcesExcludeMatcher = null;
+		this.classesIncludeMatcher = null;
+		this.classesExcludeMatcher = null;
 	}
 
 	/**
