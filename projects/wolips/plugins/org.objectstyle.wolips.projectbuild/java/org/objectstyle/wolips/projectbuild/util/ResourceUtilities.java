@@ -81,7 +81,8 @@ public class ResourceUtilities {
    * create a Folder recursively 
    * @param f the Folder to be created
    * @param m a ProgressMonitor
-   */
+   * @throws CoreException
+ */
   public static void createFolder (IFolder f, IProgressMonitor m) 
     throws CoreException
   {
@@ -102,7 +103,9 @@ public class ResourceUtilities {
    * check if a folder exists under a path, create it if necessary
    * @param path the path to the folder to be created (relative to the workspace root or absolute)
    * @param m a ProgressMonitor
-   */
+   * @return
+ * @throws CoreException
+ */
   public static boolean checkDir (IPath path, IProgressMonitor m) 
     throws CoreException 
   {
@@ -139,7 +142,9 @@ public class ResourceUtilities {
    * if necessary)
    * @param path the candidate destination path
    * @param m a ProgressMonitor
-   */
+   * @return
+ * @throws CoreException
+ */
   public static IResource checkDestination (IPath path, IProgressMonitor m) throws CoreException {
     if (checkDir (path.removeLastSegments(1), m)) {
       IResource res  = getWorkspaceRoot().findMember(path);
@@ -189,7 +194,9 @@ public class ResourceUtilities {
     return ResourcesPlugin.getWorkspace().getRoot();
   }
   
-  protected ResourceUtilities () {}
+  protected ResourceUtilities () {
+  	super();
+  }
   
   private static int _uniqifier = 1;
 
