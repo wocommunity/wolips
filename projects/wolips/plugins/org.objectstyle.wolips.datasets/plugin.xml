@@ -37,5 +37,11 @@
    <extension
          point="org.eclipse.ui.startup">
    </extension>
+   <extension point="org.eclipse.core.runtime.adapters">
+       <factory class="org.objectstyle.wolips.datasets.adaptable.IProjectAdapterFactory"
+           adaptableType="org.eclipse.core.resources.IProject">
+           <adapter type="org.objectstyle.wolips.datasets.adaptable.Project"/>
+       </factory>
+   </extension>
 
 </plugin>

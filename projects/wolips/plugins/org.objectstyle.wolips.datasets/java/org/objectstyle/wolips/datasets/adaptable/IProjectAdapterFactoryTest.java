@@ -53,27 +53,15 @@
  * <http://objectstyle.org/>.
  *
  */
-package org.objectstyle.wolips.datasets;
+package org.objectstyle.wolips.datasets.adaptable;
 
-import junit.framework.Test;
 import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
-import org.objectstyle.wolips.datasets.adaptable.AdaptableTestSuite;
 
 /**
- * Run all compiler regression tests
+ * @author ulrich
+ *
+ * To change the template for this generated type comment go to
+ * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public class DataSetsTestSuite extends TestCase {
-
-	public DataSetsTestSuite(String testName) {
-		super(testName);
-	}
-	public static Test suite() throws Exception {
-		TestSuite suite = new TestSuite();
-		suite.addTestSuite(DataSetsPluginTest.class);
-		suite.addTestSuite(IApiTest.class);
-		suite.addTest(AdaptableTestSuite.suite());
-		return suite;
-	}
+public class IProjectAdapterFactoryTest extends TestCase {
 }

@@ -53,27 +53,30 @@
  * <http://objectstyle.org/>.
  *
  */
-package org.objectstyle.wolips.datasets;
+package org.objectstyle.wolips.datasets.adaptable;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
-import org.objectstyle.wolips.datasets.adaptable.AdaptableTestSuite;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.IAdapterFactory;
 
 /**
- * Run all compiler regression tests
+ * @author ulrich
+ *
+ * To change the template for this generated type comment go to
+ * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public class DataSetsTestSuite extends TestCase {
-
-	public DataSetsTestSuite(String testName) {
-		super(testName);
+public class IProjectAdapterFactory implements IAdapterFactory {
+	/* (non-Javadoc)
+	 * @see org.eclipse.core.runtime.IAdapterFactory#getAdapter(java.lang.Object, java.lang.Class)
+	 */
+	public Object getAdapter(Object adaptableObject, Class adapterType) {
+		if(adaptableObject instanceof IProject)
+			return new Project((IProject)adaptableObject);
+		return null;
 	}
-	public static Test suite() throws Exception {
-		TestSuite suite = new TestSuite();
-		suite.addTestSuite(DataSetsPluginTest.class);
-		suite.addTestSuite(IApiTest.class);
-		suite.addTest(AdaptableTestSuite.suite());
-		return suite;
+	/* (non-Javadoc)
+	 * @see org.eclipse.core.runtime.IAdapterFactory#getAdapterList()
+	 */
+	public Class[] getAdapterList() {
+		return null;
 	}
 }

@@ -235,7 +235,7 @@ public class DataSetsPlugin extends Plugin implements IDataSetTypes, IStartup {
 	 *            The file extension.
 	 * @return The IDataSet type.
 	 */
-	protected int getAssociatedType(String extension) {
+	public int getAssociatedType(String extension) {
 		if (extension == null)
 			return -1;
 		for (int i = 0; i < DataSetsPlugin.TYPES.length; i++) {
