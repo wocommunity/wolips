@@ -107,7 +107,7 @@ public class Preferences {
 			PreferencesMessages.getString(Preferences.falseString));
 		store.setDefault(
 			IWOLipsPluginConstants.PREF_NS_PROJECT_SEARCH_PATH,
-			PreferencesMessages.getString(""));
+			"");
 	}
 
 	/**
