@@ -15,17 +15,12 @@
       </library>
    </runtime>
 
-   <requires>
-      <import plugin="org.eclipse.core.resources"/>
-      <import plugin="org.eclipse.ui"/>
-   </requires>
-
 <!-- ============================================== -->
 <!-- Define the main book                           -->
 <!-- ============================================== -->
 
     <extension point="org.eclipse.help.toc">
-        <toc file="toc_root.xml" primary="true" />
+        <toc file="doc_root/toc_root.xml" primary="true" />
     </extension>
 
 <!-- =============================================== -->
@@ -33,10 +28,10 @@
 <!-- =============================================== -->
 
        	<extension point="org.eclipse.help.toc">     		
-       		<toc file="toc_tasks.xml" />
-       		<toc file="toc_tips.xml" />
-       		<toc file="toc_reference.xml" />
-       		<toc file="toc_programmer.xml" />
+       		<toc file="doc_root/tasks/toc_tasks.xml" />
+       		<toc file="doc_root/tips/toc_tips.xml" />
+       		<toc file="doc_root/reference/toc_reference.xml" />
+       		<toc file="doc_root/programmer/toc_programmer.xml" />
        	</extension>
        	
 </fragment>
