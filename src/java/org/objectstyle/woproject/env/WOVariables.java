@@ -272,23 +272,26 @@ public class WOVariables {
 	 * Method woTemplateDirectory.
 	 * @return String
 	 */
+	/* mn: moved to WOLipsUtils
 	public static String woTemplateDirectory() {
 		return "templates";
-	}
+	}*/
 	/**
 	 * Method woTemplateFiles.
 	 * @return String
 	 */
+	/* mn: moved to WOLipsUtils
 	public static String woTemplateFiles() {
 		return "/wo_file_templates.xml";
-	}
+	}*/
 	/**
 	 * Method woTemplateProject.
 	 * @return String
 	 */
+	/* mn: moved to WOLipsUtils
 	public static String woTemplateProject() {
 		return "/wo_project_templates.xml";
-	}
+	}*/
 	/**
 	 * Method woProjectFileName.
 	 * @return String
@@ -308,7 +311,7 @@ public class WOVariables {
 	 * @param aString
 	 * @return String
 	 */
-	/* mn: moved to 
+	/* mn: moved to WOLipsUtils
 	public static String classPathVariableToExpand(String aString) {
 		if (aString == null)
 			return null;

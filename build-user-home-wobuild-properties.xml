@@ -7,7 +7,9 @@
 	<property file="${user.home}${file.separator}Library${file.separator}wobuild.properties"/>
 	
 	<target name="check" depends="check_file,set_other,correct_win,check_env,set_mac">
+	<!--
 		<fail message="Could not find ${user.home}${file.separator}Library${file.separator}wobuild.properties. There should now be a generated one. Just launch ant again" if="wo.properties.ckeck.failed"/>
+		-->
 	</target>
 
 	<target name="check_file">
@@ -32,10 +34,10 @@
   	</target>
 	
 	<target name="correct_win" if="correct.win">
-		
+		<!--
 		<replaceregexp file="${user.home}${file.separator}Library${file.separator}wobuild.properties" match="\\" replace="" byline="false" flags="g"/> 
 		<replaceregexp file="${user.home}${file.separator}Library${file.separator}wobuild.properties" match="/" replace="\\\" byline="false" flags="g"/> 
-		
+		-->
 
 	</target>
 
