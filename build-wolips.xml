@@ -1,0 +1,158 @@
+<?xml version="1.0"?>
+
+<!-- ======================================================== -->
+<!--                 WOLips Ant file.                         -->
+<!-- ======================================================== -->
+<project name="woproject-wolips" default="java" basedir=".">
+	<property file="build.properties"/>
+    <property file="${user.home}/build.properties"/>
+    <property file="default.properties"/>
+
+    <!-- ============================================= -->
+    <!-- Derived Properties.                           -->
+    <!-- ============================================= -->
+    <property name="build" value="${output}/build"/>
+    <property name="wolips-name" value="com.objectstyle.woproject.wolips-${project.version}"/>
+    <property name="dist-wolips" value="${dist.base}/${wolips-name}"/>
+    <!-- main distribution. -->
+    <property name="dist" value="${dist.base}/${project.name}-${project.version}"/>
+
+    <!-- ============================================= -->
+    <!-- Define CLASSPATH settings.                    -->
+    <!-- ============================================= -->
+    <path id="classpath">
+        <fileset dir="${ant.home}/lib">
+            <include name="ant.jar"/>
+        </fileset>
+        <fileset dir="lib">
+            <include name="*.jar"/>
+	        <include name="eclipse/**/*.jar"/>
+        </fileset>
+        
+        <!-- Depends on WOProject core. -->
+        <pathelement path="${build}/main"/>
+    </path>
+    
+
+    <target name="java" depends="prepare">
+        <javac srcdir="src/wolips/java"
+                destdir="${build}/wolips"
+                deprecation="${compile.deprecation}"
+                debug="${compile.debug}"
+                optimize="${compile.optimize}">
+            <classpath refid="classpath"/>
+        </javac>
+
+        <jar jarfile="${dist-wolips}/lib/${project.name}-wolips.jar">
+            <fileset dir="${build}/wolips" />
+            <fileset dir="src/wolips/resources"/>            
+            <metainf dir="doc">
+                <include name="LICENSE*"/>
+            </metainf>
+        </jar>
+        
+        <!-- Copy WOProject JAR's -->
+        <copy todir="${dist-wolips}/lib">
+             <fileset dir="${dist}/lib">
+          	    <exclude name="junit.jar"/>
+             	<exclude name="ant.jar"/>
+             	<exclude name="woproject-tests.jar"/>
+             </fileset>
+         </copy>
+    </target>
+
+    <target name="dist" depends="prepare,java">
+         <!-- Copy source code -->
+         <copy todir="${dist-wolips}/src">
+             <fileset dir="src/wolips"/>
+         </copy>
+         
+         <copy todir="${dist-wolips}">
+             <fileset dir="src/wolips/resources"/>
+         </copy>
+         
+	     <!-- make wolips dist -->
+         <tar tarfile="${dist.base}/${wolips-name}.tar">
+             <tarfileset dir="${dist-wolips}">
+            </tarfileset>
+         </tar>
+         
+         <gzip src="${dist.base}/${wolips-name}.tar"
+              zipfile="${dist.base}/${wolips-name}.tar.gz"/>
+         <delete file="${dist.base}/${wolips-name}.tar"/>
+    </target>
+         
+         
+         
+    <!-- ============================================= -->
+    <!-- Sets up build and distribution directories.   -->
+    <!-- ============================================= -->
+    <target name="prepare">
+        <mkdir dir="${build}/wolips"/>
+        <mkdir dir="${dist-wolips}/lib"/>
+    </target>
+
+
+    <!-- ============================================= -->
+    <!-- Deletes temporary files.                      -->
+    <!-- ============================================= -->
+    <target name="clean">
+        <delete dir="${build}/wolips"/>
+        <delete dir="${dist-wolips}"/>
+    </target>
+    
+    
+    <!-- ============================================= -->
+    <!-- Deploys WOLips web site files in a local      -->
+    <!-- directory.                                    -->
+    <!-- ============================================= -->
+    <target name="deploy-web" depends="prepare,api" if="deploy.web">
+         <mkdir dir="${deploy.web}/woproject"/>
+
+         <!-- copy all but HTML -->
+         <copy todir="${deploy.web}/woproject">
+             <fileset dir="${dist-wolips}/doc">
+             	<exclude name="**/*.html"/>
+             </fileset>
+         </copy>
+
+         <!-- do replacement in HTML files -->
+         <copy todir="${deploy.web}/woproject" overwrite="true">
+             <fileset dir="${dist-wolips}/doc">
+             	<include name="**/*.html"/>
+             </fileset>
+
+             <filterset begintoken="!--" endtoken="--">
+				<filter token="SFLOGO" value="${sf.logo}"/>
+			 </filterset>
+         </copy>
+    </target>
+    
+    
+    <!-- ========================================== -->
+    <!-- Builds API documenatation.                 -->
+    <!-- ========================================== -->
+    <target name="api" depends="prepare">
+        <copy todir="${dist-wolips}/doc">
+            <fileset dir="doc">
+                <include name="**/LICENSE*"/>
+            </fileset>
+        </copy>
+
+        <javadoc   packagenames="org.objectstyle.woproject.wolips.*"
+                   defaultexcludes="yes"
+                   destdir="${dist}/doc/api"
+                   author="true"
+                   version="true"
+                   use="true"
+                   windowtitle="WOProject API">
+
+        <classpath refid="classpath"/>
+        <sourcepath>
+            <pathelement path="src/wolips/java"/>
+        </sourcepath>
+        <doctitle><![CDATA[<h2>WOProject API Documentation</h2>]]></doctitle>
+        <link href="http://developer.java.sun.com/developer/products/xml/docs/api/"/>
+        </javadoc>
+    </target>
+</project>

@@ -1,21 +1,25 @@
 <?xml version="1.0"?>
 
 <!-- ======================================================== -->
-<!--              Main WOProject Ant build file               -->
-<!-- Serves as a facade for different helper build files.     -->
+<!--              Main core WOProject Ant build file          -->
 <!-- ======================================================== -->
-<project name="woproject" default="java" basedir=".">
-	<property file="build.properties"/>
-    <property file="${user.home}/build.properties"/>
-    <property file="default.properties"/>
+<project name="woproject-core" default="java" basedir=".">
+	<property file="build.properties" />
+    <property file="${user.home}/build.properties" />
+    <property file="default.properties" />
+    <property environment="env"/>
+    <property name="next.root" value="${env.NEXT_ROOT}"/>
+
 
     <!-- ============================================= -->
     <!-- Derived Properties. These properties are      -->
     <!-- derived from other properties. You probably   -->
     <!-- don't want to redefine them.                  -->
     <!-- ============================================= -->
+    <property name="dist" value="${dist.base}/${project.name}-${project.version}"/>
     <property name="output" value="output"/>
     
+
     <target name="help">
         <echo>
         ****************************************
@@ -45,34 +49,72 @@
     <!-- ============================================= -->
     <!-- Creates WOProject distribution.               -->
     <!-- ============================================= -->
-    <target name="dist"> 
-    	<ant antfile="build-core.xml" target="dist"/>
-    	<ant antfile="build-wolips.xml" target="dist"/>
+    <target name="dist" depends="prepare,java,doc,api">
+         <!-- Copy source code -->
+         <copy todir="${dist}/src">
+             <fileset dir="src"/>
+         </copy>
+
+         <!-- Copy examples code -->
+         <copy todir="${dist}/examples">
+             <fileset dir="tests/wo">
+             	<exclude name="**/build/**"/>
+             	<exclude name="**/dist/**"/>
+             	<exclude name="**/auto/**"/>
+             </fileset>
+         </copy>
+
+         <tar tarfile="${dist.base}/${project.name}-src-${project.version}.tar">
+             <tarfileset dir="${dist.base}">
+                <include name="${project.name}-${project.version}/**"/>
+                <exclude name="**/WOApplication.java"/>
+                <exclude name="**/examples/**"/>
+                <exclude name="**/lib/ant.jar"/>
+                <exclude name="**/lib/junit.jar"/>
+            </tarfileset>
+         </tar>
+         
+         <gzip src="${dist.base}/${project.name}-src-${project.version}.tar"
+              zipfile="${dist.base}/${project.name}-src-${project.version}.tar.gz"/>
+         <delete file="${dist.base}/${project.name}-src-${project.version}.tar"/>
     </target>
+
 
     <!-- ============================================= -->
     <!-- Compiles Java classes                         -->
     <!-- ============================================= -->    
     <target name="java">
-    	<ant antfile="build-core.xml" target="java"/>
-    	<ant antfile="build-wolips.xml" target="java"/>
+		<ant antfile="build-code.xml"/>
     </target>
-
 
     <!-- ============================================= -->
     <!-- Runs Unit tests.                              -->
     <!-- ============================================= -->
-    <target name="test">
-        <ant antfile="build-core.xml" target="test"/>
+    <target name="test" depends="prepare,java">
+        <ant antfile="build-test.xml"/>
+    </target>
+    
+
+    <!-- ============================================= -->
+    <!-- Sets up build and distribution directories.   -->
+    <!-- ============================================= -->
+    <target name="prepare">
+        <mkdir dir="${dist}"/>
+        <mkdir dir="${dist}/src"/>
+        <mkdir dir="${dist}/examples"/>
     </target>
 
 
     <!-- ============================================= -->
     <!-- Deletes temporary files.                      -->
     <!-- ============================================= -->
-    <target name="clean">
-        <delete dir="${dist.base}"/>
-        <delete dir="${output}"/>
+    <target name="clean">        
+        <ant antfile="build-test.xml" target="clean"/>
+        <ant antfile="build-code.xml" target="clean"/>
+        <ant antfile="build-doc.xml" target="clean"/>
+                
+        <delete dir="${dist}"/>
+        <delete dir="${output}/build/main"/>
     </target>
     
     
@@ -81,7 +123,7 @@
     <!-- Builds WOProject documenatation.          -->
     <!-- ========================================== -->
     <target name="doc">
-		<ant antfile="build-core.xml" target="doc"/>
+		<ant antfile="build-doc.xml" target="doc"/>
     </target>
 
 
@@ -89,8 +131,7 @@
     <!-- Builds API documenatation.                 -->
     <!-- ========================================== -->
     <target name="api">
-		<ant antfile="build-core.xml" target="api"/>
-		<ant antfile="build-wolips.xml" target="api"/>
+		<ant antfile="build-doc.xml" target="api"/>
     </target>
     
     
@@ -99,7 +140,7 @@
     <!-- directory.                                    -->
     <!-- ============================================= -->
     <target name="deploy-web" depends="java,doc,api" if="deploy.web">
-		<ant antfile="build-core.xml" target="deploy-web"/>
-        <ant antfile="build-wolips.xml" target="deploy-web"/>
+		<ant antfile="build-doc.xml" target="deploy-web"/>
+
     </target>
 </project>
