@@ -68,9 +68,8 @@
         </tr>
         <tr>
             <td>
-<!-- During publishing this will be replaced by SourceForge logo. -->
-<!-- For offline viewing we don't want images from other servers -->
-<img alt="SourceForge.net Logo" src="${relativePath}$spacer" width="125" height="37" border="0">
+            <!--SFLOGO--> 
+            &nbsp;
             </td>
             
             <td align="center">

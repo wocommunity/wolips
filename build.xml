@@ -87,8 +87,22 @@
     <target name="deploy-web" depends="prepare,java,doc,api" if="deploy.web">
          <mkdir dir="${deploy.web}/woproject"/>
              
+         <!-- copy all but HTML -->
          <copy todir="${deploy.web}/woproject">
-             <fileset dir="${dist}/doc"/>
+             <fileset dir="${dist}/doc"> 
+             	<exclude name="**/*.html"/>
+             </fileset>
+         </copy>
+         
+         <!-- do replacement in HTML files -->
+         <copy todir="${deploy.web}/woproject" overwrite="true">
+             <fileset dir="${dist}/doc"> 
+             	<include name="**/*.html"/>
+             </fileset>
+             
+             <filterset begintoken="!--" endtoken="--">
+				<filter token="SFLOGO" value="${sf.logo}"/>
+			 </filterset>
          </copy>
     </target>
     
