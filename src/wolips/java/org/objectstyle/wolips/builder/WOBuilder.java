@@ -89,7 +89,7 @@ public abstract class WOBuilder extends IncrementalProjectBuilder {
 		throws CoreException {
 		//do not run twice for the same monitor
 		//if(true) return null;
-		if(monitor != null && monitor == lastMonitor)
+		if (monitor != null && monitor == lastMonitor)
 			return null;
 		monitor.beginTask(
 			BuildMessages.getString("Build.Monitor.Title"),
@@ -113,13 +113,24 @@ public abstract class WOBuilder extends IncrementalProjectBuilder {
 					IMarker.TASK,
 					false,
 					IProject.DEPTH_ONE);
-				RunAnt.asExternalTool(
-					getProject().getFile(aBuildFile),
-					kind,
-					monitor);
-				/*RunAnt.asAnt(
-					getProject().getFile(aBuildFile).getLocation().toOSString(),
-					monitor);*/
+				if (Preferences
+					.getBoolean(
+						IWOLipsPluginConstants
+							.PREF_RUN_ANT_AS_EXTERNAL_TOOL)) {
+					RunAnt.asExternalTool(
+						getProject().getFile(aBuildFile),
+						kind,
+						monitor);
+
+				} else {
+					RunAnt.asAnt(
+						getProject()
+							.getFile(aBuildFile)
+							.getLocation()
+							.toOSString(),
+						monitor);
+				}
+
 			}
 		} catch (Exception e) {
 			this.handleException(e);
