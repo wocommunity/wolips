@@ -142,7 +142,7 @@ public class Environment {
 			} else {
 				p = r.exec("env");
 			}
-			p = null;
+			//p = null;
 			r = null;
 			OS = null;
 			return p;
