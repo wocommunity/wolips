@@ -81,7 +81,7 @@ public class ProjectNaturePage extends PropertyPage implements IAdaptable {
 
 	private static final String WO_IS_FRAMEWORK_TITLE = "Is a framework";
 
-	private static final String WO_IS_INCREMENTAL_TITLE = "Is a incremental";
+	private static final String WO_IS_INCREMENTAL_TITLE = "Use incremental builder";
 
 	private static final int TEXT_FIELD_WIDTH = 50;
 	/**
@@ -125,12 +125,32 @@ public class ProjectNaturePage extends PropertyPage implements IAdaptable {
 		separator.setLayoutData(gridData);
 	}
 
+  /**
+   * @param parent
+   * @param woLipsProject
+   * @throws CoreException
+   */
+  private void _addSecondSection(
+    Composite parent,
+    WOLipsProject woLipsProject)
+    throws CoreException {
+    Composite group = _createDefaultComposite(parent);
+
+    // project kind field (is framework?)
+    _woIsFrameworkCheck = new Button(group, SWT.CHECK | SWT.LEFT);
+    _woIsFrameworkCheck.setText(WO_IS_FRAMEWORK_TITLE);
+    _woIsFrameworkCheck.setEnabled(true);
+
+    _woIsFrameworkCheck.setSelection(
+      woLipsProject.getNaturesAccessor().isFramework());
+  }
+
 	/**
 	 * @param parent
 	 * @param woLipsProject
 	 * @throws CoreException
 	 */
-	private void _addSecondSection(
+	private void _addThirdSection (
 		Composite parent,
 		WOLipsProject woLipsProject)
 		throws CoreException {
@@ -144,26 +164,6 @@ public class ProjectNaturePage extends PropertyPage implements IAdaptable {
 		_woIsIncrementalCheck.setSelection(
 			woLipsProject.getNaturesAccessor().isIncremental());
 	}
-	/**
-	 * @param parent
-	 * @param woLipsProject
-	 * @throws CoreException
-	 */
-	private void _addThirdSection(
-		Composite parent,
-		WOLipsProject woLipsProject)
-		throws CoreException {
-		Composite group = _createDefaultComposite(parent);
-
-		// project kind field (is framework?)
-		_woIsFrameworkCheck = new Button(group, SWT.CHECK | SWT.LEFT);
-		_woIsFrameworkCheck.setText(WO_IS_FRAMEWORK_TITLE);
-		_woIsFrameworkCheck.setEnabled(true);
-
-		_woIsFrameworkCheck.setSelection(
-			woLipsProject.getNaturesAccessor().isFramework());
-	}
-
 	/**
 	 * @see PreferencePage#createContents(Composite)
 	 */
