@@ -34,8 +34,8 @@
                 <td>WOApplication idea, framework code, unit and functional tests</td>
             </tr>
             <tr>
-                <td>Ulrich Koster</td>
-                <td>ulrich at assense dot com</td>
+                <td>Ulrich Koester</td>
+                <td>ulrich at objectstyle dot org</td>
                 <td><a href="http://www.assense.com">http://www.assense.com</a></td>
                 <td>WOLips Eclipse Plugin</td>
             </tr>
@@ -92,6 +92,12 @@
                 <td>anders_peterson at optimatika dot se</td>
                 <td>-</td>
                 <td>WOLips documentation</td>
+            </tr>
+             <tr>
+                <td>Harald Niesche</td>
+                <td>harald at theco dot de</td>
+                <td><a href="http://theco.de">http://theco.de</a></td>
+                <td>WOLips Classpath Container, Incremental Builder and bug fixes</td>
             </tr>
             </table>
             </subsection>
