@@ -64,8 +64,6 @@ import org.apache.tools.ant.Task;
 import org.apache.tools.ant.taskdefs.*;
 import org.apache.tools.ant.types.FileSet;
 
-
-
 /**
   * Ant task to build WebObjects framework.  
   * 
@@ -143,10 +141,10 @@ public class WOFramework extends MatchingTask {
 
         mkdir.setDir(frameworkDir);
         mkdir.execute();
-        
+
         mkdir.setDir(resourceDir);
         mkdir.execute();
-        
+
         mkdir.setDir(new File(resourceDir, "Java"));
         mkdir.execute();
 
@@ -178,7 +176,7 @@ public class WOFramework extends MatchingTask {
         WOCompCopy cp = new WOCompCopy();
         initChildTask(cp);
 
-        cp.setTodir(resourcesDir());        
+        cp.setTodir(resourcesDir());
         Enumeration en = resources.elements();
         while (en.hasMoreElements()) {
             cp.addFileset((FileSet) en.nextElement());
@@ -223,13 +221,29 @@ public class WOFramework extends MatchingTask {
             throw new BuildException("Error copying Info.plist", ioex);
         }
     }
+    
 
+    /** Substitutes a single occurance of "@NAME@" with
+      * the value of <code>name</code> instance variable
+      * and a single occurrance of "@LOWERC_NAME@" with 
+      * the lowercase value of  <code>name</code>. 
+      * 
+      * <p>TODO: use some regular expressions package to do this.</p>
+      */
     private String subsToken(String line) {
         int tokInd = line.indexOf("@NAME@");
-        return (tokInd >= 0)
-            ? line.substring(0, tokInd) + name + line.substring(tokInd + 6)
+        if (tokInd >= 0) {
+            return line.substring(0, tokInd) + name + line.substring(tokInd + 6);
+        }
+
+        int lctokInd = line.indexOf("@LOWERC_NAME@");
+        return (lctokInd >= 0)
+            ? line.substring(0, lctokInd)
+                + name.toLowerCase()
+                + line.substring(lctokInd + 13)
             : line;
     }
+    
 
     protected File frameworkDir() {
         return getProject().resolveFile(destDir + File.separator + name + ".framework");

@@ -2,11 +2,11 @@
 <plist version="0.9">
 <dict>
 	<key>NSJavaPathClient</key>
-	<string>@NAME@.jar</string>
+	<string>@LOWERC_NAME@.jar</string>
 	<key>CFBundleIconFile</key>
 	<string>WOAfile.icns</string>
 	<key>CFBundleExecutable</key>
-	<string>BusinessLogic</string>
+	<string>@NAME@</string>
 	<key>NSJavaRoot</key>
 	<string>Resources/Java</string>
 	<key>NSJavaRootClient</key>
