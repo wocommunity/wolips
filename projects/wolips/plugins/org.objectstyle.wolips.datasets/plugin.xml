@@ -2,7 +2,7 @@
 <?eclipse version="3.0"?>
 <plugin
    id="org.objectstyle.wolips.datasets"
-   name="Data Sets Plug-in"
+   name="WOLips Data Sets Plug-in"
    version="1.0.6"
    provider-name="objectstyle.org"
    class="org.objectstyle.wolips.datasets.DataSetsPlugin">
