@@ -2,10 +2,4 @@
 <?NLS TYPE="org.eclipse.help.toc"?>
 
 <toc label="WOLips Table of Contents" topic="doc/toc.html">
-	<topic label="wizards"  href="doc/wizards.html">
-	<topic label="popup"  href="doc/popup.html">
-	<topic label="manipulating the build process"  href="doc/manipulating_the_build_process.html">
-	<topic label="bugs and known issues"  href="doc/bugs_and_known_issues.html">
-	<topic label="inside WOLips"  href="doc/inside_wolips.html"> 
-	</topic>
 </toc>
