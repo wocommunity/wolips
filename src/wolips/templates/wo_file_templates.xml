@@ -269,7 +269,7 @@ public class DirectAction extends WODirectAction {
 		<delete file="ant.classpaths.wo.woroot"/>
 	</target>
 
-	<target name="refreshView">
+	<target name="refreshView" if="eclipse.running">
 		<refreshview projectName="${project.name}"/>
 	</target>
 
@@ -347,7 +347,7 @@ project.name = ${PROJECT_NAME}
 		<eclipse.refreshLocal resource="${framework.name}" depth="infinite"/>
 	</target>
 		
-	<target name="refreshView">
+	<target name="refreshView" if="eclipse.running">
 		<refreshview projectName="${framework.name}"/>
 	</target>
 
