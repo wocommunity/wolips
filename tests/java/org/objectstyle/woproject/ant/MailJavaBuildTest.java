@@ -53,30 +53,30 @@
  * <http://objectstyle.org/>.
  *
  */
-
 package org.objectstyle.woproject.ant;
+
+import junit.framework.TestCase;
 
 import java.io.File;
 import org.apache.tools.ant.*;
 
 /**
- * A test case that builds the art framework using its ant buildfile
+ * A test case that builds the MailJava framework using its ant buildfile
  * then does various assertions about what ant produced.
  *
- * @author Andrei Adamchik, Emily Bache
+ * @author Emily Bache
  */
-public class ArtBuildTest extends BuildTestCase {
+public class MailJavaBuildTest extends BuildTestCase {
 
-    protected Project project;
+    Project project;
 
-    public ArtBuildTest(String name) {
+    public MailJavaBuildTest(String name) {
         super(name);
     }
 
     public void setUp() throws Exception {
         super.setUp();
-
-        String projectDir = "tests/wo/frameworks/art";
+        String projectDir = "tests/wo/frameworks/MailJava";
         project = getProject(new File(projectDir), new File(projectDir, "build.xml"));
     }
 
@@ -88,17 +88,13 @@ public class ArtBuildTest extends BuildTestCase {
     public void testFilesPresent() throws Exception {
         String defaultTarget = project.getDefaultTarget();
         project.executeTarget(defaultTarget);
+        FrameworkStructure fw = new FrameworkStructure("MailJava");
+        fw.setJars(new String[]{"activation", "mail"});
 
-        FrameworkStructure artFrwk = new FrameworkStructure("art");
-        artFrwk.setJars(new String[] { "art", "cayenne", "woproject" });
-        artFrwk.setWocomps(new String[] { "PaintingSearch" });
-        artFrwk.setWsResources(new String[] { "images/spacer.gif" });
-
-        assertStructure(artFrwk);
-
+        assertStructure(fw);
     }
 
     public static void main(String[] args) {
-        junit.textui.TestRunner.main(new String[]{ArtBuildTest.class.getName()});
+        junit.textui.TestRunner.main(new String[]{MailJavaBuildTest.class.getName()});
     }
 }

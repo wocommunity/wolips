@@ -1,8 +1,8 @@
 /* ====================================================================
- * 
- * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 The ObjectStyle Group 
+ * The ObjectStyle Group Software License, Version 1.0
+ *
+ * Copyright (c) 2002 The ObjectStyle Group
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,15 +18,15 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution, if
- *    any, must include the following acknowlegement:  
- *       "This product includes software developed by the 
+ *    any, must include the following acknowlegement:
+ *       "This product includes software developed by the
  *        ObjectStyle Group (http://objectstyle.org/)."
  *    Alternately, this acknowlegement may appear in the software itself,
  *    if and wherever such third-party acknowlegements normally appear.
  *
- * 4. The names "ObjectStyle Group" and "Cayenne" 
+ * 4. The names "ObjectStyle Group" and "Cayenne"
  *    must not be used to endorse or promote products derived
- *    from this software without prior written permission. For written 
+ *    from this software without prior written permission. For written
  *    permission, please contact andrus@objectstyle.org.
  *
  * 5. Products derived from this software may not be called "ObjectStyle"
@@ -53,24 +53,25 @@
  * <http://objectstyle.org/>.
  *
  */
-
 package org.objectstyle.woproject.ant;
 
 import java.io.File;
 import java.io.IOException;
-
-import junit.framework.TestCase;
-
+import org.apache.tools.ant.*;
 import org.apache.log4j.Logger;
 
-/** 
- * Superclass of Ant task test cases that implements common
- * functionality, like path resolution, etc.
- * 
- * @author Andrei Adamchik
+import junit.framework.*;
+
+/**
+ * useful for setting up an ant woproject task and then asserting stuff about
+ * what it produces.
+ * Because everything is static, test cases can use delegation rather than
+ * inheritance if they like.
+ *
+ * @author Andrei Adamchik, Emily Bache
  */
-public class StructureTestCase extends TestCase {
-    static Logger logger = Logger.getLogger(StructureTestCase.class);
+public abstract class BuildTestCase extends TestCase {
+    private static Logger logger = Logger.getLogger(BuildTestCase.class);
 
     private static File testDist;
 
@@ -87,40 +88,39 @@ public class StructureTestCase extends TestCase {
         }
     }
 
-    public StructureTestCase(String name) {
+    public BuildTestCase(String name) {
         super(name);
     }
 
-    /** 
-     * Returns a "canonical" file located at <code>path</code>
-     * relative to tests distribution directory. Note that
-     * when building a path, forward slash can be used as path
-     * separator even on Windows. This method will do all needed
-     * replacements.
-     */
-    protected File resolveDistPath(String path) {
-        if (File.separator != "/") {
-            path = path.replace('/', File.separatorChar);
-        }
+    public static final Project getProject(File projectBaseDir, File projectBuildFile)
+            throws BuildException, ClassNotFoundException {
+        Project project = new Project();
+        project.setBaseDir(projectBaseDir);
 
-        return new File(testDist, path);
+        project.init();
+        project.setUserProperty("ant.version", Main.getAntVersion());
+
+        project.setUserProperty("ant.file" , projectBuildFile.getAbsolutePath() );
+
+        Class.forName("javax.xml.parsers.SAXParserFactory");
+        ProjectHelper.configureProject(project, projectBuildFile);
+        return project;
     }
 
-    /** Performs JUnit assertions about project structure <code>struct</code>. */
-    protected void assertStructure(ProjectStructure struct) throws Exception {
+    public static void assertStructure(ProjectStructure struct) throws AssertionFailedError {
         String path = struct.getDirectoryPath();
         File projDir = resolveDistPath(path);
-        assertTrue("Project directory is missing: " + projDir, projDir.isDirectory());
+        Assert.assertTrue("Project directory is missing: " + projDir, projDir.isDirectory());
 
         File res = new File(projDir, "Resources");
-        assertTrue("Resources directory is missing: " + res, res.isDirectory());
+        Assert.assertTrue("Resources directory is missing: " + res, res.isDirectory());
 
         File info = new File(res, "Info.plist");
-        assertTrue("Info.plist is missing: " + info, info.isFile());
+        Assert.assertTrue("Info.plist is missing: " + info, info.isFile());
 
         if (struct.hasWebServerResources()) {
             File wsres = new File(projDir, "WebServerResources");
-            assertTrue(
+            Assert.assertTrue(
                 "WebServerResources directory is missing: " + wsres,
                 wsres.isDirectory());
             assertWsResources(wsres, struct.getWsResources());
@@ -128,7 +128,7 @@ public class StructureTestCase extends TestCase {
 
         if (struct.hasJava()) {
             File javaDir = new File(projDir, "Resources/Java");
-            assertTrue("Java directory is missing: " + javaDir, javaDir.isDirectory());
+            Assert.assertTrue("Java directory is missing: " + javaDir, javaDir.isDirectory());
             assertJars(javaDir, struct.getJars());
         }
 
@@ -137,31 +137,47 @@ public class StructureTestCase extends TestCase {
         }
     }
 
-    protected void assertJars(File javaDir, String[] jars) throws Exception {
+    /**
+     * Returns a "canonical" file located at <code>path</code>
+     * relative to tests distribution directory. Note that
+     * when building a path, forward slash can be used as path
+     * separator even on Windows. This method will do all needed
+     * replacements.
+     */
+    public static File resolveDistPath(String path) {
+        if (File.separator != "/") {
+            path = path.replace('/', File.separatorChar);
+        }
+
+        return new File(testDist, path);
+    }
+
+
+    private static void assertJars(File javaDir, String[] jars) throws AssertionFailedError {
         for (int i = 0; i < jars.length; i++) {
             File jar = new File(javaDir, jars[i] + ".jar");
-            assertTrue("Jar file is missing: " + jar, jar.isFile());
+            Assert.assertTrue("Jar file is missing: " + jar, jar.isFile());
         }
     }
 
-    protected void assertWos(File resourceDir, String[] wos) throws Exception {
+    private static void assertWos(File resourceDir, String[] wos) throws AssertionFailedError {
         for (int i = 0; i < wos.length; i++) {
             File wo = new File(resourceDir, wos[i] + ".wo");
-            assertTrue("WO directory is missing: " + wo, wo.isDirectory());
+            Assert.assertTrue("WO directory is missing: " + wo, wo.isDirectory());
 
             File wod = new File(wo, wos[i] + ".wod");
-            assertTrue(".wod file is missing: " + wod, wod.isFile());
+            Assert.assertTrue(".wod file is missing: " + wod, wod.isFile());
 
             File html = new File(wo, wos[i] + ".html");
-            assertTrue(".html file is missing: " + html, html.isFile());
+            Assert.assertTrue(".html file is missing: " + html, html.isFile());
         }
     }
 
-    protected void assertWsResources(File resDir, String[] res) throws Exception {
+    private static void assertWsResources(File resDir, String[] res) throws AssertionFailedError {
         for (int i = 0; i < res.length; i++) {
             String path = res[i].replace('/', File.separatorChar);
             File wsfile = new File(resDir, path);
-            assertTrue("WebServer file is missing: " + wsfile, wsfile.isFile());
+            Assert.assertTrue("WebServer file is missing: " + wsfile, wsfile.isFile());
         }
     }
 }
