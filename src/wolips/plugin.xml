@@ -37,8 +37,9 @@
       <import plugin="org.eclipse.ui.externaltools"/>
    </requires>
 
-
-<!-- help -->
+<!-- =================================================================================== -->
+<!-- Extension: help                                                                     -->
+<!-- =================================================================================== -->
    <extension
          point="org.eclipse.help.toc">
       <toc
@@ -46,8 +47,10 @@
             primary="true">
       </toc>
    </extension>
-<!-- Project Wizard -->
-   <extension
+<!-- =================================================================================== -->
+<!-- Extension: Project Wizards                                                          -->
+<!-- =================================================================================== -->
+  <extension
          point="org.eclipse.ui.newWizards">
       <category
             name="%WOLips.webobjects.5.1.categoryName"
@@ -110,7 +113,9 @@
          </selection>
       </wizard>
    </extension>
-<!-- action set -->
+<!-- =================================================================================== -->
+<!-- Extension: Avtion set in the perspective                                            -->
+<!-- =================================================================================== -->
    <extension
          point="org.eclipse.ui.actionSets">
       <actionSet
@@ -176,7 +181,9 @@
          </action>
       </actionSet>
    </extension>
-<!-- project actions -->
+<!-- =================================================================================== -->
+<!-- Extension: Project actions                                                          -->
+<!-- =================================================================================== -->
    <extension
          point="org.eclipse.ui.popupMenus">
       <objectContribution
@@ -214,7 +221,56 @@
          </action>
       </objectContribution>
    </extension>
-<!-- ant -->
+<!-- =================================================================================== -->
+<!-- Extension: File actions                                                             -->
+<!-- =================================================================================== -->
+	<extension point="org.eclipse.ui.popupMenus">
+		<objectContribution
+			id="org.objectstyle.wolips.actions.OpenComponentAction"
+			objectClass="org.eclipse.jdt.core.ICompilationUnit"
+			adaptable="true"
+			nameFilter="*.java">
+			<action
+				id="org.objectstyle.wolips.actions.OpenComponentAction"
+				label="%WOLips.PopupMenu.OpenComponentAction"
+				tooltip="%WOLips.PopupMenu.OpenComponentActionTip"
+				menubarPath="additions"
+				enablesFor="1"
+				class="org.objectstyle.wolips.actions.OpenComponentAction">
+			</action>
+		</objectContribution>
+		<objectContribution
+			id="org.objectstyle.wolips.actions.OpenSourceAction"
+			objectClass="org.eclipse.core.resources.IFile"
+			adaptable="true"
+			nameFilter="*.wod">
+			<action
+				id="org.objectstyle.wolips.actions.OpenSourceAction"
+				label="%WOLips.PopupMenu.OpenSourceAction"
+				tooltip="%WOLips.PopupMenu.OpenSourceActionTip"
+				menubarPath="additions"
+				enablesFor="1"
+				class="org.objectstyle.wolips.actions.OpenSourceAction">
+			</action>
+		</objectContribution>
+		<objectContribution
+			id="org.objectstyle.wolips.actions.OpenSourceAction"
+			objectClass="org.eclipse.core.resources.IContainer"
+			adaptable="true"
+			nameFilter="*.wo">
+			<action
+				id="org.objectstyle.wolips.actions.OpenSourceAction"
+				label="%WOLips.PopupMenu.OpenSourceAction"
+				tooltip="%WOLips.PopupMenu.OpenSourceActionTip"
+				menubarPath="additions"
+				enablesFor="1"
+				class="org.objectstyle.wolips.actions.OpenSourceAction">
+			</action>
+		</objectContribution>				
+	</extension>
+<!-- =================================================================================== -->
+<!-- Extension: Ant                                                                      -->
+<!-- =================================================================================== -->
    <extension
          point="org.eclipse.ant.core.extraClasspathEntries">
       <extraClasspathEntry
