@@ -174,12 +174,12 @@
             class="org.objectstyle.woproject.ant.WOGenerator">
       </antTask>
       <antTask
-            library="wolips.jar"
+            library="lip/wolips.jar"
             name="updateframeworksets"
             class="org.objectstyle.wolips.ant.UpdateFrameworksets">
       </antTask>
       <antTask
-            library="wolips.jar"
+            library="lip/wolips.jar"
             name="refreshview"
             class="org.objectstyle.wolips.ant.RefreshEclipse">
       </antTask>
