@@ -4,6 +4,7 @@
 <!-- ======================================================== -->
 
 <project name="woproject" default="check" basedir=".">
+	<property file="${user.home}/wobuild.properties"/>
 	
 	<target name="check" depends="check_file,set_other,check_env,set_mac">
 		<fail message="Could not find ${user.home}/wobuild.properties. There should now be a generated one. Just launch ant again" if="wo.properties.ckeck.failed"/>

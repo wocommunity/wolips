@@ -81,6 +81,11 @@
     </target>
 
     <target name="dist" depends="prepare,java,doc,api">
+    	<copy todir="${wolips.dist}">
+    		<fileset dir=".">
+    			<include name="build-user-home-wobuild-properties.xml"/>
+    		</fileset>
+    	</copy>
          <!-- Copy source code -->
          <copy todir="${wolips.dist}/src">
              <fileset dir="src/wolips/java"/>

@@ -66,6 +66,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.eclipse.ant.core.AntRunner;
 import org.eclipse.core.internal.boot.URLContentFilter;
 import org.eclipse.core.internal.plugins.PluginClassLoader;
 import org.eclipse.core.resources.IContainer;
@@ -112,6 +113,8 @@ import org.objectstyle.wolips.wo.WOVariables;
 public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 
 	private static final String PLUGIN_ID = "org.objectstyle.wolips";
+	private static final String build_user_home_properties = "build-user-home-wobuild-properties.xml";
+	private static final String build_user_home_properties_pde_info = "PDE User please copy " + WOLipsPlugin.build_user_home_properties + " from woproject to wolips.";
 	private static WOLipsPlugin plugin;
 	private Hashtable projectUpdater;
 	private static IResourceChangeListener resourceChangeListener;
@@ -141,7 +144,14 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 	 * @see org.eclipse.ui.IStartup#earlyStartup()
 	 */
 	public void earlyStartup() {
-
+		
+		try {
+			WOLipsPlugin.writePropertiesFileToUserHome();
+		}
+		catch (Exception anException) {
+			WOLipsPlugin.log(anException);
+			WOLipsPlugin.log(WOLipsPlugin.build_user_home_properties_pde_info);				
+		}
 		validateMandatoryAttributes();
 
 		// add resource change listener to update project file on resource changes
@@ -154,6 +164,16 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 		JavaCore.addElementChangedListener(
 			javaElementChangeListener,
 			ElementChangedEvent.PRE_AUTO_BUILD);
+	}
+	/**
+	 * Method writePropertiesFileToUserHome.
+	 */
+	private static void writePropertiesFileToUserHome() throws Exception {
+		AntRunner antRunner = new AntRunner();
+		URL relativeBuildFile = new URL(WOLipsPlugin.baseURL(), WOLipsPlugin.build_user_home_properties);
+		URL buildFile = Platform.asLocalURL(relativeBuildFile);
+		antRunner.setBuildFileLocation(buildFile.getPath());
+		antRunner.run();
 	}
 
 	private void loadFoundationClasses() {
