@@ -17,19 +17,21 @@
 			
 			<h3>Properties:</h3>
 			
-			<p>WOApplication behavior depends on the following properties that specify
+			<p>WOApplication behavior depends on various properties in the wobuild.properties file that specify
 			common locations of the frameworks used by the application. 
-			If any of these properties is not initialized, a default value for this property 
-			is used:</p>
+			These properties can be initialized with the build-user-home-wobuild-properties.xml.
+			Per default the woapplication task expects this file in $user.home/Library/wobuild.properties.
+			If no file is found the woapplication task resolves the property WOBUILD_PROPERTIES from the
+			java properties and the environment(in this order) to find the file.</p>
 			
 			<table border="1" cellpadding="2" cellspacing="0">
 				<tr>
-					<th valign="top"><b>Property</b></th>
+					<th valign="top"><b>Property from the wobuild.properties file</b></th>
 					<th valign="top"><b>Description</b></th>
 					<th align="center" valign="top"><b>Default</b></th>
 				</tr>
 				<tr>
-					<td valign="top">wo.woroot</td>
+					<td valign="top">wo.wosystemroot</td>
 					<td valign="top">Usually this is a WebObjects installation directory,
 					like "C:\Apple".</td>
 					<td valign="top" align="center">NEXT_ROOT environment variable, or root directory "/".</td>
@@ -128,7 +130,7 @@
 				<tr>
 					<td valign="top">root</td>
 					<td valign="top">Logical base location of the framework. Allowed values are 
-					"wo.homeroot", "wo.woroot", "wo.localroot" (these are string values,
+					"wo.homeroot", "wo.wosystemroot", "wo.localroot" (these are string values,
 					don't include them in <code>${}</code>)</td>
 					<td valign="top" align="center">Yes</td>
 				</tr>
