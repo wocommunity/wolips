@@ -89,7 +89,9 @@
 
          <!-- Copy source code -->
          <copy todir="${dist}/src">
-             <fileset dir="src"/>
+             <fileset dir="src">
+             	<exclude name="**/WOApplication.java"/>
+             </fileset>
          </copy>
 
          <!-- Copy examples code -->
@@ -104,6 +106,9 @@
          <tar tarfile="${dist.base}/${project.name}-src-${project.version}.tar">
              <tarfileset dir="${dist.base}">
                 <include name="${project.name}-${project.version}/**"/>
+                <exclude name="**/WOApplication.*"/>
+                <exclude name="**/examples/applications/**"/>
+                <exclude name="**/examples/frameworks/Mail*/**"/>
             </tarfileset>
          </tar>
          <gzip src="${dist.base}/${project.name}-src-${project.version}.tar"
@@ -288,6 +293,7 @@
     <target name="clean">
         <delete dir="${dist.base}"/>
         <delete dir="${output}"/>
+        <delete dir="tests/wo/dist"/>
     </target>
 
 
