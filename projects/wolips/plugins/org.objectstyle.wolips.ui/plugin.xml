@@ -46,9 +46,6 @@
                label="&amp;WOLips Tools"
                id="org.objectstyle.wolips.ui">
 			<separator
-                 name="group0">
-           </separator>
-           <separator
                  name="group1">
            </separator>
          </menu>
@@ -56,7 +53,7 @@
                label="Update PB.project"
                class="org.objectstyle.wolips.ui.actions.PBAction"
                enablesFor="1"
-			   menubarPath="org.objectstyle.wolips.ui/group0"
+			   menubarPath="org.objectstyle.wolips.ui/group1"
                id="org.objectstyle.wolips.ui.actions.PBAction">
          </action>
       </objectContribution>
@@ -68,11 +65,18 @@
             adaptable="true"
             nameFilter="*.java"
             id="org.objectstyle.wolips.ui.actions.OpenComponentAction">
+         <menu
+               label="&amp;WOLips Tools"
+               id="org.objectstyle.wolips.ui">
+			<separator
+                 name="group0">
+           </separator>
+         </menu>
          <action
                label="Open WOComponent"
                class="org.objectstyle.wolips.ui.actions.OpenComponentAction"
                enablesFor="1"
-			   menubarPath="org.objectstyle.wolips.ui/group1"
+			   menubarPath="org.objectstyle.wolips.ui/group0"
                id="org.objectstyle.wolips.ui.actions.OpenComponentAction">
          </action>
       </objectContribution>
@@ -81,11 +85,18 @@
             adaptable="true"
             nameFilter="*.wod"
             id="org.objectstyle.wolips.ui.actions.OpenSourceAction">
+         <menu
+               label="&amp;WOLips Tools"
+               id="org.objectstyle.wolips.ui">
+			<separator
+                 name="group0">
+           </separator>
+         </menu>
          <action
                label="Open .java"
                class="org.objectstyle.wolips.ui.actions.OpenSourceAction"
                enablesFor="1"
-			   menubarPath="org.objectstyle.wolips.ui/group1"
+			   menubarPath="org.objectstyle.wolips.ui/group0"
                id="org.objectstyle.wolips.ui.actions.OpenSourceAction">
          </action>
       </objectContribution>
@@ -94,11 +105,18 @@
             adaptable="true"
             nameFilter="*.wo"
             id="org.objectstyle.wolips.ui.actions.OpenSourceAction">
+         <menu
+               label="&amp;WOLips Tools"
+               id="org.objectstyle.wolips.ui">
+			<separator
+                 name="group0">
+           </separator>
+         </menu>
          <action
                label="Open .java"
                class="org.objectstyle.wolips.ui.actions.OpenSourceAction"
                enablesFor="1"
-			   menubarPath="org.objectstyle.wolips.ui/group1"
+			   menubarPath="org.objectstyle.wolips.ui/group0"
                id="org.objectstyle.wolips.ui.actions.OpenSourceAction">
          </action>
       </objectContribution>
@@ -107,11 +125,18 @@
             adaptable="true"
             nameFilter="*.eomodeld"
             id="org.objectstyle.wolips.ui.actions.OpenEOModelIndexAction">
+         <menu
+               label="&amp;WOLips Tools"
+               id="org.objectstyle.wolips.ui">
+			<separator
+                 name="group0">
+           </separator>
+         </menu>
          <action
                label="Open EOModel"
                class="org.objectstyle.wolips.ui.actions.OpenEOModelIndexAction"
                enablesFor="1"
-			   menubarPath="org.objectstyle.wolips.ui/group1"
+			   menubarPath="org.objectstyle.wolips.ui/group0"
                id="org.objectstyle.wolips.ui.actions.OpenEOModelIndexAction">
          </action>
       </objectContribution>
