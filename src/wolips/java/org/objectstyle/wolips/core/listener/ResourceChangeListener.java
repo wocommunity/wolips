@@ -78,47 +78,38 @@ import org.objectstyle.wolips.core.project.WOLipsJavaProject;
 import org.objectstyle.wolips.core.project.WOLipsProject;
 import org.objectstyle.wolips.core.util.StringListMatcher;
 import org.objectstyle.wolips.logging.WOLipsLog;
-
 /**
  * Tracking changes in resources and synchronizes webobjects project file
  */
 public class ResourceChangeListener
-	implements IResourceChangeListener, IWOLipsPluginConstants
-{
-
-  StringListMatcher woappResourcesIncludeMatcher = null;
-  StringListMatcher woappResourcesExcludeMatcher = null;
-  StringListMatcher classesIncludeMatcher = null;
-  StringListMatcher classesExcludeMatcher = null;
-
+	implements IResourceChangeListener, IWOLipsPluginConstants {
+	StringListMatcher woappResourcesIncludeMatcher = null;
+	StringListMatcher woappResourcesExcludeMatcher = null;
+	StringListMatcher classesIncludeMatcher = null;
+	StringListMatcher classesExcludeMatcher = null;
 	/**
 	 * Constructor for ResourceChangeListener.
 	 */
 	public ResourceChangeListener() {
 		super();
-    woappResourcesIncludeMatcher = new StringListMatcher(
-      Preferences.getStringArrayForKey(
-        IWOLipsPluginConstants
-          .PREF_PBWO_PROJECT_INCLUDED_WOAPP_RESOURCES
-      )
-    );
-    woappResourcesExcludeMatcher = new StringListMatcher(
-      Preferences.getStringArrayForKey(
-        IWOLipsPluginConstants
-          .PREF_PBWO_PROJECT_EXCLUDED_WOAPP_RESOURCES
-      )
-    );
-		classesIncludeMatcher = new StringListMatcher(
-      Preferences.getStringArrayForKey(
-        IWOLipsPluginConstants.PREF_PBWO_PROJECT_INCLUDED_CLASSES
-      )
-    );
-
-		classesExcludeMatcher = new StringListMatcher(
-      Preferences.getStringArrayForKey(
-        IWOLipsPluginConstants.PREF_PBWO_PROJECT_EXCLUDED_CLASSES
-      )
-    );
+		woappResourcesIncludeMatcher =
+			new StringListMatcher(
+				Preferences.getStringArrayForKey(
+					IWOLipsPluginConstants
+						.PREF_PBWO_PROJECT_INCLUDED_WOAPP_RESOURCES));
+		woappResourcesExcludeMatcher =
+			new StringListMatcher(
+				Preferences.getStringArrayForKey(
+					IWOLipsPluginConstants
+						.PREF_PBWO_PROJECT_EXCLUDED_WOAPP_RESOURCES));
+		classesIncludeMatcher =
+			new StringListMatcher(
+				Preferences.getStringArrayForKey(
+					IWOLipsPluginConstants.PREF_PBWO_PROJECT_INCLUDED_CLASSES));
+		classesExcludeMatcher =
+			new StringListMatcher(
+				Preferences.getStringArrayForKey(
+					IWOLipsPluginConstants.PREF_PBWO_PROJECT_EXCLUDED_CLASSES));
 	}
 	/**
 	 * Adds instance of inner class ProjectFileResourceValidator to events
@@ -241,10 +232,13 @@ public class ResourceChangeListener
 					} // no webobjects project
 					return false;
 				case IResource.FOLDER :
+					//is this really required?
+					// what if this delta has no changes but a child of it?
 					if (needsProjectFileUpdate(kindOfChange)) {
 						if (EXT_FRAMEWORK.equals(resource.getFileExtension())
 							|| EXT_WOA.equals(resource.getFileExtension())
-							|| EXT_BUILD.equals(resource.getFileExtension())) {
+							|| "build".equals(resource.getName())
+							|| "dist".equals(resource.getName())) {
 							// no further examination needed
 							return false;
 						}
@@ -264,14 +258,14 @@ public class ResourceChangeListener
 								resource.getParent().getFile(
 									new Path(PROJECT_FILE_NAME)));
 						} /*else if (
-																			EXT_EOMODEL.equals(resource.getFileExtension())) {
-																			updateProjectFile(
-																				kindOfChange,
-																				resource,
-																				RESOURCES_ID,
-																				resource.getParent().getFile(
-																					new Path(PROJECT_FILE_NAME)));
-																		} */
+																									EXT_EOMODEL.equals(resource.getFileExtension())) {
+																									updateProjectFile(
+																										kindOfChange,
+																										resource,
+																										RESOURCES_ID,
+																										resource.getParent().getFile(
+																											new Path(PROJECT_FILE_NAME)));
+																								} */
 						/*else if (
 							EXT_EOMODEL_BACKUP.equals(
 								resource.getFileExtension())) {
@@ -440,10 +434,10 @@ public class ResourceChangeListener
 		}
 		private boolean matchWOAppResourcesPattern(IResource resource) {
 			String string = resource.getFullPath().toString();
-				if (woappResourcesExcludeMatcher.match(string))
-					return false;
-				if (woappResourcesIncludeMatcher.match(string))
-					return true;
+			if (woappResourcesExcludeMatcher.match(string))
+				return false;
+			if (woappResourcesIncludeMatcher.match(string))
+				return true;
 			return false;
 		}
 		/**
