@@ -59,9 +59,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Properties;
-
-import org.objectstyle.woproject.util.FileStringScanner;
-
 /**
  * @author uli
  * Utility for the environment.
@@ -71,6 +68,8 @@ public class Environment {
 	 * The String NEXT_ROOT.
 	 */
 	public static final String NEXT_ROOT = "NEXT_ROOT";
+	public static final String NEXT_LOCAL_ROOT = "NEXT_LOCAL_ROOT";
+	public static final String NEXT_SYSTEM_ROOT = "NEXT_SYSTEM_ROOT";
 	private static Properties envVars;
 	private static String nextRoot;
 	private static String localRoot;
@@ -114,7 +113,6 @@ public class Environment {
 		line = null;
 		return Environment.envVars;
 	}
-
 	/**
 	 * Method osProcess.
 	 * @return Process
@@ -153,7 +151,13 @@ public class Environment {
 		if (foundationJarPath != null)
 			return foundationJarPath;
 		try {
-			if (Environment.isNextRootSet())
+			if (Environment.isNextRootSet()) {
+				foundationJarPath =
+					"file:///"
+						+ Environment.getEnvVars().getProperty(
+							Environment.NEXT_ROOT)
+						+ "/Library/Frameworks/JavaFoundation.framework/Resources/Java/javafoundation.jar";
+				/*
 				foundationJarPath =
 					"file:///"
 						+ FileStringScanner.replace(
@@ -161,9 +165,11 @@ public class Environment {
 							"/",
 							"\\")
 						+ "\\Library\\Frameworks\\JavaFoundation.framework\\Resources\\Java\\javafoundation.jar";
-			else
+						*/
+			} else {
 				foundationJarPath =
 					"file:///System/Library/Frameworks/JavaFoundation.framework/Resources/Java/javafoundation.jar";
+			}
 		} catch (Exception anException) {
 			//WOLipsLog.log(anException);
 		}
@@ -191,7 +197,7 @@ public class Environment {
 		Environment.nextRoot = "/System";
 		return Environment.nextRoot;
 	}
-*/
+	/
 	/**
 	 * Method localRoot.
 	 * @return String
@@ -210,7 +216,7 @@ public class Environment {
 		return Environment.localRoot;
 	}
 	*/
-	
+
 	/**
 	 * Method isNextRootSet.
 	 * @return boolean
