@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+
+<!-- ======================================================== -->
+<!--                 WOLips Ant file.                         -->
+<!-- ======================================================== -->
+<project name="woproject-wolips-dist" default="dist" basedir=".">
+	<target name="dist">
+	<property file="src/wolips/plugin.properties"/>
+    
+    <property name="build" value="${output}/build"/>
+    <property name="wolips.name" value="org.objectstyle.wolips_${WOLips.version}"/>
+    <property name="wolips.targetbuilder.name" value="org.objectstyle.wolips.targetbuilder_${WOLips.version}"/>
+    <property name="wolips.dist" value="${dist.base}/${wolips.name}"/>
+    
+    <!-- main distribution. -->
+    <property name="dist" value="${dist.base}/${project.name}-${project.version}"/>
+         <!-- make wolips dist -->
+         <tar tarfile="${wolips.dist}.tar">
+             <tarfileset dir="${dist.base}">
+             	<include name="**/${wolips.name}/**"/>
+             	<include name="**/${wolips.targetbuilder.name}/**"/>
+            </tarfileset>
+         </tar>
+         
+         <gzip src="${wolips.dist}.tar"
+              zipfile="${wolips.dist}.tar.gz"/>
+         <delete file="${wolips.dist}.tar"/>
+    </target>
+
+</project>

@@ -48,6 +48,8 @@
     <target name="dist"> 
     	<ant antfile="build-core.xml" target="dist"/>
     	<ant antfile="build-wolips.xml" target="dist"/>
+		<ant antfile="build-wolips-targetbuilder.xml" target="dist"/>
+		<ant antfile="build-wolips-dist.xml" target="dist"/>
     </target>
 
     <!-- ============================================= -->
@@ -56,6 +58,7 @@
     <target name="java">
     	<ant antfile="build-core.xml" target="java"/>
     	<ant antfile="build-wolips.xml" target="java"/>
+		<ant antfile="build-wolips-targetbuilder.xml" target="java"/>
     </target>
 
 
@@ -83,6 +86,7 @@
     <target name="doc">
 		<ant antfile="build-core.xml" target="doc"/>
 		<ant antfile="build-wolips.xml" target="doc"/>
+		<ant antfile="build-wolips-targetbuilder.xml" target="doc"/>
     </target>
 
 
@@ -92,6 +96,7 @@
     <target name="api">
 		<ant antfile="build-core.xml" target="api"/>
 		<ant antfile="build-wolips.xml" target="api"/>
+		<ant antfile="build-wolips-targetbuilder.xml" target="api"/>
     </target>
     
     
@@ -102,5 +107,6 @@
     <target name="deploy-web" depends="java,doc,api" if="deploy.web">
 		<ant antfile="build-core.xml" target="deploy-web"/>
         <ant antfile="build-wolips.xml" target="deploy-web"/>
+		<ant antfile="build-wolips-targetbuilder.xml" target="deploy-web"/>
     </target>
 </project>
