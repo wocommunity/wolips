@@ -207,7 +207,7 @@ public class DirectAction extends WODirectAction {
     		</not>
   		</condition>
   		<fail message="Could not find ${user.home}${file.separator}Library${file.separator}wobuild.properties." if="wo.properties.check.failed"/>
-		<property name="install.dir" value="${wo.wolocalroot}/Library/Webobjects/Applications"/>
+		<property name="install.dir" value="${wo.wolocalroot}/Library/WebObjects/Applications"/>
 	</target>
 		
 	<!-- basic initializations  -->
