@@ -56,6 +56,7 @@
 package org.objectstyle.wolips.utils;
 
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.resource.CompositeImageDescriptor;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -69,11 +70,13 @@ import org.objectstyle.wolips.IWOLipsPluginConstants;
  * @author mnolte
  *
  */
-public class WOLabelDecorator implements ILabelDecorator,IWOLipsPluginConstants {
+public class WOLabelDecorator
+	implements ILabelDecorator, IWOLipsPluginConstants {
 
 	private static Image subprojectImage;
 	private static Image componentImage;
 	private static Image buildImage;
+	private static Image eomodelImage;
 
 	/**
 	 * Constructor for WOLabelDecorator.
@@ -86,10 +89,11 @@ public class WOLabelDecorator implements ILabelDecorator,IWOLipsPluginConstants 
 	 * @see org.eclipse.jface.viewers.ILabelDecorator#decorateImage(Image, Object)
 	 */
 	public Image decorateImage(Image image, Object element) {
+	
 		if (element instanceof IFolder
 			&& WOLipsUtils.isWOProjectResource((IResource) element)) {
-			if (EXT_SUBPROJECT
-				.equals(((IFolder) element).getFileExtension())) {
+			String extension = ((IFolder) element).getFileExtension();
+			if (EXT_SUBPROJECT.equals(extension)) {
 				if (subprojectImage == null) {
 					subprojectImage =
 						new WOImageDescriptor(image, "subproj_overlay.gif")
@@ -97,8 +101,7 @@ public class WOLabelDecorator implements ILabelDecorator,IWOLipsPluginConstants 
 				}
 				return subprojectImage;
 			}
-			if (EXT_COMPONENT
-				.equals(((IFolder) element).getFileExtension())) {
+			if (EXT_COMPONENT.equals(extension)) {
 				if (componentImage == null) {
 					componentImage =
 						new WOImageDescriptor(image, "comp_overlay.gif")
@@ -106,8 +109,15 @@ public class WOLabelDecorator implements ILabelDecorator,IWOLipsPluginConstants 
 				}
 				return componentImage;
 			}
-			if (EXT_WOA
-				.equals(((IFolder) element).getFileExtension())) {
+			if (EXT_EOMODEL.equals(extension)) {
+				if (eomodelImage == null) {
+					eomodelImage =
+						new WOImageDescriptor(image, "eomodel_overlay.gif")
+							.createImage();
+				}
+				return eomodelImage;
+			}
+			if (EXT_WOA.equals(extension) || EXT_FRAMEWORK.equals(extension)) {
 				if (buildImage == null) {
 					buildImage =
 						new WOImageDescriptor(image, "build_overlay.gif")
