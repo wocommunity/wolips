@@ -94,8 +94,8 @@ public abstract class AbstractDataSetTest extends TestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		try {
-			project = Utils.CreateProject(AbstractDataSetTest.class.getName());
-			javaProject = Utils.CreateJavaProject(AbstractDataSetTest.class.getName()
+			this.project = Utils.CreateProject(AbstractDataSetTest.class.getName());
+			this.javaProject = Utils.CreateJavaProject(AbstractDataSetTest.class.getName()
 						+ "Java");
 		} catch (CoreException e) {
 			assertNull("Project creation shouldnt throw an Exception",
@@ -109,8 +109,8 @@ public abstract class AbstractDataSetTest extends TestCase {
 	protected void tearDown() throws Exception {
 		super.tearDown();
 		try {
-			project.delete(false, new NullProgressMonitor());
-			javaProject.getProject().delete(false,
+			this.project.delete(false, new NullProgressMonitor());
+			this.javaProject.getProject().delete(false,
 						new NullProgressMonitor());
 		} catch (CoreException e) {
 			assertNull("Project deletion shouldnt throw an exception",
@@ -146,12 +146,16 @@ public abstract class AbstractDataSetTest extends TestCase {
 		Assert.assertEquals("the dataset should return the same type", type, dataSet.getType());
 	}
 	
+	/**
+	 * @param resource
+	 * @return
+	 */
 	public IDataSet getDataSet(IResource resource) {
 		return DataSetsPlugin.getDefault().getDataSet(resource);
 	}
 	
 	private IFile file(String string) {
-		IFile file = project.getFile("foo." + string);
+		IFile file = this.project.getFile("foo." + string);
 		try {
 			file.create(new StringBufferInputStream(""), false, new NullProgressMonitor());
 		} catch (CoreException e) {
@@ -161,7 +165,7 @@ public abstract class AbstractDataSetTest extends TestCase {
 	}
 
 	private IFolder folder(String string) {
-		IFolder folder =project.getFolder("foo." + string);
+		IFolder folder =this.project.getFolder("foo." + string);
 		try {
 			folder.create(false, false, new NullProgressMonitor());
 		} catch (CoreException e) {

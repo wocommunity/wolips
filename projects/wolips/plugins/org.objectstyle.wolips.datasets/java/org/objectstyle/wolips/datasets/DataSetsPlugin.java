@@ -56,6 +56,7 @@
 package org.objectstyle.wolips.datasets;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
@@ -112,14 +113,15 @@ public class DataSetsPlugin extends Plugin implements IDataSetTypes {
 		super();
 		plugin = this;
 		try {
-			resourceBundle = ResourceBundle
+			this.resourceBundle = ResourceBundle
 					.getBundle("org.objectstyle.wolips.datasets.DataSetPluginResources");
 		} catch (MissingResourceException x) {
-			resourceBundle = null;
+			this.resourceBundle = null;
 		}
 	}
 	/**
-	 * Returns the shared instance.
+	 * @return Returns the shared instance.
+	 * 
 	 */
 	public static DataSetsPlugin getDefault() {
 		return plugin;
@@ -130,15 +132,12 @@ public class DataSetsPlugin extends Plugin implements IDataSetTypes {
 	 * @return
 	 */
 	public static String getPluginId() {
-		if (plugin != null) {
-			return getDefault().getDescriptor().getUniqueIdentifier();
-		} else
-			return DataSetsPlugin.PLUGIN_ID;
+		return DataSetsPlugin.PLUGIN_ID;
 	}
 	/**
 	 * Prints a Status.
 	 * 
-	 * @param e
+	 * @param status
 	 */
 	public static void log(IStatus status) {
 		DataSetsPlugin.getDefault().getLog().log(status);
@@ -162,13 +161,14 @@ public class DataSetsPlugin extends Plugin implements IDataSetTypes {
 				.getPluginId(), IStatus.ERROR, message, null));
 	}
 	/**
-	 * Returns the workspace instance.
+	 * @return Returns the workspace instance.
 	 */
 	public static IWorkspace getWorkspace() {
 		return DataSetsPlugin.getWorkspace();
 	}
 	/**
-	 * Returns the string from the plugin's resource bundle, or 'key' if not
+	 * @param key
+	 * @return Returns the string from the plugin's resource bundle, or 'key' if not
 	 * found.
 	 */
 	public static String getResourceString(String key) {
@@ -180,15 +180,14 @@ public class DataSetsPlugin extends Plugin implements IDataSetTypes {
 		}
 	}
 	/**
-	 * Returns the plugin's resource bundle,
+	 * @return Returns the plugin's resource bundle,
 	 */
 	public ResourceBundle getResourceBundle() {
-		return resourceBundle;
+		return this.resourceBundle;
 	}
 	/**
 	 * @param resource
-	 *            return Null if the resource is null or unsupported otherwise
-	 *            the IDataSet
+	 * @return Null if the resource is null or unsupported otherwise the IDataSet
 	 */
 	public IDataSet getDataSet(IResource resource) {
 		if (resource == null)
@@ -252,19 +251,17 @@ public class DataSetsPlugin extends Plugin implements IDataSetTypes {
 		String title = "Error";
 		MessageDialog.openError(shell, title, message);
 	}
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
+	/* (non-Javadoc)
+	 * @see org.eclipse.core.runtime.Plugin#start(org.osgi.framework.BundleContext)
 	 */
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
-		adapterCache = new AdapterCache();
+		this.adapterCache = new AdapterCache();
 		//add resource change listener to update project file on resource
 		// changes
-		resourceChangeListener = new MasterResourceChangeListener();
+		this.resourceChangeListener = new MasterResourceChangeListener();
 		ResourcesPlugin.getWorkspace().addResourceChangeListener(
-				resourceChangeListener, IResourceChangeEvent.PRE_AUTO_BUILD);
+				this.resourceChangeListener, IResourceChangeEvent.PRE_BUILD);
 	}
 	
 	
@@ -273,15 +270,16 @@ public class DataSetsPlugin extends Plugin implements IDataSetTypes {
 	 */
 	public void stop(BundleContext context) throws Exception {
 		ResourcesPlugin.getWorkspace().removeResourceChangeListener(
-				resourceChangeListener);
-		adapterCache.clean();
-		adapterCache = null;
+				this.resourceChangeListener);
+		this.adapterCache.clean();
+		this.adapterCache = null;
 		super.stop(context);
 	}
 	/**
 	 * @return Returns the adapterCache.
 	 */
 	public AdapterCache getAdapterCache() {
-		return adapterCache;
+		return this.adapterCache;
 	}
+	
 }
