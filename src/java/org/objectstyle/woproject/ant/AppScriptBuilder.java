@@ -67,12 +67,30 @@ import org.apache.tools.ant.taskdefs.Mkdir;
  * @author Andrei Adamchik
  */
 public class AppScriptBuilder extends TemplateProcessor {
-	protected String pathSeparator = File.separator;
+
+	/** 
+	 * Contains path separator specific to platform currently
+	 * being built, regardless of the platform on which the
+	 * build is running. 
+	 */
+	private String pathSeparator = File.separator;
 
 	public AppScriptBuilder(WOApplication task) {
 		super(task);
 	}
 
+    /** 
+     * Copies all needed scripts for all platforms to the application
+     * directory. Main worker method of this class.
+     */ 
+	public void buildScripts() throws IOException {
+		buildWindows();
+		buildUnix();
+		buildMac();
+		buildCommon();
+	}
+
+	/** Returns parent WOApplication task of this builder object. */
 	protected WOApplication getAppTask() {
 		return (WOApplication) task;
 	}
@@ -115,19 +133,15 @@ public class AppScriptBuilder extends TemplateProcessor {
 		return line;
 	}
 
-	public void buildScripts() throws IOException {
-		buildWindows();
-		buildUnix();
-		buildMac();
-	}
-
 	protected void buildWindows() throws IOException {
 		pathSeparator = "\\";
 
+		// create windows platform directory
 		File dir = getWindowsDir();
-		File runScript = new File(dir, getName() + ".cmd");
 		mkdir(dir);
 
+		// add scripts
+		File runScript = new File(dir, getName() + ".cmd");
 		fileFromTemplate("woapp/Contents/Windows/appstart.cmd", runScript);
 		fileFromTemplate(
 			"woapp/Contents/Windows/CLSSPATH.TXT",
@@ -140,13 +154,45 @@ public class AppScriptBuilder extends TemplateProcessor {
 	protected void buildUnix() throws IOException {
 		pathSeparator = "/";
 
-		mkdir(getUnixDir());
+		// create UNIX platform directory
+		File dir = getUnixDir();
+		mkdir(dir);
+
+		// add scripts
+		fileFromTemplate(
+			"woapp/Contents/UNIX/UNIXClassPath.txt",
+			new File(dir, "UNIXClassPath.txt"));
 	}
 
 	protected void buildMac() throws IOException {
 		pathSeparator = "/";
 
-		mkdir(getMacDir());
+		// create Mac platform directory
+		File dir = getMacDir();
+		mkdir(dir);
+
+		// add scripts
+		File runScript = new File(dir, getName());
+		fileFromTemplate("woapp/Contents/MacOS/appstart", runScript);
+		fileFromTemplate(
+			"woapp/Contents/MacOS/MacOSClassPath.txt",
+			new File(dir, "MacOSClassPath.txt"));
+		fileFromTemplate(
+			"woapp/Contents/MacOS/MacOSXServerClassPath.txt",
+			new File(dir, "MacOSXServerClassPath.txt"));
+	}
+	
+	protected void buildCommon() throws IOException {
+		pathSeparator = "/";
+
+		File dir = task.taskDir();
+
+		// add scripts
+		File macScript = new File(dir, getName());
+		fileFromTemplate("woapp/Contents/MacOS/appstart", macScript);
+		
+	    File winScript = new File(dir, getName() + ".cmd");
+		fileFromTemplate("woapp/Contents/Windows/appstart.cmd", winScript);
 	}
 
 	protected void mkdir(File dir) {

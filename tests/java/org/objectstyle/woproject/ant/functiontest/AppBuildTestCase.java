@@ -89,14 +89,15 @@ public abstract class AppBuildTestCase extends BuildTestCase {
 		assertUnix(struct);
 
 		// assert common
+		File appDir = resolveDistPath(struct.getDirectoryPath());
 		File runscriptWin =
-			new File(struct.getDirectoryPath(), struct.getName() + ".cmd");
+			new File(appDir, struct.getName() + ".cmd");
 		Assert.assertTrue(
 			"Windows run script is missing: " + runscriptWin,
 			runscriptWin.isFile());
 
 		File runscriptUnix =
-			new File(struct.getDirectoryPath(), struct.getName());
+			new File(appDir, struct.getName());
 		Assert.assertTrue(
 			"UNIX run script is missing: " + runscriptUnix,
 			runscriptUnix.isFile());
