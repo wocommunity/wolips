@@ -31,8 +31,6 @@
       <import plugin="org.objectstyle.wolips.workbenchutilities"/>
       <import plugin="org.objectstyle.wolips.datasets"/>
       <import plugin="org.eclipse.ui.forms"/>
-      <import plugin="org.eclipse.team.cvs.ui"/>
-      <import plugin="org.eclipse.team.ui"/>
       <import plugin="org.objectstyle.wolips.projectbuild"/>
    </requires>
 
