@@ -67,7 +67,7 @@ import org.objectstyle.wolips.core.project.WOLipsCore;
  *
  *The Action for updating the PB.project file.
  */
-public class PBAction extends ActionOnIProject {
+public class PBAction extends ActionOnIResource {
 
 	private static String UpdatePBProjectID = "UpdatePB.Project.ID";
 
