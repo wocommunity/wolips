@@ -76,35 +76,30 @@ public class PerspectiveFactory implements IPerspectiveFactory {
 		"org.objectstyle.wolips.wizards.ElementCreationActionSet";
 	private static final String ID_BUILD_ACTION_SET =
 		"org.objectstyle.wolips.ui.BuildActionSet";
-	private static final String ID_RELATED ="org.objectstyle.wolips.ui.view.RelatedView";	
-	//private static final String ID_WONavigator = "org.objectstyle.wolips.ui.WONavigator"; //$NON-NLS-1$
-	//private static final String ID_ModelNavigator = "org.objectstyle.wolips.ui.ModelNavigator"; //$NON-NLS-1$
-	//private static final String ID_ProductNavigator = "org.objectstyle.wolips.ui.ProductNavigator"; //$NON-NLS-1$
-	//private static final String ID_AntNavigator = "org.eclipse.ui.externaltools.AntView"; //$NON-NLS-1$
-
+	private static final String ID_RELATED =
+		"org.objectstyle.wolips.ui.view.RelatedView";
 
 	public void createInitialLayout(IPageLayout layout) {
 		String editorArea = layout.getEditorArea();
 
 		IFolderLayout folder = layout.createFolder("left", IPageLayout.LEFT, (float) 0.25, editorArea); //$NON-NLS-1$
-		//folder.addView(IWOLipsPluginConstants.ID_Navigator);
 		folder.addView(JavaUI.ID_PACKAGES);
-		//folder.addView(PerspectiveFactory.ID_WONavigator);
-		//folder.addView(PerspectiveFactory.ID_ModelNavigator);
-		//folder.addView(PerspectiveFactory.ID_AntNavigator);
-		//folder.addView(PerspectiveFactory.ID_ProductNavigator);
 		folder.addPlaceholder(IPageLayout.ID_RES_NAV);
 		folder = null;
 
-		folder = layout.createFolder("left_bottom", IPageLayout.BOTTOM, (float) 0.75, "left");
+		folder =
+			layout.createFolder(
+				"left_bottom",
+				IPageLayout.BOTTOM,
+				(float) 0.75,
+				"left");
 		folder.addView(PerspectiveFactory.ID_RELATED);
 		folder = null;
-		
+
 		IFolderLayout outputfolder = layout.createFolder("bottom", IPageLayout.BOTTOM, (float) 0.75, editorArea); //$NON-NLS-1$
 		outputfolder.addView(IPageLayout.ID_TASK_LIST);
 		outputfolder.addView(IDebugUIConstants.ID_CONSOLE_VIEW);
 		outputfolder.addPlaceholder(SearchUI.SEARCH_RESULT_VIEW_ID);
-		outputfolder.addPlaceholder(IDebugUIConstants.ID_CONSOLE_VIEW);
 		outputfolder.addPlaceholder(IPageLayout.ID_BOOKMARKS);
 		outputfolder = null;
 
@@ -117,10 +112,8 @@ public class PerspectiveFactory implements IPerspectiveFactory {
 		layout.addActionSet(IDebugUIConstants.LAUNCH_ACTION_SET);
 		layout.addActionSet(JavaUI.ID_ACTION_SET);
 		layout.addActionSet(JavaUI.ID_ELEMENT_CREATION_ACTION_SET);
-		layout.addActionSet(
-		PerspectiveFactory.ID_BUILD_ACTION_SET);
-		layout.addActionSet(
-		PerspectiveFactory.ID_ELEMENT_CREATION_ACTION_SET);
+		layout.addActionSet(PerspectiveFactory.ID_BUILD_ACTION_SET);
+		layout.addActionSet(PerspectiveFactory.ID_ELEMENT_CREATION_ACTION_SET);
 
 		// views - java
 		//layout.addShowViewShortcut(WOLipsPlugin.ID_Finder);
