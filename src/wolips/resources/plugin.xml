@@ -21,13 +21,9 @@
    </requires>
 
    <!-- help -->
-   <extension
-         point="org.eclipse.help.toc">
+   <extension point="org.eclipse.help.toc">
       <toc
-            file="toc.xml">
-      </toc>
-      <toc
-            file="testToc.xml"
+            file="oc.xml"
             primary="true">
       </toc>
    </extension>
@@ -84,7 +80,7 @@
 	<!-- ant -->
      
 	<extension point="org.eclipse.ant.core.extraClasspathEntries">
-		<extraClasspathEntry library="lib/woproject-tests.jar">
+		<extraClasspathEntry library="lib/woproject.jar">
 		</extraClasspathEntry>
 		<extraClasspathEntry library="lib/cayenne.jar">
 		</extraClasspathEntry>
