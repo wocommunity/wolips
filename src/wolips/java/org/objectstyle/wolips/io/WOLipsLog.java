@@ -80,7 +80,7 @@ public class WOLipsLog {
 	 * Prints a message.
 	 */
 	public static void log(String message) {
-		log(
+		WOLipsLog.log(
 			new Status(
 				IStatus.ERROR,
 				WOLipsPlugin.getPluginId(),
@@ -92,20 +92,20 @@ public class WOLipsLog {
 	 * Prints a Throwable.
 	 */
 	public static void log(Throwable e) {
-		log(new Status(IStatus.ERROR, WOLipsPlugin.getPluginId(), IStatus.ERROR, "Internal Error", e)); //$NON-NLS-1$
+		WOLipsLog.log(new Status(IStatus.ERROR, WOLipsPlugin.getPluginId(), IStatus.ERROR, "Internal Error", e)); //$NON-NLS-1$
 	}
 	/**
-	 * If WOLips.debug is true this method prints a String to the console.
+	 * If WOLips.debug is true this method prints a String to the log.
 	 */
 	public static void debug(String aString) {
 		if (WOLipsPlugin.debug)
-			System.out.println(aString);
+			WOLipsLog.log(aString);
 	}
 	/**
-	 * If WOLips.debug is true this method prints an Exception to the console.
+	 * If WOLips.debug is true this method prints an Exception to the log.
 	 */
 	public static void debug(Throwable aThrowable) {
 		if (WOLipsPlugin.debug);
-		System.out.println("Exception: " + aThrowable);
+		WOLipsLog.log(aThrowable);
 	}
 }

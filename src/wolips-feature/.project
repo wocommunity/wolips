@@ -3,8 +3,6 @@
 	<name>wolips-feature</name>
 	<comment></comment>
 	<projects>
-		<project>wolips</project>
-		<project>wolips-targetbuilder</project>
 		<project>woproject</project>
 	</projects>
 	<buildSpec>

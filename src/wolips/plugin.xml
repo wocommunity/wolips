@@ -35,6 +35,7 @@
       <import plugin="org.eclipse.compare"/>
       <import plugin="org.apache.lucene"/>
       <import plugin="org.eclipse.ui.externaltools"/>
+      <import plugin="org.eclipse.pde.runtime"/>
    </requires>
 
 <!-- =================================================================================== -->
@@ -550,6 +551,16 @@
             extension="mappings">
       </fileTypes>
    </extension>
+<!-- =================================================================================== -->
+<!-- Extension: Ignored team file types                                                          -->
+<!-- =================================================================================== -->
+	<extension point="org.eclipse.team.core.ignore">
+		<ignore pattern = ".DS_Store" selected = "true"/>
+		<ignore pattern = "ant.frameworks.wo.woroot" selected = "true"/>
+		<ignore pattern = "ant.frameworks.wo.wolocalroot" selected = "true"/>
+		<ignore pattern = "ant.frameworks.user.home" selected = "true"/>
+		<ignore pattern = "ant.classpaths.wo.woroot" selected = "true"/>
+	</extension>
 <!-- =================================================================================== -->
 <!-- Extension: Resource filter                                                          -->
 <!-- =================================================================================== -->    

@@ -17,3 +17,5 @@ This is our list of open items.
 - avoid the use of Eclipse internal Classes
 - avoid the use of foundation Classes
 - update the PB.project when the scr folder name is changed
+- create projects outside the workspace
+- update PB.project when project is outside of the workspace

@@ -3,6 +3,7 @@
 	<name>wolips-help</name>
 	<comment></comment>
 	<projects>
+		<project>wolips</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
