@@ -17,7 +17,7 @@
         </p>
         
         <p><b>WOLips Eclipse plugin is now part of WOProject.</b> 
-        WOLips is a plugin wizard for <a href="http://eclipse.org">Eclipse IDE</a> that
+        WOLips is a plugin for <a href="http://eclipse.org">Eclipse IDE</a> that
         supports development of WebObjects applications and frameworks. It can be downloaded 
         as a separate package that includes WOProject jar files. For more details go to
         <a href="wolips/toc.html">WOLips page</a>. 
