@@ -49,7 +49,6 @@
  */
 package org.objectstyle.wolips.projectbuild.builder;
 import java.util.Map;
-
 import org.eclipse.ant.core.AntCorePlugin;
 import org.eclipse.ant.core.AntRunner;
 import org.eclipse.ant.internal.ui.launchConfigurations.IAntLaunchConfigurationConstants;
@@ -66,6 +65,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.core.variables.VariablesPlugin;
 import org.eclipse.debug.core.DebugPlugin;
+import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationType;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
@@ -75,12 +75,10 @@ import org.eclipse.jdt.launching.IVMInstall;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.externaltools.internal.model.IExternalToolConstants;
-import org.objectstyle.wolips.ant.runner.BuildMessages;
 import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
 import org.objectstyle.wolips.core.preferences.Preferences;
 import org.objectstyle.wolips.datasets.resources.IWOLipsModel;
 import org.objectstyle.wolips.projectbuild.WOProjectBuildConstants;
-import org.objectstyle.wolips.templateengine.BuildLaunchEngine;
 import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 /**
  * @author uli
@@ -114,7 +112,7 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 			monitor.done();
 			return null;
 		}
-		monitor.beginTask(BuildMessages.getString("Build.Monitor.Title"),
+		monitor.beginTask(AntBuildMessages.getString("Build.Monitor.Title"),
 				WOAntBuilder.TOTAL_WORK_UNITS);
 		if (!Preferences.getPREF_RUN_WOBUILDER_ON_BUILD()
 				|| getProject() == null || !getProject().exists()) {
@@ -384,13 +382,15 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 		} catch (CoreException e) {
 			config = null;
 			WorkbenchUtilitiesPlugin.handleException(Display.getCurrent()
-					.getActiveShell(), e, BuildMessages
+					.getActiveShell(), e, AntBuildMessages
 					.getString("Build.Exception"));
 			return;
 		}
 		try {
 			//config= ExternalToolMigration.migrateRunInBackground(config);
-			config.launch(ILaunchManager.RUN_MODE, monitor);
+			ILaunch launch = config.launch(ILaunchManager.RUN_MODE, monitor);
+			ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
+			manager.removeLaunch(launch);	
 		} finally {
 			config = null;
 		}
@@ -451,42 +451,5 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 		workingCopy.setAttribute("org.eclipse.ui.externaltools.ATTR_CAPTURE_OUTPUT", false);
 		return workingCopy.doSave();
 	}
-	/**
-	 * Creates and returns a default launch configuration for the given file.
-	 * 
-	 * @param file
-	 * @return default launch configuration
-	 */
-	private ILaunchConfiguration createDefaultLaunchConfiguration(
-			IFile buildFile, IProgressMonitor monitor) throws CoreException {
-		IProject project = buildFile.getProject();
-		String persistentLaunchConfigFileName = project.getName()
-				+ ".build.launch";
-		IFile persistentLaunchConfigFile = project
-				.getFile(persistentLaunchConfigFileName);
-		if (!persistentLaunchConfigFile.exists()) {
-			BuildLaunchEngine buildLaunchEngine = new BuildLaunchEngine();
-			try {
-				buildLaunchEngine.init();
-				buildLaunchEngine.setProjectName(project.getName());
-				buildLaunchEngine.setProject(project);
-				buildLaunchEngine.setAttrLocation(buildFile.getLocation()
-						.toString());
-				buildLaunchEngine.setWorkingDirectory(project.getLocation()
-						.toString());
-				IVMInstall vmInstall = JavaRuntime.getDefaultVMInstall();
-				buildLaunchEngine.setVmInstallName(vmInstall.getName());
-				buildLaunchEngine.setVmInstallTypeId(vmInstall.getId());
-				buildLaunchEngine.run(monitor);
-			} catch (Exception e) {
-				WOLipsPlugin.getDefault().getPluginLogger().log(e);
-			}
-			persistentLaunchConfigFile.refreshLocal(IResource.DEPTH_ONE,
-					monitor);
-		}
-		ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
-		ILaunchConfiguration config = manager
-				.getLaunchConfiguration(persistentLaunchConfigFile);
-		return config;
-	}
+
 }
