@@ -83,13 +83,12 @@ import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
  */
 public final class PBProjectUpdater {
 	//	local framework search for PB.project
-	private static final String DefaultLocalFrameworkSearch =
-		"$(NEXT_ROOT)$(LOCAL_LIBRARY_DIR)/Frameworks";
-	
-	private static final String MARKER_ID = 
-		"org.objectstyle.wolips.datasets.pbproject.warning";
+	private static final String DefaultLocalFrameworkSearch = "$(NEXT_ROOT)$(LOCAL_LIBRARY_DIR)/Frameworks";
+
+	private static final String MARKER_ID = "org.objectstyle.wolips.datasets.pbproject.warning";
 
 	private boolean saveRequired = false;
+
 	//do not cache PB.projects see bug #693046
 	//private static Hashtable projectUpdater = new Hashtable();
 	//public static String PBProject = "PB.projectContainer"; moved to
@@ -115,12 +114,14 @@ public final class PBProjectUpdater {
 
 	private final void removeProjectMarker() {
 		try {
-			IFile aFile =
-				projectContainer.getFile(
-					new Path(IWOLipsModel.PROJECT_FILE_NAME));
+			IFile aFile = projectContainer.getFile(new Path(
+					IWOLipsModel.PROJECT_FILE_NAME));
 			if (aFile.exists()) {
-				// these old markers were making it impossible to launch in E-3.0m9
-				aFile.deleteMarkers(IMarker.PROBLEM,false,IResource.DEPTH_ONE);
+				// these old markers were making it impossible to launch in
+				// E-3.0m9
+				aFile
+						.deleteMarkers(IMarker.PROBLEM, false,
+								IResource.DEPTH_ONE);
 				// we also have to get rid of our own (new) markers
 				aFile.deleteMarkers(MARKER_ID, true, IResource.DEPTH_ONE);
 			}
@@ -135,9 +136,8 @@ public final class PBProjectUpdater {
 					IWOLipsModel.PROJECT_FILE_NAME));
 			if (aFile.exists()) {
 				IMarker marker = aFile.createMarker(MARKER_ID);
-				marker.setAttribute(
-					IMarker.MESSAGE,
-					"Error while updating PB.project");
+				marker.setAttribute(IMarker.MESSAGE,
+						"Error while updating PB.project");
 				marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
 			}
 		} catch (Exception e) {
@@ -160,24 +160,24 @@ public final class PBProjectUpdater {
 	 */
 	public static PBProjectUpdater instance(IContainer aProjectContainer) {
 		IContainer findContainer = aProjectContainer;
-            IContainer container = null;
-            while ((findContainer.findMember(IWOLipsModel.PROJECT_FILE_NAME) == null)
-                   && (findContainer.getParent() != null)) {
-                findContainer = findContainer.getParent();
-            }
-            if (findContainer.getParent() == null)
-               container = findContainer.getProject();
-            if (findContainer.findMember(IWOLipsModel.PROJECT_FILE_NAME) != null)
-                container = findContainer;
-            PBProjectUpdater updater = null;
-            if(container != null) {
-                updater = new PBProjectUpdater(container);
-                if (null == updater.pbProject) {
-                  updater = null;
-                }
-            }
-            
-            return updater;
+		IContainer container = null;
+		while ((findContainer.findMember(IWOLipsModel.PROJECT_FILE_NAME) == null)
+				&& (findContainer.getParent() != null)) {
+			findContainer = findContainer.getParent();
+		}
+		if (findContainer.getParent() == null)
+			container = findContainer.getProject();
+		if (findContainer.findMember(IWOLipsModel.PROJECT_FILE_NAME) != null)
+			container = findContainer;
+		PBProjectUpdater updater = null;
+		if (container != null) {
+			updater = new PBProjectUpdater(container);
+			if (null == updater.pbProject) {
+				updater = null;
+			}
+		}
+
+		return updater;
 	}
 
 	//	/**
@@ -498,8 +498,16 @@ public final class PBProjectUpdater {
 	 */
 	public void setFrameworks(List newFrameworks) {
 		List actualFrameworks = this.pbProject.getFrameworks();
-		this.saveRequired = true;
-		this.pbProject.setFrameworks(newFrameworks);
+		if (actualFrameworks.size() != newFrameworks.size()) {
+			this.saveRequired = true;
+		} else {
+			if (!actualFrameworks.containsAll(newFrameworks)) {
+				this.saveRequired = true;
+			}
+		}
+		if (this.saveRequired) {
+			this.pbProject.setFrameworks(newFrameworks);
+		}
 		try {
 			this._saveChanges();
 		} catch (Throwable throwable) {
