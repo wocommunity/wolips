@@ -61,6 +61,7 @@ import java.util.List;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
+import org.apache.tools.ant.ProjectHelper;
 import org.apache.tools.ant.types.FileSet;
 
 /**
@@ -71,7 +72,7 @@ import org.apache.tools.ant.types.FileSet;
 public class FrameworkSet extends FileSet {
 	protected File 		aDirectory;
 	protected boolean 	embed = false;
-
+        protected String 	ifCondition = "";
 	/** 
 	 * Creates new FrameworkSet.
 	 */
@@ -111,7 +112,23 @@ public class FrameworkSet extends FileSet {
 		return this.embed;
 	}
 
-	public File[] findJars(Project project, String frameworkDir) {
+        public void setIf(String string) {
+            ifCondition = string == null ? "" : string;
+        }
+
+        private boolean testIfCondition() {
+            if ("".equals(ifCondition))
+                return true;
+            String string
+                = ProjectHelper.replaceProperties(getProject(), ifCondition,
+                                                  getProject().getProperties());
+            return project.getProperty(string) != null;
+        }
+
+        public File[] findJars(Project project, String frameworkDir) {
+            if(!testIfCondition())
+                return new File[] {};
+            
 		String jarDirName = frameworkDir
 				+ File.separator
 				+ "Resources"
