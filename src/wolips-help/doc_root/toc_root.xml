@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?NLS TYPE="org.eclipse.help.toc"?>
+
+<toc label="WOLips User Guide" href="./doc_root/index.html">
+
+	<topic label="Getting Started" href="./doc_root/introduction.html">
+		<topic label="Preparations" href="./doc_root/introduction.html#prepare"/>
+		<topic label="Your Very First WOLips Application" href="./doc_root/introduction.html#HelloWOrld"/>
+		<topic label="NextStep" href="./doc_root/introduction.html#NextStep"/>
+	</topic>
+	
+	<topic label="Concepts" href="./doc_root/concepts.html"/>
+
+	<topic label="Tasks" href="./doc_root/tasks/index.html">
+		<link toc="toc_tasks.xml"/>
+	</topic>
+
+	<topic label="Tips and Tricks" href="./doc_root/tips/index.html">
+		<link toc="toc_tips.xml"/>
+	</topic>
+	
+	<topic label="FAQ" href="./doc_root/faq.html"/>
+
+	<topic label="Reference" href="./doc_root/reference/index.html">
+		<link toc="toc_reference.xml"/>
+	</topic>
+
+	<topic label="What's New" href="./doc_root/history.html"/>
+
+	<topic label="Bugs, Issues and Other Things" href="./doc_root/issues.html">
+		<topic label="Bugs" href="./doc_root/issues.html#bugs"/>
+		<topic label="Issues" href="./doc_root/issues.html#issues"/>
+		<topic label="Other Things" href="./doc_root/issues.html#other"/>
+	</topic>
+
+	<topic label="Programmer's Guide" href="./doc_root/programmer/index.html">
+		<link toc="toc_programmer.xml"/>
+	</topic>
+	
+</toc>

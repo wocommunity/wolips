@@ -25,17 +25,18 @@
 <!-- ============================================== -->
 
     <extension point="org.eclipse.help.toc">
-        <toc file="book.xml" primary="true" />
+        <toc file="toc_root.xml" primary="true" />
     </extension>
 
 <!-- =============================================== -->
 <!-- Link the sections into the book                 -->
 <!-- =============================================== -->
 
-    <extension point="org.eclipse.help.toc">
-        <toc file="toc_Concepts.xml" />
-        <toc file="toc_Tasks.xml" />
-        <toc file="toc_Ref.xml" />
-    </extension>
-
+       	<extension point="org.eclipse.help.toc">     		
+       		<toc file="toc_tasks.xml" />
+       		<toc file="toc_tips.xml" />
+       		<toc file="toc_reference.xml" />
+       		<toc file="toc_programmer.xml" />
+       	</extension>
+       	
 </fragment>
