@@ -64,9 +64,7 @@
     </target>
 
 
-    <target name="package" depends="compile">
-        <echo message="installing to dir ${app_install_dir}"/>
-        
+    <target name="package" depends="compile">        
         <taskdef name="woapplication" classname="org.objectstyle.woproject.ant.WOApplication">
         	<classpath refid="classpath"/>
         </taskdef>

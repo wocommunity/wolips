@@ -57,13 +57,9 @@
 package org.objectstyle.woproject.ant;
 
 import org.apache.tools.ant.Project;
-import org.apache.tools.ant.taskdefs.Copy;
+import org.apache.tools.ant.taskdefs.Mkdir;
 
-public class WOCompCopy extends Copy {
-
-	public WOCompCopy() {
-		super.mapperElement = new WOMapper(project);
-	}
+public class WOMkdir extends Mkdir {
 
 	/** Reduces log priority by one. */
 	public void log(String msg) {

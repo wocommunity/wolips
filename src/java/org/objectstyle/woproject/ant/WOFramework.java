@@ -80,6 +80,8 @@ public class WOFramework extends WOTask {
 
     public void execute() throws BuildException {
         validateAttributes();
+        
+        log("Installing " + name + " in " + destDir + ".");
         createDirectories();
 
         if (hasClasses()) {

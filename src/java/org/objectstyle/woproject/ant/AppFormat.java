@@ -166,7 +166,7 @@ public class AppFormat extends ProjectFormat {
 					if (jars == null || jars.length == 0) {
 						log(
 							"No Jars in " + dirs[j] + ", ignoring.",
-							Project.MSG_WARN);
+							Project.MSG_VERBOSE);
 						continue;
 					}
 

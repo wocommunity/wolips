@@ -141,7 +141,7 @@ public abstract class WOTask extends MatchingTask {
     }
 
     protected void createDirectories() throws BuildException {
-        Mkdir mkdir = new Mkdir();
+        Mkdir mkdir = new WOMkdir();
         initChildTask(mkdir);
 
         File taskDir = taskDir();
