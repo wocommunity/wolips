@@ -8,6 +8,8 @@ To learn more you can browse the <topic id="/org.objectstyle.wolips/toc_root.xml
 </item>
 
 <item><b>What's new?</b>
+Important:
+Reset the WOLips perspective after updating. 
 To solve the problem with foo.eomodeld/index.eomodeld entries in the PB.project:
 1. Open the preferences. Window->Preferences
 2. Restore the defaults of the WOLips->ProjectBuilder->WOAppResources exclude page.
@@ -16,6 +18,29 @@ To solve the problem with foo.eomodeld/index.eomodeld entries in the PB.project:
 5. Open your PB.project files with the text editor. 
 6. If there entries like foo.eomodeld/index.eomodeld right click on the project root and select WOLips->Update PB.project 
 
+What's new:
+Related view in the WOLips perpective. (Hint: Select the WOComponent bundle and double click while holding down the alt/command (win/mac) modifier to open the api and wo in text editors.
+Action to open the index.eomodeld of a .eomodeld bundle.
+Filter for the Package Explorer.
+New project type that creates a jar.
+Classpath container.
+Text editor is default for alot of filetypes.
+Icons for various file types.
+Removed some views. se the filters instead.
+Options to disable the generation of the .woo and .api file in the WOComponent.
+The default folder for the ant builder is dist (new projects) and for incremental builder is build.
+Entries from WOLips popup menu to and/remove the targetbuilder moved to the build properties page.
+The classpath container shows the entries under their root.
+If a framework is installed under multiple roots, the one with the highest priority is used.
+The priorities are: UserHome, Localroot, Systemroot(NextRoot) and ProjectWonderRoot. 
+The WO tab in the run/debug launch config shows the existing value of the argument in the change dialog. 
+
+Fixed bugs:
+Sync of the project name in the PB.project.
+ClasspathContainer on Mac.
+Framwork section in the PB.project.
+Resource marker for the Pn.project if something goes wrong.
+Problem with commons-logging and xdoclet.
 </item>	
 
 <item><b>Learn More</b>
