@@ -319,7 +319,8 @@
       <perspective
             name="WOLips"
             class="org.objectstyle.wolips.ui.PerspectiveFactory"
-            id="org.objectstyle.wolips.ui.Perspective">
+            id="org.objectstyle.wolips.ui.Perspective"
+            icon="icons/wolips/WOLips-icon.gif">
       </perspective>
    </extension>
 <!-- =================================================================================== -->
