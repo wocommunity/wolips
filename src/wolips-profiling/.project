@@ -3,6 +3,7 @@
 	<name>wolips-profiling</name>
 	<comment></comment>
 	<projects>
+		<project>wolips</project>
 		<project>wolips-launching</project>
 	</projects>
 	<buildSpec>
