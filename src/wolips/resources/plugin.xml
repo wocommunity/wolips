@@ -61,9 +61,9 @@
       	</wizard>
       	
       	<wizard 
-			id="org.objectstyle.woproject.wolips.projects.woframework.WOApplicationProjectCreationWizard"
+			id="org.objectstyle.woproject.wolips.projects.woapplication.WOApplicationProjectCreationWizard"
 			name="%WOApplicationProjectCreationWizard.title"
-			class="org.objectstyle.woproject.wolips.projects.woframework.WOApplicationProjectCreationWizard"
+			class="org.objectstyle.woproject.wolips.projects.woapplication.WOApplicationProjectCreationWizard"
 			category="org.objectstyle.woproject.wolips.projects"
 			project="true"
 			finalPerspective="org.eclipse.jdt.ui.JavaPerspective"
