@@ -24,8 +24,8 @@
 	<!ELEMENT files (file+)>
 	<!ELEMENT file EMPTY>
 	<!ATTLIST file
-	templateId (application | session | directAction | project | properties | makefile | makefile.preamble | makefile.postamble | applicationproject | frameworkproject | subproject | antwoapplication | antwoframework | woapplication.makefile.preamble | woapplication.makefile.postamble | woapplication.makefile | woapplication.custominfo.plist | woapplication.icon | woframework.makefile.preamble | woframework.makefile.postamble | woframework.makefile | woframework.custominfo.plist ) #REQUIRED
-		name CDATA #REQUIRED 
+	templateId (application | session | directAction | project | properties | makefile | makefile.preamble | makefile.postamble | applicationproject | frameworkproject | subproject | woapplication.ant.build | woapplication.ant.properties | woframework.ant.build | woframework.ant.properties | ant.helper | woapplication.makefile.preamble | woapplication.makefile.postamble | woapplication.makefile | woapplication.custominfo.plist | woapplication.icon | woframework.makefile.preamble | woframework.makefile.postamble | woframework.makefile | woframework.custominfo.plist) #REQUIRED
+		name CDATA #REQUIRED
 >
 ]>
 <projectTypes>
@@ -48,7 +48,9 @@
 			<file templateId="directAction" name="DirectAction.java"/>
 			<file templateId="properties" name="Properties"/>
 			<file templateId="applicationproject" name="PB.project"/>
-			<file templateId="antwoapplication" name="build.xml"/>
+			<file templateId="woapplication.ant.build" name="build.xml"/>
+			<file templateId="woapplication.ant.properties" name="build.properties"/>
+			<file templateId="ant.helper" name="build-subproj.xml"/>
 			<file templateId="woapplication.makefile.preamble" name="Makefile.preamble"/>
 			<file templateId="woapplication.makefile" name="Makefile"/>
 			<file templateId="woapplication.makefile.postamble" name="Makefile.postamble"/>
@@ -71,7 +73,9 @@
 		</classpath>
 		<files>
 			<file templateId="frameworkproject" name="PB.project"/>
-			<file templateId="antwoframework" name="build.xml"/>
+			<file templateId="woframework.ant.build" name="build.xml"/>
+			<file templateId="woframework.ant.properties" name="build.properties"/>
+			<file templateId="ant.helper" name="build-subproj.xml"/>
 			<file templateId="woframework.makefile.preamble" name="Makefile.preamble"/>
 			<file templateId="woframework.makefile" name="Makefile"/>
 			<file templateId="woframework.makefile.postamble" name="Makefile.postamble"/>

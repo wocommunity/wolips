@@ -159,7 +159,7 @@ public class DirectAction extends WODirectAction {
     WINDOWS_OBJCPLUS_COMPILER = "$(DEVDIR)/gcc"; 
 }
 ]]></template>
-<template name="webobjects subproject file " id="subproject" description="basic subproject file" variables="PROJECT_NAME" enabled="true"><![CDATA[{
+	<template name="webobjects subproject file " id="subproject" description="basic subproject file" variables="PROJECT_NAME" enabled="true"><![CDATA[{
     DYNAMIC_CODE_GEN = YES; 
     English_RESOURCES = {}; 
     FILESTABLE = {
@@ -184,52 +184,172 @@ public class DirectAction extends WODirectAction {
 	 <string>APPL</string>
 </dict>
 </plist>]]></template>
-	<template name="ant file woapplication" id="antwoapplication" description="basic project file with main component and application class" variables="PROJECT_NAME" enabled="true"><![CDATA[<project name="${PROJECT_NAME}" default="build" basedir=".">
+	<template name="ant file woapplication" id="woapplication.ant.build" variables="PROJECT_NAME" enabled="true"><![CDATA[<project name="${PROJECT_NAME}" default="build" basedir=".">
 
-	<target name="init">
-		<property name="wo.woroot" value="${wolips.next.root}"/>
+	<property file="build.properties"/>
+	
+    <!-- ============================================= -->
+    <!-- Subproject Support            .                                               -->
+    <!-- ============================================= -->
+    <target name="subproj"> 
+    	<ant antfile="build-subproj.xml" target="copy.resources"/>
+    </target>
+    
+	<target name="build" depends="init.build,subproj,build.woapp"/>
+
+	<target name="install" depends="init.install,subproj,build.woapp"/>
+		
+	<target name="init.install">
+		 <tstamp/>
+		<property name="dest.dir" value="${install.dir}"/>
 	</target>
 	
-	<target name="build" depends="init">
-		<woapplication name="${PROJECT_NAME}" destDir=".">
-   			<classes dir="bin">
+	<target name="init.build">
+	 	<tstamp/>
+		<property name="dest.dir" value="."/>
+	</target>
+
+	<target name="clean">
+	  	<delete dir="${project.name}.woa"/>
+	 	<refreshview projectname="${project.name}"/>
+	</target>
+	  
+	<target name="build.woapp">
+		<updateframeworksets projectname="${project.name}" frameworkincludesfile="${framework.includesfile}"/>
+		<woapplication name="${project.name}"  stdFrameworks="false" destDir="${dest.dir}">
+   			<classes dir="${classes.dir}">
    			</classes>
    			<resources dir=".">
-       			<include name="*.eomodeld/**"/>
-       			<include name="*.wo/**"/>
+   				<include name="*.eomodeld/"/>
+       			<include name="*.wo/"/>
        			<include name="*.api"/>
-   			</resources>
-   			<wsresources dir=".">
-       			<include name="Images/**"/>
-   			</wsresources>
-		</woapplication>
+       		</resources>
+			<frameworks root="${wo.woroot}">
+      				<patternset>
+  					<includesfile name="${framework.includesfile}"/> 
+				</patternset>
+   			</frameworks>
+   		</woapplication>
+   		<refreshview projectname="${project.name}"/>
 	</target>
-	
-</project>
+		
+</project>]]></template>
+	<template name="ant properties woapplication" id="woapplication.ant.properties" variables="BUILD_DIR,PROJECT_NAME,NEXT_ROOT" enabled="true"><![CDATA[
+wo.woroot = ${NEXT_ROOT}
+library.java = ${NEXT_ROOT}/Library/Java
+classes.dir = ${BUILD_DIR}
+dest.dir = .
+install.dir = ${NEXT_ROOT}/Local/Library/Webobjects/Applications
+framework.includesfile = frameworks.ant
+project.name = ${PROJECT_NAME}
 ]]></template>
-	<template name="ant file woframework" id="antwoframework" description="basic project file with main component and application class" variables="PROJECT_NAME" enabled="true"><![CDATA[<project name="${projectname}" default="build" basedir=".">
+	<template name="ant file woframework" id="woframework.ant.build" variables="PROJECT_NAME" enabled="true"><![CDATA[<project name="${PROJECT_NAME,}" default="build" basedir=".">
 
-	<target name="init">
-		<property name="wo.woroot" value="${wolips.next.root}"/>
+	<property file="build.properties"/>
+
+	<target name="build" depends="init.build,subproj,build.woframework"/>
+
+	<target name="install" depends="init.install,subproj,build.woframework"/>
+	
+    <!-- ============================================= -->
+    <!-- Subproject Support            .                                               -->
+    <!-- ============================================= -->
+    <target name="subproj"> 
+    	<ant antfile="build-subproj.xml" target="copy.resources"/>
+    </target>
+    
+
+	<target name="init.install">
+		 <tstamp/>
+		<property name="dest.dir" value="${install.dir}"/>
 	</target>
 	
-	<target name="build" depends="init">
-		<woframework name="${PROJECT_NAME}" destDir=".">
-   			<classes dir="bin">
+	<target name="init.build">
+		 <tstamp/>
+		<property name="dest.dir" value="."/>
+	</target>
+
+	<target name="clean">
+	  <delete dir="${framework.name}.woa"/>
+	<refreshview projectname="${framework.name}"/>
+	</target>
+	  
+	<target name="build.woframework">
+		<updateframeworksets projectname="${framework.name}" frameworkincludesfile="${framework.includesfile}"/>	
+		<woframework name="${framework.name}" destDir="${dest.dir}">
+   			<classes dir="${classes.dir}">
    			</classes>
    			<resources dir=".">
-       			<include name="*.eomodeld/**"/>
-       			<include name="*.wo/**"/>
-       			<include name="*.api"/>
+       			<include name="**/*.eomodeld/"/>
+       			<include name="**/*.wo/"/>
    			</resources>
-   			<wsresources dir=".">
-       			<include name="Images/**"/>
-   			</wsresources>
-		</woframework>
+			<frameworks root="${wo.woroot}">
+      				<patternset>
+  					<includesfile name="${framework.includesfile}"/> 
+				</patternset>
+   			</frameworks>
+   		</woframework>
+   		<refreshview projectname="${framework.name}"/>
 	</target>
-	
-</project>
+		
+</project>]]></template>
+	<template name="ant properties woframework" id="woframework.ant.properties" variables="BUILD_DIR,PROJECT_NAME,NEXT_ROOT" enabled="true"><![CDATA[
+wo.woroot = ${NEXT_ROOT}
+classes.dir =  ${BUILD_DIR}
+dest.dir = .
+install.dir = ${NEXT_ROOT}/Local/Library/Frameworks
+framework.includesfile = frameworks.ant
+framework.name = ${PROJECT_NAME}
 ]]></template>
+	<template name="ant helper" id="ant.helper" enabled="true"><![CDATA[<?xml version="1.0"?>
+<!-- temporary help file to copy subproject resources -->
+<project name="${project.name}" default="copy.resources" basedir=".">
+
+	<property file="build.properties"/>
+
+	<target name="copy.resources">
+	
+		<!-- copy api files (all) -->
+ 		<copy todir="${dest.dir}/${project.name}.woa/Contents/Resources">
+    		<fileset dir="." casesensitive="yes">
+   				<include name="**/*.api"/>
+			</fileset>
+      		<mapper type="flatten"/>
+  		</copy>
+  		
+  		<!-- copy wo components (windows) -->
+  		<copy todir="${dest.dir}/${project.name}.woa/Contents/Resources">
+    		<fileset dir="." casesensitive="yes">
+   				<include name="**/*.wo/"/>
+			</fileset>
+      		<mapper type="regexp" from="^(.*)\\(.*\.wo)\\(.*\..+)$$" to="\2/\3"/>
+  		</copy>
+		<!-- copy wo components (mac/unix) -->
+		<copy todir="${dest.dir}/${project.name}.woa/Contents/Resources">
+    		<fileset dir="." casesensitive="yes">
+   				<include name="**/*.wo/"/>
+			</fileset>
+      		<mapper type="regexp" from="^(.*)/(.*\.wo)/(.*\..+)$$" to="\2/\3"/>
+  		</copy>
+  		
+  		<!-- copy eomodels (windows) -->
+  		<copy todir="${dest.dir}/${project.name}.woa/Contents/Resources">
+    		<fileset dir="." casesensitive="yes">
+   				<include name="**/*.eomodeld/"/>
+			</fileset>
+      		<mapper type="regexp" from="^(.*)\\(.*\.eomodeld)\\(.*)$$" to="\2/\3"/>
+  		</copy>
+		<!-- copy eomodels (mac/unix) -->
+  		<copy todir="${dest.dir}/${project.name}.woa/Contents/Resources">
+    		<fileset dir="." casesensitive="yes">
+   				<include name="**/*.eomodeld/"/>
+			</fileset>
+      		<mapper type="regexp" from="^(.*)/(.*\.eomodeld)/(.*)$$" to="\2/\3"/>
+  		</copy>
+  		
+	</target>
+
+</project>]]></template>
 	<template name="webobjects properties template" id="properties" description="empty property file" enabled="true"><![CDATA[
 	]]></template>
 	<template name="webobjects woapplication makefile" id="woapplication.makefile" description="basic make file with main component and application class" variables="PROJECT_NAME" enabled="true"><![CDATA[
