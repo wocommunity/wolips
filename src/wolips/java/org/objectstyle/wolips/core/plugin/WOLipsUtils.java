@@ -69,7 +69,7 @@ public class WOLipsUtils extends AWOLips {
 	/**
 	 * Constructor for WOLipsUtils.
 	 */
-	private WOLipsUtils() {
+	public WOLipsUtils() {
 		super();
 	}
 

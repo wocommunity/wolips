@@ -61,8 +61,8 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
+import org.objectstyle.wolips.core.plugin.WOLipsUtils;
 import org.objectstyle.wolips.core.plugin.logging.WOLipsLog;
-import org.objectstyle.wolips.core.workbench.WorkbenchHelper;
 /**
  * @author mnolte
  * @author uli
@@ -110,7 +110,8 @@ public class WOApplicationCreationWizard extends WOProjectCreationWizard {
 	private void openResource(final IResource resource) {
 		if (resource == null || resource.getType() != IResource.FILE)
 			return;
-		final IWorkbenchPage activePage = WorkbenchHelper.getActivePage();
+			
+		final IWorkbenchPage activePage = new WOLipsUtils().getActivePage();
 		if (activePage == null)
 			return;
 		final Display display = getShell().getDisplay();
