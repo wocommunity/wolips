@@ -94,7 +94,6 @@
 	    <ant dir="org.objectstyle.wolips.profiling" target="all"/>
 	    <ant dir="org.objectstyle.wolips.profiling.about" target="all"/>
 	    <ant dir="org.objectstyle.wolips.projectbuild" target="all"/>
-	    <ant dir="org.objectstyle.wolips.tests" target="all"/>
 	    <ant dir="org.objectstyle.wolips.tests.about" target="all"/>
 	    <ant dir="org.objectstyle.wolips.wounit" target="all"/>
 	    <ant dir="org.objectstyle.wolips.wounit.about" target="all"/>
@@ -108,6 +107,7 @@
 	    <ant dir="org.objectstyle.wolips.team" target="all"/>
 	    <ant dir="org.objectstyle.wolips.about" target="all"/>
 	    <ant dir="org.objectstyle.wolips.jdom" target="all"/>
+	    <ant dir="org.objectstyle.wolips.tests" target="all"/>
     </target>
     <!-- ========================================== -->
     <!-- Build dist.                                -->
@@ -124,7 +124,6 @@
 	    <ant dir="org.objectstyle.wolips.profiling" target="dist"/>
 	    <ant dir="org.objectstyle.wolips.profiling.about" target="dist"/>
 	    <ant dir="org.objectstyle.wolips.projectbuild" target="dist"/>
-	    <ant dir="org.objectstyle.wolips.tests" target="dist"/>
 	    <ant dir="org.objectstyle.wolips.tests.about" target="dist"/>
 	    <ant dir="org.objectstyle.wolips.wounit" target="dist"/>
 	    <ant dir="org.objectstyle.wolips.wounit.about" target="dist"/>
@@ -138,6 +137,7 @@
 	    <ant dir="org.objectstyle.wolips.team" target="dist"/>
 	    <ant dir="org.objectstyle.wolips.about" target="dist"/>
 	    <ant dir="org.objectstyle.wolips.jdom" target="dist"/>
+	    <ant dir="org.objectstyle.wolips.tests" target="dist"/>
 	</target>
 
     <!-- ========================================== -->
