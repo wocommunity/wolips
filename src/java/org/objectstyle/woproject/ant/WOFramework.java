@@ -99,7 +99,7 @@ public class WOFramework extends WOTask {
             copyWsresources();
         }
 
-        buildInfo();
+        formatProject();
     }
 
     protected void copyLibs() throws BuildException {
@@ -115,13 +115,12 @@ public class WOFramework extends WOTask {
         cp.execute();
     }
 
-    protected void buildInfo() throws BuildException {
-        Vector libs = getLibFiles();
-        InfoBuilder infoBuilder = new InfoBuilder(this, libs);
+
+    protected void formatProject() throws BuildException {
         try {
-            infoBuilder.fileFromTemplate("woframework/Info.plist", new File(resourcesDir(), "Info.plist"));
+            new FrameworkFormat(this).processTemplates();
         } catch (IOException ioex) {
-            throw new BuildException("Error copying Info.plist", ioex);
+            throw new BuildException("Error doing file autogeneration.", ioex);
         }
     }
 
@@ -129,7 +128,7 @@ public class WOFramework extends WOTask {
      * returns a vector of Strings - the file names of the library files
      * included in the lib nested element.
      */
-    private Vector getLibFiles() {
+    public Vector getLibFiles() {
         Vector answer = new Vector();
         Enumeration en = lib.elements();
         while (en.hasMoreElements()) {

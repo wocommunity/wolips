@@ -55,62 +55,83 @@
  */
 package org.objectstyle.woproject.ant;
 
-import java.io.*;
+import java.io.File;
 import java.util.Enumeration;
-import java.util.Vector;
+import java.util.Iterator;
 
 import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.Task;
-import org.apache.tools.ant.taskdefs.*;
-import org.apache.tools.ant.types.FileSet;
-
-import java.io.*;
-
-import junit.framework.TestCase;
+import org.apache.tools.ant.types.FilterSet;
+import org.apache.tools.ant.types.FilterSetCollection;
 
 /**
- * Unit test for WOFramework
+ * Subclass of TemplateFilter that defines file copying 
+ * strategy for WOFrameworks.
  *
- * @author Emily Bache
+ * @author Andrei Adamchik
  */
-public class WOFrameworkTest extends TestCase {
+public class FrameworkFormat extends ProjectFormat {
+	public static final String INFO_TEMPLATE = "woframework/Info.plist";
 
-	public WOFrameworkTest(String name) {
-		super(name);
+	/** 
+	 * Creates new FrameTemplateFilter and initializes it with the name
+	 * of the project being built.
+	 */
+	public FrameworkFormat(WOTask task) {
+		super(task);
 	}
 
-	public void testCreateInfo() throws Exception {
-		WOFramework wofw = new WOFramework() {
-			public File resourcesDir() {
-				 // avoid creating temporary files in the root project directory
-	             return new File("output" + File.separator + "test_results");
-			}
-		};
-		File createdInfoFile = new File(wofw.resourcesDir(), "Info.plist");
-		
-		try {
-			wofw.setName("Poodle");
-			wofw.formatProject();
-			
-			assertTrue(createdInfoFile.exists());
-			String fileContents = getContents(createdInfoFile);
-			assertTrue(fileContents.indexOf("poodle") > 0);
-		} finally {
-			if (createdInfoFile.exists()) {
-				createdInfoFile.delete();
-			}
+	private WOFramework getFrameworkTask() {
+		return (WOFramework) task;
+	}
+
+	public Iterator fileIterator() {
+		String infoFile = new File(task.resourcesDir(), "Info.plist").getPath();
+		return stringIterator(infoFile);
+	}
+
+	public String templateForTarget(String targetName) throws BuildException {
+		if (targetName.endsWith("Info.plist")) {
+			return INFO_TEMPLATE;
+		} else {
+			throw new BuildException("Invalid target: " + targetName);
 		}
 	}
 
-	private String getContents(File file) throws Exception {
-		FileInputStream fin = new FileInputStream(file);
-		DataInput din = new DataInputStream(fin);
-		StringBuffer contents = new StringBuffer();
-		String line = null;
-		while ((line = din.readLine()) != null) {
-			contents.append(line);
+	public FilterSetCollection filtersForTarget(String targetName)
+		throws BuildException {
+		if (targetName.endsWith("Info.plist")) {
+			FilterSet filter = new FilterSet();
+
+			filter.addFilter("NAME", getName());
+			filter.addFilter("LOWERC_NAME", getName().toLowerCase());
+			filter.addFilter("JAR_ARRAY", libsString());
+
+			return new FilterSetCollection(filter);
+		} else {
+			throw new BuildException("Invalid target: " + targetName);
 		}
-		return contents.toString();
 	}
 
+	private String libsString() {
+		StringBuffer buf = new StringBuffer();
+
+		buf.append("<array>");
+		if (task.hasClasses()) {
+			buf
+				.append(endLine)
+				.append("\t\t<string>")
+				.append(getName().toLowerCase() + ".jar")
+				.append("</string>");
+		}
+
+		Enumeration en = getFrameworkTask().getLibFiles().elements();
+		while (en.hasMoreElements()) {
+			String libFile = (String) en.nextElement();
+			buf.append(endLine).append("\t\t<string>");
+			buf.append(libFile);
+			buf.append("</string>");
+		}
+		buf.append(endLine).append("\t</array>");
+		return buf.toString();
+	}
 }
