@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XML Spy v3.5 NT (http://www.xmlspy.com) by  () -->
+<!DOCTYPE projectTypes [
+	<!ELEMENT projectTypes (projectType+)>
+	<!ELEMENT projectType (nature+, classpath, files)>
+	<!ATTLIST projectType
+	name CDATA #REQUIRED
+		id ID #REQUIRED
+>
+	<!ELEMENT nature EMPTY>
+	<!ATTLIST nature
+	id CDATA #REQUIRED
+>
+	<!ELEMENT classpath (classpathentry+)>
+	<!ATTLIST classpath
+	variables CDATA #REQUIRED
+>
+	<!ELEMENT classpathentry EMPTY>
+	<!ATTLIST classpathentry
+	kind (lib | output | src | var) #REQUIRED
+		path CDATA #REQUIRED
+		rootpath CDATA #IMPLIED
+		sourcepath CDATA #IMPLIED
+>
+	<!ELEMENT files (file+)>
+	<!ELEMENT file EMPTY>
+	<!ATTLIST file
+	templateId (application | session | directAction | project | properties | makefile | makefile.preamble | makefile.postamble) #REQUIRED
+		name CDATA #REQUIRED
+>
+]>
+<projectTypes>
+	<projectType name="Java WebObjects Application" id="JavaWebObjectsApplication">
+		<nature id="org.eclipse.jdt.core.javanature"/>
+		<classpath variables="webobjects.next.root,webobjects.system.library.dir">
+			<classpathentry kind="lib" path="${webobjects.system.library.dir}/Frameworks/JavaWebObjects.framework/Resources/Java/javawebobjects.jar"/>
+
+			<classpathentry kind="lib" path="${webobjects.system.library.dir}/Frameworks/JavaFoundation.framework/Resources/Java/javafoundation.jar"/>
+
+			<classpathentry kind="lib" path="${webobjects.system.library.dir}/Frameworks/JavaXML.framework/Resources/Java/javaxml.jar"/>
+
+			<classpathentry kind="lib" path="${webobjects.system.library.dir}/Frameworks/JavaWOExtensions.framework/Resources/Java/JavaWOExtensions.jar"/>
+
+			<classpathentry kind="lib" path="${webobjects.system.library.dir}/Frameworks/JavaEOAccess.framework/Resources/Java/javaeoaccess.jar"/>
+
+			<classpathentry kind="lib" path="${webobjects.system.library.dir}/Frameworks/JavaEOControl.framework/Resources/Java/javaeocontrol.jar"/>
+
+			<classpathentry kind="var" path="JRE_LIB" rootpath="JRE_SRCROOT" sourcepath="JRE_SRC"/>
+			<classpathentry kind="output" path="bin"/>
+		</classpath>
+		<files>
+			<file templateId="application" name="Application.java"/>
+			<file templateId="session" name="Session.java"/>
+			<file templateId="directAction" name="DirectAction.java"/>
+			<file templateId="properties" name="Properties"/>
+			<file templateId="applicationproject" name="PB.project"/>
+			<file templateId="antwoapplication" name="build.xml"/>
+		</files>
+	</projectType>
+	<projectType name="Java WebObjects Framework" id="JavaWebObjectsFramework">
+		<nature id="org.eclipse.jdt.core.javanature"/>
+		<classpath variables="webobjects.next.root,webobjects.system.library.dir">
+
+			<classpathentry kind="lib" path="${webobjects.system.library.dir}/Frameworks/JavaWebObjects.framework/Resources/Java/javawebobjects.jar"/>
+
+			<classpathentry kind="lib" path="${webobjects.system.library.dir}/Frameworks/JavaFoundation.framework/Resources/Java/javafoundation.jar"/>
+
+			<classpathentry kind="lib" path="${webobjects.system.library.dir}/Frameworks/JavaXML.framework/Resources/Java/javaxml.jar"/>
+
+			<classpathentry kind="lib" path="${webobjects.system.library.dir}/Frameworks/JavaWOExtensions.framework/Resources/Java/JavaWOExtensions.jar"/>
+
+			<classpathentry kind="lib" path="${webobjects.system.library.dir}/Frameworks/JavaEOAccess.framework/Resources/Java/javaeoaccess.jar"/>
+
+			<classpathentry kind="lib" path="${webobjects.system.library.dir}/Frameworks/JavaEOControl.framework/Resources/Java/javaeocontrol.jar"/>
+
+			<classpathentry kind="var" path="JRE_LIB" rootpath="JRE_SRCROOT" sourcepath="JRE_SRC"/>
+			<classpathentry kind="output" path="bin"/>
+		</classpath>
+		<files>
+			<file templateId="properties" name="Properties"/>
+			<file templateId="frameworkproject" name="PB.project"/>
+			<file templateId="antwoframework" name="build.xml"/>
+		</files>
+	</projectType>
+</projectTypes>
