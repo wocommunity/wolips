@@ -22,40 +22,6 @@
 
 
 <!-- =================================================================================== -->
-<!-- Extension: Classpath container                                                                      -->
-<!-- =================================================================================== -->
-   <extension
-         point="org.eclipse.jdt.core.classpathContainerInitializer">
-      <classpathContainerInitializer
-            class="org.objectstyle.wolips.projectbuild.classpath.WOClasspathContainerInitializer"
-            id="de.thecode.eclipse.wosupport.WO_CLASSPATH">
-      </classpathContainerInitializer>
-   </extension>
-   <extension
-         point="org.eclipse.jdt.launching.runtimeClasspathEntryResolvers">
-      <runtimeClasspathEntryResolver
-            container="org.objectstyle.wolips.WO_CLASSPATH"
-            class="org.objectstyle.wolips.projectbuild.classpath.WORuntimeClasspathContainerResolver"
-            id="org.objectstyle.wolips.projectbuild.classpath.WORuntimeClasspathContainerResolver">
-      </runtimeClasspathEntryResolver>
-   </extension>
-   <extension
-         point="org.eclipse.jdt.launching.runtimeClasspathEntryResolvers">
-      <runtimeClasspathEntryResolver
-            container="de.thecode.eclipse.wosupport.WO_CLASSPATH"
-            class="org.objectstyle.wolips.projectbuild.classpath.WORuntimeClasspathContainerResolver"
-            id="org.objectstyle.wolips.projectbuild.classpath.WORuntimeClasspathContainerResolver">
-      </runtimeClasspathEntryResolver>
-   </extension>
-   <extension
-         point="org.eclipse.jdt.ui.classpathContainerPage">
-      <classpathContainerPage
-            name="WO Frameworks (theCo.de) deprecated"
-            class="org.objectstyle.wolips.projectbuild.classpath.WOClassPathContainerPage"
-            id="de.thecode.eclipse.wosupport.WO_CLASSPATH">
-      </classpathContainerPage>
-   </extension>
-<!-- =================================================================================== -->
 <!-- Extension: WOLips projectbuild problem marker                                       -->
 <!-- =================================================================================== -->
    <extension
