@@ -74,11 +74,10 @@ import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.jdt.launching.IVMInstall;
 import org.eclipse.jdt.launching.IVMRunner;
 import org.eclipse.jdt.launching.VMRunnerConfiguration;
-import org.objectstyle.wolips.logging.WOLipsLog;
-import org.objectstyle.wolips.plugin.IWOLipsPluginConstants;
-import org.objectstyle.wolips.preferences.Preferences;
-import org.objectstyle.wolips.project.ProjectHelper;
-import org.objectstyle.wolips.workbench.WorkbenchHelper;
+import org.objectstyle.wolips.core.plugin.logging.WOLipsLog;
+import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
+import org.objectstyle.wolips.core.preferences.Preferences;
+import org.objectstyle.wolips.core.workbench.WorkbenchHelper;
 import org.objectstyle.woproject.util.FileStringScanner;
 
 /**
@@ -290,11 +289,12 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 		IJavaProject buildProject = null;
 		try {
 			buildProject = this.getJavaProject(configuration);
-			if (ProjectHelper.isWOFwBuilderInstalled(project)
+//			TODO: check if is application
+			/*if (ProjectHelper.isWOFwBuilderInstalled(project)
 				&& projectISReferencedByProject(
 					project,
 					buildProject.getProject()))
-				return true;
+				return true;*/
 			if (project.equals(buildProject.getProject()))
 				return true;
 		} catch (Exception anException) {

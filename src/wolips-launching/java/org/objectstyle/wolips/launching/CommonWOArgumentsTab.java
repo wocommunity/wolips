@@ -56,7 +56,6 @@
 
 package org.objectstyle.wolips.launching;
 
-
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -81,9 +80,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.help.WorkbenchHelp;
-import org.objectstyle.wolips.logging.WOLipsLog;
-import org.objectstyle.woproject.env.Environment;
-import org.objectstyle.woproject.env.WOVariables;
+import org.objectstyle.wolips.core.plugin.logging.WOLipsLog;
+import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
 
 /**
  * @author uli
@@ -95,37 +93,37 @@ import org.objectstyle.woproject.env.WOVariables;
  */
 public class CommonWOArgumentsTab extends JavaLaunchConfigurationTab {
 
-//new stuff
-//extends WOArgumentsTab {
-/*
-	protected Label fPrgmArgumentsLabel;
-	/**
-	 * @see ILaunchConfigurationTab#createControl(Composite)
-	 */
-/*	public void createControl(Composite parent) {
-		Composite comp = new Composite(parent, SWT.NONE);
-		setControl(comp);
-		WorkbenchHelp.setHelp(
-			getControl(),
-			IJavaDebugHelpContextIds.LAUNCH_CONFIGURATION_DIALOG_ARGUMENTS_TAB);
-		GridLayout topLayout = new GridLayout();
-		comp.setLayout(topLayout);
-		GridData gd;
-
-		createVerticalSpacer(comp, 1);
-
-		fPrgmArgumentsLabel = new Label(comp, SWT.NONE);
-		fPrgmArgumentsLabel.setText(LaunchingMessages.getString("WOArgumentsTab.&Program_arguments__5")); //$NON-NLS-1$
-
-	}*/
+	//new stuff
+	//extends WOArgumentsTab {
+	/*
+		protected Label fPrgmArgumentsLabel;
+		/**
+		 * @see ILaunchConfigurationTab#createControl(Composite)
+		 */
+	/*	public void createControl(Composite parent) {
+			Composite comp = new Composite(parent, SWT.NONE);
+			setControl(comp);
+			WorkbenchHelp.setHelp(
+				getControl(),
+				IJavaDebugHelpContextIds.LAUNCH_CONFIGURATION_DIALOG_ARGUMENTS_TAB);
+			GridLayout topLayout = new GridLayout();
+			comp.setLayout(topLayout);
+			GridData gd;
+	
+			createVerticalSpacer(comp, 1);
+	
+			fPrgmArgumentsLabel = new Label(comp, SWT.NONE);
+			fPrgmArgumentsLabel.setText(LaunchingMessages.getString("WOArgumentsTab.&Program_arguments__5")); //$NON-NLS-1$
+	
+		}*/
 	/**
 	* @see ILaunchConfigurationTab#getName()
 	*/
-/*	public String getName() {
-		return LaunchingMessages.getString("CommonWOArgumentsTab.Name"); //$NON-NLS-1$
-	}
-*/
-//old stuff
+	/*	public String getName() {
+			return LaunchingMessages.getString("CommonWOArgumentsTab.Name"); //$NON-NLS-1$
+		}
+	*/
+	//old stuff
 
 	// Program arguments widgets
 	protected Label fPrgmArgumentsLabel;
@@ -270,7 +268,10 @@ public class CommonWOArgumentsTab extends JavaLaunchConfigurationTab {
 	 */
 	private String getDefaultArguments(ILaunchConfigurationWorkingCopy config) {
 		try {
-			String path = config.getAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, (String)null);
+			String path =
+				config.getAttribute(
+					IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME,
+					(String) null);
 			IPath aPath = null;
 			if (path != null) {
 				aPath = new Path(path);
@@ -282,10 +283,14 @@ public class CommonWOArgumentsTab extends JavaLaunchConfigurationTab {
 					((IContainer) res).findMember(aPath.toString() + ".woa");
 				if (aRes != null) {
 					if (aRes instanceof IContainer && aRes.exists()) {
-					config.setAttribute(
-						IJavaLaunchConfigurationConstants
-							.ATTR_WORKING_DIRECTORY,
-						((IContainer) aRes).getFullPath().toString().substring(1));
+						config.setAttribute(
+							IJavaLaunchConfigurationConstants
+								.ATTR_WORKING_DIRECTORY,
+							((IContainer) aRes)
+								.getFullPath()
+								.toString()
+								.substring(
+								1));
 					}
 				}
 			}
@@ -303,9 +308,27 @@ public class CommonWOArgumentsTab extends JavaLaunchConfigurationTab {
 	 * @return String
 	 */
 	private String getWOApplicationPlatformSpecificArguments() {
-		if (!Environment.isNextRootSet())
+		if (WOLipsPlugin
+			.getDefault()
+			.getWOEnvironment()
+			.getWOVariables()
+			.systemRoot()
+			.startsWith("/System"))
 			return "";
-		return "-DWORoot=" + WOVariables.systemRoot() + " " + "-DWORootDirectory=" + WOVariables.systemRoot() + " ";
+		return "-DWORoot="
+			+ WOLipsPlugin
+				.getDefault()
+				.getWOEnvironment()
+				.getWOVariables()
+				.systemRoot()
+			+ " "
+			+ "-DWORootDirectory="
+			+ WOLipsPlugin
+				.getDefault()
+				.getWOEnvironment()
+				.getWOVariables()
+				.systemRoot()
+			+ " ";
 	}
 
 	/**
@@ -337,4 +360,3 @@ public class CommonWOArgumentsTab extends JavaLaunchConfigurationTab {
 	}
 
 }
-

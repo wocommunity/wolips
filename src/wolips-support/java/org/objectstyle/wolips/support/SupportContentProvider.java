@@ -58,11 +58,11 @@ package org.objectstyle.wolips.support;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.util.SafeRunnable;
-import org.objectstyle.wolips.plugin.IWOLipsPluginConstants;
-import org.objectstyle.wolips.preferences.Preferences;
-import org.objectstyle.wolips.preferences.PreferencesMessages;
-import org.objectstyle.wolips.utils.WOLipsUtils;
-import org.objectstyle.woproject.env.Environment;
+import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
+import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
+import org.objectstyle.wolips.core.preferences.Preferences;
+import org.objectstyle.wolips.core.preferences.PreferencesMessages;
+import org.objectstyle.wolips.core.utils.WOLipsUtils;
 import org.objectstyle.woproject.env.WOVariables;
 
 /**
@@ -126,27 +126,47 @@ public class SupportContentProvider extends AbstractTreeContentProvider {
 			createNode(
 				SupportMessages.getString(
 					"WOLips.support.WOVariables.developerDir"),
-				WOVariables.developerDir()));
+				WOLipsPlugin
+					.getDefault()
+					.getWOEnvironment()
+					.getWOVariables()
+					.developerDir()));
 		wovariablesNode.addChild(
 			createNode(
 				SupportMessages.getString(
 					"WOLips.support.WOVariables.developerAppsDir"),
-				WOVariables.developerAppsDir()));
+				WOLipsPlugin
+					.getDefault()
+					.getWOEnvironment()
+					.getWOVariables()
+					.developerAppsDir()));
 		wovariablesNode.addChild(
 			createNode(
 				SupportMessages.getString(
 					"WOLips.support.WOVariables.libraryDir"),
-				WOVariables.libraryDir()));
+				WOLipsPlugin
+					.getDefault()
+					.getWOEnvironment()
+					.getWOVariables()
+					.libraryDir()));
 		wovariablesNode.addChild(
 			createNode(
 				SupportMessages.getString(
 					"WOLips.support.WOVariables.localDeveloperDir"),
-				WOVariables.localDeveloperDir()));
+				WOLipsPlugin
+					.getDefault()
+					.getWOEnvironment()
+					.getWOVariables()
+					.localDeveloperDir()));
 		wovariablesNode.addChild(
 			createNode(
 				SupportMessages.getString(
 					"WOLips.support.WOVariables.localLibraryDir"),
-				WOVariables.localLibraryDir()));
+				WOLipsPlugin
+					.getDefault()
+					.getWOEnvironment()
+					.getWOVariables()
+					.localLibraryDir()));
 		wovariablesNode.addChild(
 			createNode(
 				SupportMessages.getString(
@@ -189,17 +209,20 @@ public class SupportContentProvider extends AbstractTreeContentProvider {
 			createNode(
 				SupportMessages.getString(
 					"WOLips.support.Environment.localRoot"),
-				WOVariables.localRoot()));
+				WOLipsPlugin
+					.getDefault()
+					.getWOEnvironment()
+					.getWOVariables()
+					.localRoot()));
 		environmentNode.addChild(
 			createNode(
 				SupportMessages.getString(
 					"WOLips.support.Environment.nextRoot"),
-				WOVariables.nextRoot()));
-		environmentNode.addChild(
-			createNode(
-				SupportMessages.getString(
-					"WOLips.support.Environment.isNextRootSet"),
-				Environment.isNextRootSet() + ""));
+				WOLipsPlugin
+					.getDefault()
+					.getWOEnvironment()
+					.getWOVariables()
+					.nextRoot()));
 	}
 
 	/**

@@ -11,9 +11,9 @@ import java.net.URL;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
-import org.objectstyle.wolips.builder.RunAnt;
-import org.objectstyle.wolips.plugin.IWOLipsPluginConstants;
-import org.objectstyle.wolips.plugin.WOLipsPlugin;
+import org.objectstyle.wolips.core.project.ant.RunAnt;
+import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
+import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
 /**
  * @author uli
  *

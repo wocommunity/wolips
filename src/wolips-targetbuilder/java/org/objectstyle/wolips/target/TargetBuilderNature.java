@@ -76,7 +76,7 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.objectstyle.cayenne.wocompat.PropertyListSerialization;
-import org.objectstyle.wolips.project.ProjectHelper;
+import org.objectstyle.wolips.core.project.ProjectHelper;
 /**
  * @author uwe
  *

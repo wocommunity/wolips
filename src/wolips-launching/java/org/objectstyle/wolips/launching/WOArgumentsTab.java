@@ -72,9 +72,9 @@ import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
-import org.objectstyle.wolips.logging.WOLipsLog;
-import org.objectstyle.woproject.env.Environment;
-import org.objectstyle.woproject.env.WOVariables;
+import org.objectstyle.wolips.core.plugin.logging.WOLipsLog;
+import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
+
 /**
  * @author uli
  *
@@ -193,7 +193,10 @@ public abstract class WOArgumentsTab extends JavaLaunchConfigurationTab {
 	 */
 	private String getDefaultArguments(ILaunchConfigurationWorkingCopy config) {
 		try {
-			String path = config.getAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, (String)null);
+			String path =
+				config.getAttribute(
+					IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME,
+					(String) null);
 			IPath aPath = null;
 			if (path != null) {
 				aPath = new Path(path);
@@ -205,10 +208,14 @@ public abstract class WOArgumentsTab extends JavaLaunchConfigurationTab {
 					((IContainer) res).findMember(aPath.toString() + ".woa");
 				if (aRes != null) {
 					if (aRes instanceof IContainer && aRes.exists()) {
-					config.setAttribute(
-						IJavaLaunchConfigurationConstants
-							.ATTR_WORKING_DIRECTORY,
-						((IContainer) aRes).getFullPath().toString().substring(1));
+						config.setAttribute(
+							IJavaLaunchConfigurationConstants
+								.ATTR_WORKING_DIRECTORY,
+							((IContainer) aRes)
+								.getFullPath()
+								.toString()
+								.substring(
+								1));
 					}
 				}
 			}
@@ -226,9 +233,20 @@ public abstract class WOArgumentsTab extends JavaLaunchConfigurationTab {
 	 * @return String
 	 */
 	private String getWOApplicationPlatformSpecificArguments() {
-		if (!Environment.isNextRootSet())
+		if (!WOLipsPlugin
+			.getDefault()
+			.getWOEnvironment()
+			.getWOVariables()
+			.systemRoot()
+			.startsWith("/System"))
 			return "";
-		return "-WORoot = " + WOVariables.nextRoot() + " ";
+		return "-WORoot = "
+			+ WOLipsPlugin
+				.getDefault()
+				.getWOEnvironment()
+				.getWOVariables()
+				.systemRoot()
+			+ " ";
 	}
 
 	/**
