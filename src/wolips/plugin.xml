@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin
-   id="org.objectstyle.wolips.core"
+   id="org.objectstyle.wolips"
    name="%WOLips.pluginName"
    version="0.9.4"
    provider-name="%WOLips.providerName"
@@ -327,7 +327,7 @@
 <!-- Extension: WOFramework Builder                                                      -->
 <!-- =================================================================================== -->
    <extension
-         id="woframeworkbuilder"
+         id="org.objectstyle.wolips.woframeworkbuilder"
          name="%WOFrameworkBuilderName"
          point="org.eclipse.core.resources.builders">
       <builder>
@@ -340,7 +340,7 @@
 <!-- Extension: WOApplication Builder                                                    -->
 <!-- =================================================================================== -->
    <extension
-         id="woapplicationbuilder"
+         id="org.objectstyle.wolips.woapplicationbuilder"
          name="%WOApplicationBuilderName"
          point="org.eclipse.core.resources.builders">
       <builder>
@@ -393,7 +393,7 @@
 <!-- =================================================================================== -->
    <extension
          id="applicationnature"
-         name="org.eclipse.core.resources.natures"
+         name="org.objectstyle.wolips.applicationnature"
          point="org.eclipse.core.resources.natures">
       <runtime>
          <run
@@ -406,7 +406,7 @@
    </extension>
    <extension
          id="frameworknature"
-         name="org.eclipse.core.resources.natures"
+         name="org.objectstyle.wolips.frameworknature"
          point="org.eclipse.core.resources.natures">
       <runtime>
          <run

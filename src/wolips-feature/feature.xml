@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.objectstyle.wolips"
+      id="org.objectstyle.wolips.feature"
       label="%featureName"
       version="0.9.4"
       image="%image"
@@ -31,7 +31,7 @@
 
 
    <plugin
-         id="org.objectstyle.wolips.core"
+         id="org.objectstyle.wolips"
          download-size="0"
          install-size="0"
          version="0.9.4">

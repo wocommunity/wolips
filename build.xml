@@ -18,7 +18,7 @@
     <!-- don't want to redefine them.                  -->
     <!-- ============================================= -->
     <property name="woproject.dist" value="${dist.base}/${woproject.name}-${woproject.version}"/>
-    <property name="wolips.plugin.name" value="org.objectstyle.wolips.core_${WOLips.version}"/>
+    <property name="wolips.plugin.name" value="org.objectstyle.wolips_${WOLips.version}"/>
     <property name="wolips.dist.base" value="${dist.base}/WOLips_${WOLips.version}"/>
     <property name="wolips.plugins.folder" value="${wolips.dist.base}/plugins"/>
     <property name="wolips.features.folder" value="${wolips.dist.base}/features"/>
@@ -28,7 +28,7 @@
     <property name="wolips.targetbuilder.dist" value="${wolips.plugins.folder}/${wolips.targetbuilder.name}"/>
     <property name="wolips.support.name" value="org.objectstyle.wolips.support_${WOLips.version}"/>
     <property name="wolips.support.dist" value="${wolips.plugins.folder}/${wolips.support.name}"/>
-    <property name="wolips.feature.dist" value="${wolips.features.folder}/org.objectstyle.wolips_${WOLips.version}"/>
+    <property name="wolips.feature.dist" value="${wolips.features.folder}/org.objectstyle.wolips.feature_${WOLips.version}"/>
     <property name="wolips.help.dist" value="${wolips.plugins.folder}/org.objectstyle.wolips.help_${WOLips.version}"/>
         
     <target name="help">
