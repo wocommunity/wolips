@@ -664,7 +664,7 @@ public class WOIncrementalBuilder extends IncrementalProjectBuilder {
 
   static final String INFO_PLIST_APPLICATION = 
 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + "\r\n"
-+"<!DOCTYPE plist SYSTEM \"file://localhost/System/Library/DTDs/PropertyList.dtd\">" + "\r\n"
+//+"<!DOCTYPE plist SYSTEM \"file://localhost/System/Library/DTDs/PropertyList.dtd\">" + "\r\n"
 +"<plist version=\"0.9\">" + "\r\n"
 +"<dict>" + "\r\n"
 +"  <key>CFBundleDevelopmentRegion</key>" + "\r\n"
