@@ -1,24 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?NLS TYPE="org.eclipse.help.toc"?>
-
 <toc>
-
 	<topic label="Install" href="./doc_root/tasks/install.html"/>
-	
 	<topic label="Wizards" href="./doc_root/tasks/wiz/index.html">
-
 		<topic label="New Application" href="./doc_root/tasks/wiz/new_application.html"/>
 		<topic label="New Framework" href="./doc_root/tasks/wiz/new_framework.html"/>
 		<topic label="Import Application" href="./doc_root/tasks/wiz/import_application.html"/>
 		<topic label="Import Framework" href="./doc_root/tasks/wiz/import_framework.html"/>
 		<topic label="Add Component" href="./doc_root/tasks/wiz/add_component.html"/>
-        <topic label="Add EO Model" href="./doc_root/tasks/wiz/add_eomodel.html"/>
-
+    	<topic label="Add EO Model" href="./doc_root/tasks/wiz/add_eomodel.html"/>
 	</topic>
-	
 	<topic label="Debugging" href="./doc_root/tasks/debug.html"/>
-	
-	<topic label="Profiling" href="./doc_root/tasks/profile.html"/>
-      
+	<topic label="Profiling" href="./doc_root/tasks/profile.html"/>  
 </toc>
