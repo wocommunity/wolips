@@ -81,7 +81,7 @@ public final class WOLipsCore {
 					WOLipsCore.class
 						+ ": Can't create an IWOLipsProject for null.",
 					null));
-		return null;
+		return new WOLipsProject(project);
 	}
 
 	public final static IWOLipsJavaProject createJavaProject(IJavaProject project)
@@ -95,7 +95,7 @@ public final class WOLipsCore {
 					WOLipsCore.class
 						+ ": Can't create an IWOLipsJavaProject for null.",
 					null));
-		return null;
+		return new WOLipsJavaProject(project);
 	}
 
 }

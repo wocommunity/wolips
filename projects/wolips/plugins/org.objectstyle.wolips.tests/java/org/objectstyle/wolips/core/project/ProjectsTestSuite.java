@@ -70,6 +70,8 @@ public class ProjectsTestSuite extends TestCase {
 	public static Test suite() throws Exception {
 		TestSuite suite = new TestSuite();
 		suite.addTestSuite(WOLipsCoreTest.class);
+		suite.addTestSuite(IWOLipsProjectTest.class);
+		suite.addTestSuite(IWOLipsJavaProjectTest.class);
 		return suite;
 	}
 }

@@ -55,6 +55,8 @@
  */
 package org.objectstyle.wolips.core.project;
 
+import org.eclipse.jdt.core.IJavaProject;
+
 /**
  * @author ulrich
  *
@@ -63,4 +65,5 @@ package org.objectstyle.wolips.core.project;
  */
 public interface IWOLipsJavaProject {
 
+	public IJavaProject getJavaProject();
 }

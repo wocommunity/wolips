@@ -91,7 +91,7 @@ import org.objectstyle.wolips.logging.WOLipsLog;
  *
  * Use this class to modify an IProject.
  */
-public class WOLipsProject implements IWOLipsPluginConstants {
+public class WOLipsProject implements IWOLipsPluginConstants, IWOLipsProject {
 	private IProject project;
 	private NaturesAccessor naturesAccessor;
 	private BuilderAccessor builderAccessor;

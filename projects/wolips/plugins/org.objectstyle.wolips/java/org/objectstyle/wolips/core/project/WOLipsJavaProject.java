@@ -86,7 +86,7 @@ import org.objectstyle.woenvironment.util.FileStringScanner;
  * To change this generated comment go to 
  * Window>Preferences>Java>Code Generation>Code Template
  */
-public class WOLipsJavaProject extends WOLipsProject {
+public class WOLipsJavaProject extends WOLipsProject implements IWOLipsJavaProject {
 	IJavaProject javaProject;
 	private ClasspathAccessor classpathAccessor;
 	private LaunchParameterAccessor launchParameterAccessor;

@@ -63,9 +63,8 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.objectstyle.wolips.core.project.IWOLipsJavaProject;
-import org.objectstyle.wolips.core.project.IWOLipsProject;
-import org.objectstyle.wolips.core.project.WOLipsCore;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
 
 /**
  * @author uli
@@ -136,6 +135,44 @@ public class WOLipsCoreTest extends TestCase {
 			assertNotNull("projectDescription should not be null", projectDescription);
 		projectDescription.setLocation(project.getLocation());
 			//org.objectstyle.wolips.antapplicationnature
+			projectDescription.setNatureIds(new String[0]);
+			String[] natures = projectDescription.getNatureIds();
+			assertNotNull("natures should not be null", natures);
+			assertEquals("expect one nature", natures.length, 1);
+			if (!project.exists()) {
+				// set description only in this way
+				// to ensure project location is set
+				project.create(
+				projectDescription,
+					null);
+			}
+			if (!project.isOpen()) {
+				project.open(null);
+			}
+			IWOLipsProject wolipsProject = WOLipsCore.createProject(project);
+			assertNotNull("wolipsProject should not be null", wolipsProject);
+			IWOLipsProjectTest.PROJECT = project;
+		} catch (CoreException e) {
+			coreException = e;
+		}
+		assertNull(
+			"project creation should not throw an exception",
+			coreException);
+
+	}
+	
+	public void testCreateJavaProject() {
+		CoreException coreException = null;
+		String projectName = "FooJava";
+		IProject project =
+			ResourcesPlugin.getWorkspace().getRoot().getProject(
+		projectName);
+		assertNotNull("project handle should not be null", project);
+		try {
+			IProjectDescription projectDescription = ResourcesPlugin.getWorkspace().newProjectDescription("Foo");
+			assertNotNull("projectDescription should not be null", projectDescription);
+		projectDescription.setLocation(project.getLocation());
+			//org.objectstyle.wolips.antapplicationnature
 			projectDescription.setNatureIds(new String[] {"org.eclipse.jdt.core.javanature"});
 			String[] natures = projectDescription.getNatureIds();
 			assertNotNull("natures should not be null", natures);
@@ -150,6 +187,11 @@ public class WOLipsCoreTest extends TestCase {
 			if (!project.isOpen()) {
 				project.open(null);
 			}
+			IJavaProject javaProject = JavaCore.create(project);
+			assertNotNull("javaProject should not be null", javaProject);
+			IWOLipsJavaProject wolipsJavaProject = WOLipsCore.createJavaProject(javaProject);
+			assertNotNull("wolipsJavaProject should not be null", wolipsJavaProject);
+			IWOLipsJavaProjectTest.PROJECT = javaProject;
 		} catch (CoreException e) {
 			coreException = e;
 		}
@@ -158,4 +200,5 @@ public class WOLipsCoreTest extends TestCase {
 			coreException);
 
 	}
+	
 }

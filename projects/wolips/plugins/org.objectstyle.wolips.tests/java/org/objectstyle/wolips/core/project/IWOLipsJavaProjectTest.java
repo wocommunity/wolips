@@ -53,10 +53,15 @@
  * <http://objectstyle.org/>.
  *
  */
- 
+
 package org.objectstyle.wolips.core.project;
 
-import org.eclipse.core.resources.IProject;
+import junit.framework.TestCase;
+
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.IJavaProject;
 
 /**
  * @author ulrich
@@ -64,7 +69,49 @@ import org.eclipse.core.resources.IProject;
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public interface IWOLipsProject {
+public class IWOLipsJavaProjectTest extends TestCase {
 
-	public IProject getProject();
+	//	set by WOLipsCoreTest
+	public static IJavaProject PROJECT;
+
+	private IWorkspace workspace = null;
+	/**
+	 * Constructor for CheckWorkspaceTest.
+	 * @param arg0
+	 */
+	public IWOLipsJavaProjectTest(String arg0) {
+		super(arg0);
+	}
+
+	/*
+	 * @see TestCase#setUp()
+	 */
+	protected void setUp() throws Exception {
+		super.setUp();
+		workspace = ResourcesPlugin.getWorkspace();
+	}
+
+	/*
+	 * @see TestCase#tearDown()
+	 */
+	protected void tearDown() throws Exception {
+		super.tearDown();
+		workspace = null;
+	}
+
+	public void testGetJavaProject() {
+		IJavaProject project = IWOLipsJavaProjectTest.PROJECT;
+		assertNotNull("WOLipsCoreTest should set the project", project);
+		IWOLipsJavaProject wolipsJavaProject = null;
+		try {
+			wolipsJavaProject = WOLipsCore.createJavaProject(project);
+		} catch (CoreException e) {
+			assertNull("WOLipsCore.createJavaProject(project) should not throw an exception for valid project");
+		}
+		assertNotNull(
+			"wolipsJavaProject should not be null",
+			wolipsJavaProject);
+		assertSame("wolipsJavaProject should return the same java project as from the constructor", project, wolipsJavaProject.getJavaProject());	
+	}
+
 }
