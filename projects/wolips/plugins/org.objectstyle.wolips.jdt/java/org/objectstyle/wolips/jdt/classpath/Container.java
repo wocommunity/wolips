@@ -74,7 +74,7 @@ public class Container implements IClasspathContainer {
 	/**
 	 * Comment for <code>DEFAULT_PATH</code>
 	 */
-	public static final String DEFAULT_PATH = CONTAINER_IDENTITY + "/10/1/JavaWebObjects/1/nil/1/nil/1/0/1/nil/10/1/JavaFoundation/1/nil/1/nil/1/0/1/nil/10/1/JavaXML/1/nil/1/nil/1/0/1/nil/10/1/JavaWOExtensions/1/nil/1/nil/1/0/1/nil/10/1/JavaEOAccess/1/nil/1/nil/1/0/1/nil/10/1/JavaEOControl/1/nil/1/nil/1/0/1/nil";
+	public static final String DEFAULT_PATH = "/10/1/JavaWebObjects/1/nil/1/nil/1/0/1/nil/10/1/JavaFoundation/1/nil/1/nil/1/0/1/nil/10/1/JavaXML/1/nil/1/nil/1/0/1/nil/10/1/JavaWOExtensions/1/nil/1/nil/1/0/1/nil/10/1/JavaEOAccess/1/nil/1/nil/1/0/1/nil/10/1/JavaEOControl/1/nil/1/nil/1/0/1/nil";
 	/**
 	 * Names of the standard frameworks.
 	 */
@@ -83,6 +83,7 @@ public class Container implements IClasspathContainer {
 			"JavaEOAccess", "JavaEOControl" };
 
 	private ContainerEntries containerEntries = null;
+	private IClasspathEntry[] classpathEntries = null;
 
 	/**
 	 * @param containerEntries
@@ -90,6 +91,9 @@ public class Container implements IClasspathContainer {
 	public Container(ContainerEntries containerEntries) {
 		super();
 		this.containerEntries = containerEntries;
+		if(this.containerEntries == null) {
+			this.containerEntries = new ContainerEntries();
+		}
 	}
 
 	/*
@@ -98,7 +102,10 @@ public class Container implements IClasspathContainer {
 	 * @see org.eclipse.jdt.core.IClasspathContainer#getClasspathEntries()
 	 */
 	public IClasspathEntry[] getClasspathEntries() {
-		return this.containerEntries.getEntries();
+		if(classpathEntries == null) {
+			classpathEntries = this.containerEntries.getEntries();
+		}
+		return classpathEntries;
 	}
 
 	/**

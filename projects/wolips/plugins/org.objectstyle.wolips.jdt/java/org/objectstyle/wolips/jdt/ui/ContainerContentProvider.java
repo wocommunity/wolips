@@ -70,6 +70,7 @@ import org.objectstyle.wolips.jdt.JdtPlugin;
 import org.objectstyle.wolips.jdt.PluginImages;
 import org.objectstyle.wolips.jdt.classpath.Container;
 import org.objectstyle.wolips.jdt.classpath.ContainerEntries;
+import org.objectstyle.wolips.jdt.classpath.PathCoderException;
 import org.objectstyle.wolips.jdt.classpath.model.Framework;
 import org.objectstyle.wolips.jdt.classpath.model.Root;
 
@@ -79,20 +80,25 @@ import org.objectstyle.wolips.jdt.classpath.model.Root;
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public class ContainerContentProvider
-		implements
-			ITreeContentProvider,
-			ILabelProvider {
+public class ContainerContentProvider implements ITreeContentProvider,
+		ILabelProvider {
 	private CheckboxTreeViewer checkboxTreeViewer;
+
 	private Container container;
-	
+
 	/**
-	 * 
+	 *  
 	 */
 	public ContainerContentProvider() {
 		super();
-		this.container = new Container(
-				ContainerEntries.initWithPath(new Path(Container.DEFAULT_PATH)));
+		ContainerEntries containerEntries = null;
+		try {
+			containerEntries = ContainerEntries.initWithPath(new Path(
+					Container.DEFAULT_PATH));
+		} catch (PathCoderException e) {
+			JdtPlugin.getDefault().getPluginLogger().log(e);
+		}
+		this.container = new Container(containerEntries);
 	}
 
 	/**
@@ -100,26 +106,31 @@ public class ContainerContentProvider
 	 */
 	public ContainerContentProvider(IClasspathEntry containerEntry) {
 		super();
-		this.container = new Container(
-				ContainerEntries.initWithPath(containerEntry.getPath()));
+		ContainerEntries containerEntries = null;
+		try {
+			containerEntries = ContainerEntries.initWithPath(containerEntry
+					.getPath());
+		} catch (PathCoderException e) {
+			JdtPlugin.getDefault().getPluginLogger().log(e);
+		}
+		this.container = new Container(containerEntries);
 	}
 
 	private void setCheckedElements() {
 		ArrayList checked = new ArrayList();
 		Root[] roots = JdtPlugin.getDefault().getClasspathModel().getRoots();
 		for (int i = 0; i < roots.length; i++) {
-				Framework[] entries =
-					roots[i].getEntries();
-				if (entries != null)
-					for (int j = 0; j < entries.length; j++) {
-						if(this.container.contains(entries[j]))
+			Framework[] entries = roots[i].getEntries();
+			if (entries != null)
+				for (int j = 0; j < entries.length; j++) {
+					if (this.container.contains(entries[j]))
 						checked.add(entries[j]);
-					}
+				}
 		}
 		this.checkboxTreeViewer.setCheckedElements(checked.toArray());
-						
-		
+
 	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -127,8 +138,7 @@ public class ContainerContentProvider
 	 */
 	public Object[] getChildren(Object parentElement) {
 		if (parentElement instanceof Root) {
-			Framework[] frameworks = ((Root) parentElement)
-					.getEntries();
+			Framework[] frameworks = ((Root) parentElement).getEntries();
 			return frameworks;
 		}
 		if (parentElement instanceof ContainerContentProvider) {
@@ -146,7 +156,7 @@ public class ContainerContentProvider
 		if (element instanceof Root)
 			return this;
 		if (element instanceof Framework)
-			return ((Framework)element).getRoot();
+			return ((Framework) element).getRoot();
 		return null;
 	}
 
@@ -259,7 +269,8 @@ public class ContainerContentProvider
 	}
 
 	/**
-	 * @param checkboxTreeViewer The checkboxTreeViewer to set.
+	 * @param checkboxTreeViewer
+	 *            The checkboxTreeViewer to set.
 	 */
 	protected void setCheckboxTreeViewer(CheckboxTreeViewer checkboxTreeViewer) {
 		this.checkboxTreeViewer = checkboxTreeViewer;

@@ -70,11 +70,13 @@ public class PathCoder {
 	 * @param path
 	 *            Decodes paths within a path.
 	 * @return
+	 * @throws PathCoderException
 	 */
-	public static IPath[] decode(IPath path) {
+	public static IPath[] decode(IPath path) throws PathCoderException {
 		ArrayList arrayList = new ArrayList();
 		int segmentCount = path.segmentCount();
-		for (int i = 0; i < segmentCount;) {
+		//if something goes wrong max 2048 runs
+		for (int i = 0; i < segmentCount && i < 2048;) {
 			boolean skip = false;
 			Integer integer = null;
 			try {
@@ -82,16 +84,13 @@ public class PathCoder {
 				integer = new Integer(string);
 			} catch (NumberFormatException e) {
 				JdtPlugin.getDefault().getPluginLogger().log(e);
-				skip = true;
+				throw new PathCoderException();
 			}
-			if (!skip) {
-				IPath entryPath = path.removeFirstSegments(i + 1);
-				entryPath = entryPath.removeLastSegments(entryPath
-						.segmentCount()
-						- integer.intValue());
-				arrayList.add(entryPath);
-				i = i + integer.intValue() + 1;
-			}
+			IPath entryPath = path.removeFirstSegments(i + 1);
+			entryPath = entryPath.removeLastSegments(entryPath.segmentCount()
+					- integer.intValue());
+			arrayList.add(entryPath);
+			i = i + integer.intValue() + 1;
 		}
 		return (IPath[]) arrayList.toArray(new IPath[arrayList.size()]);
 	}
@@ -105,7 +104,7 @@ public class PathCoder {
 		if (path == null) {
 			path = new Path("nil");
 		}
-		IPath returnValue = path.append(path.segmentCount() + "");
+		IPath returnValue = new Path(path.segmentCount() + "");
 		returnValue = returnValue.append(path);
 		return returnValue;
 	}

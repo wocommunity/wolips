@@ -55,49 +55,12 @@
  */
 package org.objectstyle.wolips.jdt.classpath;
 
-import java.util.ArrayList;
-
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.jdt.core.IClasspathEntry;
-
 /**
  * @author ulrich
+ *
+ * TODO To change the template for this generated type comment go to
+ * Window - Preferences - Java - Code Style - Code Templates
  */
-public class ClasspathEntries {
-	ArrayList entries = new ArrayList();
-	/**
-	 * @return
-	 */
-	public IClasspathEntry[] getEntries() {
-		ArrayList arrayList = new ArrayList();
-		for(int i = 0; i < this.entries.size(); i++) {
-			ClasspathEntry classpathEntry = (ClasspathEntry)this.entries.get(i);
-			arrayList.add(classpathEntry.getEntry());
-		}
-		return (IClasspathEntry[])arrayList.toArray(new IClasspathEntry[this.entries.size()]);
-	}
+public class PathCoderException extends Exception {
 
-	/**
-	 * @return
-	 */
-	public IPath getPath() {
-		IPath path = new Path("");
-		for(int i = 0; i < this.entries.size(); i++) {
-			ClasspathEntry classpathEntry = (ClasspathEntry)this.entries.get(i);
-			path = path.append(classpathEntry.getPath());
-		}
-		return path;
-	}
-
-	/**
-	 * @param path
-	 * @param name
-	 * @param order
-	 * @param exported
-	 */
-	public void add(IPath path, String name, String order, String exported) {
-		ClasspathEntry classpathEntry = new ClasspathEntry(path, name, order, exported);
-		this.entries.add(classpathEntry);
-	}
 }

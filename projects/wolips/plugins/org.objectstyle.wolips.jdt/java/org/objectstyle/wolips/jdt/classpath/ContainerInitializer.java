@@ -66,6 +66,7 @@ import org.eclipse.jdt.core.ClasspathContainerInitializer;
 import org.eclipse.jdt.core.IClasspathContainer;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
+import org.objectstyle.wolips.jdt.JdtPlugin;
 
 /**
  * @author ulrich
@@ -77,40 +78,53 @@ public class ContainerInitializer extends ClasspathContainerInitializer {
 	 */
 	public ContainerInitializer() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
-	/* (non-Javadoc)
-	 * @see org.eclipse.jdt.core.ClasspathContainerInitializer#canUpdateClasspathContainer(org.eclipse.core.runtime.IPath, org.eclipse.jdt.core.IJavaProject)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.jdt.core.ClasspathContainerInitializer#canUpdateClasspathContainer(org.eclipse.core.runtime.IPath,
+	 *      org.eclipse.jdt.core.IJavaProject)
 	 */
 	public boolean canUpdateClasspathContainer(IPath containerPath,
 			IJavaProject project) {
-		// TODO Auto-generated method stub
 		return super.canUpdateClasspathContainer(containerPath, project);
 	}
-	/* (non-Javadoc)
-	 * @see org.eclipse.jdt.core.ClasspathContainerInitializer#getComparisonID(org.eclipse.core.runtime.IPath, org.eclipse.jdt.core.IJavaProject)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.jdt.core.ClasspathContainerInitializer#getComparisonID(org.eclipse.core.runtime.IPath,
+	 *      org.eclipse.jdt.core.IJavaProject)
 	 */
 	public Object getComparisonID(IPath containerPath, IJavaProject project) {
-		// TODO Auto-generated method stub
 		return super.getComparisonID(containerPath, project);
 	}
-	/* (non-Javadoc)
-	 * @see org.eclipse.jdt.core.ClasspathContainerInitializer#getDescription(org.eclipse.core.runtime.IPath, org.eclipse.jdt.core.IJavaProject)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.jdt.core.ClasspathContainerInitializer#getDescription(org.eclipse.core.runtime.IPath,
+	 *      org.eclipse.jdt.core.IJavaProject)
 	 */
 	public String getDescription(IPath containerPath, IJavaProject project) {
-		// TODO Auto-generated method stub
 		return super.getDescription(containerPath, project);
 	}
-	/* (non-Javadoc)
-	 * @see org.eclipse.jdt.core.ClasspathContainerInitializer#requestClasspathContainerUpdate(org.eclipse.core.runtime.IPath, org.eclipse.jdt.core.IJavaProject, org.eclipse.jdt.core.IClasspathContainer)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.jdt.core.ClasspathContainerInitializer#requestClasspathContainerUpdate(org.eclipse.core.runtime.IPath,
+	 *      org.eclipse.jdt.core.IJavaProject,
+	 *      org.eclipse.jdt.core.IClasspathContainer)
 	 */
 	public void requestClasspathContainerUpdate(IPath containerPath,
 			IJavaProject project, IClasspathContainer containerSuggestion)
 			throws CoreException {
-		// TODO Auto-generated method stub
 		super.requestClasspathContainerUpdate(containerPath, project,
 				containerSuggestion);
 	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -122,11 +136,23 @@ public class ContainerInitializer extends ClasspathContainerInitializer {
 		int size = containerPath.segmentCount();
 		if (size > 0) {
 			String firstSegment = containerPath.segment(0);
-			if (firstSegment
-					.startsWith(Container.CONTAINER_IDENTITY)) {
+			if (firstSegment.startsWith(Container.CONTAINER_IDENTITY)) {
+				ContainerEntries containerEntries = null;
+				try {
+
+					containerEntries = ContainerEntries
+							.initWithPath(containerPath.removeFirstSegments(1));
+				} catch (PathCoderException e) {
+					JdtPlugin.getDefault().getPluginLogger().log(e);
+				}
+				if (containerEntries != null) {
 					IClasspathContainer classpathContainer = new Container(
-							ContainerEntries.initWithPath(containerPath));
-				JavaCore.setClasspathContainer(containerPath, new IJavaProject[] {project}, new IClasspathContainer[] {classpathContainer}, null);
+							containerEntries);
+					JavaCore.setClasspathContainer(containerPath,
+							new IJavaProject[] { project },
+							new IClasspathContainer[] { classpathContainer },
+							null);
+				}
 			}
 		}
 	}

@@ -106,17 +106,17 @@ public class ContainerEntry {
 			this.exported = true;
 		}
 		
-		JdtPlugin.getDefault().getPluginLogger().log("name : " + this.name);
-		JdtPlugin.getDefault().getPluginLogger().log("order : " + this.order);
-		JdtPlugin.getDefault().getPluginLogger().log("srcPath : " + this.srcPath);
-		JdtPlugin.getDefault().getPluginLogger().log("javaDocPath : " + this.javaDocPath);
-		JdtPlugin.getDefault().getPluginLogger().log("exported : " + this.exported);
+		JdtPlugin.getDefault().getPluginLogger().debug("name : " + this.name);
+		JdtPlugin.getDefault().getPluginLogger().debug("order : " + this.order);
+		JdtPlugin.getDefault().getPluginLogger().debug("srcPath : " + this.srcPath);
+		JdtPlugin.getDefault().getPluginLogger().debug("javaDocPath : " + this.javaDocPath);
+		JdtPlugin.getDefault().getPluginLogger().debug("exported : " + this.exported);
 		Framework framework = JdtPlugin.getDefault().getClasspathModel()
 				.getFrameworkWithName(this.name);
 		if (framework != null) {
-			for (int i = 0; i < framework.getLibraryPaths().length; i++) {
-				IClasspathEntry entry = JavaCore.newLibraryEntry(framework
-						.getPath(), this.srcPath, this.javaDocPath, this.exported);
+			IPath[] libraryPaths = framework.getLibraryPaths();
+			for (int i = 0; i < libraryPaths.length; i++) {
+				IClasspathEntry entry = JavaCore.newLibraryEntry(libraryPaths[i], this.srcPath, this.javaDocPath, this.exported);
 				this.entries.add(entry);
 			}
 		} else {
@@ -127,8 +127,9 @@ public class ContainerEntry {
 	/**
 	 * @param path
 	 * @return
+	 * @throws PathCoderException
 	 */
-	public static ContainerEntry initWithPath(IPath path) {
+	public static ContainerEntry initWithPath(IPath path) throws PathCoderException {
 		IPath[] details = PathCoder.decode(path);
 		return new ContainerEntry(details[0].toString(), details[1],
 				details[2], details[3].toString(), details[4].toString());

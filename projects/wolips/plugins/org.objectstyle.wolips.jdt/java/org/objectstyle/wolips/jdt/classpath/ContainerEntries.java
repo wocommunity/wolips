@@ -68,17 +68,21 @@ import org.objectstyle.wolips.jdt.classpath.model.Framework;
 public class ContainerEntries {
 	ArrayList entries = new ArrayList();
 	
-	private ContainerEntries() {
+	/**
+	 * 
+	 */
+	public ContainerEntries() {
 		super();
 	}
 	
 	/**
 	 * @param path
 	 * @return a container with the entries from the path
+	 * @throws PathCoderException
 	 */
-	public static ContainerEntries initWithPath(IPath path) {
+	public static ContainerEntries initWithPath(IPath path) throws PathCoderException {
 		ContainerEntries containerEntries =  new ContainerEntries();
-		IPath[] entries = PathCoder.decode(path.removeFirstSegments(1));
+		IPath[] entries = PathCoder.decode(path);
 		for(int i = 0;i < entries.length; i++) {
 			ContainerEntry containerEntry = ContainerEntry.initWithPath(entries[i]);
 			containerEntries.add(containerEntry);
@@ -105,8 +109,7 @@ public class ContainerEntries {
 		for(int i = 0; i < this.entries.size(); i++) {
 			ContainerEntry containerEntry = (ContainerEntry)this.entries.get(i);
 			IPath entryPath = containerEntry.getPath();
-			path = path.append(entryPath.segmentCount() + "");
-			path = path.append(entryPath);
+			path = path.append(PathCoder.encode(entryPath));
 		}
 		return path;
 	}

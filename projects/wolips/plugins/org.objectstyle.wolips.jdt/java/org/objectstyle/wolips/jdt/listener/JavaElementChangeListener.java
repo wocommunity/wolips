@@ -209,7 +209,7 @@ public class JavaElementChangeListener extends WorkspaceJob {
 			IJavaElementDelta[] deltasToExamine, int elementType,
 			ArrayList foundElements) {
 		for (int i = 0; i < deltasToExamine.length; i++) {
-			if (deltasToExamine[i].getFlags() == IJavaElementDelta.F_CHILDREN) {
+			if ((deltasToExamine[i].getFlags() & IJavaElementDelta.F_CHILDREN) != 0) {
 				// further examination needed
 				while (searchDeltas(deltasToExamine[i].getChangedChildren(),
 						elementType, foundElements)) {
