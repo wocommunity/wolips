@@ -259,7 +259,8 @@ public class JavaElementChangeListener extends Job {
 			if (changedFrameworks.size() > 0) {
 				PBProjectUpdater projectUpdater = PBProjectUpdater
 						.instance(currentProject);
-				projectUpdater.removeFrameworks(this
+                            if(projectUpdater != null)
+                                projectUpdater.removeFrameworks(this
 						.toFrameworkNames(changedFrameworks));
 			}
 		}
@@ -271,6 +272,7 @@ public class JavaElementChangeListener extends Job {
 			if (changedFrameworks.size() > 0) {
 				PBProjectUpdater projectUpdater = PBProjectUpdater
 						.instance(currentProject);
+                            if(projectUpdater != null)
 				projectUpdater.addFrameworks(this
 						.toFrameworkNames(changedFrameworks));
 			}
