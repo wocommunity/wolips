@@ -65,17 +65,6 @@
 					<td valign="top">Destination directory where the application woa should be created.</td>
 					<td valign="top" align="center">Yes</td>
 				</tr>
-                <tr>
-					<td valign="top">warDestDir</td>
-					<td valign="top"><i><b>[not implemented yet]</b></i> Destination directory where the application war file should be created.
-                                     <i>(no war will be created if this parameter is omitted)</i></td>
-					<td valign="top" align="center">No</td>
-				</tr>
-                <tr>
-					<td valign="top">webXmlTemplate</td>
-					<td valign="top"><i><b>[not implemented yet]</b></i> The file to use as a template when generating <code>web.xml</code></td>
-					<td valign="top" align="center">No</td>
-				</tr>
 				<tr>
 					<td valign="top">stdFrameworks</td>
 					<td valign="top">If set to <i>true</i>, a set of standard frameworks will be 

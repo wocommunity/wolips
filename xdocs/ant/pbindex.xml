@@ -39,6 +39,12 @@
 					created using internal template.</td>
 					<td valign="top" align="center">No</td>
 				</tr>
+				<tr>
+					<td valign="top">framework</td>
+					<td valign="top">Boolean value that defines whether the target project is an application
+					or a framework. Default is <code>false</code> (application).</td>
+					<td valign="top" align="center">No</td>
+				</tr>
 			</table>
 
 			<h3>Nested elements:</h3>
@@ -46,7 +52,8 @@
 			<h4>src</h4>
 			<p>The nested <code>src</code> element specifies a <a
 			href="http://jakarta.apache.org/ant/manual/CoreTypes/fileset.html">FileSet</a>
-			matching Java source files used in the project.</p>
+			matching Java source files used in the project. Note that only <code>*.java</code>
+			files will be included out of all the files matched.</p>
 
 			<h4>resources</h4>
 			<p>The nested <code>resources</code> element specifies a <a
@@ -62,7 +69,8 @@
 			<h4>wocomponents</h4>
 			<p>The nested <code>wocomponents</code> element specifies a <a
 			href="http://jakarta.apache.org/ant/manual/CoreTypes/fileset.html">FileSet</a> 
-			matching all WOComponents used in the project.</p>
+			matching all WOComponents used in the project. Note that only <code>*.wo</code>
+			directories will be included out of all the files and directories matched.</p>
 
 			<h4>Examples:</h4>
 
@@ -78,13 +86,17 @@ where the task is run. If PB.project does not exist, it is automatically created
    &amp;lt;src dir="java"&amp;gt;
       &amp;lt;exclude name="*.properties"/&amp;gt;
    &amp;lt;/src&amp;gt;
+   
    &amp;lt;resources dir="."&amp;gt;
-       &amp;lt;include name="*.eomodeld/**"/&amp;gt;
+       &amp;lt;include name="*.eomodeld"/&amp;gt;
        &amp;lt;include name="*.api"/&amp;gt;
    &amp;lt;/resources&amp;gt;
+   
    &amp;lt;wsresources dir="."&amp;gt;
-       &amp;lt;include name="Images/**"/&amp;gt;
+       &amp;lt;!-- Include the whole Images folder as a single resource --&amp;gt;
+       &amp;lt;include name="Images"/&amp;gt;
    &amp;lt;/wsresources&amp;gt;
+   
    &amp;lt;wocomponents dir="."&amp;gt;
        &amp;lt;include name="*.wo"/&amp;gt;
    &amp;lt;/wocomponents&amp;gt;
