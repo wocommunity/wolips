@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 The ObjectStyle Group 
+ * Copyright (c) 2002 - 2004 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -64,8 +64,11 @@ package org.objectstyle.woenvironment.env;
  */
 public class WOBuildPropertiesNotFoundException extends Throwable {
 
+	/**
+	 * Default Constrcutor
+	 */
 	public WOBuildPropertiesNotFoundException() {
-		super("Could not find wobuild.properties. Run the buildfile: build-user-home-wobuild-properties.xml first.");
+		super("Could not find wobuild.properties. Run the buildfile: woproperties.xml first.");
 	}
 
 }
