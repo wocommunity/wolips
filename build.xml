@@ -205,6 +205,7 @@
             <batchtest todir="${test_results}">
                 <fileset dir="${build}/tests">
                     <include name="**/*Test.class"/>
+                    <exclude name="**/*BuildTest.class"/>
                 </fileset>
             </batchtest>
         </junit>
