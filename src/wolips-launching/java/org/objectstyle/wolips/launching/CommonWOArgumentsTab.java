@@ -56,6 +56,7 @@
 
 package org.objectstyle.wolips.launching;
 
+
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -65,15 +66,24 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.ILaunchConfigurationDialog;
+import org.eclipse.jdt.internal.debug.ui.IJavaDebugHelpContextIds;
 import org.eclipse.jdt.internal.debug.ui.JDIDebugUIPlugin;
 import org.eclipse.jdt.internal.debug.ui.JavaDebugImages;
 import org.eclipse.jdt.internal.debug.ui.launcher.JavaLaunchConfigurationTab;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.help.WorkbenchHelp;
 import org.objectstyle.wolips.env.Environment;
 import org.objectstyle.wolips.io.WOLipsLog;
+
 /**
  * @author uli
  *
@@ -82,16 +92,83 @@ import org.objectstyle.wolips.io.WOLipsLog;
  * To enable and disable the creation of type comments go to
  * Window>Preferences>Java>Code Generation.
  */
-public abstract class WOArgumentsTab extends JavaLaunchConfigurationTab {
+public class CommonWOArgumentsTab extends JavaLaunchConfigurationTab {
 
-	protected String fPrgmArgumentsText;
+//new stuff
+//extends WOArgumentsTab {
+/*
+	protected Label fPrgmArgumentsLabel;
+	/**
+	 * @see ILaunchConfigurationTab#createControl(Composite)
+	 */
+/*	public void createControl(Composite parent) {
+		Composite comp = new Composite(parent, SWT.NONE);
+		setControl(comp);
+		WorkbenchHelp.setHelp(
+			getControl(),
+			IJavaDebugHelpContextIds.LAUNCH_CONFIGURATION_DIALOG_ARGUMENTS_TAB);
+		GridLayout topLayout = new GridLayout();
+		comp.setLayout(topLayout);
+		GridData gd;
+
+		createVerticalSpacer(comp, 1);
+
+		fPrgmArgumentsLabel = new Label(comp, SWT.NONE);
+		fPrgmArgumentsLabel.setText(LaunchingMessages.getString("WOArgumentsTab.&Program_arguments__5")); //$NON-NLS-1$
+
+	}*/
+	/**
+	* @see ILaunchConfigurationTab#getName()
+	*/
+/*	public String getName() {
+		return LaunchingMessages.getString("CommonWOArgumentsTab.Name"); //$NON-NLS-1$
+	}
+*/
+//old stuff
+
+	// Program arguments widgets
+	protected Label fPrgmArgumentsLabel;
+	protected Text fPrgmArgumentsText;
 
 	protected static final String EMPTY_STRING = ""; //$NON-NLS-1$
 
 	/**
 	 * @see ILaunchConfigurationTab#createControl(Composite)
 	 */
-	public abstract void createControl(Composite parent);
+	public void createControl(Composite parent) {
+
+		Composite comp = new Composite(parent, SWT.NONE);
+		setControl(comp);
+		WorkbenchHelp.setHelp(
+			getControl(),
+			IJavaDebugHelpContextIds.LAUNCH_CONFIGURATION_DIALOG_ARGUMENTS_TAB);
+		GridLayout topLayout = new GridLayout();
+		comp.setLayout(topLayout);
+		GridData gd;
+
+		createVerticalSpacer(comp, 1);
+
+		fPrgmArgumentsLabel = new Label(comp, SWT.NONE);
+		fPrgmArgumentsLabel.setText(LaunchingMessages.getString("WOArgumentsTab.&Program_arguments__5")); //$NON-NLS-1$
+
+		fPrgmArgumentsText =
+			new Text(
+				comp,
+				SWT.MULTI
+					| SWT.WRAP
+					| SWT.BORDER
+					| SWT.V_SCROLL
+					| SWT.H_SCROLL);
+		gd = new GridData(GridData.FILL_BOTH);
+		gd.heightHint = 80;
+		fPrgmArgumentsText.setLayoutData(gd);
+		fPrgmArgumentsText.addModifyListener(new ModifyListener() {
+			public void modifyText(ModifyEvent evt) {
+				updateLaunchConfigurationDialog();
+			}
+		});
+	}
+
 	/**
 	 * @see ILaunchConfigurationTab#dispose()
 	 */
@@ -122,7 +199,7 @@ public abstract class WOArgumentsTab extends JavaLaunchConfigurationTab {
 	 */
 	public void initializeFrom(ILaunchConfiguration configuration) {
 		try {
-			fPrgmArgumentsText = configuration.getAttribute(WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_WOARGUMENTS, ""); //$NON-NLS-1$
+			fPrgmArgumentsText.setText(configuration.getAttribute(WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_WOARGUMENTS, "")); //$NON-NLS-1$
 		} catch (CoreException e) {
 			setErrorMessage(LaunchingMessages.getString("WOArgumentsTab.Exception_occurred_reading_configuration___15") + e.getStatus().getMessage()); //$NON-NLS-1$
 			JDIDebugUIPlugin.log(e);
@@ -136,7 +213,7 @@ public abstract class WOArgumentsTab extends JavaLaunchConfigurationTab {
 		configuration.setAttribute(
 			WOJavaLocalApplicationLaunchConfigurationDelegate
 				.ATTR_WOLIPS_LAUNCH_WOARGUMENTS,
-			fPrgmArgumentsText);
+			getAttributeValueFrom(fPrgmArgumentsText));
 	}
 
 	/**
@@ -156,7 +233,7 @@ public abstract class WOArgumentsTab extends JavaLaunchConfigurationTab {
 	 * @see ILaunchConfigurationTab#getName()
 	 */
 	public String getName() {
-		return "";
+		return LaunchingMessages.getString("CommonWOArgumentsTab.Name"); //$NON-NLS-1$
 	}
 
 	/**
@@ -227,7 +304,7 @@ public abstract class WOArgumentsTab extends JavaLaunchConfigurationTab {
 	private String getWOApplicationPlatformSpecificArguments() {
 		if (!Environment.isNextRootSet())
 			return "";
-		return "-WORoot = " + Environment.nextRoot() + " ";
+		return "-DWORoot = " + Environment.nextRoot() + " ";
 	}
 
 	/**
@@ -259,3 +336,4 @@ public abstract class WOArgumentsTab extends JavaLaunchConfigurationTab {
 	}
 
 }
+

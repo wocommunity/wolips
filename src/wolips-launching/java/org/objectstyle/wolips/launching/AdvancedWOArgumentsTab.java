@@ -56,16 +56,8 @@
 
 package org.objectstyle.wolips.launching;
 
+import org.eclipse.swt.widgets.Composite;
 
-import org.eclipse.debug.ui.AbstractLaunchConfigurationTabGroup;
-import org.eclipse.debug.ui.CommonTab;
-import org.eclipse.debug.ui.ILaunchConfigurationDialog;
-import org.eclipse.debug.ui.ILaunchConfigurationTab;
-import org.eclipse.jdt.debug.ui.launchConfigurations.JavaArgumentsTab;
-import org.eclipse.jdt.debug.ui.launchConfigurations.JavaClasspathTab;
-import org.eclipse.jdt.debug.ui.launchConfigurations.JavaJRETab;
-import org.eclipse.jdt.debug.ui.launchConfigurations.JavaMainTab;
-import org.eclipse.jdt.debug.ui.launchConfigurations.JavaSourceLookupTab;
 
 /**
  * @author uli
@@ -75,23 +67,19 @@ import org.eclipse.jdt.debug.ui.launchConfigurations.JavaSourceLookupTab;
  * To enable and disable the creation of type comments go to
  * Window>Preferences>Java>Code Generation.
  */
-public class WOLocalJavaApplicationTabGroup extends AbstractLaunchConfigurationTabGroup {
+public class AdvancedWOArgumentsTab extends WOArgumentsTab {
+
 
 	/**
-	 * @see ILaunchConfigurationTabGroup#createTabs(ILaunchConfigurationDialog, String)
+	 * @see ILaunchConfigurationTab#createControl(Composite)
 	 */
-	public void createTabs(ILaunchConfigurationDialog dialog, String mode) {
-		ILaunchConfigurationTab[] tabs = new ILaunchConfigurationTab[] {
-			new JavaMainTab(),
-			new JavaArgumentsTab(),
-			new CommonWOArgumentsTab(),
-			new AdvancedWOArgumentsTab(),
-			new JavaJRETab(),
-			new JavaClasspathTab(),
-			new JavaSourceLookupTab(),
-			new CommonTab()
-		};
-		setTabs(tabs);
+	public void createControl(Composite parent) {
+	}
+	/**
+	 * @see ILaunchConfigurationTab#getName()
+	 */
+	public String getName() {
+		return LaunchingMessages.getString("AdvancedWOArgumentsTab.Name"); //$NON-NLS-1$
 	}
 
 }
