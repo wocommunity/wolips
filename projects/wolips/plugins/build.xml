@@ -30,6 +30,7 @@
 	<ant dir="org.objectstyle.wolips.cayenne.ant" target="all"/>
 	<ant dir="org.objectstyle.wolips.team" target="all"/>
 	<ant dir="org.objectstyle.wolips.ant" target="all"/>
+	<ant dir="org.objectstyle.wolips.feature" target="all"/>
     </target>
     <!-- ========================================== -->
     <!-- Build dist.                                -->
@@ -55,6 +56,7 @@
 	<ant dir="org.objectstyle.wolips.cayenne.ant" target="dist"/>
 	<ant dir="org.objectstyle.wolips.team" target="dist"/>
 	<ant dir="org.objectstyle.wolips.ant" target="dist"/>
+	<ant dir="org.objectstyle.wolips.feature" target="dist"/>
     </target>
 
 </project>

@@ -205,6 +205,10 @@
             <fileset dir="../../woproject/src/wolips-support">
              </fileset>
         </copy>
+       <copy todir="wolips/plugins/org.objectstyle.wolips.feature">
+            <fileset dir="../../woproject/src/wolips-feature-plugin">
+             </fileset>
+        </copy>
 
        <copy todir="wolips/update">
             <fileset dir="../../woproject/doc/update">
