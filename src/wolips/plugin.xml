@@ -26,6 +26,13 @@
       <import plugin="org.eclipse.jdt.core"/>
       <import plugin="org.eclipse.jdt.ui"/>
       <import plugin="org.apache.xerces"/>
+      <import plugin="org.eclipse.jdt.core"/>
+      <import plugin="org.eclipse.search"/>
+      <import plugin="org.eclipse.debug.core"/>
+      <import plugin="org.eclipse.debug.ui"/> 
+      <import plugin="org.eclipse.jdt.debug"/>
+      <import plugin="org.eclipse.jdt.launching"/>
+      <import plugin="org.eclipse.compare"/>
    </requires>
 
 
@@ -86,6 +93,45 @@
          </description>
       </wizard>
    </extension>
+   <!-- action set -->
+   <extension point="org.eclipse.ui.actionSets">
+	<actionSet
+		id="org.objectstyle.wolips.ElementCreationActionSet"
+        label="%ElementCreationActionSet.label"
+		visible="false"
+		description="%ElementCreationActionSet.description">
+		<action id="org.objectstyle.wolips.OpenWOComponentCreationWizard"	
+			toolbarPath="Normal/WOLipsWizards"			
+			label="%OpenWOComponentCreationWizard.label"
+			tooltip="%OpenWOComponentCreationWizard.tooltip"
+			icon="icons/wobuilder/wocomponent_wiz.gif"
+			class="org.objectstyle.wolips.actions.OpenWOComponentCreationWizard"/>
+		<action id="org.objectstyle.wolips.OpenWOSubprojectCreationWizard"	
+			toolbarPath="Normal/WOLipsWizards"			
+			label="%OpenWOSubprojectCreationWizard.label"
+			tooltip="%OpenWOSubprojectCreationWizard.tooltip"
+			icon="icons/woproject/wosubproject_wiz.gif"
+			class="org.objectstyle.wolips.actions.OpenWOSubprojectCreationWizard"/>
+		<action id="org.objectstyle.wolips.OpenWOProjectCreationWizard"	
+			toolbarPath="Normal/WOLipsWizards"			
+			label="%OpenWOProjectCreationWizard.label"
+			tooltip="%OpenWOProjectCreationWizard.tooltip"
+			icon="icons/woproject/woapplication_wiz.gif"
+			class="org.objectstyle.wolips.actions.OpenWOProjectCreationWizard"/>
+		<action id="org.objectstyle.wolips.OpenWOFrameworkCreationWizard"	
+			toolbarPath="Normal/WOLipsWizards"			
+			label="%OpenWOFrameworkCreationWizard.label"
+			tooltip="%OpenWOFrameworkCreationWizard.tooltip"
+			icon="icons/woproject/woframework_wiz.gif"
+			class="org.objectstyle.wolips.actions.OpenWOFrameworkCreationWizard"/>
+		<action id="org.objectstyle.wolips.OpenEOModelCreationWizard"	
+			toolbarPath="Normal/WOLipsWizards"			
+			label="%OpenEOModelCreationWizard.label"
+			tooltip="%OpenEOModelCreationWizard.tooltip"
+			icon="icons/woproject/eomodel_wiz.gif"
+			class="org.objectstyle.wolips.actions.OpenEOModelCreationWizard"/>
+    </actionSet>
+</extension>
 <!-- ant -->
    <extension
          point="org.eclipse.ant.core.extraClasspathEntries">
@@ -244,6 +290,17 @@
             id="org.eclipse.jdt.core.javanature">
       </requires-nature>
    </extension>
+   
+    <!-- =================================================================================== -->
+	<!-- Extension: Perspective                                                    -->
+	<!-- =================================================================================== -->
+  <extension point="org.eclipse.ui.perspectives">
+   	<perspective
+         name="WOLips"
+         class="org.objectstyle.wolips.ui.PerspectiveFactory"
+         id="org.objectstyle.wolips.ui.Perspective">
+   	</perspective>
+	</extension>
    <!-- =================================================================================== -->
 	<!-- Extension: Startup                                                    -->
 	<!-- =================================================================================== -->

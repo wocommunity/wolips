@@ -119,6 +119,8 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 	 * Set this variable to true to get debug output
 	 */
 	public static final boolean debug = false;
+	
+	public static final String ID_ELEMENT_CREATION_ACTION_SET= "org.objectstyle.wolips.ElementCreationActionSet";
 
 	/**
 	 * The constructor.
