@@ -50,13 +50,20 @@
       <import plugin="org.eclipse.jdt.core"/>
       <import plugin="org.eclipse.core.runtime.compatibility"/>
       <import plugin="org.eclipse.core.resources"/>
-      <import plugin="org.eclipse.ant.core"/>
       <import plugin="org.eclipse.jdt.launching"/>
       <import plugin="org.eclipse.debug.core"/>
-      <import plugin="org.eclipse.debug.ui"/>
       <import plugin="org.eclipse.jface"/>
+      <import plugin="org.eclipse.debug.ui"/>
+      <import plugin="org.eclipse.jdt.debug.ui"/>
+      <import plugin="org.eclipse.jdt.ui"/>
+      <import plugin="org.objectstyle.wolips.tests.core"/>
+      <import plugin="org.eclipse.ui.workbench"/>
       <import plugin="org.eclipse.ui.ide"/>
       <import plugin="org.eclipse.team.core"/>
+      <import plugin="org.apache.xerces"/>
+      <import plugin="org.junit"/>
+      <import plugin="org.eclipse.ant.core"/>
+      <import plugin="org.eclipse.swt"/>
    </requires>
 
    <plugin
@@ -102,8 +109,7 @@
          id="org.objectstyle.wolips.ui"
          download-size="64"
          install-size="124"
-         version="1.0.6"
-         fragment="true"/>
+         version="1.0.6"/>
 
    <plugin
          id="org.objectstyle.wolips.wizards"
@@ -152,17 +158,35 @@
          download-size="1300"
          install-size="1500"
          version="1.0.6"/>
-         
+
    <plugin
          id="org.objectstyle.wolips.datasets"
          download-size="1300"
          install-size="1500"
          version="1.0.6"/>
-         
+
    <plugin
          id="org.objectstyle.wolips.jdom"
          download-size="180"
          install-size="192"
+         version="1.0.6"/>
+
+   <plugin
+         id="org.objectstyle.wolips.ant"
+         download-size="0"
+         install-size="0"
+         version="1.0.6"/>
+
+   <plugin
+         id="org.objectstyle.wolips.jdt"
+         download-size="0"
+         install-size="0"
+         version="1.0.6"/>
+
+   <plugin
+         id="org.objectstyle.wolips.variables"
+         download-size="0"
+         install-size="0"
          version="1.0.6"/>
 
 </feature>

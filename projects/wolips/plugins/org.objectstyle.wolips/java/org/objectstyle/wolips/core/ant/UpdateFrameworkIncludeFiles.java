@@ -58,6 +58,7 @@ import org.objectstyle.wolips.core.logging.WOLipsLog;
 import org.objectstyle.wolips.core.project.IWOLipsProject;
 import org.objectstyle.wolips.core.project.WOLipsCore;
 import org.objectstyle.wolips.core.resources.IWOLipsModel;
+import org.objectstyle.wolips.variables.VariablesPlugin;
 
 /**
  * @author mnolte
@@ -103,7 +104,7 @@ public class UpdateFrameworkIncludeFiles extends UpdateIncludeFiles {
 		// classpath entries with framework entries
 		for (int i = 0; i < this.getPaths().length; i++) {
 
-			String thisPath = getPaths()[i];
+			String thisPath = getPaths()[i].toOSString();
 
 			currentFrameworkListFile =
 				this.getIProject().getFile(
@@ -145,7 +146,7 @@ public class UpdateFrameworkIncludeFiles extends UpdateIncludeFiles {
 					}
 				}
 			}
-			if (thisPath.toString().equals(this.getWOLocalRoot())) {
+			if (thisPath.equals(VariablesPlugin.getDefault().getLocalRoot().toOSString())) {
 				IProject[] referencedProjects;
 				try {
 					referencedProjects = getIProject().getReferencedProjects();

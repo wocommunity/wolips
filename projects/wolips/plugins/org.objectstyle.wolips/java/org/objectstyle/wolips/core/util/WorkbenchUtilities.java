@@ -78,8 +78,6 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.part.FileEditorInput;
-import org.objectstyle.woenvironment.env.WOEnvironment;
-import org.objectstyle.woenvironment.env.WOVariables;
 import org.objectstyle.wolips.core.logging.WOLipsLog;
 import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
 
@@ -413,13 +411,6 @@ public final class WorkbenchUtilities {
 		return null;
 	}
 	/**
-	 * @return WOEnvironment
-	 */
-	public final static WOEnvironment getWOEnvironment() {
-		return WOLipsPlugin.getDefault().getWOEnvironment();
-	}
-
-	/**
 	 * @return IWorkbench
 	 */
 	public final static IWorkbench getWorkbench() {
@@ -430,12 +421,6 @@ public final class WorkbenchUtilities {
 	 */
 	public final static IWorkspace getWorkspace() {
 		return ResourcesPlugin.getWorkspace();
-	}
-	/**
-	 * @return WOVariables
-	 */
-	public final static WOVariables getWOVariables() {
-		return WorkbenchUtilities.getWOEnvironment().getWOVariables();
 	}
 	/**
 	 * Method members.

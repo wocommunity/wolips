@@ -56,8 +56,8 @@
 package org.objectstyle.wolips.core.ant;
 
 import org.eclipse.core.resources.IProject;
-import org.objectstyle.woenvironment.env.WOVariables;
-import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
+import org.eclipse.core.runtime.IPath;
+import org.objectstyle.wolips.variables.VariablesPlugin;
 
 /**
  * @author mnolte
@@ -65,11 +65,9 @@ import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
  */
 public abstract class UpdateIncludeFiles {
 
-	private final WOVariables woVariables =
-		WOLipsPlugin.getDefault().getWOEnvironment().getWOVariables();
 	protected String[] rootPaths = null;
 		
-	private String[] paths = null;
+	private IPath[] paths = null;
 
 	protected String INCLUDES_FILE_PREFIX;
 
@@ -77,25 +75,22 @@ public abstract class UpdateIncludeFiles {
 
 	public UpdateIncludeFiles() {
 		paths =
-			new String[] {
-				woVariables.userHome(),
-				woVariables.localRoot(),
-				woVariables.systemRoot()};
+			new IPath[] {
+				VariablesPlugin.getDefault().getUserHome(),
+				VariablesPlugin.getDefault().getLocalRoot(),
+				VariablesPlugin.getDefault().getSystemRoot()};
 		rootPaths = new String [] { "user.home", "wo.wolocalroot", "wo.wosystemroot" };
-		if (paths[1].length() < paths[2].length()) {
+		if (paths[1].toOSString().length() < paths[2].toOSString().length()) {
 			paths =
-				new String[] {
-					woVariables.userHome(),
-					woVariables.systemRoot(),
-					woVariables.localRoot()};
+				new IPath[] {
+				VariablesPlugin.getDefault().getUserHome(),
+				VariablesPlugin.getDefault().getSystemRoot(),
+				VariablesPlugin.getDefault().getLocalRoot() };
 			rootPaths = new String [] { "user.home", "wo.wosystemroot", "wo.wolocalroot" };
 		}
 	}
 
-	protected String getWOLocalRoot() {
-		return woVariables.localRoot();
-	}
-	public String[] getPaths() {
+	public IPath[] getPaths() {
 		return paths;
 	}
 	/**

@@ -5,6 +5,7 @@
 	<projects>
 		<project>org.objectstyle.wolips</project>
 		<project>org.objectstyle.wolips.feature</project>
+		<project>org.objectstyle.wolips.variables</project>
 		<project>org.objectstyle.wolips.woproject</project>
 	</projects>
 	<buildSpec>

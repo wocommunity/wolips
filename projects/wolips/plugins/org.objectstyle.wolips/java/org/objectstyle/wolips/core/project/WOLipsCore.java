@@ -101,10 +101,6 @@ public final class WOLipsCore {
 		return new WOLipsJavaProject(project);
 	}
 
-	public final static IClasspathVariablesAccessor getClasspathVariablesAccessor() {
-		return new ClasspathVariablesAccessor();
-	}
-	
 	public final static IWOLipsModel getWOLipsModel() {
 		return WOLipsModel.getSharedWOLipsModel();
 	}

@@ -70,7 +70,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.objectstyle.woenvironment.pb.PBProject;
 import org.objectstyle.woenvironment.util.FileStringScanner;
-import org.objectstyle.wolips.core.classpath.WOClasspathContainer;
 import org.objectstyle.wolips.core.logging.WOLipsLog;
 import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
 import org.objectstyle.wolips.core.resources.IWOLipsModel;
@@ -635,7 +634,7 @@ public final class PBProjectUpdater {
 		String[] frameworkNames = null;
 		// search framework segment in path
 		if (frameworkPath.segmentCount() > 0
-			&& WOClasspathContainer.WOLIPS_CLASSPATH_CONTAINER_IDENTITY.equals(
+			&& "org.objectstyle.wolips.WO_CLASSPATH".equals(
 				frameworkPath.segment(0))) {
 			frameworkNames = new String[frameworkPath.segments().length - 1];
 			System.arraycopy(

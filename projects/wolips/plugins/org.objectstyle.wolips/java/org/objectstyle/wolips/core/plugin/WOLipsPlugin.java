@@ -56,18 +56,25 @@
 package org.objectstyle.wolips.core.plugin;
 import java.net.URL;
 
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPluginDescriptor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.jdt.core.ElementChangedEvent;
+import org.eclipse.jdt.core.IElementChangedListener;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IStartup;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.objectstyle.woenvironment.env.WOEnvironment;
+import org.objectstyle.wolips.core.listener.JavaElementChangeListener;
+import org.objectstyle.wolips.core.listener.ResourceChangeListener;
 import org.objectstyle.wolips.core.logging.WOLipsLog;
 import org.objectstyle.wolips.core.preferences.Preferences;
+import org.objectstyle.wolips.core.util.WorkbenchUtilities;
 /**
  * The main plugin class to be used in the desktop.
  * 
@@ -77,7 +84,6 @@ import org.objectstyle.wolips.core.preferences.Preferences;
 public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 	//The plugin.
 	private static WOLipsPlugin plugin;
-	private WOEnvironment woEnvironment;
 	private static final String PLUGIN_ID = "org.objectstyle.wolips";
 	public static final String WO_TEMPLATE_DIRECTORY = "templates";
 	public static final String WO_TEMPLATE_FILES = "/wo_file_templates.xml";
@@ -109,8 +115,18 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 	 * @see org.eclipse.ui.IStartup#earlyStartup()
 	 */
 	public void earlyStartup() {
-		EarlyStartup earlyStartup = new EarlyStartup();
-		earlyStartup.earlyStartup();
+//		 add resource change listener to update project file on resource changes
+		IResourceChangeListener resourceChangeListener =
+			new ResourceChangeListener();
+		WorkbenchUtilities.getWorkspace().addResourceChangeListener(
+			resourceChangeListener,
+			IResourceChangeEvent.PRE_AUTO_BUILD);
+		// add element change listener to update project file on classpath changes
+		IElementChangedListener javaElementChangeListener =
+			new JavaElementChangeListener();
+		JavaCore.addElementChangedListener(
+			javaElementChangeListener,
+			ElementChangedEvent.POST_CHANGE);
 	}
 	/**
 	 * Returns the shared instance.
@@ -174,13 +190,5 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 			return getDefault().getDescriptor().getUniqueIdentifier();
 		} else
 			return WOLipsPlugin.PLUGIN_ID;
-	}
-	/**
-	 * @return WOEnvironment
-	 */
-	public WOEnvironment getWOEnvironment() {
-		if (woEnvironment == null)
-			woEnvironment = new WOEnvironment();
-		return woEnvironment;
 	}
 }

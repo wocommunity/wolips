@@ -132,7 +132,7 @@ public class UpdateOtherClasspathIncludeFiles extends UpdateIncludeFiles {
 					resolvedEntry =
 						classpathEntryToOtherClasspathEntry(
 							classPaths[j],
-							getPaths()[i]);
+							getPaths()[i].toOSString());
 
 					if (resolvedEntry != null
 						&& !resolvedEntries.contains(classPaths[j])) {

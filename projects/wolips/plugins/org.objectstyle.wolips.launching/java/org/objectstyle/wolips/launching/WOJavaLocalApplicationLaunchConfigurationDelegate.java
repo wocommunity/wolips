@@ -75,11 +75,10 @@ import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.jdt.launching.IVMInstall;
 import org.eclipse.jdt.launching.IVMRunner;
 import org.eclipse.jdt.launching.VMRunnerConfiguration;
-import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
 import org.objectstyle.wolips.core.preferences.ILaunchInfo;
 import org.objectstyle.wolips.core.preferences.Preferences;
-import org.objectstyle.wolips.core.project.WOLipsCore;
 import org.objectstyle.wolips.core.project.WOLipsJavaProject;
+import org.objectstyle.wolips.variables.VariablesPlugin;
 
 /**
  * Launches a local VM.
@@ -160,11 +159,7 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 						argument = mainTypeName;
 					if ("-DWORoot=".equals(parameter)) {
 						argument =
-							WOLipsPlugin
-								.getDefault()
-								.getWOEnvironment()
-								.getWOVariables()
-								.systemRoot();
+							VariablesPlugin.getDefault().getSystemRoot().toOSString();
 						spaceBetweenParameterAndArgument = false;
 						if (woLipsJavaProject
 							.getLaunchParameterAccessor()
@@ -175,11 +170,7 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 					}
 					if ("-DWORootDirectory=".equals(parameter)) {
 						argument =
-							WOLipsPlugin
-								.getDefault()
-								.getWOEnvironment()
-								.getWOVariables()
-								.systemRoot();
+							VariablesPlugin.getDefault().getSystemRoot().toOSString();
 						spaceBetweenParameterAndArgument = false;
 						if (woLipsJavaProject
 							.getLaunchParameterAccessor()
@@ -282,7 +273,7 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 				theProject,
 				wd);
 		if(null == wdFile) {
-			IPath path = WOLipsCore.getClasspathVariablesAccessor().getExternalBuildRootClassPathVariable();
+			IPath path = VariablesPlugin.getDefault().getExternalBuildRoot();
 			path = path.append(theProject.getName() + ".woa");
 			wdFile = path.toFile();
 			if(!wdFile.exists()) {

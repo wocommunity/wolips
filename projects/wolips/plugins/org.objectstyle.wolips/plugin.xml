@@ -10,20 +10,19 @@
    <runtime>
       <library name="lib/wolips.jar">
          <export name="*"/>
-         <packages prefixes="org.objectstyle.wolips.core"/>
+         <packages prefixes="org.objectstyle.wolips.core.ant,org.objectstyle.wolips.core.listener,org.objectstyle.wolips.core.logging,org.objectstyle.wolips.core.plugin,org.objectstyle.wolips.core.preferences,org.objectstyle.wolips.core.project,org.objectstyle.wolips.core.resources,org.objectstyle.wolips.core.util"/>
       </library>
    </runtime>
    <requires>
       <import plugin="org.eclipse.core.resources"/>
-      <import plugin="org.eclipse.ant.core"/>
       <import plugin="org.eclipse.jdt.core"/>
       <import plugin="org.eclipse.jface"/>
-      <import plugin="org.objectstyle.wolips.woproject"/>
       <import plugin="org.eclipse.core.runtime.compatibility"/>
-      <import plugin="org.eclipse.jdt.launching"/>
       <import plugin="org.eclipse.ui.workbench"/>
       <import plugin="org.eclipse.ui.ide"/>
       <import plugin="org.eclipse.ui"/>
+      <import plugin="org.objectstyle.wolips.variables"/>
+      <import plugin="org.objectstyle.wolips.woproject"/>
    </requires>
 
 
@@ -32,16 +31,6 @@
 <!-- =================================================================================== -->
    <extension
          point="org.eclipse.ui.startup">
-   </extension>
-<!-- =================================================================================== -->
-<!-- Extension: Classpath container initializer                                          -->
-<!-- =================================================================================== -->
-   <extension
-         point="org.eclipse.jdt.core.classpathContainerInitializer">
-      <classpathContainerInitializer
-            class="org.objectstyle.wolips.core.classpath.WOClasspathContainerInitializer"
-            id="org.objectstyle.wolips.WO_CLASSPATH">
-      </classpathContainerInitializer>
    </extension>
 
 </plugin>

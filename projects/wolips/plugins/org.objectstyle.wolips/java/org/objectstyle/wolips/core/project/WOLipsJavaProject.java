@@ -53,9 +53,7 @@
  * <http://objectstyle.org/>.
  *
  */
-
 package org.objectstyle.wolips.core.project;
-
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -69,30 +67,27 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.objectstyle.woenvironment.util.FileStringScanner;
 import org.objectstyle.wolips.core.logging.WOLipsLog;
-import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
 import org.objectstyle.wolips.core.preferences.Preferences;
 import org.objectstyle.wolips.core.resources.IWOLipsModel;
-
+import org.objectstyle.wolips.variables.VariablesPlugin;
 /**
  * @author uli
- *
- * To change this generated comment go to 
- * Window>Preferences>Java>Code Generation>Code Template
+ * 
+ * To change this generated comment go to Window>Preferences>Java>Code
+ * Generation>Code Template
  */
-public final class WOLipsJavaProject
-	extends WOLipsProject
-	implements IWOLipsJavaProject {
+public final class WOLipsJavaProject extends WOLipsProject
+		implements
+			IWOLipsJavaProject {
 	IJavaProject javaProject;
 	private ClasspathAccessor classpathAccessor;
 	private LaunchParameterAccessor launchParameterAccessor;
-
 	/**
 	 * @param javaProject
 	 */
@@ -106,7 +101,6 @@ public final class WOLipsJavaProject
 	public IJavaProject getJavaProject() {
 		return javaProject;
 	}
-
 	/**
 	 * @return ClasspathAccessor
 	 */
@@ -115,7 +109,6 @@ public final class WOLipsJavaProject
 			classpathAccessor = new ClasspathAccessor(this);
 		return classpathAccessor;
 	}
-
 	/**
 	 * @return ClasspathAccessor
 	 */
@@ -124,19 +117,19 @@ public final class WOLipsJavaProject
 			launchParameterAccessor = new LaunchParameterAccessor(this);
 		return launchParameterAccessor;
 	}
-
 	/**
 	 * @author uli
-	 *
-	 * To change this generated comment go to 
-	 * Window>Preferences>Java>Code Generation>Code Template
+	 * 
+	 * To change this generated comment go to Window>Preferences>Java>Code
+	 * Generation>Code Template
 	 */
 	private class WOLipsJavaProjectInnerClass {
 		private WOLipsJavaProject woLipsJavaProject;
 		/**
 		 * @param woLipsProject
 		 */
-		protected WOLipsJavaProjectInnerClass(WOLipsJavaProject woLipsJavaProject) {
+		protected WOLipsJavaProjectInnerClass(
+				WOLipsJavaProject woLipsJavaProject) {
 			this.woLipsJavaProject = woLipsJavaProject;
 		}
 		/**
@@ -160,12 +153,13 @@ public final class WOLipsJavaProject
 	}
 	/**
 	 * @author uli
-	 *
-	 * To change this generated comment go to 
-	 * Window>Preferences>Java>Code Generation>Code Template
+	 * 
+	 * To change this generated comment go to Window>Preferences>Java>Code
+	 * Generation>Code Template
 	 */
-	public class ClasspathAccessor extends WOLipsJavaProjectInnerClass implements IClasspathAccessor {
-
+	public class ClasspathAccessor extends WOLipsJavaProjectInnerClass
+			implements
+				IClasspathAccessor {
 		/**
 		 * @param wolipsProject
 		 */
@@ -174,37 +168,31 @@ public final class WOLipsJavaProject
 		}
 		/**
 		 * Method addNewSourcefolderToClassPath.
+		 * 
 		 * @param newSourceFolder
 		 * @param monitor
 		 * @throws InvocationTargetException
 		 */
-		public void addNewSourcefolderToClassPath(
-			IFolder newSourceFolder,
-			IProgressMonitor monitor)
-			throws InvocationTargetException {
+		public void addNewSourcefolderToClassPath(IFolder newSourceFolder,
+				IProgressMonitor monitor) throws InvocationTargetException {
 			// add source classpath entry for project
 			IJavaProject actualJavaProject = null;
 			IClasspathEntry[] oldClassPathEntries = null;
 			IClasspathEntry[] newClassPathEntries = null;
 			try {
-				actualJavaProject =
-					JavaCore.create(newSourceFolder.getProject());
+				actualJavaProject = JavaCore.create(newSourceFolder
+						.getProject());
 				oldClassPathEntries = actualJavaProject.getRawClasspath();
 			} catch (JavaModelException e) {
 				actualJavaProject = null;
 				oldClassPathEntries = null;
 				throw new InvocationTargetException(e);
 			}
-			newClassPathEntries =
-				new IClasspathEntry[oldClassPathEntries.length + 1];
-			System.arraycopy(
-				oldClassPathEntries,
-				0,
-				newClassPathEntries,
-				1,
-				oldClassPathEntries.length);
-			newClassPathEntries[0] =
-				JavaCore.newSourceEntry(newSourceFolder.getFullPath());
+			newClassPathEntries = new IClasspathEntry[oldClassPathEntries.length + 1];
+			System.arraycopy(oldClassPathEntries, 0, newClassPathEntries, 1,
+					oldClassPathEntries.length);
+			newClassPathEntries[0] = JavaCore.newSourceEntry(newSourceFolder
+					.getFullPath());
 			try {
 				actualJavaProject.setRawClasspath(newClassPathEntries, monitor);
 			} catch (JavaModelException e) {
@@ -214,48 +202,45 @@ public final class WOLipsJavaProject
 				throw new InvocationTargetException(e);
 			}
 		}
-
 		/**
-		 * Method getSubprojectSourceFolder. Searches classpath source entries for correspondending
-		 * subproject source folder (first found source folder in subproject folder)
+		 * Method getSubprojectSourceFolder. Searches classpath source entries
+		 * for correspondending subproject source folder (first found source
+		 * folder in subproject folder)
+		 * 
 		 * @param subprojectFolder
-		 * @param forceCreation - create folder if necessary
+		 * @param forceCreation -
+		 *            create folder if necessary
 		 * @return IFolder
 		 */
-		public IFolder getSubprojectSourceFolder(
-			IFolder subprojectFolder,
-			boolean forceCreation) {
+		public IFolder getSubprojectSourceFolder(IFolder subprojectFolder,
+				boolean forceCreation) {
 			//ensure that the folder is a subproject
-			if (!IWOLipsModel
-				.EXT_SUBPROJECT
-				.equals(subprojectFolder.getFileExtension())) {
-				IFolder parentFolder =
-					this
-						.getWOLipsJavaProject()
+			if (!IWOLipsModel.EXT_SUBPROJECT.equals(subprojectFolder
+					.getFileExtension())) {
+				IFolder parentFolder = this.getWOLipsJavaProject()
 						.getPBProjectFilesAccessor()
 						.getParentFolderWithPBProject(subprojectFolder);
 				//this belongs to the project and not a subproject
 				if (parentFolder == null)
 					return subprojectFolder.getProject().getFolder(
-						this.getProjectSourceFolder().getProjectRelativePath());
+							this.getProjectSourceFolder()
+									.getProjectRelativePath());
 				subprojectFolder = parentFolder;
 			}
 			List subprojectFolders = getSubProjectsSourceFolder();
 			for (int i = 0; i < subprojectFolders.size(); i++) {
-				if (((IFolder) subprojectFolders.get(i))
-					.getFullPath()
-					.removeLastSegments(1)
-					.equals(subprojectFolder.getFullPath())) {
+				if (((IFolder) subprojectFolders.get(i)).getFullPath()
+						.removeLastSegments(1).equals(
+								subprojectFolder.getFullPath())) {
 					return (IFolder) subprojectFolders.get(i);
 				}
 			}
 			if (forceCreation) {
 				// no folder found - create new source folder
-				IFolder subprojectSourceFolder =
-					subprojectFolder.getProject().getFolder(
-						subprojectFolder.getName()
-							+ "/"
-							+ IWOLipsModel.EXT_SRC);
+				IFolder subprojectSourceFolder = subprojectFolder.getProject()
+						.getFolder(
+								subprojectFolder.getName() + "/"
+										+ IWOLipsModel.EXT_SRC);
 				if (!subprojectSourceFolder.exists()) {
 					try {
 						subprojectSourceFolder.create(true, true, null);
@@ -264,9 +249,8 @@ public final class WOLipsJavaProject
 					}
 				} // add folder to classpath
 				try {
-					this.addNewSourcefolderToClassPath(
-						subprojectSourceFolder,
-						null);
+					this.addNewSourcefolderToClassPath(subprojectSourceFolder,
+							null);
 				} catch (InvocationTargetException e) {
 					WOLipsLog.log(e);
 				}
@@ -275,8 +259,10 @@ public final class WOLipsJavaProject
 			return null;
 		}
 		/**
-		 * Method getProjectSourceFolder. Searches classpath source entries for project source folder.
-		 * The project source folder is the first found source folder the project container contains.
+		 * Method getProjectSourceFolder. Searches classpath source entries for
+		 * project source folder. The project source folder is the first found
+		 * source folder the project container contains.
+		 * 
 		 * @param project
 		 * @return IContainer found source folder
 		 */
@@ -289,43 +275,33 @@ public final class WOLipsJavaProject
 				return null;
 			}
 			for (int i = 0; i < classpathEntries.length; i++) {
-				if (IClasspathEntry.CPE_SOURCE
-					== classpathEntries[i].getEntryKind()) {
+				if (IClasspathEntry.CPE_SOURCE == classpathEntries[i]
+						.getEntryKind()) {
 					// source entry found
 					if (classpathEntries[i].getPath() != null
-						&& classpathEntries[i].getPath().removeLastSegments(
-							1).equals(
-							this.getProject().getFullPath())) {
+							&& classpathEntries[i].getPath()
+									.removeLastSegments(1).equals(
+											this.getProject().getFullPath())) {
 						// source folder's parent is project
 						// project source folder found
-						return this
-							.getProject()
-							.getWorkspace()
-							.getRoot()
-							.getFolder(
-							classpathEntries[i].getPath());
+						return this.getProject().getWorkspace().getRoot()
+								.getFolder(classpathEntries[i].getPath());
 					}
 					/*
-					if (classpathEntries[i].getPath() != null
-							&& classpathEntries[i].getPath().toString().indexOf(
-						"."
-					+ IWOLipsPluginConstants.EXT_SUBPROJECT
-					+ "."
-					+ IWOLipsPluginConstants.EXT_SRC)
-					== -1) {
-						// non subproject entry found
-						if (classpathEntries[i].getPath().segmentCount() > 1) {
-								return project.getWorkspace().getRoot().getFolder(
-							classpathEntries[i].getPath());
-						}
-							break;
-					}
-					*/
+					 * if (classpathEntries[i].getPath() != null &&
+					 * classpathEntries[i].getPath().toString().indexOf( "." +
+					 * IWOLipsPluginConstants.EXT_SUBPROJECT + "." +
+					 * IWOLipsPluginConstants.EXT_SRC) == -1) { // non
+					 * subproject entry found if
+					 * (classpathEntries[i].getPath().segmentCount() > 1) {
+					 * return project.getWorkspace().getRoot().getFolder(
+					 * classpathEntries[i].getPath()); } break; }
+					 */
 				}
 			}
 			// no source folder found -> create new one
-			IFolder projectSourceFolder =
-				this.getProject().getFolder(IWOLipsModel.EXT_SRC);
+			IFolder projectSourceFolder = this.getProject().getFolder(
+					IWOLipsModel.EXT_SRC);
 			if (!projectSourceFolder.exists()) {
 				try {
 					projectSourceFolder.create(true, true, null);
@@ -342,8 +318,9 @@ public final class WOLipsJavaProject
 			return projectSourceFolder;
 		}
 		/**
-		 * Method getSubProjectsSourceFolder. Searches classpath source entries for all source
-		 * folders who's parents are NOT project.
+		 * Method getSubProjectsSourceFolder. Searches classpath source entries
+		 * for all source folders who's parents are NOT project.
+		 * 
 		 * @param project
 		 * @return List
 		 */
@@ -357,78 +334,66 @@ public final class WOLipsJavaProject
 				return null;
 			}
 			for (int i = 0; i < classpathEntries.length; i++) {
-				if (IClasspathEntry.CPE_SOURCE
-					== classpathEntries[i].getEntryKind()) {
+				if (IClasspathEntry.CPE_SOURCE == classpathEntries[i]
+						.getEntryKind()) {
 					// source entry found
 					if (classpathEntries[i].getPath() != null
-						&& !classpathEntries[i].getPath().removeLastSegments(
-							1).equals(
-							this.getProject().getFullPath())) {
+							&& !classpathEntries[i].getPath()
+									.removeLastSegments(1).equals(
+											this.getProject().getFullPath())) {
 						// source folder's parent is not project
 						// project source folder found
-						foundFolders.add(
-							this
-								.getProject()
-								.getWorkspace()
-								.getRoot()
-								.getFolder(
-								classpathEntries[i].getPath()));
+						foundFolders.add(this.getProject().getWorkspace()
+								.getRoot().getFolder(
+										classpathEntries[i].getPath()));
 					}
 					/*
-					if (classpathEntries[i].getPath() != null
-						&& classpathEntries[i].getPath().toString().indexOf(
-							"."
-								+ IWOLipsPluginConstants.EXT_SUBPROJECT
-								+ "/"
-								+ IWOLipsPluginConstants.EXT_SRC)
-							!= -1) {
-						foundFolders.add(
-							project.getWorkspace().getRoot().getFolder(
-								classpathEntries[i].getPath()));
-					}
-					*/
+					 * if (classpathEntries[i].getPath() != null &&
+					 * classpathEntries[i].getPath().toString().indexOf( "." +
+					 * IWOLipsPluginConstants.EXT_SUBPROJECT + "/" +
+					 * IWOLipsPluginConstants.EXT_SRC) != -1) {
+					 * foundFolders.add(
+					 * project.getWorkspace().getRoot().getFolder(
+					 * classpathEntries[i].getPath())); }
+					 */
 				}
 			}
 			return foundFolders;
 		}
 		/**
 		 * Method removeSourcefolderFromClassPath.
+		 * 
 		 * @param folderToRemove
 		 * @param monitor
 		 * @throws InvocationTargetException
 		 */
-		public void removeSourcefolderFromClassPath(
-			IFolder folderToRemove,
-			IProgressMonitor monitor)
-			throws InvocationTargetException {
+		public void removeSourcefolderFromClassPath(IFolder folderToRemove,
+				IProgressMonitor monitor) throws InvocationTargetException {
 			if (folderToRemove != null) {
 				IClasspathEntry[] oldClassPathEntries;
 				try {
-					oldClassPathEntries =
-						this.getJavaProject().getRawClasspath();
+					oldClassPathEntries = this.getJavaProject()
+							.getRawClasspath();
 				} catch (JavaModelException e) {
 					oldClassPathEntries = null;
 					throw new InvocationTargetException(e);
 				}
-				IClasspathEntry[] newClassPathEntries =
-					new IClasspathEntry[oldClassPathEntries.length - 1];
+				IClasspathEntry[] newClassPathEntries = new IClasspathEntry[oldClassPathEntries.length - 1];
 				int offSet = 0;
 				for (int i = 0; i < oldClassPathEntries.length; i++) {
-					if (IClasspathEntry.CPE_SOURCE
-						== oldClassPathEntries[i].getEntryKind()
-						&& oldClassPathEntries[i].getPath().equals(
-							folderToRemove.getFullPath())) {
+					if (IClasspathEntry.CPE_SOURCE == oldClassPathEntries[i]
+							.getEntryKind()
+							&& oldClassPathEntries[i].getPath().equals(
+									folderToRemove.getFullPath())) {
 						offSet = 1;
 					} else {
-						newClassPathEntries[i - offSet] =
-							oldClassPathEntries[i];
+						newClassPathEntries[i - offSet] = oldClassPathEntries[i];
 					}
 				}
 				if (offSet != 0) {
 					try {
 						this.getJavaProject().setRawClasspath(
-							newClassPathEntries,
-							monitor);
+								newClassPathEntries, monitor);
 					} catch (JavaModelException e) {
 						oldClassPathEntries = null;
 						newClassPathEntries = null;
@@ -439,22 +404,18 @@ public final class WOLipsJavaProject
 		}
 		/**
 		 * Method addFrameworkListToClasspathEntries.
+		 * 
 		 * @param frameworkList
 		 * @param projectToUpdate
 		 * @return IClasspathEntry[]
 		 * @throws JavaModelException
 		 */
-		public IClasspathEntry[] addFrameworkListToClasspathEntries(List frameworkList)
+public IClasspathEntry[] addFrameworkListToClasspathEntries(List frameworkList)
 			throws JavaModelException {
 			IClasspathEntry[] oldClasspathEntries =
 				this.getJavaProject().getResolvedClasspath(true);
 			IPath nextRootAsPath =
-				new Path(
-					WOLipsPlugin
-						.getDefault()
-						.getWOEnvironment()
-						.getWOVariables()
-						.systemRoot());
+				VariablesPlugin.getDefault().getSystemRoot();
 			ArrayList classpathEntries = new ArrayList(frameworkList.size());
 			IPath frameworkPath;
 			String jarName;
@@ -476,23 +437,10 @@ public final class WOLipsJavaProject
 						+ ".jar";
 				// check for root
 				frameworkPath =
-					new Path(
-						WOLipsPlugin
-							.getDefault()
-							.getWOEnvironment()
-							.getWOVariables()
-							.libraryDir());
-				frameworkPath = frameworkPath.append("Frameworks");
+					VariablesPlugin.getDefault().getSystemRoot().append("Library").append("Frameworks");
 				frameworkPath = frameworkPath.append(frameworkName);
 				if (!frameworkPath.toFile().isDirectory()) {
-					frameworkPath =
-						new Path(
-							WOLipsPlugin
-								.getDefault()
-								.getWOEnvironment()
-								.getWOVariables()
-								.localLibraryDir());
-					frameworkPath = frameworkPath.append("Frameworks");
+					frameworkPath = VariablesPlugin.getDefault().getLocalRoot().append("Library").append("Frameworks");
 					frameworkPath = frameworkPath.append(frameworkName);
 				}
 				if (!frameworkPath.toFile().isDirectory()) { // invalid path
@@ -532,15 +480,11 @@ public final class WOLipsJavaProject
 						.equals(nextRootAsPath)) {
 					// replace beginning of class path with next root
 					frameworkPath =
-						new Path(
-							WOLipsPlugin
-								.getDefault()
-								.getWOEnvironment()
-								.getNEXT_ROOT())
+						VariablesPlugin.getDefault().getSystemRoot()
 								.append(
 							frameworkPath.removeFirstSegments(
 								nextRootAsPath.segmentCount()));
-					// set path as variable entry			
+					// set path as variable entry
 					classpathEntries.add(
 						JavaCore.newVariableEntry(frameworkPath, null, null));
 				} else {
@@ -560,41 +504,28 @@ public final class WOLipsJavaProject
 					(IClasspathEntry) classpathEntries.get(i);
 			}
 			return newClasspathEntries;
-		}
-
-		private IResource getJar(String prefix, String postfix) {
+		}		private IResource getJar(String prefix, String postfix) {
 			IResource result = null;
 			String projectName = this.getProject().getName();
 			result = this.getProject().getFile(
-					prefix 
-					+ projectName
-					+ postfix
-					+"Resources/Java/"
-					+ projectName
-					+ ".jar");
-			if(result == null || !result.exists()) {
+					prefix + projectName + postfix + "Resources/Java/"
+							+ projectName + ".jar");
+			if (result == null || !result.exists()) {
 				result = this.getProject().getFile(
-						prefix 
-						+ projectName
-						+ postfix
-						+"Resources/Java/"
-						+ projectName.toLowerCase()
-						+ ".jar");
+						prefix + projectName + postfix + "Resources/Java/"
+								+ projectName.toLowerCase() + ".jar");
 			}
 			return result;
 		}
-		
 		public IPath getWOJavaArchive() throws CoreException {
 			IResource resource = null;
 			IPath path = null;
-			
-			INaturesAccessor na =
-				this.getWOLipsJavaProject().getNaturesAccessor();
-
+			INaturesAccessor na = this.getWOLipsJavaProject()
+					.getNaturesAccessor();
 			String projectName = this.getProject().getName();
 			//String projectNameLC = projectName.toLowerCase();
-
-			// I'd rather use the knowledge from the IncrementalNature, but that fragment is not
+			// I'd rather use the knowledge from the IncrementalNature, but
+			// that fragment is not
 			// visible here (so I can't use the class, I think) [hn3000]
 			if (na.isFramework()) {
 				if (na.isAnt()) {
@@ -602,16 +533,17 @@ public final class WOLipsJavaProject
 					if (!resource.exists())
 						resource = getJar("", ".framework/");
 				} else if (na.isIncremental()) {
-					resource =
-						this.getProject().getFolder(
-							"build/"
-								+ projectName
-								+ ".framework/Resources/Java");
+					resource = this.getProject().getFolder(
+							"build/" + projectName
+									+ ".framework/Resources/Java");
 				}
-				if(resource != null && (resource.exists())) {
+				if (resource != null && (resource.exists())) {
 					path = resource.getLocation();
-				} else  {
-					path = WOLipsCore.getClasspathVariablesAccessor().getExternalBuildRootClassPathVariable().append(projectName + ".framework/Resources/Java/" + projectName + ".jar");
+				} else {
+					path = VariablesPlugin.getDefault().getExternalBuildRoot()
+							.append(
+									projectName + ".framework/Resources/Java/"
+											+ projectName + ".jar");
 				}
 			} else if (na.isApplication()) { // must be application
 				if (na.isAnt()) {
@@ -619,55 +551,48 @@ public final class WOLipsJavaProject
 					if (!resource.exists())
 						resource = getJar("", ".woa/Contents/");
 				} else if (na.isIncremental()) {
-					resource =
-						this.getProject().getFolder(
-							"build/"
-								+ projectName
-								+ ".woa/Contents/Resources/Java");
+					resource = this.getProject().getFolder(
+							"build/" + projectName
+									+ ".woa/Contents/Resources/Java");
 				}
-				if(resource != null && (resource.exists())) {
+				if (resource != null && (resource.exists())) {
 					path = resource.getLocation();
-				} else  {
-					path = WOLipsCore.getClasspathVariablesAccessor().getExternalBuildRootClassPathVariable().append(projectName + ".woa/Contents/Resources/Java/" + projectName + ".jar");
+				} else {
+					path = VariablesPlugin.getDefault().getExternalBuildRoot()
+							.append(
+									projectName
+											+ ".woa/Contents/Resources/Java/"
+											+ projectName + ".jar");
 				}
 			}
 			return path;
 		}
 	}
-
 	/**
 	 * @author uli
-	 *
-	 * To change this generated comment go to 
-	 * Window>Preferences>Java>Code Generation>Code Template
+	 * 
+	 * To change this generated comment go to Window>Preferences>Java>Code
+	 * Generation>Code Template
 	 */
 	public class LaunchParameterAccessor extends WOLipsJavaProjectInnerClass {
-
 		/**
 		 * @param wolipsProject
 		 */
 		protected LaunchParameterAccessor(WOLipsJavaProject wolipsJavaProject) {
 			super(wolipsJavaProject);
 		}
-
 		public boolean isOnMacOSX() {
-			return WOLipsPlugin
-				.getDefault()
-				.getWOEnvironment()
-				.getWOVariables()
-				.systemRoot()
-				.startsWith("/System");
+			return VariablesPlugin.getDefault().getSystemRoot().toOSString().startsWith("/System");
 		}
-
 		/**
 		 * Method projectISReferencedByProject.
+		 * 
 		 * @param child
 		 * @param mother
 		 * @return boolean
 		 */
-		public boolean projectISReferencedByProject(
-			IProject child,
-			IProject mother) {
+		public boolean projectISReferencedByProject(IProject child,
+				IProject mother) {
 			IProject[] projects = null;
 			try {
 				projects = mother.getReferencedProjects();
@@ -681,9 +606,9 @@ public final class WOLipsJavaProject
 			}
 			return false;
 		}
-
 		/**
 		 * Method isTheLaunchAppOrFramework.
+		 * 
 		 * @param project
 		 * @param configuration
 		 * @return boolean
@@ -694,9 +619,8 @@ public final class WOLipsJavaProject
 				buildProject = this.getJavaProject();
 				WOLipsProject woLipsProject = new WOLipsProject(project);
 				if (woLipsProject.getNaturesAccessor().isFramework()
-					&& projectISReferencedByProject(
-						project,
-						buildProject.getProject()))
+						&& projectISReferencedByProject(project, buildProject
+								.getProject()))
 					return true;
 			} catch (Exception anException) {
 				WOLipsLog.log(anException);
@@ -704,9 +628,9 @@ public final class WOLipsJavaProject
 			}
 			return false;
 		}
-
 		/**
 		 * Method isTheLaunchAppOrFramework.
+		 * 
 		 * @param project
 		 * @param configuration
 		 * @return boolean
@@ -722,9 +646,9 @@ public final class WOLipsJavaProject
 			}
 			return false;
 		}
-
 		/**
 		 * Method isValidProjectPath.
+		 * 
 		 * @param project
 		 * @param configuration
 		 * @return boolean
@@ -737,40 +661,30 @@ public final class WOLipsJavaProject
 				return false;
 			}
 		}
-
 		/**
 		 * Method getGeneratedByWOLips.
+		 * 
 		 * @return String
 		 */
 		public String getGeneratedByWOLips() {
 			String returnValue = "";
-			IProject[] projects =
-				ResourcesPlugin.getWorkspace().getRoot().getProjects();
+			IProject[] projects = ResourcesPlugin.getWorkspace().getRoot()
+					.getProjects();
 			for (int i = 0; i < projects.length; i++) {
 				if (isValidProjectPath(projects[i])) {
 					if (isAFramework(projects[i])) {
 						if (returnValue.length() > 0) {
 							returnValue = returnValue + ",";
 						}
-						returnValue =
-							returnValue
-								+ "\""
-								+ projects[i].getLocation().toOSString()
-								+ "\"";
+						returnValue = returnValue + "\""
+								+ projects[i].getLocation().toOSString() + "\"";
 					}
 					if (isTheLaunchApp(projects[i])) {
 						if (returnValue.length() > 0) {
 							returnValue = returnValue + ",";
 						}
-						returnValue =
-							returnValue
-								+ "\""
-								+ ".."
-								+ "\""
-								+ ","
-								+ "\""
-								+ "../.."
-								+ "\"";
+						returnValue = returnValue + "\"" + ".." + "\"" + ","
+								+ "\"" + "../.." + "\"";
 					}
 				}
 			}
@@ -778,54 +692,50 @@ public final class WOLipsJavaProject
 			returnValue = this.addPreferencesValue(returnValue);
 			if ("".equals(returnValue))
 				returnValue = "\"" + ".." + "\"";
-
 			returnValue = "(" + returnValue + ")";
-
 			return returnValue;
 		}
-
 		/**
 		 * Method addPreferencesValue.
+		 * 
 		 * @param aString
 		 * @return String
 		 */
 		private String addPreferencesValue(String aString) {
 			if (aString == null)
 				return aString;
-			String nsProjectSarchPath =
-				Preferences.getPREF_NS_PROJECT_SEARCH_PATH();
+			String nsProjectSarchPath = Preferences
+					.getPREF_NS_PROJECT_SEARCH_PATH();
 			if (nsProjectSarchPath == null || nsProjectSarchPath.length() == 0)
 				return aString;
 			if (aString.length() > 0)
 				aString = aString + ",";
 			return aString + nsProjectSarchPath;
 		}
-
 		public File getWDFolder(IProject theProject, IPath wd)
-			throws CoreException {
- 			WOLipsProject wolipsProject = new WOLipsProject(theProject);
+				throws CoreException {
+			WOLipsProject wolipsProject = new WOLipsProject(theProject);
 			INaturesAccessor na = wolipsProject.getNaturesAccessor();
-
 			File wdFile = null;
 			if (wd == null) {
 				IFolder wdFolder;
 				if (na.isAnt()) {
-					wdFolder =
-						theProject.getFolder(
-							"dist/" + theProject.getName() + ".woa");
+					wdFolder = theProject.getFolder("dist/"
+							+ theProject.getName() + ".woa");
 				} else {
-					wdFolder =
-						theProject.getFolder(
-							"build/" + theProject.getName() + ".woa");
+					wdFolder = theProject.getFolder("build/"
+							+ theProject.getName() + ".woa");
 				}
 				if (wdFolder == null || !wdFolder.exists()) {
-					wdFolder =
-						theProject.getFolder(theProject.getName() + ".woa");
+					wdFolder = theProject.getFolder(theProject.getName()
+							+ ".woa");
 				}
 				if (wdFolder == null || !wdFolder.exists()) {
-					IPath externalRoot = WOLipsCore.getClasspathVariablesAccessor().getExternalBuildRootClassPathVariable();
-					if(externalRoot != null) {
-						wdFile = externalRoot.append(theProject.getName() + ".woa").toFile();
+					IPath externalRoot = VariablesPlugin.getDefault()
+							.getExternalBuildRoot();
+					if (externalRoot != null) {
+						wdFile = externalRoot.append(
+								theProject.getName() + ".woa").toFile();
 					}
 				} else {
 					wdFile = wdFolder.getLocation().toFile();
@@ -833,11 +743,10 @@ public final class WOLipsJavaProject
 			} else {
 				wdFile = wd.toFile();
 			}
-			if(wdFile != null  && !wdFile.exists()) {
+			if (wdFile != null && !wdFile.exists()) {
 				wdFile = null;
 			}
 			return wdFile;
 		}
-
 	}
 }

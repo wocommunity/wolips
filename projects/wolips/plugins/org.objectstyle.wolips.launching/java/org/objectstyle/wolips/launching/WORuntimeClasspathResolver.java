@@ -64,7 +64,7 @@ import org.eclipse.jdt.launching.IRuntimeClasspathEntry;
 import org.eclipse.jdt.launching.IRuntimeClasspathEntryResolver;
 import org.eclipse.jdt.launching.IVMInstall;
 import org.eclipse.jdt.launching.JavaRuntime;
-import org.objectstyle.wolips.core.classpath.WOClasspathContainer;
+import org.objectstyle.wolips.jdt.classpath.WOClasspathContainer;
 
 /**
  * @author ulrich

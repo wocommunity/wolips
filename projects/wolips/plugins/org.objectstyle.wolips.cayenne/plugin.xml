@@ -9,7 +9,7 @@
    <runtime>
       <library name="lib/cayenne.jar">
          <export name="*"/>
-         <packages prefixes="org.objectstyle.cayenne"/>
+         <packages prefixes="org.objectstyle.cayenne.wocompat,org.objectstyle.cayenne.wocompat.parser"/>
       </library>
    </runtime>
 
