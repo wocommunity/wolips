@@ -124,6 +124,7 @@ public class WOFrameworkWizard extends AbstractProjectWizard {
 					throw new InvocationTargetException(e);
 				}
 				templateEngine.getWolipsContext().setProjectName(projectName);
+				templateEngine.getWolipsContext().setAntFolderName(ProjectPatternsets.ANT_FOLDER_NAME);
 				templateEngine.addTemplate(new TemplateDefinition(
 						"woframework/.classpath.vm", path, ".classpath",
 						".classpath"));

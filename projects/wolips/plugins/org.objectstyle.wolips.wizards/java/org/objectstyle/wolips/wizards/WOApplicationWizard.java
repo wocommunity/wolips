@@ -126,6 +126,7 @@ public class WOApplicationWizard extends AbstractProjectWizard {
 					throw new InvocationTargetException(e);
 				}
 				templateEngine.getWolipsContext().setProjectName(projectName);
+				templateEngine.getWolipsContext().setAntFolderName(ProjectPatternsets.ANT_FOLDER_NAME);
 				templateEngine.addTemplate(new TemplateDefinition(
 						"woapplication/Main.html.vm", path + File.separator
 								+ "Main.wo", "Main.html", "Main.html"));

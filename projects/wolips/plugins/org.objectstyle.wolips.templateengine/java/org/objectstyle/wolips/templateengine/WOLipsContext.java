@@ -141,13 +141,13 @@ public class WOLipsContext {
 	/**
 	 * @return Returns the antFolderName.
 	 */
-	protected String getAntFolderName() {
+	public String getAntFolderName() {
 		return this.antFolderName;
 	}
 	/**
 	 * @param antFolderName The antFolderName to set.
 	 */
-	protected void setAntFolderName(String antFolderName) {
+	public void setAntFolderName(String antFolderName) {
 		this.antFolderName = antFolderName;
 	}
 }
