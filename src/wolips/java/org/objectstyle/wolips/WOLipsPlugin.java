@@ -176,6 +176,19 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 	 * Returns the shared instance.
 	 */
 	public static WOLipsPlugin getDefault() {
+		if (plugin == null) {
+
+			// ensure plugin instance is always available using id
+			try {
+				return (WOLipsPlugin) Platform
+					.getPlugin(PLUGIN_ID)
+					.getDescriptor()
+					.getPlugin();
+			} catch (CoreException e) {
+				// ummh .. what to do now?!
+				throw new RuntimeException("Missing plugin with id: " + PLUGIN_ID);
+			}
+		}
 		return plugin;
 	}
 	
