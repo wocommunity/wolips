@@ -128,7 +128,7 @@ public final class WOClasspathContainerPath
 			String base = basePath.toOSString();
 			if (!basePath.toString().endsWith(IPath.SEPARATOR + ""))
 				base = base + new Path(IPath.SEPARATOR + "").toOSString();
-			if(root != IClasspathVariablesAccessor.ProjectWonderHomeClasspathVariable) {
+			if(root != IClasspathVariablesAccessor.ExternalBuildRootClasspathVariable) {
 				base =
 					base
 						+ "Library"
@@ -204,10 +204,12 @@ public final class WOClasspathContainerPath
 			IPath expandedClasspathVariable =
 				JavaCore.getClasspathVariable(classpathVariable);
 			if (classpathVariable != null) {
-				expandedClasspathVariable =
+				if (!expandedClasspathVariable.equals(WOLipsCore.getClasspathVariablesAccessor().getExternalBuildRootClassPathVariable())) {
+					expandedClasspathVariable =
 					expandedClasspathVariable.append("Library");
 				expandedClasspathVariable =
 					expandedClasspathVariable.append("Frameworks");
+				}
 				File frameworkFile =
 					new File(
 						expandedClasspathVariable.toOSString(),

@@ -74,12 +74,13 @@ public final class ClasspathVariablesAccessor
 
 	private final String[] classpathVariables =
 		new String[] {
-			IClasspathVariablesAccessor.ProjectWonderHomeClasspathVariable,
-			IClasspathVariablesAccessor.UserHomeClasspathVariable,
+			 IClasspathVariablesAccessor.ExternalBuildRootClasspathVariable,
+			 IClasspathVariablesAccessor.UserHomeClasspathVariable,
 			"NEXT_LOCAL_ROOT",
-			"NEXT_SYSTEM_ROOT" };
+			"NEXT_SYSTEM_ROOT"
+		};
 	private final String[] classpathVariablesNames =
-		new String[] {"Project Wonder", "User Home", "Local", "System" };
+		new String[] { "External Build Root", "User Home", "Local", "System" };
 
 	protected ClasspathVariablesAccessor() {
 		super();
@@ -113,11 +114,11 @@ public final class ClasspathVariablesAccessor
 			IClasspathVariablesAccessor.UserHomeClasspathVariable);
 	}
 	/**
-	 * @return IPath from ProjectWonder Classpath variable if it exists.
+	 * @return IPath from External Build Root Classpath variable if it exists.
 	 */
-	public final IPath getProjectWonderHomeClassPathVariable() {
+	public final IPath getExternalBuildRootClassPathVariable() {
 		return JavaCore.getClasspathVariable(
-			IClasspathVariablesAccessor.ProjectWonderHomeClasspathVariable);
+			IClasspathVariablesAccessor.ExternalBuildRootClasspathVariable);
 	}
 
 	/**
@@ -163,10 +164,10 @@ public final class ClasspathVariablesAccessor
 	/**
 	 * set IPath for UserHome Classpath variable.
 	 */
-	public final void setProjectWonderHomeClassPathVariable(IPath path)
+	public final void setExternalBuildRootClassPathVariable(IPath path)
 		throws JavaModelException {
 		JavaCore.setClasspathVariable(
-			IClasspathVariablesAccessor.ProjectWonderHomeClasspathVariable,
+			IClasspathVariablesAccessor.ExternalBuildRootClasspathVariable,
 			path,
 			null);
 	}
@@ -200,8 +201,8 @@ public final class ClasspathVariablesAccessor
 				classpathVariable)
 			|| IClasspathVariablesAccessor.UserHomeClasspathVariable.equals(
 				classpathVariable)
-			|| IClasspathVariablesAccessor
-				.ProjectWonderHomeClasspathVariable
+			|| ClasspathVariablesAccessor
+				.ExternalBuildRootClasspathVariable
 				.equals(
 				classpathVariable);
 	}

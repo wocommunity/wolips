@@ -250,12 +250,12 @@ public final class EarlyStartup {
 		}
 		if (WOLipsCore
 			.getClasspathVariablesAccessor()
-			.getProjectWonderHomeClassPathVariable()
+			.getExternalBuildRootClassPathVariable()
 			== null) {
 			try {
 				WOLipsCore
 					.getClasspathVariablesAccessor()
-					.setProjectWonderHomeClassPathVariable(
+					.setExternalBuildRootClassPathVariable(
 						new Path(
 							WorkbenchUtilities.getWOVariables().userHome()
 								+ "/Roots"));

@@ -69,13 +69,15 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.launching.IRuntimeContainerComparator;
+import org.objectstyle.wolips.core.logging.WOLipsLog;
 import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
+import org.objectstyle.wolips.core.project.WOLipsCore;
 
 /**
  * @author Harald Niesche
  *
  */
-public class WOClasspathContainer 
+public class WOClasspathContainer
   implements IClasspathContainer, IRuntimeContainerComparator
 {
   
@@ -156,9 +158,6 @@ public class WOClasspathContainer
 
 
   private void _initPath () {
-    File fwBase = _getFrameworkBase();
-    File fwBaseL = _getLocalFrameworkBase ();
-
     int start = 1;
     
     if (_id.segment(start).startsWith ("export=")) {
@@ -166,32 +165,54 @@ public class WOClasspathContainer
     }
 
     boolean isExported = _isExported();
-    
-    for (int nFW = start; nFW < _id.segmentCount(); ++nFW) {
-      String fw = _id.segment(nFW);
-      
-      File thisFW = new File (fwBase, fw + ".framework/Resources/Java");
-      if (!thisFW.isDirectory()) {
-        thisFW = new File (fwBaseL, fw + ".framework/Resources/Java");
-      }
-      if (thisFW.isDirectory()) {
-        String archives[] = thisFW.list (new FilenameFilter () {
-          public boolean accept (File dir, String name) {
-            String lowerName = name.toLowerCase ();
-            return (lowerName.endsWith (".zip") || lowerName.endsWith (".jar"));
-          }
-        });
-        
-        for (int i = 0; i < archives.length; ++i) {
-          IPath archivePath = new Path (thisFW.getAbsolutePath()+"/"+archives[i]);
-          //IClasspathEntry entry = JavaCore.newLibraryEntry(archivePath, null, null);
-          IClasspathEntry entry = JavaCore.newLibraryEntry(archivePath, null, null, isExported);
-          _path.add (entry);
-        }
-      }
-      
+    // AK: this code is copied over from org.objectstyle.wolips.core.classpath.WOClasspathContainer, until I can figure why this class is here in the first place
+    String[] classpathVariables = WOLipsCore.getClasspathVariablesAccessor().classpathVariables();
+    for (int i = start; i < _id.segmentCount(); i++) {
+    	for ( int h = 0; h < classpathVariables.length; h++) {
+    		
+    		IPath classpathVariable =
+    		JavaCore.getClasspathVariable(classpathVariables[h]);
+    		String framework = _id.segment(i);
+    		if (classpathVariable != null) {
+    			if(!classpathVariable.equals(WOLipsCore.getClasspathVariablesAccessor().getExternalBuildRootClassPathVariable())) {
+    				classpathVariable = classpathVariable.append("Library");
+    				classpathVariable = classpathVariable.append("Frameworks");
+    			}
+    			File frameworkFile =
+    			new File(
+    					classpathVariable.toOSString(),
+    					framework + ".framework/Resources/Java");
+    			if (frameworkFile.isDirectory()) {
+    				String archives[] =
+    				frameworkFile.list(new FilenameFilter() {
+    					public boolean accept(File dir, String name) {
+    						String lowerName = name.toLowerCase();
+    						return (
+    								lowerName.endsWith(".zip")
+    								|| lowerName.endsWith(".jar"));
+    					}
+    				});
+    				for (int j = 0; j < archives.length; j++) {
+    					//framework found under this root
+    					h = classpathVariables.length;
+    					IPath archivePath =
+    					new Path(
+    							frameworkFile.getAbsolutePath()
+    							+ "/"
+    							+ archives[j]);
+    					//IClasspathEntry entry = JavaCore.newLibraryEntry(archivePath, null, null);
+    					IClasspathEntry entry =
+    					JavaCore.newLibraryEntry(
+    							archivePath,
+    							null,
+								null,
+								_isExported());
+    					_path.add(entry);
+    				}
+    			}
+    		}
+    	}
     }
-    
   }
   
   
@@ -215,41 +236,16 @@ public class WOClasspathContainer
     }
     return exported;          
   }
-  
+
   static File _getFrameworkBase () {
-	File result = null;
-	
-	result = new File (WOLipsPlugin.getDefault().getWOEnvironment().getWOVariables().libraryDir()+"/Frameworks");
-	
-	return result;
+  	File result = new File (WOLipsPlugin.getDefault().getWOEnvironment().getWOVariables().libraryDir()+"/Frameworks");
+  	return result;
   }
-
   static File _getLocalFrameworkBase () {
-	File result = null;
-
-	result = new File (WOLipsPlugin.getDefault().getWOEnvironment().getWOVariables().localLibraryDir()+"/Frameworks");
-	
-	return result;
-//	File fwBase = new File (WOSupportPlugin.getWORoot(), "Library/Frameworks");
-//	File fwBaseL = new File (WOSupportPlugin.getLocalRoot(), "Library/Frameworks");
-//    
-//	if (
-//	  !fwBase.exists() || !fwBase.isDirectory()
-//	) {
-//	   // might wanna give some message...
-//	  System.out.println("WO_ROOT not found");
-//	  return ;
-//	}
-//    
-//	if (
-//	  !fwBaseL.exists() || !fwBaseL.isDirectory()
-//	) {
-//	   // might wanna give some message...
-//	  System.out.println("LOCAL_ROOT ("+fwBaseL+") does not exist, using WO_ROOT/Local ");
-//	  fwBaseL = new File (WOSupportPlugin.getWORoot(), "Local/Library/Frameworks");
-//	}
-  }
-
+  	File result = new File (WOLipsPlugin.getDefault().getWOEnvironment().getWOVariables().localLibraryDir()+"/Frameworks");
+  	return result;
+   }
+  
   private IPath _id = new Path ("de.thecode.eclipse.wosupport.WO_CLASSPATH");
 
   private List _path = new ArrayList ();

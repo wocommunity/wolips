@@ -78,6 +78,7 @@ import org.eclipse.jdt.launching.VMRunnerConfiguration;
 import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
 import org.objectstyle.wolips.core.preferences.ILaunchInfo;
 import org.objectstyle.wolips.core.preferences.Preferences;
+import org.objectstyle.wolips.core.project.WOLipsCore;
 import org.objectstyle.wolips.core.project.WOLipsJavaProject;
 
 /**
@@ -273,10 +274,17 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 			woLipsJavaProject.getLaunchParameterAccessor().getWDFolder(
 				theProject,
 				wd);
+		if(null == wdFile) {
+			IPath path = WOLipsCore.getClasspathVariablesAccessor().getExternalBuildRootClassPathVariable();
+			path = path.append(theProject.getName() + ".woa");
+			wdFile = path.toFile();
+			if(!wdFile.exists()) {
+				wdFile = null;
+			}
+		}
 		if (null == wdFile) {
 			wdFile = super.verifyWorkingDirectory(configuration);
 		}
-
 		if (((wdFile == null) || (wdFile.toString().indexOf(".woa") < 0))) {
 			abort(MessageFormat.format(LaunchingMessages.getString("WOJavaLocalApplicationLaunchConfigurationDelegate.Working_directory_is_not_a_woa__{0}_12"), new String[] { wdFile.toString()}), null, IJavaLaunchConfigurationConstants.ERR_WORKING_DIRECTORY_DOES_NOT_EXIST); //$NON-NLS-1$
 		}

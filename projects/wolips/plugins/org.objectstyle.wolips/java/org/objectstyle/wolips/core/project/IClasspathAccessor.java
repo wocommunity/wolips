@@ -13,6 +13,7 @@ import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.JavaModelException;
@@ -25,7 +26,7 @@ import org.eclipse.jdt.core.JavaModelException;
  */
 public interface IClasspathAccessor {
 
-	public abstract IResource getWOJavaArchive() throws CoreException;
+	public abstract IPath getWOJavaArchive() throws CoreException;
 	public abstract IFolder getSubprojectSourceFolder(
 		IFolder subprojectFolder, boolean forceCreation);
 	public abstract void removeSourcefolderFromClassPath(

@@ -68,8 +68,7 @@ import org.eclipse.jdt.core.JavaModelException;
 public interface IClasspathVariablesAccessor {
 
 	public final static String UserHomeClasspathVariable = "USER_HOME";
-	public final static String ProjectWonderHomeClasspathVariable =
-		"PROJECT_WONDER_HOME";
+	public final static String ExternalBuildRootClasspathVariable = "EXTERNAL_BUILD_ROOT";
 
 	/**
 	 * @return IPath from NextLocalRoot Classpath variable if it exists.
@@ -94,7 +93,7 @@ public interface IClasspathVariablesAccessor {
 	/**
 	 * @return IPath from UserHome Classpath variable if it exists.
 	 */
-	public abstract IPath getProjectWonderHomeClassPathVariable();
+	public abstract IPath getExternalBuildRootClassPathVariable();
 
 	/**
 	 *set IPath for NextLocalRoot Classpath variable.
@@ -121,9 +120,9 @@ public interface IClasspathVariablesAccessor {
 		throws JavaModelException;
 
 	/**
-	 * set IPath for UserHome Classpath variable.
+	 * set IPath for External Build Root Classpath variable.
 	 */
-	public abstract void setProjectWonderHomeClassPathVariable(IPath path)
+	public abstract void setExternalBuildRootClassPathVariable(IPath path)
 		throws JavaModelException;
 
 	/**

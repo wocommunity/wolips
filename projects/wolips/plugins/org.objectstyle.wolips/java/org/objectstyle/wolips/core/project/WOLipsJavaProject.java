@@ -62,6 +62,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -75,6 +76,7 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jdt.internal.core.index.impl.IFileDocument;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.objectstyle.woenvironment.util.FileStringScanner;
 import org.objectstyle.wolips.core.logging.WOLipsLog;
@@ -564,9 +566,32 @@ public final class WOLipsJavaProject
 			return newClasspathEntries;
 		}
 
-		public IResource getWOJavaArchive() throws CoreException {
+		private IResource getJar(String prefix, String postfix) {
 			IResource result = null;
-
+			String projectName = this.getProject().getName();
+			result = this.getProject().getFile(
+					prefix 
+					+ projectName
+					+ postfix
+					+"Resources/Java/"
+					+ projectName
+					+ ".jar");
+			if(result == null || !result.exists()) {
+				result = this.getProject().getFile(
+						prefix 
+						+ projectName
+						+ postfix
+						+"Resources/Java/"
+						+ projectName.toLowerCase()
+						+ ".jar");
+			}
+			return result;
+		}
+		
+		public IPath getWOJavaArchive() throws CoreException {
+			IResource resource = null;
+			IPath path = null;
+			
 			INaturesAccessor na =
 				this.getWOLipsJavaProject().getNaturesAccessor();
 
@@ -577,60 +602,50 @@ public final class WOLipsJavaProject
 			// visible here (so I can't use the class, I think) [hn3000]
 			if (na.isFramework()) {
 				if (na.isAnt()) {
-					result =
-						this.getProject().getFile(
-							"dist/"
-								+ projectName
-								+ ".framework/Resources/Java/"
-								+ projectNameLC
-								+ ".jar");
-					if (!result.exists())
-						result =
-							this.getProject().getFile(
-								projectName
-									+ ".framework/Resources/Java/"
-									+ projectNameLC
-									+ ".jar");
+					resource = getJar("dist/", ".framework/");
+					if (!resource.exists())
+						resource = getJar("", ".framework/");
 				} else if (na.isIncremental()) {
-					result =
+					resource =
 						this.getProject().getFolder(
 							"build/"
 								+ projectName
 								+ ".framework/Resources/Java");
 				}
+				if(resource != null && (resource.exists())) {
+					path = resource.getLocation();
+				} else  {
+					path = WOLipsCore.getClasspathVariablesAccessor().getExternalBuildRootClassPathVariable().append(projectName + ".framework/Resources/Java/" + projectName + ".jar");
+				}
 			} else if (na.isApplication()) { // must be application
 				if (na.isAnt()) {
-					result =
-						this.getProject().getFile(
-							"dist/"
-								+ projectName
-								+ ".woa/Contents/Resources/Java/"
-								+ projectNameLC
-								+ ".jar");
-					if (!result.exists())
-						result =
-							this.getProject().getFile(
-								projectName
-									+ ".woa/Contents/Resources/Java/"
-									+ projectNameLC
-									+ ".jar");
+					resource = getJar("dist/", ".woa/Contents/");
+					if (!resource.exists())
+						resource = getJar("", ".woa/Contents/");
 				} else if (na.isIncremental()) {
-					result =
+					resource =
 						this.getProject().getFolder(
 							"build/"
 								+ projectName
 								+ ".woa/Contents/Resources/Java");
 				}
+				if(resource != null && (resource.exists())) {
+					path = resource.getLocation();
+				} else  {
+					path = WOLipsCore.getClasspathVariablesAccessor().getExternalBuildRootClassPathVariable().append(projectName + ".woa/Contents/Resources/Java/" + projectName + ".jar");
+				}
 			}
 
 			// check if folder exists, otherwise let Eclipse to its default thing
-			if ((null != result) && (!result.exists())) {
+			if ((null == path) || (!path.toFile().exists())) {
 				WOLipsLog.log(
 					"expected resource is not there: "
-						+ result.getLocation().toOSString());
-				result = null;
+						+ path + " - " + path.toFile());
+				path = null;
+			} else {
+				// WOLipsLog.log( "Found file: " + path);
 			}
-			return result;
+			return path;
 		}
 	}
 
@@ -822,7 +837,7 @@ public final class WOLipsJavaProject
 
 		public File getWDFolder(IProject theProject, IPath wd)
 			throws CoreException {
-			WOLipsProject wolipsProject = new WOLipsProject(theProject);
+ 			WOLipsProject wolipsProject = new WOLipsProject(theProject);
 			INaturesAccessor na = wolipsProject.getNaturesAccessor();
 
 			File wdFile = null;
@@ -841,11 +856,19 @@ public final class WOLipsJavaProject
 					wdFolder =
 						theProject.getFolder(theProject.getName() + ".woa");
 				}
-				if (wdFolder != null && !wdFolder.exists()) {
-					wdFolder = null;
+				if (wdFolder == null || !wdFolder.exists()) {
+					IPath externalRoot = WOLipsCore.getClasspathVariablesAccessor().getExternalBuildRootClassPathVariable();
+					if(externalRoot != null) {
+						wdFile = externalRoot.append(theProject.getName() + ".woa").toFile();
+					}
 				} else {
 					wdFile = wdFolder.getLocation().toFile();
 				}
+			} else {
+				wdFile = wd.toFile();
+			}
+			if(wdFile != null  && !wdFile.exists()) {
+				wdFile = null;
 			}
 			return wdFile;
 		}

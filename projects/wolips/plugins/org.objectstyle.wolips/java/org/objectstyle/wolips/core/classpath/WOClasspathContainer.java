@@ -66,6 +66,7 @@ import org.eclipse.jdt.core.IClasspathContainer;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.launching.IRuntimeContainerComparator;
+import org.objectstyle.wolips.core.logging.WOLipsLog;
 import org.objectstyle.wolips.core.project.WOLipsCore;
 
 /**
@@ -137,48 +138,50 @@ public final class WOClasspathContainer
 		String[] classpathVariables = WOLipsCore.getClasspathVariablesAccessor().classpathVariables();
 		for (int i = 1; i < _id.segmentCount(); i++) {
 			for ( int h = 0; h < classpathVariables.length; h++) {
-		
-			IPath classpathVariable =
+				
+				IPath classpathVariable =
 				JavaCore.getClasspathVariable(classpathVariables[h]);
-			String framework = _id.segment(i);
-			if (classpathVariable != null) {
-				classpathVariable = classpathVariable.append("Library");
-				classpathVariable = classpathVariable.append("Frameworks");
-				File frameworkFile =
+				String framework = _id.segment(i);
+				if (classpathVariable != null) {
+					if(!classpathVariable.equals(WOLipsCore.getClasspathVariablesAccessor().getExternalBuildRootClassPathVariable())) {
+						classpathVariable = classpathVariable.append("Library");
+						classpathVariable = classpathVariable.append("Frameworks");
+					}
+					File frameworkFile =
 					new File(
-						classpathVariable.toOSString(),
-						framework + ".framework/Resources/Java");
-				if (frameworkFile.isDirectory()) {
-					String archives[] =
+							classpathVariable.toOSString(),
+							framework + ".framework/Resources/Java");
+					if (frameworkFile.isDirectory()) {
+						String archives[] =
 						frameworkFile.list(new FilenameFilter() {
-						public boolean accept(File dir, String name) {
-							String lowerName = name.toLowerCase();
-							return (
-								lowerName.endsWith(".zip")
-									|| lowerName.endsWith(".jar"));
-						}
-					});
-					for (int j = 0; j < archives.length; j++) {
-						//framework found under this root
-						h = classpathVariables.length;
-						IPath archivePath =
+							public boolean accept(File dir, String name) {
+								String lowerName = name.toLowerCase();
+								return (
+										lowerName.endsWith(".zip")
+										|| lowerName.endsWith(".jar"));
+							}
+						});
+						for (int j = 0; j < archives.length; j++) {
+							//framework found under this root
+							h = classpathVariables.length;
+							IPath archivePath =
 							new Path(
-								frameworkFile.getAbsolutePath()
+									frameworkFile.getAbsolutePath()
 									+ "/"
 									+ archives[j]);
-						//IClasspathEntry entry = JavaCore.newLibraryEntry(archivePath, null, null);
-						IClasspathEntry entry =
+							//IClasspathEntry entry = JavaCore.newLibraryEntry(archivePath, null, null);
+							IClasspathEntry entry =
 							JavaCore.newLibraryEntry(
-								archivePath,
-								null,
-								null,
-								false);
-						_path.add(entry);
+									archivePath,
+									null,
+									null,
+									false);
+							_path.add(entry);
+						}
 					}
 				}
 			}
 		}
-	}
 	}
 
 	private IPath _id;
