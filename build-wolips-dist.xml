@@ -28,6 +28,25 @@
      	</fileset>
      </jar>
 
+
+ <!-- make feature -->
+    <mkdir dir="${wolips.feature.plugin.dist}"/>
+    <copy todir="${wolips.feature.plugin.dist}">
+        <fileset dir="src/wolips-feature-plugin">
+        	<exclude name=".project"/>
+        </fileset>
+    </copy>
+    <copy todir="${wolips.feature.plugin.dist}">
+        <fileset dir="doc">
+        	<include name="LICENSE"/>
+        </fileset>
+    </copy>
+    <jar jarfile="${wolips.feature.plugin.dist}.jar">
+     	<fileset dir="${wolips.feature.plugin.dist}">
+     	</fileset>
+     </jar>
+
+
     <mkdir dir="${wolips.profiling.feature.dist}"/>
     <copy todir="${wolips.profiling.feature.dist}">
         <fileset dir="src/wolips-profiling-feature">
@@ -99,7 +118,17 @@
      <gzip src="${wolips.dist.filename}.tar"
          zipfile="${wolips.dist.filename}.tar.gz"/>
      <delete file="${wolips.dist.filename}.tar"/>
-     
-    </target>
-	
+
+     <tar tarfile="${wolips.dist.base}/org.eclipse.core.ant.patched.tar">
+         <tarfileset dir="${wolips.dist.base}">
+             <include name="**/optional/**"/>
+         </tarfileset>
+    </tar>
+
+   <gzip src="${wolips.dist.base}/org.eclipse.core.ant.patched.tar"
+       zipfile="${wolips.dist.base}/org.eclipse.core.ant.patched.tar.gz"/>	
+   <delete file="${wolips.dist.base}/org.eclipse.core.ant.patched.tar"/>
+
+   </target>
+
 </project>

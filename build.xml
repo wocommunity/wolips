@@ -60,6 +60,7 @@
     <property name="wolips.logging.name" value="org.objectstyle.wolips.logging_${WOLips.version}"/>
     <property name="wolips.logging.dist" value="${wolips.plugins.folder}/${wolips.logging.name}"/>
     <property name="wolips.feature.dist" value="${wolips.features.folder}/org.objectstyle.wolips.feature_${WOLips.version}"/>
+    <property name="wolips.feature.plugin.dist" value="${wolips.plugins.folder}/org.objectstyle.wolips.feature_${WOLips.version}"/>
     <property name="wolips.profiling.feature.dist" value="${wolips.features.folder}/org.objectstyle.wolips.profiling.feature_${WOLips.version}"/>
     <property name="wolips.tests.feature.dist" value="${wolips.features.folder}/org.objectstyle.wolips.tests.feature_${WOLips.version}"/>
     <property name="wolips.team.name" value="org.objectstyle.wolips.team_${WOLips.version}"/>
