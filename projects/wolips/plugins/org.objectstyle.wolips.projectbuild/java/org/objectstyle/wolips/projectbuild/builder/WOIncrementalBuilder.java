@@ -99,41 +99,17 @@ import org.objectstyle.wolips.projectbuild.util.ResourceUtilities;
  * build/ProjectName.framework folder that contains an approximation of the
  * structure needed to run a WebObjects application or use a framework
  */
-public class WOIncrementalBuilder extends IncrementalProjectBuilder {
-    private static interface ILogger {
-      void log(String s);
-      void log(Throwable t);
-      void log(String s, Throwable t);
-      void debug(String s);
-      void debug(Throwable t);
-      void debug(String s, Throwable t);
-    }
+public class WOIncrementalBuilder extends IncrementalProjectBuilder {  
     
-    private static class ConsoleLogger implements ILogger {
-      public void log(String s)                { System.out.println(s); }
-      public void log(Throwable t)             { t.printStackTrace(System.out); }
-      public void log(String s, Throwable t)   { System.out.print(s); t.printStackTrace(System.out); } 
-      public void debug(String s)              { System.out.println(s); }
-      public void debug(Throwable t)           { t.printStackTrace(System.out); }
-      public void debug(String s, Throwable t) { System.out.print(s); t.printStackTrace(System.out); }
-    }
-  
-    private static class StandardLogger implements ILogger {
-      StandardLogger (PluginLogger logger)      { _log = logger; }
-      public void log(String s)                 { _log.log(s); }
-      public void log(Throwable t)              { _log.log(t); }
-      public void log(String s, Throwable t)    { _log.log(s, t); } 
-      public void debug(String s)               { _log.debug(s); }
-      public void debug(Throwable t)            { _log.debug(t); }
-      public void debug(String s, Throwable t)  { _log.debug(s, t); } 
-      PluginLogger _log;
-    }
-  
 	/**
 	 * Constructor for WOProjectBuilder.
 	 */
 	public WOIncrementalBuilder() {
 		super();
+	}
+	
+	private static PluginLogger _getLogger() {
+		return ProjectBuildPlugin.getDefault().getPluginLogger();
 	}
 	/*
 	 * this is duplicated from ProjectNaturePage, couldn't find a good place for
@@ -330,15 +306,6 @@ public class WOIncrementalBuilder extends IncrementalProjectBuilder {
 			// JVM
 			_getLogger().log(uee);
 		}
-	}
-
-    private static ILogger _logger = null;
-    private static ILogger _getLogger() {
-      if (null == _logger) {
-        _logger = new StandardLogger (ProjectBuildPlugin.getDefault().getPluginLogger());
-//        _logger = new ConsoleLogger();
-      }
-      return _logger;
 	}
 
     private void _jarBuild(IResourceDelta delta, IProgressMonitor m)
