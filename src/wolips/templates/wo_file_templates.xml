@@ -230,6 +230,7 @@ public class DirectAction extends WODirectAction {
    			<resources dir=".">
 				<include name="Properties"/>
    				<include name="**/*.eomodeld/"/>
+   				<include name="**/*.d2wmodel"/>
        			<include name="**/*.wo/"/>
        			<include name="**/*.api"/>
        			<include name="**/*.strings"/>
@@ -341,6 +342,7 @@ project.name = ${PROJECT_NAME}
    			<resources dir=".">
 				<include name="Properties"/>
        			<include name="**/*.eomodeld/"/>
+       			<include name="**/*.d2wmodel"/>
        			<include name="**/*.wo/"/>
 				<include name="**/*.api"/>
 				<include name="**/*.strings"/>
