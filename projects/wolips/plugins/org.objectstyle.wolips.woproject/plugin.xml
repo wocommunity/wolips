@@ -12,5 +12,9 @@
          <packages prefixes="org.objectstyle.woenvironment"/>
       </library>
    </runtime>
+   <requires>
+      <import plugin="org.objectstyle.wolips.cayenne"/>
+   </requires>
+
 
 </plugin>
