@@ -6,6 +6,8 @@
  */
 package org.objectstyle.wolips.templateengine;
 
+import java.util.GregorianCalendar;
+
 
 /**
  * @author ulrich
@@ -14,6 +16,9 @@ package org.objectstyle.wolips.templateengine;
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
 public class WOLipsContext {
+	/**
+	 * Comment for <code>Key</code>
+	 */
 	public final static String Key = "WOLipsContext";
 	
 	private String projectName;
@@ -37,6 +42,9 @@ public class WOLipsContext {
 		this.projectName = projectName;
 	}
 	
+	/**
+	 * @return
+	 */
 	public String getPluginName() {
 		return TemplateEnginePlugin.getDefault().getDescriptor().getUniqueIdentifier();
 	}
@@ -75,5 +83,12 @@ public class WOLipsContext {
 	 */
 	public void setComponentName(String componentName) {
 		this.componentName = componentName;
+	}
+	
+	/**
+	 * @return
+	 */
+	public String getDate() {
+		return new GregorianCalendar().toString();
 	}
 }
