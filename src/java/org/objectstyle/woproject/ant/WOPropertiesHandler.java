@@ -102,8 +102,10 @@ public class WOPropertiesHandler extends ProjectComponent {
 		String aPrefix = null;
 		String aPath = null;
 		try {
-			aPath = aFile.getCanonicalPath();
-
+			//aPath = aFile.getCanonicalPath();
+			//u.k. the CanonicalPath will resolve links this will
+			//result in path with /Versions/a in it
+			aPath = aFile.getPath();
 			//            aPrefix = this.getAppRootPath();
 			//            if((aPrefix != null) && (aPrefix.length() > 1) && (aPath.startsWith(aPrefix))) {
 			//            	return "APPROOT" + aPath.substring(aPrefix.length());
