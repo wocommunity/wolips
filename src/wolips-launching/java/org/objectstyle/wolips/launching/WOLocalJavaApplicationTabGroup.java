@@ -57,6 +57,7 @@
 package org.objectstyle.wolips.launching;
 
 
+import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTabGroup;
 import org.eclipse.debug.ui.CommonTab;
 import org.eclipse.debug.ui.ILaunchConfigurationDialog;
@@ -92,6 +93,15 @@ public class WOLocalJavaApplicationTabGroup extends AbstractLaunchConfigurationT
 			new CommonTab()
 		};
 		setTabs(tabs);
+	}
+
+  /* (non-Javadoc)
+	 * @see org.eclipse.debug.ui.AbstractLaunchConfigurationTabGroup#setDefaults(org.eclipse.debug.core.ILaunchConfigurationWorkingCopy)
+	 */
+	public void setDefaults(ILaunchConfigurationWorkingCopy wc) {
+    WOJavaLocalApplicationLaunchConfigurationDelegate.initConfiguration(wc);
+
+		super.setDefaults(wc);
 	}
 
 }

@@ -60,13 +60,16 @@ import java.io.File;
 import java.text.MessageFormat;
 import java.util.Map;
 
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
+import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.launching.AbstractJavaLaunchConfigurationDelegate;
@@ -87,12 +90,23 @@ import org.objectstyle.woproject.util.FileStringScanner;
  * Launches a local VM.
  */
 public class WOJavaLocalApplicationLaunchConfigurationDelegate
-	extends AbstractJavaLaunchConfigurationDelegate {
+	extends AbstractJavaLaunchConfigurationDelegate 
+{
 	public static final String WOJavaLocalApplicationID =
 		"org.objectstyle.wolips.launching.WOLocalJavaApplication";
 	/** The launch configuration attribute for stack trace depth */
 	public static final String ATTR_WOLIPS_LAUNCH_WOARGUMENTS =
 		"org.objectstyle.wolips.launchinfo";
+
+
+  public static void initConfiguration (ILaunchConfigurationWorkingCopy config) {
+    config.setAttribute(
+      IJavaLaunchConfigurationConstants.ATTR_CLASSPATH_PROVIDER, 
+      WORuntimeClasspathProvider.ID
+    );
+
+  }
+
 	/**
 	 * @see ILaunchConfigurationDelegate#launch(ILaunchConfiguration, String, ILaunch, IProgressMonitor)
 	 */
@@ -245,17 +259,41 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 	 * @see org.eclipse.jdt.launching.AbstractJavaLaunchConfigurationDelegate#verifyWorkingDirectory(org.eclipse.debug.core.ILaunchConfiguration)
 	 */
 	public File verifyWorkingDirectory(ILaunchConfiguration configuration)
-		throws CoreException {
-		WOLipsProject wolipsProject =
-			new WOLipsProject(this.getJavaProject(configuration).getProject());
-		boolean projectIsBuildByAnt =
-			wolipsProject.getNaturesAccessor().isAnt();
-		File aFile = super.verifyWorkingDirectory(configuration);
-		if (projectIsBuildByAnt
-			&& ((aFile == null) || (aFile.toString().indexOf(".woa") < 0))) {
-			abort(MessageFormat.format(LaunchingMessages.getString("WOJavaLocalApplicationLaunchConfigurationDelegate.Working_directory_is_not_a_woa__{0}_12"), new String[] { aFile.toString()}), null, IJavaLaunchConfigurationConstants.ERR_WORKING_DIRECTORY_DOES_NOT_EXIST); //$NON-NLS-1$
+		throws CoreException 
+  {
+    IProject theProject = this.getJavaProject(configuration).getProject();  
+    WOLipsProject wolipsProject = new WOLipsProject(theProject);
+    WOLipsProject.NaturesAccessor na = wolipsProject.getNaturesAccessor();
+
+    IPath wd = getWorkingDirectoryPath(configuration);
+    
+    File wdFile = null;
+    if (wd == null) {
+      IFolder wdFolder;
+      if (na.isAnt()) {
+        wdFolder = theProject.getFolder("dist/"+theProject.getName()+".woa");
+      } else {
+        wdFolder = theProject.getFolder("build/"+theProject.getName()+".woa");
+      }
+      if (wdFolder == null || !wdFolder.exists()) {
+        wdFolder = theProject.getFolder(theProject.getName()+".woa");
+      }
+      if (wdFolder != null && !wdFolder.exists()) {
+        wdFolder = null;
+      } else {
+        wdFile = wdFolder.getLocation().toFile();
+      }
+    } 
+
+    if (null == wdFile) {
+      wdFile = super.verifyWorkingDirectory(configuration);
+    }
+
+    if (((wdFile == null) || (wdFile.toString().indexOf(".woa") < 0))) {
+			abort(MessageFormat.format(LaunchingMessages.getString("WOJavaLocalApplicationLaunchConfigurationDelegate.Working_directory_is_not_a_woa__{0}_12"), new String[] { wdFile.toString()}), null, IJavaLaunchConfigurationConstants.ERR_WORKING_DIRECTORY_DOES_NOT_EXIST); //$NON-NLS-1$
 		}
-		return aFile;
+
+		return wdFile;
 	}
 
 	/**
@@ -277,7 +315,6 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 	 * @return String
 	 */
 	private String getGeneratedByWOLips(ILaunchConfiguration configuration) {
-		boolean moreThenOne = false;
 		String returnValue = "";
 		IProject[] projects =
 			ResourcesPlugin.getWorkspace().getRoot().getProjects();
@@ -285,7 +322,6 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 			if (isValidProjectPath(projects[i], configuration)) {
 				if (isAFramework(projects[i], configuration)) {
 					if (returnValue.length() > 0) {
-						moreThenOne = true;
 						returnValue = returnValue + ",";
 					}
 					returnValue =
@@ -296,14 +332,8 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 				}
 				if (isTheLaunchApp(projects[i], configuration)) {
 					if (returnValue.length() > 0) {
-						moreThenOne = true;
 						returnValue = returnValue + ",";
 					}
-					/*returnValue =
-						returnValue
-							+ "\""
-							+ projects[i].getLocation().toOSString()
-							+ "\"";*/
 					returnValue =
 						returnValue
 							+ "\""
@@ -320,10 +350,9 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 		returnValue = this.addPreferencesValue(returnValue);
 		if ("".equals(returnValue))
 			returnValue = "\"" + ".." + "\"";
-		//if (moreThenOne)
-		/*	returnValue = "\"(" + returnValue + ")\"";
-			else */
+
 		returnValue = "(" + returnValue + ")";
+
 		return returnValue;
 	}
 	/**

@@ -244,6 +244,9 @@ public class WOJavaApplicationLaunchShortcut implements ILaunchShortcut {
 			//wc.setAttribute(IDebugUIConstants.ATTR_TARGET_DEBUG_PERSPECTIVE, IDebugUIConstants.PERSPECTIVE_DEFAULT);
 			//wc.setAttribute(IDebugUIConstants.ATTR_TARGET_RUN_PERSPECTIVE, IDebugUIConstants.PERSPECTIVE_DEFAULT);
 			wc.setAttribute(ILaunchConfiguration.ATTR_SOURCE_LOCATOR_ID, JavaUISourceLocator.ID_PROMPTING_JAVA_SOURCE_LOCATOR);
+      
+      WOJavaLocalApplicationLaunchConfigurationDelegate.initConfiguration(wc);
+      
 			config = wc.doSave();		
 		} catch (CoreException ce) {
 			JDIDebugUIPlugin.log(ce);			
