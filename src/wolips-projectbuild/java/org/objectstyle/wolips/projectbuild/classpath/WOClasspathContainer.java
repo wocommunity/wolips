@@ -68,6 +68,7 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jdt.launching.IRuntimeContainerComparator;
 import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
 
 /**
@@ -75,7 +76,7 @@ import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
  *
  */
 public class WOClasspathContainer 
-  implements IClasspathContainer
+  implements IClasspathContainer, IRuntimeContainerComparator
 {
   
 	public static final String WOCP_IDENTITY 
@@ -103,6 +104,13 @@ public class WOClasspathContainer
     
     _initPath ();
   }
+  
+  /* (non-Javadoc)
+	 * @see org.eclipse.jdt.launching.IRuntimeContainerComparator#isDuplicate(org.eclipse.core.runtime.IPath)
+	 */
+	public boolean isDuplicate(IPath containerPath) {
+		return _id.equals(containerPath);
+	}
 
   /**
    * @see org.eclipse.jdt.core.IClasspathContainer#getClasspathEntries()
