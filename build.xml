@@ -165,6 +165,8 @@
         </jar>
         
         <copy todir="${dist}/lib" file="lib/junit.jar"/>
+        <copy todir="${dist}/lib" file="${ant.home}/lib/ant.jar"/>
+        <copy todir="tests/wo/frameworks/art/lib" file="${dist}/lib/${project.name}.jar"/>
     </target>
 
 
@@ -172,7 +174,7 @@
     <!-- Runs Unit tests.                              -->
     <!-- ============================================= -->
     <target name="test" depends="java-tests">
-    	<java classname="org.objectstyle.woproject.TestsMain" fork="yes" >
+    	<java classname="org.objectstyle.woproject.TestsMain" fork="yes" failonerror="yes">
     		<classpath refid="classpath-tests-run"/>
         </java>
     </target>

@@ -28,7 +28,7 @@
     	<!-- Include project extra libraries. -->
         <fileset dir="lib">
             <include name="**/*.jar"/>
-        </fileset>
+        </fileset>        
         
         <!-- Include WebObjects jars. -->
         <fileset dir="${next.root}/Library/Frameworks">           
@@ -63,7 +63,7 @@
     <!-- framework.                                    -->
     <!-- ============================================= -->
     <target name="compile" depends="prepare">
-        <javac srcdir="src/java" destdir="build">
+        <javac srcdir="src" destdir="build">
             <classpath refid="classpath"/>
         </javac>       
     </target>

@@ -56,40 +56,36 @@
 
 package org.objectstyle.woproject.ant;
 
-import junit.framework.TestCase;
+import java.io.File;
 
-import org.apache.tools.ant.taskdefs.Ant;
+import org.apache.tools.ant.*;
 
 /** 
- * A test case that attempts to build art framework and does
- * various assertions about build results. 
+ * Helper class to prepare ant tasks from Java code.
  * 
  * @author Andrei Adamchik
  */
-public class ArtBuildTest extends TestCase {
-    protected TaskBuilder builder;
+public class TaskBuilder {
+    protected Project project;
 
-    public ArtBuildTest(String name) {
-        super(name);
+    public TaskBuilder(String baseDir) {
+        project = new Project();
+        project.setBaseDir(new File(baseDir));
+        project.setJavaVersionProperty();
+        project.addTaskDefinition("property", org.apache.tools.ant.taskdefs.Property.class);
     }
 
-    public void setUp() throws Exception {
-        super.setUp();
-        builder = new TaskBuilder(".");
-        buildFramework();
+    /**
+     * Returns default project associated with this TaskBuilder.
+     */
+    public Project getProject() {
+        return project;
     }
 
-    public void tearDown() throws Exception {
-        super.tearDown();
-    }
-
-    public void testMe() throws Exception {
-    }
-
-    /** Runs full build on "art" framework. */
-    public void buildFramework() throws Exception {
-        Ant t = new Ant();
-        builder.prepareTask(t);
-        t.execute();
+    /** Performs new task initialization. */
+    public void prepareTask(Task t) {
+        t.setProject(project);
+        t.setTaskName("Test");
+        t.setLocation(Location.UNKNOWN_LOCATION);
     }
 }
