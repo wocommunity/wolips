@@ -57,7 +57,10 @@ package org.objectstyle.wolips.jdt.listener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.WorkspaceJob;
@@ -103,7 +106,7 @@ public class JavaElementChangeListener extends WorkspaceJob {
 					"Done", null);
 		
 		IJavaElementDelta elementDeltaToExamine = this.event.getDelta();
-		ArrayList foundChangedElements = new ArrayList();
+		Set foundChangedElements = new HashSet();
 		HashMap addedFrameworksProjectDict = new HashMap();
 		HashMap removedFrameworksProjectDict = new HashMap();
 		boolean javaProjectChanges = false;
@@ -145,7 +148,7 @@ public class JavaElementChangeListener extends WorkspaceJob {
 						removedFrameworksProjectDict.put(projectToExamine,
 								new ArrayList());
 						// webobjects project changed
-						ArrayList foundElements = new ArrayList();
+						Set foundElements = new HashSet();
 						// search deltas for classpath changes
 						searchDeltas(
 								elementDeltaToExamine.getChangedChildren()[i]
@@ -154,15 +157,13 @@ public class JavaElementChangeListener extends WorkspaceJob {
 								foundElements);
 						IPackageFragmentRoot currentPackageFragmentRoot;
 						ArrayList addedFrameworks = (ArrayList) addedFrameworksProjectDict
-								.get(projectToExamine);
-						for (int j = 0; j < foundElements.size(); j++) {
-							currentPackageFragmentRoot = (IPackageFragmentRoot) foundElements
-									.get(j);
-							//System.out.println(currentPackageFragmentRoot);
-							addedFrameworks.add(currentPackageFragmentRoot
-									.getPath());
+						.get(projectToExamine);
+						for (Iterator iter = foundElements.iterator(); iter.hasNext();) {
+						    currentPackageFragmentRoot = (IPackageFragmentRoot) iter.next();
+						    addedFrameworks.add(currentPackageFragmentRoot
+						            .getPath());
 						}
-						foundElements = new ArrayList();
+						foundElements = new HashSet();
 						// search deltas for classpath changes
 						searchDeltas(
 								elementDeltaToExamine.getChangedChildren()[i]
@@ -171,9 +172,8 @@ public class JavaElementChangeListener extends WorkspaceJob {
 								foundElements);
 						ArrayList removedFrameworks = (ArrayList) removedFrameworksProjectDict
 								.get(projectToExamine);
-						for (int j = 0; j < foundElements.size(); j++) {
-							currentPackageFragmentRoot = (IPackageFragmentRoot) foundElements
-									.get(j);
+						for (Iterator iter = foundElements.iterator(); iter.hasNext();) {
+						    currentPackageFragmentRoot = (IPackageFragmentRoot) iter.next();
 							IPath rawClasspathEntryPath = currentPackageFragmentRoot
 									.getPath();
 							//.getRawClasspathEntry()
@@ -202,12 +202,12 @@ public class JavaElementChangeListener extends WorkspaceJob {
 	 * 
 	 * @param deltasToExamine
 	 * @param elementType
-	 * @param foundElements
+	 * @param foundChangedElements
 	 * @return boolean
 	 */
 	private final boolean searchDeltasForElementType(
 			IJavaElementDelta[] deltasToExamine, int elementType,
-			ArrayList foundElements
+			Set foundElements
     ) {
 	    int oldSize = 0;
 	    if (null != foundElements) {
@@ -220,11 +220,9 @@ public class JavaElementChangeListener extends WorkspaceJob {
 						elementType, foundElements)) {
 					continue;
 				}
-			} else if (deltasToExamine[i].getElement().getElementType() == elementType) {
+			} else if ((deltasToExamine[i].getElement().getElementType() & elementType) != 0) {
 				// element found
-			    if(!foundElements.contains(deltasToExamine[i].getElement())) {
-			        foundElements.add(deltasToExamine[i].getElement());
-			    }
+		        foundElements.add(deltasToExamine[i].getElement());
 			}
 		}
 		return (foundElements != null && (foundElements.size() != oldSize));
@@ -238,11 +236,11 @@ public class JavaElementChangeListener extends WorkspaceJob {
 	 * 
 	 * @param deltasToExamine
 	 * @param changeFlagToSearch
-	 * @param foundElements
+	 * @param foundChangedElements
 	 * @return boolean
 	 */
 	private final boolean searchDeltas(IJavaElementDelta[] deltasToExamine,
-			int changeFlagToSearch, ArrayList foundElements) {
+			int changeFlagToSearch, Set foundElements) {
 	    int oldSize = 0;
 	    if (null != foundElements) {
 	        oldSize = foundElements.size();
@@ -254,11 +252,9 @@ public class JavaElementChangeListener extends WorkspaceJob {
 						changeFlagToSearch, foundElements)) {
 					continue;
 				}
-			} else if ((deltasToExamine[i].getFlags() & changeFlagToSearch) == 0) {
+			} else if ((deltasToExamine[i].getFlags() & changeFlagToSearch) != 0) {
 			    // element found
-			    if(!foundElements.contains(deltasToExamine[i].getElement())) {
-			        foundElements.add(deltasToExamine[i].getElement());
-			    }
+		        foundElements.add(deltasToExamine[i].getElement());
 			}
 		}
 		return (foundElements != null && (foundElements.size() != oldSize));
