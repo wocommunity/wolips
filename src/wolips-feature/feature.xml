@@ -78,5 +78,12 @@
          install-size="0"
          version="1.0.0"
          fragment="true"/>
+         
+   <plugin
+         id="org.objectstyle.wolipsui"
+         download-size="0"
+         install-size="0"
+         version="1.0.0"
+         fragment="true"/>         
                   
 </feature>

@@ -65,6 +65,8 @@
 	     <fileset dir="src/wolips-profiling/java"/>
 	     <fileset dir="src/wolips-devstudio/java"/>
 	     <fileset dir="src/wolips-projectbuild/java"/>	     		     <fileset dir="src/wolips-wounit/java"/>
+	     <fileset dir="src/wolips-ui/java"/>
+	     <fileset dir="src/wolips-tests/java"/>
          </copy>
 
     </target>

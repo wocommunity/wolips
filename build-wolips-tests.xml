@@ -1,0 +1,110 @@
+<?xml version="1.0"?>
+
+<!-- ======================================================== -->
+<!--                 WOLips Ant file.                         -->
+<!-- ======================================================== -->
+<project name="woproject-wolips-tests" default="java" basedir=".">
+
+    <!-- ============================================= -->
+    <!-- Define CLASSPATH settings.                    -->
+    <!-- ============================================= -->
+    <target name="defineClasspath" if="wolips.build.tests">
+        <path id="classpath">
+            <fileset dir="${ant.home}/lib">
+                <include name="ant.jar"/>
+            </fileset>
+            <fileset dir="lib">
+                <include name="*.jar"/>
+	            <include name="eclipse/**/*.jar"/>
+            </fileset>
+	    <fileset dir="${wolips.dist}">
+			<include name="**/wolips.jar"/>
+	    </fileset>
+            <fileset dir="${wo.dir.library.frameworks}">
+                <include name="JavaFoundation.framework/Resources/Java/*.jar"/>
+            </fileset>
+             <!-- Depends on WOProject core. -->
+            <pathelement path="${build}/main"/>
+        </path>
+    </target>
+
+    <target name="java" depends="prepare" if="wolips.build.tests">
+        <javac srcdir="src/wolips-tests/java"
+                destdir="${build}/wolips-tests"
+                deprecation="${compile.deprecation}"
+                debug="${compile.debug}"
+                optimize="${compile.optimize}">
+            <classpath refid="classpath"/>
+        </javac>
+         
+        <jar jarfile="${wolips.tests.dist}/lib/wolips-tests.jar">
+            <fileset dir="${build}/wolips-tests"/>
+            <fileset dir="src/wolips-tests/java">
+          	    <include name="**/*.properties"/>
+             </fileset>         
+            <metainf dir="doc">
+                <include name="LICENSE*"/>
+            </metainf>
+        </jar>
+        
+    </target>
+
+    <target name="dist" depends="prepare,java,doc,api" if="wolips.build.tests">
+         <copy todir="${wolips.tests.dist}">
+             <fileset dir="src/wolips-tests">
+             	<exclude name="**/java/**"/>
+             	<exclude name="**/lib/**"/>
+             	<exclude name="**/xdocs/**"/>
+             	<exclude name="**/docs/**"/>
+             	<exclude name=".project"/>
+             	<exclude name=".classpath"/>
+             	<exclude name="build.properties"/>
+             </fileset>
+         </copy>
+     <jar jarfile="${wolips.tests.dist}.jar">
+     	<fileset dir="${wolips.tests.dist}">
+     	</fileset>
+     </jar>
+          
+    </target>
+         
+         
+         
+    <!-- ============================================= -->
+    <!-- Sets up build and distribution directories.   -->
+    <!-- ============================================= -->
+    <target name="prepare" depends="defineClasspath" if="wolips.build.tests">
+        <mkdir dir="${build}/wolips-tests"/>
+        <mkdir dir="${wolips.tests.dist}/lib"/>
+    </target>
+
+
+    <!-- ============================================= -->
+    <!-- Deletes temporary files.                      -->
+    <!-- ============================================= -->
+    <target name="clean">
+        <delete dir="${build}/wolips-tests"/>
+        <delete dir="${wolips.tests.dist}"/>
+    </target>
+    
+    
+    <!-- ============================================= -->
+    <!-- Deploys WOLips web site files in a local      -->
+    <!-- directory.                                    -->
+    <!-- ============================================= -->
+    <target name="deploy-web" depends="prepare,site-doc" if="deploy.web"/>
+    
+    
+    <!-- ========================================== -->
+    <!-- Builds API documenatation.                 -->
+    <!-- ========================================== -->
+    <target name="api" depends="prepare" if="wolips.build.tests">
+    </target>
+    
+    
+    <target name="doc" depends="prepare" if="wolips.build.tests">
+    </target>
+    
+    <target name="site-doc" depends="prepare" if="wolips.build.tests">
+    </target>
+</project>
