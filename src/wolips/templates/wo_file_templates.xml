@@ -202,22 +202,16 @@ public class DirectAction extends WODirectAction {
 	<!-- property determination  -->
 	<target name="setProps">
 		<property file="build.properties"/>
-		<!-- determine os depending properties -->
-		<property environment="env"/>
-		<property name="wo.woroot" value="${env.NEXT_ROOT}"/>
-    	<condition property="wo.woroot" value="/System">
-            <and>
-                <os family="mac" />
-                <os family="unix" />
-            </and>
-        </condition>
-		<property name="wo.wolocalroot" value="${wo.woroot}/Local"/>
-		<condition property= "wo.wolocalroot" value="/">
-            <and>
-                <os family="mac" />
-                <os family="unix" />
-            </and>
-     	</condition>
+		<property file="${user.home}/wobuild.properties"/>
+		<condition property="wo.properties.ckeck.failed">
+			<not>
+    			<and>
+      				<isset property="wo.woroot"/>
+      				<isset property="wo.wolocalroot"/>
+    			</and>
+    		</not>
+  		</condition>
+  		<fail message="Could not find ${user.home}/wobuild.properties." if="wo.properties.ckeck.failed"/>
 		<property name="install.dir" value="${wo.wolocalroot}/Library/Webobjects/Applications"/>
 	</target>
 		
@@ -244,6 +238,8 @@ public class DirectAction extends WODirectAction {
    				<include name="**/*.eomodeld/"/>
        			<include name="**/*.wo/"/>
        			<include name="**/*.api"/>
+       			<exclude name="**/*.eomodeld~/"/>
+       			<exclude name="**/*.woa/**"
        		</resources>
 			<frameworks root="${wo.woroot}">
       				<patternset>
@@ -309,23 +305,17 @@ project.name = ${PROJECT_NAME}
 
 	<!-- property determination  -->
 	<target name="setProps">
-		<property file="build.properties"/>	
-		<!-- determine os depending properties -->
-		<property environment="env"/>
-		<property name="wo.woroot" value="${env.NEXT_ROOT}"/>
-    	<condition property="wo.woroot" value="/System">
-            <and>
-                <os family="mac" />
-                <os family="unix" />
-            </and>
-        </condition>
-		<property name="wo.wolocalroot" value="${wo.woroot}/Local"/>
-		<condition property= "wo.wolocalroot" value="/">
-            <and>
-                <os family="mac" />
-                <os family="unix" />
-            </and>
-     	</condition>
+		<property file="build.properties"/>
+		<property file="${user.home}/wobuild.properties"/>
+		<condition property="wo.properties.ckeck.failed">
+			<not>
+    			<and>
+      				<isset property="wo.woroot"/>
+      				<isset property="wo.wolocalroot"/>
+    			</and>
+    		</not>
+  		</condition>
+  		<fail message="Could not find ${user.home}/wobuild.properties." if="wo.properties.ckeck.failed"/>
 		<property name="install.dir" value="${wo.wolocalroot}/Library/Frameworks"/>
 	</target>
 
@@ -350,6 +340,8 @@ project.name = ${PROJECT_NAME}
        			<include name="**/*.eomodeld/"/>
        			<include name="**/*.wo/"/>
 				<include name="**/*.api"/>
+				<exclude name="**/*.eomodeld~/"/>
+				<exclude name="**/*.framework/**"/>
    			</resources>
    		</woframework>
 		<eclipse.refreshLocal resource="${framework.name}" depth="infinite"/>
