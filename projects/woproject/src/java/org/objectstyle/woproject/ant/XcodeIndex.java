@@ -64,39 +64,16 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.types.FileSet;
-import org.objectstyle.woenvironment.pb.PBXProject;
+import org.objectstyle.woenvironment.pb.XcodeProject;
 
 /**
  * @author Jonathan 'Wolf' Rentzsch
  */
-public class PBXIndex extends Task {
-	protected File projectFile;
-	protected Vector resources = new Vector();
-	protected Vector frameworkSets = new Vector();
-	protected SubtaskFactory subtaskFactory = new SubtaskFactory(this);
+public class XcodeIndex extends PBXIndex {
+	protected Vector sources = new Vector();
 
-	public void addResources(FileSet set) {
-		resources.addElement(set);
-	}
-
-	public void addFrameworks(FrameworkSet set) {
-		frameworkSets.addElement(set);
-	}
-
-	/**
-	 * Returns the projectFile.
-	 * @return String
-	 */
-	public File getProjectFile() {
-		return projectFile;
-	}
-
-	/**
-	 * Sets the projectFile.
-	 * @param projectFile The projectFile to set
-	 */
-	public void setProjectFile(File projectFile) {
-		this.projectFile = projectFile;
+	public void addSources(FileSet set) {
+		sources.addElement(set);
 	}
 
 	/**
@@ -105,12 +82,32 @@ public class PBXIndex extends Task {
 	public void execute() throws BuildException {
 		validateAttributes();
 		
-		PBXProject proj = new PBXProject();
+		XcodeProject proj = new XcodeProject();
 		addToProject( proj );
+		
+		//	Add source file references.
+		File	dir;
+		Iterator it = sources.iterator();
+		while (it.hasNext()) {
+			FileSet fs = (FileSet) it.next();
+			dir = fs.getDir(getProject());
+			DirectoryScanner ds = fs.getDirectoryScanner(getProject());
+			ds.scan();
+			
+			String[] allFiles = ds.getIncludedFiles();
+			for (int i = 0; i < allFiles.length; i++) {
+				proj.addSourceReference((new File(dir,fixPath(allFiles[i]))).getAbsolutePath());
+			}
+
+			String[] allDirs = ds.getIncludedDirectories();
+			for (int i = 0; i < allDirs.length; i++) {
+				proj.addSourceReference((new File(dir,fixPath(allDirs[i]))).getAbsolutePath());
+			}
+		}
 		
 		if( getProjectFile().exists() ) {
 			if( !getProjectFile().isDirectory() )
-				throw new BuildException("Specified PBX project package is not a directory.");
+				throw new BuildException("Specified Xcode project package is not a directory.");
 		} else
 			getProjectFile().mkdir();
 		File pbxprojFile = new File( getProjectFile(), "project.pbxproj" );
@@ -118,65 +115,10 @@ public class PBXIndex extends Task {
 			try {
 				pbxprojFile.createNewFile();
 			} catch( IOException x ) {
-				throw new BuildException("Failed to create project.pbxproj PBX project package file: "+x);
+				throw new BuildException("Failed to create project.pbxproj Xcode project package file: "+x);
 			}
 		}
 
 		proj.save( pbxprojFile );
-	}
-	
-	protected void addToProject( PBXProject proj ) {
-		//	Add resource file references.
-		File	dir;
-		Iterator it = resources.iterator();
-		while (it.hasNext()) {
-			FileSet fs = (FileSet) it.next();
-			dir = fs.getDir(getProject());
-			//System.out.println( "**** resources dir: "+dir );
-			DirectoryScanner ds = fs.getDirectoryScanner(getProject());
-			ds.scan();
-			
-			String[] allFiles = ds.getIncludedFiles();
-			for (int i = 0; i < allFiles.length; i++) {
-				proj.addFileReference((new File(dir,fixPath(allFiles[i]))).getAbsolutePath());
-			}
-
-			String[] allDirs = ds.getIncludedDirectories();
-			for (int i = 0; i < allDirs.length; i++) {
-				proj.addFileReference((new File(dir,fixPath(allDirs[i]))).getAbsolutePath());
-			}
-		}
-		
-		//	Add framework references.
-		it = frameworkSets.iterator();
-		while(it.hasNext()) {
-			FrameworkSet fs = (FrameworkSet) it.next();
-			dir = fs.getDir(getProject());
-			//System.out.println( "**** frameworks dir: "+dir );
-			DirectoryScanner ds = fs.getDirectoryScanner(getProject());
-			ds.scan();
-
-			String[] allDirs = ds.getIncludedDirectories();
-			for (int i = 0; i < allDirs.length; i++) {
-				proj.addFrameworkReference((new File(dir,fixPath(allDirs[i]))).getAbsolutePath());
-			}
-		}
-	}
-
-	/**
-	 * Ensure we have a consistent and legal set of attributes, and set any
-	 * internal flags necessary based on different combinations of attributes.
-	 *
-	 * @throws BuildException if task attributes are inconsistent or missing.
-	 */
-	protected void validateAttributes() throws BuildException {
-		if (projectFile == null) {
-			throw new BuildException("Required 'projectFile' attribute is missing.");
-		}
-	}
-
-	/** Replaces back slashes with forward slashes */
-	protected String fixPath(String path) {
-		return (File.separatorChar == '\\') ? path.replace('\\', '/') : path;
 	}
 }
