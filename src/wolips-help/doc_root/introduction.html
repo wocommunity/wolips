@@ -8,15 +8,9 @@
 <h1>Getting Started</h1>
 <h2><a name="prepare"></a>Preparations</h2>
 <p><span lang=EN-GB style='mso-fareast-font-family:"MS Mincho";
-mso-ansi-language:EN-GB'>You need a computer with a complete and working WebObjects 
-  5.1/5.2 development installation (<a
-href="http://www.tetlabors.de/wo/setup_webobjects_on_windows.html">Setup WebObjects 
-  on Windows</a>). WOLips versions prior to 0.9.2 required that you launched Eclipse 
-  using Java 1.3.1. WOLips 0.9.2 works with both Java 1.3.1 and <span
-class=GramE>1.4.1,</span> but require that you use Eclipse 2.1. At the time of 
-  writing the Eclipse “Latest Release” is still version 2.0.2. Both the “Current 
-  Stable Build” and “Current Integration Build” are however version 2.1 – use 
-  one of these. In addition, there is no “Latest Release” Macintosh version.<o:p></o:p></span></p>
+mso-ansi-language:EN-GB'>It is assumed that you have basic knowledge of WebObjects, 
+  WOLips is <a href="tasks/install.html">installed</a> and working, and you're 
+  ready to create your first WOLips application<o:p>.</o:p></span></p>
 <p class=MsoNormal><span lang=EN-GB style='mso-fareast-font-family:"MS Mincho";
 mso-ansi-language:EN-GB'><o:p></o:p></span><span lang=EN-GB style='mso-fareast-font-family:"MS Mincho";
 mso-ansi-language:EN-GB'>WOLips is mainly developed using Eclipse on Macintosh 
@@ -24,17 +18,6 @@ mso-ansi-language:EN-GB'>WOLips is mainly developed using Eclipse on Macintosh
   has, however, had some problems. If you have access to both Macintosh and Windows 
   computers, the author currently recommends you use a Windows computer to evaluate 
   WOLips (because of Eclipse).<o:p></o:p></span></p>
-<p class=MsoNormal><span lang=EN-GB style='mso-fareast-font-family:"MS Mincho";
-mso-ansi-language:EN-GB'><o:p></o:p></span><span lang=EN-GB style='mso-fareast-font-family:"MS Mincho";
-mso-ansi-language:EN-GB'>If you haven’t already, <a
-href="http://www.eclipse.org/downloads/index.php">download</a> Eclipse – unpack 
-  it and move the Eclipse folder to C:\Eclipse (From now on the author assumes 
-  this is where you put it). Inside this folder you find the executable as well 
-  as the C:\eclipse\features, C:\eclipse\plugins and C:\eclipse\workspace folders.<o:p></o:p></span></p>
-<p class=MsoNormal><span lang=EN-GB style='mso-fareast-font-family:"MS Mincho";
-mso-ansi-language:EN-GB'><o:p></o:p></span><span lang=EN-GB style='mso-fareast-font-family:"MS Mincho";
-mso-ansi-language:EN-GB'>(On Macintosh you need to Show Package Contents on the 
-  Eclipse application.)<o:p></o:p></span></p>
 <p class=MsoNormal><span lang=EN-GB style='mso-fareast-font-family:"MS Mincho";
 mso-ansi-language:EN-GB'><o:p></o:p></span><b style='mso-bidi-font-weight:normal'><span lang=EN-GB
 style='mso-fareast-font-family:"MS Mincho";mso-ansi-language:EN-GB'>Get to know 
@@ -49,7 +32,11 @@ lang=EN-GB style='mso-ansi-language:EN-GB'>several tutorials. Make certain you
 mso-ansi-language:EN-GB'>If you’re used to working with CVS then set that up as 
   well, and while you’re at it, why not set up <a href="http://www.junit.org/"><span
 class=SpellE>junit</span></a> and write a couple of tests.<o:p></o:p></span></p>
-<h2><a name="HelloWOrld"></a>Your Very First WOLips Application</h2>
+<p class=MsoNormal><span lang=EN-GB style='mso-fareast-font-family:"MS Mincho";
+mso-ansi-language:EN-GB'><o:p></o:p>It is a good idea to read through the <a href="issues.html">Bugs, 
+  Issues and Other Things</a> section of this documentation</span><span lang=EN-GB style='mso-fareast-font-family:"MS Mincho";
+mso-ansi-language:EN-GB'><o:p> before continuing.</o:p></span></p>
+<h2><a name="HelloWOrld"></a>Your First WOLips Application</h2>
 <p class=MsoNormal><span lang=EN-GB style='mso-fareast-font-family:"MS Mincho";
 mso-ansi-language:EN-GB'>It is very easy to create and run a basic WO application 
   using WOLips. Here’s how to do it:<o:p></o:p></span><span lang=EN-GB style='mso-fareast-font-family:"MS Mincho";
@@ -57,27 +44,19 @@ mso-ansi-language:EN-GB'><o:p></o:p></span></p>
 <ol style='margin-top:0cm' start=1 type=1>
   <li class=MsoNormal style='mso-list:l10 level1 lfo11;tab-stops:list 36.0pt'><span
      lang=EN-GB style='mso-fareast-font-family:"MS Mincho";mso-ansi-language:
-     EN-GB'>Open Windows &gt; Preferences – WOLips and make sure Build after <span
-     class=SpellE>JavaBuilder</span> is checked. This ensures that ready-to-deploy 
+     EN-GB'>Open <a href="reference/preferences.html#plugin_wolips_build">Windows 
+    &gt; Preferences – WOLips &gt; Build</a> and make sure &quot;Build after <span
+     class=SpellE>JavaBuilder&quot;</span> is checked. This ensures that ready-to-deploy 
     frameworks and applications are build as soon as the project is built, and 
     as always with Eclipse, the project is built as soon as (and every time) you 
-    save changes. Turning this option on is only necessary when you actually want 
-    to build a framework or application. It is not necessary while developing.<o:p></o:p></span></li>
-  <li class=MsoNormal style='mso-list:l10 level1 lfo11;tab-stops:list 36.0pt'><span
-     lang=EN-GB style='mso-fareast-font-family:"MS Mincho";mso-ansi-language:
-     EN-GB'>Select the menu option File &gt; New &gt; <span class=GramE>Other</span>...<o:p></o:p></span></li>
-  <li class=MsoNormal style='mso-list:l10 level1 lfo11;tab-stops:list 36.0pt'><span
-     lang=EN-GB style='mso-fareast-font-family:"MS Mincho";mso-ansi-language:
-     EN-GB'>Select WOLips WO 5.1 and 5.2 and then Application – press next.<o:p></o:p></span></li>
-  <li class=MsoNormal style='mso-list:l10 level1 lfo11;tab-stops:list 36.0pt'><span
-     lang=EN-GB style='mso-fareast-font-family:"MS Mincho";mso-ansi-language:
-     EN-GB'>Name the project <span class=SpellE>HelloWOrld</span> – press Finish.<o:p></o:p></span></li>
+    save changes. Later, when you know more about WOLips, you may want to turn 
+    this option off.<o:p></o:p></span></li>
+  <li>Use the <a href="tasks/wiz/new_application.html">New Application Wizard</a> 
+    to create a new application called HelloWOrld.</li>
   <li class=MsoNormal style='mso-list:l10 level1 lfo11;tab-stops:list 36.0pt'><span
      lang=EN-GB style='mso-fareast-font-family:"MS Mincho";mso-ansi-language:
      EN-GB'>Open the Navigator view and expand the <span class=SpellE>HelloWOrld</span> 
-    node. (As you just learned there is now a WOLips perspective and several new 
-    views. This description is based on the ordinary Navigator view.) Inside you’ll 
-    find four folders, and a number of files. They are:<o:p></o:p></span>
+    node. Inside you’ll find four folders, and a number of files. They are:<o:p></o:p></span> 
     <ul>
       <li><span lang=EN-GB style='mso-fareast-font-family:
 "MS Mincho";mso-ansi-language:EN-GB'>‘<span class=GramE>bin</span>’ contains all 
@@ -88,13 +67,9 @@ mso-ansi-language:EN-GB'><o:p></o:p></span></p>
       <li><span lang=EN-GB style='mso-fareast-font-family:
 "MS Mincho";mso-ansi-language:EN-GB'>‘<span class=SpellE>HelloWOrld.woa</span>’ 
         is the executable application. Among other things this folder contains 
-        the application start script ‘<span class=SpellE>HelloWOrld.cmd</span>’. 
-        If this folder doesn’t exist two things could be wrong. 1) The Build after 
-        <span
-class=SpellE>JavaBuild</span> option (from step 1) isn’t on. 2) The file ~\Library\<span class=SpellE>wobuild.properties</span> 
-        (from Installing WOLips) does not exist or is incorrect. If any of these 
-        things are wrong you need to correct them and then rebuild the project 
-        (Project &gt; Rebuild Project).<o:p></o:p></span></li>
+        the application start script ‘<span class=SpellE>HelloWOrld.cmd</span>’ 
+        for Windows and '<span class=SpellE>HelloWOrld</span>' for other platforms. 
+        <o:p></o:p></span></li>
       <li><span lang=EN-GB style='mso-fareast-font-family:
 "MS Mincho";mso-ansi-language:EN-GB'>‘<span class=SpellE>Main.wo</span>’ contain 
         the *.html, *.<span class=SpellE>wod</span> and *.woo files for the Main 
@@ -129,28 +104,21 @@ class=SpellE>JavaBuild</span> option (from step 1) isn’t on. 2) The file ~\Libra
   <li class=MsoNormal style='mso-list:l10 level1 lfo11;tab-stops:list 36.0pt'><span
      lang=EN-GB style='mso-fareast-font-family:"MS Mincho";mso-ansi-language:
      EN-GB'>Double-click ‘<span class=SpellE>Main.wod</span>’ and <span
-     class=SpellE>WOBuilder</span> opens... (Modify it to be a simple <span
+     class=SpellE>WOBuilder</span> opens... (Modify Main to be a simple <span
      class=SpellE><span class=GramE>HelloWOrld</span></span><span class=GramE><span
      style='mso-spacerun:yes'>  </span>component</span>.)<o:p></o:p></span></li>
   <li class=MsoNormal style='mso-list:l10 level1 lfo11;tab-stops:list 36.0pt'><span
      lang=EN-GB style='mso-fareast-font-family:"MS Mincho";mso-ansi-language:
-     EN-GB'>Double-click ‘<span class=SpellE>HelloWOrld.cmd</span>’ and the application 
-    is launched...<o:p></o:p></span><span lang=EN-GB style='mso-fareast-font-family:"MS Mincho";
+     EN-GB'>Double-click ‘<span class=SpellE>HelloWOrld.cmd</span>’or (‘<span class=SpellE>HelloWOrld'</span>) 
+    and the application is launched...<o:p></o:p></span><span lang=EN-GB style='mso-fareast-font-family:"MS Mincho";
 mso-ansi-language:EN-GB'><o:p></o:p></span></li>
 </ol>
 <p><span lang=EN-GB style='mso-fareast-font-family:"MS Mincho";
 mso-ansi-language:EN-GB'>That’s it!</span></p>
-<h2><a name="NextStep"></a>NextStep</h2>
-<p>In the tasks section you'll find descriptions on:</p>
-<ul>
-  <li><a href="tasks/wiz/new_application.html">Creating a new application</a></li>
-  <li><a href="tasks/wiz/new_framework.html">Creating a new framework</a></li>
-  <li><a href="tasks/wiz/add_component.html">Adding a new component</a></li>
-  <li><a href="tasks/wiz/add_eomodel.html">Adding a new model</a></li>
-  <li><a href="tasks/wiz/import_application.html">Importing an existing application</a></li>
-  <li><a href="tasks/wiz/import_framework.html">Importing an existing framework</a></li>
-  <li><a href="tasks/debug.html">Running and debugging the applications in Eclipse</a></li>
-</ul>
-<p>... and more.</p>
+<h2><a name="NextStep"></a>Next Steps</h2>
+<p>As you may guess, there is more to learn. Basically you should look at all 
+  the different topics in the <a href="tasks/index.html">Tasks</a> section. In 
+  particular you should read about <a href="tasks/build.html">building</a> and 
+  <a href="tasks/launch.html">launching</a>.</p>
 </body>
 </html>

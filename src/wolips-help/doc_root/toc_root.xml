@@ -7,8 +7,8 @@
 	<topic label="Getting Started" href="./doc_root/introduction.html">
 		
 		<topic label="Preparations" href="./doc_root/introduction.html#prepare"/>
-		<topic label="Your Very First WOLips Application" href="./doc_root/introduction.html#HelloWOrld"/>
-		<topic label="NextStep" href="./doc_root/introduction.html#NextStep"/>
+		<topic label="Your First WOLips Application" href="./doc_root/introduction.html#HelloWOrld"/>
+		<topic label="Next Steps" href="./doc_root/introduction.html#NextStep"/>
 		
 	</topic>
 	
@@ -16,7 +16,7 @@
 	
 	<topic label="Tasks" href="./doc_root/tasks/index.html">
 	
-		<topic label="Install" href="./doc_root/tasks/install.html"/>
+		<topic label="Installing" href="./doc_root/tasks/install.html"/>
 	
 		<topic label="Wizards" href="./doc_root/tasks/wiz/index.html">
 			
@@ -31,7 +31,7 @@
 
 		<topic label="Building" href="./doc_root/tasks/build.html"/>
 		<topic label="Testing" href="./doc_root/tasks/test.html"/>
-		<topic label="Debugging" href="./doc_root/tasks/debug.html"/>
+		<topic label="Launching" href="./doc_root/tasks/launch.html"/>
 		<topic label="Profiling" href="./doc_root/tasks/profile.html"/>  
 		
 	</topic>
@@ -65,9 +65,11 @@
 	<topic label="Programmer's Guide" href="./doc_root/programmer/index.html">
 		
 		<topic label="Inside WOLips" href="./doc_root/programmer/pde.html"/>
-		<topic label="Building from source" href="./doc_root/programmer/build.html"/>
+		<topic label="Building From Source" href="./doc_root/programmer/build.html"/>
 		<topic label="API Reference" href="./doc_root/programmer/api/index.html"/>
 		
 	</topic>
+	
+	<topic label="About This Document" href="./doc_root/index.html"/>
 	
 </toc>
