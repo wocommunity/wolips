@@ -68,7 +68,7 @@ public abstract class UpdateIncludeFiles extends Task {
 	protected static final String[] ROOT_PATHS =
 		{ "user.home", "wo.wolocalroot", "wo.woroot" };
 
-	protected static String INCLUDES_FILE_PREFIX;
+	protected  String INCLUDES_FILE_PREFIX;
 
 	private String projectName;
 	protected IProject actualProject;
