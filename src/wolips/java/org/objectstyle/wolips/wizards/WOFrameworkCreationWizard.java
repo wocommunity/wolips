@@ -56,7 +56,7 @@
 package org.objectstyle.wolips.wizards;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbench;
-import org.objectstyle.wolips.io.WOLipsLog;
+import org.objectstyle.wolips.logging.WOLipsLog;
 import org.objectstyle.wolips.project.ProjectHelper;
 /**
  * @author mnolte

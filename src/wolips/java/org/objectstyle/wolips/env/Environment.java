@@ -59,7 +59,7 @@ import java.io.File;
 import java.io.InputStreamReader;
 import java.util.Properties;
 import org.objectstyle.wolips.io.FileStringScanner;
-import org.objectstyle.wolips.io.WOLipsLog;
+import org.objectstyle.wolips.logging.WOLipsLog;
 /**
  * @author uli
  * Utility for the environment.

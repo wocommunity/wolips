@@ -69,7 +69,7 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
-import org.objectstyle.wolips.io.WOLipsLog;
+import org.objectstyle.wolips.logging.WOLipsLog;
 import org.objectstyle.wolips.plugin.WOLipsPlugin;
 
 /**

@@ -58,7 +58,7 @@ package org.objectstyle.wolips.actions;
 
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
-import org.objectstyle.wolips.io.WOLipsLog;
+import org.objectstyle.wolips.logging.WOLipsLog;
 import org.objectstyle.wolips.project.PBProjectUpdater;
 import org.objectstyle.wolips.project.ProjectHelper;
 

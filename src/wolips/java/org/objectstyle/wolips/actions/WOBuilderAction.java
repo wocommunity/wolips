@@ -58,7 +58,7 @@ import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
-import org.objectstyle.wolips.io.WOLipsLog;
+import org.objectstyle.wolips.logging.WOLipsLog;
 import org.objectstyle.wolips.plugin.IWOLipsPluginConstants;
 import org.objectstyle.wolips.project.ProjectHelper;
 /**

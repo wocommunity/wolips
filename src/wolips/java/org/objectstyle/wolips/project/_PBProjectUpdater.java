@@ -13,7 +13,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.Path;
-import org.objectstyle.wolips.io.WOLipsLog;
+import org.objectstyle.wolips.logging.WOLipsLog;
 import org.objectstyle.wolips.plugin.IWOLipsPluginConstants;
 import org.objectstyle.woproject.pb.PBProject;
 import org.objectstyle.woproject.util.FileStringScanner;

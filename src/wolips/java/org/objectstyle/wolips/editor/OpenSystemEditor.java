@@ -59,7 +59,7 @@ package org.objectstyle.wolips.editor;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.ui.IEditorLauncher;
 import org.eclipse.ui.internal.WorkbenchPlugin;
-import org.objectstyle.wolips.io.WOLipsLog;
+import org.objectstyle.wolips.logging.WOLipsLog;
 
 /**
  * @author uli

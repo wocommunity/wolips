@@ -60,7 +60,7 @@ package org.objectstyle.wolips.actions;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.action.IAction;
 import org.objectstyle.wolips.io.FileFromTemplateCreator;
-import org.objectstyle.wolips.io.WOLipsLog;
+import org.objectstyle.wolips.logging.WOLipsLog;
 import org.objectstyle.wolips.project.ProjectHelper;
 
 /**

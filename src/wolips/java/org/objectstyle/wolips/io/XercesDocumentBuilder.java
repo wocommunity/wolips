@@ -61,6 +61,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.objectstyle.wolips.logging.*;
+
 /**
  * @author uli
  *

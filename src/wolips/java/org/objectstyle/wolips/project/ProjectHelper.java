@@ -76,7 +76,7 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.internal.ui.util.CoreUtility;
-import org.objectstyle.wolips.io.WOLipsLog;
+import org.objectstyle.wolips.logging.WOLipsLog;
 import org.objectstyle.wolips.plugin.IWOLipsPluginConstants;
 import org.objectstyle.woproject.env.Environment;
 import org.objectstyle.woproject.env.WOVariables;

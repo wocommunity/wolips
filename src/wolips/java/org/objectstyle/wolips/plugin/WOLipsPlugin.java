@@ -56,7 +56,6 @@
 package org.objectstyle.wolips.plugin;
 import java.net.MalformedURLException;
 import java.net.URL;
-
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPluginDescriptor;
 import org.eclipse.core.runtime.IStatus;
@@ -67,7 +66,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IStartup;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.objectstyle.wolips.io.WOLipsLog;
+import org.objectstyle.wolips.logging.WOLipsLog;
 import org.objectstyle.wolips.preferences.Preferences;
 import org.objectstyle.wolips.wo.Foundation;
 /**
@@ -89,6 +88,10 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 	public WOLipsPlugin(IPluginDescriptor descriptor) {
 		super(descriptor);
 		plugin = this;
+		// set log factory
+		System.setProperty(
+			"org.apache.commons.logging.LogFactory",
+			"org.objectstyle.wolips.logging.WOLipsLogFactory");
 		Foundation.loadFoundationClasses();
 		Preferences.setDefaults();
 	}
@@ -99,7 +102,6 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 	 */
 	public void earlyStartup() {
 		EarlyStartup.earlyStartup();
-
 	}
 	/**
 	 * Returns an ImageDescriptor.
