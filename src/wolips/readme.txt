@@ -30,6 +30,7 @@ Don't use it.
 Working with WOLips in the PDE.
 
 1. Check out the stuff at woproject/src/wolips
-2. Right click on your project and select Update Classpath...
+2. Add cayenne.jar, log4j-1.2beta4.jar and woproject.jar from the woproject distribution to the lib folder.
+3. Right click on your project and select Update Classpath... .
 
 You should now be able to run it as a Runtime Workbench
