@@ -55,22 +55,29 @@
  */
 package org.objectstyle.wolips.datasets;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
-
 /**
- * Run all compiler regression tests
+ * @author ulrich
+ *
+ * To change the template for this generated type comment go to
+ * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public class DataSetsPluginTestSuite extends TestCase {
+public interface IWo {
+	
+	/**
+	 * @return true if the component has a WOComponentContent.
+	 */
+	public boolean getIsWOComponentContent();
+	/**
+	 * @param isWOComponentContent
+	 */
+	public void setIsWOComponentContent(boolean isWOComponentContent);
 
-	public DataSetsPluginTestSuite(String testName) {
-		super(testName);
-	}
-	public static Test suite() throws Exception {
-		TestSuite suite = new TestSuite();
-		suite.addTestSuite(DataSetsPluginTest.class);
-		suite.addTestSuite(IApiTest.class);
-		return suite;
-	}
+	/**
+	 * @return the class name.
+	 */
+	public String clazz();
+	/**
+	 * @param clazz
+	 */
+	public void setClazz(String clazz);
 }

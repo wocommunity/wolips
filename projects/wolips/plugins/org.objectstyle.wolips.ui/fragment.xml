@@ -24,8 +24,10 @@
       <import plugin="org.eclipse.debug.ui"/>
       <import plugin="org.eclipse.ui.workbench.texteditor"/>
       <import plugin="org.eclipse.ui.editors"/>
+      <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.ui.views"/>
    </requires>
-
 
 <!-- =================================================================================== -->
 <!-- Extension: Project actions                                                          -->
@@ -114,7 +116,7 @@
    <extension
          id="org.objectstyle.wolips.editors"
          point="org.eclipse.ui.editors">
-      <editor
+     <editor
             name="WOBuilder"
             default="true"
             icon="icons/wobuilder/webobjects_builder.gif"
