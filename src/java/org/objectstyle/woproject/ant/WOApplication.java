@@ -56,11 +56,13 @@
 package org.objectstyle.woproject.ant;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.types.PatternSet;
+import org.apache.tools.ant.taskdefs.Copy;
+import org.apache.tools.ant.types.FileSet;
+import org.apache.tools.ant.DirectoryScanner;
 
 /**
  * Ant task to build WebObjects application. For detailed instructions go to the
@@ -84,7 +86,13 @@ public class WOApplication extends WOTask {
 			"JavaXML" };
 
 	protected ArrayList frameworkSets = new ArrayList();
+	private Vector lib = new Vector();
 	protected boolean stdFrameworks = true;
+	protected boolean embedStdFrameworks = false;
+
+	public void addLib(FileSet set) {
+	    lib.addElement(set);
+	}
 
     public String getPrincipalClass() {
     	String principalClass = super.getPrincipalClass();
@@ -106,15 +114,82 @@ public class WOApplication extends WOTask {
 		if (hasClasses()) {
 			jarClasses();
 		}
+		if (hasLib()) {
+		    copyLibs();
+		}
 		if (hasResources()) {
 			copyResources();
 		}
 		if (hasWs()) {
 			copyWsresources();
 		}
+		if (hasEmbeddedFrameworks()) {
+		    copyEmbeddedFrameworks();
+		}
 
 		// create all needed scripts
 		new AppFormat(this).processTemplates();
+	}
+
+	protected void copyEmbeddedFrameworks() throws BuildException {
+//	    Copy cp = subtaskFactory.getResourceCopy();
+	    Copy cp = new Copy();
+	    cp.setOwningTarget(getOwningTarget());
+            cp.setProject(getProject()); 
+            cp.setTaskName(getTaskName());   
+            cp.setLocation(getLocation()); 
+
+	    cp.setTodir(embeddedFrameworksDir());
+ 
+	    // The purpose of this is to create filesets that actually
+	    // allow the framework directory to be copied into the
+	    // WOApplication directory.  If we didn't do this, we'd
+	    // have to append '/' or '/**' to the end of the includes
+	    // in the <frameworks> tag.
+	    List frameworkSets = getFrameworkSets();
+	    int size = frameworkSets.size();
+	    for (int i = 0; i < size; i++) {
+		FrameworkSet fs = (FrameworkSet)frameworkSets.get(i);
+
+		if ( fs.getEmbed() == false ) {
+		    continue;
+		}
+
+		File root = fs.getDir(getProject());
+		DirectoryScanner ds = fs.getDirectoryScanner(getProject());
+		String[] dirs = ds.getIncludedDirectories();
+
+		for (int j = 0; j < dirs.length; j++) {
+		    String includeName = dirs[j];
+
+		    if ( includeName.endsWith(".framework") == false ) {
+			throw new BuildException("'name' attribute must end with '.framework'");
+		    }
+
+		    FileSet newFs = new FileSet();
+		    PatternSet.NameEntry include;
+
+		    newFs.setDir(root);
+		    include = newFs.createInclude();
+		    include.setName(includeName + "/Resources/");
+		    include = newFs.createInclude();
+		    include.setName(includeName + "/WebServerResources/");
+		    
+		    cp.addFileset(newFs);
+		}
+	    }
+	    cp.execute();
+	}
+
+	protected void copyLibs() throws BuildException {
+	    Copy cp = subtaskFactory.getResourceCopy();
+	    cp.setTodir(new File(resourcesDir(), "Java"));
+ 
+	    Enumeration en = lib.elements();
+	    while (en.hasMoreElements()) {
+		cp.addFileset((FileSet) en.nextElement());
+	    }
+	    cp.execute();
 	}
 
 	/**
@@ -122,15 +197,19 @@ public class WOApplication extends WOTask {
 	public FrameworkSet standardSet() {
 		FrameworkSet set = new FrameworkSet();
 		set.setProject(this.getProject());
-		set.setRoot(WOPropertiesHandler.WO_ROOT);
+		set.setRoot(WOPropertiesHandler.WO_ROOT + "/Library/Frameworks");
+//		set.setRoot(WOPropertiesHandler.WO_ROOT);
 
 		for (int i = 0; i < stdFrameworkNames.length; i++) {
 			String path =
-				"Library/Frameworks/" + stdFrameworkNames[i] + ".framework";
+//				"Library/Frameworks/" + stdFrameworkNames[i] + ".framework";
+				stdFrameworkNames[i] + ".framework";
 			PatternSet.NameEntry include = set.createInclude();
 			include.setName(path);
 		}
 
+		// Force embedding of the standard frameworks.
+		set.setEmbed(embedStdFrameworks);
 		return set;
 	}
 
@@ -142,6 +221,16 @@ public class WOApplication extends WOTask {
 	 */
 	public void setStdFrameworks(boolean flag) {
 		stdFrameworks = flag;
+	}
+
+	public void setEmbedStdFrameworks(boolean flag) {
+		embedStdFrameworks = flag;
+		// If we request embedding for the standard
+		// frameworks, we certainly want to reference
+		// them.
+		if ( flag ) {
+		  stdFrameworks = true;
+		}
 	}
 
 	/**
@@ -157,12 +246,35 @@ public class WOApplication extends WOTask {
 		return new File(taskDir(), "Contents");
 	}
 
+	protected File embeddedFrameworksDir() {
+		return new File(contentsDir(), "Frameworks");
+	}
+
 	protected File resourcesDir() {
 		return new File(contentsDir(), "Resources");
 	}
 
 	protected File wsresourcesDir() {
 		return new File(contentsDir(), "WebServerResources");
+	}
+
+	protected boolean hasLib() {
+	    return lib.size() > 0;
+	}
+
+	protected boolean hasEmbeddedFrameworks() {
+	    List frameworkSets = getFrameworkSets();
+	    int size = frameworkSets.size();
+
+	    for (int i = 0; i < size; i++) {
+		FrameworkSet fs = (FrameworkSet)frameworkSets.get(i);
+
+		if ( fs.getEmbed() ) {
+		    return true;
+		}
+	    }
+
+	    return false;
 	}
 
 	/**

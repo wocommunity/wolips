@@ -59,6 +59,8 @@ import java.io.File;
 import java.util.*;
 
 import org.apache.tools.ant.*;
+import org.apache.tools.ant.types.FileSet;
+import org.apache.tools.ant.types.PatternSet;
 import org.apache.tools.ant.types.FilterSet;
 import org.apache.tools.ant.types.FilterSetCollection;
 
@@ -71,7 +73,7 @@ import org.apache.tools.ant.types.FilterSetCollection;
 public class AppFormat extends ProjectFormat {
 	protected HashMap templateMap = new HashMap();
 	protected HashMap filterMap = new HashMap();
-	protected String appPath;
+	protected String appPaths;
 	protected String frameworkPaths;
 
 	/** 
@@ -106,7 +108,7 @@ public class AppFormat extends ProjectFormat {
 	 * Prepares all path values needed for substitutions.
 	 */
 	private void preparePaths() {
-		appPath = buildAppPath();
+		appPaths = buildAppPaths();
 		frameworkPaths = buildFrameworkPaths();
 	}
 
@@ -116,15 +118,20 @@ public class AppFormat extends ProjectFormat {
 	 * and may need to be changed when creating files for multiple 
 	 * platforms.
 	 */
-	protected String buildAppPath() {
-		String name = getApplicatonTask().getName().toLowerCase() + ".jar";
-		return "APPROOT"
-			+ File.separator
-			+ "Resources"
-			+ File.separator
-			+ "Java"
-			+ File.separator
-			+ name;
+	protected String buildAppPaths() {
+		FileSet fs = new FileSet();
+		fs.setDir(getApplicatonTask().contentsDir());
+		PatternSet.NameEntry include = fs.createInclude();
+		include.setName("**/Resources/Java/*.jar");
+
+		DirectoryScanner ds = fs.getDirectoryScanner(task.getProject());
+		String[] files = ds.getIncludedFiles();
+		StringBuffer buf = new StringBuffer();
+
+		for (int i = 0; i < files.length; i++) {
+		  buf.append("APPROOT").append(File.separatorChar).append(files[i]).append("\r\n");
+		}
+		return buf.toString();
 	}
 
 	/** 
@@ -146,6 +153,12 @@ public class AppFormat extends ProjectFormat {
 		for (int i = 0; i < size; i++) {
 
 			FrameworkSet fs = (FrameworkSet) frameworkSets.get(i);
+
+			// Don't bother checking if it's embedded.
+			if ( fs.getEmbed() ) {
+			    continue;
+			}
+
 			String root = fs.getRootPrefix();
 			try {
 				DirectoryScanner ds = fs.getDirectoryScanner(project);
@@ -263,12 +276,12 @@ public class AppFormat extends ProjectFormat {
 		FilterSet filter = new FilterSet();
 
 		if (pathSeparator == File.separatorChar) {
-			filter.addFilter("APP_JAR", appPath);
+			filter.addFilter("APP_JAR", appPaths);
 			filter.addFilter("FRAMEWORK_JAR", frameworkPaths);
 		} else {
 			filter.addFilter(
 				"APP_JAR",
-				appPath.replace(File.separatorChar, pathSeparator));
+				appPaths.replace(File.separatorChar, pathSeparator));
 			filter.addFilter(
 				"FRAMEWORK_JAR",
 				frameworkPaths.replace(File.separatorChar, pathSeparator));

@@ -124,7 +124,14 @@ public class WOPropertiesHandler extends ProjectComponent {
 			localRoot = getProject().getProperty(LOCAL_ROOT);
 
 			if (localRoot == null) {
-				localRoot = getWORoot() + "/Local";
+				String osName = System.getProperty("os.name");
+
+				// This should really be "Darwin"
+				if ( osName.equals("Mac OS X") ) {
+				    localRoot = "";
+				} else {
+				    localRoot = getWORoot() + "/Local";
+				}
 			}
 		}
 

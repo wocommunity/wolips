@@ -2,7 +2,7 @@
  *
  * The ObjectStyle Group Software License, Version 1.0
  *
- * Copyright (c) 2002 The ObjectStyle Group
+ * Copyright (c) 2002 The ObjectStyle Group,
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -55,78 +55,82 @@
  */
 package org.objectstyle.woproject.ant;
 
-import java.io.File;
-import java.util.Iterator;
-
-import junit.framework.TestCase;
-
-import org.apache.tools.ant.Project;
+import java.io.StringWriter;
+import java.io.PrintWriter;
+import java.util.Vector;
 
 /**
- * TestCase for AppFormat class.
+ * Copyright (c) 2002 The Apache Group,
+ * A set of helper methods related to string manipulation.
  *
- * @author Andrei Adamchik
+ * @author <a href="mailto:sbailliez@apache.org">Stephane Bailliez</a>
  */
-public class AppFormatTest extends TestCase {
-	protected AppFormat format;
-	protected WOTask formatTask;
+public final class AntStringUtils {
 
-	public AppFormatTest(String name) {
-		super(name);
-	}
+    /** the line separator for this OS */
+    public static final String LINE_SEP = System.getProperty("line.separator");
 
-	public void setUp() throws Exception {
-		super.setUp();
-		formatTask = new TestWOApplication();
-		formatTask.setProject(new Project());
-		formatTask.setName("somename");
-		format = new TestAppFormat(formatTask);
-	}
+    /**
+     * Splits up a string into a list of lines. It is equivalent
+     * to <tt>split(data, '\n')</tt>.
+     * @param data the string to split up into lines.
+     * @return the list of lines available in the string.
+     */
+    public static Vector lineSplit(String data){
+        return split(data, '\n');
+    }
 
-	public void testFileIterator() throws Exception {
-		Iterator it = format.fileIterator();
-		assertNotNull(it);
-		assertTrue(it.hasNext());
-	}
+    /**
+     * Splits up a string where elements are separated by a specific
+     * character and return all elements.
+     * @param data the string to split up.
+     * @param ch the separator character.
+     * @return the list of elements.
+     */
+    public static Vector split(String data, int ch){
+        Vector elems = new Vector();
+        int pos = -1;
+        int i = 0;
+        while ((pos = data.indexOf(ch, i)) != -1){
+            String elem = data.substring(i, pos);
+            elems.addElement(elem);
+            i = pos + 1;
+        }
+        elems.addElement(data.substring(i));
+        return elems;
+    }
 
-	public void testTemplates() throws Exception {
-		Iterator it = format.fileIterator();
+    /**
+     * Replace occurrences into a string.
+     * @param data the string to replace occurrences into
+     * @param from the occurrence to replace.
+     * @param to the occurrence to be used as a replacement.
+     * @return the new string with replaced occurrences.
+     */
+    public static String replace(String data, String from, String to){
+        StringBuffer buf = new StringBuffer(data.length());
+        int pos = -1;
+        int i = 0;
+        while ((pos = data.indexOf(from, i)) != -1){
+            buf.append(data.substring(i, pos)).append(to);
+            i = pos + from.length();
+        }
+        buf.append(data.substring(i));
+        return buf.toString();
+    }
 
-		// check that templates exist for all files
-		while (it.hasNext()) {
-			String file = (String) it.next();
-			String template = format.templateForTarget(file);
-			assertNotNull(template);
-			assertNotNull(
-				format.getClass().getClassLoader().getResource(template));
-		}
-	}
+    /**
+     * Convenient method to retrieve the full stacktrace from a given exception.
+     * @param t the exception to get the stacktrace from.
+     * @return the stacktrace from the given exception.
+     */
+    public static String getStackTrace(Throwable t) {
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw, true);
+        t.printStackTrace(pw);
+        pw.flush();
+        pw.close();
+        return sw.toString();
+    }
 
-	/** 
-	 * Helper class to allow testing of partially initialized 
-	 * WOApplication task. 
-	 */
-	class TestWOApplication extends WOApplication {
-		protected File taskDir() {
-			return new File(".");
-		}
-	}
-	
-	class TestAppFormat extends AppFormat {
-		/**
-		 * Constructor for TestAppFormat.
-		 * @param task
-		 */
-		public TestAppFormat(WOTask task) {
-			super(task);
-		}
-
-
-		/**
-		 * @see org.objectstyle.woproject.ant.AppFormat#buildAppPaths()
-		 */
-		protected String buildAppPaths() {
-			return "APPROOT";
-		}
-	}
 }

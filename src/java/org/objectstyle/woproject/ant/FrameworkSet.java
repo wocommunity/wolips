@@ -70,6 +70,7 @@ import org.apache.tools.ant.types.FileSet;
  */
 public class FrameworkSet extends FileSet {
 	protected String root;
+	protected boolean embed = false;
 
 	/** 
 	 * Creates new FrameworkSet.
@@ -88,11 +89,11 @@ public class FrameworkSet extends FileSet {
 	 */
 	public String getRootPrefix() throws BuildException {
 		if (isWORoot()) {
-			return "WOROOT";
+			return AntStringUtils.replace(root, WOPropertiesHandler.WO_ROOT, "WOROOT");
 		} else if (isHomeRoot()) {
-			return "HOMEROOT";
+			return AntStringUtils.replace(root, WOPropertiesHandler.HOME_ROOT, "HOMEROOT");
 		} else if (isLocalRoot()) {
-			return "LOCALROOT";
+			return AntStringUtils.replace(root, WOPropertiesHandler.LOCAL_ROOT, "LOCALROOT");
 		} else if (isAbsoluteRoot()) {
 			return getRoot();
 		} else {
@@ -101,15 +102,15 @@ public class FrameworkSet extends FileSet {
 	}
 
 	public boolean isWORoot() {
-		return WOPropertiesHandler.WO_ROOT.equals(root);
+		return root.startsWith(WOPropertiesHandler.WO_ROOT);
 	}
 
 	public boolean isHomeRoot() {
-		return WOPropertiesHandler.HOME_ROOT.equals(root);
+		return root.startsWith(WOPropertiesHandler.HOME_ROOT);
 	}
 
 	public boolean isLocalRoot() {
-		return WOPropertiesHandler.LOCAL_ROOT.equals(root);
+		return root.startsWith(WOPropertiesHandler.LOCAL_ROOT);
 	}
 
 	public boolean isAbsoluteRoot() {
@@ -139,16 +140,26 @@ public class FrameworkSet extends FileSet {
 			new WOPropertiesHandler(this.getProject());
 
 		if (isWORoot()) {
-			super.setDir(new File(propsHandler.getWORoot()));
+			String newRoot = AntStringUtils.replace(root, WOPropertiesHandler.WO_ROOT, propsHandler.getWORoot());
+			super.setDir(new File(newRoot));
 		} else if (isLocalRoot()) {
-			super.setDir(new File(propsHandler.getLocalRoot()));
+			String newRoot = AntStringUtils.replace(root, WOPropertiesHandler.LOCAL_ROOT, propsHandler.getLocalRoot());
+			super.setDir(new File(newRoot));
 		} else if (isHomeRoot()) {
-			super.setDir(new File(propsHandler.getHomeRoot()));
+			String newRoot = AntStringUtils.replace(root, WOPropertiesHandler.HOME_ROOT, propsHandler.getHomeRoot());
 		} else if (isAbsoluteRoot()) {
 			super.setDir(new File(root));
 		} else {
 			throw new BuildException("Unrecognized root: " + root);
 		}
+	}
+
+	public void setEmbed(boolean flag) {
+		this.embed = flag;
+	}
+
+	public boolean getEmbed() {
+		return this.embed;
 	}
 
 	public String[] findJars(Project project, String frameworkDir) {
