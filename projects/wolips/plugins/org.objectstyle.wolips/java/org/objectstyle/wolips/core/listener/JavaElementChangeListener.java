@@ -142,7 +142,7 @@ public class JavaElementChangeListener implements IElementChangedListener {
 						updateFrameworkIncludeFiles.setIProject(
 							projectToExamine);
 						updateFrameworkIncludeFiles.execute();
-						if (!Preferences.getPREF_PBWO_PROJECT_UPDATE()) {
+						if (Preferences.getPREF_PBWO_PROJECT_UPDATE()) {
 							addedFrameworksProjectDict.put(
 								projectToExamine,
 								new ArrayList());
@@ -159,27 +159,36 @@ public class JavaElementChangeListener implements IElementChangedListener {
 								IJavaElementDelta.F_ADDED_TO_CLASSPATH,
 								foundElements);
 							IPackageFragmentRoot currentPackageFragmentRoot;
+							ArrayList addedFrameworks =
+								(ArrayList) addedFrameworksProjectDict.get(
+									projectToExamine);
 							for (int j = 0; j < foundElements.size(); j++) {
 								currentPackageFragmentRoot =
 									(IPackageFragmentRoot) foundElements.get(j);
-								ArrayList addedFrameworks =
-									(ArrayList) addedFrameworksProjectDict.get(
-										projectToExamine);
+
 								addedFrameworks.add(
 									currentPackageFragmentRoot
 										.getRawClasspathEntry()
 										.getPath());
-								/*
-								WOProjectFileUpdater.addFrameworkToPBFile(
-									currentPackageFragmentRoot
-										.getRawClasspathEntry()
-										.getPath(),
-									WOProjectFileUpdater
-										.projectFileFromParentResource(
-										projectToExamine),
-									null);
-									*/
 							}
+							/*
+							IProject[] referencedProjects =
+								projectToExamine.getReferencedProjects();
+							for (int j = 0;
+								j < referencedProjects.length;
+								j++) {
+								IWOLipsProject referencedWOLipsProject =
+									WOLipsCore.createProject(
+										referencedProjects[j]);
+								if (referencedWOLipsProject != null
+									&& referencedWOLipsProject
+										.getNaturesAccessor()
+										.hasWOLipsNature()
+									&& referencedWOLipsProject
+										.getNaturesAccessor()
+										.isFramework())
+									addedFrameworks.add(new Path(referencedWOLipsProject.getProject().getName() + "." + IWOLipsPluginConstants.EXT_FRAMEWORK));
+							}*/
 							foundElements = new ArrayList();
 							// search deltas for classpath changes
 							searchDeltas(
@@ -188,29 +197,19 @@ public class JavaElementChangeListener implements IElementChangedListener {
 									.getChangedChildren(),
 								IJavaElementDelta.F_REMOVED_FROM_CLASSPATH,
 								foundElements);
+							ArrayList removedFrameworks =
+																(
+																	ArrayList) removedFrameworksProjectDict
+																		.get(
+																	projectToExamine);
 							for (int j = 0; j < foundElements.size(); j++) {
 								currentPackageFragmentRoot =
 									(IPackageFragmentRoot) foundElements.get(j);
-								ArrayList removedFrameworks =
-									(
-										ArrayList) removedFrameworksProjectDict
-											.get(
-										projectToExamine);
+								
 								removedFrameworks.add(
 									new Path(
 										currentPackageFragmentRoot
 											.getElementName()));
-								/*
-								WOProjectFileUpdater
-								.removeFrameworkFromPBFile(
-								new Path(
-								currentPackageFragmentRoot
-									.getElementName()),
-								WOProjectFileUpdater
-								.projectFileFromParentResource(
-								projectToExamine),
-								null);
-								*/
 							}
 						}
 					}
@@ -291,17 +290,6 @@ public class JavaElementChangeListener implements IElementChangedListener {
 		HashMap removedFrameworksProjectDict) {
 		IProject currentProject;
 		List changedFrameworks;
-		Object[] allAddedKeys = addedFrameworksProjectDict.keySet().toArray();
-		for (int i = 0; i < allAddedKeys.length; i++) {
-			currentProject = (IProject) allAddedKeys[i];
-			changedFrameworks =
-				(ArrayList) addedFrameworksProjectDict.get(currentProject);
-			if (changedFrameworks.size() > 0) {
-				PBProjectUpdater projectUpdater =
-					PBProjectUpdater.instance(currentProject);
-				projectUpdater.addFrameworks(changedFrameworks);
-			}
-		}
 		Object[] allRemovedKeys =
 			removedFrameworksProjectDict.keySet().toArray();
 		for (int i = 0; i < allRemovedKeys.length; i++) {
@@ -312,6 +300,17 @@ public class JavaElementChangeListener implements IElementChangedListener {
 				PBProjectUpdater projectUpdater =
 					PBProjectUpdater.instance(currentProject);
 				projectUpdater.removeFrameworks(changedFrameworks);
+			}
+		}
+		Object[] allAddedKeys = addedFrameworksProjectDict.keySet().toArray();
+		for (int i = 0; i < allAddedKeys.length; i++) {
+			currentProject = (IProject) allAddedKeys[i];
+			changedFrameworks =
+				(ArrayList) addedFrameworksProjectDict.get(currentProject);
+			if (changedFrameworks.size() > 0) {
+				PBProjectUpdater projectUpdater =
+					PBProjectUpdater.instance(currentProject);
+				projectUpdater.addFrameworks(changedFrameworks);
 			}
 		}
 	}

@@ -59,7 +59,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -69,6 +68,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.objectstyle.woenvironment.pb.PBProject;
 import org.objectstyle.woenvironment.util.FileStringScanner;
+import org.objectstyle.wolips.core.classpath.WOClasspathContainer;
 import org.objectstyle.wolips.core.logging.WOLipsLog;
 import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
 import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
@@ -548,17 +548,22 @@ public final class PBProjectUpdater {
 	 * @param newFrameworks
 	 */
 	public void addFrameworks(List newFrameworks) {
+		boolean saveRequired = false;
 		List actualFrameworks = pbProject.getFrameworks();
-		String frameworkName = null;
 		for (int j = 0; j < newFrameworks.size(); j++) {
-			frameworkName =
-				frameworkIdentifierFromPath((Path) newFrameworks.get(j));
-			if (frameworkName != null
-				&& !actualFrameworks.contains(frameworkName)) {
-				actualFrameworks.add(frameworkName);
+			String[] frameworkIdentifiers =
+				frameworkIdentifiersFromPath((Path) newFrameworks.get(j));
+			for (int k = 0; k < frameworkIdentifiers.length; k++) {
+				String frameworkName = frameworkIdentifiers[k];
+				if (frameworkName != null
+					&& !actualFrameworks.contains(frameworkName)) {
+					actualFrameworks.add(frameworkName);
+					saveRequired = true;
+				}
 			}
 		}
 		try {
+			if(saveRequired)
 			_saveChanges();
 		} catch (IOException e) {
 			WOLipsLog.log(e);
@@ -569,17 +574,22 @@ public final class PBProjectUpdater {
 	 * @param removedFrameworks
 	 */
 	public void removeFrameworks(List removedFrameworks) {
+		boolean saveRequired = false;
 		List actualFrameworks = pbProject.getFrameworks();
-		String frameworkName = null;
 		for (int j = 0; j < removedFrameworks.size(); j++) {
-			frameworkName =
-				frameworkIdentifierFromPath((Path) removedFrameworks.get(j));
-			if (frameworkName != null
-				&& actualFrameworks.contains(frameworkName)) {
-				actualFrameworks.remove(frameworkName);
+			String[] frameworkIdentifiers =
+				frameworkIdentifiersFromPath((Path) removedFrameworks.get(j));
+			for (int k = 0; k < frameworkIdentifiers.length; k++) {
+				String frameworkName = frameworkIdentifiers[k];
+				if (frameworkName != null
+					&& actualFrameworks.contains(frameworkName)) {
+					actualFrameworks.remove(frameworkName);
+					saveRequired = true;
+				}
 			}
 		}
 		try {
+			if(saveRequired)
 			_saveChanges();
 		} catch (IOException e) {
 			WOLipsLog.log(e);
@@ -590,18 +600,37 @@ public final class PBProjectUpdater {
 	 * @param frameworkPath
 	 * @return String
 	 */
-	private String frameworkIdentifierFromPath(Path frameworkPath) {
-		String frameworkName = null;
+	private String[] frameworkIdentifiersFromPath(Path frameworkPath) {
+		String[] frameworkNames = null;
 		// search framework segment in path
-		for (int i = 0; i < frameworkPath.segmentCount(); i++) {
-			frameworkName = frameworkPath.segment(i);
-			if (frameworkName
-				.endsWith("." + IWOLipsPluginConstants.EXT_FRAMEWORK)) {
-				break;
-			} else {
-				frameworkName = null;
+		if (frameworkPath.segmentCount() > 0
+			&& WOClasspathContainer.WOLIPS_CLASSPATH_CONTAINER_IDENTITY.equals(
+				frameworkPath.segment(0))) {
+			frameworkNames = new String[frameworkPath.segments().length - 1];
+			System.arraycopy(
+				frameworkPath.segments(),
+				1,
+				frameworkNames,
+				0,
+				frameworkNames.length);
+			return frameworkNames;
+		} else {
+			String frameworkName = null;
+			for (int i = 0; i < frameworkPath.segmentCount(); i++) {
+				frameworkName = frameworkPath.segment(i);
+				if (frameworkName
+					.endsWith("." + IWOLipsPluginConstants.EXT_FRAMEWORK)) {
+					break;
+				} else {
+					frameworkName = null;
+				}
 			}
+			if (frameworkName == null)
+				frameworkNames = new String[] {
+			};
+			else
+				frameworkNames = new String[] { frameworkName };
 		}
-		return frameworkName;
+		return frameworkNames;
 	}
 }

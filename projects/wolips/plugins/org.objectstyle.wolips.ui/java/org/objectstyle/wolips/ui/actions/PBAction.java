@@ -100,6 +100,11 @@ public class PBAction extends ActionOnIResource {
 					this.project().close(null);
 					//invokes the ResoureChangeListener indirectly
 					this.project().open(null);
+					this.project().findMember(".classpath").touch(null);
+					/*IJavaProject javaProject = JavaCore.create(project());
+					javaProject.setRawClasspath(
+						javaProject.getRawClasspath(),
+						null);*/
 				}
 			} catch (Exception ex) {
 				WOLipsLog.log(ex);

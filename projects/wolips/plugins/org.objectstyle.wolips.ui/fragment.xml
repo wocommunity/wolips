@@ -84,28 +84,7 @@
 <!-- =================================================================================== -->
 <!-- Extension: File actions                                                             -->
 <!-- =================================================================================== -->
-      <objectContribution
-            objectClass="org.eclipse.core.resources.IFile"
-            adaptable="true"
-            nameFilter="PB.project"
-            id="org.objectstyle.wolips.ui.actions.PBAction">
-         <menu
-               label="&amp;WOLips"
-               path="additions"
-               id="org.objectstyle.wolips">
-            <separator
-                  name="project">
-            </separator>
-         </menu>
-         <action
-               label="%UpdatePB.Project"
-               class="org.objectstyle.wolips.ui.actions.PBAction"
-               menubarPath="org.objectstyle.wolips/project"
-               enablesFor="1"
-               id="org.objectstyle.wolips.ui.actions.PBAction">
-         </action>
-      </objectContribution>
-      <objectContribution
+     <objectContribution
             objectClass="org.eclipse.jdt.core.ICompilationUnit"
             adaptable="true"
             nameFilter="*.java"

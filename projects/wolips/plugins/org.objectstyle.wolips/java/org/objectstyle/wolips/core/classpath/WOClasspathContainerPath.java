@@ -278,7 +278,7 @@ public class WOClasspathContainerPath
 					for (int j = 0; j < root.getEntries().length; j++) {
 						if (root.getEntries() != null
 							&& viewer.getChecked(root.getEntries()[j])) {
-							path = path.append(root.root);
+							//path = path.append(root.root);
 							path = path.append(root.getEntries()[j].getName());
 						}
 					}
