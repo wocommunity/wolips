@@ -84,6 +84,7 @@
     <!-- Build all.                                 -->
     <!-- ========================================== -->
     <target name="all">
+        <ant dir="org.objectstyle.wolips.datasets" target="all"/>
         <ant dir="org.objectstyle.wolips.templateengine" target="all"/>
         <ant dir="org.objectstyle.wolips" target="all"/>
 	    <ant dir="org.objectstyle.wolips.help" target="all"/>
@@ -110,8 +111,9 @@
     <!-- Build dist.                                -->
     <!-- ========================================== -->
     <target name="dist">
-	    <mkdir dir="../../${build.output.dist.dir}/plugins"/>
-	    <ant dir="org.objectstyle.wolips.templateengine" target="dist"/>
+	<mkdir dir="../../${build.output.dist.dir}/plugins"/>
+	<ant dir="org.objectstyle.wolips.datasets" target="dist"/>
+        <ant dir="org.objectstyle.wolips.templateengine" target="dist"/>
     	<ant dir="org.objectstyle.wolips" target="dist"/>
 	    <ant dir="org.objectstyle.wolips.help" target="dist"/>
 	    <ant dir="org.objectstyle.wolips.targetbuilder" target="dist"/>
