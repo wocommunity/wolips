@@ -5,37 +5,59 @@
 <toc label="WOLips User Guide" href="./doc_root/index.html">
 
 	<topic label="Getting Started" href="./doc_root/introduction.html">
+		
 		<topic label="Preparations" href="./doc_root/introduction.html#prepare"/>
 		<topic label="Your Very First WOLips Application" href="./doc_root/introduction.html#HelloWOrld"/>
 		<topic label="NextStep" href="./doc_root/introduction.html#NextStep"/>
+		
 	</topic>
 	
 	<topic label="Concepts" href="./doc_root/concepts.html"/>
-
+	
 	<topic label="Tasks" href="./doc_root/tasks/index.html">
-		<link toc="toc_tasks.xml"/>
+	
+		<topic label="Install" href="./doc_root/tasks/install.html"/>
+	
+		<topic label="Wizards" href="./doc_root/tasks/wiz/index.html">
+			
+			<topic label="New Application" href="./doc_root/tasks/wiz/new_application.html"/>
+			<topic label="New Framework" href="./doc_root/tasks/wiz/new_framework.html"/>
+			<topic label="Import Application" href="./doc_root/tasks/wiz/import_application.html"/>
+			<topic label="Import Framework" href="./doc_root/tasks/wiz/import_framework.html"/>
+			<topic label="Add Component" href="./doc_root/tasks/wiz/add_component.html"/>
+			<topic label="Add EO Model" href="./doc_root/tasks/wiz/add_eomodel.html"/>
+			
+		</topic>
+			
+		<topic label="Debugging" href="./doc_root/tasks/debug.html"/>
+		<topic label="Profiling" href="./doc_root/tasks/profile.html"/>  
+		
 	</topic>
 
 	<topic label="Tips and Tricks" href="./doc_root/tips/index.html">
-		<link toc="toc_tips.xml"/>
+		
+		<topic label="Manipulating the Build Process" href="doc_root/tips/building.html"/>
+		
 	</topic>
 	
 	<topic label="FAQ" href="./doc_root/faq.html"/>
-
-	<topic label="Reference" href="./doc_root/reference/index.html">
-		<link toc="toc_reference.xml"/>
-	</topic>
-
+	<topic label="Reference" href="./doc_root/reference/index.html"/topic>
 	<topic label="What's New" href="./doc_root/history.html"/>
 
 	<topic label="Bugs, Issues and Other Things" href="./doc_root/issues.html">
+		
 		<topic label="Bugs" href="./doc_root/issues.html#bugs"/>
 		<topic label="Issues" href="./doc_root/issues.html#issues"/>
 		<topic label="Other Things" href="./doc_root/issues.html#other"/>
+		
 	</topic>
 
 	<topic label="Programmer's Guide" href="./doc_root/programmer/index.html">
-		<link toc="toc_programmer.xml"/>
+		
+		<topic label="Inside WOLips" href="./doc_root/programmer/pde.html"/>
+		<topic label="Building from source" href="./doc_root/programmer/build.html"/>
+		<topic label="API Reference" href="./doc_root/programmer/api/index.html"/>
+		
 	</topic>
 	
 </toc>

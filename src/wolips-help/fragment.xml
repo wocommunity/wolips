@@ -22,16 +22,5 @@
     <extension point="org.eclipse.help.toc">
         <toc file="doc_root/toc_root.xml" primary="true" />
     </extension>
-
-<!-- =============================================== -->
-<!-- Link the sections into the book                 -->
-<!-- =============================================== -->
-
-       	<extension point="org.eclipse.help.toc">     		
-       		<toc file="doc_root/tasks/toc_tasks.xml" />
-       		<toc file="doc_root/tips/toc_tips.xml" />
-       		<toc file="doc_root/reference/toc_reference.xml" />
-       		<toc file="doc_root/programmer/toc_programmer.xml" />
-       	</extension>
        	
 </fragment>
