@@ -10,7 +10,6 @@
     <property file="${user.home}${file.separator}Library${file.separator}wobuild.properties"/>
     <property file="default.properties"/>
     <property file="lib/lib.properties"/>
-    <property file="src/wolips/plugin.properties"/>
 
     <!-- ============================================= -->
     <!-- Derived Properties. These properties are      -->
