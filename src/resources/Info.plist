@@ -19,7 +19,7 @@
 	<string>@NAME@</string>
 	<key>NSJavaPath</key>
 	<array>
-		<string>@NAME@.jar</string>
+		<string>@LOWERC_NAME@.jar</string>
 	</array>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
