@@ -83,21 +83,6 @@ public class CommonsPlugin extends Plugin {
 	}
 
 	/**
-	 * Returns the string from the plugin's resource bundle,
-	 * or 'key' if not found.
-	 * @param key
-	 * @return
-	 */
-	public static String getResourceString(String key) {
-		ResourceBundle bundle = CommonsPlugin.getDefault().getResourceBundle();
-		try {
-			return (bundle != null) ? bundle.getString(key) : key;
-		} catch (MissingResourceException e) {
-			return key;
-		}
-	}
-
-	/**
 	 * @return Returns the plugin's resource bundle,
 	 */
 	public ResourceBundle getResourceBundle() {
