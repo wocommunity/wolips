@@ -68,7 +68,7 @@ import org.apache.tools.ant.taskdefs.*;
  * 
  * @author Andrei Adamchik
  */
-public class SubtaskFactory extends Copy {
+public class SubtaskFactory {
 	protected Task parent;
 
 	public SubtaskFactory(Task parent) {
