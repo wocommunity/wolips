@@ -2,7 +2,7 @@
 <plugin
    id="org.objectstyle.wolips.cayenne.ant"
    name="%WOLips.cayenne.ant.pluginName"
-   version="1.0.3"
+   version="1.0.4"
    provider-name="%WOLips.providerName">
 
    <runtime>
