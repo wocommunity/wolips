@@ -511,8 +511,6 @@
 	</filter>
 	<filter pattern = "*.wod" selected = "false" >
 	</filter>
-	<filter pattern = "*.wod" selected = "false" >
-	</filter>
 	<filter pattern = "*.woo" selected = "false" >
 	</filter>
 	<filter pattern = "*.html" selected = "false" >
@@ -526,8 +524,6 @@
 	<filter pattern = "*.eomodeld" selected = "false" >
 	</filter>
 	<filter pattern = "*.d2wmodel" selected = "false" >
-	</filter>
-	<filter pattern = "*.pbxuser" selected = "false" >
 	</filter>
 	<filter pattern = "*.pbxuser" selected = "false" >
 	</filter>
