@@ -98,7 +98,9 @@ public class DirectAction extends WODirectAction {
             Makefile.postamble, 
             CustomInfo.plist 
         ); 
-        WOAPP_RESOURCES = ( ); 
+        WOAPP_RESOURCES = (
+            Properties
+        ); 
         WO_COMPONENTS = ( ); 
     }; 
     LANGUAGE = English; 
@@ -186,6 +188,17 @@ public class DirectAction extends WODirectAction {
 </plist>]]></template>
 	<template name="ant file woapplication" id="woapplication.ant.build" variables="PROJECT_NAME" enabled="true"><![CDATA[<project name="${PROJECT_NAME}" default="build" basedir=".">
 
+	<!-- main targets  -->
+	<!-- add optional targets to depends list if needed -->
+	<target name="build" depends="setProps,init.build,build.woapp,refreshView"/>
+
+	<target name="install" depends="setProps,init.install,build.woapp,refreshView"/>
+	
+	<target name="clean" depends="setProps">
+	  	<delete dir="${project.name}.woa"/>
+		<eclipse.refreshLocal resource="${project.name}" depth="infinite"/>
+	</target>
+
 	<!-- property determination  -->
 	<target name="setProps">
 		<property file="build.properties"/>
@@ -207,22 +220,7 @@ public class DirectAction extends WODirectAction {
      	</condition>
 		<property name="install.dir" value="${wo.wolocalroot}/Library/Webobjects/Applications"/>
 	</target>
-
-    <!-- temporary subproject support -->
-    <target name="subproj"> 
-    	<ant antfile="build-subproj.xml" target="copy.resources.application"/>
-    </target>
-    
-	<!-- main targets  -->
-	<target name="build" depends="setProps,init.build,subproj,build.woapp"/>
-
-	<target name="install" depends="setProps,init.install,subproj,build.woapp"/>
 		
-	<target name="clean" depends="setProps">
-	  	<delete dir="${project.name}.woa"/>
-		<eclipse.refreshLocal resource="${project.name}" depth="infinite"/>
-	</target>
-	
 	<!-- basic initializations  -->
 	<target name="init.install">
 		 <tstamp/>
@@ -233,8 +231,8 @@ public class DirectAction extends WODirectAction {
 	 	<tstamp/>
 		<property name="dest.dir" value="."/>
 	</target>
-
-	<!-- woproject tasks -->  
+	
+	<!-- woproject tasks -->
 	<target name="build.woapp">
 		<updateframeworksets projectname="${project.name}"/>
 		<updateotherclasspaths projectname="${project.name}"/>
@@ -242,9 +240,10 @@ public class DirectAction extends WODirectAction {
    			<classes dir="${classes.dir}">
    			</classes>
    			<resources dir=".">
-   				<include name="*.eomodeld/"/>
-       			<include name="*.wo/"/>
-       			<include name="*.api"/>
+				<include name="Properties"/>
+   				<include name="**/*.eomodeld/"/>
+       			<include name="**/*.wo/"/>
+       			<include name="**/*.api"/>
        		</resources>
 			<frameworks root="${wo.woroot}">
       			<patternset>
@@ -256,19 +255,41 @@ public class DirectAction extends WODirectAction {
   					<includesfile name="ant.frameworks.wo.wolocalroot"/> 
 				</patternset>
    			</frameworks>
-   			<frameworks root="${user.home}">
+			<frameworks root="${user.home}">
       			<patternset>
   					<includesfile name="ant.frameworks.user.home"/> 
 				</patternset>
    			</frameworks>
+			<otherclasspath root="${wo.woroot}">
+   				<patternset>
+  					<includesfile name="ant.classpaths.wo.woroot"/> 
+				</patternset>
+			</otherclasspath>
    		</woapplication>
 		<!-- delete include files -->
 		<delete file="ant.frameworks.wo.woroot"/>
 		<delete file="ant.frameworks.wo.wolocalroot"/>
 		<delete file="ant.frameworks.user.home"/>
+		<delete file="ant.classpaths.wo.woroot"/>
+	</target>
+
+	<!-- eclipse tasks -->
+	<target name="refreshView">
 		<eclipse.refreshLocal resource="${project.name}" depth="infinite"/>
 	</target>
-		
+
+ 	<!-- optional targets -->
+	 <!-- copy strings files -->	
+	<target name="copy.strings">
+   		 <copy todir="${dest.dir}/${project.name}.woa/Contents/Resources">
+       		<fileset dir="." casesensitive="yes">
+				<include name="*.strings"/>
+        			<include name="**/*.strings"/>
+    			</fileset>
+         		<mapper type="flatten"/>
+     		</copy>
+ 	</target>
+
 </project>]]></template>
 	<template name="ant properties woapplication" id="woapplication.ant.properties" variables="BUILD_DIR,PROJECT_NAME,NEXT_ROOT" enabled="true"><![CDATA[
 classes.dir = ${BUILD_DIR}
@@ -276,9 +297,20 @@ project.name = ${PROJECT_NAME}
 ]]></template>
 	<template name="ant file woframework" id="woframework.ant.build" variables="PROJECT_NAME" enabled="true"><![CDATA[<project name="${PROJECT_NAME}" default="build" basedir=".">
 
+	<!-- main targets  -->
+	<!-- add optional targets to depends list if needed -->
+	<target name="build" depends="setProps,init.build,build.woframework,refreshView"/>
+
+	<target name="install" depends="setProps,init.install,build.woframework"/>
+	    
+	<target name="clean" depends="setProps">
+	  	<delete dir="${framework.name}.framework"/>
+		<eclipse.refreshLocal resource="${framework.name}" depth="infinite"/>
+	</target>
+
 	<!-- property determination  -->
 	<target name="setProps">
-		<property file="build.properties"/>
+		<property file="build.properties"/>	
 		<!-- determine os depending properties -->
 		<property environment="env"/>
 		<property name="wo.woroot" value="${env.NEXT_ROOT}"/>
@@ -298,22 +330,6 @@ project.name = ${PROJECT_NAME}
 		<property name="install.dir" value="${wo.wolocalroot}/Library/Frameworks"/>
 	</target>
 
-
- 	<!-- main targets  -->
-	<target name="build" depends="setProps,init.build,subproj,build.woframework"/>
-
-	<target name="install" depends="setProps,init.install,subproj,build.woframework"/>
-	
-	<target name="clean" depends="setProps">
-	  	<delete dir="${framework.name}.framework"/>
-		<eclipse.refreshLocal resource="${framework.name}" depth="infinite"/>
-	</target>
-	
-      <!-- temporary subproject support -->
-   	 <target name="subproj"> 
-    		<ant antfile="build-subproj.xml" target="copy.resources.framework"/>
-    	</target>
-    
 	<!-- basic initializations  -->
 	<target name="init.install">
 		 <tstamp/>
@@ -325,7 +341,7 @@ project.name = ${PROJECT_NAME}
 		<property name="dest.dir" value="."/>
 	</target>
 
-	<!-- woproject tasks -->	  
+	<!-- woproject tasks -->
 	<target name="build.woframework">	
 		<woframework name="${framework.name}" destDir="${dest.dir}">
    			<classes dir="${classes.dir}">
@@ -333,11 +349,29 @@ project.name = ${PROJECT_NAME}
    			<resources dir=".">
        			<include name="**/*.eomodeld/"/>
        			<include name="**/*.wo/"/>
+				<include name="**/*.api"/>
    			</resources>
    		</woframework>
 		<eclipse.refreshLocal resource="${framework.name}" depth="infinite"/>
 	</target>
 		
+	<!-- eclipse tasks -->
+	<target name="refreshView">
+		<eclipse.refreshLocal resource="${framework.name}" depth="infinite"/>
+	</target>
+
+	<!-- optional targets -->
+	 <!-- copy strings files -->	
+	<target name="copy.strings">
+   		 <copy todir="${dest.dir}/${framework.name}.framework/Resources">
+       		<fileset dir="." casesensitive="yes">
+				<include name="*.strings"/>
+        			<include name="**/*.strings"/>
+    			</fileset>
+         		<mapper type="flatten"/>
+     		</copy>
+ 	</target>
+
 </project>]]></template>
 	<template name="ant properties woframework" id="woframework.ant.properties" variables="BUILD_DIR,PROJECT_NAME" enabled="true"><![CDATA[
 classes.dir =  ${BUILD_DIR}
