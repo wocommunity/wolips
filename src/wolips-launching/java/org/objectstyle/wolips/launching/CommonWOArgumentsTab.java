@@ -69,7 +69,6 @@ import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.ILaunchConfigurationDialog;
 import org.eclipse.jdt.internal.debug.ui.JDIDebugUIPlugin;
 import org.eclipse.jdt.internal.debug.ui.JavaDebugImages;
-import org.eclipse.jdt.internal.debug.ui.launcher.JavaLaunchConfigurationTab;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.InputDialog;
@@ -89,6 +88,7 @@ import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
 import org.objectstyle.wolips.core.preferences.ILaunchInfo;
 import org.objectstyle.wolips.core.preferences.Preferences;
 import org.objectstyle.wolips.core.preferences.PreferencesMessages;
+import org.objectstyle.wolips.core.util.ArrayUtilities;
 import org.objectstyle.wolips.logging.WOLipsLog;
 /**
  * @author uli
@@ -98,7 +98,7 @@ import org.objectstyle.wolips.logging.WOLipsLog;
  * To enable and disable the creation of type comments go to
  * Window>Preferences>Java>Code Generation.
  */
-public class CommonWOArgumentsTab extends JavaLaunchConfigurationTab {
+public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 
 	private Table includeTable;
 	private Button addButton;
@@ -108,7 +108,6 @@ public class CommonWOArgumentsTab extends JavaLaunchConfigurationTab {
 	private Vector allParameter;
 	private Vector allArguments;
 	protected static final String EMPTY_STRING = ""; //$NON-NLS-1$
-	private boolean isTableFilled = false;
 	/**
 	 * @see ILaunchConfigurationTab#createControl(Composite)
 	 */
@@ -144,6 +143,12 @@ public class CommonWOArgumentsTab extends JavaLaunchConfigurationTab {
 		includeTable.addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event e) {
 				handleSelection();
+			}
+		});
+
+		includeTable.addListener(SWT.CHECK, new Listener() {
+			public void handleEvent(Event e) {
+				superUpdateLaunchConfigurationDialog();
 			}
 		});
 
@@ -221,11 +226,9 @@ public class CommonWOArgumentsTab extends JavaLaunchConfigurationTab {
 	 * @param ignore
 	 */
 	private void fillTable(ILaunchInfo[] launchInfoArray) {
-		if (isTableFilled)
-			return;
-		isTableFilled = true;
 		allArguments = new Vector();
 		allParameter = new Vector();
+		includeTable.removeAll();
 		for (int i = 0; i < launchInfoArray.length; i++) {
 			ILaunchInfo launchInfo = launchInfoArray[i];
 			TableItem item = new TableItem(includeTable, SWT.NONE);
@@ -269,15 +272,20 @@ public class CommonWOArgumentsTab extends JavaLaunchConfigurationTab {
 	private void removeIgnore() {
 		int[] selection = includeTable.getSelectionIndices();
 		includeTable.remove(selection);
-		String remove = "WOLips_Remove_request";
-		
-		for (int i = 0; i < selection.length; i++) {
-			allParameter.setElementAt(remove, i);
-			allArguments.setElementAt(remove, i);
-		}
-		for (int i = 0; i < selection.length; i++) {
-			allParameter.remove(remove);
-			allArguments.remove(remove);
+		if (selection == null)
+			return;
+		int[] newIndices = new int[selection.length];
+		System.arraycopy(selection, 0, newIndices, 0, selection.length);
+		ArrayUtilities.sort(selection);
+		int last = -1;
+		for (int i = 0; i < newIndices.length; i++) {
+			int index = newIndices[i];
+			if (index != last || i == 0) {
+				allParameter.remove(index);
+				allArguments.remove(index);
+			}
+
+			last = index;
 		}
 		this.updateLaunchConfigurationDialog();
 	}
@@ -298,7 +306,7 @@ public class CommonWOArgumentsTab extends JavaLaunchConfigurationTab {
 		allArguments.setElementAt(argument, index);
 		this.updateLaunchConfigurationDialog();
 	}
-	
+
 	private void handleSelection() {
 		if (includeTable.getSelectionCount() > 0) {
 			removeButton.setEnabled(true);
@@ -435,8 +443,16 @@ public class CommonWOArgumentsTab extends JavaLaunchConfigurationTab {
 			IResource res =
 				ResourcesPlugin.getWorkspace().getRoot().findMember(path);
 			if (res instanceof IContainer && res.exists()) {
-				IResource aRes =
-					((IContainer) res).findMember(aPath.toString() + ".woa");
+				IResource aDistRes = ((IContainer) res).findMember("dist");
+				IResource aRes;
+				if (aDistRes instanceof IContainer && aDistRes.exists())
+					aRes =
+						((IContainer) aDistRes).findMember(
+							aPath.toString() + ".woa");
+				else
+					aRes =
+						((IContainer) res).findMember(
+							aPath.toString() + ".woa");
 				if (aRes != null) {
 					if (aRes instanceof IContainer && aRes.exists()) {
 						config.setAttribute(
@@ -457,4 +473,54 @@ public class CommonWOArgumentsTab extends JavaLaunchConfigurationTab {
 		return Preferences.getString(IWOLipsPluginConstants.PREF_LAUNCH_GLOBAL);
 	}
 
+	/**
+		 * Updates the buttons and message in this page's launch
+		 * configuration dialog.
+		 */
+	protected void superUpdateLaunchConfigurationDialog() {
+		super.updateLaunchConfigurationDialog();
+	}
+	protected void updateLaunchConfigurationDialog() {
+		super.updateLaunchConfigurationDialog();
+		this.getControl().update();
+		this.includeTable.update();
+	}
 }
+/*
+private String getWOApplicationPlatformSpecificArguments() {
+	if (!WOLipsPlugin
+		.getDefault()
+		.getWOEnvironment()
+		.getWOVariables()
+		.systemRoot()
+		.startsWith("/System"))
+		return "";
+	return "-WORoot = "
+		+ WOLipsPlugin
+			.getDefault()
+			.getWOEnvironment()
+			.getWOVariables()
+			.systemRoot()
+		+ " ";
+}
+
+private String getWOApplicationClassNameArgument(ILaunchConfigurationWorkingCopy config) {
+	String main = null;
+	try {
+		main =
+			config.getAttribute(
+				IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME,
+				"");
+	} catch (Exception anException) {
+		WOLipsLog.log(anException);
+		return "";
+	}
+	if ("".equals(main))
+		return "";
+	return "WOApplicationClass=" + main + " ";
+}
+
+private String getCommonWOApplicationArguments() {
+	return LaunchingMessages.getString("WOArguments.common");
+}
+*/
