@@ -57,7 +57,6 @@ package org.objectstyle.wolips.core.ant;
 
 import org.eclipse.core.resources.IProject;
 import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
-import org.objectstyle.wolips.logging.WOLipsLog;
 import org.objectstyle.woproject.env.WOVariables;
 
 /**
@@ -91,8 +90,6 @@ public abstract class UpdateIncludeFiles {
 					woVariables.localRoot()};
 			rootPaths = new String [] { "user.home", "wo.wosystemroot", "wo.wolocalroot" };
 		}
-		WOLipsLog.log("paths: " + paths);
-		WOLipsLog.log("rootPaths: " + rootPaths);
 	}
 
 	public String[] getPaths() {
