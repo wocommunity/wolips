@@ -50,14 +50,9 @@
 package org.objectstyle.wolips.ant.runner;
 import org.eclipse.ant.core.AntRunner;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.SubProgressMonitor;
-import org.eclipse.debug.core.DebugPlugin;
-import org.eclipse.debug.core.ILaunchConfiguration;
-import org.eclipse.debug.core.ILaunchManager;
-import org.eclipse.ui.externaltools.internal.registry.ExternalToolMigration;
 /**
  * @author uli
  * 
@@ -108,46 +103,5 @@ public final class RunAnt {
 			runner = null;
 		}
 	}
-	/**
-	 * Method inExternalVM.
-	 * 
-	 * @param buildFile
-	 * @param kind
-	 * @param monitor
-	 * @throws Exception
-	 */
-	public void inExternalVM(IFile buildFile, IProgressMonitor monitor)
-			throws CoreException {
-		ILaunchConfiguration config = null;
-		try {
-			config = RunAnt.createDefaultLaunchConfiguration(buildFile);
-		} catch (CoreException e) {
-			config = null;
-			/*
-			 * WOLipsPlugin.handleException(
-			 * Display.getCurrent().getActiveShell(), e,
-			 * BuildMessages.getString("Build.Exception"));
-			 */
-			return;
-		}
-		try {
-			config= ExternalToolMigration.migrateRunInBackground(config);
-			config.launch(ILaunchManager.RUN_MODE, monitor);
-			
-		} finally {
-			config = null;
-		}
-	}
-	/**
-	 * Creates and returns a default launch configuration for the given file.
-	 * 
-	 * @param file
-	 * @return default launch configuration
-	 */
-	private static ILaunchConfiguration createDefaultLaunchConfiguration(
-			IFile buildFile) throws CoreException {
-		ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
-		ILaunchConfiguration config = manager.getLaunchConfiguration(buildFile.getProject().getFile(buildFile.getProject().getName() + ".build.launch"));
-		return config;
-	}
+
 }

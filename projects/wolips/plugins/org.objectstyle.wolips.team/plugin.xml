@@ -101,6 +101,10 @@
             type="text"
             extension="ant.frameworks.wo.wosystemroot">
       </fileTypes>
+      <fileTypes
+            type="text"
+            extension="build.launch">
+      </fileTypes>
    </extension>
 <!-- =================================================================================== -->
 <!-- Extension: Ignored team file types                                                          -->
@@ -130,6 +134,10 @@
       <ignore
             selected="false"
             pattern=".api">
+      </ignore>
+      <ignore
+            selected="true"
+            pattern=".build.launch">
       </ignore>
    </extension>
 

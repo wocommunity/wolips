@@ -22,9 +22,9 @@
  * this acknowlegement may appear in the software itself, if and wherever such
  * third-party acknowlegements normally appear.
  * 
- * 4. The names "ObjectStyle Group" and "Cayenne" must not be used to endorse
- * or promote products derived from this software without prior written
- * permission. For written permission, please contact andrus@objectstyle.org.
+ * 4. The names "ObjectStyle Group" and "Cayenne" must not be used to endorse or
+ * promote products derived from this software without prior written permission.
+ * For written permission, please contact andrus@objectstyle.org.
  * 
  * 5. Products derived from this software may not be called "ObjectStyle" nor
  * may "ObjectStyle" appear in their names without prior written permission of
@@ -42,8 +42,8 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * ====================================================================
  * 
- * This software consists of voluntary contributions made by many individuals
- * on behalf of the ObjectStyle Group. For more information on the ObjectStyle
+ * This software consists of voluntary contributions made by many individuals on
+ * behalf of the ObjectStyle Group. For more information on the ObjectStyle
  * Group, please see <http://objectstyle.org/>.
  *  
  */
@@ -62,12 +62,20 @@ import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.QualifiedName;
+import org.eclipse.debug.core.DebugPlugin;
+import org.eclipse.debug.core.ILaunchConfiguration;
+import org.eclipse.debug.core.ILaunchManager;
+import org.eclipse.jdt.launching.IVMInstall;
+import org.eclipse.jdt.launching.JavaRuntime;
+import org.eclipse.swt.widgets.Display;
 import org.objectstyle.wolips.ant.runner.BuildMessages;
 import org.objectstyle.wolips.ant.runner.RunAnt;
 import org.objectstyle.wolips.core.logging.WOLipsLog;
+import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
 import org.objectstyle.wolips.core.preferences.Preferences;
 import org.objectstyle.wolips.datasets.resources.IWOLipsModel;
 import org.objectstyle.wolips.projectbuild.WOProjectBuildConstants;
+import org.objectstyle.wolips.templateengine.BuildLaunchEngine;
 /**
  * @author uli
  */
@@ -161,7 +169,7 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 		RunAnt runAnt = new RunAnt();
 		//if (projectNeedsClean())
 		//TODO:handle clean
-		runAnt.inExternalVM(getProject().getFile(aBuildFile), monitor);
+		this.launchAntInExternalVM(getProject().getFile(aBuildFile), monitor);
 	}
 	/**
 	 * Method projectNeedsClean.
@@ -350,5 +358,66 @@ public class WOAntBuilder extends IncrementalProjectBuilder {
 		public boolean isBuildRequired() {
 			return buildRequired;
 		}
+	}
+	/**
+	 * Method inExternalVM.
+	 * 
+	 * @param buildFile
+	 * @param kind
+	 * @param monitor
+	 * @throws Exception
+	 */
+	private void launchAntInExternalVM(IFile buildFile, IProgressMonitor monitor)
+			throws CoreException {
+		ILaunchConfiguration config = null;
+		try {
+			config = this.createDefaultLaunchConfiguration(buildFile, monitor);
+		} catch (CoreException e) {
+			config = null;
+			WOLipsPlugin.handleException(Display.getCurrent().getActiveShell(),
+					e, BuildMessages.getString("Build.Exception"));
+			return;
+		}
+		try {
+			//config= ExternalToolMigration.migrateRunInBackground(config);
+			config.launch(ILaunchManager.RUN_MODE, monitor);
+		} finally {
+			config = null;
+		}
+	}
+	/**
+	 * Creates and returns a default launch configuration for the given file.
+	 * 
+	 * @param file
+	 * @return default launch configuration
+	 */
+	private ILaunchConfiguration createDefaultLaunchConfiguration(
+			IFile buildFile, IProgressMonitor monitor) throws CoreException {
+		IProject project = buildFile.getProject();
+		String persistentLaunchConfigFileName = project.getName()
+				+ ".build.launch";
+		IFile persistentLaunchConfigFile = project
+				.getFile(persistentLaunchConfigFileName);
+		if (!persistentLaunchConfigFile.exists()) {
+			BuildLaunchEngine buildLaunchEngine = new BuildLaunchEngine();
+			try {
+				buildLaunchEngine.init();
+				buildLaunchEngine.setProjectName(project.getName());
+				buildLaunchEngine.setProject(project);
+				buildLaunchEngine.setAttrLocation(buildFile.getLocation().toString());
+				buildLaunchEngine.setWorkingDirectory(project.getLocation().toString());
+				IVMInstall vmInstall = JavaRuntime.getDefaultVMInstall();
+			    buildLaunchEngine.setVmInstallName(vmInstall.getName());
+				buildLaunchEngine.setVmInstallTypeId(vmInstall.getId());
+				buildLaunchEngine.run(monitor);
+			} catch (Exception e) {
+				WOLipsLog.log(e);
+			}
+			persistentLaunchConfigFile.refreshLocal(IResource.DEPTH_ONE, monitor);
+		}
+		ILaunchManager manager = DebugPlugin.getDefault().getLaunchManager();
+		ILaunchConfiguration config = manager
+				.getLaunchConfiguration(persistentLaunchConfigFile);
+		return config;
 	}
 }

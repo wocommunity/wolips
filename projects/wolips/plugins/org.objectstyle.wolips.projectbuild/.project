@@ -7,6 +7,7 @@
 		<project>org.objectstyle.wolips.ant</project>
 		<project>org.objectstyle.wolips.cayenne</project>
 		<project>org.objectstyle.wolips.datasets</project>
+		<project>org.objectstyle.wolips.templateengine</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
