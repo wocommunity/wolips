@@ -53,7 +53,8 @@
  * <http://objectstyle.org/>.
  *
  */
- package org.objectstyle.wolips.io;
+
+package org.objectstyle.wolips.io;
 
 import java.util.Hashtable;
 import java.io.File;
