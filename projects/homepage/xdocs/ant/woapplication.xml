@@ -78,7 +78,7 @@
 					<td valign="top">wsDestDir</td>
 					<td valign="top">Destination directory where WebServerResorces should be copied 
 					during split install (presense of this parameter will trigger split install). WebServerResources
-					will be created under [wsDestDir]/WebObjects/AppName.woa/.</td>
+					will be created under [wsDestDir]/WebObjects/AppName.woa/Contents/.</td>
 					<td valign="top" align="center">No</td>
 				</tr>
 				<tr>
