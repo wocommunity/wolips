@@ -56,29 +56,63 @@
 
 package org.objectstyle.wolips.jdt.ui;
 
-// http://www.eclipse.org/articles/Understanding%20Layouts/Understanding%20Layouts.htm
-
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.ui.wizards.IClasspathContainerPage;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.DirectoryDialog;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
+import org.objectstyle.wolips.jdt.classpath.model.Framework;
 
 /**
  * Insert the type's description here.
+ * 
  * @see WizardPage
  */
-public class ContainerPage
-	extends WizardPage
-	implements IClasspathContainerPage {
+public class ContainerPage extends WizardPage implements
+		IClasspathContainerPage, ISelectionChangedListener {
 	private ContainerContentProvider containerContentProvider;
+
 	private CheckboxTreeViewer checkboxTreeViewer;
-	
+
+	private Text sourceField;
+
+	private Button sourceFileButton;
+
+	private Button sourceFolderButton;
+
+	private Text javaDocField;
+
+	private Button javaDocFileButton;
+
+	private Button javaDocFolderButton;
+
+	private Text orderField;
+
+	private Button exportedButton;
+
+	private Framework framework;
+
+	//private
+
 	/**
 	 * The constructor.
 	 */
@@ -94,53 +128,273 @@ public class ContainerPage
 		//thisPage.setLayout(new RowLayout(SWT.VERTICAL));
 
 		this.checkboxTreeViewer = new CheckboxTreeViewer(thisPage, SWT.MULTI);
-		//_uiList = new CheckboxTreeViewer(thisPage, SWT.MULTI | SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
-		GridData gd =
-			new GridData(
-				GridData.HORIZONTAL_ALIGN_FILL | GridData.FILL_HORIZONTAL);
+		//_uiList = new CheckboxTreeViewer(thisPage, SWT.MULTI | SWT.BORDER |
+		// SWT.V_SCROLL | SWT.H_SCROLL);
+		GridData gd = new GridData(GridData.HORIZONTAL_ALIGN_FILL
+				| GridData.FILL_HORIZONTAL);
 		//|GridData.VERTICAL_ALIGN_FILL
-		Rectangle trim =
-			this.checkboxTreeViewer.getTree().computeTrim(
-				0,
-				0,
-				0,
+		Rectangle trim = this.checkboxTreeViewer.getTree().computeTrim(0, 0, 0,
 				12 * this.checkboxTreeViewer.getTree().getItemHeight());
 		gd.heightHint = trim.height;
 		this.checkboxTreeViewer.getTree().setLayoutData(gd);
-		this.checkboxTreeViewer.setContentProvider(this.containerContentProvider);
+		this.checkboxTreeViewer
+				.setContentProvider(this.containerContentProvider);
 		this.checkboxTreeViewer.setLabelProvider(this.containerContentProvider);
 		this.checkboxTreeViewer.setInput(this.containerContentProvider);
-		Label lbl = new Label(thisPage, SWT.SINGLE);
-		lbl.setText("Hint: use Ctrl-click or Shift-click");
+		this.checkboxTreeViewer.addSelectionChangedListener(this);
+		if (false) {
+			Composite row = new Composite(thisPage, SWT.NONE);
+			row.setLayout(new RowLayout());
+			Label lbl = new Label(row, SWT.SINGLE);
+			lbl.setText("Source location");
+			sourceField = new Text(row, SWT.SINGLE);
+			sourceField.setEditable(false);
+			sourceFileButton = new Button(row, SWT.PUSH);
+			sourceFileButton.setText("Choose File");
+			sourceFileButton.addMouseListener(new MouseListener() {
 
+				public void mouseDoubleClick(MouseEvent e) {
+					return;
+				}
+
+				public void mouseDown(MouseEvent e) {
+					FileDialog fileDialog = new FileDialog(new Shell());
+					fileDialog.open();
+					String path = fileDialog.getFilterPath();
+					String file = fileDialog.getFileName();
+					if (path != null) {
+						if (file != null) {
+							sourceField.setText(path + file);
+						} else {
+							sourceField.setText(path);
+						}
+					}
+				}
+
+				public void mouseUp(MouseEvent e) {
+					return;
+				}
+
+			});
+			sourceFolderButton = new Button(row, SWT.PUSH);
+			sourceFolderButton.setText("Choose Folder");
+			sourceFolderButton.addMouseListener(new MouseListener() {
+
+				public void mouseDoubleClick(MouseEvent e) {
+					return;
+				}
+
+				public void mouseDown(MouseEvent e) {
+					DirectoryDialog directoryDialog = new DirectoryDialog(
+							new Shell());
+					directoryDialog.open();
+					String path = directoryDialog.getFilterPath();
+					if (path != null) {
+						sourceField.setText(path);
+						framework.setSrcPath(new Path(path));
+					}
+				}
+
+				public void mouseUp(MouseEvent e) {
+					return;
+				}
+
+			});
+
+			row = new Composite(thisPage, SWT.NONE);
+			row.setLayout(new RowLayout());
+			lbl = new Label(row, SWT.SINGLE);
+			lbl.setText("Javadoc location");
+			javaDocField = new Text(row, SWT.SINGLE);
+			javaDocField.setEditable(false);
+			javaDocFileButton = new Button(row, SWT.PUSH);
+			javaDocFileButton.setText("Choose File");
+			javaDocFileButton.addMouseListener(new MouseListener() {
+
+				public void mouseDoubleClick(MouseEvent e) {
+					return;
+				}
+
+				public void mouseDown(MouseEvent e) {
+					FileDialog fileDialog = new FileDialog(new Shell());
+					fileDialog.open();
+					String path = fileDialog.getFilterPath();
+					String file = fileDialog.getFileName();
+					if (path != null) {
+						if (file != null) {
+							sourceField.setText(path + file);
+							Path srcPath = new Path(path);
+							framework.setJavaDocPath(srcPath.append(file));
+						} else {
+							javaDocField.setText(path);
+							framework.setJavaDocPath(new Path(path));
+						}
+					}
+				}
+
+				public void mouseUp(MouseEvent e) {
+					return;
+				}
+
+			});
+			javaDocFolderButton = new Button(row, SWT.PUSH);
+			javaDocFolderButton.setText("Choose Folder");
+			javaDocFolderButton.addMouseListener(new MouseListener() {
+
+				public void mouseDoubleClick(MouseEvent e) {
+					return;
+				}
+
+				public void mouseDown(MouseEvent e) {
+					DirectoryDialog directoryDialog = new DirectoryDialog(
+							new Shell());
+					directoryDialog.open();
+					String path = directoryDialog.getFilterPath();
+					if (path != null) {
+						javaDocField.setText(path);
+					}
+				}
+
+				public void mouseUp(MouseEvent e) {
+					return;
+				}
+
+			});
+
+			row = new Composite(thisPage, SWT.NONE);
+			row.setLayout(new RowLayout());
+			lbl = new Label(row, SWT.SINGLE);
+			lbl.setText("Order");
+			orderField = new Text(row, SWT.SINGLE);
+			orderField.addModifyListener(new ModifyListener() {
+
+				public void modifyText(ModifyEvent e) {
+					if (framework != null) {
+						framework.setOrder(orderField.getText());
+					}
+				}
+
+			});
+
+			row = new Composite(thisPage, SWT.NONE);
+			row.setLayout(new RowLayout());
+			exportedButton = new Button(row, SWT.CHECK);
+			exportedButton.addMouseListener(new MouseListener() {
+
+				public void mouseDoubleClick(MouseEvent e) {
+					return;
+				}
+
+				public void mouseDown(MouseEvent e) {
+					framework.setExported(exportedButton.getSelection());
+				}
+
+				public void mouseUp(MouseEvent e) {
+					return;
+				}
+
+			});
+			lbl = new Label(row, SWT.SINGLE);
+			lbl.setText("Exported");
+		}
 		thisPage.layout();
 
 		setControl(thisPage);
-		this.containerContentProvider.setCheckboxTreeViewer(this.checkboxTreeViewer);
+		this.containerContentProvider
+				.setCheckboxTreeViewer(this.checkboxTreeViewer);
+		this.frameworkChanged();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.jdt.ui.wizards.IClasspathContainerPage#finish()
 	 */
 	public boolean finish() {
 		return true;
 	}
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.jdt.ui.wizards.IClasspathContainerPage#getSelection()
 	 */
 	public IClasspathEntry getSelection() {
 		return this.containerContentProvider.getClasspathEntry();
 	}
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.jdt.ui.wizards.IClasspathContainerPage#setSelection(org.eclipse.jdt.core.IClasspathEntry)
 	 */
 	public void setSelection(IClasspathEntry containerEntry) {
-		if(containerEntry == null) {
+		if (containerEntry == null) {
 			this.containerContentProvider = new ContainerContentProvider();
-		}
-		else {
-			this.containerContentProvider = new ContainerContentProvider(containerEntry);
+		} else {
+			this.containerContentProvider = new ContainerContentProvider(
+					containerEntry);
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.jface.viewers.ISelectionChangedListener#selectionChanged(org.eclipse.jface.viewers.SelectionChangedEvent)
+	 */
+	public void selectionChanged(SelectionChangedEvent event) {
+		this.framework = null;
+		Object selection = event.getSelection();
+		if (selection instanceof IStructuredSelection) {
+			IStructuredSelection structuredSelection = (IStructuredSelection) selection;
+			if (!structuredSelection.isEmpty()) {
+				Object object = structuredSelection.getFirstElement();
+				if (object instanceof Framework) {
+					this.framework = (Framework) object;
+				}
+			}
+		}
+		this.frameworkChanged();
+	}
+
+	private void frameworkChanged() {
+		if(true) {
+			return;
+		}
+		if (this.framework == null) {
+			sourceField.setText("");
+			sourceFileButton.setEnabled(false);
+			sourceFolderButton.setEnabled(false);
+			javaDocField.setText("");
+			javaDocFileButton.setEnabled(false);
+			javaDocFolderButton.setEnabled(false);
+			orderField.setText("");
+			orderField.setEditable(false);
+			exportedButton.setSelection(false);
+			exportedButton.setEnabled(false);
+		} else {
+			if (framework.getSrcPath() != null) {
+				sourceField.setText(framework.getSrcPath().toString());
+			} else {
+				sourceField.setText("");
+			}
+			sourceFileButton.setEnabled(true);
+			sourceFolderButton.setEnabled(true);
+			if (framework.getJavaDocPath() != null) {
+				javaDocField.setText(framework.getJavaDocPath().toString());
+			} else {
+				javaDocField.setText("");
+			}
+			javaDocFileButton.setEnabled(true);
+			javaDocFolderButton.setEnabled(true);
+			if (framework.getOrder() != null) {
+				orderField.setText(framework.getOrder());
+			} else {
+				javaDocField.setText("");
+			}
+			orderField.setEditable(true);
+			exportedButton.setSelection(framework.isExported());
+			exportedButton.setEnabled(true);
+		}
+	}
 }
