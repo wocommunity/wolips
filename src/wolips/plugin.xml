@@ -38,6 +38,7 @@
       <import plugin="org.eclipse.pde.runtime"/>
    </requires>
 
+
 <!-- =================================================================================== -->
 <!-- Extension: Project Wizards                                                          -->
 <!-- =================================================================================== -->
@@ -75,7 +76,7 @@
             name="%WOLips.Application"
             icon="icons/woproject/woapplication_wiz.gif"
             category="org.objectstyle.wolips.wizards.webobjects.5.1"
-            class="org.objectstyle.wolips.wizards.WOProjectCreationWizard"
+            class="org.objectstyle.wolips.wizards.WOApplicationCreationWizard"
             project="true"
             id="org.objectstyle.wolips.wizards.new.wo.5.1.application">
          <description>
@@ -554,52 +555,106 @@
 <!-- =================================================================================== -->
 <!-- Extension: Ignored team file types                                                          -->
 <!-- =================================================================================== -->
-	<extension point="org.eclipse.team.core.ignore">
-		<ignore pattern = ".DS_Store" selected = "true"/>
-		<ignore pattern = "ant.frameworks.wo.woroot" selected = "true"/>
-		<ignore pattern = "ant.frameworks.wo.wolocalroot" selected = "true"/>
-		<ignore pattern = "ant.frameworks.user.home" selected = "true"/>
-		<ignore pattern = "ant.classpaths.wo.woroot" selected = "true"/>
-	</extension>
+   <extension
+         point="org.eclipse.team.core.ignore">
+      <ignore
+            selected="true"
+            pattern=".DS_Store">
+      </ignore>
+      <ignore
+            selected="true"
+            pattern="ant.frameworks.wo.woroot">
+      </ignore>
+      <ignore
+            selected="true"
+            pattern="ant.frameworks.wo.wolocalroot">
+      </ignore>
+      <ignore
+            selected="true"
+            pattern="ant.frameworks.user.home">
+      </ignore>
+      <ignore
+            selected="true"
+            pattern="ant.classpaths.wo.woroot">
+      </ignore>
+   </extension>
 <!-- =================================================================================== -->
 <!-- Extension: Resource filter                                                          -->
-<!-- =================================================================================== -->    
-	<extension point= "org.eclipse.ui.resourceFilters">
-	<filter pattern = "*.woa" selected = "false" >
-	</filter>
-	<filter pattern = "*.framework" selected = "false" >
-	</filter>
-	<filter pattern = "*.java" selected = "false" >
-	</filter>
-	<filter pattern = "*.wod" selected = "false" >
-	</filter>
-	<filter pattern = "*.woo" selected = "false" >
-	</filter>
-	<filter pattern = "*.html" selected = "false" >
-	</filter>
-	<filter pattern = "*.api" selected = "false" >
-	</filter>
-	<filter pattern = "*.wo" selected = "false" >
-	</filter>
-	<filter pattern = "*.plist" selected = "false" >
-	</filter>
-	<filter pattern = "*.eomodeld" selected = "false" >
-	</filter>
-	<filter pattern = "*.d2wmodel" selected = "false" >
-	</filter>
-	<filter pattern = "*.pbxuser" selected = "false" >
-	</filter>
-	<filter pattern = "PB.project" selected = "false" >
-	</filter>
-	<filter pattern = "*.postamble" selected = "false" >
-	</filter>
-	<filter pattern = "*.preamble" selected = "false" >
-	</filter>
-	<filter pattern = "makefile" selected = "false" >
-	</filter>
-	<filter pattern = "build.xml" selected = "false" >
-	</filter>
-	<filter pattern = "*.subproj" selected = "false" >
-	</filter>
-</extension>
+<!-- =================================================================================== -->
+   <extension
+         point="org.eclipse.ui.resourceFilters">
+      <filter
+            selected="false"
+            pattern="*.woa">
+      </filter>
+      <filter
+            selected="false"
+            pattern="*.framework">
+      </filter>
+      <filter
+            selected="false"
+            pattern="*.java">
+      </filter>
+      <filter
+            selected="false"
+            pattern="*.wod">
+      </filter>
+      <filter
+            selected="false"
+            pattern="*.woo">
+      </filter>
+      <filter
+            selected="false"
+            pattern="*.html">
+      </filter>
+      <filter
+            selected="false"
+            pattern="*.api">
+      </filter>
+      <filter
+            selected="false"
+            pattern="*.wo">
+      </filter>
+      <filter
+            selected="false"
+            pattern="*.plist">
+      </filter>
+      <filter
+            selected="false"
+            pattern="*.eomodeld">
+      </filter>
+      <filter
+            selected="false"
+            pattern="*.d2wmodel">
+      </filter>
+      <filter
+            selected="false"
+            pattern="*.pbxuser">
+      </filter>
+      <filter
+            selected="false"
+            pattern="PB.project">
+      </filter>
+      <filter
+            selected="false"
+            pattern="*.postamble">
+      </filter>
+      <filter
+            selected="false"
+            pattern="*.preamble">
+      </filter>
+      <filter
+            selected="false"
+            pattern="makefile">
+      </filter>
+      <filter
+            selected="false"
+            pattern="build.xml">
+      </filter>
+      <filter
+            selected="false"
+            pattern="*.subproj">
+      </filter>
+   </extension>
+
 </plugin>
