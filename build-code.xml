@@ -64,7 +64,7 @@
             </metainf>
         </jar>
 
-        <copy todir="${dist}/lib" file="lib/cayenne.jar"/>
+        <copy todir="${dist}/lib" file="lib/${lib.cayenne}"/>
     </target>
 
 
@@ -86,8 +86,8 @@
 
         <copy todir="${dist}/lib">
         	<fileset dir="lib">
-        		<include name="log4j*"/>
-        		<include name="junit.jar"/>
+        		<include name="${lib.log4j}"/>
+        		<include name="${lib.junit}"/>
         	</fileset>
         	<fileset dir="${ant.home}/lib">
         		<include name="ant.jar"/>

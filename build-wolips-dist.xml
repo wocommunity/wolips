@@ -20,6 +20,7 @@
     <mkdir dir="${wolips.feature.dist}"/>
     <copy todir="${wolips.feature.dist}">
         <fileset dir="src/wolips-feature">
+        	<exclude name=".project"/>
         </fileset>
     </copy>
     

@@ -60,6 +60,8 @@ import java.util.*;
 
 import junit.framework.*;
 
+import java.io.PrintStream;
+
 /** 
  * Test runner to run batches of test suites. 
  * 
@@ -124,7 +126,7 @@ public class WOProjectRunner extends junit.textui.TestRunner {
             failureCount += stats.result.failureCount();
             errorCount += stats.result.errorCount();
             totalTime += stats.elapsedTime;
-            print(stats.result);
+            writer().print(stats.result);
         }
 
         writer().println();
@@ -190,4 +192,9 @@ public class WOProjectRunner extends junit.textui.TestRunner {
         long elapsedTime;
         String suiteName;
     }
+    
+    public PrintStream writer() {
+    	return System.out;
+    }
+    
 }

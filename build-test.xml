@@ -111,9 +111,9 @@
         
         <copy todir="tests/wo/lib">
         	<fileset dir="${dist}/lib">
-        		<include name="log4j*.jar"/>
+        		<include name="${lib.log4j}"/>
         		<include name="${project.name}.jar"/>
-        		<include name="cayenne.jar"/>
+        		<include name="${lib.cayenne}"/>
         	</fileset>
         </copy>
     </target>

@@ -43,7 +43,7 @@
                 <include name="${project.name}-${project.version}/**"/>
                 <exclude name="**/examples/**"/>
                 <exclude name="**/lib/ant.jar"/>
-                <exclude name="**/lib/junit.jar"/>
+                <exclude name="**/lib/${lib.junit}"/>
             </tarfileset>
          </tar>
          

@@ -69,8 +69,8 @@
         <!-- Copy WOProject JAR's -->
         <copy todir="${wolips.dist}/lib">
              <fileset dir="${dist}/lib">
-             	<exclude name="junit.jar"/>
-             	<exclude name="log4j-1.2.beta4.jar"/>
+             	<exclude name="${lib.junit}"/>
+             	<exclude name="${lib.log4j}"/>
              	<exclude name="ant.jar"/>
              	<exclude name="woproject-tests.jar"/>
              </fileset>
