@@ -2,7 +2,7 @@
 <classpath>
     <classpathentry kind="src" path="java"/>
     <classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins/wolips"/>
-    <classpathentry kind="var" path="JAVA_WO_FOUNDATION"/>
+    <classpathentry kind="var" path="NEXT_ROOT/Library/Frameworks/JavaFoundation.framework/Resources/Java/javafoundation.jar"/>
     <classpathentry kind="var" path="JRE_LIB" rootpath="JRE_SRCROOT" sourcepath="JRE_SRC"/>
     <classpathentry exported="true" kind="lib" path="lib/cayenne.jar"/>
     <classpathentry exported="true" kind="lib" path="lib/woproject.jar"/>

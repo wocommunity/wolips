@@ -192,7 +192,8 @@ public class TargetBuilderPersistenceStore implements ISaveParticipant, IResourc
 				for (int i = 0; i < stateCount; i++)
 				{
 					String key = in.readUTF();
-					State buildState = JavaBuilder.readState(in);
+					//This is not correct.
+					State buildState =JavaBuilder.readState(null,in);
 					setBuildStateForKey(buildState, key);
 				}
 			}
