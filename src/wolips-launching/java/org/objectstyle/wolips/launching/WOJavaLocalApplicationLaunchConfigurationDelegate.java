@@ -138,11 +138,14 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 						.ATTR_WOLIPS_LAUNCH_WOARGUMENTS,
 					"");
 		String vmArgs = getVMArguments(configuration);
-		ExecutionArguments execArgs = new ExecutionArguments(vmArgs, pgmArgs);
+		StringBuffer vmArgsBuffer = 
+			new StringBuffer(vmArgs);
+
+		this.addVMArguments(vmArgsBuffer, configuration, launch, mode);
+		ExecutionArguments execArgs = new ExecutionArguments(vmArgsBuffer.toString(), pgmArgs);
 
 		// VM-specific attributes
 		Map vmAttributesMap = getVMSpecificAttributesMap(configuration);
-
 		// Classpath
 		String[] classpath = getClasspath(configuration);
 
@@ -231,7 +234,9 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 	protected void addVMArguments(
 		StringBuffer vmArgs,
 		ILaunchConfiguration configuration,
-		int hprofPort) {
+		ILaunch launch,
+		String mode)
+		throws CoreException {
 	}
 	/**
 	 * Method replaceInArgumentGeneratedByWOLips.
@@ -284,10 +289,13 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 		IJavaProject buildProject = null;
 		try {
 			buildProject = this.getJavaProject(configuration);
-			if(ProjectHelper.isWOFwBuilderInstalled(project) && projectISReferencedByProject(project, buildProject.getProject()))
-			return true;
-			if(project.equals(buildProject.getProject()))
-			return true;
+			if (ProjectHelper.isWOFwBuilderInstalled(project)
+				&& projectISReferencedByProject(
+					project,
+					buildProject.getProject()))
+				return true;
+			if (project.equals(buildProject.getProject()))
+				return true;
 		} catch (Exception anException) {
 			WOLipsLog.log(anException);
 			return false;
@@ -300,18 +308,19 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate
 	 * @param mother
 	 * @return boolean
 	 */
-	private boolean projectISReferencedByProject(IProject child, IProject mother) {
+	private boolean projectISReferencedByProject(
+		IProject child,
+		IProject mother) {
 		IProject[] projects = null;
 		try {
 			projects = mother.getReferencedProjects();
-		}
-		catch (Exception anException) {
+		} catch (Exception anException) {
 			WOLipsLog.log(anException);
 			return false;
 		}
-		for(int i = 0;i < projects.length;i++) {
-			if(projects[i].equals(child))
-			return true;
+		for (int i = 0; i < projects.length; i++) {
+			if (projects[i].equals(child))
+				return true;
 		}
 		return false;
 	}
