@@ -61,8 +61,8 @@ import junit.framework.TestCase;
 import org.apache.tools.ant.taskdefs.Java;
 
 /** 
- * A test case that attempts to build art framework and does
- * various assertions about build results. 
+ * A test case that does various assertions about 
+ * build results of art framework. 
  * 
  * @author Andrei Adamchik
  */
@@ -73,14 +73,7 @@ public class ArtBuildTest extends TestCase {
         super(name);
     }
 
-    public void setUp() throws Exception {
-        super.setUp();
-    }
-
-    public void tearDown() throws Exception {
-        super.tearDown();
-    }
-
     public void testMe() throws Exception {
+        
     }
 }
