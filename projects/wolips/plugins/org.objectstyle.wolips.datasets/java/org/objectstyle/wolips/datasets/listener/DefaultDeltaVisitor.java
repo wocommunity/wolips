@@ -65,8 +65,8 @@ public abstract class DefaultDeltaVisitor implements IResourceDeltaVisitor {
 	 */
 	public boolean visit(IResourceDelta delta) throws CoreException {
 		IResource resource = delta.getResource();
-		if (!resource.exists() || !resource.isAccessible())
-			return false;
+		//if (!resource.exists() || !resource.isAccessible())
+		//	return false;
 		if (resource.getType() == IResource.FOLDER) {
 				if (IWOLipsModel.EXT_FRAMEWORK.equals(resource
 						.getFileExtension())
