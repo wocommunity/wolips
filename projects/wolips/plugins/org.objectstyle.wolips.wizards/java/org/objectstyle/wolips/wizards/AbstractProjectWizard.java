@@ -58,24 +58,43 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.wizards.newresource.BasicNewProjectResourceWizard;
 import org.objectstyle.wolips.core.plugin.WOLipsPluginImages;
+import org.objectstyle.wolips.templateengine.TemplateEnginePlugin;
+import org.objectstyle.wolips.templateengine.TemplateFolder;
 /**
  * @author ulrich
  *  
  */
-public abstract class AbstractWOWizard extends BasicNewProjectResourceWizard {
+public abstract class AbstractProjectWizard extends BasicNewProjectResourceWizard {
+	private String id;
+	private SelectTemplatePage selectTemplatePage;
 	/**
 	 * Constructor for WOProjectCreationWizard.
 	 */
-	public AbstractWOWizard() {
+	public AbstractProjectWizard(String templatesID) {
 		super();
+		id = templatesID;
 	}
 	public abstract String getWindowTitle();
+	
+	private boolean displayPage() {
+		if(id == null)
+			return false;
+		TemplateFolder[] templateFolder = TemplateEnginePlugin.getTemplateFolder(id);
+		if(templateFolder.length < 2)
+			return false;
+		selectTemplatePage = new SelectTemplatePage(templateFolder);
+		return false;
+	}
+	
 	/**
 	 * (non-Javadoc) Method declared on INewWizard
 	 */
 	public void init(IWorkbench workbench,
 			IStructuredSelection structuredSelection) {
 		super.init(workbench, structuredSelection);
+		if(this.displayPage()) {
+			this.addPage(selectTemplatePage);
+		}
 		setDefaultPageImageDescriptor(WOLipsPluginImages
 				.WOPROJECT_WIZARD_BANNER());
 		setWindowTitle(this.getWindowTitle());

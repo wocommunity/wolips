@@ -55,10 +55,9 @@
  */
 package org.objectstyle.wolips.wizards;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.objectstyle.wolips.core.plugin.WOLipsPluginImages;
+import org.objectstyle.wolips.templateengine.TemplateEnginePlugin;
 /**
  * @author mnolte
  * @author uli
@@ -66,7 +65,13 @@ import org.objectstyle.wolips.core.plugin.WOLipsPluginImages;
  * This class implements the interface required by the desktop for all 'New'
  * wizards. This wizard creates WOComponent folders and files.
  */
-public class WOComponentCreationWizard extends Wizard implements INewWizard {
+public class WOComponentCreationWizard extends AbstractResourceWizard {
+	/**
+	 * @param templatesID
+	 */
+	public WOComponentCreationWizard() {
+		super(TemplateEnginePlugin.WOComponent);
+	}
 	private WOComponentCreationPage mainPage;
 	/**
 	 * (non-Javadoc) Method declared on Wizard.
@@ -78,6 +83,7 @@ public class WOComponentCreationWizard extends Wizard implements INewWizard {
 	 * (non-Javadoc) Method declared on INewWizard
 	 */
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
+		super.init(workbench, selection);
 		mainPage = new WOComponentCreationPage(selection);
 		setWindowTitle(Messages.getString("WOComponentCreationWizard.title"));
 		setDefaultPageImageDescriptor(WOLipsPluginImages
@@ -88,16 +94,5 @@ public class WOComponentCreationWizard extends Wizard implements INewWizard {
 	 */
 	public boolean performFinish() {
 		return mainPage.createComponent();
-		/*
-		 * moved to WizardNewWOResourcePage.sledgeHammer() boolean returnValue =
-		 * mainPage.createComponent(); IWorkbenchWindow a[] =
-		 * WOLipsPlugin.getDefault().getWorkbench().getWorkbenchWindows(); for
-		 * (int i = 0; i < a.length; i++) { IWorkbenchPage b[] =
-		 * a[i].getPages(); for (int j = 0; j < b.length; j++) { IViewReference
-		 * c[] = b[j].getViewReferences(); for (int k = 0; k < c.length; k++) {
-		 * IViewPart d = c[k].getView(false); //maybe null if ((d != null) && (d
-		 * instanceof PackageExplorerPart)) ((PackageExplorerPart)
-		 * d).getTreeViewer().refresh(); } } } return returnValue;
-		 */
 	}
 }

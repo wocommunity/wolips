@@ -55,43 +55,43 @@
  */
 package org.objectstyle.wolips.wizards;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.wizard.IWizard;
+import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.IWorkbench;
-import org.objectstyle.wolips.core.plugin.WOLipsPluginImages;
 import org.objectstyle.wolips.templateengine.TemplateEnginePlugin;
+import org.objectstyle.wolips.templateengine.TemplateFolder;
 /**
- * @author mnolte
- * @author uli Wizard to create new eo model in selected webobjects java
- *         project
+ * @author ulrich
+ *  
  */
-public class EOModelCreationWizard extends AbstractResourceWizard {
-	private EOModelCreationPage mainPage;
+public abstract class AbstractResourceWizard extends Wizard implements IWizard {
+	private String id;
+	private SelectTemplatePage selectTemplatePage;
 	/**
-	 * Constructor for EOModelCreationWizard.
+	 * Constructor for WOProjectCreationWizard.
 	 */
-	public EOModelCreationWizard() {
-		super(TemplateEnginePlugin.EOModel);
+	public AbstractResourceWizard(String templatesID) {
+		super();
+		id = templatesID;
 	}
-	/**
-	 * @see org.eclipse.jface.wizard.IWizard#addPages()
-	 */
-	public void addPages() {
-		addPage(mainPage);
+	
+	private boolean displayPage() {
+		if(id == null)
+			return false;
+		TemplateFolder[] templateFolder = TemplateEnginePlugin.getTemplateFolder(id);
+		if(templateFolder.length < 2)
+			return false;
+		selectTemplatePage = new SelectTemplatePage(templateFolder);
+		return false;
 	}
+	
 	/**
-	 * @see org.eclipse.jface.wizard.IWizard#performFinish()
+	 * (non-Javadoc) Method declared on INewWizard
 	 */
-	public boolean performFinish() {
-		return mainPage.createEOModel();
-	}
-	/**
-	 * @see org.eclipse.ui.IWorkbenchWizard#init(IWorkbench,
-	 *      IStructuredSelection)
-	 */
-	public void init(IWorkbench workbench, IStructuredSelection selection) {
-		super.init(workbench, selection);
-		mainPage = new EOModelCreationPage(selection);
-		setWindowTitle(Messages.getString("EOModelCreationWizard.title"));
-		setDefaultPageImageDescriptor(WOLipsPluginImages
-				.WOCOMPONENT_WIZARD_BANNER());
+	public void init(IWorkbench workbench,
+			IStructuredSelection structuredSelection) {
+		if(this.displayPage()) {
+			this.addPage(selectTemplatePage);
+		}
 	}
 }

@@ -64,6 +64,7 @@ import org.objectstyle.wolips.core.project.ant.RunAnt;
 import org.objectstyle.wolips.core.resources.IWOLipsModel;
 import org.objectstyle.wolips.templateengine.TemplateDefinition;
 import org.objectstyle.wolips.templateengine.TemplateEngine;
+import org.objectstyle.wolips.templateengine.TemplateEnginePlugin;
 /**
  * @author mnolte
  * @author uli
@@ -72,7 +73,13 @@ import org.objectstyle.wolips.templateengine.TemplateEngine;
  * Window>Preferences>Java>Templates. To enable and disable the creation of
  * type comments go to Window>Preferences>Java>Code Generation.
  */
-public class JarProjectWizard extends AbstractWOWizard {
+public class JarProjectWizard extends AbstractProjectWizard {
+	/**
+	 * default contructor
+	 */
+	public JarProjectWizard() {
+		super(TemplateEnginePlugin.JarProject);
+	}
 	/*
 	 * (non-Javadoc)
 	 * 

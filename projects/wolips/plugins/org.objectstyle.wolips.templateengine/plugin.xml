@@ -20,10 +20,10 @@
       <import plugin="org.objectstyle.wolips.jdom"/>
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.ui"/>
-      <import plugin="org.apache.xerces"/>
       <import plugin="org.eclipse.core.runtime.compatibility"/>
       <import plugin="org.objectstyle.wolips.tests.core"/>
       <import plugin="org.objectstyle.wolips.datasets"/>
+      <import plugin="org.apache.xerces"/>
    </requires>
 
 

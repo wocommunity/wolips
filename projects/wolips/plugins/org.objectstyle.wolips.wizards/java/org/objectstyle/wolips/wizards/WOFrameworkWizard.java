@@ -56,6 +56,7 @@
 package org.objectstyle.wolips.wizards;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -64,6 +65,7 @@ import org.objectstyle.wolips.core.project.ant.RunAnt;
 import org.objectstyle.wolips.core.resources.IWOLipsModel;
 import org.objectstyle.wolips.templateengine.TemplateDefinition;
 import org.objectstyle.wolips.templateengine.TemplateEngine;
+import org.objectstyle.wolips.templateengine.TemplateEnginePlugin;
 /**
  * @author mnolte
  * @author uli
@@ -72,7 +74,13 @@ import org.objectstyle.wolips.templateengine.TemplateEngine;
  * Window>Preferences>Java>Templates. To enable and disable the creation of
  * type comments go to Window>Preferences>Java>Code Generation.
  */
-public class WOFrameworkWizard extends AbstractWOWizard {
+public class WOFrameworkWizard extends AbstractProjectWizard {
+	/**
+	 * default contructor
+	 */
+	public WOFrameworkWizard() {
+		super(TemplateEnginePlugin.WOFrameworkProject);
+	}
 	/*
 	 * (non-Javadoc)
 	 * 
