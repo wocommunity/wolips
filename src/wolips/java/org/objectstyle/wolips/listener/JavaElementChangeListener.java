@@ -67,7 +67,7 @@ import org.eclipse.jdt.core.IJavaElementDelta;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.objectstyle.wolips.IWOLipsPluginConstants;
-import org.objectstyle.wolips.WOLipsPlugin;
+import org.objectstyle.wolips.io.WOLipsLog;
 import org.objectstyle.wolips.project.PBProjectUpdater;
 import org.objectstyle.woproject.pb.PBProject;
 
@@ -198,7 +198,7 @@ public class JavaElementChangeListener implements IElementChangedListener {
 							}
 						}
 					} catch (CoreException e) {
-						WOLipsPlugin.log(e);
+						WOLipsLog.log(e);
 					}
 				}
 			}

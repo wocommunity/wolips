@@ -55,6 +55,9 @@
  */
 package org.objectstyle.wolips.utils;
 
+import java.util.ArrayList;
+import java.util.StringTokenizer;
+
 import org.objectstyle.wolips.IWOLipsPluginConstants;
 
 /**
@@ -68,6 +71,23 @@ public class WOLipsUtils implements IWOLipsPluginConstants {
 	 */
 	private WOLipsUtils() {
 		super();
+	}
+
+	/**
+		 * Method arrayListFromCSV.
+		 * @param csvString
+		 * @return ArrayList
+		 */
+	public static synchronized ArrayList arrayListFromCSV(String csvString) {
+		if (csvString == null || csvString.length() == 0) {
+			return new ArrayList();
+		}
+		StringTokenizer valueTokenizer = new StringTokenizer(csvString, ",");
+		ArrayList resultList = new ArrayList(valueTokenizer.countTokens());
+		while (valueTokenizer.hasMoreElements()) {
+			resultList.add(valueTokenizer.nextElement());
+		}
+		return resultList;
 	}
 
 	// mn: not deleted yet

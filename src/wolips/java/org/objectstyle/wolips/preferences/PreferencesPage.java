@@ -102,6 +102,12 @@ public class PreferencesPage
 					"Preferences.RunWOBuilderOnBuild.Label"),
 				getFieldEditorParent()));
 		addField(
+			new BooleanFieldEditor(
+				IWOLipsPluginConstants.PREF_SHOW_BUILD_OUTPUT,
+				PreferencesMessages.getString(
+					"Preferences.ShowBuildOutput.Label"),
+				getFieldEditorParent()));
+		addField(
 			new StringFieldEditor(
 				IWOLipsPluginConstants.PREF_MODEL_NAVIGATOR_FILTER,
 				PreferencesMessages.getString(

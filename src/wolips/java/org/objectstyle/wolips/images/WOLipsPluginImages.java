@@ -61,6 +61,7 @@ import java.net.URL;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.objectstyle.wolips.WOLipsPlugin;
+import org.objectstyle.wolips.io.WOLipsLog;
 
 /**
  * @author mnolte
@@ -89,7 +90,7 @@ public class WOLipsPluginImages {
 			URL url = new URL(WOLipsPlugin.baseURL(), path);
 			return ImageDescriptor.createFromURL(url);
 		} catch (MalformedURLException e) {
-			WOLipsPlugin.log(e);
+			WOLipsLog.log(e);
 		}
 		return ImageDescriptor.getMissingImageDescriptor();
 	}

@@ -53,9 +53,8 @@
  * <http://objectstyle.org/>.
  *
  */
-
+ 
 package org.objectstyle.wolips.actions;
-
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jface.action.IAction;
@@ -63,72 +62,47 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
-
 /**
  * @author uli
  *
  * The superclass for all Actions
  */
-
 public class ActionOnIProject implements IObjectActionDelegate {
-
 	private IProject project;
-
-	private IJavaProject javaProject;
-
 	protected IWorkbenchPart part;
-
 	public ActionOnIProject() {
-
 		super();
-
 	}
-
 	/**
 	 * @return Returns the IProject
 	 */
-
 	protected IProject project() {
-
 		return project;
-
 	}
-
 	public void dispose() {
-
+		part = null;
+		project = null;
 	}
-
 	/**
 	 * Has to be implemented in the subclass.
 	 */
-
 	public void run(IAction action) {
-
 	}
-
 	/**
 	 * Resets the project when the selection is changed.
 	 */
-
 	public void selectionChanged(IAction action, ISelection selection) {
-
 		Object obj = (((IStructuredSelection) selection).getFirstElement());
-
 		project = null;
-
 		if (obj != null && obj instanceof IProject)
 			project = ((IProject) obj).getProject();
-
 		if (obj != null && obj instanceof IJavaProject)
 			project = ((IJavaProject) obj).getProject();
-
 	}
-
 	/** (non-Javadoc)
 	 * Method declared on IObjectActionDelegate
 	 */
 	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
 		this.part = targetPart;
 	}
-
 }

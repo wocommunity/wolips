@@ -59,7 +59,7 @@ package org.objectstyle.wolips.editor;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.ui.IEditorLauncher;
 import org.eclipse.ui.internal.WorkbenchPlugin;
-import org.objectstyle.wolips.WOLipsPlugin;
+import org.objectstyle.wolips.io.WOLipsLog;
 
 /**
  * @author uli
@@ -88,7 +88,7 @@ public class OpenSystemEditor implements IEditorLauncher {
 				.getActivePage()
 				.openSystemEditor(file);
 		} catch (Exception e) {
-			WOLipsPlugin.log(e);
+			WOLipsLog.log(e);
 		}
 	}
 }

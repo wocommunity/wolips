@@ -63,6 +63,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Hashtable;
+
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -76,6 +77,7 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.objectstyle.wolips.WOLipsPlugin;
+import org.objectstyle.wolips.utils.WOLipsUtils;
 import org.objectstyle.wolips.wizards.Messages;
 import org.objectstyle.wolips.wo.WOVariables;
 import org.w3c.dom.Document;
@@ -270,7 +272,7 @@ public class FileFromTemplateCreator {
 				String variablesToExpand =
 					elementForTemplate.getAttribute("variables");
 				ArrayList variableList =
-					WOLipsPlugin.arrayListFromCSV(variablesToExpand);
+					WOLipsUtils.arrayListFromCSV(variablesToExpand);
 				if (variablesToExpand != null && !variableList.isEmpty()) {
 					// expand variables
 					String variableToExpand = null;
@@ -409,7 +411,7 @@ public class FileFromTemplateCreator {
 						WOVariables.woTemplateDirectory()
 							+ WOVariables.woTemplateFiles()))
 						.openStream();
-				templateDocument = WOLipsPlugin.documentBuilder().parse(input);
+				templateDocument = XercesDocumentBuilder.documentBuilder().parse(input);
 			} catch (java.util.MissingResourceException e) {
 				throw new InvocationTargetException(e);
 			} catch (MalformedURLException e) {

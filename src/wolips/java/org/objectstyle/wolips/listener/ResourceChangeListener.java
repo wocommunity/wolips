@@ -55,6 +55,7 @@
  */
 package org.objectstyle.wolips.listener;
 import java.lang.reflect.InvocationTargetException;
+
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -70,9 +71,10 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.QualifiedName;
 import org.objectstyle.wolips.IWOLipsPluginConstants;
-import org.objectstyle.wolips.WOLipsPlugin;
+import org.objectstyle.wolips.io.WOLipsLog;
 import org.objectstyle.wolips.project.PBProjectUpdater;
 import org.objectstyle.wolips.project.ProjectHelper;
+
 import com.webobjects.foundation.NSDictionary;
 import com.webobjects.foundation.NSMutableArray;
 import com.webobjects.foundation.NSMutableDictionary;
@@ -101,7 +103,7 @@ public class ResourceChangeListener
 		try {
 			event.getDelta().accept(resourceValidator);
 		} catch (CoreException e) {
-			WOLipsPlugin.log(e);
+			WOLipsLog.log(e);
 		}
 		// update project files
 		IFile projectFileToUpdate;
@@ -175,7 +177,7 @@ public class ResourceChangeListener
 			try {
 				return examineResource(resource, delta.getKind());
 			} catch (CoreException e) {
-				WOLipsPlugin.log(e);
+				WOLipsLog.log(e);
 				return false;
 			}
 		}
@@ -253,7 +255,7 @@ public class ResourceChangeListener
 											false),
 										null);
 								} catch (InvocationTargetException e) {
-									WOLipsPlugin.log(e);
+									WOLipsLog.log(e);
 								}
 							}
 						}

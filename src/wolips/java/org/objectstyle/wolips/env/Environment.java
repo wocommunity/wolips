@@ -59,8 +59,8 @@ import java.io.File;
 import java.io.InputStreamReader;
 import java.util.Properties;
 
-import org.objectstyle.wolips.WOLipsPlugin;
 import org.objectstyle.wolips.io.FileStringScanner;
+import org.objectstyle.wolips.io.WOLipsLog;
 /**
  * @author uli
  * Utility for the environment.
@@ -133,7 +133,7 @@ public class Environment {
 				foundationJarPath =
 					"file:///System/Library/Frameworks/JavaFoundation.framework/Resources/Java/javafoundation.jar";
 		} catch (Exception anException) {
-			WOLipsPlugin.log(anException);
+			WOLipsLog.log(anException);
 		}
 		return foundationJarPath;
 	}
@@ -151,7 +151,7 @@ public class Environment {
 				return Environment.nextRoot;
 			}
 		} catch (Exception anException) {
-			WOLipsPlugin.log(anException);
+			WOLipsLog.log(anException);
 		}
 		Environment.nextRoot = "/System";
 		return Environment.nextRoot;
@@ -175,7 +175,7 @@ public class Environment {
 			if (Environment.getEnvVars().containsKey(Environment.NEXT_ROOT))
 				return true;
 		} catch (Exception anException) {
-			WOLipsPlugin.log(anException);
+			WOLipsLog.log(anException);
 		}
 		return false;
 	}

@@ -96,9 +96,13 @@ public class Preferences {
 			PreferencesMessages.getString(
 				"Preferences.ProductNavigatorFilter.Default"));
 		store.setDefault(
-					IWOLipsPluginConstants.PREF_OPEN_WOCOMPONENT_ACTION_INCLUDES_OPEN_HTML,
-					PreferencesMessages.getString(
-						Preferences.falseString));
+			IWOLipsPluginConstants
+				.PREF_OPEN_WOCOMPONENT_ACTION_INCLUDES_OPEN_HTML,
+			PreferencesMessages.getString(Preferences.falseString));
+		store.setDefault(
+			IWOLipsPluginConstants
+				.PREF_SHOW_BUILD_OUTPUT,
+			PreferencesMessages.getString(Preferences.falseString));
 	}
 
 	/**
@@ -127,7 +131,7 @@ public class Preferences {
 	*/
 	public static boolean getBoolean(String key) {
 		IPreferenceStore store = getPreferenceStore();
-		return (!store.getString(key).equals(Preferences.falseString));
+		return (Preferences.trueString.equals(store.getString(key)));
 	}
 	/**
 	 * Method setBoolean.

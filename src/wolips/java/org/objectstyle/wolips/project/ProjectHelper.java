@@ -60,6 +60,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFolder;
@@ -76,8 +77,8 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.internal.ui.util.CoreUtility;
 import org.objectstyle.wolips.IWOLipsPluginConstants;
-import org.objectstyle.wolips.WOLipsPlugin;
 import org.objectstyle.wolips.env.Environment;
+import org.objectstyle.wolips.io.WOLipsLog;
 import org.objectstyle.wolips.wo.WOVariables;
 /**
  * @author uli
@@ -198,7 +199,7 @@ public class ProjectHelper implements IWOLipsPluginConstants {
 					return true;
 			}
 		} catch (Exception anException) {
-			WOLipsPlugin.log(anException);
+			WOLipsLog.log(anException);
 			return false;
 		}
 		return false;
@@ -217,7 +218,7 @@ public class ProjectHelper implements IWOLipsPluginConstants {
 			javaProject = JavaCore.create(project);
 			classpathEntries = javaProject.getRawClasspath();
 		} catch (JavaModelException e) {
-			WOLipsPlugin.log(e);
+			WOLipsLog.log(e);
 			return null;
 		}
 		for (int i = 0; i < classpathEntries.length; i++) {
@@ -257,14 +258,14 @@ public class ProjectHelper implements IWOLipsPluginConstants {
 			try {
 				projectSourceFolder.create(true, true, null);
 			} catch (CoreException e) {
-				WOLipsPlugin.log(e);
+				WOLipsLog.log(e);
 			}
 		}
 		// add to classpath
 		try {
 			addNewSourcefolderToClassPath(projectSourceFolder, null);
 		} catch (InvocationTargetException e) {
-			WOLipsPlugin.log(e);
+			WOLipsLog.log(e);
 		}
 		return projectSourceFolder;
 	}
@@ -311,13 +312,13 @@ public class ProjectHelper implements IWOLipsPluginConstants {
 				try {
 					subprojectSourceFolder.create(true, true, null);
 				} catch (CoreException e) {
-					WOLipsPlugin.log(e);
+					WOLipsLog.log(e);
 				}
 			} // add folder to classpath
 			try {
 				addNewSourcefolderToClassPath(subprojectSourceFolder, null);
 			} catch (InvocationTargetException e) {
-				WOLipsPlugin.log(e);
+				WOLipsLog.log(e);
 			}
 			return subprojectSourceFolder;
 		}
@@ -337,7 +338,7 @@ public class ProjectHelper implements IWOLipsPluginConstants {
 			javaProject = JavaCore.create(project);
 			classpathEntries = javaProject.getRawClasspath();
 		} catch (JavaModelException e) {
-			WOLipsPlugin.log(e);
+			WOLipsLog.log(e);
 			return null;
 		}
 		for (int i = 0; i < classpathEntries.length; i++) {

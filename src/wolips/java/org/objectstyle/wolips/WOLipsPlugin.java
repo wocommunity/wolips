@@ -54,36 +54,18 @@
  *
  */
 package org.objectstyle.wolips;
-import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.StringTokenizer;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.FactoryConfigurationError;
-import javax.xml.parsers.ParserConfigurationException;
-import org.eclipse.ant.core.AntRunner;
-import org.eclipse.core.internal.boot.URLContentFilter;
-import org.eclipse.core.internal.plugins.PluginClassLoader;
+
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IResourceChangeEvent;
-import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPluginDescriptor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.jdt.core.ElementChangedEvent;
-import org.eclipse.jdt.core.IElementChangedListener;
 import org.eclipse.jdt.core.IJavaElement;
-import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -94,13 +76,10 @@ import org.eclipse.ui.IStartup;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.objectstyle.wolips.env.Environment;
-import org.objectstyle.wolips.ide.WOClasspathUpdater;
-import org.objectstyle.wolips.io.FileStringScanner;
-import org.objectstyle.wolips.listener.JavaElementChangeListener;
-import org.objectstyle.wolips.listener.ResourceChangeListener;
+import org.objectstyle.wolips.io.WOLipsLog;
+import org.objectstyle.wolips.plugin.EarlyStartup;
 import org.objectstyle.wolips.preferences.Preferences;
-import org.objectstyle.wolips.wo.WOVariables;
+import org.objectstyle.wolips.wo.Foundation;
 /**
  * The main plugin class to be used in the desktop.
  * 
@@ -108,103 +87,28 @@ import org.objectstyle.wolips.wo.WOVariables;
  * @author markus
  */
 public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
+	//The plugin.
 	private static WOLipsPlugin plugin;
-	private static IResourceChangeListener resourceChangeListener;
-	private static IElementChangedListener javaElementChangeListener;
-	//Resource bundle.
-	private static DocumentBuilder documentBuilder;
 	/**
 	 * Set this variable to true to get debug output
 	 */
 	public static final boolean debug = false;
-
 	/**
 	 * The constructor.
 	 */
 	public WOLipsPlugin(IPluginDescriptor descriptor) {
 		super(descriptor);
 		plugin = this;
-		this.loadFoundationClasses();
+		Foundation.loadFoundationClasses();
 		Preferences.setDefaults();
 	}
 	/**
-	 * Adds listeners for resource and java classpath changes to keep
-	 * webobjects project file synchronized.
+	 * Calls EarlyStartup.earlyStartup().
 	 * <br>
 	 * @see org.eclipse.ui.IStartup#earlyStartup()
 	 */
 	public void earlyStartup() {
-		try {
-			WOLipsPlugin.writePropertiesFileToUserHome();
-		} catch (Exception anException) {
-			WOLipsPlugin.log(anException);
-			WOLipsPlugin.log(
-				IWOLipsPluginConstants.build_user_home_properties_pde_info);
-		}
-		validateMandatoryAttributes();
-		// add resource change listener to update project file on resource changes
-		resourceChangeListener = new ResourceChangeListener();
-		getWorkspace().addResourceChangeListener(
-			resourceChangeListener,
-			IResourceChangeEvent.PRE_AUTO_BUILD);
-		// add element change listener to update project file on classpath changes
-		javaElementChangeListener = new JavaElementChangeListener();
-		JavaCore.addElementChangedListener(
-			javaElementChangeListener,
-			ElementChangedEvent.PRE_AUTO_BUILD);
-	}
-	/**
-	 * Method writePropertiesFileToUserHome.
-	 */
-	private static void writePropertiesFileToUserHome() throws Exception {
-		AntRunner antRunner = new AntRunner();
-		URL relativeBuildFile =
-			new URL(
-				WOLipsPlugin.baseURL(),
-				IWOLipsPluginConstants.build_user_home_properties);
-		URL buildFile = Platform.asLocalURL(relativeBuildFile);
-		antRunner.setBuildFileLocation(buildFile.getPath());
-		antRunner.run();
-	}
-	private void loadFoundationClasses() {
-		ClassLoader aClassLoader = this.getClass().getClassLoader();
-		URLContentFilter[] theURLContentFilter = new URLContentFilter[1];
-		theURLContentFilter[0] = new URLContentFilter(true);
-		URL[] theUrls = new URL[1];
-		try {
-			theUrls[0] = new URL(Environment.foundationJarPath());
-			((PluginClassLoader) aClassLoader).addURLs(
-				theUrls,
-				theURLContentFilter,
-				null,
-				null);
-		} catch (Exception anException) {
-			WOLipsPlugin.log(anException);
-		}
-	}
-	/**
-	 * Returns the shared instance.
-	 */
-	public static WOLipsPlugin getDefault() {
-		if (plugin == null) {
-			// ensure plugin instance is always available using id
-			return new WOLipsPlugin(
-				Platform
-					.getPlugin(IWOLipsPluginConstants.PLUGIN_ID)
-					.getDescriptor());
-		}
-		return plugin;
-	}
-	public void startup() throws CoreException {
-		super.startup();
-		WOClasspathUpdater.update();
-		Hashtable options = JavaCore.getOptions();
-	}
-	/**
-	 * Returns the workspace instance.
-	 */
-	public static IWorkspace getWorkspace() {
-		return ResourcesPlugin.getWorkspace();
+		EarlyStartup.earlyStartup();
 	}
 	/**
 	 * Returns an ImageDescriptor.
@@ -218,57 +122,16 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 		}
 	}
 	/**
-	 * Returns the PluginID.
-	 */
-	public static String getPluginId() {
-		if (plugin != null) {
-			return getDefault().getDescriptor().getUniqueIdentifier();
-		} else
-			return IWOLipsPluginConstants.PLUGIN_ID;
-	}
-	/**
-	 * Prints an IStatus.
-	 */
-	public static void log(IStatus status) {
-		getDefault().getLog().log(status);
-	}
-	/**
-	 * Prints a message.
-	 */
-	public static void log(String message) {
-		log(
-			new Status(
-				IStatus.ERROR,
-				getPluginId(),
-				IStatus.ERROR,
-				message,
-				null));
-	}
-	/**
-	 * Prints a Throwable.
-	 */
-	public static void log(Throwable e) {
-		log(new Status(IStatus.ERROR, getPluginId(), IStatus.ERROR, "Internal Error", e)); //$NON-NLS-1$
-	}
-	/**
-	 * If WOLips.debug is true this method prints a String to the console.
-	 */
-	public static void debug(String aString) {
-		if (WOLipsPlugin.debug)
-			System.out.println(aString);
-	}
-	/**
-	 * If WOLips.debug is true this method prints an Exception to the console.
-	 */
-	public static void debug(Throwable aThrowable) {
-		if (WOLipsPlugin.debug);
-		System.out.println("Exception: " + aThrowable);
-	}
-	/**
 	 * @return Returns the active page.
 	 */
 	public IWorkbenchPage getActivePage() {
 		return getActiveWorkbenchWindow().getActivePage();
+	}
+	/**
+	 * @return Returns the the active workbench window.
+	 */
+	public IWorkbenchWindow getActiveWorkbenchWindow() {
+		return getWorkbench().getActiveWorkbenchWindow();
 	}
 	/**
 	 * @return Returns the active workbench shell.
@@ -277,10 +140,23 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 		return getActiveWorkbenchWindow().getShell();
 	}
 	/**
-	 * @return Returns the the active workbench window.
+	 * Returns the workspace instance.
 	 */
-	public IWorkbenchWindow getActiveWorkbenchWindow() {
-		return getWorkbench().getActiveWorkbenchWindow();
+	public static IWorkspace getWorkspace() {
+		return ResourcesPlugin.getWorkspace();
+	}
+	/**
+	 * Returns the shared instance.
+	 */
+	public static WOLipsPlugin getDefault() {
+		if (plugin == null) {
+			// ensure plugin instance is always available using id
+			return new WOLipsPlugin(
+				Platform
+					.getPlugin(IWOLipsPluginConstants.PLUGIN_ID)
+					.getDescriptor());
+		}
+		return plugin;
 	}
 	/**
 	 * @return Returns the active editor java input.
@@ -317,14 +193,24 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 		}
 		return null;
 	}
+	/**
+	 * Method baseURL.
+	 * @return URL
+	 */
 	public static URL baseURL() {
 		return WOLipsPlugin.getDefault().getDescriptor().getInstallURL();
 	}
+	/**
+	 * Method handleException.
+	 * @param shell
+	 * @param target
+	 * @param message
+	 */
 	public static void handleException(
 		Shell shell,
 		Throwable target,
 		String message) {
-		WOLipsPlugin.debug(target);
+		WOLipsLog.debug(target);
 		String title = "Error";
 		if (message == null) {
 			message = target.getMessage();
@@ -332,79 +218,19 @@ public class WOLipsPlugin extends AbstractUIPlugin implements IStartup {
 		if (target instanceof CoreException) {
 			IStatus status = ((CoreException) target).getStatus();
 			ErrorDialog.openError(shell, title, message, status);
-			WOLipsPlugin.log(status);
+			WOLipsLog.log(status);
 		} else {
 			MessageDialog.openError(shell, title, target.getMessage());
-			WOLipsPlugin.log(target);
+			WOLipsLog.log(target);
 		}
 	}
-	public static DocumentBuilder documentBuilder() {
-		if (documentBuilder == null) {
-			try {
-				//Eclipse set this stuff
-				/*String jaxpPropertyName =
-					"javax.xml.parsers.DocumentBuilderFactory";
-				if (System.getProperty(jaxpPropertyName) == null) {
-					String apacheXercesPropertyValue =
-						"org.apache.xerces.jaxp.DocumentBuilderFactoryImpl";
-					WOLipsPlugin.log("2");
-					System.setProperty(
-						jaxpPropertyName,
-						apacheXercesPropertyValue);
-				}*/
-				DocumentBuilderFactory builderFactory =
-					DocumentBuilderFactory.newInstance();
-				documentBuilder = builderFactory.newDocumentBuilder();
-			} catch (ParserConfigurationException pce) {
-				WOLipsPlugin.log("ParserConfigurationException: " + pce);
-				documentBuilder = null;
-			} catch (FactoryConfigurationError fce) {
-				WOLipsPlugin.log("FactoryConfigurationError: " + fce);
-				documentBuilder = null;
-			}
-		}
-		return documentBuilder;
-	}
-	public static String getJavaBuildFilter() {
-		try {
-			URL aStarterURL =
-				WOLipsPlugin.getDefault().getDescriptor().getInstallURL();
-			URL aURL = new URL(aStarterURL, "JavaBuildFilter.txt");
-			String aJavaBuildFilterFile = Platform.asLocalURL(aURL).getFile();
-			String contents =
-				FileStringScanner.stringFromFile(
-					new File(aJavaBuildFilterFile));
-			WOLipsPlugin.debug("JavaBuildFilter.txt: " + contents);
-			return contents;
-		} catch (Exception anException) {
-			WOLipsPlugin.log(anException);
-		}
-		return "";
-	}
-	public static synchronized ArrayList arrayListFromCSV(String csvString) {
-		if (csvString == null || csvString.length() == 0) {
-			return new ArrayList();
-		}
-		StringTokenizer valueTokenizer = new StringTokenizer(csvString, ",");
-		ArrayList resultList = new ArrayList(valueTokenizer.countTokens());
-		while (valueTokenizer.hasMoreElements()) {
-			resultList.add(valueTokenizer.nextElement());
-		}
-		return resultList;
-	}
-	public static String getId() {
-		return getDefault().getDescriptor().getUniqueIdentifier();
-	}
-	private void validateMandatoryAttributes() {
-		if (JavaCore.getClasspathVariable(Environment.NEXT_ROOT) == null) {
-			try {
-				JavaCore.setClasspathVariable(
-					Environment.NEXT_ROOT,
-					new Path(WOVariables.nextRoot()),
-					null);
-			} catch (JavaModelException e) {
-				log(e);
-			}
-		}
+	/**
+	 * Returns the PluginID.
+	 */
+	public static String getPluginId() {
+		if (plugin != null) {
+			return getDefault().getDescriptor().getUniqueIdentifier();
+		} else
+			return IWOLipsPluginConstants.PLUGIN_ID;
 	}
 }

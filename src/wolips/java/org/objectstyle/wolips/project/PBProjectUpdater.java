@@ -58,6 +58,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -67,9 +68,10 @@ import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 import org.objectstyle.wolips.IWOLipsPluginConstants;
-import org.objectstyle.wolips.WOLipsPlugin;
 import org.objectstyle.wolips.io.FileStringScanner;
+import org.objectstyle.wolips.io.WOLipsLog;
 import org.objectstyle.woproject.pb.PBProject;
+
 import com.webobjects.foundation.NSArray;
 import com.webobjects.foundation.NSDictionary;
 /**
@@ -123,7 +125,7 @@ public class PBProjectUpdater {
 					aFile.delete();
 			}
 		} catch (Exception anException) {
-			WOLipsPlugin.log(anException);
+			WOLipsLog.log(anException);
 		}
 	}
 	private void getPBProject(IContainer aProject) {
@@ -144,7 +146,7 @@ public class PBProjectUpdater {
 			if (sync)
 				syncPBProjectWithProject();
 		} catch (Exception anException) {
-			WOLipsPlugin.log(anException);
+			WOLipsLog.log(anException);
 		}
 	}
 	private void syncPBProjectWithProject() {
@@ -154,7 +156,7 @@ public class PBProjectUpdater {
 			this.syncProjectName();
 			pbProject.saveChanges();
 		} catch (Exception ioex) {
-			WOLipsPlugin.log(ioex);
+			WOLipsLog.log(ioex);
 		}
 	}
 	private void syncFilestable() {
@@ -165,7 +167,7 @@ public class PBProjectUpdater {
 		try {
 			resources = projectContainer.members();
 		} catch (Exception anException) {
-			WOLipsPlugin.log(anException);
+			WOLipsLog.log(anException);
 			return;
 		}
 		int lastResource = resources.length;
@@ -224,7 +226,7 @@ public class PBProjectUpdater {
 					aWOAppResourcesList.add(aPath);
 			}
 		} catch (Exception anException) {
-			WOLipsPlugin.log(anException);
+			WOLipsLog.log(anException);
 		}
 	}
 	private void syncProjectName() {
@@ -326,7 +328,7 @@ public class PBProjectUpdater {
 		try {
 			pbProject.saveChanges();
 		} catch (IOException e) {
-			WOLipsPlugin.log(e);
+			WOLipsLog.log(e);
 		}
 	}
 	private List addResources(NSArray newResources, List actualResources) {
@@ -419,7 +421,7 @@ public class PBProjectUpdater {
 		try {
 			pbProject.saveChanges();
 		} catch (IOException e) {
-			WOLipsPlugin.log(e);
+			WOLipsLog.log(e);
 		}
 	}
 	public void removeFrameworks(NSArray removedFrameworks) {
@@ -437,7 +439,7 @@ public class PBProjectUpdater {
 		try {
 			pbProject.saveChanges();
 		} catch (IOException e) {
-			WOLipsPlugin.log(e);
+			WOLipsLog.log(e);
 		}
 	}
 	private String frameworkIdentifierFromPath(Path frameworkPath) {

@@ -1,8 +1,8 @@
 /* ====================================================================
- * 
- * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 The ObjectStyle Group 
+ * The ObjectStyle Group Software License, Version 1.0
+ *
+ * Copyright (c) 2002 The ObjectStyle Group
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,15 +18,15 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution, if
- *    any, must include the following acknowlegement:  
- *       "This product includes software developed by the 
+ *    any, must include the following acknowlegement:
+ *       "This product includes software developed by the
  *        ObjectStyle Group (http://objectstyle.org/)."
  *    Alternately, this acknowlegement may appear in the software itself,
  *    if and wherever such third-party acknowlegements normally appear.
  *
- * 4. The names "ObjectStyle Group" and "Cayenne" 
+ * 4. The names "ObjectStyle Group" and "Cayenne"
  *    must not be used to endorse or promote products derived
- *    from this software without prior written permission. For written 
+ *    from this software without prior written permission. For written
  *    permission, please contact andrus@objectstyle.org.
  *
  * 5. Products derived from this software may not be called "ObjectStyle"
@@ -54,63 +54,38 @@
  *
  */
 
-package org.objectstyle.wolips.actions;
+package org.objectstyle.wolips.io;
 
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.viewers.ISelection;
-import org.objectstyle.wolips.io.WOLipsLog;
-import org.objectstyle.wolips.project.PBProjectUpdater;
-import org.objectstyle.wolips.project.ProjectHelper;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.FactoryConfigurationError;
+import javax.xml.parsers.ParserConfigurationException;
 
 /**
  * @author uli
  *
- *The Action for updating the PB.project file.
+ * To change this generated comment edit the template variable "typecomment":
+ * Window>Preferences>Java>Templates.
+ * To enable and disable the creation of type comments go to
+ * Window>Preferences>Java>Code Generation.
  */
-public class PBAction extends ActionOnIProject {
-
-	private static String UpdatePBProjectSetID = "UpdatePB.Project.Set.ID";
+public class XercesDocumentBuilder {
 
 	/**
-	 * Contructor for the PBAction
+	 * Method documentBuilder.
+	 * @return DocumentBuilder
 	 */
-	public PBAction() {
-		super();
-	}
-
-	/**
-	 * Updates the PB.project file.
-	 * Will be invoked by the popup menu.
-	 */
-	public void run(IAction action) {
-		if (project() != null) {
-			try {
-				if (action.getId().equals(PBAction.UpdatePBProjectSetID)) {
-					PBProjectUpdater projectUpdater =
-						new PBProjectUpdater(project());
-					projectUpdater.updatePBProject();
-				}
-			} catch (Exception ex) {
-				WOLipsLog.log(ex);
-			}
+	public static DocumentBuilder documentBuilder() {
+		try {
+			DocumentBuilderFactory builderFactory =
+				DocumentBuilderFactory.newInstance();
+			return builderFactory.newDocumentBuilder();
+		} catch (ParserConfigurationException pce) {
+			WOLipsLog.log("ParserConfigurationException: " + pce);
+		} catch (FactoryConfigurationError fce) {
+			WOLipsLog.log("FactoryConfigurationError: " + fce);
 		}
-	}
-
-	/**
-	 * Calls super.
-	 * Inactivates the Action if the project has no WOBuilder installed
-	 */
-	public void selectionChanged(IAction action, ISelection selection) {
-		super.selectionChanged(action, selection);
-		if (project() != null) {
-			if (action.getId().equals(PBAction.UpdatePBProjectSetID)) {
-				action.setEnabled(
-					ProjectHelper.isWOFwBuilderInstalled(project())
-						|| ProjectHelper.isWOAppBuilderInstalled(project()));
-			}
-		} else {
-			action.setEnabled(false);
-		}
+		return null;
 	}
 
 }

@@ -1,8 +1,8 @@
 /* ====================================================================
- * 
- * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 The ObjectStyle Group 
+ * The ObjectStyle Group Software License, Version 1.0
+ *
+ * Copyright (c) 2002 The ObjectStyle Group
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,15 +18,15 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution, if
- *    any, must include the following acknowlegement:  
- *       "This product includes software developed by the 
+ *    any, must include the following acknowlegement:
+ *       "This product includes software developed by the
  *        ObjectStyle Group (http://objectstyle.org/)."
  *    Alternately, this acknowlegement may appear in the software itself,
  *    if and wherever such third-party acknowlegements normally appear.
  *
- * 4. The names "ObjectStyle Group" and "Cayenne" 
+ * 4. The names "ObjectStyle Group" and "Cayenne"
  *    must not be used to endorse or promote products derived
- *    from this software without prior written permission. For written 
+ *    from this software without prior written permission. For written
  *    permission, please contact andrus@objectstyle.org.
  *
  * 5. Products derived from this software may not be called "ObjectStyle"
@@ -53,64 +53,47 @@
  * <http://objectstyle.org/>.
  *
  */
+package org.objectstyle.wolips.builder;
 
-package org.objectstyle.wolips.actions;
-
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.viewers.ISelection;
-import org.objectstyle.wolips.io.WOLipsLog;
-import org.objectstyle.wolips.project.PBProjectUpdater;
-import org.objectstyle.wolips.project.ProjectHelper;
+import java.text.MessageFormat;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 
 /**
  * @author uli
- *
- *The Action for updating the PB.project file.
  */
-public class PBAction extends ActionOnIProject {
+public class BuildMessages {
 
-	private static String UpdatePBProjectSetID = "UpdatePB.Project.Set.ID";
+	private static final String RESOURCE_BUNDLE =
+	BuildMessages.class.getName();
+	private static ResourceBundle fgResourceBundle =
+		ResourceBundle.getBundle(RESOURCE_BUNDLE);
 
-	/**
-	 * Contructor for the PBAction
-	 */
-	public PBAction() {
-		super();
+	private BuildMessages() {
 	}
 
-	/**
-	 * Updates the PB.project file.
-	 * Will be invoked by the popup menu.
-	 */
-	public void run(IAction action) {
-		if (project() != null) {
-			try {
-				if (action.getId().equals(PBAction.UpdatePBProjectSetID)) {
-					PBProjectUpdater projectUpdater =
-						new PBProjectUpdater(project());
-					projectUpdater.updatePBProject();
-				}
-			} catch (Exception ex) {
-				WOLipsLog.log(ex);
-			}
+	public static String getString(String key) {
+		try {
+			return fgResourceBundle.getString(key);
+		} catch (MissingResourceException e) {
+			return '!' + key + '!';
 		}
 	}
 
 	/**
-	 * Calls super.
-	 * Inactivates the Action if the project has no WOBuilder installed
+	 * Gets a string from the resource bundle and formats it with the argument
+	 *
+	 * @param key	the string used to get the bundle value, must not be null
 	 */
-	public void selectionChanged(IAction action, ISelection selection) {
-		super.selectionChanged(action, selection);
-		if (project() != null) {
-			if (action.getId().equals(PBAction.UpdatePBProjectSetID)) {
-				action.setEnabled(
-					ProjectHelper.isWOFwBuilderInstalled(project())
-						|| ProjectHelper.isWOAppBuilderInstalled(project()));
-			}
-		} else {
-			action.setEnabled(false);
-		}
+	public static String getFormattedString(String key, Object arg) {
+		return MessageFormat.format(getString(key), new Object[] { arg });
+	}
+
+	/**
+	 * Gets a string from the resource bundle and formats it with arguments
+	 */
+	public static String getFormattedString(String key, Object[] args) {
+		return MessageFormat.format(getString(key), args);
 	}
 
 }

@@ -56,8 +56,8 @@
 package org.objectstyle.wolips.wo;
 import java.io.File;
 
-import org.objectstyle.wolips.WOLipsPlugin;
 import org.objectstyle.wolips.env.Environment;
+import org.objectstyle.wolips.io.WOLipsLog;
 /**
  * @author uli
  *
@@ -73,11 +73,11 @@ public class WOVariables {
 	private WOVariables() {
 		super();
 	}
-	
+
 	public static String nextRoot() {
 		return Environment.nextRoot();
 	}
-	
+
 	public static String developerDir() {
 		String returnValue = "";
 		if (Environment.isNextRootSet())
@@ -85,7 +85,7 @@ public class WOVariables {
 		returnValue = returnValue + File.separator + "Developer";
 		return returnValue;
 	}
-	
+
 	public static String developerAppsDir() {
 		String returnValue = "";
 		if (Environment.isNextRootSet())
@@ -98,13 +98,13 @@ public class WOVariables {
 				+ "Applications";
 		return returnValue;
 	}
-	
+
 	public static String libraryDir() {
 		String returnValue = "";
 		returnValue = WOVariables.nextRoot() + File.separator + "Library";
 		return returnValue;
 	}
-	
+
 	public static String localDeveloperDir() {
 		String returnValue = "";
 		/*
@@ -123,27 +123,27 @@ public class WOVariables {
 		returnValue = Environment.localRoot() + File.separator + "Library";
 		return returnValue;
 	}
-	
+
 	public static String woTemplateDirectory() {
 		return "templates";
 	}
-	
+
 	public static String woTemplateFiles() {
 		return "/wo_file_templates.xml";
 	}
-	
+
 	public static String woTemplateProject() {
 		return "/wo_project_templates.xml";
 	}
-	
+
 	public static String woProjectFileName() {
 		return "PB.project";
 	}
-	
+
 	public static String webServerResourcesDirName() {
 		return "WebServerResources";
 	}
-	
+
 	public static String classPathVariableToExpand(String aString) {
 		String returnValue = "";
 		if (aString != null) {
@@ -153,7 +153,7 @@ public class WOVariables {
 				returnValue = WOVariables.libraryDir();
 		}
 		if ((returnValue == null) || (returnValue.equals("")))
-			WOLipsPlugin.log("Can not resolve classpath variable: " + aString);
+			WOLipsLog.log("Can not resolve classpath variable: " + aString);
 		return returnValue;
 	}
 }

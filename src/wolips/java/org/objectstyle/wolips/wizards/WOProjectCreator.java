@@ -86,7 +86,10 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.objectstyle.wolips.IWOLipsPluginConstants;
 import org.objectstyle.wolips.WOLipsPlugin;
 import org.objectstyle.wolips.io.FileFromTemplateCreator;
+import org.objectstyle.wolips.io.WOLipsLog;
+import org.objectstyle.wolips.io.XercesDocumentBuilder;
 import org.objectstyle.wolips.project.ProjectHelper;
+import org.objectstyle.wolips.utils.WOLipsUtils;
 import org.objectstyle.wolips.wo.WOVariables;
 import org.objectstyle.woproject.pb.PBProject;
 import org.w3c.dom.Document;
@@ -603,7 +606,7 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 					.getAttributes()
 					.getNamedItem("variables")
 					.getNodeValue();
-			variableList = WOLipsPlugin.arrayListFromCSV(variablesToExpand);
+			variableList = WOLipsUtils.arrayListFromCSV(variablesToExpand);
 		}
 		return variableList;
 	}
@@ -619,7 +622,7 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 							+ "/"
 							+ Messages.getString("webobjects.template.project")))
 						.openStream();
-				templateDocument = WOLipsPlugin.documentBuilder().parse(input);
+				templateDocument = XercesDocumentBuilder.documentBuilder().parse(input);
 			} catch (java.util.MissingResourceException e) {
 				throw new InvocationTargetException(e);
 			} catch (MalformedURLException e) {
@@ -648,7 +651,7 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 			try {
 				pbProject = new PBProject(projectFile, isFramework);
 			} catch (IOException e) {
-				WOLipsPlugin.log(e);
+				WOLipsLog.log(e);
 				return;
 			}
 			IJavaProject newJavaProject =
@@ -660,7 +663,7 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 						newJavaProject);
 				newJavaProject.setRawClasspath(newClasspathEntries, monitor);
 			} catch (JavaModelException e) {
-				WOLipsPlugin.log(e);
+				WOLipsLog.log(e);
 			}
 		}
 	}
@@ -743,7 +746,7 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 				resourcesIncludes = new String[] { "*" };
 				classesIncludes = new String[] { "*." + EXT_JAVA };
 				subprojectsIncludes = new String[] { "*." + EXT_SUBPROJECT };
-				WOLipsPlugin.log(e);
+				WOLipsLog.log(e);
 			}
 		} else {
 			resourcesIncludes = new String[] { "*" };
@@ -768,13 +771,13 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 						foundFiles[i],
 						monitor);
 			} catch (FileNotFoundException e) {
-				WOLipsPlugin.log(e);
+				WOLipsLog.log(e);
 				continue;
 			}
 			try {
 				copy.execute();
 			} catch (CoreException e) {
-				WOLipsPlugin.log(e);
+				WOLipsLog.log(e);
 				continue;
 			}
 		}
@@ -790,13 +793,13 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 							foundDirs[i],
 							monitor);
 				} catch (FileNotFoundException e) {
-					WOLipsPlugin.log(e);
+					WOLipsLog.log(e);
 					continue;
 				}
 				try {
 					copy.execute();
 				} catch (CoreException e) {
-					WOLipsPlugin.log(e);
+					WOLipsLog.log(e);
 					continue;
 				}
 			}
@@ -830,13 +833,13 @@ public class WOProjectCreator extends WOProjectResourceCreator {
 								foundJavaFiles[i],
 								monitor);
 					} catch (FileNotFoundException e) {
-						WOLipsPlugin.log(e);
+						WOLipsLog.log(e);
 						continue;
 					}
 					try {
 						copy.execute();
 					} catch (CoreException e) {
-						WOLipsPlugin.log(e);
+						WOLipsLog.log(e);
 						continue;
 					}
 				}

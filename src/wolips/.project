@@ -3,6 +3,7 @@
 	<name>wolips</name>
 	<comment></comment>
 	<projects>
+		<project>org.eclipse.ui.externaltools</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

@@ -57,8 +57,8 @@ package org.objectstyle.wolips.wizards;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.wizards.newresource.BasicNewProjectResourceWizard;
-import org.objectstyle.wolips.WOLipsPlugin;
 import org.objectstyle.wolips.images.WOLipsPluginImages;
+import org.objectstyle.wolips.io.WOLipsLog;
 import org.objectstyle.wolips.project.ProjectHelper;
 /**
  * @author mnolte
@@ -105,7 +105,7 @@ public class WOFrameworkCreationWizard extends BasicNewProjectResourceWizard {
 					ProjectHelper.WOFRAMEWORK_BUILDER_ID);
 
 			} catch (Exception anException) {
-				WOLipsPlugin.log(anException);
+				WOLipsLog.log(anException);
 				creationSuccessful = false;
 			}
 		}

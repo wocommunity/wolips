@@ -71,7 +71,9 @@ public interface IWOLipsPluginConstants {
 	public static final String PREF_RUN_WOBUILDER_ON_BUILD =
 		"org.objectstyle.wolips.preference.RunWOBuilderOnBuild";
 	public static final String PREF_OPEN_WOCOMPONENT_ACTION_INCLUDES_OPEN_HTML =
-			"org.objectstyle.wolips.Preference.OpenWOComponentActionIncludesOpenHTML";
+		"org.objectstyle.wolips.Preference.OpenWOComponentActionIncludesOpenHTML";
+	public static final String PREF_SHOW_BUILD_OUTPUT =
+			"org.objectstyle.wolips.Preference.ShowBuildOutput";
 	// file extensions and resource identifier
 	public static final String EXT_PROJECT = "project";
 	public static final String EXT_SUBPROJECT = "subproj";

@@ -59,7 +59,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.objectstyle.wolips.IWOLipsPluginConstants;
-import org.objectstyle.wolips.WOLipsPlugin;
+import org.objectstyle.wolips.io.WOLipsLog;
 import org.objectstyle.wolips.project.ProjectHelper;
 /**
  * @author uli
@@ -104,7 +104,7 @@ public class WOBuilderAction extends ActionOnIProject {
 					}
 				}
 			} catch (CoreException ex) {
-				WOLipsPlugin.log(ex);
+				WOLipsLog.log(ex);
 			}
 		}
 	}

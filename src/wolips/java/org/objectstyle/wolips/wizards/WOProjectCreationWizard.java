@@ -65,6 +65,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.wizards.newresource.BasicNewProjectResourceWizard;
 import org.objectstyle.wolips.WOLipsPlugin;
 import org.objectstyle.wolips.images.WOLipsPluginImages;
+import org.objectstyle.wolips.io.WOLipsLog;
 import org.objectstyle.wolips.project.ProjectHelper;
 /**
  * @author mnolte
@@ -112,7 +113,7 @@ public class WOProjectCreationWizard extends BasicNewProjectResourceWizard {
 
 				openResource(mainPage.getElementToOpen());
 			} catch (Exception anException) {
-				WOLipsPlugin.log(anException);
+				WOLipsLog.log(anException);
 				creationSuccessful = false;
 			}
 		}
@@ -136,7 +137,7 @@ public class WOProjectCreationWizard extends BasicNewProjectResourceWizard {
 					try {
 						activePage.openEditor((IFile) resource);
 					} catch (PartInitException e) {
-						WOLipsPlugin.log(e);
+						WOLipsLog.log(e);
 					}
 				}
 			});

@@ -73,8 +73,6 @@ import org.objectstyle.wolips.IWOLipsPluginConstants;
  * Window>Preferences>Java>Code Generation.
  */
 public class PerspectiveFactory implements IPerspectiveFactory {
-	private final static String ID_ANT_CONSOLE =
-		"org.eclipse.ui.externaltools.LogConsoleView";
 
 	public void createInitialLayout(IPageLayout layout) {
 		String editorArea = layout.getEditorArea();
@@ -87,14 +85,15 @@ public class PerspectiveFactory implements IPerspectiveFactory {
 		folder.addView(IWOLipsPluginConstants.ID_AntNavigator);
 		folder.addView(IWOLipsPluginConstants.ID_ProductNavigator);
 		folder.addPlaceholder(IPageLayout.ID_RES_NAV);
+		folder = null;
 
 		IFolderLayout outputfolder = layout.createFolder("bottom", IPageLayout.BOTTOM, (float) 0.75, editorArea); //$NON-NLS-1$
 		outputfolder.addView(IPageLayout.ID_TASK_LIST);
 		outputfolder.addView(IDebugUIConstants.ID_CONSOLE_VIEW);
-		outputfolder.addView(PerspectiveFactory.ID_ANT_CONSOLE);
 		outputfolder.addPlaceholder(SearchUI.SEARCH_RESULT_VIEW_ID);
 		//outputfolder.addPlaceholder(IDebugUIConstants.ID_CONSOLE_VIEW);
 		outputfolder.addPlaceholder(IPageLayout.ID_BOOKMARKS);
+		outputfolder = null;
 
 		layout.addView(
 			IPageLayout.ID_OUTLINE,

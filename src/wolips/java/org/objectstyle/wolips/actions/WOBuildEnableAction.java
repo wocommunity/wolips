@@ -91,20 +91,20 @@ public class WOBuildEnableAction
 				IWOLipsPluginConstants.PREF_RUN_WOBUILDER_ON_BUILD,
 				true);
 	}
-	/*
-		 * @see IWorkbenchWindowActionDelegate#dispose()
-		 */
+	/**
+	 * @see IWorkbenchWindowActionDelegate#dispose()
+	 */
 	public void dispose() {
 	}
 
-	/*
+	/**
 	 * @see IWorkbenchWindowActionDelegate#init(IWorkbenchWindow)
 	 */
 	public void init(IWorkbenchWindow window) {
 	}
-	/*
-		 * @see IActionDelegate#selectionChanged(IAction, ISelection)
-		 */
+	/**
+	 * @see IActionDelegate#selectionChanged(IAction, ISelection)
+	 */
 	public void selectionChanged(IAction action, ISelection selection) {
 		// selection taken from selectionprovider
 	}

@@ -53,79 +53,51 @@
  * <http://objectstyle.org/>.
  *
  */
+
 package org.objectstyle.wolips.builder;
 
-import java.util.ArrayList;
 import java.util.Map;
-import java.util.Vector;
 
-import org.eclipse.ant.core.AntRunner;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.SubProgressMonitor;
 import org.objectstyle.wolips.IWOLipsPluginConstants;
-import org.objectstyle.wolips.WOLipsPlugin;
+import org.objectstyle.wolips.io.WOLipsLog;
 import org.objectstyle.wolips.preferences.Preferences;
 
 /**
  * @author uli
  */
 public abstract class WOBuilder extends IncrementalProjectBuilder {
-
-	private static AntRunner antRunner = null;
-	private static Vector marker = new Vector();
-	private static final boolean cacheAntRunner = true;
-	private static final String ANT_LOGGER_CLASS =
-		"org.eclipse.ui.externaltools.internal.ui.ant.AntBuildLogger";
-	private static IProgressMonitor lastMonitor = null;
-	private static ArrayList projects = null;
-
+	private static final int TOTAL_WORK_UNITS = 1;
 	/**
 	 * Constructor for WOBuilder.
 	 */
-
 	public WOBuilder() {
 		super();
 	}
-
-	private AntRunner antRunner() {
-		if (WOBuilder.antRunner == null)
-			WOBuilder.antRunner = new AntRunner();
-		return WOBuilder.antRunner;
-	}
-
 	/**
-	 * Method isFirstRequest.
-	 * After a build a refresh is called. To prevent a second build a list of projects for the monitor is stored.
-	 * @param monitor
-	 * @return boolean
-	 */
-	private boolean isFirstRequest(IProgressMonitor monitor) {
-		if (monitor == null)
-			return true;
-		if (lastMonitor == null) {
-			lastMonitor = monitor;
-			projects = new ArrayList();
-		}
-		if (lastMonitor != monitor)
-			projects = new ArrayList();
-		if (projects.contains(getProject()))
-			return false;
-		projects.add(getProject());
-		return true;
-	}
-
+			 * Runs the build with the ant runner.
+			 * @see org.eclipse.core.internal.events.InternalBuilder#build(int, java.util.Map, org.eclipse.core.runtime.IProgressMonitor)
+			 */
 	protected IProject[] build(int kind, Map args, IProgressMonitor monitor)
 		throws CoreException {
-		if (getProject() == null || !getProject().exists())
-			return new IProject[0];
+		monitor.beginTask(
+			BuildMessages.getString("Build.Monitor.Title"),
+			WOBuilder.TOTAL_WORK_UNITS);
+		if (getProject() == null || !getProject().exists()) {
+			monitor.done();
+			return null;
+		}
 		if (!Preferences
-			.getBoolean(IWOLipsPluginConstants.PREF_RUN_WOBUILDER_ON_BUILD))
-			return new IProject[0];
+			.getBoolean(IWOLipsPluginConstants.PREF_RUN_WOBUILDER_ON_BUILD)) {
+			monitor.done();
+			return null;
+		}
+
 		Exception anException = null;
 		try {
 			getProject().deleteMarkers(
@@ -133,27 +105,19 @@ public abstract class WOBuilder extends IncrementalProjectBuilder {
 				false,
 				IResource.DEPTH_ONE);
 			String aBuildFile = this.buildFile();
-			if (checkIfBuildfileExist(aBuildFile) && isFirstRequest(monitor)) {
+			if (checkIfBuildfileExist(aBuildFile)) {
 				getProject().getFile(aBuildFile).deleteMarkers(
 					IMarker.TASK,
 					false,
 					IProject.DEPTH_ONE);
-				antRunner().setBuildFileLocation(
-					getProject()
-						.getFile(aBuildFile)
-						.getLocation()
-						.toOSString());
-				//if we dont get a logger the stuff goes to the console
-				try {
-					Class a = Class.forName(WOBuilder.ANT_LOGGER_CLASS);
-					antRunner.addBuildLogger(WOBuilder.ANT_LOGGER_CLASS);
-				} catch (Exception aLoggerException) {
-					WOLipsPlugin.debug(aLoggerException);
-				}
-				antRunner().addUserProperties(args);
-				antRunner().run(new SubProgressMonitor(monitor, 1));
-				if (!WOBuilder.cacheAntRunner)
-					WOBuilder.antRunner = null;
+				/*RunAntAsExternalTool.run(
+					getProject().getFile(aBuildFile).getLocation().toOSString(),
+					getProject().getLocation().toOSString(),
+					kind,
+					monitor);*/
+				RunAnt.asAnt(
+					getProject().getFile(aBuildFile).getLocation().toOSString(),
+					monitor);
 			}
 		} catch (Exception e) {
 			anException = e;
@@ -170,13 +134,18 @@ public abstract class WOBuilder extends IncrementalProjectBuilder {
 						+ " Please visit the Eclipse log for mor details.");
 				aMarker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
 			} catch (Exception e) {
-				WOLipsPlugin.log(e);
+				WOLipsLog.log(e);
 			}
 		}
-
-		return new IProject[0];
+		monitor.done();
+		return null;
 	}
 
+	/**
+	 * Checks if the build file exists.
+	 * @param aBuildFile
+	 * @return boolean
+	 */
 	private boolean checkIfBuildfileExist(String aBuildFile) {
 		try {
 			if (getProject().getFile(aBuildFile).exists())
@@ -190,11 +159,14 @@ public abstract class WOBuilder extends IncrementalProjectBuilder {
 				"WOLips: Can not find: " + this.buildFile());
 			aMarker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
 		} catch (Exception anException) {
-			WOLipsPlugin.log(anException);
+			WOLipsLog.log(anException);
 		}
 		return false;
 	}
-
+	/**
+	 * Must be implemented in the subclass.
+	 * @return String
+	 */
 	public abstract String buildFile();
 
 }
