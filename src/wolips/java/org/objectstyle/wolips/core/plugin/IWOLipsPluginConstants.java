@@ -94,6 +94,7 @@ public interface IWOLipsPluginConstants {
 	public static final String EXT_WOO = "woo";
 	public static final String EXT_HTML = "html";
 	public static final String EXT_EOMODEL = "eomodeld";
+	public static final String EXT_EOMODEL_BACKUP = "eomodeld~";
 	public static final String EXT_D2WMODEL = "d2wmodel";
 	public static final String EXT_PROPERTIES = "properties";
 	public static final String EXT_STRINGS = "strings";

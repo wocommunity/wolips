@@ -54,6 +54,7 @@
  *
  */
 package org.objectstyle.wolips.core.listener;
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -229,6 +230,10 @@ public class ResourceChangeListener
 								resource.getParent().getFile(
 									new Path(PROJECT_FILE_NAME)));
 						} else if (
+							EXT_EOMODEL_BACKUP.equals(
+								resource.getFileExtension())) {
+							deleteTeamPrivateMembers((IFolder) resource);
+						} else if (
 							EXT_SUBPROJECT.equals(
 								resource.getFileExtension())) {
 							updateProjectFile(
@@ -357,6 +362,22 @@ public class ResourceChangeListener
 					}
 			}
 			return false;
+		}
+		/**
+		 * @param resource
+		 */
+		private void deleteTeamPrivateMembers(IFolder folder) {
+			try {
+				File file =
+					new File(
+						folder.getLocation().toOSString()
+							+ System.getProperty("path.separator")
+							+ "CVS");
+				if (file.exists() && file.isDirectory())
+					file.delete();
+			} catch (Exception exception) {
+				WOLipsLog.log(exception);
+			}
 		}
 		/**
 		 * Method needsProjectFileUpdate.
