@@ -82,6 +82,8 @@ public interface IWOLipsPluginConstants {
 		"org.objectstyle.wolips.Preference.NSProjectSearch";
 	public static final String PREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH =
 		"org.objectstyle.wolips.Preference.RebuildWOBuildPropertiesOnNextLaunch";
+	public static final String PREF_LOG_LEVEL =
+			"org.objectstyle.wolips.Preference.LogLevel";
 	// flle extensions and resource identifier
 	public static final String EXT_PROJECT = "project";
 	public static final String EXT_SUBPROJECT = "subproj";

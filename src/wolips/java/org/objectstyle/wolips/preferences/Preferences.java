@@ -101,16 +101,20 @@ public class Preferences {
 		store.setDefault(
 			IWOLipsPluginConstants
 				.PREF_OPEN_WOCOMPONENT_ACTION_INCLUDES_OPEN_HTML,
-			PreferencesMessages.getString(Preferences.falseString));
+			Preferences.falseString);
 		store.setDefault(
 			IWOLipsPluginConstants.PREF_SHOW_BUILD_OUTPUT,
-			PreferencesMessages.getString(Preferences.falseString));
+			Preferences.falseString);
 		store.setDefault(
 			IWOLipsPluginConstants.PREF_NS_PROJECT_SEARCH_PATH,
 			"");
 		store.setDefault(
-			IWOLipsPluginConstants.PREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH,
+			IWOLipsPluginConstants
+				.PREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH,
 			PreferencesMessages.getString(Preferences.falseString));
+		store.setDefault(
+			IWOLipsPluginConstants.PREF_LOG_LEVEL,
+			PreferencesMessages.getString("Preferences.LogLevel.Default"));
 	}
 
 	/**

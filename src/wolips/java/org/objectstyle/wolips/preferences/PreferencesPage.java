@@ -143,9 +143,16 @@ public class PreferencesPage
 				getFieldEditorParent()));
 		addField(
 			new BooleanFieldEditor(
-				IWOLipsPluginConstants.PREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH,
+				IWOLipsPluginConstants
+					.PREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH,
 				PreferencesMessages.getString(
 					"Preferences.RebuildWOBuildProperties.Label"),
+				getFieldEditorParent()));
+		addField(
+			new StringFieldEditor(
+				IWOLipsPluginConstants.PREF_LOG_LEVEL,
+				PreferencesMessages.getString("Preferences.LogLevel.Label"),
+				60,
 				getFieldEditorParent()));
 		/*addField(
 			new StringFieldEditor(
