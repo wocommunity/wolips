@@ -12,7 +12,7 @@
     <property name="wolips.targetbuilder.name" value="org.objectstyle.wolips.targetbuilder_${WOLips.version}"/>
     <property name="wolips.dist" value="${dist.base}/${wolips.name}"/>
     <property name="wolips.feature.dist" value="${dist.base}/features/${wolips.name}"/>
-    <property name="wolips.help.dist" value="${dist.base}/plugins/${wolips.name}.help_${WOLips.version}"/>
+    <property name="wolips.help.dist" value="${dist.base}/plugins/org.objectstyle.wolips.help_${WOLips.version}"/>
     
     <!-- main distribution. -->
     <property name="dist" value="${dist.base}/${project.name}-${project.version}"/>
