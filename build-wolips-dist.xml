@@ -70,6 +70,13 @@
      	</fileset>
      </jar>
 
+	<!-- copy optional stuff -->
+    <mkdir dir="${wolips.dist.base}/optional"/>
+    <copy todir="${wolips.dist.base}/optional">
+        <fileset dir="optional">
+        </fileset>
+	</copy>
+     
     <!-- make wolips dist -->
     <tar tarfile="${wolips.dist.filename}.tar">
         <tarfileset dir="${wolips.dist.base}">
