@@ -73,9 +73,9 @@ public class MasterResourceChangeListener implements IResourceChangeListener {
 	 * @see org.eclipse.core.resources.IResourceChangeListener#resourceChanged(IResourceChangeEvent)
 	 */
 	public final void resourceChanged(IResourceChangeEvent event) {
-System.out.println("MasterResourceChangeListener.resourceChanged");
-//		ResourceChangeListener resourceChangeListener = new ResourceChangeListener();
-//		resourceChangeListener.setEvent(event);
-//		resourceChangeListener.schedule();
+//System.out.println("MasterResourceChangeListener.resourceChanged");
+		ResourceChangeListener resourceChangeListener = new ResourceChangeListener();
+		resourceChangeListener.setEvent(event);
+		resourceChangeListener.schedule();
 	}
 }
