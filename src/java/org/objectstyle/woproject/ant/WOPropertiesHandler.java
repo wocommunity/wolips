@@ -116,7 +116,13 @@ public class WOPropertiesHandler extends ProjectComponent {
             if((aPrefix != null) && (aPrefix.length() > 1) && (aPath.startsWith(aPrefix))) {
             	return "WOROOT" + aPath.substring(aPrefix.length());
             }
-	        return aPath;
+            aPrefix = this.getLocalRootPath();
+            //System.err.println("aPrefix + aPath "+ aPrefix + " " + aPath);
+            // (anjo) if this is OSX, then we simply try again with "/" as the local root.
+            if(isMacOSX() && ((aPrefix != null) && (aPrefix.length() >= 1) && (aPath.startsWith(aPrefix)))) {
+                return "LOCALROOT" + aPath;
+            }
+            return aPath;
         } catch (Exception anException) {
 		return null;
         }
@@ -161,7 +167,13 @@ public class WOPropertiesHandler extends ProjectComponent {
 		return "cczxczc";
     }
 
-	/**
+
+        public boolean isMacOSX() {
+            // This should really be "Darwin"
+            return System.getProperty("os.name").equals("Mac OS X");
+        }
+        
+        /**
 	 * Returns the value of "wo.localroot" property. Search algorithm is the following:
 	 * <ul>
 	 *    <li>Project <code>wo.localroot</code> property value.</li>
@@ -174,10 +186,7 @@ public class WOPropertiesHandler extends ProjectComponent {
 			aPath = this.getProject().getProperty(LOCAL_ROOT);
 
 			if (aPath == null) {
-				String osName = System.getProperty("os.name");
-
-				// This should really be "Darwin"
-				if ( osName.equals("Mac OS X") ) {
+				if ( isMacOSX() ) {
 				    aPath = "/";
 				} else {
 				    aPath = getWORoot() + File.separator + "Local";
