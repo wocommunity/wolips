@@ -104,10 +104,7 @@ public class WOFramework extends MatchingTask {
     public void execute() throws BuildException {
         validateAttributes();
         createDirectories();
-
-        if (hasClasses()) {
-            jarClasses();
-        }
+        jarClasses();
 
         if (hasResources()) {
             copyResources();
@@ -144,13 +141,12 @@ public class WOFramework extends MatchingTask {
 
         mkdir.setDir(frameworkDir);
         mkdir.execute();
+        
         mkdir.setDir(resourceDir);
         mkdir.execute();
-
-        if (hasJava()) {
-            mkdir.setDir(new File(resourceDir, "Java"));
-            mkdir.perform();
-        }
+        
+        mkdir.setDir(new File(resourceDir, "Java"));
+        mkdir.execute();
 
         if (hasWs()) {
             mkdir.setDir(new File(frameworkDir, "WebServerResources"));
@@ -166,12 +162,14 @@ public class WOFramework extends MatchingTask {
             new File(resourcesDir(), "Java" + File.separator + name.toLowerCase() + ".jar");
         jar.setJarfile(frameworkJar);
 
-        Enumeration en = classes.elements();
-        while (en.hasMoreElements()) {
-            jar.addFileset((FileSet) en.nextElement());
+        if (hasClasses()) {
+            Enumeration en = classes.elements();
+            while (en.hasMoreElements()) {
+                jar.addFileset((FileSet) en.nextElement());
+            }
         }
 
-        jar.perform();
+        jar.execute();
     }
 
     protected void copyResources() throws BuildException {
@@ -184,7 +182,7 @@ public class WOFramework extends MatchingTask {
         while (en.hasMoreElements()) {
             cp.addFileset((FileSet) en.nextElement());
         }
-        cp.perform();
+        cp.execute();
     }
 
     protected void copyWsresources() throws BuildException {
@@ -197,7 +195,7 @@ public class WOFramework extends MatchingTask {
         while (en.hasMoreElements()) {
             cp.addFileset((FileSet) en.nextElement());
         }
-        cp.perform();
+        cp.execute();
     }
 
     protected void buildInfo() throws BuildException {
