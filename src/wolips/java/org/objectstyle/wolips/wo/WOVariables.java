@@ -140,6 +140,10 @@ public class WOVariables {
 		return "PB.project";
 	}
 	
+	public static String webServerResourcesDirName() {
+		return "WebServerResources";
+	}
+	
 	public static String classPathVariableToExpand(String aString) {
 		String returnValue = "";
 		if (aString != null) {
