@@ -46,20 +46,20 @@
 		<woframework name="${framework.name}" destDir="${dest.dir}">
    			<classes dir="${classes.dir}">
       			<patternset>
-  					<includesfile name="ant/classes.include.patternset"/> 
-					<excludesfile name="ant/classes.exclude.patternset"/> 
+  					<includesfile name="${WOLipsContext.getAntFolderName()}/classes.include.patternset"/> 
+					<excludesfile name="${WOLipsContext.getAntFolderName()}/classes.exclude.patternset"/> 
 				</patternset>
    			</classes>
    			<wsresources dir=".">
       			<patternset>
-  					<includesfile name="ant/wsresources.include.patternset"/> 
-					<excludesfile name="ant/wsresources.exclude.patternset"/> 
+  					<includesfile name="${WOLipsContext.getAntFolderName()}/wsresources.include.patternset"/> 
+					<excludesfile name="${WOLipsContext.getAntFolderName()}/wsresources.exclude.patternset"/> 
 				</patternset>
 			</wsresources>
    			<resources dir=".">
       			<patternset>
-  					<includesfile name="ant/resources.include.patternset"/> 
-					<excludesfile name="ant/resources.exclude.patternset"/> 
+  					<includesfile name="${WOLipsContext.getAntFolderName()}/resources.include.patternset"/> 
+					<excludesfile name="${WOLipsContext.getAntFolderName()}/resources.exclude.patternset"/> 
 				</patternset>
        		</resources>
 			<lib dir=".">

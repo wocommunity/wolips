@@ -71,6 +71,7 @@ public class WOLipsContext {
 	private String adaptorName;
 	private String componentName;
 	private boolean createBodyTag = false;
+	private String antFolderName;
 	
 	protected WOLipsContext() {
 		super();
@@ -136,5 +137,17 @@ public class WOLipsContext {
 	 */
 	public String getDate() {
 		return new GregorianCalendar().toString();
+	}
+	/**
+	 * @return Returns the antFolderName.
+	 */
+	protected String getAntFolderName() {
+		return this.antFolderName;
+	}
+	/**
+	 * @param antFolderName The antFolderName to set.
+	 */
+	protected void setAntFolderName(String antFolderName) {
+		this.antFolderName = antFolderName;
 	}
 }

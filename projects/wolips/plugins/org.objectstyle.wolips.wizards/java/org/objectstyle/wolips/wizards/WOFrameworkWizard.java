@@ -63,6 +63,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
+import org.objectstyle.wolips.datasets.adaptable.ProjectPatternsets;
 import org.objectstyle.wolips.templateengine.TemplateDefinition;
 import org.objectstyle.wolips.templateengine.TemplateEngine;
 import org.objectstyle.wolips.templateengine.TemplateEnginePlugin;
@@ -112,7 +113,7 @@ public class WOFrameworkWizard extends AbstractProjectWizard {
 				File xcode = new File(path + File.separator + projectName
 						+ ".xcode");
 				xcode.mkdirs();
-				File ant = new File(path + File.separator + "ant");
+				File ant = new File(path + File.separator + ProjectPatternsets.ANT_FOLDER_NAME);
 				ant.mkdirs();
 				//project.close(nullProgressMonitor);
 				TemplateEngine templateEngine = new TemplateEngine();

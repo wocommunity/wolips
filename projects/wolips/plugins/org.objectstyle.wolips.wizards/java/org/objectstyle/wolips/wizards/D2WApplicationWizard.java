@@ -63,6 +63,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
+import org.objectstyle.wolips.datasets.adaptable.Project;
+import org.objectstyle.wolips.datasets.adaptable.ProjectPatternsets;
 import org.objectstyle.wolips.templateengine.TemplateDefinition;
 import org.objectstyle.wolips.templateengine.TemplateEngine;
 import org.objectstyle.wolips.templateengine.TemplateEnginePlugin;
@@ -121,7 +123,7 @@ public class D2WApplicationWizard extends AbstractProjectWizard {
 				File xcode = new File(path + File.separator + projectName
 						+ ".xcode");
 				xcode.mkdirs();
-				File ant = new File(path + File.separator + "ant");
+				File ant = new File(path + File.separator + ProjectPatternsets.ANT_FOLDER_NAME);
 				ant.mkdirs();
 				//project.close(nullProgressMonitor);
 				TemplateEngine templateEngine = new TemplateEngine();
@@ -196,33 +198,33 @@ public class D2WApplicationWizard extends AbstractProjectWizard {
 				templateEngine
 						.addTemplate(new TemplateDefinition(
 								"d2w_application/ant.classpaths.user.home.vm",
-								path + File.separator + "ant",
+								path + File.separator + ProjectPatternsets.ANT_FOLDER_NAME,
 								"ant.classpaths.user.home",
 								"ant.classpaths.user.home"));
 				templateEngine.addTemplate(new TemplateDefinition(
 						"d2w_application/ant.classpaths.wo.wolocalroot.vm", path
-								+ File.separator + "ant",
+								+ File.separator + ProjectPatternsets.ANT_FOLDER_NAME,
 						"ant.classpaths.wo.wolocalroot",
 						"ant.classpaths.wo.wolocalroot"));
 				templateEngine.addTemplate(new TemplateDefinition(
 						"d2w_application/ant.classpaths.wo.wosystemroot.vm",
-						path + File.separator + "ant",
+						path + File.separator + ProjectPatternsets.ANT_FOLDER_NAME,
 						"ant.classpaths.wo.wosystemroot",
 						"ant.classpaths.wo.wosystemroot"));
 				templateEngine
 						.addTemplate(new TemplateDefinition(
 								"d2w_application/ant.frameworks.user.home.vm",
-								path + File.separator + "ant",
+								path + File.separator + ProjectPatternsets.ANT_FOLDER_NAME,
 								"ant.frameworks.user.home",
 								"ant.frameworks.user.home"));
 				templateEngine.addTemplate(new TemplateDefinition(
 						"d2w_application/ant.frameworks.wo.wolocalroot.vm", path
-								+ File.separator + "ant",
+								+ File.separator + ProjectPatternsets.ANT_FOLDER_NAME,
 						"ant.frameworks.wo.wolocalroot",
 						"ant.frameworks.wo.wolocalroot"));
 				templateEngine.addTemplate(new TemplateDefinition(
 						"d2w_application/ant.frameworks.wo.wosystemroot.vm",
-						path + File.separator + "ant",
+						path + File.separator + ProjectPatternsets.ANT_FOLDER_NAME,
 						"ant.frameworks.wo.wosystemroot",
 						"ant.frameworks.wo.wosystemroot"));
 				templateEngine.addTemplate(new TemplateDefinition(

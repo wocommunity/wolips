@@ -47,40 +47,40 @@
 		<woapplication name="${project.name}"  stdFrameworks="false" destDir="${dest.dir}">
    			<classes dir="${classes.dir}">
       			<patternset>
-  					<includesfile name="ant/classes.include.patternset"/> 
-					<excludesfile name="ant/classes.exclude.patternset"/> 
+  					<includesfile name="${WOLipsContext.getAntFolderName()}/classes.include.patternset"/> 
+					<excludesfile name="${WOLipsContext.getAntFolderName()}/classes.exclude.patternset"/> 
 				</patternset>
    			</classes>
    			<wsresources dir=".">
       			<patternset>
-  					<includesfile name="ant/wsresources.include.patternset"/> 
-					<excludesfile name="ant/wsresources.exclude.patternset"/> 
+  					<includesfile name="${WOLipsContext.getAntFolderName()}/wsresources.include.patternset"/> 
+					<excludesfile name="${WOLipsContext.getAntFolderName()}/wsresources.exclude.patternset"/> 
 				</patternset>
 			</wsresources>
    			<resources dir=".">
       			<patternset>
-  					<includesfile name="ant/resources.include.patternset"/> 
-					<excludesfile name="ant/resources.exclude.patternset"/> 
+  					<includesfile name="${WOLipsContext.getAntFolderName()}/resources.include.patternset"/> 
+					<excludesfile name="${WOLipsContext.getAntFolderName()}/resources.exclude.patternset"/> 
 				</patternset>
        		</resources>
 			<frameworks root="${wo.wosystemroot}">
       				<patternset>
-  					<includesfile name="ant/ant.frameworks.wo.wosystemroot"/> 
+  					<includesfile name="${WOLipsContext.getAntFolderName()}/ant.frameworks.wo.wosystemroot"/> 
 				</patternset>
    			</frameworks>
    			<frameworks root="${wo.wolocalroot}">
       				<patternset>
-  					<includesfile name="ant/ant.frameworks.wo.wolocalroot"/> 
+  					<includesfile name="${WOLipsContext.getAntFolderName()}/ant.frameworks.wo.wolocalroot"/> 
 				</patternset>
    			</frameworks>
 			<frameworks root="${user.home}">
       				<patternset>
-  					<includesfile name="ant/ant.frameworks.user.home"/> 
+  					<includesfile name="${WOLipsContext.getAntFolderName()}/ant.frameworks.user.home"/> 
 				</patternset>
    			</frameworks>
 			<otherclasspath root="${wo.wosystemroot}">
    				<patternset>
-  					<includesfile name="ant/ant.classpaths.wo.wosystemroot"/> 
+  					<includesfile name="${WOLipsContext.getAntFolderName()}/ant.classpaths.wo.wosystemroot"/> 
 				</patternset>
 			</otherclasspath>
 			<lib dir=".">
