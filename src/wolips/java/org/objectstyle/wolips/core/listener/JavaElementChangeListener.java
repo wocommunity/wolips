@@ -68,8 +68,8 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.objectstyle.wolips.core.ant.UpdateFrameworkIncludeFiles;
 import org.objectstyle.wolips.core.ant.UpdateOtherClasspathIncludeFiles;
-import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
 import org.objectstyle.wolips.core.project.PBProjectUpdater;
+import org.objectstyle.wolips.core.project.WOLipsProject;
 import org.objectstyle.wolips.logging.WOLipsLog;
 import org.objectstyle.woproject.pb.PBProject;
 /**
@@ -109,23 +109,17 @@ public class JavaElementChangeListener implements IElementChangedListener {
 							.getChangedChildren()[i]
 							.getElement())
 							.getProject();
-					if (!projectToExamine.exists()) {
+					if (!projectToExamine.exists()
+						|| !projectToExamine.isAccessible()) {
 						// project deleted no further investigatin needed
 						continue;
 					}
+					WOLipsProject woLipsProject =
+						new WOLipsProject(projectToExamine);
 					try {
-						if (projectToExamine
-							.hasNature(
-								IWOLipsPluginConstants.ANT_FRAMEWORK_NATURE_ID)
-							|| projectToExamine.hasNature(
-								IWOLipsPluginConstants
-									.INCREMENTAL_FRAMEWORK_NATURE_ID)
-							|| projectToExamine.hasNature(
-								IWOLipsPluginConstants
-									.ANT_APPLICATION_NATURE_ID)
-							|| projectToExamine.hasNature(
-								IWOLipsPluginConstants
-									.INCREMENTAL_APPLICATION_NATURE_ID)) {
+						if (woLipsProject
+							.getNaturesAccessor()
+							.hasWOLipsNature()) {
 							addedFrameworksProjectDict.put(
 								projectToExamine,
 								new ArrayList());
@@ -195,17 +189,20 @@ public class JavaElementChangeListener implements IElementChangedListener {
 								null);
 								*/
 							}
-							UpdateOtherClasspathIncludeFiles updateOtherClasspathIncludeFiles =
-								new UpdateOtherClasspathIncludeFiles();
-							updateOtherClasspathIncludeFiles.setIProject(
-								projectToExamine);
-							updateOtherClasspathIncludeFiles.execute();
-							UpdateFrameworkIncludeFiles updateFrameworkIncludeFiles =
-								new UpdateFrameworkIncludeFiles();
-							updateFrameworkIncludeFiles.setIProject(
-								projectToExamine);
-							updateFrameworkIncludeFiles.execute();
-
+							if (woLipsProject
+								.getNaturesAccessor()
+								.isApplication()) {
+								UpdateOtherClasspathIncludeFiles updateOtherClasspathIncludeFiles =
+									new UpdateOtherClasspathIncludeFiles();
+								updateOtherClasspathIncludeFiles.setIProject(
+									projectToExamine);
+								updateOtherClasspathIncludeFiles.execute();
+								UpdateFrameworkIncludeFiles updateFrameworkIncludeFiles =
+									new UpdateFrameworkIncludeFiles();
+								updateFrameworkIncludeFiles.setIProject(
+									projectToExamine);
+								updateFrameworkIncludeFiles.execute();
+							}
 						}
 					} catch (CoreException e) {
 						WOLipsLog.log(e);
