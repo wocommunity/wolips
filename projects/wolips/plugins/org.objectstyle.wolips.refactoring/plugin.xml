@@ -3,12 +3,12 @@
 <plugin
    id="org.objectstyle.wolips.refactoring"
    name="WOLips Refactoring Plug-in"
-   version="1.0.0"
-   provider-name=""
+   version="1.0.6"
+   provider-name="objectstyle.org"
    class="org.objectstyle.wolips.refactoring.RefactoringPlugin">
 
    <runtime>
-      <library name="refactoring.jar">
+      <library name="wolips-refactoring.jar">
          <export name="*"/>
       </library>
    </runtime>

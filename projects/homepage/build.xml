@@ -139,7 +139,8 @@
 	        <pathelement path="../wolips/plugins/org.objectstyle.wolips.templateengine/java"/>
 	        <pathelement path="../wolips/plugins/org.objectstyle.wolips.tests/java"/>
 	        <pathelement path="../wolips/plugins/org.objectstyle.wolips.tests.core/java"/>
-	        <pathelement path="../wolips/plugins/org.objectstyle.wolips.workbenchutilities/java"/>
+    	        <pathelement path="../wolips/plugins/org.objectstyle.wolips.workbenchutilities/java"/>
+    	        <pathelement path="../wolips/plugins/org.objectstyle.wolips.refactoring/java"/>
 	        <pathelement path="../wolips/plugins/org.objectstyle.wolips.goodies.core.mac/java"/>
 	        <pathelement path="../wolips/plugins/org.objectstyle.wolips.goodies.ui.mac/java"/>
             </sourcepath>

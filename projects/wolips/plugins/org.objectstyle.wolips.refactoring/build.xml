@@ -4,7 +4,7 @@
 <!--        Main WOLips plugins Ant build file                -->
 <!-- Serves as a facade for different helper build files.     -->
 <!-- ======================================================== -->
-<project name="org.objectstyle.wolips.projectbuild" default="" basedir=".">
+<project name="org.objectstyle.wolips.refactoring" default="" basedir=".">
 
     <property file="default.properties"/>
 
@@ -33,13 +33,13 @@
     <!-- ========================================== -->
     <target name="jar">
 	    <patternset id="param.classes.patternset.refid">
-                <include name="**/org/objectstyle/wolips/projectbuild/**"/>
+                <include name="**/org/objectstyle/wolips/refactoring/**"/>
         </patternset>
             
 	    <ant dir="." antfile="../../../${project.buildscripts.dir}/plugin-project.xml" target="jar">
             <property name="param.plugin.dir" value="."/>
             <property name="param.classes.dir" value="../../../${build.output.java.dir}"/>
-            <property name="param.jar.file" value="wolips-projectbuild.jar"/>
+            <property name="param.jar.file" value="wolips-refactoring.jar"/>
             <reference refid="param.classes.patternset.refid"/>
             <property name="param.plugin.name" value="${plugin.name}"/>
             <property name="param.build.output.build.dir" value="../../../${build.output.build.dir}"/>
