@@ -230,6 +230,7 @@ public class ProjectNatures extends ProjectBuilder {
 		// add / remove natures as needed, avoid setting the project description
 		// more than once
 		{
+			boolean needsSave = false;
 			List naturesList = new ArrayList(Arrays.asList(desc.getNatureIds()));
 			if (!naturesList.contains(natureID)) {
 				Iterator iter = naturesList.iterator();
@@ -241,17 +242,21 @@ public class ProjectNatures extends ProjectBuilder {
 				naturesList.add(natureID);
 				desc.setNatureIds((String[]) naturesList
 						.toArray(new String[naturesList.size()]));
-				_setDescription(this.getIProject(), desc);
+				needsSave = true;
 			}
 			List buildersList = new ArrayList(Arrays
-					.asList(desc.getBuildSpec()));
-			for (Iterator builders = buildersList.iterator(); builders
-					.hasNext();) {
-				ICommand command = (ICommand) builders.next();
-				String name = command.getBuilderName();
-				if (name.equals(ProjectBuilder.INCREMENTAL_BUILDER_ID)) {
-					command.setArguments(args);
-				}
+			        .asList(desc.getBuildSpec()));
+			for (Iterator builders = buildersList.iterator(); builders.hasNext();) {
+			    ICommand command = (ICommand) builders.next();
+			    String name = command.getBuilderName();
+			    if (name.equals(ProjectBuilder.INCREMENTAL_BUILDER_ID)) {
+			        command.setArguments(args);
+			        needsSave = true;
+				    desc.setBuildSpec((ICommand[])buildersList.toArray(new ICommand[0]));
+			    }
+			}
+			if(needsSave) {
+			    _setDescription(this.getIProject(), desc);
 			}
 		}
 	}
