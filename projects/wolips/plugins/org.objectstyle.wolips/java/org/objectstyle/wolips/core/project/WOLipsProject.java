@@ -62,7 +62,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -349,13 +348,12 @@ public class WOLipsProject implements IWOLipsProject {
 
 		private void setWONature(String natureID, Map args)
 			throws CoreException {
-			IProject project = this.getProject();
-
+			
 			if (null == args) {
 				args = Collections.EMPTY_MAP;
 			}
 
-			IProjectDescription desc = project.getDescription();
+			IProjectDescription desc = this.getProject().getDescription();
 
 			// add / remove natures as needed, avoid setting the project description more than once
 			{
@@ -373,7 +371,7 @@ public class WOLipsProject implements IWOLipsProject {
 					desc.setNatureIds(
 						(String[]) naturesList.toArray(
 							new String[naturesList.size()]));
-					_setDescription(project, desc);
+					_setDescription(this.getProject(), desc);
 				}
 			}
 		}
@@ -849,29 +847,11 @@ public class WOLipsProject implements IWOLipsProject {
 	protected class PBProjectFilesAccessor
 		extends WOLipsProjectInnerClass
 		implements IPBProjectFilesAccessor {
-		private Hashtable pbProjectFileAccessors = new Hashtable();
 		/**
 		 * @param wolipsProject
 		 */
 		protected PBProjectFilesAccessor(WOLipsProject wolipsProject) {
 			super(wolipsProject);
-		}
-		/**
-		 * @param resource
-		 * @return PBProjectFileAccessor
-		 */
-		public PBProjectFileAccessor getPBProjectFileAccessor(IResource resource) {
-			if (resource == null)
-				return null;
-			IFolder folder = this.getParentFolderWithPBProject(resource);
-			if (folder == null)
-				return null;
-			PBProjectFileAccessor pbProjectFileAccessor =
-				(PBProjectFileAccessor) pbProjectFileAccessors.get(
-					folder.getFullPath().toOSString());
-			if (pbProjectFileAccessor != null)
-				return pbProjectFileAccessor;
-			return new PBProjectFileAccessor(this);
 		}
 		/**
 		 * @param resource
@@ -908,19 +888,6 @@ public class WOLipsProject implements IWOLipsProject {
 			return null;
 		}
 
-		public class PBProjectFileAccessor {
-			private PBProjectFilesAccessor pbProjectFilesAccessor;
-			public PBProjectFileAccessor(PBProjectFilesAccessor pbProjectFilesAccessor) {
-				this.pbProjectFilesAccessor = pbProjectFilesAccessor;
-			}
-			/**
-			 * @return PBProjectFilesAccessor
-			 */
-			protected PBProjectFilesAccessor getPbProjectFilesAccessor() {
-				return pbProjectFilesAccessor;
-			}
-
-		}
 		/**
 		 * cleans all tables
 		 */
