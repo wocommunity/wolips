@@ -57,17 +57,14 @@
 package org.objectstyle.wolips.project;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.Path;
 import org.objectstyle.wolips.logging.WOLipsLog;
 import org.objectstyle.wolips.plugin.IWOLipsPluginConstants;
@@ -293,98 +290,14 @@ public class _PBProjectUpdater {
 	private void syncWOAppResources(List list) {
 		this.getPbProject().setWoAppResources(list);
 	}
-	/**
-	 * Method syncFilestable.
-	 * @param changedResources
-	 * @param kindOfChange
-	 */
-	public void syncFilestable(Map changedResources, int kindOfChange) {
-		List actualResources;
-		String currentKey;
-		Object[] allKeys = changedResources.keySet().toArray();
-		for (int i = 0; i < allKeys.length; i++) {
-			currentKey = (String) allKeys[i];
-			if (IWOLipsPluginConstants.RESOURCES_ID.equals(currentKey)) {
-				actualResources = this.getPbProject().getWoAppResources();
-				switch (kindOfChange) {
-					case IResourceDelta.ADDED :
-					this.getPbProject().setWoAppResources(
-							addResources(
-								(List) changedResources.get(currentKey),
-								actualResources));
-						break;
-					case IResourceDelta.REMOVED :
-					this.getPbProject().setWoAppResources(
-							removeResources(
-								(List) changedResources.get(currentKey),
-								actualResources));
-						break;
-				}
-			} else if (IWOLipsPluginConstants.CLASSES_ID.equals(currentKey)) {
-				actualResources = this.getPbProject().getClasses();
-				switch (kindOfChange) {
-					case IResourceDelta.ADDED :
-					this.getPbProject().setClasses(
-							addResources(
-								(List) changedResources.get(currentKey),
-								actualResources));
-						break;
-					case IResourceDelta.REMOVED :
-					this.getPbProject().setClasses(
-							removeResources(
-								(List) changedResources.get(currentKey),
-								actualResources));
-						break;
-				}
-			} else if (
-				IWOLipsPluginConstants.SUBPROJECTS_ID.equals(currentKey)) {
-				actualResources = this.getPbProject().getSubprojects();
-				switch (kindOfChange) {
-					case IResourceDelta.ADDED :
-					this.getPbProject().setSubprojects(
-							addResources(
-								(List) changedResources.get(currentKey),
-								actualResources));
-						break;
-					case IResourceDelta.REMOVED :
-					this.getPbProject().setSubprojects(
-							removeResources(
-								(List) changedResources.get(currentKey),
-								actualResources));
-						break;
-				}
-			} else if (
-				IWOLipsPluginConstants.COMPONENTS_ID.equals(currentKey)) {
-				actualResources = this.getPbProject().getWoComponents();
-				switch (kindOfChange) {
-					case IResourceDelta.ADDED :
-					this.getPbProject().setWoComponents(
-							addResources(
-								(List) changedResources.get(currentKey),
-								actualResources));
-						break;
-					case IResourceDelta.REMOVED :
-					this.getPbProject().setWoComponents(
-							removeResources(
-								(List) changedResources.get(currentKey),
-								actualResources));
-						break;
-				}
-			}
-		}
-		try {
-			this.getPbProject().saveChanges();
-		} catch (IOException e) {
-			WOLipsLog.log(e);
-		}
-	}
+
 	/**
 	 * Method addResources.
 	 * @param newResources
 	 * @param actualResources
 	 * @return List
 	 */
-	private List addResources(List newResources, List actualResources) {
+	protected List addResources(List newResources, List actualResources) {
 		if (actualResources == null) {
 			actualResources = new ArrayList();
 		}
@@ -410,7 +323,7 @@ public class _PBProjectUpdater {
 	 * @param actualResources
 	 * @return List
 	 */
-	private List removeResources(List removedResources, List actualResources) {
+	protected List removeResources(List removedResources, List actualResources) {
 		if (actualResources == null) {
 			return new ArrayList();
 		}

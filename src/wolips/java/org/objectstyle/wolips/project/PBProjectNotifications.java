@@ -56,7 +56,15 @@
 
 package org.objectstyle.wolips.project;
 
+import java.net.URL;
+
+import org.eclipse.core.internal.boot.URLContentFilter;
+import org.eclipse.core.internal.plugins.PluginClassLoader;
 import org.objectstyle.wolips.logging.WOLipsLog;
+import org.objectstyle.wolips.plugin.WOLipsPlugin;
+import org.objectstyle.woproject.env.Environment;
+import org.objectstyle.woproject.env.WOVariables;
+import org.objectstyle.woproject.util.FileStringScanner;
 
 import com.webobjects.foundation.NSNotificationCenter;
 
@@ -82,8 +90,8 @@ public class PBProjectNotifications {
 		"File Added to Project";
 	private static String PBFileRemovedFromProjectNotification =
 		"File Removed from Project";
-	private static NSNotificationCenter notificationCenter =
-		NSNotificationCenter.defaultCenter();
+	private static NSNotificationCenter notificationCenter = null;
+	private static boolean loadedFoundationClasses = false;
 
 	//postNotification(notification, dict);
 
@@ -93,15 +101,79 @@ public class PBProjectNotifications {
 	private PBProjectNotifications() {
 		super();
 	}
-
+	/**
+	 * Method notificationCenter.
+	 * @return NSNotificationCenter
+	 */
+	private static NSNotificationCenter notificationCenter() {
+		if (PBProjectNotifications.notificationCenter == null)
+			PBProjectNotifications.notificationCenter =
+				NSNotificationCenter.defaultCenter();
+		return PBProjectNotifications.notificationCenter;
+	}
+	/**
+	 * Method postPBProjectDidUpgradeNotification.
+	 * @param aProjectName
+	 */
 	public static void postPBProjectDidUpgradeNotification(String aProjectName) {
 		try {
-		PBProjectNotifications.notificationCenter.postNotification(
-			PBProjectNotifications.PBFileAddedToProjectNotification,
-			aProjectName);
-		}
-		catch (Exception anException) {
+			PBProjectNotifications.loadFoundationClasses();
+			PBProjectNotifications.notificationCenter().postNotification(
+				PBProjectNotifications.PBFileAddedToProjectNotification,
+				aProjectName);
+		} catch (Exception anException) {
 			WOLipsLog.log(anException);
+		}
+	}
+	/**
+	 * Method foundationJarPath.
+	 * @return String
+	 */
+	private static String foundationJarPath() {
+		String foundationJarPath = null;
+		try {
+			if (Environment.isNextRootSet())
+				foundationJarPath =
+					"file:///"
+						+ FileStringScanner.replace(
+							WOVariables.nextRoot(),
+							"/",
+							"\\")
+						+ "\\Library\\Frameworks\\JavaFoundation.framework\\Resources\\Java\\javafoundation.jar";
+			else
+				foundationJarPath =
+					"file:///System/Library/Frameworks/JavaFoundation.framework/Resources/Java/javafoundation.jar";
+		} catch (Exception anException) {
+			WOLipsLog.log(anException);
+		}
+		return foundationJarPath;
+	}
+
+	/**
+	 * Loads the foundation classes.
+	 */
+	private static void loadFoundationClasses() {
+		if (PBProjectNotifications.loadedFoundationClasses)
+			return;
+		ClassLoader aClassLoader =
+			WOLipsPlugin.getDefault().getClass().getClassLoader();
+		URLContentFilter[] theURLContentFilter = new URLContentFilter[1];
+		theURLContentFilter[0] = new URLContentFilter(true);
+		URL[] theUrls = new URL[1];
+		try {
+			theUrls[0] = new URL(PBProjectNotifications.foundationJarPath());
+			((PluginClassLoader) aClassLoader).addURLs(
+				theUrls,
+				theURLContentFilter,
+				null,
+				null);
+			PBProjectNotifications.loadedFoundationClasses = true;
+		} catch (Exception anException) {
+			WOLipsLog.log(anException);
+		} finally {
+			aClassLoader = null;
+			theURLContentFilter = null;
+			theUrls = null;
 		}
 	}
 }

@@ -58,12 +58,12 @@ package org.objectstyle.wolips.support;
 
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.util.SafeRunnable;
-import org.objectstyle.wolips.env.Environment;
 import org.objectstyle.wolips.plugin.IWOLipsPluginConstants;
 import org.objectstyle.wolips.preferences.Preferences;
 import org.objectstyle.wolips.preferences.PreferencesMessages;
-import org.objectstyle.woproject.env.WOVariables;
 import org.objectstyle.wolips.utils.WOLipsUtils;
+import org.objectstyle.woproject.env.Environment;
+import org.objectstyle.woproject.env.WOVariables;
 
 /**
  * @author uli
@@ -188,18 +188,13 @@ public class SupportContentProvider extends AbstractTreeContentProvider {
 		environmentNode.addChild(
 			createNode(
 				SupportMessages.getString(
-					"WOLips.support.Environment.foundationJarPath"),
-				Environment.foundationJarPath()));
-		environmentNode.addChild(
-			createNode(
-				SupportMessages.getString(
 					"WOLips.support.Environment.localRoot"),
-				Environment.localRoot()));
+				WOVariables.localRoot()));
 		environmentNode.addChild(
 			createNode(
 				SupportMessages.getString(
 					"WOLips.support.Environment.nextRoot"),
-				Environment.nextRoot()));
+				WOVariables.nextRoot()));
 		environmentNode.addChild(
 			createNode(
 				SupportMessages.getString(

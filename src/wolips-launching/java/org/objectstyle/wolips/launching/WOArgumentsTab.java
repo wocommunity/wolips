@@ -72,8 +72,9 @@ import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
-import org.objectstyle.wolips.env.Environment;
 import org.objectstyle.wolips.logging.WOLipsLog;
+import org.objectstyle.woproject.env.Environment;
+import org.objectstyle.woproject.env.WOVariables;
 /**
  * @author uli
  *
@@ -227,7 +228,7 @@ public abstract class WOArgumentsTab extends JavaLaunchConfigurationTab {
 	private String getWOApplicationPlatformSpecificArguments() {
 		if (!Environment.isNextRootSet())
 			return "";
-		return "-WORoot = " + Environment.nextRoot() + " ";
+		return "-WORoot = " + WOVariables.nextRoot() + " ";
 	}
 
 	/**

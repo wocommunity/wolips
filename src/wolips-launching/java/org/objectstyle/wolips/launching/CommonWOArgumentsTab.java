@@ -81,8 +81,9 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.help.WorkbenchHelp;
-import org.objectstyle.wolips.env.Environment;
 import org.objectstyle.wolips.logging.WOLipsLog;
+import org.objectstyle.woproject.env.Environment;
+import org.objectstyle.woproject.env.WOVariables;
 
 /**
  * @author uli
@@ -304,7 +305,7 @@ public class CommonWOArgumentsTab extends JavaLaunchConfigurationTab {
 	private String getWOApplicationPlatformSpecificArguments() {
 		if (!Environment.isNextRootSet())
 			return "";
-		return "-DWORoot = " + Environment.nextRoot() + " ";
+		return "-DWORoot = " + WOVariables.nextRoot() + " ";
 	}
 
 	/**
