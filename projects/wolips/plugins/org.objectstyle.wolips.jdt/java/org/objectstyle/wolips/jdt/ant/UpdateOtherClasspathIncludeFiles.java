@@ -108,7 +108,7 @@ public class UpdateOtherClasspathIncludeFiles extends UpdateIncludeFiles {
 
 		for (int i = 0; i < getPaths().length; i++) {
 
-			currentClasspathListFile = this.getIProject().getFolder("ant").getFile(
+			currentClasspathListFile = this.getProject().getAntFolder().getFile(
 					this.INCLUDES_FILE_PREFIX + "." + this.rootPaths[i]);
 			//System.out.println("currentClasspathListFile: " +
 			// currentClasspathListFile.toString());

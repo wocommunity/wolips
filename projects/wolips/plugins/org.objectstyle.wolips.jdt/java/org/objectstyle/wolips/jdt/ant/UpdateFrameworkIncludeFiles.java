@@ -104,8 +104,7 @@ public class UpdateFrameworkIncludeFiles extends UpdateIncludeFiles {
 		for (int i = 0; i < this.getPaths().length; i++) {
 
 			String thisPath = getPaths()[i].toOSString();
-
-			currentFrameworkListFile = this.getIProject().getFolder("ant").getFile(
+			currentFrameworkListFile = this.getProject().getAntFolder().getFile(
 					this.INCLUDES_FILE_PREFIX + "." + this.rootPaths[i]);
 
 			//if (currentFrameworkListFile.exists()) {
