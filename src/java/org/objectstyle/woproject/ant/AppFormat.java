@@ -65,6 +65,7 @@ import java.util.Vector;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.Project;
+import org.apache.tools.ant.taskdefs.Copy;
 import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.FilterSet;
 import org.apache.tools.ant.types.FilterSetCollection;
@@ -99,6 +100,7 @@ public class AppFormat extends ProjectFormat {
 	private void prepare() {
 		preparePaths();
 
+		prepare52();
 		prepareWindows();
 		prepareUnix();
 		prepareMac();
@@ -108,7 +110,7 @@ public class AppFormat extends ProjectFormat {
 		// add Info.plist
 		String infoFile =
 			new File(getApplicatonTask().contentsDir(), "Info.plist").getPath();
-		createMappings(infoFile, "woapp/Info.plist", infoFilter(null));
+		createMappings(infoFile, woappPlusVersion() + "/Info.plist", infoFilter(null));
 	}
 
 	/**
@@ -120,6 +122,20 @@ public class AppFormat extends ProjectFormat {
 		otherClasspaths = buildOtherClassPaths();
 	}
 
+	/**
+	 * Prepares all path values needed for substitutions.
+	 */
+	private void prepare52() {
+		if(is52()) {
+			Copy cp = new Copy();
+			//cp.setOwningTarget(getApplicatonTask().getProject().getDefaultTarget());
+			cp.setProject(getApplicatonTask().getProject());
+			cp.setTaskName("copy bootstrap");
+			cp.setFile(bootstrap());
+			cp.setTodir(getApplicatonTask().taskDir());
+			cp.execute();
+		}
+	}
 	/**
 	 * Returns a String that consists of paths to the aplication jar. 
 	 * File separator used is platform dependent
@@ -251,20 +267,20 @@ public class AppFormat extends ProjectFormat {
 		String cp = new File(winDir, "CLSSPATH.TXT").getPath();
 		createMappings(
 			cp,
-			"woapp/Contents/Windows/CLSSPATH.TXT",
+			woappPlusVersion() + "/Contents/Windows/CLSSPATH.TXT",
 			classpathFilter('\\'));
 
 		String subp = new File(winDir, "SUBPATHS.TXT").getPath();
-		createMappings(subp, "woapp/Contents/Windows/SUBPATHS.TXT");
+		createMappings(subp, woappPlusVersion() + "/Contents/Windows/SUBPATHS.TXT");
 
 		// add run script to Win. directory
 		String runScript = new File(winDir, getName() + ".cmd").getPath();
-		createMappings(runScript, "woapp/Contents/Windows/appstart.cmd");
+		createMappings(runScript, woappPlusVersion() + "/Contents/Windows/appstart.cmd");
 
 		// add run script to top-level directory
 		File taskDir = getApplicatonTask().taskDir();
 		String topRunScript = new File(taskDir, getName() + ".cmd").getPath();
-		createMappings(topRunScript, "woapp/Contents/Windows/appstart.cmd");
+		createMappings(topRunScript, woappPlusVersion() + "/Contents/Windows/appstart.cmd");
 	}
 
 	/** 
@@ -276,7 +292,7 @@ public class AppFormat extends ProjectFormat {
 		String cp = new File(dir, "UNIXClassPath.txt").getPath();
 		createMappings(
 			cp,
-			"woapp/Contents/UNIX/UNIXClassPath.txt",
+			woappPlusVersion() + "/Contents/UNIX/UNIXClassPath.txt",
 			classpathFilter('/'));
 	}
 
@@ -289,24 +305,24 @@ public class AppFormat extends ProjectFormat {
 		String cp = new File(macDir, "MacOSClassPath.txt").getPath();
 		createMappings(
 			cp,
-			"woapp/Contents/MacOS/MacOSClassPath.txt",
+			woappPlusVersion() + "/Contents/MacOS/MacOSClassPath.txt",
 			classpathFilter('/'));
 
 		String servercp =
 			new File(macDir, "MacOSXServerClassPath.txt").getPath();
 		createMappings(
 			servercp,
-			"woapp/Contents/MacOS/MacOSXServerClassPath.txt",
+			woappPlusVersion() + "/Contents/MacOS/MacOSXServerClassPath.txt",
 			classpathFilter('/'));
 
 		// add run script to Mac directory
 		String runScript = new File(macDir, getName()).getPath();
-		createMappings(runScript, "woapp/Contents/MacOS/appstart");
+		createMappings(runScript, woappPlusVersion() + "/Contents/MacOS/appstart");
 
 		// add run script to top-level directory
 		File taskDir = getApplicatonTask().taskDir();
 		String topRunScript = new File(taskDir, getName()).getPath();
-		createMappings(topRunScript, "woapp/Contents/MacOS/appstart");
+		createMappings(topRunScript, woappPlusVersion() + "/Contents/MacOS/appstart");
 	}
 
 	/** 
@@ -383,5 +399,35 @@ public class AppFormat extends ProjectFormat {
 			throw new BuildException("Invalid target: " + targetName);
 		}
 		return (FilterSetCollection) filterMap.get(targetName);
+	}
+	
+	public boolean is52() {
+		if (woversion().equals("_52")) return true;
+		return false;
+	}
+	
+	public String woversion() {
+		if(bootstrap() != null) return "_52";
+		return "";
+	}
+	
+	public String woappPlusVersion() {
+		return "woapp" + woversion();
+	}
+	
+	public File bootstrap() {
+		File mac = null;
+		File other = null;
+		try {
+			mac = new File ("/System/Library/WebObjects/JavaApplications/wotaskd.woa/WOBootstrap.jar");
+			WOPropertiesHandler aHandler = new WOPropertiesHandler(this.getApplicatonTask().getProject());
+			other = new File(aHandler.getWORootPath() + "/WebObjects/JavaApplications/wotaskd.woa/WOBootstrap.jar");
+		}
+		catch (Exception anException) {
+			System.out.println(anException);
+		}
+		if((mac != null) && (mac.exists())) return mac;
+		if((other != null) && (other.exists())) return other;
+		return null;
 	}
 }
