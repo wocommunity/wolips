@@ -53,56 +53,47 @@
  * <http://objectstyle.org/>.
  *
  */
-
 package org.objectstyle.wolips.ui.actions;
-
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.ui.IActionDelegate2;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
+import org.eclipse.ui.actions.ActionDelegate;
 import org.objectstyle.wolips.core.preferences.Preferences;
-
 /**
- * @author uli
- *
- * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates.
- * To enable and disable the creation of type comments go to
- * Window>Preferences>Java>Code Generation.
+ * @author ulrich
+ * 
+ * To change the template for this generated type comment go to
+ * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public class WOBuildDisableAction
-	extends Action
-	implements IWorkbenchWindowActionDelegate {
-	private static String DisableWOBuildID = "WOBuild.Disable.ID";
-	/**
-	 * The constructor.
-	 */
-	public WOBuildDisableAction() {
-		super();
+public class WOBuildToggleAction extends ActionDelegate
+		implements
+			IWorkbenchWindowActionDelegate,
+			IActionDelegate2 {
+	
+	public void init(IAction action) {
+		super.init(action);
+		updateChecked(action);
 	}
-	/**
-	 * Runs the action.
-	 */
-	public void run(IAction action) {
-		if (action.getId().equals(WOBuildDisableAction.DisableWOBuildID))
-			Preferences.setPREF_RUN_WOBUILDER_ON_BUILD(false);
-	}
-	/*
-		 * @see IWorkbenchWindowActionDelegate#dispose()
-		 */
-	public void dispose() {
-	}
-
-	/*
-	 * @see IWorkbenchWindowActionDelegate#init(IWorkbenchWindow)
-	 */
+	
 	public void init(IWorkbenchWindow window) {
 	}
-	/*
-		 * @see IActionDelegate#selectionChanged(IAction, ISelection)
-		 */
+	
+	public void run(IAction action) {
+		if (Preferences.getPREF_RUN_WOBUILDER_ON_BUILD())
+			Preferences.setPREF_RUN_WOBUILDER_ON_BUILD(false);
+		else
+			Preferences.setPREF_RUN_WOBUILDER_ON_BUILD(true);
+		updateChecked(action);
+	}
+	
 	public void selectionChanged(IAction action, ISelection selection) {
-		// selection taken from selectionprovider
+		//        super.selectionChanged(action, selection);
+		//        updateChecked(action);
+	}
+	
+	private void updateChecked(IAction action) {
+		action.setChecked(Preferences.getPREF_RUN_WOBUILDER_ON_BUILD());
 	}
 }
