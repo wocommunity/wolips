@@ -66,8 +66,10 @@ import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.DirectoryScanner;
 
 /**
- * common superclass for WOApplication and WOFramework that looks
+ * Common superclass for WOApplication and WOFramework that looks
  * after common functionality.
+ * 
+ * @author Emily Bache, Andrei Adamchik
  */
 public abstract class WOTask extends MatchingTask {
 
@@ -100,17 +102,22 @@ public abstract class WOTask extends MatchingTask {
     }
 
     /**
-     * location where WOTask is being built up: ie the .woa dir or the .framework dir.
+     * Returns a location where WOTask is being built up.
+     * For instance the <code>.woa</code> dir or the </code>.framework</code> dir.
      */
     protected abstract File taskDir();
 
     /**
-     * where resources should be put: WOComponents, EOModels etc
+     * Returns a location where resources should be put.
+     * For instance this can be WOComponents, EOModels etc.
      */
     protected abstract File resourcesDir();
 
+
     /**
-     * where web server resources should be put: images etc
+     * Returns a location where web server resources should be put.
+     * WebServerResources are normally images, JavaScript files,
+     * stylesheets, etc.
      */
     protected abstract File wsresourcesDir();
 

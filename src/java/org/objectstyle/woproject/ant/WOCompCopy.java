@@ -1,4 +1,3 @@
-package org.objectstyle.woproject.ant;
 /* ====================================================================
  * 
  * The ObjectStyle Group Software License, Version 1.0 
@@ -54,6 +53,8 @@ package org.objectstyle.woproject.ant;
  * <http://objectstyle.org/>.
  *
  */  
+ 
+package org.objectstyle.woproject.ant;
 
 import org.apache.tools.ant.taskdefs.Copy;
 
