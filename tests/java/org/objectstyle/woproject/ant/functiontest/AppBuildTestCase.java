@@ -57,35 +57,59 @@ package org.objectstyle.woproject.ant.functiontest;
 
 import java.io.File;
 
+import junit.framework.Assert;
 import junit.framework.AssertionFailedError;
 
-import org.apache.tools.ant.Project;
+/**
+ * Provides testing framework for the functional tests of WebObjects application 
+ * building tasks.
+ * 
+ * @author Andrei Adamchik, Emily Bache
+ */
+public abstract class AppBuildTestCase extends BuildTestCase {
 
-public class HelloWorldBuildTest extends AppBuildTestCase {
-
-	Project project;
-
-	public HelloWorldBuildTest(String name) {
+	public AppBuildTestCase(String name) {
 		super(name);
 	}
 
-	public void testBuildHelloWorld() throws Exception {
-		String projectDir = "tests/wo/applications/HelloWorld";
-		Project project =
-			getProject(new File(projectDir), new File(projectDir, "build.xml"));
-		String defaultTarget = project.getDefaultTarget();
-		project.executeTarget(defaultTarget);
+	public void assertStructure(ProjectStructure struct)
+		throws AssertionFailedError {
+		super.assertStructure(struct);
 
-		ApplicationStructure app = new ApplicationStructure("HelloWorld");
-		app.setWocomps(new String[] { "Main" });
-		app.setWsResources(new String[] { "hello.gif" });
-		assertStructure(app);
+		// do application specific assertions
+		if (struct instanceof ApplicationStructure) {
+			assertAppStructure((ApplicationStructure) struct);
+		}
 	}
-	
-	
-	public static void main(String[] args) {
-		org.apache.log4j.BasicConfigurator.configure();
-		junit.textui.TestRunner.main(
-			new String[] { HelloWorldBuildTest.class.getName()});
+
+	protected void assertAppStructure(ApplicationStructure struct)
+		throws AssertionFailedError {
+		assertWindows(struct);
+		assertMac(struct);
+		assertUnix(struct);
+	}
+
+	protected void assertWindows(ApplicationStructure struct)
+		throws AssertionFailedError {
+		File winFolder = resolveDistPath(struct.getWindowsFolder());
+		Assert.assertTrue(
+			"Windows scripts directory is missing: " + winFolder,
+			winFolder.isDirectory());
+	}
+
+	protected void assertMac(ApplicationStructure struct)
+		throws AssertionFailedError {
+		File macFolder = resolveDistPath(struct.getMacFolder());
+		Assert.assertTrue(
+			"Mac scripts directory is missing: " + macFolder,
+			macFolder.isDirectory());
+	}
+
+	protected void assertUnix(ApplicationStructure struct)
+		throws AssertionFailedError {
+		File unixFolder = resolveDistPath(struct.getUnixFolder());
+		Assert.assertTrue(
+			"UNIX scripts directory is missing: " + unixFolder,
+			unixFolder.isDirectory());
 	}
 }

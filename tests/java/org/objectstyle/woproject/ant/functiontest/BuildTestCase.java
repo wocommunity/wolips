@@ -57,16 +57,19 @@ package org.objectstyle.woproject.ant.functiontest;
 
 import java.io.File;
 import java.io.IOException;
-import org.apache.tools.ant.*;
-import org.apache.log4j.Logger;
 
-import junit.framework.*;
+import junit.framework.Assert;
+import junit.framework.AssertionFailedError;
+import junit.framework.TestCase;
+
+import org.apache.log4j.Logger;
+import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Main;
+import org.apache.tools.ant.Project;
+import org.apache.tools.ant.ProjectHelper;
 
 /**
- * useful for setting up an ant woproject task and then asserting stuff about
- * what it produces.
- * Because everything is static, test cases can use delegation rather than
- * inheritance if they like.
+ * Provides testing framework for the functional tests of project building tasks.
  *
  * @author Andrei Adamchik, Emily Bache
  */
@@ -136,6 +139,7 @@ public abstract class BuildTestCase extends TestCase {
             assertWos(res, struct.getWocomps());
         }
     }
+    
 
     /**
      * Returns a "canonical" file located at <code>path</code>
@@ -144,7 +148,7 @@ public abstract class BuildTestCase extends TestCase {
      * separator even on Windows. This method will do all needed
      * replacements.
      */
-    public static File resolveDistPath(String path) {
+    protected File resolveDistPath(String path) {
         if (File.separator != "/") {
             path = path.replace('/', File.separatorChar);
         }
@@ -153,32 +157,32 @@ public abstract class BuildTestCase extends TestCase {
     }
 
 
-    private void assertJars(File javaDir, String[] jars) throws AssertionFailedError {
+    protected void assertJars(File javaDir, String[] jars) throws AssertionFailedError {
         for (int i = 0; i < jars.length; i++) {
             File jar = new File(javaDir, jars[i] + ".jar");
             Assert.assertTrue("Jar file is missing: " + jar, jar.isFile());
         }
     }
 
-    private void assertWos(File resourceDir, String[] wos) throws AssertionFailedError {
+    protected void assertWos(File resourceDir, String[] wos) throws AssertionFailedError {
         for (int i = 0; i < wos.length; i++) {
             File wo = new File(resourceDir, wos[i] + ".wo");
-            Assert.assertTrue("WO directory is missing: " + wo, wo.isDirectory());
+            Assert.assertTrue("Component .wo directory is missing: " + wo, wo.isDirectory());
 
             String compName = new File(wos[i]).getName();
             File wod = new File(wo, compName + ".wod");
-            Assert.assertTrue(".wod file is missing: " + wod, wod.isFile());
+            Assert.assertTrue("Component .wod file is missing: " + wod, wod.isFile());
 
             File html = new File(wo, compName + ".html");
-            Assert.assertTrue(".html file is missing: " + html, html.isFile());
+            Assert.assertTrue("Component .html file is missing: " + html, html.isFile());
         }
     }
 
-    private void assertWsResources(File resDir, String[] res) throws AssertionFailedError {
+    protected void assertWsResources(File resDir, String[] res) throws AssertionFailedError {
         for (int i = 0; i < res.length; i++) {
             String path = res[i].replace('/', File.separatorChar);
             File wsfile = new File(resDir, path);
-            Assert.assertTrue("WebServer file is missing: " + wsfile, wsfile.isFile());
+            Assert.assertTrue("WebServerResource is missing: " + wsfile, wsfile.isFile());
         }
     }
 }

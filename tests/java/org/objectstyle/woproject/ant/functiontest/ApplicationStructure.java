@@ -56,11 +56,10 @@
 
 package org.objectstyle.woproject.ant.functiontest;
 
-import java.io.File;
 
 /**
  * Java bean that keeps information about WebObjects
- * project structure.
+ * application project structure.
  *
  * @author Andrei Adamchik
  */
@@ -84,5 +83,17 @@ public class ApplicationStructure extends ProjectStructure {
 
     public String getRelativeInfoPath() {
         return "Contents";
+    }
+    
+    public String getMacFolder() {
+    	return getDirectoryPath() + "/" + getRelativeInfoPath() + "/MacOS";
+    }
+    
+    public String getWindowsFolder() {
+    	return getDirectoryPath() + "/" + getRelativeInfoPath() + "/Windows";
+    }
+    
+    public String getUnixFolder() {
+    	return getDirectoryPath() + "/" + getRelativeInfoPath() + "/UNIX";
     }
 }
