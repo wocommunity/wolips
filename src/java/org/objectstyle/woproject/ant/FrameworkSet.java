@@ -55,110 +55,25 @@
  */
 package org.objectstyle.woproject.ant;
 
-import java.io.File;
-import java.util.ArrayList;
-
-import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.types.FileSet;
 
 /**
- * Ant task to build WebObjects application. For detailed instructions go to the
- * <a href="../../../../../ant/woapplication.html">manual page</a> .
+ * Customized subclass of FileSet used to locate frameworks.
  *
- *
- * @ant.task category="packaging"
- * 
- * @author Emily Bache
  * @author Andrei Adamchik
  */
-public class WOApplication extends WOTask {
-	String[] frameworkNames =
-		new String[] {
-			"JavaWebObjects",
-			"JavaWOExtensions",
-			"JavaEOAccess",
-			"JavaEOControl",
-			"JavaFoundation",
-			"JavaJDBCAdaptor" };
-
-    protected ArrayList frameworkSets = new ArrayList();
-	protected boolean stdFrameworks = true;
-
+public class FrameworkSet extends FileSet {
 	/** 
-	 * Creates a path to framework JAR file. The following
-	 * assumptions are made (may not always be true): framework 
-	 * is located in "Library/Frameworks" subdirectory, 
-	 * JAR file is named after the framework, in lowercase.
+	 * Creates new FrameworkSet.
 	 */
-	public static String frameworkJar(String name) {
-		StringBuffer buf = new StringBuffer("Library/Frameworks/");
-		buf.append(name);
-		if (!name.endsWith(".framework")) {
-			buf.append(".framework");
-		}
-		buf.append("/Resources/Java/").append(name.toLowerCase()).append(
-			".jar");
-
-		return buf.toString();
-	}
-
-	/** 
-	 * Runs WOApplication task. Main worker method that would validate
-	 * all task settings and create a WOApplication.
-	 */
-	public void execute() throws BuildException {
-		validateAttributes();
-		createDirectories();
-		if (hasClasses()) {
-			jarClasses();
-		}
-		if (hasResources()) {
-			copyResources();
-		}
-		if (hasWs()) {
-			copyWsresources();
-		}
-
-		// create all needed scripts
-		new AppFormat(this).processTemplates();
-	}
-
-	/** 
-	 * Sets a flag indicating that standard frameworks,
-	 * namely JavaWebObjects, JavaWOExtensions, JavaEOAccess, JavaEOControl, 
-	 * JavaFoundation, JavaJDBCAdaptor should be automatically 
-	 * referenced in deployed application.
-	 */
-	public void setStdFrameworks(boolean flag) {
-		stdFrameworks = flag;
-	}
-
-	/**
-	 * Returns location where WOApplication is being built up. 
-	 * For WebObjects applications this is a <code>.woa</code> directory.
-	 */
-	protected File taskDir() {
-		return getProject().resolveFile(
-			destDir + File.separator + name + ".woa");
-	}
-
-	protected File contentsDir() {
-		return new File(taskDir(), "Contents");
-	}
-
-	protected File resourcesDir() {
-		return new File(contentsDir(), "Resources");
-	}
-
-	protected File wsresourcesDir() {
-		return new File(contentsDir(), "WebServerResources");
+	public FrameworkSet() {
+		super();
 	}
 	
-	/**
-     * Create a nested FrameworkSet.
-     */
-    public FrameworkSet createFrameworks() {
-        FrameworkSet frameSet = new FrameworkSet();
-        frameworkSets.add(frameSet);
-        return frameSet;
-    }
+	/** 
+	 * Creates new FrameworkSet.
+	 */
+	public FrameworkSet(FileSet fileSet) {
+		super(fileSet);
+	}
 }

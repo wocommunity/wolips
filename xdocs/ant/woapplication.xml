@@ -121,7 +121,10 @@
             is deployed as a servlet. When building a FileSet, path should match up to the 
             "*.framework" directory (no need to match individual JAR files).</p>
             
-			<h4>Nested <code>frameworks</code> Parameters:</h4>
+			<h4>Nested <code>frameworks</code> Parameters: </h4>
+			<p><i>Note: all standard FileSet 
+			parameters are supported as well, though <code>dir</code>
+			wouldn't make sense and will be ignored.</i></p>
             <table border="1" cellpadding="2" cellspacing="0">
 				<tr>
 					<th valign="top"><b>Attribute</b></th>
