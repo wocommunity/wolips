@@ -120,8 +120,6 @@ public class AppFormat extends ProjectFormat {
 		String name = getApplicatonTask().getName().toLowerCase() + ".jar";
 		return "APPROOT"
 			+ File.separator
-			+ "Contents"
-			+ File.separator
 			+ "Resources"
 			+ File.separator
 			+ "Java"

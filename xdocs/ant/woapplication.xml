@@ -81,7 +81,7 @@
 					<td valign="top">If set to <i>true</i>, a set of standard frameworks will be 
 					associated with the deployed application (default is <i>true</i>). "Standard"
 					frameworks are: JavaWebObjects, JavaWOExtensions, JavaEOAccess, JavaEOControl,
-					JavaFoundation, JavaJDBCAdaptor.</td>
+					JavaFoundation, JavaJDBCAdaptor, JavaXML.</td>
 					<td valign="top" align="center">No</td>
 				</tr>
 			</table>
@@ -91,8 +91,8 @@
 			<h4>classes</h4>
 			<p>The nested <code>classes</code> element specifies a <a
 			href="http://jakarta.apache.org/ant/manual/CoreTypes/fileset.html">FileSet</a>.
-			All files included in this fileset will
-			end up in the <code>Contents/Resources/Java/*.jar</code> file of the application.</p>
+			All files included in this fileset will end up in the 
+			<code>Contents/Resources/Java/*.jar</code> file of the application.</p>
 
 
 			<h4>resources</h4>
@@ -147,7 +147,7 @@
 &amp;lt;taskdef name="woapplication" classname="org.objectstyle.woproject.ant.WOApplication"&amp;gt;
      &amp;lt;classpath refid="classpath"/&amp;gt;
 &amp;lt;/taskdef&amp;gt;
-&amp;lt;woapplication name="MyApp" destDir="${dist}/Applications"&amp;gt;
+&amp;lt;woapplication name="MyApp" destDir="${dist}/WebObjects/Applications"&amp;gt;
    &amp;lt;classes dir="${build}/common"&amp;gt;
       &amp;lt;exclude name="*.properties"/&amp;gt;
    &amp;lt;/classes&amp;gt;
@@ -169,7 +169,7 @@
 			and a set of custom frameworks located under HOMEROOT (defined from the 
 			value of <code>wo.homeroot</code> property):</p>
 <source>
-&amp;lt;woapplication name="MyApp" stdFrameworks="false" destDir="${dist}/Applications"&amp;gt;
+&amp;lt;woapplication name="MyApp" stdFrameworks="false" destDir="${dist}/WebObjects/Applications"&amp;gt;
    ...
    &amp;lt;frameworks root="home"&amp;gt;
       &amp;lt;include name="**/*.framework"/&amp;gt;

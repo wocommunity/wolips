@@ -80,7 +80,8 @@ public class WOApplication extends WOTask {
 			"JavaEOAccess",
 			"JavaEOControl",
 			"JavaFoundation",
-			"JavaJDBCAdaptor" };
+			"JavaJDBCAdaptor",
+			"JavaXML" };
 
 	protected ArrayList frameworkSets = new ArrayList();
 	protected boolean stdFrameworks = true;
