@@ -229,6 +229,12 @@
             class="org.objectstyle.wolips.ui.preferences.LaunchPreferencesPage"
             id="org.objectstyle.wolips.preferences.LaunchPreferencesPage">
       </page>
+      <page
+            name="%WOLips.preferences.projectbuilder.viewName"
+            category="org.objectstyle.wolips.preferences.PreferencesPage"
+            class="org.objectstyle.wolips.ui.preferences.ProjectBuilderPreferencesPage"
+            id="org.objectstyle.wolips.preferences.ProjectBuilderPreferencesPage">
+      </page>
    </extension>
 <!-- =================================================================================== -->
 <!-- Extension: Decorators                                                               -->

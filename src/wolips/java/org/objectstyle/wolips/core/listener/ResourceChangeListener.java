@@ -58,6 +58,7 @@ import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
+
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -74,6 +75,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.jdt.core.JavaCore;
 import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
+import org.objectstyle.wolips.core.preferences.Preferences;
 import org.objectstyle.wolips.core.project.PBProjectUpdater;
 import org.objectstyle.wolips.core.project.WOLipsJavaProject;
 import org.objectstyle.wolips.core.project.WOLipsProject;
@@ -97,6 +99,9 @@ public class ResourceChangeListener
 	 * @see org.eclipse.core.resources.IResourceChangeListener#resourceChanged(IResourceChangeEvent)
 	 */
 	public final void resourceChanged(IResourceChangeEvent event) {
+		if (!Preferences
+			.getBoolean(IWOLipsPluginConstants.PREF_PBWO_PROJECT_UPDATE))
+			return;
 		//System.out.println("******* resourceChanged begin ");
 		ProjectFileResourceValidator resourceValidator =
 			new ProjectFileResourceValidator();

@@ -158,6 +158,12 @@ public class Preferences {
 			store.setDefault(
 				IWOLipsPluginConstants.PREF_LOG_LEVEL,
 				PreferencesMessages.getString("Preferences.LogLevel.Default"));
+		if (Preferences.SET_DEFAULTS_STRING == null
+			|| Preferences.SET_DEFAULTS_STRING.equals(
+				IWOLipsPluginConstants.PREF_PBWO_PROJECT_UPDATE))
+			store.setDefault(
+				IWOLipsPluginConstants.PREF_PBWO_PROJECT_UPDATE,
+				PreferencesMessages.getString(Preferences.trueString));
 		Preferences.SET_DEFAULTS_STRING = null;
 	}
 

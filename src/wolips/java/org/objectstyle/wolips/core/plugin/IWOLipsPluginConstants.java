@@ -83,6 +83,8 @@ public interface IWOLipsPluginConstants {
 		"org.objectstyle.wolips.Preference.LogLevel";
 	public static final String PREF_WOLIPS_VERSION_EARLY_STARTUP =
 		"org.objectstyle.wolips.Preference.WOLipsVersionEarlyStartup";
+	public static final String PREF_PBWO_PROJECT_UPDATE =
+		"org.objectstyle.wolips.Preference.Update_PBWO_Project";
 	// flle extensions and resource identifier
 	public static final String EXT_PROJECT = "project";
 	public static final String EXT_SUBPROJECT = "subproj";
@@ -174,5 +176,6 @@ public interface IWOLipsPluginConstants {
 	public static final String ID_AntNavigator = "org.eclipse.ui.externaltools.AntView"; //$NON-NLS-1$
 	public static final String build_file_wounit = "build-wounit.xml";
 	//local framework search for PB.project
-	public static final String DefaultLocalFrameworkSearch = "$(NEXT_ROOT)$(LOCAL_LIBRARY_DIR)/Frameworks";
+	public static final String DefaultLocalFrameworkSearch =
+		"$(NEXT_ROOT)$(LOCAL_LIBRARY_DIR)/Frameworks";
 }

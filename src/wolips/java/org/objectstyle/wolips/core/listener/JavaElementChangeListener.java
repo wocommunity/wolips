@@ -57,6 +57,7 @@ package org.objectstyle.wolips.core.listener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
@@ -68,6 +69,8 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.objectstyle.wolips.core.ant.UpdateFrameworkIncludeFiles;
 import org.objectstyle.wolips.core.ant.UpdateOtherClasspathIncludeFiles;
+import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
+import org.objectstyle.wolips.core.preferences.Preferences;
 import org.objectstyle.wolips.core.project.PBProjectUpdater;
 import org.objectstyle.wolips.core.project.WOLipsProject;
 import org.objectstyle.wolips.logging.WOLipsLog;
@@ -89,6 +92,9 @@ public class JavaElementChangeListener implements IElementChangedListener {
 	 * @see org.eclipse.jdt.core.IElementChangedListener#elementChanged(ElementChangedEvent)
 	 */
 	public final void elementChanged(ElementChangedEvent event) {
+		if (!Preferences
+			.getBoolean(IWOLipsPluginConstants.PREF_PBWO_PROJECT_UPDATE))
+			return;
 		HashMap addedFrameworksProjectDict = new HashMap();
 		HashMap removedFrameworksProjectDict = new HashMap();
 		if (event.getDelta().getElement().getElementType()
