@@ -91,8 +91,8 @@ public class PBAction extends ActionOnIProject {
 			PBProjectUpdater projectUpdater = null;
 			try {
 				if (action.getId().equals(PBAction.UpdatePBProjectID)) {
-					projectUpdater = PBProjectUpdater.instance(project());
-					projectUpdater.forceRebuild();
+					//projectUpdater = PBProjectUpdater.instance(project());
+					//projectUpdater.forceRebuild();
 				}
 			} catch (Exception ex) {
 				WOLipsLog.log(ex);

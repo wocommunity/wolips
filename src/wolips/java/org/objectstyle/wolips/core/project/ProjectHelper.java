@@ -60,12 +60,12 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.eclipse.core.resources.ICommand;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
-import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -74,9 +74,10 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
-import org.objectstyle.wolips.core.plugin.logging.WOLipsLog;
+import org.eclipse.jdt.internal.ui.util.CoreUtility;
 import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
 import org.objectstyle.wolips.core.plugin.WOLipsPlugin;
+import org.objectstyle.wolips.core.plugin.logging.WOLipsLog;
 import org.objectstyle.woproject.env.Environment;
 /**
  * @author uli
@@ -85,9 +86,15 @@ import org.objectstyle.woproject.env.Environment;
  * Window>Preferences>Java>Templates.
  * To enable and disable the creation of type comments go to
  * Window>Preferences>Java>Code Generation.
- * @deprecated use WOLipsProject ord WOLipsJavaProject instead.
+ * @deprecated
  */
 public class ProjectHelper implements IWOLipsPluginConstants {
+	public static String WOGENERATOR_ID =
+		"org.objectstyle.wolips.wogenerator";
+		public static String WOFRAMEWORK_BUILDER_ID =
+		"org.objectstyle.wolips.woframeworkbuilder";
+	public static String WOAPPLICATION_BUILDER_ID =
+		"org.objectstyle.wolips.woapplicationbuilder";
 	public static String JAVA_BUILDER_ID = "org.eclipse.jdt.core.javabuilder";
 	public static final int NotFound = -1;
 	/**
@@ -176,10 +183,97 @@ public class ProjectHelper implements IWOLipsPluginConstants {
 			command = null;
 		}
 	}
+	/**
+	 * Method addWOFrameworkStuffToJavaProject.
+	 * @param aProject
+	 * @param aMonitor
+	 * @throws CoreException
+	 */
+	public static void addWOFrameworkStuffToJavaProject(
+		IProject aProject,
+		IProgressMonitor aMonitor)
+		throws CoreException {
+		ProjectHelper.addCommonStuff(aProject, aMonitor);
+	}
+	/**
+	 * Method addWOApplicationStuffToJavaProject.
+	 * @param aProject
+	 * @param aMonitor
+	 * @throws CoreException
+	 */
+	public static void addWOApplicationStuffToJavaProject(
+		IProject aProject,
+		IProgressMonitor aMonitor)
+		throws CoreException {
+		ProjectHelper.addCommonStuff(aProject, aMonitor);
+	}
+	/**
+	 * Method addCommonStuff.
+	 * @param aProject
+	 * @param aMonitor
+	 * @throws CoreException
+	 */
+	private static void addCommonStuff(
+		IProject aProject,
+		IProgressMonitor aMonitor)
+		throws CoreException {
+		ProjectHelper.createFolder("Resources", aProject, aMonitor);
+		ProjectHelper.createFolder("WSResources", aProject, aMonitor);
+	}
+	/**
+	 * Method createFolder.
+	 * @param aFolderName
+	 * @param aProject
+	 * @param aMonitor
+	 * @throws CoreException
+	 */
+	private static void createFolder(
+		String aFolderName,
+		IProject aProject,
+		IProgressMonitor aMonitor)
+		throws CoreException {
+		IFolder folder = null;
+		IPath path = null;
+		try {
+			folder = aProject.getFolder(aFolderName);
+			path = folder.getFullPath();
+			if (!folder.exists()) {
+				CoreUtility.createFolder(folder, true, true, aMonitor);
+			}
+		} finally {
+			folder = null;
+			path = null;
+		}
+	}
+	/**
+	 * Method isWOGeneratorInstalled.
+	 * @param aProject
+	 * @return boolean
+	 */
 	public static boolean isWOGeneratorInstalled(IProject aProject) {
 		return ProjectHelper.isBuilderInstalled(
 			aProject,
 			ProjectHelper.WOGENERATOR_ID);
+	}
+	/**
+	 * Method isWOAppBuilderInstalled.
+	 * @param aProject
+	 * @return boolean
+	 */
+	public static boolean isWOAppBuilderInstalled(IProject aProject) {
+		return ProjectHelper.isBuilderInstalled(
+			aProject,
+			ProjectHelper.WOAPPLICATION_BUILDER_ID);
+	}
+	/**
+	 * Method isWOFwBuilderInstalled.
+	 * @param aProject
+	 * @return boolean
+	 */
+	public static boolean isWOFwBuilderInstalled(IProject aProject) {
+		return ProjectHelper.isBuilderInstalled(
+			aProject,
+			ProjectHelper.WOFRAMEWORK_BUILDER_ID);
 	}
 	/**
 	 * Method isBuilderInstalled.
@@ -459,30 +553,6 @@ public class ProjectHelper implements IWOLipsPluginConstants {
 		}
 	}
 	/**
-	 * Method isWOProjectResource.
-	 * @param aResource
-	 * @return boolean
-	 */
-	public static boolean isWOProjectResource(IResource aResource) {
-		if (aResource == null)
-			return false;
-		try {
-			switch (aResource.getType()) {
-				case IResource.PROJECT :
-					return new WOLipsProject((IProject) aResource)
-						.getWOLipsProjectNatures()
-						.hasWOLipsNature();
-				default :
-					return aResource.getProject() != null
-						&& new WOLipsProject(aResource.getProject())
-							.getWOLipsProjectNatures()
-							.hasWOLipsNature();
-			}
-		} catch (CoreException e) {
-			return false;
-		}
-	}
-	/**
 	 * Method addFrameworkListToClasspathEntries.
 	 * @param frameworkList
 	 * @param projectToUpdate
@@ -495,13 +565,7 @@ public class ProjectHelper implements IWOLipsPluginConstants {
 		throws JavaModelException {
 		IClasspathEntry[] oldClasspathEntries =
 			projectToUpdate.getResolvedClasspath(true);
-		IPath nextRootAsPath =
-			new Path(
-				WOLipsPlugin
-					.getDefault()
-					.getWOEnvironment()
-					.getWOVariables()
-					.systemRoot());
+		IPath nextRootAsPath = new Path(WOLipsPlugin.getDefault().getWOEnvironment().getWOVariables().systemRoot());
 		ArrayList classpathEntries = new ArrayList(frameworkList.size());
 		IPath frameworkPath;
 		String jarName;
@@ -519,23 +583,11 @@ public class ProjectHelper implements IWOLipsPluginConstants {
 				frameworkName.substring(0, frameworkExtIndex - 1).toLowerCase()
 					+ ".jar";
 			// check for root
-			frameworkPath =
-				new Path(
-					WOLipsPlugin
-						.getDefault()
-						.getWOEnvironment()
-						.getWOVariables()
-						.libraryDir());
+			frameworkPath = new Path(WOLipsPlugin.getDefault().getWOEnvironment().getWOVariables().libraryDir());
 			frameworkPath = frameworkPath.append("Frameworks");
 			frameworkPath = frameworkPath.append(frameworkName);
 			if (!frameworkPath.toFile().isDirectory()) {
-				frameworkPath =
-					new Path(
-						WOLipsPlugin
-							.getDefault()
-							.getWOEnvironment()
-							.getWOVariables()
-							.localLibraryDir());
+				frameworkPath = new Path(WOLipsPlugin.getDefault().getWOEnvironment().getWOVariables().localLibraryDir());
 				frameworkPath = frameworkPath.append("Frameworks");
 				frameworkPath = frameworkPath.append(frameworkName);
 			}
@@ -564,59 +616,22 @@ public class ProjectHelper implements IWOLipsPluginConstants {
 			}
 			if (j != oldClasspathEntries.length) { // entry already set
 				continue;
-			}
-			boolean beginsWithNextSystemRoot =
-				pathBeginsWithNextSystemRoot(frameworkPath);
-			boolean beginsWithNextLocalRoot =
-				pathBeginsWithNextLocalRoot(frameworkPath);
-			if (beginsWithNextSystemRoot && !beginsWithNextLocalRoot) {
-				// replace beginning of class path with next system root
+			} // determine if new class path begins with next root
+			if ((frameworkPath.segmentCount() > nextRootAsPath.segmentCount())
+				&& frameworkPath
+					.removeLastSegments(
+						frameworkPath.segmentCount()
+							- nextRootAsPath.segmentCount())
+					.equals(nextRootAsPath)) {
+				// replace beginning of class path with next root
 				frameworkPath =
-					new Path(Environment.NEXT_SYSTEM_ROOT).append(
+					new Path(Environment.NEXT_ROOT).append(
 						frameworkPath.removeFirstSegments(
-							new Path(
-								WOLipsPlugin
-									.getDefault()
-									.getWOEnvironment()
-									.getWOVariables()
-									.systemRoot())
-								.segmentCount()));
+							nextRootAsPath.segmentCount()));
 				// set path as variable entry			
 				classpathEntries.add(
 					JavaCore.newVariableEntry(frameworkPath, null, null));
-			} else if (beginsWithNextLocalRoot) {
-				// replace beginning of class path with next local root
-				frameworkPath =
-					new Path(Environment.NEXT_LOCAL_ROOT).append(
-						frameworkPath.removeFirstSegments(
-							new Path(
-								WOLipsPlugin
-									.getDefault()
-									.getWOEnvironment()
-									.getWOVariables()
-									.localRoot())
-								.segmentCount()));
-				// set path as variable entry			
-				classpathEntries.add(
-					JavaCore.newVariableEntry(frameworkPath, null, null));
-			} /*
-												// determine if new class path begins with next root
-												if ((frameworkPath.segmentCount() > nextRootAsPath.segmentCount())
-													&& frameworkPath
-														.removeLastSegments(
-															frameworkPath.segmentCount()
-																- nextRootAsPath.segmentCount())
-														.equals(nextRootAsPath)) {
-													// replace beginning of class path with next root
-													frameworkPath =
-														new Path(Environment.NEXT_ROOT).append(
-															frameworkPath.removeFirstSegments(
-																nextRootAsPath.segmentCount()));
-													// set path as variable entry			
-													classpathEntries.add(
-														JavaCore.newVariableEntry(frameworkPath, null, null));
-												} */
-			else {
+			} else {
 				classpathEntries.add(
 					JavaCore.newLibraryEntry(frameworkPath, null, null));
 			}
@@ -725,39 +740,5 @@ public class ProjectHelper implements IWOLipsPluginConstants {
 			!= null)
 			return findFolder;
 		return null;
-	}
-	public static boolean pathBeginsWithNextSystemRoot(IPath aPath) {
-		IPath nextSystemRootPath =
-			new Path(
-				WOLipsPlugin
-					.getDefault()
-					.getWOEnvironment()
-					.getWOVariables()
-					.systemRoot());
-		if ((aPath.segmentCount() > nextSystemRootPath.segmentCount())
-			&& aPath
-				.removeLastSegments(
-					aPath.segmentCount() - nextSystemRootPath.segmentCount())
-				.equals(nextSystemRootPath)) {
-			return true;
-		}
-		return false;
-	}
-	public static boolean pathBeginsWithNextLocalRoot(IPath aPath) {
-		IPath nextLocalRootPath =
-			new Path(
-				WOLipsPlugin
-					.getDefault()
-					.getWOEnvironment()
-					.getWOVariables()
-					.localRoot());
-		if ((aPath.segmentCount() > nextLocalRootPath.segmentCount())
-			&& aPath
-				.removeLastSegments(
-					aPath.segmentCount() - nextLocalRootPath.segmentCount())
-				.equals(nextLocalRootPath)) {
-			return true;
-		}
-		return false;
 	}
 }

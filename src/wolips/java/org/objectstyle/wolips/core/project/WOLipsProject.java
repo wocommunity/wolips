@@ -489,9 +489,7 @@ public class WOLipsProject implements IWOLipsPluginConstants {
 			 * @return int
 			 * @throws CoreException
 			 */
-		public int positionForBuilder(
-			String aBuilder)
-			throws CoreException {
+		public int positionForBuilder(String aBuilder) throws CoreException {
 			IProjectDescription desc = null;
 			ICommand[] coms = null;
 			try {
@@ -576,7 +574,8 @@ public class WOLipsProject implements IWOLipsPluginConstants {
 		 */
 		protected IFolder getParentFolderWithPBProject(IFolder aFolder) {
 			IFolder findFolder = aFolder;
-			while ((findFolder.findMember(IWOLipsPluginConstants.PROJECT_FILE_NAME)
+			while ((findFolder
+				.findMember(IWOLipsPluginConstants.PROJECT_FILE_NAME)
 				== null)
 				&& (findFolder.getParent() != null)
 				&& (findFolder.getParent().getType() != IProject.PROJECT)) {
@@ -589,6 +588,6 @@ public class WOLipsProject implements IWOLipsPluginConstants {
 				return findFolder;
 			return null;
 		}
-
 	}
+
 }

@@ -57,6 +57,7 @@ package org.objectstyle.wolips.core.listener;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
+
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -71,10 +72,11 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.QualifiedName;
-import org.objectstyle.wolips.core.plugin.logging.WOLipsLog;
 import org.objectstyle.wolips.core.plugin.IWOLipsPluginConstants;
+import org.objectstyle.wolips.core.plugin.logging.WOLipsLog;
 import org.objectstyle.wolips.core.project.PBProjectUpdater;
 import org.objectstyle.wolips.core.project.ProjectHelper;
+import org.objectstyle.wolips.core.project.WOLipsProject;
 /**
  * Tracking changes in resources and synchronizes webobjects project file
  */
@@ -137,6 +139,7 @@ public class ResourceChangeListener
 			}
 		}
 	}
+
 	private final class ProjectFileResourceValidator
 		implements IResourceDeltaVisitor {
 		//private QualifiedName resourceQualifier;
@@ -191,11 +194,8 @@ public class ResourceChangeListener
 						// project deleted no further investigation needed
 						return false;
 					}
-					if (((IProject) resource).hasNature(ANT_FRAMEWORK_NATURE_ID)
-						|| ((IProject) resource).hasNature(INCREMENTAL_FRAMEWORK_NATURE_ID)
-						|| ((IProject) resource).hasNature(ANT_APPLICATION_NATURE_ID)
-						|| ((IProject) resource).hasNature(
-							INCREMENTAL_APPLICATION_NATURE_ID)) {
+					WOLipsProject wolipsProject = new WOLipsProject((IProject) resource);
+					if (wolipsProject.getWOLipsProjectNatures().hasWOLipsNature()) {
 						// resource change concerns to webobjects project
 						// -> visit childs
 						return true;
@@ -218,14 +218,6 @@ public class ResourceChangeListener
 									new Path(PROJECT_FILE_NAME)));
 						} else if (
 							EXT_EOMODEL.equals(resource.getFileExtension())) {
-							updateProjectFile(
-								kindOfChange,
-								resource,
-								RESOURCES_ID,
-								resource.getParent().getFile(
-									new Path(PROJECT_FILE_NAME)));
-						} else if (
-							EXT_D2WMODEL.equals(resource.getFileExtension())) {
 							updateProjectFile(
 								kindOfChange,
 								resource,
