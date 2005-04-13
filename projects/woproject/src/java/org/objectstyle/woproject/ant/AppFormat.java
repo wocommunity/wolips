@@ -313,10 +313,15 @@ public class AppFormat extends ProjectFormat {
 			for (int i = 0; i < size; i++) {
 				// log(": Framework JAR " + (File) someFiles[i],
 				// Project.MSG_VERBOSE);
-				buf.append(
-						this.getApplicatonTask().getWOEnvironment()
-								.getWOVariables().encodePathForFile(
-										(File) someFiles[i])).append("\r\n");
+			    String fileName = this.getApplicatonTask().getWOEnvironment()
+									.getWOVariables().encodePathForFile( (File) someFiles[i] );
+			    
+			    // If it's not a jar file and it doesn't have a trailing '/'. add one in.
+			    boolean isJar = fileName.endsWith(".jar") || fileName.endsWith(".zip");
+			    if ( isJar == false && fileName.endsWith("/") == false ) {
+			        fileName = fileName + "/";
+			    }
+				buf.append(fileName).append("\r\n");
 			}
 		}
 		return buf.toString();

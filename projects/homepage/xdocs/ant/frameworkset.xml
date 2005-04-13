@@ -47,6 +47,14 @@
 					</td>
 					<td valign="top" align="center">No</td>
 				</tr>
+				<tr>
+					<td valign="top">embed</td>
+					<td valign="top">If set to true, this framework will be copied into the application .woa
+					directory under Contents/Frameworks.  This supports the notion of single directory deployment.
+					Used only when inside a <code>woapplication</code> task.
+					</td>
+					<td valign="top" align="center">No</td>
+				</tr>
 			</table>
 			<p><i>Note: all standard FileSet parameters are supported as well.</i></p>
 	<p> </p>

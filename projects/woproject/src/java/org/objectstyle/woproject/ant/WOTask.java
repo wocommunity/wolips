@@ -510,7 +510,7 @@ public abstract class WOTask extends Task {
 			String[] libs = scanner.getIncludedFiles();
 			for (int i = 0; i < libs.length; i++) {
 				File libFile = new File(libs[i]);
-				libNames.add(libFile.getName());
+				libNames.add(libFile.getPath());
 			}
 		}
 		return libNames.iterator();

@@ -16,6 +16,7 @@ public class OtherClasspathSet extends FileSet {
 
 	protected File aDirectory;
 	protected boolean packagesOnly = false;
+	protected boolean embed = false;
 
 	/**
 	 * Constructor for OtherClasspathSet.
@@ -63,6 +64,11 @@ public class OtherClasspathSet extends FileSet {
 						Project.MSG_VERBOSE);
 					continue;
 				}
+				
+				if ( getEmbed() ) {
+				    log("embed and isPackagesOnly are mutually exclusive");
+				    continue;
+				}
 
 				int jsize = paths.length;
 				for (int k = 0; k < jsize; k++) {
@@ -71,7 +77,11 @@ public class OtherClasspathSet extends FileSet {
 			} else {
 				File directory = new File(getDir(aProject), directories[i]);
 				if (directory.exists()) {
-					pathSet.add(directory);
+				    if ( getEmbed() ) {
+						pathSet.add(new File("APPROOT", directories[i]));
+				    } else {
+				        pathSet.add(directory);
+				    }
 				}
 			}
 		}
@@ -115,6 +125,18 @@ public class OtherClasspathSet extends FileSet {
 	 */
 	public void setPackagesOnly(boolean packagesOnly) {
 		this.packagesOnly = packagesOnly;
+	}
+	
+	/**
+	 * Sets the embed.
+	 * @param embed 
+	 */
+	public void setEmbed(boolean embed) {
+		this.embed = embed;
+	}
+	
+	public boolean getEmbed() {
+		return embed;
 	}
 
 }

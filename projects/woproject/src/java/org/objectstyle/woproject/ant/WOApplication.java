@@ -158,6 +158,9 @@ public class WOApplication extends WOTask {
 		if (hasEmbeddedFrameworks()) {
 			copyEmbeddedFrameworks();
 		}
+		if (hasEmbeddedOtherClasspaths()) {
+		    copyEmbeddedOtherClasspaths();
+		}
 
 		// create all needed scripts
 		AppFormat appFormat = new AppFormat(this);
@@ -262,6 +265,58 @@ public class WOApplication extends WOTask {
 		if (hasSet)
 			cp.execute();
 	}
+
+    /**
+     * Method copyEmbeddedFrameworks.
+     *
+     * @throws BuildException
+     */
+    protected void copyEmbeddedOtherClasspaths() throws BuildException {
+        Copy cp = new Copy();
+        cp.setOwningTarget(getOwningTarget());
+        cp.setProject(getProject());
+        cp.setTaskName(getTaskName());
+        cp.setLocation(getLocation());
+
+        cp.setTodir(contentsDir());
+
+        List theOtherClasspathSets = getOtherClasspath();
+        int size = theOtherClasspathSets.size();
+        boolean hasSet = false;
+        for (int i = 0; i < size; i++) {
+            OtherClasspathSet cs = (OtherClasspathSet) theOtherClasspathSets.get(i);
+
+            if (cs.getEmbed() == false) {
+                continue;
+            }
+
+            File root = cs.getDir(getProject());
+            DirectoryScanner ds = cs.getDirectoryScanner(getProject());
+            String[] dirs = ds.getIncludedDirectories();
+
+            for (int j = 0; j < dirs.length; j++) {
+                String includeName = dirs[j];
+
+                FileSet newCs = new FileSet();
+                PatternSet.NameEntry include;
+
+                newCs.setDir(root);
+                include = newCs.createInclude();
+                
+                // Since we're embedding, we expect to copy the entire subtree 
+                // for this included entry.  Force it if the task user didn't.
+                if ( includeName.endsWith("/") == false ) {
+                    includeName = includeName + "/";
+                }
+                include.setName(includeName);
+
+                cp.addFileset(newCs);
+                hasSet = true;
+            }
+        }
+        if (hasSet)
+            cp.execute();
+    }
 
 	/**
 	 * Returns a list of standard frameworks as a FrameworkSet.
@@ -462,6 +517,27 @@ public class WOApplication extends WOTask {
 		}
 		return frameworkSets;
 	}
+
+    /**
+     * Return true if any of the otherclasspath elements have the 'embed'
+     * attribute set to true.
+     *
+     * @return true if an otherclasspath element is embedded
+     */
+    protected boolean hasEmbeddedOtherClasspaths() {
+        List theClasspathSets = getOtherClasspath();
+        int size = theClasspathSets.size();
+
+        for (int i = 0; i < size; i++) {
+            OtherClasspathSet cs = (OtherClasspathSet) theClasspathSets.get(i);
+
+            if (cs.getEmbed()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
 	/**
 	 * Create a nested OtherClasspath.
