@@ -121,7 +121,7 @@ public class WOComponentRenameParticipant extends RenameParticipant {
                         // compositeChange.add(new RenameResourceChange(oldApiFile, newName + ".api"));
                         CompositeChange renameApiFileChange = new CompositeChange("Rename " + oldApiFile.getName() + ".");
                         renameApiFileChange.add(new CopyResourceChange(oldApiFile, oldApiFile.getParent(), new FixedNewNameQuery(newName + ".api")));
-                        renameApiFileChange.add(new DeleteFileChange(oldApiFile));
+                        renameApiFileChange.add(new DeleteFileChange(oldApiFile, true));
                         compositeChange.add(renameApiFileChange);
                     }
                     if (oldWoFolder != null) {
@@ -137,11 +137,11 @@ public class WOComponentRenameParticipant extends RenameParticipant {
                                 //compositeChange.add(new RenameResourceChange(woFile, newName + renameExtensions[i]));
                                 CompositeChange renameWoFileChange = new CompositeChange("Rename " + woFile.getName() + ".");
                                 renameWoFileChange.add(new CopyResourceChange(woFile, newWoFolder, new FixedNewNameQuery(newName + renameExtensions[i])));
-                                renameWoFileChange.add(new DeleteFileChange(woFile));
+                                renameWoFileChange.add(new DeleteFileChange(woFile, true));
                                 renameWoFolderChange.add(renameWoFileChange);
                             }
                         }
-                        renameWoFolderChange.add(new DeleteFolderChange(oldWoFolder));
+                        renameWoFolderChange.add(new DeleteFolderChange(oldWoFolder, true));
                         compositeChange.add(renameWoFolderChange);
                     }
                     change = compositeChange;
