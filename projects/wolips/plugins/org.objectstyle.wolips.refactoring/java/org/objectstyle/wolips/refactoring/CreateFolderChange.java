@@ -82,7 +82,7 @@ public class CreateFolderChange extends Change {
 
   public Change perform(IProgressMonitor _pm) throws CoreException {
     myFolder.create(false, true, _pm);
-    DeleteFolderChange undoChange = new DeleteFolderChange(myFolder);
+    DeleteFolderChange undoChange = new DeleteFolderChange(myFolder, true);
     return undoChange;
   }
 
