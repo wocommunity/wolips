@@ -158,6 +158,7 @@ public class PBProject {
 					.getResourceAsStream(getDefaultTemplate());
 			pbProject = (Map) PropertyListSerialization
 					.propertyListFromStream(in);
+			in.close();
 			in = null;
 		} else {
 			pbProject = (Map) PropertyListSerialization
