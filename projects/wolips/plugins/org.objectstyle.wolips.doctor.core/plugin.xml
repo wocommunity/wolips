@@ -8,7 +8,7 @@
    class="org.objectstyle.wolips.doctor.core.DoctorCorePlugin">
 
    <runtime>
-      <library name="wolips-doctor-core.jar">
+      <library name="lib/wolips-doctor-core.jar">
          <export name="*"/>
       </library>
    </runtime>

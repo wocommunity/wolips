@@ -8,7 +8,7 @@
    class="org.objectstyle.wolips.doctor.ui.DoctorUiPlugin">
 
    <runtime>
-      <library name="wolips-doctor-ui.jar">
+      <library name="lib/wolips-doctor-ui.jar">
          <export name="*"/>
       </library>
    </runtime>
