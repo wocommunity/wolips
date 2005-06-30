@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin
+   id="org.objectstyle.wolips.wodclipse"
+   name="WOLips WOD Editor Plug-in"
+   version="1.0.6"
+   provider-name="objectstyle.org"
+   class="org.objectstyle.wolips.wodclipse.WodclipsePlugin">
+   <runtime>
+      <library name="lib/wolips-wodclipse.jar">
+         <export name="*"/>
+      </library>
+   </runtime>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            name="WOD Editor"
+            extensions="wod"
+            icon="icons/sample.gif"
+            contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
+            class="org.objectstyle.wolips.wodclipse.editors.WODEditor"
+            id="org.objectstyle.wolips.wodclipse.editors.WODEditor">
+      </editor>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="org.objectstyle.wolips.wodclipse.preferences.WODEditorPreferencePage"
+            category="org.objectstyle.wolips.preferences.PreferencesPage"
+            id="org.objectstyle.wolips.wodclipse.preferences.WODEditorPreferencePage"
+            name="WOD Editor Preferences"/>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer class="org.objectstyle.wolips.wodclipse.preferences.PreferenceInitializer"/>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.contentTypes">
+      <content-type
+            base-type="org.eclipse.core.runtime.text"
+            file-extensions="wod"
+            id="org.objectstyle.wolips.wodclipse.wod"
+            name="org.objectstyle.wolips.wodclipse.wod"
+            priority="normal"/>
+   </extension>
+
+</plugin>
