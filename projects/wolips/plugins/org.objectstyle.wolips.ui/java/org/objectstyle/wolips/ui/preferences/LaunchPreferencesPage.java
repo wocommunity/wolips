@@ -81,6 +81,7 @@ import org.objectstyle.wolips.preferences.ILaunchInfo;
 import org.objectstyle.wolips.preferences.Preferences;
 import org.objectstyle.wolips.preferences.PreferencesMessages;
 import org.objectstyle.wolips.commons.util.ArrayUtilities;
+import org.objectstyle.wolips.commons.util.StringUtilities;
 
 /**
  * @author uli
@@ -153,6 +154,10 @@ public class LaunchPreferencesPage
 		data.horizontalAlignment = GridData.FILL;
 		data.heightHint =
 			convertVerticalDLUsToPixels(IDialogConstants.BUTTON_HEIGHT);
+        data.heightHint =
+            Math.max(
+                data.heightHint,
+                this.addButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).y);
 		int widthHint =
 			convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
 		data.widthHint =
@@ -172,6 +177,10 @@ public class LaunchPreferencesPage
 		data.horizontalAlignment = GridData.FILL;
 		data.heightHint =
 			convertVerticalDLUsToPixels(IDialogConstants.BUTTON_HEIGHT);
+        data.heightHint =
+          Math.max(
+              data.heightHint,
+              this.removeButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).y);
 		widthHint =
 			convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
 		data.widthHint =
@@ -191,6 +200,10 @@ public class LaunchPreferencesPage
 		data.horizontalAlignment = GridData.FILL;
 		data.heightHint =
 			convertVerticalDLUsToPixels(IDialogConstants.BUTTON_HEIGHT);
+        data.heightHint =
+          Math.max(
+              data.heightHint,
+              this.changeButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).y);
 		widthHint =
 			convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
 		data.widthHint =
@@ -248,8 +261,7 @@ public class LaunchPreferencesPage
 		for (int i = 0; i < launchInfoArray.length; i++) {
 			ILaunchInfo launchInfo = launchInfoArray[i];
 			TableItem item = new TableItem(this.includeTable, SWT.NONE);
-			item.setText(
-				launchInfo.getParameter() + " " + launchInfo.getArgument());
+			item.setText(StringUtilities.toCommandlineParameterFormat(launchInfo.getParameter(), launchInfo.getArgument()));
 			this.allParameter.add(launchInfo.getParameter());
 			this.allArguments.add(launchInfo.getArgument());
 			item.setChecked(launchInfo.isEnabled());
@@ -278,7 +290,7 @@ public class LaunchPreferencesPage
 			}
 		}
 		TableItem item = new TableItem(this.includeTable, SWT.NONE);
-		item.setText(parameter + " " + argument);
+		item.setText(StringUtilities.toCommandlineParameterFormat(parameter, argument));
 		this.allParameter.add(parameter);
 		this.allArguments.add(argument);
 		item.setChecked(true);
@@ -316,7 +328,7 @@ public class LaunchPreferencesPage
 		String argument = argumentDialog.getValue();
 		String parameter = (String) this.allParameter.elementAt(index);
 		TableItem item = this.includeTable.getItem(index);
-		item.setText(parameter + " " + argument);
+		item.setText(StringUtilities.toCommandlineParameterFormat(parameter, argument));
 		this.allArguments.setElementAt(argument, index);
 	}
 

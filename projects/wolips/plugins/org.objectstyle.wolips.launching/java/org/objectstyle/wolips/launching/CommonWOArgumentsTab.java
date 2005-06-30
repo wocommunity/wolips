@@ -58,6 +58,7 @@ package org.objectstyle.wolips.launching;
 
 import java.util.StringTokenizer;
 import java.util.Vector;
+
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -86,6 +87,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.objectstyle.wolips.commons.util.ArrayUtilities;
+import org.objectstyle.wolips.commons.util.StringUtilities;
 import org.objectstyle.wolips.preferences.ILaunchInfo;
 import org.objectstyle.wolips.preferences.Preferences;
 import org.objectstyle.wolips.preferences.PreferencesMessages;
@@ -177,7 +179,11 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 		this.addButton.setText(PreferencesMessages.getString("LaunchPreferencesPage.add")); //$NON-NLS-1$
 		data = new GridData();
 		data.horizontalAlignment = GridData.FILL;
-		data.heightHint = 20;
+        data.heightHint = 20;
+        data.heightHint =
+            Math.max(
+                data.heightHint,
+                this.addButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).y);
 		//convertVerticalDLUsToPixels(IDialogConstants.BUTTON_HEIGHT);
 		int widthHint = 100;
 		//convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
@@ -196,7 +202,11 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 		this.removeButton.setText(PreferencesMessages.getString("LaunchPreferencesPage.remove")); //$NON-NLS-1$
 		data = new GridData();
 		data.horizontalAlignment = GridData.FILL;
-		data.heightHint = 20;
+        data.heightHint = 20;
+        data.heightHint =
+            Math.max(
+                data.heightHint,
+                this.removeButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).y);
 		//Dialog.convertVerticalDLUsToPixels(new FontMetrics(), IDialogConstants.BUTTON_HEIGHT);
 		widthHint = 100;
 		//Dialog.convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
@@ -217,6 +227,11 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 		data = new GridData();
 		data.horizontalAlignment = GridData.FILL;
 		data.heightHint = 20;
+        data.heightHint =
+            Math.max(
+                data.heightHint,
+                this.changeButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).y);
+
 		//Dialog.convertVerticalDLUsToPixels(new FontMetrics(), IDialogConstants.BUTTON_HEIGHT);
 		widthHint = 100;
 		//Dialog.convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
@@ -243,8 +258,7 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 		for (int i = 0; i < launchInfoArray.length; i++) {
 			ILaunchInfo launchInfo = launchInfoArray[i];
 			TableItem item = new TableItem(this.includeTable, SWT.NONE);
-			item.setText(
-				launchInfo.getParameter() + " " + launchInfo.getArgument());
+			item.setText(StringUtilities.toCommandlineParameterFormat(launchInfo.getParameter(), launchInfo.getArgument()));
 			this.allParameter.add(launchInfo.getParameter());
 			this.allArguments.add(launchInfo.getArgument());
 			item.setChecked(launchInfo.isEnabled());
@@ -287,7 +301,7 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 			}
 		}
 		TableItem item = new TableItem(this.includeTable, SWT.NONE);
-		item.setText(parameter + " " + argument);
+		item.setText(StringUtilities.toCommandlineParameterFormat(parameter, argument));
 		this.allParameter.add(parameter);
 		this.allArguments.add(argument);
 		item.setChecked(true);
@@ -320,14 +334,15 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 		if (selection.length != 1)
 			return;
 		int index = selection[0];
-		InputDialog argumentDialog = new InputDialog(getShell(), PreferencesMessages.getString("LaunchPreferencesPage.enterArgumentShort"), Preferences.getString("IgnorePreferencePage.enterPatternLong"), (String) this.allArguments.elementAt(index), null); //$NON-NLS-1$ //$NON-NLS-2$
+        String parameter = (String) this.allParameter.elementAt(index);
+		InputDialog argumentDialog = new InputDialog(getShell(), parameter + " " + PreferencesMessages.getString("LaunchPreferencesPage.enterArgumentShort"), Preferences.getString("IgnorePreferencePage.enterPatternLong"), (String) this.allArguments.elementAt(index), null); //$NON-NLS-1$ //$NON-NLS-2$
 		argumentDialog.open();
 		if (argumentDialog.getReturnCode() != Window.OK)
 			return;
 		String argument = argumentDialog.getValue();
-		String parameter = (String) this.allParameter.elementAt(index);
 		TableItem item = this.includeTable.getItem(index);
-		item.setText(parameter + " " + argument);
+        String newText;
+		item.setText(StringUtilities.toCommandlineParameterFormat(parameter, argument));
 		this.allArguments.setElementAt(argument, index);
 		this.updateLaunchConfigurationDialog();
 	}
