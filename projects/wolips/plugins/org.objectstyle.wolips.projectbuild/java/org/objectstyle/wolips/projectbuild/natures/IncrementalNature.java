@@ -74,407 +74,401 @@ import org.objectstyle.wolips.projectbuild.ProjectBuildPlugin;
  */
 public class IncrementalNature implements IProjectNature {
 
-	/**
-	 * Constructor for WebObjectsNature.
-	 */
-	public IncrementalNature() {
-		super();
-	}
+  /**
+   * Constructor for WebObjectsNature.
+   */
+  public IncrementalNature() {
+    super();
+  }
 
-	/**
-	 * @see org.eclipse.core.resources.IProjectNature#configure()
-	 */
-	public void configure() throws CoreException {
-		Project project = (Project) (this.getProject())
-				.getAdapter(Project.class);
-		project.installIncrementalBuilder();
+  /**
+   * @see org.eclipse.core.resources.IProjectNature#configure()
+   */
+  public void configure() throws CoreException {
+    Project project = (Project) (this.getProject()).getAdapter(Project.class);
+    project.installIncrementalBuilder();
 
-		IFolder buildFolder = this.getProject().getFolder("build");
-		if (!buildFolder.exists()) {
-			buildFolder.create(IResource.FORCE, true, null);
-		}
-		buildFolder.setDerived(true);
+    IFolder buildFolder = this.getProject().getFolder("build");
+    if (!buildFolder.exists()) {
+      buildFolder.create(IResource.FORCE, true, null);
+    }
+    buildFolder.setDerived(true);
 
-		//IPath outputPath = ((IJavaProject) this.getProject().getNature(
-		//		JavaCore.NATURE_ID)).getOutputLocation();
-		//IFolder outputFolder = this.getProject().getFolder(outputPath);
+    //IPath outputPath = ((IJavaProject) this.getProject().getNature(
+    //		JavaCore.NATURE_ID)).getOutputLocation();
+    //IFolder outputFolder = this.getProject().getFolder(outputPath);
 
-		//System.out.println(outputFolder.isDerived());
-	}
+    //System.out.println(outputFolder.isDerived());
+  }
 
-	/**
-	 * @see org.eclipse.core.resources.IProjectNature#deconfigure()
-	 */
-	public void deconfigure() throws CoreException {
-		Project project = (Project) (this.getProject())
-				.getAdapter(Project.class);
-		project.removeIncrementalBuilder();
+  /**
+   * @see org.eclipse.core.resources.IProjectNature#deconfigure()
+   */
+  public void deconfigure() throws CoreException {
+    Project project = (Project) (this.getProject()).getAdapter(Project.class);
+    project.removeIncrementalBuilder();
 
-		IFolder buildFolder = this.getProject().getFolder("build");
-		if (buildFolder.exists() && buildFolder.isDerived()) {
-			buildFolder.delete(true, false, null);
-		}
-	}
+    IFolder buildFolder = this.getProject().getFolder("build");
+    if (buildFolder.exists() && buildFolder.isDerived()) {
+      buildFolder.delete(true, false, null);
+    }
+  }
 
-	/**
-	 * @see org.eclipse.core.resources.IProjectNature#getProject()
-	 */
-	public IProject getProject() {
-		return this._project;
-	}
+  /**
+   * @see org.eclipse.core.resources.IProjectNature#getProject()
+   */
+  public IProject getProject() {
+    return this._project;
+  }
 
-	/**
-	 * @see org.eclipse.core.resources.IProjectNature#setProject(IProject)
-	 */
-	public void setProject(IProject project) {
-		this._project = project;
-	}
+  /**
+   * @see org.eclipse.core.resources.IProjectNature#setProject(IProject)
+   */
+  public void setProject(IProject project) {
+    this._project = project;
+  }
 
-	/* ************************************************************************ */
+  /* ************************************************************************ */
 
-	/**
-	 * @return
-	 *  
-	 */
-	public IJavaProject getJavaProject() {
-		try {
-			return ((IJavaProject) getProject().getNature(JavaCore.NATURE_ID));
-		} catch (CoreException up) {
-			ProjectBuildPlugin.getDefault().getPluginLogger().log(up);
-		}
+  /**
+   * @return
+   *  
+   */
+  public IJavaProject getJavaProject() {
+    try {
+      return ((IJavaProject) getProject().getNature(JavaCore.NATURE_ID));
+    }
+    catch (CoreException up) {
+      ProjectBuildPlugin.getDefault().getPluginLogger().log(up);
+    }
 
-		return (null);
-	}
+    return (null);
+  }
 
-	/**
-	 * @return
-	 */
-	//	public String getStringProperty(String key) {
-	//		String result = "";
-	//		try {
-	//			result =
-	//				getProject().getPersistentProperty(new QualifiedName("", key));
-	//		} catch (CoreException up) {
-	//			up.printStackTrace();
-	//		}
-	//
-	//		return (result);
-	//	}
-	//
-	//	public void setStringProperty(String key, String value) {
-	//		try {
-	//			getProject().setPersistentProperty(
-	//				new QualifiedName("", key),
-	//				value);
-	//		} catch (CoreException up) {
-	//			up.printStackTrace();
-	//		}
-	//
-	//	}
-	//
-	//	public boolean getBooleanProperty(String key) {
-	//		return ("true".equals(getStringProperty(key)));
-	//	}
-	//
-	//	public void setBooleanProperty(String key, boolean value) {
-	//		setStringProperty(key, value ? "true" : "false");
-	//	}
+  /**
+   * @return
+   */
+  //	public String getStringProperty(String key) {
+  //		String result = "";
+  //		try {
+  //			result =
+  //				getProject().getPersistentProperty(new QualifiedName("", key));
+  //		} catch (CoreException up) {
+  //			up.printStackTrace();
+  //		}
+  //
+  //		return (result);
+  //	}
+  //
+  //	public void setStringProperty(String key, String value) {
+  //		try {
+  //			getProject().setPersistentProperty(
+  //				new QualifiedName("", key),
+  //				value);
+  //		} catch (CoreException up) {
+  //			up.printStackTrace();
+  //		}
+  //
+  //	}
+  //
+  //	public boolean getBooleanProperty(String key) {
+  //		return ("true".equals(getStringProperty(key)));
+  //	}
+  //
+  //	public void setBooleanProperty(String key, boolean value) {
+  //		setStringProperty(key, value ? "true" : "false");
+  //	}
+  public boolean isFramework() {
+    //return (getBooleanProperty(FRAMEWORK_PROPERTY));
+    try {
+      Project project = (Project) (this.getProject()).getAdapter(Project.class);
+      return (project.isFramework());
+    }
+    catch (CoreException up) {
+      ProjectBuildPlugin.getDefault().getPluginLogger().log(up.getStatus());
+    }
 
-	public boolean isFramework() {
-		//return (getBooleanProperty(FRAMEWORK_PROPERTY));
-		try {
-			Project project = (Project) (this.getProject())
-			.getAdapter(Project.class);
-				return (project.isFramework());
-		} catch (CoreException up) {
-			ProjectBuildPlugin.getDefault().getPluginLogger().log(
-					up.getStatus());
-		}
+    return false;
+  }
 
-		return false;
-	}
+  //	public void setIsFramework(boolean isFramework) {
+  //		setBooleanProperty(FRAMEWORK_PROPERTY, isFramework);
+  //	}
 
-	//	public void setIsFramework(boolean isFramework) {
-	//		setBooleanProperty(FRAMEWORK_PROPERTY, isFramework);
-	//	}
+  /**
+   * either name.woa or name.framework
+   * @return
+   */
+  public String getResultName() {
+    String name = getProject().getName();
 
-	/**
-	 * either name.woa or name.framework
-	 * @return
-	 */
-	public String getResultName() {
-		String name = getProject().getName();
+    if (isFramework()) {
+      return (name + ".framework");
+    }
+    return (name + ".woa");
+  }
 
-		if (isFramework()) {
-			return (name + ".framework");
-		}
-		return (name + ".woa");
-	}
+  /**
+   * @return
+   */
+  public IPath getBuildPath() {
+    return (getProject().getFullPath().append("build"));
+  }
 
-	/**
-	 * @return
-	 */
-	public IPath getBuildPath() {
-		return (getProject().getFullPath().append("build"));
-	}
+  /**
+   * @return
+   */
+  public IPath getResultPath() {
+    return (getBuildPath().append(getResultName()));
+  }
 
-	/**
-	 * @return
-	 */
-	public IPath getResultPath() {
-		return (getBuildPath().append(getResultName()));
-	}
+  /**
+   * @return
+   */
+  public IPath getInfoPath() {
+    if (isFramework()) {
+      return (getResultPath().append("Resources"));
+    }
+    return (getResultPath().append(APPINFO_PATH));
+  }
 
-	/**
-	 * @return
-	 */
-	public IPath getInfoPath() {
-		if (isFramework()) {
-			return (getResultPath().append("Resources"));
-		}
-		return (getResultPath().append(APPINFO_PATH));
-	}
+  /**
+   * @return
+   */
+  public IPath _getResultPath() {
+    if (isFramework()) {
+      return (getResultPath());
+    }
+    return (getResultPath().append(APPINFO_PATH));
+  }
 
-	/**
-	 * @return
-	 */
-	public IPath _getResultPath() {
-		if (isFramework()) {
-			return (getResultPath());
-		}
-		return (getResultPath().append(APPINFO_PATH));
-	}
+  /**
+   * @return
+   */
+  public IPath getResourceOutputPath() {
+    return (_getResultPath().append(RESOURCE_PATH));
+  }
 
-	/**
-	 * @return
-	 */
-	public IPath getResourceOutputPath() {
-		return (_getResultPath().append(RESOURCE_PATH));
-	}
+  /**
+   * @return
+   */
+  public IPath getJavaOutputPath() {
+    return (_getResultPath().append(JAVA_PATH));
+  }
 
-	/**
-	 * @return
-	 */
-	public IPath getJavaOutputPath() {
-		return (_getResultPath().append(JAVA_PATH));
-	}
+  /**
+   * @return
+   */
+  public IPath getWebResourceOutputPath() {
+    return (_getResultPath().append(WEBRESOURCE_PATH));
+  }
 
-	/**
-	 * @return
-	 */
-	public IPath getWebResourceOutputPath() {
-		return (_getResultPath().append(WEBRESOURCE_PATH));
-	}
+  /**
+   * @return
+   */
+  public String getResourceName() {
+    String result = "";
+    if (!isFramework()) {
+      result += APPINFO_PATH + "/";
+    }
+    result += RESOURCE_PATH;
+    return (result);
+  }
 
-	/**
-	 * @return
-	 */
-	public String getResourceName() {
-		String result = "";
-		if (!isFramework()) {
-			result += APPINFO_PATH + "/";
-		}
-		result += RESOURCE_PATH;
-		return (result);
-	}
+  /**
+   * @return
+   */
+  public String getWebResourceName() {
+    String result = "";
+    if (!isFramework()) {
+      result += APPINFO_PATH + "/";
+    }
+    result += WEBRESOURCE_PATH;
+    return (result);
+  }
 
-	/**
-	 * @return
-	 */
-	public String getWebResourceName() {
-		String result = "";
-		if (!isFramework()) {
-			result += APPINFO_PATH + "/";
-		}
-		result += WEBRESOURCE_PATH;
-		return (result);
-	}
+  /* ************************************************************************ */
 
-	/* ************************************************************************ */
+  //	public IPath getDestinationPath(IResource res) {
+  //
+  //		IPath fullPath = res.getFullPath();
+  //
+  //		if (getBuildPath().isPrefixOf(fullPath)) {
+  //			return (null);
+  //		}
+  //
+  //		try {
+  //			if (!getJavaProject()
+  //				.getOutputLocation()
+  //				.equals(getJavaProject().getPath())
+  //				&& getJavaProject().getOutputLocation().isPrefixOf(fullPath)) {
+  //				return (null);
+  //			}
+  //		} catch (CoreException up) {
+  //			up.printStackTrace();
+  //		}
+  //
+  //		IPath result = asResourcePath(fullPath, res);
+  //		if (null == result)
+  //			result = asWebResourcePath(fullPath, res);
+  //
+  //		return (result);
+  //	}
+  private IPath _appendSpecial(IPath destinationPrefix, IPath source) {
+    String segments[] = source.segments();
 
-	//	public IPath getDestinationPath(IResource res) {
-	//
-	//		IPath fullPath = res.getFullPath();
-	//
-	//		if (getBuildPath().isPrefixOf(fullPath)) {
-	//			return (null);
-	//		}
-	//
-	//		try {
-	//			if (!getJavaProject()
-	//				.getOutputLocation()
-	//				.equals(getJavaProject().getPath())
-	//				&& getJavaProject().getOutputLocation().isPrefixOf(fullPath)) {
-	//				return (null);
-	//			}
-	//		} catch (CoreException up) {
-	//			up.printStackTrace();
-	//		}
-	//
-	//		IPath result = asResourcePath(fullPath, res);
-	//		if (null == result)
-	//			result = asWebResourcePath(fullPath, res);
-	//
-	//		return (result);
-	//	}
-	private IPath _appendSpecial(IPath destinationPrefix, IPath source) {
-		String segments[] = source.segments();
+    int n = segments.length - 1;
+    for (int i = n; i >= 0; --i) {
+      if (segments[i].endsWith(".lproj")) {
+        n = i;
+        if (segments[i].toLowerCase().startsWith("nonlocalized")) {
+          n = i + 1;
+        }
+      }
+    }
+    IPath tmp = destinationPrefix;
+    while (n < segments.length) {
+      tmp = tmp.append(segments[n++]);
+    }
+    return (tmp);
+  }
 
-		int n = segments.length - 1;
-		for (int i = n; i >= 0; --i) {
-			if (segments[i].endsWith(".lproj")) {
-				n = i;
-				if (segments[i].toLowerCase().startsWith("nonlocalized")) {
-					n = i + 1;
-				}
-			}
-		}
-		IPath tmp = destinationPrefix;
-		while (n < segments.length) {
-			tmp = tmp.append(segments[n++]);
-		}
-		return (tmp);
-	}
+  /**
+   * @param path
+   * @param res
+   * @return
+   */
+  public IPath asResourcePath(IPath path, IResource res) {
+    if (IResource.FILE == res.getType() || IResource.FOLDER == res.getType()) {
+      String lastSegment = path.lastSegment();
+      if ((-1 == path.toString().indexOf(".eomodeld/")) && (-1 == path.toString().indexOf(".wo/"))) {
+        return (_appendSpecial(getResourceOutputPath(), path));
+      }
 
-	/**
-	 * @param path
-	 * @param res
-	 * @return
-	 */
-	public IPath asResourcePath(IPath path, IResource res) {
-		if (IResource.FILE == res.getType()
-				|| IResource.FOLDER == res.getType()) {
-			String lastSegment = path.lastSegment();
-			if ((-1 == path.toString().indexOf(".eomodeld/"))
-					&& (-1 == path.toString().indexOf(".wo/"))) {
-				return (_appendSpecial(getResourceOutputPath(), path));
-			}
+      String parentName = res.getParent().getName();
+      if (parentName.endsWith(".wo") || parentName.endsWith(".eomodeld")) {
+        return (_appendSpecial(getResourceOutputPath(), res.getParent().getProjectRelativePath()).append(lastSegment));
+        //return
+        // (getResourceOutputPath().append(parentName).append(lastSegment));
+      }
 
-			String parentName = res.getParent().getName();
-			if (parentName.endsWith(".wo") || parentName.endsWith(".eomodeld")) {
-				return (_appendSpecial(getResourceOutputPath(), res.getParent()
-						.getProjectRelativePath()).append(lastSegment));
-				//return
-				// (getResourceOutputPath().append(parentName).append(lastSegment));
-			}
+    }
 
-		}
+    return (null);
+  }
 
-		return (null);
-	}
+  /**
+   * @param path
+   * @param res
+   * @return
+   */
+  public IPath asWebResourcePath(IPath path, IResource res) {
+    if (IResource.FILE == res.getType() || IResource.FOLDER == res.getType()) {
+      return _appendSpecial(getWebResourceOutputPath(), path);
+    }
 
-	/**
-	 * @param path
-	 * @param res
-	 * @return
-	 */
-	public IPath asWebResourcePath(IPath path, IResource res) {
-		if (IResource.FILE == res.getType()) {
-			return _appendSpecial(getWebResourceOutputPath(), path);
-		}
+    return (null);
+  }
 
-		return (null);
-	}
+  /* ************************************************************************ */
+  //  public static IncrementalNature s_getNature(IProject project) {
+  //    try {
+  //      if (project.hasNature(INCREMENTAL_APPLICATION_NATURE_ID)) {
+  //        return (IncrementalNature) project.getNature(
+  //          INCREMENTAL_APPLICATION_NATURE_ID
+  //        );
+  //      } else if (project.hasNature(INCREMENTAL_FRAMEWORK_NATURE_ID)) {
+  //        return (IncrementalNature) project.getNature(
+  //          INCREMENTAL_FRAMEWORK_NATURE_ID
+  //        );
+  //      }
+  //
+  //    } catch (CoreException exception) {
+  //      WOLipsLog.log(exception);
+  //    }
+  //    return null;
+  //  }
+  //	public static String getNature(boolean isFramework) {
+  //		if (isFramework)
+  //			return INCREMENTAL_FRAMEWORK_NATURE_ID;
+  //		return INCREMENTAL_APPLICATION_NATURE_ID;
+  //	}
+  //
+  //	public static void s_addToProject(IProject project, boolean isFramework)
+  //		throws CoreException {
+  //		IProjectDescription desc = project.getDescription();
+  //
+  //		String natures_array[] = desc.getNatureIds();
+  //
+  //		List natures = new ArrayList(Arrays.asList(natures_array));
+  //		if (!natures.contains(getNature(isFramework))) {
+  //			natures.add(getNature(isFramework));
+  //			natures_array =
+  //				(String[]) natures.toArray(new String[natures.size()]);
+  //			desc.setNatureIds(natures_array);
+  //			s_setDescription(project, desc);
+  //		}
+  //	}
+  //
+  //	public static void s_removeFromProject(
+  //		IProject project,
+  //		boolean isFramework)
+  //		throws CoreException {
+  //		IProjectDescription desc = project.getDescription();
+  //
+  //		String natures_array[] = desc.getNatureIds();
+  //
+  //		List natures = new ArrayList(Arrays.asList(natures_array));
+  //
+  //		if (natures.contains(getNature(isFramework))) {
+  //			natures.remove(getNature(isFramework));
+  //			natures_array =
+  //				(String[]) natures.toArray(new String[natures.size()]);
+  //			desc.setNatureIds(natures_array);
+  //			s_setDescription(project, desc);
+  //		}
+  //	}
+  //
+  //	private static void s_setDescription(
+  //		final IProject f_project,
+  //		final IProjectDescription f_desc) {
+  //		s_showProgress(new IRunnableWithProgress() {
+  //			public void run(IProgressMonitor pm) {
+  //				try {
+  //					f_project.setDescription(f_desc, pm);
+  //				} catch (CoreException up) {
+  //					pm.done();
+  //				}
+  //			}
+  //		});
+  //	}
+  //
+  //	public static void s_showProgress(IRunnableWithProgress rwp) {
+  //		IWorkbench workbench = PlatformUI.getWorkbench();
+  //		Shell shell = null;
+  //		if (null != workbench) {
+  //			IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+  //			if (null != window) {
+  //				shell = window.getShell();
+  //			}
+  //		}
+  //
+  //		ProgressMonitorDialog pmd = new ProgressMonitorDialog(shell);
+  //
+  //		try {
+  //			pmd.run(true, true, rwp);
+  //		} catch (InvocationTargetException e) {
+  //			// handle exception
+  //			e.printStackTrace();
+  //		} catch (InterruptedException e) {
+  //			// handle cancelation
+  //			e.printStackTrace();
+  //		}
+  //	}
+  IProject _project = null;
 
-	/* ************************************************************************ */
-	//  public static IncrementalNature s_getNature(IProject project) {
-	//    try {
-	//      if (project.hasNature(INCREMENTAL_APPLICATION_NATURE_ID)) {
-	//        return (IncrementalNature) project.getNature(
-	//          INCREMENTAL_APPLICATION_NATURE_ID
-	//        );
-	//      } else if (project.hasNature(INCREMENTAL_FRAMEWORK_NATURE_ID)) {
-	//        return (IncrementalNature) project.getNature(
-	//          INCREMENTAL_FRAMEWORK_NATURE_ID
-	//        );
-	//      }
-	//
-	//    } catch (CoreException exception) {
-	//      WOLipsLog.log(exception);
-	//    }
-	//    return null;
-	//  }
-	//	public static String getNature(boolean isFramework) {
-	//		if (isFramework)
-	//			return INCREMENTAL_FRAMEWORK_NATURE_ID;
-	//		return INCREMENTAL_APPLICATION_NATURE_ID;
-	//	}
-	//
-	//	public static void s_addToProject(IProject project, boolean isFramework)
-	//		throws CoreException {
-	//		IProjectDescription desc = project.getDescription();
-	//
-	//		String natures_array[] = desc.getNatureIds();
-	//
-	//		List natures = new ArrayList(Arrays.asList(natures_array));
-	//		if (!natures.contains(getNature(isFramework))) {
-	//			natures.add(getNature(isFramework));
-	//			natures_array =
-	//				(String[]) natures.toArray(new String[natures.size()]);
-	//			desc.setNatureIds(natures_array);
-	//			s_setDescription(project, desc);
-	//		}
-	//	}
-	//
-	//	public static void s_removeFromProject(
-	//		IProject project,
-	//		boolean isFramework)
-	//		throws CoreException {
-	//		IProjectDescription desc = project.getDescription();
-	//
-	//		String natures_array[] = desc.getNatureIds();
-	//
-	//		List natures = new ArrayList(Arrays.asList(natures_array));
-	//
-	//		if (natures.contains(getNature(isFramework))) {
-	//			natures.remove(getNature(isFramework));
-	//			natures_array =
-	//				(String[]) natures.toArray(new String[natures.size()]);
-	//			desc.setNatureIds(natures_array);
-	//			s_setDescription(project, desc);
-	//		}
-	//	}
-	//
-	//	private static void s_setDescription(
-	//		final IProject f_project,
-	//		final IProjectDescription f_desc) {
-	//		s_showProgress(new IRunnableWithProgress() {
-	//			public void run(IProgressMonitor pm) {
-	//				try {
-	//					f_project.setDescription(f_desc, pm);
-	//				} catch (CoreException up) {
-	//					pm.done();
-	//				}
-	//			}
-	//		});
-	//	}
-	//
-	//	public static void s_showProgress(IRunnableWithProgress rwp) {
-	//		IWorkbench workbench = PlatformUI.getWorkbench();
-	//		Shell shell = null;
-	//		if (null != workbench) {
-	//			IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-	//			if (null != window) {
-	//				shell = window.getShell();
-	//			}
-	//		}
-	//
-	//		ProgressMonitorDialog pmd = new ProgressMonitorDialog(shell);
-	//
-	//		try {
-	//			pmd.run(true, true, rwp);
-	//		} catch (InvocationTargetException e) {
-	//			// handle exception
-	//			e.printStackTrace();
-	//		} catch (InterruptedException e) {
-	//			// handle cancelation
-	//			e.printStackTrace();
-	//		}
-	//	}
-	IProject _project = null;
-
-	private static final String APPINFO_PATH = "Contents";
-	private static final String RESOURCE_PATH = "Resources";
-	private static final String WEBRESOURCE_PATH = "WebServerResources";
-	private static final String JAVA_PATH = "Resources/Java";
+  private static final String APPINFO_PATH = "Contents";
+  private static final String RESOURCE_PATH = "Resources";
+  private static final String WEBRESOURCE_PATH = "WebServerResources";
+  private static final String JAVA_PATH = "Resources/Java";
 }
