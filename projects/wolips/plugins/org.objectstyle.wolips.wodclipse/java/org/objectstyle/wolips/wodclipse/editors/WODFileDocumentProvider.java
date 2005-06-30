@@ -12,7 +12,7 @@ import org.eclipse.ui.editors.text.TextFileDocumentProvider;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 
 public class WODFileDocumentProvider extends TextFileDocumentProvider {
-  public static final String WOD_FILE_CONTENT_TYPE_STRING = "com.mdimension.wodclipse.wod";
+  public static final String WOD_FILE_CONTENT_TYPE_STRING = "org.objectstyle.wolips.wodclipse.wod";
   public static final IContentType WOD_FILE_CONTENT_TYPE = Platform.getContentTypeManager().getContentType(WODFileDocumentProvider.WOD_FILE_CONTENT_TYPE_STRING); //$NON-NLS-1$
 
   public WODFileDocumentProvider() {

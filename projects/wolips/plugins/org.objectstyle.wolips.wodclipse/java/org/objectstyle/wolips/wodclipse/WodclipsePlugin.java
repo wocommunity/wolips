@@ -49,6 +49,6 @@ public class WodclipsePlugin extends AbstractUIPlugin {
    * @return the image descriptor
    */
   public static ImageDescriptor getImageDescriptor(String path) {
-    return AbstractUIPlugin.imageDescriptorFromPlugin("com.mdimension.wodclipse", path);
+    return AbstractUIPlugin.imageDescriptorFromPlugin("org.objectstyle.wolips.wodclipse", path);
   }
 }
