@@ -209,6 +209,12 @@
          version="1.0.6"/>
 
    <plugin
+         id="org.objectstyle.wolips.wodclipse"
+         download-size="12"
+         install-size="24"
+         version="1.0.6"/>
+
+   <plugin
          id="org.objectstyle.wolips.woproject"
          download-size="108"
          install-size="336"

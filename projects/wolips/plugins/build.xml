@@ -110,6 +110,7 @@
         <ant dir="org.objectstyle.wolips.templateengine" target="all"/>
         <ant dir="org.objectstyle.wolips.ui" target="all"/>
         <ant dir="org.objectstyle.wolips.wizards" target="all"/>
+        <ant dir="org.objectstyle.wolips.wodclipse" target="all"/>
         <ant dir="org.objectstyle.wolips.woproject" target="all"/>
         <ant dir="org.objectstyle.wolips.woproject.ant" target="all"/>
         <ant dir="org.objectstyle.wolips.wounit" target="all"/>
@@ -146,6 +147,7 @@
         <ant dir="org.objectstyle.wolips.templateengine" target="dist"/>
         <ant dir="org.objectstyle.wolips.ui" target="dist"/>
         <ant dir="org.objectstyle.wolips.wizards" target="dist"/>
+        <ant dir="org.objectstyle.wolips.wodclipse" target="dist"/>
         <ant dir="org.objectstyle.wolips.woproject" target="dist"/>
         <ant dir="org.objectstyle.wolips.woproject.ant" target="dist"/>
         <ant dir="org.objectstyle.wolips.wounit" target="dist"/>
