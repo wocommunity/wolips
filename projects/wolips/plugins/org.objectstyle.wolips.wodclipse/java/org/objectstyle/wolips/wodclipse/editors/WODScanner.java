@@ -14,7 +14,7 @@ import org.eclipse.jface.text.rules.SingleLineRule;
 import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.rules.WhitespaceRule;
 import org.objectstyle.wolips.wodclipse.WodclipsePlugin;
-import org.objectstyle.wolips.wodclipse.wodclipse.preferences.PreferenceConstants;
+import org.objectstyle.wolips.wodclipse.preferences.PreferenceConstants;
 
 public class WODScanner extends AbstractJavaScanner {
   private static String[] WOD_TOKENS = { PreferenceConstants.COMPONENT_NAME, PreferenceConstants.COMPONENT_TYPE, PreferenceConstants.ASSOCIATION_NAME, PreferenceConstants.ASSOCIATION_VALUE, PreferenceConstants.CONSTANT_ASSOCIATION_VALUE, PreferenceConstants.OPERATOR, PreferenceConstants.UNKNOWN };

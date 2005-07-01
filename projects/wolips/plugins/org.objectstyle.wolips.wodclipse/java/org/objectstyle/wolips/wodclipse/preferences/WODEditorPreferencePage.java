@@ -1,4 +1,4 @@
-package org.objectstyle.wolips.wodclipse.wodclipse.preferences;
+package org.objectstyle.wolips.wodclipse.preferences;
 
 import org.eclipse.jface.preference.ColorFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;

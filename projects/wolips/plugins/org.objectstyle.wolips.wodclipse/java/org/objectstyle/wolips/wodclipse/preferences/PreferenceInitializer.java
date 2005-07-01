@@ -1,4 +1,4 @@
-package org.objectstyle.wolips.wodclipse.wodclipse.preferences;
+package org.objectstyle.wolips.wodclipse.preferences;
 
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;

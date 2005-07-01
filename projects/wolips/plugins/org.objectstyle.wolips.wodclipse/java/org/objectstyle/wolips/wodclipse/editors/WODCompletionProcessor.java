@@ -28,7 +28,7 @@ import org.eclipse.jface.text.rules.IRule;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IPathEditorInput;
-import org.objectstyle.wolips.wodclipse.wodclipse.preferences.PreferenceConstants;
+import org.objectstyle.wolips.wodclipse.preferences.PreferenceConstants;
 
 
 public class WODCompletionProcessor implements IContentAssistProcessor {

@@ -1,4 +1,4 @@
-package org.objectstyle.wolips.wodclipse.wodclipse.preferences;
+package org.objectstyle.wolips.wodclipse.preferences;
 
 public class PreferenceConstants {
   public static final String COMPONENT_NAME = "ComponentName";
