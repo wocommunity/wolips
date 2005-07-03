@@ -54,12 +54,35 @@
  *
  */
 package org.objectstyle.wolips.wizards;
+import java.util.LinkedList;
+import java.util.List;
+
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.IPackageFragment;
+import org.eclipse.jdt.core.IPackageFragmentRoot;
+import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jdt.internal.core.JavaModel;
+import org.eclipse.jdt.internal.core.JavaModelManager;
+import org.eclipse.jdt.internal.core.JavaProject;
+import org.eclipse.jdt.internal.core.PackageFragmentRoot;
+import org.eclipse.jdt.internal.ui.JavaPlugin;
+import org.eclipse.jdt.internal.ui.refactoring.contentassist.ControlContentAssistHelper;
+import org.eclipse.jdt.internal.ui.refactoring.contentassist.JavaPackageCompletionProcessor;
+import org.eclipse.jdt.internal.ui.wizards.NewWizardMessages;
+import org.eclipse.jdt.internal.ui.wizards.dialogfields.DialogField;
+import org.eclipse.jdt.internal.ui.wizards.dialogfields.IDialogFieldListener;
+import org.eclipse.jdt.internal.ui.wizards.dialogfields.IStringButtonAdapter;
+import org.eclipse.jdt.internal.ui.wizards.dialogfields.LayoutUtil;
+import org.eclipse.jdt.internal.ui.wizards.dialogfields.StringButtonStatusDialogField;
+import org.eclipse.jdt.ui.JavaElementLabelProvider;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -68,7 +91,9 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.actions.WorkspaceModifyDelegatingOperation;
+import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 /**
  * @author mnolte
  * @author uli <br><br>This class is the only page of the WOComponent file
@@ -83,6 +108,9 @@ public class WOComponentCreationPage extends WizardNewWOResourcePage {
 	private Button wooCheckbox;
 	private Button apiCheckbox;
 	private IResource resourceToReveal;
+    private StringButtonStatusDialogField myPackageDialogField;
+    
+
 	/**
 	 * Creates the page for the wocomponent creation wizard.
 	 * 
@@ -108,6 +136,27 @@ public class WOComponentCreationPage extends WizardNewWOResourcePage {
 		// IReadmeConstants.CREATION_WIZARD_PAGE_CONTEXT);
 		this.setFileName(Messages
 				.getString("WOComponentCreationPage.newComponent.defaultName"));
+
+        new Label(composite, SWT.NONE); // vertical spacer
+        
+        Group packageGroup = new Group(composite, SWT.NONE);
+        GridLayout layout = new GridLayout();
+        layout.numColumns = 4;
+        packageGroup.setLayout(layout);
+        packageGroup.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
+        PackageButtonAdapter adapter = new PackageButtonAdapter();
+        myPackageDialogField= new StringButtonStatusDialogField(adapter);
+        myPackageDialogField.setDialogFieldListener(adapter);
+        myPackageDialogField.setLabelText(NewWizardMessages.NewTypeWizardPage_package_label); 
+        myPackageDialogField.setButtonLabel(NewWizardMessages.NewTypeWizardPage_package_button); 
+        myPackageDialogField.setStatusWidthHint(NewWizardMessages.NewTypeWizardPage_default); 
+        myPackageDialogField.doFillIntoGrid(packageGroup, 4);
+        Text text= myPackageDialogField.getTextControl(null);
+        LayoutUtil.setWidthHint(text, convertWidthInCharsToPixels(40));  
+        LayoutUtil.setHorizontalGrabbing(text);
+        //JavaPackageCompletionProcessor packageCompletionProcessor= new JavaPackageCompletionProcessor();
+        //ControlContentAssistHelper.createTextContentAssistant(text, packageCompletionProcessor);
+
 		new Label(composite, SWT.NONE); // vertical spacer
 		// section generation group
 		Group group = new Group(composite, SWT.NONE);
@@ -116,6 +165,7 @@ public class WOComponentCreationPage extends WizardNewWOResourcePage {
 				.getString("WOComponentCreationPage.creationOptions.title"));
 		group.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
 				| GridData.HORIZONTAL_ALIGN_FILL));
+        
 		Composite row = new Composite(group, SWT.NONE);
 		RowLayout rowLayout = new RowLayout();
 		row.setLayout(rowLayout);
@@ -149,6 +199,7 @@ public class WOComponentCreationPage extends WizardNewWOResourcePage {
 	public boolean createComponent() {
 		WOComponentCreator componentCreator;
 		String componentName = getFileName();
+        String packageName = myPackageDialogField.getText();
 		IProject actualProject = ResourcesPlugin.getWorkspace().getRoot()
 				.getProject(getContainerFullPath().segment(0));
 		switch (getContainerFullPath().segmentCount()) {
@@ -158,7 +209,7 @@ public class WOComponentCreationPage extends WizardNewWOResourcePage {
 				return false;
 			case 1 :
 				componentCreator = new WOComponentCreator(actualProject,
-						componentName, bodyCheckbox.getSelection(), apiCheckbox
+						componentName, packageName, bodyCheckbox.getSelection(), apiCheckbox
 								.getSelection(), wooCheckbox.getSelection(), this);
 				break;
 			default :
@@ -168,7 +219,7 @@ public class WOComponentCreationPage extends WizardNewWOResourcePage {
 						.getFolder(getContainerFullPath()
 								.removeFirstSegments(1));
 				componentCreator = new WOComponentCreator(subprojectFolder,
-						componentName, bodyCheckbox.getSelection(), apiCheckbox
+						componentName, packageName, bodyCheckbox.getSelection(), apiCheckbox
 								.getSelection(), wooCheckbox.getSelection(), this);
 				break;
 		}
@@ -189,4 +240,51 @@ public class WOComponentCreationPage extends WizardNewWOResourcePage {
 	public void setResourceToReveal(IResource resourceToReveal) {
 		this.resourceToReveal = resourceToReveal;
 	}
+    
+    private IPackageFragment choosePackage() {
+      List packagesList = new LinkedList();
+      try {
+        IProject actualProject = ResourcesPlugin.getWorkspace().getRoot().getProject(getContainerFullPath().segment(0));
+        IJavaProject javaProject = JavaModelManager.getJavaModelManager().getJavaModel().getJavaProject(actualProject);
+        IPackageFragmentRoot[] roots = javaProject.getPackageFragmentRoots();
+        for (int k = 0; k < roots.length; k++) {
+          if (roots[k].getKind() == IPackageFragmentRoot.K_SOURCE) {
+            IJavaElement[] children = roots[k].getChildren();
+            for (int i = 0; i < children.length; i++) {
+              packagesList.add(children[i]);
+            }
+          }
+        }
+      } catch (JavaModelException e) {
+          //JTourBusPlugin.log(e);
+        e.printStackTrace();
+      }
+      IJavaElement[] packages= (IJavaElement[])packagesList.toArray(new IJavaElement[packagesList.size()]);
+      
+      ElementListSelectionDialog dialog= new ElementListSelectionDialog(getShell(), new JavaElementLabelProvider(JavaElementLabelProvider.SHOW_DEFAULT));
+      dialog.setIgnoreCase(false);
+      dialog.setTitle(NewWizardMessages.NewTypeWizardPage_ChoosePackageDialog_title); 
+      dialog.setMessage(NewWizardMessages.NewTypeWizardPage_ChoosePackageDialog_description); 
+      dialog.setEmptyListMessage(NewWizardMessages.NewTypeWizardPage_ChoosePackageDialog_empty);
+      dialog.setFilter(myPackageDialogField.getText());
+      dialog.setElements(packages);
+      if (dialog.open() == Window.OK) {
+        return (IPackageFragment) dialog.getFirstResult();
+      }
+      return null;
+    }
+
+    protected class PackageButtonAdapter implements IStringButtonAdapter, IDialogFieldListener {
+      public void changeControlPressed(DialogField _field) {
+        IPackageFragment pack = choosePackage(); 
+        if (pack != null) {
+            myPackageDialogField.setText(pack.getElementName());
+        }
+      }
+      
+      public void dialogFieldChanged(DialogField _field) {
+        //fPackageStatus= packageChanged();
+        //updatePackageStatusLabel();
+      }
+    }
 }

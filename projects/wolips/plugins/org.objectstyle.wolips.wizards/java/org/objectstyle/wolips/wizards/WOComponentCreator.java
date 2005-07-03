@@ -63,6 +63,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -76,6 +77,7 @@ import org.objectstyle.wolips.templateengine.ComponentEngine;
  */
 public class WOComponentCreator implements IRunnableWithProgress {
 	private String componentName;
+    private String packageName;
 	private boolean createBodyTag;
 	private boolean createApiFile;
 	private boolean createWooFile;
@@ -86,14 +88,16 @@ public class WOComponentCreator implements IRunnableWithProgress {
 	 * 
 	 * @param parentResource
 	 * @param componentName
+     * @param packageName
 	 * @param createBodyTag
 	 * @param createApiFile
 	 * @param createWooFile
 	 */
-	public WOComponentCreator(IResource parentResource, String componentName,
+	public WOComponentCreator(IResource parentResource, String componentName, String packageName,
 			boolean createBodyTag, boolean createApiFile, boolean createWooFile, WOComponentCreationPage page) {
 		this.parentResource = parentResource;
 		this.componentName = componentName;
+        this.packageName = packageName;
 		this.createBodyTag = createBodyTag;
 		this.createApiFile = createApiFile;
 		this.createWooFile = createWooFile;
@@ -150,6 +154,12 @@ public class WOComponentCreator implements IRunnableWithProgress {
 				throw new InvocationTargetException(new Exception(
 						"Wrong parent resource - check validation"));
 		}
+        if (packageName != null && packageName.length() > 0) {
+          componentJavaPath = componentJavaPath.append(new Path(packageName.replace('.', '/')));
+        }
+        //IFolder componentJavaFolder = ((IProject) this.parentResource).getFolder(componentJavaPath);
+        //System.out.println("WOComponentCreator.createWOComponent: " + componentJavaFolder);
+        //componentJavaFolder.create(false, true, monitor);
 		componentFolder.create(false, true, monitor);
 		String projectName = this.parentResource.getProject().getName();
 		IPath path = componentFolder.getLocation();
@@ -166,6 +176,7 @@ public class WOComponentCreator implements IRunnableWithProgress {
 		componentEngine.setProjectName(projectName);
 		componentEngine.setCreateBodyTag(this.createBodyTag);
 		componentEngine.setComponentName(this.componentName);
+        componentEngine.setPackageName(this.packageName);
 		componentEngine.setComponentPath(path);
 		componentEngine.setApiPath(apiPath);
 		componentEngine.setJavaPath(componentJavaPath);

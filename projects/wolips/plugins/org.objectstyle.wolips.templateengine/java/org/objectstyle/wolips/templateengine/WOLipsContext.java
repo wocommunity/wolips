@@ -70,6 +70,7 @@ public class WOLipsContext {
 	private String projectName;
 	private String adaptorName;
 	private String componentName;
+    private String packageName;
 	private boolean createBodyTag = false;
 	private String antFolderName;
 	
@@ -131,6 +132,18 @@ public class WOLipsContext {
 	public void setComponentName(String componentName) {
 		this.componentName = componentName;
 	}
+    
+    public boolean getCreatePackageDeclaration() {
+      return this.packageName != null && this.packageName.length() > 0;
+    }
+    
+    public void setPackageName(String packageName) {
+      this.packageName = packageName;
+    }
+    
+    public String getPackageName() {
+      return this.packageName;
+    }
 	
 	/**
 	 * @return
