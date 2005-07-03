@@ -223,7 +223,7 @@ public class WODCompletionProcessor implements IContentAssistProcessor {
             if (ch == ' ') {
               // ignore spaces
             }
-            else if (ch == stringToMatch[matchIndex]) {
+            else if (Character.toLowerCase((char)ch) == stringToMatch[matchIndex]) {
               matchIndex++;
               if (matchIndex == stringToMatch.length) {
                 elementNameBuffer = new StringBuffer();
@@ -232,7 +232,7 @@ public class WODCompletionProcessor implements IContentAssistProcessor {
             }
             else {
               matchIndex = 0;
-              if (ch == stringToMatch[matchIndex]) {
+              if (Character.toLowerCase((char)ch) == stringToMatch[matchIndex]) {
                 matchIndex++;
               }
             }
