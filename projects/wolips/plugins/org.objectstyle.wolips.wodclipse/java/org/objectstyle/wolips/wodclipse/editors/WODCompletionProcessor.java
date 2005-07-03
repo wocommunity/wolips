@@ -18,6 +18,7 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IMember;
 import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
+import org.eclipse.jdt.core.ITypeHierarchy;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.Signature;
 import org.eclipse.jdt.core.search.IJavaSearchConstants;
@@ -49,11 +50,11 @@ public class WODCompletionProcessor implements IContentAssistProcessor {
   private IEditorPart myEditor;
   private List myValidElementNames;
   private long myTemplateLastModified;
-  
+
   public WODCompletionProcessor(IEditorPart _editor) {
     myEditor = _editor;
   }
-  
+
   public char[] getContextInformationAutoActivationCharacters() {
     return null;
   }
@@ -223,7 +224,7 @@ public class WODCompletionProcessor implements IContentAssistProcessor {
             if (ch == ' ') {
               // ignore spaces
             }
-            else if (Character.toLowerCase((char)ch) == stringToMatch[matchIndex]) {
+            else if (Character.toLowerCase((char) ch) == stringToMatch[matchIndex]) {
               matchIndex++;
               if (matchIndex == stringToMatch.length) {
                 elementNameBuffer = new StringBuffer();
@@ -232,7 +233,7 @@ public class WODCompletionProcessor implements IContentAssistProcessor {
             }
             else {
               matchIndex = 0;
-              if (Character.toLowerCase((char)ch) == stringToMatch[matchIndex]) {
+              if (Character.toLowerCase((char) ch) == stringToMatch[matchIndex]) {
                 matchIndex++;
               }
             }
@@ -305,14 +306,18 @@ public class WODCompletionProcessor implements IContentAssistProcessor {
   protected void fillInAssociationNameCompletionProposals(IJavaProject _project, IType _componentType, IPath _wodFilePath, String _token, int _tokenOffset, int _offset, List _completionProposalsList) throws JavaModelException {
     String partialToken = partialToken(_token, _tokenOffset, _offset).toLowerCase();
 
-    IField[] fields = _componentType.getFields();
-    for (int i = 0; i < fields.length; i++) {
-      findMemberProposals(fields[i], partialToken, WODCompletionProcessor.FIELD_PREFIXES, _token, _tokenOffset, _offset, _completionProposalsList, 1, false);
-    }
+    ITypeHierarchy typeHierarchy = _componentType.newSupertypeHierarchy(null);
+    IType[] types = typeHierarchy.getAllTypes();
+    for (int typeNum = 0; typeNum < types.length; typeNum++) {
+      IField[] fields = types[typeNum].getFields();
+      for (int fieldNum = 0; fieldNum < fields.length; fieldNum++) {
+        findMemberProposals(fields[fieldNum], partialToken, WODCompletionProcessor.FIELD_PREFIXES, _token, _tokenOffset, _offset, _completionProposalsList, 1, false);
+      }
 
-    IMethod[] methods = _componentType.getMethods();
-    for (int i = 0; i < methods.length; i++) {
-      findMemberProposals(methods[i], partialToken, WODCompletionProcessor.SET_METHOD_PREFIXES, _token, _tokenOffset, _offset, _completionProposalsList, 1, false);
+      IMethod[] methods = types[typeNum].getMethods();
+      for (int methodNum = 0; methodNum < methods.length; methodNum++) {
+        findMemberProposals(methods[methodNum], partialToken, WODCompletionProcessor.SET_METHOD_PREFIXES, _token, _tokenOffset, _offset, _completionProposalsList, 1, false);
+      }
     }
   }
 
@@ -358,14 +363,18 @@ public class WODCompletionProcessor implements IContentAssistProcessor {
 
       String accessor = accessors[accessors.length - 1];
       _token = accessors[accessors.length - 1];
-      IField[] fields = nextType.getFields();
-      for (int i = 0; i < fields.length; i++) {
-        findMemberProposals(fields[i], accessor, WODCompletionProcessor.FIELD_PREFIXES, _token, _tokenOffset, _offset, _completionProposalsList, 0, true);
-      }
+      ITypeHierarchy typeHierarchy = nextType.newSupertypeHierarchy(null);
+      IType[] types = typeHierarchy.getAllTypes();
+      for (int typeNum = 0; typeNum < types.length; typeNum++) {
+        IField[] fields = types[typeNum].getFields();
+        for (int fieldNum = 0; fieldNum < fields.length; fieldNum++) {
+          findMemberProposals(fields[fieldNum], accessor, WODCompletionProcessor.FIELD_PREFIXES, _token, _tokenOffset, _offset, _completionProposalsList, 0, true);
+        }
 
-      IMethod[] methods = nextType.getMethods();
-      for (int i = 0; i < methods.length; i++) {
-        findMemberProposals(methods[i], accessor, WODCompletionProcessor.GET_METHOD_PREFIXES, _token, _tokenOffset, _offset, _completionProposalsList, 0, true);
+        IMethod[] methods = types[typeNum].getMethods();
+        for (int methodsNum = 0; methodsNum < methods.length; methodsNum++) {
+          findMemberProposals(methods[methodsNum], accessor, WODCompletionProcessor.GET_METHOD_PREFIXES, _token, _tokenOffset, _offset, _completionProposalsList, 0, true);
+        }
       }
     }
   }
@@ -373,14 +382,18 @@ public class WODCompletionProcessor implements IContentAssistProcessor {
   protected String nextType(IType _currentType, String _accessor) throws JavaModelException {
     String partialToken = _accessor.toLowerCase();
     String nextTypeName = null;
-    IField[] fields = _currentType.getFields();
-    for (int i = 0; nextTypeName == null && i < fields.length; i++) {
-      nextTypeName = findMemberProposals(fields[i], partialToken, WODCompletionProcessor.FIELD_PREFIXES, "", 0, 0, new LinkedList(), 0, true);
-    }
+    ITypeHierarchy typeHierarchy = _currentType.newSupertypeHierarchy(null);
+    IType[] types = typeHierarchy.getAllTypes();
+    for (int typeNum = 0; nextTypeName == null && typeNum < types.length; typeNum++) {
+      IField[] fields = types[typeNum].getFields();
+      for (int fieldNum = 0; nextTypeName == null && fieldNum < fields.length; fieldNum++) {
+        nextTypeName = findMemberProposals(fields[fieldNum], partialToken, WODCompletionProcessor.FIELD_PREFIXES, "", 0, 0, new LinkedList(), 0, true);
+      }
 
-    IMethod[] methods = _currentType.getMethods();
-    for (int i = 0; nextTypeName == null && i < methods.length; i++) {
-      nextTypeName = findMemberProposals(methods[i], partialToken, WODCompletionProcessor.GET_METHOD_PREFIXES, "", 0, 0, new LinkedList(), 0, true);
+      IMethod[] methods = _currentType.getMethods();
+      for (int methodNum = 0; nextTypeName == null && methodNum < methods.length; methodNum++) {
+        nextTypeName = findMemberProposals(methods[methodNum], partialToken, WODCompletionProcessor.GET_METHOD_PREFIXES, "", 0, 0, new LinkedList(), 0, true);
+      }
     }
     return nextTypeName;
   }
@@ -394,7 +407,10 @@ public class WODCompletionProcessor implements IContentAssistProcessor {
         IMethod method = (IMethod) _member;
         if (method.getParameterNames().length == _requiredParameterCount) {
           nextType = method.getReturnType();
-          if (!_returnValueRequired || nextType != null) {
+          if (_returnValueRequired && nextType != null) {
+            memberMatches = true;
+          }
+          else if (!_returnValueRequired && nextType == null) {
             memberMatches = true;
           }
           else {
