@@ -30,12 +30,13 @@
    <extension
          point="org.eclipse.ui.editors">
       <editor
-            name="WOD Editor"
+            class="org.objectstyle.wolips.wodclipse.editors.WODEditor"
+            contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
+            default="true"
             extensions="wod"
             icon="icons/sample.gif"
-            contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
-            class="org.objectstyle.wolips.wodclipse.editors.WODEditor"
-            id="org.objectstyle.wolips.wodclipse.editors.WODEditor">
+            id="org.objectstyle.wolips.wodclipse.editors.WODEditor"
+            name="WOD Editor">
       </editor>
    </extension>
    <extension
@@ -58,6 +59,14 @@
             id="org.objectstyle.wolips.wodclipse.wod"
             name="org.objectstyle.wolips.wodclipse.wod"
             priority="normal"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.contexts">
+      <context
+            description="Editing WOD Files Context"
+            id="org.objectstyle.wolips.wodclipse.wodEditorScope"
+            name="Editing WOD Files"
+            parentId="org.eclipse.ui.textEditorScope"/>
    </extension>
 
 </plugin>

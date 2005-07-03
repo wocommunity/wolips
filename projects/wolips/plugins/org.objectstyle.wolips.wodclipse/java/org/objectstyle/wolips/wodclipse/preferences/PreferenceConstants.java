@@ -1,8 +1,8 @@
 package org.objectstyle.wolips.wodclipse.preferences;
 
 public class PreferenceConstants {
-  public static final String COMPONENT_NAME = "ComponentName";
-  public static final String COMPONENT_TYPE = "ComponentType";
+  public static final String ELEMENT_NAME = "ComponentName";
+  public static final String ELEMENT_TYPE = "ComponentType";
   public static final String ASSOCIATION_NAME = "AssociationName";
   public static final String ASSOCIATION_VALUE = "AssociationValue";
   public static final String CONSTANT_ASSOCIATION_VALUE = "ConstantAssociationValue";

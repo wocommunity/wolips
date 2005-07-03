@@ -1,5 +1,7 @@
 package org.objectstyle.wolips.wodclipse;
 
+import java.util.ResourceBundle;
+
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
@@ -10,6 +12,7 @@ import org.osgi.framework.BundleContext;
 public class WodclipsePlugin extends AbstractUIPlugin {
   //The shared instance.
   private static WodclipsePlugin plugin;
+  private ResourceBundle resourceBundle;
 
   /**
    * The constructor.
@@ -17,6 +20,7 @@ public class WodclipsePlugin extends AbstractUIPlugin {
   public WodclipsePlugin() {
     super();
     plugin = this;
+    resourceBundle = ResourceBundle.getBundle("org.objectstyle.wolips.wodclipse.WodclipsePluginResources");
   }
 
   /**
@@ -50,5 +54,12 @@ public class WodclipsePlugin extends AbstractUIPlugin {
    */
   public static ImageDescriptor getImageDescriptor(String path) {
     return AbstractUIPlugin.imageDescriptorFromPlugin("org.objectstyle.wolips.wodclipse", path);
+  }
+
+  /**
+   * Returns the plugin's resource bundle,
+   */
+  public ResourceBundle getResourceBundle() {
+    return this.resourceBundle;
   }
 }

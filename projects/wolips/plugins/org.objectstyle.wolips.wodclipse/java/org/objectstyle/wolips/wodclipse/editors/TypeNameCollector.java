@@ -9,6 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.core.resources.IResource;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.ITypeHierarchy;
@@ -21,16 +22,18 @@ public class TypeNameCollector extends TypeNameRequestor {
   private Map myTypeNameToPath;
   private Map myTypeNameToType;
   private IType myWOElementType;
+  private boolean myRequireTypeInProject;
 
-  public TypeNameCollector(IJavaProject _project) throws JavaModelException {
-    this(_project, new LinkedList());
+  public TypeNameCollector(IJavaProject _project, boolean _requireTypeInProject) throws JavaModelException {
+    this(_project, _requireTypeInProject, new LinkedList());
   }
 
-  public TypeNameCollector(IJavaProject _project, List _typeNames) throws JavaModelException {
+  public TypeNameCollector(IJavaProject _project, boolean _requireTypeInProject, List _typeNames) throws JavaModelException {
     myProject = _project;
     myTypeNames = _typeNames;
     myTypeNameToPath = new HashMap();
     myTypeNameToType = new HashMap();
+    myRequireTypeInProject = _requireTypeInProject;
     myWOElementType = myProject.findType("com.webobjects.appserver.WOElement");
   }
 
@@ -71,11 +74,20 @@ public class TypeNameCollector extends TypeNameRequestor {
     try {
       IType type = myProject.findType(className);
       if (type != null) {
-        ITypeHierarchy typeHierarchy = type.newSupertypeHierarchy(null);
-        if (typeHierarchy.contains(myWOElementType)) {
-          myTypeNames.add(className);
-          myTypeNameToPath.put(className, _path);
-          myTypeNameToType.put(className, type);
+        boolean typeMatches = true;
+        if (myRequireTypeInProject) {
+          IResource correspondingResource = type.getResource();
+          if (correspondingResource == null) {
+            typeMatches = false;
+          }
+        }
+        if (typeMatches) {
+          ITypeHierarchy typeHierarchy = type.newSupertypeHierarchy(null);
+          if (typeHierarchy.contains(myWOElementType)) {
+            myTypeNames.add(className);
+            myTypeNameToPath.put(className, _path);
+            myTypeNameToType.put(className, type);
+          }
         }
       }
     }

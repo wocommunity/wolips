@@ -31,28 +31,28 @@ public class WhitespacePredicateRule implements IPredicateRule {
     fDetector = detector;
   }
 
-  public IToken evaluate(ICharacterScanner _scanner, boolean _resume) {
-    return evaluate(_scanner, false);
-  }
-
   public IToken getSuccessToken() {
     return Token.WHITESPACE;
+  }
+
+  public IToken evaluate(ICharacterScanner _scanner) {
+    return evaluate(_scanner, false);
   }
 
   /*
    * @see IRule#evaluate(ICharacterScanner)
    */
-  public IToken evaluate(ICharacterScanner scanner) {
-    int c = scanner.read();
+  public IToken evaluate(ICharacterScanner _scanner, boolean _resume) {
+    int c = _scanner.read();
     if (fDetector.isWhitespace((char) c)) {
       do {
-        c = scanner.read();
+        c = _scanner.read();
       } while (fDetector.isWhitespace((char) c));
-      scanner.unread();
+      _scanner.unread();
       return Token.WHITESPACE;
     }
 
-    scanner.unread();
+    _scanner.unread();
     return Token.UNDEFINED;
   }
 }

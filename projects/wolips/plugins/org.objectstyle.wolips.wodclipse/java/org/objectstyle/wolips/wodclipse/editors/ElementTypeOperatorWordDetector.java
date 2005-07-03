@@ -2,8 +2,8 @@ package org.objectstyle.wolips.wodclipse.editors;
 
 import org.eclipse.jface.text.rules.IWordDetector;
 
-public class ComponentTypeOperatorWordDetector implements IWordDetector {
-  public ComponentTypeOperatorWordDetector() {
+public class ElementTypeOperatorWordDetector implements IWordDetector {
+  public ElementTypeOperatorWordDetector() {
   }
 
   public boolean isWordStart(char _ch) {

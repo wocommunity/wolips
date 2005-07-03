@@ -17,7 +17,7 @@ import org.objectstyle.wolips.wodclipse.WodclipsePlugin;
 import org.objectstyle.wolips.wodclipse.preferences.PreferenceConstants;
 
 public class WODScanner extends AbstractJavaScanner {
-  private static String[] WOD_TOKENS = { PreferenceConstants.COMPONENT_NAME, PreferenceConstants.COMPONENT_TYPE, PreferenceConstants.ASSOCIATION_NAME, PreferenceConstants.ASSOCIATION_VALUE, PreferenceConstants.CONSTANT_ASSOCIATION_VALUE, PreferenceConstants.OPERATOR, PreferenceConstants.UNKNOWN };
+  private static String[] WOD_TOKENS = { PreferenceConstants.ELEMENT_NAME, PreferenceConstants.ELEMENT_TYPE, PreferenceConstants.ASSOCIATION_NAME, PreferenceConstants.ASSOCIATION_VALUE, PreferenceConstants.CONSTANT_ASSOCIATION_VALUE, PreferenceConstants.OPERATOR, PreferenceConstants.UNKNOWN };
 
   public static WODScanner newWODScanner() {
     IColorManager colorManager = JavaPlugin.getDefault().getJavaTextTools().getColorManager();
@@ -40,13 +40,13 @@ public class WODScanner extends AbstractJavaScanner {
     rules.add(new SingleLineRule("\"", "\"", getToken(PreferenceConstants.CONSTANT_ASSOCIATION_VALUE), '\\'));
     rules.add(new SingleLineRule("'", "'", getToken(PreferenceConstants.CONSTANT_ASSOCIATION_VALUE), '\\'));
     rules.add(new WhitespaceRule(new JavaWhitespaceDetector()));
-    rules.add(new WordPredicateRule(new ComponentTypeOperatorWordDetector(), getToken(PreferenceConstants.OPERATOR)));
+    rules.add(new WordPredicateRule(new ElementTypeOperatorWordDetector(), getToken(PreferenceConstants.OPERATOR)));
     rules.add(new WordPredicateRule(new OpenDefinitionWordDetector(), getToken(PreferenceConstants.OPERATOR)));
     rules.add(new WordPredicateRule(new AssignmentOperatorWordDetector(), getToken(PreferenceConstants.OPERATOR)));
     rules.add(new WordPredicateRule(new EndAssignmentWordDetector(), getToken(PreferenceConstants.OPERATOR)));
     rules.add(new WordPredicateRule(new CloseDefinitionWordDetector(), getToken(PreferenceConstants.OPERATOR)));
-    rules.add(new ComponentNameRule(getToken(PreferenceConstants.COMPONENT_NAME)));
-    rules.add(new ComponentTypeRule(getToken(PreferenceConstants.COMPONENT_TYPE)));
+    rules.add(new ElementNameRule(getToken(PreferenceConstants.ELEMENT_NAME)));
+    rules.add(new ElementTypeRule(getToken(PreferenceConstants.ELEMENT_TYPE)));
     rules.add(new AssociationNameRule(getToken(PreferenceConstants.ASSOCIATION_NAME)));
     rules.add(new AssociationValueRule(getToken(PreferenceConstants.ASSOCIATION_VALUE)));
     rules.add(new WordPredicateRule(new UnknownWordDetector(), getToken(PreferenceConstants.UNKNOWN)));
@@ -80,14 +80,14 @@ public class WODScanner extends AbstractJavaScanner {
 
   public IToken nextToken() {
     IToken token = super.nextToken();
-    /*
+    /**
      try {
-     System.out.println("WODScanner.nextToken: " + fDocument.get(getTokenOffset(), getTokenLength()));
+     System.out.println("WODScanner.nextToken: '" + fDocument.get(getTokenOffset(), getTokenLength()) + "'");
      }
      catch (Throwable t) {
      System.out.println("WODScanner.nextToken: " + t);
      }
-     */
+     /**/
     return token;
   }
 }

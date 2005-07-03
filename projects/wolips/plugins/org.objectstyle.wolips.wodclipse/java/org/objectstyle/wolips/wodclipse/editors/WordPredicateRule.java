@@ -20,7 +20,7 @@ public class WordPredicateRule extends WordRule implements IPredicateRule {
   }
 
   public IToken evaluate(ICharacterScanner _scanner, boolean _resume) {
-    IToken token = evaluate(_scanner, false);
+    IToken token = evaluate(_scanner);
     return token;
   }
 

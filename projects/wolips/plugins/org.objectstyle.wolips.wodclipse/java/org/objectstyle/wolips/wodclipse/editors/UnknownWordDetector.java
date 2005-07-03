@@ -15,7 +15,7 @@ public class UnknownWordDetector implements IWordDetector {
   }
 
   private boolean isUnknownLetter(char _ch) {
-    boolean unknownLetter = Character.isLetterOrDigit(_ch);
+    boolean unknownLetter = Character.isLetterOrDigit(_ch) || _ch == '.';
     return unknownLetter;
   }
 }

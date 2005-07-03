@@ -5,10 +5,10 @@ import org.eclipse.jface.text.rules.IPredicateRule;
 import org.eclipse.jface.text.rules.IToken;
 import org.eclipse.jface.text.rules.Token;
 
-public class ComponentNameRule implements IPredicateRule {
+public class ElementNameRule implements IPredicateRule {
   private IToken myToken;
 
-  public ComponentNameRule(IToken _token) {
+  public ElementNameRule(IToken _token) {
     myToken = _token;
   }
 
@@ -16,11 +16,11 @@ public class ComponentNameRule implements IPredicateRule {
     return myToken;
   }
 
-  public IToken evaluate(ICharacterScanner _scanner, boolean _resume) {
+  public IToken evaluate(ICharacterScanner _scanner) {
     return evaluate(_scanner, false);
   }
 
-  public IToken evaluate(ICharacterScanner _scanner) {
+  public IToken evaluate(ICharacterScanner _scanner, boolean _resume) {
     IToken token = Token.UNDEFINED;
     int whitespaceCount = 0;
     int unreadCount = 0;
@@ -42,12 +42,12 @@ public class ComponentNameRule implements IPredicateRule {
         whitespaceCount = 0;
       }
     }
-    
+
     if (token == myToken) {
       unreadCount = whitespaceCount;
     }
     if (ch == ICharacterScanner.EOF) {
-      unreadCount ++;
+      unreadCount++;
     }
     for (int i = 0; i < unreadCount; i++) {
       _scanner.unread();

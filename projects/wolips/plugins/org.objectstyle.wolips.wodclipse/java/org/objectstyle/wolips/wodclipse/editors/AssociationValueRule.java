@@ -16,12 +16,11 @@ public class AssociationValueRule implements IPredicateRule {
     return myToken;
   }
 
-  public IToken evaluate(ICharacterScanner _scanner, boolean _resume) {
+  public IToken evaluate(ICharacterScanner _scanner) {
     return evaluate(_scanner, false);
   }
 
-  public IToken evaluate(ICharacterScanner _scanner) {
-    int startColumn = _scanner.getColumn();
+  public IToken evaluate(ICharacterScanner _scanner, boolean _resume) {
     IToken token = Token.UNDEFINED;
     int whitespaceCount = 0;
     int unreadCount = 0;
@@ -48,7 +47,7 @@ public class AssociationValueRule implements IPredicateRule {
       unreadCount = whitespaceCount;
     }
     if (ch == ICharacterScanner.EOF) {
-      unreadCount ++;
+      unreadCount++;
     }
     for (int i = 0; i < unreadCount; i++) {
       _scanner.unread();

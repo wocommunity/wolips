@@ -16,11 +16,11 @@ public class AssociationNameRule implements IPredicateRule {
     return myToken;
   }
 
-  public IToken evaluate(ICharacterScanner _scanner, boolean _resume) {
+  public IToken evaluate(ICharacterScanner _scanner) {
     return evaluate(_scanner, false);
   }
 
-  public IToken evaluate(ICharacterScanner _scanner) {
+  public IToken evaluate(ICharacterScanner _scanner, boolean _resume) {
     int startColumn = _scanner.getColumn();
     IToken token = Token.UNDEFINED;
     int whitespaceCount = 0;

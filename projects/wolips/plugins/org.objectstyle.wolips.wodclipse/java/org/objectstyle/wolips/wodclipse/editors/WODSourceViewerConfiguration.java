@@ -34,11 +34,13 @@ public class WODSourceViewerConfiguration extends SourceViewerConfiguration {
   }
 
   public IContentAssistant getContentAssistant(ISourceViewer _sourceViewer) {
-    ContentAssistant assistance = new ContentAssistant();
-    assistance.setContentAssistProcessor(new WODCompletionProcessor(myEditor), IDocument.DEFAULT_CONTENT_TYPE);
-    assistance.enableAutoActivation(true);
-    assistance.setAutoActivationDelay(500);
-    assistance.setProposalPopupOrientation(IContentAssistant.PROPOSAL_OVERLAY);
-    return assistance;
+    WODCompletionProcessor processor = new WODCompletionProcessor(myEditor);
+    ContentAssistant assistant = new ContentAssistant();
+    assistant.setContentAssistProcessor(processor, IDocument.DEFAULT_CONTENT_TYPE);
+    //assistant.enableAutoActivation(true);
+    //assistant.setAutoActivationDelay(500);
+    //assistant.enableAutoInsert(true);
+    assistant.setProposalPopupOrientation(IContentAssistant.PROPOSAL_OVERLAY);
+    return assistant;
   }
 }
