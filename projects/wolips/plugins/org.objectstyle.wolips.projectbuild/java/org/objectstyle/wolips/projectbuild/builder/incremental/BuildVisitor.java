@@ -58,6 +58,7 @@ package org.objectstyle.wolips.projectbuild.builder.incremental;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
@@ -140,10 +141,13 @@ public class BuildVisitor extends BuildHelper {
 				String message = "duplicate resource for destination .../"
 						+ shortened.toString();
 				//_getLogger().debug("** " + message);
+                /**/
 				markResource(res, ProjectBuildPlugin.MARKER_BUILD_DUPLICATE,
 						IMarker.SEVERITY_ERROR, message, src.getFullPath()
 								.toString());
 				result = false; // ignore this one, it's a duplicate
+                /**/
+                //result = true;
 			} else {
 				result = true;
 			}
@@ -173,8 +177,9 @@ public class BuildVisitor extends BuildHelper {
 	 * @see org.objectstyle.wolips.projectbuild.builder.WOIncrementalBuilder.WOBuildHelper#handleResource(org.eclipse.core.resources.IResource,
 	 *      org.eclipse.core.resources.IResourceDelta)
 	 */
-	public void handleResource(IResource res, IResourceDelta delta)
+	public boolean handleResource(IResource res, IResourceDelta delta)
 			throws CoreException {
+      boolean handleResourceChildren = true;
 		++count;
 		IPath fullPath = res.getFullPath();
 		boolean ignore = false;
@@ -200,10 +205,13 @@ public class BuildVisitor extends BuildHelper {
 				//					_getLogger().debug("ignoring probable resource! "+res);
 			}
 			if (this.getProject().matchesWOAppResourcesPattern(res)) {
-				IPath dest = this.getIncrementalNature().asWebResourcePath(
-						res.getFullPath(), res);
+				IPath dest = this.getIncrementalNature().asWebResourcePath(res.getFullPath(), res);
 				if (_checkResource(res, delta, dest)) {
 					handled = _handleResource(res, delta, dest);
+                    // copying a folder already copies children, so don't process children folders
+                    if (res instanceof IFolder) {
+                      handleResourceChildren = false;
+                    }
 				} else {
 					handled = true;
 				}
@@ -213,6 +221,7 @@ public class BuildVisitor extends BuildHelper {
 			_getLogger().debug("//not a (ws)resource: " + res);
 			unmarkResource(res, ProjectBuildPlugin.MARKER_BUILD_DUPLICATE);
 		}
+        return handleResourceChildren;
 	}
 
 	/**

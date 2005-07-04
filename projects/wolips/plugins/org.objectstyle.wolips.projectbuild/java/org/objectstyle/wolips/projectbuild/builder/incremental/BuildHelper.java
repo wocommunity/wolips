@@ -315,8 +315,8 @@ public abstract class BuildHelper extends ResourceUtilities implements
 				|| _distPath.isPrefixOf(resPath)) {
 			return false;
 		}
-		handleResource(res, delta);
-		return true;
+		boolean handleResourceChildren = handleResource(res, delta);
+		return handleResourceChildren;
 	}
 
 	/**
@@ -350,7 +350,7 @@ public abstract class BuildHelper extends ResourceUtilities implements
 		return ProjectBuildPlugin.getDefault().getPluginLogger();
 	}
 
-	public abstract void handleResource(IResource res, IResourceDelta delta)
+	public abstract boolean handleResource(IResource res, IResourceDelta delta)
 			throws CoreException;
 
 	protected IncrementalNature getIncrementalNature() {

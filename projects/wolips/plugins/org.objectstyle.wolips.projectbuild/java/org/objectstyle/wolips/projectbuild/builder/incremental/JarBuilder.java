@@ -83,7 +83,7 @@ public class JarBuilder extends BuildHelper {
 	 * @param delta
 	 * @throws CoreException
 	 */
-	public void handleResource(IResource resource, IResourceDelta delta)
+	public boolean handleResource(IResource resource, IResourceDelta delta)
 			throws CoreException {
 		int baseSegments;
 
@@ -111,6 +111,7 @@ public class JarBuilder extends BuildHelper {
 				}
 			}
 		}
+        return true;
 	}
 
 }
