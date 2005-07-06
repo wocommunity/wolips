@@ -92,8 +92,21 @@ public class WODCompletionProcessor implements IContentAssistProcessor {
           if (_offset == lineRegion.getOffset() && _offset == scanner.getTokenOffset()) {
             foundToken = true;
           }
-          else if (_offset > scanner.getTokenOffset() && _offset <= (scanner.getTokenOffset() + scanner.getTokenLength())) {
-            foundToken = true;
+          else {
+            int tokenEndOffset = scanner.getTokenOffset() + scanner.getTokenLength();
+            if (_offset > scanner.getTokenOffset()) {
+              if (_offset < tokenEndOffset) {
+                foundToken = true;
+              }
+              else if (_offset == tokenEndOffset) {
+                if (matchingRule instanceof OperatorRule) {
+                  foundToken = false;
+                }
+                else {
+                  foundToken = true;
+                }
+              }
+            }
           }
         }
 
@@ -126,31 +139,34 @@ public class WODCompletionProcessor implements IContentAssistProcessor {
           else if (matchingRule instanceof AssociationValueRule) {
             tokenType = PreferenceConstants.ASSOCIATION_VALUE;
           }
+          else if (matchingRule instanceof OperatorRule) {
+            tokenType = null;//PreferenceConstants.OPERATOR;
+          }
           else {
             tokenType = null;
           }
         }
 
         if (tokenType == null) {
-          if (tokenOffset == document.getLength()) {
-            tokenOffset--;
+          int startOffset = tokenOffset;
+          if (startOffset != 0 && startOffset == document.getLength()) {
+            startOffset--;
           }
-          if (tokenOffset != -1) {
-            int hintChar = -1;
-            for (int startOffset = tokenOffset - 1; tokenType == null && startOffset > 0; startOffset--) {
-              int ch = document.getChar(startOffset);
-              if (ch == ':') {
-                tokenType = PreferenceConstants.ELEMENT_TYPE;
-              }
-              else if (ch == '{' || ch == ';') {
-                tokenType = PreferenceConstants.ASSOCIATION_NAME;
-              }
-              else if (ch == '=') {
-                tokenType = PreferenceConstants.ASSOCIATION_VALUE;
-              }
-              else if (ch == '}') {
-                tokenType = PreferenceConstants.ELEMENT_NAME;
-              }
+          int hintChar = -1;
+          //for (int startOffset = tokenOffset - 1; tokenType == null && startOffset > 0; startOffset--) {
+          for (; tokenType == null && startOffset > 0; startOffset--) {
+            int ch = document.getChar(startOffset);
+            if (ch == ':') {
+              tokenType = PreferenceConstants.ELEMENT_TYPE;
+            }
+            else if (ch == '{' || ch == ';') {
+              tokenType = PreferenceConstants.ASSOCIATION_NAME;
+            }
+            else if (ch == '=') {
+              tokenType = PreferenceConstants.ASSOCIATION_VALUE;
+            }
+            else if (ch == '}') {
+              tokenType = PreferenceConstants.ELEMENT_NAME;
             }
           }
         }
@@ -302,7 +318,7 @@ public class WODCompletionProcessor implements IContentAssistProcessor {
       }
     }
   }
-
+  
   protected void fillInAssociationNameCompletionProposals(IJavaProject _project, IType _componentType, IPath _wodFilePath, String _token, int _tokenOffset, int _offset, List _completionProposalsList) throws JavaModelException {
     String partialToken = partialToken(_token, _tokenOffset, _offset).toLowerCase();
 
@@ -407,10 +423,10 @@ public class WODCompletionProcessor implements IContentAssistProcessor {
         IMethod method = (IMethod) _member;
         if (method.getParameterNames().length == _requiredParameterCount) {
           nextType = method.getReturnType();
-          if (_returnValueRequired && nextType != null) {
+          if (_returnValueRequired && nextType != null && !nextType.equals("V")) {
             memberMatches = true;
           }
-          else if (!_returnValueRequired && nextType == null) {
+          else if (!_returnValueRequired && (nextType == null || nextType.equals("V"))) {
             memberMatches = true;
           }
           else {
@@ -428,7 +444,7 @@ public class WODCompletionProcessor implements IContentAssistProcessor {
         String lowercaseElementName = elementName.toLowerCase();
 
         String proposalElementName = null;
-        for (int prefixNum = 0; prefixNum < _prefixes.length; prefixNum++) {
+        for (int prefixNum = 0; proposalElementName == null && prefixNum < _prefixes.length; prefixNum++) {
           if (lowercaseElementName.startsWith(_prefixes[prefixNum])) {
             int prefixLength = _prefixes[prefixNum].length();
             String noPrefixElementName = lowercaseElementName.substring(prefixLength);
@@ -467,7 +483,10 @@ public class WODCompletionProcessor implements IContentAssistProcessor {
   protected IType findElementType(IJavaProject _project, IDocument _document, WODScanner _scanner, int _offset) throws BadLocationException, JavaModelException {
     IType type;
     int colonOffset = _offset;
-    for (colonOffset = _offset; colonOffset >= 0; colonOffset--) {
+    if (colonOffset >= _document.getLength()) {
+      colonOffset--;
+    }
+    for (; colonOffset >= 0; colonOffset--) {
       char ch = _document.getChar(colonOffset);
       if (ch == ':') {
         break;

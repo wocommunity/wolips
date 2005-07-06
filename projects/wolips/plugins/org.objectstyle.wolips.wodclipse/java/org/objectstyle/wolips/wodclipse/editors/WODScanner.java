@@ -40,11 +40,11 @@ public class WODScanner extends AbstractJavaScanner {
     rules.add(new SingleLineRule("\"", "\"", getToken(PreferenceConstants.CONSTANT_ASSOCIATION_VALUE), '\\'));
     rules.add(new SingleLineRule("'", "'", getToken(PreferenceConstants.CONSTANT_ASSOCIATION_VALUE), '\\'));
     rules.add(new WhitespaceRule(new JavaWhitespaceDetector()));
-    rules.add(new WordPredicateRule(new ElementTypeOperatorWordDetector(), getToken(PreferenceConstants.OPERATOR)));
-    rules.add(new WordPredicateRule(new OpenDefinitionWordDetector(), getToken(PreferenceConstants.OPERATOR)));
-    rules.add(new WordPredicateRule(new AssignmentOperatorWordDetector(), getToken(PreferenceConstants.OPERATOR)));
-    rules.add(new WordPredicateRule(new EndAssignmentWordDetector(), getToken(PreferenceConstants.OPERATOR)));
-    rules.add(new WordPredicateRule(new CloseDefinitionWordDetector(), getToken(PreferenceConstants.OPERATOR)));
+    rules.add(new OperatorRule(new ElementTypeOperatorWordDetector(), getToken(PreferenceConstants.OPERATOR)));
+    rules.add(new OperatorRule(new OpenDefinitionWordDetector(), getToken(PreferenceConstants.OPERATOR)));
+    rules.add(new OperatorRule(new AssignmentOperatorWordDetector(), getToken(PreferenceConstants.OPERATOR)));
+    rules.add(new OperatorRule(new EndAssignmentWordDetector(), getToken(PreferenceConstants.OPERATOR)));
+    rules.add(new OperatorRule(new CloseDefinitionWordDetector(), getToken(PreferenceConstants.OPERATOR)));
     rules.add(new ElementNameRule(getToken(PreferenceConstants.ELEMENT_NAME)));
     rules.add(new ElementTypeRule(getToken(PreferenceConstants.ELEMENT_TYPE)));
     rules.add(new AssociationNameRule(getToken(PreferenceConstants.ASSOCIATION_NAME)));
