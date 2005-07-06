@@ -5,9 +5,9 @@ package org.objectstyle.wolips.wodclipse.editors;
 
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jdt.core.IJavaProject;
@@ -18,17 +18,17 @@ import org.eclipse.jdt.core.search.TypeNameRequestor;
 
 public class TypeNameCollector extends TypeNameRequestor {
   private IJavaProject myProject;
-  private List myTypeNames;
+  private Set myTypeNames;
   private Map myTypeNameToPath;
   private Map myTypeNameToType;
   private IType myWOElementType;
   private boolean myRequireTypeInProject;
 
   public TypeNameCollector(IJavaProject _project, boolean _requireTypeInProject) throws JavaModelException {
-    this(_project, _requireTypeInProject, new LinkedList());
+    this(_project, _requireTypeInProject, new TreeSet());
   }
 
-  public TypeNameCollector(IJavaProject _project, boolean _requireTypeInProject, List _typeNames) throws JavaModelException {
+  public TypeNameCollector(IJavaProject _project, boolean _requireTypeInProject, Set _typeNames) throws JavaModelException {
     myProject = _project;
     myTypeNames = _typeNames;
     myTypeNameToPath = new HashMap();
@@ -46,7 +46,7 @@ public class TypeNameCollector extends TypeNameRequestor {
   }
 
   public String firstTypeName() {
-    return (String) myTypeNames.get(0);
+    return (String) myTypeNames.iterator().next();
   }
 
   public Iterator typeNames() {

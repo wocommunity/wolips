@@ -6,6 +6,8 @@ import java.io.InputStream;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -48,7 +50,7 @@ public class WODCompletionProcessor implements IContentAssistProcessor {
   private static final String[] SET_METHOD_PREFIXES = { "set", "_set" };
   private static final String[] GET_METHOD_PREFIXES = { "get", "_get", "is", "_is" };
   private IEditorPart myEditor;
-  private List myValidElementNames;
+  private Set myValidElementNames;
   private long myTemplateLastModified;
 
   public WODCompletionProcessor(IEditorPart _editor) {
@@ -217,14 +219,14 @@ public class WODCompletionProcessor implements IContentAssistProcessor {
     return null;
   }
 
-  protected List validComponentNames(IPath _filePath) throws CoreException, IOException {
+  protected Set validComponentNames(IPath _filePath) throws CoreException, IOException {
     IPath templatePath = _filePath.removeFileExtension().addFileExtension("html");
     IFile file = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(templatePath);
     //myTemplateLastModified = IFile.NULL_STAMP;
     if (file != null) {
       long templateLastModified = file.getModificationStamp();
       if (myValidElementNames == null || myTemplateLastModified == IFile.NULL_STAMP || templateLastModified > myTemplateLastModified) {
-        myValidElementNames = new LinkedList();
+        myValidElementNames = new TreeSet();
         myTemplateLastModified = templateLastModified;
         FileEditorInput fileInput = new FileEditorInput(file);
         InputStream fileContents = fileInput.getStorage().getContents();
@@ -318,7 +320,7 @@ public class WODCompletionProcessor implements IContentAssistProcessor {
       }
     }
   }
-  
+
   protected void fillInAssociationNameCompletionProposals(IJavaProject _project, IType _componentType, IPath _wodFilePath, String _token, int _tokenOffset, int _offset, List _completionProposalsList) throws JavaModelException {
     String partialToken = partialToken(_token, _tokenOffset, _offset).toLowerCase();
 
