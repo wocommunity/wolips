@@ -366,6 +366,7 @@ public class WODCompletionProcessor implements IContentAssistProcessor {
       }
     }
 
+    /*
     IOpenable typeContainer = _componentType.getOpenable();
     if (typeContainer instanceof IClassFile) {
       IClassFile classFile = (IClassFile) typeContainer;
@@ -384,6 +385,7 @@ public class WODCompletionProcessor implements IContentAssistProcessor {
     else if (typeContainer instanceof ICompilationUnit) {
       ICompilationUnit cu = (ICompilationUnit) typeContainer;
     }
+    */
   }
 
   protected void fillInAssociationValueCompletionProposals(IJavaProject _project, IType _associatedType, String _token, int _tokenOffset, int _offset, List _completionProposalsList) throws JavaModelException {
@@ -455,7 +457,7 @@ public class WODCompletionProcessor implements IContentAssistProcessor {
         nextTypeName = findMemberProposals(fields[fieldNum], partialToken, WODCompletionProcessor.FIELD_PREFIXES, "", 0, 0, new LinkedList(), 0, true);
       }
 
-      IMethod[] methods = _currentType.getMethods();
+      IMethod[] methods = types[typeNum].getMethods();
       for (int methodNum = 0; nextTypeName == null && methodNum < methods.length; methodNum++) {
         nextTypeName = findMemberProposals(methods[methodNum], partialToken, WODCompletionProcessor.GET_METHOD_PREFIXES, "", 0, 0, new LinkedList(), 0, true);
       }
