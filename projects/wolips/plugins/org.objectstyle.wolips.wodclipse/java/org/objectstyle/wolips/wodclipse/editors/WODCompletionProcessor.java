@@ -1,8 +1,10 @@
 package org.objectstyle.wolips.wodclipse.editors;
 
 import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -15,10 +17,15 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.Flags;
+import org.eclipse.jdt.core.IClassFile;
+import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IField;
+import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IMember;
 import org.eclipse.jdt.core.IMethod;
+import org.eclipse.jdt.core.IOpenable;
+import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.ITypeHierarchy;
 import org.eclipse.jdt.core.JavaModelException;
@@ -178,7 +185,7 @@ public class WODCompletionProcessor implements IContentAssistProcessor {
         }
 
         if (tokenType == PreferenceConstants.ELEMENT_NAME) {
-          fillInElementNameCompletionProposals(javaProject, path, token, tokenOffset, _offset, completionProposalsList);
+          fillInElementNameCompletionProposals(javaProject, document, path, token, tokenOffset, _offset, completionProposalsList);
         }
         else if (tokenType == PreferenceConstants.ELEMENT_TYPE) {
           fillInElementTypeCompletionProposals(javaProject, token, tokenOffset, _offset, completionProposalsList);
@@ -288,13 +295,34 @@ public class WODCompletionProcessor implements IContentAssistProcessor {
     return partialToken;
   }
 
-  protected void fillInElementNameCompletionProposals(IJavaProject _project, IPath _wodFilePath, String _token, int _tokenOffset, int _offset, List _completionProposalsList) throws CoreException, IOException {
+  protected void fillInElementNameCompletionProposals(IJavaProject _project, IDocument _document, IPath _wodFilePath, String _token, int _tokenOffset, int _offset, List _completionProposalsList) throws CoreException, IOException {
     String partialToken = partialToken(_token, _tokenOffset, _offset).toLowerCase();
-    Iterator validComponentNamesIter = validComponentNames(_wodFilePath).iterator();
-    while (validComponentNamesIter.hasNext()) {
-      String validComponentName = (String) validComponentNamesIter.next();
-      if (validComponentName.toLowerCase().startsWith(partialToken)) {
-        _completionProposalsList.add(completionProposal(_token, _tokenOffset, _offset, validComponentName));
+    Iterator validElementNamesIter = validComponentNames(_wodFilePath).iterator();
+
+    // We really need something like the AST ... This is a pretty expensive way to go here.
+    HashSet alreadyUsedElementNames = new HashSet();
+    try {
+      WODScanner scanner = WODScanner.newWODScanner();
+      scanner.setRange(_document, 0, _document.getLength());
+      IRule matchingRule = null;
+      while ((matchingRule = scanner.nextMatchingRule()) != null) {
+        if (matchingRule instanceof ElementNameRule) {
+          int tokenOffset = scanner.getTokenOffset();
+          int tokenLength = scanner.getTokenLength();
+          String alreadyUsedElementName = _document.get(tokenOffset, tokenLength);
+          alreadyUsedElementNames.add(alreadyUsedElementName);
+        }
+      }
+    }
+    catch (Throwable t) {
+      // It's not THAT big of a deal ...
+      t.printStackTrace();
+    }
+
+    while (validElementNamesIter.hasNext()) {
+      String validElementName = (String) validElementNamesIter.next();
+      if (validElementName.toLowerCase().startsWith(partialToken) && !alreadyUsedElementNames.contains(validElementName)) {
+        _completionProposalsList.add(completionProposal(_token, _tokenOffset, _offset, validElementName));
       }
     }
   }
@@ -336,6 +364,25 @@ public class WODCompletionProcessor implements IContentAssistProcessor {
       for (int methodNum = 0; methodNum < methods.length; methodNum++) {
         findMemberProposals(methods[methodNum], partialToken, WODCompletionProcessor.SET_METHOD_PREFIXES, _token, _tokenOffset, _offset, _completionProposalsList, 1, false);
       }
+    }
+
+    IOpenable typeContainer = _componentType.getOpenable();
+    if (typeContainer instanceof IClassFile) {
+      IClassFile classFile = (IClassFile) typeContainer;
+      IJavaElement parent = classFile.getParent();
+      if (parent instanceof IPackageFragment) {
+        IPackageFragment parentPackage = (IPackageFragment) parent;
+        IPath packagePath = parentPackage.getPath();
+        IPath apiPath = packagePath.removeLastSegments(2).append(_componentType.getElementName()).addFileExtension("api");
+        File apiFile = apiPath.toFile();
+        System.out.println("WODCompletionProcessor.fillInAssociationNameCompletionProposals: " + apiPath);
+        if (apiFile.exists()) {
+          System.out.println("WODCompletionProcessor.fillInAssociationNameCompletionProposals: exists");
+        }
+      }
+    }
+    else if (typeContainer instanceof ICompilationUnit) {
+      ICompilationUnit cu = (ICompilationUnit) typeContainer;
     }
   }
 
