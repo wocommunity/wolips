@@ -370,12 +370,12 @@ public class WODCompletionProcessor implements IContentAssistProcessor {
     for (int typeNum = 0; typeNum < types.length; typeNum++) {
       IField[] fields = types[typeNum].getFields();
       for (int fieldNum = 0; fieldNum < fields.length; fieldNum++) {
-        findMemberProposals(fields[fieldNum], partialToken, WODCompletionProcessor.FIELD_PREFIXES, _token, _tokenOffset, _offset, _completionProposalsSet, 1, false);
+        findMemberProposals(fields[fieldNum], partialToken, WODCompletionProcessor.FIELD_PREFIXES, _token, _tokenOffset, _offset, _completionProposalsSet, 1, false, false);
       }
 
       IMethod[] methods = types[typeNum].getMethods();
       for (int methodNum = 0; methodNum < methods.length; methodNum++) {
-        findMemberProposals(methods[methodNum], partialToken, WODCompletionProcessor.SET_METHOD_PREFIXES, _token, _tokenOffset, _offset, _completionProposalsSet, 1, false);
+        findMemberProposals(methods[methodNum], partialToken, WODCompletionProcessor.SET_METHOD_PREFIXES, _token, _tokenOffset, _offset, _completionProposalsSet, 1, false, false);
       }
     }
 
@@ -443,6 +443,7 @@ public class WODCompletionProcessor implements IContentAssistProcessor {
         IType nextTypeAttempt = null;
         for (int typeNum = 0; nextTypeAttempt == null && typeNum < types.length; typeNum++) {
           String[][] resolvedTypes = types[typeNum].resolveType(nextTypeName);
+          //System.out.println("WODCompletionProcessor.fillInAssociationValueCompletionProposals: " + nextTypeName + ", " + resolvedTypes);
           if (resolvedTypes != null && resolvedTypes.length == 1) {
             String nextTypeNameTemp = Signature.toQualifiedName(resolvedTypes[0]);
             nextTypeAttempt = _project.findType(nextTypeNameTemp);
@@ -468,12 +469,12 @@ public class WODCompletionProcessor implements IContentAssistProcessor {
       for (int typeNum = 0; typeNum < types.length; typeNum++) {
         IField[] fields = types[typeNum].getFields();
         for (int fieldNum = 0; fieldNum < fields.length; fieldNum++) {
-          findMemberProposals(fields[fieldNum], accessor, WODCompletionProcessor.FIELD_PREFIXES, _token, _tokenOffset, _offset, _completionProposalsSet, 0, true);
+          findMemberProposals(fields[fieldNum], accessor, WODCompletionProcessor.FIELD_PREFIXES, _token, _tokenOffset, _offset, _completionProposalsSet, 0, true, false);
         }
 
         IMethod[] methods = types[typeNum].getMethods();
         for (int methodsNum = 0; methodsNum < methods.length; methodsNum++) {
-          findMemberProposals(methods[methodsNum], accessor, WODCompletionProcessor.GET_METHOD_PREFIXES, _token, _tokenOffset, _offset, _completionProposalsSet, 0, true);
+          findMemberProposals(methods[methodsNum], accessor, WODCompletionProcessor.GET_METHOD_PREFIXES, _token, _tokenOffset, _offset, _completionProposalsSet, 0, true, false);
         }
       }
     }
@@ -489,20 +490,20 @@ public class WODCompletionProcessor implements IContentAssistProcessor {
     for (int typeNum = 0; nextTypeName == null && typeNum < types.length; typeNum++) {
       IField[] fields = types[typeNum].getFields();
       for (int fieldNum = 0; nextTypeName == null && fieldNum < fields.length; fieldNum++) {
-        nextTypeName = findMemberProposals(fields[fieldNum], partialToken, WODCompletionProcessor.FIELD_PREFIXES, "", 0, 0, new HashSet(), 0, true);
+        nextTypeName = findMemberProposals(fields[fieldNum], partialToken, WODCompletionProcessor.FIELD_PREFIXES, "", 0, 0, new HashSet(), 0, true, true);
         //System.out.println("WODCompletionProcessor.nextType: field " + fields[fieldNum].getElementName() + "=>" + nextTypeName);
       }
 
       IMethod[] methods = types[typeNum].getMethods();
       for (int methodNum = 0; nextTypeName == null && methodNum < methods.length; methodNum++) {
-        nextTypeName = findMemberProposals(methods[methodNum], partialToken, WODCompletionProcessor.GET_METHOD_PREFIXES, "", 0, 0, new HashSet(), 0, true);
+        nextTypeName = findMemberProposals(methods[methodNum], partialToken, WODCompletionProcessor.GET_METHOD_PREFIXES, "", 0, 0, new HashSet(), 0, true, true);
         //System.out.println("WODCompletionProcessor.nextType: method " + methods[methodNum].getElementName() + "=>" + nextTypeName);
       }
     }
     return nextTypeName;
   }
 
-  protected String findMemberProposals(IMember _member, String _partialToken, String[] _prefixes, String _token, int _tokenOffset, int _offset, Set _completionProposals, int _requiredParameterCount, boolean _returnValueRequired) throws JavaModelException {
+  protected String findMemberProposals(IMember _member, String _partialToken, String[] _prefixes, String _token, int _tokenOffset, int _offset, Set _completionProposals, int _requiredParameterCount, boolean _returnValueRequired, boolean _requireExactNameMatch) throws JavaModelException {
     String nextType = null;
     int flags = _member.getFlags();
     // Look for non-static, non-private members ...
@@ -543,7 +544,7 @@ public class WODCompletionProcessor implements IContentAssistProcessor {
           if (lowercaseElementName.startsWith(_prefixes[prefixNum])) {
             int prefixLength = _prefixes[prefixNum].length();
             String noPrefixElementName = lowercaseElementName.substring(prefixLength);
-            if (noPrefixElementName.startsWith(_partialToken)) {
+            if ((_requireExactNameMatch && noPrefixElementName.equals(_partialToken)) || (!_requireExactNameMatch && noPrefixElementName.startsWith(_partialToken))) {
               proposalElementName = elementName.substring(prefixLength);
               if (proposalElementName.length() > 0) {
                 char firstChar = proposalElementName.charAt(0);
@@ -554,7 +555,7 @@ public class WODCompletionProcessor implements IContentAssistProcessor {
             }
           }
         }
-        if (proposalElementName == null && lowercaseElementName.startsWith(_partialToken)) {
+        if (proposalElementName == null && ((_requireExactNameMatch && lowercaseElementName.equals(_partialToken)) || (!_requireExactNameMatch && lowercaseElementName.startsWith(_partialToken)))) {
           proposalElementName = elementName;
         }
 
