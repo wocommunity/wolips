@@ -383,7 +383,8 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 			if ((memberResource != null)
 					&& (memberResource instanceof IContainer)
 					&& (!memberResource.toString().endsWith(".framework"))
-					&& (!memberResource.toString().endsWith(".woa")))
+					&& (!memberResource.toString().endsWith(".woa"))
+					&& (!memberResource.isDerived()))
 				WorkbenchUtilitiesPlugin.findFilesInResourceByName(anArrayList,
 						memberResource, aFileName);
 		}
