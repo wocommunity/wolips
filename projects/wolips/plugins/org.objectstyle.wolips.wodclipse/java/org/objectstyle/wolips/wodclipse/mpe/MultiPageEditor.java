@@ -70,15 +70,13 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor;
 import org.eclipse.jdt.ui.JavaUI;
 import org.eclipse.jface.dialogs.ErrorDialog;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
-import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.ide.IDE;
+import org.eclipse.ui.internal.browser.WebBrowserEditor;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.objectstyle.wolips.wodclipse.editors.WODEditor;
@@ -97,6 +95,7 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 		IResourceChangeListener {
 
 	ArrayList editors = new ArrayList();
+	int webEditorIndex = 0;
 
 	/**
 	 * Creates a multi-page editor example.
@@ -216,6 +215,39 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 					"Error creating nested text editor", null, e.getStatus());
 		}
 	}
+	
+	/**
+	 * Creates page 4 of the multi-page editor, which shows the preview.
+	 */
+	void createPage4() {
+
+		try {
+			IFile file = ((FileEditorInput) this.getEditorInput()).getFile();
+			IProject project = file.getProject();
+			List resources = WorkbenchUtilitiesPlugin
+					.findResourcesInProjectByNameAndExtensions(project, file
+							.getName()
+							.substring(0, file.getName().length() - 5),
+							new String[] { "html" }, false);
+			if (resources == null || resources.size() != 1) {
+				return;
+			}
+			IResource wodResource = (IResource) resources.get(0);
+			if (wodResource.getType() != IResource.FILE) {
+				return;
+			}
+			WebBrowserEditor webEditor = new WebBrowserEditor();
+			FileEditorInput fileEditorInput = new FileEditorInput(
+					(IFile) wodResource);
+			int index = addPage(webEditor, fileEditorInput);
+			setPageText(index, "Preview");
+			editors.add(webEditor);
+			webEditorIndex = index;
+		} catch (PartInitException e) {
+			ErrorDialog.openError(getSite().getShell(),
+					"Error creating nested text editor", null, e.getStatus());
+		}
+	}
 
 	/**
 	 * Creates the pages of the multi-page editor.
@@ -225,6 +257,7 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 		createPage1();
 		createPage2();
 		createPage3();
+		createPage4();
 	}
 
 	/**
@@ -243,7 +276,10 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 	public void doSave(IProgressMonitor monitor) {
 		int pageCount = this.getPageCount();
 		for (int i = 0; i < pageCount; i++) {
-			getEditor(i).doSave(monitor);
+			//Save all except preview
+			if(!(webEditorIndex > 0 && webEditorIndex == i)) {
+				getEditor(i).doSave(monitor);
+			}
 		}
 	}
 

@@ -22,6 +22,7 @@
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.ui.ide"/>
       <import plugin="org.objectstyle.wolips.workbenchutilities"/>
+      <import plugin="org.eclipse.ui.browser"/>
    </requires>
 
    <extension
@@ -68,12 +69,13 @@
    <extension
          point="org.eclipse.ui.editors">
       <editor
-            name="WO Multi-page Editor"
+            class="org.objectstyle.wolips.wodclipse.mpe.MultiPageEditor"
+            contributorClass="org.objectstyle.wolips.wodclipse.mpe.MultiPageEditorContributor"
+            default="true"
             extensions="java"
             icon="icons/WOMultiPageEditor.gif"
-            contributorClass="org.objectstyle.wolips.wodclipse.mpe.MultiPageEditorContributor"
-            class="org.objectstyle.wolips.wodclipse.mpe.MultiPageEditor"
-            id="org.objectstyle.wolips.wodclipse.mpe.MultiPageEditor">
+            id="org.objectstyle.wolips.wodclipse.mpe.MultiPageEditor"
+            name="WO Multi-page Editor">
       </editor>
    </extension>
    
