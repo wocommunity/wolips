@@ -18,13 +18,10 @@
       <import plugin="org.eclipse.ui.editors"/>
       <import plugin="org.eclipse.ui.workbench.texteditor"/>
       <import plugin="org.eclipse.jdt.ui"/>
-      <import plugin="org.eclipse.jdt.source"/>
       <import plugin="org.eclipse.jdt.core"/>
-      <import plugin="org.eclipse.jdt"/>
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.ui.ide"/>
-      <import plugin="org.eclipse.ltk.ui.refactoring"/>
-      <import plugin="org.eclipse.ltk.core.refactoring"/>
+      <import plugin="org.objectstyle.wolips.workbenchutilities"/>
    </requires>
 
    <extension
@@ -34,7 +31,7 @@
             contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
             default="true"
             extensions="wod"
-            icon="icons/sample.gif"
+            icon="icons/WODEditor.gif"
             id="org.objectstyle.wolips.wodclipse.editors.WODEditor"
             name="WOD Editor">
       </editor>
@@ -68,5 +65,16 @@
             name="Editing WOD Files"
             parentId="org.eclipse.ui.textEditorScope"/>
    </extension>
-
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            name="WO Multi-page Editor"
+            extensions="java"
+            icon="icons/WOMultiPageEditor.gif"
+            contributorClass="org.objectstyle.wolips.wodclipse.mpe.MultiPageEditorContributor"
+            class="org.objectstyle.wolips.wodclipse.mpe.MultiPageEditor"
+            id="org.objectstyle.wolips.wodclipse.mpe.MultiPageEditor">
+      </editor>
+   </extension>
+   
 </plugin>
