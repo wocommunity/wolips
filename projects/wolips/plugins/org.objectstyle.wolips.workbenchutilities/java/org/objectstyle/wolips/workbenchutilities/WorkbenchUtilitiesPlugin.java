@@ -530,6 +530,28 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 	}
 
 	/**
+	 * Method open.
+	 * 
+	 * @param file
+	 *            The file to open.
+	 * @param editor
+	 */
+	public final static void open(IFile file, String editor) {
+		IWorkbenchWindow workbenchWindow = WorkbenchUtilitiesPlugin
+				.getDefault().getWorkbench().getActiveWorkbenchWindow();
+		if (workbenchWindow != null) {
+			IWorkbenchPage workbenchPage = workbenchWindow.getActivePage();
+			if (workbenchPage != null) {
+				try {
+					workbenchPage.openEditor(new FileEditorInput(file), editor);
+				} catch (Exception anException) {
+					WorkbenchUtilitiesPlugin.log(anException);
+				}
+			}
+		}
+	}
+
+	/**
 	 * @return Returns the pluginLogger.
 	 */
 	public ILogger getPluginLogger() {

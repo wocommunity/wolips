@@ -68,8 +68,10 @@ import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor;
+import org.eclipse.jdt.internal.ui.javaeditor.EditorUtility;
 import org.eclipse.jdt.ui.JavaUI;
 import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
@@ -308,18 +310,10 @@ public class MultiPageEditor extends MultiPageEditorPart implements
 			throw new PartInitException(
 					"Invalid Input: Must be IFileEditorInput");
 		
-		IFile file = ((FileEditorInput) editorInput).getFile();
-		IProject project = file.getProject();
+		final IFile file = ((FileEditorInput) editorInput).getFile();
 		String fileName = file
 		.getName()
 		.substring(0, file.getName().length() - 5);
-		List resources = WorkbenchUtilitiesPlugin
-				.findResourcesInProjectByNameAndExtensions(project, fileName,
-						new String[] { "wo" }, false);
-		if (resources == null || resources.size() != 1) {
-			WorkbenchUtilitiesPlugin.open(file, false, JavaUI.ID_CU_EDITOR);
-			return;
-		}
 		super.init(site, editorInput);
 		this.setPartName(fileName);
 	}

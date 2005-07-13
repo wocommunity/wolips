@@ -69,13 +69,19 @@
    <extension
          point="org.eclipse.ui.editors">
       <editor
-            class="org.objectstyle.wolips.wodclipse.mpe.MultiPageEditor"
-            contributorClass="org.objectstyle.wolips.wodclipse.mpe.MultiPageEditorContributor"
             default="true"
             extensions="java"
             icon="icons/WOMultiPageEditor.gif"
             id="org.objectstyle.wolips.wodclipse.mpe.MultiPageEditor"
+            launcher="org.objectstyle.wolips.wodclipse.mpe.MultiPageEditorLauncher"
             name="WO Multi-page Editor">
+      </editor>
+      <editor
+            class="org.objectstyle.wolips.wodclipse.mpe.MultiPageEditor"
+            contributorClass="org.objectstyle.wolips.wodclipse.mpe.MultiPageEditorContributor"
+            icon="icons/WOMultiPageEditor.gif"
+            id="org.objectstyle.wolips.wodclipse.mpe.InternalMultiPageEditor"
+            name="WO Multi-page Editor Internal">
       </editor>
    </extension>
    
