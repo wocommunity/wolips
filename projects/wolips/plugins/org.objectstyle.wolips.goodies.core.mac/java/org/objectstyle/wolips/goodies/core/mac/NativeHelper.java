@@ -92,31 +92,29 @@ public class NativeHelper {
 	}
 
 	private static void launchHelper(String action, String argument) {
-		if (!NativeHelper.ChmodDone) {
-			StringBuffer chmodStringBuffer = new StringBuffer();
-			chmodStringBuffer.append("chmod 755 ");
-			chmodStringBuffer.append(NativeHelper.helperCommand());
-			String chmodString = chmodStringBuffer.toString();
-			try {
-				Runtime.getRuntime().exec(chmodString);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			NativeHelper.ChmodDone = true;
-		}
-		StringBuffer toolStringBuffer = new StringBuffer();
-		toolStringBuffer.append(NativeHelper.helperCommand());
-		toolStringBuffer.append(" ");
-		toolStringBuffer.append(action);
-		toolStringBuffer.append(" \"");
-		toolStringBuffer.append(argument.replace(' ', ':'));
-		toolStringBuffer.append("\"");
-		String toolString = toolStringBuffer.toString();
+	  if (!NativeHelper.ChmodDone) {
+        String[] chmod = {
+          "chmod",
+          "755",
+          NativeHelper.helperCommand()
+        };
 		try {
-			Runtime.getRuntime().exec(toolString);
+			Runtime.getRuntime().exec(chmod);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		NativeHelper.ChmodDone = true;
+	  }
+      String[] toolCommands = {
+          NativeHelper.helperCommand(),
+          action,
+          argument.replace(' ', ':')
+      };
+      try {
+    	Runtime.getRuntime().exec(toolCommands);
+      } catch (IOException e) {
+    	e.printStackTrace();
+      }
 	}
 
 	/**
