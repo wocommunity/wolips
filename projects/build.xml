@@ -129,7 +129,7 @@
     <!-- ========================================== -->
     <!-- Build buildserver.                         -->
     <!-- ========================================== -->
-    <target name="buildserver" depends="dist,test">
+    <target name="buildserver" depends="dist">
     </target>
 
     <!-- ============================================= -->
