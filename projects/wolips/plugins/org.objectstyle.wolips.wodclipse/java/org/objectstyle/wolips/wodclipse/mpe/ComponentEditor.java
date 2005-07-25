@@ -40,7 +40,8 @@
  * on behalf of the ObjectStyle Group. For more information on the ObjectStyle
  * Group, please see <http://objectstyle.org/> .
  *  
- */package org.objectstyle.wolips.wodclipse.mpe;
+ */
+package org.objectstyle.wolips.wodclipse.mpe;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
@@ -53,6 +54,9 @@ import org.eclipse.ui.IPropertyListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.part.MultiEditor;
 
+/**
+ * @author uli
+ */
 public class ComponentEditor extends MultiEditor {
 
 	/*
