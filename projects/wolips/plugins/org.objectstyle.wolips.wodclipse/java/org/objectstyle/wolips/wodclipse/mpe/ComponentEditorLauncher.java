@@ -48,7 +48,11 @@ import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtension;
+import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.ui.JavaUI;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorLauncher;
@@ -66,7 +70,8 @@ public class ComponentEditorLauncher implements IEditorLauncher {
 	/**
 	 * Open the wocomponent editor with the given file resource.
 	 * 
-	 * @param file the file resource
+	 * @param file
+	 *            the file resource
 	 */
 	public void open(IFile file) {
 		IProject project = file.getProject();
@@ -102,7 +107,11 @@ public class ComponentEditorLauncher implements IEditorLauncher {
 		}
 		ids[0] = JavaUI.ID_CU_EDITOR;
 		allInput[0] = new FileEditorInput(file);
-		ids[1] = "org.eclipse.ui.DefaultTextEditor";
+		if (isEditorInstalled(WodclipsePlugin.HTMLEditorID)) {
+			ids[1] = WodclipsePlugin.HTMLEditorID;
+		} else {
+			ids[1] = "org.eclipse.ui.DefaultTextEditor";
+		}
 		allInput[1] = new FileEditorInput(((IFile) htmlResources.get(0)));
 		ids[2] = WodclipsePlugin.WODEditorID;
 		allInput[2] = new FileEditorInput(((IFile) wodResources.get(0)));
@@ -126,5 +135,26 @@ public class ComponentEditorLauncher implements IEditorLauncher {
 		IFile input = WorkbenchUtilitiesPlugin.getWorkspace().getRoot()
 				.getFileForLocation(file);
 		this.open(input);
+	}
+
+	/**
+	 * @return true if the plugin with the editor is installed
+	 */
+	private boolean isEditorInstalled(String editorID) {
+		IExtensionPoint extensionPoint = Platform.getExtensionRegistry()
+				.getExtensionPoint("org.eclipse.ui.editors");
+		IExtension[] extensions = extensionPoint.getExtensions();
+		for (int i = 0; i < extensions.length; i++) {
+			IConfigurationElement[] configurationElements = extensions[i]
+					.getConfigurationElements();
+			for (int j = 0; j < configurationElements.length; j++) {
+				IConfigurationElement configurationElement = configurationElements[j];
+				String id = configurationElement.getAttribute("id");
+				if (editorID.equals(id)) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 }
