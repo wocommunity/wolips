@@ -14,6 +14,8 @@ public class WodclipsePlugin extends AbstractUIPlugin {
   private static WodclipsePlugin plugin;
   private ResourceBundle resourceBundle;
 
+  public static String WODEditorID = "org.objectstyle.wolips.wodclipse.editors.WODEditor";
+  public static String ComponentEditorID = "org.objectstyle.wolips.wodclipse.mpe.ComponentEditor";
   /**
    * The constructor.
    */

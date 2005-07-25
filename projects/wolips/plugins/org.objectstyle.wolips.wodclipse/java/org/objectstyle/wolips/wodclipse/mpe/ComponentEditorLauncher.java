@@ -50,41 +50,70 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.ui.JavaUI;
+import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorLauncher;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.part.FileEditorInput;
+import org.eclipse.ui.part.MultiEditorInput;
+import org.objectstyle.wolips.wodclipse.WodclipsePlugin;
 import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 
 /**
  * @author uli
  */
-
-/**
- * Standard editor for opening a system editor on the currently selected file
- * resource.
- * <p>
- * This class may be instantiated; it is not intended to be subclassed.
- * </p>
- */
-public class MultiPageEditorLauncher implements IEditorLauncher {
+public class ComponentEditorLauncher implements IEditorLauncher {
 
 	/**
-	 * Opens a system editor on the given file resource.
+	 * Open the wocomponent editor with the given file resource.
 	 * 
-	 * @param file
-	 *            the file resource
+	 * @param file the file resource
 	 */
 	public void open(IFile file) {
 		IProject project = file.getProject();
+		String ids[] = null;
+		IEditorInput allInput[] = null;
 		String fileName = file.getName().substring(0,
 				file.getName().length() - 5);
-		List resources = WorkbenchUtilitiesPlugin
+		List htmlResources = WorkbenchUtilitiesPlugin
 				.findResourcesInProjectByNameAndExtensions(project, fileName,
-						new String[] { "wo" }, false);
-		if (resources == null || resources.size() != 1) {
+						new String[] { "html" }, false);
+		if (htmlResources == null || htmlResources.size() != 1) {
 			WorkbenchUtilitiesPlugin.open(file, JavaUI.ID_CU_EDITOR);
+			return;
+		}
+		List wodResources = WorkbenchUtilitiesPlugin
+				.findResourcesInProjectByNameAndExtensions(project, fileName,
+						new String[] { "wod" }, false);
+
+		if (wodResources == null || wodResources.size() != 1) {
+			WorkbenchUtilitiesPlugin.open(file, JavaUI.ID_CU_EDITOR);
+			return;
+		}
+		List apiResources = WorkbenchUtilitiesPlugin
+				.findResourcesInProjectByNameAndExtensions(project, fileName,
+						new String[] { "api" }, false);
+
+		if (wodResources == null || wodResources.size() != 1) {
+			ids = new String[3];
+			allInput = new IEditorInput[3];
 		} else {
-			WorkbenchUtilitiesPlugin
-					.open(file,
-							"org.objectstyle.wolips.wodclipse.mpe.InternalMultiPageEditor");
+			ids = new String[4];
+			allInput = new IEditorInput[4];
+		}
+		ids[0] = JavaUI.ID_CU_EDITOR;
+		allInput[0] = new FileEditorInput(file);
+		ids[1] = "org.eclipse.ui.DefaultTextEditor";
+		allInput[1] = new FileEditorInput(((IFile) htmlResources.get(0)));
+		ids[2] = WodclipsePlugin.WODEditorID;
+		allInput[2] = new FileEditorInput(((IFile) wodResources.get(0)));
+		ids[3] = "org.eclipse.ui.DefaultTextEditor";
+		allInput[3] = new FileEditorInput(((IFile) apiResources.get(0)));
+		MultiEditorInput input = new MultiEditorInput(ids, allInput);
+		try {
+			WorkbenchUtilitiesPlugin.getActiveWorkbenchWindow().getActivePage()
+					.openEditor(input, WodclipsePlugin.ComponentEditorID);
+		} catch (PartInitException e) {
+			e.printStackTrace();
 		}
 	}
 
