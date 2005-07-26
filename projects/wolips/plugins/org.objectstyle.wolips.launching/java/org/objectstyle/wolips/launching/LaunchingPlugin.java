@@ -62,6 +62,7 @@ public class LaunchingPlugin extends AbstractUIPlugin {
 	public static final String PLUGIN_ID = "org.objectstyle.wolips.launching";
 	private PluginLogger pluginLogger = new PluginLogger(
 			LaunchingPlugin.PLUGIN_ID, false);
+	
 	/**
 	 * The constructor.
 	 */

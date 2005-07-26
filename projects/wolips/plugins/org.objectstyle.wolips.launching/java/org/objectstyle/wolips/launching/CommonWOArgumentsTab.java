@@ -68,6 +68,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
+import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.debug.ui.ILaunchConfigurationDialog;
 import org.eclipse.debug.ui.ILaunchConfigurationTab;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
@@ -91,26 +92,35 @@ import org.objectstyle.wolips.commons.util.StringUtilities;
 import org.objectstyle.wolips.preferences.ILaunchInfo;
 import org.objectstyle.wolips.preferences.Preferences;
 import org.objectstyle.wolips.preferences.PreferencesMessages;
+
 /**
- * @author uli
- *
- * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates.
- * To enable and disable the creation of type comments go to
- * Window>Preferences>Java>Code Generation.
+ * @author uli To change this generated comment edit the template variable
+ *         "typecomment": Window>Preferences>Java>Templates. To enable and
+ *         disable the creation of type comments go to
+ *         Window>Preferences>Java>Code Generation.
  */
 public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 
 	private Table includeTable;
+
 	private Table debugGroupsTable;
+
 	private Button addButton;
+
 	private Button removeButton;
+
 	private Button changeButton;
 
 	private Vector allParameter;
+
 	private Vector allArguments;
-	
+
+	private Button openInBrowserCheckbox;
+
+	private Button webServerConnect;
+
 	protected static final String EMPTY_STRING = ""; //$NON-NLS-1$
+
 	/**
 	 * @see ILaunchConfigurationTab#createControl(Composite)
 	 */
@@ -128,18 +138,21 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 		parent.setLayoutData(data);
 
 		// set F1 help
-		//WorkbenchHelp.setHelp(parent, IHelpContextIds.IGNORE_PREFERENCE_PAGE);
+		// WorkbenchHelp.setHelp(parent,
+		// IHelpContextIds.IGNORE_PREFERENCE_PAGE);
 
 		Label l1 = new Label(parent, SWT.NULL);
-		l1.setText(PreferencesMessages.getString("LaunchPreferencesPage.label")); //$NON-NLS-1$
+		l1
+				.setText(PreferencesMessages
+						.getString("LaunchPreferencesPage.label")); //$NON-NLS-1$
 		data = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
 		data.horizontalSpan = 3;
 		l1.setLayoutData(data);
 
-		//includeTable = new Table(parent, SWT.CHECK | SWT.BORDER);
+		// includeTable = new Table(parent, SWT.CHECK | SWT.BORDER);
 		this.includeTable = new Table(parent, SWT.CHECK | SWT.BORDER);
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-		//gd.widthHint = convertWidthInCharsToPixels(30);
+		// gd.widthHint = convertWidthInCharsToPixels(30);
 		gd.widthHint = 150;
 		gd.heightHint = 250;
 		this.includeTable.setLayoutData(gd);
@@ -157,11 +170,11 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 
 		this.debugGroupsTable = new Table(parent, SWT.CHECK | SWT.BORDER);
 		GridData gd2 = new GridData(GridData.FILL_HORIZONTAL);
-		//gd.widthHint = convertWidthInCharsToPixels(30);
+		// gd.widthHint = convertWidthInCharsToPixels(30);
 		gd2.widthHint = 150;
 		gd2.heightHint = 250;
 		this.debugGroupsTable.setLayoutData(gd2);
-		
+
 		this.debugGroupsTable.addListener(SWT.CHECK, new Listener() {
 			public void handleEvent(Event e) {
 				superUpdateLaunchConfigurationDialog();
@@ -176,21 +189,18 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 		buttons.setLayout(layout);
 
 		this.addButton = new Button(buttons, SWT.PUSH);
-		this.addButton.setText(PreferencesMessages.getString("LaunchPreferencesPage.add")); //$NON-NLS-1$
+		this.addButton.setText(PreferencesMessages
+				.getString("LaunchPreferencesPage.add")); //$NON-NLS-1$
 		data = new GridData();
 		data.horizontalAlignment = GridData.FILL;
-        data.heightHint = 20;
-        data.heightHint =
-            Math.max(
-                data.heightHint,
-                this.addButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).y);
-		//convertVerticalDLUsToPixels(IDialogConstants.BUTTON_HEIGHT);
+		data.heightHint = 20;
+		data.heightHint = Math.max(data.heightHint, this.addButton.computeSize(
+				SWT.DEFAULT, SWT.DEFAULT, true).y);
+		// convertVerticalDLUsToPixels(IDialogConstants.BUTTON_HEIGHT);
 		int widthHint = 100;
-		//convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
-		data.widthHint =
-			Math.max(
-				widthHint,
-				this.addButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x);
+		// convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
+		data.widthHint = Math.max(widthHint, this.addButton.computeSize(
+				SWT.DEFAULT, SWT.DEFAULT, true).x);
 		this.addButton.setLayoutData(data);
 		this.addButton.addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event e) {
@@ -199,21 +209,19 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 		});
 
 		this.removeButton = new Button(buttons, SWT.PUSH);
-		this.removeButton.setText(PreferencesMessages.getString("LaunchPreferencesPage.remove")); //$NON-NLS-1$
+		this.removeButton.setText(PreferencesMessages
+				.getString("LaunchPreferencesPage.remove")); //$NON-NLS-1$
 		data = new GridData();
 		data.horizontalAlignment = GridData.FILL;
-        data.heightHint = 20;
-        data.heightHint =
-            Math.max(
-                data.heightHint,
-                this.removeButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).y);
-		//Dialog.convertVerticalDLUsToPixels(new FontMetrics(), IDialogConstants.BUTTON_HEIGHT);
+		data.heightHint = 20;
+		data.heightHint = Math.max(data.heightHint, this.removeButton
+				.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).y);
+		// Dialog.convertVerticalDLUsToPixels(new FontMetrics(),
+		// IDialogConstants.BUTTON_HEIGHT);
 		widthHint = 100;
-		//Dialog.convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
-		data.widthHint =
-			Math.max(
-				widthHint,
-				this.removeButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x);
+		// Dialog.convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
+		data.widthHint = Math.max(widthHint, this.removeButton.computeSize(
+				SWT.DEFAULT, SWT.DEFAULT, true).x);
 		this.removeButton.setLayoutData(data);
 		this.removeButton.setEnabled(false);
 		this.removeButton.addListener(SWT.Selection, new Listener() {
@@ -223,27 +231,73 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 		});
 
 		this.changeButton = new Button(buttons, SWT.PUSH);
-		this.changeButton.setText(PreferencesMessages.getString("LaunchPreferencesPage.change")); //$NON-NLS-1$
+		this.changeButton.setText(PreferencesMessages
+				.getString("LaunchPreferencesPage.change")); //$NON-NLS-1$
 		data = new GridData();
 		data.horizontalAlignment = GridData.FILL;
 		data.heightHint = 20;
-        data.heightHint =
-            Math.max(
-                data.heightHint,
-                this.changeButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).y);
+		data.heightHint = Math.max(data.heightHint, this.changeButton
+				.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).y);
 
-		//Dialog.convertVerticalDLUsToPixels(new FontMetrics(), IDialogConstants.BUTTON_HEIGHT);
+		// Dialog.convertVerticalDLUsToPixels(new FontMetrics(),
+		// IDialogConstants.BUTTON_HEIGHT);
 		widthHint = 100;
-		//Dialog.convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
-		data.widthHint =
-			Math.max(
-				widthHint,
-				this.changeButton.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x);
+		// Dialog.convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
+		data.widthHint = Math.max(widthHint, this.changeButton.computeSize(
+				SWT.DEFAULT, SWT.DEFAULT, true).x);
 		this.changeButton.setLayoutData(data);
 		this.changeButton.setEnabled(false);
 		this.changeButton.addListener(SWT.Selection, new Listener() {
 			public void handleEvent(Event e) {
 				changeArgument();
+			}
+		});
+
+		this.openInBrowserCheckbox = new Button(buttons, SWT.CHECK);
+		this.openInBrowserCheckbox.setText("Use Eclipse Browser");
+		data = new GridData();
+		data.horizontalAlignment = GridData.FILL;
+		data.heightHint = 20;
+		data.heightHint = Math.max(data.heightHint, this.openInBrowserCheckbox
+				.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).y);
+
+		// Dialog.convertVerticalDLUsToPixels(new FontMetrics(),
+		// IDialogConstants.BUTTON_HEIGHT);
+		widthHint = 100;
+		// Dialog.convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
+		data.widthHint = Math.max(widthHint, this.openInBrowserCheckbox
+				.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x);
+		this.openInBrowserCheckbox.setLayoutData(data);
+		this.openInBrowserCheckbox.setEnabled(true);
+
+		this.openInBrowserCheckbox.addListener(SWT.Selection, new Listener() {
+			public void handleEvent(Event e) {
+				//setDirty(true);
+				updateLaunchConfigurationDialog();
+			}
+		});
+
+		this.webServerConnect = new Button(buttons, SWT.CHECK);
+		this.webServerConnect.setText("WebServerConnect");
+		data = new GridData();
+		data.horizontalAlignment = GridData.FILL;
+		data.heightHint = 20;
+		data.heightHint = Math.max(data.heightHint, this.webServerConnect
+				.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).y);
+
+		// Dialog.convertVerticalDLUsToPixels(new FontMetrics(),
+		// IDialogConstants.BUTTON_HEIGHT);
+		widthHint = 100;
+		// Dialog.convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
+		data.widthHint = Math.max(widthHint, this.webServerConnect.computeSize(
+				SWT.DEFAULT, SWT.DEFAULT, true).x);
+		this.webServerConnect.setLayoutData(data);
+		this.webServerConnect.setEnabled(true);
+
+		this.webServerConnect.addListener(SWT.Selection, new Listener() {
+			public void handleEvent(Event e) {
+				//setDirty(true);
+				updateLaunchConfigurationDialog();
 			}
 		});
 
@@ -258,7 +312,8 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 		for (int i = 0; i < launchInfoArray.length; i++) {
 			ILaunchInfo launchInfo = launchInfoArray[i];
 			TableItem item = new TableItem(this.includeTable, SWT.NONE);
-			item.setText(StringUtilities.toCommandlineParameterFormat(launchInfo.getParameter(), launchInfo.getArgument()));
+			item.setText(StringUtilities.toCommandlineParameterFormat(
+					launchInfo.getParameter(), launchInfo.getArgument()));
 			this.allParameter.add(launchInfo.getParameter());
 			this.allArguments.add(launchInfo.getArgument());
 			item.setChecked(launchInfo.isEnabled());
@@ -266,25 +321,33 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 	}
 
 	private void fillDebugGroupsTable(String aString) {
-		String debugGroups = LaunchingMessages.getString(WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_DEBUG_GROUPS);
+		String debugGroups = LaunchingMessages
+				.getString(WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_DEBUG_GROUPS);
 		StringTokenizer stringTokenizer = new StringTokenizer(debugGroups, ",");
 		this.debugGroupsTable.removeAll();
-		while(stringTokenizer.hasMoreTokens()) {
+		while (stringTokenizer.hasMoreTokens()) {
 			TableItem item = new TableItem(this.debugGroupsTable, SWT.NONE);
 			String token = stringTokenizer.nextToken();
 			item.setText(token);
-			if(aString != null && aString.indexOf(token) >= 0)
+			if (aString != null && aString.indexOf(token) >= 0)
 				item.setChecked(true);
 			else
 				item.setChecked(false);
 		}
 	}
+
 	protected void addIgnore() {
-		InputDialog parameterDialog = new InputDialog(getShell(), PreferencesMessages.getString("LaunchPreferencesPage.enterParameterShort"), Preferences.getString("IgnorePreferencePage.enterPatternLong"), null, null); //$NON-NLS-1$ //$NON-NLS-2$
+		InputDialog parameterDialog = new InputDialog(
+				getShell(),
+				PreferencesMessages
+						.getString("LaunchPreferencesPage.enterParameterShort"), Preferences.getString("IgnorePreferencePage.enterPatternLong"), null, null); //$NON-NLS-1$ //$NON-NLS-2$
 		parameterDialog.open();
 		if (parameterDialog.getReturnCode() != Window.OK)
 			return;
-		InputDialog argumentDialog = new InputDialog(getShell(), PreferencesMessages.getString("LaunchPreferencesPage.enterArgumentShort"), Preferences.getString("IgnorePreferencePage.enterPatternLong"), null, null); //$NON-NLS-1$ //$NON-NLS-2$
+		InputDialog argumentDialog = new InputDialog(
+				getShell(),
+				PreferencesMessages
+						.getString("LaunchPreferencesPage.enterArgumentShort"), Preferences.getString("IgnorePreferencePage.enterPatternLong"), null, null); //$NON-NLS-1$ //$NON-NLS-2$
 		argumentDialog.open();
 		if (argumentDialog.getReturnCode() != Window.OK)
 			return;
@@ -296,12 +359,17 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 		TableItem[] items = this.includeTable.getItems();
 		for (int i = 0; i < items.length; i++) {
 			if (items[i].getText(1).equals(parameter)) {
-				MessageDialog.openWarning(getShell(), PreferencesMessages.getString("LaunchPreferencesPage.parameterExistsShort"), Preferences.getString("IgnorePreferencePage.patternExistsLong")); //$NON-NLS-1$ //$NON-NLS-2$
+				MessageDialog
+						.openWarning(
+								getShell(),
+								PreferencesMessages
+										.getString("LaunchPreferencesPage.parameterExistsShort"), Preferences.getString("IgnorePreferencePage.patternExistsLong")); //$NON-NLS-1$ //$NON-NLS-2$
 				return;
 			}
 		}
 		TableItem item = new TableItem(this.includeTable, SWT.NONE);
-		item.setText(StringUtilities.toCommandlineParameterFormat(parameter, argument));
+		item.setText(StringUtilities.toCommandlineParameterFormat(parameter,
+				argument));
 		this.allParameter.add(parameter);
 		this.allArguments.add(argument);
 		item.setChecked(true);
@@ -334,15 +402,19 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 		if (selection.length != 1)
 			return;
 		int index = selection[0];
-        String parameter = (String) this.allParameter.elementAt(index);
-		InputDialog argumentDialog = new InputDialog(getShell(), parameter + " " + PreferencesMessages.getString("LaunchPreferencesPage.enterArgumentShort"), Preferences.getString("IgnorePreferencePage.enterPatternLong"), (String) this.allArguments.elementAt(index), null); //$NON-NLS-1$ //$NON-NLS-2$
+		String parameter = (String) this.allParameter.elementAt(index);
+		InputDialog argumentDialog = new InputDialog(
+				getShell(),
+				parameter
+						+ " " + PreferencesMessages.getString("LaunchPreferencesPage.enterArgumentShort"), Preferences.getString("IgnorePreferencePage.enterPatternLong"), (String) this.allArguments.elementAt(index), null); //$NON-NLS-1$ //$NON-NLS-2$
 		argumentDialog.open();
 		if (argumentDialog.getReturnCode() != Window.OK)
 			return;
 		String argument = argumentDialog.getValue();
 		TableItem item = this.includeTable.getItem(index);
-        String newText;
-		item.setText(StringUtilities.toCommandlineParameterFormat(parameter, argument));
+		String newText;
+		item.setText(StringUtilities.toCommandlineParameterFormat(parameter,
+				argument));
 		this.allArguments.setElementAt(argument, index);
 		this.updateLaunchConfigurationDialog();
 	}
@@ -378,14 +450,22 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 	 */
 	public void setDefaults(ILaunchConfigurationWorkingCopy config) {
 		String string = this.getDefaultArguments(config);
-		config.setAttribute(
-			WOJavaLocalApplicationLaunchConfigurationDelegate
-				.ATTR_WOLIPS_LAUNCH_WOARGUMENTS,
-			string);
-		config.setAttribute(
-				WOJavaLocalApplicationLaunchConfigurationDelegate
-				.ATTR_WOLIPS_LAUNCH_DEBUG_GROUPS,
-				"");
+		config
+				.setAttribute(
+						WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_WOARGUMENTS,
+						string);
+		config
+				.setAttribute(
+						WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_DEBUG_GROUPS,
+						"");
+		config
+				.setAttribute(
+						WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_OPEN_IN_BROWSER,
+						"true");
+		config
+				.setAttribute(
+						WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_WEBSERVER_CONNECT,
+						"false");
 	}
 
 	/**
@@ -393,13 +473,35 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 	 */
 	public void initializeFrom(ILaunchConfiguration configuration) {
 		try {
-			String string = configuration.getAttribute(WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_WOARGUMENTS, Preferences.getPREF_LAUNCH_GLOBAL()); //$NON-NLS-1$
+			String string = configuration
+					.getAttribute(
+							WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_WOARGUMENTS,
+							Preferences.getPREF_LAUNCH_GLOBAL()); //$NON-NLS-1$
 			this.fillTable(Preferences.getLaunchInfoFrom(string));
-			this.fillDebugGroupsTable(configuration.getAttribute(
-					WOJavaLocalApplicationLaunchConfigurationDelegate
-					.ATTR_WOLIPS_LAUNCH_DEBUG_GROUPS, ""));
+			this
+					.fillDebugGroupsTable(configuration
+							.getAttribute(
+									WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_DEBUG_GROUPS,
+									""));
+			if (configuration
+					.getAttribute(
+							WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_DEBUG_GROUPS,
+							"true").equals("true")) {
+				openInBrowserCheckbox.setSelection(true);
+			} else {
+				openInBrowserCheckbox.setSelection(false);
+			}
+			if (configuration
+					.getAttribute(
+							WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_WEBSERVER_CONNECT,
+							"false").equals("true")) {
+				webServerConnect.setSelection(true);
+			} else {
+				webServerConnect.setSelection(false);
+			}
 		} catch (CoreException e) {
-			setErrorMessage(LaunchingMessages.getString("WOArgumentsTab.Exception_occurred_reading_configuration___15") + e.getStatus().getMessage()); //$NON-NLS-1$
+			setErrorMessage(LaunchingMessages
+					.getString("WOArgumentsTab.Exception_occurred_reading_configuration___15") + e.getStatus().getMessage()); //$NON-NLS-1$
 			LaunchingPlugin.getDefault().getPluginLogger().log(e);
 		}
 	}
@@ -418,26 +520,48 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 			arguments[i] = (String) this.allArguments.get(i);
 			enabled[i] = items[i].getChecked();
 		}
-		String string =
-			Preferences.LaunchInfoToString(parameter, arguments, enabled);
-		configuration.setAttribute(
-			WOJavaLocalApplicationLaunchConfigurationDelegate
-				.ATTR_WOLIPS_LAUNCH_WOARGUMENTS,
-			string);
-		
+		String string = Preferences.LaunchInfoToString(parameter, arguments,
+				enabled);
+		configuration
+				.setAttribute(
+						WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_WOARGUMENTS,
+						string);
+
 		String aString = "";
 		TableItem[] debugGrouspItems = this.debugGroupsTable.getItems();
 		for (int i = 0; i < debugGrouspItems.length; i++) {
-			if(debugGrouspItems[i].getChecked()) {
-				if(aString.length() > 0)
-					aString = aString +",";
+			if (debugGrouspItems[i].getChecked()) {
+				if (aString.length() > 0)
+					aString = aString + ",";
 				aString = aString + debugGrouspItems[i].getText();
 			}
 		}
-		configuration.setAttribute(
-				WOJavaLocalApplicationLaunchConfigurationDelegate
-				.ATTR_WOLIPS_LAUNCH_DEBUG_GROUPS,
-				aString);
+		configuration
+				.setAttribute(
+						WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_DEBUG_GROUPS,
+						aString);
+		if (openInBrowserCheckbox.getSelection()) {
+			configuration
+					.setAttribute(
+							WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_OPEN_IN_BROWSER,
+							"true");
+		} else {
+			configuration
+					.setAttribute(
+							WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_OPEN_IN_BROWSER,
+							"false");
+		}
+		if (webServerConnect.getSelection()) {
+			configuration
+					.setAttribute(
+							WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_WEBSERVER_CONNECT,
+							"true");
+		} else {
+			configuration
+					.setAttribute(
+							WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_WEBSERVER_CONNECT,
+							"false");
+		}
 	}
 
 	/**
@@ -445,13 +569,11 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 	 * 
 	 * @return text or <code>null</code>
 	 */
-	/*protected String getAttributeValueFrom(Text text) {
-		String content = text.getText().trim();
-		if (content.length() > 0) {
-			return content;
-		}
-		return null;
-	}*/
+	/*
+	 * protected String getAttributeValueFrom(Text text) { String content =
+	 * text.getText().trim(); if (content.length() > 0) { return content; }
+	 * return null; }
+	 */
 
 	/**
 	 * @see ILaunchConfigurationTab#getName()
@@ -466,6 +588,7 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 	public void setLaunchConfigurationDialog(ILaunchConfigurationDialog dialog) {
 		super.setLaunchConfigurationDialog(dialog);
 	}
+
 	/**
 	 * @see ILaunchConfigurationTab#getErrorMessage()
 	 */
@@ -489,37 +612,31 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 
 	private String getDefaultArguments(ILaunchConfigurationWorkingCopy config) {
 		try {
-			String path =
-				config.getAttribute(
+			String path = config.getAttribute(
 					IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME,
 					(String) null);
 			IPath aPath = null;
 			if (path != null) {
 				aPath = new Path(path);
 			}
-			IResource res =
-				ResourcesPlugin.getWorkspace().getRoot().findMember(path);
+			IResource res = ResourcesPlugin.getWorkspace().getRoot()
+					.findMember(path);
 			if (res instanceof IContainer && res.exists()) {
 				IResource aDistRes = ((IContainer) res).findMember("dist");
 				IResource aRes;
 				if (aDistRes instanceof IContainer && aDistRes.exists())
-					aRes =
-						((IContainer) aDistRes).findMember(
-							aPath.toString() + ".woa");
+					aRes = ((IContainer) aDistRes).findMember(aPath.toString()
+							+ ".woa");
 				else
-					aRes =
-						((IContainer) res).findMember(
-							aPath.toString() + ".woa");
+					aRes = ((IContainer) res).findMember(aPath.toString()
+							+ ".woa");
 				if (aRes != null) {
 					if (aRes instanceof IContainer && aRes.exists()) {
-						config.setAttribute(
-							IJavaLaunchConfigurationConstants
-								.ATTR_WORKING_DIRECTORY,
-							((IContainer) aRes)
-								.getFullPath()
-								.toString()
-								.substring(
-								1));
+						config
+								.setAttribute(
+										IJavaLaunchConfigurationConstants.ATTR_WORKING_DIRECTORY,
+										((IContainer) aRes).getFullPath()
+												.toString().substring(1));
 					}
 				}
 			}
@@ -531,33 +648,40 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 	}
 
 	/**
-		 * Updates the buttons and message in this page's launch
-		 * configuration dialog.
-		 */
+	 * Updates the buttons and message in this page's launch configuration
+	 * dialog.
+	 */
 	protected void superUpdateLaunchConfigurationDialog() {
 		super.updateLaunchConfigurationDialog();
 	}
+
 	protected void updateLaunchConfigurationDialog() {
 		super.updateLaunchConfigurationDialog();
 		this.getControl().update();
 		this.includeTable.update();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#activated(org.eclipse.debug.core.ILaunchConfigurationWorkingCopy)
 	 */
 	public void activated(ILaunchConfigurationWorkingCopy workingCopy) {
 		return;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#deactivated(org.eclipse.debug.core.ILaunchConfigurationWorkingCopy)
 	 */
 	public void deactivated(ILaunchConfigurationWorkingCopy workingCopy) {
 		return;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#launched(org.eclipse.debug.core.ILaunch)
 	 */
 	public void launched(ILaunch launch) {

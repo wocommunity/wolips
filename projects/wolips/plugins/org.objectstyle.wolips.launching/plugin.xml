@@ -28,6 +28,8 @@
       <import plugin="org.objectstyle.wolips.commons"/>
       <import plugin="org.objectstyle.wolips.preferences"/>
       <import plugin="org.objectstyle.wolips.workbenchutilities"/>
+      <import plugin="org.eclipse.jface.text"/>
+      <import plugin="org.eclipse.ui.browser"/>
    </requires>
 
 
@@ -145,5 +147,12 @@
                id="org.objectstyle.wolips.ui.Perspective">
          </perspective>
       </shortcut>
+   </extension>
+   <extension point="org.eclipse.debug.ui.consoleLineTrackers">
+   	<consoleLineTracker
+   		id="org.objectstyle.wolips.launching.ConsoleLineTracker"
+		class="org.objectstyle.wolips.launching.ConsoleLineTracker"
+		processType="java">
+	</consoleLineTracker>
    </extension>
 </plugin>
