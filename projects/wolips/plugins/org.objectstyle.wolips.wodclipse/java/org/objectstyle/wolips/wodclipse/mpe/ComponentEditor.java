@@ -50,9 +50,12 @@ import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IPropertyListener;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.MultiEditor;
+import org.eclipse.ui.part.MultiEditorInput;
 
 /**
  * @author uli
@@ -135,6 +138,7 @@ public class ComponentEditor extends MultiEditor {
 	void fireDirtyProperty() {
 		this.firePropertyChange(IEditorPart.PROP_DIRTY);
 	}
+
 	/**
 	 * Draw the gradient for the specified editor.
 	 */
@@ -149,6 +153,17 @@ public class ComponentEditor extends MultiEditor {
 				return i;
 		}
 		return -1;
+	}
+
+	/*
+	 * @see IEditorPart#init(IEditorSite, IEditorInput)
+	 */
+	public void init(IEditorSite site, MultiEditorInput input)
+			throws PartInitException {
+		super.init(site, input);
+		String javaInputName = input.getInput()[0].getName();
+		String partName = javaInputName.substring(0, javaInputName.length() - 5) + " WOComponent";
+		setPartName(partName);
 	}
 
 }
