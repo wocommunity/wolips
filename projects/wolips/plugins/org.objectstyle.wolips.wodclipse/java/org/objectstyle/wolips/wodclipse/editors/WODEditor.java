@@ -44,8 +44,11 @@
 package org.objectstyle.wolips.wodclipse.editors;
 
 import java.util.ResourceBundle;
+import java.util.Set;
 
 import org.eclipse.jdt.internal.ui.IJavaHelpContextIds;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.IVerticalRuler;
 import org.eclipse.swt.widgets.Composite;
@@ -83,9 +86,18 @@ public class WODEditor extends TextEditor {
     markAsStateDependentAction("ContentAssistProposal", true);
     PlatformUI.getWorkbench().getHelpSystem().setHelp(action, IJavaHelpContextIds.CONTENT_ASSIST_ACTION);
   }
-  
+
   public void updateWebObjectsTagNames() {
-	  WodclipsePlugin.getDefault().setWebObjectsTagNames(new String[] {"hello", "foo"});
-	  return;
+    try {
+      IDocument document = getDocumentProvider().getDocument(getEditorInput());
+      Set elementNamesSet = WODCompletionProcessor.getElementNames(document);
+      String[] elementNames = (String[]) elementNamesSet.toArray(new String[elementNamesSet.size()]);
+      WodclipsePlugin.getDefault().setWebObjectsTagNames(elementNames);
+    }
+    catch (BadLocationException t) {
+      // MS: How do you want to handle this -- Basically there was a parse error of some
+      // sort.  It's pretty resilient, so this shouldn't happen often.
+      WodclipsePlugin.getDefault().setWebObjectsTagNames(new String[0]);
+    }
   }
 }
