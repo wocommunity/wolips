@@ -22,7 +22,6 @@
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.ui.ide"/>
       <import plugin="org.objectstyle.wolips.workbenchutilities"/>
-      <import plugin="org.eclipse.ui.browser"/>
    </requires>
 
    <extension
@@ -83,5 +82,18 @@
             name="Editing WOD Files"
             parentId="org.eclipse.ui.textEditorScope"/>
    </extension>
+   
+   <!-- Templates -->
+	<extension point="org.eclipse.ui.editors.templates">
+		<include
+			file="templates/htmlwo-templates.xml"
+			translations="templates/htmlwo-templates.properties">
+		</include>
+  		<resolver
+        		class="org.objectstyle.wolips.wodclipse.html.templates.TemplateVariableWebObjectsName"
+        		contextTypeId="html_all"
+        		type="wotagnameattribute"
+        		name="name attribute of webobjects tag"/>
+    </extension>
    
 </plugin>

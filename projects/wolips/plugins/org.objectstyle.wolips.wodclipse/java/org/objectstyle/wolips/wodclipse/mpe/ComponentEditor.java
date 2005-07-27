@@ -56,6 +56,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.MultiEditor;
 import org.eclipse.ui.part.MultiEditorInput;
+import org.objectstyle.wolips.wodclipse.editors.WODEditor;
 
 /**
  * @author uli
@@ -92,6 +93,9 @@ public class ComponentEditor extends MultiEditor {
 
 		for (int i = 0; i < innerEditors.length; i++) {
 			final IEditorPart e = innerEditors[i];
+			if(e instanceof WODEditor) {
+				((WODEditor)e).updateWebObjectsTagNames();
+			}
 			switch (i) {
 			case 0:
 				createInnerPartControl(javaEditorParent, e);
