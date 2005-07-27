@@ -356,23 +356,14 @@ public class WODCompletionProcessor implements IContentAssistProcessor {
 
     // We really need something like the AST ... This is a pretty expensive way to go here.  To
     // find element names that have already been mapped, we reparse the wod file.  Lame.
-    HashSet alreadyUsedElementNames = new HashSet();
+    Set alreadyUsedElementNames;
     try {
-      WODScanner scanner = WODScanner.newWODScanner();
-      scanner.setRange(_document, 0, _document.getLength());
-      IRule matchingRule = null;
-      while ((matchingRule = scanner.nextMatchingRule()) != null) {
-        if (matchingRule instanceof ElementNameRule) {
-          int tokenOffset = scanner.getTokenOffset();
-          int tokenLength = scanner.getTokenLength();
-          String alreadyUsedElementName = _document.get(tokenOffset, tokenLength);
-          alreadyUsedElementNames.add(alreadyUsedElementName);
-        }
-      }
+      alreadyUsedElementNames = WODCompletionProcessor.getElementNames(_document);
     }
     catch (Throwable t) {
       // It's not THAT big of a deal ...
       t.printStackTrace();
+      alreadyUsedElementNames = new HashSet();
     }
 
     while (validElementNamesIter.hasNext()) {
@@ -672,5 +663,21 @@ public class WODCompletionProcessor implements IContentAssistProcessor {
     SearchEngine searchEngine = new SearchEngine();
     IJavaSearchScope searchScope = SearchEngine.createWorkspaceScope();
     searchEngine.searchAllTypeNames(null, _elementTypeName.toCharArray(), _matchType /*| SearchPattern.R_CASE_SENSITIVE*/, IJavaSearchConstants.TYPE, searchScope, _typeNameCollector, IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH, null);
+  }
+
+  public static Set getElementNames(IDocument _document) throws BadLocationException {
+    HashSet elementNames = new HashSet();
+    WODScanner scanner = WODScanner.newWODScanner();
+    scanner.setRange(_document, 0, _document.getLength());
+    IRule matchingRule = null;
+    while ((matchingRule = scanner.nextMatchingRule()) != null) {
+      if (matchingRule instanceof ElementNameRule) {
+        int tokenOffset = scanner.getTokenOffset();
+        int tokenLength = scanner.getTokenLength();
+        String elementName = _document.get(tokenOffset, tokenLength);
+        elementNames.add(elementName);
+      }
+    }
+    return elementNames;
   }
 }
