@@ -95,9 +95,9 @@ public class WODEditor extends TextEditor {
       WodclipsePlugin.getDefault().setWebObjectsTagNames(elementNames);
     }
     catch (BadLocationException t) {
-      // MS: How do you want to handle this -- Basically there was a parse error of some
-      // sort.  It's pretty resilient, so this shouldn't happen often.
-      WodclipsePlugin.getDefault().setWebObjectsTagNames(new String[0]);
+    	//null means no tags
+    	//the user has to enter the name manually
+     WodclipsePlugin.getDefault().setWebObjectsTagNames(null);
     }
   }
 }

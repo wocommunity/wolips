@@ -47,6 +47,7 @@ import java.util.ResourceBundle;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.objectstyle.wolips.wodclipse.editors.WODEditor;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -67,6 +68,8 @@ public class WodclipsePlugin extends AbstractUIPlugin {
 	public static String HTMLEditorID = "org.eclipse.wst.html.core.htmlsource.source";
 
 	private String[] webObjectsTagNames;
+
+	private WODEditor lastWODEditor;
 
 	/**
 	 * The constructor.
@@ -121,11 +124,26 @@ public class WodclipsePlugin extends AbstractUIPlugin {
 	}
 
 	public String[] getWebObjectsTagNames() {
+		if (this.webObjectsTagNames == null) {
+			this.webObjectsTagNames = new String[] { "No tags available" };
+		}
 		return webObjectsTagNames;
 	}
 
 	public void setWebObjectsTagNames(String[] webObjectsTagNames) {
 		this.webObjectsTagNames = webObjectsTagNames;
+	}
+
+	public void updateWebObjectsTagNames(WODEditor wodEditor) {
+		if (lastWODEditor == wodEditor) {
+			return;
+		}
+		if (wodEditor != null) {
+			wodEditor.updateWebObjectsTagNames();
+		} else {
+			this.setWebObjectsTagNames(null);
+		}
+		lastWODEditor = wodEditor;
 	}
 
 }

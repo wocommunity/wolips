@@ -93,7 +93,7 @@
         		class="org.objectstyle.wolips.wodclipse.html.templates.TemplateVariableWebObjectsName"
         		contextTypeId="html_all"
         		type="wotagnameattribute"
-        		name="name attribute of webobjects tag"/>
+        		name="wotagnameattribute"/>
     </extension>
    
 </plugin>

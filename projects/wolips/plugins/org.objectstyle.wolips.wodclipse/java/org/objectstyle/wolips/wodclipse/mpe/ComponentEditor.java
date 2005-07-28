@@ -43,6 +43,8 @@
  */
 package org.objectstyle.wolips.wodclipse.mpe;
 
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
@@ -54,8 +56,10 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IPropertyListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.part.MultiEditor;
 import org.eclipse.ui.part.MultiEditorInput;
+import org.objectstyle.wolips.wodclipse.WodclipsePlugin;
 import org.objectstyle.wolips.wodclipse.editors.WODEditor;
 
 /**
@@ -88,14 +92,10 @@ public class ComponentEditor extends MultiEditor {
 
 		SashForm componentEditorSashParent = new SashForm(
 				componentEditorParent, SWT.VERTICAL | SWT.SMOOTH);
-
+		TextEditor htmlEditor = null;
 		IEditorPart[] innerEditors = getInnerEditors();
-
 		for (int i = 0; i < innerEditors.length; i++) {
 			final IEditorPart e = innerEditors[i];
-			if(e instanceof WODEditor) {
-				((WODEditor)e).updateWebObjectsTagNames();
-			}
 			switch (i) {
 			case 0:
 				createInnerPartControl(javaEditorParent, e);
@@ -107,6 +107,7 @@ public class ComponentEditor extends MultiEditor {
 						SWT.VERTICAL);
 				createInnerPartControl(htmlSashform, e);
 				addPropertyListener(e);
+				htmlEditor = (TextEditor) e;
 				break;
 
 			case 2:
@@ -114,6 +115,8 @@ public class ComponentEditor extends MultiEditor {
 						SWT.VERTICAL);
 				createInnerPartControl(wodSashform, e);
 				addPropertyListener(e);
+				addWebObjectsTagNamesListener((WODEditor) e,
+						htmlEditor);
 				break;
 			case 3:
 				createInnerPartControl(apiEditorParent, e);
@@ -125,6 +128,29 @@ public class ComponentEditor extends MultiEditor {
 			}
 		}
 		folder.setSelection(javaTab);
+	}
+
+	private void addWebObjectsTagNamesListener(final WODEditor wodEditor,
+			TextEditor htmlEditor) {
+		htmlEditor.getSelectionProvider().addSelectionChangedListener(
+				new ISelectionChangedListener() {
+
+					public void selectionChanged(SelectionChangedEvent event) {
+						WodclipsePlugin.getDefault().updateWebObjectsTagNames(
+								wodEditor);
+					}
+
+				});
+		wodEditor.getSelectionProvider().addSelectionChangedListener(
+				new ISelectionChangedListener() {
+
+					public void selectionChanged(SelectionChangedEvent event) {
+						WodclipsePlugin.getDefault().updateWebObjectsTagNames(
+								null);
+					}
+
+				});
+
 	}
 
 	private void addPropertyListener(IEditorPart editorPart) {
@@ -166,7 +192,9 @@ public class ComponentEditor extends MultiEditor {
 			throws PartInitException {
 		super.init(site, input);
 		String javaInputName = input.getInput()[0].getName();
-		String partName = javaInputName.substring(0, javaInputName.length() - 5) + " WOComponent";
+		String partName = javaInputName
+				.substring(0, javaInputName.length() - 5)
+				+ " WOComponent";
 		setPartName(partName);
 	}
 
