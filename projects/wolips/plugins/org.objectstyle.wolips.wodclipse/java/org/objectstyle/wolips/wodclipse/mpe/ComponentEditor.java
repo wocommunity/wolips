@@ -150,7 +150,8 @@ public class ComponentEditor extends MultiEditor {
 					}
 
 				});
-
+		WodclipsePlugin.getDefault().updateWebObjectsTagNames(
+				wodEditor);
 	}
 
 	private void addPropertyListener(IEditorPart editorPart) {
