@@ -98,7 +98,7 @@ public class ComponentEditorLauncher implements IEditorLauncher {
 				.findResourcesInProjectByNameAndExtensions(project, fileName,
 						new String[] { "api" }, false);
 
-		if (wodResources == null || wodResources.size() != 1) {
+		if (apiResources == null || apiResources.size() != 1) {
 			ids = new String[3];
 			allInput = new IEditorInput[3];
 		} else {
@@ -115,8 +115,10 @@ public class ComponentEditorLauncher implements IEditorLauncher {
 		allInput[1] = new FileEditorInput(((IFile) htmlResources.get(0)));
 		ids[2] = WodclipsePlugin.WODEditorID;
 		allInput[2] = new FileEditorInput(((IFile) wodResources.get(0)));
-		ids[3] = "org.eclipse.ui.DefaultTextEditor";
-		allInput[3] = new FileEditorInput(((IFile) apiResources.get(0)));
+		if (apiResources != null && apiResources.size() == 1) {
+			ids[3] = "org.eclipse.ui.DefaultTextEditor";
+			allInput[3] = new FileEditorInput(((IFile) apiResources.get(0)));
+		}
 		MultiEditorInput input = new MultiEditorInput(ids, allInput);
 		try {
 			WorkbenchUtilitiesPlugin.getActiveWorkbenchWindow().getActivePage()
