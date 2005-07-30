@@ -1,26 +1,26 @@
 <?xml version="1.0"?>
- 
+
 <!-- ======================================================== -->
 <!--              Main Ant build file               -->
 <!-- Serves as a facade for different project build files.     -->
 <!-- ======================================================== -->
 <project name="all-projects" default="dist" basedir=".">
 
-    <!-- ========================================== -->
-    <!-- Load properties files.                     -->
-    <!-- ========================================== -->
-    <property file="build.properties"/>
-    <property file="${user.home}${file.separator}build.properties"/>
-    <property file="${user.home}${file.separator}Library${file.separator}wobuild.properties"/>
-    <property file="default.properties"/>
-    <property file="${project.lib.dir}/lib.properties"/>
-    <property name="build.version.to.replace" value="1.0.6"/>
-    
-    <!-- ========================================== -->
-    <!-- Print help.                                -->
-    <!-- ========================================== -->
-    <target name="help">
-        <echo>
+	<!-- ========================================== -->
+	<!-- Load properties files.                     -->
+	<!-- ========================================== -->
+	<property file="build.properties" />
+	<property file="${user.home}${file.separator}build.properties" />
+	<property file="${user.home}${file.separator}Library${file.separator}wobuild.properties" />
+	<property file="default.properties" />
+	<property file="${project.lib.dir}/lib.properties" />
+	<property name="build.version.to.replace" value="1.0.6" />
+
+	<!-- ========================================== -->
+	<!-- Print help.                                -->
+	<!-- ========================================== -->
+	<target name="help">
+		<echo>
         ****************************************
         * TARGETS (also you can use "-projecthelp" ant flag):
         *
@@ -35,21 +35,20 @@
         *  9. buildserver.publish   - Target for the buildserver to publish
         ****************************************
         </echo>
-    </target>
-    
-    <!-- ========================================== -->
-    <!-- Load version provided by buidserver.                            -->
-    <!-- ========================================== -->
-    <target name="load.version.file">
-	    <loadfile property="build.version"
-            srcFile="buildserver.version"/>
-    </target>
-    	
-    <!-- ========================================== -->
-    <!-- Print environment.                         -->
-    <!-- ========================================== -->
-    <target name="print.environment" depends="load.version.file">
-        <echo>
+	</target>
+
+	<!-- ========================================== -->
+	<!-- Load version provided by buidserver.                            -->
+	<!-- ========================================== -->
+	<target name="load.version.file">
+		<loadfile property="build.version" srcFile="buildserver.version" />
+	</target>
+
+	<!-- ========================================== -->
+	<!-- Print environment.                         -->
+	<!-- ========================================== -->
+	<target name="print.environment" depends="load.version.file">
+		<echo>
         ****************************************
         * java.home = ${java.home}
         * build.compiler = ${build.compiler}
@@ -80,141 +79,141 @@
         * test.java.library.path = ${test.java.library.path}
         ****************************************
         </echo>
-    </target>
+	</target>
 
-    <!-- ========================================== -->
-    <!-- Build homepage.                            -->
-    <!-- ========================================== -->
-    <target name="homepage" unless="no.docs">
-	    <ant dir="${project.homepage.dir}" target="all"/>
-    </target>
+	<!-- ========================================== -->
+	<!-- Build homepage.                            -->
+	<!-- ========================================== -->
+	<target name="homepage" unless="no.docs">
+		<ant dir="${project.homepage.dir}" target="all" />
+	</target>
 
-    <!-- ========================================== -->
-    <!-- Build woenvironment.                       -->
-    <!-- ========================================== -->
-    <target name="woenvironment">
-	    <ant dir="${project.woenvironment.dir}" target="all"/>
-    </target>
+	<!-- ========================================== -->
+	<!-- Build woenvironment.                       -->
+	<!-- ========================================== -->
+	<target name="woenvironment">
+		<ant dir="${project.woenvironment.dir}" target="all" />
+	</target>
 
-    <!-- ========================================== -->
-    <!-- Build woproject.                           -->
-    <!-- ========================================== -->
-    <target name="woproject">
-	    <ant dir="${project.woproject.dir}" target="all">
-	    </ant>
-    </target>
+	<!-- ========================================== -->
+	<!-- Build woproject.                           -->
+	<!-- ========================================== -->
+	<target name="woproject">
+		<ant dir="${project.woproject.dir}" target="all">
+		</ant>
+	</target>
 
-    <!-- ========================================== -->
-    <!-- Build wolips.                              -->
-    <!-- ========================================== -->
-    <target name="wolips">
-	    <ant dir="${project.wolips.dir}" target="all"/>
-    </target>
+	<!-- ========================================== -->
+	<!-- Build wolips.                              -->
+	<!-- ========================================== -->
+	<target name="wolips">
+		<ant dir="${project.wolips.dir}" target="all" />
+	</target>
 
-    <!-- ========================================== -->
-    <!-- Build all.                                 -->
-    <!-- ========================================== -->
-    <target name="all" depends="print.environment,verify.clean,set.clean,call.clean,prepare,homepage,woenvironment,woproject,wolips">
-    </target>
+	<!-- ========================================== -->
+	<!-- Build all.                                 -->
+	<!-- ========================================== -->
+	<target name="all" depends="print.environment,verify.clean,set.clean,call.clean,prepare,homepage,woenvironment,woproject,wolips">
+	</target>
 
-    <!-- ========================================== -->
-    <!-- Build dist.                                -->
-    <!-- ========================================== -->
-    <target name="dist" depends="all">
-	    <ant dir="${project.woenvironment.dir}" target="dist"/>
-	    <ant dir="${project.woproject.dir}" target="dist"/>
-	    <ant dir="${project.wolips.dir}" target="dist"/>
-    </target>
+	<!-- ========================================== -->
+	<!-- Build dist.                                -->
+	<!-- ========================================== -->
+	<target name="dist" depends="all">
+		<ant dir="${project.woenvironment.dir}" target="dist" />
+		<ant dir="${project.woproject.dir}" target="dist" />
+		<ant dir="${project.wolips.dir}" target="dist" />
+	</target>
 
-    <!-- ========================================== -->
-    <!-- Build buildserver.                         -->
-    <!-- ========================================== -->
-    <target name="buildserver" depends="dist">
-    </target>
+	<!-- ========================================== -->
+	<!-- Build buildserver.                         -->
+	<!-- ========================================== -->
+	<target name="buildserver" depends="dist">
+	</target>
 
-    <!-- ============================================= -->
-    <!-- Prepare.                                      -->
-    <!-- ============================================= -->
-    <target name="prepare" depends=".ds_store,check">
-        <mkdir dir="${build.output.java.dir}"/>
-        <mkdir dir="${build.output.build.dir}"/>
-        <mkdir dir="${build.output.dist.dir}"/>
-        <mkdir dir="${build.output.homepage.dir}"/>
-    </target>
+	<!-- ============================================= -->
+	<!-- Prepare.                                      -->
+	<!-- ============================================= -->
+	<target name="prepare" depends=".ds_store,check">
+		<mkdir dir="${build.output.java.dir}" />
+		<mkdir dir="${build.output.build.dir}" />
+		<mkdir dir="${build.output.dist.dir}" />
+		<mkdir dir="${build.output.homepage.dir}" />
+	</target>
 
-    <!-- ============================================= -->
-    <!-- Deletes temporary files.                      -->
-    <!-- ============================================= -->
-    <target name="clean">
-        <delete dir="${build.output.dir}"/>
-        <delete file="velocity.log"/>
-    </target>
+	<!-- ============================================= -->
+	<!-- Deletes temporary files.                      -->
+	<!-- ============================================= -->
+	<target name="clean">
+		<delete dir="${build.output.dir}" />
+		<delete file="velocity.log" />
+	</target>
 
-    <!-- ============================================= -->
-    <!-- Run tests.                                    -->
-    <!-- ============================================= -->
-    <target name="test" depends="print.environment,prepare,woenvironment.test,woproject.test,wolips.test">
-    </target>
+	<!-- ============================================= -->
+	<!-- Run tests.                                    -->
+	<!-- ============================================= -->
+	<target name="test" depends="print.environment,prepare,woenvironment.test,woproject.test,wolips.test">
+	</target>
 
-    <!-- ========================================== -->
-    <!-- Run woenvironment tests.                   -->
-    <!-- ========================================== -->
-    <target name="woenvironment.test">
-	    <ant dir="${project.woenvironment.dir}" target="test"/>
-    </target>
+	<!-- ========================================== -->
+	<!-- Run woenvironment tests.                   -->
+	<!-- ========================================== -->
+	<target name="woenvironment.test">
+		<ant dir="${project.woenvironment.dir}" target="test" />
+	</target>
 
-    <!-- ========================================== -->
-    <!-- Run woproject tests.                       -->
-    <!-- ========================================== -->
-    <target name="woproject.test">
-	    <ant dir="${project.woproject.dir}" target="test"/>
-    </target>
+	<!-- ========================================== -->
+	<!-- Run woproject tests.                       -->
+	<!-- ========================================== -->
+	<target name="woproject.test">
+		<ant dir="${project.woproject.dir}" target="test" />
+	</target>
 
-    <!-- ========================================== -->
-    <!-- Run wolips  tests.                         -->
-    <!-- ========================================== -->
-    <target name="wolips.test">
-	<ant dir="${project.wolips.dir}" target="test"/>
-    </target>
+	<!-- ========================================== -->
+	<!-- Run wolips  tests.                         -->
+	<!-- ========================================== -->
+	<target name="wolips.test">
+		<ant dir="${project.wolips.dir}" target="test" />
+	</target>
 
-    <!-- ========================================== -->
-    <!-- Check properties.                          -->
-    <!-- ========================================== -->
-    <target name="check">
-	    <ant antfile="${project.buildscripts.dir}/woproperties.xml" target="check"/>
-    </target>
+	<!-- ========================================== -->
+	<!-- Check properties.                          -->
+	<!-- ========================================== -->
+	<target name="check">
+		<ant antfile="${project.buildscripts.dir}/woproperties.xml" target="check" />
+	</target>
 
-    <!-- ========================================== -->
-    <!-- Delete .DS_Store files.                    -->
-    <!-- ========================================== -->
-    <target name=".ds_store">
-   	    <ant dir="." antfile="${project.buildscripts.dir}/delete_DS_store_files.xml" target=".ds_store"/>
-    </target>
+	<!-- ========================================== -->
+	<!-- Delete .DS_Store files.                    -->
+	<!-- ========================================== -->
+	<target name=".ds_store">
+		<ant dir="." antfile="${project.buildscripts.dir}/delete_DS_store_files.xml" target=".ds_store" />
+	</target>
 
-    <!-- ========================================== -->
-    <!-- Verify clean.                              -->
-    <!-- ========================================== -->
-    <target name="verify.clean">
-        <condition property="no.clean.not.set">
-            <not>
-                <isset property="no.clean"/>
-            </not>    
-        </condition>
-    </target>
-     
-    <!-- ========================================== -->
-    <!-- Set clean property.                        -->
-    <!-- ========================================== -->
-    <target name="set.clean" if="no.clean.not.set">
-        <property name="clean" value="true"/>
-        <echo message="To skip the clean set the property no.clean in your build.properties"/>
-    </target>
-    
-    <!-- ========================================== -->
-    <!-- Call clean.                        -->
-    <!-- ========================================== -->
-    <target name="call.clean" if="clean">
-        <antcall target="clean"/>
-    </target>
-    
+	<!-- ========================================== -->
+	<!-- Verify clean.                              -->
+	<!-- ========================================== -->
+	<target name="verify.clean">
+		<condition property="no.clean.not.set">
+			<not>
+				<isset property="no.clean" />
+			</not>
+		</condition>
+	</target>
+
+	<!-- ========================================== -->
+	<!-- Set clean property.                        -->
+	<!-- ========================================== -->
+	<target name="set.clean" if="no.clean.not.set">
+		<property name="clean" value="true" />
+		<echo message="To skip the clean set the property no.clean in your build.properties" />
+	</target>
+
+	<!-- ========================================== -->
+	<!-- Call clean.                        -->
+	<!-- ========================================== -->
+	<target name="call.clean" if="clean">
+		<antcall target="clean" />
+	</target>
+
 </project>

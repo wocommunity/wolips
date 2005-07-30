@@ -13,7 +13,6 @@
 	    <ant dir="org.objectstyle.wolips.feature" target="all"/>
 	    <ant dir="org.objectstyle.wolips.profiling.feature" target="all"/>
 	    <ant dir="org.objectstyle.wolips.tests.feature" target="all"/>
-	    <ant dir="org.objectstyle.wolips.wounit.feature" target="all"/>
 	    <ant dir="org.objectstyle.wolips.goodies.mac.feature" target="all"/>
 	</target>
     <!-- ========================================== -->
@@ -24,7 +23,6 @@
 	    <ant dir="org.objectstyle.wolips.feature" target="dist"/>
 	    <ant dir="org.objectstyle.wolips.profiling.feature" target="dist"/>
 	    <ant dir="org.objectstyle.wolips.tests.feature" target="dist"/>
-	    <ant dir="org.objectstyle.wolips.wounit.feature" target="dist"/>
 	    <ant dir="org.objectstyle.wolips.goodies.mac.feature" target="dist"/>
 	</target>
 
