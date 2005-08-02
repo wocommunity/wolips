@@ -73,32 +73,32 @@
 
    <requires>
       <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.debug.ui"/>
       <import plugin="org.eclipse.debug.core"/>
+      <import plugin="org.eclipse.core.variables"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.eclipse.ui.externaltools"/>
+      <import plugin="org.eclipse.jdt.core"/>
       <import plugin="org.eclipse.ant.ui"/>
       <import plugin="org.eclipse.jdt.launching"/>
-      <import plugin="org.eclipse.core.variables"/>
-      <import plugin="org.eclipse.debug.ui"/>
-      <import plugin="org.eclipse.ui.externaltools"/>
-      <import plugin="org.eclipse.jface"/>
-      <import plugin="org.eclipse.ui"/>
-      <import plugin="org.eclipse.jdt.core"/>
-      <import plugin="org.eclipse.ui.workbench" version="3.1.1" match="greaterOrEqual"/>
-      <import plugin="org.apache.ant"/>
+      <import plugin="org.junit"/>
       <import plugin="org.objectstyle.wolips.tests.core"/>
-      <import plugin="org.eclipse.swt"/>
+      <import plugin="org.apache.ant"/>
       <import plugin="org.eclipse.jdt.ui"/>
-      <import plugin="org.eclipse.jdt.debug.ui"/>
       <import plugin="org.eclipse.jface.text"/>
+      <import plugin="org.eclipse.ui.browser"/>
+      <import plugin="org.eclipse.jdt.debug.ui"/>
       <import plugin="org.eclipse.ant.core"/>
-      <import plugin="org.eclipse.team.core"/>
+      <import plugin="org.eclipse.swt"/>
       <import plugin="org.eclipse.search"/>
       <import plugin="org.eclipse.ui.console"/>
       <import plugin="org.eclipse.ui.ide"/>
-      <import plugin="org.eclipse.ui.workbench.texteditor"/>
-      <import plugin="org.eclipse.ui.editors"/>
       <import plugin="org.eclipse.ui.forms"/>
-      <import plugin="org.eclipse.ui.browser"/>
+      <import plugin="org.eclipse.jface"/>
+      <import plugin="org.eclipse.ui.workbench" version="3.1.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.editors"/>
+      <import plugin="org.eclipse.ui.workbench.texteditor"/>
       <import plugin="org.eclipse.ltk.core.refactoring"/>
    </requires>
 
@@ -112,13 +112,15 @@
          id="org.objectstyle.wolips.ant"
          download-size="16"
          install-size="24"
-         version="1.0.6"/>
+         version="1.0.6"
+         unpack="false"/>
 
    <plugin
          id="org.objectstyle.wolips.cayenne"
          download-size="2100"
          install-size="2300"
-         version="1.0.6"/>
+         version="1.0.6"
+         unpack="false"/>
 
    <plugin
          id="org.objectstyle.wolips.cayenne.ant"
@@ -130,43 +132,50 @@
          id="org.objectstyle.wolips.commons"
          download-size="8"
          install-size="12"
-         version="1.0.6"/>
+         version="1.0.6"
+         unpack="false"/>
 
    <plugin
          id="org.objectstyle.wolips.datasets"
          download-size="80"
          install-size="96"
-         version="1.0.6"/>
+         version="1.0.6"
+         unpack="false"/>
 
    <plugin
          id="org.objectstyle.wolips.documentation"
          download-size="3100"
          install-size="3300"
-         version="1.0.6"/>
+         version="1.0.6"
+         unpack="false"/>
 
    <plugin
          id="org.objectstyle.wolips.jdom"
          download-size="248"
          install-size="268"
-         version="1.0.6"/>
+         version="1.0.6"
+         unpack="false"/>
 
    <plugin
          id="org.objectstyle.wolips.jdt"
          download-size="56"
          install-size="76"
-         version="1.0.6"/>
+         version="1.0.6"
+         unpack="false"/>
 
    <plugin
          id="org.objectstyle.wolips.launching"
          download-size="32"
          install-size="44"
-         version="1.0.6"/>
+         version="1.0.6"
+         unpack="false"/>
 
    <plugin
          id="org.objectstyle.wolips.preferences"
          download-size="12"
          install-size="16"
-         version="1.0.6"/>
+         version="1.0.6"
+         unpack="false"/>
 
    <plugin
          id="org.objectstyle.wolips.projectbuild"
@@ -178,49 +187,57 @@
          id="org.objectstyle.wolips.targetbuilder"
          download-size="4"
          install-size="8"
-         version="1.0.6"/>
+         version="1.0.6"
+         unpack="false"/>
 
    <plugin
          id="org.objectstyle.wolips.team"
          download-size="4"
          install-size="12"
-         version="1.0.6"/>
+         version="1.0.6"
+         unpack="false"/>
 
    <plugin
          id="org.objectstyle.wolips.templateengine"
          download-size="258"
          install-size="976"
-         version="1.0.6"/>
+         version="1.0.6"
+         unpack="false"/>
 
    <plugin
          id="org.objectstyle.wolips.ui"
          download-size="76"
          install-size="144"
-         version="1.0.6"/>
+         version="1.0.6"
+         unpack="false"/>
 
    <plugin
          id="org.objectstyle.wolips.variables"
          download-size="12"
          install-size="24"
-         version="1.0.6"/>
+         version="1.0.6"
+         unpack="false"/>
 
    <plugin
          id="org.objectstyle.wolips.wizards"
          download-size="52"
          install-size="100"
-         version="1.0.6"/>
+         version="1.0.6"
+         unpack="false"/>
 
    <plugin
          id="org.objectstyle.wolips.wodclipse"
          download-size="12"
          install-size="24"
-         version="1.0.6"/>
+         version="1.0.6"
+         unpack="false"/>
 
    <plugin
          id="org.objectstyle.wolips.woproject"
          download-size="108"
          install-size="336"
-         version="1.0.6"/>
+         version="1.0.6"
+         unpack="false"/>
 
    <plugin
          id="org.objectstyle.wolips.woproject.ant"
@@ -232,24 +249,14 @@
          id="org.objectstyle.wolips.workbenchutilities"
          download-size="12"
          install-size="24"
-         version="1.0.6"/>
-
-   <plugin
-         id="org.objectstyle.wolips.doctor.core"
-         download-size="12"
-         install-size="24"
-         version="1.0.6"/>
-
-   <plugin
-         id="org.objectstyle.wolips.doctor.ui"
-         download-size="12"
-         install-size="24"
-         version="1.0.6"/>
+         version="1.0.6"
+         unpack="false"/>
 
    <plugin
          id="org.objectstyle.wolips.refactoring"
          download-size="12"
          install-size="24"
-         version="1.0.6"/>
+         version="1.0.6"
+         unpack="false"/>
 
 </feature>
