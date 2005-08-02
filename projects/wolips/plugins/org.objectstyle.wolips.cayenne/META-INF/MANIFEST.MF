@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: WOLips Cayenne Plug-in
+Bundle-SymbolicName: org.objectstyle.wolips.cayenne
+Bundle-Version: 1.0.6
+Bundle-Vendor: objectstyle.org
+Bundle-Localization: plugin
+Eclipse-AutoStart: true
+Export-Package: org.objectstyle.cayenne.wocompat,
+ org.objectstyle.cayenne.wocompat.parser
+Bundle-ClassPath: lib/cayenne.jar

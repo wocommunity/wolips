@@ -1,20 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
-<plugin
-   id="org.objectstyle.wolips.commons"
-   name="WOLips Commons Plug-in"
-   version="1.0.6"
-   provider-name="objectstyle.org"
-   class="org.objectstyle.wolips.commons.CommonsPlugin">
-
-   <runtime>
-      <library name="lib/wolips-commons.jar">
-         <export name="*"/>
-      </library>
-   </runtime>
-   <requires>
-      <import plugin="org.eclipse.core.runtime"/>
-   </requires>
+<plugin>
 
 
 </plugin>

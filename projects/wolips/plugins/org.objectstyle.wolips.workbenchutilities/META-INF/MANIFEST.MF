@@ -1,0 +1,20 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: WOLips Workbenchutilities Plug-in
+Bundle-SymbolicName: org.objectstyle.wolips.workbenchutilities; singleton:=true
+Bundle-Version: 1.0.6
+Bundle-ClassPath: wolips-workbenchutilities.jar
+Bundle-Activator: org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin
+Bundle-Vendor: objectstyle.org
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.ui.workbench,
+ org.eclipse.core.resources,
+ org.eclipse.jface,
+ org.objectstyle.wolips.commons,
+ org.eclipse.ui,
+ org.eclipse.ui.ide,
+ org.eclipse.jdt.core
+Eclipse-AutoStart: true
+Export-Package: org.objectstyle.wolips.workbenchutilities,
+ org.objectstyle.wolips.workbenchutilities.actions

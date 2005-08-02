@@ -1,0 +1,20 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: WOLips Templateengine Plug-in
+Bundle-SymbolicName: org.objectstyle.wolips.templateengine
+Bundle-Version: 1.0.6
+Bundle-ClassPath: lib/wolips-templateengine.jar
+Bundle-Activator: org.objectstyle.wolips.templateengine.TemplateEnginePlugin
+Bundle-Vendor: objectstyle.org
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.core.runtime,
+ org.junit,
+ org.objectstyle.wolips.jdom,
+ org.eclipse.core.resources,
+ org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.objectstyle.wolips.tests.core,
+ org.objectstyle.wolips.datasets,
+ org.objectstyle.wolips.commons
+Eclipse-AutoStart: true
+Export-Package: org.objectstyle.wolips.templateengine

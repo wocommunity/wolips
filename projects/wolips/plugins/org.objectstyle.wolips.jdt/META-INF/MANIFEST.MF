@@ -1,0 +1,24 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: WOLips JDT Plug-in
+Bundle-SymbolicName: org.objectstyle.wolips.jdt; singleton:=true
+Bundle-Version: 1.0.6
+Bundle-ClassPath: lib/wolips-jdt.jar
+Bundle-Activator: org.objectstyle.wolips.jdt.JdtPlugin
+Bundle-Vendor: objectstyle.org
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.ui,
+ org.objectstyle.wolips.commons,
+ org.eclipse.core.resources,
+ org.eclipse.jdt.core,
+ org.objectstyle.wolips.datasets,
+ org.objectstyle.wolips.variables,
+ org.eclipse.jdt.ui
+Eclipse-AutoStart: true
+Export-Package: org.objectstyle.wolips.jdt,
+ org.objectstyle.wolips.jdt.ant,
+ org.objectstyle.wolips.jdt.classpath,
+ org.objectstyle.wolips.jdt.classpath.model,
+ org.objectstyle.wolips.jdt.listener,
+ org.objectstyle.wolips.jdt.ui

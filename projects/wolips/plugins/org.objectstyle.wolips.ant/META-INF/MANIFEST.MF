@@ -1,0 +1,26 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: WOLips Ant Plug-in
+Bundle-SymbolicName: org.objectstyle.wolips.ant; singleton:=true
+Bundle-Version: 1.0.6
+Bundle-ClassPath: lib/wolips-ant.jar
+Bundle-Activator: org.objectstyle.wolips.ant.AntPlugin
+Bundle-Vendor: objectstyle.org
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.ui,
+ org.objectstyle.wolips.commons,
+ org.eclipse.debug.ui,
+ org.eclipse.debug.core,
+ org.eclipse.core.variables,
+ org.eclipse.core.resources,
+ org.eclipse.ui.externaltools,
+ org.eclipse.jdt.core,
+ org.eclipse.ant.ui,
+ org.eclipse.jdt.launching,
+ org.objectstyle.wolips.workbenchutilities,
+ org.objectstyle.wolips.datasets
+Eclipse-AutoStart: true
+Export-Package: org.objectstyle.wolips.ant,
+ org.objectstyle.wolips.ant.launching,
+ org.objectstyle.wolips.ant.ui

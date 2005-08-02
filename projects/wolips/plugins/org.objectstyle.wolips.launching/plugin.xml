@@ -1,36 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
-<plugin
-   id="org.objectstyle.wolips.launching"
-   name="WOLips Launching"
-   version="1.0.6"
-   provider-name="objectstyle.org"
-   class="org.objectstyle.wolips.launching.LaunchingPlugin">
-
-   <runtime>
-      <library name="lib/wolips-launching.jar">
-         <export name="*"/>
-      </library>
-   </runtime>
-   <requires>
-      <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.eclipse.core.resources"/>
-      <import plugin="org.eclipse.jdt.core"/>
-      <import plugin="org.eclipse.jdt.launching"/>
-      <import plugin="org.eclipse.debug.core"/>
-      <import plugin="org.eclipse.ui"/>
-      <import plugin="org.eclipse.jface"/>
-      <import plugin="org.eclipse.debug.ui"/>
-      <import plugin="org.eclipse.jdt.debug.ui"/>
-      <import plugin="org.objectstyle.wolips.variables"/>
-      <import plugin="org.objectstyle.wolips.jdt"/>
-      <import plugin="org.objectstyle.wolips.datasets"/>
-      <import plugin="org.objectstyle.wolips.commons"/>
-      <import plugin="org.objectstyle.wolips.preferences"/>
-      <import plugin="org.objectstyle.wolips.workbenchutilities"/>
-      <import plugin="org.eclipse.jface.text"/>
-      <import plugin="org.eclipse.ui.browser"/>
-   </requires>
+<plugin>
 
 
 <!-- =================================================================================== -->

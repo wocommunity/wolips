@@ -125,10 +125,6 @@ public class WOIncrementalBuilder extends AbstractIncrementalProjectBuilder {
 		return result;
 	}
 
-	/**
-	 * @see org.eclipse.core.internal.events.InternalBuilder#build(int, Map,
-	 *      IProgressMonitor)
-	 */
 	protected IProject[] build(int kind, Map args, IProgressMonitor monitor)
 			throws CoreException {
 		if (null == monitor) {

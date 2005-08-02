@@ -1,0 +1,27 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: WOLips WODClipse Plug-in
+Bundle-SymbolicName: org.objectstyle.wolips.wodclipse; singleton:=true
+Bundle-Version: 1.0.6
+Bundle-ClassPath: wolips-wodclipse.jar
+Bundle-Activator: org.objectstyle.wolips.wodclipse.WodclipsePlugin
+Bundle-Vendor: objectstyle.org
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.ui.workbench,
+ org.eclipse.ui.ide,
+ org.eclipse.ui.editors,
+ org.eclipse.ui,
+ org.eclipse.jface.text,
+ org.eclipse.jface,
+ org.eclipse.ui.workbench.texteditor,
+ org.eclipse.core.resources,
+ org.eclipse.jdt.core,
+ org.eclipse.jdt.ui,
+ org.objectstyle.wolips.workbenchutilities
+Eclipse-AutoStart: true
+Export-Package: org.objectstyle.wolips.wodclipse,
+ org.objectstyle.wolips.wodclipse.editors,
+ org.objectstyle.wolips.wodclipse.html.templates,
+ org.objectstyle.wolips.wodclipse.mpe,
+ org.objectstyle.wolips.wodclipse.preferences

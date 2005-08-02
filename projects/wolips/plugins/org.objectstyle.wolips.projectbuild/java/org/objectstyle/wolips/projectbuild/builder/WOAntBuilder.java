@@ -81,9 +81,6 @@ public class WOAntBuilder extends AbstractIncrementalProjectBuilder {
 
 	/**
 	 * Runs the build with the ant runner.
-	 * 
-	 * @see org.eclipse.core.internal.events.InternalBuilder#build(int, java.
-	 *      util. Map, org.eclipse.core.runtime.IProgressMonitor)
 	 */
 	protected IProject[] build(int kind, Map args, IProgressMonitor monitor)
 			throws CoreException {

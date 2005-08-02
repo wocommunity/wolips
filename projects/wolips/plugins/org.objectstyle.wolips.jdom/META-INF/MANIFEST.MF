@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: WOLips JDOM Plug-in
+Bundle-SymbolicName: org.objectstyle.wolips.jdom
+Bundle-Version: 1.0.6
+Bundle-ClassPath: lib/jdom-b9.jar
+Bundle-Vendor: objectstyle.org
+Bundle-Localization: plugin
+Eclipse-AutoStart: true
+Export-Package: org.jdom,
+ org.jdom.adapters,
+ org.jdom.filter,
+ org.jdom.input,
+ org.jdom.output,
+ org.jdom.transform,
+ org.jdom.xpath
