@@ -201,8 +201,7 @@
          id="org.objectstyle.wolips.templateengine"
          download-size="258"
          install-size="976"
-         version="1.0.6"
-         unpack="false"/>
+         version="1.0.6"/>
 
    <plugin
          id="org.objectstyle.wolips.ui"
