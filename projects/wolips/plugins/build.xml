@@ -100,6 +100,7 @@
 		<ant dir="org.objectstyle.wolips.jdom" target="all" />
 		<ant dir="org.objectstyle.wolips.jdt" target="all" />
 		<ant dir="org.objectstyle.wolips.launching" target="all" />
+		<ant dir="org.objectstyle.wolips.pbserver" target="all" />
 		<ant dir="org.objectstyle.wolips.profiling" target="all" />
 		<ant dir="org.objectstyle.wolips.projectbuild" target="all" />
 		<ant dir="org.objectstyle.wolips.refactoring" target="all" />
@@ -134,6 +135,7 @@
 		<ant dir="org.objectstyle.wolips.jdom" target="dist" />
 		<ant dir="org.objectstyle.wolips.jdt" target="dist" />
 		<ant dir="org.objectstyle.wolips.launching" target="dist" />
+		<ant dir="org.objectstyle.wolips.pbserver" target="dist" />
 		<ant dir="org.objectstyle.wolips.profiling" target="dist" />
 		<ant dir="org.objectstyle.wolips.projectbuild" target="dist" />
 		<ant dir="org.objectstyle.wolips.refactoring" target="dist" />

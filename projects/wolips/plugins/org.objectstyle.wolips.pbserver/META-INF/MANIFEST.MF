@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: WOLips PB Server Plug-in
+Bundle-SymbolicName: org.objectstyle.wolips.pbserver; singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Activator: org.objectstyle.wolips.pbserver.PBServerPlugin
+Bundle-Vendor: org.objectstyle
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.ui,
+ org.eclipse.core.resources,
+ org.eclipse.ui.ide,
+ org.eclipse.ui.workbench.texteditor,
+ org.eclipse.text
+Eclipse-AutoStart: true
