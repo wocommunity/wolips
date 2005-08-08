@@ -3,6 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: WOLips PB Server Plug-in
 Bundle-SymbolicName: org.objectstyle.wolips.pbserver; singleton:=true
 Bundle-Version: 1.0.0
+Bundle-ClassPath: lib/wolips-pbserver.jar
 Bundle-Activator: org.objectstyle.wolips.pbserver.PBServerPlugin
 Bundle-Vendor: org.objectstyle
 Bundle-Localization: plugin
