@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.StringBufferInputStream;
+import java.io.StringReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Iterator;
@@ -42,6 +42,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
+import org.xml.sax.InputSource;
 
 public class PBServer {
   private static final int PB_PORT = 8547;
@@ -96,7 +97,9 @@ public class PBServer {
     NodeList elementsList = _element.getElementsByTagName(_tagName);
     String text;
     if (elementsList.getLength() > 0) {
-      text = elementsList.item(0).getTextContent();
+      Element textElementContainer = (Element)elementsList.item(0);
+      Text textNode = (Text)textElementContainer.getChildNodes().item(0);
+      text = textNode.getNodeValue();
     }
     else {
       text = null;
@@ -110,7 +113,9 @@ public class PBServer {
     NodeList stringsList = arrayElement.getChildNodes();
     String[] strings = new String[stringsList.getLength()];
     for (int i = 0; i < strings.length; i++) {
-      strings[i] = stringsList.item(i).getTextContent();
+      Element textElementContainer = (Element)stringsList.item(0);
+      Text textNode = (Text)textElementContainer.getChildNodes().item(0);
+      strings[i] = textNode.getNodeValue();
     }
     return strings;
   }
@@ -157,11 +162,11 @@ public class PBServer {
 
         Element keyElement = pbDevelopmentDocument.createElement("key");
         dictElement.appendChild(keyElement);
-        keyElement.setTextContent("PBXProjectSourcePath");
+        keyElement.appendChild(pbDevelopmentDocument.createTextNode("PBXProjectSourcePath"));
 
         Element stringElement = pbDevelopmentDocument.createElement("string");
         dictElement.appendChild(stringElement);
-        stringElement.setTextContent(xcodeFilePath);
+        stringElement.appendChild(pbDevelopmentDocument.createTextNode(xcodeFilePath));
 
         Transformer transformer = TransformerFactory.newInstance().newTransformer();
         transformer.setOutputProperty(OutputKeys.INDENT, "yes");
@@ -412,7 +417,7 @@ public class PBServer {
               int ch = is.read();
               sb.append((char) ch);
             }
-            Document requestDocument = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new StringBufferInputStream(sb.toString()));
+            Document requestDocument = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new InputSource(new StringReader(sb.toString())));
             Document responseDocument = handleRequestDocument(requestDocument);
             if (responseDocument != null) {
               Transformer transformer = TransformerFactory.newInstance().newTransformer();
