@@ -48,7 +48,7 @@ public class PBServerPlugin extends Plugin implements IStartup {
     System.out.println("PBServerPlugin.start: Starting.");
     myServer = new PBServer();
     try {
-      myServer.start();
+      myServer.start(PBServer.DEFAULT_PB_PORT);
     }
     catch (IOException e) {
       e.printStackTrace(System.out);

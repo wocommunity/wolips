@@ -45,7 +45,7 @@ import org.w3c.dom.Text;
 import org.xml.sax.InputSource;
 
 public class PBServer {
-  private static final int PB_PORT = 8547;
+  public static final int DEFAULT_PB_PORT = 8547;
   private ServerSocket myServerSocket;
   private Thread myServerThread;
   private boolean myRunning;
@@ -53,14 +53,14 @@ public class PBServer {
   public PBServer() {
   }
 
-  public void start() throws IOException {
-    myServerSocket = new ServerSocket(PBServer.PB_PORT);
+  public synchronized void start(int _port) throws IOException {
+    myServerSocket = new ServerSocket(_port);
     myRunning = true;
     myServerThread = new Thread(new ServerSocketAcceptor());
     myServerThread.start();
   }
 
-  public void stop() throws IOException {
+  public synchronized void stop() throws IOException {
     myRunning = false;
     myServerSocket.close();
   }
