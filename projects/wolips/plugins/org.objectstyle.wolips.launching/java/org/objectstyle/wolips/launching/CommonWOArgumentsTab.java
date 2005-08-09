@@ -485,7 +485,7 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 									""));
 			if (configuration
 					.getAttribute(
-							WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_DEBUG_GROUPS,
+							WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_OPEN_IN_BROWSER,
 							"true").equals("true")) {
 				openInBrowserCheckbox.setSelection(true);
 			} else {
