@@ -88,7 +88,13 @@ public class PerspectiveFactory implements IPerspectiveFactory {
 		folder.addView(JavaUI.ID_PACKAGES);
 		folder.addView(JavaUI.ID_TYPE_HIERARCHY);
 		folder.addPlaceholder(IPageLayout.ID_RES_NAV);
-		
+		folder =
+			layout.createFolder(
+				"left_bottom",
+				IPageLayout.BOTTOM,
+				(float) 0.75,
+				"left");
+		folder.addView(PerspectiveFactory.ID_RELATED);
 		IFolderLayout outputfolder= layout.createFolder("bottom", IPageLayout.BOTTOM, (float)0.75, editorArea); //$NON-NLS-1$
 		outputfolder.addView(IPageLayout.ID_PROBLEM_VIEW);
 		outputfolder.addView(JavaUI.ID_JAVADOC_VIEW);
