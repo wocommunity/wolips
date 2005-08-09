@@ -71,8 +71,6 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
-import org.eclipse.debug.core.ILaunchesListener;
-import org.eclipse.debug.core.model.IProcess;
 import org.eclipse.jdt.launching.ExecutionArguments;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.jdt.launching.IVMInstall;
@@ -114,6 +112,7 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate extends
 		config.setAttribute(
 				IJavaLaunchConfigurationConstants.ATTR_CLASSPATH_PROVIDER,
 				WORuntimeClasspathProvider.ID);
+		config.setAttribute(WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_OPEN_IN_BROWSER, "true");
 	}
 
 	public String[] getClasspath(ILaunchConfiguration configuration)
