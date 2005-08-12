@@ -106,7 +106,8 @@
          id="org.objectstyle.wolips"
          download-size="8"
          install-size="8"
-         version="1.0.6"/>
+         version="1.0.6"
+         unpack="false"/>
 
    <plugin
          id="org.objectstyle.wolips.ant"
@@ -181,7 +182,8 @@
          id="org.objectstyle.wolips.projectbuild"
          download-size="40"
          install-size="44"
-         version="1.0.6"/>
+         version="1.0.6"
+         unpack="false"/>
 
    <plugin
          id="org.objectstyle.wolips.targetbuilder"
@@ -260,6 +262,13 @@
 
    <plugin
          id="org.objectstyle.wolips.pbserver"
+         download-size="32"
+         install-size="32"
+         version="1.0.6"
+         unpack="false"/>
+
+   <plugin
+         id="org.objectstyle.wolips.builder"
          download-size="32"
          install-size="32"
          version="1.0.6"

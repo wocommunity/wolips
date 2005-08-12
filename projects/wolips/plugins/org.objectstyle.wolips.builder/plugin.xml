@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+<!-- =================================================================================== -->
+<!-- Extension: Builder                                                                  -->
+<!-- =================================================================================== -->  
+   <extension point="org.objectstyle.wolips.builders">
+	  <builder
+		id="org.objectstyle.wolips.builder.antbuilder"
+         name="Ant Builder"
+         class="org.objectstyle.wolips.builder.internal.AntBuilder"
+         context="never"/>
+     <builder
+		id="org.objectstyle.wolips.builder.incrementalbuilder"
+         name="Incremental Builder"
+         class="org.objectstyle.wolips.builder.internal.IncrementalBuilder"
+         context="never"/>
+     <builder
+		id="org.objectstyle.wolips.builder.dotxcodebuilder"
+         name="DotXcode Builder"
+         class="org.objectstyle.wolips.builder.internal.DotXcodeBuilder"
+         context="never"/>
+     <builder
+		id="org.objectstyle.wolips.builder.pbdotprojectbuilder"
+         name="PB.project Builder"
+         class="org.objectstyle.wolips.builder.internal.PBDotProjectBuilder"
+         context="never"/>
+   </extension>
+</plugin>
