@@ -3,7 +3,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0
  * 
- * Copyright (c) 2002 - 2004 The ObjectStyle Group and individual authors of the
+ * Copyright (c) 2002 - 2005 The ObjectStyle Group and individual authors of the
  * software. All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -54,8 +54,8 @@ import java.util.Map;
 import org.eclipse.ant.core.AntRunner;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -79,28 +79,22 @@ public class WOAntBuilder extends AbstractIncrementalProjectBuilder {
 		super();
 	}
 
-	/**
-	 * Runs the build with the ant runner.
-	 */
-	protected IProject[] build(int kind, Map args, IProgressMonitor monitor)
-			throws CoreException {
+	public void invokeOldBuilder(int kind, Map args, IProgressMonitor monitor,
+			IResourceDelta delta) throws CoreException {
 		if (AntRunner.isBuildRunning() || this.getProject() == null) {
 			monitor.done();
-			return null;
 		}
 		monitor.beginTask(AntBuildMessages.getString("Build.Monitor.Title"),
 				WOAntBuilder.TOTAL_WORK_UNITS);
 		if (!Preferences.getPREF_RUN_WOBUILDER_ON_BUILD()
 				|| getProject() == null || !getProject().exists()) {
 			monitor.done();
-			return null;
 		}
 		String aBuildFile = null;
 		try {
-			if (!projectNeedsAnUpdate()
+			if (!projectNeedsAnUpdate(delta)
 					&& kind != IncrementalProjectBuilder.FULL_BUILD) {
 				monitor.done();
-				return null;
 			}
 			aBuildFile = this.buildFile();
 			if (checkIfBuildfileExist(aBuildFile)) {
@@ -120,7 +114,6 @@ public class WOAntBuilder extends AbstractIncrementalProjectBuilder {
 		// this.forgetLastBuiltState();
 		// getProject().refreshLocal(IProject.DEPTH_INFINITE, monitor);
 		monitor.done();
-		return null;
 	}
 
 	/**

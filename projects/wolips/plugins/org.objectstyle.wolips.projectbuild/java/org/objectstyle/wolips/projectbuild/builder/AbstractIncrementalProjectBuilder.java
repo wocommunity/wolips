@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 - 2004 The ObjectStyle Group 
+ * Copyright (c) 2002 - 2005 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -55,8 +55,9 @@
  */
 package org.objectstyle.wolips.projectbuild.builder;
 
-import org.eclipse.core.resources.IncrementalProjectBuilder;
+import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.CoreException;
+import org.objectstyle.wolips.core.resources.builder.AbstractOldBuilder;
 import org.objectstyle.wolips.datasets.adaptable.Project;
 import org.objectstyle.wolips.datasets.listener.PatternsetDeltaVisitor;
 import org.objectstyle.wolips.projectbuild.ProjectBuildPlugin;
@@ -64,7 +65,7 @@ import org.objectstyle.wolips.projectbuild.ProjectBuildPlugin;
 /**
  * @author ulrich
  */
-public abstract class AbstractIncrementalProjectBuilder extends IncrementalProjectBuilder {
+public abstract class AbstractIncrementalProjectBuilder extends AbstractOldBuilder {
 
 	private BuildResourceValidator buildResourceValidator = new BuildResourceValidator();
 	private PatternsetDeltaVisitor patternsetDeltaVisitor = new PatternsetDeltaVisitor();
@@ -74,19 +75,18 @@ public abstract class AbstractIncrementalProjectBuilder extends IncrementalProje
 	 * 
 	 * @return boolean
 	 */
-	protected boolean projectNeedsAnUpdate() {
+	protected boolean projectNeedsAnUpdate(IResourceDelta delta) {
 		this.buildResourceValidator.reset();
 		this.patternsetDeltaVisitor.reset();
-		if(this.getProject() == null
-				|| this.getDelta(this.getProject()) == null)
+		if(delta == null)
 			return false;
 		try {
-			this.getDelta(this.getProject()).accept(patternsetDeltaVisitor);
+			delta.accept(patternsetDeltaVisitor);
 			Project project = (Project)this.getProject().getAdapter(Project.class);
 			if(project.fullBuildRequired) {
 				return true;
 			}
-			this.getDelta(this.getProject()).accept(this.buildResourceValidator);
+			delta.accept(this.buildResourceValidator);
 		} catch (CoreException e) {
 			ProjectBuildPlugin.getDefault().getPluginLogger().log(e);
 			return false;

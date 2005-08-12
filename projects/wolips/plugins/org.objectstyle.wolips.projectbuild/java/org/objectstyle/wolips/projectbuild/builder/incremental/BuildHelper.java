@@ -284,11 +284,8 @@ public abstract class BuildHelper extends ResourceUtilities implements
 	 */
 	public void reinitForNextBuild(Project project) {
 		_project = project;
-		try {
-			_woNature = (IncrementalNature) _project.getIncrementalNature();
-		} catch (CoreException e) {
-			ProjectBuildPlugin.getDefault().getPluginLogger().log(e);
-		}
+		_woNature = new IncrementalNature();
+		_woNature.setProject(project.getIProject());
 		_distPath = new Path("dist");
 		_buildWork = 0;
 		_buildTasks = new ArrayList();

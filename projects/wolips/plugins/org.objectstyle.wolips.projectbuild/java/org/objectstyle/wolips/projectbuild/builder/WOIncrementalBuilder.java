@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002, 2004 The ObjectStyle Group 
+ * Copyright (c) 2002, 2005 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -65,7 +65,6 @@ import java.util.Map;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
@@ -85,11 +84,10 @@ import org.objectstyle.wolips.projectbuild.builder.incremental.JarBuilder;
 import org.objectstyle.wolips.projectbuild.natures.IncrementalNature;
 
 /**
- * @author Harald Niesche
- * 
- * The incremental builder creates the build/ProjectName.woa or
- * build/ProjectName.framework folder that contains an approximation of the
- * structure needed to run a WebObjects application or use a framework
+ * @author Harald Niesche The incremental builder creates the
+ *         build/ProjectName.woa or build/ProjectName.framework folder that
+ *         contains an approximation of the structure needed to run a WebObjects
+ *         application or use a framework
  */
 public class WOIncrementalBuilder extends AbstractIncrementalProjectBuilder {
 	private BuildVisitor buildVisitor;
@@ -125,29 +123,27 @@ public class WOIncrementalBuilder extends AbstractIncrementalProjectBuilder {
 		return result;
 	}
 
-	protected IProject[] build(int kind, Map args, IProgressMonitor monitor)
-			throws CoreException {
+	public void invokeOldBuilder(int kind, Map args, IProgressMonitor monitor,
+			IResourceDelta delta) throws CoreException {
 		if (null == monitor) {
 			monitor = new NullProgressMonitor();
 		}
 		monitor = new SubProgressMonitor(monitor, 100 * 1000);
 		if (kind != IncrementalProjectBuilder.FULL_BUILD
-				&& !projectNeedsAnUpdate()) {
+				&& !projectNeedsAnUpdate(delta)) {
 			monitor.done();
-			return new IProject[0];
 		}
 		getLogger().debug("<incremental build>");
 		monitor.beginTask("building WebObjects layout ...", 100);
 		try {
-			IResourceDelta delta = getDelta(getProject());
-			//if(delta != null)
-			//			wird schon in projectNeedsAnUpdate() geprüft
-			//	delta.accept(new PatternsetDeltaVisitor());
-			//_getLogger().debug(delta);
+			// if(delta != null)
+			// wird schon in projectNeedsAnUpdate() geprüft
+			// delta.accept(new PatternsetDeltaVisitor());
+			// _getLogger().debug(delta);
 			Project project = (Project) this.getProject().getAdapter(
 					Project.class);
 			boolean fullBuild = (null != delta)
-					&& (kind == FULL_BUILD || project.fullBuildRequired);
+					&& (kind == IncrementalProjectBuilder.FULL_BUILD || project.fullBuildRequired);
 			project.fullBuildRequired = false;
 			String oldPrincipalClass = getArg(args,
 					ProjectBuildPlugin.NS_PRINCIPAL_CLASS, "");
@@ -246,15 +242,14 @@ public class WOIncrementalBuilder extends AbstractIncrementalProjectBuilder {
 			throw up;
 		}
 		getLogger().debug("</incremental build>");
-		return new IProject[0];
 	}
 
 	private void createInfoPlist() throws CoreException {
 		Project project = (Project) (getProject()).getAdapter(Project.class);
-		IncrementalNature nature = (IncrementalNature) project
-				.getIncrementalNature();
+		IncrementalNature nature = new IncrementalNature();
+		nature.setProject(project.getIProject());
 		String infoPlist;
-		if (nature.isFramework()) {
+		if ( project.isFramework()) {
 			infoPlist = INFO_PLIST_FRAMEWORK;
 		} else {
 			infoPlist = INFO_PLIST_APPLICATION;
@@ -285,7 +280,8 @@ public class WOIncrementalBuilder extends AbstractIncrementalProjectBuilder {
 			infoPlist = StringUtilities.replace(infoPlist,
 					"$$customInfoPListContent$$", "");
 		}
-		if (project.isFramework() && eoAdaptorClassName != null && eoAdaptorClassName.length() > 0) {
+		if (project.isFramework() && eoAdaptorClassName != null
+				&& eoAdaptorClassName.length() > 0) {
 			String string = "  <key>EOAdaptorClassName</key>" + "\r\n"
 					+ "  <string>" + eoAdaptorClassName + "</string>" + "\r\n";
 			infoPlist = StringUtilities.replace(infoPlist,
@@ -321,7 +317,7 @@ public class WOIncrementalBuilder extends AbstractIncrementalProjectBuilder {
 					resFile.refreshLocal(1, null);
 				} catch (IOException e) {
 					resFile.refreshLocal(1, null);
-                }
+				}
 				retry = false;
 			}
 		}
@@ -407,17 +403,17 @@ public class WOIncrementalBuilder extends AbstractIncrementalProjectBuilder {
 	 * @see org.eclipse.core.resources.IncrementalProjectBuilder#startupOnInitialize()
 	 */
 	protected void startupOnInitialize() {
-		//try {
-		//IJavaProject javaProject = getJavaProject();
-		//_getLogger().debug(javaProject.getOutputLocation());
-		//} catch (Throwable up) {
-		//}
-		//super.startupOnInitialize();
+		// try {
+		// IJavaProject javaProject = getJavaProject();
+		// _getLogger().debug(javaProject.getOutputLocation());
+		// } catch (Throwable up) {
+		// }
+		// super.startupOnInitialize();
 	}
 
 	static final String INFO_PLIST_APPLICATION = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
 			+ "\r\n"
-			//+"<!DOCTYPE plist SYSTEM
+			// +"<!DOCTYPE plist SYSTEM
 			// \"file://localhost/System/Library/DTDs/PropertyList.dtd\">" +
 			// "\r\n"
 			+ "<plist version=\"0.9\">"
