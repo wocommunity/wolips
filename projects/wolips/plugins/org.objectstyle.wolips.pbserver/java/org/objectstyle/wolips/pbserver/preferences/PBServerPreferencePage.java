@@ -41,70 +41,34 @@
  * Group, please see <http://objectstyle.org/> .
  *  
  */
-package org.objectstyle.wolips.pbserver;
+package org.objectstyle.wolips.pbserver.preferences;
 
-import java.io.IOException;
-
-import org.eclipse.core.runtime.Plugin;
+import org.eclipse.jface.preference.BooleanFieldEditor;
+import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.ui.IStartup;
-import org.objectstyle.wolips.pbserver.preferences.PreferenceConstants;
+import org.eclipse.jface.preference.IntegerFieldEditor;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.objectstyle.wolips.preferences.PreferencesPlugin;
-import org.osgi.framework.BundleContext;
 
 /**
  * @author mike
  */
-public class PBServerPlugin extends Plugin implements IStartup {
-
-  //The shared instance.
-  private static PBServerPlugin plugin;
-  private PBServer myServer;
-
-  /**
-   * The constructor.
-   */
-  public PBServerPlugin() {
-    plugin = this;
-
-    IPreferenceStore store = PreferencesPlugin.getDefault().getPreferenceStore();
-    store.setDefault(PreferenceConstants.PBSERVER_PORT, PBServer.DEFAULT_PB_PORT);
-    store.setDefault(PreferenceConstants.PBSERVER_ENABLED, false);
+public class PBServerPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
+  public PBServerPreferencePage() {
+    super(GRID);
+    setMessage("Changes will not be reflected until after a restart.");
+  }
+  
+  protected IPreferenceStore doGetPreferenceStore() {
+    return PreferencesPlugin.getDefault().getPreferenceStore();
   }
 
-  /**
-   * This method is called upon plug-in activation
-   */
-  public void start(BundleContext context) throws Exception {
-    super.start(context);
+  protected void createFieldEditors() {
+    addField(new BooleanFieldEditor(PreferenceConstants.PBSERVER_ENABLED, "ProjectBuilder Server Enabled", getFieldEditorParent()));
+    addField(new IntegerFieldEditor(PreferenceConstants.PBSERVER_PORT, "ProjectBuilder Server Port", getFieldEditorParent(), 5));
   }
 
-  /**
-   * This method is called when the plug-in is stopped
-   */
-  public void stop(BundleContext context) throws Exception {
-    super.stop(context);
-    plugin = null;
-  }
-
-  /**
-   * Returns the shared instance.
-   */
-  public static PBServerPlugin getDefault() {
-    return plugin;
-  }
-
-  public void earlyStartup() {
-    IPreferenceStore store = PreferencesPlugin.getDefault().getPreferenceStore();
-    if (store.getBoolean(PreferenceConstants.PBSERVER_ENABLED)) {
-      myServer = new PBServer();
-      try {
-        int port = store.getInt(PreferenceConstants.PBSERVER_PORT);
-        myServer.start(port);
-      }
-      catch (IOException e) {
-        e.printStackTrace(System.out);
-      }
-    }
+  public void init(IWorkbench _workbench) {
   }
 }

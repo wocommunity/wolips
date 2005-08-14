@@ -7,10 +7,11 @@ Bundle-ClassPath: lib/wolips-pbserver.jar
 Bundle-Activator: org.objectstyle.wolips.pbserver.PBServerPlugin
 Bundle-Vendor: org.objectstyle
 Bundle-Localization: plugin
-Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.ui,
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
  org.eclipse.core.resources,
  org.eclipse.ui.ide,
  org.eclipse.ui.workbench.texteditor,
- org.eclipse.text
+ org.eclipse.text,
+ org.objectstyle.wolips.preferences
 Eclipse-AutoStart: true

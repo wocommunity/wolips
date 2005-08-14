@@ -1,9 +1,53 @@
+/*
+ * ====================================================================
+ * 
+ * The ObjectStyle Group Software License, Version 1.0
+ * 
+ * Copyright (c) 2005 The ObjectStyle Group and individual authors of the
+ * software. All rights reserved.
+ * 
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met: 1.
+ * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer. 2. Redistributions in
+ * binary form must reproduce the above copyright notice, this list of
+ * conditions and the following disclaimer in the documentation and/or other
+ * materials provided with the distribution. 3. The end-user documentation
+ * included with the redistribution, if any, must include the following
+ * acknowlegement: "This product includes software developed by the ObjectStyle
+ * Group (http://objectstyle.org/)." Alternately, this acknowlegement may
+ * appear in the software itself, if and wherever such third-party
+ * acknowlegements normally appear. 4. The names "ObjectStyle Group" and
+ * "Cayenne" must not be used to endorse or promote products derived from this
+ * software without prior written permission. For written permission, please
+ * contact andrus@objectstyle.org. 5. Products derived from this software may
+ * not be called "ObjectStyle" nor may "ObjectStyle" appear in their names
+ * without prior written permission of the ObjectStyle Group.
+ * 
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+ * FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * OBJECTSTYLE GROUP OR ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+ * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+ * OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+ * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * ====================================================================
+ * 
+ * This software consists of voluntary contributions made by many individuals
+ * on behalf of the ObjectStyle Group. For more information on the ObjectStyle
+ * Group, please see <http://objectstyle.org/> .
+ *  
+ */
 package org.objectstyle.wolips.pbserver;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintStream;
 import java.io.StringReader;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -44,6 +88,9 @@ import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 import org.xml.sax.InputSource;
 
+/**
+ * @author mike
+ */
 public class PBServer {
   public static final int DEFAULT_PB_PORT = 8547;
   private ServerSocket myServerSocket;
@@ -97,8 +144,8 @@ public class PBServer {
     NodeList elementsList = _element.getElementsByTagName(_tagName);
     String text;
     if (elementsList.getLength() > 0) {
-      Element textElementContainer = (Element)elementsList.item(0);
-      Text textNode = (Text)textElementContainer.getChildNodes().item(0);
+      Element textElementContainer = (Element) elementsList.item(0);
+      Text textNode = (Text) textElementContainer.getChildNodes().item(0);
       text = textNode.getNodeValue();
     }
     else {
@@ -113,8 +160,8 @@ public class PBServer {
     NodeList stringsList = arrayElement.getChildNodes();
     String[] strings = new String[stringsList.getLength()];
     for (int i = 0; i < strings.length; i++) {
-      Element textElementContainer = (Element)stringsList.item(0);
-      Text textNode = (Text)textElementContainer.getChildNodes().item(0);
+      Element textElementContainer = (Element) stringsList.item(0);
+      Text textNode = (Text) textElementContainer.getChildNodes().item(0);
       strings[i] = textNode.getNodeValue();
     }
     return strings;
@@ -185,7 +232,9 @@ public class PBServer {
     String path = path(_requestDocument);
     IContainer[] containers = ResourcesPlugin.getWorkspace().getRoot().findContainersForLocation(new Path(path));
     Document responseDocument = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
-    appendString(appendArray(responseDocument), "mockTarget");
+    appendString(appendArray(responseDocument), project.getName());
+    appendString(appendArray(responseDocument), "Application Server");
+    appendString(appendArray(responseDocument), "Web Server");
     return responseDocument;
   }
 
@@ -196,14 +245,12 @@ public class PBServer {
     return responseDocument;
   }
 
-  public Document nameOfProject(Document _requestDocument) throws ParserConfigurationException {
+  public void nameOfProject(Document _requestDocument, OutputStream _os) {
     IProject project = project(_requestDocument, "projectCookie");
-    Document responseDocument = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
-    appendString(appendArray(responseDocument), project.getName());
-    return responseDocument;
+    new PrintStream(_os, true).print(project.getName());
   }
 
-  public Document addFilesToProject(Document _requestDocument) throws ParserConfigurationException {
+  public void addFilesToProject(Document _requestDocument, OutputStream _os) {
     Element documentElement = _requestDocument.getDocumentElement();
     String[] addFiles = strings(documentElement, "addFiles");
     for (int i = 0; i < addFiles.length; i++) {
@@ -215,9 +262,7 @@ public class PBServer {
     String[] addToTargets = strings(documentElement, "addToTargets");
     boolean copyIntoGroupFolder = booleanValue(documentElement, "copyIntoGroupFolder");
     boolean createGroupsRecursively = booleanValue(documentElement, "createGroupsRecursively");
-    Document responseDocument = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
-    // NTS: Not implemented
-    return responseDocument;
+    new PrintStream(_os, true).print("YES");
   }
 
   public Document filesOfTypesInTargetOfProject(Document _requestDocument) throws ParserConfigurationException, CoreException {
@@ -242,7 +287,7 @@ public class PBServer {
     return responseDocument;
   }
 
-  public Document nameOfTargetInProject(Document _requestDocument) throws ParserConfigurationException {
+  public void nameOfTargetInProject(Document _requestDocument, OutputStream _os) {
     //    stringbuffer.append("<nameOfTarget>");
     //    stringbuffer.append("<targetCookie>" + s + "</targetCookie >");
     //    stringbuffer.append("<projectCookie>" + s1 + "</projectCookie >");
@@ -250,12 +295,10 @@ public class PBServer {
     IProject project = project(_requestDocument, "projectCookie");
     Element documentElement = _requestDocument.getDocumentElement();
     String targetCookie = text(documentElement, "targetCookie");
-    Document responseDocument = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
-    appendString(appendArray(responseDocument), targetCookie);
-    return responseDocument;
+    new PrintStream(_os, true).print(targetCookie);
   }
 
-  public Document openFile(Document _requestDocument) throws ParserConfigurationException {
+  public void openFile(Document _requestDocument, OutputStream _os) {
     //  stringbuffer.append("<OpenFile><filename>");
     //  stringbuffer.append(s);
     //  stringbuffer.append("</filename><linenumber>");
@@ -293,11 +336,10 @@ public class PBServer {
         }
       }
     }
-    Document responseDocument = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
-    return responseDocument;
+    new PrintStream(_os, true).print("YES");
   }
 
-  public Document addGroup(Document _requestDocument) throws ParserConfigurationException {
+  public void addGroup(Document _requestDocument, OutputStream _os) {
     //    stringbuffer.append("<addGroup>");
     //    stringbuffer.append("<name>" + s + "</name >");
     //    if(s1 != null)
@@ -311,12 +353,10 @@ public class PBServer {
     System.out.println("PBServer.addGroup: name = " + name);
     IProject project = project(_requestDocument, "projectCookie");
     String nearFile = text(_requestDocument.getDocumentElement(), "nearFile");
-    Document responseDocument = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
-    // NTS: Not implemented
-    return responseDocument;
+    new PrintStream(_os, true).print("YES");
   }
 
-  public Document addGroupToPreferredInsertionGroup(Document _requestDocument) throws ParserConfigurationException {
+  public void addGroupToPreferredInsertionGroup(Document _requestDocument, OutputStream _os) {
     //    stringbuffer.append("<addGroupToPreferredInsertionGroup>");
     //    stringbuffer.append("<name>" + s + "</name >");
     //    if(s1 != null)
@@ -333,13 +373,11 @@ public class PBServer {
     IProject project = project(_requestDocument, "projectCookie");
     String nearFile = text(_requestDocument.getDocumentElement(), "nearFile");
     String preferredInsertionGroup = text(_requestDocument.getDocumentElement(), "preferredInsertionGroup");
-    Document responseDocument = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
-    // NTS: Not implemented
-    return responseDocument;
+    new PrintStream(_os, true).print("YES");
   }
 
-  public Document handleRequestDocument(Document _requestDocument) throws Throwable {
-    Document responseDocument;
+  public void handleRequestDocument(Document _requestDocument, OutputStream _os) throws Throwable {
+    Document responseDocument = null;
     String nodeName = _requestDocument.getDocumentElement().getNodeName();
     if ("openProjectsAppropriateForFile".equals(nodeName)) {
       responseDocument = openProjectsAppropriateForFile(_requestDocument);
@@ -351,31 +389,38 @@ public class PBServer {
       responseDocument = targetsInProject(_requestDocument);
     }
     else if ("nameOfProject".equals(nodeName)) {
-      responseDocument = nameOfProject(_requestDocument);
+      nameOfProject(_requestDocument, _os);
     }
     else if ("addFilesToProject".equals(nodeName)) {
-      responseDocument = addFilesToProject(_requestDocument);
+      addFilesToProject(_requestDocument, _os);
     }
     else if ("filesOfTypesInTargetOfProject".equals(nodeName)) {
       responseDocument = filesOfTypesInTargetOfProject(_requestDocument);
     }
     else if ("nameOfTarget".equals(nodeName)) {
-      responseDocument = nameOfTargetInProject(_requestDocument);
+      nameOfTargetInProject(_requestDocument, _os);
     }
     else if ("OpenFile".equals(nodeName)) {
-      responseDocument = openFile(_requestDocument);
+      openFile(_requestDocument, _os);
     }
     else if ("addGroup".equals(nodeName)) {
-      responseDocument = addGroup(_requestDocument);
+      addGroup(_requestDocument, _os);
     }
     else if ("addGroupToPreferredInsertionGroup".equals(nodeName)) {
-      responseDocument = addGroupToPreferredInsertionGroup(_requestDocument);
+      addGroupToPreferredInsertionGroup(_requestDocument, _os);
     }
     else {
       System.out.println("PBServer.run: Unknown request: " + nodeName);
       responseDocument = null;
     }
-    return responseDocument;
+    if (responseDocument != null) {
+      Transformer transformer = TransformerFactory.newInstance().newTransformer();
+      transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+      transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+      DOMSource source = new DOMSource(responseDocument);
+      StreamResult result = new StreamResult(_os);
+      transformer.transform(source, result);
+    }
   }
 
   public class FileTypeResourceVisitor implements IResourceVisitor {
@@ -418,15 +463,7 @@ public class PBServer {
               sb.append((char) ch);
             }
             Document requestDocument = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new InputSource(new StringReader(sb.toString())));
-            Document responseDocument = handleRequestDocument(requestDocument);
-            if (responseDocument != null) {
-              Transformer transformer = TransformerFactory.newInstance().newTransformer();
-              transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-              transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-              DOMSource source = new DOMSource(responseDocument);
-              StreamResult result = new StreamResult(os);
-              transformer.transform(source, result);
-            }
+            handleRequestDocument(requestDocument, os);
           }
           finally {
             os.flush();
