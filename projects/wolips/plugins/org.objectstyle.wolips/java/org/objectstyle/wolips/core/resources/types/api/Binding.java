@@ -67,6 +67,10 @@ public class Binding extends AbstractApiModelElement {
 
 	private final static String DEFAULTS = "defaults";
 
+	public final static String[] ALL_DEFAULTS = new String[] { "Undefined",
+			"Boolean", "Date Format Strings", "MIME Types", "Direct Actions",
+			"Direct Action Classes", "Page Names", "Frameworks", "Resources" };
+
 	private Wo parent;
 
 	protected Binding(Element element, ApiModel apiModel, Wo parent) {
@@ -90,8 +94,38 @@ public class Binding extends AbstractApiModelElement {
 		return element.getAttributeValue(DEFAULTS);
 	}
 
+	public int getSelectedDefaults() {
+		String defaults = this.getDefaults();
+		if(defaults == null) {
+			return 0;
+		}
+		for (int i = 0; i < ALL_DEFAULTS.length; i++) {
+			String string = ALL_DEFAULTS[i];
+			if(string.equals(defaults)) {
+				return i;
+			}
+		}
+		return 0;
+	}
+
 	public void setDefaults(String defaults) {
 		element.setAttribute(DEFAULTS, defaults);
+	}
+
+	public void setDefaults(int defaults) {
+		if (defaults == 0) {
+			if (getDefaults() == null) {
+				return;
+			}
+			element.removeAttribute(DEFAULTS);
+		} else {
+			if (getDefaults() != null
+					&& getDefaults().equals(ALL_DEFAULTS[defaults])) {
+				return;
+			}
+			this.setDefaults(ALL_DEFAULTS[defaults]);
+		}
+		apiModel.markAsDirty();
 	}
 
 	public boolean isRequired() {
