@@ -74,7 +74,7 @@ public class CorePlugin extends AbstractCorePlugin {
 	// The shared instance.
 	private static CorePlugin plugin;
 
-	private BuilderWrapper[] builder;
+	private BuilderWrapper[] builderWrapper;
 
 	private static final String EXTENSION_POINT_ID = "org.objectstyle.wolips.builders";
 
@@ -92,7 +92,7 @@ public class CorePlugin extends AbstractCorePlugin {
 	public void stop(BundleContext context) throws Exception {
 		super.stop(context);
 		plugin = null;
-		builder = null;
+		builderWrapper = null;
 	}
 
 	/**
@@ -121,8 +121,10 @@ public class CorePlugin extends AbstractCorePlugin {
 					currentBuilder = (IBuilder) configurationElement
 							.createExecutableExtension("class");
 					String name = configurationElement.getAttribute("name");
-					String context = configurationElement.getAttribute("context");
-					arrayList.add(new BuilderWrapper(currentBuilder, name, context));
+					String context = configurationElement
+							.getAttribute("context");
+					arrayList.add(new BuilderWrapper(currentBuilder, name,
+							context));
 				} catch (CoreException e) {
 					this.log(
 							"Could not create executable from configuration element: "
@@ -130,14 +132,23 @@ public class CorePlugin extends AbstractCorePlugin {
 				}
 			}
 		}
-		this.builder = (BuilderWrapper[]) arrayList
+		this.builderWrapper = (BuilderWrapper[]) arrayList
 				.toArray(new BuilderWrapper[arrayList.size()]);
 	}
 
-	public BuilderWrapper[] getBuilder() {
-		if (this.builder == null) {
+	public BuilderWrapper[] getBuilderWrapper(String context) {
+		if (this.builderWrapper == null) {
 			loadBuilderExtensionPoint();
 		}
-		return this.builder;
+		ArrayList builderWrapperList = new ArrayList();
+		for (int i = 0; i < builderWrapper.length; i++) {
+			BuilderWrapper currentBuilderWrapper = builderWrapper[i];
+			if (currentBuilderWrapper.validInContext(context)) {
+				builderWrapperList.add(currentBuilderWrapper);
+			}
+		}
+		return (BuilderWrapper[]) builderWrapperList
+				.toArray(new BuilderWrapper[builderWrapperList.size()]);
 	}
+
 }

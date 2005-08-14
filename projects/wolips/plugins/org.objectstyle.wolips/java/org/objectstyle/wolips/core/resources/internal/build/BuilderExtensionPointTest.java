@@ -62,7 +62,7 @@ import org.objectstyle.wolips.core.CorePlugin;
 public class BuilderExtensionPointTest extends TestCase {
 
 	public void testGetBuilder() {
-		BuilderWrapper[] builder = CorePlugin.getDefault().getBuilder();
+		BuilderWrapper[] builder = CorePlugin.getDefault().getBuilderWrapper(null);
 		assertNotNull(builder);
 	}
 

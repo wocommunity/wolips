@@ -84,7 +84,8 @@ public abstract class Builder extends IncrementalProjectBuilder {
 	protected IProject[] build(int kind, Map args, IProgressMonitor monitor)
 			throws CoreException {
 		if (this.builderWrapper == null) {
-			this.builderWrapper = CorePlugin.getDefault().getBuilder();
+			this.builderWrapper = CorePlugin.getDefault().getBuilderWrapper(
+					this.getContext());
 		}
 		if (this.deltaVisitor == null) {
 			this.deltaVisitor = new DeltaVisitor(this.builderWrapper);
@@ -107,17 +108,12 @@ public abstract class Builder extends IncrementalProjectBuilder {
 	private void invokeOldBuilder(int kind, Map args, IProgressMonitor monitor,
 			IResourceDelta delta) throws CoreException {
 		for (int i = 0; i < this.builderWrapper.length; i++) {
-			boolean isBuilderValidInContext = this.builderWrapper[i]
-					.validInContext(this.getContext());
-			if (isBuilderValidInContext) {
-				boolean isOldBuilder = this.builderWrapper[i].isOldBuilder();
-				if (isOldBuilder) {
-					AbstractOldBuilder abstractOldBuilder = (AbstractOldBuilder) this.builderWrapper[i]
-							.getBuilder();
-					abstractOldBuilder.setProject(this.getProject());
-					abstractOldBuilder.invokeOldBuilder(kind, args, monitor,
-							delta);
-				}
+			boolean isOldBuilder = this.builderWrapper[i].isOldBuilder();
+			if (isOldBuilder) {
+				AbstractOldBuilder abstractOldBuilder = (AbstractOldBuilder) this.builderWrapper[i]
+						.getBuilder();
+				abstractOldBuilder.setProject(this.getProject());
+				abstractOldBuilder.invokeOldBuilder(kind, args, monitor, delta);
 			}
 		}
 	}
@@ -125,24 +121,16 @@ public abstract class Builder extends IncrementalProjectBuilder {
 	private void notifyBuilderBuildStarted(int kind, Map args,
 			IProgressMonitor monitor) {
 		for (int i = 0; i < this.builderWrapper.length; i++) {
-			boolean isBuilderValidInContext = this.builderWrapper[i]
-					.validInContext(this.getContext());
-			if (isBuilderValidInContext) {
-				this.builderWrapper[i].getBuilder().buildStarted(kind, args,
-						monitor, this.getProject());
-			}
+			this.builderWrapper[i].getBuilder().buildStarted(kind, args,
+					monitor, this.getProject());
 		}
 	}
 
 	private void notifyBuilderVisitingDeltasDone(int kind, Map args,
 			IProgressMonitor monitor) {
 		for (int i = 0; i < this.builderWrapper.length; i++) {
-			boolean isBuilderValidInContext = this.builderWrapper[i]
-					.validInContext(this.getContext());
-			if (isBuilderValidInContext) {
-				this.builderWrapper[i].getBuilder().visitingDeltasDone(kind,
-						args, monitor, this.getProject());
-			}
+			this.builderWrapper[i].getBuilder().visitingDeltasDone(kind, args,
+					monitor, this.getProject());
 		}
 	}
 }
