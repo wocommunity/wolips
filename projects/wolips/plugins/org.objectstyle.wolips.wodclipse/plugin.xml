@@ -5,13 +5,25 @@
    <extension
          point="org.eclipse.ui.editors">
       <editor
+            class="org.objectstyle.wolips.wodclipse.api.ApiEditor"
+            default="true"
+            icon="icons/ApiEditor.gif"
+            id="org.objectstyle.wolips.wodclipse.api.ApiEditor"
+            name="Api Editor">
+			<contentTypeBinding
+               contentTypeId="org.objectstyle.wolips.wodclipse.api"
+            /> 
+      </editor>
+      <editor
             class="org.objectstyle.wolips.wodclipse.editors.WODEditor"
             contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
             default="true"
-            extensions="wod"
             icon="icons/WODEditor.gif"
             id="org.objectstyle.wolips.wodclipse.editors.WODEditor"
             name="WOD Editor">
+			<contentTypeBinding
+               contentTypeId="org.objectstyle.wolips.wodclipse.wod"
+            /> 
       </editor>
       <editor
             default="true"
@@ -49,7 +61,13 @@
             base-type="org.eclipse.core.runtime.text"
             file-extensions="wod"
             id="org.objectstyle.wolips.wodclipse.wod"
-            name="org.objectstyle.wolips.wodclipse.wod"
+            name="wod file of a WOComponent"
+            priority="normal"/>
+      <content-type
+            base-type="org.eclipse.core.runtime.text"
+            file-extensions="api"
+            id="org.objectstyle.wolips.wodclipse.api"
+            name="api file of a WOComponent"
             priority="normal"/>
    </extension>
    <extension
@@ -73,5 +91,5 @@
         		type="wotagnameattribute"
         		name="wotagnameattribute"/>
     </extension>
-   
+
 </plugin>

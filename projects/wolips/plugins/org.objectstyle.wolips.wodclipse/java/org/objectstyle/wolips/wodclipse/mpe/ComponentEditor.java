@@ -51,14 +51,16 @@ import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IPropertyListener;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.part.MultiEditor;
 import org.eclipse.ui.part.MultiEditorInput;
+import org.eclipse.wst.html.ui.internal.provisional.StructuredTextEditorHTML;
 import org.objectstyle.wolips.wodclipse.WodclipsePlugin;
 import org.objectstyle.wolips.wodclipse.editors.WODEditor;
 
@@ -66,6 +68,8 @@ import org.objectstyle.wolips.wodclipse.editors.WODEditor;
  * @author uli
  */
 public class ComponentEditor extends MultiEditor {
+
+	int activeEditorIndex = 0;
 
 	/*
 	 * @see IWorkbenchPart#createPartControl(Composite)
@@ -77,50 +81,74 @@ public class ComponentEditor extends MultiEditor {
 		CTabItem javaTab = new CTabItem(folder, SWT.NONE);
 		javaTab.setControl(javaEditorParent);
 		javaTab.setText("Java");
+		javaEditorParent.addListener(SWT.Activate, new Listener() {
 
+			public void handleEvent(Event event) {
+				activeEditorIndex = 0;
+			}
+
+		});
 		Composite componentEditorParent = new Composite(folder, SWT.NONE);
 		componentEditorParent.setLayout(new FillLayout());
 		CTabItem componentTab = new CTabItem(folder, SWT.NONE);
 		componentTab.setControl(componentEditorParent);
 		componentTab.setText("Component");
-
 		Composite apiEditorParent = new Composite(folder, SWT.NONE);
 		apiEditorParent.setLayout(new FillLayout());
 		CTabItem apiTab = new CTabItem(folder, SWT.NONE);
 		apiTab.setControl(apiEditorParent);
 		apiTab.setText("Api");
+		apiEditorParent.addListener(SWT.Activate, new Listener() {
 
+			public void handleEvent(Event event) {
+				activeEditorIndex = 3;
+			}
+
+		});
 		SashForm componentEditorSashParent = new SashForm(
 				componentEditorParent, SWT.VERTICAL | SWT.SMOOTH);
-		TextEditor htmlEditor = null;
+		StructuredTextEditorHTML htmlEditor = null;
 		IEditorPart[] innerEditors = getInnerEditors();
 		for (int i = 0; i < innerEditors.length; i++) {
-			final IEditorPart e = innerEditors[i];
+			final IEditorPart innerEditor = innerEditors[i];
 			switch (i) {
 			case 0:
-				createInnerPartControl(javaEditorParent, e);
-				addPropertyListener(e);
+				createInnerPartControl(javaEditorParent, innerEditor);
+				addPropertyListener(innerEditor);
 				break;
 
 			case 1:
 				SashForm htmlSashform = new SashForm(componentEditorSashParent,
 						SWT.VERTICAL);
-				createInnerPartControl(htmlSashform, e);
-				addPropertyListener(e);
-				htmlEditor = (TextEditor) e;
+				createInnerPartControl(htmlSashform, innerEditor);
+				addPropertyListener(innerEditor);
+				htmlEditor = (StructuredTextEditorHTML) innerEditor;
+				htmlSashform.addListener(SWT.Activate, new Listener() {
+
+					public void handleEvent(Event event) {
+						activeEditorIndex = 1;
+					}
+
+				});
 				break;
 
 			case 2:
 				SashForm wodSashform = new SashForm(componentEditorSashParent,
 						SWT.VERTICAL);
-				createInnerPartControl(wodSashform, e);
-				addPropertyListener(e);
-				addWebObjectsTagNamesListener((WODEditor) e,
+				createInnerPartControl(wodSashform, innerEditor);
+				addPropertyListener(innerEditor);
+				wodSashform.addListener(SWT.Activate, new Listener() {
+					public void handleEvent(Event event) {
+						activeEditorIndex = 1;
+					}
+
+				});
+				addWebObjectsTagNamesListener((WODEditor) innerEditor,
 						htmlEditor);
 				break;
 			case 3:
-				createInnerPartControl(apiEditorParent, e);
-				addPropertyListener(e);
+				createInnerPartControl(apiEditorParent, innerEditor);
+				addPropertyListener(innerEditor);
 				break;
 
 			default:
@@ -131,7 +159,7 @@ public class ComponentEditor extends MultiEditor {
 	}
 
 	private void addWebObjectsTagNamesListener(final WODEditor wodEditor,
-			TextEditor htmlEditor) {
+			StructuredTextEditorHTML htmlEditor) {
 		htmlEditor.getSelectionProvider().addSelectionChangedListener(
 				new ISelectionChangedListener() {
 
@@ -150,8 +178,7 @@ public class ComponentEditor extends MultiEditor {
 					}
 
 				});
-		WodclipsePlugin.getDefault().updateWebObjectsTagNames(
-				wodEditor);
+		WodclipsePlugin.getDefault().updateWebObjectsTagNames(wodEditor);
 	}
 
 	private void addPropertyListener(IEditorPart editorPart) {
@@ -197,6 +224,13 @@ public class ComponentEditor extends MultiEditor {
 				.substring(0, javaInputName.length() - 5)
 				+ " WOComponent";
 		setPartName(partName);
+	}
+
+	/*
+	 * @see IWorkbenchPart#setFocus()
+	 */
+	public void setFocus() {
+		getInnerEditors()[activeEditorIndex].setFocus();
 	}
 
 }

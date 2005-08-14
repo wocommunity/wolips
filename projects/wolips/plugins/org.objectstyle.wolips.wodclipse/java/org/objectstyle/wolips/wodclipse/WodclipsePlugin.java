@@ -43,10 +43,12 @@
  */
 package org.objectstyle.wolips.wodclipse;
 
-import java.util.ResourceBundle;
-
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.forms.FormColors;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.objectstyle.wolips.ui.plugins.AbstractWOLipsUIPlugin;
 import org.objectstyle.wolips.wodclipse.editors.WODEditor;
 import org.osgi.framework.BundleContext;
 
@@ -55,18 +57,20 @@ import org.osgi.framework.BundleContext;
  * 
  * @author mike
  */
-public class WodclipsePlugin extends AbstractUIPlugin {
+public class WodclipsePlugin extends AbstractWOLipsUIPlugin {
 	// The shared instance.
 	private static WodclipsePlugin plugin;
 
-	private ResourceBundle resourceBundle;
-
+	private FormColors formColors;
+	
 	public static String WODEditorID = "org.objectstyle.wolips.wodclipse.editors.WODEditor";
 
 	public static String ComponentEditorID = "org.objectstyle.wolips.wodclipse.mpe.ComponentEditor";
 
 	public static String HTMLEditorID = "org.eclipse.wst.html.core.htmlsource.source";
 
+	public static String ApiEditorID = "org.objectstyle.wolips.wodclipse.api.ApiEditor";
+	
 	private String[] webObjectsTagNames;
 
 	private WODEditor lastWODEditor;
@@ -77,8 +81,6 @@ public class WodclipsePlugin extends AbstractUIPlugin {
 	public WodclipsePlugin() {
 		super();
 		plugin = this;
-		resourceBundle = ResourceBundle
-				.getBundle("org.objectstyle.wolips.wodclipse.WodclipsePluginResources");
 	}
 
 	/**
@@ -92,10 +94,16 @@ public class WodclipsePlugin extends AbstractUIPlugin {
 	 * This method is called when the plug-in is stopped
 	 */
 	public void stop(BundleContext context) throws Exception {
-		super.stop(context);
+		try {
+			if (formColors != null) {
+				formColors.dispose();
+				formColors = null;
+			}
+		} finally {
+			super.stop(context);
+		}
 		plugin = null;
 	}
-
 	/**
 	 * Returns the shared instance.
 	 */
@@ -115,14 +123,11 @@ public class WodclipsePlugin extends AbstractUIPlugin {
 		return AbstractUIPlugin.imageDescriptorFromPlugin(
 				"org.objectstyle.wolips.wodclipse", path);
 	}
-
-	/**
-	 * Returns the plugin's resource bundle,
-	 */
-	public ResourceBundle getResourceBundle() {
-		return this.resourceBundle;
+	
+	public Image getImage(String key) {
+		return getImageRegistry().get(key);
 	}
-
+	
 	public String[] getWebObjectsTagNames() {
 		if (this.webObjectsTagNames == null) {
 			this.webObjectsTagNames = new String[] { "No tags available" };
@@ -145,5 +150,12 @@ public class WodclipsePlugin extends AbstractUIPlugin {
 		}
 		lastWODEditor = wodEditor;
 	}
-
+	public FormColors getFormColors(Display display) {
+		if (formColors == null) {
+			formColors = new FormColors(display);
+			formColors.markShared();
+		}
+		return formColors;
+	}
+	
 }
