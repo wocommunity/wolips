@@ -237,9 +237,9 @@ public class DataSetsPlugin extends Plugin implements IDataSetTypes {
 		this.adapterCache = new AdapterCache();
 		//add resource change listener to update project file on resource
 		// changes
-		this.resourceChangeListener = new ResourceChangeListener();
-		ResourcesPlugin.getWorkspace().addResourceChangeListener(
-				this.resourceChangeListener, IResourceChangeEvent.POST_BUILD);
+//		this.resourceChangeListener = new ResourceChangeListener();
+//		ResourcesPlugin.getWorkspace().addResourceChangeListener(
+//				this.resourceChangeListener, IResourceChangeEvent.POST_BUILD);
 	}
 
 	/*
@@ -248,8 +248,8 @@ public class DataSetsPlugin extends Plugin implements IDataSetTypes {
 	 * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
 	 */
 	public void stop(BundleContext context) throws Exception {
-		ResourcesPlugin.getWorkspace().removeResourceChangeListener(
-				this.resourceChangeListener);
+		//ResourcesPlugin.getWorkspace().removeResourceChangeListener(
+		//		this.resourceChangeListener);
 		this.adapterCache.clean();
 		this.adapterCache = null;
 		super.stop(context);
