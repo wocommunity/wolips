@@ -143,14 +143,14 @@ public class PBDotProjectBuilder implements IBuilder {
 			return;
 		}
 		int kind = delta.getKind();
-		if (kind == IResourceDelta.ADDED || kind == IResourceDelta.REMOVED) {
+		if (kind == IResourceDelta.ADDED || kind == IResourceDelta.CHANGED || kind == IResourceDelta.REMOVED) {
 			IPBDotProjectOwner pbDotProjectOwner = this
 					.getIPBDotProjectOwner(resource);
 			IPBDotProjectAdapter pbDotProjectAdapter = this
 					.getIPBDotProjectAdapter(pbDotProjectOwner);
 			ILocalizedPath localizedPath = pbDotProjectAdapter
 					.localizedRelativeResourcePath(pbDotProjectOwner, resource);
-			if (kind == IResourceDelta.ADDED) {
+			if (kind == IResourceDelta.ADDED || kind == IResourceDelta.CHANGED) {
 				pbDotProjectAdapter.addClass(localizedPath);
 			} else if (kind == IResourceDelta.REMOVED) {
 				pbDotProjectAdapter.removeClass(localizedPath);
@@ -161,7 +161,7 @@ public class PBDotProjectBuilder implements IBuilder {
 	public void handleWoappResourcesDelta(IResourceDelta delta) {
 		IResource resource = delta.getResource();
 		int kind = delta.getKind();
-		if (kind == IResourceDelta.ADDED || kind == IResourceDelta.REMOVED) {
+		if (kind == IResourceDelta.ADDED || kind == IResourceDelta.CHANGED || kind == IResourceDelta.REMOVED) {
 			IPBDotProjectOwner pbDotProjectOwner = this
 					.getIPBDotProjectOwner(resource);
 			IPBDotProjectAdapter pbDotProjectAdapter = this
@@ -180,7 +180,7 @@ public class PBDotProjectBuilder implements IBuilder {
 			if (parentIsDotWO) {
 				return;
 			}
-			if (kind == IResourceDelta.ADDED) {
+			if (kind == IResourceDelta.ADDED || kind == IResourceDelta.CHANGED) {
 				if (isDotWO) {
 					pbDotProjectAdapter.addWoComponent(localizedPath);
 				} else {
@@ -199,14 +199,14 @@ public class PBDotProjectBuilder implements IBuilder {
 	public void handleWebServerResourcesDelta(IResourceDelta delta) {
 		IResource resource = delta.getResource();
 		int kind = delta.getKind();
-		if (kind == IResourceDelta.ADDED || kind == IResourceDelta.REMOVED) {
+		if (kind == IResourceDelta.ADDED || kind == IResourceDelta.CHANGED || kind == IResourceDelta.REMOVED) {
 			IPBDotProjectOwner pbDotProjectOwner = this
 					.getIPBDotProjectOwner(resource);
 			IPBDotProjectAdapter pbDotProjectAdapter = this
 					.getIPBDotProjectAdapter(pbDotProjectOwner);
 			ILocalizedPath localizedPath = pbDotProjectAdapter
 					.localizedRelativeResourcePath(pbDotProjectOwner, resource);
-			if (kind == IResourceDelta.ADDED) {
+			if (kind == IResourceDelta.ADDED || kind == IResourceDelta.CHANGED) {
 				pbDotProjectAdapter.addWebServerResource(localizedPath);
 			} else if (kind == IResourceDelta.REMOVED) {
 				pbDotProjectAdapter.removeWebServerResource(localizedPath);
@@ -221,14 +221,14 @@ public class PBDotProjectBuilder implements IBuilder {
 			return;
 		}
 		int kind = delta.getKind();
-		if (kind == IResourceDelta.ADDED || kind == IResourceDelta.REMOVED) {
+		if (kind == IResourceDelta.ADDED || kind == IResourceDelta.CHANGED || kind == IResourceDelta.REMOVED) {
 			IPBDotProjectOwner pbDotProjectOwner = this
 					.getIPBDotProjectOwner(resource);
 			IPBDotProjectAdapter pbDotProjectAdapter = this
 					.getIPBDotProjectAdapter(pbDotProjectOwner);
 			ILocalizedPath localizedPath = pbDotProjectAdapter
 					.localizedRelativeResourcePath(pbDotProjectOwner, resource);
-			if (kind == IResourceDelta.ADDED) {
+			if (kind == IResourceDelta.ADDED || kind == IResourceDelta.CHANGED) {
 				pbDotProjectAdapter.addClass(localizedPath);
 			} else if (kind == IResourceDelta.REMOVED) {
 				pbDotProjectAdapter.removeClass(localizedPath);
