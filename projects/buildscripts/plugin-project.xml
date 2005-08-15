@@ -26,7 +26,9 @@
                 destdir="${param.java.dest.dir}"
                 deprecation="${compile.deprecation}"
                 debug="${compile.debug}"
-                optimize="${compile.optimize}">
+                optimize="${compile.optimize}"
+        		   source="${compile.source}"
+                target="${compile.target}">
             <classpath refid="full.classpath"/>
        </javac>
     </target>
