@@ -23,7 +23,6 @@
      <builder
 		id="org.objectstyle.wolips.builder.pbdotprojectbuilder"
          name="PB.project Builder"
-         class="org.objectstyle.wolips.builder.internal.PBDotProjectBuilder"
-         context="never"/>
+         class="org.objectstyle.wolips.builder.internal.PBDotProjectBuilder"/>
    </extension>
 </plugin>
