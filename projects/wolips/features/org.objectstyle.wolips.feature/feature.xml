@@ -11,7 +11,7 @@
    </description>
 
    <copyright>
-      Copyright 2002, 2004, objectstyle.org
+      Copyright 2002, 2005, objectstyle.org
    </copyright>
 
    <license>
@@ -20,7 +20,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0
  * 
- * Copyright (c) 2002, 2004 The ObjectStyle Group and individual authors of the
+ * Copyright (c) 2002, 2005 The ObjectStyle Group and individual authors of the
  * software. All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -73,24 +73,22 @@
 
    <requires>
       <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.core.resources"/>
+      <import plugin="org.junit"/>
+      <import plugin="org.apache.ant"/>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.debug.ui"/>
       <import plugin="org.eclipse.debug.core"/>
       <import plugin="org.eclipse.core.variables"/>
-      <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.ui.externaltools"/>
       <import plugin="org.eclipse.jdt.core"/>
       <import plugin="org.eclipse.ant.ui"/>
       <import plugin="org.eclipse.jdt.launching"/>
-      <import plugin="org.junit"/>
-      <import plugin="org.objectstyle.wolips.tests.core"/>
-      <import plugin="org.apache.ant"/>
       <import plugin="org.eclipse.jdt.ui"/>
       <import plugin="org.eclipse.jface.text"/>
       <import plugin="org.eclipse.ui.browser"/>
       <import plugin="org.eclipse.jdt.debug.ui"/>
       <import plugin="org.eclipse.ant.core"/>
-      <import plugin="org.eclipse.swt"/>
       <import plugin="org.eclipse.search"/>
       <import plugin="org.eclipse.ui.console"/>
       <import plugin="org.eclipse.ui.ide"/>
@@ -100,6 +98,11 @@
       <import plugin="org.eclipse.ui.editors"/>
       <import plugin="org.eclipse.ui.workbench.texteditor"/>
       <import plugin="org.eclipse.ltk.core.refactoring"/>
+      <import plugin="org.eclipse.wst.sse.core"/>
+      <import plugin="org.eclipse.wst.html.ui"/>
+      <import plugin="org.eclipse.wst.sse.ui"/>
+      <import plugin="org.eclipse.text"/>
+      <import plugin="org.eclipse.core.filebuffers"/>
    </requires>
 
    <plugin
@@ -269,6 +272,13 @@
 
    <plugin
          id="org.objectstyle.wolips.builder"
+         download-size="32"
+         install-size="32"
+         version="1.0.6"
+         unpack="false"/>
+
+   <plugin
+         id="org.objectstyle.wolips.editors"
          download-size="32"
          install-size="32"
          version="1.0.6"
