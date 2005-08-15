@@ -337,7 +337,7 @@ public class ProjectNaturePage extends PropertyPage implements IAdaptable {
 			//setDefaults(project);
 			enableWidgets(this._woIsIncrementalButton.getSelection());
 		} catch (CoreException exception) {
-			UIPlugin.getDefault().getPluginLogger().log(exception);
+			UIPlugin.getDefault().log(exception);
 		}
 		return composite;
 	}
@@ -429,7 +429,7 @@ public class ProjectNaturePage extends PropertyPage implements IAdaptable {
 			boolean selection = this._woTargetBuilderCheck.getSelection();
 			project.useTargetBuilder(selection);
 		} catch (CoreException up) {
-			UIPlugin.getDefault().getPluginLogger().log(up);
+			UIPlugin.getDefault().log(up);
 			return false;
 		} finally {
 			project = null;

@@ -97,7 +97,7 @@ public class PBAction extends AbstractActionOnIResource {
 					touchAllFilesOperation.run(new NullProgressMonitor());
 				}
 			} catch (Exception ex) {
-				UIPlugin.getDefault().getPluginLogger().log(ex);
+				UIPlugin.getDefault().log(ex);
 			}
 		}
 	}
@@ -115,7 +115,7 @@ public class PBAction extends AbstractActionOnIResource {
 							.getAdapter(Project.class);
 					action.setEnabled(project.hasWOLipsNature());
 				} catch (Exception exception) {
-					UIPlugin.getDefault().getPluginLogger().log(exception);
+					UIPlugin.getDefault().log(exception);
 				}
 			}
 		} else {

@@ -96,7 +96,7 @@ public class TouchAllFilesOperation extends WorkspaceModifyOperation {
 			//remove all existing entries
 			project.cleanAllFileTables();
 		} catch (Throwable e) {
-			UIPlugin.getDefault().getPluginLogger().log(e);
+			UIPlugin.getDefault().log(e);
 		}
 		this.touch(this.iProject, monitor);
 	}

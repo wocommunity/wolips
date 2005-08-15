@@ -18,12 +18,9 @@ Require-Bundle: org.eclipse.search,
  org.eclipse.core.resources,
  org.objectstyle.wolips.preferences,
  org.objectstyle.wolips.commons,
- org.objectstyle.wolips.variables,
  org.objectstyle.wolips.workbenchutilities,
  org.objectstyle.wolips.datasets,
- org.eclipse.ui.forms,
- org.objectstyle.wolips.projectbuild,
- org.objectstyle.wolips.ant
+ org.objectstyle.wolips.projectbuild
 Eclipse-AutoStart: true
 Export-Package: org.objectstyle.wolips.ui,
  org.objectstyle.wolips.ui.actions,

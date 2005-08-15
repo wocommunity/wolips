@@ -146,7 +146,7 @@ public final class RelatedView extends ViewPart
 					result.addAll(list);
 
 				} catch (Exception e) {
-					UIPlugin.getDefault().getPluginLogger().log(e);
+					UIPlugin.getDefault().log(e);
 				}
 			}
 			return result.toArray();

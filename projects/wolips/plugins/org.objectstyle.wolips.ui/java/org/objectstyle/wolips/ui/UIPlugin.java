@@ -3,7 +3,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0
  * 
- * Copyright (c) 2004 The ObjectStyle Group and individual authors of the
+ * Copyright (c) 2004 - 2005 The ObjectStyle Group and individual authors of the
  * software. All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -48,20 +48,22 @@
  *  
  */
 package org.objectstyle.wolips.ui;
+
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.objectstyle.wolips.commons.logging.PluginLogger;
+import org.objectstyle.wolips.ui.plugins.AbstractWOLipsUIPlugin;
+import org.osgi.framework.BundleContext;
+
 /**
  * The main plugin class to be used in the desktop.
  * 
  * @author uli
  * @author markus
  */
-public class UIPlugin extends AbstractUIPlugin {
-	//The plugin.
+public class UIPlugin extends AbstractWOLipsUIPlugin {
+	// The shared instance.
 	private static UIPlugin plugin;
-	private static final String PLUGIN_ID = "org.objectstyle.wolips.ui";
-	private PluginLogger pluginLogger = new PluginLogger(
-			UIPlugin.PLUGIN_ID, false);
+
 	/**
 	 * The constructor.
 	 */
@@ -69,16 +71,32 @@ public class UIPlugin extends AbstractUIPlugin {
 		super();
 		plugin = this;
 	}
+
 	/**
-	 * @return the shared instance
+	 * This method is called when the plug-in is stopped
+	 */
+	public void stop(BundleContext context) throws Exception {
+		super.stop(context);
+		plugin = null;
+	}
+
+	/**
+	 * Returns the shared instance.
 	 */
 	public static UIPlugin getDefault() {
 		return plugin;
 	}
+
 	/**
-	 * @return Returns the pluginLogger.
+	 * Returns an image descriptor for the image file at the given plug-in
+	 * relative path.
+	 * 
+	 * @param path
+	 *            the path
+	 * @return the image descriptor
 	 */
-	public PluginLogger getPluginLogger() {
-		return this.pluginLogger;
+	public static ImageDescriptor getImageDescriptor(String path) {
+		return AbstractUIPlugin.imageDescriptorFromPlugin(
+				"org.objectstyle.wolips.ui", path);
 	}
 }
