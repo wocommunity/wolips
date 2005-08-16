@@ -143,4 +143,13 @@
             />
       </editor>
    </extension>
+<!-- =================================================================================== -->
+<!-- Extension: Templates                                                                -->
+<!-- =================================================================================== -->   
+   <extension point="org.eclipse.ui.editors.templates">
+		<include
+			file="templates/java-templates.xml"
+			translations="templates/java-templates.properties">
+		</include>
+    </extension>
 </plugin>
