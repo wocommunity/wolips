@@ -100,7 +100,10 @@
             </fileset>
             <fileset dir="${param.plugin.dir}/java">
                 <include name="**/*.gif"/>
-            </fileset>         
+            </fileset>
+            <fileset dir="${param.plugin.dir}/java">
+                <include name="**/*.xml"/>
+            </fileset>          
             <metainf dir="../../../homepage/doc">
                 <include name="LICENSE*"/>
             </metainf>
