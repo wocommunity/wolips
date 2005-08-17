@@ -120,6 +120,7 @@
            <adapter type="org.objectstyle.wolips.core.resources.types.folder.IDotSubprojAdapter"/>
            <adapter type="org.objectstyle.wolips.core.resources.types.folder.IDotLprojAdapter"/>
            <adapter type="org.objectstyle.wolips.core.resources.types.folder.IDotWoAdapter"/>
+           <adapter type="org.objectstyle.wolips.core.resources.types.folder.IDotEOModeldAdapter"/>
            <adapter type="org.objectstyle.wolips.core.resources.types.folder.IBuildAdapter"/>
            <adapter type="org.objectstyle.wolips.core.resources.types.folder.IContentsAdapter"/>
            <adapter type="org.objectstyle.wolips.core.resources.types.folder.IResourcesAdapter"/>
