@@ -67,6 +67,7 @@ import org.objectstyle.wolips.core.resources.builder.IBuilder;
 import org.objectstyle.wolips.core.resources.types.ILocalizedPath;
 import org.objectstyle.wolips.core.resources.types.IPBDotProjectOwner;
 import org.objectstyle.wolips.core.resources.types.file.IPBDotProjectAdapter;
+import org.objectstyle.wolips.core.resources.types.folder.IDotEOModeldAdapter;
 import org.objectstyle.wolips.core.resources.types.folder.IDotWoAdapter;
 import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
 
@@ -105,8 +106,7 @@ public class PBDotProjectBuilder implements IBuilder {
 			IProgressMonitor monitor, IProject project) {
 		Iterator iterator = affectedPBDotProjectOwner.values().iterator();
 		while (iterator.hasNext()) {
-			Object object = iterator
-					.next();
+			Object object = iterator.next();
 			IPBDotProjectAdapter pbDotProjectAdapter = (IPBDotProjectAdapter) object;
 			pbDotProjectAdapter.save();
 		}
@@ -143,7 +143,8 @@ public class PBDotProjectBuilder implements IBuilder {
 			return;
 		}
 		int kind = delta.getKind();
-		if (kind == IResourceDelta.ADDED || kind == IResourceDelta.CHANGED || kind == IResourceDelta.REMOVED) {
+		if (kind == IResourceDelta.ADDED || kind == IResourceDelta.CHANGED
+				|| kind == IResourceDelta.REMOVED) {
 			IPBDotProjectOwner pbDotProjectOwner = this
 					.getIPBDotProjectOwner(resource);
 			IPBDotProjectAdapter pbDotProjectAdapter = this
@@ -161,7 +162,8 @@ public class PBDotProjectBuilder implements IBuilder {
 	public void handleWoappResourcesDelta(IResourceDelta delta) {
 		IResource resource = delta.getResource();
 		int kind = delta.getKind();
-		if (kind == IResourceDelta.ADDED || kind == IResourceDelta.CHANGED || kind == IResourceDelta.REMOVED) {
+		if (kind == IResourceDelta.ADDED || kind == IResourceDelta.CHANGED
+				|| kind == IResourceDelta.REMOVED) {
 			IPBDotProjectOwner pbDotProjectOwner = this
 					.getIPBDotProjectOwner(resource);
 			IPBDotProjectAdapter pbDotProjectAdapter = this
@@ -178,6 +180,15 @@ public class PBDotProjectBuilder implements IBuilder {
 			}
 			boolean parentIsDotWO = parentWoAdapter != null;
 			if (parentIsDotWO) {
+				return;
+			}
+			IDotEOModeldAdapter parentDotEOModeldAdapter = null;
+			if (resource.getParent() != null) {
+				parentDotEOModeldAdapter = (IDotEOModeldAdapter) resource.getParent()
+						.getAdapter(IDotEOModeldAdapter.class);
+			}
+			boolean parentIsDotEOModeld = parentDotEOModeldAdapter != null;
+			if (parentIsDotEOModeld) {
 				return;
 			}
 			if (kind == IResourceDelta.ADDED || kind == IResourceDelta.CHANGED) {
@@ -199,7 +210,8 @@ public class PBDotProjectBuilder implements IBuilder {
 	public void handleWebServerResourcesDelta(IResourceDelta delta) {
 		IResource resource = delta.getResource();
 		int kind = delta.getKind();
-		if (kind == IResourceDelta.ADDED || kind == IResourceDelta.CHANGED || kind == IResourceDelta.REMOVED) {
+		if (kind == IResourceDelta.ADDED || kind == IResourceDelta.CHANGED
+				|| kind == IResourceDelta.REMOVED) {
 			IPBDotProjectOwner pbDotProjectOwner = this
 					.getIPBDotProjectOwner(resource);
 			IPBDotProjectAdapter pbDotProjectAdapter = this
@@ -221,7 +233,8 @@ public class PBDotProjectBuilder implements IBuilder {
 			return;
 		}
 		int kind = delta.getKind();
-		if (kind == IResourceDelta.ADDED || kind == IResourceDelta.CHANGED || kind == IResourceDelta.REMOVED) {
+		if (kind == IResourceDelta.ADDED || kind == IResourceDelta.CHANGED
+				|| kind == IResourceDelta.REMOVED) {
 			IPBDotProjectOwner pbDotProjectOwner = this
 					.getIPBDotProjectOwner(resource);
 			IPBDotProjectAdapter pbDotProjectAdapter = this
