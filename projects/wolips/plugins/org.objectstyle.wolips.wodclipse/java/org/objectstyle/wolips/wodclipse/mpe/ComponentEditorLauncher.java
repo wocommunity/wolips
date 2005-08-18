@@ -44,19 +44,12 @@
 
 package org.objectstyle.wolips.wodclipse.mpe;
 
-import java.util.List;
-
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.ui.JavaUI;
-import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorLauncher;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.part.FileEditorInput;
-import org.eclipse.ui.part.MultiEditorInput;
 import org.objectstyle.wolips.wodclipse.WodclipsePlugin;
-import org.objectstyle.wolips.wodclipse.api.ApiEditorInput;
 import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 
 /**
@@ -71,48 +64,51 @@ public class ComponentEditorLauncher implements IEditorLauncher {
 	 *            the file resource
 	 */
 	public void open(IFile file) {
-		IProject project = file.getProject();
-		String ids[] = null;
-		IEditorInput allInput[] = null;
-		String fileName = file.getName().substring(0,
-				file.getName().length() - 5);
-		List htmlResources = WorkbenchUtilitiesPlugin
-				.findResourcesInProjectByNameAndExtensions(project, fileName,
-						new String[] { "html" }, false);
-		if (htmlResources == null || htmlResources.size() != 1) {
-			WorkbenchUtilitiesPlugin.open(file, JavaUI.ID_CU_EDITOR);
+		String extension = file.getFileExtension();
+		ComponentEditorInput input = null;
+		if (extension == null) {
+			WorkbenchUtilitiesPlugin.open(file, "");
 			return;
 		}
-		List wodResources = WorkbenchUtilitiesPlugin
-				.findResourcesInProjectByNameAndExtensions(project, fileName,
-						new String[] { "wod" }, false);
-
-		if (wodResources == null || wodResources.size() != 1) {
-			WorkbenchUtilitiesPlugin.open(file, JavaUI.ID_CU_EDITOR);
+		if (extension.equals("java")) {
+			input = ComponentEditorInput.createWithDotJava(file);
+			if (input == null) {
+				WorkbenchUtilitiesPlugin.open(file, JavaUI.ID_CU_EDITOR);
+				return;
+			}
+		}
+		if (extension.equals("html")) {
+			input = ComponentEditorInput.createWithDotHtml(file);
+			if (input == null) {
+				WorkbenchUtilitiesPlugin.open(file, WodclipsePlugin.HTMLEditorID);
+				return;
+			}
+		}
+		if (extension.equals("wod")) {
+			input = ComponentEditorInput.createWithDotWod(file);
+			if (input == null) {
+				WorkbenchUtilitiesPlugin.open(file, WodclipsePlugin.WODEditorID);
+				return;
+			}
+		}
+		if (extension.equals("api")) {
+			input = ComponentEditorInput.createWithDotApi(file);
+			if (input == null) {
+				WorkbenchUtilitiesPlugin.open(file, WodclipsePlugin.ApiEditorID);
+				return;
+				}
+		}
+		if (extension.equals("woo")) {
+			input = ComponentEditorInput.createWithDotWoo(file);
+			if (input == null) {
+				WorkbenchUtilitiesPlugin.open(file, WodclipsePlugin.WOOEditorID);
+				return;
+				}
+		}
+		if(input == null) {
+			WodclipsePlugin.getDefault().log("Invalid input for Component Editor Launcher. File:" + file);
 			return;
 		}
-		List apiResources = WorkbenchUtilitiesPlugin
-				.findResourcesInProjectByNameAndExtensions(project, fileName,
-						new String[] { "api" }, false);
-
-		if (apiResources == null || apiResources.size() != 1) {
-			ids = new String[3];
-			allInput = new IEditorInput[3];
-		} else {
-			ids = new String[4];
-			allInput = new IEditorInput[4];
-		}
-		ids[0] = JavaUI.ID_CU_EDITOR;
-		allInput[0] = new FileEditorInput(file);
-		ids[1] = WodclipsePlugin.HTMLEditorID;
-		allInput[1] = new FileEditorInput(((IFile) htmlResources.get(0)));
-		ids[2] = WodclipsePlugin.WODEditorID;
-		allInput[2] = new FileEditorInput(((IFile) wodResources.get(0)));
-		if (apiResources != null && apiResources.size() == 1) {
-			ids[3] = WodclipsePlugin.ApiEditorID;
-			allInput[3] = new ApiEditorInput(((IFile) apiResources.get(0)));
-		}
-		MultiEditorInput input = new MultiEditorInput(ids, allInput);
 		try {
 			WorkbenchUtilitiesPlugin.getActiveWorkbenchWindow().getActivePage()
 					.openEditor(input, WodclipsePlugin.ComponentEditorID);

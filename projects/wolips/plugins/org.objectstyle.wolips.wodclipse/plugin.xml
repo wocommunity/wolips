@@ -6,7 +6,8 @@
          point="org.eclipse.ui.editors">
       <editor
             class="org.objectstyle.wolips.wodclipse.api.ApiEditor"
-            default="true"
+            default="false"
+            extensions="api"
             icon="icons/ApiEditor.gif"
             id="org.objectstyle.wolips.wodclipse.api.ApiEditor"
             name="Api Editor">
@@ -17,7 +18,8 @@
       <editor
             class="org.objectstyle.wolips.wodclipse.editors.WODEditor"
             contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
-            default="true"
+            default="false"
+            extensions="wod"
             icon="icons/WODEditor.gif"
             id="org.objectstyle.wolips.wodclipse.editors.WODEditor"
             name="WOD Editor">
@@ -27,6 +29,7 @@
       </editor>
       <editor
             default="true"
+            extensions="java,html,wod,woo,api"
             icon="icons/ComponentEditor.gif"
             id="org.objectstyle.wolips.wodclipse.mpe.ComponentEditorLauncher"
             launcher="org.objectstyle.wolips.wodclipse.mpe.ComponentEditorLauncher"
@@ -34,13 +37,25 @@
 			<contentTypeBinding
                contentTypeId="org.eclipse.jdt.core.javaSource"
             /> 
+			<contentTypeBinding
+               contentTypeId="org.objectstyle.wolips.editors.api"
+            />
+			<contentTypeBinding
+               contentTypeId="org.objectstyle.wolips.editors.wod"
+            /> 
+			<contentTypeBinding
+               contentTypeId="org.objectstyle.wolips.editors.woo"
+            /> 
+			<contentTypeBinding
+               contentTypeId="org.eclipse.core.runtime.text"
+            /> 
       </editor>
       <editor
             class="org.objectstyle.wolips.wodclipse.mpe.ComponentEditor"
-            icon="icons/ComponentEditor.gif"
             default="false"
-            name="WOComponent Editor internal"
-            id="org.objectstyle.wolips.wodclipse.mpe.ComponentEditor">
+            icon="icons/ComponentEditor.gif"
+            id="org.objectstyle.wolips.wodclipse.mpe.ComponentEditor"
+            name="WOComponent Editor internal">
       </editor>
    </extension>
    <extension

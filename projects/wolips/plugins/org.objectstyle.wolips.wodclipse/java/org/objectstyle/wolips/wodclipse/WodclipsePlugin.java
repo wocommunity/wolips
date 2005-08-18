@@ -71,6 +71,8 @@ public class WodclipsePlugin extends AbstractWOLipsUIPlugin {
 
 	public static String ApiEditorID = "org.objectstyle.wolips.wodclipse.api.ApiEditor";
 	
+	public static String WOOEditorID = "org.eclipse.ui.DefaultTextEditor";
+	
 	private String[] webObjectsTagNames;
 
 	private WODEditor lastWODEditor;
