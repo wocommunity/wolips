@@ -396,7 +396,7 @@
             state="true"
             id="org.objectstyle.wolips.ui.labeldecorator.WOProjectFolderLabelDecorator">
          <description>
-            Subproject folder
+            Woproject folder
          </description>
 		<enablement>
 			<and>
@@ -404,6 +404,26 @@
 				</objectClass>
 				<objectState name="name"
 					value="woproject">
+				</objectState>
+            </and>
+         </enablement>
+      </decorator>
+      <decorator
+            lightweight="true"
+            adaptable="true"
+            label="Xcode folder"
+            icon="icons/ovr16/xcode_co.gif"
+            state="true"
+            id="org.objectstyle.wolips.ui.labeldecorator.XcodeabelDecorator">
+         <description>
+            Xcode folder
+         </description>
+		<enablement>
+			<and>
+				<objectClass name="org.eclipse.core.resources.IFolder">
+				</objectClass>
+				<objectState name="extension"
+					value="xcode">
 				</objectState>
             </and>
          </enablement>
@@ -512,10 +532,28 @@
             pattern="build.xml">
       </filter>
       <filter
-            name="build launch config (WOLips)"
+            name="Xcode (WOLips)"
             enabled="true"
-            description="Hide all *.build.launch files"
-            pattern="*.build.launch">
+            description="Hide all *.xcode files"
+            pattern="*.xcode">
+      </filter>
+      <filter
+            name="dist (WOLips)"
+            enabled="false"
+            description="Hide all dist files"
+            pattern="dist">
+      </filter>
+      <filter
+            name="build (WOLips)"
+            enabled="false"
+            description="Hide all build files"
+            pattern="build">
+      </filter>
+      <filter
+            name="woproject (WOLips)"
+            enabled="true"
+            description="Hide all woproject files"
+            pattern="woproject">
       </filter>
    </extension>
 
