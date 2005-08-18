@@ -53,7 +53,6 @@ public class ComponentFilter extends ViewerFilter {
 		super();
 	}
 
-	@Override
 	public boolean select(Viewer viewer, Object parentElement, Object element) {
 		if(element instanceof IFolder) {
 			IFolder folder = (IFolder)element;
