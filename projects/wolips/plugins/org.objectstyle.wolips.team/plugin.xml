@@ -108,6 +108,10 @@
             type="text"
             extension="build.launch">
       </fileTypes>
+      <fileTypes
+            type="text"
+            extension="wolips">
+      </fileTypes>
    </extension>
 <!-- =================================================================================== -->
 <!-- Extension: Ignored team file types                                                          -->
