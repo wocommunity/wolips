@@ -62,6 +62,7 @@ import java.io.IOException;
 import org.eclipse.core.resources.IFile;
 import org.jdom.Document;
 import org.jdom.input.SAXBuilder;
+import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 import org.objectstyle.wolips.core.CorePlugin;
 
@@ -98,6 +99,14 @@ public class ApiModel {
 		return new Wodefinitions(document.getRootElement(), this);
 	}
 
+	public Wo getWo() {
+		Wodefinitions wodefinitions = this.getWODefinitions();
+		if(wodefinitions == null) {
+			return null;
+		}
+		return wodefinitions.getWo();
+	}
+	
 	public void saveChanges() {
 		File fileToWrite = null;
 		XMLOutputter outputter = null;
@@ -105,6 +114,8 @@ public class ApiModel {
 		try {
 			fileToWrite = new File(file.getLocation().toOSString());
 			outputter = new XMLOutputter();
+			Format format = Format.getPrettyFormat();
+			outputter.setFormat(format);
 			fileWriter = new FileWriter(fileToWrite);
 			outputter.output(document, fileWriter);
 			isDirty = false;
