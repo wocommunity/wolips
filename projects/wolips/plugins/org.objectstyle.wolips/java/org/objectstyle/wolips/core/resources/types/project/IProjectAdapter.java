@@ -55,6 +55,8 @@
  */
 package org.objectstyle.wolips.core.resources.types.project;
 
+import java.util.List;
+
 import org.eclipse.core.resources.IProject;
 import org.objectstyle.wolips.core.resources.types.IPBDotProjectOwner;
 import org.objectstyle.wolips.core.resources.types.IResourceType;
@@ -67,4 +69,5 @@ public interface IProjectAdapter extends IResourceType, IPBDotProjectOwner {
 	public abstract boolean isFramework();
 	public abstract IDotWOLipsAdapter getDotWOLipsAdapter();
 	public abstract IBuildAdapter getBuildAdapter();
+	public abstract List getFrameworkNames();
 }

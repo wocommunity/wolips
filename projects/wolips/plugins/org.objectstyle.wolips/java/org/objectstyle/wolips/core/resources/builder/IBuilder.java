@@ -74,5 +74,7 @@ public interface IBuilder {
 	public abstract void handleWebServerResourcesDelta(IResourceDelta delta);
 
 	public abstract void handleOtherDelta(IResourceDelta delta);
+
+	public abstract void classpathChanged(IResourceDelta delta);
 	
 }

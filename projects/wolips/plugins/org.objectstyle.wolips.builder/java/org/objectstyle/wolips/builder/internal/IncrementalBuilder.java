@@ -337,4 +337,9 @@ public class IncrementalBuilder implements IBuilder {
 		String msgPrefix;
 	}
 
+	public void classpathChanged(IResourceDelta delta) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

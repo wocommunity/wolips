@@ -264,4 +264,30 @@ public class PBDotProjectAdapter extends AbstractFileAdapter implements
 				localizedPath.getResourcePath());
 	}
 
+	public void updateFrameworkNames(List frameworkNames) {
+		if (this.pbProject == null) {
+			return;
+		}
+		List list = pbProject.getFrameworks();
+		boolean set = false;
+		int existingNamesLength = list.size();
+		int newNamesLength = frameworkNames.size();
+		if(existingNamesLength != newNamesLength) {
+			set = true;
+		}
+		else {
+			for(int i = 0;i < newNamesLength; i++) {
+				String currentName = (String)frameworkNames.get(i);
+				if(!list.contains(currentName)) {
+					set = true;
+					break;
+				}
+			}
+		}
+		if(set) {
+			pbProject.setFrameworks(frameworkNames);
+			this.saveRequired = true;
+		}
+	}
+
 }

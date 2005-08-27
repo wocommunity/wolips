@@ -55,6 +55,8 @@
  */
 package org.objectstyle.wolips.core.resources.types.file;
 
+import java.util.List;
+
 import org.objectstyle.wolips.core.resources.types.ILocalizedPath;
 
 public interface IPBDotProjectAdapter extends IFileAdapter {
@@ -78,4 +80,6 @@ public interface IPBDotProjectAdapter extends IFileAdapter {
 	public abstract void addWebServerResource(ILocalizedPath localizedPath);
 
 	public abstract void removeWebServerResource(ILocalizedPath localizedPath);
+
+	public abstract void updateFrameworkNames(List frameworkNames);
 }

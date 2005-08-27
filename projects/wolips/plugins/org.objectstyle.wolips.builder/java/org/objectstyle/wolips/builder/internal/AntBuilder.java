@@ -98,4 +98,9 @@ public class AntBuilder implements IBuilder {
 		this.toString();
 	}
 
+	public void classpathChanged(IResourceDelta delta) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

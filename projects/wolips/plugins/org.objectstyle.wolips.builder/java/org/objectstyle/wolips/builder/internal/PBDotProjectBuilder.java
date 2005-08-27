@@ -57,6 +57,7 @@ package org.objectstyle.wolips.builder.internal;
 
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.resources.IProject;
@@ -184,8 +185,8 @@ public class PBDotProjectBuilder implements IBuilder {
 			}
 			IDotEOModeldAdapter parentDotEOModeldAdapter = null;
 			if (resource.getParent() != null) {
-				parentDotEOModeldAdapter = (IDotEOModeldAdapter) resource.getParent()
-						.getAdapter(IDotEOModeldAdapter.class);
+				parentDotEOModeldAdapter = (IDotEOModeldAdapter) resource
+						.getParent().getAdapter(IDotEOModeldAdapter.class);
 			}
 			boolean parentIsDotEOModeld = parentDotEOModeldAdapter != null;
 			if (parentIsDotEOModeld) {
@@ -247,6 +248,19 @@ public class PBDotProjectBuilder implements IBuilder {
 				pbDotProjectAdapter.removeClass(localizedPath);
 			}
 		}
+	}
+
+	public void classpathChanged(IResourceDelta delta) {
+		IResource resource = delta.getResource();
+		IPBDotProjectOwner pbDotProjectOwner = this
+				.getIPBDotProjectOwner(resource);
+		IPBDotProjectAdapter pbDotProjectAdapter = this
+				.getIPBDotProjectAdapter(pbDotProjectOwner);
+		IProject project = resource.getProject();
+		IProjectAdapter projectAdapter = (IProjectAdapter)project.getAdapter(IProjectAdapter.class);
+		List frameworkNames = projectAdapter.getFrameworkNames();
+		pbDotProjectAdapter.updateFrameworkNames(frameworkNames);
+
 	}
 
 }

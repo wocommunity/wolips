@@ -144,18 +144,18 @@ public class ResourceChangeListener implements IResourceChangeListener,
 						this.project.getIProject());
 				updateIncludeFilesJob.setRule(this.project.getIProject());
 				updateIncludeFilesJob.schedule();
-				IJavaProject iJavaProject = JavaCore.create(this.project
-						.getIProject());
-				JavaProject javaProject = (JavaProject) iJavaProject
-						.getAdapter(JavaProject.class);
-				List frameworkNames = javaProject.getFrameworkNames();
-
-				if (frameworkNames != null) {
-					UpdateFrameworkNamesJob updateFrameworkNamesJob = new UpdateFrameworkNamesJob(
-							frameworkNames, this.project.getIProject());
-					updateFrameworkNamesJob.setRule(this.project.getIProject());
-					updateFrameworkNamesJob.schedule();
-				}
+//				IJavaProject iJavaProject = JavaCore.create(this.project
+//						.getIProject());
+//				JavaProject javaProject = (JavaProject) iJavaProject
+//						.getAdapter(JavaProject.class);
+//				List frameworkNames = javaProject.getFrameworkNames();
+//
+//				if (frameworkNames != null) {
+//					UpdateFrameworkNamesJob updateFrameworkNamesJob = new UpdateFrameworkNamesJob(
+//							frameworkNames, this.project.getIProject());
+//					updateFrameworkNamesJob.setRule(this.project.getIProject());
+//					updateFrameworkNamesJob.schedule();
+//				}
 			}
 		}
 		return false;

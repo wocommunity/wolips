@@ -131,7 +131,18 @@ public class DeltaVisitor implements IResourceDeltaVisitor {
 		} else {
 			this.notifyBuilderHandleOtherDelta(delta);
 		}
+		if (resource.getType() == IResource.FILE) {
+			if (resource.getName().equals(".classpath")) {
+				this.notifyBuilderClasspathChanged(delta);
+			}
+		}
 		return true;
+	}
+
+	private void notifyBuilderClasspathChanged(IResourceDelta delta) {
+		for (int i = 0; i < this.builderWrapper.length; i++) {
+			this.builderWrapper[i].getBuilder().classpathChanged(delta);
+		}
 	}
 
 	private void notifyBuilderHandleClassesDelta(IResourceDelta delta) {

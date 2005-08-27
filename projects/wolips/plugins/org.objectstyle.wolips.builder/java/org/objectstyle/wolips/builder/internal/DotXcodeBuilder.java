@@ -98,4 +98,9 @@ public class DotXcodeBuilder implements IBuilder {
 		
 	}
 
+	public void classpathChanged(IResourceDelta delta) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

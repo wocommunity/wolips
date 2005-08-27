@@ -107,4 +107,8 @@ public abstract class AbstractOldBuilder implements IBuilder {
 	public void handleOtherDelta(IResourceDelta delta) {
 		// do nothing
 	}
+
+	public void classpathChanged(IResourceDelta delta) {
+		// do nothing
+	}
 }
