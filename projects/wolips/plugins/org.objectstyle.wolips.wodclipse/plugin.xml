@@ -91,5 +91,122 @@
         		type="wotagnameattribute"
         		name="wotagnameattribute"/>
     </extension>
-
+    
+    <extension
+        point="org.eclipse.ui.commands">
+        <category
+            name="Component Editor"
+            description="Component Editor"
+            id="org.objectstyle.wolips.wodclipse.componenteditor">
+      </category>
+        <command
+                name="Switch to Java Editor"
+                description="Switch to Java Editor"
+                categoryId="org.objectstyle.wolips.wodclipse.componenteditor"
+                id="org.objectstyle.wolips.wodclipse.editors.tojava">
+        </command>
+        <command
+                name="Switch to Html Editor"
+                description="Switch to Html Editor"
+                categoryId="org.objectstyle.wolips.wodclipse.componenteditor"
+                id="org.objectstyle.wolips.wodclipse.editors.tohtml">
+        </command>
+        <command
+                name="Switch to Wod Editor"
+                description="Switch to Wod Editor"
+                categoryId="org.objectstyle.wolips.wodclipse.componenteditor"
+                id="org.objectstyle.wolips.wodclipse.editors.towod">
+        </command>
+    </extension>
+    <extension point="org.eclipse.ui.bindings">
+		<key
+        		commandId="org.objectstyle.wolips.wodclipse.editors.tojava"
+        		contextId="org.eclipse.ui.textEditorScope"
+        		schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+        		sequence="M1+M3+1"/>
+		<key
+        		commandId="org.objectstyle.wolips.wodclipse.editors.tohtml"
+        		contextId="org.eclipse.ui.textEditorScope"
+        		schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+        		sequence="M1+M3+2"/>
+		<key
+        		commandId="org.objectstyle.wolips.wodclipse.editors.towod"
+        		contextId="org.eclipse.ui.textEditorScope"
+        		schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+        		sequence="M1+M3+3"/>
+	</extension>
+	
+	<extension point = "org.eclipse.ui.editorActions">
+      <editorContribution 
+         id="org.objectstyle.wolips.wodclipse.componenteditor.javacontribution" 
+         targetID="org.eclipse.jdt.ui.CompilationUnitEditor">        
+           <menu id="ComponentEditor"
+			label="&amp;Component Editor" 
+             path="edit/additions">
+ 				<separator name="group1"/>
+		  </menu>
+         <action
+               class="org.objectstyle.wolips.wodclipse.editormenu.SwitchToWodEditorActionDelegate"
+               definitionId="org.objectstyle.wolips.wodclipse.editors.towod"
+               id="org.objectstyle.wolips.wodclipse.editors.switchfromjavatowod"
+               label="Switch to Wod Editor"
+               menubarPath="edit/ComponentEditor/group1"/>
+         <action
+               class="org.objectstyle.wolips.wodclipse.editormenu.SwitchToHtmlEditorActionDelegate"
+               definitionId="org.objectstyle.wolips.wodclipse.editors.tohtml"
+               id="org.objectstyle.wolips.wodclipse.editors.switchfromjavatohtml"
+               label="Switch to Html Editor"
+               menubarPath="edit/ComponentEditor/group1"/> 
+         <action
+               class="org.objectstyle.wolips.wodclipse.editormenu.SwitchToJavaEditorActionDelegate"
+               definitionId="org.objectstyle.wolips.wodclipse.editors.tojava"
+               id="org.objectstyle.wolips.wodclipse.editors.switchfromjavatojava"
+               label="Switch to Html Editor"
+               menubarPath="edit/ComponentEditor/group1"/> 
+      </editorContribution>
+      <editorContribution 
+         id="org.objectstyle.wolips.wodclipse.componenteditor.htmlcontribution" 
+         targetID="org.eclipse.wst.html.core.htmlsource.source"> 
+         <action
+               class="org.objectstyle.wolips.wodclipse.editormenu.SwitchToWodEditorActionDelegate"
+               definitionId="org.objectstyle.wolips.wodclipse.editors.towod"
+               id="org.objectstyle.wolips.wodclipse.editors.switchfromhtmltowod"
+               label="Switch to Wod Editor"
+               menubarPath="edit/ComponentEditor/group1"/>
+         <action
+               class="org.objectstyle.wolips.wodclipse.editormenu.SwitchToHtmlEditorActionDelegate"
+               definitionId="org.objectstyle.wolips.wodclipse.editors.tohtml"
+               id="org.objectstyle.wolips.wodclipse.editors.switchfromhtmltohtml"
+               label="Switch to Java Editor"
+               menubarPath="edit/ComponentEditor/group1"/>
+         <action
+               class="org.objectstyle.wolips.wodclipse.editormenu.SwitchToJavaEditorActionDelegate"
+               definitionId="org.objectstyle.wolips.wodclipse.editors.tojava"
+               id="org.objectstyle.wolips.wodclipse.editors.switchfromhtmltojava"
+               label="Switch to Java Editor"
+               menubarPath="edit/ComponentEditor/group1"/> 
+      </editorContribution>
+      <editorContribution 
+         id="org.objectstyle.wolips.wodclipse.componenteditor.wodcontribution" 
+         targetID="org.objectstyle.wolips.wodclipse.editors.WODEditor"> 
+         <action
+               class="org.objectstyle.wolips.wodclipse.editormenu.SwitchToWodEditorActionDelegate"
+               definitionId="org.objectstyle.wolips.wodclipse.editors.towod"
+               id="org.objectstyle.wolips.wodclipse.editors.switchfromwodtowod"
+               label="Switch to Html Editor"
+               menubarPath="edit/ComponentEditor/group1"/> 
+         <action
+               class="org.objectstyle.wolips.wodclipse.editormenu.SwitchToHtmlEditorActionDelegate"
+               definitionId="org.objectstyle.wolips.wodclipse.editors.tohtml"
+               id="org.objectstyle.wolips.wodclipse.editors.switchfromwodtohtml"
+               label="Switch to Html Editor"
+               menubarPath="edit/ComponentEditor/group1"/> 
+         <action
+               class="org.objectstyle.wolips.wodclipse.editormenu.SwitchToJavaEditorActionDelegate"
+               definitionId="org.objectstyle.wolips.wodclipse.editors.tojava"
+               id="org.objectstyle.wolips.wodclipse.editors.switchfromwodtojava"
+               label="Switch to Java Editor"
+               menubarPath="edit/ComponentEditor/group1"/>
+      </editorContribution>
+ 	</extension>
 </plugin>

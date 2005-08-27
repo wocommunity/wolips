@@ -27,6 +27,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.wst.sse.ui
 Eclipse-AutoStart: true
 Export-Package: org.objectstyle.wolips.wodclipse,
+ org.objectstyle.wolips.wodclipse.api,
  org.objectstyle.wolips.wodclipse.editors,
  org.objectstyle.wolips.wodclipse.html.templates,
  org.objectstyle.wolips.wodclipse.mpe,

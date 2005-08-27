@@ -71,11 +71,26 @@ public class ComponentEditor extends MultiEditor {
 
 	int activeEditorIndex = 0;
 
+	CTabFolder folder;
+
 	/*
 	 * @see IWorkbenchPart#createPartControl(Composite)
 	 */
 	public void createPartControl(Composite parent) {
-		final CTabFolder folder = new CTabFolder(parent, SWT.BOTTOM);
+
+		parent.addListener(SWT.Activate, new Listener() {
+			public void handleEvent(Event event) {
+				if (event.type == SWT.Activate) {
+					WodclipsePlugin.getDefault().setActiveComponentEditor(
+							ComponentEditor.this);
+				}
+				if (event.type == SWT.Deactivate) {
+					WodclipsePlugin.getDefault().setActiveComponentEditor(null);
+				}
+			}
+		});
+
+		folder = new CTabFolder(parent, SWT.BOTTOM);
 		Composite javaEditorParent = new Composite(folder, SWT.NONE);
 		javaEditorParent.setLayout(new FillLayout());
 		CTabItem javaTab = new CTabItem(folder, SWT.NONE);
@@ -139,7 +154,7 @@ public class ComponentEditor extends MultiEditor {
 				addPropertyListener(innerEditor);
 				wodSashform.addListener(SWT.Activate, new Listener() {
 					public void handleEvent(Event event) {
-						activeEditorIndex = 1;
+						activeEditorIndex = 2;
 					}
 
 				});
@@ -231,6 +246,24 @@ public class ComponentEditor extends MultiEditor {
 	 */
 	public void setFocus() {
 		getInnerEditors()[activeEditorIndex].setFocus();
+	}
+
+	public void switchToJava() {
+		activeEditorIndex = 0;
+		folder.setSelection(0);
+		this.setFocus();
+	}
+
+	public void switchToHtml() {
+		activeEditorIndex = 1;
+		folder.setSelection(1);
+		this.setFocus();
+	}
+
+	public void switchToWod() {
+		activeEditorIndex = 2;
+		folder.setSelection(1);
+		this.setFocus();
 	}
 
 }

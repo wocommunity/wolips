@@ -50,6 +50,7 @@ import org.eclipse.ui.forms.FormColors;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.objectstyle.wolips.ui.plugins.AbstractWOLipsUIPlugin;
 import org.objectstyle.wolips.wodclipse.editors.WODEditor;
+import org.objectstyle.wolips.wodclipse.mpe.ComponentEditor;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -76,6 +77,8 @@ public class WodclipsePlugin extends AbstractWOLipsUIPlugin {
 	private String[] webObjectsTagNames;
 
 	private WODEditor lastWODEditor;
+	
+	private ComponentEditor activeComponentEditor;
 
 	/**
 	 * The constructor.
@@ -105,6 +108,8 @@ public class WodclipsePlugin extends AbstractWOLipsUIPlugin {
 			super.stop(context);
 		}
 		plugin = null;
+		activeComponentEditor = null;
+		lastWODEditor = null;
 	}
 	/**
 	 * Returns the shared instance.
@@ -158,6 +163,14 @@ public class WodclipsePlugin extends AbstractWOLipsUIPlugin {
 			formColors.markShared();
 		}
 		return formColors;
+	}
+
+	public ComponentEditor getActiveComponentEditor() {
+		return activeComponentEditor;
+	}
+
+	public void setActiveComponentEditor(ComponentEditor activeComponentEditor) {
+		this.activeComponentEditor = activeComponentEditor;
 	}
 	
 }
