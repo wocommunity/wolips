@@ -55,8 +55,11 @@
  */
 package org.objectstyle.wolips.wodclipse.api;
 
+import java.util.Iterator;
+
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -64,6 +67,8 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -86,7 +91,7 @@ public class BindingsPageBlock extends MasterDetailsBlock implements
 		BindingNameChangedListener {
 	FormPage page;
 
-	private TableViewer viewer;
+	TableViewer viewer;
 
 	public BindingsPageBlock(FormPage page) {
 		this.page = page;
@@ -101,11 +106,12 @@ public class BindingsPageBlock extends MasterDetailsBlock implements
 			if (inputElement instanceof ApiEditorInput) {
 				ApiEditorInput input = (ApiEditorInput) page.getEditor()
 						.getEditorInput();
-				Binding[] bindings = input.getModel().getWODefinitions().getWo()
-				.getBindings();
+				Binding[] bindings = input.getModel().getWODefinitions()
+						.getWo().getBindings();
 				for (int i = 0; i < bindings.length; i++) {
 					Binding binding = bindings[i];
-					binding.setBindingNameChangedListener(BindingsPageBlock.this);
+					binding
+							.setBindingNameChangedListener(BindingsPageBlock.this);
 				}
 				return bindings;
 			}
@@ -160,9 +166,56 @@ public class BindingsPageBlock extends MasterDetailsBlock implements
 		gd.widthHint = 100;
 		t.setLayoutData(gd);
 		toolkit.paintBordersFor(client);
-		Button b = toolkit.createButton(client, "Add...", SWT.PUSH);
+
+		Button addButton = toolkit.createButton(client, "Add", SWT.PUSH);
 		gd = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
-		b.setLayoutData(gd);
+		addButton.setLayoutData(gd);
+		addButton.addSelectionListener(new SelectionListener() {
+
+			public void widgetSelected(SelectionEvent e) {
+				ApiEditorInput apiEditorInput = (ApiEditorInput) page
+						.getEditor().getEditorInput();
+				apiEditorInput.getModel().getWo().createBinding("Foo");
+				viewer.refresh();
+				int count = viewer.getTable().getItemCount();
+				Object element = viewer.getElementAt(count - 1);
+				viewer.editElement(element, count - 1);
+				managedForm.dirtyStateChanged();
+			}
+
+			public void widgetDefaultSelected(SelectionEvent e) {
+				// nothing to do
+			}
+
+		});
+
+		Button removeButton = toolkit.createButton(client, "Remove", SWT.PUSH);
+		gd = new GridData(GridData.VERTICAL_ALIGN_END);
+		removeButton.setLayoutData(gd);
+		removeButton.addSelectionListener(new SelectionListener() {
+
+			public void widgetSelected(SelectionEvent e) {
+				IStructuredSelection selection = (IStructuredSelection) viewer
+						.getSelection();
+				if (!selection.isEmpty()) {
+					Iterator iterator = selection.iterator();
+					ApiEditorInput apiEditorInput = (ApiEditorInput) page
+							.getEditor().getEditorInput();
+					while (iterator.hasNext()) {
+						Binding binding = (Binding)iterator.next();
+						apiEditorInput.getModel().getWo().removeBinding(binding);
+						viewer.remove(binding);
+						}
+					managedForm.dirtyStateChanged();
+				}
+			}
+
+			public void widgetDefaultSelected(SelectionEvent e) {
+				// nothing to do
+			}
+
+		});
+
 		section.setClient(client);
 		final SectionPart spart = new SectionPart(section);
 		managedForm.addPart(spart);
@@ -192,7 +245,7 @@ public class BindingsPageBlock extends MasterDetailsBlock implements
 	}
 
 	protected void createToolBarActions(IManagedForm managedForm) {
-		//nothing to do
+		// nothing to do
 	}
 
 	protected void registerPages(DetailsPart details) {

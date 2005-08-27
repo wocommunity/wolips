@@ -100,35 +100,53 @@ public class Wo extends AbstractApiModelElement {
 		Iterator iterator = bindingElements.iterator();
 		ArrayList bindings = new ArrayList();
 		while (iterator.hasNext()) {
-			Element bindingElement = (Element)iterator.next();
+			Element bindingElement = (Element) iterator.next();
 			Binding binding = new Binding(bindingElement, apiModel, this);
 			bindings.add(binding);
 		}
-		return (Binding[])bindings.toArray(new Binding[bindings.size()]);
+		return (Binding[]) bindings.toArray(new Binding[bindings.size()]);
 	}
-	
+
 	public Validation[] getValidations() {
 		List validationElements = element.getChildren(Validation.VALIDATION);
 		Iterator iterator = validationElements.iterator();
 		ArrayList validations = new ArrayList();
 		while (iterator.hasNext()) {
-			Element validationElement = (Element)iterator.next();
+			Element validationElement = (Element) iterator.next();
 			Validation validation = new Validation(validationElement, apiModel);
 			validations.add(validation);
 		}
-		return (Validation[])validations.toArray(new Validation[validations.size()]);
+		return (Validation[]) validations.toArray(new Validation[validations
+				.size()]);
 	}
-	
+
 	public Validation[] getAffectedValidations(String bindingName) {
 		Validation[] validations = this.getValidations();
 		ArrayList validationsList = new ArrayList();
 		for (int i = 0; i < validations.length; i++) {
 			Validation validation = validations[i];
-			if(validation.isAffectedByBindingNamed(bindingName)) {
+			if (validation.isAffectedByBindingNamed(bindingName)) {
 				validationsList.add(validation);
 			}
-			
+
 		}
-		return (Validation[])validationsList.toArray(new Validation[validationsList.size()]);
+		return (Validation[]) validationsList
+				.toArray(new Validation[validationsList.size()]);
+	}
+
+	public void createBinding(String name) {
+		Element newBindingElement = new Element(Binding.BINDING);
+		newBindingElement.setAttribute(Binding.NAME, name);
+		this.element.addContent(newBindingElement);
+		this.apiModel.markAsDirty();
+	}
+
+	public void removeBinding(Binding binding) {
+		Validation[] validations = this.getAffectedValidations(binding.getName());
+		for(int i = 0; i < validations.length; i++) {
+			this.element.removeContent(validations[i].element);
+		}
+		this.element.removeContent(binding.element);
+		this.apiModel.markAsDirty();
 	}
 }

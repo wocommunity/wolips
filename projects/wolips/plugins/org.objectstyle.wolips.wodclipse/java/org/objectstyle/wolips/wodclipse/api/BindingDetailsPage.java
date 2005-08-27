@@ -187,7 +187,7 @@ public class BindingDetailsPage implements IDetailsPage {
 		willSetFlag.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent e) {
 				if (binding != null) {
-					binding.setIsRequired(willSetFlag.getSelection());
+					binding.setIsWillSet(willSetFlag.getSelection());
 					managedForm.dirtyStateChanged();
 				}
 			}

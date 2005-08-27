@@ -63,7 +63,7 @@ public class Binding extends AbstractApiModelElement {
 
 	public final static String BINDING = "binding";
 
-	private final static String NAME = "name";
+	public final static String NAME = "name";
 
 	private final static String DEFAULTS = "defaults";
 
