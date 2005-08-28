@@ -151,91 +151,104 @@
       <editorContribution 
          id="org.objectstyle.wolips.wodclipse.componenteditor.javacontribution" 
          targetID="org.eclipse.jdt.ui.CompilationUnitEditor">        
-           <menu id="ComponentEditor"
+           <menu id="ComponentEditorJava"
 			label="&amp;Component Editor" 
              path="edit/additions">
  				<separator name="group1"/>
+ 				<separator name="group2"/>
 		  </menu>
          <action
                class="org.objectstyle.wolips.wodclipse.editormenu.SwitchToWodEditorActionDelegate"
                definitionId="org.objectstyle.wolips.wodclipse.editors.towod"
                id="org.objectstyle.wolips.wodclipse.editors.switchfromjavatowod"
                label="Switch to Wod Editor"
-               menubarPath="edit/ComponentEditor/group1"/>
+               menubarPath="edit/ComponentEditorJava/group1"/>
          <action
                class="org.objectstyle.wolips.wodclipse.editormenu.SwitchToHtmlEditorActionDelegate"
                definitionId="org.objectstyle.wolips.wodclipse.editors.tohtml"
                id="org.objectstyle.wolips.wodclipse.editors.switchfromjavatohtml"
                label="Switch to Html Editor"
-               menubarPath="edit/ComponentEditor/group1"/> 
+               menubarPath="edit/ComponentEditorJava/group1"/> 
          <action
                class="org.objectstyle.wolips.wodclipse.editormenu.SwitchToJavaEditorActionDelegate"
                definitionId="org.objectstyle.wolips.wodclipse.editors.tojava"
                id="org.objectstyle.wolips.wodclipse.editors.switchfromjavatojava"
-               label="Switch to Html Editor"
-               menubarPath="edit/ComponentEditor/group1"/>
+               label="Switch to Java Editor"
+               menubarPath="edit/ComponentEditorJava/group1"/>
          <action
                class="org.objectstyle.wolips.wodclipse.editormenu.SaveComponentEditorActionDelegate"
                definitionId="org.objectstyle.wolips.wodclipse.editors.savecomponent"
                id="org.objectstyle.wolips.wodclipse.editors.savecomponentinjava"
                label="Save Component"
-               menubarPath="edit/ComponentEditor/group1"/> 
+               menubarPath="edit/ComponentEditorJava/group2"/> 
       </editorContribution>
       <editorContribution 
          id="org.objectstyle.wolips.wodclipse.componenteditor.htmlcontribution" 
-         targetID="org.eclipse.wst.html.core.htmlsource.source"> 
+         targetID="org.eclipse.wst.html.core.htmlsource.source">        
+           <menu id="ComponentEditorHtml"
+			label="&amp;Component Editor" 
+             path="edit/additions">
+ 				<separator name="group1"/>
+ 				<separator name="group2"/>
+		  </menu>
          <action
                class="org.objectstyle.wolips.wodclipse.editormenu.SwitchToWodEditorActionDelegate"
                definitionId="org.objectstyle.wolips.wodclipse.editors.towod"
                id="org.objectstyle.wolips.wodclipse.editors.switchfromhtmltowod"
                label="Switch to Wod Editor"
-               menubarPath="edit/ComponentEditor/group1"/>
+               menubarPath="edit/ComponentEditorHtml/group1"/>
          <action
                class="org.objectstyle.wolips.wodclipse.editormenu.SwitchToHtmlEditorActionDelegate"
                definitionId="org.objectstyle.wolips.wodclipse.editors.tohtml"
                id="org.objectstyle.wolips.wodclipse.editors.switchfromhtmltohtml"
-               label="Switch to Java Editor"
-               menubarPath="edit/ComponentEditor/group1"/>
+               label="Switch to HTML Editor"
+               menubarPath="edit/ComponentEditorHtml/group1"/>
          <action
                class="org.objectstyle.wolips.wodclipse.editormenu.SwitchToJavaEditorActionDelegate"
                definitionId="org.objectstyle.wolips.wodclipse.editors.tojava"
                id="org.objectstyle.wolips.wodclipse.editors.switchfromhtmltojava"
                label="Switch to Java Editor"
-               menubarPath="edit/ComponentEditor/group1"/>
+               menubarPath="edit/ComponentEditorHtml/group1"/>
          <action
                class="org.objectstyle.wolips.wodclipse.editormenu.SaveComponentEditorActionDelegate"
                definitionId="org.objectstyle.wolips.wodclipse.editors.savecomponent"
                id="org.objectstyle.wolips.wodclipse.editors.savecomponentinhtml"
                label="Save Component"
-               menubarPath="edit/ComponentEditor/group1"/>  
+               menubarPath="edit/ComponentEditorHtml/group2"/>  
       </editorContribution>
       <editorContribution 
          id="org.objectstyle.wolips.wodclipse.componenteditor.wodcontribution" 
-         targetID="org.objectstyle.wolips.wodclipse.editors.WODEditor"> 
+         targetID="org.objectstyle.wolips.wodclipse.editors.WODEditor">        
+           <menu id="ComponentEditorWod"
+			label="&amp;Component Editor" 
+             path="edit/additions">
+ 				<separator name="group1"/>
+ 				<separator name="group2"/>
+		  </menu>
          <action
                class="org.objectstyle.wolips.wodclipse.editormenu.SwitchToWodEditorActionDelegate"
                definitionId="org.objectstyle.wolips.wodclipse.editors.towod"
                id="org.objectstyle.wolips.wodclipse.editors.switchfromwodtowod"
-               label="Switch to Html Editor"
-               menubarPath="edit/ComponentEditor/group1"/> 
+               label="Switch to Wod Editor"
+               menubarPath="edit/ComponentEditorWod/group1"/> 
          <action
                class="org.objectstyle.wolips.wodclipse.editormenu.SwitchToHtmlEditorActionDelegate"
                definitionId="org.objectstyle.wolips.wodclipse.editors.tohtml"
                id="org.objectstyle.wolips.wodclipse.editors.switchfromwodtohtml"
                label="Switch to Html Editor"
-               menubarPath="edit/ComponentEditor/group1"/> 
+               menubarPath="edit/ComponentEditorWod/group1"/> 
          <action
                class="org.objectstyle.wolips.wodclipse.editormenu.SwitchToJavaEditorActionDelegate"
                definitionId="org.objectstyle.wolips.wodclipse.editors.tojava"
                id="org.objectstyle.wolips.wodclipse.editors.switchfromwodtojava"
                label="Switch to Java Editor"
-               menubarPath="edit/ComponentEditor/group1"/>
+               menubarPath="edit/ComponentEditorWod/group1"/>
          <action
                class="org.objectstyle.wolips.wodclipse.editormenu.SaveComponentEditorActionDelegate"
                definitionId="org.objectstyle.wolips.wodclipse.editors.savecomponent"
                id="org.objectstyle.wolips.wodclipse.editors.savecomponentinwod"
                label="Save Component"
-               menubarPath="edit/ComponentEditor/group1"/> 
+               menubarPath="edit/ComponentEditorWod/group2"/> 
       </editorContribution>
  	</extension>
 </plugin>
