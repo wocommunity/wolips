@@ -263,6 +263,7 @@ public class ComponentEditor extends MultiEditor {
 	public void switchToWod() {
 		activeEditorIndex = 2;
 		folder.setSelection(1);
+		activeEditorIndex = 2;
 		this.setFocus();
 	}
 
