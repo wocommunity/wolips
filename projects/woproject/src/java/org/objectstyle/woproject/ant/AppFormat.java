@@ -60,7 +60,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Vector;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.DirectoryScanner;
@@ -70,7 +69,9 @@ import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.FilterSet;
 import org.apache.tools.ant.types.FilterSetCollection;
 import org.apache.tools.ant.types.PatternSet;
+import org.objectstyle.woenvironment.env.WOVariables;
 import org.objectstyle.woenvironment.util.FileStringScanner;
+
 
 /**
  * Subclass of ProjectFormat that defines file copying strategy for
@@ -79,508 +80,403 @@ import org.objectstyle.woenvironment.util.FileStringScanner;
  * @author Andrei Adamchik
  */
 public class AppFormat extends ProjectFormat {
-	protected HashMap templateMap = new HashMap();
+    protected HashMap templateMap = new HashMap();
 
-	protected HashMap filterMap = new HashMap();
+    protected HashMap filterMap = new HashMap();
 
-	protected String appPaths;
+    protected String appPaths;
 
-	protected String frameworkPaths;
+    protected String frameworkPaths;
 
-	protected String otherClasspaths;
+    protected String otherClasspaths;
 
-	/**
-	 * Creates new AppFormat and initializes it with the name of the project
-	 * being built.
-	 */
-	public AppFormat(WOTask task) {
-		super(task);
-		prepare();
-	}
+    /**
+     * Creates new AppFormat and initializes it with the name of the project
+     * being built.
+     */
+    public AppFormat(WOTask task) {
+        super(task);
+        prepare();
+    }
 
-	/**
-	 * Builds a list of files for the application, maps them to templates and
-	 * filters.
-	 */
-	private void prepare() {
-		log("AppFormat prepare", Project.MSG_VERBOSE);
-		preparePaths();
+    /**
+     * Builds a list of files for the application, maps them to templates and
+     * filters.
+     */
+    private void prepare() {
+        log("AppFormat prepare", Project.MSG_VERBOSE);
+        preparePaths();
 
-		prepare52();
-		prepareWindows();
-		prepareUnix();
-		prepareMac();
+        prepare52();
+        prepareWindows();
+        prepareUnix();
+        prepareMac();
 
-		// add Info.plist
-		String infoFile = new File(getApplicatonTask().contentsDir(),
-				"Info.plist").getPath();
-		createMappings(infoFile, woappPlusVersion() + "/Info.plist",
-				infoFilter(null));
-		// add web.xml
-		if (((WOApplication) this.task).webXML) {
-			String webXMLFile = new File(getApplicatonTask().contentsDir(),
-					"web.xml").getPath();
-			createMappings(webXMLFile, woappPlusVersion() + "/web.xml",
-					webXMLFilter());
-		}
-	}
+        // add Info.plist
+        String infoFile = new File(getApplicatonTask().contentsDir(), "Info.plist").getPath();
+        createMappings(infoFile, woappPlusVersion() + "/Info.plist", infoFilter(null));
+        // add web.xml
+        if (((WOApplication)this.task).webXML) {
+            String webXMLFile = new File(getApplicatonTask().contentsDir(), "web.xml").getPath();
+            createMappings(webXMLFile, woappPlusVersion() + "/web.xml", webXMLFilter());
+        }
+    }
 
-	/**
-	 * Prepares all path values needed for substitutions.
-	 */
-	private void preparePaths() {
-		appPaths = buildAppPaths();
-		frameworkPaths = buildFrameworkPaths();
-		otherClasspaths = buildOtherClassPaths();
-	}
+    /**
+     * Prepares all path values needed for substitutions.
+     */
+    private void preparePaths() {
+        appPaths = buildAppPaths();
+        frameworkPaths = buildFrameworkPaths();
+        otherClasspaths = buildOtherClassPaths();
+    }
 
-	/**
-	 * Prepares all path values needed for substitutions.
-	 */
-	private void prepare52() {
-		if (this.getApplicatonTask().getWOEnvironment().wo52()) {
-			Copy cp = new Copy();
-			// cp.setOwningTarget(getApplicatonTask().getProject().getDefaultTarget());
-			cp.setProject(getApplicatonTask().getProject());
-			cp.setTaskName("copy bootstrap");
-			cp.setFile(this.getApplicatonTask().getWOEnvironment().bootstrap());
-			cp.setTodir(getApplicatonTask().taskDir());
-			cp.execute();
-		}
-	}
+    /**
+     * Prepares all path values needed for substitutions.
+     */
+    private void prepare52() {
+        if (this.getApplicatonTask().getWOEnvironment().wo52()) {
+            Copy cp = new Copy();
+            // cp.setOwningTarget(getApplicatonTask().getProject().getDefaultTarget());
+            cp.setProject(getApplicatonTask().getProject());
+            cp.setTaskName("copy bootstrap");
+            cp.setFile(this.getApplicatonTask().getWOEnvironment().bootstrap());
+            cp.setTodir(getApplicatonTask().taskDir());
+            cp.execute();
+        }
+    }
 
-	/**
-	 * Returns a String that consists of paths to the aplication jar. File
-	 * separator used is platform dependent and may need to be changed when
-	 * creating files for multiple platforms.
-	 */
-	protected String buildAppPaths() {
-		FileSet fs = null;
-		// include zips and jars
-		// http://objectstyle.org/jira/secure/ViewIssue.jspa?key=WOL-47
-		PatternSet.NameEntry includeJar = null, includeZip = null;
-		DirectoryScanner ds = null;
-		String[] files = null;
-		StringBuffer buf = null;
-		try {
-			fs = new FileSet();
-			fs.setDir(getApplicatonTask().contentsDir());
-			includeJar = fs.createInclude();
-			includeJar.setName("**/Resources/Java/**/*.jar");
-			includeZip = fs.createInclude();
-			includeZip.setName("**/Resources/Java/**/*.zip");
-			ds = fs.getDirectoryScanner(task.getProject());
-			files = ds.getIncludedFiles();
-			buf = new StringBuffer();
+    /**
+     * Returns a String that consists of paths to the aplication jar. File
+     * separator used is platform dependent and may need to be changed when
+     * creating files for multiple platforms.
+     */
+    protected String buildAppPaths() {
+        FileSet fs = null;
+        // include zips and jars
+        // http://objectstyle.org/jira/secure/ViewIssue.jspa?key=WOL-47
+        PatternSet.NameEntry includeJar = null, includeZip = null;
+        DirectoryScanner ds = null;
+        String[] files = null;
+        StringBuffer buf = null;
+        try {
+            fs = new FileSet();
+            fs.setDir(getApplicatonTask().contentsDir());
+            includeJar = fs.createInclude();
+            includeJar.setName("**/Resources/Java/**/*.jar");
+            includeZip = fs.createInclude();
+            includeZip.setName("**/Resources/Java/**/*.zip");
+            ds = fs.getDirectoryScanner(task.getProject());
+            files = ds.getIncludedFiles();
+            buf = new StringBuffer();
 
-			// prepend the path with Resources/Java (for CompilerProxy support)
-			buf.append("APPROOT").append(File.separatorChar)
-					.append("Resources").append(File.separatorChar).append(
-							"Java").append(File.separatorChar).append("\r\n");
-			for (int i = 0; i < files.length; i++) {
-				buf.append("APPROOT").append(File.separatorChar).append(
-						files[i]).append("\r\n");
-			}
-			return buf.toString();
-		} catch (Exception anException) {
-			log(anException.getMessage(), Project.MSG_WARN);
-		} finally {
-			fs = null;
-			includeJar = null;
-			includeZip = null;
-			ds = null;
-			files = null;
-			buf = null;
-		}
-		return "";
-	}
+            // prepend the path with Resources/Java (for CompilerProxy support)
+            buf.append("APPROOT").append(File.separatorChar).append("Resources").append(File.separatorChar).append("Java").append(File.separatorChar).append("\r\n");
+            for (int i = 0; i < files.length; i++) {
+                buf.append("APPROOT").append(File.separatorChar).append(files[i]).append("\r\n");
+            }
+            return buf.toString();
+        } catch (Exception anException) {
+            log(anException.getMessage(), Project.MSG_WARN);
+        } finally {
+            fs = null;
+            includeJar = null;
+            includeZip = null;
+            ds = null;
+            files = null;
+            buf = null;
+        }
+        return "";
+    }
 
-	/**
-	 * Returns a String that consists of paths of all framework's jar's needed
-	 * by the application. File separator used is platform dependent and may
-	 * need to be changed when creating files for multiple platforms.
-	 */
-	protected String buildFrameworkPaths() {
-		StringBuffer buf = new StringBuffer();
+    /**
+     * Returns a String that consists of paths of all framework's jar's needed
+     * by the application. File separator used is platform dependent and may
+     * need to be changed when creating files for multiple platforms.
+     */
+    protected String buildFrameworkPaths() {
+        StringBuffer stringBuffer = new StringBuffer();
+        String[] jarPaths = FrameworkSet.jarsPathForFrameworkSets(task.getProject(), getApplicatonTask().getFrameworkSets(), true).list();
+        WOVariables variables = getApplicatonTask().getWOEnvironment().getWOVariables();
+        for (int jarPathIndex = 0; jarPathIndex < jarPaths.length; jarPathIndex++) {
+            String jarPath = jarPaths[jarPathIndex];
+            log(": Framework JAR " + jarPath, Project.MSG_VERBOSE);
+            stringBuffer.append(variables.encodePath(jarPath)).append("\r\n");
+        }
+        return stringBuffer.toString();
+    }
 
-		List frameworkSets = getApplicatonTask().getFrameworkSets();
-		Project project = task.getProject();
+    /**
+     * Method buildOtherClassPaths.
+     * 
+     * @return String
+     */
+    protected String buildOtherClassPaths() {
+        StringBuffer buf = new StringBuffer();
 
-		// track included jar files to avoid double entries
-		Vector jarSet = new Vector();
-		HashSet processedFrameworks = new HashSet();
+        List classpathSets = getApplicatonTask().getOtherClasspath();
+        Project project = task.getProject();
 
-		int size = frameworkSets.size();
-		for (int i = 0; i < size; i++) {
-			FrameworkSet fs = (FrameworkSet) frameworkSets.get(i);
+        // track included paths to avoid double entries
+        HashSet pathSet = new HashSet();
 
-			try {
-				String[] frameworks = fs.getFrameworks();
-				if (!fs.isReference()) {
-					log(
-							"fs.createPatternSet().getIncludePatterns(project) "
-									+ fs.createPatternSet().getIncludePatterns(
-											project), Project.MSG_VERBOSE);
-					log(
-							"fs.createPatternSet().getExcludePatterns(project) "
-									+ fs.createPatternSet().getExcludePatterns(
-											project), Project.MSG_VERBOSE);
-				}
-				if (fs.getEmbed()) {
-					continue;
-				}
-				for (int j = 0; j < frameworks.length; j++) {
-					String frameworkName = frameworks[j];
-					File[] jars = fs.findJars(frameworkName);
+        int size = classpathSets.size();
+        try {
+            for (int i = 0; i < size; i++) {
 
-					if (jars == null || jars.length == 0) {
-						log("No Jars in " + fs.getDir(project).getPath() + "/"
-								+ frameworkName + ", ignoring.",
-								Project.MSG_VERBOSE);
-						continue;
-					}
+                OtherClasspathSet cs = (OtherClasspathSet)classpathSets.get(i);
+                cs.collectClassPaths(project, pathSet);
+            }
+        } catch (BuildException be) {
+            // paths doesn't exist or are not readable
+            log(be.getMessage(), Project.MSG_WARN);
+        }
+        if (pathSet.size() > 0) {
+            Object someFiles[] = pathSet.toArray();
+            size = someFiles.length;
+            for (int i = 0; i < size; i++) {
+                // log(": Framework JAR " + (File) someFiles[i],
+                // Project.MSG_VERBOSE);
+                String fileName = this.getApplicatonTask().getWOEnvironment().getWOVariables().encodePathForFile((File)someFiles[i]);
 
-					if (!processedFrameworks.contains(frameworkName)) {
-						int jsize = jars.length;
-						for (int k = 0; k < jsize; k++) {
-							File jar = jars[k];
-							jar = fs.getDeployedFile(jar);
-							if (!jarSet.contains(jar)) {
-								jarSet.add(jar);
-							} else {
-								log("Skipped " + jar.getPath(),
-										Project.MSG_VERBOSE);
-							}
-						}
-					}
-					processedFrameworks.add(frameworkName);
-				}
-			} catch (BuildException be) {
-				// directory doesn't exist or is not readable
-				log(be.getMessage(), Project.MSG_WARN);
-			} finally {
-				fs = null;
-			}
-		}
-		File aFile = null;
-		try {
-			for (int i = 0; i < jarSet.size(); i++) {
-				aFile = (File) jarSet.elementAt(i);
-				log(": Framework JAR " + aFile, Project.MSG_VERBOSE);
-				buf.append(
-						this.getApplicatonTask().getWOEnvironment()
-								.getWOVariables().encodePathForFile(aFile))
-						.append("\r\n");
-			}
-			return buf.toString();
-		} catch (Exception anException) {
-			// directory doesn't exist or is not readable
-			log(anException.getMessage(), Project.MSG_WARN);
-		} finally {
-			aFile = null;
-		}
-		return "";
-	}
+                // If it's not a jar file and it doesn't have a trailing '/'.
+                // add one in.
+                boolean isJar = fileName.endsWith(".jar") || fileName.endsWith(".zip");
+                if (isJar == false && fileName.endsWith("/") == false) {
+                    fileName = fileName + "/";
+                }
+                buf.append(fileName).append("\r\n");
+            }
+        }
+        return buf.toString();
+    }
 
-	/**
-	 * Method buildOtherClassPaths.
-	 * 
-	 * @return String
-	 */
-	protected String buildOtherClassPaths() {
-		StringBuffer buf = new StringBuffer();
+    /**
+     * Prepare mappings for Windows subdirectory.
+     */
+    private void prepareWindows() {
+        File winDir = new File(getApplicatonTask().contentsDir(), "Windows");
+        String cp = new File(winDir, "CLSSPATH.TXT").getPath();
+        createMappings(cp, woappPlusVersion() + "/Contents/Windows/CLSSPATH.TXT", classpathFilter('\\'));
+        String subp = new File(winDir, "SUBPATHS.TXT").getPath();
+        createMappings(subp, woappPlusVersion() + "/Contents/Windows/SUBPATHS.TXT");
+        // add run script to Win. directory
+        String runScript = new File(winDir, getName() + ".cmd").getPath();
+        createMappings(runScript, woappPlusVersion() + "/Contents/Windows/appstart.cmd");
+        // add run script to top-level directory
+        File taskDir = getApplicatonTask().taskDir();
+        String topRunScript = new File(taskDir, getName() + ".cmd").getPath();
+        createMappings(topRunScript, woappPlusVersion() + "/Contents/Windows/appstart.cmd");
+    }
 
-		List classpathSets = getApplicatonTask().getOtherClasspath();
-		Project project = task.getProject();
+    /**
+     * Prepare mappings for UNIX subdirectory.
+     */
+    private void prepareUnix() {
+        File dir = new File(getApplicatonTask().contentsDir(), "UNIX");
+        String cp = new File(dir, "UNIXClassPath.txt").getPath();
+        createMappings(cp, woappPlusVersion() + "/Contents/UNIX/UNIXClassPath.txt", classpathFilter('/'));
+    }
 
-		// track included paths to avoid double entries
-		HashSet pathSet = new HashSet();
+    /**
+     * Prepare mappings for MacOS subdirectory.
+     */
+    private void prepareMac() {
+        File macDir = new File(getApplicatonTask().contentsDir(), "MacOS");
+        String cp = new File(macDir, "MacOSClassPath.txt").getPath();
+        createMappings(cp, woappPlusVersion() + "/Contents/MacOS/MacOSClassPath.txt", classpathFilter('/'));
+        String servercp = new File(macDir, "MacOSXServerClassPath.txt").getPath();
+        createMappings(servercp, woappPlusVersion() + "/Contents/MacOS/MacOSXServerClassPath.txt", classpathFilter('/'));
+        // add run script to Mac directory
+        String runScript = new File(macDir, getName()).getPath();
+        createMappings(runScript, woappPlusVersion() + "/Contents/MacOS/appstart");
+        // add run script to top-level directory
+        File taskDir = getApplicatonTask().taskDir();
+        String topRunScript = new File(taskDir, getName()).getPath();
+        createMappings(topRunScript, woappPlusVersion() + "/Contents/MacOS/appstart");
+    }
 
-		int size = classpathSets.size();
-		try {
-			for (int i = 0; i < size; i++) {
+    /**
+     * Creates a filter for Classpath helper files.
+     */
+    private FilterSet classpathFilter(char pathSeparator) {
+        FilterSet filter = new FilterSet();
+        if (pathSeparator == File.separatorChar) {
+            filter.addFilter("APP_JAR", appPaths);
+            filter.addFilter("FRAMEWORK_JAR", frameworkPaths);
+            filter.addFilter("OTHER_PATHS", otherClasspaths);
+        } else {
+            filter.addFilter("APP_JAR", appPaths.replace(File.separatorChar, pathSeparator));
+            filter.addFilter("FRAMEWORK_JAR", frameworkPaths.replace(File.separatorChar, pathSeparator));
+            filter.addFilter("OTHER_PATHS", otherClasspaths.replace(File.separatorChar, pathSeparator));
+        }
 
-				OtherClasspathSet cs = (OtherClasspathSet) classpathSets.get(i);
-				cs.collectClassPaths(project, pathSet);
-			}
-		} catch (BuildException be) {
-			// paths doesn't exist or are not readable
-			log(be.getMessage(), Project.MSG_WARN);
-		}
-		if (pathSet.size() > 0) {
-			Object someFiles[] = pathSet.toArray();
-			size = someFiles.length;
-			for (int i = 0; i < size; i++) {
-				// log(": Framework JAR " + (File) someFiles[i],
-				// Project.MSG_VERBOSE);
-			    String fileName = this.getApplicatonTask().getWOEnvironment()
-									.getWOVariables().encodePathForFile( (File) someFiles[i] );
-			    
-			    // If it's not a jar file and it doesn't have a trailing '/'. add one in.
-			    boolean isJar = fileName.endsWith(".jar") || fileName.endsWith(".zip");
-			    if ( isJar == false && fileName.endsWith("/") == false ) {
-			        fileName = fileName + "/";
-			    }
-				buf.append(fileName).append("\r\n");
-			}
-		}
-		return buf.toString();
-	}
+        return filter;
+    }
 
-	/**
-	 * Prepare mappings for Windows subdirectory.
-	 */
-	private void prepareWindows() {
-		File winDir = new File(getApplicatonTask().contentsDir(), "Windows");
-		String cp = new File(winDir, "CLSSPATH.TXT").getPath();
-		createMappings(cp, woappPlusVersion()
-				+ "/Contents/Windows/CLSSPATH.TXT", classpathFilter('\\'));
-		String subp = new File(winDir, "SUBPATHS.TXT").getPath();
-		createMappings(subp, woappPlusVersion()
-				+ "/Contents/Windows/SUBPATHS.TXT");
-		// add run script to Win. directory
-		String runScript = new File(winDir, getName() + ".cmd").getPath();
-		createMappings(runScript, woappPlusVersion()
-				+ "/Contents/Windows/appstart.cmd");
-		// add run script to top-level directory
-		File taskDir = getApplicatonTask().taskDir();
-		String topRunScript = new File(taskDir, getName() + ".cmd").getPath();
-		createMappings(topRunScript, woappPlusVersion()
-				+ "/Contents/Windows/appstart.cmd");
-	}
+    /**
+     * Method getAppClass.
+     * 
+     * @return String
+     */
+    private String getAppClass() {
+        return task.getPrincipalClass();
+    }
 
-	/**
-	 * Prepare mappings for UNIX subdirectory.
-	 */
-	private void prepareUnix() {
-		File dir = new File(getApplicatonTask().contentsDir(), "UNIX");
-		String cp = new File(dir, "UNIXClassPath.txt").getPath();
-		createMappings(cp, woappPlusVersion()
-				+ "/Contents/UNIX/UNIXClassPath.txt", classpathFilter('/'));
-	}
+    /**
+     * Method createMappings.
+     * 
+     * @param fileName
+     * @param template
+     * @param filter
+     */
+    private void createMappings(String fileName, String template, FilterSet filter) {
+        FilterSetCollection fsCollection = new FilterSetCollection(filter);
+        FilterSet additionalBuildSettingsFilter = additionalBuildSettingsFilter();
 
-	/**
-	 * Prepare mappings for MacOS subdirectory.
-	 */
-	private void prepareMac() {
-		File macDir = new File(getApplicatonTask().contentsDir(), "MacOS");
-		String cp = new File(macDir, "MacOSClassPath.txt").getPath();
-		createMappings(cp, woappPlusVersion()
-				+ "/Contents/MacOS/MacOSClassPath.txt", classpathFilter('/'));
-		String servercp = new File(macDir, "MacOSXServerClassPath.txt")
-				.getPath();
-		createMappings(servercp, woappPlusVersion()
-				+ "/Contents/MacOS/MacOSXServerClassPath.txt",
-				classpathFilter('/'));
-		// add run script to Mac directory
-		String runScript = new File(macDir, getName()).getPath();
-		createMappings(runScript, woappPlusVersion()
-				+ "/Contents/MacOS/appstart");
-		// add run script to top-level directory
-		File taskDir = getApplicatonTask().taskDir();
-		String topRunScript = new File(taskDir, getName()).getPath();
-		createMappings(topRunScript, woappPlusVersion()
-				+ "/Contents/MacOS/appstart");
-	}
+        filter.addFilter("APP_CLASS", getAppClass());
+        filter.addFilter("JAR_NAME", getJarName());
 
-	/**
-	 * Creates a filter for Classpath helper files.
-	 */
-	private FilterSet classpathFilter(char pathSeparator) {
-		FilterSet filter = new FilterSet();
-		if (pathSeparator == File.separatorChar) {
-			filter.addFilter("APP_JAR", appPaths);
-			filter.addFilter("FRAMEWORK_JAR", frameworkPaths);
-			filter.addFilter("OTHER_PATHS", otherClasspaths);
-		} else {
-			filter.addFilter("APP_JAR", appPaths.replace(File.separatorChar,
-					pathSeparator));
-			filter.addFilter("FRAMEWORK_JAR", frameworkPaths.replace(
-					File.separatorChar, pathSeparator));
-			filter.addFilter("OTHER_PATHS", otherClasspaths.replace(
-					File.separatorChar, pathSeparator));
-		}
+        if (additionalBuildSettingsFilter != null) {
+            fsCollection.addFilterSet(additionalBuildSettingsFilter);
+        }
 
-		return filter;
-	}
+        createMappings(fileName, template, fsCollection);
+    }
 
-	/**
-	 * Method getAppClass.
-	 * 
-	 * @return String
-	 */
-	private String getAppClass() {
-		return task.getPrincipalClass();
-	}
+    /**
+     * Method createMappings.
+     * 
+     * @param fileName
+     * @param template
+     */
+    private void createMappings(String fileName, String template) {
+        createMappings(fileName, template, (FilterSetCollection)null);
+    }
 
-	/**
-	 * Method createMappings.
-	 * 
-	 * @param fileName
-	 * @param template
-	 * @param filter
-	 */
-	private void createMappings(String fileName, String template,
-			FilterSet filter) {
-		FilterSetCollection fsCollection = new FilterSetCollection(filter);
-		FilterSet additionalBuildSettingsFilter = additionalBuildSettingsFilter();
+    /**
+     * Method createMappings.
+     * 
+     * @param fileName
+     * @param template
+     * @param filter
+     */
+    private void createMappings(String fileName, String template, FilterSetCollection filter) {
+        templateMap.put(fileName, template);
+        filterMap.put(fileName, filter);
+    }
 
-		filter.addFilter("APP_CLASS", getAppClass());
-		filter.addFilter("JAR_NAME", getJarName());
+    /**
+     * Method getApplicatonTask.
+     * 
+     * @return WOApplication
+     */
+    private WOApplication getApplicatonTask() {
+        return (WOApplication)task;
+    }
 
-		if (additionalBuildSettingsFilter != null) {
-			fsCollection.addFilterSet(additionalBuildSettingsFilter);
-		}
+    /**
+     * @see org.objectstyle.woproject.ant.ProjectFormat#fileIterator()
+     */
+    public Iterator fileIterator() {
+        return templateMap.keySet().iterator();
+    }
 
-		createMappings(fileName, template, fsCollection);
-	}
+    /**
+     * @see org.objectstyle.woproject.ant.ProjectFormat#templateForTarget(java.lang.String)
+     */
+    public String templateForTarget(String targetName) throws BuildException {
+        String template = (String)templateMap.get(targetName);
+        if (template == null) {
+            throw new BuildException("Invalid target, no template found: " + targetName);
+        }
+        return template;
+    }
 
-	/**
-	 * Method createMappings.
-	 * 
-	 * @param fileName
-	 * @param template
-	 */
-	private void createMappings(String fileName, String template) {
-		createMappings(fileName, template, (FilterSetCollection) null);
-	}
+    /**
+     * @see org.objectstyle.woproject.ant.ProjectFormat#filtersForTarget(java.lang.String)
+     */
+    public FilterSetCollection filtersForTarget(String targetName) throws BuildException {
 
-	/**
-	 * Method createMappings.
-	 * 
-	 * @param fileName
-	 * @param template
-	 * @param filter
-	 */
-	private void createMappings(String fileName, String template,
-			FilterSetCollection filter) {
-		templateMap.put(fileName, template);
-		filterMap.put(fileName, filter);
-	}
+        if (!filterMap.containsKey(targetName)) {
+            throw new BuildException("Invalid target: " + targetName);
+        }
+        return (FilterSetCollection)filterMap.get(targetName);
+    }
 
-	/**
-	 * Method getApplicatonTask.
-	 * 
-	 * @return WOApplication
-	 */
-	private WOApplication getApplicatonTask() {
-		return (WOApplication) task;
-	}
+    /**
+     * Method woappPlusVersion returns the template name.
+     * 
+     * @return String
+     */
+    public String woappPlusVersion() {
+        if (this.getApplicatonTask().getWOEnvironment().wo5or51())
+            return "woapp";
+        return "woapp_52";
+    }
 
-	/**
-	 * @see org.objectstyle.woproject.ant.ProjectFormat#fileIterator()
-	 */
-	public Iterator fileIterator() {
-		return templateMap.keySet().iterator();
-	}
+    private FilterSet additionalBuildSettingsFilter() {
+        String jvmOptions = getApplicatonTask().getJvmOptions();
+        if (jvmOptions != null) {
+            FilterSet filter = new FilterSet();
+            filter.addFilter("JVM_OPTIONS", jvmOptions);
+            return filter;
+        }
 
-	/**
-	 * @see org.objectstyle.woproject.ant.ProjectFormat#templateForTarget(java.lang.String)
-	 */
-	public String templateForTarget(String targetName) throws BuildException {
-		String template = (String) templateMap.get(targetName);
-		if (template == null) {
-			throw new BuildException("Invalid target, no template found: "
-					+ targetName);
-		}
-		return template;
-	}
+        return null;
+    }
 
-	/**
-	 * @see org.objectstyle.woproject.ant.ProjectFormat#filtersForTarget(java.lang.String)
-	 */
-	public FilterSetCollection filtersForTarget(String targetName)
-			throws BuildException {
+    /**
+     * 
+     */
+    public void release() {
+        super.release();
+    }
 
-		if (!filterMap.containsKey(targetName)) {
-			throw new BuildException("Invalid target: " + targetName);
-		}
-		return (FilterSetCollection) filterMap.get(targetName);
-	}
+    /**
+     * Returns a FilterSet that can be used to build web.xml file.
+     */
+    public FilterSetCollection webXMLFilter() {
+        FilterSet filter = new FilterSet();
+        String WEBINFROOT = "WEBINFROOT";
+        String paths = "";
+        if (appPaths != null && appPaths.length() > 0) {
+            paths = paths + WEBINFROOT;
+            paths = paths + FileStringScanner.replace(appPaths, "\n", "\n" + WEBINFROOT);
+        }
+        if (frameworkPaths != null && frameworkPaths.length() > 0) {
+            paths = paths + WEBINFROOT;
+            paths = paths + FileStringScanner.replace(frameworkPaths, "\n", "\n" + WEBINFROOT);
+        }
+        if (otherClasspaths != null && otherClasspaths.length() > 0) {
+            paths = paths + WEBINFROOT;
+            paths = paths + FileStringScanner.replace(otherClasspaths, "\n", "\n" + WEBINFROOT);
+        }
+        paths = FileStringScanner.replace(paths, WEBINFROOT + WEBINFROOT, WEBINFROOT);
 
-	/**
-	 * Method woappPlusVersion returns the template name.
-	 * 
-	 * @return String
-	 */
-	public String woappPlusVersion() {
-		if (this.getApplicatonTask().getWOEnvironment().wo5or51())
-			return "woapp";
-		return "woapp_52";
-	}
+        paths = FileStringScanner.replace(paths, "WOROOT", "");
 
-	private FilterSet additionalBuildSettingsFilter() {
-		String jvmOptions = getApplicatonTask().getJvmOptions();
-		if (jvmOptions != null) {
-			FilterSet filter = new FilterSet();
-			filter.addFilter("JVM_OPTIONS", jvmOptions);
-			return filter;
-		}
+        paths = FileStringScanner.replace(paths, "APPROOT", "");
 
-		return null;
-	}
-
-	/**
-	 * 
-	 */
-	public void release() {
-		super.release();
-	}
-
-	/**
-	 * Returns a FilterSet that can be used to build web.xml file.
-	 */
-	public FilterSetCollection webXMLFilter() {
-		FilterSet filter = new FilterSet();
-		String WEBINFROOT = "WEBINFROOT";
-		String paths = "";
-		if (appPaths != null && appPaths.length() > 0) {
-			paths = paths + WEBINFROOT;
-			paths = paths
-					+ FileStringScanner.replace(appPaths, "\n", "\n"
-							+ WEBINFROOT);
-		}
-		if (frameworkPaths != null && frameworkPaths.length() > 0) {
-			paths = paths + WEBINFROOT;
-			paths = paths
-					+ FileStringScanner.replace(frameworkPaths, "\n", "\n"
-							+ WEBINFROOT);
-		}
-		if (otherClasspaths != null && otherClasspaths.length() > 0) {
-			paths = paths + WEBINFROOT;
-			paths = paths
-					+ FileStringScanner.replace(otherClasspaths, "\n", "\n"
-							+ WEBINFROOT);
-		}
-		paths = FileStringScanner.replace(paths, WEBINFROOT + WEBINFROOT,
-				WEBINFROOT);
-
-		paths = FileStringScanner.replace(paths, "WOROOT", "");
-
-		paths = FileStringScanner.replace(paths, "APPROOT", "");
-
-		paths = FileStringScanner.replace(paths, "LOCALROOT", "");
-		if (paths.length() > 0) {
-			paths = paths + "++++++++";
-			paths = FileStringScanner.replace(paths, WEBINFROOT + "++++++++", "");
-		}
-		WOApplication woappTask = (WOApplication) this.task;
-		log(" AppFormat.webXMLFilter().woappTask: " + woappTask,
-				Project.MSG_VERBOSE);
-		filter.addFilter("WOROOT", woappTask.getWebXML_WOROOT());
-		filter.addFilter("LOCALROOT", woappTask.getWebXML_LOCALROOT());
-		filter
-				.addFilter("WOAINSTALLROOT", woappTask
-						.getWebXML_WOAINSTALLROOT());
-		filter.addFilter("WOAppMode", woappTask.getWebXML_WOAppMode());
-		filter.addFilter("WOClasspath", paths);
-		filter.addFilter("WOApplicationClass", this.getAppClass());
-		filter.addFilter("WOTagLib", woappTask.getWebXML_WOtaglib());
-		String customContent = woappTask.getWebXML_CustomContent();
-		if (customContent == null) {
-			customContent = "";
-		}
-		filter.addFilter("CustomContent", customContent);
-		return new FilterSetCollection(filter);
-	}
+        paths = FileStringScanner.replace(paths, "LOCALROOT", "");
+        if (paths.length() > 0) {
+            paths = paths + "++++++++";
+            paths = FileStringScanner.replace(paths, WEBINFROOT + "++++++++", "");
+        }
+        WOApplication woappTask = (WOApplication)this.task;
+        log(" AppFormat.webXMLFilter().woappTask: " + woappTask, Project.MSG_VERBOSE);
+        filter.addFilter("WOROOT", woappTask.getWebXML_WOROOT());
+        filter.addFilter("LOCALROOT", woappTask.getWebXML_LOCALROOT());
+        filter.addFilter("WOAINSTALLROOT", woappTask.getWebXML_WOAINSTALLROOT());
+        filter.addFilter("WOAppMode", woappTask.getWebXML_WOAppMode());
+        filter.addFilter("WOClasspath", paths);
+        filter.addFilter("WOApplicationClass", this.getAppClass());
+        filter.addFilter("WOTagLib", woappTask.getWebXML_WOtaglib());
+        String customContent = woappTask.getWebXML_CustomContent();
+        if (customContent == null) {
+            customContent = "";
+        }
+        filter.addFilter("CustomContent", customContent);
+        return new FilterSetCollection(filter);
+    }
 }

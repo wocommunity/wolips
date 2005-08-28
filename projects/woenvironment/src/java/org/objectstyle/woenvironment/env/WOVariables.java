@@ -315,7 +315,11 @@ public class WOVariables {
 	 * @param aFile
 	 * @return String
 	 */
-	public String encodePathForFile(File aFile) {
+    public String encodePathForFile(File aFile) {
+        return encodePath(aFile.getPath());
+    }
+    
+    public String encodePath(String path) {
 		String userHome = null;
 		String systemRoot = null;
 		String localRoot = null;
@@ -336,7 +340,7 @@ public class WOVariables {
 			//aPath = aFile.getCanonicalPath();
 			//u.k. the CanonicalPath will resolve links this will
 			//result in path with /Versions/a in it
-			aPath = this.convertWindowsPath(aFile.getPath());
+			aPath = this.convertWindowsPath(path);
 			//            aPrefix = this.getAppRootPath();
 			//            if((aPrefix != null) && (aPrefix.length() > 1) &&
 			// (aPath.startsWith(aPrefix))) {

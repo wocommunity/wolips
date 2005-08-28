@@ -57,10 +57,14 @@ package org.objectstyle.woproject.ant;
 
 import java.io.File;
 import java.io.FilenameFilter;
-
+import java.util.Collection;
+import java.util.Iterator;
 import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Project;
 import org.apache.tools.ant.ProjectHelper;
 import org.apache.tools.ant.types.FileSet;
+import org.apache.tools.ant.types.Path;
+
 
 /**
  * A subclass of FileSet that with special support for matching WOFrameworks.
@@ -71,7 +75,7 @@ public class FrameworkSet extends FileSet {
 
     protected boolean embed;
     protected File deploymentDir;
-    
+
     protected String ifCondition = "";
 
     /**
@@ -82,21 +86,24 @@ public class FrameworkSet extends FileSet {
     }
 
     /**
-     * Sets the deployment root directory (can be different from the normal <code>root</code> specified). 
-     * The idea is that you can specify the compile time path via <code>dir=/some_binary_release_path/</code>,
-     * but still end up with <code>LOCALROOT/Library/Frameworks/Bar.framework</code> as the prefix.
+     * Sets the deployment root directory (can be different from the normal
+     * <code>root</code> specified). The idea is that you can specify the
+     * compile time path via <code>dir=/some_binary_release_path/</code>, but
+     * still end up with <code>LOCALROOT/Library/Frameworks/Bar.framework</code>
+     * as the prefix.
      * 
      * @param root
      */
     public void setDeploymentDir(File root) {
         this.deploymentDir = root;
     }
-    
+
     public File getDeployedFile(File file) {
         File result = file;
-        if(this.deploymentDir != null && !getEmbed()) {
+        if (this.deploymentDir != null && !getEmbed()) {
             // maps
-            //  foo/bar/Baz.framework/Resources/Java/xxx.jar -> /System/Library/Frameworks/Baz.framework
+            // foo/bar/Baz.framework/Resources/Java/xxx.jar ->
+            // /System/Library/Frameworks/Baz.framework
             String oldPath = file.getPath();
             String newRoot = deploymentDir.getPath();
             String newPath = oldPath.replaceFirst("(.*?)(/\\w+\\.framework/)", newRoot + "$2");
@@ -105,7 +112,7 @@ public class FrameworkSet extends FileSet {
         }
         return result;
     }
-    
+
     /**
      * Sets root directory of this FileSet based on a symbolic name, that can be
      * "wo.homeroot", "wo.woroot", "wo.localroot". Throws BuildException if an
@@ -123,7 +130,7 @@ public class FrameworkSet extends FileSet {
 
     public boolean getEmbed() {
         if (isReference() && getProject() != null) {
-            return ((FrameworkSet) getRef(getProject())).getEmbed();
+            return ((FrameworkSet)getRef(getProject())).getEmbed();
         }
         return this.embed;
     }
@@ -137,34 +144,25 @@ public class FrameworkSet extends FileSet {
             return true;
         }
 
-        String string = ProjectHelper.replaceProperties(
-                getProject(),
-                ifCondition,
-                getProject().getProperties());
+        String string = ProjectHelper.replaceProperties(getProject(), ifCondition, getProject().getProperties());
         return getProject().getProperty(string) != null;
     }
 
     public String[] getFrameworks() {
-        String[] files = getDirectoryScanner(getProject())
-                .getIncludedDirectories();
+        String[] files = getDirectoryScanner(getProject()).getIncludedDirectories();
         return files;
     }
 
     public File[] findJars(String frameworkDir) {
         if (!testIfCondition())
             return new File[] {};
-
-        String jarDirName = frameworkDir
-                + File.separator
-                + "Resources"
-                + File.separator
-                + "Java";
-
-        File jarDir = new File(getDir(this.getProject()), jarDirName);
+        String jarDirName = frameworkDir;
+        if (frameworkDir.endsWith(".woa"))
+                jarDirName += File.separator + "Resources" + File.separator + "Java";
+        File jarDir = new File(getDir(getProject()), jarDirName);
         if (!jarDir.isDirectory()) {
-            return null;
+            return new File[] {};
         }
-
         File[] finalFiles = jarDir.listFiles(new JarFilter());
         return finalFiles;
     }
@@ -175,4 +173,37 @@ public class FrameworkSet extends FileSet {
             return (name.endsWith(".jar") || name.endsWith(".zip")) && !name.equals("src.jar");
         }
     }
+
+    private void addJarsForFrameworkNameToPath(String frameworkName, Path path) {
+        File[] jarFiles = findJars(frameworkName);
+        for (int jarFileIndex = 0; jarFileIndex < jarFiles.length; jarFileIndex++)
+            try {
+                File jarFile = getDeployedFile(jarFiles[jarFileIndex]);
+                log(": Framework JAR " + jarFile, Project.MSG_VERBOSE);
+                path.setLocation(jarFile);
+            } catch (BuildException buildException) {
+                log(buildException.getMessage(), Project.MSG_WARN);
+            }
+        if (jarFiles.length == 0)
+            log("No Jars in " + getDir(getProject()).getPath() + "/" + frameworkName + ".", Project.MSG_VERBOSE);
+    }
+
+    public Path jarsPath() {
+        Path path = new Path(getProject());
+        String[] frameworkNames = getFrameworks();
+        for (int frameworkNameIndex = 0; frameworkNameIndex < frameworkNames.length; frameworkNameIndex++)
+            addJarsForFrameworkNameToPath(frameworkNames[frameworkNameIndex], path);
+        return path;
+    }
+
+    public static Path jarsPathForFrameworkSets(Project project, Collection frameworkSets, boolean excludeEmbed) {
+        Path path = new Path(project);
+        for (Iterator frameworkSetIterator = frameworkSets.iterator(); frameworkSetIterator.hasNext();) {
+            FrameworkSet frameworkSet = (FrameworkSet)frameworkSetIterator.next();
+            if (!(excludeEmbed && frameworkSet.getEmbed()))
+                path.append(frameworkSet.jarsPath());
+        }
+        return path;
+    }
+
 }

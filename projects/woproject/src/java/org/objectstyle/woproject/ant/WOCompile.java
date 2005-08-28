@@ -55,15 +55,9 @@
  */
 package org.objectstyle.woproject.ant;
 
-import java.io.File;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Vector;
-
 import org.apache.tools.ant.BuildException;
-import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.Javac;
-import org.apache.tools.ant.types.Path;
 
 /**
  * Customized subclass of Javac used to locate jars in frameworks.
@@ -77,64 +71,8 @@ public class WOCompile extends Javac {
         frameworkSets.add(frameworks);
     }
 
-    protected String buildFrameworkPaths() {
-        StringBuffer buf = new StringBuffer();
-
-        Project aProject = getProject();
-
-        // track included jar files to avoid double entries
-        Vector jarSet = new Vector();
-        HashSet processedFrameworks = new HashSet();
-
-        int size = frameworkSets.size();
-        for (int i = 0; i < size; i++) {
-            FrameworkSet fs = (FrameworkSet) frameworkSets.get(i);
-            //Never read locally
-            //HashSet frameworksToSkip = new HashSet();
-
-            try {
-                String[] frameworks = fs.getFrameworks();
-
-                for (int j = 0; j < frameworks.length; j++) {
-                    String frameworkName = frameworks[j];
-                    File[] jars = fs.findJars(frameworkName);
-
-                    if (jars == null || jars.length == 0) {
-                        log("No Jars in " + fs.getDir(aProject).getPath() + "/" + frameworkName + ", ignoring.",
-                            Project.MSG_VERBOSE);
-                        continue;
-                    }
-
-                    if(!processedFrameworks.contains(frameworkName)) {
-                        int jsize = jars.length;
-                        for (int k = 0; k < jsize; k++) {
-                            if (!jarSet.contains(jars[k])) {
-                                jarSet.add(jars[k]);
-                            } else {
-                                log("Skipped " + jars[k].getPath(), Project.MSG_VERBOSE);
-                            }
-                        }
-                    }
-                    processedFrameworks.add(frameworkName);
-                }
-            } catch (BuildException be) {
-                // directory doesn't exist or is not readable
-                log(be.getMessage(), Project.MSG_WARN);
-            }
-        }
-        Object someFiles[] = jarSet.toArray();
-        size = someFiles.length;
-        for (int i = 0; i < size; i++) {
-            log(": Framework JAR " + someFiles[i], Project.MSG_VERBOSE);
-            buf.append(someFiles[i]).append(":");
-        }
-        return buf.toString();
-    }
-
     public void execute() throws BuildException {
-        Path path = new Path(getProject(), buildFrameworkPaths());
-
-        setClasspath(path);
+        setClasspath(FrameworkSet.jarsPathForFrameworkSets(getProject(), frameworkSets, false));
         super.execute();
     }
 }
