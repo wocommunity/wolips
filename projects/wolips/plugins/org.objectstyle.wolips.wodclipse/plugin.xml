@@ -117,6 +117,12 @@
                 categoryId="org.objectstyle.wolips.wodclipse.componenteditor"
                 id="org.objectstyle.wolips.wodclipse.editors.towod">
         </command>
+        <command
+                name="Save Component"
+                description="Save Component"
+                categoryId="org.objectstyle.wolips.wodclipse.componenteditor"
+                id="org.objectstyle.wolips.wodclipse.editors.savecomponent">
+        </command>
     </extension>
     <extension point="org.eclipse.ui.bindings">
 		<key
@@ -134,6 +140,11 @@
         		contextId="org.eclipse.ui.textEditorScope"
         		schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
         		sequence="M1+M3+3"/>
+		<key
+        		commandId="org.objectstyle.wolips.wodclipse.editors.savecomponent"
+        		contextId="org.eclipse.ui.textEditorScope"
+        		schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+        		sequence="M1+M3+S"/>
 	</extension>
 	
 	<extension point = "org.eclipse.ui.editorActions">
@@ -162,6 +173,12 @@
                definitionId="org.objectstyle.wolips.wodclipse.editors.tojava"
                id="org.objectstyle.wolips.wodclipse.editors.switchfromjavatojava"
                label="Switch to Html Editor"
+               menubarPath="edit/ComponentEditor/group1"/>
+         <action
+               class="org.objectstyle.wolips.wodclipse.editormenu.SaveComponentEditorActionDelegate"
+               definitionId="org.objectstyle.wolips.wodclipse.editors.savecomponent"
+               id="org.objectstyle.wolips.wodclipse.editors.savecomponentinjava"
+               label="Save Component"
                menubarPath="edit/ComponentEditor/group1"/> 
       </editorContribution>
       <editorContribution 
@@ -184,7 +201,13 @@
                definitionId="org.objectstyle.wolips.wodclipse.editors.tojava"
                id="org.objectstyle.wolips.wodclipse.editors.switchfromhtmltojava"
                label="Switch to Java Editor"
-               menubarPath="edit/ComponentEditor/group1"/> 
+               menubarPath="edit/ComponentEditor/group1"/>
+         <action
+               class="org.objectstyle.wolips.wodclipse.editormenu.SaveComponentEditorActionDelegate"
+               definitionId="org.objectstyle.wolips.wodclipse.editors.savecomponent"
+               id="org.objectstyle.wolips.wodclipse.editors.savecomponentinhtml"
+               label="Save Component"
+               menubarPath="edit/ComponentEditor/group1"/>  
       </editorContribution>
       <editorContribution 
          id="org.objectstyle.wolips.wodclipse.componenteditor.wodcontribution" 
@@ -207,6 +230,12 @@
                id="org.objectstyle.wolips.wodclipse.editors.switchfromwodtojava"
                label="Switch to Java Editor"
                menubarPath="edit/ComponentEditor/group1"/>
+         <action
+               class="org.objectstyle.wolips.wodclipse.editormenu.SaveComponentEditorActionDelegate"
+               definitionId="org.objectstyle.wolips.wodclipse.editors.savecomponent"
+               id="org.objectstyle.wolips.wodclipse.editors.savecomponentinwod"
+               label="Save Component"
+               menubarPath="edit/ComponentEditor/group1"/> 
       </editorContribution>
  	</extension>
 </plugin>
