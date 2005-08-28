@@ -117,6 +117,18 @@
                 <td><a href="www.denali.be">http://www.denali.be</a></td>
                 <td>XCode project file serialisation</td>
             </tr>
+             <tr>
+                <td>Mike Schrag</td>
+                <td>mschrag at mdimension dot com</td>
+                <td><a href="www.mdimension.com">http://www.mdimension.com</a></td>
+                <td>WODEditor, PBServer and much more</td>
+            </tr>
+             <tr>
+                <td>Christian Pekeler</td>
+                <td>christian at pekeler dot org</td>
+                <td><a href="www.pekeler.org">http://www.pekeler.org</a></td>
+                <td>WOUnit task</td>
+            </tr>
             </table>
             </subsection>
         </section>
