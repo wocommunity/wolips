@@ -52,16 +52,23 @@ import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.IVerticalRuler;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.texteditor.ContentAssistAction;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
+import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.objectstyle.wolips.wodclipse.WodclipsePlugin;
 
 /**
  * @author mike
  */
 public class WODEditor extends TextEditor {
+	private WODContentOutlinePage contentOutlinePage;
+	private IEditorInput input;
+	
   public WODEditor() {
     setSourceViewerConfiguration(new WODSourceViewerConfiguration(this));
   }
@@ -99,5 +106,21 @@ public class WODEditor extends TextEditor {
     	//the user has to enter the name manually
      WodclipsePlugin.getDefault().setWebObjectsTagNames(null);
     }
+  }
+
+  public Object getAdapter(Class adapter) {
+	  if (IContentOutlinePage.class.equals(adapter)) {
+          if (contentOutlinePage == null) {
+        	  	contentOutlinePage= new WODContentOutlinePage(getDocumentProvider(), this);
+        	  	contentOutlinePage.setInput(input);
+          }
+          return contentOutlinePage;
+  }
+  return super.getAdapter(adapter);
+  }
+  
+  public void init(IEditorSite site, IEditorInput input) throws PartInitException {
+	super.init(site, input);
+	this.input = input;
   }
 }
