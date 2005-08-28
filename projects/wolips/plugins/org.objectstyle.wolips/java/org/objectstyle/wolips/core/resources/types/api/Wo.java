@@ -59,7 +59,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.jdom.Element;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 public class Wo extends AbstractApiModelElement {
 
@@ -72,7 +73,7 @@ public class Wo extends AbstractApiModelElement {
 	}
 
 	public String getClassName() {
-		return element.getAttributeValue(CLASS);
+		return element.getAttribute(CLASS);
 	}
 
 	public void setClassName(String className) {
@@ -80,7 +81,7 @@ public class Wo extends AbstractApiModelElement {
 	}
 
 	public boolean getIsWocomponentcontent() {
-		String value = element.getAttributeValue(WOCOMPONENTCONTENT);
+		String value = element.getAttribute(WOCOMPONENTCONTENT);
 		if (value == null) {
 			return false;
 		}
@@ -96,11 +97,11 @@ public class Wo extends AbstractApiModelElement {
 	}
 
 	public Binding[] getBindings() {
-		List bindingElements = element.getChildren(Binding.BINDING);
-		Iterator iterator = bindingElements.iterator();
+		NodeList bindingElements = element
+				.getElementsByTagName(Binding.BINDING);
 		ArrayList bindings = new ArrayList();
-		while (iterator.hasNext()) {
-			Element bindingElement = (Element) iterator.next();
+		for (int i = 0; i < bindingElements.getLength(); i++) {
+			Element bindingElement = (Element) bindingElements.item(i);
 			Binding binding = new Binding(bindingElement, apiModel, this);
 			bindings.add(binding);
 		}
@@ -108,11 +109,11 @@ public class Wo extends AbstractApiModelElement {
 	}
 
 	public Validation[] getValidations() {
-		List validationElements = element.getChildren(Validation.VALIDATION);
-		Iterator iterator = validationElements.iterator();
+		NodeList validationElements = element
+				.getElementsByTagName(Validation.VALIDATION);
 		ArrayList validations = new ArrayList();
-		while (iterator.hasNext()) {
-			Element validationElement = (Element) iterator.next();
+		for (int i = 0; i < validationElements.getLength(); i++) {
+			Element validationElement = (Element) validationElements.item(i);
 			Validation validation = new Validation(validationElement, apiModel);
 			validations.add(validation);
 		}
@@ -135,18 +136,20 @@ public class Wo extends AbstractApiModelElement {
 	}
 
 	public void createBinding(String name) {
-		Element newBindingElement = new Element(Binding.BINDING);
+		Element newBindingElement = this.element.getOwnerDocument()
+				.createElement(Binding.BINDING);
 		newBindingElement.setAttribute(Binding.NAME, name);
-		this.element.addContent(newBindingElement);
+		this.element.appendChild(newBindingElement);
 		this.apiModel.markAsDirty();
 	}
 
 	public void removeBinding(Binding binding) {
-		Validation[] validations = this.getAffectedValidations(binding.getName());
-		for(int i = 0; i < validations.length; i++) {
-			this.element.removeContent(validations[i].element);
+		Validation[] validations = this.getAffectedValidations(binding
+				.getName());
+		for (int i = 0; i < validations.length; i++) {
+			this.element.removeChild(validations[i].element);
 		}
-		this.element.removeContent(binding.element);
+		this.element.removeChild(binding.element);
 		this.apiModel.markAsDirty();
 	}
 }

@@ -55,7 +55,8 @@
  */
 package org.objectstyle.wolips.core.resources.types.api;
 
-import org.jdom.Element;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 public class Wodefinitions extends AbstractApiModelElement {
 
@@ -66,6 +67,7 @@ public class Wodefinitions extends AbstractApiModelElement {
 	}
 
 	public Wo getWo() {
-		return new Wo(element.getChild(WO), apiModel);
+		NodeList nodeList = element.getElementsByTagName(WO);
+		return new Wo((Element) nodeList.item(0), apiModel);
 	}
 }

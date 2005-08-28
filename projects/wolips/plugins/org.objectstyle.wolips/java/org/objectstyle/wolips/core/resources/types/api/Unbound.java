@@ -55,7 +55,7 @@
  */
 package org.objectstyle.wolips.core.resources.types.api;
 
-import org.jdom.Element;
+import org.w3c.dom.Element;
 
 public class Unbound extends AbstractUn {
 
@@ -66,22 +66,22 @@ public class Unbound extends AbstractUn {
 	}
 
 	public static void addToWoWithBinding(Wo wo, Binding binding) {
-		Element newValidationElement = new Element(Validation.VALIDATION);
-		wo.element.addContent(newValidationElement);
+		Element newValidationElement = wo.element.getOwnerDocument().createElement(Validation.VALIDATION);
+		wo.element.appendChild(newValidationElement);
 		newValidationElement.setAttribute(Validation.MESSAGE, "&apos;" + binding.getName() + "&apos; is a required binding");
-		Element newUnboundElement = new Element(UNBOUND);
-		newValidationElement.addContent(newUnboundElement);
+		Element newUnboundElement = wo.element.getOwnerDocument().createElement(UNBOUND);
+		newValidationElement.appendChild(newUnboundElement);
 		newUnboundElement.setAttribute(NAME, binding.getName());
 	}
 
 	public static void removeFromWoWithBinding(Wo wo, Binding binding) {
 		Validation[] validations = wo.getValidations();
-		for (int i = 0; i < validations.length; i++) {
+		for (int i = validations.length - 1; i > 0 ; i--) {
 			Validation validation = validations[i];
 			Unbound[] unbounds = validation.getUnbounds();
 			if (unbounds.length == 1) {
 				if (unbounds[0].isAffectedByBindingNamed(binding.getName())) {
-					wo.element.removeContent(unbounds[0].element);
+					validation.element.removeChild(unbounds[0].element);
 				}
 			}
 		}

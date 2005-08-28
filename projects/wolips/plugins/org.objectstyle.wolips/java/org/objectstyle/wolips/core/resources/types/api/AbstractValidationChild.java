@@ -56,10 +56,9 @@
 package org.objectstyle.wolips.core.resources.types.api;
 
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
-import org.jdom.Element;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 public class AbstractValidationChild extends AbstractApiModelElement {
 	
@@ -68,11 +67,10 @@ public class AbstractValidationChild extends AbstractApiModelElement {
 	}
 
 	public Unsettable[] getUnsettables() {
-		List unsetableElements = element.getChildren(Unsettable.UNSETTABLE);
-		Iterator iterator = unsetableElements.iterator();
+		NodeList unsetableElements = element.getElementsByTagName(Unsettable.UNSETTABLE);
 		ArrayList unsetables = new ArrayList();
-		while (iterator.hasNext()) {
-			Element unsettableElement = (Element)iterator.next();
+		for (int i = 0; i < unsetableElements.getLength(); i++) {
+			Element unsettableElement = (Element)unsetableElements.item(i);
 			Unsettable validation = new Unsettable(unsettableElement, apiModel);
 			unsetables.add(validation);
 		}
@@ -80,11 +78,10 @@ public class AbstractValidationChild extends AbstractApiModelElement {
 	}
 
 	public Settable[] getSettables() {
-		List setableElements = element.getChildren(Settable.SETTABLE);
-		Iterator iterator = setableElements.iterator();
+		NodeList setableElements = element.getElementsByTagName(Settable.SETTABLE);
 		ArrayList setables = new ArrayList();
-		while (iterator.hasNext()) {
-			Element settableElement = (Element)iterator.next();
+		for (int i = 0; i < setableElements.getLength(); i++) {
+			Element settableElement = (Element)setableElements.item(i);
 			Settable settable = new Settable(settableElement, apiModel);
 			setables.add(settable);
 		}
@@ -92,11 +89,10 @@ public class AbstractValidationChild extends AbstractApiModelElement {
 	}
 
 	public Unbound[] getUnbounds() {
-		List unsetableElements = element.getChildren(Unbound.UNBOUND);
-		Iterator iterator = unsetableElements.iterator();
+		NodeList unsetableElements = element.getElementsByTagName(Unbound.UNBOUND);
 		ArrayList unsetables = new ArrayList();
-		while (iterator.hasNext()) {
-			Element unboundElement = (Element)iterator.next();
+		for (int i = 0; i < unsetableElements.getLength(); i++) {
+			Element unboundElement = (Element)unsetableElements.item(i);
 			Unbound validation = new Unbound(unboundElement, apiModel);
 			unsetables.add(validation);
 		}
@@ -104,11 +100,10 @@ public class AbstractValidationChild extends AbstractApiModelElement {
 	}
 
 	public Bound[] getBounds() {
-		List setableElements = element.getChildren(Bound.BOUND);
-		Iterator iterator = setableElements.iterator();
+		NodeList setableElements = element.getElementsByTagName(Bound.BOUND);
 		ArrayList setables = new ArrayList();
-		while (iterator.hasNext()) {
-			Element boundElement = (Element)iterator.next();
+		for (int i = 0; i < setableElements.getLength(); i++) {
+			Element boundElement = (Element)setableElements.item(i);
 			Bound bound = new Bound(boundElement, apiModel);
 			setables.add(bound);
 		}
@@ -118,33 +113,33 @@ public class AbstractValidationChild extends AbstractApiModelElement {
 	
 
 	public And getAnd() {
-		List list = element.getChildren();
-		assert (list.size() == 0 || list.size() == 1);
-		Element child = element.getChild(And.AND);
-		if (child == null) {
+		NodeList list = element.getChildNodes();
+		assert (list.getLength()== 0 || list.getLength() == 1);
+		NodeList elements = element.getElementsByTagName(And.AND);
+		if (elements == null || elements.getLength() == 0) {
 			return null;
 		}
-		return new And(child, apiModel);
+		return new And((Element)elements.item(0), apiModel);
 	}
 
 	public Or getOr() {
-		List list = element.getChildren();
-		assert (list.size() == 0 || list.size() == 1);
-		Element child = element.getChild(Or.OR);
-		if (child == null) {
+		NodeList list = element.getChildNodes();
+		assert (list.getLength()== 0 || list.getLength() == 1);
+		NodeList elements = element.getElementsByTagName(Or.OR);
+		if (elements == null || elements.getLength() == 0) {
 			return null;
 		}
-		return new Or(child, apiModel);
+		return new Or((Element)elements.item(0), apiModel);
 	}
 
 	public Not getNot() {
-		List list = element.getChildren();
-		assert (list.size() == 0 || list.size() == 1);
-		Element child = element.getChild(Not.NOT);
-		if (child == null) {
+		NodeList list = element.getChildNodes();
+		assert (list.getLength()== 0 || list.getLength() == 1);
+		NodeList elements = element.getElementsByTagName(Not.NOT);
+		if (elements == null || elements.getLength() == 0) {
 			return null;
 		}
-		return new Not(child, apiModel);
+		return new Not((Element)elements.item(0), apiModel);
 	}
 
 	public boolean isAffectedByBindingNamed(String bindingName) {

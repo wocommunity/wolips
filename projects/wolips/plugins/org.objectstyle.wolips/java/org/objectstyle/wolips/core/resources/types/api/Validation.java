@@ -55,7 +55,7 @@
  */
 package org.objectstyle.wolips.core.resources.types.api;
 
-import org.jdom.Element;
+import org.w3c.dom.Element;
 
 public class Validation extends AbstractValidationChild {
 
@@ -68,7 +68,7 @@ public class Validation extends AbstractValidationChild {
 	}
 
 	public String getMessage() {
-		return element.getAttributeValue(MESSAGE);
+		return element.getAttribute(MESSAGE);
 	}
 
 	public void setMessage(String className) {

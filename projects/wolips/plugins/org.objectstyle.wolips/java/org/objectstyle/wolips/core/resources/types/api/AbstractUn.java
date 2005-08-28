@@ -55,7 +55,7 @@
  */
 package org.objectstyle.wolips.core.resources.types.api;
 
-import org.jdom.Element;
+import org.w3c.dom.Element;
 
 public class AbstractUn extends AbstractApiModelElement {
 
@@ -66,7 +66,7 @@ public class AbstractUn extends AbstractApiModelElement {
 	}
 
 	public String getName() {
-		return element.getAttributeValue(NAME);
+		return element.getAttribute(NAME);
 	}
 
 	public void setName(String className) {

@@ -56,15 +56,26 @@
 package org.objectstyle.wolips.core.resources.types.api;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.TransformerFactoryConfigurationError;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
 import org.eclipse.core.resources.IFile;
-import org.jdom.Document;
-import org.jdom.input.SAXBuilder;
-import org.jdom.output.Format;
-import org.jdom.output.XMLOutputter;
 import org.objectstyle.wolips.core.CorePlugin;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 public class ApiModel {
 
@@ -73,7 +84,7 @@ public class ApiModel {
 	private IFile file;
 
 	private boolean isDirty = false;
-	
+
 	public ApiModel(IFile file) {
 		super();
 		this.file = file;
@@ -81,50 +92,72 @@ public class ApiModel {
 	}
 
 	private void parse() {
-		SAXBuilder builder;
-		try {
-			builder = new SAXBuilder();
-			document = builder.build(file.getLocation().toOSString());
-		} catch (Exception e) {
-			CorePlugin.getDefault().log(e);
-			builder = null;
-			document = null;
 
-		} finally {
-			builder = null;
+		DocumentBuilder documentBuilder = null;
+		try {
+			documentBuilder = DocumentBuilderFactory.newInstance()
+					.newDocumentBuilder();
+		} catch (ParserConfigurationException e) {
+			CorePlugin.getDefault().debug(
+					this.getClass().getName() + "Error while parsing .wolips",
+					e);
+		}
+		try {
+			this.document = documentBuilder.parse(this.file.getLocation()
+					.toOSString());
+		} catch (SAXException e) {
+			CorePlugin.getDefault().debug(
+					this.getClass().getName() + "Error while parsing .wolips",
+					e);
+			e.printStackTrace();
+		} catch (IOException e) {
+			CorePlugin.getDefault().debug(
+					this.getClass().getName() + "Error while parsing .wolips",
+					e);
 		}
 	}
 
 	public Wodefinitions getWODefinitions() {
-		return new Wodefinitions(document.getRootElement(), this);
+		Element element = document.getDocumentElement();
+		return new Wodefinitions(element, this);
 	}
 
 	public Wo getWo() {
 		Wodefinitions wodefinitions = this.getWODefinitions();
-		if(wodefinitions == null) {
+		if (wodefinitions == null) {
 			return null;
 		}
 		return wodefinitions.getWo();
 	}
-	
+
 	public void saveChanges() {
-		File fileToWrite = null;
-		XMLOutputter outputter = null;
-		FileWriter fileWriter = null;
+		// Prepare the DOM document for writing
+		Source source = new DOMSource(this.document);
+
+		// Prepare the output file
+		File file = new File(this.file.getLocation().toOSString());
+		Result result = new StreamResult(file);
+
+		// Write the DOM document to the file
+		Transformer xformer = null;
 		try {
-			fileToWrite = new File(file.getLocation().toOSString());
-			outputter = new XMLOutputter();
-			Format format = Format.getPrettyFormat();
-			outputter.setFormat(format);
-			fileWriter = new FileWriter(fileToWrite);
-			outputter.output(document, fileWriter);
+			xformer = TransformerFactory.newInstance().newTransformer();
+		} catch (TransformerConfigurationException e) {
+			CorePlugin.getDefault().debug(
+					this.getClass().getName() + "Error while writing .wolips",
+					e);
+		} catch (TransformerFactoryConfigurationError e) {
+			CorePlugin.getDefault().debug(
+					this.getClass().getName() + "Error while writing .wolips",
+					e);
+		}
+		try {
+			xformer.transform(source, result);
 			isDirty = false;
-		} catch (IOException e) {
-			CorePlugin.getDefault().log(e);
-		} finally {
-			fileToWrite = null;
-			outputter = null;
-			fileWriter = null;
+		} catch (TransformerException e) {
+			CorePlugin.getDefault().debug(
+					this.getClass().getName() + "Error while writing .wolips",
+					e);
 		}
 	}
 
@@ -135,4 +168,4 @@ public class ApiModel {
 	public void markAsDirty() {
 		isDirty = true;
 	}
-}	
+}

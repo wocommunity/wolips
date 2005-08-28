@@ -55,7 +55,7 @@
  */
 package org.objectstyle.wolips.core.resources.types.api;
 
-import org.jdom.Element;
+import org.w3c.dom.Element;
 
 public class Binding extends AbstractApiModelElement {
 
@@ -79,7 +79,7 @@ public class Binding extends AbstractApiModelElement {
 	}
 
 	public String getName() {
-		return element.getAttributeValue(NAME);
+		return element.getAttribute(NAME);
 	}
 
 	public void setName(String className) {
@@ -91,17 +91,17 @@ public class Binding extends AbstractApiModelElement {
 	}
 
 	public String getDefaults() {
-		return element.getAttributeValue(DEFAULTS);
+		return element.getAttribute(DEFAULTS);
 	}
 
 	public int getSelectedDefaults() {
 		String defaults = this.getDefaults();
-		if(defaults == null) {
+		if (defaults == null) {
 			return 0;
 		}
 		for (int i = 0; i < ALL_DEFAULTS.length; i++) {
 			String string = ALL_DEFAULTS[i];
-			if(string.equals(defaults)) {
+			if (string.equals(defaults)) {
 				return i;
 			}
 		}

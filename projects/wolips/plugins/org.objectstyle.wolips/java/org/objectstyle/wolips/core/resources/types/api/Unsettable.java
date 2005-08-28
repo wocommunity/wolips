@@ -55,7 +55,7 @@
  */
 package org.objectstyle.wolips.core.resources.types.api;
 
-import org.jdom.Element;
+import org.w3c.dom.Element;
 
 public class Unsettable extends AbstractUn {
 
@@ -66,24 +66,24 @@ public class Unsettable extends AbstractUn {
 	}
 
 	public static void addToWoWithBinding(Wo wo, Binding binding) {
-		Element newValidationElement = new Element(Validation.VALIDATION);
-		wo.element.addContent(newValidationElement);
+		Element newValidationElement = wo.element.getOwnerDocument().createElement(Validation.VALIDATION);
+		wo.element.appendChild(newValidationElement);
 		newValidationElement.setAttribute(Validation.MESSAGE, "&apos;"
 				+ binding.getName()
 				+ "&apos; must be bound to a settable value");
-		Element newUnsettableElement = new Element(UNSETTABLE);
-		newValidationElement.addContent(newUnsettableElement);
+		Element newUnsettableElement = wo.element.getOwnerDocument().createElement(UNSETTABLE);
+		newValidationElement.appendChild(newUnsettableElement);
 		newUnsettableElement.setAttribute(NAME, binding.getName());
 	}
 
 	public static void removeFromWoWithBinding(Wo wo, Binding binding) {
 		Validation[] validations = wo.getValidations();
-		for (int i = 0; i < validations.length; i++) {
+		for (int i = validations.length - 1; i > 0 ; i--) {
 			Validation validation = validations[i];
 			Unsettable[] unsettables = validation.getUnsettables();
 			if (unsettables.length == 1) {
 				if (unsettables[0].isAffectedByBindingNamed(binding.getName())) {
-					wo.element.removeContent(unsettables[0].element);
+					validation.element.removeChild(unsettables[0].element);
 				}
 			}
 		}
