@@ -42,6 +42,11 @@
  				<li><a href="xcodeindex.html">XcodeIndex</a>: Maintains
  				XCode project files for integration with WOBuilder on the latest Mac OS X.</li>
  				</ul>
+ 				
+ 			<p><strong>JUnit Tasks:</strong></p>
+ 				<ul>
+ 				<li><a href="wounit.html">WOUnit</a>: Run unit tests.</li>
+ 				</ul>
  		</section>
  		
  		
