@@ -69,6 +69,17 @@
             class="org.objectstyle.woproject.ant.EOModel"
             eclipseRuntime="false">
       </antTask>
+      <antTask
+            library="lib/woproject.jar"
+            name="wounit"
+            class="org.objectstyle.woproject.ant.WOUnit"
+            eclipseRuntime="false">
+      </antTask>
+      <antTask
+            library="lib/woproject.jar"
+            name="xcodeindex"
+            class="org.objectstyle.woproject.ant.XcodeIndex"
+            eclipseRuntime="false">
+      </antTask>
    </extension>
-
 </plugin>
