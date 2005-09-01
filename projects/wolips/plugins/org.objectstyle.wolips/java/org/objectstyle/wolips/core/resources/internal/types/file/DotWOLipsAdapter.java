@@ -178,7 +178,6 @@ public class DotWOLipsAdapter extends AbstractFileAdapter implements
 				CorePlugin.getDefault().debug(
 						this.getClass().getName()
 								+ "Error while parsing .wolips", e);
-				e.printStackTrace();
 			} catch (IOException e) {
 				CorePlugin.getDefault().debug(
 						this.getClass().getName()
