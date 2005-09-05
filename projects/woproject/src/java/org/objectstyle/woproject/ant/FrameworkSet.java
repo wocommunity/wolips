@@ -2,7 +2,7 @@
  *
  * The ObjectStyle Group Software License, Version 1.0
  *
- * Copyright (c) 2002 The ObjectStyle Group
+ * Copyright (c) 2002 - 2005 The ObjectStyle Group
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -156,13 +156,18 @@ public class FrameworkSet extends FileSet {
     public File[] findJars(String frameworkDir) {
         if (!testIfCondition())
             return new File[] {};
-        String jarDirName = frameworkDir;
-        if (frameworkDir.endsWith(".woa"))
-                jarDirName += File.separator + "Resources" + File.separator + "Java";
-        File jarDir = new File(getDir(getProject()), jarDirName);
+
+        String jarDirName = frameworkDir
+                + File.separator
+                + "Resources"
+                + File.separator
+                + "Java";
+
+        File jarDir = new File(getDir(this.getProject()), jarDirName);
         if (!jarDir.isDirectory()) {
-            return new File[] {};
+            return null;
         }
+
         File[] finalFiles = jarDir.listFiles(new JarFilter());
         return finalFiles;
     }
