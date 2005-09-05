@@ -73,6 +73,8 @@ public class ComponentEditor extends MultiEditor {
 
 	CTabFolder folder;
 
+	private ComponentEditorInput componentEditorInput;
+
 	/*
 	 * @see IWorkbenchPart#createPartControl(Composite)
 	 */
@@ -170,7 +172,18 @@ public class ComponentEditor extends MultiEditor {
 				break;
 			}
 		}
-		folder.setSelection(javaTab);
+
+		if (componentEditorInput.isCreatedFromDotApi()) {
+			folder.setSelection(apiTab);
+		} else if (componentEditorInput.isCreatedFromDotHtml()) {
+			folder.setSelection(componentTab);
+		} else if (componentEditorInput.isCreatedFromDotJava()) {
+			folder.setSelection(javaTab);
+		} else if (componentEditorInput.isCreatedFromDotWod()) {
+			folder.setSelection(componentTab);
+		} else if (componentEditorInput.isCreatedFromDotWoo()) {
+			folder.setSelection(componentTab);
+		}
 	}
 
 	private void addWebObjectsTagNamesListener(final WODEditor wodEditor,
@@ -239,6 +252,18 @@ public class ComponentEditor extends MultiEditor {
 				.substring(0, javaInputName.length() - 5)
 				+ " WOComponent";
 		setPartName(partName);
+		componentEditorInput = (ComponentEditorInput) input;
+		if (componentEditorInput.isCreatedFromDotApi()) {
+			activeEditorIndex = 3;
+		} else if (componentEditorInput.isCreatedFromDotHtml()) {
+			activeEditorIndex = 1;
+		} else if (componentEditorInput.isCreatedFromDotJava()) {
+			activeEditorIndex = 0;
+		} else if (componentEditorInput.isCreatedFromDotWod()) {
+			activeEditorIndex = 2;
+		} else if (componentEditorInput.isCreatedFromDotWoo()) {
+			activeEditorIndex = 1;
+		}
 	}
 
 	/*
