@@ -304,7 +304,7 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 				for (int i = 0; i < extensions.length; i++) {
 					IResource foundResource = ((IContainer) resource)
 							.findMember(name + "." + extensions[i]);
-					if ((foundResource != null))
+					if (foundResource != null && !foundResource.isDerived())
 						list.add(foundResource);
 				}
 				IResource[] members = WorkbenchUtilitiesPlugin
@@ -331,7 +331,7 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 						for (int j = 0; j < extensions.length; j++) {
 							IResource foundResource = ((IContainer) resource)
 									.findMember(name + "." + extensions[j]);
-							if ((foundResource != null))
+							if (foundResource != null && !foundResource.isDerived())
 								list.add(foundResource);
 						}
 						IResource[] members = WorkbenchUtilitiesPlugin
@@ -359,7 +359,7 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 					|| (aResource instanceof IProject)) {
 				IResource resource = ((IContainer) aResource)
 						.findMember(aFileName);
-				if ((resource != null) && (resource instanceof IFile))
+				if ((resource != null) && (resource instanceof IFile) && !resource.isDerived())
 					anArrayList.add(resource);
 				IResource[] members = WorkbenchUtilitiesPlugin
 						.members(aResource);
