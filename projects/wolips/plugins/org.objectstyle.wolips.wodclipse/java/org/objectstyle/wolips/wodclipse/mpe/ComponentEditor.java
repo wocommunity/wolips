@@ -60,7 +60,9 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.MultiEditor;
 import org.eclipse.ui.part.MultiEditorInput;
+import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.wst.html.ui.internal.provisional.StructuredTextEditorHTML;
+import org.eclipse.wst.sse.ui.internal.contentoutline.StructuredTextEditorContentOutlinePage;
 import org.objectstyle.wolips.wodclipse.WodclipsePlugin;
 import org.objectstyle.wolips.wodclipse.editors.WODEditor;
 
@@ -125,6 +127,7 @@ public class ComponentEditor extends MultiEditor {
 		SashForm componentEditorSashParent = new SashForm(
 				componentEditorParent, SWT.VERTICAL | SWT.SMOOTH);
 		StructuredTextEditorHTML htmlEditor = null;
+		StructuredTextEditorContentOutlinePage contentOutlinePage = null;
 		IEditorPart[] innerEditors = getInnerEditors();
 		for (int i = 0; i < innerEditors.length; i++) {
 			final IEditorPart innerEditor = innerEditors[i];
@@ -147,6 +150,8 @@ public class ComponentEditor extends MultiEditor {
 					}
 
 				});
+				contentOutlinePage = (StructuredTextEditorContentOutlinePage) htmlEditor
+						.getAdapter(IContentOutlinePage.class);
 				break;
 
 			case 2:
@@ -162,6 +167,9 @@ public class ComponentEditor extends MultiEditor {
 				});
 				addWebObjectsTagNamesListener((WODEditor) innerEditor,
 						htmlEditor);
+				if (contentOutlinePage != null) {
+					new HTMLOutlineSelectionHandler(contentOutlinePage, (WODEditor) innerEditor);
+				}
 				break;
 			case 3:
 				createInnerPartControl(apiEditorParent, innerEditor);

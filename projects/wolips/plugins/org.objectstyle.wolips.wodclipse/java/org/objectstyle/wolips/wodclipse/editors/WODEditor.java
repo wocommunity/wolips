@@ -49,8 +49,10 @@ import java.util.Set;
 import org.eclipse.jdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.IVerticalRuler;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
@@ -123,4 +125,23 @@ public class WODEditor extends TextEditor {
 	super.init(site, input);
 	this.input = input;
   }
+
+  public void selectTagNamed(String webobjectTagName) {
+		IDocument document = getDocumentProvider()
+				.getDocument(getEditorInput());
+		int numberOfLines = document.getNumberOfLines();
+		for (int i = 0; i < numberOfLines; i++) {
+			try {
+				IRegion region = document.getLineInformation(i);
+				String string = document.get(region.getOffset(), region.getLength());
+				if(string != null && (string.startsWith(webobjectTagName + " ") || string.startsWith(webobjectTagName + ":"))) {
+					this.setHighlightRange(region.getOffset(), region.getLength(), true);
+					break;
+				}
+			} catch (BadLocationException e) {
+				WodclipsePlugin.getDefault().log(e);
+			}
+		}
+
+	}
 }
