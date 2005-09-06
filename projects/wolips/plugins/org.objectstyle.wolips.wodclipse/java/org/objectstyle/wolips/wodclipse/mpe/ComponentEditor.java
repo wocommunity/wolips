@@ -292,4 +292,10 @@ public class ComponentEditor extends MultiEditor {
 		this.setFocus();
 	}
 
+	public void switchToApi() {
+		activeEditorIndex = 3;
+		folder.setSelection(2);
+		this.setFocus();
+	}
+
 }

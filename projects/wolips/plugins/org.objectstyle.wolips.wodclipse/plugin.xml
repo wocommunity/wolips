@@ -118,6 +118,12 @@
                 id="org.objectstyle.wolips.wodclipse.editors.towod">
         </command>
         <command
+                name="Switch to Api Editor"
+                description="Switch to Api Editor"
+                categoryId="org.objectstyle.wolips.wodclipse.componenteditor"
+                id="org.objectstyle.wolips.wodclipse.editors.toapi">
+        </command>
+        <command
                 name="Save Component"
                 description="Save Component"
                 categoryId="org.objectstyle.wolips.wodclipse.componenteditor"
@@ -141,6 +147,11 @@
         		schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
         		sequence="M1+M3+3"/>
 		<key
+        		commandId="org.objectstyle.wolips.wodclipse.editors.toapi"
+        		contextId="org.eclipse.ui.textEditorScope"
+        		schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+        		sequence="M1+M3+4"/>
+		<key
         		commandId="org.objectstyle.wolips.wodclipse.editors.savecomponent"
         		contextId="org.eclipse.ui.textEditorScope"
         		schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
@@ -157,6 +168,12 @@
  				<separator name="group1"/>
  				<separator name="group2"/>
 		  </menu>
+         <action
+               class="org.objectstyle.wolips.wodclipse.editormenu.SwitchToApiEditorActionDelegate"
+               definitionId="org.objectstyle.wolips.wodclipse.editors.toapi"
+               id="org.objectstyle.wolips.wodclipse.editors.switchfromjavatoapi"
+               label="Switch to Api Editor"
+               menubarPath="edit/ComponentEditorJava/group1"/>
          <action
                class="org.objectstyle.wolips.wodclipse.editormenu.SwitchToWodEditorActionDelegate"
                definitionId="org.objectstyle.wolips.wodclipse.editors.towod"
@@ -192,6 +209,12 @@
  				<separator name="group2"/>
 		  </menu>
          <action
+               class="org.objectstyle.wolips.wodclipse.editormenu.SwitchToApiEditorActionDelegate"
+               definitionId="org.objectstyle.wolips.wodclipse.editors.toapi"
+               id="org.objectstyle.wolips.wodclipse.editors.switchfromhtmltoapi"
+               label="Switch to Api Editor"
+               menubarPath="edit/ComponentEditorHtml/group1"/>
+         <action
                class="org.objectstyle.wolips.wodclipse.editormenu.SwitchToWodEditorActionDelegate"
                definitionId="org.objectstyle.wolips.wodclipse.editors.towod"
                id="org.objectstyle.wolips.wodclipse.editors.switchfromhtmltowod"
@@ -226,6 +249,12 @@
  				<separator name="group2"/>
 		  </menu>
          <action
+               class="org.objectstyle.wolips.wodclipse.editormenu.SwitchToApiEditorActionDelegate"
+               definitionId="org.objectstyle.wolips.wodclipse.editors.toapi"
+               id="org.objectstyle.wolips.wodclipse.editors.switchfromwodtoapi"
+               label="Switch to Api Editor"
+               menubarPath="edit/ComponentEditorWod/group1"/> 
+         <action
                class="org.objectstyle.wolips.wodclipse.editormenu.SwitchToWodEditorActionDelegate"
                definitionId="org.objectstyle.wolips.wodclipse.editors.towod"
                id="org.objectstyle.wolips.wodclipse.editors.switchfromwodtowod"
@@ -249,6 +278,46 @@
                id="org.objectstyle.wolips.wodclipse.editors.savecomponentinwod"
                label="Save Component"
                menubarPath="edit/ComponentEditorWod/group2"/> 
+      </editorContribution>
+ 	  <editorContribution 
+         id="org.objectstyle.wolips.wodclipse.componenteditor.apicontribution" 
+         targetID="org.objectstyle.wolips.wodclipse.api.ApiEditor">        
+           <menu id="ComponentEditorApi"
+			label="&amp;Component Editor" 
+             path="edit/additions">
+ 				<separator name="group1"/>
+ 				<separator name="group2"/>
+		  </menu>
+         <action
+               class="org.objectstyle.wolips.wodclipse.editormenu.SwitchToApiEditorActionDelegate"
+               definitionId="org.objectstyle.wolips.wodclipse.editors.toapi"
+               id="org.objectstyle.wolips.wodclipse.editors.switchfromapitoapi"
+               label="Switch to Api Editor"
+               menubarPath="edit/ComponentEditorApi/group1"/> 
+         <action
+               class="org.objectstyle.wolips.wodclipse.editormenu.SwitchToWodEditorActionDelegate"
+               definitionId="org.objectstyle.wolips.wodclipse.editors.towod"
+               id="org.objectstyle.wolips.wodclipse.editors.switchfromapitowod"
+               label="Switch to Wod Editor"
+               menubarPath="edit/ComponentEditorApi/group1"/> 
+         <action
+               class="org.objectstyle.wolips.wodclipse.editormenu.SwitchToHtmlEditorActionDelegate"
+               definitionId="org.objectstyle.wolips.wodclipse.editors.tohtml"
+               id="org.objectstyle.wolips.wodclipse.editors.switchfromapitohtml"
+               label="Switch to Html Editor"
+               menubarPath="edit/ComponentEditorApi/group1"/> 
+         <action
+               class="org.objectstyle.wolips.wodclipse.editormenu.SwitchToJavaEditorActionDelegate"
+               definitionId="org.objectstyle.wolips.wodclipse.editors.tojava"
+               id="org.objectstyle.wolips.wodclipse.editors.switchfromapitojava"
+               label="Switch to Java Editor"
+               menubarPath="edit/ComponentEditorApi/group1"/>
+         <action
+               class="org.objectstyle.wolips.wodclipse.editormenu.SaveComponentEditorActionDelegate"
+               definitionId="org.objectstyle.wolips.wodclipse.editors.savecomponent"
+               id="org.objectstyle.wolips.wodclipse.editors.savecomponentinapi"
+               label="Save Component"
+               menubarPath="edit/ComponentEditorApi/group2"/> 
       </editorContribution>
  	</extension>
 </plugin>
