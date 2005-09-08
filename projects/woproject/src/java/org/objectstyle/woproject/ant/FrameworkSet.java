@@ -181,16 +181,20 @@ public class FrameworkSet extends FileSet {
 
     private void addJarsForFrameworkNameToPath(String frameworkName, Path path) {
         File[] jarFiles = findJars(frameworkName);
-        for (int jarFileIndex = 0; jarFileIndex < jarFiles.length; jarFileIndex++)
-            try {
-                File jarFile = getDeployedFile(jarFiles[jarFileIndex]);
-                log(": Framework JAR " + jarFile, Project.MSG_VERBOSE);
-                path.setLocation(jarFile);
-            } catch (BuildException buildException) {
-                log(buildException.getMessage(), Project.MSG_WARN);
-            }
-        if (jarFiles.length == 0)
-            log("No Jars in " + getDir(getProject()).getPath() + "/" + frameworkName + ".", Project.MSG_VERBOSE);
+        if (jarFiles == null || jarFiles.length == 0) {
+          log("No Jars in " + getDir(getProject()).getPath() + "/" + frameworkName + ".", Project.MSG_VERBOSE);
+        }
+        else {
+          for (int jarFileIndex = 0; jarFileIndex < jarFiles.length; jarFileIndex++) {
+              try {
+                  File jarFile = getDeployedFile(jarFiles[jarFileIndex]);
+                  log(": Framework JAR " + jarFile, Project.MSG_VERBOSE);
+                  path.setLocation(jarFile);
+              } catch (BuildException buildException) {
+                  log(buildException.getMessage(), Project.MSG_WARN);
+              }
+          }
+        }
     }
 
     public Path jarsPath() {
