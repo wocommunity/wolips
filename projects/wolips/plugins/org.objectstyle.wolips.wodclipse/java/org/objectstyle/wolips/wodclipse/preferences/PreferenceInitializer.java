@@ -55,9 +55,9 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
     IPreferenceStore store = WodclipsePlugin.getDefault().getPreferenceStore();
     store.setDefault(PreferenceConstants.ELEMENT_NAME, "65,0,197");
     store.setDefault(PreferenceConstants.ELEMENT_TYPE, "63,127,95");
-    store.setDefault(PreferenceConstants.ASSOCIATION_NAME, "138,23,100");
-    store.setDefault(PreferenceConstants.ASSOCIATION_VALUE, "0,65,216");
-    store.setDefault(PreferenceConstants.CONSTANT_ASSOCIATION_VALUE, "42,0,255");
+    store.setDefault(PreferenceConstants.BINDING_NAME, "138,23,100");
+    store.setDefault(PreferenceConstants.BINDING_VALUE, "0,65,216");
+    store.setDefault(PreferenceConstants.CONSTANT_BINDING_VALUE, "42,0,255");
     store.setDefault(PreferenceConstants.OPERATOR, "0,0,0");
     store.setDefault(PreferenceConstants.UNKNOWN, "0,0,0");
   }

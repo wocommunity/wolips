@@ -64,7 +64,7 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.wst.html.ui.internal.provisional.StructuredTextEditorHTML;
 import org.eclipse.wst.sse.ui.internal.contentoutline.StructuredTextEditorContentOutlinePage;
 import org.objectstyle.wolips.wodclipse.WodclipsePlugin;
-import org.objectstyle.wolips.wodclipse.editors.WODEditor;
+import org.objectstyle.wolips.wodclipse.wod.WodEditor;
 
 /**
  * @author uli
@@ -165,10 +165,10 @@ public class ComponentEditor extends MultiEditor {
 					}
 
 				});
-				addWebObjectsTagNamesListener((WODEditor) innerEditor,
+				addWebObjectsTagNamesListener((WodEditor) innerEditor,
 						htmlEditor);
 				if (contentOutlinePage != null) {
-					new HTMLOutlineSelectionHandler(contentOutlinePage, (WODEditor) innerEditor);
+					new HTMLOutlineSelectionHandler(contentOutlinePage, (WodEditor) innerEditor);
 				}
 				break;
 			case 3:
@@ -194,7 +194,7 @@ public class ComponentEditor extends MultiEditor {
 		}
 	}
 
-	private void addWebObjectsTagNamesListener(final WODEditor wodEditor,
+	private void addWebObjectsTagNamesListener(final WodEditor wodEditor,
 			StructuredTextEditorHTML htmlEditor) {
 		htmlEditor.getSelectionProvider().addSelectionChangedListener(
 				new ISelectionChangedListener() {

@@ -41,91 +41,66 @@
  * Group, please see <http://objectstyle.org/> .
  *  
  */
+package org.objectstyle.wolips.wodclipse.wod;
 
-package org.objectstyle.wolips.wodclipse.mpe;
-
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.jdt.ui.JavaUI;
-import org.eclipse.ui.IEditorLauncher;
-import org.eclipse.ui.PartInitException;
-import org.objectstyle.wolips.wodclipse.WodclipsePlugin;
-import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.contentassist.ContentAssistant;
+import org.eclipse.jface.text.contentassist.IContentAssistant;
+import org.eclipse.jface.text.presentation.IPresentationReconciler;
+import org.eclipse.jface.text.presentation.PresentationReconciler;
+import org.eclipse.jface.text.reconciler.IReconciler;
+import org.eclipse.jface.text.reconciler.MonoReconciler;
+import org.eclipse.jface.text.rules.DefaultDamagerRepairer;
+import org.eclipse.jface.text.source.ISourceViewer;
+import org.eclipse.jface.text.source.SourceViewerConfiguration;
+import org.eclipse.ui.texteditor.ITextEditor;
+import org.objectstyle.wolips.wodclipse.wod.completion.WodCompletionProcessor;
+import org.objectstyle.wolips.wodclipse.wod.parser.WodScanner;
 
 /**
- * @author uli
+ * @author mike
  */
-public class ComponentEditorLauncher implements IEditorLauncher {
+public class WodSourceViewerConfiguration extends SourceViewerConfiguration {
+  private WodScanner myScanner;
+  private ITextEditor myEditor;
 
-	/**
-	 * Open the wocomponent editor with the given file resource.
-	 * 
-	 * @param file
-	 *            the file resource
-	 */
-	public void open(IFile file) {
-		String extension = file.getFileExtension();
-		ComponentEditorInput input = null;
-		if (extension == null) {
-			WorkbenchUtilitiesPlugin.open(file, "");
-			return;
-		}
-		if (extension.equals("java")) {
-			input = ComponentEditorInput.createWithDotJava(file);
-			if (input == null) {
-				WorkbenchUtilitiesPlugin.open(file, JavaUI.ID_CU_EDITOR);
-				return;
-			}
-		}
-		if (extension.equals("html")) {
-			input = ComponentEditorInput.createWithDotHtml(file);
-			if (input == null) {
-				WorkbenchUtilitiesPlugin.open(file, WodclipsePlugin.HTMLEditorID);
-				return;
-			}
-		}
-		if (extension.equals("wod")) {
-			input = ComponentEditorInput.createWithDotWod(file);
-			if (input == null) {
-				WorkbenchUtilitiesPlugin.open(file, WodclipsePlugin.WodEditorID);
-				return;
-			}
-		}
-		if (extension.equals("api")) {
-			input = ComponentEditorInput.createWithDotApi(file);
-			if (input == null) {
-				WorkbenchUtilitiesPlugin.open(file, WodclipsePlugin.ApiEditorID);
-				return;
-				}
-		}
-		if (extension.equals("woo")) {
-			input = ComponentEditorInput.createWithDotWoo(file);
-			if (input == null) {
-				WorkbenchUtilitiesPlugin.open(file, WodclipsePlugin.WOOEditorID);
-				return;
-				}
-		}
-		if(input == null) {
-			WodclipsePlugin.getDefault().log("Invalid input for Component Editor Launcher. File:" + file);
-			return;
-		}
-		try {
-			WorkbenchUtilitiesPlugin.getActiveWorkbenchWindow().getActivePage()
-					.openEditor(input, WodclipsePlugin.ComponentEditorID);
-		} catch (PartInitException e) {
-			e.printStackTrace();
-		}
-	}
+  public WodSourceViewerConfiguration(ITextEditor _editor) {
+    myEditor = _editor;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.IEditorLauncher#open(org.eclipse.core.runtime.IPath)
-	 */
-	public void open(IPath file) {
-		IFile input = WorkbenchUtilitiesPlugin.getWorkspace().getRoot()
-				.getFileForLocation(file);
-		this.open(input);
-	}
+  protected WodScanner getWODScanner() {
+    if (myScanner == null) {
+      myScanner = WodScanner.newWODScanner();
+    }
+    return myScanner;
+  }
+  
+//  public IAnnotationHover getAnnotationHover(ISourceViewer _sourceViewer) {
+//    return new WodAnnotationHover(_sourceViewer.getAnnotationModel());
+//  }
 
+  public IReconciler getReconciler(ISourceViewer _sourceViewer) {
+    WodReconcilingStrategy reconcilerStrategy = new WodReconcilingStrategy(myEditor);
+    MonoReconciler reconciler = new MonoReconciler(reconcilerStrategy, false);
+    return reconciler;
+  }
+
+  public IPresentationReconciler getPresentationReconciler(ISourceViewer sourceView) {
+    PresentationReconciler reconciler = new PresentationReconciler();
+    DefaultDamagerRepairer dr = new DefaultDamagerRepairer(getWODScanner());
+    reconciler.setDamager(dr, IDocument.DEFAULT_CONTENT_TYPE);
+    reconciler.setRepairer(dr, IDocument.DEFAULT_CONTENT_TYPE);
+    return reconciler;
+  }
+
+  public IContentAssistant getContentAssistant(ISourceViewer _sourceViewer) {
+    WodCompletionProcessor processor = new WodCompletionProcessor(myEditor);
+    ContentAssistant assistant = new ContentAssistant();
+    assistant.setContentAssistProcessor(processor, IDocument.DEFAULT_CONTENT_TYPE);
+    //assistant.enableAutoActivation(true);
+    //assistant.setAutoActivationDelay(500);
+    //assistant.enableAutoInsert(true);
+    assistant.setProposalPopupOrientation(IContentAssistant.PROPOSAL_OVERLAY);
+    return assistant;
+  }
 }

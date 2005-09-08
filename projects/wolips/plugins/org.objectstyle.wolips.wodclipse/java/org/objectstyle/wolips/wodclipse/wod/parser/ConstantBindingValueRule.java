@@ -41,91 +41,28 @@
  * Group, please see <http://objectstyle.org/> .
  *  
  */
+package org.objectstyle.wolips.wodclipse.wod.parser;
 
-package org.objectstyle.wolips.wodclipse.mpe;
-
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.jdt.ui.JavaUI;
-import org.eclipse.ui.IEditorLauncher;
-import org.eclipse.ui.PartInitException;
-import org.objectstyle.wolips.wodclipse.WodclipsePlugin;
-import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
+import org.eclipse.jface.text.rules.IToken;
+import org.eclipse.jface.text.rules.SingleLineRule;
 
 /**
- * @author uli
+ * @author mschrag
  */
-public class ComponentEditorLauncher implements IEditorLauncher {
+public class ConstantBindingValueRule extends SingleLineRule {
+  public ConstantBindingValueRule(String _startSequence, String _endSequence, IToken _token) {
+    super(_startSequence, _endSequence, _token);
+  }
 
-	/**
-	 * Open the wocomponent editor with the given file resource.
-	 * 
-	 * @param file
-	 *            the file resource
-	 */
-	public void open(IFile file) {
-		String extension = file.getFileExtension();
-		ComponentEditorInput input = null;
-		if (extension == null) {
-			WorkbenchUtilitiesPlugin.open(file, "");
-			return;
-		}
-		if (extension.equals("java")) {
-			input = ComponentEditorInput.createWithDotJava(file);
-			if (input == null) {
-				WorkbenchUtilitiesPlugin.open(file, JavaUI.ID_CU_EDITOR);
-				return;
-			}
-		}
-		if (extension.equals("html")) {
-			input = ComponentEditorInput.createWithDotHtml(file);
-			if (input == null) {
-				WorkbenchUtilitiesPlugin.open(file, WodclipsePlugin.HTMLEditorID);
-				return;
-			}
-		}
-		if (extension.equals("wod")) {
-			input = ComponentEditorInput.createWithDotWod(file);
-			if (input == null) {
-				WorkbenchUtilitiesPlugin.open(file, WodclipsePlugin.WodEditorID);
-				return;
-			}
-		}
-		if (extension.equals("api")) {
-			input = ComponentEditorInput.createWithDotApi(file);
-			if (input == null) {
-				WorkbenchUtilitiesPlugin.open(file, WodclipsePlugin.ApiEditorID);
-				return;
-				}
-		}
-		if (extension.equals("woo")) {
-			input = ComponentEditorInput.createWithDotWoo(file);
-			if (input == null) {
-				WorkbenchUtilitiesPlugin.open(file, WodclipsePlugin.WOOEditorID);
-				return;
-				}
-		}
-		if(input == null) {
-			WodclipsePlugin.getDefault().log("Invalid input for Component Editor Launcher. File:" + file);
-			return;
-		}
-		try {
-			WorkbenchUtilitiesPlugin.getActiveWorkbenchWindow().getActivePage()
-					.openEditor(input, WodclipsePlugin.ComponentEditorID);
-		} catch (PartInitException e) {
-			e.printStackTrace();
-		}
-	}
+  public ConstantBindingValueRule(String _startSequence, String _endSequence, IToken _token, char _escapeCharacter) {
+    super(_startSequence, _endSequence, _token, _escapeCharacter);
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.IEditorLauncher#open(org.eclipse.core.runtime.IPath)
-	 */
-	public void open(IPath file) {
-		IFile input = WorkbenchUtilitiesPlugin.getWorkspace().getRoot()
-				.getFileForLocation(file);
-		this.open(input);
-	}
+  public ConstantBindingValueRule(String _startSequence, String _endSequence, IToken _token, char _escapeCharacter, boolean _breaksOnEOF) {
+    super(_startSequence, _endSequence, _token, _escapeCharacter, _breaksOnEOF);
+  }
 
+  public ConstantBindingValueRule(String _startSequence, String _endSequence, IToken _token, char _escapeCharacter, boolean _breaksOnEOF, boolean _escapeContinuesLine) {
+    super(_startSequence, _endSequence, _token, _escapeCharacter, _breaksOnEOF, _escapeContinuesLine);
+  }
 }

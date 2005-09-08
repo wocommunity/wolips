@@ -41,91 +41,47 @@
  * Group, please see <http://objectstyle.org/> .
  *  
  */
+package org.objectstyle.wolips.wodclipse.wod.completion;
 
-package org.objectstyle.wolips.wodclipse.mpe;
-
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.jdt.ui.JavaUI;
-import org.eclipse.ui.IEditorLauncher;
-import org.eclipse.ui.PartInitException;
-import org.objectstyle.wolips.wodclipse.WodclipsePlugin;
-import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
+import org.eclipse.jface.text.contentassist.CompletionProposal;
 
 /**
- * @author uli
+ * @author mike
  */
-public class ComponentEditorLauncher implements IEditorLauncher {
+public class WodCompletionProposal implements Comparable {
+  private String myToken;
+  private int myTokenOffset;
+  private int myOffset;
+  private String myProposal;
 
-	/**
-	 * Open the wocomponent editor with the given file resource.
-	 * 
-	 * @param file
-	 *            the file resource
-	 */
-	public void open(IFile file) {
-		String extension = file.getFileExtension();
-		ComponentEditorInput input = null;
-		if (extension == null) {
-			WorkbenchUtilitiesPlugin.open(file, "");
-			return;
-		}
-		if (extension.equals("java")) {
-			input = ComponentEditorInput.createWithDotJava(file);
-			if (input == null) {
-				WorkbenchUtilitiesPlugin.open(file, JavaUI.ID_CU_EDITOR);
-				return;
-			}
-		}
-		if (extension.equals("html")) {
-			input = ComponentEditorInput.createWithDotHtml(file);
-			if (input == null) {
-				WorkbenchUtilitiesPlugin.open(file, WodclipsePlugin.HTMLEditorID);
-				return;
-			}
-		}
-		if (extension.equals("wod")) {
-			input = ComponentEditorInput.createWithDotWod(file);
-			if (input == null) {
-				WorkbenchUtilitiesPlugin.open(file, WodclipsePlugin.WodEditorID);
-				return;
-			}
-		}
-		if (extension.equals("api")) {
-			input = ComponentEditorInput.createWithDotApi(file);
-			if (input == null) {
-				WorkbenchUtilitiesPlugin.open(file, WodclipsePlugin.ApiEditorID);
-				return;
-				}
-		}
-		if (extension.equals("woo")) {
-			input = ComponentEditorInput.createWithDotWoo(file);
-			if (input == null) {
-				WorkbenchUtilitiesPlugin.open(file, WodclipsePlugin.WOOEditorID);
-				return;
-				}
-		}
-		if(input == null) {
-			WodclipsePlugin.getDefault().log("Invalid input for Component Editor Launcher. File:" + file);
-			return;
-		}
-		try {
-			WorkbenchUtilitiesPlugin.getActiveWorkbenchWindow().getActivePage()
-					.openEditor(input, WodclipsePlugin.ComponentEditorID);
-		} catch (PartInitException e) {
-			e.printStackTrace();
-		}
-	}
+  public WodCompletionProposal(String _token, int _tokenOffset, int _offset, String _proposal) {
+    myToken = _token;
+    myTokenOffset = _tokenOffset;
+    myOffset = _offset;
+    myProposal = _proposal;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.IEditorLauncher#open(org.eclipse.core.runtime.IPath)
-	 */
-	public void open(IPath file) {
-		IFile input = WorkbenchUtilitiesPlugin.getWorkspace().getRoot()
-				.getFileForLocation(file);
-		this.open(input);
-	}
+  public CompletionProposal toCompletionProposal() {
+    CompletionProposal completionProposal = new CompletionProposal(myProposal, myTokenOffset, myToken.length(), myProposal.length());
+    return completionProposal;
+  }
 
+  public boolean equals(Object _obj) {
+    return (_obj instanceof WodCompletionProposal && ((WodCompletionProposal) _obj).myProposal.equals(myProposal));
+  }
+
+  public int hashCode() {
+    return myProposal.hashCode();
+  }
+
+  public int compareTo(Object _obj) {
+    int comparison;
+    if (_obj instanceof WodCompletionProposal) {
+      comparison = myProposal.compareTo(((WodCompletionProposal) _obj).myProposal);
+    }
+    else {
+      comparison = -1;
+    }
+    return comparison;
+  }
 }

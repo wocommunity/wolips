@@ -41,91 +41,35 @@
  * Group, please see <http://objectstyle.org/> .
  *  
  */
+package org.objectstyle.wolips.wodclipse.preferences;
 
-package org.objectstyle.wolips.wodclipse.mpe;
-
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.jdt.ui.JavaUI;
-import org.eclipse.ui.IEditorLauncher;
-import org.eclipse.ui.PartInitException;
+import org.eclipse.jface.preference.ColorFieldEditor;
+import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.objectstyle.wolips.wodclipse.WodclipsePlugin;
-import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 
 /**
- * @author uli
+ * @author mike
  */
-public class ComponentEditorLauncher implements IEditorLauncher {
+public class WodEditorPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
+  public WodEditorPreferencePage() {
+    super(GRID);
+    setPreferenceStore(WodclipsePlugin.getDefault().getPreferenceStore());
+    setDescription("WOD Editor Preferences");
+  }
 
-	/**
-	 * Open the wocomponent editor with the given file resource.
-	 * 
-	 * @param file
-	 *            the file resource
-	 */
-	public void open(IFile file) {
-		String extension = file.getFileExtension();
-		ComponentEditorInput input = null;
-		if (extension == null) {
-			WorkbenchUtilitiesPlugin.open(file, "");
-			return;
-		}
-		if (extension.equals("java")) {
-			input = ComponentEditorInput.createWithDotJava(file);
-			if (input == null) {
-				WorkbenchUtilitiesPlugin.open(file, JavaUI.ID_CU_EDITOR);
-				return;
-			}
-		}
-		if (extension.equals("html")) {
-			input = ComponentEditorInput.createWithDotHtml(file);
-			if (input == null) {
-				WorkbenchUtilitiesPlugin.open(file, WodclipsePlugin.HTMLEditorID);
-				return;
-			}
-		}
-		if (extension.equals("wod")) {
-			input = ComponentEditorInput.createWithDotWod(file);
-			if (input == null) {
-				WorkbenchUtilitiesPlugin.open(file, WodclipsePlugin.WodEditorID);
-				return;
-			}
-		}
-		if (extension.equals("api")) {
-			input = ComponentEditorInput.createWithDotApi(file);
-			if (input == null) {
-				WorkbenchUtilitiesPlugin.open(file, WodclipsePlugin.ApiEditorID);
-				return;
-				}
-		}
-		if (extension.equals("woo")) {
-			input = ComponentEditorInput.createWithDotWoo(file);
-			if (input == null) {
-				WorkbenchUtilitiesPlugin.open(file, WodclipsePlugin.WOOEditorID);
-				return;
-				}
-		}
-		if(input == null) {
-			WodclipsePlugin.getDefault().log("Invalid input for Component Editor Launcher. File:" + file);
-			return;
-		}
-		try {
-			WorkbenchUtilitiesPlugin.getActiveWorkbenchWindow().getActivePage()
-					.openEditor(input, WodclipsePlugin.ComponentEditorID);
-		} catch (PartInitException e) {
-			e.printStackTrace();
-		}
-	}
+  public void createFieldEditors() {
+    addField(new ColorFieldEditor(PreferenceConstants.ELEMENT_NAME, "Element Name Color", getFieldEditorParent()));
+    addField(new ColorFieldEditor(PreferenceConstants.ELEMENT_TYPE, "Element Type Color", getFieldEditorParent()));
+    addField(new ColorFieldEditor(PreferenceConstants.BINDING_NAME, "Association Name Color", getFieldEditorParent()));
+    addField(new ColorFieldEditor(PreferenceConstants.BINDING_VALUE, "Association Value Color", getFieldEditorParent()));
+    addField(new ColorFieldEditor(PreferenceConstants.CONSTANT_BINDING_VALUE, "Constant Association Value Color", getFieldEditorParent()));
+    addField(new ColorFieldEditor(PreferenceConstants.OPERATOR, "Operator Color", getFieldEditorParent()));
+    addField(new ColorFieldEditor(PreferenceConstants.UNKNOWN, "Unknown Color", getFieldEditorParent()));
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.IEditorLauncher#open(org.eclipse.core.runtime.IPath)
-	 */
-	public void open(IPath file) {
-		IFile input = WorkbenchUtilitiesPlugin.getWorkspace().getRoot()
-				.getFileForLocation(file);
-		this.open(input);
-	}
+  public void init(IWorkbench workbench) {
+  }
 
 }

@@ -41,91 +41,58 @@
  * Group, please see <http://objectstyle.org/> .
  *  
  */
-
-package org.objectstyle.wolips.wodclipse.mpe;
+package org.objectstyle.wolips.wodclipse.wod;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.jdt.ui.JavaUI;
-import org.eclipse.ui.IEditorLauncher;
-import org.eclipse.ui.PartInitException;
-import org.objectstyle.wolips.wodclipse.WodclipsePlugin;
-import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.content.IContentDescription;
+import org.eclipse.core.runtime.content.IContentType;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.editors.text.ForwardingDocumentProvider;
+import org.eclipse.ui.editors.text.TextFileDocumentProvider;
+import org.eclipse.ui.texteditor.IDocumentProvider;
+import org.objectstyle.wolips.wodclipse.wod.parser.IWodFilePartitions;
 
 /**
- * @author uli
+ * @author mike
  */
-public class ComponentEditorLauncher implements IEditorLauncher {
+public class WodFileDocumentProvider extends TextFileDocumentProvider {
+  public static final String WOD_FILE_CONTENT_TYPE_STRING = "org.objectstyle.wolips.wodclipse.wod";
+  public static final IContentType WOD_FILE_CONTENT_TYPE = Platform.getContentTypeManager().getContentType(WodFileDocumentProvider.WOD_FILE_CONTENT_TYPE_STRING); //$NON-NLS-1$
 
-	/**
-	 * Open the wocomponent editor with the given file resource.
-	 * 
-	 * @param file
-	 *            the file resource
-	 */
-	public void open(IFile file) {
-		String extension = file.getFileExtension();
-		ComponentEditorInput input = null;
-		if (extension == null) {
-			WorkbenchUtilitiesPlugin.open(file, "");
-			return;
-		}
-		if (extension.equals("java")) {
-			input = ComponentEditorInput.createWithDotJava(file);
-			if (input == null) {
-				WorkbenchUtilitiesPlugin.open(file, JavaUI.ID_CU_EDITOR);
-				return;
-			}
-		}
-		if (extension.equals("html")) {
-			input = ComponentEditorInput.createWithDotHtml(file);
-			if (input == null) {
-				WorkbenchUtilitiesPlugin.open(file, WodclipsePlugin.HTMLEditorID);
-				return;
-			}
-		}
-		if (extension.equals("wod")) {
-			input = ComponentEditorInput.createWithDotWod(file);
-			if (input == null) {
-				WorkbenchUtilitiesPlugin.open(file, WodclipsePlugin.WodEditorID);
-				return;
-			}
-		}
-		if (extension.equals("api")) {
-			input = ComponentEditorInput.createWithDotApi(file);
-			if (input == null) {
-				WorkbenchUtilitiesPlugin.open(file, WodclipsePlugin.ApiEditorID);
-				return;
-				}
-		}
-		if (extension.equals("woo")) {
-			input = ComponentEditorInput.createWithDotWoo(file);
-			if (input == null) {
-				WorkbenchUtilitiesPlugin.open(file, WodclipsePlugin.WOOEditorID);
-				return;
-				}
-		}
-		if(input == null) {
-			WodclipsePlugin.getDefault().log("Invalid input for Component Editor Launcher. File:" + file);
-			return;
-		}
-		try {
-			WorkbenchUtilitiesPlugin.getActiveWorkbenchWindow().getActivePage()
-					.openEditor(input, WodclipsePlugin.ComponentEditorID);
-		} catch (PartInitException e) {
-			e.printStackTrace();
-		}
-	}
+  public WodFileDocumentProvider() {
+    IDocumentProvider provider = new TextFileDocumentProvider();
+    provider = new ForwardingDocumentProvider(IWodFilePartitions.WOD_FILE_PARTITIONING, new WodFileDocumentSetupParticipant(), provider);
+    setParentDocumentProvider(provider);
+  }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.IEditorLauncher#open(org.eclipse.core.runtime.IPath)
-	 */
-	public void open(IPath file) {
-		IFile input = WorkbenchUtilitiesPlugin.getWorkspace().getRoot()
-				.getFileForLocation(file);
-		this.open(input);
-	}
+  protected FileInfo createFileInfo(Object element) throws CoreException {
+    if (WOD_FILE_CONTENT_TYPE == null || !(element instanceof IFileEditorInput)) {
+      return null;
+    }
 
+    IFileEditorInput input = (IFileEditorInput) element;
+
+    IFile file = input.getFile();
+    if (file == null) {
+      return null;
+    }
+
+    IContentDescription description = file.getContentDescription();
+    if (description == null || description.getContentType() == null || !description.getContentType().isKindOf(WOD_FILE_CONTENT_TYPE)) {
+      return null;
+    }
+
+    return super.createFileInfo(element);
+  }
+
+  protected DocumentProviderOperation createSaveOperation(final Object element, final IDocument document, final boolean overwrite) throws CoreException {
+    if (getFileInfo(element) == null) {
+      return null;
+    }
+
+    return super.createSaveOperation(element, document, overwrite);
+  }
 }

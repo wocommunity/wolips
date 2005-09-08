@@ -41,91 +41,50 @@
  * Group, please see <http://objectstyle.org/> .
  *  
  */
+package org.objectstyle.wolips.wodclipse.wod.model;
 
-package org.objectstyle.wolips.wodclipse.mpe;
+import java.util.LinkedList;
+import java.util.List;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.jdt.ui.JavaUI;
-import org.eclipse.ui.IEditorLauncher;
-import org.eclipse.ui.PartInitException;
-import org.objectstyle.wolips.wodclipse.WodclipsePlugin;
-import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
+import org.objectstyle.wolips.wodclipse.wod.parser.RulePosition;
 
 /**
- * @author uli
+ * @author mschrag
  */
-public class ComponentEditorLauncher implements IEditorLauncher {
+public class DocumentWodElement implements IWodElement {
+  private RulePosition myElementName;
+  private RulePosition myElementType;
+  private DocumentWodModel myModel;
+  private List myBindings;
+  
+  public DocumentWodElement(RulePosition _elementName, RulePosition _elementType, DocumentWodModel _model) {
+    myModel = _model;
+    myElementName = _elementName;
+    myElementType = _elementType;
+    myBindings = new LinkedList();
+  }
+  
+  public void addBinding(DocumentWodBinding _binding) {
+    myBindings.add(_binding);
+  }
+  
+  public String getElementName() {
+    return myElementName._getTextWithoutException();
+  }
+  
+  public String getElementType() {
+    return myElementType._getTextWithoutException();
+  }
+  
+  public List getBindings() {
+    return myBindings;
+  }
+  
+  public IWodModel getModel() {
+    return myModel;
+  }
 
-	/**
-	 * Open the wocomponent editor with the given file resource.
-	 * 
-	 * @param file
-	 *            the file resource
-	 */
-	public void open(IFile file) {
-		String extension = file.getFileExtension();
-		ComponentEditorInput input = null;
-		if (extension == null) {
-			WorkbenchUtilitiesPlugin.open(file, "");
-			return;
-		}
-		if (extension.equals("java")) {
-			input = ComponentEditorInput.createWithDotJava(file);
-			if (input == null) {
-				WorkbenchUtilitiesPlugin.open(file, JavaUI.ID_CU_EDITOR);
-				return;
-			}
-		}
-		if (extension.equals("html")) {
-			input = ComponentEditorInput.createWithDotHtml(file);
-			if (input == null) {
-				WorkbenchUtilitiesPlugin.open(file, WodclipsePlugin.HTMLEditorID);
-				return;
-			}
-		}
-		if (extension.equals("wod")) {
-			input = ComponentEditorInput.createWithDotWod(file);
-			if (input == null) {
-				WorkbenchUtilitiesPlugin.open(file, WodclipsePlugin.WodEditorID);
-				return;
-			}
-		}
-		if (extension.equals("api")) {
-			input = ComponentEditorInput.createWithDotApi(file);
-			if (input == null) {
-				WorkbenchUtilitiesPlugin.open(file, WodclipsePlugin.ApiEditorID);
-				return;
-				}
-		}
-		if (extension.equals("woo")) {
-			input = ComponentEditorInput.createWithDotWoo(file);
-			if (input == null) {
-				WorkbenchUtilitiesPlugin.open(file, WodclipsePlugin.WOOEditorID);
-				return;
-				}
-		}
-		if(input == null) {
-			WodclipsePlugin.getDefault().log("Invalid input for Component Editor Launcher. File:" + file);
-			return;
-		}
-		try {
-			WorkbenchUtilitiesPlugin.getActiveWorkbenchWindow().getActivePage()
-					.openEditor(input, WodclipsePlugin.ComponentEditorID);
-		} catch (PartInitException e) {
-			e.printStackTrace();
-		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.IEditorLauncher#open(org.eclipse.core.runtime.IPath)
-	 */
-	public void open(IPath file) {
-		IFile input = WorkbenchUtilitiesPlugin.getWorkspace().getRoot()
-				.getFileForLocation(file);
-		this.open(input);
-	}
-
+  public String toString() {
+    return "[DocumentWodElement: elementName = " + myElementName + ";  elementType = " + myElementType + "; bindings = " + myBindings + "]";
+  }
 }

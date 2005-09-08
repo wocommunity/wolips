@@ -49,14 +49,14 @@ import org.eclipse.wst.html.core.internal.document.ElementStyleImpl;
 import org.eclipse.wst.sse.ui.internal.contentoutline.StructuredTextEditorContentOutlinePage;
 import org.eclipse.wst.sse.ui.internal.view.events.INodeSelectionListener;
 import org.eclipse.wst.sse.ui.internal.view.events.NodeSelectionChangedEvent;
-import org.objectstyle.wolips.wodclipse.editors.WODEditor;
+import org.objectstyle.wolips.wodclipse.wod.WodEditor;
 
 public class HTMLOutlineSelectionHandler implements INodeSelectionListener {
-	private WODEditor wodEditor;
+	private WodEditor wodEditor;
 
 	public HTMLOutlineSelectionHandler(
 			StructuredTextEditorContentOutlinePage contentOutlinePage,
-			WODEditor wodEditor) {
+			WodEditor wodEditor) {
 		super();
 		this.wodEditor = wodEditor;
 		contentOutlinePage.getViewerSelectionManager()

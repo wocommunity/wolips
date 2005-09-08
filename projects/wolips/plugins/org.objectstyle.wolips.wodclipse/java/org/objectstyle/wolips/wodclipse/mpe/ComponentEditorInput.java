@@ -138,7 +138,7 @@ public class ComponentEditorInput extends MultiEditorInput {
 		allInput[0] = new FileEditorInput(file);
 		ids[1] = WodclipsePlugin.HTMLEditorID;
 		allInput[1] = new FileEditorInput(((IFile) htmlResources.get(0)));
-		ids[2] = WodclipsePlugin.WODEditorID;
+		ids[2] = WodclipsePlugin.WodEditorID;
 		allInput[2] = new FileEditorInput(((IFile) wodResources.get(0)));
 		if (apiResources != null && apiResources.size() == 1) {
 			ids[3] = WodclipsePlugin.ApiEditorID;

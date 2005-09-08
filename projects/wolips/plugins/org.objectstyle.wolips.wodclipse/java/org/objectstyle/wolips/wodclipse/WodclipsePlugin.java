@@ -49,8 +49,8 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.forms.FormColors;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.objectstyle.wolips.ui.plugins.AbstractWOLipsUIPlugin;
-import org.objectstyle.wolips.wodclipse.editors.WODEditor;
 import org.objectstyle.wolips.wodclipse.mpe.ComponentEditor;
+import org.objectstyle.wolips.wodclipse.wod.WodEditor;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -64,7 +64,7 @@ public class WodclipsePlugin extends AbstractWOLipsUIPlugin {
 
 	private FormColors formColors;
 	
-	public static String WODEditorID = "org.objectstyle.wolips.wodclipse.editors.WODEditor";
+	public static String WodEditorID = "org.objectstyle.wolips.wodclipse.wod.WodEditor";
 
 	public static String ComponentEditorID = "org.objectstyle.wolips.wodclipse.mpe.ComponentEditor";
 
@@ -76,7 +76,7 @@ public class WodclipsePlugin extends AbstractWOLipsUIPlugin {
 	
 	private String[] webObjectsTagNames;
 
-	private WODEditor lastWODEditor;
+	private WodEditor lastWodEditor;
 	
 	private ComponentEditor activeComponentEditor;
 
@@ -109,7 +109,7 @@ public class WodclipsePlugin extends AbstractWOLipsUIPlugin {
 		}
 		plugin = null;
 		activeComponentEditor = null;
-		lastWODEditor = null;
+		lastWodEditor = null;
 	}
 	/**
 	 * Returns the shared instance.
@@ -146,8 +146,8 @@ public class WodclipsePlugin extends AbstractWOLipsUIPlugin {
 		this.webObjectsTagNames = webObjectsTagNames;
 	}
 
-	public void updateWebObjectsTagNames(WODEditor wodEditor) {
-		if (lastWODEditor == wodEditor) {
+	public void updateWebObjectsTagNames(WodEditor wodEditor) {
+		if (lastWodEditor == wodEditor) {
 			return;
 		}
 		if (wodEditor != null) {
@@ -155,7 +155,7 @@ public class WodclipsePlugin extends AbstractWOLipsUIPlugin {
 		} else {
 			this.setWebObjectsTagNames(null);
 		}
-		lastWODEditor = wodEditor;
+		lastWodEditor = wodEditor;
 	}
 	public FormColors getFormColors(Display display) {
 		if (formColors == null) {
