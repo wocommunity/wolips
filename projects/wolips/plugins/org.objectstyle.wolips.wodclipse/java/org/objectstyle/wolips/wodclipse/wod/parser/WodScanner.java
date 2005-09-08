@@ -110,7 +110,7 @@ public class WodScanner extends AbstractJavaScanner {
 
   public RulePosition getFirstRulePositionOfType(Class _ruleType) {
     RulePosition rulePosition = null;
-    while (!rulePosition.isRuleOfType(_ruleType) && (rulePosition = nextRulePosition()) != null) {
+    while ((rulePosition == null || !rulePosition.isRuleOfType(_ruleType)) && (rulePosition = nextRulePosition()) != null) {
     }
 
     if (rulePosition == null || !rulePosition.isRuleOfType(_ruleType)) {

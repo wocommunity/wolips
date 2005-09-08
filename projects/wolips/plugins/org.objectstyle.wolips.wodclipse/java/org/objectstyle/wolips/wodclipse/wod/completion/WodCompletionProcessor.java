@@ -48,6 +48,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -56,19 +57,10 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.jdt.core.Flags;
-import org.eclipse.jdt.core.IField;
 import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.IMember;
-import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
-import org.eclipse.jdt.core.ITypeHierarchy;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
-import org.eclipse.jdt.core.Signature;
-import org.eclipse.jdt.core.search.IJavaSearchConstants;
-import org.eclipse.jdt.core.search.IJavaSearchScope;
-import org.eclipse.jdt.core.search.SearchEngine;
 import org.eclipse.jdt.core.search.SearchPattern;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
@@ -84,11 +76,17 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IPathEditorInput;
 import org.eclipse.ui.part.FileEditorInput;
+import org.objectstyle.wolips.wodclipse.WodclipsePlugin;
 import org.objectstyle.wolips.wodclipse.preferences.PreferenceConstants;
+import org.objectstyle.wolips.wodclipse.wod.parser.AssignmentOperatorWordDetector;
 import org.objectstyle.wolips.wodclipse.wod.parser.BindingNameRule;
 import org.objectstyle.wolips.wodclipse.wod.parser.BindingValueRule;
+import org.objectstyle.wolips.wodclipse.wod.parser.CloseDefinitionWordDetector;
 import org.objectstyle.wolips.wodclipse.wod.parser.ElementNameRule;
+import org.objectstyle.wolips.wodclipse.wod.parser.ElementTypeOperatorWordDetector;
 import org.objectstyle.wolips.wodclipse.wod.parser.ElementTypeRule;
+import org.objectstyle.wolips.wodclipse.wod.parser.EndAssignmentWordDetector;
+import org.objectstyle.wolips.wodclipse.wod.parser.OpenDefinitionWordDetector;
 import org.objectstyle.wolips.wodclipse.wod.parser.OperatorRule;
 import org.objectstyle.wolips.wodclipse.wod.parser.RulePosition;
 import org.objectstyle.wolips.wodclipse.wod.parser.WodScanner;
@@ -97,9 +95,6 @@ import org.objectstyle.wolips.wodclipse.wod.parser.WodScanner;
  * @author mike
  */
 public class WodCompletionProcessor implements IContentAssistProcessor {
-  private static final String[] FIELD_PREFIXES = { "_" };
-  private static final String[] SET_METHOD_PREFIXES = { "set", "_set" };
-  private static final String[] GET_METHOD_PREFIXES = { "get", "_get", "is", "_is" };
   private IEditorPart myEditor;
   private Set myValidElementNames;
   private long myTemplateLastModified;
@@ -134,7 +129,7 @@ public class WodCompletionProcessor implements IContentAssistProcessor {
         IPathEditorInput pathInput = (IPathEditorInput) input;
         IPath path = pathInput.getPath();
         IResource file = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(path);
-        IJavaProject javaProject = JavaCore.create(file.getProject()); 
+        IJavaProject javaProject = JavaCore.create(file.getProject());
 
         // Without an underlying model, we have to rescan the line to figure out exactly 
         // what the current matching rule was, so we know what kind of token we're dealing with.
@@ -148,25 +143,15 @@ public class WodCompletionProcessor implements IContentAssistProcessor {
           if (_offset == lineRegion.getOffset() && _offset == tokenOffset) {
             foundToken = true;
           }
-          else {
-            if (_offset > tokenOffset) {
-              int tokenEndOffset = rulePosition.getTokenEndOffset();
-              if (_offset < tokenEndOffset) {
-                foundToken = true;
-              }
-              else if (_offset == tokenEndOffset) {
-                // If you're sitting right after an operator, you don't want to
-                // return the operator as the match, rather you want the
-                // next token after the operator.
-                foundToken = (rulePosition.getRule() instanceof OperatorRule);
-              }
-            }
+          else if (_offset > tokenOffset && _offset <= rulePosition.getTokenEndOffset()) {
+            foundToken = true;
           }
         }
 
-        int tokenOffset = rulePosition.getTokenOffset();
-        int tokenLength = rulePosition.getTokenLength();
-        IRule rule = rulePosition.getRule();
+        // We can't reliably use rulePosition here because it might be null ...
+        int tokenOffset = scanner.getTokenOffset();
+        int tokenLength = scanner.getTokenLength();
+        IRule rule = (rulePosition == null) ? null : rulePosition.getRule();
         // If you make a completion request in the middle of whitespace, we
         // don't want to select the whitespace, so zero out the 
         // whitespace token offsets.
@@ -182,20 +167,36 @@ public class WodCompletionProcessor implements IContentAssistProcessor {
         String token = document.get(tokenOffset, tokenLength);
         String tokenType = null;
         if (foundToken) {
-          if (rule instanceof ElementNameRule) {
+          if (rulePosition.isRuleOfType(ElementNameRule.class)) {
             tokenType = PreferenceConstants.ELEMENT_NAME;
           }
-          else if (rule instanceof ElementTypeRule) {
+          else if (rulePosition.isRuleOfType(ElementTypeRule.class)) {
             tokenType = PreferenceConstants.ELEMENT_TYPE;
           }
-          else if (rule instanceof BindingNameRule) {
+          else if (rulePosition.isRuleOfType(BindingNameRule.class)) {
             tokenType = PreferenceConstants.BINDING_NAME;
           }
-          else if (rule instanceof BindingValueRule) {
+          else if (rulePosition.isRuleOfType(BindingValueRule.class)) {
             tokenType = PreferenceConstants.BINDING_VALUE;
           }
-          else if (rule instanceof OperatorRule) {
-            tokenType = null;//PreferenceConstants.OPERATOR;
+          else if (rulePosition.isRuleOfType(OperatorRule.class)) {
+            tokenOffset += tokenLength;
+            tokenLength = 0;
+            if (RulePosition.isOperatorOfType(rulePosition, CloseDefinitionWordDetector.class)) {
+              tokenType = PreferenceConstants.ELEMENT_NAME;
+            }
+            else if (RulePosition.isOperatorOfType(rulePosition, ElementTypeOperatorWordDetector.class)) {
+              tokenType = PreferenceConstants.ELEMENT_TYPE;
+            }
+            else if (RulePosition.isOperatorOfType(rulePosition, OpenDefinitionWordDetector.class) || RulePosition.isOperatorOfType(rulePosition, EndAssignmentWordDetector.class)) {
+              tokenType = PreferenceConstants.BINDING_NAME;
+            }
+            else if (RulePosition.isOperatorOfType(rulePosition, AssignmentOperatorWordDetector.class)) {
+              tokenType = PreferenceConstants.BINDING_VALUE;
+            }
+            else {
+              tokenType = null;//PreferenceConstants.OPERATOR;
+            }
           }
           else {
             tokenType = null;
@@ -242,30 +243,27 @@ public class WodCompletionProcessor implements IContentAssistProcessor {
           fillInElementTypeCompletionProposals(javaProject, token, tokenOffset, _offset, completionProposalsSet);
         }
         else if (tokenType == PreferenceConstants.BINDING_NAME) {
-          IType elementType = findElementType(javaProject, document, scanner, tokenOffset);
+          IType elementType = WodCompletionProcessor.findNearestElementType(javaProject, document, scanner, tokenOffset);
           fillInBindingNameCompletionProposals(javaProject, elementType, path, token, tokenOffset, _offset, completionProposalsSet);
         }
         else if (tokenType == PreferenceConstants.BINDING_VALUE) {
-          String associatedTypeName = path.removeFileExtension().lastSegment();
-          IType associatedType = findElementType(javaProject, associatedTypeName, true);
-          fillInBindingValueCompletionProposals(javaProject, associatedType, token, tokenOffset, _offset, completionProposalsSet);
+          String elementTypeName = path.removeFileExtension().lastSegment();
+          IType elementType = WodBindingUtils.findElementType(javaProject, elementTypeName, true);
+          fillInBindingValueCompletionProposals(javaProject, elementType, token, tokenOffset, _offset, completionProposalsSet);
         }
       }
     }
     catch (JavaModelException e) {
-      e.printStackTrace();
+      WodclipsePlugin.getDefault().log(e);
     }
     catch (BadLocationException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+      WodclipsePlugin.getDefault().log(e);
     }
     catch (CoreException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+      WodclipsePlugin.getDefault().log(e);
     }
     catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+      WodclipsePlugin.getDefault().log(e);
     }
 
     ICompletionProposal[] completionProposals = new ICompletionProposal[completionProposalsSet.size()];
@@ -342,20 +340,8 @@ public class WodCompletionProcessor implements IContentAssistProcessor {
     return myValidElementNames;
   }
 
-  protected String partialToken(String _token, int _tokenOffset, int _offset) {
-    String partialToken;
-    int partialIndex = _offset - _tokenOffset;
-    if (partialIndex > _token.length()) {
-      partialToken = _token;
-    }
-    else {
-      partialToken = _token.substring(0, _offset - _tokenOffset);
-    }
-    return partialToken;
-  }
-
   protected void fillInElementNameCompletionProposals(IJavaProject _project, IDocument _document, IPath _wodFilePath, String _token, int _tokenOffset, int _offset, Set _completionProposalsSet) throws CoreException, IOException {
-    String partialToken = partialToken(_token, _tokenOffset, _offset).toLowerCase();
+    String partialToken = WodCompletionProcessor.partialToken(_token, _tokenOffset, _offset).toLowerCase();
     Iterator validElementNamesIter = validElementNames(_wodFilePath).iterator();
 
     // We really need something like the AST ... This is a pretty expensive way to go here.  To
@@ -366,7 +352,7 @@ public class WodCompletionProcessor implements IContentAssistProcessor {
     }
     catch (Throwable t) {
       // It's not THAT big of a deal ...
-      t.printStackTrace();
+      WodclipsePlugin.getDefault().log(t);
       alreadyUsedElementNames = new HashSet();
     }
 
@@ -378,47 +364,58 @@ public class WodCompletionProcessor implements IContentAssistProcessor {
     }
   }
 
-  protected void fillInElementTypeCompletionProposals(IJavaProject _project, String _token, int _tokenOffset, int _offset, Set _completionProposalsSet) throws JavaModelException {
+  protected static void fillInElementTypeCompletionProposals(IJavaProject _project, String _token, int _tokenOffset, int _offset, Set _completionProposalsSet) throws JavaModelException {
     // Lookup type names that extend WOElement based on the current partial token
     TypeNameCollector typeNameCollector = new TypeNameCollector(_project, false);
-    String partialToken = partialToken(_token, _tokenOffset, _offset);
+    String partialToken = WodCompletionProcessor.partialToken(_token, _tokenOffset, _offset);
     if (partialToken.length() > 0) {
-      findMatchingElementClassNames(partialToken, SearchPattern.R_PREFIX_MATCH, typeNameCollector);
+      WodBindingUtils.findMatchingElementClassNames(partialToken, SearchPattern.R_PREFIX_MATCH, typeNameCollector);
       Iterator matchingElementClassNamesIter = typeNameCollector.typeNames();
       while (matchingElementClassNamesIter.hasNext()) {
         String matchingElementClassName = (String) matchingElementClassNamesIter.next();
-        String matchingElementTypeName;
-        int lastDotIndex = matchingElementClassName.lastIndexOf('.');
-        if (lastDotIndex == -1) {
-          matchingElementTypeName = matchingElementClassName;
-        }
-        else {
-          matchingElementTypeName = matchingElementClassName.substring(lastDotIndex + 1);
-        }
-        WodCompletionProposal completionProposal = new WodCompletionProposal(_token, _tokenOffset, _offset, matchingElementTypeName);
+        String shortElementTypeName = WodBindingUtils.getShortClassName(matchingElementClassName);
+        WodCompletionProposal completionProposal = new WodCompletionProposal(_token, _tokenOffset, _offset, shortElementTypeName);
         _completionProposalsSet.add(completionProposal);
       }
     }
   }
 
-  protected void fillInBindingNameCompletionProposals(IJavaProject _project, IType _elementType, IPath _wodFilePath, String _token, int _tokenOffset, int _offset, Set _completionProposalsSet) throws JavaModelException {
-    String partialToken = partialToken(_token, _tokenOffset, _offset).toLowerCase();
-
-    // Walk the type hierarchy for the current type and try to find
-    // set methods and public/protocted attributes.
-    ITypeHierarchy typeHierarchy = _elementType.newSupertypeHierarchy(null);
-    IType[] types = typeHierarchy.getAllTypes();
-    for (int typeNum = 0; typeNum < types.length; typeNum++) {
-      IField[] fields = types[typeNum].getFields();
-      for (int fieldNum = 0; fieldNum < fields.length; fieldNum++) {
-        findMemberProposals(fields[fieldNum], partialToken, WodCompletionProcessor.FIELD_PREFIXES, _token, _tokenOffset, _offset, _completionProposalsSet, 1, false, false);
-      }
-
-      IMethod[] methods = types[typeNum].getMethods();
-      for (int methodNum = 0; methodNum < methods.length; methodNum++) {
-        findMemberProposals(methods[methodNum], partialToken, WodCompletionProcessor.SET_METHOD_PREFIXES, _token, _tokenOffset, _offset, _completionProposalsSet, 1, false, false);
+  protected static IType findNearestElementType(IJavaProject _project, IDocument _document, WodScanner _scanner, int _offset) throws BadLocationException, JavaModelException {
+    // Go hunting for the element type in a potentially malformed document ...
+    IType type;
+    int colonOffset = _offset;
+    if (colonOffset >= _document.getLength()) {
+      colonOffset--;
+    }
+    for (; colonOffset >= 0; colonOffset--) {
+      char ch = _document.getChar(colonOffset);
+      if (ch == ':') {
+        break;
       }
     }
+    if (colonOffset != -1) {
+      _scanner.setRange(_document, colonOffset, _offset);
+      RulePosition elementRulePosition = _scanner.getFirstRulePositionOfType(ElementTypeRule.class);
+      if (elementRulePosition != null) {
+        String elementTypeName = elementRulePosition.getText();
+        type = WodBindingUtils.findElementType(_project, elementTypeName, false);
+      }
+      else {
+        // we didn't find a ElementTypeRule
+        type = null;
+      }
+    }
+    else {
+      // failed colonoscopy
+      type = null;
+    }
+    return type;
+  }
+
+  protected static void fillInBindingNameCompletionProposals(IJavaProject _project, IType _elementType, IPath _wodFilePath, String _token, int _tokenOffset, int _offset, Set _completionProposalsSet) throws JavaModelException {
+    String partialToken = WodCompletionProcessor.partialToken(_token, _tokenOffset, _offset);
+    List bindingKeys = WodBindingUtils.createMatchingBindingKeys(_elementType, partialToken, false, WodBindingUtils.MUTATORS_ONLY);
+    WodBindingUtils.fillInCompletionProposals(bindingKeys, _token, _tokenOffset, _offset, _completionProposalsSet);
 
     // API files:
     /*
@@ -460,210 +457,28 @@ public class WodCompletionProcessor implements IContentAssistProcessor {
      */
   }
 
-  protected void fillInBindingValueCompletionProposals(IJavaProject _project, IType _associatedType, String _token, int _tokenOffset, int _offset, Set _completionProposalsSet) throws JavaModelException {
-    // Split association values on '.'
-    String partialToken = partialToken(_token, _tokenOffset, _offset).toLowerCase();
-    String[] accessors = partialToken.split("\\.");
-    // Split tosses empty tokens, so we check to see if we're on the last "." and fake an empty token in the list
-    if (partialToken.length() > 0 && partialToken.charAt(partialToken.length() - 1) == '.') {
-      String[] addedBlankAccessor = new String[accessors.length + 1];
-      System.arraycopy(accessors, 0, addedBlankAccessor, 0, accessors.length);
-      addedBlankAccessor[addedBlankAccessor.length - 1] = "";
-      accessors = addedBlankAccessor;
-    }
-
-    // Walk through the accessor keypath until we get to the end
-    IType nextType = _associatedType;
-    int offset = _tokenOffset;
-    for (int i = 0; nextType != null && i < accessors.length - 1; i++) {
-      String nextTypeName = nextType(nextType, accessors[i]);
-      if (nextTypeName != null) {
-        nextTypeName = Signature.toString(nextTypeName);
-        ITypeHierarchy typeHierarchy = nextType.newSupertypeHierarchy(null);
-        IType[] types = typeHierarchy.getAllTypes();
-        IType nextTypeAttempt = null;
-        for (int typeNum = 0; nextTypeAttempt == null && typeNum < types.length; typeNum++) {
-          String[][] resolvedTypes = types[typeNum].resolveType(nextTypeName);
-          //System.out.println("WODCompletionProcessor.fillInAssociationValueCompletionProposals: " + nextTypeName + ", " + resolvedTypes);
-          if (resolvedTypes != null && resolvedTypes.length == 1) {
-            String nextTypeNameTemp = Signature.toQualifiedName(resolvedTypes[0]);
-            nextTypeAttempt = _project.findType(nextTypeNameTemp);
-          }
-        }
-        nextType = nextTypeAttempt;
-      }
-      else {
-        nextType = null;
-      }
-    }
-
-    if (nextType != null) {
+  protected static void fillInBindingValueCompletionProposals(IJavaProject _project, IType _elementType, String _token, int _tokenOffset, int _offset, Set _completionProposalsSet) throws JavaModelException {
+    String partialToken = WodCompletionProcessor.partialToken(_token, _tokenOffset, _offset);
+    String[] bindingKeyNames = WodBindingUtils.getBindingKeyNames(partialToken);
+    IType lastType = WodBindingUtils.getLastType(_project, _elementType, bindingKeyNames);
+    if (lastType != null) {
       // Jump forward to the last '.' and look for valid "get" method completion
       // proposals based on the partial token
-      int previousTokenLength = partialToken.lastIndexOf('.') + 1;
-      _tokenOffset += previousTokenLength;
-
-      String accessor = accessors[accessors.length - 1];
-      _token = accessors[accessors.length - 1];
-      ITypeHierarchy typeHierarchy = nextType.newSupertypeHierarchy(null);
-      IType[] types = typeHierarchy.getAllTypes();
-      for (int typeNum = 0; typeNum < types.length; typeNum++) {
-        IField[] fields = types[typeNum].getFields();
-        for (int fieldNum = 0; fieldNum < fields.length; fieldNum++) {
-          findMemberProposals(fields[fieldNum], accessor, WodCompletionProcessor.FIELD_PREFIXES, _token, _tokenOffset, _offset, _completionProposalsSet, 0, true, false);
-        }
-
-        IMethod[] methods = types[typeNum].getMethods();
-        for (int methodsNum = 0; methodsNum < methods.length; methodsNum++) {
-          findMemberProposals(methods[methodsNum], accessor, WodCompletionProcessor.GET_METHOD_PREFIXES, _token, _tokenOffset, _offset, _completionProposalsSet, 0, true, false);
-        }
-      }
+      String bindingKeyName = bindingKeyNames[bindingKeyNames.length - 1];
+      List bindingKeys = WodBindingUtils.createMatchingBindingKeys(lastType, bindingKeyName, false, WodBindingUtils.ACCESSORS_ONLY);
+      WodBindingUtils.fillInCompletionProposals(bindingKeys, bindingKeyNames[bindingKeyNames.length - 1], _tokenOffset + partialToken.lastIndexOf('.') + 1, _offset, _completionProposalsSet);
     }
   }
 
-  protected String nextType(IType _currentType, String _accessor) throws JavaModelException {
-    // NTS: This looks pretty damn similar to the code right above ... these should collaapse together
-    //System.out.println("WODCompletionProcessor.nextType: " + _currentType.getElementName() + ", accessor = " + _accessor);
-    String partialToken = _accessor.toLowerCase();
-    String nextTypeName = null;
-    ITypeHierarchy typeHierarchy = _currentType.newSupertypeHierarchy(null);
-    IType[] types = typeHierarchy.getAllTypes();
-    for (int typeNum = 0; nextTypeName == null && typeNum < types.length; typeNum++) {
-      IField[] fields = types[typeNum].getFields();
-      for (int fieldNum = 0; nextTypeName == null && fieldNum < fields.length; fieldNum++) {
-        nextTypeName = findMemberProposals(fields[fieldNum], partialToken, WodCompletionProcessor.FIELD_PREFIXES, "", 0, 0, new HashSet(), 0, true, true);
-        //System.out.println("WODCompletionProcessor.nextType: field " + fields[fieldNum].getElementName() + "=>" + nextTypeName);
-      }
-
-      IMethod[] methods = types[typeNum].getMethods();
-      for (int methodNum = 0; nextTypeName == null && methodNum < methods.length; methodNum++) {
-        nextTypeName = findMemberProposals(methods[methodNum], partialToken, WodCompletionProcessor.GET_METHOD_PREFIXES, "", 0, 0, new HashSet(), 0, true, true);
-        //System.out.println("WODCompletionProcessor.nextType: method " + methods[methodNum].getElementName() + "=>" + nextTypeName);
-      }
-    }
-    return nextTypeName;
-  }
-
-  protected String findMemberProposals(IMember _member, String _partialToken, String[] _prefixes, String _token, int _tokenOffset, int _offset, Set _completionProposals, int _requiredParameterCount, boolean _returnValueRequired, boolean _requireExactNameMatch) throws JavaModelException {
-    String nextType = null;
-    int flags = _member.getFlags();
-    // Look for non-static, non-private members ...
-    if (!Flags.isStatic(flags) && !Flags.isPrivate(flags)) {
-      boolean memberMatches = false;
-      if (_member instanceof IMethod) {
-        IMethod method = (IMethod) _member;
-        // make sure the requested parameter count matches (get = 0, set = 1)
-        if (method.getParameterNames().length == _requiredParameterCount) {
-          nextType = method.getReturnType();
-          // for get methods, we require a return type that is not void
-          if (_returnValueRequired && nextType != null && !nextType.equals("V")) {
-            memberMatches = true;
-          }
-          // for set methods, we require no return type or a void return type
-          else if (!_returnValueRequired && (nextType == null || nextType.equals("V"))) {
-            memberMatches = true;
-          }
-          else {
-            nextType = null;
-          }
-        }
-      }
-      else {
-        nextType = ((IField) _member).getTypeSignature();
-        memberMatches = true;
-      }
-
-      if (memberMatches) {
-        String elementName = _member.getElementName();
-        String lowercaseElementName = elementName.toLowerCase();
-        //System.out.println("WODCompletionProcessor.findMemberProposals: '" + _partialToken + "'=>" + _member.getElementName());
-
-        // Run through our list of valid prefixes and look for a match (i.e. whatever, _whatever, _getWhatever, etc).
-        // If we find a match, then turn it into wod-style naming -- lowercase first letter, dropping the prefix
-        String proposalElementName = null;
-        for (int prefixNum = 0; proposalElementName == null && prefixNum < _prefixes.length; prefixNum++) {
-          if (lowercaseElementName.startsWith(_prefixes[prefixNum])) {
-            int prefixLength = _prefixes[prefixNum].length();
-            String noPrefixElementName = lowercaseElementName.substring(prefixLength);
-            if ((_requireExactNameMatch && noPrefixElementName.equals(_partialToken)) || (!_requireExactNameMatch && noPrefixElementName.startsWith(_partialToken))) {
-              proposalElementName = elementName.substring(prefixLength);
-              if (proposalElementName.length() > 0) {
-                char firstChar = proposalElementName.charAt(0);
-                if (Character.isUpperCase(firstChar)) {
-                  proposalElementName = Character.toLowerCase(firstChar) + proposalElementName.substring(1);
-                }
-              }
-            }
-          }
-        }
-        if (proposalElementName == null && ((_requireExactNameMatch && lowercaseElementName.equals(_partialToken)) || (!_requireExactNameMatch && lowercaseElementName.startsWith(_partialToken)))) {
-          proposalElementName = elementName;
-        }
-
-        if (proposalElementName != null) {
-          WodCompletionProposal completionProposal = new WodCompletionProposal(_token, _tokenOffset, _offset, proposalElementName);
-          //_completionProposalsList.add(completionProposal);
-          _completionProposals.add(completionProposal);
-        }
-        else {
-          nextType = null;
-        }
-      }
-    }
-    return nextType;
-  }
-
-  protected IType findElementType(IJavaProject _project, IDocument _document, WodScanner _scanner, int _offset) throws BadLocationException, JavaModelException {
-    // Go hunting for the element type in a potentially malformed document ...
-    IType type;
-    int colonOffset = _offset;
-    if (colonOffset >= _document.getLength()) {
-      colonOffset--;
-    }
-    for (; colonOffset >= 0; colonOffset--) {
-      char ch = _document.getChar(colonOffset);
-      if (ch == ':') {
-        break;
-      }
-    }
-    if (colonOffset != -1) {
-      _scanner.setRange(_document, colonOffset, _offset);
-      RulePosition elementRulePosition = _scanner.getFirstRulePositionOfType(ElementTypeRule.class);
-      if (elementRulePosition != null) {
-        String elementTypeName = elementRulePosition.getText();
-        type = findElementType(_project, elementTypeName, false);
-      }
-      else {
-        // we didn't find a ElementTypeRule
-        type = null;
-      }
+  protected static String partialToken(String _token, int _tokenOffset, int _offset) {
+    String partialToken;
+    int partialIndex = _offset - _tokenOffset;
+    if (partialIndex > _token.length()) {
+      partialToken = _token;
     }
     else {
-      // failed colonoscopy
-      type = null;
+      partialToken = _token.substring(0, _offset - _tokenOffset);
     }
-    return type;
-  }
-
-  protected IType findElementType(IJavaProject _javaProject, String _elementTypeName, boolean _requireTypeInProject) throws JavaModelException {
-    // Search the current project for the given element type name
-    IType type;
-    TypeNameCollector typeNameCollector = new TypeNameCollector(_javaProject, _requireTypeInProject);
-    findMatchingElementClassNames(_elementTypeName, SearchPattern.R_EXACT_MATCH, typeNameCollector);
-    if (typeNameCollector.isExactMatch()) {
-      String matchingElementClassName = typeNameCollector.firstTypeName();
-      type = typeNameCollector.getTypeForClassName(matchingElementClassName);
-    }
-    else {
-      // there was more than one matching class!  crap!
-      type = null;
-    }
-    return type;
-  }
-
-  protected void findMatchingElementClassNames(String _elementTypeName, int _matchType, TypeNameCollector _typeNameCollector) throws JavaModelException {
-    SearchEngine searchEngine = new SearchEngine();
-    IJavaSearchScope searchScope = SearchEngine.createWorkspaceScope();
-    searchEngine.searchAllTypeNames(null, _elementTypeName.toCharArray(), _matchType /*| SearchPattern.R_CASE_SENSITIVE*/, IJavaSearchConstants.TYPE, searchScope, _typeNameCollector, IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH, null);
+    return partialToken;
   }
 }

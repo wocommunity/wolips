@@ -61,7 +61,7 @@ public class UnknownWordDetector implements IWordDetector {
   }
 
   private boolean isUnknownLetter(char _ch) {
-    boolean unknownLetter = Character.isLetterOrDigit(_ch) || _ch == '.';
+    boolean unknownLetter = Character.isLetterOrDigit(_ch) || _ch == '.' || _ch == '_' || _ch == '^';
     return unknownLetter;
   }
 }
