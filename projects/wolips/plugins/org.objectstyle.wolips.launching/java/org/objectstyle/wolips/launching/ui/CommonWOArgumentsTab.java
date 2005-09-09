@@ -2,7 +2,7 @@
  *
  * The ObjectStyle Group Software License, Version 1.0
  *
- * Copyright (c) 2002 - 2004 The ObjectStyle Group
+ * Copyright (c) 2002 - 2005 The ObjectStyle Group
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -54,9 +54,8 @@
  *
  */
 
-package org.objectstyle.wolips.launching;
+package org.objectstyle.wolips.launching.ui;
 
-import java.util.StringTokenizer;
 import java.util.Vector;
 
 import org.eclipse.core.resources.IContainer;
@@ -65,11 +64,8 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
-import org.eclipse.debug.core.model.IProcess;
-import org.eclipse.debug.ui.ILaunchConfigurationDialog;
 import org.eclipse.debug.ui.ILaunchConfigurationTab;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.jface.dialogs.Dialog;
@@ -89,6 +85,9 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.objectstyle.wolips.commons.util.ArrayUtilities;
 import org.objectstyle.wolips.commons.util.StringUtilities;
+import org.objectstyle.wolips.launching.LaunchingMessages;
+import org.objectstyle.wolips.launching.LaunchingPlugin;
+import org.objectstyle.wolips.launching.delegates.WOJavaLocalApplicationLaunchConfigurationDelegate;
 import org.objectstyle.wolips.preferences.ILaunchInfo;
 import org.objectstyle.wolips.preferences.Preferences;
 import org.objectstyle.wolips.preferences.PreferencesMessages;
@@ -103,8 +102,6 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 
 	private Table includeTable;
 
-	private Table debugGroupsTable;
-
 	private Button addButton;
 
 	private Button removeButton;
@@ -114,10 +111,6 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 	private Vector allParameter;
 
 	private Vector allArguments;
-
-	private Button openInBrowserCheckbox;
-
-	private Button webServerConnect;
 
 	protected static final String EMPTY_STRING = ""; //$NON-NLS-1$
 
@@ -164,20 +157,7 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 
 		this.includeTable.addListener(SWT.CHECK, new Listener() {
 			public void handleEvent(Event e) {
-				superUpdateLaunchConfigurationDialog();
-			}
-		});
-
-		this.debugGroupsTable = new Table(parent, SWT.CHECK | SWT.BORDER);
-		GridData gd2 = new GridData(GridData.FILL_HORIZONTAL);
-		// gd.widthHint = convertWidthInCharsToPixels(30);
-		gd2.widthHint = 150;
-		gd2.heightHint = 250;
-		this.debugGroupsTable.setLayoutData(gd2);
-
-		this.debugGroupsTable.addListener(SWT.CHECK, new Listener() {
-			public void handleEvent(Event e) {
-				superUpdateLaunchConfigurationDialog();
+				updateLaunchConfigurationDialog();
 			}
 		});
 
@@ -253,54 +233,6 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 			}
 		});
 
-		this.openInBrowserCheckbox = new Button(buttons, SWT.CHECK);
-		this.openInBrowserCheckbox.setText("Use Eclipse Browser");
-		data = new GridData();
-		data.horizontalAlignment = GridData.FILL;
-		data.heightHint = 20;
-		data.heightHint = Math.max(data.heightHint, this.openInBrowserCheckbox
-				.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).y);
-
-		// Dialog.convertVerticalDLUsToPixels(new FontMetrics(),
-		// IDialogConstants.BUTTON_HEIGHT);
-		widthHint = 100;
-		// Dialog.convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
-		data.widthHint = Math.max(widthHint, this.openInBrowserCheckbox
-				.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).x);
-		this.openInBrowserCheckbox.setLayoutData(data);
-		this.openInBrowserCheckbox.setEnabled(true);
-
-		this.openInBrowserCheckbox.addListener(SWT.Selection, new Listener() {
-			public void handleEvent(Event e) {
-				//setDirty(true);
-				updateLaunchConfigurationDialog();
-			}
-		});
-
-		this.webServerConnect = new Button(buttons, SWT.CHECK);
-		this.webServerConnect.setText("WebServerConnect");
-		data = new GridData();
-		data.horizontalAlignment = GridData.FILL;
-		data.heightHint = 20;
-		data.heightHint = Math.max(data.heightHint, this.webServerConnect
-				.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).y);
-
-		// Dialog.convertVerticalDLUsToPixels(new FontMetrics(),
-		// IDialogConstants.BUTTON_HEIGHT);
-		widthHint = 100;
-		// Dialog.convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
-		data.widthHint = Math.max(widthHint, this.webServerConnect.computeSize(
-				SWT.DEFAULT, SWT.DEFAULT, true).x);
-		this.webServerConnect.setLayoutData(data);
-		this.webServerConnect.setEnabled(true);
-
-		this.webServerConnect.addListener(SWT.Selection, new Listener() {
-			public void handleEvent(Event e) {
-				//setDirty(true);
-				updateLaunchConfigurationDialog();
-			}
-		});
-
 		Dialog.applyDialogFont(parent);
 		this.setControl(parent);
 	}
@@ -317,22 +249,6 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 			this.allParameter.add(launchInfo.getParameter());
 			this.allArguments.add(launchInfo.getArgument());
 			item.setChecked(launchInfo.isEnabled());
-		}
-	}
-
-	private void fillDebugGroupsTable(String aString) {
-		String debugGroups = LaunchingMessages
-				.getString(WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_DEBUG_GROUPS);
-		StringTokenizer stringTokenizer = new StringTokenizer(debugGroups, ",");
-		this.debugGroupsTable.removeAll();
-		while (stringTokenizer.hasMoreTokens()) {
-			TableItem item = new TableItem(this.debugGroupsTable, SWT.NONE);
-			String token = stringTokenizer.nextToken();
-			item.setText(token);
-			if (aString != null && aString.indexOf(token) >= 0)
-				item.setChecked(true);
-			else
-				item.setChecked(false);
 		}
 	}
 
@@ -454,18 +370,6 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 				.setAttribute(
 						WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_WOARGUMENTS,
 						string);
-		config
-				.setAttribute(
-						WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_DEBUG_GROUPS,
-						"");
-		config
-				.setAttribute(
-						WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_OPEN_IN_BROWSER,
-						"true");
-		config
-				.setAttribute(
-						WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_WEBSERVER_CONNECT,
-						"false");
 	}
 
 	/**
@@ -478,31 +382,10 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 							WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_WOARGUMENTS,
 							Preferences.getPREF_LAUNCH_GLOBAL()); //$NON-NLS-1$
 			this.fillTable(Preferences.getLaunchInfoFrom(string));
-			this
-					.fillDebugGroupsTable(configuration
-							.getAttribute(
-									WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_DEBUG_GROUPS,
-									""));
-			if (configuration
-					.getAttribute(
-							WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_OPEN_IN_BROWSER,
-							"true").equals("true")) {
-				openInBrowserCheckbox.setSelection(true);
-			} else {
-				openInBrowserCheckbox.setSelection(false);
-			}
-			if (configuration
-					.getAttribute(
-							WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_WEBSERVER_CONNECT,
-							"false").equals("true")) {
-				webServerConnect.setSelection(true);
-			} else {
-				webServerConnect.setSelection(false);
-			}
 		} catch (CoreException e) {
 			setErrorMessage(LaunchingMessages
 					.getString("WOArgumentsTab.Exception_occurred_reading_configuration___15") + e.getStatus().getMessage()); //$NON-NLS-1$
-			LaunchingPlugin.getDefault().getPluginLogger().log(e);
+			LaunchingPlugin.getDefault().log(e);
 		}
 	}
 
@@ -526,42 +409,6 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 				.setAttribute(
 						WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_WOARGUMENTS,
 						string);
-
-		String aString = "";
-		TableItem[] debugGrouspItems = this.debugGroupsTable.getItems();
-		for (int i = 0; i < debugGrouspItems.length; i++) {
-			if (debugGrouspItems[i].getChecked()) {
-				if (aString.length() > 0)
-					aString = aString + ",";
-				aString = aString + debugGrouspItems[i].getText();
-			}
-		}
-		configuration
-				.setAttribute(
-						WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_DEBUG_GROUPS,
-						aString);
-		if (openInBrowserCheckbox.getSelection()) {
-			configuration
-					.setAttribute(
-							WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_OPEN_IN_BROWSER,
-							"true");
-		} else {
-			configuration
-					.setAttribute(
-							WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_OPEN_IN_BROWSER,
-							"false");
-		}
-		if (webServerConnect.getSelection()) {
-			configuration
-					.setAttribute(
-							WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_WEBSERVER_CONNECT,
-							"true");
-		} else {
-			configuration
-					.setAttribute(
-							WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_WEBSERVER_CONNECT,
-							"false");
-		}
 	}
 
 	/**
@@ -583,31 +430,11 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 	}
 
 	/**
-	 * @see ILaunchConfigurationTab#setLaunchConfigurationDialog(ILaunchConfigurationDialog)
-	 */
-	public void setLaunchConfigurationDialog(ILaunchConfigurationDialog dialog) {
-		super.setLaunchConfigurationDialog(dialog);
-	}
-
-	/**
-	 * @see ILaunchConfigurationTab#getErrorMessage()
-	 */
-	public String getErrorMessage() {
-		return super.getErrorMessage();
-	}
-
-	/**
-	 * @see ILaunchConfigurationTab#getMessage()
-	 */
-	public String getMessage() {
-		return super.getMessage();
-	}
-
-	/**
 	 * @see ILaunchConfigurationTab#getImage()
 	 */
 	public Image getImage() {
-		return null;
+		return LaunchingPlugin.getImageDescriptor(
+				"icons/launching/arguments-tab.gif").createImage();
 	}
 
 	private String getDefaultArguments(ILaunchConfigurationWorkingCopy config) {
@@ -642,17 +469,9 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 			}
 
 		} catch (Exception anException) {
-			LaunchingPlugin.getDefault().getPluginLogger().log(anException);
+			LaunchingPlugin.getDefault().log(anException);
 		}
 		return Preferences.getPREF_LAUNCH_GLOBAL();
-	}
-
-	/**
-	 * Updates the buttons and message in this page's launch configuration
-	 * dialog.
-	 */
-	protected void superUpdateLaunchConfigurationDialog() {
-		super.updateLaunchConfigurationDialog();
 	}
 
 	protected void updateLaunchConfigurationDialog() {
@@ -661,30 +480,4 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 		this.includeTable.update();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#activated(org.eclipse.debug.core.ILaunchConfigurationWorkingCopy)
-	 */
-	public void activated(ILaunchConfigurationWorkingCopy workingCopy) {
-		return;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#deactivated(org.eclipse.debug.core.ILaunchConfigurationWorkingCopy)
-	 */
-	public void deactivated(ILaunchConfigurationWorkingCopy workingCopy) {
-		return;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.debug.ui.ILaunchConfigurationTab#launched(org.eclipse.debug.core.ILaunch)
-	 */
-	public void launched(ILaunch launch) {
-		return;
-	}
 }

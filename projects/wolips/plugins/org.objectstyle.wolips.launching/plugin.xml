@@ -9,7 +9,7 @@
    <extension
          point="org.eclipse.debug.core.launchConfigurationTypes">
       <launchConfigurationType
-            delegate="org.objectstyle.wolips.launching.WOJavaLocalApplicationLaunchConfigurationDelegate"
+            delegate="org.objectstyle.wolips.launching.delegates.WOJavaLocalApplicationLaunchConfigurationDelegate"
             name="WOApplication"
             id="org.objectstyle.wolips.launching.WOLocalJavaApplication"
             modes="run, debug">
@@ -33,7 +33,7 @@
          point="org.eclipse.debug.ui.launchConfigurationTabGroups">
       <launchConfigurationTabGroup
             type="org.objectstyle.wolips.launching.WOLocalJavaApplication"
-            class="org.objectstyle.wolips.launching.WOLocalJavaApplicationTabGroup"
+            class="org.objectstyle.wolips.launching.ui.WOLocalJavaApplicationTabGroup"
             description="Launches a local WebObjects Application"
             id="org.objectstyle.wolips.launching.WOLocalJavaApplicationTabGroup">
       </launchConfigurationTabGroup>
@@ -44,12 +44,12 @@
    <extension
          point="org.eclipse.jdt.launching.classpathProviders">
       <classpathProvider
-            class="org.objectstyle.wolips.launching.WORuntimeClasspathProvider"
+            class="org.objectstyle.wolips.launching.classpath.WORuntimeClasspathProvider"
             id="org.objectstyle.wolips.launching.WORuntimeClasspathProvider">
       </classpathProvider>
 	<!-- deprecated -->
       <classpathProvider
-            class="org.objectstyle.wolips.launching.WORuntimeClasspathProvider"
+            class="org.objectstyle.wolips.launching.classpath.WORuntimeClasspathProvider"
             id="org.objectstyle.wolips.launching.WORuntimeClasspath">
       </classpathProvider>
 	<!-- end deprecated -->
@@ -61,13 +61,13 @@
          point="org.eclipse.jdt.launching.runtimeClasspathEntryResolvers">
       <runtimeClasspathEntryResolver
             container="org.objectstyle.wolips.WO_CLASSPATH"
-            class="org.objectstyle.wolips.launching.WORuntimeClasspathResolver"
+            class="org.objectstyle.wolips.launching.classpath.WORuntimeClasspathResolverimeClasspathResolver"
             id="org.objectstyle.wolips.launching.WORuntimeClasspathResolver">
       </runtimeClasspathEntryResolver>
 	<!-- deprecated -->
       <runtimeClasspathEntryResolver
             container="org.objectstyle.wolips.WO_CLASSPATH"
-            class="org.objectstyle.wolips.launching.WORuntimeClasspathResolver"
+		    class="org.objectstyle.wolips.launching.classpath.WORuntimeClasspathResolverimeClasspathResolver"
             id="org.objectstyle.wolips.launching.WORuntimeClasspathProvider">
       </runtimeClasspathEntryResolver>
 	<!-- end deprecated -->
@@ -81,7 +81,7 @@
             label="WOApplication"
             icon="icons/launching/WOLips-launching.gif"
             modes="run, debug"
-            class="org.objectstyle.wolips.launching.WOJavaApplicationLaunchShortcut"
+            class="org.objectstyle.wolips.launching.actions.WOJavaApplicationLaunchShortcut"
             id="org.objectstyle.wolips.launching.WOJavaApplicationLaunchShortcut">
          <contextualLaunch>
            <enablement>
@@ -121,7 +121,7 @@
    <extension point="org.eclipse.debug.ui.consoleLineTrackers">
    	<consoleLineTracker
    		id="org.objectstyle.wolips.launching.ConsoleLineTracker"
-		class="org.objectstyle.wolips.launching.ConsoleLineTracker"
+		class="org.objectstyle.wolips.launching.browsersupport.ConsoleLineTracker"
 		processType="java">
 	</consoleLineTracker>
    </extension>

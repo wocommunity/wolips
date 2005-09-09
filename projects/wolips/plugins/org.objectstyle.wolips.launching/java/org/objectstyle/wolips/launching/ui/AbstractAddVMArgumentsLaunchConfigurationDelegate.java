@@ -54,7 +54,7 @@
 *
 */
 
-package org.objectstyle.wolips.launching;
+package org.objectstyle.wolips.launching.ui;
 
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;

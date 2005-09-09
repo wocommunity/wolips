@@ -1,4 +1,4 @@
-package org.objectstyle.wolips.launching;
+package org.objectstyle.wolips.launching.browsersupport;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -13,6 +13,8 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.browser.IWebBrowser;
 import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
 import org.eclipse.ui.internal.browser.WebBrowserUIPlugin;
+import org.objectstyle.wolips.launching.LaunchingPlugin;
+import org.objectstyle.wolips.launching.delegates.WOJavaLocalApplicationLaunchConfigurationDelegate;
 
 public class ConsoleLineTracker implements IConsoleLineTracker {
 
@@ -40,7 +42,7 @@ public class ConsoleLineTracker implements IConsoleLineTracker {
 							WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_OPEN_IN_BROWSER,
 							"false");
 		} catch (CoreException e) {
-			LaunchingPlugin.getDefault().getPluginLogger().log(e);
+			LaunchingPlugin.getDefault().log(e);
 		}
 		String webServerConnectString = null;
 		try {
@@ -52,7 +54,7 @@ public class ConsoleLineTracker implements IConsoleLineTracker {
 							WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_WEBSERVER_CONNECT,
 							"false");
 		} catch (CoreException e) {
-			LaunchingPlugin.getDefault().getPluginLogger().log(e);
+			LaunchingPlugin.getDefault().log(e);
 		}
 
 		if (openBrowser != null && openBrowser.equals("true")) {
@@ -102,9 +104,9 @@ public class ConsoleLineTracker implements IConsoleLineTracker {
 										null, null, null);
 						browser.openURL(url);
 					} catch (MalformedURLException e1) {
-						LaunchingPlugin.getDefault().getPluginLogger().log(e1);
+						LaunchingPlugin.getDefault().log(e1);
 					} catch (PartInitException e) {
-						LaunchingPlugin.getDefault().getPluginLogger().log(e);
+						LaunchingPlugin.getDefault().log(e);
 					}
 
 				}

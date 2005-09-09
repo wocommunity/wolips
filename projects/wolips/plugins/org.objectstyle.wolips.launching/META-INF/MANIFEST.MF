@@ -22,6 +22,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui.browser,
  org.eclipse.jdt.debug.ui,
  org.objectstyle.wolips.variables,
- org.objectstyle.wolips.jdt
+ org.objectstyle.wolips.jdt,
+ org.objectstyle.wolips.ui
 Eclipse-AutoStart: true
 Export-Package: org.objectstyle.wolips.launching

@@ -57,7 +57,7 @@
 package org.objectstyle.wolips.profiling;
 
 import org.eclipse.debug.core.ILaunchConfigurationType;
-import org.objectstyle.wolips.launching.WOJavaApplicationLaunchShortcut;
+import org.objectstyle.wolips.launching.actions.WOJavaApplicationLaunchShortcut;
 /**
  * @author uli
  *

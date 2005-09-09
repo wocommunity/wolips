@@ -2,7 +2,7 @@
  *
  * The ObjectStyle Group Software License, Version 1.0
  *
- * Copyright (c) 2002 - 2004 The ObjectStyle Group
+ * Copyright (c) 2002 - 2005 The ObjectStyle Group
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -54,7 +54,7 @@
  *
  */
 
-package org.objectstyle.wolips.launching;
+package org.objectstyle.wolips.launching.delegates;
 
 import java.io.File;
 import java.text.MessageFormat;
@@ -79,6 +79,10 @@ import org.eclipse.jdt.launching.VMRunnerConfiguration;
 import org.eclipse.swt.widgets.Display;
 import org.objectstyle.wolips.commons.util.StringUtilities;
 import org.objectstyle.wolips.datasets.adaptable.JavaProject;
+import org.objectstyle.wolips.launching.LaunchingMessages;
+import org.objectstyle.wolips.launching.LaunchingPlugin;
+import org.objectstyle.wolips.launching.classpath.WORuntimeClasspathProvider;
+import org.objectstyle.wolips.launching.ui.AbstractAddVMArgumentsLaunchConfigurationDelegate;
 import org.objectstyle.wolips.preferences.ILaunchInfo;
 import org.objectstyle.wolips.preferences.Preferences;
 import org.objectstyle.wolips.variables.VariablesPlugin;
@@ -137,7 +141,7 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate extends
 
 			public void run() {
 				Status status = new Status(IStatus.ERROR,
-						LaunchingPlugin.PLUGIN_ID, IStatus.ERROR,
+						"org.objectstyle.wolips.launching", IStatus.ERROR,
 						"Classpath Provider missing", null);
 				WorkbenchUtilitiesPlugin
 						.errorDialog(

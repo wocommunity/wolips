@@ -54,7 +54,7 @@
  *
  */
 
-package org.objectstyle.wolips.launching;
+package org.objectstyle.wolips.launching.ui;
 
 
 import org.eclipse.core.runtime.CoreException;
@@ -73,6 +73,8 @@ import org.eclipse.jdt.debug.ui.launchConfigurations.JavaMainTab;
 import org.eclipse.jdt.debug.ui.launchConfigurations.JavaSourceLookupTab;
 import org.eclipse.jdt.internal.debug.ui.launcher.WorkingDirectoryBlock;
 import org.eclipse.jdt.launching.JavaRuntime;
+import org.objectstyle.wolips.launching.LaunchingPlugin;
+import org.objectstyle.wolips.launching.delegates.WOJavaLocalApplicationLaunchConfigurationDelegate;
 
 /**
  * @author uli
@@ -106,7 +108,7 @@ public class WOLocalJavaApplicationTabGroup extends AbstractLaunchConfigurationT
 								}
 							}
 						} catch (CoreException ce) {
-							LaunchingPlugin.getDefault().getPluginLogger().log(ce);
+							LaunchingPlugin.getDefault().log(ce);
 						}
 						this.fWorkingDirText.setText(System.getProperty("user.dir")); //$NON-NLS-1$
 					}
@@ -118,7 +120,8 @@ public class WOLocalJavaApplicationTabGroup extends AbstractLaunchConfigurationT
 			new JavaMainTab(),
 			javaArgumentsTab,
 			new CommonWOArgumentsTab(),
-			//new AdvancedWOArgumentsTab(),
+			new LogTab(),
+			new BrowserTab(),
 			new JavaJRETab(),
 			new JavaClasspathTab(),
 			new JavaSourceLookupTab(),

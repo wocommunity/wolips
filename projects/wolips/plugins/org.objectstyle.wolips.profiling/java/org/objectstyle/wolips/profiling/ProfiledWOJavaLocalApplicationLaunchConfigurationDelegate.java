@@ -50,7 +50,7 @@ import jmechanic.eclipse.profiler.launching.ProfilingLaunchSupport;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
-import org.objectstyle.wolips.launching.WOJavaLocalApplicationLaunchConfigurationDelegate;
+import org.objectstyle.wolips.launching.delegates.WOJavaLocalApplicationLaunchConfigurationDelegate;
 
 /**
  * Launches a local VM.
@@ -62,7 +62,7 @@ public class ProfiledWOJavaLocalApplicationLaunchConfigurationDelegate
 		"org.objectstyle.wolips.profiling.ProfiledWOLocalJavaApplication";
 
 	/**
-	 * @see org.objectstyle.wolips.launching.WOJavaLocalApplicationLaunchConfigurationDelegate#addVMArguments(java.lang.StringBuffer,
+	 * @see org.objectstyle.wolips.launching.delegates.WOJavaLocalApplicationLaunchConfigurationDelegate#addVMArguments(java.lang.StringBuffer,
 	 *      org.eclipse.debug.core.ILaunchConfiguration,
 	 *      org.eclipse.debug.core.ILaunch, java.lang.String)
 	 */

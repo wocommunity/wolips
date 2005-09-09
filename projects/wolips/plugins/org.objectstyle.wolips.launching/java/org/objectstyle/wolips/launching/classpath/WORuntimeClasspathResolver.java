@@ -43,7 +43,7 @@
  *  
  */
 
-package org.objectstyle.wolips.launching;
+package org.objectstyle.wolips.launching.classpath;
 
 import java.util.ArrayList;
 import java.util.Arrays;
