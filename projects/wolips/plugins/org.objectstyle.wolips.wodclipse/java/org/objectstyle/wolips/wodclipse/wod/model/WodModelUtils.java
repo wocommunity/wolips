@@ -116,9 +116,9 @@ public class WodModelUtils {
     else {
       htmlElementNames = null;
     }
-    
+
     Set elementNames = new HashSet();
-    
+
     List problems = new LinkedList();
     Iterator elementsIter = _wodModel.getElements().iterator();
     while (elementsIter.hasNext()) {
@@ -151,11 +151,20 @@ public class WodModelUtils {
         else {
           bindingNames.add(bindingName);
         }
-        
+
         //String bindingValue = binding.getValue();
       }
     }
-    
+
+    if (htmlElementNames != null) {
+      htmlElementNames.removeAll(elementNames);
+      Iterator undefinedHtmlElementNames = htmlElementNames.iterator();
+      while (undefinedHtmlElementNames.hasNext()) {
+        String htmlElementName = (String) undefinedHtmlElementNames.next();
+        problems.add(new WodProblem(_wodModel, "The component HTML file references an element '" + htmlElementName + "' which does not appear in the WOD file", null));
+      }
+    }
+
     return problems;
   }
 
