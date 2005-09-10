@@ -69,7 +69,7 @@ public class ApiEditorInput extends FileEditorInput {
 
 	public ApiModel getModel() {
 		if (model == null) {
-			model = new ApiModel(this.getFile());
+			model = new ApiModel(this.getFile().getLocation().toFile());
 		}
 		return model;
 	}

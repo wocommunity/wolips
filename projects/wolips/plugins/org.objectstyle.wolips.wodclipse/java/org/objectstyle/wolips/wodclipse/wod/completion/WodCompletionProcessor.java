@@ -73,6 +73,8 @@ import org.eclipse.jface.text.rules.WhitespaceRule;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IPathEditorInput;
+import org.objectstyle.wolips.core.resources.types.api.Binding;
+import org.objectstyle.wolips.core.resources.types.api.Wo;
 import org.objectstyle.wolips.wodclipse.WodclipsePlugin;
 import org.objectstyle.wolips.wodclipse.preferences.PreferenceConstants;
 import org.objectstyle.wolips.wodclipse.wod.model.WodModelUtils;
@@ -373,43 +375,24 @@ public class WodCompletionProcessor implements IContentAssistProcessor {
     WodBindingUtils.fillInCompletionProposals(bindingKeys, _token, _tokenOffset, _offset, _completionProposalsSet);
 
     // API files:
-    /*
-     try {
-     IOpenable typeContainer = _elementType.getOpenable();
-     if (typeContainer instanceof IClassFile) {
-     IClassFile classFile = (IClassFile) typeContainer;
-     IJavaElement parent = classFile.getParent();
-     if (parent instanceof IPackageFragment) {
-     IPackageFragment parentPackage = (IPackageFragment) parent;
-     IPath packagePath = parentPackage.getPath();
-     IPath apiPath = packagePath.removeLastSegments(2).append(_elementType.getElementName()).addFileExtension("api");
-     File apiFile = apiPath.toFile();
-     boolean fileExists = apiFile.exists();
-     if (!fileExists && parentPackage.getElementName().startsWith("com.webobjects")) {
-     apiFile = new File("/Developer/Applications/WebObjects/WebObjects Builder.app/Contents/Resources/WebObjectDefinitions.xml");
-     fileExists = apiFile.exists();
-     }
-     if (fileExists) {
-     DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-     DocumentBuilder db = dbf.newDocumentBuilder();
-     Document apiDoc = db.parse(apiFile);
-     NodeList woNodes = apiDoc.getDocumentElement().getElementsByTagName("wo");
-     int woNodesLength = woNodes.getLength();
-     for (int i = 0; i < woNodesLength; i++) {
-     System.out.println("WODCompletionProcessor.fillInAssociationNameCompletionProposals: " + woNodes.item(i).getNodeName());
-     }
-     }
-     }
-     }
-     else if (typeContainer instanceof ICompilationUnit) {
-     ICompilationUnit cu = (ICompilationUnit) typeContainer;
-     }
-     }
-     catch (Throwable t) {
-     // It's not that big a deal ... give up on api files
-     t.printStackTrace();
-     }
-     */
+    try {
+      Wo wo = WodBindingUtils.findWo(_elementType);
+      if (wo != null) {
+        String lowercasePartialToken = partialToken.toLowerCase();
+        Binding[] bindings = wo.getBindings();
+        for (int i = 0; i < bindings.length; i++) {
+          String bindingName = bindings[i].getName();
+          String lowercaseBindingName = bindingName.toLowerCase();
+          if (lowercaseBindingName.startsWith(lowercasePartialToken)) {
+            _completionProposalsSet.add(new WodCompletionProposal(_token, _tokenOffset, _offset, bindingName));
+          }
+        }
+      }
+    }
+    catch (Throwable t) {
+      // It's not that big a deal ... give up on api files
+      t.printStackTrace();
+    }
   }
 
   protected static void fillInBindingValueCompletionProposals(IJavaProject _project, IType _elementType, String _token, int _tokenOffset, int _offset, Set _completionProposalsSet) throws JavaModelException {

@@ -77,7 +77,24 @@ public class WodCompletionProposal implements Comparable {
   public int compareTo(Object _obj) {
     int comparison;
     if (_obj instanceof WodCompletionProposal) {
-      comparison = myProposal.compareTo(((WodCompletionProposal) _obj).myProposal);
+      String proposal = myProposal;
+      String otherProposal = ((WodCompletionProposal)_obj).myProposal;
+      if (proposal.startsWith("_")) {
+        if (otherProposal.startsWith("_")) {
+          comparison = myProposal.compareTo(((WodCompletionProposal) _obj).myProposal);
+        }
+        else {
+          comparison = 1;
+        }
+      }
+      else {
+        if (otherProposal.startsWith("_")) {
+          comparison = -1;
+        }
+        else {
+          comparison = proposal.compareTo(otherProposal);
+        }
+      }
     }
     else {
       comparison = -1;
