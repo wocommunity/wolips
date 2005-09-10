@@ -61,13 +61,13 @@
          point="org.eclipse.jdt.launching.runtimeClasspathEntryResolvers">
       <runtimeClasspathEntryResolver
             container="org.objectstyle.wolips.WO_CLASSPATH"
-            class="org.objectstyle.wolips.launching.classpath.WORuntimeClasspathResolverimeClasspathResolver"
+            class="org.objectstyle.wolips.launching.classpath.WORuntimeClasspathResolver"
             id="org.objectstyle.wolips.launching.WORuntimeClasspathResolver">
       </runtimeClasspathEntryResolver>
 	<!-- deprecated -->
       <runtimeClasspathEntryResolver
             container="org.objectstyle.wolips.WO_CLASSPATH"
-		    class="org.objectstyle.wolips.launching.classpath.WORuntimeClasspathResolverimeClasspathResolver"
+		    class="org.objectstyle.wolips.launching.classpath.WORuntimeClasspathProvider"
             id="org.objectstyle.wolips.launching.WORuntimeClasspathProvider">
       </runtimeClasspathEntryResolver>
 	<!-- end deprecated -->
