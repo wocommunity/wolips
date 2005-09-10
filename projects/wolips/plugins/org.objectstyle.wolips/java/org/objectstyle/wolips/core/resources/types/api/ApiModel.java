@@ -57,6 +57,7 @@ package org.objectstyle.wolips.core.resources.types.api;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -75,21 +76,29 @@ import org.eclipse.core.resources.IFile;
 import org.objectstyle.wolips.core.CorePlugin;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 public class ApiModel {
 
 	private Document document;
 
-	private IFile file;
+  private URL url;
+	private File file;
 
 	private boolean isDirty = false;
 
-	public ApiModel(IFile file) {
+	public ApiModel(File file) {
 		super();
 		this.file = file;
 		this.parse();
 	}
+
+  public ApiModel(URL url) {
+    super();
+    this.url = url;
+    this.parse();
+  }
 
 	private void parse() {
 
@@ -103,8 +112,12 @@ public class ApiModel {
 					e);
 		}
 		try {
-			this.document = documentBuilder.parse(this.file.getLocation()
-					.toOSString());
+      if (this.url != null) {
+        this.document = documentBuilder.parse(this.url.toExternalForm());
+      }
+      else {
+        this.document = documentBuilder.parse(this.file);
+      }
 		} catch (SAXException e) {
 			CorePlugin.getDefault().debug(
 					this.getClass().getName() + "Error while parsing .wolips",
@@ -130,11 +143,14 @@ public class ApiModel {
 	}
 
 	public void saveChanges() {
+    if (file == null) {
+      throw new IllegalStateException("You can not saveChanges to an ApiModel that is not backed by a file.");
+    }
+    
 		// Prepare the DOM document for writing
 		Source source = new DOMSource(this.document);
 
 		// Prepare the output file
-		File file = new File(this.file.getLocation().toOSString());
 		Result result = new StreamResult(file);
 
 		// Write the DOM document to the file
