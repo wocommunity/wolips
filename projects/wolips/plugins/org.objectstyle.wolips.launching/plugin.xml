@@ -67,7 +67,7 @@
 	<!-- deprecated -->
       <runtimeClasspathEntryResolver
             container="org.objectstyle.wolips.WO_CLASSPATH"
-		    class="org.objectstyle.wolips.launching.classpath.WORuntimeClasspathProvider"
+		    class="org.objectstyle.wolips.launching.classpath.WORuntimeClasspathResolver"
             id="org.objectstyle.wolips.launching.WORuntimeClasspathProvider">
       </runtimeClasspathEntryResolver>
 	<!-- end deprecated -->
