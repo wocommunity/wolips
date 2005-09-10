@@ -1,18 +1,16 @@
 package org.objectstyle.wolips.wodclipse.wod.model;
 
-import org.objectstyle.wolips.wodclipse.wod.parser.RulePosition;
+import org.eclipse.jface.text.Position;
 
 public class WodProblem {
   private IWodModel myModel;
   private String myMessage;
-  private RulePosition myCurrentRulePosition;
-  private RulePosition myPreviousRulePosition;
+  private Position myPosition;
 
-  public WodProblem(IWodModel _model, String _message, RulePosition _currentRulePosition, RulePosition _previousRulePosition) {
+  public WodProblem(IWodModel _model, String _message, Position _position) {
     myModel = _model;
     myMessage = _message;
-    myCurrentRulePosition = _currentRulePosition;
-    myPreviousRulePosition = _previousRulePosition;
+    myPosition = _position;
   }
 
   public String getMessage() {
@@ -23,11 +21,7 @@ public class WodProblem {
     return myModel;
   }
 
-  public RulePosition getCurrentRulePosition() {
-    return myCurrentRulePosition;
-  }
-
-  public RulePosition getPreviousRulePosition() {
-    return myPreviousRulePosition;
+  public Position getPosition() {
+    return myPosition;
   }
 }

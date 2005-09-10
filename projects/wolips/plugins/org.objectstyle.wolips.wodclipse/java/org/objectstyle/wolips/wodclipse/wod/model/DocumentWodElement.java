@@ -46,6 +46,7 @@ package org.objectstyle.wolips.wodclipse.wod.model;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.eclipse.jface.text.Position;
 import org.objectstyle.wolips.wodclipse.wod.parser.RulePosition;
 
 /**
@@ -72,8 +73,16 @@ public class DocumentWodElement implements IWodElement {
     return myElementName._getTextWithoutException();
   }
   
+  public Position getElementNamePosition() {
+    return myElementName.getPosition();
+  }
+  
   public String getElementType() {
     return myElementType._getTextWithoutException();
+  }
+  
+  public Position getElementTypePosition() {
+    return myElementType.getPosition();
   }
   
   public List getBindings() {

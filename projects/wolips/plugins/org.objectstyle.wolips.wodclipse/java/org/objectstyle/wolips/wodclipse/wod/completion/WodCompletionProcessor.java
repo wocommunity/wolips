@@ -43,9 +43,7 @@
  */
 package org.objectstyle.wolips.wodclipse.wod.completion;
 
-import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -75,9 +73,9 @@ import org.eclipse.jface.text.rules.WhitespaceRule;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IPathEditorInput;
-import org.eclipse.ui.part.FileEditorInput;
 import org.objectstyle.wolips.wodclipse.WodclipsePlugin;
 import org.objectstyle.wolips.wodclipse.preferences.PreferenceConstants;
+import org.objectstyle.wolips.wodclipse.wod.model.WodModelUtils;
 import org.objectstyle.wolips.wodclipse.wod.parser.AssignmentOperatorWordDetector;
 import org.objectstyle.wolips.wodclipse.wod.parser.BindingNameRule;
 import org.objectstyle.wolips.wodclipse.wod.parser.BindingValueRule;
@@ -281,60 +279,17 @@ public class WodCompletionProcessor implements IContentAssistProcessor {
 
   protected Set validElementNames(IPath _filePath) throws CoreException, IOException {
     // Look for an html file of the same name as the .wod file we're editing now
-    IPath templatePath = _filePath.removeFileExtension().addFileExtension("html");
-    IFile file = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(templatePath);
+    IFile htmlFile = WodModelUtils.getHtmlFileForWodFilePath(_filePath);
     //myTemplateLastModified = IFile.NULL_STAMP;
-    if (file != null) {
-      long templateLastModified = file.getModificationStamp();
+    if (htmlFile != null) {
+      long templateLastModified = htmlFile.getModificationStamp();
       // if we either haven't either retrieved element names or the HTML template has been
       // modified since the last time we did, rescan the template for <webobject name =" tags,
       // ignoring spaces, etc.
       if (myValidElementNames == null || myTemplateLastModified == IFile.NULL_STAMP || templateLastModified > myTemplateLastModified) {
         myValidElementNames = new HashSet();
         myTemplateLastModified = templateLastModified;
-        FileEditorInput fileInput = new FileEditorInput(file);
-        InputStream fileContents = fileInput.getStorage().getContents();
-        BufferedInputStream bis = new BufferedInputStream(fileContents);
-        int ch;
-
-        char[] stringToMatch = { '<', 'w', 'e', 'b', 'o', 'b', 'j', 'e', 'c', 't', 'n', 'a', 'm', 'e', '=' };
-        int matchIndex = 0;
-        StringBuffer elementNameBuffer = null;
-        boolean elementFound = false;
-        while ((ch = bis.read()) != -1) {
-          if (elementNameBuffer == null) {
-            if (ch == ' ') {
-              // ignore spaces
-            }
-            else if (Character.toLowerCase((char) ch) == stringToMatch[matchIndex]) {
-              matchIndex++;
-              if (matchIndex == stringToMatch.length) {
-                elementNameBuffer = new StringBuffer();
-                matchIndex = 0;
-              }
-            }
-            else {
-              matchIndex = 0;
-              if (Character.toLowerCase((char) ch) == stringToMatch[matchIndex]) {
-                matchIndex++;
-              }
-            }
-          }
-          else {
-            if (ch == ' ') {
-            }
-            else if (ch == '"') {
-            }
-            else if (ch == '>') {
-              String elementName = elementNameBuffer.toString();
-              myValidElementNames.add(elementName);
-              elementNameBuffer = null;
-            }
-            else {
-              elementNameBuffer.append((char) ch);
-            }
-          }
-        }
+        WodModelUtils.fillInHtmlElementNames(htmlFile, myValidElementNames);
       }
     }
     return myValidElementNames;

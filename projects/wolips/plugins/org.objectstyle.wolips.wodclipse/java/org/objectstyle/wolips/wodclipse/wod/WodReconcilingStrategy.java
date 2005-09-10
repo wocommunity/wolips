@@ -1,6 +1,9 @@
 package org.objectstyle.wolips.wodclipse.wod;
 
+import java.io.IOException;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
@@ -10,9 +13,12 @@ import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
+import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.reconciler.DirtyRegion;
 import org.eclipse.jface.text.reconciler.IReconcilingStrategy;
 import org.eclipse.jface.text.reconciler.IReconcilingStrategyExtension;
@@ -24,7 +30,6 @@ import org.objectstyle.wolips.wodclipse.WodclipsePlugin;
 import org.objectstyle.wolips.wodclipse.wod.model.IWodModel;
 import org.objectstyle.wolips.wodclipse.wod.model.WodModelUtils;
 import org.objectstyle.wolips.wodclipse.wod.model.WodProblem;
-import org.objectstyle.wolips.wodclipse.wod.parser.RulePosition;
 
 public class WodReconcilingStrategy implements IReconcilingStrategy, IReconcilingStrategyExtension {
   private ITextEditor myTextEditor;
@@ -71,14 +76,31 @@ public class WodReconcilingStrategy implements IReconcilingStrategy, IReconcilin
           WodclipsePlugin.getDefault().debug(e);
         }
 
-        IWodModel wodModel = WodModelUtils.createWodModel(myDocument);
-        Iterator problemsIter = wodModel.getProblems().iterator();
+        IWodModel wodModel = WodModelUtils.createWodModel(finalDocumentFile, myDocument);
+        List problems = new LinkedList();
+        List syntaxProblems = wodModel.getSyntacticProblems();
+        problems.addAll(syntaxProblems);
+
+        try {
+          IJavaProject javaProject = JavaCore.create(finalDocumentFile.getProject());
+          List semanticProblems = WodModelUtils.getSemanticProblems(javaProject, wodModel);
+          problems.addAll(semanticProblems);
+        }
+        catch (CoreException e) {
+          WodclipsePlugin.getDefault().log(e);
+        }
+        catch (IOException e) {
+          WodclipsePlugin.getDefault().log(e);
+        }
+
+        Iterator problemsIter = problems.iterator();
         while (problemsIter.hasNext()) {
           WodProblem problem = (WodProblem) problemsIter.next();
+          Position problemPosition = problem.getPosition();
+
           //String type = "org.eclipse.ui.workbench.texteditor.error";
           // String type = "org.eclipse.ui.workbench.texteditor.warning";
           //Annotation problemAnnotation = new Annotation(type, false, problem.getMessage());
-          RulePosition currentPosition = problem.getCurrentRulePosition();
           //Position problemPosition = currentPosition.getPosition();
           //annotationModel.addAnnotation(problemAnnotation, problemPosition);
 
@@ -86,9 +108,9 @@ public class WodReconcilingStrategy implements IReconcilingStrategy, IReconcilin
             IMarker marker = finalDocumentFile.createMarker(IMarker.PROBLEM);
             marker.setAttribute(IMarker.MESSAGE, problem.getMessage());
             marker.setAttribute(IMarker.SEVERITY, new Integer(IMarker.SEVERITY_ERROR));
-            marker.setAttribute(IMarker.LINE_NUMBER, myDocument.getLineOfOffset(currentPosition.getTokenOffset()));
-            marker.setAttribute(IMarker.CHAR_START, currentPosition.getTokenOffset());
-            marker.setAttribute(IMarker.CHAR_END, currentPosition.getTokenEndOffset());
+            marker.setAttribute(IMarker.LINE_NUMBER, myDocument.getLineOfOffset(problemPosition.getOffset()));
+            marker.setAttribute(IMarker.CHAR_START, problemPosition.getOffset());
+            marker.setAttribute(IMarker.CHAR_END, problemPosition.getOffset() + problemPosition.getLength());
             marker.setAttribute(IMarker.TRANSIENT, false);
           }
           catch (CoreException e) {

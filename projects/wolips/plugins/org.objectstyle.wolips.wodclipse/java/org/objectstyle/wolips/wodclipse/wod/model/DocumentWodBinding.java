@@ -43,6 +43,7 @@
  */
 package org.objectstyle.wolips.wodclipse.wod.model;
 
+import org.eclipse.jface.text.Position;
 import org.objectstyle.wolips.wodclipse.wod.parser.RulePosition;
 
 /**
@@ -66,9 +67,17 @@ public class DocumentWodBinding implements IWodBinding {
   public String getName() {
     return myName._getTextWithoutException();
   }
+  
+  public Position getNamePosition() {
+    return myName.getPosition();
+  }
 
   public String getValue() {
     return myValue._getTextWithoutException();
+  }
+  
+  public Position getValuePosition() {
+    return myValue.getPosition();
   }
   
   public String toString() {

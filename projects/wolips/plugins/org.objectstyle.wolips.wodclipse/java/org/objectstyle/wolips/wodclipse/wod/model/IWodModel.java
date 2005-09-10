@@ -49,7 +49,9 @@ import java.util.List;
  * @author mschrag
  */
 public interface IWodModel {
+  public String getName();
+  
   public List getElements();
   
-  public List getProblems();
+  public List getSyntacticProblems();
 }
