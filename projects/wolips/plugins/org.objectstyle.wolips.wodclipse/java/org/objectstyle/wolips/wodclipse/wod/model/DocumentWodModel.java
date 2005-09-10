@@ -146,8 +146,13 @@ public class DocumentWodModel implements IWodModel {
           syntaxError = true;
         }
         else if (!syntaxError) {
-          DocumentWodBinding binding = new DocumentWodBinding(savedRulePosition, rulePosition, element);
-          element.addBinding(binding);
+          if (element == null) {
+            syntaxError = true;
+          }
+          else {
+            DocumentWodBinding binding = new DocumentWodBinding(savedRulePosition, rulePosition, element);
+            element.addBinding(binding);
+          }
         }
       }
       else if (RulePosition.isOperatorOfType(rulePosition, EndAssignmentWordDetector.class)) {
