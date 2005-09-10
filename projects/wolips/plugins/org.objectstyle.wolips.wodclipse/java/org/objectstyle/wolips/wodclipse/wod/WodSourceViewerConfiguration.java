@@ -63,6 +63,9 @@ import org.objectstyle.wolips.wodclipse.wod.parser.WodScanner;
 public class WodSourceViewerConfiguration extends SourceViewerConfiguration {
   private WodScanner myScanner;
   private ITextEditor myEditor;
+  private MonoReconciler myReconciler;
+  private PresentationReconciler myPresentationReconciler;
+  private ContentAssistant myContentAssistant;
 
   public WodSourceViewerConfiguration(ITextEditor _editor) {
     myEditor = _editor;
@@ -74,33 +77,39 @@ public class WodSourceViewerConfiguration extends SourceViewerConfiguration {
     }
     return myScanner;
   }
-  
-//  public IAnnotationHover getAnnotationHover(ISourceViewer _sourceViewer) {
-//    return new WodAnnotationHover(_sourceViewer.getAnnotationModel());
-//  }
+
+  //  public IAnnotationHover getAnnotationHover(ISourceViewer _sourceViewer) {
+  //    return new WodAnnotationHover(_sourceViewer.getAnnotationModel());
+  //  }
 
   public IReconciler getReconciler(ISourceViewer _sourceViewer) {
-    WodReconcilingStrategy reconcilerStrategy = new WodReconcilingStrategy(myEditor);
-    MonoReconciler reconciler = new MonoReconciler(reconcilerStrategy, false);
-    return reconciler;
+    if (myReconciler == null) {
+      WodReconcilingStrategy reconcilingStrategy = new WodReconcilingStrategy(myEditor);
+      myReconciler = new MonoReconciler(reconcilingStrategy, false);
+    }
+    return myReconciler;
   }
 
   public IPresentationReconciler getPresentationReconciler(ISourceViewer sourceView) {
-    PresentationReconciler reconciler = new PresentationReconciler();
-    DefaultDamagerRepairer dr = new DefaultDamagerRepairer(getWODScanner());
-    reconciler.setDamager(dr, IDocument.DEFAULT_CONTENT_TYPE);
-    reconciler.setRepairer(dr, IDocument.DEFAULT_CONTENT_TYPE);
-    return reconciler;
+    if (myPresentationReconciler == null) {
+      myPresentationReconciler = new PresentationReconciler();
+      DefaultDamagerRepairer dr = new DefaultDamagerRepairer(getWODScanner());
+      myPresentationReconciler.setDamager(dr, IDocument.DEFAULT_CONTENT_TYPE);
+      myPresentationReconciler.setRepairer(dr, IDocument.DEFAULT_CONTENT_TYPE);
+    }
+    return myPresentationReconciler;
   }
 
   public IContentAssistant getContentAssistant(ISourceViewer _sourceViewer) {
-    WodCompletionProcessor processor = new WodCompletionProcessor(myEditor);
-    ContentAssistant assistant = new ContentAssistant();
-    assistant.setContentAssistProcessor(processor, IDocument.DEFAULT_CONTENT_TYPE);
-    //assistant.enableAutoActivation(true);
-    //assistant.setAutoActivationDelay(500);
-    //assistant.enableAutoInsert(true);
-    assistant.setProposalPopupOrientation(IContentAssistant.PROPOSAL_OVERLAY);
-    return assistant;
+    if (myContentAssistant == null) {
+      WodCompletionProcessor completionProcessor = new WodCompletionProcessor(myEditor);
+      myContentAssistant = new ContentAssistant();
+      myContentAssistant.setContentAssistProcessor(completionProcessor, IDocument.DEFAULT_CONTENT_TYPE);
+      myContentAssistant.enableAutoActivation(true);
+      myContentAssistant.setAutoActivationDelay(500);
+      myContentAssistant.enableAutoInsert(true);
+      myContentAssistant.setProposalPopupOrientation(IContentAssistant.PROPOSAL_OVERLAY);
+    }
+    return myContentAssistant;
   }
 }
