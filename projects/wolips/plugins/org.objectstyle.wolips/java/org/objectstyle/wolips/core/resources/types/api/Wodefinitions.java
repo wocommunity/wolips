@@ -65,7 +65,16 @@ public class Wodefinitions extends AbstractApiModelElement {
 	protected Wodefinitions(Element element, ApiModel apiModel) {
 		super(element, apiModel);
 	}
-
+  
+  public Wo[] getWos() {
+    NodeList nodeList = element.getElementsByTagName(WO);
+    Wo[] wos = new Wo[nodeList.getLength()];
+    for (int i = 0; i < wos.length; i ++) {
+      wos[i] = new Wo((Element) nodeList.item(i), apiModel);
+    }
+    return wos;
+  }
+  
 	public Wo getWo() {
 		NodeList nodeList = element.getElementsByTagName(WO);
 		return new Wo((Element) nodeList.item(0), apiModel);
