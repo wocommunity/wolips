@@ -94,8 +94,12 @@ public class WodBindingUtils {
       String matchingElementClassName = typeNameCollector.firstTypeName();
       type = typeNameCollector.getTypeForClassName(matchingElementClassName);
     }
-    else {
+    else if (!typeNameCollector.isEmpty()) {
       // there was more than one matching class!  crap!
+      String matchingElementClassName = typeNameCollector.firstTypeName();
+      type = typeNameCollector.getTypeForClassName(matchingElementClassName);
+    }
+    else {
       type = null;
     }
     return type;
