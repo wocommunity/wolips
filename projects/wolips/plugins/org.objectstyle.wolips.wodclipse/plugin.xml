@@ -320,4 +320,11 @@
                menubarPath="edit/ComponentEditorApi/group2"/> 
       </editorContribution>
  	</extension>
+ <extension
+       point="org.objectstyle.wolips.builders">
+    <builder
+          class="org.objectstyle.wolips.wodclipse.builder.WodBuilder"
+          id="org.objectstyle.wolips.wodclipse.builder.WodBuilder"
+          name="Wod Builder"/>
+ </extension>
 </plugin>

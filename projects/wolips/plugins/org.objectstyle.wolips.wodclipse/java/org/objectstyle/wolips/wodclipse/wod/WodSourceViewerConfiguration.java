@@ -84,8 +84,8 @@ public class WodSourceViewerConfiguration extends SourceViewerConfiguration {
 
   public IReconciler getReconciler(ISourceViewer _sourceViewer) {
     if (myReconciler == null) {
-      WodReconcilingStrategy reconcilingStrategy = new WodReconcilingStrategy(myEditor);
-      myReconciler = new MonoReconciler(reconcilingStrategy, false);
+      //WodReconcilingStrategy reconcilingStrategy = new WodReconcilingStrategy(myEditor);
+      //myReconciler = new MonoReconciler(reconcilingStrategy, false);
     }
     return myReconciler;
   }

@@ -62,6 +62,8 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.part.FileEditorInput;
+import org.objectstyle.wolips.wodclipse.wod.WodFileDocumentProvider;
+import org.objectstyle.wolips.wodclipse.wod.WodReconcilingStrategy;
 import org.objectstyle.wolips.wodclipse.wod.completion.WodBindingUtils;
 
 /**
@@ -70,6 +72,19 @@ import org.objectstyle.wolips.wodclipse.wod.completion.WodBindingUtils;
 public class WodModelUtils {
   public static IWodModel createWodModel(IFile _wodFile, IDocument _wodDocument) {
     return new DocumentWodModel(_wodFile, _wodDocument);
+  }
+
+  public static void reconcileWodFile(IFile _file) throws CoreException {
+    WodFileDocumentProvider provider = new WodFileDocumentProvider();
+    FileEditorInput input = new FileEditorInput(_file);
+    provider.connect(input);
+    try {
+      IDocument document = provider.getDocument(input);
+      WodReconcilingStrategy.reconcileWodModel(_file, document);
+    }
+    finally {
+      provider.disconnect(input);
+    }
   }
 
   public static void writeWodFormat(IWodModel _wodModel, Writer _writer) {

@@ -66,62 +66,7 @@ public class WodReconcilingStrategy implements IReconcilingStrategy, IReconcilin
     final IFile finalDocumentFile = documentFile;
     IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
       public void run(IProgressMonitor _monitor) throws CoreException {
-        try {
-          IMarker[] markers = finalDocumentFile.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
-          for (int i = 0; i < markers.length; i++) {
-            markers[i].delete();
-          }
-        }
-        catch (CoreException e) {
-          WodclipsePlugin.getDefault().debug(e);
-        }
-
-        IWodModel wodModel = WodModelUtils.createWodModel(finalDocumentFile, myDocument);
-        List problems = new LinkedList();
-        List syntaxProblems = wodModel.getSyntacticProblems();
-        problems.addAll(syntaxProblems);
-
-        try {
-          IJavaProject javaProject = JavaCore.create(finalDocumentFile.getProject());
-          List semanticProblems = WodModelUtils.getSemanticProblems(javaProject, wodModel);
-          problems.addAll(semanticProblems);
-        }
-        catch (CoreException e) {
-          WodclipsePlugin.getDefault().log(e);
-        }
-        catch (IOException e) {
-          WodclipsePlugin.getDefault().log(e);
-        }
-
-        Iterator problemsIter = problems.iterator();
-        while (problemsIter.hasNext()) {
-          WodProblem problem = (WodProblem) problemsIter.next();
-          Position problemPosition = problem.getPosition();
-
-          //String type = "org.eclipse.ui.workbench.texteditor.error";
-          // String type = "org.eclipse.ui.workbench.texteditor.warning";
-          //Annotation problemAnnotation = new Annotation(type, false, problem.getMessage());
-          //Position problemPosition = currentPosition.getPosition();
-          //annotationModel.addAnnotation(problemAnnotation, problemPosition);
-
-          try {
-            IMarker marker = finalDocumentFile.createMarker(IMarker.PROBLEM);
-            marker.setAttribute(IMarker.MESSAGE, problem.getMessage());
-            marker.setAttribute(IMarker.SEVERITY, new Integer(IMarker.SEVERITY_ERROR));
-            if (problemPosition != null) {
-              marker.setAttribute(IMarker.LINE_NUMBER, myDocument.getLineOfOffset(problemPosition.getOffset()));
-              marker.setAttribute(IMarker.CHAR_START, problemPosition.getOffset());
-              marker.setAttribute(IMarker.CHAR_END, problemPosition.getOffset() + problemPosition.getLength());
-            }
-            marker.setAttribute(IMarker.TRANSIENT, false);
-          }
-          catch (CoreException e) {
-            WodclipsePlugin.getDefault().log(e);
-          }
-          catch (BadLocationException e) {
-            WodclipsePlugin.getDefault().log(e);
-          }
-        }
+        WodReconcilingStrategy.reconcileWodModel(finalDocumentFile, myDocument);
       }
     };
 
@@ -153,5 +98,64 @@ public class WodReconcilingStrategy implements IReconcilingStrategy, IReconcilin
     IEditorInput input = myTextEditor.getEditorInput();
     IAnnotationModel annotationModel = myTextEditor.getDocumentProvider().getAnnotationModel(input);
     return annotationModel;
+  }
+
+  public static synchronized void reconcileWodModel(IFile _wodFile, IDocument _wodDocument) {
+    try {
+      IMarker[] markers = _wodFile.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
+      for (int i = 0; i < markers.length; i++) {
+        markers[i].delete();
+      }
+    }
+    catch (CoreException e) {
+      WodclipsePlugin.getDefault().debug(e);
+    }
+
+    IWodModel wodModel = WodModelUtils.createWodModel(_wodFile, _wodDocument);
+    List problems = new LinkedList();
+    List syntaxProblems = wodModel.getSyntacticProblems();
+    problems.addAll(syntaxProblems);
+
+    try {
+      IJavaProject javaProject = JavaCore.create(_wodFile.getProject());
+      List semanticProblems = WodModelUtils.getSemanticProblems(javaProject, wodModel);
+      problems.addAll(semanticProblems);
+    }
+    catch (CoreException e) {
+      WodclipsePlugin.getDefault().log(e);
+    }
+    catch (IOException e) {
+      WodclipsePlugin.getDefault().log(e);
+    }
+
+    Iterator problemsIter = problems.iterator();
+    while (problemsIter.hasNext()) {
+      WodProblem problem = (WodProblem) problemsIter.next();
+      Position problemPosition = problem.getPosition();
+
+      //String type = "org.eclipse.ui.workbench.texteditor.error";
+      // String type = "org.eclipse.ui.workbench.texteditor.warning";
+      //Annotation problemAnnotation = new Annotation(type, false, problem.getMessage());
+      //Position problemPosition = currentPosition.getPosition();
+      //annotationModel.addAnnotation(problemAnnotation, problemPosition);
+
+      try {
+        IMarker marker = _wodFile.createMarker(IMarker.PROBLEM);
+        marker.setAttribute(IMarker.MESSAGE, problem.getMessage());
+        marker.setAttribute(IMarker.SEVERITY, new Integer(IMarker.SEVERITY_ERROR));
+        if (problemPosition != null) {
+          marker.setAttribute(IMarker.LINE_NUMBER, _wodDocument.getLineOfOffset(problemPosition.getOffset()));
+          marker.setAttribute(IMarker.CHAR_START, problemPosition.getOffset());
+          marker.setAttribute(IMarker.CHAR_END, problemPosition.getOffset() + problemPosition.getLength());
+        }
+        marker.setAttribute(IMarker.TRANSIENT, false);
+      }
+      catch (CoreException e) {
+        WodclipsePlugin.getDefault().log(e);
+      }
+      catch (BadLocationException e) {
+        WodclipsePlugin.getDefault().log(e);
+      }
+    }
   }
 }
