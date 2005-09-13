@@ -68,8 +68,9 @@ public class Settable extends AbstractUn {
 	}
   
   public boolean evaluate(Map _bindings) {
-    // NTS: We can't check this right now.  Maybe ever?  Dynamic bindings throw a huge monkey wrench into this.
-    return true;
+    String bindingName = getName();
+    String bindingValue = (String)_bindings.get(bindingName);
+    boolean evaluation = (bindingValue != null && !bindingValue.startsWith("\""));
+    return evaluation;
   }
-
 }

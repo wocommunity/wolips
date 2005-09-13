@@ -69,7 +69,7 @@ public class And extends AbstractValidationChild {
 
   public boolean evaluate(Map _bindings) {
     boolean evaluation = true;
-    IValidation[] validationChildren = getValidationChildren(false);
+    IValidation[] validationChildren = getValidationChildren();
     for (int i = 0; evaluation && i < validationChildren.length; i ++) {
       evaluation = validationChildren[i].evaluate(_bindings);
     }

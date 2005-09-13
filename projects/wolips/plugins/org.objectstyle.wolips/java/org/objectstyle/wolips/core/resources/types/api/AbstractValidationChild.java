@@ -91,6 +91,28 @@ public abstract class AbstractValidationChild extends AbstractApiModelElement im
     return (Settable[]) setables.toArray(new Settable[setables.size()]);
   }
 
+  public Ungettable[] getUngettables() {
+    List ungetableElements = getChildrenElementsByTagName(Ungettable.UNGETTABLE);
+    ArrayList ungetables = new ArrayList();
+    for (int i = 0; i < ungetableElements.size(); i++) {
+      Element ungettableElement = (Element) ungetableElements.get(i);
+      Ungettable validation = new Ungettable(ungettableElement, apiModel);
+      ungetables.add(validation);
+    }
+    return (Ungettable[]) ungetables.toArray(new Ungettable[ungetables.size()]);
+  }
+
+  public Gettable[] getGettables() {
+    List getableElements = getChildrenElementsByTagName(Gettable.GETTABLE);
+    ArrayList getables = new ArrayList();
+    for (int i = 0; i < getableElements.size(); i++) {
+      Element gettableElement = (Element) getableElements.get(i);
+      Gettable gettable = new Gettable(gettableElement, apiModel);
+      getables.add(gettable);
+    }
+    return (Gettable[]) getables.toArray(new Gettable[getables.size()]);
+  }
+
   public Unbound[] getUnbounds() {
     List unsetableElements = getChildrenElementsByTagName(Unbound.UNBOUND);
     ArrayList unsetables = new ArrayList();
@@ -153,7 +175,7 @@ public abstract class AbstractValidationChild extends AbstractApiModelElement im
     return new Not((Element) elements.get(0), apiModel);
   }
 
-  public IValidation[] getValidationChildren(boolean _includeUnevaluatableChildren) {
+  public IValidation[] getValidationChildren() {
     List validationChildren = new LinkedList();
     Count count = this.getCount();
     if (count != null) {
@@ -181,17 +203,25 @@ public abstract class AbstractValidationChild extends AbstractApiModelElement im
       Bound bound = bounds[i];
       validationChildren.add(bound);
     }
-    if (_includeUnevaluatableChildren) {
-      Unsettable[] unsettables = this.getUnsettables();
-      for (int i = 0; i < unsettables.length; i++) {
-        Unsettable unsettable = unsettables[i];
-        validationChildren.add(unsettable);
-      }
-      Settable[] settables = this.getSettables();
-      for (int i = 0; i < settables.length; i++) {
-        Settable settable = settables[i];
-        validationChildren.add(settable);
-      }
+    Unsettable[] unsettables = this.getUnsettables();
+    for (int i = 0; i < unsettables.length; i++) {
+      Unsettable unsettable = unsettables[i];
+      validationChildren.add(unsettable);
+    }
+    Settable[] settables = this.getSettables();
+    for (int i = 0; i < settables.length; i++) {
+      Settable settable = settables[i];
+      validationChildren.add(settable);
+    }
+    Ungettable[] ungettables = this.getUngettables();
+    for (int i = 0; i < ungettables.length; i++) {
+      Ungettable ungettable = ungettables[i];
+      validationChildren.add(ungettable);
+    }
+    Gettable[] gettables = this.getGettables();
+    for (int i = 0; i < gettables.length; i++) {
+      Gettable gettable = gettables[i];
+      validationChildren.add(gettable);
     }
     IValidation[] validations = (IValidation[]) validationChildren.toArray(new IValidation[validationChildren.size()]);
     return validations;
@@ -199,7 +229,7 @@ public abstract class AbstractValidationChild extends AbstractApiModelElement im
 
   public boolean isAffectedByBindingNamed(String bindingName) {
     boolean isAffectedByBindingName = false;
-    IValidation[] validationChildren = getValidationChildren(true);
+    IValidation[] validationChildren = getValidationChildren();
     for (int i = 0; !isAffectedByBindingName && i < validationChildren.length; i++) {
       isAffectedByBindingName = validationChildren[i].isAffectedByBindingNamed(bindingName);
     }

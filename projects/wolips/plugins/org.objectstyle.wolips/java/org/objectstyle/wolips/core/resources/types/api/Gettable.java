@@ -59,20 +59,19 @@ import java.util.Map;
 
 import org.w3c.dom.Element;
 
-public class Or  extends AbstractValidationChild {
+public class Gettable extends AbstractUn {
 
-	protected final static String OR = "or";
-	
-	protected Or(Element element, ApiModel apiModel) {
+	protected final static String GETTABLE = "gettable";
+
+	protected Gettable(Element element, ApiModel apiModel) {
 		super(element, apiModel);
 	}
-
+  
   public boolean evaluate(Map _bindings) {
-    boolean evaluation = false;
-    IValidation[] validationChildren = getValidationChildren();
-    for (int i = 0; !evaluation && i < validationChildren.length; i ++) {
-      evaluation = validationChildren[i].evaluate(_bindings);
-    }
+    String bindingName = getName();
+    String bindingValue = (String)_bindings.get(bindingName);
+    boolean evaluation = (bindingValue != null && !bindingValue.startsWith("\""));
     return evaluation;
   }
+
 }

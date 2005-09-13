@@ -24,7 +24,7 @@ public class Count extends AbstractValidationChild {
   
   public boolean evaluate(Map _bindings) {
     int count = 0;
-    IValidation[] validationChildren = getValidationChildren(false);
+    IValidation[] validationChildren = getValidationChildren();
     for (int i = 0; i < validationChildren.length; i ++) {
       boolean evaluation = validationChildren[i].evaluate(_bindings);
       if (evaluation) {

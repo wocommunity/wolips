@@ -70,7 +70,7 @@ public class Not  extends AbstractValidationChild {
   public boolean evaluate(Map _bindings) {
     // NTS: What do we do when NOT has more than one child?  I just and the not's together right now
     boolean evaluation = true;
-    IValidation[] validationChildren = getValidationChildren(false);
+    IValidation[] validationChildren = getValidationChildren();
     for (int i = 0; i < validationChildren.length; i ++) {
       evaluation = evaluation && !validationChildren[i].evaluate(_bindings);
     }

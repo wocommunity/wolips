@@ -73,7 +73,7 @@ public abstract class AbstractUn extends AbstractApiModelElement implements IVal
 		element.setAttribute(NAME, className);
 	}
   
-  public IValidation[] getValidationChildren(boolean _includeUnevaluatableChildren) {
+  public IValidation[] getValidationChildren() {
     return new IValidation[0];
   }
 
