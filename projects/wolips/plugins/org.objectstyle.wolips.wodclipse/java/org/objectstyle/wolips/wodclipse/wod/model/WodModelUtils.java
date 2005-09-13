@@ -221,6 +221,8 @@ public class WodModelUtils {
         }
         else if (ch == '"') {
         }
+        else if (ch == '/') {
+        }
         else if (ch == '>') {
           String elementName = elementNameBuffer.toString();
           _htmlElementNames.add(elementName);
