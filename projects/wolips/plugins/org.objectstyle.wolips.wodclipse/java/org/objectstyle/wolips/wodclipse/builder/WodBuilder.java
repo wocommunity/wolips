@@ -21,7 +21,7 @@ public class WodBuilder implements IBuilder {
 
   public void buildStarted(int _kind, Map _args, IProgressMonitor _monitor, IProject _project) {
     // System.out.println("WodBuilder.buildStarted: " + _project + ", " + _kind);
-    if (_kind == IncrementalProjectBuilder.FULL_BUILD) {
+    if (_kind == IncrementalProjectBuilder.FULL_BUILD || _kind == IncrementalProjectBuilder.CLEAN_BUILD) {
       try {
         _project.accept(new WodBuilderResourceVisitor(_monitor));
       }
