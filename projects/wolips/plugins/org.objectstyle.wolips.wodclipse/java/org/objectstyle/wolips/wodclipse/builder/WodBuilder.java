@@ -15,7 +15,7 @@ import org.objectstyle.wolips.core.resources.builder.IBuilder;
 import org.objectstyle.wolips.wodclipse.wod.model.WodModelUtils;
 import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 
-public class WodBuilder implements IBuilder, IResourceVisitor {
+public class WodBuilder implements IBuilder {
   public WodBuilder() {
   }
 
@@ -23,7 +23,7 @@ public class WodBuilder implements IBuilder, IResourceVisitor {
     // System.out.println("WodBuilder.buildStarted: " + _project + ", " + _kind);
     if (_kind == IncrementalProjectBuilder.FULL_BUILD) {
       try {
-        _project.accept(this);
+        _project.accept(new WodBuilderResourceVisitor(_monitor));
       }
       catch (CoreException e) {
         // TODO Auto-generated catch block
@@ -43,7 +43,7 @@ public class WodBuilder implements IBuilder, IResourceVisitor {
   public void handleWoappResourcesDelta(IResourceDelta _delta) {
     try {
       IResource resource = _delta.getResource();
-      visit(resource);
+      WodBuilder.visit(resource, null);
       // System.out.println("WodBuilder.handleWoappResourcesDelta: " + _delta);
     }
     catch (CoreException e) {
@@ -63,31 +63,56 @@ public class WodBuilder implements IBuilder, IResourceVisitor {
     //System.out.println("WodBuilder.classpathChanged: " + _delta);
   }
 
-  public boolean visit(IResource _resource) throws CoreException {
+  public static boolean visit(IResource _resource, IProgressMonitor _progressMonitor) throws CoreException {
     boolean visitChildren;
     if (_resource.isDerived() || "dist".equals(_resource.getName())) {
       visitChildren = false;
     }
     else {
       visitChildren = true;
+      IFile wodFile = null;
       if (_resource instanceof IFile) {
         IFile file = (IFile) _resource;
         String fileExtension = file.getFileExtension();
         if ("wod".equals(fileExtension)) {
-          WodModelUtils.reconcileWodFile(file);
+          wodFile = file;
         }
         else if (("html".equals(fileExtension) && _resource.getParent().getName().endsWith(".wo")) || "api".equals(fileExtension)) {
           String fileName = file.getName();
           fileName = fileName.substring(0, fileName.length() - ("." + fileExtension).length());
           List wodResources = WorkbenchUtilitiesPlugin.findResourcesInProjectByNameAndExtensions(_resource.getProject(), fileName, new String[] { "wod" }, false);
           if (wodResources != null && wodResources.size() > 0) {
-            IFile wodFile = (IFile) wodResources.get(0);
-            WodModelUtils.reconcileWodFile(wodFile);
+            wodFile = (IFile) wodResources.get(0);
           }
+        }
+        if (wodFile != null) {
+          if (_progressMonitor != null) {
+            _progressMonitor.subTask("Building WOD file " + wodFile.getName() + " ...");
+          }
+          WodModelUtils.reconcileWodFile(wodFile);
         }
         visitChildren = false;
       }
     }
     return visitChildren;
+  }
+
+  public static class WodBuilderResourceVisitor implements IResourceVisitor {
+    private IProgressMonitor myProgressMonitor;
+
+    public WodBuilderResourceVisitor(IProgressMonitor _progressMonitor) {
+      myProgressMonitor = _progressMonitor;
+    }
+
+    public boolean visit(IResource _resource) throws CoreException {
+      boolean visitChildren;
+      if (myProgressMonitor.isCanceled()) {
+        visitChildren = false;
+      }
+      else {
+        visitChildren = WodBuilder.visit(_resource, myProgressMonitor);
+      }
+      return visitChildren;
+    }
   }
 }
