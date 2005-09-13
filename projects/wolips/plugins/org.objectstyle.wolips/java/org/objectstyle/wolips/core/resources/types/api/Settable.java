@@ -55,6 +55,8 @@
  */
 package org.objectstyle.wolips.core.resources.types.api;
 
+import java.util.Map;
+
 import org.w3c.dom.Element;
 
 public class Settable extends AbstractUn {
@@ -64,5 +66,10 @@ public class Settable extends AbstractUn {
 	protected Settable(Element element, ApiModel apiModel) {
 		super(element, apiModel);
 	}
+  
+  public boolean evaluate(Map _bindings) {
+    // NTS: We can't check this right now.  Maybe ever?  Dynamic bindings throw a huge monkey wrench into this.
+    return true;
+  }
 
 }

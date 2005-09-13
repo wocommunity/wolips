@@ -55,14 +55,24 @@
  */
 package org.objectstyle.wolips.core.resources.types.api;
 
+import java.util.Map;
+
 import org.w3c.dom.Element;
 
-public class And  extends AbstractValidationChild {
+public class And extends AbstractValidationChild {
 
-	protected final static String AND = "and";
+  protected final static String AND = "and";
 
-	protected And(Element element, ApiModel apiModel) {
-		super(element, apiModel);
-	}
+  protected And(Element element, ApiModel apiModel) {
+    super(element, apiModel);
+  }
 
+  public boolean evaluate(Map _bindings) {
+    boolean evaluation = true;
+    IValidation[] validationChildren = getValidationChildren(false);
+    for (int i = 0; evaluation && i < validationChildren.length; i ++) {
+      evaluation = validationChildren[i].evaluate(_bindings);
+    }
+    return evaluation;
+  }
 }

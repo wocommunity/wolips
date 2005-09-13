@@ -57,7 +57,7 @@ package org.objectstyle.wolips.core.resources.types.api;
 
 import org.w3c.dom.Element;
 
-public class AbstractUn extends AbstractApiModelElement {
+public abstract class AbstractUn extends AbstractApiModelElement implements IValidation {
 
 	public final static String NAME = "name";
 
@@ -72,9 +72,12 @@ public class AbstractUn extends AbstractApiModelElement {
 	public void setName(String className) {
 		element.setAttribute(NAME, className);
 	}
+  
+  public IValidation[] getValidationChildren(boolean _includeUnevaluatableChildren) {
+    return new IValidation[0];
+  }
 
 	public boolean isAffectedByBindingNamed(String bindingName) {
 		return bindingName.equals(this.getName());
 	}
-
 }

@@ -55,7 +55,12 @@
  */
 package org.objectstyle.wolips.core.resources.types.api;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 public abstract class AbstractApiModelElement {
 
@@ -67,6 +72,19 @@ public abstract class AbstractApiModelElement {
 		this.element = element;
 		this.apiModel = apiModel;
 	}
+  
+  public List getChildrenElementsByTagName(String _tagName) {
+    List elementsList = new LinkedList();
+    NodeList nodeList = element.getChildNodes();
+    int length = nodeList.getLength();
+    for (int i = 0; i < length; i ++) {
+      Node childNode = nodeList.item(i);
+      if (childNode instanceof Element && _tagName.equals(childNode.getNodeName())) {
+        elementsList.add(childNode);
+      }
+    }
+    return elementsList;
+  }
 
 	
 }

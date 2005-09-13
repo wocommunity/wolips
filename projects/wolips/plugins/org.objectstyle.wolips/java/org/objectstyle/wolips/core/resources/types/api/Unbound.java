@@ -55,6 +55,8 @@
  */
 package org.objectstyle.wolips.core.resources.types.api;
 
+import java.util.Map;
+
 import org.w3c.dom.Element;
 
 public class Unbound extends AbstractUn {
@@ -86,4 +88,9 @@ public class Unbound extends AbstractUn {
 			}
 		}
 	}
+  
+  public boolean evaluate(Map _bindings) {
+    String bindingName = getName();
+    return !_bindings.containsKey(bindingName);
+  }
 }

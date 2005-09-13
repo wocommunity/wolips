@@ -56,8 +56,7 @@
 package org.objectstyle.wolips.core.resources.types.api;
 
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.Map;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -135,7 +134,19 @@ public class Wo extends AbstractApiModelElement {
 				.toArray(new Validation[validationsList.size()]);
 	}
 
-	public void createBinding(String name) {
+  public Validation[] getFailedValidations(Map _bindings) {
+    Validation[] validations = this.getValidations();
+    ArrayList validationsList = new ArrayList();
+    for (int i = 0; i < validations.length; i++) {
+      Validation validation = validations[i];
+      if (validation.evaluate(_bindings)) {
+        validationsList.add(validation);
+      }
+    }
+    return (Validation[]) validationsList.toArray(new Validation[validationsList.size()]);
+  }
+
+  public void createBinding(String name) {
 		Element newBindingElement = this.element.getOwnerDocument()
 				.createElement(Binding.BINDING);
 		newBindingElement.setAttribute(Binding.NAME, name);

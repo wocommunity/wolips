@@ -55,6 +55,8 @@
  */
 package org.objectstyle.wolips.core.resources.types.api;
 
+import java.util.Map;
+
 import org.w3c.dom.Element;
 
 public class Validation extends AbstractValidationChild {
@@ -75,4 +77,12 @@ public class Validation extends AbstractValidationChild {
 		element.setAttribute(MESSAGE, className);
 	}
 
+  public boolean evaluate(Map _bindings) {
+    boolean evaluation = true;
+    IValidation[] validationChildren = getValidationChildren(false);
+    for (int i = 0; evaluation && i < validationChildren.length; i ++) {
+      evaluation = validationChildren[i].evaluate(_bindings);
+    }
+    return evaluation;
+  }
 }

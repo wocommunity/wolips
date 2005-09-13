@@ -55,6 +55,8 @@
  */
 package org.objectstyle.wolips.core.resources.types.api;
 
+import java.util.Map;
+
 import org.w3c.dom.Element;
 
 public class Bound extends AbstractUn {
@@ -64,5 +66,10 @@ public class Bound extends AbstractUn {
 	protected Bound(Element element, ApiModel apiModel) {
 		super(element, apiModel);
 	}
-
+  
+  public boolean evaluate(Map _bindings) {
+    String bindingName = getName();
+    boolean evaluation = _bindings.containsKey(bindingName);
+    return evaluation;
+  }
 }
