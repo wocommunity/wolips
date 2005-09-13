@@ -43,8 +43,11 @@
  */
 package org.objectstyle.wolips.wodclipse.wod.model;
 
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.jface.text.Position;
 import org.objectstyle.wolips.wodclipse.wod.parser.RulePosition;
@@ -89,6 +92,16 @@ public class DocumentWodElement implements IWodElement {
     return myBindings;
   }
   
+  public Map getBindingsMap() {
+    Map bindingsMap = new HashMap();
+    Iterator bindingsIter = myBindings.iterator();
+    while (bindingsIter.hasNext()) {
+      IWodBinding binding = (IWodBinding)bindingsIter.next();
+      bindingsMap.put(binding.getName(), binding.getValue());
+    }
+    return bindingsMap;
+  }
+
   public IWodModel getModel() {
     return myModel;
   }

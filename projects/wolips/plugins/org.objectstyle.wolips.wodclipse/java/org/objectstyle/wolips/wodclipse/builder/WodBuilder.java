@@ -12,8 +12,11 @@ import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.ui.part.FileEditorInput;
 import org.objectstyle.wolips.core.resources.builder.IBuilder;
-import org.objectstyle.wolips.wodclipse.wod.model.WodModelUtils;
+import org.objectstyle.wolips.wodclipse.wod.WodFileDocumentProvider;
+import org.objectstyle.wolips.wodclipse.wod.WodReconcilingStrategy;
 import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 
 public class WodBuilder implements IBuilder {
@@ -44,7 +47,7 @@ public class WodBuilder implements IBuilder {
   public void handleWoappResourcesDelta(IResourceDelta _delta) {
     try {
       IResource resource = _delta.getResource();
-      WodBuilder.visit(IncrementalProjectBuilder.INCREMENTAL_BUILD, resource, null, new HashMap());
+      WodBuilder.visit(IncrementalProjectBuilder.INCREMENTAL_BUILD, resource, null, new HashMap(), new HashMap());
       // System.out.println("WodBuilder.handleWoappResourcesDelta: " + _delta);
     }
     catch (CoreException e) {
@@ -64,7 +67,7 @@ public class WodBuilder implements IBuilder {
     //System.out.println("WodBuilder.classpathChanged: " + _delta);
   }
 
-  public static boolean visit(int _kind, IResource _resource, IProgressMonitor _progressMonitor, Map _elementNameToTypeCache) throws CoreException {
+  public static boolean visit(int _kind, IResource _resource, IProgressMonitor _progressMonitor, Map _elementNameToTypeCache, Map _typeToApiModelWoCache) throws CoreException {
     boolean visitChildren;
     if (_resource.isDerived() || "dist".equals(_resource.getName())) {
       visitChildren = false;
@@ -90,7 +93,17 @@ public class WodBuilder implements IBuilder {
           if (_progressMonitor != null) {
             _progressMonitor.subTask("Building WOD file " + wodFile.getName() + " ...");
           }
-          WodModelUtils.reconcileWodFile(wodFile, _elementNameToTypeCache);
+
+          WodFileDocumentProvider provider = new WodFileDocumentProvider();
+          FileEditorInput input = new FileEditorInput(wodFile);
+          provider.connect(input);
+          try {
+            IDocument document = provider.getDocument(input);
+            WodReconcilingStrategy.reconcileWodModel(wodFile, document, _elementNameToTypeCache, _typeToApiModelWoCache);
+          }
+          finally {
+            provider.disconnect(input);
+          }
         }
         visitChildren = false;
       }
@@ -101,10 +114,12 @@ public class WodBuilder implements IBuilder {
   public static class WodBuilderResourceVisitor implements IResourceVisitor {
     private IProgressMonitor myProgressMonitor;
     private Map myElementNameToTypeCache;
+    private Map myTypeToApiModelWoCache;
 
     public WodBuilderResourceVisitor(IProgressMonitor _progressMonitor) {
       myProgressMonitor = _progressMonitor;
       myElementNameToTypeCache = new HashMap();
+      myTypeToApiModelWoCache = new HashMap();
     }
 
     public boolean visit(IResource _resource) throws CoreException {
@@ -113,7 +128,7 @@ public class WodBuilder implements IBuilder {
         visitChildren = false;
       }
       else {
-        visitChildren = WodBuilder.visit(IncrementalProjectBuilder.FULL_BUILD, _resource, myProgressMonitor, myElementNameToTypeCache);
+        visitChildren = WodBuilder.visit(IncrementalProjectBuilder.FULL_BUILD, _resource, myProgressMonitor, myElementNameToTypeCache, myTypeToApiModelWoCache);
       }
       return visitChildren;
     }

@@ -44,6 +44,7 @@
 package org.objectstyle.wolips.wodclipse.wod.model;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author mschrag
@@ -53,4 +54,5 @@ public interface IWodElement {
   public String getElementName();
   public String getElementType();
   public List getBindings();
+  public Map getBindingsMap();
 }

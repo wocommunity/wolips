@@ -377,7 +377,7 @@ public class WodCompletionProcessor implements IContentAssistProcessor {
 
     // API files:
     try {
-      Wo wo = WodBindingUtils.findWo(_elementType);
+      Wo wo = WodBindingUtils.findApiModelWo(_elementType, new HashMap());
       if (wo != null) {
         String lowercasePartialToken = partialToken.toLowerCase();
         Binding[] bindings = wo.getBindings();

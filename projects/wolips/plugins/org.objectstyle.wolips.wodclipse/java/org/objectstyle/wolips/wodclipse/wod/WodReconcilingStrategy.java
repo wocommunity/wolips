@@ -68,7 +68,7 @@ public class WodReconcilingStrategy implements IReconcilingStrategy, IReconcilin
     final IFile finalDocumentFile = documentFile;
     IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
       public void run(IProgressMonitor _monitor) throws CoreException {
-        WodReconcilingStrategy.reconcileWodModel(finalDocumentFile, myDocument, new HashMap());
+        WodReconcilingStrategy.reconcileWodModel(finalDocumentFile, myDocument, new HashMap(), new HashMap());
       }
     };
 
@@ -102,7 +102,7 @@ public class WodReconcilingStrategy implements IReconcilingStrategy, IReconcilin
     return annotationModel;
   }
 
-  public static synchronized void reconcileWodModel(IFile _wodFile, IDocument _wodDocument, Map _elementNameToTypeCache) {
+  public static synchronized void reconcileWodModel(IFile _wodFile, IDocument _wodDocument, Map _elementNameToTypeCache, Map _typeToApiModelWoCache) {
     try {
       IMarker[] markers = _wodFile.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
       for (int i = 0; i < markers.length; i++) {
@@ -120,7 +120,7 @@ public class WodReconcilingStrategy implements IReconcilingStrategy, IReconcilin
 
     try {
       IJavaProject javaProject = JavaCore.create(_wodFile.getProject());
-      List semanticProblems = WodModelUtils.getSemanticProblems(javaProject, wodModel, _elementNameToTypeCache);
+      List semanticProblems = WodModelUtils.getSemanticProblems(javaProject, wodModel, _elementNameToTypeCache, _typeToApiModelWoCache);
       problems.addAll(semanticProblems);
     }
     catch (CoreException e) {

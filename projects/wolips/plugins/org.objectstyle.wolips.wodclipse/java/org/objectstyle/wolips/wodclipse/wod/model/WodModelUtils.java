@@ -63,8 +63,8 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.part.FileEditorInput;
-import org.objectstyle.wolips.wodclipse.wod.WodFileDocumentProvider;
-import org.objectstyle.wolips.wodclipse.wod.WodReconcilingStrategy;
+import org.objectstyle.wolips.core.resources.types.api.Validation;
+import org.objectstyle.wolips.core.resources.types.api.Wo;
 import org.objectstyle.wolips.wodclipse.wod.completion.WodBindingUtils;
 
 /**
@@ -73,20 +73,6 @@ import org.objectstyle.wolips.wodclipse.wod.completion.WodBindingUtils;
 public class WodModelUtils {
   public static IWodModel createWodModel(IFile _wodFile, IDocument _wodDocument) {
     return new DocumentWodModel(_wodFile, _wodDocument);
-  }
-
-  public static void reconcileWodFile(IFile _file, Map _elementNameToTypeCache) throws CoreException {
-    long startTime = System.currentTimeMillis();
-    WodFileDocumentProvider provider = new WodFileDocumentProvider();
-    FileEditorInput input = new FileEditorInput(_file);
-    provider.connect(input);
-    try {
-      IDocument document = provider.getDocument(input);
-      WodReconcilingStrategy.reconcileWodModel(_file, document, _elementNameToTypeCache);
-    }
-    finally {
-      provider.disconnect(input);
-    }
   }
 
   public static void writeWodFormat(IWodModel _wodModel, Writer _writer) {
@@ -118,7 +104,7 @@ public class WodModelUtils {
     pw.flush();
   }
 
-  public static List getSemanticProblems(IJavaProject _javaProject, IWodModel _wodModel, Map _elementNameToTypeCache) throws CoreException, IOException {
+  public static List getSemanticProblems(IJavaProject _javaProject, IWodModel _wodModel, Map _elementNameToTypeCache, Map _typeToApiModelWoCache) throws CoreException, IOException {
     long startTime = System.currentTimeMillis();
     boolean hasPositions = (_wodModel instanceof DocumentWodModel);
     Set htmlElementNames;
@@ -157,6 +143,17 @@ public class WodModelUtils {
       if (elementType == null) {
         problems.add(new WodProblem(_wodModel, "The class for '" + elementTypeName + "' is either missing or does extend WOElement.", (hasPositions) ? ((DocumentWodElement) element).getElementTypePosition() : null));
       }
+      else {
+        Wo wo = WodBindingUtils.findApiModelWo(elementType, _typeToApiModelWoCache);
+        if (wo != null) {
+          Map bindingsMap = element.getBindingsMap();
+          Validation[] failedValidations = wo.getFailedValidations(bindingsMap);
+          for (int i = 0; i < failedValidations.length; i ++) {
+            String failedValidationMessage = failedValidations[i].getMessage();
+            problems.add(new WodProblem(_wodModel, failedValidationMessage, (hasPositions) ? ((DocumentWodElement) element).getElementNamePosition() : null));
+          }
+        }
+      }
 
       Set bindingNames = new HashSet();
       Iterator bindingsIter = element.getBindings().iterator();
@@ -169,8 +166,6 @@ public class WodModelUtils {
         else {
           bindingNames.add(bindingName);
         }
-
-        //String bindingValue = binding.getValue();
       }
     }
 

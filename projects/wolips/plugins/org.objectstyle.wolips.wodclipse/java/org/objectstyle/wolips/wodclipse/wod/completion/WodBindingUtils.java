@@ -243,58 +243,77 @@ public class WodBindingUtils {
     return lowercaseFirstLetterMemberName;
   }
 
-  public static Wo findWo(IType _elementType) throws JavaModelException {
-    ApiModel apiModel = null;
-    IOpenable typeContainer = _elementType.getOpenable();
-    if (typeContainer instanceof IClassFile) {
-      IClassFile classFile = (IClassFile) typeContainer;
-      IJavaElement parent = classFile.getParent();
-      if (parent instanceof IPackageFragment) {
-        IPackageFragment parentPackage = (IPackageFragment) parent;
-        IPath packagePath = parentPackage.getPath();
-        IPath apiPath = packagePath.removeLastSegments(2).append(_elementType.getElementName()).addFileExtension("api");
-        File apiFile = apiPath.toFile();
-        boolean fileExists = apiFile.exists();
-        if (!fileExists && parentPackage.getElementName().startsWith("com.webobjects")) {
-          Bundle bundle = WodclipsePlugin.getDefault().getBundle();
-          URL woDefinitionsURL = bundle.getEntry("/WebObjectDefinitions.xml");
-          //apiFile = new File("/Users/mschrag/Documents/workspace/org.objectstyle.wolips.wodclipse/java/org/objectstyle/wolips/wodclipse/api/WebObjectDefinitions.xml");
-          apiModel = new ApiModel(woDefinitionsURL);
-        }
-        else if (fileExists) {
-          apiModel = new ApiModel(apiFile);
-        }
-      }
-    }
-    else if (typeContainer instanceof ICompilationUnit) {
-      ICompilationUnit cu = (ICompilationUnit) typeContainer;
-      IResource resource = cu.getCorrespondingResource();
-      String name = resource.getName();
-      List apiResources = WorkbenchUtilitiesPlugin.findResourcesInProjectByNameAndExtensions(_elementType.getJavaProject().getProject(), _elementType.getElementName(), new String[] { "api" }, false);
-      if (apiResources != null && apiResources.size() > 0) {
-        IResource apiResource = (IResource) apiResources.get(0);
-        apiModel = new ApiModel(apiResource.getLocation().toFile());
-      }
-    }
-
+  public static Wo findApiModelWo(IType _elementType, Map _elementTypeToWoCache) throws JavaModelException {
+    Object cachedWo = _elementTypeToWoCache.get(_elementType);
     Wo wo = null;
-    if (apiModel != null) {
-      Wo[] wos = apiModel.getWODefinitions().getWos();
-      if (wos.length == 0) {
-        wo = null;
-      }
-      else if (wos.length == 1) {
-        wo = wos[0];
+    if (cachedWo != null) {
+      if (cachedWo instanceof Wo) {
+        wo = (Wo)cachedWo;
       }
       else {
-        String className;
-        for (int i = 0; wo == null && i < wos.length; i++) {
-          if (_elementType.getElementName().equals(wos[i].getClassName())) {
-            wo = wos[i];
+        wo = null;
+      }
+    }
+    else if (cachedWo == null) {
+      ApiModel apiModel = null;
+      IOpenable typeContainer = _elementType.getOpenable();
+      if (typeContainer instanceof IClassFile) {
+        IClassFile classFile = (IClassFile) typeContainer;
+        IJavaElement parent = classFile.getParent();
+        if (parent instanceof IPackageFragment) {
+          IPackageFragment parentPackage = (IPackageFragment) parent;
+          IPath packagePath = parentPackage.getPath();
+          IPath apiPath = packagePath.removeLastSegments(2).append(_elementType.getElementName()).addFileExtension("api");
+          File apiFile = apiPath.toFile();
+          boolean fileExists = apiFile.exists();
+          if (!fileExists && parentPackage.getElementName().startsWith("com.webobjects")) {
+            Bundle bundle = WodclipsePlugin.getDefault().getBundle();
+            URL woDefinitionsURL = bundle.getEntry("/WebObjectDefinitions.xml");
+            //apiFile = new File("/Users/mschrag/Documents/workspace/org.objectstyle.wolips.wodclipse/java/org/objectstyle/wolips/wodclipse/api/WebObjectDefinitions.xml");
+            apiModel = new ApiModel(woDefinitionsURL);
+          }
+          else if (fileExists) {
+            apiModel = new ApiModel(apiFile);
           }
         }
       }
+      else if (typeContainer instanceof ICompilationUnit) {
+        ICompilationUnit cu = (ICompilationUnit) typeContainer;
+        IResource resource = cu.getCorrespondingResource();
+        String name = resource.getName();
+        List apiResources = WorkbenchUtilitiesPlugin.findResourcesInProjectByNameAndExtensions(_elementType.getJavaProject().getProject(), _elementType.getElementName(), new String[] { "api" }, false);
+        if (apiResources != null && apiResources.size() > 0) {
+          IResource apiResource = (IResource) apiResources.get(0);
+          apiModel = new ApiModel(apiResource.getLocation().toFile());
+        }
+      }
+
+      if (apiModel != null) {
+        Wo[] wos = apiModel.getWODefinitions().getWos();
+        if (wos.length == 0) {
+          wo = null;
+        }
+        else if (wos.length == 1) {
+          wo = wos[0];
+        }
+        else {
+          String className;
+          for (int i = 0; wo == null && i < wos.length; i++) {
+            if (_elementType.getElementName().equals(wos[i].getClassName())) {
+              wo = wos[i];
+            }
+          }
+        }
+      }
+      
+      if (wo == null) {
+        _elementTypeToWoCache.put(_elementType, "NOAPI");
+      }
+      else {
+        _elementTypeToWoCache.put(_elementType, wo);
+      }
     }
+    
     return wo;
   }
 }
