@@ -1,9 +1,11 @@
 package org.objectstyle.wolips.wodclipse.wod;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
@@ -66,7 +68,7 @@ public class WodReconcilingStrategy implements IReconcilingStrategy, IReconcilin
     final IFile finalDocumentFile = documentFile;
     IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
       public void run(IProgressMonitor _monitor) throws CoreException {
-        WodReconcilingStrategy.reconcileWodModel(finalDocumentFile, myDocument);
+        WodReconcilingStrategy.reconcileWodModel(finalDocumentFile, myDocument, new HashMap());
       }
     };
 
@@ -100,7 +102,7 @@ public class WodReconcilingStrategy implements IReconcilingStrategy, IReconcilin
     return annotationModel;
   }
 
-  public static synchronized void reconcileWodModel(IFile _wodFile, IDocument _wodDocument) {
+  public static synchronized void reconcileWodModel(IFile _wodFile, IDocument _wodDocument, Map _elementNameToTypeCache) {
     try {
       IMarker[] markers = _wodFile.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
       for (int i = 0; i < markers.length; i++) {
@@ -118,7 +120,7 @@ public class WodReconcilingStrategy implements IReconcilingStrategy, IReconcilin
 
     try {
       IJavaProject javaProject = JavaCore.create(_wodFile.getProject());
-      List semanticProblems = WodModelUtils.getSemanticProblems(javaProject, wodModel);
+      List semanticProblems = WodModelUtils.getSemanticProblems(javaProject, wodModel, _elementNameToTypeCache);
       problems.addAll(semanticProblems);
     }
     catch (CoreException e) {

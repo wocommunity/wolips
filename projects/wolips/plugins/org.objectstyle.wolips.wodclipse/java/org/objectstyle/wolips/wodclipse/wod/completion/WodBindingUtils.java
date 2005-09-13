@@ -5,6 +5,7 @@ import java.net.URL;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.resources.IResource;
@@ -85,22 +86,33 @@ public class WodBindingUtils {
     return shortClassName;
   }
 
-  public static IType findElementType(IJavaProject _javaProject, String _elementTypeName, boolean _requireTypeInProject) throws JavaModelException {
+  public static IType findElementType(IJavaProject _javaProject, String _elementTypeName, boolean _requireTypeInProject, Map _elementNameToTypeCache) throws JavaModelException {
     // Search the current project for the given element type name
     IType type;
-    TypeNameCollector typeNameCollector = new TypeNameCollector(_javaProject, _requireTypeInProject);
-    WodBindingUtils.findMatchingElementClassNames(_elementTypeName, SearchPattern.R_EXACT_MATCH, typeNameCollector);
-    if (typeNameCollector.isExactMatch()) {
-      String matchingElementClassName = typeNameCollector.firstTypeName();
-      type = typeNameCollector.getTypeForClassName(matchingElementClassName);
-    }
-    else if (!typeNameCollector.isEmpty()) {
-      // there was more than one matching class!  crap!
-      String matchingElementClassName = typeNameCollector.firstTypeName();
-      type = typeNameCollector.getTypeForClassName(matchingElementClassName);
+    if (_elementNameToTypeCache != null) {
+      type = (IType) _elementNameToTypeCache.get(_elementTypeName);
     }
     else {
       type = null;
+    }
+    if (type == null) {
+      TypeNameCollector typeNameCollector = new TypeNameCollector(_javaProject, _requireTypeInProject);
+      WodBindingUtils.findMatchingElementClassNames(_elementTypeName, SearchPattern.R_EXACT_MATCH, typeNameCollector);
+      if (typeNameCollector.isExactMatch()) {
+        String matchingElementClassName = typeNameCollector.firstTypeName();
+        type = typeNameCollector.getTypeForClassName(matchingElementClassName);
+      }
+      else if (!typeNameCollector.isEmpty()) {
+        // there was more than one matching class!  crap!
+        String matchingElementClassName = typeNameCollector.firstTypeName();
+        type = typeNameCollector.getTypeForClassName(matchingElementClassName);
+      }
+      else {
+        type = null;
+      }
+      if (type != null) {
+        _elementNameToTypeCache.put(_elementTypeName, type);
+      }
     }
     return type;
   }
@@ -108,7 +120,7 @@ public class WodBindingUtils {
   public static void findMatchingElementClassNames(String _elementTypeName, int _matchType, TypeNameCollector _typeNameCollector) throws JavaModelException {
     SearchEngine searchEngine = new SearchEngine();
     IJavaSearchScope searchScope = SearchEngine.createWorkspaceScope();
-    searchEngine.searchAllTypeNames(null, _elementTypeName.toCharArray(), _matchType /*| SearchPattern.R_CASE_SENSITIVE*/, IJavaSearchConstants.TYPE, searchScope, _typeNameCollector, IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH, null);
+    searchEngine.searchAllTypeNames(null, _elementTypeName.toCharArray(), _matchType /*| SearchPattern.R_CASE_SENSITIVE*/, IJavaSearchConstants.CLASS, searchScope, _typeNameCollector, IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH, null);
   }
 
   public static void fillInCompletionProposals(List _bindingKeys, String _token, int _tokenOffset, int _offset, Set _completionProposalsSet) {

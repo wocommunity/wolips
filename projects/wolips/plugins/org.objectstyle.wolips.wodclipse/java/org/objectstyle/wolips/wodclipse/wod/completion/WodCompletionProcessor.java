@@ -44,6 +44,7 @@
 package org.objectstyle.wolips.wodclipse.wod.completion;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -248,7 +249,7 @@ public class WodCompletionProcessor implements IContentAssistProcessor {
         }
         else if (tokenType == PreferenceConstants.BINDING_VALUE) {
           String elementTypeName = path.removeFileExtension().lastSegment();
-          IType elementType = WodBindingUtils.findElementType(javaProject, elementTypeName, true);
+          IType elementType = WodBindingUtils.findElementType(javaProject, elementTypeName, true, new HashMap());
           fillInBindingValueCompletionProposals(javaProject, elementType, token, tokenOffset, _offset, completionProposalsSet);
         }
       }
@@ -355,7 +356,7 @@ public class WodCompletionProcessor implements IContentAssistProcessor {
       RulePosition elementRulePosition = _scanner.getFirstRulePositionOfType(ElementTypeRule.class);
       if (elementRulePosition != null) {
         String elementTypeName = elementRulePosition.getText();
-        type = WodBindingUtils.findElementType(_project, elementTypeName, false);
+        type = WodBindingUtils.findElementType(_project, elementTypeName, false, new HashMap());
       }
       else {
         // we didn't find a ElementTypeRule

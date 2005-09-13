@@ -52,6 +52,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
@@ -74,13 +75,14 @@ public class WodModelUtils {
     return new DocumentWodModel(_wodFile, _wodDocument);
   }
 
-  public static void reconcileWodFile(IFile _file) throws CoreException {
+  public static void reconcileWodFile(IFile _file, Map _elementNameToTypeCache) throws CoreException {
+    long startTime = System.currentTimeMillis();
     WodFileDocumentProvider provider = new WodFileDocumentProvider();
     FileEditorInput input = new FileEditorInput(_file);
     provider.connect(input);
     try {
       IDocument document = provider.getDocument(input);
-      WodReconcilingStrategy.reconcileWodModel(_file, document);
+      WodReconcilingStrategy.reconcileWodModel(_file, document, _elementNameToTypeCache);
     }
     finally {
       provider.disconnect(input);
@@ -116,7 +118,8 @@ public class WodModelUtils {
     pw.flush();
   }
 
-  public static List getSemanticProblems(IJavaProject _javaProject, IWodModel _wodModel) throws CoreException, IOException {
+  public static List getSemanticProblems(IJavaProject _javaProject, IWodModel _wodModel, Map _elementNameToTypeCache) throws CoreException, IOException {
+    long startTime = System.currentTimeMillis();
     boolean hasPositions = (_wodModel instanceof DocumentWodModel);
     Set htmlElementNames;
     if (hasPositions) {
@@ -150,7 +153,7 @@ public class WodModelUtils {
       }
 
       String elementTypeName = element.getElementType();
-      IType elementType = WodBindingUtils.findElementType(_javaProject, elementTypeName, false);
+      IType elementType = WodBindingUtils.findElementType(_javaProject, elementTypeName, false, _elementNameToTypeCache);
       if (elementType == null) {
         problems.add(new WodProblem(_wodModel, "The class for '" + elementTypeName + "' is either missing or does extend WOElement.", (hasPositions) ? ((DocumentWodElement) element).getElementTypePosition() : null));
       }

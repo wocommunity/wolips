@@ -1,5 +1,6 @@
 package org.objectstyle.wolips.wodclipse.builder;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -43,7 +44,7 @@ public class WodBuilder implements IBuilder {
   public void handleWoappResourcesDelta(IResourceDelta _delta) {
     try {
       IResource resource = _delta.getResource();
-      WodBuilder.visit(IncrementalProjectBuilder.INCREMENTAL_BUILD, resource, null);
+      WodBuilder.visit(IncrementalProjectBuilder.INCREMENTAL_BUILD, resource, null, new HashMap());
       // System.out.println("WodBuilder.handleWoappResourcesDelta: " + _delta);
     }
     catch (CoreException e) {
@@ -63,7 +64,7 @@ public class WodBuilder implements IBuilder {
     //System.out.println("WodBuilder.classpathChanged: " + _delta);
   }
 
-  public static boolean visit(int _kind, IResource _resource, IProgressMonitor _progressMonitor) throws CoreException {
+  public static boolean visit(int _kind, IResource _resource, IProgressMonitor _progressMonitor, Map _elementNameToTypeCache) throws CoreException {
     boolean visitChildren;
     if (_resource.isDerived() || "dist".equals(_resource.getName())) {
       visitChildren = false;
@@ -89,7 +90,7 @@ public class WodBuilder implements IBuilder {
           if (_progressMonitor != null) {
             _progressMonitor.subTask("Building WOD file " + wodFile.getName() + " ...");
           }
-          WodModelUtils.reconcileWodFile(wodFile);
+          WodModelUtils.reconcileWodFile(wodFile, _elementNameToTypeCache);
         }
         visitChildren = false;
       }
@@ -99,9 +100,11 @@ public class WodBuilder implements IBuilder {
 
   public static class WodBuilderResourceVisitor implements IResourceVisitor {
     private IProgressMonitor myProgressMonitor;
+    private Map myElementNameToTypeCache;
 
     public WodBuilderResourceVisitor(IProgressMonitor _progressMonitor) {
       myProgressMonitor = _progressMonitor;
+      myElementNameToTypeCache = new HashMap();
     }
 
     public boolean visit(IResource _resource) throws CoreException {
@@ -110,7 +113,7 @@ public class WodBuilder implements IBuilder {
         visitChildren = false;
       }
       else {
-        visitChildren = WodBuilder.visit(IncrementalProjectBuilder.FULL_BUILD, _resource, myProgressMonitor);
+        visitChildren = WodBuilder.visit(IncrementalProjectBuilder.FULL_BUILD, _resource, myProgressMonitor, myElementNameToTypeCache);
       }
       return visitChildren;
     }
