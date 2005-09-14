@@ -130,24 +130,36 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate extends
 		if (configuration.getAttribute(
 				IJavaLaunchConfigurationConstants.ATTR_CLASSPATH_PROVIDER,
 				notFound).equals(notFound)) {
-			this.informUser();
+			ILaunchConfigurationWorkingCopy workingCopy = configuration.getWorkingCopy();
+			workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_CLASSPATH_PROVIDER, WORuntimeClasspathProvider.ID);
+			workingCopy.doSave();
+			this.informUser("LaunchConfiguration update. The message should occur only once. Please launch your app again.");
+			return false;
+		}
+		if (configuration.getAttribute(
+				IJavaLaunchConfigurationConstants.ATTR_CLASSPATH_PROVIDER,
+				notFound).equals("org.objectstyle.wolips.launching.WORuntimeClasspathProvider")) {
+			ILaunchConfigurationWorkingCopy workingCopy = configuration.getWorkingCopy();
+			workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_CLASSPATH_PROVIDER, WORuntimeClasspathProvider.ID);
+			workingCopy.doSave();
+			this.informUser("LaunchConfiguration update. The message should occur only once. Please launch your app again.");
 			return false;
 		}
 		return super.preLaunchCheck(configuration, mode, monitor);
 	}
 
-	private final void informUser() {
+	private final void informUser(final String message) {
 		class RunnableExceptionHandler implements Runnable {
 
 			public void run() {
 				Status status = new Status(IStatus.ERROR,
 						"org.objectstyle.wolips.launching", IStatus.ERROR,
-						"Classpath Provider missing", null);
+						"Classpath Provider missing or invalid", null);
 				WorkbenchUtilitiesPlugin
 						.errorDialog(
 								Display.getCurrent().getActiveShell(),
 								"WOLips",
-								" This launch configuration is invalid. Please create a new one.",
+								message,
 								status);
 			}
 		}
