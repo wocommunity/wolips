@@ -219,7 +219,7 @@
       </editorContribution>
       <editorContribution 
          id="org.objectstyle.wolips.wodclipse.componenteditor.htmlcontribution" 
-         targetID="org.eclipse.wst.html.core.htmlsource.source">        
+         targetID="org.objectstyle.wolips.wodclipse.html.HtmlEditor">        
            <menu id="ComponentEditorHtml"
 			label="&amp;Component Editor" 
              path="edit/additions">
