@@ -96,7 +96,7 @@ public class DocumentWodModel implements IWodModel {
       }
       else if (RulePosition.isRulePositionOfType(rulePosition, ElementNameRule.class)) {
         if (lastRulePosition != null && !RulePosition.isOperatorOfType(lastRulePosition, CloseDefinitionWordDetector.class)) {
-          addProblem("The element name '" + rulePosition._getTextWithoutException() + "' can only appear at the beginning of the document or after a '}'", rulePosition);
+          addProblem("The element name '" + rulePosition._getTextWithoutException() + "' can only appear at the beginning of the document or after a '}'", rulePosition, false);
           syntaxError = true;
         }
         savedRulePosition = rulePosition;
@@ -105,13 +105,13 @@ public class DocumentWodModel implements IWodModel {
       }
       else if (RulePosition.isOperatorOfType(rulePosition, ElementTypeOperatorWordDetector.class)) {
         if (!RulePosition.isRulePositionOfType(lastRulePosition, ElementNameRule.class)) {
-          addProblem("A ':' can only appear after an element name", rulePosition);
+          addProblem("A ':' can only appear after an element name", rulePosition, false);
           syntaxError = true;
         }
       }
       else if (RulePosition.isRulePositionOfType(rulePosition, ElementTypeRule.class)) {
         if (!RulePosition.isOperatorOfType(lastRulePosition, ElementTypeOperatorWordDetector.class)) {
-          addProblem("The element type '" + rulePosition._getTextWithoutException() + "' can only appear after a ':'", rulePosition);
+          addProblem("The element type '" + rulePosition._getTextWithoutException() + "' can only appear after a ':'", rulePosition, false);
           syntaxError = true;
         }
         else if (!syntaxError) {
@@ -121,13 +121,13 @@ public class DocumentWodModel implements IWodModel {
       }
       else if (RulePosition.isOperatorOfType(rulePosition, OpenDefinitionWordDetector.class)) {
         if (!RulePosition.isRulePositionOfType(lastRulePosition, ElementTypeRule.class)) {
-          addProblem("A '{' can only appear after an element type", rulePosition);
+          addProblem("A '{' can only appear after an element type", rulePosition, false);
           syntaxError = true;
         }
       }
       else if (RulePosition.isRulePositionOfType(rulePosition, BindingNameRule.class)) {
         if (!RulePosition.isOperatorOfType(lastRulePosition, OpenDefinitionWordDetector.class) && !RulePosition.isOperatorOfType(lastRulePosition, EndAssignmentWordDetector.class)) {
-          addProblem("The binding name '" + rulePosition._getTextWithoutException() + "' can only appear after a '{' or a ';'", rulePosition);
+          addProblem("The binding name '" + rulePosition._getTextWithoutException() + "' can only appear after a '{' or a ';'", rulePosition, false);
           syntaxError = true;
         }
         else if (!syntaxError) {
@@ -136,13 +136,13 @@ public class DocumentWodModel implements IWodModel {
       }
       else if (RulePosition.isOperatorOfType(rulePosition, AssignmentOperatorWordDetector.class)) {
         if (!RulePosition.isRulePositionOfType(lastRulePosition, BindingNameRule.class)) {
-          addProblem("An '=' can only appear after a binding name", rulePosition);
+          addProblem("An '=' can only appear after a binding name", rulePosition, false);
           syntaxError = true;
         }
       }
       else if (RulePosition.isRulePositionOfType(rulePosition, BindingValueRule.class) || RulePosition.isRulePositionOfType(rulePosition, ConstantBindingValueRule.class)) {
         if (!RulePosition.isOperatorOfType(lastRulePosition, AssignmentOperatorWordDetector.class)) {
-          addProblem("The binding value '" + rulePosition._getTextWithoutException() + "' can only appear after an '='", rulePosition);
+          addProblem("The binding value '" + rulePosition._getTextWithoutException() + "' can only appear after an '='", rulePosition, false);
           syntaxError = true;
         }
         else if (!syntaxError) {
@@ -157,13 +157,13 @@ public class DocumentWodModel implements IWodModel {
       }
       else if (RulePosition.isOperatorOfType(rulePosition, EndAssignmentWordDetector.class)) {
         if (!RulePosition.isRulePositionOfType(lastRulePosition, BindingValueRule.class) && !RulePosition.isRulePositionOfType(lastRulePosition, ConstantBindingValueRule.class)) {
-          addProblem("A ';' can only appear after a binding value", rulePosition);
+          addProblem("A ';' can only appear after a binding value", rulePosition, false);
           syntaxError = true;
         }
       }
       else if (RulePosition.isOperatorOfType(rulePosition, CloseDefinitionWordDetector.class)) {
         if (!RulePosition.isOperatorOfType(lastRulePosition, OpenDefinitionWordDetector.class) && !RulePosition.isOperatorOfType(lastRulePosition, EndAssignmentWordDetector.class)) {
-          addProblem("A '}' can only appear after a ';' or a '{'", rulePosition);
+          addProblem("A '}' can only appear after a ';' or a '{'", rulePosition, false);
           syntaxError = true;
         }
         else {
@@ -171,7 +171,7 @@ public class DocumentWodModel implements IWodModel {
         }
       }
       else {
-        addProblem("'" + rulePosition._getTextWithoutException() + "' is an unknown keyword", rulePosition);
+        addProblem("'" + rulePosition._getTextWithoutException() + "' is an unknown keyword", rulePosition, false);
         syntaxError = true;
       }
 
@@ -181,12 +181,12 @@ public class DocumentWodModel implements IWodModel {
     }
 
     if (lastRulePosition != null && !RulePosition.isOperatorOfType(lastRulePosition, CloseDefinitionWordDetector.class)) {
-      addProblem("The last entry in a WOD file must be a '}'.", lastRulePosition);
+      addProblem("The last entry in a WOD file must be a '}'.", lastRulePosition, false);
     }
   }
 
-  public synchronized void addProblem(String _message, RulePosition _found) {
-    myProblems.add(new WodProblem(this, _message, _found.getPosition()));
+  public synchronized void addProblem(String _message, RulePosition _found, boolean _warning) {
+    myProblems.add(new WodProblem(this, _message, _found.getPosition(), _warning));
   }
 
   public synchronized void addElement(DocumentWodElement _element) {

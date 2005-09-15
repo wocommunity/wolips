@@ -129,10 +129,10 @@ public class WodModelUtils {
       IWodElement element = (IWodElement) elementsIter.next();
       String elementName = element.getElementName();
       if (htmlElementNames != null && !htmlElementNames.contains(elementName)) {
-        problems.add(new WodProblem(_wodModel, "There is no element named '" + elementName + "' in your component HTML file", (hasPositions) ? ((DocumentWodElement) element).getElementNamePosition() : null));
+        problems.add(new WodProblem(_wodModel, "There is no element named '" + elementName + "' in your component HTML file", (hasPositions) ? ((DocumentWodElement) element).getElementNamePosition() : null, true));
       }
       if (elementNames.contains(elementName)) {
-        problems.add(new WodProblem(_wodModel, "Duplicate definition of '" + elementName + "'", (hasPositions) ? ((DocumentWodElement) element).getElementNamePosition() : null));
+        problems.add(new WodProblem(_wodModel, "Duplicate definition of '" + elementName + "'", (hasPositions) ? ((DocumentWodElement) element).getElementNamePosition() : null, false));
       }
       else {
         elementNames.add(elementName);
@@ -141,7 +141,7 @@ public class WodModelUtils {
       String elementTypeName = element.getElementType();
       IType elementType = WodBindingUtils.findElementType(_javaProject, elementTypeName, false, _elementNameToTypeCache);
       if (elementType == null) {
-        problems.add(new WodProblem(_wodModel, "The class for '" + elementTypeName + "' is either missing or does extend WOElement.", (hasPositions) ? ((DocumentWodElement) element).getElementTypePosition() : null));
+        problems.add(new WodProblem(_wodModel, "The class for '" + elementTypeName + "' is either missing or does extend WOElement.", (hasPositions) ? ((DocumentWodElement) element).getElementTypePosition() : null, false));
       }
       else {
         Wo wo = WodBindingUtils.findApiModelWo(elementType, _typeToApiModelWoCache);
@@ -150,7 +150,7 @@ public class WodModelUtils {
           Validation[] failedValidations = wo.getFailedValidations(bindingsMap);
           for (int i = 0; i < failedValidations.length; i ++) {
             String failedValidationMessage = failedValidations[i].getMessage();
-            problems.add(new WodProblem(_wodModel, failedValidationMessage, (hasPositions) ? ((DocumentWodElement) element).getElementNamePosition() : null));
+            problems.add(new WodProblem(_wodModel, failedValidationMessage, (hasPositions) ? ((DocumentWodElement) element).getElementNamePosition() : null, false));
           }
         }
       }
@@ -161,7 +161,7 @@ public class WodModelUtils {
         IWodBinding binding = (IWodBinding) bindingsIter.next();
         String bindingName = binding.getName();
         if (bindingNames.contains(bindingName)) {
-          problems.add(new WodProblem(_wodModel, "Duplicate binding named '" + bindingName + "'", (hasPositions) ? ((DocumentWodBinding) binding).getNamePosition() : null));
+          problems.add(new WodProblem(_wodModel, "Duplicate binding named '" + bindingName + "'", (hasPositions) ? ((DocumentWodBinding) binding).getNamePosition() : null, false));
         }
         else {
           bindingNames.add(bindingName);
@@ -174,7 +174,7 @@ public class WodModelUtils {
       Iterator undefinedHtmlElementNames = htmlElementNames.iterator();
       while (undefinedHtmlElementNames.hasNext()) {
         String htmlElementName = (String) undefinedHtmlElementNames.next();
-        problems.add(new WodProblem(_wodModel, "The component HTML file references an element '" + htmlElementName + "' which does not appear in the WOD file", null));
+        problems.add(new WodProblem(_wodModel, "The component HTML file references an element '" + htmlElementName + "' which does not appear in the WOD file", null, false));
       }
     }
 

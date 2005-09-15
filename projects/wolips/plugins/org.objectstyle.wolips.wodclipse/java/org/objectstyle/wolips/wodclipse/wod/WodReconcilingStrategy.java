@@ -144,7 +144,14 @@ public class WodReconcilingStrategy implements IReconcilingStrategy, IReconcilin
       try {
         IMarker marker = _wodFile.createMarker(IMarker.PROBLEM);
         marker.setAttribute(IMarker.MESSAGE, problem.getMessage());
-        marker.setAttribute(IMarker.SEVERITY, new Integer(IMarker.SEVERITY_ERROR));
+        int severity;
+        if (problem.isWarning()) {
+          severity = IMarker.SEVERITY_WARNING;
+        }
+        else {
+          severity = IMarker.SEVERITY_ERROR;
+        }
+        marker.setAttribute(IMarker.SEVERITY, new Integer(severity));
         if (problemPosition != null) {
           marker.setAttribute(IMarker.LINE_NUMBER, _wodDocument.getLineOfOffset(problemPosition.getOffset()));
           marker.setAttribute(IMarker.CHAR_START, problemPosition.getOffset());

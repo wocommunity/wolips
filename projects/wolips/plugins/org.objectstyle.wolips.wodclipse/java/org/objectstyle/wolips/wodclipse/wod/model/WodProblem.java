@@ -6,11 +6,13 @@ public class WodProblem {
   private IWodModel myModel;
   private String myMessage;
   private Position myPosition;
+  private boolean myWarning;
 
-  public WodProblem(IWodModel _model, String _message, Position _position) {
+  public WodProblem(IWodModel _model, String _message, Position _position, boolean _warning) {
     myModel = _model;
     myMessage = _message;
     myPosition = _position;
+    myWarning = _warning;
   }
 
   public String getMessage() {
@@ -23,5 +25,9 @@ public class WodProblem {
 
   public Position getPosition() {
     return myPosition;
+  }
+  
+  public boolean isWarning() {
+    return myWarning;
   }
 }
