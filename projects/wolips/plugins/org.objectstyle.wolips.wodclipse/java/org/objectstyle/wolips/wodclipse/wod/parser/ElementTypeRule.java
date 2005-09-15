@@ -79,10 +79,10 @@ public class ElementTypeRule implements IPredicateRule {
         _scanner.unread();
         break;
       }
-      else if (ch == ' ' || ch == '\t') {
+      else if (ch == ' ' || ch == '\t' || ch == '\n' || ch == '\r') {
         whitespaceCount++;
       }
-      else if (ch == '{' || ch == '=' || ch == ':' || ch == ';' || ch == '\n' || ch == '\r') {
+      else if (ch == '{' || ch == '=' || ch == ':' || ch == ';') {
         break;
       }
       else {
