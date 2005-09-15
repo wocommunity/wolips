@@ -407,6 +407,12 @@ public class WodCompletionProcessor implements IContentAssistProcessor {
       List bindingKeys = WodBindingUtils.createMatchingBindingKeys(lastType, bindingKeyName, false, WodBindingUtils.ACCESSORS_ONLY);
       WodBindingUtils.fillInCompletionProposals(bindingKeys, bindingKeyNames[bindingKeyNames.length - 1], _tokenOffset + partialToken.lastIndexOf('.') + 1, _offset, _completionProposalsSet);
     }
+    if ("true".startsWith(partialToken)) {
+      _completionProposalsSet.add(new WodCompletionProposal(_token, _tokenOffset, _offset, "true"));
+    }
+    if ("false".startsWith(partialToken)) {
+      _completionProposalsSet.add(new WodCompletionProposal(_token, _tokenOffset, _offset, "false"));
+    }
   }
 
   protected static String partialToken(String _token, int _tokenOffset, int _offset) {
