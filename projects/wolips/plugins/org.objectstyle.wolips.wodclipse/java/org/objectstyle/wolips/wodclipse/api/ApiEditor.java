@@ -88,8 +88,13 @@ public class ApiEditor extends FormEditor {
 	}
 
 	public void doSave(IProgressMonitor monitor) {
-		apiEditorInput.getModel().saveChanges();
-		editorDirtyStateChanged();
+    try {
+      apiEditorInput.getModel().saveChanges();
+      editorDirtyStateChanged();
+    }
+    catch (Throwable t) {
+      throw new RuntimeException("Failed to save .api file.", t);
+    }
 	}
 
 	public void doSaveAs() {

@@ -61,10 +61,13 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IType;
+import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.part.FileEditorInput;
+import org.objectstyle.wolips.core.resources.types.api.ApiModelException;
 import org.objectstyle.wolips.core.resources.types.api.Validation;
 import org.objectstyle.wolips.core.resources.types.api.Wo;
+import org.objectstyle.wolips.wodclipse.WodclipsePlugin;
 import org.objectstyle.wolips.wodclipse.wod.completion.WodBindingUtils;
 
 /**
@@ -144,14 +147,23 @@ public class WodModelUtils {
         problems.add(new WodProblem(_wodModel, "The class for '" + elementTypeName + "' is either missing or does extend WOElement.", (hasPositions) ? ((DocumentWodElement) element).getElementTypePosition() : null, false));
       }
       else {
-        Wo wo = WodBindingUtils.findApiModelWo(elementType, _typeToApiModelWoCache);
-        if (wo != null) {
-          Map bindingsMap = element.getBindingsMap();
-          Validation[] failedValidations = wo.getFailedValidations(bindingsMap);
-          for (int i = 0; i < failedValidations.length; i ++) {
-            String failedValidationMessage = failedValidations[i].getMessage();
-            problems.add(new WodProblem(_wodModel, failedValidationMessage, (hasPositions) ? ((DocumentWodElement) element).getElementNamePosition() : null, false));
+        Wo wo;
+        try {
+          wo = WodBindingUtils.findApiModelWo(elementType, _typeToApiModelWoCache);
+          if (wo != null) {
+            Map bindingsMap = element.getBindingsMap();
+            Validation[] failedValidations = wo.getFailedValidations(bindingsMap);
+            for (int i = 0; i < failedValidations.length; i++) {
+              String failedValidationMessage = failedValidations[i].getMessage();
+              problems.add(new WodProblem(_wodModel, failedValidationMessage, (hasPositions) ? ((DocumentWodElement) element).getElementNamePosition() : null, false));
+            }
           }
+        }
+        catch (JavaModelException e) {
+          WodclipsePlugin.getDefault().log(e);
+        }
+        catch (ApiModelException e) {
+          WodclipsePlugin.getDefault().log(e);
         }
       }
 

@@ -58,6 +58,7 @@ package org.objectstyle.wolips.wodclipse.api;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.ui.part.FileEditorInput;
 import org.objectstyle.wolips.core.resources.types.api.ApiModel;
+import org.objectstyle.wolips.core.resources.types.api.ApiModelException;
 
 public class ApiEditorInput extends FileEditorInput {
 
@@ -67,7 +68,7 @@ public class ApiEditorInput extends FileEditorInput {
 		super(file);
 	}
 
-	public ApiModel getModel() {
+	public ApiModel getModel() throws ApiModelException {
 		if (model == null) {
 			model = new ApiModel(this.getFile().getLocation().toFile());
 		}

@@ -29,6 +29,7 @@ import org.eclipse.jdt.core.search.SearchEngine;
 import org.eclipse.jdt.core.search.SearchPattern;
 import org.eclipse.jdt.internal.corext.util.JavaModelUtil;
 import org.objectstyle.wolips.core.resources.types.api.ApiModel;
+import org.objectstyle.wolips.core.resources.types.api.ApiModelException;
 import org.objectstyle.wolips.core.resources.types.api.Wo;
 import org.objectstyle.wolips.wodclipse.WodclipsePlugin;
 import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
@@ -243,7 +244,7 @@ public class WodBindingUtils {
     return lowercaseFirstLetterMemberName;
   }
 
-  public static Wo findApiModelWo(IType _elementType, Map _elementTypeToWoCache) throws JavaModelException {
+  public static Wo findApiModelWo(IType _elementType, Map _elementTypeToWoCache) throws JavaModelException, ApiModelException {
     Object cachedWo = _elementTypeToWoCache.get(_elementType);
     Wo wo = null;
     if (cachedWo != null) {

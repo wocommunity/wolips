@@ -56,129 +56,107 @@
 package org.objectstyle.wolips.core.resources.types.api;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.objectstyle.wolips.core.CorePlugin;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.xml.sax.SAXException;
 
 public class ApiModel {
 
-	private Document document;
+  private Document document;
 
   private URL url;
-	private File file;
+  private File file;
 
-	private boolean isDirty = false;
+  private boolean isDirty = false;
 
-	public ApiModel(File file) {
-		super();
-		this.file = file;
-		this.parse();
-	}
+  public ApiModel(File file) throws ApiModelException {
+    super();
+    this.file = file;
+    this.parse();
+  }
 
-  public ApiModel(URL url) {
+  public ApiModel(URL url) throws ApiModelException {
     super();
     this.url = url;
     this.parse();
   }
 
-	private void parse() {
+  public String getLocation() {
+    String location;
+    if (this.url != null) {
+      location = this.url.toExternalForm();
+    }
+    else {
+      location = this.file.getAbsolutePath();
+    }
+    return location;
+  }
 
-		DocumentBuilder documentBuilder = null;
-		try {
-			documentBuilder = DocumentBuilderFactory.newInstance()
-					.newDocumentBuilder();
-		} catch (ParserConfigurationException e) {
-			CorePlugin.getDefault().debug(
-					this.getClass().getName() + "Error while parsing .wolips",
-					e);
-		}
-		try {
+  private void parse() throws ApiModelException {
+    try {
+      DocumentBuilder documentBuilder = documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
       if (this.url != null) {
         this.document = documentBuilder.parse(this.url.toExternalForm());
       }
       else {
         this.document = documentBuilder.parse(this.file);
       }
-		} catch (SAXException e) {
-			CorePlugin.getDefault().debug(
-					this.getClass().getName() + "Error while parsing .wolips",
-					e);
-		} catch (IOException e) {
-			CorePlugin.getDefault().debug(
-					this.getClass().getName() + "Error while parsing .wolips",
-					e);
-		}
-	}
-
-	public Wodefinitions getWODefinitions() {
-		Element element = document.getDocumentElement();
-		return new Wodefinitions(element, this);
-	}
-
-	public Wo getWo() {
-		Wodefinitions wodefinitions = this.getWODefinitions();
-		if (wodefinitions == null) {
-			return null;
-		}
-		return wodefinitions.getWo();
-	}
-
-	public void saveChanges() {
-    if (file == null) {
-      throw new IllegalStateException("You can not saveChanges to an ApiModel that is not backed by a file.");
     }
-    
-		// Prepare the DOM document for writing
-		Source source = new DOMSource(this.document);
+    catch (Throwable e) {
+      throw new ApiModelException("Failed to parse API file " + getLocation() + ".", e);
+    }
+  }
 
-		// Prepare the output file
-		Result result = new StreamResult(file);
+  public Wodefinitions getWODefinitions() {
+    Element element = document.getDocumentElement();
+    return new Wodefinitions(element, this);
+  }
 
-		// Write the DOM document to the file
-		Transformer xformer = null;
-		try {
-			xformer = TransformerFactory.newInstance().newTransformer();
-		} catch (TransformerConfigurationException e) {
-			CorePlugin.getDefault().debug(
-					this.getClass().getName() + "Error while writing .wolips",
-					e);
-		} catch (TransformerFactoryConfigurationError e) {
-			CorePlugin.getDefault().debug(
-					this.getClass().getName() + "Error while writing .wolips",
-					e);
-		}
-		try {
-			xformer.transform(source, result);
-			isDirty = false;
-		} catch (TransformerException e) {
-			CorePlugin.getDefault().debug(
-					this.getClass().getName() + "Error while writing .wolips",
-					e);
-		}
-	}
+  public Wo getWo() {
+    Wodefinitions wodefinitions = this.getWODefinitions();
+    if (wodefinitions == null) {
+      return null;
+    }
+    return wodefinitions.getWo();
+  }
 
-	public boolean isDirty() {
-		return isDirty;
-	}
+  public void saveChanges() throws ApiModelException {
+    if (file == null) {
+      throw new ApiModelException("You can not saveChanges to an ApiModel that is not backed by a file.");
+    }
 
-	public void markAsDirty() {
-		isDirty = true;
-	}
+    // Prepare the DOM document for writing
+    Source source = new DOMSource(this.document);
+
+    // Prepare the output file
+    Result result = new StreamResult(file);
+
+    // Write the DOM document to the file
+    try {
+      Transformer xformer = TransformerFactory.newInstance().newTransformer();
+      xformer.transform(source, result);
+      isDirty = false;
+    }
+    catch (Throwable t) {
+      throw new ApiModelException("Failed to save API file " + getLocation() + ".", t);
+    }
+  }
+
+  public boolean isDirty() {
+    return isDirty;
+  }
+
+  public void markAsDirty() {
+    isDirty = true;
+  }
 }
