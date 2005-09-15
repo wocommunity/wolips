@@ -68,8 +68,9 @@ public class WodclipsePlugin extends AbstractWOLipsUIPlugin {
 
 	public static String ComponentEditorID = "org.objectstyle.wolips.wodclipse.mpe.ComponentEditor";
 
-	public static String HTMLEditorID = "org.eclipse.wst.html.core.htmlsource.source";
-
+	//public static String HTMLEditorID = "org.eclipse.wst.html.core.htmlsource.source";
+	public static String HTMLEditorID = "org.objectstyle.wolips.wodclipse.html.HtmlEditor";
+	
 	public static String ApiEditorID = "org.objectstyle.wolips.wodclipse.api.ApiEditor";
 	
 	public static String WOOEditorID = "org.eclipse.ui.DefaultTextEditor";

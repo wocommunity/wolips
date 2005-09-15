@@ -2,8 +2,26 @@
 <?eclipse version="3.0"?>
 <plugin>
 
+ 	<extension point="org.eclipse.wst.sse.ui.extendedconfiguration">
+		<configuration
+			type="textviewerconfiguration"
+			class="org.objectstyle.wolips.wodclipse.html.StructuredTextViewerConfigurationHTMLWithWebObjectTags"
+			target="org.objectstyle.wolips.editors.wohtml" />
+ 	</extension>
+ 	
    <extension
          point="org.eclipse.ui.editors">
+		<editor
+			name="HTML Editor with WO tags"
+			icon="icons/WODEditor.gif"
+			default="false"
+			contributorClass="org.objectstyle.wolips.wodclipse.html.ActionContributorHTMLWithWebObjectTags"
+			class="org.objectstyle.wolips.wodclipse.html.StructuredTextEditorHTMLWithWebObjectTags"
+			symbolicFontName="org.eclipse.wst.sse.ui.textfont"
+			id="org.objectstyle.wolips.wodclipse.html.HtmlEditor">
+			<contentTypeBinding
+				contentTypeId="org.objectstyle.wolips.editors.wohtml" />
+		</editor>
       <editor
             class="org.objectstyle.wolips.wodclipse.api.ApiEditor"
             default="false"
@@ -320,6 +338,7 @@
                menubarPath="edit/ComponentEditorApi/group2"/> 
       </editorContribution>
  	</extension>
+		
  <extension
        point="org.objectstyle.wolips.builders">
     <builder
