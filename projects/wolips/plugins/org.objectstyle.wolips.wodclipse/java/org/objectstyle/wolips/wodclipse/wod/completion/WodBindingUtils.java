@@ -181,7 +181,7 @@ public class WodBindingUtils {
     IBindingKey bindingKey = null;
 
     int flags = _member.getFlags();
-    if (!Flags.isStatic(flags) && !Flags.isPrivate(flags) && !Flags.isProtected(flags)) {
+    if (!Flags.isStatic(flags) && !Flags.isPrivate(flags)) {
       String[] possiblePrefixes;
       boolean memberSignatureMatches;
       if (_member instanceof IMethod) {
