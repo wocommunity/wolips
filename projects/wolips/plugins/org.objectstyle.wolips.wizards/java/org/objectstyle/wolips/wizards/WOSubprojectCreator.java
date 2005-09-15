@@ -116,8 +116,8 @@ public class WOSubprojectCreator implements IRunnableWithProgress {
 	 * @throws InterruptedException
 	 */
 	public void createSubproject(IProgressMonitor monitor)
-			throws CoreException, InvocationTargetException,
-			InterruptedException {
+			throws CoreException, InvocationTargetException
+			{
 		IFolder subprojectFolder = null;
 		switch (parentResource.getType()) {
 		case IResource.PROJECT:

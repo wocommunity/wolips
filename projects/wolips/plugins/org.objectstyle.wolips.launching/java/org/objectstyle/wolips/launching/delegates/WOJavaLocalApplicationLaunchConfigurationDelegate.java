@@ -80,7 +80,6 @@ import org.eclipse.swt.widgets.Display;
 import org.objectstyle.wolips.commons.util.StringUtilities;
 import org.objectstyle.wolips.datasets.adaptable.JavaProject;
 import org.objectstyle.wolips.launching.LaunchingMessages;
-import org.objectstyle.wolips.launching.LaunchingPlugin;
 import org.objectstyle.wolips.launching.classpath.WORuntimeClasspathProvider;
 import org.objectstyle.wolips.launching.ui.AbstractAddVMArgumentsLaunchConfigurationDelegate;
 import org.objectstyle.wolips.preferences.ILaunchInfo;

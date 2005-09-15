@@ -112,7 +112,7 @@ public ContainerContentProvider(IClasspathEntry containerEntry) {
 		try {
 			IPath path = containerEntry
 			.getPath();
-			if(Container.CONTAINER_IDENTITY.equals(path.segment(0)));
+			if(Container.CONTAINER_IDENTITY.equals(path.segment(0)))
 			{
 				path = path.removeFirstSegments(1);
 			}

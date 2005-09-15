@@ -162,34 +162,31 @@ public abstract class WizardNewWOResourcePage extends WizardNewFileCreationPage 
 								setErrorMessage(Messages
 										.getString("WizardNewWOResourcePage.errorMessage.containerNoWOProject"));
 								return false;
-							} else {
-								// project is selected and wo project - now
-								// check for subproject
-								IPath projectFilePath = getContainerFullPath()
-										.removeFirstSegments(1).append(
-												IWOLipsModel.PROJECT_FILE_NAME);
-								if (!actualProject.getFile(projectFilePath)
-										.exists()) {
-									// no webobjects subproject selected
-									setErrorMessage(Messages
-											.getString("WizardNewWOResourcePage.errorMessage.containerNoWOSubproject"));
-									return false;
-								}
+							}
+							// project is selected and wo project - now
+							// check for subproject
+							IPath projectFilePath = getContainerFullPath()
+									.removeFirstSegments(1).append(
+											IWOLipsModel.PROJECT_FILE_NAME);
+							if (!actualProject.getFile(projectFilePath)
+									.exists()) {
+								// no webobjects subproject selected
+								setErrorMessage(Messages
+										.getString("WizardNewWOResourcePage.errorMessage.containerNoWOSubproject"));
+								return false;
 							}
 						}
 						break;
 				}
 				// selection validated
 				return true;
-			} else {
-				// no project selected (container path is < 1)
-				setErrorMessage(Messages
-						.getString("WizardNewWOResourcePage.errorMessage.containerNoWOProject"));
-				return false;
 			}
-		} else {
-			// super validation failed
+			// no project selected (container path is < 1)
+			setErrorMessage(Messages
+					.getString("WizardNewWOResourcePage.errorMessage.containerNoWOProject"));
 			return false;
-		}
+		} 
+		// super validation failed
+		return false;
 	}
 }

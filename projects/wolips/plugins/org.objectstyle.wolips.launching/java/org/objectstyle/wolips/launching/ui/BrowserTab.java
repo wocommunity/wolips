@@ -1,10 +1,8 @@
 package org.objectstyle.wolips.launching.ui;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
-import org.eclipse.debug.ui.ILaunchConfigurationDialog;
 import org.eclipse.debug.ui.ILaunchConfigurationTab;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.swt.SWT;

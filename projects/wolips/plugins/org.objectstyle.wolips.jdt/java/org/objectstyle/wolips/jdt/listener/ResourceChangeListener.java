@@ -49,8 +49,6 @@
  */
 package org.objectstyle.wolips.jdt.listener;
 
-import java.util.List;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -59,10 +57,7 @@ import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.JavaCore;
 import org.objectstyle.wolips.datasets.DataSetsPlugin;
-import org.objectstyle.wolips.datasets.adaptable.JavaProject;
 import org.objectstyle.wolips.datasets.adaptable.Project;
 import org.objectstyle.wolips.jdt.JdtPlugin;
 

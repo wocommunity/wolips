@@ -58,10 +58,8 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Plugin;
@@ -70,7 +68,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.objectstyle.wolips.commons.logging.PluginLogger;
 import org.objectstyle.wolips.datasets.adaptable.AdapterCache;
 import org.objectstyle.wolips.datasets.internal.Api;
-import org.objectstyle.wolips.datasets.listener.ResourceChangeListener;
 import org.osgi.framework.BundleContext;
 /**
  * The main plugin class to be used in the desktop.

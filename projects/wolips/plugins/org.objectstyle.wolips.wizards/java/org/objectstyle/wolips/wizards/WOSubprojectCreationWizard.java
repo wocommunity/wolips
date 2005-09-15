@@ -84,9 +84,9 @@ public class WOSubprojectCreationWizard extends BasicNewFolderResourceWizard {
 	/** (non-Javadoc)
 	 * Method declared on INewWizard
 	 */
-	public void init(IWorkbench workbench, IStructuredSelection selection) {
-		this.workbench = workbench;
-		this.selection = selection;
+	public void init(IWorkbench _workbench, IStructuredSelection _selection) {
+		this.workbench = _workbench;
+		this.selection = _selection;
 		setWindowTitle(Messages.getString("WOSubprojectCreationWizard.title"));
 		setDefaultPageImageDescriptor(WizardsPlugin
 				.WOCOMPONENT_WIZARD_BANNER());

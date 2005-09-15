@@ -100,9 +100,9 @@ public abstract class AbstractResourceWizard extends Wizard implements IWizard {
 	/**
 	 * (non-Javadoc) Method declared on INewWizard
 	 */
-	public void init(IWorkbench workbench,
+	public void init(IWorkbench _workbench,
 			IStructuredSelection structuredSelection) {
-		this.workbench = workbench;
+		this.workbench = _workbench;
 		if (this.displayPage()) {
 			this.addPage(selectTemplatePage);
 		}
