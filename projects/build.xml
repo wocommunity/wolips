@@ -126,6 +126,21 @@
 	</target>
 
 	<!-- ========================================== -->
+	<!-- Build all except homepage.                 -->
+	<!-- ========================================== -->
+	<target name="allexcepthomepage" depends="print.environment,verify.clean,set.clean,call.clean,prepare,woenvironment,woproject,wolips">
+	</target>
+
+	<!-- ========================================== -->
+	<!-- Build dist.                                -->
+	<!-- ========================================== -->
+	<target name="distexcepthomepage" depends="allexcepthomepage">
+		<ant dir="${project.woenvironment.dir}" target="dist" />
+		<ant dir="${project.woproject.dir}" target="dist" />
+		<ant dir="${project.wolips.dir}" target="dist" />
+	</target>
+
+	<!-- ========================================== -->
 	<!-- Build buildserver.                         -->
 	<!-- ========================================== -->
 	<target name="buildserver" depends="dist">
