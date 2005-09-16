@@ -3,7 +3,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0
  * 
- * Copyright (c) 2002 - 2004 The ObjectStyle Group and individual authors of the
+ * Copyright (c) 2002 - 2005 The ObjectStyle Group and individual authors of the
  * software. All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -66,13 +66,11 @@ import org.eclipse.jdt.launching.StandardClasspathProvider;
 import org.objectstyle.wolips.commons.logging.PluginLogger;
 import org.objectstyle.wolips.datasets.adaptable.JavaProject;
 import org.objectstyle.wolips.jdt.JdtPlugin;
+import org.objectstyle.wolips.launching.LaunchingPlugin;
 
 /**
  * @author hn3000
  * @author Gary Watkins
- * 
- * To change this generated comment go to Window>Preferences>Java>Code
- * Generation>Code Template
  */
 public class WORuntimeClasspathProvider extends StandardClasspathProvider {
   /**
@@ -91,8 +89,6 @@ public class WORuntimeClasspathProvider extends StandardClasspathProvider {
     if (entries.length == 0) {
       return entries;
     }
-
-    PluginLogger log = JdtPlugin.getDefault().getPluginLogger();
 
     // keep track of all of the projects
     List projectList = new ArrayList();
@@ -157,15 +153,15 @@ public class WORuntimeClasspathProvider extends StandardClasspathProvider {
           if (!frameworkSet.contains(frameworkJar)) {
             frameworkSet.add(frameworkJar);
             resolved.add(cpe);
-            log.debug(cpe.getPath());
+            LaunchingPlugin.getDefault().debug(cpe.getPath());
           }
           else {
-            log.debug("Bypassing - " + cpe.getPath());
+        	  LaunchingPlugin.getDefault().debug("Bypassing - " + cpe.getPath());
           }
         }
         else {
           resolved.add(cpe);
-          log.debug(cpe.getPath());
+          LaunchingPlugin.getDefault().debug(cpe.getPath());
         }
       }
     }
@@ -179,10 +175,10 @@ public class WORuntimeClasspathProvider extends StandardClasspathProvider {
         if (!frameworkSet.contains(frameworkJar)) {
           frameworkSet.add(frameworkJar);
           resolved.add(cpe);
-          log.debug(cpe.getPath());
+          LaunchingPlugin.getDefault().debug(cpe.getPath());
         }
         else {
-          log.debug("Bypassing - " + cpe.toString());
+        	LaunchingPlugin.getDefault().debug("Bypassing - " + cpe.toString());
         }
       }
     }
