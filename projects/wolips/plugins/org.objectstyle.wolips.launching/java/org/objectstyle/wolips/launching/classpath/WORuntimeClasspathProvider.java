@@ -46,117 +46,147 @@
 package org.objectstyle.wolips.launching.classpath;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.launching.IRuntimeClasspathEntry;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.jdt.launching.StandardClasspathProvider;
+import org.objectstyle.wolips.commons.logging.PluginLogger;
 import org.objectstyle.wolips.datasets.adaptable.JavaProject;
+import org.objectstyle.wolips.jdt.JdtPlugin;
 
 /**
  * @author hn3000
+ * @author Gary Watkins
  * 
  * To change this generated comment go to Window>Preferences>Java>Code
  * Generation>Code Template
  */
 public class WORuntimeClasspathProvider extends StandardClasspathProvider {
-	/**
-	 * Comment for <code>ID</code>
-	 */
-	public final static String ID =
-		WORuntimeClasspathProvider.class.getName();
+  /**
+   * Comment for <code>ID</code>
+   */
+  public final static String ID = WORuntimeClasspathProvider.class.getName();
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.jdt.launching.IRuntimeClasspathProvider#computeUnresolvedClasspath(org.eclipse.debug.core.ILaunchConfiguration)
-	 */
-	public IRuntimeClasspathEntry[] computeUnresolvedClasspath(ILaunchConfiguration configuration)
-		throws CoreException {
-		return super.computeUnresolvedClasspath(configuration);
-	}
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.eclipse.jdt.launching.IRuntimeClasspathProvider#resolveClasspath(org.eclipse.jdt.launching.IRuntimeClasspathEntry[],
+   *      org.eclipse.debug.core.ILaunchConfiguration)
+   */
+  public IRuntimeClasspathEntry[] resolveClasspath(IRuntimeClasspathEntry[] entries, ILaunchConfiguration configuration) throws CoreException {
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.jdt.launching.IRuntimeClasspathProvider#resolveClasspath(org.eclipse.jdt.launching.IRuntimeClasspathEntry[],
-	 *      org.eclipse.debug.core.ILaunchConfiguration)
-	 */
-	public IRuntimeClasspathEntry[] resolveClasspath(
-		IRuntimeClasspathEntry[] entries,
-		ILaunchConfiguration configuration)
-		throws CoreException {
+    if (entries.length == 0) {
+      return entries;
+    }
 
-		List others = new ArrayList();
-		List resolved = new ArrayList();
+    PluginLogger log = JdtPlugin.getDefault().getPluginLogger();
 
-		// used for duplicate removal
-		Set allEntries = new HashSet();
-		
-		// looks like we need to let super do it's thing before
-		// we start tinkering with things ourselves
+    // keep track of all of the projects
+    List projectList = new ArrayList();
+    // keeps a list of all the jars by project name
+    Map projectJars = new HashMap();
 
-		entries = super.resolveClasspath(entries, configuration);
-		// resolve WO framework/application projects ourselves, let super do the rest
-		for (int i = 0; i < entries.length; ++i) {
-			IRuntimeClasspathEntry entry = entries[i];
-			IPath archive = _getWOJavaArchive(entry);
-			if (null != archive) {
-				// I think this line here breaks things: (hn3000)
-				//resolved.add(entry);
-				if (!allEntries.contains(archive.toString())) {
-					resolved.add(
-						JavaRuntime.newArchiveRuntimeClasspathEntry(archive));
+    // keep track of all of the frameworks
+    ArrayList frameworks = new ArrayList();
 
-					allEntries.add(archive.toString());
-				}
-				allEntries.add(entry.toString());
-			} else {
-				others.add(entry);
-			}
-		}
+    // pattern to recognize a framework
+    Pattern pattern = Pattern.compile("^*/(\\w+\\.framework)/Resources/Java/(.*\\.jar)$");
 
-		// ... let super do the rest but remove duplicates from the resulting
-		// classpath ...
-		if (others.size() != 0) {
-			IRuntimeClasspathEntry oe[] =
-				(IRuntimeClasspathEntry[]) others.toArray(
-						new IRuntimeClasspathEntry[others.size()]
-				);
+    // resolve WO framework/application projects ourselves, let super do the rest
+    IRuntimeClasspathEntry[] entries2 = super.resolveClasspath(entries, configuration);
+    for (int i = 0; i < entries2.length; ++i) {
+      IRuntimeClasspathEntry entry = entries2[i];
+      String name = entry.getPath().segment(0);
+      int entryType = entry.getType();
 
-			for (int i = 0; i < oe.length; ++i) {
-				IRuntimeClasspathEntry entry = oe[i];
-				String ls = entry.getLocation();
-				IPath loc = (null == ls) ? null : new Path(ls);
-				if (null == loc) {
-					resolved.add(entry);
-				} else {
-					if (!allEntries.contains(loc)) {
-						resolved.add(entry);
-						allEntries.add(loc);
-					}
-				}
-			}
-		}
-		return (IRuntimeClasspathEntry[]) resolved.toArray(
-			new IRuntimeClasspathEntry[resolved.size()]);
-	}
+      if (entryType == IRuntimeClasspathEntry.PROJECT) {
+        if (!projectJars.containsKey(name)) {
+          IProject project = (IProject) entry.getResource();
+          JavaProject javaProject = (JavaProject) JavaCore.create(project).getAdapter(JavaProject.class);
+          IPath path = javaProject.getWOJavaArchive();
 
-	IPath _getWOJavaArchive(IRuntimeClasspathEntry entry)
-		throws CoreException {
-		if (IRuntimeClasspathEntry.PROJECT == entry.getType()) {
-			IProject project = (IProject) entry.getResource();
-			JavaProject javaProject = (JavaProject)JavaCore.create(project).getAdapter(JavaProject.class);
-			return javaProject.getWOJavaArchive();
-		}
-		return null;
-	}
+          entry = JavaRuntime.newArchiveRuntimeClasspathEntry(path);
+
+          ArrayList al = new ArrayList();
+          al.add(entry);
+          projectJars.put(name, al);
+          projectList.add(name);
+        }
+      }
+      else if (entryType == IRuntimeClasspathEntry.ARCHIVE) {
+        // if it has .framework in the name it is a framework
+        Matcher match = pattern.matcher(entry.getPath().toString());
+        if (match.find()) {
+          frameworks.add(entry);
+        }
+        else if (projectJars.containsKey(name)) {
+          ArrayList al = (ArrayList) projectJars.get(name);
+          al.add(entry);
+        }
+      }
+    }
+
+    // final classpath
+    ArrayList resolved = new ArrayList();
+
+    // used to make sure that we don't add anything twice
+    Set frameworkSet = new HashSet();
+
+    // loop through all of the projects first
+    for (Iterator it = projectList.iterator(); it.hasNext();) {
+      String name = (String) it.next();
+      ArrayList al = (ArrayList) projectJars.get(name);
+      for (Iterator it2 = al.iterator(); it2.hasNext();) {
+        IRuntimeClasspathEntry cpe = (IRuntimeClasspathEntry) it2.next();
+        Matcher match = pattern.matcher(cpe.getPath().toString());
+        if (match.find()) {
+          String frameworkJar = match.group(1) + "-" + match.group(2);
+          if (!frameworkSet.contains(frameworkJar)) {
+            frameworkSet.add(frameworkJar);
+            resolved.add(cpe);
+            log.debug(cpe.getPath());
+          }
+          else {
+            log.debug("Bypassing - " + cpe.getPath());
+          }
+        }
+        else {
+          resolved.add(cpe);
+          log.debug(cpe.getPath());
+        }
+      }
+    }
+
+    // loop through all of the frameworks
+    for (Iterator it = frameworks.iterator(); it.hasNext();) {
+      IRuntimeClasspathEntry cpe = (IRuntimeClasspathEntry) it.next();
+      Matcher match = pattern.matcher(cpe.getPath().toString());
+      if (match.find()) {
+        String frameworkJar = match.group(1) + "-" + match.group(2);
+        if (!frameworkSet.contains(frameworkJar)) {
+          frameworkSet.add(frameworkJar);
+          resolved.add(cpe);
+          log.debug(cpe.getPath());
+        }
+        else {
+          log.debug("Bypassing - " + cpe.toString());
+        }
+      }
+    }
+
+    return (IRuntimeClasspathEntry[]) resolved.toArray(new IRuntimeClasspathEntry[resolved.size()]);
+  }
 }
