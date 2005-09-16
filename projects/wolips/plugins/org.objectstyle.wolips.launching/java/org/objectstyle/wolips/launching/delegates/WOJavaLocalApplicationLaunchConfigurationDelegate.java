@@ -2,7 +2,7 @@
 *
 * The ObjectStyle Group Software License, Version 1.0
 *
-* Copyright (c) 2002 - 2004 The ObjectStyle Group
+* Copyright (c) 2002 - 2005 The ObjectStyle Group
 * and individual authors of the software.  All rights reserved.
 *
 * Redistribution and use in source and binary forms, with or without
@@ -63,7 +63,9 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
@@ -73,6 +75,7 @@ import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.jdt.launching.IVMInstall;
 import org.eclipse.jdt.launching.IVMRunner;
 import org.eclipse.jdt.launching.VMRunnerConfiguration;
+import org.eclipse.swt.widgets.Display;
 import org.objectstyle.wolips.datasets.adaptable.JavaProject;
 import org.objectstyle.wolips.launching.LaunchingMessages;
 import org.objectstyle.wolips.launching.classpath.WORuntimeClasspathProvider;
@@ -80,6 +83,7 @@ import org.objectstyle.wolips.launching.ui.AbstractAddVMArgumentsLaunchConfigura
 import org.objectstyle.wolips.preferences.ILaunchInfo;
 import org.objectstyle.wolips.preferences.Preferences;
 import org.objectstyle.wolips.variables.VariablesPlugin;
+import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 
 /**
 * Launches a local VM.
@@ -116,6 +120,50 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate extends
     config.setAttribute(WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_OPEN_IN_BROWSER, "true");
   }
   
+	public boolean preLaunchCheck(ILaunchConfiguration configuration,
+			String mode, IProgressMonitor monitor) throws CoreException {
+		String notFound = "notFound";
+		if (configuration.getAttribute(
+				IJavaLaunchConfigurationConstants.ATTR_CLASSPATH_PROVIDER,
+				notFound).equals(notFound)) {
+			ILaunchConfigurationWorkingCopy workingCopy = configuration.getWorkingCopy();
+			workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_CLASSPATH_PROVIDER, WORuntimeClasspathProvider.ID);
+			workingCopy.doSave();
+			this.informUser("LaunchConfiguration update. The message should occur only once. Please launch your app again.");
+			return false;
+		}
+		if (configuration.getAttribute(
+				IJavaLaunchConfigurationConstants.ATTR_CLASSPATH_PROVIDER,
+				notFound).equals("org.objectstyle.wolips.launching.WORuntimeClasspathProvider")) {
+			ILaunchConfigurationWorkingCopy workingCopy = configuration.getWorkingCopy();
+			workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_CLASSPATH_PROVIDER, WORuntimeClasspathProvider.ID);
+			workingCopy.doSave();
+			this.informUser("LaunchConfiguration update. The message should occur only once. Please launch your app again.");
+			return false;
+		}
+		return super.preLaunchCheck(configuration, mode, monitor);
+	}
+	
+	private final void informUser(final String message) {
+		class RunnableExceptionHandler implements Runnable {
+
+			public void run() {
+				Status status = new Status(IStatus.ERROR,
+						"org.objectstyle.wolips.launching", IStatus.ERROR,
+						"Classpath Provider missing or invalid", null);
+				WorkbenchUtilitiesPlugin
+						.errorDialog(
+								Display.getCurrent().getActiveShell(),
+								"WOLips",
+								message,
+								status);
+			}
+		}
+		RunnableExceptionHandler runnable = new RunnableExceptionHandler();
+		Display.getDefault().asyncExec(runnable);
+	}
+
+	
   public void launch(ILaunchConfiguration configuration, String mode,
       ILaunch launch, IProgressMonitor monitor) throws CoreException {
 
