@@ -121,7 +121,18 @@ public class WodBindingUtils {
   public static void findMatchingElementClassNames(String _elementTypeName, int _matchType, TypeNameCollector _typeNameCollector) throws JavaModelException {
     SearchEngine searchEngine = new SearchEngine();
     IJavaSearchScope searchScope = SearchEngine.createWorkspaceScope();
-    searchEngine.searchAllTypeNames(null, _elementTypeName.toCharArray(), _matchType /*| SearchPattern.R_CASE_SENSITIVE*/, IJavaSearchConstants.CLASS, searchScope, _typeNameCollector, IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH, null);
+    int lastDotIndex = _elementTypeName.lastIndexOf('.');
+    char[] packageName;
+    char[] typeName;
+    if (lastDotIndex == -1) {
+      packageName = null;
+      typeName = _elementTypeName.toCharArray();
+    }
+    else {
+      packageName = _elementTypeName.substring(0, lastDotIndex).toCharArray();
+      typeName = _elementTypeName.substring(lastDotIndex + 1).toCharArray();
+    }
+    searchEngine.searchAllTypeNames(packageName, typeName, _matchType, IJavaSearchConstants.CLASS, searchScope, _typeNameCollector, IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH, null);
   }
 
   public static void fillInCompletionProposals(List _bindingKeys, String _token, int _tokenOffset, int _offset, Set _completionProposalsSet) {

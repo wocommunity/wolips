@@ -328,11 +328,18 @@ public class WodCompletionProcessor implements IContentAssistProcessor {
     String partialToken = WodCompletionProcessor.partialToken(_token, _tokenOffset, _offset);
     if (partialToken.length() > 0) {
       WodBindingUtils.findMatchingElementClassNames(partialToken, SearchPattern.R_PREFIX_MATCH, typeNameCollector);
+      boolean includePackageName = _token.indexOf('.') != -1;
       Iterator matchingElementClassNamesIter = typeNameCollector.typeNames();
       while (matchingElementClassNamesIter.hasNext()) {
-        String matchingElementClassName = (String) matchingElementClassNamesIter.next();
-        String shortElementTypeName = WodBindingUtils.getShortClassName(matchingElementClassName);
-        WodCompletionProposal completionProposal = new WodCompletionProposal(_token, _tokenOffset, _offset, shortElementTypeName);
+        String matchingElementTypeName = (String) matchingElementClassNamesIter.next();
+        String elementTypeName;
+        if (includePackageName) {
+          elementTypeName = matchingElementTypeName;
+        }
+        else {
+          elementTypeName = WodBindingUtils.getShortClassName(matchingElementTypeName);
+        }
+        WodCompletionProposal completionProposal = new WodCompletionProposal(_token, _tokenOffset, _offset, elementTypeName);
         _completionProposalsSet.add(completionProposal);
       }
     }
