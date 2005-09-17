@@ -118,7 +118,7 @@ public class PBProject {
 
 	protected Map filesTable;
 
-	private boolean hasUnsavedChanges = false;;
+	private boolean hasUnsavedChanges = false;
 
 	/**
 	 * Creates a new PBProject object with an associated project file assumed to

@@ -59,20 +59,42 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.tools.ant.BuildException;
+import org.objectstyle.woenvironment.pb.PBXProject;
+import org.objectstyle.woenvironment.pb.XcodeProjProject;
 import org.objectstyle.woenvironment.pb.XcodeProject;
 
 /**
  * @author Jonathan 'Wolf' Rentzsch
  */
 public class XcodeIndex extends PBXIndex {
-    
+  private boolean myXcodeProj;
+  
+  /**
+   * If true, this outputs .xcodeproj format files from Xcode 2.1.
+   * 
+   * @param _xcodeProj whether or not to output .xcodeproj files
+   */
+  public void setXcodeProj(boolean _xcodeProj) {
+    myXcodeProj = _xcodeProj;
+  }
+  
+  public boolean isXcodeProj() {
+    return myXcodeProj;
+  }
+  
 	/**
 	 * @see org.apache.tools.ant.Task#execute()
 	 */
 	public void execute() throws BuildException {
 		validateAttributes();
 		
-		XcodeProject proj = new XcodeProject();
+    PBXProject proj;
+    if (myXcodeProj) {
+      proj = new XcodeProjProject();
+    }
+    else {
+      proj = new XcodeProject();
+    }
 		addToProject( proj );
 		
 		if( getProjectFile().exists() ) {
