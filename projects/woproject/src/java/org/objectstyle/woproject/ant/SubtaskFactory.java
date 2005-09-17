@@ -88,9 +88,8 @@ public class SubtaskFactory {
 	public static int subtaskLogLevel(int level) {
 		if (level == Project.MSG_INFO) {
 			return Project.MSG_VERBOSE;
-		} else {
-			return level;
-		}
+		} 
+		return level;
 	}
 
 	protected void initChildTask(Task t) {

@@ -559,12 +559,12 @@ public class ParserTokenManager implements ParserConstants {
 		SwitchTo(lexState);
 	}
 	public void SwitchTo(int lexState) {
-		if (lexState >= 2 || lexState < 0)
+		if (lexState >= 2 || lexState < 0) {
 			throw new TokenMgrError("Error: Ignoring invalid lexical state : "
 					+ lexState + ". State unchanged.",
 					TokenMgrError.INVALID_LEXICAL_STATE);
-		else
-			curLexState = lexState;
+    }
+		curLexState = lexState;
 	}
 	protected Token jjFillToken() {
 		Token t = Token.newToken(jjmatchedKind);

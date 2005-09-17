@@ -92,9 +92,8 @@ public class FrameworkFormat extends ProjectFormat {
 	public String templateForTarget(String targetName) throws BuildException {
 		if (targetName.endsWith("Info.plist")) {
 			return INFO_TEMPLATE;
-		} else {
-			throw new BuildException("Invalid target: " + targetName);
-		}
+		} 
+		throw new BuildException("Invalid target: " + targetName);
 	}
 
 	public FilterSetCollection filtersForTarget(String targetName)
@@ -102,9 +101,8 @@ public class FrameworkFormat extends ProjectFormat {
 
 		if (targetName.endsWith("Info.plist")) {
 			return infoFilter(getFrameworkTask().getLibNames());
-		} else {
-			throw new BuildException("Invalid target: " + targetName);
 		}
+		throw new BuildException("Invalid target: " + targetName);
 	}
 
 	/**
