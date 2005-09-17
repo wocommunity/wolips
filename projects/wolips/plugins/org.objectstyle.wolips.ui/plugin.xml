@@ -546,8 +546,8 @@
             id="org.objectstyle.wolips.ui.javaelementfilters.dotxcode"
             name="Xcode (WOLips)"
             enabled="true"
-            description="Hide all *.xcode files"
-            pattern="*.xcode">
+            description="Hide all *.xcode/*.xcodeproj files"
+            pattern="*.xcode*">
       </filter>
       <filter
             id="org.objectstyle.wolips.ui.javaelementfilters.dist"
