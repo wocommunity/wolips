@@ -71,32 +71,35 @@ import org.objectstyle.woenvironment.pb.PBXProject.ObjectsTable.ID;
  */
 public class XcodeProjProject extends PBXProject {
   protected Map newFrameworkReference(String _name, String _path) {
-    return map(new Object[] { "isa", "PBXFileReference", "lastKnownFileType", "wrapper.framework", "name", _name, "path", _path, "sourceTree", "<absolute>" });
+    return map(new Object[] { "isa", "PBXFileReference", "lastKnownFileType", "wrapper.framework", "name", _name, "path", _path, "sourceTree", "\"<absolute>\"" });
   }
 
   protected Map newGroup(String _name, List _childrenIDs) {
-    return map(new Object[] { "isa", "PBXGroup", "refType", "<group>", "name", _name, "children", _childrenIDs });
+    return map(new Object[] { "isa", "PBXGroup", "refType", "\"<group>\"", "name", _name, "children", _childrenIDs });
   }
 
   protected Map newFileReference(String _name, String _path) {
-    return map(new Object[] { "isa", "PBXFileReference", "lastKnownFileType", "sourcecode.java", "sourceTree", new File(_path).isAbsolute() ? "<absolute>" : "SOURCE_ROOT", "name", _name, "path", _path });
+    return map(new Object[] { "isa", "PBXFileReference", "lastKnownFileType", "sourcecode.java", "sourceTree", new File(_path).isAbsolute() ? "\"<absolute>\"" : "SOURCE_ROOT", "name", _name, "path", _path });
   }
 
   protected Map newFolderReference(String _name, String _path) {
-    //    if (_path.endsWith(".wo") || _path.endsWith(".eomodeld") || _path.endsWith(".nib")) {
-    //    }
-    Map result = map(new Object[] { "isa", "PBXFileReference", "includeInIndex", "0", "lastKnownFileType", "folder", "path", _path, "sourceTree", new File(_path).isAbsolute() ? "<absolute>" : "<group>" });
-    // sourceTree = "SOURCE_ROOT";  ?
+    Map result;
+    if (_path.endsWith(".wo") || _path.endsWith(".eomodeld") || _path.endsWith(".nib")) {
+      result = map(new Object[] { "isa", "PBXFileReference", "explicitFileType", "wrapper", "path", _path, "sourceTree", "SOURCE_ROOT" });
+    }
+    else {
+      result = map(new Object[] { "isa", "PBXFileReference", "lastKnownFileType", "folder", "path", _path, "sourceTree", new File(_path).isAbsolute() ? "\"<absolute>\"" : "\"<group>\"" });
+    }
     return result;
   }
 
-  protected Map newAppServerTarget(List _buildPhaseIDs) {
-    Map result = super.newAppServerTarget(_buildPhaseIDs);
+  protected Map newAppServerTarget(List _buildPhaseIDs, ObjectsTable _objectsTable) {
+    Map result = super.newAppServerTarget(_buildPhaseIDs, _objectsTable);
     List buildConfigurations = new LinkedList();
-    buildConfigurations.add(newBuildConfiguration(map(new Object[] { "COPY_PHASE_STRIP", "NO" }), "Development"));
-    buildConfigurations.add(newBuildConfiguration(map(new Object[] { "COPY_PHASE_STRIP", "YES" }), "Deployment"));
-    buildConfigurations.add(newBuildConfiguration(new HashMap(), "Default"));
-    result.put("buildConfigurationList", newBuildConfigurationList(buildConfigurations, false, "Default"));
+    buildConfigurations.add(_objectsTable.insert(newBuildConfiguration(map(new Object[] { "COPY_PHASE_STRIP", "NO" }), "Development")));
+    buildConfigurations.add(_objectsTable.insert(newBuildConfiguration(map(new Object[] { "COPY_PHASE_STRIP", "YES" }), "Deployment")));
+    buildConfigurations.add(_objectsTable.insert(newBuildConfiguration(new HashMap(), "Default")));
+    result.put("buildConfigurationList", _objectsTable.insert(newBuildConfigurationList(buildConfigurations, false, "Default")));
     result.put("productName", "Application Server"); 
     return result;
   }
@@ -113,20 +116,20 @@ public class XcodeProjProject extends PBXProject {
     return map(new Object[] { "isa", "PBXFrameworksBuildPhase", "files", _buildFileIDs, "buildActionMask", "2147483647", "runOnlyForDeploymentPostprocessing", "0" });
   }
 
-  protected Map newProject(ID _groupID, List _targetIDs) {
-    Map project = super.newProject(_groupID, _targetIDs);
+  protected Map newProject(ID _groupID, List _targetIDs, ObjectsTable _objectsTable) {
+    Map project = super.newProject(_groupID, _targetIDs, _objectsTable);
 
     List buildConfigurations = new LinkedList();
-    buildConfigurations.add(newBuildConfiguration(new HashMap(), "Development"));
-    buildConfigurations.add(newBuildConfiguration(new HashMap(), "Deployment"));
-    buildConfigurations.add(newBuildConfiguration(new HashMap(), "Default"));
-    project.put("buildConfigurationList", newBuildConfigurationList(buildConfigurations, false, "Default"));
+    buildConfigurations.add(_objectsTable.insert(newBuildConfiguration(new HashMap(), "Development")));
+    buildConfigurations.add(_objectsTable.insert(newBuildConfiguration(new HashMap(), "Deployment")));
+    buildConfigurations.add(_objectsTable.insert(newBuildConfiguration(new HashMap(), "Default")));
+    project.put("buildConfigurationList", _objectsTable.insert(newBuildConfigurationList(buildConfigurations, false, "Default")));
 
     project.put("buildSettings", new HashMap());
 
     List buildStyles = new LinkedList();
-    buildStyles.add(newBuildStyle(map(new Object[] { "COPY_PHASE_STRIP", "NO" }), "Development"));
-    buildStyles.add(newBuildStyle(map(new Object[] { "COPY_PHASE_STRIP", "YES" }), "Deployment"));
+    buildStyles.add(_objectsTable.insert(newBuildStyle(map(new Object[] { "COPY_PHASE_STRIP", "NO" }), "Development")));
+    buildStyles.add(_objectsTable.insert(newBuildStyle(map(new Object[] { "COPY_PHASE_STRIP", "YES" }), "Deployment")));
     project.put("buildStyles", buildStyles);
 
     return project;

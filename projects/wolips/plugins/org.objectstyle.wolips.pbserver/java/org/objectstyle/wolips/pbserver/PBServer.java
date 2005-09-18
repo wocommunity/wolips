@@ -187,6 +187,9 @@ public class PBServer {
     for (int i = 0; i < containers.length; i++) {
       IProject project = containers[i].getProject();
       IFile xcodeFile = project.getFile(project.getName() + ".xcode");
+      if (!xcodeFile.exists()) {
+        xcodeFile = project.getFile(project.getName() + ".xcodeproj");
+      }
       String xcodeFilePath = xcodeFile.getLocation().toOSString();
 
       if (containers[i].getName().endsWith(".woa")) {

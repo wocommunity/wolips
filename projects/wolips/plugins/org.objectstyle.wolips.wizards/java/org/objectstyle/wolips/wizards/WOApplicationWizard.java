@@ -112,9 +112,12 @@ public class WOApplicationWizard extends AbstractProjectWizard {
 				src.mkdirs();
 				File bin = new File(path + File.separator + "bin");
 				bin.mkdirs();
-				File xcode = new File(path + File.separator + projectName
-						+ ".xcode");
-				xcode.mkdirs();
+//				File xcode = new File(path + File.separator + projectName
+//						+ ".xcode");
+//				xcode.mkdirs();
+//        File xcodeproj = new File(path + File.separator + projectName
+//            + ".xcodeproj");
+//        xcodeproj.mkdirs();
 				File ant = new File(path + File.separator + ProjectPatternsets.ANT_FOLDER_NAME);
 				ant.mkdirs();
 				//project.close(nullProgressMonitor);
@@ -215,10 +218,10 @@ public class WOApplicationWizard extends AbstractProjectWizard {
 				templateEngine.addTemplate(new TemplateDefinition(
 						"woapplication/Properties.vm", path, "Properties",
 						"Properties"));
-				templateEngine.addTemplate(new TemplateDefinition(
-						"woapplication/project.pbxproj.vm", path
-								+ File.separator + projectName + ".xcode",
-						"project.pbxproj", "project.pbxproj"));
+//				templateEngine.addTemplate(new TemplateDefinition(
+//						"woapplication/project.pbxproj.vm", path
+//								+ File.separator + projectName + ".xcode",
+//						"project.pbxproj", "project.pbxproj"));
 				templateEngine.run(nullProgressMonitor);
 				//project.open(nullProgressMonitor);
 				//RunAnt runAnt = new RunAnt();

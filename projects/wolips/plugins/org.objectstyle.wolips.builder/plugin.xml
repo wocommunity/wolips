@@ -11,15 +11,15 @@
          class="org.objectstyle.wolips.builder.internal.AntBuilder"
          context="never"/>
      <builder
-		id="org.objectstyle.wolips.builder.incrementalbuilder"
-         name="Incremental Builder"
-         class="org.objectstyle.wolips.builder.internal.IncrementalBuilder"
-         context="never"/>
+           class="org.objectstyle.wolips.builder.internal.IncrementalBuilder"
+           context="never"
+           id="org.objectstyle.wolips.builder.incrementalbuilder"
+           name="Incremental Builder"/>
      <builder
 		id="org.objectstyle.wolips.builder.dotxcodebuilder"
          name="DotXcode Builder"
          class="org.objectstyle.wolips.builder.internal.DotXcodeBuilder"
-         context="never"/>
+         />
      <builder
 		id="org.objectstyle.wolips.builder.pbdotprojectbuilder"
          name="PB.project Builder"

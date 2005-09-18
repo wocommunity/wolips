@@ -189,6 +189,18 @@
                id="org.objectstyle.wolips.ui.actions.AddToClassesExcludePatternsetAction">
          </action>
       </objectContribution>
+      <objectContribution
+            adaptable="true"
+            nameFilter="*.wo"
+            id="org.objectstyle.wolips.ui.actions.OpenWOAction"
+            objectClass="org.eclipse.core.resources.IContainer">
+         <action
+               class="org.objectstyle.wolips.ui.actions.OpenWOAction"
+               enablesFor="1"
+               id="org.objectstyle.wolips.ui.actions.OpenWOAction"
+               label="Open WO"
+               menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group0"/>
+      </objectContribution>
    </extension>
 <!-- =================================================================================== -->
 <!-- Extension: Perspective                                                              -->

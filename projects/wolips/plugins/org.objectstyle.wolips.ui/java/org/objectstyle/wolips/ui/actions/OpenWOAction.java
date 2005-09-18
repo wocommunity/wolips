@@ -2,7 +2,7 @@
  *
  * The ObjectStyle Group Software License, Version 1.0
  *
- * Copyright (c) 2005 The ObjectStyle Group,
+ * Copyright (c) 2002 - 2004 The ObjectStyle Group
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -53,24 +53,43 @@
  * <http://objectstyle.org/>.
  *
  */
-package org.objectstyle.wolips.core.resources.types.project;
 
-import java.util.List;
+package org.objectstyle.wolips.ui.actions;
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.IPath;
-import org.objectstyle.wolips.core.resources.types.IPBDotProjectOwner;
-import org.objectstyle.wolips.core.resources.types.IResourceType;
-import org.objectstyle.wolips.core.resources.types.file.IDotWOLipsAdapter;
-import org.objectstyle.wolips.core.resources.types.folder.IBuildAdapter;
+import java.util.ArrayList;
+import org.eclipse.jface.action.IAction;
+import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
+import org.objectstyle.wolips.workbenchutilities.actions.AbstractActionOnIResource;
 
-public interface IProjectAdapter extends IResourceType, IPBDotProjectOwner {
+/**
+ * @author mschrag
+ * 
+ * To change the template for this generated type comment go to
+ * Window>Preferences>Java>Code Generation>Code and Comments
+ */
+public class OpenWOAction extends AbstractActionOnIResource {
 
-	public IProject getUnderlyingProject();
-	public boolean isFramework();
-	public IDotWOLipsAdapter getDotWOLipsAdapter();
-	public IBuildAdapter getBuildAdapter();
-	public List getFrameworkNames();
-  public List getFrameworkPaths();
-  public String getFrameworkName(IPath _path);
+  private final String woExtension = ".wo";
+	private final String wodExtension = ".wod";
+	/**
+	 * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
+	 */
+	public void run(IAction action) {
+		if (getActionResource() != null) {
+			String fileName = getActionResource().getName();
+			fileName = fileName.substring(0, fileName.length()
+					- this.woExtension.length());
+
+			ArrayList list = new ArrayList();
+			WorkbenchUtilitiesPlugin.findFilesInResourceByName(list,
+					getActionResource(), fileName + this.wodExtension);
+			WorkbenchUtilitiesPlugin.open(list);
+		}
+	}
+	/**
+	 * Method dispose.
+	 */
+	public void dispose() {
+		super.dispose();
+	}
 }

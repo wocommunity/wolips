@@ -186,10 +186,10 @@ public class PBXProject {
 		//	Create the PBXToolTarget and add it to the objects table and
 		//	the targets list.
 		ArrayList targetIDs = new ArrayList( 1 );
-		targetIDs.add( objectsTable.insert( newAppServerTarget(buildPhaseIDs)));
+		targetIDs.add( objectsTable.insert( newAppServerTarget(buildPhaseIDs, objectsTable)));
 		
 		//	Create the PBXProject and add it to the objects table.
-		ObjectsTable.ID projectID = objectsTable.insert( newProject( mainGroupID, targetIDs ));
+		ObjectsTable.ID projectID = objectsTable.insert( newProject( mainGroupID, targetIDs, objectsTable ));
 		
 		//	Create the root dictionary.
 		Map pbxproj = newPBXProj( objectsTable, projectID);
@@ -269,7 +269,7 @@ public class PBXProject {
 			"children",	childrenIDs });
 	}
 
-	protected Map newAppServerTarget( List buildPhaseIDs ) {
+	protected Map newAppServerTarget( List buildPhaseIDs, ObjectsTable _objectsTable ) {
 		return map( new Object[] {
 			"isa",				"PBXToolTarget",
 			"buildSettings",	new HashMap(),
@@ -277,7 +277,7 @@ public class PBXProject {
 			"buildPhases",		buildPhaseIDs });
 	}
 	
-	protected Map newProject( ObjectsTable.ID groupID, List targetIDs ) {
+	protected Map newProject( ObjectsTable.ID groupID, List targetIDs, ObjectsTable objectsTable ) {
 		return map( new Object[] {
 			"isa",						"PBXProject",
 			"hasScannedForEncodings",	"1",

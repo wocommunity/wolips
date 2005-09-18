@@ -76,6 +76,16 @@ public class Preferences {
 	 */
 	public static final String PREF_RUN_WOBUILDER_ON_BUILD = "org.objectstyle.wolips.preference.RunWOBuilderOnBuild";
 
+  /**
+   * Comment for <code>PREF_WRITE_XCODE_ON_BUILD</code>
+   */
+  public static final String PREF_WRITE_XCODE_ON_BUILD = "org.objectstyle.wolips.preference.WriteXcodeOnBuild";
+
+  /**
+   * Comment for <code>PREF_WRITE_XCODE21_ON_BUILD</code>
+   */
+  public static final String PREF_WRITE_XCODE21_ON_BUILD = "org.objectstyle.wolips.preference.WriteXcode21OnBuild";
+
 	/**
 	 * Comment for <code>PREF_CAPTURE_ANT_OUTPUT</code>
 	 */
@@ -158,6 +168,12 @@ public class Preferences {
 						.equals(Preferences.PREF_RUN_WOBUILDER_ON_BUILD))
 			store.setDefault(Preferences.PREF_RUN_WOBUILDER_ON_BUILD,
 					Preferences.trueString);
+    if (Preferences.SET_DEFAULTS_STRING == null || Preferences.SET_DEFAULTS_STRING.equals(Preferences.PREF_WRITE_XCODE_ON_BUILD)) {
+      store.setDefault(Preferences.PREF_WRITE_XCODE_ON_BUILD, Preferences.falseString);
+    }
+    if (Preferences.SET_DEFAULTS_STRING == null || Preferences.SET_DEFAULTS_STRING.equals(Preferences.PREF_WRITE_XCODE21_ON_BUILD)) {
+      store.setDefault(Preferences.PREF_WRITE_XCODE21_ON_BUILD, Preferences.trueString);
+    }
 		if (Preferences.SET_DEFAULTS_STRING == null
 				|| Preferences.SET_DEFAULTS_STRING
 						.equals(Preferences.PREF_OPEN_WOCOMPONENT_ACTION_INCLUDES_OPEN_HTML))
@@ -399,6 +415,14 @@ public class Preferences {
 	public static boolean getPREF_RUN_WOBUILDER_ON_BUILD() {
 		return Preferences.getBoolean(Preferences.PREF_RUN_WOBUILDER_ON_BUILD);
 	}
+  
+  public static boolean getPREF_WRITE_XCODE_ON_BUILD() {
+    return Preferences.getBoolean(Preferences.PREF_WRITE_XCODE_ON_BUILD);
+  }
+  
+  public static boolean getPREF_WRITE_XCODE21_ON_BUILD() {
+    return Preferences.getBoolean(Preferences.PREF_WRITE_XCODE21_ON_BUILD);
+  }
 
 	/**
 	 * @return the preferences
@@ -455,6 +479,14 @@ public class Preferences {
 	public static void setPREF_RUN_WOBUILDER_ON_BUILD(boolean value) {
 		Preferences.setBoolean(Preferences.PREF_RUN_WOBUILDER_ON_BUILD, value);
 	}
+  
+  public static void setPREF_WRITE_XCODE_ON_BUILD(boolean value) {
+    Preferences.setBoolean(Preferences.PREF_WRITE_XCODE_ON_BUILD, value);
+  }
+  
+  public static void setPREF_WRITE_XCODE21_ON_BUILD(boolean value) {
+    Preferences.setBoolean(Preferences.PREF_WRITE_XCODE21_ON_BUILD, value);
+  }
 
 	/**
 	 * @param string

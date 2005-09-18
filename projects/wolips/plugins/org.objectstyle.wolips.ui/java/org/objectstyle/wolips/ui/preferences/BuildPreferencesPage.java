@@ -82,6 +82,8 @@ public class BuildPreferencesPage extends FieldEditorPreferencePage
 				Preferences.PREF_RUN_WOBUILDER_ON_BUILD, PreferencesMessages
 						.getString("Preferences.RunWOBuilderOnBuild.Label"),
 				getFieldEditorParent()));
+    addField(new BooleanFieldEditor(Preferences.PREF_WRITE_XCODE_ON_BUILD, PreferencesMessages.getString("Preferences.WriteXcodeOnBuild.Label"), getFieldEditorParent()));
+    addField(new BooleanFieldEditor(Preferences.PREF_WRITE_XCODE21_ON_BUILD, PreferencesMessages.getString("Preferences.WriteXcode21OnBuild.Label"), getFieldEditorParent()));
 	}
 	/**
 	 * @see org.eclipse.ui.IWorkbenchPreferencePage#init(IWorkbench)

@@ -63,6 +63,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
+import org.objectstyle.woenvironment.pb.XcodeProject;
 import org.objectstyle.wolips.datasets.adaptable.ProjectPatternsets;
 import org.objectstyle.wolips.templateengine.TemplateDefinition;
 import org.objectstyle.wolips.templateengine.TemplateEngine;
@@ -110,9 +111,12 @@ public class WOFrameworkWizard extends AbstractProjectWizard {
 				src.mkdirs();
 				File bin = new File(path + File.separator + "bin");
 				bin.mkdirs();
-				File xcode = new File(path + File.separator + projectName
-						+ ".xcode");
-				xcode.mkdirs();
+//				File xcode = new File(path + File.separator + projectName
+//						+ ".xcode");
+//				xcode.mkdirs();
+//        File xcodeproj = new File(path + File.separator + projectName
+//            + ".xcodeproj");
+//        xcodeproj.mkdirs();
 				File ant = new File(path + File.separator + ProjectPatternsets.ANT_FOLDER_NAME);
 				ant.mkdirs();
 				//project.close(nullProgressMonitor);
@@ -157,10 +161,10 @@ public class WOFrameworkWizard extends AbstractProjectWizard {
 				templateEngine.addTemplate(new TemplateDefinition(
 						"woframework/Properties.vm", path, "Properties",
 						"Properties"));
-				templateEngine.addTemplate(new TemplateDefinition(
-						"woframework/project.pbxproj.vm", path + File.separator
-								+ projectName + ".xcode", "project.pbxproj",
-						"project.pbxproj"));
+//				templateEngine.addTemplate(new TemplateDefinition(
+//						"woframework/project.pbxproj.vm", path + File.separator
+//								+ projectName + ".xcode", "project.pbxproj",
+//						"project.pbxproj"));
 				templateEngine.run(nullProgressMonitor);
 				//project.open(nullProgressMonitor);
 				//RunAnt runAnt = new RunAnt();

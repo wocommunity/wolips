@@ -56,6 +56,7 @@
 package org.objectstyle.wolips.core.resources.internal.types.project;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.resources.IContainer;
@@ -76,151 +77,170 @@ import org.objectstyle.wolips.core.resources.types.file.IPBDotProjectAdapter;
 import org.objectstyle.wolips.core.resources.types.folder.IBuildAdapter;
 import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
 
-public class ProjectAdapter extends AbstractResourceAdapter implements
-		IProjectAdapter {
+public class ProjectAdapter extends AbstractResourceAdapter implements IProjectAdapter {
 
-	private IProject underlyingProject;
+  private IProject underlyingProject;
 
-	private boolean isFramework;
+  private boolean isFramework;
 
-	public ProjectAdapter(IProject project, boolean isFramework) {
-		super(project);
-		this.underlyingProject = project;
-		this.isFramework = isFramework;
-	}
+  public ProjectAdapter(IProject project, boolean isFramework) {
+    super(project);
+    this.underlyingProject = project;
+    this.isFramework = isFramework;
+  }
 
-	public IProject getUnderlyingProject() {
-		return this.underlyingProject;
-	}
+  public IProject getUnderlyingProject() {
+    return this.underlyingProject;
+  }
 
-	public boolean isFramework() {
-		return this.isFramework;
-	}
+  public boolean isFramework() {
+    return this.isFramework;
+  }
 
-	public IDotWOLipsAdapter getDotWOLipsAdapter() {
-		IResource resource = this.getUnderlyingProject().getFile(
-				IDotWOLipsAdapter.FILE_NAME);
-		return (IDotWOLipsAdapter) resource.getAdapter(IDotWOLipsAdapter.class);
-	}
+  public IDotWOLipsAdapter getDotWOLipsAdapter() {
+    IResource resource = this.getUnderlyingProject().getFile(IDotWOLipsAdapter.FILE_NAME);
+    return (IDotWOLipsAdapter) resource.getAdapter(IDotWOLipsAdapter.class);
+  }
 
-	public IPBDotProjectAdapter getPBDotProjectAdapter() {
-		IContainer underlyingContainer = this.getUnderlyingProject();
-		IResource pbDotProjectResource = underlyingContainer.getFile(new Path(
-				IPBDotProjectAdapter.FILE_NAME));
-		IPBDotProjectAdapter pbDotProjectAdapter = (IPBDotProjectAdapter) pbDotProjectResource
-				.getAdapter(IPBDotProjectAdapter.class);
-		return pbDotProjectAdapter;
-	}
+  public IPBDotProjectAdapter getPBDotProjectAdapter() {
+    IContainer underlyingContainer = this.getUnderlyingProject();
+    IResource pbDotProjectResource = underlyingContainer.getFile(new Path(IPBDotProjectAdapter.FILE_NAME));
+    IPBDotProjectAdapter pbDotProjectAdapter = (IPBDotProjectAdapter) pbDotProjectResource.getAdapter(IPBDotProjectAdapter.class);
+    return pbDotProjectAdapter;
+  }
 
-	public IPBDotProjectOwner getPBDotProjectOwner(IResource resource) {
-		if (resource == this.getUnderlyingProject()) {
-			return this;
-		}
-		return super.getPBDotProjectOwner(resource);
-	}
+  public IPBDotProjectOwner getPBDotProjectOwner(IResource resource) {
+    if (resource == this.getUnderlyingProject()) {
+      return this;
+    }
+    return super.getPBDotProjectOwner(resource);
+  }
 
-	public IPBDotProjectOwner getPBDotProjectOwner() {
-		return this;
-	}
+  public IPBDotProjectOwner getPBDotProjectOwner() {
+    return this;
+  }
 
-	public boolean hasParentPBDotProjectAdapter() {
-		return false;
-	}
+  public boolean hasParentPBDotProjectAdapter() {
+    return false;
+  }
 
-	public IBuildAdapter getBuildAdapter() {
-		IResource resource = this.getUnderlyingProject().getFolder(
-				IBuildAdapter.FILE_NAME);
-		return (IBuildAdapter) resource.getAdapter(IBuildAdapter.class);
-	}
+  public IBuildAdapter getBuildAdapter() {
+    IResource resource = this.getUnderlyingProject().getFolder(IBuildAdapter.FILE_NAME);
+    return (IBuildAdapter) resource.getAdapter(IBuildAdapter.class);
+  }
 
-	public List getFrameworkNames() {
-		ArrayList list = new ArrayList();
-		IProject[] projects = ResourcesPlugin.getWorkspace().getRoot()
-				.getProjects();
-		for (int i = 0; i < projects.length; i++) {
-			if (isFrameworkReference(projects[i])) {
-				list.add(projects[i].getName() + "." + "framework");
-			}
-		}
-		try {
-			IJavaProject javaProject = JavaCore.create(this
-					.getUnderlyingProject());
-			list.addAll(this.toFrameworkNames(javaProject
-					.getResolvedClasspath(false)));
-		} catch (JavaModelException e) {
-			CorePlugin.getDefault().log(e);
-		}
-		return list;
-	}
+  public List getFrameworkPaths() {
+    ArrayList list = new ArrayList();
+    IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
+    for (int i = 0; i < projects.length; i++) {
+      if (isFrameworkReference(projects[i])) {
+        list.add(projects[i].getLocation());
+      }
+    }
+    try {
+      IJavaProject javaProject = JavaCore.create(this.getUnderlyingProject());
+      list.addAll(toFrameworkPaths(javaProject.getResolvedClasspath(false)));
+    }
+    catch (JavaModelException e) {
+      CorePlugin.getDefault().log(e);
+    }
+    return list;
+  }
 
-	private List toFrameworkNames(IClasspathEntry[] classpathEntries) {
-		ArrayList arrayList = new ArrayList();
-		for (int i = 0; i < classpathEntries.length; i++) {
-			IPath path = classpathEntries[i].getPath();
-			String name = this.getFrameworkName(path);
-			if (name != null && !name.startsWith("JavaVM")) {
-				arrayList.add(name);
-			}
-		}
-		return arrayList;
-	}
+  public List getFrameworkNames() {
+    ArrayList list = new ArrayList();
+    IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
+    for (int i = 0; i < projects.length; i++) {
+      if (isFrameworkReference(projects[i])) {
+        list.add(projects[i].getName() + "." + "framework");
+      }
+    }
+    try {
+      IJavaProject javaProject = JavaCore.create(this.getUnderlyingProject());
+      list.addAll(this.toFrameworkNames(javaProject.getResolvedClasspath(false)));
+    }
+    catch (JavaModelException e) {
+      CorePlugin.getDefault().log(e);
+    }
+    return list;
+  }
 
-	private String getFrameworkName(IPath frameworkPath) {
-		String frameworkName = null;
-		int i = 0;
-		int count = frameworkPath.segmentCount();
-		while (i < count && frameworkName == null) {
-			String segment = frameworkPath.segment(i);
-			if (segment.endsWith("." + "framework"))
-				frameworkName = segment;
-			else
-				i++;
-		}
-		return frameworkName;
-	}
+  public String getFrameworkName(IPath frameworkPath) {
+    String frameworkName = null;
+    if (ResourcesPlugin.getWorkspace().getRoot().getContainerForLocation(frameworkPath) instanceof IProject) {
+      frameworkName = frameworkPath.lastSegment() + ".framework";
+    }
+    else {
+      frameworkName = frameworkPath.lastSegment();
+    }
+    return frameworkName;
+  }
 
-	/**
-	 * Method isTheLaunchAppOrFramework.
-	 * 
-	 * @param iProject
-	 * @return boolean
-	 */
-	public boolean isFrameworkReference(IProject iProject) {
-		IJavaProject javaProject = null;
-		try {
-			javaProject = JavaCore.create(this.getUnderlyingProject());
-			IProjectAdapter project = (IProjectAdapter) iProject
-					.getAdapter(IProjectAdapter.class);
-			if (project.isFramework()
-					&& projectISReferencedByProject(iProject, javaProject
-							.getProject()))
-				return true;
-		} catch (Exception e) {
-			CorePlugin.getDefault().log(e);
-			return false;
-		}
-		return false;
-	}
+  private List toFrameworkPaths(IClasspathEntry[] classpathEntries) {
+    ArrayList arrayList = new ArrayList();
+    for (int i = 0; i < classpathEntries.length; i++) {
+      IPath path = classpathEntries[i].getPath();
+      IPath choppedFrameworkPath = null;
+      int count = path.segmentCount();
+      for (int pathElementNum = 0; pathElementNum < count && choppedFrameworkPath == null; pathElementNum ++) {
+        String segment = path.segment(pathElementNum);
+        if (segment.endsWith("." + "framework")) {
+          choppedFrameworkPath = path.removeLastSegments(count - pathElementNum - 1);
+        }
+      }
+      if (choppedFrameworkPath != null && !choppedFrameworkPath.lastSegment().startsWith("JavaVM")) {
+        arrayList.add(choppedFrameworkPath);
+      }
+    }
+    return arrayList;
+  }
 
-	/**
-	 * Method projectISReferencedByProject.
-	 * 
-	 * @param child
-	 * @param mother
-	 * @return boolean
-	 */
-	public boolean projectISReferencedByProject(IProject child, IProject mother) {
-		IProject[] projects = null;
-		try {
-			projects = mother.getReferencedProjects();
-		} catch (Exception e) {
-			CorePlugin.getDefault().log(e);
-			return false;
-		}
-		for (int i = 0; i < projects.length; i++) {
-			if (projects[i].equals(child))
-				return true;
-		}
-		return false;
-	}
+  private List toFrameworkNames(IClasspathEntry[] classpathEntries) {
+    List pathsList = toFrameworkPaths(classpathEntries);
+    ArrayList namesList = new ArrayList(pathsList.size());
+    Iterator pathsIter = pathsList.iterator();
+    while (pathsIter.hasNext()) {
+      IPath path = (IPath) pathsIter.next();
+      String name = this.getFrameworkName(path);
+      namesList.add(name);
+    }
+    return namesList;
+  }
+
+  /**
+   * Method isTheLaunchAppOrFramework.
+   * 
+   * @param iProject
+   * @return boolean
+   */
+  public boolean isFrameworkReference(IProject iProject) {
+    IJavaProject javaProject = null;
+    try {
+      javaProject = JavaCore.create(this.getUnderlyingProject());
+      IProjectAdapter project = (IProjectAdapter) iProject.getAdapter(IProjectAdapter.class);
+      if (project.isFramework() && projectIsReferencedByProject(iProject, javaProject.getProject()))
+        return true;
+    }
+    catch (Exception e) {
+      CorePlugin.getDefault().log(e);
+      return false;
+    }
+    return false;
+  }
+
+  public boolean projectIsReferencedByProject(IProject child, IProject mother) {
+    IProject[] projects = null;
+    try {
+      projects = mother.getReferencedProjects();
+    }
+    catch (Exception e) {
+      CorePlugin.getDefault().log(e);
+      return false;
+    }
+    for (int i = 0; i < projects.length; i++) {
+      if (projects[i].equals(child))
+        return true;
+    }
+    return false;
+  }
 }
