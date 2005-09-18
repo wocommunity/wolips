@@ -86,6 +86,11 @@ public class Preferences {
    */
   public static final String PREF_WRITE_XCODE21_ON_BUILD = "org.objectstyle.wolips.preference.WriteXcode21OnBuild";
 
+  /**
+   * Comment for <code>PREF_VALIDATE_WOD_ON_BUILD</code>
+   */
+  public static final String PREF_VALIDATE_WOD_ON_BUILD = "org.objectstyle.wolips.preference.ValidateWODOnBuild";
+
 	/**
 	 * Comment for <code>PREF_CAPTURE_ANT_OUTPUT</code>
 	 */
@@ -173,6 +178,9 @@ public class Preferences {
     }
     if (Preferences.SET_DEFAULTS_STRING == null || Preferences.SET_DEFAULTS_STRING.equals(Preferences.PREF_WRITE_XCODE21_ON_BUILD)) {
       store.setDefault(Preferences.PREF_WRITE_XCODE21_ON_BUILD, Preferences.trueString);
+    }
+    if (Preferences.SET_DEFAULTS_STRING == null || Preferences.SET_DEFAULTS_STRING.equals(Preferences.PREF_VALIDATE_WOD_ON_BUILD)) {
+      store.setDefault(Preferences.PREF_VALIDATE_WOD_ON_BUILD, Preferences.trueString);
     }
 		if (Preferences.SET_DEFAULTS_STRING == null
 				|| Preferences.SET_DEFAULTS_STRING
@@ -423,6 +431,10 @@ public class Preferences {
   public static boolean getPREF_WRITE_XCODE21_ON_BUILD() {
     return Preferences.getBoolean(Preferences.PREF_WRITE_XCODE21_ON_BUILD);
   }
+  
+  public static boolean getPREF_VALIDATE_WOD_ON_BUILD() {
+    return Preferences.getBoolean(Preferences.PREF_VALIDATE_WOD_ON_BUILD);
+  }
 
 	/**
 	 * @return the preferences
@@ -486,6 +498,10 @@ public class Preferences {
   
   public static void setPREF_WRITE_XCODE21_ON_BUILD(boolean value) {
     Preferences.setBoolean(Preferences.PREF_WRITE_XCODE21_ON_BUILD, value);
+  }
+
+  public static void setPREF_VALIDATE_WOD_ON_BUILD(boolean value) {
+    Preferences.setBoolean(Preferences.PREF_VALIDATE_WOD_ON_BUILD, value);
   }
 
 	/**

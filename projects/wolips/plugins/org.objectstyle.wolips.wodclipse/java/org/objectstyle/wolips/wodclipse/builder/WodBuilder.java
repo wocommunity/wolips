@@ -15,17 +15,21 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.part.FileEditorInput;
 import org.objectstyle.wolips.core.resources.builder.IBuilder;
+import org.objectstyle.wolips.preferences.Preferences;
 import org.objectstyle.wolips.wodclipse.wod.WodFileDocumentProvider;
 import org.objectstyle.wolips.wodclipse.wod.WodReconcilingStrategy;
 import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 
 public class WodBuilder implements IBuilder {
+  private boolean myValidateWOD;
+
   public WodBuilder() {
   }
 
   public void buildStarted(int _kind, Map _args, IProgressMonitor _monitor, IProject _project) {
+    myValidateWOD = Preferences.getPREF_VALIDATE_WOD_ON_BUILD();
     // System.out.println("WodBuilder.buildStarted: " + _project + ", " + _kind);
-    if (_kind == IncrementalProjectBuilder.FULL_BUILD || _kind == IncrementalProjectBuilder.CLEAN_BUILD) {
+    if (myValidateWOD && (_kind == IncrementalProjectBuilder.FULL_BUILD || _kind == IncrementalProjectBuilder.CLEAN_BUILD)) {
       try {
         _project.accept(new WodBuilderResourceVisitor(_monitor));
       }
@@ -45,13 +49,15 @@ public class WodBuilder implements IBuilder {
   }
 
   public void handleWoappResourcesDelta(IResourceDelta _delta) {
-    try {
-      IResource resource = _delta.getResource();
-      WodBuilder.visit(IncrementalProjectBuilder.INCREMENTAL_BUILD, resource, null, new HashMap(), new HashMap());
-      // System.out.println("WodBuilder.handleWoappResourcesDelta: " + _delta);
-    }
-    catch (CoreException e) {
-      e.printStackTrace();
+    if (myValidateWOD) {
+      try {
+        IResource resource = _delta.getResource();
+        WodBuilder.visit(IncrementalProjectBuilder.INCREMENTAL_BUILD, resource, null, new HashMap(), new HashMap());
+        // System.out.println("WodBuilder.handleWoappResourcesDelta: " + _delta);
+      }
+      catch (CoreException e) {
+        e.printStackTrace();
+      }
     }
   }
 

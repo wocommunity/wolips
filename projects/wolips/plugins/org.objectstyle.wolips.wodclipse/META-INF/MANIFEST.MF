@@ -29,7 +29,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.wst.xml.core,
  org.eclipse.wst.html.core,
  org.objectstyle.wolips.builder,
- org.eclipse.wst.xml.ui
+ org.eclipse.wst.xml.ui,
+ org.objectstyle.wolips.preferences
 Eclipse-AutoStart: true
 Export-Package: org.objectstyle.wolips.wodclipse,
  org.objectstyle.wolips.wodclipse.api,
