@@ -423,12 +423,12 @@
       <decorator
             lightweight="true"
             adaptable="true"
-            label="Xcode folder"
+            label="Xcode .xcode folder"
             icon="icons/ovr16/xcode_co.gif"
             state="true"
             id="org.objectstyle.wolips.ui.labeldecorator.XcodeabelDecorator">
          <description>
-            Xcode folder
+            Xcode .xcode folder
          </description>
 		<enablement>
 			<and>
@@ -437,6 +437,26 @@
 				<objectState name="extension"
 					value="xcode">
 				</objectState>
+            </and>
+         </enablement>
+      </decorator>
+      <decorator
+            lightweight="true"
+            adaptable="true"
+            label="Xcode .xcodeproj folder"
+            icon="icons/ovr16/xcode_co.gif"
+            state="true"
+            id="org.objectstyle.wolips.ui.labeldecorator.XcodeabelDecorator">
+         <description>
+            Xcode .xcodeproj folder
+         </description>
+                <enablement>
+                        <and>
+                                <objectClass name="org.eclipse.core.resources.IFolder">
+                                </objectClass>
+                                <objectState name="extension"
+                                        value="xcodeproj">
+                                </objectState>
             </and>
          </enablement>
       </decorator>
