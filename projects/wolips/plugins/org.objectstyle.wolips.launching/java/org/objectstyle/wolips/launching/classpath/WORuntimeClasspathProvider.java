@@ -63,9 +63,7 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.launching.IRuntimeClasspathEntry;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.jdt.launching.StandardClasspathProvider;
-import org.objectstyle.wolips.commons.logging.PluginLogger;
 import org.objectstyle.wolips.datasets.adaptable.JavaProject;
-import org.objectstyle.wolips.jdt.JdtPlugin;
 import org.objectstyle.wolips.launching.LaunchingPlugin;
 
 /**
