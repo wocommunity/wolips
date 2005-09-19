@@ -1,58 +1,59 @@
 /* ====================================================================
-*
-* The ObjectStyle Group Software License, Version 1.0
-*
-* Copyright (c) 2002 - 2005 The ObjectStyle Group
-* and individual authors of the software.  All rights reserved.
-*
-* Redistribution and use in source and binary forms, with or without
-* modification, are permitted provided that the following conditions
-* are met:
-*
-* 1. Redistributions of source code must retain the above copyright
-*    notice, this list of conditions and the following disclaimer.
-*
-* 2. Redistributions in binary form must reproduce the above copyright
-*    notice, this list of conditions and the following disclaimer in
-*    the documentation and/or other materials provided with the
-*    distribution.
-*
-* 3. The end-user documentation included with the redistribution, if
-*    any, must include the following acknowlegement:
-*       "This product includes software developed by the
-*        ObjectStyle Group (http://objectstyle.org/)."
-*    Alternately, this acknowlegement may appear in the software itself,
-*    if and wherever such third-party acknowlegements normally appear.
-*
-* 4. The names "ObjectStyle Group" and "Cayenne"
-*    must not be used to endorse or promote products derived
-*    from this software without prior written permission. For written
-*    permission, please contact andrus@objectstyle.org.
-*
-* 5. Products derived from this software may not be called "ObjectStyle"
-*    nor may "ObjectStyle" appear in their names without prior written
-*    permission of the ObjectStyle Group.
-*
-* THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
-* WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-* OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-* DISCLAIMED.  IN NO EVENT SHALL THE OBJECTSTYLE GROUP OR
-* ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-* SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-* LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
-* USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-* ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-* OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
-* OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
-* SUCH DAMAGE.
-* ====================================================================
-*
-* This software consists of voluntary contributions made by many
-* individuals on behalf of the ObjectStyle Group.  For more
-* information on the ObjectStyle Group, please see
-* <http://objectstyle.org/>.
-*
-*/
+ *
+ * The ObjectStyle Group Software License, Version 1.0
+ *
+ * Copyright (c) 2002 - 2005 The ObjectStyle Group
+ * and individual authors of the software.  All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions
+ * are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright
+ *    notice, this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in
+ *    the documentation and/or other materials provided with the
+ *    distribution.
+ *
+ * 3. The end-user documentation included with the redistribution, if
+ *    any, must include the following acknowlegement:
+ *       "This product includes software developed by the
+ *        ObjectStyle Group (http://objectstyle.org/)."
+ *    Alternately, this acknowlegement may appear in the software itself,
+ *    if and wherever such third-party acknowlegements normally appear.
+ *
+ * 4. The names "ObjectStyle Group" and "Cayenne"
+ *    must not be used to endorse or promote products derived
+ *    from this software without prior written permission. For written
+ *    permission, please contact andrus@objectstyle.org.
+ *
+ * 5. Products derived from this software may not be called "ObjectStyle"
+ *    nor may "ObjectStyle" appear in their names without prior written
+ *    permission of the ObjectStyle Group.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESSED OR IMPLIED
+ * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ * OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED.  IN NO EVENT SHALL THE OBJECTSTYLE GROUP OR
+ * ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF
+ * USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
+ * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+ * SUCH DAMAGE.
+ * ====================================================================
+ *
+ * This software consists of voluntary contributions made by many
+ * individuals on behalf of the ObjectStyle Group.  For more
+ * information on the ObjectStyle Group, please see
+ * <http://objectstyle.org/>.
+ *
+ */
+
 package org.objectstyle.wolips.launching.delegates;
 
 import java.io.File;
@@ -76,6 +77,7 @@ import org.eclipse.jdt.launching.IVMInstall;
 import org.eclipse.jdt.launching.IVMRunner;
 import org.eclipse.jdt.launching.VMRunnerConfiguration;
 import org.eclipse.swt.widgets.Display;
+import org.objectstyle.wolips.commons.util.StringUtilities;
 import org.objectstyle.wolips.datasets.adaptable.JavaProject;
 import org.objectstyle.wolips.launching.LaunchingMessages;
 import org.objectstyle.wolips.launching.classpath.WORuntimeClasspathProvider;
@@ -86,40 +88,41 @@ import org.objectstyle.wolips.variables.VariablesPlugin;
 import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 
 /**
-* Launches a local VM.
-* 
-* @author Gary Watkins
-*/
+ * Launches a local VM.
+ */
 public class WOJavaLocalApplicationLaunchConfigurationDelegate extends
-    AbstractAddVMArgumentsLaunchConfigurationDelegate {
+		AbstractAddVMArgumentsLaunchConfigurationDelegate {
+	/**
+	 * Comment for <code>WOJavaLocalApplicationID</code>
+	 */
+	public static final String WOJavaLocalApplicationID = "org.objectstyle.wolips.launching.WOLocalJavaApplication";
 
-  /**
-   * Comment for <code>WOJavaLocalApplicationID</code>
-   */
-  public static final String WOJavaLocalApplicationID = "org.objectstyle.wolips.launching.WOLocalJavaApplication";
+	/** The launch configuration attribute for stack trace depth */
+	public static final String ATTR_WOLIPS_LAUNCH_WOARGUMENTS = "org.objectstyle.wolips.launchinfo";
 
-  /** The launch configuration attribute for stack trace depth */
-  public static final String ATTR_WOLIPS_LAUNCH_WOARGUMENTS = "org.objectstyle.wolips.launchinfo";
+	/**
+	 * Comment for <code>ATTR_WOLIPS_LAUNCH_DEBUG_GROUPS</code>
+	 */
+	public static final String ATTR_WOLIPS_LAUNCH_DEBUG_GROUPS = "WOJavaLocalApplicationLaunchConfigurationDelegate.NSDebugGroups";
 
-  /**
-   * Comment for <code>ATTR_WOLIPS_LAUNCH_DEBUG_GROUPS</code>
-   */
-  public static final String ATTR_WOLIPS_LAUNCH_DEBUG_GROUPS =
-    "WOJavaLocalApplicationLaunchConfigurationDelegate.NSDebugGroups";
+	public static final String ATTR_WOLIPS_LAUNCH_OPEN_IN_BROWSER = "WOJavaLocalApplicationLaunchConfigurationDelegate.OpenInBrowser";
+	public static final String ATTR_WOLIPS_LAUNCH_WEBSERVER_CONNECT = "WOJavaLocalApplicationLaunchConfigurationDelegate.WebServerConnect";
 
-  public static final String ATTR_WOLIPS_LAUNCH_OPEN_IN_BROWSER = "WOJavaLocalApplicationLaunchConfigurationDelegate.OpenInBrowser";
-  public static final String ATTR_WOLIPS_LAUNCH_WEBSERVER_CONNECT = "WOJavaLocalApplicationLaunchConfigurationDelegate.WebServerConnect";
+	/**
+	 * @param config
+	 */
+	public static void initConfiguration(ILaunchConfigurationWorkingCopy config) {
+		config.setAttribute(
+				IJavaLaunchConfigurationConstants.ATTR_CLASSPATH_PROVIDER,
+				WORuntimeClasspathProvider.ID);
+		config.setAttribute(WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_OPEN_IN_BROWSER, "true");
+	}
 
-  /**
-   * @param config
-   */
-  public static void initConfiguration(ILaunchConfigurationWorkingCopy config) {
-    config.setAttribute(
-      IJavaLaunchConfigurationConstants.ATTR_CLASSPATH_PROVIDER,
-      WORuntimeClasspathProvider.ID);
-    config.setAttribute(WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_OPEN_IN_BROWSER, "true");
-  }
-  
+	public String[] getClasspath(ILaunchConfiguration configuration)
+			throws CoreException {
+		return super.getClasspath(configuration);
+	}
+
 	public boolean preLaunchCheck(ILaunchConfiguration configuration,
 			String mode, IProgressMonitor monitor) throws CoreException {
 		String notFound = "notFound";
@@ -143,7 +146,7 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate extends
 		}
 		return super.preLaunchCheck(configuration, mode, monitor);
 	}
-	
+
 	private final void informUser(final String message) {
 		class RunnableExceptionHandler implements Runnable {
 
@@ -163,199 +166,190 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate extends
 		Display.getDefault().asyncExec(runnable);
 	}
 
-	
-  public void launch(ILaunchConfiguration configuration, String mode,
-      ILaunch launch, IProgressMonitor monitor) throws CoreException {
+	public void launch(ILaunchConfiguration configuration, String mode,
+			ILaunch launch, IProgressMonitor monitor) throws CoreException {
 
-    if (monitor == null) {
-      monitor = new NullProgressMonitor();
-    }
-    monitor
-        .beginTask(
-            LaunchingMessages
-                .getString("WOJavaLocalApplicationLaunchConfigurationDelegate.Launching..._1"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
-    // check for cancellation
-    if (monitor.isCanceled()) {
-      return;
-    }
-    
-    configuration = configuration.getWorkingCopy();
-    initConfiguration((ILaunchConfigurationWorkingCopy)configuration);
-    
-    JavaProject javaProject = (JavaProject) (this.getJavaProject(configuration).getAdapter(JavaProject.class));
+		if (monitor == null) {
+			monitor = new NullProgressMonitor();
+		}
+		monitor
+				.beginTask(
+						LaunchingMessages
+								.getString("WOJavaLocalApplicationLaunchConfigurationDelegate.Launching..._1"), IProgressMonitor.UNKNOWN); //$NON-NLS-1$
+		// check for cancellation
+		if (monitor.isCanceled()) {
+			return;
+		}
+		JavaProject javaProject = (JavaProject) (this
+				.getJavaProject(configuration).getAdapter(JavaProject.class));
 
-    String mainTypeName = verifyMainTypeName(configuration);
+		String mainTypeName = verifyMainTypeName(configuration);
 
-    IVMInstall vm = verifyVMInstall(configuration);
+		IVMInstall vm = verifyVMInstall(configuration);
 
-    IVMRunner runner = vm.getVMRunner(mode);
-    if (runner == null) {
-      if (mode == ILaunchManager.DEBUG_MODE) {
-        abort(
-            MessageFormat
-                .format(
-                    LaunchingMessages
-                        .getString("WOJavaLocalApplicationLaunchConfigurationDelegate.JRE_{0}_does_not_support_debug_mode._1"), new String[] { vm.getName() }), null, IJavaLaunchConfigurationConstants.ERR_VM_RUNNER_DOES_NOT_EXIST); //$NON-NLS-1$
-      } else {
-        abort(
-            MessageFormat
-                .format(
-                    LaunchingMessages
-                        .getString("WOJavaLocalApplicationLaunchConfigurationDelegate.JRE_{0}_does_not_support_run_mode._2"), new String[] { vm.getName() }), null, IJavaLaunchConfigurationConstants.ERR_VM_RUNNER_DOES_NOT_EXIST); //$NON-NLS-1$
-      }
-    }
+		IVMRunner runner = vm.getVMRunner(mode);
+		if (runner == null) {
+			if (mode == ILaunchManager.DEBUG_MODE) {
+				abort(
+						MessageFormat
+								.format(
+										LaunchingMessages
+												.getString("WOJavaLocalApplicationLaunchConfigurationDelegate.JRE_{0}_does_not_support_debug_mode._1"), new String[] { vm.getName() }), null, IJavaLaunchConfigurationConstants.ERR_VM_RUNNER_DOES_NOT_EXIST); //$NON-NLS-1$
+			} else {
+				abort(
+						MessageFormat
+								.format(
+										LaunchingMessages
+												.getString("WOJavaLocalApplicationLaunchConfigurationDelegate.JRE_{0}_does_not_support_run_mode._2"), new String[] { vm.getName() }), null, IJavaLaunchConfigurationConstants.ERR_VM_RUNNER_DOES_NOT_EXIST); //$NON-NLS-1$
+			}
+		}
 
-    File workingDir = verifyWorkingDirectory(configuration);
-    String workingDirName = null;
-    if (workingDir != null) {
-      workingDirName = workingDir.getAbsolutePath();
-    }
-    
-    String launchArguments = configuration
-        .getAttribute(
-            WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_WOARGUMENTS,
-            Preferences.getPREF_LAUNCH_GLOBAL());
-    
-    ILaunchInfo[] launchInfo = Preferences.getLaunchInfoFrom(launchArguments);
-    StringBuffer launchArgument = new StringBuffer();
-    String automatic = "Automatic";
-    for (int i = 0; i < launchInfo.length; i++) {
-      boolean spaceBetweenParameterAndArgument = true;
-      if (launchInfo[i].isEnabled()) {
-        // -WOApplicationClassName
-        String parameter = launchInfo[i].getParameter();
-        String argument = launchInfo[i].getArgument();
-        if (automatic.equals(argument)) {
-          if ("-WOApplicationClassName".equals(parameter))
-            argument = mainTypeName;
-          if ("-DWORoot=".equals(parameter)) {
-            argument = VariablesPlugin.getDefault().getSystemRoot()
-                .toOSString();
-            spaceBetweenParameterAndArgument = false;
-            if (javaProject.isOnMacOSX()) {
-              parameter = "";
-              argument = "";
-            }
-          }
-          if ("-DWORootDirectory=".equals(parameter)) {
-            argument = VariablesPlugin.getDefault().getSystemRoot()
-                .toOSString();
-            spaceBetweenParameterAndArgument = false;
-            if (javaProject.isOnMacOSX()) {
-              parameter = "";
-              argument = "";
-            }
-          }
-          if ("-DWOUserDirectory".equals(parameter)) {
-            argument = workingDir.getAbsolutePath();
-            spaceBetweenParameterAndArgument = false;
-          }
-          if ("-NSProjectSearchPath".equals(parameter)) {
-            argument = javaProject.getGeneratedByWOLips(Preferences
-                .getPREF_NS_PROJECT_SEARCH_PATH());
-          }
-        }
+		File workingDir = verifyWorkingDirectory(configuration);
+		String workingDirName = null;
+		if (workingDir != null) {
+			workingDirName = workingDir.getAbsolutePath();
+		}
+		String launchArguments = configuration
+				.getAttribute(
+						WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_WOARGUMENTS,
+						Preferences.getPREF_LAUNCH_GLOBAL());
+		ILaunchInfo[] launchInfo = Preferences
+				.getLaunchInfoFrom(launchArguments);
+		StringBuffer launchArgument = new StringBuffer();
+		String automatic = "Automatic";
+		for (int i = 0; i < launchInfo.length; i++) {
+			if (launchInfo[i].isEnabled()) {
+				// -WOApplicationClassName
+				String parameter = launchInfo[i].getParameter();
+				String argument = launchInfo[i].getArgument();
+				if (automatic.equals(argument)) {
+					if ("-WOApplicationClassName".equals(parameter))
+						argument = mainTypeName;
+					if ("-DWORoot=".equals(parameter)) {
+						argument = VariablesPlugin.getDefault().getSystemRoot()
+								.toOSString();
+						if (javaProject.isOnMacOSX()) {
+							parameter = "";
+							argument = "";
+						}
+					}
+					if ("-DWORootDirectory=".equals(parameter)) {
+						argument = VariablesPlugin.getDefault().getSystemRoot()
+								.toOSString();
+						if (javaProject.isOnMacOSX()) {
+							parameter = "";
+							argument = "";
+						}
+					}
+					if ("-DWOUserDirectory=".equals(parameter)) {
+						argument = workingDir.getAbsolutePath();
+					}
+					if ("-NSProjectSearchPath".equals(parameter)) {
+						argument = javaProject.getGeneratedByWOLips(Preferences
+								.getPREF_NS_PROJECT_SEARCH_PATH());
+					}
 
-        launchArgument.append(parameter);
-        if (spaceBetweenParameterAndArgument)
-          launchArgument.append(" ");
-        launchArgument.append(argument);
-        launchArgument.append(" ");
-      }
-    }
-    
-    String debugGroups = configuration
-        .getAttribute(
-            WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_DEBUG_GROUPS,
-            "");
-    if (debugGroups != null && debugGroups.length() > 0) {
-      launchArgument.append(" -DNSDebugGroups=\"(");
-      launchArgument.append(debugGroups);
-      launchArgument.append(")\"");
-    }
-    
-    // Program & VM args
-    String pgmArgs = getProgramArguments(configuration) + " " + launchArgument.toString();
-    String vmArgs = getVMArguments(configuration);
-    StringBuffer vmArgsBuffer = new StringBuffer(vmArgs);
+				}
 
-    this.addVMArguments(vmArgsBuffer, configuration, launch, mode);
-    ExecutionArguments execArgs = new ExecutionArguments(vmArgsBuffer.toString(), pgmArgs);
+				launchArgument.append(StringUtilities
+						.toCommandlineParameterFormat(parameter, argument));
+				launchArgument.append(" ");
+			}
+		}
+		String debugGroups = configuration
+				.getAttribute(
+						WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_DEBUG_GROUPS,
+						"");
+		if (debugGroups != null && debugGroups.length() > 0) {
+			launchArgument.append(" -DNSDebugGroups=\"(");
+			launchArgument.append(debugGroups);
+			launchArgument.append(")\"");
+		}
+		// Program & VM args
+		String pgmArgs = getProgramArguments(configuration) + " "
+				+ launchArgument.toString();
+		String vmArgs = getVMArguments(configuration);
+		StringBuffer vmArgsBuffer = new StringBuffer(vmArgs);
 
-    // VM-specific attributes
-    Map vmAttributesMap = getVMSpecificAttributesMap(configuration);
+		this.addVMArguments(vmArgsBuffer, configuration, launch, mode);
+		ExecutionArguments execArgs = new ExecutionArguments(vmArgsBuffer
+				.toString(), pgmArgs);
 
-    // Classpath
-    String[] classpath = super.getClasspath(configuration);
+		// VM-specific attributes
+		Map vmAttributesMap = getVMSpecificAttributesMap(configuration);
+		// Classpath
+		String[] classpath = getClasspath(configuration);
 
-    // Create VM config
-    VMRunnerConfiguration runConfig = new VMRunnerConfiguration(mainTypeName, classpath);
-    runConfig.setProgramArguments(execArgs.getProgramArgumentsArray());
-    runConfig.setVMArguments(execArgs.getVMArgumentsArray());
-    runConfig.setWorkingDirectory(workingDirName);
-    runConfig.setVMSpecificAttributesMap(vmAttributesMap);
+		// Create VM config
+		VMRunnerConfiguration runConfig = new VMRunnerConfiguration(
+				mainTypeName, classpath);
+		runConfig.setProgramArguments(execArgs.getProgramArgumentsArray());
+		runConfig.setVMArguments(execArgs.getVMArgumentsArray());
+		runConfig.setWorkingDirectory(workingDirName);
+		runConfig.setVMSpecificAttributesMap(vmAttributesMap);
 
-    // Bootpath
-    String[] bootpath = getBootpath(configuration);
-    runConfig.setBootClassPath(bootpath);
+		// Bootpath
+		String[] bootpath = getBootpath(configuration);
+		runConfig.setBootClassPath(bootpath);
 
-    // check for cancellation
-    if (monitor.isCanceled()) {
-      return;
-    }
+		// check for cancellation
+		if (monitor.isCanceled()) {
+			return;
+		}
 
-    // stop in main
-    prepareStopInMain(configuration);
+		// stop in main
+		prepareStopInMain(configuration);
 
-    // Launch the configuration
-    runner.run(runConfig, launch, monitor);
+		// Launch the configuration
+		runner.run(runConfig, launch, monitor);
 
-    // check for cancellation
-    if (monitor.isCanceled()) {
-      return;
-    }
+		// check for cancellation
+		if (monitor.isCanceled()) {
+			return;
+		}
 
-    // set the default source locator if required
-    setDefaultSourceLocator(launch, configuration);
+		// set the default source locator if required
+		setDefaultSourceLocator(launch, configuration);
 
-    monitor.done();
-  }
+		monitor.done();
+	}
 
-  /**
-   * @see org.eclipse.jdt.launching.AbstractJavaLaunchConfigurationDelegate#verifyWorkingDirectory(org.eclipse.debug.core.ILaunchConfiguration)
-   */
-  public File verifyWorkingDirectory(ILaunchConfiguration configuration)
-      throws CoreException {
-    IProject theProject = this.getJavaProject(configuration).getProject();
+	/**
+	 * @see org.eclipse.jdt.launching.AbstractJavaLaunchConfigurationDelegate#verifyWorkingDirectory(org.eclipse.debug.core.ILaunchConfiguration)
+	 */
+	public File verifyWorkingDirectory(ILaunchConfiguration configuration)
+			throws CoreException {
+		IProject theProject = this.getJavaProject(configuration).getProject();
 
-    IPath wd = getWorkingDirectoryPath(configuration);
-    JavaProject javaProject = (JavaProject) (this
-        .getJavaProject(configuration).getAdapter(JavaProject.class));
+		IPath wd = getWorkingDirectoryPath(configuration);
+		JavaProject javaProject = (JavaProject) (this
+				.getJavaProject(configuration).getAdapter(JavaProject.class));
 
-    File wdFile = javaProject.getWDFolder(theProject, wd);
-    if (null == wdFile) {
-      IPath path = VariablesPlugin.getDefault().getExternalBuildRoot();
-      path = path.append(theProject.getName() + ".woa");
-      wdFile = path.toFile();
-      if (!wdFile.exists()) {
-        wdFile = null;
-      }
-    }
-    if (null == wdFile) {
-      wdFile = super.verifyWorkingDirectory(configuration);
-    }
-    if (((wdFile == null) || (wdFile.toString().indexOf(".woa") < 0))) {
-      abort(
-          MessageFormat
-              .format(
-                  LaunchingMessages
-                      .getString("WOJavaLocalApplicationLaunchConfigurationDelegate.Working_directory_is_not_a_woa__{0}_12"), new String[] { wdFile.toString() }), null, IJavaLaunchConfigurationConstants.ERR_WORKING_DIRECTORY_DOES_NOT_EXIST); //$NON-NLS-1$
-    }
+		File wdFile = javaProject.getWDFolder(theProject, wd);
+		if (null == wdFile) {
+			IPath path = VariablesPlugin.getDefault().getExternalBuildRoot();
+			path = path.append(theProject.getName() + ".woa");
+			wdFile = path.toFile();
+			if (!wdFile.exists()) {
+				wdFile = null;
+			}
+		}
+		if (null == wdFile) {
+			wdFile = super.verifyWorkingDirectory(configuration);
+		}
+		if (((wdFile == null) || (wdFile.toString().indexOf(".woa") < 0))) {
+			abort(
+					MessageFormat
+							.format(
+									LaunchingMessages
+											.getString("WOJavaLocalApplicationLaunchConfigurationDelegate.Working_directory_is_not_a_woa__{0}_12"), new String[] { wdFile.toString() }), null, IJavaLaunchConfigurationConstants.ERR_WORKING_DIRECTORY_DOES_NOT_EXIST); //$NON-NLS-1$
+		}
 
-    return wdFile;
-  }
+		return wdFile;
+	}
 
-  protected StringBuffer addVMArguments(StringBuffer vmArgs, ILaunchConfiguration configuration, ILaunch launch, String mode) {
-    return vmArgs;
-  }
+	protected StringBuffer addVMArguments(StringBuffer vmArgs,
+			ILaunchConfiguration configuration, ILaunch launch, String mode) {
+		return vmArgs;
+	}
 }
