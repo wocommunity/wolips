@@ -48,6 +48,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.Writer;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -78,9 +79,14 @@ public class WodModelUtils {
     return new DocumentWodModel(_wodFile, _wodDocument);
   }
 
-  public static void writeWodFormat(IWodModel _wodModel, Writer _writer) {
+  public static void writeWodFormat(IWodModel _wodModel, Writer _writer, boolean _alphabetize) {
     PrintWriter pw = new PrintWriter(_writer);
-    Iterator elementsIter = _wodModel.getElements().iterator();
+    List elementsList = _wodModel.getElements();
+    if (_alphabetize) {
+      elementsList = new LinkedList(elementsList);
+      Collections.sort(elementsList);
+    }
+    Iterator elementsIter = elementsList.iterator();
     while (elementsIter.hasNext()) {
       IWodElement element = (IWodElement) elementsIter.next();
       pw.print(element.getElementName());

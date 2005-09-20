@@ -55,7 +55,7 @@ import org.objectstyle.wolips.wodclipse.wod.parser.RulePosition;
 /**
  * @author mschrag
  */
-public class DocumentWodElement implements IWodElement {
+public class DocumentWodElement implements IWodElement, Comparable {
   private RulePosition myElementName;
   private RulePosition myElementType;
   private DocumentWodModel myModel;
@@ -104,6 +104,18 @@ public class DocumentWodElement implements IWodElement {
 
   public IWodModel getModel() {
     return myModel;
+  }
+  
+  public int compareTo(Object _otherObj) {
+    int comparison;
+    if (_otherObj instanceof DocumentWodElement) {
+      String otherName = ((DocumentWodElement)_otherObj).getElementName();
+      comparison = getElementName().compareTo(otherName);
+    }
+    else {
+      comparison = -1;
+    }
+    return comparison;
   }
 
   public String toString() {
