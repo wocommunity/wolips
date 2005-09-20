@@ -182,7 +182,7 @@ public class ProjectAdapter extends AbstractResourceAdapter implements IProjectA
       IPath path = classpathEntries[i].getPath();
       IPath choppedFrameworkPath = null;
       int count = path.segmentCount();
-      for (int pathElementNum = 0; pathElementNum < count && choppedFrameworkPath == null; pathElementNum ++) {
+      for (int pathElementNum = 0; pathElementNum < count && choppedFrameworkPath == null; pathElementNum++) {
         String segment = path.segment(pathElementNum);
         if (segment.endsWith("." + "framework")) {
           choppedFrameworkPath = path.removeLastSegments(count - pathElementNum - 1);
@@ -214,18 +214,23 @@ public class ProjectAdapter extends AbstractResourceAdapter implements IProjectA
    * @return boolean
    */
   public boolean isFrameworkReference(IProject iProject) {
+    boolean isFrameworkReference;
     IJavaProject javaProject = null;
     try {
       javaProject = JavaCore.create(this.getUnderlyingProject());
-      IProjectAdapter project = (IProjectAdapter) iProject.getAdapter(IProjectAdapter.class);
-      if (project.isFramework() && projectIsReferencedByProject(iProject, javaProject.getProject()))
-        return true;
+      if (javaProject == null) {
+        isFrameworkReference = false;
+      }
+      else {
+        IProjectAdapter project = (IProjectAdapter) iProject.getAdapter(IProjectAdapter.class);
+        isFrameworkReference = project != null && project.isFramework() && projectIsReferencedByProject(iProject, javaProject.getProject());
+      }
     }
     catch (Exception e) {
       CorePlugin.getDefault().log(e);
-      return false;
+      isFrameworkReference = false;
     }
-    return false;
+    return isFrameworkReference;
   }
 
   public boolean projectIsReferencedByProject(IProject child, IProject mother) {
