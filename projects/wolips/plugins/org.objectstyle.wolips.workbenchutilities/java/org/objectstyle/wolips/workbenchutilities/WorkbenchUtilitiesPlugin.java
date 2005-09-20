@@ -324,7 +324,10 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 			IResource resource = resources[i];
 			if ((resource != null) && (resource instanceof IContainer)
 					&& (!resource.toString().endsWith(".framework"))
-					&& (!resource.toString().endsWith(".woa"))) {
+                    && (!resource.toString().endsWith(".woa"))
+                    && (!(resource.toString().equalsIgnoreCase("build") && resource.getParent().equals(resource.getProject())))
+                    && (!(resource.toString().equalsIgnoreCase("dist") && resource.getParent().equals(resource.getProject())))
+                    && (!(resource.toString().equalsIgnoreCase("target") && resource.getParent().equals(resource.getProject())))) {
 				if ((resource != null)) {
 					if ((resource instanceof IContainer)
 							|| (resource instanceof IProject)) {
@@ -383,7 +386,10 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 			if ((memberResource != null)
 					&& (memberResource instanceof IContainer)
 					&& (!memberResource.toString().endsWith(".framework"))
-					&& (!memberResource.toString().endsWith(".woa"))
+                    && (!memberResource.toString().endsWith(".woa"))
+                    && (!(memberResource.toString().equalsIgnoreCase("build") && memberResource.getParent().equals(memberResource.getProject())))
+                    && (!(memberResource.toString().equalsIgnoreCase("dist") && memberResource.getParent().equals(memberResource.getProject())))
+                    && (!(memberResource.toString().equalsIgnoreCase("target") && memberResource.getParent().equals(memberResource.getProject())))
 					&& (!memberResource.isDerived()))
 				WorkbenchUtilitiesPlugin.findFilesInResourceByName(anArrayList,
 						memberResource, aFileName);
