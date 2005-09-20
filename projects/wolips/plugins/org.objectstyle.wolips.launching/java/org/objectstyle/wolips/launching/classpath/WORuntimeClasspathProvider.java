@@ -71,8 +71,10 @@ public class WORuntimeClasspathProvider extends StandardClasspathProvider {
 	/**
 	 * Comment for <code>ID</code>
 	 */
-	public final static String ID =
-		WORuntimeClasspathProvider.class.getName();
+    public final static String ID =
+        "org.objectstyle.wolips.launching.WORuntimeClasspathProvider";
+    public final static String OLD_ID = "org.objectstyle.wolips.launching.WORuntimeClasspathProvider";
+    public final static String VERY_OLD_ID = "org.objectstyle.wolips.launching.WORuntimeClasspath";
 
 	/*
 	 * (non-Javadoc)

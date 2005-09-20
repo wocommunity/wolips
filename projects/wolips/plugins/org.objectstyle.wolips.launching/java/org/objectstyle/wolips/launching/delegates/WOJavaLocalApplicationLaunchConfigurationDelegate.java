@@ -135,15 +135,24 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate extends
 			this.informUser("LaunchConfiguration update. The message should occur only once. Please launch your app again.");
 			return false;
 		}
-		if (configuration.getAttribute(
-				IJavaLaunchConfigurationConstants.ATTR_CLASSPATH_PROVIDER,
-				notFound).equals("org.objectstyle.wolips.launching.WORuntimeClasspathProvider")) {
-			ILaunchConfigurationWorkingCopy workingCopy = configuration.getWorkingCopy();
-			workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_CLASSPATH_PROVIDER, WORuntimeClasspathProvider.ID);
-			workingCopy.doSave();
-			this.informUser("LaunchConfiguration update. The message should occur only once. Please launch your app again.");
-			return false;
-		}
+        if (configuration.getAttribute(
+                IJavaLaunchConfigurationConstants.ATTR_CLASSPATH_PROVIDER,
+                notFound).equals(WORuntimeClasspathProvider.OLD_ID)) {
+            ILaunchConfigurationWorkingCopy workingCopy = configuration.getWorkingCopy();
+            workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_CLASSPATH_PROVIDER, WORuntimeClasspathProvider.ID);
+            workingCopy.doSave();
+            this.informUser("LaunchConfiguration update. The message should occur only once. Please launch your app again.");
+            return false;
+        }
+        if (configuration.getAttribute(
+                IJavaLaunchConfigurationConstants.ATTR_CLASSPATH_PROVIDER,
+                notFound).equals(WORuntimeClasspathProvider.VERY_OLD_ID)) {
+            ILaunchConfigurationWorkingCopy workingCopy = configuration.getWorkingCopy();
+            workingCopy.setAttribute(IJavaLaunchConfigurationConstants.ATTR_CLASSPATH_PROVIDER, WORuntimeClasspathProvider.ID);
+            workingCopy.doSave();
+            this.informUser("LaunchConfiguration update. The message should occur only once. Please launch your app again.");
+            return false;
+        }
 		return super.preLaunchCheck(configuration, mode, monitor);
 	}
 

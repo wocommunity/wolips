@@ -45,14 +45,8 @@
          point="org.eclipse.jdt.launching.classpathProviders">
       <classpathProvider
             class="org.objectstyle.wolips.launching.classpath.WORuntimeClasspathProvider"
-            id="org.objectstyle.wolips.launching.classpath.WORuntimeClasspathProvider">
+            id="org.objectstyle.wolips.launching.WORuntimeClasspathProvider">
       </classpathProvider>
-	<!-- deprecated -->
-      <classpathProvider
-            class="org.objectstyle.wolips.launching.classpath.WORuntimeClasspathProvider"
-            id="org.objectstyle.wolips.launching.WORuntimeClasspath">
-      </classpathProvider>
-	<!-- end deprecated -->
    </extension>
 <!-- =================================================================================== -->
 <!-- Extension: runtime classpath entry resolvers                                        -->
