@@ -322,19 +322,25 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 			ArrayList list) {
 		for (int i = 0; i < resources.length; i++) {
 			IResource resource = resources[i];
-			if ((resource != null) && (resource instanceof IContainer)
-					&& (!resource.toString().endsWith(".framework"))
-                    && (!resource.toString().endsWith(".woa"))
-                    && (!(resource.toString().equalsIgnoreCase("build") && resource.getParent().equals(resource.getProject())))
-                    && (!(resource.toString().equalsIgnoreCase("dist") && resource.getParent().equals(resource.getProject())))
-                    && (!(resource.toString().equalsIgnoreCase("target") && resource.getParent().equals(resource.getProject())))) {
+			if ((resource != null)
+					&& (!resource.isDerived())
+					&& (resource instanceof IContainer)
+					&& (!resource.getName().endsWith(".framework"))
+					&& (!resource.getName().endsWith(".woa"))
+					&& (!(resource.getName().equalsIgnoreCase("build") && resource
+							.getParent().equals(resource.getProject())))
+					&& (!(resource.getName().equalsIgnoreCase("dist") && resource
+							.getParent().equals(resource.getProject())))
+					&& (!(resource.getName().equalsIgnoreCase("target") && resource
+							.getParent().equals(resource.getProject())))) {
 				if ((resource != null)) {
 					if ((resource instanceof IContainer)
 							|| (resource instanceof IProject)) {
 						for (int j = 0; j < extensions.length; j++) {
 							IResource foundResource = ((IContainer) resource)
 									.findMember(name + "." + extensions[j]);
-							if (foundResource != null && !foundResource.isDerived())
+							if (foundResource != null
+									&& !foundResource.isDerived())
 								list.add(foundResource);
 						}
 						IResource[] members = WorkbenchUtilitiesPlugin
@@ -362,7 +368,8 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 					|| (aResource instanceof IProject)) {
 				IResource resource = ((IContainer) aResource)
 						.findMember(aFileName);
-				if ((resource != null) && (resource instanceof IFile) && !resource.isDerived())
+				if ((resource != null) && (resource instanceof IFile)
+						&& !resource.isDerived())
 					anArrayList.add(resource);
 				IResource[] members = WorkbenchUtilitiesPlugin
 						.members(aResource);
@@ -384,13 +391,16 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 		for (int i = 0; i < aResource.length; i++) {
 			IResource memberResource = aResource[i];
 			if ((memberResource != null)
+					&& (!memberResource.isDerived())
 					&& (memberResource instanceof IContainer)
 					&& (!memberResource.toString().endsWith(".framework"))
-                    && (!memberResource.toString().endsWith(".woa"))
-                    && (!(memberResource.toString().equalsIgnoreCase("build") && memberResource.getParent().equals(memberResource.getProject())))
-                    && (!(memberResource.toString().equalsIgnoreCase("dist") && memberResource.getParent().equals(memberResource.getProject())))
-                    && (!(memberResource.toString().equalsIgnoreCase("target") && memberResource.getParent().equals(memberResource.getProject())))
-					&& (!memberResource.isDerived()))
+					&& (!memberResource.toString().endsWith(".woa"))
+					&& (!(memberResource.toString().equalsIgnoreCase("build") && memberResource
+							.getParent().equals(memberResource.getProject())))
+					&& (!(memberResource.toString().equalsIgnoreCase("dist") && memberResource
+							.getParent().equals(memberResource.getProject())))
+					&& (!(memberResource.toString().equalsIgnoreCase("target") && memberResource
+							.getParent().equals(memberResource.getProject()))))
 				WorkbenchUtilitiesPlugin.findFilesInResourceByName(anArrayList,
 						memberResource, aFileName);
 		}
