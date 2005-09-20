@@ -59,6 +59,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
     store.setDefault(PreferenceConstants.BINDING_VALUE, "0,65,216");
     store.setDefault(PreferenceConstants.CONSTANT_BINDING_VALUE, "42,0,255");
     store.setDefault(PreferenceConstants.OPERATOR, "0,0,0");
+    store.setDefault(PreferenceConstants.COMMENT, "63,127,95");
     store.setDefault(PreferenceConstants.UNKNOWN, "0,0,0");
   }
 

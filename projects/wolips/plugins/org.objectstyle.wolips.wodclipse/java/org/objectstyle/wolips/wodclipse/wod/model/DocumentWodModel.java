@@ -53,6 +53,7 @@ import org.objectstyle.wolips.wodclipse.wod.parser.AssignmentOperatorWordDetecto
 import org.objectstyle.wolips.wodclipse.wod.parser.BindingNameRule;
 import org.objectstyle.wolips.wodclipse.wod.parser.BindingValueRule;
 import org.objectstyle.wolips.wodclipse.wod.parser.CloseDefinitionWordDetector;
+import org.objectstyle.wolips.wodclipse.wod.parser.CommentRule;
 import org.objectstyle.wolips.wodclipse.wod.parser.ConstantBindingValueRule;
 import org.objectstyle.wolips.wodclipse.wod.parser.ElementNameRule;
 import org.objectstyle.wolips.wodclipse.wod.parser.ElementTypeOperatorWordDetector;
@@ -90,9 +91,13 @@ public class DocumentWodModel implements IWodModel {
     RulePosition rulePosition;
     while ((rulePosition = scanner.nextRulePosition()) != null) {
       boolean whitespace = false;
+      boolean comment = false;
       boolean syntaxError = false;
       if (RulePosition.isRulePositionOfType(rulePosition, WhitespaceRule.class)) {
         whitespace = true;
+      }
+      else if (RulePosition.isRulePositionOfType(rulePosition, CommentRule.class)) {
+        comment = true;
       }
       else if (RulePosition.isRulePositionOfType(rulePosition, ElementNameRule.class)) {
         if (lastRulePosition != null && !RulePosition.isOperatorOfType(lastRulePosition, CloseDefinitionWordDetector.class)) {
@@ -175,7 +180,7 @@ public class DocumentWodModel implements IWodModel {
         syntaxError = true;
       }
 
-      if (!whitespace) {
+      if (!whitespace && !comment) {
         lastRulePosition = rulePosition;
       }
     }

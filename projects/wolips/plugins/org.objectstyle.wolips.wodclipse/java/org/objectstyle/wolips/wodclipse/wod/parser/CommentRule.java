@@ -41,19 +41,63 @@
  * Group, please see <http://objectstyle.org/> .
  *  
  */
-package org.objectstyle.wolips.wodclipse.preferences;
+package org.objectstyle.wolips.wodclipse.wod.parser;
+
+import org.eclipse.jface.text.rules.ICharacterScanner;
+import org.eclipse.jface.text.rules.IPredicateRule;
+import org.eclipse.jface.text.rules.IToken;
+import org.eclipse.jface.text.rules.Token;
 
 /**
- * @author mike
+ * @author mschrag
  */
-public class PreferenceConstants {
-  public static final String ELEMENT_NAME = "ComponentName";
-  public static final String ELEMENT_TYPE = "ComponentType";
-  public static final String BINDING_NAME = "BindingName";
-  public static final String BINDING_VALUE = "BindingValue";
-  public static final String CONSTANT_BINDING_VALUE = "ConstantBindingValue";
-  public static final String PARENT_BINDING_VALUE = "ParentBindingValue";
-  public static final String OPERATOR = "Operator";
-  public static final String COMMENT = "Comment";
-  public static final String UNKNOWN = "Unknown";
+public class CommentRule implements IPredicateRule {
+  private IToken myToken;
+
+  public CommentRule(IToken _token) {
+    myToken = _token;
+  }
+
+  public IToken getSuccessToken() {
+    return myToken;
+  }
+
+  public IToken evaluate(ICharacterScanner _scanner) {
+    return evaluate(_scanner, false);
+  }
+
+  public IToken evaluate(ICharacterScanner _scanner, boolean _resume) {
+    int startColumn = _scanner.getColumn();
+    IToken token = Token.UNDEFINED;
+    int ch;
+    int unreadCount = 0;
+    int slashCount = 0;
+    while ((ch = _scanner.read()) != ICharacterScanner.EOF) {
+      unreadCount ++;
+      if (slashCount < 2) {
+        if (ch == '/') {
+          slashCount ++;
+        }
+        else {
+          break;
+        }
+      }
+      else {
+        unreadCount = 0;
+        token = myToken;
+        if (ch == '\n' || ch == '\r') {
+          break;
+        }
+      }
+    }
+
+    if (ch == ICharacterScanner.EOF) {
+      unreadCount ++;
+    }
+    for (int i = 0; i < unreadCount; i++) {
+      _scanner.unread();
+    }
+
+    return token;
+  }
 }
