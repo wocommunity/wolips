@@ -56,81 +56,75 @@
 
 package org.objectstyle.wolips.goodies.core.mac;
 
-import java.io.IOException;
+import java.io.File;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.net.URL;
+import java.net.URLClassLoader;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.Platform;
 
 /**
  * @author ulrich
- *  
+ * @author Mike Schrag
  */
 public class NativeHelper {
-	private static final String REVEAL_IN_FINDER_ACTION = "REVEAL_IN_FINDER";
+  private static URLClassLoader APPLE_CLASS_LOADER;
 
-	private static final String CD_IN_TERMINAL_ACTION = "CD_IN_TERMINAL";
+  static {
+    try {
+      // Note: This HAS to only be loaded one time or the app will explode because the dylib will have already been loaded
+      // in another class loader.
+      NativeHelper.APPLE_CLASS_LOADER = URLClassLoader.newInstance(new URL[] { new File("/System/Library/Java").toURL() });
+    }
+    catch (Throwable t) {
+      t.printStackTrace();
+    }
+  }
 
-	private static String NATIVE_HELPER_PATH = null;
+  public static void revealInFinder(IResource resource) {
+    try {
+      Class nsApplicationClass = NativeHelper.APPLE_CLASS_LOADER.loadClass("com.apple.cocoa.application.NSApplication");
+      Method nsApplicationSharedApplicationMethod = nsApplicationClass.getMethod("sharedApplication", null);
+      nsApplicationSharedApplicationMethod.invoke(null, null);
 
-	private static boolean ChmodDone = false;
+      Class nsWorkspaceClass = NativeHelper.APPLE_CLASS_LOADER.loadClass("com.apple.cocoa.application.NSWorkspace");
+      Method nsWorkspaceSharedWorkspaceMethod = nsWorkspaceClass.getMethod("sharedWorkspace", null);
+      Object nsWorkspace = nsWorkspaceSharedWorkspaceMethod.invoke(null, null);
 
-	private static String helperCommand() {
-		if (NativeHelper.NATIVE_HELPER_PATH == null) {
-			URL url;
-			try {
-				url = Platform.resolve(MacPlugin.getDefault().getDescriptor()
-						.getInstallURL());
-				NativeHelper.NATIVE_HELPER_PATH = url.getPath()
-						+ "tool/NativeHelper.app/Contents/MacOS/NativeHelper";
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		return NativeHelper.NATIVE_HELPER_PATH;
-	}
+      Method nsWorkspaceSelectFileMethod = nsWorkspaceClass.getMethod("selectFile", new Class[] { String.class, String.class });
+      String resourcePath = resource.getLocation().toOSString();
+      Object selectFileResults = nsWorkspaceSelectFileMethod.invoke(nsWorkspace, new Object[] { resourcePath, resourcePath });
+    }
+    catch (Throwable t) {
+      t.printStackTrace();
+    }
+  }
 
-	private static void launchHelper(String action, String argument) {
-	  if (!NativeHelper.ChmodDone) {
-        String[] chmod = {
-          "chmod",
-          "755",
-          NativeHelper.helperCommand()
-        };
-		try {
-			Runtime.getRuntime().exec(chmod);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		NativeHelper.ChmodDone = true;
-	  }
-      String[] toolCommands = {
-          NativeHelper.helperCommand(),
-          action,
-          argument.replace(' ', ':')
-      };
-      try {
-    	Runtime.getRuntime().exec(toolCommands);
-      } catch (IOException e) {
-    	e.printStackTrace();
-      }
-	}
+  public static void cdInTerminal(IContainer container) {
+    try {
+      Class nsApplicationClass = NativeHelper.APPLE_CLASS_LOADER.loadClass("com.apple.cocoa.application.NSApplication");
+      Method nsApplicationSharedApplicationMethod = nsApplicationClass.getMethod("sharedApplication", null);
+      nsApplicationSharedApplicationMethod.invoke(null, null);
 
-	/**
-	 * @param resource
-	 */
-	public static void revealInFinder(IResource resource) {
-		NativeHelper.launchHelper(NativeHelper.REVEAL_IN_FINDER_ACTION,
-				resource.getLocation().toOSString());
-	}
+      Class nsAppleScriptClass = NativeHelper.APPLE_CLASS_LOADER.loadClass("com.apple.cocoa.foundation.NSAppleScript");
+      Constructor nsAppleScriptConstructor = nsAppleScriptClass.getConstructor(new Class[] { String.class });
 
-	/**
-	 * @param container
-	 */
-	public static void cdInTerminal(IContainer container) {
-		NativeHelper.launchHelper(NativeHelper.CD_IN_TERMINAL_ACTION, container
-				.getLocation().toOSString());
-	}
+      Class nsMutableDictionaryClass = NativeHelper.APPLE_CLASS_LOADER.loadClass("com.apple.cocoa.foundation.NSMutableDictionary");
+      Constructor nsMutableDictionaryConstructor = nsMutableDictionaryClass.getConstructor(null);
+      Object errorsDictionary = nsMutableDictionaryConstructor.newInstance(null);
+
+      String containerPath = container.getLocation().toOSString().replaceAll(" ", "\\ ");
+      String openInTerminalString = "tell application \"Terminal\"\n do script \"cd " + containerPath + "\"\n activate\nend tell";
+      Object nsAppleScript = nsAppleScriptConstructor.newInstance(new Object[] { openInTerminalString });
+
+      Method nsAppleScriptExecuteMethod = nsAppleScriptClass.getMethod("execute", new Class[] { nsMutableDictionaryClass });
+      nsAppleScriptExecuteMethod.invoke(nsAppleScript, new Object[] { errorsDictionary });
+    }
+    catch (Throwable t) {
+      t.printStackTrace();
+    }
+  }
 
 }
