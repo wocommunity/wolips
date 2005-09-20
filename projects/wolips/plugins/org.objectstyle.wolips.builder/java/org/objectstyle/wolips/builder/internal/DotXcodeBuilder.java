@@ -55,7 +55,6 @@
  */
 package org.objectstyle.wolips.builder.internal;
 
-import java.io.ByteArrayInputStream;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -123,7 +122,7 @@ public class DotXcodeBuilder implements IBuilder {
       // NTS: What do we do about project frameworks here??
       _xcodeProject.addFrameworkReference(frameworkPath.toOSString());
     }
-    
+
     IFile projectFolderFile = _project.getFile(_projectFolderName);
     if (projectFolderFile.exists()) {
       // NTS: ??
@@ -132,13 +131,11 @@ public class DotXcodeBuilder implements IBuilder {
     else {
       IFolder projectFolder = _project.getFolder(_projectFolderName);
       if (!projectFolder.exists()) {
-        projectFolder.create(true, false, _monitor);
+        projectFolder.create(false, true, _monitor);
       }
       IFile pbxProjFile = projectFolder.getFile("project.pbxproj");
-      if (!pbxProjFile.exists()) {
-        pbxProjFile.create(new ByteArrayInputStream(new byte[0]), false, _monitor);
-      }
       _xcodeProject.save(pbxProjFile.getLocation().toFile());
+      pbxProjFile.refreshLocal(IResource.DEPTH_INFINITE, _monitor);
     }
   }
 
@@ -173,7 +170,7 @@ public class DotXcodeBuilder implements IBuilder {
     public XcodeResourceVisitor(PBXProject _xcodeProject) {
       myXcodeProject = _xcodeProject;
     }
-    
+
     public boolean visit(IResource _resource) throws CoreException {
       boolean traverseChildren;
       String ext = _resource.getFileExtension();
