@@ -43,66 +43,15 @@
  */
 package org.objectstyle.wolips.wodclipse.wod.parser;
 
-import org.eclipse.jface.text.rules.ICharacterScanner;
-import org.eclipse.jface.text.rules.IPredicateRule;
 import org.eclipse.jface.text.rules.IToken;
-import org.eclipse.jface.text.rules.Token;
 
 /**
  * @author mike
  */
-public class BindingValueRule implements IPredicateRule {
+public class BindingValueRule extends SingleWordRule {
   private IToken myToken;
 
   public BindingValueRule(IToken _token) {
-    myToken = _token;
-  }
-
-  public IToken getSuccessToken() {
-    return myToken;
-  }
-
-  public IToken evaluate(ICharacterScanner _scanner) {
-    return evaluate(_scanner, false);
-  }
-
-  public IToken evaluate(ICharacterScanner _scanner, boolean _resume) {
-    IToken token = Token.UNDEFINED;
-    int whitespaceCount = 0;
-    int unreadCount = 0;
-    int wordCount = 0;
-    int ch;
-    while ((ch = _scanner.read()) != ICharacterScanner.EOF) {
-      unreadCount++;
-      if (ch == ';') {
-        token = myToken;
-        _scanner.unread();
-        break;
-      }
-      else if (Character.isJavaIdentifierPart(ch) || ch == '.' || ch == '^') {
-        if ((wordCount == 0 || whitespaceCount > 0) && (++ wordCount >= 2)) {
-          break;
-        }
-        whitespaceCount = 0;
-      }
-      else if (ch == ' ' || ch == '\t' || ch == '\n' || ch == '\r') {
-        whitespaceCount++;
-      }
-      else {
-        break;
-      }
-    }
-
-    if (token == myToken) {
-      unreadCount = whitespaceCount;
-    }
-    if (ch == ICharacterScanner.EOF) {
-      unreadCount++;
-    }
-    for (int i = 0; i < unreadCount; i++) {
-      _scanner.unread();
-    }
-
-    return token;
+    super(_token, new char[] { '.', '^' }, ';');
   }
 }

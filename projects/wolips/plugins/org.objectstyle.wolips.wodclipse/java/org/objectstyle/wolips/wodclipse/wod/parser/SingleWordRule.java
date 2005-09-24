@@ -43,13 +43,78 @@
  */
 package org.objectstyle.wolips.wodclipse.wod.parser;
 
+import org.eclipse.jface.text.rules.ICharacterScanner;
+import org.eclipse.jface.text.rules.IPredicateRule;
 import org.eclipse.jface.text.rules.IToken;
+import org.eclipse.jface.text.rules.Token;
 
 /**
  * @author mike
  */
-public class BindingNameRule extends SingleWordRule {
-  public BindingNameRule(IToken _token) {
-    super(_token, new char[] { '.' }, '=');
+public class SingleWordRule implements IPredicateRule {
+  private IToken myToken;
+  private char[] myAcceptableCharacters;
+  private char myStopCharacter;
+
+  public SingleWordRule(IToken _token, char[] _acceptableCharacters, char _stopCharacter) {
+    myToken = _token;
+    myAcceptableCharacters = _acceptableCharacters;
+    myStopCharacter = _stopCharacter;
+  }
+
+  public IToken getSuccessToken() {
+    return myToken;
+  }
+
+  public IToken evaluate(ICharacterScanner _scanner) {
+    return evaluate(_scanner, false);
+  }
+
+  public IToken evaluate(ICharacterScanner _scanner, boolean _resume) {
+    IToken token = Token.UNDEFINED;
+    int whitespaceCount = 0;
+    int unreadCount = 0;
+    int wordCount = 0;
+    int ch;
+    while ((ch = _scanner.read()) != ICharacterScanner.EOF) {
+      unreadCount++;
+      if (ch == myStopCharacter) {
+        token = myToken;
+        _scanner.unread();
+        break;
+      }
+      else if (isAcceptableCharacter((char)ch)) {
+        if ((wordCount == 0 || whitespaceCount > 0) && (++ wordCount >= 2)) {
+          break;
+        }
+        whitespaceCount = 0;
+      }
+      else if (Character.isWhitespace((char)ch)) {
+        whitespaceCount++;
+      }
+      else {
+        break;
+      }
+    }
+
+    if (token == myToken) {
+      unreadCount = whitespaceCount;
+    }
+    if (ch == ICharacterScanner.EOF) {
+      unreadCount++;
+    }
+    for (int i = 0; i < unreadCount; i++) {
+      _scanner.unread();
+    }
+
+    return token;
+  }
+  
+  protected boolean isAcceptableCharacter(char _ch) {
+    boolean acceptableCharacter = Character.isJavaIdentifierPart(_ch);
+    for (int i = 0; !acceptableCharacter && i < myAcceptableCharacters.length; i ++) {
+      acceptableCharacter = (myAcceptableCharacters[i] == _ch);
+    }
+    return acceptableCharacter;
   }
 }
