@@ -86,7 +86,10 @@ public class WOJavaApplicationLaunchShortcut extends
 		ILaunchConfigurationWorkingCopy wc = null;
 		try {
 			ILaunchConfigurationType configType = getJavaLaunchConfigType();
-			wc = configType.newInstance(null, getLaunchManager().generateUniqueLaunchConfigurationNameFrom(type.getElementName()));
+      String elementName = type.getElementName();
+      String projectName = type.getJavaProject().getProject().getName();
+      String launchName = projectName + ": " + elementName;
+			wc = configType.newInstance(null, getLaunchManager().generateUniqueLaunchConfigurationNameFrom(launchName));
 		} catch (CoreException exception) {
 			reportCreatingConfiguration(exception);
 			return null;		
