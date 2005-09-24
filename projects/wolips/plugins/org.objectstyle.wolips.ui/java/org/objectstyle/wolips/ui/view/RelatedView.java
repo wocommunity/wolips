@@ -311,9 +311,10 @@ public final class RelatedView extends ViewPart
 						display.asyncExec(new Runnable() {
 
 							public void run() {
-
-								getViewer().refresh(false);
-
+                TableViewer tableViewer = getViewer();
+                if (!tableViewer.getTable().isDisposed()) {
+                  tableViewer.refresh(false);
+                }
 							}
 
 						});
