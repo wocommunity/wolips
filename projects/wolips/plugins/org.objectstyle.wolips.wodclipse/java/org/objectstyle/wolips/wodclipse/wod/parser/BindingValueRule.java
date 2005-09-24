@@ -70,6 +70,7 @@ public class BindingValueRule implements IPredicateRule {
     IToken token = Token.UNDEFINED;
     int whitespaceCount = 0;
     int unreadCount = 0;
+    int wordCount = 0;
     int ch;
     while ((ch = _scanner.read()) != ICharacterScanner.EOF) {
       unreadCount++;
@@ -78,14 +79,17 @@ public class BindingValueRule implements IPredicateRule {
         _scanner.unread();
         break;
       }
-      else if (ch == ' ' || ch == '\t') {
+      else if (Character.isJavaIdentifierPart(ch) || ch == '.' || ch == '^') {
+        if ((wordCount == 0 || whitespaceCount > 0) && (++ wordCount >= 2)) {
+          break;
+        }
+        whitespaceCount = 0;
+      }
+      else if (ch == ' ' || ch == '\t' || ch == '\n' || ch == '\r') {
         whitespaceCount++;
       }
-      else if (ch == '{' || ch == '}' || ch == ':' || ch == '=' || ch == '\n' || ch == '\r') {
-        break;
-      }
       else {
-        whitespaceCount = 0;
+        break;
       }
     }
 

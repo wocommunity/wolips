@@ -62,10 +62,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IType;
-import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.part.FileEditorInput;
-import org.objectstyle.wolips.core.resources.types.api.ApiModelException;
+import org.objectstyle.wolips.core.resources.types.api.Binding;
 import org.objectstyle.wolips.core.resources.types.api.Validation;
 import org.objectstyle.wolips.core.resources.types.api.Wo;
 import org.objectstyle.wolips.wodclipse.WodclipsePlugin;
@@ -158,6 +157,13 @@ public class WodModelUtils {
           wo = WodBindingUtils.findApiModelWo(elementType, _typeToApiModelWoCache);
           if (wo != null) {
             Map bindingsMap = element.getBindingsMap();
+            Binding[] bindings = wo.getBindings();
+            for (int i = 0; i < bindings.length; i ++) {
+              String bindingName = bindings[i].getName();
+              if (bindings[i].isExplicitlyRequired() && !bindingsMap.containsKey(bindingName)) {
+                problems.add(new WodProblem(_wodModel, "Binding '" + bindingName + "' is required for " + wo.getClassName(), (hasPositions) ? ((DocumentWodElement) element).getElementNamePosition() : null, false));
+              }
+            }
             Validation[] failedValidations = wo.getFailedValidations(bindingsMap);
             for (int i = 0; i < failedValidations.length; i++) {
               String failedValidationMessage = failedValidations[i].getMessage();
@@ -165,10 +171,7 @@ public class WodModelUtils {
             }
           }
         }
-        catch (JavaModelException e) {
-          WodclipsePlugin.getDefault().log(e);
-        }
-        catch (ApiModelException e) {
+        catch (Throwable e) {
           WodclipsePlugin.getDefault().log(e);
         }
       }

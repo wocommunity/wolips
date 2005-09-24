@@ -71,6 +71,7 @@ public class ElementNameRule implements IPredicateRule {
     int whitespaceCount = 0;
     int unreadCount = 0;
     int ch;
+    int wordCount = 0;
     while ((ch = _scanner.read()) != ICharacterScanner.EOF) {
       unreadCount++;
       if (ch == ':') {
@@ -78,14 +79,17 @@ public class ElementNameRule implements IPredicateRule {
         _scanner.unread();
         break;
       }
+      else if (Character.isJavaIdentifierPart(ch) || ch == '.') {
+        if ((wordCount == 0 || whitespaceCount > 0) && (++wordCount >= 2)) {
+          break;
+        }
+        whitespaceCount = 0;
+      }
       else if (ch == ' ' || ch == '\t') {
         whitespaceCount++;
       }
-      else if (ch == '{' || ch == '}' || ch == '=' || ch == '\n' || ch == '\r') {
-        break;
-      }
       else {
-        whitespaceCount = 0;
+        break;
       }
     }
 
