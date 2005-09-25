@@ -14,5 +14,6 @@ Require-Bundle: org.objectstyle.wolips,
  org.objectstyle.wolips.woproject.ant,
  org.objectstyle.wolips.woproject,
  org.apache.ant,
- org.objectstyle.wolips.preferences
+ org.objectstyle.wolips.preferences,
+ org.eclipse.jdt.core
 Eclipse-AutoStart: true
