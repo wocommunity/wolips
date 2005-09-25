@@ -52,6 +52,6 @@ public class BindingValueRule extends SingleWordRule {
   private IToken myToken;
 
   public BindingValueRule(IToken _token) {
-    super(_token, new char[] { '.', '^', '-' }, ';');
+    super(_token, new char[] { '.', '^', '-', '@' }, ';');
   }
 }
