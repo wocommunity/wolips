@@ -59,6 +59,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
@@ -66,9 +67,12 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
 import org.objectstyle.woenvironment.pb.PBXProject;
 import org.objectstyle.woenvironment.pb.XcodeProjProject;
 import org.objectstyle.woenvironment.pb.XcodeProject;
@@ -119,8 +123,21 @@ public class DotXcodeBuilder implements IBuilder {
     Iterator frameworkPathsIter = frameworkPaths.iterator();
     while (frameworkPathsIter.hasNext()) {
       IPath frameworkPath = (IPath) frameworkPathsIter.next();
-      // NTS: What do we do about project frameworks here??
-      _xcodeProject.addFrameworkReference(frameworkPath.toOSString());
+      IContainer frameworkContainer = ResourcesPlugin.getWorkspace().getRoot().getContainerForLocation(frameworkPath);
+      if (frameworkContainer instanceof IProject) {
+        IProject frameworkProject = (IProject) frameworkContainer;
+        IJavaProject frameworkJavaProject = JavaCore.create(frameworkProject);
+        if (frameworkJavaProject != null) {
+          IPath defaultOutputLocation = frameworkJavaProject.getOutputLocation();
+          if (defaultOutputLocation != null) {
+            IPath builtFrameworkPath = defaultOutputLocation.append(frameworkProject.getName() + ".framework");
+            _xcodeProject.addFrameworkReference(builtFrameworkPath.toOSString());
+          }
+        }
+      }
+      else {
+        _xcodeProject.addFrameworkReference(frameworkPath.toOSString());
+      }
     }
 
     IFile projectFolderFile = _project.getFile(_projectFolderName);
