@@ -117,7 +117,13 @@ final class BuildResourceValidator extends DefaultDeltaVisitor {
 			this.project = (Project) resource.getAdapter(Project.class);
 			return true;
 		case IResource.FOLDER:
-			if(resource.getName().endsWith(".framework") || resource.getName().endsWith(".woa")) {
+			String extension = resource.getFileExtension();
+			if(extension != null) {
+				if(extension.equals("framework") ||extension.equals("woa") || extension.equals("xcode") || extension.equals("xcodeproj")) {
+					return false;
+				}
+			}
+			if(resource.getName().equals("build") || resource.getName().equals("dist") || resource.getName().equals("target")) {
 				return false;
 			}
 			if (this.project.matchesResourcesPattern(resource)

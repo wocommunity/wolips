@@ -83,18 +83,21 @@ public class WOAntBuilder extends AbstractIncrementalProjectBuilder {
 			IResourceDelta delta) throws CoreException {
 		if (AntRunner.isBuildRunning() || this.getProject() == null) {
 			monitor.done();
+			return;
 		}
 		monitor.beginTask(AntBuildMessages.getString("Build.Monitor.Title"),
 				WOAntBuilder.TOTAL_WORK_UNITS);
 		if (!Preferences.getPREF_RUN_WOBUILDER_ON_BUILD()
 				|| getProject() == null || !getProject().exists()) {
 			monitor.done();
+			return;
 		}
 		String aBuildFile = null;
 		try {
 			if (!projectNeedsAnUpdate(delta)
 					&& kind != IncrementalProjectBuilder.FULL_BUILD) {
 				monitor.done();
+				return;
 			}
 			aBuildFile = this.buildFile();
 			if (checkIfBuildfileExist(aBuildFile)) {
