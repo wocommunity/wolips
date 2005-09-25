@@ -51,6 +51,7 @@ import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.IEditorPart;
@@ -75,7 +76,7 @@ public class ComponentEditor extends MultiEditor {
 
 	CTabFolder folder;
 
-	private ComponentEditorInput componentEditorInput;
+	ComponentEditorInput componentEditorInput;
 
 	/*
 	 * @see IWorkbenchPart#createPartControl(Composite)
@@ -97,7 +98,7 @@ public class ComponentEditor extends MultiEditor {
 		folder = new CTabFolder(parent, SWT.BOTTOM);
 		Composite javaEditorParent = new Composite(folder, SWT.NONE);
 		javaEditorParent.setLayout(new FillLayout());
-		CTabItem javaTab = new CTabItem(folder, SWT.NONE);
+		final CTabItem javaTab = new CTabItem(folder, SWT.NONE);
 		javaTab.setControl(javaEditorParent);
 		javaTab.setText("Java");
 		javaEditorParent.addListener(SWT.Activate, new Listener() {
@@ -109,12 +110,12 @@ public class ComponentEditor extends MultiEditor {
 		});
 		Composite componentEditorParent = new Composite(folder, SWT.NONE);
 		componentEditorParent.setLayout(new FillLayout());
-		CTabItem componentTab = new CTabItem(folder, SWT.NONE);
+		final CTabItem componentTab = new CTabItem(folder, SWT.NONE);
 		componentTab.setControl(componentEditorParent);
 		componentTab.setText("Component");
 		Composite apiEditorParent = new Composite(folder, SWT.NONE);
 		apiEditorParent.setLayout(new FillLayout());
-		CTabItem apiTab = new CTabItem(folder, SWT.NONE);
+		final CTabItem apiTab = new CTabItem(folder, SWT.NONE);
 		apiTab.setControl(apiEditorParent);
 		apiTab.setText("Api");
 		apiEditorParent.addListener(SWT.Activate, new Listener() {
@@ -168,7 +169,8 @@ public class ComponentEditor extends MultiEditor {
 				addWebObjectsTagNamesListener((WodEditor) innerEditor,
 						htmlEditor);
 				if (contentOutlinePage != null) {
-					new HTMLOutlineSelectionHandler(contentOutlinePage, (WodEditor) innerEditor);
+					new HTMLOutlineSelectionHandler(contentOutlinePage,
+							(WodEditor) innerEditor);
 				}
 				break;
 			case 3:
@@ -181,17 +183,21 @@ public class ComponentEditor extends MultiEditor {
 			}
 		}
 
-		if (componentEditorInput.isCreatedFromDotApi()) {
-			folder.setSelection(apiTab);
-		} else if (componentEditorInput.isCreatedFromDotHtml()) {
-			folder.setSelection(componentTab);
-		} else if (componentEditorInput.isCreatedFromDotJava()) {
-			folder.setSelection(javaTab);
-		} else if (componentEditorInput.isCreatedFromDotWod()) {
-			folder.setSelection(componentTab);
-		} else if (componentEditorInput.isCreatedFromDotWoo()) {
-			folder.setSelection(componentTab);
-		}
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				if (componentEditorInput.isCreatedFromDotApi()) {
+					folder.setSelection(apiTab);
+				} else if (componentEditorInput.isCreatedFromDotHtml()) {
+					folder.setSelection(componentTab);
+				} else if (componentEditorInput.isCreatedFromDotJava()) {
+					folder.setSelection(javaTab);
+				} else if (componentEditorInput.isCreatedFromDotWod()) {
+					folder.setSelection(componentTab);
+				} else if (componentEditorInput.isCreatedFromDotWoo()) {
+					folder.setSelection(componentTab);
+				}
+			}
+		});
 	}
 
 	private void addWebObjectsTagNamesListener(final WodEditor wodEditor,
@@ -282,28 +288,44 @@ public class ComponentEditor extends MultiEditor {
 	}
 
 	public void switchToJava() {
-		activeEditorIndex = 0;
-		folder.setSelection(0);
-		this.setFocus();
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				activeEditorIndex = 0;
+				folder.setSelection(0);
+				ComponentEditor.this.setFocus();
+			}
+		});
 	}
 
 	public void switchToHtml() {
-		activeEditorIndex = 1;
-		folder.setSelection(1);
-		this.setFocus();
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				activeEditorIndex = 1;
+				folder.setSelection(1);
+				ComponentEditor.this.setFocus();
+			}
+		});
 	}
 
 	public void switchToWod() {
-		activeEditorIndex = 2;
-		folder.setSelection(1);
-		activeEditorIndex = 2;
-		this.setFocus();
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				activeEditorIndex = 2;
+				folder.setSelection(1);
+				activeEditorIndex = 2;
+				ComponentEditor.this.setFocus();
+			}
+		});
 	}
 
 	public void switchToApi() {
-		activeEditorIndex = 3;
-		folder.setSelection(2);
-		this.setFocus();
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				activeEditorIndex = 3;
+				folder.setSelection(2);
+				ComponentEditor.this.setFocus();
+			}
+		});
 	}
 
 }
