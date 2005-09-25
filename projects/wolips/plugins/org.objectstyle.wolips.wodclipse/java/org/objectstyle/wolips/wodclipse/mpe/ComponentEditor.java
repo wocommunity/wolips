@@ -78,23 +78,30 @@ public class ComponentEditor extends MultiEditor {
 
 	ComponentEditorInput componentEditorInput;
 
+	boolean created = false;
+
 	/*
 	 * @see IWorkbenchPart#createPartControl(Composite)
 	 */
 	public void createPartControl(Composite parent) {
-
-		parent.addListener(SWT.Activate, new Listener() {
-			public void handleEvent(Event event) {
-				if (event.type == SWT.Activate) {
-					WodclipsePlugin.getDefault().setActiveComponentEditor(
-							ComponentEditor.this);
-				}
-				if (event.type == SWT.Deactivate) {
-					WodclipsePlugin.getDefault().setActiveComponentEditor(null);
-				}
+		final Composite activator = parent;
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				activator.addListener(SWT.Activate, new Listener() {
+					public void handleEvent(Event event) {
+						if (event.type == SWT.Activate) {
+							WodclipsePlugin.getDefault()
+									.setActiveComponentEditor(
+											ComponentEditor.this);
+						}
+						if (event.type == SWT.Deactivate) {
+							WodclipsePlugin.getDefault()
+									.setActiveComponentEditor(null);
+						}
+					}
+				});
 			}
 		});
-
 		folder = new CTabFolder(parent, SWT.BOTTOM);
 		Composite javaEditorParent = new Composite(folder, SWT.NONE);
 		javaEditorParent.setLayout(new FillLayout());
