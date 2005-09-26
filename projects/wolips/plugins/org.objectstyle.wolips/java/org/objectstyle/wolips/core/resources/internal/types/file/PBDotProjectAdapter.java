@@ -129,6 +129,8 @@ public class PBDotProjectAdapter extends AbstractFileAdapter implements IPBDotPr
           CorePlugin.getDefault().debug(this.getClass().getName() + "Error while refreshing PB.project: " + underlyingFile, e);
         }
       }
+      addLocalFrameworkSectionToPBProject();
+      syncProjectName();
     }
     catch (IOException e) {
       CorePlugin.getDefault().debug(this.getClass().getName() + "Error while loading PB.project: " + this.getUnderlyingFile(), e);

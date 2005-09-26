@@ -57,7 +57,10 @@ package org.objectstyle.wolips.core.resources.internal.types.project;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IProject;
@@ -148,21 +151,21 @@ public class ProjectAdapter extends AbstractResourceAdapter implements IProjectA
   }
 
   public List getFrameworkNames() {
-    ArrayList list = new ArrayList();
+    Set frameworkNamesSet = new TreeSet();
     IProject[] projects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
     for (int i = 0; i < projects.length; i++) {
       if (isFrameworkReference(projects[i])) {
-        list.add(projects[i].getName() + "." + "framework");
+        frameworkNamesSet.add(projects[i].getName() + "." + "framework");
       }
     }
     try {
       IJavaProject javaProject = JavaCore.create(this.getUnderlyingProject());
-      list.addAll(this.toFrameworkNames(javaProject.getResolvedClasspath(false)));
+      frameworkNamesSet.addAll(this.toFrameworkNames(javaProject.getResolvedClasspath(false)));
     }
     catch (JavaModelException e) {
       CorePlugin.getDefault().log(e);
     }
-    return list;
+    return new LinkedList(frameworkNamesSet);
   }
 
   public String getFrameworkName(IPath frameworkPath) {
