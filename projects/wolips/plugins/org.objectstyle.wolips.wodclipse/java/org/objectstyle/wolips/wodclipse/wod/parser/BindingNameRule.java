@@ -50,6 +50,6 @@ import org.eclipse.jface.text.rules.IToken;
  */
 public class BindingNameRule extends SingleWordRule {
   public BindingNameRule(IToken _token) {
-    super(_token, new char[] { '.' }, '=');
+    super(_token, new char[] { '.', '?' }, '=');
   }
 }
