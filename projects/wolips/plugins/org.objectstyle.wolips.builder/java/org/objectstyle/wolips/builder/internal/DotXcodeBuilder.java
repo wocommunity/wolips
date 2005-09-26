@@ -130,7 +130,7 @@ public class DotXcodeBuilder implements IDeltaBuilder {
         IProject frameworkProject = (IProject) frameworkContainer;
         IJavaProject frameworkJavaProject = JavaCore.create(frameworkProject);
         if (frameworkJavaProject != null) {
-          IPath defaultOutputLocation = frameworkJavaProject.getOutputLocation();
+          IPath defaultOutputLocation = frameworkProject.getLocation().append("build");
           if (defaultOutputLocation != null) {
             IPath builtFrameworkPath = defaultOutputLocation.append(frameworkProject.getName() + ".framework");
             _xcodeProject.addFrameworkReference(builtFrameworkPath.toOSString());
