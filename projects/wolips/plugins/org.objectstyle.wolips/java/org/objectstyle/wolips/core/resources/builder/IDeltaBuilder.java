@@ -53,46 +53,21 @@
  * <http://objectstyle.org/>.
  *
  */
-package org.objectstyle.wolips.core.resources.internal.build;
+package org.objectstyle.wolips.core.resources.builder;
 
-import org.objectstyle.wolips.core.resources.builder.AbstractOldBuilder;
-import org.objectstyle.wolips.core.resources.builder.IBuilder;
+import java.util.Map;
 
-public final class BuilderWrapper {
+import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.runtime.IProgressMonitor;
 
-	private final IBuilder builder;
-	private final String name;
-	private final String context;
-	
-	
-	public BuilderWrapper(IBuilder builder, String name, String context) {
-		super();
-		this.builder = builder;
-		this.name = name;
-		this.context = context;
-	}
+public interface IDeltaBuilder extends IBuilder {
+  public abstract boolean handleClassesDelta(IResourceDelta delta, IProgressMonitor _progressMonitor, Map _buildCache);
 
-	public IBuilder getBuilder() {
-		return this.builder;
-	}
+	public abstract boolean handleWoappResourcesDelta(IResourceDelta delta, IProgressMonitor _progressMonitor, Map _buildCache);
 
-	public String getName() {
-		return this.name;
-	}
-	
-	public boolean validInContext(String buildContext) {
-		if(context == null) {
-			return true;
-		}
-		return buildContext.equals(context);
-	}
+	public abstract boolean handleWebServerResourcesDelta(IResourceDelta delta, IProgressMonitor _progressMonitor, Map _buildCache);
 
-	public boolean isOldBuilder() {
-		return builder instanceof AbstractOldBuilder;
-	}
+	public abstract boolean handleOtherDelta(IResourceDelta delta, IProgressMonitor _progressMonitor, Map _buildCache);
 
-
-  public String toString() {
-    return "[BuilderWrapper: name = " + name + "; builder = " + builder + "]";
-  }
+	public abstract boolean classpathChanged(IResourceDelta delta, IProgressMonitor _progressMonitor, Map _buildCache);
 }

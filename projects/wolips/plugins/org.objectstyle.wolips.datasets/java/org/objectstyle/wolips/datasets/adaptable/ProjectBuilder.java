@@ -572,6 +572,38 @@ public class ProjectBuilder extends ProjectFiles {
 		}
 	}
 
+  public String getEOGeneratorArgs(boolean convertNullValueToEmptyString) {
+    String returnValue = null;
+    try {
+      returnValue = (String) this.getBuildProperties().get(
+          "eogeneratorArgs");
+    } catch (CoreException e) {
+      DataSetsPlugin.getDefault().getPluginLogger().log(e);
+    } catch (IOException e) {
+      DataSetsPlugin.getDefault().getPluginLogger().log(e);
+    }
+    if (convertNullValueToEmptyString && returnValue == null) {
+      return "";
+    }
+    return returnValue;
+  }
+
+  public void setEOGeneratorArgs(String eogeneratorArgs) {
+    try {
+      Properties properties = this.getBuildProperties();
+      if (eogeneratorArgs == null) {
+        properties.put("eogeneratorArgs", "");
+      } else {
+        properties.put("eogeneratorArgs", eogeneratorArgs);
+      }
+      this.setBuildProperties(properties);
+    } catch (CoreException e) {
+      DataSetsPlugin.getDefault().getPluginLogger().log(e);
+    } catch (IOException e) {
+      DataSetsPlugin.getDefault().getPluginLogger().log(e);
+    }
+  }
+
 	/**
 	 * @param convertNullValueToEmptyString
 	 * @return principalClass.

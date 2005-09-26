@@ -63,7 +63,9 @@ public interface IPBDotProjectAdapter extends IFileAdapter {
 
 	public static final String FILE_NAME = "PB.project";
 
-	public abstract void save();
+  public abstract boolean isRebuildRequired();
+  
+  public abstract void save();
 
 	public abstract void addClass(ILocalizedPath localizedPath);
 

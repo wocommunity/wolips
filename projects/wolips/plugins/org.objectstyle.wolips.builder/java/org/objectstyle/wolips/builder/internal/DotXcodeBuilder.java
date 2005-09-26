@@ -77,23 +77,24 @@ import org.objectstyle.woenvironment.pb.PBXProject;
 import org.objectstyle.woenvironment.pb.XcodeProjProject;
 import org.objectstyle.woenvironment.pb.XcodeProject;
 import org.objectstyle.wolips.builder.BuilderPlugin;
-import org.objectstyle.wolips.core.resources.builder.IBuilder;
+import org.objectstyle.wolips.core.resources.builder.IDeltaBuilder;
 import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
 import org.objectstyle.wolips.preferences.Preferences;
 
 /**
  * @author mschrag
  */
-public class DotXcodeBuilder implements IBuilder {
+public class DotXcodeBuilder implements IDeltaBuilder {
   private boolean myRebuildProject;
 
   public DotXcodeBuilder() {
   }
 
-  public void buildStarted(int _kind, Map _args, IProgressMonitor _monitor, IProject _project) {
+  public boolean buildStarted(int _kind, Map _args, IProgressMonitor _monitor, IProject _project, Map _buildCache) {
+    return false;
   }
 
-  public void visitingDeltasDone(int _kind, Map _args, IProgressMonitor _monitor, IProject _project) {
+  public boolean buildPreparationDone(int _kind, Map _args, IProgressMonitor _monitor, IProject _project, Map _buildCache) {
     if (myRebuildProject || _kind == IncrementalProjectBuilder.FULL_BUILD || _kind == IncrementalProjectBuilder.CLEAN_BUILD) {
       if (Preferences.getPREF_WRITE_XCODE_ON_BUILD()) {
         try {
@@ -113,6 +114,7 @@ public class DotXcodeBuilder implements IBuilder {
         }
       }
     }
+    return false;
   }
 
   public void writeXcodeProject(IProgressMonitor _monitor, IProject _project, PBXProject _xcodeProject, String _projectFolderName) throws CoreException {
@@ -156,29 +158,34 @@ public class DotXcodeBuilder implements IBuilder {
     }
   }
 
-  public void handleClassesDelta(IResourceDelta _delta) {
+  public boolean handleClassesDelta(IResourceDelta _delta, IProgressMonitor monitor, Map _buildCache) {
     if (_delta.getKind() == IResourceDelta.ADDED || _delta.getKind() == IResourceDelta.REMOVED) {
       myRebuildProject = true;
     }
+    return false;
   }
 
-  public void handleWoappResourcesDelta(IResourceDelta _delta) {
+  public boolean handleWoappResourcesDelta(IResourceDelta _delta, IProgressMonitor monitor, Map _buildCache) {
     if (_delta.getKind() == IResourceDelta.ADDED || _delta.getKind() == IResourceDelta.REMOVED) {
       myRebuildProject = true;
     }
+    return false;
   }
 
-  public void handleWebServerResourcesDelta(IResourceDelta _delta) {
+  public boolean handleWebServerResourcesDelta(IResourceDelta _delta, IProgressMonitor monitor, Map _buildCache) {
     if (_delta.getKind() == IResourceDelta.ADDED || _delta.getKind() == IResourceDelta.REMOVED) {
       myRebuildProject = true;
     }
+    return false;
   }
 
-  public void handleOtherDelta(IResourceDelta _delta) {
+  public boolean handleOtherDelta(IResourceDelta _delta, IProgressMonitor monitor, Map _buildCache) {
+    return false;
   }
 
-  public void classpathChanged(IResourceDelta _delta) {
+  public boolean classpathChanged(IResourceDelta _delta, IProgressMonitor monitor, Map _buildCache) {
     myRebuildProject = true;
+    return false;
   }
 
   protected static class XcodeResourceVisitor implements IResourceVisitor {

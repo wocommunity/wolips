@@ -80,6 +80,9 @@ public class ProjectBuildPlugin extends AbstractUIPlugin {
 	 * Comment for <code>NS_PRINCIPAL_CLASS</code>
 	 */
 	public static final String NS_PRINCIPAL_CLASS = "nsprincipalclass";
+  
+  public static final String EOGENERATOR_ARGS = "org.objectstyle.wolips.projectbuild.eogeneratorargs";
+  
 //The plugin.
 	private static ProjectBuildPlugin plugin;
 	private PluginLogger pluginLogger = null;

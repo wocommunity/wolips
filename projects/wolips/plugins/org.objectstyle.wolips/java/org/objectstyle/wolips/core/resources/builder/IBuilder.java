@@ -58,23 +58,32 @@ package org.objectstyle.wolips.core.resources.builder;
 import java.util.Map;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 public interface IBuilder {
 
-	public abstract void buildStarted(int kind, Map args, IProgressMonitor monitor, IProject project);
+  /**
+   * Called when a build is about to begin.
+   * 
+   * @param kind the kind of build that is happening (IncrementalProjectBuild.AUTO/FULL/INCREMENTAL/CLEAN)
+   * @param args builder arguments
+   * @param monitor the progress monitor to report status through
+   * @param project the project that is being built
+   * @param _buildCache a cache that can be used by builders that lasts for a single build cycle
+   * @return whether or not this builder is requesting to have a full build happen when this build is done (only an IDeltaBuilder should return true from this)
+   */
+	public abstract boolean buildStarted(int kind, Map args, IProgressMonitor monitor, IProject project, Map _buildCache);
 
-	public abstract void visitingDeltasDone(int kind, Map args, IProgressMonitor monitor, IProject project);
+  /**
+   * Called when all the preparations for building are complete.  Some builders may choose not to actually do anything until this method is called.
+   * 
+   * @param kind the kind of build that is happening (IncrementalProjectBuild.AUTO/FULL/INCREMENTAL/CLEAN)
+   * @param args builder arguments
+   * @param monitor the progress monitor to report status through
+   * @param project the project that is being built
+   * @param _buildCache a cache that can be used by builders that lasts for a single build cycle
+   * @return whether or not this builder is requesting to have a full build happen when this build is done (only an IDeltaBuilder should return true from this)
+   */
+  public abstract boolean buildPreparationDone(int kind, Map args, IProgressMonitor monitor, IProject project, Map _buildCache);
 
-	public abstract void handleClassesDelta(IResourceDelta delta);
-
-	public abstract void handleWoappResourcesDelta(IResourceDelta delta);
-
-	public abstract void handleWebServerResourcesDelta(IResourceDelta delta);
-
-	public abstract void handleOtherDelta(IResourceDelta delta);
-
-	public abstract void classpathChanged(IResourceDelta delta);
-	
 }

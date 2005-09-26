@@ -49,120 +49,98 @@
  */
 package org.objectstyle.wolips.core.resources.internal.build;
 
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IResourceDelta;
-import org.eclipse.core.resources.IResourceDeltaVisitor;
+import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.objectstyle.wolips.core.resources.builder.IBuilder;
-import org.objectstyle.wolips.core.resources.builder.IDeltaBuilder;
+import org.objectstyle.wolips.core.resources.builder.ICleanBuilder;
 
 /**
- * @author ulrich/mike
+ * @author ulrich
  */
-public class DeltaVisitor extends AbstractBuildVisitor implements IResourceDeltaVisitor {
-  private Set myFullBuilderWrappers;
-
-  public DeltaVisitor(BuilderWrapper[] builderWrappers, IProgressMonitor _progressMonitor, Map _buildCache) {
+public class CleanVisitor extends AbstractBuildVisitor implements IResourceVisitor {
+  public CleanVisitor(BuilderWrapper[] builderWrappers, IProgressMonitor _progressMonitor, Map _buildCache) {
     super(builderWrappers, _progressMonitor, _buildCache);
-    myFullBuilderWrappers = new HashSet();
   }
 
-  public BuilderWrapper[] getBuilderWrappersRequestingFullBuild() {
-    BuilderWrapper[] builderWrappers = (BuilderWrapper[]) myFullBuilderWrappers.toArray(new BuilderWrapper[myFullBuilderWrappers.size()]);
-    return builderWrappers;
-  }
-
-  public boolean visit(IResourceDelta delta) throws CoreException {
-    if (delta == null || isCanceled()) {
+  public boolean visit(IResource resource) throws CoreException {
+    if (resource == null || isCanceled()) {
       return false;
     }
-    IResource resource = delta.getResource();
-    IProgressMonitor progressMonitor = getProgressMonitor();
     Map buildCache = getBuildCache();
+    IProgressMonitor progressMonitor = getProgressMonitor();
     int woResourceType = getWoResourceType(resource);
     if (woResourceType == AbstractBuildVisitor.WO_RESOURCE_TYPE_CLASS) {
-      this.notifyBuilderHandleClassesDelta(delta, progressMonitor, buildCache);
+      this.notifyBuilderHandleClasses(resource, progressMonitor, buildCache);
     }
     else if (woResourceType == AbstractBuildVisitor.WO_RESOURCE_TYPE_CLASSPATH) {
-      this.notifyBuilderHandleOtherDelta(delta, progressMonitor, buildCache);
-      this.notifyBuilderClasspathChanged(delta, progressMonitor, buildCache);
+      this.notifyBuilderHandleOther(resource, progressMonitor, buildCache);
+      this.notifyBuilderClasspath(resource, progressMonitor, buildCache);
     }
     else if (woResourceType == AbstractBuildVisitor.WO_RESOURCE_TYPE_IGNORE) {
 
     }
     else if (woResourceType == AbstractBuildVisitor.WO_RESOURCE_TYPE_OTHER) {
-      this.notifyBuilderHandleOtherDelta(delta, progressMonitor, buildCache);
+      this.notifyBuilderHandleOther(resource, progressMonitor, buildCache);
     }
     else if (woResourceType == AbstractBuildVisitor.WO_RESOURCE_TYPE_RESOURCE) {
-      this.notifyBuilderHandleResourcesDelta(delta, progressMonitor, buildCache);
+      this.notifyBuilderHandleResources(resource, progressMonitor, buildCache);
     }
     else if (woResourceType == AbstractBuildVisitor.WO_RESOURCE_TYPE_WEB_SERVER_RESOURCE) {
-      this.notifyBuilderHandleWebServerResourcesDelta(delta, progressMonitor, buildCache);
+      this.notifyBuilderHandleWebServerResources(resource, progressMonitor, buildCache);
     }
     return true;
   }
 
-  private void notifyBuilderClasspathChanged(IResourceDelta delta, IProgressMonitor _progressMonitor, Map _buildCache) {
+  private void notifyBuilderClasspath(IResource resource, IProgressMonitor _progressMonitor, Map _buildCache) {
     BuilderWrapper[] builderWrappers = getBuilderWrappers();
     for (int i = 0; i < builderWrappers.length; i++) {
       IBuilder builder = builderWrappers[i].getBuilder();
-      if (builder instanceof IDeltaBuilder) {
-        if (((IDeltaBuilder) builder).classpathChanged(delta, _progressMonitor, _buildCache)) {
-          myFullBuilderWrappers.add(builder);
-        }
+      if (builder instanceof ICleanBuilder) {
+        ((ICleanBuilder) builder).handleClasspath(resource, _progressMonitor, _buildCache);
       }
     }
   }
 
-  private void notifyBuilderHandleClassesDelta(IResourceDelta delta, IProgressMonitor _progressMonitor, Map _buildCache) {
+  private void notifyBuilderHandleClasses(IResource resource, IProgressMonitor _progressMonitor, Map _buildCache) {
     BuilderWrapper[] builderWrappers = getBuilderWrappers();
     for (int i = 0; i < builderWrappers.length; i++) {
       IBuilder builder = builderWrappers[i].getBuilder();
-      if (builder instanceof IDeltaBuilder) {
-        if (((IDeltaBuilder) builder).handleClassesDelta(delta, _progressMonitor, _buildCache)) {
-          myFullBuilderWrappers.add(builder);
-        }
+      if (builder instanceof ICleanBuilder) {
+        ((ICleanBuilder) builder).handleClasses(resource, _progressMonitor, _buildCache);
       }
     }
   }
 
-  private void notifyBuilderHandleResourcesDelta(IResourceDelta delta, IProgressMonitor _progressMonitor, Map _buildCache) {
+  private void notifyBuilderHandleResources(IResource resource, IProgressMonitor _progressMonitor, Map _buildCache) {
     BuilderWrapper[] builderWrappers = getBuilderWrappers();
     for (int i = 0; i < builderWrappers.length; i++) {
       IBuilder builder = builderWrappers[i].getBuilder();
-      if (builder instanceof IDeltaBuilder) {
-        if (((IDeltaBuilder) builder).handleWoappResourcesDelta(delta, _progressMonitor, _buildCache)) {
-          myFullBuilderWrappers.add(builder);
-        }
+      if (builder instanceof ICleanBuilder) {
+        ((ICleanBuilder) builder).handleWoappResources(resource, _progressMonitor, _buildCache);
       }
     }
   }
 
-  private void notifyBuilderHandleWebServerResourcesDelta(IResourceDelta delta, IProgressMonitor _progressMonitor, Map _buildCache) {
+  private void notifyBuilderHandleWebServerResources(IResource resource, IProgressMonitor _progressMonitor, Map _buildCache) {
     BuilderWrapper[] builderWrappers = getBuilderWrappers();
     for (int i = 0; i < builderWrappers.length; i++) {
       IBuilder builder = builderWrappers[i].getBuilder();
-      if (builder instanceof IDeltaBuilder) {
-        if (((IDeltaBuilder) builder).handleWebServerResourcesDelta(delta, _progressMonitor, _buildCache)) {
-          myFullBuilderWrappers.add(builder);
-        }
+      if (builder instanceof ICleanBuilder) {
+        ((ICleanBuilder) builder).handleWebServerResources(resource, _progressMonitor, _buildCache);
       }
     }
   }
 
-  private void notifyBuilderHandleOtherDelta(IResourceDelta delta, IProgressMonitor _progressMonitor, Map _buildCache) {
+  private void notifyBuilderHandleOther(IResource resource, IProgressMonitor _progressMonitor, Map _buildCache) {
     BuilderWrapper[] builderWrappers = getBuilderWrappers();
     for (int i = 0; i < builderWrappers.length; i++) {
       IBuilder builder = builderWrappers[i].getBuilder();
-      if (builder instanceof IDeltaBuilder) {
-        if (((IDeltaBuilder) builder).handleOtherDelta(delta, _progressMonitor, _buildCache)) {
-          myFullBuilderWrappers.add(builder);
-        }
+      if (builder instanceof ICleanBuilder) {
+        ((ICleanBuilder) builder).handleOther(resource, _progressMonitor, _buildCache);
       }
     }
   }

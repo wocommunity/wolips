@@ -71,223 +71,224 @@ import org.objectstyle.wolips.core.resources.types.ILocalizedPath;
 import org.objectstyle.wolips.core.resources.types.file.IPBDotProjectAdapter;
 import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
 
-public class PBDotProjectAdapter extends AbstractFileAdapter implements
-		IPBDotProjectAdapter {
-	// local framework search for PB.project
-	private static final String DefaultLocalFrameworkSearch = "$(NEXT_ROOT)$(LOCAL_LIBRARY_DIR)/Frameworks";
+public class PBDotProjectAdapter extends AbstractFileAdapter implements IPBDotProjectAdapter {
+  // local framework search for PB.project
+  private static final String DefaultLocalFrameworkSearch = "$(NEXT_ROOT)$(LOCAL_LIBRARY_DIR)/Frameworks";
 
-	private boolean saveRequired = false;
+  private boolean saveRequired = false;
+  private boolean rebuildRequired = false;
 
-	private PBProject pbProject;
+  private PBProject pbProject;
 
-	public PBDotProjectAdapter(IFile underlyingFile) {
-		super(underlyingFile);
-		this.initPBProject();
-	}
+  public PBDotProjectAdapter(IFile underlyingFile) {
+    super(underlyingFile);
+    this.initPBProject();
+  }
+  
+  public boolean isRebuildRequired() {
+    return rebuildRequired;
+  }
 
-	public void save(IProgressMonitor monitor) {
-		if (this.pbProject == null) {
-			return;
-		}
-		if (!this.saveRequired) {
-			return;
-		}
-		this.saveRequired = false;
-		this.pbProject.saveChanges();
-		try {
-			this.getUnderlyingFile()
-					.refreshLocal(IResource.DEPTH_ZERO, monitor);
-		} catch (CoreException up) {
-			CorePlugin.getDefault().debug(
-					this.getClass().getName()
-							+ "Error while saving PB.project: "
-							+ this.getUnderlyingFile(), up);
-		}
-	}
+  public void save(IProgressMonitor monitor) {
+    if (this.pbProject == null) {
+      return;
+    }
+    if (!this.saveRequired) {
+      return;
+    }
+    this.saveRequired = false;
+    this.pbProject.saveChanges();
+    try {
+      this.getUnderlyingFile().refreshLocal(IResource.DEPTH_ZERO, monitor);
+    }
+    catch (CoreException up) {
+      CorePlugin.getDefault().debug(this.getClass().getName() + "Error while saving PB.project: " + this.getUnderlyingFile(), up);
+    }
+  }
 
-	private IProjectAdapter getProjectAdapter() {
-		IProject project = this.getUnderlyingFile().getProject();
-		IProjectAdapter projectAdapter = (IProjectAdapter) project
-				.getAdapter(IProjectAdapter.class);
-		return projectAdapter;
-	}
+  private IProjectAdapter getProjectAdapter() {
+    IProject project = this.getUnderlyingFile().getProject();
+    IProjectAdapter projectAdapter = (IProjectAdapter) project.getAdapter(IProjectAdapter.class);
+    return projectAdapter;
+  }
 
-	private void initPBProject() {
-		IProjectAdapter projectAdapter = this.getProjectAdapter();
-		File file = this.getUnderlyingFile().getLocation().toFile();
-		try {
-			this.pbProject = new PBProject(file, projectAdapter.isFramework());
-			this.pbProject.update();
-			if (!this.getUnderlyingFile().exists()) {
-				this.pbProject.saveChanges();
-				try {
-					this.getUnderlyingFile().refreshLocal(IResource.DEPTH_ONE,
-							null);
-				} catch (CoreException e) {
-					CorePlugin.getDefault().debug(
-							this.getClass().getName()
-									+ "Error while refreshing PB.project: "
-									+ this.getUnderlyingFile(), e);
-				}
-			}
-		} catch (IOException e) {
-			CorePlugin.getDefault().debug(
-					this.getClass().getName()
-							+ "Error while loading PB.project: "
-							+ this.getUnderlyingFile(), e);
-		}
-	}
+  private void initPBProject() {
+    IProjectAdapter projectAdapter = this.getProjectAdapter();
+    File file = this.getUnderlyingFile().getLocation().toFile();
+    try {
+      this.pbProject = new PBProject(file, projectAdapter.isFramework());
+      this.pbProject.update();
+      IFile underlyingFile = getUnderlyingFile();
+      if (!underlyingFile.exists()) {
+        this.rebuildRequired = true;
+        pbProject.saveChanges();
+        try {
+          underlyingFile.refreshLocal(IResource.DEPTH_ONE, null);
+        }
+        catch (CoreException e) {
+          CorePlugin.getDefault().debug(this.getClass().getName() + "Error while refreshing PB.project: " + underlyingFile, e);
+        }
+      }
+    }
+    catch (IOException e) {
+      CorePlugin.getDefault().debug(this.getClass().getName() + "Error while loading PB.project: " + this.getUnderlyingFile(), e);
+    }
+  }
 
-	public void cleanTables() {
-		this.pbProject.setClasses(new ArrayList());
-		this.pbProject.setWebServerResources(new ArrayList());
-		this.pbProject.setWoAppResources(new ArrayList());
-		this.pbProject.setWoComponents(new ArrayList());
-		this.saveRequired = true;
-	}
+  public void cleanTables() {
+    this.pbProject.setClasses(new ArrayList());
+    this.pbProject.setWebServerResources(new ArrayList());
+    this.pbProject.setWoAppResources(new ArrayList());
+    this.pbProject.setWoComponents(new ArrayList());
+    this.saveRequired = true;
+  }
 
-	/**
-	 * Method syncProjectName.
-	 */
-	public void syncProjectName() {
-		String projectName = this.getUnderlyingResource().getProject()
-				.getName();
-		if (!projectName.equals(this.pbProject.getProjectName())) {
-			this.pbProject.setProjectName(projectName);
-			this.saveRequired = true;
-		}
-	}
+  /**
+   * Method syncProjectName.
+   */
+  public void syncProjectName() {
+    String projectName = this.getUnderlyingResource().getProject().getName();
+    if (!projectName.equals(this.pbProject.getProjectName())) {
+      this.pbProject.setProjectName(projectName);
+      this.saveRequired = true;
+    }
+  }
 
-	/**
-	 * 
-	 */
-	public void addLocalFrameworkSectionToPBProject() {
-		List actualFrameworkSearch = this.pbProject.getFrameworkSearch();
-		if (actualFrameworkSearch == null) {
-			this.pbProject.setFrameworkSearch(new ArrayList());
-			actualFrameworkSearch = this.pbProject.getFrameworkSearch();
-		}
-		if (!actualFrameworkSearch
-				.contains(PBDotProjectAdapter.DefaultLocalFrameworkSearch)) {
-			actualFrameworkSearch
-					.add(PBDotProjectAdapter.DefaultLocalFrameworkSearch);
-		}
-	}
+  /**
+   * 
+   */
+  public void addLocalFrameworkSectionToPBProject() {
+    List actualFrameworkSearch = this.pbProject.getFrameworkSearch();
+    if (actualFrameworkSearch == null) {
+      this.pbProject.setFrameworkSearch(new ArrayList());
+      actualFrameworkSearch = this.pbProject.getFrameworkSearch();
+    }
+    if (!actualFrameworkSearch.contains(PBDotProjectAdapter.DefaultLocalFrameworkSearch)) {
+      actualFrameworkSearch.add(PBDotProjectAdapter.DefaultLocalFrameworkSearch);
+    }
+  }
 
-	public void save() {
-		if (this.pbProject != null && this.saveRequired) {
-			this.pbProject.saveChanges();
-			this.saveRequired = false;
-		}
-	}
+  public void save() {
+    if (this.pbProject != null && this.saveRequired) {
+      this.pbProject.saveChanges();
+      this.saveRequired = false;
+    }
+  }
 
-	private void addToListIfListNotContains(List list, Object object) {
-		if (!list.contains(object)) {
-			list.add(object);
-			this.saveRequired = true;
-		}
-	}
+  private void addToListIfListNotContains(List list, Object object) {
+    if (!list.contains(object)) {
+      list.add(object);
+      this.saveRequired = true;
+    }
+  }
 
-	private void removeFromListIfListNotContains(List list, Object object) {
-		if (list.contains(object)) {
-			list.remove(object);
-			this.saveRequired = true;
-		}
-	}
+  private void removeFromListIfListNotContains(List list, Object object) {
+    if (list != null && list.contains(object)) {
+      list.remove(object);
+      this.saveRequired = true;
+    }
+  }
 
-	public void addClass(ILocalizedPath localizedPath) {
-		if (this.pbProject == null) {
-			return;
-		}
-		addToListIfListNotContains(this.pbProject.getClasses(), localizedPath
-				.getResourcePath());
-	}
+  public void addClass(ILocalizedPath localizedPath) {
+    if (this.pbProject == null) {
+      return;
+    }
+    List classes = this.pbProject.getClasses();
+    if (classes == null) {
+      this.pbProject.setClasses(new ArrayList());
+      classes = this.pbProject.getClasses();
+    }
+    addToListIfListNotContains(classes, localizedPath.getResourcePath());
+  }
 
-	public void removeClass(ILocalizedPath localizedPath) {
-		if (this.pbProject == null) {
-			return;
-		}
-		removeFromListIfListNotContains(this.pbProject.getClasses(),
-				localizedPath.getResourcePath());
-	}
+  public void removeClass(ILocalizedPath localizedPath) {
+    if (this.pbProject == null) {
+      return;
+    }
+    removeFromListIfListNotContains(this.pbProject.getClasses(), localizedPath.getResourcePath());
+  }
 
-	public void addWoComponent(ILocalizedPath localizedPath) {
-		if (this.pbProject == null) {
-			return;
-		}
-		addToListIfListNotContains(this.pbProject.getWoComponents(localizedPath
-				.getLanguage()), localizedPath.getResourcePath());
-	}
+  public void addWoComponent(ILocalizedPath localizedPath) {
+    if (this.pbProject == null) {
+      return;
+    }
+    List woComponents = this.pbProject.getWoComponents(localizedPath.getLanguage());
+    if (woComponents == null) {
+      this.pbProject.setWoComponents(new ArrayList(), localizedPath.getLanguage());
+      woComponents = this.pbProject.getWoComponents(localizedPath.getLanguage());
+    }
+    addToListIfListNotContains(woComponents, localizedPath.getResourcePath());
+  }
 
-	public void removeWoComponent(ILocalizedPath localizedPath) {
-		if (this.pbProject == null) {
-			return;
-		}
-		removeFromListIfListNotContains(this.pbProject
-				.getWoComponents(localizedPath.getLanguage()), localizedPath
-				.getResourcePath());
-	}
+  public void removeWoComponent(ILocalizedPath localizedPath) {
+    if (this.pbProject == null) {
+      return;
+    }
+    removeFromListIfListNotContains(this.pbProject.getWoComponents(localizedPath.getLanguage()), localizedPath.getResourcePath());
+  }
 
-	public void addWoappResource(ILocalizedPath localizedPath) {
-		if (this.pbProject == null) {
-			return;
-		}
-		addToListIfListNotContains(this.pbProject
-				.getWoAppResources(localizedPath.getLanguage()), localizedPath
-				.getResourcePath());
-	}
+  public void addWoappResource(ILocalizedPath localizedPath) {
+    if (this.pbProject == null) {
+      return;
+    }
+    List woAppResourcesComponents = this.pbProject.getWoAppResources(localizedPath.getLanguage());
+    if (woAppResourcesComponents == null) {
+      this.pbProject.setWoAppResources(new ArrayList(), localizedPath.getLanguage());
+      woAppResourcesComponents = this.pbProject.getWoAppResources(localizedPath.getLanguage());
+    }
+    addToListIfListNotContains(woAppResourcesComponents, localizedPath.getResourcePath());
+  }
 
-	public void removeWoappResource(ILocalizedPath localizedPath) {
-		if (this.pbProject == null) {
-			return;
-		}
-		removeFromListIfListNotContains(this.pbProject
-				.getWoAppResources(localizedPath.getLanguage()), localizedPath
-				.getResourcePath());
-	}
+  public void removeWoappResource(ILocalizedPath localizedPath) {
+    if (this.pbProject == null) {
+      return;
+    }
+    removeFromListIfListNotContains(this.pbProject.getWoAppResources(localizedPath.getLanguage()), localizedPath.getResourcePath());
+  }
 
-	public void addWebServerResource(ILocalizedPath localizedPath) {
-		if (this.pbProject == null) {
-			return;
-		}
-		addToListIfListNotContains(this.pbProject
-				.getWebServerResources(localizedPath.getLanguage()),
-				localizedPath.getResourcePath());
-	}
+  public void addWebServerResource(ILocalizedPath localizedPath) {
+    if (this.pbProject == null) {
+      return;
+    }
+    List wsResourcesComponents = this.pbProject.getWebServerResources(localizedPath.getLanguage());
+    if (wsResourcesComponents == null) {
+      this.pbProject.setWebServerResources(new ArrayList(), localizedPath.getLanguage());
+      wsResourcesComponents = this.pbProject.getWebServerResources(localizedPath.getLanguage());
+    }
+    addToListIfListNotContains(wsResourcesComponents, localizedPath.getResourcePath());
+  }
 
-	public void removeWebServerResource(ILocalizedPath localizedPath) {
-		if (this.pbProject == null) {
-			return;
-		}
-		removeFromListIfListNotContains(this.pbProject
-				.getWebServerResources(localizedPath.getLanguage()),
-				localizedPath.getResourcePath());
-	}
+  public void removeWebServerResource(ILocalizedPath localizedPath) {
+    if (this.pbProject == null) {
+      return;
+    }
+    removeFromListIfListNotContains(this.pbProject.getWebServerResources(localizedPath.getLanguage()), localizedPath.getResourcePath());
+  }
 
-	public void updateFrameworkNames(List frameworkNames) {
-		if (this.pbProject == null) {
-			return;
-		}
-		List list = pbProject.getFrameworks();
-		boolean set = false;
-		int existingNamesLength = list.size();
-		int newNamesLength = frameworkNames.size();
-		if(existingNamesLength != newNamesLength) {
-			set = true;
-		}
-		else {
-			for(int i = 0;i < newNamesLength; i++) {
-				String currentName = (String)frameworkNames.get(i);
-				if(!list.contains(currentName)) {
-					set = true;
-					break;
-				}
-			}
-		}
-		if(set) {
-			pbProject.setFrameworks(frameworkNames);
-			this.saveRequired = true;
-		}
-	}
+  public void updateFrameworkNames(List frameworkNames) {
+    if (this.pbProject == null) {
+      return;
+    }
+    List list = pbProject.getFrameworks();
+    boolean set = false;
+    int existingNamesLength = list.size();
+    int newNamesLength = frameworkNames.size();
+    if (existingNamesLength != newNamesLength) {
+      set = true;
+    }
+    else {
+      for (int i = 0; i < newNamesLength; i++) {
+        String currentName = (String) frameworkNames.get(i);
+        if (!list.contains(currentName)) {
+          set = true;
+          break;
+        }
+      }
+    }
+    if (set) {
+      pbProject.setFrameworks(frameworkNames);
+      this.saveRequired = true;
+    }
+  }
 
 }

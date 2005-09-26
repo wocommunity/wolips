@@ -60,47 +60,47 @@ import java.util.Map;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.objectstyle.wolips.core.resources.builder.IBuilder;
+import org.objectstyle.wolips.core.resources.builder.IDeltaBuilder;
 
-public class AntBuilder implements IBuilder {
+public class AntBuilder implements IDeltaBuilder {
 
 	public AntBuilder() {
 		super();
 	}
 
-	public void buildStarted(int kind, Map args, IProgressMonitor monitor, IProject project) {
+	public boolean buildStarted(int kind, Map args, IProgressMonitor monitor, IProject project, Map _buildCache) {
 		// TODO Auto-generated method stub
-		
+		return false;
 	}
 
-	public void visitingDeltasDone(int kind, Map args, IProgressMonitor monitor, IProject project) {
+  public boolean buildPreparationDone(int _kind, Map _args, IProgressMonitor _monitor, IProject _project, Map _buildCache) {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+	public boolean handleClassesDelta(IResourceDelta delta, IProgressMonitor monitor, Map _buildCache) {
 		// TODO Auto-generated method stub
-		
+    return false;
 	}
 
-	public void handleClassesDelta(IResourceDelta delta) {
+	public boolean handleWoappResourcesDelta(IResourceDelta delta, IProgressMonitor monitor, Map _buildCache) {
 		// TODO Auto-generated method stub
-		
+    return false;
 	}
 
-	public void handleWoappResourcesDelta(IResourceDelta delta) {
+	public boolean handleWebServerResourcesDelta(IResourceDelta delta, IProgressMonitor monitor, Map _buildCache) {
 		// TODO Auto-generated method stub
-		
+    return false;
 	}
 
-	public void handleWebServerResourcesDelta(IResourceDelta delta) {
+	public boolean handleOtherDelta(IResourceDelta delta, IProgressMonitor monitor, Map _buildCache) {
 		// TODO Auto-generated method stub
-		
+    return false;
 	}
 
-	public void handleOtherDelta(IResourceDelta delta) {
+	public boolean classpathChanged(IResourceDelta delta, IProgressMonitor monitor, Map _buildCache) {
 		// TODO Auto-generated method stub
-		this.toString();
-	}
-
-	public void classpathChanged(IResourceDelta delta) {
-		// TODO Auto-generated method stub
-		
+    return false;
 	}
 
 }

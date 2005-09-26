@@ -121,11 +121,12 @@ public class Preferences {
 	 */
 	public static final String PREF_LAUNCH_GLOBAL = "org.objectstyle.wolips.Preference.Launch_Global";
 
+  public static final String PREF_EOGENERATOR_PATH = "org.objectstyle.wolips.Preference.EOGeneratorPath";
+
 	/**
 	 * Comment for <code>FLAG_INCLUDE_EXCLUDE_RULES_CHANGED</code>
 	 */
 	public static boolean FLAG_INCLUDE_EXCLUDE_RULES_CHANGED = false;
-
 	/**
 	 * Comment for <code>trueString</code>
 	 */
@@ -173,6 +174,9 @@ public class Preferences {
 						.equals(Preferences.PREF_RUN_WOBUILDER_ON_BUILD))
 			store.setDefault(Preferences.PREF_RUN_WOBUILDER_ON_BUILD,
 					Preferences.trueString);
+    if (Preferences.SET_DEFAULTS_STRING == null || Preferences.SET_DEFAULTS_STRING.equals(Preferences.PREF_EOGENERATOR_PATH)) {
+      store.setDefault(Preferences.PREF_EOGENERATOR_PATH, "");
+    }
     if (Preferences.SET_DEFAULTS_STRING == null || Preferences.SET_DEFAULTS_STRING.equals(Preferences.PREF_WRITE_XCODE_ON_BUILD)) {
       store.setDefault(Preferences.PREF_WRITE_XCODE_ON_BUILD, Preferences.falseString);
     }
@@ -436,6 +440,14 @@ public class Preferences {
     return Preferences.getBoolean(Preferences.PREF_VALIDATE_WOD_ON_BUILD);
   }
 
+  public static String getPREF_EOGENERATOR_PATH() {
+    return Preferences.getString(Preferences.PREF_EOGENERATOR_PATH);
+  }
+  
+  public static void setPREF_EOGENERATOR_PATH(String _path) {
+    Preferences.setString(Preferences.PREF_EOGENERATOR_PATH, _path);
+  }
+  
 	/**
 	 * @return the preferences
 	 */

@@ -55,7 +55,10 @@
  */
 package org.objectstyle.wolips.core.resources.internal.build;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResourceDelta;
@@ -67,70 +70,95 @@ import org.objectstyle.wolips.core.resources.builder.AbstractOldBuilder;
 
 public abstract class Builder extends IncrementalProjectBuilder {
 
-	protected final static String INCREMENTAL_BUILDER_ID = "org.objectstyle.wolips.incrementalbuilder";
+  protected final static String INCREMENTAL_BUILDER_ID = "org.objectstyle.wolips.incrementalbuilder";
 
-	protected final static String ANT_BUILDER_ID = "org.objectstyle.wolips.antbuilder";
+  protected final static String ANT_BUILDER_ID = "org.objectstyle.wolips.antbuilder";
 
-	private DeltaVisitor deltaVisitor;
+  private BuilderWrapper[] builderWrappers;
 
-	private BuilderWrapper[] builderWrapper;
+  public Builder() {
+    super();
+  }
 
-	public Builder() {
-		super();
-	}
+  public abstract String getContext();
 
-	public abstract String getContext();
+  protected IProject[] build(int kind, Map args, IProgressMonitor monitor) throws CoreException {
+    if (this.builderWrappers == null) {
+      this.builderWrappers = CorePlugin.getDefault().getBuilderWrapper(this.getContext());
+    }
+    return build(kind, args, monitor, this.builderWrappers);
+  }
 
-	protected IProject[] build(int kind, Map args, IProgressMonitor monitor)
-			throws CoreException {
-		if (this.builderWrapper == null) {
-			this.builderWrapper = CorePlugin.getDefault().getBuilderWrapper(
-					this.getContext());
-		}
-		if (this.deltaVisitor == null) {
-			this.deltaVisitor = new DeltaVisitor(this.builderWrapper);
-		}
-		this.invokeOldBuilder(kind, args, monitor, getDelta(this.getProject()));
-		this.notifyBuilderBuildStarted(kind, args, monitor);
-		this.deltaVisitor.buildStarted(this.getProject());
-		IResourceDelta delta = getDelta(this.getProject());
-		try {
-			if (delta != null) {
-				delta.accept(this.deltaVisitor);
-			}
-		} finally {
-			this.notifyBuilderVisitingDeltasDone(kind, args, monitor);
-			this.deltaVisitor.visitingDeltasDone();
-		}
-		return null;
-	}
+  protected IProject[] build(int kind, Map args, IProgressMonitor monitor, BuilderWrapper[] _builderWrappers) throws CoreException {
+    Map buildCache = new HashMap();
+    AbstractBuildVisitor buildVisitor;
+    if (kind == IncrementalProjectBuilder.INCREMENTAL_BUILD || kind == IncrementalProjectBuilder.AUTO_BUILD) {
+      buildVisitor = new DeltaVisitor(_builderWrappers, monitor, buildCache);
+    }
+    else {
+      buildVisitor = new CleanVisitor(_builderWrappers, monitor, buildCache);
+    }
+    Set builderWrappersRequestingFullBuild = new HashSet();
+    IProject project = this.getProject();
+    IResourceDelta projectDelta = getDelta(project);
+    this.invokeOldBuilder(kind, args, monitor, projectDelta, _builderWrappers);
+    this.notifyBuilderBuildStarted(builderWrappersRequestingFullBuild, kind, args, monitor, buildCache, _builderWrappers);
+    buildVisitor.buildStarted(project);
+    try {
+      if (buildVisitor instanceof DeltaVisitor) {
+        if (projectDelta != null) {
+          projectDelta.accept((DeltaVisitor) buildVisitor);
+        }
+      }
+      else {
+        project.accept((CleanVisitor) buildVisitor);
+      }
+    }
+    finally {
+      this.notifyBuildPreparationDone(builderWrappersRequestingFullBuild, kind, args, monitor, buildCache, _builderWrappers);
+      buildVisitor.visitingDone();
+    }
 
-	private void invokeOldBuilder(int kind, Map args, IProgressMonitor monitor,
-			IResourceDelta delta) throws CoreException {
-		for (int i = 0; i < this.builderWrapper.length; i++) {
-			boolean isOldBuilder = this.builderWrapper[i].isOldBuilder();
-			if (isOldBuilder) {
-				AbstractOldBuilder abstractOldBuilder = (AbstractOldBuilder) this.builderWrapper[i]
-						.getBuilder();
-				abstractOldBuilder.setProject(this.getProject());
-				abstractOldBuilder.invokeOldBuilder(kind, args, monitor, delta);
-			}
-		}
-	}
+    if (buildVisitor instanceof DeltaVisitor) {
+      BuilderWrapper[] deltaBuilderWrappersRequestingFullBuild = ((DeltaVisitor) buildVisitor).getBuilderWrappersRequestingFullBuild();
+      for (int i = 0; i < deltaBuilderWrappersRequestingFullBuild.length; i++) {
+        builderWrappersRequestingFullBuild.add(deltaBuilderWrappersRequestingFullBuild[i]);
+      }
 
-	private void notifyBuilderBuildStarted(int kind, Map args,
-			IProgressMonitor monitor) {
-		for (int i = 0; i < this.builderWrapper.length; i++) {
-			this.builderWrapper[i].getBuilder().buildStarted(kind, args,
-					monitor, this.getProject());
-		}
-	}
+      if (builderWrappersRequestingFullBuild.size() > 0) {
+        BuilderWrapper[] builderWrappersRequestingFullBuildList = (BuilderWrapper[]) builderWrappersRequestingFullBuild.toArray(new BuilderWrapper[builderWrappersRequestingFullBuild.size()]);
+        build(IncrementalProjectBuilder.FULL_BUILD, args, monitor, builderWrappersRequestingFullBuildList);
+      }
+    }
 
-	private void notifyBuilderVisitingDeltasDone(int kind, Map args,
-			IProgressMonitor monitor) {
-		for (int i = 0; i < this.builderWrapper.length; i++) {
-			this.builderWrapper[i].getBuilder().visitingDeltasDone(kind, args,
-					monitor, this.getProject());
-		}
-	}
+    return null;
+  }
+
+  private void invokeOldBuilder(int kind, Map args, IProgressMonitor monitor, IResourceDelta delta, BuilderWrapper[] _builderWrappers) throws CoreException {
+    for (int i = 0; i < _builderWrappers.length; i++) {
+      boolean isOldBuilder = _builderWrappers[i].isOldBuilder();
+      if (isOldBuilder) {
+        AbstractOldBuilder abstractOldBuilder = (AbstractOldBuilder) _builderWrappers[i].getBuilder();
+        abstractOldBuilder.setProject(this.getProject());
+        abstractOldBuilder.invokeOldBuilder(kind, args, monitor, delta);
+      }
+    }
+  }
+
+  private void notifyBuilderBuildStarted(Set _builderWrappersRequestingFullBuild, int kind, Map args, IProgressMonitor monitor, Map _buildCache, BuilderWrapper[] _builderWrappers) {
+    for (int i = 0; i < _builderWrappers.length; i++) {
+      if (_builderWrappers[i].getBuilder().buildStarted(kind, args, monitor, this.getProject(), _buildCache)) {
+        _builderWrappersRequestingFullBuild.add(_builderWrappers[i]);
+      }
+    }
+  }
+
+  private void notifyBuildPreparationDone(Set _builderWrappersRequestingFullBuild, int kind, Map args, IProgressMonitor monitor, Map _buildCache, BuilderWrapper[] _builderWrappers) {
+    for (int i = 0; i < _builderWrappers.length; i++) {
+
+      if (_builderWrappers[i].getBuilder().buildPreparationDone(kind, args, monitor, this.getProject(), _buildCache)) {
+        _builderWrappersRequestingFullBuild.add(_builderWrappers[i]);
+      }
+    }
+  }
 }

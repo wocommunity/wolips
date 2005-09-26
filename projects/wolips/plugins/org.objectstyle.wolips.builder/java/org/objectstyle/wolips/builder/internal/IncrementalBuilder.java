@@ -71,11 +71,11 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
-import org.objectstyle.wolips.core.resources.builder.IBuilder;
+import org.objectstyle.wolips.core.resources.builder.IDeltaBuilder;
 import org.objectstyle.wolips.core.resources.types.folder.IBuildAdapter;
 import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
 
-public class IncrementalBuilder implements IBuilder {
+public class IncrementalBuilder implements IDeltaBuilder {
 
 	private IBuildAdapter buildAdapter;
 
@@ -89,8 +89,8 @@ public class IncrementalBuilder implements IBuilder {
 		super();
 	}
 
-	public void buildStarted(int kind, Map args, IProgressMonitor monitor,
-			IProject project) {
+	public boolean buildStarted(int kind, Map args, IProgressMonitor monitor,
+			IProject project, Map _buildCache) {
 		buildKind = kind;
 		IProjectAdapter projectAdapter = (IProjectAdapter) project
 				.getAdapter(IProjectAdapter.class);
@@ -103,27 +103,28 @@ public class IncrementalBuilder implements IBuilder {
 				e.printStackTrace();
 			}
 		}
+    return false;
 	}
-
-	public void visitingDeltasDone(int kind, Map args,
-			IProgressMonitor monitor, IProject project) {
+  
+  public boolean buildPreparationDone(int _kind, Map _args, IProgressMonitor _monitor, IProject _project, Map _buildCache) {
 		for (int i = 0; i < this.buildTasks.size(); i++) {
 			Buildtask buildtask = (Buildtask) this.buildTasks.get(i);
 			try {
-				buildtask.doWork(monitor);
+				buildtask.doWork(_monitor);
 			} catch (CoreException e) {
 				e.printStackTrace();
 			}
 		}
 		this.buildAdapter = null;
+    return false;
 	}
 
-	public void handleClassesDelta(IResourceDelta delta) {
+	public boolean handleClassesDelta(IResourceDelta delta, IProgressMonitor monitor, Map _buildCache) {
 		// TODO Auto-generated method stub
-
+    return false;
 	}
 
-	public void handleWoappResourcesDelta(IResourceDelta delta) {
+	public boolean handleWoappResourcesDelta(IResourceDelta delta, IProgressMonitor monitor, Map _buildCache) {
 		try {
 			if(buildKind == IncrementalProjectBuilder.FULL_BUILD || delta.getKind() == IResourceDelta.ADDED || delta.getKind() == IResourceDelta.CHANGED) {
 			IResource resource = buildAdapter.getProductAdapter()
@@ -139,16 +140,17 @@ public class IncrementalBuilder implements IBuilder {
 		} catch (CoreException e) {
 			e.printStackTrace();
 		}
+    return false;
 	}
 
-	public void handleWebServerResourcesDelta(IResourceDelta delta) {
+	public boolean handleWebServerResourcesDelta(IResourceDelta delta, IProgressMonitor monitor, Map _buildCache) {
 		// TODO Auto-generated method stub
-
+    return false;
 	}
 
-	public void handleOtherDelta(IResourceDelta delta) {
+	public boolean handleOtherDelta(IResourceDelta delta, IProgressMonitor monitor, Map _buildCache) {
 		// TODO Auto-generated method stub
-
+    return false;
 	}
 
 	/**
@@ -337,9 +339,9 @@ public class IncrementalBuilder implements IBuilder {
 		String msgPrefix;
 	}
 
-	public void classpathChanged(IResourceDelta delta) {
+	public boolean classpathChanged(IResourceDelta delta, IProgressMonitor monitor, Map _buildCache) {
 		// TODO Auto-generated method stub
-		
+    return false;
 	}
 
 }

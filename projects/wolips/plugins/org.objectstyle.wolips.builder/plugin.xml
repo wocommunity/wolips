@@ -24,5 +24,10 @@
 		id="org.objectstyle.wolips.builder.pbdotprojectbuilder"
          name="PB.project Builder"
          class="org.objectstyle.wolips.builder.internal.PBDotProjectBuilder"/>
+     <builder
+		id="org.objectstyle.wolips.builder.eogeneratorbuilder"
+         name="EOGenerator Builder"
+         class="org.objectstyle.wolips.builder.internal.EOGeneratorBuilder"
+         />
    </extension>
 </plugin>

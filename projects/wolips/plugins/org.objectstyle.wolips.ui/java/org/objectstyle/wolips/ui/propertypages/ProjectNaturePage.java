@@ -250,6 +250,8 @@ public class ProjectNaturePage extends PropertyPage implements IAdaptable {
 		this.principalClass.setText(project.getPrincipalClass(true));
 		this.eoAdaptorClassName = _addTextField(group, "EOAdaptorClassName");
 		this.eoAdaptorClassName.setText(project.getEOAdaptorClassName(true));
+    this.eogeneratorArgs = _addTextArea(group, "EOGenerator Args");
+    this.eogeneratorArgs.setText(project.getEOGeneratorArgs(true));
 		this.customInfoPListContent = _addTextArea(group,
 				"Custom Info.plist content");
 		this.customInfoPListContent.setText(project.getCustomInfoPListContent(true));
@@ -298,6 +300,7 @@ public class ProjectNaturePage extends PropertyPage implements IAdaptable {
 		this.principalClass.setEnabled(true);
 		this.customInfoPListContent.setEnabled(true);
 		this.eoAdaptorClassName.setEnabled(true);
+    this.eogeneratorArgs.setEnabled(true);
 		this.webXMLCustomContent.setEnabled(true);
 	}
 
@@ -381,16 +384,22 @@ public class ProjectNaturePage extends PropertyPage implements IAdaptable {
 		if (string != null) {
 			this.principalClass.setText(string);
 		}
-		string = project.getCustomInfoPListContent(true);
 
+    string = project.getCustomInfoPListContent(true);
 		if (string != null) {
 			this.customInfoPListContent.setText(string);
 		}
-		string = project.getEOAdaptorClassName(true);
 
+    string = project.getEOAdaptorClassName(true);
 		if (string != null) {
 			this.eoAdaptorClassName.setText(string);
 		}
+    
+    string = project.getEOGeneratorArgs(true);
+    if (string != null) {
+      this.eogeneratorArgs.setText(string);
+    }
+    
 		this.webXMLCustomContent.setText("");
 		this._woWebXMLCheck.setSelection(false);
 	}
@@ -415,6 +424,7 @@ public class ProjectNaturePage extends PropertyPage implements IAdaptable {
 				project
 						.setEOAdaptorClassName(this.eoAdaptorClassName
 								.getText());
+        project.setEOGeneratorArgs(this.eogeneratorArgs.getText());
 				if (this._woIsIncrementalButton.getSelection()) {
 					Map args = new HashMap();
 					project.setIncrementalNature(this._woIsFrameworkButton
@@ -490,5 +500,7 @@ public class ProjectNaturePage extends PropertyPage implements IAdaptable {
 
 	private Text webXMLCustomContent;
 
-	private Text eoAdaptorClassName;
+  private Text eoAdaptorClassName;
+
+  private Text eogeneratorArgs;
 }

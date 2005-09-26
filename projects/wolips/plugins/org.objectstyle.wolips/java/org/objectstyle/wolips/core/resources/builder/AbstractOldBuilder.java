@@ -62,7 +62,7 @@ import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
-public abstract class AbstractOldBuilder implements IBuilder {
+public abstract class AbstractOldBuilder implements IDeltaBuilder {
 
 	private IProject currentProject;
 
@@ -82,33 +82,39 @@ public abstract class AbstractOldBuilder implements IBuilder {
 		this.currentProject = project;
 	}
 
-	public void buildStarted(int kind, Map args, IProgressMonitor monitor,
-			IProject project) {
+	public boolean buildStarted(int kind, Map args, IProgressMonitor monitor,
+			IProject project, Map _buildCache) {
 		// do nothing
+    return false;
 	}
 
-	public void visitingDeltasDone(int kind, Map args,
-			IProgressMonitor monitor, IProject project) {
+  public boolean buildPreparationDone(int _kind, Map _args, IProgressMonitor _monitor, IProject _project, Map _buildCache) {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
+	public boolean handleClassesDelta(IResourceDelta delta, IProgressMonitor monitor, Map _buildCache) {
 		// do nothing
+    return false;
 	}
 
-	public void handleClassesDelta(IResourceDelta delta) {
+	public boolean handleWoappResourcesDelta(IResourceDelta delta, IProgressMonitor monitor, Map _buildCache) {
 		// do nothing
+    return false;
 	}
 
-	public void handleWoappResourcesDelta(IResourceDelta delta) {
+	public boolean handleWebServerResourcesDelta(IResourceDelta delta, IProgressMonitor monitor, Map _buildCache) {
 		// do nothing
+    return false;
 	}
 
-	public void handleWebServerResourcesDelta(IResourceDelta delta) {
+	public boolean handleOtherDelta(IResourceDelta delta, IProgressMonitor monitor, Map _buildCache) {
 		// do nothing
+    return false;
 	}
 
-	public void handleOtherDelta(IResourceDelta delta) {
+	public boolean classpathChanged(IResourceDelta delta, IProgressMonitor monitor, Map _buildCache) {
 		// do nothing
-	}
-
-	public void classpathChanged(IResourceDelta delta) {
-		// do nothing
+    return false;
 	}
 }

@@ -50,6 +50,7 @@
 package org.objectstyle.wolips.ui.preferences;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.jface.preference.FileFieldEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.objectstyle.wolips.preferences.Preferences;
@@ -85,6 +86,7 @@ public class BuildPreferencesPage extends FieldEditorPreferencePage
     addField(new BooleanFieldEditor(Preferences.PREF_WRITE_XCODE_ON_BUILD, PreferencesMessages.getString("Preferences.WriteXcodeOnBuild.Label"), getFieldEditorParent()));
     addField(new BooleanFieldEditor(Preferences.PREF_WRITE_XCODE21_ON_BUILD, PreferencesMessages.getString("Preferences.WriteXcode21OnBuild.Label"), getFieldEditorParent()));
     addField(new BooleanFieldEditor(Preferences.PREF_VALIDATE_WOD_ON_BUILD, PreferencesMessages.getString("Preferences.ValidateWODOnBuild.Label"), getFieldEditorParent()));
+    addField(new FileFieldEditor(Preferences.PREF_EOGENERATOR_PATH, PreferencesMessages.getString("Preferences.EOGeneratorPath.Label"), getFieldEditorParent()));
 	}
 	/**
 	 * @see org.eclipse.ui.IWorkbenchPreferencePage#init(IWorkbench)

@@ -15,5 +15,9 @@ Require-Bundle: org.objectstyle.wolips,
  org.objectstyle.wolips.woproject,
  org.apache.ant,
  org.objectstyle.wolips.preferences,
- org.eclipse.jdt.core
+ org.eclipse.jdt.core,
+ org.objectstyle.wolips.datasets,
+ org.eclipse.debug.core,
+ org.eclipse.ui.externaltools,
+ org.eclipse.debug.ui
 Eclipse-AutoStart: true
