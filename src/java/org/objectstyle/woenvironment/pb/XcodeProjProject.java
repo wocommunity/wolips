@@ -79,7 +79,7 @@ public class XcodeProjProject extends PBXProject {
   }
 
   protected Map newFileReference(String _name, String _path) {
-    return map(new Object[] { "isa", "PBXFileReference", "lastKnownFileType", "sourcecode.java", "sourceTree", new File(_path).isAbsolute() ? "\"<absolute>\"" : "SOURCE_ROOT", "name", _name, "path", _path });
+    return map(new Object[] { "isa", "PBXFileReference", "lastKnownFileType", "sourcecode.java", "sourceTree", new File(_path).isAbsolute() ? "<absolute>" : "SOURCE_ROOT", "name", _name, "path", _path });
   }
 
   protected Map newFolderReference(String _name, String _path) {
@@ -96,7 +96,7 @@ public class XcodeProjProject extends PBXProject {
     else {
       lastKnownFileType = "folder";
     }
-    Map result = map(new Object[] { "isa", "PBXFileReference", "lastKnownFileType", lastKnownFileType, "path", _path, "sourceTree", new File(_path).isAbsolute() ? "\"<absolute>\"" : "\"<group>\"" });
+    Map result = map(new Object[] { "isa", "PBXFileReference", "lastKnownFileType", lastKnownFileType, "path", _path, "sourceTree", new File(_path).isAbsolute() ? "<absolute>" : "<group>" });
     return result;
   }
 
