@@ -83,13 +83,20 @@ public class XcodeProjProject extends PBXProject {
   }
 
   protected Map newFolderReference(String _name, String _path) {
-    Map result;
-    if (_path.endsWith(".wo") || _path.endsWith(".eomodeld") || _path.endsWith(".nib")) {
-      result = map(new Object[] { "isa", "PBXFileReference", "explicitFileType", "wrapper", "path", _path, "sourceTree", "SOURCE_ROOT" });
+    String lastKnownFileType;
+    if (_path.endsWith(".eomodeld")) {
+      lastKnownFileType = "wrapper.eomodeld";
+    }
+    else if (_path.endsWith(".wo")) {
+      lastKnownFileType = "wrapper.wo";
+    }
+    else if (_path.endsWith(".nib")) {
+      lastKnownFileType = "wrapper.nib";
     }
     else {
-      result = map(new Object[] { "isa", "PBXFileReference", "lastKnownFileType", "folder", "path", _path, "sourceTree", new File(_path).isAbsolute() ? "\"<absolute>\"" : "\"<group>\"" });
+      lastKnownFileType = "folder";
     }
+    Map result = map(new Object[] { "isa", "PBXFileReference", "lastKnownFileType", lastKnownFileType, "path", _path, "sourceTree", new File(_path).isAbsolute() ? "\"<absolute>\"" : "\"<group>\"" });
     return result;
   }
 
@@ -100,7 +107,7 @@ public class XcodeProjProject extends PBXProject {
     buildConfigurations.add(_objectsTable.insert(newBuildConfiguration(map(new Object[] { "COPY_PHASE_STRIP", "YES" }), "Deployment")));
     buildConfigurations.add(_objectsTable.insert(newBuildConfiguration(new HashMap(), "Default")));
     result.put("buildConfigurationList", _objectsTable.insert(newBuildConfigurationList(buildConfigurations, false, "Default")));
-    result.put("productName", "Application Server"); 
+    result.put("productName", "Application Server");
     return result;
   }
 
