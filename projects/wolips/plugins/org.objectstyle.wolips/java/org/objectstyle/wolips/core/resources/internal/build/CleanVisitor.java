@@ -67,32 +67,36 @@ public class CleanVisitor extends AbstractBuildVisitor implements IResourceVisit
   }
 
   public boolean visit(IResource resource) throws CoreException {
+    boolean visitChildren;
     if (resource == null || isCanceled()) {
-      return false;
+      visitChildren = false;
     }
-    Map buildCache = getBuildCache();
-    IProgressMonitor progressMonitor = getProgressMonitor();
-    int woResourceType = getWoResourceType(resource);
-    if (woResourceType == AbstractBuildVisitor.WO_RESOURCE_TYPE_CLASS) {
-      this.notifyBuilderHandleClasses(resource, progressMonitor, buildCache);
+    else {
+      visitChildren = true;
+      Map buildCache = getBuildCache();
+      IProgressMonitor progressMonitor = getProgressMonitor();
+      int woResourceType = getWoResourceType(resource);
+      if (woResourceType == AbstractBuildVisitor.WO_RESOURCE_TYPE_CLASS) {
+        this.notifyBuilderHandleClasses(resource, progressMonitor, buildCache);
+      }
+      else if (woResourceType == AbstractBuildVisitor.WO_RESOURCE_TYPE_CLASSPATH) {
+        this.notifyBuilderHandleOther(resource, progressMonitor, buildCache);
+        this.notifyBuilderClasspath(resource, progressMonitor, buildCache);
+      }
+      else if (woResourceType == AbstractBuildVisitor.WO_RESOURCE_TYPE_IGNORE) {
+        visitChildren = false;
+      }
+      else if (woResourceType == AbstractBuildVisitor.WO_RESOURCE_TYPE_OTHER) {
+        this.notifyBuilderHandleOther(resource, progressMonitor, buildCache);
+      }
+      else if (woResourceType == AbstractBuildVisitor.WO_RESOURCE_TYPE_RESOURCE) {
+        this.notifyBuilderHandleResources(resource, progressMonitor, buildCache);
+      }
+      else if (woResourceType == AbstractBuildVisitor.WO_RESOURCE_TYPE_WEB_SERVER_RESOURCE) {
+        this.notifyBuilderHandleWebServerResources(resource, progressMonitor, buildCache);
+      }
     }
-    else if (woResourceType == AbstractBuildVisitor.WO_RESOURCE_TYPE_CLASSPATH) {
-      this.notifyBuilderHandleOther(resource, progressMonitor, buildCache);
-      this.notifyBuilderClasspath(resource, progressMonitor, buildCache);
-    }
-    else if (woResourceType == AbstractBuildVisitor.WO_RESOURCE_TYPE_IGNORE) {
-
-    }
-    else if (woResourceType == AbstractBuildVisitor.WO_RESOURCE_TYPE_OTHER) {
-      this.notifyBuilderHandleOther(resource, progressMonitor, buildCache);
-    }
-    else if (woResourceType == AbstractBuildVisitor.WO_RESOURCE_TYPE_RESOURCE) {
-      this.notifyBuilderHandleResources(resource, progressMonitor, buildCache);
-    }
-    else if (woResourceType == AbstractBuildVisitor.WO_RESOURCE_TYPE_WEB_SERVER_RESOURCE) {
-      this.notifyBuilderHandleWebServerResources(resource, progressMonitor, buildCache);
-    }
-    return true;
+    return visitChildren;
   }
 
   private void notifyBuilderClasspath(IResource resource, IProgressMonitor _progressMonitor, Map _buildCache) {
