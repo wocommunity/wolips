@@ -151,7 +151,7 @@ public class WodModelUtils {
       String elementTypeName = element.getElementType();
       IType elementType = WodBindingUtils.findElementType(_javaProject, elementTypeName, false, _elementNameToTypeCache);
       if (elementType == null) {
-        problems.add(new WodProblem(_wodModel, "The class for '" + elementTypeName + "' is either missing or does extend WOElement.", (hasPositions) ? ((DocumentWodElement) element).getElementTypePosition() : null, false));
+        problems.add(new WodProblem(_wodModel, "The class for '" + elementTypeName + "' is either missing or does not extend WOElement.", (hasPositions) ? ((DocumentWodElement) element).getElementTypePosition() : null, false));
       }
       else {
         Wo wo;
