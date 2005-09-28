@@ -43,9 +43,10 @@
  */
 package org.objectstyle.wolips.wodclipse.wod.model;
 
-import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.Collections;
@@ -56,6 +57,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.core.resources.IEncodedStorage;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -210,15 +212,16 @@ public class WodModelUtils {
 
   public static void fillInHtmlElementNames(IFile _htmlFile, Set _htmlElementNames) throws CoreException, IOException {
     FileEditorInput fileInput = new FileEditorInput(_htmlFile);
-    InputStream fileContents = fileInput.getStorage().getContents();
-    BufferedInputStream bis = new BufferedInputStream(fileContents);
+    IEncodedStorage storage = (IEncodedStorage)fileInput.getStorage();
+    InputStream fileContents = storage.getContents();
+    BufferedReader br = new BufferedReader(new InputStreamReader(fileContents, storage.getCharset()));
     int ch;
 
     char[] stringToMatch = { '<', 'w', 'e', 'b', 'o', 'b', 'j', 'e', 'c', 't', 'n', 'a', 'm', 'e', '=' };
     int matchIndex = 0;
     StringBuffer elementNameBuffer = null;
     boolean elementFound = false;
-    while ((ch = bis.read()) != -1) {
+    while ((ch = br.read()) != -1) {
       if (elementNameBuffer == null) {
         if (ch == ' ' || ch == '\n' || ch == '\r' || ch == '\t') {
           // ignore spaces
