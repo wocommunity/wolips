@@ -220,7 +220,7 @@ public class WodModelUtils {
     boolean elementFound = false;
     while ((ch = bis.read()) != -1) {
       if (elementNameBuffer == null) {
-        if (ch == ' ') {
+        if (ch == ' ' || ch == '\n' || ch == '\r' || ch == '\t') {
           // ignore spaces
         }
         else if (Character.toLowerCase((char) ch) == stringToMatch[matchIndex]) {
