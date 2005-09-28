@@ -238,7 +238,7 @@ public class WodModelUtils {
         }
       }
       else {
-        if (ch == ' ') {
+        if (ch == ' ' || ch == '\n' || ch == '\r' || ch == '\t') {
         }
         else if (ch == '"') {
         }
