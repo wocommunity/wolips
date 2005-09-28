@@ -113,7 +113,7 @@ public class DeltaVisitor extends AbstractBuildVisitor implements IResourceDelta
       IBuilder builder = builderWrappers[i].getBuilder();
       if (builder instanceof IDeltaBuilder) {
         if (((IDeltaBuilder) builder).classpathChanged(delta, _progressMonitor, _buildCache)) {
-          myFullBuilderWrappers.add(builder);
+          myFullBuilderWrappers.add(builderWrappers[i]);
         }
       }
     }
@@ -125,7 +125,7 @@ public class DeltaVisitor extends AbstractBuildVisitor implements IResourceDelta
       IBuilder builder = builderWrappers[i].getBuilder();
       if (builder instanceof IDeltaBuilder) {
         if (((IDeltaBuilder) builder).handleClassesDelta(delta, _progressMonitor, _buildCache)) {
-          myFullBuilderWrappers.add(builder);
+          myFullBuilderWrappers.add(builderWrappers[i]);
         }
       }
     }
@@ -137,7 +137,7 @@ public class DeltaVisitor extends AbstractBuildVisitor implements IResourceDelta
       IBuilder builder = builderWrappers[i].getBuilder();
       if (builder instanceof IDeltaBuilder) {
         if (((IDeltaBuilder) builder).handleWoappResourcesDelta(delta, _progressMonitor, _buildCache)) {
-          myFullBuilderWrappers.add(builder);
+          myFullBuilderWrappers.add(builderWrappers[i]);
         }
       }
     }
@@ -149,7 +149,7 @@ public class DeltaVisitor extends AbstractBuildVisitor implements IResourceDelta
       IBuilder builder = builderWrappers[i].getBuilder();
       if (builder instanceof IDeltaBuilder) {
         if (((IDeltaBuilder) builder).handleWebServerResourcesDelta(delta, _progressMonitor, _buildCache)) {
-          myFullBuilderWrappers.add(builder);
+          myFullBuilderWrappers.add(builderWrappers[i]);
         }
       }
     }
@@ -161,7 +161,7 @@ public class DeltaVisitor extends AbstractBuildVisitor implements IResourceDelta
       IBuilder builder = builderWrappers[i].getBuilder();
       if (builder instanceof IDeltaBuilder) {
         if (((IDeltaBuilder) builder).handleOtherDelta(delta, _progressMonitor, _buildCache)) {
-          myFullBuilderWrappers.add(builder);
+          myFullBuilderWrappers.add(builderWrappers[i]);
         }
       }
     }
