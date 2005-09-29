@@ -71,15 +71,15 @@ import org.objectstyle.woenvironment.pb.PBXProject.ObjectsTable.ID;
  */
 public class XcodeProjProject extends PBXProject {
   protected Map newFrameworkReference(String _name, String _path) {
-    return map(new Object[] { "isa", "PBXFileReference", "lastKnownFileType", "wrapper.framework", "name", _name, "path", _path, "sourceTree", "\"<absolute>\"" });
+    return map(new Object[] { "isa", "PBXFileReference", "lastKnownFileType", "wrapper.framework", "name", _name, "path", _path, "sourceTree", "<absolute>" });
   }
 
   protected Map newGroup(String _name, List _childrenIDs) {
-    return map(new Object[] { "isa", "PBXGroup", "refType", "\"<group>\"", "name", _name, "children", _childrenIDs });
+    return map(new Object[] { "isa", "PBXGroup", "refType", "<group>", "name", _name, "children", _childrenIDs });
   }
 
   protected Map newFileReference(String _name, String _path) {
-    return map(new Object[] { "isa", "PBXFileReference", "lastKnownFileType", "sourcecode.java", "sourceTree", new File(_path).isAbsolute() ? "<absolute>" : "SOURCE_ROOT", "name", _name, "path", _path });
+    return map(new Object[] { "isa", "PBXFileReference", "lastKnownFileType", "sourcecode.java", "sourceTree", new File(_path).isAbsolute() ? "<absolute>" : "<group>", "name", _name, "path", _path });
   }
 
   protected Map newFolderReference(String _name, String _path) {
@@ -88,7 +88,7 @@ public class XcodeProjProject extends PBXProject {
       lastKnownFileType = "wrapper.eomodeld";
     }
     else if (_path.endsWith(".wo")) {
-      lastKnownFileType = "wrapper.wo";
+      lastKnownFileType = "folder";
     }
     else if (_path.endsWith(".nib")) {
       lastKnownFileType = "wrapper.nib";
