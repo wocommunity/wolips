@@ -82,7 +82,7 @@ public class HTMLOutlineSelectionHandler implements INodeSelectionListener {
 	private void changeWodSelection(ElementStyleImpl elementStyleImpl) {
 		String webobjectTagName = elementStyleImpl.getAttribute("name");
 		if (webobjectTagName != null && webobjectTagName.length() > 0) {
-			//wodEditor.selectTagNamed(webobjectTagName);
+			wodEditor.selectTagNamed(webobjectTagName);
 		}
 	}
 }
