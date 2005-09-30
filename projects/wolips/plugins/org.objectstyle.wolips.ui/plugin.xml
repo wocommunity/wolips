@@ -426,6 +426,7 @@
             label="Xcode .xcode folder"
             icon="icons/ovr16/xcode_co.gif"
             state="true"
+            location="TOP_RIGHT"
             id="org.objectstyle.wolips.ui.labeldecorator.XcodeLabelDecorator">
          <description>
             Xcode .xcode folder
@@ -446,6 +447,7 @@
             label="Xcode .xcodeproj folder"
             icon="icons/ovr16/xcode_co.gif"
             state="true"
+            location="TOP_RIGHT"
             id="org.objectstyle.wolips.ui.labeldecorator.XcodeProjLabelDecorator">
          <description>
             Xcode .xcodeproj folder
