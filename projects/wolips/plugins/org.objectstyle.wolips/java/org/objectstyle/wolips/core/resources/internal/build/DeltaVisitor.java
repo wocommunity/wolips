@@ -101,6 +101,9 @@ public class DeltaVisitor extends AbstractBuildVisitor implements IResourceDelta
     else if (woResourceType == AbstractBuildVisitor.WO_RESOURCE_TYPE_RESOURCE) {
       this.notifyBuilderHandleResourcesDelta(delta, progressMonitor, buildCache);
     }
+    else if (woResourceType == AbstractBuildVisitor.WO_RESOURCE_TYPE_SOURCE) {
+      this.notifyBuilderHandleSourceDelta(delta, progressMonitor, buildCache);
+    }
     else if (woResourceType == AbstractBuildVisitor.WO_RESOURCE_TYPE_WEB_SERVER_RESOURCE) {
       this.notifyBuilderHandleWebServerResourcesDelta(delta, progressMonitor, buildCache);
     }
@@ -137,6 +140,18 @@ public class DeltaVisitor extends AbstractBuildVisitor implements IResourceDelta
       IBuilder builder = builderWrappers[i].getBuilder();
       if (builder instanceof IDeltaBuilder) {
         if (((IDeltaBuilder) builder).handleWoappResourcesDelta(delta, _progressMonitor, _buildCache)) {
+          myFullBuilderWrappers.add(builderWrappers[i]);
+        }
+      }
+    }
+  }
+
+  private void notifyBuilderHandleSourceDelta(IResourceDelta delta, IProgressMonitor _progressMonitor, Map _buildCache) {
+    BuilderWrapper[] builderWrappers = getBuilderWrappers();
+    for (int i = 0; i < builderWrappers.length; i++) {
+      IBuilder builder = builderWrappers[i].getBuilder();
+      if (builder instanceof IDeltaBuilder) {
+        if (((IDeltaBuilder) builder).handleSourceDelta(delta, _progressMonitor, _buildCache)) {
           myFullBuilderWrappers.add(builderWrappers[i]);
         }
       }

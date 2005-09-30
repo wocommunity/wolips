@@ -78,6 +78,11 @@ public class AntBuilder implements IDeltaBuilder {
     return false;
   }
 
+  public boolean handleSourceDelta(IResourceDelta delta, IProgressMonitor monitor, Map _buildCache) {
+    // TODO Auto-generated method stub
+    return false;
+  }
+
 	public boolean handleClassesDelta(IResourceDelta delta, IProgressMonitor monitor, Map _buildCache) {
 		// TODO Auto-generated method stub
     return false;

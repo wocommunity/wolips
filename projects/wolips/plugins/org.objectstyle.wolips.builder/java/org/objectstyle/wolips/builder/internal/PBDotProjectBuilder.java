@@ -131,21 +131,18 @@ public class PBDotProjectBuilder implements IDeltaBuilder, ICleanBuilder {
     return pbDotProjectAdapter;
   }
 
-  public boolean handleClassesDelta(IResourceDelta delta, IProgressMonitor monitor, Map _buildCache) {
+  public boolean handleSourceDelta(IResourceDelta delta, IProgressMonitor monitor, Map _buildCache) {
     IResource resource = delta.getResource();
-    handleClasses(delta.getKind(), resource, monitor, _buildCache);
+    handleSource(delta.getKind(), resource, monitor, _buildCache);
     return false;
   }
 
-  public void handleClasses(IResource _resource, IProgressMonitor _progressMonitor, Map _buildCache) {
-    handleClasses(IResourceDelta.ADDED, _resource, _progressMonitor, _buildCache);
+  public void handleSource(IResource _resource, IProgressMonitor _progressMonitor, Map _buildCache) {
+    handleSource(IResourceDelta.ADDED, _resource, _progressMonitor, _buildCache);
   }
 
-  public boolean handleClasses(int _kind, IResource _resource, IProgressMonitor _progressMonitor, Map _buildCache) {
+  public boolean handleSource(int _kind, IResource _resource, IProgressMonitor _progressMonitor, Map _buildCache) {
     String extension = _resource.getFileExtension();
-    if (extension != null && extension.equals("class")) {
-      return false;
-    }
     if (_kind == IResourceDelta.ADDED || _kind == IResourceDelta.CHANGED || _kind == IResourceDelta.REMOVED) {
       IPBDotProjectOwner pbDotProjectOwner = this.getIPBDotProjectOwner(_resource);
       IPBDotProjectAdapter pbDotProjectAdapter = this.getIPBDotProjectAdapter(pbDotProjectOwner);
@@ -157,6 +154,20 @@ public class PBDotProjectBuilder implements IDeltaBuilder, ICleanBuilder {
         pbDotProjectAdapter.removeClass(localizedPath);
       }
     }
+    return false;
+  }
+
+  public boolean handleClassesDelta(IResourceDelta delta, IProgressMonitor monitor, Map _buildCache) {
+    IResource resource = delta.getResource();
+    handleClasses(delta.getKind(), resource, monitor, _buildCache);
+    return false;
+  }
+
+  public void handleClasses(IResource _resource, IProgressMonitor _progressMonitor, Map _buildCache) {
+    handleClasses(IResourceDelta.ADDED, _resource, _progressMonitor, _buildCache);
+  }
+
+  public boolean handleClasses(int _kind, IResource _resource, IProgressMonitor _progressMonitor, Map _buildCache) {
     return false;
   }
 
@@ -246,21 +257,6 @@ public class PBDotProjectBuilder implements IDeltaBuilder, ICleanBuilder {
   }
 
   public void handleOther(int _kind, IResource resource, IProgressMonitor monitor, Map _buildCache) {
-    String extension = resource.getFileExtension();
-    if (extension == null || !extension.equals("java")) {
-      return;
-    }
-    if (_kind == IResourceDelta.ADDED || _kind == IResourceDelta.CHANGED || _kind == IResourceDelta.REMOVED) {
-      IPBDotProjectOwner pbDotProjectOwner = this.getIPBDotProjectOwner(resource);
-      IPBDotProjectAdapter pbDotProjectAdapter = this.getIPBDotProjectAdapter(pbDotProjectOwner);
-      ILocalizedPath localizedPath = pbDotProjectAdapter.localizedRelativeResourcePath(pbDotProjectOwner, resource);
-      if (_kind == IResourceDelta.ADDED || _kind == IResourceDelta.CHANGED) {
-        pbDotProjectAdapter.addClass(localizedPath);
-      }
-      else if (_kind == IResourceDelta.REMOVED) {
-        pbDotProjectAdapter.removeClass(localizedPath);
-      }
-    }
   }
 
   public void handleClasspath(IResource _resource, IProgressMonitor _progressMonitor, Map _buildCache) {

@@ -34,6 +34,9 @@ public class WodBuilder extends AbstractDeltaCleanBuilder {
   public void handleClasses(IResource _resource, IProgressMonitor _monitor, Map _buildCache) {
   }
 
+  public void handleSource(IResource _resource, IProgressMonitor _progressMonitor, Map _buildCache) {
+  }
+  
   public void handleClasspath(IResource _resource, IProgressMonitor _monitor, Map _buildCache) {
   }
 

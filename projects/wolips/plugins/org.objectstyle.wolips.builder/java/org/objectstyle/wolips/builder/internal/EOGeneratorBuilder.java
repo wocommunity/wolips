@@ -68,6 +68,9 @@ public class EOGeneratorBuilder extends AbstractDeltaCleanBuilder {
     return false;
   }
 
+  public void handleSource(IResource _resource, IProgressMonitor monitor, Map _buildCache) {
+  }
+
   public void handleClasses(IResource _resource, IProgressMonitor monitor, Map _buildCache) {
   }
 

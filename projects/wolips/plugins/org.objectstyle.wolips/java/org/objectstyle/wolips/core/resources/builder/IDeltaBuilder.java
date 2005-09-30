@@ -61,6 +61,8 @@ import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 public interface IDeltaBuilder extends IBuilder {
+  public abstract boolean handleSourceDelta(IResourceDelta delta, IProgressMonitor _progressMonitor, Map _buildCache);
+
   public abstract boolean handleClassesDelta(IResourceDelta delta, IProgressMonitor _progressMonitor, Map _buildCache);
 
 	public abstract boolean handleWoappResourcesDelta(IResourceDelta delta, IProgressMonitor _progressMonitor, Map _buildCache);

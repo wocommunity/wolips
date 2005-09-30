@@ -6,6 +6,11 @@ import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 public abstract class AbstractDeltaCleanBuilder implements IDeltaBuilder, ICleanBuilder {
+  public boolean handleSourceDelta(IResourceDelta _delta, IProgressMonitor _progressMonitor, Map _buildCache) {
+    handleSource(_delta.getResource(), _progressMonitor, _buildCache);
+    return false;
+  }
+
   public boolean handleClassesDelta(IResourceDelta _delta, IProgressMonitor _progressMonitor, Map _buildCache) {
     handleClasses(_delta.getResource(), _progressMonitor, _buildCache);
     return false;

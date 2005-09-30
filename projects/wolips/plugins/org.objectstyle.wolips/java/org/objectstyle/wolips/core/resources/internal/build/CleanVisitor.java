@@ -92,6 +92,9 @@ public class CleanVisitor extends AbstractBuildVisitor implements IResourceVisit
       else if (woResourceType == AbstractBuildVisitor.WO_RESOURCE_TYPE_RESOURCE) {
         this.notifyBuilderHandleResources(resource, progressMonitor, buildCache);
       }
+      else if (woResourceType == AbstractBuildVisitor.WO_RESOURCE_TYPE_SOURCE) {
+        this.notifyBuilderHandleSource(resource, progressMonitor, buildCache);
+      }
       else if (woResourceType == AbstractBuildVisitor.WO_RESOURCE_TYPE_WEB_SERVER_RESOURCE) {
         this.notifyBuilderHandleWebServerResources(resource, progressMonitor, buildCache);
       }
@@ -115,6 +118,16 @@ public class CleanVisitor extends AbstractBuildVisitor implements IResourceVisit
       IBuilder builder = builderWrappers[i].getBuilder();
       if (builder instanceof ICleanBuilder) {
         ((ICleanBuilder) builder).handleClasses(resource, _progressMonitor, _buildCache);
+      }
+    }
+  }
+
+  private void notifyBuilderHandleSource(IResource resource, IProgressMonitor _progressMonitor, Map _buildCache) {
+    BuilderWrapper[] builderWrappers = getBuilderWrappers();
+    for (int i = 0; i < builderWrappers.length; i++) {
+      IBuilder builder = builderWrappers[i].getBuilder();
+      if (builder instanceof ICleanBuilder) {
+        ((ICleanBuilder) builder).handleSource(resource, _progressMonitor, _buildCache);
       }
     }
   }

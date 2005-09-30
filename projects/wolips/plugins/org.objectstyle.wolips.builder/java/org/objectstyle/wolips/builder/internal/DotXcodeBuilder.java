@@ -173,6 +173,10 @@ public class DotXcodeBuilder implements IDeltaBuilder, ICleanBuilder {
     }
   }
 
+  public boolean handleSourceDelta(IResourceDelta _delta, IProgressMonitor monitor, Map _buildCache) {
+    return _delta.getKind() == IResourceDelta.ADDED || _delta.getKind() == IResourceDelta.REMOVED;
+  }
+
   public boolean handleClassesDelta(IResourceDelta _delta, IProgressMonitor monitor, Map _buildCache) {
     return _delta.getKind() == IResourceDelta.ADDED || _delta.getKind() == IResourceDelta.REMOVED;
   }
@@ -193,13 +197,16 @@ public class DotXcodeBuilder implements IDeltaBuilder, ICleanBuilder {
     return false;
   }
 
-  public void handleClasses(IResource _resource, IProgressMonitor _progressMonitor, Map _buildCache) {
+  public void handleSource(IResource _resource, IProgressMonitor _progressMonitor, Map _buildCache) {
     if (myXcodeProject != null) {
       myXcodeProject.addSourceReference(_resource.getLocation().toOSString());
     }
     if (myXcodeProjProject != null) {
       myXcodeProjProject.addSourceReference(_resource.getLocation().toOSString());
     }
+  }
+
+  public void handleClasses(IResource _resource, IProgressMonitor _progressMonitor, Map _buildCache) {
   }
 
   public void handleClasspath(IResource _resource, IProgressMonitor _progressMonitor, Map _buildCache) {

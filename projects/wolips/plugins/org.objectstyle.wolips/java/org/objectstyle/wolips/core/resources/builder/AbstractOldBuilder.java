@@ -112,6 +112,11 @@ public abstract class AbstractOldBuilder implements IDeltaBuilder {
 		// do nothing
     return false;
 	}
+  
+  public boolean handleSourceDelta(IResourceDelta _delta, IProgressMonitor _progressMonitor, Map _buildCache) {
+    // do nothing
+    return false;
+  }
 
 	public boolean classpathChanged(IResourceDelta delta, IProgressMonitor monitor, Map _buildCache) {
 		// do nothing
