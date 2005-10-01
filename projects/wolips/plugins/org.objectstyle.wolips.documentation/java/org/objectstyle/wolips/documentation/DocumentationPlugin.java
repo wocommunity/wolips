@@ -3,7 +3,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0
  * 
- * Copyright (c) 2004 The ObjectStyle Group and individual authors of the
+ * Copyright (c) 2004 - 2005 The ObjectStyle Group and individual authors of the
  * software. All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -48,20 +48,18 @@
  *  
  */
 package org.objectstyle.wolips.documentation;
-import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.objectstyle.wolips.commons.logging.PluginLogger;
+import org.objectstyle.wolips.core.runtime.AbstractCorePlugin;
+import org.osgi.framework.BundleContext;
 /**
  * The main plugin class to be used in the desktop.
  * 
  * @author uli
  * @author markus
  */
-public class DocumentationPlugin extends AbstractUIPlugin {
-	//The plugin.
+public class DocumentationPlugin extends AbstractCorePlugin {
+	// The shared instance.
 	private static DocumentationPlugin plugin;
-	private static final String PLUGIN_ID = "org.objectstyle.wolips.documentation";
-	private PluginLogger pluginLogger = new PluginLogger(
-			DocumentationPlugin.PLUGIN_ID, false);
+
 	/**
 	 * The constructor.
 	 */
@@ -69,18 +67,20 @@ public class DocumentationPlugin extends AbstractUIPlugin {
 		super();
 		plugin = this;
 	}
+
+	/**
+	 * This method is called when the plug-in is stopped
+	 */
+	public void stop(BundleContext context) throws Exception {
+		super.stop(context);
+		plugin = null;
+	}
+
 	/**
 	 * Returns the shared instance.
-	 * 
-	 * @return
 	 */
 	public static DocumentationPlugin getDefault() {
 		return plugin;
 	}
-	/**
-	 * @return Returns the pluginLogger.
-	 */
-	public PluginLogger getPluginLogger() {
-		return this.pluginLogger;
-	}
+
 }
