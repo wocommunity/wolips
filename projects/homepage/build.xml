@@ -132,6 +132,8 @@
 				<pathelement path="../wolips/plugins/org.objectstyle.wolips.pbserver/java" />
 				<pathelement path="../wolips/plugins/org.objectstyle.wolips.builder/java" />
 				<pathelement path="../wolips/plugins/org.objectstyle.wolips.editors/java" />
+				<pathelement path="../wolips/plugins/org.objectstyle.wolips.apieditor/java" />
+				<pathelement path="../wolips/plugins/org.objectstyle.wolips.htmleditor/java" />
 			</sourcepath>
 			<doctitle>
 				<![CDATA[<h2>WOProject API Documentation</h2>]]></doctitle>
