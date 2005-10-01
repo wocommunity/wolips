@@ -48,6 +48,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.forms.FormColors;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.objectstyle.wolips.htmleditor.HtmleditorPlugin;
 import org.objectstyle.wolips.ui.plugins.AbstractWOLipsUIPlugin;
 import org.objectstyle.wolips.wodclipse.mpe.ComponentEditor;
 import org.objectstyle.wolips.wodclipse.wod.WodEditor;
@@ -68,15 +69,8 @@ public class WodclipsePlugin extends AbstractWOLipsUIPlugin {
 
 	public static String ComponentEditorID = "org.objectstyle.wolips.wodclipse.mpe.ComponentEditor";
 
-	//public static String HTMLEditorID = "org.eclipse.wst.html.core.htmlsource.source";
-	public static String HTMLEditorID = "org.objectstyle.wolips.wodclipse.html.HtmlEditor";
-	
-	public static String ApiEditorID = "org.objectstyle.wolips.wodclipse.api.ApiEditor";
-	
 	public static String WOOEditorID = "org.eclipse.ui.DefaultTextEditor";
 	
-	private String[] webObjectsTagNames;
-
 	private WodEditor lastWodEditor;
 	
 	private ComponentEditor activeComponentEditor;
@@ -136,28 +130,6 @@ public class WodclipsePlugin extends AbstractWOLipsUIPlugin {
 		return getImageRegistry().get(key);
 	}
 	
-	public String[] getWebObjectsTagNames() {
-		if (this.webObjectsTagNames == null) {
-			this.webObjectsTagNames = new String[] { "No tags available" };
-		}
-		return webObjectsTagNames;
-	}
-
-	public void setWebObjectsTagNames(String[] webObjectsTagNames) {
-		this.webObjectsTagNames = webObjectsTagNames;
-	}
-
-	public void updateWebObjectsTagNames(WodEditor wodEditor) {
-		if (lastWodEditor == wodEditor) {
-			return;
-		}
-		if (wodEditor != null) {
-			wodEditor.updateWebObjectsTagNames();
-		} else {
-			this.setWebObjectsTagNames(null);
-		}
-		lastWodEditor = wodEditor;
-	}
 	public FormColors getFormColors(Display display) {
 		if (formColors == null) {
 			formColors = new FormColors(display);
@@ -174,4 +146,15 @@ public class WodclipsePlugin extends AbstractWOLipsUIPlugin {
 		this.activeComponentEditor = activeComponentEditor;
 	}
 	
+	public void updateWebObjectsTagNames(WodEditor wodEditor) {
+		if (lastWodEditor == wodEditor) {
+			return;
+		}
+		if (wodEditor != null) {
+			wodEditor.updateWebObjectsTagNames();
+		} else {
+			HtmleditorPlugin.getDefault().setWebObjectsTagNames(null);
+		}
+		lastWodEditor = wodEditor;
+	}
 }

@@ -41,7 +41,7 @@
  * Group, please see <http://objectstyle.org/> .
  *  
  */
-package org.objectstyle.wolips.htmleditor.html;
+package org.objectstyle.wolips.htmleditor.editor;
 
 import java.util.List;
 

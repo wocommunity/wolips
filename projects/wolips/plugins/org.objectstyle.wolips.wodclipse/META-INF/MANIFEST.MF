@@ -30,11 +30,11 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.wst.html.core,
  org.objectstyle.wolips.builder,
  org.eclipse.wst.xml.ui,
- org.objectstyle.wolips.preferences
+ org.objectstyle.wolips.preferences,
+ org.objectstyle.wolips.htmleditor,
+ org.objectstyle.wolips.apieditor
 Eclipse-AutoStart: true
 Export-Package: org.objectstyle.wolips.wodclipse,
- org.objectstyle.wolips.wodclipse.api,
- org.objectstyle.wolips.wodclipse.html.templates,
  org.objectstyle.wolips.wodclipse.mpe,
  org.objectstyle.wolips.wodclipse.preferences,
  org.objectstyle.wolips.wodclipse.wod,

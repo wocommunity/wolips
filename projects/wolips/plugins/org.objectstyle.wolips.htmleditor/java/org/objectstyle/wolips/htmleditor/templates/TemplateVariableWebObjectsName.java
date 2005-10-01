@@ -41,33 +41,20 @@
  * Group, please see <http://objectstyle.org/> .
  *  
  */
-package org.objectstyle.wolips.wodclipse.html;
 
-import org.eclipse.jface.text.contentassist.ContentAssistant;
-import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
-import org.eclipse.jface.text.contentassist.IContentAssistant;
-import org.eclipse.jface.text.source.ISourceViewer;
-import org.eclipse.wst.html.core.internal.provisional.text.IHTMLPartitionTypes;
-import org.eclipse.wst.html.ui.internal.provisional.StructuredTextViewerConfigurationHTML;
+package org.objectstyle.wolips.htmleditor.templates;
 
-public class StructuredTextViewerConfigurationHTMLWithWebObjectTags extends StructuredTextViewerConfigurationHTML {
+import org.eclipse.jface.text.templates.TemplateContext;
+import org.eclipse.jface.text.templates.TemplateVariableResolver;
+import org.objectstyle.wolips.htmleditor.HtmleditorPlugin;
 
-	public StructuredTextViewerConfigurationHTMLWithWebObjectTags() {
+public class TemplateVariableWebObjectsName extends TemplateVariableResolver {
+	
+	public TemplateVariableWebObjectsName() {
 		super();
 	}
 
-	public IContentAssistant getContentAssistant(ISourceViewer sourceViewer) {
-		IContentAssistant ca = super.getContentAssistant(sourceViewer);
-
-		if (ca != null && ca instanceof ContentAssistant) {
-			ContentAssistant contentAssistant = (ContentAssistant) ca;
-
-			IContentAssistProcessor htmlContentAssistProcessor = new WebObjectTagContentAssistProcessor();
-
-			// HTML
-			setContentAssistProcessor(contentAssistant, htmlContentAssistProcessor, IHTMLPartitionTypes.HTML_DEFAULT);
-			}
-
-		return ca;
+	protected String[] resolveAll(TemplateContext context) {
+		return HtmleditorPlugin.getDefault().getWebObjectsTagNames();
 	}
 }

@@ -51,8 +51,10 @@ import org.eclipse.jdt.ui.JavaUI;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiEditorInput;
+import org.objectstyle.wolips.apieditor.ApieditorPlugin;
+import org.objectstyle.wolips.apieditor.editor.ApiEditorInput;
+import org.objectstyle.wolips.htmleditor.HtmleditorPlugin;
 import org.objectstyle.wolips.wodclipse.WodclipsePlugin;
-import org.objectstyle.wolips.wodclipse.api.ApiEditorInput;
 import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 
 public class ComponentEditorInput extends MultiEditorInput {
@@ -136,12 +138,12 @@ public class ComponentEditorInput extends MultiEditorInput {
 		}
 		ids[0] = JavaUI.ID_CU_EDITOR;
 		allInput[0] = new FileEditorInput(file);
-		ids[1] = WodclipsePlugin.HTMLEditorID;
+		ids[1] = HtmleditorPlugin.HTMLEditorID;
 		allInput[1] = new FileEditorInput(((IFile) htmlResources.get(0)));
 		ids[2] = WodclipsePlugin.WodEditorID;
 		allInput[2] = new FileEditorInput(((IFile) wodResources.get(0)));
 		if (apiResources != null && apiResources.size() == 1) {
-			ids[3] = WodclipsePlugin.ApiEditorID;
+			ids[3] = ApieditorPlugin.ApiEditorID;
 			allInput[3] = new ApiEditorInput(((IFile) apiResources.get(0)));
 		}
 		ComponentEditorInput input = new ComponentEditorInput(ids, allInput);

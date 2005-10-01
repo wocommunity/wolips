@@ -31,7 +31,7 @@
 			translations="templates/htmlwo-templates.properties">
 		</include>
   		<resolver
-        		class="org.objectstyle.wolips.wodclipse.html.templates.TemplateVariableWebObjectsName"
+        		class="org.objectstyle.wolips.htmleditor.templates.TemplateVariableWebObjectsName"
         		contextTypeId="html_all"
         		type="wotagnameattribute"
         		name="wotagnameattribute"/>

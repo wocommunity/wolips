@@ -61,6 +61,7 @@ import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.texteditor.ContentAssistAction;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
+import org.objectstyle.wolips.htmleditor.HtmleditorPlugin;
 import org.objectstyle.wolips.wodclipse.WodclipsePlugin;
 import org.objectstyle.wolips.wodclipse.wod.parser.ElementNameRule;
 import org.objectstyle.wolips.wodclipse.wod.parser.RulePosition;
@@ -103,12 +104,12 @@ public class WodEditor extends TextEditor {
       IDocument document = getDocumentProvider().getDocument(getEditorInput());
       Set elementNamesSet = WodScanner.getTextForRulesOfType(document, ElementNameRule.class);
       String[] elementNames = (String[]) elementNamesSet.toArray(new String[elementNamesSet.size()]);
-      WodclipsePlugin.getDefault().setWebObjectsTagNames(elementNames);
+      HtmleditorPlugin.getDefault().setWebObjectsTagNames(elementNames);
     }
     catch (BadLocationException t) {
       //null means no tags
       //the user has to enter the name manually
-      WodclipsePlugin.getDefault().setWebObjectsTagNames(null);
+    	HtmleditorPlugin.getDefault().setWebObjectsTagNames(null);
     }
   }
 
