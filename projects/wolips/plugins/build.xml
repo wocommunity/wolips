@@ -91,6 +91,7 @@
 		<ant dir="org.objectstyle.wolips.datasets" target="all" />
 		<ant dir="org.objectstyle.wolips.preferences" target="all" />
 		<ant dir="org.objectstyle.wolips" target="all" />
+		<ant dir="org.objectstyle.wolips.locate" target="all" />
 		<ant dir="org.objectstyle.wolips.ant" target="all" />
 		<ant dir="org.objectstyle.wolips.cayenne" target="all" />
 		<ant dir="org.objectstyle.wolips.cayenne.ant" target="all" />
@@ -130,6 +131,7 @@
 		<ant dir="org.objectstyle.wolips.tests.core" target="dist" />
 		<ant dir="org.objectstyle.wolips.preferences" target="dist" />
 		<ant dir="org.objectstyle.wolips" target="dist" />
+		<ant dir="org.objectstyle.wolips.locate" target="dist" />
 		<ant dir="org.objectstyle.wolips.ant" target="dist" />
 		<ant dir="org.objectstyle.wolips.cayenne" target="dist" />
 		<ant dir="org.objectstyle.wolips.cayenne.ant" target="dist" />
