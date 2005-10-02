@@ -297,5 +297,12 @@
          install-size="32"
          version="1.0.6"
          unpack="false"/>
+         
+   <plugin
+         id="org.objectstyle.wolips.locate"
+         download-size="32"
+         install-size="32"
+         version="1.0.6"
+         unpack="false"/>
 
 </feature>
