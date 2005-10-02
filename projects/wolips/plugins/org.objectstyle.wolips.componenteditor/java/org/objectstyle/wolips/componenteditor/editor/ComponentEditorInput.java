@@ -43,19 +43,23 @@
  */
 package org.objectstyle.wolips.componenteditor.editor;
 
-import java.util.List;
-
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.ui.JavaUI;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiEditorInput;
 import org.objectstyle.wolips.apieditor.ApieditorPlugin;
 import org.objectstyle.wolips.apieditor.editor.ApiEditorInput;
+import org.objectstyle.wolips.componenteditor.ComponenteditorPlugin;
 import org.objectstyle.wolips.htmleditor.HtmleditorPlugin;
+import org.objectstyle.wolips.locate.Locate;
+import org.objectstyle.wolips.locate.LocateException;
+import org.objectstyle.wolips.locate.result.LocalizedComponentsLocateResult;
+import org.objectstyle.wolips.locate.scope.ComponentLocateScope;
 import org.objectstyle.wolips.wodclipse.WodclipsePlugin;
-import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 
 public class ComponentEditorInput extends MultiEditorInput {
 
@@ -68,6 +72,8 @@ public class ComponentEditorInput extends MultiEditorInput {
 	private boolean createdFromDotApi = false;
 
 	private boolean createdFromDotWoo = false;
+	
+	private LocalizedComponentsLocateResult localizedComponentsLocateResult;
 
 	public boolean isCreatedFromDotApi() {
 		return createdFromDotApi;
@@ -93,43 +99,12 @@ public class ComponentEditorInput extends MultiEditorInput {
 		super(editorIDs, innerEditors);
 	}
 
-	/*
-	 * may return null
-	 */
-	public static ComponentEditorInput createWithDotJava(IFile file) {
-		return createWithDotJava(file, true, false, false, false, false);
-	}
-
-	/*
-	 * may return null
-	 */
-	private static ComponentEditorInput createWithDotJava(IFile file,
-			boolean createFromDotJava, boolean createFromDotHtml,
-			boolean createFromDotWod, boolean createFromDotApi,
-			boolean createFromDotWoo) {
-		IProject project = file.getProject();
+	private static ComponentEditorInput create(
+			LocalizedComponentsLocateResult localizedComponentsLocateResult)
+			throws CoreException {
 		String ids[] = null;
 		IEditorInput allInput[] = null;
-		String fileName = file.getName().substring(0,
-				file.getName().length() - 5);
-		List htmlResources = WorkbenchUtilitiesPlugin
-				.findResourcesInProjectByNameAndExtensions(project, fileName,
-						new String[] { "html" }, false);
-		if (htmlResources == null || htmlResources.size() != 1) {
-			return null;
-		}
-		List wodResources = WorkbenchUtilitiesPlugin
-				.findResourcesInProjectByNameAndExtensions(project, fileName,
-						new String[] { "wod" }, false);
-
-		if (wodResources == null || wodResources.size() != 1) {
-			return null;
-		}
-		List apiResources = WorkbenchUtilitiesPlugin
-				.findResourcesInProjectByNameAndExtensions(project, fileName,
-						new String[] { "api" }, false);
-
-		if (apiResources == null || apiResources.size() != 1) {
+		if (localizedComponentsLocateResult.getDotApi() == null) {
 			ids = new String[3];
 			allInput = new IEditorInput[3];
 		} else {
@@ -137,126 +112,114 @@ public class ComponentEditorInput extends MultiEditorInput {
 			allInput = new IEditorInput[4];
 		}
 		ids[0] = JavaUI.ID_CU_EDITOR;
-		allInput[0] = new FileEditorInput(file);
+		allInput[0] = new FileEditorInput(localizedComponentsLocateResult
+				.getDotJava());
 		ids[1] = HtmleditorPlugin.HTMLEditorID;
-		allInput[1] = new FileEditorInput(((IFile) htmlResources.get(0)));
+		IFolder folder = localizedComponentsLocateResult.getComponents()[0];
+		IFile htmlFile = LocalizedComponentsLocateResult.getHtml(folder);
+		IFile wodFile = LocalizedComponentsLocateResult.getWod(folder);
+		allInput[1] = new FileEditorInput(htmlFile);
 		ids[2] = WodclipsePlugin.WodEditorID;
-		allInput[2] = new FileEditorInput(((IFile) wodResources.get(0)));
-		if (apiResources != null && apiResources.size() == 1) {
+		allInput[2] = new FileEditorInput(wodFile);
+		if (localizedComponentsLocateResult.getDotApi() != null) {
 			ids[3] = ApieditorPlugin.ApiEditorID;
-			allInput[3] = new ApiEditorInput(((IFile) apiResources.get(0)));
+			allInput[3] = new ApiEditorInput(localizedComponentsLocateResult
+					.getDotApi());
 		}
 		ComponentEditorInput input = new ComponentEditorInput(ids, allInput);
-		input.createdFromDotJava = createFromDotJava;
-		input.createdFromDotHtml = createFromDotHtml;
-		input.createdFromDotWod = createFromDotWod;
-		input.createdFromDotApi = createFromDotApi;
-		input.createdFromDotWoo = createFromDotWoo;
-
+		input.localizedComponentsLocateResult = localizedComponentsLocateResult;
 		return input;
 	}
 
-	public static ComponentEditorInput createWithDotHtml(IFile file) {
+	/*
+	 * may return null
+	 */
+	private static ComponentEditorInput create(IProject project, String fileName)
+			throws CoreException {
+		ComponentLocateScope componentLocateScope = new ComponentLocateScope(
+				project, fileName);
+		LocalizedComponentsLocateResult localizedComponentsLocateResult = new LocalizedComponentsLocateResult();
+		Locate locate = new Locate(componentLocateScope,
+				localizedComponentsLocateResult);
+		try {
+			locate.locate();
+		} catch (CoreException e) {
+			ComponenteditorPlugin.getDefault().log(e);
+			return null;
+		} catch (LocateException e) {
+			ComponenteditorPlugin.getDefault().log(e);
+			return null;
+		}
+		ComponentEditorInput input = create(localizedComponentsLocateResult);
+		return input;
+	}
+
+	/*
+	 * may return null
+	 */
+	public static ComponentEditorInput createWithDotJava(IFile file)
+			throws CoreException {
 		IProject project = file.getProject();
-		String javaFileName = file.getName().substring(0,
+		String fileName = file.getName().substring(0,
 				file.getName().length() - 5);
-		List javaResources = WorkbenchUtilitiesPlugin
-				.findResourcesInProjectByNameAndExtensions(project,
-						javaFileName, new String[] { "java" }, false);
-		if (javaResources == null || javaResources.size() != 1) {
-			return null;
-		}
-		IFile javaFile = (IFile) javaResources.get(0);
-		String htmlFileName = javaFile.getName().substring(0,
-				javaFile.getName().length() - 5);
-		List htmlResources = WorkbenchUtilitiesPlugin
-				.findResourcesInProjectByNameAndExtensions(project,
-						htmlFileName, new String[] { "html" }, false);
-		if (htmlResources == null || htmlResources.size() != 1) {
-			return null;
-		}
-		IFile htmlFile = (IFile) htmlResources.get(0);
-		if (htmlFile.getLocation().equals(file.getLocation())) {
-			return createWithDotJava(javaFile, false, true, false, false, false);
-		}
-		return null;
+		ComponentEditorInput input = create(project, fileName);
+		input.createdFromDotJava = true;
+		return input;
 	}
 
-	public static ComponentEditorInput createWithDotWod(IFile file) {
+	/*
+	 * may return null
+	 */
+	public static ComponentEditorInput createWithDotHtml(IFile file)
+			throws CoreException {
 		IProject project = file.getProject();
-		String javaFileName = file.getName().substring(0,
-				file.getName().length() - 4);
-		List javaResources = WorkbenchUtilitiesPlugin
-				.findResourcesInProjectByNameAndExtensions(project,
-						javaFileName, new String[] { "java" }, false);
-		if (javaResources == null || javaResources.size() != 1) {
-			return null;
-		}
-		IFile javaFile = (IFile) javaResources.get(0);
-		String htmlFileName = javaFile.getName().substring(0,
-				javaFile.getName().length() - 5);
-		List htmlResources = WorkbenchUtilitiesPlugin
-				.findResourcesInProjectByNameAndExtensions(project,
-						htmlFileName, new String[] { "wod" }, false);
-		if (htmlResources == null || htmlResources.size() != 1) {
-			return null;
-		}
-		IFile htmlFile = (IFile) htmlResources.get(0);
-		if (htmlFile.getLocation().equals(file.getLocation())) {
-			return createWithDotJava(javaFile, false, false, true, false, false);
-		}
-		return null;
+		String fileName = file.getName().substring(0,
+				file.getName().length() - 5);
+		ComponentEditorInput input = create(project, fileName);
+		input.createdFromDotHtml = true;
+		return input;
 	}
 
-	public static ComponentEditorInput createWithDotApi(IFile file) {
+	/*
+	 * may return null
+	 */
+	public static ComponentEditorInput createWithDotWod(IFile file)
+			throws CoreException {
 		IProject project = file.getProject();
-		String javaFileName = file.getName().substring(0,
+		String fileName = file.getName().substring(0,
 				file.getName().length() - 4);
-		List javaResources = WorkbenchUtilitiesPlugin
-				.findResourcesInProjectByNameAndExtensions(project,
-						javaFileName, new String[] { "java" }, false);
-		if (javaResources == null || javaResources.size() != 1) {
-			return null;
-		}
-		IFile javaFile = (IFile) javaResources.get(0);
-		String htmlFileName = javaFile.getName().substring(0,
-				javaFile.getName().length() - 5);
-		List htmlResources = WorkbenchUtilitiesPlugin
-				.findResourcesInProjectByNameAndExtensions(project,
-						htmlFileName, new String[] { "api" }, false);
-		if (htmlResources == null || htmlResources.size() != 1) {
-			return null;
-		}
-		IFile htmlFile = (IFile) htmlResources.get(0);
-		if (htmlFile.getLocation().equals(file.getLocation())) {
-			return createWithDotJava(javaFile, false, false, false, true, false);
-		}
-		return null;
+		ComponentEditorInput input = create(project, fileName);
+		input.createdFromDotWod = true;
+		return input;
 	}
 
-	public static ComponentEditorInput createWithDotWoo(IFile file) {
+	/*
+	 * may return null
+	 */
+	public static ComponentEditorInput createWithDotApi(IFile file)
+			throws CoreException {
 		IProject project = file.getProject();
-		String javaFileName = file.getName().substring(0,
+		String fileName = file.getName().substring(0,
 				file.getName().length() - 4);
-		List javaResources = WorkbenchUtilitiesPlugin
-				.findResourcesInProjectByNameAndExtensions(project,
-						javaFileName, new String[] { "java" }, false);
-		if (javaResources == null || javaResources.size() != 1) {
-			return null;
-		}
-		IFile javaFile = (IFile) javaResources.get(0);
-		String htmlFileName = javaFile.getName().substring(0,
-				javaFile.getName().length() - 5);
-		List htmlResources = WorkbenchUtilitiesPlugin
-				.findResourcesInProjectByNameAndExtensions(project,
-						htmlFileName, new String[] { "woo" }, false);
-		if (htmlResources == null || htmlResources.size() != 1) {
-			return null;
-		}
-		IFile htmlFile = (IFile) htmlResources.get(0);
-		if (htmlFile.getLocation().equals(file.getLocation())) {
-			return createWithDotJava(javaFile, false, false, false, false, true);
-		}
-		return null;
+		ComponentEditorInput input = create(project, fileName);
+		input.createdFromDotApi = true;
+		return input;
+	}
+
+	/*
+	 * may return null
+	 */
+	public static ComponentEditorInput createWithDotWoo(IFile file)
+			throws CoreException {
+		IProject project = file.getProject();
+		String fileName = file.getName().substring(0,
+				file.getName().length() - 4);
+		ComponentEditorInput input = create(project, fileName);
+		input.createdFromDotWoo = true;
+		return input;
+	}
+
+	public LocalizedComponentsLocateResult getLocalizedComponentsLocateResult() {
+		return localizedComponentsLocateResult;
 	}
 }

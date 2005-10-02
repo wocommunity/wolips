@@ -45,6 +45,7 @@
 package org.objectstyle.wolips.componenteditor.editor;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.ui.JavaUI;
 import org.eclipse.ui.IEditorLauncher;
@@ -74,42 +75,69 @@ public class ComponentEditorLauncher implements IEditorLauncher {
 			return;
 		}
 		if (extension.equals("java")) {
-			input = ComponentEditorInput.createWithDotJava(file);
+			try {
+				input = ComponentEditorInput.createWithDotJava(file);
+			} catch (CoreException e) {
+				ComponenteditorPlugin.getDefault().log(e);
+			}
 			if (input == null) {
 				WorkbenchUtilitiesPlugin.open(file, JavaUI.ID_CU_EDITOR);
 				return;
 			}
 		}
 		if (extension.equals("html")) {
-			input = ComponentEditorInput.createWithDotHtml(file);
+			try {
+				input = ComponentEditorInput.createWithDotHtml(file);
+			} catch (CoreException e) {
+				ComponenteditorPlugin.getDefault().log(e);
+			}
 			if (input == null) {
-				WorkbenchUtilitiesPlugin.open(file, HtmleditorPlugin.HTMLEditorID);
+				WorkbenchUtilitiesPlugin.open(file,
+						HtmleditorPlugin.HTMLEditorID);
 				return;
 			}
 		}
 		if (extension.equals("wod")) {
-			input = ComponentEditorInput.createWithDotWod(file);
+			try {
+				input = ComponentEditorInput.createWithDotWod(file);
+			} catch (CoreException e) {
+				ComponenteditorPlugin.getDefault().log(e);
+			}
 			if (input == null) {
-				WorkbenchUtilitiesPlugin.open(file, WodclipsePlugin.WodEditorID);
+				WorkbenchUtilitiesPlugin
+						.open(file, WodclipsePlugin.WodEditorID);
 				return;
 			}
 		}
 		if (extension.equals("api")) {
-			input = ComponentEditorInput.createWithDotApi(file);
+			try {
+				input = ComponentEditorInput.createWithDotApi(file);
+			} catch (CoreException e) {
+				ComponenteditorPlugin.getDefault().log(e);
+			}
 			if (input == null) {
-				WorkbenchUtilitiesPlugin.open(file, ApieditorPlugin.ApiEditorID);
+				WorkbenchUtilitiesPlugin
+						.open(file, ApieditorPlugin.ApiEditorID);
 				return;
-				}
+			}
 		}
 		if (extension.equals("woo")) {
-			input = ComponentEditorInput.createWithDotWoo(file);
+			try {
+				input = ComponentEditorInput.createWithDotWoo(file);
+			} catch (CoreException e) {
+				ComponenteditorPlugin.getDefault().log(e);
+			}
 			if (input == null) {
-				WorkbenchUtilitiesPlugin.open(file, ComponenteditorPlugin.WOOEditorID);
+				WorkbenchUtilitiesPlugin.open(file,
+						ComponenteditorPlugin.WOOEditorID);
 				return;
-				}
+			}
 		}
-		if(input == null) {
-			ComponenteditorPlugin.getDefault().log("Invalid input for Component Editor Launcher. File:" + file);
+		if (input == null) {
+			ComponenteditorPlugin.getDefault()
+					.log(
+							"Invalid input for Component Editor Launcher. File:"
+									+ file);
 			return;
 		}
 		try {
