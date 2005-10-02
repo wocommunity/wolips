@@ -1,10 +1,10 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: WOLips WODClipse Plug-in
-Bundle-SymbolicName: org.objectstyle.wolips.wodclipse; singleton:=true
+Bundle-Name: WOLips Componenteditor Plug-in
+Bundle-SymbolicName: org.objectstyle.wolips.componenteditor; singleton:=true
 Bundle-Version: 1.0.6
-Bundle-ClassPath: lib/wolips-wodclipse.jar
-Bundle-Activator: org.objectstyle.wolips.wodclipse.WodclipsePlugin
+Bundle-ClassPath: lib/component-editor.jar
+Bundle-Activator: org.objectstyle.wolips.componenteditor.ComponenteditorPlugin
 Bundle-Vendor: objectstyle.org
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
@@ -32,11 +32,6 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.wst.xml.ui,
  org.objectstyle.wolips.preferences,
  org.objectstyle.wolips.htmleditor,
- org.objectstyle.wolips.apieditor
+ org.objectstyle.wolips.apieditor,
+ org.objectstyle.wolips.wodclipse
 Eclipse-AutoStart: true
-Export-Package: org.objectstyle.wolips.wodclipse,
- org.objectstyle.wolips.wodclipse.preferences,
- org.objectstyle.wolips.wodclipse.wod,
- org.objectstyle.wolips.wodclipse.wod.completion,
- org.objectstyle.wolips.wodclipse.wod.model,
- org.objectstyle.wolips.wodclipse.wod.parser

@@ -41,18 +41,18 @@
  * Group, please see <http://objectstyle.org/> .
  *  
  */
-package org.objectstyle.wolips.wodclipse.editormenu;
+package org.objectstyle.wolips.componenteditor.editormenu;
 
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IEditorActionDelegate;
 import org.eclipse.ui.IEditorPart;
-import org.objectstyle.wolips.wodclipse.WodclipsePlugin;
-import org.objectstyle.wolips.wodclipse.mpe.ComponentEditor;
+import org.objectstyle.wolips.componenteditor.ComponenteditorPlugin;
+import org.objectstyle.wolips.componenteditor.editor.ComponentEditor;
 
-public class SwitchToJavaEditorActionDelegate implements IEditorActionDelegate {
+public class SwitchToWodEditorActionDelegate implements IEditorActionDelegate {
 
-	public SwitchToJavaEditorActionDelegate() {
+	public SwitchToWodEditorActionDelegate() {
 		super();
 	}
 
@@ -61,9 +61,9 @@ public class SwitchToJavaEditorActionDelegate implements IEditorActionDelegate {
 	}
 
 	public void run(IAction action) {
-		ComponentEditor componentEditor = WodclipsePlugin.getDefault().getActiveComponentEditor();
+		ComponentEditor componentEditor = ComponenteditorPlugin.getDefault().getActiveComponentEditor();
 		if(componentEditor != null) {
-			componentEditor.switchToJava();
+			componentEditor.switchToWod();
 		}
 		
 	}

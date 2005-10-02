@@ -42,7 +42,7 @@
  *  
  */
 
-package org.objectstyle.wolips.wodclipse.mpe;
+package org.objectstyle.wolips.componenteditor.editor;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IPath;
@@ -50,6 +50,7 @@ import org.eclipse.jdt.ui.JavaUI;
 import org.eclipse.ui.IEditorLauncher;
 import org.eclipse.ui.PartInitException;
 import org.objectstyle.wolips.apieditor.ApieditorPlugin;
+import org.objectstyle.wolips.componenteditor.ComponenteditorPlugin;
 import org.objectstyle.wolips.htmleditor.HtmleditorPlugin;
 import org.objectstyle.wolips.wodclipse.WodclipsePlugin;
 import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
@@ -103,17 +104,17 @@ public class ComponentEditorLauncher implements IEditorLauncher {
 		if (extension.equals("woo")) {
 			input = ComponentEditorInput.createWithDotWoo(file);
 			if (input == null) {
-				WorkbenchUtilitiesPlugin.open(file, WodclipsePlugin.WOOEditorID);
+				WorkbenchUtilitiesPlugin.open(file, ComponenteditorPlugin.WOOEditorID);
 				return;
 				}
 		}
 		if(input == null) {
-			WodclipsePlugin.getDefault().log("Invalid input for Component Editor Launcher. File:" + file);
+			ComponenteditorPlugin.getDefault().log("Invalid input for Component Editor Launcher. File:" + file);
 			return;
 		}
 		try {
 			WorkbenchUtilitiesPlugin.getActiveWorkbenchWindow().getActivePage()
-					.openEditor(input, WodclipsePlugin.ComponentEditorID);
+					.openEditor(input, ComponenteditorPlugin.ComponentEditorID);
 		} catch (PartInitException e) {
 			e.printStackTrace();
 		}

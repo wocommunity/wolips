@@ -134,6 +134,7 @@
 				<pathelement path="../wolips/plugins/org.objectstyle.wolips.editors/java" />
 				<pathelement path="../wolips/plugins/org.objectstyle.wolips.apieditor/java" />
 				<pathelement path="../wolips/plugins/org.objectstyle.wolips.htmleditor/java" />
+				<pathelement path="../wolips/plugins/org.objectstyle.wolips.componenteditor/java" />
 				<pathelement path="../wolips/plugins/org.objectstyle.wolips.locate/java" />
 			</sourcepath>
 			<doctitle>

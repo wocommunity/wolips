@@ -41,7 +41,7 @@
  * Group, please see <http://objectstyle.org/> .
  *  
  */
-package org.objectstyle.wolips.wodclipse.mpe;
+package org.objectstyle.wolips.componenteditor.editor;
 
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -64,6 +64,7 @@ import org.eclipse.ui.part.MultiEditorInput;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.wst.html.ui.internal.provisional.StructuredTextEditorHTML;
 import org.eclipse.wst.sse.ui.internal.contentoutline.StructuredTextEditorContentOutlinePage;
+import org.objectstyle.wolips.componenteditor.ComponenteditorPlugin;
 import org.objectstyle.wolips.wodclipse.WodclipsePlugin;
 import org.objectstyle.wolips.wodclipse.wod.WodEditor;
 
@@ -90,10 +91,10 @@ public class ComponentEditor extends MultiEditor {
         activator.addListener(SWT.Activate, new Listener() {
           public void handleEvent(Event event) {
             if (event.type == SWT.Activate) {
-              WodclipsePlugin.getDefault().setActiveComponentEditor(ComponentEditor.this);
+            	ComponenteditorPlugin.getDefault().setActiveComponentEditor(ComponentEditor.this);
             }
             if (event.type == SWT.Deactivate) {
-              WodclipsePlugin.getDefault().setActiveComponentEditor(null);
+            	ComponenteditorPlugin.getDefault().setActiveComponentEditor(null);
             }
           }
         });

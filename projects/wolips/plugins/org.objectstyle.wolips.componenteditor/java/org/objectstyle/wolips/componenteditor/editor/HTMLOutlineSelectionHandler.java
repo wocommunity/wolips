@@ -41,35 +41,48 @@
  * Group, please see <http://objectstyle.org/> .
  *  
  */
-package org.objectstyle.wolips.wodclipse.editormenu;
+package org.objectstyle.wolips.componenteditor.editor;
 
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.ui.IEditorActionDelegate;
-import org.eclipse.ui.IEditorPart;
-import org.objectstyle.wolips.wodclipse.WodclipsePlugin;
-import org.objectstyle.wolips.wodclipse.mpe.ComponentEditor;
+import java.util.List;
 
-public class SaveComponentEditorActionDelegate implements IEditorActionDelegate {
+import org.eclipse.wst.html.core.internal.document.ElementStyleImpl;
+import org.eclipse.wst.sse.ui.internal.contentoutline.StructuredTextEditorContentOutlinePage;
+import org.eclipse.wst.sse.ui.internal.view.events.INodeSelectionListener;
+import org.eclipse.wst.sse.ui.internal.view.events.NodeSelectionChangedEvent;
+import org.objectstyle.wolips.wodclipse.wod.WodEditor;
 
-	public SaveComponentEditorActionDelegate() {
+public class HTMLOutlineSelectionHandler implements INodeSelectionListener {
+	private WodEditor wodEditor;
+
+	public HTMLOutlineSelectionHandler(
+			StructuredTextEditorContentOutlinePage contentOutlinePage,
+			WodEditor wodEditor) {
 		super();
+		this.wodEditor = wodEditor;
+		contentOutlinePage.getViewerSelectionManager()
+				.addNodeSelectionListener(this);
 	}
 
-	public void setActiveEditor(IAction action, IEditorPart targetEditor) {
-		// nothing to do
-	}
+	public void nodeSelectionChanged(NodeSelectionChangedEvent event) {
 
-	public void run(IAction action) {
-		ComponentEditor componentEditor = WodclipsePlugin.getDefault().getActiveComponentEditor();
-		if(componentEditor != null) {
-			componentEditor.doSave(null);
+		List nodes = event.getSelectedNodes();
+		if (nodes != null && nodes.size() == 1) {
+			Object object = nodes.get(0);
+			if (object instanceof ElementStyleImpl) {
+				ElementStyleImpl elementStyleImpl = (ElementStyleImpl) object;
+				String tagName = elementStyleImpl.getTagName();
+				if (tagName != null && "webobject".equalsIgnoreCase(tagName)) {
+					this.changeWodSelection(elementStyleImpl);
+
+				}
+			}
 		}
-		
 	}
 
-	public void selectionChanged(IAction action, ISelection selection) {
-		// nothing to do
+	private void changeWodSelection(ElementStyleImpl elementStyleImpl) {
+		String webobjectTagName = elementStyleImpl.getAttribute("name");
+		if (webobjectTagName != null && webobjectTagName.length() > 0) {
+			wodEditor.selectTagNamed(webobjectTagName);
+		}
 	}
-
 }

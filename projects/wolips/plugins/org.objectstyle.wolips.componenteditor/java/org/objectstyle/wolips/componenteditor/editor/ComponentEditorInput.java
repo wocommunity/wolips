@@ -41,7 +41,7 @@
  * Group, please see <http://objectstyle.org/> .
  *  
  */
-package org.objectstyle.wolips.wodclipse.mpe;
+package org.objectstyle.wolips.componenteditor.editor;
 
 import java.util.List;
 

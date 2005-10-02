@@ -41,14 +41,14 @@
  * Group, please see <http://objectstyle.org/> .
  *  
  */
-package org.objectstyle.wolips.wodclipse;
+package org.objectstyle.wolips.componenteditor;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.ui.forms.FormColors;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.objectstyle.wolips.htmleditor.HtmleditorPlugin;
+import org.objectstyle.wolips.componenteditor.editor.ComponentEditor;
 import org.objectstyle.wolips.ui.plugins.AbstractWOLipsUIPlugin;
-import org.objectstyle.wolips.wodclipse.wod.WodEditor;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -56,18 +56,22 @@ import org.osgi.framework.BundleContext;
  * 
  * @author mike
  */
-public class WodclipsePlugin extends AbstractWOLipsUIPlugin {
+public class ComponenteditorPlugin extends AbstractWOLipsUIPlugin {
 	// The shared instance.
-	private static WodclipsePlugin plugin;
+	private static ComponenteditorPlugin plugin;
 
-	public static String WodEditorID = "org.objectstyle.wolips.wodclipse.wod.WodEditor";
-
-	private WodEditor lastWodEditor;
+	private FormColors formColors;
 	
+	public static String ComponentEditorID = "org.objectstyle.wolips.wodclipse.mpe.ComponentEditor";
+	
+	public static String WOOEditorID = "org.eclipse.ui.DefaultTextEditor";
+	
+	private ComponentEditor activeComponentEditor;
+
 	/**
 	 * The constructor.
 	 */
-	public WodclipsePlugin() {
+	public ComponenteditorPlugin() {
 		super();
 		plugin = this;
 	}
@@ -83,14 +87,21 @@ public class WodclipsePlugin extends AbstractWOLipsUIPlugin {
 	 * This method is called when the plug-in is stopped
 	 */
 	public void stop(BundleContext context) throws Exception {
-		super.stop(context);
+		try {
+			if (formColors != null) {
+				formColors.dispose();
+				formColors = null;
+			}
+		} finally {
+			super.stop(context);
+		}
 		plugin = null;
-		lastWodEditor = null;
+		activeComponentEditor = null;
 	}
 	/**
 	 * Returns the shared instance.
 	 */
-	public static WodclipsePlugin getDefault() {
+	public static ComponenteditorPlugin getDefault() {
 		return plugin;
 	}
 
@@ -111,15 +122,12 @@ public class WodclipsePlugin extends AbstractWOLipsUIPlugin {
 		return getImageRegistry().get(key);
 	}
 	
-	public void updateWebObjectsTagNames(WodEditor wodEditor) {
-		if (lastWodEditor == wodEditor) {
-			return;
-		}
-		if (wodEditor != null) {
-			wodEditor.updateWebObjectsTagNames();
-		} else {
-			HtmleditorPlugin.getDefault().setWebObjectsTagNames(null);
-		}
-		lastWodEditor = wodEditor;
+	public ComponentEditor getActiveComponentEditor() {
+		return activeComponentEditor;
 	}
+
+	public void setActiveComponentEditor(ComponentEditor activeComponentEditor) {
+		this.activeComponentEditor = activeComponentEditor;
+	}
+	
 }
