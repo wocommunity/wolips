@@ -69,13 +69,13 @@ public class Locate {
 
 	private ILocateResult locateResult;
 
-	protected Locate(ILocateScope locateScope, ILocateResult locateResult) {
+	public Locate(ILocateScope locateScope, ILocateResult locateResult) {
 		super();
 		this.locateScope = locateScope;
 		this.locateResult = locateResult;
 	}
 
-	public void locate() throws CoreException {
+	public void locate() throws CoreException, LocateException {
 		IProject[] allProjects = ResourcesPlugin.getWorkspace().getRoot()
 				.getProjects();
 		for (int i = 0; i < allProjects.length; i++) {
@@ -83,7 +83,7 @@ public class Locate {
 		}
 	}
 
-	private void investigate(IProject project) throws CoreException {
+	private void investigate(IProject project) throws CoreException, LocateException {
 		if (project.isOpen() && project.isAccessible()) {
 			if (!locateScope.ignoreContainer(project)) {
 				this.investigate(project.members());
@@ -91,21 +91,21 @@ public class Locate {
 		}
 	}
 
-	private void investigate(IResource[] resources) throws CoreException {
+	private void investigate(IResource[] resources) throws CoreException, LocateException {
 		for (int i = 0; i < resources.length; i++) {
 			IResource resource = resources[i];
 			if (resource.isAccessible() && !resource.isTeamPrivateMember() && !resource.isDerived()) {
 				if (resource.getType() == IResource.FOLDER) {
 					this.investigate((IFolder) resource);
 				}
-				if (resource.getType() == IResource.FILE) {
+				else if (resource.getType() == IResource.FILE) {
 					this.investigate((IFile) resource);
 				}
 			}
 		}
 	}
 
-	private void investigate(IFolder folder) throws CoreException {
+	private void investigate(IFolder folder) throws CoreException, LocateException {
 		if (!locateScope.ignoreContainer(folder)) {
 			if (locateScope.addToResult(folder)) {
 				locateResult.add(folder);
@@ -114,7 +114,7 @@ public class Locate {
 		}
 	}
 
-	private void investigate(IFile file) {
+	private void investigate(IFile file) throws LocateException {
 		if (locateScope.addToResult(file)) {
 			locateResult.add(file);
 		}

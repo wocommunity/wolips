@@ -53,13 +53,24 @@
  * <http://objectstyle.org/>.
  *
  */
-package org.objectstyle.wolips.locate.scope;
+package org.objectstyle.wolips.locate;
 
-public class DefaultIgnoredFolderScope extends IgnoredFolderScope {
+public class LocateException extends Exception {
 
-	public DefaultIgnoredFolderScope() {
-		super(new String[] { "build", "dist", "target" }, new String[] {
-				"framework", "woa" });
+	public LocateException() {
+		super();
+	}
+
+	public LocateException(String message, Throwable cause) {
+		super(message, cause);
+	}
+
+	public LocateException(String message) {
+		super(message);
+	}
+
+	public LocateException(Throwable cause) {
+		super(cause);
 	}
 
 }

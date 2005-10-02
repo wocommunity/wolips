@@ -55,38 +55,11 @@
  */
 package org.objectstyle.wolips.locate.scope;
 
-import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IResource;
+public class DefaultIgnoredFolderLocateScope extends IgnoredFolderLocateScope {
 
-public class IgnoredFolderScope extends AbstractLocateScope {
-
-	private String names[];
-
-	private String[] extensions;
-
-	public IgnoredFolderScope(String names[], String[] extensions) {
-		super();
-		this.names = names;
-		this.extensions = extensions;
+	public DefaultIgnoredFolderLocateScope() {
+		super(new String[] { "build", "dist", "target" }, new String[] {
+				"framework", "woa" });
 	}
 
-	public boolean ignoreContainer(IContainer container) {
-		if (container.getType() == IResource.FOLDER) {
-			IFolder folder = (IFolder) container;
-			if (names != null) {
-				for (int i = 0; i < names.length; i++) {
-					folder.getName().equals(names[i]);
-					return true;
-				}
-			}
-			if (extensions != null) {
-				for (int i = 0; i < extensions.length; i++) {
-					folder.getFileExtension().equals(extensions[i]);
-					return true;
-				}
-			}
-		}
-		return false;
-	}
 }

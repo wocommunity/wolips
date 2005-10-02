@@ -53,27 +53,37 @@
  * <http://objectstyle.org/>.
  *
  */
-package org.objectstyle.wolips.locate.result;
+package org.objectstyle.wolips.locate.scope;
 
-import java.util.ArrayList;
+import org.eclipse.core.resources.IFile;
 
-import org.eclipse.core.resources.IResource;
-import org.objectstyle.wolips.locate.LocateException;
+public class IncludeFileLocateScope extends AbstractLocateScope {
 
-public abstract class AbstractLocateResult implements ILocateResult {
+	private String names[];
 
-	private ArrayList resources = new ArrayList();
-	
-	public AbstractLocateResult() {
+	private String[] extensions;
+
+	public IncludeFileLocateScope(String names[], String[] extensions) {
 		super();
+		this.names = names;
+		this.extensions = extensions;
 	}
 
-
-	public void add(IResource resource) throws LocateException {
-		resources.add(resource);
-	}
-	
-	public IResource[] getResources() {
-		return (IResource[])resources.toArray(new IResource[resources.size()]);
+	public boolean addToResult(IFile file) {
+		if (names != null) {
+			for (int i = 0; i < names.length; i++) {
+				if (file.getName().equals(names[i])) {
+					return true;
+				}
+			}
+		}
+		if (extensions != null) {
+			for (int i = 0; i < extensions.length; i++) {
+				if (file.getFileExtension().equals(extensions[i])) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 }

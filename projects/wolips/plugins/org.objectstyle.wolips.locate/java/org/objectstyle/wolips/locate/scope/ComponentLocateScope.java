@@ -55,24 +55,13 @@
  */
 package org.objectstyle.wolips.locate.scope;
 
-import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
 
-public class ProjectScope extends AbstractLocateScope {
+public class ComponentLocateScope extends DefaultLocateScope {
 
-	private IProject project;
-
-	public ProjectScope(IProject project) {
-		super();
-		this.project = project;
-	}
-
-	public boolean ignoreContainer(IContainer container) {
-		if (container.getType() == IResource.PROJECT) {
-			return !project.equals(container);
-		}
-		return false;
+	public ComponentLocateScope(IProject project, String name) {
+		super(project, new String[] { name + ".java", name + ".api" },
+				new String[] { name + ".wo" });
 	}
 
 }

@@ -56,8 +56,9 @@
 package org.objectstyle.wolips.locate.result;
 
 import org.eclipse.core.resources.IResource;
+import org.objectstyle.wolips.locate.LocateException;
 
 public interface ILocateResult {
 
-	public abstract void add(IResource resource);
+	public abstract void add(IResource resource) throws LocateException;
 }

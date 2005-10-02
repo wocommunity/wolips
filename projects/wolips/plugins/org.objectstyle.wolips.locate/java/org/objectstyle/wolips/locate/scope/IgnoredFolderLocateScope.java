@@ -56,59 +56,39 @@
 package org.objectstyle.wolips.locate.scope;
 
 import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IResource;
 
-public class DefaultScope extends AbstractLocateScope {
+public class IgnoredFolderLocateScope extends AbstractLocateScope {
 
-	private ProjectReferencesScope projectReferencesScope;
+	private String names[];
 
-	private IgnoredFolderScope ignoredFolderScope;
+	private String[] extensions;
 
-	private IncludeFileScope includeFileScope;
-
-	public DefaultScope(IProject project, String[] includedFilesNames) {
+	public IgnoredFolderLocateScope(String names[], String[] extensions) {
 		super();
-		projectReferencesScope = new ProjectReferencesScope(project);
-		ignoredFolderScope = new DefaultIgnoredFolderScope();
-		includeFileScope = new IncludeFileScope(includedFilesNames, null);
+		this.names = names;
+		this.extensions = extensions;
 	}
 
 	public boolean ignoreContainer(IContainer container) {
-		if (projectReferencesScope.ignoreContainer(container)) {
-			return true;
-		}
-		if (ignoredFolderScope.ignoreContainer(container)) {
-			return true;
-		}
-		if (includeFileScope.ignoreContainer(container)) {
-			return true;
-		}
-		return false;
-	}
-
-	public boolean addToResult(IFile file) {
-		if (projectReferencesScope.addToResult(file)) {
-			return true;
-		}
-		if (ignoredFolderScope.addToResult(file)) {
-			return true;
-		}
-		if (includeFileScope.addToResult(file)) {
-			return true;
-		}
-		return false;
-	}
-
-	public boolean addToResult(IContainer container) {
-		if (projectReferencesScope.addToResult(container)) {
-			return true;
-		}
-		if (ignoredFolderScope.addToResult(container)) {
-			return true;
-		}
-		if (includeFileScope.addToResult(container)) {
-			return true;
+		if (container.getType() == IResource.FOLDER) {
+			IFolder folder = (IFolder) container;
+			if (names != null) {
+				for (int i = 0; i < names.length; i++) {
+					if (folder.getName().equals(names[i])) {
+						return true;
+					}
+				}
+			}
+			if (extensions != null) {
+				for (int i = 0; i < extensions.length; i++) {
+					String extension = folder.getFileExtension();
+					if (extension != null && extension.equals(extensions[i])) {
+						return true;
+					}
+				}
+			}
 		}
 		return false;
 	}

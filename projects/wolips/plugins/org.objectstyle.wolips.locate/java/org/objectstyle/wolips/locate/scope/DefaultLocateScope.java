@@ -53,27 +53,75 @@
  * <http://objectstyle.org/>.
  *
  */
-package org.objectstyle.wolips.locate.result;
+package org.objectstyle.wolips.locate.scope;
 
-import java.util.ArrayList;
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
 
-import org.eclipse.core.resources.IResource;
-import org.objectstyle.wolips.locate.LocateException;
+public class DefaultLocateScope extends AbstractLocateScope {
 
-public abstract class AbstractLocateResult implements ILocateResult {
+	private ProjectReferencesLocateScope projectReferencesScope;
 
-	private ArrayList resources = new ArrayList();
-	
-	public AbstractLocateResult() {
+	private IgnoredFolderLocateScope ignoredFolderScope;
+
+	private IncludeFileLocateScope includeFileScope;
+
+	private IncludeFolderLocateScope includeFolderScope;
+
+	public DefaultLocateScope(IProject project, String[] includedFilesNames, String[] includedFolderNames) {
 		super();
+		projectReferencesScope = new ProjectReferencesLocateScope(project);
+		ignoredFolderScope = new DefaultIgnoredFolderLocateScope();
+		includeFileScope = new IncludeFileLocateScope(includedFilesNames, null);
+		includeFolderScope = new IncludeFolderLocateScope(includedFolderNames, null);
 	}
 
-
-	public void add(IResource resource) throws LocateException {
-		resources.add(resource);
+	public boolean ignoreContainer(IContainer container) {
+		if (projectReferencesScope.ignoreContainer(container)) {
+			return true;
+		}
+		if (ignoredFolderScope.ignoreContainer(container)) {
+			return true;
+		}
+		if (includeFileScope.ignoreContainer(container)) {
+			return true;
+		}
+		if (includeFolderScope.ignoreContainer(container)) {
+			return true;
+		}
+		return false;
 	}
-	
-	public IResource[] getResources() {
-		return (IResource[])resources.toArray(new IResource[resources.size()]);
+
+	public boolean addToResult(IFile file) {
+		if (projectReferencesScope.addToResult(file)) {
+			return true;
+		}
+		if (ignoredFolderScope.addToResult(file)) {
+			return true;
+		}
+		if (includeFileScope.addToResult(file)) {
+			return true;
+		}
+		if (includeFolderScope.addToResult(file)) {
+			return true;
+		}
+		return false;
+	}
+
+	public boolean addToResult(IContainer container) {
+		if (projectReferencesScope.addToResult(container)) {
+			return true;
+		}
+		if (ignoredFolderScope.addToResult(container)) {
+			return true;
+		}
+		if (includeFileScope.addToResult(container)) {
+			return true;
+		}
+		if (includeFolderScope.addToResult(container)) {
+			return true;
+		}
+		return false;
 	}
 }

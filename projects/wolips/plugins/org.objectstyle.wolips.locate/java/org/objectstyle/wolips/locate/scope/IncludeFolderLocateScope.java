@@ -53,27 +53,42 @@
  * <http://objectstyle.org/>.
  *
  */
-package org.objectstyle.wolips.locate.result;
+package org.objectstyle.wolips.locate.scope;
 
-import java.util.ArrayList;
-
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
-import org.objectstyle.wolips.locate.LocateException;
 
-public abstract class AbstractLocateResult implements ILocateResult {
+public class IncludeFolderLocateScope extends AbstractLocateScope {
 
-	private ArrayList resources = new ArrayList();
-	
-	public AbstractLocateResult() {
+	private String names[];
+
+	private String[] extensions;
+
+	public IncludeFolderLocateScope(String names[], String[] extensions) {
 		super();
+		this.names = names;
+		this.extensions = extensions;
 	}
 
-
-	public void add(IResource resource) throws LocateException {
-		resources.add(resource);
-	}
-	
-	public IResource[] getResources() {
-		return (IResource[])resources.toArray(new IResource[resources.size()]);
+	public boolean addToResult(IContainer container) {
+		if (container.getType() == IResource.FOLDER) {
+			IFolder folder = (IFolder) container;
+			if (names != null) {
+				for (int i = 0; i < names.length; i++) {
+					if (folder.getName().equals(names[i])) {
+						return true;
+					}
+				}
+			}
+			if (extensions != null) {
+				for (int i = 0; i < extensions.length; i++) {
+					if (folder.getFileExtension().equals(extensions[i])) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
 	}
 }

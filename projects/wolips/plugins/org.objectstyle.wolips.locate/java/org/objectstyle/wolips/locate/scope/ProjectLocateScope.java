@@ -53,12 +53,26 @@
  * <http://objectstyle.org/>.
  *
  */
-package org.objectstyle.wolips.locate.result;
+package org.objectstyle.wolips.locate.scope;
 
-public class LocalizedLocateResult extends AbstractLocateResult {
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 
-	public LocalizedLocateResult() {
+public class ProjectLocateScope extends AbstractLocateScope {
+
+	private IProject project;
+
+	public ProjectLocateScope(IProject project) {
 		super();
+		this.project = project;
+	}
+
+	public boolean ignoreContainer(IContainer container) {
+		if (container.getType() == IResource.PROJECT) {
+			return !project.equals(container);
+		}
+		return false;
 	}
 
 }

@@ -53,75 +53,90 @@
  * <http://objectstyle.org/>.
  *
  */
-package org.objectstyle.wolips.locate.scope;
+package org.objectstyle.wolips.locate.result;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.objectstyle.wolips.locate.LocatePlugin;
+import org.eclipse.core.runtime.CoreException;
+import org.objectstyle.wolips.locate.LocateException;
 
-public class ProjectReferencesScope extends AbstractLocateScope {
+public class LocalizedComponentsLocateResult extends AbstractLocateResult {
 
-	private IProject project;
+	private ArrayList components = new ArrayList();
 
-	private List projects;
+	private IFile dotJava;
 
-	public ProjectReferencesScope(IProject project) {
+	private IFile dotApi;
+
+	public LocalizedComponentsLocateResult() {
 		super();
-		this.project = project;
 	}
 
-	public boolean ignoreContainer(IContainer container) {
-		if (container.getType() == IResource.PROJECT) {
-			return this.ignoreProject((IProject) container);
-		}
-		return false;
-	}
-
-	private boolean ignoreProject(IProject projectToValidate) {
-		if (projects == null) {
-			IProject[] allProjects = ResourcesPlugin.getWorkspace().getRoot()
-					.getProjects();
-			projects = new ArrayList();
-			for (int i = 0; i < allProjects.length; i++) {
-				if (this.projectISReferencedByProject(allProjects[i],
-						project)
-						|| this.projectISReferencedByProject(project,
-								allProjects[i]))
-					projects.add(allProjects[i]);
+	public void add(IResource resource) throws LocateException {
+		super.add(resource);
+		if (resource.getType() == IResource.FOLDER) {
+			components.add(resource);
+		} else if (resource.getType() == IResource.FILE) {
+			IFile file = (IFile) resource;
+			String extension = resource.getFileExtension();
+			if (extension.equals("java")) {
+				if (dotJava != null) {
+					throw new LocateException("Duplicate lacated: " + dotJava
+							+ " " + file);
+				}
+				dotJava = file;
+			} else if (extension.equals("api")) {
+				if (dotApi != null) {
+					throw new LocateException("Duplicate lacated: " + dotApi
+							+ " " + file);
+				}
+				dotApi = file;
+			} else {
+				throw new LocateException("unknown extension" + file);
 			}
+
+		} else {
+			throw new LocateException("unsupported type" + resource);
 		}
-		return !projects.contains(projectToValidate);
 	}
 
-	/**
-	 * Method projectISReferencedByProject.
-	 * 
-	 * @param child
-	 * @param mother
-	 * @return boolean
-	 */
-	private boolean projectISReferencedByProject(IProject child,
-			IProject mother) {
-		IProject[] projects2 = null;
-		try {
-			if (!mother.isOpen() || !mother.isAccessible())
-				// return maybe;
-				return false;
-			projects2 = mother.getReferencedProjects();
-		} catch (Exception anException) {
-			LocatePlugin.getDefault().log(anException);
-			return false;
-		}
-		for (int i = 0; i < projects2.length; i++) {
-			if (projects2[i].equals(child))
-				return true;
-		}
-		return false;
+	public IFolder[] getComponents() {
+		return (IFolder[]) components.toArray(new IFolder[components.size()]);
 	}
 
+	public IFile getDotApi() {
+		return dotApi;
+	}
+
+	public IFile getDotJava() {
+		return dotJava;
+	}
+
+	public static IFile getHtml(IFolder component) throws CoreException {
+		return LocalizedComponentsLocateResult.getMemberWithExtension(component, "html");
+	}
+	
+	public static IFile getWod(IFolder component) throws CoreException {
+		return LocalizedComponentsLocateResult.getMemberWithExtension(component, "wod");
+	}
+	
+	public static IFile getWoo(IFolder component) throws CoreException {
+		return LocalizedComponentsLocateResult.getMemberWithExtension(component, "woo");
+	}
+	
+	private static IFile getMemberWithExtension(IFolder folder, String extension) throws CoreException {
+		IResource[] member = folder.members();
+		for (int i = 0; i < member.length; i++) {
+			IResource resource = member[i];
+			String fileExtension = resource.getFileExtension();
+			if(resource.getType() == IResource.FILE && fileExtension != null && fileExtension.equalsIgnoreCase(extension)) {
+				return (IFile)resource;
+			}
+			
+		}
+		return null;
+	}
 }

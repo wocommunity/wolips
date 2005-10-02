@@ -55,33 +55,74 @@
  */
 package org.objectstyle.wolips.locate.scope;
 
-import org.eclipse.core.resources.IFile;
+import java.util.ArrayList;
+import java.util.List;
 
-public class IncludeFileScope extends AbstractLocateScope {
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.objectstyle.wolips.locate.LocatePlugin;
 
-	private String names[];
+public class ProjectReferencesLocateScope extends AbstractLocateScope {
 
-	private String[] extensions;
+	private IProject project;
 
-	public IncludeFileScope(String names[], String[] extensions) {
+	private List projects;
+
+	public ProjectReferencesLocateScope(IProject project) {
 		super();
-		this.names = names;
-		this.extensions = extensions;
+		this.project = project;
 	}
 
-	public boolean addToResult(IFile file) {
-		if (names != null) {
-			for (int i = 0; i < names.length; i++) {
-				file.getName().equals(names[i]);
-				return true;
-			}
-		}
-		if (extensions != null) {
-			for (int i = 0; i < extensions.length; i++) {
-				file.getFileExtension().equals(extensions[i]);
-				return true;
-			}
+	public boolean ignoreContainer(IContainer container) {
+		if (container.getType() == IResource.PROJECT) {
+			return this.ignoreProject((IProject) container);
 		}
 		return false;
 	}
+
+	private boolean ignoreProject(IProject projectToValidate) {
+		if (projects == null) {
+			IProject[] allProjects = ResourcesPlugin.getWorkspace().getRoot()
+					.getProjects();
+			projects = new ArrayList();
+			for (int i = 0; i < allProjects.length; i++) {
+				if (this.projectISReferencedByProject(allProjects[i],
+						project)
+						|| this.projectISReferencedByProject(project,
+								allProjects[i]))
+					projects.add(allProjects[i]);
+			}
+			projects.add(projectToValidate);
+		}
+		return !projects.contains(projectToValidate);
+	}
+
+	/**
+	 * Method projectISReferencedByProject.
+	 * 
+	 * @param child
+	 * @param mother
+	 * @return boolean
+	 */
+	private boolean projectISReferencedByProject(IProject child,
+			IProject mother) {
+		IProject[] projects2 = null;
+		try {
+			if (!mother.isOpen() || !mother.isAccessible())
+				// return maybe;
+				return false;
+			projects2 = mother.getReferencedProjects();
+		} catch (Exception anException) {
+			LocatePlugin.getDefault().log(anException);
+			return false;
+		}
+		for (int i = 0; i < projects2.length; i++) {
+			if (projects2[i].equals(child))
+				return true;
+		}
+		return false;
+	}
+
 }
