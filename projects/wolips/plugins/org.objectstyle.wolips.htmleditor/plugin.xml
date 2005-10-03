@@ -13,7 +13,7 @@
          point="org.eclipse.ui.editors">
 		<editor
         class="org.objectstyle.wolips.htmleditor.editor.StructuredTextEditorHTMLWithWebObjectTags"
-        contributorClass="org.objectstyle.wolips.wodclipse.html.ActionContributorHTMLWithWebObjectTags"
+        contributorClass="org.objectstyle.wolips.htmleditor.editor.ActionContributorHTMLWithWebObjectTags"
         default="false"
         icon="icons/HTMLEditor.gif"
         id="org.objectstyle.wolips.wodclipse.html.HtmlEditor"
