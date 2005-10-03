@@ -116,8 +116,6 @@
 <!-- =================================================================================== -->
 <!-- Extension: Ignored team file types                                                          -->
 <!-- =================================================================================== -->
-<!-- AK NOTE: the schema says "selected" should actually be "enabled", but this is a bug 
-     in the team stuff, so it should stay until the team plugin is fixed by IBM -->
    <extension
          point="org.eclipse.team.core.ignore">
       <ignore
@@ -139,6 +137,10 @@
       <ignore
             enabled="false"
             pattern=".api">
+      </ignore>
+      <ignore
+            enabled="false"
+            pattern="PB.project">
       </ignore>
    </extension>
 
