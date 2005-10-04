@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: WOLips Componenteditor Plug-in
 Bundle-SymbolicName: org.objectstyle.wolips.componenteditor; singleton:=true
 Bundle-Version: 1.0.6
-Bundle-ClassPath: lib/component-editor.jar
+Bundle-ClassPath: lib/wolips-componenteditor.jar
 Bundle-Activator: org.objectstyle.wolips.componenteditor.ComponenteditorPlugin
 Bundle-Vendor: objectstyle.org
 Bundle-Localization: plugin
