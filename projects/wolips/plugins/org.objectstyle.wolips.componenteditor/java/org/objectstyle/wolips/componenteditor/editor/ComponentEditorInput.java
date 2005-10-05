@@ -72,7 +72,7 @@ public class ComponentEditorInput extends MultiEditorInput {
 	private boolean createdFromDotApi = false;
 
 	private boolean createdFromDotWoo = false;
-	
+
 	private LocalizedComponentsLocateResult localizedComponentsLocateResult;
 
 	public boolean isCreatedFromDotApi() {
@@ -150,6 +150,11 @@ public class ComponentEditorInput extends MultiEditorInput {
 			ComponenteditorPlugin.getDefault().log(e);
 			return null;
 		}
+		if (localizedComponentsLocateResult.getDotJava() == null
+				|| localizedComponentsLocateResult.getComponents() == null
+				|| localizedComponentsLocateResult.getComponents().length == 0) {
+			return null;
+		}
 		ComponentEditorInput input = create(localizedComponentsLocateResult);
 		return input;
 	}
@@ -163,7 +168,9 @@ public class ComponentEditorInput extends MultiEditorInput {
 		String fileName = file.getName().substring(0,
 				file.getName().length() - 5);
 		ComponentEditorInput input = create(project, fileName);
-		input.createdFromDotJava = true;
+		if (input != null) {
+			input.createdFromDotJava = true;
+		}
 		return input;
 	}
 
@@ -176,7 +183,9 @@ public class ComponentEditorInput extends MultiEditorInput {
 		String fileName = file.getName().substring(0,
 				file.getName().length() - 5);
 		ComponentEditorInput input = create(project, fileName);
-		input.createdFromDotHtml = true;
+		if (input != null) {
+			input.createdFromDotHtml = true;
+		}
 		return input;
 	}
 
@@ -189,7 +198,9 @@ public class ComponentEditorInput extends MultiEditorInput {
 		String fileName = file.getName().substring(0,
 				file.getName().length() - 4);
 		ComponentEditorInput input = create(project, fileName);
-		input.createdFromDotWod = true;
+		if (input != null) {
+			input.createdFromDotWod = true;
+		}
 		return input;
 	}
 
@@ -215,7 +226,9 @@ public class ComponentEditorInput extends MultiEditorInput {
 		String fileName = file.getName().substring(0,
 				file.getName().length() - 4);
 		ComponentEditorInput input = create(project, fileName);
-		input.createdFromDotWoo = true;
+		if (input != null) {
+			input.createdFromDotWoo = true;
+		}
 		return input;
 	}
 
