@@ -94,7 +94,7 @@ public class Locate {
 	private void investigate(IResource[] resources) throws CoreException, LocateException {
 		for (int i = 0; i < resources.length; i++) {
 			IResource resource = resources[i];
-			if (resource.isAccessible() && !resource.isTeamPrivateMember() && !resource.isDerived()) {
+			if (resource.isAccessible() && !resource.isDerived()) {
 				if (resource.getType() == IResource.FOLDER) {
 					this.investigate((IFolder) resource);
 				}
