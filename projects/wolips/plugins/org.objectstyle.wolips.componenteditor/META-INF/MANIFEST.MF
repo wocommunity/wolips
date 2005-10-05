@@ -36,3 +36,6 @@ Require-Bundle: org.eclipse.core.runtime,
  org.objectstyle.wolips.wodclipse,
  org.objectstyle.wolips.locate
 Eclipse-AutoStart: true
+Export-Package: org.objectstyle.wolips.componenteditor,
+ org.objectstyle.wolips.componenteditor.editor,
+ org.objectstyle.wolips.componenteditor.editormenu
