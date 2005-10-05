@@ -82,10 +82,12 @@ public class IgnoredFolderLocateScope extends AbstractLocateScope {
 				}
 			}
 			if (extensions != null) {
-				for (int i = 0; i < extensions.length; i++) {
-					String extension = folder.getFileExtension();
-					if (extension != null && extension.equals(extensions[i])) {
-						return true;
+				String extension = folder.getFileExtension();
+				if (extension != null) {
+					for (int i = 0; i < extensions.length; i++) {
+						if(extension.equals(extensions[i])) {
+							return true;
+						}
 					}
 				}
 			}
