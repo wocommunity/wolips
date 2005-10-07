@@ -61,7 +61,7 @@ import org.eclipse.core.resources.IProject;
 
 public class DefaultLocateScope extends AbstractLocateScope {
 
-	private ProjectReferencesLocateScope projectReferencesScope;
+	private ProjectLocateScope projectLocateScope;
 
 	private IgnoredFolderLocateScope ignoredFolderScope;
 
@@ -69,16 +69,18 @@ public class DefaultLocateScope extends AbstractLocateScope {
 
 	private IncludeFolderLocateScope includeFolderScope;
 
-	public DefaultLocateScope(IProject project, String[] includedFilesNames, String[] includedFolderNames) {
+	public DefaultLocateScope(IProject project, String[] includedFilesNames,
+			String[] includedFolderNames) {
 		super();
-		projectReferencesScope = new ProjectReferencesLocateScope(project);
+		projectLocateScope = new ProjectLocateScope(project);
 		ignoredFolderScope = new DefaultIgnoredFolderLocateScope();
 		includeFileScope = new IncludeFileLocateScope(includedFilesNames, null);
-		includeFolderScope = new IncludeFolderLocateScope(includedFolderNames, null);
+		includeFolderScope = new IncludeFolderLocateScope(includedFolderNames,
+				null);
 	}
 
 	public boolean ignoreContainer(IContainer container) {
-		if (projectReferencesScope.ignoreContainer(container)) {
+		if (projectLocateScope.ignoreContainer(container)) {
 			return true;
 		}
 		if (ignoredFolderScope.ignoreContainer(container)) {
@@ -94,7 +96,7 @@ public class DefaultLocateScope extends AbstractLocateScope {
 	}
 
 	public boolean addToResult(IFile file) {
-		if (projectReferencesScope.addToResult(file)) {
+		if (projectLocateScope.addToResult(file)) {
 			return true;
 		}
 		if (ignoredFolderScope.addToResult(file)) {
@@ -110,7 +112,7 @@ public class DefaultLocateScope extends AbstractLocateScope {
 	}
 
 	public boolean addToResult(IContainer container) {
-		if (projectReferencesScope.addToResult(container)) {
+		if (projectLocateScope.addToResult(container)) {
 			return true;
 		}
 		if (ignoredFolderScope.addToResult(container)) {
