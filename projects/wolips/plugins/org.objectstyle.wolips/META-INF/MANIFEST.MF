@@ -3,7 +3,6 @@ Bundle-ManifestVersion: 2
 Bundle-Name: WOLips Core Plug-in
 Bundle-SymbolicName: org.objectstyle.wolips; singleton:=true
 Bundle-Version: 1.0.6
-Bundle-ClassPath: lib/wolips-core.jar
 Bundle-Activator: org.objectstyle.wolips.core.CorePlugin
 Bundle-Vendor: objectstyle.org
 Bundle-Localization: plugin

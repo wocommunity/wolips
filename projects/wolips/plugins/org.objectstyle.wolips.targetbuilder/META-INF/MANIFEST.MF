@@ -3,7 +3,6 @@ Bundle-ManifestVersion: 2
 Bundle-Name: WOLips Targetbuilder Plug-in
 Bundle-SymbolicName: org.objectstyle.wolips.targetbuilder; singleton:=true
 Bundle-Version: 1.0.6
-Bundle-ClassPath: lib/wolips-targetbuilder.jar
 Bundle-Activator: org.objectstyle.wolips.target.TargetBuilderPlugin
 Bundle-Vendor: objectstyle.org
 Bundle-Localization: plugin

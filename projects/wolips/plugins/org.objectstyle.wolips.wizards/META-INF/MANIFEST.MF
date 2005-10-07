@@ -3,7 +3,6 @@ Bundle-ManifestVersion: 2
 Bundle-Name: WOLips Wizards Plug-in
 Bundle-SymbolicName: org.objectstyle.wolips.wizards; singleton:=true
 Bundle-Version: 1.0.6
-Bundle-ClassPath: lib/wolips-wizards.jar
 Bundle-Activator: org.objectstyle.wolips.wizards.WizardsPlugin
 Bundle-Vendor: objectstyle.org
 Bundle-Localization: plugin

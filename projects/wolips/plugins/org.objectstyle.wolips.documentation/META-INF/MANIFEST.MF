@@ -3,7 +3,6 @@ Bundle-ManifestVersion: 2
 Bundle-Name: WOLips Documentation Plug-in
 Bundle-SymbolicName: org.objectstyle.wolips.documentation; singleton:=true
 Bundle-Version: 1.0.6
-Bundle-ClassPath: lib/wolips-documentation.jar
 Bundle-Activator: org.objectstyle.wolips.documentation.DocumentationPlugin
 Bundle-Vendor: objectstyle.org
 Bundle-Localization: plugin

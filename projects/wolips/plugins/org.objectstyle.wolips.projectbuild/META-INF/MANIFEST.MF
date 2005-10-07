@@ -3,7 +3,6 @@ Bundle-ManifestVersion: 2
 Bundle-Name: WOLips Projectbuild Plug-in
 Bundle-SymbolicName: org.objectstyle.wolips.projectbuild; singleton:=true
 Bundle-Version: 1.0.6
-Bundle-ClassPath: lib/wolips-projectbuild.jar
 Bundle-Activator: org.objectstyle.wolips.projectbuild.ProjectBuildPlugin
 Bundle-Vendor: objectstyle.org
 Bundle-Localization: plugin

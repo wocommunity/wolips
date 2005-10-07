@@ -1,157 +1,196 @@
 <?xml version="1.0"?>
- 
+
 <!-- ======================================================== -->
 <!--              Script to build a plugin               -->
 <!-- ======================================================== -->
 <project name="build-plugin" default="" basedir=".">
 
-    <!-- ============================================= -->
-    <!-- Compiles Java classes                         -->
-    <!-- Required parameters                           -->
-    <!-- param.plugin.dir the plugin directory         -->
-    <!-- param.java.dest.dir the javac output directory-->
-    <!-- classpath the classpath refid                 -->
-    <!-- ============================================= -->
-    <target name="java">
-        <path id="full.classpath">
-	    <path refid="classpath"/>
-            <fileset dir="${eclipse.home}/plugins">
-                <include name="**/*.jar"/>
-                <exclude name="**/org.objectstyle.*/**"/>
-				<exclude name="**/org.eclipse.core.runtime/**"/>
-            </fileset>
-        </path>
+	<!-- ============================================= -->
+	<!-- Compiles Java classes                         -->
+	<!-- Required parameters                           -->
+	<!-- param.plugin.dir the plugin directory         -->
+	<!-- param.java.dest.dir the javac output directory-->
+	<!-- classpath the classpath refid                 -->
+	<!-- ============================================= -->
+	<target name="java">
+		<path id="full.classpath">
+			<path refid="classpath" />
+			<fileset dir="${eclipse.home}/plugins">
+				<include name="**/*.jar" />
+				<exclude name="**/org.objectstyle.*/**" />
+				<exclude name="**/org.eclipse.core.runtime/**" />
+			</fileset>
+		</path>
 
-       <javac srcdir="${param.plugin.dir}/java"
-                destdir="${param.java.dest.dir}"
-                deprecation="${compile.deprecation}"
-                debug="${compile.debug}"
-                optimize="${compile.optimize}"
-        		   source="${compile.source}"
-                target="${compile.target}">
-            <classpath refid="full.classpath"/>
-       </javac>
-    </target>
+		<javac srcdir="${param.plugin.dir}/java" destdir="${param.java.dest.dir}" deprecation="${compile.deprecation}" debug="${compile.debug}" optimize="${compile.optimize}" source="${compile.source}" target="${compile.target}">
+			<classpath refid="full.classpath" />
+		</javac>
+	</target>
 
-    <!-- ============================================= -->
-    <!-- Copies the resources                          -->
-    <!-- Required parameters                           -->
-    <!-- param.plugin.dir the plugin directory         -->
-    <!-- param.build.output.build.dir the output dir   -->
-    <!-- param.plugin.name the plugin name             -->
-    <!-- ============================================= -->
-    <target name="copy.resources">
-         <mkdir dir="${param.build.output.build.dir}/plugins/${param.plugin.name}_${build.version}"/>
-         <copy todir="${param.build.output.build.dir}/plugins/${param.plugin.name}_${build.version}">
-            <fileset dir="${param.plugin.dir}">
-        	<exclude name="build.xml"/>
-                <exclude name="default.properties"/>
-        	<exclude name=".project"/>
-                <exclude name=".classpath"/>
-                <exclude name="**/java/**"/>
-            </fileset>
-        </copy>
-        
-        <replace dir="${param.build.output.build.dir}/plugins/${param.plugin.name}_${build.version}/" token="${build.version.to.replace}" value="${build.version}">
-            <include name="plugin.xml"/>
-            <include name="fragment.xml"/>
-            <include name="README.html"/>
-            <include name="about.properties"/>
-            <include name="plugin.properties"/>
-            <include name="scripts/test.properties"/>
-            <include name="META-INF/MANIFEST.MF"/>
-        </replace>
-        
-        <condition property="stringToReplace" value="I hope we have never a string like this in the plugin.xml">
-        	<contains string="${param.plugin.name}" substring="test"/>
-	</condition>
-        
-        <condition property="stringToReplace" value="${TestsCorePluginReferenceToReplace}">
-        	<not>
-	        	<contains string="${param.plugin.name}" substring="test"/>
-	        </not>
-	</condition>
+	<!-- ============================================= -->
+	<!-- Copies the resources                          -->
+	<!-- Required parameters                           -->
+	<!-- param.plugin.dir the plugin directory         -->
+	<!-- param.build.output.build.dir the output dir   -->
+	<!-- param.plugin.name the plugin name             -->
+	<!-- ============================================= -->
+	<target name="copy.resources">
+		<mkdir dir="${param.build.output.build.dir}/plugins/${param.plugin.name}_${build.version}" />
+		<copy todir="${param.build.output.build.dir}/plugins/${param.plugin.name}_${build.version}">
+			<fileset dir="${param.plugin.dir}">
+				<exclude name="build.xml" />
+				<exclude name="default.properties" />
+				<exclude name=".project" />
+				<exclude name=".classpath" />
+				<exclude name="**/java/**" />
+			</fileset>
+		</copy>
 
-        <replace dir="${param.build.output.build.dir}/plugins/${param.plugin.name}_${build.version}/" token="${stringToReplace}" value="">
-            <include name="plugin.xml"/>
-            <include name="fragment.xml"/>
-        </replace>
-           
-    </target>
+		<replace dir="${param.build.output.build.dir}/plugins/${param.plugin.name}_${build.version}/" token="${build.version.to.replace}" value="${build.version}">
+			<include name="plugin.xml" />
+			<include name="fragment.xml" />
+			<include name="README.html" />
+			<include name="about.properties" />
+			<include name="plugin.properties" />
+			<include name="scripts/test.properties" />
+			<include name="META-INF/MANIFEST.MF" />
+		</replace>
 
-    <!-- ============================================= -->
-    <!-- Jars Java classes                             -->
-    <!-- Required parameters                           -->
-    <!-- param.classes.dir                             -->
-    <!-- param.classes.patternset.refid the classes    -->
-    <!-- param.jar.file the jar file                   -->
-    <!-- param.plugin.name the plugin name             -->
-    <!-- param.plugin.dir                              -->           
-    <!-- param.build.output.build.dir the output dir   -->
-    <!-- ============================================= -->
-    <target name="jar">
-	    <mkdir dir="${param.build.output.build.dir}/plugins/${param.plugin.name}_${build.version}/lib"/>
-	    <jar jarfile="${param.build.output.build.dir}/plugins/${param.plugin.name}_${build.version}/lib/${param.jar.file}">
-            <fileset dir="${param.classes.dir}">
-		        <patternset refid="param.classes.patternset.refid"/>
-	        </fileset>
-	        <fileset dir="${param.plugin.dir}/java">
-                <include name="**/*.properties"/>
-            </fileset>
-            <fileset dir="${param.plugin.dir}/java">
-                <include name="**/*.gif"/>
-            </fileset>
-            <fileset dir="${param.plugin.dir}/java">
-                <include name="**/*.xml"/>
-            </fileset>          
-            <metainf dir="../../../homepage/doc">
-                <include name="LICENSE*"/>
-            </metainf>
-	    </jar>
-    </target>
+		<condition property="stringToReplace" value="I hope we have never a string like this in the plugin.xml">
+			<contains string="${param.plugin.name}" substring="test" />
+		</condition>
 
-    <!-- ============================================= -->
-    <!-- Jars Java classes from a project              -->
-    <!-- Required parameters                           -->
-    <!-- param.classes.dir                             -->
-    <!-- param.classes.patternset.refid the classes    -->
-    <!-- param.jar.file the jar file                   -->
-    <!-- param.project.dir                             -->
-    <!-- param.plugin.name                             -->           
-    <!-- param.build.output.build.dir the output dir   -->
-    <!-- ============================================= -->
-    <target name="jar.from.project">
-	    <mkdir dir="${param.build.output.build.dir}/plugins/${param.plugin.name}_${build.version}/lib"/>
-	    <jar jarfile="${param.build.output.build.dir}/plugins/${param.plugin.name}_${build.version}/lib/${param.jar.file}" compress="false">
-            <fileset dir="${param.classes.dir}">
-		        <patternset refid="param.classes.patternset.refid"/>
-	        </fileset>
-	        <fileset dir="${param.project.dir}/java">
-                <include name="**/*.properties"/>
-            </fileset>
-            <fileset dir="${param.project.dir}/java">
-                <include name="**/*.gif"/>
-            </fileset>         
-            <fileset dir="${param.project.dir}/resources">
-            </fileset>         
-            <metainf dir="../../../homepage/doc">
-                <include name="LICENSE*"/>
-            </metainf>
-	    </jar>
-    </target>
+		<condition property="stringToReplace" value="${TestsCorePluginReferenceToReplace}">
+			<not>
+				<contains string="${param.plugin.name}" substring="test" />
+			</not>
+		</condition>
 
-    <!-- ============================================= -->
-    <!-- Dist                                          -->
-    <!-- Required parameters                           -->
-    <!-- param.plugin.name the plugin directory        -->
-    <!-- param.build.output.build.dir the output dir   -->
-    <!-- param.build.dist.build.dir the dist directory -->
-    <!-- ============================================= -->
-    <target name="dist">
-        <zip zipfile="${param.build.dist.build.dir}/plugins/${param.plugin.name}_${build.version}.jar" compress="true">
-     	    <fileset dir="${param.build.output.build.dir}/plugins/${param.plugin.name}_${build.version}">
-     	    </fileset>
-        </zip>    
-    </target>
+		<replace dir="${param.build.output.build.dir}/plugins/${param.plugin.name}_${build.version}/" token="${stringToReplace}" value="">
+			<include name="plugin.xml" />
+			<include name="fragment.xml" />
+		</replace>
+
+	</target>
+
+	<!-- ============================================= -->
+	<!-- Jars Java classes                             -->
+	<!-- Required parameters                           -->
+	<!-- param.classes.dir                             -->
+	<!-- param.classes.patternset.refid the classes    -->
+	<!-- param.jar.file the jar file                   -->
+	<!-- param.plugin.name the plugin name             -->
+	<!-- param.plugin.dir                              -->
+	<!-- param.build.output.build.dir the output dir   -->
+	<!-- ============================================= -->
+	<target name="jar">
+		<mkdir dir="${param.build.output.build.dir}/plugins/${param.plugin.name}_${build.version}/lib" />
+		<jar jarfile="${param.build.output.build.dir}/plugins/${param.plugin.name}_${build.version}/lib/${param.jar.file}">
+			<fileset dir="${param.classes.dir}">
+				<patternset refid="param.classes.patternset.refid" />
+			</fileset>
+			<fileset dir="${param.plugin.dir}/java">
+				<include name="**/*.properties" />
+			</fileset>
+			<fileset dir="${param.plugin.dir}/java">
+				<include name="**/*.gif" />
+			</fileset>
+			<fileset dir="${param.plugin.dir}/java">
+				<include name="**/*.xml" />
+			</fileset>
+			<metainf dir="../../../homepage/doc">
+				<include name="LICENSE*" />
+			</metainf>
+		</jar>
+	</target>
+
+	<!-- ============================================= -->
+	<!-- Jars Java classes from a project              -->
+	<!-- Required parameters                           -->
+	<!-- param.classes.dir                             -->
+	<!-- param.classes.patternset.refid the classes    -->
+	<!-- param.jar.file the jar file                   -->
+	<!-- param.project.dir                             -->
+	<!-- param.plugin.name                             -->
+	<!-- param.build.output.build.dir the output dir   -->
+	<!-- ============================================= -->
+	<target name="jar.from.project">
+		<mkdir dir="${param.build.output.build.dir}/plugins/${param.plugin.name}_${build.version}/lib" />
+		<jar jarfile="${param.build.output.build.dir}/plugins/${param.plugin.name}_${build.version}/lib/${param.jar.file}" compress="false">
+			<fileset dir="${param.classes.dir}">
+				<patternset refid="param.classes.patternset.refid" />
+			</fileset>
+			<fileset dir="${param.project.dir}/java">
+				<include name="**/*.properties" />
+			</fileset>
+			<fileset dir="${param.project.dir}/java">
+				<include name="**/*.gif" />
+			</fileset>
+			<fileset dir="${param.project.dir}/resources">
+			</fileset>
+			<metainf dir="../../../homepage/doc">
+				<include name="LICENSE*" />
+			</metainf>
+		</jar>
+	</target>
+
+
+	<!-- ============================================= -->
+	<!-- Jars Java classes                             -->
+	<!-- Required parameters                           -->
+	<!-- param.classes.dir                             -->
+	<!-- param.classes.patternset.refid the classes    -->
+	<!-- param.plugin.name the plugin name             -->
+	<!-- param.plugin.dir                              -->
+	<!-- param.build.dist.build.dir the output dir   -->
+	<!-- ============================================= -->
+	<target name="jar.no.unpack">
+		<copy todir="${param.build.dist.build.dir}/plugins/${param.plugin.name}_${build.version}/META-INF">
+			<fileset dir="${param.plugin.dir}/META-INF">
+			</fileset>
+		</copy>
+		<replace dir="${param.build.dist.build.dir}/plugins/${param.plugin.name}_${build.version}/META-INF" token="${build.version.to.replace}" value="${build.version}">
+			<include name="MANIFEST.MF" />
+		</replace>
+		<zip zipfile="${param.build.dist.build.dir}/plugins/${param.plugin.name}_${build.version}.jar" roundup="false">
+			<fileset dir="${param.classes.dir}">
+				<patternset refid="param.classes.patternset.refid" />
+			</fileset>
+			<fileset dir="${param.plugin.dir}">
+				<exclude name="java/**" />
+				<exclude name=".classpath" />
+				<exclude name=".project" />
+				<exclude name=".cvsignore" />
+				<exclude name="*.launch" />
+				<exclude name="build.properties" />
+				<exclude name="default.properties" />
+				<exclude name="build.xml" />
+				<exclude name="META-INF/**" />
+			</fileset>
+			<fileset dir="${param.plugin.dir}/java">
+				<exclude name="**/*.java" />
+			</fileset>
+			<zipfileset dir="../../../homepage/doc" includes="LICENSE*" prefix="META-INF" />
+			<zipfileset dir="${param.build.dist.build.dir}/plugins/${param.plugin.name}_${build.version}/META-INF" prefix="META-INF" />
+		</zip>
+		<delete dir="${param.build.dist.build.dir}/plugins/${param.plugin.name}_${build.version}" />
+	</target>
+
+
+	<!-- ============================================= -->
+	<!-- Dist                                          -->
+	<!-- Required parameters                           -->
+	<!-- param.plugin.name the plugin directory        -->
+	<!-- param.build.output.build.dir the output dir   -->
+	<!-- param.build.dist.build.dir the dist directory -->
+	<!-- ============================================= -->
+	<target name="dist">
+		<zip zipfile="${param.build.dist.build.dir}/plugins/${param.plugin.name}_${build.version}.jar" compress="true">
+			<fileset dir="${param.build.output.build.dir}/plugins/${param.plugin.name}_${build.version}">
+			</fileset>
+		</zip>
+	</target>
+
+
 
 </project>

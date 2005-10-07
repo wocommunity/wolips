@@ -3,7 +3,6 @@ Bundle-ManifestVersion: 2
 Bundle-Name: WOLips Datasets Plug-in
 Bundle-SymbolicName: org.objectstyle.wolips.datasets; singleton:=true
 Bundle-Version: 1.0.6
-Bundle-ClassPath: lib/wolips-datasets.jar
 Bundle-Activator: org.objectstyle.wolips.datasets.DataSetsPlugin
 Bundle-Vendor: objectstyle.org
 Bundle-Localization: plugin

@@ -3,7 +3,6 @@ Bundle-ManifestVersion: 2
 Bundle-Name: WOLips Api Editor Plug-in
 Bundle-SymbolicName: org.objectstyle.wolips.apieditor; singleton:=true
 Bundle-Version: 1.0.6
-Bundle-ClassPath: lib/wolips-apieditor.jar
 Bundle-Activator: org.objectstyle.wolips.apieditor.ApieditorPlugin
 Bundle-Vendor: objectstyle.org
 Bundle-Localization: plugin

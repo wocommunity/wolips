@@ -3,7 +3,6 @@ Bundle-ManifestVersion: 2
 Bundle-Name: WOLips Refactoring Plug-in
 Bundle-SymbolicName: org.objectstyle.wolips.refactoring; singleton:=true
 Bundle-Version: 1.0.6
-Bundle-ClassPath: lib/wolips-refactoring.jar
 Bundle-Activator: org.objectstyle.wolips.refactoring.RefactoringPlugin
 Bundle-Vendor: objectstyle.org
 Bundle-Localization: plugin

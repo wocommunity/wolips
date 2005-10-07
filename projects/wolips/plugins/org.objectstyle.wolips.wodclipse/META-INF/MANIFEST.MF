@@ -3,7 +3,6 @@ Bundle-ManifestVersion: 2
 Bundle-Name: WOLips WODClipse Plug-in
 Bundle-SymbolicName: org.objectstyle.wolips.wodclipse; singleton:=true
 Bundle-Version: 1.0.6
-Bundle-ClassPath: lib/wolips-wodclipse.jar
 Bundle-Activator: org.objectstyle.wolips.wodclipse.WodclipsePlugin
 Bundle-Vendor: objectstyle.org
 Bundle-Localization: plugin
