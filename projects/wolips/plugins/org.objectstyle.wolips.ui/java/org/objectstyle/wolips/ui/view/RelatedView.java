@@ -134,7 +134,7 @@ public final class RelatedView extends ViewPart
 			if (parent instanceof IResource) {
 				wolipsResource = WOLipsCore.getWOLipsModel().getWOLipsResource(
 						(IResource) parent);
-				getViewer().setInput(wolipsResource);
+				//getViewer().setInput(wolipsResource);
 			} else if (parent instanceof ICompilationUnit) {
 				wolipsResource = WOLipsCore.getWOLipsModel()
 						.getWOLipsCompilationUnit((ICompilationUnit) parent);
