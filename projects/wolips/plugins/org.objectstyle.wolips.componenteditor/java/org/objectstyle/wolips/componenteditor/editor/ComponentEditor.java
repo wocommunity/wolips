@@ -194,15 +194,15 @@ public class ComponentEditor extends MultiEditor {
 
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
-				if (componentEditorInput.isCreatedFromDotApi()) {
+				if (componentEditorInput.isDisplayApiPartOnReveal()) {
 					folder.setSelection(apiTab);
-				} else if (componentEditorInput.isCreatedFromDotHtml()) {
+				} else if (componentEditorInput.isDisplayHtmlPartOnReveal()) {
 					folder.setSelection(componentTab);
-				} else if (componentEditorInput.isCreatedFromDotJava()) {
+				} else if (componentEditorInput.isDisplayJavaPartOnReveal()) {
 					folder.setSelection(javaTab);
-				} else if (componentEditorInput.isCreatedFromDotWod()) {
+				} else if (componentEditorInput.isDisplayWodPartOnReveal()) {
 					folder.setSelection(componentTab);
-				} else if (componentEditorInput.isCreatedFromDotWoo()) {
+				} else if (componentEditorInput.isDisplayWooPartOnReveal()) {
 					folder.setSelection(componentTab);
 				}
 			}
@@ -294,15 +294,15 @@ public class ComponentEditor extends MultiEditor {
 		setPartName(partName);
 		componentEditorInput = (ComponentEditorInput) input;
 		final int initActiveEditorIndex;
-		if (componentEditorInput.isCreatedFromDotApi()) {
+		if (componentEditorInput.isDisplayApiPartOnReveal()) {
 			initActiveEditorIndex = 3;
-		} else if (componentEditorInput.isCreatedFromDotHtml()) {
+		} else if (componentEditorInput.isDisplayHtmlPartOnReveal()) {
 			initActiveEditorIndex = 1;
-		} else if (componentEditorInput.isCreatedFromDotJava()) {
+		} else if (componentEditorInput.isDisplayJavaPartOnReveal()) {
 			initActiveEditorIndex = 0;
-		} else if (componentEditorInput.isCreatedFromDotWod()) {
+		} else if (componentEditorInput.isDisplayWodPartOnReveal()) {
 			initActiveEditorIndex = 2;
-		} else if (componentEditorInput.isCreatedFromDotWoo()) {
+		} else if (componentEditorInput.isDisplayWooPartOnReveal()) {
 			initActiveEditorIndex = 1;
 		} else {
 			initActiveEditorIndex = 1;
