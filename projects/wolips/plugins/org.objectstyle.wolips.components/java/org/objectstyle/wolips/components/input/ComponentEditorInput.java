@@ -49,6 +49,8 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.ui.JavaUI;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IMemento;
+import org.eclipse.ui.IPersistableElement;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiEditorInput;
 import org.objectstyle.wolips.components.ComponentsPlugin;
@@ -58,39 +60,20 @@ import org.objectstyle.wolips.locate.LocateException;
 import org.objectstyle.wolips.locate.result.LocalizedComponentsLocateResult;
 import org.objectstyle.wolips.locate.scope.ComponentLocateScope;
 
-public class ComponentEditorInput extends MultiEditorInput {
+public class ComponentEditorInput extends MultiEditorInput implements
+		IPersistableElement {
 
-	private boolean createdFromDotJava = false;
+	private boolean displayJavaPartOnReveal = false;
 
-	private boolean createdFromDotHtml = false;
+	private boolean displayHtmlPartOnReveal = false;
 
-	private boolean createdFromDotWod = false;
+	private boolean displayWodPartOnReveal = false;
 
-	private boolean createdFromDotApi = false;
+	private boolean displayApiPartOnReveal = false;
 
-	private boolean createdFromDotWoo = false;
+	private boolean displayWooPartOnReveal = false;
 
 	private LocalizedComponentsLocateResult localizedComponentsLocateResult;
-
-	public boolean isCreatedFromDotApi() {
-		return createdFromDotApi;
-	}
-
-	public boolean isCreatedFromDotHtml() {
-		return createdFromDotHtml;
-	}
-
-	public boolean isCreatedFromDotJava() {
-		return createdFromDotJava;
-	}
-
-	public boolean isCreatedFromDotWod() {
-		return createdFromDotWod;
-	}
-
-	public boolean isCreatedFromDotWoo() {
-		return createdFromDotWoo;
-	}
 
 	public ComponentEditorInput(String[] editorIDs, IEditorInput[] innerEditors) {
 		super(editorIDs, innerEditors);
@@ -166,7 +149,7 @@ public class ComponentEditorInput extends MultiEditorInput {
 				file.getName().length() - 5);
 		ComponentEditorInput input = create(project, fileName);
 		if (input != null) {
-			input.createdFromDotJava = true;
+			input.displayJavaPartOnReveal = true;
 		}
 		return input;
 	}
@@ -181,7 +164,7 @@ public class ComponentEditorInput extends MultiEditorInput {
 				file.getName().length() - 5);
 		ComponentEditorInput input = create(project, fileName);
 		if (input != null) {
-			input.createdFromDotHtml = true;
+			input.displayHtmlPartOnReveal = true;
 		}
 		return input;
 	}
@@ -196,7 +179,7 @@ public class ComponentEditorInput extends MultiEditorInput {
 				file.getName().length() - 4);
 		ComponentEditorInput input = create(project, fileName);
 		if (input != null) {
-			input.createdFromDotWod = true;
+			input.displayWodPartOnReveal = true;
 		}
 		return input;
 	}
@@ -210,7 +193,7 @@ public class ComponentEditorInput extends MultiEditorInput {
 		String fileName = file.getName().substring(0,
 				file.getName().length() - 4);
 		ComponentEditorInput input = create(project, fileName);
-		input.createdFromDotApi = true;
+		input.displayApiPartOnReveal = true;
 		return input;
 	}
 
@@ -224,12 +207,64 @@ public class ComponentEditorInput extends MultiEditorInput {
 				file.getName().length() - 4);
 		ComponentEditorInput input = create(project, fileName);
 		if (input != null) {
-			input.createdFromDotWoo = true;
+			input.displayWooPartOnReveal = true;
 		}
 		return input;
 	}
 
 	public LocalizedComponentsLocateResult getLocalizedComponentsLocateResult() {
 		return localizedComponentsLocateResult;
+	}
+
+	public String getFactoryId() {
+		return ComponentEditorInputFactory.ID_FACTORY;
+	}
+
+	public void saveState(IMemento memento) {
+		ComponentEditorInputFactory.saveState(memento, this);
+	}
+
+	public IPersistableElement getPersistable() {
+		return this;
+	}
+
+	public boolean isDisplayApiPartOnReveal() {
+		return displayApiPartOnReveal;
+	}
+
+	public void setDisplayApiPartOnReveal(boolean displayApiPartOnReveal) {
+		this.displayApiPartOnReveal = displayApiPartOnReveal;
+	}
+
+	public boolean isDisplayHtmlPartOnReveal() {
+		return displayHtmlPartOnReveal;
+	}
+
+	public void setDisplayHtmlPartOnReveal(boolean displayHtmlPartOnReveal) {
+		this.displayHtmlPartOnReveal = displayHtmlPartOnReveal;
+	}
+
+	public boolean isDisplayJavaPartOnReveal() {
+		return displayJavaPartOnReveal;
+	}
+
+	public void setDisplayJavaPartOnReveal(boolean displayJavaPartOnReveal) {
+		this.displayJavaPartOnReveal = displayJavaPartOnReveal;
+	}
+
+	public boolean isDisplayWodPartOnReveal() {
+		return displayWodPartOnReveal;
+	}
+
+	public void setDisplayWodPartOnReveal(boolean displayWodPartOnReveal) {
+		this.displayWodPartOnReveal = displayWodPartOnReveal;
+	}
+
+	public boolean isDisplayWooPartOnReveal() {
+		return displayWooPartOnReveal;
+	}
+
+	public void setDisplayWooPartOnReveal(boolean displayWooPartOnReveal) {
+		this.displayWooPartOnReveal = displayWooPartOnReveal;
 	}
 }
