@@ -278,7 +278,7 @@
          unpack="false"/>
          
    <plugin
-         id="org.objectstyle.wolips.component"
+         id="org.objectstyle.wolips.components"
          download-size="32"
          install-size="32"
          version="1.0.6"
