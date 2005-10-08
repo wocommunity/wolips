@@ -55,6 +55,7 @@
  */
 package org.objectstyle.wolips.apieditor.editor;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
@@ -62,11 +63,14 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.part.FileEditorInput;
 import org.objectstyle.wolips.apieditor.ApieditorPlugin;
+import org.objectstyle.wolips.core.resources.types.api.ApiModel;
+import org.objectstyle.wolips.core.resources.types.api.ApiModelException;
 
 public class ApiEditor extends FormEditor {
 
-	private ApiEditorInput apiEditorInput;
+	private ApiModel model;
 
 	public ApiEditor() {
 		super();
@@ -88,13 +92,12 @@ public class ApiEditor extends FormEditor {
 	}
 
 	public void doSave(IProgressMonitor monitor) {
-    try {
-      apiEditorInput.getModel().saveChanges();
-      editorDirtyStateChanged();
-    }
-    catch (Throwable t) {
-      throw new RuntimeException("Failed to save .api file.", t);
-    }
+		try {
+			this.getModel().saveChanges();
+			editorDirtyStateChanged();
+		} catch (Throwable t) {
+			throw new RuntimeException("Failed to save .api file.", t);
+		}
 	}
 
 	public void doSaveAs() {
@@ -109,7 +112,14 @@ public class ApiEditor extends FormEditor {
 	public void init(IEditorSite site, IEditorInput input)
 			throws PartInitException {
 		super.init(site, input);
-		apiEditorInput = (ApiEditorInput) input;
+	}
+
+	public ApiModel getModel() throws ApiModelException {
+		if (model == null) {
+			model = new ApiModel(((FileEditorInput) this.getEditorInput())
+					.getFile().getLocation().toFile());
+		}
+		return model;
 	}
 
 }

@@ -75,6 +75,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.DetailsPart;
@@ -103,24 +104,22 @@ public class BindingsPageBlock extends MasterDetailsBlock implements
 	 */
 	class MasterContentProvider implements IStructuredContentProvider {
 		public Object[] getElements(Object inputElement) {
-      try {
-    			if (inputElement instanceof ApiEditorInput) {
-    				ApiEditorInput input = (ApiEditorInput) page.getEditor()
-    						.getEditorInput();
-    				Binding[] bindings = input.getModel().getWODefinitions()
-    						.getWo().getBindings();
-    				for (int i = 0; i < bindings.length; i++) {
-    					Binding binding = bindings[i];
-    					binding
-    							.setBindingNameChangedListener(BindingsPageBlock.this);
-    				}
-    				return bindings;
-    			}
-    			return new Object[0];
-      }
-      catch (Throwable t) {
-        throw new RuntimeException("Failed to open .api file.", t);
-      }
+			try {
+				if (inputElement instanceof IEditorInput) {
+					ApiEditor apiEditor = (ApiEditor) page.getEditor();
+					Binding[] bindings = apiEditor.getModel()
+							.getWODefinitions().getWo().getBindings();
+					for (int i = 0; i < bindings.length; i++) {
+						Binding binding = bindings[i];
+						binding
+								.setBindingNameChangedListener(BindingsPageBlock.this);
+					}
+					return bindings;
+				}
+				return new Object[0];
+			} catch (Throwable t) {
+				throw new RuntimeException("Failed to open .api file.", t);
+			}
 		}
 
 		public void dispose() {
@@ -178,19 +177,17 @@ public class BindingsPageBlock extends MasterDetailsBlock implements
 		addButton.addSelectionListener(new SelectionListener() {
 
 			public void widgetSelected(SelectionEvent e) {
-        try {
-    				ApiEditorInput apiEditorInput = (ApiEditorInput) page
-    						.getEditor().getEditorInput();
-    				apiEditorInput.getModel().getWo().createBinding("Foo");
-    				viewer.refresh();
-    				int count = viewer.getTable().getItemCount();
-    				Object element = viewer.getElementAt(count - 1);
-    				viewer.editElement(element, count - 1);
-    				managedForm.dirtyStateChanged();
-        }
-        catch (Throwable tx) {
-          throw new RuntimeException("Failed to open .api file.", tx);
-        }
+				try {
+					ApiEditor apiEditor = (ApiEditor) page.getEditor();
+					apiEditor.getModel().getWo().createBinding("Foo");
+					viewer.refresh();
+					int count = viewer.getTable().getItemCount();
+					Object element = viewer.getElementAt(count - 1);
+					viewer.editElement(element, count - 1);
+					managedForm.dirtyStateChanged();
+				} catch (Throwable tx) {
+					throw new RuntimeException("Failed to open .api file.", tx);
+				}
 			}
 
 			public void widgetDefaultSelected(SelectionEvent e) {
@@ -205,24 +202,22 @@ public class BindingsPageBlock extends MasterDetailsBlock implements
 		removeButton.addSelectionListener(new SelectionListener() {
 
 			public void widgetSelected(SelectionEvent e) {
-        try {
-    				IStructuredSelection selection = (IStructuredSelection) viewer
-    						.getSelection();
-    				if (!selection.isEmpty()) {
-    					Iterator iterator = selection.iterator();
-    					ApiEditorInput apiEditorInput = (ApiEditorInput) page
-    							.getEditor().getEditorInput();
-    					while (iterator.hasNext()) {
-    						Binding binding = (Binding)iterator.next();
-    						apiEditorInput.getModel().getWo().removeBinding(binding);
-    						viewer.remove(binding);
-    						}
-    					managedForm.dirtyStateChanged();
-           }
-        }
-        catch (Throwable tx) {
-          throw new RuntimeException("Failed to open .api file.", tx);
-        }
+				try {
+					IStructuredSelection selection = (IStructuredSelection) viewer
+							.getSelection();
+					if (!selection.isEmpty()) {
+						Iterator iterator = selection.iterator();
+						ApiEditor apiEditor = (ApiEditor) page.getEditor();
+						while (iterator.hasNext()) {
+							Binding binding = (Binding) iterator.next();
+							apiEditor.getModel().getWo().removeBinding(binding);
+							viewer.remove(binding);
+						}
+						managedForm.dirtyStateChanged();
+					}
+				} catch (Throwable tx) {
+					throw new RuntimeException("Failed to open .api file.", tx);
+				}
 			}
 
 			public void widgetDefaultSelected(SelectionEvent e) {
