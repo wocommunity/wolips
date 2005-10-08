@@ -52,6 +52,7 @@ import org.eclipse.ui.IEditorLauncher;
 import org.eclipse.ui.PartInitException;
 import org.objectstyle.wolips.apieditor.ApieditorPlugin;
 import org.objectstyle.wolips.componenteditor.ComponenteditorPlugin;
+import org.objectstyle.wolips.components.input.ComponentEditorInput;
 import org.objectstyle.wolips.htmleditor.HtmleditorPlugin;
 import org.objectstyle.wolips.wodclipse.WodclipsePlugin;
 import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;

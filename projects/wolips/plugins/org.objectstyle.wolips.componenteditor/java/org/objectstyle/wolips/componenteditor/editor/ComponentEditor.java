@@ -65,6 +65,7 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.wst.html.ui.internal.provisional.StructuredTextEditorHTML;
 import org.eclipse.wst.sse.ui.internal.contentoutline.StructuredTextEditorContentOutlinePage;
 import org.objectstyle.wolips.componenteditor.ComponenteditorPlugin;
+import org.objectstyle.wolips.components.input.ComponentEditorInput;
 import org.objectstyle.wolips.wodclipse.WodclipsePlugin;
 import org.objectstyle.wolips.wodclipse.wod.WodEditor;
 
