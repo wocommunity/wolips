@@ -36,5 +36,4 @@ Require-Bundle: org.eclipse.core.runtime,
  org.objectstyle.wolips.locate
 Eclipse-AutoStart: true
 Export-Package: org.objectstyle.wolips.components,
- org.objectstyle.wolips.components.input,
- org.objectstyle.wolips.components.model
+ org.objectstyle.wolips.components.input

@@ -52,7 +52,7 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiEditorInput;
 import org.objectstyle.wolips.apieditor.ApieditorPlugin;
-import org.objectstyle.wolips.component.ComponentPlugin;
+import org.objectstyle.wolips.components.ComponentsPlugin;
 import org.objectstyle.wolips.htmleditor.HtmleditorPlugin;
 import org.objectstyle.wolips.locate.Locate;
 import org.objectstyle.wolips.locate.LocateException;
@@ -143,10 +143,10 @@ public class ComponentEditorInput extends MultiEditorInput {
 		try {
 			locate.locate();
 		} catch (CoreException e) {
-			ComponentPlugin.getDefault().log(e);
+			ComponentsPlugin.getDefault().log(e);
 			return null;
 		} catch (LocateException e) {
-			ComponentPlugin.getDefault().log(e);
+			ComponentsPlugin.getDefault().log(e);
 			return null;
 		}
 		if (localizedComponentsLocateResult.getDotJava() == null
