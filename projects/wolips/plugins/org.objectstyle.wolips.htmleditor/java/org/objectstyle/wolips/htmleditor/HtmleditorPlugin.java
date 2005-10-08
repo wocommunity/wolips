@@ -61,9 +61,7 @@ public class HtmleditorPlugin extends AbstractWOLipsUIPlugin {
 	private String[] webObjectsTagNames;
 
 	
-    public static String HTMLEditorID = "org.objectstyle.wolips.wodclipse.html.HtmlEditor";
-	
-	/**
+    /**
 	 * The constructor.
 	 */
 	public HtmleditorPlugin() {

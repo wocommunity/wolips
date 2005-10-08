@@ -61,6 +61,12 @@ public class EditorsPlugin extends AbstractWOLipsUIPlugin {
 	// The shared instance.
 	private static EditorsPlugin plugin;
 
+	public static String ApiEditorID = "org.objectstyle.wolips.wodclipse.api.ApiEditor";
+
+	public static String HTMLEditorID = "org.objectstyle.wolips.wodclipse.html.HtmlEditor";
+
+	public static String WodEditorID = "org.objectstyle.wolips.wodclipse.wod.WodEditor";
+
 	/**
 	 * The constructor.
 	 */

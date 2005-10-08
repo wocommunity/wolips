@@ -27,10 +27,9 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.wst.html.core,
  org.objectstyle.wolips.builder,
  org.objectstyle.wolips.preferences,
- org.objectstyle.wolips.htmleditor,
- org.objectstyle.wolips.apieditor,
- org.objectstyle.wolips.wodclipse,
- org.objectstyle.wolips.components
+ org.objectstyle.wolips.editors,
+ org.objectstyle.wolips.components,
+ org.objectstyle.wolips.wodclipse
 Eclipse-AutoStart: true
 Export-Package: org.objectstyle.wolips.componenteditor,
  org.objectstyle.wolips.componenteditor.editor,

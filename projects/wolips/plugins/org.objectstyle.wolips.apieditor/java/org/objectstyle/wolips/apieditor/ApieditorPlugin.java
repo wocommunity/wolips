@@ -61,8 +61,6 @@ public class ApieditorPlugin extends AbstractWOLipsUIPlugin {
 
 	private FormColors formColors;
 	
-	public static String ApiEditorID = "org.objectstyle.wolips.wodclipse.api.ApiEditor";
-	
 	/**
 	 * The constructor.
 	 */

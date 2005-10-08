@@ -51,14 +51,12 @@ import org.eclipse.jdt.ui.JavaUI;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiEditorInput;
-import org.objectstyle.wolips.apieditor.ApieditorPlugin;
 import org.objectstyle.wolips.components.ComponentsPlugin;
-import org.objectstyle.wolips.htmleditor.HtmleditorPlugin;
+import org.objectstyle.wolips.editors.EditorsPlugin;
 import org.objectstyle.wolips.locate.Locate;
 import org.objectstyle.wolips.locate.LocateException;
 import org.objectstyle.wolips.locate.result.LocalizedComponentsLocateResult;
 import org.objectstyle.wolips.locate.scope.ComponentLocateScope;
-import org.objectstyle.wolips.wodclipse.WodclipsePlugin;
 
 public class ComponentEditorInput extends MultiEditorInput {
 
@@ -113,15 +111,15 @@ public class ComponentEditorInput extends MultiEditorInput {
 		ids[0] = JavaUI.ID_CU_EDITOR;
 		allInput[0] = new FileEditorInput(localizedComponentsLocateResult
 				.getDotJava());
-		ids[1] = HtmleditorPlugin.HTMLEditorID;
+		ids[1] = EditorsPlugin.HTMLEditorID;
 		IFolder folder = localizedComponentsLocateResult.getComponents()[0];
 		IFile htmlFile = LocalizedComponentsLocateResult.getHtml(folder);
 		IFile wodFile = LocalizedComponentsLocateResult.getWod(folder);
 		allInput[1] = new FileEditorInput(htmlFile);
-		ids[2] = WodclipsePlugin.WodEditorID;
+		ids[2] = EditorsPlugin.WodEditorID;
 		allInput[2] = new FileEditorInput(wodFile);
 		if (localizedComponentsLocateResult.getDotApi() != null) {
-			ids[3] = ApieditorPlugin.ApiEditorID;
+			ids[3] = EditorsPlugin.ApiEditorID;
 			allInput[3] = new FileEditorInput(localizedComponentsLocateResult
 					.getDotApi());
 		}

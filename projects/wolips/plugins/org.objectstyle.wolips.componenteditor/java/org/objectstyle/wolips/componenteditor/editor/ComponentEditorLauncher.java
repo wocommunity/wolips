@@ -50,11 +50,9 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.ui.JavaUI;
 import org.eclipse.ui.IEditorLauncher;
 import org.eclipse.ui.PartInitException;
-import org.objectstyle.wolips.apieditor.ApieditorPlugin;
 import org.objectstyle.wolips.componenteditor.ComponenteditorPlugin;
 import org.objectstyle.wolips.components.input.ComponentEditorInput;
-import org.objectstyle.wolips.htmleditor.HtmleditorPlugin;
-import org.objectstyle.wolips.wodclipse.WodclipsePlugin;
+import org.objectstyle.wolips.editors.EditorsPlugin;
 import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 
 /**
@@ -94,7 +92,7 @@ public class ComponentEditorLauncher implements IEditorLauncher {
 			}
 			if (input == null) {
 				WorkbenchUtilitiesPlugin.open(file,
-						HtmleditorPlugin.HTMLEditorID);
+						EditorsPlugin.HTMLEditorID);
 				return;
 			}
 		}
@@ -106,7 +104,7 @@ public class ComponentEditorLauncher implements IEditorLauncher {
 			}
 			if (input == null) {
 				WorkbenchUtilitiesPlugin
-						.open(file, WodclipsePlugin.WodEditorID);
+						.open(file, EditorsPlugin.WodEditorID);
 				return;
 			}
 		}
@@ -118,7 +116,7 @@ public class ComponentEditorLauncher implements IEditorLauncher {
 			}
 			if (input == null) {
 				WorkbenchUtilitiesPlugin
-						.open(file, ApieditorPlugin.ApiEditorID);
+						.open(file, EditorsPlugin.ApiEditorID);
 				return;
 			}
 		}

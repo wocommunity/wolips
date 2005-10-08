@@ -60,8 +60,6 @@ public class WodclipsePlugin extends AbstractWOLipsUIPlugin {
 	// The shared instance.
 	private static WodclipsePlugin plugin;
 
-	public static String WodEditorID = "org.objectstyle.wolips.wodclipse.wod.WodEditor";
-
 	private WodEditor lastWodEditor;
 	
 	/**
