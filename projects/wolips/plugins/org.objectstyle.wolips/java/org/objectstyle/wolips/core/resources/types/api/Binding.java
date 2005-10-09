@@ -67,7 +67,7 @@ public class Binding extends AbstractApiModelElement {
 
   private final static String DEFAULTS = "defaults";
 
-  public final static String[] ALL_DEFAULTS = new String[] { "Undefined", "Actions", "Boolean", "YES/NO", "Date Format Strings", "MIME Types", "Direct Actions", "Direct Action Classes", "Page Names", "Frameworks", "Resources" };
+  public final static String[] ALL_DEFAULTS = new String[] { "Undefined", "Actions", "Boolean", "YES/NO", "Date Format Strings", "Number Format Strings", "MIME Types", "Direct Actions", "Direct Action Classes", "Page Names", "Frameworks", "Resources" };
 
   private Wo parent;
 
