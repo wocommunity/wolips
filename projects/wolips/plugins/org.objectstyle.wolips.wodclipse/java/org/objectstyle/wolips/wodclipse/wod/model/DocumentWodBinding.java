@@ -53,7 +53,7 @@ public class DocumentWodBinding implements IWodBinding {
   private RulePosition myName;
   private RulePosition myValue;
   private DocumentWodElement myElement;
-  
+
   public DocumentWodBinding(RulePosition _name, RulePosition _value, DocumentWodElement _element) {
     myName = _name;
     myValue = _value;
@@ -67,7 +67,7 @@ public class DocumentWodBinding implements IWodBinding {
   public String getName() {
     return myName._getTextWithoutException();
   }
-  
+
   public Position getNamePosition() {
     return myName.getPosition();
   }
@@ -75,11 +75,19 @@ public class DocumentWodBinding implements IWodBinding {
   public String getValue() {
     return myValue._getTextWithoutException();
   }
-  
+
   public Position getValuePosition() {
     return myValue.getPosition();
   }
-  
+
+  public int getStartOffset() {
+    return myName.getTokenOffset();
+  }
+
+  public int getEndOffset() {
+    return myValue.getTokenEndOffset();
+  }
+
   public String toString() {
     return "[DocumentWodBinding: name = " + myName + "; value = " + myValue + "]";
   }

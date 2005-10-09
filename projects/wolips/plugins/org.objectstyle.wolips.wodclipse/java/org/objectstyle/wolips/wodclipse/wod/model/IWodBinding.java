@@ -46,7 +46,7 @@ package org.objectstyle.wolips.wodclipse.wod.model;
 /**
  * @author mschrag
  */
-public interface IWodBinding {
+public interface IWodBinding extends IWodUnit {
   public IWodElement getElement();
   public String getName();
   public String getValue();

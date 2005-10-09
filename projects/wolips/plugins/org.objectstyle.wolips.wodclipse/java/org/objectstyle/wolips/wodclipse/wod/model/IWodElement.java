@@ -49,7 +49,7 @@ import java.util.Map;
 /**
  * @author mschrag
  */
-public interface IWodElement {
+public interface IWodElement extends IWodUnit {
   public IWodModel getModel();
   public String getElementName();
   public String getElementType();

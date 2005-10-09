@@ -48,10 +48,12 @@ import java.util.List;
 /**
  * @author mschrag
  */
-public interface IWodModel {
+public interface IWodModel extends IWodUnit {
   public String getName();
-  
+
   public List getElements();
-  
+
   public List getSyntacticProblems();
+
+  public IWodUnit getWodUnitAtIndex(int _index);
 }

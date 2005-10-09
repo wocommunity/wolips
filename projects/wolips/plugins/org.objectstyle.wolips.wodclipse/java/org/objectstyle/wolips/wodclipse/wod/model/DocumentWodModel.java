@@ -43,6 +43,7 @@
  */
 package org.objectstyle.wolips.wodclipse.wod.model;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -212,6 +213,38 @@ public class DocumentWodModel implements IWodModel {
 
   public synchronized List getSyntacticProblems() {
     return myProblems;
+  }
+
+  public int getStartOffset() {
+    return 0;
+  }
+
+  public int getEndOffset() {
+    return myDocument.getLength();
+  }
+
+  public IWodUnit getWodUnitAtIndex(int _index) {
+    IWodUnit wodUnit = null;
+    Iterator elementsIter = getElements().iterator();
+    while (wodUnit == null && elementsIter.hasNext()) {
+      DocumentWodElement element = (DocumentWodElement) elementsIter.next();
+      if (WodModelUtils.isIndexContainedByWodUnit(_index, element)) {
+        Iterator bindingsIter = element.getBindings().iterator();
+        while (wodUnit == null && bindingsIter.hasNext()) {
+          DocumentWodBinding binding = (DocumentWodBinding) bindingsIter.next();
+          if (WodModelUtils.isIndexContainedByWodUnit(_index, binding)) {
+            wodUnit = binding;
+          }
+        }
+        if (wodUnit == null) {
+          wodUnit = element;
+        }
+      }
+    }
+    if (wodUnit == null) {
+      wodUnit = this;
+    }
+    return wodUnit;
   }
 
   public String toString() {

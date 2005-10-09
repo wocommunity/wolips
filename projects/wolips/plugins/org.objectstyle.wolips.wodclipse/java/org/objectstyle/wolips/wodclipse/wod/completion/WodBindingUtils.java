@@ -60,7 +60,7 @@ public class WodBindingUtils {
   public static IType getLastType(IJavaProject _project, IType _elementType, String[] _bindingKeyNames) throws JavaModelException {
     IType currentType = _elementType;
     for (int i = 0; currentType != null && i < _bindingKeyNames.length - 1; i++) {
-      IBindingKey bindingKey = WodBindingUtils.createMatchingBindingKey(currentType, _bindingKeyNames[i], WodBindingUtils.ACCESSORS_ONLY);
+      IBindingKey bindingKey = WodBindingUtils.createMatchingBindingKey(_project, currentType, _bindingKeyNames[i], WodBindingUtils.ACCESSORS_ONLY);
       if (bindingKey != null) {
         String nextTypeName = bindingKey.getNextTypeName();
         currentType = WodBindingUtils.resolveTypeWithName(_project, currentType, nextTypeName);
@@ -144,8 +144,8 @@ public class WodBindingUtils {
     }
   }
 
-  public static IBindingKey createMatchingBindingKey(IType _type, String _nameStartingWith, int _accessorsOrMutators) throws JavaModelException {
-    List bindingKeys = WodBindingUtils.createMatchingBindingKeys(_type, _nameStartingWith, true, _accessorsOrMutators);
+  public static IBindingKey createMatchingBindingKey(IJavaProject _javaProject, IType _type, String _nameStartingWith, int _accessorsOrMutators) throws JavaModelException {
+    List bindingKeys = WodBindingUtils.createMatchingBindingKeys(_javaProject, _type, _nameStartingWith, true, _accessorsOrMutators);
     IBindingKey bindingKey;
     if (bindingKeys.size() == 0) {
       bindingKey = null;
@@ -156,12 +156,20 @@ public class WodBindingUtils {
     return bindingKey;
   }
 
-  public static List createMatchingBindingKeys(IType _type, String _nameStartingWith, boolean _requireExactNameMatch, int _accessorsOrMutators) throws JavaModelException {
+  public static List createMatchingBindingKeys(IJavaProject _javaProject, IType _type, String _nameStartingWith, boolean _requireExactNameMatch, int _accessorsOrMutators) throws JavaModelException {
     List bindingKeys = new LinkedList();
 
     if (_type != null) {
       String lowercaseNameStartingWith = _nameStartingWith.toLowerCase();
-      ITypeHierarchy typeHierarchy = _type.newSupertypeHierarchy(null);
+      ITypeHierarchy typeHierarchy;
+      String typeName = _type.getElementName();
+      // We want to show fields from your WOApplication, WOSession, and WODirectAction subclasses ...
+      if ("WOApplication".equals(typeName) || "WOSession".equals(typeName) || "WODirectAction".equals(typeName)) {
+        typeHierarchy = _type.newTypeHierarchy(_javaProject, null);
+      }
+      else {
+        typeHierarchy = _type.newSupertypeHierarchy(null);
+      }
       IType[] types = typeHierarchy.getAllTypes();
       for (int typeNum = 0; (!_requireExactNameMatch || bindingKeys.size() == 0) && typeNum < types.length; typeNum++) {
         IField[] fields = types[typeNum].getFields();
@@ -193,7 +201,7 @@ public class WodBindingUtils {
     IBindingKey bindingKey = null;
 
     int flags = _member.getFlags();
-    if (!Flags.isStatic(flags) && !Flags.isPrivate(flags)) {
+    if (!Flags.isStatic(flags) && Flags.isPublic(flags)) {
       String[] possiblePrefixes;
       boolean memberSignatureMatches;
       if (_member instanceof IMethod) {
@@ -226,7 +234,9 @@ public class WodBindingUtils {
             String lowercaseMemberNameWithoutPrefix = lowercaseMemberName.substring(prefixLength);
             if ((_requireExactNameMatch && lowercaseMemberNameWithoutPrefix.equals(_nameStartingWith)) || (!_requireExactNameMatch && lowercaseMemberNameWithoutPrefix.startsWith(_nameStartingWith))) {
               String bindingName = WodBindingUtils.toLowercaseFirstLetter(memberName.substring(prefixLength));
-              bindingKey = new MemberBindingKey(bindingName, _member);
+              if (_nameStartingWith.length() > 0 || !bindingName.startsWith("_")) {
+                bindingKey = new MemberBindingKey(bindingName, _member);
+              }
             }
           }
         }
@@ -260,7 +270,7 @@ public class WodBindingUtils {
     Wo wo = null;
     if (cachedWo != null) {
       if (cachedWo instanceof Wo) {
-        wo = (Wo)cachedWo;
+        wo = (Wo) cachedWo;
       }
       else {
         wo = null;
@@ -317,7 +327,7 @@ public class WodBindingUtils {
           }
         }
       }
-      
+
       if (wo == null) {
         _elementTypeToWoCache.put(_elementType, "NOAPI");
       }
@@ -325,7 +335,7 @@ public class WodBindingUtils {
         _elementTypeToWoCache.put(_elementType, wo);
       }
     }
-    
+
     return wo;
   }
 }

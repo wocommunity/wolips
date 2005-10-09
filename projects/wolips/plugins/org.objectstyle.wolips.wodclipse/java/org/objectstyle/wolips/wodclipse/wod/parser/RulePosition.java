@@ -33,15 +33,15 @@ public class RulePosition {
   public int getTokenOffset() {
     return myTokenOffset;
   }
-  
+
   public int getTokenEndOffset() {
     return myTokenOffset + myTokenLength;
   }
-  
+
   public Position getPosition() {
     return new Position(myTokenOffset, myTokenLength);
   }
-  
+
   public String getText() throws BadLocationException {
     String text = myDocument.get(myTokenOffset, myTokenLength);
     return text;
@@ -60,18 +60,22 @@ public class RulePosition {
   }
 
   public boolean isRuleOfType(Class _ruleType) {
-    return _ruleType.isAssignableFrom(myRule.getClass()); 
+    return _ruleType.isAssignableFrom(myRule.getClass());
   }
-  
+
+  public boolean containsIndex(int _index) {
+    return (myTokenOffset <= _index) && ((myTokenOffset + myTokenLength) >= _index);
+  }
+
   public String toString() {
     return "[RulePosition: rule = " + myRule + "; tokenOffset = " + myTokenOffset + "; tokenLength = " + myTokenLength + "; text = " + _getTextWithoutException() + "]";
   }
-  
+
   public static boolean isRulePositionOfType(RulePosition _rulePosition, Class _ruleType) {
     return (_rulePosition != null && _rulePosition.isRuleOfType(_ruleType));
   }
-  
+
   public static boolean isOperatorOfType(RulePosition _rulePosition, Class _wordDetectorType) {
-    return (_rulePosition != null && _rulePosition.getRule() instanceof OperatorRule && ((OperatorRule)_rulePosition.getRule()).isWordDetectorOfType(_wordDetectorType));
+    return (_rulePosition != null && _rulePosition.getRule() instanceof OperatorRule && ((OperatorRule) _rulePosition.getRule()).isWordDetectorOfType(_wordDetectorType));
   }
 }

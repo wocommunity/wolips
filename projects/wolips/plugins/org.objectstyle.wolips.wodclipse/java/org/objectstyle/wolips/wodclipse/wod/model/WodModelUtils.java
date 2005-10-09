@@ -160,7 +160,7 @@ public class WodModelUtils {
           if (wo != null) {
             Map bindingsMap = element.getBindingsMap();
             Binding[] bindings = wo.getBindings();
-            for (int i = 0; i < bindings.length; i ++) {
+            for (int i = 0; i < bindings.length; i++) {
               String bindingName = bindings[i].getName();
               if (bindings[i].isExplicitlyRequired() && !bindingsMap.containsKey(bindingName)) {
                 problems.add(new WodProblem(_wodModel, "Binding '" + bindingName + "' is required for " + wo.getClassName(), (hasPositions) ? ((DocumentWodElement) element).getElementNamePosition() : null, false));
@@ -212,7 +212,7 @@ public class WodModelUtils {
 
   public static void fillInHtmlElementNames(IFile _htmlFile, Set _htmlElementNames) throws CoreException, IOException {
     FileEditorInput fileInput = new FileEditorInput(_htmlFile);
-    IEncodedStorage storage = (IEncodedStorage)fileInput.getStorage();
+    IEncodedStorage storage = (IEncodedStorage) fileInput.getStorage();
     InputStream fileContents = storage.getContents();
     BufferedReader br = new BufferedReader(new InputStreamReader(fileContents, storage.getCharset()));
     int ch;
@@ -257,5 +257,9 @@ public class WodModelUtils {
         }
       }
     }
+  }
+
+  public static boolean isIndexContainedByWodUnit(int _index, IWodUnit _wodUnit) {
+    return _index >= _wodUnit.getStartOffset() && _index <= _wodUnit.getEndOffset();
   }
 }
