@@ -55,7 +55,6 @@
  */
 package org.objectstyle.wolips.apieditor.editor;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
