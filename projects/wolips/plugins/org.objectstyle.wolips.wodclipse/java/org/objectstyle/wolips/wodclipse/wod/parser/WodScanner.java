@@ -87,9 +87,10 @@ public class WodScanner extends AbstractJavaScanner {
 
   protected List createRules() {
     List rules = new ArrayList();
-    rules.add(new ConstantBindingValueRule("\"", "\"", getToken(PreferenceConstants.CONSTANT_BINDING_VALUE), '\\'));
-    rules.add(new ConstantBindingValueRule("'", "'", getToken(PreferenceConstants.CONSTANT_BINDING_VALUE), '\\'));
+    rules.add(new StringLiteralRule("\"", "\"", getToken(PreferenceConstants.CONSTANT_BINDING_VALUE), '\\'));
+    rules.add(new StringLiteralRule("'", "'", getToken(PreferenceConstants.CONSTANT_BINDING_VALUE), '\\'));
     rules.add(new WhitespaceRule(new WodWhitespaceDetector()));
+    rules.add(new MultilineCommentRule(getToken(PreferenceConstants.COMMENT)));
     rules.add(new CommentRule(getToken(PreferenceConstants.COMMENT)));
     rules.add(new OperatorRule(new ElementTypeOperatorWordDetector(), getToken(PreferenceConstants.OPERATOR)));
     rules.add(new OperatorRule(new OpenDefinitionWordDetector(), getToken(PreferenceConstants.OPERATOR)));
@@ -166,7 +167,7 @@ public class WodScanner extends AbstractJavaScanner {
         rulePosition = null;
       }
       else {
-        rulePosition = null;
+        rulePosition = new RulePosition(fDocument, null, getTokenOffset(), getTokenLength());
       }
     }
 

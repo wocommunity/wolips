@@ -52,7 +52,7 @@ public class RulePosition {
     try {
       text = getText();
     }
-    catch (BadLocationException e) {
+    catch (Throwable e) {
       e.printStackTrace();
       text = "<<failed>>";
     }
@@ -60,7 +60,7 @@ public class RulePosition {
   }
 
   public boolean isRuleOfType(Class _ruleType) {
-    return _ruleType.isAssignableFrom(myRule.getClass());
+    return myRule != null && _ruleType.isAssignableFrom(myRule.getClass());
   }
 
   public boolean containsIndex(int _index) {

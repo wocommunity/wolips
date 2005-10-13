@@ -54,14 +54,14 @@ import org.objectstyle.wolips.wodclipse.wod.parser.AssignmentOperatorWordDetecto
 import org.objectstyle.wolips.wodclipse.wod.parser.BindingNameRule;
 import org.objectstyle.wolips.wodclipse.wod.parser.BindingValueRule;
 import org.objectstyle.wolips.wodclipse.wod.parser.CloseDefinitionWordDetector;
-import org.objectstyle.wolips.wodclipse.wod.parser.CommentRule;
-import org.objectstyle.wolips.wodclipse.wod.parser.ConstantBindingValueRule;
 import org.objectstyle.wolips.wodclipse.wod.parser.ElementNameRule;
 import org.objectstyle.wolips.wodclipse.wod.parser.ElementTypeOperatorWordDetector;
 import org.objectstyle.wolips.wodclipse.wod.parser.ElementTypeRule;
 import org.objectstyle.wolips.wodclipse.wod.parser.EndAssignmentWordDetector;
+import org.objectstyle.wolips.wodclipse.wod.parser.ICommentRule;
 import org.objectstyle.wolips.wodclipse.wod.parser.OpenDefinitionWordDetector;
 import org.objectstyle.wolips.wodclipse.wod.parser.RulePosition;
+import org.objectstyle.wolips.wodclipse.wod.parser.StringLiteralRule;
 import org.objectstyle.wolips.wodclipse.wod.parser.WodScanner;
 
 /**
@@ -89,88 +89,87 @@ public class DocumentWodModel implements IWodModel {
     DocumentWodElement element = null;
     RulePosition savedRulePosition = null;
     RulePosition lastRulePosition = null;
+    boolean stringLiteralIsABindingName = false;
     RulePosition rulePosition;
     while ((rulePosition = scanner.nextRulePosition()) != null) {
       boolean whitespace = false;
       boolean comment = false;
-      boolean syntaxError = false;
       if (RulePosition.isRulePositionOfType(rulePosition, WhitespaceRule.class)) {
         whitespace = true;
       }
-      else if (RulePosition.isRulePositionOfType(rulePosition, CommentRule.class)) {
+      else if (RulePosition.isRulePositionOfType(rulePosition, ICommentRule.class)) {
         comment = true;
       }
       else if (RulePosition.isRulePositionOfType(rulePosition, ElementNameRule.class)) {
         if (lastRulePosition != null && !RulePosition.isOperatorOfType(lastRulePosition, CloseDefinitionWordDetector.class)) {
           addProblem("The element name '" + rulePosition._getTextWithoutException() + "' can only appear at the beginning of the document or after a '}'", rulePosition, false);
-          syntaxError = true;
         }
         savedRulePosition = rulePosition;
         element = null;
-        syntaxError = false;
       }
       else if (RulePosition.isOperatorOfType(rulePosition, ElementTypeOperatorWordDetector.class)) {
         if (!RulePosition.isRulePositionOfType(lastRulePosition, ElementNameRule.class)) {
           addProblem("A ':' can only appear after an element name", rulePosition, false);
-          syntaxError = true;
         }
       }
       else if (RulePosition.isRulePositionOfType(rulePosition, ElementTypeRule.class)) {
         if (!RulePosition.isOperatorOfType(lastRulePosition, ElementTypeOperatorWordDetector.class)) {
           addProblem("The element type '" + rulePosition._getTextWithoutException() + "' can only appear after a ':'", rulePosition, false);
-          syntaxError = true;
         }
-        else if (!syntaxError) {
+        else {
           element = new DocumentWodElement(savedRulePosition, rulePosition, this);
           addElement(element);
+          savedRulePosition = null;
         }
       }
       else if (RulePosition.isOperatorOfType(rulePosition, OpenDefinitionWordDetector.class)) {
         if (!RulePosition.isRulePositionOfType(lastRulePosition, ElementTypeRule.class)) {
           addProblem("A '{' can only appear after an element type", rulePosition, false);
-          syntaxError = true;
+        }
+      }
+      else if (RulePosition.isRulePositionOfType(rulePosition, StringLiteralRule.class)) {
+        boolean literalIsValue = RulePosition.isOperatorOfType(lastRulePosition, AssignmentOperatorWordDetector.class);
+        boolean literalIsName = !literalIsValue && (RulePosition.isOperatorOfType(lastRulePosition, EndAssignmentWordDetector.class) || RulePosition.isOperatorOfType(lastRulePosition, OpenDefinitionWordDetector.class));
+        if (!literalIsValue && !literalIsName) {
+          addProblem("The string literal '" + rulePosition._getTextWithoutException() + "' can only appear after a '{', '=', or ';'.", rulePosition, false);
+          savedRulePosition = null;
+        }
+        else if (literalIsName) {
+          savedRulePosition = rulePosition;
+        }
+        else if (literalIsValue) {
+          addBinding(element, savedRulePosition, rulePosition);
+          savedRulePosition = null;
         }
       }
       else if (RulePosition.isRulePositionOfType(rulePosition, BindingNameRule.class)) {
         if (!RulePosition.isOperatorOfType(lastRulePosition, OpenDefinitionWordDetector.class) && !RulePosition.isOperatorOfType(lastRulePosition, EndAssignmentWordDetector.class)) {
           addProblem("The binding name '" + rulePosition._getTextWithoutException() + "' can only appear after a '{' or a ';'", rulePosition, false);
-          syntaxError = true;
         }
-        else if (!syntaxError) {
-          savedRulePosition = rulePosition;
-        }
+        savedRulePosition = rulePosition;
       }
       else if (RulePosition.isOperatorOfType(rulePosition, AssignmentOperatorWordDetector.class)) {
-        if (!RulePosition.isRulePositionOfType(lastRulePosition, BindingNameRule.class)) {
+        if (!RulePosition.isRulePositionOfType(lastRulePosition, BindingNameRule.class) && !RulePosition.isRulePositionOfType(lastRulePosition, StringLiteralRule.class)) {
           addProblem("An '=' can only appear after a binding name", rulePosition, false);
-          syntaxError = true;
         }
       }
-      else if (RulePosition.isRulePositionOfType(rulePosition, BindingValueRule.class) || RulePosition.isRulePositionOfType(rulePosition, ConstantBindingValueRule.class)) {
+      else if (RulePosition.isRulePositionOfType(rulePosition, BindingValueRule.class)) {
         if (!RulePosition.isOperatorOfType(lastRulePosition, AssignmentOperatorWordDetector.class)) {
           addProblem("The binding value '" + rulePosition._getTextWithoutException() + "' can only appear after an '='", rulePosition, false);
-          syntaxError = true;
         }
-        else if (!syntaxError) {
-          if (element == null) {
-            syntaxError = true;
-          }
-          else {
-            DocumentWodBinding binding = new DocumentWodBinding(savedRulePosition, rulePosition, element);
-            element.addBinding(binding);
-          }
+        else {
+          addBinding(element, savedRulePosition, rulePosition);
         }
+        savedRulePosition = null;
       }
       else if (RulePosition.isOperatorOfType(rulePosition, EndAssignmentWordDetector.class)) {
-        if (!RulePosition.isRulePositionOfType(lastRulePosition, BindingValueRule.class) && !RulePosition.isRulePositionOfType(lastRulePosition, ConstantBindingValueRule.class)) {
+        if (!RulePosition.isRulePositionOfType(lastRulePosition, BindingValueRule.class) && !RulePosition.isRulePositionOfType(lastRulePosition, StringLiteralRule.class)) {
           addProblem("A ';' can only appear after a binding value", rulePosition, false);
-          syntaxError = true;
         }
       }
       else if (RulePosition.isOperatorOfType(rulePosition, CloseDefinitionWordDetector.class)) {
         if (!RulePosition.isOperatorOfType(lastRulePosition, OpenDefinitionWordDetector.class) && !RulePosition.isOperatorOfType(lastRulePosition, EndAssignmentWordDetector.class)) {
           addProblem("A '}' can only appear after a ';' or a '{'", rulePosition, false);
-          syntaxError = true;
         }
         else {
           element = null;
@@ -178,7 +177,6 @@ public class DocumentWodModel implements IWodModel {
       }
       else {
         addProblem("'" + rulePosition._getTextWithoutException() + "' is an unknown keyword", rulePosition, false);
-        syntaxError = true;
       }
 
       if (!whitespace && !comment) {
@@ -191,8 +189,25 @@ public class DocumentWodModel implements IWodModel {
     }
   }
 
+  protected void addBinding(DocumentWodElement _element, RulePosition _nameRulePosition, RulePosition _valueRulePosition) {
+    if (_element == null) {
+      addProblem("A binding must appear in a declaration", _valueRulePosition, false);
+    }
+    else if (_nameRulePosition == null) {
+      addProblem("A binding must have a name", _valueRulePosition, false);
+    }
+    else if (_valueRulePosition == null) {
+      addProblem("A binding must have a value", _valueRulePosition, false);
+    }
+    else {
+      DocumentWodBinding binding = new DocumentWodBinding(_nameRulePosition, _valueRulePosition, _element);
+      _element.addBinding(binding);
+    }
+  }
+
   public synchronized void addProblem(String _message, RulePosition _found, boolean _warning) {
-    myProblems.add(new WodProblem(this, _message, _found.getPosition(), _warning));
+    WodProblem problem = new WodProblem(this, _message, _found.getPosition(), _warning);
+    myProblems.add(problem);
   }
 
   public synchronized void addElement(DocumentWodElement _element) {

@@ -30,4 +30,8 @@ public class WodProblem {
   public boolean isWarning() {
     return myWarning;
   }
+  
+  public String toString() {
+    return "[WodProblem: message = " + myMessage + "]";
+  }
 }

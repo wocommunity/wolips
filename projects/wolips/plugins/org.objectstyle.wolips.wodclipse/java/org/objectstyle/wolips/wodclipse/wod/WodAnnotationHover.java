@@ -24,39 +24,39 @@ public class WodAnnotationHover implements IAnnotationHover, ITextHover {
   }
 
   public String getHoverInfo(ISourceViewer _sourceViewer, int _lineNumber) {
-    List annotations = getAnnotationsForLine(_sourceViewer, _lineNumber);
-    if (annotations != null) {
-      List messages = new ArrayList();
-      Iterator e = annotations.iterator();
-      while (e.hasNext()) {
-        Annotation annotation = (Annotation) e.next();
+    String hoverInfo = null;
+    List annotationsList = getAnnotationsForLine(_sourceViewer, _lineNumber);
+    if (annotationsList != null) {
+      List messagesList = new ArrayList();
+      Iterator annotationsIter = annotationsList.iterator();
+      while (annotationsIter.hasNext()) {
+        Annotation annotation = (Annotation) annotationsIter.next();
         String message = annotation.getText();
         if (message != null) {
           message = message.trim();
           if (message.length() > 0) {
-            messages.add(message);
+            messagesList.add(message);
           }
         }
       }
-      String message;
-      if (messages.size() == 1) {
-        message = (String) messages.get(0);
+      if (messagesList.size() == 1) {
+        hoverInfo = (String) messagesList.get(0);
       }
-      else if (messages.size() > 1) {
-        message = formatMessages(messages);
+      else if (messagesList.size() > 1) {
+        hoverInfo = formatMessages(messagesList);
       }
     }
-    return null;
+    return hoverInfo;
   }
 
   public String getHoverInfo(ITextViewer _textViewer, IRegion _hoverRegion) {
-    Iterator e = myAnnotationModel.getAnnotationIterator();
-    while (e.hasNext()) {
-      Annotation a = (Annotation) e.next();
-      Position p = myAnnotationModel.getPosition(a);
-      if (p.overlapsWith(_hoverRegion.getOffset(), _hoverRegion.getLength())) {
-        String text = a.getText();
-        if ((text != null) && (text.trim().length() > 0)) {
+    Iterator annotationsIter = myAnnotationModel.getAnnotationIterator();
+    while (annotationsIter.hasNext()) {
+      Annotation annotation = (Annotation) annotationsIter.next();
+      Position position = myAnnotationModel.getPosition(annotation);
+      if (position.overlapsWith(_hoverRegion.getOffset(), _hoverRegion.getLength())) {
+        String text = annotation.getText();
+        if (text != null && text.trim().length() > 0) {
           return text;
         }
       }
@@ -66,23 +66,23 @@ public class WodAnnotationHover implements IAnnotationHover, ITextHover {
 
   public IRegion getHoverRegion(ITextViewer _textViewer, int _offset) {
     // TODO If this is too slow then we might return new Region(offset, 0)
-    Iterator e = myAnnotationModel.getAnnotationIterator();
-    while (e.hasNext()) {
-      Annotation a = (Annotation) e.next();
-      Position p = myAnnotationModel.getPosition(a);
-      if (p.overlapsWith(_offset, 0)) {
-        String text = a.getText();
-        if ((text != null) && (text.trim().length() > 0)) {
-          return new Region(p.offset, p.length);
+    Iterator annotationsIter = myAnnotationModel.getAnnotationIterator();
+    while (annotationsIter.hasNext()) {
+      Annotation annotation = (Annotation) annotationsIter.next();
+      Position position = myAnnotationModel.getPosition(annotation);
+      if (position.overlapsWith(_offset, 0)) {
+        String text = annotation.getText();
+        if (text != null && text.trim().length() > 0) {
+          return new Region(position.offset, position.length);
         }
       }
     }
     return null;
   }
 
-  private String formatMessages(List messages) {
+  private String formatMessages(List _messages) {
     StringBuffer buffer = new StringBuffer();
-    Iterator e = messages.iterator();
+    Iterator e = _messages.iterator();
     while (e.hasNext()) {
       buffer.append("- "); //$NON-NLS-1$
       buffer.append(e.next());
@@ -91,30 +91,29 @@ public class WodAnnotationHover implements IAnnotationHover, ITextHover {
     return buffer.toString();
   }
 
-  private List getAnnotationsForLine(ISourceViewer viewer, int line) {
-    IDocument document = viewer.getDocument();
-    IAnnotationModel model = viewer.getAnnotationModel();
-    if (model == null) {
-      return null;
-    }
-    List retVal = new ArrayList();
-    Iterator e = model.getAnnotationIterator();
-    while (e.hasNext()) {
-      Annotation a = (Annotation) e.next();
-      Position position = model.getPosition(a);
-      if (position != null) {
-        try {
-          int annotationLine = document.getLineOfOffset(position.getOffset());
-          if (annotationLine == line) {
-            retVal.add(a);
+  private List getAnnotationsForLine(ISourceViewer _viewer, int _line) {
+    List annotationsList = new ArrayList();
+    IDocument document = _viewer.getDocument();
+    IAnnotationModel model = _viewer.getAnnotationModel();
+    if (model != null) {
+      Iterator annotationsIter = model.getAnnotationIterator();
+      while (annotationsIter.hasNext()) {
+        Annotation annotation = (Annotation) annotationsIter.next();
+        Position position = model.getPosition(annotation);
+        if (position != null) {
+          try {
+            int annotationLine = document.getLineOfOffset(position.getOffset());
+            if (annotationLine == _line) {
+              annotationsList.add(annotation);
+            }
           }
-        }
-        catch (BadLocationException e1) {
-          // ignore
+          catch (BadLocationException e1) {
+            // ignore
+          }
         }
       }
     }
-    return retVal;
+    return annotationsList;
   }
 
 }

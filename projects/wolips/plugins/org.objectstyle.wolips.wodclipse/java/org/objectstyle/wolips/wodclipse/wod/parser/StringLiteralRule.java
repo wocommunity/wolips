@@ -49,20 +49,20 @@ import org.eclipse.jface.text.rules.SingleLineRule;
 /**
  * @author mschrag
  */
-public class ConstantBindingValueRule extends SingleLineRule {
-  public ConstantBindingValueRule(String _startSequence, String _endSequence, IToken _token) {
+public class StringLiteralRule extends SingleLineRule {
+  public StringLiteralRule(String _startSequence, String _endSequence, IToken _token) {
     super(_startSequence, _endSequence, _token);
   }
 
-  public ConstantBindingValueRule(String _startSequence, String _endSequence, IToken _token, char _escapeCharacter) {
+  public StringLiteralRule(String _startSequence, String _endSequence, IToken _token, char _escapeCharacter) {
     super(_startSequence, _endSequence, _token, _escapeCharacter);
   }
 
-  public ConstantBindingValueRule(String _startSequence, String _endSequence, IToken _token, char _escapeCharacter, boolean _breaksOnEOF) {
+  public StringLiteralRule(String _startSequence, String _endSequence, IToken _token, char _escapeCharacter, boolean _breaksOnEOF) {
     super(_startSequence, _endSequence, _token, _escapeCharacter, _breaksOnEOF);
   }
 
-  public ConstantBindingValueRule(String _startSequence, String _endSequence, IToken _token, char _escapeCharacter, boolean _breaksOnEOF, boolean _escapeContinuesLine) {
+  public StringLiteralRule(String _startSequence, String _endSequence, IToken _token, char _escapeCharacter, boolean _breaksOnEOF, boolean _escapeContinuesLine) {
     super(_startSequence, _endSequence, _token, _escapeCharacter, _breaksOnEOF, _escapeContinuesLine);
   }
 }

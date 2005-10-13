@@ -44,14 +44,13 @@
 package org.objectstyle.wolips.wodclipse.wod.parser;
 
 import org.eclipse.jface.text.rules.ICharacterScanner;
-import org.eclipse.jface.text.rules.IPredicateRule;
 import org.eclipse.jface.text.rules.IToken;
 import org.eclipse.jface.text.rules.Token;
 
 /**
  * @author mschrag
  */
-public class CommentRule implements IPredicateRule {
+public class CommentRule implements ICommentRule {
   private IToken myToken;
 
   public CommentRule(IToken _token) {
@@ -69,30 +68,32 @@ public class CommentRule implements IPredicateRule {
   public IToken evaluate(ICharacterScanner _scanner, boolean _resume) {
     int startColumn = _scanner.getColumn();
     IToken token = Token.UNDEFINED;
-    int ch;
+    int ch = 0;
     int unreadCount = 0;
     int slashCount = 0;
-    while ((ch = _scanner.read()) != ICharacterScanner.EOF) {
-      unreadCount ++;
+    boolean done = false;
+    while (!done && (ch = _scanner.read()) != ICharacterScanner.EOF) {
       if (slashCount < 2) {
+        unreadCount++;
         if (ch == '/') {
-          slashCount ++;
+          slashCount++;
+          if (slashCount == 2) {
+            token = myToken;
+            unreadCount = 0;
+          }
         }
         else {
-          break;
+          done = true;
         }
       }
-      else {
-        unreadCount = 0;
-        token = myToken;
-        if (ch == '\n' || ch == '\r') {
-          break;
-        }
+      else if (ch == '\n' || ch == '\r') {
+        unreadCount ++;
+        done = true;
       }
     }
 
     if (ch == ICharacterScanner.EOF) {
-      unreadCount ++;
+      unreadCount++;
     }
     for (int i = 0; i < unreadCount; i++) {
       _scanner.unread();

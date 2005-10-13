@@ -6,12 +6,12 @@ import java.util.Map;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.part.FileEditorInput;
 import org.objectstyle.wolips.core.resources.builder.AbstractDeltaCleanBuilder;
 import org.objectstyle.wolips.preferences.Preferences;
+import org.objectstyle.wolips.wodclipse.WodclipsePlugin;
 import org.objectstyle.wolips.wodclipse.wod.WodFileDocumentProvider;
 import org.objectstyle.wolips.wodclipse.wod.WodReconcilingStrategy;
 import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
@@ -82,8 +82,8 @@ public class WodBuilder extends AbstractDeltaCleanBuilder {
           }
         }
       }
-      catch (CoreException e) {
-        e.printStackTrace();
+      catch (Throwable e) {
+        WodclipsePlugin.getDefault().log(e);
       }
     }
   }

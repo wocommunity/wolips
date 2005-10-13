@@ -51,6 +51,7 @@ import org.eclipse.jface.text.presentation.PresentationReconciler;
 import org.eclipse.jface.text.reconciler.IReconciler;
 import org.eclipse.jface.text.reconciler.MonoReconciler;
 import org.eclipse.jface.text.rules.DefaultDamagerRepairer;
+import org.eclipse.jface.text.source.IAnnotationHover;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.ui.texteditor.ITextEditor;
@@ -78,9 +79,9 @@ public class WodSourceViewerConfiguration extends SourceViewerConfiguration {
     return myScanner;
   }
 
-  //  public IAnnotationHover getAnnotationHover(ISourceViewer _sourceViewer) {
-  //    return new WodAnnotationHover(_sourceViewer.getAnnotationModel());
-  //  }
+  public IAnnotationHover getAnnotationHover(ISourceViewer _sourceViewer) {
+    return new WodAnnotationHover(_sourceViewer.getAnnotationModel());
+  }
 
   public IReconciler getReconciler(ISourceViewer _sourceViewer) {
     if (myReconciler == null) {

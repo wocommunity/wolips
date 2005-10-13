@@ -43,13 +43,86 @@
  */
 package org.objectstyle.wolips.wodclipse.wod.parser;
 
+import org.eclipse.jface.text.rules.ICharacterScanner;
 import org.eclipse.jface.text.rules.IToken;
+import org.eclipse.jface.text.rules.Token;
 
 /**
- * @author mike
+ * @author mschrag
  */
-public class BindingNameRule extends SingleWordRule {
-  public BindingNameRule(IToken _token) {
-    super(_token, new char[] { '.', '?', '-' }, '=');
+public class MultilineCommentRule implements ICommentRule {
+  private static final int COMMENT_STATE_NONE = 0;
+  private static final int COMMENT_STATE_SLASH = 1;
+  private static final int COMMENT_STATE_SLASHSTAR = 2;
+  private static final int COMMENT_STATE_SLASHSTARSTAR = 3;
+  private static final int COMMENT_STATE_SLASHSTARSTARSLASH = 4;
+
+  private IToken myToken;
+
+  public MultilineCommentRule(IToken _token) {
+    myToken = _token;
+  }
+
+  public IToken getSuccessToken() {
+    return myToken;
+  }
+
+  public IToken evaluate(ICharacterScanner _scanner) {
+    return evaluate(_scanner, false);
+  }
+
+  public IToken evaluate(ICharacterScanner _scanner, boolean _resume) {
+    int startColumn = _scanner.getColumn();
+    IToken token = Token.UNDEFINED;
+    int ch = 0;
+    int unreadCount = 0;
+    int commentState = MultilineCommentRule.COMMENT_STATE_NONE;
+    boolean done = false;
+    while (!done && (ch = _scanner.read()) != ICharacterScanner.EOF) {
+      if (commentState == MultilineCommentRule.COMMENT_STATE_NONE) {
+        unreadCount++;
+        if (ch == '/') {
+          commentState = MultilineCommentRule.COMMENT_STATE_SLASH;
+        }
+        else {
+          done = true;
+        }
+      }
+      else if (commentState == MultilineCommentRule.COMMENT_STATE_SLASH) {
+        if (ch == '*') {
+          commentState = MultilineCommentRule.COMMENT_STATE_SLASHSTAR;
+          token = myToken;
+          unreadCount = 0;
+        }
+        else {
+          unreadCount++;
+          commentState = MultilineCommentRule.COMMENT_STATE_NONE;
+          done = true;
+        }
+      }
+      else if (commentState == MultilineCommentRule.COMMENT_STATE_SLASHSTAR) {
+        if (ch == '*') {
+          commentState = MultilineCommentRule.COMMENT_STATE_SLASHSTARSTAR;
+        }
+      }
+      else if (commentState == MultilineCommentRule.COMMENT_STATE_SLASHSTARSTAR) {
+        if (ch == '/') {
+          commentState = MultilineCommentRule.COMMENT_STATE_SLASHSTARSTARSLASH;
+          done = true;
+        }
+        else {
+          commentState = MultilineCommentRule.COMMENT_STATE_SLASHSTARSTAR;
+        }
+      }
+    }
+
+    if (ch == ICharacterScanner.EOF) {
+      unreadCount++;
+    }
+    for (int i = 0; i < unreadCount; i++) {
+      _scanner.unread();
+    }
+
+    return token;
   }
 }
