@@ -137,7 +137,7 @@ public abstract class AbstractValidationChild extends AbstractApiModelElement im
 
   public And getAnd() {
     NodeList list = element.getChildNodes();
-    assert (list.getLength() == 0 || list.getLength() == 1);
+//  assert (list.getLength() == 0 || list.getLength() == 1);
     List elements = getChildrenElementsByTagName(And.AND);
     if (elements == null || elements.size() == 0) {
       return null;
@@ -147,7 +147,7 @@ public abstract class AbstractValidationChild extends AbstractApiModelElement im
 
   public Count getCount() {
     NodeList list = element.getChildNodes();
-    assert (list.getLength() == 0 || list.getLength() == 1);
+//  assert (list.getLength() == 0 || list.getLength() == 1);
     List elements = getChildrenElementsByTagName(Count.COUNT);
     if (elements == null || elements.size() == 0) {
       return null;
@@ -157,7 +157,7 @@ public abstract class AbstractValidationChild extends AbstractApiModelElement im
 
   public Or getOr() {
     NodeList list = element.getChildNodes();
-    assert (list.getLength() == 0 || list.getLength() == 1);
+//   assert (list.getLength() == 0 || list.getLength() == 1);
     List elements = getChildrenElementsByTagName(Or.OR);
     if (elements == null || elements.size() == 0) {
       return null;
@@ -167,7 +167,7 @@ public abstract class AbstractValidationChild extends AbstractApiModelElement im
 
   public Not getNot() {
     NodeList list = element.getChildNodes();
-    assert (list.getLength() == 0 || list.getLength() == 1);
+//  assert (list.getLength() == 0 || list.getLength() == 1);
     List elements = getChildrenElementsByTagName(Not.NOT);
     if (elements == null || elements.size() == 0) {
       return null;

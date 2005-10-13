@@ -100,8 +100,7 @@ public class ApiEditor extends FormEditor {
 	}
 
 	public void doSaveAs() {
-		assert (false);
-		return;
+		throw new UnsupportedOperationException("doSaveAs");
 	}
 
 	public boolean isSaveAsAllowed() {
