@@ -67,6 +67,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.Point;
 import org.objectstyle.wolips.datasets.adaptable.Project;
+import org.objectstyle.wolips.datasets.project.WOLipsCore;
 import org.objectstyle.wolips.ui.UIPlugin;
 
 /**
@@ -131,7 +132,7 @@ public class ResourcesLabelDecorator implements ILabelDecorator {
 						return webServerResourcesImage(image);
 				}
 			} catch (CoreException e) {
-				UIPlugin.getDefault().getPluginLogger().log(e);
+				UIPlugin.getDefault().log(e);
 			}
 		}
 		return image;

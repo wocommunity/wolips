@@ -24,4 +24,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.objectstyle.wolips.jdt,
  org.objectstyle.wolips.ui
 Eclipse-AutoStart: true
-Export-Package: org.objectstyle.wolips.launching
+Export-Package: org.objectstyle.wolips.launching,
+ org.objectstyle.wolips.launching.actions,
+ org.objectstyle.wolips.launching.delegates,
+ org.objectstyle.wolips.launching.ui
