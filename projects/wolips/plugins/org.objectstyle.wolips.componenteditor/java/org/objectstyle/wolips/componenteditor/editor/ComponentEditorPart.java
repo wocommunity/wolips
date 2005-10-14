@@ -43,6 +43,8 @@
  */
 package org.objectstyle.wolips.componenteditor.editor;
 
+import java.util.Iterator;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -158,7 +160,8 @@ public class ComponentEditorPart extends MultiPageEditorPart {
 			IEditorPart editorPart = null;
 			switch (i) {
 			case 0:
-				compilationUnitEditor = new CompilationUnitEditor();;
+				compilationUnitEditor = new CompilationUnitEditor();
+				;
 				editorPart = compilationUnitEditor;
 				try {
 					this.addPage(editorPart, editorInput[i]);
@@ -329,5 +332,18 @@ public class ComponentEditorPart extends MultiPageEditorPart {
 					.getAdapter(IContentOutlinePage.class);
 			this.getComponentEditorOutline().setPageActive(contentOutlinePage);
 		}
+	}
+
+	public boolean isDirty() {
+		if (super.isDirty()) {
+			return true;
+		}
+		if(structuredTextEditorHTMLWithWebObjectTags.isDirty()) {
+			return true;
+		}
+		if(wodEditor.isDirty()) {
+			return true;
+		}
+		return false;
 	}
 }
