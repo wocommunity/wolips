@@ -43,63 +43,61 @@
  */
 package org.objectstyle.wolips.componenteditor.editor;
 
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.ide.IGotoMarker;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.ui.IActionBars;
+import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
-/**
- * @author uli
- */
-public class ComponentEditor extends ComponentEditorPart {
+public class EmptyOutlinePage implements IContentOutlinePage {
+	private Composite control;
 
-	public ComponentEditor() {
+	public EmptyOutlinePage() {
 		super();
+
 	}
 
-	public Object getAdapter(Class adapter) {
-		if (adapter.equals(IGotoMarker.class)) {
-			return null;
-		}
-		return super.getAdapter(adapter);
+	public void createControl(Composite parent) {
+		control = new Composite(parent, SWT.NULL);
 	}
 
-	public void switchToJava() {
-		Display.getDefault().asyncExec(new Runnable() {
-			public void run() {
-				setActivePage(0);
-				setFocus();
+	public void dispose() {
+		control = null;
+	}
+
+	public Control getControl() {
+		return control;
+	}
+
+	public void setActionBars(IActionBars actionBars) {
+		return;
+	}
+
+	public void setFocus() {
+		return;
+	}
+
+	public void addSelectionChangedListener(ISelectionChangedListener listener) {
+		return;
+	}
+
+	public ISelection getSelection() {
+		return new ISelection() {
+			public boolean isEmpty() {
+				return true;
 			}
-		});
+		};
 	}
 
-	public void switchToHtml() {
-		Display.getDefault().asyncExec(new Runnable() {
-			public void run() {
-				setHtmlActive(true);
-				setActivePage(1);
-				setFocus();
-			}
-		});
+	public void removeSelectionChangedListener(
+			ISelectionChangedListener listener) {
+		return;
 	}
 
-	public void switchToWod() {
-		Display.getDefault().asyncExec(new Runnable() {
-			public void run() {
-				setHtmlActive(false);
-				setActivePage(1);
-				setFocus();
-			}
-		});
+	public void setSelection(ISelection selection) {
+		return;
 	}
 
-	public void switchToApi() {
-		if (apiEditor == null) {
-			return;
-		}
-		Display.getDefault().asyncExec(new Runnable() {
-			public void run() {
-				setActivePage(2);
-				setFocus();
-			}
-		});
-	}
 }
