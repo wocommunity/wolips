@@ -57,7 +57,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.jdt.internal.core.SourceType;
+import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.internal.corext.refactoring.changes.CopyResourceChange;
 import org.eclipse.jdt.internal.corext.refactoring.changes.DeleteFileChange;
 import org.eclipse.jdt.internal.corext.refactoring.changes.DeleteFolderChange;
@@ -76,7 +76,7 @@ import org.eclipse.ltk.core.refactoring.participants.RenameParticipant;
  */
 
 public class WOComponentRenameParticipant extends RenameParticipant {
-    private SourceType mySourceType;
+    private IType mySourceType;
     
     public WOComponentRenameParticipant() {
     }
@@ -84,8 +84,8 @@ public class WOComponentRenameParticipant extends RenameParticipant {
     protected boolean initialize(Object _element) {
         boolean initialized = false;
         try {
-            if (_element instanceof SourceType) {
-                mySourceType = (SourceType) _element;
+            if (_element instanceof IType) {
+                mySourceType = (IType) _element;
                 initialized = PluginUtils.isOfType(mySourceType, "com.webobjects.appserver.WOComponent");
             }
         }
