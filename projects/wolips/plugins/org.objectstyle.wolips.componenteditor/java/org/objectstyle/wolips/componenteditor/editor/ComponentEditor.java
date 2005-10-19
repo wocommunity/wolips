@@ -43,6 +43,7 @@
  */
 package org.objectstyle.wolips.componenteditor.editor;
 
+import org.eclipse.core.resources.IMarker;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.ide.IGotoMarker;
 
@@ -62,44 +63,4 @@ public class ComponentEditor extends ComponentEditorPart {
 		return super.getAdapter(adapter);
 	}
 
-	public void switchToJava() {
-		Display.getDefault().asyncExec(new Runnable() {
-			public void run() {
-				setActivePage(0);
-				setFocus();
-			}
-		});
-	}
-
-	public void switchToHtml() {
-		Display.getDefault().asyncExec(new Runnable() {
-			public void run() {
-				setHtmlActive(true);
-				setActivePage(1);
-				setFocus();
-			}
-		});
-	}
-
-	public void switchToWod() {
-		Display.getDefault().asyncExec(new Runnable() {
-			public void run() {
-				setHtmlActive(false);
-				setActivePage(1);
-				setFocus();
-			}
-		});
-	}
-
-	public void switchToApi() {
-		if (apiEditor == null) {
-			return;
-		}
-		Display.getDefault().asyncExec(new Runnable() {
-			public void run() {
-				setActivePage(2);
-				setFocus();
-			}
-		});
-	}
 }

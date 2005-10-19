@@ -43,8 +43,7 @@
  */
 package org.objectstyle.wolips.componenteditor.editor;
 
-import java.util.Iterator;
-
+import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -64,9 +63,9 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IPropertyListener;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.ide.IGotoMarker;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
-import org.eclipse.wst.html.ui.internal.provisional.StructuredTextEditorHTML;
 import org.eclipse.wst.sse.ui.internal.contentoutline.StructuredTextEditorContentOutlinePage;
 import org.objectstyle.wolips.apieditor.editor.ApiEditor;
 import org.objectstyle.wolips.componenteditor.ComponenteditorPlugin;
@@ -77,7 +76,7 @@ import org.objectstyle.wolips.wodclipse.wod.WodEditor;
 
 public class ComponentEditorPart extends MultiPageEditorPart {
 
-	private ComponentEditorInput componentEditorInput;
+	ComponentEditorInput componentEditorInput;
 
 	private IEditorPart[] editorParts;
 
@@ -160,8 +159,18 @@ public class ComponentEditorPart extends MultiPageEditorPart {
 			IEditorPart editorPart = null;
 			switch (i) {
 			case 0:
-				compilationUnitEditor = new CompilationUnitEditor();
-				;
+				compilationUnitEditor = new CompilationUnitEditor() {
+				public Object getAdapter(Class adapter) {
+					if (adapter.equals(IGotoMarker.class)) {
+						return super.getAdapter(adapter);
+					}
+					return super.getAdapter(adapter);
+				}
+				public void gotoMarker(IMarker marker) {
+					super.gotoMarker(marker);
+				}
+				
+			};
 				editorPart = compilationUnitEditor;
 				try {
 					this.addPage(editorPart, editorInput[i]);
@@ -239,11 +248,9 @@ public class ComponentEditorPart extends MultiPageEditorPart {
 		StructuredTextEditorContentOutlinePage contentOutlinePage = null;
 		contentOutlinePage = (StructuredTextEditorContentOutlinePage) structuredTextEditorHTMLWithWebObjectTags
 				.getAdapter(IContentOutlinePage.class);
-		addWebObjectsTagNamesListener(wodEditor,
-				structuredTextEditorHTMLWithWebObjectTags);
+		addWebObjectsTagNamesListener();
 		if (contentOutlinePage != null) {
-			new HTMLOutlineSelectionHandler(contentOutlinePage,
-					(WodEditor) wodEditor);
+			new HTMLOutlineSelectionHandler(contentOutlinePage, wodEditor);
 		}
 		CTabFolder tabFolder = (CTabFolder) this.getContainer();
 		tabFolder.addSelectionListener(new SelectionListener() {
@@ -257,18 +264,28 @@ public class ComponentEditorPart extends MultiPageEditorPart {
 			}
 
 		});
-		Display.getDefault().asyncExec(new Runnable() {
-			public void run() {
-				ComponentEditorPart.this.updateOutline();
-			}
-		});
+		if (componentEditorInput.isDisplayJavaPartOnReveal()) {
+			Display.getDefault().asyncExec(new Runnable() {
+				public void run() {
+					ComponentEditorPart.this.updateOutline();
+				}
+			});
+		}
+		if (componentEditorInput.isDisplayHtmlPartOnReveal()) {
+			this.switchToHtml();
+		} else if (componentEditorInput.isDisplayWodPartOnReveal()) {
+			this.switchToWod();
+		} else if (componentEditorInput.isDisplayWooPartOnReveal()) {
+			this.switchToWod();
+		} else if (componentEditorInput.isDisplayApiPartOnReveal()) {
+			this.switchToApi();
+		}
 		return;
 	}
 
-	private void addWebObjectsTagNamesListener(final WodEditor wodEditor,
-			StructuredTextEditorHTML htmlEditor) {
-		htmlEditor.getSelectionProvider().addSelectionChangedListener(
-				new ISelectionChangedListener() {
+	private void addWebObjectsTagNamesListener() {
+		structuredTextEditorHTMLWithWebObjectTags.getSelectionProvider()
+				.addSelectionChangedListener(new ISelectionChangedListener() {
 
 					public void selectionChanged(SelectionChangedEvent event) {
 						WodclipsePlugin.getDefault().updateWebObjectsTagNames(
@@ -338,12 +355,42 @@ public class ComponentEditorPart extends MultiPageEditorPart {
 		if (super.isDirty()) {
 			return true;
 		}
-		if(structuredTextEditorHTMLWithWebObjectTags.isDirty()) {
+		if (structuredTextEditorHTMLWithWebObjectTags.isDirty()) {
 			return true;
 		}
-		if(wodEditor.isDirty()) {
+		if (wodEditor.isDirty()) {
 			return true;
 		}
 		return false;
+	}
+
+	public void switchToJava() {
+		switchToPage(0);
+	}
+
+	public void switchToHtml() {
+		setHtmlActive(true);
+		switchToPage(1);
+	}
+
+	public void switchToWod() {
+		setHtmlActive(false);
+		switchToPage(1);
+	}
+
+	public void switchToApi() {
+		if (apiEditor == null) {
+			return;
+		}
+		switchToPage(2);
+	}
+
+	public void switchToPage(int page) {
+		this.setActivePage(page);
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				setFocus();
+			}
+		});
 	}
 }
