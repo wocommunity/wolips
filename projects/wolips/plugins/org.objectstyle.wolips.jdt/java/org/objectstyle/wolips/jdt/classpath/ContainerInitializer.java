@@ -98,8 +98,8 @@ public class ContainerInitializer extends ClasspathContainerInitializer {
 	 *      org.eclipse.jdt.core.IJavaProject)
 	 */
 	public Object getComparisonID(IPath containerPath, IJavaProject project) {
-		return super.getComparisonID(containerPath, project);
-	}
+    return containerPath;
+  }
 
 	/*
 	 * (non-Javadoc)
