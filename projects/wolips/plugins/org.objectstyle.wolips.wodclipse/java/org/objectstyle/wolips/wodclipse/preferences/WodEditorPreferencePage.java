@@ -45,6 +45,7 @@ package org.objectstyle.wolips.wodclipse.preferences;
 
 import org.eclipse.jface.preference.ColorFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.objectstyle.wolips.wodclipse.WodclipsePlugin;
@@ -68,6 +69,8 @@ public class WodEditorPreferencePage extends FieldEditorPreferencePage implement
     addField(new ColorFieldEditor(PreferenceConstants.OPERATOR, "Operator Color", getFieldEditorParent()));
     addField(new ColorFieldEditor(PreferenceConstants.COMMENT, "Comment Color", getFieldEditorParent()));
     addField(new ColorFieldEditor(PreferenceConstants.UNKNOWN, "Unknown Color", getFieldEditorParent()));
+//  AK: this actually belongs to the build prefs section, but this resides in another framework and isn't used anywhere else...
+    addField(new StringFieldEditor(PreferenceConstants.ALLOWED_BINDING_CHARACTERS, "Allowed Binding Characters", getFieldEditorParent()));
   }
 
   public void init(IWorkbench workbench) {
