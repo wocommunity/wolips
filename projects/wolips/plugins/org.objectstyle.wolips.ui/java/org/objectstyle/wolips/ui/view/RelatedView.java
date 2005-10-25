@@ -69,6 +69,10 @@ import org.eclipse.jdt.internal.ui.JavaPlugin;
 import org.eclipse.jdt.internal.ui.viewsupport.StorageLabelProvider;
 import org.eclipse.jdt.ui.IWorkingCopyManager;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.DecoratingLabelProvider;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -85,7 +89,9 @@ import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -93,10 +99,13 @@ import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IPartListener;
 import org.eclipse.ui.ISelectionListener;
 import org.eclipse.ui.IViewSite;
+import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.actions.OpenWithMenu;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.ui.views.navigator.ShowInNavigatorAction;
 import org.objectstyle.wolips.datasets.project.WOLipsCore;
 import org.objectstyle.wolips.datasets.resources.IWOLipsResource;
 import org.objectstyle.wolips.ui.UIPlugin;
@@ -112,6 +121,7 @@ public final class RelatedView extends ViewPart
 			ISelectionListener,
 			IPartListener {
 	private boolean forceOpenInTextEditor = false;
+	
 
 	protected class ViewContentProvider implements ITreeContentProvider {
 
@@ -233,6 +243,9 @@ public final class RelatedView extends ViewPart
 		super();
 	}
 
+	private Action openInEditorAction;
+	private Action showInNavigatorAction;
+
 	public void createPartControl(Composite parent) {
 
 		this.viewer = new TableViewer(parent, 770);
@@ -255,7 +268,8 @@ public final class RelatedView extends ViewPart
 			}
 		});
 
-		this.doubleClickAction = new Action() {
+		this.showInNavigatorAction= new ShowInNavigatorAction(this.getViewSite().getPage(), this.viewer);
+		this.openInEditorAction = new Action() {
 
 			public void run() {
 
@@ -282,6 +296,9 @@ public final class RelatedView extends ViewPart
 			}
 
 		};
+		
+		this.doubleClickAction = this.openInEditorAction;
+		
 		this.viewer.addDoubleClickListener(new IDoubleClickListener() {
 
 			public void doubleClick(DoubleClickEvent event) {
@@ -326,6 +343,58 @@ public final class RelatedView extends ViewPart
 		getViewSite().getPage().addSelectionListener(this);
 		getViewSite().getPage().addPartListener(this);
 		this.selectionChanged(null, getViewSite().getPage().getSelection());
+		createContextMenu();
+	}
+
+	/**
+	 * Creates a pop-up menu on the given control
+	 *
+	 * @param menuControl the control with which the pop-up
+	 *  menu will be associated
+	 */
+	private void createContextMenu() {
+		Control menuControl = this.viewer.getControl();
+		MenuManager menuMgr = new MenuManager("#PopUp"); //$NON-NLS-1$
+		menuMgr.setRemoveAllWhenShown(true);
+		menuMgr.addMenuListener(new IMenuListener() {
+			public void menuAboutToShow(IMenuManager manager) {
+				fillContextMenu(manager);
+			}
+		});
+		Menu menu = menuMgr.createContextMenu(menuControl);
+		menuControl.setMenu(menu);
+		// register the context menu such that other plugins may contribute to it
+		getSite().registerContextMenu(menuMgr, this.viewer);
+	}
+
+	/**
+	 * Adds actions to the context menu
+	 *
+	 * @param viewer the viewer who's menu we're configuring
+	 * @param menu The menu to contribute to
+	 */
+	private void fillContextMenu(IMenuManager menu) {
+		menu.add(new Separator());
+		menu.add(showInNavigatorAction);
+		List list = ((IStructuredSelection) getViewer().getSelection()).toList();
+		for (int i = 0; i < list.size(); i++) {
+			Object object = list.get(i);
+			if (object != null) {
+				if (object instanceof IResource) {
+					IResource resource = (IResource)object;
+					OpenWithMenu action = new OpenWithMenu(getViewSite().getPage(), resource);
+					menu.add(action);
+					//AK: I can
+					// OpenEditorActionGroup group = new OpenEditorActionGroup(this);
+					// group.fillContextMenu(menu);
+				} else if (object instanceof ICompilationUnit) {
+					ICompilationUnit unit = (ICompilationUnit)object;
+					OpenWithMenu action = new OpenWithMenu(getViewSite().getPage(), unit);
+					menu.add(action);
+				}
+			}
+		}
+		menu.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 	}
 
 	public void setFocus() {
