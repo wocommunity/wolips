@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -20,6 +21,7 @@ public class WodBuilder extends AbstractDeltaCleanBuilder {
   private boolean myValidateWOD;
 
   public WodBuilder() {
+	  super();
   }
 
   public boolean buildStarted(int _kind, Map _args, IProgressMonitor _monitor, IProject _project, Map _buildCache) {
@@ -56,7 +58,18 @@ public class WodBuilder extends AbstractDeltaCleanBuilder {
           if ("wod".equals(fileExtension)) {
             wodFile = file;
           }
-          else if (("html".equals(fileExtension) && _resource.getParent().getName().endsWith(".wo")) || "api".equals(fileExtension)) {
+          else if ("html".equals(fileExtension) && _resource.getParent().getName().endsWith(".wo")) {
+        	  String fileName = file.getName();
+              fileName = fileName.substring(0, fileName.length() - ("." + fileExtension).length());
+              IFolder folder = (IFolder)_resource.getParent();
+              wodFile = (IFile)folder.findMember(fileName + "wod");
+          }
+          else if ("api".equals(fileExtension)) {
+        	  //should we really do something with the component when we change the api?
+        	  //shoulnd't we validate all files using the api?
+        	  if(5==5) {
+        		  return;
+        	  }
             String fileName = file.getName();
             fileName = fileName.substring(0, fileName.length() - ("." + fileExtension).length());
             List wodResources = WorkbenchUtilitiesPlugin.findResourcesInProjectByNameAndExtensions(_resource.getProject(), fileName, new String[] { "wod" }, false);
