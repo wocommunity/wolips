@@ -240,6 +240,7 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 	 * @param extensions
 	 * @param includesReferencedProjects
 	 * @return The list of resources.
+	 * @deprecated Use the locate stuff.
 	 */
 	public final static List findResourcesInProjectByNameAndExtensions(
 			IProject project, String name, String[] extensions,
@@ -278,6 +279,7 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 	 * @param name
 	 * @param extensions
 	 * @return List of IResource
+	 * @deprecated Use the locate stuff.
 	 */
 	public final static List findResourcesInResourcesByNameAndExtensions(
 			IResource[] resources, String name, String[] extensions) {
@@ -294,6 +296,7 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 	 * @param name
 	 * @param extensions
 	 * @return List of IResource
+	 * @deprecated Use the locate stuff.
 	 */
 	public final static List findResourcesInResourceByNameAndExtensions(
 			IResource resource, String name, String[] extensions) {
@@ -317,6 +320,13 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 		return list;
 	}
 
+	/**
+	 * @param resources
+	 * @param name
+	 * @param extensions
+	 * @param list
+	 * @deprecated Use the locate stuff.
+	 */
 	private final static void findResourcesInResourceByNameAndExtensionsAndAddToArrayList(
 			IResource[] resources, String name, String[] extensions,
 			ArrayList list) {
@@ -360,6 +370,7 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 	 * @param anArrayList
 	 * @param aResource
 	 * @param aFileName
+	 * @deprecated Use the locate stuff.
 	 */
 	public final static void findFilesInResourceByName(ArrayList anArrayList,
 			IResource aResource, String aFileName) {
@@ -385,6 +396,7 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 	 * @param anArrayList
 	 * @param aResource
 	 * @param aFileName
+	 * @deprecated Use the locate stuff.
 	 */
 	private final static void findFilesInResourceByName(ArrayList anArrayList,
 			IResource[] aResource, String aFileName) {
