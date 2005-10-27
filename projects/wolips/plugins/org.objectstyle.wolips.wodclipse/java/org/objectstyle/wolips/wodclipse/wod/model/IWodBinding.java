@@ -50,4 +50,5 @@ public interface IWodBinding extends IWodUnit {
   public IWodElement getElement();
   public String getName();
   public String getValue();
+  public boolean shouldValidate();
 }

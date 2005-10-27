@@ -53,11 +53,13 @@ public class DocumentWodBinding implements IWodBinding {
   private RulePosition myName;
   private RulePosition myValue;
   private DocumentWodElement myElement;
+  private boolean myValidate;
 
   public DocumentWodBinding(RulePosition _name, RulePosition _value, DocumentWodElement _element) {
     myName = _name;
     myValue = _value;
     myElement = _element;
+    myValidate = true;
   }
 
   public IWodElement getElement() {
@@ -86,6 +88,14 @@ public class DocumentWodBinding implements IWodBinding {
 
   public int getEndOffset() {
     return myValue.getTokenEndOffset();
+  }
+  
+  public void setValidate(boolean _validate) {
+    myValidate = _validate;
+  }
+  
+  public boolean shouldValidate() {
+    return myValidate;
   }
 
   public String toString() {

@@ -48,6 +48,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.rules.WhitespaceRule;
 import org.objectstyle.wolips.wodclipse.wod.parser.AssignmentOperatorWordDetector;
@@ -86,6 +87,7 @@ public class DocumentWodModel implements IWodModel {
     myProblems.clear();
 
     WodScanner scanner = WodScanner.wodScannerForDocument(myDocument);
+    DocumentWodBinding lastBinding = null;
     DocumentWodElement element = null;
     RulePosition savedRulePosition = null;
     RulePosition lastRulePosition = null;
@@ -99,6 +101,20 @@ public class DocumentWodModel implements IWodModel {
       }
       else if (RulePosition.isRulePositionOfType(rulePosition, ICommentRule.class)) {
         comment = true;
+        if (lastBinding != null) {
+          try {
+            String commentText = rulePosition.getText();
+            if (commentText.startsWith("//")) {
+              commentText = commentText.substring(2).trim();
+              if ("VALID".equalsIgnoreCase(commentText)) {
+                lastBinding.setValidate(false);
+              }
+            }
+          }
+          catch (BadLocationException e) {
+            e.printStackTrace();
+          }
+        }
       }
       else if (RulePosition.isRulePositionOfType(rulePosition, ElementNameRule.class)) {
         if (lastRulePosition != null && !RulePosition.isOperatorOfType(lastRulePosition, CloseDefinitionWordDetector.class)) {
@@ -138,7 +154,7 @@ public class DocumentWodModel implements IWodModel {
           savedRulePosition = rulePosition;
         }
         else if (literalIsValue) {
-          addBinding(element, savedRulePosition, rulePosition);
+          lastBinding = addBinding(element, savedRulePosition, rulePosition);
           savedRulePosition = null;
         }
       }
@@ -147,6 +163,7 @@ public class DocumentWodModel implements IWodModel {
           addProblem("The binding name '" + rulePosition._getTextWithoutException() + "' can only appear after a '{' or a ';'", rulePosition, false);
         }
         savedRulePosition = rulePosition;
+        lastBinding = null;
       }
       else if (RulePosition.isOperatorOfType(rulePosition, AssignmentOperatorWordDetector.class)) {
         if (!RulePosition.isRulePositionOfType(lastRulePosition, BindingNameRule.class) && !RulePosition.isRulePositionOfType(lastRulePosition, StringLiteralRule.class)) {
@@ -158,7 +175,7 @@ public class DocumentWodModel implements IWodModel {
           addProblem("The binding value '" + rulePosition._getTextWithoutException() + "' can only appear after an '='", rulePosition, false);
         }
         else {
-          addBinding(element, savedRulePosition, rulePosition);
+          lastBinding = addBinding(element, savedRulePosition, rulePosition);
         }
         savedRulePosition = null;
       }
@@ -174,6 +191,7 @@ public class DocumentWodModel implements IWodModel {
         else {
           element = null;
         }
+        lastBinding = null;
       }
       else {
         addProblem("'" + rulePosition._getTextWithoutException() + "' is an unknown keyword", rulePosition, false);
@@ -189,7 +207,8 @@ public class DocumentWodModel implements IWodModel {
     }
   }
 
-  protected void addBinding(DocumentWodElement _element, RulePosition _nameRulePosition, RulePosition _valueRulePosition) {
+  protected DocumentWodBinding addBinding(DocumentWodElement _element, RulePosition _nameRulePosition, RulePosition _valueRulePosition) {
+    DocumentWodBinding binding = null;
     if (_element == null) {
       addProblem("A binding must appear in a declaration", _valueRulePosition, false);
     }
@@ -200,9 +219,10 @@ public class DocumentWodModel implements IWodModel {
       addProblem("A binding must have a value", _valueRulePosition, false);
     }
     else {
-      DocumentWodBinding binding = new DocumentWodBinding(_nameRulePosition, _valueRulePosition, _element);
+      binding = new DocumentWodBinding(_nameRulePosition, _valueRulePosition, _element);
       _element.addBinding(binding);
     }
+    return binding;
   }
 
   public synchronized void addProblem(String _message, RulePosition _found, boolean _warning) {

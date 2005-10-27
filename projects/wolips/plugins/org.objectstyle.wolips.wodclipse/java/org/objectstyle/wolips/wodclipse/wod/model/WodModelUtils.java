@@ -231,7 +231,7 @@ public class WodModelUtils {
           Iterator checkValuesBindingsIter = element.getBindings().iterator();
           while (checkValuesBindingsIter.hasNext()) {
             IWodBinding binding = (IWodBinding) checkValuesBindingsIter.next();
-            if (WodModelUtils.isBindingValueKeyPath(binding)) {
+            if (binding.shouldValidate() && WodModelUtils.isBindingValueKeyPath(binding)) {
               String bindingValue = binding.getValue();
               BindingValueKeyPath bindingValueKeyPath = new BindingValueKeyPath(bindingValue, wodJavaType, _javaProject);
               if (!bindingValueKeyPath.isValid()) {
