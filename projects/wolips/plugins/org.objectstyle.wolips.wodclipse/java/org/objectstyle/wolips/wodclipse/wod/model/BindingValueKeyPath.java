@@ -45,7 +45,7 @@ public class BindingValueKeyPath {
   }
   
   public boolean isValid() {
-    return myBindingKeyNames.length == myBindingKeys.length;
+    return myBindingKeyNames.length == myBindingKeys.length || (myBindingKeyNames.length == 1 && "true".equalsIgnoreCase(myBindingKeyNames[0]) || "false".equalsIgnoreCase(myBindingKeyNames[0]) || "yes".equalsIgnoreCase(myBindingKeyNames[0]) || "no".equalsIgnoreCase(myBindingKeyNames[0]));
   }
 
   public String getLastBindingKeyName() {
