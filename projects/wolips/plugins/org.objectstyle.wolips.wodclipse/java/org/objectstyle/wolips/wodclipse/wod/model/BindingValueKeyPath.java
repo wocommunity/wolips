@@ -13,6 +13,7 @@ public class BindingValueKeyPath {
   private IType myContextType;
   private String[] myBindingKeyNames;
   private BindingValueKey[] myBindingKeys;
+  private boolean myValid;
 
   public BindingValueKeyPath(String _keyPath, IType _contextType, IJavaProject _javaProject) throws JavaModelException {
     String[] bindingKeyNames = _keyPath.split("\\.");
@@ -30,22 +31,32 @@ public class BindingValueKeyPath {
     myJavaProject = _javaProject;
     myContextType = _contextType;
 
+    myValid = true;
     IType currentType = _contextType;
     List bindingKeysList = new LinkedList();
     for (int i = 0; currentType != null && i < myBindingKeyNames.length; i++) {
-      List bindingKeys = WodBindingUtils.createMatchingBindingKeys(_javaProject, currentType, myBindingKeyNames[i], true, WodBindingUtils.ACCESSORS_ONLY);
-      if (!bindingKeys.isEmpty()) {
-        // NTS: Deal with multiple matches ...
-        BindingValueKey bindingKey = (BindingValueKey)bindingKeys.get(0);
-        bindingKeysList.add(bindingKey);
-        currentType = bindingKey.getNextType();
+      if (!myBindingKeyNames[i].startsWith("@")) {
+        List bindingKeys = WodBindingUtils.createMatchingBindingKeys(_javaProject, currentType, myBindingKeyNames[i], true, WodBindingUtils.ACCESSORS_ONLY);
+        if (!bindingKeys.isEmpty()) {
+          // NTS: Deal with multiple matches ...
+          BindingValueKey bindingKey = (BindingValueKey) bindingKeys.get(0);
+          bindingKeysList.add(bindingKey);
+          currentType = bindingKey.getNextType();
+        }
+        else {
+          myValid = false;
+        }
       }
     }
     myBindingKeys = (BindingValueKey[]) bindingKeysList.toArray(new BindingValueKey[bindingKeysList.size()]);
+    
+    if (!myValid) {
+      myValid = myBindingKeyNames.length == 1 && "true".equalsIgnoreCase(myBindingKeyNames[0]) || "false".equalsIgnoreCase(myBindingKeyNames[0]) || "yes".equalsIgnoreCase(myBindingKeyNames[0]) || "no".equalsIgnoreCase(myBindingKeyNames[0]);
+    }
   }
-  
+
   public boolean isValid() {
-    return myBindingKeyNames.length == myBindingKeys.length || (myBindingKeyNames.length == 1 && "true".equalsIgnoreCase(myBindingKeyNames[0]) || "false".equalsIgnoreCase(myBindingKeyNames[0]) || "yes".equalsIgnoreCase(myBindingKeyNames[0]) || "no".equalsIgnoreCase(myBindingKeyNames[0]));
+    return myValid;
   }
 
   public String getLastBindingKeyName() {
@@ -58,7 +69,7 @@ public class BindingValueKeyPath {
     }
     return lastBindingKeyName;
   }
-  
+
   public BindingValueKey getLastBindingKey() {
     BindingValueKey bindingKey;
     if (myBindingKeys.length > 0) {
@@ -81,7 +92,7 @@ public class BindingValueKeyPath {
     }
     return lastType;
   }
-  
+
   public List getPartialMatchesForLastBindingKey() throws JavaModelException {
     List bindingKeysList;
     IType lastType = getLastType();
@@ -96,7 +107,7 @@ public class BindingValueKeyPath {
     }
     return bindingKeysList;
   }
-  
+
   public int getLength() {
     return myBindingKeyNames.length;
   }
