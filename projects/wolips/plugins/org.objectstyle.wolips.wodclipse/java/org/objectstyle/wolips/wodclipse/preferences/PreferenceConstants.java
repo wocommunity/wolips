@@ -57,4 +57,5 @@ public class PreferenceConstants {
   public static final String COMMENT = "Comment";
   public static final String UNKNOWN = "Unknown";
   public static final String ALLOWED_BINDING_CHARACTERS = "AllowedBindingCharacters";
+  public static final String CHECK_BINDING_VALUES = "CheckBindingValues";
 }

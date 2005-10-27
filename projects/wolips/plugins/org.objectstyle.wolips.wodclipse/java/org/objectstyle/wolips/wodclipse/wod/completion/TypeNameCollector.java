@@ -58,6 +58,7 @@ import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.ITypeHierarchy;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.search.TypeNameRequestor;
+import org.eclipse.jdt.internal.corext.util.SuperTypeHierarchyCache;
 
 /**
  * @author mike
@@ -128,7 +129,7 @@ public class TypeNameCollector extends TypeNameRequestor {
           }
         }
         if (typeMatches) {
-          ITypeHierarchy typeHierarchy = type.newSupertypeHierarchy(null);
+          ITypeHierarchy typeHierarchy = SuperTypeHierarchyCache.getTypeHierarchy(type);
           if (typeHierarchy.contains(myWOElementType)) {
             myTypeNames.add(className);
             myTypeNameToPath.put(className, _path);

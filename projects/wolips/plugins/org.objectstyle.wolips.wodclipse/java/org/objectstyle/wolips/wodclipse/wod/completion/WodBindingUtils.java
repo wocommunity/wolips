@@ -2,11 +2,9 @@ package org.objectstyle.wolips.wodclipse.wod.completion;
 
 import java.io.File;
 import java.net.URL;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
@@ -27,11 +25,13 @@ import org.eclipse.jdt.core.search.IJavaSearchConstants;
 import org.eclipse.jdt.core.search.IJavaSearchScope;
 import org.eclipse.jdt.core.search.SearchEngine;
 import org.eclipse.jdt.core.search.SearchPattern;
-import org.eclipse.jdt.internal.corext.util.JavaModelUtil;
+import org.eclipse.jdt.internal.corext.util.SuperTypeHierarchyCache;
 import org.objectstyle.wolips.core.resources.types.api.ApiModel;
 import org.objectstyle.wolips.core.resources.types.api.ApiModelException;
+import org.objectstyle.wolips.core.resources.types.api.Binding;
 import org.objectstyle.wolips.core.resources.types.api.Wo;
 import org.objectstyle.wolips.wodclipse.WodclipsePlugin;
+import org.objectstyle.wolips.wodclipse.wod.model.BindingValueKey;
 import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 import org.osgi.framework.Bundle;
 
@@ -42,38 +42,6 @@ public class WodBindingUtils {
 
   public static final int ACCESSORS_ONLY = 0;
   public static final int MUTATORS_ONLY = 1;
-
-  public static String[] getBindingKeyNames(String _keyPath) {
-    String[] bindingKeyNames = _keyPath.split("\\.");
-
-    // Split tosses empty tokens, so we check to see if we're on the last "." and fake an empty token in the list
-    if (_keyPath.length() > 0 && _keyPath.charAt(_keyPath.length() - 1) == '.') {
-      String[] bindingKeyNamesWithFinalBlank = new String[bindingKeyNames.length + 1];
-      System.arraycopy(bindingKeyNames, 0, bindingKeyNamesWithFinalBlank, 0, bindingKeyNames.length);
-      bindingKeyNamesWithFinalBlank[bindingKeyNamesWithFinalBlank.length - 1] = "";
-      bindingKeyNames = bindingKeyNamesWithFinalBlank;
-    }
-
-    return bindingKeyNames;
-  }
-
-  public static IType getLastType(IJavaProject _project, IType _elementType, String[] _bindingKeyNames) throws JavaModelException {
-    IType currentType = _elementType;
-    for (int i = 0; currentType != null && i < _bindingKeyNames.length - 1; i++) {
-      IBindingKey bindingKey = WodBindingUtils.createMatchingBindingKey(_project, currentType, _bindingKeyNames[i], WodBindingUtils.ACCESSORS_ONLY);
-      if (bindingKey != null) {
-        String nextTypeName = bindingKey.getNextTypeName();
-        currentType = WodBindingUtils.resolveTypeWithName(_project, currentType, nextTypeName);
-      }
-    }
-    return currentType;
-  }
-
-  public static IType resolveTypeWithName(IJavaProject _project, IType _typeContext, String _typeName) throws JavaModelException {
-    String resolvedTypeName = JavaModelUtil.getResolvedTypeName(_typeName, _typeContext);
-    IType resolvedType = JavaModelUtil.findType(_project, resolvedTypeName);
-    return resolvedType;
-  }
 
   public static String getShortClassName(String _fullClassName) {
     String shortClassName;
@@ -135,27 +103,6 @@ public class WodBindingUtils {
     searchEngine.searchAllTypeNames(packageName, typeName, _matchType, IJavaSearchConstants.CLASS, searchScope, _typeNameCollector, IJavaSearchConstants.WAIT_UNTIL_READY_TO_SEARCH, null);
   }
 
-  public static void fillInCompletionProposals(List _bindingKeys, String _token, int _tokenOffset, int _offset, Set _completionProposalsSet) {
-    Iterator bindingKeysIter = _bindingKeys.iterator();
-    while (bindingKeysIter.hasNext()) {
-      IBindingKey bindingKey = (IBindingKey) bindingKeysIter.next();
-      WodCompletionProposal completionProposal = new WodCompletionProposal(_token, _tokenOffset, _offset, bindingKey.getBindingName());
-      _completionProposalsSet.add(completionProposal);
-    }
-  }
-
-  public static IBindingKey createMatchingBindingKey(IJavaProject _javaProject, IType _type, String _nameStartingWith, int _accessorsOrMutators) throws JavaModelException {
-    List bindingKeys = WodBindingUtils.createMatchingBindingKeys(_javaProject, _type, _nameStartingWith, true, _accessorsOrMutators);
-    IBindingKey bindingKey;
-    if (bindingKeys.size() == 0) {
-      bindingKey = null;
-    }
-    else {
-      bindingKey = (IBindingKey) bindingKeys.get(0);
-    }
-    return bindingKey;
-  }
-
   public static List createMatchingBindingKeys(IJavaProject _javaProject, IType _type, String _nameStartingWith, boolean _requireExactNameMatch, int _accessorsOrMutators) throws JavaModelException {
     List bindingKeys = new LinkedList();
 
@@ -168,13 +115,13 @@ public class WodBindingUtils {
         typeHierarchy = _type.newTypeHierarchy(_javaProject, null);
       }
       else {
-        typeHierarchy = _type.newSupertypeHierarchy(null);
+        typeHierarchy = SuperTypeHierarchyCache.getTypeHierarchy(_type);
       }
       IType[] types = typeHierarchy.getAllTypes();
       for (int typeNum = 0; (!_requireExactNameMatch || bindingKeys.size() == 0) && typeNum < types.length; typeNum++) {
         IField[] fields = types[typeNum].getFields();
         for (int fieldNum = 0; (!_requireExactNameMatch || bindingKeys.size() == 0) && fieldNum < fields.length; fieldNum++) {
-          IBindingKey bindingKey = WodBindingUtils.createBindingKeyIfMatches(fields[fieldNum], lowercaseNameStartingWith, _requireExactNameMatch, _accessorsOrMutators);
+          BindingValueKey bindingKey = WodBindingUtils.createBindingKeyIfMatches(_javaProject, fields[fieldNum], lowercaseNameStartingWith, _requireExactNameMatch, _accessorsOrMutators);
           if (bindingKey != null) {
             bindingKeys.add(bindingKey);
           }
@@ -184,7 +131,7 @@ public class WodBindingUtils {
         if (!_requireExactNameMatch || bindingKeys.size() == 0) {
           IMethod[] methods = types[typeNum].getMethods();
           for (int methodNum = 0; (!_requireExactNameMatch || bindingKeys.size() == 0) && methodNum < methods.length; methodNum++) {
-            IBindingKey bindingKey = WodBindingUtils.createBindingKeyIfMatches(methods[methodNum], lowercaseNameStartingWith, _requireExactNameMatch, _accessorsOrMutators);
+            BindingValueKey bindingKey = WodBindingUtils.createBindingKeyIfMatches(_javaProject, methods[methodNum], lowercaseNameStartingWith, _requireExactNameMatch, _accessorsOrMutators);
             if (bindingKey != null) {
               bindingKeys.add(bindingKey);
             }
@@ -197,8 +144,8 @@ public class WodBindingUtils {
     return bindingKeys;
   }
 
-  public static IBindingKey createBindingKeyIfMatches(IMember _member, String _nameStartingWith, boolean _requireExactNameMatch, int _accessorsOrMutators) throws JavaModelException {
-    IBindingKey bindingKey = null;
+  public static BindingValueKey createBindingKeyIfMatches(IJavaProject _javaProject, IMember _member, String _nameStartingWith, boolean _requireExactNameMatch, int _accessorsOrMutators) throws JavaModelException {
+    BindingValueKey bindingKey = null;
 
     int flags = _member.getFlags();
     if (!Flags.isStatic(flags) && Flags.isPublic(flags)) {
@@ -235,7 +182,7 @@ public class WodBindingUtils {
             if ((_requireExactNameMatch && lowercaseMemberNameWithoutPrefix.equals(_nameStartingWith)) || (!_requireExactNameMatch && lowercaseMemberNameWithoutPrefix.startsWith(_nameStartingWith))) {
               String bindingName = WodBindingUtils.toLowercaseFirstLetter(memberName.substring(prefixLength));
               if (_nameStartingWith.length() > 0 || !bindingName.startsWith("_")) {
-                bindingKey = new MemberBindingKey(bindingName, _member);
+                bindingKey = new BindingValueKey(bindingName, _member, _javaProject);
               }
             }
           }
@@ -337,5 +284,52 @@ public class WodBindingUtils {
     }
 
     return wo;
+  }
+  
+  public static String[] getValidValues(IType _elementType, String _bindingName, Map _elementTypeToWoCache) throws JavaModelException, ApiModelException {
+    String[] validValues = null;
+    Wo wo = WodBindingUtils.findApiModelWo(_elementType, _elementTypeToWoCache);
+    if (wo != null) {
+      Binding matchingBinding = null;
+      Binding[] bindings = wo.getBindings();
+      for (int i = 0; matchingBinding == null && i < bindings.length; i++) {
+        String apiBindingName = bindings[i].getName();
+        if (apiBindingName.equals(_bindingName)) {
+          matchingBinding = bindings[i];
+        }
+      }
+      if (matchingBinding != null) {
+        int selectedDefaults = matchingBinding.getSelectedDefaults();
+        String defaultsName = Binding.ALL_DEFAULTS[selectedDefaults];
+        if ("Boolean".equals(defaultsName)) {
+          validValues = new String[] { "true", "false" };
+        }
+        else if ("YES/NO".equals(defaultsName)) {
+          validValues = new String[] { "true", "false" };
+        }
+        else if ("Date Format Strings".equals(defaultsName)) {
+          validValues = new String[] { "\"%m/%d/%y\"", "\"%B %d, %Y\"", "\"%b %d, %Y\"", "\"%A, %B %d, %Y\"", "\"%A, %b %d, %Y\"", "\"%d.%m.%y\"", "\"%d %B %y\"", "\"%d %b %y\"", "\"%A %d %B %Y\"", "\"%A %d %b %Y\"", "\"%x\"", "\"%H:%M:%S\"", "\"%I:%M:%S %p\"", "\"%H:%M\"", "\"%I:%M %p\"", "\"%X\"" };
+        }
+        else if ("Number Format Strings".equals(defaultsName)) {
+          validValues = new String[] { "\"0\"", "\"0.00\"", "\"0.##\"", "\"#,##0\"", "\"_,__0\"", "\"#,##0.00\"", "\"$#,##0\"", "\"$#,##0.00\"", "\"$#,##0.##\"" };
+        }
+        else if ("MIME Types".equals(defaultsName)) {
+          validValues = new String[] { "\"image/gif\"", "\"image/jpeg\"", "\"image/png\"" };
+        }
+        else if ("Direct Actions".equals(defaultsName)) {
+        }
+        else if ("Direct Action Classes".equals(defaultsName)) {
+        }
+        else if ("Page Names".equals(defaultsName)) {
+        }
+        else if ("Frameworks".equals(defaultsName)) {
+        }
+        else if ("Resources".equals(defaultsName)) {
+        }
+        else if ("Actions".equals(defaultsName)) {
+        }
+      }
+    }
+    return validValues;
   }
 }

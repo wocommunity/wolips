@@ -1,6 +1,5 @@
 package org.objectstyle.wolips.wodclipse.wod;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -124,9 +123,6 @@ public class WodReconcilingStrategy implements IReconcilingStrategy, IReconcilin
       problems.addAll(semanticProblems);
     }
     catch (CoreException e) {
-      WodclipsePlugin.getDefault().log(e);
-    }
-    catch (IOException e) {
       WodclipsePlugin.getDefault().log(e);
     }
 

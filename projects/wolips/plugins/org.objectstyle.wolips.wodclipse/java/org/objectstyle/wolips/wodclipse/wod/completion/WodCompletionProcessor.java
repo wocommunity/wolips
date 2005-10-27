@@ -77,6 +77,8 @@ import org.objectstyle.wolips.core.resources.types.api.Binding;
 import org.objectstyle.wolips.core.resources.types.api.Wo;
 import org.objectstyle.wolips.wodclipse.WodclipsePlugin;
 import org.objectstyle.wolips.wodclipse.preferences.PreferenceConstants;
+import org.objectstyle.wolips.wodclipse.wod.model.BindingValueKey;
+import org.objectstyle.wolips.wodclipse.wod.model.BindingValueKeyPath;
 import org.objectstyle.wolips.wodclipse.wod.model.WodModelUtils;
 import org.objectstyle.wolips.wodclipse.wod.parser.AssignmentOperatorWordDetector;
 import org.objectstyle.wolips.wodclipse.wod.parser.BindingNameRule;
@@ -351,7 +353,7 @@ public class WodCompletionProcessor implements IContentAssistProcessor {
   protected IType findNearestElementType(IJavaProject _project, IDocument _document, WodScanner _scanner, int _offset) throws BadLocationException, JavaModelException {
     // Go hunting for the element type in a potentially malformed document ...
     IType type;
-    int colonOffset = scanBackFor(_document, _offset, new char[] { ':' }, false);
+    int colonOffset = WodCompletionProcessor.scanBackFor(_document, _offset, new char[] { ':' }, false);
     if (colonOffset != -1) {
       _scanner.setRange(_document, colonOffset, _offset);
       RulePosition elementRulePosition = _scanner.getFirstRulePositionOfType(ElementTypeRule.class);
@@ -374,7 +376,7 @@ public class WodCompletionProcessor implements IContentAssistProcessor {
   protected void fillInBindingNameCompletionProposals(IJavaProject _project, IType _elementType, IPath _wodFilePath, String _token, int _tokenOffset, int _offset, Set _completionProposalsSet) throws JavaModelException {
     String partialToken = partialToken(_token, _tokenOffset, _offset);
     List bindingKeys = WodBindingUtils.createMatchingBindingKeys(_project, _elementType, partialToken, false, WodBindingUtils.MUTATORS_ONLY);
-    WodBindingUtils.fillInCompletionProposals(bindingKeys, _token, _tokenOffset, _offset, _completionProposalsSet);
+    WodCompletionProcessor.fillInCompletionProposals(bindingKeys, _token, _tokenOffset, _offset, _completionProposalsSet);
 
     // API files:
     try {
@@ -399,65 +401,29 @@ public class WodCompletionProcessor implements IContentAssistProcessor {
 
   protected void fillInBindingValueCompletionProposals(IJavaProject _project, IType _elementType, String _token, int _tokenOffset, int _offset, Set _completionProposalsSet, WodScanner _scanner, IDocument _document) throws JavaModelException {
     String partialToken = partialToken(_token, _tokenOffset, _offset);
-    String[] bindingKeyNames = WodBindingUtils.getBindingKeyNames(partialToken);
-    IType lastType = WodBindingUtils.getLastType(_project, _elementType, bindingKeyNames);
-    if (lastType != null) {
-      // Jump forward to the last '.' and look for valid "get" method completion
-      // proposals based on the partial token
-      String bindingKeyName = bindingKeyNames[bindingKeyNames.length - 1];
-      List bindingKeys = WodBindingUtils.createMatchingBindingKeys(_project, lastType, bindingKeyName, false, WodBindingUtils.ACCESSORS_ONLY);
-      WodBindingUtils.fillInCompletionProposals(bindingKeys, bindingKeyNames[bindingKeyNames.length - 1], _tokenOffset + partialToken.lastIndexOf('.') + 1, _offset, _completionProposalsSet);
+    BindingValueKeyPath bindingKeyPath = new BindingValueKeyPath(partialToken, _elementType, _project);
+    List possibleBindingKeyMatchesList = bindingKeyPath.getPartialMatchesForLastBindingKey();
+    if (possibleBindingKeyMatchesList != null) {
+      String bindingKeyName = bindingKeyPath.getLastBindingKeyName();
+      WodCompletionProcessor.fillInCompletionProposals(possibleBindingKeyMatchesList, bindingKeyName, _tokenOffset + partialToken.lastIndexOf('.') + 1, _offset, _completionProposalsSet);
     }
 
     // Only do binding type checks if you're on the first of a keypath ...
-    if (bindingKeyNames.length == 1) {
+    if (bindingKeyPath.getLength() == 1) {
       try {
         // We might (probably do) have a syntactically invalid wod file at this point, so we need to
         // hunt for the name of the binding that this value corresponds to ...
-        int equalsIndex = scanBackFor(_document, _offset, new char[] { '=' }, false);
-        int noSpaceIndex = scanBackFor(_document, equalsIndex - 1, new char[] { ' ', '\t', '\n', '\r' }, true);
-        int spaceIndex = scanBackFor(_document, noSpaceIndex, new char[] { ' ', '\t', '\n', '\r' }, false);
+        int equalsIndex = WodCompletionProcessor.scanBackFor(_document, _offset, new char[] { '=' }, false);
+        int noSpaceIndex = WodCompletionProcessor.scanBackFor(_document, equalsIndex - 1, new char[] { ' ', '\t', '\n', '\r' }, true);
+        int spaceIndex = WodCompletionProcessor.scanBackFor(_document, noSpaceIndex, new char[] { ' ', '\t', '\n', '\r' }, false);
         String bindingName = _document.get(spaceIndex + 1, noSpaceIndex - spaceIndex);
         IType elementType = findNearestElementType(_project, _document, _scanner, _offset);
-        Wo wo = WodBindingUtils.findApiModelWo(elementType, myElementTypeToWoCache);
-        if (wo != null) {
-          Binding matchingBinding = null;
-          Binding[] bindings = wo.getBindings();
-          for (int i = 0; matchingBinding == null && i < bindings.length; i++) {
-            String apiBindingName = bindings[i].getName();
-            if (apiBindingName.equals(bindingName)) {
-              matchingBinding = bindings[i];
-            }
-          }
-          if (matchingBinding != null) {
-            int selectedDefaults = matchingBinding.getSelectedDefaults();
-            String defaultsName = Binding.ALL_DEFAULTS[selectedDefaults];
-            if ("Boolean".equals(defaultsName)) {
-              fillInStaticCompletions(new String[] { "true", "false" }, partialToken, _token, _tokenOffset, _offset, _completionProposalsSet);
-            }
-            else if ("YES/NO".equals(defaultsName)) {
-              fillInStaticCompletions(new String[] { "true", "false" }, partialToken, _token, _tokenOffset, _offset, _completionProposalsSet);
-            }
-            else if ("Date Format Strings".equals(defaultsName)) {
-              fillInStaticCompletions(new String[] { "\"%m/%d/%y\"", "\"%B %d, %Y\"", "\"%b %d, %Y\"", "\"%A, %B %d, %Y\"", "\"%A, %b %d, %Y\"", "\"%d.%m.%y\"", "\"%d %B %y\"", "\"%d %b %y\"", "\"%A %d %B %Y\"", "\"%A %d %b %Y\"", "\"%x\"", "\"%H:%M:%S\"", "\"%I:%M:%S %p\"", "\"%H:%M\"", "\"%I:%M %p\"", "\"%X\"" }, partialToken, _token, _tokenOffset, _offset, _completionProposalsSet);
-            }
-            else if ("Number Format Strings".equals(defaultsName)) {
-              fillInStaticCompletions(new String[] { "\"0\"", "\"0.00\"", "\"0.##\"", "\"#,##0\"", "\"_,__0\"", "\"#,##0.00\"", "\"$#,##0\"", "\"$#,##0.00\"", "\"$#,##0.##\"" }, partialToken, _token, _tokenOffset, _offset, _completionProposalsSet);
-            }
-            else if ("MIME Types".equals(defaultsName)) {
-              fillInStaticCompletions(new String[] { "\"image/gif\"", "\"image/jpeg\"", "\"image/png\"" }, partialToken, _token, _tokenOffset, _offset, _completionProposalsSet);
-            }
-            else if ("Direct Actions".equals(defaultsName)) {
-            }
-            else if ("Direct Action Classes".equals(defaultsName)) {
-            }
-            else if ("Page Names".equals(defaultsName)) {
-            }
-            else if ("Frameworks".equals(defaultsName)) {
-            }
-            else if ("Resources".equals(defaultsName)) {
-            }
-            else if ("Actions".equals(defaultsName)) {
+        String[] validValues = WodBindingUtils.getValidValues(elementType, bindingName, myElementTypeToWoCache);
+        if (validValues != null) {
+          String lowercasePartialToken = partialToken.toLowerCase();
+          for (int i = 0; i < validValues.length; i++) {
+            if (validValues[i].toLowerCase().startsWith(lowercasePartialToken)) {
+              _completionProposalsSet.add(new WodCompletionProposal(_token, _tokenOffset, _offset, validValues[i]));
             }
           }
         }
@@ -469,16 +435,7 @@ public class WodCompletionProcessor implements IContentAssistProcessor {
     }
   }
 
-  protected void fillInStaticCompletions(String[] _possibleCompletions, String _partialToken, String _token, int _tokenOffset, int _offset, Set _completionProposalsSet) {
-    String lowercasePartialToken = _partialToken.toLowerCase();
-    for (int i = 0; i < _possibleCompletions.length; i++) {
-      if (_possibleCompletions[i].toLowerCase().startsWith(lowercasePartialToken)) {
-        _completionProposalsSet.add(new WodCompletionProposal(_token, _tokenOffset, _offset, _possibleCompletions[i]));
-      }
-    }
-  }
-
-  protected int scanBackFor(IDocument _document, int _offset, char[] _lookForChars, boolean _negate) throws BadLocationException {
+  protected static int scanBackFor(IDocument _document, int _offset, char[] _lookForChars, boolean _negate) throws BadLocationException {
     int offset = _offset;
     if (offset >= _document.getLength()) {
       offset--;
@@ -503,7 +460,7 @@ public class WodCompletionProcessor implements IContentAssistProcessor {
     return foundIndex;
   }
 
-  protected String partialToken(String _token, int _tokenOffset, int _offset) {
+  protected static String partialToken(String _token, int _tokenOffset, int _offset) {
     String partialToken;
     int partialIndex = _offset - _tokenOffset;
     if (partialIndex > _token.length()) {
@@ -513,5 +470,14 @@ public class WodCompletionProcessor implements IContentAssistProcessor {
       partialToken = _token.substring(0, _offset - _tokenOffset);
     }
     return partialToken;
+  }
+
+  protected static void fillInCompletionProposals(List _bindingKeys, String _token, int _tokenOffset, int _offset, Set _completionProposalsSet) {
+    Iterator bindingKeysIter = _bindingKeys.iterator();
+    while (bindingKeysIter.hasNext()) {
+      BindingValueKey bindingKey = (BindingValueKey) bindingKeysIter.next();
+      WodCompletionProposal completionProposal = new WodCompletionProposal(_token, _tokenOffset, _offset, bindingKey.getBindingName());
+      _completionProposalsSet.add(completionProposal);
+    }
   }
 }

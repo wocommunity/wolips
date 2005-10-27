@@ -59,17 +59,26 @@ import java.util.Set;
 
 import org.eclipse.core.resources.IEncodedStorage;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.jdt.core.ICompilationUnit;
+import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IType;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.part.FileEditorInput;
 import org.objectstyle.wolips.core.resources.types.api.Binding;
 import org.objectstyle.wolips.core.resources.types.api.Validation;
 import org.objectstyle.wolips.core.resources.types.api.Wo;
+import org.objectstyle.wolips.locate.Locate;
+import org.objectstyle.wolips.locate.LocateException;
+import org.objectstyle.wolips.locate.result.LocalizedComponentsLocateResult;
+import org.objectstyle.wolips.locate.scope.ComponentLocateScope;
 import org.objectstyle.wolips.wodclipse.WodclipsePlugin;
+import org.objectstyle.wolips.wodclipse.preferences.PreferenceConstants;
 import org.objectstyle.wolips.wodclipse.wod.completion.WodBindingUtils;
 
 /**
@@ -114,21 +123,47 @@ public class WodModelUtils {
     pw.flush();
   }
 
-  public static List getSemanticProblems(IJavaProject _javaProject, IWodModel _wodModel, Map _elementNameToTypeCache, Map _typeToApiModelWoCache) throws CoreException, IOException {
+  public static List getSemanticProblems(IJavaProject _javaProject, IWodModel _wodModel, Map _elementNameToTypeCache, Map _typeToApiModelWoCache) throws CoreException {
     long startTime = System.currentTimeMillis();
     boolean hasPositions = (_wodModel instanceof DocumentWodModel);
-    Set htmlElementNames;
+    boolean checkBindingValues = WodclipsePlugin.getDefault().getPluginPreferences().getBoolean(PreferenceConstants.CHECK_BINDING_VALUES);
+
+    LocalizedComponentsLocateResult localizedComponentsLocateResult = new LocalizedComponentsLocateResult();
+    IType wodJavaType = null;
+    Set htmlElementNames = null;
+
     if (hasPositions) {
       IFile wodFile = ((DocumentWodModel) _wodModel).getWodFile();
-      IPath wodFilePath = wodFile.getLocation();
-      IFile wodHtmlFile = WodModelUtils.getHtmlFileForWodFilePath(wodFilePath);
-      htmlElementNames = new HashSet();
-      if (wodHtmlFile != null) {
-        WodModelUtils.fillInHtmlElementNames(wodHtmlFile, htmlElementNames);
+      String fileName = wodFile.getName().substring(0, wodFile.getName().length() - 4);
+      ComponentLocateScope componentLocateScope = new ComponentLocateScope(_javaProject.getProject(), fileName);
+      Locate locate = new Locate(componentLocateScope, localizedComponentsLocateResult);
+      try {
+        locate.locate();
+
+        if (checkBindingValues) {
+          IFile javaFile = localizedComponentsLocateResult.getDotJava();
+          IJavaElement javaElement = JavaCore.create(javaFile);
+          if (javaElement instanceof ICompilationUnit) {
+            wodJavaType = ((ICompilationUnit) javaElement).getTypes()[0];
+          }
+        }
+
+        IFolder folder = localizedComponentsLocateResult.getComponents()[0];
+        IFile wodHtmlFile = LocalizedComponentsLocateResult.getHtml(folder);
+        htmlElementNames = new HashSet();
+        if (wodHtmlFile != null) {
+          WodModelUtils.fillInHtmlElementNames(wodHtmlFile, htmlElementNames);
+        }
       }
-    }
-    else {
-      htmlElementNames = null;
+      catch (IOException e) {
+        WodclipsePlugin.getDefault().log("Failed to locate html, java, or api file.", e);
+      }
+      catch (CoreException e) {
+        WodclipsePlugin.getDefault().log("Failed to locate html, java, or api file.", e);
+      }
+      catch (LocateException e) {
+        WodclipsePlugin.getDefault().log("Failed to locate html, java, or api file.", e);
+      }
     }
 
     Set elementNames = new HashSet();
@@ -179,15 +214,34 @@ public class WodModelUtils {
       }
 
       Set bindingNames = new HashSet();
-      Iterator bindingsIter = element.getBindings().iterator();
-      while (bindingsIter.hasNext()) {
-        IWodBinding binding = (IWodBinding) bindingsIter.next();
+      Iterator checkForDuplicateBindingsIter = element.getBindings().iterator();
+      while (checkForDuplicateBindingsIter.hasNext()) {
+        IWodBinding binding = (IWodBinding) checkForDuplicateBindingsIter.next();
         String bindingName = binding.getName();
         if (bindingNames.contains(bindingName)) {
           problems.add(new WodProblem(_wodModel, "Duplicate binding named '" + bindingName + "'", (hasPositions) ? ((DocumentWodBinding) binding).getNamePosition() : null, false));
         }
         else {
           bindingNames.add(bindingName);
+        }
+      }
+
+      if (checkBindingValues && wodJavaType != null) {
+        try {
+          Iterator checkValuesBindingsIter = element.getBindings().iterator();
+          while (checkValuesBindingsIter.hasNext()) {
+            IWodBinding binding = (IWodBinding) checkValuesBindingsIter.next();
+            if (WodModelUtils.isBindingValueKeyPath(binding)) {
+              String bindingValue = binding.getValue();
+              BindingValueKeyPath bindingValueKeyPath = new BindingValueKeyPath(bindingValue, wodJavaType, _javaProject);
+              if (!bindingValueKeyPath.isValid()) {
+                problems.add(new WodProblem(_wodModel, "There is no key path '" + bindingValue + "' for " + wodJavaType.getElementName(), (hasPositions) ? ((DocumentWodBinding) binding).getValuePosition() : null, false));
+              }
+            }
+          }
+        }
+        catch (Throwable t) {
+          WodclipsePlugin.getDefault().log("Failed to check wod binding values.", t);
         }
       }
     }
@@ -262,4 +316,18 @@ public class WodModelUtils {
   public static boolean isIndexContainedByWodUnit(int _index, IWodUnit _wodUnit) {
     return _index >= _wodUnit.getStartOffset() && _index <= _wodUnit.getEndOffset();
   }
+
+  public static boolean isBindingValueKeyPath(IWodBinding _binding) {
+    String bindingValue = _binding.getValue();
+    boolean isBindingValueKeyPath;
+    if (bindingValue.length() > 0) {
+      char ch = bindingValue.charAt(0);
+      isBindingValueKeyPath = Character.isJavaIdentifierStart(ch);
+    }
+    else {
+      isBindingValueKeyPath = false;
+    }
+    return isBindingValueKeyPath;
+  }
+
 }
