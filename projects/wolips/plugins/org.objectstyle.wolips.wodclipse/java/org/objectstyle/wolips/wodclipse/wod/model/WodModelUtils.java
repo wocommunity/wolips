@@ -49,7 +49,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.Writer;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -238,12 +237,12 @@ public class WodModelUtils {
               if (!bindingValueKeyPath.isValid()) {
                 problems.add(new WodProblem(_wodModel, "There is no key path '" + bindingValue + "' for " + wodJavaType.getElementName(), (hasPositions) ? ((DocumentWodBinding) binding).getValuePosition() : null, false));
               }
-              else {
-                String[] validApiValues = WodBindingUtils.getValidValues(elementType, binding.getName(), _typeToApiModelWoCache);
-                if (validApiValues != null && !Arrays.asList(validApiValues).contains(bindingValue)) {
-                  problems.add(new WodProblem(_wodModel, "The .api file for " + wodJavaType.getElementName() + " declares '" + bindingValue + "' as invalid.", (hasPositions) ? ((DocumentWodBinding) binding).getValuePosition() : null, false));
-                }
-              }
+//              else {
+//                String[] validApiValues = WodBindingUtils.getValidValues(elementType, binding.getName(), _typeToApiModelWoCache);
+//                if (validApiValues != null && !Arrays.asList(validApiValues).contains(bindingValue)) {
+//                  problems.add(new WodProblem(_wodModel, "The .api file for " + wodJavaType.getElementName() + " declares '" + bindingValue + "' to be an invalid value.", (hasPositions) ? ((DocumentWodBinding) binding).getValuePosition() : null, false));
+//                }
+//              }
             }
           }
         }
