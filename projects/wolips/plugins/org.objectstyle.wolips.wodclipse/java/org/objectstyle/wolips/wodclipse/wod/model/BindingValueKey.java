@@ -7,6 +7,7 @@ import org.eclipse.jdt.core.IMethod;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.internal.corext.util.JavaModelUtil;
+import org.objectstyle.wolips.wodclipse.WodclipsePlugin;
 
 public class BindingValueKey {
   private String myBindingName;
@@ -52,9 +53,14 @@ public class BindingValueKey {
     if (myNextType == null) {
       String nextTypeName = getNextTypeName();
       IType typeContext = getDeclaringType();
-      // NTS: This next line takes a long time
       String resolvedNextTypeName = JavaModelUtil.getResolvedTypeName(nextTypeName, typeContext);
-      myNextType = JavaModelUtil.findType(myJavaProject, resolvedNextTypeName);
+      if (resolvedNextTypeName == null) {
+        WodclipsePlugin.getDefault().log("Failed to resolve type name " + nextTypeName + " in component " + typeContext.getElementName());
+        myNextType = null;
+      }
+      else {
+        myNextType = JavaModelUtil.findType(myJavaProject, resolvedNextTypeName);
+      }
     }
     return myNextType;
   }
