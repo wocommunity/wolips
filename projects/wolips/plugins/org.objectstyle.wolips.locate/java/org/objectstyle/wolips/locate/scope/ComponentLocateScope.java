@@ -55,6 +55,7 @@
  */
 package org.objectstyle.wolips.locate.scope;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 
 public class ComponentLocateScope extends DefaultLocateScope {
@@ -64,4 +65,11 @@ public class ComponentLocateScope extends DefaultLocateScope {
 				new String[] { name + ".wo" });
 	}
 
+  public static ComponentLocateScope createLocateScope(IFile _file) {
+    IProject project = _file.getProject();
+    String fileNameWithExtension = _file.getName();
+    String extension = _file.getFileExtension();
+    String fileNameWithoutExtension = fileNameWithExtension.substring(0, fileNameWithExtension.length() - extension.length() - 1);
+    return new ComponentLocateScope(project, fileNameWithoutExtension);
+  }
 }
