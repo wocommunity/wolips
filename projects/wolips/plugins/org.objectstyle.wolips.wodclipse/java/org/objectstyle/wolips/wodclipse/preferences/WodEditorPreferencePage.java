@@ -70,6 +70,7 @@ public class WodEditorPreferencePage extends FieldEditorPreferencePage implement
     addField(new ColorFieldEditor(PreferenceConstants.OPERATOR, "Operator Color", getFieldEditorParent()));
     addField(new ColorFieldEditor(PreferenceConstants.COMMENT, "Comment Color", getFieldEditorParent()));
     addField(new ColorFieldEditor(PreferenceConstants.UNKNOWN, "Unknown Color", getFieldEditorParent()));
+    addField(new BooleanFieldEditor(PreferenceConstants.AUTO_INSERT_ON_COMPLETION, "Auto-Insert {'s, :'s, and ='s", getFieldEditorParent()));
 //  AK: this actually belongs to the build prefs section, but this resides in another framework and isn't used anywhere else...
     addField(new StringFieldEditor(PreferenceConstants.ALLOWED_BINDING_CHARACTERS, "Allowed Binding Characters", 15, getFieldEditorParent()));
     addField(new BooleanFieldEditor(PreferenceConstants.CHECK_BINDING_VALUES, "Check Binding Values (Experimental)", getFieldEditorParent()));

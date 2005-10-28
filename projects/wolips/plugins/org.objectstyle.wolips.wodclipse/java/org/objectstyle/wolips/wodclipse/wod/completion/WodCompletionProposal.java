@@ -53,16 +53,24 @@ public class WodCompletionProposal implements Comparable {
   private int myTokenOffset;
   private int myOffset;
   private String myProposal;
+  private String myDisplay;
+  private int myCursorOffset;
 
   public WodCompletionProposal(String _token, int _tokenOffset, int _offset, String _proposal) {
+    this(_token, _tokenOffset, _offset, _proposal, null, _proposal.length());
+  }
+
+  public WodCompletionProposal(String _token, int _tokenOffset, int _offset, String _proposal, String _display, int _cursorOffset) {
     myToken = _token;
     myTokenOffset = _tokenOffset;
     myOffset = _offset;
     myProposal = _proposal;
+    myDisplay = _display;
+    myCursorOffset = _cursorOffset;
   }
 
   public CompletionProposal toCompletionProposal() {
-    CompletionProposal completionProposal = new CompletionProposal(myProposal, myTokenOffset, myToken.length(), myProposal.length());
+    CompletionProposal completionProposal = new CompletionProposal(myProposal, myTokenOffset, myToken.length(), myCursorOffset, null, myDisplay, null, null);
     return completionProposal;
   }
 

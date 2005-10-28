@@ -209,6 +209,7 @@ public class WodCompletionProcessor implements IContentAssistProcessor {
           }
         }
 
+        boolean guessed = false;
         // If there was no matching token type, then that means we're
         // in an invalid parse state and we have to "guess".  So we backscan
         // until we find an operator that we know about, which will tell us
@@ -224,38 +225,43 @@ public class WodCompletionProcessor implements IContentAssistProcessor {
             int ch = document.getChar(startOffset);
             if (ch == ':') {
               tokenType = PreferenceConstants.ELEMENT_TYPE;
+              guessed = true;
             }
             else if (ch == '{' || ch == ';') {
               tokenType = PreferenceConstants.BINDING_NAME;
+              guessed = true;
             }
             else if (ch == '=') {
               tokenType = PreferenceConstants.BINDING_VALUE;
+              guessed = true;
             }
             else if (ch == '}') {
               tokenType = PreferenceConstants.ELEMENT_NAME;
+              guessed = true;
             }
           }
         }
 
         if (tokenType == null) {
           tokenType = PreferenceConstants.ELEMENT_NAME;
+          guessed = true;
         }
 
         // ... Fill in completion proposals based on the token type
         if (tokenType == PreferenceConstants.ELEMENT_NAME) {
-          fillInElementNameCompletionProposals(javaProject, document, path, token, tokenOffset, _offset, completionProposalsSet);
+          fillInElementNameCompletionProposals(javaProject, document, path, token, tokenOffset, _offset, completionProposalsSet, guessed);
         }
         else if (tokenType == PreferenceConstants.ELEMENT_TYPE) {
-          fillInElementTypeCompletionProposals(javaProject, token, tokenOffset, _offset, completionProposalsSet);
+          fillInElementTypeCompletionProposals(javaProject, token, tokenOffset, _offset, completionProposalsSet, guessed);
         }
         else if (tokenType == PreferenceConstants.BINDING_NAME) {
           IType elementType = findNearestElementType(javaProject, document, scanner, tokenOffset);
-          fillInBindingNameCompletionProposals(javaProject, elementType, path, token, tokenOffset, _offset, completionProposalsSet);
+          fillInBindingNameCompletionProposals(javaProject, elementType, path, token, tokenOffset, _offset, completionProposalsSet, guessed);
         }
         else if (tokenType == PreferenceConstants.BINDING_VALUE) {
           String elementTypeName = path.removeFileExtension().lastSegment();
           IType elementType = WodBindingUtils.findElementType(javaProject, elementTypeName, true, myElementNameToTypeCache);
-          fillInBindingValueCompletionProposals(javaProject, elementType, token, tokenOffset, _offset, completionProposalsSet, scanner, document);
+          fillInBindingValueCompletionProposals(javaProject, elementType, token, tokenOffset, _offset, completionProposalsSet, scanner, document, guessed);
         }
       }
     }
@@ -303,7 +309,11 @@ public class WodCompletionProcessor implements IContentAssistProcessor {
     return myValidElementNames;
   }
 
-  protected void fillInElementNameCompletionProposals(IJavaProject _project, IDocument _document, IPath _wodFilePath, String _token, int _tokenOffset, int _offset, Set _completionProposalsSet) throws CoreException, IOException {
+  protected boolean shouldSmartInsert() {
+    return true;
+  }
+  
+  protected void fillInElementNameCompletionProposals(IJavaProject _project, IDocument _document, IPath _wodFilePath, String _token, int _tokenOffset, int _offset, Set _completionProposalsSet, boolean _guessed) throws CoreException, IOException {
     String partialToken = partialToken(_token, _tokenOffset, _offset).toLowerCase();
     Iterator validElementNamesIter = validElementNames(_wodFilePath).iterator();
 
@@ -322,12 +332,19 @@ public class WodCompletionProcessor implements IContentAssistProcessor {
     while (validElementNamesIter.hasNext()) {
       String validElementName = (String) validElementNamesIter.next();
       if (validElementName.toLowerCase().startsWith(partialToken) && !alreadyUsedElementNames.contains(validElementName)) {
-        _completionProposalsSet.add(new WodCompletionProposal(_token, _tokenOffset, _offset, validElementName));
+        WodCompletionProposal completionProposal;
+        if (shouldSmartInsert() && _guessed) {
+          completionProposal = new WodCompletionProposal(_token, _tokenOffset, _offset, validElementName + " : ", validElementName, validElementName.length() + 3);
+        }
+        else {
+          completionProposal = new WodCompletionProposal(_token, _tokenOffset, _offset, validElementName);
+        }
+        _completionProposalsSet.add(completionProposal);
       }
     }
   }
 
-  protected void fillInElementTypeCompletionProposals(IJavaProject _project, String _token, int _tokenOffset, int _offset, Set _completionProposalsSet) throws JavaModelException {
+  protected void fillInElementTypeCompletionProposals(IJavaProject _project, String _token, int _tokenOffset, int _offset, Set _completionProposalsSet, boolean _guessed) throws JavaModelException {
     // Lookup type names that extend WOElement based on the current partial token
     TypeNameCollector typeNameCollector = new TypeNameCollector(_project, false);
     String partialToken = partialToken(_token, _tokenOffset, _offset);
@@ -344,7 +361,13 @@ public class WodCompletionProcessor implements IContentAssistProcessor {
         else {
           elementTypeName = WodBindingUtils.getShortClassName(matchingElementTypeName);
         }
-        WodCompletionProposal completionProposal = new WodCompletionProposal(_token, _tokenOffset, _offset, elementTypeName);
+        WodCompletionProposal completionProposal;
+        if (shouldSmartInsert() && _guessed) {
+          completionProposal = new WodCompletionProposal(_token, _tokenOffset, _offset, elementTypeName + " {\n\t\n}", elementTypeName, elementTypeName.length() + 4);
+        }
+        else {
+          completionProposal = new WodCompletionProposal(_token, _tokenOffset, _offset, elementTypeName);
+        }
         _completionProposalsSet.add(completionProposal);
       }
     }
@@ -373,7 +396,7 @@ public class WodCompletionProcessor implements IContentAssistProcessor {
     return type;
   }
 
-  protected void fillInBindingNameCompletionProposals(IJavaProject _project, IType _elementType, IPath _wodFilePath, String _token, int _tokenOffset, int _offset, Set _completionProposalsSet) throws JavaModelException {
+  protected void fillInBindingNameCompletionProposals(IJavaProject _project, IType _elementType, IPath _wodFilePath, String _token, int _tokenOffset, int _offset, Set _completionProposalsSet, boolean _guessed) throws JavaModelException {
     String partialToken = partialToken(_token, _tokenOffset, _offset);
     List bindingKeys = WodBindingUtils.createMatchingBindingKeys(_project, _elementType, partialToken, false, WodBindingUtils.MUTATORS_ONLY);
     WodCompletionProcessor.fillInCompletionProposals(bindingKeys, _token, _tokenOffset, _offset, _completionProposalsSet);
@@ -388,7 +411,14 @@ public class WodCompletionProcessor implements IContentAssistProcessor {
           String bindingName = bindings[i].getName();
           String lowercaseBindingName = bindingName.toLowerCase();
           if (lowercaseBindingName.startsWith(lowercasePartialToken)) {
-            _completionProposalsSet.add(new WodCompletionProposal(_token, _tokenOffset, _offset, bindingName));
+            WodCompletionProposal completionProposal;
+            if (shouldSmartInsert() && _guessed) {
+              completionProposal = new WodCompletionProposal(_token, _tokenOffset, _offset, bindingName + " = ", bindingName, bindingName.length() + 3);
+            }
+            else {
+              completionProposal = new WodCompletionProposal(_token, _tokenOffset, _offset, bindingName);
+            }
+            _completionProposalsSet.add(completionProposal);
           }
         }
       }
@@ -399,7 +429,7 @@ public class WodCompletionProcessor implements IContentAssistProcessor {
     }
   }
 
-  protected void fillInBindingValueCompletionProposals(IJavaProject _project, IType _elementType, String _token, int _tokenOffset, int _offset, Set _completionProposalsSet, WodScanner _scanner, IDocument _document) throws JavaModelException {
+  protected void fillInBindingValueCompletionProposals(IJavaProject _project, IType _elementType, String _token, int _tokenOffset, int _offset, Set _completionProposalsSet, WodScanner _scanner, IDocument _document, boolean _guessed) throws JavaModelException {
     String partialToken = partialToken(_token, _tokenOffset, _offset);
     BindingValueKeyPath bindingKeyPath = new BindingValueKeyPath(partialToken, _elementType, _project);
     List possibleBindingKeyMatchesList = bindingKeyPath.getPartialMatchesForLastBindingKey();
