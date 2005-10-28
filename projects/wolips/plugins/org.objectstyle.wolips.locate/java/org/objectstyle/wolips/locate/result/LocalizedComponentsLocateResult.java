@@ -84,13 +84,13 @@ public class LocalizedComponentsLocateResult extends AbstractLocateResult {
 			String extension = resource.getFileExtension();
 			if (extension.equals("java")) {
 				if (dotJava != null) {
-					throw new LocateException("Duplicate lacated: " + dotJava
+					throw new LocateException("Duplicate located: " + dotJava
 							+ " " + file);
 				}
 				dotJava = file;
 			} else if (extension.equals("api")) {
 				if (dotApi != null) {
-					throw new LocateException("Duplicate lacated: " + dotApi
+					throw new LocateException("Duplicate located: " + dotApi
 							+ " " + file);
 				}
 				dotApi = file;
