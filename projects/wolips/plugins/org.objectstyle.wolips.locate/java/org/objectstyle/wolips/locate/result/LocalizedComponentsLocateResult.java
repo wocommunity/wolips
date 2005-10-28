@@ -61,18 +61,22 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.core.ICompilationUnit;
+import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IType;
+import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.core.JavaModelException;
 import org.objectstyle.wolips.locate.LocateException;
 
 public class LocalizedComponentsLocateResult extends AbstractLocateResult {
-
 	private ArrayList components = new ArrayList();
-
+  
 	private IFile dotJava;
+  private IType dotJavaType;
 
 	private IFile dotApi;
-
-	public LocalizedComponentsLocateResult() {
-		super();
+  
+  public LocalizedComponentsLocateResult() {
 	}
 
 	public void add(IResource resource) throws LocateException {
@@ -95,11 +99,11 @@ public class LocalizedComponentsLocateResult extends AbstractLocateResult {
 				}
 				dotApi = file;
 			} else {
-				throw new LocateException("unknown extension" + file);
+				throw new LocateException("unknown extension on " + file);
 			}
 
 		} else {
-			throw new LocateException("unsupported type" + resource);
+			throw new LocateException("unsupported type " + resource);
 		}
 	}
 
@@ -115,6 +119,59 @@ public class LocalizedComponentsLocateResult extends AbstractLocateResult {
 		return dotJava;
 	}
 
+  public IType getDotJavaType() throws JavaModelException {
+    if (dotJavaType == null) {
+      IFile javaFile = getDotJava();
+      if (javaFile != null) {
+        IJavaElement javaElement = JavaCore.create(javaFile);
+        if (javaElement instanceof ICompilationUnit) {
+          IType[] types = ((ICompilationUnit)javaElement).getTypes();
+          // NTS: What do we do about multiple types in a file??
+          if (types.length > 0) {
+            dotJavaType = types[0];
+          }
+        }
+      }
+    }
+    return dotJavaType;
+  }
+
+  public IFile getFirstHtmlFile() throws CoreException {
+    IFile htmlFile;
+    if (components.size() > 0) {
+      IFolder componentFolder = (IFolder)components.get(0);
+      htmlFile = LocalizedComponentsLocateResult.getHtml(componentFolder);
+    }
+    else {
+      htmlFile = null;
+    }
+    return htmlFile;
+  }
+
+  public IFile getFirstWodFile() throws CoreException {
+    IFile wodFile;
+    if (components.size() > 0) {
+      IFolder componentFolder = (IFolder)components.get(0);
+      wodFile = LocalizedComponentsLocateResult.getWod(componentFolder);
+    }
+    else {
+      wodFile = null;
+    }
+    return wodFile;
+  }
+
+  public IFile getFirstWooFile() throws CoreException {
+    IFile wooFile;
+    if (components.size() > 0) {
+      IFolder componentFolder = (IFolder)components.get(0);
+      wooFile = LocalizedComponentsLocateResult.getWoo(componentFolder);
+    }
+    else {
+      wooFile = null;
+    }
+    return wooFile;
+  }
+  
 	public static IFile getHtml(IFolder component) throws CoreException {
 		return LocalizedComponentsLocateResult.getMemberWithExtension(component, "html");
 	}
