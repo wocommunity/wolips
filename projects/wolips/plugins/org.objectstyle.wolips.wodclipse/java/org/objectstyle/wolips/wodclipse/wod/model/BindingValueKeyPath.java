@@ -14,6 +14,7 @@ public class BindingValueKeyPath {
   private String[] myBindingKeyNames;
   private BindingValueKey[] myBindingKeys;
   private boolean myValid;
+  private boolean myAmbiguous;
 
   public BindingValueKeyPath(String _keyPath, IType _contextType, IJavaProject _javaProject) throws JavaModelException {
     String[] bindingKeyNames = _keyPath.split("\\.");
@@ -35,7 +36,11 @@ public class BindingValueKeyPath {
     IType currentType = _contextType;
     List bindingKeysList = new LinkedList();
     for (int i = 0; currentType != null && i < myBindingKeyNames.length; i++) {
-      if (!myBindingKeyNames[i].startsWith("@")) {
+      if (myBindingKeyNames[i].startsWith("@")) {
+        myAmbiguous = true;
+        currentType = null;
+      }
+      else {
         List bindingKeys = WodBindingUtils.createMatchingBindingKeys(_javaProject, currentType, myBindingKeyNames[i], true, WodBindingUtils.ACCESSORS_ONLY);
         if (!bindingKeys.isEmpty()) {
           // NTS: Deal with multiple matches ...
@@ -55,6 +60,10 @@ public class BindingValueKeyPath {
     }
   }
 
+  public boolean isAmbiguous() {
+    return myAmbiguous;
+  }
+  
   public boolean isValid() {
     return myValid;
   }

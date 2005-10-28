@@ -237,6 +237,9 @@ public class WodModelUtils {
               if (!bindingValueKeyPath.isValid()) {
                 problems.add(new WodProblem(_wodModel, "There is no key path '" + bindingValue + "' for " + wodJavaType.getElementName(), (hasPositions) ? ((DocumentWodBinding) binding).getValuePosition() : null, false));
               }
+              else if (bindingValueKeyPath.isAmbiguous()) {
+                problems.add(new WodProblem(_wodModel, "Unable to verify key path '" + bindingValue + "' for " + wodJavaType.getElementName(), (hasPositions) ? ((DocumentWodBinding) binding).getValuePosition() : null, true));
+              }
 //              else {
 //                String[] validApiValues = WodBindingUtils.getValidValues(elementType, binding.getName(), _typeToApiModelWoCache);
 //                if (validApiValues != null && !Arrays.asList(validApiValues).contains(bindingValue)) {
