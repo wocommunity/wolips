@@ -2,7 +2,7 @@
  *
  * The ObjectStyle Group Software License, Version 1.0
  *
- * Copyright (c) 2002, 2004 The ObjectStyle Group
+ * Copyright (c) 2002 - 2005 The ObjectStyle Group
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -92,7 +92,7 @@ public class FrameworkFormat extends ProjectFormat {
 	public String templateForTarget(String targetName) throws BuildException {
 		if (targetName.endsWith("Info.plist")) {
 			return INFO_TEMPLATE;
-		} 
+		}
 		throw new BuildException("Invalid target: " + targetName);
 	}
 
@@ -110,21 +110,15 @@ public class FrameworkFormat extends ProjectFormat {
 	 */
 	public FilterSetCollection infoFilter(Iterator extLibs) {
 		FilterSetCollection filterSetCollection = super.infoFilter(extLibs);
-		String string = null;
-		if(getFrameworkTask().getEOAdaptorClassName() == null || getFrameworkTask().getEOAdaptorClassName().length() == 0) {
-			string = "";
-		}
-		else {
-			string = "  <key>EOAdaptorClassName</key>" + "\r\n"
-			+ "  <string>" + getFrameworkTask().getEOAdaptorClassName() + "</string>" + "\r\n";
-		}
 		FilterSet filter = new FilterSet();
 
-		filter.addFilter("EOAdaptorClassName", getFrameworkTask().getEOAdaptorClassName());
+		filter.addFilter("EOAdaptorClassName", getFrameworkTask()
+				.getEOAdaptorClassName());
 		filterSetCollection.addFilterSet(filter);
-		
+
 		return filterSetCollection;
 	}
+
 	/**
 	 * Returns an iterator with a single String element.
 	 */
