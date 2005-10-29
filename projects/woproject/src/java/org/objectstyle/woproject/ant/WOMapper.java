@@ -85,22 +85,21 @@ public class WOMapper extends Mapper {
 	private final String NON_LOCALIZED = "Nonlocalized" + LPROJ_SUFFIX;
 
 	WOTask wotask;
+
 	String[] pattern;
-	
-	
+
 	/**
 	 * @param project
 	 * @param parent
-	 * 
-	 * The default constructor.
+	 *            The default constructor.
 	 */
 	public WOMapper(Project project, Task parent) {
 		super(project);
-		if(parent != null && parent instanceof WOTask) {
-			wotask = (WOTask)parent;
+		if (parent != null && parent instanceof WOTask) {
+			wotask = (WOTask) parent;
 		}
 	}
-	
+
 	public FileNameMapper getImplementation() throws BuildException {
 		return new WOFileNameMapper();
 	}
@@ -122,10 +121,46 @@ public class WOMapper extends Mapper {
 			String localizedPath = localizationFilter(subprojPath);
 
 			String wocompPath = wocompFilter(localizedPath);
-			String miscFilter = miscFilter(wocompPath);
+			String resourcesPath = resourcesFilter(wocompPath);
+			String webserverresourcesPath = webserverResourcesFilter(resourcesPath);
+			String miscFilter = miscFilter(webserverresourcesPath);
 			String flattenfilesFilter = applyFlattenfiles(miscFilter);
 			String finalPath = eomodelFilter(flattenfilesFilter);
 			return new String[] { finalPath };
+		}
+
+		/**
+		 * Returns destination path based on source file path applying Resources
+		 * rules to <code>path</code> if applicable.
+		 */
+		private final String resourcesFilter(String path) {
+			File f = new File(path);
+
+			// File in Resources directory
+			String parent = f.getParent();
+			if (parent != null && parent.equals("Resources")) {
+				return flatten(f);
+			}
+
+			// skip the filter
+			return path;
+		}
+
+		/**
+		 * Returns destination path based on source file path applying Resources
+		 * rules to <code>path</code> if applicable.
+		 */
+		private final String webserverResourcesFilter(String path) {
+			File f = new File(path);
+
+			// File in Resources directory
+			String parent = f.getParent();
+			if (parent != null && parent.equals("WebServerResources")) {
+				return flatten(f);
+			}
+
+			// skip the filter
+			return path;
 		}
 
 		/**
@@ -246,22 +281,24 @@ public class WOMapper extends Mapper {
 		 * Pattern extracted from the Flattenfiles
 		 */
 		private String[] pattern() {
-			if(wotask != null) {
+			if (wotask != null) {
 				ArrayList arrayList = new ArrayList();
 				Iterator iterator = wotask.getFlattenfileNames();
-				while(iterator.hasNext()) {
-					String fileName = (String)iterator.next();
+				while (iterator.hasNext()) {
+					String fileName = (String) iterator.next();
 					addPattern(fileName, arrayList);
 				}
-				pattern = (String[])arrayList.toArray(new String[arrayList.size()]);
+				pattern = (String[]) arrayList.toArray(new String[arrayList
+						.size()]);
 			}
 			return pattern;
 		}
-		
+
 		private void addPattern(String fileName, ArrayList arrayList) {
 			BufferedReader patternReader = null;
 			try {
-				patternReader = new BufferedReader(new FileReader(new File(fileName)));
+				patternReader = new BufferedReader(new FileReader(new File(
+						fileName)));
 				String line = patternReader.readLine();
 				while (line != null) {
 					if (line.length() > 0) {
@@ -270,7 +307,8 @@ public class WOMapper extends Mapper {
 					line = patternReader.readLine();
 				}
 			} catch (IOException ioe) {
-				WOMapper.this.log("Error while reading file: " + ioe.getMessage());
+				WOMapper.this.log("Error while reading file: "
+						+ ioe.getMessage());
 			} finally {
 				if (null != patternReader) {
 					try {
@@ -281,22 +319,24 @@ public class WOMapper extends Mapper {
 				}
 			}
 		}
+
 		/*
 		 * Apply Flattenfiles
 		 */
 		private String applyFlattenfiles(String path) {
-			if(pattern() == null)
+			if (pattern() == null)
 				return path;
 			File f = new File(path);
-			for(int i = 0; i < pattern.length; i++) {
-				if(SelectorUtils.matchPath(pattern[i], path)) {
+			for (int i = 0; i < pattern.length; i++) {
+				if (SelectorUtils.matchPath(pattern[i], path)) {
 					return flatten(f);
 				}
 			}
 			// skip the filter
 			return path;
-			
+
 		}
+
 		/**
 		 * Flatten parent path, taking localization into account. No need to
 		 * check for Nonlocalized.lproj here, since it should've been stripped

@@ -173,7 +173,9 @@
 			All files included in this fileset will
 			end up in the <code>Contents/Resources</code> directory of the application. 
 			For the discussion
-			of resource localization issues follow <a href="localized.html">this link</a>.</p>
+			of resource localization issues follow <a href="localized.html">this link</a>.
+			Auto flattening: basedir/Resoures/xyz.foo end up in the <code>Resources</code>
+			directory of the framework as xyz.foo.</p>
 
 			<h4>wsresources</h4>
 			<p>The nested <code>wsresources</code> element specifies a <a
@@ -181,7 +183,9 @@
 			All files included in this fileset will
 			end up in the <code>Contents/WebServerResources</code> directory of the application.
 			For the discussion
-			of resource localization issues follow <a href="localized.html">this link</a>.</p>
+			of resource localization issues follow <a href="localized.html">this link</a>.
+			Auto flattening: basedir/WebServerResources/xyz.foo end up in the <code>WebServerResources</code>
+			directory of the framework as xyz.foo.</p>
 
             <h4>flattenfiles</h4>
 			<p>The nested <code>flattenfiles</code> element specifies a <a
