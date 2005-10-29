@@ -41,7 +41,7 @@ public class BindingValueKeyPath {
         currentType = null;
       }
       else {
-        List bindingKeys = WodBindingUtils.createMatchingBindingKeys(_javaProject, currentType, myBindingKeyNames[i], true, WodBindingUtils.ACCESSORS_ONLY);
+        List bindingKeys = WodBindingUtils.createMatchingBindingKeys(_javaProject, currentType, myBindingKeyNames[i], true, WodBindingUtils.ACCESSORS_OR_VOID);
         if (!bindingKeys.isEmpty()) {
           // NTS: Deal with multiple matches ...
           BindingValueKey bindingKey = (BindingValueKey) bindingKeys.get(0);

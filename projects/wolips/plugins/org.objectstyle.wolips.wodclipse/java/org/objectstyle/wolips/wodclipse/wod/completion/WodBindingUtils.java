@@ -42,6 +42,8 @@ public class WodBindingUtils {
 
   public static final int ACCESSORS_ONLY = 0;
   public static final int MUTATORS_ONLY = 1;
+  public static final int ACCESSORS_OR_VOID = 2;
+  public static final int VOID_ONLY = 3;
 
   public static String getShortClassName(String _fullClassName) {
     String shortClassName;
@@ -157,6 +159,14 @@ public class WodBindingUtils {
         String returnType = method.getReturnType();
         if (_accessorsOrMutators == WodBindingUtils.ACCESSORS_ONLY) {
           memberSignatureMatches = (parameterCount == 0 && !"V".equals(returnType));
+          possiblePrefixes = WodBindingUtils.GET_METHOD_PREFIXES;
+        }
+        else if (_accessorsOrMutators == WodBindingUtils.ACCESSORS_OR_VOID) {
+          memberSignatureMatches = (parameterCount == 0);
+          possiblePrefixes = WodBindingUtils.GET_METHOD_PREFIXES;
+        }
+        else if (_accessorsOrMutators == WodBindingUtils.VOID_ONLY) {
+          memberSignatureMatches = (parameterCount == 0 && "V".equals(returnType));
           possiblePrefixes = WodBindingUtils.GET_METHOD_PREFIXES;
         }
         else {
@@ -286,7 +296,7 @@ public class WodBindingUtils {
     return wo;
   }
   
-  public static String[] getValidValues(IType _elementType, String _bindingName, Map _elementTypeToWoCache) throws JavaModelException, ApiModelException {
+  public static String[] getValidValues(IJavaProject _javaProject, IType _wodJavaFileType, IType _elementType, String _bindingName, Map _elementTypeToWoCache) throws JavaModelException, ApiModelException {
     String[] validValues = null;
     Wo wo = WodBindingUtils.findApiModelWo(_elementType, _elementTypeToWoCache);
     if (wo != null) {
@@ -327,6 +337,11 @@ public class WodBindingUtils {
         else if ("Resources".equals(defaultsName)) {
         }
         else if ("Actions".equals(defaultsName)) {
+          List bindingKeysList = WodBindingUtils.createMatchingBindingKeys(_javaProject, _wodJavaFileType, "", false, WodBindingUtils.VOID_ONLY);
+          validValues = new String[bindingKeysList.size()];
+          for (int i = 0; i < validValues.length; i ++) {
+            validValues[i] = ((BindingValueKey)bindingKeysList.get(i)).getBindingName();
+          }
         }
       }
     }

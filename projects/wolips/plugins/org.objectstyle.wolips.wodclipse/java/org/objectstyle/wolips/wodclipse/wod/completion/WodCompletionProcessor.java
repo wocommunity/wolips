@@ -52,6 +52,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -71,12 +72,13 @@ import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 import org.eclipse.jface.text.rules.IRule;
 import org.eclipse.jface.text.rules.WhitespaceRule;
 import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IPathEditorInput;
 import org.objectstyle.wolips.core.resources.types.api.Binding;
 import org.objectstyle.wolips.core.resources.types.api.Wo;
+import org.objectstyle.wolips.locate.LocateException;
 import org.objectstyle.wolips.wodclipse.WodclipsePlugin;
 import org.objectstyle.wolips.wodclipse.preferences.PreferenceConstants;
+import org.objectstyle.wolips.wodclipse.wod.WodEditor;
 import org.objectstyle.wolips.wodclipse.wod.model.BindingValueKey;
 import org.objectstyle.wolips.wodclipse.wod.model.BindingValueKeyPath;
 import org.objectstyle.wolips.wodclipse.wod.model.WodModelUtils;
@@ -97,13 +99,16 @@ import org.objectstyle.wolips.wodclipse.wod.parser.WodScanner;
  * @author mike
  */
 public class WodCompletionProcessor implements IContentAssistProcessor {
-  private IEditorPart myEditor;
+  private WodEditor myEditor;
   private Set myValidElementNames;
   private long myTemplateLastModified;
   private HashMap myElementNameToTypeCache;
   private HashMap myElementTypeToWoCache;
+  private IFile myHtmlFile;
+  private IFile myJavaFile;
+  private IType myJavaFileType;
 
-  public WodCompletionProcessor(IEditorPart _editor) {
+  public WodCompletionProcessor(WodEditor _editor) {
     myEditor = _editor;
     myElementNameToTypeCache = new HashMap();
     myElementTypeToWoCache = new HashMap();
@@ -134,8 +139,9 @@ public class WodCompletionProcessor implements IContentAssistProcessor {
       if (input instanceof IPathEditorInput) {
         IPathEditorInput pathInput = (IPathEditorInput) input;
         IPath path = pathInput.getPath();
-        IFile file = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(path);
-        IJavaProject javaProject = JavaCore.create(file.getProject());
+        IFile wodFile = ResourcesPlugin.getWorkspace().getRoot().getFileForLocation(path);
+        IProject project = wodFile.getProject();
+        IJavaProject javaProject = JavaCore.create(project);
 
         // Without an underlying model, we have to rescan the line to figure out exactly 
         // what the current matching rule was, so we know what kind of token we're dealing with.
@@ -277,6 +283,9 @@ public class WodCompletionProcessor implements IContentAssistProcessor {
     catch (IOException e) {
       WodclipsePlugin.getDefault().log(e);
     }
+    catch (LocateException e) {
+      WodclipsePlugin.getDefault().log(e);
+    }
 
     ICompletionProposal[] completionProposals = new ICompletionProposal[completionProposalsSet.size()];
     Iterator completionProposalsIter = completionProposalsSet.iterator();
@@ -291,9 +300,9 @@ public class WodCompletionProcessor implements IContentAssistProcessor {
     return null;
   }
 
-  protected Set validElementNames(IPath _filePath) throws CoreException, IOException {
+  protected Set validElementNames(IPath _filePath) throws CoreException, IOException, LocateException {
     // Look for an html file of the same name as the .wod file we're editing now
-    IFile htmlFile = WodModelUtils.getHtmlFileForWodFilePath(_filePath);
+    IFile htmlFile = myEditor.getComponentsLocateResults().getFirstHtmlFile();
     //myTemplateLastModified = IFile.NULL_STAMP;
     if (htmlFile != null) {
       long templateLastModified = htmlFile.getModificationStamp();
@@ -312,8 +321,8 @@ public class WodCompletionProcessor implements IContentAssistProcessor {
   protected boolean shouldSmartInsert() {
     return true;
   }
-  
-  protected void fillInElementNameCompletionProposals(IJavaProject _project, IDocument _document, IPath _wodFilePath, String _token, int _tokenOffset, int _offset, Set _completionProposalsSet, boolean _guessed) throws CoreException, IOException {
+
+  protected void fillInElementNameCompletionProposals(IJavaProject _project, IDocument _document, IPath _wodFilePath, String _token, int _tokenOffset, int _offset, Set _completionProposalsSet, boolean _guessed) throws CoreException, IOException, LocateException {
     String partialToken = partialToken(_token, _tokenOffset, _offset).toLowerCase();
     Iterator validElementNamesIter = validElementNames(_wodFilePath).iterator();
 
@@ -448,7 +457,7 @@ public class WodCompletionProcessor implements IContentAssistProcessor {
         int spaceIndex = WodCompletionProcessor.scanBackFor(_document, noSpaceIndex, new char[] { ' ', '\t', '\n', '\r' }, false);
         String bindingName = _document.get(spaceIndex + 1, noSpaceIndex - spaceIndex);
         IType elementType = findNearestElementType(_project, _document, _scanner, _offset);
-        String[] validValues = WodBindingUtils.getValidValues(elementType, bindingName, myElementTypeToWoCache);
+        String[] validValues = WodBindingUtils.getValidValues(_project, myEditor.getComponentsLocateResults().getDotJavaType(),  elementType, bindingName, myElementTypeToWoCache);
         if (validValues != null) {
           String lowercasePartialToken = partialToken.toLowerCase();
           for (int i = 0; i < validValues.length; i++) {

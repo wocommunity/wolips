@@ -54,7 +54,6 @@ import org.eclipse.jface.text.rules.DefaultDamagerRepairer;
 import org.eclipse.jface.text.source.IAnnotationHover;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
-import org.eclipse.ui.texteditor.ITextEditor;
 import org.objectstyle.wolips.wodclipse.wod.completion.WodCompletionProcessor;
 import org.objectstyle.wolips.wodclipse.wod.parser.WodScanner;
 
@@ -63,12 +62,12 @@ import org.objectstyle.wolips.wodclipse.wod.parser.WodScanner;
  */
 public class WodSourceViewerConfiguration extends SourceViewerConfiguration {
   private WodScanner myScanner;
-  private ITextEditor myEditor;
+  private WodEditor myEditor;
   private MonoReconciler myReconciler;
   private PresentationReconciler myPresentationReconciler;
   private ContentAssistant myContentAssistant;
 
-  public WodSourceViewerConfiguration(ITextEditor _editor) {
+  public WodSourceViewerConfiguration(WodEditor _editor) {
     myEditor = _editor;
   }
 

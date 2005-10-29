@@ -26,19 +26,20 @@ import org.eclipse.jface.text.reconciler.IReconcilingStrategyExtension;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
-import org.eclipse.ui.texteditor.ITextEditor;
+import org.objectstyle.wolips.locate.LocateException;
+import org.objectstyle.wolips.locate.result.LocalizedComponentsLocateResult;
 import org.objectstyle.wolips.wodclipse.WodclipsePlugin;
 import org.objectstyle.wolips.wodclipse.wod.model.IWodModel;
 import org.objectstyle.wolips.wodclipse.wod.model.WodModelUtils;
 import org.objectstyle.wolips.wodclipse.wod.model.WodProblem;
 
 public class WodReconcilingStrategy implements IReconcilingStrategy, IReconcilingStrategyExtension {
-  private ITextEditor myTextEditor;
+  private WodEditor myWodEditor;
   private IProgressMonitor myProgressMonitor;
   private IDocument myDocument;
 
-  public WodReconcilingStrategy(ITextEditor _textEditor) {
-    myTextEditor = _textEditor;
+  public WodReconcilingStrategy(WodEditor _wodEditor) {
+    myWodEditor = _wodEditor;
   }
 
   public void setDocument(IDocument _document) {
@@ -46,36 +47,26 @@ public class WodReconcilingStrategy implements IReconcilingStrategy, IReconcilin
   }
 
   public void reconcile() {
-    IFile documentFile = null;
-
-    IEditorInput input = myTextEditor.getEditorInput();
+    IEditorInput input = myWodEditor.getEditorInput();
     if (input instanceof IFileEditorInput) {
-      documentFile = ((IFileEditorInput) input).getFile();
-    }
+      final IFile wodFile = ((IFileEditorInput) input).getFile();
+      IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
+        public void run(IProgressMonitor _monitor) throws CoreException {
+          try {
+            WodReconcilingStrategy.reconcileWodModel(myDocument, myWodEditor.getComponentsLocateResults(), new HashMap(), new HashMap());
+          }
+          catch (LocateException e) {
+            WodclipsePlugin.getDefault().log(e);
+          }
+        }
+      };
 
-    /*
-     IAnnotationModel annotationModel = getAnnotationModel();
-     Iterator annotationIter = annotationModel.getAnnotationIterator();
-     while (annotationIter.hasNext()) {
-     Annotation annotation = (Annotation) annotationIter.next();
-     if (!annotation.isPersistent()) {
-     annotationModel.removeAnnotation(annotation);
-     }
-     }
-     */
-
-    final IFile finalDocumentFile = documentFile;
-    IWorkspaceRunnable runnable = new IWorkspaceRunnable() {
-      public void run(IProgressMonitor _monitor) throws CoreException {
-        WodReconcilingStrategy.reconcileWodModel(finalDocumentFile, myDocument, new HashMap(), new HashMap());
+      try {
+        ResourcesPlugin.getWorkspace().run(runnable, ResourcesPlugin.getWorkspace().getRuleFactory().markerRule(wodFile), IWorkspace.AVOID_UPDATE, null);
       }
-    };
-
-    try {
-      ResourcesPlugin.getWorkspace().run(runnable, ResourcesPlugin.getWorkspace().getRuleFactory().markerRule(documentFile), IWorkspace.AVOID_UPDATE, null);
-    }
-    catch (CoreException e) {
-      WodclipsePlugin.getDefault().log(e);
+      catch (CoreException e) {
+        WodclipsePlugin.getDefault().log(e);
+      }
     }
   }
 
@@ -96,14 +87,15 @@ public class WodReconcilingStrategy implements IReconcilingStrategy, IReconcilin
   }
 
   private IAnnotationModel getAnnotationModel() {
-    IEditorInput input = myTextEditor.getEditorInput();
-    IAnnotationModel annotationModel = myTextEditor.getDocumentProvider().getAnnotationModel(input);
+    IEditorInput input = myWodEditor.getEditorInput();
+    IAnnotationModel annotationModel = myWodEditor.getDocumentProvider().getAnnotationModel(input);
     return annotationModel;
   }
 
-  public static synchronized void reconcileWodModel(IFile _wodFile, IDocument _wodDocument, Map _elementNameToTypeCache, Map _typeToApiModelWoCache) {
+  public static synchronized void reconcileWodModel(IDocument _wodDocument, LocalizedComponentsLocateResult _locateResult, Map _elementNameToTypeCache, Map _typeToApiModelWoCache) throws CoreException {
+    IFile wodFile = _locateResult.getFirstWodFile();
     try {
-      IMarker[] markers = _wodFile.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
+      IMarker[] markers = wodFile.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
       for (int i = 0; i < markers.length; i++) {
         markers[i].delete();
       }
@@ -112,14 +104,14 @@ public class WodReconcilingStrategy implements IReconcilingStrategy, IReconcilin
       WodclipsePlugin.getDefault().debug(e);
     }
 
-    IWodModel wodModel = WodModelUtils.createWodModel(_wodFile, _wodDocument);
+    IWodModel wodModel = WodModelUtils.createWodModel(wodFile, _wodDocument);
     List problems = new LinkedList();
     List syntaxProblems = wodModel.getSyntacticProblems();
     problems.addAll(syntaxProblems);
 
     try {
-      IJavaProject javaProject = JavaCore.create(_wodFile.getProject());
-      List semanticProblems = WodModelUtils.getSemanticProblems(javaProject, wodModel, _elementNameToTypeCache, _typeToApiModelWoCache);
+      IJavaProject javaProject = JavaCore.create(wodFile.getProject());
+      List semanticProblems = WodModelUtils.getSemanticProblems(wodModel, _locateResult, javaProject, _elementNameToTypeCache, _typeToApiModelWoCache);
       problems.addAll(semanticProblems);
     }
     catch (CoreException e) {
@@ -138,7 +130,7 @@ public class WodReconcilingStrategy implements IReconcilingStrategy, IReconcilin
       //annotationModel.addAnnotation(problemAnnotation, problemPosition);
 
       try {
-        IMarker marker = _wodFile.createMarker(IMarker.PROBLEM);
+        IMarker marker = wodFile.createMarker(IMarker.PROBLEM);
         marker.setAttribute(IMarker.MESSAGE, problem.getMessage());
         int severity;
         if (problem.isWarning()) {

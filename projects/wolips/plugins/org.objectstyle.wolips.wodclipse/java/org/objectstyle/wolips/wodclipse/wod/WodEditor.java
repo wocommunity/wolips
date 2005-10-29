@@ -46,6 +46,7 @@ package org.objectstyle.wolips.wodclipse.wod;
 import java.util.ResourceBundle;
 import java.util.Set;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
@@ -55,6 +56,7 @@ import org.eclipse.jface.text.source.IVerticalRuler;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.editors.text.TextEditor;
@@ -62,7 +64,10 @@ import org.eclipse.ui.texteditor.ContentAssistAction;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.objectstyle.wolips.htmleditor.HtmleditorPlugin;
+import org.objectstyle.wolips.locate.LocateException;
+import org.objectstyle.wolips.locate.result.LocalizedComponentsLocateResult;
 import org.objectstyle.wolips.wodclipse.WodclipsePlugin;
+import org.objectstyle.wolips.wodclipse.wod.model.WodModelUtils;
 import org.objectstyle.wolips.wodclipse.wod.parser.ElementNameRule;
 import org.objectstyle.wolips.wodclipse.wod.parser.RulePosition;
 import org.objectstyle.wolips.wodclipse.wod.parser.WodScanner;
@@ -73,6 +78,7 @@ import org.objectstyle.wolips.wodclipse.wod.parser.WodScanner;
 public class WodEditor extends TextEditor {
   private WodContentOutlinePage myContentOutlinePage;
   private IEditorInput myInput;
+  private LocalizedComponentsLocateResult myComponentsLocateResults;
 
   public WodEditor() {
     setSourceViewerConfiguration(new WodSourceViewerConfiguration(this));
@@ -109,7 +115,7 @@ public class WodEditor extends TextEditor {
     catch (BadLocationException t) {
       //null means no tags
       //the user has to enter the name manually
-    	HtmleditorPlugin.getDefault().setWebObjectsTagNames(null);
+      HtmleditorPlugin.getDefault().setWebObjectsTagNames(null);
     }
   }
 
@@ -127,8 +133,6 @@ public class WodEditor extends TextEditor {
   public void init(IEditorSite _site, IEditorInput _input) throws PartInitException {
     super.init(_site, _input);
     myInput = _input;
-    //IDocument document = getDocumentProvider().getDocument(getEditorInput());
-    //IWodModel wodModel = WodModelUtils.createWodModel(document);
   }
 
   public void selectTagNamed(String _webobjectTagName) {
@@ -144,5 +148,12 @@ public class WodEditor extends TextEditor {
     catch (BadLocationException e) {
       WodclipsePlugin.getDefault().log(e);
     }
+  }
+  
+  public LocalizedComponentsLocateResult getComponentsLocateResults() throws CoreException, LocateException {
+    if (myComponentsLocateResults == null) {
+      myComponentsLocateResults = WodModelUtils.findComponents((IFileEditorInput)myInput);
+    }
+    return myComponentsLocateResults;
   }
 }
