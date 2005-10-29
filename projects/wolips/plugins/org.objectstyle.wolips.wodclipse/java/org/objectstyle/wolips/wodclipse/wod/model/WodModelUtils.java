@@ -125,18 +125,31 @@ public class WodModelUtils {
     boolean hasPositions = (_wodModel instanceof DocumentWodModel);
     boolean checkBindingValues = WodclipsePlugin.getDefault().getPluginPreferences().getBoolean(PreferenceConstants.CHECK_BINDING_VALUES);
 
+    String htmlFileName = null;
     Set htmlElementNames = null;
     try {
       htmlElementNames = new HashSet();
       IFile htmlFile = _locateResults.getFirstHtmlFile();
       if (htmlFile != null) {
+        htmlFileName = htmlFile.getName();
         WodModelUtils.fillInHtmlElementNames(htmlFile, htmlElementNames);
       }
     }
     catch (IOException e) {
       WodclipsePlugin.getDefault().log("Failed to locate html, java, or api file.", e);
     }
+    
     IType javaFileType = _locateResults.getDotJavaType();
+    String javaFileName = null;
+    if (javaFileType != null) {
+      javaFileName = _locateResults.getDotJava().getName();
+    }
+    
+    String apiFileName = null;
+    IFile apiFile = _locateResults.getDotApi();
+    if (apiFile != null) {
+      apiFileName = apiFile.getName();
+    }
 
     Set elementNames = new HashSet();
 
@@ -146,10 +159,10 @@ public class WodModelUtils {
       IWodElement element = (IWodElement) elementsIter.next();
       String elementName = element.getElementName();
       if (htmlElementNames != null && !htmlElementNames.contains(elementName)) {
-        problems.add(new WodProblem(_wodModel, "There is no element named '" + elementName + "' in your component HTML file", (hasPositions) ? ((DocumentWodElement) element).getElementNamePosition() : null, true));
+        problems.add(new WodProblem(_wodModel, "There is no element named '" + elementName + "' in your component HTML file", (hasPositions) ? ((DocumentWodElement) element).getElementNamePosition() : null, true, htmlFileName));
       }
       if (elementNames.contains(elementName)) {
-        problems.add(new WodProblem(_wodModel, "Duplicate definition of '" + elementName + "'", (hasPositions) ? ((DocumentWodElement) element).getElementNamePosition() : null, false));
+        problems.add(new WodProblem(_wodModel, "Duplicate definition of '" + elementName + "'", (hasPositions) ? ((DocumentWodElement) element).getElementNamePosition() : null, false, (String)null));
       }
       else {
         elementNames.add(elementName);
@@ -158,7 +171,7 @@ public class WodModelUtils {
       String elementTypeName = element.getElementType();
       IType elementType = WodBindingUtils.findElementType(_javaProject, elementTypeName, false, _elementNameToTypeCache);
       if (elementType == null) {
-        problems.add(new WodProblem(_wodModel, "The class for '" + elementTypeName + "' is either missing or does not extend WOElement.", (hasPositions) ? ((DocumentWodElement) element).getElementTypePosition() : null, false));
+        problems.add(new WodProblem(_wodModel, "The class for '" + elementTypeName + "' is either missing or does not extend WOElement.", (hasPositions) ? ((DocumentWodElement) element).getElementTypePosition() : null, false, elementTypeName + ".java"));
       }
       else {
         Wo wo;
@@ -170,13 +183,13 @@ public class WodModelUtils {
             for (int i = 0; i < bindings.length; i++) {
               String bindingName = bindings[i].getName();
               if (bindings[i].isExplicitlyRequired() && !bindingsMap.containsKey(bindingName)) {
-                problems.add(new WodProblem(_wodModel, "Binding '" + bindingName + "' is required for " + wo.getClassName(), (hasPositions) ? ((DocumentWodElement) element).getElementNamePosition() : null, false));
+                problems.add(new WodProblem(_wodModel, "Binding '" + bindingName + "' is required for " + wo.getClassName(), (hasPositions) ? ((DocumentWodElement) element).getElementNamePosition() : null, false, elementTypeName + ".api"));
               }
             }
             Validation[] failedValidations = wo.getFailedValidations(bindingsMap);
             for (int i = 0; i < failedValidations.length; i++) {
               String failedValidationMessage = failedValidations[i].getMessage();
-              problems.add(new WodProblem(_wodModel, failedValidationMessage, (hasPositions) ? ((DocumentWodElement) element).getElementNamePosition() : null, false));
+              problems.add(new WodProblem(_wodModel, failedValidationMessage, (hasPositions) ? ((DocumentWodElement) element).getElementNamePosition() : null, false, elementTypeName + ".api"));
             }
           }
         }
@@ -191,7 +204,7 @@ public class WodModelUtils {
         IWodBinding binding = (IWodBinding) checkForDuplicateBindingsIter.next();
         String bindingName = binding.getName();
         if (bindingNames.contains(bindingName)) {
-          problems.add(new WodProblem(_wodModel, "Duplicate binding named '" + bindingName + "'", (hasPositions) ? ((DocumentWodBinding) binding).getNamePosition() : null, false));
+          problems.add(new WodProblem(_wodModel, "Duplicate binding named '" + bindingName + "'", (hasPositions) ? ((DocumentWodBinding) binding).getNamePosition() : null, false, (String)null));
         }
         else {
           bindingNames.add(bindingName);
@@ -206,11 +219,12 @@ public class WodModelUtils {
             if (binding.shouldValidate() && WodModelUtils.isBindingValueKeyPath(binding)) {
               String bindingValue = binding.getValue();
               BindingValueKeyPath bindingValueKeyPath = new BindingValueKeyPath(bindingValue, javaFileType, _javaProject);
+              // NTS: Technically these need to be related to every java file name in the key path
               if (!bindingValueKeyPath.isValid()) {
-                problems.add(new WodProblem(_wodModel, "There is no key path '" + bindingValue + "' for " + javaFileType.getElementName(), (hasPositions) ? ((DocumentWodBinding) binding).getValuePosition() : null, false));
+                problems.add(new WodProblem(_wodModel, "There is no key path '" + bindingValue + "' for " + javaFileType.getElementName(), (hasPositions) ? ((DocumentWodBinding) binding).getValuePosition() : null, false, bindingValueKeyPath.getRelatedToFileNames()));
               }
               else if (bindingValueKeyPath.isAmbiguous()) {
-                problems.add(new WodProblem(_wodModel, "Unable to verify key path '" + bindingValue + "' for " + javaFileType.getElementName(), (hasPositions) ? ((DocumentWodBinding) binding).getValuePosition() : null, true));
+                problems.add(new WodProblem(_wodModel, "Unable to verify key path '" + bindingValue + "' for " + javaFileType.getElementName(), (hasPositions) ? ((DocumentWodBinding) binding).getValuePosition() : null, true, bindingValueKeyPath.getRelatedToFileNames()));
               }
               //              else {
               //                String[] validApiValues = WodBindingUtils.getValidValues(elementType, binding.getName(), _typeToApiModelWoCache);
@@ -232,7 +246,7 @@ public class WodModelUtils {
       Iterator undefinedHtmlElementNames = htmlElementNames.iterator();
       while (undefinedHtmlElementNames.hasNext()) {
         String htmlElementName = (String) undefinedHtmlElementNames.next();
-        problems.add(new WodProblem(_wodModel, "The component HTML file references an element '" + htmlElementName + "' which does not appear in the WOD file", null, false));
+        problems.add(new WodProblem(_wodModel, "The component HTML file references an element '" + htmlElementName + "' which does not appear in the WOD file", null, false, htmlFileName));
       }
     }
 

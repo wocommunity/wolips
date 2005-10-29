@@ -1,8 +1,11 @@
 package org.objectstyle.wolips.wodclipse.wod.model;
 
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
+import org.eclipse.core.resources.IResource;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IType;
 import org.eclipse.jdt.core.JavaModelException;
@@ -54,7 +57,7 @@ public class BindingValueKeyPath {
       }
     }
     myBindingKeys = (BindingValueKey[]) bindingKeysList.toArray(new BindingValueKey[bindingKeysList.size()]);
-    
+
     if (!myValid) {
       myValid = myBindingKeyNames.length == 1 && "true".equalsIgnoreCase(myBindingKeyNames[0]) || "false".equalsIgnoreCase(myBindingKeyNames[0]) || "yes".equalsIgnoreCase(myBindingKeyNames[0]) || "no".equalsIgnoreCase(myBindingKeyNames[0]);
     }
@@ -63,7 +66,7 @@ public class BindingValueKeyPath {
   public boolean isAmbiguous() {
     return myAmbiguous;
   }
-  
+
   public boolean isValid() {
     return myValid;
   }
@@ -115,6 +118,20 @@ public class BindingValueKeyPath {
       bindingKeysList = null;
     }
     return bindingKeysList;
+  }
+
+  public String[] getRelatedToFileNames() {
+    Set relatedToFileNamesSet = new HashSet();
+    relatedToFileNamesSet.add(myContextType.getResource().getName());
+    for (int i = 0; i < myBindingKeys.length; i++) {
+      IResource resource = myBindingKeys[i].getDeclaringType().getResource();
+      if (resource != null) {
+        relatedToFileNamesSet.add(resource.getName());
+      }
+    }
+    //System.out.println("BindingValueKeyPath.getRelatedToFileNames: " + relatedToFileNamesSet);
+    String[] relatedToFileNames = (String[]) relatedToFileNamesSet.toArray(new String[relatedToFileNamesSet.size()]);
+    return relatedToFileNames;
   }
 
   public int getLength() {

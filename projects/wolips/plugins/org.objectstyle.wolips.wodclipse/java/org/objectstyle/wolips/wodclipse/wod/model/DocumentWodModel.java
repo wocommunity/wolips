@@ -226,7 +226,7 @@ public class DocumentWodModel implements IWodModel {
   }
 
   public synchronized void addProblem(String _message, RulePosition _found, boolean _warning) {
-    WodProblem problem = new WodProblem(this, _message, _found.getPosition(), _warning);
+    WodProblem problem = new WodProblem(this, _message, _found.getPosition(), _warning, (String)null);
     myProblems.add(problem);
   }
 

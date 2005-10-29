@@ -146,6 +146,15 @@ public class WodReconcilingStrategy implements IReconcilingStrategy, IReconcilin
           marker.setAttribute(IMarker.CHAR_END, problemPosition.getOffset() + problemPosition.getLength());
         }
         marker.setAttribute(IMarker.TRANSIENT, false);
+        String[] relatedToFileNames = problem.getRelatedToFileNames();
+        if (relatedToFileNames != null) {
+          StringBuffer relatedToFileNamesBuffer = new StringBuffer();
+          for (int i = 0; i < relatedToFileNames.length; i++) {
+            relatedToFileNamesBuffer.append(relatedToFileNames[i]);
+            relatedToFileNamesBuffer.append(", ");
+          }
+          marker.setAttribute(WodProblem.RELATED_TO_FILE_NAMES, relatedToFileNamesBuffer.toString());
+        }
       }
       catch (CoreException e) {
         WodclipsePlugin.getDefault().log(e);
