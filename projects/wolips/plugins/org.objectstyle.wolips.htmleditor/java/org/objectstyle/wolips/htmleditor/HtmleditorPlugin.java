@@ -48,6 +48,11 @@ package org.objectstyle.wolips.htmleditor;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.eclipse.wst.html.core.internal.contentmodel.CMNamespaceImpl;
+import org.eclipse.wst.html.core.internal.contentmodel.HTMLCMDocumentFactory;
+import org.eclipse.wst.html.core.internal.provisional.HTML40Namespace;
+import org.eclipse.wst.xml.core.internal.provisional.contentmodel.CMDocType;
+import org.objectstyle.wolips.htmleditor.editor.contentmodel.WebObjectsHCMDocImpl;
 import org.objectstyle.wolips.ui.plugins.AbstractWOLipsUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -60,7 +65,12 @@ public class HtmleditorPlugin extends AbstractWOLipsUIPlugin {
 	private static HtmleditorPlugin plugin;
 	private String[] webObjectsTagNames;
 
-	
+  static {
+    CMNamespaceImpl h40ns = new CMNamespaceImpl(HTML40Namespace.HTML40_URI, HTML40Namespace.HTML40_TAG_PREFIX);
+    WebObjectsHCMDocImpl webobjectHtml40doc = new WebObjectsHCMDocImpl(CMDocType.HTML_DOC_TYPE, h40ns);
+    HTMLCMDocumentFactory.addCMDocument(CMDocType.HTML_DOC_TYPE, webobjectHtml40doc);
+  }
+  
     /**
 	 * The constructor.
 	 */
