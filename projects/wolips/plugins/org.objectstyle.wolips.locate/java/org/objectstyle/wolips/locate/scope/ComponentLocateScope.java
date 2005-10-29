@@ -65,11 +65,19 @@ public class ComponentLocateScope extends DefaultLocateScope {
 				new String[] { name + ".wo" });
 	}
 
+  public static ComponentLocateScope createLocateScope(IProject _project, String _fileNamePossiblyWithExtension) {
+    String fileNameWithoutExtension;
+    int dotIndex = _fileNamePossiblyWithExtension.indexOf('.');
+    if (dotIndex != -1) {
+      fileNameWithoutExtension = _fileNamePossiblyWithExtension.substring(0, dotIndex);
+    }
+    else {
+      fileNameWithoutExtension = _fileNamePossiblyWithExtension;
+    }
+    return new ComponentLocateScope(_project, fileNameWithoutExtension);
+  }
+
   public static ComponentLocateScope createLocateScope(IFile _file) {
-    IProject project = _file.getProject();
-    String fileNameWithExtension = _file.getName();
-    String extension = _file.getFileExtension();
-    String fileNameWithoutExtension = fileNameWithExtension.substring(0, fileNameWithExtension.length() - extension.length() - 1);
-    return new ComponentLocateScope(project, fileNameWithoutExtension);
+    return ComponentLocateScope.createLocateScope(_file.getProject(), _file.getName());
   }
 }
