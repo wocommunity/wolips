@@ -33,7 +33,9 @@
             name="Profiled WOApplication"
             delegate="org.objectstyle.wolips.profiling.ProfiledWOJavaLocalApplicationLaunchConfigurationDelegate"
             modes="debug"
-            id="org.objectstyle.wolips.profiling.ProfiledWOLocalJavaApplication">
+            id="org.objectstyle.wolips.profiling.ProfiledWOLocalJavaApplication"
+            sourceLocatorId="org.eclipse.jdt.launching.sourceLocator.JavaSourceLookupDirector"
+            sourcePathComputerId="org.eclipse.jdt.launching.sourceLookup.javaSourcePathComputer">
       </launchConfigurationType>
    </extension>
 <!-- =================================================================================== -->

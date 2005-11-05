@@ -2,7 +2,7 @@
  *
  * The ObjectStyle Group Software License, Version 1.0
  *
- * Copyright (c) 2002 The ObjectStyle Group
+ * Copyright (c) 2002 - 2005 The ObjectStyle Group
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -65,11 +65,11 @@ import org.eclipse.debug.ui.CommonTab;
 import org.eclipse.debug.ui.ILaunchConfigurationDialog;
 import org.eclipse.debug.ui.ILaunchConfigurationTab;
 import org.eclipse.debug.ui.ILaunchConfigurationTabGroup;
+import org.eclipse.debug.ui.sourcelookup.SourceLookupTab;
 import org.eclipse.jdt.debug.ui.launchConfigurations.JavaArgumentsTab;
 import org.eclipse.jdt.debug.ui.launchConfigurations.JavaClasspathTab;
 import org.eclipse.jdt.debug.ui.launchConfigurations.JavaJRETab;
 import org.eclipse.jdt.debug.ui.launchConfigurations.JavaMainTab;
-import org.eclipse.jdt.debug.ui.launchConfigurations.JavaSourceLookupTab;
 import org.objectstyle.wolips.launching.ui.BrowserTab;
 import org.objectstyle.wolips.launching.ui.CommonWOArgumentsTab;
 import org.objectstyle.wolips.launching.ui.LogTab;
@@ -96,7 +96,7 @@ public class ProfiledWOLocalJavaApplicationTabGroup extends AbstractLaunchConfig
 			new BrowserTab(),
 			new JavaJRETab(),
 			new JavaClasspathTab(),
-			new JavaSourceLookupTab(),
+			new SourceLookupTab(),
 			new JavaProfilingTab(),
 			new CommonTab()
 		};

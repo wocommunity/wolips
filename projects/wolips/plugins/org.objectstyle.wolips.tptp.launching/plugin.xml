@@ -10,7 +10,9 @@
             name="Profiled WOApplication (TPTP)"
             delegate="org.objectstyle.wolips.tptp.launching.TPTPWOJavaLocalApplicationLaunchConfigurationDelegate"
             modes="profile"
-            id="org.objectstyle.wolips.tptp.launching.TPTPWOLocalJavaApplication">
+            id="org.objectstyle.wolips.tptp.launching.TPTPWOLocalJavaApplication"
+            sourceLocatorId="org.eclipse.jdt.launching.sourceLocator.JavaSourceLookupDirector"
+            sourcePathComputerId="org.eclipse.jdt.launching.sourceLookup.javaSourcePathComputer">
       </launchConfigurationType>
    </extension>
 <!-- =================================================================================== -->

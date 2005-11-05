@@ -64,6 +64,7 @@ import org.eclipse.debug.ui.AbstractLaunchConfigurationTabGroup;
 import org.eclipse.debug.ui.CommonTab;
 import org.eclipse.debug.ui.ILaunchConfigurationDialog;
 import org.eclipse.debug.ui.ILaunchConfigurationTabGroup;
+import org.eclipse.debug.ui.sourcelookup.SourceLookupTab;
 import org.eclipse.hyades.trace.internal.ui.TraceConstants;
 import org.eclipse.hyades.trace.ui.UIPlugin;
 import org.eclipse.hyades.trace.ui.internal.launcher.ProfileEnvironmentTab;
@@ -71,7 +72,6 @@ import org.eclipse.hyades.trace.ui.internal.launcher.ProfileTab;
 import org.eclipse.jdt.debug.ui.launchConfigurations.JavaArgumentsTab;
 import org.eclipse.jdt.debug.ui.launchConfigurations.JavaClasspathTab;
 import org.eclipse.jdt.debug.ui.launchConfigurations.JavaMainTab;
-import org.eclipse.jdt.debug.ui.launchConfigurations.JavaSourceLookupTab;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.objectstyle.wolips.launching.delegates.WOJavaLocalApplicationLaunchConfigurationDelegate;
 
@@ -103,7 +103,7 @@ public class TPTPWOLocalJavaApplicationTabGroup extends
 			tabs.add(new ProfileTab(false));
 		}
 
-		tabs.add(new JavaSourceLookupTab());
+		tabs.add(new SourceLookupTab());
 		tabs.add(new ProfileEnvironmentTab());
 		tabs.add(new CommonTab());
 
