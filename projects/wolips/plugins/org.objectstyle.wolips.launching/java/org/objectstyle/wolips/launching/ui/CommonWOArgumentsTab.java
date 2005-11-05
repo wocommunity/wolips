@@ -328,7 +328,6 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 			return;
 		String argument = argumentDialog.getValue();
 		TableItem item = this.includeTable.getItem(index);
-		String newText;
 		item.setText(StringUtilities.toCommandlineParameterFormat(parameter,
 				argument));
 		this.allArguments.setElementAt(argument, index);
