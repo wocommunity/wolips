@@ -56,86 +56,47 @@
 
 package org.objectstyle.wolips.launching.ui;
 
-
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTabGroup;
 import org.eclipse.debug.ui.CommonTab;
 import org.eclipse.debug.ui.ILaunchConfigurationDialog;
 import org.eclipse.debug.ui.ILaunchConfigurationTab;
 import org.eclipse.debug.ui.ILaunchConfigurationTabGroup;
-import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.debug.ui.sourcelookup.SourceLookupTab;
 import org.eclipse.jdt.debug.ui.launchConfigurations.JavaArgumentsTab;
 import org.eclipse.jdt.debug.ui.launchConfigurations.JavaClasspathTab;
 import org.eclipse.jdt.debug.ui.launchConfigurations.JavaJRETab;
 import org.eclipse.jdt.debug.ui.launchConfigurations.JavaMainTab;
-import org.eclipse.jdt.debug.ui.launchConfigurations.JavaSourceLookupTab;
-import org.eclipse.jdt.internal.debug.ui.launcher.WorkingDirectoryBlock;
-import org.eclipse.jdt.launching.JavaRuntime;
-import org.objectstyle.wolips.launching.LaunchingPlugin;
 import org.objectstyle.wolips.launching.delegates.WOJavaLocalApplicationLaunchConfigurationDelegate;
 
 /**
  * @author uli
- *
- * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates.
- * To enable and disable the creation of type comments go to
- * Window>Preferences>Java>Code Generation.
  */
-public class WOLocalJavaApplicationTabGroup extends AbstractLaunchConfigurationTabGroup {
+public class WOLocalJavaApplicationTabGroup extends
+		AbstractLaunchConfigurationTabGroup {
 
 	/**
-	 * @see ILaunchConfigurationTabGroup#createTabs(ILaunchConfigurationDialog, String)
+	 * @see ILaunchConfigurationTabGroup#createTabs(ILaunchConfigurationDialog,
+	 *      String)
 	 */
 	public void createTabs(ILaunchConfigurationDialog dialog, String mode) {
-		
-		JavaArgumentsTab javaArgumentsTab = new JavaArgumentsTab() {
-			protected WorkingDirectoryBlock createWorkingDirBlock() {
-				return new WorkingDirectoryBlock() {
-					/**
-					 * Sets the default working directory
-					 */
-					protected void setDefaultWorkingDir() {
-						try {
-							ILaunchConfiguration config = getLaunchConfiguration();
-							if (config != null) {
-								IJavaProject javaProject = JavaRuntime.getJavaProject(config);
-								if (javaProject != null) {
-									this.fWorkingDirText.setText("${working_dir_loc_WOLips:" + javaProject.getProject().getName() + "}"); //$NON-NLS-1$ //$NON-NLS-2$
-									return;
-								}
-							}
-						} catch (CoreException ce) {
-							LaunchingPlugin.getDefault().log(ce);
-						}
-						this.fWorkingDirText.setText(System.getProperty("user.dir")); //$NON-NLS-1$
-					}
 
-				};
-			}
-		};
 		ILaunchConfigurationTab[] tabs = new ILaunchConfigurationTab[] {
-			new JavaMainTab(),
-			javaArgumentsTab,
-			new CommonWOArgumentsTab(),
-			new LogTab(),
-			new BrowserTab(),
-			new JavaJRETab(),
-			new JavaClasspathTab(),
-			new JavaSourceLookupTab(),
-			new CommonTab()
-		};
+				new JavaMainTab(), new JavaArgumentsTab(),
+				new CommonWOArgumentsTab(), new LogTab(), new BrowserTab(),
+				new JavaJRETab(), new JavaClasspathTab(),
+				new SourceLookupTab(), new CommonTab() };
 		setTabs(tabs);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.debug.ui.AbstractLaunchConfigurationTabGroup#setDefaults(org.eclipse.debug.core.ILaunchConfigurationWorkingCopy)
 	 */
 	public void setDefaults(ILaunchConfigurationWorkingCopy wc) {
-	    WOJavaLocalApplicationLaunchConfigurationDelegate.initConfiguration(wc);
-	    super.setDefaults(wc);
+		WOJavaLocalApplicationLaunchConfigurationDelegate.initConfiguration(wc);
+		super.setDefaults(wc);
 	}
-	
+
 }
