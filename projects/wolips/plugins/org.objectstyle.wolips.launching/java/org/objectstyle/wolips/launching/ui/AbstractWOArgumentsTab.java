@@ -2,7 +2,7 @@
  *
  * The ObjectStyle Group Software License, Version 1.0
  *
- * Copyright (c) 2002 - 2004 The ObjectStyle Group
+ * Copyright (c) 2002 - 2005 The ObjectStyle Group
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -56,16 +56,19 @@
 
 package org.objectstyle.wolips.launching.ui;
 
- 
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
-import org.eclipse.debug.internal.ui.SWTUtil;
 import org.eclipse.debug.ui.ILaunchConfigurationDialog;
 import org.eclipse.debug.ui.ILaunchConfigurationTab;
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.util.Assert;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.FontMetrics;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
@@ -75,57 +78,55 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
 /**
- * @author ulrich
- *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
+ * @author ulrich To change the template for this generated type comment go to
+ *         Window>Preferences>Java>Code Generation>Code and Comments
  */
 public abstract class AbstractWOArgumentsTab implements ILaunchConfigurationTab {
-	
+
 	/**
 	 * The control for this page, or <code>null</code>
 	 */
 	private Control fControl;
 
 	/**
-	 * The launch configuration dialog this tab is
-	 * contained in.
+	 * The launch configuration dialog this tab is contained in.
 	 */
 	private ILaunchConfigurationDialog fLaunchConfigurationDialog;
-	
+
 	/**
 	 * Current error message, or <code>null</code>
 	 */
 	private String fErrorMessage;
-	
+
 	/**
 	 * Current message, or <code>null</code>
 	 */
 	private String fMessage;
-	
+
 	/**
 	 * Whether this tab needs to apply changes. This attribute is initialized to
-	 * <code>true</code> to be backwards compatible. If clients want to take adavantage
-	 * of such a feature, they should set the flag to false, and check it before
-	 * applying changes to the lanuch configuration working copy.
+	 * <code>true</code> to be backwards compatible. If clients want to take
+	 * adavantage of such a feature, they should set the flag to false, and
+	 * check it before applying changes to the lanuch configuration working
+	 * copy.
 	 * 
 	 * @since 2.1
 	 */
-	private boolean fDirty = true;	
-		
+	private boolean fDirty = true;
+
 	/**
-	 * Returns the dialog this tab is contained in, or
-	 * <code>null</code> if not yet set.
+	 * Returns the dialog this tab is contained in, or <code>null</code> if
+	 * not yet set.
 	 * 
 	 * @return launch configuration dialog, or <code>null</code>
 	 */
 	protected ILaunchConfigurationDialog getLaunchConfigurationDialog() {
 		return this.fLaunchConfigurationDialog;
-	}	
-		
+	}
+
 	/**
-	 * Updates the buttons and message in this page's launch
-	 * configuration dialog.
+	 * Updates the buttons and message in this page's launch configuration
+	 * dialog.
 	 */
 	protected void updateLaunchConfigurationDialog() {
 		if (getLaunchConfigurationDialog() != null) {
@@ -133,7 +134,7 @@ public abstract class AbstractWOArgumentsTab implements ILaunchConfigurationTab 
 			getLaunchConfigurationDialog().updateButtons();
 		}
 	}
-				
+
 	/**
 	 * @see ILaunchConfigurationTab#getControl()
 	 */
@@ -144,7 +145,8 @@ public abstract class AbstractWOArgumentsTab implements ILaunchConfigurationTab 
 	/**
 	 * Sets the control to be displayed in this tab.
 	 * 
-	 * @param control the control for this tab
+	 * @param control
+	 *            the control for this tab
 	 */
 	protected void setControl(Control control) {
 		this.fControl = control;
@@ -170,11 +172,12 @@ public abstract class AbstractWOArgumentsTab implements ILaunchConfigurationTab 
 	public void setLaunchConfigurationDialog(ILaunchConfigurationDialog dialog) {
 		this.fLaunchConfigurationDialog = dialog;
 	}
-	
+
 	/**
 	 * Sets this page's error message, possibly <code>null</code>.
 	 * 
-	 * @param errorMessage the error message or <code>null</code>
+	 * @param errorMessage
+	 *            the error message or <code>null</code>
 	 */
 	protected void setErrorMessage(String errorMessage) {
 		this.fErrorMessage = errorMessage;
@@ -183,12 +186,13 @@ public abstract class AbstractWOArgumentsTab implements ILaunchConfigurationTab 
 	/**
 	 * Sets this page's message, possibly <code>null</code>.
 	 * 
-	 * @param message the message or <code>null</code>
+	 * @param message
+	 *            the message or <code>null</code>
 	 */
 	protected void setMessage(String message) {
 		this.fMessage = message;
 	}
-	
+
 	/**
 	 * Convenience method to return the launch manager.
 	 * 
@@ -196,8 +200,8 @@ public abstract class AbstractWOArgumentsTab implements ILaunchConfigurationTab 
 	 */
 	protected ILaunchManager getLaunchManager() {
 		return DebugPlugin.getDefault().getLaunchManager();
-	}	
-	
+	}
+
 	/**
 	 * By default, do nothing.
 	 * 
@@ -206,7 +210,7 @@ public abstract class AbstractWOArgumentsTab implements ILaunchConfigurationTab 
 	public void dispose() {
 		return;
 	}
-	
+
 	/**
 	 * Returns the shell this tab is contained in, or <code>null</code>.
 	 * 
@@ -219,41 +223,14 @@ public abstract class AbstractWOArgumentsTab implements ILaunchConfigurationTab 
 		}
 		return null;
 	}
-	
-	/**
-	 * Creates and returns a new push button with the given
-	 * label and/or image.
-	 * 
-	 * @param parent parent control
-	 * @param label button label or <code>null</code>
-	 * @param image image of <code>null</code>
-	 * 
-	 * @return a new push button
-	 */
-	protected Button createPushButton(Composite parent, String label, Image image) {
-		return SWTUtil.createPushButton(parent, label, image);	
-	}
-	
-	/**
-	 * Creates and returns a new radio button with the given
-	 * label and/or image.
-	 * 
-	 * @param parent parent control
-	 * @param label button label or <code>null</code>
-	 * 
-	 * @return a new radio button
-	 */
-	protected Button createRadioButton(Composite parent, String label) {
-		return SWTUtil.createRadioButton(parent, label);	
-	}	
-	
+
 	/**
 	 * @see ILaunchConfigurationTab#canSave()
 	 */
 	public boolean canSave() {
 		return true;
 	}
-	
+
 	/**
 	 * @see ILaunchConfigurationTab#isValid(ILaunchConfiguration)
 	 */
@@ -263,6 +240,7 @@ public abstract class AbstractWOArgumentsTab implements ILaunchConfigurationTab 
 
 	/**
 	 * Create some empty space.
+	 * 
 	 * @param comp
 	 * @param colSpan
 	 */
@@ -271,7 +249,8 @@ public abstract class AbstractWOArgumentsTab implements ILaunchConfigurationTab 
 		GridData gd = new GridData();
 		gd.horizontalSpan = colSpan;
 		label.setLayoutData(gd);
-	}	
+	}
+
 	/**
 	 * @see ILaunchConfigurationTab#getImage()
 	 */
@@ -284,25 +263,30 @@ public abstract class AbstractWOArgumentsTab implements ILaunchConfigurationTab 
 	 * configuration. If the value being set is the default, the attribute's
 	 * value is set to <code>null</code>.
 	 * 
-	 * @param attribute attribute identifier
-	 * @param configuration the configuration on which to set the attribute
-	 * @param value the value of the attribute
-	 * @param defaultValue the default value of the attribute
+	 * @param attribute
+	 *            attribute identifier
+	 * @param configuration
+	 *            the configuration on which to set the attribute
+	 * @param value
+	 *            the value of the attribute
+	 * @param defaultValue
+	 *            the default value of the attribute
 	 * @since 2.1
 	 */
-	protected void setAttribute(String attribute, ILaunchConfigurationWorkingCopy configuration, boolean value, boolean defaultValue) {
+	protected void setAttribute(String attribute,
+			ILaunchConfigurationWorkingCopy configuration, boolean value,
+			boolean defaultValue) {
 		if (value == defaultValue) {
-			configuration.setAttribute(attribute, (String)null);
+			configuration.setAttribute(attribute, (String) null);
 		} else {
 			configuration.setAttribute(attribute, value);
 		}
 	}
 
-
-
 	/**
-	 * Returns whether this tab is dirty. It is up to clients to set/reset and consult
-	 * this attribute as required. By default, a tab is initialized to dirty.
+	 * Returns whether this tab is dirty. It is up to clients to set/reset and
+	 * consult this attribute as required. By default, a tab is initialized to
+	 * dirty.
 	 * 
 	 * @return whether this tab is dirty
 	 * @since 2.1
@@ -312,16 +296,18 @@ public abstract class AbstractWOArgumentsTab implements ILaunchConfigurationTab 
 	}
 
 	/**
-	 * Returns whether this tab is dirty. It is up to clients to set/reset and consult
-	 * this attribute as required. By default, a tab is initialized to dirty.
+	 * Returns whether this tab is dirty. It is up to clients to set/reset and
+	 * consult this attribute as required. By default, a tab is initialized to
+	 * dirty.
 	 * 
-	 * @param dirty whether this tab is dirty
+	 * @param dirty
+	 *            whether this tab is dirty
 	 * @since 2.1
 	 */
 	protected void setDirty(boolean dirty) {
 		this.fDirty = dirty;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -347,6 +333,64 @@ public abstract class AbstractWOArgumentsTab implements ILaunchConfigurationTab 
 	 */
 	public void launched(ILaunch launch) {
 		return;
+	}
+
+	/**
+	 * Returns a width hint for a button control.
+	 */
+	private static int getButtonWidthHint(Button button) {
+		GC gc = new GC(button);
+		gc.setFont(button.getFont());
+		FontMetrics fFontMetrics = gc.getFontMetrics();
+		gc.dispose();
+		int widthHint = Dialog.convertHorizontalDLUsToPixels(fFontMetrics,
+				IDialogConstants.BUTTON_WIDTH);
+		return Math.max(widthHint, button.computeSize(SWT.DEFAULT, SWT.DEFAULT,
+				true).x);
+	}
+
+	/**
+	 * Sets width and height hint for the button control. <b>Note:</b> This is
+	 * a NOP if the button's layout data is not an instance of
+	 * <code>GridData</code>.
+	 * 
+	 * @param the
+	 *            button for which to set the dimension hint
+	 */
+	private static void setButtonDimensionHint(Button button) {
+		Assert.isNotNull(button);
+		Object gd = button.getLayoutData();
+		if (gd instanceof GridData) {
+			((GridData) gd).widthHint = getButtonWidthHint(button);
+			((GridData) gd).horizontalAlignment = GridData.FILL;
+		}
+	}
+
+	/**
+	 * Creates and returns a new push button with the given label and/or image.
+	 * 
+	 * @param parent
+	 *            parent control
+	 * @param label
+	 *            button label or <code>null</code>
+	 * @param image
+	 *            image of <code>null</code>
+	 * @return a new push button
+	 */
+	public static Button createPushButton(Composite parent, String label,
+			Image image) {
+		Button button = new Button(parent, SWT.PUSH);
+		button.setFont(parent.getFont());
+		if (image != null) {
+			button.setImage(image);
+		}
+		if (label != null) {
+			button.setText(label);
+		}
+		GridData gd = new GridData();
+		button.setLayoutData(gd);
+		AbstractWOArgumentsTab.setButtonDimensionHint(button);
+		return button;
 	}
 
 }
