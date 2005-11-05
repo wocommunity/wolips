@@ -12,7 +12,9 @@
             delegate="org.objectstyle.wolips.launching.delegates.WOJavaLocalApplicationLaunchConfigurationDelegate"
             name="WOApplication"
             id="org.objectstyle.wolips.launching.WOLocalJavaApplication"
-            modes="run, debug">
+            modes="run, debug"
+            sourceLocatorId="org.eclipse.jdt.launching.sourceLocator.JavaSourceLookupDirector"
+            sourcePathComputerId="org.eclipse.jdt.launching.sourceLookup.javaSourcePathComputer">
       </launchConfigurationType>
    </extension>
 <!-- =================================================================================== -->
@@ -54,17 +56,11 @@
    <extension
          point="org.eclipse.jdt.launching.runtimeClasspathEntryResolvers">
       <runtimeClasspathEntryResolver
-            container="org.objectstyle.wolips.WO_CLASSPATH"
             class="org.objectstyle.wolips.launching.classpath.WORuntimeClasspathResolver"
-            id="org.objectstyle.wolips.launching.classpath.WORuntimeClasspathResolver">
-      </runtimeClasspathEntryResolver>
-	<!-- deprecated -->
-      <runtimeClasspathEntryResolver
             container="org.objectstyle.wolips.WO_CLASSPATH"
-		    class="org.objectstyle.wolips.launching.classpath.WORuntimeClasspathResolver"
-            id="org.objectstyle.wolips.launching.WORuntimeClasspathProvider">
+            id="org.objectstyle.wolips.launching.classpath.WORuntimeClasspathResolver"
+            runtimeClasspathEntryId="org.objectstyle.wolips.launching.WORuntimeClasspathProvider">
       </runtimeClasspathEntryResolver>
-	<!-- end deprecated -->
    </extension>   
 <!-- =================================================================================== -->
 <!-- Extension: Launch shortcuts                                                         -->
