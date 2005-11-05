@@ -71,16 +71,19 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
+import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.launching.AbstractJavaLaunchConfigurationDelegate;
 import org.eclipse.jdt.launching.ExecutionArguments;
 import org.eclipse.jdt.launching.IJavaLaunchConfigurationConstants;
 import org.eclipse.jdt.launching.IVMInstall;
 import org.eclipse.jdt.launching.IVMRunner;
+import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.jdt.launching.VMRunnerConfiguration;
 import org.eclipse.swt.widgets.Display;
 import org.objectstyle.wolips.commons.util.StringUtilities;
 import org.objectstyle.wolips.datasets.adaptable.JavaProject;
 import org.objectstyle.wolips.launching.LaunchingMessages;
+import org.objectstyle.wolips.launching.LaunchingPlugin;
 import org.objectstyle.wolips.launching.classpath.WORuntimeClasspathProvider;
 import org.objectstyle.wolips.preferences.ILaunchInfo;
 import org.objectstyle.wolips.preferences.Preferences;
@@ -113,6 +116,19 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate extends
 	 * @param config
 	 */
 	public static void initConfiguration(ILaunchConfigurationWorkingCopy config) {
+		try {
+			IJavaProject javaProject = JavaRuntime.getJavaProject(config);
+			if (javaProject != null) {
+				config
+						.setAttribute(
+								IJavaLaunchConfigurationConstants.ATTR_WORKING_DIRECTORY,
+								"${working_dir_loc_WOLips:"
+										+ javaProject.getProject().getName()
+										+ "}");
+			}
+		} catch (CoreException ce) {
+			LaunchingPlugin.getDefault().log(ce);
+		}
 		config.setAttribute(
 				IJavaLaunchConfigurationConstants.ATTR_CLASSPATH_PROVIDER,
 				WORuntimeClasspathProvider.ID);
@@ -379,12 +395,14 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate extends
 
 	/**
 	 * for the profiling plugin
+	 * 
 	 * @param configuration
 	 * @param launch
 	 * @return
-	 * @throws CoreException 
+	 * @throws CoreException
 	 */
-	public String getVMArguments(ILaunchConfiguration configuration, ILaunch launch) throws CoreException {
+	public String getVMArguments(ILaunchConfiguration configuration,
+			ILaunch launch) throws CoreException {
 		return super.getVMArguments(configuration);
 	}
 }
