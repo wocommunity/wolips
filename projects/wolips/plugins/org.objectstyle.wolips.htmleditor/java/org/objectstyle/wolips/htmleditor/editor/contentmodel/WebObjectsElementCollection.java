@@ -6,7 +6,7 @@ import org.eclipse.wst.html.core.internal.contentmodel.AttributeCollection;
 import org.eclipse.wst.html.core.internal.contentmodel.ElementCollection;
 import org.eclipse.wst.xml.core.internal.contentmodel.CMNode;
 
-public class WebObjectsElementCollection extends ElementCollection implements HTML40WebObjectsNamespace.ElementName {
+public class WebObjectsElementCollection extends ElementCollection implements WebObjectsHTML40Namespace.ElementName {
   private static String[] fNamesWithWebObject;
   
   static {

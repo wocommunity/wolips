@@ -32,7 +32,7 @@ public class HedWEBOBJECT extends HedFlowContainer {
 	/**
 	 */
 	public HedWEBOBJECT(ElementCollection collection) {
-		super(HTML40WebObjectsNamespace.ElementName.WEBOBJECT, collection);
+		super(WebObjectsHTML40Namespace.ElementName.WEBOBJECT, collection);
 		layoutType = LAYOUT_BLOCK;
 	}
 
