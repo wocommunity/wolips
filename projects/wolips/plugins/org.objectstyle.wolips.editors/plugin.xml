@@ -118,11 +118,11 @@
             />
       </editor>
       <editor
-            default="true"
+            default="false"
             icon="icons/editors/ruleeditor.gif"
             id="org.objectstyle.wolips.editors.editor.d2wmodel"
             launcher="org.objectstyle.wolips.editors.launcher.SystemEditorLauncher"
-            name="RuleEditor">
+            name="RuleEditor (External)">
 			<contentTypeBinding
                contentTypeId="org.objectstyle.wolips.editors.d2wmodel"
             />
