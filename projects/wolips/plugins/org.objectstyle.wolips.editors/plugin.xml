@@ -118,7 +118,7 @@
             />
       </editor>
       <editor
-            default="false"
+            default="true"
             icon="icons/editors/ruleeditor.gif"
             id="org.objectstyle.wolips.editors.editor.d2wmodel"
             launcher="org.objectstyle.wolips.editors.launcher.SystemEditorLauncher"
