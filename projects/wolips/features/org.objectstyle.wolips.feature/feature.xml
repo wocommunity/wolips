@@ -276,7 +276,7 @@
          install-size="32"
          version="1.0.6"
          unpack="false"/>
-         
+
    <plugin
          id="org.objectstyle.wolips.components"
          download-size="32"
@@ -297,26 +297,33 @@
          install-size="32"
          version="1.0.6"
          unpack="false"/>
-         
+
    <plugin
          id="org.objectstyle.wolips.htmleditor"
          download-size="32"
          install-size="32"
          version="1.0.6"
          unpack="false"/>
-         
+
    <plugin
          id="org.objectstyle.wolips.apieditor"
          download-size="32"
          install-size="32"
          version="1.0.6"
          unpack="false"/>
-         
+
    <plugin
          id="org.objectstyle.wolips.componenteditor"
          download-size="32"
          install-size="32"
          version="1.0.6"
+         unpack="false"/>
+
+   <plugin
+         id="org.objectstyle.wolips.ruleeditor"
+         download-size="32"
+         install-size="32"
+         version="0.0.0"
          unpack="false"/>
 
 </feature>
