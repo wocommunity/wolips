@@ -11,7 +11,7 @@
             default="false"
             icon="icons/editors/ruleeditor.gif"
             id="org.objectstyle.wolips.ruleeditor"
-            name="RuleEditor">
+            name="RuleEditor (in place)">
 			<contentTypeBinding
                contentTypeId="org.objectstyle.wolips.editors.d2wmodel"
             />

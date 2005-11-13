@@ -122,7 +122,7 @@
             icon="icons/editors/ruleeditor.gif"
             id="org.objectstyle.wolips.editors.editor.d2wmodel"
             launcher="org.objectstyle.wolips.editors.launcher.SystemEditorLauncher"
-            name="RuleEditor (External)">
+            name="RuleEditor (external)">
 			<contentTypeBinding
                contentTypeId="org.objectstyle.wolips.editors.d2wmodel"
             />
