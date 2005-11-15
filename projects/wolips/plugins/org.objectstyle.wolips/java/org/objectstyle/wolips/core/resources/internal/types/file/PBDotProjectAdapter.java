@@ -55,7 +55,6 @@
  */
 package org.objectstyle.wolips.core.resources.internal.types.file;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -114,9 +113,8 @@ public class PBDotProjectAdapter extends AbstractFileAdapter implements IPBDotPr
 
   private void initPBProject() {
     IProjectAdapter projectAdapter = this.getProjectAdapter();
-    File file = this.getUnderlyingFile().getLocation().toFile();
     try {
-      this.pbProject = new PBProject(file, projectAdapter.isFramework());
+      this.pbProject = new PBProject(this.getUnderlyingFile().getLocation().toOSString(), projectAdapter.isFramework());
       this.pbProject.update();
       IFile underlyingFile = getUnderlyingFile();
       if (!underlyingFile.exists()) {

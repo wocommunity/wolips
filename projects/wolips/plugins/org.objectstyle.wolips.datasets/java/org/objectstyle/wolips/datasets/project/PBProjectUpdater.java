@@ -222,7 +222,7 @@ public final class PBProjectUpdater {
 					Project project = (Project) this.projectContainer
 							.getProject().getAdapter(Project.class);
 					boolean isFramework = project.isFramework();
-					this.pbProject = new PBProject(aFile, isFramework);
+					this.pbProject = new PBProject(aFile.getPath(), isFramework);
 					String message = this.projectContainer.getProject()
 							.getName()
 							+ ": The EOModeler has converted your PB.project to an XML file. Please select Update PB.project from the WOLips context menu.";
@@ -250,7 +250,7 @@ public final class PBProjectUpdater {
 			boolean sync = !aFile.exists();
 			Project project = (Project) this.projectContainer.getProject()
 					.getAdapter(Project.class);
-			this.pbProject = new PBProject(aFile, project.isFramework());
+			this.pbProject = new PBProject(aFile.getPath(), project.isFramework());
 			if (sync) {
 				// TODO: uli
 			}

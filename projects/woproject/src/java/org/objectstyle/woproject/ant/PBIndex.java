@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 The ObjectStyle Group 
+ * Copyright (c) 2002 - 2005 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -161,7 +161,7 @@ public class PBIndex extends Task {
 		try {
 			proj =
 				(projectFile != null)
-					? new PBProject(projectFile, framework)
+					? new PBProject(projectFile.getPath(), framework)
 					: new PBProject(framework);
 
 			proj.setProjectName(name);

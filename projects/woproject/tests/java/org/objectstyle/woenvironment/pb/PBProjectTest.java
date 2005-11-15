@@ -83,7 +83,7 @@ public class PBProjectTest extends TestCase {
 	 */
 	protected void setUp() throws Exception {
 		super.setUp();
-		proj = new PBProject(new File("PB.project"), false);
+		proj = new PBProject("PB.project", false);
 	}
 
 	public void testProjectName() throws Exception {
@@ -92,8 +92,8 @@ public class PBProjectTest extends TestCase {
 	}
 	
     public void testDefaultProjectFile() throws Exception {
-    	assertNotNull(proj.getProjectFile());
-		assertEquals("PB.project", proj.getProjectFile().toString());
+    		assertNotNull(proj.pathToProjectFile);
+		assertEquals("PB.project", proj.pathToProjectFile);
 	}
 
 
@@ -103,9 +103,8 @@ public class PBProjectTest extends TestCase {
 	}
 
 	public void testProjectFile() throws Exception {
-		File f = new File("PB.project.test");
-		proj.setProjectFile(f);
-		assertSame(f, proj.getProjectFile());
+		proj.setPathToProjectFile("PB.project.test");
+		assertEquals("PB.project.test", proj.getPathToProjectFile());
 	}
 
 	public void testSaveChanges() throws Exception {
@@ -113,7 +112,7 @@ public class PBProjectTest extends TestCase {
 		assertTrue(!f.exists());
 
 		try {
-			proj.setProjectFile(f);
+			proj.setPathToProjectFile(f.getPath());
 			proj.saveChanges();
 			assertTrue(f.exists());
 		} finally {
