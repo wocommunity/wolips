@@ -103,7 +103,7 @@
                label="EOModel"
                icon="icons/woproject/eomodel_wiz.gif"
                class="org.objectstyle.wolips.wizards.actions.OpenEOModelWizard"
-               tooltip="Opens the EOModel wizard"
+               tooltip="New EOModel"
                toolbarPath="Normal/WOLipsWizards"
                id="org.objectstyle.wolips.wizards.actions.OpenEOModelWizard">
          </action>
@@ -111,7 +111,7 @@
                label="WOComponent"
                icon="icons/wobuilder/wocomponent_wiz.gif"
                class="org.objectstyle.wolips.wizards.actions.OpenWOComponentWizard"
-               tooltip="Opens the WOComponent wizard"
+               tooltip="New WOComponent"
                toolbarPath="Normal/WOLipsWizards"
                id="org.objectstyle.wolips.wizards.actions.OpenWOComponentWizard">
          </action>
@@ -119,7 +119,7 @@
                label="WOSubproject"
                icon="icons/woproject/wosubproject_wiz.gif"
                class="org.objectstyle.wolips.wizards.actions.OpenWOSubprojectCreationWizard"
-               tooltip="Opens the WOSubproject wizard"
+               tooltip="New WOSubproject"
                toolbarPath="Normal/WOLipsWizards"
                id="org.objectstyle.wolips.wizards.actions.OpenWOSubprojectCreationWizard">
          </action>
@@ -127,7 +127,7 @@
                label="Jar Project"
                icon="icons/woproject/jar_project_wiz.gif"
                class="org.objectstyle.wolips.wizards.actions.OpenJarProjectWizard"
-               tooltip="Opens the Jar Project wizard"
+               tooltip="New Jar Project"
                toolbarPath="Normal/WOLipsWizards"
                id="org.objectstyle.wolips.wizards.actions.OpenJarProjectWizard">
          </action>
@@ -135,7 +135,7 @@
                label="WOFramework"
                icon="icons/woproject/woframework_wiz.gif"
                class="org.objectstyle.wolips.wizards.actions.OpenWOFrameworkWizard"
-               tooltip="Opens the WOFramework wizard"
+               tooltip="New WOFramework"
                toolbarPath="Normal/WOLipsWizards"
                id="org.objectstyle.wolips.wizards.actions.OpenWOFrameworkWizard">
          </action>
@@ -143,7 +143,7 @@
                label="D2WApplication"
                icon="icons/woproject/d2wapplication_wiz.gif"
                class="org.objectstyle.wolips.wizards.actions.OpenD2WApplicationWizard"
-               tooltip="Opens the D2WApplication wizard"
+               tooltip="New D2WApplication"
                toolbarPath="Normal/WOLipsWizards"
                id="org.objectstyle.wolips.wizards.actions.OpenD2WApplicationWizard">
          </action>
@@ -151,7 +151,7 @@
                label="WOApplication"
                icon="icons/woproject/woapplication_wiz.gif"
                class="org.objectstyle.wolips.wizards.actions.OpenWOApplicationWizard"
-               tooltip="Opens the WOApplication wizard"
+               tooltip="New WOApplication"
                toolbarPath="Normal/WOLipsWizards"
                id="org.objectstyle.wolips.wizards.actions.OpenWOApplicationWizard">
          </action>
@@ -168,7 +168,7 @@
             nameFilter="build.xml"
             id="org.objectstyle.wolips.wizards.actions.UpgradeBuildXML">
          <action
-               label="Upgrade to 1.1.0"
+               label="Replace with latest build.xml"
                icon="icons/action/ant_buildfile.gif"
                class="org.objectstyle.wolips.wizards.actions.UpgradeBuildXML"
                menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group4"
@@ -181,7 +181,7 @@
             adaptable="true"
             id="org.objectstyle.wolips.wizards.actions.UpgradeAllBuildXML">
          <action
-               label="Upgrade build.xml to 1.1.0"
+               label="Replace with latest build.xml"
                icon="icons/action/ant_buildfile.gif"
                class="org.objectstyle.wolips.wizards.actions.UpgradeAllBuildXML"
                menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group4"
