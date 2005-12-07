@@ -2,7 +2,7 @@
  *
  * The ObjectStyle Group Software License, Version 1.0
  *
- * Copyright (c) 2004 The ObjectStyle Group
+ * Copyright (c) 2004 - 2005 The ObjectStyle Group
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -55,7 +55,9 @@
  */
 package org.objectstyle.wolips.variables;
 
-import java.net.URL;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.Dictionary;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -66,7 +68,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.objectstyle.woenvironment.env.WOEnvironment;
@@ -84,10 +85,10 @@ public class VariablesPlugin extends AbstractUIPlugin {
 			+ VariablesPlugin.build_user_home_properties
 			+ " from the woproject/projects/buildscripts to the wolips variables plugin.";
 
-	//The shared instance.
+	// The shared instance.
 	private static VariablesPlugin plugin;
 
-	//Resource bundle.
+	// Resource bundle.
 	private ResourceBundle resourceBundle;
 
 	private WOEnvironment woEnvironment;
@@ -144,30 +145,46 @@ public class VariablesPlugin extends AbstractUIPlugin {
 	 * @throws Exception
 	 */
 	private void writePropertiesFileToUserHome() throws Exception {
-		if (!Preferences.getPREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH())
+		if (!wobuildPropertiesMissing()
+				&& !Preferences
+						.getPREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH())
 			return;
-		URL relativeBuildFile = null;
-		URL buildFile = null;
 		IProgressMonitor monitor = null;
-		relativeBuildFile = this.find(new Path(
-				VariablesPlugin.build_user_home_properties));
-		buildFile = Platform.asLocalURL(relativeBuildFile);
 		monitor = new NullProgressMonitor();
+		File tmpFile = File.createTempFile("wolips", "xml");
+		FileOutputStream fileOutputStream = new FileOutputStream(tmpFile);
+		InputStream inputStream = this.openStream(new Path(
+				VariablesPlugin.build_user_home_properties));
+		int aByte = 0;
+		while (aByte >= 0) {
+			aByte = inputStream.read();
+			if (aByte >= 0) {
+				fileOutputStream.write(aByte);
+			}
+		}
+		inputStream.close();
+		fileOutputStream.close();
+		String buildFile = tmpFile.getPath();
+		tmpFile = null;
+		inputStream = null;
+		fileOutputStream = null;
 		AntRunner runner = null;
 		try {
 			runner = new AntRunner();
-			runner.setBuildFileLocation(buildFile.getPath());
+			runner.setBuildFileLocation(buildFile);
 			runner.setArguments("-quiet");
 			runner.run(monitor);
 		} finally {
 			runner = null;
-			relativeBuildFile = null;
-			buildFile = null;
-			monitor = null;
-			relativeBuildFile = null;
 			buildFile = null;
 			monitor = null;
 		}
+	}
+
+	private boolean wobuildPropertiesMissing() {
+		File wobuildDotProperties = new File(System.getProperty("user.home")
+				+ "/Library/wobuild.properties");
+		return !wobuildDotProperties.exists();
 	}
 
 	/**
@@ -180,7 +197,7 @@ public class VariablesPlugin extends AbstractUIPlugin {
 	/**
 	 * @param key
 	 * @return the string from the plugin's resource bundle, or 'key' if not
-	 * found.
+	 *         found.
 	 */
 	public static String getResourceString(String key) {
 		ResourceBundle bundle = VariablesPlugin.getDefault()
