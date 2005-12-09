@@ -43,6 +43,11 @@
 			<property name="param.plugin.name" value="${plugin.name}" />
 			<property name="param.build.dist.build.dir" value="../../../${build.output.dist.dir}" />
 		</ant>
+		<zip zipfile="../../../${build.output.dist.dir}/plugins/${plugin.name}_${build.version}.jar" roundup="false" duplicate="preserve" update="true">
+			<fileset dir="../../../${project.buildscripts.dir}/">
+				<include name="woproperties.xml" />
+			</fileset>
+		</zip>
 	</target>
 
 	<!-- ========================================== -->
