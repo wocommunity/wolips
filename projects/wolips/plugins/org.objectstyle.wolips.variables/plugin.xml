@@ -1,19 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
 <plugin>
-
-
-<!-- =================================================================================== -->
-<!-- Extension: Preferences                                                              -->
-<!-- =================================================================================== -->
-   <extension
-         point="org.eclipse.ui.preferencePages">
-      <page
-            name="wobuild.properties"
-            category="org.objectstyle.wolips.preferences.PreferencesPage"
-            class="org.objectstyle.wolips.variables.VariablesPreferencesPage"
-            id="org.objectstyle.wolips.variables.VariablesPreferencesPage">
-      </page>
-   </extension>
-
 </plugin>

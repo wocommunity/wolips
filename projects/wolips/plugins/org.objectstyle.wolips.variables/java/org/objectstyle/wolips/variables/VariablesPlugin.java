@@ -114,40 +114,12 @@ public class VariablesPlugin extends AbstractUIPlugin {
 	}
 
 	/**
-	 * Method setUpPreferencesForPropertiesFile.
-	 */
-	private void setUpPreferencesForPropertiesFile() {
-		Dictionary dictionary = VariablesPlugin.getDefault().getBundle()
-				.getHeaders();
-		String currentVersion = (String) dictionary
-				.get(Constants.BUNDLE_VERSION);
-		String preferencesVersion = Preferences
-				.getPREF_WOLIPS_VERSION_EARLY_STARTUP();
-		if (!currentVersion.equals(preferencesVersion))
-			Preferences.setPREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH(true);
-	}
-
-	/**
-	 * Method setUpPreferencesAfterPropertiesFile.
-	 */
-	private void setUpPreferencesAfterPropertiesFile() {
-		Dictionary dictionary = VariablesPlugin.getDefault().getBundle()
-				.getHeaders();
-		String currentVersion = (String) dictionary
-				.get(Constants.BUNDLE_VERSION);
-		Preferences.setPREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH(false);
-		Preferences.setPREF_WOLIPS_VERSION_EARLY_STARTUP(currentVersion);
-	}
-
-	/**
 	 * Method writePropertiesFileToUserHome.
 	 * 
 	 * @throws Exception
 	 */
 	private void writePropertiesFileToUserHome() throws Exception {
-		if (!wobuildPropertiesMissing()
-				&& !Preferences
-						.getPREF_REBUILD_WOBUILD_PROPERTIES_ON_NEXT_LAUNCH())
+		if (!wobuildPropertiesMissing())
 			return;
 		IProgressMonitor monitor = null;
 		monitor = new NullProgressMonitor();
@@ -312,9 +284,7 @@ public class VariablesPlugin extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		try {
-			this.setUpPreferencesForPropertiesFile();
 			this.writePropertiesFileToUserHome();
-			this.setUpPreferencesAfterPropertiesFile();
 		} catch (Exception anException) {
 			this.logError(VariablesPlugin.build_user_home_properties_pde_info
 					+ " " + anException.getStackTrace());
