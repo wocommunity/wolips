@@ -59,26 +59,22 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.Dictionary;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
 
 import org.eclipse.ant.core.AntRunner;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.objectstyle.woenvironment.env.WOEnvironment;
 import org.objectstyle.woenvironment.env.WOVariables;
+import org.objectstyle.wolips.core.runtime.AbstractCorePlugin;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 
 /**
  * The main plugin class to be used in the desktop.
  */
-public class VariablesPlugin extends AbstractUIPlugin {
+public class VariablesPlugin extends AbstractCorePlugin {
 	private static final String build_user_home_properties = "woproperties.xml";
 
 	private static final String build_user_home_properties_pde_info = "PDE User please copy "
@@ -88,9 +84,6 @@ public class VariablesPlugin extends AbstractUIPlugin {
 	// The shared instance.
 	private static VariablesPlugin plugin;
 
-	// Resource bundle.
-	private ResourceBundle resourceBundle;
-
 	private WOEnvironment woEnvironment;
 
 	/**
@@ -99,18 +92,6 @@ public class VariablesPlugin extends AbstractUIPlugin {
 	public VariablesPlugin() {
 		super();
 		plugin = this;
-		try {
-			this.resourceBundle = ResourceBundle
-					.getBundle("org.objectstyle.wolips.variables.VariablesPluginResources");
-		} catch (MissingResourceException x) {
-			this.resourceBundle = null;
-		}
-	}
-
-	private void logError(String string) {
-		this.getLog().log(
-				new Status(IStatus.ERROR, VariablesPlugin.getPluginId(),
-						IStatus.ERROR, string, null));
 	}
 
 	/**
@@ -164,28 +145,6 @@ public class VariablesPlugin extends AbstractUIPlugin {
 	 */
 	public static VariablesPlugin getDefault() {
 		return plugin;
-	}
-
-	/**
-	 * @param key
-	 * @return the string from the plugin's resource bundle, or 'key' if not
-	 *         found.
-	 */
-	public static String getResourceString(String key) {
-		ResourceBundle bundle = VariablesPlugin.getDefault()
-				.getResourceBundle();
-		try {
-			return (bundle != null) ? bundle.getString(key) : key;
-		} catch (MissingResourceException e) {
-			return key;
-		}
-	}
-
-	/**
-	 * @return the plugin's resource bundle
-	 */
-	public ResourceBundle getResourceBundle() {
-		return this.resourceBundle;
 	}
 
 	private IPath fixMissingSeparatorAfterDevice(String string) {
@@ -286,7 +245,7 @@ public class VariablesPlugin extends AbstractUIPlugin {
 		try {
 			this.writePropertiesFileToUserHome();
 		} catch (Exception anException) {
-			this.logError(VariablesPlugin.build_user_home_properties_pde_info
+			this.debug(VariablesPlugin.build_user_home_properties_pde_info
 					+ " " + anException.getStackTrace());
 		}
 	}

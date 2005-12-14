@@ -7,9 +7,8 @@ Bundle-Activator: org.objectstyle.wolips.variables.VariablesPlugin
 Bundle-Vendor: objectstyle.org
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.jface,
- org.eclipse.ui,
  org.objectstyle.wolips.woproject,
- org.eclipse.ant.core
+ org.eclipse.ant.core,
+ org.objectstyle.wolips
 Eclipse-AutoStart: true
 Export-Package: org.objectstyle.wolips.variables
