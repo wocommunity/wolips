@@ -139,6 +139,7 @@
 				<pathelement path="../wolips/plugins/org.objectstyle.wolips.locate/java" />
 				<pathelement path="../wolips/plugins/org.objectstyle.wolips.components/java" />
 				<pathelement path="../wolips/plugins/org.objectstyle.wolips.ruleeditor/java" />
+				<pathelement path="../wolips/plugins/org.objectstyle.wolips.deployment.ui/java" />
 			</sourcepath>
 			<doctitle>
 				<![CDATA[<h2>WOProject API Documentation</h2>]]></doctitle>
