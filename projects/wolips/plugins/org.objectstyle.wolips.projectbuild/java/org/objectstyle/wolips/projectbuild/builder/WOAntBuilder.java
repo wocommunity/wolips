@@ -60,7 +60,7 @@ import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.widgets.Display;
-import org.objectstyle.wolips.ant.launching.LaunchAntInExternalVM;
+import org.objectstyle.wolips.ant.AntPlugin;
 import org.objectstyle.wolips.datasets.adaptable.Project;
 import org.objectstyle.wolips.preferences.Preferences;
 import org.objectstyle.wolips.projectbuild.ProjectBuildPlugin;
@@ -227,7 +227,7 @@ public class WOAntBuilder extends AbstractIncrementalProjectBuilder {
 	 */
 	private void launchAntInExternalVM(IFile buildFile, IProgressMonitor monitor) {
 		try {
-			LaunchAntInExternalVM.launchAntInExternalVM(buildFile, monitor,
+			AntPlugin.getDefault().launchAntInExternalVM(buildFile, monitor,
 					Preferences.getPREF_CAPTURE_ANT_OUTPUT(), null);
 		} catch (CoreException e) {
 			WorkbenchUtilitiesPlugin.errorDialog(Display.getCurrent()
