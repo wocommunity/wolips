@@ -1,8 +1,8 @@
 /* ====================================================================
+ * 
+ * The ObjectStyle Group Software License, Version 1.0 
  *
- * The ObjectStyle Group Software License, Version 1.0
- *
- * Copyright (c) 2005 The ObjectStyle Group,
+ * Copyright (c) 2004 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,15 +18,15 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution, if
- *    any, must include the following acknowlegement:
- *       "This product includes software developed by the
+ *    any, must include the following acknowlegement:  
+ *       "This product includes software developed by the 
  *        ObjectStyle Group (http://objectstyle.org/)."
  *    Alternately, this acknowlegement may appear in the software itself,
  *    if and wherever such third-party acknowlegements normally appear.
  *
- * 4. The names "ObjectStyle Group" and "Cayenne"
+ * 4. The names "ObjectStyle Group" and "Cayenne" 
  *    must not be used to endorse or promote products derived
- *    from this software without prior written permission. For written
+ *    from this software without prior written permission. For written 
  *    permission, please contact andrus@objectstyle.org.
  *
  * 5. Products derived from this software may not be called "ObjectStyle"
@@ -53,36 +53,43 @@
  * <http://objectstyle.org/>.
  *
  */
-package org.objectstyle.wolips.core.resources.tests;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+package org.objectstyle.wolips.core.resources.pattern;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
-import org.objectstyle.wolips.core.resources.internal.build.BuilderExtensionPointTest;
-import org.objectstyle.wolips.core.resources.internal.build.NatureTest;
-import org.objectstyle.wolips.core.resources.internal.types.TypesTestSuite;
+import org.eclipse.core.resources.IFile;
+import org.objectstyle.wolips.core.CorePlugin;
 
 /**
- * Run all plugin core tests
+ * @author ulrich
  */
-public class CoreResourcesTestSuite extends TestCase {
-
+public class PatternsetWriter {
+	
 	/**
-	 * @param testName
+	 * @param patternset
+	 * @param pattern
 	 */
-	public CoreResourcesTestSuite(String testName) {
-		super(testName);
-	}
-	/**
-	 * @return
-	 * @throws Exception
-	 */
-	public static Test suite() throws Exception {
-		TestSuite suite = new TestSuite();
-		suite.addTestSuite(BuilderExtensionPointTest.class);
-		suite.addTestSuite(NatureTest.class);
-		suite.addTest(TypesTestSuite.suite());
-		return suite;
+	public static void create(IFile patternset, String[] pattern) {
+		BufferedWriter patternWriter = null;
+		try {
+			patternWriter = new BufferedWriter(new FileWriter(new File(patternset.getLocation().toOSString())));
+			for(int i = 0; i < pattern.length; i++) {
+				patternWriter.write(pattern[i]);
+				patternWriter.write("\n");
+			}
+		} catch (IOException ioe) {
+			CorePlugin.getDefault().log(ioe);
+		} finally {
+			if (null != patternWriter) {
+				try {
+					patternWriter.close();
+				} catch (IOException ioe) {
+					//Ignore exception
+				}
+			}
+		}
 	}
 }
