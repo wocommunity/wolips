@@ -1,8 +1,8 @@
 /* ====================================================================
- * 
- * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2004 The ObjectStyle Group 
+ * The ObjectStyle Group Software License, Version 1.0
+ *
+ * Copyright (c) 2005 The ObjectStyle Group,
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer. 
+ *    notice, this list of conditions and the following disclaimer.
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,15 +18,15 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution, if
- *    any, must include the following acknowlegement:  
- *       "This product includes software developed by the 
+ *    any, must include the following acknowlegement:
+ *       "This product includes software developed by the
  *        ObjectStyle Group (http://objectstyle.org/)."
  *    Alternately, this acknowlegement may appear in the software itself,
  *    if and wherever such third-party acknowlegements normally appear.
  *
- * 4. The names "ObjectStyle Group" and "Cayenne" 
+ * 4. The names "ObjectStyle Group" and "Cayenne"
  *    must not be used to endorse or promote products derived
- *    from this software without prior written permission. For written 
+ *    from this software without prior written permission. For written
  *    permission, please contact andrus@objectstyle.org.
  *
  * 5. Products derived from this software may not be called "ObjectStyle"
@@ -53,66 +53,15 @@
  * <http://objectstyle.org/>.
  *
  */
-package org.objectstyle.wolips.ant.ui;
-
-import java.lang.reflect.InvocationTargetException;
+package org.objectstyle.wolips.ant.antlaunchers;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.SubProgressMonitor;
-import org.eclipse.jface.dialogs.ProgressMonitorDialog;
-import org.eclipse.jface.operation.IRunnableWithProgress;
-import org.eclipse.swt.widgets.Shell;
-import org.objectstyle.wolips.ant.AntPlugin;
-import org.objectstyle.wolips.ant.launching.LaunchAntInExternalVM;
-import org.objectstyle.wolips.workbenchutilities.actions.AbstractActionOnIResource;
 
-/**
- * @author ulrich
- */
-public abstract class AbstractInstallAction extends AbstractActionOnIResource {
+public interface IAntlauncher {
 
-	protected void install(IProject[] projects) {
-		ProgressMonitorDialog progressMonitorDialog = new ProgressMonitorDialog(
-				new Shell());
-		Runnable runnable = new Runnable();
-		runnable.projectsToBuild = projects;
-		try {
-			progressMonitorDialog.run(true, true, runnable);
-		} catch (InvocationTargetException e) {
-			AntPlugin.getDefault().getPluginLogger().log(e);
-		} catch (InterruptedException e) {
-			AntPlugin.getDefault().getPluginLogger().log(e);
-		}
-	}
-
-	private class Runnable implements IRunnableWithProgress {
-		IProject[] projectsToBuild;
-
-		String projectName = "";
-
-		public void run(IProgressMonitor monitor) {
-			SubProgressMonitor subProgressMonitor = new SubProgressMonitor(
-					monitor, projectsToBuild.length);
-			for (int i = 0; i < projectsToBuild.length; i++) {
-				if (monitor.isCanceled()) {
-					break;
-				}
-				IProject iProjectToBuild = projectsToBuild[i];
-				projectName = "Installing " + iProjectToBuild.getName();
-				subProgressMonitor.subTask(projectName);
-				IFile iFile = iProjectToBuild.getFile("build.xml");
-				try {
-					LaunchAntInExternalVM.launchAntInExternalVM(iFile,
-							subProgressMonitor, true, "install");
-				} catch (CoreException e) {
-					AntPlugin.getDefault().getPluginLogger().log(e);
-				}
-				subProgressMonitor.worked(1);
-
-			}
-		}
-	}
+	public abstract void launchAntInExternalVM(IFile buildFile,
+			IProgressMonitor monitor, boolean captureOutput, String targets)
+			throws CoreException;
 }

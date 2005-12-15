@@ -1,45 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
 <plugin>
-<!-- =================================================================================== -->
-<!-- Extension: File actions                                                             -->
-<!-- =================================================================================== -->
-   <extension
-         point="org.eclipse.ui.popupMenus">
-      <objectContribution
-            objectClass="org.eclipse.core.resources.IResource"
-            adaptable="true"
-            id="org.objectstyle.wolips.ant.ui.FixWaitingForVirtualMachineToExitActions">
-         <action
-               label="Fix 'Waiting for virtual machine to exit' bug"
-               icon="icons/action/ant_buildfile.gif"
-               class="org.objectstyle.wolips.ant.ui.FixWaitingForVirtualMachineToExitAction"
-               menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group6"
-               enablesFor="1"
-               id="org.objectstyle.wolips.ant.ui.FixWaitingForVirtualMachineToExitAction">
-         </action>
-      </objectContribution>
-      <objectContribution
-            objectClass="org.eclipse.core.resources.IResource"
-            adaptable="true"
-            id="org.objectstyle.wolips.ant.ui.InstallActions">
-         <action
-               label="Install..."
-               icon="icons/action/ant_buildfile.gif"
-               class="org.objectstyle.wolips.ant.ui.InstallWithSelectionDialogAction"
-               menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group5"
-               enablesFor="1"
-               id="org.objectstyle.wolips.ant.ui.InstallWithSelectionDialogAction">
-         </action>
-         <action
-               label="Install"
-               icon="icons/action/ant_buildfile.gif"
-               class="org.objectstyle.wolips.ant.ui.InstallAction"
-               menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group5"
-               enablesFor="1"
-               id="org.objectstyle.wolips.ant.ui.InstallAction">
-         </action>
-      </objectContribution>
-   </extension>
+
+	<extension-point id="antlaunchers" name="Antlauncher" schema="schema/antlaunchers.exsd"/>
 
 </plugin>
