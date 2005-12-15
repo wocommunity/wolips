@@ -69,10 +69,10 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.objectstyle.wolips.core.resources.pattern.PatternsetWriter;
 import org.objectstyle.wolips.datasets.DataSetsPlugin;
 import org.objectstyle.wolips.datasets.pattern.IStringMatcher;
 import org.objectstyle.wolips.datasets.pattern.PatternsetMatcher;
-import org.objectstyle.wolips.datasets.pattern.PatternsetWriter;
 
 /**
  * @author ulrich

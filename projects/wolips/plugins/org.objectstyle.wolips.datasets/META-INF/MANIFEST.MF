@@ -15,7 +15,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.junit,
  org.objectstyle.wolips.variables,
  org.objectstyle.wolips.woproject,
- org.apache.ant
+ org.apache.ant,
+ org.objectstyle.wolips
 Eclipse-AutoStart: true
 Export-Package: org.objectstyle.wolips.datasets,
  org.objectstyle.wolips.datasets.adaptable,

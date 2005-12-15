@@ -57,6 +57,7 @@
 package org.objectstyle.wolips.datasets.pattern;
 import org.apache.tools.ant.types.selectors.SelectorUtils;
 import org.eclipse.core.resources.IFile;
+import org.objectstyle.wolips.core.resources.pattern.PatternsetReader;
 /**
  * A string pattern matcher, supporting ant patterns.
  */
