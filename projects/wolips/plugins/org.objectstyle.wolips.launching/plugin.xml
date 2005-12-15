@@ -4,7 +4,16 @@
 
 
 <!-- =================================================================================== -->
-<!-- Extension: Launch configuration types                                                -->
+<!-- Extension: Antlauncher                                                              -->
+<!-- =================================================================================== -->  
+   <extension point="org.objectstyle.wolips.ant.antlaunchers">
+	  <antlauncher
+		id="org.objectstyle.wolips.ant.antlauncher"
+         name="Default Ant Launcher"
+         class="org.objectstyle.wolips.launching.antlauncher.internal.DefaultAntlauncher"/>
+   </extension>
+<!-- =================================================================================== -->
+<!-- Extension: Launch configuration types                                               -->
 <!-- =================================================================================== -->
    <extension
          point="org.eclipse.debug.core.launchConfigurationTypes">
