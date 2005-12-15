@@ -67,8 +67,8 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.editor.FormEditor;
-import org.objectstyle.wolips.datasets.pattern.PatternsetReader;
-import org.objectstyle.wolips.datasets.pattern.PatternsetWriter;
+import org.objectstyle.wolips.core.resources.pattern.PatternsetReader;
+import org.objectstyle.wolips.core.resources.pattern.PatternsetWriter;
 import org.objectstyle.wolips.editors.EditorsPlugin;
 import org.objectstyle.wolips.ui.actions.TouchAllFilesOperation;
 
