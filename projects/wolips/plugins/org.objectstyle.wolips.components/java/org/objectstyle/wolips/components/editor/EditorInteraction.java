@@ -43,9 +43,14 @@
  */
 package org.objectstyle.wolips.components.editor;
 
+/**
+ * @author uli
+ */
 public class EditorInteraction {
 
 	private IWebobjectTagListener webObjectTagListener;
+
+	private IHtmlDocumentProvider htmlDocumentProvider;
 
 	public EditorInteraction() {
 		super();
@@ -59,4 +64,14 @@ public class EditorInteraction {
 	public void fireWebobjectTagChanged(String name) {
 		this.webObjectTagListener.webObjectTagSelected(name);
 	}
+
+	public IHtmlDocumentProvider getHtmlDocumentProvider() {
+		return htmlDocumentProvider;
+	}
+
+	public void setHtmlDocumentProvider(
+			IHtmlDocumentProvider htmlDocumentProvider) {
+		this.htmlDocumentProvider = htmlDocumentProvider;
+	}
+
 }

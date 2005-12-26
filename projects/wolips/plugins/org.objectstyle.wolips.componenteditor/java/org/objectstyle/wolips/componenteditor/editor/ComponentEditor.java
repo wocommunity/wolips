@@ -43,9 +43,6 @@
  */
 package org.objectstyle.wolips.componenteditor.editor;
 
-import org.eclipse.core.resources.IMarker;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.ide.IGotoMarker;
 
 /**
  * @author uli
@@ -57,9 +54,9 @@ public class ComponentEditor extends ComponentEditorPart {
 	}
 
 	public Object getAdapter(Class adapter) {
-		if (adapter.equals(IGotoMarker.class)) {
-			return null;
-		}
+//		if (adapter.equals(IGotoMarker.class)) {
+//			return null;
+//		}
 		return super.getAdapter(adapter);
 	}
 

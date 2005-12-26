@@ -44,6 +44,7 @@
 package org.objectstyle.wolips.htmleditor.editor;
 
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.util.TransferDragSourceListener;
 import org.eclipse.jface.util.TransferDropTargetListener;
 import org.eclipse.jface.viewers.IContentProvider;
@@ -59,10 +60,11 @@ import org.eclipse.wst.sse.ui.internal.contentoutline.ConfigurableContentOutline
 import org.eclipse.wst.sse.ui.views.contentoutline.ContentOutlineConfiguration;
 import org.objectstyle.wolips.components.editor.EditorInteraction;
 import org.objectstyle.wolips.components.editor.IEmbeddedEditor;
+import org.objectstyle.wolips.components.editor.IHtmlDocumentProvider;
 import org.objectstyle.wolips.htmleditor.HtmleditorPlugin;
 
 public class StructuredTextEditorHTMLWithWebObjectTags extends
-		StructuredTextEditor implements IEmbeddedEditor {
+		StructuredTextEditor implements IEmbeddedEditor, IHtmlDocumentProvider {
 
 	Image image;
 
@@ -245,7 +247,14 @@ public class StructuredTextEditorHTMLWithWebObjectTags extends
 	}
 
 	public void initEditorInteraction(EditorInteraction editorInteraction) {
-		this.getSelectionProvider().addSelectionChangedListener(new HTMLOutlineSelectionHandler(
-				editorInteraction));
+		this.getSelectionProvider().addSelectionChangedListener(
+				new HTMLOutlineSelectionHandler(editorInteraction));
+		editorInteraction.setHtmlDocumentProvider(this);
+	}
+
+	public IDocument getHtmlEditDocument() {
+		IDocument editDocument = this.getDocumentProvider().getDocument(
+				this.getEditorInput());
+		return editDocument;
 	}
 }

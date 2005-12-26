@@ -70,17 +70,20 @@ import org.eclipse.ui.part.MultiPageEditorActionBarContributor;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.part.MultiPageSelectionProvider;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
-import org.eclipse.wst.sse.ui.internal.contentoutline.ConfigurableContentOutlinePage;
 import org.objectstyle.wolips.apieditor.editor.ApiEditor;
 import org.objectstyle.wolips.componenteditor.ComponenteditorPlugin;
 import org.objectstyle.wolips.components.editor.EditorInteraction;
 import org.objectstyle.wolips.components.editor.IEmbeddedEditor;
+import org.objectstyle.wolips.components.editor.IEmbeddedEditorSelected;
 import org.objectstyle.wolips.components.input.ComponentEditorInput;
-import org.objectstyle.wolips.htmleditor.editor.HTMLOutlineSelectionHandler;
 import org.objectstyle.wolips.htmleditor.editor.StructuredTextEditorHTMLWithWebObjectTags;
+import org.objectstyle.wolips.htmlpreview.editor.HtmlPreviewEditor;
 import org.objectstyle.wolips.wodclipse.WodclipsePlugin;
 import org.objectstyle.wolips.wodclipse.wod.WodEditor;
 
+/**
+ * @author uli
+ */
 public class ComponentEditorPart extends MultiPageEditorPart {
 
 	ComponentEditorInput componentEditorInput;
@@ -97,6 +100,8 @@ public class ComponentEditorPart extends MultiPageEditorPart {
 	public WodEditor wodEditor;
 
 	public ApiEditor apiEditor;
+
+	public HtmlPreviewEditor htmlPreviewEditor;
 
 	private ComponentEditorOutline componentEditorOutline;
 
@@ -138,7 +143,7 @@ public class ComponentEditorPart extends MultiPageEditorPart {
 
 	protected void createPages() {
 		IEditorInput[] editorInput = componentEditorInput.getInput();
-		editorParts = new IEditorPart[editorInput.length];
+		editorParts = new IEditorPart[editorInput.length + 1];
 		Composite componentEditorParent = new Composite(getContainer(),
 				SWT.NONE);
 		componentEditorParent.setLayout(new FillLayout());
@@ -163,7 +168,7 @@ public class ComponentEditorPart extends MultiPageEditorPart {
 				ComponentEditorPart.this.updateOutline();
 			}
 		});
-		for (int i = 0; i < componentEditorInput.getEditors().length; i++) {
+		for (int i = 0; i < componentEditorInput.getEditors().length + 1; i++) {
 			IEditorPart editorPart = null;
 			switch (i) {
 			case 0:
@@ -245,6 +250,16 @@ public class ComponentEditorPart extends MultiPageEditorPart {
 					ComponenteditorPlugin.getDefault().log(e);
 				}
 				this.setPageText(i - 1, "Api");
+				break;
+			case 4:
+				htmlPreviewEditor = new HtmlPreviewEditor();
+				editorPart = htmlPreviewEditor;
+				try {
+					this.addPage(editorPart, editorInput[i - 3]);
+				} catch (PartInitException e) {
+					ComponenteditorPlugin.getDefault().log(e);
+				}
+				this.setPageText(i - 1, "Preview");
 				break;
 
 			default:
@@ -429,6 +444,10 @@ public class ComponentEditorPart extends MultiPageEditorPart {
 				provider.fireSelectionChanged(event);
 				provider.firePostSelectionChanged(event);
 			}
+			 if (activeEditor instanceof IEmbeddedEditorSelected) {
+				 IEmbeddedEditorSelected embeddedEditorPageChanged = (IEmbeddedEditorSelected)activeEditor;
+				 embeddedEditorPageChanged.editorSelected();
+			 }
 		}
     }
 }

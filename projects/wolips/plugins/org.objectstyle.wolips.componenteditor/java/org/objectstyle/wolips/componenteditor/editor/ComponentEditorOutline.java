@@ -60,6 +60,9 @@ import org.eclipse.ui.part.Page;
 import org.eclipse.ui.part.PageBook;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
+/**
+ * @author uli
+ */
 public class ComponentEditorOutline extends Page implements
 		IContentOutlinePage, ISelectionProvider, ISelectionChangedListener {
 	private PageBook pagebook;

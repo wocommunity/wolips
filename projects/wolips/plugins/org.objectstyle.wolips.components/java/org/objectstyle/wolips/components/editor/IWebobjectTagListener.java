@@ -43,6 +43,9 @@
  */
 package org.objectstyle.wolips.components.editor;
 
+/**
+ * @author uli
+ */
 public interface IWebobjectTagListener {
 
 	public abstract void webObjectTagSelected(String name);

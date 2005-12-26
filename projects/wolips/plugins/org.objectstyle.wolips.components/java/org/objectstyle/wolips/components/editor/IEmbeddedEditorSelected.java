@@ -41,12 +41,13 @@
  * Group, please see <http://objectstyle.org/> .
  *  
  */
+
 package org.objectstyle.wolips.components.editor;
 
 /**
  * @author uli
  */
-public interface IEmbeddedEditor {
+public interface IEmbeddedEditorSelected {
 
-	public abstract void initEditorInteraction(EditorInteraction editorInteraction);
+	public abstract void editorSelected();
 }

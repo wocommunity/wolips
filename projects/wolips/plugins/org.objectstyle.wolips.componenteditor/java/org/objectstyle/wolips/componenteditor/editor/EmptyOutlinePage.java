@@ -51,6 +51,9 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
+/**
+ * @author uli
+ */
 public class EmptyOutlinePage implements IContentOutlinePage {
 	private Composite control;
 
