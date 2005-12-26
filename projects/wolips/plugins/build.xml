@@ -116,6 +116,7 @@
 		<ant dir="org.objectstyle.wolips.components" target="all" />
 		<ant dir="org.objectstyle.wolips.apieditor" target="all" />
 		<ant dir="org.objectstyle.wolips.htmleditor" target="all" />
+		<ant dir="org.objectstyle.wolips.htmlpreview" target="all" />
 		<ant dir="org.objectstyle.wolips.wodclipse" target="all" />
 		<ant dir="org.objectstyle.wolips.componenteditor" target="all" />
 		<ant dir="org.objectstyle.wolips.ruleeditor" target="all" />
@@ -161,6 +162,7 @@
 		<ant dir="org.objectstyle.wolips.components" target="dist" />
 		<ant dir="org.objectstyle.wolips.apieditor" target="dist" />
 		<ant dir="org.objectstyle.wolips.htmleditor" target="dist" />
+		<ant dir="org.objectstyle.wolips.htmlpreview" target="dist" />
 		<ant dir="org.objectstyle.wolips.wodclipse" target="dist" />
 		<ant dir="org.objectstyle.wolips.componenteditor" target="dist" />
 		<ant dir="org.objectstyle.wolips.ruleeditor" target="dist" />
