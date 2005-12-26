@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 The ObjectStyle Group 
+ * Copyright (c) 2002 - 2005 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -56,7 +56,6 @@
 
 package org.objectstyle.wolips.wizards.actions;
 
-import org.eclipse.jdt.internal.ui.wizards.AbstractOpenWizardAction;
 import org.eclipse.jface.wizard.Wizard;
 import org.objectstyle.wolips.wizards.WOSubprojectCreationWizard;
 
@@ -71,6 +70,7 @@ public class OpenWOSubprojectCreationWizard extends AbstractOpenWizardAction {
 	protected boolean checkWorkspaceNotEmpty() {
 		return true;
 	}
+
 	/**
 	 * @see org.eclipse.jdt.internal.ui.wizards.AbstractOpenWizardAction#createWizard()
 	 */

@@ -11,5 +11,5 @@ Require-Bundle: org.eclipse.core.runtime,
  org.junit;visibility,
  org.eclipse.core.resources,
  org.eclipse.jdt.core
-Eclipse-AutoStart: true
+Eclipse-LazyStart: true
 Export-Package: org.objectstyle.wolips.tests.core

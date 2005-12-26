@@ -19,6 +19,6 @@ Require-Bundle: org.eclipse.jdt.ui,
  org.objectstyle.wolips.commons,
  org.objectstyle.wolips.workbenchutilities,
  org.junit
-Eclipse-AutoStart: true
+Eclipse-LazyStart: true
 Export-Package: org.objectstyle.wolips.wizards,
  org.objectstyle.wolips.wizards.actions

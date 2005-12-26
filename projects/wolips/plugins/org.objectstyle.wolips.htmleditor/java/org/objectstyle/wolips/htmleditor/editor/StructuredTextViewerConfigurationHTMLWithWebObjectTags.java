@@ -43,12 +43,10 @@
  */
 package org.objectstyle.wolips.htmleditor.editor;
 
-import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
-import org.eclipse.jface.text.contentassist.IContentAssistant;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.wst.html.core.internal.provisional.text.IHTMLPartitionTypes;
-import org.eclipse.wst.html.ui.internal.provisional.StructuredTextViewerConfigurationHTML;
+import org.eclipse.wst.html.ui.StructuredTextViewerConfigurationHTML;
 
 public class StructuredTextViewerConfigurationHTMLWithWebObjectTags extends StructuredTextViewerConfigurationHTML {
 
@@ -56,18 +54,12 @@ public class StructuredTextViewerConfigurationHTMLWithWebObjectTags extends Stru
 		super();
 	}
 
-	public IContentAssistant getContentAssistant(ISourceViewer sourceViewer) {
-		IContentAssistant ca = super.getContentAssistant(sourceViewer);
 
-		if (ca != null && ca instanceof ContentAssistant) {
-			ContentAssistant contentAssistant = (ContentAssistant) ca;
-
-			IContentAssistProcessor htmlContentAssistProcessor = new WebObjectTagContentAssistProcessor();
-
-			// HTML
-			setContentAssistProcessor(contentAssistant, htmlContentAssistProcessor, IHTMLPartitionTypes.HTML_DEFAULT);
-			}
-
-		return ca;
+	protected IContentAssistProcessor[] getContentAssistProcessors(ISourceViewer sourceViewer, String partitionType) {
+		if ((partitionType == IHTMLPartitionTypes.HTML_DEFAULT) || (partitionType == IHTMLPartitionTypes.HTML_COMMENT)) {
+			return new IContentAssistProcessor[]{new WebObjectTagContentAssistProcessor()};
+		}
+		return super.getContentAssistProcessors(sourceViewer, partitionType);
 	}
+	
 }

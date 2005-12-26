@@ -2,7 +2,7 @@
  *
  * The ObjectStyle Group Software License, Version 1.0
  *
- * Copyright (c) 2002 2004 The ObjectStyle Group
+ * Copyright (c) 2002-2005 The ObjectStyle Group
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -91,7 +91,7 @@ public class WOJavaApplicationLaunchShortcut extends
       String launchName = projectName + ": " + elementName;
 			wc = configType.newInstance(null, getLaunchManager().generateUniqueLaunchConfigurationNameFrom(launchName));
 		} catch (CoreException exception) {
-			reportCreatingConfiguration(exception);
+			reportErorr(exception);
 			return null;		
 		} 
 		wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME, type.getFullyQualifiedName());
@@ -101,7 +101,7 @@ public class WOJavaApplicationLaunchShortcut extends
 		try {
 			config = wc.doSave();		
 		} catch (CoreException exception) {
-			reportCreatingConfiguration(exception);			
+			reportErorr(exception);			
 		}
 		return config;
 	}

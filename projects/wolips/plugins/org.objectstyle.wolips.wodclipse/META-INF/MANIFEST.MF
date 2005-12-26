@@ -33,7 +33,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.objectstyle.wolips.htmleditor,
  org.objectstyle.wolips.apieditor,
  org.objectstyle.wolips.locate
-Eclipse-AutoStart: true
+Eclipse-LazyStart: true
 Export-Package: org.objectstyle.wolips.wodclipse,
  org.objectstyle.wolips.wodclipse.builder,
  org.objectstyle.wolips.wodclipse.preferences,

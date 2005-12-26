@@ -32,7 +32,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.objectstyle.wolips.wodclipse,
  org.objectstyle.wolips.apieditor,
  org.objectstyle.wolips.htmleditor
-Eclipse-AutoStart: true
+Eclipse-LazyStart: true
 Export-Package: org.objectstyle.wolips.componenteditor,
  org.objectstyle.wolips.componenteditor.editor,
  org.objectstyle.wolips.componenteditor.editormenu

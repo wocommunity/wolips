@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 - 2005 The ObjectStyle Group 
+ * Copyright (c) 2005 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -52,22 +52,33 @@
  * information on the ObjectStyle Group, please see
  * <http://objectstyle.org/>.
  *
- */
+ */package org.objectstyle.wolips.wizards.actions;
 
-package org.objectstyle.wolips.wizards.actions;
-
-import org.eclipse.jface.wizard.Wizard;
-import org.objectstyle.wolips.wizards.EOModelCreationWizard;
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 
 /**
  * @author uli
  */
-public class OpenEOModelWizard extends AbstractOpenWizardAction {
+public abstract class AbstractOpenWizardAction extends
+		org.eclipse.jdt.ui.actions.AbstractOpenWizardAction implements
+		IWorkbenchWindowActionDelegate {
 
-	/**
-	 * @see org.eclipse.jdt.internal.ui.wizards.AbstractOpenWizardAction#createWizard()
-	 */
-	protected Wizard createWizard() {
-		return new EOModelCreationWizard();
+	public void dispose() {
+		// nothing to do
+	}
+
+	public void init(IWorkbenchWindow window) {
+		// nothing to do
+	}
+
+	public void run(IAction action) {
+		super.run();
+	}
+
+	public void selectionChanged(IAction action, ISelection selection) {
+		// nothing to do
 	}
 }

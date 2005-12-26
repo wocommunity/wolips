@@ -15,4 +15,4 @@ Require-Bundle: org.eclipse.jdt.debug.ui,
  org.eclipse.hyades.trace.ui,
  org.objectstyle.wolips.ui,
  org.eclipse.jdt.launching
-Eclipse-AutoStart: true
+Eclipse-LazyStart: true

@@ -21,7 +21,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.wst.xml.ui,
  org.eclipse.ui.editors,
  org.eclipse.ui.workbench.texteditor
-Eclipse-AutoStart: true
+Eclipse-LazyStart: true
 Export-Package: org.objectstyle.wolips.htmleditor,
  org.objectstyle.wolips.htmleditor.editor,
  org.objectstyle.wolips.htmleditor.templates

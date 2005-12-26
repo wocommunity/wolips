@@ -12,6 +12,6 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui.ide,
  org.objectstyle.wolips.cayenne,
  org.eclipse.core.resources
-Eclipse-AutoStart: true
+Eclipse-LazyStart: true
 Export-Package: org.objectstyle.wolips.ruleeditor,
  org.objectstyle.wolips.ruleeditor.model

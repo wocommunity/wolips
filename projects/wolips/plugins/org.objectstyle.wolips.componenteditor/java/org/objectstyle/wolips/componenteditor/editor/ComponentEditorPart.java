@@ -47,6 +47,7 @@ import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
@@ -58,15 +59,18 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.ui.IEditorActionBarContributor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IPropertyListener;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.ide.IGotoMarker;
+import org.eclipse.ui.part.MultiPageEditorActionBarContributor;
 import org.eclipse.ui.part.MultiPageEditorPart;
+import org.eclipse.ui.part.MultiPageSelectionProvider;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
-import org.eclipse.wst.sse.ui.internal.contentoutline.StructuredTextEditorContentOutlinePage;
+import org.eclipse.wst.sse.ui.internal.contentoutline.ConfigurableContentOutlinePage;
 import org.objectstyle.wolips.apieditor.editor.ApiEditor;
 import org.objectstyle.wolips.componenteditor.ComponenteditorPlugin;
 import org.objectstyle.wolips.components.input.ComponentEditorInput;
@@ -160,17 +164,18 @@ public class ComponentEditorPart extends MultiPageEditorPart {
 			switch (i) {
 			case 0:
 				compilationUnitEditor = new CompilationUnitEditor() {
-				public Object getAdapter(Class adapter) {
-					if (adapter.equals(IGotoMarker.class)) {
+					public Object getAdapter(Class adapter) {
+						if (adapter.equals(IGotoMarker.class)) {
+							return super.getAdapter(adapter);
+						}
 						return super.getAdapter(adapter);
 					}
-					return super.getAdapter(adapter);
-				}
-				public void gotoMarker(IMarker marker) {
-					super.gotoMarker(marker);
-				}
-				
-			};
+
+					public void gotoMarker(IMarker marker) {
+						super.gotoMarker(marker);
+					}
+
+				};
 				editorPart = compilationUnitEditor;
 				try {
 					this.addPage(editorPart, editorInput[i]);
@@ -245,12 +250,14 @@ public class ComponentEditorPart extends MultiPageEditorPart {
 			editorParts[i] = editorPart;
 
 		}
-		StructuredTextEditorContentOutlinePage contentOutlinePage = null;
-		contentOutlinePage = (StructuredTextEditorContentOutlinePage) structuredTextEditorHTMLWithWebObjectTags
+		ConfigurableContentOutlinePage contentOutlinePage = null;
+		contentOutlinePage = (ConfigurableContentOutlinePage) structuredTextEditorHTMLWithWebObjectTags
 				.getAdapter(IContentOutlinePage.class);
 		addWebObjectsTagNamesListener();
 		if (contentOutlinePage != null) {
-			new HTMLOutlineSelectionHandler(contentOutlinePage, wodEditor);
+			contentOutlinePage
+					.addSelectionChangedListener(new HTMLOutlineSelectionHandler(
+							wodEditor));
 		}
 		CTabFolder tabFolder = (CTabFolder) this.getContainer();
 		tabFolder.addSelectionListener(new SelectionListener() {
@@ -393,4 +400,33 @@ public class ComponentEditorPart extends MultiPageEditorPart {
 			}
 		});
 	}
+	
+	/* (non-Javadoc)
+	 * @see org.eclipse.ui.part.MultiPageEditorPart#pageChange(int)
+	 * 
+	 * Because of a assert error we have to overwrite this method
+	 */
+	protected void pageChange(int newPageIndex) {
+        setFocus();
+        IEditorPart activeEditor = getEditor(newPageIndex);
+        IEditorActionBarContributor contributor = getEditorSite()
+                .getActionBarContributor();
+        if (contributor != null
+                && contributor instanceof MultiPageEditorActionBarContributor) {
+            ((MultiPageEditorActionBarContributor) contributor)
+                    .setActivePage(activeEditor);
+        }
+        if (activeEditor != null) {
+			ISelectionProvider selectionProvider = activeEditor.getSite()
+					.getSelectionProvider();
+			if (selectionProvider != null && selectionProvider.getSelection() != null) {
+				SelectionChangedEvent event = new SelectionChangedEvent(
+						selectionProvider, selectionProvider.getSelection());
+				MultiPageSelectionProvider provider = (MultiPageSelectionProvider) getSite()
+						.getSelectionProvider();
+				provider.fireSelectionChanged(event);
+				provider.firePostSelectionChanged(event);
+			}
+		}
+    }
 }

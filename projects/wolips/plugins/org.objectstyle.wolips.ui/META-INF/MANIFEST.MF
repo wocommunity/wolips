@@ -20,7 +20,7 @@ Require-Bundle: org.eclipse.search,
  org.objectstyle.wolips.workbenchutilities,
  org.objectstyle.wolips.datasets,
  org.objectstyle.wolips.projectbuild
-Eclipse-AutoStart: true
+Eclipse-LazyStart: true
 Export-Package: org.objectstyle.wolips.ui,
  org.objectstyle.wolips.ui.actions,
  org.objectstyle.wolips.ui.plugins,

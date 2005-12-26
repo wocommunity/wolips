@@ -43,34 +43,27 @@
  */
 package org.objectstyle.wolips.htmleditor.editor;
 
-import java.util.List;
-
-import org.eclipse.jface.action.IContributionItem;
-import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.util.TransferDragSourceListener;
 import org.eclipse.jface.util.TransferDropTargetListener;
 import org.eclipse.jface.viewers.IContentProvider;
-import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.wst.html.core.internal.document.ElementStyleImpl;
-import org.eclipse.wst.html.ui.internal.provisional.StructuredTextEditorHTML;
-import org.eclipse.wst.sse.ui.internal.contentoutline.StructuredTextEditorContentOutlinePage;
-import org.eclipse.wst.sse.ui.internal.provisional.views.contentoutline.ContentOutlineConfiguration;
-import org.eclipse.wst.sse.ui.internal.view.events.NodeSelectionChangedEvent;
+import org.eclipse.wst.sse.ui.StructuredTextEditor;
+import org.eclipse.wst.sse.ui.internal.contentoutline.ConfigurableContentOutlinePage;
+import org.eclipse.wst.sse.ui.views.contentoutline.ContentOutlineConfiguration;
 import org.objectstyle.wolips.htmleditor.HtmleditorPlugin;
 
 public class StructuredTextEditorHTMLWithWebObjectTags extends
-		StructuredTextEditorHTML {
-	
+		StructuredTextEditor {
+
 	Image image;
-	
+
 	public StructuredTextEditorHTMLWithWebObjectTags() {
 		super();
 	}
@@ -78,33 +71,28 @@ public class StructuredTextEditorHTMLWithWebObjectTags extends
 	public Object getAdapter(Class required) {
 		Object object = super.getAdapter(required);
 		if (IContentOutlinePage.class.equals(required)) {
-			StructuredTextEditorContentOutlinePage structuredTextEditorContentOutlinePage = (StructuredTextEditorContentOutlinePage) object;
-			ContentOutlineConfiguration contentOutlineConfiguration = structuredTextEditorContentOutlinePage.getConfiguration();
-			if(!(contentOutlineConfiguration instanceof ContentOutlineConfigurationWrapper)) {
-				structuredTextEditorContentOutlinePage.setConfiguration(new ContentOutlineConfigurationWrapper(contentOutlineConfiguration));
+			ConfigurableContentOutlinePage structuredTextEditorContentOutlinePage = (ConfigurableContentOutlinePage) object;
+			ContentOutlineConfiguration contentOutlineConfiguration = structuredTextEditorContentOutlinePage
+					.getConfiguration();
+			if (!(contentOutlineConfiguration instanceof ContentOutlineConfigurationWrapper)) {
+				structuredTextEditorContentOutlinePage
+						.setConfiguration(new ContentOutlineConfigurationWrapper(
+								contentOutlineConfiguration));
 			}
 		}
 		return object;
 	}
 
-	private class ContentOutlineConfigurationWrapper extends ContentOutlineConfiguration {
+	private class ContentOutlineConfigurationWrapper extends
+			ContentOutlineConfiguration {
 		private ContentOutlineConfiguration contentOutlineConfiguration;
-		
+
 		private WebObjectTagLabelProvider webObjectTagLabelProvider;
-		
-		public ContentOutlineConfigurationWrapper(ContentOutlineConfiguration contentOutlineConfiguration) {
+
+		public ContentOutlineConfigurationWrapper(
+				ContentOutlineConfiguration contentOutlineConfiguration) {
 			super();
 			this.contentOutlineConfiguration = contentOutlineConfiguration;
-		}
-		
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-		 */
-		public Object getAdapter(Class adapter) {
-			return contentOutlineConfiguration.getAdapter(adapter);
 		}
 
 		/**
@@ -116,28 +104,11 @@ public class StructuredTextEditorHTMLWithWebObjectTags extends
 		}
 
 		/**
-		 * @return Returns the declaringID, useful for remembering settings.
-		 */
-		public String getDeclaringID() {
-			return contentOutlineConfiguration.getDeclaringID();
-		}
-
-		/**
 		 * @param viewer
-		 * @return the IDoubleClickListener to be notified when the viewer
-		 *         receives a double click event
-		 */
-		public IDoubleClickListener getDoubleClickListener(TreeViewer viewer) {
-			return contentOutlineConfiguration.getDoubleClickListener(viewer);
-		}
-
-		/**
-		 * 
-		 * @param viewer
-		 * @return an array of KeyListeners to attach to the TreeViewer's Control.
-		 *         The listeners should adhere to the KeyEvent.doit field to
-		 *         ensure proper behaviors. Ordering of the event notifications is
-		 *         dependent on the Control in the TreeViewer.
+		 * @return an array of KeyListeners to attach to the TreeViewer's
+		 *         Control. The listeners should adhere to the KeyEvent.doit
+		 *         field to ensure proper behaviors. Ordering of the event
+		 *         notifications is dependent on the Control in the TreeViewer.
 		 */
 		public KeyListener[] getKeyListeners(TreeViewer viewer) {
 			return contentOutlineConfiguration.getKeyListeners(viewer);
@@ -148,89 +119,43 @@ public class StructuredTextEditorHTMLWithWebObjectTags extends
 		 * @return the ILabelProvider for items within the viewer
 		 */
 		public ILabelProvider getLabelProvider(TreeViewer viewer) {
-			if(webObjectTagLabelProvider != null) {
+			if (webObjectTagLabelProvider != null) {
 				return webObjectTagLabelProvider;
 			}
-			ILabelProvider labelProvider = contentOutlineConfiguration.getLabelProvider(viewer);
-			if(!(labelProvider instanceof WebObjectTagLabelProvider)) {
-				webObjectTagLabelProvider = new WebObjectTagLabelProvider(labelProvider);
+			ILabelProvider labelProvider = contentOutlineConfiguration
+					.getLabelProvider(viewer);
+			if (!(labelProvider instanceof WebObjectTagLabelProvider)) {
+				webObjectTagLabelProvider = new WebObjectTagLabelProvider(
+						labelProvider);
 				return webObjectTagLabelProvider;
 			}
 			return labelProvider;
 		}
 
 		/**
-		 * @param viewer
-		 * @return IContributionItem[] for the local menu
-		 */
-		public IContributionItem[] getMenuContributions(TreeViewer viewer) {
-			return contentOutlineConfiguration.getMenuContributions(viewer);
-		}
-
-		/**
-		 * @param viewer
-		 * @return the IMenuListener to notify when the viewer's context menu is
-		 *         about to be show
-		 */
-		public IMenuListener getMenuListener(TreeViewer viewer) {
-			return null;
-		}
-
-		/**
-		 * @param nodes
-		 * @return The list of nodes from this List that should be seen in the
-		 *         Outline. Possible uses include programmatic selection setting.
-		 */
-		public List getNodes(List nodes) {
-			return contentOutlineConfiguration.getNodes(nodes);
-		}
-
-		/**
-		 * @param event
-		 * @return The (filtered) list of selected nodes from this event. Uses
-		 *         include mapping model selection onto elements provided by the
-		 *         content provider. Should only return elements that will be
-		 *         shown in the Tree Control.
-		 */
-		public List getSelectedNodes(NodeSelectionChangedEvent event) {
-			return contentOutlineConfiguration.getSelectedNodes(event);
-		}
-
-		/**
-		 * @param viewer
-		 * @return the ISelectionChangedListener to notify when the viewer's
-		 *         selection changes
-		 */
-		public ISelectionChangedListener getSelectionChangedListener(TreeViewer viewer) {
-			return contentOutlineConfiguration.getSelectionChangedListener(viewer);
-		}
-
-		/**
-		 * @param viewer
-		 * @return IContributionItem[] for the local toolbar
-		 */
-		public IContributionItem[] getToolbarContributions(TreeViewer viewer) {
-			return contentOutlineConfiguration.getToolbarContributions(viewer);
-		}
-
-		/**
-		 * Adopted since you can't easily removeDragSupport from StructuredViewers
+		 * Adopted since you can't easily removeDragSupport from
+		 * StructuredViewers
 		 * 
 		 * @param treeViewer
 		 * @return
 		 */
-		public TransferDragSourceListener[] getTransferDragSourceListeners(TreeViewer treeViewer) {
-			return contentOutlineConfiguration.getTransferDragSourceListeners(treeViewer);
+		public TransferDragSourceListener[] getTransferDragSourceListeners(
+				TreeViewer treeViewer) {
+			return contentOutlineConfiguration
+					.getTransferDragSourceListeners(treeViewer);
 		}
 
 		/**
-		 * Adopted since you can't easily removeDropSupport from StructuredViewers
+		 * Adopted since you can't easily removeDropSupport from
+		 * StructuredViewers
 		 * 
 		 * @param treeViewer
 		 * @return
 		 */
-		public TransferDropTargetListener[] getTransferDropTargetListeners(TreeViewer treeViewer) {
-			return contentOutlineConfiguration.getTransferDropTargetListeners(treeViewer);
+		public TransferDropTargetListener[] getTransferDropTargetListeners(
+				TreeViewer treeViewer) {
+			return contentOutlineConfiguration
+					.getTransferDropTargetListeners(treeViewer);
 		}
 
 		/**
@@ -243,14 +168,6 @@ public class StructuredTextEditorHTMLWithWebObjectTags extends
 		}
 
 		/**
-		 * @param declaringID
-		 *            The declaringID to set.
-		 */
-		public void setDeclaringID(String declaringID) {
-			contentOutlineConfiguration.setDeclaringID(declaringID);
-		}
-
-		/**
 		 * General hook for resource releasing and listener removal when
 		 * configurations change or the viewer is disposed of
 		 * 
@@ -260,6 +177,7 @@ public class StructuredTextEditorHTMLWithWebObjectTags extends
 			contentOutlineConfiguration.unconfigure(viewer);
 		}
 	}
+
 	private class WebObjectTagLabelProvider implements ILabelProvider {
 
 		private ILabelProvider baseLabelProvider;
@@ -291,14 +209,15 @@ public class StructuredTextEditorHTMLWithWebObjectTags extends
 				String tagName = elementStyleImpl.getTagName();
 				if (tagName != null && "webobject".equalsIgnoreCase(tagName)) {
 					if (image == null) {
-				          ImageDescriptor desc = HtmleditorPlugin.getImageDescriptor("icons/BindingOutline.gif");
-				          if (desc != null) {
-				            image = desc.createImage();
-				          }
-				        }
-				        if (image != null) {
-				          return image;
-				        }
+						ImageDescriptor desc = HtmleditorPlugin
+								.getImageDescriptor("icons/BindingOutline.gif");
+						if (desc != null) {
+							image = desc.createImage();
+						}
+					}
+					if (image != null) {
+						return image;
+					}
 
 				}
 			}
@@ -310,8 +229,10 @@ public class StructuredTextEditorHTMLWithWebObjectTags extends
 				ElementStyleImpl elementStyleImpl = (ElementStyleImpl) element;
 				String tagName = elementStyleImpl.getTagName();
 				if (tagName != null && "webobject".equalsIgnoreCase(tagName)) {
-					String nameAttributeValue = elementStyleImpl.getAttribute("name");
-					if(nameAttributeValue != null && nameAttributeValue.length() > 0) {
+					String nameAttributeValue = elementStyleImpl
+							.getAttribute("name");
+					if (nameAttributeValue != null
+							&& nameAttributeValue.length() > 0) {
 						return nameAttributeValue;
 					}
 				}

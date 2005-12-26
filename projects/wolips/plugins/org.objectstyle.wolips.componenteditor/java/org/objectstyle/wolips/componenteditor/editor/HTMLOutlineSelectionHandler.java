@@ -45,24 +45,25 @@ package org.objectstyle.wolips.componenteditor.editor;
 
 import java.util.List;
 
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.wst.html.core.internal.document.ElementStyleImpl;
-import org.eclipse.wst.sse.ui.internal.contentoutline.StructuredTextEditorContentOutlinePage;
-import org.eclipse.wst.sse.ui.internal.view.events.INodeSelectionListener;
 import org.eclipse.wst.sse.ui.internal.view.events.NodeSelectionChangedEvent;
 import org.objectstyle.wolips.wodclipse.wod.WodEditor;
 
-public class HTMLOutlineSelectionHandler implements INodeSelectionListener {
+public class HTMLOutlineSelectionHandler implements ISelectionChangedListener {
 	private WodEditor wodEditor;
 
-	public HTMLOutlineSelectionHandler(
-			StructuredTextEditorContentOutlinePage contentOutlinePage,
-			WodEditor wodEditor) {
+	public HTMLOutlineSelectionHandler(WodEditor wodEditor) {
 		super();
 		this.wodEditor = wodEditor;
-		contentOutlinePage.getViewerSelectionManager()
-				.addNodeSelectionListener(this);
 	}
 
+
+	public void selectionChanged(SelectionChangedEvent event) {
+		event.getSelection();
+		
+	}
 	public void nodeSelectionChanged(NodeSelectionChangedEvent event) {
 
 		List nodes = event.getSelectedNodes();
@@ -71,7 +72,9 @@ public class HTMLOutlineSelectionHandler implements INodeSelectionListener {
 			if (object instanceof ElementStyleImpl) {
 				ElementStyleImpl elementStyleImpl = (ElementStyleImpl) object;
 				String tagName = elementStyleImpl.getTagName();
-				if (tagName != null && "webobject".equalsIgnoreCase(tagName)) {
+				if (tagName != null
+						&& ("webobject".equalsIgnoreCase(tagName) || "webobjects"
+								.equalsIgnoreCase(tagName))) {
 					this.changeWodSelection(elementStyleImpl);
 
 				}
@@ -85,4 +88,5 @@ public class HTMLOutlineSelectionHandler implements INodeSelectionListener {
 			wodEditor.selectTagNamed(webobjectTagName);
 		}
 	}
+
 }

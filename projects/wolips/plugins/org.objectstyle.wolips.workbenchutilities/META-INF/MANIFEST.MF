@@ -14,6 +14,6 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui,
  org.eclipse.ui.ide,
  org.eclipse.jdt.core
-Eclipse-AutoStart: true
+Eclipse-LazyStart: true
 Export-Package: org.objectstyle.wolips.workbenchutilities,
  org.objectstyle.wolips.workbenchutilities.actions
