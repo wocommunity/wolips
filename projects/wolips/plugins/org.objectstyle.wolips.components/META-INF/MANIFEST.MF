@@ -16,4 +16,5 @@ Require-Bundle: org.eclipse.core.runtime,
  org.objectstyle.wolips.editors
 Eclipse-LazyStart: true
 Export-Package: org.objectstyle.wolips.components,
+ org.objectstyle.wolips.components.editor,
  org.objectstyle.wolips.components.input

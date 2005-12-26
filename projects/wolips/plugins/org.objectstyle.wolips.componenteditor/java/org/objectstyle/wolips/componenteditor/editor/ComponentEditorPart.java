@@ -73,7 +73,10 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.wst.sse.ui.internal.contentoutline.ConfigurableContentOutlinePage;
 import org.objectstyle.wolips.apieditor.editor.ApiEditor;
 import org.objectstyle.wolips.componenteditor.ComponenteditorPlugin;
+import org.objectstyle.wolips.components.editor.EditorInteraction;
+import org.objectstyle.wolips.components.editor.IEmbeddedEditor;
 import org.objectstyle.wolips.components.input.ComponentEditorInput;
+import org.objectstyle.wolips.htmleditor.editor.HTMLOutlineSelectionHandler;
 import org.objectstyle.wolips.htmleditor.editor.StructuredTextEditorHTMLWithWebObjectTags;
 import org.objectstyle.wolips.wodclipse.WodclipsePlugin;
 import org.objectstyle.wolips.wodclipse.wod.WodEditor;
@@ -81,6 +84,7 @@ import org.objectstyle.wolips.wodclipse.wod.WodEditor;
 public class ComponentEditorPart extends MultiPageEditorPart {
 
 	ComponentEditorInput componentEditorInput;
+	private EditorInteraction editorInteraction = new EditorInteraction();
 
 	private IEditorPart[] editorParts;
 
@@ -248,17 +252,15 @@ public class ComponentEditorPart extends MultiPageEditorPart {
 			}
 
 			editorParts[i] = editorPart;
+			if(editorPart instanceof IEmbeddedEditor) {
+				IEmbeddedEditor embeddedEditor = (IEmbeddedEditor)editorPart;
+				embeddedEditor.initEditorInteraction(editorInteraction);
+			}
 
 		}
-		ConfigurableContentOutlinePage contentOutlinePage = null;
-		contentOutlinePage = (ConfigurableContentOutlinePage) structuredTextEditorHTMLWithWebObjectTags
-				.getAdapter(IContentOutlinePage.class);
+		
 		addWebObjectsTagNamesListener();
-		if (contentOutlinePage != null) {
-			contentOutlinePage
-					.addSelectionChangedListener(new HTMLOutlineSelectionHandler(
-							wodEditor));
-		}
+		
 		CTabFolder tabFolder = (CTabFolder) this.getContainer();
 		tabFolder.addSelectionListener(new SelectionListener() {
 

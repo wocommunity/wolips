@@ -57,10 +57,12 @@ import org.eclipse.wst.html.core.internal.document.ElementStyleImpl;
 import org.eclipse.wst.sse.ui.StructuredTextEditor;
 import org.eclipse.wst.sse.ui.internal.contentoutline.ConfigurableContentOutlinePage;
 import org.eclipse.wst.sse.ui.views.contentoutline.ContentOutlineConfiguration;
+import org.objectstyle.wolips.components.editor.EditorInteraction;
+import org.objectstyle.wolips.components.editor.IEmbeddedEditor;
 import org.objectstyle.wolips.htmleditor.HtmleditorPlugin;
 
 public class StructuredTextEditorHTMLWithWebObjectTags extends
-		StructuredTextEditor {
+		StructuredTextEditor implements IEmbeddedEditor {
 
 	Image image;
 
@@ -240,5 +242,10 @@ public class StructuredTextEditorHTMLWithWebObjectTags extends
 			return baseLabelProvider.getText(element);
 		}
 
+	}
+
+	public void initEditorInteraction(EditorInteraction editorInteraction) {
+		this.getSelectionProvider().addSelectionChangedListener(new HTMLOutlineSelectionHandler(
+				editorInteraction));
 	}
 }

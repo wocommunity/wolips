@@ -63,6 +63,9 @@ import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.texteditor.ContentAssistAction;
 import org.eclipse.ui.texteditor.ITextEditorActionDefinitionIds;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
+import org.objectstyle.wolips.components.editor.EditorInteraction;
+import org.objectstyle.wolips.components.editor.IEmbeddedEditor;
+import org.objectstyle.wolips.components.editor.IWebobjectTagListener;
 import org.objectstyle.wolips.htmleditor.HtmleditorPlugin;
 import org.objectstyle.wolips.locate.LocateException;
 import org.objectstyle.wolips.locate.result.LocalizedComponentsLocateResult;
@@ -74,8 +77,9 @@ import org.objectstyle.wolips.wodclipse.wod.parser.WodScanner;
 
 /**
  * @author mike
+ * @author uli
  */
-public class WodEditor extends TextEditor {
+public class WodEditor extends TextEditor implements IEmbeddedEditor, IWebobjectTagListener {
   private WodContentOutlinePage myContentOutlinePage;
   private IEditorInput myInput;
   private LocalizedComponentsLocateResult myComponentsLocateResults;
@@ -135,25 +139,29 @@ public class WodEditor extends TextEditor {
     myInput = _input;
   }
 
-  public void selectTagNamed(String _webobjectTagName) {
-    try {
-      IDocument document = getDocumentProvider().getDocument(getEditorInput());
-      WodScanner wodScanner = WodScanner.wodScannerForDocument(document);
-      RulePosition elementNameRulePosition = wodScanner.firstRulePositionOfTypeWithText(ElementNameRule.class, _webobjectTagName);
-      if (elementNameRulePosition != null) {
-        IRegion region = document.getLineInformationOfOffset(elementNameRulePosition.getTokenOffset());
-        setHighlightRange(region.getOffset(), region.getLength(), true);
-      }
-    }
-    catch (BadLocationException e) {
-      WodclipsePlugin.getDefault().log(e);
-    }
-  }
-  
   public LocalizedComponentsLocateResult getComponentsLocateResults() throws CoreException, LocateException {
     if (myComponentsLocateResults == null) {
       myComponentsLocateResults = WodModelUtils.findComponents((IFileEditorInput)myInput);
     }
     return myComponentsLocateResults;
   }
+
+  public void initEditorInteraction(EditorInteraction editorInteraction) {
+	  editorInteraction.setWebObjectTagListener(this);
+  }
+
+  public void webObjectTagSelected(String name) {
+	 try {
+	      IDocument document = getDocumentProvider().getDocument(getEditorInput());
+	      WodScanner wodScanner = WodScanner.wodScannerForDocument(document);
+	      RulePosition elementNameRulePosition = wodScanner.firstRulePositionOfTypeWithText(ElementNameRule.class, name);
+	      if (elementNameRulePosition != null) {
+	        IRegion region = document.getLineInformationOfOffset(elementNameRulePosition.getTokenOffset());
+	        setHighlightRange(region.getOffset(), region.getLength(), true);
+	      }
+	    }
+	    catch (BadLocationException e) {
+	      WodclipsePlugin.getDefault().log(e);
+	    }
+	  }
 }

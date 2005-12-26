@@ -41,51 +41,42 @@
  * Group, please see <http://objectstyle.org/> .
  *  
  */
-package org.objectstyle.wolips.componenteditor.editor;
-
-import java.util.List;
+package org.objectstyle.wolips.htmleditor.editor;
 
 import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.wst.html.core.internal.document.ElementStyleImpl;
-import org.eclipse.wst.sse.ui.internal.view.events.NodeSelectionChangedEvent;
-import org.objectstyle.wolips.wodclipse.wod.WodEditor;
+import org.objectstyle.wolips.components.editor.EditorInteraction;
 
 public class HTMLOutlineSelectionHandler implements ISelectionChangedListener {
-	private WodEditor wodEditor;
+	private EditorInteraction editorInteraction;
 
-	public HTMLOutlineSelectionHandler(WodEditor wodEditor) {
+	public HTMLOutlineSelectionHandler(EditorInteraction editorInteraction) {
 		super();
-		this.wodEditor = wodEditor;
+		this.editorInteraction = editorInteraction;
 	}
-
 
 	public void selectionChanged(SelectionChangedEvent event) {
-		event.getSelection();
-		
-	}
-	public void nodeSelectionChanged(NodeSelectionChangedEvent event) {
+		IStructuredSelection structuredSelection = (IStructuredSelection)event.getSelection();
+		Object object = structuredSelection.getFirstElement();
+		if (object instanceof ElementStyleImpl) {
+			ElementStyleImpl elementStyleImpl = (ElementStyleImpl) object;
+			String tagName = elementStyleImpl.getTagName();
+			if (tagName != null
+					&& ("webobject".equalsIgnoreCase(tagName) || "webobjects"
+							.equalsIgnoreCase(tagName))) {
+				this.changeWodSelection(elementStyleImpl);
 
-		List nodes = event.getSelectedNodes();
-		if (nodes != null && nodes.size() == 1) {
-			Object object = nodes.get(0);
-			if (object instanceof ElementStyleImpl) {
-				ElementStyleImpl elementStyleImpl = (ElementStyleImpl) object;
-				String tagName = elementStyleImpl.getTagName();
-				if (tagName != null
-						&& ("webobject".equalsIgnoreCase(tagName) || "webobjects"
-								.equalsIgnoreCase(tagName))) {
-					this.changeWodSelection(elementStyleImpl);
-
-				}
 			}
 		}
+
 	}
 
 	private void changeWodSelection(ElementStyleImpl elementStyleImpl) {
 		String webobjectTagName = elementStyleImpl.getAttribute("name");
 		if (webobjectTagName != null && webobjectTagName.length() > 0) {
-			wodEditor.selectTagNamed(webobjectTagName);
+			editorInteraction.fireWebobjectTagChanged(webobjectTagName);
 		}
 	}
 
