@@ -25,7 +25,10 @@ import org.eclipse.wst.xml.core.internal.contentmodel.CMNamespace;
 import org.eclipse.wst.xml.core.internal.contentmodel.CMNode;
 
 /**
- * CMDocument implementation for the HTML.
+ * CMDocument implementation for the HTML that only exists to wire up 
+ * WebObjectsElementCollection instead of ElementCollection.
+ * 
+ * @author mschrag
  */
 public class WebObjectsHCMDocImpl extends CMNodeImpl implements HTMLCMDocument {
 

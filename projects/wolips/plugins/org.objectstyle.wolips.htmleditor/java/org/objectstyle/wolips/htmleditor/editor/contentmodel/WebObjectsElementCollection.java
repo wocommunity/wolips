@@ -6,6 +6,11 @@ import org.eclipse.wst.html.core.internal.contentmodel.AttributeCollection;
 import org.eclipse.wst.html.core.internal.contentmodel.ElementCollection;
 import org.eclipse.wst.xml.core.internal.contentmodel.CMNode;
 
+/**
+ * ElementCollection subclass that adds WebObjects as a known block tag.
+ *  
+ * @author mschrag
+ */
 public class WebObjectsElementCollection extends ElementCollection implements WebObjectsHTML40Namespace.ElementName {
   private static String[] fNamesWithWebObject;
   

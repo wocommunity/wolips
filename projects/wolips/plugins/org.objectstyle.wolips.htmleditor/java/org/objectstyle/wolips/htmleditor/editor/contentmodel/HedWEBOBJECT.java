@@ -25,7 +25,12 @@ import org.eclipse.wst.xml.core.internal.contentmodel.CMAttributeDeclaration;
 import org.eclipse.wst.xml.core.internal.contentmodel.CMNamedNodeMap;
 
 /**
- * WEBOBJECT.
+ * WEBOBJECT.  Right now this is a FlowContainer, which behaves basically
+ * like a DIV tag.  This is not strictly correct since DIV can't contain
+ * a TR, TD, etc.  So eventually this will change to be something slightly
+ * different that can basically contain any tag.
+ * 
+ * @author mschrag
  */
 public class HedWEBOBJECT extends HedFlowContainer {
 
