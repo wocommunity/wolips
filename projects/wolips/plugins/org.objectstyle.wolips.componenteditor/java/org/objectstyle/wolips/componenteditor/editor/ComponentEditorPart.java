@@ -242,24 +242,24 @@ public class ComponentEditorPart extends MultiPageEditorPart {
 						.updateWebObjectsTagNames(wodEditor);
 				break;
 			case 3:
-				apiEditor = new ApiEditor();
-				editorPart = apiEditor;
-				try {
-					this.addPage(editorPart, editorInput[i]);
-				} catch (PartInitException e) {
-					ComponenteditorPlugin.getDefault().log(e);
-				}
-				this.setPageText(i - 1, "Api");
-				break;
-			case 4:
 				htmlPreviewEditor = new HtmlPreviewEditor();
 				editorPart = htmlPreviewEditor;
 				try {
-					this.addPage(editorPart, editorInput[i - 3]);
+					this.addPage(editorPart, editorInput[i - 2]);
 				} catch (PartInitException e) {
 					ComponenteditorPlugin.getDefault().log(e);
 				}
 				this.setPageText(i - 1, "Preview");
+				break;
+			case 4:
+				apiEditor = new ApiEditor();
+				editorPart = apiEditor;
+				try {
+					this.addPage(editorPart, editorInput[i - 1]);
+				} catch (PartInitException e) {
+					ComponenteditorPlugin.getDefault().log(e);
+				}
+				this.setPageText(i - 1, "Api");
 				break;
 
 			default:
@@ -406,7 +406,7 @@ public class ComponentEditorPart extends MultiPageEditorPart {
 		if (apiEditor == null) {
 			return;
 		}
-		switchToPage(2);
+		switchToPage(3);
 	}
 
 	public void switchToPage(int page) {
