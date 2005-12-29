@@ -14,4 +14,5 @@ Require-Bundle: org.eclipse.core.runtime,
  org.objectstyle.wolips.workbenchutilities,
  org.objectstyle.wolips.ant
 Eclipse-LazyStart: true
-Export-Package: org.objectstyle.wolips.deployment.ui
+Export-Package: org.objectstyle.wolips.deployment.ui,
+ org.objectstyle.wolips.deployment.ui.actions

@@ -4,7 +4,7 @@
 <!--        Main WOLips plugins Ant build file                -->
 <!-- Serves as a facade for different helper build files.     -->
 <!-- ======================================================== -->
-<project name="org.objectstyle.wolips.deployment" default="" basedir=".">
+<project name="org.objectstyle.wolips.deployment.ui" default="" basedir=".">
 
     <property file="default.properties"/>
 
@@ -33,7 +33,7 @@
     <!-- ========================================== -->
     <target name="jar">
 	    <patternset id="param.classes.patternset.refid">
-                <include name="**/org/objectstyle/wolips/ant/**"/>
+                <include name="**/org/objectstyle/wolips/deployment/ui/**"/>
         </patternset>
             
 	    <ant dir="." antfile="../../../${project.buildscripts.dir}/plugin-project.xml" target="jar">
