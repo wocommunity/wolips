@@ -72,7 +72,11 @@ public class RightHandSide extends AbstractClassElement {
 	}
 
 	public String getValue() {
-		return (String) this.getMap().get(VALUE_KEY);
+		Object value = this.getMap().get(VALUE_KEY);
+		if(value == null) {
+			return null;
+		}
+		return value.toString();
 	}
 
 	public void setValue(String value) {

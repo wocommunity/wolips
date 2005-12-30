@@ -62,6 +62,12 @@ public abstract class AbstractD2WModelChild {
 	
 	public AbstractD2WModelChild(D2WModel model, Map map) {
 		super();
+		if(model == null) {
+			throw new IllegalArgumentException();
+		}
+		if(map == null) {
+			throw new IllegalArgumentException();
+		}
 		this.map = map;
 		this.model = model;
 	}

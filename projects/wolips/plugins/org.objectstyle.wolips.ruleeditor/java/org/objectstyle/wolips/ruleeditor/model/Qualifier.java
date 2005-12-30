@@ -54,7 +54,7 @@ import java.util.Map;
 /**
  * @author uli
  */
-public class Qualifier extends AbstractClassElement {
+public class Qualifier extends AbstractQualifierElement {
 	private static final String KEY_KEY = "key";
 	private static final String VALUE_KEY = "value";
 	private static final String SELECTOR_NAME_KEY = "selectorName";
@@ -88,5 +88,45 @@ public class Qualifier extends AbstractClassElement {
 	public void setSelectorName(String selectorName) {
 		this.getMap().put(SELECTOR_NAME_KEY, selectorName);
 		this.getModel().setHasUnsavedChanges(true);
+	}
+	public void appendToDisplayStringBuffer(StringBuffer stringBuffer,
+			String concatWith) {
+		if (this.getQualifiers() == null) {
+			stringBuffer.append(this.getKey());
+			stringBuffer.append(" ");
+			stringBuffer.append(this.getSelectorDisplayString());
+			stringBuffer.append(" ");
+			stringBuffer.append(this.getValue());
+		}
+		super.appendToDisplayStringBuffer(stringBuffer, concatWith);
+	}
+
+	private String getSelectorDisplayString() {
+		String selectorName = this.getSelectorName();
+		if(selectorName == null) {
+			return null;
+		}
+		if("isEqualTo".equals(selectorName)) {
+			return "=";
+		}
+		if("isNotEqualTo".equals(selectorName)) {
+			return "!=";
+		}
+		if("isLessThen".equals(selectorName)) {
+			return "<";
+		}
+		if("isLessThenOrEqualTo".equals(selectorName)) {
+			return "<=";
+		}
+		if("isGreaterThen".equals(selectorName)) {
+			return ">";
+		}
+		if("isGreaterThenOrEqualTo".equals(selectorName)) {
+			return ">=";
+		}
+		if("isLike".equals(selectorName)) {
+			return "=";
+		}
+		return selectorName;
 	}
 }

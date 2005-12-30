@@ -86,6 +86,9 @@ public class Rule extends AbstractClassElement {
 			return leftHandSide;
 		}
 		Map map = (Map)this.getMap().get(LHS_KEY);
+		if(map == null) {
+			return null;
+		}
 		leftHandSide  = new LeftHandSide(this.getModel(), map);
 		return leftHandSide;
 	}
@@ -95,11 +98,15 @@ public class Rule extends AbstractClassElement {
 		this.getModel().setHasUnsavedChanges(true);
 	}
 
-	public Integer getPriority() {
-		return  (Integer)this.getMap().get(AUTHOR_KEY);
+	public String getPriority() {
+		Object priority = this.getMap().get(AUTHOR_KEY);
+		if(priority == null) {
+			return null;
+		}
+		return  priority.toString();
 	}
 
-	public void setPriority(Integer priority) {
+	public void setPriority(String priority) {
 		this.getMap().put(AUTHOR_KEY, priority);
 		this.getModel().setHasUnsavedChanges(true);
 	}

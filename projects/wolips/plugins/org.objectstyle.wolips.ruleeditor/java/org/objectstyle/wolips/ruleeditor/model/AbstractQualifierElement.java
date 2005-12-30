@@ -47,90 +47,75 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.ruleeditor;
+package org.objectstyle.wolips.ruleeditor.model;
 
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IEditorSite;
-import org.eclipse.ui.IFileEditorInput;
-import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.part.EditorPart;
-import org.objectstyle.wolips.ruleeditor.model.D2WModel;
+public abstract class AbstractQualifierElement extends AbstractClassElement {
 
-/**
- * @author omar
- * @author uli
- */
-public class RuleEditorPart extends EditorPart {
+	private static final String QUALIFIERS_KEY = "qualifiers";
 
-	private IFileEditorInput fileEditorInput;
+	private ArrayList qualifiers;
 
-	private RuleEditor ruleEditor;
-
-	private boolean isDirty;
-
-	private D2WModel model;
-
-	public RuleEditorPart() {
-		super();
+	public AbstractQualifierElement(D2WModel model, Map map) {
+		super(model, map);
 	}
 
-	public void doSave(IProgressMonitor monitor) {
-		model.saveChanges();
-	}
-
-	public void doSaveAs() {
-		throw new IllegalStateException();
-	}
-
-	public void init(IEditorSite site, IEditorInput input)
-			throws PartInitException {
-		fileEditorInput = (IFileEditorInput) input;
-		super.setSite(site);
-		super.setInput(input);
-	}
-
-	public boolean isDirty() {
-		return isDirty;
-	}
-
-	public boolean isSaveAsAllowed() {
-		return false;
-	}
-
-	public void createPartControl(Composite parent) {
-		ruleEditor = new RuleEditor();
-		String fileName = fileEditorInput.getFile().getLocation().toOSString();
-		model = new D2WModel() {
-
-			public void setHasUnsavedChanges(boolean hasUnsavedChanges) {
-				super.setHasUnsavedChanges(hasUnsavedChanges);
-				RuleEditorPart.this.setDirty(hasUnsavedChanges);
-			}
-		};
-		try {
-			model.init(fileName);
-		} catch (IOException e) {
-			RuleEditorPlugin.getDefault().log("Error while saving model", e);
+	public List getQualifiers() {
+		if (qualifiers != null) {
+			return qualifiers;
 		}
-		ruleEditor.setD2WModel(model);
-		ruleEditor.createContents(parent);
+		List list = (List) this.getMap().get(QUALIFIERS_KEY);
+		if (list == null) {
+			return null;
+		}
+		qualifiers = new ArrayList(list.size());
+		for (int i = 0; i < list.size(); i++) {
+			Map map = (Map) list.get(i);
+			Qualifier qualifier = new Qualifier(this.getModel(), map);
+			qualifiers.add(i, qualifier);
+		}
+		return qualifiers;
 	}
 
-	public void setFocus() {
-		ruleEditor.setFocus();
+	public void appendToDisplayStringBuffer(StringBuffer stringBuffer,
+			String concatWith) {
+		if (this.getQualifiers() == null) {
+			return;
+		}
+		stringBuffer.append("(");
+		Iterator iterator = qualifiers.iterator();
+		while (iterator.hasNext()) {
+			AbstractQualifierElement abstractQualifierElement = (AbstractQualifierElement) iterator
+					.next();
+			abstractQualifierElement.appendToDisplayStringBuffer(stringBuffer,
+					this.getConcatWithString());
+			if (iterator.hasNext()) {
+				stringBuffer.append(" ");
+				stringBuffer.append(concatWith);
+				stringBuffer.append(" ");
+			}
+		}
+		stringBuffer.append(")");
 	}
 
-	/**
-	 * @param isDirty
-	 *            The isDirty to set.
-	 */
-	public void setDirty(boolean isDirty) {
-		this.isDirty = isDirty;
-		this.firePropertyChange(IEditorPart.PROP_DIRTY);
+	public String getConcatWithString() {
+		String assignmentClassName = this.getAssignmentClassName();
+		if(assignmentClassName == null) {
+			return null;
+		}
+		if("com.webobjects.eocontrol.EOAndQualifier".equals(assignmentClassName)) {
+			return "and";
+		}
+		if("com.webobjects.eocontrol.EOOrQualifier".equals(assignmentClassName)) {
+			return "or";
+		}
+		if("com.webobjects.eocontrol.EONotQualifier".equals(assignmentClassName)) {
+			return "not";
+		}
+		return assignmentClassName;
 	}
 }

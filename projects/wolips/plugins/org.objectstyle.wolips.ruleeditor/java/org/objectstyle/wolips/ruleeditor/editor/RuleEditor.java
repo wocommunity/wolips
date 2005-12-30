@@ -47,7 +47,7 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.ruleeditor;
+package org.objectstyle.wolips.ruleeditor.editor;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.TableEditor;
@@ -72,6 +72,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
+import org.objectstyle.wolips.ruleeditor.RuleEditorPlugin;
 import org.objectstyle.wolips.ruleeditor.model.D2WModel;
 import org.objectstyle.wolips.ruleeditor.model.Rule;
 /**
@@ -111,7 +112,7 @@ public class RuleEditor {
 	}
 
 	void setPriority(String priority) {
-		rule.setPriority(new Integer(priority));
+		rule.setPriority(priority);
 		updateRules();
 	}
 
@@ -506,7 +507,7 @@ public class RuleEditor {
 			if (currentRule.getLeftHandSide() == null)
 				item.setText(0, "*true*");
 			else
-				item.setText(0, currentRule.getLeftHandSide().toString());
+				item.setText(0, currentRule.getLeftHandSide().getDisplayString());
 
 			item.setText(1, currentRule.getRightHandSide().getKeyPath());
 

@@ -47,21 +47,91 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.ruleeditor.model;
+package org.objectstyle.wolips.ruleeditor.editor;
 
-import java.util.Map;
+import java.io.IOException;
+
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.part.EditorPart;
+import org.objectstyle.wolips.ruleeditor.RuleEditorPlugin;
+import org.objectstyle.wolips.ruleeditor.model.D2WModel;
 
 /**
+ * @author omar
  * @author uli
  */
-public class LeftHandSide extends AbstractQualifierElement {
-	public LeftHandSide(D2WModel model, Map map) {
-		super(model, map);
+public class RuleEditorPart extends EditorPart {
+
+	private IFileEditorInput fileEditorInput;
+
+	private RuleEditor ruleEditor;
+
+	private boolean isDirty;
+
+	private D2WModel model;
+
+	public RuleEditorPart() {
+		super();
 	}
-	
-	public String getDisplayString() {
-		StringBuffer stringBuffer = new StringBuffer();
-		this.appendToDisplayStringBuffer(stringBuffer, this.getConcatWithString());
-		return stringBuffer.toString();
+
+	public void doSave(IProgressMonitor monitor) {
+		model.saveChanges();
+	}
+
+	public void doSaveAs() {
+		throw new IllegalStateException();
+	}
+
+	public void init(IEditorSite site, IEditorInput input)
+			throws PartInitException {
+		fileEditorInput = (IFileEditorInput) input;
+		super.setSite(site);
+		super.setInput(input);
+	}
+
+	public boolean isDirty() {
+		return isDirty;
+	}
+
+	public boolean isSaveAsAllowed() {
+		return false;
+	}
+
+	public void createPartControl(Composite parent) {
+		ruleEditor = new RuleEditor();
+		String fileName = fileEditorInput.getFile().getLocation().toOSString();
+		model = new D2WModel() {
+
+			public void setHasUnsavedChanges(boolean hasUnsavedChanges) {
+				super.setHasUnsavedChanges(hasUnsavedChanges);
+				RuleEditorPart.this.setDirty(hasUnsavedChanges);
+			}
+		};
+		try {
+			model.init(fileName);
+		} catch (IOException e) {
+			RuleEditorPlugin.getDefault().log("Error while saving model", e);
+		}
+		ruleEditor.setD2WModel(model);
+		ruleEditor.createContents(parent);
+	}
+
+	public void setFocus() {
+		ruleEditor.setFocus();
+	}
+
+	/**
+	 * @param isDirty
+	 *            The isDirty to set.
+	 */
+	public void setDirty(boolean isDirty) {
+		this.isDirty = isDirty;
+		this.firePropertyChange(IEditorPart.PROP_DIRTY);
 	}
 }

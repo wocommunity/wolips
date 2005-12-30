@@ -7,7 +7,7 @@
    <extension
          point="org.eclipse.ui.editors">
       <editor
-            class="org.objectstyle.wolips.ruleeditor.RuleEditorPart"
+            class="org.objectstyle.wolips.ruleeditor.editor.RuleEditorPart"
             default="false"
             icon="icons/editors/ruleeditor.gif"
             id="org.objectstyle.wolips.ruleeditor"
