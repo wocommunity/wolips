@@ -29,6 +29,7 @@
       </editor>
       <editor
             class="org.objectstyle.wolips.componenteditor.editor.ComponentEditor"
+            contributorClass="org.objectstyle.wolips.componenteditor.editor.ComponentEditorMatchingContributor"
             default="false"
             icon="icons/ComponentEditor.gif"
             id="org.objectstyle.wolips.wodclipse.mpe.ComponentEditor"
