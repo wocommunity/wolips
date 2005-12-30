@@ -43,7 +43,6 @@
  */
 package org.objectstyle.wolips.componenteditor.editor;
 
-import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -65,7 +64,6 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IPropertyListener;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.ide.IGotoMarker;
 import org.eclipse.ui.part.MultiPageEditorActionBarContributor;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.part.MultiPageSelectionProvider;
@@ -172,19 +170,7 @@ public class ComponentEditorPart extends MultiPageEditorPart {
 			IEditorPart editorPart = null;
 			switch (i) {
 			case 0:
-				compilationUnitEditor = new CompilationUnitEditor() {
-					public Object getAdapter(Class adapter) {
-						if (adapter.equals(IGotoMarker.class)) {
-							return super.getAdapter(adapter);
-						}
-						return super.getAdapter(adapter);
-					}
-
-					public void gotoMarker(IMarker marker) {
-						super.gotoMarker(marker);
-					}
-
-				};
+				compilationUnitEditor = new CompilationUnitEditor();
 				editorPart = compilationUnitEditor;
 				try {
 					this.addPage(editorPart, editorInput[i]);
