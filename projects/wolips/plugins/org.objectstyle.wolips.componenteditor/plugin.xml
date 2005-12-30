@@ -32,6 +32,7 @@
             default="false"
             icon="icons/ComponentEditor.gif"
             id="org.objectstyle.wolips.wodclipse.mpe.ComponentEditor"
+            matchingStrategy="org.objectstyle.wolips.componenteditor.editor.ComponentEditorMatchingStrategy"
             name="WOComponent Editor internal">
       </editor>
    </extension>
