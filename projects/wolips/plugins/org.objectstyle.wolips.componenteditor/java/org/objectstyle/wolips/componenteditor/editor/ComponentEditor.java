@@ -43,21 +43,85 @@
  */
 package org.objectstyle.wolips.componenteditor.editor;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IMarker;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.ide.IGotoMarker;
+import org.eclipse.ui.ide.ResourceUtil;
+import org.objectstyle.wolips.componenteditor.ComponenteditorPlugin;
+
 
 /**
  * @author uli
  */
-public class ComponentEditor extends ComponentEditorPart {
+public class ComponentEditor extends ComponentEditorPart implements IGotoMarker {
 
 	public ComponentEditor() {
 		super();
 	}
 
 	public Object getAdapter(Class adapter) {
-//		if (adapter.equals(IGotoMarker.class)) {
-//			return null;
-//		}
+		if (adapter.equals(IGotoMarker.class)) {
+			return this;
+		}
 		return super.getAdapter(adapter);
+	}
+
+	public void gotoMarker(IMarker marker) {
+		ComponenteditorPlugin.getDefault().log(marker);
+		IResource resource = marker.getResource();
+		if(resource == null) {
+			return;
+		}
+		IEditorInput[] editorInputArray = componentEditorInput.getInput();
+		for (int i = 0; i < editorInputArray.length; i++) {
+			IFile inputFileFromEditor = ResourceUtil.getFile(editorInputArray[i]);
+			if(inputFileFromEditor == null) {
+				continue;
+			}
+			IPath pathFromInputFile = inputFileFromEditor.getLocation();
+			if(pathFromInputFile == null) {
+				continue;
+			}
+			IPath pathFromResource = resource.getLocation();
+			if(pathFromResource == null) {
+				continue;
+			}
+			if(pathFromInputFile.equals(pathFromResource)) {
+				IEditorPart editorPart = null;
+				if(i == 0) {
+					editorPart = compilationUnitEditor;
+				}
+				if(i == 1) {
+					editorPart = structuredTextEditorHTMLWithWebObjectTags;
+				}
+				if(i == 2) {
+					editorPart = wodEditor;
+				}
+				if(editorPart == null) {
+					continue;
+				}
+				IGotoMarker gotoMarker = (IGotoMarker)editorPart.getAdapter(IGotoMarker.class);
+				if(gotoMarker == null) {
+					return;
+				}
+				if(i == 0) {
+					this.switchToJava();
+				}
+				if(i == 1) {
+					this.switchToHtml();
+				}
+				if(i == 2) {
+					this.switchToWod();
+				}
+				gotoMarker.gotoMarker(marker);
+				return;
+			}
+			
+		}
 	}
 
 }
