@@ -63,6 +63,25 @@ public class ComponentEditor extends ComponentEditorPart implements IGotoMarker 
 		super();
 	}
 
+	public String getTitleToolTip() {
+		StringBuffer toolTip = new StringBuffer();
+
+		IEditorInput[] editorInputArray = componentEditorInput.getInput();
+		for (int i = 0; i < editorInputArray.length; i++) {
+			IFile inputFileFromEditor = ResourceUtil.getFile(editorInputArray[i]);
+			if(inputFileFromEditor == null) {
+				continue;
+			}
+			IPath pathFromInputFile = inputFileFromEditor.getFullPath();
+			if(pathFromInputFile == null) {
+				continue;
+			}
+			toolTip.append(pathFromInputFile.toString());
+			toolTip.append("\n");
+		}
+        return toolTip.toString();
+    }
+	
 	public Object getAdapter(Class adapter) {
 		if (adapter.equals(IGotoMarker.class)) {
 			return this;
