@@ -12,9 +12,15 @@
       	</description>
    	</category-def>
    	
-	<category-def name="WOLips.profiling" label="Profiling">
+	<category-def name="WOLips.profiling" label="JMechanic Profiling Support">
     		<description>
          	Profiling support for WOLips. Requires jMechanic.
+      	</description>
+   	</category-def>
+   	
+	<category-def name="WOLips.tptp" label="TPTP Profiling Support">
+    		<description>
+         	Profiling support for WOLips. Requires TPTP.
       	</description>
    	</category-def>
    	
@@ -36,6 +42,10 @@
    	
    	<feature url="features/org.objectstyle.wolips.profiling.feature_1.0.6.jar" id="org.objectstyle.wolips.profiling.feature" version="1.0.6">
     		<category name="WOLips.profiling"/>
+   	</feature>
+
+	<feature url="features/org.objectstyle.wolips.tptp.feature_1.0.6.jar" id="org.objectstyle.wolips.tptp.feature" version="1.0.6">
+    		<category name="WOLips.tptp"/>
    	</feature>
 
 	<feature url="features/org.objectstyle.wolips.tests.feature_1.0.6.jar" id="org.objectstyle.wolips.tests.feature" version="1.0.6">
