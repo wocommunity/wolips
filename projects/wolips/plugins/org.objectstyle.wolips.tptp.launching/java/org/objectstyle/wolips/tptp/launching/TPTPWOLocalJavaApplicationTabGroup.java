@@ -63,6 +63,7 @@ import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTabGroup;
 import org.eclipse.debug.ui.CommonTab;
 import org.eclipse.debug.ui.ILaunchConfigurationDialog;
+import org.eclipse.debug.ui.ILaunchConfigurationTab;
 import org.eclipse.debug.ui.ILaunchConfigurationTabGroup;
 import org.eclipse.debug.ui.sourcelookup.SourceLookupTab;
 import org.eclipse.hyades.trace.internal.ui.TraceConstants;
@@ -74,6 +75,8 @@ import org.eclipse.jdt.debug.ui.launchConfigurations.JavaClasspathTab;
 import org.eclipse.jdt.debug.ui.launchConfigurations.JavaMainTab;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.objectstyle.wolips.launching.delegates.WOJavaLocalApplicationLaunchConfigurationDelegate;
+import org.objectstyle.wolips.launching.ui.CommonWOArgumentsTab;
+import org.objectstyle.wolips.launching.ui.LogTab;
 
 /**
  * @author uli To change this generated comment edit the template variable
@@ -97,6 +100,8 @@ public class TPTPWOLocalJavaApplicationTabGroup extends
 		ArrayList tabs = new ArrayList(10);
 		tabs.add(new JavaMainTab());
 		tabs.add(new JavaArgumentsTab());
+		tabs.add(new CommonWOArgumentsTab());
+		tabs.add(new LogTab());
 		tabs.add(new JavaClasspathTab());
 
 		if (isProfilingEnabled) {
@@ -107,7 +112,7 @@ public class TPTPWOLocalJavaApplicationTabGroup extends
 		tabs.add(new ProfileEnvironmentTab());
 		tabs.add(new CommonTab());
 
-		AbstractLaunchConfigurationTab[] array = new AbstractLaunchConfigurationTab[tabs
+		ILaunchConfigurationTab[] array = new ILaunchConfigurationTab[tabs
 				.size()];
 		tabs.toArray(array);
 		setTabs(array);
