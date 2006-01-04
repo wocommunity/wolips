@@ -13,13 +13,13 @@
    	</category-def>
    	
 	<category-def name="WOLips.profiling" label="JMechanic Profiling Support">
-    		<description>
+    	<description>
          	Profiling support for WOLips. Requires jMechanic.
       	</description>
    	</category-def>
    	
 	<category-def name="WOLips.tptp" label="TPTP Profiling Support">
-    		<description>
+    	<description>
          	Profiling support for WOLips. Requires TPTP.
       	</description>
    	</category-def>
