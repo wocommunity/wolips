@@ -296,4 +296,8 @@ public class HtmlPreviewEditor implements IEmbeddedEditor,
 	public void editorSelected() {
 		updatePreviewContent();
 	}
+
+	public EditorInteraction getEditorInteraction() {
+		return editorInteraction;
+	}
 }
