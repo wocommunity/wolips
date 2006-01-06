@@ -52,6 +52,8 @@ public class EditorInteraction {
 
 	private IHtmlDocumentProvider htmlDocumentProvider;
 
+	private IWodDocumentProvider wodDocumentProvider;
+
 	public EditorInteraction() {
 		super();
 	}
@@ -72,6 +74,14 @@ public class EditorInteraction {
 	public void setHtmlDocumentProvider(
 			IHtmlDocumentProvider htmlDocumentProvider) {
 		this.htmlDocumentProvider = htmlDocumentProvider;
+	}
+
+	public IWodDocumentProvider getWodDocumentProvider() {
+		return wodDocumentProvider;
+	}
+
+	public void setWodDocumentProvider(IWodDocumentProvider wodDocumentProvider) {
+		this.wodDocumentProvider = wodDocumentProvider;
 	}
 
 }

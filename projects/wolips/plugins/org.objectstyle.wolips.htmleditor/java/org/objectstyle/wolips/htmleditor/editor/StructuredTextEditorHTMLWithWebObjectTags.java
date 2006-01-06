@@ -67,6 +67,7 @@ public class StructuredTextEditorHTMLWithWebObjectTags extends
 		StructuredTextEditor implements IEmbeddedEditor, IHtmlDocumentProvider {
 
 	Image image;
+	private EditorInteraction editorInteraction;
 
 	public StructuredTextEditorHTMLWithWebObjectTags() {
 		super();
@@ -250,11 +251,16 @@ public class StructuredTextEditorHTMLWithWebObjectTags extends
 		this.getSelectionProvider().addSelectionChangedListener(
 				new HTMLOutlineSelectionHandler(editorInteraction));
 		editorInteraction.setHtmlDocumentProvider(this);
+		this.editorInteraction = editorInteraction;
 	}
 
 	public IDocument getHtmlEditDocument() {
 		IDocument editDocument = this.getDocumentProvider().getDocument(
 				this.getEditorInput());
 		return editDocument;
+	}
+
+	public EditorInteraction getEditorInteraction() {
+		return editorInteraction;
 	}
 }

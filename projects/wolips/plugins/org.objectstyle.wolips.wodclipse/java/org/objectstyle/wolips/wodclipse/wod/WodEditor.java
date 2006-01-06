@@ -66,6 +66,7 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.objectstyle.wolips.components.editor.EditorInteraction;
 import org.objectstyle.wolips.components.editor.IEmbeddedEditor;
 import org.objectstyle.wolips.components.editor.IWebobjectTagListener;
+import org.objectstyle.wolips.components.editor.IWodDocumentProvider;
 import org.objectstyle.wolips.htmleditor.HtmleditorPlugin;
 import org.objectstyle.wolips.locate.LocateException;
 import org.objectstyle.wolips.locate.result.LocalizedComponentsLocateResult;
@@ -79,10 +80,11 @@ import org.objectstyle.wolips.wodclipse.wod.parser.WodScanner;
  * @author mike
  * @author uli
  */
-public class WodEditor extends TextEditor implements IEmbeddedEditor, IWebobjectTagListener {
+public class WodEditor extends TextEditor implements IEmbeddedEditor, IWebobjectTagListener, IWodDocumentProvider {
   private WodContentOutlinePage myContentOutlinePage;
   private IEditorInput myInput;
   private LocalizedComponentsLocateResult myComponentsLocateResults;
+  private EditorInteraction editorInteraction;
 
   public WodEditor() {
     setSourceViewerConfiguration(new WodSourceViewerConfiguration(this));
@@ -148,6 +150,8 @@ public class WodEditor extends TextEditor implements IEmbeddedEditor, IWebobject
 
   public void initEditorInteraction(EditorInteraction editorInteraction) {
 	  editorInteraction.setWebObjectTagListener(this);
+	  editorInteraction.setWodDocumentProvider(this);
+	  this.editorInteraction = editorInteraction;
   }
 
   public void webObjectTagSelected(String name) {
@@ -164,4 +168,13 @@ public class WodEditor extends TextEditor implements IEmbeddedEditor, IWebobject
 	      WodclipsePlugin.getDefault().log(e);
 	    }
 	  }
+
+  public IDocument getWodEditDocument() {
+	  IDocument document = getDocumentProvider().getDocument(getEditorInput());
+	  return document;
+  }
+
+  public EditorInteraction getEditorInteraction() {
+		return editorInteraction;
+	}
 }

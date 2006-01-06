@@ -43,11 +43,12 @@
  */
 package org.objectstyle.wolips.components.editor;
 
+import org.eclipse.jface.text.IDocument;
+
 /**
  * @author uli
  */
-public interface IEmbeddedEditor {
+public interface IWodDocumentProvider {
 
-	public abstract void initEditorInteraction(EditorInteraction editorInteraction);
-	public abstract EditorInteraction getEditorInteraction();
+	public abstract IDocument getWodEditDocument();
 }
