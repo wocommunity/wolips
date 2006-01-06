@@ -51,7 +51,6 @@ import org.eclipse.jdt.ui.JavaUI;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IPersistableElement;
-import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiEditorInput;
 import org.objectstyle.wolips.components.ComponentsPlugin;
 import org.objectstyle.wolips.editors.EditorsPlugin;
@@ -83,31 +82,34 @@ public class ComponentEditorInput extends MultiEditorInput implements
 			LocalizedComponentsLocateResult localizedComponentsLocateResult)
 			throws CoreException {
 		String ids[] = null;
-		IEditorInput allInput[] = null;
+		ComponentEditorFileEditorInput allInput[] = null;
 		if (localizedComponentsLocateResult.getDotApi() == null) {
 			ids = new String[3];
-			allInput = new IEditorInput[3];
+			allInput = new ComponentEditorFileEditorInput[3];
 		} else {
 			ids = new String[4];
-			allInput = new IEditorInput[4];
+			allInput = new ComponentEditorFileEditorInput[4];
 		}
 		ids[0] = JavaUI.ID_CU_EDITOR;
-		allInput[0] = new FileEditorInput(localizedComponentsLocateResult
+		allInput[0] = new ComponentEditorFileEditorInput(localizedComponentsLocateResult
 				.getDotJava());
 		ids[1] = EditorsPlugin.HTMLEditorID;
 		IFolder folder = localizedComponentsLocateResult.getComponents()[0];
 		IFile htmlFile = LocalizedComponentsLocateResult.getHtml(folder);
 		IFile wodFile = LocalizedComponentsLocateResult.getWod(folder);
-		allInput[1] = new FileEditorInput(htmlFile);
+		allInput[1] = new ComponentEditorFileEditorInput(htmlFile);
 		ids[2] = EditorsPlugin.WodEditorID;
-		allInput[2] = new FileEditorInput(wodFile);
+		allInput[2] = new ComponentEditorFileEditorInput(wodFile);
 		if (localizedComponentsLocateResult.getDotApi() != null) {
 			ids[3] = EditorsPlugin.ApiEditorID;
-			allInput[3] = new FileEditorInput(localizedComponentsLocateResult
+			allInput[3] = new ComponentEditorFileEditorInput(localizedComponentsLocateResult
 					.getDotApi());
 		}
 		ComponentEditorInput input = new ComponentEditorInput(ids, allInput);
 		input.localizedComponentsLocateResult = localizedComponentsLocateResult;
+		for(int i = 0; i < allInput.length; i++) {
+			allInput[i].setComponentEditorInput(input);
+		}
 		return input;
 	}
 

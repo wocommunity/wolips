@@ -83,20 +83,16 @@ public class ComponentEditorMatchingStrategy implements IEditorMatchingStrategy 
 				.equalsIgnoreCase(extension))) {
 			return false;
 		}
-		IEditorInput editorReferenceEditorInput = null;
-		try {
-			//expensive call it as late as possible
-			editorReferenceEditorInput = editorReference.getEditorInput();
-		} catch (PartInitException e) {
-			ComponenteditorPlugin.getDefault().log(e);
-		}
-		if(editorReferenceEditorInput == null) {
-			return false;
-		}
-		if(!(editorReferenceEditorInput instanceof ComponentEditorInput)) {
-			return false;
-		}
-		ComponentEditorInput componentEditorInput = (ComponentEditorInput)editorReferenceEditorInput;
+//		IEditorInput editorReferenceEditorInput = null;
+		//expensive: call it as late as possible
+		ComponentEditorInput componentEditorInput = ((ComponentEditorPart)editorReference.getPart(false)).componentEditorInput;
+//		if(editorReferenceEditorInput == null) {
+//			return false;
+//		}
+//		if(!(editorReferenceEditorInput instanceof ComponentEditorInput)) {
+//			return false;
+//		}
+//		ComponentEditorInput componentEditorInput = (ComponentEditorInput)editorReferenceEditorInput;
 		IEditorInput[] editorInputArray = componentEditorInput.getInput();
 		for (int i = 0; i < editorInputArray.length; i++) {
 			IFile inputFileFromEditor = ResourceUtil.getFile(editorInputArray[i]);

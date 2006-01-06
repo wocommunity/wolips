@@ -49,7 +49,6 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.ui.IElementFactory;
 import org.eclipse.ui.IMemento;
-import org.eclipse.ui.part.FileEditorInput;
 
 public class ComponentEditorInputFactory implements IElementFactory {
 
@@ -83,20 +82,23 @@ public class ComponentEditorInputFactory implements IElementFactory {
 		}
 		int count = Integer.parseInt(countString);
 		String[] editors = new String[count];
-		FileEditorInput[] input = new FileEditorInput[count];
+		ComponentEditorFileEditorInput[] input = new ComponentEditorFileEditorInput[count];
 
 		for (int i = 0; i < count; i++) {
 			editors[i] = memento.getString(TAG_EDITOR + i);
 			String fileName = memento.getString(TAG_INPUT + i);
 			IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(
 					new Path(fileName));
-			input[i] = new FileEditorInput(file);
+			input[i] = new ComponentEditorFileEditorInput(file);
 		}
 
 		ComponentEditorInput componentEditorInput = new ComponentEditorInput(
 				editors, input);
 		if (componentEditorInput == null) {
 			return null;
+		}
+		for(int i = 0; i < input.length; i++) {
+			input[i].setComponentEditorInput(componentEditorInput);
 		}
 		if (memento.getString(TAG_DISPLAY_API_PART_ON_REVEAL) != null) {
 			componentEditorInput.setDisplayApiPartOnReveal(true);
@@ -119,7 +121,7 @@ public class ComponentEditorInputFactory implements IElementFactory {
 		memento.putString(TAG_COUNT, count);
 		for (int i = 0; i < input.getEditors().length; i++) {
 			memento.putString(TAG_EDITOR + i, input.getEditors()[i]);
-			IFile file = ((FileEditorInput) input.getInput()[i]).getFile();
+			IFile file = ((ComponentEditorFileEditorInput) input.getInput()[i]).getFile();
 			memento.putString(TAG_INPUT + i, file.getFullPath().toString());
 		}
 		if (input.isDisplayApiPartOnReveal()) {

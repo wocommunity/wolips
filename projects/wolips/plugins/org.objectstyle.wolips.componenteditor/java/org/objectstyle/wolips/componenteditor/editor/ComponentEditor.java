@@ -90,7 +90,6 @@ public class ComponentEditor extends ComponentEditorPart implements IGotoMarker 
 	}
 
 	public void gotoMarker(IMarker marker) {
-		ComponenteditorPlugin.getDefault().log(marker);
 		IResource resource = marker.getResource();
 		if(resource == null) {
 			return;
