@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: WPLips TPTP Launching Plug-in
+Bundle-Name: WOLips TPTP Launching Plug-in
 Bundle-SymbolicName: org.objectstyle.wolips.tptp.launching; singleton:=true
 Bundle-Version: 1.0.6
 Bundle-Activator: org.objectstyle.wolips.tptp.launching.TPTPLaunchingPlugin
