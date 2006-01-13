@@ -47,7 +47,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorMatchingStrategy;
 import org.eclipse.ui.IEditorReference;
-import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.ide.ResourceUtil;
 import org.eclipse.ui.part.FileEditorInput;
 import org.objectstyle.wolips.componenteditor.ComponenteditorPlugin;
@@ -85,7 +85,11 @@ public class ComponentEditorMatchingStrategy implements IEditorMatchingStrategy 
 		}
 //		IEditorInput editorReferenceEditorInput = null;
 		//expensive: call it as late as possible
-		ComponentEditorInput componentEditorInput = ((ComponentEditorPart)editorReference.getPart(false)).componentEditorInput;
+		IWorkbenchPart workbenchPart = editorReference.getPart(true);
+		if(workbenchPart == null) {
+			return false;
+		}
+		ComponentEditorInput componentEditorInput = ((ComponentEditorPart)workbenchPart).componentEditorInput;
 //		if(editorReferenceEditorInput == null) {
 //			return false;
 //		}
