@@ -3,7 +3,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0
  * 
- * Copyright (c) 2005 The ObjectStyle Group and individual authors of the
+ * Copyright (c) 2005 - 2006 The ObjectStyle Group and individual authors of the
  * software. All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -69,9 +69,9 @@ import org.objectstyle.wolips.components.editor.IWebobjectTagListener;
 import org.objectstyle.wolips.components.editor.IWodDocumentProvider;
 import org.objectstyle.wolips.htmleditor.HtmleditorPlugin;
 import org.objectstyle.wolips.locate.LocateException;
+import org.objectstyle.wolips.locate.LocatePlugin;
 import org.objectstyle.wolips.locate.result.LocalizedComponentsLocateResult;
 import org.objectstyle.wolips.wodclipse.WodclipsePlugin;
-import org.objectstyle.wolips.wodclipse.wod.model.WodModelUtils;
 import org.objectstyle.wolips.wodclipse.wod.parser.ElementNameRule;
 import org.objectstyle.wolips.wodclipse.wod.parser.RulePosition;
 import org.objectstyle.wolips.wodclipse.wod.parser.WodScanner;
@@ -143,7 +143,7 @@ public class WodEditor extends TextEditor implements IEmbeddedEditor, IWebobject
 
   public LocalizedComponentsLocateResult getComponentsLocateResults() throws CoreException, LocateException {
     if (myComponentsLocateResults == null) {
-      myComponentsLocateResults = WodModelUtils.findComponents((IFileEditorInput)myInput);
+      myComponentsLocateResults = LocatePlugin.getDefault().getLocalizedComponentsLocateResult(((IFileEditorInput)myInput).getFile());
     }
     return myComponentsLocateResults;
   }

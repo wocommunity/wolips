@@ -2,7 +2,7 @@
  *
  * The ObjectStyle Group Software License, Version 1.0
  *
- * Copyright (c) 2005 The ObjectStyle Group,
+ * Copyright (c) 2005 - 2006 The ObjectStyle Group,
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -55,7 +55,13 @@
  */
 package org.objectstyle.wolips.locate;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.objectstyle.wolips.core.runtime.AbstractCorePlugin;
+import org.objectstyle.wolips.locate.cache.ComponentLocateCache;
+import org.objectstyle.wolips.locate.result.LocalizedComponentsLocateResult;
+import org.objectstyle.wolips.locate.scope.ComponentLocateScope;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -65,6 +71,8 @@ public class LocatePlugin extends AbstractCorePlugin {
 	// The shared instance.
 	private static LocatePlugin plugin;
 
+	private ComponentLocateCache componentsLocateCache;
+
 	/**
 	 * The constructor.
 	 */
@@ -73,11 +81,18 @@ public class LocatePlugin extends AbstractCorePlugin {
 		plugin = this;
 	}
 
-	/**
-	 * This method is called when the plug-in is stopped
-	 */
+	public void start(BundleContext context) throws Exception {
+		super.start(context);
+		componentsLocateCache = new ComponentLocateCache();
+		ResourcesPlugin.getWorkspace().addResourceChangeListener(
+				componentsLocateCache);
+	}
+
 	public void stop(BundleContext context) throws Exception {
 		super.stop(context);
+		ResourcesPlugin.getWorkspace().addResourceChangeListener(
+				componentsLocateCache);
+		componentsLocateCache = null;
 		plugin = null;
 	}
 
@@ -88,4 +103,35 @@ public class LocatePlugin extends AbstractCorePlugin {
 		return plugin;
 	}
 
+	public LocalizedComponentsLocateResult getLocalizedComponentsLocateResult(
+			IFile file) throws CoreException, LocateException {
+		LocalizedComponentsLocateResult localizedComponentsLocateResult = componentsLocateCache
+				.getLocalizedComponentsLocateResult(file);
+		if (localizedComponentsLocateResult != null) {
+			return localizedComponentsLocateResult;
+		}
+		ComponentLocateScope componentLocateScope = ComponentLocateScope
+				.createLocateScope(file);
+		localizedComponentsLocateResult = new LocalizedComponentsLocateResult();
+		Locate locate = new Locate(componentLocateScope,
+				localizedComponentsLocateResult);
+		locate.locate();
+		if (localizedComponentsLocateResult != null) {
+			componentsLocateCache.addToCache(file,
+					localizedComponentsLocateResult);
+		}
+		return localizedComponentsLocateResult;
+	}
+
+	public String fileNameWithoutExtension(IFile file) {
+		String fileName = file.getName();
+		String fileNameWithoutExtension;
+		int dotIndex = fileName.indexOf('.');
+		if (dotIndex != -1) {
+			fileNameWithoutExtension = fileName.substring(0, dotIndex);
+		} else {
+			fileNameWithoutExtension = fileName;
+		}
+		return fileNameWithoutExtension;
+	}
 }

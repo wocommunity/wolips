@@ -3,7 +3,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0
  * 
- * Copyright (c) 2005 The ObjectStyle Group and individual authors of the
+ * Copyright (c) 2005 - 2006 The ObjectStyle Group and individual authors of the
  * software. All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -45,7 +45,6 @@ package org.objectstyle.wolips.components.input;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.ui.JavaUI;
 import org.eclipse.ui.IEditorInput;
@@ -54,10 +53,9 @@ import org.eclipse.ui.IPersistableElement;
 import org.eclipse.ui.part.MultiEditorInput;
 import org.objectstyle.wolips.components.ComponentsPlugin;
 import org.objectstyle.wolips.editors.EditorsPlugin;
-import org.objectstyle.wolips.locate.Locate;
 import org.objectstyle.wolips.locate.LocateException;
+import org.objectstyle.wolips.locate.LocatePlugin;
 import org.objectstyle.wolips.locate.result.LocalizedComponentsLocateResult;
-import org.objectstyle.wolips.locate.scope.ComponentLocateScope;
 
 public class ComponentEditorInput extends MultiEditorInput implements
 		IPersistableElement {
@@ -91,8 +89,8 @@ public class ComponentEditorInput extends MultiEditorInput implements
 			allInput = new ComponentEditorFileEditorInput[4];
 		}
 		ids[0] = JavaUI.ID_CU_EDITOR;
-		allInput[0] = new ComponentEditorFileEditorInput(localizedComponentsLocateResult
-				.getDotJava());
+		allInput[0] = new ComponentEditorFileEditorInput(
+				localizedComponentsLocateResult.getDotJava());
 		ids[1] = EditorsPlugin.HTMLEditorID;
 		IFolder folder = localizedComponentsLocateResult.getComponents()[0];
 		IFile htmlFile = LocalizedComponentsLocateResult.getHtml(folder);
@@ -102,12 +100,12 @@ public class ComponentEditorInput extends MultiEditorInput implements
 		allInput[2] = new ComponentEditorFileEditorInput(wodFile);
 		if (localizedComponentsLocateResult.getDotApi() != null) {
 			ids[3] = EditorsPlugin.ApiEditorID;
-			allInput[3] = new ComponentEditorFileEditorInput(localizedComponentsLocateResult
-					.getDotApi());
+			allInput[3] = new ComponentEditorFileEditorInput(
+					localizedComponentsLocateResult.getDotApi());
 		}
 		ComponentEditorInput input = new ComponentEditorInput(ids, allInput);
 		input.localizedComponentsLocateResult = localizedComponentsLocateResult;
-		for(int i = 0; i < allInput.length; i++) {
+		for (int i = 0; i < allInput.length; i++) {
 			allInput[i].setComponentEditorInput(input);
 		}
 		return input;
@@ -116,15 +114,11 @@ public class ComponentEditorInput extends MultiEditorInput implements
 	/*
 	 * may return null
 	 */
-	private static ComponentEditorInput create(IProject project, String fileName)
-			throws CoreException {
-		ComponentLocateScope componentLocateScope = new ComponentLocateScope(
-				project, fileName);
-		LocalizedComponentsLocateResult localizedComponentsLocateResult = new LocalizedComponentsLocateResult();
-		Locate locate = new Locate(componentLocateScope,
-				localizedComponentsLocateResult);
+	private static ComponentEditorInput create(IFile file) throws CoreException {
+		LocalizedComponentsLocateResult localizedComponentsLocateResult = null;
 		try {
-			locate.locate();
+			localizedComponentsLocateResult = LocatePlugin.getDefault()
+					.getLocalizedComponentsLocateResult(file);
 		} catch (CoreException e) {
 			ComponentsPlugin.getDefault().log(e);
 			return null;
@@ -146,10 +140,7 @@ public class ComponentEditorInput extends MultiEditorInput implements
 	 */
 	public static ComponentEditorInput createWithDotJava(IFile file)
 			throws CoreException {
-		IProject project = file.getProject();
-		String fileName = file.getName().substring(0,
-				file.getName().length() - 5);
-		ComponentEditorInput input = create(project, fileName);
+		ComponentEditorInput input = create(file);
 		if (input != null) {
 			input.displayJavaPartOnReveal = true;
 		}
@@ -161,10 +152,7 @@ public class ComponentEditorInput extends MultiEditorInput implements
 	 */
 	public static ComponentEditorInput createWithDotHtml(IFile file)
 			throws CoreException {
-		IProject project = file.getProject();
-		String fileName = file.getName().substring(0,
-				file.getName().length() - 5);
-		ComponentEditorInput input = create(project, fileName);
+		ComponentEditorInput input = create(file);
 		if (input != null) {
 			input.displayHtmlPartOnReveal = true;
 		}
@@ -176,10 +164,7 @@ public class ComponentEditorInput extends MultiEditorInput implements
 	 */
 	public static ComponentEditorInput createWithDotWod(IFile file)
 			throws CoreException {
-		IProject project = file.getProject();
-		String fileName = file.getName().substring(0,
-				file.getName().length() - 4);
-		ComponentEditorInput input = create(project, fileName);
+		ComponentEditorInput input = create(file);
 		if (input != null) {
 			input.displayWodPartOnReveal = true;
 		}
@@ -191,10 +176,7 @@ public class ComponentEditorInput extends MultiEditorInput implements
 	 */
 	public static ComponentEditorInput createWithDotApi(IFile file)
 			throws CoreException {
-		IProject project = file.getProject();
-		String fileName = file.getName().substring(0,
-				file.getName().length() - 4);
-		ComponentEditorInput input = create(project, fileName);
+		ComponentEditorInput input = create(file);
 		input.displayApiPartOnReveal = true;
 		return input;
 	}
@@ -204,10 +186,7 @@ public class ComponentEditorInput extends MultiEditorInput implements
 	 */
 	public static ComponentEditorInput createWithDotWoo(IFile file)
 			throws CoreException {
-		IProject project = file.getProject();
-		String fileName = file.getName().substring(0,
-				file.getName().length() - 4);
-		ComponentEditorInput input = create(project, fileName);
+		ComponentEditorInput input = create(file);
 		if (input != null) {
 			input.displayWooPartOnReveal = true;
 		}

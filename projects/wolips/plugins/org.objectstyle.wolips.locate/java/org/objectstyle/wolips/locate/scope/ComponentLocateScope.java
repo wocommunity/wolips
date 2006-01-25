@@ -2,7 +2,7 @@
  *
  * The ObjectStyle Group Software License, Version 1.0
  *
- * Copyright (c) 2005 The ObjectStyle Group,
+ * Copyright (c) 2005 - 2006 The ObjectStyle Group,
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -57,6 +57,7 @@ package org.objectstyle.wolips.locate.scope;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.objectstyle.wolips.locate.LocatePlugin;
 
 public class ComponentLocateScope extends DefaultLocateScope {
 
@@ -65,19 +66,11 @@ public class ComponentLocateScope extends DefaultLocateScope {
 				new String[] { name + ".wo" });
 	}
 
-  public static ComponentLocateScope createLocateScope(IProject _project, String _fileNamePossiblyWithExtension) {
-    String fileNameWithoutExtension;
-    int dotIndex = _fileNamePossiblyWithExtension.indexOf('.');
-    if (dotIndex != -1) {
-      fileNameWithoutExtension = _fileNamePossiblyWithExtension.substring(0, dotIndex);
-    }
-    else {
-      fileNameWithoutExtension = _fileNamePossiblyWithExtension;
-    }
-    return new ComponentLocateScope(_project, fileNameWithoutExtension);
-  }
+	public static ComponentLocateScope createLocateScope(IFile file) {
+		String fileNameWithoutExtension = LocatePlugin.getDefault()
+				.fileNameWithoutExtension(file);
 
-  public static ComponentLocateScope createLocateScope(IFile _file) {
-    return ComponentLocateScope.createLocateScope(_file.getProject(), _file.getName());
-  }
+		return new ComponentLocateScope(file.getProject(),
+				fileNameWithoutExtension);
+	}
 }

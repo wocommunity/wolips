@@ -2,7 +2,7 @@
  *
  * The ObjectStyle Group Software License, Version 1.0
  *
- * Copyright (c) 2005 The ObjectStyle Group,
+ * Copyright (c) 2005 - 2006 The ObjectStyle Group,
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -70,13 +70,15 @@ import org.objectstyle.wolips.locate.LocateException;
 
 public class LocalizedComponentsLocateResult extends AbstractLocateResult {
 	private ArrayList components = new ArrayList();
-  
+
 	private IFile dotJava;
-  private IType dotJavaType;
+
+	private IType dotJavaType;
 
 	private IFile dotApi;
-  
-  public LocalizedComponentsLocateResult() {
+
+	public LocalizedComponentsLocateResult() {
+		super();
 	}
 
 	public void add(IResource resource) throws LocateException {
@@ -119,80 +121,82 @@ public class LocalizedComponentsLocateResult extends AbstractLocateResult {
 		return dotJava;
 	}
 
-  public IType getDotJavaType() throws JavaModelException {
-    if (dotJavaType == null) {
-      IFile javaFile = getDotJava();
-      if (javaFile != null) {
-        IJavaElement javaElement = JavaCore.create(javaFile);
-        if (javaElement instanceof ICompilationUnit) {
-          IType[] types = ((ICompilationUnit)javaElement).getTypes();
-          // NTS: What do we do about multiple types in a file??
-          if (types.length > 0) {
-            dotJavaType = types[0];
-          }
-        }
-      }
-    }
-    return dotJavaType;
-  }
+	public IType getDotJavaType() throws JavaModelException {
+		if (dotJavaType == null) {
+			IFile javaFile = getDotJava();
+			if (javaFile != null) {
+				IJavaElement javaElement = JavaCore.create(javaFile);
+				if (javaElement instanceof ICompilationUnit) {
+					IType[] types = ((ICompilationUnit) javaElement).getTypes();
+					// NTS: What do we do about multiple types in a file??
+					if (types.length > 0) {
+						dotJavaType = types[0];
+					}
+				}
+			}
+		}
+		return dotJavaType;
+	}
 
-  public IFile getFirstHtmlFile() throws CoreException {
-    IFile htmlFile;
-    if (components.size() > 0) {
-      IFolder componentFolder = (IFolder)components.get(0);
-      htmlFile = LocalizedComponentsLocateResult.getHtml(componentFolder);
-    }
-    else {
-      htmlFile = null;
-    }
-    return htmlFile;
-  }
+	public IFile getFirstHtmlFile() throws CoreException {
+		IFile htmlFile;
+		if (components.size() > 0) {
+			IFolder componentFolder = (IFolder) components.get(0);
+			htmlFile = LocalizedComponentsLocateResult.getHtml(componentFolder);
+		} else {
+			htmlFile = null;
+		}
+		return htmlFile;
+	}
 
-  public IFile getFirstWodFile() throws CoreException {
-    IFile wodFile;
-    if (components.size() > 0) {
-      IFolder componentFolder = (IFolder)components.get(0);
-      wodFile = LocalizedComponentsLocateResult.getWod(componentFolder);
-    }
-    else {
-      wodFile = null;
-    }
-    return wodFile;
-  }
+	public IFile getFirstWodFile() throws CoreException {
+		IFile wodFile;
+		if (components.size() > 0) {
+			IFolder componentFolder = (IFolder) components.get(0);
+			wodFile = LocalizedComponentsLocateResult.getWod(componentFolder);
+		} else {
+			wodFile = null;
+		}
+		return wodFile;
+	}
 
-  public IFile getFirstWooFile() throws CoreException {
-    IFile wooFile;
-    if (components.size() > 0) {
-      IFolder componentFolder = (IFolder)components.get(0);
-      wooFile = LocalizedComponentsLocateResult.getWoo(componentFolder);
-    }
-    else {
-      wooFile = null;
-    }
-    return wooFile;
-  }
-  
+	public IFile getFirstWooFile() throws CoreException {
+		IFile wooFile;
+		if (components.size() > 0) {
+			IFolder componentFolder = (IFolder) components.get(0);
+			wooFile = LocalizedComponentsLocateResult.getWoo(componentFolder);
+		} else {
+			wooFile = null;
+		}
+		return wooFile;
+	}
+
 	public static IFile getHtml(IFolder component) throws CoreException {
-		return LocalizedComponentsLocateResult.getMemberWithExtension(component, "html");
+		return LocalizedComponentsLocateResult.getMemberWithExtension(
+				component, "html");
 	}
-	
+
 	public static IFile getWod(IFolder component) throws CoreException {
-		return LocalizedComponentsLocateResult.getMemberWithExtension(component, "wod");
+		return LocalizedComponentsLocateResult.getMemberWithExtension(
+				component, "wod");
 	}
-	
+
 	public static IFile getWoo(IFolder component) throws CoreException {
-		return LocalizedComponentsLocateResult.getMemberWithExtension(component, "woo");
+		return LocalizedComponentsLocateResult.getMemberWithExtension(
+				component, "woo");
 	}
-	
-	private static IFile getMemberWithExtension(IFolder folder, String extension) throws CoreException {
+
+	private static IFile getMemberWithExtension(IFolder folder, String extension)
+			throws CoreException {
 		IResource[] member = folder.members();
 		for (int i = 0; i < member.length; i++) {
 			IResource resource = member[i];
 			String fileExtension = resource.getFileExtension();
-			if(resource.getType() == IResource.FILE && fileExtension != null && fileExtension.equalsIgnoreCase(extension)) {
-				return (IFile)resource;
+			if (resource.getType() == IResource.FILE && fileExtension != null
+					&& fileExtension.equalsIgnoreCase(extension)) {
+				return (IFile) resource;
 			}
-			
+
 		}
 		return null;
 	}

@@ -3,7 +3,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0
  * 
- * Copyright (c) 2005 The ObjectStyle Group and individual authors of the
+ * Copyright (c) 2005 - 2006 The ObjectStyle Group and individual authors of the
  * software. All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -325,11 +325,4 @@ public class WodModelUtils {
     return isBindingValueKeyPath;
   }
 
-  public static LocalizedComponentsLocateResult findComponents(IFileEditorInput _editorInput) throws CoreException, LocateException {
-    LocalizedComponentsLocateResult localizedComponentsLocateResult = new LocalizedComponentsLocateResult();
-    ComponentLocateScope componentLocateScope = ComponentLocateScope.createLocateScope(_editorInput.getFile());
-    Locate locate = new Locate(componentLocateScope, localizedComponentsLocateResult);
-    locate.locate();
-    return localizedComponentsLocateResult;
-  }
 }
