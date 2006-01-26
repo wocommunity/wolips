@@ -3,7 +3,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0
  * 
- * Copyright (c) 2005 - 2006 The ObjectStyle Group and individual authors of the
+ * Copyright (c) 2006 The ObjectStyle Group and individual authors of the
  * software. All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -46,16 +46,16 @@ package org.objectstyle.wolips.componenteditor.editormenu;
 import org.eclipse.jface.action.IAction;
 import org.objectstyle.wolips.componenteditor.editor.ComponentEditor;
 
-public class SwitchToApiEditorActionDelegate extends AbstractSwitchToActionDelegate {
+public class SwitchToPreviewActionDelegate extends AbstractSwitchToActionDelegate {
 
-	public SwitchToApiEditorActionDelegate() {
+	public SwitchToPreviewActionDelegate() {
 		super();
 	}
 
 	public void run(IAction action) {
 		ComponentEditor componentEditor = this.getComponentEditor();
 		if(componentEditor != null) {
-			componentEditor.switchToApi();
+			componentEditor.switchToPreview();
 		}
 		
 	}

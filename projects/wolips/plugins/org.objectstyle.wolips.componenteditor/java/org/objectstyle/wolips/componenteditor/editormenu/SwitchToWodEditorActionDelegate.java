@@ -3,7 +3,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0
  * 
- * Copyright (c) 2005 The ObjectStyle Group and individual authors of the
+ * Copyright (c) 2005 - 2006 The ObjectStyle Group and individual authors of the
  * software. All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -44,32 +44,20 @@
 package org.objectstyle.wolips.componenteditor.editormenu;
 
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.ui.IEditorActionDelegate;
-import org.eclipse.ui.IEditorPart;
-import org.objectstyle.wolips.componenteditor.ComponenteditorPlugin;
 import org.objectstyle.wolips.componenteditor.editor.ComponentEditor;
 
-public class SwitchToWodEditorActionDelegate implements IEditorActionDelegate {
+public class SwitchToWodEditorActionDelegate extends
+		AbstractSwitchToActionDelegate {
 
 	public SwitchToWodEditorActionDelegate() {
 		super();
 	}
 
-	public void setActiveEditor(IAction action, IEditorPart targetEditor) {
-		// nothing to do
-	}
-
 	public void run(IAction action) {
-		ComponentEditor componentEditor = ComponenteditorPlugin.getDefault().getActiveComponentEditor();
-		if(componentEditor != null) {
+		ComponentEditor componentEditor = this.getComponentEditor();
+		if (componentEditor != null) {
 			componentEditor.switchToWod();
 		}
-		
-	}
 
-	public void selectionChanged(IAction action, ISelection selection) {
-		// nothing to do
 	}
-
 }

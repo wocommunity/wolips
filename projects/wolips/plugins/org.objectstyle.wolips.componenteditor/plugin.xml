@@ -64,6 +64,12 @@
                 id="org.objectstyle.wolips.componenteditor.editors.towod">
         </command>
         <command
+                name="Switch to Preview"
+                description="Switch to Preview"
+                categoryId="org.objectstyle.wolips.componenteditor.componenteditor"
+                id="org.objectstyle.wolips.componenteditor.editors.topreview">
+        </command>
+        <command
                 name="Switch to Api Editor"
                 description="Switch to Api Editor"
                 categoryId="org.objectstyle.wolips.componenteditor.componenteditor"
@@ -73,162 +79,71 @@
     <extension point="org.eclipse.ui.bindings">
 		<key
         		commandId="org.objectstyle.wolips.componenteditor.editors.tojava"
-        		contextId="org.eclipse.ui.textEditorScope"
+        		contextId="org.eclipse.ui.contexts.window"
         		schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
         		sequence="M1+M3+1"/>
 		<key
         		commandId="org.objectstyle.wolips.componenteditor.editors.tohtml"
-        		contextId="org.eclipse.ui.textEditorScope"
+        		contextId="org.eclipse.ui.contexts.window"
         		schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
         		sequence="M1+M3+2"/>
 		<key
         		commandId="org.objectstyle.wolips.componenteditor.editors.towod"
-        		contextId="org.eclipse.ui.textEditorScope"
+        		contextId="org.eclipse.ui.contexts.window"
         		schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
         		sequence="M1+M3+3"/>
 		<key
-        		commandId="org.objectstyle.wolips.componenteditor.editors.toapi"
-        		contextId="org.eclipse.ui.textEditorScope"
+        		commandId="org.objectstyle.wolips.componenteditor.editors.topreview"
+        		contextId="org.eclipse.ui.contexts.window"
         		schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
         		sequence="M1+M3+4"/>
+		<key
+        		commandId="org.objectstyle.wolips.componenteditor.editors.toapi"
+        		contextId="org.eclipse.ui.contexts.window"
+        		schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+        		sequence="M1+M3+5"/>
 	</extension>
 	
 	<extension point = "org.eclipse.ui.editorActions">
       <editorContribution 
-         id="org.objectstyle.wolips.componenteditor.componenteditor.javacontribution" 
-         targetID="org.eclipse.jdt.ui.CompilationUnitEditor">        
-           <menu id="ComponentEditorJava"
+         id="org.objectstyle.wolips.componenteditor.editorActionsContribution" 
+         targetID="org.objectstyle.wolips.wodclipse.mpe.ComponentEditor">        
+           <menu id="org.objectstyle.wolips.componenteditor.navigateMenuContribution"
 			label="&amp;Component Editor" 
-             path="edit/additions">
+             path="navigate/additions">
  				<separator name="group1"/>
  				<separator name="group2"/>
 		  </menu>
          <action
                class="org.objectstyle.wolips.componenteditor.editormenu.SwitchToApiEditorActionDelegate"
                definitionId="org.objectstyle.wolips.componenteditor.editors.toapi"
-               id="org.objectstyle.wolips.componenteditor.editors.switchfromjavatoapi"
+               id="org.objectstyle.wolips.componenteditor.editors.switchtoapi"
                label="Switch to Api Editor"
-               menubarPath="edit/ComponentEditorJava/group1"/>
+               menubarPath="navigate/org.objectstyle.wolips.componenteditor.navigateMenuContribution/group1"/>
+         <action
+               class="org.objectstyle.wolips.componenteditor.editormenu.SwitchToPreviewActionDelegate"
+               definitionId="org.objectstyle.wolips.componenteditor.editors.topreview"
+               id="org.objectstyle.wolips.componenteditor.editors.switchtopreview"
+               label="Switch to Preview"
+               menubarPath="navigate/org.objectstyle.wolips.componenteditor.navigateMenuContribution/group1"/>
          <action
                class="org.objectstyle.wolips.componenteditor.editormenu.SwitchToWodEditorActionDelegate"
                definitionId="org.objectstyle.wolips.componenteditor.editors.towod"
-               id="org.objectstyle.wolips.componenteditor.editors.switchfromjavatowod"
+               id="org.objectstyle.wolips.componenteditor.editors.switchtowod"
                label="Switch to Wod Editor"
-               menubarPath="edit/ComponentEditorJava/group1"/>
+               menubarPath="navigate/org.objectstyle.wolips.componenteditor.navigateMenuContribution/group1"/>
          <action
                class="org.objectstyle.wolips.componenteditor.editormenu.SwitchToHtmlEditorActionDelegate"
                definitionId="org.objectstyle.wolips.componenteditor.editors.tohtml"
-               id="org.objectstyle.wolips.componenteditor.editors.switchfromjavatohtml"
+               id="org.objectstyle.wolips.componenteditor.editors.switchtohtml"
                label="Switch to Html Editor"
-               menubarPath="edit/ComponentEditorJava/group1"/> 
+               menubarPath="navigate/org.objectstyle.wolips.componenteditor.navigateMenuContribution/group1"/>
          <action
                class="org.objectstyle.wolips.componenteditor.editormenu.SwitchToJavaEditorActionDelegate"
                definitionId="org.objectstyle.wolips.componenteditor.editors.tojava"
-               id="org.objectstyle.wolips.componenteditor.editors.switchfromjavatojava"
+               id="org.objectstyle.wolips.componenteditor.editors.switchtojava"
                label="Switch to Java Editor"
-               menubarPath="edit/ComponentEditorJava/group1"/>
-      </editorContribution>
-      <editorContribution 
-         id="org.objectstyle.wolips.componenteditor.componenteditor.htmlcontribution" 
-         targetID="org.objectstyle.wolips.wodclipse.html.HtmlEditor">        
-           <menu id="ComponentEditorHtml"
-			label="&amp;Component Editor" 
-             path="edit/additions">
- 				<separator name="group1"/>
- 				<separator name="group2"/>
-		  </menu>
-         <action
-               class="org.objectstyle.wolips.componenteditor.editormenu.SwitchToApiEditorActionDelegate"
-               definitionId="org.objectstyle.wolips.componenteditor.editors.toapi"
-               id="org.objectstyle.wolips.componenteditor.editors.switchfromhtmltoapi"
-               label="Switch to Api Editor"
-               menubarPath="edit/ComponentEditorHtml/group1"/>
-         <action
-               class="org.objectstyle.wolips.componenteditor.editormenu.SwitchToWodEditorActionDelegate"
-               definitionId="org.objectstyle.wolips.componenteditor.editors.towod"
-               id="org.objectstyle.wolips.componenteditor.editors.switchfromhtmltowod"
-               label="Switch to Wod Editor"
-               menubarPath="edit/ComponentEditorHtml/group1"/>
-         <action
-               class="org.objectstyle.wolips.componenteditor.editormenu.SwitchToHtmlEditorActionDelegate"
-               definitionId="org.objectstyle.wolips.componenteditor.editors.tohtml"
-               id="org.objectstyle.wolips.componenteditor.editors.switchfromhtmltohtml"
-               label="Switch to HTML Editor"
-               menubarPath="edit/ComponentEditorHtml/group1"/>
-         <action
-               class="org.objectstyle.wolips.componenteditor.editormenu.SwitchToJavaEditorActionDelegate"
-               definitionId="org.objectstyle.wolips.componenteditor.editors.tojava"
-               id="org.objectstyle.wolips.componenteditor.editors.switchfromhtmltojava"
-               label="Switch to Java Editor"
-               menubarPath="edit/ComponentEditorHtml/group1"/>
-      </editorContribution>
-      <editorContribution 
-         id="org.objectstyle.wolips.componenteditor.componenteditor.wodcontribution" 
-         targetID="org.objectstyle.wolips.wodclipse.wod.WodEditor">        
-           <menu id="ComponentEditorWod"
-			label="&amp;Component Editor" 
-             path="edit/additions">
- 				<separator name="group1"/>
- 				<separator name="group2"/>
-		  </menu>
-         <action
-               class="org.objectstyle.wolips.componenteditor.editormenu.SwitchToApiEditorActionDelegate"
-               definitionId="org.objectstyle.wolips.componenteditor.editors.toapi"
-               id="org.objectstyle.wolips.componenteditor.editors.switchfromwodtoapi"
-               label="Switch to Api Editor"
-               menubarPath="edit/ComponentEditorWod/group1"/> 
-         <action
-               class="org.objectstyle.wolips.componenteditor.editormenu.SwitchToWodEditorActionDelegate"
-               definitionId="org.objectstyle.wolips.componenteditor.editors.towod"
-               id="org.objectstyle.wolips.componenteditor.editors.switchfromwodtowod"
-               label="Switch to Wod Editor"
-               menubarPath="edit/ComponentEditorWod/group1"/> 
-         <action
-               class="org.objectstyle.wolips.componenteditor.editormenu.SwitchToHtmlEditorActionDelegate"
-               definitionId="org.objectstyle.wolips.componenteditor.editors.tohtml"
-               id="org.objectstyle.wolips.componenteditor.editors.switchfromwodtohtml"
-               label="Switch to Html Editor"
-               menubarPath="edit/ComponentEditorWod/group1"/> 
-         <action
-               class="org.objectstyle.wolips.componenteditor.editormenu.SwitchToJavaEditorActionDelegate"
-               definitionId="org.objectstyle.wolips.componenteditor.editors.tojava"
-               id="org.objectstyle.wolips.componenteditor.editors.switchfromwodtojava"
-               label="Switch to Java Editor"
-               menubarPath="edit/ComponentEditorWod/group1"/>
-      </editorContribution>
- 	  <editorContribution 
-         id="org.objectstyle.wolips.componenteditor.componenteditor.apicontribution" 
-         targetID="org.objectstyle.wolips.wodclipse.api.ApiEditor">        
-           <menu id="ComponentEditorApi"
-			label="&amp;Component Editor" 
-             path="edit/additions">
- 				<separator name="group1"/>
- 				<separator name="group2"/>
-		  </menu>
-         <action
-               class="org.objectstyle.wolips.componenteditor.editormenu.SwitchToApiEditorActionDelegate"
-               definitionId="org.objectstyle.wolips.componenteditor.editors.toapi"
-               id="org.objectstyle.wolips.componenteditor.editors.switchfromapitoapi"
-               label="Switch to Api Editor"
-               menubarPath="edit/ComponentEditorApi/group1"/> 
-         <action
-               class="org.objectstyle.wolips.componenteditor.editormenu.SwitchToWodEditorActionDelegate"
-               definitionId="org.objectstyle.wolips.componenteditor.editors.towod"
-               id="org.objectstyle.wolips.componenteditor.editors.switchfromapitowod"
-               label="Switch to Wod Editor"
-               menubarPath="edit/ComponentEditorApi/group1"/> 
-         <action
-               class="org.objectstyle.wolips.componenteditor.editormenu.SwitchToHtmlEditorActionDelegate"
-               definitionId="org.objectstyle.wolips.componenteditor.editors.tohtml"
-               id="org.objectstyle.wolips.componenteditor.editors.switchfromapitohtml"
-               label="Switch to Html Editor"
-               menubarPath="edit/ComponentEditorApi/group1"/> 
-         <action
-               class="org.objectstyle.wolips.componenteditor.editormenu.SwitchToJavaEditorActionDelegate"
-               definitionId="org.objectstyle.wolips.componenteditor.editors.tojava"
-               id="org.objectstyle.wolips.componenteditor.editors.switchfromapitojava"
-               label="Switch to Java Editor"
-               menubarPath="edit/ComponentEditorApi/group1"/>
-      </editorContribution>
- 	</extension>
+               menubarPath="navigate/org.objectstyle.wolips.componenteditor.navigateMenuContribution/group1"/>
+		</editorContribution>
+	</extension>
 </plugin>

@@ -45,9 +45,7 @@ package org.objectstyle.wolips.componenteditor;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.ui.forms.FormColors;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.objectstyle.wolips.componenteditor.editor.ComponentEditor;
 import org.objectstyle.wolips.ui.plugins.AbstractWOLipsUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -60,13 +58,9 @@ public class ComponenteditorPlugin extends AbstractWOLipsUIPlugin {
 	// The shared instance.
 	private static ComponenteditorPlugin plugin;
 
-	private FormColors formColors;
-	
 	public static String ComponentEditorID = "org.objectstyle.wolips.wodclipse.mpe.ComponentEditor";
 	
 	public static String WOOEditorID = "org.eclipse.ui.DefaultTextEditor";
-	
-	private ComponentEditor activeComponentEditor;
 
 	/**
 	 * The constructor.
@@ -87,16 +81,8 @@ public class ComponenteditorPlugin extends AbstractWOLipsUIPlugin {
 	 * This method is called when the plug-in is stopped
 	 */
 	public void stop(BundleContext context) throws Exception {
-		try {
-			if (formColors != null) {
-				formColors.dispose();
-				formColors = null;
-			}
-		} finally {
-			super.stop(context);
-		}
+		super.stop(context);
 		plugin = null;
-		activeComponentEditor = null;
 	}
 	/**
 	 * Returns the shared instance.
@@ -115,19 +101,11 @@ public class ComponenteditorPlugin extends AbstractWOLipsUIPlugin {
 	 */
 	public static ImageDescriptor getImageDescriptor(String path) {
 		return AbstractUIPlugin.imageDescriptorFromPlugin(
-				"org.objectstyle.wolips.wodclipse", path);
+				"org.objectstyle.wolips.componenteditor", path);
 	}
 	
 	public Image getImage(String key) {
 		return getImageRegistry().get(key);
-	}
-	
-	public ComponentEditor getActiveComponentEditor() {
-		return activeComponentEditor;
-	}
-
-	public void setActiveComponentEditor(ComponentEditor activeComponentEditor) {
-		this.activeComponentEditor = activeComponentEditor;
 	}
 	
 }

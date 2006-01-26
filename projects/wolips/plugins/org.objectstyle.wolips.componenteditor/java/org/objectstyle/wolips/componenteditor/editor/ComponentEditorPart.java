@@ -424,6 +424,10 @@ public class ComponentEditorPart extends MultiPageEditorPart {
 		switchToPage(1);
 	}
 
+	public void switchToPreview() {
+		switchToPage(2);
+	}
+
 	public void switchToApi() {
 		if (apiEditor == null) {
 			return;
