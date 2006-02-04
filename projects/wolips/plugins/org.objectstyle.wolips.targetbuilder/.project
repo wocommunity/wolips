@@ -3,9 +3,6 @@
 	<name>org.objectstyle.wolips.targetbuilder</name>
 	<comment></comment>
 	<projects>
-		<project>org.objectstyle.wolips</project>
-		<project>org.objectstyle.wolips.cayenne</project>
-		<project>org.objectstyle.wolips.datasets</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
