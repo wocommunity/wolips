@@ -70,6 +70,9 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IEditorInput;
@@ -584,5 +587,21 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 	 */
 	public ILogger getPluginLogger() {
 		return this.pluginLogger;
+	}
+	
+	
+	/**
+	 * Returns the selection of the ActiveWorkbenchWindow
+	 * @return the configured selection
+	 */
+	public final static IStructuredSelection getActiveWorkbenchWindowSelection() {
+		IWorkbenchWindow window= WorkbenchUtilitiesPlugin.getActiveWorkbenchWindow();
+		if (window != null) {
+			ISelection selection= window.getSelectionService().getSelection();
+			if (selection instanceof IStructuredSelection) {
+				return (IStructuredSelection) selection;
+			}
+		}
+		return StructuredSelection.EMPTY;
 	}
 }
