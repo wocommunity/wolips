@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 The ObjectStyle Group 
+ * Copyright (c) 2002 - 2006 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -54,18 +54,24 @@
  *
  */
 package org.objectstyle.wolips.wizards;
+
 import java.text.MessageFormat;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+
 /**
  * @author uli
  */
 public class Messages {
 	private static final String RESOURCE_BUNDLE = Messages.class.getName();
+
 	private static ResourceBundle fgResourceBundle = ResourceBundle
 			.getBundle(RESOURCE_BUNDLE);
+
 	private Messages() {
+		super();
 	}
+
 	public static String getString(String key) {
 		try {
 			return fgResourceBundle.getString(key);
@@ -73,6 +79,7 @@ public class Messages {
 			return '!' + key + '!';
 		}
 	}
+
 	/**
 	 * Gets a string from the resource bundle and formats it with the argument
 	 * 
@@ -80,8 +87,9 @@ public class Messages {
 	 *            the string used to get the bundle value, must not be null
 	 */
 	public static String getFormattedString(String key, Object arg) {
-		return MessageFormat.format(getString(key), new Object[]{arg});
+		return MessageFormat.format(getString(key), new Object[] { arg });
 	}
+
 	/**
 	 * Gets a string from the resource bundle and formats it with arguments
 	 */

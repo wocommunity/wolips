@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 - 2004 The ObjectStyle Group 
+ * Copyright (c) 2002 - 2006 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -54,6 +54,7 @@
  *
  */
 package org.objectstyle.wolips.wizards;
+
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 
@@ -66,13 +67,13 @@ import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.objectstyle.wolips.templateengine.TemplateDefinition;
 import org.objectstyle.wolips.templateengine.TemplateEngine;
 import org.objectstyle.wolips.templateengine.TemplateEnginePlugin;
+
 /**
  * @author mnolte
- * @author uli
- * 
- * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates. To enable and disable the creation of
- * type comments go to Window>Preferences>Java>Code Generation.
+ * @author uli To change this generated comment edit the template variable
+ *         "typecomment": Window>Preferences>Java>Templates. To enable and
+ *         disable the creation of type comments go to
+ *         Window>Preferences>Java>Code Generation.
  */
 public class JarProjectWizard extends AbstractProjectWizard {
 	/**
@@ -81,6 +82,7 @@ public class JarProjectWizard extends AbstractProjectWizard {
 	public JarProjectWizard() {
 		super(TemplateEnginePlugin.JarProject);
 	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -89,9 +91,10 @@ public class JarProjectWizard extends AbstractProjectWizard {
 	public String getWindowTitle() {
 		return Messages.getString("JarProjectCreationWizard.title");
 	}
-	
+
 	private class Operation extends WorkspaceModifyOperation {
 		IProject project = null;
+
 		/**
 		 * @param project
 		 */
@@ -99,8 +102,9 @@ public class JarProjectWizard extends AbstractProjectWizard {
 			super();
 			this.project = project;
 		}
+
 		protected void execute(IProgressMonitor monitor) throws CoreException,
-		InvocationTargetException, InterruptedException {
+				InvocationTargetException, InterruptedException {
 
 			String projectName = this.project.getName();
 			String path = this.project.getLocation().toOSString();
@@ -110,12 +114,12 @@ public class JarProjectWizard extends AbstractProjectWizard {
 				src.mkdirs();
 				File bin = new File(path + File.separator + "bin");
 				bin.mkdirs();
-				//project.close(nullProgressMonitor);
+				// project.close(nullProgressMonitor);
 				TemplateEngine templateEngine = new TemplateEngine();
 				try {
 					templateEngine.init();
 				} catch (Exception e) {
-					WizardsPlugin.getDefault().getPluginLogger().log(e);
+					WizardsPlugin.getDefault().log(e);
 					throw new InvocationTargetException(e);
 				}
 				templateEngine.getWolipsContext().setProjectName(projectName);
@@ -133,10 +137,10 @@ public class JarProjectWizard extends AbstractProjectWizard {
 						"jarproject/build.properties.vm", path,
 						"build.properties", "build.properties"));
 				templateEngine.run(new NullProgressMonitor());
-				//project.open(nullProgressMonitor);
-				//RunAnt runAnt = new RunAnt();
-				//runAnt.asAnt(path + File.separator
-				//		+ IWOLipsModel.DEFAULT_BUILD_FILENAME, null, null);
+				// project.open(nullProgressMonitor);
+				// RunAnt runAnt = new RunAnt();
+				// runAnt.asAnt(path + File.separator
+				// + IWOLipsModel.DEFAULT_BUILD_FILENAME, null, null);
 				this.project.refreshLocal(IResource.DEPTH_INFINITE,
 						nullProgressMonitor);
 			} catch (Exception e) {
@@ -144,6 +148,7 @@ public class JarProjectWizard extends AbstractProjectWizard {
 			}
 		}
 	}
+
 	/**
 	 * (non-Javadoc) Method declared on IWizard
 	 * 
@@ -157,10 +162,10 @@ public class JarProjectWizard extends AbstractProjectWizard {
 			try {
 				operation.run(new NullProgressMonitor());
 			} catch (InvocationTargetException e) {
-				WizardsPlugin.getDefault().getPluginLogger().log(e);
+				WizardsPlugin.getDefault().log(e);
 				success = false;
 			} catch (InterruptedException e) {
-				WizardsPlugin.getDefault().getPluginLogger().log(e);
+				WizardsPlugin.getDefault().log(e);
 				success = false;
 			}
 		}

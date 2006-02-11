@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2004 The ObjectStyle Group 
+ * Copyright (c) 2004 - 2006 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -80,7 +80,7 @@ public class UpgradeBuildXML extends AbstractActionOnIResource {
 				return;
 			}
 		} catch (CoreException e) {
-			WizardsPlugin.getDefault().getPluginLogger().log(e);
+			WizardsPlugin.getDefault().log(e);
 		}
 		UpgradeBuildXML.upgradeBuildXml(project);
 	}
@@ -111,7 +111,7 @@ public class UpgradeBuildXML extends AbstractActionOnIResource {
 			project.getIProject().refreshLocal(IResource.DEPTH_INFINITE,
 					new NullProgressMonitor());
 		} catch (Exception e) {
-			WizardsPlugin.getDefault().getPluginLogger().log(e);
+			WizardsPlugin.getDefault().log(e);
 		}
 
 	}

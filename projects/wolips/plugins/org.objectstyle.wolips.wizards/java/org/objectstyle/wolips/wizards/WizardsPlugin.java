@@ -56,125 +56,78 @@
 
 package org.objectstyle.wolips.wizards;
 
-import java.net.URL;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.objectstyle.wolips.commons.logging.PluginLogger;
+import org.objectstyle.wolips.ui.plugins.AbstractWOLipsUIPlugin;
+import org.osgi.framework.BundleContext;
 
 /**
  * The main plugin class to be used in the desktop.
  */
-public class WizardsPlugin extends AbstractUIPlugin {
-	//The shared instance.
+public class WizardsPlugin extends AbstractWOLipsUIPlugin {
+	// The shared instance.
 	private static WizardsPlugin plugin;
-	//Resource bundle.
-	private ResourceBundle resourceBundle;
+
 	private static ImageDescriptor WOCOMPONENT_WIZARD_BANNER;
+
 	private static ImageDescriptor WOPROJECT_WIZARD_BANNER;
-	private static String pluginID ="org.objectstyle.wolips.wizards";
-	
-	private PluginLogger pluginLogger = new PluginLogger(pluginID, false);
+
 	/**
 	 * The constructor.
 	 */
 	public WizardsPlugin() {
 		super();
 		plugin = this;
-		try {
-			resourceBundle= ResourceBundle.getBundle("org.objectstyle.wolips.wizards.WizardsPluginResources");
-		} catch (MissingResourceException x) {
-			resourceBundle = null;
-		}
+	}
+
+	public void start(BundleContext context) throws Exception {
+		super.start(context);
+	}
+
+	/**
+	 * This method is called when the plug-in is stopped
+	 */
+	public void stop(BundleContext context) throws Exception {
+		super.stop(context);
+		plugin = null;
 	}
 
 	/**
 	 * Returns the shared instance.
-	 * @return
 	 */
 	public static WizardsPlugin getDefault() {
 		return plugin;
 	}
 
 	/**
-	 * Returns the workspace instance.
-	 * @return
-	 */
-	public static IWorkspace getWorkspace() {
-		return ResourcesPlugin.getWorkspace();
-	}
-
-	/**
-	 * Returns the string from the plugin's resource bundle,
-	 * or 'key' if not found.
-	 * @param key
-	 * @return
-	 */
-	public static String getResourceString(String key) {
-		ResourceBundle bundle= WizardsPlugin.getDefault().getResourceBundle();
-		try {
-			return bundle.getString(key);
-		} catch (MissingResourceException e) {
-			return key;
-		}
-	}
-
-	/**
-	 * Returns the plugin's resource bundle,
-	 * @return
-	 */
-	public ResourceBundle getResourceBundle() {
-		return resourceBundle;
-	}
-
-	/**
-	 * Method baseURL.
-	 * @return URL
-	 */
-	public static URL baseURL() {
-		return WizardsPlugin.getDefault().getDescriptor().getInstallURL();
-	}
-	
-	/**
-	 * @return Returns the pluginLogger.
-	 */
-	public PluginLogger getPluginLogger() {
-		return pluginLogger;
-	}
-	
-	/**
-	 * Utility method to create an <code>ImageDescriptor</code>
-	 * from a path to a file.
+	 * Returns an image descriptor for the image file at the given plug-in
+	 * relative path.
+	 * 
 	 * @param path
-	 * @return
+	 *            the path
+	 * @return the image descriptor
 	 */
-	private static ImageDescriptor createImageDescriptor(String path) {
-		ImageDescriptor imageDescriptor = AbstractUIPlugin.imageDescriptorFromPlugin(pluginID, path);
-		if(imageDescriptor != null)
-			return imageDescriptor;
-		return ImageDescriptor.getMissingImageDescriptor();
+	public static ImageDescriptor getImageDescriptor(String path) {
+		return AbstractUIPlugin.imageDescriptorFromPlugin(
+				"org.objectstyle.wolips.wizards", path);
 	}
 
 	/**
 	 * @return Returns the image descriptor.
 	 */
 	public static ImageDescriptor WOCOMPONENT_WIZARD_BANNER() {
-		if(WOCOMPONENT_WIZARD_BANNER == null)
-			WOCOMPONENT_WIZARD_BANNER = createImageDescriptor("icons/wizban/webobjects_wiz.gif");
+		if (WOCOMPONENT_WIZARD_BANNER == null)
+			WOCOMPONENT_WIZARD_BANNER = getImageDescriptor("icons/wizban/webobjects_wiz.gif");
 		return WOCOMPONENT_WIZARD_BANNER;
 	}
-	
+
 	/**
 	 * @return Returns the image descriptor.
 	 */
 	public static final ImageDescriptor WOPROJECT_WIZARD_BANNER() {
-		if(WOPROJECT_WIZARD_BANNER == null)
-			WOPROJECT_WIZARD_BANNER = createImageDescriptor("icons/wizban/webobjects_wiz.gif");
+		if (WOPROJECT_WIZARD_BANNER == null)
+			WOPROJECT_WIZARD_BANNER = getImageDescriptor("icons/wizban/webobjects_wiz.gif");
 		return WOPROJECT_WIZARD_BANNER;
 	}
-	
-	
+
 }

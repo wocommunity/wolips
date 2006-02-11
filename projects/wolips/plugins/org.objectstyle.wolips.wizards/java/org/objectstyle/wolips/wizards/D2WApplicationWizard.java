@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 - 2004 The ObjectStyle Group 
+ * Copyright (c) 2002 - 2006 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -54,6 +54,7 @@
  *
  */
 package org.objectstyle.wolips.wizards;
+
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 
@@ -67,13 +68,13 @@ import org.objectstyle.wolips.datasets.adaptable.ProjectPatternsets;
 import org.objectstyle.wolips.templateengine.TemplateDefinition;
 import org.objectstyle.wolips.templateengine.TemplateEngine;
 import org.objectstyle.wolips.templateengine.TemplateEnginePlugin;
+
 /**
  * @author mnolte
- * @author uli
- * 
- * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates. To enable and disable the creation of type
- * comments go to Window>Preferences>Java>Code Generation.
+ * @author uli To change this generated comment edit the template variable
+ *         "typecomment": Window>Preferences>Java>Templates. To enable and
+ *         disable the creation of type comments go to
+ *         Window>Preferences>Java>Code Generation.
  */
 public class D2WApplicationWizard extends AbstractProjectWizard {
 	/**
@@ -82,6 +83,7 @@ public class D2WApplicationWizard extends AbstractProjectWizard {
 	public D2WApplicationWizard() {
 		super(TemplateEnginePlugin.D2W_ApplicationProject);
 	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -93,6 +95,7 @@ public class D2WApplicationWizard extends AbstractProjectWizard {
 
 	private class Operation extends WorkspaceModifyOperation {
 		IProject project = null;
+
 		/**
 		 * @param project
 		 */
@@ -100,6 +103,7 @@ public class D2WApplicationWizard extends AbstractProjectWizard {
 			super();
 			this.project = project;
 		}
+
 		protected void execute(IProgressMonitor monitor) throws CoreException,
 				InvocationTargetException, InterruptedException {
 
@@ -119,24 +123,19 @@ public class D2WApplicationWizard extends AbstractProjectWizard {
 				src.mkdirs();
 				File bin = new File(path + File.separator + "bin");
 				bin.mkdirs();
-//				File xcode = new File(path + File.separator + projectName
-//						+ ".xcode");
-//				xcode.mkdirs();
-//        File xcodeproj = new File(path + File.separator + projectName
-//            + ".xcodeproj");
-//        xcodeproj.mkdirs();
-				File ant = new File(path + File.separator + ProjectPatternsets.ANT_FOLDER_NAME);
+				File ant = new File(path + File.separator
+						+ ProjectPatternsets.ANT_FOLDER_NAME);
 				ant.mkdirs();
-				//project.close(nullProgressMonitor);
 				TemplateEngine templateEngine = new TemplateEngine();
 				try {
 					templateEngine.init();
 				} catch (Exception e) {
-					WizardsPlugin.getDefault().getPluginLogger().log(e);
+					WizardsPlugin.getDefault().log(e);
 					throw new InvocationTargetException(e);
 				}
 				templateEngine.getWolipsContext().setProjectName(projectName);
-				templateEngine.getWolipsContext().setAntFolderName(ProjectPatternsets.ANT_FOLDER_NAME);
+				templateEngine.getWolipsContext().setAntFolderName(
+						ProjectPatternsets.ANT_FOLDER_NAME);
 				templateEngine.addTemplate(new TemplateDefinition(
 						"d2w_application/Main.html.vm", path + File.separator
 								+ "Main.wo", "Main.html", "Main.html"));
@@ -190,8 +189,9 @@ public class D2WApplicationWizard extends AbstractProjectWizard {
 								+ File.separator + "src", "PageWrapper.java",
 						"PageWrapper.java"));
 				templateEngine.addTemplate(new TemplateDefinition(
-						"d2w_application/Session.java.vm", path + File.separator
-								+ "src", "Session.java", "Session.java"));
+						"d2w_application/Session.java.vm", path
+								+ File.separator + "src", "Session.java",
+						"Session.java"));
 				templateEngine.addTemplate(new TemplateDefinition(
 						"d2w_application/.classpath.vm", path, ".classpath",
 						".classpath"));
@@ -201,33 +201,39 @@ public class D2WApplicationWizard extends AbstractProjectWizard {
 				templateEngine
 						.addTemplate(new TemplateDefinition(
 								"d2w_application/ant.classpaths.user.home.vm",
-								path + File.separator + ProjectPatternsets.ANT_FOLDER_NAME,
+								path + File.separator
+										+ ProjectPatternsets.ANT_FOLDER_NAME,
 								"ant.classpaths.user.home",
 								"ant.classpaths.user.home"));
 				templateEngine.addTemplate(new TemplateDefinition(
-						"d2w_application/ant.classpaths.wo.wolocalroot.vm", path
-								+ File.separator + ProjectPatternsets.ANT_FOLDER_NAME,
+						"d2w_application/ant.classpaths.wo.wolocalroot.vm",
+						path + File.separator
+								+ ProjectPatternsets.ANT_FOLDER_NAME,
 						"ant.classpaths.wo.wolocalroot",
 						"ant.classpaths.wo.wolocalroot"));
 				templateEngine.addTemplate(new TemplateDefinition(
 						"d2w_application/ant.classpaths.wo.wosystemroot.vm",
-						path + File.separator + ProjectPatternsets.ANT_FOLDER_NAME,
+						path + File.separator
+								+ ProjectPatternsets.ANT_FOLDER_NAME,
 						"ant.classpaths.wo.wosystemroot",
 						"ant.classpaths.wo.wosystemroot"));
 				templateEngine
 						.addTemplate(new TemplateDefinition(
 								"d2w_application/ant.frameworks.user.home.vm",
-								path + File.separator + ProjectPatternsets.ANT_FOLDER_NAME,
+								path + File.separator
+										+ ProjectPatternsets.ANT_FOLDER_NAME,
 								"ant.frameworks.user.home",
 								"ant.frameworks.user.home"));
 				templateEngine.addTemplate(new TemplateDefinition(
-						"d2w_application/ant.frameworks.wo.wolocalroot.vm", path
-								+ File.separator + ProjectPatternsets.ANT_FOLDER_NAME,
+						"d2w_application/ant.frameworks.wo.wolocalroot.vm",
+						path + File.separator
+								+ ProjectPatternsets.ANT_FOLDER_NAME,
 						"ant.frameworks.wo.wolocalroot",
 						"ant.frameworks.wo.wolocalroot"));
 				templateEngine.addTemplate(new TemplateDefinition(
 						"d2w_application/ant.frameworks.wo.wosystemroot.vm",
-						path + File.separator + ProjectPatternsets.ANT_FOLDER_NAME,
+						path + File.separator
+								+ ProjectPatternsets.ANT_FOLDER_NAME,
 						"ant.frameworks.wo.wosystemroot",
 						"ant.frameworks.wo.wosystemroot"));
 				templateEngine.addTemplate(new TemplateDefinition(
@@ -271,9 +277,9 @@ public class D2WApplicationWizard extends AbstractProjectWizard {
 						"d2w_application/user.d2wmodel.vm", path,
 						"user.d2wmodel", "user.d2wmodel"));
 				templateEngine.run(nullProgressMonitor);
-				//project.open(nullProgressMonitor);
-				//RunAnt runAnt = new RunAnt();
-				//runAnt.asAnt(path + File.separator +
+				// project.open(nullProgressMonitor);
+				// RunAnt runAnt = new RunAnt();
+				// runAnt.asAnt(path + File.separator +
 				// IWOLipsModel.DEFAULT_BUILD_FILENAME, null, null);
 				this.project.refreshLocal(IResource.DEPTH_INFINITE,
 						nullProgressMonitor);
@@ -282,6 +288,7 @@ public class D2WApplicationWizard extends AbstractProjectWizard {
 			}
 		}
 	}
+
 	/**
 	 * (non-Javadoc) Method declared on IWizard
 	 * 
@@ -295,10 +302,10 @@ public class D2WApplicationWizard extends AbstractProjectWizard {
 			try {
 				operation.run(new NullProgressMonitor());
 			} catch (InvocationTargetException e) {
-				WizardsPlugin.getDefault().getPluginLogger().log(e);
+				WizardsPlugin.getDefault().log(e);
 				success = false;
 			} catch (InterruptedException e) {
-				WizardsPlugin.getDefault().getPluginLogger().log(e);
+				WizardsPlugin.getDefault().log(e);
 				success = false;
 			}
 		}

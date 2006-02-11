@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002, 2004 The ObjectStyle Group 
+ * Copyright (c) 2002 - 2006 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -54,6 +54,7 @@
  *
  */
 package org.objectstyle.wolips.wizards;
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.Vector;
 
@@ -72,6 +73,7 @@ import org.objectstyle.wolips.datasets.adaptable.JavaProject;
 import org.objectstyle.wolips.datasets.resources.IWOLipsModel;
 import org.objectstyle.wolips.templateengine.TemplateDefinition;
 import org.objectstyle.wolips.templateengine.TemplateEngine;
+
 /**
  * @author mnolte
  * @author uli Creates new eo model file resources from values gathered by
@@ -79,11 +81,16 @@ import org.objectstyle.wolips.templateengine.TemplateEngine;
  */
 public class EOModelCreator implements IRunnableWithProgress {
 	private String modelName;
+
 	private String adaptorName;
+
 	private IResource parentResource;
+
 	private EOModelCreationPage page;
+
 	/**
 	 * Constructor for EOModelCreator.
+	 * 
 	 * @param parentResource
 	 * @param modelName
 	 * @param adaptorName
@@ -95,7 +102,7 @@ public class EOModelCreator implements IRunnableWithProgress {
 		this.adaptorName = adaptorName;
 		this.page = page;
 	}
-	
+
 	public void run(IProgressMonitor monitor) throws InvocationTargetException {
 		try {
 			createEOModel(monitor);
@@ -103,13 +110,15 @@ public class EOModelCreator implements IRunnableWithProgress {
 			throw new InvocationTargetException(e);
 		}
 	}
+
 	/**
 	 * Method createEOModelNamed. Creates eo model file resources. All file
 	 * resource changes are registered in ResourceChangeListener where the
-	 * project file is updated. <br>All folder resource changes are registered
-	 * in @link WOProjectResourceCreator#createResourceFolderInProject(IFolder,
-	 * IProgressMonitor). <br>
+	 * project file is updated. <br>
+	 * All folder resource changes are registered in
 	 * 
+	 * @link WOProjectResourceCreator#createResourceFolderInProject(IFolder,
+	 *       IProgressMonitor). <br>
 	 * @param monitor
 	 * @throws CoreException
 	 * @throws InvocationTargetException
@@ -118,17 +127,17 @@ public class EOModelCreator implements IRunnableWithProgress {
 			InvocationTargetException {
 		IFolder modelFolder = null;
 		switch (this.parentResource.getType()) {
-			case IResource.PROJECT :
-				modelFolder = ((IProject) this.parentResource).getFolder(this.modelName
-						+ "." + IWOLipsModel.EXT_EOMODEL);
-				break;
-			case IResource.FOLDER :
-				modelFolder = ((IFolder) this.parentResource).getFolder(this.modelName
-						+ "." + IWOLipsModel.EXT_EOMODEL);
-				break;
-			default :
-				throw new InvocationTargetException(new Exception(
-						"Wrong parent resource - check validation"));
+		case IResource.PROJECT:
+			modelFolder = ((IProject) this.parentResource)
+					.getFolder(this.modelName + "." + IWOLipsModel.EXT_EOMODEL);
+			break;
+		case IResource.FOLDER:
+			modelFolder = ((IFolder) this.parentResource)
+					.getFolder(this.modelName + "." + IWOLipsModel.EXT_EOMODEL);
+			break;
+		default:
+			throw new InvocationTargetException(new Exception(
+					"Wrong parent resource - check validation"));
 		}
 		modelFolder.create(false, true, monitor);
 		String projectName = this.parentResource.getProject().getName();
@@ -137,19 +146,21 @@ public class EOModelCreator implements IRunnableWithProgress {
 		try {
 			templateEngine.init();
 		} catch (Exception e) {
-			WizardsPlugin.getDefault().getPluginLogger().log(e);
+			WizardsPlugin.getDefault().log(e);
 			throw new InvocationTargetException(e);
 		}
 		templateEngine.getWolipsContext().setProjectName(projectName);
 		templateEngine.getWolipsContext().setAdaptorName(this.adaptorName);
 		templateEngine.addTemplate(new TemplateDefinition(
-				"eomodel/index.eomodeld.vm", path, "index.eomodeld", "index.eomodeld"));
+				"eomodel/index.eomodeld.vm", path, "index.eomodeld",
+				"index.eomodeld"));
 		templateEngine.addTemplate(new TemplateDefinition(
-				"eomodel/DiagramLayout.vm", path, "DiagramLayout", "DiagramLayout"));
+				"eomodel/DiagramLayout.vm", path, "DiagramLayout",
+				"DiagramLayout"));
 		try {
 			templateEngine.run(new NullProgressMonitor());
 		} catch (Exception e) {
-			WizardsPlugin.getDefault().getPluginLogger().log(e);
+			WizardsPlugin.getDefault().log(e);
 			throw new InvocationTargetException(e);
 		}
 		modelFolder.refreshLocal(IResource.DEPTH_INFINITE, monitor);
@@ -161,9 +172,10 @@ public class EOModelCreator implements IRunnableWithProgress {
 			Vector newAdaptorFrameworkList = new Vector();
 			newAdaptorFrameworkList.add("Java" + this.adaptorName + "Adaptor."
 					+ IWOLipsModel.EXT_FRAMEWORK);
-			JavaProject javaProject = (JavaProject)projectToUpdate.getAdapter(JavaProject.class);
-			IClasspathEntry[] newClasspathEntries = javaProject.addFrameworkListToClasspathEntries(
-							newAdaptorFrameworkList);
+			JavaProject javaProject = (JavaProject) projectToUpdate
+					.getAdapter(JavaProject.class);
+			IClasspathEntry[] newClasspathEntries = javaProject
+					.addFrameworkListToClasspathEntries(newAdaptorFrameworkList);
 			try {
 				projectToUpdate.setRawClasspath(newClasspathEntries, null);
 			} catch (JavaModelException e) {

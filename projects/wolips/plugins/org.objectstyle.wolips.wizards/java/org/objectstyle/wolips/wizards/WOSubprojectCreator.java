@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 - 2004 The ObjectStyle Group 
+ * Copyright (c) 2002 - 2006 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -74,11 +74,10 @@ import org.objectstyle.wolips.templateengine.TemplateEngine;
 
 /**
  * @author mnolte
- * @author uli
- * 
- * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates. To enable and disable the creation of type
- * comments go to Window>Preferences>Java>Code Generation.
+ * @author uli To change this generated comment edit the template variable
+ *         "typecomment": Window>Preferences>Java>Templates. To enable and
+ *         disable the creation of type comments go to
+ *         Window>Preferences>Java>Code Generation.
  */
 public class WOSubprojectCreator implements IRunnableWithProgress {
 
@@ -116,8 +115,7 @@ public class WOSubprojectCreator implements IRunnableWithProgress {
 	 * @throws InterruptedException
 	 */
 	public void createSubproject(IProgressMonitor monitor)
-			throws CoreException, InvocationTargetException
-			{
+			throws CoreException, InvocationTargetException {
 		IFolder subprojectFolder = null;
 		switch (parentResource.getType()) {
 		case IResource.PROJECT:
@@ -140,7 +138,7 @@ public class WOSubprojectCreator implements IRunnableWithProgress {
 		try {
 			templateEngine.init();
 		} catch (Exception e) {
-			WizardsPlugin.getDefault().getPluginLogger().log(e);
+			WizardsPlugin.getDefault().log(e);
 			throw new InvocationTargetException(e);
 		}
 		templateEngine.getWolipsContext().setProjectName(subprojectName);
@@ -149,12 +147,12 @@ public class WOSubprojectCreator implements IRunnableWithProgress {
 		try {
 			templateEngine.run(new NullProgressMonitor());
 		} catch (Exception e) {
-			WizardsPlugin.getDefault().getPluginLogger().log(e);
+			WizardsPlugin.getDefault().log(e);
 			throw new InvocationTargetException(e);
 		}
-		
+
 		subprojectFolder.refreshLocal(IResource.DEPTH_INFINITE, monitor);
-		
+
 		IFolder sourceFolder;
 		sourceFolder = subprojectFolder.getFolder(IWOLipsModel.EXT_SRC);
 		if (!sourceFolder.exists()) {
@@ -166,10 +164,12 @@ public class WOSubprojectCreator implements IRunnableWithProgress {
 			}
 		}
 		IJavaProject javaProject = JavaCore.create(parentResource.getProject());
-		IClasspathEntry classpathEntry = JavaCore.newSourceEntry(sourceFolder.getFullPath());
+		IClasspathEntry classpathEntry = JavaCore.newSourceEntry(sourceFolder
+				.getFullPath());
 		IClasspathEntry[] classpathEntries = javaProject.getRawClasspath();
 		IClasspathEntry[] newClasspathEntries = new IClasspathEntry[classpathEntries.length + 1];
-		System.arraycopy(classpathEntries, 0, newClasspathEntries, 0, classpathEntries.length);
+		System.arraycopy(classpathEntries, 0, newClasspathEntries, 0,
+				classpathEntries.length);
 		newClasspathEntries[classpathEntries.length] = classpathEntry;
 		javaProject.setRawClasspath(newClasspathEntries, monitor);
 	}

@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 - 2004 The ObjectStyle Group 
+ * Copyright (c) 2002 - 2006 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -63,17 +63,13 @@ import org.eclipse.ui.wizards.newresource.BasicNewFolderResourceWizard;
 /**
  * @author mnolte
  * @author uli
- *
- * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates.
- * To enable and disable the creation of type comments go to
- * Window>Preferences>Java>Code Generation.
  */
 public class WOSubprojectCreationWizard extends BasicNewFolderResourceWizard {
 
 	private IStructuredSelection selection;
-	private IWorkbench workbench;
+
 	private WOSubprojectCreationPage mainPage;
+
 	/**
 	 * Constructor for WOSubprojectCreationWizard.
 	 */
@@ -81,28 +77,26 @@ public class WOSubprojectCreationWizard extends BasicNewFolderResourceWizard {
 		super();
 	}
 
-	/** (non-Javadoc)
-	 * Method declared on INewWizard
+	/**
+	 * (non-Javadoc) Method declared on INewWizard
 	 */
 	public void init(IWorkbench _workbench, IStructuredSelection _selection) {
-		this.workbench = _workbench;
 		this.selection = _selection;
 		setWindowTitle(Messages.getString("WOSubprojectCreationWizard.title"));
-		setDefaultPageImageDescriptor(WizardsPlugin
-				.WOCOMPONENT_WIZARD_BANNER());
+		setDefaultPageImageDescriptor(WizardsPlugin.WOCOMPONENT_WIZARD_BANNER());
 	}
 
-	/** (non-Javadoc)
-	 * Method declared on Wizard.
+	/**
+	 * (non-Javadoc) Method declared on Wizard.
 	 */
 	public void addPages() {
 		mainPage = new WOSubprojectCreationPage(selection);
 		addPage(mainPage);
 	}
 
-	/** (non-Javadoc)
-		 * Method declared on IWizard
-		 */
+	/**
+	 * (non-Javadoc) Method declared on IWizard
+	 */
 	public boolean performFinish() {
 		return mainPage.createSubproject();
 	}

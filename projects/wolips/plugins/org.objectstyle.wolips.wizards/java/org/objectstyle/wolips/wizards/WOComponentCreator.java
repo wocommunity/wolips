@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002, 2004 The ObjectStyle Group 
+ * Copyright (c) 2002 - 2006 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -54,6 +54,7 @@
  *
  */
 package org.objectstyle.wolips.wizards;
+
 import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.resources.IFolder;
@@ -71,38 +72,48 @@ import org.objectstyle.wolips.datasets.adaptable.JavaProject;
 import org.objectstyle.wolips.datasets.adaptable.Project;
 import org.objectstyle.wolips.datasets.resources.IWOLipsModel;
 import org.objectstyle.wolips.templateengine.ComponentEngine;
+
 /**
  * @author mnolte
  * @author uli
  */
 public class WOComponentCreator implements IRunnableWithProgress {
 	private String componentName;
-    private String packageName;
+
+	private String packageName;
+
 	private boolean createBodyTag;
+
 	private boolean createApiFile;
+
 	private boolean createWooFile;
+
 	private IResource parentResource;
+
 	private WOComponentCreationPage page;
+
 	/**
 	 * Constructor for WOComponentCreator.
 	 * 
 	 * @param parentResource
 	 * @param componentName
-     * @param packageName
+	 * @param packageName
 	 * @param createBodyTag
 	 * @param createApiFile
 	 * @param createWooFile
 	 */
-	public WOComponentCreator(IResource parentResource, String componentName, String packageName,
-			boolean createBodyTag, boolean createApiFile, boolean createWooFile, WOComponentCreationPage page) {
+	public WOComponentCreator(IResource parentResource, String componentName,
+			String packageName, boolean createBodyTag, boolean createApiFile,
+			boolean createWooFile, WOComponentCreationPage page) {
 		this.parentResource = parentResource;
 		this.componentName = componentName;
-        this.packageName = packageName;
+		this.packageName = packageName;
 		this.createBodyTag = createBodyTag;
 		this.createApiFile = createApiFile;
 		this.createWooFile = createWooFile;
 		this.page = page;
 	}
+
 	public void run(IProgressMonitor monitor) throws InvocationTargetException {
 		try {
 			createWOComponent(monitor);
@@ -110,6 +121,7 @@ public class WOComponentCreator implements IRunnableWithProgress {
 			throw new InvocationTargetException(e);
 		}
 	}
+
 	/**
 	 * Method createWOComponent.
 	 * 
@@ -123,60 +135,65 @@ public class WOComponentCreator implements IRunnableWithProgress {
 		IPath componentJavaPath = null;
 		IPath apiPath = null;
 		IFolder componentFolderToReveal = null;
-		IJavaProject iJavaProject = JavaCore.create(
-				this.parentResource.getProject());
-		JavaProject javaProject = (JavaProject) iJavaProject.getAdapter(JavaProject.class);
-		Project project = (Project)this.parentResource.getProject().getAdapter(Project.class);
+		IJavaProject iJavaProject = JavaCore.create(this.parentResource
+				.getProject());
+		JavaProject javaProject = (JavaProject) iJavaProject
+				.getAdapter(JavaProject.class);
+		Project project = (Project) this.parentResource.getProject()
+				.getAdapter(Project.class);
 		switch (this.parentResource.getType()) {
-			case IResource.PROJECT :
-				componentFolder = ((IProject) this.parentResource)
-						.getFolder(this.componentName + "."
-								+ IWOLipsModel.EXT_COMPONENT);
-			componentFolderToReveal = (IFolder)javaProject.getProjectSourceFolder();
-				componentJavaPath = 
-					componentFolderToReveal.getLocation();
-				apiPath = this.parentResource.getProject().getLocation();
-				break;
-			case IResource.FOLDER :
-			    componentFolder = ((IFolder) this.parentResource)
-						.getFolder(this.componentName + "."
-								+ IWOLipsModel.EXT_COMPONENT);
+		case IResource.PROJECT:
+			componentFolder = ((IProject) this.parentResource)
+					.getFolder(this.componentName + "."
+							+ IWOLipsModel.EXT_COMPONENT);
+			componentFolderToReveal = (IFolder) javaProject
+					.getProjectSourceFolder();
+			componentJavaPath = componentFolderToReveal.getLocation();
+			apiPath = this.parentResource.getProject().getLocation();
+			break;
+		case IResource.FOLDER:
+			componentFolder = ((IFolder) this.parentResource)
+					.getFolder(this.componentName + "."
+							+ IWOLipsModel.EXT_COMPONENT);
 			componentFolderToReveal = javaProject.getSubprojectSourceFolder(
-					(IFolder) this.parentResource, true);		
-				componentJavaPath = componentFolderToReveal.getLocation();
-				apiPath = componentFolder.getParent().getLocation();
-				IFolder pbFolder = project.getParentFolderWithPBProject((IFolder)this.parentResource);
-				if(pbFolder != null) {
-				    apiPath = pbFolder.getLocation();
-				}
-				break;
-			default :
-				throw new InvocationTargetException(new Exception(
-						"Wrong parent resource - check validation"));
+					(IFolder) this.parentResource, true);
+			componentJavaPath = componentFolderToReveal.getLocation();
+			apiPath = componentFolder.getParent().getLocation();
+			IFolder pbFolder = project
+					.getParentFolderWithPBProject((IFolder) this.parentResource);
+			if (pbFolder != null) {
+				apiPath = pbFolder.getLocation();
+			}
+			break;
+		default:
+			throw new InvocationTargetException(new Exception(
+					"Wrong parent resource - check validation"));
 		}
-        if (packageName != null && packageName.length() > 0) {
-          componentJavaPath = componentJavaPath.append(new Path(packageName.replace('.', '/')));
-        }
-        //IFolder componentJavaFolder = ((IProject) this.parentResource).getFolder(componentJavaPath);
-        //System.out.println("WOComponentCreator.createWOComponent: " + componentJavaFolder);
-        //componentJavaFolder.create(false, true, monitor);
+		if (packageName != null && packageName.length() > 0) {
+			componentJavaPath = componentJavaPath.append(new Path(packageName
+					.replace('.', '/')));
+		}
+		// IFolder componentJavaFolder = ((IProject)
+		// this.parentResource).getFolder(componentJavaPath);
+		// System.out.println("WOComponentCreator.createWOComponent: " +
+		// componentJavaFolder);
+		// componentJavaFolder.create(false, true, monitor);
 		componentFolder.create(false, true, monitor);
 		String projectName = this.parentResource.getProject().getName();
 		IPath path = componentFolder.getLocation();
-		IPath projectPath = this.parentResource.getProject().getLocation();
 		ComponentEngine componentEngine = new ComponentEngine();
 		try {
 			componentEngine.init();
 		} catch (Exception e) {
-			WizardsPlugin.getDefault().getPluginLogger().log(e);
+			WizardsPlugin.getDefault().log(e);
 			throw new InvocationTargetException(e);
 		}
-		//TODO: select template in the user interface
+		// TODO: select template in the user interface
 		componentEngine.setSelectedTemplateName(componentEngine.names()[0]);
 		componentEngine.setProjectName(projectName);
 		componentEngine.setCreateBodyTag(this.createBodyTag);
 		componentEngine.setComponentName(this.componentName);
-        componentEngine.setPackageName(this.packageName);
+		componentEngine.setPackageName(this.packageName);
 		componentEngine.setComponentPath(path);
 		componentEngine.setApiPath(apiPath);
 		componentEngine.setJavaPath(componentJavaPath);
@@ -186,11 +203,13 @@ public class WOComponentCreator implements IRunnableWithProgress {
 			componentEngine.run(new NullProgressMonitor());
 			this.parentResource.getProject().refreshLocal(
 					IResource.DEPTH_INFINITE, monitor);
-			page.setResourceToReveal(componentFolderToReveal.findMember(this.componentName + "." + IWOLipsModel.EXT_JAVA));
+			page.setResourceToReveal(componentFolderToReveal
+					.findMember(this.componentName + "."
+							+ IWOLipsModel.EXT_JAVA));
 		} catch (Exception e) {
-			WizardsPlugin.getDefault().getPluginLogger().log(e);
+			WizardsPlugin.getDefault().log(e);
 			throw new InvocationTargetException(e);
 		}
 	}
-	
+
 }

@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 - 2004 The ObjectStyle Group 
+ * Copyright (c) 2002 - 2006 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -54,6 +54,7 @@
  *
  */
 package org.objectstyle.wolips.wizards;
+
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 
@@ -67,13 +68,13 @@ import org.objectstyle.wolips.datasets.adaptable.ProjectPatternsets;
 import org.objectstyle.wolips.templateengine.TemplateDefinition;
 import org.objectstyle.wolips.templateengine.TemplateEngine;
 import org.objectstyle.wolips.templateengine.TemplateEnginePlugin;
+
 /**
  * @author mnolte
- * @author uli
- * 
- * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates. To enable and disable the creation of type
- * comments go to Window>Preferences>Java>Code Generation.
+ * @author uli To change this generated comment edit the template variable
+ *         "typecomment": Window>Preferences>Java>Templates. To enable and
+ *         disable the creation of type comments go to
+ *         Window>Preferences>Java>Code Generation.
  */
 public class WOApplicationWizard extends AbstractProjectWizard {
 	/**
@@ -82,6 +83,7 @@ public class WOApplicationWizard extends AbstractProjectWizard {
 	public WOApplicationWizard() {
 		super(TemplateEnginePlugin.WOApplicationProject);
 	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -93,6 +95,7 @@ public class WOApplicationWizard extends AbstractProjectWizard {
 
 	private class Operation extends WorkspaceModifyOperation {
 		IProject project = null;
+
 		/**
 		 * @param project
 		 */
@@ -100,6 +103,7 @@ public class WOApplicationWizard extends AbstractProjectWizard {
 			super();
 			this.project = project;
 		}
+
 		protected void execute(IProgressMonitor monitor) throws CoreException,
 				InvocationTargetException, InterruptedException {
 			String projectName = this.project.getName();
@@ -112,24 +116,26 @@ public class WOApplicationWizard extends AbstractProjectWizard {
 				src.mkdirs();
 				File bin = new File(path + File.separator + "bin");
 				bin.mkdirs();
-//				File xcode = new File(path + File.separator + projectName
-//						+ ".xcode");
-//				xcode.mkdirs();
-//        File xcodeproj = new File(path + File.separator + projectName
-//            + ".xcodeproj");
-//        xcodeproj.mkdirs();
-				File ant = new File(path + File.separator + ProjectPatternsets.ANT_FOLDER_NAME);
+				// File xcode = new File(path + File.separator + projectName
+				// + ".xcode");
+				// xcode.mkdirs();
+				// File xcodeproj = new File(path + File.separator + projectName
+				// + ".xcodeproj");
+				// xcodeproj.mkdirs();
+				File ant = new File(path + File.separator
+						+ ProjectPatternsets.ANT_FOLDER_NAME);
 				ant.mkdirs();
-				//project.close(nullProgressMonitor);
+				// project.close(nullProgressMonitor);
 				TemplateEngine templateEngine = new TemplateEngine();
 				try {
 					templateEngine.init();
 				} catch (Exception e) {
-					WizardsPlugin.getDefault().getPluginLogger().log(e);
+					WizardsPlugin.getDefault().log(e);
 					throw new InvocationTargetException(e);
 				}
 				templateEngine.getWolipsContext().setProjectName(projectName);
-				templateEngine.getWolipsContext().setAntFolderName(ProjectPatternsets.ANT_FOLDER_NAME);
+				templateEngine.getWolipsContext().setAntFolderName(
+						ProjectPatternsets.ANT_FOLDER_NAME);
 				templateEngine.addTemplate(new TemplateDefinition(
 						"woapplication/Main.html.vm", path + File.separator
 								+ "Main.wo", "Main.html", "Main.html"));
@@ -162,33 +168,39 @@ public class WOApplicationWizard extends AbstractProjectWizard {
 				templateEngine
 						.addTemplate(new TemplateDefinition(
 								"woapplication/ant.classpaths.user.home.vm",
-								path + File.separator + ProjectPatternsets.ANT_FOLDER_NAME,
+								path + File.separator
+										+ ProjectPatternsets.ANT_FOLDER_NAME,
 								"ant.classpaths.user.home",
 								"ant.classpaths.user.home"));
 				templateEngine.addTemplate(new TemplateDefinition(
 						"woapplication/ant.classpaths.wo.wolocalroot.vm", path
-								+ File.separator + ProjectPatternsets.ANT_FOLDER_NAME,
+								+ File.separator
+								+ ProjectPatternsets.ANT_FOLDER_NAME,
 						"ant.classpaths.wo.wolocalroot",
 						"ant.classpaths.wo.wolocalroot"));
 				templateEngine.addTemplate(new TemplateDefinition(
 						"woapplication/ant.classpaths.wo.wosystemroot.vm", path
-								+ File.separator + ProjectPatternsets.ANT_FOLDER_NAME,
+								+ File.separator
+								+ ProjectPatternsets.ANT_FOLDER_NAME,
 						"ant.classpaths.wo.wosystemroot",
 						"ant.classpaths.wo.wosystemroot"));
 				templateEngine
 						.addTemplate(new TemplateDefinition(
 								"woapplication/ant.frameworks.user.home.vm",
-								path + File.separator + ProjectPatternsets.ANT_FOLDER_NAME,
+								path + File.separator
+										+ ProjectPatternsets.ANT_FOLDER_NAME,
 								"ant.frameworks.user.home",
 								"ant.frameworks.user.home"));
 				templateEngine.addTemplate(new TemplateDefinition(
 						"woapplication/ant.frameworks.wo.wolocalroot.vm", path
-								+ File.separator + ProjectPatternsets.ANT_FOLDER_NAME,
+								+ File.separator
+								+ ProjectPatternsets.ANT_FOLDER_NAME,
 						"ant.frameworks.wo.wolocalroot",
 						"ant.frameworks.wo.wolocalroot"));
 				templateEngine.addTemplate(new TemplateDefinition(
 						"woapplication/ant.frameworks.wo.wosystemroot.vm", path
-								+ File.separator + ProjectPatternsets.ANT_FOLDER_NAME,
+								+ File.separator
+								+ ProjectPatternsets.ANT_FOLDER_NAME,
 						"ant.frameworks.wo.wosystemroot",
 						"ant.frameworks.wo.wosystemroot"));
 				templateEngine.addTemplate(new TemplateDefinition(
@@ -218,15 +230,15 @@ public class WOApplicationWizard extends AbstractProjectWizard {
 				templateEngine.addTemplate(new TemplateDefinition(
 						"woapplication/Properties.vm", path, "Properties",
 						"Properties"));
-//				templateEngine.addTemplate(new TemplateDefinition(
-//						"woapplication/project.pbxproj.vm", path
-//								+ File.separator + projectName + ".xcode",
-//						"project.pbxproj", "project.pbxproj"));
+				// templateEngine.addTemplate(new TemplateDefinition(
+				// "woapplication/project.pbxproj.vm", path
+				// + File.separator + projectName + ".xcode",
+				// "project.pbxproj", "project.pbxproj"));
 				templateEngine.run(nullProgressMonitor);
-				//project.open(nullProgressMonitor);
-				//RunAnt runAnt = new RunAnt();
-				//runAnt.asAnt(path + File.separator
-				//		+ IWOLipsModel.DEFAULT_BUILD_FILENAME, null, null);
+				// project.open(nullProgressMonitor);
+				// RunAnt runAnt = new RunAnt();
+				// runAnt.asAnt(path + File.separator
+				// + IWOLipsModel.DEFAULT_BUILD_FILENAME, null, null);
 				this.project.refreshLocal(IResource.DEPTH_INFINITE,
 						nullProgressMonitor);
 			} catch (Exception e) {
@@ -234,6 +246,7 @@ public class WOApplicationWizard extends AbstractProjectWizard {
 			}
 		}
 	}
+
 	/**
 	 * (non-Javadoc) Method declared on IWizard
 	 * 
@@ -247,10 +260,10 @@ public class WOApplicationWizard extends AbstractProjectWizard {
 			try {
 				operation.run(new NullProgressMonitor());
 			} catch (InvocationTargetException e) {
-				WizardsPlugin.getDefault().getPluginLogger().log(e);
+				WizardsPlugin.getDefault().log(e);
 				success = false;
 			} catch (InterruptedException e) {
-				WizardsPlugin.getDefault().getPluginLogger().log(e);
+				WizardsPlugin.getDefault().log(e);
 				success = false;
 			}
 		}
