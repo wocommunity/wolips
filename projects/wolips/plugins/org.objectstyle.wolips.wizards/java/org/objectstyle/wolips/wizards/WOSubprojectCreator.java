@@ -97,8 +97,7 @@ public class WOSubprojectCreator implements IRunnableWithProgress {
 	/**
 	 * @see WOProjectResourceCreator#run(IProgressMonitor)
 	 */
-	public void run(IProgressMonitor monitor) throws InvocationTargetException,
-			InterruptedException {
+	public void run(IProgressMonitor monitor) throws InvocationTargetException {
 		try {
 			createSubproject(monitor);
 		} catch (CoreException e) {

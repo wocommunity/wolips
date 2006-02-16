@@ -60,7 +60,6 @@ import java.lang.reflect.InvocationTargetException;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
@@ -103,8 +102,7 @@ public class JarProjectWizard extends AbstractProjectWizard {
 			this.project = project;
 		}
 
-		protected void execute(IProgressMonitor monitor) throws CoreException,
-				InvocationTargetException, InterruptedException {
+		protected void execute(IProgressMonitor monitor) throws InvocationTargetException {
 
 			String projectName = this.project.getName();
 			String path = this.project.getLocation().toOSString();

@@ -4,6 +4,8 @@
 	<!-- add optional targets to depends list if needed -->
 	<target name="build" depends="setProps,init.build,build.woapp,war,ssdd"/>
 
+  <target name="compileAndBuild" depends="setProps,init.build,compile,build.woapp,war,ssdd" />
+
 	<target name="install" depends="setProps,init.install,build.woapp,war,ssdd"/>
 	
 	<target name="clean" depends="setProps">
@@ -156,4 +158,20 @@
      		</copy>
  	</target>
 
+  <target name = "compile" depends = "setProps,init.build" >
+    <mkdir dir = "bin"/>
+    <javac srcdir = "src" destdir = "bin">
+      <classpath>
+        <fileset dir="${wo.dir.user.home.library.frameworks}" includesfile = "woproject/ant.frameworks.user.home">
+          <include name = "**/*.jar"/>
+        </fileset>
+        <fileset dir="${wo.wolocalroot}" includesfile = "woproject/ant.frameworks.wo.wolocalroot">
+          <include name = "**/*.jar"/>
+        </fileset>
+        <fileset dir="${wo.wosystemroot}" includesfile = "woproject/ant.frameworks.wo.wosystemroot">
+          <include name = "**/*.jar"/>
+        </fileset>
+      </classpath>
+    </javac>
+  </target>
 </project>
