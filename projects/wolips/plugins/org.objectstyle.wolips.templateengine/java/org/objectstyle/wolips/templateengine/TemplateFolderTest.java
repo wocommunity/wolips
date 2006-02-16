@@ -79,6 +79,21 @@ public class TemplateFolderTest extends TestCase {
 				assertTrue(folder.isOfType(TemplateEnginePlugin.WOApplicationProject));				
 			}
 	}
+  
+  /**
+   * 
+   */
+  public void testIsOfWOnderApplicationProjectType() {
+    TemplateFolderRoot[] templateFolderRoots = TemplateEnginePlugin
+          .getTemplateFolderRoots();
+      TemplateFolder[] templateFolder = TemplateEnginePlugin
+          .getTemplateFolder(templateFolderRoots,
+              TemplateEnginePlugin.WOnderApplicationProject);
+      for (int i = 0; i < templateFolder.length; i++) {
+        TemplateFolder folder = templateFolder[i];
+        assertTrue(folder.isOfType(TemplateEnginePlugin.WOnderApplicationProject));       
+      }
+  }
 	
 	/**
 	 * 

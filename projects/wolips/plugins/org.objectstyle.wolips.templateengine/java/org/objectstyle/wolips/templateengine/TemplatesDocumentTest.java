@@ -82,6 +82,24 @@ public class TemplatesDocumentTest extends TestCase {
 				assertEquals(25, templateDefinitions.length);
 			}
 	}
+  
+  /**
+   * 
+   */
+  public void testIsOfWOnderApplicationProjectType() {
+    TemplateFolderRoot[] templateFolderRoots = TemplateEnginePlugin
+          .getTemplateFolderRoots();
+      TemplateFolder[] templateFolder = TemplateEnginePlugin
+          .getTemplateFolder(templateFolderRoots,
+              TemplateEnginePlugin.WOnderApplicationProject);
+      for (int i = 0; i < templateFolder.length; i++) {
+        TemplateFolder folder = templateFolder[i];
+        assertTrue(folder.getTemplatesDocument().isValid());        
+        TemplateDefinition[] templateDefinitions = folder.getTemplatesDocument().getTemplateDefinitions();
+        assertNotNull(templateDefinitions);
+        assertEquals(25, templateDefinitions.length);
+      }
+  }
 	
 	/**
 	 * 

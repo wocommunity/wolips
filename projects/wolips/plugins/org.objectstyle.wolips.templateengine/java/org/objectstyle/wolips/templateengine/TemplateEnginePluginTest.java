@@ -99,6 +99,19 @@ public class TemplateEnginePluginTest extends TestCase {
 		assertNotNull(templateFolder);
 		assertEquals(2, templateFolder.length);
 	}
+  
+  /**
+   * 
+   */
+  public void testGetWOnderApplicationProjectTemplateFolder() {
+    TemplateFolderRoot[] templateFolderRoots = TemplateEnginePlugin
+        .getTemplateFolderRoots();
+    TemplateFolder[] templateFolder = TemplateEnginePlugin
+        .getTemplateFolder(templateFolderRoots,
+            TemplateEnginePlugin.WOnderApplicationProject);
+    assertNotNull(templateFolder);
+    assertEquals(2, templateFolder.length);
+  }
 	
 	/**
 	 * 

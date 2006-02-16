@@ -89,6 +89,10 @@ public class TemplateEnginePlugin extends AbstractUIPlugin {
 	 * Comment for <code>WOApplicationProject</code>
 	 */
 	public static final String WOApplicationProject = "WOApplicationProject";
+  /**
+   * Comment for <code>WOnderApplicationProject</code>
+   */
+  public static final String WOnderApplicationProject = "WOnderApplicationProject";
 	/**
 	 * Comment for <code>D2W_ApplicationProject</code>
 	 */

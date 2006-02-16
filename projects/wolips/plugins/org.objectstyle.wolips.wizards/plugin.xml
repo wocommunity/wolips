@@ -35,6 +35,16 @@
          </description>
       </wizard>
       <wizard
+            name="WOnderApplication"
+            icon="icons/woproject/woapplication_wiz.gif"
+            category="org.objectstyle.wolips.wizards"
+            class="org.objectstyle.wolips.wizards.WOnderApplicationWizard"
+            project="true"
+            id="org.objectstyle.wolips.wizards.new.wo.5.1.wonderapplication">
+         <description>
+         </description>
+      </wizard>
+      <wizard
             name="D2WApplication"
             icon="icons/woproject/d2wapplication_wiz.gif"
             category="org.objectstyle.wolips.wizards"
