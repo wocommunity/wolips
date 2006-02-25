@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 - 2004 The ObjectStyle Group 
+ * Copyright (c) 2002 - 2006 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -65,9 +65,7 @@ import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IMember;
-import org.eclipse.jdt.internal.ui.JavaPlugin;
 import org.eclipse.jdt.internal.ui.viewsupport.StorageLabelProvider;
-import org.eclipse.jdt.ui.IWorkingCopyManager;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -111,17 +109,12 @@ import org.objectstyle.wolips.datasets.resources.IWOLipsResource;
 import org.objectstyle.wolips.ui.UIPlugin;
 
 /**
- * @author ulrich
- * 
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
+ * @author ulrich To change the template for this generated type comment go to
+ *         Window>Preferences>Java>Code Generation>Code and Comments
  */
-public final class RelatedView extends ViewPart
-		implements
-			ISelectionListener,
-			IPartListener {
+public final class RelatedView extends ViewPart implements ISelectionListener,
+		IPartListener {
 	private boolean forceOpenInTextEditor = false;
-	
 
 	protected class ViewContentProvider implements ITreeContentProvider {
 
@@ -144,7 +137,7 @@ public final class RelatedView extends ViewPart
 			if (parent instanceof IResource) {
 				wolipsResource = WOLipsCore.getWOLipsModel().getWOLipsResource(
 						(IResource) parent);
-				//getViewer().setInput(wolipsResource);
+				// getViewer().setInput(wolipsResource);
 			} else if (parent instanceof ICompilationUnit) {
 				wolipsResource = WOLipsCore.getWOLipsModel()
 						.getWOLipsCompilationUnit((ICompilationUnit) parent);
@@ -161,6 +154,7 @@ public final class RelatedView extends ViewPart
 			}
 			return result.toArray();
 		}
+
 		ViewContentProvider() {
 			super();
 		}
@@ -193,9 +187,8 @@ public final class RelatedView extends ViewPart
 		}
 	}
 
-	class ViewLabelProvider extends LabelProvider
-			implements
-				ITableLabelProvider {
+	class ViewLabelProvider extends LabelProvider implements
+			ITableLabelProvider {
 
 		public String getColumnText(Object obj, int index) {
 			if (obj instanceof IStorage) {
@@ -244,6 +237,7 @@ public final class RelatedView extends ViewPart
 	}
 
 	private Action openInEditorAction;
+
 	private Action showInNavigatorAction;
 
 	public void createPartControl(Composite parent) {
@@ -253,7 +247,7 @@ public final class RelatedView extends ViewPart
 		this.viewer.setContentProvider(new ViewContentProvider());
 
 		this.viewer.setLabelProvider(new DecoratingLabelProvider(
-				new StorageLabelProvider(), getSite().getWorkbenchWindow()
+				new LabelProvider(), getSite().getWorkbenchWindow()
 						.getWorkbench().getDecoratorManager()
 						.getLabelDecorator()));
 
@@ -263,12 +257,14 @@ public final class RelatedView extends ViewPart
 				if (e.keyCode == SWT.COMMAND || e.keyCode == SWT.ALT)
 					setForceOpenInTextEditor(true);
 			}
+
 			public void keyReleased(KeyEvent e) {
 				setForceOpenInTextEditor(false);
 			}
 		});
 
-		this.showInNavigatorAction= new ShowInNavigatorAction(this.getViewSite().getPage(), this.viewer);
+		this.showInNavigatorAction = new ShowInNavigatorAction(this
+				.getViewSite().getPage(), this.viewer);
 		this.openInEditorAction = new Action() {
 
 			public void run() {
@@ -296,9 +292,9 @@ public final class RelatedView extends ViewPart
 			}
 
 		};
-		
+
 		this.doubleClickAction = this.openInEditorAction;
-		
+
 		this.viewer.addDoubleClickListener(new IDoubleClickListener() {
 
 			public void doubleClick(DoubleClickEvent event) {
@@ -328,10 +324,10 @@ public final class RelatedView extends ViewPart
 						display.asyncExec(new Runnable() {
 
 							public void run() {
-                TableViewer tableViewer = getViewer();
-                if (!tableViewer.getTable().isDisposed()) {
-                  tableViewer.refresh(false);
-                }
+								TableViewer tableViewer = getViewer();
+								if (!tableViewer.getTable().isDisposed()) {
+									tableViewer.refresh(false);
+								}
 							}
 
 						});
@@ -348,9 +344,9 @@ public final class RelatedView extends ViewPart
 
 	/**
 	 * Creates a pop-up menu on the given control
-	 *
-	 * @param menuControl the control with which the pop-up
-	 *  menu will be associated
+	 * 
+	 * @param menuControl
+	 *            the control with which the pop-up menu will be associated
 	 */
 	private void createContextMenu() {
 		Control menuControl = this.viewer.getControl();
@@ -363,33 +359,40 @@ public final class RelatedView extends ViewPart
 		});
 		Menu menu = menuMgr.createContextMenu(menuControl);
 		menuControl.setMenu(menu);
-		// register the context menu such that other plugins may contribute to it
+		// register the context menu such that other plugins may contribute to
+		// it
 		getSite().registerContextMenu(menuMgr, this.viewer);
 	}
 
 	/**
 	 * Adds actions to the context menu
-	 *
-	 * @param viewer the viewer who's menu we're configuring
-	 * @param menu The menu to contribute to
+	 * 
+	 * @param viewer
+	 *            the viewer who's menu we're configuring
+	 * @param menu
+	 *            The menu to contribute to
 	 */
-	private void fillContextMenu(IMenuManager menu) {
+	void fillContextMenu(IMenuManager menu) {
 		menu.add(new Separator());
 		menu.add(showInNavigatorAction);
-		List list = ((IStructuredSelection) getViewer().getSelection()).toList();
+		List list = ((IStructuredSelection) getViewer().getSelection())
+				.toList();
 		for (int i = 0; i < list.size(); i++) {
 			Object object = list.get(i);
 			if (object != null) {
 				if (object instanceof IResource) {
-					IResource resource = (IResource)object;
-					OpenWithMenu action = new OpenWithMenu(getViewSite().getPage(), resource);
+					IResource resource = (IResource) object;
+					OpenWithMenu action = new OpenWithMenu(getViewSite()
+							.getPage(), resource);
 					menu.add(action);
-					//AK: I can
-					// OpenEditorActionGroup group = new OpenEditorActionGroup(this);
+					// AK: I can
+					// OpenEditorActionGroup group = new
+					// OpenEditorActionGroup(this);
 					// group.fillContextMenu(menu);
 				} else if (object instanceof ICompilationUnit) {
-					ICompilationUnit unit = (ICompilationUnit)object;
-					OpenWithMenu action = new OpenWithMenu(getViewSite().getPage(), unit);
+					ICompilationUnit unit = (ICompilationUnit) object;
+					OpenWithMenu action = new OpenWithMenu(getViewSite()
+							.getPage(), unit);
 					menu.add(action);
 				}
 			}
@@ -416,6 +419,7 @@ public final class RelatedView extends ViewPart
 	protected TableViewer getViewer() {
 		return this.viewer;
 	}
+
 	/**
 	 * @return force open in text editor
 	 */
@@ -441,31 +445,32 @@ public final class RelatedView extends ViewPart
 		if (part instanceof IEditorPart) {
 			IEditorInput input = ((IEditorPart) part).getEditorInput();
 			if (input instanceof IFileEditorInput) {
-				IWorkingCopyManager manager = JavaPlugin.getDefault()
-						.getWorkingCopyManager();
-				this.viewer.setInput(manager.getWorkingCopy(input));
+				this.viewer.setInput(input);
 			}
 		}
 	}
+
 	public void partClosed(IWorkbenchPart part) {
 		return;
 	}
+
 	public void partOpened(IWorkbenchPart part) {
 		if (part instanceof IEditorPart) {
 			IEditorInput input = ((IEditorPart) part).getEditorInput();
 			if (input instanceof IFileEditorInput) {
-				IWorkingCopyManager manager = JavaPlugin.getDefault()
-						.getWorkingCopyManager();
-				this.viewer.setInput(manager.getWorkingCopy(input));
+				this.viewer.setInput(input);
 			}
 		}
 	}
+
 	public void partDeactivated(IWorkbenchPart part) {
 		return;
 	}
+
 	public void partBroughtToTop(IWorkbenchPart part) {
 		return;
 	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
