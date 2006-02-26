@@ -2,7 +2,7 @@
  *
  * The ObjectStyle Group Software License, Version 1.0
  *
- * Copyright (c) 2004 - 2006 The ObjectStyle Group
+ * Copyright (c) 2004 - 2005 The ObjectStyle Group
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -61,7 +61,6 @@ import java.io.InputStream;
 import java.util.Dictionary;
 
 import org.eclipse.ant.core.AntRunner;
-import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -107,8 +106,8 @@ public class VariablesPlugin extends AbstractCorePlugin {
 		monitor = new NullProgressMonitor();
 		File tmpFile = File.createTempFile("wolips", "xml");
 		FileOutputStream fileOutputStream = new FileOutputStream(tmpFile);
-		InputStream inputStream = FileLocator.openStream(this.getBundle(),
-				new Path(VariablesPlugin.build_user_home_properties), false);
+		InputStream inputStream = this.openStream(new Path(
+				VariablesPlugin.build_user_home_properties));
 		int aByte = 0;
 		while (aByte >= 0) {
 			aByte = inputStream.read();

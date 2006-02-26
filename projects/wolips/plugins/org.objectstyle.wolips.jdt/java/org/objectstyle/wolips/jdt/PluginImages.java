@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 - 2006 The ObjectStyle Group 
+ * Copyright (c) 2002 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -58,7 +58,6 @@ package org.objectstyle.wolips.jdt;
 
 import java.net.URL;
 
-import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
@@ -112,7 +111,7 @@ public class PluginImages {
 	 * @return
 	 */
 	private static ImageDescriptor createImageDescriptor(String path) {
-		URL url = FileLocator.find(JdtPlugin.getDefault().getBundle(), new Path(path), null);
+		URL url = JdtPlugin.getDefault().find(new Path(path));
 		if (url != null)
 			return ImageDescriptor.createFromURL(url);
 		return ImageDescriptor.getMissingImageDescriptor();
