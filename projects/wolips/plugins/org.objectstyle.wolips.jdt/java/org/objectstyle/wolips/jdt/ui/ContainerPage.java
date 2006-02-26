@@ -106,11 +106,11 @@ public class ContainerPage extends WizardPage implements
 
 	private Button javaDocFolderButton;
 
-	private Text orderField;
+	Text orderField;
 
-	private Button exportedButton;
+	Button exportedButton;
 
-	private Framework framework;
+	Framework framework;
 
 	//private
 
