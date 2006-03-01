@@ -42,7 +42,7 @@
  *  
  */
 
-package org.objectstyle.wolips.componenteditor.editor;
+package org.objectstyle.wolips.componenteditor.launcher;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;

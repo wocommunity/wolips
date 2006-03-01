@@ -41,60 +41,75 @@
  * Group, please see <http://objectstyle.org/> .
  *  
  */
-package org.objectstyle.wolips.componenteditor.editor;
+package org.objectstyle.wolips.componenteditor.launcher;
 
-import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditorActionContributor;
-import org.eclipse.jface.action.ICoolBarManager;
-import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.IStatusLineManager;
-import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.ui.IActionBars;
-import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.part.MultiPageEditorActionBarContributor;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorMatchingStrategy;
+import org.eclipse.ui.IEditorReference;
+import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.ide.ResourceUtil;
+import org.eclipse.ui.part.FileEditorInput;
+import org.objectstyle.wolips.componenteditor.ComponenteditorPlugin;
+import org.objectstyle.wolips.componenteditor.part.ComponentEditorPart;
+import org.objectstyle.wolips.components.input.ComponentEditorInput;
 
-public class ComponentEditorMatchingContributor extends MultiPageEditorActionBarContributor{
+public class ComponentEditorMatchingStrategy implements IEditorMatchingStrategy {
 
-	private CompilationUnitEditorActionContributor compilationUnitEditorActionContributor;
-	
-	
-	public ComponentEditorMatchingContributor() {
-		super();
-		compilationUnitEditorActionContributor = new CompilationUnitEditorActionContributor();
-	}
-
-	public void setActivePage(IEditorPart activeEditor) {
-		compilationUnitEditorActionContributor.setActiveEditor(activeEditor);
-	}
-
-	public void contributeToCoolBar(ICoolBarManager coolBarManager) {
-		super.contributeToCoolBar(coolBarManager);
-		compilationUnitEditorActionContributor.contributeToCoolBar(coolBarManager);
-	}
-
-	public void contributeToMenu(IMenuManager menuManager) {
-		super.contributeToMenu(menuManager);
-		compilationUnitEditorActionContributor.contributeToMenu(menuManager);
-	}
-
-	public void contributeToStatusLine(IStatusLineManager statusLineManager) {
-		super.contributeToStatusLine(statusLineManager);
-		compilationUnitEditorActionContributor.contributeToStatusLine(statusLineManager);
-	}
-
-	public void contributeToToolBar(IToolBarManager toolBarManager) {
-		super.contributeToToolBar(toolBarManager);
-		compilationUnitEditorActionContributor.contributeToToolBar(toolBarManager);
-	}
-
-	public void init(IActionBars bars, IWorkbenchPage page) {
-		super.init(bars, page);
-		compilationUnitEditorActionContributor.init(bars, page);
-	}
-
-	public void init(IActionBars bars) {
-		super.init(bars);
-		compilationUnitEditorActionContributor.init(bars);
+	public boolean matches(IEditorReference editorReference,
+			IEditorInput editorInput) {
+		String editorID = editorReference.getId();
+		if(editorID == null) {
+			return false;
+		}
+		if(!editorID.equals(ComponenteditorPlugin.ComponentEditorID)) {
+			return false;
+		}
+		if (!(editorInput instanceof FileEditorInput)) {
+			return false;
+		}
+		IFile inputFile = ResourceUtil.getFile(editorInput);
+		if (inputFile == null) {
+			return false;
+		}
+		String extension = inputFile.getFileExtension();
+		if (extension == null) {
+			return false;
+		}
+		if (!("java".equalsIgnoreCase(extension)
+				|| "wod".equalsIgnoreCase(extension)
+				|| "html".equalsIgnoreCase(extension)
+				|| "woo".equalsIgnoreCase(extension)
+				|| "api".equalsIgnoreCase(extension) || "tiff"
+				.equalsIgnoreCase(extension))) {
+			return false;
+		}
+//		IEditorInput editorReferenceEditorInput = null;
+		//expensive: call it as late as possible
+		IWorkbenchPart workbenchPart = editorReference.getPart(true);
+		if(workbenchPart == null) {
+			return false;
+		}
+		ComponentEditorInput componentEditorInput = ((ComponentEditorPart)workbenchPart).getComponentEditorInput();
+//		if(editorReferenceEditorInput == null) {
+//			return false;
+//		}
+//		if(!(editorReferenceEditorInput instanceof ComponentEditorInput)) {
+//			return false;
+//		}
+//		ComponentEditorInput componentEditorInput = (ComponentEditorInput)editorReferenceEditorInput;
+		IEditorInput[] editorInputArray = componentEditorInput.getInput();
+		for (int i = 0; i < editorInputArray.length; i++) {
+			IFile inputFileFromEditor = ResourceUtil.getFile(editorInputArray[i]);
+			if(inputFileFromEditor == null) {
+				continue;
+			}
+			if(inputFileFromEditor.equals(inputFile)) {
+				return true;
+			}
+			
+		}
+		return false;
 	}
 
 }

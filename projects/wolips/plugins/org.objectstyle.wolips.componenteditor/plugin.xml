@@ -9,7 +9,7 @@
             extensions="java,html,wod,woo,api"
             icon="icons/ComponentEditor.gif"
             id="org.objectstyle.wolips.wodclipse.mpe.ComponentEditorLauncher"
-            launcher="org.objectstyle.wolips.componenteditor.editor.ComponentEditorLauncher"
+            launcher="org.objectstyle.wolips.componenteditor.launcher.ComponentEditorLauncher"
             name="WOComponent Editor">
 			<contentTypeBinding
                contentTypeId="org.eclipse.jdt.core.javaSource"
@@ -28,12 +28,12 @@
             /> 
       </editor>
       <editor
-            class="org.objectstyle.wolips.componenteditor.editor.ComponentEditor"
-            contributorClass="org.objectstyle.wolips.componenteditor.editor.ComponentEditorMatchingContributor"
+            class="org.objectstyle.wolips.componenteditor.part.ComponentEditor"
+            contributorClass="org.objectstyle.wolips.componenteditor.contributor.ComponentEditorContributor"
             default="false"
             icon="icons/ComponentEditor.gif"
             id="org.objectstyle.wolips.wodclipse.mpe.ComponentEditor"
-            matchingStrategy="org.objectstyle.wolips.componenteditor.editor.ComponentEditorMatchingStrategy"
+            matchingStrategy="org.objectstyle.wolips.componenteditor.launcher.ComponentEditorMatchingStrategy"
             name="WOComponent Editor internal">
       </editor>
    </extension>

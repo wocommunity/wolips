@@ -41,105 +41,70 @@
  * Group, please see <http://objectstyle.org/> .
  *  
  */
-package org.objectstyle.wolips.componenteditor.editor;
+package org.objectstyle.wolips.componenteditor.contributor;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IMarker;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.ui.IEditorInput;
+import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditorActionContributor;
+import org.eclipse.jface.action.ICoolBarManager;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.IStatusLineManager;
+import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.ide.IGotoMarker;
-import org.eclipse.ui.ide.ResourceUtil;
-import org.objectstyle.wolips.componenteditor.ComponenteditorPlugin;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.part.MultiPageEditorActionBarContributor;
+import org.objectstyle.wolips.componenteditor.part.ComponentEditor;
 
+public class ComponentEditorContributor extends
+		MultiPageEditorActionBarContributor {
 
-/**
- * @author uli
- */
-public class ComponentEditor extends ComponentEditorPart implements IGotoMarker {
+	private CompilationUnitEditorActionContributor compilationUnitEditorActionContributor;
 
-	public ComponentEditor() {
+	public ComponentEditorContributor() {
 		super();
+		compilationUnitEditorActionContributor = new CompilationUnitEditorActionContributor();
 	}
 
-	public String getTitleToolTip() {
-		StringBuffer toolTip = new StringBuffer();
-
-		IEditorInput[] editorInputArray = componentEditorInput.getInput();
-		for (int i = 0; i < editorInputArray.length; i++) {
-			IFile inputFileFromEditor = ResourceUtil.getFile(editorInputArray[i]);
-			if(inputFileFromEditor == null) {
-				continue;
-			}
-			IPath pathFromInputFile = inputFileFromEditor.getFullPath();
-			if(pathFromInputFile == null) {
-				continue;
-			}
-			toolTip.append(pathFromInputFile.toString());
-			toolTip.append("\n");
-		}
-        return toolTip.toString();
-    }
-	
-	public Object getAdapter(Class adapter) {
-		if (adapter.equals(IGotoMarker.class)) {
-			return this;
-		}
-		return super.getAdapter(adapter);
+	public void setActivePage(IEditorPart activeEditor) {
+		IEditorPart editorPart = activeEditor;
+//		if (activeEditor instanceof ComponentEditor) {
+//			ComponentEditor componentEditor = (ComponentEditor) activeEditor;
+//			editorPart = componentEditor.compilationUnitEditor;
+//		}
+		compilationUnitEditorActionContributor
+				.setActiveEditor(editorPart);
 	}
 
-	public void gotoMarker(IMarker marker) {
-		IResource resource = marker.getResource();
-		if(resource == null) {
-			return;
-		}
-		IEditorInput[] editorInputArray = componentEditorInput.getInput();
-		for (int i = 0; i < editorInputArray.length; i++) {
-			IFile inputFileFromEditor = ResourceUtil.getFile(editorInputArray[i]);
-			if(inputFileFromEditor == null) {
-				continue;
-			}
-			IPath pathFromInputFile = inputFileFromEditor.getLocation();
-			if(pathFromInputFile == null) {
-				continue;
-			}
-			IPath pathFromResource = resource.getLocation();
-			if(pathFromResource == null) {
-				continue;
-			}
-			if(pathFromInputFile.equals(pathFromResource)) {
-				IEditorPart editorPart = null;
-				if(i == 0) {
-					editorPart = compilationUnitEditor;
-				}
-				if(i == 1) {
-					editorPart = structuredTextEditorHTMLWithWebObjectTags;
-				}
-				if(i == 2) {
-					editorPart = wodEditor;
-				}
-				if(editorPart == null) {
-					continue;
-				}
-				IGotoMarker gotoMarker = (IGotoMarker)editorPart.getAdapter(IGotoMarker.class);
-				if(gotoMarker == null) {
-					return;
-				}
-				if(i == 0) {
-					this.switchToJava();
-				}
-				if(i == 1) {
-					this.switchToHtml();
-				}
-				if(i == 2) {
-					this.switchToWod();
-				}
-				gotoMarker.gotoMarker(marker);
-				return;
-			}
-			
-		}
+	public void contributeToCoolBar(ICoolBarManager coolBarManager) {
+		super.contributeToCoolBar(coolBarManager);
+		compilationUnitEditorActionContributor
+				.contributeToCoolBar(coolBarManager);
+	}
+
+	public void contributeToMenu(IMenuManager menuManager) {
+		super.contributeToMenu(menuManager);
+		compilationUnitEditorActionContributor.contributeToMenu(menuManager);
+	}
+
+	public void contributeToStatusLine(IStatusLineManager statusLineManager) {
+		super.contributeToStatusLine(statusLineManager);
+		compilationUnitEditorActionContributor
+				.contributeToStatusLine(statusLineManager);
+	}
+
+	public void contributeToToolBar(IToolBarManager toolBarManager) {
+		super.contributeToToolBar(toolBarManager);
+		compilationUnitEditorActionContributor
+				.contributeToToolBar(toolBarManager);
+	}
+
+	public void init(IActionBars bars, IWorkbenchPage page) {
+		super.init(bars, page);
+		compilationUnitEditorActionContributor.init(bars, page);
+	}
+
+	public void init(IActionBars bars) {
+		super.init(bars);
+		compilationUnitEditorActionContributor.init(bars);
 	}
 
 }

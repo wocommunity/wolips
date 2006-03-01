@@ -44,7 +44,7 @@
 package org.objectstyle.wolips.componenteditor.editormenu;
 
 import org.eclipse.jface.action.IAction;
-import org.objectstyle.wolips.componenteditor.editor.ComponentEditor;
+import org.objectstyle.wolips.componenteditor.part.ComponentEditor;
 
 public class SwitchToApiEditorActionDelegate extends AbstractSwitchToActionDelegate {
 

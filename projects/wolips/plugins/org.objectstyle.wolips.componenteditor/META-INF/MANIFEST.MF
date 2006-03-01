@@ -24,8 +24,12 @@ Require-Bundle: org.eclipse.core.runtime,
  org.objectstyle.wolips.htmleditor,
  org.eclipse.ui.editors,
  org.eclipse.ui.workbench.texteditor,
- org.objectstyle.wolips.htmlpreview
+ org.objectstyle.wolips.htmlpreview,
+ org.eclipse.jface.text
 Eclipse-LazyStart: true
 Export-Package: org.objectstyle.wolips.componenteditor,
- org.objectstyle.wolips.componenteditor.editor,
- org.objectstyle.wolips.componenteditor.editormenu
+ org.objectstyle.wolips.componenteditor.contributor,
+ org.objectstyle.wolips.componenteditor.editormenu,
+ org.objectstyle.wolips.componenteditor.launcher,
+ org.objectstyle.wolips.componenteditor.outline,
+ org.objectstyle.wolips.componenteditor.part

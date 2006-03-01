@@ -47,7 +47,7 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IEditorActionDelegate;
 import org.eclipse.ui.IEditorPart;
-import org.objectstyle.wolips.componenteditor.editor.ComponentEditor;
+import org.objectstyle.wolips.componenteditor.part.ComponentEditor;
 
 public abstract class AbstractSwitchToActionDelegate implements
 		IEditorActionDelegate {
