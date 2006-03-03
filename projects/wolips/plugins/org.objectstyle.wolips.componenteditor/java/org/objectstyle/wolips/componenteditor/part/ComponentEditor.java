@@ -69,122 +69,137 @@ public class ComponentEditor extends ComponentEditorPart implements IGotoMarker,
 
 	
 	public IDocumentProvider getDocumentProvider() {
-		if(this.getActivePage() != 0) {
-			this.switchToJava();
+		IEditorPart editorPart = this.getActiveEditor();
+		if(editorPart == null || !(this.getActiveEditor() instanceof ITextEditor)) {
+			return null;
 		}
-		ITextEditor textEditor = (ITextEditor)compilationUnitEditor;
+		ITextEditor textEditor = (ITextEditor)editorPart;
 		return textEditor.getDocumentProvider();
 	}
 
 	public void close(boolean save) {
-		if(this.getActivePage() != 0) {
-			this.switchToJava();
+		IEditorPart editorPart = this.getActiveEditor();
+		if(editorPart == null || !(this.getActiveEditor() instanceof ITextEditor)) {
+			return;
 		}
-		ITextEditor textEditor = (ITextEditor)compilationUnitEditor;
+		ITextEditor textEditor = (ITextEditor)editorPart;
 		textEditor.close(save);
 	}
 
 	public boolean isEditable() {
-		if(this.getActivePage() != 0) {
-			this.switchToJava();
+		IEditorPart editorPart = this.getActiveEditor();
+		if(editorPart == null || !(this.getActiveEditor() instanceof ITextEditor)) {
+			return false;
 		}
-		ITextEditor textEditor = (ITextEditor)compilationUnitEditor;
+		ITextEditor textEditor = (ITextEditor)editorPart;
 		return textEditor.isEditable();
 	}
 
 	public void doRevertToSaved() {
-		if(this.getActivePage() != 0) {
-			this.switchToJava();
+		IEditorPart editorPart = this.getActiveEditor();
+		if(editorPart == null || !(this.getActiveEditor() instanceof ITextEditor)) {
+			return;
 		}
-		ITextEditor textEditor = (ITextEditor)compilationUnitEditor;
+		ITextEditor textEditor = (ITextEditor)editorPart;
 		textEditor.doRevertToSaved();
 	}
 
 	public void setAction(String actionID, IAction action) {
-		if(this.getActivePage() != 0) {
-			this.switchToJava();
+		IEditorPart editorPart = this.getActiveEditor();
+		if(editorPart == null || !(this.getActiveEditor() instanceof ITextEditor)) {
+			return;
 		}
-		ITextEditor textEditor = (ITextEditor)compilationUnitEditor;
+		ITextEditor textEditor = (ITextEditor)editorPart;
 		textEditor.setAction(actionID, action);
 	}
 
 	public IAction getAction(String actionId) {
-		if(this.getActivePage() != 0) {
-			this.switchToJava();
+		IEditorPart editorPart = this.getActiveEditor();
+		if(editorPart == null || !(this.getActiveEditor() instanceof ITextEditor)) {
+			return null;
 		}
-		ITextEditor textEditor = (ITextEditor)compilationUnitEditor;
+		ITextEditor textEditor = (ITextEditor)editorPart;
 		return textEditor.getAction(actionId);
 	}
 
 	public void setActionActivationCode(String actionId, char activationCharacter, int activationKeyCode, int activationStateMask) {
-		if(this.getActivePage() != 0) {
-			this.switchToJava();
+		IEditorPart editorPart = this.getActiveEditor();
+		if(editorPart == null || !(this.getActiveEditor() instanceof ITextEditor)) {
+			return;
 		}
-		ITextEditor textEditor = (ITextEditor)compilationUnitEditor;
+		ITextEditor textEditor = (ITextEditor)editorPart;
 		textEditor.setActionActivationCode(actionId, activationCharacter, activationKeyCode, activationStateMask);
 	}
 
 	public void removeActionActivationCode(String actionId) {
-		if(this.getActivePage() != 0) {
-			this.switchToJava();
+		IEditorPart editorPart = this.getActiveEditor();
+		if(editorPart == null || !(this.getActiveEditor() instanceof ITextEditor)) {
+			return;
 		}
-		ITextEditor textEditor = (ITextEditor)compilationUnitEditor;
+		ITextEditor textEditor = (ITextEditor)editorPart;
 		textEditor.removeActionActivationCode(actionId);
 	}
 
 	public boolean showsHighlightRangeOnly() {
-		if(this.getActivePage() != 0) {
-			this.switchToJava();
+		IEditorPart editorPart = this.getActiveEditor();
+		if(editorPart == null || !(this.getActiveEditor() instanceof ITextEditor)) {
+			return false;
 		}
-		ITextEditor textEditor = (ITextEditor)compilationUnitEditor;
+		ITextEditor textEditor = (ITextEditor)editorPart;
 		return textEditor.showsHighlightRangeOnly();
 	}
 
 	public void showHighlightRangeOnly(boolean showHighlightRangeOnly) {
-		if(this.getActivePage() != 0) {
-			this.switchToJava();
+		IEditorPart editorPart = this.getActiveEditor();
+		if(editorPart == null || !(this.getActiveEditor() instanceof ITextEditor)) {
+			return;
 		}
-		ITextEditor textEditor = (ITextEditor)compilationUnitEditor;
+		ITextEditor textEditor = (ITextEditor)editorPart;
 		textEditor.showHighlightRangeOnly(showHighlightRangeOnly);
 	}
 
 	public void setHighlightRange(int offset, int length, boolean moveCursor) {
-		if(this.getActivePage() != 0) {
-			this.switchToJava();
+		IEditorPart editorPart = this.getActiveEditor();
+		if(editorPart == null || !(this.getActiveEditor() instanceof ITextEditor)) {
+			return;
 		}
-		ITextEditor textEditor = (ITextEditor)compilationUnitEditor;
+		ITextEditor textEditor = (ITextEditor)editorPart;
 		textEditor.setHighlightRange(offset, length, moveCursor);
 	}
 
 	public IRegion getHighlightRange() {
-		if(this.getActivePage() != 0) {
-			this.switchToJava();
+		IEditorPart editorPart = this.getActiveEditor();
+		if(editorPart == null || !(this.getActiveEditor() instanceof ITextEditor)) {
+			return null;
 		}
-		ITextEditor textEditor = (ITextEditor)compilationUnitEditor;
+		ITextEditor textEditor = (ITextEditor)editorPart;
 		return textEditor.getHighlightRange();
 	}
 
 	public void resetHighlightRange() {
-		if(this.getActivePage() != 0) {
-			this.switchToJava();
+		IEditorPart editorPart = this.getActiveEditor();
+		if(editorPart == null || !(this.getActiveEditor() instanceof ITextEditor)) {
+			return;
 		}
-		ITextEditor textEditor = (ITextEditor)compilationUnitEditor;
+		ITextEditor textEditor = (ITextEditor)editorPart;
 		textEditor.resetHighlightRange();
 	}
 
 	public ISelectionProvider getSelectionProvider() {
-		if(this.getActivePage() != 0) {
-			this.switchToJava();
+		IEditorPart editorPart = this.getActiveEditor();
+		if(editorPart == null || !(this.getActiveEditor() instanceof ITextEditor)) {
+			return null;
 		}
-		ITextEditor textEditor = (ITextEditor)compilationUnitEditor;
+		ITextEditor textEditor = (ITextEditor)editorPart;
 		return textEditor.getSelectionProvider();
 	}
 
 	public void selectAndReveal(int offset, int length) {
-		if(this.getActivePage() != 0) {
-			this.switchToJava();
+		IEditorPart editorPart = this.getActiveEditor();
+		if(editorPart == null || !(this.getActiveEditor() instanceof ITextEditor)) {
+			return;
 		}
-		ITextEditor textEditor = (ITextEditor)compilationUnitEditor;
+		ITextEditor textEditor = (ITextEditor)editorPart;
 		textEditor.selectAndReveal(offset, length);
 	}
 

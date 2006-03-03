@@ -51,7 +51,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.ide.ResourceUtil;
 import org.eclipse.ui.part.FileEditorInput;
 import org.objectstyle.wolips.componenteditor.ComponenteditorPlugin;
-import org.objectstyle.wolips.componenteditor.part.ComponentEditorPart;
+import org.objectstyle.wolips.componenteditor.part.ComponentEditor;
 import org.objectstyle.wolips.components.input.ComponentEditorInput;
 
 public class ComponentEditorMatchingStrategy implements IEditorMatchingStrategy {
@@ -90,7 +90,8 @@ public class ComponentEditorMatchingStrategy implements IEditorMatchingStrategy 
 		if(workbenchPart == null) {
 			return false;
 		}
-		ComponentEditorInput componentEditorInput = ((ComponentEditorPart)workbenchPart).getComponentEditorInput();
+		ComponentEditor componentEditor = (ComponentEditor)workbenchPart;
+		ComponentEditorInput componentEditorInput = componentEditor.getComponentEditorInput();
 //		if(editorReferenceEditorInput == null) {
 //			return false;
 //		}
@@ -105,6 +106,23 @@ public class ComponentEditorMatchingStrategy implements IEditorMatchingStrategy 
 				continue;
 			}
 			if(inputFileFromEditor.equals(inputFile)) {
+				switch (i) {
+				case 0:
+					componentEditor.switchToJava();
+					break;
+				case 1:
+					componentEditor.switchToHtml();
+					break;
+				case 2:
+					componentEditor.switchToWod();
+					break;
+				case 3:
+					componentEditor.switchToApi();
+					break;
+
+				default:
+					break;
+				}
 				return true;
 			}
 			

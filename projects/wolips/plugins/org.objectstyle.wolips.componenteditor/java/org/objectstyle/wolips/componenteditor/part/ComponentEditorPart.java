@@ -437,11 +437,7 @@ public class ComponentEditorPart extends MultiPageEditorPart {
 
 	public void switchToPage(int page) {
 		this.setActivePage(page);
-		Display.getDefault().asyncExec(new Runnable() {
-			public void run() {
-				setFocus();
-			}
-		});
+		setFocus();
 	}
 
 	/*
