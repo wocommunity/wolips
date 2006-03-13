@@ -57,13 +57,22 @@ package org.objectstyle.woproject.ant;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
 import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.ProjectHelper;
 import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.Path;
+import org.apache.tools.ant.types.selectors.SelectorUtils;
 
 
 /**
@@ -214,5 +223,74 @@ public class FrameworkSet extends FileSet {
         }
         return path;
     }
+    
+    /**
+     * Overrides the super method in order to return the right DirectoryScanner that doesn't
+     * sort directories. See svn revision detail:
+     * http://svn.apache.org/viewcvs.cgi?rev=274976&view=rev
+     * 
+     * Instead sort by the order defined in the include list.
+     */
+    public DirectoryScanner getDirectoryScanner(Project p)
+    {
+        DirectoryScanner ds = super.getDirectoryScanner(p);
+        if(isReference())
+            return ds;
+        // Setup a new type for the directory scanner to avoid sorting included
+        // directories as set by:
+        // http://svn.apache.org/viewcvs.cgi?rev=274976&view=rev
+        // but rather sort by order of the includes list.
+        ds = new SortedDirectoryScanner();
+        setupDirectoryScanner(ds, p);
+        ds.setFollowSymlinks(isFollowSymlinks());
+        ds.scan();
+        return ds;
+    }
 
+    
+    class SortedDirectoryScanner extends DirectoryScanner implements Comparator {
+    
+        List includeNonPatternList;
+        
+        public synchronized String[] getIncludedDirectories()
+        {
+            
+            if(dirsIncluded == null) {
+                throw new IllegalStateException();
+            } else {
+                
+                if (includeNonPatternList == null) {
+                    includeNonPatternList = new ArrayList();
+                    fillNonPatternList( includeNonPatternList,includes);
+                }
+                Collections.sort(dirsIncluded, this);
+                String directories[] = new String[dirsIncluded.size()];
+                dirsIncluded.copyInto(directories);
+                return directories;
+            }
+        }
+
+        public int compare(Object o1, Object o2) {
+            String frameworkDir1 = (String) o1;
+            String frameworkDir2 = (String) o2;
+            if ( isCaseSensitive() )
+                return includeNonPatternList.indexOf(frameworkDir1) - includeNonPatternList.indexOf(frameworkDir2);
+            else 
+                return includeNonPatternList.indexOf(frameworkDir1.toUpperCase()) - includeNonPatternList.indexOf(frameworkDir2.toUpperCase());
+        }
+        
+        private String[] fillNonPatternList(List list, String patterns[])
+        {
+            ArrayList al = new ArrayList(patterns.length);
+            for(int i = 0; i < patterns.length; i++)
+                if(!SelectorUtils.hasWildcards(patterns[i]))
+                    list.add(isCaseSensitive() ? ((Object) (patterns[i])) : ((Object) (patterns[i].toUpperCase())));
+                else
+                    al.add(patterns[i]);
+
+            return list.size() != 0 ? (String[])al.toArray(new String[al.size()]) : patterns;
+        }
+        
+    }
+    
 }
