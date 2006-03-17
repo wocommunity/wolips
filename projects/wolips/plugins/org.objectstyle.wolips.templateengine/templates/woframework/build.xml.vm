@@ -4,7 +4,7 @@
 	<!-- add optional targets to depends list if needed -->
 	<target name="build" depends="setProps,init.build,build.woframework"/>
 
-  	<target name="compileAndBuild" depends="setProps,compile,init.build,build.woframework" />
+  	<target name="compileAndBuild" depends="setProps,init.build,compile,build.woframework" />
 
 	<target name="install" depends="setProps,init.install,build.woframework"/>
 	    
