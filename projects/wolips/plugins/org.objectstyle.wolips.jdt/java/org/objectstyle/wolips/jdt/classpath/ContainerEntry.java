@@ -120,7 +120,7 @@ public class ContainerEntry implements Comparable {
 			IPath[] libraryPaths = framework.getLibraryPaths();
 			for (int i = 0; i < libraryPaths.length; i++) {
 				IClasspathEntry entry = JavaCore.newLibraryEntry(
-						libraryPaths[i], this.srcPath, this.javaDocPath,
+						libraryPaths[i], framework.getSourcePath(), this.javaDocPath,
 						this.exported);
 				this.entries.add(entry);
 			}
@@ -211,7 +211,7 @@ public class ContainerEntry implements Comparable {
 			IPath[] libraryPaths = framework.getLibraryPaths();
 			for (int j = 0; j < libraryPaths.length; j++) {
 				IClasspathEntry entry = JavaCore.newLibraryEntry(
-						libraryPaths[j], this.srcPath, this.javaDocPath,
+						libraryPaths[j], framework.getSrcPath(), this.javaDocPath,
 						this.exported);
 				this.entries.add(entry);
 			}

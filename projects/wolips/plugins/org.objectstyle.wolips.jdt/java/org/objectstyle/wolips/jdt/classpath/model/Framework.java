@@ -58,6 +58,7 @@ package org.objectstyle.wolips.jdt.classpath.model;
 import java.util.ArrayList;
 
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 
 /**
  * @author ulrich
@@ -68,15 +69,17 @@ public class Framework {
 	private String jarFiles[];
 	private String zipFiles[];
 	private String order;
-	private IPath srcPath;
+	private String sourceFile;
 	private IPath javaDocPath;
+    private IPath srcPath;
 	private boolean exported = false;
 	
-	protected Framework(String name, Root root, String jarFiles[], String zipFiles[]) {
+	protected Framework(String name, Root root, String jarFiles[], String zipFiles[], String sourceFile) {
 		this.name = name;
 		this.root = root;
 		this.jarFiles = jarFiles;
 		this.zipFiles = zipFiles;
+        this.sourceFile = sourceFile;
 	}
 
 	/**
@@ -156,7 +159,7 @@ public class Framework {
 	 * @return Returns the srcPath.
 	 */
 	public IPath getSrcPath() {
-		return srcPath;
+		return  this.srcPath;
 	}
 	/**
 	 * @param srcPath The srcPath to set.
@@ -164,4 +167,14 @@ public class Framework {
 	public void setSrcPath(IPath srcPath) {
 		this.srcPath = srcPath;
 	}
+
+    /**
+     * @return
+     */
+    public IPath getSourcePath() {
+        IPath sourcePath = null;
+        if (sourceFile != null)
+            sourcePath = libraryPath(sourceFile);
+        return sourcePath;
+    }
 }
