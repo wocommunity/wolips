@@ -61,6 +61,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.objectstyle.woenvironment.pb.PBXProject.ObjectsTable;
 import org.objectstyle.woenvironment.pb.PBXProject.ObjectsTable.ID;
 
 /**
@@ -101,42 +102,37 @@ public class XcodeProjProject extends PBXProject {
   }
 
   protected Map newAppServerTarget(List _buildPhaseIDs, ObjectsTable _objectsTable) {
-    Map result = super.newAppServerTarget(_buildPhaseIDs, _objectsTable);
+    Map result = map( new Object[] {
+			"isa",				"PBXLegacyTarget",
+			"buildArgumentsString", "-emacs $(ACTION)",
+			"buildSettings",	new HashMap(),
+			"buildToolPath", "/Developer/Java/Ant/bin/ant",
+			"passBuildSettingsInEnvironment", "1",
+			"name",				"Ant",
+			"buildPhases",		_buildPhaseIDs });
     List buildConfigurations = new LinkedList();
-    buildConfigurations.add(_objectsTable.insert(newBuildConfiguration(map(new Object[] { "COPY_PHASE_STRIP", "NO" }), "Development")));
-    buildConfigurations.add(_objectsTable.insert(newBuildConfiguration(map(new Object[] { "COPY_PHASE_STRIP", "YES" }), "Deployment")));
+    buildConfigurations.add(_objectsTable.insert(newBuildConfiguration(map(new Object[] { "COPY_PHASE_STRIP", "NO" }), "Debug")));
+    buildConfigurations.add(_objectsTable.insert(newBuildConfiguration(map(new Object[] { "COPY_PHASE_STRIP", "YES" }), "Release")));
     buildConfigurations.add(_objectsTable.insert(newBuildConfiguration(new HashMap(), "Default")));
     result.put("buildConfigurationList", _objectsTable.insert(newBuildConfigurationList(buildConfigurations, false, "Default")));
-    result.put("productName", "Application Server");
+    result.put("productName", "Ant");
     return result;
-  }
-
-  protected Map newSourcesBuildPhase(List _buildFileIDs) {
-    return map(new Object[] { "isa", "PBXSourcesBuildPhase", "files", _buildFileIDs, "buildActionMask", "2147483647", "runOnlyForDeploymentPostprocessing", "0" });
-  }
-
-  protected Map newResourcesBuildPhase(List _buildFileIDs) {
-    return map(new Object[] { "isa", "PBXResourcesBuildPhase", "files", _buildFileIDs, "buildActionMask", "2147483647", "runOnlyForDeploymentPostprocessing", "0" });
-  }
-
-  protected Map newFrameworkBuildPhase(List _buildFileIDs) {
-    return map(new Object[] { "isa", "PBXFrameworksBuildPhase", "files", _buildFileIDs, "buildActionMask", "2147483647", "runOnlyForDeploymentPostprocessing", "0" });
   }
 
   protected Map newProject(ID _groupID, List _targetIDs, ObjectsTable _objectsTable) {
     Map project = super.newProject(_groupID, _targetIDs, _objectsTable);
 
     List buildConfigurations = new LinkedList();
-    buildConfigurations.add(_objectsTable.insert(newBuildConfiguration(new HashMap(), "Development")));
-    buildConfigurations.add(_objectsTable.insert(newBuildConfiguration(new HashMap(), "Deployment")));
+    buildConfigurations.add(_objectsTable.insert(newBuildConfiguration(new HashMap(), "Debug")));
+    buildConfigurations.add(_objectsTable.insert(newBuildConfiguration(new HashMap(), "Release")));
     buildConfigurations.add(_objectsTable.insert(newBuildConfiguration(new HashMap(), "Default")));
     project.put("buildConfigurationList", _objectsTable.insert(newBuildConfigurationList(buildConfigurations, false, "Default")));
 
     project.put("buildSettings", new HashMap());
 
     List buildStyles = new LinkedList();
-    buildStyles.add(_objectsTable.insert(newBuildStyle(map(new Object[] { "COPY_PHASE_STRIP", "NO" }), "Development")));
-    buildStyles.add(_objectsTable.insert(newBuildStyle(map(new Object[] { "COPY_PHASE_STRIP", "YES" }), "Deployment")));
+    buildStyles.add(_objectsTable.insert(newBuildStyle(map(new Object[] { "COPY_PHASE_STRIP", "NO" }), "Debug")));
+    buildStyles.add(_objectsTable.insert(newBuildStyle(map(new Object[] { "COPY_PHASE_STRIP", "YES" }), "Release")));
     project.put("buildStyles", buildStyles);
 
     return project;
@@ -162,4 +158,9 @@ public class XcodeProjProject extends PBXProject {
   protected Map newPBXProj(Map objectsTable, ObjectsTable.ID rootObject) {
     return map(new Object[] { "archiveVersion", "1", "classes", new HashMap(), "objectVersion", "42", "rootObject", rootObject, "objects", objectsTable });
   }
+  
+  protected boolean hasBuildPhases() {
+	  return false;
+  }
+  
 }
