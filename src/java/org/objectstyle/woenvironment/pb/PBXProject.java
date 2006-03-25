@@ -179,9 +179,11 @@ public class PBXProject {
 		
 		//	Create the PBXBuildPhase and add it to the objects table.
 		ArrayList buildPhaseIDs = new ArrayList( 1 );
-		buildPhaseIDs.add( objectsTable.insert( newSourcesBuildPhase( sourceBuildFileIDs)));
-		buildPhaseIDs.add( objectsTable.insert( newResourcesBuildPhase( resourceBuildFileIDs)));
-		buildPhaseIDs.add( objectsTable.insert( newFrameworkBuildPhase( frameworkBuildFileIDs)));
+		if (hasBuildPhases()) {
+			buildPhaseIDs.add( objectsTable.insert( newSourcesBuildPhase( sourceBuildFileIDs)));
+			buildPhaseIDs.add( objectsTable.insert( newResourcesBuildPhase( resourceBuildFileIDs)));
+			buildPhaseIDs.add( objectsTable.insert( newFrameworkBuildPhase( frameworkBuildFileIDs)));
+		}
 		
 		//	Create the PBXToolTarget and add it to the objects table and
 		//	the targets list.
@@ -292,6 +294,10 @@ public class PBXProject {
 			"objectVersion",	"38",
 			"rootObject",		rootObject,
 			"objects",			objectsTable });
+	}
+	
+	protected boolean hasBuildPhases() {
+		return true;
 	}
 	
 	protected static class ObjectsTable extends TreeMap {
