@@ -1,8 +1,8 @@
 /* ====================================================================
+ * 
+ * The ObjectStyle Group Software License, Version 1.0 
  *
- * The ObjectStyle Group Software License, Version 1.0
- *
- * Copyright (c) 2005 The ObjectStyle Group,
+ * Copyright (c) 2004 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,15 +18,15 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution, if
- *    any, must include the following acknowlegement:
- *       "This product includes software developed by the
+ *    any, must include the following acknowlegement:  
+ *       "This product includes software developed by the 
  *        ObjectStyle Group (http://objectstyle.org/)."
  *    Alternately, this acknowlegement may appear in the software itself,
  *    if and wherever such third-party acknowlegements normally appear.
  *
- * 4. The names "ObjectStyle Group" and "Cayenne"
+ * 4. The names "ObjectStyle Group" and "Cayenne" 
  *    must not be used to endorse or promote products derived
- *    from this software without prior written permission. For written
+ *    from this software without prior written permission. For written 
  *    permission, please contact andrus@objectstyle.org.
  *
  * 5. Products derived from this software may not be called "ObjectStyle"
@@ -53,18 +53,65 @@
  * <http://objectstyle.org/>.
  *
  */
-package org.objectstyle.wolips.core.resources.types.file;
 
-import org.objectstyle.wolips.core.resources.pattern.IPatternList;
+package org.objectstyle.wolips.core.resources.pattern;
+import org.apache.tools.ant.types.selectors.SelectorUtils;
+import org.eclipse.core.resources.IFile;
+import org.objectstyle.wolips.core.resources.pattern.PatternsetReader;
+/**
+ * A string pattern matcher, supporting ant patterns.
+ */
+public class PatternsetMatcher extends PatternsetReader {
 
-public interface IDotWOLipsAdapter extends IFileAdapter {
+	/**
+	 * @param patternset
+	 */
+	public PatternsetMatcher(IFile patternset) {
+		super(patternset);
+	}
+	
+	/**
+	 * @param pattern
+	 */
+	public  PatternsetMatcher(String[] pattern) {
+		super(pattern);
+	}
+	
 
-	public static final String FILE_NAME = ".WOLips";
-	public abstract IPatternList getClassesExcludePatternList();
-	public abstract IPatternList getClassesIncludePatternList();
-	public abstract IPatternList getResourcesExcludePatternList();
-	public abstract IPatternList getResourcesIncludePatternList();
-	public abstract IPatternList getWoappResourcesExcludePatternList();
-	public abstract IPatternList getWoappResourcesIncludePatternList();
-	public abstract void saveDocument();
+	/**
+	 * match the given <code>text</code> with the pattern
+	 * @param string
+	 * 
+	 * @return true if matched eitherwise false
+	 */
+	public boolean match(String string) {
+		String[] pattern = this.getPattern();
+		for (int i = 0; i < pattern.length; i++) {
+			if (SelectorUtils.matchPath(pattern[i], string))
+				return true;
+		}
+		return false;
+	}
+	/* (non-Javadoc)
+	 * @see org.objectstyle.wolips.datasets.pattern.IStringMatcher#match(java.lang.String)
+	 */
+	public boolean match(String[] strings) {
+		for(int i = 0; i < strings.length; i++) {
+			if(this.match(strings[i])) {
+				return true;
+			}
+		}
+		return false;
+	}
+	/* (non-Javadoc)
+	 * @see org.objectstyle.wolips.datasets.pattern.IStringMatcher#hasPattern(java.lang.String)
+	 */
+	public boolean hasPattern(String string) {
+		String[] pattern = this.getPattern();
+		for (int i = 0; i < pattern.length; i++) {
+			if (pattern[i].equals(string))
+				return true;
+		}
+		return false;
+	}
 }

@@ -2,7 +2,7 @@
  *
  * The ObjectStyle Group Software License, Version 1.0
  *
- * Copyright (c) 2005 The ObjectStyle Group,
+ * Copyright (c) 2005 - 2006 The ObjectStyle Group,
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -60,7 +60,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 /**
- * Run all compiler regression tests
+ * Run all file types regression tests
  */
 public class FileTypesTestSuite extends TestCase {
 
@@ -77,7 +77,6 @@ public class FileTypesTestSuite extends TestCase {
 	 */
 	public static Test suite() throws Exception {
 		TestSuite suite = new TestSuite();
-		suite.addTestSuite(DotWOLipsAdapterTest.class);
 		suite.addTestSuite(PBDotProjectAdapterTest.class);
 		return suite;
 	}

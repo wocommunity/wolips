@@ -56,10 +56,9 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.objectstyle.wolips.core.resources.internal.pattern.PatternList;
-import org.objectstyle.wolips.core.resources.types.file.IDotWOLipsAdapter;
+import org.objectstyle.wolips.core.resources.internal.types.file.ProjectPatternsets;
 import org.objectstyle.wolips.core.resources.types.folder.IDotApplicationAdapter;
 import org.objectstyle.wolips.core.resources.types.folder.IDotFrameworkAdapter;
-import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
 
 /**
  * @author ulrich/mike
@@ -75,7 +74,7 @@ public class AbstractBuildVisitor {
 
   private IProgressMonitor myProgressMonitor;
   private BuilderWrapper[] myBuilderWrappers;
-  private IDotWOLipsAdapter myDotWOLipsAdapter;
+  private ProjectPatternsets projectPatternsets;
   private Map myBuildCache;
   private final static PatternList DEFAULT_EXCLUDE_MATCHER = new PatternList(new String[] { "**/.svn", "**/.svn/**", "**/CVS", "**.*~/**", "**/CVS/**", "**/build/**", "**/dist/**" });
 
@@ -102,12 +101,11 @@ public class AbstractBuildVisitor {
   }
 
   public void buildStarted(IProject project) {
-    IProjectAdapter projectAdapter = (IProjectAdapter) project.getAdapter(IProjectAdapter.class);
-    myDotWOLipsAdapter = projectAdapter.getDotWOLipsAdapter();
+    projectPatternsets = new ProjectPatternsets(project);
   }
 
   public void visitingDone() {
-    myDotWOLipsAdapter = null;
+	  projectPatternsets = null;
   }
 
   public int getWoResourceType(IResource _resource) {
@@ -132,13 +130,13 @@ public class AbstractBuildVisitor {
     if (DEFAULT_EXCLUDE_MATCHER.matches(strings)) {
       woResourceType = AbstractBuildVisitor.WO_RESOURCE_TYPE_IGNORE;
     }
-    else if (!myDotWOLipsAdapter.getClassesExcludePatternList().matches(strings) && myDotWOLipsAdapter.getClassesIncludePatternList().matches(strings)) {
+    else if (!projectPatternsets.getClassesExcludeMatcher().match(strings) && projectPatternsets.getClassesIncludeMatcher().match(strings)) {
       woResourceType = AbstractBuildVisitor.WO_RESOURCE_TYPE_CLASS;
     }
-    else if (!myDotWOLipsAdapter.getResourcesExcludePatternList().matches(strings) && myDotWOLipsAdapter.getResourcesIncludePatternList().matches(strings)) {
+    else if (!projectPatternsets.getResourcesExcludeMatcher().match(strings) && projectPatternsets.getResourcesIncludeMatcher().match(strings)) {
       woResourceType = AbstractBuildVisitor.WO_RESOURCE_TYPE_RESOURCE;
     }
-    else if (!myDotWOLipsAdapter.getWoappResourcesExcludePatternList().matches(strings) && myDotWOLipsAdapter.getWoappResourcesIncludePatternList().matches(strings)) {
+    else if (!projectPatternsets.getWoappResourcesExcludeMatcher().match(strings) && projectPatternsets.getWoappResourcesIncludeMatcher().match(strings)) {
       woResourceType = AbstractBuildVisitor.WO_RESOURCE_TYPE_WEB_SERVER_RESOURCE;
     }
     else if (_resource.getType() == IResource.FILE && _resource.getName().endsWith(".java")) {

@@ -61,16 +61,19 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.objectstyle.wolips.core.resources.types.IPBDotProjectOwner;
 import org.objectstyle.wolips.core.resources.types.IResourceType;
-import org.objectstyle.wolips.core.resources.types.file.IDotWOLipsAdapter;
 import org.objectstyle.wolips.core.resources.types.folder.IBuildAdapter;
 
 public interface IProjectAdapter extends IResourceType, IPBDotProjectOwner {
 
 	public IProject getUnderlyingProject();
+
 	public boolean isFramework();
-	public IDotWOLipsAdapter getDotWOLipsAdapter();
+
 	public IBuildAdapter getBuildAdapter();
+
 	public List getFrameworkNames();
-  public List getFrameworkPaths();
-  public String getFrameworkName(IPath _path);
+
+	public List getFrameworkPaths();
+
+	public String getFrameworkName(IPath _path);
 }

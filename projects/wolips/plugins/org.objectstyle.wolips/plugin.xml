@@ -110,7 +110,6 @@
    <extension point="org.eclipse.core.runtime.adapters">
        <factory class="org.objectstyle.wolips.core.resources.internal.types.file.FileAdapterFactory"
            adaptableType="org.eclipse.core.resources.IFile">
-           <adapter type="org.objectstyle.wolips.core.resources.types.file.IDotWOLipsAdapter"/>
            <adapter type="org.objectstyle.wolips.core.resources.types.file.IPBDotProjectAdapter"/>
        </factory>
        <factory class="org.objectstyle.wolips.core.resources.internal.types.folder.FolderAdapterFactory"

@@ -2,7 +2,7 @@
  *
  * The ObjectStyle Group Software License, Version 1.0
  *
- * Copyright (c) 2005 The ObjectStyle Group,
+ * Copyright (c) 2005 - 2006 The ObjectStyle Group,
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -62,17 +62,14 @@ import org.objectstyle.wolips.core.CorePlugin;
 import org.objectstyle.wolips.core.resources.internal.build.Nature;
 import org.objectstyle.wolips.core.resources.internal.types.AbstractResourceAdapterFactory;
 import org.objectstyle.wolips.core.resources.types.IResourceType;
-import org.objectstyle.wolips.core.resources.types.file.IDotWOLipsAdapter;
 import org.objectstyle.wolips.core.resources.types.file.IPBDotProjectAdapter;
 
 /**
- * @author ulrich To change the template for this generated type comment go to
- *         Window>Preferences>Java>Code Generation>Code and Comments
+ * @author ulrich
  */
 public class FileAdapterFactory extends AbstractResourceAdapterFactory {
 
-	private Class[] adapterList = new Class[] { IDotWOLipsAdapter.class,
-			IPBDotProjectAdapter.class };
+	private Class[] adapterList = new Class[] { IPBDotProjectAdapter.class };
 
 	public Class[] getAdapterList() {
 		return this.adapterList;
@@ -83,23 +80,16 @@ public class FileAdapterFactory extends AbstractResourceAdapterFactory {
 			return false;
 		}
 		IFile file = (IFile) adaptableObject;
-		if (adapterType == IDotWOLipsAdapter.class) {
-				String name = file.getName();
-				if (IDotWOLipsAdapter.FILE_NAME.equals(name)) {
-					 return true;
-				}
+		if (adapterType == IPBDotProjectAdapter.class) {
+			String name = file.getName();
+			if (IPBDotProjectAdapter.FILE_NAME.equals(name)) {
+				return true;
 			}
-		else if (adapterType == IPBDotProjectAdapter.class) {
-				String name = file.getName();
-				if (IPBDotProjectAdapter.FILE_NAME.equals(name)) {
-					return true;
-				}
-			}
+		}
 		return false;
 	}
 
-	public IResourceType createAdapter(Object adaptableObject,
-			Class adapterType) {
+	public IResourceType createAdapter(Object adaptableObject, Class adapterType) {
 		IFile file = (IFile) adaptableObject;
 		IProject project = file.getProject();
 		Nature nature = null;
@@ -113,9 +103,7 @@ public class FileAdapterFactory extends AbstractResourceAdapterFactory {
 		if (nature == null) {
 			return null;
 		}
-		if (adapterType == IDotWOLipsAdapter.class) {
-			return new DotWOLipsAdapter(file);
-		} else if (adapterType == IPBDotProjectAdapter.class) {
+		if (adapterType == IPBDotProjectAdapter.class) {
 			return new PBDotProjectAdapter(file);
 		}
 		return null;
