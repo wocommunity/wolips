@@ -46,7 +46,6 @@ package org.objectstyle.wolips.componenteditor.part;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
@@ -58,17 +57,12 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.ui.IEditorActionBarContributor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IPropertyListener;
-import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.part.MultiPageEditorActionBarContributor;
 import org.eclipse.ui.part.MultiPageEditorPart;
-import org.eclipse.ui.part.MultiPageSelectionProvider;
-import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.objectstyle.wolips.apieditor.editor.ApiEditor;
 import org.objectstyle.wolips.componenteditor.ComponenteditorPlugin;
@@ -81,7 +75,6 @@ import org.objectstyle.wolips.htmleditor.editor.StructuredTextEditorHTMLWithWebO
 import org.objectstyle.wolips.htmlpreview.editor.HtmlPreviewEditor;
 import org.objectstyle.wolips.wodclipse.WodclipsePlugin;
 import org.objectstyle.wolips.wodclipse.wod.WodEditor;
-import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 
 /**
  * @author uli
@@ -89,7 +82,6 @@ import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 public class ComponentEditorPart extends MultiPageEditorPart {
 
 	boolean running = false;
-	private IEditorPart lastEditorPart;
 	ComponentEditorInput componentEditorInput;
 
 	private EditorInteraction editorInteraction = new EditorInteraction();
@@ -448,60 +440,13 @@ public class ComponentEditorPart extends MultiPageEditorPart {
 	 * Because of a assert error we have to overwrite this method
 	 */
 	protected void pageChange(int newPageIndex) {
-		setFocus();
+		super.pageChange(newPageIndex);
 		final IEditorPart activeEditor = getEditor(newPageIndex);
-		IEditorActionBarContributor contributor = getEditorSite()
-				.getActionBarContributor();
-		if (contributor != null
-				&& contributor instanceof MultiPageEditorActionBarContributor) {
-			((MultiPageEditorActionBarContributor) contributor)
-					.setActivePage(activeEditor);
-		}
 		if (activeEditor != null) {
-			ISelectionProvider selectionProvider = activeEditor.getSite()
-					.getSelectionProvider();
-			if (selectionProvider != null
-					&& selectionProvider.getSelection() != null) {
-				SelectionChangedEvent event = new SelectionChangedEvent(
-						selectionProvider, selectionProvider.getSelection());
-				MultiPageSelectionProvider provider = (MultiPageSelectionProvider) getSite()
-						.getSelectionProvider();
-				provider.fireSelectionChanged(event);
-				provider.firePostSelectionChanged(event);
-			}
 			if (activeEditor instanceof IEmbeddedEditorSelected) {
 				IEmbeddedEditorSelected embeddedEditorPageChanged = (IEmbeddedEditorSelected) activeEditor;
 				embeddedEditorPageChanged.editorSelected();
 			}
-			//force activation to send part activated events
-			//WorkbenchUtilitiesPlugin.getActivePage().activate(this);
-			if(!running && lastEditorPart != null && activeEditor != lastEditorPart) {
-			Display.getCurrent().asyncExec(new Runnable() {
-
-				public void run() {
-					running = true;
-					IViewReference[] viewReferences =  WorkbenchUtilitiesPlugin.getActivePage().getViewReferences();
-					WorkbenchUtilitiesPlugin.getActivePage().activate(viewReferences[0].getPart(false));
-
-					Display.getCurrent().asyncExec(new Runnable() {
-
-						public void run() {
-							WorkbenchUtilitiesPlugin.getActivePage().activate(activeEditor);
-
-							Display.getDefault().asyncExec(new Runnable() {
-								public void run() {
-									setFocus();
-									running = false;
-								}
-							});
-						}
-						
-					});
-				}
-				
-			});
-			}
-			lastEditorPart = activeEditor;
 		}
 	}
 
