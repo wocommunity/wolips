@@ -204,7 +204,7 @@ public abstract class WOTask extends Task {
 	}
 
 	/**
-	 * Method addResources.
+	 * Method addSources.
 	 * 
 	 * @param set
 	 */
@@ -217,7 +217,7 @@ public abstract class WOTask extends Task {
 	 * 
 	 * @param set
 	 */
-	public void addResources(FileSet set) {
+	public void addResources(ResourcesSet set) {
 		resources.addElement(set);
 	}
 
@@ -235,7 +235,7 @@ public abstract class WOTask extends Task {
 	 * 
 	 * @param set
 	 */
-	public void addWsresources(FileSet set) {
+	public void addWsresources(ResourcesSet set) {
 		wsresources.addElement(set);
 	}
 
@@ -431,11 +431,20 @@ public abstract class WOTask extends Task {
 		Copy cp = this.getSubtaskFactory().getResourceCopy();
 
 		cp.setTodir(resourcesDir());
+        int count = 0;
 		Enumeration en = resources.elements();
 		while (en.hasMoreElements()) {
-			cp.addFileset((FileSet) en.nextElement());
+            ResourcesSet rs = (ResourcesSet) en.nextElement();
+            if( rs.testIfCondition() ){
+                cp.addFileset( (FileSet) rs );
+                count++;
+            }
+        }
+ 
+		// if no filesets were added, then don't run copy
+		if( count > 0){
+		    cp.execute();
 		}
-		cp.execute();
 	}
 
 	/**
@@ -448,19 +457,28 @@ public abstract class WOTask extends Task {
 		Copy cp = this.getSubtaskFactory().getResourceCopy();
 		cp.setTodir(wsresourcesDir());
 
+        int count = 0;
 		Enumeration en = wsresources.elements();
 		while (en.hasMoreElements()) {
-			cp.addFileset((FileSet) en.nextElement());
-		}
-		cp.execute();
+            ResourcesSet rs = (ResourcesSet) en.nextElement();
+            if( rs.testIfCondition() ){
+                cp.addFileset( (FileSet) rs );
+                count++;
+            }
+              }
+        
+        // if no filesets were added, then don't run copy
+        if( count > 0){
+              cp.execute();
 
-		// do split install
-		if (doingSplitInstall()) {
-			log("Split install WebServerResources of " + name + " in "
-					+ wsDestDir);
-			cp.setTodir(wsresourcesDestDir());
-			cp.execute();
-		}
+              // do split install
+              if (doingSplitInstall()) {
+              log("Split install WebServerResources of " + name + " in "
+                              + wsDestDir);
+                      cp.setTodir(wsresourcesDestDir());
+                      cp.execute();
+            }
+        }
 	}
 
 	/**
