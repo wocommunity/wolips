@@ -1,0 +1,103 @@
+<?xml version="1.0"?>
+
+
+<!-- ============================================= -->
+<!-- Ant buildfile for "art" WebObjects framework. -->
+<!-- ============================================= -->
+
+<project name="art" default="dist" basedir=".">
+
+	<!-- ================================================= -->
+	<!-- It is nice to be able to override some properties -->
+	<!-- Only default.properties come with the project.    -->
+	<!-- The rest are optional properties files that       -->
+	<!-- can be created by the user.                       -->
+	<!-- ================================================= -->
+    <property file="${user.home}/build.properties" />
+    <property file="build.properties" />
+    <property file="default.properties" />
+    
+    <property environment="env"/>
+    <property name="next.root" value="${env.NEXT_ROOT}"/>
+    
+    
+    <!-- ============================================= -->
+    <!-- Define compile classpath.                     -->
+    <!-- ============================================= -->
+    <path id="classpath">
+    	<!-- Include project extra libraries. -->
+        <fileset dir="../../lib">
+            <include name="**/*.jar"/>
+        </fileset>        
+        
+        <!-- Include WebObjects jars. -->
+        <fileset dir="${next.root}/Library/Frameworks">           
+            <include name="JavaEOAccess.framework/Resources/Java/*.jar"/>
+            <include name="JavaEOControl.framework/Resources/Java/*.jar"/>
+            <include name="JavaFoundation.framework/Resources/Java/*.jar"/>
+            <include name="JavaWebObjects.framework/Resources/Java/*.jar"/>
+            <include name="JavaJDBCAdaptor.framework/Resources/Java/*.jar"/>
+       </fileset>
+    </path>
+    
+    
+    <!-- ============================================= -->
+    <!-- Cleans framework build.                       -->
+    <!-- ============================================= -->
+	<target name="clean">
+		<delete dir="build"/>
+	</target>
+	
+	
+    <!-- ============================================= -->
+    <!-- Sets up needed directories.                   -->
+    <!-- ============================================= -->
+	<target name="prepare">
+		<mkdir dir="build"/>
+		<mkdir dir="${dist}/Frameworks"/>
+	</target>
+	
+	
+    <!-- ============================================= -->
+    <!-- Compiles java source code, deploys it as a    -->
+    <!-- framework.                                    -->
+    <!-- ============================================= -->
+    <target name="compile" depends="prepare,gen-classes">
+        <javac srcdir="src/java" destdir="build">
+            <classpath refid="classpath"/>
+        </javac>       
+    </target>
+    
+    
+    <target name="gen-classes">
+    	<taskdef name="wogen" classname="org.objectstyle.woproject.ant.WOGenerator">
+			<classpath refid="classpath"/>
+		</taskdef>
+		<wogen map="src/art.eomodeld" destDir="src/java" superpkg="org.objectstyle.art.auto"/>
+    </target>
+    
+    
+    <!-- ============================================= -->
+    <!-- Deploys WOFramework.                          -->
+    <!-- ============================================= -->
+    <target name="dist" depends="prepare,compile">
+		<taskdef name="woframework" classname="org.objectstyle.woproject.ant.WOFramework">
+			<classpath refid="classpath"/>
+		</taskdef>
+		<woframework name="${project.name}" destDir="${dist}/Frameworks">
+			<classes dir="build">
+				<include name="**/*.class"/>
+			</classes>
+			<resources dir="src/wocomp">
+				<include name="**/*.wo/**"/>
+			</resources>
+			<resources dir="src">
+				<include name="*.eomodeld/**"/>
+			</resources>
+			<wsresources dir="src/web"/>
+			<lib dir="../../lib">
+				<include name="**/*.jar"/>
+			</lib>
+		</woframework>
+    </target>
+</project>
