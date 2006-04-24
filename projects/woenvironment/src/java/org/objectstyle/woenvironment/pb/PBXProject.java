@@ -79,14 +79,22 @@ public class PBXProject {
 		_sourceRefs.add( path );
 	}
 	
-	public void addFileReference( String path ) {
-		_fileRefs.add( path );
+	public void addResourceFileReference( String path ) {
+		_resourceFileRefs.add( path );
 	}
 	
-	public void addFolderReference( String path ) {
-		_folderRefs.add( path );
+	public void addResourceFolderReference( String path ) {
+                _resourceFolderRefs.add( path );
+        }
+
+	public void addWSResourceFileReference( String path ) {
+		_wsresourceFileRefs.add( path );
 	}
 	
+	public void addWSResourceFolderReference( String path ) {
+		_wsresourceFolderRefs.add( path );
+	}
+        
 	public void addFrameworkReference( String path ) {
 		_frameworkRefs.add( path );
 	}
@@ -110,11 +118,13 @@ public class PBXProject {
 	    
 	    ArrayList sourceBuildFileIDs = new ArrayList();
 	    ArrayList resourceBuildFileIDs = new ArrayList();
-	    ArrayList frameworkBuildFileIDs = new ArrayList();
+            ArrayList wsresourceBuildFileIDs = new ArrayList();
+            ArrayList frameworkBuildFileIDs = new ArrayList();
 	    
 	    ArrayList sourceFileIDs = new ArrayList();
 	    ArrayList resourceFileIDs = new ArrayList();
-	    ArrayList frameworkFileIDs = new ArrayList();
+            ArrayList wsresourceFileIDs = new ArrayList();
+            ArrayList frameworkFileIDs = new ArrayList();
 	    
 	    //	Walk refs, creating the appropriate reference type and an associated
 	    //  build file for each and adding it to the objects table and group children list.
@@ -134,20 +144,23 @@ public class PBXProject {
 			sourceBuildFileIDs.add(objectsTable.insert(newBuildFile(refID)));
 		}
 
-		it = _fileRefs.iterator();
+                
+		it = _resourceFileRefs.iterator();
 		while( it.hasNext() ) {
-		    path = (String) it.next();
-		    if(path.indexOf(projectPath) == 0) {
-		        path = path.substring(projectPath.length()+1);
-		    }
-		    File file = new File(path);
-		    Map reference = newFileReference(file.getName(), path);
+                    path = (String) it.next();
+                    if(path.indexOf(projectPath) == 0) {
+                        path = path.substring(projectPath.length()+1);
+                    }
+                    File file = new File(path);
+                    if( !_resourceFolderRefs.contains( projectPath + "/" + file.getParent() ) ){
+                        Map reference = newFileReference(file.getName(), path);
 			ObjectsTable.ID refID = objectsTable.insert(reference);
 			resourceFileIDs.add(refID);
 			resourceBuildFileIDs.add(objectsTable.insert(newBuildFile(refID)));
+                    }
 		}
 
-		it = _folderRefs.iterator();
+		it = _resourceFolderRefs.iterator();
 		while( it.hasNext() ) {
 		    path = (String) it.next();
 		    if(path.indexOf(projectPath) == 0) {
@@ -160,6 +173,36 @@ public class PBXProject {
 			resourceBuildFileIDs.add(objectsTable.insert(newBuildFile(refID)));
 		}
 
+                
+		it = _wsresourceFileRefs.iterator();
+		while( it.hasNext() ) {
+		    path = (String) it.next();
+		    if(path.indexOf(projectPath) == 0) {
+		        path = path.substring(projectPath.length()+1);
+		    }
+		    File file = new File(path);
+                    if( !_wsresourceFolderRefs.contains( projectPath + "/" + file.getParent() ) ){
+                        Map reference = newFileReference(file.getName(), path);
+			ObjectsTable.ID refID = objectsTable.insert(reference);
+			wsresourceFileIDs.add(refID);
+			wsresourceBuildFileIDs.add(objectsTable.insert(newBuildFile(refID)));
+                    }
+		}
+
+		it = _wsresourceFolderRefs.iterator();
+		while( it.hasNext() ) {
+		    path = (String) it.next();
+		    if(path.indexOf(projectPath) == 0) {
+		        path = path.substring(projectPath.length()+1);
+		    }
+		    File file = new File(path);
+		    Map reference = newFolderReference(file.getName(), path);
+			ObjectsTable.ID refID = objectsTable.insert(reference);
+			wsresourceFileIDs.add(refID);
+			wsresourceBuildFileIDs.add(objectsTable.insert(newBuildFile(refID)));
+		}
+
+                
 		it = _frameworkRefs.iterator();
 		while( it.hasNext() ) {
 			path = (String) it.next();
@@ -170,9 +213,10 @@ public class PBXProject {
 		}
 		
 		ArrayList childrenIDs = new ArrayList();
-	    childrenIDs.add(objectsTable.insert(newGroup( "Sources", sourceFileIDs)));
+                childrenIDs.add(objectsTable.insert(newGroup( "Sources", sourceFileIDs)));
 		childrenIDs.add(objectsTable.insert(newGroup( "Resources", resourceFileIDs)));
-		childrenIDs.add(objectsTable.insert(newGroup( "Frameworks", frameworkFileIDs)));
+                childrenIDs.add(objectsTable.insert(newGroup( "WebServerResources", wsresourceFileIDs)));
+                childrenIDs.add(objectsTable.insert(newGroup( "Frameworks", frameworkFileIDs)));
 		
 		//	Create the PBXGroup and add it to the objects table.
 		ObjectsTable.ID mainGroupID = objectsTable.insert( newGroup( "Root", childrenIDs) );
@@ -182,7 +226,8 @@ public class PBXProject {
 		if (hasBuildPhases()) {
 			buildPhaseIDs.add( objectsTable.insert( newSourcesBuildPhase( sourceBuildFileIDs)));
 			buildPhaseIDs.add( objectsTable.insert( newResourcesBuildPhase( resourceBuildFileIDs)));
-			buildPhaseIDs.add( objectsTable.insert( newFrameworkBuildPhase( frameworkBuildFileIDs)));
+                        buildPhaseIDs.add( objectsTable.insert( newWSResourcesBuildPhase( wsresourceBuildFileIDs)));
+                        buildPhaseIDs.add( objectsTable.insert( newFrameworkBuildPhase( frameworkBuildFileIDs)));
 		}
 		
 		//	Create the PBXToolTarget and add it to the objects table and
@@ -202,8 +247,10 @@ public class PBXProject {
 	//---------------------------------------------------------------
 	//	Implementation stuff.
 	
-	protected ArrayList _folderRefs = new ArrayList();
-	protected ArrayList _fileRefs = new ArrayList();
+	protected ArrayList _resourceFolderRefs = new ArrayList();
+	protected ArrayList _resourceFileRefs = new ArrayList();
+	protected ArrayList _wsresourceFolderRefs = new ArrayList();
+	protected ArrayList _wsresourceFileRefs = new ArrayList();
 	protected ArrayList _frameworkRefs = new ArrayList();
 	protected ArrayList _sourceRefs = new ArrayList();
 	
@@ -257,6 +304,12 @@ public class PBXProject {
 			"files",	buildFileIDs });
 	}
 
+	protected Map newWSResourcesBuildPhase( List buildFileIDs ) {
+		return map( new Object[] {
+			"isa",		"PBXResourcesBuildPhase",
+			"files",	buildFileIDs });
+	}
+        
 	protected Map newSourcesBuildPhase( List buildFileIDs ) {
 		return map( new Object[] {
 			"isa",		"PBXSourcesBuildPhase",

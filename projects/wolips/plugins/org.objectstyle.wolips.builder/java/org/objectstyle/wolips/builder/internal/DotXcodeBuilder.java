@@ -224,27 +224,27 @@ public class DotXcodeBuilder implements IDeltaBuilder, ICleanBuilder {
     //System.out.println("DotXcodeBuilder.handleWoappResources: " + resourcePath + ", " + (_resource instanceof IFolder));
     if (_resource instanceof IFolder) {
       if (myXcodeProject != null) {
-        myXcodeProject.addFolderReference(resourcePath);
+        myXcodeProject.addResourceFolderReference(resourcePath);
       }
       if (myXcodeProjProject != null) {
-        myXcodeProjProject.addFolderReference(resourcePath);
+        myXcodeProjProject.addResourceFolderReference(resourcePath);
       }
     }
     else if (_resource instanceof IFile) {
       IContainer parent = _resource.getParent();
-      boolean addFileReference = true;
+      boolean addResourceFileReference = true;
       if (parent != null) {
         String parentName = parent.getName().toLowerCase();
         if (parentName.endsWith(".eomodeld") || parentName.endsWith(".wo")) {
-          addFileReference = false;
+          addResourceFileReference = false;
         }
       }
-      if (addFileReference) {
+      if (addResourceFileReference) {
         if (myXcodeProject != null) {
-          myXcodeProject.addFileReference(resourcePath);
+          myXcodeProject.addResourceFileReference(resourcePath);
         }
         if (myXcodeProjProject != null) {
-          myXcodeProjProject.addFileReference(resourcePath);
+          myXcodeProjProject.addResourceFileReference(resourcePath);
         }
       }
     }

@@ -198,6 +198,10 @@ public class BuildVisitor extends BuildHelper {
 						res.getFullPath(), res);
 				if (_checkResource(res, delta, dest)) {
 					handled = _handleResource(res, delta, dest);
+                    // copying a folder already copies children, so don't process children folders
+                    if (res instanceof IFolder) {
+                      handleResourceChildren = false;
+                    }
 				} else {
 					handled = true;
 				}
@@ -241,7 +245,7 @@ public class BuildVisitor extends BuildHelper {
 			addTask(new DeleteTask(copyToPath, "build"));
 			handled = true;
 		} else {
-			if (!res.isTeamPrivateMember()) {
+			if (!(res.isTeamPrivateMember()|| res.getName().equals(".svn"))) {
 				addTask(new CopyTask(res, copyToPath, "build"));
 				handled = true;
 			}

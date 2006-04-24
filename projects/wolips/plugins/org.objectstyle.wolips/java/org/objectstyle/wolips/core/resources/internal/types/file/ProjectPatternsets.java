@@ -57,6 +57,7 @@ package org.objectstyle.wolips.core.resources.internal.types.file;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -106,7 +107,7 @@ public class ProjectPatternsets {
 	private PatternsetMatcher classesExcludeMatcher = null;
 
 	private final static PatternsetMatcher DEFAULT_EXCLUDE_MATCHER = new PatternsetMatcher(
-			new String[] { "**/.svn", "**/.svn/**", "**/CVS", "**.*~/**",
+			new String[] { "**/.svn", "**/.svn/**", "**/CVS",  "**/*.eomodeld~", "**/*.eomodeld~/**",
 					"**/CVS/**", "**/build/**", "**/dist/**" });
 
 	private IProject project;
@@ -317,27 +318,21 @@ public class ProjectPatternsets {
 
 	private String[] toProjectRelativePaths(IResource resource) {
 		String[] returnValue = null;
-		if (resource.getParent().getType() != IResource.ROOT
-		/* && resource.getParent().getType() != IResource.PROJECT */) {
-			returnValue = new String[2];
+		if (resource.getParent().getType() != IResource.ROOT) {
+
 			String string = null;
 			if (resource.getType() != IResource.FOLDER) {
-				IPath path = resource.getParent().getProjectRelativePath();
-				/*
-				 * String string = resource.getProject().getName() + "/" +
-				 * path.toString() + "/";
-				 */
-				string = path.toString() + "/";
+				returnValue = new String[1];
 			} else {
+				returnValue = new String[2];
 				string = "/" + resource.getName() + "/";
+				returnValue[0] = string;
 			}
-			returnValue[0] = string;
+
 		} else {
 			returnValue = new String[1];
 		}
 		IPath path = resource.getProjectRelativePath();
-		//String string = resource.getProject().getName() + "/" +
-		// path.toString();
 		String string = path.toString();
 		if (returnValue.length == 2) {
 			returnValue[1] = string;
@@ -347,10 +342,10 @@ public class ProjectPatternsets {
 		return returnValue;
 	}
 
-	/**
-	 * @param resource
-	 * @return true if the resource matches the classes pattern
-	 */
+	  /**
+		 * @param resource
+		 * @return true if the resource matches the classes pattern
+		 */
 	public boolean matchesClassesPattern(IResource resource) {
 		String[] strings = this.toProjectRelativePaths(resource);
 		if (this.getClassesExcludeMatcher().match(strings))

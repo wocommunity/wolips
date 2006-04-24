@@ -2,7 +2,7 @@
  *
  * The ObjectStyle Group Software License, Version 1.0
  *
- * Copyright (c) 2005 The ObjectStyle Group,
+ * Copyright (c) 2005 - 2006 The ObjectStyle Group,
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -58,6 +58,7 @@ package org.objectstyle.wolips.core.resources.types.file;
 import java.util.List;
 
 import org.objectstyle.wolips.core.resources.types.ILocalizedPath;
+import org.objectstyle.wolips.core.resources.types.folder.IDotSubprojAdapter;
 
 public interface IPBDotProjectAdapter extends IFileAdapter {
 
@@ -66,6 +67,10 @@ public interface IPBDotProjectAdapter extends IFileAdapter {
   public abstract boolean isRebuildRequired();
   
   public abstract void save();
+
+	public abstract void addSubproject(IDotSubprojAdapter dotSubprojAdapter);
+
+	public abstract void removeSubproject(IDotSubprojAdapter dotSubprojAdapter);
 
 	public abstract void addClass(ILocalizedPath localizedPath);
 

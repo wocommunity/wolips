@@ -9,7 +9,20 @@
     <body>        
         <!-- Welcome section -->
         <section name="Welcome to WOProject and WOLips">
-        
+
+
+        <p>
+        	<i>April 14, 2006.</i>
+        	<b>New WOProject / WOLips info site.</b>
+        </p>
+        <p>
+        	WOProject and WOLips have a 
+        	<a href="http://www.objectstyle.org/confluence/display/WOL/Home">new information site</a>
+        	. The info on this page (where you are now) is outdated and not maintained.
+        	<hr />
+        </p>
+
+
         <p><i>January 12, 2005.</i> <b>WOProject release 1.1.0.102 RC 2 is out.</b></p>
         <p>Download a new <a href="compatibilty_matrix.html">release</a> of WOProject.
         <hr/>

@@ -207,7 +207,7 @@ public class ResourceUtilities {
   public static void copyDerivedOld(IResource res, IPath dest, IProgressMonitor m)
     throws CoreException
   {
-    if (res.isTeamPrivateMember ())
+    if (res.isTeamPrivateMember() || res.getName().equals(".svn"))
       return;
   
     IResource rdest = checkDestination (dest, m);
@@ -227,7 +227,7 @@ public class ResourceUtilities {
   public static void copyDerived(IResource res, IPath dest, IProgressMonitor m)
     throws CoreException 
   {
-    if (res.isTeamPrivateMember ())
+    if (res.isTeamPrivateMember() || res.getName().equals(".svn"))
       return;
   
     if (res instanceof IFolder) {

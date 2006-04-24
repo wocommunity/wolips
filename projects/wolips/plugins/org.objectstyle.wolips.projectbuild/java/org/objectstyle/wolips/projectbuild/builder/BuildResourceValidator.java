@@ -126,6 +126,9 @@ final class BuildResourceValidator extends DefaultDeltaVisitor {
 			if(resource.getName().equals("build") || resource.getName().equals("dist") || resource.getName().equals("target")) {
 				return false;
 			}
+			if(resource.getName().equals(".svn") || resource.getName().equals("CVS")) {
+				return false;
+			}
 			if (this.project.matchesResourcesPattern(resource)
 					|| this.project.matchesWOAppResourcesPattern(resource)
 					|| this.project.matchesClassesPattern(resource)) {

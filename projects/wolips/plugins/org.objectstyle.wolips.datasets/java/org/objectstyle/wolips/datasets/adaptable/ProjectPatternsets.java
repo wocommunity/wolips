@@ -57,6 +57,7 @@ package org.objectstyle.wolips.datasets.adaptable;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -107,7 +108,7 @@ public class ProjectPatternsets extends AbstractProjectAdapterType {
 	private PatternsetMatcher classesExcludeMatcher = null;
 
 	private final static PatternsetMatcher DEFAULT_EXCLUDE_MATCHER = new PatternsetMatcher(
-			new String[] { "**/.svn", "**/.svn/**", "**/CVS", "**.*~/**",
+			new String[] { "**/.svn", "**/.svn/**", "**/CVS", "**/*.eomodeld~", "**/*.eomodeld~/**",
 					"**/CVS/**", "**/build/**", "**/dist/**" });
 
 	/**
@@ -289,7 +290,7 @@ public class ProjectPatternsets extends AbstractProjectAdapterType {
 				"wsresources.exclude.patternset");
 		PatternsetWorkspaceRunnable patternsetWorkspaceRunnable = new PatternsetWorkspaceRunnable(
 					wsresourcesExcludePatternset,
-					new String[] { "**/*.woa/**", "**/*.framework/**" });
+					new String[] { "**/*.woa/**", "**/*.framework/**", "**/*.eomodeld~/**" });
 			this.run(this.getIProject(), patternsetWorkspaceRunnable);
 		this.woappResourcesExcludeMatcher = patternsetWorkspaceRunnable.getMatcher();
 		return this.woappResourcesExcludeMatcher;
@@ -314,37 +315,32 @@ public class ProjectPatternsets extends AbstractProjectAdapterType {
 		return this.woappResourcesIncludeMatcher;
 	}
 
-	private String[] toProjectRelativePaths(IResource resource) {
-		String[] returnValue = null;
-		if (resource.getParent().getType() != IResource.ROOT
-		/* && resource.getParent().getType() != IResource.PROJECT */) {
-			returnValue = new String[2];
-			String string = null;
-			if (resource.getType() != IResource.FOLDER) {
-				IPath path = resource.getParent().getProjectRelativePath();
-				/*
-				 * String string = resource.getProject().getName() + "/" +
-				 * path.toString() + "/";
-				 */
-				string = path.toString() + "/";
-			} else {
-				string = "/" + resource.getName() + "/";
-			}
-			returnValue[0] = string;
-		} else {
-			returnValue = new String[1];
-		}
-		IPath path = resource.getProjectRelativePath();
-		//String string = resource.getProject().getName() + "/" +
-		// path.toString();
-		String string = path.toString();
-		if (returnValue.length == 2) {
-			returnValue[1] = string;
-		} else {
-			returnValue[0] = string;
-		}
-		return returnValue;
-	}
+	  private String[] toProjectRelativePaths(IResource resource) {
+		    String[] returnValue = null;
+		    if (resource.getParent().getType() != IResource.ROOT ) {
+		      
+		      String string = null;
+		      if (resource.getType() != IResource.FOLDER) {
+		    	  returnValue = new String[1];
+		      } else {
+		    	  returnValue = new String[2];
+		    	  string = "/" + resource.getName() + "/";
+		    	  returnValue[0] = string;
+		      }
+		      
+		    } else {
+		      returnValue = new String[1];
+		    }
+		    IPath path = resource.getProjectRelativePath();
+		    String string = path.toString();
+		    if (returnValue.length == 2) {
+		      returnValue[1] = string;
+		    }
+		    else {
+		      returnValue[0] = string;
+		    }
+		    return returnValue;
+		  }
 
 	/**
 	 * @param resource

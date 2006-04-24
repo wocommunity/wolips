@@ -15,8 +15,8 @@
 	<target name="java">
 		<path id="full.classpath">
 			<path refid="classpath" />
-			<fileset dir="${eclipse.home}/plugins">
-				<include name="**/*.jar" />
+			<fileset dir="${eclipse.home}">
+				<include name="**/plugins/**/*.jar" />
 				<exclude name="**/org.objectstyle.*/**" />
 				<exclude name="**/org.eclipse.core.runtime/**" />
 			</fileset>

@@ -56,7 +56,6 @@
  
 package org.objectstyle.wolips.projectbuild.util;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -173,20 +172,20 @@ public class ResourceUtilities {
           res.delete(true, m);
 //        } catch (org.eclipse.core.internal.resources.ResourceException e) {
         } catch (CoreException ce) {
-          ce.printStackTrace();
-          
-//          IPath trashFolder = res.getProject().getFullPath().append("build/.trash");
-//          IPath trashPath = trashFolder.append(res.getName()+(_uniqifier++));
-//          checkDir (trashFolder, m);
-//          res.move(trashPath, true, null);
-
-          IPath newName = res.getLocation().removeLastSegments(1);
-          newName = newName.append(res.getName()+_getUniqifier());
-          File resFile = res.getLocation().toFile();
-          if (!resFile.renameTo(newName.toFile())) {
-            throw ce;
-          }          
-        }
+        	ce.printStackTrace();
+        	// NOTE AK: this code was commented out, I re-instated it as I think it's 
+        	// better to have the non-deletable files in one place, instead of messing the build directory
+        	IPath trashFolder = res.getProject().getFullPath().append("build/.trash");
+        	IPath trashPath = trashFolder.append(res.getName()+(_getUniqifier()));
+        	checkDir (trashFolder, m);
+    		res.move(trashPath, true, null);
+/*        		IPath newName = res.getLocation().removeLastSegments(1);
+        		newName = newName.append(res.getName()+_getUniqifier());
+        		File resFile = res.getLocation().toFile();
+        		if (!resFile.renameTo(newName.toFile())) {
+        			throw ce;
+        		}          
+*/        }
         //res.refreshLocal(IResource.DEPTH_ONE, m);
       }
       return res;
@@ -207,7 +206,7 @@ public class ResourceUtilities {
   public static void copyDerivedOld(IResource res, IPath dest, IProgressMonitor m)
     throws CoreException
   {
-    if (res.isTeamPrivateMember ())
+    if (res.isTeamPrivateMember() || res.getName().equals(".svn"))
       return;
   
     IResource rdest = checkDestination (dest, m);
@@ -227,7 +226,7 @@ public class ResourceUtilities {
   public static void copyDerived(IResource res, IPath dest, IProgressMonitor m)
     throws CoreException 
   {
-    if (res.isTeamPrivateMember ())
+    if (res.isTeamPrivateMember () || res.getName().equals(".svn"))
       return;
   
     if (res instanceof IFolder) {

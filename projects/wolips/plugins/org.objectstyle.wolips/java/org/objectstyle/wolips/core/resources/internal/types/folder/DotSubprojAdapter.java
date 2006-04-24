@@ -2,7 +2,7 @@
  *
  * The ObjectStyle Group Software License, Version 1.0
  *
- * Copyright (c) 2005 The ObjectStyle Group,
+ * Copyright (c) 2005 - 2006 The ObjectStyle Group,
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -85,5 +85,9 @@ public class DotSubprojAdapter extends AbstractFolderAdapter
 
 	public boolean hasParentPBDotProjectAdapter() {
 		return true;
+	}
+
+	public String getSubprojectName() {
+		return this.getUnderlyingFolder().getName().substring(0, this.getUnderlyingFolder().getName().indexOf('.'));
 	}
 }

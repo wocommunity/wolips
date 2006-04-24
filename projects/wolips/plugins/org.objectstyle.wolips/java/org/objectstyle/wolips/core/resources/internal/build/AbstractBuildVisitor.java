@@ -153,29 +153,21 @@ public class AbstractBuildVisitor {
 
   private String[] toProjectRelativePaths(IResource resource) {
     String[] returnValue = null;
-    if (resource.getParent().getType() != IResource.ROOT
-    /* && resource.getParent().getType() != IResource.PROJECT */) {
-      returnValue = new String[2];
+    if (resource.getParent().getType() != IResource.ROOT ) {
+      
       String string = null;
       if (resource.getType() != IResource.FOLDER) {
-        IPath path = resource.getParent().getProjectRelativePath();
-        /*
-         * String string = resource.getProject().getName() + "/" +
-         * path.toString() + "/";
-         */
-        string = path.toString() + "/";
+    	  returnValue = new String[1];
+      } else {
+    	  returnValue = new String[2];
+    	  string = "/" + resource.getName() + "/";
+    	  returnValue[0] = string;
       }
-      else {
-        string = "/" + resource.getName() + "/";
-      }
-      returnValue[0] = string;
-    }
-    else {
+      
+    } else {
       returnValue = new String[1];
     }
     IPath path = resource.getProjectRelativePath();
-    // String string = resource.getProject().getName() + "/" +
-    // path.toString();
     String string = path.toString();
     if (returnValue.length == 2) {
       returnValue[1] = string;

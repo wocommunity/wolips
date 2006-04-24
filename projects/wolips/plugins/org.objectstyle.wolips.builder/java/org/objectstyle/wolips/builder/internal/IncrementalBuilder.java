@@ -183,7 +183,7 @@ public class IncrementalBuilder implements IDeltaBuilder {
 			addTask(new DeleteTask(copyToPath, "build"));
 			handled = true;
 		} else {
-			if (!res.isTeamPrivateMember()) {
+			if (!(res.isTeamPrivateMember() || res.getName().equals(".svn"))) {
 				addTask(new CopyTask(res, copyToPath, "build"));
 				handled = true;
 			}

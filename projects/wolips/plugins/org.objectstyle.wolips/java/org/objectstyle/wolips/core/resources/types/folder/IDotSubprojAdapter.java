@@ -2,7 +2,7 @@
  *
  * The ObjectStyle Group Software License, Version 1.0
  *
- * Copyright (c) 2005 The ObjectStyle Group,
+ * Copyright (c) 2005 - 2006 The ObjectStyle Group,
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -61,5 +61,7 @@ import org.objectstyle.wolips.core.resources.types.IPBDotProjectOwner;
 public interface IDotSubprojAdapter extends IFolderAdapter, IPBDotProjectOwner {
 
 	public static final String FILE_NAME_EXTENSION = "subproj";
+	
+	public abstract String getSubprojectName();
 
 }
