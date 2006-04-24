@@ -1,0 +1,20 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: WOLips Editors Plug-in
+Bundle-SymbolicName: org.objectstyle.wolips.editors; singleton:=true
+Bundle-Version: 1.0.6
+Bundle-Activator: org.objectstyle.wolips.editors.EditorsPlugin
+Bundle-Vendor: objectstyle.org
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.objectstyle.wolips.ui,
+ org.objectstyle.wolips.workbenchutilities,
+ org.eclipse.core.resources,
+ org.eclipse.ui.ide,
+ org.eclipse.ui.forms,
+ org.objectstyle.wolips.commons,
+ org.objectstyle.wolips
+Eclipse-LazyStart: true
+Export-Package: org.objectstyle.wolips.editors,
+ org.objectstyle.wolips.editors.launcher

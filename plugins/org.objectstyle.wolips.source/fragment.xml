@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<fragment
+   id="org.objectstyle.wolips.source"
+   name="WOLips Source"
+   version="1.0.6"
+   provider-name="objectstyle.org"
+   plugin-id="org.objectstyle.wolips"
+   plugin-version="1.0.6"
+   match="compatible">
+
+   <runtime>
+   </runtime>
+
+
+</fragment>

@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+
+ 	<extension
+         point="org.eclipse.ui.editors">
+      <editor
+            default="true"
+            extensions="java,html,wod,woo,api"
+            icon="icons/ComponentEditor.gif"
+            id="org.objectstyle.wolips.wodclipse.mpe.ComponentEditorLauncher"
+            launcher="org.objectstyle.wolips.componenteditor.launcher.ComponentEditorLauncher"
+            name="WOComponent Editor">
+			<contentTypeBinding
+               contentTypeId="org.eclipse.jdt.core.javaSource"
+            /> 
+			<contentTypeBinding
+               contentTypeId="org.objectstyle.wolips.editors.api"
+            />
+			<contentTypeBinding
+               contentTypeId="org.objectstyle.wolips.editors.wod"
+            /> 
+			<contentTypeBinding
+               contentTypeId="org.objectstyle.wolips.editors.woo"
+            /> 
+			<contentTypeBinding
+               contentTypeId="org.eclipse.core.runtime.text"
+            /> 
+      </editor>
+      <editor
+            class="org.objectstyle.wolips.componenteditor.part.ComponentEditor"
+            contributorClass="org.objectstyle.wolips.componenteditor.contributor.ComponentEditorContributor"
+            default="false"
+            icon="icons/ComponentEditor.gif"
+            id="org.objectstyle.wolips.wodclipse.mpe.ComponentEditor"
+            matchingStrategy="org.objectstyle.wolips.componenteditor.launcher.ComponentEditorMatchingStrategy"
+            name="WOComponent Editor internal">
+      </editor>
+   </extension>
+   
+   <extension
+        point="org.eclipse.ui.commands">
+        <category
+            name="Component Editor"
+            description="Component Editor"
+            id="org.objectstyle.wolips.componenteditor.componenteditor">
+      </category>
+        <command
+                name="Switch to Java Editor"
+                description="Switch to Java Editor"
+                categoryId="org.objectstyle.wolips.componenteditor.componenteditor"
+                id="org.objectstyle.wolips.componenteditor.editors.tojava">
+        </command>
+        <command
+                name="Switch to Html Editor"
+                description="Switch to Html Editor"
+                categoryId="org.objectstyle.wolips.componenteditor.componenteditor"
+                id="org.objectstyle.wolips.componenteditor.editors.tohtml">
+        </command>
+        <command
+                name="Switch to Wod Editor"
+                description="Switch to Wod Editor"
+                categoryId="org.objectstyle.wolips.componenteditor.componenteditor"
+                id="org.objectstyle.wolips.componenteditor.editors.towod">
+        </command>
+        <command
+                name="Switch to Preview"
+                description="Switch to Preview"
+                categoryId="org.objectstyle.wolips.componenteditor.componenteditor"
+                id="org.objectstyle.wolips.componenteditor.editors.topreview">
+        </command>
+        <command
+                name="Switch to Api Editor"
+                description="Switch to Api Editor"
+                categoryId="org.objectstyle.wolips.componenteditor.componenteditor"
+                id="org.objectstyle.wolips.componenteditor.editors.toapi">
+        </command>
+    </extension>
+    <extension point="org.eclipse.ui.bindings">
+		<key
+        		commandId="org.objectstyle.wolips.componenteditor.editors.tojava"
+        		contextId="org.eclipse.ui.contexts.window"
+        		schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+        		sequence="M1+M3+1"/>
+		<key
+        		commandId="org.objectstyle.wolips.componenteditor.editors.tohtml"
+        		contextId="org.eclipse.ui.contexts.window"
+        		schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+        		sequence="M1+M3+2"/>
+		<key
+        		commandId="org.objectstyle.wolips.componenteditor.editors.towod"
+        		contextId="org.eclipse.ui.contexts.window"
+        		schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+        		sequence="M1+M3+3"/>
+		<key
+        		commandId="org.objectstyle.wolips.componenteditor.editors.topreview"
+        		contextId="org.eclipse.ui.contexts.window"
+        		schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+        		sequence="M1+M3+4"/>
+		<key
+        		commandId="org.objectstyle.wolips.componenteditor.editors.toapi"
+        		contextId="org.eclipse.ui.contexts.window"
+        		schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+        		sequence="M1+M3+5"/>
+	</extension>
+	
+	<extension point = "org.eclipse.ui.editorActions">
+      <editorContribution 
+         id="org.objectstyle.wolips.componenteditor.editorActionsContribution" 
+         targetID="org.objectstyle.wolips.wodclipse.mpe.ComponentEditor">        
+           <menu id="org.objectstyle.wolips.componenteditor.navigateMenuContribution"
+			label="&amp;Component Editor" 
+             path="navigate/additions">
+ 				<separator name="group1"/>
+ 				<separator name="group2"/>
+		  </menu>
+         <action
+               class="org.objectstyle.wolips.componenteditor.editormenu.SwitchToApiEditorActionDelegate"
+               definitionId="org.objectstyle.wolips.componenteditor.editors.toapi"
+               id="org.objectstyle.wolips.componenteditor.editors.switchtoapi"
+               label="Switch to Api Editor"
+               menubarPath="navigate/org.objectstyle.wolips.componenteditor.navigateMenuContribution/group1"/>
+         <action
+               class="org.objectstyle.wolips.componenteditor.editormenu.SwitchToPreviewActionDelegate"
+               definitionId="org.objectstyle.wolips.componenteditor.editors.topreview"
+               id="org.objectstyle.wolips.componenteditor.editors.switchtopreview"
+               label="Switch to Preview"
+               menubarPath="navigate/org.objectstyle.wolips.componenteditor.navigateMenuContribution/group1"/>
+         <action
+               class="org.objectstyle.wolips.componenteditor.editormenu.SwitchToWodEditorActionDelegate"
+               definitionId="org.objectstyle.wolips.componenteditor.editors.towod"
+               id="org.objectstyle.wolips.componenteditor.editors.switchtowod"
+               label="Switch to Wod Editor"
+               menubarPath="navigate/org.objectstyle.wolips.componenteditor.navigateMenuContribution/group1"/>
+         <action
+               class="org.objectstyle.wolips.componenteditor.editormenu.SwitchToHtmlEditorActionDelegate"
+               definitionId="org.objectstyle.wolips.componenteditor.editors.tohtml"
+               id="org.objectstyle.wolips.componenteditor.editors.switchtohtml"
+               label="Switch to Html Editor"
+               menubarPath="navigate/org.objectstyle.wolips.componenteditor.navigateMenuContribution/group1"/>
+         <action
+               class="org.objectstyle.wolips.componenteditor.editormenu.SwitchToJavaEditorActionDelegate"
+               definitionId="org.objectstyle.wolips.componenteditor.editors.tojava"
+               id="org.objectstyle.wolips.componenteditor.editors.switchtojava"
+               label="Switch to Java Editor"
+               menubarPath="navigate/org.objectstyle.wolips.componenteditor.navigateMenuContribution/group1"/>
+		</editorContribution>
+	</extension>
+</plugin>

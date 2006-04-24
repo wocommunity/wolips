@@ -1,0 +1,20 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: WOLips Api Editor Plug-in
+Bundle-SymbolicName: org.objectstyle.wolips.apieditor; singleton:=true
+Bundle-Version: 1.0.6
+Bundle-Activator: org.objectstyle.wolips.apieditor.ApieditorPlugin
+Bundle-Vendor: objectstyle.org
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.ui.workbench,
+ org.eclipse.ui.ide,
+ org.eclipse.ui,
+ org.eclipse.jface,
+ org.eclipse.core.resources,
+ org.eclipse.ui.forms,
+ org.objectstyle.wolips.ui,
+ org.objectstyle.wolips
+Eclipse-LazyStart: true
+Export-Package: org.objectstyle.wolips.apieditor,
+ org.objectstyle.wolips.apieditor.editor

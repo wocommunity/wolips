@@ -1,0 +1,220 @@
+<?xml version="1.0"?>
+
+<!-- ======================================================== -->
+<!--        Main WOLips plugins Ant build file                -->
+<!-- Serves as a facade for different helper build files.     -->
+<!-- ======================================================== -->
+<project name="wolips" default="" basedir=".">
+
+	<!-- ========================================== -->
+	<!-- Verify test.eclipse.home.                  -->
+	<!-- ========================================== -->
+	<target name="verify">
+		<condition property="test.eclipse.home.set">
+			<isset property="test.eclipse.home" />
+		</condition>
+		<condition property="test.eclipse.home.not.set">
+			<not>
+				<isset property="test.eclipse.home" />
+			</not>
+		</condition>
+		<condition property="os.set">
+			<isset property="os" />
+		</condition>
+		<condition property="os.not.set">
+			<not>
+				<isset property="os" />
+			</not>
+		</condition>
+		<condition property="ws.set">
+			<isset property="ws" />
+		</condition>
+		<condition property="ws.not.set">
+			<not>
+				<isset property="ws" />
+			</not>
+		</condition>
+		<condition property="test.java.library.path.set">
+			<isset property="test.java.library.path" />
+		</condition>
+		<condition property="test.java.library.path.not.set">
+			<not>
+				<isset property="test.java.library.path" />
+			</not>
+		</condition>
+		<condition property="test.properties.set">
+			<and>
+				<isset property="test.eclipse.home" />
+				<isset property="os" />
+				<isset property="ws" />
+				<isset property="test.java.library.path" />
+			</and>
+		</condition>
+	</target>
+
+	<!-- ========================================== -->
+	<!-- Inform user.                               -->
+	<!-- ========================================== -->
+	<target name="inform_user" if="test.eclipse.home.not.set">
+		<echo message="Please set the property test.eclipse.home in your build.properties to run wolips unit tests." />
+	</target>
+
+	<!-- ========================================== -->
+	<!-- Inform user.                               -->
+	<!-- ========================================== -->
+	<target name="inform_user_os" if="os.not.set">
+		<echo message="Please set the property os in your build.properties to run wolips unit tests." />
+	</target>
+
+	<!-- ========================================== -->
+	<!-- Inform user.                               -->
+	<!-- ========================================== -->
+	<target name="inform_user_ws" if="ws.not.set">
+		<echo message="Please set the property ws in your build.properties to run wolips unit tests." />
+	</target>
+
+	<!-- ========================================== -->
+	<!-- Inform user.                               -->
+	<!-- ========================================== -->
+	<target name="inform_user_test_java_library_path" if="test.java.library.path.not.set">
+		<echo message="Please set the property test.java.library.path in your build.properties to run wolips unit tests." />
+	</target>
+
+	<!-- ========================================== -->
+	<!-- Build all.                                 -->
+	<!-- ========================================== -->
+	<target name="all">
+		<ant dir="org.objectstyle.wolips.commons" target="all" />
+		<ant dir="org.objectstyle.wolips.workbenchutilities" target="all" />
+		<ant dir="org.objectstyle.wolips.tests.core" target="all" />
+		<ant dir="org.objectstyle.wolips.preferences" target="all" />
+		<ant dir="org.objectstyle.wolips" target="all" />
+		<ant dir="org.objectstyle.wolips.variables" target="all" />
+		<ant dir="org.objectstyle.wolips.datasets" target="all" />
+		<ant dir="org.objectstyle.wolips.locate" target="all" />
+		<ant dir="org.objectstyle.wolips.ant" target="all" />
+		<ant dir="org.objectstyle.wolips.cayenne" target="all" />
+		<ant dir="org.objectstyle.wolips.cayenne.ant" target="all" />
+		<ant dir="org.objectstyle.wolips.documentation" target="all" />
+		<ant dir="org.objectstyle.wolips.goodies.core.mac" target="all" />
+		<ant dir="org.objectstyle.wolips.goodies.ui.mac" target="all" />
+		<ant dir="org.objectstyle.wolips.jdom" target="all" />
+		<ant dir="org.objectstyle.wolips.jdt" target="all" />
+		<ant dir="org.objectstyle.wolips.pbserver" target="all" />
+		<ant dir="org.objectstyle.wolips.projectbuild" target="all" />
+		<ant dir="org.objectstyle.wolips.ui" target="all" />
+		<ant dir="org.objectstyle.wolips.deployment.ui" target="all" />
+		<ant dir="org.objectstyle.wolips.launching" target="all" />
+		<ant dir="org.objectstyle.wolips.profiling" target="all" />
+		<ant dir="org.objectstyle.wolips.tptp.launching" target="all" />
+		<ant dir="org.objectstyle.wolips.refactoring" target="all" />
+		<ant dir="org.objectstyle.wolips.targetbuilder" target="all" />
+		<ant dir="org.objectstyle.wolips.team" target="all" />
+		<ant dir="org.objectstyle.wolips.templateengine" target="all" />
+		<ant dir="org.objectstyle.wolips.wizards" target="all" />
+		<ant dir="org.objectstyle.wolips.editors" target="all" />
+		<ant dir="org.objectstyle.wolips.components" target="all" />
+		<ant dir="org.objectstyle.wolips.apieditor" target="all" />
+		<ant dir="org.objectstyle.wolips.htmleditor" target="all" />
+		<ant dir="org.objectstyle.wolips.htmlpreview" target="all" />
+		<ant dir="org.objectstyle.wolips.wodclipse" target="all" />
+		<ant dir="org.objectstyle.wolips.componenteditor" target="all" />
+		<ant dir="org.objectstyle.wolips.ruleeditor" target="all" />
+		<ant dir="org.objectstyle.wolips.woproject" target="all" />
+		<ant dir="org.objectstyle.wolips.woproject.ant" target="all" />
+		<ant dir="org.objectstyle.wolips.builder" target="all" />
+		<ant dir="org.objectstyle.wolips.tests" target="all" />
+	</target>
+	<!-- ========================================== -->
+	<!-- Build dist.                                -->
+	<!-- ========================================== -->
+	<target name="dist">
+		<mkdir dir="../../${build.output.dist.dir}/plugins" />
+		<ant dir="org.objectstyle.wolips.commons" target="dist" />
+		<ant dir="org.objectstyle.wolips.workbenchutilities" target="dist" />
+		<ant dir="org.objectstyle.wolips.tests.core" target="dist" />
+		<ant dir="org.objectstyle.wolips.preferences" target="dist" />
+		<ant dir="org.objectstyle.wolips" target="dist" />
+		<ant dir="org.objectstyle.wolips.variables" target="dist" />
+		<ant dir="org.objectstyle.wolips.datasets" target="dist" />
+		<ant dir="org.objectstyle.wolips.locate" target="dist" />
+		<ant dir="org.objectstyle.wolips.ant" target="dist" />
+		<ant dir="org.objectstyle.wolips.cayenne" target="dist" />
+		<ant dir="org.objectstyle.wolips.cayenne.ant" target="dist" />
+		<ant dir="org.objectstyle.wolips.documentation" target="dist" />
+		<ant dir="org.objectstyle.wolips.goodies.core.mac" target="dist" />
+		<ant dir="org.objectstyle.wolips.goodies.ui.mac" target="dist" />
+		<ant dir="org.objectstyle.wolips.jdom" target="dist" />
+		<ant dir="org.objectstyle.wolips.jdt" target="dist" />
+		<ant dir="org.objectstyle.wolips.pbserver" target="dist" />
+		<ant dir="org.objectstyle.wolips.projectbuild" target="dist" />
+		<ant dir="org.objectstyle.wolips.ui" target="dist" />
+		<ant dir="org.objectstyle.wolips.deployment.ui" target="dist" />
+		<ant dir="org.objectstyle.wolips.launching" target="dist" />
+		<ant dir="org.objectstyle.wolips.profiling" target="dist" />
+		<ant dir="org.objectstyle.wolips.tptp.launching" target="dist" />
+		<ant dir="org.objectstyle.wolips.refactoring" target="dist" />
+		<ant dir="org.objectstyle.wolips.targetbuilder" target="dist" />
+		<ant dir="org.objectstyle.wolips.team" target="dist" />
+		<ant dir="org.objectstyle.wolips.templateengine" target="dist" />
+		<ant dir="org.objectstyle.wolips.wizards" target="dist" />
+		<ant dir="org.objectstyle.wolips.editors" target="dist" />
+		<ant dir="org.objectstyle.wolips.components" target="dist" />
+		<ant dir="org.objectstyle.wolips.apieditor" target="dist" />
+		<ant dir="org.objectstyle.wolips.htmleditor" target="dist" />
+		<ant dir="org.objectstyle.wolips.htmlpreview" target="dist" />
+		<ant dir="org.objectstyle.wolips.wodclipse" target="dist" />
+		<ant dir="org.objectstyle.wolips.componenteditor" target="dist" />
+		<ant dir="org.objectstyle.wolips.ruleeditor" target="dist" />
+		<ant dir="org.objectstyle.wolips.woproject" target="dist" />
+		<ant dir="org.objectstyle.wolips.woproject.ant" target="dist" />
+		<ant dir="org.objectstyle.wolips.builder" target="dist" />
+		<ant dir="org.objectstyle.wolips.tests" target="dist" />
+	</target>
+
+	<!-- ========================================== -->
+	<!-- Build test prepare.                        -->
+	<!-- ========================================== -->
+	<target name="test.prepare" if="test.eclipse.home.set">
+		<copy todir="${test.eclipse.home}/plugins">
+			<fileset dir="../../${build.output.build.dir}/plugins">
+			</fileset>
+		</copy>
+		<copy todir="${test.eclipse.home}/features">
+			<fileset dir="../../${build.output.build.dir}/features">
+			</fileset>
+		</copy>
+	</target>
+
+	<!-- ========================================== -->
+	<!-- Build test run.                            -->
+	<!-- ========================================== -->
+	<target name="test.run" if="test.properties.set">
+		<ant dir="org.objectstyle.wolips.tests" target="test">
+			<property name="param.eclipse.home" value="${test.eclipse.home}" />
+		</ant>
+	</target>
+
+	<!-- ========================================== -->
+	<!-- Build test clean.                          -->
+	<!-- ========================================== -->
+	<target name="test.clean" if="test.eclipse.home.set">
+		<delete>
+			<fileset dir="${test.eclipse.home}/plugins">
+				<include name="**/org.objectstyle.wolips*/**" />
+			</fileset>
+		</delete>
+		<delete>
+			<fileset dir="${test.eclipse.home}/features">
+				<include name="**/org.objectstyle.wolips*/**" />
+			</fileset>
+		</delete>
+	</target>
+
+	<!-- ========================================== -->
+	<!-- Build test.                                -->
+	<!-- ========================================== -->
+	<target name="test" depends="verify,inform_user,inform_user_os,inform_user_ws,inform_user_test_java_library_path,test.prepare,test.run,test.clean">
+	</target>
+
+</project>

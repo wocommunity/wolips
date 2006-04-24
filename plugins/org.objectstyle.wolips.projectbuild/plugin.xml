@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+<!-- =================================================================================== -->
+<!-- Extension: WOLips projectbuild problem marker                                       -->
+<!-- =================================================================================== -->
+   <extension
+         id="projectbuild.taskmarker"
+         name="WOLips Task Marker"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="org.eclipse.core.resources.taskmarker">
+      </super>
+   </extension>
+   <extension
+         id="projectbuild.marker"
+         name="WOLips Build Marker"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="org.eclipse.core.resources.problemmarker">
+      </super>
+   </extension>
+   <extension
+         id="projectbuild.problem"
+         name="WOLips Build Problem Marker"
+         point="org.eclipse.core.resources.markers">
+      <persistent
+            value="true">
+      </persistent>
+      <super
+            type="org.objectstyle.wolips.projectbuild.marker">
+      </super>
+   </extension>
+   <extension
+         id="projectbuild.duplicate"
+         name="WOLips Build Duplicate Marker"
+         point="org.eclipse.core.resources.markers">
+      <persistent
+            value="true">
+      </persistent>
+      <super
+            type="org.objectstyle.wolips.projectbuild.marker">
+      </super>
+   </extension>
+   <extension
+         point="org.eclipse.core.variables.dynamicVariables">
+      <variable
+            name="working_dir_loc_WOLips"
+            resolver="org.objectstyle.wolips.projectbuild.variables.WorkingDirResolver"
+            description="Resolves the working dir for a WebObjects Application within a WOLips project. Add the ProjectName as the argument.">
+      </variable>
+   </extension>
+
+<!-- =================================================================================== -->
+<!-- Extension: Builder                                                                   -->
+<!-- =================================================================================== -->
+   
+   <extension point="org.objectstyle.wolips.builders">
+	  <builder
+		id="org.objectstyle.wolips.projectbuild.builder.antbuilder"
+         name="Ant Builder"
+         class="org.objectstyle.wolips.projectbuild.builder.WOAntBuilder"
+         context="ant"/>
+     <builder
+		id="org.objectstyle.wolips.projectbuild.builder.incrementalbuilder"
+         name="Incremental Builder"
+         class="org.objectstyle.wolips.projectbuild.builder.WOIncrementalBuilder"
+         context="incremental"/>
+   </extension>
+</plugin>

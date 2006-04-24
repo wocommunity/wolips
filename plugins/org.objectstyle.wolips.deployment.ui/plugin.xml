@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+<!-- =================================================================================== -->
+<!-- Extension: File actions                                                             -->
+<!-- =================================================================================== -->
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IResource"
+            adaptable="true"
+            id="org.objectstyle.wolips.deployment.ui.actions.InstallActions">
+         <action
+               label="Install..."
+               icon="icons/action/ant_buildfile.gif"
+               class="org.objectstyle.wolips.deployment.ui.actions.InstallWithSelectionDialogAction"
+               menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group5"
+               enablesFor="1"
+               id="org.objectstyle.wolips.deployment.ui.actions.InstallWithSelectionDialogAction">
+         </action>
+         <action
+               label="Install"
+               icon="icons/action/ant_buildfile.gif"
+               class="org.objectstyle.wolips.deployment.ui.actions.InstallAction"
+               menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group5"
+               enablesFor="1"
+               id="org.objectstyle.wolips.deployment.ui.actions.InstallAction">
+         </action>
+      </objectContribution>
+   </extension>
+
+</plugin>

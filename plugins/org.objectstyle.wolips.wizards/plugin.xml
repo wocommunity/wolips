@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+
+
+<!-- =================================================================================== -->
+<!-- Extension: Project Wizards                                                          -->
+<!-- =================================================================================== -->
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            name="WOLips WO 5.1 and 5.2"
+            id="org.objectstyle.wolips.wizards">
+      </category>
+      <wizard
+            name="WOComponent"
+            icon="icons/wobuilder/wocomponent_wiz.gif"
+            category="org.objectstyle.wolips.wizards"
+            class="org.objectstyle.wolips.wizards.WOComponentCreationWizard"
+            id="org.objectstyle.wolips.wizards.new.wo.5.1.component">
+         <description>
+         </description>
+         <selection
+               class="org.eclipse.core.resources.IResource">
+         </selection>
+      </wizard>
+      <wizard
+            name="WOApplication"
+            icon="icons/woproject/woapplication_wiz.gif"
+            category="org.objectstyle.wolips.wizards"
+            class="org.objectstyle.wolips.wizards.WOApplicationWizard"
+            project="true"
+            id="org.objectstyle.wolips.wizards.new.wo.5.1.application">
+         <description>
+         </description>
+      </wizard>
+      <wizard
+            name="WOnderApplication"
+            icon="icons/woproject/woapplication_wiz.gif"
+            category="org.objectstyle.wolips.wizards"
+            class="org.objectstyle.wolips.wizards.WOnderApplicationWizard"
+            project="true"
+            id="org.objectstyle.wolips.wizards.new.wo.5.1.wonderapplication">
+         <description>
+         </description>
+      </wizard>
+      <wizard
+            name="D2WApplication"
+            icon="icons/woproject/d2wapplication_wiz.gif"
+            category="org.objectstyle.wolips.wizards"
+            class="org.objectstyle.wolips.wizards.D2WApplicationWizard"
+            project="true"
+            id="org.objectstyle.wolips.wizards.new.wo.5.1.d2wapplication">
+         <description>
+         </description>
+      </wizard>
+      <wizard
+            name="WOFramework"
+            icon="icons/woproject/woframework_wiz.gif"
+            category="org.objectstyle.wolips.wizards"
+            class="org.objectstyle.wolips.wizards.WOFrameworkWizard"
+            project="true"
+            id="org.objectstyle.wolips.wizards.new.wo.5.1.framework">
+         <description>
+         </description>
+      </wizard>
+      <wizard
+            name="Jar Project"
+            icon="icons/woproject/jar_project_wiz.gif"
+            category="org.objectstyle.wolips.wizards"
+            class="org.objectstyle.wolips.wizards.JarProjectWizard"
+            project="true"
+            id="org.objectstyle.wolips.wizards.new.wo.5.1.jarproject">
+         <description>
+         </description>
+      </wizard>
+      <wizard
+            name="Subproject"
+            icon="icons/woproject/wosubproject_wiz.gif"
+            category="org.objectstyle.wolips.wizards"
+            class="org.objectstyle.wolips.wizards.WOSubprojectCreationWizard"
+            id="org.objectstyle.wolips.wizards.new.wo.5.1.subproject">
+         <description>
+         </description>
+         <selection
+               class="org.eclipse.core.resources.IResource">
+         </selection>
+      </wizard>
+      <wizard
+            name="EOModel"
+            icon="icons/woproject/eomodel_wiz.gif"
+            category="org.objectstyle.wolips.wizards"
+            class="org.objectstyle.wolips.wizards.EOModelCreationWizard"
+            id="org.objectstyle.wolips.wizards.new.wo.5.1.eomodel">
+         <description>
+         </description>
+         <selection
+               class="org.eclipse.core.resources.IResource">
+         </selection>
+      </wizard>
+   </extension>
+<!-- =================================================================================== -->
+<!-- Extension: Action set in the perspective                                            -->
+<!-- =================================================================================== -->
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            label="WOLips Wizards"
+            description="WOLips Wizards"
+            visible="false"
+            id="org.objectstyle.wolips.wizards.ElementCreationActionSet">
+         <action
+               label="EOModel"
+               icon="icons/woproject/eomodel_wiz.gif"
+               class="org.objectstyle.wolips.wizards.actions.OpenEOModelWizard"
+               tooltip="New EOModel"
+               toolbarPath="Normal/WOLipsWizards"
+               id="org.objectstyle.wolips.wizards.actions.OpenEOModelWizard">
+         </action>
+         <action
+               label="WOComponent"
+               icon="icons/wobuilder/wocomponent_wiz.gif"
+               class="org.objectstyle.wolips.wizards.actions.OpenWOComponentWizard"
+               tooltip="New WOComponent"
+               toolbarPath="Normal/WOLipsWizards"
+               id="org.objectstyle.wolips.wizards.actions.OpenWOComponentWizard">
+         </action>
+         <action
+               label="WOSubproject"
+               icon="icons/woproject/wosubproject_wiz.gif"
+               class="org.objectstyle.wolips.wizards.actions.OpenWOSubprojectCreationWizard"
+               tooltip="New WOSubproject"
+               toolbarPath="Normal/WOLipsWizards"
+               id="org.objectstyle.wolips.wizards.actions.OpenWOSubprojectCreationWizard">
+         </action>
+         <action
+               label="Jar Project"
+               icon="icons/woproject/jar_project_wiz.gif"
+               class="org.objectstyle.wolips.wizards.actions.OpenJarProjectWizard"
+               tooltip="New Jar Project"
+               toolbarPath="Normal/WOLipsWizards"
+               id="org.objectstyle.wolips.wizards.actions.OpenJarProjectWizard">
+         </action>
+         <action
+               label="WOFramework"
+               icon="icons/woproject/woframework_wiz.gif"
+               class="org.objectstyle.wolips.wizards.actions.OpenWOFrameworkWizard"
+               tooltip="New WOFramework"
+               toolbarPath="Normal/WOLipsWizards"
+               id="org.objectstyle.wolips.wizards.actions.OpenWOFrameworkWizard">
+         </action>
+         <action
+               label="D2WApplication"
+               icon="icons/woproject/d2wapplication_wiz.gif"
+               class="org.objectstyle.wolips.wizards.actions.OpenD2WApplicationWizard"
+               tooltip="New D2WApplication"
+               toolbarPath="Normal/WOLipsWizards"
+               id="org.objectstyle.wolips.wizards.actions.OpenD2WApplicationWizard">
+         </action>
+         <action
+               label="WOApplication"
+               icon="icons/woproject/woapplication_wiz.gif"
+               class="org.objectstyle.wolips.wizards.actions.OpenWOApplicationWizard"
+               tooltip="New WOApplication"
+               toolbarPath="Normal/WOLipsWizards"
+               id="org.objectstyle.wolips.wizards.actions.OpenWOApplicationWizard">
+         </action>
+      </actionSet>
+   </extension>
+<!-- =================================================================================== -->
+<!-- Extension: Popup menus                                                              -->
+<!-- =================================================================================== -->
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IResource"
+            adaptable="true"
+            nameFilter="build.xml"
+            id="org.objectstyle.wolips.wizards.actions.UpgradeBuildXML">
+         <action
+               label="Replace with latest build.xml"
+               icon="icons/action/ant_buildfile.gif"
+               class="org.objectstyle.wolips.wizards.actions.UpgradeBuildXML"
+               menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group4"
+               enablesFor="1"
+               id="org.objectstyle.wolips.wizards.actions.UpgradeBuildXML">
+         </action>
+      </objectContribution>
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IProject"
+            adaptable="true"
+            id="org.objectstyle.wolips.wizards.actions.UpgradeAllBuildXML">
+         <action
+               label="Replace with latest build.xml"
+               icon="icons/action/ant_buildfile.gif"
+               class="org.objectstyle.wolips.wizards.actions.UpgradeAllBuildXML"
+               menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group4"
+               id="org.objectstyle.wolips.wizards.actions.UpgradeAllBuildXML">
+         </action>
+      </objectContribution>
+   </extension>
+</plugin>

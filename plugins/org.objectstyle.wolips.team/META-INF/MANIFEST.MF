@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: WOLips Team Plug-in
+Bundle-SymbolicName: org.objectstyle.wolips.team; singleton:=true
+Bundle-Version: 1.0.6
+Bundle-Activator: org.objectstyle.wolips.team.TeamPlugin
+Bundle-Vendor: objectstyle.org
+Bundle-Localization: plugin
+Eclipse-LazyStart: true
+Require-Bundle: org.eclipse.core.runtime,
+ org.objectstyle.wolips
+Export-Package: org.objectstyle.wolips.team
