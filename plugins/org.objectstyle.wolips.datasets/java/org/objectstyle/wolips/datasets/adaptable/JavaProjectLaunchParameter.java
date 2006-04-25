@@ -56,6 +56,7 @@
 package org.objectstyle.wolips.datasets.adaptable;
 import java.io.File;
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -186,6 +187,23 @@ public class JavaProjectLaunchParameter extends JavaProjectClasspath {
 			} else {
 				wdFolder = theProject.getFolder("build/" + theProject.getName()
 						+ ".woa");
+			}
+			if(wdFolder != null || !wdFolder.exists()) {
+				if (this.isAnt()) {
+					wdFolder = theProject.getFolder("dist");
+				} else {
+					wdFolder = theProject.getFolder("build");
+				}
+				if(wdFolder != null || !wdFolder.exists()) {
+					IResource[] members = wdFolder.members();
+					for(int i = 0; i < members.length; i++) {
+						IResource member = members[i];
+						if(member.getType() ==IResource.FOLDER && member.getName().endsWith(".woa")) {
+							wdFolder = (IFolder)member;
+							break;
+						}
+					}
+				}
 			}
 			if (wdFolder == null || !wdFolder.exists()) {
 				wdFolder = theProject.getFolder(theProject.getName() + ".woa");
