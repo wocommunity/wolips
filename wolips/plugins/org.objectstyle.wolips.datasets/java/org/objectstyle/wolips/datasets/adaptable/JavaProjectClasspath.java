@@ -55,6 +55,7 @@
  */
 package org.objectstyle.wolips.datasets.adaptable;
 
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
@@ -431,7 +432,7 @@ public class JavaProjectClasspath extends AbstractJavaProjectAdapterType {
 		}
 		return result;
 	}
-
+	
 	/**
 	 * @return
 	 * @throws CoreException
@@ -462,15 +463,33 @@ public class JavaProjectClasspath extends AbstractJavaProjectAdapterType {
 										+ projectName + ".jar");
 			}
 		} else if (this.isApplication()) { // must be application
+			IFolder wdFolder = null;
 			if (this.isAnt()) {
-				resource = getJar("dist/", ".woa/Contents/");
+				wdFolder = this.getIProject().getFolder("dist");
+			} else {
+				wdFolder = this.getIProject().getFolder("build");
+			}
+			if(wdFolder != null || !wdFolder.exists()) {
+				IResource[] members = wdFolder.members();
+				for(int i = 0; i < members.length; i++) {
+					IResource member = members[i];
+					if(member.getType() ==IResource.FOLDER && member.getName().endsWith(".woa")) {
+						wdFolder = (IFolder)member;
+						break;
+					}
+				}
+			}
+			if(wdFolder != null && wdFolder.exists()) {
+			IFolder javaFolder = wdFolder
+			.getFolder(
+					"Contents/Resources/Java");
+			if (this.isAnt()) {
+				resource = javaFolder.findMember(wdFolder.getName().substring(0, wdFolder.getName().length() - 4 ).toLowerCase()+ ".jar");
 				if (!resource.exists())
 					resource = getJar("", ".woa/Contents/");
 			} else if (this.isIncremental()) {
-				resource = this.getIProject()
-						.getFolder(
-								"build/" + projectName
-										+ ".woa/Contents/Resources/Java");
+				resource = javaFolder;
+			}
 			}
 			if (resource != null && (resource.exists())) {
 				path = resource.getLocation();
