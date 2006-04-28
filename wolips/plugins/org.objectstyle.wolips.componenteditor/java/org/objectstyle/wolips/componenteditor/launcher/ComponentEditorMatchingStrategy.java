@@ -65,6 +65,15 @@ public class ComponentEditorMatchingStrategy implements IEditorMatchingStrategy 
 		if(!editorID.equals(ComponenteditorPlugin.ComponentEditorID)) {
 			return false;
 		}
+		if (editorInput instanceof ComponentEditorInput) {
+			IWorkbenchPart workbenchPart = editorReference.getPart(true);
+			if(workbenchPart == null) {
+				return false;
+			}
+			ComponentEditor componentEditor = (ComponentEditor)workbenchPart;
+			ComponentEditorInput componentEditorInput = componentEditor.getComponentEditorInput();
+			return componentEditorInput.equals(editorInput);
+		}
 		if (!(editorInput instanceof FileEditorInput)) {
 			return false;
 		}
