@@ -14,4 +14,3 @@ How to use it:
 
 1. At the command line cd to the projects folder.
 2. Call the build script: 'ant'
-
