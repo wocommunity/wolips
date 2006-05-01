@@ -334,7 +334,7 @@ public class PBDotProjectAdapter extends AbstractFileAdapter implements
 			subProjects = this.pbProject.getSubprojects();
 		}
 		addToListIfListNotContains(subProjects, dotSubprojAdapter
-				.getSubprojectName());
+				.getUnderlyingFolder().getName());
 	}
 
 	public void removeSubproject(IDotSubprojAdapter dotSubprojAdapter) {
@@ -342,7 +342,7 @@ public class PBDotProjectAdapter extends AbstractFileAdapter implements
 			return;
 		}
 		removeFromListIfListNotContains(this.pbProject.getSubprojects(),
-				dotSubprojAdapter.getSubprojectName());
+				dotSubprojAdapter.getUnderlyingFolder().getName());
 
 	}
 
