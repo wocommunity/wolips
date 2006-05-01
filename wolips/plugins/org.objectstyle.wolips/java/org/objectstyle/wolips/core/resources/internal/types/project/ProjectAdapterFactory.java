@@ -2,7 +2,7 @@
  *
  * The ObjectStyle Group Software License, Version 1.0
  *
- * Copyright (c) 2005 The ObjectStyle Group,
+ * Copyright (c) 2005 - 2006 The ObjectStyle Group,
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -62,6 +62,7 @@ import org.objectstyle.wolips.core.resources.internal.build.Nature;
 import org.objectstyle.wolips.core.resources.internal.types.AbstractResourceAdapterFactory;
 import org.objectstyle.wolips.core.resources.types.IResourceType;
 import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
+import org.objectstyle.wolips.core.resources.types.project.IProjectPatternsets;
 
 /**
  * @author ulrich To change the template for this generated type comment go to
@@ -82,11 +83,13 @@ public class ProjectAdapterFactory extends AbstractResourceAdapterFactory {
 		if (adapterType == IProjectAdapter.class) {
 			return true;
 		}
+		if (adapterType == IProjectPatternsets.class) {
+			return true;
+		}
 		return false;
 	}
 
-	public IResourceType createAdapter(Object adaptableObject,
-			Class adapterType) {
+	public IResourceType createAdapter(Object adaptableObject, Class adapterType) {
 		IProject project = (IProject) adaptableObject;
 		Nature nature = null;
 		try {
@@ -101,6 +104,9 @@ public class ProjectAdapterFactory extends AbstractResourceAdapterFactory {
 		}
 		if (adapterType == IProjectAdapter.class) {
 			return new ProjectAdapter(project, nature.isFramework());
+		}
+		if (adapterType == IProjectPatternsets.class) {
+			return new ProjectPatternsets(project);
 		}
 		return null;
 	}

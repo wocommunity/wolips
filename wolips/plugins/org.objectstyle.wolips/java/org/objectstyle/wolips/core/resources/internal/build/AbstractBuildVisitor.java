@@ -56,7 +56,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.objectstyle.wolips.core.resources.internal.pattern.PatternList;
-import org.objectstyle.wolips.core.resources.internal.types.file.ProjectPatternsets;
+import org.objectstyle.wolips.core.resources.internal.types.project.ProjectPatternsets;
 import org.objectstyle.wolips.core.resources.types.folder.IDotApplicationAdapter;
 import org.objectstyle.wolips.core.resources.types.folder.IDotFrameworkAdapter;
 

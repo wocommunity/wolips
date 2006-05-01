@@ -128,6 +128,7 @@
        <factory class="org.objectstyle.wolips.core.resources.internal.types.project.ProjectAdapterFactory"
            adaptableType="org.eclipse.core.resources.IProject">
            <adapter type="org.objectstyle.wolips.core.resources.types.project.IProjectAdapter"/>
+           <adapter type="org.objectstyle.wolips.core.resources.types.project.IProjectPatternsets"/>
        </factory>
    </extension>
 

@@ -53,7 +53,7 @@
  * <http://objectstyle.org/>.
  *
  */
-package org.objectstyle.wolips.core.resources.internal.types.file;
+package org.objectstyle.wolips.core.resources.internal.types.project;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -72,6 +72,10 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.objectstyle.wolips.core.CorePlugin;
 import org.objectstyle.wolips.core.resources.pattern.PatternsetMatcher;
 import org.objectstyle.wolips.core.resources.pattern.PatternsetWriter;
+import org.objectstyle.wolips.core.resources.types.ILocalizedPath;
+import org.objectstyle.wolips.core.resources.types.IPBDotProjectOwner;
+import org.objectstyle.wolips.core.resources.types.IResourceType;
+import org.objectstyle.wolips.core.resources.types.project.IProjectPatternsets;
 
 /**
  * @author ulrich
@@ -79,7 +83,7 @@ import org.objectstyle.wolips.core.resources.pattern.PatternsetWriter;
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public class ProjectPatternsets {
+public class ProjectPatternsets implements IProjectPatternsets, IResourceType {
 	
 	/**
 	 * EXTENSION file extension for patternset files
@@ -609,6 +613,22 @@ public class ProjectPatternsets {
 
 	public IProject getIProject() {
 		return project;
+	}
+
+	public IPBDotProjectOwner getPBDotProjectOwner() {
+		return null;
+	}
+
+	public IPBDotProjectOwner getPBDotProjectOwner(IResource resource) {
+		return null;
+	}
+
+	public IResource getUnderlyingResource() {
+		return null;
+	}
+
+	public ILocalizedPath localizedRelativeResourcePath(IPBDotProjectOwner pbDotProjectOwner, IResource resource) {
+		return null;
 	}
 
 }
