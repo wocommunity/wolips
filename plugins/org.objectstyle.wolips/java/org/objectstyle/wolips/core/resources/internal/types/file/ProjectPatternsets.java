@@ -57,7 +57,6 @@ package org.objectstyle.wolips.core.resources.internal.types.file;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
