@@ -462,6 +462,19 @@
             </and>
          </enablement>
       </decorator>
+      <decorator
+            label="WebObjects Resources"
+            state="true"
+            class="org.objectstyle.wolips.ui.labeldecorator.ResourcesLabelDecorator"
+            id="org.objectstyle.wolips.ui.labeldecorator.ResourcesLabelDecorator">
+         <description>
+            Xcode .xcodeproj folder
+         </description>
+         <enablement>
+         	<objectClass name="org.eclipse.core.resources.IResource">
+            </objectClass>
+         </enablement>
+      </decorator>
    </extension>
 <!-- =================================================================================== -->
 <!-- Extension: Action set in the perspective                                            -->
