@@ -62,6 +62,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.objectstyle.wolips.core.CorePlugin;
 import org.objectstyle.wolips.core.resources.internal.types.AbstractResourceAdapter;
 import org.objectstyle.wolips.core.resources.types.folder.IFolderAdapter;
 
@@ -132,4 +133,27 @@ public abstract class AbstractFolderAdapter extends AbstractResourceAdapter
 			deleteResource.delete(true, null);
 	}
 
+	public void markAsDerivated(IProgressMonitor monitor) {
+		try {
+			this.markAsDerivated(this.getUnderlyingFolder(), monitor);
+		} catch (CoreException e) {
+
+			CorePlugin.getDefault().log(e);
+		}
+	}
+
+	public void markAsDerivated(IFolder folder, IProgressMonitor monitor)
+			throws CoreException {
+		folder.setDerived(true);
+		IResource[] members = folder.members();
+		for (int i = 0; i < members.length; i++) {
+			IResource member = members[i];
+			if (member instanceof IFolder) {
+				member.setDerived(true);
+				this.markAsDerivated((IFolder) member, monitor);
+			} else {
+				member.setDerived(true);
+			}
+		}
+	}
 }

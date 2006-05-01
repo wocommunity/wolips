@@ -63,9 +63,11 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathEntry;
@@ -124,9 +126,24 @@ public class ProjectAdapter extends AbstractResourceAdapter implements
 		return false;
 	}
 
+
+	private IFolder getBuildFolder() {
+		IResource resource = this.getUnderlyingProject().getFolder(IBuildAdapter.FILE_NAME_DIST);
+		if (resource.exists() && resource instanceof IFolder) {
+			return (IFolder)resource;
+		}
+		resource = this.getUnderlyingProject().getFolder(IBuildAdapter.FILE_NAME_DIST);
+		if (resource.exists() && resource instanceof IFolder) {
+			return (IFolder)resource;
+		}
+		return null;
+	}
+
 	public IBuildAdapter getBuildAdapter() {
-		IResource resource = this.getUnderlyingProject().getFolder(
-				IBuildAdapter.FILE_NAME);
+		IResource resource = this.getBuildFolder();
+		if(resource == null) {
+			return null;
+		}
 		return (IBuildAdapter) resource.getAdapter(IBuildAdapter.class);
 	}
 

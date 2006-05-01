@@ -58,6 +58,9 @@ package org.objectstyle.wolips.core.resources.internal.types.folder;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.objectstyle.wolips.core.CorePlugin;
 import org.objectstyle.wolips.core.resources.types.folder.IBuildAdapter;
 import org.objectstyle.wolips.core.resources.types.folder.IDotApplicationAdapter;
 import org.objectstyle.wolips.core.resources.types.folder.IDotFrameworkAdapter;
@@ -96,6 +99,14 @@ public class BuildAdapter extends AbstractFolderAdapter implements
 		}
 
 		return this.getDotApplicationAdapter();
+	}
+
+	public void clean(IProgressMonitor monitor) {
+		try {
+			this.getUnderlyingFolder().delete(true, monitor);
+		} catch (CoreException e) {
+			CorePlugin.getDefault().log(e);
+		}
 	}
 
 }

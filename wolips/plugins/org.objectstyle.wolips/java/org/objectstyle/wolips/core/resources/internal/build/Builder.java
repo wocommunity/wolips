@@ -2,7 +2,7 @@
  *
  * The ObjectStyle Group Software License, Version 1.0
  *
- * Copyright (c) 2005 The ObjectStyle Group,
+ * Copyright (c) 2005 - 2006 The ObjectStyle Group,
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -67,98 +67,140 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.objectstyle.wolips.core.CorePlugin;
 import org.objectstyle.wolips.core.resources.builder.AbstractOldBuilder;
+import org.objectstyle.wolips.core.resources.types.folder.IBuildAdapter;
+import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
 
 public abstract class Builder extends IncrementalProjectBuilder {
 
-  protected final static String INCREMENTAL_BUILDER_ID = "org.objectstyle.wolips.incrementalbuilder";
+	protected final static String INCREMENTAL_BUILDER_ID = "org.objectstyle.wolips.incrementalbuilder";
 
-  protected final static String ANT_BUILDER_ID = "org.objectstyle.wolips.antbuilder";
+	protected final static String ANT_BUILDER_ID = "org.objectstyle.wolips.antbuilder";
 
-  private BuilderWrapper[] builderWrappers;
+	private BuilderWrapper[] builderWrappers;
 
-  public Builder() {
-    super();
-  }
+	public Builder() {
+		super();
+	}
 
-  public abstract String getContext();
+	public abstract String getContext();
 
-  protected IProject[] build(int kind, Map args, IProgressMonitor monitor) throws CoreException {
-    if (this.builderWrappers == null) {
-      this.builderWrappers = CorePlugin.getDefault().getBuilderWrapper(this.getContext());
-    }
-    return build(kind, args, monitor, this.builderWrappers);
-  }
+	protected IProject[] build(int kind, Map args, IProgressMonitor monitor)
+			throws CoreException {
+		if (this.builderWrappers == null) {
+			this.builderWrappers = CorePlugin.getDefault().getBuilderWrapper(
+					this.getContext());
+		}
+		return build(kind, args, monitor, this.builderWrappers);
+	}
 
-  protected IProject[] build(int kind, Map args, IProgressMonitor monitor, BuilderWrapper[] _builderWrappers) throws CoreException {
-    Map buildCache = new HashMap();
-    AbstractBuildVisitor buildVisitor;
-    if (kind == IncrementalProjectBuilder.INCREMENTAL_BUILD || kind == IncrementalProjectBuilder.AUTO_BUILD) {
-      buildVisitor = new DeltaVisitor(_builderWrappers, monitor, buildCache);
-    }
-    else {
-      buildVisitor = new CleanVisitor(_builderWrappers, monitor, buildCache);
-    }
-    Set builderWrappersRequestingFullBuild = new HashSet();
-    IProject project = this.getProject();
-    IResourceDelta projectDelta = getDelta(project);
-    this.invokeOldBuilder(kind, args, monitor, projectDelta, _builderWrappers);
-    this.notifyBuilderBuildStarted(builderWrappersRequestingFullBuild, kind, args, monitor, buildCache, _builderWrappers);
-    buildVisitor.buildStarted(project);
-    try {
-      if (buildVisitor instanceof DeltaVisitor) {
-        if (projectDelta != null) {
-          projectDelta.accept((DeltaVisitor) buildVisitor);
-        }
-      }
-      else {
-        project.accept((CleanVisitor) buildVisitor);
-      }
-    }
-    finally {
-      this.notifyBuildPreparationDone(builderWrappersRequestingFullBuild, kind, args, monitor, buildCache, _builderWrappers);
-      buildVisitor.visitingDone();
-    }
+	protected IProject[] build(int kind, Map args, IProgressMonitor monitor,
+			BuilderWrapper[] _builderWrappers) throws CoreException {
+		IProject project = this.getProject();
+		IProjectAdapter projectAdapter = (IProjectAdapter) project
+				.getAdapter(IProjectAdapter.class);
+		IBuildAdapter buildAdapter = projectAdapter.getBuildAdapter();
+		if (kind == IncrementalProjectBuilder.FULL_BUILD || kind == IncrementalProjectBuilder.CLEAN_BUILD) {
+			if (buildAdapter != null) {
+				buildAdapter.clean(monitor);
+			} else {
+				CorePlugin.getDefault().debug(
+						"Could not locate build folder in project: " + project
+								+ " Skipping clean");
+			}
+		}
+		Map buildCache = new HashMap();
+		AbstractBuildVisitor buildVisitor;
+		if (kind == IncrementalProjectBuilder.INCREMENTAL_BUILD
+				|| kind == IncrementalProjectBuilder.AUTO_BUILD) {
+			buildVisitor = new DeltaVisitor(_builderWrappers, monitor,
+					buildCache);
+		} else {
+			buildVisitor = new CleanVisitor(_builderWrappers, monitor,
+					buildCache);
+		}
+		Set builderWrappersRequestingFullBuild = new HashSet();
+		IResourceDelta projectDelta = getDelta(project);
+		this.invokeOldBuilder(kind, args, monitor, projectDelta,
+				_builderWrappers);
+		this.notifyBuilderBuildStarted(builderWrappersRequestingFullBuild,
+				kind, args, monitor, buildCache, _builderWrappers);
+		buildVisitor.buildStarted(project);
+		try {
+			if (buildVisitor instanceof DeltaVisitor) {
+				if (projectDelta != null) {
+					projectDelta.accept((DeltaVisitor) buildVisitor);
+				}
+			} else {
+				project.accept((CleanVisitor) buildVisitor);
+			}
+		} finally {
+			this.notifyBuildPreparationDone(builderWrappersRequestingFullBuild,
+					kind, args, monitor, buildCache, _builderWrappers);
+			buildVisitor.visitingDone();
+		}
 
-    if (buildVisitor instanceof DeltaVisitor) {
-      BuilderWrapper[] deltaBuilderWrappersRequestingFullBuild = ((DeltaVisitor) buildVisitor).getBuilderWrappersRequestingFullBuild();
-      for (int i = 0; i < deltaBuilderWrappersRequestingFullBuild.length; i++) {
-        builderWrappersRequestingFullBuild.add(deltaBuilderWrappersRequestingFullBuild[i]);
-      }
+		if (buildVisitor instanceof DeltaVisitor) {
+			BuilderWrapper[] deltaBuilderWrappersRequestingFullBuild = ((DeltaVisitor) buildVisitor)
+					.getBuilderWrappersRequestingFullBuild();
+			for (int i = 0; i < deltaBuilderWrappersRequestingFullBuild.length; i++) {
+				builderWrappersRequestingFullBuild
+						.add(deltaBuilderWrappersRequestingFullBuild[i]);
+			}
 
-      if (builderWrappersRequestingFullBuild.size() > 0) {
-        BuilderWrapper[] builderWrappersRequestingFullBuildList = (BuilderWrapper[]) builderWrappersRequestingFullBuild.toArray(new BuilderWrapper[builderWrappersRequestingFullBuild.size()]);
-        build(IncrementalProjectBuilder.FULL_BUILD, args, monitor, builderWrappersRequestingFullBuildList);
-      }
-    }
+			if (builderWrappersRequestingFullBuild.size() > 0) {
+				BuilderWrapper[] builderWrappersRequestingFullBuildList = (BuilderWrapper[]) builderWrappersRequestingFullBuild
+						.toArray(new BuilderWrapper[builderWrappersRequestingFullBuild
+								.size()]);
+				build(IncrementalProjectBuilder.FULL_BUILD, args, monitor,
+						builderWrappersRequestingFullBuildList);
+			}
+		}
+		if (buildAdapter != null) {
+			buildAdapter.markAsDerivated(monitor);
+		} else {
+			CorePlugin.getDefault().debug(
+					"Could not locate build folder in project: " + project
+							+ " Skipping markAsDerivated");
+		}
+		return null;
+	}
 
-    return null;
-  }
+	private void invokeOldBuilder(int kind, Map args, IProgressMonitor monitor,
+			IResourceDelta delta, BuilderWrapper[] _builderWrappers)
+			throws CoreException {
+		for (int i = 0; i < _builderWrappers.length; i++) {
+			boolean isOldBuilder = _builderWrappers[i].isOldBuilder();
+			if (isOldBuilder) {
+				AbstractOldBuilder abstractOldBuilder = (AbstractOldBuilder) _builderWrappers[i]
+						.getBuilder();
+				abstractOldBuilder.setProject(this.getProject());
+				abstractOldBuilder.invokeOldBuilder(kind, args, monitor, delta);
+			}
+		}
+	}
 
-  private void invokeOldBuilder(int kind, Map args, IProgressMonitor monitor, IResourceDelta delta, BuilderWrapper[] _builderWrappers) throws CoreException {
-    for (int i = 0; i < _builderWrappers.length; i++) {
-      boolean isOldBuilder = _builderWrappers[i].isOldBuilder();
-      if (isOldBuilder) {
-        AbstractOldBuilder abstractOldBuilder = (AbstractOldBuilder) _builderWrappers[i].getBuilder();
-        abstractOldBuilder.setProject(this.getProject());
-        abstractOldBuilder.invokeOldBuilder(kind, args, monitor, delta);
-      }
-    }
-  }
+	private void notifyBuilderBuildStarted(
+			Set _builderWrappersRequestingFullBuild, int kind, Map args,
+			IProgressMonitor monitor, Map _buildCache,
+			BuilderWrapper[] _builderWrappers) {
+		for (int i = 0; i < _builderWrappers.length; i++) {
+			if (_builderWrappers[i].getBuilder().buildStarted(kind, args,
+					monitor, this.getProject(), _buildCache)) {
+				_builderWrappersRequestingFullBuild.add(_builderWrappers[i]);
+			}
+		}
+	}
 
-  private void notifyBuilderBuildStarted(Set _builderWrappersRequestingFullBuild, int kind, Map args, IProgressMonitor monitor, Map _buildCache, BuilderWrapper[] _builderWrappers) {
-    for (int i = 0; i < _builderWrappers.length; i++) {
-      if (_builderWrappers[i].getBuilder().buildStarted(kind, args, monitor, this.getProject(), _buildCache)) {
-        _builderWrappersRequestingFullBuild.add(_builderWrappers[i]);
-      }
-    }
-  }
+	private void notifyBuildPreparationDone(
+			Set _builderWrappersRequestingFullBuild, int kind, Map args,
+			IProgressMonitor monitor, Map _buildCache,
+			BuilderWrapper[] _builderWrappers) {
+		for (int i = 0; i < _builderWrappers.length; i++) {
 
-  private void notifyBuildPreparationDone(Set _builderWrappersRequestingFullBuild, int kind, Map args, IProgressMonitor monitor, Map _buildCache, BuilderWrapper[] _builderWrappers) {
-    for (int i = 0; i < _builderWrappers.length; i++) {
-
-      if (_builderWrappers[i].getBuilder().buildPreparationDone(kind, args, monitor, this.getProject(), _buildCache)) {
-        _builderWrappersRequestingFullBuild.add(_builderWrappers[i]);
-      }
-    }
-  }
+			if (_builderWrappers[i].getBuilder().buildPreparationDone(kind,
+					args, monitor, this.getProject(), _buildCache)) {
+				_builderWrappersRequestingFullBuild.add(_builderWrappers[i]);
+			}
+		}
+	}
 }
