@@ -58,6 +58,7 @@ package org.objectstyle.wolips.core.resources.types.folder;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.objectstyle.wolips.core.resources.types.IResourceType;
 
 public interface IFolderAdapter extends IResourceType {
@@ -66,4 +67,5 @@ public interface IFolderAdapter extends IResourceType {
 	
 	public abstract IResource copy(IResource resource) throws CoreException;
 	public abstract void deleteCopy(IResource resource) throws CoreException;
+	public abstract void markAsDerivated(IProgressMonitor monitor);
 }

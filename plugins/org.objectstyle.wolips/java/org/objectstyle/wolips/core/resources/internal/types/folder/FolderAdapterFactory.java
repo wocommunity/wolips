@@ -131,7 +131,8 @@ public class FolderAdapterFactory extends AbstractResourceAdapterFactory {
 		}
 		if (adapterType == IBuildAdapter.class) {
 			if (folder.getName() != null
-					&& IBuildAdapter.FILE_NAME.equals(folder.getName())) {
+					&& (IBuildAdapter.FILE_NAME_BUILD.equals(folder.getName()) || IBuildAdapter.FILE_NAME_DIST
+							.equals(folder.getName()))) {
 				return new BuildAdapter(folder);
 			}
 		} else if (adapterType == IContentsAdapter.class) {

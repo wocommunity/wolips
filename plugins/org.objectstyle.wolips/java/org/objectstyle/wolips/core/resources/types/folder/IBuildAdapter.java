@@ -2,7 +2,7 @@
  *
  * The ObjectStyle Group Software License, Version 1.0
  *
- * Copyright (c) 2005 The ObjectStyle Group,
+ * Copyright (c) 2005 - 2006 The ObjectStyle Group,
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -55,14 +55,19 @@
  */
 package org.objectstyle.wolips.core.resources.types.folder;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+
 
 
 public interface IBuildAdapter extends IFolderAdapter {
 
-	public static final String FILE_NAME ="build";
+	public static final String FILE_NAME_BUILD ="build";
+
+	public static final String FILE_NAME_DIST ="dist";
 	
 
 	public abstract IDotApplicationAdapter getDotApplicationAdapter();
 	public abstract IDotFrameworkAdapter getDotFrameworkAdapter();
 	public abstract IProductAdapter getProductAdapter();
+	public abstract void clean(IProgressMonitor monitor);
 }
