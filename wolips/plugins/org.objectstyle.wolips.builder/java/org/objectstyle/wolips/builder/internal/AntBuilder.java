@@ -68,44 +68,44 @@ public class AntBuilder implements IDeltaBuilder {
 		super();
 	}
 
-	public boolean buildStarted(int kind, Map args, IProgressMonitor monitor, IProject project, Map _buildCache) {
-		// TODO Auto-generated method stub
+	public boolean buildStarted(int kind, Map args, IProgressMonitor monitor,
+			IProject project, Map _buildCache) {
 		return false;
 	}
 
-  public boolean buildPreparationDone(int _kind, Map _args, IProgressMonitor _monitor, IProject _project, Map _buildCache) {
-    // TODO Auto-generated method stub
-    return false;
-  }
-
-  public boolean handleSourceDelta(IResourceDelta delta, IProgressMonitor monitor, Map _buildCache) {
-    // TODO Auto-generated method stub
-    return false;
-  }
-
-	public boolean handleClassesDelta(IResourceDelta delta, IProgressMonitor monitor, Map _buildCache) {
-		// TODO Auto-generated method stub
-    return false;
+	public boolean buildPreparationDone(int _kind, Map _args,
+			IProgressMonitor _monitor, IProject _project, Map _buildCache) {
+		return false;
 	}
 
-	public boolean handleWoappResourcesDelta(IResourceDelta delta, IProgressMonitor monitor, Map _buildCache) {
-		// TODO Auto-generated method stub
-    return false;
+	public boolean handleSourceDelta(IResourceDelta delta,
+			IProgressMonitor monitor, Map _buildCache) {
+		return false;
 	}
 
-	public boolean handleWebServerResourcesDelta(IResourceDelta delta, IProgressMonitor monitor, Map _buildCache) {
-		// TODO Auto-generated method stub
-    return false;
+	public boolean handleClassesDelta(IResourceDelta delta,
+			IProgressMonitor monitor, Map _buildCache) {
+		return false;
 	}
 
-	public boolean handleOtherDelta(IResourceDelta delta, IProgressMonitor monitor, Map _buildCache) {
-		// TODO Auto-generated method stub
-    return false;
+	public boolean handleWoappResourcesDelta(IResourceDelta delta,
+			IProgressMonitor monitor, Map _buildCache) {
+		return false;
 	}
 
-	public boolean classpathChanged(IResourceDelta delta, IProgressMonitor monitor, Map _buildCache) {
-		// TODO Auto-generated method stub
-    return false;
+	public boolean handleWebServerResourcesDelta(IResourceDelta delta,
+			IProgressMonitor monitor, Map _buildCache) {
+		return false;
+	}
+
+	public boolean handleOtherDelta(IResourceDelta delta,
+			IProgressMonitor monitor, Map _buildCache) {
+		return false;
+	}
+
+	public boolean classpathChanged(IResourceDelta delta,
+			IProgressMonitor monitor, Map _buildCache) {
+		return false;
 	}
 
 }
