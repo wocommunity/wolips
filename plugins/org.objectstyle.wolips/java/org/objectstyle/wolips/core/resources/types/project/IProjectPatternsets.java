@@ -53,7 +53,7 @@
  * <http://objectstyle.org/>.
  *
  */
-package org.objectstyle.wolips.core.resources.types.file;
+package org.objectstyle.wolips.core.resources.types.project;
 
 import org.eclipse.core.resources.IResource;
 
