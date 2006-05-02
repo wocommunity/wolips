@@ -103,10 +103,6 @@ public abstract class Builder extends IncrementalProjectBuilder {
 				|| kind == IncrementalProjectBuilder.CLEAN_BUILD) {
 			if (buildAdapter != null) {
 				buildAdapter.clean(monitor);
-			} else {
-				CorePlugin.getDefault().debug(
-						"Could not locate build folder in project: " + project
-								+ " Skipping clean");
 			}
 		}
 		Map buildCache = new HashMap();
@@ -159,10 +155,6 @@ public abstract class Builder extends IncrementalProjectBuilder {
 		if (kind != IncrementalProjectBuilder.CLEAN_BUILD) {
 			if (buildAdapter != null) {
 				buildAdapter.markAsDerivated(monitor);
-			} else {
-				CorePlugin.getDefault().debug(
-						"Could not locate build folder in project: " + project
-								+ " Skipping markAsDerivated");
 			}
 		}
 		return null;
