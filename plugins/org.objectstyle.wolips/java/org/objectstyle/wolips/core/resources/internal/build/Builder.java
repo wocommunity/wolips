@@ -99,8 +99,7 @@ public abstract class Builder extends IncrementalProjectBuilder {
 		IProjectAdapter projectAdapter = (IProjectAdapter) project
 				.getAdapter(IProjectAdapter.class);
 		IBuildAdapter buildAdapter = projectAdapter.getBuildAdapter();
-		if (kind == IncrementalProjectBuilder.FULL_BUILD
-				|| kind == IncrementalProjectBuilder.CLEAN_BUILD) {
+		if (kind == IncrementalProjectBuilder.CLEAN_BUILD) {
 			if (buildAdapter != null) {
 				buildAdapter.clean(monitor);
 			}
