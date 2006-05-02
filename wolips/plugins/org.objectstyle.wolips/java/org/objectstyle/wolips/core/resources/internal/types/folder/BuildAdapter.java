@@ -102,6 +102,9 @@ public class BuildAdapter extends AbstractFolderAdapter implements
 	}
 
 	public void clean(IProgressMonitor monitor) {
+		if(!this.getUnderlyingFolder().exists()) {
+			return;
+		}
 		try {
 			this.getUnderlyingFolder().delete(true, monitor);
 		} catch (CoreException e) {

@@ -99,7 +99,8 @@ public abstract class Builder extends IncrementalProjectBuilder {
 		IProjectAdapter projectAdapter = (IProjectAdapter) project
 				.getAdapter(IProjectAdapter.class);
 		IBuildAdapter buildAdapter = projectAdapter.getBuildAdapter();
-		if (kind == IncrementalProjectBuilder.FULL_BUILD || kind == IncrementalProjectBuilder.CLEAN_BUILD) {
+		if (kind == IncrementalProjectBuilder.FULL_BUILD
+				|| kind == IncrementalProjectBuilder.CLEAN_BUILD) {
 			if (buildAdapter != null) {
 				buildAdapter.clean(monitor);
 			} else {
@@ -155,12 +156,14 @@ public abstract class Builder extends IncrementalProjectBuilder {
 						builderWrappersRequestingFullBuildList);
 			}
 		}
-		if (buildAdapter != null) {
-			buildAdapter.markAsDerivated(monitor);
-		} else {
-			CorePlugin.getDefault().debug(
-					"Could not locate build folder in project: " + project
-							+ " Skipping markAsDerivated");
+		if (kind != IncrementalProjectBuilder.CLEAN_BUILD) {
+			if (buildAdapter != null) {
+				buildAdapter.markAsDerivated(monitor);
+			} else {
+				CorePlugin.getDefault().debug(
+						"Could not locate build folder in project: " + project
+								+ " Skipping markAsDerivated");
+			}
 		}
 		return null;
 	}
