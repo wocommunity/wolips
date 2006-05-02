@@ -54,8 +54,10 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -343,21 +345,6 @@ public class ComponentEditorPart extends MultiPageEditorPart {
 		WodclipsePlugin.getDefault().updateWebObjectsTagNames(wodEditor);
 	}
 
-	protected IEditorPart getEditor(int pageIndex) {
-		if (editorParts == null) {
-			return null;
-		}
-		int index = pageIndex;
-		if (index > 1) {
-			index = index + 1;
-		} else if (index == 1) {
-			if (!htmlActive) {
-				index = 2;
-			}
-		}
-		return editorParts[index];
-	}
-
 	public void doSave(IProgressMonitor monitor) {
 		for (int i = 0; i < editorParts.length; i++) {
 			if (editorParts[i].isDirty()) {
@@ -452,5 +439,32 @@ public class ComponentEditorPart extends MultiPageEditorPart {
 
 	public ComponentEditorInput getComponentEditorInput() {
 		return componentEditorInput;
+	}
+//
+//	protected IEditorPart getEditor(int pageIndex) {
+//		if (editorParts == null) {
+//			return null;
+//		}
+//		int index = pageIndex;
+//		if (index > 1) {
+//			index = index + 1;
+//		} else if (index == 1) {
+//			if (!htmlActive) {
+//				index = 2;
+//			}
+//		}
+//		return editorParts[index];
+//	}
+	
+	protected IEditorPart getEditor(int pageIndex) {
+		if(pageIndex == 1) {
+			if(this.htmlActive) {
+				return this.structuredTextEditorHTMLWithWebObjectTags;
+			}
+			else  {
+				return this.wodEditor;
+			}
+		}
+		return super.getEditor(pageIndex);
 	}
 }
