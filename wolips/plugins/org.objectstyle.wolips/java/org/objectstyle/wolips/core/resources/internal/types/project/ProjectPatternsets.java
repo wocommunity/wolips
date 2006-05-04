@@ -219,7 +219,7 @@ public class ProjectPatternsets implements IProjectPatternsets, IResourceType {
 		IFile classesExcludePatternset = this.getAntFolder().getFile(
 				"classes.exclude.patternset");
 		PatternsetWorkspaceRunnable patternsetWorkspaceRunnable = new PatternsetWorkspaceRunnable(
-				classesExcludePatternset, new String[] { "build.properties", "**/*.wo/", "**/*.api" });
+				classesExcludePatternset, new String[] { "build.properties" });
 		this.run(this.getIProject(), patternsetWorkspaceRunnable);
 		this.classesExcludeMatcher = patternsetWorkspaceRunnable.getMatcher();
 		return this.classesExcludeMatcher;
