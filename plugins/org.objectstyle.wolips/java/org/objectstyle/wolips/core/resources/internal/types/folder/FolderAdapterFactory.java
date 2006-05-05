@@ -57,6 +57,7 @@ package org.objectstyle.wolips.core.resources.internal.types.folder;
 
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.objectstyle.wolips.core.CorePlugin;
 import org.objectstyle.wolips.core.resources.internal.build.Nature;
@@ -72,16 +73,17 @@ import org.objectstyle.wolips.core.resources.types.folder.IDotSubprojAdapter;
 import org.objectstyle.wolips.core.resources.types.folder.IDotWoAdapter;
 import org.objectstyle.wolips.core.resources.types.folder.IResourcesAdapter;
 import org.objectstyle.wolips.core.resources.types.folder.IWebServerResourcesAdapter;
+import org.objectstyle.wolips.core.resources.types.folder.IWoprojectAdapter;
 
 /**
- * @author ulrich To change the template for this generated type comment go to
- *         Window>Preferences>Java>Code Generation>Code and Comments
+ * @author ulrich
  */
 public class FolderAdapterFactory extends AbstractResourceAdapterFactory {
 
 	private Class[] adapterList = new Class[] { IDotApplicationAdapter.class,
 			IDotFrameworkAdapter.class, IDotLprojAdapter.class,
-			IDotSubprojAdapter.class, IDotWoAdapter.class };
+			IDotSubprojAdapter.class, IDotWoAdapter.class,
+			IWoprojectAdapter.class };
 
 	public Class[] getAdapterList() {
 		return this.adapterList;
@@ -110,6 +112,8 @@ public class FolderAdapterFactory extends AbstractResourceAdapterFactory {
 		} else if (adapterType == IDotWoAdapter.class) {
 			return true;
 		} else if (adapterType == IDotEOModeldAdapter.class) {
+			return true;
+		} else if (adapterType == IWoprojectAdapter.class) {
 			return true;
 		}
 		return false;
@@ -186,6 +190,15 @@ public class FolderAdapterFactory extends AbstractResourceAdapterFactory {
 					&& IDotEOModeldAdapter.FILE_NAME_EXTENSION.equals(folder
 							.getFileExtension())) {
 				return new DotEOModeldAdapter(folder);
+			}
+		} else if (adapterType == IWoprojectAdapter.class) {
+			if (folder.getFileExtension() == null
+					&& folder.getName() != null
+					&& folder.getParent() != null
+					&& folder.getParent().getType() == IResource.PROJECT
+					&& (IWoprojectAdapter.FOLDER_NAME.equals(folder.getName()) || (IWoprojectAdapter.FOLDER_NAME_DEPRECATED
+							.equals(folder.getName())))) {
+				return new WoprojectAdapter(folder);
 			}
 		}
 		return null;

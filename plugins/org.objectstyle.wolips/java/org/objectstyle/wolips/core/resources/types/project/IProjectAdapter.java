@@ -2,7 +2,7 @@
  *
  * The ObjectStyle Group Software License, Version 1.0
  *
- * Copyright (c) 2005 The ObjectStyle Group,
+ * Copyright (c) 2005 - 2006 The ObjectStyle Group,
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -62,18 +62,21 @@ import org.eclipse.core.runtime.IPath;
 import org.objectstyle.wolips.core.resources.types.IPBDotProjectOwner;
 import org.objectstyle.wolips.core.resources.types.IResourceType;
 import org.objectstyle.wolips.core.resources.types.folder.IBuildAdapter;
+import org.objectstyle.wolips.core.resources.types.folder.IWoprojectAdapter;
 
 public interface IProjectAdapter extends IResourceType, IPBDotProjectOwner {
 
-	public IProject getUnderlyingProject();
+	public abstract IProject getUnderlyingProject();
 
-	public boolean isFramework();
+	public abstract boolean isFramework();
 
-	public IBuildAdapter getBuildAdapter();
+	public abstract IBuildAdapter getBuildAdapter();
 
-	public List getFrameworkNames();
+	public abstract IWoprojectAdapter getWoprojectAdapter();
 
-	public List getFrameworkPaths();
+	public abstract List getFrameworkNames();
 
-	public String getFrameworkName(IPath _path);
+	public abstract List getFrameworkPaths();
+
+	public abstract String getFrameworkName(IPath _path);
 }

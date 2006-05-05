@@ -124,6 +124,7 @@
            <adapter type="org.objectstyle.wolips.core.resources.types.folder.IContentsAdapter"/>
            <adapter type="org.objectstyle.wolips.core.resources.types.folder.IResourcesAdapter"/>
            <adapter type="org.objectstyle.wolips.core.resources.types.folder.IWebServerResourcesAdapter"/>
+           <adapter type="org.objectstyle.wolips.core.resources.types.folder.IWoprojectAdapter"/>
        </factory>
        <factory class="org.objectstyle.wolips.core.resources.internal.types.project.ProjectAdapterFactory"
            adaptableType="org.eclipse.core.resources.IProject">

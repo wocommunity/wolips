@@ -67,7 +67,6 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathEntry;
@@ -79,6 +78,7 @@ import org.objectstyle.wolips.core.resources.internal.types.AbstractResourceAdap
 import org.objectstyle.wolips.core.resources.types.IPBDotProjectOwner;
 import org.objectstyle.wolips.core.resources.types.file.IPBDotProjectAdapter;
 import org.objectstyle.wolips.core.resources.types.folder.IBuildAdapter;
+import org.objectstyle.wolips.core.resources.types.folder.IWoprojectAdapter;
 import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
 
 public class ProjectAdapter extends AbstractResourceAdapter implements
@@ -111,6 +111,29 @@ public class ProjectAdapter extends AbstractResourceAdapter implements
 		return pbDotProjectAdapter;
 	}
 
+	public IWoprojectAdapter getWoprojectAdapter() {
+		IContainer underlyingContainer = this.getUnderlyingProject();
+		IFolder wprojectFolder = null;
+		IWoprojectAdapter wprojectAdapter = null;
+		wprojectFolder = underlyingContainer.getFolder(new Path(
+				IWoprojectAdapter.FOLDER_NAME));
+		if (wprojectFolder.exists()) {
+			wprojectAdapter = (IWoprojectAdapter) wprojectFolder
+					.getAdapter(IWoprojectAdapter.class);
+			if (wprojectAdapter != null) {
+				return wprojectAdapter;
+			}
+		}
+		wprojectFolder = underlyingContainer.getFolder(new Path(
+				IWoprojectAdapter.FOLDER_NAME_DEPRECATED));
+		if (wprojectFolder.exists()) {
+			wprojectAdapter = (IWoprojectAdapter) wprojectFolder
+					.getAdapter(IWoprojectAdapter.class);
+		}
+		return wprojectAdapter;
+
+	}
+
 	public IPBDotProjectOwner getPBDotProjectOwner(IResource resource) {
 		if (resource == this.getUnderlyingProject()) {
 			return this;
@@ -126,22 +149,23 @@ public class ProjectAdapter extends AbstractResourceAdapter implements
 		return false;
 	}
 
-
 	private IFolder getBuildFolder() {
-		IResource resource = this.getUnderlyingProject().getFolder(IBuildAdapter.FILE_NAME_DIST);
+		IResource resource = this.getUnderlyingProject().getFolder(
+				IBuildAdapter.FILE_NAME_DIST);
 		if (resource.exists() && resource instanceof IFolder) {
-			return (IFolder)resource;
+			return (IFolder) resource;
 		}
-		resource = this.getUnderlyingProject().getFolder(IBuildAdapter.FILE_NAME_DIST);
+		resource = this.getUnderlyingProject().getFolder(
+				IBuildAdapter.FILE_NAME_DIST);
 		if (resource.exists() && resource instanceof IFolder) {
-			return (IFolder)resource;
+			return (IFolder) resource;
 		}
 		return null;
 	}
 
 	public IBuildAdapter getBuildAdapter() {
 		IResource resource = this.getBuildFolder();
-		if(resource == null) {
+		if (resource == null) {
 			return null;
 		}
 		return (IBuildAdapter) resource.getAdapter(IBuildAdapter.class);
