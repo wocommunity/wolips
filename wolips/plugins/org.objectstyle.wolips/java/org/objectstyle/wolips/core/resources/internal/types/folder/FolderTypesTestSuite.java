@@ -2,7 +2,7 @@
  *
  * The ObjectStyle Group Software License, Version 1.0
  *
- * Copyright (c) 2005 The ObjectStyle Group,
+ * Copyright (c) 2005 - 2006 The ObjectStyle Group,
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -87,6 +87,7 @@ public class FolderTypesTestSuite extends TestCase {
 		suite.addTestSuite(DotFrameworkAdapterTest.class);
 		suite.addTestSuite(DotLprojAdapterTest.class);
 		suite.addTestSuite(DotSubprojAdapterTest.class);
+		suite.addTestSuite(WoprojectAdapterTest.class);
 		return suite;
 	}
 }
