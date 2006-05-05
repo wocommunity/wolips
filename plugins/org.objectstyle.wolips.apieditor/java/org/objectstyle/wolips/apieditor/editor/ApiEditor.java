@@ -82,11 +82,18 @@ public class ApiEditor extends FormEditor {
 
 	protected void addPages() {
 		try {
-			addPage(new BindingsPage(this, "Bindings"));
-			addPage(new ValidationPage(this, "Validation"));
-			addPage(new DisplayPage(this, "Display"));
+			if (this.getModel() == null) {
+				addPage(new CreatePage(this, "Create"));
+			} else {
+				addPage(new BindingsPage(this, "Bindings"));
+				addPage(new ValidationPage(this, "Validation"));
+				addPage(new DisplayPage(this, "Display"));
+				addPage(new DeletePage(this, "Delete"));
+			}
 		} catch (PartInitException e) {
-			e.printStackTrace();
+			ApieditorPlugin.getDefault().debug(e);
+		} catch (ApiModelException e) {
+			ApieditorPlugin.getDefault().debug(e);
 		}
 	}
 
@@ -114,10 +121,20 @@ public class ApiEditor extends FormEditor {
 
 	public ApiModel getModel() throws ApiModelException {
 		if (model == null) {
-			model = new ApiModel(((FileEditorInput) this.getEditorInput())
-					.getFile().getLocation().toFile());
+			if (((FileEditorInput) this.getEditorInput()).getFile().exists()) {
+				model = new ApiModel(((FileEditorInput) this.getEditorInput())
+						.getFile().getLocation().toFile());
+			}
 		}
 		return model;
+	}
+	
+	public void dropModel() {
+		model = null;
+	}
+
+	public void activateFirstPage() {
+		this.setActivePage(0);
 	}
 
 }
