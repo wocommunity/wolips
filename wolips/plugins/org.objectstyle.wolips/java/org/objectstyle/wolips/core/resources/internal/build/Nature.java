@@ -132,7 +132,6 @@ public abstract class Nature implements IProjectNature {
 				}
 			}
 			if (!foundJBuilder) {
-				newIc = null;
 				command = desc.newCommand();
 				command.setBuilderName(aBuilder);
 				newIc = new ICommand[coms.length + 1];
