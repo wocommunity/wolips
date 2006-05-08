@@ -56,6 +56,7 @@
 package org.objectstyle.wolips.apieditor.editor;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
@@ -117,6 +118,13 @@ public class ApiEditor extends FormEditor {
 	public void init(IEditorSite site, IEditorInput input)
 			throws PartInitException {
 		super.init(site, input);
+		this.getSite().getSelectionProvider().setSelection(new ISelection() {
+
+			public boolean isEmpty() {
+				return true;
+			}
+			
+		});
 	}
 
 	public ApiModel getModel() throws ApiModelException {
