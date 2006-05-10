@@ -41,7 +41,7 @@
  * Group, please see <http://objectstyle.org/> .
  *  
  */
-package org.objectstyle.wolips.htmleditor.editor;
+package org.objectstyle.wolips.htmleditor.sse;
 
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextViewer;

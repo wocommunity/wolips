@@ -3,7 +3,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0
  * 
- * Copyright (c) 2005 The ObjectStyle Group and individual authors of the
+ * Copyright (c) 2005 - 2006 The ObjectStyle Group and individual authors of the
  * software. All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -41,25 +41,14 @@
  * Group, please see <http://objectstyle.org/> .
  *  
  */
-package org.objectstyle.wolips.htmleditor.editor;
+package org.objectstyle.wolips.htmleditor.sse;
 
-import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
-import org.eclipse.jface.text.source.ISourceViewer;
-import org.eclipse.wst.html.core.internal.provisional.text.IHTMLPartitionTypes;
-import org.eclipse.wst.html.ui.StructuredTextViewerConfigurationHTML;
+import org.eclipse.wst.html.ui.internal.edit.ui.ActionContributorHTML;
 
-public class StructuredTextViewerConfigurationHTMLWithWebObjectTags extends StructuredTextViewerConfigurationHTML {
+public class ActionContributorWO extends ActionContributorHTML {
 
-	public StructuredTextViewerConfigurationHTMLWithWebObjectTags() {
+	public ActionContributorWO() {
 		super();
 	}
 
-
-	protected IContentAssistProcessor[] getContentAssistProcessors(ISourceViewer sourceViewer, String partitionType) {
-		if ((partitionType == IHTMLPartitionTypes.HTML_DEFAULT) || (partitionType == IHTMLPartitionTypes.HTML_COMMENT)) {
-			return new IContentAssistProcessor[]{new WebObjectTagContentAssistProcessor()};
-		}
-		return super.getContentAssistProcessors(sourceViewer, partitionType);
-	}
-	
 }

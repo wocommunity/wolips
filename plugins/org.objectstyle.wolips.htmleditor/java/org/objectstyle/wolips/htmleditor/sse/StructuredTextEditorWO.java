@@ -3,7 +3,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0
  * 
- * Copyright (c) 2005 The ObjectStyle Group and individual authors of the
+ * Copyright (c) 2005 - 2006 The ObjectStyle Group and individual authors of the
  * software. All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -41,14 +41,48 @@
  * Group, please see <http://objectstyle.org/> .
  *  
  */
-package org.objectstyle.wolips.htmleditor.editor;
+package org.objectstyle.wolips.htmleditor.sse;
 
-import org.eclipse.wst.html.ui.internal.edit.ui.ActionContributorHTML;
+import org.eclipse.core.runtime.content.ITextContentDescriber;
+import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.source.SourceViewerConfiguration;
+import org.eclipse.wst.sse.ui.StructuredTextEditor;
+import org.objectstyle.wolips.components.editor.EditorInteraction;
+import org.objectstyle.wolips.components.editor.IEmbeddedEditor;
+import org.objectstyle.wolips.components.editor.IHtmlDocumentProvider;
+import org.objectstyle.wolips.editors.contentdescriber.ContentDescriberWO;
 
-public class ActionContributorHTMLWithWebObjectTags extends ActionContributorHTML {
+public class StructuredTextEditorWO extends
+		StructuredTextEditor implements IEmbeddedEditor, IHtmlDocumentProvider {
 
-	public ActionContributorHTMLWithWebObjectTags() {
+	private EditorInteraction editorInteraction;
+
+	public StructuredTextEditorWO() {
 		super();
+		ContentDescriberWO.ANSWER = ITextContentDescriber.VALID;
 	}
 
+	public void initEditorInteraction(EditorInteraction editorInteraction) {
+		this.getSelectionProvider().addSelectionChangedListener(
+				new HTMLOutlineSelectionHandler(editorInteraction));
+		editorInteraction.setHtmlDocumentProvider(this);
+		this.editorInteraction = editorInteraction;
+	}
+
+	public IDocument getHtmlEditDocument() {
+		IDocument editDocument = this.getDocumentProvider().getDocument(
+				this.getEditorInput());
+		return editDocument;
+	}
+
+	public EditorInteraction getEditorInteraction() {
+		return editorInteraction;
+	}
+
+	protected void setSourceViewerConfiguration(SourceViewerConfiguration sourceViewerConfiguration) {
+		if(sourceViewerConfiguration instanceof StructuredTextViewerConfigurationWO) {
+			ContentDescriberWO.ANSWER = ITextContentDescriber.INVALID;
+		}
+		super.setSourceViewerConfiguration(sourceViewerConfiguration);
+	}
 }
