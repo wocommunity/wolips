@@ -5,11 +5,12 @@
  	<extension
          point="org.eclipse.ui.editors">
       <editor
-            default="true"
-            extensions="java,html,wod,woo,api"
+            class="org.objectstyle.wolips.componenteditor.part.ComponentEditor"
+            contributorClass="org.objectstyle.wolips.componenteditor.contributor.ComponentEditorContributor"
+            default="false"
             icon="icons/ComponentEditor.gif"
-            id="org.objectstyle.wolips.wodclipse.mpe.ComponentEditorLauncher"
-            launcher="org.objectstyle.wolips.componenteditor.launcher.ComponentEditorLauncher"
+            id="org.objectstyle.wolips.componenteditor"
+            matchingStrategy="org.objectstyle.wolips.componenteditor.launcher.ComponentEditorMatchingStrategy"
             name="WOComponent Editor">
 			<contentTypeBinding
                contentTypeId="org.eclipse.jdt.core.javaSource"
@@ -26,15 +27,6 @@
 			<contentTypeBinding
                contentTypeId="org.eclipse.core.runtime.text"
             /> 
-      </editor>
-      <editor
-            class="org.objectstyle.wolips.componenteditor.part.ComponentEditor"
-            contributorClass="org.objectstyle.wolips.componenteditor.contributor.ComponentEditorContributor"
-            default="false"
-            icon="icons/ComponentEditor.gif"
-            id="org.objectstyle.wolips.wodclipse.mpe.ComponentEditor"
-            matchingStrategy="org.objectstyle.wolips.componenteditor.launcher.ComponentEditorMatchingStrategy"
-            name="WOComponent Editor internal">
       </editor>
    </extension>
    
@@ -107,7 +99,7 @@
 	<extension point = "org.eclipse.ui.editorActions">
       <editorContribution 
          id="org.objectstyle.wolips.componenteditor.editorActionsContribution" 
-         targetID="org.objectstyle.wolips.wodclipse.mpe.ComponentEditor">        
+         targetID="org.objectstyle.wolips.componenteditor">        
            <menu id="org.objectstyle.wolips.componenteditor.navigateMenuContribution"
 			label="&amp;Component Editor" 
              path="navigate/additions">

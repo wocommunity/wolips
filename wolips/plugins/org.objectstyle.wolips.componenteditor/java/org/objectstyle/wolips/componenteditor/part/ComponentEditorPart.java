@@ -3,7 +3,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0
  * 
- * Copyright (c) 2005 The ObjectStyle Group and individual authors of the
+ * Copyright (c) 2005 - 2006 The ObjectStyle Group and individual authors of the
  * software. All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -54,10 +54,8 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
@@ -73,7 +71,7 @@ import org.objectstyle.wolips.components.editor.EditorInteraction;
 import org.objectstyle.wolips.components.editor.IEmbeddedEditor;
 import org.objectstyle.wolips.components.editor.IEmbeddedEditorSelected;
 import org.objectstyle.wolips.components.input.ComponentEditorInput;
-import org.objectstyle.wolips.htmleditor.editor.StructuredTextEditorHTMLWithWebObjectTags;
+import org.objectstyle.wolips.htmleditor.sse.StructuredTextEditorWO;
 import org.objectstyle.wolips.htmlpreview.editor.HtmlPreviewEditor;
 import org.objectstyle.wolips.wodclipse.WodclipsePlugin;
 import org.objectstyle.wolips.wodclipse.wod.WodEditor;
@@ -84,6 +82,7 @@ import org.objectstyle.wolips.wodclipse.wod.WodEditor;
 public class ComponentEditorPart extends MultiPageEditorPart {
 
 	boolean running = false;
+
 	ComponentEditorInput componentEditorInput;
 
 	private EditorInteraction editorInteraction = new EditorInteraction();
@@ -94,7 +93,7 @@ public class ComponentEditorPart extends MultiPageEditorPart {
 
 	public CompilationUnitEditor compilationUnitEditor;
 
-	public StructuredTextEditorHTMLWithWebObjectTags structuredTextEditorHTMLWithWebObjectTags;
+	public StructuredTextEditorWO structuredTextEditorWO;
 
 	public WodEditor wodEditor;
 
@@ -126,14 +125,16 @@ public class ComponentEditorPart extends MultiPageEditorPart {
 			throws PartInitException {
 		super.init(site, input);
 		componentEditorInput = (ComponentEditorInput) input;
-		String javaInputName = componentEditorInput.getInput()[0].getName();
-		String partName = javaInputName
-				.substring(0, javaInputName.length() - 5);
-		setPartName(partName);
+		if (input != null) {
+			String javaInputName = componentEditorInput.getInput()[0].getName();
+			String partName = javaInputName.substring(0,
+					javaInputName.length() - 5);
+			setPartName(partName);
+		}
 	}
 
 	public IEditorInput getEditorInput() {
-		if(componentEditorInput == null) {
+		if (componentEditorInput == null) {
 			return super.getEditorInput();
 		}
 		IEditorInput editorInput = null;
@@ -170,6 +171,9 @@ public class ComponentEditorPart extends MultiPageEditorPart {
 	}
 
 	protected void createPages() {
+		if(componentEditorInput == null) {
+			return;
+		}
 		IEditorInput[] editorInput = componentEditorInput.getInput();
 		editorParts = new IEditorPart[editorInput.length + 1];
 		Composite componentEditorParent = new Composite(getContainer(),
@@ -210,8 +214,8 @@ public class ComponentEditorPart extends MultiPageEditorPart {
 				this.setPageText(i, "Java");
 				break;
 			case 1:
-				structuredTextEditorHTMLWithWebObjectTags = new StructuredTextEditorHTMLWithWebObjectTags();
-				editorPart = structuredTextEditorHTMLWithWebObjectTags;
+				structuredTextEditorWO = new StructuredTextEditorWO();
+				editorPart = structuredTextEditorWO;
 				IEditorSite htmlSite = createSite(editorPart);
 				try {
 					editorPart.init(htmlSite, editorInput[i]);
@@ -324,7 +328,7 @@ public class ComponentEditorPart extends MultiPageEditorPart {
 	}
 
 	private void addWebObjectsTagNamesListener() {
-		structuredTextEditorHTMLWithWebObjectTags.getSelectionProvider()
+		structuredTextEditorWO.getSelectionProvider()
 				.addSelectionChangedListener(new ISelectionChangedListener() {
 
 					public void selectionChanged(SelectionChangedEvent event) {
@@ -380,7 +384,7 @@ public class ComponentEditorPart extends MultiPageEditorPart {
 		if (super.isDirty()) {
 			return true;
 		}
-		if (structuredTextEditorHTMLWithWebObjectTags.isDirty()) {
+		if (structuredTextEditorWO.isDirty()) {
 			return true;
 		}
 		if (wodEditor.isDirty()) {
@@ -440,31 +444,42 @@ public class ComponentEditorPart extends MultiPageEditorPart {
 	public ComponentEditorInput getComponentEditorInput() {
 		return componentEditorInput;
 	}
-//
-//	protected IEditorPart getEditor(int pageIndex) {
-//		if (editorParts == null) {
-//			return null;
-//		}
-//		int index = pageIndex;
-//		if (index > 1) {
-//			index = index + 1;
-//		} else if (index == 1) {
-//			if (!htmlActive) {
-//				index = 2;
-//			}
-//		}
-//		return editorParts[index];
-//	}
-	
+
+	//
+	// protected IEditorPart getEditor(int pageIndex) {
+	// if (editorParts == null) {
+	// return null;
+	// }
+	// int index = pageIndex;
+	// if (index > 1) {
+	// index = index + 1;
+	// } else if (index == 1) {
+	// if (!htmlActive) {
+	// index = 2;
+	// }
+	// }
+	// return editorParts[index];
+	// }
+
 	protected IEditorPart getEditor(int pageIndex) {
-		if(pageIndex == 1) {
-			if(this.htmlActive) {
-				return this.structuredTextEditorHTMLWithWebObjectTags;
-			}
-			else  {
+		if (pageIndex == 1) {
+			if (this.htmlActive) {
+				return this.structuredTextEditorWO;
+			} else {
 				return this.wodEditor;
 			}
 		}
 		return super.getEditor(pageIndex);
+	}
+
+	protected IEditorPart getActiveEditor() {
+		if (this.getActivePage() == 1) {
+			if (this.htmlActive) {
+				return this.structuredTextEditorWO;
+			} else {
+				return this.wodEditor;
+			}
+		}
+		return super.getActiveEditor();
 	}
 }
