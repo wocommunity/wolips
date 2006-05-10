@@ -80,7 +80,7 @@ public class ComponenteditorPlugin extends AbstractWOLipsUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		componentEditorResourceChangeListener = new ComponentEditorResourceChangeListener();
-		ResourcesPlugin.getWorkspace().addResourceChangeListener(componentEditorResourceChangeListener, IResourceChangeEvent.POST_CHANGE);
+		ResourcesPlugin.getWorkspace().addResourceChangeListener(componentEditorResourceChangeListener, IResourceChangeEvent.PRE_BUILD);
 	}
 
 	/**
