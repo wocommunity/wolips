@@ -43,9 +43,12 @@
  */
 package org.objectstyle.wolips.componenteditor;
 
+import org.eclipse.core.resources.IResourceChangeEvent;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.objectstyle.wolips.componenteditor.listener.ComponentEditorResourceChangeListener;
 import org.objectstyle.wolips.ui.plugins.AbstractWOLipsUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -58,9 +61,10 @@ public class ComponenteditorPlugin extends AbstractWOLipsUIPlugin {
 	// The shared instance.
 	private static ComponenteditorPlugin plugin;
 
-	public static String ComponentEditorID = "org.objectstyle.wolips.wodclipse.mpe.ComponentEditor";
+	public static String ComponentEditorID = "org.objectstyle.wolips.componenteditor";
 	
 	public static String WOOEditorID = "org.eclipse.ui.DefaultTextEditor";
+	private ComponentEditorResourceChangeListener componentEditorResourceChangeListener;
 
 	/**
 	 * The constructor.
@@ -75,12 +79,16 @@ public class ComponenteditorPlugin extends AbstractWOLipsUIPlugin {
 	 */
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
+		componentEditorResourceChangeListener = new ComponentEditorResourceChangeListener();
+		ResourcesPlugin.getWorkspace().addResourceChangeListener(componentEditorResourceChangeListener, IResourceChangeEvent.POST_CHANGE);
 	}
 
 	/**
 	 * This method is called when the plug-in is stopped
 	 */
 	public void stop(BundleContext context) throws Exception {
+		ResourcesPlugin.getWorkspace().removeResourceChangeListener(componentEditorResourceChangeListener);
+		componentEditorResourceChangeListener = null;
 		super.stop(context);
 		plugin = null;
 	}

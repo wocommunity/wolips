@@ -46,16 +46,23 @@ package org.objectstyle.wolips.componenteditor.part;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.ide.IGotoMarker;
 import org.eclipse.ui.ide.ResourceUtil;
+import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.eclipse.jface.text.IRegion;
+import org.objectstyle.wolips.componenteditor.ComponenteditorPlugin;
+import org.objectstyle.wolips.components.input.ComponentEditorInput;
+import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 
 
 /**
@@ -67,7 +74,54 @@ public class ComponentEditor extends ComponentEditorPart implements IGotoMarker,
 		super();
 	}
 
-	
+	public void init(IEditorSite site, IEditorInput editorInput) throws PartInitException {
+		FileEditorInput fileEditorInput = (FileEditorInput)editorInput;
+		IFile file = fileEditorInput.getFile();
+		String extension = file.getFileExtension();
+		ComponentEditorInput input = null;
+		if (extension == null) {
+			WorkbenchUtilitiesPlugin.open(file, "");
+			return;
+		}
+		if (extension.equals("java")) {
+			try {
+				input = ComponentEditorInput.createWithDotJava(file);
+			} catch (CoreException e) {
+				ComponenteditorPlugin.getDefault().log(e);
+			}
+		}
+		if (extension.equals("html")) {
+			try {
+				input = ComponentEditorInput.createWithDotHtml(file);
+			} catch (CoreException e) {
+				ComponenteditorPlugin.getDefault().log(e);
+			}
+		}
+		if (extension.equals("wod")) {
+			try {
+				input = ComponentEditorInput.createWithDotWod(file);
+			} catch (CoreException e) {
+				ComponenteditorPlugin.getDefault().log(e);
+			}
+		}
+		if (extension.equals("api")) {
+			try {
+				input = ComponentEditorInput.createWithDotApi(file);
+			} catch (CoreException e) {
+				ComponenteditorPlugin.getDefault().log(e);
+			}
+		}
+		if (extension.equals("woo")) {
+			try {
+				input = ComponentEditorInput.createWithDotWoo(file);
+			} catch (CoreException e) {
+				ComponenteditorPlugin.getDefault().log(e);
+			}
+		}
+		super.init(site, input);
+	}
+
+
 	public IDocumentProvider getDocumentProvider() {
 		IEditorPart editorPart = this.getActiveEditor();
 		if(editorPart == null || !(this.getActiveEditor() instanceof ITextEditor)) {
@@ -254,7 +308,7 @@ public class ComponentEditor extends ComponentEditorPart implements IGotoMarker,
 					editorPart = compilationUnitEditor;
 				}
 				if(i == 1) {
-					editorPart = structuredTextEditorHTMLWithWebObjectTags;
+					editorPart = structuredTextEditorWO;
 				}
 				if(i == 2) {
 					editorPart = wodEditor;

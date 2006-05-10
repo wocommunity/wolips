@@ -46,6 +46,7 @@ package org.objectstyle.wolips.components.input;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.ui.JavaUI;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IMemento;
@@ -81,13 +82,13 @@ public class ComponentEditorInput extends MultiEditorInput implements
 			throws CoreException {
 		String ids[] = null;
 		ComponentEditorFileEditorInput allInput[] = null;
-		if (localizedComponentsLocateResult.getDotApi() == null) {
-			ids = new String[3];
-			allInput = new ComponentEditorFileEditorInput[3];
-		} else {
+//		if (localizedComponentsLocateResult.getDotApi() == null) {
+//			ids = new String[3];
+//			allInput = new ComponentEditorFileEditorInput[3];
+//		} else {
 			ids = new String[4];
 			allInput = new ComponentEditorFileEditorInput[4];
-		}
+//		}
 		ids[0] = JavaUI.ID_CU_EDITOR;
 		allInput[0] = new ComponentEditorFileEditorInput(
 				localizedComponentsLocateResult.getDotJava());
@@ -102,6 +103,13 @@ public class ComponentEditorInput extends MultiEditorInput implements
 			ids[3] = EditorsPlugin.ApiEditorID;
 			allInput[3] = new ComponentEditorFileEditorInput(
 					localizedComponentsLocateResult.getDotApi());
+		} else {
+			ids[3] = EditorsPlugin.ApiEditorID;
+			String apiFileName = LocatePlugin.getDefault().fileNameWithoutExtension(wodFile);
+			IFile api = wodFile.getParent().getParent().getFile(
+					new Path(apiFileName + ".api"));
+			allInput[3] = new ComponentEditorFileEditorInput(api);
+
 		}
 		ComponentEditorInput input = new ComponentEditorInput(ids, allInput);
 		input.localizedComponentsLocateResult = localizedComponentsLocateResult;
