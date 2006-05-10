@@ -72,10 +72,11 @@
             priority="normal"/>
       <content-type
             base-type="org.eclipse.wst.html.core.htmlsource"
+            describer="org.objectstyle.wolips.editors.contentdescriber.ContentDescriberWO"
             file-extensions="html"
             id="wohtml"
             name="Html with WO tags"
-            priority="normal"/>
+            priority="high"/>
    </extension>
 <!-- =================================================================================== -->
 <!-- Extension: Editors                                                                  -->

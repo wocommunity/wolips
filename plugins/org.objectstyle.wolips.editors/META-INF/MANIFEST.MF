@@ -17,4 +17,6 @@ Require-Bundle: org.eclipse.ui,
  org.objectstyle.wolips
 Eclipse-LazyStart: true
 Export-Package: org.objectstyle.wolips.editors,
- org.objectstyle.wolips.editors.launcher
+ org.objectstyle.wolips.editors.contentdescriber,
+ org.objectstyle.wolips.editors.launcher,
+ org.objectstyle.wolips.editors.patterset
