@@ -61,6 +61,7 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IPropertyListener;
+import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
@@ -75,6 +76,7 @@ import org.objectstyle.wolips.htmleditor.sse.StructuredTextEditorWO;
 import org.objectstyle.wolips.htmlpreview.editor.HtmlPreviewEditor;
 import org.objectstyle.wolips.wodclipse.WodclipsePlugin;
 import org.objectstyle.wolips.wodclipse.wod.WodEditor;
+import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 
 /**
  * @author uli
@@ -82,6 +84,8 @@ import org.objectstyle.wolips.wodclipse.wod.WodEditor;
 public class ComponentEditorPart extends MultiPageEditorPart {
 
 	boolean running = false;
+	
+	private IEditorPart lastEditorPart;
 
 	ComponentEditorInput componentEditorInput;
 
@@ -438,6 +442,32 @@ public class ComponentEditorPart extends MultiPageEditorPart {
 				IEmbeddedEditorSelected embeddedEditorPageChanged = (IEmbeddedEditorSelected) activeEditor;
 				embeddedEditorPageChanged.editorSelected();
 			}
+			if(!running && lastEditorPart != null && activeEditor != lastEditorPart) {
+			Display.getCurrent().asyncExec(new Runnable() {
+
+				public void run() {
+					running = true;
+					IViewReference[] viewReferences =  WorkbenchUtilitiesPlugin.getActivePage().getViewReferences();
+					WorkbenchUtilitiesPlugin.getActivePage().activate(viewReferences[0].getPart(false));
+
+					Display.getCurrent().asyncExec(new Runnable() {
+
+						public void run() {
+							WorkbenchUtilitiesPlugin.getActivePage().activate(activeEditor);
+
+							Display.getDefault().asyncExec(new Runnable() {
+								public void run() {
+									setFocus();
+									running = false;
+								}
+							});
+						}
+						
+					});
+				}
+				
+			});
+			}
 		}
 	}
 
@@ -469,6 +499,9 @@ public class ComponentEditorPart extends MultiPageEditorPart {
 				return this.wodEditor;
 			}
 		}
+		if (pageIndex > 1) {
+			return super.getEditor(pageIndex + 1);
+		}
 		return super.getEditor(pageIndex);
 	}
 
@@ -481,5 +514,18 @@ public class ComponentEditorPart extends MultiPageEditorPart {
 			}
 		}
 		return super.getActiveEditor();
+	}
+
+	public void setFocus() {
+//		if (this.getActivePage() == 1) {
+//			if (this.htmlActive) {
+//				this.structuredTextEditorWO.setFocus();
+//				return;
+//			} else {
+//				this.wodEditor.setFocus();
+//				return;
+//			}
+//		}
+		super.setFocus();
 	}
 }
