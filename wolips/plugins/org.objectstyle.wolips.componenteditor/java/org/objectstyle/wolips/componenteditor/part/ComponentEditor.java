@@ -75,14 +75,14 @@ public class ComponentEditor extends ComponentEditorPart implements IGotoMarker,
 	}
 
 	public void init(IEditorSite site, IEditorInput editorInput) throws PartInitException {
+		if(editorInput instanceof ComponentEditorInput) {
+			super.init(site, editorInput);
+			return;
+		}
 		FileEditorInput fileEditorInput = (FileEditorInput)editorInput;
 		IFile file = fileEditorInput.getFile();
 		String extension = file.getFileExtension();
 		ComponentEditorInput input = null;
-		if (extension == null) {
-			WorkbenchUtilitiesPlugin.open(file, "");
-			return;
-		}
 		if (extension.equals("java")) {
 			try {
 				input = ComponentEditorInput.createWithDotJava(file);
