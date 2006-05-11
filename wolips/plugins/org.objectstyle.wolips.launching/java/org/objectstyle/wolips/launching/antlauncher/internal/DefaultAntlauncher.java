@@ -145,12 +145,6 @@ public class DefaultAntlauncher implements IAntlauncher {
 				"org.eclipse.ant.ui.AntClasspathProvider"); //$NON-NLS-1$
 		IVMInstall defaultInstall = null;
 		defaultInstall = JavaRuntime.getDefaultVMInstall();
-		// try {
-		// defaultInstall = JavaRuntime.computeVMInstall(workingCopy);
-		// } catch (CoreException e) {
-		// core exception thrown for non-Java project
-		// defaultInstall= JavaRuntime.getDefaultVMInstall();
-		// }
 		if (defaultInstall != null) {
 			String vmName = defaultInstall.getName();
 			String vmTypeID = defaultInstall.getVMInstallType().getId();
@@ -168,7 +162,7 @@ public class DefaultAntlauncher implements IAntlauncher {
 				REMOTE_ANT_PROCESS_FACTORY_ID);
 		workingCopy.setAttribute(
 				IJavaLaunchConfigurationConstants.ATTR_PROGRAM_ARGUMENTS,
-				(String) null);
+				"-Xms256m -Xmx512m");
 
 		workingCopy.setAttribute(
 				"org.eclipse.debug.ui.ATTR_LAUNCH_IN_BACKGROUND", false);
