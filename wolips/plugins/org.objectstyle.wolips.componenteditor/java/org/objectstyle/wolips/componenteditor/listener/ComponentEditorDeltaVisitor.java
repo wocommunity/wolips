@@ -70,7 +70,8 @@ public class ComponentEditorDeltaVisitor implements IResourceDeltaVisitor {
 			if ("framework".equals(resource.getFileExtension())
 					|| "woa".equals(resource.getFileExtension())
 					|| "build".equals(resource.getName())
-					|| "dist".equals(resource.getName())) {
+					|| "dist".equals(resource.getName())
+					|| "target".equals(resource.getName())) {
 				return false;
 			}
 		}
