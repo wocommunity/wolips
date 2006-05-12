@@ -2,7 +2,7 @@
  *
  * The ObjectStyle Group Software License, Version 1.0
  *
- * Copyright (c) 2002 - 2005 The ObjectStyle Group
+ * Copyright (c) 2002 - 2006 The ObjectStyle Group
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -71,6 +71,7 @@ import org.eclipse.debug.core.ILaunch;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.core.ILaunchManager;
+import org.eclipse.debug.core.sourcelookup.ISourceLookupDirector;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.launching.AbstractJavaLaunchConfigurationDelegate;
 import org.eclipse.jdt.launching.ExecutionArguments;
@@ -91,6 +92,7 @@ import org.objectstyle.wolips.variables.VariablesPlugin;
 import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 
 /**
+ * @author ulrich
  * Launches a local VM.
  */
 public class WOJavaLocalApplicationLaunchConfigurationDelegate extends
@@ -404,5 +406,19 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate extends
 	public String getVMArguments(ILaunchConfiguration configuration,
 			ILaunch launch) throws CoreException {
 		return super.getVMArguments(configuration);
+	}
+
+	protected void setDefaultSourceLocator(ILaunch launch,
+			ILaunchConfiguration configuration) throws CoreException {
+		// set default source locator if none specified
+		if (launch.getSourceLocator() == null || !(launch.getSourceLocator() instanceof JavaSourceLookupDirectorWO)) {
+			ISourceLookupDirector sourceLocator = new JavaSourceLookupDirectorWO();
+			sourceLocator
+					.setSourcePathComputer(getLaunchManager()
+							.getSourcePathComputer(
+									"org.eclipse.jdt.launching.sourceLookup.javaSourcePathComputer")); //$NON-NLS-1$
+			sourceLocator.initializeDefaults(configuration);
+			launch.setSourceLocator(sourceLocator);
+		}
 	}
 }
