@@ -25,7 +25,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.variables,
  org.eclipse.ui.externaltools,
  org.objectstyle.wolips.ant,
- org.objectstyle.wolips.datasets
+ org.objectstyle.wolips.datasets,
+ org.eclipse.ui.ide
 Eclipse-LazyStart: true
 Export-Package: org.objectstyle.wolips.launching,
  org.objectstyle.wolips.launching.actions,
