@@ -61,7 +61,6 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-
 public class CoreExtensionsTestSuite extends TestCase {
 
 	/**
@@ -70,6 +69,7 @@ public class CoreExtensionsTestSuite extends TestCase {
 	public CoreExtensionsTestSuite(String testName) {
 		super(testName);
 	}
+
 	/**
 	 * @return
 	 * @throws Exception
