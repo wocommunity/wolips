@@ -67,7 +67,7 @@
          point="org.eclipse.core.resources.natures">
       <runtime>
          <run
-               class="org.objectstyle.wolips.projectbuild.natures.AntNature">
+               class="org.objectstyle.wolips.core.resources.internal.build.AntNature">
          </run>
       </runtime>
       <requires-nature

@@ -58,6 +58,7 @@ package org.objectstyle.wolips.core.resources.types.project;
 import java.util.List;
 
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.objectstyle.wolips.core.resources.types.IPBDotProjectOwner;
 import org.objectstyle.wolips.core.resources.types.IResourceType;
@@ -79,4 +80,18 @@ public interface IProjectAdapter extends IResourceType, IPBDotProjectOwner {
 	public abstract List getFrameworkPaths();
 
 	public abstract String getFrameworkName(IPath _path);
+
+	/**
+	 * Installs the ant builder.
+	 * 
+	 * @throws CoreException
+	 */
+	public abstract void installAntBuilder() throws CoreException;
+
+	/**
+	 * Removes the ant builder.
+	 * 
+	 * @throws CoreException
+	 */
+	public abstract void removeAntBuilder() throws CoreException;
 }
