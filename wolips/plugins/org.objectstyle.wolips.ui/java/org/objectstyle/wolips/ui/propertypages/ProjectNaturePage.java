@@ -3,7 +3,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0
  * 
- * Copyright (c) 2002, 2004 The ObjectStyle Group and individual authors of the
+ * Copyright (c) 2002 - 2006 The ObjectStyle Group and individual authors of the
  * software. All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -75,8 +75,8 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.PropertyPage;
+import org.objectstyle.wolips.builder.BuilderPlugin;
 import org.objectstyle.wolips.datasets.adaptable.Project;
-import org.objectstyle.wolips.projectbuild.ProjectBuildPlugin;
 import org.objectstyle.wolips.ui.UIPlugin;
 
 /**
@@ -377,7 +377,7 @@ public class ProjectNaturePage extends PropertyPage implements IAdaptable {
 	 */
 	private void setDefaults(Project project) {
 		Map args = project.getBuilderArgs();
-		String string = _getArg(args, ProjectBuildPlugin.NS_PRINCIPAL_CLASS, "");
+		String string = _getArg(args, BuilderPlugin.NS_PRINCIPAL_CLASS, "");
 		if (string == null || string.length() == 0) {
 			string = project.getPrincipalClass(true);
 		}
