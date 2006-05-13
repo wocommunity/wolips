@@ -124,4 +124,15 @@
 		processType="java">
 	</consoleLineTracker>
    </extension>
+<!-- =================================================================================== -->
+<!-- Extension: classpath dynamic variables                                              -->
+<!-- =================================================================================== -->
+   <extension
+         point="org.eclipse.core.variables.dynamicVariables">
+      <variable
+            name="working_dir_loc_WOLips"
+            resolver="org.objectstyle.wolips.launching.variables.WorkingDirResolver"
+            description="Resolves the working dir for a WebObjects Application within a WOLips project. Add the ProjectName as the argument.">
+      </variable>
+   </extension>
 </plugin>
