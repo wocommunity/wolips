@@ -61,6 +61,8 @@ import org.osgi.framework.BundleContext;
 public class LaunchingPlugin extends AbstractWOLipsUIPlugin {
 	// The shared instance.
 	private static LaunchingPlugin plugin;
+	
+	public static final String PLUGIN_ID ="org.objectstyle.wolips.launching";
 
 	/**
 	 * The constructor.
