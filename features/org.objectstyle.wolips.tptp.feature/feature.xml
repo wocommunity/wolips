@@ -69,6 +69,9 @@
    <url>
       <update label="WOLips" url="http://www.objectstyle.org/woproject/update/"/>
       <discovery label="WOLips" url="http://www.objectstyle.org/woproject/update/"/>
+      <discovery label="Web Tools Platform (WTP) Updates" url="http://download.eclipse.org/webtools/updates"/>
+      <discovery label="Business Intelligence and Reporting Tools (BIRT) Updates" url="http://download.eclipse.org/birt/update-site/"/>
+      <discovery label="Test and Performance Tools Platform (TPTP) Updates" url="http://download.eclipse.org/tptp/updates/"/>
    </url>
 
    <requires>
@@ -81,6 +84,7 @@
       <import plugin="org.eclipse.jdt.launching"/>
       <import plugin="org.eclipse.hyades.trace.ui"/>
       <import plugin="org.objectstyle.wolips.ui"/>
+      <import feature="org.eclipse.tptp.platform.runtime"/>
    </requires>
 
    <plugin

@@ -69,6 +69,9 @@
    <url>
       <update label="WOLips" url="http://www.objectstyle.org/woproject/update/"/>
       <discovery label="WOLips" url="http://www.objectstyle.org/woproject/update/"/>
+      <discovery label="Web Tools Platform (WTP) Updates" url="http://download.eclipse.org/webtools/updates"/>
+      <discovery label="Business Intelligence and Reporting Tools (BIRT) Updates" url="http://download.eclipse.org/birt/update-site/"/>
+      <discovery label="Test and Performance Tools Platform (TPTP) Updates" url="http://download.eclipse.org/tptp/updates/"/>
    </url>
 
    <requires>
@@ -106,6 +109,7 @@
       <import plugin="org.eclipse.wst.html.core"/>
       <import plugin="org.eclipse.wst.xml.ui"/>
       <import plugin="org.eclipse.wst.common.ui"/>
+      <import feature="org.eclipse.jst"/>
    </requires>
 
    <plugin
