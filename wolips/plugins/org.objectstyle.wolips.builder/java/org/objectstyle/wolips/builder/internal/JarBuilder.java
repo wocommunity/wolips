@@ -1,8 +1,8 @@
 /* ====================================================================
+ * 
+ * The ObjectStyle Group Software License, Version 1.0 
  *
- * The ObjectStyle Group Software License, Version 1.0
- *
- * Copyright (c) 2005 The ObjectStyle Group,
+ * Copyright (c) 2002 - 2006 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -10,7 +10,7 @@
  * are met:
  *
  * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
+ *    notice, this list of conditions and the following disclaimer. 
  *
  * 2. Redistributions in binary form must reproduce the above copyright
  *    notice, this list of conditions and the following disclaimer in
@@ -18,15 +18,15 @@
  *    distribution.
  *
  * 3. The end-user documentation included with the redistribution, if
- *    any, must include the following acknowlegement:
- *       "This product includes software developed by the
+ *    any, must include the following acknowlegement:  
+ *       "This product includes software developed by the 
  *        ObjectStyle Group (http://objectstyle.org/)."
  *    Alternately, this acknowlegement may appear in the software itself,
  *    if and wherever such third-party acknowlegements normally appear.
  *
- * 4. The names "ObjectStyle Group" and "Cayenne"
+ * 4. The names "ObjectStyle Group" and "Cayenne" 
  *    must not be used to endorse or promote products derived
- *    from this software without prior written permission. For written
+ *    from this software without prior written permission. For written 
  *    permission, please contact andrus@objectstyle.org.
  *
  * 5. Products derived from this software may not be called "ObjectStyle"
@@ -53,33 +53,65 @@
  * <http://objectstyle.org/>.
  *
  */
-package org.objectstyle.wolips.builder.tests;
+package org.objectstyle.wolips.builder.internal;
 
-import org.objectstyle.wolips.builder.internal.PBDotProjectBuilderTest;
-
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.objectstyle.wolips.datasets.adaptable.Project;
 
 /**
- * Run all compiler regression tests
+ * @author Harald Niesche
  */
-public class BuilderTestSuite extends TestCase {
-
+public class JarBuilder extends BuildHelper {
 	/**
-	 * @param testName
+	 * The constructor
 	 */
-	public BuilderTestSuite(String testName) {
-		super(testName);
+	public JarBuilder() {
+		super();
 	}
 
-	/**
-	 * @return
-	 * @throws Exception
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.objectstyle.wolips.projectbuild.builder.WOIncrementalBuilder.WOBuildHelper#handleResource(org.eclipse.core.resources.IResource,
+	 *      org.eclipse.core.resources.IResourceDelta)
 	 */
-	public static Test suite() throws Exception {
-		TestSuite suite = new TestSuite();
-		suite.addTestSuite(PBDotProjectBuilderTest.class);
-		return suite;
+	/**
+	 * @param resource
+	 * @param delta
+	 * @throws CoreException
+	 */
+	public boolean handleResource(IResource resource, IResourceDelta delta)
+			throws CoreException {
+		int baseSegments;
+
+		IPath outPath;
+
+		IPath compilerOutPath;
+		outPath = this.getJavaOutputPath();
+		compilerOutPath = this.getJavaProject()
+				.getOutputLocation();
+		baseSegments = compilerOutPath.segmentCount();
+
+		Project adaptedProject = this.getProject();
+		if (adaptedProject.matchesClassesPattern(resource)) {
+			IPath path = resource.getFullPath();
+			if (compilerOutPath.isPrefixOf(path) && !outPath.isPrefixOf(path)) {
+				IPath cp = path.removeFirstSegments(baseSegments);
+				path = outPath.append(cp);
+				if ((null != delta)
+						&& (delta.getKind() == IResourceDelta.REMOVED)) {
+					addTask(new DeleteTask(path, "jar"));
+					_getLogger().debug("delete: " + path.toString());
+				} else {
+					addTask(new CopyTask(resource, path, "jar"));
+					_getLogger().debug("copy: " + path.toString());
+				}
+			}
+		}
+        return true;
 	}
+
 }

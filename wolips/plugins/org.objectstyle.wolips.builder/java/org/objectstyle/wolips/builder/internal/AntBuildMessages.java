@@ -2,7 +2,7 @@
  *
  * The ObjectStyle Group Software License, Version 1.0
  *
- * Copyright (c) 2005 The ObjectStyle Group,
+ * Copyright (c) 2002 - 2006 The ObjectStyle Group
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -55,57 +55,58 @@
  */
 package org.objectstyle.wolips.builder.internal;
 
-import java.util.Map;
+import java.text.MessageFormat;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResourceDelta;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.objectstyle.wolips.core.resources.builder.IDeltaBuilder;
+/**
+ * @author uli
+ */
+public class AntBuildMessages {
 
-public class AntBuilder implements IDeltaBuilder {
+	private static final String RESOURCE_BUNDLE = AntBuildMessages.class
+			.getName();
 
-	public AntBuilder() {
+	private static ResourceBundle fgResourceBundle = ResourceBundle
+			.getBundle(RESOURCE_BUNDLE);
+
+	private AntBuildMessages() {
 		super();
 	}
 
-	public boolean buildStarted(int kind, Map args, IProgressMonitor monitor,
-			IProject project, Map _buildCache) {
-		return false;
+	/**
+	 * @param key
+	 * @return
+	 */
+	public static String getString(String key) {
+		try {
+			return fgResourceBundle.getString(key);
+		} catch (MissingResourceException e) {
+			return '!' + key + '!';
+		}
 	}
 
-	public boolean buildPreparationDone(int _kind, Map _args,
-			IProgressMonitor _monitor, IProject _project, Map _buildCache) {
-		return false;
+	/**
+	 * Gets a string from the resource bundle and formats it with the argument
+	 * 
+	 * @param key
+	 *            the string used to get the bundle value, must not be null
+	 * @param arg
+	 * @return
+	 */
+	public static String getFormattedString(String key, Object arg) {
+		return MessageFormat.format(getString(key), new Object[] { arg });
 	}
 
-	public boolean handleSourceDelta(IResourceDelta delta,
-			IProgressMonitor monitor, Map _buildCache) {
-		return false;
-	}
-
-	public boolean handleClassesDelta(IResourceDelta delta,
-			IProgressMonitor monitor, Map _buildCache) {
-		return false;
-	}
-
-	public boolean handleWoappResourcesDelta(IResourceDelta delta,
-			IProgressMonitor monitor, Map _buildCache) {
-		return false;
-	}
-
-	public boolean handleWebServerResourcesDelta(IResourceDelta delta,
-			IProgressMonitor monitor, Map _buildCache) {
-		return false;
-	}
-
-	public boolean handleOtherDelta(IResourceDelta delta,
-			IProgressMonitor monitor, Map _buildCache) {
-		return false;
-	}
-
-	public boolean classpathChanged(IResourceDelta delta,
-			IProgressMonitor monitor, Map _buildCache) {
-		return false;
+	/**
+	 * Gets a string from the resource bundle and formats it with arguments
+	 * 
+	 * @param key
+	 * @param args
+	 * @return
+	 */
+	public static String getFormattedString(String key, Object[] args) {
+		return MessageFormat.format(getString(key), args);
 	}
 
 }

@@ -66,6 +66,33 @@ public class BuilderPlugin extends AbstractCorePlugin {
 	private static BuilderPlugin plugin;
 
 	/**
+	 * Comment for <code>MARKER_TASK_GENERIC</code>
+	 */
+	public static final String MARKER_TASK_GENERIC = "org.objectstyle.wolips.projectbuild.taskmarker";
+
+	/**
+	 * Comment for <code>MARKER_BUILD_GENERIC</code>
+	 */
+	public static final String MARKER_BUILD_GENERIC = "org.objectstyle.wolips.projectbuild.marker";
+
+	/**
+	 * Comment for <code>MARKER_BUILD_PROBLEM</code>
+	 */
+	public static final String MARKER_BUILD_PROBLEM = "org.objectstyle.wolips.projectbuild.problem";
+
+	/**
+	 * Comment for <code>MARKER_BUILD_DUPLICATE</code>
+	 */
+	public static final String MARKER_BUILD_DUPLICATE = "org.objectstyle.wolips.projectbuild.duplicate";
+
+	/**
+	 * Comment for <code>NS_PRINCIPAL_CLASS</code>
+	 */
+	public static final String NS_PRINCIPAL_CLASS = "nsprincipalclass";
+
+	public static final String EOGENERATOR_ARGS = "org.objectstyle.wolips.projectbuild.eogeneratorargs";
+
+	/**
 	 * The constructor.
 	 */
 	public BuilderPlugin() {
