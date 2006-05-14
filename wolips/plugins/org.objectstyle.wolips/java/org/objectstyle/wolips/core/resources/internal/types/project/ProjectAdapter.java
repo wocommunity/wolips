@@ -560,7 +560,6 @@ public class ProjectAdapter extends AbstractResourceAdapter implements
 				}
 			}
 			if (!foundJBuilder) {
-				newIc = null;
 				command = desc.newCommand();
 				command.setBuilderName(aBuilder);
 				newIc = new ICommand[coms.length + 1];
@@ -644,17 +643,18 @@ public class ProjectAdapter extends AbstractResourceAdapter implements
 		}
 		IProjectDescription desc = this.getUnderlyingProject().getDescription();
 		ICommand[] coms = desc.getBuildSpec();
-		if (arguments == null)
-			arguments = new HashMap();
+		Map args = arguments;
+		if (args == null)
+			args = new HashMap();
 		for (int i = 0; i < coms.length; i++) {
 			if (coms[i].getBuilderName().equals(aBuilder)
-					&& coms[i].getArguments().equals(arguments))
+					&& coms[i].getArguments().equals(args))
 				return;
 		}
 		ICommand[] newIc = null;
 		ICommand command = desc.newCommand();
 		command.setBuilderName(aBuilder);
-		command.setArguments(arguments);
+		command.setArguments(args);
 		newIc = new ICommand[coms.length + 1];
 		if (installPos <= 0) {
 			System.arraycopy(coms, 0, newIc, 1, coms.length);
