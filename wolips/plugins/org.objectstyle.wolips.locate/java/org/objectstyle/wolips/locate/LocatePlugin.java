@@ -116,10 +116,7 @@ public class LocatePlugin extends AbstractCorePlugin {
 		Locate locate = new Locate(componentLocateScope,
 				localizedComponentsLocateResult);
 		locate.locate();
-		if (localizedComponentsLocateResult != null) {
-			componentsLocateCache.addToCache(file,
-					localizedComponentsLocateResult);
-		}
+		componentsLocateCache.addToCache(file, localizedComponentsLocateResult);
 		return localizedComponentsLocateResult;
 	}
 
