@@ -84,7 +84,7 @@ public class Wo extends AbstractApiModelElement {
 		if (value == null) {
 			return false;
 		}
-		return value != null && value.equals("true");
+		return value.equals("true");
 	}
 
 	public void setIsWocomponentcontent(boolean isWocomponentcontent) {
