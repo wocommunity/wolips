@@ -104,7 +104,7 @@ public class ApiModel {
 
   private void parse() throws ApiModelException {
     try {
-      DocumentBuilder documentBuilder = documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+      DocumentBuilder documentBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
       if (this.url != null) {
         this.document = documentBuilder.parse(this.url.toExternalForm());
       }
