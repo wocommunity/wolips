@@ -55,87 +55,42 @@
  */
 package org.objectstyle.wolips.locate.cache;
 
-import java.util.HashMap;
-
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResourceChangeEvent;
-import org.eclipse.core.resources.IResourceChangeListener;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceDelta;
+import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.runtime.CoreException;
-import org.objectstyle.wolips.locate.LocatePlugin;
-import org.objectstyle.wolips.locate.result.LocalizedComponentsLocateResult;
 
-public class ComponentLocateCache implements IResourceChangeListener {
+class PreDeleteVisitor implements IResourceDeltaVisitor {
 
-	private HashMap projects = new HashMap();
+	/**
+	 * 
+	 */
+	private final ComponentLocateCache componentLocateCache;
 
-	public ComponentLocateCache() {
-		super();
+	/**
+	 * @param cache
+	 */
+	PreDeleteVisitor(ComponentLocateCache componentLocateCache) {
+		this.componentLocateCache = componentLocateCache;
 	}
 
-	public void forgetCacheForProject(IProject project) {
-		String projectKey = project.getName();
-		projects.remove(projectKey);
-	}
-
-	public void forgetCacheForFile(IFile file) {
-		HashMap projectHashMap = this.project(file.getProject());
-		if (projectHashMap == null) {
-			return;
+	public boolean visit(IResourceDelta delta) throws CoreException {
+		IResource resource = delta.getResource();
+		if (resource == null) {
+			return false;
 		}
-		String key = LocatePlugin.getDefault().fileNameWithoutExtension(file);
-		projectHashMap.remove(key);
-	}
-
-	public LocalizedComponentsLocateResult getLocalizedComponentsLocateResult(
-			IFile file) {
-		HashMap projectHashMap = this.project(file.getProject());
-		if (projectHashMap == null) {
-			return null;
+		if (resource.isDerived()) {
+			return false;
 		}
-		String key = LocatePlugin.getDefault().fileNameWithoutExtension(file);
-		LocalizedComponentsLocateResult localizedComponentsLocateResult = (LocalizedComponentsLocateResult) projectHashMap
-				.get(key);
-		return localizedComponentsLocateResult;
-	}
-
-	public void addToCache(IFile file,
-			LocalizedComponentsLocateResult localizedComponentsLocateResult) {
-
-		HashMap projectHashMap = this.project(file.getProject());
-		if (projectHashMap == null) {
-			projectHashMap = new HashMap();
-			String projectsKey = file.getProject().getName();
-			projects.put(projectsKey, projectHashMap);
-		}
-		String key = LocatePlugin.getDefault().fileNameWithoutExtension(file);
-		projectHashMap.put(key, localizedComponentsLocateResult);
-	}
-
-	private HashMap project(IProject project) {
-		HashMap projectHashMap = (HashMap) projects.get(project.getName());
-		return projectHashMap;
-	}
-
-	public void resourceChanged(IResourceChangeEvent event) {
-		if (event.getDelta() != null
-				&& event.getType() == IResourceChangeEvent.PRE_CLOSE) {
-			try {
-				event.getDelta().accept(new PreCloseVisitor(this));
-			} catch (CoreException e) {
-				LocatePlugin.getDefault().log(e);
-				projects = new HashMap();
+		if (resource instanceof IFile) {
+			if (delta.getKind() == IResourceDelta.ADDED
+					|| delta.getKind() == IResourceDelta.REMOVED) {
+				IFile file = (IFile) resource;
+				this.componentLocateCache.forgetCacheForFile(file);
 			}
 		}
-
-		if (event.getDelta() != null
-				&& event.getType() == IResourceChangeEvent.POST_CHANGE) {
-			try {
-				event.getDelta().accept(new PreDeleteVisitor(this));
-			} catch (CoreException e) {
-				LocatePlugin.getDefault().log(e);
-				projects = new HashMap();
-			}
-		}
+		return true;
 	}
+
 }
