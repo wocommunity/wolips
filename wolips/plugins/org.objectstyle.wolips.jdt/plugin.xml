@@ -9,18 +9,12 @@
 	<classpathVariableInitializer
 		variable="NEXT_LOCAL_ROOT"
 		class="org.objectstyle.wolips.jdt.classpath.NextLocalRootInitializer"/>
-</extension>
-<extension point="org.eclipse.jdt.core.classpathVariableInitializer">
 	<classpathVariableInitializer
 		variable="NEXT_SYSTEM_ROOT"
 		class="org.objectstyle.wolips.jdt.classpath.NextSystemRootInitializer"/>
-</extension>
-<extension point="org.eclipse.jdt.core.classpathVariableInitializer">
 	<classpathVariableInitializer
 		variable="NEXT_ROOT"
 		class="org.objectstyle.wolips.jdt.classpath.NextRootInitializer"/>
-</extension>
-<extension point="org.eclipse.jdt.core.classpathVariableInitializer">
 	<classpathVariableInitializer
 		variable="EXTERNAL_BUILD_ROOT"
 		class="org.objectstyle.wolips.jdt.classpath.ExternalBuildRootInitializer"/>
