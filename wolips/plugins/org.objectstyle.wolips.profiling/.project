@@ -2,10 +2,6 @@
 <projectDescription>
 	<name>org.objectstyle.wolips.profiling</name>
 	<comment></comment>
-	<projects>
-		<project>org.objectstyle.wolips</project>
-		<project>org.objectstyle.wolips.launching</project>
-	</projects>
 	<buildSpec>
 		<buildCommand>
 			<name>org.eclipse.jdt.core.javabuilder</name>
