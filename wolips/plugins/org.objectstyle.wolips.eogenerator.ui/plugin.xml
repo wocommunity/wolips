@@ -7,7 +7,7 @@
       <editor
             name="EOGenerator Editor"
             extensions="eogen"
-            icon="icons/sample.gif"
+            icon="icons/eogenerator_wiz.gif"
             contributorClass="org.objectstyle.wolips.eogenerator.ui.editors.EOGeneratorEditorContributor"
             class="org.objectstyle.wolips.eogenerator.ui.editors.EOGeneratorEditor"
             id="org.objectstyle.wolips.eogenerator.ui.editors.EOGeneratorEditor">
@@ -21,7 +21,7 @@
       </category>
       <wizard
             name="EOGenerator"
-            icon="icons/sample.gif"
+            icon="icons/eogenerator_wiz.gif"
             category="org.objectstyle.wolips.wizards"
             class="org.objectstyle.wolips.eogenerator.ui.wizards.EOGeneratorWizard"
             id="org.objectstyle.wolips.eogenerator.ui.wizards.EOGeneratorWizard">
