@@ -21,3 +21,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jdt,
  org.objectstyle.wolips.preferences
 Eclipse-LazyStart: true
+Export-Package: org.objectstyle.wolips.eogenerator.ui.wizards,
+ org.objectstyle.wolips.eogenerator.ui.editors,
+ org.objectstyle.wolips.eogenerator.ui.actions,
+ org.objectstyle.wolips.eogenerator.ui

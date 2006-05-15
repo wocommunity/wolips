@@ -118,6 +118,14 @@
                id="org.objectstyle.wolips.wizards.actions.OpenEOModelWizard">
          </action>
          <action
+               label="EOGnerator"
+               icon="icons/woproject/eomodel_wiz.gif"
+               class="org.objectstyle.wolips.wizards.actions.OpenEOGeneratorWizard"
+               tooltip="New EOGenerator"
+               toolbarPath="Normal/WOLipsWizards"
+               id="org.objectstyle.wolips.wizards.actions.OpenEOGeneratorWizard">
+         </action>
+         <action
                label="WOComponent"
                icon="icons/wobuilder/wocomponent_wiz.gif"
                class="org.objectstyle.wolips.wizards.actions.OpenWOComponentWizard"
