@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            name="EOGenerator Editor"
+            extensions="eogen"
+            icon="icons/sample.gif"
+            contributorClass="org.objectstyle.wolips.eogenerator.ui.editors.EOGeneratorEditorContributor"
+            class="org.objectstyle.wolips.eogenerator.ui.editors.EOGeneratorEditor"
+            id="org.objectstyle.wolips.eogenerator.ui.editors.EOGeneratorEditor">
+      </editor>
+   </extension>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            name="EOGenerator Wizards"
+            id="org.objectstyle.wolips.eogenerator.ui">
+      </category>
+      <wizard
+            name="EOGenerator"
+            icon="icons/sample.gif"
+            category="org.objectstyle.wolips.wizards"
+            class="org.objectstyle.wolips.eogenerator.ui.wizards.EOGeneratorWizard"
+            id="org.objectstyle.wolips.eogenerator.ui.wizards.EOGeneratorWizard">
+      </wizard>
+   </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            adaptable="true"
+            id="org.objectstyle.wolips.eogenerator.ui.contribution1"
+            nameFilter="*.eogen"
+            objectClass="org.eclipse.core.resources.IFile">
+         <action
+               class="org.objectstyle.wolips.eogenerator.ui.actions.GenerateAction"
+               enablesFor="1"
+               id="org.objectstyle.wolips.eogenerator.ui.generateAction"
+               label="EOGenerate ..."
+               menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group0"/>
+      </objectContribution>
+   </extension>
+
+</plugin>
