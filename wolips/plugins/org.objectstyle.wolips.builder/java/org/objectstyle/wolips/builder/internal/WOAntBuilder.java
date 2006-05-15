@@ -77,7 +77,7 @@ public class WOAntBuilder extends AbstractIncrementalProjectBuilder {
 	}
 
 	public void invokeOldBuilder(int kind, Map args, IProgressMonitor monitor,
-			IResourceDelta delta) throws CoreException {
+			IResourceDelta delta) {
 		if (this.getProject() == null) {
 			monitor.done();
 			return;
