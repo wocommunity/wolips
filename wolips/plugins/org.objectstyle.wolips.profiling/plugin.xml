@@ -21,6 +21,7 @@
       <import plugin="org.objectstyle.wolips.commons"/>
       <import plugin="org.eclipse.ui"/>
       <import plugin="jmechanic.eclipse.profiler"/>
+      <import plugin="org.eclipse.jdt.core"/>
    </requires>
 
 
