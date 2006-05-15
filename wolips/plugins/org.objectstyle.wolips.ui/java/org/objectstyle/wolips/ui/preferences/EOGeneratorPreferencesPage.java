@@ -49,8 +49,10 @@
  */
 package org.objectstyle.wolips.ui.preferences;
 
-import org.eclipse.jface.preference.BooleanFieldEditor;
+import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.jface.preference.FileFieldEditor;
+import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.objectstyle.wolips.preferences.Preferences;
@@ -63,58 +65,40 @@ import org.objectstyle.wolips.preferences.PreferencesMessages;
  * Window>Preferences>Java>Templates. To enable and disable the creation of type
  * comments go to Window>Preferences>Java>Code Generation.
  */
-public class BuildPreferencesPage extends FieldEditorPreferencePage implements
-		IWorkbenchPreferencePage {
-	/**
-	 * Constructor
-	 */
-	public BuildPreferencesPage() {
-		super(GRID);
-		setPreferenceStore(Preferences.getPreferenceStore());
-		setDescription(PreferencesMessages
-				.getString("Preferences.Build.PageDescription"));
-		Preferences.setDefaults();
-	}
+public class EOGeneratorPreferencesPage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
+  /**
+   * Constructor
+   */
+  public EOGeneratorPreferencesPage() {
+    super(GRID);
+    setPreferenceStore(Preferences.getPreferenceStore());
+    setDescription(PreferencesMessages.getString("Preferences.EOGenerator.PageDescription"));
+    Preferences.setDefaults();
+  }
 
-	/**
-	 * @see org.eclipse.jface.preference.FieldEditorPreferencePage#createFieldEditors()
-	 */
-	public void createFieldEditors() {
-		addField(new BooleanFieldEditor(
-				Preferences.PREF_RUN_WOBUILDER_ON_BUILD, PreferencesMessages
-						.getString("Preferences.RunWOBuilderOnBuild.Label"),
-				getFieldEditorParent()));
-		addField(new BooleanFieldEditor(
-				Preferences.PREF_CAPTURE_ANT_OUTPUT, PreferencesMessages
-						.getString("Preferences.CaptureAntOutput.Label"),
-				getFieldEditorParent()));
-		addField(new BooleanFieldEditor(Preferences.PREF_WRITE_XCODE_ON_BUILD,
-				PreferencesMessages
-						.getString("Preferences.WriteXcodeOnBuild.Label"),
-				getFieldEditorParent()));
-		addField(new BooleanFieldEditor(
-				Preferences.PREF_WRITE_XCODE21_ON_BUILD, PreferencesMessages
-						.getString("Preferences.WriteXcode21OnBuild.Label"),
-				getFieldEditorParent()));
-		addField(new BooleanFieldEditor(Preferences.PREF_VALIDATE_WOD_ON_BUILD,
-				PreferencesMessages
-						.getString("Preferences.ValidateWODOnBuild.Label"),
-				getFieldEditorParent()));
-	}
+  /**
+   * @see org.eclipse.jface.preference.FieldEditorPreferencePage#createFieldEditors()
+   */
+  public void createFieldEditors() {
+    addField(new FileFieldEditor(Preferences.PREF_EOGENERATOR_PATH, PreferencesMessages.getString("Preferences.EOGeneratorPath.Label"), getFieldEditorParent()));
+    addField(new DirectoryFieldEditor(Preferences.PREF_EOGENERATOR_TEMPLATE_DIR, PreferencesMessages.getString("Preferences.EOGeneratorTemplateDir.Label"), getFieldEditorParent()));
+    addField(new StringFieldEditor(Preferences.PREF_EOGENERATOR_JAVA_TEMPLATE, PreferencesMessages.getString("Preferences.EOGeneratorJavaTemplate.Label"), getFieldEditorParent()));
+    addField(new StringFieldEditor(Preferences.PREF_EOGENERATOR_SUBCLASS_JAVA_TEMPLATE, PreferencesMessages.getString("Preferences.EOGeneratorSubclassJavaTemplate.Label"), getFieldEditorParent()));
+  }
 
-	/**
-	 * @see org.eclipse.ui.IWorkbenchPreferencePage#init(IWorkbench)
-	 */
-	public void init(IWorkbench workbench) {
-		return;
-	}
+  /**
+   * @see org.eclipse.ui.IWorkbenchPreferencePage#init(IWorkbench)
+   */
+  public void init(IWorkbench workbench) {
+    return;
+  }
 
-	/**
-	 * Method performOK.
-	 * 
-	 * @return boolean
-	 */
-	public boolean performOk() {
-		return super.performOk();
-	}
+  /**
+   * Method performOK.
+   * 
+   * @return boolean
+   */
+  public boolean performOk() {
+    return super.performOk();
+  }
 }

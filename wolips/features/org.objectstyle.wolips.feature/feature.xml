@@ -161,6 +161,13 @@
          unpack="false"/>
 
    <plugin
+         id="org.objectstyle.wolips.eogenerator.ui"
+         download-size="12" 
+         install-size="24"
+         version="1.0.6"
+         unpack="false"/> 
+
+   <plugin
          id="org.objectstyle.wolips.jdom"
          download-size="248"
          install-size="268"

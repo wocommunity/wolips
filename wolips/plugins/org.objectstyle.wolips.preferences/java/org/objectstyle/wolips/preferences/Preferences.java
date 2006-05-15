@@ -123,6 +123,12 @@ public class Preferences {
 
   public static final String PREF_EOGENERATOR_PATH = "org.objectstyle.wolips.Preference.EOGeneratorPath";
 
+  public static final String PREF_EOGENERATOR_TEMPLATE_DIR = "org.objectstyle.wolips.Preference.EOGeneratorTemplateDir";
+
+  public static final String PREF_EOGENERATOR_JAVA_TEMPLATE = "org.objectstyle.wolips.Preference.EOGeneratorTemplate";
+
+  public static final String PREF_EOGENERATOR_SUBCLASS_JAVA_TEMPLATE = "org.objectstyle.wolips.Preference.EOGeneratorSubclassTemplate";
+
 	/**
 	 * Comment for <code>FLAG_INCLUDE_EXCLUDE_RULES_CHANGED</code>
 	 */
@@ -176,6 +182,15 @@ public class Preferences {
 					Preferences.trueString);
     if (Preferences.SET_DEFAULTS_STRING == null || Preferences.SET_DEFAULTS_STRING.equals(Preferences.PREF_EOGENERATOR_PATH)) {
       store.setDefault(Preferences.PREF_EOGENERATOR_PATH, "");
+    }
+    if (Preferences.SET_DEFAULTS_STRING == null || Preferences.SET_DEFAULTS_STRING.equals(Preferences.PREF_EOGENERATOR_TEMPLATE_DIR)) {
+      store.setDefault(Preferences.PREF_EOGENERATOR_TEMPLATE_DIR, "");
+    }
+    if (Preferences.SET_DEFAULTS_STRING == null || Preferences.SET_DEFAULTS_STRING.equals(Preferences.PREF_EOGENERATOR_JAVA_TEMPLATE)) {
+      store.setDefault(Preferences.PREF_EOGENERATOR_JAVA_TEMPLATE, "JavaSourceEOF52.eotemplate");
+    }
+    if (Preferences.SET_DEFAULTS_STRING == null || Preferences.SET_DEFAULTS_STRING.equals(Preferences.PREF_EOGENERATOR_SUBCLASS_JAVA_TEMPLATE)) {
+      store.setDefault(Preferences.PREF_EOGENERATOR_SUBCLASS_JAVA_TEMPLATE, "JavaSubclassSourceEOF5.eotemplate");
     }
     if (Preferences.SET_DEFAULTS_STRING == null || Preferences.SET_DEFAULTS_STRING.equals(Preferences.PREF_WRITE_XCODE_ON_BUILD)) {
       store.setDefault(Preferences.PREF_WRITE_XCODE_ON_BUILD, Preferences.falseString);
@@ -440,12 +455,36 @@ public class Preferences {
     return Preferences.getBoolean(Preferences.PREF_VALIDATE_WOD_ON_BUILD);
   }
 
-  public static String getPREF_EOGENERATOR_PATH() {
+  public static String getEOGeneratorPath() {
     return Preferences.getString(Preferences.PREF_EOGENERATOR_PATH);
   }
   
-  public static void setPREF_EOGENERATOR_PATH(String _path) {
+  public static void setEOGeneratorPath(String _path) {
     Preferences.setString(Preferences.PREF_EOGENERATOR_PATH, _path);
+  }
+
+  public static String getEOGeneratorTemplateDir() {
+    return Preferences.getString(Preferences.PREF_EOGENERATOR_TEMPLATE_DIR);
+  }
+  
+  public static void setEOGeneratorTemplateDir(String _path) {
+    Preferences.setString(Preferences.PREF_EOGENERATOR_TEMPLATE_DIR, _path);
+  }
+
+  public static String getEOGeneratorJavaTemplate() {
+    return Preferences.getString(Preferences.PREF_EOGENERATOR_JAVA_TEMPLATE);
+  }
+  
+  public static void setEOGeneratorJavaTemplate(String _path) {
+    Preferences.setString(Preferences.PREF_EOGENERATOR_JAVA_TEMPLATE, _path);
+  }
+
+  public static String getEOGeneratorSubclassJavaTemplate() {
+    return Preferences.getString(Preferences.PREF_EOGENERATOR_SUBCLASS_JAVA_TEMPLATE);
+  }
+  
+  public static void setEOGeneratorSubclassJavaTemplate(String _path) {
+    Preferences.setString(Preferences.PREF_EOGENERATOR_SUBCLASS_JAVA_TEMPLATE, _path);
   }
   
 	/**
