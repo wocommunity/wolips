@@ -158,9 +158,8 @@ final class BuildResourceValidator extends DefaultDeltaVisitor {
 					return false;
 				}
 			}
-		default:
-			return false;
 		}
+		return false;
 	}
 
 	/**
