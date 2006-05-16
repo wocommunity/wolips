@@ -55,7 +55,7 @@
  */
 package org.objectstyle.wolips.apieditor.editor;
 
-import java.io.StringBufferInputStream;
+import java.io.ByteArrayInputStream;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -136,11 +136,11 @@ public class CreatePage extends ApiFormPage {
 								+ "<wodefinitions>"
 								+ "<wo wocomponentcontent=\"false\" class=\""
 								+ javaFileName
-								+ ".java\">\n\n"
+								+ "\">\n\n"
 								+ " </wo>"
 								+ "</wodefinitions>";
 						fileEditorInput.getFile().create(
-								new StringBufferInputStream(content), true,
+								new ByteArrayInputStream(content.getBytes()), true,
 								new NullProgressMonitor());
 					} catch (CoreException coreException) {
 						throw new RuntimeException(
