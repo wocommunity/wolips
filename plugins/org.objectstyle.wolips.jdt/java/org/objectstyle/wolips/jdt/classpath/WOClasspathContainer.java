@@ -151,7 +151,7 @@ public final class WOClasspathContainer
 								+ "/" + archives[j]);
 						//IClasspathEntry entry = JavaCore.newLibraryEntry(archivePath, null, null);
 						if(!archives[j].equals("src.jar")) {
-						    IClasspathAttribute javadoc[] = null;
+						    IClasspathAttribute javadoc[] = new IClasspathAttribute[0];
 						    if(framework.indexOf("Java") == 0) {
 						    	javadoc = new IClasspathAttribute[1];
 						    	javadoc[0] = JavaCore.newClasspathAttribute(IClasspathAttribute.JAVADOC_LOCATION_ATTRIBUTE_NAME, 
