@@ -99,7 +99,7 @@ public class TemplateEngine implements IRunnableWithProgress {
      * configure the engine. In this case, we are using ourselves as a
      * logger (see logging examples..)
      */
-    this.velocityEngine.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM, this);
+    this.velocityEngine.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM, "org.apache.velocity.runtime.log.NullLogSystem");
     /*
      * initialize the engine
      */
@@ -126,7 +126,6 @@ public class TemplateEngine implements IRunnableWithProgress {
       // not found.
       //Per default there is no such file
       builder = null;
-      myContext = null;
     }
     if (myContext != null) {
       this.setPropertyForKey(myContext, "MyContext");
