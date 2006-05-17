@@ -68,6 +68,7 @@ import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.runtime.RuntimeConstants;
+import org.apache.velocity.runtime.configuration.Configuration;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
@@ -95,11 +96,7 @@ public class TemplateEngine implements IRunnableWithProgress {
      * create a new instance of the engine
      */
     this.velocityEngine = new VelocityEngine();
-    /*
-     * configure the engine. In this case, we are using ourselves as a
-     * logger (see logging examples..)
-     */
-    this.velocityEngine.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM, "org.apache.velocity.runtime.log.NullLogSystem");
+    this.velocityEngine.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, "org.apache.velocity.runtime.log.NullLogSystem");
     /*
      * initialize the engine
      */
