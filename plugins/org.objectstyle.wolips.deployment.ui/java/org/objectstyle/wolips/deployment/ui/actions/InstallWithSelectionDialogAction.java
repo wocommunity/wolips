@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2004 - 2005 The ObjectStyle Group 
+ * Copyright (c) 2004 - 2006 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -70,7 +70,7 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.ListSelectionDialog;
-import org.objectstyle.wolips.core.resources.internal.types.project.ProjectAdapter;
+import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
 
 /**
  * @author ulrich
@@ -86,8 +86,8 @@ public class InstallWithSelectionDialogAction extends AbstractInstallAction {
 			IProject iProject = projects[i];
 			if (iProject.isAccessible() && iProject.isOpen()) {
 				if (iProject.getFile("build.xml").exists()) {
-					ProjectAdapter project = (ProjectAdapter) this
-							.getIProject().getAdapter(ProjectAdapter.class);
+					IProjectAdapter project = (IProjectAdapter) this
+							.getIProject().getAdapter(IProjectAdapter.class);
 					if (project != null) {
 						if (iProject == this.getIProject()) {
 							arrayList.add(iProject);

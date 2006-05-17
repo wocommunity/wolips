@@ -80,6 +80,8 @@ public interface IProjectAdapter extends IResourceType, IPBDotProjectOwner {
 	public abstract List getFrameworkPaths();
 
 	public abstract String getFrameworkName(IPath _path);
+	
+	public abstract boolean isFrameworkReference(IProject iProject);
 
 	/**
 	 * Installs the ant builder.

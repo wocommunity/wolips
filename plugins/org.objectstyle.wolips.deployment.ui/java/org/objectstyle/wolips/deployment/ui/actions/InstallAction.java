@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2004 - 2005 The ObjectStyle Group 
+ * Copyright (c) 2004 - 2006 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -58,7 +58,7 @@ package org.objectstyle.wolips.deployment.ui.actions;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.action.IAction;
-import org.objectstyle.wolips.core.resources.internal.types.project.ProjectAdapter;
+import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
 
 /**
  * @author ulrich
@@ -66,8 +66,8 @@ import org.objectstyle.wolips.core.resources.internal.types.project.ProjectAdapt
 public class InstallAction extends AbstractInstallAction {
 
 	public void run(IAction action) {
-		ProjectAdapter project = (ProjectAdapter) this.getIProject()
-				.getAdapter(ProjectAdapter.class);
+		IProjectAdapter project = (IProjectAdapter) this.getIProject()
+				.getAdapter(IProjectAdapter.class);
 		if (project != null && this.getIProject().getFile("build.xml").exists()) {
 			this.install(new IProject[] { this.getIProject() });
 		}
