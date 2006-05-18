@@ -67,6 +67,8 @@ public class EOGeneratorModel {
   private Boolean myPackageDirs;
   private Boolean myJava;
   private Boolean myVerbose;
+  private String myPrefix;
+  private String myFilenameTemplate;
   private List myCustomSettings;
   private boolean myDirty;
 
@@ -81,13 +83,14 @@ public class EOGeneratorModel {
     myDefines = new LinkedList();
     myCustomSettings = new LinkedList();
   }
-
+  
   public String writeToString(String _defaultEOGeneratorPath, String _defaultTemplateDir, String _defaultJavaTemplate, String _defaultSubclassJavaTemplate) {
     StringBuffer sb = new StringBuffer();
 
     sb.append(escape(getEOGeneratorPath(_defaultEOGeneratorPath), false));
 
     append(sb, "-destination", myDestination);
+    append(sb, "-filenameTemplate", myFilenameTemplate);
     append(sb, "-java", myJava);
     append(sb, "-javaTemplate", getJavaTemplate(_defaultJavaTemplate));
 
@@ -98,6 +101,7 @@ public class EOGeneratorModel {
     }
 
     append(sb, "-packagedirs", myPackageDirs);
+    append(sb, "-prefix", myPrefix);
 
     Iterator refModelsIter = myRefModels.iterator();
     while (refModelsIter.hasNext()) {
@@ -136,6 +140,9 @@ public class EOGeneratorModel {
         if ("-destination".equalsIgnoreCase(token)) {
           myDestination = nextTokenValue(token, tokenizer);
         }
+        else if ("-filenameTemplate".equalsIgnoreCase(token)) {
+          myFilenameTemplate = nextTokenValue(token, tokenizer);
+        }
         else if ("-java".equalsIgnoreCase(token)) {
           myJava = Boolean.TRUE;
         }
@@ -148,6 +155,9 @@ public class EOGeneratorModel {
         }
         else if ("-packagedirs".equalsIgnoreCase(token)) {
           myPackageDirs = Boolean.TRUE;
+        }
+        else if ("-prefix".equalsIgnoreCase(token)) {
+          myPrefix = nextTokenValue(token, tokenizer);
         }
         else if ("-refmodel".equalsIgnoreCase(token)) {
           String refModelPath = nextTokenValue(token, tokenizer);
@@ -368,6 +378,28 @@ public class EOGeneratorModel {
     }
   }
 
+  public void setPrefix(String _prefix) {
+    if (isNew(myPrefix, _prefix)) {
+      myPrefix = _prefix;
+      myDirty = true;
+    }
+  }
+
+  public String getPrefix() {
+    return myPrefix;
+  }
+
+  public void setFilenameTemplate(String _filenameTemplate) {
+    if (isNew(myFilenameTemplate, _filenameTemplate)) {
+      myFilenameTemplate = _filenameTemplate;
+      myDirty = true;
+    }
+  }
+
+  public String getFilenameTemplate() {
+    return myFilenameTemplate;
+  }
+
   public Boolean isVerbose() {
     return myVerbose;
   }
@@ -414,6 +446,8 @@ public class EOGeneratorModel {
   public static EOGeneratorModel createDefaultModel() {
     EOGeneratorModel model = new EOGeneratorModel();
     model.setJava(Boolean.TRUE);
+    model.setPackageDirs(Boolean.TRUE);
+    model.setVerbose(Boolean.TRUE);
     return model;
   }
 }

@@ -78,10 +78,12 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.FileDialog;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.dialogs.ContainerSelectionDialog;
+import org.eclipse.ui.forms.FormColors;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.FormPage;
@@ -98,6 +100,11 @@ public class EOGeneratorFormPage extends FormPage {
   private FormEntry myTemplatesFolderEntry;
   private FormEntry myTemplateEntry;
   private FormEntry mySubclassTemplateEntry;
+  private FormEntry myPrefixEntry;
+  private FormEntry myFilenameTemplateEntry;
+  private Button myVerboseButton;
+  private Button myJavaButton; 
+  private Button myPackageDirsButton; 
   private TableViewer myModelsTableViewer;
   private TableViewer myRefModelsTableViewer;
   private TableViewer myDefinesTableViewer;
@@ -135,6 +142,8 @@ public class EOGeneratorFormPage extends FormPage {
 
     RefModelsTableContentProvider refModelsModel = new RefModelsTableContentProvider();
     myRefModelsTableViewer = createModelsSection("Referenced Models", "These models are used to resolve type references from models listed in the first section.  No Java files will be generated for these models.", toolkit, body, refModelsModel, refModelsModel, new RefModelAddModelListener(), new RefModelRemoveModelListener());
+
+    createNamingSection(toolkit, body);
 
     createPathsSection(toolkit, body);
 
@@ -180,14 +189,67 @@ public class EOGeneratorFormPage extends FormPage {
     return modelsTableViewer;
   }
 
+  protected void createNamingSection(FormToolkit _toolkit, Composite _parent) {
+    Composite namingSection = createSection(_toolkit, _parent, "File Names", "These settings control the names of the produced files.", 1, 2);
+    GridLayout namingSectionLayout = (GridLayout) namingSection.getLayout();
+    namingSectionLayout.horizontalSpacing = 10;
+
+    myFilenameTemplateEntry = new FormEntry(namingSection, _toolkit, "Filename Template", SWT.NONE);
+    myFilenameTemplateEntry.setValue(myModel.getFilenameTemplate());
+    myFilenameTemplateEntry.setFormEntryListener(new EOFormEntryAdapter() {
+      public void textValueChanged(FormEntry _entry) {
+        myModel.setFilenameTemplate(_entry.getValue());
+        getEditor().editorDirtyStateChanged();
+      }
+
+      public void textDirty(FormEntry _entry) {
+        myModel.setFilenameTemplate(_entry.getText().getText());
+        getEditor().editorDirtyStateChanged();
+      }
+    });
+
+    myPrefixEntry = new FormEntry(namingSection, _toolkit, "Prefix", SWT.NONE);
+    myPrefixEntry.setValue(myModel.getPrefix());
+    myPrefixEntry.setFormEntryListener(new EOFormEntryAdapter() {
+      public void textValueChanged(FormEntry _entry) {
+        myModel.setPrefix(_entry.getValue());
+        getEditor().editorDirtyStateChanged();
+      }
+
+      public void textDirty(FormEntry _entry) {
+        myModel.setPrefix(_entry.getText().getText());
+        getEditor().editorDirtyStateChanged();
+      }
+    });
+  }
+
   protected void createPathsSection(FormToolkit _toolkit, Composite _parent) {
     FileEditorInput editorInput = (FileEditorInput) getEditorInput();
     IFile eogenFile = editorInput.getFile();
     final IProject project = eogenFile.getProject();
 
-    Composite pathsSection = createSection(_toolkit, _parent, "Java Destination Paths", "These paths specify where generated Java files will be written and are project-relative.", 1, 3);
+    Composite pathsSection = createSection(_toolkit, _parent, "Destination Paths", "These paths specify where generated files will be written and are project-relative.", 1, 3);
     GridLayout pathsSectionLayout = (GridLayout) pathsSection.getLayout();
     pathsSectionLayout.horizontalSpacing = 10;
+
+    Label packageDirsLabel = _toolkit.createLabel(pathsSection, "Create Packages?");
+    packageDirsLabel.setForeground(_toolkit.getColors().getColor(FormColors.TITLE));
+
+    myPackageDirsButton = _toolkit.createButton(pathsSection, "", SWT.CHECK);
+    GridData packageDirsButtonGridData = new GridData(GridData.VERTICAL_ALIGN_CENTER);
+    packageDirsButtonGridData.horizontalSpan = 2;
+    myPackageDirsButton.setLayoutData(packageDirsButtonGridData);
+    myPackageDirsButton.setSelection(myModel.isPackageDirs() != null && myModel.isPackageDirs().booleanValue());
+    myPackageDirsButton.addSelectionListener(new SelectionListener() {
+      public void widgetDefaultSelected(SelectionEvent _e) {
+        widgetSelected(_e);
+      }
+      
+      public void widgetSelected(SelectionEvent _e) {
+        myModel.setPackageDirs(Boolean.valueOf(myPackageDirsButton.getSelection()));
+        getEditor().editorDirtyStateChanged();
+      }
+    });
 
     myDestinationEntry = new FormEntry(pathsSection, _toolkit, "Destination", "Browse...", false);
     myDestinationEntry.setValue(myModel.getDestination());
@@ -203,7 +265,7 @@ public class EOGeneratorFormPage extends FormPage {
       }
 
       public void browseButtonSelected(FormEntry _entry) {
-        ContainerSelectionDialog containerDialog = new ContainerSelectionDialog(getEditorSite().getShell(), project, false, "Select the folder to write autogenerated Java files into.");
+        ContainerSelectionDialog containerDialog = new ContainerSelectionDialog(getEditorSite().getShell(), project, false, "Select the folder to write autogenerated files into.");
         containerDialog.open();
         Object[] selectedContainers = containerDialog.getResult();
         if (selectedContainers != null && selectedContainers.length > 0) {
@@ -230,7 +292,7 @@ public class EOGeneratorFormPage extends FormPage {
       }
 
       public void browseButtonSelected(FormEntry _entry) {
-        ContainerSelectionDialog containerDialog = new ContainerSelectionDialog(getEditorSite().getShell(), project, false, "Select the folder to generate customizable Java files into.");
+        ContainerSelectionDialog containerDialog = new ContainerSelectionDialog(getEditorSite().getShell(), project, false, "Select the folder to generate customizable files into.");
         containerDialog.open();
         Object[] selectedContainers = containerDialog.getResult();
         if (selectedContainers != null && selectedContainers.length > 0) {
@@ -243,9 +305,28 @@ public class EOGeneratorFormPage extends FormPage {
       }
     });
 
-    Composite templatesSection = createSection(_toolkit, _parent, "Templates", "These paths specify the templates that will be used to generate Java files.  If left blank, the defaults from the EOGenerator preference page will be used.", 1, 3);
+    Composite templatesSection = createSection(_toolkit, _parent, "Templates", "These paths specify the templates that will be used to generate files.  If left blank, the defaults from the EOGenerator preference page will be used.", 1, 3);
     GridLayout templatesSectionLayout = (GridLayout) templatesSection.getLayout();
     templatesSectionLayout.horizontalSpacing = 10;
+
+    Label javaLabel = _toolkit.createLabel(templatesSection, "Java?");
+    javaLabel.setForeground(_toolkit.getColors().getColor(FormColors.TITLE));
+
+    myJavaButton = _toolkit.createButton(templatesSection, "", SWT.CHECK);
+    GridData javaButtonGridData = new GridData(GridData.VERTICAL_ALIGN_CENTER);
+    javaButtonGridData.horizontalSpan = 2;
+    myJavaButton.setLayoutData(packageDirsButtonGridData);
+    myJavaButton.setSelection(myModel.isJava() != null && myModel.isJava().booleanValue());
+    myJavaButton.addSelectionListener(new SelectionListener() {
+      public void widgetDefaultSelected(SelectionEvent _e) {
+        widgetSelected(_e);
+      }
+      
+      public void widgetSelected(SelectionEvent _e) {
+        myModel.setJava(Boolean.valueOf(myJavaButton.getSelection()));
+        getEditor().editorDirtyStateChanged();
+      }
+    });
 
     myTemplatesFolderEntry = new FormEntry(templatesSection, _toolkit, "Templates Folder", "Browse...", false);
     myTemplatesFolderEntry.setValue(myModel.getTemplateDir(null));
