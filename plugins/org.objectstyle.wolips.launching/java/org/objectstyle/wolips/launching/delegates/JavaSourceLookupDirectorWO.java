@@ -80,9 +80,10 @@ public class JavaSourceLookupDirectorWO extends JavaSourceLookupDirector
 			IFile file = (IFile) element;
 			IEditorDescriptor editorDescriptor = IDE.getDefaultEditor(file);
 			if (editorDescriptor != null
-					&& editorDescriptor.getId() != null
-					&& editorDescriptor.getId().startsWith(
-							"org.objectstyle.wolips")) {
+//					&& editorDescriptor.getId() != null
+//					&& editorDescriptor.getId().startsWith(
+//							"org.objectstyle.wolips")
+							) {
 				return editorDescriptor.getId();
 			}
 		}
@@ -92,13 +93,13 @@ public class JavaSourceLookupDirectorWO extends JavaSourceLookupDirector
 	public IEditorInput getEditorInput(Object element) {
 		if (element instanceof IFile) {
 			IFile file = (IFile) element;
-			IEditorDescriptor editorDescriptor = IDE.getDefaultEditor(file);
-			if (editorDescriptor != null
-					&& editorDescriptor.getId() != null
-					&& editorDescriptor.getId().startsWith(
-							"org.objectstyle.wolips")) {
+//			IEditorDescriptor editorDescriptor = IDE.getDefaultEditor(file);
+//			if (editorDescriptor != null
+//					&& editorDescriptor.getId() != null
+//					&& editorDescriptor.getId().startsWith(
+//							"org.objectstyle.wolips")) {
 				return new FileEditorInput(file);
-			}
+//			}
 		}
 		return null;
 	}
