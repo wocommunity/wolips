@@ -73,6 +73,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
+import org.objectstyle.wolips.eogenerator.ui.dialogs.EOGeneratorResultsDialog;
 import org.objectstyle.wolips.eogenerator.ui.editors.CommandLineTokenizer;
 import org.objectstyle.wolips.eogenerator.ui.editors.EOGeneratorEditor;
 import org.objectstyle.wolips.eogenerator.ui.editors.EOGeneratorModel;
@@ -149,13 +150,17 @@ public class GenerateAction implements IObjectActionDelegate {
           System.err.println(e);
         }
         
+        for (int i = 0; i < 100; i ++) {
+          output.append("Test\n");
+        }
         project.getFolder(new Path(eogenModel.getDestination())).refreshLocal(IResource.DEPTH_INFINITE, _monitor);
         project.getFolder(new Path(eogenModel.getSubclassDestination())).refreshLocal(IResource.DEPTH_INFINITE, _monitor);
 
         final String outputStr = output.toString();
         Display.getDefault().asyncExec(new Runnable() {
           public void run() {
-            MessageDialog.openInformation(new Shell(), "EOGenerator Finished", outputStr);
+            EOGeneratorResultsDialog resultsDialog = new EOGeneratorResultsDialog(new Shell(), outputStr);
+            resultsDialog.open();
           }
         });
       }
