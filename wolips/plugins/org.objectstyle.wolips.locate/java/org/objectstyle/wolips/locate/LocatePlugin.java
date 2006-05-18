@@ -90,7 +90,7 @@ public class LocatePlugin extends AbstractCorePlugin {
 
 	public void stop(BundleContext context) throws Exception {
 		super.stop(context);
-		ResourcesPlugin.getWorkspace().addResourceChangeListener(
+		ResourcesPlugin.getWorkspace().removeResourceChangeListener(
 				componentsLocateCache);
 		componentsLocateCache = null;
 		plugin = null;
