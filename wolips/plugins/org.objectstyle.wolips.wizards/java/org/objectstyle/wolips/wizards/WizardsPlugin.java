@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 -2004 The ObjectStyle Group 
+ * Copyright (c) 2002 -2006 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -56,9 +56,13 @@
 
 package org.objectstyle.wolips.wizards;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
 import org.objectstyle.wolips.ui.plugins.AbstractWOLipsUIPlugin;
+import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -130,4 +134,12 @@ public class WizardsPlugin extends AbstractWOLipsUIPlugin {
 		return WOPROJECT_WIZARD_BANNER;
 	}
 
+	public static void selectAndReveal(IResource newResource) {
+		if (newResource != null) {
+			BasicNewResourceWizard.selectAndReveal(newResource,
+					WorkbenchUtilitiesPlugin.getActiveWorkbenchWindow());
+			if (newResource.getType() == IResource.FILE)
+				WorkbenchUtilitiesPlugin.open((IFile) newResource);
+		}
+	}
 }

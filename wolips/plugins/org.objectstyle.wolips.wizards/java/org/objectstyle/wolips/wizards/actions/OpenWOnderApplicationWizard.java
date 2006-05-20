@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 The ObjectStyle Group 
+ * Copyright (c) 2006 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -53,74 +53,18 @@
  * <http://objectstyle.org/>.
  *
  */
-package org.objectstyle.wolips.wizards;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.wizard.IWizard;
-import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.part.ISetSelectionTarget;
-import org.eclipse.ui.wizards.newresource.BasicNewResourceWizard;
-import org.objectstyle.wolips.templateengine.TemplateEnginePlugin;
-import org.objectstyle.wolips.templateengine.TemplateFolder;
-import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
+package org.objectstyle.wolips.wizards.actions;
+
+import org.eclipse.ui.INewWizard;
+import org.objectstyle.wolips.wizards.WOnderApplicationWizard;
 
 /**
- * @author ulrich
- *  
+ * @author uli
  */
-public abstract class AbstractResourceWizard extends Wizard implements IWizard {
-	private String id;
+public class OpenWOnderApplicationWizard extends AbstractOpenWizardAction {
 
-	private SelectTemplatePage selectTemplatePage;
-
-	private IWorkbench workbench;
-
-	/**
-	 * Constructor for WOProjectCreationWizard.
-	 */
-	public AbstractResourceWizard(String templatesID) {
-		super();
-		id = templatesID;
+	protected INewWizard createWizard() {
+		return new WOnderApplicationWizard();
 	}
-
-	private boolean displayPage() {
-		if (id == null)
-			return false;
-		TemplateFolder[] templateFolder = TemplateEnginePlugin
-				.getTemplateFolder(id);
-		if (templateFolder.length < 2)
-			return false;
-		selectTemplatePage = new SelectTemplatePage(templateFolder);
-		return false;
-	}
-
-	/**
-	 * (non-Javadoc) Method declared on INewWizard
-	 */
-	public void init(IWorkbench _workbench,
-			IStructuredSelection structuredSelection) {
-		this.workbench = _workbench;
-		if (this.displayPage()) {
-			this.addPage(selectTemplatePage);
-		}
-	}
-
-	/**
-	 * Selects and reveals the newly added resource in all parts of the active
-	 * workbench window's active page.
-	 * 
-	 * @see ISetSelectionTarget
-	 */
-	protected void selectAndReveal(IResource newResource) {
-		if (newResource != null) {
-			BasicNewResourceWizard.selectAndReveal(newResource, workbench
-					.getActiveWorkbenchWindow());
-			if (newResource.getType() == IResource.FILE)
-				WorkbenchUtilitiesPlugin.open((IFile) newResource);
-		}
-	}
-
 }

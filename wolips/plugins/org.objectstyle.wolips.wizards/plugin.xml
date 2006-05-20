@@ -166,6 +166,14 @@
                id="org.objectstyle.wolips.wizards.actions.OpenD2WApplicationWizard">
          </action>
          <action
+               label="WOnderApplication"
+               icon="icons/woproject/wonderapplication_wiz.gif"
+               class="org.objectstyle.wolips.wizards.actions.OpenWOnderApplicationWizard"
+               tooltip="New WOnderApplication"
+               toolbarPath="Normal/WOLipsWizards"
+               id="org.objectstyle.wolips.wizards.actions.OpenWOnderApplicationWizard">
+         </action>
+         <action
                label="WOApplication"
                icon="icons/woproject/woapplication_wiz.gif"
                class="org.objectstyle.wolips.wizards.actions.OpenWOApplicationWizard"

@@ -66,28 +66,17 @@ import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.objectstyle.wolips.datasets.adaptable.ProjectPatternsets;
 import org.objectstyle.wolips.templateengine.TemplateDefinition;
 import org.objectstyle.wolips.templateengine.TemplateEngine;
-import org.objectstyle.wolips.templateengine.TemplateEnginePlugin;
 
 /**
  * @author mnolte
- * @author uli To change this generated comment edit the template variable
- *         "typecomment": Window>Preferences>Java>Templates. To enable and
- *         disable the creation of type comments go to
- *         Window>Preferences>Java>Code Generation.
+ * @author uli
  */
 public class WOFrameworkWizard extends AbstractProjectWizard {
-	/**
-	 * default contructor
-	 */
+
 	public WOFrameworkWizard() {
-		super(TemplateEnginePlugin.WOFrameworkProject);
+		super();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.objectstyle.wolips.wizards.AbstractWOWizard#getWindowTitle()
-	 */
 	public String getWindowTitle() {
 		return Messages.getString("WOFrameworkCreationWizard.title");
 	}
@@ -95,15 +84,13 @@ public class WOFrameworkWizard extends AbstractProjectWizard {
 	private class Operation extends WorkspaceModifyOperation {
 		IProject project = null;
 
-		/**
-		 * @param project
-		 */
 		public Operation(IProject project) {
 			super();
 			this.project = project;
 		}
 
-		protected void execute(IProgressMonitor monitor) throws InvocationTargetException {
+		protected void execute(IProgressMonitor monitor)
+				throws InvocationTargetException {
 			String projectName = this.project.getName();
 			String path = this.project.getLocation().toOSString();
 			NullProgressMonitor nullProgressMonitor = new NullProgressMonitor();
@@ -181,11 +168,6 @@ public class WOFrameworkWizard extends AbstractProjectWizard {
 		}
 	}
 
-	/**
-	 * (non-Javadoc) Method declared on IWizard
-	 * 
-	 * @return
-	 */
 	public boolean performFinish() {
 		boolean success = super.performFinish();
 		if (success) {

@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 The ObjectStyle Group 
+ * Copyright (c) 2002 - 2006 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -54,48 +54,26 @@
  *
  */
 package org.objectstyle.wolips.wizards;
+
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.wizards.newresource.BasicNewProjectResourceWizard;
-import org.objectstyle.wolips.templateengine.TemplateEnginePlugin;
-import org.objectstyle.wolips.templateengine.TemplateFolder;
+
 /**
  * @author ulrich
- *  
  */
-public abstract class AbstractProjectWizard extends BasicNewProjectResourceWizard {
-	private String id;
-	private SelectTemplatePage selectTemplatePage;
-	/**
-	 * Constructor for WOProjectCreationWizard.
-	 */
-	public AbstractProjectWizard(String templatesID) {
+public abstract class AbstractProjectWizard extends
+		BasicNewProjectResourceWizard {
+	public AbstractProjectWizard() {
 		super();
-		id = templatesID;
 	}
+
 	public abstract String getWindowTitle();
-	
-	private boolean displayPage() {
-		if(id == null)
-			return false;
-		TemplateFolder[] templateFolder = TemplateEnginePlugin.getTemplateFolder(id);
-		if(templateFolder.length < 2)
-			return false;
-		selectTemplatePage = new SelectTemplatePage(templateFolder);
-		return false;
-	}
-	
-	/**
-	 * (non-Javadoc) Method declared on INewWizard
-	 */
+
 	public void init(IWorkbench workbench,
 			IStructuredSelection structuredSelection) {
 		super.init(workbench, structuredSelection);
-		if(this.displayPage()) {
-			this.addPage(selectTemplatePage);
-		}
-		setDefaultPageImageDescriptor(WizardsPlugin
-				.WOPROJECT_WIZARD_BANNER());
+		setDefaultPageImageDescriptor(WizardsPlugin.WOPROJECT_WIZARD_BANNER());
 		setWindowTitle(this.getWindowTitle());
 	}
 }
