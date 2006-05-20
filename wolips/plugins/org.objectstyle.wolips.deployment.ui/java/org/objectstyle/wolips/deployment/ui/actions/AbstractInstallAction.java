@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2004 - 2005 The ObjectStyle Group 
+ * Copyright (c) 2004 - 2006 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -88,7 +88,7 @@ public abstract class AbstractInstallAction extends AbstractActionOnIResource {
 		}
 	}
 
-	private class Runnable implements IRunnableWithProgress {
+	class Runnable implements IRunnableWithProgress {
 		IProject[] projectsToBuild;
 
 		String projectName = "";
