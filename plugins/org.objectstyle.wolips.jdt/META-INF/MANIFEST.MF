@@ -19,6 +19,7 @@ Export-Package: org.objectstyle.wolips.jdt,
  org.objectstyle.wolips.jdt.ant,
  org.objectstyle.wolips.jdt.classpath,
  org.objectstyle.wolips.jdt.classpath.model,
+ org.objectstyle.wolips.jdt.decorator,
  org.objectstyle.wolips.jdt.javaelementfilters,
  org.objectstyle.wolips.jdt.listener,
  org.objectstyle.wolips.jdt.ui
