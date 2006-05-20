@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002, 2004 The ObjectStyle Group 
+ * Copyright (c) 2002 - 2006 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -54,48 +54,38 @@
  *
  */
 package org.objectstyle.wolips.wizards;
+
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
-import org.objectstyle.wolips.templateengine.TemplateEnginePlugin;
+
 /**
  * @author mnolte
  * @author uli
- * 
- * This class implements the interface required by the desktop for all 'New'
- * wizards. This wizard creates WOComponent folders and files.
  */
-public class WOComponentCreationWizard extends AbstractResourceWizard  implements INewWizard {
-	/**
-	 * @param templatesID
-	 */
+public class WOComponentCreationWizard extends Wizard implements INewWizard {
+
 	public WOComponentCreationWizard() {
-		super(TemplateEnginePlugin.WOComponent);
+		super();
 	}
+
 	private WOComponentCreationPage mainPage;
-	/**
-	 * (non-Javadoc) Method declared on Wizard.
-	 */
+
 	public void addPages() {
 		addPage(mainPage);
 	}
-	/**
-	 * (non-Javadoc) Method declared on INewWizard
-	 */
+
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
-		super.init(workbench, selection);
 		mainPage = new WOComponentCreationPage(selection);
 		setWindowTitle(Messages.getString("WOComponentCreationWizard.title"));
-		setDefaultPageImageDescriptor(WizardsPlugin
-				.WOCOMPONENT_WIZARD_BANNER());
+		setDefaultPageImageDescriptor(WizardsPlugin.WOCOMPONENT_WIZARD_BANNER());
 	}
-	/**
-	 * (non-Javadoc) Method declared on IWizard
-	 */
+
 	public boolean performFinish() {
 		boolean returnValue = mainPage.createComponent();
-		if(returnValue) {
-			this.selectAndReveal(mainPage.getResourceToReveal());
+		if (returnValue) {
+			WizardsPlugin.selectAndReveal(mainPage.getResourceToReveal());
 		}
 		return returnValue;
 	}

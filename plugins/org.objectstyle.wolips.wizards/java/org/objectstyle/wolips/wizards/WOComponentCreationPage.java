@@ -90,11 +90,7 @@ import org.eclipse.ui.actions.WorkspaceModifyDelegatingOperation;
 import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 /**
  * @author mnolte
- * @author uli <br><br>This class is the only page of the WOComponent file
- *         resource creation wizard. It subclasses the standard file resource
- *         creation page class, but use only the provided component name for
- *         the file resource creation functionality.
- *  
+ * @author uli
  */
 public class WOComponentCreationPage extends WizardNewWOResourcePage {
 	// widgets
@@ -102,7 +98,7 @@ public class WOComponentCreationPage extends WizardNewWOResourcePage {
 	private Button wooCheckbox;
 	private Button apiCheckbox;
 	private IResource resourceToReveal;
-    private StringButtonStatusDialogField myPackageDialogField;
+    StringButtonStatusDialogField myPackageDialogField;
     
 
 	/**

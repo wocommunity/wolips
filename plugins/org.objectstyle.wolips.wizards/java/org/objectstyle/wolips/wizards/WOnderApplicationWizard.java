@@ -55,33 +55,21 @@
  */
 package org.objectstyle.wolips.wizards;
 
-import org.objectstyle.wolips.templateengine.TemplateEnginePlugin;
-
 /**
  * @author mnolte
- * @author uli To change this generated comment edit the template variable
- *         "typecomment": Window>Preferences>Java>Templates. To enable and
- *         disable the creation of type comments go to
- *         Window>Preferences>Java>Code Generation.
+ * @author uli
  */
 public class WOnderApplicationWizard extends WOApplicationWizard {
-	/**
-	 * default contructor
-	 */
+
 	public WOnderApplicationWizard() {
-		super(TemplateEnginePlugin.WOnderApplicationProject);
+		super();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.objectstyle.wolips.wizards.AbstractWOWizard#getWindowTitle()
-	 */
 	public String getWindowTitle() {
 		return Messages.getString("WOnderApplicationCreationWizard.title");
 	}
 
-  protected String getTemplateFolder() {
-    return "wonderapplication";
-  }
+	protected String getTemplateFolder() {
+		return "wonderapplication";
+	}
 }

@@ -65,28 +65,17 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.objectstyle.wolips.templateengine.TemplateDefinition;
 import org.objectstyle.wolips.templateengine.TemplateEngine;
-import org.objectstyle.wolips.templateengine.TemplateEnginePlugin;
 
 /**
  * @author mnolte
- * @author uli To change this generated comment edit the template variable
- *         "typecomment": Window>Preferences>Java>Templates. To enable and
- *         disable the creation of type comments go to
- *         Window>Preferences>Java>Code Generation.
+ * @author uli
  */
 public class JarProjectWizard extends AbstractProjectWizard {
-	/**
-	 * default contructor
-	 */
+
 	public JarProjectWizard() {
-		super(TemplateEnginePlugin.JarProject);
+		super();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.objectstyle.wolips.wizards.AbstractWOWizard#getWindowTitle()
-	 */
 	public String getWindowTitle() {
 		return Messages.getString("JarProjectCreationWizard.title");
 	}
@@ -102,7 +91,8 @@ public class JarProjectWizard extends AbstractProjectWizard {
 			this.project = project;
 		}
 
-		protected void execute(IProgressMonitor monitor) throws InvocationTargetException {
+		protected void execute(IProgressMonitor monitor)
+				throws InvocationTargetException {
 
 			String projectName = this.project.getName();
 			String path = this.project.getLocation().toOSString();

@@ -66,28 +66,16 @@ import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.objectstyle.wolips.datasets.adaptable.ProjectPatternsets;
 import org.objectstyle.wolips.templateengine.TemplateDefinition;
 import org.objectstyle.wolips.templateengine.TemplateEngine;
-import org.objectstyle.wolips.templateengine.TemplateEnginePlugin;
 
 /**
  * @author mnolte
- * @author uli To change this generated comment edit the template variable
- *         "typecomment": Window>Preferences>Java>Templates. To enable and
- *         disable the creation of type comments go to
- *         Window>Preferences>Java>Code Generation.
+ * @author uli
  */
 public class WOApplicationWizard extends AbstractProjectWizard {
-	/**
-	 * default contructor
-	 */
+
 	public WOApplicationWizard() {
-		super(TemplateEnginePlugin.WOApplicationProject);
+		super();
 	}
-  /**
-   * default contructor
-   */
-  protected WOApplicationWizard(String templatesID) {
-    super(templatesID);
-  }
 
 	/*
 	 * (non-Javadoc)
@@ -98,13 +86,14 @@ public class WOApplicationWizard extends AbstractProjectWizard {
 		return Messages.getString("WOApplicationCreationWizard.title");
 	}
 
-  protected String getTemplateFolder() {
-    return "woapplication";
-  }
+	protected String getTemplateFolder() {
+		return "woapplication";
+	}
 
 	private class Operation extends WorkspaceModifyOperation {
 		IProject project = null;
-    private String templateFolder;
+
+		private String templateFolder;
 
 		/**
 		 * @param project
@@ -112,10 +101,11 @@ public class WOApplicationWizard extends AbstractProjectWizard {
 		public Operation(IProject project, String templateFolder) {
 			super();
 			this.project = project;
-      this.templateFolder = templateFolder;
+			this.templateFolder = templateFolder;
 		}
-    
-		protected void execute(IProgressMonitor monitor) throws InvocationTargetException {
+
+		protected void execute(IProgressMonitor monitor)
+				throws InvocationTargetException {
 			String projectName = this.project.getName();
 			String path = this.project.getLocation().toOSString();
 			NullProgressMonitor nullProgressMonitor = new NullProgressMonitor();
@@ -167,8 +157,9 @@ public class WOApplicationWizard extends AbstractProjectWizard {
 						templateFolder + "/Main.java.vm", path + File.separator
 								+ "src", "Main.java", "Main.java"));
 				templateEngine.addTemplate(new TemplateDefinition(
-						templateFolder + "/Session.java.vm", path + File.separator
-								+ "src", "Session.java", "Session.java"));
+						templateFolder + "/Session.java.vm", path
+								+ File.separator + "src", "Session.java",
+						"Session.java"));
 				templateEngine.addTemplate(new TemplateDefinition(
 						templateFolder + "/.classpath.vm", path, ".classpath",
 						".classpath"));
@@ -176,40 +167,40 @@ public class WOApplicationWizard extends AbstractProjectWizard {
 						templateFolder + "/.project.vm", path, ".project",
 						".project"));
 				templateEngine
-						.addTemplate(new TemplateDefinition(
-								templateFolder + "/ant.classpaths.user.home.vm",
-								path + File.separator
-										+ ProjectPatternsets.ANT_FOLDER_NAME,
+						.addTemplate(new TemplateDefinition(templateFolder
+								+ "/ant.classpaths.user.home.vm", path
+								+ File.separator
+								+ ProjectPatternsets.ANT_FOLDER_NAME,
 								"ant.classpaths.user.home",
 								"ant.classpaths.user.home"));
 				templateEngine.addTemplate(new TemplateDefinition(
-						templateFolder + "/ant.classpaths.wo.wolocalroot.vm", path
-								+ File.separator
+						templateFolder + "/ant.classpaths.wo.wolocalroot.vm",
+						path + File.separator
 								+ ProjectPatternsets.ANT_FOLDER_NAME,
 						"ant.classpaths.wo.wolocalroot",
 						"ant.classpaths.wo.wolocalroot"));
 				templateEngine.addTemplate(new TemplateDefinition(
-						templateFolder + "/ant.classpaths.wo.wosystemroot.vm", path
-								+ File.separator
+						templateFolder + "/ant.classpaths.wo.wosystemroot.vm",
+						path + File.separator
 								+ ProjectPatternsets.ANT_FOLDER_NAME,
 						"ant.classpaths.wo.wosystemroot",
 						"ant.classpaths.wo.wosystemroot"));
 				templateEngine
-						.addTemplate(new TemplateDefinition(
-								templateFolder + "/ant.frameworks.user.home.vm",
-								path + File.separator
-										+ ProjectPatternsets.ANT_FOLDER_NAME,
+						.addTemplate(new TemplateDefinition(templateFolder
+								+ "/ant.frameworks.user.home.vm", path
+								+ File.separator
+								+ ProjectPatternsets.ANT_FOLDER_NAME,
 								"ant.frameworks.user.home",
 								"ant.frameworks.user.home"));
 				templateEngine.addTemplate(new TemplateDefinition(
-						templateFolder + "/ant.frameworks.wo.wolocalroot.vm", path
-								+ File.separator
+						templateFolder + "/ant.frameworks.wo.wolocalroot.vm",
+						path + File.separator
 								+ ProjectPatternsets.ANT_FOLDER_NAME,
 						"ant.frameworks.wo.wolocalroot",
 						"ant.frameworks.wo.wolocalroot"));
 				templateEngine.addTemplate(new TemplateDefinition(
-						templateFolder + "/ant.frameworks.wo.wosystemroot.vm", path
-								+ File.separator
+						templateFolder + "/ant.frameworks.wo.wosystemroot.vm",
+						path + File.separator
 								+ ProjectPatternsets.ANT_FOLDER_NAME,
 						"ant.frameworks.wo.wosystemroot",
 						"ant.frameworks.wo.wosystemroot"));
