@@ -256,19 +256,24 @@ public class DotXcodeBuilder implements IDeltaBuilder, ICleanBuilder {
 		// System.out.println("DotXcodeBuilder.handleWoappResources: " +
 		// resourcePath + ", " + (_resource instanceof IFolder));
 		if (_resource instanceof IFolder) {
-			if (myXcodeProject != null) {
-				myXcodeProject.addResourceFolderReference(resourcePath);
-			}
-			if (myXcodeProjProject != null) {
-				myXcodeProjProject.addResourceFolderReference(resourcePath);
-			}
+		  // PJYF May 21 2006 We need to exclude the temp wrappers
+      if (! _resource.getName().endsWith("~")) {
+        if (myXcodeProject != null) {
+          myXcodeProject.addResourceFolderReference(resourcePath);
+        }
+        if (myXcodeProjProject != null) {
+          myXcodeProjProject.addResourceFolderReference(resourcePath);
+        }
+      }
 		} else if (_resource instanceof IFile) {
 			IContainer parent = _resource.getParent();
 			boolean addResourceFileReference = true;
 			if (parent != null) {
 				String parentName = parent.getName().toLowerCase();
+        // PJYF May 21 2006 We need to exclude the temp wrappers
 				if (parentName.endsWith(".eomodeld")
-						|| parentName.endsWith(".wo")) {
+            || parentName.endsWith(".wo")
+            || parentName.endsWith("~")) {
 					addResourceFileReference = false;
 				}
 			}
