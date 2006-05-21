@@ -134,6 +134,10 @@ final class BuildResourceValidator extends DefaultDeltaVisitor {
 					|| resource.getName().equals("CVS")) {
 				return false;
 			}
+      // PJYF May 21 2006 We need to exclude the temp wrappers
+      if (resource.getName().endsWith("~")) {
+        return false;
+      }
 			if (this.project.matchesResourcesPattern(resource)
 					|| this.project.matchesWOAppResourcesPattern(resource)
 					|| this.project.matchesClassesPattern(resource)) {
