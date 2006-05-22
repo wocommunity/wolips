@@ -150,9 +150,6 @@ public class GenerateAction implements IObjectActionDelegate {
           System.err.println(e);
         }
         
-        for (int i = 0; i < 100; i ++) {
-          output.append("Test\n");
-        }
         project.getFolder(new Path(eogenModel.getDestination())).refreshLocal(IResource.DEPTH_INFINITE, _monitor);
         project.getFolder(new Path(eogenModel.getSubclassDestination())).refreshLocal(IResource.DEPTH_INFINITE, _monitor);
 
