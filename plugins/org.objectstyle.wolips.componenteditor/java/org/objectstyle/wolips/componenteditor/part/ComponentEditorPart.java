@@ -495,9 +495,17 @@ public class ComponentEditorPart extends MultiPageEditorPart {
 		if (pageIndex == 1) {
 			if (this.htmlActive) {
 				return this.structuredTextEditorWO;
-			} else {
-				return this.wodEditor;
 			}
+			return this.wodEditor;
+		}
+		if (pageIndex == 0) {
+			return compilationUnitEditor;
+		}
+		if (pageIndex == 2) {
+			return htmlPreviewEditor;
+		}
+		if (pageIndex == 3) {
+			return apiEditor;
 		}
 		if (pageIndex > 1) {
 			return super.getEditor(pageIndex + 1);
