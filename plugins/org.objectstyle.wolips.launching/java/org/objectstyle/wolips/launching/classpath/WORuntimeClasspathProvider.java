@@ -118,12 +118,10 @@ public class WORuntimeClasspathProvider extends StandardClasspathProvider {
 					IRuntimeClasspathEntry resolvedEntry = 
 						JavaRuntime.newArchiveRuntimeClasspathEntry(projectArchive);
 					resolved.add(resolvedEntry);
-					System.out.println("Pass1:  " + entry +  "->" + resolvedEntry);
 					allEntries.add(projectArchive.toString());
 				}
 				allEntries.add(entry.toString());
 			} else {
-				System.out.println("Pass1: " + entry);
 				others.add(entry);
 			}
 		}
@@ -144,14 +142,12 @@ public class WORuntimeClasspathProvider extends StandardClasspathProvider {
 					resolved.add(entry);
 				} else {
 					if (!allEntries.contains(loc)) {
-						System.out.println("Pass2:  " +entry +  "->" + ls);
 						resolved.add(entry);
 						allEntries.add(loc);
 					}
 				}
 			}
 		}
-		System.out.println(resolved);
 		result = (IRuntimeClasspathEntry[]) resolved.toArray(
 			new IRuntimeClasspathEntry[resolved.size()]);
 		return result;
