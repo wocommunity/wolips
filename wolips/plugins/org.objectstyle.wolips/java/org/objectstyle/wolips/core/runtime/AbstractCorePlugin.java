@@ -71,7 +71,7 @@ public abstract class AbstractCorePlugin extends Plugin {
 	// The shared instance.
 	private static AbstractCorePlugin Plugin;
 
-	private boolean debug = true;
+	private boolean debug = false;
 
 	private String bundleID;
 
