@@ -93,7 +93,7 @@ public class WORuntimeClasspathProvider extends StandardClasspathProvider {
 	 *      org.eclipse.debug.core.ILaunchConfiguration)
 	 */
 	public IRuntimeClasspathEntry[] resolveClasspath(
-		IRuntimeClasspathEntry[] entries,
+			IRuntimeClasspathEntry[] entries,
 		ILaunchConfiguration configuration)
 		throws CoreException {
 
@@ -106,22 +106,24 @@ public class WORuntimeClasspathProvider extends StandardClasspathProvider {
 		// looks like we need to let super do it's thing before
 		// we start tinkering with things ourselves
 
-		entries = super.resolveClasspath(entries, configuration);
+		IRuntimeClasspathEntry[] result = super.resolveClasspath(entries, configuration);
 		// resolve WO framework/application projects ourselves, let super do the rest
-		for (int i = 0; i < entries.length; ++i) {
-			IRuntimeClasspathEntry entry = entries[i];
-			IPath archive = _getWOJavaArchive(entry);
-			if (null != archive) {
+		for (int i = 0; i < result.length; ++i) {
+			IRuntimeClasspathEntry entry = result[i];
+			IPath projectArchive = _getWOJavaArchive(entry);
+			if (projectArchive != null) {
 				// I think this line here breaks things: (hn3000)
 				//resolved.add(entry);
-				if (!allEntries.contains(archive.toString())) {
-					resolved.add(
-						JavaRuntime.newArchiveRuntimeClasspathEntry(archive));
-
-					allEntries.add(archive.toString());
+				if (!allEntries.contains(projectArchive.toString())) {
+					IRuntimeClasspathEntry resolvedEntry = 
+						JavaRuntime.newArchiveRuntimeClasspathEntry(projectArchive);
+					resolved.add(resolvedEntry);
+					System.out.println("Pass1:  " + entry +  "->" + resolvedEntry);
+					allEntries.add(projectArchive.toString());
 				}
 				allEntries.add(entry.toString());
 			} else {
+				System.out.println("Pass1: " + entry);
 				others.add(entry);
 			}
 		}
@@ -142,14 +144,17 @@ public class WORuntimeClasspathProvider extends StandardClasspathProvider {
 					resolved.add(entry);
 				} else {
 					if (!allEntries.contains(loc)) {
+						System.out.println("Pass2:  " +entry +  "->" + ls);
 						resolved.add(entry);
 						allEntries.add(loc);
 					}
 				}
 			}
 		}
-		return (IRuntimeClasspathEntry[]) resolved.toArray(
+		System.out.println(resolved);
+		result = (IRuntimeClasspathEntry[]) resolved.toArray(
 			new IRuntimeClasspathEntry[resolved.size()]);
+		return result;
 	}
 
 	IPath _getWOJavaArchive(IRuntimeClasspathEntry entry)
