@@ -61,7 +61,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.objectstyle.woenvironment.pb.PBXProject.ObjectsTable;
 import org.objectstyle.woenvironment.pb.PBXProject.ObjectsTable.ID;
 
 /**
@@ -71,37 +70,40 @@ import org.objectstyle.woenvironment.pb.PBXProject.ObjectsTable.ID;
  * @author Mike Schrag
  */
 public class XcodeProjProject extends PBXProject {
-  protected Map newFrameworkReference(String _name, String _path) {
-    return map(new Object[] { "isa", "PBXFileReference", "lastKnownFileType", "wrapper.framework", "name", _name, "path", _path, "sourceTree", "<absolute>" });
+  protected Map newFrameworkReference(String name, String path) {
+    return map(new Object[] { "isa", "PBXFileReference", "lastKnownFileType", "wrapper.framework", 
+    		"sourceTree", "<absolute>", "name", name, "path", path});
   }
 
-  protected Map newGroup(String _name, List _childrenIDs) {
-    return map(new Object[] { "isa", "PBXGroup", "refType", "<group>", "name", _name, "children", _childrenIDs });
+  protected Map newGroup(String name, List childrenIDs) {
+    return map(new Object[] { "isa", "PBXGroup", "sourceTree", "<group>", "name", name, "children", childrenIDs });
   }
 
-  protected Map newFileReference(String _name, String _path) {
-    return map(new Object[] { "isa", "PBXFileReference", "lastKnownFileType", "sourcecode.java", "sourceTree", new File(_path).isAbsolute() ? "<absolute>" : "<group>", "name", _name, "path", _path });
+  protected Map newFileReference(String name, String path) {
+    return map(new Object[] { "isa", "PBXFileReference", "lastKnownFileType", "sourcecode.java", 
+    		"sourceTree", new File(path).isAbsolute() ? "<absolute>" : "<group>", "name", name, "path", path });
   }
 
-  protected Map newFolderReference(String _name, String _path) {
+  protected Map newFolderReference(String name, String path) {
     String lastKnownFileType;
-    if (_path.endsWith(".eomodeld")) {
+    if (path.endsWith(".eomodeld")) {
       lastKnownFileType = "wrapper.eomodeld";
     }
-    else if (_path.endsWith(".wo")) {
+    else if (path.endsWith(".wo")) {
       lastKnownFileType = "folder";
     }
-    else if (_path.endsWith(".nib")) {
+    else if (path.endsWith(".nib")) {
       lastKnownFileType = "wrapper.nib";
     }
     else {
       lastKnownFileType = "folder";
     }
-    Map result = map(new Object[] { "isa", "PBXFileReference", "lastKnownFileType", lastKnownFileType, "path", _path, "sourceTree", new File(_path).isAbsolute() ? "<absolute>" : "<group>" });
+    Map result = map(new Object[] { "isa", "PBXFileReference", "lastKnownFileType", lastKnownFileType, 
+    		"sourceTree", new File(path).isAbsolute() ? "<absolute>" : "<group>",  "name", name, "path", path });
     return result;
   }
 
-  protected Map newAppServerTarget(List _buildPhaseIDs, ObjectsTable _objectsTable) {
+  protected Map newAntTarget(List _buildPhaseIDs, ObjectsTable _objectsTable) {
     Map result = map( new Object[] {
 			"isa",				"PBXLegacyTarget",
 			"buildArgumentsString", "-emacs $(ACTION)",
@@ -143,24 +145,12 @@ public class XcodeProjProject extends PBXProject {
     return buildConfigurationList;
   }
 
-  protected Map newBuildStyle(Map _buildSettings, String _name) {
-    return newBuildStyleOrConfiguration(_buildSettings, "PBXBuildStyle", _name);
-  }
-
-  protected Map newBuildConfiguration(Map _buildSettings, String _name) {
-    return newBuildStyleOrConfiguration(_buildSettings, "XCBuildConfiguration", _name);
-  }
-
-  protected Map newBuildStyleOrConfiguration(Map _buildSettings, String _isa, String _name) {
-    return map(new Object[] { "buildSettings", _buildSettings, "isa", _isa, "name", _name });
-  }
-
   protected Map newPBXProj(Map objectsTable, ObjectsTable.ID rootObject) {
     return map(new Object[] { "archiveVersion", "1", "classes", new HashMap(), "objectVersion", "42", "rootObject", rootObject, "objects", objectsTable });
   }
   
   protected boolean hasBuildPhases() {
-	  return false;
+	  return true;
   }
   
 }
