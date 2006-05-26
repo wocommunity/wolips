@@ -50,6 +50,7 @@
 package org.objectstyle.wolips.componenteditor.listener;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
@@ -58,6 +59,7 @@ import org.eclipse.core.runtime.QualifiedName;
 import org.eclipse.ui.ide.IDE;
 import org.objectstyle.wolips.componenteditor.ComponenteditorPlugin;
 import org.objectstyle.wolips.components.input.ComponentEditorInput;
+import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
 
 /**
  * @author ulrich
@@ -66,6 +68,12 @@ public class ComponentEditorDeltaVisitor implements IResourceDeltaVisitor {
 
 	public boolean visit(IResourceDelta delta) throws CoreException {
 		IResource resource = delta.getResource();
+		if (resource.getType() == IResource.PROJECT) {
+			IProject project = (IProject)resource;
+			IProjectAdapter projectAdapter = (IProjectAdapter) project
+					.getAdapter(IProjectAdapter.class);
+			return projectAdapter != null;
+		}
 		if (resource.getType() == IResource.FOLDER) {
 			if ("framework".equals(resource.getFileExtension())
 					|| "woa".equals(resource.getFileExtension())
