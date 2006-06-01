@@ -45,7 +45,9 @@ package org.objectstyle.wolips.componenteditor.part;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CTabFolder;
@@ -57,13 +59,16 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.ui.IEditorActionBarContributor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IPropertyListener;
 import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.part.MultiPageEditorActionBarContributor;
 import org.eclipse.ui.part.MultiPageEditorPart;
+import org.eclipse.ui.part.MultiPageSelectionProvider;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.objectstyle.wolips.apieditor.editor.ApiEditor;
 import org.objectstyle.wolips.componenteditor.ComponenteditorPlugin;
@@ -84,7 +89,7 @@ import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 public class ComponentEditorPart extends MultiPageEditorPart {
 
 	boolean running = false;
-	
+
 	private IEditorPart lastEditorPart;
 
 	ComponentEditorInput componentEditorInput;
@@ -135,6 +140,7 @@ public class ComponentEditorPart extends MultiPageEditorPart {
 					javaInputName.length() - 5);
 			setPartName(partName);
 		}
+		site.setSelectionProvider(new ComponentEditorPartSelectionProvider(this));
 	}
 
 	public IEditorInput getEditorInput() {
@@ -175,7 +181,7 @@ public class ComponentEditorPart extends MultiPageEditorPart {
 	}
 
 	protected void createPages() {
-		if(componentEditorInput == null) {
+		if (componentEditorInput == null) {
 			return;
 		}
 		IEditorInput[] editorInput = componentEditorInput.getInput();
@@ -435,13 +441,33 @@ public class ComponentEditorPart extends MultiPageEditorPart {
 	 * Because of a assert error we have to overwrite this method
 	 */
 	protected void pageChange(int newPageIndex) {
-		super.pageChange(newPageIndex);
+		setFocus();
 		final IEditorPart activeEditor = getEditor(newPageIndex);
+		IEditorActionBarContributor contributor = getEditorSite()
+				.getActionBarContributor();
+		if (contributor != null
+				&& contributor instanceof MultiPageEditorActionBarContributor) {
+			((MultiPageEditorActionBarContributor) contributor)
+					.setActivePage(activeEditor);
+		}
 		if (activeEditor != null) {
+			ISelectionProvider selectionProvider = activeEditor.getSite()
+					.getSelectionProvider();
+			if (selectionProvider != null
+					&& selectionProvider.getSelection() != null) {
+				SelectionChangedEvent event = new SelectionChangedEvent(
+						selectionProvider, selectionProvider.getSelection());
+				MultiPageSelectionProvider provider = (MultiPageSelectionProvider) getSite()
+						.getSelectionProvider();
+				provider.fireSelectionChanged(event);
+				provider.firePostSelectionChanged(event);
+			}
 			if (activeEditor instanceof IEmbeddedEditorSelected) {
 				IEmbeddedEditorSelected embeddedEditorPageChanged = (IEmbeddedEditorSelected) activeEditor;
 				embeddedEditorPageChanged.editorSelected();
 			}
+			//force activation to send part activated events
+			//WorkbenchUtilitiesPlugin.getActivePage().activate(this);
 			if(!running && lastEditorPart != null && activeEditor != lastEditorPart) {
 			Display.getCurrent().asyncExec(new Runnable() {
 
@@ -468,9 +494,9 @@ public class ComponentEditorPart extends MultiPageEditorPart {
 				
 			});
 			}
+			lastEditorPart = activeEditor;
 		}
 	}
-
 	public ComponentEditorInput getComponentEditorInput() {
 		return componentEditorInput;
 	}
@@ -517,23 +543,60 @@ public class ComponentEditorPart extends MultiPageEditorPart {
 		if (this.getActivePage() == 1) {
 			if (this.htmlActive) {
 				return this.structuredTextEditorWO;
-			} else {
-				return this.wodEditor;
 			}
+			return this.wodEditor;
 		}
 		return super.getActiveEditor();
 	}
 
-	public void setFocus() {
+//	public void setFocus() {
 //		if (this.getActivePage() == 1) {
 //			if (this.htmlActive) {
 //				this.structuredTextEditorWO.setFocus();
-//				return;
 //			} else {
 //				this.wodEditor.setFocus();
-//				return;
 //			}
+//			return;
 //		}
-		super.setFocus();
+//		super.setFocus();
+//	}
+	
+
+
+
+	private static class ComponentEditorPartSelectionProvider extends
+			MultiPageSelectionProvider {
+		private ISelection globalSelection;
+		
+		public ComponentEditorPartSelectionProvider(ComponentEditorPart componentEditorPart) {
+			super(componentEditorPart);
+		}
+
+		public ISelection getSelection() {
+			IEditorPart activeEditor = ((ComponentEditorPart) getMultiPageEditor())
+					.getActiveEditor();
+			if (activeEditor != null) {
+				ISelectionProvider selectionProvider = activeEditor.getSite()
+						.getSelectionProvider();
+				if (selectionProvider != null)
+					return selectionProvider.getSelection();
+			}
+			return globalSelection;
+		}
+		
+		public void setSelection(ISelection selection) {
+			IEditorPart activeEditor = ((ComponentEditorPart) getMultiPageEditor())
+					.getActiveEditor();
+			if (activeEditor != null) {
+				ISelectionProvider selectionProvider = activeEditor.getSite()
+						.getSelectionProvider();
+				if (selectionProvider != null)
+					selectionProvider.setSelection(selection);
+			} else {
+				this.globalSelection = selection;
+				fireSelectionChanged(new SelectionChangedEvent(this,
+						globalSelection));
+			}
+		}
 	}
 }

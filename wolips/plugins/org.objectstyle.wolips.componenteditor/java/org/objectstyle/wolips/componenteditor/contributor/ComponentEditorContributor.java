@@ -3,7 +3,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0
  * 
- * Copyright (c) 2005 The ObjectStyle Group and individual authors of the
+ * Copyright (c) 2005 - 2006 The ObjectStyle Group and individual authors of the
  * software. All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -43,68 +43,59 @@
  */
 package org.objectstyle.wolips.componenteditor.contributor;
 
-import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditorActionContributor;
-import org.eclipse.jface.action.ICoolBarManager;
-import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.IStatusLineManager;
-import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.actions.ActionFactory;
+import org.eclipse.ui.ide.IDEActionFactory;
 import org.eclipse.ui.part.MultiPageEditorActionBarContributor;
-import org.objectstyle.wolips.componenteditor.part.ComponentEditor;
+import org.eclipse.ui.texteditor.ITextEditor;
+import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 
 public class ComponentEditorContributor extends
 		MultiPageEditorActionBarContributor {
-
-	private CompilationUnitEditorActionContributor compilationUnitEditorActionContributor;
-
+	private IEditorPart activeEditorPart;
 	public ComponentEditorContributor() {
 		super();
-		compilationUnitEditorActionContributor = new CompilationUnitEditorActionContributor();
 	}
 
-	public void setActivePage(IEditorPart activeEditor) {
-		IEditorPart editorPart = activeEditor;
-//		if (activeEditor instanceof ComponentEditor) {
-//			ComponentEditor componentEditor = (ComponentEditor) activeEditor;
-//			editorPart = componentEditor.compilationUnitEditor;
-//		}
-		compilationUnitEditorActionContributor
-				.setActiveEditor(editorPart);
+	protected IAction getAction(ITextEditor editor, String actionID) {
+		return (editor == null ? null : editor.getAction(actionID));
 	}
 
-	public void contributeToCoolBar(ICoolBarManager coolBarManager) {
-		super.contributeToCoolBar(coolBarManager);
-		compilationUnitEditorActionContributor
-				.contributeToCoolBar(coolBarManager);
-	}
+	public void setActivePage(IEditorPart part) {
+		if (activeEditorPart == part)
+			return;
 
-	public void contributeToMenu(IMenuManager menuManager) {
-		super.contributeToMenu(menuManager);
-		compilationUnitEditorActionContributor.contributeToMenu(menuManager);
-	}
+		activeEditorPart = part;
 
-	public void contributeToStatusLine(IStatusLineManager statusLineManager) {
-		super.contributeToStatusLine(statusLineManager);
-		compilationUnitEditorActionContributor
-				.contributeToStatusLine(statusLineManager);
-	}
+		IActionBars actionBars = getActionBars();
+		if (actionBars != null) {
 
-	public void contributeToToolBar(IToolBarManager toolBarManager) {
-		super.contributeToToolBar(toolBarManager);
-		compilationUnitEditorActionContributor
-				.contributeToToolBar(toolBarManager);
-	}
+			ITextEditor editor = (part instanceof ITextEditor) ? (ITextEditor) part
+					: null;
 
-	public void init(IActionBars bars, IWorkbenchPage page) {
-		super.init(bars, page);
-		compilationUnitEditorActionContributor.init(bars, page);
+			actionBars.setGlobalActionHandler(ActionFactory.DELETE.getId(),
+					getAction(editor, ITextEditorActionConstants.DELETE));
+			actionBars.setGlobalActionHandler(ActionFactory.UNDO.getId(),
+					getAction(editor, ITextEditorActionConstants.UNDO));
+			actionBars.setGlobalActionHandler(ActionFactory.REDO.getId(),
+					getAction(editor, ITextEditorActionConstants.REDO));
+			actionBars.setGlobalActionHandler(ActionFactory.CUT.getId(),
+					getAction(editor, ITextEditorActionConstants.CUT));
+			actionBars.setGlobalActionHandler(ActionFactory.COPY.getId(),
+					getAction(editor, ITextEditorActionConstants.COPY));
+			actionBars.setGlobalActionHandler(ActionFactory.PASTE.getId(),
+					getAction(editor, ITextEditorActionConstants.PASTE));
+			actionBars.setGlobalActionHandler(ActionFactory.SELECT_ALL.getId(),
+					getAction(editor, ITextEditorActionConstants.SELECT_ALL));
+			actionBars.setGlobalActionHandler(ActionFactory.FIND.getId(),
+					getAction(editor, ITextEditorActionConstants.FIND));
+			actionBars.setGlobalActionHandler(
+					IDEActionFactory.BOOKMARK.getId(), getAction(editor,
+							IDEActionFactory.BOOKMARK.getId()));
+			actionBars.updateActionBars();
+			actionBars.getMenuManager().update();
+		}
 	}
-
-	public void init(IActionBars bars) {
-		super.init(bars);
-		compilationUnitEditorActionContributor.init(bars);
-	}
-
 }
