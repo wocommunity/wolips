@@ -59,14 +59,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.ui.IEditorActionBarContributor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IPropertyListener;
-import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.part.MultiPageEditorActionBarContributor;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.part.MultiPageSelectionProvider;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
@@ -81,16 +78,11 @@ import org.objectstyle.wolips.htmleditor.sse.StructuredTextEditorWO;
 import org.objectstyle.wolips.htmlpreview.editor.HtmlPreviewEditor;
 import org.objectstyle.wolips.wodclipse.WodclipsePlugin;
 import org.objectstyle.wolips.wodclipse.wod.WodEditor;
-import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 
 /**
  * @author uli
  */
 public class ComponentEditorPart extends MultiPageEditorPart {
-
-	boolean running = false;
-
-	private IEditorPart lastEditorPart;
 
 	ComponentEditorInput componentEditorInput;
 
@@ -433,89 +425,20 @@ public class ComponentEditorPart extends MultiPageEditorPart {
 		setFocus();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.part.MultiPageEditorPart#pageChange(int)
-	 * 
-	 * Because of a assert error we have to overwrite this method
-	 */
-	protected void pageChange(int newPageIndex) {
-		setFocus();
+	protected void pageChange(int newPageIndex) {	
+		super.pageChange(newPageIndex);
 		final IEditorPart activeEditor = getEditor(newPageIndex);
-		IEditorActionBarContributor contributor = getEditorSite()
-				.getActionBarContributor();
-		if (contributor != null
-				&& contributor instanceof MultiPageEditorActionBarContributor) {
-			((MultiPageEditorActionBarContributor) contributor)
-					.setActivePage(activeEditor);
-		}
 		if (activeEditor != null) {
-			ISelectionProvider selectionProvider = activeEditor.getSite()
-					.getSelectionProvider();
-			if (selectionProvider != null
-					&& selectionProvider.getSelection() != null) {
-				SelectionChangedEvent event = new SelectionChangedEvent(
-						selectionProvider, selectionProvider.getSelection());
-				MultiPageSelectionProvider provider = (MultiPageSelectionProvider) getSite()
-						.getSelectionProvider();
-				provider.fireSelectionChanged(event);
-				provider.firePostSelectionChanged(event);
-			}
 			if (activeEditor instanceof IEmbeddedEditorSelected) {
 				IEmbeddedEditorSelected embeddedEditorPageChanged = (IEmbeddedEditorSelected) activeEditor;
 				embeddedEditorPageChanged.editorSelected();
 			}
-			//force activation to send part activated events
-			//WorkbenchUtilitiesPlugin.getActivePage().activate(this);
-			if(!running && lastEditorPart != null && activeEditor != lastEditorPart) {
-			Display.getCurrent().asyncExec(new Runnable() {
-
-				public void run() {
-					running = true;
-					IViewReference[] viewReferences =  WorkbenchUtilitiesPlugin.getActivePage().getViewReferences();
-					WorkbenchUtilitiesPlugin.getActivePage().activate(viewReferences[0].getPart(false));
-
-					Display.getCurrent().asyncExec(new Runnable() {
-
-						public void run() {
-							WorkbenchUtilitiesPlugin.getActivePage().activate(activeEditor);
-
-							Display.getDefault().asyncExec(new Runnable() {
-								public void run() {
-									setFocus();
-									running = false;
-								}
-							});
-						}
-						
-					});
-				}
-				
-			});
-			}
-			lastEditorPart = activeEditor;
 		}
 	}
+	
 	public ComponentEditorInput getComponentEditorInput() {
 		return componentEditorInput;
 	}
-
-	//
-	// protected IEditorPart getEditor(int pageIndex) {
-	// if (editorParts == null) {
-	// return null;
-	// }
-	// int index = pageIndex;
-	// if (index > 1) {
-	// index = index + 1;
-	// } else if (index == 1) {
-	// if (!htmlActive) {
-	// index = 2;
-	// }
-	// }
-	// return editorParts[index];
-	// }
 
 	protected IEditorPart getEditor(int pageIndex) {
 		if (pageIndex == 1) {
@@ -548,22 +471,7 @@ public class ComponentEditorPart extends MultiPageEditorPart {
 		}
 		return super.getActiveEditor();
 	}
-
-//	public void setFocus() {
-//		if (this.getActivePage() == 1) {
-//			if (this.htmlActive) {
-//				this.structuredTextEditorWO.setFocus();
-//			} else {
-//				this.wodEditor.setFocus();
-//			}
-//			return;
-//		}
-//		super.setFocus();
-//	}
 	
-
-
-
 	private static class ComponentEditorPartSelectionProvider extends
 			MultiPageSelectionProvider {
 		private ISelection globalSelection;
