@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: EOGenerator UI
 Bundle-SymbolicName: org.objectstyle.wolips.eogenerator.ui; singleton:=true
-Bundle-Version: 1.0.0
+Bundle-Version: 1.0.6
 Bundle-Activator: org.objectstyle.wolips.eogenerator.ui.Activator
 Bundle-Vendor: objectstyle.org
 Bundle-Localization: plugin
