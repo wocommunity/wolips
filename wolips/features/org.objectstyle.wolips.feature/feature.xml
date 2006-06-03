@@ -11,7 +11,7 @@
    </description>
 
    <copyright>
-      Copyright 2002, 2005, objectstyle.org
+      Copyright 2002 - 2006, objectstyle.org
    </copyright>
 
    <license>
@@ -20,7 +20,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0
  * 
- * Copyright (c) 2002, 2005 The ObjectStyle Group and individual authors of the
+ * Copyright (c) 2002 - 2006 The ObjectStyle Group and individual authors of the
  * software. All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -94,7 +94,7 @@
       <import plugin="org.eclipse.search"/>
       <import plugin="org.eclipse.ui.console"/>
       <import plugin="org.eclipse.ui.ide"/>
-      <import plugin="org.eclipse.ui.workbench" version="3.1.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.workbench"/>
       <import plugin="org.eclipse.ui.editors"/>
       <import plugin="org.eclipse.jface"/>
       <import plugin="org.eclipse.ui.workbench.texteditor"/>
