@@ -97,15 +97,10 @@ public class WodBuilder extends AbstractDeltaCleanBuilder {
   }
 
   public void handleClasspath(IResource _resource, IProgressMonitor _monitor, Map _buildCache) {
+    System.out.println("WodBuilder.handleClasspath: " + _resource);
   }
 
   public void handleOther(IResource _resource, IProgressMonitor _monitor, Map _buildCache) {
-  }
-
-  public void handleWebServerResources(IResource _resource, IProgressMonitor _monitor, Map _buildCache) {
-  }
-
-  public void handleWoappResources(IResource _resource, IProgressMonitor _monitor, Map _buildCache) {
     if (myValidateWOD) {
       try {
         boolean validateWodFile = false;
@@ -142,36 +137,43 @@ public class WodBuilder extends AbstractDeltaCleanBuilder {
     }
   }
 
+  public void handleWebServerResources(IResource _resource, IProgressMonitor _monitor, Map _buildCache) {
+  }
+
+  public void handleWoappResources(IResource _resource, IProgressMonitor _monitor, Map _buildCache) {
+  }
+
   protected void touchRelatedResources(IResource _resource, IProgressMonitor _progressMonitor, Map _buildCache) throws CoreException {
     //System.out.println("WodBuilder.touchRelatedResources: looking for problems related to " + _resource);
     if (_progressMonitor != null) {
       _progressMonitor.subTask("Touching files related to " + _resource.getName() + " ...");
     }
-    
+
     IMarker[] markers = _resource.getProject().findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
     Set relatedResources = new HashSet();
     String name = _resource.getName();
     for (int markerNum = 0; markerNum < markers.length; markerNum++) {
       //System.out.println("WodBuilder.touchRelatedResources: Checking " + markers[markerNum]);
-      String relatedToFileNames = (String)markers[markerNum].getAttribute(WodProblem.RELATED_TO_FILE_NAMES);
+      String relatedToFileNames = (String) markers[markerNum].getAttribute(WodProblem.RELATED_TO_FILE_NAMES);
       //System.out.println("WodBuilder.touchRelatedResources: problem in " + markers[markerNum].getResource().getName() + " is related to " + relatedToFileNames);
       if (relatedToFileNames != null && relatedToFileNames.indexOf(name) != -1) {
         //System.out.println("WodBuilder.touchRelatedResources:  ... which is this: " + _resource);
         relatedResources.add(markers[markerNum].getResource());
       }
     }
-    
+
     Iterator relatedResourcesIter = relatedResources.iterator();
     while (relatedResourcesIter.hasNext()) {
-      IResource relatedResource = (IResource)relatedResourcesIter.next();
+      IResource relatedResource = (IResource) relatedResourcesIter.next();
       handleWoappResources(relatedResource, _progressMonitor, _buildCache);
       //relatedResource.touch(_progressMonitor);
     }
   }
 
   protected void validateWodFile(IFile file, IProgressMonitor _progressMonitor, Map _buildCache) throws CoreException, LocateException {
-	String _resourceName = file.getName();
-	if (_progressMonitor != null) {
+    System.out.println("WodBuilder.validateWodFile: validate wod file: " + file);
+    String _resourceName = file.getName();
+    if (_progressMonitor != null) {
       _progressMonitor.subTask("Locating components for " + _resourceName + " ...");
     }
     LocalizedComponentsLocateResult _locateResults = LocatePlugin.getDefault().getLocalizedComponentsLocateResult(file);
