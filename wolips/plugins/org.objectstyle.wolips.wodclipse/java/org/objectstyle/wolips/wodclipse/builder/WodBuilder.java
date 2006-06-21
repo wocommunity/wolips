@@ -171,7 +171,6 @@ public class WodBuilder extends AbstractDeltaCleanBuilder {
   }
 
   protected void validateWodFile(IFile file, IProgressMonitor _progressMonitor, Map _buildCache) throws CoreException, LocateException {
-    System.out.println("WodBuilder.validateWodFile: validate wod file: " + file);
     String _resourceName = file.getName();
     if (_progressMonitor != null) {
       _progressMonitor.subTask("Locating components for " + _resourceName + " ...");
