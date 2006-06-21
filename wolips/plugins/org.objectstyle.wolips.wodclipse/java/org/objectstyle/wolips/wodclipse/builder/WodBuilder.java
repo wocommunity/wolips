@@ -97,7 +97,6 @@ public class WodBuilder extends AbstractDeltaCleanBuilder {
   }
 
   public void handleClasspath(IResource _resource, IProgressMonitor _monitor, Map _buildCache) {
-    System.out.println("WodBuilder.handleClasspath: " + _resource);
   }
 
   public void handleOther(IResource _resource, IProgressMonitor _monitor, Map _buildCache) {
