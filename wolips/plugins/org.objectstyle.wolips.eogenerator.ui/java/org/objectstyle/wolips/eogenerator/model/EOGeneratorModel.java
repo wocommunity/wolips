@@ -47,12 +47,21 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eogenerator.ui.editors;
+package org.objectstyle.wolips.eogenerator.model;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.text.ParseException;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
+import org.objectstyle.wolips.preferences.Preferences;
 
 public class EOGeneratorModel {
   private String myEOGeneratorPath;
@@ -83,7 +92,26 @@ public class EOGeneratorModel {
     myDefines = new LinkedList();
     myCustomSettings = new LinkedList();
   }
-  
+
+  public static EOGeneratorModel createModelFromFile(IFile _file) throws ParseException, CoreException, IOException {
+    _file.refreshLocal(IResource.DEPTH_INFINITE, null);
+    InputStream eogenFileStream = _file.getContents();
+    try {
+      StringBuffer sb = new StringBuffer();
+      BufferedReader br = new BufferedReader(new InputStreamReader(eogenFileStream));
+      String line;
+      while ((line = br.readLine()) != null) {
+        sb.append(line);
+      }
+      EOGeneratorModel model = new EOGeneratorModel(sb.toString());
+      model.setEOGeneratorPath(Preferences.getEOGeneratorPath());
+      return model;
+    }
+    finally {
+      eogenFileStream.close();
+    }
+  }
+
   public String writeToString(String _defaultEOGeneratorPath, String _defaultTemplateDir, String _defaultJavaTemplate, String _defaultSubclassJavaTemplate) {
     StringBuffer sb = new StringBuffer();
 
@@ -415,6 +443,24 @@ public class EOGeneratorModel {
 
   public boolean isDirty() {
     return myDirty;
+  }
+
+  public boolean isModelReferenced(EOModelReference _modelReference) {
+    boolean modelReferenced = false;
+    String eomodelName = _modelReference.getName();
+    Iterator modelsIter = myModels.iterator();
+    while (!modelReferenced && modelsIter.hasNext()) {
+      EOModelReference model = (EOModelReference) modelsIter.next();
+      modelReferenced = model.getName().equals(eomodelName);
+    }
+    if (!modelReferenced) {
+      Iterator refModelsIter = myRefModels.iterator();
+      while (!modelReferenced && refModelsIter.hasNext()) {
+        EOModelReference model = (EOModelReference) refModelsIter.next();
+        modelReferenced = model.getName().equals(eomodelName);
+      }
+    }
+    return modelReferenced;
   }
 
   public static class Define {

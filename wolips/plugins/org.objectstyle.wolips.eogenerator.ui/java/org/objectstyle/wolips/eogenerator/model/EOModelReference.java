@@ -47,7 +47,7 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eogenerator.ui.editors;
+package org.objectstyle.wolips.eogenerator.model;
 
 import java.io.File;
 
@@ -76,5 +76,9 @@ public class EOModelReference {
       name = name.substring(0, dotIndex);
     }
     return name;
+  }
+  
+  public String toString() {
+    return "[EOModelReference: name = " + getName() + "]";
   }
 }

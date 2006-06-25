@@ -66,6 +66,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.window.Window;
 import org.eclipse.pde.internal.ui.parts.FormEntry;
 import org.eclipse.pde.internal.ui.parts.IFormEntryListener;
 import org.eclipse.swt.SWT;
@@ -88,10 +89,13 @@ import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
+import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.part.FileEditorInput;
+import org.objectstyle.wolips.eogenerator.model.EOGeneratorModel;
+import org.objectstyle.wolips.eogenerator.model.EOModelReference;
 
 public class EOGeneratorFormPage extends FormPage {
   private EOGeneratorModel myModel;
@@ -102,9 +106,9 @@ public class EOGeneratorFormPage extends FormPage {
   private FormEntry mySubclassTemplateEntry;
   private FormEntry myPrefixEntry;
   private FormEntry myFilenameTemplateEntry;
-  private Button myVerboseButton;
-  private Button myJavaButton; 
-  private Button myPackageDirsButton; 
+  //  private Button myVerboseButton;
+  private Button myJavaButton;
+  private Button myPackageDirsButton;
   private TableViewer myModelsTableViewer;
   private TableViewer myRefModelsTableViewer;
   private TableViewer myDefinesTableViewer;
@@ -189,6 +193,10 @@ public class EOGeneratorFormPage extends FormPage {
     return modelsTableViewer;
   }
 
+  protected EOGeneratorModel getModel() {
+    return myModel;
+  }
+
   protected void createNamingSection(FormToolkit _toolkit, Composite _parent) {
     Composite namingSection = createSection(_toolkit, _parent, "File Names", "These settings control the names of the produced files.", 1, 2);
     GridLayout namingSectionLayout = (GridLayout) namingSection.getLayout();
@@ -198,12 +206,12 @@ public class EOGeneratorFormPage extends FormPage {
     myFilenameTemplateEntry.setValue(myModel.getFilenameTemplate());
     myFilenameTemplateEntry.setFormEntryListener(new EOFormEntryAdapter() {
       public void textValueChanged(FormEntry _entry) {
-        myModel.setFilenameTemplate(_entry.getValue());
+        EOGeneratorFormPage.this.getModel().setFilenameTemplate(_entry.getValue());
         getEditor().editorDirtyStateChanged();
       }
 
       public void textDirty(FormEntry _entry) {
-        myModel.setFilenameTemplate(_entry.getText().getText());
+        EOGeneratorFormPage.this.getModel().setFilenameTemplate(_entry.getText().getText());
         getEditor().editorDirtyStateChanged();
       }
     });
@@ -212,12 +220,12 @@ public class EOGeneratorFormPage extends FormPage {
     myPrefixEntry.setValue(myModel.getPrefix());
     myPrefixEntry.setFormEntryListener(new EOFormEntryAdapter() {
       public void textValueChanged(FormEntry _entry) {
-        myModel.setPrefix(_entry.getValue());
+        EOGeneratorFormPage.this.getModel().setPrefix(_entry.getValue());
         getEditor().editorDirtyStateChanged();
       }
 
       public void textDirty(FormEntry _entry) {
-        myModel.setPrefix(_entry.getText().getText());
+        EOGeneratorFormPage.this.getModel().setPrefix(_entry.getText().getText());
         getEditor().editorDirtyStateChanged();
       }
     });
@@ -244,9 +252,9 @@ public class EOGeneratorFormPage extends FormPage {
       public void widgetDefaultSelected(SelectionEvent _e) {
         widgetSelected(_e);
       }
-      
+
       public void widgetSelected(SelectionEvent _e) {
-        myModel.setPackageDirs(Boolean.valueOf(myPackageDirsButton.getSelection()));
+        EOGeneratorFormPage.this.getModel().setPackageDirs(Boolean.valueOf(myPackageDirsButton.getSelection()));
         getEditor().editorDirtyStateChanged();
       }
     });
@@ -255,12 +263,12 @@ public class EOGeneratorFormPage extends FormPage {
     myDestinationEntry.setValue(myModel.getDestination());
     myDestinationEntry.setFormEntryListener(new EOFormEntryAdapter() {
       public void textValueChanged(FormEntry _entry) {
-        myModel.setDestination(_entry.getValue());
+        EOGeneratorFormPage.this.getModel().setDestination(_entry.getValue());
         getEditor().editorDirtyStateChanged();
       }
 
       public void textDirty(FormEntry _entry) {
-        myModel.setDestination(_entry.getText().getText());
+        EOGeneratorFormPage.this.getModel().setDestination(_entry.getText().getText());
         getEditor().editorDirtyStateChanged();
       }
 
@@ -282,12 +290,12 @@ public class EOGeneratorFormPage extends FormPage {
     mySubclassDestinationEntry.setValue(myModel.getSubclassDestination());
     mySubclassDestinationEntry.setFormEntryListener(new EOFormEntryAdapter() {
       public void textValueChanged(FormEntry _entry) {
-        myModel.setSubclassDestination(_entry.getValue());
+        EOGeneratorFormPage.this.getModel().setSubclassDestination(_entry.getValue());
         getEditor().editorDirtyStateChanged();
       }
 
       public void textDirty(FormEntry _entry) {
-        myModel.setSubclassDestination(_entry.getText().getText());
+        EOGeneratorFormPage.this.getModel().setSubclassDestination(_entry.getText().getText());
         getEditor().editorDirtyStateChanged();
       }
 
@@ -321,9 +329,9 @@ public class EOGeneratorFormPage extends FormPage {
       public void widgetDefaultSelected(SelectionEvent _e) {
         widgetSelected(_e);
       }
-      
+
       public void widgetSelected(SelectionEvent _e) {
-        myModel.setJava(Boolean.valueOf(myJavaButton.getSelection()));
+        EOGeneratorFormPage.this.getModel().setJava(Boolean.valueOf(myJavaButton.getSelection()));
         getEditor().editorDirtyStateChanged();
       }
     });
@@ -332,12 +340,12 @@ public class EOGeneratorFormPage extends FormPage {
     myTemplatesFolderEntry.setValue(myModel.getTemplateDir(null));
     myTemplatesFolderEntry.setFormEntryListener(new EOFormEntryAdapter() {
       public void textValueChanged(FormEntry _entry) {
-        myModel.setTemplateDir(_entry.getValue());
+        EOGeneratorFormPage.this.getModel().setTemplateDir(_entry.getValue());
         getEditor().editorDirtyStateChanged();
       }
 
       public void textDirty(FormEntry _entry) {
-        myModel.setTemplateDir(_entry.getText().getText());
+        EOGeneratorFormPage.this.getModel().setTemplateDir(_entry.getText().getText());
         getEditor().editorDirtyStateChanged();
       }
 
@@ -357,12 +365,12 @@ public class EOGeneratorFormPage extends FormPage {
     myTemplateEntry.setValue(myModel.getJavaTemplate(null));
     myTemplateEntry.setFormEntryListener(new EOFormEntryAdapter() {
       public void textValueChanged(FormEntry _entry) {
-        myModel.setJavaTemplate(_entry.getValue());
+        EOGeneratorFormPage.this.getModel().setJavaTemplate(_entry.getValue());
         getEditor().editorDirtyStateChanged();
       }
 
       public void textDirty(FormEntry _entry) {
-        myModel.setJavaTemplate(_entry.getText().getText());
+        EOGeneratorFormPage.this.getModel().setJavaTemplate(_entry.getText().getText());
         getEditor().editorDirtyStateChanged();
       }
 
@@ -376,12 +384,12 @@ public class EOGeneratorFormPage extends FormPage {
     mySubclassTemplateEntry.setValue(myModel.getSubclassJavaTemplate(null));
     mySubclassTemplateEntry.setFormEntryListener(new EOFormEntryAdapter() {
       public void textValueChanged(FormEntry _entry) {
-        myModel.setSubclassJavaTemplate(_entry.getValue());
+        EOGeneratorFormPage.this.getModel().setSubclassJavaTemplate(_entry.getValue());
         getEditor().editorDirtyStateChanged();
       }
 
       public void textDirty(FormEntry _entry) {
-        myModel.setSubclassJavaTemplate(_entry.getText().getText());
+        EOGeneratorFormPage.this.getModel().setSubclassJavaTemplate(_entry.getText().getText());
         getEditor().editorDirtyStateChanged();
       }
 
@@ -471,7 +479,7 @@ public class EOGeneratorFormPage extends FormPage {
   }
 
   protected Composite createSection(FormToolkit _toolkit, Composite _parent, String _title, String _description, int _spanColumns, int _sectionColumns) {
-    int style = (_description == null) ? Section.TITLE_BAR | Section.EXPANDED : Section.TITLE_BAR | Section.EXPANDED | Section.DESCRIPTION;
+    int style = (_description == null) ? ExpandableComposite.TITLE_BAR | ExpandableComposite.EXPANDED : ExpandableComposite.TITLE_BAR | ExpandableComposite.EXPANDED | Section.DESCRIPTION;
     Section section = _toolkit.createSection(_parent, style);
     GridLayout sectionLayout = new GridLayout();
     section.setLayout(sectionLayout);
@@ -501,12 +509,12 @@ public class EOGeneratorFormPage extends FormPage {
   protected void addDefine(String _name, String _value) {
     InputDialog nameDialog = new InputDialog(getEditorSite().getShell(), "Enter Name", "Enter the name of this variable.", _name, null);
     int nameRetval = nameDialog.open();
-    if (nameRetval == InputDialog.OK) {
+    if (nameRetval == Window.OK) {
       String name = nameDialog.getValue();
       if (name != null && name.trim().length() > 0) {
         InputDialog valueDialog = new InputDialog(getEditorSite().getShell(), "Enter Value", "Enter the value of this variable.", _value, null);
         int valueRetval = valueDialog.open();
-        if (valueRetval == InputDialog.OK) {
+        if (valueRetval == Window.OK) {
           String value = valueDialog.getValue();
           if (value != null && value.trim().length() > 0) {
             EOGeneratorModel.Define define = new EOGeneratorModel.Define(name, value);
@@ -535,13 +543,13 @@ public class EOGeneratorFormPage extends FormPage {
     public void widgetSelected(SelectionEvent _e) {
       IStructuredSelection selection = (IStructuredSelection) myModelsTableViewer.getSelection();
       if (!selection.isEmpty()) {
-        List models = myModel.getModels();
+        List models = EOGeneratorFormPage.this.getModel().getModels();
         LinkedList newModels = new LinkedList(models);
         Object[] selections = selection.toArray();
         for (int i = 0; i < selections.length; i++) {
           newModels.remove(selections[i]);
         }
-        myModel.setModels(newModels);
+        EOGeneratorFormPage.this.getModel().setModels(newModels);
         myModelsTableViewer.refresh();
         getEditor().editorDirtyStateChanged();
       }
@@ -570,11 +578,11 @@ public class EOGeneratorFormPage extends FormPage {
     }
 
     protected void addModel(EOModelReference _eoModel) {
-      List models = myModel.getModels();
+      List models = EOGeneratorFormPage.this.getModel().getModels();
       if (!models.contains(_eoModel)) {
         LinkedList newModels = new LinkedList(models);
         newModels.add(_eoModel);
-        myModel.setModels(newModels);
+        EOGeneratorFormPage.this.getModel().setModels(newModels);
         myModelsTableViewer.refresh();
         getEditor().editorDirtyStateChanged();
       }
@@ -589,13 +597,13 @@ public class EOGeneratorFormPage extends FormPage {
     public void widgetSelected(SelectionEvent _e) {
       IStructuredSelection selection = (IStructuredSelection) myRefModelsTableViewer.getSelection();
       if (!selection.isEmpty()) {
-        List refModels = myModel.getRefModels();
+        List refModels = EOGeneratorFormPage.this.getModel().getRefModels();
         LinkedList newRefModels = new LinkedList(refModels);
         Object[] selections = selection.toArray();
         for (int i = 0; i < selections.length; i++) {
           newRefModels.remove(selections[i]);
         }
-        myModel.setRefModels(newRefModels);
+        EOGeneratorFormPage.this.getModel().setRefModels(newRefModels);
         myRefModelsTableViewer.refresh();
         getEditor().editorDirtyStateChanged();
       }
@@ -610,7 +618,6 @@ public class EOGeneratorFormPage extends FormPage {
     public void widgetSelected(SelectionEvent _e) {
       FileEditorInput editorInput = (FileEditorInput) getEditorInput();
       IFile eogenFile = editorInput.getFile();
-      IProject project = eogenFile.getProject();
       DirectoryDialog directoryDialog = new DirectoryDialog(getEditorSite().getShell());
       directoryDialog.setMessage("Select the Reference EOModel to add.");
       String selectedDirectory = directoryDialog.open();
@@ -621,11 +628,11 @@ public class EOGeneratorFormPage extends FormPage {
     }
 
     protected void addModel(EOModelReference _eoModel) {
-      List refModels = myModel.getRefModels();
+      List refModels = EOGeneratorFormPage.this.getModel().getRefModels();
       if (!refModels.contains(_eoModel)) {
         LinkedList newRefModels = new LinkedList(refModels);
         newRefModels.add(_eoModel);
-        myModel.setRefModels(newRefModels);
+        EOGeneratorFormPage.this.getModel().setRefModels(newRefModels);
         myRefModelsTableViewer.refresh();
         getEditor().editorDirtyStateChanged();
       }
@@ -640,13 +647,13 @@ public class EOGeneratorFormPage extends FormPage {
     public void widgetSelected(SelectionEvent _e) {
       IStructuredSelection selection = (IStructuredSelection) myDefinesTableViewer.getSelection();
       if (!selection.isEmpty()) {
-        List defines = myModel.getDefines();
+        List defines = EOGeneratorFormPage.this.getModel().getDefines();
         LinkedList newDefines = new LinkedList(defines);
         Object[] selections = selection.toArray();
         for (int i = 0; i < selections.length; i++) {
           newDefines.remove(selections[i]);
         }
-        myModel.setDefines(newDefines);
+        EOGeneratorFormPage.this.getModel().setDefines(newDefines);
         myDefinesTableViewer.refresh();
         getEditor().editorDirtyStateChanged();
       }
@@ -677,43 +684,50 @@ public class EOGeneratorFormPage extends FormPage {
 
   protected class EOFormEntryAdapter implements IFormEntryListener {
     public void browseButtonSelected(FormEntry _entry) {
+      // do nothing
     }
 
     public void focusGained(FormEntry _entry) {
+      // do nothing
     }
 
     public void selectionChanged(FormEntry _entry) {
+      // do nothing
     }
 
     public void textDirty(FormEntry _entry) {
+      // do nothing
     }
 
     public void textValueChanged(FormEntry _entry) {
+      // do nothing
     }
 
     public void linkActivated(HyperlinkEvent _e) {
+      // do nothing
     }
 
     public void linkEntered(HyperlinkEvent _e) {
+      // do nothing
     }
 
     public void linkExited(HyperlinkEvent _e) {
+      // do nothing
     }
   }
 
   protected class DefinesTableContentProvider implements IStructuredContentProvider, ITableLabelProvider {
-    public DefinesTableContentProvider() {
-    }
-
     public Object[] getElements(Object _inputElement) {
-      Object[] models = myModel.getDefines().toArray();
+      Object[] models = EOGeneratorFormPage.this.getModel().getDefines().toArray();
       return models;
     }
 
     public void dispose() {
+      // do nothing
     }
 
     public void inputChanged(Viewer _viewer, Object _oldInput, Object _newInput) {
+      // do nothing
     }
 
     public Image getColumnImage(Object _element, int _columnIndex) {
@@ -736,6 +750,7 @@ public class EOGeneratorFormPage extends FormPage {
     }
 
     public void addListener(ILabelProviderListener _listener) {
+      // do nothing
     }
 
     public boolean isLabelProperty(Object _element, String _property) {
@@ -743,17 +758,17 @@ public class EOGeneratorFormPage extends FormPage {
     }
 
     public void removeListener(ILabelProviderListener _listener) {
+      // do nothing
     }
   }
 
   protected abstract class AbstractModelsTableContentProvider implements IStructuredContentProvider, ITableLabelProvider {
-    public AbstractModelsTableContentProvider() {
-    }
-
     public void dispose() {
+      // do nothing
     }
 
     public void inputChanged(Viewer _viewer, Object _oldInput, Object _newInput) {
+      // do nothing
     }
 
     public Image getColumnImage(Object _element, int _columnIndex) {
@@ -767,6 +782,7 @@ public class EOGeneratorFormPage extends FormPage {
     }
 
     public void addListener(ILabelProviderListener _listener) {
+      // do nothing
     }
 
     public boolean isLabelProperty(Object _element, String _property) {
@@ -774,25 +790,20 @@ public class EOGeneratorFormPage extends FormPage {
     }
 
     public void removeListener(ILabelProviderListener _listener) {
+      // do nothing
     }
   }
 
   protected class ModelsTableContentProvider extends AbstractModelsTableContentProvider {
-    public ModelsTableContentProvider() {
-    }
-
     public Object[] getElements(Object _inputElement) {
-      Object[] models = myModel.getModels().toArray();
+      Object[] models = EOGeneratorFormPage.this.getModel().getModels().toArray();
       return models;
     }
   }
 
   protected class RefModelsTableContentProvider extends AbstractModelsTableContentProvider {
-    public RefModelsTableContentProvider() {
-    }
-
     public Object[] getElements(Object _inputElement) {
-      Object[] models = myModel.getRefModels().toArray();
+      Object[] models = EOGeneratorFormPage.this.getModel().getRefModels().toArray();
       return models;
     }
   }

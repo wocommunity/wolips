@@ -100,6 +100,10 @@ public class BuildPreferencesPage extends FieldEditorPreferencePage implements
 				PreferencesMessages
 						.getString("Preferences.ValidateWODOnBuild.Label"),
 				getFieldEditorParent()));
+    addField(new BooleanFieldEditor(Preferences.PREF_AUTOEOGENERATE_ON_BUILD,
+        PreferencesMessages
+            .getString("Preferences.AutoEOGenerateOnBuild.Label"),
+        getFieldEditorParent()));
 	}
 
 	/**
