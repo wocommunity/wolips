@@ -47,7 +47,7 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eogenerator.ui.editors;
+package org.objectstyle.wolips.eogenerator.model;
 
 import java.text.CharacterIterator;
 import java.text.ParseException;

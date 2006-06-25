@@ -76,7 +76,7 @@ import org.eclipse.ui.IWorkbenchWizard;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
-import org.objectstyle.wolips.eogenerator.ui.editors.EOGeneratorModel;
+import org.objectstyle.wolips.eogenerator.model.EOGeneratorModel;
 
 /**
  * This is a sample new wizard. Its role is to create a new file 

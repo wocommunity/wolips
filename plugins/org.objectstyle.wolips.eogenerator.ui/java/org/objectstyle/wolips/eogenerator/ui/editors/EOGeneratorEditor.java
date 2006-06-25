@@ -49,46 +49,23 @@
  */
 package org.objectstyle.wolips.eogenerator.ui.editors;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.text.ParseException;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.part.FileEditorInput;
+import org.objectstyle.wolips.eogenerator.model.EOGeneratorModel;
 import org.objectstyle.wolips.preferences.Preferences;
 
 public class EOGeneratorEditor extends FormEditor {
   private EOGeneratorModel myModel;
 
   public EOGeneratorEditor() {
-  }
-
-  public static EOGeneratorModel createEOGeneratorModel(IFile _file) throws ParseException, CoreException, IOException {
-    _file.refreshLocal(IFile.DEPTH_INFINITE, null);
-    InputStream eogenFileStream = _file.getContents();
-    try {
-      StringBuffer sb = new StringBuffer();
-      BufferedReader br = new BufferedReader(new InputStreamReader(eogenFileStream));
-      String line;
-      while ((line = br.readLine()) != null) {
-        sb.append(line);
-      }
-      EOGeneratorModel model = new EOGeneratorModel(sb.toString());
-      model.setEOGeneratorPath(Preferences.getEOGeneratorPath());
-      return model;
-    }
-    finally {
-      eogenFileStream.close();
-    }
+    super();
   }
 
   protected void setInput(IEditorInput _input) {
@@ -96,7 +73,7 @@ public class EOGeneratorEditor extends FormEditor {
     try {
       FileEditorInput editorInput = (FileEditorInput) _input;
       IFile eogenFile = editorInput.getFile();
-      myModel = EOGeneratorEditor.createEOGeneratorModel(eogenFile);
+      myModel = EOGeneratorModel.createModelFromFile(eogenFile);
     }
     catch (Throwable e) {
       throw new RuntimeException("Failed to read EOGen file.", e);
@@ -135,6 +112,7 @@ public class EOGeneratorEditor extends FormEditor {
   }
 
   public void doSaveAs() {
+    // do nothing
   }
 
   public boolean isSaveAsAllowed() {
