@@ -85,8 +85,10 @@ public class ComponentEditorMatchingStrategy implements IEditorMatchingStrategy 
 		if (extension == null) {
 			return false;
 		}
-		if (!("java".equalsIgnoreCase(extension)
-				|| "wod".equalsIgnoreCase(extension)
+		// AK: the java part of the component editor is just not working in Eclipse 3.2
+		// so we skip .java
+		if (!(/*"java".equalsIgnoreCase(extension)
+				|| */"wod".equalsIgnoreCase(extension)
 				|| "html".equalsIgnoreCase(extension)
 				|| "woo".equalsIgnoreCase(extension)
 				|| "api".equalsIgnoreCase(extension) || "tiff"
