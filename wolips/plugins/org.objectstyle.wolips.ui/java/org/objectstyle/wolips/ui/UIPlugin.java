@@ -49,7 +49,14 @@
  */
 package org.objectstyle.wolips.ui;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.jdt.core.ICompilationUnit;
+import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.core.JavaModelException;
+import org.eclipse.jdt.ui.JavaUI;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.objectstyle.wolips.ui.plugins.AbstractWOLipsUIPlugin;
 import org.osgi.framework.BundleContext;
@@ -99,4 +106,16 @@ public class UIPlugin extends AbstractWOLipsUIPlugin {
 		return AbstractUIPlugin.imageDescriptorFromPlugin(
 				"org.objectstyle.wolips.ui", path);
 	}
+	
+	public IEditorPart openJavaFile(IFile file) {
+		ICompilationUnit unit = JavaCore.createCompilationUnitFrom(file);
+		try {
+			return JavaUI.openInEditor(unit);
+		} catch (PartInitException e) {
+			UIPlugin.getDefault().log(e);
+		} catch (JavaModelException e) {
+			UIPlugin.getDefault().log(e);
+		}
+		return null;
+	} 
 }

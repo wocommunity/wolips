@@ -135,7 +135,7 @@ public final class RelatedView extends ViewPart implements ISelectionListener,
 				IFileEditorInput input = (IFileEditorInput) parent;
 				try {
 					// HACK AK: we should use sth more generic here
-					if(input.getFile().getName().endsWith(".java")) {
+					if(input.getFile().getFileExtension().equals("java")) {
 						parent = JavaCore.createCompilationUnitFrom(input.getFile());
 					}
 				} catch(Exception ex) {
