@@ -113,7 +113,7 @@ public class ComponentEditorMatchingStrategy implements IEditorMatchingStrategy 
 			if(inputFileFromEditor.equals(inputFile)) {
 				switch (i) {
 				case 0:
-					// ComponenteditorPlugin.getDefault().openJavaFile(componentEditor, inputFile);
+					componentEditor.switchToJava();
 					break;
 				case 1:
 					componentEditor.switchToHtml();
