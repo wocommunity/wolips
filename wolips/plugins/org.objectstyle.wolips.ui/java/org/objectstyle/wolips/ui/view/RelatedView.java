@@ -65,7 +65,7 @@ import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IMember;
-import org.eclipse.jdt.internal.ui.viewsupport.StorageLabelProvider;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -102,6 +102,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.OpenWithMenu;
+import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.views.navigator.ShowInNavigatorAction;
 import org.objectstyle.wolips.datasets.project.WOLipsCore;
@@ -130,7 +131,17 @@ public final class RelatedView extends ViewPart implements ISelectionListener,
 
 		public Object[] getElements(Object parent) {
 			IWOLipsResource wolipsResource = null;
-
+			if (parent instanceof IFileEditorInput) {
+				IFileEditorInput input = (IFileEditorInput) parent;
+				try {
+					// HACK AK: we should use sth more generic here
+					if(input.getFile().getName().endsWith(".java")) {
+						parent = JavaCore.createCompilationUnitFrom(input.getFile());
+					}
+				} catch(Exception ex) {
+					UIPlugin.getDefault().log(ex);
+				}
+			}
 			if (parent instanceof IMember) {
 				parent = ((IMember) parent).getCompilationUnit();
 			}
