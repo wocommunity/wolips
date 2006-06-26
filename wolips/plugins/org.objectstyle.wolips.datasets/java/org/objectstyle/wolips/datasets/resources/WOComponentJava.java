@@ -137,10 +137,7 @@ public final class WOComponentJava
 	 * @param forceToOpenIntextEditor If forceToOpenIntextEditor is set to true the resource opens in a texteditor.
 	 */
 	public final void open(boolean forceToOpenIntextEditor) {
-		WorkbenchUtilitiesPlugin.open(
-			(IFile) this.getCorrespondingResource(),
-			forceToOpenIntextEditor,
-			"org.objectstyle.wolips.internal.wod.editor");
+		WorkbenchUtilitiesPlugin.open((IFile) this.getCorrespondingResource());
 	}
 
 }
