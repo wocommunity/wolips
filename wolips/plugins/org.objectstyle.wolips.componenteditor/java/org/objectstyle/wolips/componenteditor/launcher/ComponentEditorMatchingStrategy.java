@@ -55,7 +55,8 @@ import org.objectstyle.wolips.componenteditor.part.ComponentEditor;
 import org.objectstyle.wolips.components.input.ComponentEditorInput;
 
 public class ComponentEditorMatchingStrategy implements IEditorMatchingStrategy {
-
+	
+	
 	public boolean matches(IEditorReference editorReference,
 			IEditorInput editorInput) {
 		String editorID = editorReference.getId();
@@ -85,14 +86,7 @@ public class ComponentEditorMatchingStrategy implements IEditorMatchingStrategy 
 		if (extension == null) {
 			return false;
 		}
-		// AK: the java part of the component editor is just not working in Eclipse 3.2
-		// so we skip .java
-		if (!(/*"java".equalsIgnoreCase(extension)
-				|| */"wod".equalsIgnoreCase(extension)
-				|| "html".equalsIgnoreCase(extension)
-				|| "woo".equalsIgnoreCase(extension)
-				|| "api".equalsIgnoreCase(extension) || "tiff"
-				.equalsIgnoreCase(extension))) {
+		if (!ComponenteditorPlugin.getDefault().canHandleExtension(extension)) {
 			return false;
 		}
 //		IEditorInput editorReferenceEditorInput = null;
@@ -119,7 +113,7 @@ public class ComponentEditorMatchingStrategy implements IEditorMatchingStrategy 
 			if(inputFileFromEditor.equals(inputFile)) {
 				switch (i) {
 				case 0:
-					componentEditor.switchToJava();
+					// ComponenteditorPlugin.getDefault().openJavaFile(componentEditor, inputFile);
 					break;
 				case 1:
 					componentEditor.switchToHtml();

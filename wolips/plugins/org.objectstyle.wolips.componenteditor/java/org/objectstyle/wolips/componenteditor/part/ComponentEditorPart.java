@@ -43,6 +43,7 @@
  */
 package org.objectstyle.wolips.componenteditor.part;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor;
 import org.eclipse.jface.viewers.ISelection;
@@ -62,6 +63,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IPropertyListener;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.MultiPageEditorPart;
@@ -133,6 +135,10 @@ public class ComponentEditorPart extends MultiPageEditorPart {
 			setPartName(partName);
 		}
 		site.setSelectionProvider(new ComponentEditorPartSelectionProvider(this));
+	}
+	
+	public Object getJavaFile() {
+		return ((IFileEditorInput)componentEditorInput.getInput()[0]).getFile();
 	}
 
 	public IEditorInput getEditorInput() {
