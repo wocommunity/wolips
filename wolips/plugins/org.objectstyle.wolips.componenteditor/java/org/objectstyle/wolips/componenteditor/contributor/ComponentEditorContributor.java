@@ -55,6 +55,7 @@ import org.eclipse.ui.part.MultiPageEditorActionBarContributor;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.objectstyle.wolips.componenteditor.ComponenteditorPlugin;
+import org.objectstyle.wolips.componenteditor.part.ComponentEditor;
 
 public class ComponentEditorContributor extends
 		MultiPageEditorActionBarContributor {
@@ -71,15 +72,17 @@ public class ComponentEditorContributor extends
 		if (activeEditorPart == part)
 			return;
 
-		activeEditorPart = part;
-		if (part instanceof CompilationUnitEditor) {
+		/* AK: doesn't work, we get infinite recursion
+		if (part instanceof CompilationUnitEditor && activeEditorPart != null ) {
 			CompilationUnitEditor editor = (CompilationUnitEditor) part;
 			IFile file = ((FileEditorInput)editor.getEditorInput()).getFile();
 			if(!ComponenteditorPlugin.getDefault().canHandleExtension(file.getFileExtension())) {
 				ComponenteditorPlugin.getDefault().openJavaFile(null, file);
+				((ComponentEditor)getPage().getActiveEditor()).activate(activeEditorPart);
 				return;
 			}
-		}
+		}*/
+		activeEditorPart = part;
 		IActionBars actionBars = getActionBars();
 		if (actionBars != null) {
 
