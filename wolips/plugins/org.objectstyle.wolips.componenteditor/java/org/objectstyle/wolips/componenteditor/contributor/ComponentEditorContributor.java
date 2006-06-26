@@ -43,14 +43,18 @@
  */
 package org.objectstyle.wolips.componenteditor.contributor;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.ide.IDEActionFactory;
+import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorActionBarContributor;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
+import org.objectstyle.wolips.componenteditor.ComponenteditorPlugin;
 
 public class ComponentEditorContributor extends
 		MultiPageEditorActionBarContributor {
@@ -68,7 +72,14 @@ public class ComponentEditorContributor extends
 			return;
 
 		activeEditorPart = part;
-
+		if (part instanceof CompilationUnitEditor) {
+			CompilationUnitEditor editor = (CompilationUnitEditor) part;
+			IFile file = ((FileEditorInput)editor.getEditorInput()).getFile();
+			if(!ComponenteditorPlugin.getDefault().canHandleExtension(file.getFileExtension())) {
+				ComponenteditorPlugin.getDefault().openJavaFile(null, file);
+				return;
+			}
+		}
 		IActionBars actionBars = getActionBars();
 		if (actionBars != null) {
 
