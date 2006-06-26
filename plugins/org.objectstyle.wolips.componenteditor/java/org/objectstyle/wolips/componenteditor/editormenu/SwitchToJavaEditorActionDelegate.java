@@ -44,6 +44,7 @@
 package org.objectstyle.wolips.componenteditor.editormenu;
 
 import org.eclipse.jface.action.IAction;
+import org.objectstyle.wolips.componenteditor.ComponenteditorPlugin;
 import org.objectstyle.wolips.componenteditor.part.ComponentEditor;
 
 public class SwitchToJavaEditorActionDelegate extends
@@ -55,9 +56,6 @@ public class SwitchToJavaEditorActionDelegate extends
 
 	public void run(IAction action) {
 		ComponentEditor componentEditor = this.getComponentEditor();
-		if (componentEditor != null) {
-			componentEditor.switchToJava();
-		}
-
+		ComponenteditorPlugin.getDefault().openJavaFile(componentEditor, null);
 	}
 }
