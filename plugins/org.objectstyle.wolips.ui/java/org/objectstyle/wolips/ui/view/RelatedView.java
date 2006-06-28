@@ -55,30 +55,31 @@
  */
 package org.objectstyle.wolips.ui.view;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
-import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IMember;
 import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.internal.ui.viewsupport.AppearanceAwareLabelProvider;
+import org.eclipse.jdt.internal.ui.viewsupport.JavaElementImageProvider;
+import org.eclipse.jdt.ui.JavaElementLabels;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.viewers.DecoratingLabelProvider;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
@@ -102,7 +103,6 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.OpenWithMenu;
-import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.views.navigator.ShowInNavigatorAction;
 import org.objectstyle.wolips.datasets.project.WOLipsCore;
@@ -120,6 +120,7 @@ public final class RelatedView extends ViewPart implements ISelectionListener,
 	protected class ViewContentProvider implements ITreeContentProvider {
 
 		Object input = null;
+    private Object lastParent;
 
 		public void inputChanged(Viewer v, Object oldInput, Object newInput) {
 			this.input = newInput;
@@ -131,6 +132,29 @@ public final class RelatedView extends ViewPart implements ISelectionListener,
 
 		public Object[] getElements(Object parent) {
 			IWOLipsResource wolipsResource = null;
+      // MS: If we add the dependency it is a circular dependency, so that sucks ... We'll just do it Reflection-Style.
+      if (parent != null && parent.getClass().getName().equals("org.objectstyle.wolips.components.input.ComponentEditorFileEditorInput")) {
+        try {
+          parent = parent.getClass().getMethod("getFile", null).invoke(parent, null);
+        }
+        catch (Exception e) {
+          e.printStackTrace();
+        }
+        //System.out.println("ViewContentProvider.getElements: " + parent);
+      }
+      else if (parent != null && parent.getClass().getName().startsWith("org.eclipse.wst")) {
+        // MS: Total hack ... HTML editor returns its element as a TextImpl.  I'm not how to get back to the IResource from
+        // that.  It just so happens that there's always a previous selection that is something we CAN use
+        parent = lastParent;
+//        try {
+//          Object structuredDocRegion = parent.getClass().getMethod("getFirstStructuredDocumentRegion", null).invoke(parent, null);
+//          Object structuredDoc = structuredDocRegion.getClass().getMethod("getParentDocument", null).invoke(structuredDocRegion, null);
+//          System.out.println("ViewContentProvider.getElements: " + structuredDoc);
+//        }
+//        catch (Exception e) {
+//          e.printStackTrace();
+//        }
+      }
 			if (parent instanceof IFileEditorInput) {
 				IFileEditorInput input = (IFileEditorInput) parent;
 				try {
@@ -163,6 +187,7 @@ public final class RelatedView extends ViewPart implements ISelectionListener,
 					UIPlugin.getDefault().log(e);
 				}
 			}
+      lastParent = parent;
 			return result.toArray();
 		}
 
@@ -198,34 +223,36 @@ public final class RelatedView extends ViewPart implements ISelectionListener,
 		}
 	}
 
-	class ViewLabelProvider extends LabelProvider implements
+	class ViewLabelProvider extends AppearanceAwareLabelProvider implements
 			ITableLabelProvider {
-
-		public String getColumnText(Object obj, int index) {
-			if (obj instanceof IStorage) {
-				IStorage s = (IStorage) obj;
-				return s.getName();
-			}
-			return getText(obj);
-		}
-
-		public Image getColumnImage(Object obj, int index) {
-
-			return getImage(obj);
-
-		}
-
-		public Image getImage(Object obj) {
-
-			return PlatformUI.getWorkbench().getSharedImages().getImage(
-					"IMG_OBJ_ELEMENTS");
-
-		}
-
-		ViewLabelProvider() {
-			super();
-		}
-
+    public ViewLabelProvider() {
+      super(AppearanceAwareLabelProvider.DEFAULT_TEXTFLAGS | JavaElementLabels.P_COMPRESSED, AppearanceAwareLabelProvider.DEFAULT_IMAGEFLAGS | JavaElementImageProvider.SMALL_ICONS);
+      addLabelDecorator(PlatformUI.getWorkbench().getDecoratorManager().getLabelDecorator());
+    }
+    
+    public String getColumnText(Object _element, int _columnIndex) {
+      String text = null;
+      if (_element instanceof IResource) {
+        IResource resource = (IResource)_element;
+        String ext = resource.getFileExtension();
+        if (ext != null) {
+          if ("java".equalsIgnoreCase(ext)) {
+            text = "Java";
+          }
+          else {
+            text = ext.toUpperCase();
+          }
+        }
+      }
+      if (text == null) {
+        text = getText(_element);
+      }
+      return text;
+    }
+    
+    public Image getColumnImage(Object _element, int _columnIndex) {
+      return getImage(_element);
+    }
 	}
 
 	class NameSorter extends ViewerSorter {
@@ -257,10 +284,11 @@ public final class RelatedView extends ViewPart implements ISelectionListener,
 
 		this.viewer.setContentProvider(new ViewContentProvider());
 
-		this.viewer.setLabelProvider(new DecoratingLabelProvider(
-				new LabelProvider(), getSite().getWorkbenchWindow()
-						.getWorkbench().getDecoratorManager()
-						.getLabelDecorator()));
+		this.viewer.setLabelProvider(new ViewLabelProvider());
+//    new DecoratingLabelProvider(
+//				new LabelProvider(), getSite().getWorkbenchWindow()
+//						.getWorkbench().getDecoratorManager()
+//						.getLabelDecorator()));
 
 		this.viewer.setSorter(new NameSorter());
 		this.viewer.getTable().addKeyListener(new KeyListener() {

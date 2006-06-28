@@ -101,7 +101,8 @@ public final class WOComponentBundle
 						WOLipsModel.WOCOMPONENT_WOD_EXTENSION,
 						WOLipsModel.WOCOMPONENT_HTML_EXTENSION,
 						WOLipsModel.WOCOMPONENT_WOO_EXTENSION,
-						WOLipsModel.WOCOMPONENT_API_EXTENSION };
+						WOLipsModel.WOCOMPONENT_API_EXTENSION,
+            "java"};
 				list =
 					WorkbenchUtilitiesPlugin
 						.findResourcesInProjectByNameAndExtensions(

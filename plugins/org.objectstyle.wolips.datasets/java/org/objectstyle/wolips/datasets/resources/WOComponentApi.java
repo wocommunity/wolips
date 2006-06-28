@@ -60,6 +60,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
+import org.objectstyle.wolips.datasets.DataSetsPlugin;
 import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 
 /**
@@ -68,24 +69,32 @@ import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public final class WOComponentApi
-	extends WOLipsResource
-	implements IWOComponentApi {
+public final class WOComponentApi extends WOLipsResource implements IWOComponentApi {
 
-	protected WOComponentApi() {
-		super();
-	}
+  protected WOComponentApi() {
+    super();
+  }
 
-	public final int getType() {
-		return IWOLipsResource.WOCOMPONENT_API;
-	}
+  public final int getType() {
+    return IWOLipsResource.WOCOMPONENT_API;
+  }
 
-	public final List getRelatedResources() {
-		return new ArrayList();
-	}
+  public final List getRelatedResources() {
+    List list = new ArrayList();
+    try {
+      String fileName = this.getCorrespondingResource().getName();
+      fileName = fileName.substring(0, fileName.length() - 4);
+      String[] extensions = new String[] { WOLipsModel.WOCOMPONENT_BUNDLE_EXTENSION, WOLipsModel.WOCOMPONENT_WOD_EXTENSION, WOLipsModel.WOCOMPONENT_HTML_EXTENSION, WOLipsModel.WOCOMPONENT_WOO_EXTENSION, "java" };
+      list = WorkbenchUtilitiesPlugin.findResourcesInProjectByNameAndExtensions(getCorrespondingResource().getProject(), fileName, extensions, true);
+    }
+    catch (Exception e) {
+      DataSetsPlugin.getDefault().getPluginLogger().log(e);
+    }
+    return list;
+  }
 
-	public final void open(boolean forceToOpenIntextEditor) {
-		WorkbenchUtilitiesPlugin.open((IFile)this.getCorrespondingResource(), forceToOpenIntextEditor, "org.objectstyle.wolips.internal.wod.editor");
-	}
+  public final void open(boolean forceToOpenIntextEditor) {
+    WorkbenchUtilitiesPlugin.open((IFile) this.getCorrespondingResource(), forceToOpenIntextEditor, "org.objectstyle.wolips.internal.wod.editor");
+  }
 
 }
