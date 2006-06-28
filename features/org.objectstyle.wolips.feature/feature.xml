@@ -6,7 +6,7 @@
       provider-name="%providerName"
       image="%image">
 
-   <description url="http://www.objectstyle.org/woproject/index.html">
+   <description url="http://objectstyle.org/confluence/display/WOL/Home">
       This feature manages all the plug-ins that constitutes WOLips except for the profiling and tests plug-ins. Those two plug-ins are managed by separate features. If you do not install all the plug-ins managed by this feature WOLips will not function properly.
    </description>
 
@@ -67,11 +67,8 @@
    </license>
 
    <url>
-      <update label="WOLips" url="http://www.objectstyle.org/woproject/update/"/>
-      <discovery label="WOLips" url="http://www.objectstyle.org/woproject/update/"/>
-      <discovery label="Web Tools Platform (WTP) Updates" url="http://download.eclipse.org/webtools/updates"/>
-      <discovery label="Business Intelligence and Reporting Tools (BIRT) Updates" url="http://download.eclipse.org/birt/update-site/"/>
-      <discovery label="Test and Performance Tools Platform (TPTP) Updates" url="http://download.eclipse.org/tptp/updates/"/>
+      <update label="WOLips" url="http://www.mdimension.com/~wolips/update/"/>
+      <discovery label="WOLips" url="http://www.mdimension.com/~wolips/update/"/>
    </url>
 
    <requires>
