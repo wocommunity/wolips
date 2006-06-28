@@ -6,7 +6,7 @@
       provider-name="%providerName"
       image="%image">
 
-   <description url="http://www.objectstyle.org/woproject/index.html">
+   <description url="http://objectstyle.org/confluence/display/WOL/Home">
       This feature manages the profiling plug-in only. If you don
    </description>
 
@@ -67,8 +67,8 @@
    </license>
 
    <url>
-      <update label="WOLips" url="http://www.objectstyle.org/woproject/update/"/>
-      <discovery label="WOLips" url="http://www.objectstyle.org/woproject/update/"/>
+      <update label="WOLips" url="http://www.mdimension.com/~wolips/update/"/>
+      <discovery label="WOLips" url="http://www.mdimension.com/~wolips/update/"/>
    </url>
 
    <requires>
