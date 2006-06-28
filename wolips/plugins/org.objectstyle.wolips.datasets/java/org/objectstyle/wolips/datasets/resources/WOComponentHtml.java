@@ -59,6 +59,9 @@ package org.objectstyle.wolips.datasets.resources;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.objectstyle.wolips.datasets.DataSetsPlugin;
+import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
+
 
 /**
  * @author ulrich
@@ -77,7 +80,17 @@ public final class WOComponentHtml extends WOLipsResource implements IWOComponen
 	}
 	
 	public final List getRelatedResources() {
-		return new ArrayList();
+    List list = new ArrayList();
+    try {
+      String fileName = this.getCorrespondingResource().getName();
+      fileName = fileName.substring(0, fileName.length() - 5);
+      String[] extensions = new String[] { WOLipsModel.WOCOMPONENT_BUNDLE_EXTENSION, WOLipsModel.WOCOMPONENT_WOD_EXTENSION, WOLipsModel.WOCOMPONENT_API_EXTENSION, WOLipsModel.WOCOMPONENT_WOO_EXTENSION, "java" };
+      list = WorkbenchUtilitiesPlugin.findResourcesInProjectByNameAndExtensions(getCorrespondingResource().getProject(), fileName, extensions, true);
+    }
+    catch (Exception e) {
+      DataSetsPlugin.getDefault().getPluginLogger().log(e);
+    }
+    return list;
 	}
 
 	public final void open(boolean forceToOpenIntextEditor) {
