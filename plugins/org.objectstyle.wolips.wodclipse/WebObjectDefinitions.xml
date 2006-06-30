@@ -10,13 +10,13 @@
     <binding name="omitTags" passthrough="NO" defaults="YES/NO"/>
     <binding name="elementID" passthrough="NO"/>
 
-    <validation message="'elementName' must be bound when either 'formValue' or 'formValues' is bound">
+    <validation message="'name' must be bound when either 'formValue' or 'formValues' is bound">
       <and>
         <or>
           <bound name="formValue"/>
           <bound name="formValues"/>
         </or>
-        <unbound name="elementName"/>
+        <unbound name="name"/>
       </and>
     </validation>
 
@@ -448,13 +448,13 @@
     <binding name="omitTags" passthrough="NO" defaults="YES/NO"/>
     <binding name="elementID" passthrough="NO"/>
 
-    <validation message="'elementName' must be bound when either 'formValue' or 'formValues' is bound">
+    <validation message="'name' must be bound when either 'formValue' or 'formValues' is bound">
       <and>
         <or>
           <bound name="formValue"/>
           <bound name="formValues"/>
         </or>
-        <unbound name="elementName"/>
+        <unbound name="name"/>
       </and>
     </validation>
 
