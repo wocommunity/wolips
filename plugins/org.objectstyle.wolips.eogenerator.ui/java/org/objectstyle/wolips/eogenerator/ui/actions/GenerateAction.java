@@ -75,7 +75,7 @@ public class GenerateAction implements IObjectActionDelegate {
       IStructuredSelection selection = (IStructuredSelection) mySelection;
       if (selection != null && !selection.isEmpty()) {
         IFile eogenFile = (IFile) selection.getFirstElement();
-        EOGenerateWorkspaceJob generateJob = new EOGenerateWorkspaceJob(eogenFile, true);
+        EOGenerateWorkspaceJob generateJob = new EOGenerateWorkspaceJob(new IFile[] { eogenFile }, true);
         generateJob.schedule();
       }
     }

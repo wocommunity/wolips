@@ -20,6 +20,7 @@ public class EOGeneratorResultsDialog extends MessageDialog {
   protected Control createCustomArea(Composite _parent) {
     Text resultsText = new Text(_parent, SWT.MULTI | SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER);
     resultsText.setText(myResults);
+    resultsText.setEditable(false);
     GridData gd = new GridData(GridData.FILL_BOTH);
     gd.heightHint = 300;
     gd.widthHint = 500;
