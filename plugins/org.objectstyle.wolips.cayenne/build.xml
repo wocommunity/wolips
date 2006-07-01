@@ -25,6 +25,7 @@
     <target name="lib">
 	    <mkdir dir="../../../${build.output.build.dir}/plugins/${plugin.name}_${build.version}/lib"/>
 	    <copy file="../../../lib/${lib.cayenne}" tofile="../../../${build.output.build.dir}/plugins/${plugin.name}_${build.version}/lib/cayenne.jar"/>
+	    <copy file="../../../lib/${lib.log4j}" tofile="../../../${build.output.build.dir}/plugins/${plugin.name}_${build.version}/lib/log4j.jar"/>
     </target>
 
     <!-- ========================================== -->
