@@ -59,6 +59,7 @@ package org.objectstyle.woproject.ant;
 import java.io.File;
 
 import org.objectstyle.cayenne.gen.AntClassGenerator;
+import org.objectstyle.cayenne.gen.ClassGenerationInfo;
 import org.objectstyle.cayenne.gen.ClassGenerator;
 import org.objectstyle.cayenne.gen.DefaultClassGenerator;
 import org.objectstyle.cayenne.map.DataMap;
@@ -168,12 +169,12 @@ public class WOGenerator extends CayenneGenerator {
         /**
          * Fixes some Classgenerator defaults assumed by Cayenne.
          */
-        protected void initClassGenerator(
-                ClassGenerator gen,
-                ObjEntity entity,
-                boolean superclass) {
+        protected void initClassGenerator_1_1(
+            ClassGenerationInfo gen,
+            ObjEntity entity,
+            boolean superclass) {
 
-            super.initClassGenerator(gen, entity, superclass);
+            super.initClassGenerator_1_1(gen, entity, superclass);
 
             // fix default superclass
             if (gen.getSuperClassName() == null
