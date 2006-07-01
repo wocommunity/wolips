@@ -10,6 +10,7 @@
 	<classpathentry kind="var" path="NEXT_SYSTEM_ROOT/Library/Frameworks/JavaJDBCAdaptor.framework/Resources/Java/javajdbcadaptor.jar"/>
 	<classpathentry kind="lib" path="lib/junit-3.8.1.jar"/>
 	<classpathentry kind="lib" path="lib/cayenne-1.2RC2-dev.jar"/>
+	<classpathentry kind="lib" path="lib/log4j-1.2.9.jar"/>
 	<classpathentry kind="var" path="ANT_HOME/lib/ant-launcher.jar"/>
 	<classpathentry kind="var" path="ANT_HOME/lib/ant.jar"/>
 	<classpathentry kind="var" path="ANT_HOME/lib/ant-junit.jar"/>
