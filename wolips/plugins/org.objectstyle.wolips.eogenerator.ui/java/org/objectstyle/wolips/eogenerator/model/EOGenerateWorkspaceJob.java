@@ -71,65 +71,77 @@ import org.objectstyle.wolips.eogenerator.ui.dialogs.EOGeneratorResultsDialog;
 import org.objectstyle.wolips.preferences.Preferences;
 
 public class EOGenerateWorkspaceJob extends WorkspaceJob {
-  private IFile myEOGenFile;
+  private IFile[] myEOGenFiles;
   private boolean myShowResults;
 
-  public EOGenerateWorkspaceJob(IFile _eogenFile, boolean _showResults) {
-    super("EOGenerating " + _eogenFile.getName() + " ...");
-    myEOGenFile = _eogenFile;
+  public EOGenerateWorkspaceJob(IFile[] _eogenFiles, boolean _showResults) {
+    super("EOGenerating  ...");
+    myEOGenFiles = _eogenFiles;
     myShowResults = _showResults;
   }
 
   public IStatus runInWorkspace(IProgressMonitor _monitor) throws CoreException {
-    try {
-      EOGeneratorModel eogenModel = EOGeneratorModel.createModelFromFile(myEOGenFile);
-      String eogenFileContents = eogenModel.writeToString(Preferences.getEOGeneratorPath(), Preferences.getEOGeneratorTemplateDir(), Preferences.getEOGeneratorJavaTemplate(), Preferences.getEOGeneratorSubclassJavaTemplate());
-      List commandsList = new LinkedList();
-      CommandLineTokenizer tokenizer = new CommandLineTokenizer(eogenFileContents);
-      while (tokenizer.hasMoreTokens()) {
-        commandsList.add(tokenizer.nextToken());
-      }
-      String[] tokens = (String[]) commandsList.toArray(new String[commandsList.size()]);
-      IProject project = myEOGenFile.getProject();
-      Process process = Runtime.getRuntime().exec(tokens, null, project.getLocation().toFile());
-
-      InputStream inputstream = process.getInputStream();
-      InputStreamReader inputstreamreader = new InputStreamReader(inputstream);
-      BufferedReader bufferedreader = new BufferedReader(inputstreamreader);
-
-      StringBuffer output = new StringBuffer();
-      output.append("EOGenerator Finished!\n\n");
-
-      String line;
-      while ((line = bufferedreader.readLine()) != null) {
-        output.append(line);
-        output.append("\n");
-      }
-
+    StringBuffer output = new StringBuffer();
+    for (int eogenFileNum = 0; eogenFileNum < myEOGenFiles.length; eogenFileNum++) {
       try {
-        if (process.waitFor() != 0) {
-          output.append("\n\nExit value = " + process.exitValue());
+        setName("EOGenerating " + myEOGenFiles[eogenFileNum].getName() + " ...");
+        EOGeneratorModel eogenModel = EOGeneratorModel.createModelFromFile(myEOGenFiles[eogenFileNum]);
+        String eogenFileContents = eogenModel.writeToString(Preferences.getEOGeneratorPath(), Preferences.getEOGeneratorTemplateDir(), Preferences.getEOGeneratorJavaTemplate(), Preferences.getEOGeneratorSubclassJavaTemplate());
+        List commandsList = new LinkedList();
+        CommandLineTokenizer tokenizer = new CommandLineTokenizer(eogenFileContents);
+        while (tokenizer.hasMoreTokens()) {
+          commandsList.add(tokenizer.nextToken());
         }
-      }
-      catch (InterruptedException e) {
-        System.err.println(e);
-      }
+        String[] tokens = (String[]) commandsList.toArray(new String[commandsList.size()]);
+        IProject project = myEOGenFiles[eogenFileNum].getProject();
+        Process process = Runtime.getRuntime().exec(tokens, null, project.getLocation().toFile());
 
-      project.getFolder(new Path(eogenModel.getDestination())).refreshLocal(IResource.DEPTH_INFINITE, _monitor);
-      project.getFolder(new Path(eogenModel.getSubclassDestination())).refreshLocal(IResource.DEPTH_INFINITE, _monitor);
+        InputStream inputstream = process.getInputStream();
+        InputStreamReader inputstreamreader = new InputStreamReader(inputstream);
+        BufferedReader bufferedreader = new BufferedReader(inputstreamreader);
 
-      if (myShowResults) {
-        final String outputStr = output.toString();
-        Display.getDefault().asyncExec(new Runnable() {
-          public void run() {
-            EOGeneratorResultsDialog resultsDialog = new EOGeneratorResultsDialog(new Shell(), outputStr);
-            resultsDialog.open();
+        output.append(myEOGenFiles[eogenFileNum].getName() + ":\n");
+
+        int outputLines = 0;
+        String line;
+        while ((line = bufferedreader.readLine()) != null) {
+          output.append("\t");
+          output.append(line);
+          output.append("\n");
+          outputLines++;
+        }
+
+        try {
+          if (process.waitFor() != 0) {
+            output.append("\tFailed with error code " + process.exitValue());
+            myShowResults = true;
           }
-        });
+          else if (outputLines == 0) {
+            output.append("\tNo Changes.");
+          }
+
+        }
+        catch (InterruptedException e) {
+          System.err.println(e);
+        }
+        output.append("\n\n");
+
+        project.getFolder(new Path(eogenModel.getDestination())).refreshLocal(IResource.DEPTH_INFINITE, _monitor);
+        project.getFolder(new Path(eogenModel.getSubclassDestination())).refreshLocal(IResource.DEPTH_INFINITE, _monitor);
+      }
+      catch (Throwable t) {
+        throw new ResourceException(IStatus.ERROR, myEOGenFiles[eogenFileNum].getFullPath(), "Failed to generate.", t);
       }
     }
-    catch (Throwable t) {
-      throw new ResourceException(IStatus.ERROR, myEOGenFile.getFullPath(), "Failed to generate.", t);
+
+    if (myShowResults) {
+      final String outputStr = output.toString();
+      Display.getDefault().asyncExec(new Runnable() {
+        public void run() {
+          EOGeneratorResultsDialog resultsDialog = new EOGeneratorResultsDialog(new Shell(), outputStr);
+          resultsDialog.open();
+        }
+      });
     }
     return new Status(IStatus.OK, org.objectstyle.wolips.eogenerator.ui.Activator.PLUGIN_ID, IStatus.OK, "Done", null);
   }

@@ -44,7 +44,6 @@
 package org.objectstyle.wolips.eogenerator.builder;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -118,12 +117,9 @@ public class EOGeneratorBuilder extends AbstractDeltaCleanBuilder {
           }
         }
 
-        Iterator referencingEOGenFilesIter = referencingEOGenFiles.iterator();
-        while (referencingEOGenFilesIter.hasNext()) {
-          IFile eogenFile = (IFile) referencingEOGenFilesIter.next();
-          EOGenerateWorkspaceJob eogenerateJob = new EOGenerateWorkspaceJob(eogenFile, true);
-          eogenerateJob.schedule();
-        }
+        IFile[] finalEOGenFiles = (IFile[]) referencingEOGenFiles.toArray(new IFile[referencingEOGenFiles.size()]);
+        EOGenerateWorkspaceJob eogenerateJob = new EOGenerateWorkspaceJob(finalEOGenFiles, false);
+        eogenerateJob.schedule();
       }
     }
     catch (Throwable e) {
