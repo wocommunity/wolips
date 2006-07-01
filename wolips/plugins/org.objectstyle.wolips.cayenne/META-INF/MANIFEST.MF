@@ -8,4 +8,5 @@ Bundle-Localization: plugin
 Eclipse-LazyStart: true
 Export-Package: org.objectstyle.cayenne.wocompat,
  org.objectstyle.cayenne.wocompat.parser
-Bundle-ClassPath: lib/cayenne.jar
+Bundle-ClassPath: lib/cayenne.jar,
+ lib/log4j.jar
