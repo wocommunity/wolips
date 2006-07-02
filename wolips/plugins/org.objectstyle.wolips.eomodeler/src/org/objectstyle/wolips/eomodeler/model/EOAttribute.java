@@ -33,6 +33,20 @@ public class EOAttribute implements IEOAttribute {
     myAttributeMap = new EOModelMap();
   }
 
+  public boolean isPrototyped() {
+    return getPrototype() != null;
+  }
+
+  public boolean isInherited() {
+    boolean inherited = false;
+    EOEntity parent = myEntity.getParent();
+    if (parent != null) {
+      EOAttribute attribute = parent.getAttributeNamed(myName);
+      inherited = (attribute != null);
+    }
+    return inherited;
+  }
+
   public void setName(String _name) {
     myEntity._checkForDuplicateAttributeName(this, _name);
     myName = _name;
@@ -42,7 +56,7 @@ public class EOAttribute implements IEOAttribute {
     return myName;
   }
 
-  public Boolean getAllowsNull() {
+  public Boolean isAllowsNull() {
     return myAllowsNull;
   }
 

@@ -15,7 +15,10 @@ public class EOJoin {
 
   public EOAttribute getSourceAttribute() {
     EOEntity entity = myRelationship.getEntity();
-    EOAttribute attribute = entity.getAttributeNamed(mySourceAttribute);
+    EOAttribute attribute = null;
+    if (entity != null) {
+      attribute = entity.getAttributeNamed(mySourceAttribute);
+    }
     return attribute;
   }
 
@@ -30,7 +33,10 @@ public class EOJoin {
 
   public EOAttribute getDestinationAttribute() {
     EOEntity entity = myRelationship.getDestination();
-    EOAttribute attribute = entity.getAttributeNamed(myDestinationAttribute);
+    EOAttribute attribute = null;
+    if (entity != null) {
+      attribute = entity.getAttributeNamed(myDestinationAttribute);
+    }
     return attribute;
   }
 

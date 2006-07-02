@@ -41,6 +41,10 @@ public class EOEntity {
   public EOModel getModel() {
     return myModel;
   }
+  
+  public boolean isPrototype() {
+    return myName != null && myName.startsWith("EO") && myName.endsWith("Prototypes");
+  }
 
   public String getExternalQuery() {
     return myExternalQuery;
@@ -96,6 +100,22 @@ public class EOEntity {
     return myModel.getModelGroup().getEntityNamed(myParent);
   }
 
+  public List getChildren() {
+    List children = new LinkedList();
+    Iterator modelsIter = myModel.getModelGroup().getModels().iterator();
+    while (modelsIter.hasNext()) {
+      EOModel model = (EOModel) modelsIter.next();
+      Iterator entitiesIter = model.getEntities().iterator();
+      while (entitiesIter.hasNext()) {
+        EOEntity entity = (EOEntity) entitiesIter.next();
+        if (entity.getParent() == this) {
+          children.add(entity);
+        }
+      }
+    }
+    return children;
+  }
+
   public void setParent(EOEntity _entity) {
     if (_entity == null) {
       myParent = null;
@@ -103,6 +123,14 @@ public class EOEntity {
     else {
       myParent = _entity.getName();
     }
+  }
+
+  public void setParentName(String _parentName) {
+    myParent = _parentName;
+  }
+
+  public String getParentName() {
+    return myParent;
   }
 
   public Boolean isAbstractEntity() {
