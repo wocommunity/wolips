@@ -17,14 +17,14 @@ import org.eclipse.jdt.core.JavaCore;
 import org.objectstyle.wolips.datasets.adaptable.Project;
 
 public class EclipseEOModelGroupFactory {
-  protected static void addModelsFromFolderIfNecessary(EOModelGroup _modelGroup, File _folder, Set _searchedFolders, boolean _recursive) throws IOException {
+  protected static void addModelsFromFolderIfNecessary(EOModelGroup _modelGroup, File _folder, Set _searchedFolders, boolean _recursive) throws IOException, EOModelException {
     if (!_searchedFolders.contains(_folder) && _folder.exists()) {
       _searchedFolders.add(_folder);
       _modelGroup.addModelsFromFolder(_folder, _recursive);
     }
   }
 
-  public static EOModel createModel(IResource _modelResource) throws CoreException, IOException {
+  public static EOModel createModel(IResource _modelResource) throws CoreException, IOException, EOModelException {
     IProject project = _modelResource.getProject();
     EOModelGroup modelGroup = EclipseEOModelGroupFactory.createModelGroup(project);
     IContainer modelContainer;
@@ -40,7 +40,7 @@ public class EclipseEOModelGroupFactory {
     return model;
   }
 
-  public static EOModelGroup createModelGroup(IProject _project) throws CoreException, IOException {
+  public static EOModelGroup createModelGroup(IProject _project) throws CoreException, IOException, EOModelException {
     EOModelGroup modelGroup = new EOModelGroup();
     Set searchedFolders = new HashSet();
 

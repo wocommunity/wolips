@@ -47,7 +47,7 @@ public class EOAttribute implements IEOAttribute {
     return inherited;
   }
 
-  public void setName(String _name) {
+  public void setName(String _name) throws DuplicateAttributeNameException {
     myEntity._checkForDuplicateAttributeName(this, _name);
     myName = _name;
   }

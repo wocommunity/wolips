@@ -47,7 +47,7 @@ public class EORelationship implements IEOAttribute {
     return myEntity;
   }
 
-  public void setName(String _name) {
+  public void setName(String _name) throws DuplicateRelationshipNameException {
     myEntity._checkForDuplicateRelationshipName(this, _name);
     myName = _name;
   }

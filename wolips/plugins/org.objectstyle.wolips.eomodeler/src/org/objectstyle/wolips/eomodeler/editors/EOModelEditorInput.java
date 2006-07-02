@@ -10,13 +10,14 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IPersistableElement;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
+import org.objectstyle.wolips.eomodeler.model.EOModelException;
 import org.objectstyle.wolips.eomodeler.model.EclipseEOModelGroupFactory;
 
 public class EOModelEditorInput implements IEditorInput {
   private IFileEditorInput myFileEditorInput;
   private EOModel myModel;
 
-  public EOModelEditorInput(IFileEditorInput _fileEditorInput) throws CoreException, IOException {
+  public EOModelEditorInput(IFileEditorInput _fileEditorInput) throws CoreException, IOException, EOModelException {
     myFileEditorInput = _fileEditorInput;
     IFile file = myFileEditorInput.getFile();
     myModel = EclipseEOModelGroupFactory.createModel(file);

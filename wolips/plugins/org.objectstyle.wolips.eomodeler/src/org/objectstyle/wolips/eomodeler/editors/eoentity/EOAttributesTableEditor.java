@@ -9,9 +9,11 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.part.EditorPart;
+import org.objectstyle.wolips.eomodeler.Activator;
 import org.objectstyle.wolips.eomodeler.editors.EOModelEditorInput;
 import org.objectstyle.wolips.eomodeler.editors.KeyComboBoxCellEditor;
 import org.objectstyle.wolips.eomodeler.editors.TableUtils;
@@ -100,6 +102,29 @@ public class EOAttributesTableEditor extends EditorPart {
     attributesTable.setLinesVisible(true);
 
     TableUtils.createTableColumns(myAttributesTableViewer, EOAttributesConstants.COLUMNS);
+    
+    TableColumn primaryKeyColumn = attributesTable.getColumn(TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttributesConstants.PRIMARY_KEY));
+    primaryKeyColumn.setText("");
+    //primaryKeyColumn.setAlignment(SWT.CENTER);
+    primaryKeyColumn.setImage(Activator.getDefault().getImageRegistry().get(EOAttributesConstants.PRIMARY_KEY));
+    
+    TableColumn lockingColumn = attributesTable.getColumn(TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttributesConstants.LOCKING));
+    lockingColumn.setText("");
+    //lockingColumn.setAlignment(SWT.CENTER);
+    lockingColumn.setImage(Activator.getDefault().getImageRegistry().get(EOAttributesConstants.LOCKING));
+    
+    TableColumn classPropertyColumn = attributesTable.getColumn(TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttributesConstants.CLASS_PROPERTY));
+    classPropertyColumn.setText("");
+    //classPropertyColumn.setAlignment(SWT.CENTER);
+    classPropertyColumn.setImage(Activator.getDefault().getImageRegistry().get(EOAttributesConstants.CLASS_PROPERTY));
+    
+    TableColumn allowNullColumn = attributesTable.getColumn(TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttributesConstants.ALLOW_NULL));
+    allowNullColumn.setText("0");
+    //allowNullColumn.setAlignment(SWT.CENTER);
+    //classPropertyColumn.setImage(Activator.getDefault().getImageRegistry().get(EOAttributesConstants.CLASS_PROPERTY));
+
+    attributesTable.setSortColumn(attributesTable.getColumn(TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttributesConstants.NAME)));
+    attributesTable.setSortDirection(SWT.UP);
 
     CellEditor[] cellEditors = new CellEditor[EOAttributesConstants.COLUMNS.length];
     cellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttributesConstants.PROTOTYPE)] = new KeyComboBoxCellEditor(attributesTable, new String[0], SWT.READ_ONLY);

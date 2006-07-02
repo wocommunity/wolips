@@ -62,10 +62,10 @@ public class EOModel {
     return myName;
   }
 
-  public void _checkForDuplicateEntityName(EOEntity _entity, String _newName) {
+  public void _checkForDuplicateEntityName(EOEntity _entity, String _newName) throws DuplicateEntityNameException {
     EOEntity entity = getModelGroup().getEntityNamed(_newName);
     if (entity != null && entity != _entity) {
-      throw new IllegalArgumentException("There is already an entity named '" + _newName + "' in " + this + ".");
+      throw new DuplicateEntityNameException(_newName, this);
     }
   }
 
@@ -80,7 +80,7 @@ public class EOModel {
     return getEntityNamed(_entityName) != null;
   }
 
-  public void addEntity(EOEntity _entity) {
+  public void addEntity(EOEntity _entity) throws DuplicateEntityNameException {
     _checkForDuplicateEntityName(_entity, _entity.getName());
     myEntities.add(_entity);
   }
@@ -117,10 +117,10 @@ public class EOModel {
     return myUserInfo;
   }
 
-  public void loadFromFolder(File _modelFolder) throws IOException {
+  public void loadFromFolder(File _modelFolder) throws EOModelException, IOException {
     File indexFile = new File(_modelFolder, "index.eomodeld");
     if (!indexFile.exists()) {
-      throw new IOException(indexFile + " does not exist.");
+      throw new EOModelException(indexFile + " does not exist.");
     }
     EOModelMap modelMap = new EOModelMap((Map) PropertyListSerialization.propertyListFromFile(indexFile));
     myModelMap = modelMap;
@@ -229,7 +229,7 @@ public class EOModel {
     return "[EOModel: name = " + myName + "; entities = " + myEntities + "]";
   }
 
-  public static void main(String[] args) throws IOException {
+  public static void main(String[] args) throws IOException, EOModelException {
     EOModelGroup modelGroup = new EOModelGroup();
     modelGroup.addModelsFromFolder(new File("/Library/Frameworks/ERPrototypes.framework/Resources"), false);
     modelGroup.addModelsFromFolder(new File("/Users/mschrag/Documents/workspace/MDTask"), false);
