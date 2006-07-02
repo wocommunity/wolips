@@ -161,7 +161,7 @@ public class EOModelGroup {
     return matchingModel;
   }
 
-  public void addModelsFromFolder(File _folder, boolean _recursive) throws IOException {
+  public void addModelsFromFolder(File _folder, boolean _recursive) throws IOException, EOModelException {
     File[] files = _folder.listFiles();
     for (int fileNum = 0; fileNum < files.length; fileNum++) {
       String name = files[fileNum].getName();

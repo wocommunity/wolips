@@ -155,6 +155,7 @@ public class KeyComboBoxCellEditor extends CellEditor {
         KeyComboBoxCellEditor.this.focusLost();
       }
     });
+    
     return comboBox;
   }
 

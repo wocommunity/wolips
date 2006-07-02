@@ -41,7 +41,7 @@ public class EOEntity {
   public EOModel getModel() {
     return myModel;
   }
-  
+
   public boolean isPrototype() {
     return myName != null && myName.startsWith("EO") && myName.endsWith("Prototypes");
   }
@@ -74,7 +74,7 @@ public class EOEntity {
     return myName;
   }
 
-  public void setName(String _name) {
+  public void setName(String _name) throws DuplicateEntityNameException {
     myModel._checkForDuplicateEntityName(this, _name);
     myModel._entityNameChanged(_name, myName);
     myName = _name;
@@ -169,10 +169,10 @@ public class EOEntity {
     return myFetchSpecs;
   }
 
-  public void _checkForDuplicateAttributeName(EOAttribute _attribute, String _newName) {
+  public void _checkForDuplicateAttributeName(EOAttribute _attribute, String _newName) throws DuplicateAttributeNameException {
     EOAttribute attribute = getAttributeNamed(_newName);
     if (attribute != null && attribute != _attribute) {
-      throw new IllegalArgumentException("There is already an attribute named '" + _newName + "' in " + this + ".");
+      throw new DuplicateAttributeNameException(_newName, this);
     }
   }
 
@@ -188,14 +188,14 @@ public class EOEntity {
     return matchingFetchSpec;
   }
 
-  public void _checkForDuplicateFetchSpecName(EOFetchSpecification _fetchSpec, String _newName) {
+  public void _checkForDuplicateFetchSpecName(EOFetchSpecification _fetchSpec, String _newName) throws DuplicateFetchSpecNameException {
     EOFetchSpecification fetchSpec = getFetchSpecNamed(_newName);
     if (fetchSpec != null && fetchSpec != _fetchSpec) {
-      throw new IllegalArgumentException("There is already a fetch specification named '" + _newName + "' in " + this + ".");
+      throw new DuplicateFetchSpecNameException(_newName, this);
     }
   }
 
-  public void addFetchSpecification(EOFetchSpecification _fetchSpecification) {
+  public void addFetchSpecification(EOFetchSpecification _fetchSpecification) throws DuplicateFetchSpecNameException {
     _checkForDuplicateFetchSpecName(_fetchSpecification, _fetchSpecification.getName());
     myFetchSpecs.add(_fetchSpecification);
   }
@@ -204,7 +204,7 @@ public class EOEntity {
     myFetchSpecs.remove(_fetchSpecification);
   }
 
-  public void addAttribute(EOAttribute _attribute) {
+  public void addAttribute(EOAttribute _attribute) throws DuplicateAttributeNameException {
     _checkForDuplicateAttributeName(_attribute, _attribute.getName());
     myAttributes.add(_attribute);
   }
@@ -233,14 +233,14 @@ public class EOEntity {
     return matchingAttribute;
   }
 
-  public void _checkForDuplicateRelationshipName(EORelationship _relationship, String _newName) {
+  public void _checkForDuplicateRelationshipName(EORelationship _relationship, String _newName) throws DuplicateRelationshipNameException {
     EORelationship relationship = getRelationshipNamed(_newName);
     if (relationship != null && relationship != _relationship) {
-      throw new IllegalArgumentException("There is already an relationship named '" + _newName + "' in " + this + ".");
+      throw new DuplicateRelationshipNameException(_newName, this);
     }
   }
 
-  public void addRelationship(EORelationship _relationship) {
+  public void addRelationship(EORelationship _relationship) throws DuplicateRelationshipNameException {
     _checkForDuplicateRelationshipName(_relationship, _relationship.getName());
     myRelationships.add(_relationship);
   }
@@ -269,7 +269,7 @@ public class EOEntity {
     return myUserInfo;
   }
 
-  public void loadFromFile(File _entityFile, File _fetchSpecFile) throws IOException {
+  public void loadFromFile(File _entityFile, File _fetchSpecFile) throws IOException, EOModelException {
     if (_entityFile.exists()) {
       EOModelMap entityMap = new EOModelMap((Map) PropertyListSerialization.propertyListFromFile(_entityFile));
       loadFromMap(entityMap);
@@ -280,7 +280,7 @@ public class EOEntity {
     }
   }
 
-  public void loadFromMap(EOModelMap _entityMap) {
+  public void loadFromMap(EOModelMap _entityMap) throws DuplicateRelationshipNameException, DuplicateAttributeNameException {
     myEntityMap = _entityMap;
     myName = _entityMap.getString("name", true);
     myExternalName = _entityMap.getString("externalName", true);
@@ -371,7 +371,7 @@ public class EOEntity {
     }
   }
 
-  public void loadFetchSpecsFromMap(EOModelMap _map) {
+  public void loadFetchSpecsFromMap(EOModelMap _map) throws DuplicateFetchSpecNameException {
     myFetchSpecsMap = _map;
     Iterator fetchSpecIter = _map.entrySet().iterator();
     while (fetchSpecIter.hasNext()) {
