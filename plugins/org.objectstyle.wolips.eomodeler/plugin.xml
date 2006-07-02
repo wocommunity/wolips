@@ -5,24 +5,20 @@
    <extension
          point="org.eclipse.ui.editors">
       <editor
-            name="Sample Multi-page Editor"
+            name="EOModel Editor"
             extensions="eomodeld"
-            icon="icons/sample.gif"
-            contributorClass="org.objectstyle.wolips.eomodeler.editors.MultiPageEditorContributor"
-            class="org.objectstyle.wolips.eomodeler.editors.MultiPageEditor"
-            id="org.objectstyle.wolips.eomodeler.editors.MultiPageEditor">
+            icon="icons/webobjects_eomodeler.gif"
+            contributorClass="org.objectstyle.wolips.eomodeler.editors.EOModelEditorContributor"
+            class="org.objectstyle.wolips.eomodeler.editors.EOModelEditor"
+            id="org.objectstyle.wolips.eomodeler.editors.EOModelEditor">
       </editor>
    </extension>
    <extension
          point="org.eclipse.ui.newWizards">
-      <category
-            name="Sample Wizards"
-            id="org.objectstyle.wolips.eomodeler">
-      </category>
       <wizard
-            name="Multi-page Editor file"
-            icon="icons/sample.gif"
-            category="org.objectstyle.wolips.eomodeler"
+            name="EOModel (Experimental)"
+            icon="icons/webobjects_eomodeler.gif"
+            category="org.objectstyle.wolips.wizards"
             class="org.objectstyle.wolips.eomodeler.wizards.SampleNewWizard"
             id="org.objectstyle.wolips.eomodeler.wizards.SampleNewWizard">
       </wizard>

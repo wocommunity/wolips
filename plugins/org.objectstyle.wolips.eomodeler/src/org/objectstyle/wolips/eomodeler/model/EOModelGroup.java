@@ -21,6 +21,40 @@ public class EOModelGroup {
     return myModels;
   }
 
+  public List getEntityNames() {
+    List entityNames = new LinkedList();
+    Iterator modelsIter = myModels.iterator();
+    while (modelsIter.hasNext()) {
+      EOModel model = (EOModel) modelsIter.next();
+      Iterator entitiesIter = model.getEntities().iterator();
+      while (entitiesIter.hasNext()) {
+        EOEntity entity = (EOEntity) entitiesIter.next();
+        entityNames.add(entity.getName());
+      }
+    }
+    return entityNames;
+  }
+
+  public List getEntities() {
+    List entities = new LinkedList();
+    Iterator modelsIter = myModels.iterator();
+    while (modelsIter.hasNext()) {
+      EOModel model = (EOModel) modelsIter.next();
+      entities.addAll(model.getEntities());
+    }
+    return entities;
+  }
+  
+  public List getPrototypeAttributeNames() {
+    List prototypeAttributeNames = new LinkedList();
+    Iterator prototypeAttributesIter = getPrototypeAttributes().iterator();
+    while (prototypeAttributesIter.hasNext()) {
+      EOAttribute attribute = (EOAttribute)prototypeAttributesIter.next();
+      prototypeAttributeNames.add(attribute.getName());
+    }
+    return prototypeAttributeNames;
+  }
+  
   public synchronized List getPrototypeAttributes() {
     if (myPrototypeAttributeCache == null) {
       List prototypeAttributeCache = new LinkedList();

@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
@@ -22,9 +24,28 @@ public class EclipseEOModelGroupFactory {
     }
   }
 
+  public static EOModel createModel(IResource _modelResource) throws CoreException, IOException {
+    IProject project = _modelResource.getProject();
+    EOModelGroup modelGroup = EclipseEOModelGroupFactory.createModelGroup(project);
+    IContainer modelContainer;
+    if (_modelResource.getType() == IResource.FILE) {
+      modelContainer = _modelResource.getParent();
+    }
+    else {
+      modelContainer = (IContainer) _modelResource;
+    }
+    String modelFileName = modelContainer.getName();
+    String modelName = modelFileName.substring(0, modelFileName.indexOf('.'));
+    EOModel model = modelGroup.getModelNamed(modelName);
+    return model;
+  }
+
   public static EOModelGroup createModelGroup(IProject _project) throws CoreException, IOException {
     EOModelGroup modelGroup = new EOModelGroup();
     Set searchedFolders = new HashSet();
+
+    EclipseEOModelGroupFactory.addModelsFromFolderIfNecessary(modelGroup, _project.getLocation().toFile(), searchedFolders, true);
+
     IJavaProject javaProject = JavaCore.create(_project);
     IClasspathEntry[] classpathEntries = javaProject.getResolvedClasspath(true);
     for (int classpathEntryNum = 0; classpathEntryNum < classpathEntries.length; classpathEntryNum++) {
