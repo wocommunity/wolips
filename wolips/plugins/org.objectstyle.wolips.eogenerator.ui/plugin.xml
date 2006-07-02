@@ -15,10 +15,6 @@
    </extension>
    <extension
          point="org.eclipse.ui.newWizards">
-      <category
-            name="EOGenerator Wizards"
-            id="org.objectstyle.wolips.eogenerator.ui">
-      </category>
       <wizard
             name="EOGenerator"
             icon="icons/eogenerator_wiz.gif"
