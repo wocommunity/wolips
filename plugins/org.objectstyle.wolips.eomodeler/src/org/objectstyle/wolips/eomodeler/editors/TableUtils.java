@@ -22,9 +22,6 @@ public class TableUtils {
       column.setText(_properties[columnNum]);
       column.addSelectionListener(new TableSortHandler(_viewer, _properties[columnNum]));
     }
-
-    table.setSortColumn(table.getColumn(0));
-    table.setSortDirection(SWT.UP);
   }
 
   public static int getColumnNumber(String[] _properties, String _property) {

@@ -17,13 +17,18 @@ import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.MultiPageEditorPart;
-import org.objectstyle.wolips.eomodeler.editors.eoentity.EOAttributesTableEditor;
-import org.objectstyle.wolips.eomodeler.editors.eomodel.EOEntitiesTableEditor;
+import org.objectstyle.wolips.eomodeler.editors.entities.EOEntitiesTableEditor;
+import org.objectstyle.wolips.eomodeler.editors.entity.EOEntityEditor;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
+import org.objectstyle.wolips.eomodeler.model.EOModel;
 
 public class EOModelEditor extends MultiPageEditorPart implements IResourceChangeListener {
   private EOEntitiesTableEditor myEntitiesTableEditor;
-  private EOAttributesTableEditor myAttributesTableEditor;
+  //  private EOAttributesTableEditor myAttributesTableEditor;
+  //  private EORelationshipsTableEditor myRelationshipsTableEditor;
+  private EOEntityEditor myEntityEditor;
+  private EOModel myModel;
+  private EOEntity mySelectedEntity;
 
   public EOModelEditor() {
     super();
@@ -33,18 +38,40 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
   protected void createPages() {
     try {
       myEntitiesTableEditor = new EOEntitiesTableEditor();
-      int entitiesIndex = addPage(myEntitiesTableEditor, getEditorInput());
-      setPageText(entitiesIndex, "Entites");
+      addPage(0, myEntitiesTableEditor, getEditorInput());
+      setPageText(0, "Entites");
 
-      myAttributesTableEditor = new EOAttributesTableEditor();
-      int attributesIndex = addPage(myAttributesTableEditor, getEditorInput());
-      setPageText(attributesIndex, "Entity");
+      myEntityEditor = new EOEntityEditor();
+      addPage(1, myEntityEditor, getEditorInput());
+      setPageText(1, "Entity");
 
-      myEntitiesTableEditor.addSelectionListener(new EntitySelectionChangedListener());
+      //      myAttributesTableEditor = new EOAttributesTableEditor();
+      //      addPage(1, myAttributesTableEditor, getEditorInput());
+      //      setPageText(1, "Attributes");
+      //
+      //      myRelationshipsTableEditor = new EORelationshipsTableEditor();
+      //      addPage(2, myRelationshipsTableEditor, getEditorInput());
+      //      setPageText(2, "Relationships");
+
+      myEntitiesTableEditor.addSelectionChangedListener(new EntitySelectionChangedListener());
     }
     catch (PartInitException e) {
       ErrorDialog.openError(getSite().getShell(), "Error creating editor.", null, e.getStatus());
     }
+  }
+
+  public void setSelectedEntity(EOEntity _selectedEntity) {
+    mySelectedEntity = _selectedEntity;
+    myEntityEditor.setEntity(_selectedEntity);
+    //    myAttributesTableEditor.setEntity(_selectedEntity);
+    //    myRelationshipsTableEditor.setEntity(_selectedEntity);
+    if (_selectedEntity == null) {
+      EOModelEditor.this.setPageText(1, "Entity");
+    }
+    else {
+      EOModelEditor.this.setPageText(1, _selectedEntity.getName());
+    }
+    updatePartName();
   }
 
   public void dispose() {
@@ -89,8 +116,25 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
     else {
       throw new PartInitException("Unknown editor input: " + _editorInput + ".");
     }
-    setPartName(input.getModel().getName());
+    updatePartName();
     super.init(_site, input);
+  }
+
+  protected void updatePartName() {
+    IEditorInput input = getEditorInput();
+    String partName;
+    if (input != null) {
+      EOModel model = ((EOModelEditorInput) input).getModel();
+      partName = model.getName();
+      //      if (mySelectedEntity != null) {
+      //        partName += " (" + mySelectedEntity.getName() + ")";
+      //      }
+    }
+    else {
+      partName = "EOModeler";
+    }
+    //EOModelEditor.this.setPageText(2, entity.getName() + " Relationships");
+    setPartName(partName);
   }
 
   public boolean isSaveAsAllowed() {
@@ -121,15 +165,11 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
   protected class EntitySelectionChangedListener implements ISelectionChangedListener {
     public void selectionChanged(SelectionChangedEvent _event) {
       IStructuredSelection selection = (IStructuredSelection) _event.getSelection();
-      if (selection == null && selection.isEmpty()) {
-        myAttributesTableEditor.setEntity(null);
-        EOModelEditor.this.setPageText(1, "Entity");
+      EOEntity entity = null;
+      if (selection != null && !selection.isEmpty()) {
+        entity = (EOEntity) selection.getFirstElement();
       }
-      else {
-        EOEntity entity = (EOEntity) selection.getFirstElement();
-        myAttributesTableEditor.setEntity(entity);
-        EOModelEditor.this.setPageText(1, entity.getName());
-      }
+      setSelectedEntity(entity);
     }
   }
 
