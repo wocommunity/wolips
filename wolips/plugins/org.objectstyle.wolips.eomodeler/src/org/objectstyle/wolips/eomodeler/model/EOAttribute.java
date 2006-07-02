@@ -61,7 +61,12 @@ public class EOAttribute implements IEOAttribute {
   }
 
   public void setAllowsNull(Boolean _allowsNull) {
-    myAllowsNull = _allowsNull;
+    if (myPrimaryKey != null && myPrimaryKey.booleanValue()) {
+      myAllowsNull = Boolean.FALSE;
+    }
+    else {
+      myAllowsNull = _allowsNull;
+    }
   }
 
   public Boolean isClassProperty() {
@@ -94,6 +99,9 @@ public class EOAttribute implements IEOAttribute {
 
   public void setPrimaryKey(Boolean _primaryKey) {
     myPrimaryKey = _primaryKey;
+    if (_primaryKey != null && _primaryKey.booleanValue()) {
+      setAllowsNull(Boolean.FALSE);
+    }
   }
 
   public EOAttribute getPrototype() {

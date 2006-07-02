@@ -42,11 +42,31 @@ public abstract class TablePropertyViewerSorter extends ViewerSorter {
     tableViewer.refresh();
   }
 
-  public abstract int compare(Object _o1, Object _o2, String _property);
+  public abstract Object getComparisonValue(Object _obj, String _property);
 
   public int compare(Viewer _viewer, Object _o1, Object _o2) {
     String property = myColumnProperties[mySortedColumn];
-    int comparison = compare(_o1, _o2, property);
+    Object o1 = getComparisonValue(_o1, property);
+    Object o2 = getComparisonValue(_o2, property);
+    int comparison = 0;
+    if (o1 == null && o2 == null) {
+      comparison = 0;
+    }
+    else if (o1 == null) {
+      comparison = -1;
+    }
+    else if (o2 == null) {
+      comparison = 1;
+    }
+    else if (o1 instanceof Boolean) {
+      comparison = ((Boolean) o1).compareTo((Boolean) o2);
+    }
+    else if (o1 instanceof Integer) {
+      comparison = ((Integer) o1).compareTo((Integer) o2);
+    }
+    else if (o1 instanceof String) {
+      comparison = collator.compare(o1, o2);
+    }
 
     if (myDirection == SWT.DOWN) {
       comparison = -comparison;

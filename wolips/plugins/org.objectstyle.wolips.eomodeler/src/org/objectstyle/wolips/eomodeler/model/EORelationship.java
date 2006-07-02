@@ -134,6 +134,14 @@ public class EORelationship implements IEOAttribute {
     return myJoins;
   }
 
+  public EOJoin getFirstJoin() {
+    EOJoin join = null;
+    if (myJoins.size() > 0) {
+      join = (EOJoin) myJoins.get(0);
+    }
+    return join;
+  }
+
   public void loadFromMap(EOModelMap _relationshipMap) {
     myRelationshipMap = _relationshipMap;
     myDestination = _relationshipMap.getString("destination", true);
