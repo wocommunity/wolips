@@ -103,7 +103,7 @@ public class EOEntitiesCellModifier implements ICellModifier {
       if (parentName == null) {
         parentName = EOEntitiesCellModifier.NO_PARENT_VALUE;
       }
-      value = Integer.valueOf(myEntityNames.indexOf(parentName));
+      value = new Integer(myEntityNames.indexOf(parentName));
     }
     else {
       throw new IllegalArgumentException("Unknown property '" + _property + "'");
