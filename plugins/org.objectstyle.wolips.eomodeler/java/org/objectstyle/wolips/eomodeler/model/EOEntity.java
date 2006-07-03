@@ -275,7 +275,8 @@ public class EOEntity {
     Iterator attributesIter = myAttributes.iterator();
     while (matchingAttribute == null && attributesIter.hasNext()) {
       EOAttribute attribute = (EOAttribute) attributesIter.next();
-      if (attribute.getName().equals(_name)) {
+      String attributeName = attribute.getName();
+      if (attributeName != null && attributeName.equals(_name)) {
         matchingAttribute = attribute;
       }
     }
@@ -428,7 +429,7 @@ public class EOEntity {
       String fetchSpecName = (String) fetchSpecEntry.getKey();
       EOModelMap fetchSpecMap = new EOModelMap((Map) fetchSpecEntry.getValue());
       EOFetchSpecification fetchSpec = new EOFetchSpecification(this, fetchSpecName);
-      fetchSpec.loadFromMap(_map);
+      fetchSpec.loadFromMap(fetchSpecMap);
       addFetchSpecification(fetchSpec);
     }
   }

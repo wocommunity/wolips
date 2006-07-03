@@ -57,9 +57,6 @@ public class EOKeyValueQualifier implements IEOQualifier {
   private Object myValue;
   private String mySelectorName;
 
-  public EOKeyValueQualifier() {
-  }
-
   public String getKey() {
     return myKey;
   }

@@ -64,13 +64,12 @@ public class EOEntitiesTableEditor extends EditorPart {
   private EOEntitiesTableViewer myEntitiesTableViewer;
   private EOModelEditorInput myEditorInput;
 
-  public EOEntitiesTableEditor() {
-  }
-
   public void doSave(IProgressMonitor _monitor) {
+    // DO NOTHING
   }
 
   public void doSaveAs() {
+    // DO NOTHING
   }
 
   public void init(IEditorSite _site, IEditorInput _input) {
@@ -94,6 +93,7 @@ public class EOEntitiesTableEditor extends EditorPart {
   }
 
   public void setFocus() {
+    // DO NOTHING
   }
 
   protected void updateEntitiesTableViewer() {
@@ -102,11 +102,11 @@ public class EOEntitiesTableEditor extends EditorPart {
       myEntitiesTableViewer.setModel(model);
     }
   }
-  
+
   public void addSelectionChangedListener(ISelectionChangedListener _listener) {
     myEntitiesTableViewer.addSelectionChangedListener(_listener);
   }
-  
+
   public void removeSelectionChangedListener(ISelectionChangedListener _listener) {
     myEntitiesTableViewer.removeSelectionChangedListener(_listener);
   }

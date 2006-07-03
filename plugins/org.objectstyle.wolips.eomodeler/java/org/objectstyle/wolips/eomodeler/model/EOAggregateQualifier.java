@@ -102,8 +102,8 @@ public abstract class EOAggregateQualifier implements IEOQualifier {
     Iterator qualifiersIter = myQualifiers.iterator();
     while (qualifiersIter.hasNext()) {
       IEOQualifier qualifier = (IEOQualifier) qualifiersIter.next();
-      EOModelMap qualfierMap = qualifier.toMap();
-      qualifiers.add(qualifierMap);
+      EOModelMap subQualifierMap = qualifier.toMap();
+      qualifiers.add(subQualifierMap);
     }
     qualifierMap.setList("qualifiers", qualifiers);
     return qualifierMap;
@@ -114,6 +114,6 @@ public abstract class EOAggregateQualifier implements IEOQualifier {
     while (qualifiersIter.hasNext()) {
       IEOQualifier qualifier = (IEOQualifier) qualifiersIter.next();
       qualifier.verify(_failures);
-    }    
+    }
   }
 }

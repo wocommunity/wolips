@@ -55,9 +55,6 @@ public class EOSortOrdering {
   private String myKey;
   private String mySelectorName;
 
-  public EOSortOrdering() {
-  }
-
   public void setKey(String _key) {
     myKey = _key;
   }
@@ -86,7 +83,7 @@ public class EOSortOrdering {
     sortOrderingMap.setString("selectorName", mySelectorName, true);
     return sortOrderingMap;
   }
-  
+
   public void verify(List _failures) {
     // TODO
   }

@@ -52,6 +52,8 @@ package org.objectstyle.wolips.eomodeler.editors.attributes;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableColorProvider;
 import org.eclipse.jface.viewers.ITableFontProvider;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
@@ -60,8 +62,12 @@ import org.objectstyle.wolips.eomodeler.editors.TablePropertyLabelProvider;
 import org.objectstyle.wolips.eomodeler.model.EOAttribute;
 
 public class EOAttributesLabelProvider extends TablePropertyLabelProvider implements ITableColorProvider, ITableFontProvider {
-  public EOAttributesLabelProvider(String[] _columnProperties) {
+  private TableViewer myTableViewer;
+  private Font myItalicFont;
+
+  public EOAttributesLabelProvider(TableViewer _tableViewer, String[] _columnProperties) {
     super(_columnProperties);
+    myTableViewer = _tableViewer;
   }
 
   public Image getColumnImage(Object _element, String _property) {
@@ -90,20 +96,16 @@ public class EOAttributesLabelProvider extends TablePropertyLabelProvider implem
     EOAttribute attribute = (EOAttribute) _element;
     String text = null;
     if (_property == EOAttributesConstants.PRIMARY_KEY) {
-      text = null;
-      //yesNoText(attribute, attribute.isPrimaryKey());
+      // DO NOTHING
     }
     else if (_property == EOAttributesConstants.LOCKING) {
-      text = null;
-      //yesNoText(attribute, attribute.isUsedForLocking());
+      // DO NOTHING
     }
     else if (_property == EOAttributesConstants.CLASS_PROPERTY) {
-      text = null;
-      //yesNoText(attribute, attribute.isClassProperty());
+      // DO NOTHING
     }
     else if (_property == EOAttributesConstants.ALLOW_NULL) {
-      text = null;
-      //yesNoText(attribute, attribute.isAllowsNull());
+      // DO NOTHING
     }
     else if (_property == EOAttributesConstants.NAME) {
       text = attribute.getName();
@@ -124,24 +126,44 @@ public class EOAttributesLabelProvider extends TablePropertyLabelProvider implem
   }
 
   public Font getFont(Object _element, int _columnIndex) {
-    EOAttribute attribute = (EOAttribute) _element;
-    return null;
+    //EOAttribute attribute = (EOAttribute) _element;
+    Font font = null;
+    //    if (attribute.isInherited()) {
+    //      if (myItalicFont == null) {
+    //        Font originalFont = myTableViewer.getTable().getFont();
+    //        FontData[] fontData = myTableViewer.getTable().getFont().getFontData();
+    //        myItalicFont = new Font(originalFont.getDevice(), fontData[0].getName(), fontData[0].getHeight(), SWT.ITALIC);
+    //      }
+    //      font = myItalicFont;
+    //    }
+    return font;
   }
 
   public Color getBackground(Object _element, int _columnIndex) {
-    EOAttribute attribute = (EOAttribute) _element;
+    //EOAttribute attribute = (EOAttribute) _element;
     return null;
   }
 
   public Color getForeground(Object _element, int _columnIndex) {
     EOAttribute attribute = (EOAttribute) _element;
-    return null;
+    Color color = null;
+    if (attribute.isInherited()) {
+      color = myTableViewer.getTable().getDisplay().getSystemColor(SWT.COLOR_GRAY);
+    }
+    //    if (attribute.isPrototyped()) {
+    //      color = Display.getCurrent().getSystemColor(SWT.COLOR_DARK_RED);
+    //    }
+    return color;
   }
 
   public void addListener(ILabelProviderListener _listener) {
+    // DO NOTHING
   }
 
   public void dispose() {
+    if (myItalicFont != null) {
+      myItalicFont.dispose();
+    }
   }
 
   public boolean isLabelProperty(Object _element, String _property) {
@@ -149,5 +171,6 @@ public class EOAttributesLabelProvider extends TablePropertyLabelProvider implem
   }
 
   public void removeListener(ILabelProviderListener _listener) {
+    // DO NOTHING
   }
 }

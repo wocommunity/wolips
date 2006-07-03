@@ -61,4 +61,7 @@ public class DuplicateFetchSpecNameException extends DuplicateNameException {
     myEntity = _entity;
   }
 
+  public EOEntity getEntity() {
+    return myEntity;
+  }
 }

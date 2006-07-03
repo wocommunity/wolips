@@ -75,7 +75,12 @@ public class EOAttributesCellModifier implements ICellModifier {
   }
 
   public boolean canModify(Object _element, String _property) {
-    if (_property == EOAttributesConstants.PROTOTYPE) {
+    boolean canModify = true;
+    EOAttribute attribute = (EOAttribute) _element;
+    if (attribute.isInherited()) {
+      canModify = false;
+    }
+    else if (_property == EOAttributesConstants.PROTOTYPE) {
       EOEntity entity = (EOEntity) myAttributesTableViewer.getInput();
       myPrototypeNames = entity.getModel().getModelGroup().getPrototypeAttributeNames();
       myPrototypeNames.add(0, EOAttributesCellModifier.NO_PROTOYPE_VALUE);
@@ -83,7 +88,7 @@ public class EOAttributesCellModifier implements ICellModifier {
       KeyComboBoxCellEditor cellEditor = (KeyComboBoxCellEditor) myCellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, _property)];
       cellEditor.setItems(prototypeNames);
     }
-    return true;
+    return canModify;
   }
 
   public Object getValue(Object _element, String _property) {
@@ -159,10 +164,10 @@ public class EOAttributesCellModifier implements ICellModifier {
         int prototypeIndexInt = prototypeIndex.intValue();
         String prototypeName = (prototypeIndexInt == -1) ? null : (String) myPrototypeNames.get(prototypeIndexInt);
         if (EOAttributesCellModifier.NO_PROTOYPE_VALUE.equals(prototypeName)) {
-          attribute.setPrototypeName(null);
+          attribute.setPrototypeName(null, true);
         }
         else {
-          attribute.setPrototypeName(prototypeName);
+          attribute.setPrototypeName(prototypeName, true);
         }
       }
       else {
