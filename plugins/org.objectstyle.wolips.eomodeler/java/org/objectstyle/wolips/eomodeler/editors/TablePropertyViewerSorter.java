@@ -108,7 +108,17 @@ public abstract class TablePropertyViewerSorter extends ViewerSorter {
       comparison = 1;
     }
     else if (o1 instanceof Boolean) {
-      comparison = ((Boolean) o1).compareTo((Boolean) o2);
+    	boolean left = ((Boolean) _o1).booleanValue();
+    	boolean right = ((Boolean) _o2).booleanValue();
+        if(left == right) {
+      	  comparison = 0;
+        }
+        else if(left == true) {
+      	  comparison = 1;
+        }
+        else {
+      	  comparison = -1;
+        }
     }
     else if (o1 instanceof Integer) {
       comparison = ((Integer) o1).compareTo((Integer) o2);

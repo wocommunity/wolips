@@ -129,7 +129,7 @@ public class EOAttributesCellModifier implements ICellModifier {
       if (prototypeName == null) {
         prototypeName = EOAttributesCellModifier.NO_PROTOYPE_VALUE;
       }
-      value = Integer.valueOf(myPrototypeNames.indexOf(prototypeName));
+      value = new Integer(myPrototypeNames.indexOf(prototypeName));
     }
     else {
       throw new IllegalArgumentException("Unknown property '" + _property + "'");
