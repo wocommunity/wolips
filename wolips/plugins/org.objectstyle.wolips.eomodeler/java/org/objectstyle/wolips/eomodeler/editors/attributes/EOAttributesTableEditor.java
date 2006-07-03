@@ -57,36 +57,32 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.part.EditorPart;
-import org.objectstyle.wolips.eomodeler.editors.EOModelEditorInput;
 import org.objectstyle.wolips.eomodeler.editors.IEntityEditor;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 
 public class EOAttributesTableEditor extends EditorPart implements IEntityEditor {
   private EOAttributesTableViewer myAttributesTableViewer;
-  private EOModelEditorInput myEditorInput;
   private EOEntity myEntity;
-
-  public EOAttributesTableEditor() {
-  }
 
   public void setEntity(EOEntity _entity) {
     myEntity = _entity;
     updateAttributesTableViewer();
   }
-  
+
   public EOEntity getEntity() {
     return myEntity;
   }
 
   public void doSave(IProgressMonitor _monitor) {
+    // DO NOTHING
   }
 
   public void doSaveAs() {
+    // DO NOTHING
   }
 
   public void init(IEditorSite _site, IEditorInput _input) {
     setSite(_site);
-    myEditorInput = (EOModelEditorInput) _input;
     setEntity(null);
   }
 
@@ -105,6 +101,7 @@ public class EOAttributesTableEditor extends EditorPart implements IEntityEditor
   }
 
   public void setFocus() {
+    // DO NOTHING
   }
 
   protected void updateAttributesTableViewer() {
@@ -112,11 +109,11 @@ public class EOAttributesTableEditor extends EditorPart implements IEntityEditor
       myAttributesTableViewer.setEntity(myEntity);
     }
   }
-  
+
   public void addSelectionChangedListener(ISelectionChangedListener _listener) {
     myAttributesTableViewer.addSelectionChangedListener(_listener);
   }
-  
+
   public void removeSelectionChangedListener(ISelectionChangedListener _listener) {
     myAttributesTableViewer.removeSelectionChangedListener(_listener);
   }

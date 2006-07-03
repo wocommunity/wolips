@@ -89,9 +89,11 @@ public class EOEntitiesLabelProvider extends TablePropertyLabelProvider {
   }
 
   public void addListener(ILabelProviderListener _listener) {
+    // DO NOTHING
   }
 
   public void dispose() {
+    // DO NOTHING
   }
 
   public boolean isLabelProperty(Object _element, String _property) {
@@ -99,5 +101,6 @@ public class EOEntitiesLabelProvider extends TablePropertyLabelProvider {
   }
 
   public void removeListener(ILabelProviderListener _listener) {
+    // DO NOTHING
   }
 }

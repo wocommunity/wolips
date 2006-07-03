@@ -71,10 +71,10 @@ public class EOAttribute implements IEOAttribute {
   private Boolean myPrimaryKey;
   private Boolean myUsedForLocking;
   private Boolean myClientClassProperty;
-  private Map myUserInfo;
   private String myDefinition;
   private String myReadFormat;
   private String myWriteFormat;
+  private Map myUserInfo;
   private EOModelMap myAttributeMap;
 
   public EOAttribute(EOEntity _entity) {
@@ -83,7 +83,12 @@ public class EOAttribute implements IEOAttribute {
   }
 
   public boolean isPrototyped() {
-    return getPrototype() != null;
+    boolean prototyped = false;
+    EOAttribute prototype = getPrototype();
+    if (prototype != null) {
+      prototyped = true;
+    }
+    return prototyped;
   }
 
   public boolean isInherited() {
@@ -94,6 +99,73 @@ public class EOAttribute implements IEOAttribute {
       inherited = (attribute != null);
     }
     return inherited;
+  }
+
+  public EOAttribute getPrototype() {
+    return myEntity.getModel().getModelGroup().getPrototypeAttributeNamed(myPrototypeName);
+  }
+
+  public void setPrototype(EOAttribute _prototype, boolean _updateFromPrototype) {
+    if (_prototype == null) {
+      setPrototypeName(null, _updateFromPrototype);
+    }
+    else {
+      setPrototypeName(_prototype.getName(), _updateFromPrototype);
+    }
+  }
+
+  public String getPrototypeName() {
+    return myPrototypeName;
+  }
+
+  public void setPrototypeName(String _prototypeName, boolean _updateFromPrototype) {
+    boolean prototypeNameChanged = true;
+    if (_prototypeName == null && myPrototypeName == null) {
+      prototypeNameChanged = false;
+    }
+    else if ((_prototypeName != null && _prototypeName.equals(myPrototypeName)) || (myPrototypeName != null && myPrototypeName.equals(_prototypeName))) {
+      prototypeNameChanged = false;
+    }
+    myPrototypeName = _prototypeName;
+    if (prototypeNameChanged && _updateFromPrototype) {
+      EOAttribute prototype = getPrototype();
+      _updateFromPrototype(prototype);
+    }
+  }
+
+  protected void _updateFromPrototype(EOAttribute _prototype) {
+    if (_prototype != null) {
+      setColumnName((String) _nullIfPrototyped(getColumnName(), _prototype.getColumnName()));
+      setExternalType((String) _nullIfPrototyped(getExternalType(), _prototype.getExternalType()));
+      setScale((Integer) _nullIfPrototyped(getScale(), _prototype.getScale()));
+      setPrecision((Integer) _nullIfPrototyped(getPrecision(), _prototype.getPrecision()));
+      setWidth((Integer) _nullIfPrototyped(getWidth(), _prototype.getWidth()));
+      setValueType((String) _nullIfPrototyped(getValueType(), _prototype.getValueType()));
+      setValueClassName((String) _nullIfPrototyped(getValueClassName(), _prototype.getValueClassName()));
+      setValueFactoryMethodName((String) _nullIfPrototyped(getValueFactoryMethodName(), _prototype.getValueFactoryMethodName()));
+      setFactoryMethodArgumentType((String) _nullIfPrototyped(getFactoryMethodArgumentType(), _prototype.getFactoryMethodArgumentType()));
+      setAdaptorValueConversionMethodName((String) _nullIfPrototyped(getAdaptorValueConversionMethodName(), _prototype.getAdaptorValueConversionMethodName()));
+      setAllowsNull((Boolean) _nullIfPrototyped(isAllowsNull(), _prototype.isAllowsNull()));
+      setClassProperty((Boolean) _nullIfPrototyped(isClassProperty(), _prototype.isClassProperty()));
+      setClientClassProperty((Boolean) _nullIfPrototyped(isClientClassProperty(), _prototype.isClientClassProperty()));
+      setPrimaryKey((Boolean) _nullIfPrototyped(isPrimaryKey(), _prototype.isPrimaryKey()));
+      setUsedForLocking((Boolean) _nullIfPrototyped(isUsedForLocking(), _prototype.isUsedForLocking()));
+      setDefinition((String) _nullIfPrototyped(getDefinition(), _prototype.getDefinition()));
+      setReadFormat((String) _nullIfPrototyped(getReadFormat(), _prototype.getReadFormat()));
+      setWriteFormat((String) _nullIfPrototyped(getWriteFormat(), _prototype.getWriteFormat()));
+    }
+  }
+
+  protected Object _nullIfPrototyped(Object _currentValue, Object _prototypeValue) {
+    Object value = _currentValue;
+    if (_isSet(_prototypeValue)) {
+      value = null;
+    }
+    return value;
+  }
+
+  protected boolean _isSet(Object _value) {
+    return (_value != null && (!(_value instanceof String) || ((String) _value).trim().length() > 0));
   }
 
   public void setName(String _name) throws DuplicateAttributeNameException {
@@ -151,18 +223,6 @@ public class EOAttribute implements IEOAttribute {
     if (_primaryKey != null && _primaryKey.booleanValue()) {
       setAllowsNull(Boolean.FALSE);
     }
-  }
-
-  public EOAttribute getPrototype() {
-    return myEntity.getModel().getModelGroup().getPrototypeAttributeNamed(myPrototypeName);
-  }
-
-  public String getPrototypeName() {
-    return myPrototypeName;
-  }
-
-  public void setPrototypeName(String _prototypeName) {
-    myPrototypeName = _prototypeName;
   }
 
   public Boolean isUsedForLocking() {

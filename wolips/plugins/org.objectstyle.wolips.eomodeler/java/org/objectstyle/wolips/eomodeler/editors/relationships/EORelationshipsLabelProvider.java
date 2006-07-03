@@ -57,6 +57,7 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.objectstyle.wolips.eomodeler.Activator;
 import org.objectstyle.wolips.eomodeler.editors.TablePropertyLabelProvider;
+import org.objectstyle.wolips.eomodeler.model.EOAttribute;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOJoin;
 import org.objectstyle.wolips.eomodeler.model.EORelationship;
@@ -82,10 +83,10 @@ public class EORelationshipsLabelProvider extends TablePropertyLabelProvider imp
     EORelationship relationship = (EORelationship) _element;
     String text = null;
     if (_property == EORelationshipsConstants.TO_MANY) {
-      text = null;
+      // DO NOTHING
     }
     else if (_property == EORelationshipsConstants.CLASS_PROPERTY) {
-      text = null;
+      // DO NOTHING
     }
     else if (_property == EORelationshipsConstants.NAME) {
       text = relationship.getName();
@@ -99,13 +100,19 @@ public class EORelationshipsLabelProvider extends TablePropertyLabelProvider imp
     else if (_property == EORelationshipsConstants.SOURCE_ATTRIBUTE) {
       EOJoin firstJoin = relationship.getFirstJoin();
       if (firstJoin != null) {
-        text = firstJoin.getSourceAttribute().getName();
+        EOAttribute sourceAttribute = firstJoin.getSourceAttribute();
+        if (sourceAttribute != null) {
+          text = sourceAttribute.getName();
+        }
       }
     }
     else if (_property == EORelationshipsConstants.DESTINATION_ATTRIBUTE) {
       EOJoin firstJoin = relationship.getFirstJoin();
       if (firstJoin != null) {
-        text = firstJoin.getDestinationAttribute().getName();
+        EOAttribute destinationAttribute = firstJoin.getDestinationAttribute();
+        if (destinationAttribute != null) {
+          text = destinationAttribute.getName();
+        }
       }
     }
     else {
@@ -115,24 +122,26 @@ public class EORelationshipsLabelProvider extends TablePropertyLabelProvider imp
   }
 
   public Font getFont(Object _element, int _columnIndex) {
-    EORelationship relationship = (EORelationship) _element;
+    //EORelationship relationship = (EORelationship) _element;
     return null;
   }
 
   public Color getBackground(Object _element, int _columnIndex) {
-    EORelationship relationship = (EORelationship) _element;
+    //EORelationship relationship = (EORelationship) _element;
     return null;
   }
 
   public Color getForeground(Object _element, int _columnIndex) {
-    EORelationship relationship = (EORelationship) _element;
+    //EORelationship relationship = (EORelationship) _element;
     return null;
   }
 
   public void addListener(ILabelProviderListener _listener) {
+    // DO NOTHING
   }
 
   public void dispose() {
+    // DO NOTHING
   }
 
   public boolean isLabelProperty(Object _element, String _property) {
@@ -140,5 +149,6 @@ public class EORelationshipsLabelProvider extends TablePropertyLabelProvider imp
   }
 
   public void removeListener(ILabelProviderListener _listener) {
+    // DO NOTHING
   }
 }

@@ -76,8 +76,9 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
   //  private EOAttributesTableEditor myAttributesTableEditor;
   //  private EORelationshipsTableEditor myRelationshipsTableEditor;
   private EOEntityEditor myEntityEditor;
-  private EOModel myModel;
-  private EOEntity mySelectedEntity;
+
+  //  private EOModel myModel;
+  //  private EOEntity mySelectedEntity;
 
   public EOModelEditor() {
     super();
@@ -110,7 +111,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
   }
 
   public void setSelectedEntity(EOEntity _selectedEntity) {
-    mySelectedEntity = _selectedEntity;
+    //    mySelectedEntity = _selectedEntity;
     myEntityEditor.setEntity(_selectedEntity);
     //    myAttributesTableEditor.setEntity(_selectedEntity);
     //    myRelationshipsTableEditor.setEntity(_selectedEntity);
@@ -196,11 +197,11 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 
   public void resourceChanged(final IResourceChangeEvent _event) {
     if (_event.getType() == IResourceChangeEvent.PRE_CLOSE) {
+      final EOModelEditorInput input = (EOModelEditorInput) myEntitiesTableEditor.getEditorInput();
       Display.getDefault().asyncExec(new Runnable() {
         public void run() {
           IWorkbenchPage[] pages = getSite().getWorkbenchWindow().getPages();
           for (int pageNum = 0; pageNum < pages.length; pageNum++) {
-            EOModelEditorInput input = (EOModelEditorInput) myEntitiesTableEditor.getEditorInput();
             if (input.getFile().getProject().equals(_event.getResource())) {
               IEditorPart editorPart = pages[pageNum].findEditor(input);
               pages[pageNum].closeEditor(editorPart, true);
@@ -221,5 +222,4 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
       setSelectedEntity(entity);
     }
   }
-
 }

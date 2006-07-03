@@ -61,4 +61,7 @@ public class DuplicateAttributeNameException extends DuplicateNameException {
     myEntity = _entity;
   }
 
+  public EOEntity getEntity() {
+    return myEntity;
+  }
 }

@@ -61,4 +61,7 @@ public class DuplicateEntityNameException extends DuplicateNameException {
     myModel = _model;
   }
 
+  public EOModel getModel() {
+    return myModel;
+  }
 }

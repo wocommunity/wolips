@@ -65,8 +65,10 @@ public class EORelationshipsContentProvider implements IStructuredContentProvide
   }
 
   public void dispose() {
+    // DO NOTHING
   }
 
   public void inputChanged(Viewer _viewer, Object _oldInput, Object _newInput) {
+    // DO NOTHING
   }
 }

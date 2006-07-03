@@ -123,7 +123,7 @@ public class EOModelMap implements Map {
 
   public Map getMap(String _key, boolean _clone) {
     Map map = (Map) myBackingMap.get(_key);
-    if (map != null) {
+    if (_clone && map != null) {
       map = new HashMap(map);
     }
     return map;
@@ -144,7 +144,7 @@ public class EOModelMap implements Map {
 
   public List getList(String _key, boolean _clone) {
     List list = (List) myBackingMap.get(_key);
-    if (list != null) {
+    if (_clone && list != null) {
       list = new LinkedList(list);
     }
     return list;

@@ -76,7 +76,7 @@ public class EOAttributesTableViewer extends Composite {
     setLayout(new GridLayout(1, true));
     myAttributesTableViewer = new TableViewer(this, SWT.FULL_SELECTION);
     myAttributesTableViewer.setContentProvider(new EOAttributesContentProvider());
-    myAttributesTableViewer.setLabelProvider(new EOAttributesLabelProvider(EOAttributesConstants.COLUMNS));
+    myAttributesTableViewer.setLabelProvider(new EOAttributesLabelProvider(myAttributesTableViewer, EOAttributesConstants.COLUMNS));
     myAttributesTableViewer.setSorter(new EOAttributesViewerSorter(EOAttributesConstants.COLUMNS));
     myAttributesTableViewer.setColumnProperties(EOAttributesConstants.COLUMNS);
 
