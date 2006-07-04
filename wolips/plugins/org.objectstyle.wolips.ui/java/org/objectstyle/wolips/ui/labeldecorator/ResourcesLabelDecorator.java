@@ -64,6 +64,7 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.Point;
+import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
 import org.objectstyle.wolips.core.resources.types.project.IProjectPatternsets;
 
 /**
@@ -119,15 +120,21 @@ public class ResourcesLabelDecorator implements ILabelDecorator {
 		if (element instanceof IResource && !(element instanceof IProject)) {
 			IResource resource = (IResource) element;
 			IProject iProject = resource.getProject();
-			IProjectPatternsets projectPatternsets = (IProjectPatternsets) iProject
-					.getAdapter(IProjectPatternsets.class);
-			if (projectPatternsets != null) {
-				if (this.matchesResourcesPattern(projectPatternsets, resource)) {
-					return resourcesImage(image);
-				}
-				if (this.matchesWOAppResourcesPattern(projectPatternsets,
-						resource)) {
-					return webServerResourcesImage(image);
+			IProjectAdapter projectAdapter = (IProjectAdapter) iProject
+					.getAdapter(IProjectAdapter.class);
+			// make sure it's a wo project
+			if (projectAdapter != null) {
+				IProjectPatternsets projectPatternsets = (IProjectPatternsets) iProject
+						.getAdapter(IProjectPatternsets.class);
+				if (projectPatternsets != null) {
+					if (this.matchesResourcesPattern(projectPatternsets,
+							resource)) {
+						return resourcesImage(image);
+					}
+					if (this.matchesWOAppResourcesPattern(projectPatternsets,
+							resource)) {
+						return webServerResourcesImage(image);
+					}
 				}
 			}
 		}
