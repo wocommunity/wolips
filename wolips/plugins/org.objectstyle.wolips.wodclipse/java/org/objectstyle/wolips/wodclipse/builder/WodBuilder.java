@@ -83,6 +83,7 @@ public class WodBuilder extends AbstractDeltaCleanBuilder {
   }
 
   public void handleClasses(IResource _resource, IProgressMonitor _monitor, Map _buildCache) {
+    // DO NOTHING
   }
 
   public void handleSource(IResource _resource, IProgressMonitor _progressMonitor, Map _buildCache) {
@@ -97,6 +98,7 @@ public class WodBuilder extends AbstractDeltaCleanBuilder {
   }
 
   public void handleClasspath(IResource _resource, IProgressMonitor _monitor, Map _buildCache) {
+    // DO NOTHING
   }
 
   public void handleOther(IResource _resource, IProgressMonitor _monitor, Map _buildCache) {
@@ -134,12 +136,23 @@ public class WodBuilder extends AbstractDeltaCleanBuilder {
         WodclipsePlugin.getDefault().log(e);
       }
     }
+    else {
+      if (_resource instanceof IFile) {
+        IFile file = (IFile) _resource;
+        String fileExtension = file.getFileExtension();
+        if ("wod".equals(fileExtension)) {
+          WodReconcilingStrategy.deleteWodProblems(file);
+        }
+      }
+    }
   }
 
   public void handleWebServerResources(IResource _resource, IProgressMonitor _monitor, Map _buildCache) {
+    // DO NOTHING
   }
 
   public void handleWoappResources(IResource _resource, IProgressMonitor _monitor, Map _buildCache) {
+    // DO NOTHING
   }
 
   protected void touchRelatedResources(IResource _resource, IProgressMonitor _progressMonitor, Map _buildCache) throws CoreException {

@@ -92,10 +92,9 @@ public class WodReconcilingStrategy implements IReconcilingStrategy, IReconcilin
     return annotationModel;
   }
 
-  public static synchronized void reconcileWodModel(IDocument _wodDocument, LocalizedComponentsLocateResult _locateResult, Map _elementNameToTypeCache, Map _typeToApiModelWoCache) throws CoreException {
-    IFile wodFile = _locateResult.getFirstWodFile();
+  public static synchronized void deleteWodProblems(IFile _wodFile) {
     try {
-      IMarker[] markers = wodFile.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
+      IMarker[] markers = _wodFile.findMarkers(IMarker.PROBLEM, true, IResource.DEPTH_INFINITE);
       for (int i = 0; i < markers.length; i++) {
         markers[i].delete();
       }
@@ -103,6 +102,11 @@ public class WodReconcilingStrategy implements IReconcilingStrategy, IReconcilin
     catch (CoreException e) {
       WodclipsePlugin.getDefault().debug(e);
     }
+  }
+
+  public static synchronized void reconcileWodModel(IDocument _wodDocument, LocalizedComponentsLocateResult _locateResult, Map _elementNameToTypeCache, Map _typeToApiModelWoCache) throws CoreException {
+    IFile wodFile = _locateResult.getFirstWodFile();
+    WodReconcilingStrategy.deleteWodProblems(wodFile);
 
     IWodModel wodModel = WodModelUtils.createWodModel(wodFile, _wodDocument);
     List problems = new LinkedList();
