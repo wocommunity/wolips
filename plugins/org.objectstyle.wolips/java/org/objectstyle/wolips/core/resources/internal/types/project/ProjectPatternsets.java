@@ -168,7 +168,7 @@ public class ProjectPatternsets implements IProjectPatternsets, IResourceType {
 			PatternsetWorkspaceRunnable patternsetWorkspaceRunnable) {
 		try {
 			ResourcesPlugin.getWorkspace().run(patternsetWorkspaceRunnable,
-					rule, IResource.NONE, null);
+					rule, IWorkspace.AVOID_UPDATE, new NullProgressMonitor());
 		} catch (CoreException e) {
 			CorePlugin.getDefault().log(e);
 		}
