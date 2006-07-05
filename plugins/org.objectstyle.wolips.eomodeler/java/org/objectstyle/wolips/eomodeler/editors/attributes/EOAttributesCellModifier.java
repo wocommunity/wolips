@@ -80,7 +80,7 @@ public class EOAttributesCellModifier implements ICellModifier {
     if (attribute.isInherited()) {
       canModify = false;
     }
-    else if (_property == EOAttributesConstants.PROTOTYPE) {
+    else if (_property == EOAttribute.PROTOTYPE) {
       EOEntity entity = (EOEntity) myAttributesTableViewer.getInput();
       myPrototypeNames = entity.getModel().getModelGroup().getPrototypeAttributeNames();
       myPrototypeNames.add(0, EOAttributesCellModifier.NO_PROTOYPE_VALUE);
@@ -94,37 +94,37 @@ public class EOAttributesCellModifier implements ICellModifier {
   public Object getValue(Object _element, String _property) {
     EOAttribute attribute = (EOAttribute) _element;
     Object value = null;
-    if (_property == EOAttributesConstants.PRIMARY_KEY) {
+    if (_property == EOAttribute.PRIMARY_KEY) {
       value = attribute.isPrimaryKey();
       if (value == null) {
         value = Boolean.FALSE;
       }
     }
-    else if (_property == EOAttributesConstants.CLASS_PROPERTY) {
+    else if (_property == EOAttribute.CLASS_PROPERTY) {
       value = attribute.isClassProperty();
       if (value == null) {
         value = Boolean.FALSE;
       }
     }
-    else if (_property == EOAttributesConstants.LOCKING) {
+    else if (_property == EOAttribute.LOCKING) {
       value = attribute.isUsedForLocking();
       if (value == null) {
         value = Boolean.FALSE;
       }
     }
-    else if (_property == EOAttributesConstants.ALLOW_NULL) {
+    else if (_property == EOAttribute.ALLOW_NULL) {
       value = attribute.isAllowsNull();
       if (value == null) {
         value = Boolean.FALSE;
       }
     }
-    else if (_property == EOAttributesConstants.NAME) {
+    else if (_property == EOAttribute.NAME) {
       value = attribute.getName();
     }
-    else if (_property == EOAttributesConstants.COLUMN) {
+    else if (_property == EOAttribute.COLUMN) {
       value = attribute.getColumnName();
     }
-    else if (_property == EOAttributesConstants.PROTOTYPE) {
+    else if (_property == EOAttribute.PROTOTYPE) {
       String prototypeName = attribute.getPrototypeName();
       if (prototypeName == null) {
         prototypeName = EOAttributesCellModifier.NO_PROTOYPE_VALUE;
@@ -141,25 +141,25 @@ public class EOAttributesCellModifier implements ICellModifier {
     try {
       TableItem tableItem = (TableItem) _element;
       EOAttribute attribute = (EOAttribute) tableItem.getData();
-      if (_property == EOAttributesConstants.PRIMARY_KEY) {
+      if (_property == EOAttribute.PRIMARY_KEY) {
         attribute.setPrimaryKey((Boolean) _value);
       }
-      else if (_property == EOAttributesConstants.CLASS_PROPERTY) {
+      else if (_property == EOAttribute.CLASS_PROPERTY) {
         attribute.setClassProperty((Boolean) _value);
       }
-      else if (_property == EOAttributesConstants.LOCKING) {
+      else if (_property == EOAttribute.LOCKING) {
         attribute.setUsedForLocking((Boolean) _value);
       }
-      else if (_property == EOAttributesConstants.ALLOW_NULL) {
+      else if (_property == EOAttribute.ALLOW_NULL) {
         attribute.setAllowsNull((Boolean) _value);
       }
-      else if (_property == EOAttributesConstants.NAME) {
+      else if (_property == EOAttribute.NAME) {
         attribute.setName((String) _value);
       }
-      else if (_property == EOAttributesConstants.COLUMN) {
+      else if (_property == EOAttribute.COLUMN) {
         attribute.setColumnName((String) _value);
       }
-      else if (_property == EOAttributesConstants.PROTOTYPE) {
+      else if (_property == EOAttribute.PROTOTYPE) {
         Integer prototypeIndex = (Integer) _value;
         int prototypeIndexInt = prototypeIndex.intValue();
         String prototypeName = (prototypeIndexInt == -1) ? null : (String) myPrototypeNames.get(prototypeIndexInt);

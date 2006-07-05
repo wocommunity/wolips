@@ -70,10 +70,10 @@ public class EORelationshipsLabelProvider extends TablePropertyLabelProvider imp
   public Image getColumnImage(Object _element, String _property) {
     EORelationship relationship = (EORelationship) _element;
     Image image = null;
-    if (_property == EORelationshipsConstants.TO_MANY) {
+    if (_property == EORelationship.TO_MANY) {
       image = yesNoImage(relationship.isToMany(), Activator.getDefault().getImageRegistry().get(Activator.TO_MANY_ICON), Activator.getDefault().getImageRegistry().get(Activator.TO_ONE_ICON), Activator.getDefault().getImageRegistry().get(Activator.TO_ONE_ICON));
     }
-    else if (_property == EORelationshipsConstants.CLASS_PROPERTY) {
+    else if (_property == EORelationship.CLASS_PROPERTY) {
       image = yesNoImage(relationship.isClassProperty(), Activator.getDefault().getImageRegistry().get(Activator.CLASS_PROPERTY_ICON), null, null);
     }
     return image;
@@ -82,22 +82,22 @@ public class EORelationshipsLabelProvider extends TablePropertyLabelProvider imp
   public String getColumnText(Object _element, String _property) {
     EORelationship relationship = (EORelationship) _element;
     String text = null;
-    if (_property == EORelationshipsConstants.TO_MANY) {
+    if (_property == EORelationship.TO_MANY) {
       // DO NOTHING
     }
-    else if (_property == EORelationshipsConstants.CLASS_PROPERTY) {
+    else if (_property == EORelationship.CLASS_PROPERTY) {
       // DO NOTHING
     }
-    else if (_property == EORelationshipsConstants.NAME) {
+    else if (_property == EORelationship.NAME) {
       text = relationship.getName();
     }
-    else if (_property == EORelationshipsConstants.DESTINATION) {
+    else if (_property == EORelationship.DESTINATION) {
       EOEntity destination = relationship.getDestination();
       if (destination != null) {
         text = destination.getName();
       }
     }
-    else if (_property == EORelationshipsConstants.SOURCE_ATTRIBUTE) {
+    else if (_property == EORelationship.SOURCE_ATTRIBUTE) {
       EOJoin firstJoin = relationship.getFirstJoin();
       if (firstJoin != null) {
         EOAttribute sourceAttribute = firstJoin.getSourceAttribute();
@@ -106,7 +106,7 @@ public class EORelationshipsLabelProvider extends TablePropertyLabelProvider imp
         }
       }
     }
-    else if (_property == EORelationshipsConstants.DESTINATION_ATTRIBUTE) {
+    else if (_property == EORelationship.DESTINATION_ATTRIBUTE) {
       EOJoin firstJoin = relationship.getFirstJoin();
       if (firstJoin != null) {
         EOAttribute destinationAttribute = firstJoin.getDestinationAttribute();

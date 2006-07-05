@@ -55,28 +55,24 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
-import org.eclipse.ui.views.properties.IPropertySource2;
+import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
 
-public class ConnectionDictionaryPropertySource implements IPropertySource2 {
-  private EOModel myModel;
+public class ConnectionDictionaryPropertySource implements IPropertySource {
   private IPropertyDescriptor[] myDescriptors;
   private Map myConnectionDictionary;
-  private Map myOriginalConnectionDictionary;
 
   public ConnectionDictionaryPropertySource(EOModel _model) {
-    myModel = _model;
-    myConnectionDictionary = new HashMap(_model.getConnectionDictionary());
-    myOriginalConnectionDictionary = new HashMap(_model.getConnectionDictionary());
+    myConnectionDictionary = _model.getConnectionDictionary();
+    if (myConnectionDictionary == null) {
+      myConnectionDictionary = new HashMap();
+      _model.setConnectionDictionary(myConnectionDictionary);
+    }
   }
 
   public Object getEditableValue() {
     return this;
-  }
-
-  public EOModel getModel() {
-    return myModel;
   }
 
   public IPropertyDescriptor[] getPropertyDescriptors() {
@@ -90,17 +86,8 @@ public class ConnectionDictionaryPropertySource implements IPropertySource2 {
     return myDescriptors;
   }
 
-  public boolean isPropertyResettable(Object _id) {
-    return true;
-  }
-
   public Map getConnectionDictionary() {
     return myConnectionDictionary;
-  }
-  
-  public boolean isPropertySet(Object _id) {
-    Map connectionDictionary = getConnectionDictionary();
-    return connectionDictionary != null && connectionDictionary.containsKey(_id);
   }
 
   public Object getPropertyValue(Object _id) {
@@ -112,25 +99,24 @@ public class ConnectionDictionaryPropertySource implements IPropertySource2 {
     return value;
   }
 
-  public void resetPropertyValue(Object _id) {
-    Map connectionDictionary = getConnectionDictionary();
-    if (connectionDictionary != null) {
-      if (myOriginalConnectionDictionary == null || !myOriginalConnectionDictionary.containsKey(_id)) {
-        connectionDictionary.remove(_id);
-      }
-      else {
-        connectionDictionary.put(_id, myOriginalConnectionDictionary.get(_id));
-      }
-    }
-  }
-
   public void setPropertyValue(Object _id, Object _value) {
-    System.out.println("ConnectionDictionaryPropertySource.setPropertyValue: " + _id + "=" + _value);
     Map connectionDictionary = getConnectionDictionary();
     if (connectionDictionary == null) {
       connectionDictionary = new HashMap();
       myConnectionDictionary = connectionDictionary;
     }
     connectionDictionary.put(_id, _value);
+  }
+
+  public boolean isPropertyResettable(Object _id) {
+    return false;
+  }
+
+  public boolean isPropertySet(Object _id) {
+    return true;
+  }
+
+  public void resetPropertyValue(Object _id) {
+    // DO NOTHING
   }
 }

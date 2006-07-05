@@ -55,6 +55,13 @@ import java.util.List;
 import java.util.Map;
 
 public class EORelationship implements IEOAttribute {
+  public static final String TO_MANY = "To Many";
+  public static final String CLASS_PROPERTY = "Class Property";
+  public static final String NAME = "Name";
+  public static final String DESTINATION = "Destination";
+  public static final String SOURCE_ATTRIBUTE = "Source Att";
+  public static final String DESTINATION_ATTRIBUTE = "Dest Att";
+
   private EOEntity myEntity;
   private String myName;
   private String myDestination;

@@ -73,16 +73,16 @@ public class EOAttributesLabelProvider extends TablePropertyLabelProvider implem
   public Image getColumnImage(Object _element, String _property) {
     EOAttribute attribute = (EOAttribute) _element;
     Image image = null;
-    if (_property == EOAttributesConstants.PRIMARY_KEY) {
+    if (_property == EOAttribute.PRIMARY_KEY) {
       image = yesNoImage(attribute.isPrimaryKey(), Activator.getDefault().getImageRegistry().get(Activator.PRIMARY_KEY_ICON), null, null);
     }
-    else if (_property == EOAttributesConstants.LOCKING) {
+    else if (_property == EOAttribute.LOCKING) {
       image = yesNoImage(attribute.isUsedForLocking(), Activator.getDefault().getImageRegistry().get(Activator.LOCKING_ICON), null, null);
     }
-    else if (_property == EOAttributesConstants.CLASS_PROPERTY) {
+    else if (_property == EOAttribute.CLASS_PROPERTY) {
       image = yesNoImage(attribute.isClassProperty(), Activator.getDefault().getImageRegistry().get(Activator.CLASS_PROPERTY_ICON), null, null);
     }
-    else if (_property == EOAttributesConstants.ALLOW_NULL) {
+    else if (_property == EOAttribute.ALLOW_NULL) {
       image = yesNoImage(attribute.isAllowsNull(), Activator.getDefault().getImageRegistry().get(Activator.CHECK_ICON), null, null);
     }
     return image;
@@ -95,25 +95,25 @@ public class EOAttributesLabelProvider extends TablePropertyLabelProvider implem
   public String getColumnText(Object _element, String _property) {
     EOAttribute attribute = (EOAttribute) _element;
     String text = null;
-    if (_property == EOAttributesConstants.PRIMARY_KEY) {
+    if (_property == EOAttribute.PRIMARY_KEY) {
       // DO NOTHING
     }
-    else if (_property == EOAttributesConstants.LOCKING) {
+    else if (_property == EOAttribute.LOCKING) {
       // DO NOTHING
     }
-    else if (_property == EOAttributesConstants.CLASS_PROPERTY) {
+    else if (_property == EOAttribute.CLASS_PROPERTY) {
       // DO NOTHING
     }
-    else if (_property == EOAttributesConstants.ALLOW_NULL) {
+    else if (_property == EOAttribute.ALLOW_NULL) {
       // DO NOTHING
     }
-    else if (_property == EOAttributesConstants.NAME) {
+    else if (_property == EOAttribute.NAME) {
       text = attribute.getName();
     }
-    else if (_property == EOAttributesConstants.COLUMN) {
+    else if (_property == EOAttribute.COLUMN) {
       text = attribute.getColumnName();
     }
-    else if (_property == EOAttributesConstants.PROTOTYPE) {
+    else if (_property == EOAttribute.PROTOTYPE) {
       EOAttribute prototype = attribute.getPrototype();
       if (prototype != null) {
         text = prototype.getName();

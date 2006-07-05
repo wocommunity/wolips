@@ -65,6 +65,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.objectstyle.wolips.eomodeler.Activator;
 import org.objectstyle.wolips.eomodeler.editors.TableUtils;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
+import org.objectstyle.wolips.eomodeler.model.EORelationship;
 
 public class EORelationshipsTableViewer extends Composite implements ISelectionProvider {
   private TableViewer myRelationshipsTableViewer;
@@ -86,19 +87,19 @@ public class EORelationshipsTableViewer extends Composite implements ISelectionP
 
     TableUtils.createTableColumns(myRelationshipsTableViewer, EORelationshipsConstants.COLUMNS);
 
-    TableColumn toManyColumn = relationshipsTable.getColumn(TableUtils.getColumnNumber(EORelationshipsConstants.COLUMNS, EORelationshipsConstants.TO_MANY));
+    TableColumn toManyColumn = relationshipsTable.getColumn(TableUtils.getColumnNumber(EORelationshipsConstants.COLUMNS, EORelationship.TO_MANY));
     toManyColumn.setText("");
 
-    TableColumn classPropertyColumn = relationshipsTable.getColumn(TableUtils.getColumnNumber(EORelationshipsConstants.COLUMNS, EORelationshipsConstants.CLASS_PROPERTY));
+    TableColumn classPropertyColumn = relationshipsTable.getColumn(TableUtils.getColumnNumber(EORelationshipsConstants.COLUMNS, EORelationship.CLASS_PROPERTY));
     classPropertyColumn.setText("");
     classPropertyColumn.setImage(Activator.getDefault().getImageRegistry().get(Activator.CLASS_PROPERTY_ICON));
 
-    ((EORelationshipsViewerSorter) myRelationshipsTableViewer.getSorter()).sort(myRelationshipsTableViewer, EORelationshipsConstants.NAME);
+    ((EORelationshipsViewerSorter) myRelationshipsTableViewer.getSorter()).sort(myRelationshipsTableViewer, EORelationship.NAME);
 
     CellEditor[] cellEditors = new CellEditor[EORelationshipsConstants.COLUMNS.length];
-    cellEditors[TableUtils.getColumnNumber(EORelationshipsConstants.COLUMNS, EORelationshipsConstants.TO_MANY)] = new CheckboxCellEditor();
-    cellEditors[TableUtils.getColumnNumber(EORelationshipsConstants.COLUMNS, EORelationshipsConstants.CLASS_PROPERTY)] = new CheckboxCellEditor();
-    cellEditors[TableUtils.getColumnNumber(EORelationshipsConstants.COLUMNS, EORelationshipsConstants.NAME)] = new TextCellEditor(relationshipsTable);
+    cellEditors[TableUtils.getColumnNumber(EORelationshipsConstants.COLUMNS, EORelationship.TO_MANY)] = new CheckboxCellEditor();
+    cellEditors[TableUtils.getColumnNumber(EORelationshipsConstants.COLUMNS, EORelationship.CLASS_PROPERTY)] = new CheckboxCellEditor();
+    cellEditors[TableUtils.getColumnNumber(EORelationshipsConstants.COLUMNS, EORelationship.NAME)] = new TextCellEditor(relationshipsTable);
     myRelationshipsTableViewer.setCellModifier(new EORelationshipsCellModifier(myRelationshipsTableViewer));
     myRelationshipsTableViewer.setCellEditors(cellEditors);
   }

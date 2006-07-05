@@ -47,44 +47,73 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eomodeler.editors.attributes;
+package org.objectstyle.wolips.eomodeler.properties;
 
-import org.objectstyle.wolips.eomodeler.editors.TablePropertyViewerSorter;
-import org.objectstyle.wolips.eomodeler.model.EOAttribute;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
-public class EOAttributesViewerSorter extends TablePropertyViewerSorter {
+import org.eclipse.ui.views.properties.IPropertyDescriptor;
+import org.eclipse.ui.views.properties.IPropertySource;
+import org.eclipse.ui.views.properties.PropertyDescriptor;
+import org.objectstyle.wolips.eomodeler.model.EOModel;
+import org.objectstyle.wolips.eomodeler.model.EORelationship;
 
-  public EOAttributesViewerSorter(String[] _properties) {
-    super(_properties);
+public class EORelationshipPropertySource implements IPropertySource {
+  private EORelationship myRelationship;
+  private IPropertyDescriptor[] myDescriptors;
+
+  public EORelationshipPropertySource(EORelationship _relationship) {
+    myRelationship = _relationship;
   }
 
-  public Object getComparisonValue(Object _obj, String _property) {
-    EOAttribute attribute = (EOAttribute) _obj;
+  public Object getEditableValue() {
+    return this;
+  }
+
+  public IPropertyDescriptor[] getPropertyDescriptors() {
+    if (myDescriptors == null) {
+      List descriptorsList = new LinkedList();
+      //descriptorsList.add(new PropertyDescriptor(EORelationship., "Connection Dictionary"));
+      descriptorsList.add(new PropertyDescriptor(EOModel.CONNECTION_DICTIONARY, "Connection Dictionary"));
+      myDescriptors = (IPropertyDescriptor[]) descriptorsList.toArray(new IPropertyDescriptor[descriptorsList.size()]);
+    }
+    return myDescriptors;
+  }
+
+  public boolean isPropertyResettable(Object _id) {
+    return true;
+  }
+
+  public boolean isPropertySet(Object _id) {
+    boolean isPropertySet = false;
+    if (_id == EOModel.CONNECTION_DICTIONARY) {
+      isPropertySet = true;
+    }
+    return isPropertySet;
+  }
+
+  public Object getPropertyValue(Object _id) {
     Object value = null;
-    if (_property == EOAttribute.PRIMARY_KEY) {
-      value = attribute.isPrimaryKey();
-    }
-    else if (_property == EOAttribute.LOCKING) {
-      value = attribute.isUsedForLocking();
-    }
-    else if (_property == EOAttribute.CLASS_PROPERTY) {
-      value = attribute.isClassProperty();
-    }
-    else if (_property == EOAttribute.ALLOW_NULL) {
-      value = attribute.isAllowsNull();
-    }
-    else if (_property == EOAttribute.NAME) {
-      value = attribute.getName();
-    }
-    else if (_property == EOAttribute.COLUMN) {
-      value = attribute.getColumnName();
-    }
-    else if (_property == EOAttribute.PROTOTYPE) {
-      value = attribute.getPrototypeName();
-    }
-    else {
-      throw new IllegalArgumentException("Unknown property '" + _property + "'");
+    if (_id == EOModel.CONNECTION_DICTIONARY) {
+      //value = new ConnectionDictionaryPropertySource(myModel);
     }
     return value;
   }
+
+  public void resetPropertyValue(Object _id) {
+    if (_id == EOModel.CONNECTION_DICTIONARY) {
+      //myModel.setConnectionDictionary(myOriginalConnectionDictionary);
+    }
+  }
+
+  public void setPropertyValue(Object _id, Object _value) {
+    System.out.println("EOModelPropertySource.setPropertyValue: " + _id + "=" + _value);
+    if (_id == EOModel.CONNECTION_DICTIONARY) {
+      ConnectionDictionaryPropertySource connDict = (ConnectionDictionaryPropertySource) _value;
+      //myModel.setConnectionDictionary(connDict.getConnectionDictionary());
+    }
+  }
+
 }
