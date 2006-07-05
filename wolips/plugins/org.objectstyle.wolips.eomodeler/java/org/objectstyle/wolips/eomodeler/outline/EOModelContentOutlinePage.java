@@ -47,14 +47,32 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eomodeler.model;
+package org.objectstyle.wolips.eomodeler.outline;
 
-import java.util.List;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
+import org.objectstyle.wolips.eomodeler.editors.EOModelEditorInput;
 
-public interface IEOQualifier {
-  public void loadFromMap(EOModelMap _map) throws EOModelException;
+public class EOModelContentOutlinePage extends ContentOutlinePage {
+  private EOModelEditorInput myEditorInput;
 
-  public EOModelMap toMap();
+  public EOModelContentOutlinePage(EOModelEditorInput _editorInput) {
+    myEditorInput = _editorInput;
+  }
 
-  public void verify(List _failures);
+  public void createControl(Composite _parent) {
+    super.createControl(_parent);
+    TreeViewer viewer = getTreeViewer();
+    viewer.setContentProvider(new EOModelOutlineContentProvider());
+    viewer.setLabelProvider(new EOModelOutlineLabelProvider());
+    viewer.setInput(myEditorInput);
+    viewer.expandToLevel(2);
+  }
+  
+  public void setSelection(ISelection _selection) {
+    super.setSelection(_selection);
+  }
+
 }

@@ -57,9 +57,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.ui.views.properties.IPropertySource;
 import org.objectstyle.cayenne.wocompat.PropertyListSerialization;
+import org.objectstyle.wolips.eomodeler.properties.EOModelPropertySource;
 
-public class EOEntity {
+public class EOEntity implements IAdaptable {
   private EOModel myModel;
   private String myName;
   private String myExternalName;
@@ -85,6 +88,15 @@ public class EOEntity {
     myFetchSpecs = new LinkedList();
     myEntityMap = new EOModelMap();
     myFetchSpecsMap = new EOModelMap();
+  }
+
+  public Object getAdapter(Class _adapter) {
+    //System.out.println("EOEntity.getAdapter: " + _adapter);
+    Object adapter = null;
+    if (IPropertySource.class.isAssignableFrom(_adapter)) {
+      //adapter = new EOModelPropertySource(this);
+    }
+    return adapter;
   }
 
   public EOModel getModel() {
@@ -145,11 +157,41 @@ public class EOEntity {
     myExternalName = _externalName;
   }
 
+  public int hashCode() {
+    return myName.hashCode();
+  }
+
+  public boolean equals(Object _obj) {
+    return (_obj instanceof EOEntity && ((EOEntity) _obj).myName.equals(myName));
+  }
+
+  public List getReferencingRelationships() {
+    List referencingRelationships = new LinkedList();
+    Iterator modelsIter = getModel().getModelGroup().getModels().iterator();
+    while (modelsIter.hasNext()) {
+      EOModel model = (EOModel) modelsIter.next();
+      Iterator entitiesIter = model.getEntities().iterator();
+      while (entitiesIter.hasNext()) {
+        EOEntity entity = (EOEntity) entitiesIter.next();
+        if (!entity.equals(this)) {
+          Iterator relationshipsIter = entity.getRelationships().iterator();
+          while (relationshipsIter.hasNext()) {
+            EORelationship relationship = (EORelationship) relationshipsIter.next();
+            if (relationship.isRelatedTo(this)) {
+              referencingRelationships.add(relationship);
+            }
+          }
+        }
+      }
+    }
+    return referencingRelationships;
+  }
+
   public EOEntity getParent() {
     return myModel.getModelGroup().getEntityNamed(myParent);
   }
 
-  public List getChildren() {
+  public List getChildrenEntities() {
     List children = new LinkedList();
     Iterator modelsIter = myModel.getModelGroup().getModels().iterator();
     while (modelsIter.hasNext()) {
@@ -320,13 +362,18 @@ public class EOEntity {
   }
 
   public void loadFromFile(File _entityFile, File _fetchSpecFile) throws IOException, EOModelException {
-    if (_entityFile.exists()) {
-      EOModelMap entityMap = new EOModelMap((Map) PropertyListSerialization.propertyListFromFile(_entityFile));
-      loadFromMap(entityMap);
+    try {
+      if (_entityFile.exists()) {
+        EOModelMap entityMap = new EOModelMap((Map) PropertyListSerialization.propertyListFromFile(_entityFile));
+        loadFromMap(entityMap);
+      }
+      if (_fetchSpecFile.exists()) {
+        EOModelMap fspecMap = new EOModelMap((Map) PropertyListSerialization.propertyListFromFile(_fetchSpecFile));
+        loadFetchSpecsFromMap(fspecMap);
+      }
     }
-    if (_fetchSpecFile.exists()) {
-      EOModelMap fspecMap = new EOModelMap((Map) PropertyListSerialization.propertyListFromFile(_fetchSpecFile));
-      loadFetchSpecsFromMap(fspecMap);
+    catch (EOModelException e) {
+      throw new EOModelException("Failed to load model from " + _entityFile + " (fetch spec = " + _fetchSpecFile + ").", e);
     }
   }
 
@@ -421,7 +468,7 @@ public class EOEntity {
     }
   }
 
-  public void loadFetchSpecsFromMap(EOModelMap _map) throws DuplicateFetchSpecNameException {
+  public void loadFetchSpecsFromMap(EOModelMap _map) throws EOModelException {
     myFetchSpecsMap = _map;
     Iterator fetchSpecIter = _map.entrySet().iterator();
     while (fetchSpecIter.hasNext()) {

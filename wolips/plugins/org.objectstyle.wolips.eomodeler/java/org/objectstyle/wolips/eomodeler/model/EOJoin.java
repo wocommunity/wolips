@@ -62,6 +62,18 @@ public class EOJoin {
     myJoinMap = new EOModelMap();
   }
 
+  public int hashCode() {
+    return myRelationship.hashCode() * mySourceAttribute.hashCode() * myDestinationAttribute.hashCode();
+  }
+
+  public boolean equals(Object _obj) {
+    return (_obj instanceof EOJoin && ((EOJoin) _obj).myRelationship.equals(myRelationship) && ((EOJoin) _obj).mySourceAttribute.equals(mySourceAttribute) && ((EOJoin) _obj).myDestinationAttribute.equals(myDestinationAttribute));
+  }
+
+  public boolean isRelatedTo(EOAttribute _attribute) {
+    return getSourceAttribute().equals(_attribute) || getDestinationAttribute().equals(_attribute);
+  }
+
   public EOAttribute getSourceAttribute() {
     EOEntity entity = myRelationship.getEntity();
     EOAttribute attribute = null;

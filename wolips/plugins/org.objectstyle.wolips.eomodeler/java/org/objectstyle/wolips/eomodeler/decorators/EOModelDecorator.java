@@ -47,14 +47,58 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eomodeler.model;
+package org.objectstyle.wolips.eomodeler.decorators;
 
-import java.util.List;
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.jface.viewers.ILabelDecorator;
+import org.eclipse.jface.viewers.ILabelProviderListener;
+import org.eclipse.swt.graphics.Image;
 
-public interface IEOQualifier {
-  public void loadFromMap(EOModelMap _map) throws EOModelException;
+public class EOModelDecorator implements ILabelDecorator {
+  public Image decorateImage(Image _image, Object _element) {
+    Image icon = null;
+    return icon;
+  }
 
-  public EOModelMap toMap();
+  public String decorateText(String _text, Object _element) {
+    IResource modelResource = (IResource) _element;
+    boolean isModelFile = (modelResource instanceof IFile);
+    IContainer modelFolder;
+    if (isModelFile) {
+      IFile modelFile = (IFile) _element;
+      modelFolder = modelFile.getParent();
+    }
+    else {
+      modelFolder = (IContainer) modelResource;
+    }
+    String fileName = modelFolder.getName();
+    String fileNameWithoutExtension = fileName.substring(0, fileName.indexOf('.'));
+    String text;
+    if (isModelFile) {
+      text = fileNameWithoutExtension;
+    }
+    else {
+      text = fileNameWithoutExtension + " EOModel";
+    }
+    return text;
+  }
 
-  public void verify(List _failures);
+  public void addListener(ILabelProviderListener _listener) {
+    // DO NOTHING
+  }
+
+  public void dispose() {
+    // DO NOTHING
+  }
+
+  public boolean isLabelProperty(Object _element, String _property) {
+    return false;
+  }
+
+  public void removeListener(ILabelProviderListener _listener) {
+    // DO NOTHING
+  }
+
 }

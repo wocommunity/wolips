@@ -78,6 +78,14 @@ public class EOFetchSpecification {
     mySortOrderings = new LinkedList();
   }
 
+  public int hashCode() {
+    return myEntity.hashCode() * myName.hashCode();
+  }
+
+  public boolean equals(Object _obj) {
+    return (_obj instanceof EOFetchSpecification && ((EOFetchSpecification) _obj).myEntity.equals(myEntity) && ((EOFetchSpecification) _obj).myName.equals(myName));
+  }
+
   public void setName(String _name) {
     myName = _name;
   }
@@ -118,7 +126,7 @@ public class EOFetchSpecification {
     return myEntity;
   }
 
-  public void loadFromMap(EOModelMap _map) {
+  public void loadFromMap(EOModelMap _map) throws EOModelException {
     myFetchSpecMap = _map;
     // "entityName" = myEntity
     myClass = _map.getString("class", true);

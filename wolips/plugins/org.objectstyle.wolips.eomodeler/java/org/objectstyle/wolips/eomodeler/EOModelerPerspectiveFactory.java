@@ -47,14 +47,21 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eomodeler.model;
+package org.objectstyle.wolips.eomodeler;
 
-import java.util.List;
+import org.eclipse.ui.IFolderLayout;
+import org.eclipse.ui.IPageLayout;
+import org.eclipse.ui.IPerspectiveFactory;
 
-public interface IEOQualifier {
-  public void loadFromMap(EOModelMap _map) throws EOModelException;
+public class EOModelerPerspectiveFactory implements IPerspectiveFactory {
+  public static final String EOMODELER_PERSPECTIVE_ID = "org.objectstyle.wolips.eomodeler.EOModelerPerspective";
+  public void createInitialLayout(IPageLayout _layout) {
+    String editorArea = _layout.getEditorArea();
+    IFolderLayout topLeft = _layout.createFolder("left", IPageLayout.LEFT, 0.25f, editorArea);
+    topLeft.addView(IPageLayout.ID_OUTLINE);
+    topLeft.addView("org.eclipse.jdt.ui.PackageExplorer");
 
-  public EOModelMap toMap();
-
-  public void verify(List _failures);
+    IFolderLayout bottomRight = _layout.createFolder("bottom", IPageLayout.BOTTOM, 0.75f, editorArea);
+    bottomRight.addView(IPageLayout.ID_PROP_SHEET);
+  }
 }

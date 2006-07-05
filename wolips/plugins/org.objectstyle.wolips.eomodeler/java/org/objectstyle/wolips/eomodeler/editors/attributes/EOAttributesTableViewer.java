@@ -51,7 +51,9 @@ package org.objectstyle.wolips.eomodeler.editors.attributes;
 
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
@@ -67,7 +69,7 @@ import org.objectstyle.wolips.eomodeler.editors.TriStateCellEditor;
 import org.objectstyle.wolips.eomodeler.editors.relationships.EORelationshipsConstants;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 
-public class EOAttributesTableViewer extends Composite {
+public class EOAttributesTableViewer extends Composite implements ISelectionProvider {
   private TableViewer myAttributesTableViewer;
   private EOEntity myEntity;
 
@@ -155,5 +157,13 @@ public class EOAttributesTableViewer extends Composite {
 
   public void removeSelectionChangedListener(ISelectionChangedListener _listener) {
     myAttributesTableViewer.removeSelectionChangedListener(_listener);
+  }
+
+  public ISelection getSelection() {
+    return myAttributesTableViewer.getSelection();
+  }
+
+  public void setSelection(ISelection _selection) {
+    myAttributesTableViewer.setSelection(_selection);
   }
 }

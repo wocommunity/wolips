@@ -47,14 +47,19 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eomodeler.model;
+package org.objectstyle.wolips.eomodeler.properties;
 
-import java.util.List;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.views.properties.tabbed.AdvancedPropertySection;
+import org.objectstyle.wolips.eomodeler.model.EOModel;
 
-public interface IEOQualifier {
-  public void loadFromMap(EOModelMap _map) throws EOModelException;
-
-  public EOModelMap toMap();
-
-  public void verify(List _failures);
+public class ConnectionDictionarySection extends AdvancedPropertySection {
+  public void setInput(IWorkbenchPart _part, ISelection _selection) {
+    EOModel model = (EOModel) ((IStructuredSelection) _selection).getFirstElement();
+    StructuredSelection connectionDictionarySelection = new StructuredSelection(new ConnectionDictionaryPropertySource(model));
+    super.setInput(_part, connectionDictionarySelection);
+  }
 }

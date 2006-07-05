@@ -57,9 +57,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.ui.views.properties.IPropertySource;
 import org.objectstyle.cayenne.wocompat.PropertyListSerialization;
+import org.objectstyle.wolips.eomodeler.properties.EOModelPropertySource;
 
-public class EOModel {
+public class EOModel implements IAdaptable {
   private EOModelGroup myModelGroup;
   private String myName;
   private String myVersion;
@@ -77,6 +80,23 @@ public class EOModel {
     myDeletedEntityNamesInObjectStore = new LinkedList();
     myVersion = "2.1";
     myModelMap = new EOModelMap();
+  }
+
+  public Object getAdapter(Class _adapter) {
+    Object adapter = null;
+    if (IPropertySource.class.isAssignableFrom(_adapter)) {
+      adapter = new EOModelPropertySource(this);
+    }
+    //System.out.println("EOModel.getAdapter: " + _adapter);
+    return adapter;
+  }
+
+  public int hashCode() {
+    return myName.hashCode();
+  }
+
+  public boolean equals(Object _obj) {
+    return (_obj instanceof EOModel && ((EOModel) _obj).myName.equals(myName));
   }
 
   public EOModelGroup getModelGroup() {

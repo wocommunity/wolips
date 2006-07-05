@@ -49,6 +49,8 @@
  */
 package org.objectstyle.wolips.eomodeler.model;
 
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -80,6 +82,14 @@ public class EOAttribute implements IEOAttribute {
   public EOAttribute(EOEntity _entity) {
     myEntity = _entity;
     myAttributeMap = new EOModelMap();
+  }
+
+  public int hashCode() {
+    return myEntity.hashCode() * myName.hashCode();
+  }
+
+  public boolean equals(Object _obj) {
+    return (_obj instanceof EOAttribute && ((EOAttribute) _obj).myEntity.equals(myEntity) && ((EOAttribute) _obj).myName.equals(myName));
   }
 
   public boolean isPrototyped() {
@@ -343,6 +353,26 @@ public class EOAttribute implements IEOAttribute {
 
   public Boolean isClientClassProperty() {
     return myClientClassProperty;
+  }
+
+  public List getReferencingRelationships() {
+    List referencingRelationships = new LinkedList();
+    Iterator modelsIter = getEntity().getModel().getModelGroup().getModels().iterator();
+    while (modelsIter.hasNext()) {
+      EOModel model = (EOModel) modelsIter.next();
+      Iterator entitiesIter = model.getEntities().iterator();
+      while (entitiesIter.hasNext()) {
+        EOEntity entity = (EOEntity) entitiesIter.next();
+        Iterator relationshipsIter = entity.getRelationships().iterator();
+        while (relationshipsIter.hasNext()) {
+          EORelationship relationship = (EORelationship) relationshipsIter.next();
+          if (relationship.isRelatedTo(this)) {
+            referencingRelationships.add(relationship);
+          }
+        }
+      }
+    }
+    return referencingRelationships;
   }
 
   public void loadFromMap(EOModelMap _attributeMap) {

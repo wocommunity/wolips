@@ -63,7 +63,7 @@ public class EONotQualifier implements IEOQualifier {
     return myQualifier;
   }
 
-  public void loadFromMap(EOModelMap _map) {
+  public void loadFromMap(EOModelMap _map) throws EOModelException {
     Map qualifierMap = _map.getMap("qualifier");
     if (qualifierMap != null) {
       myQualifier = EOQualifierFactory.qualifierForMap(new EOModelMap(qualifierMap));
