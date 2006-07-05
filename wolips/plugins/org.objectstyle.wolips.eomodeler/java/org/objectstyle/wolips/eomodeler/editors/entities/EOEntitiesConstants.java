@@ -49,10 +49,8 @@
  */
 package org.objectstyle.wolips.eomodeler.editors.entities;
 
+import org.objectstyle.wolips.eomodeler.model.EOEntity;
+
 public class EOEntitiesConstants {
-  public static final String NAME = "Name";
-  public static final String TABLE = "Table";
-  public static final String CLASS_NAME = "Class Name";
-  public static final String PARENT = "Parent";
-  public static final String[] COLUMNS = { EOEntitiesConstants.NAME, EOEntitiesConstants.TABLE, EOEntitiesConstants.CLASS_NAME, EOEntitiesConstants.PARENT };
+  public static final String[] COLUMNS = { EOEntity.NAME, EOEntity.TABLE, EOEntity.CLASS_NAME, EOEntity.PARENT };
 }

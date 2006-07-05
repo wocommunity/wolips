@@ -64,7 +64,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.objectstyle.wolips.eomodeler.editors.KeyComboBoxCellEditor;
 import org.objectstyle.wolips.eomodeler.editors.TableUtils;
-import org.objectstyle.wolips.eomodeler.editors.relationships.EORelationshipsConstants;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
 
@@ -88,13 +87,13 @@ public class EOEntitiesTableViewer extends Composite implements ISelectionProvid
 
     TableUtils.createTableColumns(myEntitiesTableViewer, EOEntitiesConstants.COLUMNS);
 
-    ((EOEntitiesViewerSorter) myEntitiesTableViewer.getSorter()).sort(myEntitiesTableViewer, EORelationshipsConstants.NAME);
+    ((EOEntitiesViewerSorter) myEntitiesTableViewer.getSorter()).sort(myEntitiesTableViewer, EOEntity.NAME);
 
     CellEditor[] cellEditors = new CellEditor[EOEntitiesConstants.COLUMNS.length];
-    cellEditors[TableUtils.getColumnNumber(EOEntitiesConstants.COLUMNS, EOEntitiesConstants.NAME)] = new TextCellEditor(entitiesTable);
-    cellEditors[TableUtils.getColumnNumber(EOEntitiesConstants.COLUMNS, EOEntitiesConstants.TABLE)] = new TextCellEditor(entitiesTable);
-    cellEditors[TableUtils.getColumnNumber(EOEntitiesConstants.COLUMNS, EOEntitiesConstants.CLASS_NAME)] = new TextCellEditor(entitiesTable);
-    cellEditors[TableUtils.getColumnNumber(EOEntitiesConstants.COLUMNS, EOEntitiesConstants.PARENT)] = new KeyComboBoxCellEditor(entitiesTable, new String[0], SWT.READ_ONLY);
+    cellEditors[TableUtils.getColumnNumber(EOEntitiesConstants.COLUMNS, EOEntity.NAME)] = new TextCellEditor(entitiesTable);
+    cellEditors[TableUtils.getColumnNumber(EOEntitiesConstants.COLUMNS, EOEntity.TABLE)] = new TextCellEditor(entitiesTable);
+    cellEditors[TableUtils.getColumnNumber(EOEntitiesConstants.COLUMNS, EOEntity.CLASS_NAME)] = new TextCellEditor(entitiesTable);
+    cellEditors[TableUtils.getColumnNumber(EOEntitiesConstants.COLUMNS, EOEntity.PARENT)] = new KeyComboBoxCellEditor(entitiesTable, new String[0], SWT.READ_ONLY);
     myEntitiesTableViewer.setCellModifier(new EOEntitiesCellModifier(myEntitiesTableViewer, cellEditors));
     myEntitiesTableViewer.setCellEditors(cellEditors);
   }

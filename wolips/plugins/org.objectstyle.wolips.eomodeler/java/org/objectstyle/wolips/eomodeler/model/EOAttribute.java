@@ -55,6 +55,14 @@ import java.util.List;
 import java.util.Map;
 
 public class EOAttribute implements IEOAttribute {
+  public static final String PRIMARY_KEY = "Primary Key";
+  public static final String CLASS_PROPERTY = "Class Property";
+  public static final String LOCKING = "Locking";
+  public static final String ALLOW_NULL = "Allow Null";
+  public static final String PROTOTYPE = "Prototype";
+  public static final String NAME = "Name";
+  public static final String COLUMN = "Column";
+
   private EOEntity myEntity;
   private String myName;
   private String myColumnName;

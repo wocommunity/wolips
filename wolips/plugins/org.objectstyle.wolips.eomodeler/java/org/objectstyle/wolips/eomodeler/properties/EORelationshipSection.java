@@ -47,44 +47,63 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eomodeler.editors.attributes;
+package org.objectstyle.wolips.eomodeler.properties;
 
-import org.objectstyle.wolips.eomodeler.editors.TablePropertyViewerSorter;
-import org.objectstyle.wolips.eomodeler.model.EOAttribute;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CLabel;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
+import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
+import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
+import org.objectstyle.wolips.eomodeler.model.EORelationship;
 
-public class EOAttributesViewerSorter extends TablePropertyViewerSorter {
+public class EORelationshipSection extends AbstractPropertySection {
+  private EORelationship myRelationship;
 
-  public EOAttributesViewerSorter(String[] _properties) {
-    super(_properties);
+  private Text myNameField;
+
+  public void createControls(Composite _parent, TabbedPropertySheetPage _tabbedPropertySheetPage) {
+    super.createControls(_parent, _tabbedPropertySheetPage);
+    Composite composite = getWidgetFactory().createFlatFormComposite(_parent);
+    myNameField = createText(composite, "");
+    //labelText.addModifyListener(listener);
+    createLabelFor(composite, myNameField, "Name");
   }
 
-  public Object getComparisonValue(Object _obj, String _property) {
-    EOAttribute attribute = (EOAttribute) _obj;
-    Object value = null;
-    if (_property == EOAttribute.PRIMARY_KEY) {
-      value = attribute.isPrimaryKey();
-    }
-    else if (_property == EOAttribute.LOCKING) {
-      value = attribute.isUsedForLocking();
-    }
-    else if (_property == EOAttribute.CLASS_PROPERTY) {
-      value = attribute.isClassProperty();
-    }
-    else if (_property == EOAttribute.ALLOW_NULL) {
-      value = attribute.isAllowsNull();
-    }
-    else if (_property == EOAttribute.NAME) {
-      value = attribute.getName();
-    }
-    else if (_property == EOAttribute.COLUMN) {
-      value = attribute.getColumnName();
-    }
-    else if (_property == EOAttribute.PROTOTYPE) {
-      value = attribute.getPrototypeName();
-    }
-    else {
-      throw new IllegalArgumentException("Unknown property '" + _property + "'");
-    }
-    return value;
+  public void dispose() {
+    super.dispose();
+  }
+
+  protected Text createText(Composite _parent, String _initialValue) {
+    Text text = getWidgetFactory().createText(_parent, _initialValue);
+    FormData data = new FormData();
+    data.left = new FormAttachment(0, STANDARD_LABEL_WIDTH);
+    data.right = new FormAttachment(100, 0);
+    data.top = new FormAttachment(0, ITabbedPropertyConstants.VSPACE);
+    text.setLayoutData(data);
+    return text;
+  }
+
+  protected CLabel createLabelFor(Composite _parent, Control _control, String _labelText) {
+    CLabel label = getWidgetFactory().createCLabel(_parent, _labelText);
+    FormData data = new FormData();
+    data.left = new FormAttachment(0, 0);
+    data.right = new FormAttachment(_control, -ITabbedPropertyConstants.HSPACE);
+    data.top = new FormAttachment(_control, 0, SWT.CENTER);
+    label.setLayoutData(data);
+    return label;
+  }
+
+  public void setInput(IWorkbenchPart _part, ISelection _selection) {
+    super.setInput(_part, _selection);
+    myRelationship = (EORelationship) ((IStructuredSelection) _selection).getFirstElement();
+    myNameField.setText(myRelationship.getName());
   }
 }

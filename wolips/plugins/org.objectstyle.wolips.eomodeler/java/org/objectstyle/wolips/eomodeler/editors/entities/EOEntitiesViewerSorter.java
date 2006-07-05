@@ -61,16 +61,16 @@ public class EOEntitiesViewerSorter extends TablePropertyViewerSorter {
   public Object getComparisonValue(Object _obj, String _property) {
     EOEntity entity = (EOEntity) _obj;
     Object value = null;
-    if (_property == EOEntitiesConstants.NAME) {
+    if (_property == EOEntity.NAME) {
       value = entity.getName();
     }
-    else if (_property == EOEntitiesConstants.TABLE) {
+    else if (_property == EOEntity.TABLE) {
       value = entity.getExternalName();
     }
-    else if (_property == EOEntitiesConstants.CLASS_NAME) {
+    else if (_property == EOEntity.CLASS_NAME) {
       value = entity.getClassName();
     }
-    else if (_property == EOEntitiesConstants.PARENT) {
+    else if (_property == EOEntity.PARENT) {
       value = entity.getParentName();
     }
     else {

@@ -184,7 +184,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
     try {
       IWorkbench workbench = Activator.getDefault().getWorkbench();
       IWorkbenchPage workbenchPage = workbench.getActiveWorkbenchWindow().getActivePage();
-      if (!EOModelerPerspectiveFactory.EOMODELER_PERSPECTIVE_ID.equals(workbenchPage.getPerspective().getId())) {
+      if (workbenchPage != null && !EOModelerPerspectiveFactory.EOMODELER_PERSPECTIVE_ID.equals(workbenchPage.getPerspective().getId())) {
         boolean switchPerspectives = MessageDialog.openQuestion(Display.getDefault().getActiveShell(), "Switch Perspectives?", "Would you like to switch to the EOModeler Perspective?");
         if (switchPerspectives) {
           workbench.showPerspective(EOModelerPerspectiveFactory.EOMODELER_PERSPECTIVE_ID, workbench.getActiveWorkbenchWindow());

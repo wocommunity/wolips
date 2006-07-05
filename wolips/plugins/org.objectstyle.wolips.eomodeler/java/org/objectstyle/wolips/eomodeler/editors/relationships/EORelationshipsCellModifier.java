@@ -65,20 +65,20 @@ public class EORelationshipsCellModifier implements ICellModifier {
   }
 
   public boolean canModify(Object _element, String _property) {
-    boolean canModify = (_property == EORelationshipsConstants.CLASS_PROPERTY || _property == EORelationshipsConstants.NAME);
+    boolean canModify = (_property == EORelationship.CLASS_PROPERTY || _property == EORelationship.NAME);
     return canModify;
   }
 
   public Object getValue(Object _element, String _property) {
     EORelationship relationship = (EORelationship) _element;
     Object value = null;
-    if (_property == EORelationshipsConstants.CLASS_PROPERTY) {
+    if (_property == EORelationship.CLASS_PROPERTY) {
       value = relationship.isClassProperty();
       if (value == null) {
         value = Boolean.FALSE;
       }
     }
-    else if (_property == EORelationshipsConstants.NAME) {
+    else if (_property == EORelationship.NAME) {
       value = relationship.getName();
     }
     else {
@@ -91,10 +91,10 @@ public class EORelationshipsCellModifier implements ICellModifier {
     try {
       TableItem tableItem = (TableItem) _element;
       EORelationship relationship = (EORelationship) tableItem.getData();
-      if (_property == EORelationshipsConstants.CLASS_PROPERTY) {
+      if (_property == EORelationship.CLASS_PROPERTY) {
         relationship.setClassProperty((Boolean) _value);
       }
-      else if (_property == EORelationshipsConstants.NAME) {
+      else if (_property == EORelationship.NAME) {
         relationship.setName((String) _value);
       }
       else {

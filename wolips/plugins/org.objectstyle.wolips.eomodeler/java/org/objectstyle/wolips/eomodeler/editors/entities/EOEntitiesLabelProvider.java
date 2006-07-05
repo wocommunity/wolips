@@ -67,16 +67,16 @@ public class EOEntitiesLabelProvider extends TablePropertyLabelProvider {
   public String getColumnText(Object _element, String _property) {
     EOEntity entity = (EOEntity) _element;
     String text = null;
-    if (_property == EOEntitiesConstants.NAME) {
+    if (_property == EOEntity.NAME) {
       text = entity.getName();
     }
-    else if (_property == EOEntitiesConstants.TABLE) {
+    else if (_property == EOEntity.TABLE) {
       text = entity.getExternalName();
     }
-    else if (_property == EOEntitiesConstants.CLASS_NAME) {
+    else if (_property == EOEntity.CLASS_NAME) {
       text = entity.getClassName();
     }
-    else if (_property == EOEntitiesConstants.PARENT) {
+    else if (_property == EOEntity.PARENT) {
       EOEntity parent = entity.getParent();
       if (parent != null) {
         text = parent.getName();

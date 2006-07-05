@@ -63,28 +63,28 @@ public class EORelationshipsViewerSorter extends TablePropertyViewerSorter {
   public Object getComparisonValue(Object _obj, String _property) {
     EORelationship relationship = (EORelationship) _obj;
     Object value = null;
-    if (_property == EORelationshipsConstants.TO_MANY) {
+    if (_property == EORelationship.TO_MANY) {
       value = relationship.isToMany();
     }
-    else if (_property == EORelationshipsConstants.CLASS_PROPERTY) {
+    else if (_property == EORelationship.CLASS_PROPERTY) {
       value = relationship.isClassProperty();
     }
-    else if (_property == EORelationshipsConstants.NAME) {
+    else if (_property == EORelationship.NAME) {
       value = relationship.getName();
     }
-    else if (_property == EORelationshipsConstants.DESTINATION) {
+    else if (_property == EORelationship.DESTINATION) {
       EOEntity destination = relationship.getDestination();
       if (destination != null) {
         value = destination.getName();
       }
     }
-    else if (_property == EORelationshipsConstants.SOURCE_ATTRIBUTE) {
+    else if (_property == EORelationship.SOURCE_ATTRIBUTE) {
       EOJoin firstJoin = relationship.getFirstJoin();
       if (firstJoin != null) {
         value = firstJoin.getSourceAttribute().getName();
       }
     }
-    else if (_property == EORelationshipsConstants.DESTINATION_ATTRIBUTE) {
+    else if (_property == EORelationship.DESTINATION_ATTRIBUTE) {
       EOJoin firstJoin = relationship.getFirstJoin();
       if (firstJoin != null) {
         value = firstJoin.getDestinationAttribute().getName();

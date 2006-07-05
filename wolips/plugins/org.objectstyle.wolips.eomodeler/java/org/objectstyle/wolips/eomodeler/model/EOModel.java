@@ -63,6 +63,10 @@ import org.objectstyle.cayenne.wocompat.PropertyListSerialization;
 import org.objectstyle.wolips.eomodeler.properties.EOModelPropertySource;
 
 public class EOModel implements IAdaptable {
+  public static final String CONNECTION_DICTIONARY = "Connection Dictionary";
+  public static final String ADAPTOR_NAME = "Adaptor";
+  public static final String USER_INFO = "User Info";
+
   private EOModelGroup myModelGroup;
   private String myName;
   private String myVersion;
@@ -84,10 +88,9 @@ public class EOModel implements IAdaptable {
 
   public Object getAdapter(Class _adapter) {
     Object adapter = null;
-    if (IPropertySource.class.isAssignableFrom(_adapter)) {
+    if (_adapter == IPropertySource.class) {
       adapter = new EOModelPropertySource(this);
     }
-    //System.out.println("EOModel.getAdapter: " + _adapter);
     return adapter;
   }
 

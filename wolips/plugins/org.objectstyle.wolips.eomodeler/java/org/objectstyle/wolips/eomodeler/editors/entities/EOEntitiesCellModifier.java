@@ -75,7 +75,7 @@ public class EOEntitiesCellModifier implements ICellModifier {
   }
 
   public boolean canModify(Object _element, String _property) {
-    if (_property == EOEntitiesConstants.PARENT) {
+    if (_property == EOEntity.PARENT) {
       EOModel model = (EOModel) myModelTableViewer.getInput();
       myEntityNames = model.getModelGroup().getEntityNames();
       myEntityNames.add(0, EOEntitiesCellModifier.NO_PARENT_VALUE);
@@ -89,16 +89,16 @@ public class EOEntitiesCellModifier implements ICellModifier {
   public Object getValue(Object _element, String _property) {
     EOEntity entity = (EOEntity) _element;
     Object value = null;
-    if (_property == EOEntitiesConstants.NAME) {
+    if (_property == EOEntity.NAME) {
       value = entity.getName();
     }
-    else if (_property == EOEntitiesConstants.TABLE) {
+    else if (_property == EOEntity.TABLE) {
       value = entity.getExternalName();
     }
-    else if (_property == EOEntitiesConstants.CLASS_NAME) {
+    else if (_property == EOEntity.CLASS_NAME) {
       value = entity.getClassName();
     }
-    else if (_property == EOEntitiesConstants.PARENT) {
+    else if (_property == EOEntity.PARENT) {
       String parentName = entity.getParentName();
       if (parentName == null) {
         parentName = EOEntitiesCellModifier.NO_PARENT_VALUE;
@@ -115,16 +115,16 @@ public class EOEntitiesCellModifier implements ICellModifier {
     try {
       TableItem tableItem = (TableItem) _element;
       EOEntity entity = (EOEntity) tableItem.getData();
-      if (_property == EOEntitiesConstants.NAME) {
+      if (_property == EOEntity.NAME) {
         entity.setName((String) _value);
       }
-      else if (_property == EOEntitiesConstants.TABLE) {
+      else if (_property == EOEntity.TABLE) {
         entity.setExternalName((String) _value);
       }
-      else if (_property == EOEntitiesConstants.CLASS_NAME) {
+      else if (_property == EOEntity.CLASS_NAME) {
         entity.setClassName((String) _value);
       }
-      else if (_property == EOEntitiesConstants.PARENT) {
+      else if (_property == EOEntity.PARENT) {
         Integer entityIndex = (Integer) _value;
         int entityIndexInt = entityIndex.intValue();
         String entityName = (entityIndexInt == -1) ? null : (String) myEntityNames.get(entityIndexInt);

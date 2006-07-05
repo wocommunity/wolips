@@ -60,9 +60,13 @@ import java.util.Map;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.objectstyle.cayenne.wocompat.PropertyListSerialization;
-import org.objectstyle.wolips.eomodeler.properties.EOModelPropertySource;
 
 public class EOEntity implements IAdaptable {
+  public static final String NAME = "Name";
+  public static final String TABLE = "Table";
+  public static final String CLASS_NAME = "Class Name";
+  public static final String PARENT = "Parent";
+
   private EOModel myModel;
   private String myName;
   private String myExternalName;
