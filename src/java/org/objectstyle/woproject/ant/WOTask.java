@@ -2,7 +2,7 @@
  *
  * The ObjectStyle Group Software License, Version 1.0
  *
- * Copyright (c) 2002- 2005 The ObjectStyle Group
+ * Copyright (c) 2002- 2006 The ObjectStyle Group
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -436,7 +436,7 @@ public abstract class WOTask extends Task {
 		while (en.hasMoreElements()) {
             ResourcesSet rs = (ResourcesSet) en.nextElement();
             if( rs.testIfCondition() ){
-                cp.addFileset( (FileSet) rs );
+                cp.addFileset( rs );
                 count++;
             }
         }
@@ -462,7 +462,7 @@ public abstract class WOTask extends Task {
 		while (en.hasMoreElements()) {
             ResourcesSet rs = (ResourcesSet) en.nextElement();
             if( rs.testIfCondition() ){
-                cp.addFileset( (FileSet) rs );
+                cp.addFileset( rs );
                 count++;
             }
               }
