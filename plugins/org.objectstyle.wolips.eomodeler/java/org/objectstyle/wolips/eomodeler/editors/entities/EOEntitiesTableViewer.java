@@ -50,7 +50,11 @@
 package org.objectstyle.wolips.eomodeler.editors.entities;
 
 import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
@@ -61,9 +65,10 @@ import org.eclipse.swt.widgets.Table;
 import org.objectstyle.wolips.eomodeler.editors.KeyComboBoxCellEditor;
 import org.objectstyle.wolips.eomodeler.editors.TableUtils;
 import org.objectstyle.wolips.eomodeler.editors.relationships.EORelationshipsConstants;
+import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
 
-public class EOEntitiesTableViewer extends Composite {
+public class EOEntitiesTableViewer extends Composite implements ISelectionProvider {
   private TableViewer myEntitiesTableViewer;
   private EOModel myModel;
 
@@ -104,14 +109,34 @@ public class EOEntitiesTableViewer extends Composite {
     return myModel;
   }
 
+  public void setSelectedEntity(EOEntity _entity) {
+    IStructuredSelection selection = (IStructuredSelection) myEntitiesTableViewer.getSelection();
+    if (selection != null && !selection.toList().contains(_entity)) {
+      if (_entity == null) {
+        myEntitiesTableViewer.setSelection(new StructuredSelection(), true);
+      }
+      else {
+        myEntitiesTableViewer.setSelection(new StructuredSelection(_entity), true);
+      }
+    }
+  }
+
   public TableViewer getTableViewer() {
     return myEntitiesTableViewer;
   }
-  
+
+  public void setSelection(ISelection _selection) {
+    myEntitiesTableViewer.setSelection(_selection);
+  }
+
+  public ISelection getSelection() {
+    return myEntitiesTableViewer.getSelection();
+  }
+
   public void addSelectionChangedListener(ISelectionChangedListener _listener) {
     myEntitiesTableViewer.addSelectionChangedListener(_listener);
   }
-  
+
   public void removeSelectionChangedListener(ISelectionChangedListener _listener) {
     myEntitiesTableViewer.removeSelectionChangedListener(_listener);
   }

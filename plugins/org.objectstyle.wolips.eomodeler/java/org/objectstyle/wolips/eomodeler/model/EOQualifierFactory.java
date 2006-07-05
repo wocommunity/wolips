@@ -50,7 +50,7 @@
 package org.objectstyle.wolips.eomodeler.model;
 
 public class EOQualifierFactory {
-  public static IEOQualifier qualifierForMap(EOModelMap _qualifierMap) {
+  public static IEOQualifier qualifierForMap(EOModelMap _qualifierMap) throws EOModelException {
     String className = _qualifierMap.getString("class", true);
     IEOQualifier qualifier = qualifierForClass(className);
     qualifier.loadFromMap(_qualifierMap);

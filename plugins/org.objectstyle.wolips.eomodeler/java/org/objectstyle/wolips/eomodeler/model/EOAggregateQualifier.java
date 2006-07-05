@@ -83,7 +83,7 @@ public abstract class EOAggregateQualifier implements IEOQualifier {
     return myQualifiers;
   }
 
-  public void loadFromMap(EOModelMap _map) {
+  public void loadFromMap(EOModelMap _map) throws EOModelException {
     List qualifiers = _map.getList("qualifiers");
     if (qualifiers != null) {
       Iterator qualifiersIter = qualifiers.iterator();

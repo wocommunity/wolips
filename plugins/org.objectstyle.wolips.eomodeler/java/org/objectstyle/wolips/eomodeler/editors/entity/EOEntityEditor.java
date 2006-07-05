@@ -50,7 +50,11 @@
 package org.objectstyle.wolips.eomodeler.editors.entity;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.ListenerList;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.layout.GridData;
@@ -63,10 +67,16 @@ import org.objectstyle.wolips.eomodeler.editors.attributes.EOAttributesTableView
 import org.objectstyle.wolips.eomodeler.editors.relationships.EORelationshipsTableViewer;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 
-public class EOEntityEditor extends EditorPart implements IEntityEditor {
+public class EOEntityEditor extends EditorPart implements IEntityEditor, ISelectionProvider {
   private EOAttributesTableViewer myAttributesTableViewer;
   private EORelationshipsTableViewer myRelationshipsTableViewer;
   private EOEntity myEntity;
+  private ListenerList myListenerList;
+  private ISelection myLastSelection;
+
+  public EOEntityEditor() {
+    myListenerList = new ListenerList();
+  }
 
   public void setEntity(EOEntity _entity) {
     myEntity = _entity;
@@ -85,6 +95,14 @@ public class EOEntityEditor extends EditorPart implements IEntityEditor {
     // DO NOTHING
   }
 
+  public EOAttributesTableViewer getAttributesTableViewer() {
+    return myAttributesTableViewer;
+  }
+
+  public EORelationshipsTableViewer getRelationshipsTableViewer() {
+    return myRelationshipsTableViewer;
+  }
+
   public void init(IEditorSite _site, IEditorInput _input) {
     setSite(_site);
     setEntity(null);
@@ -101,10 +119,15 @@ public class EOEntityEditor extends EditorPart implements IEntityEditor {
   public void createPartControl(Composite _parent) {
     SashForm sashForm = new SashForm(_parent, SWT.VERTICAL);
     sashForm.setLayoutData(new GridData(GridData.FILL_BOTH));
+
     myAttributesTableViewer = new EOAttributesTableViewer(sashForm, SWT.NONE);
     myAttributesTableViewer.setLayoutData(new GridData(GridData.FILL_BOTH));
+    myAttributesTableViewer.addSelectionChangedListener(new AttributeSelectionChangedListener());
+
     myRelationshipsTableViewer = new EORelationshipsTableViewer(sashForm, SWT.NONE);
     myRelationshipsTableViewer.setLayoutData(new GridData(GridData.FILL_BOTH));
+    myRelationshipsTableViewer.addSelectionChangedListener(new RelationshipSelectionChangedListener());
+
     sashForm.setWeights(new int[] { 2, 1 });
     updateTableViewers();
   }
@@ -122,13 +145,45 @@ public class EOEntityEditor extends EditorPart implements IEntityEditor {
     }
   }
 
+  public ISelection getSelection() {
+    return myLastSelection;
+  }
+
+  public void fireSelectionChanged(ISelection _selection) {
+    Object[] listeners = myListenerList.getListeners();
+    for (int i = 0; i < listeners.length; i++) {
+      ((ISelectionChangedListener) listeners[i]).selectionChanged(new SelectionChangedEvent(this, _selection));
+    }
+  }
+
+  public void setSelection(ISelection _selection) {
+    myAttributesTableViewer.setSelection(_selection);
+    myRelationshipsTableViewer.setSelection(_selection);
+  }
+
   public void addSelectionChangedListener(ISelectionChangedListener _listener) {
-    myAttributesTableViewer.addSelectionChangedListener(_listener);
-    myRelationshipsTableViewer.addSelectionChangedListener(_listener);
+    myListenerList.add(_listener);
   }
 
   public void removeSelectionChangedListener(ISelectionChangedListener _listener) {
-    myAttributesTableViewer.removeSelectionChangedListener(_listener);
-    myRelationshipsTableViewer.removeSelectionChangedListener(_listener);
+    myListenerList.remove(_listener);
+  }
+
+  protected class AttributeSelectionChangedListener implements ISelectionChangedListener {
+    public void selectionChanged(SelectionChangedEvent _event) {
+      if (!_event.getSelection().isEmpty()) {
+        getRelationshipsTableViewer().setSelection(null);
+        fireSelectionChanged(_event.getSelection());
+      }
+    }
+  }
+
+  protected class RelationshipSelectionChangedListener implements ISelectionChangedListener {
+    public void selectionChanged(SelectionChangedEvent _event) {
+      if (!_event.getSelection().isEmpty()) {
+        getAttributesTableViewer().setSelection(null);
+        fireSelectionChanged(_event.getSelection());
+      }
+    }
   }
 }

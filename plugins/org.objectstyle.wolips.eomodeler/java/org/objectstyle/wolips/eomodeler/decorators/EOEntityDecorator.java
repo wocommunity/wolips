@@ -47,14 +47,52 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eomodeler.model;
+package org.objectstyle.wolips.eomodeler.decorators;
 
-import java.util.List;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.jface.viewers.ILabelDecorator;
+import org.eclipse.jface.viewers.ILabelProviderListener;
+import org.eclipse.swt.graphics.Image;
+import org.objectstyle.wolips.eomodeler.Activator;
 
-public interface IEOQualifier {
-  public void loadFromMap(EOModelMap _map) throws EOModelException;
+public class EOEntityDecorator implements ILabelDecorator {
+  protected boolean shouldDecorate(Object _element) {
+    IFile file = (IFile) _element;
+    return ("eomodeld".equals(file.getParent().getFileExtension()));
+  }
 
-  public EOModelMap toMap();
+  public Image decorateImage(Image _image, Object _element) {
+    Image icon = null;
+    if (shouldDecorate(_element)) {
+      icon = Activator.getDefault().getImageRegistry().get(Activator.EOENTITY_ICON);
+    }
+    return icon;
+  }
 
-  public void verify(List _failures);
+  public String decorateText(String _text, Object _element) {
+    String text = null;
+    if (shouldDecorate(_element)) {
+      IFile entityFile = (IFile) _element;
+      String fileName = entityFile.getName();
+      text = fileName.substring(0, fileName.indexOf('.'));
+    }
+    return text;
+  }
+
+  public void addListener(ILabelProviderListener _listener) {
+    // DO NOTHING
+  }
+
+  public void dispose() {
+    // DO NOTHING
+  }
+
+  public boolean isLabelProperty(Object _element, String _property) {
+    return false;
+  }
+
+  public void removeListener(ILabelProviderListener _listener) {
+    // DO NOTHING
+  }
+
 }

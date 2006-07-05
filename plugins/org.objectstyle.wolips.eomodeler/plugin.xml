@@ -5,23 +5,92 @@
    <extension
          point="org.eclipse.ui.editors">
       <editor
-            name="EOModel Editor"
-            extensions="eomodeld"
-            icon="icons/webobjects_eomodeler.gif"
-            contributorClass="org.objectstyle.wolips.eomodeler.editors.EOModelEditorContributor"
             class="org.objectstyle.wolips.eomodeler.editors.EOModelEditor"
-            id="org.objectstyle.wolips.eomodeler.editors.EOModelEditor">
+            contributorClass="org.objectstyle.wolips.eomodeler.editors.EOModelEditorContributor"
+            extensions="eomodeld, plist"
+            icon="icons/eoModel.gif"
+            id="org.objectstyle.wolips.eomodeler.editors.EOModelEditor"
+            matchingStrategy="org.objectstyle.wolips.eomodeler.editors.EOModelMatchingStrategy"
+            name="EOModel Editor">
       </editor>
    </extension>
    <extension
          point="org.eclipse.ui.newWizards">
       <wizard
             name="EOModel (Experimental)"
-            icon="icons/webobjects_eomodeler.gif"
+            icon="icons/eoModel.gif"
             category="org.objectstyle.wolips.wizards"
             class="org.objectstyle.wolips.eomodeler.wizards.SampleNewWizard"
             id="org.objectstyle.wolips.eomodeler.wizards.SampleNewWizard">
       </wizard>
+   </extension>
+   <extension
+         point="org.eclipse.ui.decorators">
+      <decorator
+            class="org.objectstyle.wolips.eomodeler.decorators.EOEntityDecorator"
+            id="org.objectstyle.wolips.eomodeler.decorators.EOEntityDecorator"
+            label="EOEntity Decorator"
+            lightweight="false"
+            state="true">
+         <enablement>
+            <and>
+               <objectState
+                     name="extension"
+                     value="plist"/>
+               <objectClass name="org.eclipse.core.resources.IFile"/>
+            </and>
+         </enablement>
+      </decorator>
+      <decorator
+            class="org.objectstyle.wolips.eomodeler.decorators.EOModelDecorator"
+            icon="icons/eoModel.gif"
+            id="org.objectstyle.wolips.eomodeler.decorators.EOModelDecorator"
+            label="EOModel Decorator"
+            lightweight="false"
+            state="true">
+         <enablement>
+            <and>
+               <objectClass name="org.eclipse.core.resources.IResource"/>
+               <objectState
+                     name="extension"
+                     value="eomodeld"/>
+            </and>
+         </enablement>
+      </decorator>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views.properties.tabbed.propertyContributor">
+      <propertyContributor contributorId="org.objectstyle.wolips.eomodeler.editors.EOModelEditor">
+         <propertyCategory category="eomodel"/>
+      </propertyContributor>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views.properties.tabbed.propertyTabs">
+      <propertyTabs contributorId="org.objectstyle.wolips.eomodeler.editors.EOModelEditor">
+         <propertyTab
+               category="eomodel"
+               id="org.objectstyle.wolips.eomodeler.eomodelTab"
+               label="Connection Dictionary"/>
+      </propertyTabs>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views.properties.tabbed.propertySections">
+      <propertySections contributorId="org.objectstyle.wolips.eomodeler.editors.EOModelEditor">
+         <propertySection
+               class="org.objectstyle.wolips.eomodeler.properties.ConnectionDictionarySection"
+               id="org.objectstyle.wolips.eomodeler.connectionDictionarySection"
+               tab="org.objectstyle.wolips.eomodeler.eomodelTab">
+            <input type="org.objectstyle.wolips.eomodeler.model.EOModel"/>
+         </propertySection>
+      </propertySections>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="org.objectstyle.wolips.eomodeler.EOModelerPerspectiveFactory"
+            icon="icons/eoModel.gif"
+            id="org.objectstyle.wolips.eomodeler.EOModelerPerspective"
+            name="EO Modeler"/>
    </extension>
 
 </plugin>

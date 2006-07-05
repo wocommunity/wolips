@@ -49,12 +49,20 @@
  */
 package org.objectstyle.wolips.eomodeler.model;
 
-import java.util.List;
+public class EORelationshipPath {
+  private EORelationshipPath myParentRelationshipPath;
+  private EORelationship myChildRelationship;
 
-public interface IEOQualifier {
-  public void loadFromMap(EOModelMap _map) throws EOModelException;
+  public EORelationshipPath(EORelationshipPath _parentRelationshipPath, EORelationship _childRelationship) {
+    myParentRelationshipPath = _parentRelationshipPath;
+    myChildRelationship = _childRelationship;
+  }
 
-  public EOModelMap toMap();
+  public EORelationshipPath getParentRelationshipPath() {
+    return myParentRelationshipPath;
+  }
 
-  public void verify(List _failures);
+  public EORelationship getChildRelationship() {
+    return myChildRelationship;
+  }
 }

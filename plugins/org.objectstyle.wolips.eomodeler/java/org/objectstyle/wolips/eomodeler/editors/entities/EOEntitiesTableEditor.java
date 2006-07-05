@@ -50,7 +50,9 @@
 package org.objectstyle.wolips.eomodeler.editors.entities;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
@@ -58,9 +60,10 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.part.EditorPart;
 import org.objectstyle.wolips.eomodeler.editors.EOModelEditorInput;
+import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
 
-public class EOEntitiesTableEditor extends EditorPart {
+public class EOEntitiesTableEditor extends EditorPart implements ISelectionProvider {
   private EOEntitiesTableViewer myEntitiesTableViewer;
   private EOModelEditorInput myEditorInput;
 
@@ -96,11 +99,23 @@ public class EOEntitiesTableEditor extends EditorPart {
     // DO NOTHING
   }
 
+  public void setSelectedEntity(EOEntity _entity) {
+    myEntitiesTableViewer.setSelectedEntity(_entity);
+  }
+
   protected void updateEntitiesTableViewer() {
     if (myEntitiesTableViewer != null) {
       EOModel model = (myEditorInput != null) ? myEditorInput.getModel() : null;
       myEntitiesTableViewer.setModel(model);
     }
+  }
+
+  public ISelection getSelection() {
+    return myEntitiesTableViewer.getSelection();
+  }
+
+  public void setSelection(ISelection _selection) {
+    myEntitiesTableViewer.setSelection(_selection);
   }
 
   public void addSelectionChangedListener(ISelectionChangedListener _listener) {

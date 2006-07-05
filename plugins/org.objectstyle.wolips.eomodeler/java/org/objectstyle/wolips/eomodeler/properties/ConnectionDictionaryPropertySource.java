@@ -47,78 +47,90 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eomodeler.editors;
+package org.objectstyle.wolips.eomodeler.properties;
 
-import java.io.IOException;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
-import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IStorage;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.ui.IFileEditorInput;
-import org.eclipse.ui.IPersistableElement;
-import org.eclipse.ui.part.FileEditorInput;
+import org.eclipse.ui.views.properties.IPropertyDescriptor;
+import org.eclipse.ui.views.properties.IPropertySource2;
+import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
-import org.objectstyle.wolips.eomodeler.model.EOModelException;
-import org.objectstyle.wolips.eomodeler.model.EclipseEOModelGroupFactory;
 
-public class EOModelEditorInput implements IFileEditorInput {
-  private IFileEditorInput myFileEditorInput;
-  private IContainer myModelFolder;
+public class ConnectionDictionaryPropertySource implements IPropertySource2 {
   private EOModel myModel;
+  private IPropertyDescriptor[] myDescriptors;
+  private Map myConnectionDictionary;
+  private Map myOriginalConnectionDictionary;
 
-  public EOModelEditorInput(IFileEditorInput _fileEditorInput) throws CoreException, IOException, EOModelException {
-    IFile file = _fileEditorInput.getFile();
-    if ("plist".equals(file.getFileExtension())) {
-      myFileEditorInput = new FileEditorInput(file.getParent().getFile(new Path("index.eomodeld")));
-    }
-    else {
-      myFileEditorInput = _fileEditorInput;
-    }
-    myModelFolder = myFileEditorInput.getFile().getParent();
-    myModel = EclipseEOModelGroupFactory.createModel(myFileEditorInput.getFile());
+  public ConnectionDictionaryPropertySource(EOModel _model) {
+    myModel = _model;
+    myConnectionDictionary = new HashMap(_model.getConnectionDictionary());
+    myOriginalConnectionDictionary = new HashMap(_model.getConnectionDictionary());
   }
 
-  public IContainer getModelFolder() {
-    return myModelFolder;
+  public Object getEditableValue() {
+    return this;
   }
 
   public EOModel getModel() {
     return myModel;
   }
 
-  public boolean exists() {
-    return myFileEditorInput.exists();
+  public IPropertyDescriptor[] getPropertyDescriptors() {
+    if (myDescriptors == null) {
+      List descriptorsList = new LinkedList();
+      descriptorsList.add(new TextPropertyDescriptor("username", "User Name"));
+      descriptorsList.add(new TextPropertyDescriptor("password", "Password"));
+      descriptorsList.add(new TextPropertyDescriptor("URL", "URL"));
+      myDescriptors = (IPropertyDescriptor[]) descriptorsList.toArray(new IPropertyDescriptor[descriptorsList.size()]);
+    }
+    return myDescriptors;
   }
 
-  public Object getAdapter(Class _adapter) {
-    return myFileEditorInput.getAdapter(_adapter);
+  public boolean isPropertyResettable(Object _id) {
+    return true;
   }
 
-  public IFile getFile() {
-    return myFileEditorInput.getFile();
+  public Map getConnectionDictionary() {
+    return myConnectionDictionary;
+  }
+  
+  public boolean isPropertySet(Object _id) {
+    Map connectionDictionary = getConnectionDictionary();
+    return connectionDictionary != null && connectionDictionary.containsKey(_id);
   }
 
-  public ImageDescriptor getImageDescriptor() {
-    return myFileEditorInput.getImageDescriptor();
+  public Object getPropertyValue(Object _id) {
+    Object value = null;
+    Map connectionDictionary = getConnectionDictionary();
+    if (connectionDictionary != null) {
+      value = getConnectionDictionary().get(_id);
+    }
+    return value;
   }
 
-  public String getName() {
-    return myFileEditorInput.getName();
+  public void resetPropertyValue(Object _id) {
+    Map connectionDictionary = getConnectionDictionary();
+    if (connectionDictionary != null) {
+      if (myOriginalConnectionDictionary == null || !myOriginalConnectionDictionary.containsKey(_id)) {
+        connectionDictionary.remove(_id);
+      }
+      else {
+        connectionDictionary.put(_id, myOriginalConnectionDictionary.get(_id));
+      }
+    }
   }
 
-  public IPersistableElement getPersistable() {
-    return myFileEditorInput.getPersistable();
+  public void setPropertyValue(Object _id, Object _value) {
+    System.out.println("ConnectionDictionaryPropertySource.setPropertyValue: " + _id + "=" + _value);
+    Map connectionDictionary = getConnectionDictionary();
+    if (connectionDictionary == null) {
+      connectionDictionary = new HashMap();
+      myConnectionDictionary = connectionDictionary;
+    }
+    connectionDictionary.put(_id, _value);
   }
-
-  public IStorage getStorage() throws CoreException {
-    return myFileEditorInput.getStorage();
-  }
-
-  public String getToolTipText() {
-    return myFileEditorInput.getToolTipText();
-  }
-
 }

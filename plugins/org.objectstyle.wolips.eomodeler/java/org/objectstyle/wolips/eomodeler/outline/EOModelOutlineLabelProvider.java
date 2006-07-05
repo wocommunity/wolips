@@ -47,14 +47,75 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eomodeler.model;
+package org.objectstyle.wolips.eomodeler.outline;
 
-import java.util.List;
+import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.jface.viewers.ILabelProviderListener;
+import org.eclipse.swt.graphics.Image;
+import org.objectstyle.wolips.eomodeler.Activator;
+import org.objectstyle.wolips.eomodeler.model.EOEntity;
+import org.objectstyle.wolips.eomodeler.model.EOModel;
+import org.objectstyle.wolips.eomodeler.model.EORelationship;
+import org.objectstyle.wolips.eomodeler.model.EORelationshipPath;
 
-public interface IEOQualifier {
-  public void loadFromMap(EOModelMap _map) throws EOModelException;
+public class EOModelOutlineLabelProvider implements ILabelProvider {
+  public void addListener(ILabelProviderListener _listener) {
+    // DO NOTHING
+  }
 
-  public EOModelMap toMap();
+  public void dispose() {
+    // DO NOTHING
+  }
 
-  public void verify(List _failures);
+  public Image getImage(Object _element) {
+    Image image;
+    if (_element instanceof EOModel) {
+      image = Activator.getDefault().getImageRegistry().get(Activator.EOMODEL_ICON);
+    }
+    else if (_element instanceof EOEntity) {
+      image = Activator.getDefault().getImageRegistry().get(Activator.EOENTITY_ICON);
+    }
+    else if (_element instanceof EORelationship) {
+      image = Activator.getDefault().getImageRegistry().get(Activator.EORELATIONSHIP_ICON);
+    }
+    else if (_element instanceof EORelationshipPath) {
+      image = Activator.getDefault().getImageRegistry().get(Activator.EORELATIONSHIP_ICON);
+    }
+    else {
+      image = null;
+    }
+    return image;
+  }
+
+  public String getText(Object _element) {
+    String text;
+    if (_element instanceof EOModel) {
+      EOModel model = (EOModel) _element;
+      text = model.getName();
+    }
+    else if (_element instanceof EOEntity) {
+      EOEntity entity = (EOEntity) _element;
+      text = entity.getName();
+    }
+    else if (_element instanceof EORelationship) {
+      EORelationship relationship = (EORelationship) _element;
+      text = relationship.getName();
+    }
+    else if (_element instanceof EORelationshipPath) {
+      EORelationshipPath relationshipPath = (EORelationshipPath) _element;
+      text = relationshipPath.getChildRelationship().getName();
+    }
+    else {
+      text = null;
+    }
+    return text;
+  }
+
+  public boolean isLabelProperty(Object _element, String _property) {
+    return false;
+  }
+
+  public void removeListener(ILabelProviderListener _listener) {
+    // DO NOTHING
+  }
 }

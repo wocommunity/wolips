@@ -76,6 +76,28 @@ public class EORelationship implements IEOAttribute {
     myRelationshipMap = new EOModelMap();
   }
 
+  public int hashCode() {
+    return myEntity.hashCode() * myName.hashCode();
+  }
+
+  public boolean equals(Object _obj) {
+    return (_obj instanceof EORelationship && ((EORelationship) _obj).myEntity.equals(myEntity) && ((EORelationship) _obj).myName.equals(myName));
+  }
+
+  public boolean isRelatedTo(EOEntity _entity) {
+    return _entity.getName().equals(myDestination);
+  }
+
+  public boolean isRelatedTo(EOAttribute _attribute) {
+    boolean isRelated = false;
+    Iterator joinsIter = myJoins.iterator();
+    while (!isRelated && joinsIter.hasNext()) {
+      EOJoin join = (EOJoin) joinsIter.next();
+      isRelated = join.isRelatedTo(_attribute);
+    }
+    return isRelated;
+  }
+
   public void setDefinition(String _definition) {
     myDefinition = _definition;
   }

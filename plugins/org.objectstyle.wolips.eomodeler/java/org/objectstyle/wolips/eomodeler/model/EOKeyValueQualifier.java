@@ -81,7 +81,7 @@ public class EOKeyValueQualifier implements IEOQualifier {
     myValue = _value;
   }
 
-  public void loadFromMap(EOModelMap _map) {
+  public void loadFromMap(EOModelMap _map) throws EOModelException {
     myKey = _map.getString("key", true);
     mySelectorName = _map.getString("selectorName", true);
     Object value = _map.get("value");
@@ -91,8 +91,11 @@ public class EOKeyValueQualifier implements IEOQualifier {
       if ("EONull".equals(clazz)) {
         myValue = null;
       }
+      else if ("EOQualifierVariable".equals(clazz)) {
+        myValue = new EOQualifierVariable((String) valueMap.get("name"));
+      }
       else {
-        throw new IllegalArgumentException("Unknown class " + clazz);
+        throw new EOModelException("Unknown class " + clazz);
       }
     }
     else {
@@ -109,6 +112,13 @@ public class EOKeyValueQualifier implements IEOQualifier {
       EOModelMap nullMap = new EOModelMap();
       nullMap.setString("class", "EONull", true);
       qualifierMap.setMap("value", nullMap);
+    }
+    else if (myValue instanceof EOQualifierVariable) {
+      EOQualifierVariable var = (EOQualifierVariable) myValue;
+      EOModelMap variableMap = new EOModelMap();
+      variableMap.setString("class", "EOQualifierVariable", true);
+      variableMap.setString("name", var.getName(), false);
+      qualifierMap.setMap("value", variableMap);
     }
     else {
       qualifierMap.put("value", myValue);

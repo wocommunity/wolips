@@ -47,14 +47,79 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eomodeler.model;
+package org.objectstyle.wolips.eomodeler.properties;
 
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
-public interface IEOQualifier {
-  public void loadFromMap(EOModelMap _map) throws EOModelException;
+import org.eclipse.ui.views.properties.IPropertyDescriptor;
+import org.eclipse.ui.views.properties.IPropertySource2;
+import org.eclipse.ui.views.properties.PropertyDescriptor;
+import org.objectstyle.wolips.eomodeler.model.EOModel;
 
-  public EOModelMap toMap();
+public class EOModelPropertySource implements IPropertySource2 {
+  public static final String CONNECTION_DICTIONARY = "connectionDictionary";
 
-  public void verify(List _failures);
+  private EOModel myModel;
+  private IPropertyDescriptor[] myDescriptors;
+  private Map myOriginalConnectionDictionary;
+
+  public EOModelPropertySource(EOModel _model) {
+    myModel = _model;
+    myOriginalConnectionDictionary = new HashMap(_model.getConnectionDictionary());
+  }
+
+  public Object getEditableValue() {
+    return this;
+  }
+
+  public EOModel getModel() {
+    return myModel;
+  }
+
+  public IPropertyDescriptor[] getPropertyDescriptors() {
+    if (myDescriptors == null) {
+      List descriptorsList = new LinkedList();
+      descriptorsList.add(new PropertyDescriptor(EOModelPropertySource.CONNECTION_DICTIONARY, "Connection Dictionary"));
+      myDescriptors = (IPropertyDescriptor[]) descriptorsList.toArray(new IPropertyDescriptor[descriptorsList.size()]);
+    }
+    return myDescriptors;
+  }
+
+  public boolean isPropertyResettable(Object _id) {
+    return true;
+  }
+
+  public boolean isPropertySet(Object _id) {
+    boolean isPropertySet = false;
+    if (_id == EOModelPropertySource.CONNECTION_DICTIONARY) {
+      isPropertySet = true;
+    }
+    return isPropertySet;
+  }
+
+  public Object getPropertyValue(Object _id) {
+    Object value = null;
+    if (_id == EOModelPropertySource.CONNECTION_DICTIONARY) {
+      value = new ConnectionDictionaryPropertySource(myModel);
+    }
+    return value;
+  }
+
+  public void resetPropertyValue(Object _id) {
+    if (_id == EOModelPropertySource.CONNECTION_DICTIONARY) {
+      myModel.setConnectionDictionary(myOriginalConnectionDictionary);
+    }
+  }
+
+  public void setPropertyValue(Object _id, Object _value) {
+    System.out.println("EOModelPropertySource.setPropertyValue: " + _id + "=" + _value);
+    if (_id == EOModelPropertySource.CONNECTION_DICTIONARY) {
+      ConnectionDictionaryPropertySource connDict = (ConnectionDictionaryPropertySource) _value;
+      myModel.setConnectionDictionary(connDict.getConnectionDictionary());
+    }
+  }
+
 }
