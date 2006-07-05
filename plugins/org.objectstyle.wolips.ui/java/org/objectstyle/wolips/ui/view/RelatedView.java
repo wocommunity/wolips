@@ -55,7 +55,6 @@
  */
 package org.objectstyle.wolips.ui.view;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -120,7 +119,8 @@ public final class RelatedView extends ViewPart implements ISelectionListener,
 	protected class ViewContentProvider implements ITreeContentProvider {
 
 		Object input = null;
-    private Object lastParent;
+
+		private Object lastParent;
 
 		public void inputChanged(Viewer v, Object oldInput, Object newInput) {
 			this.input = newInput;
@@ -132,37 +132,53 @@ public final class RelatedView extends ViewPart implements ISelectionListener,
 
 		public Object[] getElements(Object parent) {
 			IWOLipsResource wolipsResource = null;
-      // MS: If we add the dependency it is a circular dependency, so that sucks ... We'll just do it Reflection-Style.
-      if (parent != null && parent.getClass().getName().equals("org.objectstyle.wolips.components.input.ComponentEditorFileEditorInput")) {
-        try {
-          parent = parent.getClass().getMethod("getFile", null).invoke(parent, null);
-        }
-        catch (Exception e) {
-          e.printStackTrace();
-        }
-        //System.out.println("ViewContentProvider.getElements: " + parent);
-      }
-      else if (parent != null && parent.getClass().getName().startsWith("org.eclipse.wst")) {
-        // MS: Total hack ... HTML editor returns its element as a TextImpl.  I'm not how to get back to the IResource from
-        // that.  It just so happens that there's always a previous selection that is something we CAN use
-        parent = lastParent;
-//        try {
-//          Object structuredDocRegion = parent.getClass().getMethod("getFirstStructuredDocumentRegion", null).invoke(parent, null);
-//          Object structuredDoc = structuredDocRegion.getClass().getMethod("getParentDocument", null).invoke(structuredDocRegion, null);
-//          System.out.println("ViewContentProvider.getElements: " + structuredDoc);
-//        }
-//        catch (Exception e) {
-//          e.printStackTrace();
-//        }
-      }
+			// MS: If we add the dependency it is a circular dependency, so that
+			// sucks ... We'll just do it Reflection-Style.
+			if (parent != null
+					&& parent
+							.getClass()
+							.getName()
+							.equals(
+									"org.objectstyle.wolips.components.input.ComponentEditorFileEditorInput")) {
+				try {
+					parent = parent.getClass().getMethod("getFile", null)
+							.invoke(parent, null);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				// System.out.println("ViewContentProvider.getElements: " +
+				// parent);
+			} else if (parent != null
+					&& parent.getClass().getName()
+							.startsWith("org.eclipse.wst")) {
+				// MS: Total hack ... HTML editor returns its element as a
+				// TextImpl. I'm not how to get back to the IResource from
+				// that. It just so happens that there's always a previous
+				// selection that is something we CAN use
+				parent = lastParent;
+				// try {
+				// Object structuredDocRegion =
+				// parent.getClass().getMethod("getFirstStructuredDocumentRegion",
+				// null).invoke(parent, null);
+				// Object structuredDoc =
+				// structuredDocRegion.getClass().getMethod("getParentDocument",
+				// null).invoke(structuredDocRegion, null);
+				// System.out.println("ViewContentProvider.getElements: " +
+				// structuredDoc);
+				// }
+				// catch (Exception e) {
+				// e.printStackTrace();
+				// }
+			}
 			if (parent instanceof IFileEditorInput) {
 				IFileEditorInput input = (IFileEditorInput) parent;
 				try {
 					// HACK AK: we should use sth more generic here
-					if(input.getFile().getFileExtension().equals("java")) {
-						parent = JavaCore.createCompilationUnitFrom(input.getFile());
+					if (input.getFile().getFileExtension().equals("java")) {
+						parent = JavaCore.createCompilationUnitFrom(input
+								.getFile());
 					}
-				} catch(Exception ex) {
+				} catch (Exception ex) {
 					UIPlugin.getDefault().log(ex);
 				}
 			}
@@ -187,7 +203,7 @@ public final class RelatedView extends ViewPart implements ISelectionListener,
 					UIPlugin.getDefault().log(e);
 				}
 			}
-      lastParent = parent;
+			lastParent = parent;
 			return result.toArray();
 		}
 
@@ -225,34 +241,37 @@ public final class RelatedView extends ViewPart implements ISelectionListener,
 
 	class ViewLabelProvider extends AppearanceAwareLabelProvider implements
 			ITableLabelProvider {
-    public ViewLabelProvider() {
-      super(AppearanceAwareLabelProvider.DEFAULT_TEXTFLAGS | JavaElementLabels.P_COMPRESSED, AppearanceAwareLabelProvider.DEFAULT_IMAGEFLAGS | JavaElementImageProvider.SMALL_ICONS);
-      addLabelDecorator(PlatformUI.getWorkbench().getDecoratorManager().getLabelDecorator());
-    }
-    
-    public String getColumnText(Object _element, int _columnIndex) {
-      String text = null;
-      if (_element instanceof IResource) {
-        IResource resource = (IResource)_element;
-        String ext = resource.getFileExtension();
-        if (ext != null) {
-          if ("java".equalsIgnoreCase(ext)) {
-            text = "Java";
-          }
-          else {
-            text = ext.toUpperCase();
-          }
-        }
-      }
-      if (text == null) {
-        text = getText(_element);
-      }
-      return text;
-    }
-    
-    public Image getColumnImage(Object _element, int _columnIndex) {
-      return getImage(_element);
-    }
+		public ViewLabelProvider() {
+			super(AppearanceAwareLabelProvider.DEFAULT_TEXTFLAGS
+					| JavaElementLabels.P_COMPRESSED,
+					AppearanceAwareLabelProvider.DEFAULT_IMAGEFLAGS
+							| JavaElementImageProvider.SMALL_ICONS);
+			addLabelDecorator(PlatformUI.getWorkbench().getDecoratorManager()
+					.getLabelDecorator());
+		}
+
+		public String getColumnText(Object _element, int _columnIndex) {
+			String text = null;
+			if (_element instanceof IResource) {
+				IResource resource = (IResource) _element;
+				String ext = resource.getFileExtension();
+				if (ext != null) {
+					if ("java".equalsIgnoreCase(ext)) {
+						text = "Java";
+					} else {
+						text = ext.toUpperCase();
+					}
+				}
+			}
+			if (text == null) {
+				text = getText(_element);
+			}
+			return text;
+		}
+
+		public Image getColumnImage(Object _element, int _columnIndex) {
+			return getImage(_element);
+		}
 	}
 
 	class NameSorter extends ViewerSorter {
@@ -263,12 +282,12 @@ public final class RelatedView extends ViewPart implements ISelectionListener,
 
 	}
 
-	private TableViewer viewer;
+	TableViewer viewer;
 
 	private Action doubleClickAction;
 
 	/**
-	 *  
+	 * 
 	 */
 	public RelatedView() {
 		super();
@@ -285,10 +304,10 @@ public final class RelatedView extends ViewPart implements ISelectionListener,
 		this.viewer.setContentProvider(new ViewContentProvider());
 
 		this.viewer.setLabelProvider(new ViewLabelProvider());
-//    new DecoratingLabelProvider(
-//				new LabelProvider(), getSite().getWorkbenchWindow()
-//						.getWorkbench().getDecoratorManager()
-//						.getLabelDecorator()));
+		// new DecoratingLabelProvider(
+		// new LabelProvider(), getSite().getWorkbenchWindow()
+		// .getWorkbench().getDecoratorManager()
+		// .getLabelDecorator()));
 
 		this.viewer.setSorter(new NameSorter());
 		this.viewer.getTable().addKeyListener(new KeyListener() {
@@ -347,30 +366,31 @@ public final class RelatedView extends ViewPart implements ISelectionListener,
 				new IResourceChangeListener() {
 
 					public void resourceChanged(IResourceChangeEvent event) {
-						IViewSite viewSite = getViewSite();
-						if (viewSite == null)
-							return;
-						IWorkbenchWindow workbenchWindow = viewSite
-								.getWorkbenchWindow();
-						if (workbenchWindow == null)
-							return;
-						Shell shell = workbenchWindow.getShell();
-						if (shell == null)
-							return;
-						Display display = shell.getDisplay();
-						if (display == null)
-							return;
-						display.asyncExec(new Runnable() {
+						synchronized (viewer) {
+							IViewSite viewSite = getViewSite();
+							if (viewSite == null)
+								return;
+							IWorkbenchWindow workbenchWindow = viewSite
+									.getWorkbenchWindow();
+							if (workbenchWindow == null)
+								return;
+							Shell shell = workbenchWindow.getShell();
+							if (shell == null)
+								return;
+							Display display = shell.getDisplay();
+							if (display == null)
+								return;
+							display.asyncExec(new Runnable() {
 
-							public void run() {
-								TableViewer tableViewer = getViewer();
-								if (!tableViewer.getTable().isDisposed()) {
-									tableViewer.refresh(false);
+								public void run() {
+									TableViewer tableViewer = getViewer();
+									if (!tableViewer.getTable().isDisposed()) {
+										tableViewer.refresh(false);
+									}
 								}
-							}
 
-						});
-
+							});
+						}
 					}
 
 				});
@@ -444,14 +464,17 @@ public final class RelatedView extends ViewPart implements ISelectionListener,
 	}
 
 	public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-		if (selection != null && selection instanceof IStructuredSelection) {
+		synchronized (viewer) {
+			if (selection != null && selection instanceof IStructuredSelection) {
 
-			IStructuredSelection sel = (IStructuredSelection) selection;
+				IStructuredSelection sel = (IStructuredSelection) selection;
 
-			Object selectedElement = sel.getFirstElement();
-			Object viewerInput = this.viewer.getInput();
-			if (viewerInput == null || (!viewerInput.equals(selectedElement)))
-				this.viewer.setInput(selectedElement);
+				Object selectedElement = sel.getFirstElement();
+				Object viewerInput = this.viewer.getInput();
+				if (viewerInput == null
+						|| (!viewerInput.equals(selectedElement)))
+					this.viewer.setInput(selectedElement);
+			}
 		}
 	}
 
