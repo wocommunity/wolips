@@ -344,4 +344,11 @@
          version="1.0.6"
          unpack="false"/>
 
+   <plugin
+         id="org.objectstyle.wolips.eomodeler"
+         download-size="144"
+         install-size="144"
+         version="1.0.6"
+         unpack="false"/>
+
 </feature>
