@@ -106,8 +106,7 @@ public class EOAttribute extends EOModelObject implements IEOAttribute {
     myAttributeMap = new EOModelMap();
   }
 
-  protected void firePropertyChange(String _propertyName, Object _oldValue, Object _newValue) {
-    super.firePropertyChange(_propertyName, _oldValue, _newValue);
+  protected void _propertyChanged(String _propertyName, Object _oldValue, Object _newValue) {
     myEntity._attributeChanged(this);
   }
 

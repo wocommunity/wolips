@@ -29,7 +29,13 @@ public class EOModelObject implements IAdaptable {
   }
 
   protected void firePropertyChange(String _propertyName, Object _oldValue, Object _newValue) {
-    myPropertyChangeSupport.firePropertyChange(_propertyName, _oldValue, _newValue);
+    if (_oldValue == null || _newValue == null || !_oldValue.equals(_newValue)) {
+      myPropertyChangeSupport.firePropertyChange(_propertyName, _oldValue, _newValue);
+      _propertyChanged(_propertyName, _oldValue, _newValue);
+    }
+  }
+
+  protected void _propertyChanged(String _propertyName, Object _oldValue, Object _newValue) {
   }
 
   public Object getAdapter(Class _adapter) {

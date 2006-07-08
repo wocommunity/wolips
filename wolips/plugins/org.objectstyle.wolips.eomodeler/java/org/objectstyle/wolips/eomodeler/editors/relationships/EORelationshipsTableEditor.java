@@ -87,11 +87,11 @@ public class EORelationshipsTableEditor extends EditorPart implements IEntityEdi
   }
 
   public boolean isDirty() {
-    return false;
+    return myEntity != null && myEntity.getModel().isDirty();
   }
 
   public boolean isSaveAsAllowed() {
-    return false;
+    return true;
   }
 
   public void createPartControl(Composite _parent) {

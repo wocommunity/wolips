@@ -109,11 +109,11 @@ public class EOEntityEditor extends EditorPart implements IEntityEditor, ISelect
   }
 
   public boolean isDirty() {
-    return false;
+    return myEntity != null && myEntity.getModel().isDirty();
   }
 
   public boolean isSaveAsAllowed() {
-    return false;
+    return true;
   }
 
   public void createPartControl(Composite _parent) {
