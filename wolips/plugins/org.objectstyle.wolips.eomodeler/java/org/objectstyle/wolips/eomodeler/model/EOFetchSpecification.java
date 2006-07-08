@@ -54,20 +54,23 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.jface.internal.databinding.provisional.observable.list.WritableList;
+
 public class EOFetchSpecification extends EOModelObject {
-  public static final String NAME = "Name";
-  public static final String SORT_ORDERINGS = "Sort Orderings";
-  public static final String QUALIFIER = "Qualifier";
-  public static final String ENTITY = "Entity";
-  public static final String FETCH_LIMIT = "Fetch Limit";
-  public static final String DEEP = "Deep";
-  public static final String LOCKS_OBJECTS = "Locks Objects";
-  public static final String PREFETCHING_RELATIONSHIP_KEY_PATHS = "Prefetching Relationship Key Paths";
-  public static final String PROMPTS_AFTER_FETCH_LIMIT = "Prompts After Fetch Limit";
-  public static final String RAW_ROW_KEY_PATHS = "Raw Row Key Paths";
-  public static final String REFRESHES_REFETCHED_OBJECTS = "Refreshes Refetched Objects";
-  public static final String REQUIRES_ALL_QUALIFIER_BINDING_VARIABLES = "Requires All Qualifier Binding Variables";
-  public static final String USES_DISTINCT = "Uses Distinct";
+  public static final String NAME = "name";
+  public static final String SORT_ORDERINGS = "sortOrderings";
+  public static final String QUALIFIER = "qualifier";
+  public static final String ENTITY = "entity";
+  public static final String FETCH_LIMIT = "fetchLimit";
+  public static final String DEEP = "deep";
+  public static final String LOCKS_OBJECTS = "locksObjects";
+  public static final String PREFETCHING_RELATIONSHIP_KEY_PATHS = "prefetchingRelationshipKeyPaths";
+  public static final String PROMPTS_AFTER_FETCH_LIMIT = "promptsAfterFetchLimit";
+  public static final String RAW_ROW_KEY_PATHS = "rawRowKeyPaths";
+  public static final String REFRESHES_REFETCHED_OBJECTS = "refreshesRefetchedObjects";
+  public static final String REQUIRES_ALL_QUALIFIER_BINDING_VARIABLES = "requiresAllQualifierBindingVariables";
+  public static final String USES_DISTINCT = "usesDistinct";
+
   private EOEntity myEntity;
   private String myName;
   private String myClass;
@@ -88,7 +91,12 @@ public class EOFetchSpecification extends EOModelObject {
     myEntity = _entity;
     myName = _name;
     myClass = "EOFetchSpecification";
-    mySortOrderings = new LinkedList();
+    mySortOrderings = new WritableList(new LinkedList(), EOSortOrdering.class);
+  }
+
+  protected void firePropertyChange(String _propertyName, Object _oldValue, Object _newValue) {
+    super.firePropertyChange(_propertyName, _oldValue, _newValue);
+    myEntity._fetchSpecificationChanged(this);
   }
 
   public int hashCode() {

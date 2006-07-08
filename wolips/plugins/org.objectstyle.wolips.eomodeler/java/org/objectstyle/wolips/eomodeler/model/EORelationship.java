@@ -54,6 +54,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.jface.internal.databinding.provisional.observable.list.WritableList;
+
 public class EORelationship extends EOModelObject implements IEOAttribute {
   public static final String TO_MANY = "To Many";
   public static final String CLASS_PROPERTY = "Class Property";
@@ -84,8 +86,13 @@ public class EORelationship extends EOModelObject implements IEOAttribute {
 
   public EORelationship(EOEntity _entity) {
     myEntity = _entity;
-    myJoins = new LinkedList();
+    myJoins = new WritableList(new LinkedList(), EOJoin.class);
     myRelationshipMap = new EOModelMap();
+  }
+
+  protected void firePropertyChange(String _propertyName, Object _oldValue, Object _newValue) {
+    super.firePropertyChange(_propertyName, _oldValue, _newValue);
+    myEntity._relationshipChanged(this);
   }
 
   public int hashCode() {
@@ -121,9 +128,15 @@ public class EORelationship extends EOModelObject implements IEOAttribute {
   }
 
   public void setClassProperty(Boolean _classProperty) {
+    setClassProperty(_classProperty, true);
+  }
+
+  public void setClassProperty(Boolean _classProperty, boolean _fireEvents) {
     Boolean oldClassProperty = myClassProperty;
     myClassProperty = _classProperty;
-    firePropertyChange(EORelationship.CLASS_PROPERTY, oldClassProperty, myClassProperty);
+    if (_fireEvents) {
+      firePropertyChange(EORelationship.CLASS_PROPERTY, oldClassProperty, myClassProperty);
+    }
   }
 
   public Boolean isClassProperty() {
@@ -229,10 +242,22 @@ public class EORelationship extends EOModelObject implements IEOAttribute {
     firePropertyChange(EORelationship.JOINS, null, null);
   }
 
+  public void setJoins(List _joins) {
+    myJoins.clear();
+    myJoins.addAll(_joins);
+    firePropertyChange(EORelationship.JOINS, null, null);
+  }
+
   public void addJoin(EOJoin _join) {
+    addJoin(_join, true);
+  }
+
+  public void addJoin(EOJoin _join, boolean _fireEvents) {
     // TODO: Check duplicates
     myJoins.add(_join);
-    firePropertyChange(EORelationship.JOINS, null, null);
+    if (_fireEvents) {
+      firePropertyChange(EORelationship.JOINS, null, null);
+    }
   }
 
   public void removeJoin(EOJoin _join) {
@@ -270,7 +295,7 @@ public class EORelationship extends EOModelObject implements IEOAttribute {
         EOModelMap joinMap = new EOModelMap((Map) joinsIter.next());
         EOJoin join = new EOJoin(this);
         join.loadFromMap(joinMap);
-        addJoin(join);
+        addJoin(join, false);
       }
     }
     myUserInfo = _relationshipMap.getMap("userInfo", true);

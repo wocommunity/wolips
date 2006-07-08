@@ -52,5 +52,7 @@ package org.objectstyle.wolips.eomodeler.model;
 public interface IEOAttribute {
   public void setClassProperty(Boolean _classProperty);
 
+  public void setClassProperty(Boolean _classProperty, boolean _fireEvents);
+
   public Boolean isClassProperty();
 }

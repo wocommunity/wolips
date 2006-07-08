@@ -57,17 +57,19 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.jface.internal.databinding.provisional.observable.list.WritableList;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.objectstyle.cayenne.wocompat.PropertyListSerialization;
 import org.objectstyle.wolips.eomodeler.properties.EOModelPropertySource;
 
 public class EOModel extends EOModelObject {
-  public static final String CONNECTION_DICTIONARY = "Connection Dictionary";
-  public static final String ADAPTOR_NAME = "Adaptor";
-  public static final String USER_INFO = "User Info";
-  public static final String VERSION = "Version";
-  public static final String NAME = "Name";
-  public static final String ENTITIES = "Entities";
+  public static final String ENTITY = "entity";
+  public static final String CONNECTION_DICTIONARY = "connectionDictionary";
+  public static final String ADAPTOR_NAME = "adaptorName";
+  public static final String USER_INFO = "userInfo";
+  public static final String VERSION = "version";
+  public static final String NAME = "name";
+  public static final String ENTITIES = "entities";
 
   private EOModelGroup myModelGroup;
   private String myName;
@@ -82,10 +84,18 @@ public class EOModel extends EOModelObject {
   public EOModel(EOModelGroup _modelGroup, String _name) {
     myModelGroup = _modelGroup;
     myName = _name;
-    myEntities = new LinkedList();
-    myDeletedEntityNamesInObjectStore = new LinkedList();
+    myEntities = new WritableList(new LinkedList(), EOEntity.class);
+    myDeletedEntityNamesInObjectStore = new WritableList(new LinkedList(), String.class);
     myVersion = "2.1";
     myModelMap = new EOModelMap();
+  }
+
+  protected void firePropertyChange(String _propertyName, Object _oldValue, Object _newValue) {
+    super.firePropertyChange(_propertyName, _oldValue, _newValue);
+  }
+
+  protected void _entityChanged(EOEntity _entity) {
+    firePropertyChange(EOModel.ENTITY, null, _entity);
   }
 
   public Object getAdapter(Class _adapter) {
@@ -161,9 +171,15 @@ public class EOModel extends EOModelObject {
   }
 
   public void addEntity(EOEntity _entity) throws DuplicateEntityNameException {
+    addEntity(_entity, true);
+  }
+
+  public void addEntity(EOEntity _entity, boolean _fireEvents) throws DuplicateEntityNameException {
     _checkForDuplicateEntityName(_entity, _entity.getName());
     myEntities.add(_entity);
-    firePropertyChange(EOModel.ENTITIES, null, null);
+    if (_fireEvents) {
+      firePropertyChange(EOModel.ENTITIES, null, null);
+    }
   }
 
   public void removeEntity(EOEntity _entity) {
@@ -223,7 +239,7 @@ public class EOModel extends EOModelObject {
         File entityFile = new File(_modelFolder, entityName + ".plist");
         File fspecFile = new File(_modelFolder, entityName + ".fspec");
         entity.loadFromFile(entityFile, fspecFile);
-        addEntity(entity);
+        addEntity(entity, false);
       }
     }
 

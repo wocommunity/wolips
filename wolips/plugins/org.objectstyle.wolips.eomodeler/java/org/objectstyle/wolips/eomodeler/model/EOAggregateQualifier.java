@@ -54,15 +54,17 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.jface.internal.databinding.provisional.observable.list.WritableList;
+
 public abstract class EOAggregateQualifier extends EOModelObject implements IEOQualifier {
   public static final String QUALIFIERS = "Qualifiers";
-  
+
   private String myClassName;
   private List myQualifiers;
 
   public EOAggregateQualifier(String _className) {
     myClassName = _className;
-    myQualifiers = new LinkedList();
+    myQualifiers = new WritableList(new LinkedList(), IEOQualifier.class);
   }
 
   public String getClassName() {
@@ -70,8 +72,14 @@ public abstract class EOAggregateQualifier extends EOModelObject implements IEOQ
   }
 
   public void addQualifier(IEOQualifier _qualifier) {
+    addQualifier(_qualifier, true);
+  }
+
+  public void addQualifier(IEOQualifier _qualifier, boolean _fireEvents) {
     myQualifiers.add(_qualifier);
-    firePropertyChange(EOAggregateQualifier.QUALIFIERS, null, null);
+    if (_fireEvents) {
+      firePropertyChange(EOAggregateQualifier.QUALIFIERS, null, null);
+    }
   }
 
   public void removeQualifier(IEOQualifier _qualifier) {
@@ -95,7 +103,7 @@ public abstract class EOAggregateQualifier extends EOModelObject implements IEOQ
       while (qualifiersIter.hasNext()) {
         Map qualifierMap = (Map) qualifiersIter.next();
         IEOQualifier qualifier = EOQualifierFactory.qualifierForMap(new EOModelMap(qualifierMap));
-        addQualifier(qualifier);
+        addQualifier(qualifier, false);
       }
     }
   }

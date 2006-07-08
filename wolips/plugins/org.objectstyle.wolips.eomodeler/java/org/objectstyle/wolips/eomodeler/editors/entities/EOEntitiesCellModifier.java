@@ -92,7 +92,7 @@ public class EOEntitiesCellModifier implements ICellModifier {
     if (_property == EOEntity.NAME) {
       value = entity.getName();
     }
-    else if (_property == EOEntity.TABLE) {
+    else if (_property == EOEntity.EXTERNAL_NAME) {
       value = entity.getExternalName();
     }
     else if (_property == EOEntity.CLASS_NAME) {
@@ -118,7 +118,7 @@ public class EOEntitiesCellModifier implements ICellModifier {
       if (_property == EOEntity.NAME) {
         entity.setName((String) _value);
       }
-      else if (_property == EOEntity.TABLE) {
+      else if (_property == EOEntity.EXTERNAL_NAME) {
         entity.setExternalName((String) _value);
       }
       else if (_property == EOEntity.CLASS_NAME) {

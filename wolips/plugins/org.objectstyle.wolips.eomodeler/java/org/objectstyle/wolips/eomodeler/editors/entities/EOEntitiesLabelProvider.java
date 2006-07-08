@@ -70,7 +70,7 @@ public class EOEntitiesLabelProvider extends TablePropertyLabelProvider {
     if (_property == EOEntity.NAME) {
       text = entity.getName();
     }
-    else if (_property == EOEntity.TABLE) {
+    else if (_property == EOEntity.EXTERNAL_NAME) {
       text = entity.getExternalName();
     }
     else if (_property == EOEntity.CLASS_NAME) {
