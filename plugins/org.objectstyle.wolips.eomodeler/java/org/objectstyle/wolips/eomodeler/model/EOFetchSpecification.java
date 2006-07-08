@@ -94,8 +94,7 @@ public class EOFetchSpecification extends EOModelObject {
     mySortOrderings = new WritableList(new LinkedList(), EOSortOrdering.class);
   }
 
-  protected void firePropertyChange(String _propertyName, Object _oldValue, Object _newValue) {
-    super.firePropertyChange(_propertyName, _oldValue, _newValue);
+  protected void _propertyChanged(String _propertyName, Object _oldValue, Object _newValue) {
     myEntity._fetchSpecificationChanged(this);
   }
 
@@ -314,7 +313,7 @@ public class EOFetchSpecification extends EOModelObject {
   public void resolve(List _failures) {
     // TODO
   }
-  
+
   public void verify(List _failures) {
     // TODO
     if (myQualifier != null) {

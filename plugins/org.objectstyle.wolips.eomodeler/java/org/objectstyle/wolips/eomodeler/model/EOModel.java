@@ -80,6 +80,7 @@ public class EOModel extends EOModelObject {
   private List myDeletedEntityNamesInObjectStore;
   private EOModelMap myModelMap;
   private Map myUserInfo;
+  private boolean myDirty;
 
   public EOModel(EOModelGroup _modelGroup, String _name) {
     myModelGroup = _modelGroup;
@@ -90,7 +91,16 @@ public class EOModel extends EOModelObject {
     myModelMap = new EOModelMap();
   }
 
+  public boolean isDirty() {
+    return myDirty;
+  }
+
+  public void setDirty(boolean _dirty) {
+    myDirty = _dirty;
+  }
+
   protected void firePropertyChange(String _propertyName, Object _oldValue, Object _newValue) {
+    myDirty = true;
     super.firePropertyChange(_propertyName, _oldValue, _newValue);
   }
 
@@ -220,7 +230,7 @@ public class EOModel extends EOModelObject {
   public void loadFromFolder(File _modelFolder) throws EOModelException, IOException {
     loadFromFolder(_modelFolder, null);
   }
-  
+
   public void loadFromFolder(File _modelFolder, List _resolveFailures) throws EOModelException, IOException {
     File indexFile = new File(_modelFolder, "index.eomodeld");
     if (!indexFile.exists()) {

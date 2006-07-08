@@ -82,11 +82,11 @@ public class EOEntitiesTableEditor extends EditorPart implements ISelectionProvi
   }
 
   public boolean isDirty() {
-    return false;
+    return myEditorInput != null && myEditorInput.getModel().isDirty();
   }
 
   public boolean isSaveAsAllowed() {
-    return false;
+    return true;
   }
 
   public void createPartControl(Composite _parent) {
