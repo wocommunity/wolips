@@ -58,6 +58,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.jface.internal.databinding.provisional.observable.list.WritableList;
+
 public class EOModelGroup extends EOModelObject {
   public static final String MODELS = "Models";
   
@@ -65,7 +67,7 @@ public class EOModelGroup extends EOModelObject {
   private List myPrototypeAttributeCache;
 
   public EOModelGroup() {
-    myModels = new LinkedList();
+    myModels = new WritableList(new LinkedList(), EOModel.class);
   }
 
   public List getModels() {

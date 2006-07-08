@@ -64,7 +64,7 @@ public class EOEntitiesViewerSorter extends TablePropertyViewerSorter {
     if (_property == EOEntity.NAME) {
       value = entity.getName();
     }
-    else if (_property == EOEntity.TABLE) {
+    else if (_property == EOEntity.EXTERNAL_NAME) {
       value = entity.getExternalName();
     }
     else if (_property == EOEntity.CLASS_NAME) {

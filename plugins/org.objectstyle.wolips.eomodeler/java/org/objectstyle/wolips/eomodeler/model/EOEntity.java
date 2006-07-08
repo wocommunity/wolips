@@ -57,24 +57,27 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.jface.internal.databinding.provisional.observable.list.WritableList;
 import org.objectstyle.cayenne.wocompat.PropertyListSerialization;
 
 public class EOEntity extends EOModelObject {
-  public static final String NAME = "Name";
-  public static final String TABLE = "Table";
-  public static final String CLASS_NAME = "Class Name";
-  public static final String PARENT_NAME = "Parent";
-  public static final String EXTERNAL_QUERY = "External Query";
-  public static final String MAX_NUMBER_OF_INSTANCES_TO_BATCH_FETCH = "Max Number of Instances to Batch Fetch";
-  public static final String READ_ONLY = "Read Only";
-  public static final String EXTERNAL_NAME = "External Name";
-  public static final String ABSTRACT_ENTITY = "Abstract Entity";
-  public static final String CACHES_OBJECTS = "Caches Objects";
-  public static final String RESTRICTING_QUALIFIER = "Restricting Qualifier";
-  public static final String FETCH_SPECIFICATIONS = "Fetch Specification";
-  public static final String ATTRIBUTES = "Attributes";
-  public static final String RELATIONSHIPS = "Relationships";
-  public static final String USER_INFO = "User Info";
+  public static final String ATTRIBUTE = "attribute";
+  public static final String RELATIONSHIP = "relationship";
+  public static final String FETCH_SPECIFICATION = "fetchSpecification";
+  public static final String NAME = "name";
+  public static final String CLASS_NAME = "className";
+  public static final String PARENT_NAME = "parentName";
+  public static final String EXTERNAL_QUERY = "externalQuery";
+  public static final String MAX_NUMBER_OF_INSTANCES_TO_BATCH_FETCH = "maxNumberOfInstancesToBatchFetch";
+  public static final String READ_ONLY = "readOnly";
+  public static final String EXTERNAL_NAME = "externalName";
+  public static final String ABSTRACT_ENTITY = "abstractEntity";
+  public static final String CACHES_OBJECTS = "cachesObjects";
+  public static final String RESTRICTING_QUALIFIER = "restrictingQualifier";
+  public static final String FETCH_SPECIFICATIONS = "fetchSpecifications";
+  public static final String ATTRIBUTES = "attributes";
+  public static final String RELATIONSHIPS = "relationships";
+  public static final String USER_INFO = "userInfo";
 
   private EOModel myModel;
   private String myName;
@@ -96,11 +99,16 @@ public class EOEntity extends EOModelObject {
 
   public EOEntity(EOModel _model) {
     myModel = _model;
-    myAttributes = new LinkedList();
-    myRelationships = new LinkedList();
-    myFetchSpecs = new LinkedList();
+    myAttributes = new WritableList(new LinkedList(), EOAttribute.class);
+    myRelationships = new WritableList(new LinkedList(), EORelationship.class);
+    myFetchSpecs = new WritableList(new LinkedList(), EOFetchSpecification.class);
     myEntityMap = new EOModelMap();
     myFetchSpecsMap = new EOModelMap();
+  }
+
+  protected void firePropertyChange(String _propertyName, Object _oldValue, Object _newValue) {
+    super.firePropertyChange(_propertyName, _oldValue, _newValue);
+    myModel._entityChanged(this);
   }
 
   public Object getAdapter(Class _adapter) {
@@ -280,6 +288,11 @@ public class EOEntity extends EOModelObject {
     firePropertyChange(EOEntity.RESTRICTING_QUALIFIER, oldRestrictingQualifier, myRestrictingQualifier);
   }
 
+  public void setAttributes(List _attributes) {
+    myAttributes = _attributes;
+    firePropertyChange(EOEntity.ATTRIBUTES, null, null);
+  }
+
   public List getAttributes() {
     return myAttributes;
   }
@@ -319,9 +332,15 @@ public class EOEntity extends EOModelObject {
   }
 
   public void addFetchSpecification(EOFetchSpecification _fetchSpecification) throws DuplicateFetchSpecNameException {
+    addFetchSpecification(_fetchSpecification, true);
+  }
+
+  public void addFetchSpecification(EOFetchSpecification _fetchSpecification, boolean _fireEvents) throws DuplicateFetchSpecNameException {
     _checkForDuplicateFetchSpecName(_fetchSpecification, _fetchSpecification.getName());
     myFetchSpecs.add(_fetchSpecification);
-    firePropertyChange(EOEntity.FETCH_SPECIFICATIONS, null, null);
+    if (_fireEvents) {
+      firePropertyChange(EOEntity.FETCH_SPECIFICATIONS, null, null);
+    }
   }
 
   public void removeFetchSpecification(EOFetchSpecification _fetchSpecification) {
@@ -330,9 +349,15 @@ public class EOEntity extends EOModelObject {
   }
 
   public void addAttribute(EOAttribute _attribute) throws DuplicateAttributeNameException {
+    addAttribute(_attribute, true);
+  }
+
+  public void addAttribute(EOAttribute _attribute, boolean _fireEvents) throws DuplicateAttributeNameException {
     _checkForDuplicateAttributeName(_attribute, _attribute.getName());
     myAttributes.add(_attribute);
-    firePropertyChange(EOEntity.ATTRIBUTES, null, null);
+    if (_fireEvents) {
+      firePropertyChange(EOEntity.ATTRIBUTES, null, null);
+    }
   }
 
   public void removeAttribute(EOAttribute _attribute) {
@@ -368,10 +393,28 @@ public class EOEntity extends EOModelObject {
     }
   }
 
+  protected void _attributeChanged(EOAttribute _attribute) {
+    firePropertyChange(EOEntity.ATTRIBUTE, null, _attribute);
+  }
+
+  protected void _relationshipChanged(EORelationship _relationship) {
+    firePropertyChange(EOEntity.RELATIONSHIP, null, _relationship);
+  }
+
+  protected void _fetchSpecificationChanged(EOFetchSpecification _fetchSpecification) {
+    firePropertyChange(EOEntity.FETCH_SPECIFICATION, null, _fetchSpecification);
+  }
+
   public void addRelationship(EORelationship _relationship) throws DuplicateRelationshipNameException {
+    addRelationship(_relationship, true);
+  }
+
+  public void addRelationship(EORelationship _relationship, boolean _fireEvents) throws DuplicateRelationshipNameException {
     _checkForDuplicateRelationshipName(_relationship, _relationship.getName());
     myRelationships.add(_relationship);
-    firePropertyChange(EOEntity.RELATIONSHIPS, null, null);
+    if (_fireEvents) {
+      firePropertyChange(EOEntity.RELATIONSHIPS, null, null);
+    }
   }
 
   public void removeRelationship(EORelationship _relationship) {
@@ -441,7 +484,7 @@ public class EOEntity extends EOModelObject {
         EOModelMap attributeMap = new EOModelMap((Map) attributeIter.next());
         EOAttribute attribute = new EOAttribute(this);
         attribute.loadFromMap(attributeMap);
-        addAttribute(attribute);
+        addAttribute(attribute, false);
       }
     }
 
@@ -452,7 +495,7 @@ public class EOEntity extends EOModelObject {
         EOModelMap relationshipMap = new EOModelMap((Map) relationshipIter.next());
         EORelationship relationship = new EORelationship(this);
         relationship.loadFromMap(relationshipMap);
-        addRelationship(relationship);
+        addRelationship(relationship, false);
       }
     }
 
@@ -463,7 +506,7 @@ public class EOEntity extends EOModelObject {
         String attributeName = (String) attributesUsedForLockingIter.next();
         EOAttribute attribute = getAttributeNamed(attributeName);
         if (attribute != null) {
-          attribute.setUsedForLocking(Boolean.TRUE);
+          attribute.setUsedForLocking(Boolean.TRUE, false);
         }
       }
     }
@@ -475,7 +518,7 @@ public class EOEntity extends EOModelObject {
         String attributeName = (String) classPropertiesIter.next();
         IEOAttribute attribute = _getAttributeNamed(attributeName);
         if (attribute != null) {
-          attribute.setClassProperty(Boolean.TRUE);
+          attribute.setClassProperty(Boolean.TRUE, false);
         }
       }
     }
@@ -487,7 +530,7 @@ public class EOEntity extends EOModelObject {
         String attributeName = (String) primaryKeyAttributesIter.next();
         EOAttribute attribute = getAttributeNamed(attributeName);
         if (attribute != null) {
-          attribute.setPrimaryKey(Boolean.TRUE);
+          attribute.setPrimaryKey(Boolean.TRUE, false);
         }
       }
     }
@@ -517,7 +560,7 @@ public class EOEntity extends EOModelObject {
       EOModelMap fetchSpecMap = new EOModelMap((Map) fetchSpecEntry.getValue());
       EOFetchSpecification fetchSpec = new EOFetchSpecification(this, fetchSpecName);
       fetchSpec.loadFromMap(fetchSpecMap);
-      addFetchSpecification(fetchSpec);
+      addFetchSpecification(fetchSpec, false);
     }
   }
 

@@ -64,6 +64,8 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.objectstyle.wolips.eomodeler.Activator;
 import org.objectstyle.wolips.eomodeler.editors.KeyComboBoxCellEditor;
+import org.objectstyle.wolips.eomodeler.editors.TableRefreshPropertyListener;
+import org.objectstyle.wolips.eomodeler.editors.TableRowRefreshPropertyListener;
 import org.objectstyle.wolips.eomodeler.editors.TableUtils;
 import org.objectstyle.wolips.eomodeler.editors.TriStateCellEditor;
 import org.objectstyle.wolips.eomodeler.model.EOAttribute;
@@ -72,15 +74,20 @@ import org.objectstyle.wolips.eomodeler.model.EOEntity;
 public class EOAttributesTableViewer extends Composite implements ISelectionProvider {
   private TableViewer myAttributesTableViewer;
   private EOEntity myEntity;
+  private TableRefreshPropertyListener myTableRefresher;
+  private TableRowRefreshPropertyListener myTableRowRefresher;
 
   public EOAttributesTableViewer(Composite _parent, int _style) {
     super(_parent, _style);
+
     setLayout(new GridLayout(1, true));
     myAttributesTableViewer = new TableViewer(this, SWT.FULL_SELECTION);
     myAttributesTableViewer.setContentProvider(new EOAttributesContentProvider());
     myAttributesTableViewer.setLabelProvider(new EOAttributesLabelProvider(myAttributesTableViewer, EOAttributesConstants.COLUMNS));
     myAttributesTableViewer.setSorter(new EOAttributesViewerSorter(EOAttributesConstants.COLUMNS));
     myAttributesTableViewer.setColumnProperties(EOAttributesConstants.COLUMNS);
+    myTableRefresher = new TableRefreshPropertyListener(myAttributesTableViewer, EOEntity.ATTRIBUTES);
+    myTableRowRefresher = new TableRowRefreshPropertyListener(myAttributesTableViewer, EOEntity.ATTRIBUTE);
 
     Table attributesTable = myAttributesTableViewer.getTable();
     attributesTable.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -121,10 +128,18 @@ public class EOAttributesTableViewer extends Composite implements ISelectionProv
   }
 
   public void setEntity(EOEntity _entity) {
+    if (myEntity != null) {
+      myEntity.removePropertyChangeListener(myTableRefresher);
+      myEntity.removePropertyChangeListener(myTableRowRefresher);
+    }
     myEntity = _entity;
     myAttributesTableViewer.setInput(myEntity);
     updateCellEditors(myAttributesTableViewer.getCellEditors());
     TableUtils.packTableColumns(myAttributesTableViewer);
+    if (myEntity != null) {
+      myEntity.addPropertyChangeListener(myTableRefresher);
+      myEntity.addPropertyChangeListener(myTableRowRefresher);
+    }
   }
 
   public EOEntity getEntity() {

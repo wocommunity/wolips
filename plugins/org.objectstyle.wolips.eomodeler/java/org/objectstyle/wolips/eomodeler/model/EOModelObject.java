@@ -32,14 +32,6 @@ public class EOModelObject implements IAdaptable {
     myPropertyChangeSupport.firePropertyChange(_propertyName, _oldValue, _newValue);
   }
 
-  protected void firePropertyChange(String _propertyName, int _oldValue, int _newValue) {
-    myPropertyChangeSupport.firePropertyChange(_propertyName, _oldValue, _newValue);
-  }
-
-  protected void firePropertyChange(String _propertyName, boolean _oldValue, boolean _newValue) {
-    myPropertyChangeSupport.firePropertyChange(_propertyName, _oldValue, _newValue);
-  }
-
   public Object getAdapter(Class _adapter) {
     return null;
   }

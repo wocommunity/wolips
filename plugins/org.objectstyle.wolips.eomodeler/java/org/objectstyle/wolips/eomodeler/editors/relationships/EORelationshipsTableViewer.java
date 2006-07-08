@@ -63,6 +63,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.objectstyle.wolips.eomodeler.Activator;
+import org.objectstyle.wolips.eomodeler.editors.TableRefreshPropertyListener;
+import org.objectstyle.wolips.eomodeler.editors.TableRowRefreshPropertyListener;
 import org.objectstyle.wolips.eomodeler.editors.TableUtils;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EORelationship;
@@ -70,6 +72,8 @@ import org.objectstyle.wolips.eomodeler.model.EORelationship;
 public class EORelationshipsTableViewer extends Composite implements ISelectionProvider {
   private TableViewer myRelationshipsTableViewer;
   private EOEntity myEntity;
+  private TableRefreshPropertyListener myTableRefresher;
+  private TableRowRefreshPropertyListener myTableRowRefresher;
 
   public EORelationshipsTableViewer(Composite _parent, int _style) {
     super(_parent, _style);
@@ -79,6 +83,8 @@ public class EORelationshipsTableViewer extends Composite implements ISelectionP
     myRelationshipsTableViewer.setLabelProvider(new EORelationshipsLabelProvider(EORelationshipsConstants.COLUMNS));
     myRelationshipsTableViewer.setSorter(new EORelationshipsViewerSorter(EORelationshipsConstants.COLUMNS));
     myRelationshipsTableViewer.setColumnProperties(EORelationshipsConstants.COLUMNS);
+    myTableRefresher = new TableRefreshPropertyListener(myRelationshipsTableViewer, EOEntity.RELATIONSHIPS);
+    myTableRowRefresher = new TableRowRefreshPropertyListener(myRelationshipsTableViewer, EOEntity.RELATIONSHIP);
 
     Table relationshipsTable = myRelationshipsTableViewer.getTable();
     relationshipsTable.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -105,9 +111,17 @@ public class EORelationshipsTableViewer extends Composite implements ISelectionP
   }
 
   public void setEntity(EOEntity _entity) {
+    if (myEntity != null) {
+      myEntity.removePropertyChangeListener(myTableRefresher);
+      myEntity.removePropertyChangeListener(myTableRowRefresher);
+    }
     myEntity = _entity;
     myRelationshipsTableViewer.setInput(myEntity);
     TableUtils.packTableColumns(myRelationshipsTableViewer);
+    if (myEntity != null) {
+      myEntity.addPropertyChangeListener(myTableRefresher);
+      myEntity.addPropertyChangeListener(myTableRowRefresher);
+    }
   }
 
   public EOEntity getEntity() {

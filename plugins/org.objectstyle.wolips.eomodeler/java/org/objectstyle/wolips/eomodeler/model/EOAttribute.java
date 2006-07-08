@@ -55,27 +55,27 @@ import java.util.List;
 import java.util.Map;
 
 public class EOAttribute extends EOModelObject implements IEOAttribute {
-  public static final String PRIMARY_KEY = "Primary Key";
-  public static final String CLASS_PROPERTY = "Class Property";
-  public static final String USED_FOR_LOCKING = "Locking";
-  public static final String ALLOWS_NULL = "Allow Null";
-  public static final String PROTOTYPE_NAME = "Prototype";
-  public static final String NAME = "Name";
-  public static final String COLUMN_NAME = "Column";
-  public static final String ADAPTOR_VALUE_CONVERSION_METHOD_NAME = "Adaptor Value Conversion Method Name";
-  public static final String EXTERNAL_TYPE = "External Type";
-  public static final String FACTORY_METHOD_ARGUMENT_TYPE = "Factory Method Argument Type";
-  public static final String PRECISION = "Precision";
-  public static final String SCALE = "Scale";
-  public static final String USER_INFO = "User Info";
-  public static final String VALUE_CLASS_NAME = "Value Class Name";
-  public static final String VALUE_FACTORY_METHOD_NAME = "Value Factory Method Name";
-  public static final String VALUE_TYPE = "Value Type";
-  public static final String DEFINITION = "Definition";
-  public static final String WIDTH = "Width";
-  public static final String READ_FORMAT = "ReadFormat";
-  public static final String WRITE_FORMAT = "WriteFormat";
-  public static final String CLIENT_CLASS_PROPERTY = "ClientClassProperty";
+  public static final String PRIMARY_KEY = "primaryKey";
+  public static final String CLASS_PROPERTY = "classProperty";
+  public static final String USED_FOR_LOCKING = "usedForLocking";
+  public static final String ALLOWS_NULL = "allowsNull";
+  public static final String PROTOTYPE_NAME = "prototypeName";
+  public static final String NAME = "name";
+  public static final String COLUMN_NAME = "columnName";
+  public static final String ADAPTOR_VALUE_CONVERSION_METHOD_NAME = "adaptorValueConversionMethodName";
+  public static final String EXTERNAL_TYPE = "externalType";
+  public static final String FACTORY_METHOD_ARGUMENT_TYPE = "factoryMethodArgumentType";
+  public static final String PRECISION = "precision";
+  public static final String SCALE = "scale";
+  public static final String USER_INFO = "userInfo";
+  public static final String VALUE_CLASS_NAME = "valueClassName";
+  public static final String VALUE_FACTORY_METHOD_NAME = "valueFactoryMethodName";
+  public static final String VALUE_TYPE = "valueType";
+  public static final String DEFINITION = "definition";
+  public static final String WIDTH = "width";
+  public static final String READ_FORMAT = "readFormat";
+  public static final String WRITE_FORMAT = "writeFormat";
+  public static final String CLIENT_CLASS_PROPERTY = "clientClassProperty";
 
   private EOEntity myEntity;
   private String myName;
@@ -104,6 +104,11 @@ public class EOAttribute extends EOModelObject implements IEOAttribute {
   public EOAttribute(EOEntity _entity) {
     myEntity = _entity;
     myAttributeMap = new EOModelMap();
+  }
+
+  protected void firePropertyChange(String _propertyName, Object _oldValue, Object _newValue) {
+    super.firePropertyChange(_propertyName, _oldValue, _newValue);
+    myEntity._attributeChanged(this);
   }
 
   public int hashCode() {
@@ -218,6 +223,10 @@ public class EOAttribute extends EOModelObject implements IEOAttribute {
   }
 
   public void setAllowsNull(Boolean _allowsNull) {
+    setAllowsNull(_allowsNull, true);
+  }
+
+  public void setAllowsNull(Boolean _allowsNull, boolean _fireEvents) {
     Boolean oldAllowsNull = myAllowsNull;
     if (myPrimaryKey != null && myPrimaryKey.booleanValue()) {
       myAllowsNull = Boolean.FALSE;
@@ -225,7 +234,9 @@ public class EOAttribute extends EOModelObject implements IEOAttribute {
     else {
       myAllowsNull = _allowsNull;
     }
-    firePropertyChange(EOAttribute.ALLOWS_NULL, oldAllowsNull, myAllowsNull);
+    if (_fireEvents) {
+      firePropertyChange(EOAttribute.ALLOWS_NULL, oldAllowsNull, myAllowsNull);
+    }
   }
 
   public Boolean isClassProperty() {
@@ -233,9 +244,15 @@ public class EOAttribute extends EOModelObject implements IEOAttribute {
   }
 
   public void setClassProperty(Boolean _classProperty) {
+    setClassProperty(_classProperty, true);
+  }
+
+  public void setClassProperty(Boolean _classProperty, boolean _fireEvents) {
     Boolean oldClassProperty = myClassProperty;
     myClassProperty = _classProperty;
-    firePropertyChange(EOAttribute.CLASS_PROPERTY, oldClassProperty, myClassProperty);
+    if (_fireEvents) {
+      firePropertyChange(EOAttribute.CLASS_PROPERTY, oldClassProperty, myClassProperty);
+    }
   }
 
   public String getColumnName() {
@@ -257,12 +274,18 @@ public class EOAttribute extends EOModelObject implements IEOAttribute {
   }
 
   public void setPrimaryKey(Boolean _primaryKey) {
+    setPrimaryKey(_primaryKey, true);
+  }
+
+  public void setPrimaryKey(Boolean _primaryKey, boolean _fireEvents) {
     Boolean oldPrimaryKey = myPrimaryKey;
     myPrimaryKey = _primaryKey;
     if (_primaryKey != null && _primaryKey.booleanValue()) {
-      setAllowsNull(Boolean.FALSE);
+      setAllowsNull(Boolean.FALSE, _fireEvents);
     }
-    firePropertyChange(EOAttribute.PRIMARY_KEY, oldPrimaryKey, myPrimaryKey);
+    if (_fireEvents) {
+      firePropertyChange(EOAttribute.PRIMARY_KEY, oldPrimaryKey, myPrimaryKey);
+    }
   }
 
   public Boolean isUsedForLocking() {
@@ -270,9 +293,15 @@ public class EOAttribute extends EOModelObject implements IEOAttribute {
   }
 
   public void setUsedForLocking(Boolean _usedForLocking) {
+    setUsedForLocking(_usedForLocking, true);
+  }
+
+  public void setUsedForLocking(Boolean _usedForLocking, boolean _fireEvents) {
     Boolean oldUsedForLocking = myUsedForLocking;
     myUsedForLocking = _usedForLocking;
-    firePropertyChange(EOAttribute.USED_FOR_LOCKING, oldUsedForLocking, myUsedForLocking);
+    if (_fireEvents) {
+      firePropertyChange(EOAttribute.USED_FOR_LOCKING, oldUsedForLocking, myUsedForLocking);
+    }
   }
 
   public String getAdaptorValueConversionMethodName() {
