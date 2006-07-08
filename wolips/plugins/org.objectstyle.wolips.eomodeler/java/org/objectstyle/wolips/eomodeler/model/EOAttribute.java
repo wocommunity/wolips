@@ -54,14 +54,28 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class EOAttribute implements IEOAttribute {
+public class EOAttribute extends EOModelObject implements IEOAttribute {
   public static final String PRIMARY_KEY = "Primary Key";
   public static final String CLASS_PROPERTY = "Class Property";
-  public static final String LOCKING = "Locking";
-  public static final String ALLOW_NULL = "Allow Null";
-  public static final String PROTOTYPE = "Prototype";
+  public static final String USED_FOR_LOCKING = "Locking";
+  public static final String ALLOWS_NULL = "Allow Null";
+  public static final String PROTOTYPE_NAME = "Prototype";
   public static final String NAME = "Name";
-  public static final String COLUMN = "Column";
+  public static final String COLUMN_NAME = "Column";
+  public static final String ADAPTOR_VALUE_CONVERSION_METHOD_NAME = "Adaptor Value Conversion Method Name";
+  public static final String EXTERNAL_TYPE = "External Type";
+  public static final String FACTORY_METHOD_ARGUMENT_TYPE = "Factory Method Argument Type";
+  public static final String PRECISION = "Precision";
+  public static final String SCALE = "Scale";
+  public static final String USER_INFO = "User Info";
+  public static final String VALUE_CLASS_NAME = "Value Class Name";
+  public static final String VALUE_FACTORY_METHOD_NAME = "Value Factory Method Name";
+  public static final String VALUE_TYPE = "Value Type";
+  public static final String DEFINITION = "Definition";
+  public static final String WIDTH = "Width";
+  public static final String READ_FORMAT = "ReadFormat";
+  public static final String WRITE_FORMAT = "WriteFormat";
+  public static final String CLIENT_CLASS_PROPERTY = "ClientClassProperty";
 
   private EOEntity myEntity;
   private String myName;
@@ -137,6 +151,7 @@ public class EOAttribute implements IEOAttribute {
   }
 
   public void setPrototypeName(String _prototypeName, boolean _updateFromPrototype) {
+    String oldPrototypeName = myPrototypeName;
     boolean prototypeNameChanged = true;
     if (_prototypeName == null && myPrototypeName == null) {
       prototypeNameChanged = false;
@@ -149,6 +164,7 @@ public class EOAttribute implements IEOAttribute {
       EOAttribute prototype = getPrototype();
       _updateFromPrototype(prototype);
     }
+    firePropertyChange(EOAttribute.PROTOTYPE_NAME, oldPrototypeName, _prototypeName);
   }
 
   protected void _updateFromPrototype(EOAttribute _prototype) {
@@ -187,8 +203,10 @@ public class EOAttribute implements IEOAttribute {
   }
 
   public void setName(String _name) throws DuplicateAttributeNameException {
+    String oldName = myName;
     myEntity._checkForDuplicateAttributeName(this, _name);
     myName = _name;
+    firePropertyChange(EOAttribute.NAME, oldName, myName);
   }
 
   public String getName() {
@@ -200,12 +218,14 @@ public class EOAttribute implements IEOAttribute {
   }
 
   public void setAllowsNull(Boolean _allowsNull) {
+    Boolean oldAllowsNull = myAllowsNull;
     if (myPrimaryKey != null && myPrimaryKey.booleanValue()) {
       myAllowsNull = Boolean.FALSE;
     }
     else {
       myAllowsNull = _allowsNull;
     }
+    firePropertyChange(EOAttribute.ALLOWS_NULL, oldAllowsNull, myAllowsNull);
   }
 
   public Boolean isClassProperty() {
@@ -213,7 +233,9 @@ public class EOAttribute implements IEOAttribute {
   }
 
   public void setClassProperty(Boolean _classProperty) {
+    Boolean oldClassProperty = myClassProperty;
     myClassProperty = _classProperty;
+    firePropertyChange(EOAttribute.CLASS_PROPERTY, oldClassProperty, myClassProperty);
   }
 
   public String getColumnName() {
@@ -221,15 +243,13 @@ public class EOAttribute implements IEOAttribute {
   }
 
   public void setColumnName(String _columnName) {
+    String oldColumnName = myColumnName;
     myColumnName = _columnName;
+    firePropertyChange(EOAttribute.COLUMN_NAME, oldColumnName, myColumnName);
   }
 
   public EOEntity getEntity() {
     return myEntity;
-  }
-
-  public void setEntity(EOEntity _entity) {
-    myEntity = _entity;
   }
 
   public Boolean isPrimaryKey() {
@@ -237,10 +257,12 @@ public class EOAttribute implements IEOAttribute {
   }
 
   public void setPrimaryKey(Boolean _primaryKey) {
+    Boolean oldPrimaryKey = myPrimaryKey;
     myPrimaryKey = _primaryKey;
     if (_primaryKey != null && _primaryKey.booleanValue()) {
       setAllowsNull(Boolean.FALSE);
     }
+    firePropertyChange(EOAttribute.PRIMARY_KEY, oldPrimaryKey, myPrimaryKey);
   }
 
   public Boolean isUsedForLocking() {
@@ -248,7 +270,9 @@ public class EOAttribute implements IEOAttribute {
   }
 
   public void setUsedForLocking(Boolean _usedForLocking) {
+    Boolean oldUsedForLocking = myUsedForLocking;
     myUsedForLocking = _usedForLocking;
+    firePropertyChange(EOAttribute.USED_FOR_LOCKING, oldUsedForLocking, myUsedForLocking);
   }
 
   public String getAdaptorValueConversionMethodName() {
@@ -256,7 +280,9 @@ public class EOAttribute implements IEOAttribute {
   }
 
   public void setAdaptorValueConversionMethodName(String _adaptorValueConversionMethodName) {
+    String oldAdaptorValueConversionMethodName = myAdaptorValueConversionMethodName;
     myAdaptorValueConversionMethodName = _adaptorValueConversionMethodName;
+    firePropertyChange(EOAttribute.ADAPTOR_VALUE_CONVERSION_METHOD_NAME, oldAdaptorValueConversionMethodName, myAdaptorValueConversionMethodName);
   }
 
   public String getExternalType() {
@@ -264,7 +290,9 @@ public class EOAttribute implements IEOAttribute {
   }
 
   public void setExternalType(String _externalType) {
+    String oldExternalType = myExternalType;
     myExternalType = _externalType;
+    firePropertyChange(EOAttribute.EXTERNAL_TYPE, oldExternalType, myExternalType);
   }
 
   public String getFactoryMethodArgumentType() {
@@ -272,7 +300,9 @@ public class EOAttribute implements IEOAttribute {
   }
 
   public void setFactoryMethodArgumentType(String _factoryMethodArgumentType) {
+    String oldFactoryMethodArgumentType = myFactoryMethodArgumentType;
     myFactoryMethodArgumentType = _factoryMethodArgumentType;
+    firePropertyChange(EOAttribute.FACTORY_METHOD_ARGUMENT_TYPE, oldFactoryMethodArgumentType, myFactoryMethodArgumentType);
   }
 
   public Integer getPrecision() {
@@ -280,7 +310,9 @@ public class EOAttribute implements IEOAttribute {
   }
 
   public void setPrecision(Integer _precision) {
+    Integer oldPrecision = myPrecision;
     myPrecision = _precision;
+    firePropertyChange(EOAttribute.PRECISION, oldPrecision, myPrecision);
   }
 
   public Integer getScale() {
@@ -288,7 +320,9 @@ public class EOAttribute implements IEOAttribute {
   }
 
   public void setScale(Integer _scale) {
+    Integer oldScale = myScale;
     myScale = _scale;
+    firePropertyChange(EOAttribute.SCALE, oldScale, myScale);
   }
 
   public Map getUserInfo() {
@@ -296,7 +330,9 @@ public class EOAttribute implements IEOAttribute {
   }
 
   public void setUserInfo(Map _userInfo) {
+    Map oldUserInfo = myUserInfo;
     myUserInfo = _userInfo;
+    firePropertyChange(EOAttribute.USER_INFO, oldUserInfo, myUserInfo);
   }
 
   public String getValueClassName() {
@@ -304,7 +340,9 @@ public class EOAttribute implements IEOAttribute {
   }
 
   public void setValueClassName(String _valueClassName) {
+    String oldValueClassName = myValueClassName;
     myValueClassName = _valueClassName;
+    firePropertyChange(EOAttribute.VALUE_CLASS_NAME, oldValueClassName, myValueClassName);
   }
 
   public String getValueFactoryMethodName() {
@@ -312,7 +350,9 @@ public class EOAttribute implements IEOAttribute {
   }
 
   public void setValueFactoryMethodName(String _valueFactoryMethodName) {
+    String oldValueFactoryMethodName = myValueFactoryMethodName;
     myValueFactoryMethodName = _valueFactoryMethodName;
+    firePropertyChange(EOAttribute.VALUE_FACTORY_METHOD_NAME, oldValueFactoryMethodName, myValueFactoryMethodName);
   }
 
   public String getValueType() {
@@ -320,7 +360,9 @@ public class EOAttribute implements IEOAttribute {
   }
 
   public void setValueType(String _valueType) {
+    String oldValueType = myValueType;
     myValueType = _valueType;
+    firePropertyChange(EOAttribute.VALUE_TYPE, oldValueType, myValueType);
   }
 
   public Integer getWidth() {
@@ -328,7 +370,9 @@ public class EOAttribute implements IEOAttribute {
   }
 
   public void setWidth(Integer _width) {
+    Integer oldWidth = myWidth;
     myWidth = _width;
+    firePropertyChange(EOAttribute.WIDTH, oldWidth, myWidth);
   }
 
   public String getDefinition() {
@@ -336,7 +380,9 @@ public class EOAttribute implements IEOAttribute {
   }
 
   public void setDefinition(String _definition) {
+    String oldDefinition = myDefinition;
     myDefinition = _definition;
+    firePropertyChange(EOAttribute.DEFINITION, oldDefinition, myDefinition);
   }
 
   public String getReadFormat() {
@@ -344,7 +390,9 @@ public class EOAttribute implements IEOAttribute {
   }
 
   public void setReadFormat(String _readFormat) {
+    String oldReadFormat = myReadFormat;
     myReadFormat = _readFormat;
+    firePropertyChange(EOAttribute.READ_FORMAT, oldReadFormat, myReadFormat);
   }
 
   public String getWriteFormat() {
@@ -352,11 +400,15 @@ public class EOAttribute implements IEOAttribute {
   }
 
   public void setWriteFormat(String _writeFormat) {
+    String oldWriteFormat = myWriteFormat;
     myWriteFormat = _writeFormat;
+    firePropertyChange(EOAttribute.WRITE_FORMAT, oldWriteFormat, myWriteFormat);
   }
 
   public void setClientClassProperty(Boolean _clientClassProperty) {
+    Boolean oldClientClassProperty = myClientClassProperty;
     myClientClassProperty = _clientClassProperty;
+    firePropertyChange(EOAttribute.CLIENT_CLASS_PROPERTY, oldClientClassProperty, myClientClassProperty);
   }
 
   public Boolean isClientClassProperty() {

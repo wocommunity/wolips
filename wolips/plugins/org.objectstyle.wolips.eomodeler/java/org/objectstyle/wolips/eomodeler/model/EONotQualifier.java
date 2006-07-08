@@ -52,11 +52,15 @@ package org.objectstyle.wolips.eomodeler.model;
 import java.util.List;
 import java.util.Map;
 
-public class EONotQualifier implements IEOQualifier {
+public class EONotQualifier extends EOModelObject implements IEOQualifier {
+  public static final String QUALIFIER = "Qualifier";
+
   private IEOQualifier myQualifier;
 
   public void setQualifier(IEOQualifier _qualifier) {
+    IEOQualifier oldQualifier = myQualifier;
     myQualifier = _qualifier;
+    firePropertyChange(EONotQualifier.QUALIFIER, oldQualifier, myQualifier);
   }
 
   public IEOQualifier getQualifier() {

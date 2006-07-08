@@ -49,8 +49,9 @@
  */
 package org.objectstyle.wolips.eomodeler.editors.relationships;
 
+import org.objectstyle.wolips.eomodeler.model.EOJoin;
 import org.objectstyle.wolips.eomodeler.model.EORelationship;
 
 public class EORelationshipsConstants {
-  public static final String[] COLUMNS = { EORelationship.TO_MANY, EORelationship.CLASS_PROPERTY, EORelationship.NAME, EORelationship.DESTINATION, EORelationship.SOURCE_ATTRIBUTE, EORelationship.DESTINATION_ATTRIBUTE };
+  public static final String[] COLUMNS = { EORelationship.TO_MANY, EORelationship.CLASS_PROPERTY, EORelationship.NAME, EORelationship.DESTINATION, EOJoin.SOURCE_ATTRIBUTE_NAME, EOJoin.DESTINATION_ATTRIBUTE_NAME };
 }

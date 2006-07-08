@@ -54,17 +54,22 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class EORelationship implements IEOAttribute {
+public class EORelationship extends EOModelObject implements IEOAttribute {
   public static final String TO_MANY = "To Many";
   public static final String CLASS_PROPERTY = "Class Property";
   public static final String NAME = "Name";
   public static final String DESTINATION = "Destination";
-  public static final String SOURCE_ATTRIBUTE = "Source Att";
-  public static final String DESTINATION_ATTRIBUTE = "Dest Att";
+  public static final String DEFINITION = "Definition";
+  public static final String DELETE_RULE = "Delete Rule";
+  public static final String JOIN_SEMANTIC = "Join Semantic";
+  public static final String MANDATORY = "Mandatory";
+  public static final String OWNS_DESTINATION = "Owns Destination";
+  public static final String PROPAGATES_PRIMARY_KEY = "Propagates Primary Key";
+  public static final String JOINS = "Joins";
 
   private EOEntity myEntity;
   private String myName;
-  private String myDestination;
+  private String myDestinationName;
   private String myDefinition;
   private Boolean myMandatory;
   private Boolean myToMany;
@@ -92,7 +97,7 @@ public class EORelationship implements IEOAttribute {
   }
 
   public boolean isRelatedTo(EOEntity _entity) {
-    return _entity.getName().equals(myDestination);
+    return _entity.getName().equals(myDestinationName);
   }
 
   public boolean isRelatedTo(EOAttribute _attribute) {
@@ -106,7 +111,9 @@ public class EORelationship implements IEOAttribute {
   }
 
   public void setDefinition(String _definition) {
+    String oldDefinition = myDefinition;
     myDefinition = _definition;
+    firePropertyChange(EORelationship.DEFINITION, oldDefinition, myDefinition);
   }
 
   public String getDefinition() {
@@ -114,7 +121,9 @@ public class EORelationship implements IEOAttribute {
   }
 
   public void setClassProperty(Boolean _classProperty) {
+    Boolean oldClassProperty = myClassProperty;
     myClassProperty = _classProperty;
+    firePropertyChange(EORelationship.CLASS_PROPERTY, oldClassProperty, myClassProperty);
   }
 
   public Boolean isClassProperty() {
@@ -126,8 +135,10 @@ public class EORelationship implements IEOAttribute {
   }
 
   public void setName(String _name) throws DuplicateRelationshipNameException {
+    String oldName = myName;
     myEntity._checkForDuplicateRelationshipName(this, _name);
     myName = _name;
+    firePropertyChange(EORelationship.NAME, oldName, myName);
   }
 
   public String getName() {
@@ -139,20 +150,28 @@ public class EORelationship implements IEOAttribute {
   }
 
   public void setDeleteRule(String _deleteRule) {
+    String oldDeleteRule = myDeleteRule;
     myDeleteRule = _deleteRule;
+    firePropertyChange(EORelationship.DELETE_RULE, oldDeleteRule, myDeleteRule);
   }
 
   public EOEntity getDestination() {
-    return myEntity.getModel().getModelGroup().getEntityNamed(myDestination);
+    return myEntity.getModel().getModelGroup().getEntityNamed(myDestinationName);
   }
 
   public void setDestination(EOEntity _destination) {
     if (_destination == null) {
-      myDestination = null;
+      setDestinationName(null);
     }
     else {
-      myDestination = _destination.getName();
+      setDestinationName(_destination.getName());
     }
+  }
+
+  public void setDestinationName(String _destinationName) {
+    String oldDestinationName = myDestinationName;
+    myDestinationName = _destinationName;
+    firePropertyChange(EORelationship.DESTINATION, oldDestinationName, myDestinationName);
   }
 
   public String getJoinSemantic() {
@@ -160,7 +179,9 @@ public class EORelationship implements IEOAttribute {
   }
 
   public void setJoinSemantic(String _joinSemantic) {
+    String oldJoinSemantic = myJoinSemantic;
     myJoinSemantic = _joinSemantic;
+    firePropertyChange(EORelationship.JOIN_SEMANTIC, oldJoinSemantic, myJoinSemantic);
   }
 
   public Boolean isMandatory() {
@@ -168,7 +189,9 @@ public class EORelationship implements IEOAttribute {
   }
 
   public void setMandatory(Boolean _mandatory) {
+    Boolean oldMandatory = myMandatory;
     myMandatory = _mandatory;
+    firePropertyChange(EORelationship.MANDATORY, oldMandatory, myMandatory);
   }
 
   public Boolean isOwnsDestination() {
@@ -176,7 +199,9 @@ public class EORelationship implements IEOAttribute {
   }
 
   public void setOwnsDestination(Boolean _ownsDestination) {
+    Boolean oldOwnsDestination = myOwnsDestination;
     myOwnsDestination = _ownsDestination;
+    firePropertyChange(EORelationship.OWNS_DESTINATION, oldOwnsDestination, myOwnsDestination);
   }
 
   public Boolean isPropagatesPrimaryKey() {
@@ -184,7 +209,9 @@ public class EORelationship implements IEOAttribute {
   }
 
   public void setPropagatesPrimaryKey(Boolean _propagatesPrimaryKey) {
+    Boolean oldPropagatesPrimaryKey = myPropagatesPrimaryKey;
     myPropagatesPrimaryKey = _propagatesPrimaryKey;
+    firePropertyChange(EORelationship.PROPAGATES_PRIMARY_KEY, oldPropagatesPrimaryKey, myPropagatesPrimaryKey);
   }
 
   public Boolean isToMany() {
@@ -192,20 +219,25 @@ public class EORelationship implements IEOAttribute {
   }
 
   public void setToMany(Boolean _toMany) {
+    Boolean oldToMany = myToMany;
     myToMany = _toMany;
+    firePropertyChange(EORelationship.TO_MANY, oldToMany, myToMany);
   }
 
   public void clearJoins() {
     myJoins.clear();
+    firePropertyChange(EORelationship.JOINS, null, null);
   }
 
   public void addJoin(EOJoin _join) {
     // TODO: Check duplicates
     myJoins.add(_join);
+    firePropertyChange(EORelationship.JOINS, null, null);
   }
 
   public void removeJoin(EOJoin _join) {
     myJoins.remove(_join);
+    firePropertyChange(EORelationship.JOINS, null, null);
   }
 
   public List getJoins() {
@@ -222,7 +254,7 @@ public class EORelationship implements IEOAttribute {
 
   public void loadFromMap(EOModelMap _relationshipMap) {
     myRelationshipMap = _relationshipMap;
-    myDestination = _relationshipMap.getString("destination", true);
+    myDestinationName = _relationshipMap.getString("destination", true);
     myDefinition = _relationshipMap.getString("definition", true);
     myMandatory = _relationshipMap.getBoolean("isMandatory");
     myToMany = _relationshipMap.getBoolean("isToMany");
@@ -246,7 +278,7 @@ public class EORelationship implements IEOAttribute {
 
   public EOModelMap toMap() {
     EOModelMap relationshipMap = myRelationshipMap.cloneModelMap();
-    relationshipMap.setString("destination", myDestination, true);
+    relationshipMap.setString("destination", myDestinationName, true);
     relationshipMap.setString("definition", myDefinition, true);
     relationshipMap.setBoolean("isMandatory", myMandatory);
     relationshipMap.setBoolean("isToMany", myToMany);
@@ -268,8 +300,8 @@ public class EORelationship implements IEOAttribute {
   }
 
   public void verify(List _failures) {
-    if (myDestination != null && getDestination() == null) {
-      _failures.add(new MissingEntityFailure(myDestination));
+    if (myDestinationName != null && getDestination() == null) {
+      _failures.add(new MissingEntityFailure(myDestinationName));
     }
 
     // TODO
@@ -282,6 +314,6 @@ public class EORelationship implements IEOAttribute {
   }
 
   public String toString() {
-    return "[EORelationship: destination = " + myDestination + "; joins = " + myJoins + "]";
+    return "[EORelationship: destination = " + myDestinationName + "; joins = " + myJoins + "]";
   }
 }

@@ -54,7 +54,20 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class EOFetchSpecification {
+public class EOFetchSpecification extends EOModelObject {
+  public static final String NAME = "Name";
+  public static final String SORT_ORDERINGS = "Sort Orderings";
+  public static final String QUALIFIER = "Qualifier";
+  public static final String ENTITY = "Entity";
+  public static final String FETCH_LIMIT = "Fetch Limit";
+  public static final String DEEP = "Deep";
+  public static final String LOCKS_OBJECTS = "Locks Objects";
+  public static final String PREFETCHING_RELATIONSHIP_KEY_PATHS = "Prefetching Relationship Key Paths";
+  public static final String PROMPTS_AFTER_FETCH_LIMIT = "Prompts After Fetch Limit";
+  public static final String RAW_ROW_KEY_PATHS = "Raw Row Key Paths";
+  public static final String REFRESHES_REFETCHED_OBJECTS = "Refreshes Refetched Objects";
+  public static final String REQUIRES_ALL_QUALIFIER_BINDING_VARIABLES = "Requires All Qualifier Binding Variables";
+  public static final String USES_DISTINCT = "Uses Distinct";
   private EOEntity myEntity;
   private String myName;
   private String myClass;
@@ -87,7 +100,9 @@ public class EOFetchSpecification {
   }
 
   public void setName(String _name) {
+    String oldName = myName;
     myName = _name;
+    firePropertyChange(EOFetchSpecification.NAME, oldName, myName);
   }
 
   public String getName() {
@@ -96,14 +111,22 @@ public class EOFetchSpecification {
 
   public void addSortOrdering(EOSortOrdering _sortOrdering) {
     mySortOrderings.add(_sortOrdering);
+    firePropertyChange(EOFetchSpecification.SORT_ORDERINGS, null, null);
   }
 
   public void removeSortOrdering(EOSortOrdering _sortOrdering) {
     mySortOrderings.remove(_sortOrdering);
+    firePropertyChange(EOFetchSpecification.SORT_ORDERINGS, null, null);
+  }
+
+  public void setSortOrderings(List _sortOrderings) {
+    mySortOrderings = _sortOrderings;
+    firePropertyChange(EOFetchSpecification.SORT_ORDERINGS, null, null);
   }
 
   public void clearSortOrderings() {
     mySortOrderings.clear();
+    firePropertyChange(EOFetchSpecification.SORT_ORDERINGS, null, null);
   }
 
   public List getSortOrderings() {
@@ -111,7 +134,9 @@ public class EOFetchSpecification {
   }
 
   public void setQualifier(IEOQualifier _qualifier) {
+    IEOQualifier oldQualifier = myQualifier;
     myQualifier = _qualifier;
+    firePropertyChange(EOFetchSpecification.QUALIFIER, oldQualifier, myQualifier);
   }
 
   public IEOQualifier getQualifier() {
@@ -119,11 +144,101 @@ public class EOFetchSpecification {
   }
 
   public void setEntity(EOEntity _entity) {
+    EOEntity oldEntity = myEntity;
     myEntity = _entity;
+    firePropertyChange(EOFetchSpecification.ENTITY, oldEntity, myEntity);
   }
 
   public EOEntity getEntity() {
     return myEntity;
+  }
+
+  public Boolean isDeep() {
+    return myDeep;
+  }
+
+  public void setDeep(Boolean _deep) {
+    Boolean oldDeep = myDeep;
+    myDeep = _deep;
+    firePropertyChange(EOFetchSpecification.DEEP, oldDeep, myDeep);
+  }
+
+  public Integer getFetchLimit() {
+    return myFetchLimit;
+  }
+
+  public void setFetchLimit(Integer _fetchLimit) {
+    Integer oldFetchLimit = myFetchLimit;
+    myFetchLimit = _fetchLimit;
+    firePropertyChange(EOFetchSpecification.FETCH_LIMIT, oldFetchLimit, myFetchLimit);
+  }
+
+  public Boolean isLocksObjects() {
+    return myLocksObjects;
+  }
+
+  public void setLocksObjects(Boolean _locksObjects) {
+    Boolean oldLocksObjects = myLocksObjects;
+    myLocksObjects = _locksObjects;
+    firePropertyChange(EOFetchSpecification.LOCKS_OBJECTS, oldLocksObjects, myLocksObjects);
+  }
+
+  public List getPrefetchingRelationshipKeyPaths() {
+    return myPrefetchingRelationshipKeyPaths;
+  }
+
+  public void setPrefetchingRelationshipKeyPaths(List _prefetchingRelationshipKeyPaths) {
+    myPrefetchingRelationshipKeyPaths = _prefetchingRelationshipKeyPaths;
+    firePropertyChange(EOFetchSpecification.PREFETCHING_RELATIONSHIP_KEY_PATHS, null, null);
+  }
+
+  public Boolean isPromptsAfterFetchLimit() {
+    return myPromptsAfterFetchLimit;
+  }
+
+  public void setPromptsAfterFetchLimit(Boolean _promptsAfterFetchLimit) {
+    Boolean oldPromptsAfterFetchLimit = myPromptsAfterFetchLimit;
+    myPromptsAfterFetchLimit = _promptsAfterFetchLimit;
+    firePropertyChange(EOFetchSpecification.PROMPTS_AFTER_FETCH_LIMIT, oldPromptsAfterFetchLimit, myPromptsAfterFetchLimit);
+  }
+
+  public List getRawRowKeyPaths() {
+    return myRawRowKeyPaths;
+  }
+
+  public void setRawRowKeyPaths(List _rawRowKeyPaths) {
+    myRawRowKeyPaths = _rawRowKeyPaths;
+    firePropertyChange(EOFetchSpecification.RAW_ROW_KEY_PATHS, null, null);
+  }
+
+  public Boolean isRefreshesRefetchedObjects() {
+    return myRefreshesRefetchedObjects;
+  }
+
+  public void setRefreshesRefetchedObjects(Boolean _refreshesRefetchedObjects) {
+    Boolean oldRefreshesRefetchedObjects = myRefreshesRefetchedObjects;
+    myRefreshesRefetchedObjects = _refreshesRefetchedObjects;
+    firePropertyChange(EOFetchSpecification.REFRESHES_REFETCHED_OBJECTS, oldRefreshesRefetchedObjects, myRefreshesRefetchedObjects);
+  }
+
+  public Boolean isRequiresAllQualifierBindingVariables() {
+    return myRequiresAllQualifierBindingVariables;
+  }
+
+  public void setRequiresAllQualifierBindingVariables(Boolean _requiresAllQualifierBindingVariables) {
+    Boolean oldRequiresAllQualifierBindingVariables = myRequiresAllQualifierBindingVariables;
+    myRequiresAllQualifierBindingVariables = _requiresAllQualifierBindingVariables;
+    firePropertyChange(EOFetchSpecification.REQUIRES_ALL_QUALIFIER_BINDING_VARIABLES, oldRequiresAllQualifierBindingVariables, myRequiresAllQualifierBindingVariables);
+  }
+
+  public Boolean isUsesDistinct() {
+    return myUsesDistinct;
+  }
+
+  public void setUsesDistinct(Boolean _usesDistinct) {
+    Boolean oldUsesDistinct = myUsesDistinct;
+    myUsesDistinct = _usesDistinct;
+    firePropertyChange(EOFetchSpecification.USES_DISTINCT, oldUsesDistinct, myUsesDistinct);
   }
 
   public void loadFromMap(EOModelMap _map) throws EOModelException {

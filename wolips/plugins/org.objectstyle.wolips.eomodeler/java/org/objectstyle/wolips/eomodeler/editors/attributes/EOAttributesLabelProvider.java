@@ -76,13 +76,13 @@ public class EOAttributesLabelProvider extends TablePropertyLabelProvider implem
     if (_property == EOAttribute.PRIMARY_KEY) {
       image = yesNoImage(attribute.isPrimaryKey(), Activator.getDefault().getImageRegistry().get(Activator.PRIMARY_KEY_ICON), null, null);
     }
-    else if (_property == EOAttribute.LOCKING) {
+    else if (_property == EOAttribute.USED_FOR_LOCKING) {
       image = yesNoImage(attribute.isUsedForLocking(), Activator.getDefault().getImageRegistry().get(Activator.LOCKING_ICON), null, null);
     }
     else if (_property == EOAttribute.CLASS_PROPERTY) {
       image = yesNoImage(attribute.isClassProperty(), Activator.getDefault().getImageRegistry().get(Activator.CLASS_PROPERTY_ICON), null, null);
     }
-    else if (_property == EOAttribute.ALLOW_NULL) {
+    else if (_property == EOAttribute.ALLOWS_NULL) {
       image = yesNoImage(attribute.isAllowsNull(), Activator.getDefault().getImageRegistry().get(Activator.CHECK_ICON), null, null);
     }
     return image;
@@ -98,22 +98,22 @@ public class EOAttributesLabelProvider extends TablePropertyLabelProvider implem
     if (_property == EOAttribute.PRIMARY_KEY) {
       // DO NOTHING
     }
-    else if (_property == EOAttribute.LOCKING) {
+    else if (_property == EOAttribute.USED_FOR_LOCKING) {
       // DO NOTHING
     }
     else if (_property == EOAttribute.CLASS_PROPERTY) {
       // DO NOTHING
     }
-    else if (_property == EOAttribute.ALLOW_NULL) {
+    else if (_property == EOAttribute.ALLOWS_NULL) {
       // DO NOTHING
     }
     else if (_property == EOAttribute.NAME) {
       text = attribute.getName();
     }
-    else if (_property == EOAttribute.COLUMN) {
+    else if (_property == EOAttribute.COLUMN_NAME) {
       text = attribute.getColumnName();
     }
-    else if (_property == EOAttribute.PROTOTYPE) {
+    else if (_property == EOAttribute.PROTOTYPE_NAME) {
       EOAttribute prototype = attribute.getPrototype();
       if (prototype != null) {
         text = prototype.getName();

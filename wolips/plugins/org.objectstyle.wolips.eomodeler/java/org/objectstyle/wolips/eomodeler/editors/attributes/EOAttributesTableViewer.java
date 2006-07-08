@@ -94,7 +94,7 @@ public class EOAttributesTableViewer extends Composite implements ISelectionProv
     //primaryKeyColumn.setAlignment(SWT.CENTER);
     primaryKeyColumn.setImage(Activator.getDefault().getImageRegistry().get(Activator.PRIMARY_KEY_ICON));
 
-    TableColumn lockingColumn = attributesTable.getColumn(TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttribute.LOCKING));
+    TableColumn lockingColumn = attributesTable.getColumn(TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttribute.USED_FOR_LOCKING));
     lockingColumn.setText("");
     //lockingColumn.setAlignment(SWT.CENTER);
     lockingColumn.setImage(Activator.getDefault().getImageRegistry().get(Activator.LOCKING_ICON));
@@ -104,7 +104,7 @@ public class EOAttributesTableViewer extends Composite implements ISelectionProv
     //classPropertyColumn.setAlignment(SWT.CENTER);
     classPropertyColumn.setImage(Activator.getDefault().getImageRegistry().get(Activator.CLASS_PROPERTY_ICON));
 
-    TableColumn allowNullColumn = attributesTable.getColumn(TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttribute.ALLOW_NULL));
+    TableColumn allowNullColumn = attributesTable.getColumn(TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttribute.ALLOWS_NULL));
     allowNullColumn.setText("0");
     //allowNullColumn.setAlignment(SWT.CENTER);
     //classPropertyColumn.setImage(Activator.getDefault().getImageRegistry().get(EOAttribute.CLASS_PROPERTY));
@@ -112,9 +112,9 @@ public class EOAttributesTableViewer extends Composite implements ISelectionProv
     ((EOAttributesViewerSorter) myAttributesTableViewer.getSorter()).sort(myAttributesTableViewer, EOAttribute.NAME);
 
     CellEditor[] cellEditors = new CellEditor[EOAttributesConstants.COLUMNS.length];
-    cellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttribute.PROTOTYPE)] = new KeyComboBoxCellEditor(attributesTable, new String[0], SWT.READ_ONLY);
+    cellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttribute.PROTOTYPE_NAME)] = new KeyComboBoxCellEditor(attributesTable, new String[0], SWT.READ_ONLY);
     cellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttribute.NAME)] = new TextCellEditor(attributesTable);
-    cellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttribute.COLUMN)] = new TextCellEditor(attributesTable);
+    cellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttribute.COLUMN_NAME)] = new TextCellEditor(attributesTable);
     updateCellEditors(cellEditors);
     myAttributesTableViewer.setCellModifier(new EOAttributesCellModifier(myAttributesTableViewer, cellEditors));
     myAttributesTableViewer.setCellEditors(cellEditors);
@@ -140,14 +140,14 @@ public class EOAttributesTableViewer extends Composite implements ISelectionProv
     if (myEntity != null && myEntity.isPrototype()) {
       _cellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttribute.PRIMARY_KEY)] = new TriStateCellEditor(attributesTable);
       _cellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttribute.CLASS_PROPERTY)] = new TriStateCellEditor(attributesTable);
-      _cellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttribute.LOCKING)] = new TriStateCellEditor(attributesTable);
-      _cellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttribute.ALLOW_NULL)] = new TriStateCellEditor(attributesTable);
+      _cellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttribute.USED_FOR_LOCKING)] = new TriStateCellEditor(attributesTable);
+      _cellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttribute.ALLOWS_NULL)] = new TriStateCellEditor(attributesTable);
     }
     else {
       _cellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttribute.PRIMARY_KEY)] = new CheckboxCellEditor(attributesTable);
       _cellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttribute.CLASS_PROPERTY)] = new CheckboxCellEditor(attributesTable);
-      _cellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttribute.LOCKING)] = new CheckboxCellEditor(attributesTable);
-      _cellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttribute.ALLOW_NULL)] = new CheckboxCellEditor(attributesTable);
+      _cellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttribute.USED_FOR_LOCKING)] = new CheckboxCellEditor(attributesTable);
+      _cellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttribute.ALLOWS_NULL)] = new CheckboxCellEditor(attributesTable);
     }
   }
 

@@ -57,21 +57,30 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.ui.views.properties.IPropertySource;
 import org.objectstyle.cayenne.wocompat.PropertyListSerialization;
 
-public class EOEntity implements IAdaptable {
+public class EOEntity extends EOModelObject {
   public static final String NAME = "Name";
   public static final String TABLE = "Table";
   public static final String CLASS_NAME = "Class Name";
-  public static final String PARENT = "Parent";
+  public static final String PARENT_NAME = "Parent";
+  public static final String EXTERNAL_QUERY = "External Query";
+  public static final String MAX_NUMBER_OF_INSTANCES_TO_BATCH_FETCH = "Max Number of Instances to Batch Fetch";
+  public static final String READ_ONLY = "Read Only";
+  public static final String EXTERNAL_NAME = "External Name";
+  public static final String ABSTRACT_ENTITY = "Abstract Entity";
+  public static final String CACHES_OBJECTS = "Caches Objects";
+  public static final String RESTRICTING_QUALIFIER = "Restricting Qualifier";
+  public static final String FETCH_SPECIFICATIONS = "Fetch Specification";
+  public static final String ATTRIBUTES = "Attributes";
+  public static final String RELATIONSHIPS = "Relationships";
+  public static final String USER_INFO = "User Info";
 
   private EOModel myModel;
   private String myName;
   private String myExternalName;
   private String myClassName;
-  private String myParent;
+  private String myParentName;
   private String myRestrictingQualifier;
   private String myExternalQuery;
   private Boolean myCachesObjects;
@@ -95,11 +104,10 @@ public class EOEntity implements IAdaptable {
   }
 
   public Object getAdapter(Class _adapter) {
-    //System.out.println("EOEntity.getAdapter: " + _adapter);
     Object adapter = null;
-    if (IPropertySource.class.isAssignableFrom(_adapter)) {
-      //adapter = new EOModelPropertySource(this);
-    }
+    //    if (_adapter == IPropertySource.class) {
+    //      adapter = null; 
+    //    }
     return adapter;
   }
 
@@ -116,7 +124,9 @@ public class EOEntity implements IAdaptable {
   }
 
   public void setExternalQuery(String _externalQuery) {
+    String oldExternalQuery = myExternalQuery;
     myExternalQuery = _externalQuery;
+    firePropertyChange(EOEntity.EXTERNAL_QUERY, oldExternalQuery, myExternalQuery);
   }
 
   public Integer getMaxNumberOfInstancesToBatchFetch() {
@@ -124,7 +134,9 @@ public class EOEntity implements IAdaptable {
   }
 
   public void setMaxNumberOfInstancesToBatchFetch(Integer _maxNumberOfInstancesToBatchFetch) {
+    Integer oldMaxNumberOfInstancesToBatchFetch = myMaxNumberOfInstancesToBatchFetch;
     myMaxNumberOfInstancesToBatchFetch = _maxNumberOfInstancesToBatchFetch;
+    firePropertyChange(EOEntity.MAX_NUMBER_OF_INSTANCES_TO_BATCH_FETCH, oldMaxNumberOfInstancesToBatchFetch, myMaxNumberOfInstancesToBatchFetch);
   }
 
   public Boolean isReadOnly() {
@@ -132,7 +144,9 @@ public class EOEntity implements IAdaptable {
   }
 
   public void setReadOnly(Boolean _readOnly) {
+    Boolean oldReadOnly = myReadOnly;
     myReadOnly = _readOnly;
+    firePropertyChange(EOEntity.READ_ONLY, oldReadOnly, myReadOnly);
   }
 
   public String getName() {
@@ -140,9 +154,11 @@ public class EOEntity implements IAdaptable {
   }
 
   public void setName(String _name) throws DuplicateEntityNameException {
+    String oldName = myName;
     myModel._checkForDuplicateEntityName(this, _name);
-    myModel._entityNameChanged(_name, myName);
+    myModel._entityNameChanged(myName);
     myName = _name;
+    firePropertyChange(EOEntity.NAME, oldName, myName);
   }
 
   public String getClassName() {
@@ -150,7 +166,9 @@ public class EOEntity implements IAdaptable {
   }
 
   public void setClassName(String _className) {
+    String oldClassName = myClassName;
     myClassName = _className;
+    firePropertyChange(EOEntity.CLASS_NAME, oldClassName, myClassName);
   }
 
   public String getExternalName() {
@@ -158,7 +176,9 @@ public class EOEntity implements IAdaptable {
   }
 
   public void setExternalName(String _externalName) {
+    String oldExternalName = myExternalName;
     myExternalName = _externalName;
+    firePropertyChange(EOEntity.EXTERNAL_NAME, oldExternalName, myExternalName);
   }
 
   public int hashCode() {
@@ -192,7 +212,7 @@ public class EOEntity implements IAdaptable {
   }
 
   public EOEntity getParent() {
-    return myModel.getModelGroup().getEntityNamed(myParent);
+    return myModel.getModelGroup().getEntityNamed(myParentName);
   }
 
   public List getChildrenEntities() {
@@ -213,19 +233,21 @@ public class EOEntity implements IAdaptable {
 
   public void setParent(EOEntity _entity) {
     if (_entity == null) {
-      myParent = null;
+      setParentName(null);
     }
     else {
-      myParent = _entity.getName();
+      setParentName(_entity.getName());
     }
   }
 
   public void setParentName(String _parentName) {
-    myParent = _parentName;
+    String oldParentName = myParentName;
+    myParentName = _parentName;
+    firePropertyChange(EOEntity.PARENT_NAME, oldParentName, myParentName);
   }
 
   public String getParentName() {
-    return myParent;
+    return myParentName;
   }
 
   public Boolean isAbstractEntity() {
@@ -233,7 +255,9 @@ public class EOEntity implements IAdaptable {
   }
 
   public void setAbstractEntity(Boolean _abstractEntity) {
+    Boolean oldAbstractEntity = myAbstractEntity;
     myAbstractEntity = _abstractEntity;
+    firePropertyChange(EOEntity.ABSTRACT_ENTITY, oldAbstractEntity, myAbstractEntity);
   }
 
   public Boolean isCachesObjects() {
@@ -241,7 +265,9 @@ public class EOEntity implements IAdaptable {
   }
 
   public void setCachesObjects(Boolean _cachesObjects) {
+    Boolean oldCachesObjects = myCachesObjects;
     myCachesObjects = _cachesObjects;
+    firePropertyChange(EOEntity.CACHES_OBJECTS, oldCachesObjects, myCachesObjects);
   }
 
   public String getRestrictingQualifier() {
@@ -249,7 +275,9 @@ public class EOEntity implements IAdaptable {
   }
 
   public void setRestrictingQualifier(String _restrictingQualifier) {
+    String oldRestrictingQualifier = myRestrictingQualifier;
     myRestrictingQualifier = _restrictingQualifier;
+    firePropertyChange(EOEntity.RESTRICTING_QUALIFIER, oldRestrictingQualifier, myRestrictingQualifier);
   }
 
   public List getAttributes() {
@@ -293,19 +321,23 @@ public class EOEntity implements IAdaptable {
   public void addFetchSpecification(EOFetchSpecification _fetchSpecification) throws DuplicateFetchSpecNameException {
     _checkForDuplicateFetchSpecName(_fetchSpecification, _fetchSpecification.getName());
     myFetchSpecs.add(_fetchSpecification);
+    firePropertyChange(EOEntity.FETCH_SPECIFICATIONS, null, null);
   }
 
   public void removeFetchSpecification(EOFetchSpecification _fetchSpecification) {
     myFetchSpecs.remove(_fetchSpecification);
+    firePropertyChange(EOEntity.FETCH_SPECIFICATIONS, null, null);
   }
 
   public void addAttribute(EOAttribute _attribute) throws DuplicateAttributeNameException {
     _checkForDuplicateAttributeName(_attribute, _attribute.getName());
     myAttributes.add(_attribute);
+    firePropertyChange(EOEntity.ATTRIBUTES, null, null);
   }
 
   public void removeAttribute(EOAttribute _attribute) {
     myAttributes.remove(_attribute);
+    firePropertyChange(EOEntity.ATTRIBUTES, null, null);
   }
 
   public IEOAttribute _getAttributeNamed(String _name) {
@@ -339,10 +371,12 @@ public class EOEntity implements IAdaptable {
   public void addRelationship(EORelationship _relationship) throws DuplicateRelationshipNameException {
     _checkForDuplicateRelationshipName(_relationship, _relationship.getName());
     myRelationships.add(_relationship);
+    firePropertyChange(EOEntity.RELATIONSHIPS, null, null);
   }
 
   public void removeRelationship(EORelationship _relationship) {
     myRelationships.remove(_relationship);
+    firePropertyChange(EOEntity.RELATIONSHIPS, null, null);
   }
 
   public EORelationship getRelationshipNamed(String _name) {
@@ -358,7 +392,9 @@ public class EOEntity implements IAdaptable {
   }
 
   public void setUserInfo(Map _userInfo) {
+    Map oldUserInfo = myUserInfo;
     myUserInfo = _userInfo;
+    firePropertyChange(EOEntity.USER_INFO, oldUserInfo, myUserInfo);
   }
 
   public Map getUserInfo() {
@@ -386,7 +422,7 @@ public class EOEntity implements IAdaptable {
     myName = _entityMap.getString("name", true);
     myExternalName = _entityMap.getString("externalName", true);
     myClassName = _entityMap.getString("className", true);
-    myParent = _entityMap.getString("parent", true);
+    myParentName = _entityMap.getString("parent", true);
     myCachesObjects = _entityMap.getBoolean("cachesObjects");
     myAbstractEntity = _entityMap.getBoolean("isAbstractEntity");
     myReadOnly = _entityMap.getBoolean("readOnly");
@@ -490,7 +526,7 @@ public class EOEntity implements IAdaptable {
     entityMap.setString("name", myName, true);
     entityMap.setString("externalName", myExternalName, true);
     entityMap.setString("className", myClassName, true);
-    entityMap.setString("parent", myParent, true);
+    entityMap.setString("parent", myParentName, true);
     entityMap.setBoolean("cachesObjects", myCachesObjects);
     entityMap.setBoolean("isAbstractEntity", myAbstractEntity);
     entityMap.setBoolean("readOnly", myReadOnly);
@@ -579,8 +615,8 @@ public class EOEntity implements IAdaptable {
   }
 
   public void verify(List _failures) {
-    if (myParent != null && getParent() == null) {
-      _failures.add(new MissingEntityFailure(myParent));
+    if (myParentName != null && getParent() == null) {
+      _failures.add(new MissingEntityFailure(myParentName));
     }
 
     // TODO

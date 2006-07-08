@@ -58,7 +58,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class EOModelGroup {
+public class EOModelGroup extends EOModelObject {
+  public static final String MODELS = "Models";
+  
   private List myModels;
   private List myPrototypeAttributeCache;
 
@@ -192,10 +194,12 @@ public class EOModelGroup {
     _checkForDuplicateModelName(_model, _model.getName());
     myModels.add(_model);
     myPrototypeAttributeCache = null;
+    firePropertyChange(EOModelGroup.MODELS, null, null);
   }
 
   public void removeModel(EOModel _entity) {
     myModels.remove(_entity);
+    firePropertyChange(EOModelGroup.MODELS, null, null);
   }
 
   public EOModel getModelNamed(String _name) {

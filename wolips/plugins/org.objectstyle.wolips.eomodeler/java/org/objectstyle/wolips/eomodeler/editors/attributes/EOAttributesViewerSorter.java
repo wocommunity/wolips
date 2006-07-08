@@ -64,22 +64,22 @@ public class EOAttributesViewerSorter extends TablePropertyViewerSorter {
     if (_property == EOAttribute.PRIMARY_KEY) {
       value = attribute.isPrimaryKey();
     }
-    else if (_property == EOAttribute.LOCKING) {
+    else if (_property == EOAttribute.USED_FOR_LOCKING) {
       value = attribute.isUsedForLocking();
     }
     else if (_property == EOAttribute.CLASS_PROPERTY) {
       value = attribute.isClassProperty();
     }
-    else if (_property == EOAttribute.ALLOW_NULL) {
+    else if (_property == EOAttribute.ALLOWS_NULL) {
       value = attribute.isAllowsNull();
     }
     else if (_property == EOAttribute.NAME) {
       value = attribute.getName();
     }
-    else if (_property == EOAttribute.COLUMN) {
+    else if (_property == EOAttribute.COLUMN_NAME) {
       value = attribute.getColumnName();
     }
-    else if (_property == EOAttribute.PROTOTYPE) {
+    else if (_property == EOAttribute.PROTOTYPE_NAME) {
       value = attribute.getPrototypeName();
     }
     else {

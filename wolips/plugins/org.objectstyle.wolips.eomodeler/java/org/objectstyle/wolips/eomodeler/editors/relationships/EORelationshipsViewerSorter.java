@@ -78,13 +78,13 @@ public class EORelationshipsViewerSorter extends TablePropertyViewerSorter {
         value = destination.getName();
       }
     }
-    else if (_property == EORelationship.SOURCE_ATTRIBUTE) {
+    else if (_property == EOJoin.SOURCE_ATTRIBUTE_NAME) {
       EOJoin firstJoin = relationship.getFirstJoin();
       if (firstJoin != null) {
         value = firstJoin.getSourceAttribute().getName();
       }
     }
-    else if (_property == EORelationship.DESTINATION_ATTRIBUTE) {
+    else if (_property == EOJoin.DESTINATION_ATTRIBUTE_NAME) {
       EOJoin firstJoin = relationship.getFirstJoin();
       if (firstJoin != null) {
         value = firstJoin.getDestinationAttribute().getName();
