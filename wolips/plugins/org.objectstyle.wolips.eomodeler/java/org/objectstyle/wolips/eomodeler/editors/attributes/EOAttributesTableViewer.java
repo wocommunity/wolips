@@ -63,13 +63,13 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.objectstyle.wolips.eomodeler.Activator;
-import org.objectstyle.wolips.eomodeler.editors.KeyComboBoxCellEditor;
-import org.objectstyle.wolips.eomodeler.editors.TableRefreshPropertyListener;
-import org.objectstyle.wolips.eomodeler.editors.TableRowRefreshPropertyListener;
-import org.objectstyle.wolips.eomodeler.editors.TableUtils;
-import org.objectstyle.wolips.eomodeler.editors.TriStateCellEditor;
 import org.objectstyle.wolips.eomodeler.model.EOAttribute;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
+import org.objectstyle.wolips.eomodeler.utils.KeyComboBoxCellEditor;
+import org.objectstyle.wolips.eomodeler.utils.TableRefreshPropertyListener;
+import org.objectstyle.wolips.eomodeler.utils.TableRowRefreshPropertyListener;
+import org.objectstyle.wolips.eomodeler.utils.TableUtils;
+import org.objectstyle.wolips.eomodeler.utils.TriStateCellEditor;
 
 public class EOAttributesTableViewer extends Composite implements ISelectionProvider {
   private TableViewer myAttributesTableViewer;
@@ -119,7 +119,7 @@ public class EOAttributesTableViewer extends Composite implements ISelectionProv
     ((EOAttributesViewerSorter) myAttributesTableViewer.getSorter()).sort(myAttributesTableViewer, EOAttribute.NAME);
 
     CellEditor[] cellEditors = new CellEditor[EOAttributesConstants.COLUMNS.length];
-    cellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttribute.PROTOTYPE_NAME)] = new KeyComboBoxCellEditor(attributesTable, new String[0], SWT.READ_ONLY);
+    cellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttribute.PROTOTYPE)] = new KeyComboBoxCellEditor(attributesTable, new String[0], SWT.READ_ONLY);
     cellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttribute.NAME)] = new TextCellEditor(attributesTable);
     cellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttribute.COLUMN_NAME)] = new TextCellEditor(attributesTable);
     updateCellEditors(cellEditors);

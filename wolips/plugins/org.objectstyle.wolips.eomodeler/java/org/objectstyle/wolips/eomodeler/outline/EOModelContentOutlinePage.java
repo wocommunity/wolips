@@ -49,30 +49,108 @@
  */
 package org.objectstyle.wolips.eomodeler.outline;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
 import org.objectstyle.wolips.eomodeler.editors.EOModelEditorInput;
+import org.objectstyle.wolips.eomodeler.model.EOEntity;
+import org.objectstyle.wolips.eomodeler.model.EOModel;
+import org.objectstyle.wolips.eomodeler.model.EORelationshipPath;
 
 public class EOModelContentOutlinePage extends ContentOutlinePage {
   private EOModelEditorInput myEditorInput;
+  private ModelPropertyChangeListener myModelListener;
+  private EntityPropertyChangeListener myEntityListener;
+  private List myEntities;
 
   public EOModelContentOutlinePage(EOModelEditorInput _editorInput) {
     myEditorInput = _editorInput;
+    myEntities = new LinkedList(myEditorInput.getModel().getEntities());
+    myModelListener = new ModelPropertyChangeListener();
+    myEntityListener = new EntityPropertyChangeListener();
+    updatePropertyChangeListeners();
   }
 
   public void createControl(Composite _parent) {
     super.createControl(_parent);
-    TreeViewer viewer = getTreeViewer();
-    viewer.setContentProvider(new EOModelOutlineContentProvider());
-    viewer.setLabelProvider(new EOModelOutlineLabelProvider());
-    viewer.setInput(myEditorInput);
-    viewer.expandToLevel(2);
+    TreeViewer treeViewer = getTreeViewer();
+    treeViewer.setContentProvider(new EOModelOutlineContentProvider());
+    treeViewer.setLabelProvider(new EOModelOutlineLabelProvider());
+    treeViewer.setInput(myEditorInput);
+    treeViewer.expandToLevel(2);
   }
-  
+
   public void setSelection(ISelection _selection) {
     super.setSelection(_selection);
   }
 
+  protected TreeViewer getTreeViewer() {
+    return super.getTreeViewer();
+  }
+
+  protected void updatePropertyChangeListeners() {
+    myEditorInput.getModel().removePropertyChangeListener(myModelListener);
+    if (myEntities != null) {
+      Iterator oldEntitiesIter = myEntities.iterator();
+      while (oldEntitiesIter.hasNext()) {
+        EOEntity entity = (EOEntity) oldEntitiesIter.next();
+        entity.removePropertyChangeListener(myEntityListener);
+      }
+    }
+    myEntities = new LinkedList(myEditorInput.getModel().getEntities());
+    Iterator newEntitiesIter = myEntities.iterator();
+    while (newEntitiesIter.hasNext()) {
+      EOEntity entity = (EOEntity) newEntitiesIter.next();
+      entity.addPropertyChangeListener(myEntityListener);
+    }
+    myEditorInput.getModel().addPropertyChangeListener(myModelListener);
+  }
+
+  protected void refreshRelationshipsForEntity(EOEntity _entity) {
+    getTreeViewer().refresh(_entity, true);
+    Object[] expandedElements = getTreeViewer().getExpandedElements();
+    for (int expandedElementNum = 0; expandedElementNum < expandedElements.length; expandedElementNum++) {
+      if (expandedElements[expandedElementNum] instanceof EORelationshipPath) {
+        EORelationshipPath relationshipPath = (EORelationshipPath) expandedElements[expandedElementNum];
+        if (relationshipPath.getChildRelationship().getEntity().equals(_entity)) {
+          getTreeViewer().refresh(relationshipPath, true);
+        }
+      }
+    }
+  }
+
+  protected class ModelPropertyChangeListener implements PropertyChangeListener {
+    public void propertyChange(PropertyChangeEvent _event) {
+      String changedPropertyName = _event.getPropertyName();
+      if (EOModel.ENTITIES.equals(changedPropertyName)) {
+        getTreeViewer().refresh(true);
+      }
+    }
+  }
+
+  protected class EntityPropertyChangeListener implements PropertyChangeListener {
+    public void propertyChange(PropertyChangeEvent _event) {
+      EOEntity entity = (EOEntity) _event.getSource();
+      String changedPropertyName = _event.getPropertyName();
+      if (EOEntity.NAME.equals(changedPropertyName)) {
+        getTreeViewer().refresh(entity, true);
+      }
+      else if (EOEntity.FETCH_SPECIFICATIONS.equals(changedPropertyName)) {
+        getTreeViewer().refresh(entity, true);
+      }
+      else if (EOEntity.RELATIONSHIPS.equals(changedPropertyName)) {
+        EOModelContentOutlinePage.this.refreshRelationshipsForEntity(entity);
+      }
+      else if (EOEntity.RELATIONSHIP.equals(changedPropertyName)) {
+        EOModelContentOutlinePage.this.refreshRelationshipsForEntity(entity);
+      }
+    }
+  }
 }

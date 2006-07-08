@@ -66,7 +66,7 @@ public class EOEntity extends EOModelObject {
   public static final String FETCH_SPECIFICATION = "fetchSpecification";
   public static final String NAME = "name";
   public static final String CLASS_NAME = "className";
-  public static final String PARENT_NAME = "parentName";
+  public static final String PARENT = "parent";
   public static final String EXTERNAL_QUERY = "externalQuery";
   public static final String MAX_NUMBER_OF_INSTANCES_TO_BATCH_FETCH = "maxNumberOfInstancesToBatchFetch";
   public static final String READ_ONLY = "readOnly";
@@ -80,10 +80,10 @@ public class EOEntity extends EOModelObject {
   public static final String USER_INFO = "userInfo";
 
   private EOModel myModel;
+  private EOEntity myParent;
   private String myName;
   private String myExternalName;
   private String myClassName;
-  private String myParentName;
   private String myRestrictingQualifier;
   private String myExternalQuery;
   private Boolean myCachesObjects;
@@ -219,10 +219,6 @@ public class EOEntity extends EOModelObject {
     return referencingRelationships;
   }
 
-  public EOEntity getParent() {
-    return myModel.getModelGroup().getEntityNamed(myParentName);
-  }
-
   public List getChildrenEntities() {
     List children = new LinkedList();
     Iterator modelsIter = myModel.getModelGroup().getModels().iterator();
@@ -239,23 +235,14 @@ public class EOEntity extends EOModelObject {
     return children;
   }
 
-  public void setParent(EOEntity _entity) {
-    if (_entity == null) {
-      setParentName(null);
-    }
-    else {
-      setParentName(_entity.getName());
-    }
+  public EOEntity getParent() {
+    return myParent;
   }
 
-  public void setParentName(String _parentName) {
-    String oldParentName = myParentName;
-    myParentName = _parentName;
-    firePropertyChange(EOEntity.PARENT_NAME, oldParentName, myParentName);
-  }
-
-  public String getParentName() {
-    return myParentName;
+  public void setParent(EOEntity _parent) {
+    EOEntity oldParent = myParent;
+    myParent = _parent;
+    firePropertyChange(EOEntity.PARENT, oldParent, myParent);
   }
 
   public Boolean isAbstractEntity() {
@@ -465,7 +452,6 @@ public class EOEntity extends EOModelObject {
     myName = _entityMap.getString("name", true);
     myExternalName = _entityMap.getString("externalName", true);
     myClassName = _entityMap.getString("className", true);
-    myParentName = _entityMap.getString("parent", true);
     myCachesObjects = _entityMap.getBoolean("cachesObjects");
     myAbstractEntity = _entityMap.getBoolean("isAbstractEntity");
     myReadOnly = _entityMap.getBoolean("readOnly");
@@ -569,7 +555,9 @@ public class EOEntity extends EOModelObject {
     entityMap.setString("name", myName, true);
     entityMap.setString("externalName", myExternalName, true);
     entityMap.setString("className", myClassName, true);
-    entityMap.setString("parent", myParentName, true);
+    if (myParent != null) {
+      entityMap.setString("parent", myParent.getName(), true);
+    }
     entityMap.setBoolean("cachesObjects", myCachesObjects);
     entityMap.setBoolean("isAbstractEntity", myAbstractEntity);
     entityMap.setBoolean("readOnly", myReadOnly);
@@ -657,13 +645,35 @@ public class EOEntity extends EOModelObject {
     }
   }
 
-  public void verify(List _failures) {
-    if (myParentName != null && getParent() == null) {
-      _failures.add(new MissingEntityFailure(myParentName));
+  public void resolve(List _failures) {
+    String parentName = myEntityMap.getString("parent", true);
+    if (parentName != null) {
+      myParent = myModel.getModelGroup().getEntityNamed(parentName);
+      if (myParent == null) {
+        _failures.add(new MissingEntityFailure(parentName));
+      }
     }
 
-    // TODO
+    Iterator attributeIter = myAttributes.iterator();
+    while (attributeIter.hasNext()) {
+      EOAttribute attribute = (EOAttribute) attributeIter.next();
+      attribute.resolve(_failures);
+    }
 
+    Iterator relationshipIter = myRelationships.iterator();
+    while (relationshipIter.hasNext()) {
+      EORelationship relationship = (EORelationship) relationshipIter.next();
+      relationship.resolve(_failures);
+    }
+
+    Iterator fetchSpecIter = myFetchSpecs.iterator();
+    while (fetchSpecIter.hasNext()) {
+      EOFetchSpecification fetchSpec = (EOFetchSpecification) fetchSpecIter.next();
+      fetchSpec.resolve(_failures);
+    }
+  }
+
+  public void verify(List _failures) {
     Iterator attributeIter = myAttributes.iterator();
     while (attributeIter.hasNext()) {
       EOAttribute attribute = (EOAttribute) attributeIter.next();

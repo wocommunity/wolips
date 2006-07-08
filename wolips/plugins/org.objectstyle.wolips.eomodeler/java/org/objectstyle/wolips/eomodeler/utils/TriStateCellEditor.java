@@ -47,7 +47,7 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eomodeler.editors;
+package org.objectstyle.wolips.eomodeler.utils;
 
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.swt.SWT;

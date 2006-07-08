@@ -52,12 +52,12 @@ package org.objectstyle.wolips.eomodeler.model;
 import java.util.List;
 
 public class EOJoin extends EOModelObject {
-  public static final String DESTINATION_ATTRIBUTE_NAME = "Destination Attribute Name";
-  public static final String SOURCE_ATTRIBUTE_NAME = "Source Attribute Name";
+  public static final String DESTINATION_ATTRIBUTE = "destinationAttribute";
+  public static final String SOURCE_ATTRIBUTE = "sourceAttribute";
 
   private EORelationship myRelationship;
-  private String mySourceAttributeName;
-  private String myDestinationAttributeName;
+  private EOAttribute mySourceAttribute;
+  private EOAttribute myDestinationAttribute;
   private EOModelMap myJoinMap;
 
   public EOJoin(EORelationship _relationship) {
@@ -65,12 +65,16 @@ public class EOJoin extends EOModelObject {
     myJoinMap = new EOModelMap();
   }
 
+  public EORelationship getRelationship() {
+    return myRelationship;
+  }
+
   public int hashCode() {
-    return myRelationship.hashCode() * mySourceAttributeName.hashCode() * myDestinationAttributeName.hashCode();
+    return myRelationship.hashCode() * mySourceAttribute.hashCode() * myDestinationAttribute.hashCode();
   }
 
   public boolean equals(Object _obj) {
-    return (_obj instanceof EOJoin && ((EOJoin) _obj).myRelationship.equals(myRelationship) && ((EOJoin) _obj).mySourceAttributeName.equals(mySourceAttributeName) && ((EOJoin) _obj).myDestinationAttributeName.equals(myDestinationAttributeName));
+    return (_obj instanceof EOJoin && ((EOJoin) _obj).myRelationship.equals(myRelationship) && ((EOJoin) _obj).mySourceAttribute.equals(mySourceAttribute) && ((EOJoin) _obj).myDestinationAttribute.equals(myDestinationAttribute));
   }
 
   public boolean isRelatedTo(EOAttribute _attribute) {
@@ -78,76 +82,76 @@ public class EOJoin extends EOModelObject {
   }
 
   public EOAttribute getSourceAttribute() {
-    EOEntity entity = myRelationship.getEntity();
-    EOAttribute attribute = null;
-    if (entity != null) {
-      attribute = entity.getAttributeNamed(mySourceAttributeName);
-    }
-    return attribute;
+    return mySourceAttribute;
   }
 
-  public void setSourceAttribute(EOAttribute _attribute) {
-    if (_attribute == null) {
-      setSourceAttributeName(null);
-    }
-    else {
-      setSourceAttributeName(_attribute.getName());
-    }
+  public void setSourceAttribute(EOAttribute _sourceAttribute) {
+    setSourceAttributeName(_sourceAttribute, true);
   }
 
-  public void setSourceAttributeName(String _sourceAttributeName) {
-    String oldSourceAttributeName = mySourceAttributeName;
-    mySourceAttributeName = _sourceAttributeName;
-    firePropertyChange(EOJoin.SOURCE_ATTRIBUTE_NAME, oldSourceAttributeName, mySourceAttributeName);
+  public void setSourceAttributeName(EOAttribute _sourceAttribute, boolean _fireEvents) {
+    EOAttribute oldSourceAttribute = mySourceAttribute;
+    mySourceAttribute = _sourceAttribute;
+    if (_fireEvents) {
+      firePropertyChange(EOJoin.SOURCE_ATTRIBUTE, oldSourceAttribute, mySourceAttribute);
+    }
   }
 
   public EOAttribute getDestinationAttribute() {
-    EOEntity entity = myRelationship.getDestination();
-    EOAttribute attribute = null;
-    if (entity != null) {
-      attribute = entity.getAttributeNamed(myDestinationAttributeName);
-    }
-    return attribute;
+    return myDestinationAttribute;
   }
 
-  public void setDestinationAttribute(EOAttribute _attribute) {
-    if (_attribute == null) {
-      setDestinationAttributeName(null);
-    }
-    else {
-      setDestinationAttributeName(_attribute.getName());
-    }
+  public void setDestinationAttribute(EOAttribute _destinationAttribute) {
+    setDestinationAttribute(_destinationAttribute, true);
   }
 
-  public void setDestinationAttributeName(String _destinationAttributeName) {
-    String oldDestinationAttributeName = myDestinationAttributeName;
-    myDestinationAttributeName = _destinationAttributeName;
-    firePropertyChange(EOJoin.DESTINATION_ATTRIBUTE_NAME, oldDestinationAttributeName, myDestinationAttributeName);
+  public void setDestinationAttribute(EOAttribute _destinationAttribute, boolean _fireEvents) {
+    EOAttribute oldDestinationAttribute = myDestinationAttribute;
+    myDestinationAttribute = _destinationAttribute;
+    if (_fireEvents) {
+      firePropertyChange(EOJoin.DESTINATION_ATTRIBUTE, oldDestinationAttribute, myDestinationAttribute);
+    }
   }
 
   public void loadFromMap(EOModelMap _joinMap) {
     myJoinMap = _joinMap;
-    myDestinationAttributeName = _joinMap.getString("destinationAttribute", true);
-    mySourceAttributeName = _joinMap.getString("sourceAttribute", true);
   }
 
   public EOModelMap toMap() {
     EOModelMap joinMap = myJoinMap.cloneModelMap();
-    joinMap.setString("destinationAttribute", myDestinationAttributeName, true);
-    joinMap.setString("sourceAttribute", mySourceAttributeName, true);
+    if (myDestinationAttribute != null) {
+      joinMap.setString("destinationAttribute", myDestinationAttribute.getName(), true);
+    }
+    if (mySourceAttribute != null) {
+      joinMap.setString("sourceAttribute", mySourceAttribute.getName(), true);
+    }
     return joinMap;
   }
 
-  public void verify(List _failures) {
-    if (getDestinationAttribute() == null) {
-      _failures.add(new MissingAttributeFailure(myRelationship.getDestination(), myDestinationAttributeName));
+  public void resolve(List _failures) {
+    String sourceAttributeName = myJoinMap.getString("sourceAttribute", true);
+    mySourceAttribute = myRelationship.getEntity().getAttributeNamed(sourceAttributeName);
+    if (mySourceAttribute == null) {
+      _failures.add(new MissingAttributeFailure(myRelationship.getEntity(), sourceAttributeName));
     }
-    if (getSourceAttribute() == null) {
-      _failures.add(new MissingAttributeFailure(myRelationship.getEntity(), mySourceAttributeName));
+
+    String destinationAttributeName = myJoinMap.getString("destinationAttribute", true);
+    myDestinationAttribute = myRelationship.getDestination().getAttributeNamed(destinationAttributeName);
+    if (myDestinationAttribute == null) {
+      _failures.add(new MissingAttributeFailure(myRelationship.getDestination(), destinationAttributeName));
+    }
+  }
+
+  public void verify(List _failures) {
+    if (mySourceAttribute == null) {
+      _failures.add(new EOModelVerificationFailure(getRelationship().getEntity().getName() + "'s " + getRelationship().getName() + "'s has a join with a missing source attribute."));
+    }
+    if (myDestinationAttribute == null) {
+      _failures.add(new EOModelVerificationFailure(getRelationship().getEntity().getName() + "'s " + getRelationship().getName() + "'s has a join with a missing destination attribute."));
     }
   }
 
   public String toString() {
-    return "[EOJoin: sourceAttribute = " + mySourceAttributeName + "; destinationAttribute = " + myDestinationAttributeName + "]";
+    return "[EOJoin: sourceAttribute = " + mySourceAttribute + "; destinationAttribute = " + myDestinationAttribute + "]";
   }
 }

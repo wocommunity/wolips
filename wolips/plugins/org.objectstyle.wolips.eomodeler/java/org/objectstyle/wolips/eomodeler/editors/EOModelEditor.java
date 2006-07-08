@@ -49,6 +49,10 @@
  */
 package org.objectstyle.wolips.eomodeler.editors;
 
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
@@ -84,6 +88,7 @@ import org.objectstyle.wolips.eomodeler.editors.entity.EOEntityEditor;
 import org.objectstyle.wolips.eomodeler.model.EOAttribute;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
+import org.objectstyle.wolips.eomodeler.model.EOModelVerificationFailure;
 import org.objectstyle.wolips.eomodeler.model.EORelationship;
 import org.objectstyle.wolips.eomodeler.model.EORelationshipPath;
 import org.objectstyle.wolips.eomodeler.outline.EOModelContentOutlinePage;
@@ -202,7 +207,15 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
       }
       else if (_editorInput instanceof IFileEditorInput) {
         IFileEditorInput fileEditorInput = (IFileEditorInput) _editorInput;
-        input = new EOModelEditorInput(fileEditorInput);
+        List failures = new LinkedList();
+        input = new EOModelEditorInput(fileEditorInput, failures);
+
+        // TODO: Display errors to user!
+        Iterator failuresIter = failures.iterator();
+        while (failuresIter.hasNext()) {
+          EOModelVerificationFailure failure = (EOModelVerificationFailure) failuresIter.next();
+          System.out.println("EOModelEditor.init: " + failure);
+        }
       }
       else {
         throw new PartInitException("Unknown editor input: " + _editorInput + ".");

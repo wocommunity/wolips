@@ -56,11 +56,11 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.objectstyle.wolips.eomodeler.Activator;
-import org.objectstyle.wolips.eomodeler.editors.TablePropertyLabelProvider;
 import org.objectstyle.wolips.eomodeler.model.EOAttribute;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOJoin;
 import org.objectstyle.wolips.eomodeler.model.EORelationship;
+import org.objectstyle.wolips.eomodeler.utils.TablePropertyLabelProvider;
 
 public class EORelationshipsLabelProvider extends TablePropertyLabelProvider implements ITableColorProvider, ITableFontProvider {
   public EORelationshipsLabelProvider(String[] _columnProperties) {
@@ -97,7 +97,7 @@ public class EORelationshipsLabelProvider extends TablePropertyLabelProvider imp
         text = destination.getName();
       }
     }
-    else if (_property == EOJoin.SOURCE_ATTRIBUTE_NAME) {
+    else if (_property == EOJoin.SOURCE_ATTRIBUTE) {
       EOJoin firstJoin = relationship.getFirstJoin();
       if (firstJoin != null) {
         EOAttribute sourceAttribute = firstJoin.getSourceAttribute();
@@ -106,7 +106,7 @@ public class EORelationshipsLabelProvider extends TablePropertyLabelProvider imp
         }
       }
     }
-    else if (_property == EOJoin.DESTINATION_ATTRIBUTE_NAME) {
+    else if (_property == EOJoin.DESTINATION_ATTRIBUTE) {
       EOJoin firstJoin = relationship.getFirstJoin();
       if (firstJoin != null) {
         EOAttribute destinationAttribute = firstJoin.getDestinationAttribute();

@@ -47,40 +47,23 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eomodeler.editors;
+package org.objectstyle.wolips.eomodeler.utils;
 
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 
-public class TableUtils {
-  public static void packTableColumns(TableViewer _viewer) {
-    Table table = _viewer.getTable();
-    int columnCount = table.getColumnCount();
-    for (int columnNum = 0; columnNum < columnCount; columnNum++) {
-      table.getColumn(columnNum).pack();
-    }
+public class TableSortHandler extends SelectionAdapter {
+  private TableViewer myTableViewer;
+  private String myProperty;
+
+  public TableSortHandler(TableViewer _tableViewer, String _property) {
+    myTableViewer = _tableViewer;
+    myProperty = _property;
   }
 
-  public static void createTableColumns(TableViewer _viewer, String[] _properties) {
-    Table table = _viewer.getTable();
-    for (int columnNum = 0; columnNum < _properties.length; columnNum++) {
-      TableColumn column = new TableColumn(table, SWT.LEFT);
-      column.setMoveable(true);
-      column.setText(_properties[columnNum]);
-      column.addSelectionListener(new TableSortHandler(_viewer, _properties[columnNum]));
-    }
+  public void widgetSelected(SelectionEvent _event) {
+    TablePropertyViewerSorter sorter = (TablePropertyViewerSorter) myTableViewer.getSorter();
+    sorter.sort(myTableViewer, myProperty);
   }
-
-  public static int getColumnNumber(String[] _properties, String _property) {
-    int matchingColumnIndex = -1;
-    for (int columnNum = 0; columnNum < _properties.length; columnNum++) {
-      if (_properties[columnNum].equals(_property)) {
-        matchingColumnIndex = columnNum;
-      }
-    }
-    return matchingColumnIndex;
-  }
-
 }

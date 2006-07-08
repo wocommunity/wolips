@@ -51,8 +51,8 @@ package org.objectstyle.wolips.eomodeler.editors.entities;
 
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Image;
-import org.objectstyle.wolips.eomodeler.editors.TablePropertyLabelProvider;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
+import org.objectstyle.wolips.eomodeler.utils.TablePropertyLabelProvider;
 
 public class EOEntitiesLabelProvider extends TablePropertyLabelProvider {
   public EOEntitiesLabelProvider(String[] _columnProperties) {
@@ -76,7 +76,7 @@ public class EOEntitiesLabelProvider extends TablePropertyLabelProvider {
     else if (_property == EOEntity.CLASS_NAME) {
       text = entity.getClassName();
     }
-    else if (_property == EOEntity.PARENT_NAME) {
+    else if (_property == EOEntity.PARENT) {
       EOEntity parent = entity.getParent();
       if (parent != null) {
         text = parent.getName();

@@ -62,10 +62,10 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
-import org.objectstyle.wolips.eomodeler.editors.KeyComboBoxCellEditor;
-import org.objectstyle.wolips.eomodeler.editors.TableUtils;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
+import org.objectstyle.wolips.eomodeler.utils.KeyComboBoxCellEditor;
+import org.objectstyle.wolips.eomodeler.utils.TableUtils;
 
 public class EOEntitiesTableViewer extends Composite implements ISelectionProvider {
   private TableViewer myEntitiesTableViewer;
@@ -93,7 +93,7 @@ public class EOEntitiesTableViewer extends Composite implements ISelectionProvid
     cellEditors[TableUtils.getColumnNumber(EOEntitiesConstants.COLUMNS, EOEntity.NAME)] = new TextCellEditor(entitiesTable);
     cellEditors[TableUtils.getColumnNumber(EOEntitiesConstants.COLUMNS, EOEntity.EXTERNAL_NAME)] = new TextCellEditor(entitiesTable);
     cellEditors[TableUtils.getColumnNumber(EOEntitiesConstants.COLUMNS, EOEntity.CLASS_NAME)] = new TextCellEditor(entitiesTable);
-    cellEditors[TableUtils.getColumnNumber(EOEntitiesConstants.COLUMNS, EOEntity.PARENT_NAME)] = new KeyComboBoxCellEditor(entitiesTable, new String[0], SWT.READ_ONLY);
+    cellEditors[TableUtils.getColumnNumber(EOEntitiesConstants.COLUMNS, EOEntity.PARENT)] = new KeyComboBoxCellEditor(entitiesTable, new String[0], SWT.READ_ONLY);
     myEntitiesTableViewer.setCellModifier(new EOEntitiesCellModifier(myEntitiesTableViewer, cellEditors));
     myEntitiesTableViewer.setCellEditors(cellEditors);
   }

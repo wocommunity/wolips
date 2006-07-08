@@ -57,11 +57,11 @@ import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TableItem;
-import org.objectstyle.wolips.eomodeler.editors.KeyComboBoxCellEditor;
-import org.objectstyle.wolips.eomodeler.editors.TableUtils;
 import org.objectstyle.wolips.eomodeler.model.DuplicateAttributeNameException;
 import org.objectstyle.wolips.eomodeler.model.EOAttribute;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
+import org.objectstyle.wolips.eomodeler.utils.KeyComboBoxCellEditor;
+import org.objectstyle.wolips.eomodeler.utils.TableUtils;
 
 public class EOAttributesCellModifier implements ICellModifier {
   private static final String NO_PROTOYPE_VALUE = "No Prototype";
@@ -80,7 +80,7 @@ public class EOAttributesCellModifier implements ICellModifier {
     if (attribute.isInherited()) {
       canModify = false;
     }
-    else if (_property == EOAttribute.PROTOTYPE_NAME) {
+    else if (_property == EOAttribute.PROTOTYPE) {
       EOEntity entity = (EOEntity) myAttributesTableViewer.getInput();
       myPrototypeNames = entity.getModel().getModelGroup().getPrototypeAttributeNames();
       myPrototypeNames.add(0, EOAttributesCellModifier.NO_PROTOYPE_VALUE);
@@ -124,10 +124,14 @@ public class EOAttributesCellModifier implements ICellModifier {
     else if (_property == EOAttribute.COLUMN_NAME) {
       value = attribute.getColumnName();
     }
-    else if (_property == EOAttribute.PROTOTYPE_NAME) {
-      String prototypeName = attribute.getPrototypeName();
-      if (prototypeName == null) {
+    else if (_property == EOAttribute.PROTOTYPE) {
+      EOAttribute prototype = attribute.getPrototype();
+      String prototypeName;
+      if (prototype == null) {
         prototypeName = EOAttributesCellModifier.NO_PROTOYPE_VALUE;
+      }
+      else {
+        prototypeName = prototype.getName();
       }
       value = new Integer(myPrototypeNames.indexOf(prototypeName));
     }
@@ -159,15 +163,16 @@ public class EOAttributesCellModifier implements ICellModifier {
       else if (_property == EOAttribute.COLUMN_NAME) {
         attribute.setColumnName((String) _value);
       }
-      else if (_property == EOAttribute.PROTOTYPE_NAME) {
+      else if (_property == EOAttribute.PROTOTYPE) {
         Integer prototypeIndex = (Integer) _value;
         int prototypeIndexInt = prototypeIndex.intValue();
         String prototypeName = (prototypeIndexInt == -1) ? null : (String) myPrototypeNames.get(prototypeIndexInt);
         if (EOAttributesCellModifier.NO_PROTOYPE_VALUE.equals(prototypeName)) {
-          attribute.setPrototypeName(null, true);
+          attribute.setPrototype(null, true);
         }
         else {
-          attribute.setPrototypeName(prototypeName, true);
+          EOAttribute prototype = attribute.getEntity().getModel().getModelGroup().getPrototypeAttributeNamed(prototypeName);
+          attribute.setPrototype(prototype, true);
         }
       }
       else {
