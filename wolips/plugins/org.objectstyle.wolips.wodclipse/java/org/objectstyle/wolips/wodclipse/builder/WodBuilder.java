@@ -156,7 +156,6 @@ public class WodBuilder extends AbstractDeltaCleanBuilder {
   }
 
   protected void touchRelatedResources(IResource _resource, IProgressMonitor _progressMonitor, Map _buildCache) throws CoreException {
-    //System.out.println("WodBuilder.touchRelatedResources: looking for problems related to " + _resource);
     if (_progressMonitor != null) {
       _progressMonitor.subTask("Touching files related to " + _resource.getName() + " ...");
     }
