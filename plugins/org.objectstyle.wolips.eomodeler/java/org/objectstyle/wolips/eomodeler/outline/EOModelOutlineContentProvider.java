@@ -95,8 +95,8 @@ public class EOModelOutlineContentProvider implements ITreeContentProvider {
     return children;
   }
 
-  protected Object[] getChildrenRelationshipPaths(EORelationshipPath _parentRelationshipPath) {
-    Object[] children;
+  protected EORelationshipPath[] getChildrenRelationshipPaths(EORelationshipPath _parentRelationshipPath) {
+    EORelationshipPath[] children;
     EORelationship parentRelationship = _parentRelationshipPath.getChildRelationship();
     if (parentRelationship != null) {
       List relationshipsList = parentRelationship.getDestination().getRelationships();
@@ -106,7 +106,6 @@ public class EOModelOutlineContentProvider implements ITreeContentProvider {
         EORelationship childRelationship = (EORelationship) relationshipsIter.next();
         children[childNum] = new EORelationshipPath(_parentRelationshipPath, childRelationship);
       }
-      children = relationshipsList.toArray();
     }
     else {
       children = null;

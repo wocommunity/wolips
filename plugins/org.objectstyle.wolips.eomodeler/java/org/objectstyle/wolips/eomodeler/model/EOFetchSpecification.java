@@ -311,6 +311,10 @@ public class EOFetchSpecification extends EOModelObject {
     return fetchSpecMap;
   }
 
+  public void resolve(List _failures) {
+    // TODO
+  }
+  
   public void verify(List _failures) {
     // TODO
     if (myQualifier != null) {

@@ -57,7 +57,7 @@ public class EORelationshipPath {
     myParentRelationshipPath = _parentRelationshipPath;
     myChildRelationship = _childRelationship;
   }
-
+  
   public EORelationshipPath getParentRelationshipPath() {
     return myParentRelationshipPath;
   }

@@ -49,10 +49,10 @@
  */
 package org.objectstyle.wolips.eomodeler.editors.relationships;
 
-import org.objectstyle.wolips.eomodeler.editors.TablePropertyViewerSorter;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOJoin;
 import org.objectstyle.wolips.eomodeler.model.EORelationship;
+import org.objectstyle.wolips.eomodeler.utils.TablePropertyViewerSorter;
 
 public class EORelationshipsViewerSorter extends TablePropertyViewerSorter {
 
@@ -78,13 +78,13 @@ public class EORelationshipsViewerSorter extends TablePropertyViewerSorter {
         value = destination.getName();
       }
     }
-    else if (_property == EOJoin.SOURCE_ATTRIBUTE_NAME) {
+    else if (_property == EOJoin.SOURCE_ATTRIBUTE) {
       EOJoin firstJoin = relationship.getFirstJoin();
       if (firstJoin != null) {
         value = firstJoin.getSourceAttribute().getName();
       }
     }
-    else if (_property == EOJoin.DESTINATION_ATTRIBUTE_NAME) {
+    else if (_property == EOJoin.DESTINATION_ATTRIBUTE) {
       EOJoin firstJoin = relationship.getFirstJoin();
       if (firstJoin != null) {
         value = firstJoin.getDestinationAttribute().getName();

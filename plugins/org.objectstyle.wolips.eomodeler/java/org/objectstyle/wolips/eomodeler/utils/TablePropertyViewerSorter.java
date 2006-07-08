@@ -47,60 +47,90 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eomodeler.editors;
+package org.objectstyle.wolips.eomodeler.utils;
 
-import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.swt.graphics.Image;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
 
-public abstract class TablePropertyLabelProvider implements ITableLabelProvider {
+public abstract class TablePropertyViewerSorter extends ViewerSorter {
   private String[] myColumnProperties;
+  private int mySortedColumn;
+  private int myDirection;
 
-  public TablePropertyLabelProvider(String[] _columnProperties) {
+  public TablePropertyViewerSorter(String[] _columnProperties) {
     myColumnProperties = _columnProperties;
   }
 
-  public abstract Image getColumnImage(Object _element, String _property);
-
-  public Image getColumnImage(Object _element, int _columnIndex) {
-    return getColumnImage(_element, myColumnProperties[_columnIndex]);
-  }
-
-  public abstract String getColumnText(Object _element, String _property);
-
-  public String getColumnText(Object _element, int _columnIndex) {
-    return getColumnText(_element, myColumnProperties[_columnIndex]);
-  }
-
-  protected Image yesNoImage(Boolean _bool, Image _yesImage, Image _noImage, Image _nullImage) {
-    Image image;
-    if (_bool == null) {
-      image = _nullImage;
+  public void sort(Viewer _viewer, String _property) {
+    int matchingColumn = TableUtils.getColumnNumber(myColumnProperties, _property);
+    if (matchingColumn != -1) {
+      sort(_viewer, matchingColumn);
     }
-    else if (_bool.booleanValue()) {
-      image = _yesImage;
+  }
+
+  public void sort(Viewer _viewer, int _column) {
+    TableViewer tableViewer = (TableViewer) _viewer;
+    Table table = tableViewer.getTable();
+    TableColumn sortColumn = table.getSortColumn();
+    TableColumn selectedColumn = table.getColumn(_column);
+    int direction = table.getSortDirection();
+    if (sortColumn == selectedColumn) {
+      direction = (direction == SWT.UP) ? SWT.DOWN : SWT.UP;
     }
     else {
-      image = _noImage;
+      table.setSortColumn(selectedColumn);
+      direction = SWT.UP;
     }
-    return image;
+    table.setSortDirection(direction);
+    mySortedColumn = _column;
+    myDirection = direction;
+    tableViewer.refresh();
   }
 
-  protected String yesNoText(Boolean _bool, boolean _nullIsNo) {
-    String str;
-    if (_bool == null) {
-      if (_nullIsNo) {
-        str = "N";
-      }
-      else {
-        str = "";
-      }
+  public abstract Object getComparisonValue(Object _obj, String _property);
+
+  public int compare(Viewer _viewer, Object _o1, Object _o2) {
+    String property = myColumnProperties[mySortedColumn];
+    Object o1 = getComparisonValue(_o1, property);
+    Object o2 = getComparisonValue(_o2, property);
+    int comparison = 0;
+    if (o1 == null && o2 == null) {
+      comparison = 0;
     }
-    else if (_bool.booleanValue()) {
-      str = "Y";
+    else if (o1 == null) {
+      comparison = -1;
     }
-    else {
-      str = "N";
+    else if (o2 == null) {
+      comparison = 1;
     }
-    return str;
+    else if (o1 instanceof Boolean) {
+    	boolean left = ((Boolean) _o1).booleanValue();
+    	boolean right = ((Boolean) _o2).booleanValue();
+        if(left == right) {
+      	  comparison = 0;
+        }
+        else if(left == true) {
+      	  comparison = 1;
+        }
+        else {
+      	  comparison = -1;
+        }
+    }
+    else if (o1 instanceof Integer) {
+      comparison = ((Integer) o1).compareTo((Integer) o2);
+    }
+    else if (o1 instanceof String) {
+      comparison = collator.compare(o1, o2);
+    }
+
+    if (myDirection == SWT.DOWN) {
+      comparison = -comparison;
+    }
+
+    return comparison;
   }
 }

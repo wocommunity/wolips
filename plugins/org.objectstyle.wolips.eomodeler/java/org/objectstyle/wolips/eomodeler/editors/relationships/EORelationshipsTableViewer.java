@@ -63,11 +63,11 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.objectstyle.wolips.eomodeler.Activator;
-import org.objectstyle.wolips.eomodeler.editors.TableRefreshPropertyListener;
-import org.objectstyle.wolips.eomodeler.editors.TableRowRefreshPropertyListener;
-import org.objectstyle.wolips.eomodeler.editors.TableUtils;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EORelationship;
+import org.objectstyle.wolips.eomodeler.utils.TableRefreshPropertyListener;
+import org.objectstyle.wolips.eomodeler.utils.TableRowRefreshPropertyListener;
+import org.objectstyle.wolips.eomodeler.utils.TableUtils;
 
 public class EORelationshipsTableViewer extends Composite implements ISelectionProvider {
   private TableViewer myRelationshipsTableViewer;

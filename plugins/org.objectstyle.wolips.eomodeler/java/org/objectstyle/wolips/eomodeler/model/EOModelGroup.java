@@ -62,7 +62,7 @@ import org.eclipse.jface.internal.databinding.provisional.observable.list.Writab
 
 public class EOModelGroup extends EOModelObject {
   public static final String MODELS = "Models";
-  
+
   private List myModels;
   private List myPrototypeAttributeCache;
 
@@ -97,17 +97,17 @@ public class EOModelGroup extends EOModelObject {
     }
     return entities;
   }
-  
+
   public List getPrototypeAttributeNames() {
     List prototypeAttributeNames = new LinkedList();
     Iterator prototypeAttributesIter = getPrototypeAttributes().iterator();
     while (prototypeAttributesIter.hasNext()) {
-      EOAttribute attribute = (EOAttribute)prototypeAttributesIter.next();
+      EOAttribute attribute = (EOAttribute) prototypeAttributesIter.next();
       prototypeAttributeNames.add(attribute.getName());
     }
     return prototypeAttributeNames;
   }
-  
+
   public synchronized List getPrototypeAttributes() {
     if (myPrototypeAttributeCache == null) {
       List prototypeAttributeCache = new LinkedList();
@@ -225,7 +225,7 @@ public class EOModelGroup extends EOModelObject {
           String modelName = name.substring(0, name.indexOf('.'));
           if (!containsModelNamed(modelName)) {
             EOModel model = new EOModel(this, modelName);
-            model.loadFromFolder(files[fileNum]);
+            model.loadFromFolder(files[fileNum], null);
             addModel(model);
           }
         }
@@ -233,6 +233,22 @@ public class EOModelGroup extends EOModelObject {
           addModelsFromFolder(files[fileNum], true);
         }
       }
+    }
+  }
+
+  public void verify(List _failures) {
+    Iterator modelsIter = myModels.iterator();
+    while (modelsIter.hasNext()) {
+      EOModel model = (EOModel) modelsIter.next();
+      model.verify(_failures);
+    }
+  }
+
+  public void resolve(List _failures) {
+    Iterator modelsIter = myModels.iterator();
+    while (modelsIter.hasNext()) {
+      EOModel model = (EOModel) modelsIter.next();
+      model.resolve(_failures);
     }
   }
 

@@ -52,6 +52,7 @@ package org.objectstyle.wolips.eomodeler.model;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.resources.IContainer;
@@ -73,9 +74,9 @@ public class EclipseEOModelGroupFactory {
     }
   }
 
-  public static EOModel createModel(IResource _modelResource) throws CoreException, IOException, EOModelException {
+  public static EOModel createModel(IResource _modelResource, List _failures) throws CoreException, IOException, EOModelException {
     IProject project = _modelResource.getProject();
-    EOModelGroup modelGroup = EclipseEOModelGroupFactory.createModelGroup(project);
+    EOModelGroup modelGroup = EclipseEOModelGroupFactory.createModelGroup(project, _failures);
     IContainer modelContainer;
     if (_modelResource.getType() == IResource.FILE) {
       modelContainer = _modelResource.getParent();
@@ -89,7 +90,7 @@ public class EclipseEOModelGroupFactory {
     return model;
   }
 
-  public static EOModelGroup createModelGroup(IProject _project) throws CoreException, IOException, EOModelException {
+  public static EOModelGroup createModelGroup(IProject _project, List _failures) throws CoreException, IOException, EOModelException {
     EOModelGroup modelGroup = new EOModelGroup();
     Set searchedFolders = new HashSet();
 
@@ -127,6 +128,10 @@ public class EclipseEOModelGroupFactory {
         }
       }
     }
+
+    modelGroup.resolve(_failures);
+    modelGroup.verify(_failures);
+
     return modelGroup;
   }
 }

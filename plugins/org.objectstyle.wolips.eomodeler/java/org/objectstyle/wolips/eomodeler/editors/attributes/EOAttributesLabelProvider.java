@@ -58,8 +58,8 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.objectstyle.wolips.eomodeler.Activator;
-import org.objectstyle.wolips.eomodeler.editors.TablePropertyLabelProvider;
 import org.objectstyle.wolips.eomodeler.model.EOAttribute;
+import org.objectstyle.wolips.eomodeler.utils.TablePropertyLabelProvider;
 
 public class EOAttributesLabelProvider extends TablePropertyLabelProvider implements ITableColorProvider, ITableFontProvider {
   private TableViewer myTableViewer;
@@ -113,7 +113,7 @@ public class EOAttributesLabelProvider extends TablePropertyLabelProvider implem
     else if (_property == EOAttribute.COLUMN_NAME) {
       text = attribute.getColumnName();
     }
-    else if (_property == EOAttribute.PROTOTYPE_NAME) {
+    else if (_property == EOAttribute.PROTOTYPE) {
       EOAttribute prototype = attribute.getPrototype();
       if (prototype != null) {
         text = prototype.getName();

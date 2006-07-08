@@ -218,6 +218,10 @@ public class EOModel extends EOModelObject {
   }
 
   public void loadFromFolder(File _modelFolder) throws EOModelException, IOException {
+    loadFromFolder(_modelFolder, null);
+  }
+  
+  public void loadFromFolder(File _modelFolder, List _resolveFailures) throws EOModelException, IOException {
     File indexFile = new File(_modelFolder, "index.eomodeld");
     if (!indexFile.exists()) {
       throw new EOModelException(indexFile + " does not exist.");
@@ -246,6 +250,10 @@ public class EOModel extends EOModelObject {
     Map internalInfoMap = modelMap.getMap("internalInfo");
     if (internalInfoMap != null) {
       myDeletedEntityNamesInObjectStore = modelMap.getList("_deletedEntityNamesInObjectStore", true);
+    }
+
+    if (_resolveFailures != null) {
+      resolve(_resolveFailures);
     }
   }
 
@@ -315,6 +323,14 @@ public class EOModel extends EOModelObject {
     }
   }
 
+  public void resolve(List _failures) {
+    Iterator entitiesIter = myEntities.iterator();
+    while (entitiesIter.hasNext()) {
+      EOEntity entity = (EOEntity) entitiesIter.next();
+      entity.resolve(_failures);
+    }
+  }
+
   public void verify(List _failures) {
     // TODO
 
@@ -336,11 +352,10 @@ public class EOModel extends EOModelObject {
     modelGroup.addModelsFromFolder(new File("/Users/mschrag/Documents/workspace/MDTAccounting"), false);
     modelGroup.addModelsFromFolder(new File("/Users/mschrag/Documents/workspace/MDTCMS"), false);
     modelGroup.addModelsFromFolder(new File("/Users/mschrag/Documents/workspace/MDTWOExtensions"), false);
-    EOModel mdtaskModel = modelGroup.getModelNamed("MDTask");
-    System.out.println("EOModel.main: Loaded model: " + modelGroup);
 
     List failures = new LinkedList();
-    mdtaskModel.verify(failures);
+    modelGroup.resolve(failures);
+    modelGroup.verify(failures);
     Iterator failuresIter = failures.iterator();
     while (failuresIter.hasNext()) {
       EOModelVerificationFailure failure = (EOModelVerificationFailure) failuresIter.next();
@@ -349,6 +364,7 @@ public class EOModel extends EOModelObject {
 
     File outputPath = new File("/tmp");
     System.out.println("EOModel.main: Saving model to " + outputPath + " ...");
+    EOModel mdtaskModel = modelGroup.getModelNamed("MDTask");
     mdtaskModel.saveToFolder(outputPath);
     System.out.println("EOModel.main: Done.");
   }

@@ -59,7 +59,7 @@ public class EOAttribute extends EOModelObject implements IEOAttribute {
   public static final String CLASS_PROPERTY = "classProperty";
   public static final String USED_FOR_LOCKING = "usedForLocking";
   public static final String ALLOWS_NULL = "allowsNull";
-  public static final String PROTOTYPE_NAME = "prototypeName";
+  public static final String PROTOTYPE = "prototype";
   public static final String NAME = "name";
   public static final String COLUMN_NAME = "columnName";
   public static final String ADAPTOR_VALUE_CONVERSION_METHOD_NAME = "adaptorValueConversionMethodName";
@@ -78,9 +78,9 @@ public class EOAttribute extends EOModelObject implements IEOAttribute {
   public static final String CLIENT_CLASS_PROPERTY = "clientClassProperty";
 
   private EOEntity myEntity;
+  private EOAttribute myPrototype;
   private String myName;
   private String myColumnName;
-  private String myPrototypeName;
   private String myExternalType;
   private String myValueType;
   private String myValueClassName;
@@ -139,37 +139,24 @@ public class EOAttribute extends EOModelObject implements IEOAttribute {
   }
 
   public EOAttribute getPrototype() {
-    return myEntity.getModel().getModelGroup().getPrototypeAttributeNamed(myPrototypeName);
+    return myPrototype;
   }
 
   public void setPrototype(EOAttribute _prototype, boolean _updateFromPrototype) {
-    if (_prototype == null) {
-      setPrototypeName(null, _updateFromPrototype);
-    }
-    else {
-      setPrototypeName(_prototype.getName(), _updateFromPrototype);
-    }
-  }
-
-  public String getPrototypeName() {
-    return myPrototypeName;
-  }
-
-  public void setPrototypeName(String _prototypeName, boolean _updateFromPrototype) {
-    String oldPrototypeName = myPrototypeName;
+    EOAttribute oldPrototype = myPrototype;
     boolean prototypeNameChanged = true;
-    if (_prototypeName == null && myPrototypeName == null) {
+    if (_prototype == null && myPrototype == null) {
       prototypeNameChanged = false;
     }
-    else if ((_prototypeName != null && _prototypeName.equals(myPrototypeName)) || (myPrototypeName != null && myPrototypeName.equals(_prototypeName))) {
+    else if ((_prototype != null && _prototype.equals(myPrototype)) || (myPrototype != null && myPrototype.equals(_prototype))) {
       prototypeNameChanged = false;
     }
-    myPrototypeName = _prototypeName;
+    myPrototype = _prototype;
     if (prototypeNameChanged && _updateFromPrototype) {
       EOAttribute prototype = getPrototype();
       _updateFromPrototype(prototype);
     }
-    firePropertyChange(EOAttribute.PROTOTYPE_NAME, oldPrototypeName, _prototypeName);
+    firePropertyChange(EOAttribute.PROTOTYPE, oldPrototype, _prototype);
   }
 
   protected void _updateFromPrototype(EOAttribute _prototype) {
@@ -468,7 +455,6 @@ public class EOAttribute extends EOModelObject implements IEOAttribute {
     myAttributeMap = _attributeMap;
     myName = _attributeMap.getString("name", true);
     myColumnName = _attributeMap.getString("columnName", true);
-    myPrototypeName = _attributeMap.getString("prototypeName", true);
     myExternalType = _attributeMap.getString("externalType", true);
     myScale = _attributeMap.getInteger("scale");
     myPrecision = _attributeMap.getInteger("precision");
@@ -489,7 +475,9 @@ public class EOAttribute extends EOModelObject implements IEOAttribute {
     EOModelMap attributeMap = myAttributeMap.cloneModelMap();
     attributeMap.setString("name", myName, true);
     attributeMap.setString("columnName", myColumnName, true);
-    attributeMap.setString("prototypeName", myPrototypeName, true);
+    if (myPrototype != null) {
+      attributeMap.setString("prototypeName", myPrototype.getName(), true);
+    }
     attributeMap.setString("externalType", myExternalType, true);
     attributeMap.setInteger("scale", myScale);
     attributeMap.setInteger("precision", myPrecision);
@@ -507,11 +495,18 @@ public class EOAttribute extends EOModelObject implements IEOAttribute {
     return attributeMap;
   }
 
+  public void resolve(List _failures) {
+    String prototypeName = myAttributeMap.getString("prototypeName", true);
+    if (prototypeName != null) {
+      myPrototype = myEntity.getModel().getModelGroup().getPrototypeAttributeNamed(prototypeName);
+      if (myPrototype == null) {
+        _failures.add(new MissingPrototypeFailure(prototypeName, this));
+      }
+    }
+  }
+
   public void verify(List _failures) {
     // TODO
-    if (myPrototypeName != null && getPrototype() == null) {
-      _failures.add(new MissingPrototypeFailure(myPrototypeName, this));
-    }
   }
 
   public String toString() {

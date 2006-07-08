@@ -50,6 +50,7 @@
 package org.objectstyle.wolips.eomodeler.editors;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -69,7 +70,7 @@ public class EOModelEditorInput implements IFileEditorInput {
   private IContainer myModelFolder;
   private EOModel myModel;
 
-  public EOModelEditorInput(IFileEditorInput _fileEditorInput) throws CoreException, IOException, EOModelException {
+  public EOModelEditorInput(IFileEditorInput _fileEditorInput, List _failures) throws CoreException, IOException, EOModelException {
     IFile file = _fileEditorInput.getFile();
     if ("plist".equals(file.getFileExtension())) {
       myFileEditorInput = new FileEditorInput(file.getParent().getFile(new Path("index.eomodeld")));
@@ -78,7 +79,7 @@ public class EOModelEditorInput implements IFileEditorInput {
       myFileEditorInput = _fileEditorInput;
     }
     myModelFolder = myFileEditorInput.getFile().getParent();
-    myModel = EclipseEOModelGroupFactory.createModel(myFileEditorInput.getFile());
+    myModel = EclipseEOModelGroupFactory.createModel(myFileEditorInput.getFile(), _failures);
   }
 
   public IContainer getModelFolder() {

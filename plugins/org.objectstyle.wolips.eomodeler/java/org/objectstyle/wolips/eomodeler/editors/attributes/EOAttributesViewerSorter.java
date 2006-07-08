@@ -49,8 +49,8 @@
  */
 package org.objectstyle.wolips.eomodeler.editors.attributes;
 
-import org.objectstyle.wolips.eomodeler.editors.TablePropertyViewerSorter;
 import org.objectstyle.wolips.eomodeler.model.EOAttribute;
+import org.objectstyle.wolips.eomodeler.utils.TablePropertyViewerSorter;
 
 public class EOAttributesViewerSorter extends TablePropertyViewerSorter {
 
@@ -79,8 +79,11 @@ public class EOAttributesViewerSorter extends TablePropertyViewerSorter {
     else if (_property == EOAttribute.COLUMN_NAME) {
       value = attribute.getColumnName();
     }
-    else if (_property == EOAttribute.PROTOTYPE_NAME) {
-      value = attribute.getPrototypeName();
+    else if (_property == EOAttribute.PROTOTYPE) {
+      EOAttribute prototype = attribute.getPrototype();
+      if (prototype != null) {
+        value = prototype.getName();
+      }
     }
     else {
       throw new IllegalArgumentException("Unknown property '" + _property + "'");
