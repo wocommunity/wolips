@@ -57,15 +57,17 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.objectstyle.cayenne.wocompat.PropertyListSerialization;
 import org.objectstyle.wolips.eomodeler.properties.EOModelPropertySource;
 
-public class EOModel implements IAdaptable {
+public class EOModel extends EOModelObject {
   public static final String CONNECTION_DICTIONARY = "Connection Dictionary";
   public static final String ADAPTOR_NAME = "Adaptor";
   public static final String USER_INFO = "User Info";
+  public static final String VERSION = "Version";
+  public static final String NAME = "Name";
+  public static final String ENTITIES = "Entities";
 
   private EOModelGroup myModelGroup;
   private String myName;
@@ -111,7 +113,9 @@ public class EOModel implements IAdaptable {
   }
 
   public void setAdaptorName(String _adaptorName) {
+    String oldAdaptorName = myAdaptorName;
     myAdaptorName = _adaptorName;
+    firePropertyChange(EOModel.ADAPTOR_NAME, _adaptorName, oldAdaptorName);
   }
 
   public String getVersion() {
@@ -119,19 +123,23 @@ public class EOModel implements IAdaptable {
   }
 
   public void setVersion(String _version) {
+    String oldVersion = myVersion;
     myVersion = _version;
+    firePropertyChange(EOModel.VERSION, _version, oldVersion);
   }
 
   public void setName(String _name) {
+    String oldName = myName;
     myName = _name;
-  }
-
-  public List getEntities() {
-    return myEntities;
+    firePropertyChange(EOModel.NAME, _name, oldName);
   }
 
   public String getName() {
     return myName;
+  }
+
+  public List getEntities() {
+    return myEntities;
   }
 
   public void _checkForDuplicateEntityName(EOEntity _entity, String _newName) throws DuplicateEntityNameException {
@@ -141,7 +149,7 @@ public class EOModel implements IAdaptable {
     }
   }
 
-  public void _entityNameChanged(String _oldName, String _newName) {
+  public void _entityNameChanged(String _oldName) {
     if (myDeletedEntityNamesInObjectStore == null) {
       myDeletedEntityNamesInObjectStore = new LinkedList();
     }
@@ -155,10 +163,12 @@ public class EOModel implements IAdaptable {
   public void addEntity(EOEntity _entity) throws DuplicateEntityNameException {
     _checkForDuplicateEntityName(_entity, _entity.getName());
     myEntities.add(_entity);
+    firePropertyChange(EOModel.ENTITIES, null, null);
   }
 
   public void removeEntity(EOEntity _entity) {
     myEntities.remove(_entity);
+    firePropertyChange(EOModel.ENTITIES, null, null);
   }
 
   public EOEntity getEntityNamed(String _name) {
@@ -175,6 +185,7 @@ public class EOModel implements IAdaptable {
 
   public void setConnectionDictionary(Map _connectionDictionary) {
     myConnectionDictionary = _connectionDictionary;
+    firePropertyChange(EOModel.CONNECTION_DICTIONARY, null, null);
   }
 
   public Map getConnectionDictionary() {
@@ -183,6 +194,7 @@ public class EOModel implements IAdaptable {
 
   public void setUserInfo(Map _userInfo) {
     myUserInfo = _userInfo;
+    firePropertyChange(EOModel.USER_INFO, null, null);
   }
 
   public Map getUserInfo() {

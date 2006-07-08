@@ -93,7 +93,7 @@ public class EOEntitiesTableViewer extends Composite implements ISelectionProvid
     cellEditors[TableUtils.getColumnNumber(EOEntitiesConstants.COLUMNS, EOEntity.NAME)] = new TextCellEditor(entitiesTable);
     cellEditors[TableUtils.getColumnNumber(EOEntitiesConstants.COLUMNS, EOEntity.TABLE)] = new TextCellEditor(entitiesTable);
     cellEditors[TableUtils.getColumnNumber(EOEntitiesConstants.COLUMNS, EOEntity.CLASS_NAME)] = new TextCellEditor(entitiesTable);
-    cellEditors[TableUtils.getColumnNumber(EOEntitiesConstants.COLUMNS, EOEntity.PARENT)] = new KeyComboBoxCellEditor(entitiesTable, new String[0], SWT.READ_ONLY);
+    cellEditors[TableUtils.getColumnNumber(EOEntitiesConstants.COLUMNS, EOEntity.PARENT_NAME)] = new KeyComboBoxCellEditor(entitiesTable, new String[0], SWT.READ_ONLY);
     myEntitiesTableViewer.setCellModifier(new EOEntitiesCellModifier(myEntitiesTableViewer, cellEditors));
     myEntitiesTableViewer.setCellEditors(cellEditors);
   }

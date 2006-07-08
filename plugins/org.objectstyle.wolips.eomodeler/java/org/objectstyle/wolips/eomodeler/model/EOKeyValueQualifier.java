@@ -52,7 +52,11 @@ package org.objectstyle.wolips.eomodeler.model;
 import java.util.List;
 import java.util.Map;
 
-public class EOKeyValueQualifier implements IEOQualifier {
+public class EOKeyValueQualifier extends EOModelObject implements IEOQualifier {
+  public static final String KEY = "Key";
+  public static final String SELECTOR_NAME = "Selector Name";
+  public static final String VALUE = "Value";
+
   private String myKey;
   private Object myValue;
   private String mySelectorName;
@@ -62,7 +66,9 @@ public class EOKeyValueQualifier implements IEOQualifier {
   }
 
   public void setKey(String _key) {
+    String oldKey = myKey;
     myKey = _key;
+    firePropertyChange(EOKeyValueQualifier.KEY, oldKey, myKey);
   }
 
   public String getSelectorName() {
@@ -70,7 +76,9 @@ public class EOKeyValueQualifier implements IEOQualifier {
   }
 
   public void setSelectorName(String _selectorName) {
+    String oldSelectorName = mySelectorName;
     mySelectorName = _selectorName;
+    firePropertyChange(EOKeyValueQualifier.SELECTOR_NAME, oldSelectorName, mySelectorName);
   }
 
   public Object getValue() {
@@ -78,7 +86,9 @@ public class EOKeyValueQualifier implements IEOQualifier {
   }
 
   public void setValue(Object _value) {
+    Object oldValue = myValue;
     myValue = _value;
+    firePropertyChange(EOKeyValueQualifier.VALUE, oldValue, myValue);
   }
 
   public void loadFromMap(EOModelMap _map) throws EOModelException {

@@ -76,7 +76,7 @@ public class EOEntitiesLabelProvider extends TablePropertyLabelProvider {
     else if (_property == EOEntity.CLASS_NAME) {
       text = entity.getClassName();
     }
-    else if (_property == EOEntity.PARENT) {
+    else if (_property == EOEntity.PARENT_NAME) {
       EOEntity parent = entity.getParent();
       if (parent != null) {
         text = parent.getName();

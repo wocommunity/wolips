@@ -70,7 +70,7 @@ public class EOEntitiesViewerSorter extends TablePropertyViewerSorter {
     else if (_property == EOEntity.CLASS_NAME) {
       value = entity.getClassName();
     }
-    else if (_property == EOEntity.PARENT) {
+    else if (_property == EOEntity.PARENT_NAME) {
       value = entity.getParentName();
     }
     else {

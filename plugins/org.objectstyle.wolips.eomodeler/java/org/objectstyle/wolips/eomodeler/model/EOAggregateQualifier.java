@@ -54,7 +54,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public abstract class EOAggregateQualifier implements IEOQualifier {
+public abstract class EOAggregateQualifier extends EOModelObject implements IEOQualifier {
+  public static final String QUALIFIERS = "Qualifiers";
+  
   private String myClassName;
   private List myQualifiers;
 
@@ -69,14 +71,17 @@ public abstract class EOAggregateQualifier implements IEOQualifier {
 
   public void addQualifier(IEOQualifier _qualifier) {
     myQualifiers.add(_qualifier);
+    firePropertyChange(EOAggregateQualifier.QUALIFIERS, null, null);
   }
 
   public void removeQualifier(IEOQualifier _qualifier) {
     myQualifiers.remove(_qualifier);
+    firePropertyChange(EOAggregateQualifier.QUALIFIERS, null, null);
   }
 
   public void clearQualifiers() {
     myQualifiers.clear();
+    firePropertyChange(EOAggregateQualifier.QUALIFIERS, null, null);
   }
 
   public List getQualifiers() {

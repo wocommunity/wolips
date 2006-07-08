@@ -75,7 +75,7 @@ public class EOEntitiesCellModifier implements ICellModifier {
   }
 
   public boolean canModify(Object _element, String _property) {
-    if (_property == EOEntity.PARENT) {
+    if (_property == EOEntity.PARENT_NAME) {
       EOModel model = (EOModel) myModelTableViewer.getInput();
       myEntityNames = model.getModelGroup().getEntityNames();
       myEntityNames.add(0, EOEntitiesCellModifier.NO_PARENT_VALUE);
@@ -98,7 +98,7 @@ public class EOEntitiesCellModifier implements ICellModifier {
     else if (_property == EOEntity.CLASS_NAME) {
       value = entity.getClassName();
     }
-    else if (_property == EOEntity.PARENT) {
+    else if (_property == EOEntity.PARENT_NAME) {
       String parentName = entity.getParentName();
       if (parentName == null) {
         parentName = EOEntitiesCellModifier.NO_PARENT_VALUE;
@@ -124,7 +124,7 @@ public class EOEntitiesCellModifier implements ICellModifier {
       else if (_property == EOEntity.CLASS_NAME) {
         entity.setClassName((String) _value);
       }
-      else if (_property == EOEntity.PARENT) {
+      else if (_property == EOEntity.PARENT_NAME) {
         Integer entityIndex = (Integer) _value;
         int entityIndexInt = entityIndex.intValue();
         String entityName = (entityIndexInt == -1) ? null : (String) myEntityNames.get(entityIndexInt);
