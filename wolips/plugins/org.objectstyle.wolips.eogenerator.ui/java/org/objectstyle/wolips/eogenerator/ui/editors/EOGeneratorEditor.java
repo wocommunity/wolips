@@ -92,7 +92,6 @@ public class EOGeneratorEditor extends FormEditor {
   public void doSave(IProgressMonitor _monitor) {
     try {
       String eogenFileContents = myModel.writeToString(Preferences.getEOGeneratorPath(), Preferences.getEOGeneratorTemplateDir(), Preferences.getEOGeneratorJavaTemplate(), Preferences.getEOGeneratorSubclassJavaTemplate());
-      /*
       byte[] bytes = eogenFileContents.getBytes("UTF-8");
       ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
       FileEditorInput editorInput = (FileEditorInput) getEditorInput();
@@ -105,7 +104,6 @@ public class EOGeneratorEditor extends FormEditor {
       }
       myModel.setDirty(false);
       editorDirtyStateChanged();
-      */
     }
     catch (Throwable e) {
       e.printStackTrace();
