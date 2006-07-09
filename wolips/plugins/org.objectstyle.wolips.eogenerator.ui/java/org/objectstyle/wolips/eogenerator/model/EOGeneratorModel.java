@@ -59,11 +59,14 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.Path;
 import org.objectstyle.wolips.preferences.Preferences;
 
 public class EOGeneratorModel {
+  private IProject myProject;
   private String myEOGeneratorPath;
   private List myModels;
   private List myRefModels;
@@ -81,8 +84,9 @@ public class EOGeneratorModel {
   private List myCustomSettings;
   private boolean myDirty;
 
-  public EOGeneratorModel(String _lineInfo) throws ParseException {
+  public EOGeneratorModel(IProject _project, String _lineInfo) throws ParseException {
     this();
+    myProject = _project;
     readFromString(_lineInfo);
   }
 
@@ -103,7 +107,7 @@ public class EOGeneratorModel {
       while ((line = br.readLine()) != null) {
         sb.append(line);
       }
-      EOGeneratorModel model = new EOGeneratorModel(sb.toString());
+      EOGeneratorModel model = new EOGeneratorModel(_file.getProject(), sb.toString());
       model.setEOGeneratorPath(Preferences.getEOGeneratorPath());
       return model;
     }
@@ -125,7 +129,7 @@ public class EOGeneratorModel {
     Iterator modelsIter = myModels.iterator();
     while (modelsIter.hasNext()) {
       EOModelReference model = (EOModelReference) modelsIter.next();
-      append(sb, "-model", model.getPath());
+      append(sb, "-model", model.getPath(myProject));
     }
 
     append(sb, "-packagedirs", myPackageDirs);
@@ -134,7 +138,7 @@ public class EOGeneratorModel {
     Iterator refModelsIter = myRefModels.iterator();
     while (refModelsIter.hasNext()) {
       EOModelReference refModel = (EOModelReference) refModelsIter.next();
-      append(sb, "-refmodel", refModel.getPath());
+      append(sb, "-refmodel", refModel.getPath(myProject));
     }
 
     append(sb, "-subclassDestination", mySubclassDestination);
@@ -179,7 +183,7 @@ public class EOGeneratorModel {
         }
         else if ("-model".equalsIgnoreCase(token)) {
           String modelPath = nextTokenValue(token, tokenizer);
-          myModels.add(new EOModelReference(modelPath));
+          myModels.add(new EOModelReference(new Path(modelPath)));
         }
         else if ("-packagedirs".equalsIgnoreCase(token)) {
           myPackageDirs = Boolean.TRUE;
@@ -189,7 +193,7 @@ public class EOGeneratorModel {
         }
         else if ("-refmodel".equalsIgnoreCase(token)) {
           String refModelPath = nextTokenValue(token, tokenizer);
-          myRefModels.add(new EOModelReference(refModelPath));
+          myRefModels.add(new EOModelReference(new Path(refModelPath)));
         }
         else if ("-subclassDestination".equalsIgnoreCase(token)) {
           mySubclassDestination = nextTokenValue(token, tokenizer);
@@ -263,6 +267,10 @@ public class EOGeneratorModel {
     }
     String token = _tokenizer.nextToken();
     return token;
+  }
+
+  public IProject getProject() {
+    return myProject;
   }
 
   public List getDefines() {

@@ -103,7 +103,7 @@ public class EOGeneratorBuilder extends AbstractDeltaCleanBuilder {
   public void handleWoappResources(IResource _resource, IProgressMonitor _monitor, Map _buildCache) {
     try {
       if (myAutoEOGenerateOnBuild && _resource instanceof IContainer && _resource.getName().endsWith(".eomodeld")) {
-        EOModelReference modifiedModelReference = new EOModelReference(_resource.getName());
+        EOModelReference modifiedModelReference = new EOModelReference(_resource.getLocation());
         DefaultLocateResult result = new DefaultLocateResult();
         Locate locate = new Locate(new EOGenLocateScope(_resource.getProject()), result);
         locate.locate();

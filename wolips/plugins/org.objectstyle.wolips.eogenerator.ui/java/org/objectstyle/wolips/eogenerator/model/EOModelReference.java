@@ -49,35 +49,55 @@
  */
 package org.objectstyle.wolips.eogenerator.model;
 
-import java.io.File;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 
 public class EOModelReference {
-  private String myPath;
+  private IPath myModelPath;
 
-  public EOModelReference(String _path) {
-    myPath = _path;
+  public EOModelReference(IPath _modelPath) {
+    myModelPath = _modelPath;
   }
 
-  public String getPath() {
-    return myPath;
+  public String getPath(IProject _projectContext) {
+    IPath projectPath = _projectContext.getLocation();
+    String modelPathStr;
+    if (myModelPath.isAbsolute()) {
+      if (projectPath.isPrefixOf(myModelPath)) {
+        modelPathStr = myModelPath.removeFirstSegments(projectPath.segmentCount()).toPortableString();
+      }
+      else {
+        int matchingSegmentCount = projectPath.matchingFirstSegments(myModelPath);
+        if (matchingSegmentCount == 0) {
+          modelPathStr = myModelPath.toPortableString();
+        }
+        else {
+          int relativePathSegmentCount = projectPath.segmentCount() - matchingSegmentCount;
+          IPath relativeModelPath = new Path("");
+          for (int i = 0; i < relativePathSegmentCount; i++) {
+            relativeModelPath = relativeModelPath.append(".." + IPath.SEPARATOR);
+          }
+          relativeModelPath = relativeModelPath.append(myModelPath.removeFirstSegments(matchingSegmentCount));
+          modelPathStr = relativeModelPath.toPortableString();
+        }
+      }
+    }
+    else {
+      modelPathStr = myModelPath.toPortableString();
+    }
+    return modelPathStr;
   }
 
   public String getName() {
-    String name;
-    int separatorIndex = myPath.lastIndexOf(File.separator);
-    if (separatorIndex == -1) {
-      name = myPath;
-    }
-    else {
-      name = myPath.substring(separatorIndex + 1);
-    }
+    String name = myModelPath.lastSegment();
     int dotIndex = name.indexOf('.');
     if (dotIndex != -1) {
       name = name.substring(0, dotIndex);
     }
     return name;
   }
-  
+
   public String toString() {
     return "[EOModelReference: name = " + getName() + "]";
   }

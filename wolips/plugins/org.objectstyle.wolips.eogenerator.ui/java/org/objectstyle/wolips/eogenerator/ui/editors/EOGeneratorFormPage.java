@@ -57,6 +57,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -571,8 +572,8 @@ public class EOGeneratorFormPage extends FormPage {
       if (selectedContainers != null && selectedContainers.length > 0) {
         IPath selectedPath = (IPath) selectedContainers[0];
         IFolder selectedFolder = project.getParent().getFolder(selectedPath);
-        IPath projectRelativePath = selectedFolder.getProjectRelativePath();
-        EOModelReference eoModel = new EOModelReference(projectRelativePath.toPortableString());
+        IPath modelPath = selectedFolder.getLocation();
+        EOModelReference eoModel = new EOModelReference(modelPath);
         addModel(eoModel);
       }
     }
@@ -616,13 +617,13 @@ public class EOGeneratorFormPage extends FormPage {
     }
 
     public void widgetSelected(SelectionEvent _e) {
-      FileEditorInput editorInput = (FileEditorInput) getEditorInput();
-      IFile eogenFile = editorInput.getFile();
+      //FileEditorInput editorInput = (FileEditorInput) getEditorInput();
+      //IFile eogenFile = editorInput.getFile();
       DirectoryDialog directoryDialog = new DirectoryDialog(getEditorSite().getShell());
       directoryDialog.setMessage("Select the Reference EOModel to add.");
       String selectedDirectory = directoryDialog.open();
       if (selectedDirectory != null) {
-        EOModelReference eoModel = new EOModelReference(selectedDirectory);
+        EOModelReference eoModel = new EOModelReference(new Path(selectedDirectory));
         addModel(eoModel);
       }
     }
@@ -777,7 +778,7 @@ public class EOGeneratorFormPage extends FormPage {
 
     public String getColumnText(Object _element, int _columnIndex) {
       EOModelReference model = (EOModelReference) _element;
-      String name = model.getPath();
+      String name = model.getPath(myModel.getProject());
       return name;
     }
 
