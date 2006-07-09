@@ -61,6 +61,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IPersistableElement;
 import org.eclipse.ui.part.FileEditorInput;
+import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
 import org.objectstyle.wolips.eomodeler.model.EOModelException;
 import org.objectstyle.wolips.eomodeler.model.EclipseEOModelGroupFactory;
@@ -69,17 +70,28 @@ public class EOModelEditorInput implements IFileEditorInput {
   private IFileEditorInput myFileEditorInput;
   private IContainer myModelFolder;
   private EOModel myModel;
+  private String myFileEntityName;
 
   public EOModelEditorInput(IFileEditorInput _fileEditorInput, List _failures) throws CoreException, IOException, EOModelException {
     IFile file = _fileEditorInput.getFile();
-    if ("plist".equals(file.getFileExtension())) {
-      myFileEditorInput = new FileEditorInput(file.getParent().getFile(new Path("index.eomodeld")));
+    if ("plist".equalsIgnoreCase(file.getFileExtension())) { //$NON-NLS-1$
+      String name = file.getName();
+      myFileEntityName = name.substring(0, name.indexOf('.'));
+      myFileEditorInput = new FileEditorInput(file.getParent().getFile(new Path("index.eomodeld"))); //$NON-NLS-1$
     }
     else {
       myFileEditorInput = _fileEditorInput;
     }
     myModelFolder = myFileEditorInput.getFile().getParent();
     myModel = EclipseEOModelGroupFactory.createModel(myFileEditorInput.getFile(), _failures);
+  }
+  
+  public EOEntity getFileEntity() {
+    EOEntity entity = null;
+    if (myFileEntityName != null) {
+      entity = myModel.getEntityNamed(myFileEntityName);
+    }
+    return entity;
   }
 
   public IContainer getModelFolder() {

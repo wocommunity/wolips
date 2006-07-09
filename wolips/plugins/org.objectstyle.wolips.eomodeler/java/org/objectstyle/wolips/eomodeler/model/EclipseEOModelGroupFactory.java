@@ -106,7 +106,7 @@ public class EclipseEOModelGroupFactory {
         IPath frameworkPath = null;
         while (frameworkPath == null && path.lastSegment() != null) {
           String lastSegment = path.lastSegment();
-          if (lastSegment != null && lastSegment.endsWith(".framework")) {
+          if (lastSegment != null && lastSegment.endsWith(".framework")) { //$NON-NLS-1$
             frameworkPath = path;
           }
           else {
@@ -114,7 +114,7 @@ public class EclipseEOModelGroupFactory {
           }
         }
         if (frameworkPath != null) {
-          EclipseEOModelGroupFactory.addModelsFromFolderIfNecessary(modelGroup, frameworkPath.append("Resources").toFile(), searchedFolders, false);
+          EclipseEOModelGroupFactory.addModelsFromFolderIfNecessary(modelGroup, frameworkPath.append("Resources").toFile(), searchedFolders, false); //$NON-NLS-1$
         }
       }
       else if (entryKind == IClasspathEntry.CPE_PROJECT) {

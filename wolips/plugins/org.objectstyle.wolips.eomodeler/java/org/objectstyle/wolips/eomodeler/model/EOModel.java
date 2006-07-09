@@ -63,13 +63,13 @@ import org.objectstyle.cayenne.wocompat.PropertyListSerialization;
 import org.objectstyle.wolips.eomodeler.properties.EOModelPropertySource;
 
 public class EOModel extends EOModelObject {
-  public static final String ENTITY = "entity";
-  public static final String CONNECTION_DICTIONARY = "connectionDictionary";
-  public static final String ADAPTOR_NAME = "adaptorName";
-  public static final String USER_INFO = "userInfo";
-  public static final String VERSION = "version";
-  public static final String NAME = "name";
-  public static final String ENTITIES = "entities";
+  public static final String ENTITY = "entity"; //$NON-NLS-1$
+  public static final String CONNECTION_DICTIONARY = "connectionDictionary"; //$NON-NLS-1$
+  public static final String ADAPTOR_NAME = "adaptorName"; //$NON-NLS-1$
+  public static final String USER_INFO = "userInfo"; //$NON-NLS-1$
+  public static final String VERSION = "version"; //$NON-NLS-1$
+  public static final String NAME = "name"; //$NON-NLS-1$
+  public static final String ENTITIES = "entities"; //$NON-NLS-1$
 
   private EOModelGroup myModelGroup;
   private String myName;
@@ -87,7 +87,7 @@ public class EOModel extends EOModelObject {
     myName = _name;
     myEntities = new WritableList(new LinkedList(), EOEntity.class);
     myDeletedEntityNamesInObjectStore = new WritableList(new LinkedList(), String.class);
-    myVersion = "2.1";
+    myVersion = "2.1"; //$NON-NLS-1$
     myModelMap = new EOModelMap();
   }
 
@@ -232,34 +232,43 @@ public class EOModel extends EOModelObject {
   }
 
   public void loadFromFolder(File _modelFolder, List _resolveFailures) throws EOModelException, IOException {
-    File indexFile = new File(_modelFolder, "index.eomodeld");
+    File indexFile = new File(_modelFolder, "index.eomodeld"); //$NON-NLS-1$
     if (!indexFile.exists()) {
       throw new EOModelException(indexFile + " does not exist.");
     }
     EOModelMap modelMap = new EOModelMap((Map) PropertyListSerialization.propertyListFromFile(indexFile));
     myModelMap = modelMap;
-    myVersion = modelMap.getString("EOModelVersion", true);
-    myAdaptorName = modelMap.getString("adaptorName", true);
-    myConnectionDictionary = modelMap.getMap("connectionDictionary", true);
-    myUserInfo = modelMap.getMap("userInfo", true);
+    Object version = modelMap.getString("EOModelVersion", true); //$NON-NLS-1$
+    if (version instanceof String) {
+      myVersion = (String) version;
+    }
+    else if (version instanceof Number) {
+      myVersion = String.valueOf(((Number) version).floatValue());
+    }
+    else {
+      throw new IllegalArgumentException("Unknown version format:" + version);
+    }
+    myAdaptorName = modelMap.getString("adaptorName", true); //$NON-NLS-1$
+    myConnectionDictionary = modelMap.getMap("connectionDictionary", true); //$NON-NLS-1$
+    myUserInfo = modelMap.getMap("userInfo", true); //$NON-NLS-1$
 
-    List entities = modelMap.getList("entities");
+    List entities = modelMap.getList("entities"); //$NON-NLS-1$
     if (entities != null) {
       Iterator entitiesIter = entities.iterator();
       while (entitiesIter.hasNext()) {
         EOModelMap entityMap = new EOModelMap((Map) entitiesIter.next());
-        String entityName = entityMap.getString("name", true);
+        String entityName = entityMap.getString("name", true); //$NON-NLS-1$
         EOEntity entity = new EOEntity(this);
-        File entityFile = new File(_modelFolder, entityName + ".plist");
-        File fspecFile = new File(_modelFolder, entityName + ".fspec");
+        File entityFile = new File(_modelFolder, entityName + ".plist"); //$NON-NLS-1$
+        File fspecFile = new File(_modelFolder, entityName + ".fspec"); //$NON-NLS-1$
         entity.loadFromFile(entityFile, fspecFile);
         addEntity(entity, false);
       }
     }
 
-    Map internalInfoMap = modelMap.getMap("internalInfo");
+    Map internalInfoMap = modelMap.getMap("internalInfo"); //$NON-NLS-1$
     if (internalInfoMap != null) {
-      myDeletedEntityNamesInObjectStore = modelMap.getList("_deletedEntityNamesInObjectStore", true);
+      myDeletedEntityNamesInObjectStore = modelMap.getList("_deletedEntityNamesInObjectStore", true); //$NON-NLS-1$
     }
 
     if (_resolveFailures != null) {
@@ -269,46 +278,46 @@ public class EOModel extends EOModelObject {
 
   public EOModelMap toMap() {
     EOModelMap modelMap = myModelMap.cloneModelMap();
-    modelMap.setString("EOModelVersion", myVersion, true);
-    modelMap.setString("adaptorName", myAdaptorName, true);
-    modelMap.put("connectionDictionary", myConnectionDictionary);
+    modelMap.setString("EOModelVersion", myVersion, true); //$NON-NLS-1$
+    modelMap.setString("adaptorName", myAdaptorName, true); //$NON-NLS-1$
+    modelMap.put("connectionDictionary", myConnectionDictionary); //$NON-NLS-1$
 
     List entities = new LinkedList();
     Iterator entitiesIter = myEntities.iterator();
     while (entitiesIter.hasNext()) {
       EOEntity entity = (EOEntity) entitiesIter.next();
       EOModelMap entityMap = new EOModelMap();
-      entityMap.setString("className", entity.getClassName(), true);
+      entityMap.setString("className", entity.getClassName(), true); //$NON-NLS-1$
       EOEntity parent = entity.getParent();
       String parentName = (parent == null) ? null : parent.getName();
-      entityMap.setString("parent", parentName, true);
-      entityMap.setString("name", entity.getName(), true);
+      entityMap.setString("parent", parentName, true); //$NON-NLS-1$
+      entityMap.setString("name", entity.getName(), true); //$NON-NLS-1$
       entities.add(entityMap);
     }
-    modelMap.put("entities", entities);
+    modelMap.put("entities", entities); //$NON-NLS-1$
 
-    Map internalInfoMap = modelMap.getMap("internalInfo");
+    Map internalInfoMap = modelMap.getMap("internalInfo"); //$NON-NLS-1$
     if (internalInfoMap == null) {
       internalInfoMap = new HashMap();
-      modelMap.put("internalInfo", internalInfoMap);
+      modelMap.put("internalInfo", internalInfoMap); //$NON-NLS-1$
     }
     if (myDeletedEntityNamesInObjectStore != null) {
-      internalInfoMap.put("_deletedEntityNamesInObjectStore", myDeletedEntityNamesInObjectStore);
+      internalInfoMap.put("_deletedEntityNamesInObjectStore", myDeletedEntityNamesInObjectStore); //$NON-NLS-1$
     }
 
-    modelMap.put("userInfo", myUserInfo);
+    modelMap.put("userInfo", myUserInfo); //$NON-NLS-1$
 
     return modelMap;
   }
 
   public void saveToFolder(File _parentFolder) throws IOException {
-    File modelFolder = new File(_parentFolder, myName + ".eomodeld");
+    File modelFolder = new File(_parentFolder, myName + ".eomodeld"); //$NON-NLS-1$
     if (!modelFolder.exists()) {
       if (!modelFolder.mkdirs()) {
         throw new IOException("Failed to create folder '" + modelFolder + "'.");
       }
     }
-    File indexFile = new File(modelFolder, "index.eomodeld");
+    File indexFile = new File(modelFolder, "index.eomodeld"); //$NON-NLS-1$
     EOModelMap modelMap = toMap();
     PropertyListSerialization.propertyListToFile(indexFile, modelMap);
 
@@ -316,9 +325,9 @@ public class EOModel extends EOModelObject {
       Iterator deletedEntityNameIter = myDeletedEntityNamesInObjectStore.iterator();
       while (deletedEntityNameIter.hasNext()) {
         String entityName = (String) deletedEntityNameIter.next();
-        File entityFile = new File(modelFolder, entityName + ".plist");
+        File entityFile = new File(modelFolder, entityName + ".plist"); //$NON-NLS-1$
         entityFile.delete();
-        File fspecFile = new File(modelFolder, entityName + ".fspec");
+        File fspecFile = new File(modelFolder, entityName + ".fspec"); //$NON-NLS-1$
         fspecFile.delete();
       }
     }
@@ -327,8 +336,8 @@ public class EOModel extends EOModelObject {
     while (entitiesIter.hasNext()) {
       EOEntity entity = (EOEntity) entitiesIter.next();
       String entityName = entity.getName();
-      File entityFile = new File(modelFolder, entityName + ".plist");
-      File fspecFile = new File(modelFolder, entityName + ".fspec");
+      File entityFile = new File(modelFolder, entityName + ".plist"); //$NON-NLS-1$
+      File fspecFile = new File(modelFolder, entityName + ".fspec"); //$NON-NLS-1$
       entity.saveToFile(entityFile, fspecFile);
     }
   }
@@ -352,16 +361,16 @@ public class EOModel extends EOModelObject {
   }
 
   public String toString() {
-    return "[EOModel: name = " + myName + "; entities = " + myEntities + "]";
+    return "[EOModel: name = " + myName + "; entities = " + myEntities + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
   }
 
   public static void main(String[] args) throws IOException, EOModelException {
     EOModelGroup modelGroup = new EOModelGroup();
-    modelGroup.addModelsFromFolder(new File("/Library/Frameworks/ERPrototypes.framework/Resources"), false);
-    modelGroup.addModelsFromFolder(new File("/Users/mschrag/Documents/workspace/MDTask"), false);
-    modelGroup.addModelsFromFolder(new File("/Users/mschrag/Documents/workspace/MDTAccounting"), false);
-    modelGroup.addModelsFromFolder(new File("/Users/mschrag/Documents/workspace/MDTCMS"), false);
-    modelGroup.addModelsFromFolder(new File("/Users/mschrag/Documents/workspace/MDTWOExtensions"), false);
+    modelGroup.addModelsFromFolder(new File("/Library/Frameworks/ERPrototypes.framework/Resources"), false); //$NON-NLS-1$
+    modelGroup.addModelsFromFolder(new File("/Users/mschrag/Documents/workspace/MDTask"), false); //$NON-NLS-1$
+    modelGroup.addModelsFromFolder(new File("/Users/mschrag/Documents/workspace/MDTAccounting"), false); //$NON-NLS-1$
+    modelGroup.addModelsFromFolder(new File("/Users/mschrag/Documents/workspace/MDTCMS"), false); //$NON-NLS-1$
+    modelGroup.addModelsFromFolder(new File("/Users/mschrag/Documents/workspace/MDTWOExtensions"), false); //$NON-NLS-1$
 
     List failures = new LinkedList();
     modelGroup.resolve(failures);
@@ -369,13 +378,13 @@ public class EOModel extends EOModelObject {
     Iterator failuresIter = failures.iterator();
     while (failuresIter.hasNext()) {
       EOModelVerificationFailure failure = (EOModelVerificationFailure) failuresIter.next();
-      System.out.println("EOModel.main: " + failure);
+      System.out.println("EOModel.main: " + failure); //$NON-NLS-1$
     }
 
-    File outputPath = new File("/tmp");
-    System.out.println("EOModel.main: Saving model to " + outputPath + " ...");
-    EOModel mdtaskModel = modelGroup.getModelNamed("MDTask");
+    File outputPath = new File("/tmp"); //$NON-NLS-1$
+    System.out.println("EOModel.main: Saving model to " + outputPath + " ..."); //$NON-NLS-1$ //$NON-NLS-2$
+    EOModel mdtaskModel = modelGroup.getModelNamed("MDTask"); //$NON-NLS-1$
     mdtaskModel.saveToFolder(outputPath);
-    System.out.println("EOModel.main: Done.");
+    System.out.println("EOModel.main: Done."); //$NON-NLS-1$
   }
 }

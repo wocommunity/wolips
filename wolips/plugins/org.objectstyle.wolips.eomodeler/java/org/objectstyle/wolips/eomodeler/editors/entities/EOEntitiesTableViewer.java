@@ -110,7 +110,7 @@ public class EOEntitiesTableViewer extends Composite implements ISelectionProvid
 
   public void setSelectedEntity(EOEntity _entity) {
     IStructuredSelection selection = (IStructuredSelection) myEntitiesTableViewer.getSelection();
-    if (selection != null && !selection.toList().contains(_entity)) {
+    if ((_entity == null && !selection.isEmpty()) || (selection != null && !selection.toList().contains(_entity))) {
       if (_entity == null) {
         myEntitiesTableViewer.setSelection(new StructuredSelection(), true);
       }

@@ -80,7 +80,7 @@ public class EOModelMap implements Map {
       myBackingMap.remove(_value);
     }
     else {
-      myBackingMap.put(_key, _value.booleanValue() ? "Y" : "N");
+      myBackingMap.put(_key, _value.booleanValue() ? "Y" : "N"); //$NON-NLS-1$ //$NON-NLS-2$
     }
   }
 
@@ -96,7 +96,7 @@ public class EOModelMap implements Map {
     else if (value instanceof String) {
       String strValue = getString(_key, true);
       if (strValue != null) {
-        boolValue = Boolean.valueOf("y".equalsIgnoreCase(strValue) || "yes".equalsIgnoreCase(strValue) || "true".equalsIgnoreCase(strValue) || "on".equalsIgnoreCase(strValue));
+        boolValue = Boolean.valueOf("y".equalsIgnoreCase(strValue) || "yes".equalsIgnoreCase(strValue) || "true".equalsIgnoreCase(strValue) || "on".equalsIgnoreCase(strValue)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
       }
       else {
         boolValue = null;

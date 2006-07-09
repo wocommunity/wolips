@@ -61,7 +61,7 @@ import java.util.Set;
 import org.eclipse.jface.internal.databinding.provisional.observable.list.WritableList;
 
 public class EOModelGroup extends EOModelObject {
-  public static final String MODELS = "Models";
+  public static final String MODELS = "models"; //$NON-NLS-1$
 
   private List myModels;
   private List myPrototypeAttributeCache;
@@ -113,25 +113,25 @@ public class EOModelGroup extends EOModelObject {
       List prototypeAttributeCache = new LinkedList();
 
       Set prototypeEntityNames = new HashSet();
-      addPrototypeAttributes("EOPrototypes", prototypeEntityNames, prototypeAttributeCache);
+      addPrototypeAttributes("EOPrototypes", prototypeEntityNames, prototypeAttributeCache); //$NON-NLS-1$
       Iterator modelsIter = myModels.iterator();
       while (modelsIter.hasNext()) {
         EOModel model = (EOModel) modelsIter.next();
         String adaptorName = model.getAdaptorName();
-        String adaptorPrototypeEntityName = "EO" + adaptorName + "Prototypes";
+        String adaptorPrototypeEntityName = "EO" + adaptorName + "Prototypes"; //$NON-NLS-1$ //$NON-NLS-2$
         addPrototypeAttributes(adaptorPrototypeEntityName, prototypeEntityNames, prototypeAttributeCache);
 
         // MS: Hardcoded JDBC reference hack ...
-        if ("JDBC".equals(adaptorName)) {
+        if ("JDBC".equals(adaptorName)) { //$NON-NLS-1$
           Map connectionDictionary = model.getConnectionDictionary();
           if (connectionDictionary != null) {
-            String jdbcUrl = (String) connectionDictionary.get("URL");
+            String jdbcUrl = (String) connectionDictionary.get("URL"); //$NON-NLS-1$
             if (jdbcUrl != null) {
               int firstColon = jdbcUrl.indexOf(':');
               int secondColon = jdbcUrl.indexOf(':', firstColon + 1);
               if (firstColon != -1 && secondColon != -1) {
                 String driverName = jdbcUrl.substring(firstColon + 1, secondColon);
-                String driverPrototypeEntityName = "EOJDBC" + driverName + "Prototypes";
+                String driverPrototypeEntityName = "EOJDBC" + driverName + "Prototypes"; //$NON-NLS-1$ //$NON-NLS-2$
                 addPrototypeAttributes(driverPrototypeEntityName, prototypeEntityNames, prototypeAttributeCache);
               }
             }
@@ -221,7 +221,7 @@ public class EOModelGroup extends EOModelObject {
     for (int fileNum = 0; fileNum < files.length; fileNum++) {
       String name = files[fileNum].getName();
       if (files[fileNum].isDirectory()) {
-        if (name.endsWith(".eomodeld")) {
+        if (name.endsWith(".eomodeld")) { //$NON-NLS-1$
           String modelName = name.substring(0, name.indexOf('.'));
           if (!containsModelNamed(modelName)) {
             EOModel model = new EOModel(this, modelName);
@@ -253,6 +253,6 @@ public class EOModelGroup extends EOModelObject {
   }
 
   public String toString() {
-    return "[EOModelGroup: models = " + myModels + "]";
+    return "[EOModelGroup: models = " + myModels + "]"; //$NON-NLS-1$ //$NON-NLS-2$
   }
 }

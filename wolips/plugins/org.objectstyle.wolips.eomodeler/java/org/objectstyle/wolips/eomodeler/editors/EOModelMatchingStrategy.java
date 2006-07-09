@@ -71,7 +71,7 @@ public class EOModelMatchingStrategy implements IEditorMatchingStrategy {
     else if (_input instanceof IFileEditorInput) {
       IFile file = ((IFileEditorInput) _input).getFile();
       IContainer container = file.getParent();
-      if ("eomodeld".equals(container.getFileExtension())) {
+      if ("eomodeld".equals(container.getFileExtension())) { //$NON-NLS-1$
         EOModelEditor editor = (EOModelEditor) _editorRef.getEditor(true);
         EOModelEditorInput existingEditorInput = (EOModelEditorInput) editor.getEditorInput();
         IContainer existingEOModelFolder = existingEditorInput.getFile().getParent();
@@ -79,7 +79,7 @@ public class EOModelMatchingStrategy implements IEditorMatchingStrategy {
         IFile possibleEditorFile = possibleEditorInput.getFile();
         IContainer possibleEOModelFolder = possibleEditorFile.getParent();
         matches = existingEOModelFolder.equals(possibleEOModelFolder);
-        if ("plist".equals(possibleEditorFile.getFileExtension())) {
+        if ("plist".equals(possibleEditorFile.getFileExtension())) { //$NON-NLS-1$
           String entityName = possibleEditorFile.getName();
           entityName = entityName.substring(0, entityName.indexOf('.'));
           EOModel eoModel = existingEditorInput.getModel();

@@ -54,14 +54,15 @@ import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
 
 public class EOModelerPerspectiveFactory implements IPerspectiveFactory {
-  public static final String EOMODELER_PERSPECTIVE_ID = "org.objectstyle.wolips.eomodeler.EOModelerPerspective";
+  public static final String EOMODELER_PERSPECTIVE_ID = "org.objectstyle.wolips.eomodeler.EOModelerPerspective"; //$NON-NLS-1$
+
   public void createInitialLayout(IPageLayout _layout) {
     String editorArea = _layout.getEditorArea();
-    IFolderLayout topLeft = _layout.createFolder("left", IPageLayout.LEFT, 0.25f, editorArea);
+    IFolderLayout topLeft = _layout.createFolder("left", IPageLayout.LEFT, 0.20f, editorArea); //$NON-NLS-1$
     topLeft.addView(IPageLayout.ID_OUTLINE);
-    topLeft.addView("org.eclipse.jdt.ui.PackageExplorer");
+    topLeft.addView("org.eclipse.jdt.ui.PackageExplorer"); //$NON-NLS-1$
 
-    IFolderLayout bottomRight = _layout.createFolder("bottom", IPageLayout.BOTTOM, 0.75f, editorArea);
+    IFolderLayout bottomRight = _layout.createFolder("bottom", IPageLayout.RIGHT, 0.70f, editorArea); //$NON-NLS-1$
     bottomRight.addView(IPageLayout.ID_PROP_SHEET);
   }
 }

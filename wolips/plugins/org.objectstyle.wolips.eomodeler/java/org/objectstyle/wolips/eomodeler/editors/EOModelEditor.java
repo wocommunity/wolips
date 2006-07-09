@@ -55,7 +55,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -96,13 +95,17 @@ import org.objectstyle.wolips.eomodeler.model.EORelationshipPath;
 import org.objectstyle.wolips.eomodeler.outline.EOModelContentOutlinePage;
 
 public class EOModelEditor extends MultiPageEditorPart implements IResourceChangeListener, ITabbedPropertySheetPageContributor, ISelectionProvider {
-  public static final String EOMODEL_EDITOR_ID = "org.objectstyle.wolips.eomodeler.editors.EOModelEditor";
+  public static final String EOMODEL_EDITOR_ID = "org.objectstyle.wolips.eomodeler.editors.EOModelEditor"; //$NON-NLS-1$
+
   private EOEntitiesTableEditor myEntitiesTableEditor;
   private EOEntityEditor myEntityEditor;
   private EOModelContentOutlinePage myContentOutlinePage;
   private ListenerList mySelectionChangedListeners;
   private IStructuredSelection mySelection;
   private PropertyChangeListener myDirtyModelListener;
+  private EOEntity mySelectedEntity;
+
+  private int mySelectionDepth;
 
   public EOModelEditor() {
     mySelectionChangedListeners = new ListenerList();
@@ -145,13 +148,19 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 
       myEntityEditor = new EOEntityEditor();
       addPage(1, myEntityEditor, getEditorInput());
-      setPageText(1, "Entity");
+      setPageText(1, "No Entity Selected");
 
       EOModelSelectionChangedListener modelSelectionChangedListener = new EOModelSelectionChangedListener();
       myEntitiesTableEditor.addSelectionChangedListener(modelSelectionChangedListener);
 
       EOEntitySelectionChangedListener entitySelectionChangedListener = new EOEntitySelectionChangedListener();
       myEntityEditor.addSelectionChangedListener(entitySelectionChangedListener);
+
+      EOEntity fileEntity = ((EOModelEditorInput) getEditorInput()).getFileEntity();
+      if (fileEntity != null) {
+        setSelectedEntity(fileEntity);
+        setActivePage(1);
+      }
     }
     catch (PartInitException e) {
       ErrorDialog.openError(getSite().getShell(), "Error creating editor.", null, e.getStatus());
@@ -159,15 +168,19 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
   }
 
   public void setSelectedEntity(EOEntity _selectedEntity) {
-    myEntitiesTableEditor.setSelectedEntity(_selectedEntity);
-    myEntityEditor.setEntity(_selectedEntity);
-    if (_selectedEntity == null) {
-      EOModelEditor.this.setPageText(1, "Entity");
+    if ((mySelectedEntity == null && _selectedEntity != null) || (mySelectedEntity != null && !mySelectedEntity.equals(_selectedEntity))) {
+      System.out.println("EOModelEditor.setSelectedEntity: " + _selectedEntity);
+      mySelectedEntity = _selectedEntity;
+      myEntitiesTableEditor.setSelectedEntity(_selectedEntity);
+      myEntityEditor.setEntity(_selectedEntity);
+      if (_selectedEntity == null) {
+        EOModelEditor.this.setPageText(1, "No Entity Selected");
+      }
+      else {
+        EOModelEditor.this.setPageText(1, _selectedEntity.getName());
+      }
+      updatePartName();
     }
-    else {
-      EOModelEditor.this.setPageText(1, _selectedEntity.getName());
-    }
-    updatePartName();
   }
 
   public void dispose() {
@@ -208,10 +221,6 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
     doSave(null);
   }
 
-  public void gotoMarker(IMarker _marker) {
-    System.out.println("MultiPageEditor.gotoMarker: goto marker " + _marker);
-  }
-
   public void init(IEditorSite _site, IEditorInput _editorInput) throws PartInitException {
     try {
       IWorkbench workbench = Activator.getDefault().getWorkbench();
@@ -245,9 +254,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
       if (oldInput != null) {
         oldInput.getModel().removePropertyChangeListener(myDirtyModelListener);
       }
-      if (input != null) {
-        input.getModel().addPropertyChangeListener(myDirtyModelListener);
-      }
+      input.getModel().addPropertyChangeListener(myDirtyModelListener);
       updatePartName();
       super.init(_site, input);
       _site.setSelectionProvider(this);
@@ -323,39 +330,58 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
   }
 
   public void setSelection(ISelection _selection) {
-    IStructuredSelection previousSelection = mySelection;
-    IStructuredSelection selection = (IStructuredSelection) _selection;
-    mySelection = selection;
-    if (previousSelection == null || !selection.toList().equals(previousSelection.toList())) {
-      Object selectedObject = null;
-      if (!selection.isEmpty()) {
-        selectedObject = selection.getFirstElement();
+    setSelection(_selection, true);
+  }
+
+  public synchronized void setSelection(ISelection _selection, boolean _updateOutline) {
+    // MS: it's really easy to setup a selection loop with so many interrelated
+    // components.  In reality, we only want the top selection to count, and if
+    // the call to setSelection is called again from within this stack, then
+    // that's pretty much bad.
+    mySelectionDepth++;
+    try {
+      if (mySelectionDepth == 1) {
+        IStructuredSelection previousSelection = mySelection;
+        IStructuredSelection selection = (IStructuredSelection) _selection;
+        mySelection = selection;
+        if (previousSelection == null || !selection.toList().equals(previousSelection.toList())) {
+          Object selectedObject = null;
+          if (!selection.isEmpty()) {
+            selectedObject = selection.getFirstElement();
+          }
+          if (selectedObject instanceof EOModel) {
+            //EOModel selectedModel = (EOModel) selectedObject;
+            setSelectedEntity(null);
+            setActivePage(0);
+          }
+          else if (selectedObject instanceof EOEntity) {
+            EOEntity selectedEntity = (EOEntity) selectedObject;
+            setSelectedEntity(selectedEntity);
+          }
+          else if (selectedObject instanceof EOAttribute) {
+            //((ISelectionProvider) getActiveEditor()).setSelection(_selection);
+          }
+          else if (selectedObject instanceof EORelationship) {
+            EORelationship selectedRelationship = (EORelationship) selectedObject;
+            setSelectedEntity(selectedRelationship.getEntity());
+            getEntityEditor().setSelection(selection);
+            setActivePage(1);
+          }
+          else if (selectedObject instanceof EORelationshipPath) {
+            EORelationshipPath selectedRelationshipPath = (EORelationshipPath) selectedObject;
+            setSelectedEntity(selectedRelationshipPath.getChildRelationship().getEntity());
+            getEntityEditor().setSelection(new StructuredSelection(selectedRelationshipPath.getChildRelationship()));
+            setActivePage(1);
+          }
+          if (_updateOutline) {
+            getContentOutlinePage().setSelection(selection);
+          }
+          fireSelectionChanged(selection);
+        }
       }
-      if (selectedObject instanceof EOModel) {
-        EOModel selectedModel = (EOModel) selectedObject;
-        System.out.println("EOModelEditor.setSelection: model = " + selectedModel);
-      }
-      else if (selectedObject instanceof EOEntity) {
-        EOEntity selectedEntity = (EOEntity) selectedObject;
-        setSelectedEntity(selectedEntity);
-      }
-      else if (selectedObject instanceof EOAttribute) {
-        //((ISelectionProvider) getActiveEditor()).setSelection(_selection);
-      }
-      else if (selectedObject instanceof EORelationship) {
-        EORelationship selectedRelationship = (EORelationship) selectedObject;
-        getEntityEditor().setEntity(selectedRelationship.getEntity());
-        getEntityEditor().setSelection(selection);
-        setActivePage(1);
-      }
-      else if (selectedObject instanceof EORelationshipPath) {
-        EORelationshipPath selectedRelationshipPath = (EORelationshipPath) selectedObject;
-        getEntityEditor().setEntity(selectedRelationshipPath.getChildRelationship().getEntity());
-        getEntityEditor().setSelection(new StructuredSelection(selectedRelationshipPath.getChildRelationship()));
-        setActivePage(1);
-      }
-      getContentOutlinePage().setSelection(selection);
-      fireSelectionChanged(selection);
+    }
+    finally {
+      mySelectionDepth--;
     }
   }
 
@@ -383,7 +409,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
   protected class EOModelContentSelectionChangedListener implements ISelectionChangedListener {
     public void selectionChanged(SelectionChangedEvent _event) {
       IStructuredSelection selection = (IStructuredSelection) _event.getSelection();
-      setSelection(selection);
+      setSelection(selection, false);
     }
   }
 

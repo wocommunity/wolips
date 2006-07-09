@@ -55,27 +55,27 @@ import java.util.List;
 import java.util.Map;
 
 public class EOAttribute extends EOModelObject implements IEOAttribute {
-  public static final String PRIMARY_KEY = "primaryKey";
-  public static final String CLASS_PROPERTY = "classProperty";
-  public static final String USED_FOR_LOCKING = "usedForLocking";
-  public static final String ALLOWS_NULL = "allowsNull";
-  public static final String PROTOTYPE = "prototype";
-  public static final String NAME = "name";
-  public static final String COLUMN_NAME = "columnName";
-  public static final String ADAPTOR_VALUE_CONVERSION_METHOD_NAME = "adaptorValueConversionMethodName";
-  public static final String EXTERNAL_TYPE = "externalType";
-  public static final String FACTORY_METHOD_ARGUMENT_TYPE = "factoryMethodArgumentType";
-  public static final String PRECISION = "precision";
-  public static final String SCALE = "scale";
-  public static final String USER_INFO = "userInfo";
-  public static final String VALUE_CLASS_NAME = "valueClassName";
-  public static final String VALUE_FACTORY_METHOD_NAME = "valueFactoryMethodName";
-  public static final String VALUE_TYPE = "valueType";
-  public static final String DEFINITION = "definition";
-  public static final String WIDTH = "width";
-  public static final String READ_FORMAT = "readFormat";
-  public static final String WRITE_FORMAT = "writeFormat";
-  public static final String CLIENT_CLASS_PROPERTY = "clientClassProperty";
+  public static final String PRIMARY_KEY = "primaryKey"; //$NON-NLS-1$
+  public static final String CLASS_PROPERTY = "classProperty"; //$NON-NLS-1$
+  public static final String USED_FOR_LOCKING = "usedForLocking"; //$NON-NLS-1$
+  public static final String ALLOWS_NULL = "allowsNull"; //$NON-NLS-1$
+  public static final String PROTOTYPE = "prototype"; //$NON-NLS-1$
+  public static final String NAME = "name"; //$NON-NLS-1$
+  public static final String COLUMN_NAME = "columnName"; //$NON-NLS-1$
+  public static final String ADAPTOR_VALUE_CONVERSION_METHOD_NAME = "adaptorValueConversionMethodName"; //$NON-NLS-1$
+  public static final String EXTERNAL_TYPE = "externalType"; //$NON-NLS-1$
+  public static final String FACTORY_METHOD_ARGUMENT_TYPE = "factoryMethodArgumentType"; //$NON-NLS-1$
+  public static final String PRECISION = "precision"; //$NON-NLS-1$
+  public static final String SCALE = "scale"; //$NON-NLS-1$
+  public static final String USER_INFO = "userInfo"; //$NON-NLS-1$
+  public static final String VALUE_CLASS_NAME = "valueClassName"; //$NON-NLS-1$
+  public static final String VALUE_FACTORY_METHOD_NAME = "valueFactoryMethodName"; //$NON-NLS-1$
+  public static final String VALUE_TYPE = "valueType"; //$NON-NLS-1$
+  public static final String DEFINITION = "definition"; //$NON-NLS-1$
+  public static final String WIDTH = "width"; //$NON-NLS-1$
+  public static final String READ_FORMAT = "readFormat"; //$NON-NLS-1$
+  public static final String WRITE_FORMAT = "writeFormat"; //$NON-NLS-1$
+  public static final String CLIENT_CLASS_PROPERTY = "clientClassProperty"; //$NON-NLS-1$
 
   private EOEntity myEntity;
   private EOAttribute myPrototype;
@@ -452,50 +452,50 @@ public class EOAttribute extends EOModelObject implements IEOAttribute {
 
   public void loadFromMap(EOModelMap _attributeMap) {
     myAttributeMap = _attributeMap;
-    myName = _attributeMap.getString("name", true);
-    myColumnName = _attributeMap.getString("columnName", true);
-    myExternalType = _attributeMap.getString("externalType", true);
-    myScale = _attributeMap.getInteger("scale");
-    myPrecision = _attributeMap.getInteger("precision");
-    myWidth = _attributeMap.getInteger("width");
-    myValueType = _attributeMap.getString("valueType", true);
-    myValueClassName = _attributeMap.getString("valueClassName", true);
-    myValueFactoryMethodName = _attributeMap.getString("valueFactoryMethodName", true);
-    myFactoryMethodArgumentType = _attributeMap.getString("factoryMethodArgumentType", true);
-    myAdaptorValueConversionMethodName = _attributeMap.getString("adaptorValueConversionMethodName", true);
-    myAllowsNull = _attributeMap.getBoolean("allowsNull");
-    myDefinition = _attributeMap.getString("definition", true);
-    myReadFormat = _attributeMap.getString("readFormat", true);
-    myWriteFormat = _attributeMap.getString("writeFormat", true);
-    myUserInfo = _attributeMap.getMap("userInfo", true);
+    myName = _attributeMap.getString("name", true); //$NON-NLS-1$
+    myColumnName = _attributeMap.getString("columnName", true); //$NON-NLS-1$
+    myExternalType = _attributeMap.getString("externalType", true); //$NON-NLS-1$
+    myScale = _attributeMap.getInteger("scale"); //$NON-NLS-1$
+    myPrecision = _attributeMap.getInteger("precision"); //$NON-NLS-1$
+    myWidth = _attributeMap.getInteger("width"); //$NON-NLS-1$
+    myValueType = _attributeMap.getString("valueType", true); //$NON-NLS-1$
+    myValueClassName = _attributeMap.getString("valueClassName", true); //$NON-NLS-1$
+    myValueFactoryMethodName = _attributeMap.getString("valueFactoryMethodName", true); //$NON-NLS-1$
+    myFactoryMethodArgumentType = _attributeMap.getString("factoryMethodArgumentType", true); //$NON-NLS-1$
+    myAdaptorValueConversionMethodName = _attributeMap.getString("adaptorValueConversionMethodName", true); //$NON-NLS-1$
+    myAllowsNull = _attributeMap.getBoolean("allowsNull"); //$NON-NLS-1$
+    myDefinition = _attributeMap.getString("definition", true); //$NON-NLS-1$
+    myReadFormat = _attributeMap.getString("readFormat", true); //$NON-NLS-1$
+    myWriteFormat = _attributeMap.getString("writeFormat", true); //$NON-NLS-1$
+    myUserInfo = _attributeMap.getMap("userInfo", true); //$NON-NLS-1$
   }
 
   public EOModelMap toMap() {
     EOModelMap attributeMap = myAttributeMap.cloneModelMap();
-    attributeMap.setString("name", myName, true);
-    attributeMap.setString("columnName", myColumnName, true);
+    attributeMap.setString("name", myName, true); //$NON-NLS-1$
+    attributeMap.setString("columnName", myColumnName, true); //$NON-NLS-1$
     if (myPrototype != null) {
-      attributeMap.setString("prototypeName", myPrototype.getName(), true);
+      attributeMap.setString("prototypeName", myPrototype.getName(), true); //$NON-NLS-1$
     }
-    attributeMap.setString("externalType", myExternalType, true);
-    attributeMap.setInteger("scale", myScale);
-    attributeMap.setInteger("precision", myPrecision);
-    attributeMap.setInteger("width", myWidth);
-    attributeMap.setString("valueType", myValueType, true);
-    attributeMap.setString("valueClassName", myValueClassName, true);
-    attributeMap.setString("valueFactoryMethodName", myValueFactoryMethodName, true);
-    attributeMap.setString("factoryMethodArgumentType", myFactoryMethodArgumentType, true);
-    attributeMap.setString("adaptorValueConversionMethodName", myAdaptorValueConversionMethodName, true);
-    attributeMap.setBoolean("allowsNull", myAllowsNull);
-    attributeMap.setString("definition", myDefinition, true);
-    attributeMap.setString("readFormat", myReadFormat, true);
-    attributeMap.setString("writeFormat", myWriteFormat, true);
-    attributeMap.setMap("userInfo", myUserInfo);
+    attributeMap.setString("externalType", myExternalType, true); //$NON-NLS-1$
+    attributeMap.setInteger("scale", myScale); //$NON-NLS-1$
+    attributeMap.setInteger("precision", myPrecision); //$NON-NLS-1$
+    attributeMap.setInteger("width", myWidth); //$NON-NLS-1$
+    attributeMap.setString("valueType", myValueType, true); //$NON-NLS-1$
+    attributeMap.setString("valueClassName", myValueClassName, true); //$NON-NLS-1$
+    attributeMap.setString("valueFactoryMethodName", myValueFactoryMethodName, true); //$NON-NLS-1$
+    attributeMap.setString("factoryMethodArgumentType", myFactoryMethodArgumentType, true); //$NON-NLS-1$
+    attributeMap.setString("adaptorValueConversionMethodName", myAdaptorValueConversionMethodName, true); //$NON-NLS-1$
+    attributeMap.setBoolean("allowsNull", myAllowsNull); //$NON-NLS-1$
+    attributeMap.setString("definition", myDefinition, true); //$NON-NLS-1$
+    attributeMap.setString("readFormat", myReadFormat, true); //$NON-NLS-1$
+    attributeMap.setString("writeFormat", myWriteFormat, true); //$NON-NLS-1$
+    attributeMap.setMap("userInfo", myUserInfo); //$NON-NLS-1$
     return attributeMap;
   }
 
   public void resolve(List _failures) {
-    String prototypeName = myAttributeMap.getString("prototypeName", true);
+    String prototypeName = myAttributeMap.getString("prototypeName", true); //$NON-NLS-1$
     if (prototypeName != null) {
       myPrototype = myEntity.getModel().getModelGroup().getPrototypeAttributeNamed(prototypeName);
       if (myPrototype == null) {
@@ -509,6 +509,6 @@ public class EOAttribute extends EOModelObject implements IEOAttribute {
   }
 
   public String toString() {
-    return "[EOAttribute: " + myName + "]";
+    return "[EOAttribute: " + myName + "]"; //$NON-NLS-1$ //$NON-NLS-2$
   }
 }

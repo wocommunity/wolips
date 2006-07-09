@@ -57,19 +57,19 @@ import java.util.Map;
 import org.eclipse.jface.internal.databinding.provisional.observable.list.WritableList;
 
 public class EOFetchSpecification extends EOModelObject {
-  public static final String NAME = "name";
-  public static final String SORT_ORDERINGS = "sortOrderings";
-  public static final String QUALIFIER = "qualifier";
-  public static final String ENTITY = "entity";
-  public static final String FETCH_LIMIT = "fetchLimit";
-  public static final String DEEP = "deep";
-  public static final String LOCKS_OBJECTS = "locksObjects";
-  public static final String PREFETCHING_RELATIONSHIP_KEY_PATHS = "prefetchingRelationshipKeyPaths";
-  public static final String PROMPTS_AFTER_FETCH_LIMIT = "promptsAfterFetchLimit";
-  public static final String RAW_ROW_KEY_PATHS = "rawRowKeyPaths";
-  public static final String REFRESHES_REFETCHED_OBJECTS = "refreshesRefetchedObjects";
-  public static final String REQUIRES_ALL_QUALIFIER_BINDING_VARIABLES = "requiresAllQualifierBindingVariables";
-  public static final String USES_DISTINCT = "usesDistinct";
+  public static final String NAME = "name"; //$NON-NLS-1$
+  public static final String SORT_ORDERINGS = "sortOrderings"; //$NON-NLS-1$
+  public static final String QUALIFIER = "qualifier"; //$NON-NLS-1$
+  public static final String ENTITY = "entity"; //$NON-NLS-1$
+  public static final String FETCH_LIMIT = "fetchLimit"; //$NON-NLS-1$
+  public static final String DEEP = "deep"; //$NON-NLS-1$
+  public static final String LOCKS_OBJECTS = "locksObjects"; //$NON-NLS-1$
+  public static final String PREFETCHING_RELATIONSHIP_KEY_PATHS = "prefetchingRelationshipKeyPaths"; //$NON-NLS-1$
+  public static final String PROMPTS_AFTER_FETCH_LIMIT = "promptsAfterFetchLimit"; //$NON-NLS-1$
+  public static final String RAW_ROW_KEY_PATHS = "rawRowKeyPaths"; //$NON-NLS-1$
+  public static final String REFRESHES_REFETCHED_OBJECTS = "refreshesRefetchedObjects"; //$NON-NLS-1$
+  public static final String REQUIRES_ALL_QUALIFIER_BINDING_VARIABLES = "requiresAllQualifierBindingVariables"; //$NON-NLS-1$
+  public static final String USES_DISTINCT = "usesDistinct"; //$NON-NLS-1$
 
   private EOEntity myEntity;
   private String myName;
@@ -90,7 +90,7 @@ public class EOFetchSpecification extends EOModelObject {
   public EOFetchSpecification(EOEntity _entity, String _name) {
     myEntity = _entity;
     myName = _name;
-    myClass = "EOFetchSpecification";
+    myClass = "EOFetchSpecification"; //$NON-NLS-1$
     mySortOrderings = new WritableList(new LinkedList(), EOSortOrdering.class);
   }
 
@@ -251,23 +251,23 @@ public class EOFetchSpecification extends EOModelObject {
   public void loadFromMap(EOModelMap _map) throws EOModelException {
     myFetchSpecMap = _map;
     // "entityName" = myEntity
-    myClass = _map.getString("class", true);
-    myFetchLimit = _map.getInteger("fetchLimit");
-    myDeep = _map.getBoolean("isDeep");
-    myLocksObjects = _map.getBoolean("locksObjects");
-    myPrefetchingRelationshipKeyPaths = _map.getList("prefetchingRelationshipKeyPaths", true);
-    myPromptsAfterFetchLimit = _map.getBoolean("prompsAfterFetchLimit");
+    myClass = _map.getString("class", true); //$NON-NLS-1$
+    myFetchLimit = _map.getInteger("fetchLimit"); //$NON-NLS-1$
+    myDeep = _map.getBoolean("isDeep"); //$NON-NLS-1$
+    myLocksObjects = _map.getBoolean("locksObjects"); //$NON-NLS-1$
+    myPrefetchingRelationshipKeyPaths = _map.getList("prefetchingRelationshipKeyPaths", true); //$NON-NLS-1$
+    myPromptsAfterFetchLimit = _map.getBoolean("prompsAfterFetchLimit"); //$NON-NLS-1$
 
-    Map qualifierMap = _map.getMap("qualifier");
+    Map qualifierMap = _map.getMap("qualifier"); //$NON-NLS-1$
     if (qualifierMap != null) {
       myQualifier = EOQualifierFactory.qualifierForMap(new EOModelMap(qualifierMap));
     }
-    myRawRowKeyPaths = _map.getList("rawRowKeyPaths", true);
-    myRefreshesRefetchedObjects = _map.getBoolean("refreshesRefetchedObjects");
-    myRequiresAllQualifierBindingVariables = _map.getBoolean("requiresAllQualifierBindingVariables");
-    myUsesDistinct = _map.getBoolean("usesDistinct");
+    myRawRowKeyPaths = _map.getList("rawRowKeyPaths", true); //$NON-NLS-1$
+    myRefreshesRefetchedObjects = _map.getBoolean("refreshesRefetchedObjects"); //$NON-NLS-1$
+    myRequiresAllQualifierBindingVariables = _map.getBoolean("requiresAllQualifierBindingVariables"); //$NON-NLS-1$
+    myUsesDistinct = _map.getBoolean("usesDistinct"); //$NON-NLS-1$
 
-    List sortOrderings = _map.getList("sortOrderings");
+    List sortOrderings = _map.getList("sortOrderings"); //$NON-NLS-1$
     if (sortOrderings != null) {
       Iterator sortOrderingsIter = sortOrderings.iterator();
       while (sortOrderingsIter.hasNext()) {
@@ -281,23 +281,23 @@ public class EOFetchSpecification extends EOModelObject {
 
   public EOModelMap toMap() {
     EOModelMap fetchSpecMap = myFetchSpecMap.cloneModelMap();
-    fetchSpecMap.setString("entityName", myEntity.getName(), true);
-    fetchSpecMap.setString("class", myClass, true);
-    fetchSpecMap.setInteger("fetchLimit", myFetchLimit);
-    fetchSpecMap.setBoolean("isDeep", myDeep);
-    fetchSpecMap.setBoolean("locksObjects", myLocksObjects);
-    fetchSpecMap.setList("prefetchingRelationshipKeyPaths", myPrefetchingRelationshipKeyPaths);
-    fetchSpecMap.setBoolean("prompsAfterFetchLimit", myPromptsAfterFetchLimit);
+    fetchSpecMap.setString("entityName", myEntity.getName(), true); //$NON-NLS-1$
+    fetchSpecMap.setString("class", myClass, true); //$NON-NLS-1$
+    fetchSpecMap.setInteger("fetchLimit", myFetchLimit); //$NON-NLS-1$
+    fetchSpecMap.setBoolean("isDeep", myDeep); //$NON-NLS-1$
+    fetchSpecMap.setBoolean("locksObjects", myLocksObjects); //$NON-NLS-1$
+    fetchSpecMap.setList("prefetchingRelationshipKeyPaths", myPrefetchingRelationshipKeyPaths); //$NON-NLS-1$
+    fetchSpecMap.setBoolean("prompsAfterFetchLimit", myPromptsAfterFetchLimit); //$NON-NLS-1$
     if (myQualifier == null) {
-      fetchSpecMap.setMap("qualifier", null);
+      fetchSpecMap.setMap("qualifier", null); //$NON-NLS-1$
     }
     else {
-      fetchSpecMap.setMap("qualifier", myQualifier.toMap());
+      fetchSpecMap.setMap("qualifier", myQualifier.toMap()); //$NON-NLS-1$
     }
-    fetchSpecMap.setList("rawRowKeyPaths", myRawRowKeyPaths);
-    fetchSpecMap.setBoolean("refreshesRefetchedObjects", myRefreshesRefetchedObjects);
-    fetchSpecMap.setBoolean("requiresAllQualifierBindingVariables", myRequiresAllQualifierBindingVariables);
-    fetchSpecMap.setBoolean("usesDistinct", myUsesDistinct);
+    fetchSpecMap.setList("rawRowKeyPaths", myRawRowKeyPaths); //$NON-NLS-1$
+    fetchSpecMap.setBoolean("refreshesRefetchedObjects", myRefreshesRefetchedObjects); //$NON-NLS-1$
+    fetchSpecMap.setBoolean("requiresAllQualifierBindingVariables", myRequiresAllQualifierBindingVariables); //$NON-NLS-1$
+    fetchSpecMap.setBoolean("usesDistinct", myUsesDistinct); //$NON-NLS-1$
 
     List sortOrderings = new LinkedList();
     Iterator sortOrderingsIter = mySortOrderings.iterator();
@@ -306,7 +306,7 @@ public class EOFetchSpecification extends EOModelObject {
       EOModelMap sortOrderingMap = sortOrdering.toMap();
       sortOrderings.add(sortOrderingMap);
     }
-    fetchSpecMap.setList("sortOrderings", sortOrderings);
+    fetchSpecMap.setList("sortOrderings", sortOrderings); //$NON-NLS-1$
     return fetchSpecMap;
   }
 
