@@ -57,7 +57,7 @@ public class DuplicateEntityNameException extends DuplicateNameException {
   }
 
   public DuplicateEntityNameException(String _name, EOModel _model, Throwable _throwable) {
-    super(_name, "There is already an entity named '" + _name + "' in this model group.", _throwable);
+    super(_name, "There is more than one entity named '" + _name + "' in this model group.", _throwable);
     myModel = _model;
   }
 

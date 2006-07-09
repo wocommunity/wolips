@@ -436,13 +436,18 @@ public class EOEntity extends EOModelObject {
         EOModelMap entityMap = new EOModelMap((Map) PropertyListSerialization.propertyListFromFile(_entityFile));
         loadFromMap(entityMap);
       }
+    }
+    catch (EOModelException e) {
+      throw new EOModelException("Failed to load entity from '" + _entityFile + "'.", e);
+    }
+    try {
       if (_fetchSpecFile.exists()) {
         EOModelMap fspecMap = new EOModelMap((Map) PropertyListSerialization.propertyListFromFile(_fetchSpecFile));
         loadFetchSpecsFromMap(fspecMap);
       }
     }
     catch (EOModelException e) {
-      throw new EOModelException("Failed to load model from " + _entityFile + " (fetch spec = " + _fetchSpecFile + ").", e);
+      throw new EOModelException("Failed to load fetch specifications from '" + _fetchSpecFile + "'.", e);
     }
   }
 

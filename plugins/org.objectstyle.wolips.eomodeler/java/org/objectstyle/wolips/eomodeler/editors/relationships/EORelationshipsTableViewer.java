@@ -80,7 +80,7 @@ public class EORelationshipsTableViewer extends Composite implements ISelectionP
     setLayout(new GridLayout(1, true));
     myRelationshipsTableViewer = new TableViewer(this, SWT.FULL_SELECTION);
     myRelationshipsTableViewer.setContentProvider(new EORelationshipsContentProvider());
-    myRelationshipsTableViewer.setLabelProvider(new EORelationshipsLabelProvider(EORelationshipsConstants.COLUMNS));
+    myRelationshipsTableViewer.setLabelProvider(new EORelationshipsLabelProvider(myRelationshipsTableViewer, EORelationshipsConstants.COLUMNS));
     myRelationshipsTableViewer.setSorter(new EORelationshipsViewerSorter(EORelationshipsConstants.COLUMNS));
     myRelationshipsTableViewer.setColumnProperties(EORelationshipsConstants.COLUMNS);
     myTableRefresher = new TableRefreshPropertyListener(myRelationshipsTableViewer, EOEntity.RELATIONSHIPS);

@@ -47,27 +47,45 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eomodeler.utils;
+package org.objectstyle.wolips.eomodeler.model;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+public class EOJoinSemantic {
+  public static final EOJoinSemantic INNER = new EOJoinSemantic("EOInnerJoin", "Inner"); //$NON-NLS-1$
+  public static final EOJoinSemantic FULL_OUTER = new EOJoinSemantic("EOFullOuterJoin", "Full Outer"); //$NON-NLS-1$
+  public static final EOJoinSemantic LEFT_OUTER = new EOJoinSemantic("EOLeftOuterJoin", "Left Outer"); //$NON-NLS-1$
+  public static final EOJoinSemantic RIGHT_OUTER = new EOJoinSemantic("EORightOuterJoin", "Right Outer"); //$NON-NLS-1$
+  public static final EOJoinSemantic[] JOIN_SEMANTICS = new EOJoinSemantic[] { EOJoinSemantic.INNER, EOJoinSemantic.FULL_OUTER, EOJoinSemantic.LEFT_OUTER, EOJoinSemantic.RIGHT_OUTER };
 
-import org.eclipse.jface.viewers.TreeViewer;
+  private String myID;
+  private String myName;
 
-public class TreeNodeRefreshPropertyListener implements PropertyChangeListener {
-  private TreeViewer myTreeViewer;
-  private String myPropertyName;
-
-  public TreeNodeRefreshPropertyListener(TreeViewer _treeViewer, String _propertyName) {
-    myTreeViewer = _treeViewer;
-    myPropertyName = _propertyName;
+  public EOJoinSemantic(String _id, String _name) {
+    myID = _id;
+    myName = _name;
   }
 
-  public void propertyChange(PropertyChangeEvent _event) {
-    String changedPropertyName = _event.getPropertyName();
-    if (myPropertyName.equals(changedPropertyName)) {
-      Object newValue = _event.getNewValue();
-      myTreeViewer.refresh(newValue, true);
+  public String getID() {
+    return myID;
+  }
+
+  public String getName() {
+    return myName;
+  }
+  
+  public String toString() {
+    return "[EOJoinSemantic: name = " + myName + "]"; //$NON-NLS-1$ //$NON-NLS-2$
+  }
+  
+  public static EOJoinSemantic getJoinSemanticByID(String _id) {
+    EOJoinSemantic matchingJoinSemantic = null;
+    for (int joinSemanticNum = 0; matchingJoinSemantic == null && joinSemanticNum < EOJoinSemantic.JOIN_SEMANTICS.length; joinSemanticNum ++) {
+      if (EOJoinSemantic.JOIN_SEMANTICS[joinSemanticNum].myID.equals(_id)) {
+        matchingJoinSemantic = EOJoinSemantic.JOIN_SEMANTICS[joinSemanticNum];
+      }
     }
+    if (matchingJoinSemantic == null) {
+      matchingJoinSemantic = EOJoinSemantic.INNER;
+    }
+    return matchingJoinSemantic;
   }
 }

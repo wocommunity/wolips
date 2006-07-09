@@ -52,6 +52,8 @@ package org.objectstyle.wolips.eomodeler.editors.relationships;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableColorProvider;
 import org.eclipse.jface.viewers.ITableFontProvider;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
@@ -63,8 +65,11 @@ import org.objectstyle.wolips.eomodeler.model.EORelationship;
 import org.objectstyle.wolips.eomodeler.utils.TablePropertyLabelProvider;
 
 public class EORelationshipsLabelProvider extends TablePropertyLabelProvider implements ITableColorProvider, ITableFontProvider {
-  public EORelationshipsLabelProvider(String[] _columnProperties) {
+  private TableViewer myTableViewer;
+
+  public EORelationshipsLabelProvider(TableViewer _tableViewer, String[] _columnProperties) {
     super(_columnProperties);
+    myTableViewer = _tableViewer;
   }
 
   public Image getColumnImage(Object _element, String _property) {
@@ -132,8 +137,15 @@ public class EORelationshipsLabelProvider extends TablePropertyLabelProvider imp
   }
 
   public Color getForeground(Object _element, int _columnIndex) {
-    //EORelationship relationship = (EORelationship) _element;
-    return null;
+    EORelationship relationships = (EORelationship) _element;
+    Color color = null;
+    if (relationships.isInherited()) {
+      color = myTableViewer.getTable().getDisplay().getSystemColor(SWT.COLOR_GRAY);
+    }
+    //    if (attribute.isPrototyped()) {
+    //      color = Display.getCurrent().getSystemColor(SWT.COLOR_DARK_RED);
+    //    }
+    return color;
   }
 
   public void addListener(ILabelProviderListener _listener) {

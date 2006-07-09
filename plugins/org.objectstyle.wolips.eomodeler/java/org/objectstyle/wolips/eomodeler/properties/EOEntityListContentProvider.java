@@ -47,27 +47,44 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eomodeler.utils;
+package org.objectstyle.wolips.eomodeler.properties;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import java.util.List;
 
-import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.Viewer;
+import org.objectstyle.wolips.eomodeler.model.EOEntity;
+import org.objectstyle.wolips.eomodeler.model.EOModel;
+import org.objectstyle.wolips.eomodeler.model.EOModelGroup;
+import org.objectstyle.wolips.eomodeler.model.EORelationship;
 
-public class TreeNodeRefreshPropertyListener implements PropertyChangeListener {
-  private TreeViewer myTreeViewer;
-  private String myPropertyName;
-
-  public TreeNodeRefreshPropertyListener(TreeViewer _treeViewer, String _propertyName) {
-    myTreeViewer = _treeViewer;
-    myPropertyName = _propertyName;
+public class EOEntityListContentProvider implements IStructuredContentProvider {
+  public Object[] getElements(Object _inputElement) {
+    List entitiesList;
+    if (_inputElement instanceof EORelationship) {
+      entitiesList = ((EORelationship) _inputElement).getEntity().getModel().getEntities();
+    }
+    else if (_inputElement instanceof EOEntity) {
+      entitiesList = ((EOEntity) _inputElement).getModel().getEntities();
+    }
+    else if (_inputElement instanceof EOModel) {
+      entitiesList = ((EOModel) _inputElement).getEntities();
+    }
+    else if (_inputElement instanceof EOModelGroup) {
+      entitiesList = ((EOModelGroup) _inputElement).getEntities();
+    }
+    else {
+      throw new IllegalArgumentException("Unknown input element: " + _inputElement);
+    }
+    EOEntity[] entities = (EOEntity[]) entitiesList.toArray(new EOEntity[entitiesList.size()]);
+    return entities;
   }
 
-  public void propertyChange(PropertyChangeEvent _event) {
-    String changedPropertyName = _event.getPropertyName();
-    if (myPropertyName.equals(changedPropertyName)) {
-      Object newValue = _event.getNewValue();
-      myTreeViewer.refresh(newValue, true);
-    }
+  public void dispose() {
+    // DO NOTHING
+  }
+
+  public void inputChanged(Viewer _viewer, Object _oldInput, Object _newInput) {
+    // DO NOTHING
   }
 }

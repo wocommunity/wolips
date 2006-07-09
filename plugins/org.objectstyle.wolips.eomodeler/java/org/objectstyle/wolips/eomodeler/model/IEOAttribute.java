@@ -55,4 +55,6 @@ public interface IEOAttribute {
   public void setClassProperty(Boolean _classProperty, boolean _fireEvents);
 
   public Boolean isClassProperty();
+  
+  public boolean isInherited();
 }

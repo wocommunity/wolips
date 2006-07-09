@@ -49,25 +49,39 @@
  */
 package org.objectstyle.wolips.eomodeler.utils;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
-import org.eclipse.jface.viewers.TreeViewer;
-
-public class TreeNodeRefreshPropertyListener implements PropertyChangeListener {
-  private TreeViewer myTreeViewer;
-  private String myPropertyName;
-
-  public TreeNodeRefreshPropertyListener(TreeViewer _treeViewer, String _propertyName) {
-    myTreeViewer = _treeViewer;
-    myPropertyName = _propertyName;
+public class MiscUtils {
+  public static Boolean negate(Boolean _value) {
+    Boolean negatedValue;
+    if (_value == null) {
+      negatedValue = Boolean.TRUE;
+    }
+    else {
+      negatedValue = Boolean.valueOf(!_value.booleanValue());
+    }
+    return negatedValue;
   }
 
-  public void propertyChange(PropertyChangeEvent _event) {
-    String changedPropertyName = _event.getPropertyName();
-    if (myPropertyName.equals(changedPropertyName)) {
-      Object newValue = _event.getNewValue();
-      myTreeViewer.refresh(newValue, true);
+  public static String toGetMethod(String _propertyName, boolean _boolean) {
+    StringBuffer sb = new StringBuffer();
+    if (_boolean) {
+      sb.append("is"); //$NON-NLS-1$
     }
+    else {
+      sb.append("get"); //$NON-NLS-1$
+    }
+    MiscUtils.capitalize(_propertyName, sb);
+    return sb.toString();
+  }
+
+  public static String toSetMethod(String _propertyName) {
+    StringBuffer sb = new StringBuffer();
+    sb.append("set"); //$NON-NLS-1$
+    MiscUtils.capitalize(_propertyName, sb);
+    return sb.toString();
+  }
+
+  public static void capitalize(String _propertyName, StringBuffer _buffer) {
+    _buffer.append(Character.toUpperCase(_propertyName.charAt(0)));
+    _buffer.append(_propertyName.substring(1));
   }
 }

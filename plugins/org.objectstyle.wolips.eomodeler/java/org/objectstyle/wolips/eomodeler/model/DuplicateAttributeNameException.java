@@ -57,7 +57,7 @@ public class DuplicateAttributeNameException extends DuplicateNameException {
   }
 
   public DuplicateAttributeNameException(String _name, EOEntity _entity, Throwable _throwable) {
-    super(_name, "There is already an attribute named '" + _name + "' in " + _entity.getName() + ".", _throwable);
+    super(_name, "There is more than one attribute named '" + _name + "' in " + _entity.getName() + ".", _throwable);
     myEntity = _entity;
   }
 

@@ -47,27 +47,36 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eomodeler.utils;
+package org.objectstyle.wolips.eomodeler.properties;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.jface.viewers.ILabelProviderListener;
+import org.eclipse.swt.graphics.Image;
+import org.objectstyle.wolips.eomodeler.model.EOEntity;
 
-import org.eclipse.jface.viewers.TreeViewer;
-
-public class TreeNodeRefreshPropertyListener implements PropertyChangeListener {
-  private TreeViewer myTreeViewer;
-  private String myPropertyName;
-
-  public TreeNodeRefreshPropertyListener(TreeViewer _treeViewer, String _propertyName) {
-    myTreeViewer = _treeViewer;
-    myPropertyName = _propertyName;
+public class EOEntityLabelProvider implements ILabelProvider {
+  public Image getImage(Object _element) {
+    return null;
   }
 
-  public void propertyChange(PropertyChangeEvent _event) {
-    String changedPropertyName = _event.getPropertyName();
-    if (myPropertyName.equals(changedPropertyName)) {
-      Object newValue = _event.getNewValue();
-      myTreeViewer.refresh(newValue, true);
-    }
+  public String getText(Object _element) {
+    EOEntity entity = (EOEntity) _element;
+    return entity.getName();
+  }
+
+  public void addListener(ILabelProviderListener _listener) {
+    // DO NOTHING
+  }
+
+  public void dispose() {
+    // DO NOTHING
+  }
+
+  public boolean isLabelProperty(Object _element, String _property) {
+    return true;
+  }
+
+  public void removeListener(ILabelProviderListener _listener) {
+    // DO NOTHING
   }
 }

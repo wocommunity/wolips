@@ -47,27 +47,80 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eomodeler.utils;
+package org.objectstyle.wolips.eomodeler.properties;
 
+import java.beans.Expression;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.beans.Statement;
 
-import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
+import org.objectstyle.wolips.eomodeler.model.EOModelObject;
+import org.objectstyle.wolips.eomodeler.utils.MiscUtils;
 
-public class TreeNodeRefreshPropertyListener implements PropertyChangeListener {
-  private TreeViewer myTreeViewer;
+public class ComboViewerBinding implements ISelectionChangedListener, PropertyChangeListener {
+  private ComboViewer myViewer;
+  private EOModelObject myObj;
   private String myPropertyName;
+  private EOModelObject myListObj;
+  private String myListPropertyName;
 
-  public TreeNodeRefreshPropertyListener(TreeViewer _treeViewer, String _propertyName) {
-    myTreeViewer = _treeViewer;
+  public ComboViewerBinding(ComboViewer _viewer, EOModelObject _obj, String _propertyName, EOModelObject _listObj, String _listPropertyName) {
+    myViewer = _viewer;
+    myObj = _obj;
     myPropertyName = _propertyName;
+    myListObj = _listObj;
+    myListPropertyName = _listPropertyName;
+
+    try {
+      Object existingValue = new Expression(myObj, MiscUtils.toGetMethod(myPropertyName, false), null).getValue();
+      myViewer.setSelection(new StructuredSelection(existingValue));
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+    }
+
+    myViewer.addSelectionChangedListener(this);
+    myObj.addPropertyChangeListener(myPropertyName, this);
+    if (myListObj != null) {
+      myListObj.addPropertyChangeListener(myListPropertyName, this);
+    }
+  }
+
+  public void dispose() {
+    myViewer.removeSelectionChangedListener(this);
+    myObj.removePropertyChangeListener(myPropertyName, this);
+    if (myListObj != null) {
+      myListObj.removePropertyChangeListener(myListPropertyName, this);
+    }
   }
 
   public void propertyChange(PropertyChangeEvent _event) {
-    String changedPropertyName = _event.getPropertyName();
-    if (myPropertyName.equals(changedPropertyName)) {
+    Object source = _event.getSource();
+    String propertyName = _event.getPropertyName();
+    if (source == myObj && myPropertyName.equals(propertyName)) {
       Object newValue = _event.getNewValue();
-      myTreeViewer.refresh(newValue, true);
+      myViewer.setSelection(new StructuredSelection(newValue));
+    }
+    else if (myListObj != null && source == myListObj && myListPropertyName.equals(propertyName)) {
+      myViewer.setInput(myListObj);
+    }
+  }
+
+  public void selectionChanged(SelectionChangedEvent _event) {
+    try {
+      Object newValue = ((IStructuredSelection) _event.getSelection()).getFirstElement();
+      Object existingValue = new Expression(myObj, MiscUtils.toGetMethod(myPropertyName, false), null).getValue();
+      if (existingValue != newValue || (newValue != null && !newValue.equals(existingValue))) {
+        new Statement(myObj, MiscUtils.toSetMethod(myPropertyName), new Object[] { newValue }).execute();
+      }
+    }
+    catch (Exception e) {
+      e.printStackTrace();
     }
   }
 }
