@@ -71,6 +71,6 @@ public class EOModelVerificationFailure {
   }
 
   public String toString() {
-    return "[EOModelVerificationFailure: " + myMessage + "]";
+    return "[EOModelVerificationFailure: " + myMessage + "]"; //$NON-NLS-1$ //$NON-NLS-2$
   }
 }

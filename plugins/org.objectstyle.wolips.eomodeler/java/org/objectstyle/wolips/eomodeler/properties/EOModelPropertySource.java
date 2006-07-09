@@ -49,10 +49,8 @@
  */
 package org.objectstyle.wolips.eomodeler.properties;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
@@ -62,11 +60,9 @@ import org.objectstyle.wolips.eomodeler.model.EOModel;
 public class EOModelPropertySource implements IPropertySource {
   private EOModel myModel;
   private IPropertyDescriptor[] myDescriptors;
-  private Map myOriginalConnectionDictionary;
 
   public EOModelPropertySource(EOModel _model) {
     myModel = _model;
-    myOriginalConnectionDictionary = new HashMap(_model.getConnectionDictionary());
   }
 
   public Object getEditableValue() {
@@ -91,7 +87,6 @@ public class EOModelPropertySource implements IPropertySource {
   }
 
   public void setPropertyValue(Object _id, Object _value) {
-    System.out.println("EOModelPropertySource.setPropertyValue: " + _id + "=" + _value);
     if (_id == EOModel.CONNECTION_DICTIONARY) {
       ConnectionDictionaryPropertySource connDict = (ConnectionDictionaryPropertySource) _value;
       myModel.setConnectionDictionary(connDict.getConnectionDictionary());

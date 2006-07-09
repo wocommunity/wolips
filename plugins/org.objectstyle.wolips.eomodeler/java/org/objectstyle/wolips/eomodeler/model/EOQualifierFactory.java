@@ -51,7 +51,7 @@ package org.objectstyle.wolips.eomodeler.model;
 
 public class EOQualifierFactory {
   public static IEOQualifier qualifierForMap(EOModelMap _qualifierMap) throws EOModelException {
-    String className = _qualifierMap.getString("class", true);
+    String className = _qualifierMap.getString("class", true); //$NON-NLS-1$
     IEOQualifier qualifier = qualifierForClass(className);
     qualifier.loadFromMap(_qualifierMap);
     return qualifier;
@@ -59,7 +59,7 @@ public class EOQualifierFactory {
 
   public static IEOQualifier qualifierForClass(String _className) {
     try {
-      String qualifiedClassName = "org.objectstyle.wolips.eomodeler.model." + _className;
+      String qualifiedClassName = "org.objectstyle.wolips.eomodeler.model." + _className; //$NON-NLS-1$
       Class clazz = Class.forName(qualifiedClassName);
       IEOQualifier qualifier = (IEOQualifier) clazz.newInstance();
       return qualifier;

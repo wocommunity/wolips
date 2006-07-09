@@ -49,46 +49,112 @@
  */
 package org.objectstyle.wolips.eomodeler.properties;
 
+import org.eclipse.jface.internal.databinding.provisional.DataBindingContext;
+import org.eclipse.jface.internal.databinding.provisional.description.Property;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.objectstyle.wolips.eomodeler.model.EORelationship;
+import org.objectstyle.wolips.eomodeler.model.EORelationshipPath;
+import org.objectstyle.wolips.eomodeler.utils.BindingFactory;
 
 public class EORelationshipSection extends AbstractPropertySection {
   private EORelationship myRelationship;
-
   private Text myNameField;
+  private DataBindingContext myContext;
+  private Composite myComposite;
+  private CCombo myModelField;
+  private CCombo myEntityField;
+  private List myJoinsField;
+  private CCombo mySourceAttributeField;
+  private CCombo myDestinationAttributeField;
+  private Button myAddJoinButton;
+  private Button myRemoveJoinButton;
 
   public void createControls(Composite _parent, TabbedPropertySheetPage _tabbedPropertySheetPage) {
     super.createControls(_parent, _tabbedPropertySheetPage);
-    Composite composite = getWidgetFactory().createFlatFormComposite(_parent);
-    myNameField = createText(composite, "");
-    //labelText.addModifyListener(listener);
-    createLabelFor(composite, myNameField, "Name");
+    myComposite = getWidgetFactory().createFlatFormComposite(_parent);
+
+    //    Composite 
+
+    myNameField = createText(myComposite);
+    createLabelFor(myComposite, myNameField, "Name");
+
+    myModelField = createCombo(myComposite);
+    createLabelFor(myComposite, myModelField, "Model");
+    myEntityField = createCombo(myComposite);
+    createLabelFor(myComposite, myEntityField, "Entity");
+    myJoinsField = createList(myComposite, SWT.NONE);
+    createLabelFor(myComposite, myJoinsField, "Joins");
+    mySourceAttributeField = createCombo(myComposite);
+    createLabelFor(myComposite, mySourceAttributeField, "Source");
+    myDestinationAttributeField = createCombo(myComposite);
+    createLabelFor(myComposite, myDestinationAttributeField, "Dest");
+    myAddJoinButton = getWidgetFactory().createButton(myComposite, " + ", SWT.PUSH);
+    myAddJoinButton.setLayoutData(createControlFormData());
+    createLabelFor(myComposite, myAddJoinButton, "Add");
+    myRemoveJoinButton = getWidgetFactory().createButton(myComposite, " - ", SWT.PUSH);
+    myRemoveJoinButton.setLayoutData(createControlFormData());
+    createLabelFor(myComposite, myRemoveJoinButton, "Remove");
+  }
+
+  public void setInput(IWorkbenchPart _part, ISelection _selection) {
+    super.setInput(_part, _selection);
+    Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
+    if (selectedObject instanceof EORelationship) {
+      myRelationship = (EORelationship) selectedObject;
+    }
+    else if (selectedObject instanceof EORelationshipPath) {
+      myRelationship = ((EORelationshipPath) selectedObject).getChildRelationship();
+    }
+    if (myContext != null) {
+      myContext.dispose();
+    }
+    myContext = BindingFactory.createContext(myComposite);
+    //myContext.bind(myNameField, new Property(myRelationship, EORelationship.NAME), null);
   }
 
   public void dispose() {
     super.dispose();
   }
 
-  protected Text createText(Composite _parent, String _initialValue) {
-    Text text = getWidgetFactory().createText(_parent, _initialValue);
+  protected FormData createControlFormData() {
     FormData data = new FormData();
     data.left = new FormAttachment(0, STANDARD_LABEL_WIDTH);
     data.right = new FormAttachment(100, 0);
     data.top = new FormAttachment(0, ITabbedPropertyConstants.VSPACE);
-    text.setLayoutData(data);
+    return data;
+  }
+
+  protected Text createText(Composite _parent) {
+    Text text = getWidgetFactory().createText(_parent, ""); //$NON-NLS-1$
+    //text.setLayoutData(createControlFormData());
     return text;
+  }
+
+  protected CCombo createCombo(Composite _parent) {
+    CCombo combo = getWidgetFactory().createCCombo(_parent);
+    //combo.setLayoutData(createControlFormData());
+    return combo;
+  }
+
+  protected List createList(Composite _parent, int _style) {
+    List list = getWidgetFactory().createList(_parent, _style);
+    //list.setLayoutData(createControlFormData());
+    return list;
   }
 
   protected CLabel createLabelFor(Composite _parent, Control _control, String _labelText) {
@@ -99,11 +165,5 @@ public class EORelationshipSection extends AbstractPropertySection {
     data.top = new FormAttachment(_control, 0, SWT.CENTER);
     label.setLayoutData(data);
     return label;
-  }
-
-  public void setInput(IWorkbenchPart _part, ISelection _selection) {
-    super.setInput(_part, _selection);
-    myRelationship = (EORelationship) ((IStructuredSelection) _selection).getFirstElement();
-    myNameField.setText(myRelationship.getName());
   }
 }

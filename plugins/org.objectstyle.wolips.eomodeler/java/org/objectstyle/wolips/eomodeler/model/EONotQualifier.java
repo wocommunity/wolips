@@ -53,7 +53,7 @@ import java.util.List;
 import java.util.Map;
 
 public class EONotQualifier extends EOModelObject implements IEOQualifier {
-  public static final String QUALIFIER = "Qualifier";
+  public static final String QUALIFIER = "qualifier"; //$NON-NLS-1$
 
   private IEOQualifier myQualifier;
 
@@ -68,7 +68,7 @@ public class EONotQualifier extends EOModelObject implements IEOQualifier {
   }
 
   public void loadFromMap(EOModelMap _map) throws EOModelException {
-    Map qualifierMap = _map.getMap("qualifier");
+    Map qualifierMap = _map.getMap("qualifier"); //$NON-NLS-1$
     if (qualifierMap != null) {
       myQualifier = EOQualifierFactory.qualifierForMap(new EOModelMap(qualifierMap));
     }
@@ -76,13 +76,13 @@ public class EONotQualifier extends EOModelObject implements IEOQualifier {
 
   public EOModelMap toMap() {
     EOModelMap qualifierMap = new EOModelMap();
-    qualifierMap.setString("class", "EONotQualifier", true);
+    qualifierMap.setString("class", "EONotQualifier", true); //$NON-NLS-1$ //$NON-NLS-2$
     if (myQualifier == null) {
-      qualifierMap.setMap("qualifier", null);
+      qualifierMap.setMap("qualifier", null); //$NON-NLS-1$
     }
     else {
       EOModelMap notMap = myQualifier.toMap();
-      qualifierMap.setMap("qualifier", notMap);
+      qualifierMap.setMap("qualifier", notMap); //$NON-NLS-1$
     }
     return qualifierMap;
   }

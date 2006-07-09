@@ -61,23 +61,23 @@ import org.eclipse.jface.internal.databinding.provisional.observable.list.Writab
 import org.objectstyle.cayenne.wocompat.PropertyListSerialization;
 
 public class EOEntity extends EOModelObject {
-  public static final String ATTRIBUTE = "attribute";
-  public static final String RELATIONSHIP = "relationship";
-  public static final String FETCH_SPECIFICATION = "fetchSpecification";
-  public static final String NAME = "name";
-  public static final String CLASS_NAME = "className";
-  public static final String PARENT = "parent";
-  public static final String EXTERNAL_QUERY = "externalQuery";
-  public static final String MAX_NUMBER_OF_INSTANCES_TO_BATCH_FETCH = "maxNumberOfInstancesToBatchFetch";
-  public static final String READ_ONLY = "readOnly";
-  public static final String EXTERNAL_NAME = "externalName";
-  public static final String ABSTRACT_ENTITY = "abstractEntity";
-  public static final String CACHES_OBJECTS = "cachesObjects";
-  public static final String RESTRICTING_QUALIFIER = "restrictingQualifier";
-  public static final String FETCH_SPECIFICATIONS = "fetchSpecifications";
-  public static final String ATTRIBUTES = "attributes";
-  public static final String RELATIONSHIPS = "relationships";
-  public static final String USER_INFO = "userInfo";
+  public static final String ATTRIBUTE = "attribute"; //$NON-NLS-1$
+  public static final String RELATIONSHIP = "relationship"; //$NON-NLS-1$
+  public static final String FETCH_SPECIFICATION = "fetchSpecification"; //$NON-NLS-1$
+  public static final String NAME = "name"; //$NON-NLS-1$
+  public static final String CLASS_NAME = "className"; //$NON-NLS-1$
+  public static final String PARENT = "parent"; //$NON-NLS-1$
+  public static final String EXTERNAL_QUERY = "externalQuery"; //$NON-NLS-1$
+  public static final String MAX_NUMBER_OF_INSTANCES_TO_BATCH_FETCH = "maxNumberOfInstancesToBatchFetch"; //$NON-NLS-1$
+  public static final String READ_ONLY = "readOnly"; //$NON-NLS-1$
+  public static final String EXTERNAL_NAME = "externalName"; //$NON-NLS-1$
+  public static final String ABSTRACT_ENTITY = "abstractEntity"; //$NON-NLS-1$
+  public static final String CACHES_OBJECTS = "cachesObjects"; //$NON-NLS-1$
+  public static final String RESTRICTING_QUALIFIER = "restrictingQualifier"; //$NON-NLS-1$
+  public static final String FETCH_SPECIFICATIONS = "fetchSpecifications"; //$NON-NLS-1$
+  public static final String ATTRIBUTES = "attributes"; //$NON-NLS-1$
+  public static final String RELATIONSHIPS = "relationships"; //$NON-NLS-1$
+  public static final String USER_INFO = "userInfo"; //$NON-NLS-1$
 
   private EOModel myModel;
   private EOEntity myParent;
@@ -123,7 +123,7 @@ public class EOEntity extends EOModelObject {
   }
 
   public boolean isPrototype() {
-    return myName != null && myName.startsWith("EO") && myName.endsWith("Prototypes");
+    return myName != null && myName.startsWith("EO") && myName.endsWith("Prototypes"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
   public String getExternalQuery() {
@@ -448,21 +448,21 @@ public class EOEntity extends EOModelObject {
 
   public void loadFromMap(EOModelMap _entityMap) throws DuplicateRelationshipNameException, DuplicateAttributeNameException {
     myEntityMap = _entityMap;
-    myName = _entityMap.getString("name", true);
-    myExternalName = _entityMap.getString("externalName", true);
-    myClassName = _entityMap.getString("className", true);
-    myCachesObjects = _entityMap.getBoolean("cachesObjects");
-    myAbstractEntity = _entityMap.getBoolean("isAbstractEntity");
-    myReadOnly = _entityMap.getBoolean("readOnly");
-    myRestrictingQualifier = _entityMap.getString("restrictingQualifier", true);
-    myExternalQuery = _entityMap.getString("externalQuery", true);
-    myMaxNumberOfInstancesToBatchFetch = _entityMap.getInteger("maxNumberOfInstancesToBatchFetch");
-    myUserInfo = _entityMap.getMap("userInfo", true);
+    myName = _entityMap.getString("name", true); //$NON-NLS-1$
+    myExternalName = _entityMap.getString("externalName", true); //$NON-NLS-1$
+    myClassName = _entityMap.getString("className", true); //$NON-NLS-1$
+    myCachesObjects = _entityMap.getBoolean("cachesObjects"); //$NON-NLS-1$
+    myAbstractEntity = _entityMap.getBoolean("isAbstractEntity"); //$NON-NLS-1$
+    myReadOnly = _entityMap.getBoolean("readOnly"); //$NON-NLS-1$
+    myRestrictingQualifier = _entityMap.getString("restrictingQualifier", true); //$NON-NLS-1$
+    myExternalQuery = _entityMap.getString("externalQuery", true); //$NON-NLS-1$
+    myMaxNumberOfInstancesToBatchFetch = _entityMap.getInteger("maxNumberOfInstancesToBatchFetch"); //$NON-NLS-1$
+    myUserInfo = _entityMap.getMap("userInfo", true); //$NON-NLS-1$
 
     //Map fetchSpecifications = _entityMap.getMap("fetchSpecificationDictionary");
     // TODO: Fetch Specs
 
-    List attributeList = _entityMap.getList("attributes");
+    List attributeList = _entityMap.getList("attributes"); //$NON-NLS-1$
     if (attributeList != null) {
       Iterator attributeIter = attributeList.iterator();
       while (attributeIter.hasNext()) {
@@ -473,7 +473,7 @@ public class EOEntity extends EOModelObject {
       }
     }
 
-    List relationshipList = _entityMap.getList("relationships");
+    List relationshipList = _entityMap.getList("relationships"); //$NON-NLS-1$
     if (relationshipList != null) {
       Iterator relationshipIter = relationshipList.iterator();
       while (relationshipIter.hasNext()) {
@@ -484,7 +484,7 @@ public class EOEntity extends EOModelObject {
       }
     }
 
-    List attributesUsedForLocking = _entityMap.getList("attributesUsedForLocking");
+    List attributesUsedForLocking = _entityMap.getList("attributesUsedForLocking"); //$NON-NLS-1$
     if (attributesUsedForLocking != null) {
       Iterator attributesUsedForLockingIter = attributesUsedForLocking.iterator();
       while (attributesUsedForLockingIter.hasNext()) {
@@ -496,7 +496,7 @@ public class EOEntity extends EOModelObject {
       }
     }
 
-    List classProperties = _entityMap.getList("classProperties");
+    List classProperties = _entityMap.getList("classProperties"); //$NON-NLS-1$
     if (classProperties != null) {
       Iterator classPropertiesIter = classProperties.iterator();
       while (classPropertiesIter.hasNext()) {
@@ -508,7 +508,7 @@ public class EOEntity extends EOModelObject {
       }
     }
 
-    List primaryKeyAttributes = _entityMap.getList("primaryKeyAttributes");
+    List primaryKeyAttributes = _entityMap.getList("primaryKeyAttributes"); //$NON-NLS-1$
     if (primaryKeyAttributes != null) {
       Iterator primaryKeyAttributesIter = primaryKeyAttributes.iterator();
       while (primaryKeyAttributesIter.hasNext()) {
@@ -520,9 +520,9 @@ public class EOEntity extends EOModelObject {
       }
     }
 
-    Map internalInfo = _entityMap.getMap("internalInfo");
+    Map internalInfo = _entityMap.getMap("internalInfo"); //$NON-NLS-1$
     if (internalInfo != null) {
-      List clientClassPropertyNames = _entityMap.getList("_clientClassPropertyNames");
+      List clientClassPropertyNames = _entityMap.getList("_clientClassPropertyNames"); //$NON-NLS-1$
       if (clientClassPropertyNames != null) {
         Iterator clientClassPropertyNameIter = clientClassPropertyNames.iterator();
         while (clientClassPropertyNameIter.hasNext()) {
@@ -551,18 +551,18 @@ public class EOEntity extends EOModelObject {
 
   public EOModelMap toEntityMap() {
     EOModelMap entityMap = myEntityMap.cloneModelMap();
-    entityMap.setString("name", myName, true);
-    entityMap.setString("externalName", myExternalName, true);
-    entityMap.setString("className", myClassName, true);
+    entityMap.setString("name", myName, true); //$NON-NLS-1$
+    entityMap.setString("externalName", myExternalName, true); //$NON-NLS-1$
+    entityMap.setString("className", myClassName, true); //$NON-NLS-1$
     if (myParent != null) {
-      entityMap.setString("parent", myParent.getName(), true);
+      entityMap.setString("parent", myParent.getName(), true); //$NON-NLS-1$
     }
-    entityMap.setBoolean("cachesObjects", myCachesObjects);
-    entityMap.setBoolean("isAbstractEntity", myAbstractEntity);
-    entityMap.setBoolean("readOnly", myReadOnly);
-    entityMap.setString("restrictingQualifier", myRestrictingQualifier, true);
-    entityMap.setString("externalQuery", myExternalQuery, true);
-    entityMap.setInteger("maxNumberOfInstancesToBatchFetch", myMaxNumberOfInstancesToBatchFetch);
+    entityMap.setBoolean("cachesObjects", myCachesObjects); //$NON-NLS-1$
+    entityMap.setBoolean("isAbstractEntity", myAbstractEntity); //$NON-NLS-1$
+    entityMap.setBoolean("readOnly", myReadOnly); //$NON-NLS-1$
+    entityMap.setString("restrictingQualifier", myRestrictingQualifier, true); //$NON-NLS-1$
+    entityMap.setString("externalQuery", myExternalQuery, true); //$NON-NLS-1$
+    entityMap.setInteger("maxNumberOfInstancesToBatchFetch", myMaxNumberOfInstancesToBatchFetch); //$NON-NLS-1$
 
     //Map fetchSpecifications = _entityMap.getMap("fetchSpecificationDictionary");
     // TODO: Fetch Specs
@@ -590,7 +590,7 @@ public class EOEntity extends EOModelObject {
         clientClassProperties.add(attribute.getName());
       }
     }
-    entityMap.setList("attributes", attributes);
+    entityMap.setList("attributes", attributes); //$NON-NLS-1$
 
     List relationships = new LinkedList();
     Iterator relationshipIter = myRelationships.iterator();
@@ -602,19 +602,19 @@ public class EOEntity extends EOModelObject {
         classProperties.add(relationship.getName());
       }
     }
-    entityMap.setList("relationships", relationships);
-    entityMap.setList("attributesUsedForLocking", attributesUsedForLocking);
-    entityMap.setList("classProperties", classProperties);
-    entityMap.setList("primaryKeyAttributes", primaryKeyAttributes);
+    entityMap.setList("relationships", relationships); //$NON-NLS-1$
+    entityMap.setList("attributesUsedForLocking", attributesUsedForLocking); //$NON-NLS-1$
+    entityMap.setList("classProperties", classProperties); //$NON-NLS-1$
+    entityMap.setList("primaryKeyAttributes", primaryKeyAttributes); //$NON-NLS-1$
 
-    Map internalInfoMap = entityMap.getMap("internalInfo");
+    Map internalInfoMap = entityMap.getMap("internalInfo"); //$NON-NLS-1$
     if (internalInfoMap == null) {
       internalInfoMap = new HashMap();
-      entityMap.put("internalInfo", internalInfoMap);
+      entityMap.put("internalInfo", internalInfoMap); //$NON-NLS-1$
     }
-    internalInfoMap.put("_clientClassPropertyNames", clientClassProperties);
+    internalInfoMap.put("_clientClassPropertyNames", clientClassProperties); //$NON-NLS-1$
 
-    entityMap.put("userInfo", myUserInfo);
+    entityMap.put("userInfo", myUserInfo); //$NON-NLS-1$
 
     return entityMap;
   }
@@ -645,7 +645,7 @@ public class EOEntity extends EOModelObject {
   }
 
   public void resolve(List _failures) {
-    String parentName = myEntityMap.getString("parent", true);
+    String parentName = myEntityMap.getString("parent", true); //$NON-NLS-1$
     if (parentName != null) {
       myParent = myModel.getModelGroup().getEntityNamed(parentName);
       if (myParent == null) {
@@ -693,6 +693,6 @@ public class EOEntity extends EOModelObject {
   }
 
   public String toString() {
-    return "[EOEntity: name = " + myName + "; attributes = " + myAttributes + "; relationships = " + myRelationships + "; fetchSpecs = " + myFetchSpecs + "]";
+    return "[EOEntity: name = " + myName + "; attributes = " + myAttributes + "; relationships = " + myRelationships + "; fetchSpecs = " + myFetchSpecs + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
   }
 }

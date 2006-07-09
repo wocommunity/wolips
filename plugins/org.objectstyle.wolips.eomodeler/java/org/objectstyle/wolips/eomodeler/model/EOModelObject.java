@@ -36,6 +36,7 @@ public class EOModelObject implements IAdaptable {
   }
 
   protected void _propertyChanged(String _propertyName, Object _oldValue, Object _newValue) {
+    // TO BE OVERRIDDEN
   }
 
   public Object getAdapter(Class _adapter) {

@@ -52,8 +52,8 @@ package org.objectstyle.wolips.eomodeler.model;
 import java.util.List;
 
 public class EOJoin extends EOModelObject {
-  public static final String DESTINATION_ATTRIBUTE = "destinationAttribute";
-  public static final String SOURCE_ATTRIBUTE = "sourceAttribute";
+  public static final String DESTINATION_ATTRIBUTE = "destinationAttribute"; //$NON-NLS-1$
+  public static final String SOURCE_ATTRIBUTE = "sourceAttribute"; //$NON-NLS-1$
 
   private EORelationship myRelationship;
   private EOAttribute mySourceAttribute;
@@ -120,22 +120,22 @@ public class EOJoin extends EOModelObject {
   public EOModelMap toMap() {
     EOModelMap joinMap = myJoinMap.cloneModelMap();
     if (myDestinationAttribute != null) {
-      joinMap.setString("destinationAttribute", myDestinationAttribute.getName(), true);
+      joinMap.setString("destinationAttribute", myDestinationAttribute.getName(), true); //$NON-NLS-1$
     }
     if (mySourceAttribute != null) {
-      joinMap.setString("sourceAttribute", mySourceAttribute.getName(), true);
+      joinMap.setString("sourceAttribute", mySourceAttribute.getName(), true); //$NON-NLS-1$
     }
     return joinMap;
   }
 
   public void resolve(List _failures) {
-    String sourceAttributeName = myJoinMap.getString("sourceAttribute", true);
+    String sourceAttributeName = myJoinMap.getString("sourceAttribute", true); //$NON-NLS-1$
     mySourceAttribute = myRelationship.getEntity().getAttributeNamed(sourceAttributeName);
     if (mySourceAttribute == null) {
       _failures.add(new MissingAttributeFailure(myRelationship.getEntity(), sourceAttributeName));
     }
 
-    String destinationAttributeName = myJoinMap.getString("destinationAttribute", true);
+    String destinationAttributeName = myJoinMap.getString("destinationAttribute", true); //$NON-NLS-1$
     myDestinationAttribute = myRelationship.getDestination().getAttributeNamed(destinationAttributeName);
     if (myDestinationAttribute == null) {
       _failures.add(new MissingAttributeFailure(myRelationship.getDestination(), destinationAttributeName));
@@ -152,6 +152,6 @@ public class EOJoin extends EOModelObject {
   }
 
   public String toString() {
-    return "[EOJoin: sourceAttribute = " + mySourceAttribute + "; destinationAttribute = " + myDestinationAttribute + "]";
+    return "[EOJoin: sourceAttribute = " + ((mySourceAttribute == null) ? "null" : mySourceAttribute.getName()) + "; destinationAttribute = " + ((myDestinationAttribute == null) ? "null" : myDestinationAttribute.getName()) + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
   }
 }

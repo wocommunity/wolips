@@ -72,7 +72,6 @@ public class EOEntityEditor extends EditorPart implements IEntityEditor, ISelect
   private EORelationshipsTableViewer myRelationshipsTableViewer;
   private EOEntity myEntity;
   private ListenerList myListenerList;
-  private ISelection myLastSelection;
 
   public EOEntityEditor() {
     myListenerList = new ListenerList();
@@ -145,10 +144,6 @@ public class EOEntityEditor extends EditorPart implements IEntityEditor, ISelect
     }
   }
 
-  public ISelection getSelection() {
-    return myLastSelection;
-  }
-
   public void fireSelectionChanged(ISelection _selection) {
     Object[] listeners = myListenerList.getListeners();
     for (int i = 0; i < listeners.length; i++) {
@@ -159,6 +154,14 @@ public class EOEntityEditor extends EditorPart implements IEntityEditor, ISelect
   public void setSelection(ISelection _selection) {
     myAttributesTableViewer.setSelection(_selection);
     myRelationshipsTableViewer.setSelection(_selection);
+  }
+  
+  public ISelection getSelection() {
+    ISelection selection = myAttributesTableViewer.getSelection();
+    if (selection.isEmpty()) {
+      selection = myRelationshipsTableViewer.getSelection();
+    }
+    return selection;
   }
 
   public void addSelectionChangedListener(ISelectionChangedListener _listener) {

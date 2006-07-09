@@ -53,9 +53,9 @@ import java.util.List;
 import java.util.Map;
 
 public class EOKeyValueQualifier extends EOModelObject implements IEOQualifier {
-  public static final String KEY = "Key";
-  public static final String SELECTOR_NAME = "Selector Name";
-  public static final String VALUE = "Value";
+  public static final String KEY = "key"; //$NON-NLS-1$
+  public static final String SELECTOR_NAME = "selectorName"; //$NON-NLS-1$
+  public static final String VALUE = "value"; //$NON-NLS-1$
 
   private String myKey;
   private Object myValue;
@@ -92,17 +92,17 @@ public class EOKeyValueQualifier extends EOModelObject implements IEOQualifier {
   }
 
   public void loadFromMap(EOModelMap _map) throws EOModelException {
-    myKey = _map.getString("key", true);
-    mySelectorName = _map.getString("selectorName", true);
-    Object value = _map.get("value");
+    myKey = _map.getString("key", true); //$NON-NLS-1$
+    mySelectorName = _map.getString("selectorName", true); //$NON-NLS-1$
+    Object value = _map.get("value"); //$NON-NLS-1$
     if (value instanceof Map) {
       Map valueMap = (Map) value;
-      String clazz = (String) valueMap.get("class");
-      if ("EONull".equals(clazz)) {
+      String clazz = (String) valueMap.get("class"); //$NON-NLS-1$
+      if ("EONull".equals(clazz)) { //$NON-NLS-1$
         myValue = null;
       }
-      else if ("EOQualifierVariable".equals(clazz)) {
-        myValue = new EOQualifierVariable((String) valueMap.get("name"));
+      else if ("EOQualifierVariable".equals(clazz)) { //$NON-NLS-1$
+        myValue = new EOQualifierVariable((String) valueMap.get("name")); //$NON-NLS-1$
       }
       else {
         throw new EOModelException("Unknown class " + clazz);
@@ -115,23 +115,23 @@ public class EOKeyValueQualifier extends EOModelObject implements IEOQualifier {
 
   public EOModelMap toMap() {
     EOModelMap qualifierMap = new EOModelMap();
-    qualifierMap.setString("class", "EOKeyValueQualifier", true);
-    qualifierMap.setString("key", myKey, true);
-    qualifierMap.setString("selectorName", mySelectorName, true);
+    qualifierMap.setString("class", "EOKeyValueQualifier", true); //$NON-NLS-1$ //$NON-NLS-2$
+    qualifierMap.setString("key", myKey, true); //$NON-NLS-1$
+    qualifierMap.setString("selectorName", mySelectorName, true); //$NON-NLS-1$
     if (myValue == null) {
       EOModelMap nullMap = new EOModelMap();
-      nullMap.setString("class", "EONull", true);
-      qualifierMap.setMap("value", nullMap);
+      nullMap.setString("class", "EONull", true); //$NON-NLS-1$ //$NON-NLS-2$
+      qualifierMap.setMap("value", nullMap); //$NON-NLS-1$
     }
     else if (myValue instanceof EOQualifierVariable) {
       EOQualifierVariable var = (EOQualifierVariable) myValue;
       EOModelMap variableMap = new EOModelMap();
-      variableMap.setString("class", "EOQualifierVariable", true);
-      variableMap.setString("name", var.getName(), false);
-      qualifierMap.setMap("value", variableMap);
+      variableMap.setString("class", "EOQualifierVariable", true); //$NON-NLS-1$ //$NON-NLS-2$
+      variableMap.setString("name", var.getName(), false); //$NON-NLS-1$
+      qualifierMap.setMap("value", variableMap); //$NON-NLS-1$
     }
     else {
-      qualifierMap.put("value", myValue);
+      qualifierMap.put("value", myValue); //$NON-NLS-1$
     }
     return qualifierMap;
   }

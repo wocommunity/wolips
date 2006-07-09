@@ -1,4 +1,4 @@
-#Mon Jul 03 11:40:50 EDT 2006
+#Sat Jul 08 22:06:20 EDT 2006
 eclipse.preferences.version=1
 org.eclipse.jdt.core.compiler.codegen.inlineJsrBytecode=disabled
 org.eclipse.jdt.core.compiler.codegen.targetPlatform=1.4
@@ -32,7 +32,7 @@ org.eclipse.jdt.core.compiler.problem.missingOverrideAnnotation=ignore
 org.eclipse.jdt.core.compiler.problem.missingSerialVersion=ignore
 org.eclipse.jdt.core.compiler.problem.noEffectAssignment=warning
 org.eclipse.jdt.core.compiler.problem.noImplicitStringConversion=warning
-org.eclipse.jdt.core.compiler.problem.nonExternalizedStringLiteral=ignore
+org.eclipse.jdt.core.compiler.problem.nonExternalizedStringLiteral=warning
 org.eclipse.jdt.core.compiler.problem.nullReference=warning
 org.eclipse.jdt.core.compiler.problem.overridingPackageDefaultMethod=warning
 org.eclipse.jdt.core.compiler.problem.parameterAssignment=warning

@@ -57,17 +57,17 @@ import java.util.Map;
 import org.eclipse.jface.internal.databinding.provisional.observable.list.WritableList;
 
 public class EORelationship extends EOModelObject implements IEOAttribute {
-  public static final String TO_MANY = "toMany";
-  public static final String CLASS_PROPERTY = "classProperty";
-  public static final String NAME = "name";
-  public static final String DESTINATION = "destination";
-  public static final String DEFINITION = "definition";
-  public static final String DELETE_RULE = "eleteRule";
-  public static final String JOIN_SEMANTIC = "joinSemantic";
-  public static final String MANDATORY = "mandatory";
-  public static final String OWNS_DESTINATION = "ownsDestination";
-  public static final String PROPAGATES_PRIMARY_KEY = "propagatesPrimaryKey";
-  public static final String JOINS = "joins";
+  public static final String TO_MANY = "toMany"; //$NON-NLS-1$
+  public static final String CLASS_PROPERTY = "classProperty"; //$NON-NLS-1$
+  public static final String NAME = "name"; //$NON-NLS-1$
+  public static final String DESTINATION = "destination"; //$NON-NLS-1$
+  public static final String DEFINITION = "definition"; //$NON-NLS-1$
+  public static final String DELETE_RULE = "eleteRule"; //$NON-NLS-1$
+  public static final String JOIN_SEMANTIC = "joinSemantic"; //$NON-NLS-1$
+  public static final String MANDATORY = "mandatory"; //$NON-NLS-1$
+  public static final String OWNS_DESTINATION = "ownsDestination"; //$NON-NLS-1$
+  public static final String PROPAGATES_PRIMARY_KEY = "propagatesPrimaryKey"; //$NON-NLS-1$
+  public static final String JOINS = "joins"; //$NON-NLS-1$
 
   private EOEntity myEntity;
   private EOEntity myDestination;
@@ -275,15 +275,15 @@ public class EORelationship extends EOModelObject implements IEOAttribute {
 
   public void loadFromMap(EOModelMap _relationshipMap) {
     myRelationshipMap = _relationshipMap;
-    myDefinition = _relationshipMap.getString("definition", true);
-    myMandatory = _relationshipMap.getBoolean("isMandatory");
-    myToMany = _relationshipMap.getBoolean("isToMany");
-    myJoinSemantic = _relationshipMap.getString("joinSemantic", true);
-    myName = _relationshipMap.getString("name", true);
-    myDeleteRule = _relationshipMap.getString("deleteRule", true);
-    myOwnsDestination = _relationshipMap.getBoolean("ownsDestination");
-    myPropagatesPrimaryKey = _relationshipMap.getBoolean("propagatesPrimaryKey"); // TODO: verify
-    List joins = _relationshipMap.getList("joins");
+    myDefinition = _relationshipMap.getString("definition", true); //$NON-NLS-1$
+    myMandatory = _relationshipMap.getBoolean("isMandatory"); //$NON-NLS-1$
+    myToMany = _relationshipMap.getBoolean("isToMany"); //$NON-NLS-1$
+    myJoinSemantic = _relationshipMap.getString("joinSemantic", true); //$NON-NLS-1$
+    myName = _relationshipMap.getString("name", true); //$NON-NLS-1$
+    myDeleteRule = _relationshipMap.getString("deleteRule", true); //$NON-NLS-1$
+    myOwnsDestination = _relationshipMap.getBoolean("ownsDestination"); //$NON-NLS-1$
+    myPropagatesPrimaryKey = _relationshipMap.getBoolean("propagatesPrimaryKey"); // TODO: verify //$NON-NLS-1$
+    List joins = _relationshipMap.getList("joins"); //$NON-NLS-1$
     if (joins != null) {
       Iterator joinsIter = joins.iterator();
       while (joinsIter.hasNext()) {
@@ -293,20 +293,20 @@ public class EORelationship extends EOModelObject implements IEOAttribute {
         addJoin(join, false);
       }
     }
-    myUserInfo = _relationshipMap.getMap("userInfo", true);
+    myUserInfo = _relationshipMap.getMap("userInfo", true); //$NON-NLS-1$
   }
 
   public EOModelMap toMap() {
     EOModelMap relationshipMap = myRelationshipMap.cloneModelMap();
-    relationshipMap.setString("destination", myDestination.getName(), true);
-    relationshipMap.setString("definition", myDefinition, true);
-    relationshipMap.setBoolean("isMandatory", myMandatory);
-    relationshipMap.setBoolean("isToMany", myToMany);
-    relationshipMap.setString("joinSemantic", myJoinSemantic, true);
-    relationshipMap.setString("name", myName, true);
-    relationshipMap.setString("deleteRule", myDeleteRule, true);
-    relationshipMap.setBoolean("ownsDestination", myOwnsDestination);
-    relationshipMap.setBoolean("propagatesPrimaryKey", myPropagatesPrimaryKey); // TODO: verify
+    relationshipMap.setString("destination", myDestination.getName(), true); //$NON-NLS-1$
+    relationshipMap.setString("definition", myDefinition, true); //$NON-NLS-1$
+    relationshipMap.setBoolean("isMandatory", myMandatory); //$NON-NLS-1$
+    relationshipMap.setBoolean("isToMany", myToMany); //$NON-NLS-1$
+    relationshipMap.setString("joinSemantic", myJoinSemantic, true); //$NON-NLS-1$
+    relationshipMap.setString("name", myName, true); //$NON-NLS-1$
+    relationshipMap.setString("deleteRule", myDeleteRule, true); //$NON-NLS-1$
+    relationshipMap.setBoolean("ownsDestination", myOwnsDestination); //$NON-NLS-1$
+    relationshipMap.setBoolean("propagatesPrimaryKey", myPropagatesPrimaryKey); // TODO: verify //$NON-NLS-1$
     List joins = new LinkedList();
     Iterator joinsIter = myJoins.iterator();
     while (joinsIter.hasNext()) {
@@ -314,13 +314,13 @@ public class EORelationship extends EOModelObject implements IEOAttribute {
       EOModelMap joinMap = join.toMap();
       joins.add(joinMap);
     }
-    relationshipMap.setList("joins", joins);
-    relationshipMap.setMap("userInfo", myUserInfo);
+    relationshipMap.setList("joins", joins); //$NON-NLS-1$
+    relationshipMap.setMap("userInfo", myUserInfo); //$NON-NLS-1$
     return relationshipMap;
   }
 
   public void resolve(List _failures) {
-    String destinationName = myRelationshipMap.getString("destination", true);
+    String destinationName = myRelationshipMap.getString("destination", true); //$NON-NLS-1$
     if (destinationName == null) {
       _failures.add(new EOModelVerificationFailure(myEntity.getName() + "'s " + myName + " relationship has no destination entity."));
     }
@@ -350,6 +350,6 @@ public class EORelationship extends EOModelObject implements IEOAttribute {
   }
 
   public String toString() {
-    return "[EORelationship: name = " + myName + "; destination = " + myDestination + "; joins = " + myJoins + "]";
+    return "[EORelationship: name = " + myName + "; destination = " + ((myDestination == null) ? "null" : myDestination.getName()) + "; joins = " + myJoins + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
   }
 }

@@ -58,21 +58,21 @@ import org.osgi.framework.BundleContext;
  * The activator class controls the plug-in life cycle
  */
 public class Activator extends AbstractUIPlugin {
-  public static final String CHECK_ICON = "check";
-  public static final String EOMODEL_ICON = "eoModel";
-  public static final String EOENTITY_ICON = "eoEntity";
-  public static final String EOATTRIBUTE_ICON = "eoAttribute";
-  public static final String EORELATIONSHIP_ICON = "eoRelationship";
-  public static final String EOFETCHSPEC_ICON = "eoFetchSpec";
-  public static final String TO_MANY_ICON = "toMany";
-  public static final String TO_ONE_ICON = "toOne";
-  public static final String PRIMARY_KEY_ICON = "primaryKey";
-  public static final String LOCKING_ICON = "locking";
-  public static final String CLASS_PROPERTY_ICON = "classProperty";
-  public static final String ALLOW_NULL_ICON = "allowNull";
+  public static final String CHECK_ICON = "check"; //$NON-NLS-1$
+  public static final String EOMODEL_ICON = "eoModel"; //$NON-NLS-1$
+  public static final String EOENTITY_ICON = "eoEntity"; //$NON-NLS-1$
+  public static final String EOATTRIBUTE_ICON = "eoAttribute"; //$NON-NLS-1$
+  public static final String EORELATIONSHIP_ICON = "eoRelationship"; //$NON-NLS-1$
+  public static final String EOFETCHSPEC_ICON = "eoFetchSpec"; //$NON-NLS-1$
+  public static final String TO_MANY_ICON = "toMany"; //$NON-NLS-1$
+  public static final String TO_ONE_ICON = "toOne"; //$NON-NLS-1$
+  public static final String PRIMARY_KEY_ICON = "primaryKey"; //$NON-NLS-1$
+  public static final String LOCKING_ICON = "locking"; //$NON-NLS-1$
+  public static final String CLASS_PROPERTY_ICON = "classProperty"; //$NON-NLS-1$
+  public static final String ALLOW_NULL_ICON = "allowNull"; //$NON-NLS-1$
 
   // The plug-in ID
-  public static final String PLUGIN_ID = "org.objectstyle.wolips.eomodeler";
+  public static final String PLUGIN_ID = "org.objectstyle.wolips.eomodeler"; //$NON-NLS-1$
 
   // The shared instance
   private static Activator plugin;
@@ -123,16 +123,16 @@ public class Activator extends AbstractUIPlugin {
 
   protected void initializeImageRegistry(ImageRegistry _reg) {
     super.initializeImageRegistry(_reg);
-    _reg.put(Activator.PRIMARY_KEY_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "/icons/primaryKey.gif"));
-    _reg.put(Activator.LOCKING_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "/icons/locking.gif"));
-    _reg.put(Activator.CLASS_PROPERTY_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "/icons/classProperty.gif"));
-    _reg.put(Activator.CHECK_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/check.gif"));
-    _reg.put(Activator.EOMODEL_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/eoModel.gif"));
-    _reg.put(Activator.EOATTRIBUTE_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/eoAttribute.gif"));
-    _reg.put(Activator.EOENTITY_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/eoEntity.gif"));
-    _reg.put(Activator.EOFETCHSPEC_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/eoFetchSpecification.gif"));
-    _reg.put(Activator.EORELATIONSHIP_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/eoRelationship.gif"));
-    _reg.put(Activator.TO_MANY_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/toMany.gif"));
-    _reg.put(Activator.TO_ONE_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/toOne.gif"));
+    _reg.put(Activator.PRIMARY_KEY_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "/icons/primaryKey.gif")); //$NON-NLS-1$
+    _reg.put(Activator.LOCKING_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "/icons/locking.gif")); //$NON-NLS-1$
+    _reg.put(Activator.CLASS_PROPERTY_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "/icons/classProperty.gif")); //$NON-NLS-1$
+    _reg.put(Activator.CHECK_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/check.gif")); //$NON-NLS-1$
+    _reg.put(Activator.EOMODEL_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/eoModel.gif")); //$NON-NLS-1$
+    _reg.put(Activator.EOATTRIBUTE_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/eoAttribute.gif")); //$NON-NLS-1$
+    _reg.put(Activator.EOENTITY_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/eoEntity.gif")); //$NON-NLS-1$
+    _reg.put(Activator.EOFETCHSPEC_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/eoFetchSpecification.gif")); //$NON-NLS-1$
+    _reg.put(Activator.EORELATIONSHIP_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/eoRelationship.gif")); //$NON-NLS-1$
+    _reg.put(Activator.TO_MANY_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/toMany.gif")); //$NON-NLS-1$
+    _reg.put(Activator.TO_ONE_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/toOne.gif")); //$NON-NLS-1$
   }
 }

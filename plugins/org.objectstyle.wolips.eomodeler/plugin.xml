@@ -71,11 +71,13 @@
          <propertyTab
                category="eomodel"
                id="org.objectstyle.wolips.eomodeler.tabs.connectionDictionary"
-               label="Connection"/>
+               image="icons/eoModel.gif"
+               label=" "/>
          <propertyTab
                category="eorelationship"
                id="org.objectstyle.wolips.eomodeler.tabs.eorelationship"
-               label="Relationship"/>
+               image="icons/eoRelationship.gif"
+               label=" "/>
       </propertyTabs>
    </extension>
    <extension
@@ -92,6 +94,7 @@
                id="org.objectstyle.wolips.eomodeler.eorelationshipSection"
                tab="org.objectstyle.wolips.eomodeler.tabs.eorelationship">
             <input type="org.objectstyle.wolips.eomodeler.model.EORelationship"/>
+            <input type="org.objectstyle.wolips.eomodeler.model.EORelationshipPath"/>
          </propertySection>
       </propertySections>
    </extension>

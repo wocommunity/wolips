@@ -57,7 +57,7 @@ import java.util.Map;
 import org.eclipse.jface.internal.databinding.provisional.observable.list.WritableList;
 
 public abstract class EOAggregateQualifier extends EOModelObject implements IEOQualifier {
-  public static final String QUALIFIERS = "Qualifiers";
+  public static final String QUALIFIERS = "Qualifiers"; //$NON-NLS-1$
 
   private String myClassName;
   private List myQualifiers;
@@ -97,7 +97,7 @@ public abstract class EOAggregateQualifier extends EOModelObject implements IEOQ
   }
 
   public void loadFromMap(EOModelMap _map) throws EOModelException {
-    List qualifiers = _map.getList("qualifiers");
+    List qualifiers = _map.getList("qualifiers"); //$NON-NLS-1$
     if (qualifiers != null) {
       Iterator qualifiersIter = qualifiers.iterator();
       while (qualifiersIter.hasNext()) {
@@ -110,7 +110,7 @@ public abstract class EOAggregateQualifier extends EOModelObject implements IEOQ
 
   public EOModelMap toMap() {
     EOModelMap qualifierMap = new EOModelMap();
-    qualifierMap.setString("class", myClassName, true);
+    qualifierMap.setString("class", myClassName, true); //$NON-NLS-1$
     List qualifiers = new LinkedList();
     Iterator qualifiersIter = myQualifiers.iterator();
     while (qualifiersIter.hasNext()) {
@@ -118,7 +118,7 @@ public abstract class EOAggregateQualifier extends EOModelObject implements IEOQ
       EOModelMap subQualifierMap = qualifier.toMap();
       qualifiers.add(subQualifierMap);
     }
-    qualifierMap.setList("qualifiers", qualifiers);
+    qualifierMap.setList("qualifiers", qualifiers); //$NON-NLS-1$
     return qualifierMap;
   }
 

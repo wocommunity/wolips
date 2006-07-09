@@ -94,10 +94,10 @@ public class EORelationshipsTableViewer extends Composite implements ISelectionP
     TableUtils.createTableColumns(myRelationshipsTableViewer, EORelationshipsConstants.COLUMNS);
 
     TableColumn toManyColumn = relationshipsTable.getColumn(TableUtils.getColumnNumber(EORelationshipsConstants.COLUMNS, EORelationship.TO_MANY));
-    toManyColumn.setText("");
+    toManyColumn.setText(""); //$NON-NLS-1$
 
     TableColumn classPropertyColumn = relationshipsTable.getColumn(TableUtils.getColumnNumber(EORelationshipsConstants.COLUMNS, EORelationship.CLASS_PROPERTY));
-    classPropertyColumn.setText("");
+    classPropertyColumn.setText(""); //$NON-NLS-1$
     classPropertyColumn.setImage(Activator.getDefault().getImageRegistry().get(Activator.CLASS_PROPERTY_ICON));
 
     ((EORelationshipsViewerSorter) myRelationshipsTableViewer.getSorter()).sort(myRelationshipsTableViewer, EORelationship.NAME);
