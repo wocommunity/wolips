@@ -132,7 +132,8 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
       adapter = new TabbedPropertySheetPage(this);
     }
     else if (_adapterClass == IContentOutlinePage.class) {
-      adapter = getContentOutlinePage();
+      IContentOutlinePage outlinePage = getContentOutlinePage();
+      adapter = outlinePage;
     }
     else {
       adapter = super.getAdapter(_adapterClass);
@@ -169,7 +170,6 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 
   public void setSelectedEntity(EOEntity _selectedEntity) {
     if ((mySelectedEntity == null && _selectedEntity != null) || (mySelectedEntity != null && !mySelectedEntity.equals(_selectedEntity))) {
-      System.out.println("EOModelEditor.setSelectedEntity: " + _selectedEntity);
       mySelectedEntity = _selectedEntity;
       myEntitiesTableEditor.setSelectedEntity(_selectedEntity);
       myEntityEditor.setEntity(_selectedEntity);
@@ -391,6 +391,15 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 
   public void removeSelectionChangedListener(ISelectionChangedListener _listener) {
     mySelectionChangedListeners.remove(_listener);
+  }
+
+  public void setFocus() {
+    super.setFocus();
+    // MS: I'm not sure the right way to do this, but without 
+    // this call, selecting a relationship in the EOModelEditor
+    // before ever activing the outline would not cause the
+    // property view to update.
+    getSite().setSelectionProvider(this);
   }
 
   protected void fireSelectionChanged(ISelection _selection) {

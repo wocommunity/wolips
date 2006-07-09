@@ -63,7 +63,8 @@ import org.objectstyle.wolips.eomodeler.utils.TablePropertyLabelProvider;
 
 public class EOAttributesLabelProvider extends TablePropertyLabelProvider implements ITableColorProvider, ITableFontProvider {
   private TableViewer myTableViewer;
-  private Font myItalicFont;
+
+  //private Font myItalicFont;
 
   public EOAttributesLabelProvider(TableViewer _tableViewer, String[] _columnProperties) {
     super(_columnProperties);
@@ -161,9 +162,9 @@ public class EOAttributesLabelProvider extends TablePropertyLabelProvider implem
   }
 
   public void dispose() {
-    if (myItalicFont != null) {
-      myItalicFont.dispose();
-    }
+    //    if (myItalicFont != null) {
+    //      myItalicFont.dispose();
+    //    }
   }
 
   public boolean isLabelProperty(Object _element, String _property) {

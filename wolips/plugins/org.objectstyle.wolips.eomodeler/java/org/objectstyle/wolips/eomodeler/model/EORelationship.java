@@ -55,15 +55,18 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.jface.internal.databinding.provisional.observable.list.WritableList;
+import org.objectstyle.wolips.eomodeler.utils.MiscUtils;
 
 public class EORelationship extends EOModelObject implements IEOAttribute {
   public static final String TO_MANY = "toMany"; //$NON-NLS-1$
+  public static final String TO_ONE = "toOne"; //$NON-NLS-1$
   public static final String CLASS_PROPERTY = "classProperty"; //$NON-NLS-1$
   public static final String NAME = "name"; //$NON-NLS-1$
   public static final String DESTINATION = "destination"; //$NON-NLS-1$
   public static final String DEFINITION = "definition"; //$NON-NLS-1$
-  public static final String DELETE_RULE = "eleteRule"; //$NON-NLS-1$
+  public static final String DELETE_RULE = "deleteRule"; //$NON-NLS-1$
   public static final String JOIN_SEMANTIC = "joinSemantic"; //$NON-NLS-1$
+  public static final String OPTIONAL = "optional"; //$NON-NLS-1$
   public static final String MANDATORY = "mandatory"; //$NON-NLS-1$
   public static final String OWNS_DESTINATION = "ownsDestination"; //$NON-NLS-1$
   public static final String PROPAGATES_PRIMARY_KEY = "propagatesPrimaryKey"; //$NON-NLS-1$
@@ -78,8 +81,8 @@ public class EORelationship extends EOModelObject implements IEOAttribute {
   private Boolean myOwnsDestination;
   private Boolean myPropagatesPrimaryKey;
   private Boolean myClassProperty;
-  private String myDeleteRule;
-  private String myJoinSemantic;
+  private EODeleteRule myDeleteRule;
+  private EOJoinSemantic myJoinSemantic;
   private List myJoins;
   private EOModelMap myRelationshipMap;
   private Map myUserInfo;
@@ -142,6 +145,16 @@ public class EORelationship extends EOModelObject implements IEOAttribute {
     return myClassProperty;
   }
 
+  public boolean isInherited() {
+    boolean inherited = false;
+    EOEntity parent = myEntity.getParent();
+    if (parent != null) {
+      EORelationship attribute = parent.getRelationshipNamed(myName);
+      inherited = (attribute != null);
+    }
+    return inherited;
+  }
+
   public EOEntity getEntity() {
     return myEntity;
   }
@@ -157,12 +170,12 @@ public class EORelationship extends EOModelObject implements IEOAttribute {
     return myName;
   }
 
-  public String getDeleteRule() {
+  public EODeleteRule getDeleteRule() {
     return myDeleteRule;
   }
 
-  public void setDeleteRule(String _deleteRule) {
-    String oldDeleteRule = myDeleteRule;
+  public void setDeleteRule(EODeleteRule _deleteRule) {
+    EODeleteRule oldDeleteRule = myDeleteRule;
     myDeleteRule = _deleteRule;
     firePropertyChange(EORelationship.DELETE_RULE, oldDeleteRule, myDeleteRule);
   }
@@ -183,14 +196,18 @@ public class EORelationship extends EOModelObject implements IEOAttribute {
     }
   }
 
-  public String getJoinSemantic() {
+  public EOJoinSemantic getJoinSemantic() {
     return myJoinSemantic;
   }
 
-  public void setJoinSemantic(String _joinSemantic) {
-    String oldJoinSemantic = myJoinSemantic;
+  public void setJoinSemantic(EOJoinSemantic _joinSemantic) {
+    EOJoinSemantic oldJoinSemantic = myJoinSemantic;
     myJoinSemantic = _joinSemantic;
     firePropertyChange(EORelationship.JOIN_SEMANTIC, oldJoinSemantic, myJoinSemantic);
+  }
+
+  public Boolean getMandatory() {
+    return isMandatory();
   }
 
   public Boolean isMandatory() {
@@ -201,6 +218,19 @@ public class EORelationship extends EOModelObject implements IEOAttribute {
     Boolean oldMandatory = myMandatory;
     myMandatory = _mandatory;
     firePropertyChange(EORelationship.MANDATORY, oldMandatory, myMandatory);
+    firePropertyChange(EORelationship.OPTIONAL, MiscUtils.negate(oldMandatory), MiscUtils.negate(myMandatory));
+  }
+
+  public Boolean getOptional() {
+    return isOptional();
+  }
+
+  public Boolean isOptional() {
+    return MiscUtils.negate(isMandatory());
+  }
+
+  public void setOptional(Boolean _optional) {
+    setMandatory(MiscUtils.negate(_optional));
   }
 
   public Boolean isOwnsDestination() {
@@ -223,6 +253,10 @@ public class EORelationship extends EOModelObject implements IEOAttribute {
     firePropertyChange(EORelationship.PROPAGATES_PRIMARY_KEY, oldPropagatesPrimaryKey, myPropagatesPrimaryKey);
   }
 
+  public Boolean getToMany() {
+    return isToMany();
+  }
+
   public Boolean isToMany() {
     return myToMany;
   }
@@ -231,6 +265,19 @@ public class EORelationship extends EOModelObject implements IEOAttribute {
     Boolean oldToMany = myToMany;
     myToMany = _toMany;
     firePropertyChange(EORelationship.TO_MANY, oldToMany, myToMany);
+    firePropertyChange(EORelationship.TO_ONE, MiscUtils.negate(oldToMany), MiscUtils.negate(myToMany));
+  }
+
+  public Boolean getToOne() {
+    return isToOne();
+  }
+
+  public Boolean isToOne() {
+    return MiscUtils.negate(isToMany());
+  }
+
+  public void setToOne(Boolean _toOne) {
+    setToMany(MiscUtils.negate(_toOne));
   }
 
   public void clearJoins() {
@@ -278,9 +325,11 @@ public class EORelationship extends EOModelObject implements IEOAttribute {
     myDefinition = _relationshipMap.getString("definition", true); //$NON-NLS-1$
     myMandatory = _relationshipMap.getBoolean("isMandatory"); //$NON-NLS-1$
     myToMany = _relationshipMap.getBoolean("isToMany"); //$NON-NLS-1$
-    myJoinSemantic = _relationshipMap.getString("joinSemantic", true); //$NON-NLS-1$
+    String joinSemanticID = _relationshipMap.getString("joinSemantic", true); //$NON-NLS-1$
+    myJoinSemantic = EOJoinSemantic.getJoinSemanticByID(joinSemanticID);
     myName = _relationshipMap.getString("name", true); //$NON-NLS-1$
-    myDeleteRule = _relationshipMap.getString("deleteRule", true); //$NON-NLS-1$
+    String deleteRuleID = _relationshipMap.getString("deleteRule", true); //$NON-NLS-1$
+    myDeleteRule = EODeleteRule.getDeleteRuleByID(deleteRuleID);
     myOwnsDestination = _relationshipMap.getBoolean("ownsDestination"); //$NON-NLS-1$
     myPropagatesPrimaryKey = _relationshipMap.getBoolean("propagatesPrimaryKey"); // TODO: verify //$NON-NLS-1$
     List joins = _relationshipMap.getList("joins"); //$NON-NLS-1$
@@ -302,9 +351,13 @@ public class EORelationship extends EOModelObject implements IEOAttribute {
     relationshipMap.setString("definition", myDefinition, true); //$NON-NLS-1$
     relationshipMap.setBoolean("isMandatory", myMandatory); //$NON-NLS-1$
     relationshipMap.setBoolean("isToMany", myToMany); //$NON-NLS-1$
-    relationshipMap.setString("joinSemantic", myJoinSemantic, true); //$NON-NLS-1$
+    if (myJoinSemantic != null) {
+      relationshipMap.setString("joinSemantic", myJoinSemantic.getID(), true); //$NON-NLS-1$
+    }
     relationshipMap.setString("name", myName, true); //$NON-NLS-1$
-    relationshipMap.setString("deleteRule", myDeleteRule, true); //$NON-NLS-1$
+    if (myDeleteRule != null && myDeleteRule != EODeleteRule.NULLIFY) {
+      relationshipMap.setString("deleteRule", myDeleteRule.getID(), true); //$NON-NLS-1$
+    }
     relationshipMap.setBoolean("ownsDestination", myOwnsDestination); //$NON-NLS-1$
     relationshipMap.setBoolean("propagatesPrimaryKey", myPropagatesPrimaryKey); // TODO: verify //$NON-NLS-1$
     List joins = new LinkedList();

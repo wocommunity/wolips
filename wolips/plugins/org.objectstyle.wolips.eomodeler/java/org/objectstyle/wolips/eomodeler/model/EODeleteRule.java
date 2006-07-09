@@ -47,27 +47,45 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eomodeler.utils;
+package org.objectstyle.wolips.eomodeler.model;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+public class EODeleteRule {
+  public static final EODeleteRule NULLIFY = new EODeleteRule("EODeleteRuleNullify", "Nullify"); //$NON-NLS-1$
+  public static final EODeleteRule CASCADE = new EODeleteRule("EODeleteRuleCascade", "Cascade"); //$NON-NLS-1$
+  public static final EODeleteRule DENY = new EODeleteRule("EODeleteRuleDeny", "Deny"); //$NON-NLS-1$
+  public static final EODeleteRule NO_ACTION = new EODeleteRule("EODeleteRuleNoAction", "No Action"); //$NON-NLS-1$
+  public static final EODeleteRule[] DELETE_RULES = new EODeleteRule[] { EODeleteRule.NULLIFY, EODeleteRule.CASCADE, EODeleteRule.DENY, EODeleteRule.NO_ACTION };
 
-import org.eclipse.jface.viewers.TreeViewer;
+  private String myID;
+  private String myName;
 
-public class TreeNodeRefreshPropertyListener implements PropertyChangeListener {
-  private TreeViewer myTreeViewer;
-  private String myPropertyName;
-
-  public TreeNodeRefreshPropertyListener(TreeViewer _treeViewer, String _propertyName) {
-    myTreeViewer = _treeViewer;
-    myPropertyName = _propertyName;
+  public EODeleteRule(String _id, String _name) {
+    myID = _id;
+    myName = _name;
   }
 
-  public void propertyChange(PropertyChangeEvent _event) {
-    String changedPropertyName = _event.getPropertyName();
-    if (myPropertyName.equals(changedPropertyName)) {
-      Object newValue = _event.getNewValue();
-      myTreeViewer.refresh(newValue, true);
+  public String getID() {
+    return myID;
+  }
+
+  public String getName() {
+    return myName;
+  }
+
+  public String toString() {
+    return "[EODeleteRule: name = " + myName + "]"; //$NON-NLS-1$ //$NON-NLS-2$
+  }
+
+  public static EODeleteRule getDeleteRuleByID(String _id) {
+    EODeleteRule matchingDeleteRule = null;
+    for (int deleteRuleNum = 0; matchingDeleteRule == null && deleteRuleNum < EODeleteRule.DELETE_RULES.length; deleteRuleNum++) {
+      if (EODeleteRule.DELETE_RULES[deleteRuleNum].myID.equals(_id)) {
+        matchingDeleteRule = EODeleteRule.DELETE_RULES[deleteRuleNum];
+      }
     }
+    if (matchingDeleteRule == null) {
+      matchingDeleteRule = EODeleteRule.NULLIFY;
+    }
+    return matchingDeleteRule;
   }
 }

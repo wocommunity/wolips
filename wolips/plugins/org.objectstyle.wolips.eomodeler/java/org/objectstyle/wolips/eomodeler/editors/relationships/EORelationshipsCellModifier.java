@@ -65,7 +65,14 @@ public class EORelationshipsCellModifier implements ICellModifier {
   }
 
   public boolean canModify(Object _element, String _property) {
-    boolean canModify = (_property == EORelationship.CLASS_PROPERTY || _property == EORelationship.NAME);
+    boolean canModify = true;
+    EORelationship relationship = (EORelationship) _element;
+    if (relationship.isInherited()) {
+      canModify = false;
+    }
+    else {
+      canModify = (_property == EORelationship.CLASS_PROPERTY || _property == EORelationship.NAME);
+    }
     return canModify;
   }
 

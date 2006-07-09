@@ -56,8 +56,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.part.IPageSite;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
 import org.objectstyle.wolips.eomodeler.editors.EOModelEditorInput;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
@@ -85,8 +87,17 @@ public class EOModelContentOutlinePage extends ContentOutlinePage {
     treeViewer.setLabelProvider(new EOModelOutlineLabelProvider());
     treeViewer.setInput(myEditorInput);
     treeViewer.expandToLevel(2);
+    setFocus();
   }
 
+  public void init(IPageSite _pageSite) {
+    super.init(_pageSite);
+  }
+  
+  public void selectionChanged(SelectionChangedEvent _event) {
+    super.selectionChanged(_event);
+  }
+  
   public void setSelection(ISelection _selection) {
     super.setSelection(_selection);
   }
