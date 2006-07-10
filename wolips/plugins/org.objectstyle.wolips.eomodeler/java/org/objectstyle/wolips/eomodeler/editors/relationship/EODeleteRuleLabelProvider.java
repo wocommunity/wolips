@@ -47,21 +47,21 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eomodeler.properties;
+package org.objectstyle.wolips.eomodeler.editors.relationship;
 
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Image;
-import org.objectstyle.wolips.eomodeler.model.EOJoinSemantic;
+import org.objectstyle.wolips.eomodeler.model.EODeleteRule;
 
-public class EOJoinSemanticLabelProvider implements ILabelProvider {
+public class EODeleteRuleLabelProvider implements ILabelProvider {
   public Image getImage(Object _element) {
     return null;
   }
 
   public String getText(Object _element) {
-    EOJoinSemantic joinSemantic = (EOJoinSemantic) _element;
-    return joinSemantic.getName();
+    EODeleteRule deleteRule = (EODeleteRule) _element;
+    return deleteRule.getName();
   }
 
   public void addListener(ILabelProviderListener _listener) {

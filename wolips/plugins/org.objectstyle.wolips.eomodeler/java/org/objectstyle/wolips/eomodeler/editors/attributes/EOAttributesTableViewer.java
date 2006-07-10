@@ -94,7 +94,7 @@ public class EOAttributesTableViewer extends Composite implements ISelectionProv
     attributesTable.setHeaderVisible(true);
     attributesTable.setLinesVisible(true);
 
-    TableUtils.createTableColumns(myAttributesTableViewer, EOAttributesConstants.COLUMNS);
+    TableUtils.createTableColumns(myAttributesTableViewer, "EOAttribute", EOAttributesConstants.COLUMNS); //$NON-NLS-1$
 
     TableColumn primaryKeyColumn = attributesTable.getColumn(TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttribute.PRIMARY_KEY));
     primaryKeyColumn.setText(""); //$NON-NLS-1$

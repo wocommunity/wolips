@@ -56,6 +56,7 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.objectstyle.wolips.eomodeler.Activator;
 import org.objectstyle.wolips.eomodeler.model.EOAttribute;
@@ -66,6 +67,8 @@ import org.objectstyle.wolips.eomodeler.utils.TablePropertyLabelProvider;
 
 public class EORelationshipsLabelProvider extends TablePropertyLabelProvider implements ITableColorProvider, ITableFontProvider {
   private TableViewer myTableViewer;
+
+  private Font myFlattenedFont;
 
   public EORelationshipsLabelProvider(TableViewer _tableViewer, String[] _columnProperties) {
     super(_columnProperties);
@@ -127,8 +130,17 @@ public class EORelationshipsLabelProvider extends TablePropertyLabelProvider imp
   }
 
   public Font getFont(Object _element, int _columnIndex) {
-    //EORelationship relationship = (EORelationship) _element;
-    return null;
+    EORelationship relationship = (EORelationship) _element;
+    Font font = null;
+    if (relationship.isFlattened()) {
+      if (myFlattenedFont == null) {
+        Font originalFont = myTableViewer.getTable().getFont();
+        FontData[] fontData = myTableViewer.getTable().getFont().getFontData();
+        myFlattenedFont = new Font(originalFont.getDevice(), fontData[0].getName(), fontData[0].getHeight(), SWT.ITALIC);
+      }
+      font = myFlattenedFont;
+    }
+    return font;
   }
 
   public Color getBackground(Object _element, int _columnIndex) {
@@ -153,7 +165,9 @@ public class EORelationshipsLabelProvider extends TablePropertyLabelProvider imp
   }
 
   public void dispose() {
-    // DO NOTHING
+    if (myFlattenedFont != null) {
+      myFlattenedFont.dispose();
+    }
   }
 
   public boolean isLabelProperty(Object _element, String _property) {

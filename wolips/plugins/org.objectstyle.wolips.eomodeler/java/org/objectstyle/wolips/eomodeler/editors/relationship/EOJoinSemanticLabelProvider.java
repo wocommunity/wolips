@@ -47,21 +47,21 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eomodeler.properties;
+package org.objectstyle.wolips.eomodeler.editors.relationship;
 
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Image;
-import org.objectstyle.wolips.eomodeler.model.EOEntity;
+import org.objectstyle.wolips.eomodeler.model.EOJoinSemantic;
 
-public class EOEntityLabelProvider implements ILabelProvider {
+public class EOJoinSemanticLabelProvider implements ILabelProvider {
   public Image getImage(Object _element) {
     return null;
   }
 
   public String getText(Object _element) {
-    EOEntity entity = (EOEntity) _element;
-    return entity.getName();
+    EOJoinSemantic joinSemantic = (EOJoinSemantic) _element;
+    return joinSemantic.getName();
   }
 
   public void addListener(ILabelProviderListener _listener) {
@@ -73,10 +73,11 @@ public class EOEntityLabelProvider implements ILabelProvider {
   }
 
   public boolean isLabelProperty(Object _element, String _property) {
-    return true;
+    return false;
   }
 
   public void removeListener(ILabelProviderListener _listener) {
     // DO NOTHING
   }
+
 }

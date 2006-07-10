@@ -145,6 +145,10 @@ public class EORelationship extends EOModelObject implements IEOAttribute {
     return myClassProperty;
   }
 
+  public boolean isFlattened() {
+    return myDefinition != null;
+  }
+  
   public boolean isInherited() {
     boolean inherited = false;
     EOEntity parent = myEntity.getParent();

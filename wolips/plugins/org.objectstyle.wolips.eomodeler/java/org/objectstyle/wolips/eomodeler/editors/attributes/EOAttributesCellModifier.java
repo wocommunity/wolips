@@ -57,6 +57,7 @@ import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TableItem;
+import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.model.DuplicateAttributeNameException;
 import org.objectstyle.wolips.eomodeler.model.EOAttribute;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
@@ -64,7 +65,7 @@ import org.objectstyle.wolips.eomodeler.utils.KeyComboBoxCellEditor;
 import org.objectstyle.wolips.eomodeler.utils.TableUtils;
 
 public class EOAttributesCellModifier implements ICellModifier {
-  private static final String NO_PROTOYPE_VALUE = "No Prototype";
+  private static final String NO_PROTOYPE_VALUE = Messages.getString("EOAttributesCellModifier.noPrototype"); //$NON-NLS-1$
   private TableViewer myAttributesTableViewer;
   private CellEditor[] myCellEditors;
   private List myPrototypeNames;
@@ -181,7 +182,7 @@ public class EOAttributesCellModifier implements ICellModifier {
       myAttributesTableViewer.refresh(attribute);
     }
     catch (DuplicateAttributeNameException e) {
-      MessageDialog.openError(Display.getDefault().getActiveShell(), "Error", e.getMessage());
+      MessageDialog.openError(Display.getDefault().getActiveShell(), Messages.getString("EOAttributesCellModifier.errorTitle"), e.getMessage()); //$NON-NLS-1$
     }
   }
 }

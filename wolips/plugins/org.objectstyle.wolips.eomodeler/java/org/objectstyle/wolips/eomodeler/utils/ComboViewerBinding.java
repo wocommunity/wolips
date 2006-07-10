@@ -47,7 +47,7 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eomodeler.properties;
+package org.objectstyle.wolips.eomodeler.utils;
 
 import java.beans.Expression;
 import java.beans.PropertyChangeEvent;
@@ -60,7 +60,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.objectstyle.wolips.eomodeler.model.EOModelObject;
-import org.objectstyle.wolips.eomodeler.utils.MiscUtils;
 
 public class ComboViewerBinding implements ISelectionChangedListener, PropertyChangeListener {
   private ComboViewer myViewer;

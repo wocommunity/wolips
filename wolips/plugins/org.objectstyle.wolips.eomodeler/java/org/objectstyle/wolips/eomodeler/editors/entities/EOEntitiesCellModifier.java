@@ -57,6 +57,7 @@ import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TableItem;
+import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.model.DuplicateEntityNameException;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
@@ -64,7 +65,7 @@ import org.objectstyle.wolips.eomodeler.utils.KeyComboBoxCellEditor;
 import org.objectstyle.wolips.eomodeler.utils.TableUtils;
 
 public class EOEntitiesCellModifier implements ICellModifier {
-  private static final String NO_PARENT_VALUE = "No Parent";
+  private static final String NO_PARENT_VALUE = Messages.getString("EOEntitiesCellModifier.noParent"); //$NON-NLS-1$
   private TableViewer myModelTableViewer;
   private CellEditor[] myCellEditors;
   private List myEntityNames;

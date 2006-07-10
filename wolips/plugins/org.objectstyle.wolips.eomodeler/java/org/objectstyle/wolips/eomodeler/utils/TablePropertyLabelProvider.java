@@ -92,7 +92,7 @@ public abstract class TablePropertyLabelProvider implements ITableLabelProvider 
         str = "N";
       }
       else {
-        str = "";
+        str = ""; //$NON-NLS-1$
       }
     }
     else if (_bool.booleanValue()) {

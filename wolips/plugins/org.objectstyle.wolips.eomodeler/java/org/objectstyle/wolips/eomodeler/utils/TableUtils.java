@@ -53,6 +53,7 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.objectstyle.wolips.eomodeler.Messages;
 
 public class TableUtils {
   public static void packTableColumns(TableViewer _viewer) {
@@ -63,14 +64,25 @@ public class TableUtils {
     }
   }
 
-  public static void createTableColumns(TableViewer _viewer, String[] _properties) {
-    Table table = _viewer.getTable();
+  public static void createTableColumns(TableViewer _viewer, String _messagePrefix, String[] _properties) {
     for (int columnNum = 0; columnNum < _properties.length; columnNum++) {
-      TableColumn column = new TableColumn(table, SWT.LEFT);
-      column.setMoveable(true);
-      column.setText(_properties[columnNum]);
-      column.addSelectionListener(new TableSortHandler(_viewer, _properties[columnNum]));
+      TableUtils.createTableColumn(_viewer, _messagePrefix, _properties[columnNum]);
     }
+  }
+
+  public static TableColumn createTableColumn(TableViewer _viewer, String _messagePrefix, String _propertyName) {
+    TableColumn column = new TableColumn(_viewer.getTable(), SWT.LEFT);
+    column.setMoveable(true);
+    String text;
+    if (_messagePrefix == null) {
+      text = _propertyName;
+    }
+    else {
+      text = Messages.getString(_messagePrefix + "." + _propertyName); //$NON-NLS-1$
+    }
+    column.setText(text);
+    column.addSelectionListener(new TableSortHandler(_viewer, _propertyName));
+    return column;
   }
 
   public static int getColumnNumber(String[] _properties, String _property) {

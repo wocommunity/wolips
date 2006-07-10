@@ -47,37 +47,45 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eomodeler.properties;
+package org.objectstyle.wolips.eomodeler.editors.relationship;
 
-import org.eclipse.jface.viewers.ILabelProvider;
-import org.eclipse.jface.viewers.ILabelProviderListener;
-import org.eclipse.swt.graphics.Image;
-import org.objectstyle.wolips.eomodeler.model.EODeleteRule;
+import java.util.List;
 
-public class EODeleteRuleLabelProvider implements ILabelProvider {
-  public Image getImage(Object _element) {
-    return null;
-  }
+import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.Viewer;
+import org.objectstyle.wolips.eomodeler.model.EOEntity;
+import org.objectstyle.wolips.eomodeler.model.EOModel;
+import org.objectstyle.wolips.eomodeler.model.EOModelGroup;
+import org.objectstyle.wolips.eomodeler.model.EORelationship;
 
-  public String getText(Object _element) {
-    EODeleteRule deleteRule = (EODeleteRule) _element;
-    return deleteRule.getName();
-  }
-
-  public void addListener(ILabelProviderListener _listener) {
-    // DO NOTHING
+public class EOModelListContentProvider implements IStructuredContentProvider {
+  public Object[] getElements(Object _inputElement) {
+    EOModelGroup modelGroup;
+    if (_inputElement instanceof EORelationship) {
+      modelGroup = ((EORelationship) _inputElement).getEntity().getModel().getModelGroup();
+    }
+    else if (_inputElement instanceof EOEntity) {
+      modelGroup = ((EOEntity) _inputElement).getModel().getModelGroup();
+    }
+    else if (_inputElement instanceof EOModel) {
+      modelGroup = ((EOModel) _inputElement).getModelGroup();
+    }
+    else if (_inputElement instanceof EOModelGroup) {
+      modelGroup = (EOModelGroup) _inputElement;
+    }
+    else {
+      throw new IllegalArgumentException("Unknown input element: " + _inputElement);
+    }
+    List modelsList = modelGroup.getModels();
+    EOModel[] models = (EOModel[]) modelsList.toArray(new EOModel[modelsList.size()]);
+    return models;
   }
 
   public void dispose() {
     // DO NOTHING
   }
 
-  public boolean isLabelProperty(Object _element, String _property) {
-    return false;
-  }
-
-  public void removeListener(ILabelProviderListener _listener) {
+  public void inputChanged(Viewer _viewer, Object _oldInput, Object _newInput) {
     // DO NOTHING
   }
-
 }

@@ -86,10 +86,10 @@ public class EOJoin extends EOModelObject {
   }
 
   public void setSourceAttribute(EOAttribute _sourceAttribute) {
-    setSourceAttributeName(_sourceAttribute, true);
+    setSourceAttribute(_sourceAttribute, true);
   }
 
-  public void setSourceAttributeName(EOAttribute _sourceAttribute, boolean _fireEvents) {
+  public void setSourceAttribute(EOAttribute _sourceAttribute, boolean _fireEvents) {
     EOAttribute oldSourceAttribute = mySourceAttribute;
     mySourceAttribute = _sourceAttribute;
     if (_fireEvents) {

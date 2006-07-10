@@ -91,7 +91,7 @@ public class EORelationshipsTableViewer extends Composite implements ISelectionP
     relationshipsTable.setHeaderVisible(true);
     relationshipsTable.setLinesVisible(true);
 
-    TableUtils.createTableColumns(myRelationshipsTableViewer, EORelationshipsConstants.COLUMNS);
+    TableUtils.createTableColumns(myRelationshipsTableViewer, "EORelationship", EORelationshipsConstants.COLUMNS); //$NON-NLS-1$
 
     TableColumn toManyColumn = relationshipsTable.getColumn(TableUtils.getColumnNumber(EORelationshipsConstants.COLUMNS, EORelationship.TO_MANY));
     toManyColumn.setText(""); //$NON-NLS-1$
