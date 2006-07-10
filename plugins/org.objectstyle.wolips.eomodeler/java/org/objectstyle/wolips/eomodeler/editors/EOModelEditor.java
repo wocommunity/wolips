@@ -84,6 +84,7 @@ import org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributo
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.objectstyle.wolips.eomodeler.Activator;
 import org.objectstyle.wolips.eomodeler.EOModelerPerspectiveFactory;
+import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.editors.entities.EOEntitiesTableEditor;
 import org.objectstyle.wolips.eomodeler.editors.entity.EOEntityEditor;
 import org.objectstyle.wolips.eomodeler.model.EOAttribute;
@@ -145,11 +146,11 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
     try {
       myEntitiesTableEditor = new EOEntitiesTableEditor();
       addPage(0, myEntitiesTableEditor, getEditorInput());
-      setPageText(0, "Entites");
+      setPageText(0, Messages.getString("EOModelEditor.entitiesTab")); //$NON-NLS-1$
 
       myEntityEditor = new EOEntityEditor();
       addPage(1, myEntityEditor, getEditorInput());
-      setPageText(1, "No Entity Selected");
+      setPageText(1, Messages.getString("EOModelEditor.noEntitySelected")); //$NON-NLS-1$
 
       EOModelSelectionChangedListener modelSelectionChangedListener = new EOModelSelectionChangedListener();
       myEntitiesTableEditor.addSelectionChangedListener(modelSelectionChangedListener);
@@ -174,7 +175,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
       myEntitiesTableEditor.setSelectedEntity(_selectedEntity);
       myEntityEditor.setEntity(_selectedEntity);
       if (_selectedEntity == null) {
-        EOModelEditor.this.setPageText(1, "No Entity Selected");
+        EOModelEditor.this.setPageText(1, Messages.getString("EOModelEditor.noEntitySelected")); //$NON-NLS-1$
       }
       else {
         EOModelEditor.this.setPageText(1, _selectedEntity.getName());
@@ -226,7 +227,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
       IWorkbench workbench = Activator.getDefault().getWorkbench();
       IWorkbenchPage workbenchPage = workbench.getActiveWorkbenchWindow().getActivePage();
       if (workbenchPage != null && !EOModelerPerspectiveFactory.EOMODELER_PERSPECTIVE_ID.equals(workbenchPage.getPerspective().getId())) {
-        boolean switchPerspectives = MessageDialog.openQuestion(Display.getDefault().getActiveShell(), "Switch Perspectives?", "Would you like to switch to the EOModeler Perspective?");
+        boolean switchPerspectives = MessageDialog.openQuestion(Display.getDefault().getActiveShell(), Messages.getString("EOModelEditor.switchPerspectivesTitle"), Messages.getString("EOModelEditor.switchPerspectivesMessage")); //$NON-NLS-1$ //$NON-NLS-2$
         if (switchPerspectives) {
           workbench.showPerspective(EOModelerPerspectiveFactory.EOMODELER_PERSPECTIVE_ID, workbench.getActiveWorkbenchWindow());
         }
@@ -281,7 +282,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
       partName = model.getName();
     }
     else {
-      partName = "EOModeler";
+      partName = Messages.getString("EOModelEditor.partName"); //$NON-NLS-1$
     }
     setPartName(partName);
   }

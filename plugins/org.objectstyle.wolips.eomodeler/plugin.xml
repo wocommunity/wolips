@@ -90,7 +90,7 @@
             <input type="org.objectstyle.wolips.eomodeler.model.EOModel"/>
          </propertySection>
          <propertySection
-               class="org.objectstyle.wolips.eomodeler.properties.EORelationshipSection"
+               class="org.objectstyle.wolips.eomodeler.editors.relationship.EORelationshipBasicEditorSection"
                id="org.objectstyle.wolips.eomodeler.eorelationshipSection"
                tab="org.objectstyle.wolips.eomodeler.tabs.eorelationship">
             <input type="org.objectstyle.wolips.eomodeler.model.EORelationship"/>

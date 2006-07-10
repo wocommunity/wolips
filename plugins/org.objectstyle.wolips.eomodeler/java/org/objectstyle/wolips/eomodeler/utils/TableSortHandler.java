@@ -64,6 +64,8 @@ public class TableSortHandler extends SelectionAdapter {
 
   public void widgetSelected(SelectionEvent _event) {
     TablePropertyViewerSorter sorter = (TablePropertyViewerSorter) myTableViewer.getSorter();
-    sorter.sort(myTableViewer, myProperty);
+    if (sorter != null) {
+      sorter.sort(myTableViewer, myProperty);
+    }
   }
 }
