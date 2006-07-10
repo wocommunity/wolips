@@ -58,12 +58,12 @@ public class EOModelerPerspectiveFactory implements IPerspectiveFactory {
 
   public void createInitialLayout(IPageLayout _layout) {
     String editorArea = _layout.getEditorArea();
-    
+
     IFolderLayout topLeft = _layout.createFolder("left", IPageLayout.LEFT, 0.45f, editorArea); //$NON-NLS-1$
     topLeft.addView(IPageLayout.ID_OUTLINE);
     topLeft.addView("org.eclipse.jdt.ui.PackageExplorer"); //$NON-NLS-1$
 
-    IFolderLayout bottomRight = _layout.createFolder("bottomLeft", IPageLayout.BOTTOM, 0.50f, "left"); //$NON-NLS-1$
+    IFolderLayout bottomRight = _layout.createFolder("bottomLeft", IPageLayout.BOTTOM, 0.50f, "left"); //$NON-NLS-1$ //$NON-NLS-2$
     bottomRight.addView(IPageLayout.ID_PROP_SHEET);
   }
 }

@@ -47,26 +47,86 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eomodeler.editors.relationships;
+package org.objectstyle.wolips.eomodeler.utils;
 
+import java.beans.Expression;
+import java.beans.Statement;
+
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.ICellModifier;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
-import org.objectstyle.wolips.eomodeler.model.EORelationship;
-import org.objectstyle.wolips.eomodeler.utils.TablePropertyCellModifier;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.TableItem;
 
-public class EORelationshipsCellModifier extends TablePropertyCellModifier {
-  public EORelationshipsCellModifier(TableViewer _relationshipsTableViewer) {
-    super(_relationshipsTableViewer);
+public class TablePropertyCellModifier implements ICellModifier, ISelectionChangedListener {
+  private TableViewer myTableViewer;
+  private ISelection mySelection;
+
+  public TablePropertyCellModifier(TableViewer _tableViewer) {
+    myTableViewer = _tableViewer;
+    myTableViewer.addSelectionChangedListener(this);
+  }
+
+  public TableViewer getTableViewer() {
+    return myTableViewer;
+  }
+
+  public void selectionChanged(SelectionChangedEvent _event) {
+    mySelection = _event.getSelection();
+  }
+
+  public boolean canModify(Object _element, String _property) {
+    boolean canModify = false;
+    if (mySelection instanceof IStructuredSelection) {
+      IStructuredSelection selection = (IStructuredSelection) mySelection;
+      if (selection.size() == 1 && _element == selection.getFirstElement()) {
+        try {
+          canModify = _canModify(_element, _property);
+        }
+        catch (Throwable t) {
+          t.printStackTrace();
+          canModify = false;
+        }
+      }
+    }
+    return canModify;
   }
 
   protected boolean _canModify(Object _element, String _property) throws Throwable {
-    boolean canModify = true;
-    //    EORelationship relationship = (EORelationship) _element;
-    //    if (relationship.isInherited()) {
-    //      canModify = false;
-    //    }
-    //    else {
-    canModify = (_property == EORelationship.CLASS_PROPERTY || _property == EORelationship.NAME);
-    //    }
-    return canModify;
+    return true;
+  }
+
+  public Object getValue(Object _element, String _property) {
+    Object value = null;
+    try {
+      value = new Expression(_element, MiscUtils.toGetMethod(_property, false), null).getValue();
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+    }
+    return value;
+  }
+
+  public void modify(Object _element, String _property, Object _value) {
+    try {
+      TableItem tableItem = (TableItem) _element;
+      Object obj = tableItem.getData();
+      if (!_modify(obj, _property, _value)) {
+        new Statement(obj, MiscUtils.toSetMethod(_property), new Object[] { _value }).execute();
+      }
+      myTableViewer.refresh(obj);
+    }
+    catch (Throwable t) {
+      t.printStackTrace();
+      MessageDialog.openError(Display.getDefault().getActiveShell(), "", t.getMessage()); //$NON-NLS-1$
+    }
+  }
+
+  protected boolean _modify(Object _element, String _property, Object _value) throws Throwable {
+    return false;
   }
 }
