@@ -84,7 +84,7 @@ public class EOAttributesTableViewer extends Composite implements ISelectionProv
     myAttributesTableViewer = new TableViewer(this, SWT.FULL_SELECTION);
     myAttributesTableViewer.setContentProvider(new EOAttributesContentProvider());
     myAttributesTableViewer.setLabelProvider(new EOAttributesLabelProvider(myAttributesTableViewer, EOAttributesConstants.COLUMNS));
-    myAttributesTableViewer.setSorter(new EOAttributesViewerSorter(EOAttributesConstants.COLUMNS));
+    myAttributesTableViewer.setSorter(new EOAttributesViewerSorter(myAttributesTableViewer, EOAttributesConstants.COLUMNS));
     myAttributesTableViewer.setColumnProperties(EOAttributesConstants.COLUMNS);
     myTableRefresher = new TableRefreshPropertyListener(myAttributesTableViewer, EOEntity.ATTRIBUTES);
     myTableRowRefresher = new TableRowRefreshPropertyListener(myAttributesTableViewer, EOEntity.ATTRIBUTE);
@@ -116,7 +116,7 @@ public class EOAttributesTableViewer extends Composite implements ISelectionProv
     //allowNullColumn.setAlignment(SWT.CENTER);
     //classPropertyColumn.setImage(Activator.getDefault().getImageRegistry().get(EOAttribute.CLASS_PROPERTY));
 
-    ((EOAttributesViewerSorter) myAttributesTableViewer.getSorter()).sort(myAttributesTableViewer, EOAttribute.NAME);
+    ((EOAttributesViewerSorter) myAttributesTableViewer.getSorter()).sort(EOAttribute.NAME);
 
     CellEditor[] cellEditors = new CellEditor[EOAttributesConstants.COLUMNS.length];
     cellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttribute.PROTOTYPE)] = new KeyComboBoxCellEditor(attributesTable, new String[0], SWT.READ_ONLY);

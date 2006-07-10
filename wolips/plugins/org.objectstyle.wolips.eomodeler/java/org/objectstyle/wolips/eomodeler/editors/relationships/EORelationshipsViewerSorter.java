@@ -49,6 +49,7 @@
  */
 package org.objectstyle.wolips.eomodeler.editors.relationships;
 
+import org.eclipse.jface.viewers.TableViewer;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOJoin;
 import org.objectstyle.wolips.eomodeler.model.EORelationship;
@@ -56,23 +57,14 @@ import org.objectstyle.wolips.eomodeler.utils.TablePropertyViewerSorter;
 
 public class EORelationshipsViewerSorter extends TablePropertyViewerSorter {
 
-  public EORelationshipsViewerSorter(String[] _properties) {
-    super(_properties);
+  public EORelationshipsViewerSorter(TableViewer _tableViewer, String[] _properties) {
+    super(_tableViewer, _properties);
   }
 
   public Object getComparisonValue(Object _obj, String _property) {
     EORelationship relationship = (EORelationship) _obj;
     Object value = null;
-    if (_property == EORelationship.TO_MANY) {
-      value = relationship.isToMany();
-    }
-    else if (_property == EORelationship.CLASS_PROPERTY) {
-      value = relationship.isClassProperty();
-    }
-    else if (_property == EORelationship.NAME) {
-      value = relationship.getName();
-    }
-    else if (_property == EORelationship.DESTINATION) {
+    if (_property == EORelationship.DESTINATION) {
       EOEntity destination = relationship.getDestination();
       if (destination != null) {
         value = destination.getName();
@@ -91,7 +83,7 @@ public class EORelationshipsViewerSorter extends TablePropertyViewerSorter {
       }
     }
     else {
-      throw new IllegalArgumentException("Unknown property '" + _property + "'");
+      value = super.getComparisonValue(_obj, _property);
     }
     return value;
   }

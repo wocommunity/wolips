@@ -49,6 +49,8 @@
  */
 package org.objectstyle.wolips.eomodeler.editors.entities;
 
+import java.beans.Expression;
+import java.beans.Statement;
 import java.util.List;
 
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -58,10 +60,10 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TableItem;
 import org.objectstyle.wolips.eomodeler.Messages;
-import org.objectstyle.wolips.eomodeler.model.DuplicateEntityNameException;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
 import org.objectstyle.wolips.eomodeler.utils.KeyComboBoxCellEditor;
+import org.objectstyle.wolips.eomodeler.utils.MiscUtils;
 import org.objectstyle.wolips.eomodeler.utils.TableUtils;
 
 public class EOEntitiesCellModifier implements ICellModifier {
@@ -90,16 +92,7 @@ public class EOEntitiesCellModifier implements ICellModifier {
   public Object getValue(Object _element, String _property) {
     EOEntity entity = (EOEntity) _element;
     Object value = null;
-    if (_property == EOEntity.NAME) {
-      value = entity.getName();
-    }
-    else if (_property == EOEntity.EXTERNAL_NAME) {
-      value = entity.getExternalName();
-    }
-    else if (_property == EOEntity.CLASS_NAME) {
-      value = entity.getClassName();
-    }
-    else if (_property == EOEntity.PARENT) {
+    if (_property == EOEntity.PARENT) {
       EOEntity parent = entity.getParent();
       String parentName;
       if (parent == null) {
@@ -111,7 +104,12 @@ public class EOEntitiesCellModifier implements ICellModifier {
       value = new Integer(myEntityNames.indexOf(parentName));
     }
     else {
-      throw new IllegalArgumentException("Unknown property '" + _property + "'");
+      try {
+        value = new Expression(entity, MiscUtils.toGetMethod(_property, false), null).getValue();
+      }
+      catch (Exception e) {
+        e.printStackTrace();
+      }
     }
     return value;
   }
@@ -120,16 +118,7 @@ public class EOEntitiesCellModifier implements ICellModifier {
     try {
       TableItem tableItem = (TableItem) _element;
       EOEntity entity = (EOEntity) tableItem.getData();
-      if (_property == EOEntity.NAME) {
-        entity.setName((String) _value);
-      }
-      else if (_property == EOEntity.EXTERNAL_NAME) {
-        entity.setExternalName((String) _value);
-      }
-      else if (_property == EOEntity.CLASS_NAME) {
-        entity.setClassName((String) _value);
-      }
-      else if (_property == EOEntity.PARENT) {
+      if (_property == EOEntity.PARENT) {
         Integer parentNameIndex = (Integer) _value;
         int parentNameIndexInt = parentNameIndex.intValue();
         String parentName = (parentNameIndexInt == -1) ? null : (String) myEntityNames.get(parentNameIndexInt);
@@ -142,11 +131,11 @@ public class EOEntitiesCellModifier implements ICellModifier {
         }
       }
       else {
-        throw new IllegalArgumentException("Unknown property '" + _property + "'");
+        new Statement(entity, MiscUtils.toSetMethod(_property), new Object[] { _value });
       }
       myModelTableViewer.refresh(entity);
     }
-    catch (DuplicateEntityNameException e) {
+    catch (Throwable e) {
       MessageDialog.openError(Display.getDefault().getActiveShell(), "Error", e.getMessage());
     }
   }

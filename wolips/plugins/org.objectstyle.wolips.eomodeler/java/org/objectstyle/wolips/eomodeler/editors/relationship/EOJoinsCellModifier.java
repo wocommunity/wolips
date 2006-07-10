@@ -47,44 +47,54 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eomodeler.editors.relationships;
+package org.objectstyle.wolips.eomodeler.editors.relationship;
 
 import java.beans.Expression;
 import java.beans.Statement;
+import java.util.Arrays;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TableItem;
-import org.objectstyle.wolips.eomodeler.model.DuplicateRelationshipNameException;
-import org.objectstyle.wolips.eomodeler.model.EORelationship;
+import org.objectstyle.wolips.eomodeler.Messages;
+import org.objectstyle.wolips.eomodeler.model.EOJoin;
 import org.objectstyle.wolips.eomodeler.utils.MiscUtils;
 
-public class EORelationshipsCellModifier implements ICellModifier {
-  private TableViewer myRelationshipsTableViewer;
+public class EOJoinsCellModifier implements ICellModifier {
+  private TableViewer myJoinsTableViewer;
 
-  public EORelationshipsCellModifier(TableViewer _relationshipsTableViewer) {
-    myRelationshipsTableViewer = _relationshipsTableViewer;
+  public EOJoinsCellModifier(TableViewer _joinsTableViewer) {
+    myJoinsTableViewer = _joinsTableViewer;
   }
 
-  public boolean canModify(Object _element, String _property) {
+  public synchronized boolean canModify(Object _element, String _property) {
     boolean canModify = true;
-    //    EORelationship relationship = (EORelationship) _element;
-    //    if (relationship.isInherited()) {
-    //      canModify = false;
-    //    }
-    //    else {
-    canModify = (_property == EORelationship.CLASS_PROPERTY || _property == EORelationship.NAME);
-    //    }
     return canModify;
   }
 
   public Object getValue(Object _element, String _property) {
-    EORelationship relationship = (EORelationship) _element;
+    EOJoin join = (EOJoin) _element;
     Object value = null;
     try {
-      value = new Expression(relationship, MiscUtils.toGetMethod(_property, false), null).getValue();
+      if (join != null) {
+        if (_property == EOJoin.DESTINATION_ATTRIBUTE_NAME) {
+          String attributeName = join.getDestinationAttributeName();
+          if (attributeName != null) {
+            value = new Integer(Arrays.asList(join.getRelationship().getDestination().getAttributeNames()).indexOf(attributeName));
+          }
+        }
+        else if (_property == EOJoin.SOURCE_ATTRIBUTE_NAME) {
+          String attributeName = join.getSourceAttributeName();
+          if (attributeName != null) {
+            value = new Integer(Arrays.asList(join.getRelationship().getEntity().getAttributeNames()).indexOf(attributeName));
+          }
+        }
+        else {
+          value = new Expression(join, MiscUtils.toGetMethod(_property, false), null).getValue();
+        }
+      }
     }
     catch (Exception e) {
       e.printStackTrace();
@@ -95,12 +105,29 @@ public class EORelationshipsCellModifier implements ICellModifier {
   public void modify(Object _element, String _property, Object _value) {
     try {
       TableItem tableItem = (TableItem) _element;
-      EORelationship relationship = (EORelationship) tableItem.getData();
-      new Statement(relationship, MiscUtils.toSetMethod(_property), new Object[] { _value });
-      myRelationshipsTableViewer.refresh(relationship);
+      EOJoin join = (EOJoin) tableItem.getData();
+      if (_property == EOJoin.DESTINATION_ATTRIBUTE_NAME) {
+        Integer attributeIndex = (Integer) _value;
+        int attributeIndexInt = attributeIndex.intValue();
+        String[] destinationAttributeNames = join.getRelationship().getDestination().getAttributeNames();
+        String attributeName = (attributeIndexInt == -1) ? null : (String) destinationAttributeNames[attributeIndexInt];
+        join.setDestinationAttributeName(attributeName);
+      }
+      else if (_property == EOJoin.SOURCE_ATTRIBUTE_NAME) {
+        Integer attributeIndex = (Integer) _value;
+        int attributeIndexInt = attributeIndex.intValue();
+        String[] sourceAttributeNames = join.getRelationship().getEntity().getAttributeNames();
+        String attributeName = (attributeIndexInt == -1) ? null : (String) sourceAttributeNames[attributeIndexInt];
+        join.setSourceAttributeName(attributeName);
+      }
+      else {
+        new Statement(join, MiscUtils.toSetMethod(_property), new Object[] { _value }).execute();
+      }
+      myJoinsTableViewer.refresh(join);
     }
     catch (Throwable e) {
-      MessageDialog.openError(Display.getDefault().getActiveShell(), "Error", e.getMessage());
+      e.printStackTrace();
+      MessageDialog.openError(Display.getDefault().getActiveShell(), Messages.getString("EOAttributesCellModifier.errorTitle"), e.getMessage()); //$NON-NLS-1$
     }
   }
 }

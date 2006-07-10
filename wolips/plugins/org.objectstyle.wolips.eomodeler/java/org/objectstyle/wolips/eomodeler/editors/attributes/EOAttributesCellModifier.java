@@ -49,6 +49,8 @@
  */
 package org.objectstyle.wolips.eomodeler.editors.attributes;
 
+import java.beans.Expression;
+import java.beans.Statement;
 import java.util.List;
 
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -58,10 +60,10 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TableItem;
 import org.objectstyle.wolips.eomodeler.Messages;
-import org.objectstyle.wolips.eomodeler.model.DuplicateAttributeNameException;
 import org.objectstyle.wolips.eomodeler.model.EOAttribute;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.utils.KeyComboBoxCellEditor;
+import org.objectstyle.wolips.eomodeler.utils.MiscUtils;
 import org.objectstyle.wolips.eomodeler.utils.TableUtils;
 
 public class EOAttributesCellModifier implements ICellModifier {
@@ -77,11 +79,11 @@ public class EOAttributesCellModifier implements ICellModifier {
 
   public boolean canModify(Object _element, String _property) {
     boolean canModify = true;
-    EOAttribute attribute = (EOAttribute) _element;
-    if (attribute.isInherited()) {
-      canModify = false;
-    }
-    else if (_property == EOAttribute.PROTOTYPE) {
+    //    EOAttribute attribute = (EOAttribute) _element;
+    //    if (attribute.isInherited()) {
+    //      canModify = false;
+    //    }
+    if (_property == EOAttribute.PROTOTYPE) {
       EOEntity entity = (EOEntity) myAttributesTableViewer.getInput();
       myPrototypeNames = entity.getModel().getModelGroup().getPrototypeAttributeNames();
       myPrototypeNames.add(0, EOAttributesCellModifier.NO_PROTOYPE_VALUE);
@@ -95,37 +97,7 @@ public class EOAttributesCellModifier implements ICellModifier {
   public Object getValue(Object _element, String _property) {
     EOAttribute attribute = (EOAttribute) _element;
     Object value = null;
-    if (_property == EOAttribute.PRIMARY_KEY) {
-      value = attribute.isPrimaryKey();
-      if (value == null) {
-        value = Boolean.FALSE;
-      }
-    }
-    else if (_property == EOAttribute.CLASS_PROPERTY) {
-      value = attribute.isClassProperty();
-      if (value == null) {
-        value = Boolean.FALSE;
-      }
-    }
-    else if (_property == EOAttribute.USED_FOR_LOCKING) {
-      value = attribute.isUsedForLocking();
-      if (value == null) {
-        value = Boolean.FALSE;
-      }
-    }
-    else if (_property == EOAttribute.ALLOWS_NULL) {
-      value = attribute.isAllowsNull();
-      if (value == null) {
-        value = Boolean.FALSE;
-      }
-    }
-    else if (_property == EOAttribute.NAME) {
-      value = attribute.getName();
-    }
-    else if (_property == EOAttribute.COLUMN_NAME) {
-      value = attribute.getColumnName();
-    }
-    else if (_property == EOAttribute.PROTOTYPE) {
+    if (_property == EOAttribute.PROTOTYPE) {
       EOAttribute prototype = attribute.getPrototype();
       String prototypeName;
       if (prototype == null) {
@@ -137,7 +109,12 @@ public class EOAttributesCellModifier implements ICellModifier {
       value = new Integer(myPrototypeNames.indexOf(prototypeName));
     }
     else {
-      throw new IllegalArgumentException("Unknown property '" + _property + "'");
+      try {
+        value = new Expression(attribute, MiscUtils.toGetMethod(_property, false), null).getValue();
+      }
+      catch (Exception e) {
+        e.printStackTrace();
+      }
     }
     return value;
   }
@@ -146,25 +123,7 @@ public class EOAttributesCellModifier implements ICellModifier {
     try {
       TableItem tableItem = (TableItem) _element;
       EOAttribute attribute = (EOAttribute) tableItem.getData();
-      if (_property == EOAttribute.PRIMARY_KEY) {
-        attribute.setPrimaryKey((Boolean) _value);
-      }
-      else if (_property == EOAttribute.CLASS_PROPERTY) {
-        attribute.setClassProperty((Boolean) _value);
-      }
-      else if (_property == EOAttribute.USED_FOR_LOCKING) {
-        attribute.setUsedForLocking((Boolean) _value);
-      }
-      else if (_property == EOAttribute.ALLOWS_NULL) {
-        attribute.setAllowsNull((Boolean) _value);
-      }
-      else if (_property == EOAttribute.NAME) {
-        attribute.setName((String) _value);
-      }
-      else if (_property == EOAttribute.COLUMN_NAME) {
-        attribute.setColumnName((String) _value);
-      }
-      else if (_property == EOAttribute.PROTOTYPE) {
+      if (_property == EOAttribute.PROTOTYPE) {
         Integer prototypeIndex = (Integer) _value;
         int prototypeIndexInt = prototypeIndex.intValue();
         String prototypeName = (prototypeIndexInt == -1) ? null : (String) myPrototypeNames.get(prototypeIndexInt);
@@ -177,11 +136,11 @@ public class EOAttributesCellModifier implements ICellModifier {
         }
       }
       else {
-        throw new IllegalArgumentException("Unknown property '" + _property + "'");
+        new Statement(attribute, MiscUtils.toSetMethod(_property), new Object[] { _value });
       }
       myAttributesTableViewer.refresh(attribute);
     }
-    catch (DuplicateAttributeNameException e) {
+    catch (Throwable e) {
       MessageDialog.openError(Display.getDefault().getActiveShell(), Messages.getString("EOAttributesCellModifier.errorTitle"), e.getMessage()); //$NON-NLS-1$
     }
   }

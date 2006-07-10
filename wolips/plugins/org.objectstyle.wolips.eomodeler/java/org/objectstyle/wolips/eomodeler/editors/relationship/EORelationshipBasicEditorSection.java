@@ -55,6 +55,7 @@ import java.beans.PropertyChangeListener;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.internal.databinding.provisional.DataBindingContext;
 import org.eclipse.jface.internal.databinding.provisional.description.Property;
+import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -78,10 +79,6 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.objectstyle.wolips.eomodeler.Messages;
-import org.objectstyle.wolips.eomodeler.editors.attributes.EOAttributesContentProvider;
-import org.objectstyle.wolips.eomodeler.editors.attributes.EOAttributesLabelProvider;
-import org.objectstyle.wolips.eomodeler.editors.attributes.EOAttributesViewerSorter;
-import org.objectstyle.wolips.eomodeler.model.EOAttribute;
 import org.objectstyle.wolips.eomodeler.model.EODeleteRule;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOJoin;
@@ -92,6 +89,8 @@ import org.objectstyle.wolips.eomodeler.model.EORelationship;
 import org.objectstyle.wolips.eomodeler.model.EORelationshipPath;
 import org.objectstyle.wolips.eomodeler.utils.BindingFactory;
 import org.objectstyle.wolips.eomodeler.utils.ComboViewerBinding;
+import org.objectstyle.wolips.eomodeler.utils.KeyComboBoxCellEditor;
+import org.objectstyle.wolips.eomodeler.utils.TablePropertyViewerSorter;
 import org.objectstyle.wolips.eomodeler.utils.TableUtils;
 
 public class EORelationshipBasicEditorSection extends AbstractPropertySection {
@@ -107,8 +106,6 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
   private ComboViewer myJoinSemanticComboViewer;
   private ComboViewer myEntityComboViewer;
   private TableViewer myJoinsTableViewer;
-  private TableViewer mySourceAttributesTableViewer;
-  private TableViewer myDestinationAttributesTableViewer;
   private Button myRemoveButton;
   private Button myAddButton;
 
@@ -220,58 +217,29 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
     joinSemanticLayoutData.verticalAlignment = SWT.TOP;
     joinSemanticCombo.setLayoutData(joinSemanticLayoutData);
 
-    myJoinsTableViewer = new TableViewer(topForm, SWT.BORDER | SWT.MULTI | SWT.FULL_SELECTION | SWT.FLAT | SWT.HIDE_SELECTION);
+    myJoinsTableViewer = new TableViewer(topForm, SWT.BORDER | SWT.FLAT |  SWT.MULTI | SWT.FULL_SELECTION);
     myJoinsTableViewer.getTable().setHeaderVisible(true);
     myJoinsTableViewer.getTable().setLinesVisible(true);
     TableUtils.createTableColumns(myJoinsTableViewer, "EOJoin", EOJoinsConstants.COLUMNS); //$NON-NLS-1$
     myJoinsTableViewer.setContentProvider(new EOJoinsContentProvider());
     myJoinsTableViewer.setLabelProvider(new EOJoinsLabelProvider(EOJoinsConstants.COLUMNS));
-    myJoinsTableViewer.setSorter(new EOJoinsViewerSorter(EOJoinsConstants.COLUMNS));
+    myJoinsTableViewer.setSorter(new TablePropertyViewerSorter(myJoinsTableViewer, EOJoinsConstants.COLUMNS));
+    myJoinsTableViewer.setColumnProperties(EOJoinsConstants.COLUMNS);
+
+    CellEditor[] cellEditors = new CellEditor[EOJoinsConstants.COLUMNS.length];
+    cellEditors[TableUtils.getColumnNumber(EOJoinsConstants.COLUMNS, EOJoin.SOURCE_ATTRIBUTE_NAME)] = new KeyComboBoxCellEditor(myJoinsTableViewer.getTable(), new String[0], SWT.READ_ONLY);
+    cellEditors[TableUtils.getColumnNumber(EOJoinsConstants.COLUMNS, EOJoin.DESTINATION_ATTRIBUTE_NAME)] = new KeyComboBoxCellEditor(myJoinsTableViewer.getTable(), new String[0], SWT.READ_ONLY);
+    myJoinsTableViewer.setCellModifier(new EOJoinsCellModifier(myJoinsTableViewer));
+    myJoinsTableViewer.setCellEditors(cellEditors);
+
     GridData joinsTableLayoutData = new GridData(GridData.FILL_HORIZONTAL | GridData.GRAB_HORIZONTAL);
     joinsTableLayoutData.heightHint = 100;
     myJoinsTableViewer.getTable().setLayoutData(joinsTableLayoutData);
     myJoinsTableViewer.addSelectionChangedListener(myButtonUpdateListener);
 
-    Composite bottomForm = getWidgetFactory().createPlainComposite(form, SWT.NONE);
-    FormData bottomFormData = new FormData();
-    bottomFormData.top = new FormAttachment(topForm, 5);
-    bottomFormData.left = new FormAttachment(0, 5);
-    bottomFormData.right = new FormAttachment(100, -5);
-    bottomForm.setLayoutData(bottomFormData);
-
-    GridLayout bottomFormLayout = new GridLayout();
-    bottomFormLayout.numColumns = 2;
-    bottomFormLayout.makeColumnsEqualWidth = true;
-    bottomForm.setLayout(bottomFormLayout);
-
-    String[] attributeColumns = { EOAttribute.NAME };
-    mySourceAttributesTableViewer = new TableViewer(bottomForm, SWT.BORDER | SWT.SINGLE | SWT.FULL_SELECTION | SWT.FLAT);
-    mySourceAttributesTableViewer.getTable().setHeaderVisible(true);
-    mySourceAttributesTableViewer.getTable().setLinesVisible(true);
-    TableUtils.createTableColumns(mySourceAttributesTableViewer, "EOJoin.sourceAttribute", attributeColumns); //$NON-NLS-1$
-    mySourceAttributesTableViewer.setContentProvider(new EOAttributesContentProvider());
-    mySourceAttributesTableViewer.setLabelProvider(new EOAttributesLabelProvider(mySourceAttributesTableViewer, attributeColumns));
-    mySourceAttributesTableViewer.setSorter(new EOAttributesViewerSorter(attributeColumns));
-    GridData sourceAttributesTableLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-    sourceAttributesTableLayoutData.heightHint = 100;
-    mySourceAttributesTableViewer.getTable().setLayoutData(sourceAttributesTableLayoutData);
-    mySourceAttributesTableViewer.addSelectionChangedListener(myButtonUpdateListener);
-
-    myDestinationAttributesTableViewer = new TableViewer(bottomForm, SWT.BORDER | SWT.SINGLE | SWT.FULL_SELECTION | SWT.FLAT);
-    myDestinationAttributesTableViewer.getTable().setHeaderVisible(true);
-    myDestinationAttributesTableViewer.getTable().setLinesVisible(true);
-    TableUtils.createTableColumns(myDestinationAttributesTableViewer, "EOJoin.destinationAttribute", attributeColumns); //$NON-NLS-1$
-    myDestinationAttributesTableViewer.setContentProvider(new EOAttributesContentProvider());
-    myDestinationAttributesTableViewer.setLabelProvider(new EOAttributesLabelProvider(myDestinationAttributesTableViewer, attributeColumns));
-    myDestinationAttributesTableViewer.setSorter(new EOAttributesViewerSorter(attributeColumns));
-    GridData destinationAttributesTableLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-    destinationAttributesTableLayoutData.heightHint = 100;
-    myDestinationAttributesTableViewer.getTable().setLayoutData(destinationAttributesTableLayoutData);
-    myDestinationAttributesTableViewer.addSelectionChangedListener(myButtonUpdateListener);
-
     Composite buttonGroup = getWidgetFactory().createPlainComposite(form, SWT.NONE);
     FormData buttonGroupFormData = new FormData();
-    buttonGroupFormData.top = new FormAttachment(bottomForm, 5);
+    buttonGroupFormData.top = new FormAttachment(topForm, 5);
     buttonGroupFormData.left = new FormAttachment(0, 5);
     buttonGroupFormData.right = new FormAttachment(100, -5);
     buttonGroup.setLayoutData(buttonGroupFormData);
@@ -311,7 +279,7 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
     myEntityComboViewer.setInput(myRelationship);
     myModelComboViewer.setSelection(new StructuredSelection(myRelationship.getEntity().getModel()));
     myJoinsTableViewer.setInput(myRelationship);
-    ((EOJoinsViewerSorter) myJoinsTableViewer.getSorter()).sort(myJoinsTableViewer, EOJoin.SOURCE_ATTRIBUTE);
+    ((TablePropertyViewerSorter) myJoinsTableViewer.getSorter()).sort(EOJoin.SOURCE_ATTRIBUTE);
 
     myBindingContext = BindingFactory.createContext();
     myBindingContext.bind(myNameText, new Property(myRelationship, EORelationship.NAME), null);
@@ -329,9 +297,6 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
   }
 
   protected void updateButtons() {
-    boolean addEnabled = !mySourceAttributesTableViewer.getSelection().isEmpty() && !myDestinationAttributesTableViewer.getSelection().isEmpty();
-    myAddButton.setEnabled(addEnabled);
-
     boolean removeEnabled = !myJoinsTableViewer.getSelection().isEmpty();
     myRemoveButton.setEnabled(removeEnabled);
   }
@@ -350,31 +315,26 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
 
   protected void updateJoins() {
     if (myJoinsTableViewer != null) {
-      myJoinsTableViewer.refresh();
+      myJoinsTableViewer.setInput(myRelationship);
+      KeyComboBoxCellEditor sourceCellEditor = (KeyComboBoxCellEditor) myJoinsTableViewer.getCellEditors()[TableUtils.getColumnNumber(EOJoinsConstants.COLUMNS, EOJoin.SOURCE_ATTRIBUTE_NAME)];
+      EOEntity source = myRelationship.getEntity();
+      if (source != null) {
+        sourceCellEditor.setItems(source.getAttributeNames());
+      }
+      KeyComboBoxCellEditor destinationCellEditor = (KeyComboBoxCellEditor) myJoinsTableViewer.getCellEditors()[TableUtils.getColumnNumber(EOJoinsConstants.COLUMNS, EOJoin.DESTINATION_ATTRIBUTE_NAME)];
+      EOEntity destination = myRelationship.getDestination();
+      if (destination != null) {
+        destinationCellEditor.setItems(destination.getAttributeNames());
+      }
       TableUtils.packTableColumns(myJoinsTableViewer);
-    }
-    if (mySourceAttributesTableViewer != null) {
-      mySourceAttributesTableViewer.setInput(myRelationship.getEntity());
-      TableUtils.packTableColumns(mySourceAttributesTableViewer);
-    }
-    if (myDestinationAttributesTableViewer != null) {
-      myDestinationAttributesTableViewer.setInput(myRelationship.getDestination());
-      TableUtils.packTableColumns(myDestinationAttributesTableViewer);
     }
     updateModelAndEntityCombosEnabled();
   }
 
   protected void addSelectedJoin() {
-    EOAttribute sourceAttribute = (EOAttribute) ((IStructuredSelection) mySourceAttributesTableViewer.getSelection()).getFirstElement();
-    EOAttribute destinationAttribute = (EOAttribute) ((IStructuredSelection) myDestinationAttributesTableViewer.getSelection()).getFirstElement();
-    if (sourceAttribute != null && destinationAttribute != null) {
-      EOJoin newJoin = new EOJoin(myRelationship);
-      newJoin.setSourceAttribute(sourceAttribute);
-      newJoin.setDestinationAttribute(destinationAttribute);
-      myRelationship.addJoin(newJoin);
-      mySourceAttributesTableViewer.setSelection(new StructuredSelection());
-      myDestinationAttributesTableViewer.setSelection(new StructuredSelection());
-    }
+    EOJoin newJoin = new EOJoin(myRelationship);
+    myRelationship.addJoin(newJoin);
+    myJoinsTableViewer.setSelection(new StructuredSelection(newJoin));
   }
 
   protected void removeSelectedJoins() {
@@ -462,7 +422,6 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
       if (propertyName.equals(EORelationship.DESTINATION)) {
         EOEntity oldDestination = (EOEntity) _event.getOldValue();
         EOEntity newDestination = (EOEntity) _event.getNewValue();
-        System.out.println("RelationshipListener.propertyChange: destination changed");
         EORelationshipBasicEditorSection.this.destinationChanged(oldDestination, newDestination);
       }
       else if (propertyName.equals(EORelationship.JOINS)) {

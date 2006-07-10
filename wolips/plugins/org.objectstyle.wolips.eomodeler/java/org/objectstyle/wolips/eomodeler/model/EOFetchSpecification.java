@@ -104,7 +104,7 @@ public class EOFetchSpecification extends EOModelObject {
   }
 
   public boolean equals(Object _obj) {
-    return (_obj instanceof EOFetchSpecification && ((EOFetchSpecification) _obj).myEntity.equals(myEntity) && ((EOFetchSpecification) _obj).myName.equals(myName));
+    return (_obj instanceof EOFetchSpecification && (_obj == this || ((EOFetchSpecification) _obj).myEntity.equals(myEntity) && ((EOFetchSpecification) _obj).myName.equals(myName)));
   }
 
   public void setName(String _name) throws DuplicateFetchSpecNameException {

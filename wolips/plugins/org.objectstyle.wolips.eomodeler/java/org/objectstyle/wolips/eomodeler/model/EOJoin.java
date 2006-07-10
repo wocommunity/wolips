@@ -54,6 +54,8 @@ import java.util.Set;
 public class EOJoin extends EOModelObject {
   public static final String DESTINATION_ATTRIBUTE = "destinationAttribute"; //$NON-NLS-1$
   public static final String SOURCE_ATTRIBUTE = "sourceAttribute"; //$NON-NLS-1$
+  public static final String DESTINATION_ATTRIBUTE_NAME = "destinationAttributeName"; //$NON-NLS-1$
+  public static final String SOURCE_ATTRIBUTE_NAME = "sourceAttributeName"; //$NON-NLS-1$
 
   private EORelationship myRelationship;
   private EOAttribute mySourceAttribute;
@@ -70,15 +72,50 @@ public class EOJoin extends EOModelObject {
   }
 
   public int hashCode() {
-    return myRelationship.hashCode() * mySourceAttribute.hashCode() * myDestinationAttribute.hashCode();
+    int hashCode = myRelationship.hashCode();
+    if (mySourceAttribute != null) {
+      hashCode *= mySourceAttribute.hashCode();
+    }
+    if (myDestinationAttribute != null) {
+      hashCode *= myDestinationAttribute.hashCode();
+    }
+    return hashCode;
   }
 
   public boolean equals(Object _obj) {
-    return (_obj instanceof EOJoin && ((EOJoin) _obj).myRelationship.equals(myRelationship) && ((EOJoin) _obj).mySourceAttribute.equals(mySourceAttribute) && ((EOJoin) _obj).myDestinationAttribute.equals(myDestinationAttribute));
+    boolean equals = false;
+    if (_obj instanceof EOJoin) {
+      if (_obj == this) {
+        equals = true;
+      }
+      else {
+        EOJoin otherJoin = (EOJoin) _obj;
+        if (otherJoin.myRelationship.equals(myRelationship)) {
+          if (mySourceAttribute != null && myDestinationAttribute != null && otherJoin.mySourceAttribute != null && otherJoin.myDestinationAttribute != null) {
+            equals = mySourceAttribute.equals(otherJoin.mySourceAttribute) && myDestinationAttribute.equals(otherJoin.myDestinationAttribute);
+          }
+        }
+      }
+    }
+    return equals;
   }
 
   public boolean isRelatedTo(EOAttribute _attribute) {
     return getSourceAttribute().equals(_attribute) || getDestinationAttribute().equals(_attribute);
+  }
+
+  public String getSourceAttributeName() {
+    String sourceAttributeName = null;
+    EOAttribute sourceAttribute = getSourceAttribute();
+    if (sourceAttribute != null) {
+      sourceAttributeName = sourceAttribute.getName();
+    }
+    return sourceAttributeName;
+  }
+
+  public void setSourceAttributeName(String _sourceAttributeName) {
+    EOAttribute sourceAttribute = myRelationship.getEntity().getAttributeNamed(_sourceAttributeName);
+    setSourceAttribute(sourceAttribute);
   }
 
   public EOAttribute getSourceAttribute() {
@@ -95,6 +132,20 @@ public class EOJoin extends EOModelObject {
     if (_fireEvents) {
       firePropertyChange(EOJoin.SOURCE_ATTRIBUTE, oldSourceAttribute, mySourceAttribute);
     }
+  }
+
+  public String getDestinationAttributeName() {
+    String destinationAttributeName = null;
+    EOAttribute destinationAttribute = getDestinationAttribute();
+    if (destinationAttribute != null) {
+      destinationAttributeName = destinationAttribute.getName();
+    }
+    return destinationAttributeName;
+  }
+
+  public void setDestinationAttributeName(String _destinationAttributeName) {
+    EOAttribute destinationAttribute = myRelationship.getDestination().getAttributeNamed(_destinationAttributeName);
+    setDestinationAttribute(destinationAttribute);
   }
 
   public EOAttribute getDestinationAttribute() {

@@ -49,35 +49,27 @@
  */
 package org.objectstyle.wolips.eomodeler.editors.entities;
 
+import org.eclipse.jface.viewers.TableViewer;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.utils.TablePropertyViewerSorter;
 
 public class EOEntitiesViewerSorter extends TablePropertyViewerSorter {
 
-  public EOEntitiesViewerSorter(String[] _properties) {
-    super(_properties);
+  public EOEntitiesViewerSorter(TableViewer _viewer, String[] _properties) {
+    super(_viewer, _properties);
   }
 
   public Object getComparisonValue(Object _obj, String _property) {
     EOEntity entity = (EOEntity) _obj;
     Object value = null;
-    if (_property == EOEntity.NAME) {
-      value = entity.getName();
-    }
-    else if (_property == EOEntity.EXTERNAL_NAME) {
-      value = entity.getExternalName();
-    }
-    else if (_property == EOEntity.CLASS_NAME) {
-      value = entity.getClassName();
-    }
-    else if (_property == EOEntity.PARENT) {
+    if (_property == EOEntity.PARENT) {
       EOEntity parent = entity.getParent();
       if (parent != null) {
         value = parent.getName();
       }
     }
     else {
-      throw new IllegalArgumentException("Unknown property '" + _property + "'");
+      value = super.getComparisonValue(_obj, _property);
     }
     return value;
   }

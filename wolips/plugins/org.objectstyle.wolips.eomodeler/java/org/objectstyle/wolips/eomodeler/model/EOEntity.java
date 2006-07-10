@@ -194,7 +194,7 @@ public class EOEntity extends EOModelObject {
   }
 
   public boolean equals(Object _obj) {
-    return (_obj instanceof EOEntity && ((EOEntity) _obj).myName.equals(myName));
+    return (_obj instanceof EOEntity && (_obj == this || ((EOEntity) _obj).myName.equals(myName)));
   }
 
   public List getReferencingRelationships() {
@@ -282,6 +282,17 @@ public class EOEntity extends EOModelObject {
 
   public List getAttributes() {
     return myAttributes;
+  }
+
+  public String[] getAttributeNames() {
+    List attributes = getAttributes();
+    String[] attributeNames = new String[attributes.size()];
+    Iterator attributeIter = attributes.iterator();
+    for (int attributeNum = 0; attributeIter.hasNext(); attributeNum++) {
+      EOAttribute attribute = (EOAttribute) attributeIter.next();
+      attributeNames[attributeNum] = attribute.getName();
+    }
+    return attributeNames;
   }
 
   public List getRelationships() {

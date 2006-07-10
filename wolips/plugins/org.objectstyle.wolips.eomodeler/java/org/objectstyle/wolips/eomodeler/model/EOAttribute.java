@@ -116,7 +116,7 @@ public class EOAttribute extends EOModelObject implements IEOAttribute {
   }
 
   public boolean equals(Object _obj) {
-    return (_obj instanceof EOAttribute && ((EOAttribute) _obj).myEntity.equals(myEntity) && ((EOAttribute) _obj).myName.equals(myName));
+    return (_obj instanceof EOAttribute && (_obj == this || ((EOAttribute) _obj).myEntity.equals(myEntity) && ((EOAttribute) _obj).myName.equals(myName)));
   }
 
   public boolean isPrototyped() {
@@ -203,12 +203,16 @@ public class EOAttribute extends EOModelObject implements IEOAttribute {
     myEntity._checkForDuplicateAttributeName(this, _name, null);
     myName = _name;
     if (_fireEvents) {
-    firePropertyChange(EOAttribute.NAME, oldName, myName);
+      firePropertyChange(EOAttribute.NAME, oldName, myName);
     }
   }
 
   public String getName() {
     return myName;
+  }
+
+  public Boolean getAllowsNull() {
+    return isAllowsNull();
   }
 
   public Boolean isAllowsNull() {
@@ -230,6 +234,10 @@ public class EOAttribute extends EOModelObject implements IEOAttribute {
     if (_fireEvents) {
       firePropertyChange(EOAttribute.ALLOWS_NULL, oldAllowsNull, myAllowsNull);
     }
+  }
+  
+  public Boolean getClassProperty() {
+    return isClassProperty();
   }
 
   public Boolean isClassProperty() {
@@ -262,6 +270,10 @@ public class EOAttribute extends EOModelObject implements IEOAttribute {
     return myEntity;
   }
 
+  public Boolean getPrimaryKey() {
+    return isPrimaryKey();
+  }
+
   public Boolean isPrimaryKey() {
     return myPrimaryKey;
   }
@@ -279,6 +291,10 @@ public class EOAttribute extends EOModelObject implements IEOAttribute {
     if (_fireEvents) {
       firePropertyChange(EOAttribute.PRIMARY_KEY, oldPrimaryKey, myPrimaryKey);
     }
+  }
+
+  public Boolean getUsedForLocking() {
+    return isUsedForLocking();
   }
 
   public Boolean isUsedForLocking() {
@@ -433,6 +449,10 @@ public class EOAttribute extends EOModelObject implements IEOAttribute {
     firePropertyChange(EOAttribute.CLIENT_CLASS_PROPERTY, oldClientClassProperty, myClientClassProperty);
   }
 
+  public Boolean getClientClassProperty() {
+    return isClientClassProperty();
+  }
+  
   public Boolean isClientClassProperty() {
     return myClientClassProperty;
   }

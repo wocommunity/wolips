@@ -49,6 +49,8 @@
  */
 package org.objectstyle.wolips.eomodeler.utils;
 
+import java.beans.Expression;
+
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
@@ -56,25 +58,26 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
-public abstract class TablePropertyViewerSorter extends ViewerSorter {
+public class TablePropertyViewerSorter extends ViewerSorter {
   private String[] myColumnProperties;
   private int mySortedColumn;
   private int myDirection;
+  private TableViewer myViewer;
 
-  public TablePropertyViewerSorter(String[] _columnProperties) {
+  public TablePropertyViewerSorter(TableViewer _viewer, String[] _columnProperties) {
+    myViewer = _viewer;
     myColumnProperties = _columnProperties;
   }
 
-  public void sort(Viewer _viewer, String _property) {
+  public void sort(String _property) {
     int matchingColumn = TableUtils.getColumnNumber(myColumnProperties, _property);
     if (matchingColumn != -1) {
-      sort(_viewer, matchingColumn);
+      sort(matchingColumn);
     }
   }
 
-  public void sort(Viewer _viewer, int _column) {
-    TableViewer tableViewer = (TableViewer) _viewer;
-    Table table = tableViewer.getTable();
+  public void sort(int _column) {
+    Table table = myViewer.getTable();
     TableColumn sortColumn = table.getSortColumn();
     TableColumn selectedColumn = table.getColumn(_column);
     int direction = table.getSortDirection();
@@ -88,10 +91,8 @@ public abstract class TablePropertyViewerSorter extends ViewerSorter {
     table.setSortDirection(direction);
     mySortedColumn = _column;
     myDirection = direction;
-    tableViewer.refresh();
+    myViewer.refresh();
   }
-
-  public abstract Object getComparisonValue(Object _obj, String _property);
 
   public int compare(Viewer _viewer, Object _o1, Object _o2) {
     String property = myColumnProperties[mySortedColumn];
@@ -108,17 +109,17 @@ public abstract class TablePropertyViewerSorter extends ViewerSorter {
       comparison = 1;
     }
     else if (o1 instanceof Boolean) {
-    	boolean left = ((Boolean) _o1).booleanValue();
-    	boolean right = ((Boolean) _o2).booleanValue();
-        if(left == right) {
-      	  comparison = 0;
-        }
-        else if(left == true) {
-      	  comparison = 1;
-        }
-        else {
-      	  comparison = -1;
-        }
+      boolean left = ((Boolean) _o1).booleanValue();
+      boolean right = ((Boolean) _o2).booleanValue();
+      if (left == right) {
+        comparison = 0;
+      }
+      else if (left == true) {
+        comparison = 1;
+      }
+      else {
+        comparison = -1;
+      }
     }
     else if (o1 instanceof Integer) {
       comparison = ((Integer) o1).compareTo((Integer) o2);
@@ -132,5 +133,16 @@ public abstract class TablePropertyViewerSorter extends ViewerSorter {
     }
 
     return comparison;
+  }
+
+  public Object getComparisonValue(Object _obj, String _property) {
+    Object value = null;
+    try {
+      value = new Expression(_obj, MiscUtils.toGetMethod(_property, false), null).getValue();
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+    }
+    return value;
   }
 }
