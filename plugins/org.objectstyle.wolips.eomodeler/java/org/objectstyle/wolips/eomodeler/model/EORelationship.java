@@ -70,6 +70,7 @@ public class EORelationship extends EOModelObject implements IEOAttribute {
   public static final String MANDATORY = "mandatory"; //$NON-NLS-1$
   public static final String OWNS_DESTINATION = "ownsDestination"; //$NON-NLS-1$
   public static final String PROPAGATES_PRIMARY_KEY = "propagatesPrimaryKey"; //$NON-NLS-1$
+  public static final String NUMBER_OF_TO_MANY_FAULTS_TO_BATCH_FETCH = "numberOfToManyFaultsToBatchFetch"; //$NON-NLS-1$
   public static final String JOINS = "joins"; //$NON-NLS-1$
 
   private EOEntity myEntity;
@@ -81,6 +82,7 @@ public class EORelationship extends EOModelObject implements IEOAttribute {
   private Boolean myOwnsDestination;
   private Boolean myPropagatesPrimaryKey;
   private Boolean myClassProperty;
+  private Integer myNumberOfToManyFaultsToBatchFetch;
   private EODeleteRule myDeleteRule;
   private EOJoinSemantic myJoinSemantic;
   private List myJoins;
@@ -148,7 +150,7 @@ public class EORelationship extends EOModelObject implements IEOAttribute {
   public boolean isFlattened() {
     return myDefinition != null;
   }
-  
+
   public boolean isInherited() {
     boolean inherited = false;
     EOEntity parent = myEntity.getParent();
@@ -237,6 +239,10 @@ public class EORelationship extends EOModelObject implements IEOAttribute {
     setMandatory(MiscUtils.negate(_optional));
   }
 
+  public Boolean getOwnsDestination() {
+    return isOwnsDestination();
+  }
+
   public Boolean isOwnsDestination() {
     return myOwnsDestination;
   }
@@ -245,6 +251,10 @@ public class EORelationship extends EOModelObject implements IEOAttribute {
     Boolean oldOwnsDestination = myOwnsDestination;
     myOwnsDestination = _ownsDestination;
     firePropertyChange(EORelationship.OWNS_DESTINATION, oldOwnsDestination, myOwnsDestination);
+  }
+
+  public Boolean getPropagatesPrimaryKey() {
+    return isPropagatesPrimaryKey();
   }
 
   public Boolean isPropagatesPrimaryKey() {
@@ -282,6 +292,16 @@ public class EORelationship extends EOModelObject implements IEOAttribute {
 
   public void setToOne(Boolean _toOne) {
     setToMany(MiscUtils.negate(_toOne));
+  }
+
+  public void setNumberOfToManyFaultsToBatchFetch(Integer _numberOfToManyFaultsToBatchFetch) {
+    Integer oldNumberOfToManyFaultsToBatchFetch = myNumberOfToManyFaultsToBatchFetch;
+    myNumberOfToManyFaultsToBatchFetch = _numberOfToManyFaultsToBatchFetch;
+    firePropertyChange(EORelationship.NUMBER_OF_TO_MANY_FAULTS_TO_BATCH_FETCH, oldNumberOfToManyFaultsToBatchFetch, myNumberOfToManyFaultsToBatchFetch);
+  }
+
+  public Integer getNumberOfToManyFaultsToBatchFetch() {
+    return myNumberOfToManyFaultsToBatchFetch;
   }
 
   public void clearJoins() {
@@ -335,7 +355,8 @@ public class EORelationship extends EOModelObject implements IEOAttribute {
     String deleteRuleID = _relationshipMap.getString("deleteRule", true); //$NON-NLS-1$
     myDeleteRule = EODeleteRule.getDeleteRuleByID(deleteRuleID);
     myOwnsDestination = _relationshipMap.getBoolean("ownsDestination"); //$NON-NLS-1$
-    myPropagatesPrimaryKey = _relationshipMap.getBoolean("propagatesPrimaryKey"); // TODO: verify //$NON-NLS-1$
+    myNumberOfToManyFaultsToBatchFetch = _relationshipMap.getInteger("numberOfToManyFaultsToBatchFetch"); //$NON-NLS-1$
+    myPropagatesPrimaryKey = _relationshipMap.getBoolean("propagatesPrimaryKey"); //$NON-NLS-1$
     List joins = _relationshipMap.getList("joins"); //$NON-NLS-1$
     if (joins != null) {
       Iterator joinsIter = joins.iterator();
@@ -363,7 +384,8 @@ public class EORelationship extends EOModelObject implements IEOAttribute {
       relationshipMap.setString("deleteRule", myDeleteRule.getID(), true); //$NON-NLS-1$
     }
     relationshipMap.setBoolean("ownsDestination", myOwnsDestination); //$NON-NLS-1$
-    relationshipMap.setBoolean("propagatesPrimaryKey", myPropagatesPrimaryKey); // TODO: verify //$NON-NLS-1$
+    relationshipMap.setBoolean("propagatesPrimaryKey", myPropagatesPrimaryKey); //$NON-NLS-1$
+    relationshipMap.setInteger("numberOfToManyFaultsToBatchFetch", myNumberOfToManyFaultsToBatchFetch); //$NON-NLS-1$
     List joins = new LinkedList();
     Iterator joinsIter = myJoins.iterator();
     while (joinsIter.hasNext()) {
