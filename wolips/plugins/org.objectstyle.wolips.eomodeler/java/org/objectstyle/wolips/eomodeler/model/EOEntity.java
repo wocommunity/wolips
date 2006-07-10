@@ -100,9 +100,9 @@ public class EOEntity extends EOModelObject {
 
   public EOEntity(EOModel _model) {
     myModel = _model;
-    myAttributes = new WritableList(new LinkedList(), EOAttribute.class);
-    myRelationships = new WritableList(new LinkedList(), EORelationship.class);
-    myFetchSpecs = new WritableList(new LinkedList(), EOFetchSpecification.class);
+    myAttributes = new WritableList(EOAttribute.class);
+    myRelationships = new WritableList(EORelationship.class);
+    myFetchSpecs = new WritableList(EOFetchSpecification.class);
     myEntityMap = new EOModelMap();
     myFetchSpecsMap = new EOModelMap();
   }

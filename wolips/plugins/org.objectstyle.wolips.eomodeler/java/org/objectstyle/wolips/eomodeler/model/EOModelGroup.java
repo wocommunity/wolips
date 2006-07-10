@@ -67,7 +67,7 @@ public class EOModelGroup extends EOModelObject {
   private List myPrototypeAttributeCache;
 
   public EOModelGroup() {
-    myModels = new WritableList(new LinkedList(), EOModel.class);
+    myModels = new WritableList(EOModel.class);
   }
 
   public List getModels() {

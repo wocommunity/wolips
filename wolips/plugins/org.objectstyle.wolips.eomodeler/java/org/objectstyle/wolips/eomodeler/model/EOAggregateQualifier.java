@@ -65,7 +65,7 @@ public abstract class EOAggregateQualifier extends EOModelObject implements IEOQ
 
   public EOAggregateQualifier(String _className) {
     myClassName = _className;
-    myQualifiers = new WritableList(new LinkedList(), IEOQualifier.class);
+    myQualifiers = new WritableList(IEOQualifier.class);
   }
 
   public String getClassName() {
