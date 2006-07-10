@@ -105,7 +105,7 @@ public class EORelationship extends EOModelObject implements IEOAttribute {
   }
 
   public boolean equals(Object _obj) {
-    return (_obj instanceof EORelationship && ((EORelationship) _obj).myEntity.equals(myEntity) && ((EORelationship) _obj).myName.equals(myName));
+    return (_obj instanceof EORelationship && (_obj == this || ((EORelationship) _obj).myEntity.equals(myEntity) && ((EORelationship) _obj).myName.equals(myName)));
   }
 
   public boolean isRelatedTo(EOEntity _entity) {
@@ -328,7 +328,7 @@ public class EORelationship extends EOModelObject implements IEOAttribute {
   }
 
   public void addJoin(EOJoin _join, boolean _fireEvents) {
-    // TODO: Check duplicates
+    // TODO: Check duplicates?
     myJoins.add(_join);
     if (_fireEvents) {
       firePropertyChange(EORelationship.JOINS, null, null);

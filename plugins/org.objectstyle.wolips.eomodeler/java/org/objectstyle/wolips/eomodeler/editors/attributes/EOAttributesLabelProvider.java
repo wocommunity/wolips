@@ -56,6 +56,7 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.objectstyle.wolips.eomodeler.Activator;
 import org.objectstyle.wolips.eomodeler.model.EOAttribute;
@@ -64,7 +65,7 @@ import org.objectstyle.wolips.eomodeler.utils.TablePropertyLabelProvider;
 public class EOAttributesLabelProvider extends TablePropertyLabelProvider implements ITableColorProvider, ITableFontProvider {
   private TableViewer myTableViewer;
 
-  //private Font myItalicFont;
+  private Font myInheritedFont;
 
   public EOAttributesLabelProvider(TableViewer _tableViewer, String[] _columnProperties) {
     super(_columnProperties);
@@ -127,16 +128,16 @@ public class EOAttributesLabelProvider extends TablePropertyLabelProvider implem
   }
 
   public Font getFont(Object _element, int _columnIndex) {
-    //EOAttribute attribute = (EOAttribute) _element;
     Font font = null;
-    //    if (attribute.isInherited()) {
-    //      if (myItalicFont == null) {
-    //        Font originalFont = myTableViewer.getTable().getFont();
-    //        FontData[] fontData = myTableViewer.getTable().getFont().getFontData();
-    //        myItalicFont = new Font(originalFont.getDevice(), fontData[0].getName(), fontData[0].getHeight(), SWT.ITALIC);
-    //      }
-    //      font = myItalicFont;
-    //    }
+    EOAttribute attribute = (EOAttribute) _element;
+    if (attribute.isInherited()) {
+      if (myInheritedFont == null) {
+        Font originalFont = myTableViewer.getTable().getFont();
+        FontData[] fontData = myTableViewer.getTable().getFont().getFontData();
+        myInheritedFont = new Font(originalFont.getDevice(), fontData[0].getName(), fontData[0].getHeight(), SWT.ITALIC);
+      }
+      font = myInheritedFont;
+    }
     return font;
   }
 
@@ -146,11 +147,11 @@ public class EOAttributesLabelProvider extends TablePropertyLabelProvider implem
   }
 
   public Color getForeground(Object _element, int _columnIndex) {
-    EOAttribute attribute = (EOAttribute) _element;
     Color color = null;
-    if (attribute.isInherited()) {
-      color = myTableViewer.getTable().getDisplay().getSystemColor(SWT.COLOR_GRAY);
-    }
+    //  EOAttribute attribute = (EOAttribute) _element;
+    //    if (attribute.isInherited()) {
+    //      color = myTableViewer.getTable().getDisplay().getSystemColor(SWT.COLOR_GRAY);
+    //    }
     //    if (attribute.isPrototyped()) {
     //      color = Display.getCurrent().getSystemColor(SWT.COLOR_DARK_RED);
     //    }

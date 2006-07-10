@@ -49,44 +49,27 @@
  */
 package org.objectstyle.wolips.eomodeler.editors.attributes;
 
+import org.eclipse.jface.viewers.TableViewer;
 import org.objectstyle.wolips.eomodeler.model.EOAttribute;
 import org.objectstyle.wolips.eomodeler.utils.TablePropertyViewerSorter;
 
 public class EOAttributesViewerSorter extends TablePropertyViewerSorter {
 
-  public EOAttributesViewerSorter(String[] _properties) {
-    super(_properties);
+  public EOAttributesViewerSorter(TableViewer _viewer, String[] _properties) {
+    super(_viewer, _properties);
   }
 
   public Object getComparisonValue(Object _obj, String _property) {
     EOAttribute attribute = (EOAttribute) _obj;
     Object value = null;
-    if (_property == EOAttribute.PRIMARY_KEY) {
-      value = attribute.isPrimaryKey();
-    }
-    else if (_property == EOAttribute.USED_FOR_LOCKING) {
-      value = attribute.isUsedForLocking();
-    }
-    else if (_property == EOAttribute.CLASS_PROPERTY) {
-      value = attribute.isClassProperty();
-    }
-    else if (_property == EOAttribute.ALLOWS_NULL) {
-      value = attribute.isAllowsNull();
-    }
-    else if (_property == EOAttribute.NAME) {
-      value = attribute.getName();
-    }
-    else if (_property == EOAttribute.COLUMN_NAME) {
-      value = attribute.getColumnName();
-    }
-    else if (_property == EOAttribute.PROTOTYPE) {
+    if (_property == EOAttribute.PROTOTYPE) {
       EOAttribute prototype = attribute.getPrototype();
       if (prototype != null) {
         value = prototype.getName();
       }
     }
     else {
-      throw new IllegalArgumentException("Unknown property '" + _property + "'");
+      value = super.getComparisonValue(_obj, _property);
     }
     return value;
   }

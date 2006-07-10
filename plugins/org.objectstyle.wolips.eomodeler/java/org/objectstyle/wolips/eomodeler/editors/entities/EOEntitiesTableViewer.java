@@ -77,7 +77,7 @@ public class EOEntitiesTableViewer extends Composite implements ISelectionProvid
     myEntitiesTableViewer = new TableViewer(this, SWT.FULL_SELECTION);
     myEntitiesTableViewer.setContentProvider(new EOEntitiesContentProvider());
     myEntitiesTableViewer.setLabelProvider(new EOEntitiesLabelProvider(EOEntitiesConstants.COLUMNS));
-    myEntitiesTableViewer.setSorter(new EOEntitiesViewerSorter(EOEntitiesConstants.COLUMNS));
+    myEntitiesTableViewer.setSorter(new EOEntitiesViewerSorter(myEntitiesTableViewer, EOEntitiesConstants.COLUMNS));
     myEntitiesTableViewer.setColumnProperties(EOEntitiesConstants.COLUMNS);
 
     Table entitiesTable = myEntitiesTableViewer.getTable();
@@ -87,7 +87,7 @@ public class EOEntitiesTableViewer extends Composite implements ISelectionProvid
 
     TableUtils.createTableColumns(myEntitiesTableViewer, "EOEntity", EOEntitiesConstants.COLUMNS); //$NON-NLS-1$
 
-    ((EOEntitiesViewerSorter) myEntitiesTableViewer.getSorter()).sort(myEntitiesTableViewer, EOEntity.NAME);
+    ((EOEntitiesViewerSorter) myEntitiesTableViewer.getSorter()).sort(EOEntity.NAME);
 
     CellEditor[] cellEditors = new CellEditor[EOEntitiesConstants.COLUMNS.length];
     cellEditors[TableUtils.getColumnNumber(EOEntitiesConstants.COLUMNS, EOEntity.NAME)] = new TextCellEditor(entitiesTable);

@@ -81,7 +81,7 @@ public class EORelationshipsTableViewer extends Composite implements ISelectionP
     myRelationshipsTableViewer = new TableViewer(this, SWT.FULL_SELECTION);
     myRelationshipsTableViewer.setContentProvider(new EORelationshipsContentProvider());
     myRelationshipsTableViewer.setLabelProvider(new EORelationshipsLabelProvider(myRelationshipsTableViewer, EORelationshipsConstants.COLUMNS));
-    myRelationshipsTableViewer.setSorter(new EORelationshipsViewerSorter(EORelationshipsConstants.COLUMNS));
+    myRelationshipsTableViewer.setSorter(new EORelationshipsViewerSorter(myRelationshipsTableViewer, EORelationshipsConstants.COLUMNS));
     myRelationshipsTableViewer.setColumnProperties(EORelationshipsConstants.COLUMNS);
     myTableRefresher = new TableRefreshPropertyListener(myRelationshipsTableViewer, EOEntity.RELATIONSHIPS);
     myTableRowRefresher = new TableRowRefreshPropertyListener(myRelationshipsTableViewer, EOEntity.RELATIONSHIP);
@@ -100,7 +100,7 @@ public class EORelationshipsTableViewer extends Composite implements ISelectionP
     classPropertyColumn.setText(""); //$NON-NLS-1$
     classPropertyColumn.setImage(Activator.getDefault().getImageRegistry().get(Activator.CLASS_PROPERTY_ICON));
 
-    ((EORelationshipsViewerSorter) myRelationshipsTableViewer.getSorter()).sort(myRelationshipsTableViewer, EORelationship.NAME);
+    ((EORelationshipsViewerSorter) myRelationshipsTableViewer.getSorter()).sort(EORelationship.NAME);
 
     CellEditor[] cellEditors = new CellEditor[EORelationshipsConstants.COLUMNS.length];
     cellEditors[TableUtils.getColumnNumber(EORelationshipsConstants.COLUMNS, EORelationship.TO_MANY)] = new CheckboxCellEditor();

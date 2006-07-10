@@ -69,6 +69,7 @@ public class EORelationshipsLabelProvider extends TablePropertyLabelProvider imp
   private TableViewer myTableViewer;
 
   private Font myFlattenedFont;
+  private Font myInheritedFont;
 
   public EORelationshipsLabelProvider(TableViewer _tableViewer, String[] _columnProperties) {
     super(_columnProperties);
@@ -136,9 +137,17 @@ public class EORelationshipsLabelProvider extends TablePropertyLabelProvider imp
       if (myFlattenedFont == null) {
         Font originalFont = myTableViewer.getTable().getFont();
         FontData[] fontData = myTableViewer.getTable().getFont().getFontData();
-        myFlattenedFont = new Font(originalFont.getDevice(), fontData[0].getName(), fontData[0].getHeight(), SWT.ITALIC);
+        myFlattenedFont = new Font(originalFont.getDevice(), fontData[0].getName(), fontData[0].getHeight(), SWT.BOLD);
       }
       font = myFlattenedFont;
+    }
+    else if (relationship.isInherited()) {
+      if (myInheritedFont == null) {
+        Font originalFont = myTableViewer.getTable().getFont();
+        FontData[] fontData = myTableViewer.getTable().getFont().getFontData();
+        myInheritedFont = new Font(originalFont.getDevice(), fontData[0].getName(), fontData[0].getHeight(), SWT.ITALIC);
+      }
+      font = myInheritedFont;
     }
     return font;
   }
@@ -149,11 +158,11 @@ public class EORelationshipsLabelProvider extends TablePropertyLabelProvider imp
   }
 
   public Color getForeground(Object _element, int _columnIndex) {
-    EORelationship relationships = (EORelationship) _element;
     Color color = null;
-    if (relationships.isInherited()) {
-      color = myTableViewer.getTable().getDisplay().getSystemColor(SWT.COLOR_GRAY);
-    }
+    //EORelationship relationships = (EORelationship) _element;
+    //    if (relationships.isInherited()) {
+    //      color = myTableViewer.getTable().getDisplay().getSystemColor(SWT.COLOR_GRAY);
+    //    }
     //    if (attribute.isPrototyped()) {
     //      color = Display.getCurrent().getSystemColor(SWT.COLOR_DARK_RED);
     //    }
@@ -167,6 +176,9 @@ public class EORelationshipsLabelProvider extends TablePropertyLabelProvider imp
   public void dispose() {
     if (myFlattenedFont != null) {
       myFlattenedFont.dispose();
+    }
+    if (myInheritedFont != null) {
+      myInheritedFont.dispose();
     }
   }
 
