@@ -57,7 +57,7 @@ public class MissingEntityFailure extends EOModelVerificationFailure {
   }
 
   public MissingEntityFailure(String _entityName, Throwable _throwable) {
-    super("Unable to resolve the entity named '" + _entityName + "'.", _throwable);
+    super("Missing entity named '" + _entityName + "'.", _throwable);
     myEntityName = _entityName;
   }
 

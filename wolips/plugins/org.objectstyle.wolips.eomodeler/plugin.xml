@@ -72,18 +72,18 @@
                category="eomodel"
                id="org.objectstyle.wolips.eomodeler.tabs.connectionDictionary"
                image="icons/eoModel.gif"
-               label=" "/>
+               label="Adaptor"/>
          <propertyTab
                category="eorelationship"
                id="org.objectstyle.wolips.eomodeler.tabs.eorelationshipBasic"
                image="icons/eoRelationship.gif"
-               label=" "/>
+               label="Basic"/>
          <propertyTab
                afterTab="org.objectstyle.wolips.eomodeler.tabs.eorelationshipBasic"
                category="eorelationship"
                id="org.objectstyle.wolips.eomodeler.tabs.eorelationshipAdvanced"
                image="icons/eoRelationship.gif"
-               label=" "/>
+               label="Advanced"/>
       </propertyTabs>
    </extension>
    <extension

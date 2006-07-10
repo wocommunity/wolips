@@ -47,23 +47,33 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eomodeler;
+package org.objectstyle.wolips.eomodeler.model;
 
-import org.eclipse.ui.IFolderLayout;
-import org.eclipse.ui.IPageLayout;
-import org.eclipse.ui.IPerspectiveFactory;
+public class DuplicateFetchSpecFailure extends EOModelVerificationFailure {
+  private EOEntity myEntity;
+  private String myFetchSpecName;
+  private String myNewFetchSpecName;
 
-public class EOModelerPerspectiveFactory implements IPerspectiveFactory {
-  public static final String EOMODELER_PERSPECTIVE_ID = "org.objectstyle.wolips.eomodeler.EOModelerPerspective"; //$NON-NLS-1$
+  public DuplicateFetchSpecFailure(EOEntity _entity, String _fetchSpecName, String _newFetchSpecName) {
+    this(_entity, _fetchSpecName, _newFetchSpecName, null);
+  }
 
-  public void createInitialLayout(IPageLayout _layout) {
-    String editorArea = _layout.getEditorArea();
-    
-    IFolderLayout topLeft = _layout.createFolder("left", IPageLayout.LEFT, 0.45f, editorArea); //$NON-NLS-1$
-    topLeft.addView(IPageLayout.ID_OUTLINE);
-    topLeft.addView("org.eclipse.jdt.ui.PackageExplorer"); //$NON-NLS-1$
+  public DuplicateFetchSpecFailure(EOEntity _entity, String _fetchSpecName, String _newFetchSpecName, Throwable _throwable) {
+    super("There was more than one fetch specification named '" + _fetchSpecName + "' in " + _entity.getName() + ", so one was renamed to '" + _newFetchSpecName + "'.", _throwable);
+    myEntity = _entity;
+    myFetchSpecName = _fetchSpecName;
+    myNewFetchSpecName = _newFetchSpecName;
+  }
 
-    IFolderLayout bottomRight = _layout.createFolder("bottomLeft", IPageLayout.BOTTOM, 0.30f, "left"); //$NON-NLS-1$
-    bottomRight.addView(IPageLayout.ID_PROP_SHEET);
+  public EOEntity getEntity() {
+    return myEntity;
+  }
+
+  public String getFetchSpecName() {
+    return myFetchSpecName;
+  }
+
+  public String getNewFetchSpecName() {
+    return myNewFetchSpecName;
   }
 }

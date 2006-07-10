@@ -50,7 +50,8 @@
 package org.objectstyle.wolips.eomodeler.editors;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -71,8 +72,9 @@ public class EOModelEditorInput implements IFileEditorInput {
   private IContainer myModelFolder;
   private EOModel myModel;
   private String myFileEntityName;
+  private Set myLoadFailures;
 
-  public EOModelEditorInput(IFileEditorInput _fileEditorInput, List _failures) throws CoreException, IOException, EOModelException {
+  public EOModelEditorInput(IFileEditorInput _fileEditorInput) throws CoreException, IOException, EOModelException {
     IFile file = _fileEditorInput.getFile();
     if ("plist".equalsIgnoreCase(file.getFileExtension())) { //$NON-NLS-1$
       String name = file.getName();
@@ -83,9 +85,18 @@ public class EOModelEditorInput implements IFileEditorInput {
       myFileEditorInput = _fileEditorInput;
     }
     myModelFolder = myFileEditorInput.getFile().getParent();
-    myModel = EclipseEOModelGroupFactory.createModel(myFileEditorInput.getFile(), _failures);
+    myLoadFailures = new LinkedHashSet();
+    myModel = EclipseEOModelGroupFactory.createModel(myFileEditorInput.getFile(), myLoadFailures);
   }
   
+  public boolean hasLoadFailures() {
+    return !myLoadFailures.isEmpty();
+  }
+  
+  public Set getLoadFailures() {
+    return myLoadFailures;
+  }
+
   public EOEntity getFileEntity() {
     EOEntity entity = null;
     if (myFileEntityName != null) {

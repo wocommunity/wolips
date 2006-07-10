@@ -56,6 +56,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.jface.internal.databinding.provisional.observable.list.WritableList;
 import org.objectstyle.cayenne.wocompat.PropertyListSerialization;
@@ -162,7 +163,7 @@ public class EOEntity extends EOModelObject {
 
   public void setName(String _name) throws DuplicateEntityNameException {
     String oldName = myName;
-    myModel._checkForDuplicateEntityName(this, _name);
+    myModel._checkForDuplicateEntityName(this, _name, null);
     myModel._entityNameChanged(myName);
     myName = _name;
     firePropertyChange(EOEntity.NAME, oldName, myName);
@@ -291,10 +292,22 @@ public class EOEntity extends EOModelObject {
     return myFetchSpecs;
   }
 
-  public void _checkForDuplicateAttributeName(EOAttribute _attribute, String _newName) throws DuplicateAttributeNameException {
-    EOAttribute attribute = getAttributeNamed(_newName);
-    if (attribute != null && attribute != _attribute) {
-      throw new DuplicateAttributeNameException(_newName, this);
+  public void _checkForDuplicateAttributeName(EOAttribute _attribute, String _newName, Set _failures) throws DuplicateAttributeNameException {
+    EOAttribute existingAttribute = getAttributeNamed(_newName);
+    if (existingAttribute != null && existingAttribute != _attribute) {
+      if (_failures == null) {
+        throw new DuplicateAttributeNameException(_newName, this);
+      }
+
+      boolean unusedNameFound = false;
+      String unusedName = null;
+      for (int dupeNameNum = 1; !unusedNameFound; dupeNameNum++) {
+        unusedName = _newName + dupeNameNum;
+        EOAttribute renameAttribute = getAttributeNamed(unusedName);
+        unusedNameFound = (renameAttribute == null);
+      }
+      existingAttribute.setName(unusedName, false);
+      _failures.add(new DuplicateAttributeFailure(this, _newName, unusedName));
     }
   }
 
@@ -310,19 +323,31 @@ public class EOEntity extends EOModelObject {
     return matchingFetchSpec;
   }
 
-  public void _checkForDuplicateFetchSpecName(EOFetchSpecification _fetchSpec, String _newName) throws DuplicateFetchSpecNameException {
-    EOFetchSpecification fetchSpec = getFetchSpecNamed(_newName);
-    if (fetchSpec != null && fetchSpec != _fetchSpec) {
-      throw new DuplicateFetchSpecNameException(_newName, this);
+  public void _checkForDuplicateFetchSpecName(EOFetchSpecification _fetchSpec, String _newName, Set _failures) throws DuplicateFetchSpecNameException {
+    EOFetchSpecification existingFetchSpec = getFetchSpecNamed(_newName);
+    if (existingFetchSpec != null && existingFetchSpec != _fetchSpec) {
+      if (_failures == null) {
+        throw new DuplicateFetchSpecNameException(_newName, this);
+      }
+
+      boolean unusedNameFound = false;
+      String unusedName = null;
+      for (int dupeNameNum = 1; !unusedNameFound; dupeNameNum++) {
+        unusedName = _newName + dupeNameNum;
+        EOFetchSpecification renameFetchSpec = getFetchSpecNamed(unusedName);
+        unusedNameFound = (renameFetchSpec == null);
+      }
+      existingFetchSpec.setName(unusedName, false);
+      _failures.add(new DuplicateFetchSpecFailure(this, _newName, unusedName));
     }
   }
 
   public void addFetchSpecification(EOFetchSpecification _fetchSpecification) throws DuplicateFetchSpecNameException {
-    addFetchSpecification(_fetchSpecification, true);
+    addFetchSpecification(_fetchSpecification, true, null);
   }
 
-  public void addFetchSpecification(EOFetchSpecification _fetchSpecification, boolean _fireEvents) throws DuplicateFetchSpecNameException {
-    _checkForDuplicateFetchSpecName(_fetchSpecification, _fetchSpecification.getName());
+  public void addFetchSpecification(EOFetchSpecification _fetchSpecification, boolean _fireEvents, Set _failures) throws DuplicateFetchSpecNameException {
+    _checkForDuplicateFetchSpecName(_fetchSpecification, _fetchSpecification.getName(), _failures);
     myFetchSpecs.add(_fetchSpecification);
     if (_fireEvents) {
       firePropertyChange(EOEntity.FETCH_SPECIFICATIONS, null, null);
@@ -335,11 +360,11 @@ public class EOEntity extends EOModelObject {
   }
 
   public void addAttribute(EOAttribute _attribute) throws DuplicateAttributeNameException {
-    addAttribute(_attribute, true);
+    addAttribute(_attribute, true, null);
   }
 
-  public void addAttribute(EOAttribute _attribute, boolean _fireEvents) throws DuplicateAttributeNameException {
-    _checkForDuplicateAttributeName(_attribute, _attribute.getName());
+  public void addAttribute(EOAttribute _attribute, boolean _fireEvents, Set _failures) throws DuplicateAttributeNameException {
+    _checkForDuplicateAttributeName(_attribute, _attribute.getName(), _failures);
     myAttributes.add(_attribute);
     if (_fireEvents) {
       firePropertyChange(EOEntity.ATTRIBUTES, null, null);
@@ -372,10 +397,22 @@ public class EOEntity extends EOModelObject {
     return matchingAttribute;
   }
 
-  public void _checkForDuplicateRelationshipName(EORelationship _relationship, String _newName) throws DuplicateRelationshipNameException {
-    EORelationship relationship = getRelationshipNamed(_newName);
-    if (relationship != null && relationship != _relationship) {
-      throw new DuplicateRelationshipNameException(_newName, this);
+  public void _checkForDuplicateRelationshipName(EORelationship _relationship, String _newName, Set _failures) throws DuplicateRelationshipNameException {
+    EORelationship existingRelationship = getRelationshipNamed(_newName);
+    if (existingRelationship != null && existingRelationship != _relationship) {
+      if (_failures == null) {
+        throw new DuplicateRelationshipNameException(_newName, this);
+      }
+
+      boolean unusedNameFound = false;
+      String unusedName = null;
+      for (int dupeNameNum = 1; !unusedNameFound; dupeNameNum++) {
+        unusedName = _newName + dupeNameNum;
+        EORelationship renameRelationship = getRelationshipNamed(unusedName);
+        unusedNameFound = (renameRelationship == null);
+      }
+      existingRelationship.setName(unusedName, false);
+      _failures.add(new DuplicateRelationshipFailure(this, _newName, unusedName));
     }
   }
 
@@ -392,11 +429,11 @@ public class EOEntity extends EOModelObject {
   }
 
   public void addRelationship(EORelationship _relationship) throws DuplicateRelationshipNameException {
-    addRelationship(_relationship, true);
+    addRelationship(_relationship, true, null);
   }
 
-  public void addRelationship(EORelationship _relationship, boolean _fireEvents) throws DuplicateRelationshipNameException {
-    _checkForDuplicateRelationshipName(_relationship, _relationship.getName());
+  public void addRelationship(EORelationship _relationship, boolean _fireEvents, Set _failures) throws DuplicateRelationshipNameException {
+    _checkForDuplicateRelationshipName(_relationship, _relationship.getName(), _failures);
     myRelationships.add(_relationship);
     if (_fireEvents) {
       firePropertyChange(EOEntity.RELATIONSHIPS, null, null);
@@ -430,11 +467,11 @@ public class EOEntity extends EOModelObject {
     return myUserInfo;
   }
 
-  public void loadFromFile(File _entityFile, File _fetchSpecFile) throws IOException, EOModelException {
+  public void loadFromFile(File _entityFile, File _fetchSpecFile, Set _failures) throws IOException, EOModelException {
     try {
       if (_entityFile.exists()) {
         EOModelMap entityMap = new EOModelMap((Map) PropertyListSerialization.propertyListFromFile(_entityFile));
-        loadFromMap(entityMap);
+        loadFromMap(entityMap, _failures);
       }
     }
     catch (EOModelException e) {
@@ -443,7 +480,7 @@ public class EOEntity extends EOModelObject {
     try {
       if (_fetchSpecFile.exists()) {
         EOModelMap fspecMap = new EOModelMap((Map) PropertyListSerialization.propertyListFromFile(_fetchSpecFile));
-        loadFetchSpecsFromMap(fspecMap);
+        loadFetchSpecsFromMap(fspecMap, _failures);
       }
     }
     catch (EOModelException e) {
@@ -451,7 +488,7 @@ public class EOEntity extends EOModelObject {
     }
   }
 
-  public void loadFromMap(EOModelMap _entityMap) throws DuplicateRelationshipNameException, DuplicateAttributeNameException {
+  public void loadFromMap(EOModelMap _entityMap, Set _failures) throws DuplicateRelationshipNameException, DuplicateAttributeNameException {
     myEntityMap = _entityMap;
     myName = _entityMap.getString("name", true); //$NON-NLS-1$
     myExternalName = _entityMap.getString("externalName", true); //$NON-NLS-1$
@@ -473,8 +510,8 @@ public class EOEntity extends EOModelObject {
       while (attributeIter.hasNext()) {
         EOModelMap attributeMap = new EOModelMap((Map) attributeIter.next());
         EOAttribute attribute = new EOAttribute(this);
-        attribute.loadFromMap(attributeMap);
-        addAttribute(attribute, false);
+        attribute.loadFromMap(attributeMap, _failures);
+        addAttribute(attribute, false, _failures);
       }
     }
 
@@ -484,8 +521,8 @@ public class EOEntity extends EOModelObject {
       while (relationshipIter.hasNext()) {
         EOModelMap relationshipMap = new EOModelMap((Map) relationshipIter.next());
         EORelationship relationship = new EORelationship(this);
-        relationship.loadFromMap(relationshipMap);
-        addRelationship(relationship, false);
+        relationship.loadFromMap(relationshipMap, _failures);
+        addRelationship(relationship, false, _failures);
       }
     }
 
@@ -541,7 +578,7 @@ public class EOEntity extends EOModelObject {
     }
   }
 
-  public void loadFetchSpecsFromMap(EOModelMap _map) throws EOModelException {
+  public void loadFetchSpecsFromMap(EOModelMap _map, Set _failures) throws EOModelException {
     myFetchSpecsMap = _map;
     Iterator fetchSpecIter = _map.entrySet().iterator();
     while (fetchSpecIter.hasNext()) {
@@ -549,8 +586,8 @@ public class EOEntity extends EOModelObject {
       String fetchSpecName = (String) fetchSpecEntry.getKey();
       EOModelMap fetchSpecMap = new EOModelMap((Map) fetchSpecEntry.getValue());
       EOFetchSpecification fetchSpec = new EOFetchSpecification(this, fetchSpecName);
-      fetchSpec.loadFromMap(fetchSpecMap);
-      addFetchSpecification(fetchSpec, false);
+      fetchSpec.loadFromMap(fetchSpecMap, _failures);
+      addFetchSpecification(fetchSpec, false, _failures);
     }
   }
 
@@ -649,7 +686,7 @@ public class EOEntity extends EOModelObject {
     }
   }
 
-  public void resolve(List _failures) {
+  public void resolve(Set _failures) {
     String parentName = myEntityMap.getString("parent", true); //$NON-NLS-1$
     if (parentName != null) {
       myParent = myModel.getModelGroup().getEntityNamed(parentName);
@@ -677,7 +714,7 @@ public class EOEntity extends EOModelObject {
     }
   }
 
-  public void verify(List _failures) {
+  public void verify(Set _failures) {
     Iterator attributeIter = myAttributes.iterator();
     while (attributeIter.hasNext()) {
       EOAttribute attribute = (EOAttribute) attributeIter.next();

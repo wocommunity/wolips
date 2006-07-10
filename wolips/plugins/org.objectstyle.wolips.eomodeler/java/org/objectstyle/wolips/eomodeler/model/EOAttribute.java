@@ -53,6 +53,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class EOAttribute extends EOModelObject implements IEOAttribute {
   public static final String PRIMARY_KEY = "primaryKey"; //$NON-NLS-1$
@@ -194,10 +195,16 @@ public class EOAttribute extends EOModelObject implements IEOAttribute {
   }
 
   public void setName(String _name) throws DuplicateAttributeNameException {
+    setName(_name, true);
+  }
+
+  public void setName(String _name, boolean _fireEvents) throws DuplicateAttributeNameException {
     String oldName = myName;
-    myEntity._checkForDuplicateAttributeName(this, _name);
+    myEntity._checkForDuplicateAttributeName(this, _name, null);
     myName = _name;
+    if (_fireEvents) {
     firePropertyChange(EOAttribute.NAME, oldName, myName);
+    }
   }
 
   public String getName() {
@@ -450,7 +457,7 @@ public class EOAttribute extends EOModelObject implements IEOAttribute {
     return referencingRelationships;
   }
 
-  public void loadFromMap(EOModelMap _attributeMap) {
+  public void loadFromMap(EOModelMap _attributeMap, Set _failures) {
     myAttributeMap = _attributeMap;
     myName = _attributeMap.getString("name", true); //$NON-NLS-1$
     myColumnName = _attributeMap.getString("columnName", true); //$NON-NLS-1$
@@ -494,17 +501,18 @@ public class EOAttribute extends EOModelObject implements IEOAttribute {
     return attributeMap;
   }
 
-  public void resolve(List _failures) {
+  public void resolve(Set _failures) {
     String prototypeName = myAttributeMap.getString("prototypeName", true); //$NON-NLS-1$
     if (prototypeName != null) {
       myPrototype = myEntity.getModel().getModelGroup().getPrototypeAttributeNamed(prototypeName);
       if (myPrototype == null) {
+        System.out.println("EOAttribute.resolve: failed resolving " + prototypeName + " in " + myName + ".");
         _failures.add(new MissingPrototypeFailure(prototypeName, this));
       }
     }
   }
 
-  public void verify(List _failures) {
+  public void verify(Set _failures) {
     // TODO
   }
 

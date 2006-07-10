@@ -49,12 +49,12 @@
  */
 package org.objectstyle.wolips.eomodeler.model;
 
-import java.util.List;
+import java.util.Set;
 
 public interface IEOQualifier {
   public void loadFromMap(EOModelMap _map) throws EOModelException;
 
   public EOModelMap toMap();
 
-  public void verify(List _failures);
+  public void verify(Set _failures);
 }

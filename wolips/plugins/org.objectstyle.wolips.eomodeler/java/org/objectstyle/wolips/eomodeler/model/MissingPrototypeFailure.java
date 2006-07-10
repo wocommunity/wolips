@@ -58,7 +58,7 @@ public class MissingPrototypeFailure extends EOModelVerificationFailure {
   }
 
   public MissingPrototypeFailure(String _prototypeName, EOAttribute _referencingAttribute, Throwable _throwable) {
-    super("Unable to find the prototype named '" + _prototypeName + "' referenced by the attribute '" + _referencingAttribute + "'.", _throwable);
+    super("Missing prototype named '" + _prototypeName + "' referenced by '" + _referencingAttribute.getName() + "' in " + _referencingAttribute.getEntity().getName() + ".", _throwable);
     myPrototypeName = _prototypeName;
     myReferencingAttribute = _referencingAttribute;
   }

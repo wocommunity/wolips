@@ -53,9 +53,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.jface.internal.databinding.provisional.observable.list.WritableList;
 import org.eclipse.ui.views.properties.IPropertySource;
@@ -162,7 +164,7 @@ public class EOModel extends EOModelObject {
     return myEntities;
   }
 
-  public void _checkForDuplicateEntityName(EOEntity _entity, String _newName) throws DuplicateEntityNameException {
+  public void _checkForDuplicateEntityName(EOEntity _entity, String _newName, Set _failures) throws DuplicateEntityNameException {
     EOEntity entity = getModelGroup().getEntityNamed(_newName);
     if (entity != null && entity != _entity) {
       throw new DuplicateEntityNameException(_newName, this);
@@ -181,11 +183,11 @@ public class EOModel extends EOModelObject {
   }
 
   public void addEntity(EOEntity _entity) throws DuplicateEntityNameException {
-    addEntity(_entity, true);
+    addEntity(_entity, true, null);
   }
 
-  public void addEntity(EOEntity _entity, boolean _fireEvents) throws DuplicateEntityNameException {
-    _checkForDuplicateEntityName(_entity, _entity.getName());
+  public void addEntity(EOEntity _entity, boolean _fireEvents, Set _failures) throws DuplicateEntityNameException {
+    _checkForDuplicateEntityName(_entity, _entity.getName(), _failures);
     myEntities.add(_entity);
     if (_fireEvents) {
       firePropertyChange(EOModel.ENTITIES, null, null);
@@ -227,11 +229,7 @@ public class EOModel extends EOModelObject {
     return myUserInfo;
   }
 
-  public void loadFromFolder(File _modelFolder) throws EOModelException, IOException {
-    loadFromFolder(_modelFolder, null);
-  }
-
-  public void loadFromFolder(File _modelFolder, List _resolveFailures) throws EOModelException, IOException {
+  public void loadFromFolder(File _modelFolder, boolean _resolveImmediately, Set _failures) throws EOModelException, IOException {
     File indexFile = new File(_modelFolder, "index.eomodeld"); //$NON-NLS-1$
     if (!indexFile.exists()) {
       throw new EOModelException(indexFile + " does not exist.");
@@ -261,8 +259,8 @@ public class EOModel extends EOModelObject {
         EOEntity entity = new EOEntity(this);
         File entityFile = new File(_modelFolder, entityName + ".plist"); //$NON-NLS-1$
         File fspecFile = new File(_modelFolder, entityName + ".fspec"); //$NON-NLS-1$
-        entity.loadFromFile(entityFile, fspecFile);
-        addEntity(entity, false);
+        entity.loadFromFile(entityFile, fspecFile, _failures);
+        addEntity(entity, false, _failures);
       }
     }
 
@@ -271,8 +269,8 @@ public class EOModel extends EOModelObject {
       myDeletedEntityNamesInObjectStore = modelMap.getList("_deletedEntityNamesInObjectStore", true); //$NON-NLS-1$
     }
 
-    if (_resolveFailures != null) {
-      resolve(_resolveFailures);
+    if (_resolveImmediately) {
+      resolve(_failures);
     }
   }
 
@@ -342,7 +340,7 @@ public class EOModel extends EOModelObject {
     }
   }
 
-  public void resolve(List _failures) {
+  public void resolve(Set _failures) {
     Iterator entitiesIter = myEntities.iterator();
     while (entitiesIter.hasNext()) {
       EOEntity entity = (EOEntity) entitiesIter.next();
@@ -350,7 +348,7 @@ public class EOModel extends EOModelObject {
     }
   }
 
-  public void verify(List _failures) {
+  public void verify(Set _failures) {
     // TODO
 
     Iterator entitiesIter = myEntities.iterator();
@@ -365,14 +363,15 @@ public class EOModel extends EOModelObject {
   }
 
   public static void main(String[] args) throws IOException, EOModelException {
-    EOModelGroup modelGroup = new EOModelGroup();
-    modelGroup.addModelsFromFolder(new File("/Library/Frameworks/ERPrototypes.framework/Resources"), false); //$NON-NLS-1$
-    modelGroup.addModelsFromFolder(new File("/Users/mschrag/Documents/workspace/MDTask"), false); //$NON-NLS-1$
-    modelGroup.addModelsFromFolder(new File("/Users/mschrag/Documents/workspace/MDTAccounting"), false); //$NON-NLS-1$
-    modelGroup.addModelsFromFolder(new File("/Users/mschrag/Documents/workspace/MDTCMS"), false); //$NON-NLS-1$
-    modelGroup.addModelsFromFolder(new File("/Users/mschrag/Documents/workspace/MDTWOExtensions"), false); //$NON-NLS-1$
+    Set failures = new LinkedHashSet();
 
-    List failures = new LinkedList();
+    EOModelGroup modelGroup = new EOModelGroup();
+    modelGroup.addModelsFromFolder(new File("/Library/Frameworks/ERPrototypes.framework/Resources"), false, failures); //$NON-NLS-1$
+    modelGroup.addModelsFromFolder(new File("/Users/mschrag/Documents/workspace/MDTask"), false, failures); //$NON-NLS-1$
+    modelGroup.addModelsFromFolder(new File("/Users/mschrag/Documents/workspace/MDTAccounting"), false, failures); //$NON-NLS-1$
+    modelGroup.addModelsFromFolder(new File("/Users/mschrag/Documents/workspace/MDTCMS"), false, failures); //$NON-NLS-1$
+    modelGroup.addModelsFromFolder(new File("/Users/mschrag/Documents/workspace/MDTWOExtensions"), false, failures); //$NON-NLS-1$
+
     modelGroup.resolve(failures);
     modelGroup.verify(failures);
     Iterator failuresIter = failures.iterator();

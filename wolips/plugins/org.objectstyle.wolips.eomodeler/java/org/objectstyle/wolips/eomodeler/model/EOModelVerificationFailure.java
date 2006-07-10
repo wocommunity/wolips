@@ -62,6 +62,18 @@ public class EOModelVerificationFailure {
     myRootCause = _rootCause;
   }
 
+  public int hashCode() {
+    int hashCode = myMessage.hashCode();
+    if (myRootCause != null) {
+      hashCode *= myRootCause.hashCode();
+    }
+    return hashCode;
+  }
+
+  public boolean equals(Object _obj) {
+    return (_obj instanceof EOModelVerificationFailure && (_obj == this || (((EOModelVerificationFailure) _obj).myMessage.equals(myMessage)) && myRootCause == null && ((EOModelVerificationFailure) _obj).myRootCause == null));
+  }
+
   public String getMessage() {
     return myMessage;
   }

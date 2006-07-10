@@ -216,7 +216,11 @@ public class EOModelGroup extends EOModelObject {
     return matchingModel;
   }
 
-  public void addModelsFromFolder(File _folder, boolean _recursive) throws IOException, EOModelException {
+  public void addModelsFromFolder(File _folder, boolean _resolveImmediately, Set _failures) throws IOException, EOModelException {
+    addModelsFromFolder(_folder, true, _resolveImmediately, _failures);
+  }
+
+  public void addModelsFromFolder(File _folder, boolean _recursive, boolean _resolveImmediately, Set _failures) throws IOException, EOModelException {
     File[] files = _folder.listFiles();
     for (int fileNum = 0; fileNum < files.length; fileNum++) {
       String name = files[fileNum].getName();
@@ -225,18 +229,18 @@ public class EOModelGroup extends EOModelObject {
           String modelName = name.substring(0, name.indexOf('.'));
           if (!containsModelNamed(modelName)) {
             EOModel model = new EOModel(this, modelName);
-            model.loadFromFolder(files[fileNum], null);
+            model.loadFromFolder(files[fileNum], false, _failures);
             addModel(model);
           }
         }
         else if (_recursive) {
-          addModelsFromFolder(files[fileNum], true);
+          addModelsFromFolder(files[fileNum], _recursive, _resolveImmediately, _failures);
         }
       }
     }
   }
 
-  public void verify(List _failures) {
+  public void verify(Set _failures) {
     Iterator modelsIter = myModels.iterator();
     while (modelsIter.hasNext()) {
       EOModel model = (EOModel) modelsIter.next();
@@ -244,7 +248,7 @@ public class EOModelGroup extends EOModelObject {
     }
   }
 
-  public void resolve(List _failures) {
+  public void resolve(Set _failures) {
     Iterator modelsIter = myModels.iterator();
     while (modelsIter.hasNext()) {
       EOModel model = (EOModel) modelsIter.next();

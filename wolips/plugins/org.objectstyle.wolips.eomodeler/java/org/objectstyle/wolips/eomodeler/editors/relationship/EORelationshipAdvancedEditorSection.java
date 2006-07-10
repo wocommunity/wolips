@@ -52,47 +52,28 @@ package org.objectstyle.wolips.eomodeler.editors.relationship;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.internal.databinding.provisional.BindSpec;
 import org.eclipse.jface.internal.databinding.provisional.DataBindingContext;
 import org.eclipse.jface.internal.databinding.provisional.description.Property;
-import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.internal.databinding.provisional.validation.RegexStringValidator;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.objectstyle.wolips.eomodeler.Messages;
-import org.objectstyle.wolips.eomodeler.editors.attributes.EOAttributesContentProvider;
-import org.objectstyle.wolips.eomodeler.editors.attributes.EOAttributesLabelProvider;
-import org.objectstyle.wolips.eomodeler.editors.attributes.EOAttributesViewerSorter;
-import org.objectstyle.wolips.eomodeler.model.EOAttribute;
-import org.objectstyle.wolips.eomodeler.model.EODeleteRule;
-import org.objectstyle.wolips.eomodeler.model.EOEntity;
-import org.objectstyle.wolips.eomodeler.model.EOJoin;
-import org.objectstyle.wolips.eomodeler.model.EOJoinSemantic;
-import org.objectstyle.wolips.eomodeler.model.EOModel;
-import org.objectstyle.wolips.eomodeler.model.EOModelGroup;
 import org.objectstyle.wolips.eomodeler.model.EORelationship;
 import org.objectstyle.wolips.eomodeler.model.EORelationshipPath;
 import org.objectstyle.wolips.eomodeler.utils.BindingFactory;
-import org.objectstyle.wolips.eomodeler.utils.ComboViewerBinding;
-import org.objectstyle.wolips.eomodeler.utils.TableUtils;
 
 public class EORelationshipAdvancedEditorSection extends AbstractPropertySection {
   private EORelationship myRelationship;
@@ -152,7 +133,7 @@ public class EORelationshipAdvancedEditorSection extends AbstractPropertySection
       myRelationship.addPropertyChangeListener(EORelationship.TO_MANY, myRelationshipPropertyChangeListener);
     }
     myBindingContext = BindingFactory.createContext();
-    myBindingContext.bind(myNumberOfToManyFaultsToBatchFetchText, new Property(myRelationship, EORelationship.NUMBER_OF_TO_MANY_FAULTS_TO_BATCH_FETCH), null);
+    myBindingContext.bind(myNumberOfToManyFaultsToBatchFetchText, new Property(myRelationship, EORelationship.NUMBER_OF_TO_MANY_FAULTS_TO_BATCH_FETCH), new BindSpec(null, null, new RegexStringValidator("^[0-9]*$", "^[0-9]$", "Please enter a number"), null)); //$NON-NLS-1$ //$NON-NLS-2$
     myBindingContext.bind(myOwnsDestinationButton, new Property(myRelationship, EORelationship.OWNS_DESTINATION), null);
     myBindingContext.bind(myPropagatesPrimaryKeyButton, new Property(myRelationship, EORelationship.PROPAGATES_PRIMARY_KEY), null);
     updateCardinalityEnabled();

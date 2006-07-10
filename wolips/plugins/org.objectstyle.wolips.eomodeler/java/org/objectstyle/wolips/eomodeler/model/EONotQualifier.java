@@ -49,8 +49,8 @@
  */
 package org.objectstyle.wolips.eomodeler.model;
 
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class EONotQualifier extends EOModelObject implements IEOQualifier {
   public static final String QUALIFIER = "qualifier"; //$NON-NLS-1$
@@ -87,7 +87,7 @@ public class EONotQualifier extends EOModelObject implements IEOQualifier {
     return qualifierMap;
   }
 
-  public void verify(List _failures) {
+  public void verify(Set _failures) {
     if (myQualifier != null) {
       myQualifier.verify(_failures);
     }

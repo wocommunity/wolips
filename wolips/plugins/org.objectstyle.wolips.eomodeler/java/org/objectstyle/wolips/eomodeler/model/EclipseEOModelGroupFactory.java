@@ -67,14 +67,14 @@ import org.eclipse.jdt.core.JavaCore;
 import org.objectstyle.wolips.datasets.adaptable.Project;
 
 public class EclipseEOModelGroupFactory {
-  protected static void addModelsFromFolderIfNecessary(EOModelGroup _modelGroup, File _folder, Set _searchedFolders, boolean _recursive) throws IOException, EOModelException {
+  protected static void addModelsFromFolderIfNecessary(EOModelGroup _modelGroup, File _folder, Set _searchedFolders, boolean _recursive, Set _failures) throws IOException, EOModelException {
     if (!_searchedFolders.contains(_folder) && _folder.exists()) {
       _searchedFolders.add(_folder);
-      _modelGroup.addModelsFromFolder(_folder, _recursive);
+      _modelGroup.addModelsFromFolder(_folder, _recursive, _failures);
     }
   }
 
-  public static EOModel createModel(IResource _modelResource, List _failures) throws CoreException, IOException, EOModelException {
+  public static EOModel createModel(IResource _modelResource, Set _failures) throws CoreException, IOException, EOModelException {
     IProject project = _modelResource.getProject();
     EOModelGroup modelGroup = EclipseEOModelGroupFactory.createModelGroup(project, _failures);
     IContainer modelContainer;
@@ -90,11 +90,11 @@ public class EclipseEOModelGroupFactory {
     return model;
   }
 
-  public static EOModelGroup createModelGroup(IProject _project, List _failures) throws CoreException, IOException, EOModelException {
+  public static EOModelGroup createModelGroup(IProject _project, Set _failures) throws CoreException, IOException, EOModelException {
     EOModelGroup modelGroup = new EOModelGroup();
     Set searchedFolders = new HashSet();
 
-    EclipseEOModelGroupFactory.addModelsFromFolderIfNecessary(modelGroup, _project.getLocation().toFile(), searchedFolders, true);
+    EclipseEOModelGroupFactory.addModelsFromFolderIfNecessary(modelGroup, _project.getLocation().toFile(), searchedFolders, true, _failures);
 
     IJavaProject javaProject = JavaCore.create(_project);
     IClasspathEntry[] classpathEntries = javaProject.getResolvedClasspath(true);
@@ -114,7 +114,7 @@ public class EclipseEOModelGroupFactory {
           }
         }
         if (frameworkPath != null) {
-          EclipseEOModelGroupFactory.addModelsFromFolderIfNecessary(modelGroup, frameworkPath.append("Resources").toFile(), searchedFolders, false); //$NON-NLS-1$
+          EclipseEOModelGroupFactory.addModelsFromFolderIfNecessary(modelGroup, frameworkPath.append("Resources").toFile(), searchedFolders, false, _failures); //$NON-NLS-1$
         }
       }
       else if (entryKind == IClasspathEntry.CPE_PROJECT) {
@@ -123,7 +123,7 @@ public class EclipseEOModelGroupFactory {
         if (project != null) {
           Project wolipsProject = (Project) project.getAdapter(Project.class);
           if (wolipsProject != null && wolipsProject.hasWOLipsNature()) {
-            EclipseEOModelGroupFactory.addModelsFromFolderIfNecessary(modelGroup, project.getLocation().toFile(), searchedFolders, true);
+            EclipseEOModelGroupFactory.addModelsFromFolderIfNecessary(modelGroup, project.getLocation().toFile(), searchedFolders, true, _failures);
           }
         }
       }
