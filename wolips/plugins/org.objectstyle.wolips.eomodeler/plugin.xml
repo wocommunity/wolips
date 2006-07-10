@@ -75,7 +75,13 @@
                label=" "/>
          <propertyTab
                category="eorelationship"
-               id="org.objectstyle.wolips.eomodeler.tabs.eorelationship"
+               id="org.objectstyle.wolips.eomodeler.tabs.eorelationshipBasic"
+               image="icons/eoRelationship.gif"
+               label=" "/>
+         <propertyTab
+               afterTab="org.objectstyle.wolips.eomodeler.tabs.eorelationshipBasic"
+               category="eorelationship"
+               id="org.objectstyle.wolips.eomodeler.tabs.eorelationshipAdvanced"
                image="icons/eoRelationship.gif"
                label=" "/>
       </propertyTabs>
@@ -91,8 +97,15 @@
          </propertySection>
          <propertySection
                class="org.objectstyle.wolips.eomodeler.editors.relationship.EORelationshipBasicEditorSection"
-               id="org.objectstyle.wolips.eomodeler.eorelationshipSection"
-               tab="org.objectstyle.wolips.eomodeler.tabs.eorelationship">
+               id="org.objectstyle.wolips.eomodeler.eorelationshipBasicSection"
+               tab="org.objectstyle.wolips.eomodeler.tabs.eorelationshipBasic">
+            <input type="org.objectstyle.wolips.eomodeler.model.EORelationship"/>
+            <input type="org.objectstyle.wolips.eomodeler.model.EORelationshipPath"/>
+         </propertySection>
+         <propertySection
+               class="org.objectstyle.wolips.eomodeler.editors.relationship.EORelationshipAdvancedEditorSection"
+               id="org.objectstyle.wolips.eomodeler.eorelationshipAdvancedSection"
+               tab="org.objectstyle.wolips.eomodeler.tabs.eorelationshipAdvanced">
             <input type="org.objectstyle.wolips.eomodeler.model.EORelationship"/>
             <input type="org.objectstyle.wolips.eomodeler.model.EORelationshipPath"/>
          </propertySection>

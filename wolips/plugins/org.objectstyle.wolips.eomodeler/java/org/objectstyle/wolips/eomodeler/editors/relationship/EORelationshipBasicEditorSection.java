@@ -97,7 +97,6 @@ import org.objectstyle.wolips.eomodeler.utils.TableUtils;
 public class EORelationshipBasicEditorSection extends AbstractPropertySection {
   private EORelationship myRelationship;
 
-  private Composite myForm;
   private Text myNameText;
   private Button myToOneButton;
   private Button myToManyButton;
@@ -130,11 +129,11 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
 
   public void createControls(Composite _parent, TabbedPropertySheetPage _tabbedPropertySheetPage) {
     super.createControls(_parent, _tabbedPropertySheetPage);
-    myForm = getWidgetFactory().createFlatFormComposite(_parent);
+    Composite form = getWidgetFactory().createFlatFormComposite(_parent);
     FormLayout formLayout = new FormLayout();
-    myForm.setLayout(formLayout);
+    form.setLayout(formLayout);
 
-    Composite topForm = getWidgetFactory().createPlainComposite(myForm, SWT.NONE);
+    Composite topForm = getWidgetFactory().createPlainComposite(form, SWT.NONE);
     FormData topFormData = new FormData();
     topFormData.top = new FormAttachment(0, 5);
     topFormData.left = new FormAttachment(0, 5);
@@ -233,7 +232,7 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
     myJoinsTableViewer.getTable().setLayoutData(joinsTableLayoutData);
     myJoinsTableViewer.addSelectionChangedListener(myButtonUpdateListener);
 
-    Composite bottomForm = getWidgetFactory().createPlainComposite(myForm, SWT.NONE);
+    Composite bottomForm = getWidgetFactory().createPlainComposite(form, SWT.NONE);
     FormData bottomFormData = new FormData();
     bottomFormData.top = new FormAttachment(topForm, 5);
     bottomFormData.left = new FormAttachment(0, 5);
@@ -270,7 +269,7 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
     myDestinationAttributesTableViewer.getTable().setLayoutData(destinationAttributesTableLayoutData);
     myDestinationAttributesTableViewer.addSelectionChangedListener(myButtonUpdateListener);
 
-    Composite buttonGroup = getWidgetFactory().createPlainComposite(myForm, SWT.NONE);
+    Composite buttonGroup = getWidgetFactory().createPlainComposite(form, SWT.NONE);
     FormData buttonGroupFormData = new FormData();
     buttonGroupFormData.top = new FormAttachment(bottomForm, 5);
     buttonGroupFormData.left = new FormAttachment(0, 5);
