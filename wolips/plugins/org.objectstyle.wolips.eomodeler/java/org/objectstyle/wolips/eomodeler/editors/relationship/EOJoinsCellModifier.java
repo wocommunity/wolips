@@ -61,15 +61,14 @@ import org.eclipse.swt.widgets.TableItem;
 import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.model.EOJoin;
 import org.objectstyle.wolips.eomodeler.utils.MiscUtils;
+import org.objectstyle.wolips.eomodeler.utils.TablePropertyCellModifier;
 
-public class EOJoinsCellModifier implements ICellModifier {
-  private TableViewer myJoinsTableViewer;
-
+public class EOJoinsCellModifier extends TablePropertyCellModifier {
   public EOJoinsCellModifier(TableViewer _joinsTableViewer) {
-    myJoinsTableViewer = _joinsTableViewer;
+    super(_joinsTableViewer);
   }
 
-  public synchronized boolean canModify(Object _element, String _property) {
+  protected boolean _canModify(Object _element, String _property) throws Throwable {
     boolean canModify = true;
     return canModify;
   }
@@ -77,57 +76,43 @@ public class EOJoinsCellModifier implements ICellModifier {
   public Object getValue(Object _element, String _property) {
     EOJoin join = (EOJoin) _element;
     Object value = null;
-    try {
-      if (join != null) {
-        if (_property == EOJoin.DESTINATION_ATTRIBUTE_NAME) {
-          String attributeName = join.getDestinationAttributeName();
-          if (attributeName != null) {
-            value = new Integer(Arrays.asList(join.getRelationship().getDestination().getAttributeNames()).indexOf(attributeName));
-          }
-        }
-        else if (_property == EOJoin.SOURCE_ATTRIBUTE_NAME) {
-          String attributeName = join.getSourceAttributeName();
-          if (attributeName != null) {
-            value = new Integer(Arrays.asList(join.getRelationship().getEntity().getAttributeNames()).indexOf(attributeName));
-          }
-        }
-        else {
-          value = new Expression(join, MiscUtils.toGetMethod(_property, false), null).getValue();
-        }
+    if (_property == EOJoin.DESTINATION_ATTRIBUTE_NAME) {
+      String attributeName = join.getDestinationAttributeName();
+      if (attributeName != null) {
+        value = new Integer(Arrays.asList(join.getRelationship().getDestination().getAttributeNames()).indexOf(attributeName));
       }
     }
-    catch (Exception e) {
-      e.printStackTrace();
+    else if (_property == EOJoin.SOURCE_ATTRIBUTE_NAME) {
+      String attributeName = join.getSourceAttributeName();
+      if (attributeName != null) {
+        value = new Integer(Arrays.asList(join.getRelationship().getEntity().getAttributeNames()).indexOf(attributeName));
+      }
+    }
+    else {
+      value = super.getValue(_element, _property);
     }
     return value;
   }
 
-  public void modify(Object _element, String _property, Object _value) {
-    try {
-      TableItem tableItem = (TableItem) _element;
-      EOJoin join = (EOJoin) tableItem.getData();
-      if (_property == EOJoin.DESTINATION_ATTRIBUTE_NAME) {
-        Integer attributeIndex = (Integer) _value;
-        int attributeIndexInt = attributeIndex.intValue();
-        String[] destinationAttributeNames = join.getRelationship().getDestination().getAttributeNames();
-        String attributeName = (attributeIndexInt == -1) ? null : (String) destinationAttributeNames[attributeIndexInt];
-        join.setDestinationAttributeName(attributeName);
-      }
-      else if (_property == EOJoin.SOURCE_ATTRIBUTE_NAME) {
-        Integer attributeIndex = (Integer) _value;
-        int attributeIndexInt = attributeIndex.intValue();
-        String[] sourceAttributeNames = join.getRelationship().getEntity().getAttributeNames();
-        String attributeName = (attributeIndexInt == -1) ? null : (String) sourceAttributeNames[attributeIndexInt];
-        join.setSourceAttributeName(attributeName);
-      }
-      else {
-        new Statement(join, MiscUtils.toSetMethod(_property), new Object[] { _value }).execute();
-      }
-      myJoinsTableViewer.refresh(join);
+  protected boolean _modify(Object _element, String _property, Object _value) throws Throwable {
+    boolean modified = false;
+    EOJoin join = (EOJoin) _element;
+    if (_property == EOJoin.DESTINATION_ATTRIBUTE_NAME) {
+      Integer attributeIndex = (Integer) _value;
+      int attributeIndexInt = attributeIndex.intValue();
+      String[] destinationAttributeNames = join.getRelationship().getDestination().getAttributeNames();
+      String attributeName = (attributeIndexInt == -1) ? null : (String) destinationAttributeNames[attributeIndexInt];
+      join.setDestinationAttributeName(attributeName);
+      modified = true;
     }
-    catch (Throwable e) {
-      e.printStackTrace();
-      MessageDialog.openError(Display.getDefault().getActiveShell(), Messages.getString("EOAttributesCellModifier.errorTitle"), e.getMessage()); //$NON-NLS-1$
+    else if (_property == EOJoin.SOURCE_ATTRIBUTE_NAME) {
+      Integer attributeIndex = (Integer) _value;
+      int attributeIndexInt = attributeIndex.intValue();
+      String[] sourceAttributeNames = join.getRelationship().getEntity().getAttributeNames();
+      String attributeName = (attributeIndexInt == -1) ? null : (String) sourceAttributeNames[attributeIndexInt];
+      join.setSourceAttributeName(attributeName);
+      modified = true;
     }
+    return modified;
   }
 }

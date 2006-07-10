@@ -49,42 +49,35 @@
  */
 package org.objectstyle.wolips.eomodeler.editors.attributes;
 
-import java.beans.Expression;
-import java.beans.Statement;
 import java.util.List;
 
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.TableItem;
 import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.model.EOAttribute;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.utils.KeyComboBoxCellEditor;
-import org.objectstyle.wolips.eomodeler.utils.MiscUtils;
+import org.objectstyle.wolips.eomodeler.utils.TablePropertyCellModifier;
 import org.objectstyle.wolips.eomodeler.utils.TableUtils;
 
-public class EOAttributesCellModifier implements ICellModifier {
+public class EOAttributesCellModifier extends TablePropertyCellModifier {
   private static final String NO_PROTOYPE_VALUE = Messages.getString("EOAttributesCellModifier.noPrototype"); //$NON-NLS-1$
-  private TableViewer myAttributesTableViewer;
   private CellEditor[] myCellEditors;
   private List myPrototypeNames;
 
   public EOAttributesCellModifier(TableViewer _attributesTableViewer, CellEditor[] _cellEditors) {
-    myAttributesTableViewer = _attributesTableViewer;
+    super(_attributesTableViewer);
     myCellEditors = _cellEditors;
   }
 
-  public boolean canModify(Object _element, String _property) {
+  protected boolean _canModify(Object _element, String _property) {
     boolean canModify = true;
     //    EOAttribute attribute = (EOAttribute) _element;
     //    if (attribute.isInherited()) {
     //      canModify = false;
     //    }
     if (_property == EOAttribute.PROTOTYPE) {
-      EOEntity entity = (EOEntity) myAttributesTableViewer.getInput();
+      EOEntity entity = (EOEntity) getTableViewer().getInput();
       myPrototypeNames = entity.getModel().getModelGroup().getPrototypeAttributeNames();
       myPrototypeNames.add(0, EOAttributesCellModifier.NO_PROTOYPE_VALUE);
       String[] prototypeNames = (String[]) myPrototypeNames.toArray(new String[myPrototypeNames.size()]);
@@ -109,39 +102,27 @@ public class EOAttributesCellModifier implements ICellModifier {
       value = new Integer(myPrototypeNames.indexOf(prototypeName));
     }
     else {
-      try {
-        value = new Expression(attribute, MiscUtils.toGetMethod(_property, false), null).getValue();
-      }
-      catch (Exception e) {
-        e.printStackTrace();
-      }
+      value = super.getValue(_element, _property);
     }
     return value;
   }
 
-  public void modify(Object _element, String _property, Object _value) {
-    try {
-      TableItem tableItem = (TableItem) _element;
-      EOAttribute attribute = (EOAttribute) tableItem.getData();
-      if (_property == EOAttribute.PROTOTYPE) {
-        Integer prototypeIndex = (Integer) _value;
-        int prototypeIndexInt = prototypeIndex.intValue();
-        String prototypeName = (prototypeIndexInt == -1) ? null : (String) myPrototypeNames.get(prototypeIndexInt);
-        if (EOAttributesCellModifier.NO_PROTOYPE_VALUE.equals(prototypeName)) {
-          attribute.setPrototype(null, true);
-        }
-        else {
-          EOAttribute prototype = attribute.getEntity().getModel().getModelGroup().getPrototypeAttributeNamed(prototypeName);
-          attribute.setPrototype(prototype, true);
-        }
+  protected boolean _modify(Object _element, String _property, Object _value) throws Throwable {
+    boolean modified = false;
+    EOAttribute attribute = (EOAttribute) _element;
+    if (_property == EOAttribute.PROTOTYPE) {
+      Integer prototypeIndex = (Integer) _value;
+      int prototypeIndexInt = prototypeIndex.intValue();
+      String prototypeName = (prototypeIndexInt == -1) ? null : (String) myPrototypeNames.get(prototypeIndexInt);
+      if (EOAttributesCellModifier.NO_PROTOYPE_VALUE.equals(prototypeName)) {
+        attribute.setPrototype(null, true);
       }
       else {
-        new Statement(attribute, MiscUtils.toSetMethod(_property), new Object[] { _value });
+        EOAttribute prototype = attribute.getEntity().getModel().getModelGroup().getPrototypeAttributeNamed(prototypeName);
+        attribute.setPrototype(prototype, true);
       }
-      myAttributesTableViewer.refresh(attribute);
+      modified = true;
     }
-    catch (Throwable e) {
-      MessageDialog.openError(Display.getDefault().getActiveShell(), Messages.getString("EOAttributesCellModifier.errorTitle"), e.getMessage()); //$NON-NLS-1$
-    }
+    return modified;
   }
 }

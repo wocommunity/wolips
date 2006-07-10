@@ -49,37 +49,30 @@
  */
 package org.objectstyle.wolips.eomodeler.editors.entities;
 
-import java.beans.Expression;
-import java.beans.Statement;
 import java.util.List;
 
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.TableItem;
 import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
 import org.objectstyle.wolips.eomodeler.utils.KeyComboBoxCellEditor;
-import org.objectstyle.wolips.eomodeler.utils.MiscUtils;
+import org.objectstyle.wolips.eomodeler.utils.TablePropertyCellModifier;
 import org.objectstyle.wolips.eomodeler.utils.TableUtils;
 
-public class EOEntitiesCellModifier implements ICellModifier {
+public class EOEntitiesCellModifier extends TablePropertyCellModifier {
   private static final String NO_PARENT_VALUE = Messages.getString("EOEntitiesCellModifier.noParent"); //$NON-NLS-1$
-  private TableViewer myModelTableViewer;
   private CellEditor[] myCellEditors;
   private List myEntityNames;
 
   public EOEntitiesCellModifier(TableViewer _modelTableViewer, CellEditor[] _cellEditors) {
-    myModelTableViewer = _modelTableViewer;
+    super(_modelTableViewer);
     myCellEditors = _cellEditors;
   }
 
-  public boolean canModify(Object _element, String _property) {
+  protected boolean _canModify(Object _element, String _property) {
     if (_property == EOEntity.PARENT) {
-      EOModel model = (EOModel) myModelTableViewer.getInput();
+      EOModel model = (EOModel) getTableViewer().getInput();
       myEntityNames = model.getModelGroup().getEntityNames();
       myEntityNames.add(0, EOEntitiesCellModifier.NO_PARENT_VALUE);
       String[] entityNames = (String[]) myEntityNames.toArray(new String[myEntityNames.size()]);
@@ -104,39 +97,27 @@ public class EOEntitiesCellModifier implements ICellModifier {
       value = new Integer(myEntityNames.indexOf(parentName));
     }
     else {
-      try {
-        value = new Expression(entity, MiscUtils.toGetMethod(_property, false), null).getValue();
-      }
-      catch (Exception e) {
-        e.printStackTrace();
-      }
+      value = super.getValue(_element, _property);
     }
     return value;
   }
 
-  public void modify(Object _element, String _property, Object _value) {
-    try {
-      TableItem tableItem = (TableItem) _element;
-      EOEntity entity = (EOEntity) tableItem.getData();
-      if (_property == EOEntity.PARENT) {
-        Integer parentNameIndex = (Integer) _value;
-        int parentNameIndexInt = parentNameIndex.intValue();
-        String parentName = (parentNameIndexInt == -1) ? null : (String) myEntityNames.get(parentNameIndexInt);
-        if (EOEntitiesCellModifier.NO_PARENT_VALUE.equals(parentName)) {
-          entity.setParent(null);
-        }
-        else {
-          EOEntity parent = entity.getModel().getModelGroup().getEntityNamed(parentName);
-          entity.setParent(parent);
-        }
+  protected boolean _modify(Object _element, String _property, Object _value) throws Throwable {
+    boolean modified = false;
+    EOEntity entity = (EOEntity) _element;
+    if (_property == EOEntity.PARENT) {
+      Integer parentNameIndex = (Integer) _value;
+      int parentNameIndexInt = parentNameIndex.intValue();
+      String parentName = (parentNameIndexInt == -1) ? null : (String) myEntityNames.get(parentNameIndexInt);
+      if (EOEntitiesCellModifier.NO_PARENT_VALUE.equals(parentName)) {
+        entity.setParent(null);
       }
       else {
-        new Statement(entity, MiscUtils.toSetMethod(_property), new Object[] { _value });
+        EOEntity parent = entity.getModel().getModelGroup().getEntityNamed(parentName);
+        entity.setParent(parent);
       }
-      myModelTableViewer.refresh(entity);
+      modified = true;
     }
-    catch (Throwable e) {
-      MessageDialog.openError(Display.getDefault().getActiveShell(), "Error", e.getMessage());
-    }
+    return modified;
   }
 }
