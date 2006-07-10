@@ -47,23 +47,33 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eomodeler;
+package org.objectstyle.wolips.eomodeler.model;
 
-import org.eclipse.ui.IFolderLayout;
-import org.eclipse.ui.IPageLayout;
-import org.eclipse.ui.IPerspectiveFactory;
+public class DuplicateAttributeFailure extends EOModelVerificationFailure {
+  private EOEntity myEntity;
+  private String myAttributeName;
+  private String myNewAttributeName;
 
-public class EOModelerPerspectiveFactory implements IPerspectiveFactory {
-  public static final String EOMODELER_PERSPECTIVE_ID = "org.objectstyle.wolips.eomodeler.EOModelerPerspective"; //$NON-NLS-1$
+  public DuplicateAttributeFailure(EOEntity _entity, String _attributeName, String _newAttributeName) {
+    this(_entity, _attributeName, _newAttributeName, null);
+  }
 
-  public void createInitialLayout(IPageLayout _layout) {
-    String editorArea = _layout.getEditorArea();
-    
-    IFolderLayout topLeft = _layout.createFolder("left", IPageLayout.LEFT, 0.45f, editorArea); //$NON-NLS-1$
-    topLeft.addView(IPageLayout.ID_OUTLINE);
-    topLeft.addView("org.eclipse.jdt.ui.PackageExplorer"); //$NON-NLS-1$
+  public DuplicateAttributeFailure(EOEntity _entity, String _attributeName, String _newAttributeName, Throwable _throwable) {
+    super("There was more than one attribute named '" + _attributeName + "' in " + _entity.getName() + ", so one was renamed to '" + _newAttributeName + "'.", _throwable);
+    myEntity = _entity;
+    myAttributeName = _attributeName;
+    myNewAttributeName = _newAttributeName;
+  }
 
-    IFolderLayout bottomRight = _layout.createFolder("bottomLeft", IPageLayout.BOTTOM, 0.30f, "left"); //$NON-NLS-1$
-    bottomRight.addView(IPageLayout.ID_PROP_SHEET);
+  public EOEntity getEntity() {
+    return myEntity;
+  }
+
+  public String getAttributeName() {
+    return myAttributeName;
+  }
+
+  public String getNewAttributeName() {
+    return myNewAttributeName;
   }
 }

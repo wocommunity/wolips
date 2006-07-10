@@ -146,7 +146,7 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
 
     getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship.name"), SWT.NONE); //$NON-NLS-1$
     myNameText = new Text(topForm, SWT.BORDER);
-    GridData nameFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+    GridData nameFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL | GridData.GRAB_HORIZONTAL);
     myNameText.setLayoutData(nameFieldLayoutData);
 
     getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship.cardinality"), SWT.NONE); //$NON-NLS-1$
@@ -163,7 +163,7 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
     myToManyButton.setText(Messages.getString("EORelationship.toMany")); //$NON-NLS-1$
     GridData toManyButtonLayoutData = new GridData(GridData.FILL_HORIZONTAL);
     myToManyButton.setLayoutData(toManyButtonLayoutData);
-    GridData cardinalityCompositeLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+    GridData cardinalityCompositeLayoutData = new GridData(GridData.FILL_HORIZONTAL | GridData.GRAB_HORIZONTAL);
     cardinalityComposite.setLayoutData(cardinalityCompositeLayoutData);
 
     getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship.optionality"), SWT.NONE); //$NON-NLS-1$
@@ -180,7 +180,7 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
     myMandatoryButton.setText(Messages.getString("EORelationship.mandatory")); //$NON-NLS-1$
     GridData mandatoryButtonLayoutData = new GridData(GridData.FILL_HORIZONTAL);
     myMandatoryButton.setLayoutData(mandatoryButtonLayoutData);
-    GridData optioanlityCompositeLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+    GridData optioanlityCompositeLayoutData = new GridData(GridData.FILL_HORIZONTAL | GridData.GRAB_HORIZONTAL);
     optionalityComposite.setLayoutData(optioanlityCompositeLayoutData);
 
     getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship.deleteRule"), SWT.NONE); //$NON-NLS-1$
@@ -190,7 +190,7 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
     myDeleteRuleComboViewer.setContentProvider(new EODeleteRuleContentProvider());
     myDeleteRuleComboViewer.setInput(EODeleteRule.DELETE_RULES);
     myDeleteRuleComboViewer.setSelection(new StructuredSelection(EODeleteRule.NULLIFY));
-    GridData deleteRuleComboLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+    GridData deleteRuleComboLayoutData = new GridData(GridData.FILL_HORIZONTAL | GridData.GRAB_HORIZONTAL);
     deleteRuleCombo.setLayoutData(deleteRuleComboLayoutData);
 
     getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship.model"), SWT.NONE); //$NON-NLS-1$
@@ -199,7 +199,7 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
     myModelComboViewer.setLabelProvider(new EOModelLabelProvider());
     myModelComboViewer.setContentProvider(new EOModelListContentProvider());
     myModelComboViewer.addSelectionChangedListener(new ModelSelectionListener());
-    GridData modelRuleComboLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+    GridData modelRuleComboLayoutData = new GridData(GridData.FILL_HORIZONTAL | GridData.GRAB_HORIZONTAL);
     modelCombo.setLayoutData(modelRuleComboLayoutData);
 
     getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship.entity"), SWT.NONE); //$NON-NLS-1$
@@ -207,7 +207,7 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
     myEntityComboViewer = new ComboViewer(entityCombo);
     myEntityComboViewer.setLabelProvider(new EOEntityLabelProvider());
     myEntityComboViewer.setContentProvider(new EOEntityListContentProvider());
-    GridData entityComboLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+    GridData entityComboLayoutData = new GridData(GridData.FILL_HORIZONTAL | GridData.GRAB_HORIZONTAL);
     entityCombo.setLayoutData(entityComboLayoutData);
 
     Combo joinSemanticCombo = new Combo(topForm, SWT.BORDER | SWT.FLAT | SWT.READ_ONLY);
@@ -216,7 +216,7 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
     myJoinSemanticComboViewer.setContentProvider(new EOJoinSemanticContentProvider());
     myJoinSemanticComboViewer.setInput(EOJoinSemantic.JOIN_SEMANTICS);
     myJoinSemanticComboViewer.setSelection(new StructuredSelection(EOJoinSemantic.INNER));
-    GridData joinSemanticLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+    GridData joinSemanticLayoutData = new GridData(GridData.FILL_HORIZONTAL | GridData.GRAB_HORIZONTAL);
     joinSemanticLayoutData.verticalAlignment = SWT.TOP;
     joinSemanticCombo.setLayoutData(joinSemanticLayoutData);
 
@@ -227,7 +227,7 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
     myJoinsTableViewer.setContentProvider(new EOJoinsContentProvider());
     myJoinsTableViewer.setLabelProvider(new EOJoinsLabelProvider(EOJoinsConstants.COLUMNS));
     myJoinsTableViewer.setSorter(new EOJoinsViewerSorter(EOJoinsConstants.COLUMNS));
-    GridData joinsTableLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+    GridData joinsTableLayoutData = new GridData(GridData.FILL_HORIZONTAL | GridData.GRAB_HORIZONTAL);
     joinsTableLayoutData.heightHint = 100;
     myJoinsTableViewer.getTable().setLayoutData(joinsTableLayoutData);
     myJoinsTableViewer.addSelectionChangedListener(myButtonUpdateListener);

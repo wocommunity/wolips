@@ -49,7 +49,7 @@
  */
 package org.objectstyle.wolips.eomodeler.model;
 
-import java.util.List;
+import java.util.Set;
 
 public class EOSortOrdering {
   private String myKey;
@@ -84,7 +84,7 @@ public class EOSortOrdering {
     return sortOrderingMap;
   }
 
-  public void verify(List _failures) {
+  public void verify(Set _failures) {
     // TODO
   }
 }

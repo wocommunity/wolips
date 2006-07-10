@@ -49,7 +49,7 @@
  */
 package org.objectstyle.wolips.eomodeler.model;
 
-import java.util.List;
+import java.util.Set;
 
 public class EOJoin extends EOModelObject {
   public static final String DESTINATION_ATTRIBUTE = "destinationAttribute"; //$NON-NLS-1$
@@ -113,7 +113,7 @@ public class EOJoin extends EOModelObject {
     }
   }
 
-  public void loadFromMap(EOModelMap _joinMap) {
+  public void loadFromMap(EOModelMap _joinMap, Set _failures) {
     myJoinMap = _joinMap;
   }
 
@@ -128,7 +128,7 @@ public class EOJoin extends EOModelObject {
     return joinMap;
   }
 
-  public void resolve(List _failures) {
+  public void resolve(Set _failures) {
     String sourceAttributeName = myJoinMap.getString("sourceAttribute", true); //$NON-NLS-1$
     mySourceAttribute = myRelationship.getEntity().getAttributeNamed(sourceAttributeName);
     if (mySourceAttribute == null) {
@@ -136,13 +136,16 @@ public class EOJoin extends EOModelObject {
     }
 
     String destinationAttributeName = myJoinMap.getString("destinationAttribute", true); //$NON-NLS-1$
-    myDestinationAttribute = myRelationship.getDestination().getAttributeNamed(destinationAttributeName);
-    if (myDestinationAttribute == null) {
-      _failures.add(new MissingAttributeFailure(myRelationship.getDestination(), destinationAttributeName));
+    EOEntity destination = myRelationship.getDestination();
+    if (destination != null) {
+      myDestinationAttribute = myRelationship.getDestination().getAttributeNamed(destinationAttributeName);
+      if (myDestinationAttribute == null) {
+        _failures.add(new MissingAttributeFailure(myRelationship.getDestination(), destinationAttributeName));
+      }
     }
   }
 
-  public void verify(List _failures) {
+  public void verify(Set _failures) {
     if (mySourceAttribute == null) {
       _failures.add(new EOModelVerificationFailure(getRelationship().getEntity().getName() + "'s " + getRelationship().getName() + "'s has a join with a missing source attribute."));
     }

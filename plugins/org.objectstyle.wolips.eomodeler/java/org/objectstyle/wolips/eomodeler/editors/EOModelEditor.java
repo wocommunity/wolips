@@ -51,9 +51,7 @@ package org.objectstyle.wolips.eomodeler.editors;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Set;
 
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
@@ -90,7 +88,6 @@ import org.objectstyle.wolips.eomodeler.editors.entity.EOEntityEditor;
 import org.objectstyle.wolips.eomodeler.model.EOAttribute;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
-import org.objectstyle.wolips.eomodeler.model.EOModelVerificationFailure;
 import org.objectstyle.wolips.eomodeler.model.EORelationship;
 import org.objectstyle.wolips.eomodeler.model.EORelationshipPath;
 import org.objectstyle.wolips.eomodeler.outline.EOModelContentOutlinePage;
@@ -244,9 +241,8 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
       }
       else if (_editorInput instanceof IFileEditorInput) {
         IFileEditorInput fileEditorInput = (IFileEditorInput) _editorInput;
-        List failures = new LinkedList();
-        input = new EOModelEditorInput(fileEditorInput, failures);
-        handleModelErrors(failures);
+        input = new EOModelEditorInput(fileEditorInput);
+        handleModelErrors(input.getLoadFailures());
       }
       else {
         throw new PartInitException("Unknown editor input: " + _editorInput + ".");
@@ -265,13 +261,10 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
     }
   }
 
-  protected void handleModelErrors(List _failures) {
-    // TODO: Display errors to user!
-    Iterator failuresIter = _failures.iterator();
-    while (failuresIter.hasNext()) {
-      EOModelVerificationFailure failure = (EOModelVerificationFailure) failuresIter.next();
-      System.out.println("EOModelEditor.init: " + failure);
-    }
+  protected void handleModelErrors(Set _failures) {
+    EOModelErrorDialog dialog = new EOModelErrorDialog(Display.getDefault().getActiveShell(), _failures);
+    dialog.setBlockOnOpen(true);
+    dialog.open();
   }
 
   protected void updatePartName() {

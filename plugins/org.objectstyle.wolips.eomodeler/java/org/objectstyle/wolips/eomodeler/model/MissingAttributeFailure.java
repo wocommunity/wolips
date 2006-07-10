@@ -58,7 +58,7 @@ public class MissingAttributeFailure extends EOModelVerificationFailure {
   }
 
   public MissingAttributeFailure(EOEntity _entity, String _attributeName, Throwable _throwable) {
-    super("Unable to resolve the attribute named '" + _attributeName + "' on " + _entity + ".", _throwable);
+    super("Missing attribute named '" + _attributeName + "' on " + _entity.getName() + ".", _throwable);
     myEntity = _entity;
     myAttributeName = _attributeName;
   }

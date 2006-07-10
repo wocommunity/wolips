@@ -53,6 +53,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.jface.internal.databinding.provisional.observable.list.WritableList;
 
@@ -106,10 +107,17 @@ public class EOFetchSpecification extends EOModelObject {
     return (_obj instanceof EOFetchSpecification && ((EOFetchSpecification) _obj).myEntity.equals(myEntity) && ((EOFetchSpecification) _obj).myName.equals(myName));
   }
 
-  public void setName(String _name) {
+  public void setName(String _name) throws DuplicateFetchSpecNameException {
+    setName(_name, true);
+  }
+
+  public void setName(String _name, boolean _fireEvents) throws DuplicateFetchSpecNameException {
+    myEntity._checkForDuplicateFetchSpecName(this, _name, null);
     String oldName = myName;
     myName = _name;
-    firePropertyChange(EOFetchSpecification.NAME, oldName, myName);
+    if (_fireEvents) {
+      firePropertyChange(EOFetchSpecification.NAME, oldName, myName);
+    }
   }
 
   public String getName() {
@@ -248,7 +256,7 @@ public class EOFetchSpecification extends EOModelObject {
     firePropertyChange(EOFetchSpecification.USES_DISTINCT, oldUsesDistinct, myUsesDistinct);
   }
 
-  public void loadFromMap(EOModelMap _map) throws EOModelException {
+  public void loadFromMap(EOModelMap _map, Set _failures) throws EOModelException {
     myFetchSpecMap = _map;
     // "entityName" = myEntity
     myClass = _map.getString("class", true); //$NON-NLS-1$
@@ -310,11 +318,11 @@ public class EOFetchSpecification extends EOModelObject {
     return fetchSpecMap;
   }
 
-  public void resolve(List _failures) {
+  public void resolve(Set _failures) {
     // TODO
   }
 
-  public void verify(List _failures) {
+  public void verify(Set _failures) {
     // TODO
     if (myQualifier != null) {
       myQualifier.verify(_failures);

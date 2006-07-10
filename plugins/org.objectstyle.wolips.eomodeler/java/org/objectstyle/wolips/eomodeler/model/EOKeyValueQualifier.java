@@ -49,8 +49,8 @@
  */
 package org.objectstyle.wolips.eomodeler.model;
 
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class EOKeyValueQualifier extends EOModelObject implements IEOQualifier {
   public static final String KEY = "key"; //$NON-NLS-1$
@@ -136,7 +136,7 @@ public class EOKeyValueQualifier extends EOModelObject implements IEOQualifier {
     return qualifierMap;
   }
 
-  public void verify(List _failures) {
+  public void verify(Set _failures) {
     // TODO
   }
 }

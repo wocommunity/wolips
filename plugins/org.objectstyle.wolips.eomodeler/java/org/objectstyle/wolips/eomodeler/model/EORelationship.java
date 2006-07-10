@@ -53,6 +53,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.jface.internal.databinding.provisional.observable.list.WritableList;
 import org.objectstyle.wolips.eomodeler.utils.MiscUtils;
@@ -166,10 +167,16 @@ public class EORelationship extends EOModelObject implements IEOAttribute {
   }
 
   public void setName(String _name) throws DuplicateRelationshipNameException {
+    setName(_name, true);
+  }
+
+  public void setName(String _name, boolean _fireEvents) throws DuplicateRelationshipNameException {
     String oldName = myName;
-    myEntity._checkForDuplicateRelationshipName(this, _name);
+    myEntity._checkForDuplicateRelationshipName(this, _name, null);
     myName = _name;
-    firePropertyChange(EORelationship.NAME, oldName, myName);
+    if (_fireEvents) {
+      firePropertyChange(EORelationship.NAME, oldName, myName);
+    }
   }
 
   public String getName() {
@@ -295,6 +302,7 @@ public class EORelationship extends EOModelObject implements IEOAttribute {
   }
 
   public void setNumberOfToManyFaultsToBatchFetch(Integer _numberOfToManyFaultsToBatchFetch) {
+    System.out.println("EORelationship.setNumberOfToManyFaultsToBatchFetch: " + _numberOfToManyFaultsToBatchFetch);
     Integer oldNumberOfToManyFaultsToBatchFetch = myNumberOfToManyFaultsToBatchFetch;
     myNumberOfToManyFaultsToBatchFetch = _numberOfToManyFaultsToBatchFetch;
     firePropertyChange(EORelationship.NUMBER_OF_TO_MANY_FAULTS_TO_BATCH_FETCH, oldNumberOfToManyFaultsToBatchFetch, myNumberOfToManyFaultsToBatchFetch);
@@ -344,7 +352,7 @@ public class EORelationship extends EOModelObject implements IEOAttribute {
     return join;
   }
 
-  public void loadFromMap(EOModelMap _relationshipMap) {
+  public void loadFromMap(EOModelMap _relationshipMap, Set _failures) {
     myRelationshipMap = _relationshipMap;
     myDefinition = _relationshipMap.getString("definition", true); //$NON-NLS-1$
     myMandatory = _relationshipMap.getBoolean("isMandatory"); //$NON-NLS-1$
@@ -363,7 +371,7 @@ public class EORelationship extends EOModelObject implements IEOAttribute {
       while (joinsIter.hasNext()) {
         EOModelMap joinMap = new EOModelMap((Map) joinsIter.next());
         EOJoin join = new EOJoin(this);
-        join.loadFromMap(joinMap);
+        join.loadFromMap(joinMap, _failures);
         addJoin(join, false);
       }
     }
@@ -398,7 +406,7 @@ public class EORelationship extends EOModelObject implements IEOAttribute {
     return relationshipMap;
   }
 
-  public void resolve(List _failures) {
+  public void resolve(Set _failures) {
     String destinationName = myRelationshipMap.getString("destination", true); //$NON-NLS-1$
     if (destinationName == null) {
       _failures.add(new EOModelVerificationFailure(myEntity.getName() + "'s " + myName + " relationship has no destination entity."));
@@ -417,7 +425,7 @@ public class EORelationship extends EOModelObject implements IEOAttribute {
     }
   }
 
-  public void verify(List _failures) {
+  public void verify(Set _failures) {
     if (myDestination == null) {
       _failures.add(new EOModelVerificationFailure(myEntity.getName() + "'s " + myName + " relationship has no destination entity."));
     }
