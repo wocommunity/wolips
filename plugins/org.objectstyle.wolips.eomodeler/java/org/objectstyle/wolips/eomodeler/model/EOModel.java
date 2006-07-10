@@ -87,8 +87,8 @@ public class EOModel extends EOModelObject {
   public EOModel(EOModelGroup _modelGroup, String _name) {
     myModelGroup = _modelGroup;
     myName = _name;
-    myEntities = new WritableList(new LinkedList(), EOEntity.class);
-    myDeletedEntityNamesInObjectStore = new WritableList(new LinkedList(), String.class);
+    myEntities = new WritableList(EOEntity.class);
+    myDeletedEntityNamesInObjectStore = new WritableList(String.class);
     myVersion = "2.1"; //$NON-NLS-1$
     myModelMap = new EOModelMap();
   }

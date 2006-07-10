@@ -92,7 +92,7 @@ public class EORelationship extends EOModelObject implements IEOAttribute {
 
   public EORelationship(EOEntity _entity) {
     myEntity = _entity;
-    myJoins = new WritableList(new LinkedList(), EOJoin.class);
+    myJoins = new WritableList(EOJoin.class);
     myRelationshipMap = new EOModelMap();
   }
 
