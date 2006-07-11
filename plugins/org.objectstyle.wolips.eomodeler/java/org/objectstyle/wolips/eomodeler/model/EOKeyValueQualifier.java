@@ -121,14 +121,14 @@ public class EOKeyValueQualifier extends EOModelObject implements IEOQualifier {
     if (myValue == null) {
       EOModelMap nullMap = new EOModelMap();
       nullMap.setString("class", "EONull", true); //$NON-NLS-1$ //$NON-NLS-2$
-      qualifierMap.setMap("value", nullMap); //$NON-NLS-1$
+      qualifierMap.setMap("value", nullMap, true); //$NON-NLS-1$
     }
     else if (myValue instanceof EOQualifierVariable) {
       EOQualifierVariable var = (EOQualifierVariable) myValue;
       EOModelMap variableMap = new EOModelMap();
       variableMap.setString("class", "EOQualifierVariable", true); //$NON-NLS-1$ //$NON-NLS-2$
       variableMap.setString("name", var.getName(), false); //$NON-NLS-1$
-      qualifierMap.setMap("value", variableMap); //$NON-NLS-1$
+      qualifierMap.setMap("value", variableMap, true); //$NON-NLS-1$
     }
     else {
       qualifierMap.put("value", myValue); //$NON-NLS-1$

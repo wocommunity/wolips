@@ -49,7 +49,11 @@
  */
 package org.objectstyle.wolips.eomodeler.model;
 
-public class EORelationshipPath {
+import java.util.Map;
+
+import org.objectstyle.wolips.eomodeler.utils.NotificationMap;
+
+public class EORelationshipPath implements IUserInfoable {
   private EORelationshipPath myParentRelationshipPath;
   private EORelationship myChildRelationship;
 
@@ -64,5 +68,13 @@ public class EORelationshipPath {
 
   public EORelationship getChildRelationship() {
     return myChildRelationship;
+  }
+  
+  public NotificationMap getUserInfo() {
+    return myChildRelationship.getUserInfo();
+  }
+  
+  public void setUserInfo(Map _userInfo) {
+    myChildRelationship.setUserInfo(_userInfo);
   }
 }

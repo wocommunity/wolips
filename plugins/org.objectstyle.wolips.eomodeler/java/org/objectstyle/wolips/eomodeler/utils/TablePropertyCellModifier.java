@@ -105,8 +105,8 @@ public class TablePropertyCellModifier implements ICellModifier, ISelectionChang
     try {
       value = new Expression(_element, MiscUtils.toGetMethod(_property, false), null).getValue();
     }
-    catch (Exception e) {
-      e.printStackTrace();
+    catch (Throwable t) {
+      t.printStackTrace();
     }
     return value;
   }

@@ -217,7 +217,7 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
     joinSemanticLayoutData.verticalAlignment = SWT.TOP;
     joinSemanticCombo.setLayoutData(joinSemanticLayoutData);
 
-    myJoinsTableViewer = new TableViewer(topForm, SWT.BORDER | SWT.FLAT |  SWT.MULTI | SWT.FULL_SELECTION);
+    myJoinsTableViewer = new TableViewer(topForm, SWT.BORDER | SWT.FLAT | SWT.MULTI | SWT.FULL_SELECTION);
     myJoinsTableViewer.getTable().setHeaderVisible(true);
     myJoinsTableViewer.getTable().setLinesVisible(true);
     TableUtils.createTableColumns(myJoinsTableViewer, "EOJoin", EOJoinsConstants.COLUMNS); //$NON-NLS-1$

@@ -63,8 +63,9 @@ import org.eclipse.jface.internal.databinding.provisional.observable.list.Writab
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.objectstyle.cayenne.wocompat.PropertyListSerialization;
 import org.objectstyle.wolips.eomodeler.properties.EOModelPropertySource;
+import org.objectstyle.wolips.eomodeler.utils.NotificationMap;
 
-public class EOModel extends EOModelObject {
+public class EOModel extends EOModelObject implements IUserInfoable {
   public static final String ENTITY = "entity"; //$NON-NLS-1$
   public static final String CONNECTION_DICTIONARY = "connectionDictionary"; //$NON-NLS-1$
   public static final String ADAPTOR_NAME = "adaptorName"; //$NON-NLS-1$
@@ -77,11 +78,11 @@ public class EOModel extends EOModelObject {
   private String myName;
   private String myVersion;
   private String myAdaptorName;
-  private Map myConnectionDictionary;
+  private NotificationMap myConnectionDictionary;
   private List myEntities;
   private List myDeletedEntityNamesInObjectStore;
   private EOModelMap myModelMap;
-  private Map myUserInfo;
+  private NotificationMap myUserInfo;
   private boolean myDirty;
 
   public EOModel(EOModelGroup _modelGroup, String _name) {
@@ -212,20 +213,32 @@ public class EOModel extends EOModelObject {
   }
 
   public void setConnectionDictionary(Map _connectionDictionary) {
-    myConnectionDictionary = _connectionDictionary;
-    firePropertyChange(EOModel.CONNECTION_DICTIONARY, null, null);
+    Map oldConnectionDictionary = myConnectionDictionary;
+    if (_connectionDictionary instanceof NotificationMap) {
+      myConnectionDictionary = (NotificationMap) _connectionDictionary;
+    }
+    else {
+      myConnectionDictionary = new NotificationMap(_connectionDictionary);
+    }
+    firePropertyChange(EOModel.CONNECTION_DICTIONARY, oldConnectionDictionary, myConnectionDictionary);
   }
 
-  public Map getConnectionDictionary() {
+  public NotificationMap getConnectionDictionary() {
     return myConnectionDictionary;
   }
 
   public void setUserInfo(Map _userInfo) {
-    myUserInfo = _userInfo;
-    firePropertyChange(EOModel.USER_INFO, null, null);
+    Map oldUserInfo = myUserInfo;
+    if (_userInfo instanceof NotificationMap) {
+      myUserInfo = (NotificationMap) _userInfo;
+    }
+    else {
+      myUserInfo = new NotificationMap(_userInfo);
+    }
+    firePropertyChange(EOModel.USER_INFO, oldUserInfo, myUserInfo);
   }
 
-  public Map getUserInfo() {
+  public NotificationMap getUserInfo() {
     return myUserInfo;
   }
 
@@ -247,8 +260,8 @@ public class EOModel extends EOModelObject {
       throw new IllegalArgumentException("Unknown version format:" + version);
     }
     myAdaptorName = modelMap.getString("adaptorName", true); //$NON-NLS-1$
-    myConnectionDictionary = modelMap.getMap("connectionDictionary", true); //$NON-NLS-1$
-    myUserInfo = modelMap.getMap("userInfo", true); //$NON-NLS-1$
+    myConnectionDictionary = new NotificationMap(modelMap.getMap("connectionDictionary", true)); //$NON-NLS-1$
+    myUserInfo = new NotificationMap(modelMap.getMap("userInfo", true)); //$NON-NLS-1$
 
     List entities = modelMap.getList("entities"); //$NON-NLS-1$
     if (entities != null) {

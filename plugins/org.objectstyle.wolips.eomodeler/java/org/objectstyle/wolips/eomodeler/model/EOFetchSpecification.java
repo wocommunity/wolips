@@ -297,10 +297,10 @@ public class EOFetchSpecification extends EOModelObject {
     fetchSpecMap.setList("prefetchingRelationshipKeyPaths", myPrefetchingRelationshipKeyPaths); //$NON-NLS-1$
     fetchSpecMap.setBoolean("prompsAfterFetchLimit", myPromptsAfterFetchLimit); //$NON-NLS-1$
     if (myQualifier == null) {
-      fetchSpecMap.setMap("qualifier", null); //$NON-NLS-1$
+      fetchSpecMap.setMap("qualifier", null, true); //$NON-NLS-1$
     }
     else {
-      fetchSpecMap.setMap("qualifier", myQualifier.toMap()); //$NON-NLS-1$
+      fetchSpecMap.setMap("qualifier", myQualifier.toMap(), true); //$NON-NLS-1$
     }
     fetchSpecMap.setList("rawRowKeyPaths", myRawRowKeyPaths); //$NON-NLS-1$
     fetchSpecMap.setBoolean("refreshesRefetchedObjects", myRefreshesRefetchedObjects); //$NON-NLS-1$

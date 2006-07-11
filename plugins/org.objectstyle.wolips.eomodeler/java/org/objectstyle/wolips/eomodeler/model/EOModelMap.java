@@ -108,9 +108,13 @@ public class EOModelMap implements Map {
     return boolValue;
   }
 
-  public void setMap(String _key, Map _map) {
-    if (_map != null) {
-      myBackingMap.put(_key, _map);
+  public void setMap(String _key, Map _map, boolean _skipIfEmpty) {
+    Map map = _map;
+    if (_skipIfEmpty && map != null && map.isEmpty()) {
+      map = null;
+    }
+    if (map != null) {
+      myBackingMap.put(_key, map);
     }
     else {
       myBackingMap.remove(_key);

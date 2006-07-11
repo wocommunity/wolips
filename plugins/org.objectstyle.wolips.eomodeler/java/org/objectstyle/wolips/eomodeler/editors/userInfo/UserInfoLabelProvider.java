@@ -47,49 +47,39 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eomodeler.model;
+package org.objectstyle.wolips.eomodeler.editors.userInfo;
 
-import java.util.Map;
-import java.util.Set;
+import org.objectstyle.wolips.eomodeler.utils.NotificationMap;
+import org.objectstyle.wolips.eomodeler.utils.TablePropertyLabelProvider;
 
-public class EONotQualifier extends EOModelObject implements IEOQualifier {
-  public static final String QUALIFIER = "qualifier"; //$NON-NLS-1$
+public class UserInfoLabelProvider extends TablePropertyLabelProvider {
+  private NotificationMap myUserInfo;
 
-  private IEOQualifier myQualifier;
-
-  public void setQualifier(IEOQualifier _qualifier) {
-    IEOQualifier oldQualifier = myQualifier;
-    myQualifier = _qualifier;
-    firePropertyChange(EONotQualifier.QUALIFIER, oldQualifier, myQualifier);
+  public UserInfoLabelProvider(String[] _columns) {
+    super(_columns);
   }
 
-  public IEOQualifier getQualifier() {
-    return myQualifier;
+  public void setUserInfo(NotificationMap _userInfo) {
+    myUserInfo = _userInfo;
   }
 
-  public void loadFromMap(EOModelMap _map) throws EOModelException {
-    Map qualifierMap = _map.getMap("qualifier"); //$NON-NLS-1$
-    if (qualifierMap != null) {
-      myQualifier = EOQualifierFactory.qualifierForMap(new EOModelMap(qualifierMap));
+  public String getColumnText(Object _element, String _property) {
+    String text = null;
+    String key = (String) _element;
+    if (_property == UserInfoPropertySection.KEY) {
+      text = key;
     }
-  }
-
-  public EOModelMap toMap() {
-    EOModelMap qualifierMap = new EOModelMap();
-    qualifierMap.setString("class", "EONotQualifier", true); //$NON-NLS-1$ //$NON-NLS-2$
-    if (myQualifier == null) {
-      qualifierMap.setMap("qualifier", null, true); //$NON-NLS-1$
+    else if (_property == UserInfoPropertySection.VALUE) {
+      if (myUserInfo != null) {
+        Object value = myUserInfo.get(key);
+        if (value != null) {
+          text = value.toString();
+        }
+      }
     }
     else {
-      EOModelMap notMap = myQualifier.toMap();
-      qualifierMap.setMap("qualifier", notMap, true); //$NON-NLS-1$
+      text = super.getColumnText(_element, _property);
     }
-    return qualifierMap;
-  }
-
-  public void verify(Set _failures) {
-    if (myQualifier != null) {
-      myQualifier.verify(_failures);
-    }
+    return text;
   }
 }

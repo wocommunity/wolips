@@ -55,7 +55,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class EOAttribute extends EOModelObject implements IEOAttribute {
+import org.objectstyle.wolips.eomodeler.utils.NotificationMap;
+
+public class EOAttribute extends EOModelObject implements IEOAttribute, IUserInfoable {
   public static final String PRIMARY_KEY = "primaryKey"; //$NON-NLS-1$
   public static final String CLASS_PROPERTY = "classProperty"; //$NON-NLS-1$
   public static final String USED_FOR_LOCKING = "usedForLocking"; //$NON-NLS-1$
@@ -99,7 +101,7 @@ public class EOAttribute extends EOModelObject implements IEOAttribute {
   private String myDefinition;
   private String myReadFormat;
   private String myWriteFormat;
-  private Map myUserInfo;
+  private NotificationMap myUserInfo;
   private EOModelMap myAttributeMap;
 
   public EOAttribute(EOEntity _entity) {
@@ -235,7 +237,7 @@ public class EOAttribute extends EOModelObject implements IEOAttribute {
       firePropertyChange(EOAttribute.ALLOWS_NULL, oldAllowsNull, myAllowsNull);
     }
   }
-  
+
   public Boolean getClassProperty() {
     return isClassProperty();
   }
@@ -363,13 +365,18 @@ public class EOAttribute extends EOModelObject implements IEOAttribute {
     firePropertyChange(EOAttribute.SCALE, oldScale, myScale);
   }
 
-  public Map getUserInfo() {
+  public NotificationMap getUserInfo() {
     return myUserInfo;
   }
 
   public void setUserInfo(Map _userInfo) {
     Map oldUserInfo = myUserInfo;
-    myUserInfo = _userInfo;
+    if (_userInfo instanceof NotificationMap) {
+      myUserInfo = (NotificationMap) _userInfo;
+    }
+    else {
+      myUserInfo = new NotificationMap(_userInfo);
+    }
     firePropertyChange(EOAttribute.USER_INFO, oldUserInfo, myUserInfo);
   }
 
@@ -452,7 +459,7 @@ public class EOAttribute extends EOModelObject implements IEOAttribute {
   public Boolean getClientClassProperty() {
     return isClientClassProperty();
   }
-  
+
   public Boolean isClientClassProperty() {
     return myClientClassProperty;
   }
@@ -494,7 +501,7 @@ public class EOAttribute extends EOModelObject implements IEOAttribute {
     myDefinition = _attributeMap.getString("definition", true); //$NON-NLS-1$
     myReadFormat = _attributeMap.getString("readFormat", true); //$NON-NLS-1$
     myWriteFormat = _attributeMap.getString("writeFormat", true); //$NON-NLS-1$
-    myUserInfo = _attributeMap.getMap("userInfo", true); //$NON-NLS-1$
+    myUserInfo = new NotificationMap(_attributeMap.getMap("userInfo", true)); //$NON-NLS-1$
   }
 
   public EOModelMap toMap() {
@@ -517,7 +524,7 @@ public class EOAttribute extends EOModelObject implements IEOAttribute {
     attributeMap.setString("definition", myDefinition, true); //$NON-NLS-1$
     attributeMap.setString("readFormat", myReadFormat, true); //$NON-NLS-1$
     attributeMap.setString("writeFormat", myWriteFormat, true); //$NON-NLS-1$
-    attributeMap.setMap("userInfo", myUserInfo); //$NON-NLS-1$
+    attributeMap.setMap("userInfo", myUserInfo, true); //$NON-NLS-1$
     return attributeMap;
   }
 

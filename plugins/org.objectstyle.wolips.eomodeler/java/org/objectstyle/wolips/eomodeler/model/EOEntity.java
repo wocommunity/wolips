@@ -60,8 +60,9 @@ import java.util.Set;
 
 import org.eclipse.jface.internal.databinding.provisional.observable.list.WritableList;
 import org.objectstyle.cayenne.wocompat.PropertyListSerialization;
+import org.objectstyle.wolips.eomodeler.utils.NotificationMap;
 
-public class EOEntity extends EOModelObject {
+public class EOEntity extends EOModelObject implements IUserInfoable {
   public static final String ATTRIBUTE = "attribute"; //$NON-NLS-1$
   public static final String RELATIONSHIP = "relationship"; //$NON-NLS-1$
   public static final String FETCH_SPECIFICATION = "fetchSpecification"; //$NON-NLS-1$
@@ -94,7 +95,7 @@ public class EOEntity extends EOModelObject {
   private List myAttributes;
   private List myRelationships;
   private List myFetchSpecs;
-  private Map myUserInfo;
+  private NotificationMap myUserInfo;
   private EOModelMap myEntityMap;
   private EOModelMap myFetchSpecsMap;
 
@@ -470,11 +471,16 @@ public class EOEntity extends EOModelObject {
 
   public void setUserInfo(Map _userInfo) {
     Map oldUserInfo = myUserInfo;
-    myUserInfo = _userInfo;
+    if (_userInfo instanceof NotificationMap) {
+      myUserInfo = (NotificationMap)_userInfo;
+    }
+    else {
+      myUserInfo = new NotificationMap(_userInfo);
+    }
     firePropertyChange(EOEntity.USER_INFO, oldUserInfo, myUserInfo);
   }
 
-  public Map getUserInfo() {
+  public NotificationMap getUserInfo() {
     return myUserInfo;
   }
 
@@ -510,7 +516,7 @@ public class EOEntity extends EOModelObject {
     myRestrictingQualifier = _entityMap.getString("restrictingQualifier", true); //$NON-NLS-1$
     myExternalQuery = _entityMap.getString("externalQuery", true); //$NON-NLS-1$
     myMaxNumberOfInstancesToBatchFetch = _entityMap.getInteger("maxNumberOfInstancesToBatchFetch"); //$NON-NLS-1$
-    myUserInfo = _entityMap.getMap("userInfo", true); //$NON-NLS-1$
+    myUserInfo = new NotificationMap(_entityMap.getMap("userInfo", true)); //$NON-NLS-1$
 
     //Map fetchSpecifications = _entityMap.getMap("fetchSpecificationDictionary");
     // TODO: Fetch Specs
@@ -679,7 +685,7 @@ public class EOEntity extends EOModelObject {
     while (fetchSpecIter.hasNext()) {
       EOFetchSpecification fetchSpec = (EOFetchSpecification) fetchSpecIter.next();
       EOModelMap fetchSpecMap = fetchSpec.toMap();
-      fetchSpecsMap.setMap(fetchSpec.getName(), fetchSpecMap);
+      fetchSpecsMap.setMap(fetchSpec.getName(), fetchSpecMap, true);
     }
     return fetchSpecsMap;
   }

@@ -49,26 +49,59 @@
  */
 package org.objectstyle.wolips.eomodeler.utils;
 
+import java.beans.Expression;
+
+import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.swt.graphics.Image;
 
-public abstract class TablePropertyLabelProvider implements ITableLabelProvider {
+public class TablePropertyLabelProvider implements ITableLabelProvider {
   private String[] myColumnProperties;
 
   public TablePropertyLabelProvider(String[] _columnProperties) {
     myColumnProperties = _columnProperties;
   }
 
-  public abstract Image getColumnImage(Object _element, String _property);
-
+  public Image getColumnImage(Object _element, String _property) {
+    return null;
+  }
+  
   public Image getColumnImage(Object _element, int _columnIndex) {
     return getColumnImage(_element, myColumnProperties[_columnIndex]);
   }
 
-  public abstract String getColumnText(Object _element, String _property);
+  public String getColumnText(Object _element, String _property) {
+    String text = null;
+    try {
+      Object value = new Expression(_element, MiscUtils.toGetMethod(_property, false), null).getValue();
+      if (value != null) {
+        text = value.toString();
+      }
+    }
+    catch (Throwable t) {
+      t.printStackTrace();
+    }
+    return text;
+  }
 
   public String getColumnText(Object _element, int _columnIndex) {
     return getColumnText(_element, myColumnProperties[_columnIndex]);
+  }
+
+  public void addListener(ILabelProviderListener _listener) {
+    // DO NOTHING
+  }
+
+  public void dispose() {
+    // DO NOTHING
+  }
+
+  public boolean isLabelProperty(Object _element, String _property) {
+    return true;
+  }
+
+  public void removeListener(ILabelProviderListener _listener) {
+    // DO NOTHING
   }
 
   protected Image yesNoImage(Boolean _bool, Image _yesImage, Image _noImage, Image _nullImage) {

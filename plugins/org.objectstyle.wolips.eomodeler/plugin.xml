@@ -63,6 +63,8 @@
       <propertyContributor contributorId="org.objectstyle.wolips.eomodeler.editors.EOModelEditor">
          <propertyCategory category="eomodel"/>
          <propertyCategory category="eorelationship"/>
+         <propertyCategory category="eoentity"/>
+         <propertyCategory category="eoattribute"/>
       </propertyContributor>
    </extension>
    <extension
@@ -74,6 +76,22 @@
                image="icons/eoModel.gif"
                label="Adaptor"/>
          <propertyTab
+               afterTab="org.objectstyle.wolips.eomodeler.tabs.connectionDictionary"
+               category="eomodel"
+               id="org.objectstyle.wolips.eomodeler.tabs.eomodelUserInfo"
+               image="icons/eoModel.gif"
+               label="User Info"/>
+         <propertyTab
+               category="eoentity"
+               id="org.objectstyle.wolips.eomodeler.tabs.eoentityUserInfo"
+               image="icons/eoEntity.gif"
+               label="User Info"/>
+         <propertyTab
+               category="eoattribute"
+               id="org.objectstyle.wolips.eomodeler.tabs.eoattributeUserInfo"
+               image="icons/eoAttribute.gif"
+               label="User Info"/>
+         <propertyTab
                category="eorelationship"
                id="org.objectstyle.wolips.eomodeler.tabs.eorelationshipBasic"
                image="icons/eoRelationship.gif"
@@ -84,6 +102,12 @@
                id="org.objectstyle.wolips.eomodeler.tabs.eorelationshipAdvanced"
                image="icons/eoRelationship.gif"
                label="Advanced"/>
+         <propertyTab
+               afterTab="org.objectstyle.wolips.eomodeler.tabs.eorelationshipAdvanced"
+               category="eorelationship"
+               id="org.objectstyle.wolips.eomodeler.tabs.eorelationshipUserInfo"
+               image="icons/eoRelationship.gif"
+               label="User Info"/>
       </propertyTabs>
    </extension>
    <extension
@@ -96,6 +120,24 @@
             <input type="org.objectstyle.wolips.eomodeler.model.EOModel"/>
          </propertySection>
          <propertySection
+               class="org.objectstyle.wolips.eomodeler.editors.userInfo.UserInfoPropertySection"
+               id="org.objectstyle.wolips.eomodeler.eomodelUserInfoSection"
+               tab="org.objectstyle.wolips.eomodeler.tabs.eomodelUserInfo">
+            <input type="org.objectstyle.wolips.eomodeler.model.EOModel"/>
+         </propertySection>
+         <propertySection
+               class="org.objectstyle.wolips.eomodeler.editors.userInfo.UserInfoPropertySection"
+               id="org.objectstyle.wolips.eomodeler.eoentityUserInfoSection"
+               tab="org.objectstyle.wolips.eomodeler.tabs.eoentityUserInfo">
+            <input type="org.objectstyle.wolips.eomodeler.model.EOEntity"/>
+         </propertySection>
+         <propertySection
+               class="org.objectstyle.wolips.eomodeler.editors.userInfo.UserInfoPropertySection"
+               id="org.objectstyle.wolips.eomodeler.eoattributeUserInfoSection"
+               tab="org.objectstyle.wolips.eomodeler.tabs.eoattributeUserInfo">
+            <input type="org.objectstyle.wolips.eomodeler.model.EOAttribute"/>
+         </propertySection>
+         <propertySection
                class="org.objectstyle.wolips.eomodeler.editors.relationship.EORelationshipBasicEditorSection"
                id="org.objectstyle.wolips.eomodeler.eorelationshipBasicSection"
                tab="org.objectstyle.wolips.eomodeler.tabs.eorelationshipBasic">
@@ -106,6 +148,13 @@
                class="org.objectstyle.wolips.eomodeler.editors.relationship.EORelationshipAdvancedEditorSection"
                id="org.objectstyle.wolips.eomodeler.eorelationshipAdvancedSection"
                tab="org.objectstyle.wolips.eomodeler.tabs.eorelationshipAdvanced">
+            <input type="org.objectstyle.wolips.eomodeler.model.EORelationship"/>
+            <input type="org.objectstyle.wolips.eomodeler.model.EORelationshipPath"/>
+         </propertySection>
+         <propertySection
+               class="org.objectstyle.wolips.eomodeler.editors.userInfo.UserInfoPropertySection"
+               id="org.objectstyle.wolips.eomodeler.eorelationshipUserInfoSection"
+               tab="org.objectstyle.wolips.eomodeler.tabs.eorelationshipUserInfo">
             <input type="org.objectstyle.wolips.eomodeler.model.EORelationship"/>
             <input type="org.objectstyle.wolips.eomodeler.model.EORelationshipPath"/>
          </propertySection>
