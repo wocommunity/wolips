@@ -57,8 +57,9 @@ import java.util.Set;
 
 import org.eclipse.jface.internal.databinding.provisional.observable.list.WritableList;
 import org.objectstyle.wolips.eomodeler.utils.MiscUtils;
+import org.objectstyle.wolips.eomodeler.utils.NotificationMap;
 
-public class EORelationship extends EOModelObject implements IEOAttribute {
+public class EORelationship extends EOModelObject implements IEOAttribute, IUserInfoable {
   public static final String TO_MANY = "toMany"; //$NON-NLS-1$
   public static final String TO_ONE = "toOne"; //$NON-NLS-1$
   public static final String CLASS_PROPERTY = "classProperty"; //$NON-NLS-1$
@@ -72,6 +73,7 @@ public class EORelationship extends EOModelObject implements IEOAttribute {
   public static final String OWNS_DESTINATION = "ownsDestination"; //$NON-NLS-1$
   public static final String PROPAGATES_PRIMARY_KEY = "propagatesPrimaryKey"; //$NON-NLS-1$
   public static final String NUMBER_OF_TO_MANY_FAULTS_TO_BATCH_FETCH = "numberOfToManyFaultsToBatchFetch"; //$NON-NLS-1$
+  public static final String USER_INFO = "userInfo"; //$NON-NLS-1$
   public static final String JOINS = "joins"; //$NON-NLS-1$
 
   private EOEntity myEntity;
@@ -88,7 +90,7 @@ public class EORelationship extends EOModelObject implements IEOAttribute {
   private EOJoinSemantic myJoinSemantic;
   private List myJoins;
   private EOModelMap myRelationshipMap;
-  private Map myUserInfo;
+  private NotificationMap myUserInfo;
 
   public EORelationship(EOEntity _entity) {
     myEntity = _entity;
@@ -352,6 +354,21 @@ public class EORelationship extends EOModelObject implements IEOAttribute {
     return join;
   }
 
+  public NotificationMap getUserInfo() {
+    return myUserInfo;
+  }
+
+  public void setUserInfo(Map _userInfo) {
+    Map oldUserInfo = myUserInfo;
+    if (_userInfo instanceof NotificationMap) {
+      myUserInfo = (NotificationMap) _userInfo;
+    }
+    else {
+      myUserInfo = new NotificationMap(_userInfo);
+    }
+    firePropertyChange(EORelationship.USER_INFO, oldUserInfo, myUserInfo);
+  }
+
   public void loadFromMap(EOModelMap _relationshipMap, Set _failures) {
     myRelationshipMap = _relationshipMap;
     myDefinition = _relationshipMap.getString("definition", true); //$NON-NLS-1$
@@ -375,7 +392,7 @@ public class EORelationship extends EOModelObject implements IEOAttribute {
         addJoin(join, false);
       }
     }
-    myUserInfo = _relationshipMap.getMap("userInfo", true); //$NON-NLS-1$
+    myUserInfo = new NotificationMap(_relationshipMap.getMap("userInfo", true)); //$NON-NLS-1$
   }
 
   public EOModelMap toMap() {
@@ -402,7 +419,7 @@ public class EORelationship extends EOModelObject implements IEOAttribute {
       joins.add(joinMap);
     }
     relationshipMap.setList("joins", joins); //$NON-NLS-1$
-    relationshipMap.setMap("userInfo", myUserInfo); //$NON-NLS-1$
+    relationshipMap.setMap("userInfo", myUserInfo, true); //$NON-NLS-1$
     return relationshipMap;
   }
 

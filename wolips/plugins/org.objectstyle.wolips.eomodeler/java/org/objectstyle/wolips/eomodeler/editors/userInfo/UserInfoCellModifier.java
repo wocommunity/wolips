@@ -47,49 +47,56 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eomodeler.model;
+package org.objectstyle.wolips.eomodeler.editors.userInfo;
 
-import java.util.Map;
-import java.util.Set;
+import org.eclipse.jface.viewers.TableViewer;
+import org.objectstyle.wolips.eomodeler.utils.NotificationMap;
+import org.objectstyle.wolips.eomodeler.utils.TablePropertyCellModifier;
 
-public class EONotQualifier extends EOModelObject implements IEOQualifier {
-  public static final String QUALIFIER = "qualifier"; //$NON-NLS-1$
+public class UserInfoCellModifier extends TablePropertyCellModifier {
+  private NotificationMap myUserInfo;
 
-  private IEOQualifier myQualifier;
-
-  public void setQualifier(IEOQualifier _qualifier) {
-    IEOQualifier oldQualifier = myQualifier;
-    myQualifier = _qualifier;
-    firePropertyChange(EONotQualifier.QUALIFIER, oldQualifier, myQualifier);
+  public UserInfoCellModifier(TableViewer _tableViewer) {
+    super(_tableViewer);
   }
 
-  public IEOQualifier getQualifier() {
-    return myQualifier;
+  public void setUserInfo(NotificationMap _userInfo) {
+    getTableViewer().cancelEditing();
+    myUserInfo = _userInfo;
   }
 
-  public void loadFromMap(EOModelMap _map) throws EOModelException {
-    Map qualifierMap = _map.getMap("qualifier"); //$NON-NLS-1$
-    if (qualifierMap != null) {
-      myQualifier = EOQualifierFactory.qualifierForMap(new EOModelMap(qualifierMap));
+  public Object getValue(Object _element, String _property) {
+    Object value = null;
+    String key = (String) _element;
+    if (_property == UserInfoPropertySection.KEY) {
+      value = key;
     }
-  }
-
-  public EOModelMap toMap() {
-    EOModelMap qualifierMap = new EOModelMap();
-    qualifierMap.setString("class", "EONotQualifier", true); //$NON-NLS-1$ //$NON-NLS-2$
-    if (myQualifier == null) {
-      qualifierMap.setMap("qualifier", null, true); //$NON-NLS-1$
+    else if (_property == UserInfoPropertySection.VALUE) {
+      value = myUserInfo.get(key);
     }
     else {
-      EOModelMap notMap = myQualifier.toMap();
-      qualifierMap.setMap("qualifier", notMap, true); //$NON-NLS-1$
+      value = super.getValue(_element, _property);
     }
-    return qualifierMap;
+    return value;
   }
 
-  public void verify(Set _failures) {
-    if (myQualifier != null) {
-      myQualifier.verify(_failures);
+  protected boolean _canModify(Object _element, String _property) throws Throwable {
+    return true;
+  }
+
+  protected boolean _modify(Object _element, String _property, Object _value) throws Throwable {
+    boolean modified = false;
+    String key = (String) _element;
+    if (_property == UserInfoPropertySection.KEY) {
+      String oldValue = (String) myUserInfo.remove(key);
+      String newKey = (String) _value;
+      myUserInfo.put(newKey, oldValue);
+      modified = true;
     }
+    else if (_property == UserInfoPropertySection.VALUE) {
+      myUserInfo.put(key, _value);
+      modified = true;
+    }
+    return modified;
   }
 }

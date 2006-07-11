@@ -49,7 +49,6 @@
  */
 package org.objectstyle.wolips.eomodeler.editors.relationships;
 
-import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableColorProvider;
 import org.eclipse.jface.viewers.ITableFontProvider;
 import org.eclipse.jface.viewers.TableViewer;
@@ -97,9 +96,6 @@ public class EORelationshipsLabelProvider extends TablePropertyLabelProvider imp
     else if (_property == EORelationship.CLASS_PROPERTY) {
       // DO NOTHING
     }
-    else if (_property == EORelationship.NAME) {
-      text = relationship.getName();
-    }
     else if (_property == EORelationship.DESTINATION) {
       EOEntity destination = relationship.getDestination();
       if (destination != null) {
@@ -125,7 +121,7 @@ public class EORelationshipsLabelProvider extends TablePropertyLabelProvider imp
       }
     }
     else {
-      throw new IllegalArgumentException("Unknown property '" + _property + "'");
+      text = super.getColumnText(_element, _property);
     }
     return text;
   }
@@ -169,10 +165,6 @@ public class EORelationshipsLabelProvider extends TablePropertyLabelProvider imp
     return color;
   }
 
-  public void addListener(ILabelProviderListener _listener) {
-    // DO NOTHING
-  }
-
   public void dispose() {
     if (myFlattenedFont != null) {
       myFlattenedFont.dispose();
@@ -180,13 +172,6 @@ public class EORelationshipsLabelProvider extends TablePropertyLabelProvider imp
     if (myInheritedFont != null) {
       myInheritedFont.dispose();
     }
-  }
-
-  public boolean isLabelProperty(Object _element, String _property) {
-    return true;
-  }
-
-  public void removeListener(ILabelProviderListener _listener) {
-    // DO NOTHING
+    super.dispose();
   }
 }

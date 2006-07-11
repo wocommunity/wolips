@@ -49,7 +49,6 @@
  */
 package org.objectstyle.wolips.eomodeler.editors.attributes;
 
-import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableColorProvider;
 import org.eclipse.jface.viewers.ITableFontProvider;
 import org.eclipse.jface.viewers.TableViewer;
@@ -109,12 +108,6 @@ public class EOAttributesLabelProvider extends TablePropertyLabelProvider implem
     else if (_property == EOAttribute.ALLOWS_NULL) {
       // DO NOTHING
     }
-    else if (_property == EOAttribute.NAME) {
-      text = attribute.getName();
-    }
-    else if (_property == EOAttribute.COLUMN_NAME) {
-      text = attribute.getColumnName();
-    }
     else if (_property == EOAttribute.PROTOTYPE) {
       EOAttribute prototype = attribute.getPrototype();
       if (prototype != null) {
@@ -122,7 +115,7 @@ public class EOAttributesLabelProvider extends TablePropertyLabelProvider implem
       }
     }
     else {
-      throw new IllegalArgumentException("Unknown property '" + _property + "'");
+      text = super.getColumnText(_element, _property);
     }
     return text;
   }
@@ -157,22 +150,11 @@ public class EOAttributesLabelProvider extends TablePropertyLabelProvider implem
     //    }
     return color;
   }
-
-  public void addListener(ILabelProviderListener _listener) {
-    // DO NOTHING
-  }
-
+  
   public void dispose() {
-    //    if (myItalicFont != null) {
-    //      myItalicFont.dispose();
-    //    }
-  }
-
-  public boolean isLabelProperty(Object _element, String _property) {
-    return true;
-  }
-
-  public void removeListener(ILabelProviderListener _listener) {
-    // DO NOTHING
+    if (myInheritedFont != null) {
+      myInheritedFont.dispose();
+    }
+    super.dispose();
   }
 }

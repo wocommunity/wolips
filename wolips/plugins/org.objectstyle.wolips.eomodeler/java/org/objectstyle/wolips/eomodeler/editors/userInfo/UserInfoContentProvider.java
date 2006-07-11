@@ -47,49 +47,23 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eomodeler.model;
+package org.objectstyle.wolips.eomodeler.editors.userInfo;
 
 import java.util.Map;
-import java.util.Set;
 
-public class EONotQualifier extends EOModelObject implements IEOQualifier {
-  public static final String QUALIFIER = "qualifier"; //$NON-NLS-1$
+import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.Viewer;
 
-  private IEOQualifier myQualifier;
-
-  public void setQualifier(IEOQualifier _qualifier) {
-    IEOQualifier oldQualifier = myQualifier;
-    myQualifier = _qualifier;
-    firePropertyChange(EONotQualifier.QUALIFIER, oldQualifier, myQualifier);
+public class UserInfoContentProvider implements IStructuredContentProvider {
+  public void dispose() {
+    // DO NOTHING
   }
 
-  public IEOQualifier getQualifier() {
-    return myQualifier;
+  public Object[] getElements(Object _inputElement) {
+    return ((Map) _inputElement).keySet().toArray();
   }
 
-  public void loadFromMap(EOModelMap _map) throws EOModelException {
-    Map qualifierMap = _map.getMap("qualifier"); //$NON-NLS-1$
-    if (qualifierMap != null) {
-      myQualifier = EOQualifierFactory.qualifierForMap(new EOModelMap(qualifierMap));
-    }
-  }
-
-  public EOModelMap toMap() {
-    EOModelMap qualifierMap = new EOModelMap();
-    qualifierMap.setString("class", "EONotQualifier", true); //$NON-NLS-1$ //$NON-NLS-2$
-    if (myQualifier == null) {
-      qualifierMap.setMap("qualifier", null, true); //$NON-NLS-1$
-    }
-    else {
-      EOModelMap notMap = myQualifier.toMap();
-      qualifierMap.setMap("qualifier", notMap, true); //$NON-NLS-1$
-    }
-    return qualifierMap;
-  }
-
-  public void verify(Set _failures) {
-    if (myQualifier != null) {
-      myQualifier.verify(_failures);
-    }
+  public void inputChanged(Viewer _viewer, Object _oldInput, Object _newInput) {
+    // DO NOTHING
   }
 }

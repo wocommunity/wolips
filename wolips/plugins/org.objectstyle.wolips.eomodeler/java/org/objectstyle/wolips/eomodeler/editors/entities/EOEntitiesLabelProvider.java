@@ -49,8 +49,6 @@
  */
 package org.objectstyle.wolips.eomodeler.editors.entities;
 
-import org.eclipse.jface.viewers.ILabelProviderListener;
-import org.eclipse.swt.graphics.Image;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.utils.TablePropertyLabelProvider;
 
@@ -59,48 +57,18 @@ public class EOEntitiesLabelProvider extends TablePropertyLabelProvider {
     super(_columnProperties);
   }
 
-  public Image getColumnImage(Object _element, String _property) {
-    Image image = null;
-    return image;
-  }
-
   public String getColumnText(Object _element, String _property) {
     EOEntity entity = (EOEntity) _element;
     String text = null;
-    if (_property == EOEntity.NAME) {
-      text = entity.getName();
-    }
-    else if (_property == EOEntity.EXTERNAL_NAME) {
-      text = entity.getExternalName();
-    }
-    else if (_property == EOEntity.CLASS_NAME) {
-      text = entity.getClassName();
-    }
-    else if (_property == EOEntity.PARENT) {
+    if (_property == EOEntity.PARENT) {
       EOEntity parent = entity.getParent();
       if (parent != null) {
         text = parent.getName();
       }
     }
     else {
-      throw new IllegalArgumentException("Unknown property '" + _property + "'");
+      text = super.getColumnText(_element, _property);
     }
     return text;
-  }
-
-  public void addListener(ILabelProviderListener _listener) {
-    // DO NOTHING
-  }
-
-  public void dispose() {
-    // DO NOTHING
-  }
-
-  public boolean isLabelProperty(Object _element, String _property) {
-    return true;
-  }
-
-  public void removeListener(ILabelProviderListener _listener) {
-    // DO NOTHING
   }
 }
