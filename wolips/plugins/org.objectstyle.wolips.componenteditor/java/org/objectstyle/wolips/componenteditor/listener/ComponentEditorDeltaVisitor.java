@@ -136,8 +136,11 @@ public class ComponentEditorDeltaVisitor implements IResourceDeltaVisitor {
 				}
 			}
 			if (input != null) {
-				IDE.setDefaultEditor(file,
-						ComponenteditorPlugin.ComponentEditorID);
+				String editorID = ComponenteditorPlugin.ComponentEditorID;
+				if(extension.equals("java")) {
+					 editorID = "org.eclipse.jdt.ui.CompilationUnitEditor";
+				}
+				IDE.setDefaultEditor(file, editorID);
 //				file.setPersistentProperty(qualifiedName, "true");
 				return false;
 			}
