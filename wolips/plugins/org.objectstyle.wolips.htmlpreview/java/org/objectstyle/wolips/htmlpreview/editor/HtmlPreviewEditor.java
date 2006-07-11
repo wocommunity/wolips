@@ -96,6 +96,9 @@ public class HtmlPreviewEditor implements IEmbeddedEditor,
 	 * Update the contents of the Preview page
 	 */
 	private void updatePreviewContent() {
+		if(editorInteraction == null) {
+			return;
+		}
 		IDocument editDocument = editorInteraction.getHtmlDocumentProvider()
 				.getHtmlEditDocument();
 		IDocument htmlSource = new org.eclipse.jface.text.Document(editDocument

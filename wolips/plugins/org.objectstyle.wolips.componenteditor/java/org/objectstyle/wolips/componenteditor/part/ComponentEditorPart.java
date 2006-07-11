@@ -43,7 +43,6 @@
  */
 package org.objectstyle.wolips.componenteditor.part;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.internal.ui.javaeditor.CompilationUnitEditor;
 import org.eclipse.jface.viewers.ISelection;
@@ -94,22 +93,46 @@ public class ComponentEditorPart extends MultiPageEditorPart {
 
 	boolean htmlActive = true;
 
-	public CompilationUnitEditor compilationUnitEditor;
+	private boolean useJavaEditor = false;
+	
+	protected CompilationUnitEditor compilationUnitEditor;
 
-	public StructuredTextEditorWO structuredTextEditorWO;
+	protected StructuredTextEditorWO structuredTextEditorWO;
 
-	public WodEditor wodEditor;
+	protected WodEditor wodEditor;
 
-	public ApiEditor apiEditor;
+	protected ApiEditor apiEditor;
 
-	public HtmlPreviewEditor htmlPreviewEditor;
+	protected HtmlPreviewEditor htmlPreviewEditor;
 
 	private ComponentEditorOutline componentEditorOutline;
-
+	private IEditorPart activePart;
+	
 	public ComponentEditorPart() {
 		super();
 	}
+	
+	private int getComponentEditorPageIndex() {
+		if(!useJavaEditor) {
+			return 1;
+		}
+		return 0;
+	}
 
+	private int pageIndexToEditorPartOffset(int page) {
+		if(!useJavaEditor) {
+			return page - 1;
+		}
+		return page;
+	}
+	
+	private int editorPartOffsetToPageIndex(int offset) {
+		if(!useJavaEditor) {
+			return offset + 1;
+		}
+		return offset;
+	}
+	
 	private ComponentEditorOutline getComponentEditorOutline() {
 		if (componentEditorOutline == null) {
 			componentEditorOutline = new ComponentEditorOutline();
@@ -129,9 +152,8 @@ public class ComponentEditorPart extends MultiPageEditorPart {
 		super.init(site, input);
 		componentEditorInput = (ComponentEditorInput) input;
 		if (input != null) {
-			String javaInputName = componentEditorInput.getInput()[0].getName();
-			String partName = javaInputName.substring(0,
-					javaInputName.length() - 5);
+			String inputName = input.getName();
+			String partName = inputName.substring(0, inputName.indexOf("."));
 			setPartName(partName);
 		}
 		site.setSelectionProvider(new ComponentEditorPartSelectionProvider(this));
@@ -145,33 +167,10 @@ public class ComponentEditorPart extends MultiPageEditorPart {
 		if (componentEditorInput == null) {
 			return super.getEditorInput();
 		}
-		IEditorInput editorInput = null;
-		int activatePage = this.getActivePage();
-		switch (activatePage) {
-		case 0:
-			editorInput = componentEditorInput.getInput()[0];
-			break;
-
-		case 1:
-			if (this.htmlActive) {
-				editorInput = componentEditorInput.getInput()[1];
-			} else {
-				editorInput = componentEditorInput.getInput()[2];
-			}
-			break;
-
-		case 3:
-			editorInput = componentEditorInput.getInput()[3];
-			break;
-		default:
-			editorInput = componentEditorInput.getInput()[1];
-			break;
-		}
-		return editorInput;
+		return activePart.getEditorInput();
 	}
 
-	public Composite createInnerPartControl(Composite parent,
-			final IEditorPart e) {
+	public Composite createInnerPartControl(Composite parent, final IEditorPart e) {
 		Composite content = new Composite(parent, SWT.NONE);
 		content.setLayout(new FillLayout());
 		e.createPartControl(content);
@@ -184,122 +183,114 @@ public class ComponentEditorPart extends MultiPageEditorPart {
 		}
 		IEditorInput[] editorInput = componentEditorInput.getInput();
 		editorParts = new IEditorPart[editorInput.length + 1];
-		Composite componentEditorParent = new Composite(getContainer(),
-				SWT.NONE);
+		Composite componentEditorParent = new Composite(getContainer(), SWT.NONE);
 		componentEditorParent.setLayout(new FillLayout());
 
-		SashForm componentEditorSashParent = new SashForm(
-				componentEditorParent, SWT.VERTICAL | SWT.SMOOTH);
-		SashForm htmlSashform = new SashForm(componentEditorSashParent,
-				SWT.VERTICAL);
+		SashForm componentEditorSashParent = new SashForm(componentEditorParent, SWT.VERTICAL | SWT.SMOOTH);
+		SashForm htmlSashform = new SashForm(componentEditorSashParent, SWT.VERTICAL);
 		htmlSashform.addListener(SWT.Activate, new Listener() {
 			public void handleEvent(Event event) {
 				htmlActive = true;
-				pageChange(1);
+				pageChange(pageIndexToEditorPartOffset(1));
 				ComponentEditorPart.this.updateOutline();
 			}
 		});
-		SashForm wodSashform = new SashForm(componentEditorSashParent,
-				SWT.VERTICAL);
+		SashForm wodSashform = new SashForm(componentEditorSashParent, SWT.VERTICAL);
 		wodSashform.addListener(SWT.Activate, new Listener() {
 			public void handleEvent(Event event) {
 				htmlActive = false;
-				pageChange(1);
+				pageChange(pageIndexToEditorPartOffset(1));
 				ComponentEditorPart.this.updateOutline();
 			}
 		});
-		for (int i = 0; i < componentEditorInput.getEditors().length + 1; i++) {
+		IFileEditorInput html = null;
+		
+		for (int i = 0; i < componentEditorInput.getEditors().length; i++) {
 			IEditorPart editorPart = null;
-			switch (i) {
-			case 0:
+			IFileEditorInput input = (IFileEditorInput) editorInput[i];
+			String extension = input.getFile().getFileExtension();
+			if("java".equals(extension)) {
 				compilationUnitEditor = new CompilationUnitEditor();
-				editorPart = compilationUnitEditor;
-				try {
-					this.addPage(editorPart, editorInput[i]);
-				} catch (PartInitException e) {
-					ComponenteditorPlugin.getDefault().log(e);
+				if(useJavaEditor) {
+					editorPart = compilationUnitEditor;
+					try {
+						this.addPage(editorPart, input);
+						this.setPageText(getPageCount() - 1, "Java");
+					} catch (PartInitException e) {
+						ComponenteditorPlugin.getDefault().log(e);
+					}
+				} else {
+					// compilationUnitEditor.setInput(input);
 				}
-				this.setPageText(i, "Java");
-				break;
-			case 1:
+			} else if("html".equals(extension)) {
 				structuredTextEditorWO = new StructuredTextEditorWO();
 				editorPart = structuredTextEditorWO;
 				IEditorSite htmlSite = createSite(editorPart);
+				html = input;
 				try {
-					editorPart.init(htmlSite, editorInput[i]);
+					editorPart.init(htmlSite, input);
 				} catch (PartInitException e) {
 					ComponenteditorPlugin.getDefault().log(e);
 				}
 				createInnerPartControl(htmlSashform, editorPart);
 				editorPart.addPropertyListener(new IPropertyListener() {
 					public void propertyChanged(Object source, int propertyId) {
-						ComponentEditorPart.this
-								.handlePropertyChange(propertyId);
+						ComponentEditorPart.this.handlePropertyChange(propertyId);
 					}
 				});
-				break;
-			case 2:
+			} else if("wod".equals(extension)) {
 				wodEditor = new WodEditor();
 				editorPart = wodEditor;
 				IEditorSite wodSite = createSite(editorPart);
 				try {
-					editorPart.init(wodSite, editorInput[i]);
+					editorPart.init(wodSite, input);
 				} catch (PartInitException e) {
 					ComponenteditorPlugin.getDefault().log(e);
 				}
 				createInnerPartControl(wodSashform, editorPart);
 				editorPart.addPropertyListener(new IPropertyListener() {
 					public void propertyChanged(Object source, int propertyId) {
-						ComponentEditorPart.this
-								.handlePropertyChange(propertyId);
+						ComponentEditorPart.this.handlePropertyChange(propertyId);
 					}
 				});
 				this.addPage(componentEditorParent);
-				this.setPageText(i - 1, "Component");
+				this.setPageText(getPageCount() - 1, "Component");
 				wodEditor.getSelectionProvider().addSelectionChangedListener(
 						new ISelectionChangedListener() {
 
-							public void selectionChanged(
-									SelectionChangedEvent event) {
-								WodclipsePlugin.getDefault()
-										.updateWebObjectsTagNames(null);
+							public void selectionChanged(SelectionChangedEvent event) {
+								WodclipsePlugin.getDefault().updateWebObjectsTagNames(null);
 							}
 
 						});
-				WodclipsePlugin.getDefault()
-						.updateWebObjectsTagNames(wodEditor);
-				break;
-			case 3:
+				WodclipsePlugin.getDefault().updateWebObjectsTagNames(wodEditor);
+				// AK FIXME: doesn't work, spews out NPE later on
 				htmlPreviewEditor = new HtmlPreviewEditor();
-				editorPart = htmlPreviewEditor;
 				try {
-					this.addPage(editorPart, editorInput[i - 2]);
+					this.addPage(htmlPreviewEditor, html);
+					this.setPageText(getPageCount() - 1, "Preview");
 				} catch (PartInitException e) {
 					ComponenteditorPlugin.getDefault().log(e);
 				}
-				this.setPageText(i - 1, "Preview");
-				break;
-			case 4:
+
+			} else if("api".equals(extension)) {
 				apiEditor = new ApiEditor();
 				editorPart = apiEditor;
 				try {
-					this.addPage(editorPart, editorInput[i - 1]);
+					this.addPage(editorPart, input);
 				} catch (PartInitException e) {
 					ComponenteditorPlugin.getDefault().log(e);
 				}
-				this.setPageText(i - 1, "Api");
-				break;
-
-			default:
-				break;
+				this.setPageText(getPageCount() - 1, "Api");
 			}
-
-			editorParts[i] = editorPart;
-			if (editorPart instanceof IEmbeddedEditor) {
-				IEmbeddedEditor embeddedEditor = (IEmbeddedEditor) editorPart;
-				embeddedEditor.initEditorInteraction(editorInteraction);
+			if(editorPart != null) {
+				int offset = getPageCount();
+				editorParts[offset] = editorPart;
+				if (editorPart instanceof IEmbeddedEditor) {
+					IEmbeddedEditor embeddedEditor = (IEmbeddedEditor) editorPart;
+					embeddedEditor.initEditorInteraction(editorInteraction);
+				}
 			}
-
 		}
 
 		addWebObjectsTagNamesListener();
@@ -359,7 +350,7 @@ public class ComponentEditorPart extends MultiPageEditorPart {
 
 	public void doSave(IProgressMonitor monitor) {
 		for (int i = 0; i < editorParts.length; i++) {
-			if (editorParts[i].isDirty()) {
+			if (editorParts[i] != null && editorParts[i].isDirty()) {
 				editorParts[i].doSave(monitor);
 			}
 		}
@@ -402,28 +393,28 @@ public class ComponentEditorPart extends MultiPageEditorPart {
 	}
 
 	public void switchToJava() {
-		switchToPage(0);
+		switchToPage(pageIndexToEditorPartOffset(0));
 	}
 
 	public void switchToHtml() {
 		setHtmlActive(true);
-		switchToPage(1);
+		switchToPage(pageIndexToEditorPartOffset(1));
 	}
 
 	public void switchToWod() {
 		setHtmlActive(false);
-		switchToPage(1);
+		switchToPage(pageIndexToEditorPartOffset(1));
 	}
 
 	public void switchToPreview() {
-		switchToPage(2);
+		switchToPage(pageIndexToEditorPartOffset(2));
 	}
 
 	public void switchToApi() {
 		if (apiEditor == null) {
 			return;
 		}
-		switchToPage(3);
+		switchToPage(pageIndexToEditorPartOffset(3));
 	}
 
 	public void switchToPage(int page) {
@@ -433,10 +424,10 @@ public class ComponentEditorPart extends MultiPageEditorPart {
 
 	protected void pageChange(int newPageIndex) {	
 		super.pageChange(newPageIndex);
-		final IEditorPart activeEditor = getEditor(newPageIndex);
-		if (activeEditor != null) {
-			if (activeEditor instanceof IEmbeddedEditorSelected) {
-				IEmbeddedEditorSelected embeddedEditorPageChanged = (IEmbeddedEditorSelected) activeEditor;
+		activePart = getEditor(newPageIndex);
+		if (activePart != null) {
+			if (activePart instanceof IEmbeddedEditorSelected) {
+				IEmbeddedEditorSelected embeddedEditorPageChanged = (IEmbeddedEditorSelected) activePart;
 				embeddedEditorPageChanged.editorSelected();
 			}
 		}
@@ -447,29 +438,31 @@ public class ComponentEditorPart extends MultiPageEditorPart {
 	}
 
 	protected IEditorPart getEditor(int pageIndex) {
-		if (pageIndex == 1) {
+		IEditorPart part = editorParts[pageIndex];
+		if (pageIndex == pageIndexToEditorPartOffset(0)) {
+			return compilationUnitEditor;
+		}
+		if (pageIndex == pageIndexToEditorPartOffset(1)) {
 			if (this.htmlActive) {
 				return this.structuredTextEditorWO;
 			}
 			return this.wodEditor;
 		}
-		if (pageIndex == 0) {
-			return compilationUnitEditor;
-		}
-		if (pageIndex == 2) {
+		if (pageIndex == pageIndexToEditorPartOffset(2)) {
 			return htmlPreviewEditor;
 		}
-		if (pageIndex == 3) {
+		if (pageIndex == pageIndexToEditorPartOffset(3)) {
 			return apiEditor;
 		}
-		if (pageIndex > 1) {
+		System.out.println("Huh?");
+		if (pageIndex > pageIndexToEditorPartOffset(1)) {
 			return super.getEditor(pageIndex + 1);
 		}
 		return super.getEditor(pageIndex);
 	}
 
 	protected IEditorPart getActiveEditor() {
-		if (this.getActivePage() == 1) {
+		if (this.getActivePage() == getComponentEditorPageIndex()) {
 			if (this.htmlActive) {
 				return this.structuredTextEditorWO;
 			}
@@ -487,29 +480,26 @@ public class ComponentEditorPart extends MultiPageEditorPart {
 		}
 
 		public ISelection getSelection() {
-			IEditorPart activeEditor = ((ComponentEditorPart) getMultiPageEditor())
-					.getActiveEditor();
+			IEditorPart activeEditor = ((ComponentEditorPart) getMultiPageEditor()).getActiveEditor();
 			if (activeEditor != null) {
-				ISelectionProvider selectionProvider = activeEditor.getSite()
-						.getSelectionProvider();
-				if (selectionProvider != null)
+				ISelectionProvider selectionProvider = activeEditor.getSite().getSelectionProvider();
+				if (selectionProvider != null) {
 					return selectionProvider.getSelection();
+				}
 			}
 			return globalSelection;
 		}
 		
 		public void setSelection(ISelection selection) {
-			IEditorPart activeEditor = ((ComponentEditorPart) getMultiPageEditor())
-					.getActiveEditor();
+			IEditorPart activeEditor = ((ComponentEditorPart) getMultiPageEditor()).getActiveEditor();
 			if (activeEditor != null) {
-				ISelectionProvider selectionProvider = activeEditor.getSite()
-						.getSelectionProvider();
-				if (selectionProvider != null)
+				ISelectionProvider selectionProvider = activeEditor.getSite().getSelectionProvider();
+				if (selectionProvider != null) {
 					selectionProvider.setSelection(selection);
+				}
 			} else {
 				this.globalSelection = selection;
-				fireSelectionChanged(new SelectionChangedEvent(this,
-						globalSelection));
+				fireSelectionChanged(new SelectionChangedEvent(this, globalSelection));
 			}
 		}
 	}

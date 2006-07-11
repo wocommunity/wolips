@@ -303,13 +303,13 @@ public class ComponentEditor extends ComponentEditorPart implements IGotoMarker,
 			}
 			if(pathFromInputFile.equals(pathFromResource)) {
 				IEditorPart editorPart = null;
-				if(i == 0) {
+				if(pathFromInputFile.getFileExtension().equals("java")) {
 					editorPart = compilationUnitEditor;
 				}
-				if(i == 1) {
+				if(pathFromInputFile.getFileExtension().equals("html")) {
 					editorPart = structuredTextEditorWO;
 				}
-				if(i == 2) {
+				if(pathFromInputFile.getFileExtension().equals("wod")) {
 					editorPart = wodEditor;
 				}
 				if(editorPart == null) {
@@ -319,13 +319,13 @@ public class ComponentEditor extends ComponentEditorPart implements IGotoMarker,
 				if(gotoMarker == null) {
 					return;
 				}
-				if(i == 0) {
+				if(editorPart == compilationUnitEditor) {
 					this.switchToJava();
 				}
-				if(i == 1) {
+				if(editorPart == structuredTextEditorWO) {
 					this.switchToHtml();
 				}
-				if(i == 2) {
+				if(pathFromInputFile.getFileExtension().equals("wod")) {
 					this.switchToWod();
 				}
 				gotoMarker.gotoMarker(marker);
