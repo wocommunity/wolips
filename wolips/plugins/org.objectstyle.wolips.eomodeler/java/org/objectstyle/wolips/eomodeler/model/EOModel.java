@@ -249,7 +249,7 @@ public class EOModel extends EOModelObject implements IUserInfoable {
     }
     EOModelMap modelMap = new EOModelMap((Map) PropertyListSerialization.propertyListFromFile(indexFile));
     myModelMap = modelMap;
-    Object version = modelMap.getString("EOModelVersion", true); //$NON-NLS-1$
+    Object version = modelMap.get("EOModelVersion"); //$NON-NLS-1$
     if (version instanceof String) {
       myVersion = (String) version;
     }
