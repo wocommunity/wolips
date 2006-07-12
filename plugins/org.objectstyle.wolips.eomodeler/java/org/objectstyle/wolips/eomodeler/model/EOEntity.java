@@ -60,6 +60,7 @@ import java.util.Set;
 
 import org.eclipse.jface.internal.databinding.provisional.observable.list.WritableList;
 import org.objectstyle.cayenne.wocompat.PropertyListSerialization;
+import org.objectstyle.wolips.eomodeler.utils.MapUtils;
 import org.objectstyle.wolips.eomodeler.utils.NotificationMap;
 
 public class EOEntity extends EOModelObject implements IUserInfoable {
@@ -516,7 +517,7 @@ public class EOEntity extends EOModelObject implements IUserInfoable {
     myRestrictingQualifier = _entityMap.getString("restrictingQualifier", true); //$NON-NLS-1$
     myExternalQuery = _entityMap.getString("externalQuery", true); //$NON-NLS-1$
     myMaxNumberOfInstancesToBatchFetch = _entityMap.getInteger("maxNumberOfInstancesToBatchFetch"); //$NON-NLS-1$
-    myUserInfo = new NotificationMap(_entityMap.getMap("userInfo", true)); //$NON-NLS-1$
+    myUserInfo = new NotificationMap(MapUtils.toStringMap(_entityMap.getMap("userInfo", true))); //$NON-NLS-1$
 
     //Map fetchSpecifications = _entityMap.getMap("fetchSpecificationDictionary");
     // TODO: Fetch Specs

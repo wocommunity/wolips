@@ -55,6 +55,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.objectstyle.wolips.eomodeler.utils.MapUtils;
 import org.objectstyle.wolips.eomodeler.utils.NotificationMap;
 
 public class EOAttribute extends EOModelObject implements IEOAttribute, IUserInfoable {
@@ -501,7 +502,7 @@ public class EOAttribute extends EOModelObject implements IEOAttribute, IUserInf
     myDefinition = _attributeMap.getString("definition", true); //$NON-NLS-1$
     myReadFormat = _attributeMap.getString("readFormat", true); //$NON-NLS-1$
     myWriteFormat = _attributeMap.getString("writeFormat", true); //$NON-NLS-1$
-    myUserInfo = new NotificationMap(_attributeMap.getMap("userInfo", true)); //$NON-NLS-1$
+    myUserInfo = new NotificationMap(MapUtils.toStringMap(_attributeMap.getMap("userInfo", true))); //$NON-NLS-1$
   }
 
   public EOModelMap toMap() {

@@ -56,6 +56,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.jface.internal.databinding.provisional.observable.list.WritableList;
+import org.objectstyle.wolips.eomodeler.utils.MapUtils;
 import org.objectstyle.wolips.eomodeler.utils.MiscUtils;
 import org.objectstyle.wolips.eomodeler.utils.NotificationMap;
 
@@ -392,7 +393,7 @@ public class EORelationship extends EOModelObject implements IEOAttribute, IUser
         addJoin(join, false);
       }
     }
-    myUserInfo = new NotificationMap(_relationshipMap.getMap("userInfo", true)); //$NON-NLS-1$
+    myUserInfo = new NotificationMap(MapUtils.toStringMap(_relationshipMap.getMap("userInfo", true))); //$NON-NLS-1$
   }
 
   public EOModelMap toMap() {
