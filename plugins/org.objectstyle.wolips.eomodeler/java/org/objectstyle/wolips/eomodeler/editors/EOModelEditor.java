@@ -262,9 +262,11 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
   }
 
   protected void handleModelErrors(Set _failures) {
-    EOModelErrorDialog dialog = new EOModelErrorDialog(Display.getDefault().getActiveShell(), _failures);
-    dialog.setBlockOnOpen(true);
-    dialog.open();
+    if (!_failures.isEmpty()) {
+      EOModelErrorDialog dialog = new EOModelErrorDialog(Display.getDefault().getActiveShell(), _failures);
+      dialog.setBlockOnOpen(true);
+      dialog.open();
+    }
   }
 
   protected void updatePartName() {
