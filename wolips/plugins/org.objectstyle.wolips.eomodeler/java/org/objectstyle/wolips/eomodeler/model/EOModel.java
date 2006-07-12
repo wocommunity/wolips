@@ -63,6 +63,7 @@ import org.eclipse.jface.internal.databinding.provisional.observable.list.Writab
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.objectstyle.cayenne.wocompat.PropertyListSerialization;
 import org.objectstyle.wolips.eomodeler.properties.EOModelPropertySource;
+import org.objectstyle.wolips.eomodeler.utils.MapUtils;
 import org.objectstyle.wolips.eomodeler.utils.NotificationMap;
 
 public class EOModel extends EOModelObject implements IUserInfoable {
@@ -261,7 +262,7 @@ public class EOModel extends EOModelObject implements IUserInfoable {
     }
     myAdaptorName = modelMap.getString("adaptorName", true); //$NON-NLS-1$
     myConnectionDictionary = new NotificationMap(modelMap.getMap("connectionDictionary", true)); //$NON-NLS-1$
-    myUserInfo = new NotificationMap(modelMap.getMap("userInfo", true)); //$NON-NLS-1$
+    myUserInfo = new NotificationMap(MapUtils.toStringMap(modelMap.getMap("userInfo", true))); //$NON-NLS-1$
 
     List entities = modelMap.getList("entities"); //$NON-NLS-1$
     if (entities != null) {
