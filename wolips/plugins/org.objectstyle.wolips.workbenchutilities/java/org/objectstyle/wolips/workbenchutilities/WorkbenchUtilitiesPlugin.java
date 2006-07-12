@@ -305,8 +305,8 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 			IResource resource, String name, String[] extensions) {
 		ArrayList list = new ArrayList();
 		if ((resource != null)) {
-			if ((resource instanceof IContainer)
-					|| (resource instanceof IProject)) {
+			if (((resource instanceof IContainer)
+					|| (resource instanceof IProject)) && resource.isAccessible()) {
 				for (int i = 0; i < extensions.length; i++) {
 					IResource foundResource = ((IContainer) resource)
 							.findMember(name + "." + extensions[i]);
@@ -333,6 +333,9 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 	private final static void findResourcesInResourceByNameAndExtensionsAndAddToArrayList(
 			IResource[] resources, String name, String[] extensions,
 			ArrayList list) {
+    if (resources == null) {
+      return;
+    }
 		for (int i = 0; i < resources.length; i++) {
 			IResource resource = resources[i];
 			if ((resource != null)
@@ -347,8 +350,8 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 					&& (!(resource.getName().equalsIgnoreCase("target") && resource
 							.getParent().equals(resource.getProject())))) {
 				if ((resource != null)) {
-					if ((resource instanceof IContainer)
-							|| (resource instanceof IProject)) {
+					if (((resource instanceof IContainer)
+							|| (resource instanceof IProject)) && resource.isAccessible()) {
 						for (int j = 0; j < extensions.length; j++) {
 							IResource foundResource = ((IContainer) resource)
 									.findMember(name + "." + extensions[j]);
@@ -378,8 +381,8 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 	public final static void findFilesInResourceByName(ArrayList anArrayList,
 			IResource aResource, String aFileName) {
 		if ((aResource != null)) {
-			if ((aResource instanceof IContainer)
-					|| (aResource instanceof IProject)) {
+			if (((aResource instanceof IContainer)
+					|| (aResource instanceof IProject)) && aResource.isAccessible()) {
 				IResource resource = ((IContainer) aResource)
 						.findMember(aFileName);
 				if ((resource != null) && (resource instanceof IFile)
