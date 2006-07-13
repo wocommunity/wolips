@@ -56,8 +56,10 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.jface.internal.databinding.provisional.observable.list.WritableList;
+import org.objectstyle.wolips.eomodeler.utils.MapUtils;
+import org.objectstyle.wolips.eomodeler.utils.NotificationMap;
 
-public class EOFetchSpecification extends EOModelObject {
+public class EOFetchSpecification extends UserInfoableEOModelObject {
   public static final String NAME = "name"; //$NON-NLS-1$
   public static final String SORT_ORDERINGS = "sortOrderings"; //$NON-NLS-1$
   public static final String QUALIFIER = "qualifier"; //$NON-NLS-1$
@@ -71,6 +73,7 @@ public class EOFetchSpecification extends EOModelObject {
   public static final String REFRESHES_REFETCHED_OBJECTS = "refreshesRefetchedObjects"; //$NON-NLS-1$
   public static final String REQUIRES_ALL_QUALIFIER_BINDING_VARIABLES = "requiresAllQualifierBindingVariables"; //$NON-NLS-1$
   public static final String USES_DISTINCT = "usesDistinct"; //$NON-NLS-1$
+  public static final String SHARES_OBJECTS = "sharesObjects"; //$NON-NLS-1$
 
   private EOEntity myEntity;
   private String myName;
@@ -87,6 +90,7 @@ public class EOFetchSpecification extends EOModelObject {
   private List mySortOrderings;
   private IEOQualifier myQualifier;
   private EOModelMap myFetchSpecMap;
+  private Boolean mySharesObjects;
 
   public EOFetchSpecification(EOEntity _entity, String _name) {
     myEntity = _entity;
@@ -146,6 +150,26 @@ public class EOFetchSpecification extends EOModelObject {
 
   public List getSortOrderings() {
     return mySortOrderings;
+  }
+
+  public Boolean getSharesObjects() {
+    return isSharesObjects();
+  }
+
+  public Boolean isSharesObjects() {
+    return mySharesObjects;
+  }
+
+  public void setSharesObjects(Boolean _sharesObjects) {
+    setSharesObjects(_sharesObjects, true);
+  }
+
+  public void setSharesObjects(Boolean _sharesObjects, boolean _fireEvents) {
+    Boolean oldSharesObjects = mySharesObjects;
+    mySharesObjects = _sharesObjects;
+    if (_fireEvents) {
+      firePropertyChange(EOFetchSpecification.SHARES_OBJECTS, oldSharesObjects, mySharesObjects);
+    }
   }
 
   public void setQualifier(IEOQualifier _qualifier) {
@@ -274,6 +298,7 @@ public class EOFetchSpecification extends EOModelObject {
     myRefreshesRefetchedObjects = _map.getBoolean("refreshesRefetchedObjects"); //$NON-NLS-1$
     myRequiresAllQualifierBindingVariables = _map.getBoolean("requiresAllQualifierBindingVariables"); //$NON-NLS-1$
     myUsesDistinct = _map.getBoolean("usesDistinct"); //$NON-NLS-1$
+    setUserInfo(MapUtils.toStringMap(_map.getMap("userInfo", true)), false); //$NON-NLS-1$
 
     List sortOrderings = _map.getList("sortOrderings"); //$NON-NLS-1$
     if (sortOrderings != null) {
@@ -294,7 +319,7 @@ public class EOFetchSpecification extends EOModelObject {
     fetchSpecMap.setInteger("fetchLimit", myFetchLimit); //$NON-NLS-1$
     fetchSpecMap.setBoolean("isDeep", myDeep); //$NON-NLS-1$
     fetchSpecMap.setBoolean("locksObjects", myLocksObjects); //$NON-NLS-1$
-    fetchSpecMap.setList("prefetchingRelationshipKeyPaths", myPrefetchingRelationshipKeyPaths); //$NON-NLS-1$
+    fetchSpecMap.setList("prefetchingRelationshipKeyPaths", myPrefetchingRelationshipKeyPaths, true); //$NON-NLS-1$
     fetchSpecMap.setBoolean("prompsAfterFetchLimit", myPromptsAfterFetchLimit); //$NON-NLS-1$
     if (myQualifier == null) {
       fetchSpecMap.setMap("qualifier", null, true); //$NON-NLS-1$
@@ -302,10 +327,11 @@ public class EOFetchSpecification extends EOModelObject {
     else {
       fetchSpecMap.setMap("qualifier", myQualifier.toMap(), true); //$NON-NLS-1$
     }
-    fetchSpecMap.setList("rawRowKeyPaths", myRawRowKeyPaths); //$NON-NLS-1$
+    fetchSpecMap.setList("rawRowKeyPaths", myRawRowKeyPaths, true); //$NON-NLS-1$
     fetchSpecMap.setBoolean("refreshesRefetchedObjects", myRefreshesRefetchedObjects); //$NON-NLS-1$
     fetchSpecMap.setBoolean("requiresAllQualifierBindingVariables", myRequiresAllQualifierBindingVariables); //$NON-NLS-1$
     fetchSpecMap.setBoolean("usesDistinct", myUsesDistinct); //$NON-NLS-1$
+    fetchSpecMap.setMap("userInfo", getUserInfo(), true); //$NON-NLS-1$
 
     List sortOrderings = new LinkedList();
     Iterator sortOrderingsIter = mySortOrderings.iterator();
@@ -314,7 +340,7 @@ public class EOFetchSpecification extends EOModelObject {
       EOModelMap sortOrderingMap = sortOrdering.toMap();
       sortOrderings.add(sortOrderingMap);
     }
-    fetchSpecMap.setList("sortOrderings", sortOrderings); //$NON-NLS-1$
+    fetchSpecMap.setList("sortOrderings", sortOrderings, true); //$NON-NLS-1$
     return fetchSpecMap;
   }
 

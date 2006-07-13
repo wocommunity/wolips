@@ -93,11 +93,11 @@ public class EOModelContentOutlinePage extends ContentOutlinePage {
   public void init(IPageSite _pageSite) {
     super.init(_pageSite);
   }
-  
+
   public void selectionChanged(SelectionChangedEvent _event) {
     super.selectionChanged(_event);
   }
-  
+
   public void setSelection(ISelection _selection) {
     super.setSelection(_selection);
   }
@@ -107,31 +107,36 @@ public class EOModelContentOutlinePage extends ContentOutlinePage {
   }
 
   protected void updatePropertyChangeListeners() {
-    myEditorInput.getModel().removePropertyChangeListener(myModelListener);
-    if (myEntities != null) {
-      Iterator oldEntitiesIter = myEntities.iterator();
-      while (oldEntitiesIter.hasNext()) {
-        EOEntity entity = (EOEntity) oldEntitiesIter.next();
-        entity.removePropertyChangeListener(myEntityListener);
+    if (myEditorInput != null) {
+      myEditorInput.getModel().removePropertyChangeListener(myModelListener);
+      if (myEntities != null) {
+        Iterator oldEntitiesIter = myEntities.iterator();
+        while (oldEntitiesIter.hasNext()) {
+          EOEntity entity = (EOEntity) oldEntitiesIter.next();
+          entity.removePropertyChangeListener(myEntityListener);
+        }
       }
+      myEntities = new LinkedList(myEditorInput.getModel().getEntities());
+      Iterator newEntitiesIter = myEntities.iterator();
+      while (newEntitiesIter.hasNext()) {
+        EOEntity entity = (EOEntity) newEntitiesIter.next();
+        entity.addPropertyChangeListener(myEntityListener);
+      }
+      myEditorInput.getModel().addPropertyChangeListener(myModelListener);
     }
-    myEntities = new LinkedList(myEditorInput.getModel().getEntities());
-    Iterator newEntitiesIter = myEntities.iterator();
-    while (newEntitiesIter.hasNext()) {
-      EOEntity entity = (EOEntity) newEntitiesIter.next();
-      entity.addPropertyChangeListener(myEntityListener);
-    }
-    myEditorInput.getModel().addPropertyChangeListener(myModelListener);
   }
 
   protected void refreshRelationshipsForEntity(EOEntity _entity) {
-    getTreeViewer().refresh(_entity, true);
-    Object[] expandedElements = getTreeViewer().getExpandedElements();
-    for (int expandedElementNum = 0; expandedElementNum < expandedElements.length; expandedElementNum++) {
-      if (expandedElements[expandedElementNum] instanceof EORelationshipPath) {
-        EORelationshipPath relationshipPath = (EORelationshipPath) expandedElements[expandedElementNum];
-        if (relationshipPath.getChildRelationship().getEntity().equals(_entity)) {
-          getTreeViewer().refresh(relationshipPath, true);
+    TreeViewer treeViewer = getTreeViewer();
+    if (treeViewer != null) {
+      treeViewer.refresh(_entity, true);
+      Object[] expandedElements = getTreeViewer().getExpandedElements();
+      for (int expandedElementNum = 0; expandedElementNum < expandedElements.length; expandedElementNum++) {
+        if (expandedElements[expandedElementNum] instanceof EORelationshipPath) {
+          EORelationshipPath relationshipPath = (EORelationshipPath) expandedElements[expandedElementNum];
+          if (relationshipPath.getChildRelationship().getEntity().equals(_entity)) {
+            getTreeViewer().refresh(relationshipPath, true);
+          }
         }
       }
     }

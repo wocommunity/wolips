@@ -133,12 +133,16 @@ public class EOModelMap implements Map {
     return map;
   }
 
-  public void setList(String _key, List _list) {
-    if (_list == null) {
+  public void setList(String _key, List _list, boolean _skipIfEmpty) {
+    List list = _list;
+    if (_skipIfEmpty && list != null && list.isEmpty()) {
+      list = null;
+    }
+    if (list == null) {
       myBackingMap.remove(_key);
     }
     else {
-      myBackingMap.put(_key, _list);
+      myBackingMap.put(_key, list);
     }
   }
 

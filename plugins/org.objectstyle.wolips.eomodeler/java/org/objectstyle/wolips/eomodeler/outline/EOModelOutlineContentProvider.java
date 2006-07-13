@@ -50,6 +50,7 @@
 package org.objectstyle.wolips.eomodeler.outline;
 
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -78,8 +79,10 @@ public class EOModelOutlineContentProvider implements ITreeContentProvider {
     }
     else if (_parentElement instanceof EOEntity) {
       EOEntity entity = (EOEntity) _parentElement;
-      List relationshipsList = entity.getRelationships();
-      children = relationshipsList.toArray(new EORelationship[relationshipsList.size()]);
+      List entityChildren = new LinkedList();
+      entityChildren.addAll(entity.getRelationships());
+      entityChildren.addAll(entity.getFetchSpecs());
+      children = entityChildren.toArray();
     }
     else if (_parentElement instanceof EORelationship) {
       EORelationship relationship = (EORelationship) _parentElement;
@@ -157,7 +160,11 @@ public class EOModelOutlineContentProvider implements ITreeContentProvider {
   }
 
   public boolean hasChildren(Object _element) {
-    return true;
+    boolean hasChildren = true;
+    if (_element instanceof EOFetchSpecification) {
+      hasChildren = false;
+    }
+    return hasChildren;
   }
 
   public void inputChanged(Viewer _viewer, Object _oldInput, Object _newInput) {

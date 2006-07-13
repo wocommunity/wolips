@@ -61,9 +61,9 @@ import java.util.Set;
 import org.eclipse.jface.internal.databinding.provisional.observable.list.WritableList;
 import org.objectstyle.cayenne.wocompat.PropertyListSerialization;
 import org.objectstyle.wolips.eomodeler.utils.MapUtils;
-import org.objectstyle.wolips.eomodeler.utils.NotificationMap;
 
-public class EOEntity extends EOModelObject implements IUserInfoable {
+public class EOEntity extends UserInfoableEOModelObject {
+  private static final String FETCH_ALL = "FetchAll";
   public static final String ATTRIBUTE = "attribute"; //$NON-NLS-1$
   public static final String RELATIONSHIP = "relationship"; //$NON-NLS-1$
   public static final String FETCH_SPECIFICATION = "fetchSpecification"; //$NON-NLS-1$
@@ -80,7 +80,6 @@ public class EOEntity extends EOModelObject implements IUserInfoable {
   public static final String FETCH_SPECIFICATIONS = "fetchSpecifications"; //$NON-NLS-1$
   public static final String ATTRIBUTES = "attributes"; //$NON-NLS-1$
   public static final String RELATIONSHIPS = "relationships"; //$NON-NLS-1$
-  public static final String USER_INFO = "userInfo"; //$NON-NLS-1$
 
   private EOModel myModel;
   private EOEntity myParent;
@@ -96,7 +95,6 @@ public class EOEntity extends EOModelObject implements IUserInfoable {
   private List myAttributes;
   private List myRelationships;
   private List myFetchSpecs;
-  private NotificationMap myUserInfo;
   private EOModelMap myEntityMap;
   private EOModelMap myFetchSpecsMap;
 
@@ -111,6 +109,52 @@ public class EOEntity extends EOModelObject implements IUserInfoable {
 
   protected void _propertyChanged(String _propertyName, Object _oldValue, Object _newValue) {
     myModel._entityChanged(this);
+  }
+
+  public boolean hasSharedObjects() {
+    boolean hasSharedObjects = false;
+    Iterator fetchSpecsIter = myFetchSpecs.iterator();
+    while (!hasSharedObjects && fetchSpecsIter.hasNext()) {
+      EOFetchSpecification fetchSpec = (EOFetchSpecification) fetchSpecsIter.next();
+      hasSharedObjects = fetchSpec.isSharesObjects() != null && fetchSpec.isSharesObjects().booleanValue();
+    }
+    return hasSharedObjects;
+  }
+
+  public void shareNoObjects() {
+    Iterator fetchSpecsIter = myFetchSpecs.iterator();
+    while (fetchSpecsIter.hasNext()) {
+      EOFetchSpecification fetchSpec = (EOFetchSpecification) fetchSpecsIter.next();
+      fetchSpec.setSharesObjects(Boolean.FALSE);
+    }
+  }
+
+  public boolean isSharesAllObjectsOnly() {
+    boolean sharesAllObjects = false;
+    int sharedFetchSpecCount = 0;
+    Iterator fetchSpecsIter = myFetchSpecs.iterator();
+    while (fetchSpecsIter.hasNext()) {
+      EOFetchSpecification fetchSpec = (EOFetchSpecification) fetchSpecsIter.next();
+      if (fetchSpec.isSharesObjects() != null && fetchSpec.isSharesObjects().booleanValue()) {
+        sharedFetchSpecCount++;
+        if (EOEntity.FETCH_ALL.equals(fetchSpec.getName())) {
+          sharesAllObjects = true;
+        }
+      }
+    }
+    return sharesAllObjects && sharedFetchSpecCount == 1;
+  }
+
+  public void shareAllObjects() throws DuplicateFetchSpecNameException {
+    EOFetchSpecification fetchAllFetchSpec = getFetchSpecNamed(EOEntity.FETCH_ALL);
+    if (fetchAllFetchSpec != null) {
+      fetchAllFetchSpec.setSharesObjects(Boolean.TRUE);
+    }
+    else {
+      fetchAllFetchSpec = new EOFetchSpecification(this, EOEntity.FETCH_ALL);
+      fetchAllFetchSpec.setSharesObjects(Boolean.TRUE, false);
+      addFetchSpecification(fetchAllFetchSpec);
+    }
   }
 
   public Object getAdapter(Class _adapter) {
@@ -147,6 +191,10 @@ public class EOEntity extends EOModelObject implements IUserInfoable {
     Integer oldMaxNumberOfInstancesToBatchFetch = myMaxNumberOfInstancesToBatchFetch;
     myMaxNumberOfInstancesToBatchFetch = _maxNumberOfInstancesToBatchFetch;
     firePropertyChange(EOEntity.MAX_NUMBER_OF_INSTANCES_TO_BATCH_FETCH, oldMaxNumberOfInstancesToBatchFetch, myMaxNumberOfInstancesToBatchFetch);
+  }
+
+  public Boolean getReadOnly() {
+    return isReadOnly();
   }
 
   public Boolean isReadOnly() {
@@ -247,6 +295,10 @@ public class EOEntity extends EOModelObject implements IUserInfoable {
     firePropertyChange(EOEntity.PARENT, oldParent, myParent);
   }
 
+  public Boolean getAbstractEntity() {
+    return isAbstractEntity();
+  }
+
   public Boolean isAbstractEntity() {
     return myAbstractEntity;
   }
@@ -255,6 +307,10 @@ public class EOEntity extends EOModelObject implements IUserInfoable {
     Boolean oldAbstractEntity = myAbstractEntity;
     myAbstractEntity = _abstractEntity;
     firePropertyChange(EOEntity.ABSTRACT_ENTITY, oldAbstractEntity, myAbstractEntity);
+  }
+
+  public Boolean getCachesObjects() {
+    return isCachesObjects();
   }
 
   public Boolean isCachesObjects() {
@@ -470,21 +526,6 @@ public class EOEntity extends EOModelObject implements IUserInfoable {
     return matchingRelationship;
   }
 
-  public void setUserInfo(Map _userInfo) {
-    Map oldUserInfo = myUserInfo;
-    if (_userInfo instanceof NotificationMap) {
-      myUserInfo = (NotificationMap)_userInfo;
-    }
-    else {
-      myUserInfo = new NotificationMap(_userInfo);
-    }
-    firePropertyChange(EOEntity.USER_INFO, oldUserInfo, myUserInfo);
-  }
-
-  public NotificationMap getUserInfo() {
-    return myUserInfo;
-  }
-
   public void loadFromFile(File _entityFile, File _fetchSpecFile, Set _failures) throws IOException, EOModelException {
     try {
       if (_entityFile.exists()) {
@@ -517,7 +558,7 @@ public class EOEntity extends EOModelObject implements IUserInfoable {
     myRestrictingQualifier = _entityMap.getString("restrictingQualifier", true); //$NON-NLS-1$
     myExternalQuery = _entityMap.getString("externalQuery", true); //$NON-NLS-1$
     myMaxNumberOfInstancesToBatchFetch = _entityMap.getInteger("maxNumberOfInstancesToBatchFetch"); //$NON-NLS-1$
-    myUserInfo = new NotificationMap(MapUtils.toStringMap(_entityMap.getMap("userInfo", true))); //$NON-NLS-1$
+    setUserInfo(MapUtils.toStringMap(_entityMap.getMap("userInfo", true)), false); //$NON-NLS-1$
 
     //Map fetchSpecifications = _entityMap.getMap("fetchSpecificationDictionary");
     // TODO: Fetch Specs
@@ -598,6 +639,7 @@ public class EOEntity extends EOModelObject implements IUserInfoable {
 
   public void loadFetchSpecsFromMap(EOModelMap _map, Set _failures) throws EOModelException {
     myFetchSpecsMap = _map;
+    List sharedObjectFetchSpecificationNames = myEntityMap.getList("sharedObjectFetchSpecificationNames"); //$NON-NLS-1$
     Iterator fetchSpecIter = _map.entrySet().iterator();
     while (fetchSpecIter.hasNext()) {
       Map.Entry fetchSpecEntry = (Map.Entry) fetchSpecIter.next();
@@ -605,6 +647,9 @@ public class EOEntity extends EOModelObject implements IUserInfoable {
       EOModelMap fetchSpecMap = new EOModelMap((Map) fetchSpecEntry.getValue());
       EOFetchSpecification fetchSpec = new EOFetchSpecification(this, fetchSpecName);
       fetchSpec.loadFromMap(fetchSpecMap, _failures);
+      if (sharedObjectFetchSpecificationNames != null && sharedObjectFetchSpecificationNames.contains(fetchSpecName)) {
+        fetchSpec.setSharesObjects(Boolean.TRUE, false);
+      }
       addFetchSpecification(fetchSpec, false, _failures);
     }
   }
@@ -625,7 +670,7 @@ public class EOEntity extends EOModelObject implements IUserInfoable {
     entityMap.setInteger("maxNumberOfInstancesToBatchFetch", myMaxNumberOfInstancesToBatchFetch); //$NON-NLS-1$
 
     //Map fetchSpecifications = _entityMap.getMap("fetchSpecificationDictionary");
-    // TODO: Fetch Specs
+    // TODO: ???
 
     List classProperties = new LinkedList();
     List primaryKeyAttributes = new LinkedList();
@@ -650,7 +695,7 @@ public class EOEntity extends EOModelObject implements IUserInfoable {
         clientClassProperties.add(attribute.getName());
       }
     }
-    entityMap.setList("attributes", attributes); //$NON-NLS-1$
+    entityMap.setList("attributes", attributes, true); //$NON-NLS-1$
 
     List relationships = new LinkedList();
     Iterator relationshipIter = myRelationships.iterator();
@@ -662,19 +707,31 @@ public class EOEntity extends EOModelObject implements IUserInfoable {
         classProperties.add(relationship.getName());
       }
     }
-    entityMap.setList("relationships", relationships); //$NON-NLS-1$
-    entityMap.setList("attributesUsedForLocking", attributesUsedForLocking); //$NON-NLS-1$
-    entityMap.setList("classProperties", classProperties); //$NON-NLS-1$
-    entityMap.setList("primaryKeyAttributes", primaryKeyAttributes); //$NON-NLS-1$
+    entityMap.setList("relationships", relationships, true); //$NON-NLS-1$
+    entityMap.setList("attributesUsedForLocking", attributesUsedForLocking, true); //$NON-NLS-1$
+    entityMap.setList("classProperties", classProperties, true); //$NON-NLS-1$
+    entityMap.setList("primaryKeyAttributes", primaryKeyAttributes, true); //$NON-NLS-1$
+
+    List sharedObjectFetchSpecificationNames = new LinkedList();
+    Iterator fetchSpecsIter = myFetchSpecs.iterator();
+    while (fetchSpecsIter.hasNext()) {
+      EOFetchSpecification fetchSpec = (EOFetchSpecification) fetchSpecsIter.next();
+      if (fetchSpec.isSharesObjects() != null && fetchSpec.isSharesObjects().booleanValue()) {
+        sharedObjectFetchSpecificationNames.add(fetchSpec.getName());
+      }
+    }
+    entityMap.setList("sharedObjectFetchSpecificationNames", sharedObjectFetchSpecificationNames, true); //$NON-NLS-1$
 
     Map internalInfoMap = entityMap.getMap("internalInfo"); //$NON-NLS-1$
     if (internalInfoMap == null) {
       internalInfoMap = new HashMap();
-      entityMap.put("internalInfo", internalInfoMap); //$NON-NLS-1$
+      entityMap.setMap("internalInfo", internalInfoMap, false); //$NON-NLS-1$
     }
-    internalInfoMap.put("_clientClassPropertyNames", clientClassProperties); //$NON-NLS-1$
+    if (!clientClassProperties.isEmpty()) {
+      internalInfoMap.put("_clientClassPropertyNames", clientClassProperties); //$NON-NLS-1$
+    }
 
-    entityMap.put("userInfo", myUserInfo); //$NON-NLS-1$
+    entityMap.setMap("userInfo", getUserInfo(), true); //$NON-NLS-1$
 
     return entityMap;
   }

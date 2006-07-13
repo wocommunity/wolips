@@ -119,7 +119,7 @@ public abstract class EOAggregateQualifier extends EOModelObject implements IEOQ
       EOModelMap subQualifierMap = qualifier.toMap();
       qualifiers.add(subQualifierMap);
     }
-    qualifierMap.setList("qualifiers", qualifiers); //$NON-NLS-1$
+    qualifierMap.setList("qualifiers", qualifiers, true); //$NON-NLS-1$
     return qualifierMap;
   }
 

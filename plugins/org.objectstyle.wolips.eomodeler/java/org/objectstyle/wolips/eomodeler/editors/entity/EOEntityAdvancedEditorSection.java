@@ -47,10 +47,7 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eomodeler.editors.relationship;
-
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+package org.objectstyle.wolips.eomodeler.editors.entity;
 
 import org.eclipse.jface.internal.databinding.provisional.BindSpec;
 import org.eclipse.jface.internal.databinding.provisional.DataBindingContext;
@@ -71,22 +68,21 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.objectstyle.wolips.eomodeler.Messages;
-import org.objectstyle.wolips.eomodeler.model.EORelationship;
-import org.objectstyle.wolips.eomodeler.model.EORelationshipPath;
+import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.utils.BindingFactory;
 
-public class EORelationshipAdvancedEditorSection extends AbstractPropertySection {
-  private EORelationship myRelationship;
+public class EOEntityAdvancedEditorSection extends AbstractPropertySection {
+  private EOEntity myEntity;
 
-  private Text myNumberOfToManyFaultsToBatchFetchText;
-  private Button myOwnsDestinationButton;
-  private Button myPropagatesPrimaryKeyButton;
+  private Text myMaxNumberOfInstancesToBatchFetchText;
+  private Button myCacheInMemoryButton;
+  private Button myReadOnlyButton;
+  private Text myExternalQueryText;
 
   private DataBindingContext myBindingContext;
-  private RelationshipPropertyChangeListener myRelationshipPropertyChangeListener;
 
-  public EORelationshipAdvancedEditorSection() {
-    myRelationshipPropertyChangeListener = new RelationshipPropertyChangeListener();
+  public EOEntityAdvancedEditorSection() {
+    // DO NOTHING
   }
 
   public void createControls(Composite _parent, TabbedPropertySheetPage _tabbedPropertySheetPage) {
@@ -106,16 +102,21 @@ public class EORelationshipAdvancedEditorSection extends AbstractPropertySection
     topFormLayout.numColumns = 2;
     topForm.setLayout(topFormLayout);
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship." + EORelationship.NUMBER_OF_TO_MANY_FAULTS_TO_BATCH_FETCH), SWT.NONE); //$NON-NLS-1$
-    myNumberOfToManyFaultsToBatchFetchText = new Text(topForm, SWT.BORDER);
-    GridData nameFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-    myNumberOfToManyFaultsToBatchFetchText.setLayoutData(nameFieldLayoutData);
+    getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.MAX_NUMBER_OF_INSTANCES_TO_BATCH_FETCH), SWT.NONE); //$NON-NLS-1$
+    myMaxNumberOfInstancesToBatchFetchText = new Text(topForm, SWT.BORDER);
+    GridData maxNumberOfInstancesToBatchFetchFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+    myMaxNumberOfInstancesToBatchFetchText.setLayoutData(maxNumberOfInstancesToBatchFetchFieldLayoutData);
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship." + EORelationship.OWNS_DESTINATION), SWT.NONE); //$NON-NLS-1$
-    myOwnsDestinationButton = new Button(topForm, SWT.CHECK);
+    getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.CACHES_OBJECTS), SWT.NONE); //$NON-NLS-1$
+    myCacheInMemoryButton = new Button(topForm, SWT.CHECK);
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship." + EORelationship.PROPAGATES_PRIMARY_KEY), SWT.NONE); //$NON-NLS-1$
-    myPropagatesPrimaryKeyButton = new Button(topForm, SWT.CHECK);
+    getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.READ_ONLY), SWT.NONE); //$NON-NLS-1$
+    myReadOnlyButton = new Button(topForm, SWT.CHECK);
+
+    getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.EXTERNAL_QUERY), SWT.NONE); //$NON-NLS-1$
+    myExternalQueryText = new Text(topForm, SWT.BORDER);
+    GridData externalQueryFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+    myExternalQueryText.setLayoutData(externalQueryFieldLayoutData);
   }
 
   public void setInput(IWorkbenchPart _part, ISelection _selection) {
@@ -123,49 +124,22 @@ public class EORelationshipAdvancedEditorSection extends AbstractPropertySection
     disposeBindings();
 
     Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
-    if (selectedObject instanceof EORelationship) {
-      myRelationship = (EORelationship) selectedObject;
-    }
-    else if (selectedObject instanceof EORelationshipPath) {
-      myRelationship = ((EORelationshipPath) selectedObject).getChildRelationship();
-    }
-    if (myRelationship != null) {
-      myRelationship.addPropertyChangeListener(EORelationship.TO_MANY, myRelationshipPropertyChangeListener);
-    }
+    myEntity = (EOEntity) selectedObject;
     myBindingContext = BindingFactory.createContext();
-    myBindingContext.bind(myNumberOfToManyFaultsToBatchFetchText, new Property(myRelationship, EORelationship.NUMBER_OF_TO_MANY_FAULTS_TO_BATCH_FETCH), new BindSpec(null, null, new RegexStringValidator("^[0-9]*$", "^[0-9]$", "Please enter a number"), null)); //$NON-NLS-1$ //$NON-NLS-2$
-    myBindingContext.bind(myOwnsDestinationButton, new Property(myRelationship, EORelationship.OWNS_DESTINATION), null);
-    myBindingContext.bind(myPropagatesPrimaryKeyButton, new Property(myRelationship, EORelationship.PROPAGATES_PRIMARY_KEY), null);
-    updateCardinalityEnabled();
-  }
-
-  protected void updateCardinalityEnabled() {
-    Boolean isToMany = myRelationship.isToMany();
-    boolean enabled = (isToMany != null && isToMany.booleanValue());
-    myNumberOfToManyFaultsToBatchFetchText.setEnabled(enabled);
-  }
-
-  protected void removeRelationshipListeners() {
-    if (myRelationship != null) {
-      myRelationship.removePropertyChangeListener(EORelationship.TO_MANY, myRelationshipPropertyChangeListener);
-    }
+    myBindingContext.bind(myMaxNumberOfInstancesToBatchFetchText, new Property(myEntity, EOEntity.MAX_NUMBER_OF_INSTANCES_TO_BATCH_FETCH), new BindSpec(null, null, new RegexStringValidator("^[0-9]*$", "^[0-9]$", "Please enter a number"), null)); //$NON-NLS-1$ //$NON-NLS-2$
+    myBindingContext.bind(myCacheInMemoryButton, new Property(myEntity, EOEntity.CACHES_OBJECTS), null);
+    myBindingContext.bind(myReadOnlyButton, new Property(myEntity, EOEntity.READ_ONLY), null);
+    myBindingContext.bind(myExternalQueryText, new Property(myEntity, EOEntity.EXTERNAL_QUERY), null);
   }
 
   protected void disposeBindings() {
     if (myBindingContext != null) {
       myBindingContext.dispose();
     }
-    removeRelationshipListeners();
   }
 
   public void dispose() {
     super.dispose();
     disposeBindings();
-  }
-
-  protected class RelationshipPropertyChangeListener implements PropertyChangeListener {
-    public void propertyChange(PropertyChangeEvent _event) {
-      EORelationshipAdvancedEditorSection.this.updateCardinalityEnabled();
-    }
   }
 }

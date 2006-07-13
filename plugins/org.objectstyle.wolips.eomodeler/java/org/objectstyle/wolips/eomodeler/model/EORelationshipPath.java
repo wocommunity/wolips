@@ -61,7 +61,7 @@ public class EORelationshipPath implements IUserInfoable {
     myParentRelationshipPath = _parentRelationshipPath;
     myChildRelationship = _childRelationship;
   }
-  
+
   public EORelationshipPath getParentRelationshipPath() {
     return myParentRelationshipPath;
   }
@@ -69,12 +69,16 @@ public class EORelationshipPath implements IUserInfoable {
   public EORelationship getChildRelationship() {
     return myChildRelationship;
   }
-  
+
   public NotificationMap getUserInfo() {
     return myChildRelationship.getUserInfo();
   }
-  
+
   public void setUserInfo(Map _userInfo) {
     myChildRelationship.setUserInfo(_userInfo);
+  }
+
+  public void setUserInfo(Map _userInfo, boolean _fireEvents) {
+    myChildRelationship.setUserInfo(_userInfo, _fireEvents);
   }
 }

@@ -51,11 +51,17 @@ package org.objectstyle.wolips.eomodeler.editors;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.IOException;
+import java.util.HashSet;
 import java.util.Set;
 
+import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.jface.dialogs.ErrorDialog;
@@ -187,32 +193,31 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
   }
 
   public void doSave(IProgressMonitor _monitor) {
-    MessageDialog.openInformation(Display.getCurrent().getActiveShell(), "Not Yet", "Yeah, it can, but I'm not going to let you. It's safer for all of us at the moment.");
-    /*
-     try {
-     EOModelEditorInput input = (EOModelEditorInput) getEditorInput();
-     if (input != null) {
-     EOModel model = input.getModel();
+    //MessageDialog.openInformation(Display.getCurrent().getActiveShell(), "Not Yet", "Yeah, it can, but I'm not going to let you. It's safer for all of us at the moment.");
+    /**/
+    try {
+      EOModelEditorInput input = (EOModelEditorInput) getEditorInput();
+      if (input != null) {
+        EOModel model = input.getModel();
 
-     List failures = new LinkedList();
-     model.verify(failures);
-     handleModelErrors(failures);
+        Set failures = new HashSet();
+        model.verify(failures);
+        handleModelErrors(failures);
 
-     IFile originalFile = input.getFile();
-     IContainer originalFolder = originalFile.getParent();
-     model.saveToFolder(originalFolder.getLocation().toFile());
-     originalFolder.refreshLocal(IResource.DEPTH_INFINITE, _monitor);
-
-     setInput(new FileEditorInput(originalFile));
-     }
-     }
-     catch (IOException e) {
-     e.printStackTrace();
-     }
-     catch (CoreException e) {
-     e.printStackTrace();
-     }
-     */
+        IFile originalFile = input.getFile();
+        IContainer originalFolder = originalFile.getParent();
+        model.saveToFolder(originalFolder.getParent().getLocation().toFile());
+        model.setDirty(false);
+        originalFolder.refreshLocal(IResource.DEPTH_INFINITE, _monitor);
+      }
+    }
+    catch (IOException e) {
+      e.printStackTrace();
+    }
+    catch (CoreException e) {
+      e.printStackTrace();
+    }
+    /**/
   }
 
   public void doSaveAs() {
@@ -249,11 +254,11 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
       }
       EOModelEditorInput oldInput = (EOModelEditorInput) getEditorInput();
       if (oldInput != null) {
-        oldInput.getModel().removePropertyChangeListener(myDirtyModelListener);
+        oldInput.getModel().removePropertyChangeListener(EOModel.DIRTY, myDirtyModelListener);
       }
-      input.getModel().addPropertyChangeListener(myDirtyModelListener);
-      updatePartName();
+      input.getModel().addPropertyChangeListener(EOModel.DIRTY, myDirtyModelListener);
       super.init(_site, input);
+      updatePartName();
       _site.setSelectionProvider(this);
     }
     catch (Exception e) {
@@ -434,7 +439,10 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 
   protected class DirtyModelListener implements PropertyChangeListener {
     public void propertyChange(PropertyChangeEvent _event) {
-      EOModelEditor.this.editorDirtyStateChanged();
+      String propertyName = _event.getPropertyName();
+      if (EOModel.DIRTY.equals(propertyName)) {
+        EOModelEditor.this.editorDirtyStateChanged();
+      }
     }
   }
 }
