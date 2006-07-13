@@ -44,6 +44,7 @@
 package org.objectstyle.wolips.componenteditor.editormenu;
 
 import org.eclipse.jface.action.IAction;
+import org.objectstyle.wolips.componenteditor.ComponenteditorPlugin;
 import org.objectstyle.wolips.componenteditor.part.ComponentEditor;
 import org.objectstyle.wolips.locate.result.LocalizedComponentsLocateResult;
 import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
@@ -69,7 +70,7 @@ public class SwitchToApiEditorActionDelegate extends
 				return;
 			}
 			WorkbenchUtilitiesPlugin.open(localizedComponentsLocateResult
-					.getDotApi());
+					.getDotApi(), ComponenteditorPlugin.ComponentEditorID);
 		}
 
 	}
