@@ -45,6 +45,7 @@ package org.objectstyle.wolips.componenteditor.editormenu;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.IAction;
+import org.objectstyle.wolips.componenteditor.ComponenteditorPlugin;
 import org.objectstyle.wolips.componenteditor.part.ComponentEditor;
 import org.objectstyle.wolips.components.ComponentsPlugin;
 import org.objectstyle.wolips.locate.result.LocalizedComponentsLocateResult;
@@ -72,7 +73,8 @@ public class SwitchToWodEditorActionDelegate extends
 					return;
 				}
 				WorkbenchUtilitiesPlugin.open(localizedComponentsLocateResult
-						.getFirstWodFile());
+						.getFirstWodFile(),
+						ComponenteditorPlugin.ComponentEditorID);
 			} catch (CoreException e) {
 				ComponentsPlugin.getDefault().log(e);
 			}
