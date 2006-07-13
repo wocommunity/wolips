@@ -404,7 +404,7 @@ public class EOGeneratorModel {
     if (myTemplateDir == null || myTemplateDir.trim().length() == 0) {
       templateDir = _default;
     }
-    return templateDir;
+    return PathUtils.getRelativePath(myProject, new Path(templateDir));
   }
 
   public void setTemplateDir(String _templateDir) {

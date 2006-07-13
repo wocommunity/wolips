@@ -51,28 +51,36 @@ package org.objectstyle.wolips.eogenerator.model;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 
-public class EOModelReference {
-  private IPath myModelPath;
-
-  public EOModelReference(IPath _modelPath) {
-    myModelPath = _modelPath;
-  }
-
-  public String getPath(IProject _projectContext) {
-    return PathUtils.getRelativePath(_projectContext, myModelPath);
-  }
-
-  public String getName() {
-    String name = myModelPath.lastSegment();
-    int dotIndex = name.indexOf('.');
-    if (dotIndex != -1) {
-      name = name.substring(0, dotIndex);
+public class PathUtils {
+  public static String getRelativePath(IProject _projectContext, IPath _path) {
+    IPath projectPath = _projectContext.getLocation();
+    String modelPathStr;
+    if (_path.isAbsolute()) {
+      if (projectPath.isPrefixOf(_path)) {
+        modelPathStr = _path.removeFirstSegments(projectPath.segmentCount()).toPortableString();
+      }
+      else {
+        int matchingSegmentCount = projectPath.matchingFirstSegments(_path);
+        if (matchingSegmentCount == 0) {
+          modelPathStr = _path.toPortableString();
+        }
+        else {
+          int relativePathSegmentCount = projectPath.segmentCount() - matchingSegmentCount;
+          IPath relativeModelPath = new Path("");
+          for (int i = 0; i < relativePathSegmentCount; i++) {
+            relativeModelPath = relativeModelPath.append(".." + IPath.SEPARATOR);
+          }
+          relativeModelPath = relativeModelPath.append(_path.removeFirstSegments(matchingSegmentCount));
+          modelPathStr = relativeModelPath.toPortableString();
+        }
+      }
     }
-    return name;
+    else {
+      modelPathStr = _path.toPortableString();
+    }
+    return modelPathStr;
   }
 
-  public String toString() {
-    return "[EOModelReference: name = " + getName() + "]";
-  }
 }
