@@ -216,5 +216,40 @@
             id="org.objectstyle.wolips.eomodeler.EOModelerPerspective"
             name="EO Modeler"/>
    </extension>
+   <extension
+         point="org.eclipse.ui.editorActions">
+      <editorContribution
+            id="org.objectstyle.wolips.eomodeler.editorContributions"
+            targetID="org.objectstyle.wolips.eomodeler.editors.EOModelEditor">
+         <action
+               class="org.objectstyle.wolips.eomodeler.actions.NewEntityAction"
+               icon="icons/eoEntity.gif"
+               id="org.objectstyle.wolips.eomodeler.actions.newEntity"
+               label="New Entity"
+               style="push"
+               toolbarPath="/Normal"/>
+         <action
+               class="org.objectstyle.wolips.eomodeler.actions.NewAttributeAction"
+               icon="icons/eoAttribute.gif"
+               id="org.objectstyle.wolips.eomodeler.actions.newAttribute"
+               label="New Attribute"
+               style="push"
+               toolbarPath="/Normal"/>
+         <action
+               class="org.objectstyle.wolips.eomodeler.actions.NewRelationshipAction"
+               icon="icons/eoRelationship.gif"
+               id="org.objectstyle.wolips.eomodeler.actions.newRelationship"
+               label="New Relationship"
+               style="push"
+               toolbarPath="/Normal"/>
+         <action
+               class="org.objectstyle.wolips.eomodeler.actions.NewFetchSpecAction"
+               icon="icons/eoFetchSpecification.gif"
+               id="org.objectstyle.wolips.eomodeler.actions.newFetchSpec"
+               label="New Fetch Specification"
+               style="push"
+               toolbarPath="/Normal"/>
+      </editorContribution>
+   </extension>
 
 </plugin>

@@ -55,22 +55,22 @@ import java.util.List;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.objectstyle.wolips.eomodeler.editors.EOModelEditorInput;
 import org.objectstyle.wolips.eomodeler.model.EOAttribute;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOFetchSpecification;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
+import org.objectstyle.wolips.eomodeler.model.EOModelContainer;
 import org.objectstyle.wolips.eomodeler.model.EORelationship;
 import org.objectstyle.wolips.eomodeler.model.EORelationshipPath;
 
 public class EOModelOutlineContentProvider implements ITreeContentProvider {
-  private EOModelEditorInput myEditorInput;
+  private EOModelContainer myModelContainer;
 
   public Object[] getChildren(Object _parentElement) {
     Object[] children;
-    if (_parentElement instanceof EOModelEditorInput) {
-      EOModelEditorInput editorInput = (EOModelEditorInput) _parentElement;
-      children = new Object[] { editorInput.getModel() };
+    if (_parentElement instanceof EOModelContainer) {
+      EOModelContainer modelContainer = (EOModelContainer) _parentElement;
+      children = new Object[] { modelContainer.getModel() };
     }
     else if (_parentElement instanceof EOModel) {
       EOModel model = (EOModel) _parentElement;
@@ -126,11 +126,11 @@ public class EOModelOutlineContentProvider implements ITreeContentProvider {
 
   public Object getParent(Object _element) {
     Object parent;
-    if (_element instanceof EOModelEditorInput) {
+    if (_element instanceof EOModelContainer) {
       parent = null;
     }
     else if (_element instanceof EOModel) {
-      parent = myEditorInput;
+      parent = myModelContainer;
     }
     else if (_element instanceof EOEntity) {
       parent = ((EOEntity) _element).getModel();
@@ -168,6 +168,6 @@ public class EOModelOutlineContentProvider implements ITreeContentProvider {
   }
 
   public void inputChanged(Viewer _viewer, Object _oldInput, Object _newInput) {
-    myEditorInput = (EOModelEditorInput) _newInput;
+    myModelContainer = (EOModelContainer) _newInput;
   }
 }

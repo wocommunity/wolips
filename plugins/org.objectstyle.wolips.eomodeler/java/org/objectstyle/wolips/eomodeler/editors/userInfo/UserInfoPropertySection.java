@@ -254,9 +254,16 @@ public class UserInfoPropertySection extends AbstractPropertySection {
 
   protected void updateTextFromUserInfo() {
     if (myUserInfoable != null && mySelectedKey != null) {
-      String value = (String) myUserInfoable.getUserInfo().get(mySelectedKey);
-      myValueText.setText(value);
-      myValueText.setEnabled(true);
+      Object value = myUserInfoable.getUserInfo().get(mySelectedKey);
+      if (value instanceof String) {
+        String strValue = (String) value;
+        myValueText.setText(strValue);
+        myValueText.setEnabled(true);
+      }
+      else {
+        myValueText.setText(""); //$NON-NLS-1$
+        myValueText.setEnabled(false);
+      }
     }
     else {
       myValueText.setText(""); //$NON-NLS-1$

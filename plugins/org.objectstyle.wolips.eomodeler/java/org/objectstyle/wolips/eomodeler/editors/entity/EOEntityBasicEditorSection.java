@@ -126,7 +126,7 @@ public class EOEntityBasicEditorSection extends AbstractPropertySection {
     Combo parentEntityCombo = new Combo(topForm, SWT.BORDER | SWT.FLAT | SWT.READ_ONLY);
     myParentEntityComboViewer = new ComboViewer(parentEntityCombo);
     myParentEntityComboViewer.setLabelProvider(new EOEntityLabelProvider());
-    myParentEntityComboViewer.setContentProvider(new EOEntityListContentProvider(false));
+    myParentEntityComboViewer.setContentProvider(new EOEntityListContentProvider(true, false));
     GridData entityComboLayoutData = new GridData(GridData.FILL_HORIZONTAL);
     parentEntityCombo.setLayoutData(entityComboLayoutData);
 
@@ -155,7 +155,7 @@ public class EOEntityBasicEditorSection extends AbstractPropertySection {
     myBindingContext.bind(myRestrictingQualifierText, new Property(myEntity, EOEntity.RESTRICTING_QUALIFIER), null);
     myBindingContext.bind(myAbstractButton, new Property(myEntity, EOEntity.ABSTRACT_ENTITY), null);
 
-    myParentEntityBinding = new ComboViewerBinding(myParentEntityComboViewer, myEntity, EOEntity.PARENT, myEntity.getModel(), EOModel.ENTITIES);
+    myParentEntityBinding = new ComboViewerBinding(myParentEntityComboViewer, myEntity, EOEntity.PARENT, myEntity.getModel(), EOModel.ENTITIES, EOEntityListContentProvider.BLANK_ENTITY); //$NON-NLS-1$
   }
 
   protected void disposeBindings() {

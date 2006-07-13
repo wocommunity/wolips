@@ -67,17 +67,19 @@ public class ComboViewerBinding implements ISelectionChangedListener, PropertyCh
   private String myPropertyName;
   private EOModelObject myListObj;
   private String myListPropertyName;
+  private Object myBlankValue;
 
-  public ComboViewerBinding(ComboViewer _viewer, EOModelObject _obj, String _propertyName, EOModelObject _listObj, String _listPropertyName) {
+  public ComboViewerBinding(ComboViewer _viewer, EOModelObject _obj, String _propertyName, EOModelObject _listObj, String _listPropertyName, Object _blankValue) {
     myViewer = _viewer;
     myObj = _obj;
     myPropertyName = _propertyName;
     myListObj = _listObj;
     myListPropertyName = _listPropertyName;
+    myBlankValue = _blankValue;
 
     try {
       Object existingValue = new Expression(myObj, MiscUtils.toGetMethod(myPropertyName, false), null).getValue();
-      myViewer.setSelection(new StructuredSelection(existingValue));
+      setSelectedValue(existingValue);
     }
     catch (Exception e) {
       e.printStackTrace();
@@ -103,7 +105,7 @@ public class ComboViewerBinding implements ISelectionChangedListener, PropertyCh
     String propertyName = _event.getPropertyName();
     if (source == myObj && myPropertyName.equals(propertyName)) {
       Object newValue = _event.getNewValue();
-      myViewer.setSelection(new StructuredSelection(newValue));
+      setSelectedValue(newValue);
     }
     else if (myListObj != null && source == myListObj && myListPropertyName.equals(propertyName)) {
       myViewer.setInput(myListObj);
@@ -113,6 +115,9 @@ public class ComboViewerBinding implements ISelectionChangedListener, PropertyCh
   public void selectionChanged(SelectionChangedEvent _event) {
     try {
       Object newValue = ((IStructuredSelection) _event.getSelection()).getFirstElement();
+      if (newValue == myBlankValue || (myBlankValue != null && myBlankValue.equals(newValue))) {
+        newValue = null;
+      }
       Object existingValue = new Expression(myObj, MiscUtils.toGetMethod(myPropertyName, false), null).getValue();
       if (existingValue != newValue || (newValue != null && !newValue.equals(existingValue))) {
         new Statement(myObj, MiscUtils.toSetMethod(myPropertyName), new Object[] { newValue }).execute();
@@ -120,6 +125,15 @@ public class ComboViewerBinding implements ISelectionChangedListener, PropertyCh
     }
     catch (Exception e) {
       e.printStackTrace();
+    }
+  }
+
+  protected void setSelectedValue(Object _newValue) {
+    if (_newValue == null || _newValue == myBlankValue || (myBlankValue != null && myBlankValue.equals(_newValue))) {
+      myViewer.setSelection(null);
+    }
+    else {
+      myViewer.setSelection(new StructuredSelection(_newValue), true);
     }
   }
 }

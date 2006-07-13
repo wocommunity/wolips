@@ -61,23 +61,37 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.IPageSite;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
-import org.objectstyle.wolips.eomodeler.editors.EOModelEditorInput;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
+import org.objectstyle.wolips.eomodeler.model.EOModelContainer;
 import org.objectstyle.wolips.eomodeler.model.EORelationshipPath;
 
 public class EOModelContentOutlinePage extends ContentOutlinePage {
-  private EOModelEditorInput myEditorInput;
   private ModelPropertyChangeListener myModelListener;
   private EntityPropertyChangeListener myEntityListener;
+  private EOModel myModel;
   private List myEntities;
 
-  public EOModelContentOutlinePage(EOModelEditorInput _editorInput) {
-    myEditorInput = _editorInput;
-    myEntities = new LinkedList(myEditorInput.getModel().getEntities());
+  public EOModelContentOutlinePage(EOModel _model) {
     myModelListener = new ModelPropertyChangeListener();
     myEntityListener = new EntityPropertyChangeListener();
-    updatePropertyChangeListeners();
+    setModel(_model);
+  }
+
+  public void setModel(EOModel _model) {
+    removePropertyChangeListeners();
+    myModel = _model;
+    if (myModel != null) {
+      myEntities = new LinkedList(myModel.getEntities());
+    }
+    addPropertyChangeListeners();
+    if (getTreeViewer() != null) {
+      getTreeViewer().setInput(new EOModelContainer(_model));
+    }
+  }
+
+  public EOModel getModel() {
+    return myModel;
   }
 
   public void createControl(Composite _parent) {
@@ -85,7 +99,9 @@ public class EOModelContentOutlinePage extends ContentOutlinePage {
     TreeViewer treeViewer = getTreeViewer();
     treeViewer.setContentProvider(new EOModelOutlineContentProvider());
     treeViewer.setLabelProvider(new EOModelOutlineLabelProvider());
-    treeViewer.setInput(myEditorInput);
+    if (myModel != null) {
+      treeViewer.setInput(new EOModelContainer(myModel));
+    }
     treeViewer.expandToLevel(2);
     setFocus();
   }
@@ -106,9 +122,9 @@ public class EOModelContentOutlinePage extends ContentOutlinePage {
     return super.getTreeViewer();
   }
 
-  protected void updatePropertyChangeListeners() {
-    if (myEditorInput != null) {
-      myEditorInput.getModel().removePropertyChangeListener(myModelListener);
+  protected void removePropertyChangeListeners() {
+    if (myModel != null) {
+      myModel.removePropertyChangeListener(myModelListener);
       if (myEntities != null) {
         Iterator oldEntitiesIter = myEntities.iterator();
         while (oldEntitiesIter.hasNext()) {
@@ -116,13 +132,18 @@ public class EOModelContentOutlinePage extends ContentOutlinePage {
           entity.removePropertyChangeListener(myEntityListener);
         }
       }
-      myEntities = new LinkedList(myEditorInput.getModel().getEntities());
+    }
+  }
+
+  protected void addPropertyChangeListeners() {
+    if (myModel != null) {
+      myEntities = new LinkedList(myModel.getEntities());
       Iterator newEntitiesIter = myEntities.iterator();
       while (newEntitiesIter.hasNext()) {
         EOEntity entity = (EOEntity) newEntitiesIter.next();
         entity.addPropertyChangeListener(myEntityListener);
       }
-      myEditorInput.getModel().addPropertyChangeListener(myModelListener);
+      myModel.addPropertyChangeListener(myModelListener);
     }
   }
 

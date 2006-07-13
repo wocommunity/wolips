@@ -21,11 +21,7 @@ public class MapUtils {
           strKey = key.toString();
         }
         Object value = entry.getValue();
-        String strValue = null;
-        if (value != null) {
-          strValue = value.toString();
-        }
-        strMap.put(strKey, strValue);
+        strMap.put(strKey, value);
       }
     }
     return strMap;

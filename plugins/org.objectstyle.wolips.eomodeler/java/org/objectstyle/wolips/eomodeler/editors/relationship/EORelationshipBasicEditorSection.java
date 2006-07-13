@@ -205,7 +205,7 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
     Combo entityCombo = new Combo(topForm, SWT.BORDER | SWT.FLAT | SWT.READ_ONLY);
     myEntityComboViewer = new ComboViewer(entityCombo);
     myEntityComboViewer.setLabelProvider(new EOEntityLabelProvider());
-    myEntityComboViewer.setContentProvider(new EOEntityListContentProvider(true));
+    myEntityComboViewer.setContentProvider(new EOEntityListContentProvider(false, true));
     GridData entityComboLayoutData = new GridData(GridData.FILL_HORIZONTAL);
     entityCombo.setLayoutData(entityComboLayoutData);
 
@@ -290,9 +290,9 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
     myBindingContext.bind(myOptionalButton, new Property(myRelationship, EORelationship.OPTIONAL), null);
     myBindingContext.bind(myMandatoryButton, new Property(myRelationship, EORelationship.MANDATORY), null);
 
-    myDeleteRuleBinding = new ComboViewerBinding(myDeleteRuleComboViewer, myRelationship, EORelationship.DELETE_RULE, null, null);
-    myJoinSemanticBinding = new ComboViewerBinding(myJoinSemanticComboViewer, myRelationship, EORelationship.JOIN_SEMANTIC, myRelationship.getEntity().getModel().getModelGroup(), EOModelGroup.MODELS);
-    myEntityBinding = new ComboViewerBinding(myEntityComboViewer, myRelationship, EORelationship.DESTINATION, myRelationship.getEntity().getModel(), EOModel.ENTITIES);
+    myDeleteRuleBinding = new ComboViewerBinding(myDeleteRuleComboViewer, myRelationship, EORelationship.DELETE_RULE, null, null, null);
+    myJoinSemanticBinding = new ComboViewerBinding(myJoinSemanticComboViewer, myRelationship, EORelationship.JOIN_SEMANTIC, myRelationship.getEntity().getModel().getModelGroup(), EOModelGroup.MODELS, null);
+    myEntityBinding = new ComboViewerBinding(myEntityComboViewer, myRelationship, EORelationship.DESTINATION, myRelationship.getEntity().getModel(), EOModel.ENTITIES, null);
 
     updateModelAndEntityCombosEnabled();
     updateJoins();

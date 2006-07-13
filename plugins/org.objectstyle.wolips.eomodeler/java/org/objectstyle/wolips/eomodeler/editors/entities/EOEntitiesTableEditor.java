@@ -59,13 +59,13 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.part.EditorPart;
-import org.objectstyle.wolips.eomodeler.editors.EOModelEditorInput;
+import org.objectstyle.wolips.eomodeler.editors.IEOModelEditor;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
 
-public class EOEntitiesTableEditor extends EditorPart implements ISelectionProvider {
+public class EOEntitiesTableEditor extends EditorPart implements ISelectionProvider, IEOModelEditor {
   private EOEntitiesTableViewer myEntitiesTableViewer;
-  private EOModelEditorInput myEditorInput;
+  private EOModel myModel;
 
   public void doSave(IProgressMonitor _monitor) {
     // DO NOTHING
@@ -77,12 +77,20 @@ public class EOEntitiesTableEditor extends EditorPart implements ISelectionProvi
 
   public void init(IEditorSite _site, IEditorInput _input) {
     setSite(_site);
-    myEditorInput = (EOModelEditorInput) _input;
+    setInput(_input);
+  }
+
+  public void setModel(EOModel _model) {
+    myModel = _model;
     updateEntitiesTableViewer();
   }
 
+  public EOModel getModel() {
+    return myModel;
+  }
+
   public boolean isDirty() {
-    return myEditorInput != null && myEditorInput.getModel().isDirty();
+    return myModel != null && myModel.isDirty();
   }
 
   public boolean isSaveAsAllowed() {
@@ -105,8 +113,7 @@ public class EOEntitiesTableEditor extends EditorPart implements ISelectionProvi
 
   protected void updateEntitiesTableViewer() {
     if (myEntitiesTableViewer != null) {
-      EOModel model = (myEditorInput != null) ? myEditorInput.getModel() : null;
-      myEntitiesTableViewer.setModel(model);
+      myEntitiesTableViewer.setModel(myModel);
     }
   }
 

@@ -62,7 +62,7 @@ import org.eclipse.jface.internal.databinding.provisional.observable.list.Writab
 import org.objectstyle.cayenne.wocompat.PropertyListSerialization;
 import org.objectstyle.wolips.eomodeler.utils.MapUtils;
 
-public class EOEntity extends UserInfoableEOModelObject {
+public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRelative {
   private static final String FETCH_ALL = "FetchAll";
   public static final String ATTRIBUTE = "attribute"; //$NON-NLS-1$
   public static final String RELATIONSHIP = "relationship"; //$NON-NLS-1$
@@ -105,6 +105,54 @@ public class EOEntity extends UserInfoableEOModelObject {
     myFetchSpecs = new WritableList(EOFetchSpecification.class);
     myEntityMap = new EOModelMap();
     myFetchSpecsMap = new EOModelMap();
+  }
+
+  public EOEntity(EOModel _model, String _name) {
+    this(_model);
+    myName = _name;
+  }
+  
+  public EOEntity getEntity() {
+    return this;
+  }
+
+  public EORelationship addBlankRelationship(String _name) throws DuplicateRelationshipNameException {
+    String newRelationshipNameBase = _name;
+    String newRelationshipName = newRelationshipNameBase;
+    int newRelationshipNum = 0;
+    while (getRelationshipNamed(newRelationshipName) != null) {
+      newRelationshipNum++;
+      newRelationshipName = newRelationshipNameBase + newRelationshipNum;
+    }
+    EORelationship relationship = new EORelationship(this, newRelationshipName);
+    addRelationship(relationship);
+    return relationship;
+  }
+
+  public EOAttribute addBlankAttribute(String _name) throws DuplicateAttributeNameException {
+    String newAttributeNameBase = _name;
+    String newAttributeName = newAttributeNameBase;
+    int newAttributeNum = 0;
+    while (getAttributeNamed(newAttributeName) != null) {
+      newAttributeNum++;
+      newAttributeName = newAttributeNameBase + newAttributeNum;
+    }
+    EOAttribute attribute = new EOAttribute(this, newAttributeName);
+    addAttribute(attribute);
+    return attribute;
+  }
+
+  public EOFetchSpecification addBlankFetchSpec(String _name) throws DuplicateFetchSpecNameException {
+    String newFetchSpecNameBase = _name;
+    String newFetchSpecName = newFetchSpecNameBase;
+    int newFetchSpecNum = 0;
+    while (getFetchSpecNamed(newFetchSpecName) != null) {
+      newFetchSpecNum++;
+      newFetchSpecName = newFetchSpecNameBase + newFetchSpecNum;
+    }
+    EOFetchSpecification fetchSpec = new EOFetchSpecification(this, newFetchSpecName);
+    addFetchSpecification(fetchSpec);
+    return fetchSpec;
   }
 
   protected void _propertyChanged(String _propertyName, Object _oldValue, Object _newValue) {
@@ -212,11 +260,17 @@ public class EOEntity extends UserInfoableEOModelObject {
   }
 
   public void setName(String _name) throws DuplicateEntityNameException {
+    setName(_name, true);
+  }
+
+  public void setName(String _name, boolean _fireEvents) throws DuplicateEntityNameException {
     String oldName = myName;
     myModel._checkForDuplicateEntityName(this, _name, null);
     myModel._entityNameChanged(myName);
     myName = _name;
-    firePropertyChange(EOEntity.NAME, oldName, myName);
+    if (_fireEvents) {
+      firePropertyChange(EOEntity.NAME, oldName, myName);
+    }
   }
 
   public String getClassName() {
