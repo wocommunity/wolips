@@ -226,17 +226,22 @@ public class EOModelGroup extends EOModelObject {
       String name = files[fileNum].getName();
       if (files[fileNum].isDirectory()) {
         if (name.endsWith(".eomodeld")) { //$NON-NLS-1$
-          String modelName = name.substring(0, name.indexOf('.'));
-          if (!containsModelNamed(modelName)) {
-            EOModel model = new EOModel(this, modelName);
-            model.loadFromFolder(files[fileNum], false, _failures);
-            addModel(model);
-          }
+          addModelFromFolder(files[fileNum], _resolveImmediately, _failures);
         }
         else if (_recursive) {
           addModelsFromFolder(files[fileNum], _recursive, _resolveImmediately, _failures);
         }
       }
+    }
+  }
+
+  public void addModelFromFolder(File _folder, boolean _resolveImmediately, Set _failures) throws IOException, EOModelException {
+    String name = _folder.getName();
+    String modelName = name.substring(0, name.indexOf('.'));
+    if (!containsModelNamed(modelName)) {
+      EOModel model = new EOModel(this, modelName);
+      model.loadFromFolder(_folder, _resolveImmediately, _failures);
+      addModel(model);
     }
   }
 

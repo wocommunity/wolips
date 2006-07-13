@@ -57,22 +57,19 @@ import java.util.Set;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.objectstyle.wolips.datasets.adaptable.Project;
+import org.objectstyle.wolips.eomodeler.Activator;
 
 public class EclipseEOModelGroupFactory {
-  protected static void addModelsFromFolderIfNecessary(EOModelGroup _modelGroup, File _folder, Set _searchedFolders, boolean _recursive, Set _failures) throws IOException, EOModelException {
-    if (!_searchedFolders.contains(_folder) && _folder.exists()) {
-      _searchedFolders.add(_folder);
-      _modelGroup.addModelsFromFolder(_folder, _recursive, _failures);
-    }
-  }
-
   public static EOModel createModel(IResource _modelResource, Set _failures) throws CoreException, IOException, EOModelException {
     IProject project = _modelResource.getProject();
     EOModelGroup modelGroup = EclipseEOModelGroupFactory.createModelGroup(project, _failures);
@@ -94,7 +91,7 @@ public class EclipseEOModelGroupFactory {
       _searchedProjects.add(_project);
       Project wolipsProject = (Project) _project.getAdapter(Project.class);
       if (wolipsProject != null && wolipsProject.hasWOLipsNature()) {
-        EclipseEOModelGroupFactory.addModelsFromFolderIfNecessary(_modelGroup, _project.getLocation().toFile(), _searchedFolders, true, _failures);
+        _project.accept(new ModelVisitor(_modelGroup, _searchedFolders, _failures), IResource.DEPTH_INFINITE, IContainer.EXCLUDE_DERIVED);
 
         IJavaProject javaProject = JavaCore.create(_project);
         IClasspathEntry[] classpathEntries = javaProject.getResolvedClasspath(true);
@@ -114,7 +111,11 @@ public class EclipseEOModelGroupFactory {
               }
             }
             if (frameworkPath != null) {
-              EclipseEOModelGroupFactory.addModelsFromFolderIfNecessary(_modelGroup, frameworkPath.append("Resources").toFile(), _searchedFolders, false, _failures); //$NON-NLS-1$
+              File resourcesFolder = frameworkPath.append("Resources").toFile(); //$NON-NLS-1$
+              if (!_searchedFolders.contains(resourcesFolder) && resourcesFolder.exists()) {
+                _searchedFolders.add(resourcesFolder);
+                _modelGroup.addModelsFromFolder(resourcesFolder, false, _failures);
+              }
             }
           }
           else if (entryKind == IClasspathEntry.CPE_PROJECT) {
@@ -138,5 +139,34 @@ public class EclipseEOModelGroupFactory {
     modelGroup.verify(_failures);
 
     return modelGroup;
+  }
+
+  protected static class ModelVisitor implements IResourceVisitor {
+    private EOModelGroup myModelGroup;
+    private Set myFailures;
+    private Set mySearchedFolders;
+
+    public ModelVisitor(EOModelGroup _modelGroup, Set _searchedFolders, Set _failures) {
+      myModelGroup = _modelGroup;
+      myFailures = _failures;
+      mySearchedFolders = _searchedFolders;
+    }
+
+    public boolean visit(IResource _resource) throws CoreException {
+      try {
+        boolean visitChildren = true;
+        if (_resource.getType() == IResource.FOLDER) {
+          File resourceFile = _resource.getLocation().toFile();
+          if (!mySearchedFolders.contains(resourceFile) && "eomodeld".equals(_resource.getFileExtension())) { //$NON-NLS-1$
+            myModelGroup.addModelFromFolder(resourceFile, false, myFailures);
+            visitChildren = false;
+          }
+        }
+        return visitChildren;
+      }
+      catch (Exception e) {
+        throw new CoreException(new Status(IStatus.ERROR, Activator.PLUGIN_ID, 0, "Failed to load model in " + _resource + ".", e));
+      }
+    }
   }
 }

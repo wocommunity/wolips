@@ -157,7 +157,6 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 
   protected void createPages() {
     try {
-      System.out.println("EOModelEditor.createPages: ");
       myEntitiesTableEditor = new EOEntitiesTableEditor();
       addPage(0, myEntitiesTableEditor, getEditorInput());
       setPageText(0, Messages.getString("EOModelEditor.entitiesTab")); //$NON-NLS-1$

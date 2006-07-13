@@ -47,68 +47,57 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eomodeler.model;
+package org.objectstyle.wolips.eomodeler.actions;
 
-import java.util.Map;
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.ui.IEditorActionDelegate;
+import org.eclipse.ui.IEditorPart;
+import org.objectstyle.wolips.eomodeler.editors.EOModelEditor;
+import org.objectstyle.wolips.eomodeler.model.DuplicateRelationshipNameException;
+import org.objectstyle.wolips.eomodeler.model.EOEntity;
+import org.objectstyle.wolips.eomodeler.model.EOModel;
+import org.objectstyle.wolips.eomodeler.model.EORelationship;
+import org.objectstyle.wolips.eomodeler.model.EORelationshipPath;
 
-import org.objectstyle.wolips.eomodeler.utils.NotificationMap;
+public class FlattenRelationshipAction implements IEditorActionDelegate {
+  private EOModelEditor myEditor;
+  private EORelationshipPath myRelationshipPath;
 
-public class EORelationshipPath implements IUserInfoable, IEOEntityRelative {
-  private EORelationshipPath myParentRelationshipPath;
-  private EORelationship myChildRelationship;
-
-  public EORelationshipPath(EORelationshipPath _parentRelationshipPath, EORelationship _childRelationship) {
-    myParentRelationshipPath = _parentRelationshipPath;
-    myChildRelationship = _childRelationship;
-  }
-
-  public EORelationshipPath getParentRelationshipPath() {
-    return myParentRelationshipPath;
-  }
-
-  public EORelationship getChildRelationship() {
-    return myChildRelationship;
-  }
-
-  public NotificationMap getUserInfo() {
-    return myChildRelationship.getUserInfo();
-  }
-
-  public void setUserInfo(Map _userInfo) {
-    myChildRelationship.setUserInfo(_userInfo);
-  }
-
-  public void setUserInfo(Map _userInfo, boolean _fireEvents) {
-    myChildRelationship.setUserInfo(_userInfo, _fireEvents);
-  }
-
-  public EOEntity getEntity() {
-    return myChildRelationship.getEntity();
-  }
-
-  public EOEntity getRootEntity() {
-    EOEntity entity;
-    if (myParentRelationshipPath != null) {
-      entity = myParentRelationshipPath.getRootEntity();
+  public void setActiveEditor(IAction _action, IEditorPart _targetEditor) {
+    if (_targetEditor instanceof EOModelEditor) {
+      myEditor = (EOModelEditor) _targetEditor;
     }
-    else {
-      entity = getEntity();
-    }
-    return entity;
   }
 
-  public String toKeyPath() {
-    StringBuffer sb = new StringBuffer();
-    toKeyPath(sb);
-    return sb.toString();
+  public void selectionChanged(IAction _action, ISelection _selection) {
+    myRelationshipPath = null;
+    if (_selection instanceof IStructuredSelection) {
+      Object selectedObj = ((IStructuredSelection) _selection).getFirstElement();
+      if (selectedObj instanceof EORelationshipPath) {
+        myRelationshipPath = (EORelationshipPath) selectedObj;
+      }
+    }
   }
 
-  protected void toKeyPath(StringBuffer _keyPathBuffer) {
-    if (myParentRelationshipPath != null) {
-      myParentRelationshipPath.toKeyPath(_keyPathBuffer);
-      _keyPathBuffer.append("."); //$NON-NLS-1$
+  public void run(IAction _action) {
+    try {
+      if (myEditor != null && myRelationshipPath != null) {
+        EOModel model = myEditor.getModel();
+        if (model != null) {
+          EOEntity rootEntity = myRelationshipPath.getRootEntity();
+          String flattenedRelationship = myRelationshipPath.toKeyPath();
+          String flattenedRelationshipName = flattenedRelationship.replace('.', '_');
+          EORelationship newRelationship = rootEntity.addBlankRelationship(flattenedRelationshipName, flattenedRelationship); //$NON-NLS-1$
+          myEditor.setSelection(new StructuredSelection(newRelationship));
+        }
+      }
     }
-    String name = myChildRelationship.getName();
-    _keyPathBuffer.append(name);
+    catch (DuplicateRelationshipNameException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
   }
 }

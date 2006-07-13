@@ -9,7 +9,6 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.window.IShellProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
@@ -23,11 +22,6 @@ public class EOModelErrorDialog extends Dialog {
   private ListViewer myFailureListViewer;
 
   public EOModelErrorDialog(Shell _parentShell, Set _failures) {
-    super(_parentShell);
-    myFailures = _failures;
-  }
-
-  public EOModelErrorDialog(IShellProvider _parentShell, Set _failures) {
     super(_parentShell);
     myFailures = _failures;
   }
