@@ -43,24 +43,37 @@
  */
 package org.objectstyle.wolips.componenteditor.editormenu;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IEditorActionDelegate;
+import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.part.FileEditorInput;
 import org.objectstyle.wolips.componenteditor.part.ComponentEditor;
+import org.objectstyle.wolips.components.ComponentsPlugin;
+import org.objectstyle.wolips.locate.LocateException;
+import org.objectstyle.wolips.locate.LocatePlugin;
+import org.objectstyle.wolips.locate.result.LocalizedComponentsLocateResult;
 
 public abstract class AbstractSwitchToActionDelegate implements
 		IEditorActionDelegate {
 
 	private ComponentEditor componentEditor;
 
-	public void setActiveEditor(IAction action, IEditorPart targetEditor) {
-		if (targetEditor != null && targetEditor instanceof ComponentEditor) {
-			componentEditor = (ComponentEditor) targetEditor;
-		} else {
-			componentEditor = null;
-		}
+	private IEditorPart editorPart;
 
+	public void setActiveEditor(IAction action, IEditorPart targetEditor) {
+		editorPart = null;
+		componentEditor = null;
+		if (targetEditor == null) {
+			return;
+		}
+		if (targetEditor instanceof ComponentEditor) {
+			componentEditor = (ComponentEditor) targetEditor;
+		}
+		editorPart = targetEditor;
 	}
 
 	public void selectionChanged(IAction action, ISelection selection) {
@@ -71,4 +84,30 @@ public abstract class AbstractSwitchToActionDelegate implements
 		return componentEditor;
 	}
 
+	public IEditorPart getEditorPart() {
+		return editorPart;
+	}
+
+	public LocalizedComponentsLocateResult getLocalizedComponentsLocateResult() {
+		IEditorInput editorInput = this.editorPart.getEditorInput();
+		FileEditorInput fileEditorInput = (FileEditorInput)editorInput;
+		IFile file = fileEditorInput.getFile();
+		LocalizedComponentsLocateResult localizedComponentsLocateResult = null;
+		try {
+			localizedComponentsLocateResult = LocatePlugin.getDefault()
+					.getLocalizedComponentsLocateResult(file);
+		} catch (CoreException e) {
+			ComponentsPlugin.getDefault().log(e);
+			return null;
+		} catch (LocateException e) {
+			ComponentsPlugin.getDefault().log(e);
+			return null;
+		}
+		if (localizedComponentsLocateResult.getDotJava() == null
+				|| localizedComponentsLocateResult.getComponents() == null
+				|| localizedComponentsLocateResult.getComponents().length == 0) {
+			return null;
+		}
+		return localizedComponentsLocateResult;
+	}
 }

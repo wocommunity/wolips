@@ -13,9 +13,6 @@
             matchingStrategy="org.objectstyle.wolips.componenteditor.launcher.ComponentEditorMatchingStrategy"
             name="WOComponent Editor">
 			<contentTypeBinding
-               contentTypeId="org.eclipse.jdt.core.javaSource"
-            /> 
-			<contentTypeBinding
                contentTypeId="org.objectstyle.wolips.editors.api"
             />
 			<contentTypeBinding
@@ -136,6 +133,34 @@
                id="org.objectstyle.wolips.componenteditor.editors.switchtojava"
                label="Switch to Java Editor"
                menubarPath="navigate/org.objectstyle.wolips.componenteditor.navigateMenuContribution/group1"/>
+		</editorContribution>
+      <editorContribution 
+         id="org.objectstyle.wolips.javaeditor.editorActionsContribution" 
+         targetID="org.eclipse.jdt.ui.CompilationUnitEditor">        
+           <menu id="org.objectstyle.wolips.javaeditor.navigateMenuContribution"
+			label="&amp;Component Editor" 
+             path="navigate/additions">
+ 				<separator name="group1"/>
+ 				<separator name="group2"/>
+		  </menu>
+         <action
+               class="org.objectstyle.wolips.componenteditor.editormenu.SwitchToApiEditorActionDelegate"
+               definitionId="org.objectstyle.wolips.componenteditor.editors.toapi"
+               id="org.objectstyle.wolips.javaeditor.editors.switchtoapi"
+               label="Switch to Api Editor"
+               menubarPath="navigate/org.objectstyle.wolips.javaeditor.navigateMenuContribution/group1"/>
+         <action
+               class="org.objectstyle.wolips.componenteditor.editormenu.SwitchToWodEditorActionDelegate"
+               definitionId="org.objectstyle.wolips.componenteditor.editors.towod"
+               id="org.objectstyle.wolips.javaeditor.editors.switchtowod"
+               label="Switch to Wod Editor"
+               menubarPath="navigate/org.objectstyle.wolips.javaeditor.navigateMenuContribution/group1"/>
+         <action
+               class="org.objectstyle.wolips.componenteditor.editormenu.SwitchToHtmlEditorActionDelegate"
+               definitionId="org.objectstyle.wolips.componenteditor.editors.tohtml"
+               id="org.objectstyle.wolips.javaeditor.editors.switchtohtml"
+               label="Switch to Html Editor"
+               menubarPath="navigate/org.objectstyle.wolips.javaeditor.navigateMenuContribution/group1"/>
 		</editorContribution>
 	</extension>
 </plugin>

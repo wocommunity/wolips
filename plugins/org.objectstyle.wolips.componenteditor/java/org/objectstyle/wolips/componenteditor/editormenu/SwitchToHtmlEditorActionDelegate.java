@@ -43,8 +43,12 @@
  */
 package org.objectstyle.wolips.componenteditor.editormenu;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.IAction;
 import org.objectstyle.wolips.componenteditor.part.ComponentEditor;
+import org.objectstyle.wolips.components.ComponentsPlugin;
+import org.objectstyle.wolips.locate.result.LocalizedComponentsLocateResult;
+import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 
 public class SwitchToHtmlEditorActionDelegate extends
 		AbstractSwitchToActionDelegate {
@@ -57,6 +61,21 @@ public class SwitchToHtmlEditorActionDelegate extends
 		ComponentEditor componentEditor = this.getComponentEditor();
 		if (componentEditor != null) {
 			componentEditor.switchToHtml();
+		} else {
+			LocalizedComponentsLocateResult localizedComponentsLocateResult = this
+					.getLocalizedComponentsLocateResult();
+			if (localizedComponentsLocateResult == null) {
+				return;
+			}
+			try {
+				if (localizedComponentsLocateResult.getFirstHtmlFile() == null) {
+					return;
+				}
+				WorkbenchUtilitiesPlugin.open(localizedComponentsLocateResult
+						.getFirstHtmlFile());
+			} catch (CoreException e) {
+				ComponentsPlugin.getDefault().log(e);
+			}
 		}
 
 	}
