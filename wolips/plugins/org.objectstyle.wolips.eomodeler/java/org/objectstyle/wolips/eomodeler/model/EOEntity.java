@@ -111,12 +111,16 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     this(_model);
     myName = _name;
   }
-  
+
   public EOEntity getEntity() {
     return this;
   }
 
   public EORelationship addBlankRelationship(String _name) throws DuplicateRelationshipNameException {
+    return addBlankRelationship(_name, null);
+  }
+
+  public EORelationship addBlankRelationship(String _name, String _flattenedDefinition) throws DuplicateRelationshipNameException {
     String newRelationshipNameBase = _name;
     String newRelationshipName = newRelationshipNameBase;
     int newRelationshipNum = 0;
@@ -124,7 +128,13 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
       newRelationshipNum++;
       newRelationshipName = newRelationshipNameBase + newRelationshipNum;
     }
-    EORelationship relationship = new EORelationship(this, newRelationshipName);
+    EORelationship relationship;
+    if (_flattenedDefinition != null) {
+      relationship = new EORelationship(this, newRelationshipName, _flattenedDefinition);
+    }
+    else {
+      relationship = new EORelationship(this, newRelationshipName);
+    }
     addRelationship(relationship);
     return relationship;
   }
@@ -471,9 +481,15 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
 
   public void addFetchSpecification(EOFetchSpecification _fetchSpecification, boolean _fireEvents, Set _failures) throws DuplicateFetchSpecNameException {
     _checkForDuplicateFetchSpecName(_fetchSpecification, _fetchSpecification.getName(), _failures);
-    myFetchSpecs.add(_fetchSpecification);
+    List oldFetchSpecs = null;
     if (_fireEvents) {
-      firePropertyChange(EOEntity.FETCH_SPECIFICATIONS, null, null);
+      oldFetchSpecs = myFetchSpecs;
+      myFetchSpecs = new LinkedList(myFetchSpecs);
+      myFetchSpecs.add(_fetchSpecification);
+      firePropertyChange(EOEntity.FETCH_SPECIFICATIONS, oldFetchSpecs, myFetchSpecs);
+    }
+    else {
+      myFetchSpecs.add(_fetchSpecification);
     }
   }
 
@@ -486,11 +502,17 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     addAttribute(_attribute, true, null);
   }
 
-  public void addAttribute(EOAttribute _attribute, boolean _fireEvents, Set _failures) throws DuplicateAttributeNameException {
+  public synchronized void addAttribute(EOAttribute _attribute, boolean _fireEvents, Set _failures) throws DuplicateAttributeNameException {
     _checkForDuplicateAttributeName(_attribute, _attribute.getName(), _failures);
-    myAttributes.add(_attribute);
+    List oldAttributes = null;
     if (_fireEvents) {
-      firePropertyChange(EOEntity.ATTRIBUTES, null, null);
+      oldAttributes = myAttributes;
+      myAttributes = new LinkedList(myAttributes);
+      myAttributes.add(_attribute);
+      firePropertyChange(EOEntity.ATTRIBUTES, oldAttributes, myAttributes);
+    }
+    else {
+      myAttributes.add(_attribute);
     }
   }
 
@@ -557,9 +579,15 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
 
   public void addRelationship(EORelationship _relationship, boolean _fireEvents, Set _failures) throws DuplicateRelationshipNameException {
     _checkForDuplicateRelationshipName(_relationship, _relationship.getName(), _failures);
-    myRelationships.add(_relationship);
+    List oldRelationships = null;
     if (_fireEvents) {
-      firePropertyChange(EOEntity.RELATIONSHIPS, null, null);
+      oldRelationships = myRelationships;
+      myRelationships = new LinkedList(myRelationships);
+      myRelationships.add(_relationship);
+      firePropertyChange(EOEntity.RELATIONSHIPS, oldRelationships, myRelationships);
+    }
+    else {
+      myRelationships.add(_relationship);
     }
   }
 

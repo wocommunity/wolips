@@ -294,19 +294,32 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
     myJoinSemanticBinding = new ComboViewerBinding(myJoinSemanticComboViewer, myRelationship, EORelationship.JOIN_SEMANTIC, myRelationship.getEntity().getModel().getModelGroup(), EOModelGroup.MODELS, null);
     myEntityBinding = new ComboViewerBinding(myEntityComboViewer, myRelationship, EORelationship.DESTINATION, myRelationship.getEntity().getModel(), EOModel.ENTITIES, null);
 
+    boolean enabled = !myRelationship.isFlattened();
+    //myToOneButton.setEnabled(enabled);
+    //myToManyButton.setEnabled(enabled);
+    //myOptionalButton.setEnabled(enabled);
+    //myMandatoryButton.setEnabled(enabled);
+    //myDeleteRuleComboViewer.getCombo().setEnabled(enabled);
+    myModelComboViewer.getCombo().setEnabled(enabled);
+    myEntityComboViewer.getCombo().setEnabled(enabled);
+    myJoinSemanticComboViewer.getCombo().setEnabled(enabled);
+    myJoinsTableViewer.getTable().setEnabled(enabled);
+    myAddButton.setEnabled(enabled);
+    myRemoveButton.setEnabled(enabled);
+
     updateModelAndEntityCombosEnabled();
     updateJoins();
   }
 
   protected void updateButtons() {
-    boolean removeEnabled = !myJoinsTableViewer.getSelection().isEmpty();
+    boolean removeEnabled = !myJoinsTableViewer.getSelection().isEmpty() && !myRelationship.isFlattened();
     myRemoveButton.setEnabled(removeEnabled);
   }
 
   protected void updateModelAndEntityCombosEnabled() {
-    boolean hasJoins = myRelationship.getJoins().size() > 0;
-    myModelComboViewer.getCombo().setEnabled(!hasJoins);
-    myEntityComboViewer.getCombo().setEnabled(!hasJoins);
+    boolean enabled = myRelationship.getJoins().size() == 0 && !myRelationship.isFlattened();
+    myModelComboViewer.getCombo().setEnabled(enabled);
+    myEntityComboViewer.getCombo().setEnabled(enabled);
   }
 
   protected void updateEntityCombo() {

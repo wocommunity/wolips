@@ -212,9 +212,15 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable 
 
   public void addEntity(EOEntity _entity, boolean _fireEvents, Set _failures) throws DuplicateEntityNameException {
     _checkForDuplicateEntityName(_entity, _entity.getName(), _failures);
-    myEntities.add(_entity);
+    List oldEntities = null;
     if (_fireEvents) {
-      firePropertyChange(EOModel.ENTITIES, null, null);
+      oldEntities = myEntities;
+      myEntities = new LinkedList(myEntities);
+      myEntities.add(_entity);
+      firePropertyChange(EOModel.ENTITIES, oldEntities, myEntities);
+    }
+    else {
+      myEntities.add(_entity);
     }
   }
 

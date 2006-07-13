@@ -101,6 +101,11 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
     myName = _name;
   }
 
+  public EORelationship(EOEntity _entity, String _name, String _definition) {
+    this(_entity, _name);
+    myDefinition = _definition;
+  }
+
   protected void _propertyChanged(String _propertyName, Object _oldValue, Object _newValue) {
     myEntity._relationshipChanged(this);
   }
@@ -333,9 +338,15 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
 
   public void addJoin(EOJoin _join, boolean _fireEvents) {
     // TODO: Check duplicates?
-    myJoins.add(_join);
+    List oldJoins = null;
     if (_fireEvents) {
-      firePropertyChange(EORelationship.JOINS, null, null);
+      oldJoins = myJoins;
+      myJoins = new LinkedList(myJoins);
+      myJoins.add(_join);
+      firePropertyChange(EORelationship.JOINS, oldJoins, myJoins);
+    }
+    else {
+      myJoins.add(_join);
     }
   }
 
@@ -390,7 +401,7 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
     relationshipMap.setString("definition", myDefinition, true); //$NON-NLS-1$
     relationshipMap.setBoolean("isMandatory", myMandatory); //$NON-NLS-1$
     relationshipMap.setBoolean("isToMany", myToMany); //$NON-NLS-1$
-    if (myJoinSemantic != null) {
+    if (!isFlattened() && myJoinSemantic != null) {
       relationshipMap.setString("joinSemantic", myJoinSemantic.getID(), true); //$NON-NLS-1$
     }
     relationshipMap.setString("name", myName, true); //$NON-NLS-1$
