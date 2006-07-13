@@ -43,8 +43,12 @@
  */
 package org.objectstyle.wolips.componenteditor.editormenu;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.action.IAction;
 import org.objectstyle.wolips.componenteditor.part.ComponentEditor;
+import org.objectstyle.wolips.components.ComponentsPlugin;
+import org.objectstyle.wolips.locate.result.LocalizedComponentsLocateResult;
+import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 
 public class SwitchToWodEditorActionDelegate extends
 		AbstractSwitchToActionDelegate {
@@ -57,6 +61,21 @@ public class SwitchToWodEditorActionDelegate extends
 		ComponentEditor componentEditor = this.getComponentEditor();
 		if (componentEditor != null) {
 			componentEditor.switchToWod();
+		} else {
+			LocalizedComponentsLocateResult localizedComponentsLocateResult = this
+					.getLocalizedComponentsLocateResult();
+			if (localizedComponentsLocateResult == null) {
+				return;
+			}
+			try {
+				if (localizedComponentsLocateResult.getFirstWodFile() == null) {
+					return;
+				}
+				WorkbenchUtilitiesPlugin.open(localizedComponentsLocateResult
+						.getFirstWodFile());
+			} catch (CoreException e) {
+				ComponentsPlugin.getDefault().log(e);
+			}
 		}
 
 	}
