@@ -47,8 +47,9 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eomodeler.editors.relationship;
+package org.objectstyle.wolips.eomodeler.editors.entity;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -57,18 +58,40 @@ import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
 import org.objectstyle.wolips.eomodeler.model.EOModelGroup;
 import org.objectstyle.wolips.eomodeler.model.EORelationship;
+import org.objectstyle.wolips.eomodeler.utils.ReflectionComparator;
 
 public class EOEntityListContentProvider implements IStructuredContentProvider {
+  private boolean myRestrictToSingleModel;
+
+  public EOEntityListContentProvider(boolean _restrictToSingleModel) {
+    myRestrictToSingleModel = _restrictToSingleModel;
+  }
+
   public Object[] getElements(Object _inputElement) {
     List entitiesList;
     if (_inputElement instanceof EORelationship) {
-      entitiesList = ((EORelationship) _inputElement).getEntity().getModel().getEntities();
+      if (myRestrictToSingleModel) {
+        entitiesList = ((EORelationship) _inputElement).getEntity().getModel().getEntities();
+      }
+      else {
+        entitiesList = ((EORelationship) _inputElement).getEntity().getModel().getModelGroup().getEntities();
+      }
     }
     else if (_inputElement instanceof EOEntity) {
-      entitiesList = ((EOEntity) _inputElement).getModel().getEntities();
+      if (myRestrictToSingleModel) {
+        entitiesList = ((EOEntity) _inputElement).getModel().getEntities();
+      }
+      else {
+        entitiesList = ((EOEntity) _inputElement).getModel().getModelGroup().getEntities();
+      }
     }
     else if (_inputElement instanceof EOModel) {
-      entitiesList = ((EOModel) _inputElement).getEntities();
+      if (myRestrictToSingleModel) {
+        entitiesList = ((EOModel) _inputElement).getEntities();
+      }
+      else {
+        entitiesList = ((EOModel) _inputElement).getModelGroup().getEntities();
+      }
     }
     else if (_inputElement instanceof EOModelGroup) {
       entitiesList = ((EOModelGroup) _inputElement).getEntities();
@@ -77,6 +100,8 @@ public class EOEntityListContentProvider implements IStructuredContentProvider {
       throw new IllegalArgumentException("Unknown input element: " + _inputElement);
     }
     EOEntity[] entities = (EOEntity[]) entitiesList.toArray(new EOEntity[entitiesList.size()]);
+    Arrays.sort(entities, new ReflectionComparator(EOEntity.class, "getName"));
+
     return entities;
   }
 

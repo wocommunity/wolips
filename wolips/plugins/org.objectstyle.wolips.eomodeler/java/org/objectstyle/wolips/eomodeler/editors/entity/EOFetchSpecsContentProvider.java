@@ -47,83 +47,24 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eomodeler.outline;
+package org.objectstyle.wolips.eomodeler.editors.entity;
 
-import org.eclipse.jface.viewers.ILabelProvider;
-import org.eclipse.jface.viewers.ILabelProviderListener;
-import org.eclipse.swt.graphics.Image;
-import org.objectstyle.wolips.eomodeler.Activator;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.Viewer;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
-import org.objectstyle.wolips.eomodeler.model.EOFetchSpecification;
-import org.objectstyle.wolips.eomodeler.model.EOModel;
-import org.objectstyle.wolips.eomodeler.model.EORelationship;
-import org.objectstyle.wolips.eomodeler.model.EORelationshipPath;
 
-public class EOModelOutlineLabelProvider implements ILabelProvider {
-  public void addListener(ILabelProviderListener _listener) {
-    // DO NOTHING
+public class EOFetchSpecsContentProvider implements IStructuredContentProvider {
+  public Object[] getElements(Object _inputElement) {
+    EOEntity entity = (EOEntity) _inputElement;
+    Object[] fetchSpecs = entity.getFetchSpecs().toArray();
+    return fetchSpecs;
   }
 
   public void dispose() {
     // DO NOTHING
   }
 
-  public Image getImage(Object _element) {
-    Image image;
-    if (_element instanceof EOModel) {
-      image = Activator.getDefault().getImageRegistry().get(Activator.EOMODEL_ICON);
-    }
-    else if (_element instanceof EOEntity) {
-      image = Activator.getDefault().getImageRegistry().get(Activator.EOENTITY_ICON);
-    }
-    else if (_element instanceof EORelationship) {
-      image = Activator.getDefault().getImageRegistry().get(Activator.EORELATIONSHIP_ICON);
-    }
-    else if (_element instanceof EORelationshipPath) {
-      image = Activator.getDefault().getImageRegistry().get(Activator.EORELATIONSHIP_ICON);
-    }
-    else if (_element instanceof EOFetchSpecification) {
-      image = Activator.getDefault().getImageRegistry().get(Activator.EOFETCHSPEC_ICON);
-    }
-    else {
-      image = null;
-    }
-    return image;
-  }
-
-  public String getText(Object _element) {
-    String text;
-    if (_element instanceof EOModel) {
-      EOModel model = (EOModel) _element;
-      text = model.getName();
-    }
-    else if (_element instanceof EOEntity) {
-      EOEntity entity = (EOEntity) _element;
-      text = entity.getName();
-    }
-    else if (_element instanceof EORelationship) {
-      EORelationship relationship = (EORelationship) _element;
-      text = relationship.getName();
-    }
-    else if (_element instanceof EORelationshipPath) {
-      EORelationshipPath relationshipPath = (EORelationshipPath) _element;
-      text = relationshipPath.getChildRelationship().getName();
-    }
-    else if (_element instanceof EOFetchSpecification) {
-      EOFetchSpecification fetchSpec = (EOFetchSpecification) _element;
-      text = fetchSpec.getName();
-    }
-    else {
-      text = null;
-    }
-    return text;
-  }
-
-  public boolean isLabelProperty(Object _element, String _property) {
-    return false;
-  }
-
-  public void removeListener(ILabelProviderListener _listener) {
+  public void inputChanged(Viewer _viewer, Object _oldInput, Object _newInput) {
     // DO NOTHING
   }
 }

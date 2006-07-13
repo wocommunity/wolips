@@ -47,15 +47,11 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eomodeler.editors.relationship;
+package org.objectstyle.wolips.eomodeler.editors.entity;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
-import org.eclipse.jface.internal.databinding.provisional.BindSpec;
 import org.eclipse.jface.internal.databinding.provisional.DataBindingContext;
 import org.eclipse.jface.internal.databinding.provisional.description.Property;
-import org.eclipse.jface.internal.databinding.provisional.validation.RegexStringValidator;
+import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
@@ -65,28 +61,33 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.objectstyle.wolips.eomodeler.Messages;
-import org.objectstyle.wolips.eomodeler.model.EORelationship;
-import org.objectstyle.wolips.eomodeler.model.EORelationshipPath;
+import org.objectstyle.wolips.eomodeler.model.EOEntity;
+import org.objectstyle.wolips.eomodeler.model.EOModel;
 import org.objectstyle.wolips.eomodeler.utils.BindingFactory;
+import org.objectstyle.wolips.eomodeler.utils.ComboViewerBinding;
 
-public class EORelationshipAdvancedEditorSection extends AbstractPropertySection {
-  private EORelationship myRelationship;
+public class EOEntityBasicEditorSection extends AbstractPropertySection {
+  private EOEntity myEntity;
 
-  private Text myNumberOfToManyFaultsToBatchFetchText;
-  private Button myOwnsDestinationButton;
-  private Button myPropagatesPrimaryKeyButton;
+  private Text myNameText;
+  private Text myExternalNameText;
+  private Text myClassNameText;
+  private ComboViewer myParentEntityComboViewer;
+  private Text myRestrictingQualifierText;
+  private Button myAbstractButton;
 
   private DataBindingContext myBindingContext;
-  private RelationshipPropertyChangeListener myRelationshipPropertyChangeListener;
+  private ComboViewerBinding myParentEntityBinding;
 
-  public EORelationshipAdvancedEditorSection() {
-    myRelationshipPropertyChangeListener = new RelationshipPropertyChangeListener();
+  public EOEntityBasicEditorSection() {
+    // DO NOTHING
   }
 
   public void createControls(Composite _parent, TabbedPropertySheetPage _tabbedPropertySheetPage) {
@@ -106,16 +107,36 @@ public class EORelationshipAdvancedEditorSection extends AbstractPropertySection
     topFormLayout.numColumns = 2;
     topForm.setLayout(topFormLayout);
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship." + EORelationship.NUMBER_OF_TO_MANY_FAULTS_TO_BATCH_FETCH), SWT.NONE); //$NON-NLS-1$
-    myNumberOfToManyFaultsToBatchFetchText = new Text(topForm, SWT.BORDER);
+    getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.NAME), SWT.NONE); //$NON-NLS-1$
+    myNameText = new Text(topForm, SWT.BORDER);
     GridData nameFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-    myNumberOfToManyFaultsToBatchFetchText.setLayoutData(nameFieldLayoutData);
+    myNameText.setLayoutData(nameFieldLayoutData);
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship." + EORelationship.OWNS_DESTINATION), SWT.NONE); //$NON-NLS-1$
-    myOwnsDestinationButton = new Button(topForm, SWT.CHECK);
+    getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.EXTERNAL_NAME), SWT.NONE); //$NON-NLS-1$
+    myExternalNameText = new Text(topForm, SWT.BORDER);
+    GridData externalNameFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+    myExternalNameText.setLayoutData(externalNameFieldLayoutData);
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship." + EORelationship.PROPAGATES_PRIMARY_KEY), SWT.NONE); //$NON-NLS-1$
-    myPropagatesPrimaryKeyButton = new Button(topForm, SWT.CHECK);
+    getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.CLASS_NAME), SWT.NONE); //$NON-NLS-1$
+    myClassNameText = new Text(topForm, SWT.BORDER);
+    GridData classNameFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+    myClassNameText.setLayoutData(classNameFieldLayoutData);
+
+    getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.PARENT), SWT.NONE); //$NON-NLS-1$
+    Combo parentEntityCombo = new Combo(topForm, SWT.BORDER | SWT.FLAT | SWT.READ_ONLY);
+    myParentEntityComboViewer = new ComboViewer(parentEntityCombo);
+    myParentEntityComboViewer.setLabelProvider(new EOEntityLabelProvider());
+    myParentEntityComboViewer.setContentProvider(new EOEntityListContentProvider(false));
+    GridData entityComboLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+    parentEntityCombo.setLayoutData(entityComboLayoutData);
+
+    getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.RESTRICTING_QUALIFIER), SWT.NONE); //$NON-NLS-1$
+    myRestrictingQualifierText = new Text(topForm, SWT.BORDER);
+    GridData restrictingQualifierFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+    myRestrictingQualifierText.setLayoutData(restrictingQualifierFieldLayoutData);
+
+    getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.ABSTRACT_ENTITY), SWT.NONE); //$NON-NLS-1$
+    myAbstractButton = new Button(topForm, SWT.CHECK);
   }
 
   public void setInput(IWorkbenchPart _part, ISelection _selection) {
@@ -123,49 +144,31 @@ public class EORelationshipAdvancedEditorSection extends AbstractPropertySection
     disposeBindings();
 
     Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
-    if (selectedObject instanceof EORelationship) {
-      myRelationship = (EORelationship) selectedObject;
-    }
-    else if (selectedObject instanceof EORelationshipPath) {
-      myRelationship = ((EORelationshipPath) selectedObject).getChildRelationship();
-    }
-    if (myRelationship != null) {
-      myRelationship.addPropertyChangeListener(EORelationship.TO_MANY, myRelationshipPropertyChangeListener);
-    }
+    myEntity = (EOEntity) selectedObject;
+
+    myParentEntityComboViewer.setInput(myEntity);
+
     myBindingContext = BindingFactory.createContext();
-    myBindingContext.bind(myNumberOfToManyFaultsToBatchFetchText, new Property(myRelationship, EORelationship.NUMBER_OF_TO_MANY_FAULTS_TO_BATCH_FETCH), new BindSpec(null, null, new RegexStringValidator("^[0-9]*$", "^[0-9]$", "Please enter a number"), null)); //$NON-NLS-1$ //$NON-NLS-2$
-    myBindingContext.bind(myOwnsDestinationButton, new Property(myRelationship, EORelationship.OWNS_DESTINATION), null);
-    myBindingContext.bind(myPropagatesPrimaryKeyButton, new Property(myRelationship, EORelationship.PROPAGATES_PRIMARY_KEY), null);
-    updateCardinalityEnabled();
-  }
+    myBindingContext.bind(myNameText, new Property(myEntity, EOEntity.NAME), null); //$NON-NLS-1$ //$NON-NLS-2$
+    myBindingContext.bind(myExternalNameText, new Property(myEntity, EOEntity.EXTERNAL_NAME), null);
+    myBindingContext.bind(myClassNameText, new Property(myEntity, EOEntity.CLASS_NAME), null);
+    myBindingContext.bind(myRestrictingQualifierText, new Property(myEntity, EOEntity.RESTRICTING_QUALIFIER), null);
+    myBindingContext.bind(myAbstractButton, new Property(myEntity, EOEntity.ABSTRACT_ENTITY), null);
 
-  protected void updateCardinalityEnabled() {
-    Boolean isToMany = myRelationship.isToMany();
-    boolean enabled = (isToMany != null && isToMany.booleanValue());
-    myNumberOfToManyFaultsToBatchFetchText.setEnabled(enabled);
-  }
-
-  protected void removeRelationshipListeners() {
-    if (myRelationship != null) {
-      myRelationship.removePropertyChangeListener(EORelationship.TO_MANY, myRelationshipPropertyChangeListener);
-    }
+    myParentEntityBinding = new ComboViewerBinding(myParentEntityComboViewer, myEntity, EOEntity.PARENT, myEntity.getModel(), EOModel.ENTITIES);
   }
 
   protected void disposeBindings() {
     if (myBindingContext != null) {
       myBindingContext.dispose();
     }
-    removeRelationshipListeners();
+    if (myParentEntityBinding != null) {
+      myParentEntityBinding.dispose();
+    }
   }
 
   public void dispose() {
     super.dispose();
     disposeBindings();
-  }
-
-  protected class RelationshipPropertyChangeListener implements PropertyChangeListener {
-    public void propertyChange(PropertyChangeEvent _event) {
-      EORelationshipAdvancedEditorSection.this.updateCardinalityEnabled();
-    }
   }
 }

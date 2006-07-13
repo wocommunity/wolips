@@ -66,11 +66,11 @@ import org.objectstyle.wolips.eomodeler.properties.EOModelPropertySource;
 import org.objectstyle.wolips.eomodeler.utils.MapUtils;
 import org.objectstyle.wolips.eomodeler.utils.NotificationMap;
 
-public class EOModel extends EOModelObject implements IUserInfoable {
+public class EOModel extends UserInfoableEOModelObject implements IUserInfoable {
+  public static final String DIRTY = "dirty"; //$NON-NLS-1$
   public static final String ENTITY = "entity"; //$NON-NLS-1$
   public static final String CONNECTION_DICTIONARY = "connectionDictionary"; //$NON-NLS-1$
   public static final String ADAPTOR_NAME = "adaptorName"; //$NON-NLS-1$
-  public static final String USER_INFO = "userInfo"; //$NON-NLS-1$
   public static final String VERSION = "version"; //$NON-NLS-1$
   public static final String NAME = "name"; //$NON-NLS-1$
   public static final String ENTITIES = "entities"; //$NON-NLS-1$
@@ -83,8 +83,8 @@ public class EOModel extends EOModelObject implements IUserInfoable {
   private List myEntities;
   private List myDeletedEntityNamesInObjectStore;
   private EOModelMap myModelMap;
-  private NotificationMap myUserInfo;
   private boolean myDirty;
+  private PropertyChangeRepeater myConnectionDictionaryRepeater;
 
   public EOModel(EOModelGroup _modelGroup, String _name) {
     myModelGroup = _modelGroup;
@@ -93,6 +93,8 @@ public class EOModel extends EOModelObject implements IUserInfoable {
     myDeletedEntityNamesInObjectStore = new WritableList(String.class);
     myVersion = "2.1"; //$NON-NLS-1$
     myModelMap = new EOModelMap();
+    myConnectionDictionaryRepeater = new PropertyChangeRepeater(EOModel.CONNECTION_DICTIONARY);
+    setConnectionDictionary(new NotificationMap(), false);
   }
 
   public boolean isDirty() {
@@ -100,12 +102,19 @@ public class EOModel extends EOModelObject implements IUserInfoable {
   }
 
   public void setDirty(boolean _dirty) {
+    Boolean oldDirty = Boolean.valueOf(myDirty);
     myDirty = _dirty;
+    firePropertyChange(EOModel.DIRTY, oldDirty, Boolean.valueOf(myDirty));
   }
 
   protected void firePropertyChange(String _propertyName, Object _oldValue, Object _newValue) {
-    myDirty = true;
     super.firePropertyChange(_propertyName, _oldValue, _newValue);
+  }
+  
+  protected void _propertyChanged(String _propertyName, Object _oldValue, Object _newValue) {
+    if (!myDirty && !EOModel.DIRTY.equals(_propertyName)) {
+      setDirty(true);
+    }
   }
 
   protected void _entityChanged(EOEntity _entity) {
@@ -214,33 +223,15 @@ public class EOModel extends EOModelObject implements IUserInfoable {
   }
 
   public void setConnectionDictionary(Map _connectionDictionary) {
-    Map oldConnectionDictionary = myConnectionDictionary;
-    if (_connectionDictionary instanceof NotificationMap) {
-      myConnectionDictionary = (NotificationMap) _connectionDictionary;
-    }
-    else {
-      myConnectionDictionary = new NotificationMap(_connectionDictionary);
-    }
-    firePropertyChange(EOModel.CONNECTION_DICTIONARY, oldConnectionDictionary, myConnectionDictionary);
+    setConnectionDictionary(_connectionDictionary, true);
+  }
+  
+  public void setConnectionDictionary(Map _connectionDictionary, boolean _fireEvents) {
+    myConnectionDictionary = mapChanged(myConnectionDictionary, _connectionDictionary, myConnectionDictionaryRepeater, _fireEvents);
   }
 
   public NotificationMap getConnectionDictionary() {
     return myConnectionDictionary;
-  }
-
-  public void setUserInfo(Map _userInfo) {
-    Map oldUserInfo = myUserInfo;
-    if (_userInfo instanceof NotificationMap) {
-      myUserInfo = (NotificationMap) _userInfo;
-    }
-    else {
-      myUserInfo = new NotificationMap(_userInfo);
-    }
-    firePropertyChange(EOModel.USER_INFO, oldUserInfo, myUserInfo);
-  }
-
-  public NotificationMap getUserInfo() {
-    return myUserInfo;
   }
 
   public void loadFromFolder(File _modelFolder, boolean _resolveImmediately, Set _failures) throws EOModelException, IOException {
@@ -261,8 +252,8 @@ public class EOModel extends EOModelObject implements IUserInfoable {
       throw new IllegalArgumentException("Unknown version format:" + version);
     }
     myAdaptorName = modelMap.getString("adaptorName", true); //$NON-NLS-1$
-    myConnectionDictionary = new NotificationMap(modelMap.getMap("connectionDictionary", true)); //$NON-NLS-1$
-    myUserInfo = new NotificationMap(MapUtils.toStringMap(modelMap.getMap("userInfo", true))); //$NON-NLS-1$
+    setConnectionDictionary(modelMap.getMap("connectionDictionary", true), false); //$NON-NLS-1$
+    setUserInfo(MapUtils.toStringMap(modelMap.getMap("userInfo", true)), false); //$NON-NLS-1$
 
     List entities = modelMap.getList("entities"); //$NON-NLS-1$
     if (entities != null) {
@@ -295,6 +286,7 @@ public class EOModel extends EOModelObject implements IUserInfoable {
     modelMap.put("connectionDictionary", myConnectionDictionary); //$NON-NLS-1$
 
     List entities = new LinkedList();
+    List entitiesWithSharedObjects = new LinkedList();
     Iterator entitiesIter = myEntities.iterator();
     while (entitiesIter.hasNext()) {
       EOEntity entity = (EOEntity) entitiesIter.next();
@@ -305,8 +297,13 @@ public class EOModel extends EOModelObject implements IUserInfoable {
       entityMap.setString("parent", parentName, true); //$NON-NLS-1$
       entityMap.setString("name", entity.getName(), true); //$NON-NLS-1$
       entities.add(entityMap);
+      if (entity.hasSharedObjects()) {
+        entitiesWithSharedObjects.add(entity.getName());
+      }
     }
     modelMap.put("entities", entities); //$NON-NLS-1$
+
+    modelMap.setList("entitiesWithSharedObjects", entitiesWithSharedObjects, true); //$NON-NLS-1$
 
     Map internalInfoMap = modelMap.getMap("internalInfo"); //$NON-NLS-1$
     if (internalInfoMap == null) {
@@ -317,7 +314,7 @@ public class EOModel extends EOModelObject implements IUserInfoable {
       internalInfoMap.put("_deletedEntityNamesInObjectStore", myDeletedEntityNamesInObjectStore); //$NON-NLS-1$
     }
 
-    modelMap.put("userInfo", myUserInfo); //$NON-NLS-1$
+    modelMap.put("userInfo", getUserInfo()); //$NON-NLS-1$
 
     return modelMap;
   }

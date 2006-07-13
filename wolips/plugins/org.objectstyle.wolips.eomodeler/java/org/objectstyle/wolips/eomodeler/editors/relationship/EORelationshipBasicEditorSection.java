@@ -79,6 +79,8 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.objectstyle.wolips.eomodeler.Messages;
+import org.objectstyle.wolips.eomodeler.editors.entity.EOEntityLabelProvider;
+import org.objectstyle.wolips.eomodeler.editors.entity.EOEntityListContentProvider;
 import org.objectstyle.wolips.eomodeler.model.EODeleteRule;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOJoin;
@@ -141,7 +143,7 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
     topFormLayout.numColumns = 2;
     topForm.setLayout(topFormLayout);
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship.name"), SWT.NONE); //$NON-NLS-1$
+    getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship." + EORelationship.NAME), SWT.NONE); //$NON-NLS-1$
     myNameText = new Text(topForm, SWT.BORDER);
     GridData nameFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
     myNameText.setLayoutData(nameFieldLayoutData);
@@ -180,7 +182,7 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
     GridData optioanlityCompositeLayoutData = new GridData(GridData.FILL_HORIZONTAL);
     optionalityComposite.setLayoutData(optioanlityCompositeLayoutData);
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship.deleteRule"), SWT.NONE); //$NON-NLS-1$
+    getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship." + EORelationship.DELETE_RULE), SWT.NONE); //$NON-NLS-1$
     Combo deleteRuleCombo = new Combo(topForm, SWT.BORDER | SWT.FLAT | SWT.READ_ONLY);
     myDeleteRuleComboViewer = new ComboViewer(deleteRuleCombo);
     myDeleteRuleComboViewer.setLabelProvider(new EODeleteRuleLabelProvider());
@@ -199,11 +201,11 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
     GridData modelRuleComboLayoutData = new GridData(GridData.FILL_HORIZONTAL);
     modelCombo.setLayoutData(modelRuleComboLayoutData);
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship.entity"), SWT.NONE); //$NON-NLS-1$
+    getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship." + EORelationship.DESTINATION), SWT.NONE); //$NON-NLS-1$
     Combo entityCombo = new Combo(topForm, SWT.BORDER | SWT.FLAT | SWT.READ_ONLY);
     myEntityComboViewer = new ComboViewer(entityCombo);
     myEntityComboViewer.setLabelProvider(new EOEntityLabelProvider());
-    myEntityComboViewer.setContentProvider(new EOEntityListContentProvider());
+    myEntityComboViewer.setContentProvider(new EOEntityListContentProvider(true));
     GridData entityComboLayoutData = new GridData(GridData.FILL_HORIZONTAL);
     entityCombo.setLayoutData(entityComboLayoutData);
 

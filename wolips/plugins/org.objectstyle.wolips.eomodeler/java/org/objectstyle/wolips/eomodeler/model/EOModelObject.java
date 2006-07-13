@@ -49,10 +49,13 @@
  */
 package org.objectstyle.wolips.eomodeler.model;
 
+import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.Map;
 
 import org.eclipse.core.runtime.IAdaptable;
+import org.objectstyle.wolips.eomodeler.utils.NotificationMap;
 
 public class EOModelObject implements IAdaptable {
   private PropertyChangeSupport myPropertyChangeSupport = new PropertyChangeSupport(this);
@@ -90,6 +93,40 @@ public class EOModelObject implements IAdaptable {
 
   public Object getAdapter(Class _adapter) {
     return null;
+  }
+
+  protected NotificationMap mapChanged(NotificationMap _oldMap, Map _newMap, PropertyChangeRepeater _propertyChangeRepeater, boolean _fireEvents) {
+    NotificationMap newMap;
+    if (_oldMap != null) {
+      _oldMap.removePropertyChangeListener(_propertyChangeRepeater);
+    }
+    if (_newMap instanceof NotificationMap) {
+      newMap = (NotificationMap) _newMap;
+    }
+    else {
+      newMap = new NotificationMap(_newMap);
+    }
+    newMap.addPropertyChangeListener(_propertyChangeRepeater);
+    if (_fireEvents) {
+      firePropertyChange(_propertyChangeRepeater.getPropertyName(), _oldMap, newMap);
+    }
+    return newMap;
+  }
+
+  protected class PropertyChangeRepeater implements PropertyChangeListener {
+    private String myPropertyName;
+
+    public PropertyChangeRepeater(String _propertyName) {
+      myPropertyName = _propertyName;
+    }
+
+    public String getPropertyName() {
+      return myPropertyName;
+    }
+
+    public void propertyChange(PropertyChangeEvent _event) {
+      EOModelObject.this.firePropertyChange(myPropertyName, null, null);
+    }
   }
 
 }

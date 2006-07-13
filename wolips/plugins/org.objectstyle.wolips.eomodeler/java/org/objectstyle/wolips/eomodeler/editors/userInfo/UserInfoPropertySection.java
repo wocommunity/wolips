@@ -171,6 +171,10 @@ public class UserInfoPropertySection extends AbstractPropertySection {
     if (_selection instanceof IStructuredSelection) {
       myUserInfoable = (IUserInfoable) ((IStructuredSelection) _selection).getFirstElement();
       userInfo = myUserInfoable.getUserInfo();
+      if (userInfo == null) {
+        userInfo = new NotificationMap();
+        myUserInfoable.setUserInfo(userInfo);
+      }
       userInfo.addPropertyChangeListener(myUserInfoListener);
     }
     else {

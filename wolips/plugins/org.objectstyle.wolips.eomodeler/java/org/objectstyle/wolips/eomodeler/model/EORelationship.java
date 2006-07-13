@@ -58,9 +58,8 @@ import java.util.Set;
 import org.eclipse.jface.internal.databinding.provisional.observable.list.WritableList;
 import org.objectstyle.wolips.eomodeler.utils.MapUtils;
 import org.objectstyle.wolips.eomodeler.utils.MiscUtils;
-import org.objectstyle.wolips.eomodeler.utils.NotificationMap;
 
-public class EORelationship extends EOModelObject implements IEOAttribute, IUserInfoable {
+public class EORelationship extends UserInfoableEOModelObject implements IEOAttribute {
   public static final String TO_MANY = "toMany"; //$NON-NLS-1$
   public static final String TO_ONE = "toOne"; //$NON-NLS-1$
   public static final String CLASS_PROPERTY = "classProperty"; //$NON-NLS-1$
@@ -74,7 +73,6 @@ public class EORelationship extends EOModelObject implements IEOAttribute, IUser
   public static final String OWNS_DESTINATION = "ownsDestination"; //$NON-NLS-1$
   public static final String PROPAGATES_PRIMARY_KEY = "propagatesPrimaryKey"; //$NON-NLS-1$
   public static final String NUMBER_OF_TO_MANY_FAULTS_TO_BATCH_FETCH = "numberOfToManyFaultsToBatchFetch"; //$NON-NLS-1$
-  public static final String USER_INFO = "userInfo"; //$NON-NLS-1$
   public static final String JOINS = "joins"; //$NON-NLS-1$
 
   private EOEntity myEntity;
@@ -91,7 +89,6 @@ public class EORelationship extends EOModelObject implements IEOAttribute, IUser
   private EOJoinSemantic myJoinSemantic;
   private List myJoins;
   private EOModelMap myRelationshipMap;
-  private NotificationMap myUserInfo;
 
   public EORelationship(EOEntity _entity) {
     myEntity = _entity;
@@ -305,7 +302,6 @@ public class EORelationship extends EOModelObject implements IEOAttribute, IUser
   }
 
   public void setNumberOfToManyFaultsToBatchFetch(Integer _numberOfToManyFaultsToBatchFetch) {
-    System.out.println("EORelationship.setNumberOfToManyFaultsToBatchFetch: " + _numberOfToManyFaultsToBatchFetch);
     Integer oldNumberOfToManyFaultsToBatchFetch = myNumberOfToManyFaultsToBatchFetch;
     myNumberOfToManyFaultsToBatchFetch = _numberOfToManyFaultsToBatchFetch;
     firePropertyChange(EORelationship.NUMBER_OF_TO_MANY_FAULTS_TO_BATCH_FETCH, oldNumberOfToManyFaultsToBatchFetch, myNumberOfToManyFaultsToBatchFetch);
@@ -355,21 +351,6 @@ public class EORelationship extends EOModelObject implements IEOAttribute, IUser
     return join;
   }
 
-  public NotificationMap getUserInfo() {
-    return myUserInfo;
-  }
-
-  public void setUserInfo(Map _userInfo) {
-    Map oldUserInfo = myUserInfo;
-    if (_userInfo instanceof NotificationMap) {
-      myUserInfo = (NotificationMap) _userInfo;
-    }
-    else {
-      myUserInfo = new NotificationMap(_userInfo);
-    }
-    firePropertyChange(EORelationship.USER_INFO, oldUserInfo, myUserInfo);
-  }
-
   public void loadFromMap(EOModelMap _relationshipMap, Set _failures) {
     myRelationshipMap = _relationshipMap;
     myDefinition = _relationshipMap.getString("definition", true); //$NON-NLS-1$
@@ -393,7 +374,7 @@ public class EORelationship extends EOModelObject implements IEOAttribute, IUser
         addJoin(join, false);
       }
     }
-    myUserInfo = new NotificationMap(MapUtils.toStringMap(_relationshipMap.getMap("userInfo", true))); //$NON-NLS-1$
+    setUserInfo(MapUtils.toStringMap(_relationshipMap.getMap("userInfo", true)), false); //$NON-NLS-1$
   }
 
   public EOModelMap toMap() {
@@ -419,8 +400,8 @@ public class EORelationship extends EOModelObject implements IEOAttribute, IUser
       EOModelMap joinMap = join.toMap();
       joins.add(joinMap);
     }
-    relationshipMap.setList("joins", joins); //$NON-NLS-1$
-    relationshipMap.setMap("userInfo", myUserInfo, true); //$NON-NLS-1$
+    relationshipMap.setList("joins", joins, true); //$NON-NLS-1$
+    relationshipMap.setMap("userInfo", getUserInfo(), true); //$NON-NLS-1$
     return relationshipMap;
   }
 
