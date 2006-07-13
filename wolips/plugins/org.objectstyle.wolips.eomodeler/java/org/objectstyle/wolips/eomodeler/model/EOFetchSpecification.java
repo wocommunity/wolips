@@ -57,9 +57,8 @@ import java.util.Set;
 
 import org.eclipse.jface.internal.databinding.provisional.observable.list.WritableList;
 import org.objectstyle.wolips.eomodeler.utils.MapUtils;
-import org.objectstyle.wolips.eomodeler.utils.NotificationMap;
 
-public class EOFetchSpecification extends UserInfoableEOModelObject {
+public class EOFetchSpecification extends UserInfoableEOModelObject implements IEOEntityRelative {
   public static final String NAME = "name"; //$NON-NLS-1$
   public static final String SORT_ORDERINGS = "sortOrderings"; //$NON-NLS-1$
   public static final String QUALIFIER = "qualifier"; //$NON-NLS-1$

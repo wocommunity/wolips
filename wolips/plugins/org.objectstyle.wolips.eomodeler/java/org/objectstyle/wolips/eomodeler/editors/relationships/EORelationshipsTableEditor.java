@@ -59,6 +59,7 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.part.EditorPart;
 import org.objectstyle.wolips.eomodeler.editors.IEntityEditor;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
+import org.objectstyle.wolips.eomodeler.model.EOModel;
 
 public class EORelationshipsTableEditor extends EditorPart implements IEntityEditor {
   private EORelationshipsTableViewer myRelationshipsTableViewer;
@@ -67,6 +68,10 @@ public class EORelationshipsTableEditor extends EditorPart implements IEntityEdi
   public void setEntity(EOEntity _entity) {
     myEntity = _entity;
     updateRelationshipsTableViewer();
+  }
+
+  public EOModel getModel() {
+    return (myEntity == null) ? null : myEntity.getModel();
   }
 
   public EOEntity getEntity() {
@@ -83,6 +88,7 @@ public class EORelationshipsTableEditor extends EditorPart implements IEntityEdi
 
   public void init(IEditorSite _site, IEditorInput _input) {
     setSite(_site);
+    setInput(_input);
     setEntity(null);
   }
 

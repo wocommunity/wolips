@@ -49,40 +49,6 @@
  */
 package org.objectstyle.wolips.eomodeler.model;
 
-import java.util.Map;
-
-import org.objectstyle.wolips.eomodeler.utils.NotificationMap;
-
-public class EORelationshipPath implements IUserInfoable, IEOEntityRelative {
-  private EORelationshipPath myParentRelationshipPath;
-  private EORelationship myChildRelationship;
-
-  public EORelationshipPath(EORelationshipPath _parentRelationshipPath, EORelationship _childRelationship) {
-    myParentRelationshipPath = _parentRelationshipPath;
-    myChildRelationship = _childRelationship;
-  }
-
-  public EORelationshipPath getParentRelationshipPath() {
-    return myParentRelationshipPath;
-  }
-
-  public EORelationship getChildRelationship() {
-    return myChildRelationship;
-  }
-
-  public NotificationMap getUserInfo() {
-    return myChildRelationship.getUserInfo();
-  }
-
-  public void setUserInfo(Map _userInfo) {
-    myChildRelationship.setUserInfo(_userInfo);
-  }
-
-  public void setUserInfo(Map _userInfo, boolean _fireEvents) {
-    myChildRelationship.setUserInfo(_userInfo, _fireEvents);
-  }
-  
-  public EOEntity getEntity() {
-    return myChildRelationship.getEntity();
-  }
+public interface IEOEntityRelative {
+  public EOEntity getEntity();
 }

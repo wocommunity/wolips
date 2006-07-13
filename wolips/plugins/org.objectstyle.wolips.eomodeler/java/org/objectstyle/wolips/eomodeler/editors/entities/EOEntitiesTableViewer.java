@@ -62,14 +62,19 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
+import org.objectstyle.wolips.eomodeler.editors.IEOModelEditor;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
 import org.objectstyle.wolips.eomodeler.utils.KeyComboBoxCellEditor;
+import org.objectstyle.wolips.eomodeler.utils.TableRefreshPropertyListener;
+import org.objectstyle.wolips.eomodeler.utils.TableRowRefreshPropertyListener;
 import org.objectstyle.wolips.eomodeler.utils.TableUtils;
 
-public class EOEntitiesTableViewer extends Composite implements ISelectionProvider {
+public class EOEntitiesTableViewer extends Composite implements ISelectionProvider, IEOModelEditor {
   private TableViewer myEntitiesTableViewer;
   private EOModel myModel;
+  private TableRefreshPropertyListener myTableRefresher;
+  private TableRowRefreshPropertyListener myTableRowRefresher;
 
   public EOEntitiesTableViewer(Composite _parent, int _style) {
     super(_parent, _style);
@@ -96,12 +101,24 @@ public class EOEntitiesTableViewer extends Composite implements ISelectionProvid
     cellEditors[TableUtils.getColumnNumber(EOEntitiesConstants.COLUMNS, EOEntity.PARENT)] = new KeyComboBoxCellEditor(entitiesTable, new String[0], SWT.READ_ONLY);
     myEntitiesTableViewer.setCellModifier(new EOEntitiesCellModifier(myEntitiesTableViewer, cellEditors));
     myEntitiesTableViewer.setCellEditors(cellEditors);
+
+    myTableRefresher = new TableRefreshPropertyListener(myEntitiesTableViewer, EOModel.ENTITIES);
+    myTableRowRefresher = new TableRowRefreshPropertyListener(myEntitiesTableViewer, EOModel.ENTITY);
   }
 
   public void setModel(EOModel _model) {
+    if (myModel != null) {
+      myModel.removePropertyChangeListener(myTableRefresher);
+      myModel.removePropertyChangeListener(myTableRowRefresher);
+    }
     myModel = _model;
     myEntitiesTableViewer.setInput(myModel);
     TableUtils.packTableColumns(myEntitiesTableViewer);
+    if (myModel != null) {
+      myModel.addPropertyChangeListener(myTableRefresher);
+      myModel.addPropertyChangeListener(myTableRowRefresher);
+    }
+
   }
 
   public EOModel getModel() {

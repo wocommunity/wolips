@@ -81,7 +81,9 @@ public class UserInfoCellModifier extends TablePropertyCellModifier {
   }
 
   protected boolean _canModify(Object _element, String _property) throws Throwable {
-    return true;
+    String key = (String) _element;
+    Object value = myUserInfo.get(key);
+    return (value instanceof String);
   }
 
   protected boolean _modify(Object _element, String _property, Object _value) throws Throwable {

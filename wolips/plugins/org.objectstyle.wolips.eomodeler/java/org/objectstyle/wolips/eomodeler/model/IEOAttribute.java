@@ -49,7 +49,7 @@
  */
 package org.objectstyle.wolips.eomodeler.model;
 
-public interface IEOAttribute {
+public interface IEOAttribute extends IEOEntityRelative {
   public void setClassProperty(Boolean _classProperty);
 
   public void setClassProperty(Boolean _classProperty, boolean _fireEvents);

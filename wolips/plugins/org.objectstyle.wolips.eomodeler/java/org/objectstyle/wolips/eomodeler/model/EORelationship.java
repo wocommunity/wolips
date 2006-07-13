@@ -96,6 +96,11 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
     myRelationshipMap = new EOModelMap();
   }
 
+  public EORelationship(EOEntity _entity, String _name) {
+    this(_entity);
+    myName = _name;
+  }
+
   protected void _propertyChanged(String _propertyName, Object _oldValue, Object _newValue) {
     myEntity._relationshipChanged(this);
   }
@@ -379,7 +384,9 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
 
   public EOModelMap toMap() {
     EOModelMap relationshipMap = myRelationshipMap.cloneModelMap();
-    relationshipMap.setString("destination", myDestination.getName(), true); //$NON-NLS-1$
+    if (myDestination != null) {
+      relationshipMap.setString("destination", myDestination.getName(), true); //$NON-NLS-1$
+    }
     relationshipMap.setString("definition", myDefinition, true); //$NON-NLS-1$
     relationshipMap.setBoolean("isMandatory", myMandatory); //$NON-NLS-1$
     relationshipMap.setBoolean("isToMany", myToMany); //$NON-NLS-1$
@@ -406,14 +413,16 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
   }
 
   public void resolve(Set _failures) {
-    String destinationName = myRelationshipMap.getString("destination", true); //$NON-NLS-1$
-    if (destinationName == null) {
-      _failures.add(new EOModelVerificationFailure(myEntity.getName() + "'s " + myName + " relationship has no destination entity."));
-    }
-    else {
-      myDestination = myEntity.getModel().getModelGroup().getEntityNamed(destinationName);
-      if (myDestination == null) {
-        _failures.add(new MissingEntityFailure(destinationName));
+    if (!isFlattened()) {
+      String destinationName = myRelationshipMap.getString("destination", true); //$NON-NLS-1$
+      if (destinationName == null) {
+        _failures.add(new EOModelVerificationFailure(myEntity.getName() + "'s " + myName + " relationship has no destination entity."));
+      }
+      else {
+        myDestination = myEntity.getModel().getModelGroup().getEntityNamed(destinationName);
+        if (myDestination == null) {
+          _failures.add(new MissingEntityFailure(destinationName));
+        }
       }
     }
 
@@ -425,7 +434,7 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
   }
 
   public void verify(Set _failures) {
-    if (myDestination == null) {
+    if (!isFlattened() && myDestination == null) {
       _failures.add(new EOModelVerificationFailure(myEntity.getName() + "'s " + myName + " relationship has no destination entity."));
     }
     Iterator joinsIter = myJoins.iterator();

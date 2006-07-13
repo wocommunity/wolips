@@ -66,6 +66,7 @@ import org.objectstyle.wolips.eomodeler.editors.IEntityEditor;
 import org.objectstyle.wolips.eomodeler.editors.attributes.EOAttributesTableViewer;
 import org.objectstyle.wolips.eomodeler.editors.relationships.EORelationshipsTableViewer;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
+import org.objectstyle.wolips.eomodeler.model.EOModel;
 
 public class EOEntityEditor extends EditorPart implements IEntityEditor, ISelectionProvider {
   private EOAttributesTableViewer myAttributesTableViewer;
@@ -75,6 +76,10 @@ public class EOEntityEditor extends EditorPart implements IEntityEditor, ISelect
 
   public EOEntityEditor() {
     myListenerList = new ListenerList();
+  }
+  
+  public EOModel getModel() {
+    return (myEntity == null) ? null : myEntity.getModel();
   }
 
   public void setEntity(EOEntity _entity) {
@@ -104,6 +109,7 @@ public class EOEntityEditor extends EditorPart implements IEntityEditor, ISelect
 
   public void init(IEditorSite _site, IEditorInput _input) {
     setSite(_site);
+    setInput(_input);
     setEntity(null);
   }
 

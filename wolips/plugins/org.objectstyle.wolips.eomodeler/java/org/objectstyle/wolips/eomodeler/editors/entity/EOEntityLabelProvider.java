@@ -60,8 +60,15 @@ public class EOEntityLabelProvider implements ILabelProvider {
   }
 
   public String getText(Object _element) {
-    EOEntity entity = (EOEntity) _element;
-    return entity.getName();
+    String text = null;
+    if (_element == EOEntityListContentProvider.BLANK_ENTITY) {
+      // DO NOTHING
+    }
+    else if (_element instanceof EOEntity) {
+      EOEntity entity = (EOEntity) _element;
+      text = entity.getName();
+    }
+    return text;
   }
 
   public void addListener(ILabelProviderListener _listener) {

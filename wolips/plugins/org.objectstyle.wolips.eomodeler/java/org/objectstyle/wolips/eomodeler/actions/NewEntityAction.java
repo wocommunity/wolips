@@ -47,79 +47,45 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eomodeler.editors.entity;
+package org.objectstyle.wolips.eomodeler.actions;
 
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-
-import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.ui.IEditorActionDelegate;
+import org.eclipse.ui.IEditorPart;
+import org.objectstyle.wolips.eomodeler.Messages;
+import org.objectstyle.wolips.eomodeler.editors.EOModelEditor;
+import org.objectstyle.wolips.eomodeler.model.DuplicateEntityNameException;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
-import org.objectstyle.wolips.eomodeler.model.EOModelGroup;
-import org.objectstyle.wolips.eomodeler.model.EORelationship;
-import org.objectstyle.wolips.eomodeler.utils.ReflectionComparator;
 
-public class EOEntityListContentProvider implements IStructuredContentProvider {
-  public static final Object BLANK_ENTITY = ""; //$NON-NLS-1$
-  
-  private boolean myAllowBlank;
-  private boolean myRestrictToSingleModel;
+public class NewEntityAction implements IEditorActionDelegate {
+  private EOModelEditor myEditor;
 
-  public EOEntityListContentProvider(boolean _allowBlank, boolean _restrictToSingleModel) {
-    myAllowBlank = _allowBlank;
-    myRestrictToSingleModel = _restrictToSingleModel;
+  public void setActiveEditor(IAction _action, IEditorPart _targetEditor) {
+    if (_targetEditor instanceof EOModelEditor) {
+      myEditor = (EOModelEditor) _targetEditor;
+    }
   }
 
-  public Object[] getElements(Object _inputElement) {
-    List entitiesList;
-    if (_inputElement instanceof EORelationship) {
-      if (myRestrictToSingleModel) {
-        entitiesList = ((EORelationship) _inputElement).getEntity().getModel().getEntities();
-      }
-      else {
-        entitiesList = ((EORelationship) _inputElement).getEntity().getModel().getModelGroup().getEntities();
-      }
-    }
-    else if (_inputElement instanceof EOEntity) {
-      if (myRestrictToSingleModel) {
-        entitiesList = ((EOEntity) _inputElement).getModel().getEntities();
-      }
-      else {
-        entitiesList = ((EOEntity) _inputElement).getModel().getModelGroup().getEntities();
-      }
-    }
-    else if (_inputElement instanceof EOModel) {
-      if (myRestrictToSingleModel) {
-        entitiesList = ((EOModel) _inputElement).getEntities();
-      }
-      else {
-        entitiesList = ((EOModel) _inputElement).getModelGroup().getEntities();
-      }
-    }
-    else if (_inputElement instanceof EOModelGroup) {
-      entitiesList = ((EOModelGroup) _inputElement).getEntities();
-    }
-    else {
-      throw new IllegalArgumentException("Unknown input element: " + _inputElement);
-    }
-    
-    List entitiesListCopy = new LinkedList();
-    entitiesListCopy.addAll(entitiesList);
-    Collections.sort(entitiesListCopy, new ReflectionComparator(EOEntity.class, "getName"));
-    if (myAllowBlank) {
-      entitiesListCopy.add(0, EOEntityListContentProvider.BLANK_ENTITY); //$NON-NLS-1$
-    }
-    Object[] entities = entitiesListCopy.toArray();
-    return entities;
-  }
-
-  public void dispose() {
+  public void selectionChanged(IAction _action, ISelection _selection) {
     // DO NOTHING
   }
 
-  public void inputChanged(Viewer _viewer, Object _oldInput, Object _newInput) {
-    // DO NOTHING
+  public void run(IAction _action) {
+    try {
+      if (myEditor != null) {
+        EOModel model = myEditor.getModel();
+        if (model != null) {
+          EOEntity newEntity = model.addBlankEntity(Messages.getString("EOEntity.newName")); //$NON-NLS-1$
+          myEditor.setSelection(new StructuredSelection(newEntity));
+        }
+      }
+    }
+    catch (DuplicateEntityNameException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
   }
 }

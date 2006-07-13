@@ -47,79 +47,10 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eomodeler.editors.entity;
+package org.objectstyle.wolips.eomodeler.editors;
 
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-
-import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.Viewer;
-import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
-import org.objectstyle.wolips.eomodeler.model.EOModelGroup;
-import org.objectstyle.wolips.eomodeler.model.EORelationship;
-import org.objectstyle.wolips.eomodeler.utils.ReflectionComparator;
 
-public class EOEntityListContentProvider implements IStructuredContentProvider {
-  public static final Object BLANK_ENTITY = ""; //$NON-NLS-1$
-  
-  private boolean myAllowBlank;
-  private boolean myRestrictToSingleModel;
-
-  public EOEntityListContentProvider(boolean _allowBlank, boolean _restrictToSingleModel) {
-    myAllowBlank = _allowBlank;
-    myRestrictToSingleModel = _restrictToSingleModel;
-  }
-
-  public Object[] getElements(Object _inputElement) {
-    List entitiesList;
-    if (_inputElement instanceof EORelationship) {
-      if (myRestrictToSingleModel) {
-        entitiesList = ((EORelationship) _inputElement).getEntity().getModel().getEntities();
-      }
-      else {
-        entitiesList = ((EORelationship) _inputElement).getEntity().getModel().getModelGroup().getEntities();
-      }
-    }
-    else if (_inputElement instanceof EOEntity) {
-      if (myRestrictToSingleModel) {
-        entitiesList = ((EOEntity) _inputElement).getModel().getEntities();
-      }
-      else {
-        entitiesList = ((EOEntity) _inputElement).getModel().getModelGroup().getEntities();
-      }
-    }
-    else if (_inputElement instanceof EOModel) {
-      if (myRestrictToSingleModel) {
-        entitiesList = ((EOModel) _inputElement).getEntities();
-      }
-      else {
-        entitiesList = ((EOModel) _inputElement).getModelGroup().getEntities();
-      }
-    }
-    else if (_inputElement instanceof EOModelGroup) {
-      entitiesList = ((EOModelGroup) _inputElement).getEntities();
-    }
-    else {
-      throw new IllegalArgumentException("Unknown input element: " + _inputElement);
-    }
-    
-    List entitiesListCopy = new LinkedList();
-    entitiesListCopy.addAll(entitiesList);
-    Collections.sort(entitiesListCopy, new ReflectionComparator(EOEntity.class, "getName"));
-    if (myAllowBlank) {
-      entitiesListCopy.add(0, EOEntityListContentProvider.BLANK_ENTITY); //$NON-NLS-1$
-    }
-    Object[] entities = entitiesListCopy.toArray();
-    return entities;
-  }
-
-  public void dispose() {
-    // DO NOTHING
-  }
-
-  public void inputChanged(Viewer _viewer, Object _oldInput, Object _newInput) {
-    // DO NOTHING
-  }
+public interface IEOModelEditor {
+  public EOModel getModel();
 }

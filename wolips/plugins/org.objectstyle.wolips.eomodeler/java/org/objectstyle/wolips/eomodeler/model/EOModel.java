@@ -97,6 +97,19 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable 
     setConnectionDictionary(new NotificationMap(), false);
   }
 
+  public EOEntity addBlankEntity(String _name) throws DuplicateEntityNameException {
+    String newEntityNameBase = _name;
+    String newEntityName = newEntityNameBase;
+    int newEntityNum = 0;
+    while (getEntityNamed(newEntityName) != null) {
+      newEntityNum++;
+      newEntityName = newEntityNameBase + newEntityNum;
+    }
+    EOEntity entity = new EOEntity(this, newEntityName);
+    addEntity(entity);
+    return entity;
+  }
+
   public boolean isDirty() {
     return myDirty;
   }
@@ -110,7 +123,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable 
   protected void firePropertyChange(String _propertyName, Object _oldValue, Object _newValue) {
     super.firePropertyChange(_propertyName, _oldValue, _newValue);
   }
-  
+
   protected void _propertyChanged(String _propertyName, Object _oldValue, Object _newValue) {
     if (!myDirty && !EOModel.DIRTY.equals(_propertyName)) {
       setDirty(true);
@@ -225,7 +238,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable 
   public void setConnectionDictionary(Map _connectionDictionary) {
     setConnectionDictionary(_connectionDictionary, true);
   }
-  
+
   public void setConnectionDictionary(Map _connectionDictionary, boolean _fireEvents) {
     myConnectionDictionary = mapChanged(myConnectionDictionary, _connectionDictionary, myConnectionDictionaryRepeater, _fireEvents);
   }
