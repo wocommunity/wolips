@@ -116,6 +116,9 @@ public class EOModelOutlineLabelProvider implements ILabelProvider {
     else {
       text = null;
     }
+    if (text == null) {
+      text = "?"; //$NON-NLS-1$
+    }
     return text;
   }
 

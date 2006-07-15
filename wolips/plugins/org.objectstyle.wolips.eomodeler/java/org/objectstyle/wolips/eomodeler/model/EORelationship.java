@@ -56,6 +56,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.jface.internal.databinding.provisional.observable.list.WritableList;
+import org.objectstyle.wolips.eomodeler.Messages;
+import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.utils.MapUtils;
 import org.objectstyle.wolips.eomodeler.utils.MiscUtils;
 
@@ -113,11 +115,16 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
   }
 
   public int hashCode() {
-    return myEntity.hashCode() * myName.hashCode();
+    return myEntity.hashCode() * ((myName == null) ? super.hashCode() : myName.hashCode());
   }
 
   public boolean equals(Object _obj) {
-    return (_obj instanceof EORelationship && (_obj == this || ((EORelationship) _obj).myEntity.equals(myEntity) && ((EORelationship) _obj).myName.equals(myName)));
+    boolean equals = false;
+    if (_obj instanceof EORelationship) {
+      EORelationship relationship = (EORelationship) _obj;
+      equals = (relationship == this) || (ComparisonUtils.equals(relationship.myEntity, myEntity) && ComparisonUtils.equals(relationship.myName, myName));
+    }
+    return equals;
   }
 
   public boolean isRelatedTo(EOEntity _entity) {
@@ -183,6 +190,9 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
   }
 
   public void setName(String _name, boolean _fireEvents) throws DuplicateRelationshipNameException {
+    if (_name == null) {
+      throw new NullPointerException(Messages.getString("EORelationship.noBlankRelationshipNames")); //$NON-NLS-1$
+    }
     String oldName = myName;
     myEntity._checkForDuplicateRelationshipName(this, _name, null);
     myName = _name;

@@ -60,11 +60,12 @@ import java.util.Set;
 
 import org.eclipse.jface.internal.databinding.provisional.observable.list.WritableList;
 import org.objectstyle.cayenne.wocompat.PropertyListSerialization;
+import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.utils.MapUtils;
 
 public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRelative {
-  private static final String FETCH_ALL = "FetchAll";
+  private static final String FETCH_ALL = "FetchAll"; //$NON-NLS-1$
   public static final String ATTRIBUTE = "attribute"; //$NON-NLS-1$
   public static final String RELATIONSHIP = "relationship"; //$NON-NLS-1$
   public static final String FETCH_SPECIFICATION = "fetchSpecification"; //$NON-NLS-1$
@@ -275,6 +276,9 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
   }
 
   public void setName(String _name, boolean _fireEvents) throws DuplicateEntityNameException {
+    if (_name == null) {
+      throw new NullPointerException(Messages.getString("EOEntity.noBlankEntityNames")); //$NON-NLS-1$
+    }
     String oldName = myName;
     myModel._checkForDuplicateEntityName(this, _name, null);
     myModel._entityNameChanged(myName);
@@ -305,11 +309,11 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
   }
 
   public int hashCode() {
-    return myName.hashCode();
+    return (myName == null) ? super.hashCode() : myName.hashCode();
   }
 
   public boolean equals(Object _obj) {
-    return (_obj instanceof EOEntity && (_obj == this || ((EOEntity) _obj).myName.equals(myName)));
+    return (_obj instanceof EOEntity && ((_obj == this) || ComparisonUtils.equals(myName, ((EOEntity) _obj).myName)));
   }
 
   public List getReferencingRelationships() {

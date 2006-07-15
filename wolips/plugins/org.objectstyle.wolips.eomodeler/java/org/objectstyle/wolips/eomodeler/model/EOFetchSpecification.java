@@ -56,6 +56,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.jface.internal.databinding.provisional.observable.list.WritableList;
+import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.utils.MapUtils;
 
 public class EOFetchSpecification extends UserInfoableEOModelObject implements IEOEntityRelative {
@@ -104,11 +105,16 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
   }
 
   public int hashCode() {
-    return myEntity.hashCode() * myName.hashCode();
+    return myEntity.hashCode() * ((myName == null) ? super.hashCode() : myName.hashCode());
   }
 
   public boolean equals(Object _obj) {
-    return (_obj instanceof EOFetchSpecification && (_obj == this || ((EOFetchSpecification) _obj).myEntity.equals(myEntity) && ((EOFetchSpecification) _obj).myName.equals(myName)));
+    boolean equals = false;
+    if (_obj instanceof EOFetchSpecification) {
+      EOFetchSpecification fetchSpec = (EOFetchSpecification) _obj;
+      equals = (fetchSpec == this) || (ComparisonUtils.equals(fetchSpec.myEntity, myEntity) && ComparisonUtils.equals(fetchSpec.myName, myName));
+    }
+    return equals;
   }
 
   public void setName(String _name) throws DuplicateFetchSpecNameException {
