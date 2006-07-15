@@ -50,37 +50,49 @@
 package org.objectstyle.wolips.eomodeler.actions;
 
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.ui.IEditorActionDelegate;
-import org.eclipse.ui.IEditorPart;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.objectstyle.wolips.eomodeler.Messages;
-import org.objectstyle.wolips.eomodeler.editors.EOModelEditor;
 import org.objectstyle.wolips.eomodeler.model.DuplicateEntityNameException;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
+import org.objectstyle.wolips.eomodeler.model.IEOEntityRelative;
 
-public class NewEntityAction implements IEditorActionDelegate {
-  private EOModelEditor myEditor;
+public class NewEntityAction implements IWorkbenchWindowActionDelegate {
+  private EOModel myModel;
+  private IWorkbenchWindow myWindow;
 
-  public void setActiveEditor(IAction _action, IEditorPart _targetEditor) {
-    if (_targetEditor instanceof EOModelEditor) {
-      myEditor = (EOModelEditor) _targetEditor;
-    }
+  public void dispose() {
+    // DO NOTHING
+  }
+
+  public void init(IWorkbenchWindow _window) {
+    myWindow = _window;
   }
 
   public void selectionChanged(IAction _action, ISelection _selection) {
-    // DO NOTHING
+    myModel = null;
+    if (_selection instanceof IStructuredSelection) {
+      Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
+      if (selectedObject instanceof EOModel) {
+        myModel = (EOModel) selectedObject;
+      }
+      else if (selectedObject instanceof IEOEntityRelative) {
+        myModel = ((IEOEntityRelative) selectedObject).getEntity().getModel();
+      }
+    }
   }
 
   public void run(IAction _action) {
     try {
-      if (myEditor != null) {
-        EOModel model = myEditor.getModel();
-        if (model != null) {
-          EOEntity newEntity = model.addBlankEntity(Messages.getString("EOEntity.newName")); //$NON-NLS-1$
-          myEditor.setSelection(new StructuredSelection(newEntity));
-        }
+      if (myModel != null) {
+        EOEntity newEntity = myModel.addBlankEntity(Messages.getString("EOEntity.newName")); //$NON-NLS-1$
+      }
+      else {
+        MessageDialog.openError(myWindow.getShell(), Messages.getString("EOEntity.noModelSelectedTitle"), Messages.getString("EOEntity.noModelSelectedMessage"));//$NON-NLS-1$ //$NON-NLS-2$
       }
     }
     catch (DuplicateEntityNameException e) {

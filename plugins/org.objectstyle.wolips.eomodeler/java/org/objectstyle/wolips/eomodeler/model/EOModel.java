@@ -63,6 +63,7 @@ import org.eclipse.jface.internal.databinding.provisional.observable.list.Writab
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.objectstyle.cayenne.wocompat.PropertyListSerialization;
 import org.objectstyle.wolips.eomodeler.properties.EOModelPropertySource;
+import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.utils.MapUtils;
 import org.objectstyle.wolips.eomodeler.utils.NotificationMap;
 
@@ -234,7 +235,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable 
     Iterator entitiesIter = myEntities.iterator();
     while (matchingEntity == null && entitiesIter.hasNext()) {
       EOEntity entity = (EOEntity) entitiesIter.next();
-      if (entity.getName().equals(_name)) {
+      if (ComparisonUtils.equals(entity.getName(), _name)) {
         matchingEntity = entity;
       }
     }

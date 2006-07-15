@@ -72,11 +72,14 @@ public class KVCComparator implements Comparator {
           results = 0;
         }
         else if (value2 instanceof Comparable) {
-          results = ((Comparable) value2).compareTo(value2);
+          results = 1;
         }
         else {
           throw new IllegalArgumentException(myKeyPath + " did not return a comparable value from " + _o2);
         }
+      }
+      else if (value2 == null) {
+        results = -1;
       }
       else if (value1 instanceof Comparable) {
         results = ((Comparable) value1).compareTo(value2);

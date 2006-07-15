@@ -295,11 +295,6 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
     myEntityBinding = new ComboViewerBinding(myEntityComboViewer, myRelationship, EORelationship.DESTINATION, myRelationship.getEntity().getModel(), EOModel.ENTITIES, null);
 
     boolean enabled = !myRelationship.isFlattened();
-    //myToOneButton.setEnabled(enabled);
-    //myToManyButton.setEnabled(enabled);
-    //myOptionalButton.setEnabled(enabled);
-    //myMandatoryButton.setEnabled(enabled);
-    //myDeleteRuleComboViewer.getCombo().setEnabled(enabled);
     myModelComboViewer.getCombo().setEnabled(enabled);
     myEntityComboViewer.getCombo().setEnabled(enabled);
     myJoinSemanticComboViewer.getCombo().setEnabled(enabled);
@@ -309,11 +304,15 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
 
     updateModelAndEntityCombosEnabled();
     updateJoins();
+    updateButtons();
   }
 
   protected void updateButtons() {
-    boolean removeEnabled = !myJoinsTableViewer.getSelection().isEmpty() && !myRelationship.isFlattened();
+    boolean buttonsEnabled = myRelationship.getDestination() != null;
+    boolean removeEnabled = buttonsEnabled && !myJoinsTableViewer.getSelection().isEmpty() && !myRelationship.isFlattened();
+    boolean addEnabled = buttonsEnabled;
     myRemoveButton.setEnabled(removeEnabled);
+    myAddButton.setEnabled(addEnabled);
   }
 
   protected void updateModelAndEntityCombosEnabled() {
@@ -407,6 +406,7 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
       _oldDestination.removePropertyChangeListener(EOEntity.ATTRIBUTES, myAttributesListener);
     }
     updateJoins();
+    updateButtons();
     if (_newDestination != null) {
       _newDestination.addPropertyChangeListener(EOEntity.ATTRIBUTE, myAttributesListener);
       _newDestination.addPropertyChangeListener(EOEntity.ATTRIBUTES, myAttributesListener);

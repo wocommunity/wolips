@@ -56,45 +56,57 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.objectstyle.wolips.eomodeler.Messages;
-import org.objectstyle.wolips.eomodeler.model.DuplicateRelationshipNameException;
+import org.objectstyle.wolips.eomodeler.model.EOAttribute;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
+import org.objectstyle.wolips.eomodeler.model.EOFetchSpecification;
 import org.objectstyle.wolips.eomodeler.model.EORelationship;
-import org.objectstyle.wolips.eomodeler.model.IEOEntityRelative;
 
-public class NewRelationshipAction implements IWorkbenchWindowActionDelegate {
-  private EOEntity myEntity;
+public class DeleteAction implements IWorkbenchWindowActionDelegate {
   private IWorkbenchWindow myWindow;
-
-  public void init(IWorkbenchWindow _window) {
-    myWindow = _window;
-  }
+  private Object mySelectedObject;
 
   public void dispose() {
     // DO NOTHING
   }
 
+  public void init(IWorkbenchWindow _window) {
+    myWindow = _window;
+  }
+
   public void selectionChanged(IAction _action, ISelection _selection) {
-    myEntity = null;
+    mySelectedObject = null;
     if (_selection instanceof IStructuredSelection) {
-      Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
-      if (selectedObject instanceof IEOEntityRelative) {
-        myEntity = ((IEOEntityRelative) selectedObject).getEntity();
-      }
+      mySelectedObject = ((IStructuredSelection) _selection).getFirstElement();
     }
   }
 
   public void run(IAction _action) {
-    try {
-      if (myEntity != null) {
-        EORelationship newRelationship = myEntity.addBlankRelationship(Messages.getString("EORelationship.newName")); //$NON-NLS-1$
-      }
-      else {
-        MessageDialog.openError(myWindow.getShell(), Messages.getString("EORelationship.noEntitySelectedTitle"), Messages.getString("EORelationship.noEntitySelectedMessage"));//$NON-NLS-1$ //$NON-NLS-2$
+    if (mySelectedObject instanceof EOEntity) {
+      if (MessageDialog.openConfirm(myWindow.getShell(), Messages.getString("delete.entityTitle"), Messages.getString("delete.entityMessage"))) { //$NON-NLS-1$ //$NON-NLS-2$
+        EOEntity entity = (EOEntity) mySelectedObject;
+        entity.getModel().removeEntity(entity);
       }
     }
-    catch (DuplicateRelationshipNameException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+    else if (mySelectedObject instanceof EORelationship) {
+      if (MessageDialog.openConfirm(myWindow.getShell(), Messages.getString("delete.relationshipTitle"), Messages.getString("delete.relationshipMessage"))) { //$NON-NLS-1$ //$NON-NLS-2$
+        EORelationship relationship = (EORelationship) mySelectedObject;
+        relationship.getEntity().removeRelationship(relationship);
+      }
+    }
+    else if (mySelectedObject instanceof EOAttribute) {
+      if (MessageDialog.openConfirm(myWindow.getShell(), Messages.getString("delete.attributeTitle"), Messages.getString("delete.attributeMessage"))) { //$NON-NLS-1$ //$NON-NLS-2$
+        EOAttribute attribute = (EOAttribute) mySelectedObject;
+        attribute.getEntity().removeAttribute(attribute);
+      }
+    }
+    else if (mySelectedObject instanceof EOFetchSpecification) {
+      if (MessageDialog.openConfirm(myWindow.getShell(), Messages.getString("delete.fetchSpecTitle"), Messages.getString("delete.fetchSpecMessage"))) { //$NON-NLS-1$ //$NON-NLS-2$
+        EOFetchSpecification fetchSpec = (EOFetchSpecification) mySelectedObject;
+        fetchSpec.getEntity().removeFetchSpecification(fetchSpec);
+      }
+    }
+    else {
+      MessageDialog.openError(myWindow.getShell(), Messages.getString("delete.nothingSelectedTitle"), Messages.getString("delete.nothingSelectedMessage"));//$NON-NLS-1$ //$NON-NLS-2$
     }
   }
 }

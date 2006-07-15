@@ -49,11 +49,16 @@
  */
 package org.objectstyle.wolips.eomodeler.editors.relationships;
 
+import java.beans.PropertyChangeEvent;
+import java.util.LinkedList;
+import java.util.List;
+
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
@@ -72,7 +77,7 @@ import org.objectstyle.wolips.eomodeler.utils.TableUtils;
 public class EORelationshipsTableViewer extends Composite implements ISelectionProvider {
   private TableViewer myRelationshipsTableViewer;
   private EOEntity myEntity;
-  private TableRefreshPropertyListener myRelationshipsChangedRefresher;
+  private RelationshipsChangeRefresher myRelationshipsChangedRefresher;
   private TableRefreshPropertyListener myParentChangedRefresher;
   private TableRowRefreshPropertyListener myTableRowRefresher;
 
@@ -84,7 +89,7 @@ public class EORelationshipsTableViewer extends Composite implements ISelectionP
     myRelationshipsTableViewer.setLabelProvider(new EORelationshipsLabelProvider(myRelationshipsTableViewer, EORelationshipsConstants.COLUMNS));
     myRelationshipsTableViewer.setSorter(new EORelationshipsViewerSorter(myRelationshipsTableViewer, EORelationshipsConstants.COLUMNS));
     myRelationshipsTableViewer.setColumnProperties(EORelationshipsConstants.COLUMNS);
-    myRelationshipsChangedRefresher = new TableRefreshPropertyListener(myRelationshipsTableViewer, EOEntity.RELATIONSHIPS);
+    myRelationshipsChangedRefresher = new RelationshipsChangeRefresher(myRelationshipsTableViewer, EOEntity.RELATIONSHIPS);
     myParentChangedRefresher = new TableRefreshPropertyListener(myRelationshipsTableViewer, EOEntity.PARENT);
     myTableRowRefresher = new TableRowRefreshPropertyListener(myRelationshipsTableViewer, EOEntity.RELATIONSHIP);
 
@@ -150,5 +155,22 @@ public class EORelationshipsTableViewer extends Composite implements ISelectionP
 
   public void setSelection(ISelection _selection) {
     myRelationshipsTableViewer.setSelection(_selection);
+  }
+
+  protected class RelationshipsChangeRefresher extends TableRefreshPropertyListener {
+    public RelationshipsChangeRefresher(TableViewer _tableViewer, String _propertyName) {
+      super(_tableViewer, _propertyName);
+    }
+
+    public void propertyChange(PropertyChangeEvent _event) {
+      super.propertyChange(_event);
+      List oldRelationships = (List) _event.getOldValue();
+      List newRelationships = (List) _event.getNewValue();
+      if (newRelationships != null && oldRelationships != null && newRelationships.size() > oldRelationships.size()) {
+        newRelationships = new LinkedList(newRelationships);
+        newRelationships.removeAll(oldRelationships);
+        EORelationshipsTableViewer.this.setSelection(new StructuredSelection(newRelationships));
+      }
+    }
   }
 }

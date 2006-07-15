@@ -53,6 +53,8 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.resources.IContainer;
@@ -106,12 +108,18 @@ import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
 public class EOModelEditor extends MultiPageEditorPart implements IResourceChangeListener, ITabbedPropertySheetPageContributor, ISelectionProvider, IEOModelEditor {
   public static final String EOMODEL_EDITOR_ID = "org.objectstyle.wolips.eomodeler.editors.EOModelEditor"; //$NON-NLS-1$
 
+  public static final int EOMODEL_PAGE = 0;
+  public static final int EOENTITY_PAGE = 1;
+  
   private EOEntitiesTableEditor myEntitiesTableEditor;
   private EOEntityEditor myEntityEditor;
   private EOModelContentOutlinePage myContentOutlinePage;
+  
   private ListenerList mySelectionChangedListeners;
   private IStructuredSelection mySelection;
   private PropertyChangeListener myDirtyModelListener;
+  private EntitiesChangeRefresher myEntitiesChangeListener;
+
   private EOEntity mySelectedEntity;
   private EOEntity myOpeningEntity;
   private EOModel myModel;
@@ -122,6 +130,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
   public EOModelEditor() {
     mySelectionChangedListeners = new ListenerList();
     myDirtyModelListener = new DirtyModelListener();
+    myEntitiesChangeListener = new EntitiesChangeRefresher();
     ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
   }
 
@@ -159,12 +168,12 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
   protected void createPages() {
     try {
       myEntitiesTableEditor = new EOEntitiesTableEditor();
-      addPage(0, myEntitiesTableEditor, getEditorInput());
-      setPageText(0, Messages.getString("EOModelEditor.entitiesTab")); //$NON-NLS-1$
+      addPage(EOModelEditor.EOMODEL_PAGE, myEntitiesTableEditor, getEditorInput());
+      setPageText(EOModelEditor.EOMODEL_PAGE, Messages.getString("EOModelEditor.entitiesTab")); //$NON-NLS-1$
 
       myEntityEditor = new EOEntityEditor();
-      addPage(1, myEntityEditor, getEditorInput());
-      setPageText(1, Messages.getString("EOModelEditor.noEntitySelected")); //$NON-NLS-1$
+      addPage(EOModelEditor.EOENTITY_PAGE, myEntityEditor, getEditorInput());
+      setPageText(EOModelEditor.EOENTITY_PAGE, Messages.getString("EOModelEditor.noEntitySelected")); //$NON-NLS-1$
 
       EOModelSelectionChangedListener modelSelectionChangedListener = new EOModelSelectionChangedListener();
       myEntitiesTableEditor.addSelectionChangedListener(modelSelectionChangedListener);
@@ -175,7 +184,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 
       if (myOpeningEntity != null) {
         setSelectedEntity(myOpeningEntity);
-        setActivePage(1);
+        setActivePage(EOModelEditor.EOENTITY_PAGE);
       }
     }
     catch (PartInitException e) {
@@ -189,10 +198,10 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
       myEntitiesTableEditor.setSelectedEntity(_selectedEntity);
       myEntityEditor.setEntity(_selectedEntity);
       if (_selectedEntity == null) {
-        EOModelEditor.this.setPageText(1, Messages.getString("EOModelEditor.noEntitySelected")); //$NON-NLS-1$
+        EOModelEditor.this.setPageText(EOModelEditor.EOENTITY_PAGE, Messages.getString("EOModelEditor.noEntitySelected")); //$NON-NLS-1$
       }
       else {
-        EOModelEditor.this.setPageText(1, _selectedEntity.getName());
+        EOModelEditor.this.setPageText(EOModelEditor.EOENTITY_PAGE, _selectedEntity.getName());
       }
       updatePartName();
     }
@@ -256,6 +265,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
       }
       if (myModel != null) {
         myModel.removePropertyChangeListener(EOModel.DIRTY, myDirtyModelListener);
+        myModel.removePropertyChangeListener(EOModel.ENTITIES, myEntitiesChangeListener);
       }
 
       IFile file = fileEditorInput.getFile();
@@ -274,6 +284,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
       handleModelErrors(myLoadFailures);
 
       myModel.addPropertyChangeListener(EOModel.DIRTY, myDirtyModelListener);
+      myModel.addPropertyChangeListener(EOModel.ENTITIES, myEntitiesChangeListener);
       super.init(_site, fileEditorInput);
       updatePartName();
       _site.setSelectionProvider(this);
@@ -368,7 +379,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
           if (selectedObject instanceof EOModel) {
             //EOModel selectedModel = (EOModel) selectedObject;
             setSelectedEntity(null);
-            setActivePage(0);
+            setActivePage(EOModelEditor.EOMODEL_PAGE);
           }
           else if (selectedObject instanceof EOEntity) {
             EOEntity selectedEntity = (EOEntity) selectedObject;
@@ -378,25 +389,25 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
             EOAttribute selectedAttribute = (EOAttribute) selectedObject;
             setSelectedEntity(selectedAttribute.getEntity());
             getEntityEditor().setSelection(_selection);
-            setActivePage(1);
+            setActivePage(EOModelEditor.EOENTITY_PAGE);
           }
           else if (selectedObject instanceof EORelationship) {
             EORelationship selectedRelationship = (EORelationship) selectedObject;
             setSelectedEntity(selectedRelationship.getEntity());
             getEntityEditor().setSelection(selection);
-            setActivePage(1);
+            setActivePage(EOModelEditor.EOENTITY_PAGE);
           }
           else if (selectedObject instanceof EOFetchSpecification) {
             EOFetchSpecification selectedFetchSpec = (EOFetchSpecification) selectedObject;
             setSelectedEntity(selectedFetchSpec.getEntity());
             getEntityEditor().setSelection(selection);
-            //setActivePage(1);
+            //setActivePage(EOModelEditor.EOENTITY_PAGE);
           }
           else if (selectedObject instanceof EORelationshipPath) {
             EORelationshipPath selectedRelationshipPath = (EORelationshipPath) selectedObject;
             setSelectedEntity(selectedRelationshipPath.getChildRelationship().getEntity());
             getEntityEditor().setSelection(new StructuredSelection(selectedRelationshipPath.getChildRelationship()));
-            setActivePage(1);
+            setActivePage(EOModelEditor.EOENTITY_PAGE);
           }
           if (_updateOutline) {
             getContentOutlinePage().setSelection(selection);
@@ -466,6 +477,19 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
       String propertyName = _event.getPropertyName();
       if (EOModel.DIRTY.equals(propertyName)) {
         EOModelEditor.this.editorDirtyStateChanged();
+      }
+    }
+  }
+
+  protected class EntitiesChangeRefresher implements PropertyChangeListener {
+    public void propertyChange(PropertyChangeEvent _event) {
+      List oldEntities = (List) _event.getOldValue();
+      List newEntities = (List) _event.getNewValue();
+      if (newEntities != null && oldEntities != null && newEntities.size() > oldEntities.size()) {
+        newEntities = new LinkedList(newEntities);
+        newEntities.removeAll(oldEntities);
+        EOModelEditor.this.setSelection(new StructuredSelection(newEntities));
+        EOModelEditor.this.setActivePage(EOModelEditor.EOENTITY_PAGE);
       }
     }
   }

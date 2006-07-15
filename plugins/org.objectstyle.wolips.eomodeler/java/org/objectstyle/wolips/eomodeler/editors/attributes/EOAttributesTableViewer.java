@@ -49,11 +49,16 @@
  */
 package org.objectstyle.wolips.eomodeler.editors.attributes;
 
+import java.beans.PropertyChangeEvent;
+import java.util.LinkedList;
+import java.util.List;
+
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
@@ -74,7 +79,7 @@ import org.objectstyle.wolips.eomodeler.utils.TriStateCellEditor;
 public class EOAttributesTableViewer extends Composite implements ISelectionProvider {
   private TableViewer myAttributesTableViewer;
   private EOEntity myEntity;
-  private TableRefreshPropertyListener myAttributesChangedRefresher;
+  private AttributesChangeRefresher myAttributesChangedRefresher;
   private TableRefreshPropertyListener myParentChangedRefresher;
   private TableRowRefreshPropertyListener myTableRowRefresher;
 
@@ -87,7 +92,7 @@ public class EOAttributesTableViewer extends Composite implements ISelectionProv
     myAttributesTableViewer.setLabelProvider(new EOAttributesLabelProvider(myAttributesTableViewer, EOAttributesConstants.COLUMNS));
     myAttributesTableViewer.setSorter(new EOAttributesViewerSorter(myAttributesTableViewer, EOAttributesConstants.COLUMNS));
     myAttributesTableViewer.setColumnProperties(EOAttributesConstants.COLUMNS);
-    myAttributesChangedRefresher = new TableRefreshPropertyListener(myAttributesTableViewer, EOEntity.ATTRIBUTES);
+    myAttributesChangedRefresher = new AttributesChangeRefresher(myAttributesTableViewer, EOEntity.ATTRIBUTES);
     myParentChangedRefresher = new TableRefreshPropertyListener(myAttributesTableViewer, EOEntity.PARENT);
     myTableRowRefresher = new TableRowRefreshPropertyListener(myAttributesTableViewer, EOEntity.ATTRIBUTE);
 
@@ -184,5 +189,22 @@ public class EOAttributesTableViewer extends Composite implements ISelectionProv
 
   public void setSelection(ISelection _selection) {
     myAttributesTableViewer.setSelection(_selection);
+  }
+
+  protected class AttributesChangeRefresher extends TableRefreshPropertyListener {
+    public AttributesChangeRefresher(TableViewer _tableViewer, String _propertyName) {
+      super(_tableViewer, _propertyName);
+    }
+
+    public void propertyChange(PropertyChangeEvent _event) {
+      super.propertyChange(_event);
+      List oldAttributes = (List) _event.getOldValue();
+      List newAttributes = (List) _event.getNewValue();
+      if (newAttributes != null && oldAttributes != null && newAttributes.size() > oldAttributes.size()) {
+        newAttributes = new LinkedList(newAttributes);
+        newAttributes.removeAll(oldAttributes);
+        EOAttributesTableViewer.this.setSelection(new StructuredSelection(newAttributes));
+      }
+    }
   }
 }
