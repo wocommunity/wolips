@@ -49,7 +49,8 @@
  */
 package org.objectstyle.wolips.eomodeler.utils;
 
-import java.beans.Expression;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
@@ -57,16 +58,24 @@ import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.objectstyle.wolips.eomodeler.kvc.CachingKeyPath;
+import org.objectstyle.wolips.eomodeler.kvc.KeyPath;
 
 public class TablePropertyViewerSorter extends ViewerSorter {
   private String[] myColumnProperties;
   private int mySortedColumn;
   private int myDirection;
   private TableViewer myViewer;
+  private Map myKeys;
 
   public TablePropertyViewerSorter(TableViewer _viewer, String[] _columnProperties) {
     myViewer = _viewer;
     myColumnProperties = _columnProperties;
+    myKeys = new HashMap();
+    for (int keyNum = 0; keyNum < _columnProperties.length; keyNum++) {
+      KeyPath keyPath = new CachingKeyPath(_columnProperties[keyNum]);
+      myKeys.put(_columnProperties[keyNum], keyPath);
+    }
   }
 
   public void sort(String _property) {
@@ -136,13 +145,7 @@ public class TablePropertyViewerSorter extends ViewerSorter {
   }
 
   public Object getComparisonValue(Object _obj, String _property) {
-    Object value = null;
-    try {
-      value = new Expression(_obj, MiscUtils.toGetMethod(_property, false), null).getValue();
-    }
-    catch (Exception e) {
-      e.printStackTrace();
-    }
+    Object value = ((KeyPath) myKeys.get(_property)).getValue(_obj);
     return value;
   }
 }

@@ -49,16 +49,18 @@
  */
 package org.objectstyle.wolips.eomodeler.utils;
 
-import java.beans.Expression;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.beans.Statement;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.objectstyle.wolips.eomodeler.kvc.CachingKeyPath;
+import org.objectstyle.wolips.eomodeler.kvc.IKey;
 import org.objectstyle.wolips.eomodeler.model.EOModelObject;
 
 public class ComboViewerBinding implements ISelectionChangedListener, PropertyChangeListener {
@@ -68,28 +70,32 @@ public class ComboViewerBinding implements ISelectionChangedListener, PropertyCh
   private EOModelObject myListObj;
   private String myListPropertyName;
   private Object myBlankValue;
+  private Map myKeys;
 
   public ComboViewerBinding(ComboViewer _viewer, EOModelObject _obj, String _propertyName, EOModelObject _listObj, String _listPropertyName, Object _blankValue) {
     myViewer = _viewer;
+    myKeys = new HashMap();
     myObj = _obj;
     myPropertyName = _propertyName;
     myListObj = _listObj;
     myListPropertyName = _listPropertyName;
     myBlankValue = _blankValue;
-
-    try {
-      Object existingValue = new Expression(myObj, MiscUtils.toGetMethod(myPropertyName, false), null).getValue();
-      setSelectedValue(existingValue);
-    }
-    catch (Exception e) {
-      e.printStackTrace();
-    }
+    setSelectedValue(getKey(myPropertyName).getValue(myObj));
 
     myViewer.addSelectionChangedListener(this);
     myObj.addPropertyChangeListener(myPropertyName, this);
     if (myListObj != null) {
       myListObj.addPropertyChangeListener(myListPropertyName, this);
     }
+  }
+
+  protected synchronized IKey getKey(String _property) {
+    IKey key = (IKey) myKeys.get(_property);
+    if (key == null) {
+      key = new CachingKeyPath(_property);
+      myKeys.put(_property, key);
+    }
+    return key;
   }
 
   public void dispose() {
@@ -115,12 +121,13 @@ public class ComboViewerBinding implements ISelectionChangedListener, PropertyCh
   public void selectionChanged(SelectionChangedEvent _event) {
     try {
       Object newValue = ((IStructuredSelection) _event.getSelection()).getFirstElement();
-      if (newValue == myBlankValue || (myBlankValue != null && myBlankValue.equals(newValue))) {
+      if (ComparisonUtils.equals(myBlankValue, newValue)) {
         newValue = null;
       }
-      Object existingValue = new Expression(myObj, MiscUtils.toGetMethod(myPropertyName, false), null).getValue();
-      if (existingValue != newValue || (newValue != null && !newValue.equals(existingValue))) {
-        new Statement(myObj, MiscUtils.toSetMethod(myPropertyName), new Object[] { newValue }).execute();
+      IKey key = getKey(myPropertyName);
+      Object existingValue = key.getValue(myObj);
+      if (!ComparisonUtils.equals(existingValue, newValue)) {
+        key.setValue(myObj, newValue);
       }
     }
     catch (Exception e) {
@@ -130,7 +137,7 @@ public class ComboViewerBinding implements ISelectionChangedListener, PropertyCh
 
   protected void setSelectedValue(Object _newValue) {
     if (_newValue == null || _newValue == myBlankValue || (myBlankValue != null && myBlankValue.equals(_newValue))) {
-      myViewer.setSelection(null);
+      myViewer.setSelection(new StructuredSelection(myBlankValue), true);
     }
     else {
       myViewer.setSelection(new StructuredSelection(_newValue), true);

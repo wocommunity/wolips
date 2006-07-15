@@ -101,6 +101,7 @@ import org.objectstyle.wolips.eomodeler.model.EORelationship;
 import org.objectstyle.wolips.eomodeler.model.EORelationshipPath;
 import org.objectstyle.wolips.eomodeler.model.EclipseEOModelGroupFactory;
 import org.objectstyle.wolips.eomodeler.outline.EOModelContentOutlinePage;
+import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
 
 public class EOModelEditor extends MultiPageEditorPart implements IResourceChangeListener, ITabbedPropertySheetPageContributor, ISelectionProvider, IEOModelEditor {
   public static final String EOMODEL_EDITOR_ID = "org.objectstyle.wolips.eomodeler.editors.EOModelEditor"; //$NON-NLS-1$
@@ -183,7 +184,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
   }
 
   public void setSelectedEntity(EOEntity _selectedEntity) {
-    if ((mySelectedEntity == null && _selectedEntity != null) || (mySelectedEntity != null && !mySelectedEntity.equals(_selectedEntity))) {
+    if (!ComparisonUtils.equals(mySelectedEntity, _selectedEntity)) {
       mySelectedEntity = _selectedEntity;
       myEntitiesTableEditor.setSelectedEntity(_selectedEntity);
       myEntityEditor.setEntity(_selectedEntity);

@@ -47,49 +47,37 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eomodeler.editors;
+package org.objectstyle.wolips.eomodeler.kvc;
 
-import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IEditorMatchingStrategy;
-import org.eclipse.ui.IEditorReference;
-import org.eclipse.ui.IFileEditorInput;
-import org.objectstyle.wolips.eomodeler.model.EOEntity;
-import org.objectstyle.wolips.eomodeler.model.EOModel;
+public class ResolvedKeyPath extends KeyPath {
+  private Class myInitialClass;
 
-public class EOModelMatchingStrategy implements IEditorMatchingStrategy {
-  public boolean matches(IEditorReference _editorRef, IEditorInput _input) {
-    boolean matches = false;
-    String editorId = _editorRef.getId();
-    if (editorId == null) {
-      matches = false;
+  public ResolvedKeyPath(Class _initialClass, String _keyPath) {
+    super(_keyPath);
+    myInitialClass = _initialClass;
+  }
+
+  public ResolvedKeyPath(Class _initialClass, String[] _keyNames) {
+    super(_keyNames);
+    myInitialClass = _initialClass;
+  }
+
+  public ResolvedKeyPath(ResolvedKey[] _keys) {
+    super(_keys);
+    if (_keys.length > 0) {
+      myInitialClass = _keys[0].getDeclaringClass();
     }
-    else if (!editorId.equals(EOModelEditor.EOMODEL_EDITOR_ID)) {
-      matches = false;
+  }
+
+  protected Key createKey(Key _previousKey, String _keyName) {
+    Class clazz;
+    if (_previousKey == null) {
+      clazz = myInitialClass;
     }
-    else if (_input instanceof IFileEditorInput) {
-      IFile file = ((IFileEditorInput) _input).getFile();
-      IContainer container = file.getParent();
-      if ("eomodeld".equals(container.getFileExtension())) { //$NON-NLS-1$
-        EOModelEditor editor = (EOModelEditor) _editorRef.getEditor(true);
-        if (editor != null) {
-          IFileEditorInput existingEditorInput = (IFileEditorInput) editor.getEditorInput();
-          IContainer existingEOModelFolder = existingEditorInput.getFile().getParent();
-          IFileEditorInput possibleEditorInput = (IFileEditorInput) _input;
-          IFile possibleEditorFile = possibleEditorInput.getFile();
-          IContainer possibleEOModelFolder = possibleEditorFile.getParent();
-          matches = existingEOModelFolder.equals(possibleEOModelFolder);
-          if ("plist".equals(possibleEditorFile.getFileExtension())) { //$NON-NLS-1$
-            String entityName = possibleEditorFile.getName();
-            entityName = entityName.substring(0, entityName.indexOf('.'));
-            EOModel eoModel = editor.getModel();
-            EOEntity entity = eoModel.getEntityNamed(entityName);
-            editor.setSelectedEntity(entity);
-          }
-        }
-      }
+    else {
+      clazz = _previousKey.getType(null);
     }
-    return matches;
+    Key key = new ResolvedKey(clazz, _keyName);
+    return key;
   }
 }

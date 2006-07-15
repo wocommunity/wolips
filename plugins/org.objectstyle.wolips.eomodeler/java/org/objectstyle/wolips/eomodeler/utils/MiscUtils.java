@@ -71,28 +71,4 @@ public class MiscUtils {
     }
     return negatedValue;
   }
-
-  public static String toGetMethod(String _propertyName, boolean _boolean) {
-    StringBuffer sb = new StringBuffer();
-    if (_boolean) {
-      sb.append("is"); //$NON-NLS-1$
-    }
-    else {
-      sb.append("get"); //$NON-NLS-1$
-    }
-    MiscUtils.capitalize(_propertyName, sb);
-    return sb.toString();
-  }
-
-  public static String toSetMethod(String _propertyName) {
-    StringBuffer sb = new StringBuffer();
-    sb.append("set"); //$NON-NLS-1$
-    MiscUtils.capitalize(_propertyName, sb);
-    return sb.toString();
-  }
-
-  public static void capitalize(String _propertyName, StringBuffer _buffer) {
-    _buffer.append(Character.toUpperCase(_propertyName.charAt(0)));
-    _buffer.append(_propertyName.substring(1));
-  }
 }

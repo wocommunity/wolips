@@ -74,7 +74,8 @@ import org.objectstyle.wolips.eomodeler.utils.TriStateCellEditor;
 public class EOAttributesTableViewer extends Composite implements ISelectionProvider {
   private TableViewer myAttributesTableViewer;
   private EOEntity myEntity;
-  private TableRefreshPropertyListener myTableRefresher;
+  private TableRefreshPropertyListener myAttributesChangedRefresher;
+  private TableRefreshPropertyListener myParentChangedRefresher;
   private TableRowRefreshPropertyListener myTableRowRefresher;
 
   public EOAttributesTableViewer(Composite _parent, int _style) {
@@ -86,7 +87,8 @@ public class EOAttributesTableViewer extends Composite implements ISelectionProv
     myAttributesTableViewer.setLabelProvider(new EOAttributesLabelProvider(myAttributesTableViewer, EOAttributesConstants.COLUMNS));
     myAttributesTableViewer.setSorter(new EOAttributesViewerSorter(myAttributesTableViewer, EOAttributesConstants.COLUMNS));
     myAttributesTableViewer.setColumnProperties(EOAttributesConstants.COLUMNS);
-    myTableRefresher = new TableRefreshPropertyListener(myAttributesTableViewer, EOEntity.ATTRIBUTES);
+    myAttributesChangedRefresher = new TableRefreshPropertyListener(myAttributesTableViewer, EOEntity.ATTRIBUTES);
+    myParentChangedRefresher = new TableRefreshPropertyListener(myAttributesTableViewer, EOEntity.PARENT);
     myTableRowRefresher = new TableRowRefreshPropertyListener(myAttributesTableViewer, EOEntity.ATTRIBUTE);
 
     Table attributesTable = myAttributesTableViewer.getTable();
@@ -129,16 +131,18 @@ public class EOAttributesTableViewer extends Composite implements ISelectionProv
 
   public void setEntity(EOEntity _entity) {
     if (myEntity != null) {
-      myEntity.removePropertyChangeListener(myTableRefresher);
-      myEntity.removePropertyChangeListener(myTableRowRefresher);
+      myEntity.removePropertyChangeListener(EOEntity.PARENT, myParentChangedRefresher);
+      myEntity.removePropertyChangeListener(EOEntity.ATTRIBUTES, myAttributesChangedRefresher);
+      myEntity.removePropertyChangeListener(EOEntity.ATTRIBUTE, myTableRowRefresher);
     }
     myEntity = _entity;
     myAttributesTableViewer.setInput(myEntity);
     updateCellEditors(myAttributesTableViewer.getCellEditors());
     TableUtils.packTableColumns(myAttributesTableViewer);
     if (myEntity != null) {
-      myEntity.addPropertyChangeListener(myTableRefresher);
-      myEntity.addPropertyChangeListener(myTableRowRefresher);
+      myEntity.addPropertyChangeListener(EOEntity.PARENT, myParentChangedRefresher);
+      myEntity.addPropertyChangeListener(EOEntity.ATTRIBUTES, myAttributesChangedRefresher);
+      myEntity.addPropertyChangeListener(EOEntity.ATTRIBUTE, myTableRowRefresher);
     }
   }
 

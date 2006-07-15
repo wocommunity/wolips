@@ -55,21 +55,23 @@ import java.util.List;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.objectstyle.wolips.eomodeler.kvc.KVCComparator;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
 import org.objectstyle.wolips.eomodeler.model.EOModelGroup;
 import org.objectstyle.wolips.eomodeler.model.EORelationship;
-import org.objectstyle.wolips.eomodeler.utils.ReflectionComparator;
 
 public class EOEntityListContentProvider implements IStructuredContentProvider {
   public static final Object BLANK_ENTITY = ""; //$NON-NLS-1$
-  
+
   private boolean myAllowBlank;
   private boolean myRestrictToSingleModel;
+  private KVCComparator myComparator;
 
   public EOEntityListContentProvider(boolean _allowBlank, boolean _restrictToSingleModel) {
     myAllowBlank = _allowBlank;
     myRestrictToSingleModel = _restrictToSingleModel;
+    myComparator = new KVCComparator(EOEntity.class, EOEntity.NAME);
   }
 
   public Object[] getElements(Object _inputElement) {
@@ -104,10 +106,10 @@ public class EOEntityListContentProvider implements IStructuredContentProvider {
     else {
       throw new IllegalArgumentException("Unknown input element: " + _inputElement);
     }
-    
+
     List entitiesListCopy = new LinkedList();
     entitiesListCopy.addAll(entitiesList);
-    Collections.sort(entitiesListCopy, new ReflectionComparator(EOEntity.class, "getName"));
+    Collections.sort(entitiesListCopy, myComparator);
     if (myAllowBlank) {
       entitiesListCopy.add(0, EOEntityListContentProvider.BLANK_ENTITY); //$NON-NLS-1$
     }
