@@ -58,6 +58,7 @@ import java.util.List;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.IPageSite;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
@@ -83,10 +84,18 @@ public class EOModelContentOutlinePage extends ContentOutlinePage {
     myModel = _model;
     if (myModel != null) {
       myEntities = new LinkedList(myModel.getEntities());
+      addPropertyChangeListeners();
     }
-    addPropertyChangeListeners();
     if (getTreeViewer() != null) {
       getTreeViewer().setInput(new EOModelContainer(_model));
+    }
+  }
+
+  protected void refreshPropertyChangeListeners() {
+    removePropertyChangeListeners();
+    if (myModel != null) {
+      myEntities = new LinkedList(myModel.getEntities());
+      addPropertyChangeListeners();
     }
   }
 
@@ -99,6 +108,7 @@ public class EOModelContentOutlinePage extends ContentOutlinePage {
     TreeViewer treeViewer = getTreeViewer();
     treeViewer.setContentProvider(new EOModelOutlineContentProvider());
     treeViewer.setLabelProvider(new EOModelOutlineLabelProvider());
+    treeViewer.setSorter(new ViewerSorter());
     if (myModel != null) {
       treeViewer.setInput(new EOModelContainer(myModel));
     }
@@ -167,7 +177,9 @@ public class EOModelContentOutlinePage extends ContentOutlinePage {
     public void propertyChange(PropertyChangeEvent _event) {
       String changedPropertyName = _event.getPropertyName();
       if (EOModel.ENTITIES.equals(changedPropertyName)) {
+        //getTreeViewer().refresh(true);
         getTreeViewer().refresh(true);
+        refreshPropertyChangeListeners();
       }
     }
   }
@@ -177,10 +189,16 @@ public class EOModelContentOutlinePage extends ContentOutlinePage {
       EOEntity entity = (EOEntity) _event.getSource();
       String changedPropertyName = _event.getPropertyName();
       if (EOEntity.NAME.equals(changedPropertyName)) {
-        getTreeViewer().refresh(entity, true);
+        //getTreeViewer().refresh(entity, true);
+        getTreeViewer().refresh(true);
       }
       else if (EOEntity.FETCH_SPECIFICATIONS.equals(changedPropertyName)) {
-        getTreeViewer().refresh(entity, true);
+        //getTreeViewer().refresh(entity, true);
+        getTreeViewer().refresh(true);
+      }
+      else if (EOEntity.FETCH_SPECIFICATION.equals(changedPropertyName)) {
+        //getTreeViewer().refresh(entity, true);
+        getTreeViewer().refresh(true);
       }
       else if (EOEntity.RELATIONSHIPS.equals(changedPropertyName)) {
         EOModelContentOutlinePage.this.refreshRelationshipsForEntity(entity);

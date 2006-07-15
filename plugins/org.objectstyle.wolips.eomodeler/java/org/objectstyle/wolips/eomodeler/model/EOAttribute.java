@@ -56,6 +56,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.kvc.IKey;
 import org.objectstyle.wolips.eomodeler.kvc.ResolvedKey;
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
@@ -142,11 +143,16 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
   }
 
   public int hashCode() {
-    return myEntity.hashCode() * myName.hashCode();
+    return myEntity.hashCode() * ((myName == null) ? super.hashCode() : myName.hashCode());
   }
 
   public boolean equals(Object _obj) {
-    return (_obj instanceof EOAttribute && (_obj == this || ((EOAttribute) _obj).myEntity.equals(myEntity) && ((EOAttribute) _obj).myName.equals(myName)));
+    boolean equals = false;
+    if (_obj instanceof EOAttribute) {
+      EOAttribute attribute = (EOAttribute) _obj;
+      equals = (attribute == this) || (ComparisonUtils.equals(attribute.myEntity, myEntity) && ComparisonUtils.equals(attribute.myName, myName));
+    }
+    return equals;
   }
 
   public boolean isPrototyped(String _property) {
@@ -248,6 +254,9 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
   }
 
   public void setName(String _name, boolean _fireEvents) throws DuplicateAttributeNameException {
+    if (_name == null) {
+      throw new NullPointerException(Messages.getString("EOAttribute.noBlankAttributeNames")); //$NON-NLS-1$
+    }
     String oldName = myName;
     myEntity._checkForDuplicateAttributeName(this, _name, null);
     myName = _name;

@@ -201,7 +201,11 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
         EOModelEditor.this.setPageText(EOModelEditor.EOENTITY_PAGE, Messages.getString("EOModelEditor.noEntitySelected")); //$NON-NLS-1$
       }
       else {
-        EOModelEditor.this.setPageText(EOModelEditor.EOENTITY_PAGE, _selectedEntity.getName());
+        String entityName = _selectedEntity.getName();
+        if (entityName == null) {
+          entityName = "?"; //$NON-NLS-1$
+        }
+        EOModelEditor.this.setPageText(EOModelEditor.EOENTITY_PAGE, entityName);
       }
       updatePartName();
     }
@@ -384,6 +388,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
           else if (selectedObject instanceof EOEntity) {
             EOEntity selectedEntity = (EOEntity) selectedObject;
             setSelectedEntity(selectedEntity);
+            //setActivePage(EOModelEditor.EOENTITY_PAGE);
           }
           else if (selectedObject instanceof EOAttribute) {
             EOAttribute selectedAttribute = (EOAttribute) selectedObject;
@@ -451,10 +456,28 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
     firePropertyChange(IEditorPart.PROP_DIRTY);
   }
 
+  protected void doubleClickedObjectInOutline(Object _obj) {
+    if (_obj instanceof EOEntity) {
+      setActivePage(EOModelEditor.EOENTITY_PAGE);
+    }
+  }
   protected class EOModelContentSelectionChangedListener implements ISelectionChangedListener {
+    private Object mySelectedObject;
+    
     public void selectionChanged(SelectionChangedEvent _event) {
       IStructuredSelection selection = (IStructuredSelection) _event.getSelection();
+      Object selectedObject = selection.getFirstElement();
       setSelection(selection, false);
+      if (mySelectedObject == null) {
+        mySelectedObject = selectedObject;
+      }
+      else if (mySelectedObject == selectedObject) {
+        doubleClickedObjectInOutline(selectedObject);
+        mySelectedObject = null;
+      }
+      else {
+        mySelectedObject = selectedObject;
+      }
     }
   }
 
