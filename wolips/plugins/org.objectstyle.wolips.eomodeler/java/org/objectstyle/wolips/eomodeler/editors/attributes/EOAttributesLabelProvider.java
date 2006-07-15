@@ -57,6 +57,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Display;
 import org.objectstyle.wolips.eomodeler.Activator;
 import org.objectstyle.wolips.eomodeler.model.EOAttribute;
 import org.objectstyle.wolips.eomodeler.utils.TablePropertyLabelProvider;
@@ -141,16 +142,19 @@ public class EOAttributesLabelProvider extends TablePropertyLabelProvider implem
 
   public Color getForeground(Object _element, int _columnIndex) {
     Color color = null;
-    //  EOAttribute attribute = (EOAttribute) _element;
-    //    if (attribute.isInherited()) {
-    //      color = myTableViewer.getTable().getDisplay().getSystemColor(SWT.COLOR_GRAY);
-    //    }
-    //    if (attribute.isPrototyped()) {
-    //      color = Display.getCurrent().getSystemColor(SWT.COLOR_DARK_RED);
-    //    }
+    EOAttribute attribute = (EOAttribute) _element;
+    if (attribute != null) {
+      //    if (attribute.isInherited()) {
+      //      color = myTableViewer.getTable().getDisplay().getSystemColor(SWT.COLOR_GRAY);
+      //    }
+      String property = getColumnProperty(_columnIndex);
+      if (attribute.isPrototyped(property)) {
+        color = Display.getCurrent().getSystemColor(SWT.COLOR_DARK_RED);
+      }
+    }
     return color;
   }
-  
+
   public void dispose() {
     if (myInheritedFont != null) {
       myInheritedFont.dispose();

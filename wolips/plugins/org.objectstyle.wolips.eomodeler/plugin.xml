@@ -107,6 +107,18 @@
                label="User Info"/>
          <propertyTab
                category="eoattribute"
+               id="org.objectstyle.wolips.eomodeler.tabs.eoattributeBasic"
+               image="icons/eoAttribute.gif"
+               label="Basic"/>
+         <propertyTab
+               afterTab="org.objectstyle.wolips.eomodeler.tabs.eoattributeBasic"
+               category="eoattribute"
+               id="org.objectstyle.wolips.eomodeler.tabs.eoattributeAdvanced"
+               image="icons/eoAttribute.gif"
+               label="Advanced"/>
+         <propertyTab
+               afterTab="org.objectstyle.wolips.eomodeler.tabs.eoattributeAdvanced"
+               category="eoattribute"
                id="org.objectstyle.wolips.eomodeler.tabs.eoattributeUserInfo"
                image="icons/eoAttribute.gif"
                label="User Info"/>
@@ -172,6 +184,18 @@
                id="org.objectstyle.wolips.eomodeler.sections.eoentityUserInfo"
                tab="org.objectstyle.wolips.eomodeler.tabs.eoentityUserInfo">
             <input type="org.objectstyle.wolips.eomodeler.model.EOEntity"/>
+         </propertySection>
+         <propertySection
+               class="org.objectstyle.wolips.eomodeler.editors.attribute.EOAttributeBasicEditorSection"
+               id="org.objectstyle.wolips.eomodeler.sections.eoattributeBasic"
+               tab="org.objectstyle.wolips.eomodeler.tabs.eoattributeBasic">
+            <input type="org.objectstyle.wolips.eomodeler.model.EOAttribute"/>
+         </propertySection>
+         <propertySection
+               class="org.objectstyle.wolips.eomodeler.editors.attribute.EOAttributeAdvancedEditorSection"
+               id="org.objectstyle.wolips.eomodeler.sections.eoattributeAdvanced"
+               tab="org.objectstyle.wolips.eomodeler.tabs.eoattributeAdvanced">
+            <input type="org.objectstyle.wolips.eomodeler.model.EOAttribute"/>
          </propertySection>
          <propertySection
                class="org.objectstyle.wolips.eomodeler.editors.userInfo.UserInfoPropertySection"

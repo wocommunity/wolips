@@ -47,49 +47,44 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eomodeler.editors;
+package org.objectstyle.wolips.eomodeler.kvc;
 
-import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IEditorMatchingStrategy;
-import org.eclipse.ui.IEditorReference;
-import org.eclipse.ui.IFileEditorInput;
-import org.objectstyle.wolips.eomodeler.model.EOEntity;
-import org.objectstyle.wolips.eomodeler.model.EOModel;
+import java.lang.reflect.Member;
 
-public class EOModelMatchingStrategy implements IEditorMatchingStrategy {
-  public boolean matches(IEditorReference _editorRef, IEditorInput _input) {
-    boolean matches = false;
-    String editorId = _editorRef.getId();
-    if (editorId == null) {
-      matches = false;
+public class CachingKey extends Key {
+  private Class myCacheClass;
+  private Member myGetMember;
+  private Member mySetMember;
+
+  public CachingKey(String _name) {
+    super(_name);
+  }
+
+  protected synchronized Class getClass(Object _instance) {
+    Class clazz = super.getClass(_instance);
+    if (myCacheClass != clazz) {
+      myGetMember = null;
+      mySetMember = null;
     }
-    else if (!editorId.equals(EOModelEditor.EOMODEL_EDITOR_ID)) {
-      matches = false;
+    myCacheClass = clazz;
+    return clazz;
+  }
+
+  protected Member getGetMember(Object _instance) {
+    if (myGetMember == null) {
+      myGetMember = super.getGetMember(_instance);
     }
-    else if (_input instanceof IFileEditorInput) {
-      IFile file = ((IFileEditorInput) _input).getFile();
-      IContainer container = file.getParent();
-      if ("eomodeld".equals(container.getFileExtension())) { //$NON-NLS-1$
-        EOModelEditor editor = (EOModelEditor) _editorRef.getEditor(true);
-        if (editor != null) {
-          IFileEditorInput existingEditorInput = (IFileEditorInput) editor.getEditorInput();
-          IContainer existingEOModelFolder = existingEditorInput.getFile().getParent();
-          IFileEditorInput possibleEditorInput = (IFileEditorInput) _input;
-          IFile possibleEditorFile = possibleEditorInput.getFile();
-          IContainer possibleEOModelFolder = possibleEditorFile.getParent();
-          matches = existingEOModelFolder.equals(possibleEOModelFolder);
-          if ("plist".equals(possibleEditorFile.getFileExtension())) { //$NON-NLS-1$
-            String entityName = possibleEditorFile.getName();
-            entityName = entityName.substring(0, entityName.indexOf('.'));
-            EOModel eoModel = editor.getModel();
-            EOEntity entity = eoModel.getEntityNamed(entityName);
-            editor.setSelectedEntity(entity);
-          }
-        }
-      }
+    return myGetMember;
+  }
+
+  protected Member getSetMember(Object _instance) {
+    if (mySetMember == null) {
+      mySetMember = super.getSetMember(_instance);
     }
-    return matches;
+    return mySetMember;
+  }
+
+  public String toString() {
+    return "[CachedKey: name = " + getName() + "]";
   }
 }

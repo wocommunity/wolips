@@ -47,49 +47,10 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eomodeler.editors;
+package org.objectstyle.wolips.eomodeler.editors.attribute;
 
-import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IEditorMatchingStrategy;
-import org.eclipse.ui.IEditorReference;
-import org.eclipse.ui.IFileEditorInput;
-import org.objectstyle.wolips.eomodeler.model.EOEntity;
-import org.objectstyle.wolips.eomodeler.model.EOModel;
+import org.objectstyle.wolips.eomodeler.model.EOAttribute;
 
-public class EOModelMatchingStrategy implements IEditorMatchingStrategy {
-  public boolean matches(IEditorReference _editorRef, IEditorInput _input) {
-    boolean matches = false;
-    String editorId = _editorRef.getId();
-    if (editorId == null) {
-      matches = false;
-    }
-    else if (!editorId.equals(EOModelEditor.EOMODEL_EDITOR_ID)) {
-      matches = false;
-    }
-    else if (_input instanceof IFileEditorInput) {
-      IFile file = ((IFileEditorInput) _input).getFile();
-      IContainer container = file.getParent();
-      if ("eomodeld".equals(container.getFileExtension())) { //$NON-NLS-1$
-        EOModelEditor editor = (EOModelEditor) _editorRef.getEditor(true);
-        if (editor != null) {
-          IFileEditorInput existingEditorInput = (IFileEditorInput) editor.getEditorInput();
-          IContainer existingEOModelFolder = existingEditorInput.getFile().getParent();
-          IFileEditorInput possibleEditorInput = (IFileEditorInput) _input;
-          IFile possibleEditorFile = possibleEditorInput.getFile();
-          IContainer possibleEOModelFolder = possibleEditorFile.getParent();
-          matches = existingEOModelFolder.equals(possibleEOModelFolder);
-          if ("plist".equals(possibleEditorFile.getFileExtension())) { //$NON-NLS-1$
-            String entityName = possibleEditorFile.getName();
-            entityName = entityName.substring(0, entityName.indexOf('.'));
-            EOModel eoModel = editor.getModel();
-            EOEntity entity = eoModel.getEntityNamed(entityName);
-            editor.setSelectedEntity(entity);
-          }
-        }
-      }
-    }
-    return matches;
-  }
+public interface IDataTypePanel {
+  public void setAttribute(EOAttribute _attribute);
 }

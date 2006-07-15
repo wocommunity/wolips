@@ -49,8 +49,8 @@
  */
 package org.objectstyle.wolips.eomodeler.utils;
 
-import java.beans.Expression;
-import java.beans.Statement;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ICellModifier;
@@ -61,14 +61,19 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TableItem;
+import org.objectstyle.wolips.eomodeler.kvc.CachingKeyPath;
+import org.objectstyle.wolips.eomodeler.kvc.Key;
+import org.objectstyle.wolips.eomodeler.kvc.KeyPath;
 
 public class TablePropertyCellModifier implements ICellModifier, ISelectionChangedListener {
   private TableViewer myTableViewer;
   private ISelection mySelection;
+  private Map myKeys;
 
   public TablePropertyCellModifier(TableViewer _tableViewer) {
     myTableViewer = _tableViewer;
     myTableViewer.addSelectionChangedListener(this);
+    myKeys = new HashMap();
   }
 
   public TableViewer getTableViewer() {
@@ -101,13 +106,7 @@ public class TablePropertyCellModifier implements ICellModifier, ISelectionChang
   }
 
   public Object getValue(Object _element, String _property) {
-    Object value = null;
-    try {
-      value = new Expression(_element, MiscUtils.toGetMethod(_property, false), null).getValue();
-    }
-    catch (Throwable t) {
-      t.printStackTrace();
-    }
+    Object value = new Key(_property).getValue(_element);
     return value;
   }
 
@@ -116,7 +115,12 @@ public class TablePropertyCellModifier implements ICellModifier, ISelectionChang
       TableItem tableItem = (TableItem) _element;
       Object obj = tableItem.getData();
       if (!_modify(obj, _property, _value)) {
-        new Statement(obj, MiscUtils.toSetMethod(_property), new Object[] { _value }).execute();
+        KeyPath keyPath = (KeyPath)myKeys.get(_property);
+        if (keyPath == null) {
+          keyPath = new CachingKeyPath(_property);
+          myKeys.put(_property, keyPath);
+        }
+        keyPath.setValue(obj, _value);
       }
       myTableViewer.refresh(obj);
     }

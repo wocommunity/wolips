@@ -47,49 +47,54 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eomodeler.editors;
+package org.objectstyle.wolips.eomodeler.editors.attribute;
 
-import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IEditorMatchingStrategy;
-import org.eclipse.ui.IEditorReference;
-import org.eclipse.ui.IFileEditorInput;
-import org.objectstyle.wolips.eomodeler.model.EOEntity;
-import org.objectstyle.wolips.eomodeler.model.EOModel;
+import org.eclipse.jface.internal.databinding.provisional.DataBindingContext;
+import org.eclipse.jface.internal.databinding.provisional.description.Property;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetWidgetFactory;
+import org.objectstyle.wolips.eomodeler.Messages;
+import org.objectstyle.wolips.eomodeler.model.EOAttribute;
+import org.objectstyle.wolips.eomodeler.utils.BindingFactory;
 
-public class EOModelMatchingStrategy implements IEditorMatchingStrategy {
-  public boolean matches(IEditorReference _editorRef, IEditorInput _input) {
-    boolean matches = false;
-    String editorId = _editorRef.getId();
-    if (editorId == null) {
-      matches = false;
-    }
-    else if (!editorId.equals(EOModelEditor.EOMODEL_EDITOR_ID)) {
-      matches = false;
-    }
-    else if (_input instanceof IFileEditorInput) {
-      IFile file = ((IFileEditorInput) _input).getFile();
-      IContainer container = file.getParent();
-      if ("eomodeld".equals(container.getFileExtension())) { //$NON-NLS-1$
-        EOModelEditor editor = (EOModelEditor) _editorRef.getEditor(true);
-        if (editor != null) {
-          IFileEditorInput existingEditorInput = (IFileEditorInput) editor.getEditorInput();
-          IContainer existingEOModelFolder = existingEditorInput.getFile().getParent();
-          IFileEditorInput possibleEditorInput = (IFileEditorInput) _input;
-          IFile possibleEditorFile = possibleEditorInput.getFile();
-          IContainer possibleEOModelFolder = possibleEditorFile.getParent();
-          matches = existingEOModelFolder.equals(possibleEOModelFolder);
-          if ("plist".equals(possibleEditorFile.getFileExtension())) { //$NON-NLS-1$
-            String entityName = possibleEditorFile.getName();
-            entityName = entityName.substring(0, entityName.indexOf('.'));
-            EOModel eoModel = editor.getModel();
-            EOEntity entity = eoModel.getEntityNamed(entityName);
-            editor.setSelectedEntity(entity);
-          }
-        }
-      }
-    }
-    return matches;
+public class DecimalNumberDataTypePanel extends Composite implements IDataTypePanel {
+  private Text myPrecisionText;
+  private Text myScaleText;
+  private DataBindingContext myBindingContext;
+
+  public DecimalNumberDataTypePanel(Composite _parent, int _style, TabbedPropertySheetWidgetFactory _widgetFactory) {
+    super(_parent, _style);
+    setBackground(_parent.getBackground());
+    setLayout(new GridLayout(2, false));
+    _widgetFactory.createCLabel(this, Messages.getString("EOAttribute." + EOAttribute.PRECISION), SWT.NONE); //$NON-NLS-1$
+    myPrecisionText = new Text(this, SWT.BORDER);
+    GridData precisionFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+    myPrecisionText.setLayoutData(precisionFieldLayoutData);
+
+    _widgetFactory.createCLabel(this, Messages.getString("EOAttribute." + EOAttribute.SCALE), SWT.NONE); //$NON-NLS-1$
+    myScaleText = new Text(this, SWT.BORDER);
+    GridData scaleFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+    myScaleText.setLayoutData(scaleFieldLayoutData);
   }
+
+  public void setAttribute(EOAttribute _attribute) {
+    if (myBindingContext != null) {
+      myBindingContext.dispose();
+    }
+    if (_attribute != null) {
+      myBindingContext = BindingFactory.createContext();
+      myBindingContext.bind(myPrecisionText, new Property(_attribute, EOAttribute.PRECISION), null);
+      myBindingContext.bind(myScaleText, new Property(_attribute, EOAttribute.SCALE), null);
+    }
+  }
+  
+  public void dispose() {
+    setAttribute(null);
+    super.dispose();
+  }
+
 }

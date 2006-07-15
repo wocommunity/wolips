@@ -47,49 +47,95 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eomodeler.editors;
+package org.objectstyle.wolips.eomodeler.kvc;
 
-import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IEditorMatchingStrategy;
-import org.eclipse.ui.IEditorReference;
-import org.eclipse.ui.IFileEditorInput;
-import org.objectstyle.wolips.eomodeler.model.EOEntity;
-import org.objectstyle.wolips.eomodeler.model.EOModel;
+public class KeyPath implements IKey {
+  private String[] myKeyNames;
+  private Key[] myKeys;
 
-public class EOModelMatchingStrategy implements IEditorMatchingStrategy {
-  public boolean matches(IEditorReference _editorRef, IEditorInput _input) {
-    boolean matches = false;
-    String editorId = _editorRef.getId();
-    if (editorId == null) {
-      matches = false;
+  public KeyPath(String _keyPath) {
+    this(_keyPath.split("\\.")); //$NON-NLS-1$
+  }
+
+  public KeyPath(String[] _keyNames) {
+    myKeyNames = _keyNames;
+  }
+
+  public KeyPath(Key[] _keys) {
+    myKeys = _keys;
+    myKeyNames = new String[_keys.length];
+    for (int keyNum = 0; keyNum < _keys.length; keyNum++) {
+      myKeyNames[keyNum] = _keys[keyNum].getName();
     }
-    else if (!editorId.equals(EOModelEditor.EOMODEL_EDITOR_ID)) {
-      matches = false;
+  }
+
+  public String toKeyPath() {
+    StringBuffer sb = new StringBuffer();
+    for (int keyNum = 0; keyNum < myKeyNames.length; keyNum++) {
+      sb.append(myKeyNames[keyNum]);
+      sb.append("."); //$NON-NLS-1$
     }
-    else if (_input instanceof IFileEditorInput) {
-      IFile file = ((IFileEditorInput) _input).getFile();
-      IContainer container = file.getParent();
-      if ("eomodeld".equals(container.getFileExtension())) { //$NON-NLS-1$
-        EOModelEditor editor = (EOModelEditor) _editorRef.getEditor(true);
-        if (editor != null) {
-          IFileEditorInput existingEditorInput = (IFileEditorInput) editor.getEditorInput();
-          IContainer existingEOModelFolder = existingEditorInput.getFile().getParent();
-          IFileEditorInput possibleEditorInput = (IFileEditorInput) _input;
-          IFile possibleEditorFile = possibleEditorInput.getFile();
-          IContainer possibleEOModelFolder = possibleEditorFile.getParent();
-          matches = existingEOModelFolder.equals(possibleEOModelFolder);
-          if ("plist".equals(possibleEditorFile.getFileExtension())) { //$NON-NLS-1$
-            String entityName = possibleEditorFile.getName();
-            entityName = entityName.substring(0, entityName.indexOf('.'));
-            EOModel eoModel = editor.getModel();
-            EOEntity entity = eoModel.getEntityNamed(entityName);
-            editor.setSelectedEntity(entity);
-          }
-        }
+    if (myKeyNames.length > 0) {
+      sb.setLength(sb.length() - 1);
+    }
+    return sb.toString();
+  }
+
+  public ResolvedKeyPath toResolvedKey(Class _declaringClass) {
+    return new ResolvedKeyPath(_declaringClass, myKeyNames);
+  }
+
+  protected Key[] getKeys() {
+    if (myKeys == null) {
+      Key key = null;
+      myKeys = new Key[myKeyNames.length];
+      for (int keyNum = 0; keyNum < myKeys.length; keyNum++) {
+        key = createKey(key, myKeyNames[keyNum]);
+        myKeys[keyNum] = key;
       }
     }
-    return matches;
+    return myKeys;
+  }
+
+  protected Key createKey(Key _previousKey, String _keyName) {
+    return new Key(_keyName);
+  }
+
+  public void setValue(Object _instance, Object _value) {
+    Key[] keys = getKeys();
+    Object instance = _instance;
+    for (int keyNum = 0; instance != null && keyNum < keys.length - 1; keyNum++) {
+      Key key = keys[keyNum];
+      instance = key.getValue(instance);
+    }
+    if (instance != null) {
+      keys[keys.length - 1].setValue(instance, _value);
+    }
+  }
+
+  public Object getValue(Object _instance) {
+    Key[] keys = getKeys();
+    Object instance = _instance;
+    for (int keyNum = 0; instance != null && keyNum < keys.length; keyNum++) {
+      Key key = keys[keyNum];
+      instance = key.getValue(instance);
+    }
+    return instance;
+  }
+  
+  public String toString() {
+    return "[KeyPath: " + toKeyPath() + "]";
+  }
+  
+  public static Object getValue(Object _instance, String _keyPath) {
+    Object value;
+    if (_instance == null) {
+      value = null;
+    }
+    else {
+      ResolvedKeyPath keyPath = new ResolvedKeyPath(_instance.getClass(), _keyPath);
+      value = keyPath.getValue(_instance);
+    }
+    return value;
   }
 }

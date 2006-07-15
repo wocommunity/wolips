@@ -49,37 +49,45 @@
  */
 package org.objectstyle.wolips.eomodeler.utils;
 
-import java.beans.Expression;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.swt.graphics.Image;
+import org.objectstyle.wolips.eomodeler.kvc.CachingKeyPath;
+import org.objectstyle.wolips.eomodeler.kvc.KeyPath;
 
 public class TablePropertyLabelProvider implements ITableLabelProvider {
   private String[] myColumnProperties;
+  private Map myKeys;
 
   public TablePropertyLabelProvider(String[] _columnProperties) {
     myColumnProperties = _columnProperties;
+    myKeys = new HashMap();
+    for (int keyNum = 0; keyNum < _columnProperties.length; keyNum++) {
+      KeyPath keyPath = new CachingKeyPath(_columnProperties[keyNum]);
+      myKeys.put(_columnProperties[keyNum], keyPath);
+    }
+  }
+  
+  public String getColumnProperty(int _columnIndex) {
+    return myColumnProperties[_columnIndex];
   }
 
   public Image getColumnImage(Object _element, String _property) {
     return null;
   }
-  
+
   public Image getColumnImage(Object _element, int _columnIndex) {
     return getColumnImage(_element, myColumnProperties[_columnIndex]);
   }
 
   public String getColumnText(Object _element, String _property) {
     String text = null;
-    try {
-      Object value = new Expression(_element, MiscUtils.toGetMethod(_property, false), null).getValue();
-      if (value != null) {
-        text = value.toString();
-      }
-    }
-    catch (Throwable t) {
-      t.printStackTrace();
+    Object value = ((KeyPath) myKeys.get(_property)).getValue(_element);
+    if (value != null) {
+      text = value.toString();
     }
     return text;
   }
