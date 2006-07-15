@@ -50,49 +50,49 @@
 package org.objectstyle.wolips.eomodeler.actions;
 
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.ui.IEditorActionDelegate;
-import org.eclipse.ui.IEditorPart;
-import org.objectstyle.wolips.eomodeler.editors.EOModelEditor;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.IWorkbenchWindowActionDelegate;
+import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.model.DuplicateRelationshipNameException;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
-import org.objectstyle.wolips.eomodeler.model.EOModel;
 import org.objectstyle.wolips.eomodeler.model.EORelationship;
 import org.objectstyle.wolips.eomodeler.model.EORelationshipPath;
 
-public class FlattenRelationshipAction implements IEditorActionDelegate {
-  private EOModelEditor myEditor;
+public class FlattenRelationshipAction implements IWorkbenchWindowActionDelegate {
+  private IWorkbenchWindow myWindow;
   private EORelationshipPath myRelationshipPath;
 
-  public void setActiveEditor(IAction _action, IEditorPart _targetEditor) {
-    if (_targetEditor instanceof EOModelEditor) {
-      myEditor = (EOModelEditor) _targetEditor;
-    }
+  public void dispose() {
+    // DO NOTHING
+  }
+
+  public void init(IWorkbenchWindow _window) {
+    myWindow = _window;
   }
 
   public void selectionChanged(IAction _action, ISelection _selection) {
     myRelationshipPath = null;
     if (_selection instanceof IStructuredSelection) {
-      Object selectedObj = ((IStructuredSelection) _selection).getFirstElement();
-      if (selectedObj instanceof EORelationshipPath) {
-        myRelationshipPath = (EORelationshipPath) selectedObj;
+      Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
+      if (selectedObject instanceof EORelationshipPath) {
+        myRelationshipPath = (EORelationshipPath) selectedObject;
       }
     }
   }
 
   public void run(IAction _action) {
     try {
-      if (myEditor != null && myRelationshipPath != null) {
-        EOModel model = myEditor.getModel();
-        if (model != null) {
-          EOEntity rootEntity = myRelationshipPath.getRootEntity();
-          String flattenedRelationship = myRelationshipPath.toKeyPath();
-          String flattenedRelationshipName = flattenedRelationship.replace('.', '_');
-          EORelationship newRelationship = rootEntity.addBlankRelationship(flattenedRelationshipName, flattenedRelationship); //$NON-NLS-1$
-          myEditor.setSelection(new StructuredSelection(newRelationship));
-        }
+      if (myRelationshipPath != null) {
+        EOEntity rootEntity = myRelationshipPath.getRootEntity();
+        String flattenedRelationship = myRelationshipPath.toKeyPath();
+        String flattenedRelationshipName = flattenedRelationship.replace('.', '_');
+        EORelationship newRelationship = rootEntity.addBlankRelationship(flattenedRelationshipName, flattenedRelationship); //$NON-NLS-1$
+      }
+      else {
+        MessageDialog.openError(myWindow.getShell(), Messages.getString("EORelationship.noRelationshipSelectedTitle"), Messages.getString("EORelationship.noRelationshipSelectedMessage"));//$NON-NLS-1$ //$NON-NLS-2$
       }
     }
     catch (DuplicateRelationshipNameException e) {

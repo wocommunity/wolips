@@ -60,6 +60,7 @@ import java.util.Set;
 
 import org.eclipse.jface.internal.databinding.provisional.observable.list.WritableList;
 import org.objectstyle.cayenne.wocompat.PropertyListSerialization;
+import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.utils.MapUtils;
 
 public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRelative {
@@ -449,7 +450,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     Iterator fetchSpecsIter = myFetchSpecs.iterator();
     while (matchingFetchSpec == null && fetchSpecsIter.hasNext()) {
       EOFetchSpecification fetchSpec = (EOFetchSpecification) fetchSpecsIter.next();
-      if (fetchSpec.getName().equals(_name)) {
+      if (ComparisonUtils.equals(fetchSpec.getName(), _name)) {
         matchingFetchSpec = fetchSpec;
       }
     }
@@ -534,8 +535,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     Iterator attributesIter = myAttributes.iterator();
     while (matchingAttribute == null && attributesIter.hasNext()) {
       EOAttribute attribute = (EOAttribute) attributesIter.next();
-      String attributeName = attribute.getName();
-      if (attributeName != null && attributeName.equals(_name)) {
+      if (ComparisonUtils.equals(attribute.getName(), _name)) {
         matchingAttribute = attribute;
       }
     }
@@ -601,7 +601,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     Iterator relationshipsIter = myRelationships.iterator();
     while (matchingRelationship == null && relationshipsIter.hasNext()) {
       EORelationship relationship = (EORelationship) relationshipsIter.next();
-      if (relationship.getName().equals(_name)) {
+      if (ComparisonUtils.equals(relationship.getName(), _name)) {
         matchingRelationship = relationship;
       }
     }

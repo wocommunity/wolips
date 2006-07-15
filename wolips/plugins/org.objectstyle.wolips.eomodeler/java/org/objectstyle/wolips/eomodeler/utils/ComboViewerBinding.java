@@ -80,7 +80,8 @@ public class ComboViewerBinding implements ISelectionChangedListener, PropertyCh
     myListObj = _listObj;
     myListPropertyName = _listPropertyName;
     myBlankValue = _blankValue;
-    setSelectedValue(getKey(myPropertyName).getValue(myObj));
+    Object initialValue = getKey(myPropertyName).getValue(myObj);
+    setSelectedValue(initialValue);
 
     myViewer.addSelectionChangedListener(this);
     myObj.addPropertyChangeListener(myPropertyName, this);
@@ -137,7 +138,12 @@ public class ComboViewerBinding implements ISelectionChangedListener, PropertyCh
 
   protected void setSelectedValue(Object _newValue) {
     if (_newValue == null || _newValue == myBlankValue || (myBlankValue != null && myBlankValue.equals(_newValue))) {
-      myViewer.setSelection(new StructuredSelection(myBlankValue), true);
+      if (myBlankValue == null) {
+        //myViewer.set
+      }
+      else {
+        myViewer.setSelection(new StructuredSelection(myBlankValue), true);
+      }
     }
     else {
       myViewer.setSelection(new StructuredSelection(_newValue), true);

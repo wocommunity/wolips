@@ -94,6 +94,8 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
     myEntity = _entity;
     myJoins = new WritableList(EOJoin.class);
     myRelationshipMap = new EOModelMap();
+    myDeleteRule = EODeleteRule.getDeleteRuleByID(null);
+    myJoinSemantic = EOJoinSemantic.getJoinSemanticByID(null);
   }
 
   public EORelationship(EOEntity _entity, String _name) {
