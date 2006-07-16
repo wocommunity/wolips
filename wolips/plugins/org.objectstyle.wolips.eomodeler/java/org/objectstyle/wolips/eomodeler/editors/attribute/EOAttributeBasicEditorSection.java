@@ -79,8 +79,10 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.objectstyle.wolips.eomodeler.Messages;
+import org.objectstyle.wolips.eomodeler.editors.entity.EOEntityListContentProvider;
 import org.objectstyle.wolips.eomodeler.model.EOAttribute;
 import org.objectstyle.wolips.eomodeler.model.EODataType;
+import org.objectstyle.wolips.eomodeler.model.EOModel;
 import org.objectstyle.wolips.eomodeler.utils.BindingFactory;
 import org.objectstyle.wolips.eomodeler.utils.ComboViewerBinding;
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
@@ -92,6 +94,7 @@ public class EOAttributeBasicEditorSection extends AbstractPropertySection {
 
   private Text myNameText;
   private ComboViewer myDerivedComboViewer;
+  private ComboViewer myPrototypeComboViewer;
   private Text myColumnNameText;
   private Text myDefinitionText;
   private Text myExternalTypeText;
@@ -102,6 +105,7 @@ public class EOAttributeBasicEditorSection extends AbstractPropertySection {
   private Map myDataTypeToDataTypePanel;
 
   private DataBindingContext myBindingContext;
+  private ComboViewerBinding myPrototypeBinding;
   private ComboViewerBinding myDataTypeBinding;
   private DataTypeChangeListener myDataTypeChangeListener;
 
@@ -168,6 +172,14 @@ public class EOAttributeBasicEditorSection extends AbstractPropertySection {
     getWidgetFactory().createCLabel(topForm, Messages.getString("EOAttribute." + EOAttribute.ALLOWS_NULL), SWT.NONE); //$NON-NLS-1$
     myAllowNullsButton = new Button(topForm, SWT.CHECK);
 
+    getWidgetFactory().createCLabel(topForm, Messages.getString("EOAttribute." + EOAttribute.PROTOTYPE), SWT.NONE); //$NON-NLS-1$
+    Combo prototypeCombo = new Combo(topForm, SWT.BORDER | SWT.FLAT | SWT.READ_ONLY);
+    myPrototypeComboViewer = new ComboViewer(prototypeCombo);
+    myPrototypeComboViewer.setLabelProvider(new EOPrototypeListLabelProvider());
+    myPrototypeComboViewer.setContentProvider(new EOPrototypeListContentProvider());
+    GridData prototypeComboLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+    prototypeCombo.setLayoutData(prototypeComboLayoutData);
+
     getWidgetFactory().createCLabel(topForm, Messages.getString("EOAttribute." + EOAttribute.DATA_TYPE), SWT.NONE); //$NON-NLS-1$
     Combo dataTypeCombo = new Combo(topForm, SWT.BORDER | SWT.FLAT | SWT.READ_ONLY);
     myDataTypeComboViewer = new ComboViewer(dataTypeCombo);
@@ -221,6 +233,9 @@ public class EOAttributeBasicEditorSection extends AbstractPropertySection {
       if (myDataTypeBinding != null) {
         myDataTypeBinding.dispose();
       }
+      if (myPrototypeBinding != null) {
+        myPrototypeBinding.dispose();
+      }
 
       myAttribute = _attribute;
 
@@ -233,6 +248,8 @@ public class EOAttributeBasicEditorSection extends AbstractPropertySection {
         myBindingContext.bind(myExternalTypeText, new Property(myAttribute, EOAttribute.EXTERNAL_TYPE), null);
         myBindingContext.bind(myAllowNullsButton, new Property(myAttribute, EOAttribute.ALLOWS_NULL), null);
 
+        myPrototypeComboViewer.setInput(_attribute);
+        myPrototypeBinding = new ComboViewerBinding(myPrototypeComboViewer, myAttribute, EOAttribute.PROTOTYPE, myAttribute.getEntity().getModel(), EOModel.ENTITIES, EOEntityListContentProvider.BLANK_ENTITY); //$NON-NLS-1$
         myDataTypeBinding = new ComboViewerBinding(myDataTypeComboViewer, myAttribute, EOAttribute.DATA_TYPE, null, null, null);
         if (myAttribute.getDefinition() == null) {
           myDerivedComboViewer.setSelection(new StructuredSelection(EOAttributeBasicEditorSection.COLUMN));

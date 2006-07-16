@@ -191,6 +191,10 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
     return myPrototype;
   }
 
+  public void setPrototype(EOAttribute _prototype) {
+    setPrototype(_prototype, true);
+  }
+  
   public void setPrototype(EOAttribute _prototype, boolean _updateFromPrototype) {
     EOAttribute oldPrototype = myPrototype;
     boolean prototypeNameChanged = true;

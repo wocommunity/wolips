@@ -122,7 +122,7 @@ public class Key implements IKey {
       if (setMember == null) {
         setMember = getMemberWithPrefixes(myName, Key.FIELD_PREFIXES, members);
         if (setMember == null) {
-          throw new IllegalArgumentException("There is no member named '" + myName + "' on the class " + clazz.getName() + ".");
+          throw new IllegalArgumentException("There is no set-method named '" + myName + "' on the class " + clazz.getName() + ".");
         }
       }
     }
@@ -151,7 +151,7 @@ public class Key implements IKey {
       if (getMember == null) {
         getMember = getMemberWithPrefixes(myName, Key.FIELD_PREFIXES, members);
         if (getMember == null) {
-          throw new IllegalArgumentException("There is no member named '" + myName + "' on the class " + clazz.getName() + ".");
+          throw new IllegalArgumentException("There is no get-method named '" + myName + "' on the class " + clazz.getName() + ".");
         }
       }
     }
