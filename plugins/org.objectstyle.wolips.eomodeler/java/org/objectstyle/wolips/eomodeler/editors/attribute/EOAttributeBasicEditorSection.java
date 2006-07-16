@@ -280,7 +280,9 @@ public class EOAttributeBasicEditorSection extends AbstractPropertySection {
     IStructuredSelection selection = (IStructuredSelection) myDerivedComboViewer.getSelection();
     if (selection.getFirstElement() == EOAttributeBasicEditorSection.COLUMN) {
       myColumnNameDefinitionLayout.topControl = myColumnNameText;
-      myAttribute.setDefinition(null);
+      if (myAttribute.getDefinition() != null) {
+        myAttribute.setDefinition(null);
+      }
     }
     else {
       myColumnNameDefinitionLayout.topControl = myDefinitionText;

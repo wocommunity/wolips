@@ -49,6 +49,8 @@
  */
 package org.objectstyle.wolips.eomodeler.actions;
 
+import java.util.Set;
+
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
@@ -56,6 +58,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.objectstyle.wolips.eomodeler.Messages;
+import org.objectstyle.wolips.eomodeler.editors.EOModelErrorDialog;
 import org.objectstyle.wolips.eomodeler.model.EOAttribute;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOFetchSpecification;
@@ -63,7 +66,7 @@ import org.objectstyle.wolips.eomodeler.model.EORelationship;
 
 public class DeleteAction implements IWorkbenchWindowActionDelegate {
   private IWorkbenchWindow myWindow;
-  private Object mySelectedObject;
+  private ISelection mySelection;
 
   public void dispose() {
     // DO NOTHING
@@ -74,34 +77,43 @@ public class DeleteAction implements IWorkbenchWindowActionDelegate {
   }
 
   public void selectionChanged(IAction _action, ISelection _selection) {
-    mySelectedObject = null;
-    if (_selection instanceof IStructuredSelection) {
-      mySelectedObject = ((IStructuredSelection) _selection).getFirstElement();
-    }
+    mySelection = _selection;
   }
 
   public void run(IAction _action) {
-    if (mySelectedObject instanceof EOEntity) {
-      if (MessageDialog.openConfirm(myWindow.getShell(), Messages.getString("delete.entityTitle"), Messages.getString("delete.entityMessage"))) { //$NON-NLS-1$ //$NON-NLS-2$
-        EOEntity entity = (EOEntity) mySelectedObject;
+    Object selectedObject = null;
+    if (mySelection instanceof IStructuredSelection) {
+      selectedObject = ((IStructuredSelection) mySelection).getFirstElement();
+    }
+    if (selectedObject instanceof EOEntity) {
+      EOEntity entity = (EOEntity) selectedObject;
+      Set referenceFailures = entity.getReferenceFailures();
+      if (!referenceFailures.isEmpty()) {
+        new EOModelErrorDialog(myWindow.getShell(), referenceFailures).open();
+      }
+      else if (MessageDialog.openConfirm(myWindow.getShell(), Messages.getString("delete.entityTitle"), Messages.getString("delete.entityMessage"))) { //$NON-NLS-1$ //$NON-NLS-2$
         entity.getModel().removeEntity(entity);
       }
     }
-    else if (mySelectedObject instanceof EORelationship) {
+    else if (selectedObject instanceof EORelationship) {
       if (MessageDialog.openConfirm(myWindow.getShell(), Messages.getString("delete.relationshipTitle"), Messages.getString("delete.relationshipMessage"))) { //$NON-NLS-1$ //$NON-NLS-2$
-        EORelationship relationship = (EORelationship) mySelectedObject;
-        relationship.getEntity().removeRelationship(relationship);
+        EORelationship relationship = (EORelationship) selectedObject;
+        relationship.getEntity().removeRelationship(relationship, true);
       }
     }
-    else if (mySelectedObject instanceof EOAttribute) {
-      if (MessageDialog.openConfirm(myWindow.getShell(), Messages.getString("delete.attributeTitle"), Messages.getString("delete.attributeMessage"))) { //$NON-NLS-1$ //$NON-NLS-2$
-        EOAttribute attribute = (EOAttribute) mySelectedObject;
-        attribute.getEntity().removeAttribute(attribute);
+    else if (selectedObject instanceof EOAttribute) {
+      EOAttribute attribute = (EOAttribute) selectedObject;
+      Set referenceFailures = attribute.getReferenceFailures();
+      if (!referenceFailures.isEmpty()) {
+        new EOModelErrorDialog(myWindow.getShell(), referenceFailures).open();
+      }
+      else if (MessageDialog.openConfirm(myWindow.getShell(), Messages.getString("delete.attributeTitle"), Messages.getString("delete.attributeMessage"))) { //$NON-NLS-1$ //$NON-NLS-2$
+        attribute.getEntity().removeAttribute(attribute, true);
       }
     }
-    else if (mySelectedObject instanceof EOFetchSpecification) {
+    else if (selectedObject instanceof EOFetchSpecification) {
       if (MessageDialog.openConfirm(myWindow.getShell(), Messages.getString("delete.fetchSpecTitle"), Messages.getString("delete.fetchSpecMessage"))) { //$NON-NLS-1$ //$NON-NLS-2$
-        EOFetchSpecification fetchSpec = (EOFetchSpecification) mySelectedObject;
+        EOFetchSpecification fetchSpec = (EOFetchSpecification) selectedObject;
         fetchSpec.getEntity().removeFetchSpecification(fetchSpec);
       }
     }
