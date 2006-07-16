@@ -500,7 +500,12 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
   public synchronized EODataType getDataType() {
     EODataType dataType = myDataType;
     if (dataType == null) {
-      dataType = EODataType.getDataTypeByValueClassAndType(getValueClassName(), getValueType());
+      if (getValueFactoryMethodName() != null || getAdaptorValueConversionMethodName() != null) {
+        dataType = EODataType.CUSTOM;
+      }
+      else {
+        dataType = EODataType.getDataTypeByValueClassAndType(getValueClassName(), getValueType());
+      }
       myDataType = dataType;
     }
     return dataType;
