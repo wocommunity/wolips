@@ -120,6 +120,14 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
   }
 
   public EOEntity cloneInto(EOModel _model, String _name, boolean _fireEvents, Set _failures) throws DuplicateAttributeNameException, DuplicateRelationshipNameException, DuplicateEntityNameException {
+    EOEntity entity = _cloneJustEntityInto(_model, _name);
+    _cloneAttributesAndRelationshipsInto(entity, _fireEvents, _failures);
+    // TODO: Clone Fetch Specs
+    _model.addEntity(entity, _fireEvents, _failures);
+    return entity;
+  }
+
+  protected EOEntity _cloneJustEntityInto(EOModel _model, String _name) {
     EOEntity entity = new EOEntity(_model, _model.findUnusedEntityName(_name));
     entity.myParent = myParent;
     entity.myExternalName = myExternalName;
@@ -130,16 +138,17 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     entity.myAbstractEntity = myAbstractEntity;
     entity.myReadOnly = myReadOnly;
     entity.myMaxNumberOfInstancesToBatchFetch = myMaxNumberOfInstancesToBatchFetch;
-    _cloneAttributesAndRelationshipsInto(entity, _fireEvents, _failures);
-    // TODO: Clone Fetch Specs
-    _model.addEntity(entity, _fireEvents, _failures);
     return entity;
   }
 
   public EOEntity subclassInto(EOModel _model, boolean _fireEvents, Set _failures) throws DuplicateAttributeNameException, DuplicateRelationshipNameException, DuplicateEntityNameException {
-    EOEntity entity = cloneInto(_model, _fireEvents, _failures);
+    EOEntity entity = _cloneJustEntityInto(_model, myName);
     entity.myParent = this;
-    entity.myAbstractEntity = Boolean.FALSE;
+    if (entity.isAbstractEntity() != null) {
+      entity.myAbstractEntity = Boolean.FALSE;
+    }
+    _cloneAttributesAndRelationshipsInto(entity, _fireEvents, _failures);
+    _model.addEntity(entity, _fireEvents, _failures);
     return entity;
   }
 
@@ -147,7 +156,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     Iterator attributesIter = getAttributes().iterator();
     while (attributesIter.hasNext()) {
       EOAttribute attribute = (EOAttribute) attributesIter.next();
-      if (getAttributeNamed(attribute.getName()) == null) {
+      if (_entity.getAttributeNamed(attribute.getName()) == null) {
         attribute.cloneInto(_entity, _fireEvents, _failures);
       }
     }
@@ -155,7 +164,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     Iterator relationshipsIter = getRelationships().iterator();
     while (relationshipsIter.hasNext()) {
       EORelationship relationship = (EORelationship) relationshipsIter.next();
-      if (getRelationshipNamed(relationship.getName()) == null) {
+      if (_entity.getRelationshipNamed(relationship.getName()) == null) {
         relationship.cloneInto(_entity, _fireEvents, _failures);
       }
     }
@@ -378,7 +387,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     }
     return referenceFailures;
   }
-  
+
   public List getReferencingRelationships() {
     List referencingRelationships = new LinkedList();
     Iterator modelsIter = getModel().getModelGroup().getModels().iterator();
@@ -501,8 +510,8 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
   }
 
   public String findUnusedAttributeName(String _newName) {
-    boolean unusedNameFound = false;
-    String unusedName = null;
+    boolean unusedNameFound = (getAttributeNamed(_newName) == null);
+    String unusedName = _newName;
     for (int dupeNameNum = 1; !unusedNameFound; dupeNameNum++) {
       unusedName = _newName + dupeNameNum;
       EOAttribute renameAttribute = getAttributeNamed(unusedName);
@@ -537,8 +546,8 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
   }
 
   public String findUnusedFetchSpecificationName(String _newName) {
-    boolean unusedNameFound = false;
-    String unusedName = null;
+    boolean unusedNameFound = (getFetchSpecNamed(_newName) == null);
+    String unusedName = _newName;
     for (int dupeNameNum = 1; !unusedNameFound; dupeNameNum++) {
       unusedName = _newName + dupeNameNum;
       EOFetchSpecification renameFetchSpec = getFetchSpecNamed(unusedName);
@@ -636,8 +645,8 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
   }
 
   public String findUnusedRelationshipName(String _newName) {
-    boolean unusedNameFound = false;
-    String unusedName = null;
+    boolean unusedNameFound = (getRelationshipNamed(_newName) == null);
+    String unusedName = _newName;
     for (int dupeNameNum = 1; !unusedNameFound; dupeNameNum++) {
       unusedName = _newName + dupeNameNum;
       EORelationship renameRelationship = getRelationshipNamed(unusedName);

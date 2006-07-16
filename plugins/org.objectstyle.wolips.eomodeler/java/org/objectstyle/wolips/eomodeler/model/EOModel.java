@@ -190,8 +190,8 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable 
   }
 
   public String findUnusedEntityName(String _newName) {
-    boolean unusedNameFound = false;
-    String unusedName = null;
+    boolean unusedNameFound = (getEntityNamed(_newName) == null);
+    String unusedName = _newName;
     for (int dupeNameNum = 1; !unusedNameFound; dupeNameNum++) {
       unusedName = _newName + dupeNameNum;
       EOEntity renameEntity = getEntityNamed(unusedName);

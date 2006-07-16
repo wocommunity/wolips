@@ -110,11 +110,11 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 
   public static final int EOMODEL_PAGE = 0;
   public static final int EOENTITY_PAGE = 1;
-  
+
   private EOEntitiesTableEditor myEntitiesTableEditor;
   private EOEntityEditor myEntityEditor;
   private EOModelContentOutlinePage myContentOutlinePage;
-  
+
   private ListenerList mySelectionChangedListeners;
   private IStructuredSelection mySelection;
   private PropertyChangeListener myDirtyModelListener;
@@ -461,9 +461,10 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
       setActivePage(EOModelEditor.EOENTITY_PAGE);
     }
   }
+
   protected class EOModelContentSelectionChangedListener implements ISelectionChangedListener {
     private Object mySelectedObject;
-    
+
     public void selectionChanged(SelectionChangedEvent _event) {
       IStructuredSelection selection = (IStructuredSelection) _event.getSelection();
       Object selectedObject = selection.getFirstElement();
@@ -472,7 +473,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
         mySelectedObject = selectedObject;
       }
       else if (mySelectedObject == selectedObject) {
-        doubleClickedObjectInOutline(selectedObject);
+        EOModelEditor.this.doubleClickedObjectInOutline(selectedObject);
         mySelectedObject = null;
       }
       else {

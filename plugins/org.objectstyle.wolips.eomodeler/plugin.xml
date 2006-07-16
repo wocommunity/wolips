@@ -256,6 +256,14 @@
                toolbarPath="/Normal"
                tooltip="Delete"/>
          <action
+               class="org.objectstyle.wolips.eomodeler.actions.SubclassEntityAction"
+               icon="icons/eoEntity.gif"
+               id="org.objectstyle.wolips.eomodeler.actions.subclassEntity"
+               label="Subclass Entity"
+               style="push"
+               toolbarPath="/Normal"
+               tooltip="Subclass Entity"/>
+         <action
                class="org.objectstyle.wolips.eomodeler.actions.FlattenRelationshipAction"
                icon="icons/flattenRelationship.gif"
                id="org.objectstyle.wolips.eomodeler.actions.flattenRelationship"

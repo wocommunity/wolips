@@ -55,6 +55,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -115,7 +116,9 @@ public class ComboViewerBinding implements ISelectionChangedListener, PropertyCh
       setSelectedValue(newValue);
     }
     else if (myListObj != null && source == myListObj && myListPropertyName.equals(propertyName)) {
+      ISelection selection = myViewer.getSelection();
       myViewer.setInput(myListObj);
+      myViewer.setSelection(selection);
     }
   }
 
@@ -139,7 +142,7 @@ public class ComboViewerBinding implements ISelectionChangedListener, PropertyCh
   protected void setSelectedValue(Object _newValue) {
     if (_newValue == null || _newValue == myBlankValue || (myBlankValue != null && myBlankValue.equals(_newValue))) {
       if (myBlankValue == null) {
-        //myViewer.set
+        // DO NOTHING
       }
       else {
         myViewer.setSelection(new StructuredSelection(myBlankValue), true);
