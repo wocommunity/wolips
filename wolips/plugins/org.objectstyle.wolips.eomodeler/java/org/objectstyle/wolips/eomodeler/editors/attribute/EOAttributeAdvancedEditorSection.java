@@ -67,6 +67,7 @@ import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.model.EOAttribute;
+import org.objectstyle.wolips.eomodeler.model.EOAttributePath;
 import org.objectstyle.wolips.eomodeler.utils.BindingFactory;
 
 public class EOAttributeAdvancedEditorSection extends AbstractPropertySection {
@@ -122,7 +123,12 @@ public class EOAttributeAdvancedEditorSection extends AbstractPropertySection {
     disposeBindings();
 
     Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
-    myAttribute = (EOAttribute) selectedObject;
+    if (selectedObject instanceof EOAttribute) {
+      myAttribute = (EOAttribute) selectedObject;
+    }
+    else if (selectedObject instanceof EOAttributePath) {
+      myAttribute = ((EOAttributePath) selectedObject).getChildAttribute();
+    }
 
     myBindingContext = BindingFactory.createContext();
     myBindingContext.bind(myReadOnlyButton, new Property(myAttribute, EOAttribute.READ_ONLY), null);

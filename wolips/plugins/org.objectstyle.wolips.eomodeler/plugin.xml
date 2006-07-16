@@ -190,18 +190,21 @@
                id="org.objectstyle.wolips.eomodeler.sections.eoattributeBasic"
                tab="org.objectstyle.wolips.eomodeler.tabs.eoattributeBasic">
             <input type="org.objectstyle.wolips.eomodeler.model.EOAttribute"/>
+            <input type="org.objectstyle.wolips.eomodeler.model.EOAttributePath"/>
          </propertySection>
          <propertySection
                class="org.objectstyle.wolips.eomodeler.editors.attribute.EOAttributeAdvancedEditorSection"
                id="org.objectstyle.wolips.eomodeler.sections.eoattributeAdvanced"
                tab="org.objectstyle.wolips.eomodeler.tabs.eoattributeAdvanced">
             <input type="org.objectstyle.wolips.eomodeler.model.EOAttribute"/>
+            <input type="org.objectstyle.wolips.eomodeler.model.EOAttributePath"/>
          </propertySection>
          <propertySection
                class="org.objectstyle.wolips.eomodeler.editors.userInfo.UserInfoPropertySection"
                id="org.objectstyle.wolips.eomodeler.sections.eoattributeUserInfo"
                tab="org.objectstyle.wolips.eomodeler.tabs.eoattributeUserInfo">
             <input type="org.objectstyle.wolips.eomodeler.model.EOAttribute"/>
+            <input type="org.objectstyle.wolips.eomodeler.model.EOAttributePath"/>
          </propertySection>
          <propertySection
                class="org.objectstyle.wolips.eomodeler.editors.relationship.EORelationshipBasicEditorSection"
@@ -264,13 +267,13 @@
                toolbarPath="/Normal"
                tooltip="Subclass Entity"/>
          <action
-               class="org.objectstyle.wolips.eomodeler.actions.FlattenRelationshipAction"
+               class="org.objectstyle.wolips.eomodeler.actions.FlattenAction"
                icon="icons/flattenRelationship.gif"
-               id="org.objectstyle.wolips.eomodeler.actions.flattenRelationship"
-               label="Flatten Relationship"
+               id="org.objectstyle.wolips.eomodeler.actions.flatten"
+               label="Flatten"
                style="push"
                toolbarPath="/Normal"
-               tooltip="Flatten Relationship"/>
+               tooltip="Flatten"/>
          <action
                class="org.objectstyle.wolips.eomodeler.actions.NewFetchSpecAction"
                icon="icons/eoFetchSpecification.gif"

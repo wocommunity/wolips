@@ -49,16 +49,12 @@
  */
 package org.objectstyle.wolips.eomodeler.model;
 
-public interface IEOAttribute extends IEOEntityRelative, IUserInfoable {
-  public EOEntity getEntity();
-  
-  public String getName();
-  
-  public void setClassProperty(Boolean _classProperty);
+public class EOAttributePath extends IEOAttributePath {
+  public EOAttributePath(EORelationshipPath _parentRelationshipPath, EOAttribute _childAttribute) {
+    super(_parentRelationshipPath, _childAttribute);
+  }
 
-  public void setClassProperty(Boolean _classProperty, boolean _fireEvents);
-
-  public Boolean isClassProperty();
-  
-  public boolean isInherited();
+  public EOAttribute getChildAttribute() {
+    return (EOAttribute) getChildIEOAttribute();
+  }
 }

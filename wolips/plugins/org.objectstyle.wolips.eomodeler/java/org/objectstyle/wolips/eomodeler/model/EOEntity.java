@@ -174,11 +174,27 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     return this;
   }
 
+  public IEOAttribute addBlankIEOAttribute(IEOAttributePath _flattenAttribute) throws DuplicateAttributeNameException, DuplicateRelationshipNameException {
+    if (_flattenAttribute instanceof EORelationshipPath) {
+      return addBlankRelationship((EORelationshipPath) _flattenAttribute);
+    }
+    else if (_flattenAttribute instanceof EOAttributePath) {
+      return addBlankAttribute((EOAttributePath) _flattenAttribute);
+    }
+    else {
+      throw new IllegalArgumentException("Unknown attribute path: " + _flattenAttribute);
+    }
+  }
+
   public EORelationship addBlankRelationship(String _name) throws DuplicateRelationshipNameException {
     return addBlankRelationship(_name, null);
   }
 
-  public EORelationship addBlankRelationship(String _name, String _flattenedDefinition) throws DuplicateRelationshipNameException {
+  public EORelationship addBlankRelationship(EORelationshipPath _flattenRelationship) throws DuplicateRelationshipNameException {
+    return addBlankRelationship(_flattenRelationship.toDefinition().replace('.', '_'), _flattenRelationship);
+  }
+
+  public EORelationship addBlankRelationship(String _name, EORelationshipPath _flattenRelationship) throws DuplicateRelationshipNameException {
     String newRelationshipNameBase = _name;
     String newRelationshipName = newRelationshipNameBase;
     int newRelationshipNum = 0;
@@ -187,8 +203,8 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
       newRelationshipName = newRelationshipNameBase + newRelationshipNum;
     }
     EORelationship relationship;
-    if (_flattenedDefinition != null) {
-      relationship = new EORelationship(this, newRelationshipName, _flattenedDefinition);
+    if (_flattenRelationship != null) {
+      relationship = new EORelationship(this, newRelationshipName, _flattenRelationship.toDefinition());
     }
     else {
       relationship = new EORelationship(this, newRelationshipName);
@@ -198,6 +214,14 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
   }
 
   public EOAttribute addBlankAttribute(String _name) throws DuplicateAttributeNameException {
+    return addBlankAttribute(_name, null);
+  }
+
+  public EOAttribute addBlankAttribute(EOAttributePath _flattenAttribute) throws DuplicateAttributeNameException {
+    return addBlankAttribute(_flattenAttribute.toDefinition().replace('.', '_'), _flattenAttribute);
+  }
+
+  public EOAttribute addBlankAttribute(String _name, EOAttributePath _flattenAttribute) throws DuplicateAttributeNameException {
     String newAttributeNameBase = _name;
     String newAttributeName = newAttributeNameBase;
     int newAttributeNum = 0;
@@ -205,7 +229,13 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
       newAttributeNum++;
       newAttributeName = newAttributeNameBase + newAttributeNum;
     }
-    EOAttribute attribute = new EOAttribute(this, newAttributeName);
+    EOAttribute attribute;
+    if (_flattenAttribute != null) {
+      attribute = new EOAttribute(this, newAttributeName, _flattenAttribute.toDefinition());
+    }
+    else {
+      attribute = new EOAttribute(this, newAttributeName);
+    }
     addAttribute(attribute);
     return attribute;
   }

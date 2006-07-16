@@ -49,66 +49,35 @@
  */
 package org.objectstyle.wolips.eomodeler.model;
 
-import java.util.Map;
+import java.util.Iterator;
+import java.util.List;
 
-import org.objectstyle.wolips.eomodeler.utils.NotificationMap;
-
-public class EORelationshipPath implements IUserInfoable, IEOEntityRelative {
-  private EORelationshipPath myParentRelationshipPath;
-  private EORelationship myChildRelationship;
-
+public class EORelationshipPath extends IEOAttributePath {
   public EORelationshipPath(EORelationshipPath _parentRelationshipPath, EORelationship _childRelationship) {
-    myParentRelationshipPath = _parentRelationshipPath;
-    myChildRelationship = _childRelationship;
-  }
-
-  public EORelationshipPath getParentRelationshipPath() {
-    return myParentRelationshipPath;
+    super(_parentRelationshipPath, _childRelationship);
   }
 
   public EORelationship getChildRelationship() {
-    return myChildRelationship;
+    return (EORelationship) getChildIEOAttribute();
   }
 
-  public NotificationMap getUserInfo() {
-    return myChildRelationship.getUserInfo();
-  }
-
-  public void setUserInfo(Map _userInfo) {
-    myChildRelationship.setUserInfo(_userInfo);
-  }
-
-  public void setUserInfo(Map _userInfo, boolean _fireEvents) {
-    myChildRelationship.setUserInfo(_userInfo, _fireEvents);
-  }
-
-  public EOEntity getEntity() {
-    return myChildRelationship.getEntity();
-  }
-
-  public EOEntity getRootEntity() {
-    EOEntity entity;
-    if (myParentRelationshipPath != null) {
-      entity = myParentRelationshipPath.getRootEntity();
+  public IEOAttributePath[] getChildren() {
+    IEOAttributePath[] children;
+    EOEntity entity = getChildRelationship().getDestination();
+    List relationshipsList = entity.getRelationships();
+    List attributesList = entity.getAttributes();
+    children = new IEOAttributePath[relationshipsList.size() + attributesList.size()];
+    int childNum = 0;
+    Iterator relationshipsIter = relationshipsList.iterator();
+    for (; relationshipsIter.hasNext(); childNum++) {
+      EORelationship childRelationship = (EORelationship) relationshipsIter.next();
+      children[childNum] = new EORelationshipPath(this, childRelationship);
     }
-    else {
-      entity = getEntity();
+    Iterator attributesIter = attributesList.iterator();
+    for (; attributesIter.hasNext(); childNum++) {
+      EOAttribute childAttribute = (EOAttribute) attributesIter.next();
+      children[childNum] = new EOAttributePath(this, childAttribute);
     }
-    return entity;
-  }
-
-  public String toKeyPath() {
-    StringBuffer sb = new StringBuffer();
-    toKeyPath(sb);
-    return sb.toString();
-  }
-
-  protected void toKeyPath(StringBuffer _keyPathBuffer) {
-    if (myParentRelationshipPath != null) {
-      myParentRelationshipPath.toKeyPath(_keyPathBuffer);
-      _keyPathBuffer.append("."); //$NON-NLS-1$
-    }
-    String name = myChildRelationship.getName();
-    _keyPathBuffer.append(name);
+    return children;
   }
 }

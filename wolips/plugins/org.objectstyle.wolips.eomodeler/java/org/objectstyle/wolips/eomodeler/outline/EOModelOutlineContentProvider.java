@@ -49,19 +49,20 @@
  */
 package org.objectstyle.wolips.eomodeler.outline;
 
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.objectstyle.wolips.eomodeler.model.EOAttribute;
+import org.objectstyle.wolips.eomodeler.model.EOAttributePath;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOFetchSpecification;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
 import org.objectstyle.wolips.eomodeler.model.EOModelContainer;
 import org.objectstyle.wolips.eomodeler.model.EORelationship;
 import org.objectstyle.wolips.eomodeler.model.EORelationshipPath;
+import org.objectstyle.wolips.eomodeler.model.IEOAttributePath;
 
 public class EOModelOutlineContentProvider implements ITreeContentProvider {
   private EOModelContainer myModelContainer;
@@ -87,29 +88,7 @@ public class EOModelOutlineContentProvider implements ITreeContentProvider {
     }
     else if (_parentElement instanceof EORelationship) {
       EORelationship relationship = (EORelationship) _parentElement;
-      children = getChildrenRelationshipPaths(new EORelationshipPath(null, relationship));
-    }
-    else if (_parentElement instanceof EORelationshipPath) {
-      EORelationshipPath relationshipPath = (EORelationshipPath) _parentElement;
-      children = getChildrenRelationshipPaths(relationshipPath);
-    }
-    else {
-      children = null;
-    }
-    return children;
-  }
-
-  protected EORelationshipPath[] getChildrenRelationshipPaths(EORelationshipPath _parentRelationshipPath) {
-    EORelationshipPath[] children;
-    EORelationship parentRelationship = _parentRelationshipPath.getChildRelationship();
-    if (parentRelationship != null) {
-      List relationshipsList = parentRelationship.getDestination().getRelationships();
-      children = new EORelationshipPath[relationshipsList.size()];
-      Iterator relationshipsIter = relationshipsList.iterator();
-      for (int childNum = 0; relationshipsIter.hasNext(); childNum++) {
-        EORelationship childRelationship = (EORelationship) relationshipsIter.next();
-        children[childNum] = new EORelationshipPath(_parentRelationshipPath, childRelationship);
-      }
+      children = new EORelationshipPath(null, relationship).getChildren();
     }
     else {
       children = null;
@@ -145,10 +124,10 @@ public class EOModelOutlineContentProvider implements ITreeContentProvider {
     else if (_element instanceof EORelationship) {
       parent = ((EORelationship) _element).getEntity();
     }
-    else if (_element instanceof EORelationshipPath) {
-      EORelationshipPath parentRelationshipPath = ((EORelationshipPath) _element).getParentRelationshipPath();
+    else if (_element instanceof IEOAttributePath) {
+      EORelationshipPath parentRelationshipPath = ((IEOAttributePath) _element).getParentRelationshipPath();
       if (parentRelationshipPath == null) {
-        parent = ((EORelationshipPath) _element).getChildRelationship().getEntity();
+        parent = ((IEOAttributePath) _element).getChildIEOAttribute().getEntity();
       }
       else {
         parent = parentRelationshipPath;
@@ -166,6 +145,9 @@ public class EOModelOutlineContentProvider implements ITreeContentProvider {
       hasChildren = false;
     }
     else if (_element instanceof EOAttribute) {
+      hasChildren = false;
+    }
+    else if (_element instanceof EOAttributePath) {
       hasChildren = false;
     }
     return hasChildren;
