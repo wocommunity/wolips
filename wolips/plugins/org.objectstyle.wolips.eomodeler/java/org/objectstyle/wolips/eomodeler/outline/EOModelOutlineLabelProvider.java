@@ -53,6 +53,7 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Image;
 import org.objectstyle.wolips.eomodeler.Activator;
+import org.objectstyle.wolips.eomodeler.model.EOAttribute;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOFetchSpecification;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
@@ -75,6 +76,9 @@ public class EOModelOutlineLabelProvider implements ILabelProvider {
     }
     else if (_element instanceof EOEntity) {
       image = Activator.getDefault().getImageRegistry().get(Activator.EOENTITY_ICON);
+    }
+    else if (_element instanceof EOAttribute) {
+      image = Activator.getDefault().getImageRegistry().get(Activator.EOATTRIBUTE_ICON);
     }
     else if (_element instanceof EORelationship) {
       image = Activator.getDefault().getImageRegistry().get(Activator.EORELATIONSHIP_ICON);
@@ -100,6 +104,10 @@ public class EOModelOutlineLabelProvider implements ILabelProvider {
     else if (_element instanceof EOEntity) {
       EOEntity entity = (EOEntity) _element;
       text = entity.getName();
+    }
+    else if (_element instanceof EOAttribute) {
+      EOAttribute attribute = (EOAttribute) _element;
+      text = attribute.getName();
     }
     else if (_element instanceof EORelationship) {
       EORelationship relationship = (EORelationship) _element;

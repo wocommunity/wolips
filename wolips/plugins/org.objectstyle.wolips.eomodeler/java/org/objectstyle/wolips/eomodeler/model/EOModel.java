@@ -189,6 +189,17 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable 
     return myEntities;
   }
 
+  public String findUnusedEntityName(String _newName) {
+    boolean unusedNameFound = false;
+    String unusedName = null;
+    for (int dupeNameNum = 1; !unusedNameFound; dupeNameNum++) {
+      unusedName = _newName + dupeNameNum;
+      EOEntity renameEntity = getEntityNamed(unusedName);
+      unusedNameFound = (renameEntity == null);
+    }
+    return unusedName;
+  }
+
   public void _checkForDuplicateEntityName(EOEntity _entity, String _newName, Set _failures) throws DuplicateEntityNameException {
     EOEntity entity = getModelGroup().getEntityNamed(_newName);
     if (entity != null && entity != _entity) {

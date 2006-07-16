@@ -200,6 +200,12 @@ public class EOModelContentOutlinePage extends ContentOutlinePage {
         //getTreeViewer().refresh(entity, true);
         getTreeViewer().refresh(true);
       }
+      else if (EOEntity.ATTRIBUTES.equals(changedPropertyName)) {
+        getTreeViewer().refresh(true);
+      }
+      else if (EOEntity.ATTRIBUTE.equals(changedPropertyName)) {
+        getTreeViewer().refresh(true);
+      }
       else if (EOEntity.RELATIONSHIPS.equals(changedPropertyName)) {
         EOModelContentOutlinePage.this.refreshRelationshipsForEntity(entity);
       }

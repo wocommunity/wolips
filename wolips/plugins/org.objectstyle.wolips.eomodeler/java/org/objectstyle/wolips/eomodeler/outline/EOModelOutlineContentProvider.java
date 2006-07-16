@@ -80,6 +80,7 @@ public class EOModelOutlineContentProvider implements ITreeContentProvider {
     else if (_parentElement instanceof EOEntity) {
       EOEntity entity = (EOEntity) _parentElement;
       List entityChildren = new LinkedList();
+      entityChildren.addAll(entity.getAttributes());
       entityChildren.addAll(entity.getRelationships());
       entityChildren.addAll(entity.getFetchSpecs());
       children = entityChildren.toArray();
@@ -162,6 +163,9 @@ public class EOModelOutlineContentProvider implements ITreeContentProvider {
   public boolean hasChildren(Object _element) {
     boolean hasChildren = true;
     if (_element instanceof EOFetchSpecification) {
+      hasChildren = false;
+    }
+    else if (_element instanceof EOAttribute) {
       hasChildren = false;
     }
     return hasChildren;

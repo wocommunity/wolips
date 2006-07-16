@@ -110,6 +110,36 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
     myDefinition = _definition;
   }
 
+  public EORelationship cloneInto(EOEntity _entity, boolean _fireEvents, Set _failures) throws DuplicateRelationshipNameException, DuplicateAttributeNameException {
+    return cloneInto(_entity, myName, _fireEvents, _failures);
+  }
+
+  public EORelationship cloneInto(EOEntity _entity, String _name, boolean _fireEvents, Set _failures) throws DuplicateRelationshipNameException, DuplicateAttributeNameException {
+    EORelationship relationship = new EORelationship(_entity, _entity.findUnusedRelationshipName(_name));
+    if (myDestination == getEntity()) {
+      relationship.myDestination = _entity;
+    }
+    else {
+      relationship.myDestination = myDestination;
+    }
+    relationship.myDefinition = myDefinition;
+    relationship.myMandatory = myMandatory;
+    relationship.myToMany = myToMany;
+    relationship.myOwnsDestination = myOwnsDestination;
+    relationship.myPropagatesPrimaryKey = myPropagatesPrimaryKey;
+    relationship.myClassProperty = myClassProperty;
+    relationship.myNumberOfToManyFaultsToBatchFetch = myNumberOfToManyFaultsToBatchFetch;
+    relationship.myDeleteRule = myDeleteRule;
+    relationship.myJoinSemantic = myJoinSemantic;
+    Iterator joinsIter = myJoins.iterator();
+    while (joinsIter.hasNext()) {
+      EOJoin join = (EOJoin) joinsIter.next();
+      join.cloneInto(relationship, _fireEvents, _failures);
+    }
+    _entity.addRelationship(relationship, _fireEvents, _failures);
+    return relationship;
+  }
+
   protected void _propertyChanged(String _propertyName, Object _oldValue, Object _newValue) {
     myEntity._relationshipChanged(this);
   }

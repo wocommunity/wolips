@@ -71,6 +71,24 @@ public class EOJoin extends EOModelObject {
     return myRelationship;
   }
 
+  public EOJoin cloneInto(EORelationship _relationship, boolean _fireEvents, Set _failures) throws DuplicateAttributeNameException {
+    EOJoin join = new EOJoin(_relationship);
+    if (mySourceAttribute != null) {
+      join.mySourceAttribute = _relationship.getEntity().getAttributeNamed(mySourceAttribute.getName());
+      if (join.mySourceAttribute == null) {
+        mySourceAttribute.cloneInto(_relationship.getEntity(), _fireEvents, _failures);
+      }
+    }
+    if (myDestinationAttribute != null) {
+      join.myDestinationAttribute = _relationship.getDestination().getAttributeNamed(myDestinationAttribute.getName());
+      if (join.myDestinationAttribute == null && myDestinationAttribute.getEntity() == myRelationship.getEntity()) {
+        myDestinationAttribute.cloneInto(_relationship.getEntity(), _fireEvents, _failures);
+      }
+    }
+    _relationship.addJoin(join, _fireEvents);
+    return join;
+  }
+
   public int hashCode() {
     int hashCode = myRelationship.hashCode();
     if (mySourceAttribute != null) {

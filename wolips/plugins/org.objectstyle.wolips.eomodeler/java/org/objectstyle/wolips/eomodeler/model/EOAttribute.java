@@ -50,6 +50,7 @@
 package org.objectstyle.wolips.eomodeler.model;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -138,6 +139,37 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
     myName = _name;
   }
 
+  public EOAttribute cloneInto(EOEntity _entity, boolean _fireEvents, Set _failures) throws DuplicateAttributeNameException {
+    return cloneInto(_entity, myName, _fireEvents, _failures);
+  }
+
+  public EOAttribute cloneInto(EOEntity _entity, String _name, boolean _fireEvents, Set _failures) throws DuplicateAttributeNameException {
+    EOAttribute attribute = new EOAttribute(_entity, _entity.findUnusedAttributeName(_name));
+    attribute.myPrototype = myPrototype;
+    attribute.myColumnName = myColumnName;
+    attribute.myExternalType = myExternalType;
+    attribute.myValueType = myValueType;
+    attribute.myValueClassName = myValueClassName;
+    attribute.myValueFactoryMethodName = myValueFactoryMethodName;
+    attribute.myFactoryMethodArgumentType = myFactoryMethodArgumentType;
+    attribute.myAdaptorValueConversionMethodName = myAdaptorValueConversionMethodName;
+    attribute.myScale = myScale;
+    attribute.myPrecision = myPrecision;
+    attribute.myWidth = myWidth;
+    attribute.myAllowsNull = myAllowsNull;
+    attribute.myClassProperty = myClassProperty;
+    attribute.myPrimaryKey = myPrimaryKey;
+    attribute.myUsedForLocking = myUsedForLocking;
+    attribute.myClientClassProperty = myClientClassProperty;
+    attribute.myIndexed = myIndexed;
+    attribute.myReadOnly = myReadOnly;
+    attribute.myDefinition = myDefinition;
+    attribute.myReadFormat = myReadFormat;
+    attribute.myWriteFormat = myWriteFormat;
+    _entity.addAttribute(attribute, _fireEvents, _failures);
+    return attribute;
+  }
+
   protected void _propertyChanged(String _propertyName, Object _oldValue, Object _newValue) {
     myEntity._attributeChanged(this);
   }
@@ -194,7 +226,7 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
   public void setPrototype(EOAttribute _prototype) {
     setPrototype(_prototype, true);
   }
-  
+
   public void setPrototype(EOAttribute _prototype, boolean _updateFromPrototype) {
     EOAttribute oldPrototype = myPrototype;
     boolean prototypeNameChanged = true;
@@ -593,7 +625,17 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
     return (Boolean) _prototypeValueIfNull(EOAttribute.CLIENT_CLASS_PROPERTY, myClientClassProperty);
   }
 
-  public List getReferencingRelationships() {
+  public Set getReferenceFailures() {
+    Set referenceFailures = new HashSet();
+    Iterator referencingRelationshipsIter = getReferencingRelationships(true).iterator();
+    while (referencingRelationshipsIter.hasNext()) {
+      EORelationship referencingRelationship = (EORelationship) referencingRelationshipsIter.next();
+      referenceFailures.add(new EOAttributeRelationshipReferenceFailure(this, referencingRelationship));
+    }
+    return referenceFailures;
+  }
+
+  public List getReferencingRelationships(boolean _includeInheritedAttributes) {
     List referencingRelationships = new LinkedList();
     Iterator modelsIter = getEntity().getModel().getModelGroup().getModels().iterator();
     while (modelsIter.hasNext()) {
@@ -610,6 +652,16 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
         }
       }
     }
+
+    if (_includeInheritedAttributes) {
+      Iterator childrenEntitiesIter = myEntity.getChildrenEntities().iterator();
+      while (childrenEntitiesIter.hasNext()) {
+        EOEntity childEntity = (EOEntity) childrenEntitiesIter.next();
+        EOAttribute childAttribute = childEntity.getAttributeNamed(myName);
+        referencingRelationships.addAll(childAttribute.getReferencingRelationships(_includeInheritedAttributes));
+      }
+    }
+
     return referencingRelationships;
   }
 
