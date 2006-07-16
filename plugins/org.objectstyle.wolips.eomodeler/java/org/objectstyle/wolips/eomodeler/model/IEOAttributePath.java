@@ -49,16 +49,72 @@
  */
 package org.objectstyle.wolips.eomodeler.model;
 
-public interface IEOAttribute extends IEOEntityRelative, IUserInfoable {
-  public EOEntity getEntity();
-  
-  public String getName();
-  
-  public void setClassProperty(Boolean _classProperty);
+import java.util.Map;
 
-  public void setClassProperty(Boolean _classProperty, boolean _fireEvents);
+import org.objectstyle.wolips.eomodeler.utils.NotificationMap;
 
-  public Boolean isClassProperty();
-  
-  public boolean isInherited();
+public class IEOAttributePath implements IUserInfoable, IEOEntityRelative {
+  private EORelationshipPath myParentRelationshipPath;
+  private IEOAttribute myChildAttribute;
+
+  public IEOAttributePath(EORelationshipPath _parentRelationshipPath, IEOAttribute _childAttribute) {
+    myParentRelationshipPath = _parentRelationshipPath;
+    myChildAttribute = _childAttribute;
+  }
+
+  public EORelationshipPath getParentRelationshipPath() {
+    return myParentRelationshipPath;
+  }
+
+  public IEOAttribute getChildIEOAttribute() {
+    return myChildAttribute;
+  }
+
+  public NotificationMap getUserInfo() {
+    return myChildAttribute.getUserInfo();
+  }
+
+  public void setUserInfo(Map _userInfo) {
+    myChildAttribute.setUserInfo(_userInfo);
+  }
+
+  public void setUserInfo(Map _userInfo, boolean _fireEvents) {
+    myChildAttribute.setUserInfo(_userInfo, _fireEvents);
+  }
+
+  public EOEntity getEntity() {
+    return myChildAttribute.getEntity();
+  }
+
+  public EOEntity getRootEntity() {
+    EOEntity entity;
+    if (myParentRelationshipPath != null) {
+      entity = myParentRelationshipPath.getRootEntity();
+    }
+    else {
+      entity = getEntity();
+    }
+    return entity;
+  }
+
+  public String toKeyPath() {
+    StringBuffer sb = new StringBuffer();
+    toKeyPath(sb);
+    return sb.toString();
+  }
+
+  public String toDefinition() {
+    String flattenedAttribute = toKeyPath();
+    String flattenedAttributeName = flattenedAttribute.replace('.', '_');
+    return flattenedAttributeName;
+  }
+
+  protected void toKeyPath(StringBuffer _keyPathBuffer) {
+    if (myParentRelationshipPath != null) {
+      myParentRelationshipPath.toKeyPath(_keyPathBuffer);
+      _keyPathBuffer.append("."); //$NON-NLS-1$
+    }
+    String name = myChildAttribute.getName();
+    _keyPathBuffer.append(name);
+  }
 }

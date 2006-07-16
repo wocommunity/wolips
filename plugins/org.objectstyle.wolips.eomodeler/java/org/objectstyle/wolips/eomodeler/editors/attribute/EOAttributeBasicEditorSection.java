@@ -63,6 +63,7 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.layout.FormAttachment;
@@ -81,6 +82,7 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.editors.entity.EOEntityListContentProvider;
 import org.objectstyle.wolips.eomodeler.model.EOAttribute;
+import org.objectstyle.wolips.eomodeler.model.EOAttributePath;
 import org.objectstyle.wolips.eomodeler.model.EODataType;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
 import org.objectstyle.wolips.eomodeler.utils.BindingFactory;
@@ -185,6 +187,7 @@ public class EOAttributeBasicEditorSection extends AbstractPropertySection {
     myDataTypeComboViewer = new ComboViewer(dataTypeCombo);
     myDataTypeComboViewer.setLabelProvider(new EODataTypeLabelProvider());
     myDataTypeComboViewer.setContentProvider(new EODataTypeContentProvider());
+    myDataTypeComboViewer.setSorter(new ViewerSorter());
     myDataTypeComboViewer.setInput(EODataType.DATA_TYPES);
     GridData dataTypeComboLayoutData = new GridData(GridData.FILL_HORIZONTAL);
     dataTypeCombo.setLayoutData(dataTypeComboLayoutData);
@@ -218,7 +221,14 @@ public class EOAttributeBasicEditorSection extends AbstractPropertySection {
 
   public void setInput(IWorkbenchPart _part, ISelection _selection) {
     super.setInput(_part, _selection);
-    EOAttribute attribute = (EOAttribute) ((IStructuredSelection) _selection).getFirstElement();
+    EOAttribute attribute = null;
+    Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
+    if (selectedObject instanceof EOAttribute) {
+      attribute = (EOAttribute) selectedObject;
+    }
+    else if (selectedObject instanceof EOAttributePath) {
+      attribute = ((EOAttributePath) selectedObject).getChildAttribute();
+    }
     setAttribute(attribute);
   }
 

@@ -54,6 +54,7 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Image;
 import org.objectstyle.wolips.eomodeler.Activator;
 import org.objectstyle.wolips.eomodeler.model.EOAttribute;
+import org.objectstyle.wolips.eomodeler.model.EOAttributePath;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOFetchSpecification;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
@@ -86,6 +87,9 @@ public class EOModelOutlineLabelProvider implements ILabelProvider {
     else if (_element instanceof EORelationshipPath) {
       image = Activator.getDefault().getImageRegistry().get(Activator.EORELATIONSHIP_ICON);
     }
+    else if (_element instanceof EOAttributePath) {
+      image = Activator.getDefault().getImageRegistry().get(Activator.EOATTRIBUTE_ICON);
+    }
     else if (_element instanceof EOFetchSpecification) {
       image = Activator.getDefault().getImageRegistry().get(Activator.EOFETCHSPEC_ICON);
     }
@@ -116,6 +120,10 @@ public class EOModelOutlineLabelProvider implements ILabelProvider {
     else if (_element instanceof EORelationshipPath) {
       EORelationshipPath relationshipPath = (EORelationshipPath) _element;
       text = relationshipPath.getChildRelationship().getName();
+    }
+    else if (_element instanceof EOAttributePath) {
+      EOAttributePath attributePath = (EOAttributePath) _element;
+      text = attributePath.getChildAttribute().getName();
     }
     else if (_element instanceof EOFetchSpecification) {
       EOFetchSpecification fetchSpec = (EOFetchSpecification) _element;

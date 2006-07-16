@@ -139,6 +139,11 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
     myName = _name;
   }
 
+  public EOAttribute(EOEntity _entity, String _name, String _definition) {
+    this(_entity, _name);
+    myDefinition = _definition;
+  }
+
   public EOAttribute cloneInto(EOEntity _entity, boolean _fireEvents, Set _failures) throws DuplicateAttributeNameException {
     return cloneInto(_entity, myName, _fireEvents, _failures);
   }

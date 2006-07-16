@@ -100,8 +100,8 @@ import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOFetchSpecification;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
 import org.objectstyle.wolips.eomodeler.model.EORelationship;
-import org.objectstyle.wolips.eomodeler.model.EORelationshipPath;
 import org.objectstyle.wolips.eomodeler.model.EclipseEOModelGroupFactory;
+import org.objectstyle.wolips.eomodeler.model.IEOAttributePath;
 import org.objectstyle.wolips.eomodeler.outline.EOModelContentOutlinePage;
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
 
@@ -408,10 +408,10 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
             getEntityEditor().setSelection(selection);
             //setActivePage(EOModelEditor.EOENTITY_PAGE);
           }
-          else if (selectedObject instanceof EORelationshipPath) {
-            EORelationshipPath selectedRelationshipPath = (EORelationshipPath) selectedObject;
-            setSelectedEntity(selectedRelationshipPath.getChildRelationship().getEntity());
-            getEntityEditor().setSelection(new StructuredSelection(selectedRelationshipPath.getChildRelationship()));
+          else if (selectedObject instanceof IEOAttributePath) {
+            IEOAttributePath selectedAttributePath = (IEOAttributePath) selectedObject;
+            setSelectedEntity(selectedAttributePath.getChildIEOAttribute().getEntity());
+            getEntityEditor().setSelection(new StructuredSelection(selectedAttributePath.getChildIEOAttribute()));
             setActivePage(EOModelEditor.EOENTITY_PAGE);
           }
           if (_updateOutline) {
