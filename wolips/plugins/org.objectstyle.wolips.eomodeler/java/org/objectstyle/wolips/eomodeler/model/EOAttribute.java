@@ -62,6 +62,7 @@ import org.objectstyle.wolips.eomodeler.kvc.IKey;
 import org.objectstyle.wolips.eomodeler.kvc.ResolvedKey;
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.utils.MapUtils;
+import org.objectstyle.wolips.eomodeler.utils.StringUtils;
 
 public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribute {
   public static final String PRIMARY_KEY = "primaryKey"; //$NON-NLS-1$
@@ -739,7 +740,9 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
   }
 
   public void verify(Set _failures) {
-    // TODO
+    if (!StringUtils.isLowercaseFirstLetter(myName)) {
+      _failures.add(new EOModelVerificationFailure("Attribute names should not be capitalized, but " + myEntity.getModel().getName() + "/" + myEntity.getName() + "/" + myName + " is."));
+    }
   }
 
   public String toString() {

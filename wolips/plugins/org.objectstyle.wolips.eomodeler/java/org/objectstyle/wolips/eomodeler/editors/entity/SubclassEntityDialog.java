@@ -66,6 +66,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
 import org.objectstyle.wolips.eomodeler.model.InheritanceType;
@@ -88,7 +89,7 @@ public class SubclassEntityDialog extends Dialog {
 
   protected void configureShell(Shell _newShell) {
     super.configureShell(_newShell);
-    _newShell.setText("Subclass Entity");
+    _newShell.setText(Messages.getString("SubclassEntityDialog.title")); //$NON-NLS-1$
   }
 
   public String getEntityName() {
@@ -104,29 +105,29 @@ public class SubclassEntityDialog extends Dialog {
   }
 
   protected Control createDialogArea(Composite _parent) {
-    Composite dialogArea = new Composite(_parent, SWT.NONE);
+    Composite subclassDialogArea = new Composite(_parent, SWT.NONE);
     GridLayout gridLayout = new GridLayout(2, false);
     gridLayout.marginBottom = 0;
     gridLayout.marginTop = 15;
     gridLayout.marginLeft = 15;
     gridLayout.marginRight = 15;
     gridLayout.horizontalSpacing = 15;
-    dialogArea.setLayout(gridLayout);
+    subclassDialogArea.setLayout(gridLayout);
 
-    Label subclassNameLabel = new Label(dialogArea, SWT.NONE);
-    subclassNameLabel.setText("Entity Name");
-    myEntityNameText = new Text(dialogArea, SWT.BORDER);
+    Label subclassNameLabel = new Label(subclassDialogArea, SWT.NONE);
+    subclassNameLabel.setText(Messages.getString("SubclassEntityDialog.entityNameLabel")); //$NON-NLS-1$
+    myEntityNameText = new Text(subclassDialogArea, SWT.BORDER);
     myEntityNameText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
     myEntityNameText.addModifyListener(new ModifyListener() {
       public void modifyText(ModifyEvent _e) {
         myEntityName = myEntityNameText.getText();
       }
     });
-    myEntityNameText.setText("NewEntityName");
+    myEntityNameText.setText(Messages.getString("SubclassEntityDialog.newEntityNameDefault")); //$NON-NLS-1$
 
-    Label parentEntityLabel = new Label(dialogArea, SWT.NONE);
-    parentEntityLabel.setText("Parent Entity");
-    myParentEntityViewer = new ComboViewer(dialogArea);
+    Label parentEntityLabel = new Label(subclassDialogArea, SWT.NONE);
+    parentEntityLabel.setText(Messages.getString("SubclassEntityDialog.parentEntityLabel")); //$NON-NLS-1$
+    myParentEntityViewer = new ComboViewer(subclassDialogArea);
     myParentEntityViewer.setContentProvider(new EOEntityListContentProvider(false, false));
     myParentEntityViewer.setLabelProvider(new EOEntityLabelProvider());
     myParentEntityViewer.setSorter(new ViewerSorter());
@@ -141,9 +142,9 @@ public class SubclassEntityDialog extends Dialog {
       myParentEntityViewer.setSelection(new StructuredSelection(myParentEntity));
     }
 
-    Label inheritanceTypeLabel = new Label(dialogArea, SWT.NONE);
-    inheritanceTypeLabel.setText("Inheritance Type");
-    myInheritanceTypeViewer = new ComboViewer(dialogArea);
+    Label inheritanceTypeLabel = new Label(subclassDialogArea, SWT.NONE);
+    inheritanceTypeLabel.setText(Messages.getString("SubclassEntityDialog.inheritanceTypeLabel")); //$NON-NLS-1$
+    myInheritanceTypeViewer = new ComboViewer(subclassDialogArea);
     myInheritanceTypeViewer.setLabelProvider(new InheritanceTypeLabelProvider());
     myInheritanceTypeViewer.setContentProvider(new InheritanceTypeContentProvider());
     myInheritanceTypeViewer.setSorter(new ViewerSorter());
@@ -155,6 +156,6 @@ public class SubclassEntityDialog extends Dialog {
       }
     });
     myInheritanceTypeViewer.setSelection(new StructuredSelection(InheritanceType.HORIZONTAL));
-    return dialogArea;
+    return subclassDialogArea;
   }
 }

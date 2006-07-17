@@ -1117,6 +1117,9 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
   }
 
   public void verify(Set _failures) {
+    if (!StringUtils.isUppercaseFirstLetter(myName)) {
+      _failures.add(new EOModelVerificationFailure("Entity names should be capitalized, but " + myModel.getName() + "/" + myName + " is not."));
+    }
     Iterator attributeIter = myAttributes.iterator();
     while (attributeIter.hasNext()) {
       EOAttribute attribute = (EOAttribute) attributeIter.next();

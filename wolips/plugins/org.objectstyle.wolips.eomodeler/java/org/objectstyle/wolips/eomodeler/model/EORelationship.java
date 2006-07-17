@@ -60,6 +60,7 @@ import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.utils.BooleanUtils;
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.utils.MapUtils;
+import org.objectstyle.wolips.eomodeler.utils.StringUtils;
 
 public class EORelationship extends UserInfoableEOModelObject implements IEOAttribute {
   public static final String TO_MANY = "toMany"; //$NON-NLS-1$
@@ -487,6 +488,9 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
   }
 
   public void verify(Set _failures) {
+    if (!StringUtils.isLowercaseFirstLetter(myName)) {
+      _failures.add(new EOModelVerificationFailure("Relationship names should not be capitalized, but " + myEntity.getModel().getName() + "/" + myEntity.getName() + "/" + myName + " is ."));
+    }
     if (!isFlattened() && myDestination == null) {
       _failures.add(new EOModelVerificationFailure(myEntity.getName() + "'s " + myName + " relationship has no destination entity."));
     }
