@@ -50,6 +50,14 @@
 package org.objectstyle.wolips.eomodeler.utils;
 
 public class StringUtils {
+  public static boolean isUppercaseFirstLetter(String _name) {
+    return (_name != null && _name.length() > 0 && Character.isUpperCase(_name.charAt(0)));
+  }
+  
+  public static boolean isLowercaseFirstLetter(String _name) {
+    return (_name != null && _name.length() > 0 && Character.isLowerCase(_name.charAt(0)));
+  }
+  
   public static String toLowercaseFirstLetter(String _name) {
     String name;
     if (_name == null || _name.length() == 0) {

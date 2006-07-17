@@ -50,13 +50,13 @@
 package org.objectstyle.wolips.eomodeler.model;
 
 public class EOQualifierVariable {
-  private String myName;
+  private String myKey;
 
-  public EOQualifierVariable(String _name) {
-    myName = _name;
+  public EOQualifierVariable(String _key) {
+    myKey = _key;
   }
 
-  public String getName() {
-    return myName;
+  public String getKey() {
+    return myKey;
   }
 }

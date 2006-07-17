@@ -102,7 +102,7 @@ public class EOKeyValueQualifier extends EOModelObject implements IEOQualifier {
         myValue = null;
       }
       else if ("EOQualifierVariable".equals(clazz)) { //$NON-NLS-1$
-        myValue = new EOQualifierVariable((String) valueMap.get("name")); //$NON-NLS-1$
+        myValue = new EOQualifierVariable((String) valueMap.get("_key")); //$NON-NLS-1$
       }
       else {
         throw new EOModelException("Unknown class " + clazz);
@@ -127,7 +127,7 @@ public class EOKeyValueQualifier extends EOModelObject implements IEOQualifier {
       EOQualifierVariable var = (EOQualifierVariable) myValue;
       EOModelMap variableMap = new EOModelMap();
       variableMap.setString("class", "EOQualifierVariable", true); //$NON-NLS-1$ //$NON-NLS-2$
-      variableMap.setString("name", var.getName(), false); //$NON-NLS-1$
+      variableMap.setString("_key", var.getKey(), false); //$NON-NLS-1$
       qualifierMap.setMap("value", variableMap, true); //$NON-NLS-1$
     }
     else {
