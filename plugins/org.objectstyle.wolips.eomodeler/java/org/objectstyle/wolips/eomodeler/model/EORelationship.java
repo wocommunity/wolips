@@ -335,7 +335,7 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
     Boolean toMany;
     if (isFlattened()) {
       IEOAttribute targetAttribute = myEntity.resolveKeyPath(getDefinition());
-      if (targetAttribute instanceof EORelationship) {
+      if (targetAttribute instanceof EORelationship && targetAttribute != this) {
         toMany = ((EORelationship) targetAttribute).isToMany();
       }
       else {
