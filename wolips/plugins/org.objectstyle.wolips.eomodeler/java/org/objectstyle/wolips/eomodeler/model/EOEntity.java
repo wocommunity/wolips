@@ -62,8 +62,10 @@ import java.util.Set;
 import org.eclipse.jface.internal.databinding.provisional.observable.list.WritableList;
 import org.objectstyle.cayenne.wocompat.PropertyListSerialization;
 import org.objectstyle.wolips.eomodeler.Messages;
+import org.objectstyle.wolips.eomodeler.utils.BooleanUtils;
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.utils.MapUtils;
+import org.objectstyle.wolips.eomodeler.utils.StringUtils;
 
 public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRelative {
   private static final String FETCH_ALL = "FetchAll"; //$NON-NLS-1$
@@ -141,15 +143,99 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     return entity;
   }
 
-  public EOEntity subclassInto(EOModel _model, boolean _fireEvents, Set _failures) throws DuplicateAttributeNameException, DuplicateRelationshipNameException, DuplicateEntityNameException {
-    EOEntity entity = _cloneJustEntityInto(_model, myName);
-    entity.myParent = this;
-    if (entity.isAbstractEntity() != null) {
-      entity.myAbstractEntity = Boolean.FALSE;
+  public EOEntity subclassInto(String _subclassName, InheritanceType _inheritanceType, EOModel _model, Set _failures) throws DuplicateAttributeNameException, DuplicateRelationshipNameException, DuplicateEntityNameException {
+    EOEntity subclassEntity;
+    if (_inheritanceType == InheritanceType.HORIZONTAL) {
+      subclassEntity = _horizontalSubclassInto(_subclassName, _model, _failures);
     }
-    _cloneAttributesAndRelationshipsInto(entity, _fireEvents, _failures);
-    _model.addEntity(entity, _fireEvents, _failures);
-    return entity;
+    else if (_inheritanceType == InheritanceType.SINGLE_TABLE) {
+      subclassEntity = _singleTableSubclassInto(_subclassName, _model, _failures);
+    }
+    else if (_inheritanceType == InheritanceType.VERTICAL) {
+      subclassEntity = _verticalSubclassInto(_subclassName, _model, _failures);
+    }
+    else {
+      throw new IllegalArgumentException("Unknown inheritance type " + _inheritanceType + ".");
+    }
+    return subclassEntity;
+  }
+
+  protected String _toSubclassName(String _subclassName) {
+    String className = getClassName();
+    if (className != null) {
+      int lastDotIndex = className.lastIndexOf('.');
+      className = className.substring(0, lastDotIndex + 1) + _subclassName;
+    }
+    return className;
+  }
+
+  public EOEntity _horizontalSubclassInto(String _subclassName, EOModel _model, Set _failures) throws DuplicateAttributeNameException, DuplicateRelationshipNameException, DuplicateEntityNameException {
+    EOEntity subclassEntity = _cloneJustEntityInto(_model, _subclassName);
+    subclassEntity.myClassName = _toSubclassName(_subclassName);
+    subclassEntity.myParent = this;
+    subclassEntity.myExternalName = _subclassName;
+    if (subclassEntity.isAbstractEntity() != null) {
+      subclassEntity.myAbstractEntity = Boolean.FALSE;
+    }
+    _cloneAttributesAndRelationshipsInto(subclassEntity, false, _failures);
+    _model.addEntity(subclassEntity, true, _failures);
+    return subclassEntity;
+  }
+
+  public EOEntity _singleTableSubclassInto(String _subclassName, EOModel _model, Set _failures) throws DuplicateAttributeNameException, DuplicateRelationshipNameException, DuplicateEntityNameException {
+    EOEntity subclassEntity = _cloneJustEntityInto(_model, _subclassName);
+    subclassEntity.myClassName = _toSubclassName(_subclassName);
+    subclassEntity.myParent = this;
+    if (subclassEntity.isAbstractEntity() != null) {
+      subclassEntity.myAbstractEntity = Boolean.FALSE;
+    }
+    _cloneAttributesAndRelationshipsInto(subclassEntity, false, _failures);
+    _model.addEntity(subclassEntity, true, _failures);
+    return subclassEntity;
+  }
+
+  public EOEntity _verticalSubclassInto(String _subclassName, EOModel _model, Set _failures) throws DuplicateAttributeNameException, DuplicateRelationshipNameException, DuplicateEntityNameException {
+    EOEntity subclassEntity = _cloneJustEntityInto(_model, _subclassName);
+    subclassEntity.myClassName = _toSubclassName(_subclassName);
+    subclassEntity.myParent = this;
+    subclassEntity.myExternalName = _subclassName;
+    if (subclassEntity.isAbstractEntity() != null) {
+      subclassEntity.myAbstractEntity = Boolean.FALSE;
+    }
+
+    EORelationship superclassRelationship = subclassEntity.addBlankRelationship(subclassEntity.findUnusedRelationshipName(StringUtils.toLowercaseFirstLetter(getName())));
+    superclassRelationship.setToMany(Boolean.FALSE);
+    superclassRelationship.setDestination(this);
+    superclassRelationship.setClassProperty(Boolean.FALSE, false);
+    List primaryKeyAttributes = getPrimaryKeyAttributes();
+    Iterator primaryKeyAttributesIter = primaryKeyAttributes.iterator();
+    while (primaryKeyAttributesIter.hasNext()) {
+      EOAttribute superclassPrimaryKeyAttribute = (EOAttribute) primaryKeyAttributesIter.next();
+      EOAttribute subclassPrimaryKeyAttribute = superclassPrimaryKeyAttribute.cloneInto(subclassEntity, false, _failures);
+      EOJoin superclassJoin = new EOJoin(superclassRelationship);
+      superclassJoin.setSourceAttribute(subclassPrimaryKeyAttribute);
+      superclassJoin.setDestinationAttribute(superclassPrimaryKeyAttribute);
+      superclassRelationship.addJoin(superclassJoin, false);
+    }
+
+    Iterator attributesIter = getAttributes().iterator();
+    while (attributesIter.hasNext()) {
+      EOAttribute inheritedAttribute = (EOAttribute) attributesIter.next();
+      if (!primaryKeyAttributes.contains(inheritedAttribute) && BooleanUtils.isTrue(inheritedAttribute.isClassProperty())) {
+        subclassEntity.addBlankAttribute(new EOAttributePath(new EORelationshipPath(null, superclassRelationship), inheritedAttribute));
+      }
+    }
+
+    Iterator relationshipsIter = getRelationships().iterator();
+    while (relationshipsIter.hasNext()) {
+      EORelationship inheritedRelationship = (EORelationship) relationshipsIter.next();
+      if (BooleanUtils.isTrue(inheritedRelationship.isClassProperty())) {
+        subclassEntity.addBlankRelationship(new EORelationshipPath(new EORelationshipPath(null, superclassRelationship), inheritedRelationship));
+      }
+    }
+
+    _model.addEntity(subclassEntity, true, _failures);
+    return subclassEntity;
   }
 
   protected void _cloneAttributesAndRelationshipsInto(EOEntity _entity, boolean _fireEvents, Set _failures) throws DuplicateAttributeNameException, DuplicateRelationshipNameException {
@@ -514,6 +600,19 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
   public void setAttributes(List _attributes) {
     myAttributes = _attributes;
     firePropertyChange(EOEntity.ATTRIBUTES, null, null);
+  }
+
+  public List getPrimaryKeyAttributes() {
+    List primaryKeyAttributes = new LinkedList();
+    Iterator attributesIter = myAttributes.iterator();
+    while (attributesIter.hasNext()) {
+      EOAttribute attribute = (EOAttribute) attributesIter.next();
+      Boolean primaryKey = attribute.isPrimaryKey();
+      if (primaryKey != null && primaryKey.booleanValue()) {
+        primaryKeyAttributes.add(attribute);
+      }
+    }
+    return primaryKeyAttributes;
   }
 
   public List getAttributes() {
@@ -1035,6 +1134,13 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
       EOFetchSpecification fetchSpec = (EOFetchSpecification) fetchSpecIter.next();
       fetchSpec.verify(_failures);
     }
+
+    //    EOEntity parent = getParent();
+    //    if (parent != null && getRestrictingQualifier() == null) {
+    //      if (ComparisonUtils.equals(getExternalName(), parent.getExternalName()) {
+    //        _failures.add(new EOModelVerificationFailure(myModel.getName() + "/" + getName() + " is a subclass of " + getParent().getName() + " but does not have a restricting qualifier."));
+    //      }
+    //    }
   }
 
   public String toString() {

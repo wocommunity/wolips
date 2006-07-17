@@ -214,6 +214,10 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
     return prototyped;
   }
 
+  public boolean isFlattened() {
+    return getDefinition() != null;
+  }
+
   public boolean isInherited() {
     boolean inherited = false;
     EOEntity parent = myEntity.getParent();
