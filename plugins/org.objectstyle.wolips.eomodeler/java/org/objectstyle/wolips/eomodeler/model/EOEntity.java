@@ -1119,14 +1119,14 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
 
   public void saveToFile(File _entityFile, File _fetchSpecFile) {
     EOModelMap entityMap = toEntityMap();
-    PropertyListSerialization.propertyListToFile(_entityFile, entityMap);
+    PropertyListSerialization.propertyListToFile(_entityFile, entityMap, true);
 
     if (myFetchSpecs.size() == 0) {
       _fetchSpecFile.delete();
     }
     else {
       EOModelMap fetchSpecMap = toFetchSpecsMap();
-      PropertyListSerialization.propertyListToFile(_fetchSpecFile, fetchSpecMap);
+      PropertyListSerialization.propertyListToFile(_fetchSpecFile, fetchSpecMap, true);
     }
   }
 
