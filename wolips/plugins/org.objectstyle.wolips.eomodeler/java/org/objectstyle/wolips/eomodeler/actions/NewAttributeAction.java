@@ -56,7 +56,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.objectstyle.wolips.eomodeler.Messages;
-import org.objectstyle.wolips.eomodeler.model.DuplicateAttributeNameException;
+import org.objectstyle.wolips.eomodeler.model.DuplicateNameException;
 import org.objectstyle.wolips.eomodeler.model.EOAttribute;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.IEOEntityRelative;
@@ -92,7 +92,7 @@ public class NewAttributeAction implements IWorkbenchWindowActionDelegate {
         MessageDialog.openError(myWindow.getShell(), Messages.getString("EOAttribute.noEntitySelectedTitle"), Messages.getString("EOAttribute.noEntitySelectedMessage"));//$NON-NLS-1$ //$NON-NLS-2$
       }
     }
-    catch (DuplicateAttributeNameException e) {
+    catch (DuplicateNameException e) {
       e.printStackTrace();
     }
   }

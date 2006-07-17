@@ -49,18 +49,10 @@
  */
 package org.objectstyle.wolips.eomodeler.editors.relationship;
 
-import java.beans.Expression;
-import java.beans.Statement;
 import java.util.Arrays;
 
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.TableItem;
-import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.model.EOJoin;
-import org.objectstyle.wolips.eomodeler.utils.MiscUtils;
 import org.objectstyle.wolips.eomodeler.utils.TablePropertyCellModifier;
 
 public class EOJoinsCellModifier extends TablePropertyCellModifier {

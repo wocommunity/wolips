@@ -104,6 +104,20 @@ public class SubclassEntityDialog extends Dialog {
     return myInheritanceType;
   }
 
+  protected void _updateSubclassFromUI() {
+    myEntityName = myEntityNameText.getText();
+    myParentEntity = (EOEntity) ((IStructuredSelection) myParentEntityViewer.getSelection()).getFirstElement();
+    myInheritanceType = (InheritanceType) ((IStructuredSelection) myInheritanceTypeViewer.getSelection()).getFirstElement();
+  }
+
+  protected void _setEntityName(String _entityName) {
+    myEntityName = _entityName;
+  }
+
+  protected void _setParentEntity(EOEntity _parentEntity) {
+    myParentEntity = _parentEntity;
+  }
+
   protected Control createDialogArea(Composite _parent) {
     Composite subclassDialogArea = new Composite(_parent, SWT.NONE);
     GridLayout gridLayout = new GridLayout(2, false);
@@ -120,7 +134,7 @@ public class SubclassEntityDialog extends Dialog {
     myEntityNameText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
     myEntityNameText.addModifyListener(new ModifyListener() {
       public void modifyText(ModifyEvent _e) {
-        myEntityName = myEntityNameText.getText();
+        SubclassEntityDialog.this._updateSubclassFromUI();
       }
     });
     myEntityNameText.setText(Messages.getString("SubclassEntityDialog.newEntityNameDefault")); //$NON-NLS-1$
@@ -135,7 +149,7 @@ public class SubclassEntityDialog extends Dialog {
     myParentEntityViewer.getCombo().setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
     myParentEntityViewer.addSelectionChangedListener(new ISelectionChangedListener() {
       public void selectionChanged(SelectionChangedEvent _event) {
-        myParentEntity = (EOEntity) ((IStructuredSelection) _event.getSelection()).getFirstElement();
+        SubclassEntityDialog.this._updateSubclassFromUI();
       }
     });
     if (myParentEntity != null) {
@@ -152,7 +166,7 @@ public class SubclassEntityDialog extends Dialog {
     myInheritanceTypeViewer.getCombo().setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
     myInheritanceTypeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
       public void selectionChanged(SelectionChangedEvent _event) {
-        myInheritanceType = (InheritanceType) ((IStructuredSelection) _event.getSelection()).getFirstElement();
+        SubclassEntityDialog.this._updateSubclassFromUI();
       }
     });
     myInheritanceTypeViewer.setSelection(new StructuredSelection(InheritanceType.HORIZONTAL));

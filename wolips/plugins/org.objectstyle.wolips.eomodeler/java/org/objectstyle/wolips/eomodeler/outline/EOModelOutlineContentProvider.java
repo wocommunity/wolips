@@ -90,6 +90,10 @@ public class EOModelOutlineContentProvider implements ITreeContentProvider {
       EORelationship relationship = (EORelationship) _parentElement;
       children = new EORelationshipPath(null, relationship).getChildren();
     }
+    else if (_parentElement instanceof EORelationshipPath) {
+      EORelationshipPath relationshipPath = (EORelationshipPath) _parentElement;
+      children = relationshipPath.getChildren();
+    }
     else {
       children = null;
     }
