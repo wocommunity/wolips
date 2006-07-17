@@ -117,7 +117,7 @@ public class TablePropertyViewerSorter extends ViewerSorter {
     else if (o2 == null) {
       comparison = 1;
     }
-    else if (o1 instanceof Boolean) {
+    else if (o1 instanceof Boolean && o2 instanceof Boolean) {
       boolean left = ((Boolean) _o1).booleanValue();
       boolean right = ((Boolean) _o2).booleanValue();
       if (left == right) {
@@ -130,10 +130,10 @@ public class TablePropertyViewerSorter extends ViewerSorter {
         comparison = -1;
       }
     }
-    else if (o1 instanceof Integer) {
+    else if (o1 instanceof Integer && o2 instanceof Integer) {
       comparison = ((Integer) o1).compareTo((Integer) o2);
     }
-    else if (o1 instanceof String) {
+    else if (o1 instanceof String && o2 instanceof String) {
       comparison = collator.compare(o1, o2);
     }
 
