@@ -56,8 +56,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.objectstyle.wolips.eomodeler.Messages;
-import org.objectstyle.wolips.eomodeler.model.DuplicateAttributeNameException;
-import org.objectstyle.wolips.eomodeler.model.DuplicateRelationshipNameException;
+import org.objectstyle.wolips.eomodeler.model.DuplicateNameException;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.IEOAttribute;
 import org.objectstyle.wolips.eomodeler.model.IEOAttributePath;
@@ -94,10 +93,7 @@ public class FlattenAction implements IWorkbenchWindowActionDelegate {
         MessageDialog.openError(myWindow.getShell(), Messages.getString("EORelationship.noRelationshipOrAttributeSelectedTitle"), Messages.getString("EORelationship.noRelationshipOrAttributeSelectedMessage"));//$NON-NLS-1$ //$NON-NLS-2$
       }
     }
-    catch (DuplicateRelationshipNameException e) {
-      e.printStackTrace();
-    }
-    catch (DuplicateAttributeNameException e) {
+    catch (DuplicateNameException e) {
       e.printStackTrace();
     }
   }

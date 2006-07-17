@@ -71,7 +71,7 @@ public class EOJoin extends EOModelObject {
     return myRelationship;
   }
 
-  public EOJoin cloneInto(EORelationship _relationship, boolean _fireEvents, Set _failures) throws DuplicateAttributeNameException {
+  public EOJoin cloneInto(EORelationship _relationship, boolean _fireEvents, Set _failures) throws DuplicateNameException {
     EOJoin join = new EOJoin(_relationship);
     if (mySourceAttribute != null) {
       join.mySourceAttribute = _relationship.getEntity().getAttributeNamed(mySourceAttribute.getName());

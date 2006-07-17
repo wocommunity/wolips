@@ -56,7 +56,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.objectstyle.wolips.eomodeler.Messages;
-import org.objectstyle.wolips.eomodeler.model.DuplicateRelationshipNameException;
+import org.objectstyle.wolips.eomodeler.model.DuplicateNameException;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EORelationship;
 import org.objectstyle.wolips.eomodeler.model.IEOEntityRelative;
@@ -92,8 +92,7 @@ public class NewRelationshipAction implements IWorkbenchWindowActionDelegate {
         MessageDialog.openError(myWindow.getShell(), Messages.getString("EORelationship.noEntitySelectedTitle"), Messages.getString("EORelationship.noEntitySelectedMessage"));//$NON-NLS-1$ //$NON-NLS-2$
       }
     }
-    catch (DuplicateRelationshipNameException e) {
-      // TODO Auto-generated catch block
+    catch (DuplicateNameException e) {
       e.printStackTrace();
     }
   }

@@ -54,6 +54,10 @@ public interface IEOAttribute extends IEOEntityRelative, IUserInfoable {
   
   public String getName();
   
+  public void setName(String _name) throws DuplicateNameException;
+  
+  public void setName(String _name, boolean _fireEvents) throws DuplicateNameException;
+  
   public void setClassProperty(Boolean _classProperty);
 
   public void setClassProperty(Boolean _classProperty, boolean _fireEvents);

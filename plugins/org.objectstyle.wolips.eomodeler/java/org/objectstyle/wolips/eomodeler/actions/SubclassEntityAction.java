@@ -60,9 +60,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.editors.entity.SubclassEntityDialog;
-import org.objectstyle.wolips.eomodeler.model.DuplicateAttributeNameException;
-import org.objectstyle.wolips.eomodeler.model.DuplicateEntityNameException;
-import org.objectstyle.wolips.eomodeler.model.DuplicateRelationshipNameException;
+import org.objectstyle.wolips.eomodeler.model.DuplicateNameException;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
 import org.objectstyle.wolips.eomodeler.model.IEOEntityRelative;
@@ -110,13 +108,7 @@ public class SubclassEntityAction implements IWorkbenchWindowActionDelegate {
             HashSet failures = new HashSet();
             EOEntity newEntity = parentEntity.subclassInto(entityName, inheritanceType, myModel, failures);
           }
-          catch (DuplicateRelationshipNameException e) {
-            e.printStackTrace();
-          }
-          catch (DuplicateEntityNameException e) {
-            e.printStackTrace();
-          }
-          catch (DuplicateAttributeNameException e) {
+          catch (DuplicateNameException e) {
             e.printStackTrace();
           }
         }

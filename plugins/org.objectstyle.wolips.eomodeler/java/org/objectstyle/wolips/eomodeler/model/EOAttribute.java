@@ -145,11 +145,11 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
     myDefinition = _definition;
   }
 
-  public EOAttribute cloneInto(EOEntity _entity, boolean _fireEvents, Set _failures) throws DuplicateAttributeNameException {
+  public EOAttribute cloneInto(EOEntity _entity, boolean _fireEvents, Set _failures) throws DuplicateNameException {
     return cloneInto(_entity, myName, _fireEvents, _failures);
   }
 
-  public EOAttribute cloneInto(EOEntity _entity, String _name, boolean _fireEvents, Set _failures) throws DuplicateAttributeNameException {
+  public EOAttribute cloneInto(EOEntity _entity, String _name, boolean _fireEvents, Set _failures) throws DuplicateNameException {
     EOAttribute attribute = new EOAttribute(_entity, _entity.findUnusedAttributeName(_name));
     attribute.myPrototype = myPrototype;
     attribute.myColumnName = myColumnName;
@@ -295,11 +295,11 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
     return value;
   }
 
-  public void setName(String _name) throws DuplicateAttributeNameException {
+  public void setName(String _name) throws DuplicateNameException {
     setName(_name, true);
   }
 
-  public void setName(String _name, boolean _fireEvents) throws DuplicateAttributeNameException {
+  public void setName(String _name, boolean _fireEvents) throws DuplicateNameException {
     if (_name == null) {
       throw new NullPointerException(Messages.getString("EOAttribute.noBlankAttributeNames")); //$NON-NLS-1$
     }

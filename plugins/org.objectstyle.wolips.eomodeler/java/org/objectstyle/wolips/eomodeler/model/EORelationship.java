@@ -111,11 +111,11 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
     myDefinition = _definition;
   }
 
-  public EORelationship cloneInto(EOEntity _entity, boolean _fireEvents, Set _failures) throws DuplicateRelationshipNameException, DuplicateAttributeNameException {
+  public EORelationship cloneInto(EOEntity _entity, boolean _fireEvents, Set _failures) throws DuplicateNameException {
     return cloneInto(_entity, myName, _fireEvents, _failures);
   }
 
-  public EORelationship cloneInto(EOEntity _entity, String _name, boolean _fireEvents, Set _failures) throws DuplicateRelationshipNameException, DuplicateAttributeNameException {
+  public EORelationship cloneInto(EOEntity _entity, String _name, boolean _fireEvents, Set _failures) throws DuplicateNameException {
     EORelationship relationship = new EORelationship(_entity, _entity.findUnusedRelationshipName(_name));
     if (myDestination == getEntity()) {
       relationship.myDestination = _entity;
@@ -216,11 +216,11 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
     return myEntity;
   }
 
-  public void setName(String _name) throws DuplicateRelationshipNameException {
+  public void setName(String _name) throws DuplicateNameException {
     setName(_name, true);
   }
 
-  public void setName(String _name, boolean _fireEvents) throws DuplicateRelationshipNameException {
+  public void setName(String _name, boolean _fireEvents) throws DuplicateNameException {
     if (_name == null) {
       throw new NullPointerException(Messages.getString("EORelationship.noBlankRelationshipNames")); //$NON-NLS-1$
     }
@@ -332,14 +332,29 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
   }
 
   public Boolean isToMany() {
-    return myToMany;
+    Boolean toMany;
+    if (isFlattened()) {
+      IEOAttribute targetAttribute = myEntity.resolveKeyPath(getDefinition());
+      if (targetAttribute instanceof EORelationship) {
+        toMany = ((EORelationship)targetAttribute).isToMany();
+      }
+      else {
+        toMany = null;
+      }
+    }
+    else {
+      toMany = myToMany;
+    }
+    return toMany;
   }
 
   public void setToMany(Boolean _toMany) {
-    Boolean oldToMany = myToMany;
-    myToMany = _toMany;
-    firePropertyChange(EORelationship.TO_MANY, oldToMany, myToMany);
-    firePropertyChange(EORelationship.TO_ONE, BooleanUtils.negate(oldToMany), BooleanUtils.negate(myToMany));
+    if (!isFlattened()) {
+      Boolean oldToMany = myToMany;
+      myToMany = _toMany;
+      firePropertyChange(EORelationship.TO_MANY, oldToMany, myToMany);
+      firePropertyChange(EORelationship.TO_ONE, BooleanUtils.negate(oldToMany), BooleanUtils.negate(myToMany));
+    }
   }
 
   public Boolean getToOne() {
