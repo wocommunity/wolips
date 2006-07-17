@@ -64,6 +64,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.FormAttachment;
@@ -81,6 +82,7 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.editors.entity.EOEntityLabelProvider;
 import org.objectstyle.wolips.eomodeler.editors.entity.EOEntityListContentProvider;
+import org.objectstyle.wolips.eomodeler.model.EOAttribute;
 import org.objectstyle.wolips.eomodeler.model.EODeleteRule;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOJoin;
@@ -100,6 +102,8 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
   private EORelationship myRelationship;
 
   private Text myNameText;
+  private CLabel myDefinitionLabel;
+  private Text myDefinitionText;
   private Button myToOneButton;
   private Button myToManyButton;
   private Button myOptionalButton;
@@ -148,6 +152,11 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
     myNameText = new Text(topForm, SWT.BORDER);
     GridData nameFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
     myNameText.setLayoutData(nameFieldLayoutData);
+
+    myDefinitionLabel = getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship." + EORelationship.DEFINITION), SWT.NONE); //$NON-NLS-1$
+    myDefinitionText = new Text(topForm, SWT.BORDER);
+    GridData definitionFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+    myDefinitionText.setLayoutData(definitionFieldLayoutData);
 
     getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship.cardinality"), SWT.NONE); //$NON-NLS-1$
     Composite cardinalityComposite = getWidgetFactory().createPlainComposite(topForm, SWT.NONE);
@@ -289,6 +298,7 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
 
       myBindingContext = BindingFactory.createContext();
       myBindingContext.bind(myNameText, new Property(myRelationship, EORelationship.NAME), null);
+      myBindingContext.bind(myDefinitionText, new Property(myRelationship, EORelationship.DEFINITION), null);
       myBindingContext.bind(myToOneButton, new Property(myRelationship, EORelationship.TO_ONE), null);
       myBindingContext.bind(myToManyButton, new Property(myRelationship, EORelationship.TO_MANY), null);
       myBindingContext.bind(myOptionalButton, new Property(myRelationship, EORelationship.OPTIONAL), null);
@@ -297,7 +307,7 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
       myDeleteRuleBinding = new ComboViewerBinding(myDeleteRuleComboViewer, myRelationship, EORelationship.DELETE_RULE, null, null, null);
       myJoinSemanticBinding = new ComboViewerBinding(myJoinSemanticComboViewer, myRelationship, EORelationship.JOIN_SEMANTIC, myRelationship.getEntity().getModel().getModelGroup(), EOModelGroup.MODELS, null);
       myEntityBinding = new ComboViewerBinding(myEntityComboViewer, myRelationship, EORelationship.DESTINATION, myRelationship.getEntity().getModel(), EOModel.ENTITIES, null);
-
+      
       boolean enabled = !myRelationship.isFlattened();
       myModelComboViewer.getCombo().setEnabled(enabled);
       myEntityComboViewer.getCombo().setEnabled(enabled);
@@ -305,6 +315,10 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
       myJoinsTableViewer.getTable().setEnabled(enabled);
       myAddButton.setEnabled(enabled);
       myRemoveButton.setEnabled(enabled);
+      myDefinitionText.setEnabled(false);
+      //boolean flattened = myRelationship.isFlattened();
+      //myDefinitionLabel.setVisible(flattened);
+      //myDefinitionText.setVisible(flattened);
 
       updateModelAndEntityCombosEnabled();
       updateJoins();

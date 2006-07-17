@@ -133,12 +133,15 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
         EORelationship relationship = getRelationshipNamed(_keyPath.substring(0, dotIndex));
         if (relationship != null) {
           if (_visitedRelationships.contains(relationship)) {
-            throw new IllegalStateException("The definition '" + _keyPath + "' results in a loop in " + getName() + ".");
+            System.out.println("EOEntity.resolveKeyPath: you have an invalid flattened relationship '" + _keyPath + "' which creates a loop.");
+            //throw new IllegalStateException("The definition '" + _keyPath + "' results in a loop in " + getName() + ".");
           }
-          _visitedRelationships.add(relationship);
-          EOEntity destination = relationship.getDestination();
-          if (destination != null) {
-            targetAttribute = destination.resolveKeyPath(_keyPath.substring(dotIndex + 1));
+          else {
+            _visitedRelationships.add(relationship);
+            EOEntity destination = relationship.getDestination();
+            if (destination != null) {
+              targetAttribute = destination.resolveKeyPath(_keyPath.substring(dotIndex + 1), _visitedRelationships);
+            }
           }
         }
       }
