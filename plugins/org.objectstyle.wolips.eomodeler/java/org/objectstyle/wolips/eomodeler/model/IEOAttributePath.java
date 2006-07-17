@@ -103,12 +103,6 @@ public class IEOAttributePath implements IUserInfoable, IEOEntityRelative {
     return sb.toString();
   }
 
-  public String toDefinition() {
-    String flattenedAttribute = toKeyPath();
-    String flattenedAttributeName = flattenedAttribute.replace('.', '_');
-    return flattenedAttributeName;
-  }
-
   protected void toKeyPath(StringBuffer _keyPathBuffer) {
     if (myParentRelationshipPath != null) {
       myParentRelationshipPath.toKeyPath(_keyPathBuffer);

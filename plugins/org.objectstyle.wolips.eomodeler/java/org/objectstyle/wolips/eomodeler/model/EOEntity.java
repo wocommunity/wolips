@@ -118,6 +118,11 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
   }
 
   public IEOAttribute resolveKeyPath(String _keyPath) {
+    IEOAttribute targetAttribute = resolveKeyPath(_keyPath, new HashSet());
+    return targetAttribute;
+  }
+
+  public IEOAttribute resolveKeyPath(String _keyPath, Set _visitedRelationships) {
     IEOAttribute targetAttribute = null;
     if (_keyPath != null && _keyPath.length() > 0) {
       int dotIndex = _keyPath.indexOf('.');
@@ -126,9 +131,15 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
       }
       else {
         EORelationship relationship = getRelationshipNamed(_keyPath.substring(0, dotIndex));
-        EOEntity destination = relationship.getDestination();
-        if (destination != null) {
-          targetAttribute = destination.resolveKeyPath(_keyPath.substring(dotIndex + 1));
+        if (relationship != null) {
+          if (_visitedRelationships.contains(relationship)) {
+            throw new IllegalStateException("The definition '" + _keyPath + "' results in a loop in " + getName() + ".");
+          }
+          _visitedRelationships.add(relationship);
+          EOEntity destination = relationship.getDestination();
+          if (destination != null) {
+            targetAttribute = destination.resolveKeyPath(_keyPath.substring(dotIndex + 1));
+          }
         }
       }
     }
@@ -295,7 +306,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
   }
 
   public EORelationship addBlankRelationship(EORelationshipPath _flattenRelationship) throws DuplicateNameException {
-    return addBlankRelationship(_flattenRelationship.toDefinition().replace('.', '_'), _flattenRelationship);
+    return addBlankRelationship(_flattenRelationship.toKeyPath().replace('.', '_'), _flattenRelationship);
   }
 
   public EORelationship addBlankRelationship(String _name, EORelationshipPath _flattenRelationship) throws DuplicateNameException {
@@ -308,7 +319,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     }
     EORelationship relationship;
     if (_flattenRelationship != null) {
-      relationship = new EORelationship(this, newRelationshipName, _flattenRelationship.toDefinition());
+      relationship = new EORelationship(this, newRelationshipName, _flattenRelationship.toKeyPath());
     }
     else {
       relationship = new EORelationship(this, newRelationshipName);
@@ -323,7 +334,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
   }
 
   public EOAttribute addBlankAttribute(EOAttributePath _flattenAttribute) throws DuplicateNameException {
-    return addBlankAttribute(_flattenAttribute.toDefinition().replace('.', '_'), _flattenAttribute);
+    return addBlankAttribute(_flattenAttribute.toKeyPath().replace('.', '_'), _flattenAttribute);
   }
 
   public EOAttribute addBlankAttribute(String _name, EOAttributePath _flattenAttribute) throws DuplicateNameException {
@@ -336,7 +347,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     }
     EOAttribute attribute;
     if (_flattenAttribute != null) {
-      attribute = new EOAttribute(this, newAttributeName, _flattenAttribute.toDefinition());
+      attribute = new EOAttribute(this, newAttributeName, _flattenAttribute.toKeyPath());
     }
     else {
       attribute = new EOAttribute(this, newAttributeName);
@@ -676,7 +687,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     }
     return attribute;
   }
-  
+
   public void _checkForDuplicateAttributeName(EOAttribute _attribute, String _newName, Set _failures) throws DuplicateNameException {
     IEOAttribute existingAttribute = getAttributeOrRelationshipNamed(_newName);
     if (existingAttribute != null && existingAttribute != _attribute) {
