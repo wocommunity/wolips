@@ -105,9 +105,15 @@ public class SubclassEntityDialog extends Dialog {
   }
 
   protected void _updateSubclassFromUI() {
-    myEntityName = myEntityNameText.getText();
-    myParentEntity = (EOEntity) ((IStructuredSelection) myParentEntityViewer.getSelection()).getFirstElement();
-    myInheritanceType = (InheritanceType) ((IStructuredSelection) myInheritanceTypeViewer.getSelection()).getFirstElement();
+    if (myEntityNameText != null) {
+      myEntityName = myEntityNameText.getText();
+    }
+    if (myParentEntityViewer != null) {
+      myParentEntity = (EOEntity) ((IStructuredSelection) myParentEntityViewer.getSelection()).getFirstElement();
+    }
+    if (myInheritanceTypeViewer != null) {
+      myInheritanceType = (InheritanceType) ((IStructuredSelection) myInheritanceTypeViewer.getSelection()).getFirstElement();
+    }
   }
 
   protected void _setEntityName(String _entityName) {

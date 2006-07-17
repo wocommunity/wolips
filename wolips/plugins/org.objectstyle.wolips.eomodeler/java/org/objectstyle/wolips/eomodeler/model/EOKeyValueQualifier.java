@@ -105,7 +105,8 @@ public class EOKeyValueQualifier extends EOModelObject implements IEOQualifier {
         myValue = new EOQualifierVariable((String) valueMap.get("_key")); //$NON-NLS-1$
       }
       else {
-        throw new EOModelException("Unknown class " + clazz);
+        System.out.println("EOKeyValueQualifier.loadFromMap: WARNING: Tell Mike that your fetch spec contains: " + valueMap);
+        myValue = valueMap;
       }
     }
     else {
