@@ -506,8 +506,15 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
     if (!StringUtils.isLowercaseFirstLetter(myName)) {
       _failures.add(new EOModelVerificationFailure("Relationship names should not be capitalized, but " + myEntity.getModel().getName() + "/" + myEntity.getName() + "/" + myName + " is ."));
     }
-    if (!isFlattened() && myDestination == null) {
-      _failures.add(new EOModelVerificationFailure(myEntity.getName() + "'s " + myName + " relationship has no destination entity."));
+    if (isFlattened()) {
+      if (myEntity.resolveKeyPath(getDefinition()) == null) {
+        _failures.add(new EOModelVerificationFailure(myEntity.getName() + "'s " + myName + " flattened relationship either creates a loop or points to a non-existent target."));
+      }
+    }
+    else {
+      if (myDestination == null) {
+        _failures.add(new EOModelVerificationFailure(myEntity.getName() + "'s " + myName + " relationship has no destination entity."));
+      }
     }
     Iterator joinsIter = myJoins.iterator();
     while (joinsIter.hasNext()) {
