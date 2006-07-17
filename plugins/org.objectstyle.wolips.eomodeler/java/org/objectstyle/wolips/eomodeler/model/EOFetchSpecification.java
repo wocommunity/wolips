@@ -134,19 +134,40 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
     return myName;
   }
 
-  public void addSortOrdering(EOSortOrdering _sortOrdering) {
+  public void addSortOrdering(EOSortOrdering _sortOrdering, boolean _fireEvents) {
     mySortOrderings.add(_sortOrdering);
-    firePropertyChange(EOFetchSpecification.SORT_ORDERINGS, null, null);
+    if (_fireEvents) {
+      List oldSortOrderings = mySortOrderings;
+      mySortOrderings = new LinkedList(mySortOrderings);
+      mySortOrderings.add(_sortOrdering);
+      firePropertyChange(EOFetchSpecification.SORT_ORDERINGS, oldSortOrderings, mySortOrderings);
+    }
+    else {
+      mySortOrderings.add(_sortOrdering);
+    }
   }
 
-  public void removeSortOrdering(EOSortOrdering _sortOrdering) {
+  public void removeSortOrdering(EOSortOrdering _sortOrdering, boolean _fireEvents) {
     mySortOrderings.remove(_sortOrdering);
-    firePropertyChange(EOFetchSpecification.SORT_ORDERINGS, null, null);
+    if (_fireEvents) {
+      List oldSortOrderings = mySortOrderings;
+      mySortOrderings = new LinkedList(mySortOrderings);
+      mySortOrderings.remove(_sortOrdering);
+      firePropertyChange(EOFetchSpecification.SORT_ORDERINGS, oldSortOrderings, mySortOrderings);
+    }
+    else {
+      mySortOrderings.remove(_sortOrdering);
+    }
   }
 
-  public void setSortOrderings(List _sortOrderings) {
-    mySortOrderings = _sortOrderings;
-    firePropertyChange(EOFetchSpecification.SORT_ORDERINGS, null, null);
+  public void setSortOrderings(List _sortOrderings, boolean _fireEvents) {
+    if (_fireEvents) {
+      List oldSortOrderings = mySortOrderings;
+      firePropertyChange(EOFetchSpecification.SORT_ORDERINGS, oldSortOrderings, mySortOrderings);
+    }
+    else {
+      mySortOrderings = _sortOrderings;
+    }
   }
 
   public void clearSortOrderings() {
@@ -313,7 +334,7 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
         EOModelMap sortOrderingMap = new EOModelMap((Map) sortOrderingsIter.next());
         EOSortOrdering sortOrdering = new EOSortOrdering();
         sortOrdering.loadFromMap(sortOrderingMap);
-        addSortOrdering(sortOrdering);
+        addSortOrdering(sortOrdering, false);
       }
     }
   }
