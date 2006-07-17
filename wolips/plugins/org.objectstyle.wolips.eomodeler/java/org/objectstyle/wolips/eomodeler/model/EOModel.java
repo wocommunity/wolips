@@ -359,7 +359,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable 
     }
     File indexFile = new File(modelFolder, "index.eomodeld"); //$NON-NLS-1$
     EOModelMap modelMap = toMap();
-    PropertyListSerialization.propertyListToFile(indexFile, modelMap);
+    PropertyListSerialization.propertyListToFile(indexFile, modelMap, true);
 
     if (myDeletedEntityNamesInObjectStore != null) {
       Iterator deletedEntityNameIter = myDeletedEntityNamesInObjectStore.iterator();
