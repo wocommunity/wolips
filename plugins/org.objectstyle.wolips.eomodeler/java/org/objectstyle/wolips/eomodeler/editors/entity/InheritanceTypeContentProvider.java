@@ -47,17 +47,24 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eomodeler.utils;
+package org.objectstyle.wolips.eomodeler.editors.entity;
 
-import org.eclipse.core.resources.IResource;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.Viewer;
+import org.objectstyle.wolips.eomodeler.model.InheritanceType;
 
-public class MiscUtils {
-  public static String getFileNameWithoutExtension(IResource _resource) {
-    String fileName = _resource.getName();
-    String fileExtension = _resource.getFileExtension();
-    if (fileExtension != null) {
-      fileName = fileName.substring(0, fileName.indexOf('.'));
-    }
-    return fileName;
+public class InheritanceTypeContentProvider implements IStructuredContentProvider {
+
+  public Object[] getElements(Object _inputElement) {
+    return (InheritanceType[]) _inputElement;
   }
+
+  public void dispose() {
+    // DO NOTHING
+  }
+
+  public void inputChanged(Viewer _viewer, Object _oldInput, Object _newInput) {
+    // DO NOTHING
+  }
+
 }

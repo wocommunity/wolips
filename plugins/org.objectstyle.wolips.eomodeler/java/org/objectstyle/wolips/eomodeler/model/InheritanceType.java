@@ -47,17 +47,39 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eomodeler.utils;
+package org.objectstyle.wolips.eomodeler.model;
 
-import org.eclipse.core.resources.IResource;
+import org.objectstyle.wolips.eomodeler.Messages;
 
-public class MiscUtils {
-  public static String getFileNameWithoutExtension(IResource _resource) {
-    String fileName = _resource.getName();
-    String fileExtension = _resource.getFileExtension();
-    if (fileExtension != null) {
-      fileName = fileName.substring(0, fileName.indexOf('.'));
+public class InheritanceType {
+  public static final InheritanceType VERTICAL = new InheritanceType("Vertical", Messages.getString("InheritanceType.vertical")); //$NON-NLS-1$ //$NON-NLS-2$
+  public static final InheritanceType HORIZONTAL = new InheritanceType("Horizontal", Messages.getString("InheritanceType.horizontal")); //$NON-NLS-1$ //$NON-NLS-2$
+  public static final InheritanceType SINGLE_TABLE = new InheritanceType("SingleTable", Messages.getString("InheritanceType.singleTable")); //$NON-NLS-1$ //$NON-NLS-2$
+  public static final InheritanceType[] INHERITANCE_TYPES = { InheritanceType.VERTICAL, InheritanceType.HORIZONTAL, InheritanceType.SINGLE_TABLE };
+  private String myID;
+  private String myName;
+
+  public InheritanceType(String _id, String _name) {
+    myID = _id;
+    myName = _name;
+  }
+
+  public String getID() {
+    return myID;
+  }
+
+  public String getName() {
+    return myName;
+  }
+
+  public static InheritanceType getInheritanceTypeByID(String _id) {
+    InheritanceType matchingInheritanceType = null;
+    for (int inheritanceTypeNum = 0; inheritanceTypeNum < InheritanceType.INHERITANCE_TYPES.length; inheritanceTypeNum++) {
+      InheritanceType inheritanceType = InheritanceType.INHERITANCE_TYPES[inheritanceTypeNum];
+      if (inheritanceType.myID.equals(_id)) {
+        matchingInheritanceType = inheritanceType;
+      }
     }
-    return fileName;
+    return matchingInheritanceType;
   }
 }

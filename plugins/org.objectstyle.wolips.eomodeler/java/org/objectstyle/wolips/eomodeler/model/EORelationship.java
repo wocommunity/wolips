@@ -57,9 +57,9 @@ import java.util.Set;
 
 import org.eclipse.jface.internal.databinding.provisional.observable.list.WritableList;
 import org.objectstyle.wolips.eomodeler.Messages;
+import org.objectstyle.wolips.eomodeler.utils.BooleanUtils;
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.utils.MapUtils;
-import org.objectstyle.wolips.eomodeler.utils.MiscUtils;
 
 public class EORelationship extends UserInfoableEOModelObject implements IEOAttribute {
   public static final String TO_MANY = "toMany"; //$NON-NLS-1$
@@ -283,7 +283,7 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
     Boolean oldMandatory = myMandatory;
     myMandatory = _mandatory;
     firePropertyChange(EORelationship.MANDATORY, oldMandatory, myMandatory);
-    firePropertyChange(EORelationship.OPTIONAL, MiscUtils.negate(oldMandatory), MiscUtils.negate(myMandatory));
+    firePropertyChange(EORelationship.OPTIONAL, BooleanUtils.negate(oldMandatory), BooleanUtils.negate(myMandatory));
   }
 
   public Boolean getOptional() {
@@ -291,11 +291,11 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
   }
 
   public Boolean isOptional() {
-    return MiscUtils.negate(isMandatory());
+    return BooleanUtils.negate(isMandatory());
   }
 
   public void setOptional(Boolean _optional) {
-    setMandatory(MiscUtils.negate(_optional));
+    setMandatory(BooleanUtils.negate(_optional));
   }
 
   public Boolean getOwnsDestination() {
@@ -338,7 +338,7 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
     Boolean oldToMany = myToMany;
     myToMany = _toMany;
     firePropertyChange(EORelationship.TO_MANY, oldToMany, myToMany);
-    firePropertyChange(EORelationship.TO_ONE, MiscUtils.negate(oldToMany), MiscUtils.negate(myToMany));
+    firePropertyChange(EORelationship.TO_ONE, BooleanUtils.negate(oldToMany), BooleanUtils.negate(myToMany));
   }
 
   public Boolean getToOne() {
@@ -346,11 +346,11 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
   }
 
   public Boolean isToOne() {
-    return MiscUtils.negate(isToMany());
+    return BooleanUtils.negate(isToMany());
   }
 
   public void setToOne(Boolean _toOne) {
-    setToMany(MiscUtils.negate(_toOne));
+    setToMany(BooleanUtils.negate(_toOne));
   }
 
   public void setNumberOfToManyFaultsToBatchFetch(Integer _numberOfToManyFaultsToBatchFetch) {

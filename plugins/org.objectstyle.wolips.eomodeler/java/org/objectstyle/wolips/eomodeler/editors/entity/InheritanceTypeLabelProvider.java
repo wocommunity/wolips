@@ -47,17 +47,37 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eomodeler.utils;
+package org.objectstyle.wolips.eomodeler.editors.entity;
 
-import org.eclipse.core.resources.IResource;
+import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.jface.viewers.ILabelProviderListener;
+import org.eclipse.swt.graphics.Image;
+import org.objectstyle.wolips.eomodeler.model.InheritanceType;
 
-public class MiscUtils {
-  public static String getFileNameWithoutExtension(IResource _resource) {
-    String fileName = _resource.getName();
-    String fileExtension = _resource.getFileExtension();
-    if (fileExtension != null) {
-      fileName = fileName.substring(0, fileName.indexOf('.'));
-    }
-    return fileName;
+public class InheritanceTypeLabelProvider implements ILabelProvider {
+  public Image getImage(Object _element) {
+    return null;
   }
+
+  public String getText(Object _element) {
+    InheritanceType inheritanceType = (InheritanceType) _element;
+    return inheritanceType.getName();
+  }
+
+  public void addListener(ILabelProviderListener _listener) {
+    // DO NOTHING
+  }
+
+  public void dispose() {
+    // DO NOTHING
+  }
+
+  public boolean isLabelProperty(Object _element, String _property) {
+    return true;
+  }
+
+  public void removeListener(ILabelProviderListener _listener) {
+    // DO NOTHING
+  }
+
 }

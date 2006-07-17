@@ -49,15 +49,32 @@
  */
 package org.objectstyle.wolips.eomodeler.utils;
 
-import org.eclipse.core.resources.IResource;
-
-public class MiscUtils {
-  public static String getFileNameWithoutExtension(IResource _resource) {
-    String fileName = _resource.getName();
-    String fileExtension = _resource.getFileExtension();
-    if (fileExtension != null) {
-      fileName = fileName.substring(0, fileName.indexOf('.'));
+public class StringUtils {
+  public static String toLowercaseFirstLetter(String _name) {
+    String name;
+    if (_name == null || _name.length() == 0) {
+      name = _name;
     }
-    return fileName;
+    else {
+      StringBuffer sb = new StringBuffer();
+      sb.append(Character.toLowerCase(_name.charAt(0)));
+      sb.append(_name.substring(1));
+      name = sb.toString();
+    }
+    return name;
+  }
+
+  public static String toUppercaseFirstLetter(String _name) {
+    String name;
+    if (_name == null || _name.length() == 0) {
+      name = _name;
+    }
+    else {
+      StringBuffer sb = new StringBuffer();
+      sb.append(Character.toUpperCase(_name.charAt(0)));
+      sb.append(_name.substring(1));
+      name = sb.toString();
+    }
+    return name;
   }
 }

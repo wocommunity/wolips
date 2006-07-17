@@ -49,15 +49,20 @@
  */
 package org.objectstyle.wolips.eomodeler.utils;
 
-import org.eclipse.core.resources.IResource;
+public class BooleanUtils {
 
-public class MiscUtils {
-  public static String getFileNameWithoutExtension(IResource _resource) {
-    String fileName = _resource.getName();
-    String fileExtension = _resource.getFileExtension();
-    if (fileExtension != null) {
-      fileName = fileName.substring(0, fileName.indexOf('.'));
+  public static Boolean negate(Boolean _value) {
+    Boolean negatedValue;
+    if (_value == null) {
+      negatedValue = Boolean.TRUE;
     }
-    return fileName;
+    else {
+      negatedValue = Boolean.valueOf(!_value.booleanValue());
+    }
+    return negatedValue;
+  }
+
+  public static boolean isTrue(Boolean _bool) {
+    return (_bool != null && _bool.booleanValue());
   }
 }

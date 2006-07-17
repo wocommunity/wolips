@@ -66,6 +66,7 @@ public class EOAttributesLabelProvider extends TablePropertyLabelProvider implem
   private TableViewer myTableViewer;
 
   private Font myInheritedFont;
+  private Font myFlattenedFont;
 
   public EOAttributesLabelProvider(TableViewer _tableViewer, String[] _columnProperties) {
     super(_columnProperties);
@@ -124,7 +125,15 @@ public class EOAttributesLabelProvider extends TablePropertyLabelProvider implem
   public Font getFont(Object _element, int _columnIndex) {
     Font font = null;
     EOAttribute attribute = (EOAttribute) _element;
-    if (attribute.isInherited()) {
+    if (attribute.isFlattened()) {
+      if (myFlattenedFont == null) {
+        Font originalFont = myTableViewer.getTable().getFont();
+        FontData[] fontData = myTableViewer.getTable().getFont().getFontData();
+        myFlattenedFont = new Font(originalFont.getDevice(), fontData[0].getName(), fontData[0].getHeight(), SWT.BOLD);
+      }
+      font = myFlattenedFont;
+    }
+    else if (attribute.isInherited()) {
       if (myInheritedFont == null) {
         Font originalFont = myTableViewer.getTable().getFont();
         FontData[] fontData = myTableViewer.getTable().getFont().getFontData();

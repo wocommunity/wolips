@@ -55,17 +55,22 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.window.Window;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.objectstyle.wolips.eomodeler.Messages;
+import org.objectstyle.wolips.eomodeler.editors.entity.SubclassEntityDialog;
 import org.objectstyle.wolips.eomodeler.model.DuplicateAttributeNameException;
 import org.objectstyle.wolips.eomodeler.model.DuplicateEntityNameException;
 import org.objectstyle.wolips.eomodeler.model.DuplicateRelationshipNameException;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
+import org.objectstyle.wolips.eomodeler.model.EOModel;
 import org.objectstyle.wolips.eomodeler.model.IEOEntityRelative;
+import org.objectstyle.wolips.eomodeler.model.InheritanceType;
 
 public class SubclassEntityAction implements IWorkbenchWindowActionDelegate {
   private EOEntity myEntity;
+  private EOModel myModel;
   private IWorkbenchWindow myWindow;
 
   public void init(IWorkbenchWindow _window) {
@@ -77,34 +82,51 @@ public class SubclassEntityAction implements IWorkbenchWindowActionDelegate {
   }
 
   public void selectionChanged(IAction _action, ISelection _selection) {
+    myModel = null;
     myEntity = null;
     if (_selection instanceof IStructuredSelection) {
       Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
-      if (selectedObject instanceof IEOEntityRelative) {
+      if (selectedObject instanceof EOModel) {
+        myModel = (EOModel) selectedObject;
+      }
+      else if (selectedObject instanceof IEOEntityRelative) {
         myEntity = ((IEOEntityRelative) selectedObject).getEntity();
+        myModel = myEntity.getModel();
       }
     }
   }
 
   public void run(IAction _action) {
-    try {
-      if (myEntity != null) {
-        try {
-          EOEntity newEntity = myEntity.subclassInto(myEntity.getModel(), true, new HashSet());
+    if (myModel != null) {
+      SubclassEntityDialog dialog = new SubclassEntityDialog(myWindow.getShell(), myModel, myEntity);
+      dialog.setBlockOnOpen(true);
+      int results = dialog.open();
+      if (results == Window.OK) {
+        String entityName = dialog.getEntityName();
+        if (entityName != null && entityName.trim().length() > 0) {
+          EOEntity parentEntity = dialog.getParentEntity();
+          InheritanceType inheritanceType = dialog.getInheritanceType();
+          try {
+            HashSet failures = new HashSet();
+            EOEntity newEntity = parentEntity.subclassInto(entityName, inheritanceType, myModel, failures);
+          }
+          catch (DuplicateRelationshipNameException e) {
+            e.printStackTrace();
+          }
+          catch (DuplicateEntityNameException e) {
+            e.printStackTrace();
+          }
+          catch (DuplicateAttributeNameException e) {
+            e.printStackTrace();
+          }
         }
-        catch (DuplicateRelationshipNameException e) {
-          e.printStackTrace();
+        else {
+          MessageDialog.openError(myWindow.getShell(), Messages.getString("Subclass.noEntityNameTitle"), Messages.getString("Subclass.noEntityNameMessage"));//$NON-NLS-1$ //$NON-NLS-2$
         }
-        catch (DuplicateEntityNameException e) {
-          e.printStackTrace();
-        }
-      }
-      else {
-        MessageDialog.openError(myWindow.getShell(), Messages.getString("Subclass.noEntitySelectedTitle"), Messages.getString("Subclass.noEntitySelectedMessage"));//$NON-NLS-1$ //$NON-NLS-2$
       }
     }
-    catch (DuplicateAttributeNameException e) {
-      e.printStackTrace();
+    else {
+      MessageDialog.openError(myWindow.getShell(), Messages.getString("Subclass.noModelSelectedTitle"), Messages.getString("Subclass.noModelSelectedMessage"));//$NON-NLS-1$ //$NON-NLS-2$
     }
   }
 }
