@@ -254,9 +254,9 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
 
   protected void _updateFromPrototype() {
     if (myPrototype != null) {
-      myPrimaryKey = (Boolean) _nullIfPrototyped(EOAttribute.PRIMARY_KEY, myPrimaryKey);
-      myClassProperty = (Boolean) _nullIfPrototyped(EOAttribute.CLASS_PROPERTY, myClassProperty);
-      myUsedForLocking = (Boolean) _nullIfPrototyped(EOAttribute.USED_FOR_LOCKING, myUsedForLocking);
+      //myPrimaryKey = (Boolean) _nullIfPrototyped(EOAttribute.PRIMARY_KEY, myPrimaryKey);
+      //myClassProperty = (Boolean) _nullIfPrototyped(EOAttribute.CLASS_PROPERTY, myClassProperty);
+      //myUsedForLocking = (Boolean) _nullIfPrototyped(EOAttribute.USED_FOR_LOCKING, myUsedForLocking);
       myAllowsNull = (Boolean) _nullIfPrototyped(EOAttribute.ALLOWS_NULL, myAllowsNull);
       myName = (String) _nullIfPrototyped(EOAttribute.NAME, myName);
       myColumnName = (String) _nullIfPrototyped(EOAttribute.COLUMN_NAME, myColumnName);
@@ -272,7 +272,7 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
       myWidth = (Integer) _nullIfPrototyped(EOAttribute.WIDTH, myWidth);
       myReadFormat = (String) _nullIfPrototyped(EOAttribute.READ_FORMAT, myReadFormat);
       myWriteFormat = (String) _nullIfPrototyped(EOAttribute.WRITE_FORMAT, myWriteFormat);
-      myClientClassProperty = (Boolean) _nullIfPrototyped(EOAttribute.CLIENT_CLASS_PROPERTY, myClientClassProperty);
+      //myClientClassProperty = (Boolean) _nullIfPrototyped(EOAttribute.CLIENT_CLASS_PROPERTY, myClientClassProperty);
       myIndexed = (Boolean) _nullIfPrototyped(EOAttribute.INDEXED, myIndexed);
       myReadOnly = (Boolean) _nullIfPrototyped(EOAttribute.READ_ONLY, myReadOnly);
     }
@@ -384,7 +384,7 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
   }
 
   public Boolean isClassProperty() {
-    return (Boolean) _prototypeValueIfNull(EOAttribute.CLASS_PROPERTY, myClassProperty);
+    return myClassProperty;//(Boolean) _prototypeValueIfNull(EOAttribute.CLASS_PROPERTY, myClassProperty);
   }
 
   public void setClassProperty(Boolean _classProperty) {
@@ -393,7 +393,8 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
 
   public void setClassProperty(Boolean _classProperty, boolean _fireEvents) {
     Boolean oldClassProperty = myClassProperty;
-    myClassProperty = (Boolean) _nullIfPrototyped(EOAttribute.CLASS_PROPERTY, _classProperty);
+    //myClassProperty = (Boolean) _nullIfPrototyped(EOAttribute.CLASS_PROPERTY, _classProperty);
+    myClassProperty = _classProperty;
     if (_fireEvents) {
       firePropertyChange(EOAttribute.CLASS_PROPERTY, oldClassProperty, getClassProperty());
     }
@@ -418,7 +419,8 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
   }
 
   public Boolean isPrimaryKey() {
-    return (Boolean) _prototypeValueIfNull(EOAttribute.PRIMARY_KEY, myPrimaryKey);
+    //return (Boolean) _prototypeValueIfNull(EOAttribute.PRIMARY_KEY, myPrimaryKey);
+    return myPrimaryKey;
   }
 
   public void setPrimaryKey(Boolean _primaryKey) {
@@ -427,7 +429,8 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
 
   public void setPrimaryKey(Boolean _primaryKey, boolean _fireEvents) {
     Boolean oldPrimaryKey = myPrimaryKey;
-    myPrimaryKey = (Boolean) _nullIfPrototyped(EOAttribute.PRIMARY_KEY, _primaryKey);
+    //myPrimaryKey = (Boolean) _nullIfPrototyped(EOAttribute.PRIMARY_KEY, _primaryKey);
+    myPrimaryKey = _primaryKey;
     if (_primaryKey != null && _primaryKey.booleanValue()) {
       setAllowsNull(Boolean.FALSE, _fireEvents);
     }
@@ -441,7 +444,8 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
   }
 
   public Boolean isUsedForLocking() {
-    return (Boolean) _prototypeValueIfNull(EOAttribute.USED_FOR_LOCKING, myUsedForLocking);
+    //return (Boolean) _prototypeValueIfNull(EOAttribute.USED_FOR_LOCKING, myUsedForLocking);
+    return myUsedForLocking;
   }
 
   public void setUsedForLocking(Boolean _usedForLocking) {
@@ -450,7 +454,8 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
 
   public void setUsedForLocking(Boolean _usedForLocking, boolean _fireEvents) {
     Boolean oldUsedForLocking = myUsedForLocking;
-    myUsedForLocking = (Boolean) _nullIfPrototyped(EOAttribute.USED_FOR_LOCKING, _usedForLocking);
+    //myUsedForLocking = (Boolean) _nullIfPrototyped(EOAttribute.USED_FOR_LOCKING, _usedForLocking);
+    myUsedForLocking = _usedForLocking;
     if (_fireEvents) {
       firePropertyChange(EOAttribute.USED_FOR_LOCKING, oldUsedForLocking, getUsedForLocking());
     }
@@ -627,7 +632,8 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
 
   public void setClientClassProperty(Boolean _clientClassProperty) {
     Boolean oldClientClassProperty = myClientClassProperty;
-    myClientClassProperty = (Boolean) _nullIfPrototyped(EOAttribute.CLIENT_CLASS_PROPERTY, _clientClassProperty);
+    //myClientClassProperty = (Boolean) _nullIfPrototyped(EOAttribute.CLIENT_CLASS_PROPERTY, _clientClassProperty);
+    myClientClassProperty = _clientClassProperty;
     firePropertyChange(EOAttribute.CLIENT_CLASS_PROPERTY, oldClientClassProperty, getClientClassProperty());
   }
 
@@ -636,7 +642,8 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
   }
 
   public Boolean isClientClassProperty() {
-    return (Boolean) _prototypeValueIfNull(EOAttribute.CLIENT_CLASS_PROPERTY, myClientClassProperty);
+    //return (Boolean) _prototypeValueIfNull(EOAttribute.CLIENT_CLASS_PROPERTY, myClientClassProperty);
+    return myClientClassProperty;
   }
 
   public Set getReferenceFailures() {
