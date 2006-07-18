@@ -49,6 +49,9 @@
  */
 package org.objectstyle.wolips.eomodeler.editors.userInfo;
 
+import java.io.ByteArrayOutputStream;
+
+import org.objectstyle.cayenne.wocompat.PropertyListSerialization;
 import org.objectstyle.wolips.eomodeler.utils.NotificationMap;
 import org.objectstyle.wolips.eomodeler.utils.TablePropertyLabelProvider;
 
@@ -65,16 +68,18 @@ public class UserInfoLabelProvider extends TablePropertyLabelProvider {
 
   public String getColumnText(Object _element, String _property) {
     String text = null;
-    String key = (String) _element;
+    Object key = _element;
     if (_property == UserInfoPropertySection.KEY) {
-      text = key;
+      ByteArrayOutputStream baos = new ByteArrayOutputStream();
+      PropertyListSerialization.propertyListToStream(baos, key);
+      text = new String(baos.toByteArray());
     }
     else if (_property == UserInfoPropertySection.VALUE) {
       if (myUserInfo != null) {
-        Object value = myUserInfo.get(key);
-        if (value != null) {
-          text = value.toString();
-        }
+        Object valueObj = myUserInfo.get(key);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PropertyListSerialization.propertyListToStream(baos, valueObj);
+        text = new String(baos.toByteArray());
       }
     }
     else {

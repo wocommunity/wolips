@@ -64,7 +64,6 @@ import org.eclipse.ui.views.properties.IPropertySource;
 import org.objectstyle.cayenne.wocompat.PropertyListSerialization;
 import org.objectstyle.wolips.eomodeler.properties.EOModelPropertySource;
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
-import org.objectstyle.wolips.eomodeler.utils.MapUtils;
 import org.objectstyle.wolips.eomodeler.utils.NotificationMap;
 
 public class EOModel extends UserInfoableEOModelObject implements IUserInfoable {
@@ -284,7 +283,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable 
     }
     myAdaptorName = modelMap.getString("adaptorName", true); //$NON-NLS-1$
     setConnectionDictionary(modelMap.getMap("connectionDictionary", true), false); //$NON-NLS-1$
-    setUserInfo(MapUtils.toStringMap(modelMap.getMap("userInfo", true)), false); //$NON-NLS-1$
+    setUserInfo(modelMap.getMap("userInfo", true), false); //$NON-NLS-1$
 
     List entities = modelMap.getList("entities"); //$NON-NLS-1$
     if (entities != null) {

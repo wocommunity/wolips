@@ -49,7 +49,12 @@
  */
 package org.objectstyle.wolips.eomodeler.editors.userInfo;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+
 import org.eclipse.jface.viewers.TableViewer;
+import org.objectstyle.cayenne.wocompat.PropertyListSerialization;
+import org.objectstyle.wolips.eomodeler.model.EOModelParserDataStructureFactory;
 import org.objectstyle.wolips.eomodeler.utils.NotificationMap;
 import org.objectstyle.wolips.eomodeler.utils.TablePropertyCellModifier;
 
@@ -66,37 +71,41 @@ public class UserInfoCellModifier extends TablePropertyCellModifier {
   }
 
   public Object getValue(Object _element, String _property) {
-    Object value = null;
-    String key = (String) _element;
+    Object key = _element;
+    Object valueObj;
     if (_property == UserInfoPropertySection.KEY) {
-      value = key;
+      valueObj = key;
     }
     else if (_property == UserInfoPropertySection.VALUE) {
-      value = myUserInfo.get(key);
+      valueObj = myUserInfo.get(key);
     }
     else {
-      value = super.getValue(_element, _property);
+      valueObj = super.getValue(_element, _property);
     }
-    return value;
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    PropertyListSerialization.propertyListToStream(baos, valueObj);
+    String valueStr = new String(baos.toByteArray());
+    return valueStr;
   }
 
   protected boolean _canModify(Object _element, String _property) throws Throwable {
-    String key = (String) _element;
-    Object value = myUserInfo.get(key);
-    return (value instanceof String);
+    return true;
   }
 
   protected boolean _modify(Object _element, String _property, Object _value) throws Throwable {
     boolean modified = false;
-    String key = (String) _element;
+    Object key = _element;
     if (_property == UserInfoPropertySection.KEY) {
-      String oldValue = (String) myUserInfo.remove(key);
-      String newKey = (String) _value;
-      myUserInfo.put(newKey, oldValue);
+      Object oldValue = myUserInfo.remove(key);
+      String keyStr = (String) _value;
+      Object keyObj = PropertyListSerialization.propertyListFromStream(new ByteArrayInputStream(keyStr.getBytes()), new EOModelParserDataStructureFactory());
+      myUserInfo.put(keyObj, oldValue);
       modified = true;
     }
     else if (_property == UserInfoPropertySection.VALUE) {
-      myUserInfo.put(key, _value);
+      String valueStr = (String) _value;
+      Object valueObj = PropertyListSerialization.propertyListFromStream(new ByteArrayInputStream(valueStr.getBytes()), new EOModelParserDataStructureFactory());
+      myUserInfo.put(key, valueObj);
       modified = true;
     }
     return modified;

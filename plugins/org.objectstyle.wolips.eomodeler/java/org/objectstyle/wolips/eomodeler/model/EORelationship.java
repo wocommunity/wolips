@@ -59,7 +59,6 @@ import org.eclipse.jface.internal.databinding.provisional.observable.list.Writab
 import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.utils.BooleanUtils;
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
-import org.objectstyle.wolips.eomodeler.utils.MapUtils;
 import org.objectstyle.wolips.eomodeler.utils.StringUtils;
 
 public class EORelationship extends UserInfoableEOModelObject implements IEOAttribute {
@@ -448,7 +447,7 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
         addJoin(join, false);
       }
     }
-    setUserInfo(MapUtils.toStringMap(_relationshipMap.getMap("userInfo", true)), false); //$NON-NLS-1$
+    setUserInfo(_relationshipMap.getMap("userInfo", true), false); //$NON-NLS-1$
   }
 
   public EOModelMap toMap() {

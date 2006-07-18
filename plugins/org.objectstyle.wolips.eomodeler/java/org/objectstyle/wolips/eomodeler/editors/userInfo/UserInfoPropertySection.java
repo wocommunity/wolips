@@ -51,6 +51,8 @@ package org.objectstyle.wolips.eomodeler.editors.userInfo;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ISelection;
@@ -60,6 +62,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TextCellEditor;
+import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.FocusListener;
@@ -76,10 +79,11 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
+import org.objectstyle.cayenne.wocompat.PropertyListSerialization;
 import org.objectstyle.wolips.eomodeler.Messages;
+import org.objectstyle.wolips.eomodeler.model.EOModelParserDataStructureFactory;
 import org.objectstyle.wolips.eomodeler.model.IUserInfoable;
 import org.objectstyle.wolips.eomodeler.utils.NotificationMap;
-import org.objectstyle.wolips.eomodeler.utils.TablePropertyViewerSorter;
 import org.objectstyle.wolips.eomodeler.utils.TableUtils;
 
 public class UserInfoPropertySection extends AbstractPropertySection {
@@ -95,7 +99,7 @@ public class UserInfoPropertySection extends AbstractPropertySection {
   private IUserInfoable myUserInfoable;
   private UserInfoListener myUserInfoListener;
 
-  private String mySelectedKey;
+  private Object mySelectedKey;
   private boolean myValueTextDirty;
 
   public UserInfoPropertySection() {
@@ -113,9 +117,8 @@ public class UserInfoPropertySection extends AbstractPropertySection {
     myUserInfoTableViewer.setContentProvider(new UserInfoContentProvider());
     myUserInfoTableViewer.setLabelProvider(new UserInfoLabelProvider(UserInfoPropertySection.COLUMNS));
     myUserInfoTableViewer.setColumnProperties(UserInfoPropertySection.COLUMNS);
-    myUserInfoTableViewer.setSorter(new TablePropertyViewerSorter(myUserInfoTableViewer, UserInfoPropertySection.COLUMNS));
+    myUserInfoTableViewer.setSorter(new ViewerSorter());
     myUserInfoTableViewer.addSelectionChangedListener(new UserInfoSelectionListener());
-    ((TablePropertyViewerSorter) myUserInfoTableViewer.getSorter()).sort(UserInfoPropertySection.KEY);
 
     CellEditor[] cellEditors = new CellEditor[UserInfoPropertySection.COLUMNS.length];
     cellEditors[TableUtils.getColumnNumber(UserInfoPropertySection.COLUMNS, UserInfoPropertySection.KEY)] = new TextCellEditor(myUserInfoTableViewer.getTable());
@@ -236,7 +239,7 @@ public class UserInfoPropertySection extends AbstractPropertySection {
     IStructuredSelection selection = (IStructuredSelection) myUserInfoTableViewer.getSelection();
     Object[] selectedKeys = selection.toArray();
     for (int i = 0; i < selectedKeys.length; i++) {
-      String selectedKey = (String) selectedKeys[i];
+      Object selectedKey = selectedKeys[i];
       myUserInfoable.getUserInfo().remove(selectedKey);
     }
     updateTextFromUserInfo();
@@ -245,11 +248,18 @@ public class UserInfoPropertySection extends AbstractPropertySection {
   public void addEntry() {
     String key = Messages.getString("UserInfoPropertySection.newKey"); //$NON-NLS-1$
     String value = Messages.getString("UserInfoPropertySection.newValue"); //$NON-NLS-1$
-    myUserInfoable.getUserInfo().put(key, value);
-    myUserInfoTableViewer.setSelection(new StructuredSelection(key), true);
+    boolean unusedNameFound = (myUserInfoable.getUserInfo().get(key) == null);
+    String unusedKey = key;
+    for (int dupeNameNum = 1; !unusedNameFound; dupeNameNum++) {
+      unusedKey = key + dupeNameNum;
+      unusedNameFound = (myUserInfoable.getUserInfo().get(unusedKey) == null);
+    }
+
+    myUserInfoable.getUserInfo().put(unusedKey, value);
+    myUserInfoTableViewer.setSelection(new StructuredSelection(unusedKey), true);
   }
 
-  protected void setSelectedKey(String _key) {
+  protected void setSelectedKey(Object _key) {
     updateUserInfoFromText();
     mySelectedKey = _key;
     updateTextFromUserInfo();
@@ -257,16 +267,12 @@ public class UserInfoPropertySection extends AbstractPropertySection {
 
   protected void updateTextFromUserInfo() {
     if (myUserInfoable != null && mySelectedKey != null) {
-      Object value = myUserInfoable.getUserInfo().get(mySelectedKey);
-      if (value instanceof String) {
-        String strValue = (String) value;
-        myValueText.setText(strValue);
-        myValueText.setEnabled(true);
-      }
-      else {
-        myValueText.setText(""); //$NON-NLS-1$
-        myValueText.setEnabled(false);
-      }
+      Object valueObj = myUserInfoable.getUserInfo().get(mySelectedKey);
+      ByteArrayOutputStream baos = new ByteArrayOutputStream();
+      PropertyListSerialization.propertyListToStream(baos, valueObj);
+      String valueStr = new String(baos.toByteArray());
+      myValueText.setText(valueStr);
+      myValueText.setEnabled(true);
     }
     else {
       myValueText.setText(""); //$NON-NLS-1$
@@ -277,8 +283,9 @@ public class UserInfoPropertySection extends AbstractPropertySection {
 
   protected void updateUserInfoFromText() {
     if (mySelectedKey != null && myValueTextDirty) {
-      String value = myValueText.getText();
-      myUserInfoable.getUserInfo().put(mySelectedKey, value);
+      String valueStr = myValueText.getText();
+      Object valueObj = PropertyListSerialization.propertyListFromStream(new ByteArrayInputStream(valueStr.getBytes()), new EOModelParserDataStructureFactory());
+      myUserInfoable.getUserInfo().put(mySelectedKey, valueObj);
     }
     myValueTextDirty = false;
   }
@@ -300,7 +307,7 @@ public class UserInfoPropertySection extends AbstractPropertySection {
   protected class UserInfoSelectionListener implements ISelectionChangedListener {
     public void selectionChanged(SelectionChangedEvent _event) {
       IStructuredSelection selection = (IStructuredSelection) _event.getSelection();
-      UserInfoPropertySection.this.setSelectedKey((String) selection.getFirstElement());
+      UserInfoPropertySection.this.setSelectedKey(selection.getFirstElement());
     }
   }
 

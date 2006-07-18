@@ -64,7 +64,6 @@ import org.objectstyle.cayenne.wocompat.PropertyListSerialization;
 import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.utils.BooleanUtils;
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
-import org.objectstyle.wolips.eomodeler.utils.MapUtils;
 import org.objectstyle.wolips.eomodeler.utils.StringUtils;
 
 public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRelative {
@@ -927,7 +926,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     myRestrictingQualifier = _entityMap.getString("restrictingQualifier", true); //$NON-NLS-1$
     myExternalQuery = _entityMap.getString("externalQuery", true); //$NON-NLS-1$
     myMaxNumberOfInstancesToBatchFetch = _entityMap.getInteger("maxNumberOfInstancesToBatchFetch"); //$NON-NLS-1$
-    setUserInfo(MapUtils.toStringMap(_entityMap.getMap("userInfo", true)), false); //$NON-NLS-1$
+    setUserInfo(_entityMap.getMap("userInfo", true), false); //$NON-NLS-1$
 
     //Map fetchSpecifications = _entityMap.getMap("fetchSpecificationDictionary");
     // TODO: Fetch Specs
