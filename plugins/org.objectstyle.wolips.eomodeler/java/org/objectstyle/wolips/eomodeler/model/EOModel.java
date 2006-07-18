@@ -271,7 +271,11 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
     if (!indexFile.exists()) {
       throw new EOModelException(indexFile + " does not exist.");
     }
-    EOModelMap modelMap = new EOModelMap((Map) PropertyListSerialization.propertyListFromFile(indexFile, new EOModelParserDataStructureFactory()));
+    Map rawModelMap = (Map) PropertyListSerialization.propertyListFromFile(indexFile, new EOModelParserDataStructureFactory());
+    if (rawModelMap == null) {
+      throw new EOModelException(indexFile + " is corrupted.");
+    }
+    EOModelMap modelMap = new EOModelMap(rawModelMap);
     myModelMap = modelMap;
     Object version = modelMap.get("EOModelVersion"); //$NON-NLS-1$
     if (version instanceof String) {
