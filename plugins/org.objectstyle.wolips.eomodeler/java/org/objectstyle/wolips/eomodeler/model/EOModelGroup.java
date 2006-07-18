@@ -53,29 +53,26 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import org.eclipse.jface.internal.databinding.provisional.observable.list.WritableList;
+import java.util.TreeSet;
 
 public class EOModelGroup extends EOModelObject {
   public static final String MODELS = "models"; //$NON-NLS-1$
 
-  private List myModels;
-  private List myPrototypeAttributeCache;
+  private Set myModels;
+  private Set myPrototypeAttributeCache;
 
   public EOModelGroup() {
-    myModels = new WritableList(EOModel.class);
+    myModels = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
   }
 
-  public List getModels() {
+  public Set getModels() {
     return myModels;
   }
 
-  public List getEntityNames() {
-    List entityNames = new LinkedList();
+  public Set getEntityNames() {
+    Set entityNames = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
     Iterator modelsIter = myModels.iterator();
     while (modelsIter.hasNext()) {
       EOModel model = (EOModel) modelsIter.next();
@@ -88,8 +85,8 @@ public class EOModelGroup extends EOModelObject {
     return entityNames;
   }
 
-  public List getEntities() {
-    List entities = new LinkedList();
+  public Set getEntities() {
+    Set entities = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
     Iterator modelsIter = myModels.iterator();
     while (modelsIter.hasNext()) {
       EOModel model = (EOModel) modelsIter.next();
@@ -98,8 +95,8 @@ public class EOModelGroup extends EOModelObject {
     return entities;
   }
 
-  public List getPrototypeAttributeNames() {
-    List prototypeAttributeNames = new LinkedList();
+  public Set getPrototypeAttributeNames() {
+    Set prototypeAttributeNames = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
     Iterator prototypeAttributesIter = getPrototypeAttributes().iterator();
     while (prototypeAttributesIter.hasNext()) {
       EOAttribute attribute = (EOAttribute) prototypeAttributesIter.next();
@@ -108,9 +105,9 @@ public class EOModelGroup extends EOModelObject {
     return prototypeAttributeNames;
   }
 
-  public synchronized List getPrototypeAttributes() {
+  public synchronized Set getPrototypeAttributes() {
     if (myPrototypeAttributeCache == null) {
-      List prototypeAttributeCache = new LinkedList();
+      Set prototypeAttributeCache = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
 
       Set prototypeEntityNames = new HashSet();
       addPrototypeAttributes("EOPrototypes", prototypeEntityNames, prototypeAttributeCache); //$NON-NLS-1$
@@ -145,7 +142,7 @@ public class EOModelGroup extends EOModelObject {
     return myPrototypeAttributeCache;
   }
 
-  protected void addPrototypeAttributes(String _prototypeEntityName, Set _prototypeEntityNames, List _prototypeAttributeCache) {
+  protected void addPrototypeAttributes(String _prototypeEntityName, Set _prototypeEntityNames, Set _prototypeAttributeCache) {
     if (!_prototypeEntityNames.contains(_prototypeEntityName)) {
       _prototypeEntityNames.add(_prototypeEntityName);
       EOEntity prototypeEntity = getEntityNamed(_prototypeEntityName);
@@ -157,7 +154,7 @@ public class EOModelGroup extends EOModelObject {
 
   public EOAttribute getPrototypeAttributeNamed(String _name) {
     EOAttribute matchingAttribute = null;
-    List prototypeAttributes = getPrototypeAttributes();
+    Set prototypeAttributes = getPrototypeAttributes();
     Iterator attributesIter = prototypeAttributes.iterator();
     while (matchingAttribute == null && attributesIter.hasNext()) {
       EOAttribute attribute = (EOAttribute) attributesIter.next();

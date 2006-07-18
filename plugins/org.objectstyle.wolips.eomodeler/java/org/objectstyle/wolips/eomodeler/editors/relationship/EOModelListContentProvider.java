@@ -49,7 +49,7 @@
  */
 package org.objectstyle.wolips.eomodeler.editors.relationship;
 
-import java.util.List;
+import java.util.Set;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
@@ -76,7 +76,7 @@ public class EOModelListContentProvider implements IStructuredContentProvider {
     else {
       throw new IllegalArgumentException("Unknown input element: " + _inputElement);
     }
-    List modelsList = modelGroup.getModels();
+    Set modelsList = modelGroup.getModels();
     EOModel[] models = (EOModel[]) modelsList.toArray(new EOModel[modelsList.size()]);
     return models;
   }

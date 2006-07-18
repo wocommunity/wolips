@@ -51,7 +51,7 @@ package org.objectstyle.wolips.eomodeler.model;
 
 import java.util.Set;
 
-public class EOJoin extends EOModelObject {
+public class EOJoin extends EOModelObject implements ISortableEOModelObject {
   public static final String DESTINATION_ATTRIBUTE = "destinationAttribute"; //$NON-NLS-1$
   public static final String SOURCE_ATTRIBUTE = "sourceAttribute"; //$NON-NLS-1$
   public static final String DESTINATION_ATTRIBUTE_NAME = "destinationAttributeName"; //$NON-NLS-1$
@@ -65,6 +65,10 @@ public class EOJoin extends EOModelObject {
   public EOJoin(EORelationship _relationship) {
     myRelationship = _relationship;
     myJoinMap = new EOModelMap();
+  }
+  
+  public String getName() {
+    return ((mySourceAttribute != null) ? mySourceAttribute.getName() : "") + ((myDestinationAttribute != null) ? myDestinationAttribute.getName() : "");
   }
 
   public EORelationship getRelationship() {

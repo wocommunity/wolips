@@ -55,6 +55,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 public class EOModelMap implements Map {
   private Map myBackingMap;
@@ -130,7 +131,7 @@ public class EOModelMap implements Map {
   public Map getMap(String _key, boolean _clone) {
     Map map = (Map) myBackingMap.get(_key);
     if (_clone && map != null) {
-      TreeMap sortedMap = new TreeMap(PropertyListComparator.AscendingPropertyListComparator);
+      Map sortedMap = new TreeMap(PropertyListComparator.AscendingPropertyListComparator);
       sortedMap.putAll(map);
       map = sortedMap;
     }
@@ -138,7 +139,15 @@ public class EOModelMap implements Map {
   }
 
   public void setList(String _key, List _list, boolean _skipIfEmpty) {
-    List list = _list;
+    setCollection(_key, _list, _skipIfEmpty);
+  }
+
+  public void setSet(String _key, Set _list, boolean _skipIfEmpty) {
+    setCollection(_key, _list, _skipIfEmpty);
+  }
+
+  public void setCollection(String _key, Collection _list, boolean _skipIfEmpty) {
+    Collection list = _list;
     if (_skipIfEmpty && list != null && list.isEmpty()) {
       list = null;
     }
@@ -148,6 +157,20 @@ public class EOModelMap implements Map {
     else {
       myBackingMap.put(_key, list);
     }
+  }
+
+  public Set getSet(String _key) {
+    return (Set) myBackingMap.get(_key);
+  }
+
+  public Set getSet(String _key, boolean _clone) {
+    Set set = (Set) myBackingMap.get(_key);
+    if (_clone && set != null) {
+      Set sortedSet = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
+      sortedSet.addAll(set);
+      set = sortedSet;
+    }
+    return set;
   }
 
   public List getList(String _key) {

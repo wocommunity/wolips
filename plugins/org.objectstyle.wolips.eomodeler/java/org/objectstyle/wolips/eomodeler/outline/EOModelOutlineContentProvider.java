@@ -49,8 +49,8 @@
  */
 package org.objectstyle.wolips.eomodeler.outline;
 
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
@@ -63,6 +63,7 @@ import org.objectstyle.wolips.eomodeler.model.EOModelContainer;
 import org.objectstyle.wolips.eomodeler.model.EORelationship;
 import org.objectstyle.wolips.eomodeler.model.EORelationshipPath;
 import org.objectstyle.wolips.eomodeler.model.IEOAttributePath;
+import org.objectstyle.wolips.eomodeler.model.PropertyListComparator;
 
 public class EOModelOutlineContentProvider implements ITreeContentProvider {
   private EOModelContainer myModelContainer;
@@ -75,12 +76,12 @@ public class EOModelOutlineContentProvider implements ITreeContentProvider {
     }
     else if (_parentElement instanceof EOModel) {
       EOModel model = (EOModel) _parentElement;
-      List entitiesList = model.getEntities();
+      Set entitiesList = model.getEntities();
       children = entitiesList.toArray(new EOEntity[entitiesList.size()]);
     }
     else if (_parentElement instanceof EOEntity) {
       EOEntity entity = (EOEntity) _parentElement;
-      List entityChildren = new LinkedList();
+      Set entityChildren = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
       entityChildren.addAll(entity.getAttributes());
       entityChildren.addAll(entity.getRelationships());
       entityChildren.addAll(entity.getFetchSpecs());

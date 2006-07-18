@@ -237,7 +237,6 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
     catch (CoreException e) {
       e.printStackTrace();
     }
-    /**/
   }
 
   public void doSaveAs() {
@@ -292,6 +291,21 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
       super.init(_site, fileEditorInput);
       updatePartName();
       _site.setSelectionProvider(this);
+
+      //      try {
+      //        ILaunchConfigurationType launchConfigurationType = DebugPlugin.getDefault().getLaunchManager().getLaunchConfigurationType(WOJavaLocalApplicationLaunchConfigurationDelegate.WOJavaLocalApplicationID);
+      //        ILaunchConfigurationWorkingCopy wc = launchConfigurationType.newInstance(null, "Temp");
+      //        wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME, "org.objectstyle.wolips.eomodeler.editors.EOModelerRunTest");
+      //        wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, JavaCore.create(file.getProject()).getElementName());
+      //
+      //        WOJavaLocalApplicationLaunchConfigurationDelegate.initConfiguration(wc);
+      //        wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_SOURCE_PATH_PROVIDER, "org.eclipse.pde.ui.workbenchClasspathProvider"); //$NON-NLS-1$
+      //        ILaunch launch = wc.launch(ILaunchManager.RUN_MODE, null);
+      //        //ILaunchConfiguration config = wc.doSave();
+      //      }
+      //      catch (CoreException exception) {
+      //        exception.printStackTrace();
+      //      }
     }
     catch (Exception e) {
       throw new PartInitException("Failed to create EOModelEditorInput for " + _editorInput + ".", e);

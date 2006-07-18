@@ -63,7 +63,7 @@ import org.objectstyle.wolips.eomodeler.kvc.ResolvedKey;
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.utils.StringUtils;
 
-public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribute {
+public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribute, ISortableEOModelObject {
   public static final String PRIMARY_KEY = "primaryKey"; //$NON-NLS-1$
   public static final String CLASS_PROPERTY = "classProperty"; //$NON-NLS-1$
   public static final String USED_FOR_LOCKING = "usedForLocking"; //$NON-NLS-1$

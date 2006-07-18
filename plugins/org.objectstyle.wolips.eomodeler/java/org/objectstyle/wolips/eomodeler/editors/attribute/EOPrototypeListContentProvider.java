@@ -52,6 +52,7 @@ package org.objectstyle.wolips.eomodeler.editors.attribute;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
@@ -69,7 +70,7 @@ public class EOPrototypeListContentProvider implements IStructuredContentProvide
   }
 
   public Object[] getElements(Object _inputElement) {
-    List prototypeAttributesList;
+    Set prototypeAttributesList;
     if (_inputElement instanceof EOAttribute) {
       prototypeAttributesList = ((EOAttribute) _inputElement).getEntity().getModel().getModelGroup().getPrototypeAttributes();
     }

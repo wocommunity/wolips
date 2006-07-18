@@ -50,18 +50,17 @@
 package org.objectstyle.wolips.eomodeler.model;
 
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
-import org.eclipse.jface.internal.databinding.provisional.observable.list.WritableList;
 import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.utils.BooleanUtils;
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.utils.StringUtils;
 
-public class EORelationship extends UserInfoableEOModelObject implements IEOAttribute {
+public class EORelationship extends UserInfoableEOModelObject implements IEOAttribute, ISortableEOModelObject {
   public static final String TO_MANY = "toMany"; //$NON-NLS-1$
   public static final String TO_ONE = "toOne"; //$NON-NLS-1$
   public static final String CLASS_PROPERTY = "classProperty"; //$NON-NLS-1$
@@ -89,12 +88,12 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
   private Integer myNumberOfToManyFaultsToBatchFetch;
   private EODeleteRule myDeleteRule;
   private EOJoinSemantic myJoinSemantic;
-  private List myJoins;
+  private Set myJoins;
   private EOModelMap myRelationshipMap;
 
   public EORelationship(EOEntity _entity) {
     myEntity = _entity;
-    myJoins = new WritableList(EOJoin.class);
+    myJoins = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
     myRelationshipMap = new EOModelMap();
     myDeleteRule = EODeleteRule.getDeleteRuleByID(null);
     myJoinSemantic = EOJoinSemantic.getJoinSemanticByID(null);
@@ -395,11 +394,13 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
 
   public void addJoin(EOJoin _join, boolean _fireEvents) {
     // TODO: Check duplicates?
-    List oldJoins = null;
+    Set oldJoins = null;
     if (_fireEvents) {
       oldJoins = myJoins;
-      myJoins = new LinkedList(myJoins);
-      myJoins.add(_join);
+      Set newJoins = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
+      newJoins.addAll(myJoins);
+      newJoins.add(_join);
+      myJoins = newJoins;
       firePropertyChange(EORelationship.JOINS, oldJoins, myJoins);
     }
     else {
@@ -412,14 +413,15 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
     firePropertyChange(EORelationship.JOINS, null, null);
   }
 
-  public List getJoins() {
+  public Set getJoins() {
     return myJoins;
   }
 
   public EOJoin getFirstJoin() {
     EOJoin join = null;
-    if (myJoins.size() > 0) {
-      join = (EOJoin) myJoins.get(0);
+    Iterator joinsIter = myJoins.iterator();
+    if (joinsIter.hasNext()) {
+      join = (EOJoin) joinsIter.next();
     }
     return join;
   }
@@ -437,7 +439,7 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
     myOwnsDestination = _relationshipMap.getBoolean("ownsDestination"); //$NON-NLS-1$
     myNumberOfToManyFaultsToBatchFetch = _relationshipMap.getInteger("numberOfToManyFaultsToBatchFetch"); //$NON-NLS-1$
     myPropagatesPrimaryKey = _relationshipMap.getBoolean("propagatesPrimaryKey"); //$NON-NLS-1$
-    List joins = _relationshipMap.getList("joins"); //$NON-NLS-1$
+    Set joins = _relationshipMap.getSet("joins"); //$NON-NLS-1$
     if (joins != null) {
       Iterator joinsIter = joins.iterator();
       while (joinsIter.hasNext()) {
@@ -468,14 +470,14 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
     relationshipMap.setBoolean("ownsDestination", myOwnsDestination); //$NON-NLS-1$
     relationshipMap.setBoolean("propagatesPrimaryKey", myPropagatesPrimaryKey); //$NON-NLS-1$
     relationshipMap.setInteger("numberOfToManyFaultsToBatchFetch", myNumberOfToManyFaultsToBatchFetch); //$NON-NLS-1$
-    List joins = new LinkedList();
+    Set joins = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
     Iterator joinsIter = myJoins.iterator();
     while (joinsIter.hasNext()) {
       EOJoin join = (EOJoin) joinsIter.next();
       EOModelMap joinMap = join.toMap();
       joins.add(joinMap);
     }
-    relationshipMap.setList("joins", joins, true); //$NON-NLS-1$
+    relationshipMap.setSet("joins", joins, true); //$NON-NLS-1$
     relationshipMap.setMap("userInfo", getUserInfo(), true); //$NON-NLS-1$
     return relationshipMap;
   }

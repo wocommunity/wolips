@@ -52,6 +52,7 @@ package org.objectstyle.wolips.eomodeler.editors.entity;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
@@ -75,7 +76,7 @@ public class EOEntityListContentProvider implements IStructuredContentProvider {
   }
 
   public Object[] getElements(Object _inputElement) {
-    List entitiesList;
+    Set entitiesList;
     if (_inputElement instanceof EORelationship) {
       if (myRestrictToSingleModel) {
         entitiesList = ((EORelationship) _inputElement).getEntity().getModel().getEntities();
