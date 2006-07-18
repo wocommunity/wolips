@@ -50,17 +50,17 @@
 package org.objectstyle.wolips.eomodeler.model;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 public class EOModelMap implements Map {
   private Map myBackingMap;
 
   public EOModelMap() {
-    this(new HashMap());
+    this(new TreeMap(PropertyListComparator.AscendingPropertyListComparator));
   }
 
   public EOModelMap(Map _backingMap) {
@@ -68,7 +68,9 @@ public class EOModelMap implements Map {
   }
 
   public EOModelMap cloneModelMap() {
-    return new EOModelMap(new HashMap(myBackingMap));
+    Map sortedMap = new TreeMap(PropertyListComparator.AscendingPropertyListComparator);
+    sortedMap.putAll(myBackingMap);
+    return new EOModelMap(sortedMap);
   }
 
   public Map getBackingMap() {
@@ -128,7 +130,9 @@ public class EOModelMap implements Map {
   public Map getMap(String _key, boolean _clone) {
     Map map = (Map) myBackingMap.get(_key);
     if (_clone && map != null) {
-      map = new HashMap(map);
+      TreeMap sortedMap = new TreeMap(PropertyListComparator.AscendingPropertyListComparator);
+      sortedMap.putAll(map);
+      map = sortedMap;
     }
     return map;
   }

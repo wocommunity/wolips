@@ -270,7 +270,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable 
     if (!indexFile.exists()) {
       throw new EOModelException(indexFile + " does not exist.");
     }
-    EOModelMap modelMap = new EOModelMap((Map) PropertyListSerialization.propertyListFromFile(indexFile));
+    EOModelMap modelMap = new EOModelMap((Map) PropertyListSerialization.propertyListFromFile(indexFile, new EOModelParserDataStructureFactory()));
     myModelMap = modelMap;
     Object version = modelMap.get("EOModelVersion"); //$NON-NLS-1$
     if (version instanceof String) {
@@ -359,7 +359,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable 
     }
     File indexFile = new File(modelFolder, "index.eomodeld"); //$NON-NLS-1$
     EOModelMap modelMap = toMap();
-    PropertyListSerialization.propertyListToFile(indexFile, modelMap, true);
+    PropertyListSerialization.propertyListToFile(indexFile, modelMap);
 
     if (myDeletedEntityNamesInObjectStore != null) {
       Iterator deletedEntityNameIter = myDeletedEntityNamesInObjectStore.iterator();

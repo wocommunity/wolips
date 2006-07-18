@@ -898,7 +898,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
   public void loadFromFile(File _entityFile, File _fetchSpecFile, Set _failures) throws IOException, EOModelException {
     try {
       if (_entityFile.exists()) {
-        EOModelMap entityMap = new EOModelMap((Map) PropertyListSerialization.propertyListFromFile(_entityFile));
+        EOModelMap entityMap = new EOModelMap((Map) PropertyListSerialization.propertyListFromFile(_entityFile, new EOModelParserDataStructureFactory()));
         loadFromMap(entityMap, _failures);
       }
     }
@@ -907,7 +907,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     }
     try {
       if (_fetchSpecFile.exists()) {
-        EOModelMap fspecMap = new EOModelMap((Map) PropertyListSerialization.propertyListFromFile(_fetchSpecFile));
+        EOModelMap fspecMap = new EOModelMap((Map) PropertyListSerialization.propertyListFromFile(_fetchSpecFile, new EOModelParserDataStructureFactory()));
         loadFetchSpecsFromMap(fspecMap, _failures);
       }
     }
@@ -1119,14 +1119,14 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
 
   public void saveToFile(File _entityFile, File _fetchSpecFile) {
     EOModelMap entityMap = toEntityMap();
-    PropertyListSerialization.propertyListToFile(_entityFile, entityMap, true);
+    PropertyListSerialization.propertyListToFile(_entityFile, entityMap);
 
     if (myFetchSpecs.size() == 0) {
       _fetchSpecFile.delete();
     }
     else {
       EOModelMap fetchSpecMap = toFetchSpecsMap();
-      PropertyListSerialization.propertyListToFile(_fetchSpecFile, fetchSpecMap, true);
+      PropertyListSerialization.propertyListToFile(_fetchSpecFile, fetchSpecMap);
     }
   }
 
