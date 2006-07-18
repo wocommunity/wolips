@@ -49,7 +49,7 @@
  */
 package org.objectstyle.wolips.eomodeler.editors.attributes;
 
-import java.util.List;
+import java.util.Set;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
@@ -59,7 +59,7 @@ import org.objectstyle.wolips.eomodeler.model.EOEntity;
 public class EOAttributesContentProvider implements IStructuredContentProvider {
   public Object[] getElements(Object _inputElement) {
     EOEntity entity = (EOEntity) _inputElement;
-    List attributesList = entity.getAttributes();
+    Set attributesList = entity.getAttributes();
     EOAttribute[] attributes = (EOAttribute[]) attributesList.toArray(new EOAttribute[attributesList.size()]);
     return attributes;
   }

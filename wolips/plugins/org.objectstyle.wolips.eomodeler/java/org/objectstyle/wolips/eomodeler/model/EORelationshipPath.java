@@ -50,7 +50,7 @@
 package org.objectstyle.wolips.eomodeler.model;
 
 import java.util.Iterator;
-import java.util.List;
+import java.util.Set;
 
 public class EORelationshipPath extends IEOAttributePath {
   public EORelationshipPath(EORelationshipPath _parentRelationshipPath, EORelationship _childRelationship) {
@@ -64,8 +64,8 @@ public class EORelationshipPath extends IEOAttributePath {
   public IEOAttributePath[] getChildren() {
     IEOAttributePath[] children;
     EOEntity entity = getChildRelationship().getDestination();
-    List relationshipsList = entity.getRelationships();
-    List attributesList = entity.getAttributes();
+    Set relationshipsList = entity.getRelationships();
+    Set attributesList = entity.getAttributes();
     children = new IEOAttributePath[relationshipsList.size() + attributesList.size()];
     int childNum = 0;
     Iterator relationshipsIter = relationshipsList.iterator();

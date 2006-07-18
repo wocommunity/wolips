@@ -58,15 +58,15 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
-import org.eclipse.jface.internal.databinding.provisional.observable.list.WritableList;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.objectstyle.cayenne.wocompat.PropertyListSerialization;
 import org.objectstyle.wolips.eomodeler.properties.EOModelPropertySource;
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.utils.NotificationMap;
 
-public class EOModel extends UserInfoableEOModelObject implements IUserInfoable {
+public class EOModel extends UserInfoableEOModelObject implements IUserInfoable, ISortableEOModelObject {
   public static final String DIRTY = "dirty"; //$NON-NLS-1$
   public static final String ENTITY = "entity"; //$NON-NLS-1$
   public static final String CONNECTION_DICTIONARY = "connectionDictionary"; //$NON-NLS-1$
@@ -80,8 +80,8 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable 
   private String myVersion;
   private String myAdaptorName;
   private NotificationMap myConnectionDictionary;
-  private List myEntities;
-  private List myDeletedEntityNamesInObjectStore;
+  private Set myEntities;
+  private Set myDeletedEntityNamesInObjectStore;
   private EOModelMap myModelMap;
   private boolean myDirty;
   private PropertyChangeRepeater myConnectionDictionaryRepeater;
@@ -89,8 +89,8 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable 
   public EOModel(EOModelGroup _modelGroup, String _name) {
     myModelGroup = _modelGroup;
     myName = _name;
-    myEntities = new WritableList(EOEntity.class);
-    myDeletedEntityNamesInObjectStore = new WritableList(String.class);
+    myEntities = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
+    myDeletedEntityNamesInObjectStore = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
     myVersion = "2.1"; //$NON-NLS-1$
     myModelMap = new EOModelMap();
     myConnectionDictionaryRepeater = new PropertyChangeRepeater(EOModel.CONNECTION_DICTIONARY);
@@ -184,7 +184,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable 
     return myName;
   }
 
-  public List getEntities() {
+  public Set getEntities() {
     return myEntities;
   }
 
@@ -208,7 +208,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable 
 
   public void _entityNameChanged(String _oldName) {
     if (myDeletedEntityNamesInObjectStore == null) {
-      myDeletedEntityNamesInObjectStore = new LinkedList();
+      myDeletedEntityNamesInObjectStore = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
     }
     myDeletedEntityNamesInObjectStore.add(_oldName);
   }
@@ -223,11 +223,13 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable 
 
   public void addEntity(EOEntity _entity, boolean _fireEvents, Set _failures) throws DuplicateEntityNameException {
     _checkForDuplicateEntityName(_entity, _entity.getName(), _failures);
-    List oldEntities = null;
+    Set oldEntities = null;
     if (_fireEvents) {
       oldEntities = myEntities;
-      myEntities = new LinkedList(myEntities);
-      myEntities.add(_entity);
+      Set newEntities = new TreeSet(new TreeSet(PropertyListComparator.AscendingPropertyListComparator));
+      newEntities.addAll(myEntities);
+      newEntities.add(_entity);
+      myEntities = newEntities;
       firePropertyChange(EOModel.ENTITIES, oldEntities, myEntities);
     }
     else {
@@ -285,7 +287,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable 
     setConnectionDictionary(modelMap.getMap("connectionDictionary", true), false); //$NON-NLS-1$
     setUserInfo(modelMap.getMap("userInfo", true), false); //$NON-NLS-1$
 
-    List entities = modelMap.getList("entities"); //$NON-NLS-1$
+    Set entities = modelMap.getSet("entities"); //$NON-NLS-1$
     if (entities != null) {
       Iterator entitiesIter = entities.iterator();
       while (entitiesIter.hasNext()) {
@@ -301,7 +303,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable 
 
     Map internalInfoMap = modelMap.getMap("internalInfo"); //$NON-NLS-1$
     if (internalInfoMap != null) {
-      myDeletedEntityNamesInObjectStore = modelMap.getList("_deletedEntityNamesInObjectStore", true); //$NON-NLS-1$
+      myDeletedEntityNamesInObjectStore = modelMap.getSet("_deletedEntityNamesInObjectStore", true); //$NON-NLS-1$
     }
 
     if (_resolveImmediately) {
@@ -315,8 +317,8 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable 
     modelMap.setString("adaptorName", myAdaptorName, true); //$NON-NLS-1$
     modelMap.put("connectionDictionary", myConnectionDictionary); //$NON-NLS-1$
 
-    List entities = new LinkedList();
-    List entitiesWithSharedObjects = new LinkedList();
+    Set entities = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
+    Set entitiesWithSharedObjects = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
     Iterator entitiesIter = myEntities.iterator();
     while (entitiesIter.hasNext()) {
       EOEntity entity = (EOEntity) entitiesIter.next();
@@ -331,9 +333,9 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable 
         entitiesWithSharedObjects.add(entity.getName());
       }
     }
-    modelMap.put("entities", entities); //$NON-NLS-1$
+    modelMap.setSet("entities", entities, true); //$NON-NLS-1$
 
-    modelMap.setList("entitiesWithSharedObjects", entitiesWithSharedObjects, true); //$NON-NLS-1$
+    modelMap.setSet("entitiesWithSharedObjects", entitiesWithSharedObjects, true); //$NON-NLS-1$
 
     Map internalInfoMap = modelMap.getMap("internalInfo"); //$NON-NLS-1$
     if (internalInfoMap == null) {

@@ -83,6 +83,9 @@ public class PropertyListComparator implements Comparator {
     else if (arg0 instanceof Timestamp && arg1 instanceof Timestamp) {
       return ((Timestamp) arg0).compareTo(arg1);
     }
+    else if (arg0 instanceof ISortableEOModelObject && arg1 instanceof ISortableEOModelObject) {
+      return ((ISortableEOModelObject) arg0).getName().compareTo(((ISortableEOModelObject) arg1).getName());
+    }
     else if (arg0 instanceof Map && arg1 instanceof Map) {
       Map dic0 = (Map) arg0;
       Map dic1 = (Map) arg1;
@@ -114,6 +117,10 @@ public class PropertyListComparator implements Comparator {
       return compare(new Integer(allKeys0.size()), new Integer(allKeys1.size()));
     }
     else {
+      int compareResult = compare(arg0.getClass().getName(), arg1.getClass().getName());
+      if (compareResult != 0) {
+        return compareResult;
+      }
       return arg0.toString().compareTo(arg1.toString());
     }
   }

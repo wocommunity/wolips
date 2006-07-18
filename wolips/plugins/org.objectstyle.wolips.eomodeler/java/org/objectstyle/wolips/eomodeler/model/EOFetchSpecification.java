@@ -49,6 +49,7 @@
  */
 package org.objectstyle.wolips.eomodeler.model;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -58,7 +59,7 @@ import java.util.Set;
 import org.eclipse.jface.internal.databinding.provisional.observable.list.WritableList;
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
 
-public class EOFetchSpecification extends UserInfoableEOModelObject implements IEOEntityRelative {
+public class EOFetchSpecification extends UserInfoableEOModelObject implements IEOEntityRelative, ISortableEOModelObject {
   public static final String NAME = "name"; //$NON-NLS-1$
   public static final String SORT_ORDERINGS = "sortOrderings"; //$NON-NLS-1$
   public static final String QUALIFIER = "qualifier"; //$NON-NLS-1$
@@ -80,9 +81,9 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
   private Integer myFetchLimit;
   private Boolean myDeep;
   private Boolean myLocksObjects;
-  private List myPrefetchingRelationshipKeyPaths;
+  private Set myPrefetchingRelationshipKeyPaths;
   private Boolean myPromptsAfterFetchLimit;
-  private List myRawRowKeyPaths;
+  private Set myRawRowKeyPaths;
   private Boolean myRefreshesRefetchedObjects;
   private Boolean myRequiresAllQualifierBindingVariables;
   private Boolean myUsesDistinct;
@@ -248,11 +249,11 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
     firePropertyChange(EOFetchSpecification.LOCKS_OBJECTS, oldLocksObjects, myLocksObjects);
   }
 
-  public List getPrefetchingRelationshipKeyPaths() {
+  public Collection getPrefetchingRelationshipKeyPaths() {
     return myPrefetchingRelationshipKeyPaths;
   }
 
-  public void setPrefetchingRelationshipKeyPaths(List _prefetchingRelationshipKeyPaths) {
+  public void setPrefetchingRelationshipKeyPaths(Set _prefetchingRelationshipKeyPaths) {
     myPrefetchingRelationshipKeyPaths = _prefetchingRelationshipKeyPaths;
     firePropertyChange(EOFetchSpecification.PREFETCHING_RELATIONSHIP_KEY_PATHS, null, null);
   }
@@ -267,11 +268,11 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
     firePropertyChange(EOFetchSpecification.PROMPTS_AFTER_FETCH_LIMIT, oldPromptsAfterFetchLimit, myPromptsAfterFetchLimit);
   }
 
-  public List getRawRowKeyPaths() {
+  public Collection getRawRowKeyPaths() {
     return myRawRowKeyPaths;
   }
 
-  public void setRawRowKeyPaths(List _rawRowKeyPaths) {
+  public void setRawRowKeyPaths(Set _rawRowKeyPaths) {
     myRawRowKeyPaths = _rawRowKeyPaths;
     firePropertyChange(EOFetchSpecification.RAW_ROW_KEY_PATHS, null, null);
   }
@@ -313,14 +314,14 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
     myFetchLimit = _map.getInteger("fetchLimit"); //$NON-NLS-1$
     myDeep = _map.getBoolean("isDeep"); //$NON-NLS-1$
     myLocksObjects = _map.getBoolean("locksObjects"); //$NON-NLS-1$
-    myPrefetchingRelationshipKeyPaths = _map.getList("prefetchingRelationshipKeyPaths", true); //$NON-NLS-1$
+    myPrefetchingRelationshipKeyPaths = _map.getSet("prefetchingRelationshipKeyPaths", true); //$NON-NLS-1$
     myPromptsAfterFetchLimit = _map.getBoolean("prompsAfterFetchLimit"); //$NON-NLS-1$
 
     Map qualifierMap = _map.getMap("qualifier"); //$NON-NLS-1$
     if (qualifierMap != null) {
       myQualifier = EOQualifierFactory.qualifierForMap(new EOModelMap(qualifierMap));
     }
-    myRawRowKeyPaths = _map.getList("rawRowKeyPaths", true); //$NON-NLS-1$
+    myRawRowKeyPaths = _map.getSet("rawRowKeyPaths", true); //$NON-NLS-1$
     myRefreshesRefetchedObjects = _map.getBoolean("refreshesRefetchedObjects"); //$NON-NLS-1$
     myRequiresAllQualifierBindingVariables = _map.getBoolean("requiresAllQualifierBindingVariables"); //$NON-NLS-1$
     myUsesDistinct = _map.getBoolean("usesDistinct"); //$NON-NLS-1$
@@ -345,7 +346,7 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
     fetchSpecMap.setInteger("fetchLimit", myFetchLimit); //$NON-NLS-1$
     fetchSpecMap.setBoolean("isDeep", myDeep); //$NON-NLS-1$
     fetchSpecMap.setBoolean("locksObjects", myLocksObjects); //$NON-NLS-1$
-    fetchSpecMap.setList("prefetchingRelationshipKeyPaths", myPrefetchingRelationshipKeyPaths, true); //$NON-NLS-1$
+    fetchSpecMap.setSet("prefetchingRelationshipKeyPaths", myPrefetchingRelationshipKeyPaths, true); //$NON-NLS-1$
     fetchSpecMap.setBoolean("prompsAfterFetchLimit", myPromptsAfterFetchLimit); //$NON-NLS-1$
     if (myQualifier == null) {
       fetchSpecMap.setMap("qualifier", null, true); //$NON-NLS-1$
@@ -353,7 +354,7 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
     else {
       fetchSpecMap.setMap("qualifier", myQualifier.toMap(), true); //$NON-NLS-1$
     }
-    fetchSpecMap.setList("rawRowKeyPaths", myRawRowKeyPaths, true); //$NON-NLS-1$
+    fetchSpecMap.setSet("rawRowKeyPaths", myRawRowKeyPaths, true); //$NON-NLS-1$
     fetchSpecMap.setBoolean("refreshesRefetchedObjects", myRefreshesRefetchedObjects); //$NON-NLS-1$
     fetchSpecMap.setBoolean("requiresAllQualifierBindingVariables", myRequiresAllQualifierBindingVariables); //$NON-NLS-1$
     fetchSpecMap.setBoolean("usesDistinct", myUsesDistinct); //$NON-NLS-1$

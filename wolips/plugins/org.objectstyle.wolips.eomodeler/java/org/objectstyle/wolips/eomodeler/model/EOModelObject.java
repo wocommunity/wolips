@@ -57,7 +57,7 @@ import java.util.Map;
 import org.eclipse.core.runtime.IAdaptable;
 import org.objectstyle.wolips.eomodeler.utils.NotificationMap;
 
-public class EOModelObject implements IAdaptable {
+public abstract class EOModelObject implements IAdaptable {
   private PropertyChangeSupport myPropertyChangeSupport = new PropertyChangeSupport(this);
 
   public EOModelObject() {

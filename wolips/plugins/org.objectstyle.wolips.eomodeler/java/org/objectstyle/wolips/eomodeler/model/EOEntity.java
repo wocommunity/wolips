@@ -58,15 +58,15 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
-import org.eclipse.jface.internal.databinding.provisional.observable.list.WritableList;
 import org.objectstyle.cayenne.wocompat.PropertyListSerialization;
 import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.utils.BooleanUtils;
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.utils.StringUtils;
 
-public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRelative {
+public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRelative, ISortableEOModelObject {
   private static final String FETCH_ALL = "FetchAll"; //$NON-NLS-1$
   public static final String ATTRIBUTE = "attribute"; //$NON-NLS-1$
   public static final String RELATIONSHIP = "relationship"; //$NON-NLS-1$
@@ -96,17 +96,17 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
   private Boolean myAbstractEntity;
   private Boolean myReadOnly;
   private Integer myMaxNumberOfInstancesToBatchFetch;
-  private List myAttributes;
-  private List myRelationships;
-  private List myFetchSpecs;
+  private Set myAttributes;
+  private Set myRelationships;
+  private Set myFetchSpecs;
   private EOModelMap myEntityMap;
   private EOModelMap myFetchSpecsMap;
 
   public EOEntity(EOModel _model) {
     myModel = _model;
-    myAttributes = new WritableList(EOAttribute.class);
-    myRelationships = new WritableList(EORelationship.class);
-    myFetchSpecs = new WritableList(EOFetchSpecification.class);
+    myAttributes = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
+    myRelationships = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
+    myFetchSpecs = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
     myEntityMap = new EOModelMap();
     myFetchSpecsMap = new EOModelMap();
   }
@@ -238,7 +238,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     superclassRelationship.setToMany(Boolean.FALSE);
     superclassRelationship.setDestination(this);
     superclassRelationship.setClassProperty(Boolean.FALSE, false);
-    List primaryKeyAttributes = getPrimaryKeyAttributes();
+    Set primaryKeyAttributes = getPrimaryKeyAttributes();
     Iterator primaryKeyAttributesIter = primaryKeyAttributes.iterator();
     while (primaryKeyAttributesIter.hasNext()) {
       EOAttribute superclassPrimaryKeyAttribute = (EOAttribute) primaryKeyAttributesIter.next();
@@ -537,8 +537,8 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     return referenceFailures;
   }
 
-  public List getReferencingRelationships() {
-    List referencingRelationships = new LinkedList();
+  public Set getReferencingRelationships() {
+    Set referencingRelationships = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
     Iterator modelsIter = getModel().getModelGroup().getModels().iterator();
     while (modelsIter.hasNext()) {
       EOModel model = (EOModel) modelsIter.next();
@@ -559,8 +559,8 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     return referencingRelationships;
   }
 
-  public List getChildrenEntities() {
-    List children = new LinkedList();
+  public Set getChildrenEntities() {
+    Set children = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
     Iterator modelsIter = myModel.getModelGroup().getModels().iterator();
     while (modelsIter.hasNext()) {
       EOModel model = (EOModel) modelsIter.next();
@@ -630,13 +630,13 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     firePropertyChange(EOEntity.RESTRICTING_QUALIFIER, oldRestrictingQualifier, myRestrictingQualifier);
   }
 
-  public void setAttributes(List _attributes) {
+  public void setAttributes(Set _attributes) {
     myAttributes = _attributes;
     firePropertyChange(EOEntity.ATTRIBUTES, null, null);
   }
 
-  public List getPrimaryKeyAttributes() {
-    List primaryKeyAttributes = new LinkedList();
+  public Set getPrimaryKeyAttributes() {
+    Set primaryKeyAttributes = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
     Iterator attributesIter = myAttributes.iterator();
     while (attributesIter.hasNext()) {
       EOAttribute attribute = (EOAttribute) attributesIter.next();
@@ -648,12 +648,12 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     return primaryKeyAttributes;
   }
 
-  public List getAttributes() {
+  public Set getAttributes() {
     return myAttributes;
   }
 
   public String[] getAttributeNames() {
-    List attributes = getAttributes();
+    Set attributes = getAttributes();
     String[] attributeNames = new String[attributes.size()];
     Iterator attributeIter = attributes.iterator();
     for (int attributeNum = 0; attributeIter.hasNext(); attributeNum++) {
@@ -663,11 +663,11 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     return attributeNames;
   }
 
-  public List getRelationships() {
+  public Set getRelationships() {
     return myRelationships;
   }
 
-  public List getFetchSpecs() {
+  public Set getFetchSpecs() {
     return myFetchSpecs;
   }
 
@@ -745,11 +745,13 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
 
   public void addFetchSpecification(EOFetchSpecification _fetchSpecification, boolean _fireEvents, Set _failures) throws DuplicateFetchSpecNameException {
     _checkForDuplicateFetchSpecName(_fetchSpecification, _fetchSpecification.getName(), _failures);
-    List oldFetchSpecs = null;
+    Set oldFetchSpecs = null;
     if (_fireEvents) {
       oldFetchSpecs = myFetchSpecs;
-      myFetchSpecs = new LinkedList(myFetchSpecs);
-      myFetchSpecs.add(_fetchSpecification);
+      Set newFetchSpecs = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
+      newFetchSpecs.addAll(myFetchSpecs);
+      newFetchSpecs.add(_fetchSpecification);
+      myFetchSpecs = newFetchSpecs;
       firePropertyChange(EOEntity.FETCH_SPECIFICATIONS, oldFetchSpecs, myFetchSpecs);
     }
     else {
@@ -768,11 +770,13 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
 
   public synchronized void addAttribute(EOAttribute _attribute, boolean _fireEvents, Set _failures) throws DuplicateNameException {
     _checkForDuplicateAttributeName(_attribute, _attribute.getName(), _failures);
-    List oldAttributes = null;
+    Set oldAttributes = null;
     if (_fireEvents) {
       oldAttributes = myAttributes;
-      myAttributes = new LinkedList(myAttributes);
-      myAttributes.add(_attribute);
+      Set newAttributes = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
+      newAttributes.addAll(myAttributes);
+      newAttributes.add(_attribute);
+      myAttributes = newAttributes;
       firePropertyChange(EOEntity.ATTRIBUTES, oldAttributes, myAttributes);
     }
     else {
@@ -856,11 +860,13 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
 
   public void addRelationship(EORelationship _relationship, boolean _fireEvents, Set _failures) throws DuplicateNameException {
     _checkForDuplicateRelationshipName(_relationship, _relationship.getName(), _failures);
-    List oldRelationships = null;
+    Set oldRelationships = null;
     if (_fireEvents) {
       oldRelationships = myRelationships;
-      myRelationships = new LinkedList(myRelationships);
-      myRelationships.add(_relationship);
+      Set newRelationships = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
+      newRelationships.addAll(myRelationships);
+      newRelationships.add(_relationship);
+      myRelationships = newRelationships;
       firePropertyChange(EOEntity.RELATIONSHIPS, oldRelationships, myRelationships);
     }
     else {
@@ -931,7 +937,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     //Map fetchSpecifications = _entityMap.getMap("fetchSpecificationDictionary");
     // TODO: Fetch Specs
 
-    List attributeList = _entityMap.getList("attributes"); //$NON-NLS-1$
+    Set attributeList = _entityMap.getSet("attributes"); //$NON-NLS-1$
     if (attributeList != null) {
       Iterator attributeIter = attributeList.iterator();
       while (attributeIter.hasNext()) {
@@ -942,7 +948,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
       }
     }
 
-    List relationshipList = _entityMap.getList("relationships"); //$NON-NLS-1$
+    Set relationshipList = _entityMap.getSet("relationships"); //$NON-NLS-1$
     if (relationshipList != null) {
       Iterator relationshipIter = relationshipList.iterator();
       while (relationshipIter.hasNext()) {
@@ -953,7 +959,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
       }
     }
 
-    List attributesUsedForLocking = _entityMap.getList("attributesUsedForLocking"); //$NON-NLS-1$
+    Set attributesUsedForLocking = _entityMap.getSet("attributesUsedForLocking"); //$NON-NLS-1$
     if (attributesUsedForLocking != null) {
       Iterator attributesUsedForLockingIter = attributesUsedForLocking.iterator();
       while (attributesUsedForLockingIter.hasNext()) {
@@ -965,7 +971,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
       }
     }
 
-    List classProperties = _entityMap.getList("classProperties"); //$NON-NLS-1$
+    Set classProperties = _entityMap.getSet("classProperties"); //$NON-NLS-1$
     if (classProperties != null) {
       Iterator classPropertiesIter = classProperties.iterator();
       while (classPropertiesIter.hasNext()) {
@@ -977,7 +983,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
       }
     }
 
-    List primaryKeyAttributes = _entityMap.getList("primaryKeyAttributes"); //$NON-NLS-1$
+    Set primaryKeyAttributes = _entityMap.getSet("primaryKeyAttributes"); //$NON-NLS-1$
     if (primaryKeyAttributes != null) {
       Iterator primaryKeyAttributesIter = primaryKeyAttributes.iterator();
       while (primaryKeyAttributesIter.hasNext()) {
@@ -991,7 +997,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
 
     Map internalInfo = _entityMap.getMap("internalInfo"); //$NON-NLS-1$
     if (internalInfo != null) {
-      List clientClassPropertyNames = _entityMap.getList("_clientClassPropertyNames"); //$NON-NLS-1$
+      Set clientClassPropertyNames = _entityMap.getSet("_clientClassPropertyNames"); //$NON-NLS-1$
       if (clientClassPropertyNames != null) {
         Iterator clientClassPropertyNameIter = clientClassPropertyNames.iterator();
         while (clientClassPropertyNameIter.hasNext()) {
@@ -1007,7 +1013,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
 
   public void loadFetchSpecsFromMap(EOModelMap _map, Set _failures) throws EOModelException {
     myFetchSpecsMap = _map;
-    List sharedObjectFetchSpecificationNames = myEntityMap.getList("sharedObjectFetchSpecificationNames"); //$NON-NLS-1$
+    Set sharedObjectFetchSpecificationNames = myEntityMap.getSet("sharedObjectFetchSpecificationNames"); //$NON-NLS-1$
     Iterator fetchSpecIter = _map.entrySet().iterator();
     while (fetchSpecIter.hasNext()) {
       Map.Entry fetchSpecEntry = (Map.Entry) fetchSpecIter.next();
@@ -1040,11 +1046,11 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     //Map fetchSpecifications = _entityMap.getMap("fetchSpecificationDictionary");
     // TODO: ???
 
-    List classProperties = new LinkedList();
-    List primaryKeyAttributes = new LinkedList();
-    List attributesUsedForLocking = new LinkedList();
-    List clientClassProperties = new LinkedList();
-    List attributes = new LinkedList();
+    Set classProperties = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
+    Set primaryKeyAttributes = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
+    Set attributesUsedForLocking = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
+    Set clientClassProperties = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
+    Set attributes = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
     Iterator attributeIter = myAttributes.iterator();
     while (attributeIter.hasNext()) {
       EOAttribute attribute = (EOAttribute) attributeIter.next();
@@ -1063,9 +1069,9 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
         clientClassProperties.add(attribute.getName());
       }
     }
-    entityMap.setList("attributes", attributes, true); //$NON-NLS-1$
+    entityMap.setSet("attributes", attributes, true); //$NON-NLS-1$
 
-    List relationships = new LinkedList();
+    Set relationships = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
     Iterator relationshipIter = myRelationships.iterator();
     while (relationshipIter.hasNext()) {
       EORelationship relationship = (EORelationship) relationshipIter.next();
@@ -1075,12 +1081,12 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
         classProperties.add(relationship.getName());
       }
     }
-    entityMap.setList("relationships", relationships, true); //$NON-NLS-1$
-    entityMap.setList("attributesUsedForLocking", attributesUsedForLocking, true); //$NON-NLS-1$
-    entityMap.setList("classProperties", classProperties, true); //$NON-NLS-1$
-    entityMap.setList("primaryKeyAttributes", primaryKeyAttributes, true); //$NON-NLS-1$
+    entityMap.setSet("relationships", relationships, true); //$NON-NLS-1$
+    entityMap.setSet("attributesUsedForLocking", attributesUsedForLocking, true); //$NON-NLS-1$
+    entityMap.setSet("classProperties", classProperties, true); //$NON-NLS-1$
+    entityMap.setSet("primaryKeyAttributes", primaryKeyAttributes, true); //$NON-NLS-1$
 
-    List sharedObjectFetchSpecificationNames = new LinkedList();
+    Set sharedObjectFetchSpecificationNames = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
     Iterator fetchSpecsIter = myFetchSpecs.iterator();
     while (fetchSpecsIter.hasNext()) {
       EOFetchSpecification fetchSpec = (EOFetchSpecification) fetchSpecsIter.next();
@@ -1088,7 +1094,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
         sharedObjectFetchSpecificationNames.add(fetchSpec.getName());
       }
     }
-    entityMap.setList("sharedObjectFetchSpecificationNames", sharedObjectFetchSpecificationNames, true); //$NON-NLS-1$
+    entityMap.setSet("sharedObjectFetchSpecificationNames", sharedObjectFetchSpecificationNames, true); //$NON-NLS-1$
 
     Map internalInfoMap = entityMap.getMap("internalInfo"); //$NON-NLS-1$
     if (internalInfoMap == null) {

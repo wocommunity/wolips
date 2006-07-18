@@ -18,6 +18,10 @@ Require-Bundle: org.eclipse.ui,
  org.objectstyle.wolips.woproject,
  org.objectstyle.wolips.cayenne,
  org.eclipse.ui.views.properties.tabbed,
- org.eclipse.jface.databinding
+ org.eclipse.jface.databinding,
+ org.eclipse.jdt.launching,
+ org.eclipse.jdt.debug,
+ org.eclipse.debug.core,
+ org.objectstyle.wolips.launching
 Eclipse-LazyStart: true
 Bundle-Vendor: objectstyle.org

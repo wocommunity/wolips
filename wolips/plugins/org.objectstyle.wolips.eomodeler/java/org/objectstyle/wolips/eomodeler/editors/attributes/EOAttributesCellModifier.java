@@ -49,6 +49,7 @@
  */
 package org.objectstyle.wolips.eomodeler.editors.attributes;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import org.eclipse.jface.viewers.CellEditor;
@@ -78,7 +79,7 @@ public class EOAttributesCellModifier extends TablePropertyCellModifier {
     //    }
     if (_property == EOAttribute.PROTOTYPE) {
       EOEntity entity = (EOEntity) getTableViewer().getInput();
-      myPrototypeNames = entity.getModel().getModelGroup().getPrototypeAttributeNames();
+      myPrototypeNames = new LinkedList(entity.getModel().getModelGroup().getPrototypeAttributeNames());
       myPrototypeNames.add(0, EOAttributesCellModifier.NO_PROTOYPE_VALUE);
       String[] prototypeNames = (String[]) myPrototypeNames.toArray(new String[myPrototypeNames.size()]);
       KeyComboBoxCellEditor cellEditor = (KeyComboBoxCellEditor) myCellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, _property)];
