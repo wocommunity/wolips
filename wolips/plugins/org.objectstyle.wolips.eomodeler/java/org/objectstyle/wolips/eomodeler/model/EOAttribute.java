@@ -61,7 +61,6 @@ import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.kvc.IKey;
 import org.objectstyle.wolips.eomodeler.kvc.ResolvedKey;
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
-import org.objectstyle.wolips.eomodeler.utils.MapUtils;
 import org.objectstyle.wolips.eomodeler.utils.StringUtils;
 
 public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribute {
@@ -699,7 +698,7 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
     myDefinition = _attributeMap.getString("definition", true); //$NON-NLS-1$
     myReadFormat = _attributeMap.getString("readFormat", true); //$NON-NLS-1$
     myWriteFormat = _attributeMap.getString("writeFormat", true); //$NON-NLS-1$
-    setUserInfo(MapUtils.toStringMap(_attributeMap.getMap("userInfo", true)), false); //$NON-NLS-1$
+    setUserInfo(_attributeMap.getMap("userInfo", true), false); //$NON-NLS-1$
   }
 
   public EOModelMap toMap() {

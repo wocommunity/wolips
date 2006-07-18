@@ -49,20 +49,8 @@
  */
 package org.objectstyle.wolips.eomodeler.kvc;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Member;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.HashMap;
-import java.util.Map;
 
 public class Key implements IKey {
-  private static final int GET = 1;
-  private static final int SET = 2;
-  private static final String[] GET_METHOD_PREFIXES = { "get", "", "_", "_get", "is", "_is" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
-  private static final String[] SET_METHOD_PREFIXES = { "set", "", "_", "_set" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-  private static final String[] FIELD_PREFIXES = { "", "_" }; //$NON-NLS-1$ //$NON-NLS-2$
-
   private String myName;
 
   public Key(String _name) {
@@ -78,14 +66,8 @@ public class Key implements IKey {
   }
 
   public Class getType(Object _instance) {
-    Member getMember = getGetMember(_instance);
-    Class nextClass;
-    if (getMember instanceof Method) {
-      nextClass = ((Method) getMember).getReturnType();
-    }
-    else {
-      nextClass = ((Field) getMember).getType();
-    }
+    IKey getMember = getGetMember(_instance);
+    Class nextClass = getMember.getType(_instance);
     return nextClass;
   }
 
@@ -100,155 +82,41 @@ public class Key implements IKey {
     return clazz;
   }
 
-  protected Member getSetMember(Object _instance) {
-    Member setMember;
+  protected IKey getSetMember(Object _instance) {
+    IKey setMember;
     Class clazz = getClass(_instance);
     if (clazz == null) {
       setMember = null;
     }
     else {
-      Map members = new HashMap();
-      Class currentClass = clazz;
-      while (currentClass != null) {
-        hashMembers(currentClass.getDeclaredFields(), members, Key.SET);
-        currentClass = currentClass.getSuperclass();
-      }
-      currentClass = clazz;
-      while (currentClass != null) {
-        hashMembers(currentClass.getDeclaredMethods(), members, Key.SET);
-        currentClass = currentClass.getSuperclass();
-      }
-      setMember = getMemberWithPrefixes(myName, Key.SET_METHOD_PREFIXES, members);
-      if (setMember == null) {
-        setMember = getMemberWithPrefixes(myName, Key.FIELD_PREFIXES, members);
-        if (setMember == null) {
-          throw new IllegalArgumentException("There is no set-method named '" + myName + "' on the class " + clazz.getName() + ".");
-        }
-      }
+      MemberContainer memberContainer = new MemberContainer(clazz, MemberContainer.SET);
+      setMember = memberContainer.getMember(_instance, myName);
     }
     return setMember;
   }
 
-  protected Member getGetMember(Object _instance) {
-    Member getMember;
+  protected IKey getGetMember(Object _instance) {
+    IKey getMember;
     Class clazz = getClass(_instance);
     if (clazz == null) {
       getMember = null;
     }
     else {
-      Map members = new HashMap();
-      Class currentClass = clazz;
-      while (currentClass != null) {
-        hashMembers(currentClass.getDeclaredFields(), members, Key.GET);
-        currentClass = currentClass.getSuperclass();
-      }
-      currentClass = clazz;
-      while (currentClass != null) {
-        hashMembers(currentClass.getDeclaredMethods(), members, Key.GET);
-        currentClass = currentClass.getSuperclass();
-      }
-      getMember = getMemberWithPrefixes(myName, Key.GET_METHOD_PREFIXES, members);
-      if (getMember == null) {
-        getMember = getMemberWithPrefixes(myName, Key.FIELD_PREFIXES, members);
-        if (getMember == null) {
-          throw new IllegalArgumentException("There is no get-method named '" + myName + "' on the class " + clazz.getName() + ".");
-        }
-      }
+      MemberContainer memberContainer = new MemberContainer(clazz, MemberContainer.GET);
+      getMember = memberContainer.getMember(_instance, myName);
     }
     return getMember;
   }
 
   public void setValue(Object _instance, Object _value) {
-    try {
-      Member setMember = getSetMember(_instance);
-      if (setMember instanceof Method) {
-        ((Method) setMember).invoke(_instance, new Object[] { _value });
-      }
-      else if (setMember instanceof Field) {
-        ((Field) setMember).set(_instance, _value);
-      }
-      else {
-        throw new IllegalArgumentException("Unknown type of member '" + setMember + "'.");
-      }
-    }
-    catch (Exception e) {
-      throw new RuntimeException("Failed to set value of '" + myName + "' on " + _instance, e);
-    }
+    IKey setMember = getSetMember(_instance);
+    setMember.setValue(_instance, _value);
   }
 
   public Object getValue(Object _instance) {
-    try {
-      Object value;
-      Member getMember = getGetMember(_instance);
-      if (getMember instanceof Method) {
-        value = ((Method) getMember).invoke(_instance, null);
-      }
-      else if (getMember instanceof Field) {
-        value = ((Field) getMember).get(_instance);
-      }
-      else {
-        throw new IllegalArgumentException("Unknown type of member '" + getMember + "'.");
-      }
-      return value;
-    }
-    catch (Exception e) {
-      throw new RuntimeException("Failed to get value of '" + myName + "' on " + _instance, e);
-    }
-  }
-
-  protected void hashMembers(Member[] _members, Map _membersMap, int _getOrSet) {
-    for (int memberNum = 0; memberNum < _members.length; memberNum++) {
-      Member member = _members[memberNum];
-      int modifiers = member.getModifiers();
-      if (Modifier.isPublic(modifiers) && !Modifier.isStatic(modifiers)) {
-        boolean matches = false;
-        if (_getOrSet == Key.GET) {
-          if (member instanceof Field) {
-            matches = true;
-          }
-          else {
-            Method method = (Method) member;
-            matches = method.getReturnType() != null && method.getParameterTypes().length == 0;
-          }
-        }
-        else if (_getOrSet == Key.SET) {
-          if (member instanceof Field) {
-            matches = true;
-          }
-          else {
-            Method method = (Method) member;
-            matches = method.getReturnType() == void.class && method.getParameterTypes().length == 1;
-          }
-        }
-        if (matches) {
-          _membersMap.put(member.getName(), member);
-        }
-      }
-    }
-  }
-
-  protected Member getMemberWithPrefixes(String _key, String[] _prefixes, Map _membersMap) {
-    Member matchingMember = null;
-    for (int prefixNum = 0; matchingMember == null && prefixNum < _prefixes.length; prefixNum++) {
-      String prefix = _prefixes[prefixNum];
-      boolean capitalize = prefix.length() > 1; // Don't capitalize blank and _ prefixes
-      String keyWithPrefix = prependToKey(prefix, _key, capitalize);
-      matchingMember = (Member) _membersMap.get(keyWithPrefix);
-    }
-    return matchingMember;
-  }
-
-  protected String prependToKey(String _prepend, String _key, boolean _capitalize) {
-    StringBuffer sb = new StringBuffer();
-    sb.append(_prepend);
-    if (_capitalize) {
-      sb.append(Character.toUpperCase(_key.charAt(0)));
-      sb.append(_key.substring(1));
-    }
-    else {
-      sb.append(_key);
-    }
-    return sb.toString();
+    IKey getMember = getGetMember(_instance);
+    Object value = getMember.getValue(_instance);
+    return value;
   }
 
   public String toString() {

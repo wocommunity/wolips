@@ -49,18 +49,17 @@
  */
 package org.objectstyle.wolips.eomodeler.kvc;
 
-import java.lang.reflect.Member;
 
 public class CachingKey extends Key {
   private Class myCacheClass;
-  private Member myGetMember;
-  private Member mySetMember;
+  private IKey myGetMember;
+  private IKey mySetMember;
 
   public CachingKey(String _name) {
     super(_name);
   }
 
-  protected synchronized Class getClass(Object _instance) {
+  public synchronized Class getType(Object _instance) {
     Class clazz = super.getClass(_instance);
     if (myCacheClass != clazz) {
       myGetMember = null;
@@ -70,14 +69,14 @@ public class CachingKey extends Key {
     return clazz;
   }
 
-  protected Member getGetMember(Object _instance) {
+  protected IKey getGetMember(Object _instance) {
     if (myGetMember == null) {
       myGetMember = super.getGetMember(_instance);
     }
     return myGetMember;
   }
 
-  protected Member getSetMember(Object _instance) {
+  protected IKey getSetMember(Object _instance) {
     if (mySetMember == null) {
       mySetMember = super.getSetMember(_instance);
     }

@@ -57,7 +57,6 @@ import java.util.Set;
 
 import org.eclipse.jface.internal.databinding.provisional.observable.list.WritableList;
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
-import org.objectstyle.wolips.eomodeler.utils.MapUtils;
 
 public class EOFetchSpecification extends UserInfoableEOModelObject implements IEOEntityRelative {
   public static final String NAME = "name"; //$NON-NLS-1$
@@ -325,7 +324,7 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
     myRefreshesRefetchedObjects = _map.getBoolean("refreshesRefetchedObjects"); //$NON-NLS-1$
     myRequiresAllQualifierBindingVariables = _map.getBoolean("requiresAllQualifierBindingVariables"); //$NON-NLS-1$
     myUsesDistinct = _map.getBoolean("usesDistinct"); //$NON-NLS-1$
-    setUserInfo(MapUtils.toStringMap(_map.getMap("userInfo", true)), false); //$NON-NLS-1$
+    setUserInfo(_map.getMap("userInfo", true), false); //$NON-NLS-1$
 
     List sortOrderings = _map.getList("sortOrderings"); //$NON-NLS-1$
     if (sortOrderings != null) {
