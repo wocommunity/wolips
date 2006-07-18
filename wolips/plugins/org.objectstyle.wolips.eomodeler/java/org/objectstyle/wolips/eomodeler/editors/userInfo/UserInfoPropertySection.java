@@ -79,6 +79,7 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.model.IUserInfoable;
 import org.objectstyle.wolips.eomodeler.utils.NotificationMap;
+import org.objectstyle.wolips.eomodeler.utils.TablePropertyViewerSorter;
 import org.objectstyle.wolips.eomodeler.utils.TableUtils;
 
 public class UserInfoPropertySection extends AbstractPropertySection {
@@ -112,7 +113,9 @@ public class UserInfoPropertySection extends AbstractPropertySection {
     myUserInfoTableViewer.setContentProvider(new UserInfoContentProvider());
     myUserInfoTableViewer.setLabelProvider(new UserInfoLabelProvider(UserInfoPropertySection.COLUMNS));
     myUserInfoTableViewer.setColumnProperties(UserInfoPropertySection.COLUMNS);
+    myUserInfoTableViewer.setSorter(new TablePropertyViewerSorter(myUserInfoTableViewer, UserInfoPropertySection.COLUMNS));
     myUserInfoTableViewer.addSelectionChangedListener(new UserInfoSelectionListener());
+    ((TablePropertyViewerSorter) myUserInfoTableViewer.getSorter()).sort(UserInfoPropertySection.KEY);
 
     CellEditor[] cellEditors = new CellEditor[UserInfoPropertySection.COLUMNS.length];
     cellEditors[TableUtils.getColumnNumber(UserInfoPropertySection.COLUMNS, UserInfoPropertySection.KEY)] = new TextCellEditor(myUserInfoTableViewer.getTable());
