@@ -38,10 +38,11 @@
 	</target>
 
 	<!-- ========================================== -->
-	<!-- Load version provided by buidserver.                            -->
+	<!-- Load version provided by repository.                            -->
 	<!-- ========================================== -->
 	<target name="load.version.file">
-		<loadfile property="build.version" srcFile="buildserver.version" />
+		<xmlproperty file=".svn/entries"/>
+		<property name="build.version" value="${buildprefix.version}${wc-entries.entry(revision)}" />
 	</target>
 
 	<!-- ========================================== -->
