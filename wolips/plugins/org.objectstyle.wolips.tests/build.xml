@@ -20,6 +20,10 @@
                 <include name="**/*.jar"/>
 	        </fileset>
             <pathelement path="../../../${build.output.java.dir}"/>
+        <pathelement path = "/System/Library/Frameworks/JavaEOAccess.framework/Versions/A/Resources/Java/javaeoaccess.jar"/>
+	      <pathelement path = "/System/Library/Frameworks/JavaFoundation.framework/Versions/A/Resources/Java/javafoundation.jar"/>
+  	    <pathelement path = "/System/Library/Frameworks/JavaEOControl.framework/Versions/A/Resources/Java/javaeocontrol.jar"/>
+        <pathelement path = "/System/Library/Frameworks/JavaXML.framework/Resources/Java/javaxml.jar"/>
         </path>
 	    <ant dir="." antfile="../../../${project.buildscripts.dir}/plugin-project.xml" target="java">
             <property name="param.plugin.dir" value="."/>
