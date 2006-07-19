@@ -59,6 +59,7 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import junit.framework.TestCase;
@@ -83,37 +84,48 @@ public class EOModelCompatibilityTest extends TestCase {
       _folder.delete();
     }
   }
+
   public void testModel() {
+    testModel(new File("data/Model1.eomodeld"), new File[] { new File("/Library/Frameworks/ERPrototypes.framework/Resources/erprototypes.eomodeld") });
+  }
+
+  public void testModel(File _modelFolder, File[] _additionalModels) {
     try {
-      File tempFolder1 = new File("/tmp/_Model1.eomodeld");
-      File tempFolder2 = new File("/tmp/_Model2.eomodeld");
-      File tempFolder3 = new File("/tmp/_Model3.eomodeld");
+      File tempFolder1 = new File("/tmp/_WOOutput" + _modelFolder.getName());
+      File tempFolder2 = new File("/tmp/_WOLipsOutput" + _modelFolder.getName());
+      File tempFolder3 = new File("/tmp/_WOLipsWOOutput" + _modelFolder.getName());
       deleteFolder(tempFolder1);
       deleteFolder(tempFolder2);
       deleteFolder(tempFolder3);
 
-      File modelFolder = new File("data/Model1.eomodeld");
-      File prototypeModelFolder = new File("/Library/Frameworks/ERPrototypes.framework/Resources/erprototypes.eomodeld");
       com.webobjects.eoaccess.EOModelGroup woGroup = new com.webobjects.eoaccess.EOModelGroup();
-      woGroup.addModelWithPathURL(prototypeModelFolder.toURL());
-      com.webobjects.eoaccess.EOModel woModel = woGroup.addModelWithPathURL(modelFolder.toURL());
+      for (int additionalModelsNum = 0; additionalModelsNum < _additionalModels.length; additionalModelsNum++) {
+        woGroup.addModelWithPathURL(_additionalModels[additionalModelsNum].toURL());
+      }
+      com.webobjects.eoaccess.EOModel woModel = woGroup.addModelWithPathURL(_modelFolder.toURL());
       woModel.writeToFile(tempFolder1.getAbsolutePath());
 
       org.objectstyle.wolips.eomodeler.model.EOModelGroup wolipsGroup = new org.objectstyle.wolips.eomodeler.model.EOModelGroup();
       Set failures = new HashSet();
-      wolipsGroup.addModelFromFolder(prototypeModelFolder, failures);
-      org.objectstyle.wolips.eomodeler.model.EOModel wolipsModel = wolipsGroup.addModelFromFolder(modelFolder, failures);
+      for (int additionalModelsNum = 0; additionalModelsNum < _additionalModels.length; additionalModelsNum++) {
+        wolipsGroup.addModelFromFolder(_additionalModels[additionalModelsNum], failures);
+      }
+      org.objectstyle.wolips.eomodeler.model.EOModel wolipsModel = wolipsGroup.addModelFromFolder(_modelFolder, failures);
       wolipsGroup.resolve(failures);
       wolipsGroup.verify(failures);
+      Iterator failuresIter = failures.iterator();
+      while (failuresIter.hasNext()) {
+        System.out.println("EOModelCompatibilityTest.testModel: " + failuresIter.next());
+      }
       wolipsModel.saveToFolder(tempFolder2);
 
-      com.webobjects.eoaccess.EOModelGroup woGroup2 = new com.webobjects.eoaccess.EOModelGroup();
-      woGroup2.addModelWithPathURL(prototypeModelFolder.toURL());
-      com.webobjects.eoaccess.EOModel woModel2 = woGroup2.addModelWithPathURL(tempFolder2.toURL());
-      woModel2.writeToFile(tempFolder3.getAbsolutePath());
+      com.webobjects.eoaccess.EOModelGroup wolipsWOGroup = new com.webobjects.eoaccess.EOModelGroup();
+      for (int additionalModelsNum = 0; additionalModelsNum < _additionalModels.length; additionalModelsNum++) {
+        wolipsWOGroup.addModelWithPathURL(_additionalModels[additionalModelsNum].toURL());
+      }
+      com.webobjects.eoaccess.EOModel wolipsWOModel = wolipsWOGroup.addModelWithPathURL(tempFolder2.toURL());
+      wolipsWOModel.writeToFile(tempFolder3.getAbsolutePath());
       //deleteFolder(tempFolder2);
-
-      System.out.println("EOModelCompatibilityTest.testModel: " + failures);
     }
     catch (Throwable e) {
       throw new RuntimeException("Failed", e);
