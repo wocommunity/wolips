@@ -68,6 +68,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -243,15 +244,35 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
     doSave(null);
   }
 
+  private static int switchMode = -1;
+  
   public void init(IEditorSite _site, IEditorInput _editorInput) throws PartInitException {
     try {
       IWorkbench workbench = Activator.getDefault().getWorkbench();
       IWorkbenchPage workbenchPage = workbench.getActiveWorkbenchWindow().getActivePage();
-      if (workbenchPage != null && !EOModelerPerspectiveFactory.EOMODELER_PERSPECTIVE_ID.equals(workbenchPage.getPerspective().getId())) {
-        boolean switchPerspectives = MessageDialog.openQuestion(Display.getDefault().getActiveShell(), Messages.getString("EOModelEditor.switchPerspectivesTitle"), Messages.getString("EOModelEditor.switchPerspectivesMessage")); //$NON-NLS-1$ //$NON-NLS-2$
-        if (switchPerspectives) {
-          workbench.showPerspective(EOModelerPerspectiveFactory.EOMODELER_PERSPECTIVE_ID, workbench.getActiveWorkbenchWindow());
-        }
+      int result = switchMode;
+      if (workbenchPage != null 
+    		  && !EOModelerPerspectiveFactory.EOMODELER_PERSPECTIVE_ID.equals(workbenchPage.getPerspective().getId()) && result < 2) {
+    	  // FIXME AK: this sucks, as we only keep this pref for the session, but's I'm totally tired of this dialog
+    	  MessageDialog dialog = new MessageDialog(Display.getDefault().getActiveShell(), 
+    			  Messages.getString("EOModelEditor.switchPerspectivesTitle"),  //$NON-NLS-2$
+    			  null,
+    			  Messages.getString("EOModelEditor.switchPerspectivesMessage"),  //$NON-NLS-2$
+    			  MessageDialog.QUESTION, 
+    			  new String[] { 
+    		  IDialogConstants.YES_LABEL,
+    		  IDialogConstants.NO_LABEL,
+    		  Messages.getString("EOModelEditor.switchPerspectivesAlways"),  //$NON-NLS-2$
+    		  Messages.getString("EOModelEditor.switchPerspectivesNever") //$NON-NLS-2$
+    	  }, 
+    	  0); // yes is the default
+    	  result = dialog.open();
+    	  if(result > 1) {
+    		  switchMode = result;
+    	  }
+      }
+      if(result == 0 || result == 2) {
+    		  workbench.showPerspective(EOModelerPerspectiveFactory.EOMODELER_PERSPECTIVE_ID, workbench.getActiveWorkbenchWindow());
       }
     }
     catch (WorkbenchException e) {
