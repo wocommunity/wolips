@@ -83,7 +83,7 @@ public class EOModelMap implements Map {
       myBackingMap.remove(_value);
     }
     else {
-      myBackingMap.put(_key, _value.booleanValue() ? "Y" : "N"); //$NON-NLS-1$ //$NON-NLS-2$
+      myBackingMap.put(_key, _value.booleanValue() ? "YES" : "NO"); //$NON-NLS-1$ //$NON-NLS-2$
     }
   }
 
