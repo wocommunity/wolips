@@ -22,6 +22,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jdt.launching,
  org.eclipse.jdt.debug,
  org.eclipse.debug.core,
- org.objectstyle.wolips.launching
+ org.objectstyle.wolips.launching,
+ org.objectstyle.wolips.templateengine
 Eclipse-LazyStart: true
 Bundle-Vendor: objectstyle.org

@@ -57,6 +57,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.jface.internal.databinding.provisional.observable.list.WritableList;
+import org.objectstyle.cayenne.exp.parser.Node;
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
 
 public class EOFetchSpecification extends UserInfoableEOModelObject implements IEOEntityRelative, ISortableEOModelObject {
@@ -88,7 +89,7 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
   private Boolean myRequiresAllQualifierBindingVariables;
   private Boolean myUsesDistinct;
   private List mySortOrderings;
-  private IEOQualifier myQualifier;
+  private Node myQualifier;
   private EOModelMap myFetchSpecMap;
   private Boolean mySharesObjects;
 
@@ -199,13 +200,13 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
     }
   }
 
-  public void setQualifier(IEOQualifier _qualifier) {
-    IEOQualifier oldQualifier = myQualifier;
+  public void setQualifier(Node _qualifier) {
+    Node oldQualifier = myQualifier;
     myQualifier = _qualifier;
     firePropertyChange(EOFetchSpecification.QUALIFIER, oldQualifier, myQualifier);
   }
 
-  public IEOQualifier getQualifier() {
+  public Node getQualifier() {
     return myQualifier;
   }
 
@@ -319,8 +320,9 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
 
     Map qualifierMap = _map.getMap("qualifier"); //$NON-NLS-1$
     if (qualifierMap != null) {
-      myQualifier = EOQualifierFactory.qualifierForMap(new EOModelMap(qualifierMap));
+      myQualifier = EOQualifierFactory.createNodeFromQualifierMap(new EOModelMap(qualifierMap));
     }
+    System.out.println("EOFetchSpecification.loadFromMap: qualifier = " + myQualifier);
     myRawRowKeyPaths = _map.getSet("rawRowKeyPaths", true); //$NON-NLS-1$
     myRefreshesRefetchedObjects = _map.getBoolean("refreshesRefetchedObjects"); //$NON-NLS-1$
     myRequiresAllQualifierBindingVariables = _map.getBoolean("requiresAllQualifierBindingVariables"); //$NON-NLS-1$
@@ -352,7 +354,7 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
       fetchSpecMap.setMap("qualifier", null, true); //$NON-NLS-1$
     }
     else {
-      fetchSpecMap.setMap("qualifier", myQualifier.toMap(), true); //$NON-NLS-1$
+      fetchSpecMap.setMap("qualifier", EOQualifierFactory.createQualifierMapFromNode(myQualifier), true); //$NON-NLS-1$
     }
     fetchSpecMap.setSet("rawRowKeyPaths", myRawRowKeyPaths, true); //$NON-NLS-1$
     fetchSpecMap.setBoolean("refreshesRefetchedObjects", myRefreshesRefetchedObjects); //$NON-NLS-1$
@@ -377,9 +379,9 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
 
   public void verify(Set _failures) {
     // TODO
-    if (myQualifier != null) {
-      myQualifier.verify(_failures);
-    }
+    //    if (myQualifier != null) {
+    //      myQualifier.verify(_failures);
+    //    }
     Iterator sortOrderingsIter = mySortOrderings.iterator();
     while (sortOrderingsIter.hasNext()) {
       EOSortOrdering sortOrdering = (EOSortOrdering) sortOrderingsIter.next();
