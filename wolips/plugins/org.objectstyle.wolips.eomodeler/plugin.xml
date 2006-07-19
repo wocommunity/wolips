@@ -11,13 +11,13 @@
             icon="icons/eoModel.gif"
             id="org.objectstyle.wolips.eomodeler.editors.EOModelEditor"
             matchingStrategy="org.objectstyle.wolips.eomodeler.editors.EOModelMatchingStrategy"
-            name="EOModel Editor">
+            name="Entity Modeler">
       </editor>
    </extension>
    <extension
          point="org.eclipse.ui.newWizards">
       <wizard
-            name="EOModel (Experimental)"
+            name="Entity Modeler (Experimental)"
             icon="icons/eoModel.gif"
             category="org.objectstyle.wolips.wizards"
             class="org.objectstyle.wolips.eomodeler.wizards.SampleNewWizard"
@@ -246,9 +246,9 @@
    <extension
          point="org.eclipse.ui.actionSets">
       <actionSet
-            description="EOModeler Actions"
+            description="Entity Modeler Actions"
             id="org.objectstyle.wolips.eomodeler.actionSet"
-            label="EOModeler"
+            label="Entity Modeler"
             visible="true">
          <action
                class="org.objectstyle.wolips.eomodeler.actions.DeleteAction"
