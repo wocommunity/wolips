@@ -60,6 +60,7 @@ import java.util.Set;
 import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.kvc.IKey;
 import org.objectstyle.wolips.eomodeler.kvc.ResolvedKey;
+import org.objectstyle.wolips.eomodeler.utils.BooleanUtils;
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.utils.StringUtils;
 
@@ -368,12 +369,11 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
 
   public void setAllowsNull(Boolean _allowsNull, boolean _fireEvents) {
     Boolean oldAllowsNull = myAllowsNull;
-    if (myPrimaryKey != null && myPrimaryKey.booleanValue()) {
-      myAllowsNull = Boolean.FALSE;
+    Boolean newAllowsNull = _allowsNull;
+    if (_fireEvents && BooleanUtils.isTrue(myPrimaryKey)) {
+      newAllowsNull = Boolean.FALSE;
     }
-    else {
-      myAllowsNull = (Boolean) _nullIfPrototyped(EOAttribute.ALLOWS_NULL, _allowsNull);
-    }
+    myAllowsNull = (Boolean) _nullIfPrototyped(EOAttribute.ALLOWS_NULL, newAllowsNull);
     if (_fireEvents) {
       firePropertyChange(EOAttribute.ALLOWS_NULL, oldAllowsNull, getAllowsNull());
     }
@@ -431,7 +431,7 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
     Boolean oldPrimaryKey = myPrimaryKey;
     //myPrimaryKey = (Boolean) _nullIfPrototyped(EOAttribute.PRIMARY_KEY, _primaryKey);
     myPrimaryKey = _primaryKey;
-    if (_primaryKey != null && _primaryKey.booleanValue()) {
+    if (_fireEvents && BooleanUtils.isTrue(_primaryKey)) {
       setAllowsNull(Boolean.FALSE, _fireEvents);
     }
     if (_fireEvents) {
