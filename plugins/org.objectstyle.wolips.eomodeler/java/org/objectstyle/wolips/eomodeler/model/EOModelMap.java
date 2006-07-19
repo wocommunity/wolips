@@ -58,6 +58,8 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 public class EOModelMap implements Map {
+  public static final int YESNO = 1;
+  public static final int YN = 2;
   private Map myBackingMap;
 
   public EOModelMap() {
@@ -78,12 +80,15 @@ public class EOModelMap implements Map {
     return myBackingMap;
   }
 
-  public void setBoolean(String _key, Boolean _value) {
+  public void setBoolean(String _key, Boolean _value, int _booleanStyle) {
     if (_value == null) {
       myBackingMap.remove(_value);
     }
-    else {
+    else if (_booleanStyle == EOModelMap.YESNO) {
       myBackingMap.put(_key, _value.booleanValue() ? "YES" : "NO"); //$NON-NLS-1$ //$NON-NLS-2$
+    }
+    else {
+      myBackingMap.put(_key, _value.booleanValue() ? "Y" : "N"); //$NON-NLS-1$ //$NON-NLS-2$
     }
   }
 

@@ -266,7 +266,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
     return myConnectionDictionary;
   }
 
-  public void loadFromFolder(File _modelFolder, boolean _resolveImmediately, Set _failures) throws EOModelException, IOException {
+  public void loadFromFolder(File _modelFolder, Set _failures) throws EOModelException, IOException {
     File indexFile = new File(_modelFolder, "index.eomodeld"); //$NON-NLS-1$
     if (!indexFile.exists()) {
       throw new EOModelException(indexFile + " does not exist.");
@@ -309,10 +309,6 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
     if (internalInfoMap != null) {
       myDeletedEntityNamesInObjectStore = modelMap.getSet("_deletedEntityNamesInObjectStore", true); //$NON-NLS-1$
     }
-
-    if (_resolveImmediately) {
-      resolve(_failures);
-    }
   }
 
   public EOModelMap toMap() {
@@ -344,19 +340,27 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
     Map internalInfoMap = modelMap.getMap("internalInfo"); //$NON-NLS-1$
     if (internalInfoMap == null) {
       internalInfoMap = new HashMap();
-      modelMap.put("internalInfo", internalInfoMap); //$NON-NLS-1$
     }
-    if (myDeletedEntityNamesInObjectStore != null) {
+    if (myDeletedEntityNamesInObjectStore != null && !myDeletedEntityNamesInObjectStore.isEmpty()) {
       internalInfoMap.put("_deletedEntityNamesInObjectStore", myDeletedEntityNamesInObjectStore); //$NON-NLS-1$
     }
-
-    modelMap.put("userInfo", getUserInfo()); //$NON-NLS-1$
+    else {
+      internalInfoMap.remove("_deletedEntityNamesInObjectStore"); //$NON-NLS-1$
+    }
+    modelMap.setMap("internalInfo", internalInfoMap, true); //$NON-NLS-1$
+    modelMap.setMap("userInfo", getUserInfo(), true); //$NON-NLS-1$
 
     return modelMap;
   }
 
   public void saveToFolder(File _parentFolder) throws IOException {
-    File modelFolder = new File(_parentFolder, myName + ".eomodeld"); //$NON-NLS-1$
+    File modelFolder;
+    if (_parentFolder.getName().endsWith(".eomodeld")) {
+      modelFolder = _parentFolder;
+    }
+    else {
+      modelFolder = new File(_parentFolder, myName + ".eomodeld"); //$NON-NLS-1$
+    }
     if (!modelFolder.exists()) {
       if (!modelFolder.mkdirs()) {
         throw new IOException("Failed to create folder '" + modelFolder + "'.");

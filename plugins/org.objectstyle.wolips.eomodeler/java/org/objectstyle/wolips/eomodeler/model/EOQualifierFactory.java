@@ -114,32 +114,32 @@ public class EOQualifierFactory {
         }
         String selectorName = _qualifierMap.getString("selectorName", true); //$NON-NLS-1$
         ASTObjPath objPath = new ASTObjPath(key);
-        if ("isEqualTo:".equals(selectorName)) { //$NON-NLS-1$
+        if (EOQualifierFactory.isSelectorNameEqual("isEqualTo", selectorName)) { //$NON-NLS-1$
           node = new ASTEqual(objPath, value);
         }
-        else if ("isNotEqualTo:".equals(selectorName)) { //$NON-NLS-1$
+        else if (EOQualifierFactory.isSelectorNameEqual("isNotEqualTo", selectorName)) { //$NON-NLS-1$
           node = new ASTNotEqual(objPath, value);
         }
-        else if ("isLessThan:".equals(selectorName)) { //$NON-NLS-1$
+        else if (EOQualifierFactory.isSelectorNameEqual("isLessThan", selectorName)) { //$NON-NLS-1$
           node = new ASTLess(objPath, value);
         }
-        else if ("isGreaterThan:".equals(selectorName)) { //$NON-NLS-1$
+        else if (EOQualifierFactory.isSelectorNameEqual("isGreaterThan", selectorName)) { //$NON-NLS-1$
           node = new ASTGreater(objPath, value);
         }
-        else if ("isLessThanOrEqualTo:".equals(selectorName)) { //$NON-NLS-1$
+        else if (EOQualifierFactory.isSelectorNameEqual("isLessThanOrEqualTo", selectorName)) { //$NON-NLS-1$
           node = new ASTLessOrEqual(objPath, value);
         }
-        else if ("isGreaterThanOrEqualTo:".equals(selectorName)) { //$NON-NLS-1$
+        else if (EOQualifierFactory.isSelectorNameEqual("isGreaterThanOrEqualTo", selectorName)) { //$NON-NLS-1$
           node = new ASTGreaterOrEqual(objPath, value);
         }
-        else if ("doesContain:".equals(selectorName)) { //$NON-NLS-1$
+        else if (EOQualifierFactory.isSelectorNameEqual("doesContain", selectorName)) { //$NON-NLS-1$
           //node = new ASTEqual(objPath, value);
           throw new IllegalArgumentException("Not sure what 'doesContain:' maps onto.");
         }
-        else if ("isLike:".equals(selectorName)) { //$NON-NLS-1$
+        else if (EOQualifierFactory.isSelectorNameEqual("isLike", selectorName)) { //$NON-NLS-1$
           node = new ASTLike(objPath, value);
         }
-        else if ("isCaseInsensitiveLike:".equals(selectorName)) { //$NON-NLS-1$
+        else if (EOQualifierFactory.isSelectorNameEqual("isCaseInsensitiveLike", selectorName)) { //$NON-NLS-1$
           node = new ASTLikeIgnoreCase(objPath, value);
         }
         else {
@@ -151,6 +151,10 @@ public class EOQualifierFactory {
       }
     }
     return node;
+  }
+  
+  private static boolean isSelectorNameEqual(String _expectedName, String _possibleName) {
+    return _expectedName.equals(_possibleName) || (_expectedName + ":").equals(_possibleName);
   }
 
   private static Collection createNodesFromQualifierMaps(Collection _qualifiers) {

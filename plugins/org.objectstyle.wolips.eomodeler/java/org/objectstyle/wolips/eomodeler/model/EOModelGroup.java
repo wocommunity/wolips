@@ -213,33 +213,35 @@ public class EOModelGroup extends EOModelObject {
     return matchingModel;
   }
 
-  public void addModelsFromFolder(File _folder, boolean _resolveImmediately, Set _failures) throws IOException, EOModelException {
-    addModelsFromFolder(_folder, true, _resolveImmediately, _failures);
+  public void addModelsFromFolder(File _folder, Set _failures) throws IOException, EOModelException {
+    addModelsFromFolder(_folder, true, _failures);
   }
 
-  public void addModelsFromFolder(File _folder, boolean _recursive, boolean _resolveImmediately, Set _failures) throws IOException, EOModelException {
+  public void addModelsFromFolder(File _folder, boolean _recursive, Set _failures) throws IOException, EOModelException {
     File[] files = _folder.listFiles();
     for (int fileNum = 0; fileNum < files.length; fileNum++) {
       String name = files[fileNum].getName();
       if (files[fileNum].isDirectory()) {
         if (name.endsWith(".eomodeld")) { //$NON-NLS-1$
-          addModelFromFolder(files[fileNum], _resolveImmediately, _failures);
+          addModelFromFolder(files[fileNum], _failures);
         }
         else if (_recursive) {
-          addModelsFromFolder(files[fileNum], _recursive, _resolveImmediately, _failures);
+          addModelsFromFolder(files[fileNum], _recursive, _failures);
         }
       }
     }
   }
 
-  public void addModelFromFolder(File _folder, boolean _resolveImmediately, Set _failures) throws IOException, EOModelException {
+  public EOModel addModelFromFolder(File _folder, Set _failures) throws IOException, EOModelException {
     String name = _folder.getName();
     String modelName = name.substring(0, name.indexOf('.'));
-    if (!containsModelNamed(modelName)) {
-      EOModel model = new EOModel(this, modelName);
-      model.loadFromFolder(_folder, _resolveImmediately, _failures);
+    EOModel model = getModelNamed(modelName);
+    if (model == null) {
+      model = new EOModel(this, modelName);
+      model.loadFromFolder(_folder, _failures);
       addModel(model);
     }
+    return model;
   }
 
   public void verify(Set _failures) {

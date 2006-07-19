@@ -136,7 +136,6 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
   }
 
   public void addSortOrdering(EOSortOrdering _sortOrdering, boolean _fireEvents) {
-    mySortOrderings.add(_sortOrdering);
     if (_fireEvents) {
       List oldSortOrderings = mySortOrderings;
       mySortOrderings = new LinkedList(mySortOrderings);
@@ -322,7 +321,6 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
     if (qualifierMap != null) {
       myQualifier = EOQualifierFactory.createNodeFromQualifierMap(new EOModelMap(qualifierMap));
     }
-    System.out.println("EOFetchSpecification.loadFromMap: qualifier = " + myQualifier);
     myRawRowKeyPaths = _map.getSet("rawRowKeyPaths", true); //$NON-NLS-1$
     myRefreshesRefetchedObjects = _map.getBoolean("refreshesRefetchedObjects"); //$NON-NLS-1$
     myRequiresAllQualifierBindingVariables = _map.getBoolean("requiresAllQualifierBindingVariables"); //$NON-NLS-1$
@@ -346,20 +344,20 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
     fetchSpecMap.setString("entityName", myEntity.getName(), true); //$NON-NLS-1$
     fetchSpecMap.setString("class", myClass, true); //$NON-NLS-1$
     fetchSpecMap.setInteger("fetchLimit", myFetchLimit); //$NON-NLS-1$
-    fetchSpecMap.setBoolean("isDeep", myDeep); //$NON-NLS-1$
-    fetchSpecMap.setBoolean("locksObjects", myLocksObjects); //$NON-NLS-1$
+    fetchSpecMap.setBoolean("isDeep", myDeep, EOModelMap.YESNO); //$NON-NLS-1$
+    fetchSpecMap.setBoolean("locksObjects", myLocksObjects, EOModelMap.YESNO); //$NON-NLS-1$
     fetchSpecMap.setSet("prefetchingRelationshipKeyPaths", myPrefetchingRelationshipKeyPaths, true); //$NON-NLS-1$
-    fetchSpecMap.setBoolean("prompsAfterFetchLimit", myPromptsAfterFetchLimit); //$NON-NLS-1$
+    fetchSpecMap.setBoolean("prompsAfterFetchLimit", myPromptsAfterFetchLimit, EOModelMap.YESNO); //$NON-NLS-1$
     if (myQualifier == null) {
       fetchSpecMap.setMap("qualifier", null, true); //$NON-NLS-1$
     }
     else {
       fetchSpecMap.setMap("qualifier", EOQualifierFactory.createQualifierMapFromNode(myQualifier), true); //$NON-NLS-1$
     }
-    fetchSpecMap.setSet("rawRowKeyPaths", myRawRowKeyPaths, true); //$NON-NLS-1$
-    fetchSpecMap.setBoolean("refreshesRefetchedObjects", myRefreshesRefetchedObjects); //$NON-NLS-1$
-    fetchSpecMap.setBoolean("requiresAllQualifierBindingVariables", myRequiresAllQualifierBindingVariables); //$NON-NLS-1$
-    fetchSpecMap.setBoolean("usesDistinct", myUsesDistinct); //$NON-NLS-1$
+    fetchSpecMap.setSet("rawRowKeyPaths", myRawRowKeyPaths, false); //$NON-NLS-1$
+    fetchSpecMap.setBoolean("refreshesRefetchedObjects", myRefreshesRefetchedObjects, EOModelMap.YESNO); //$NON-NLS-1$
+    fetchSpecMap.setBoolean("requiresAllQualifierBindingVariables", myRequiresAllQualifierBindingVariables, EOModelMap.YESNO); //$NON-NLS-1$
+    fetchSpecMap.setBoolean("usesDistinct", myUsesDistinct, EOModelMap.YESNO); //$NON-NLS-1$
     fetchSpecMap.setMap("userInfo", getUserInfo(), true); //$NON-NLS-1$
 
     List sortOrderings = new LinkedList();
