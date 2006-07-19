@@ -79,26 +79,26 @@ public class EOQualifierFactory {
     Node node = null;
     if (_qualifierMap != null) {
       String className = _qualifierMap.getString("class", true); //$NON-NLS-1$
-      if ("EOAndQualifier".equals(className)) { //$NON-NLS-1$
+      if ("EOAndQualifier".equals(className) || "com.webobjects.eocontrol.EOAndQualifier".equals(className)) { //$NON-NLS-1$ //$NON-NLS-2$
         node = new ASTAnd(EOQualifierFactory.createNodesFromQualifierMaps(_qualifierMap.getList("qualifiers"))); //$NON-NLS-1$
       }
-      else if ("EOOrQualifier".equals(className)) { //$NON-NLS-1$
+      else if ("EOOrQualifier".equals(className) || "com.webobjects.eocontrol.EOOrQualifier".equals(className)) { //$NON-NLS-1$ //$NON-NLS-2$
         node = new ASTOr(EOQualifierFactory.createNodesFromQualifierMaps(_qualifierMap.getList("qualifiers"))); //$NON-NLS-1$
       }
-      else if ("EONotQualifier".equals(className)) { //$NON-NLS-1$
+      else if ("EONotQualifier".equals(className) || "com.webobjects.eocontrol.EONotQualifier".equals(className)) { //$NON-NLS-1$ //$NON-NLS-2$
         node = new ASTNot(EOQualifierFactory.createNodeFromQualifierMap(new EOModelMap(_qualifierMap.getMap("qualifier")))); //$NON-NLS-1$
       }
-      else if ("EOKeyValueQualifier".equals(className)) { //$NON-NLS-1$
+      else if ("EOKeyValueQualifier".equals(className) || "com.webobjects.eocontrol.EOKeyValueQualifier".equals(className)) { //$NON-NLS-1$ //$NON-NLS-2$
         String key = _qualifierMap.getString("key", true); //$NON-NLS-1$
         Object rawValue = _qualifierMap.get("value"); //$NON-NLS-1$
         Object value;
         if (rawValue instanceof Map) {
           EOModelMap valueMap = new EOModelMap((Map) rawValue);
           String valueClass = valueMap.getString("class", true); //$NON-NLS-1$
-          if ("EONull".equals(valueClass)) { //$NON-NLS-1$
+          if ("EONull".equals(valueClass) || "com.webobjects.eocontrol.EONull".equals(className)) { //$NON-NLS-1$
             value = null;
           }
-          else if ("EOQualifierVariable".equals(valueClass)) { //$NON-NLS-1$
+          else if ("EOQualifierVariable".equals(valueClass) || "com.webobjects.eocontrol.EOQualifierVariable".equals(className)) { //$NON-NLS-1$
             String variableKey = valueMap.getString("_key", true); //$NON-NLS-1$
             value = new ASTNamedParameter(variableKey);
           }
