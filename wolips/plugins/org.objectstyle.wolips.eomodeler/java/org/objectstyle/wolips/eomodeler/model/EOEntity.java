@@ -381,7 +381,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     Iterator fetchSpecsIter = myFetchSpecs.iterator();
     while (!hasSharedObjects && fetchSpecsIter.hasNext()) {
       EOFetchSpecification fetchSpec = (EOFetchSpecification) fetchSpecsIter.next();
-      hasSharedObjects = fetchSpec.isSharesObjects() != null && fetchSpec.isSharesObjects().booleanValue();
+      hasSharedObjects = BooleanUtils.isTrue(fetchSpec.isSharesObjects());
     }
     return hasSharedObjects;
   }
@@ -400,7 +400,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     Iterator fetchSpecsIter = myFetchSpecs.iterator();
     while (fetchSpecsIter.hasNext()) {
       EOFetchSpecification fetchSpec = (EOFetchSpecification) fetchSpecsIter.next();
-      if (fetchSpec.isSharesObjects() != null && fetchSpec.isSharesObjects().booleanValue()) {
+      if (BooleanUtils.isTrue(fetchSpec.isSharesObjects())) {
         sharedFetchSpecCount++;
         if (EOEntity.FETCH_ALL.equals(fetchSpec.getName())) {
           sharesAllObjects = true;
@@ -641,7 +641,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     while (attributesIter.hasNext()) {
       EOAttribute attribute = (EOAttribute) attributesIter.next();
       Boolean primaryKey = attribute.isPrimaryKey();
-      if (primaryKey != null && primaryKey.booleanValue()) {
+      if (BooleanUtils.isTrue(primaryKey)) {
         primaryKeyAttributes.add(attribute);
       }
     }
@@ -796,14 +796,6 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
         childEntity.removeAttribute(childAttribute, _removeFromSubclasses);
       }
     }
-  }
-
-  public IEOAttribute _getAttributeNamed(String _name) {
-    IEOAttribute attribute = getAttributeNamed(_name);
-    if (attribute == null) {
-      attribute = getRelationshipNamed(_name);
-    }
-    return attribute;
   }
 
   public EOAttribute getAttributeNamed(String _name) {
@@ -970,45 +962,6 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
         }
       }
     }
-
-    Set classProperties = _entityMap.getSet("classProperties"); //$NON-NLS-1$
-    if (classProperties != null) {
-      Iterator classPropertiesIter = classProperties.iterator();
-      while (classPropertiesIter.hasNext()) {
-        String attributeName = (String) classPropertiesIter.next();
-        IEOAttribute attribute = _getAttributeNamed(attributeName);
-        if (attribute != null) {
-          attribute.setClassProperty(Boolean.TRUE, false);
-        }
-      }
-    }
-
-    Set primaryKeyAttributes = _entityMap.getSet("primaryKeyAttributes"); //$NON-NLS-1$
-    if (primaryKeyAttributes != null) {
-      Iterator primaryKeyAttributesIter = primaryKeyAttributes.iterator();
-      while (primaryKeyAttributesIter.hasNext()) {
-        String attributeName = (String) primaryKeyAttributesIter.next();
-        EOAttribute attribute = getAttributeNamed(attributeName);
-        if (attribute != null) {
-          attribute.setPrimaryKey(Boolean.TRUE, false);
-        }
-      }
-    }
-
-    Map internalInfo = _entityMap.getMap("internalInfo"); //$NON-NLS-1$
-    if (internalInfo != null) {
-      Set clientClassPropertyNames = _entityMap.getSet("_clientClassPropertyNames"); //$NON-NLS-1$
-      if (clientClassPropertyNames != null) {
-        Iterator clientClassPropertyNameIter = clientClassPropertyNames.iterator();
-        while (clientClassPropertyNameIter.hasNext()) {
-          String attributeName = (String) clientClassPropertyNameIter.next();
-          EOAttribute attribute = getAttributeNamed(attributeName);
-          if (attribute != null) {
-            attribute.setClientClassProperty(Boolean.TRUE);
-          }
-        }
-      }
-    }
   }
 
   public void loadFetchSpecsFromMap(EOModelMap _map, Set _failures) throws EOModelException {
@@ -1056,16 +1009,16 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
       EOAttribute attribute = (EOAttribute) attributeIter.next();
       EOModelMap attributeMap = attribute.toMap();
       attributes.add(attributeMap);
-      if (attribute.isClassProperty() != null && attribute.isClassProperty().booleanValue()) {
+      if (BooleanUtils.isTrue(attribute.isClassProperty())) {
         classProperties.add(attribute.getName());
       }
-      if (attribute.isPrimaryKey() != null && attribute.isPrimaryKey().booleanValue()) {
+      if (BooleanUtils.isTrue(attribute.isPrimaryKey())) {
         primaryKeyAttributes.add(attribute.getName());
       }
-      if (attribute.isUsedForLocking() != null && attribute.isUsedForLocking().booleanValue()) {
+      if (BooleanUtils.isTrue(attribute.isUsedForLocking())) {
         attributesUsedForLocking.add(attribute.getName());
       }
-      if (attribute.isClientClassProperty() != null && attribute.isClientClassProperty().booleanValue()) {
+      if (BooleanUtils.isTrue(attribute.isClientClassProperty())) {
         clientClassProperties.add(attribute.getName());
       }
     }
@@ -1077,7 +1030,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
       EORelationship relationship = (EORelationship) relationshipIter.next();
       EOModelMap relationshipMap = relationship.toMap();
       relationships.add(relationshipMap);
-      if (relationship.isClassProperty() != null && relationship.isClassProperty().booleanValue()) {
+      if (BooleanUtils.isTrue(relationship.isClassProperty())) {
         classProperties.add(relationship.getName());
       }
     }
@@ -1090,7 +1043,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     Iterator fetchSpecsIter = myFetchSpecs.iterator();
     while (fetchSpecsIter.hasNext()) {
       EOFetchSpecification fetchSpec = (EOFetchSpecification) fetchSpecsIter.next();
-      if (fetchSpec.isSharesObjects() != null && fetchSpec.isSharesObjects().booleanValue()) {
+      if (BooleanUtils.isTrue(fetchSpec.isSharesObjects())) {
         sharedObjectFetchSpecificationNames.add(fetchSpec.getName());
       }
     }
@@ -1160,6 +1113,45 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     while (fetchSpecIter.hasNext()) {
       EOFetchSpecification fetchSpec = (EOFetchSpecification) fetchSpecIter.next();
       fetchSpec.resolve(_failures);
+    }
+
+    Set classProperties = myEntityMap.getSet("classProperties"); //$NON-NLS-1$
+    if (classProperties != null) {
+      Iterator classPropertiesIter = classProperties.iterator();
+      while (classPropertiesIter.hasNext()) {
+        String attributeName = (String) classPropertiesIter.next();
+        IEOAttribute attribute = getAttributeOrRelationshipNamed(attributeName);
+        if (attribute != null) {
+          attribute.setClassProperty(Boolean.TRUE, false);
+        }
+      }
+    }
+
+    Set primaryKeyAttributes = myEntityMap.getSet("primaryKeyAttributes"); //$NON-NLS-1$
+    if (primaryKeyAttributes != null) {
+      Iterator primaryKeyAttributesIter = primaryKeyAttributes.iterator();
+      while (primaryKeyAttributesIter.hasNext()) {
+        String attributeName = (String) primaryKeyAttributesIter.next();
+        EOAttribute attribute = getAttributeNamed(attributeName);
+        if (attribute != null) {
+          attribute.setPrimaryKey(Boolean.TRUE, false);
+        }
+      }
+    }
+
+    Map internalInfo = myEntityMap.getMap("internalInfo"); //$NON-NLS-1$
+    if (internalInfo != null) {
+      Set clientClassPropertyNames = myEntityMap.getSet("_clientClassPropertyNames"); //$NON-NLS-1$
+      if (clientClassPropertyNames != null) {
+        Iterator clientClassPropertyNameIter = clientClassPropertyNames.iterator();
+        while (clientClassPropertyNameIter.hasNext()) {
+          String attributeName = (String) clientClassPropertyNameIter.next();
+          EOAttribute attribute = getAttributeNamed(attributeName);
+          if (attribute != null) {
+            attribute.setClientClassProperty(Boolean.TRUE);
+          }
+        }
+      }
     }
   }
 
