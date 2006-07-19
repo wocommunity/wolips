@@ -67,7 +67,7 @@ public class MethodKey implements IKey {
       return myMethod.invoke(_instance, null);
     }
     catch (Throwable t) {
-      throw new RuntimeException("Failed to get value from method " + myMethod + " on  " + _instance + ".");
+      throw new RuntimeException("Failed to get value from method " + myMethod + " on  " + _instance + ".", t);
     }
   }
 
@@ -76,7 +76,7 @@ public class MethodKey implements IKey {
       myMethod.invoke(_instance, new Object[] { _value });
     }
     catch (Throwable t) {
-      throw new RuntimeException("Failed to set value with method " + myMethod + " on  " + _instance + ".");
+      throw new RuntimeException("Failed to set value with method " + myMethod + " on  " + _instance + ".", t);
     }
   }
 

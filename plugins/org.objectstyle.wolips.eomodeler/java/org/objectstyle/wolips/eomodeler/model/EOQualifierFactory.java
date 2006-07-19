@@ -217,7 +217,7 @@ public class EOQualifierFactory {
       map = EOQualifierFactory.createQualifierMapFromConditionNode((ASTEqual) _node, "isEqualTo:"); //$NON-NLS-1$
     }
     else if (_node instanceof ASTNotEqual) {
-      map = EOQualifierFactory.createQualifierMapFromConditionNode((ASTNotEqual) _node, "isNotEqual:"); //$NON-NLS-1$
+      map = EOQualifierFactory.createQualifierMapFromConditionNode((ASTNotEqual) _node, "isNotEqualTo:"); //$NON-NLS-1$
     }
     else if (_node instanceof ASTLess) {
       map = EOQualifierFactory.createQualifierMapFromConditionNode((ASTLess) _node, "isLessThan:"); //$NON-NLS-1$

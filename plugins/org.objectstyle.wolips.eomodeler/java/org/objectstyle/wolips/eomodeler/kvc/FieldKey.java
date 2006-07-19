@@ -67,7 +67,7 @@ public class FieldKey implements IKey {
       return myField.get(_instance);
     }
     catch (Throwable t) {
-      throw new RuntimeException("Failed to get value from field " + myField + " on  " + _instance + ".");
+      throw new RuntimeException("Failed to get value from field " + myField + " on  " + _instance + ".", t);
     }
   }
 
@@ -76,7 +76,7 @@ public class FieldKey implements IKey {
       myField.set(_instance, _value);
     }
     catch (Throwable t) {
-      throw new RuntimeException("Failed to set value with field " + myField + " on  " + _instance + ".");
+      throw new RuntimeException("Failed to set value with field " + myField + " on  " + _instance + ".", t);
     }
   }
 }

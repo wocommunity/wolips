@@ -59,6 +59,7 @@ import java.util.Set;
 
 import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.kvc.IKey;
+import org.objectstyle.wolips.eomodeler.kvc.Key;
 import org.objectstyle.wolips.eomodeler.kvc.ResolvedKey;
 import org.objectstyle.wolips.eomodeler.utils.BooleanUtils;
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
@@ -88,6 +89,8 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
   public static final String INDEXED = "indexed"; //$NON-NLS-1$
   public static final String READ_ONLY = "readOnly"; //$NON-NLS-1$
   public static final String DATA_TYPE = "dataType"; //$NON-NLS-1$
+
+  private static final String[] PROTOTYPED_PROPERTIES = { EOAttribute.ALLOWS_NULL, EOAttribute.ADAPTOR_VALUE_CONVERSION_METHOD_NAME, EOAttribute.EXTERNAL_TYPE, EOAttribute.FACTORY_METHOD_ARGUMENT_TYPE, EOAttribute.PRECISION, EOAttribute.SCALE, EOAttribute.VALUE_CLASS_NAME, EOAttribute.VALUE_FACTORY_METHOD_NAME, EOAttribute.VALUE_TYPE, EOAttribute.DEFINITION, EOAttribute.WIDTH, EOAttribute.READ_FORMAT, EOAttribute.WRITE_FORMAT, EOAttribute.INDEXED, EOAttribute.READ_ONLY };
 
   private static Map myCachedPropertyKeys;
 
@@ -238,44 +241,34 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
   }
 
   public void setPrototype(EOAttribute _prototype, boolean _updateFromPrototype) {
-    EOAttribute oldPrototype = myPrototype;
+    EOAttribute oldPrototype = getPrototype();
     boolean prototypeNameChanged = true;
-    if (_prototype == null && myPrototype == null) {
+    if (_prototype == null && oldPrototype == null) {
       prototypeNameChanged = false;
     }
-    else if (ComparisonUtils.equals(_prototype, myPrototype)) {
+    else if (ComparisonUtils.equals(_prototype, oldPrototype)) {
       prototypeNameChanged = false;
+    }
+
+    EODataType oldDataType = getDataType();
+    Map oldValues = new HashMap();
+    for (int propertyNum = 0; propertyNum < PROTOTYPED_PROPERTIES.length; propertyNum++) {
+      String propertyName = PROTOTYPED_PROPERTIES[propertyNum];
+      Object oldValue = EOAttribute.getPropertyKey(propertyName).getValue(this);
+      oldValues.put(propertyName, oldValue);
     }
     myPrototype = _prototype;
-    if (prototypeNameChanged && _updateFromPrototype) {
-      _updateFromPrototype();
-    }
     firePropertyChange(EOAttribute.PROTOTYPE, oldPrototype, _prototype);
-  }
-
-  protected void _updateFromPrototype() {
-    if (myPrototype != null) {
-      //myPrimaryKey = (Boolean) _nullIfPrototyped(EOAttribute.PRIMARY_KEY, myPrimaryKey);
-      //myClassProperty = (Boolean) _nullIfPrototyped(EOAttribute.CLASS_PROPERTY, myClassProperty);
-      //myUsedForLocking = (Boolean) _nullIfPrototyped(EOAttribute.USED_FOR_LOCKING, myUsedForLocking);
-      myAllowsNull = (Boolean) _nullIfPrototyped(EOAttribute.ALLOWS_NULL, myAllowsNull);
-      myName = (String) _nullIfPrototyped(EOAttribute.NAME, myName);
-      myColumnName = (String) _nullIfPrototyped(EOAttribute.COLUMN_NAME, myColumnName);
-      myAdaptorValueConversionMethodName = (String) _nullIfPrototyped(EOAttribute.ADAPTOR_VALUE_CONVERSION_METHOD_NAME, myAdaptorValueConversionMethodName);
-      myExternalType = (String) _nullIfPrototyped(EOAttribute.EXTERNAL_TYPE, myExternalType);
-      myFactoryMethodArgumentType = (EOFactoryMethodArgumentType) _nullIfPrototyped(EOAttribute.FACTORY_METHOD_ARGUMENT_TYPE, myFactoryMethodArgumentType);
-      myPrecision = (Integer) _nullIfPrototyped(EOAttribute.PRECISION, myPrecision);
-      myScale = (Integer) _nullIfPrototyped(EOAttribute.SCALE, myScale);
-      myValueClassName = (String) _nullIfPrototyped(EOAttribute.VALUE_CLASS_NAME, myValueClassName);
-      myValueClassName = (String) _nullIfPrototyped(EOAttribute.VALUE_FACTORY_METHOD_NAME, myValueFactoryMethodName);
-      myValueType = (String) _nullIfPrototyped(EOAttribute.VALUE_TYPE, myValueType);
-      myDefinition = (String) _nullIfPrototyped(EOAttribute.DEFINITION, myDefinition);
-      myWidth = (Integer) _nullIfPrototyped(EOAttribute.WIDTH, myWidth);
-      myReadFormat = (String) _nullIfPrototyped(EOAttribute.READ_FORMAT, myReadFormat);
-      myWriteFormat = (String) _nullIfPrototyped(EOAttribute.WRITE_FORMAT, myWriteFormat);
-      //myClientClassProperty = (Boolean) _nullIfPrototyped(EOAttribute.CLIENT_CLASS_PROPERTY, myClientClassProperty);
-      myIndexed = (Boolean) _nullIfPrototyped(EOAttribute.INDEXED, myIndexed);
-      myReadOnly = (Boolean) _nullIfPrototyped(EOAttribute.READ_ONLY, myReadOnly);
+    if (prototypeNameChanged && _updateFromPrototype) {
+      for (int propertyNum = 0; propertyNum < PROTOTYPED_PROPERTIES.length; propertyNum++) {
+        String propertyName = PROTOTYPED_PROPERTIES[propertyNum];
+        IKey propertyKey = EOAttribute.getPropertyKey(propertyName);
+        Object newValue = propertyKey.getValue(this);
+        Object oldValue = oldValues.get(propertyName);
+        propertyKey.setValue(this, newValue);
+        firePropertyChange(propertyName, oldValue, newValue);
+      }
+      updateDataType(oldDataType);
     }
   }
 
@@ -303,7 +296,7 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
     if (_name == null) {
       throw new NullPointerException(Messages.getString("EOAttribute.noBlankAttributeNames")); //$NON-NLS-1$
     }
-    String oldName = myName;
+    String oldName = getName();
     myEntity._checkForDuplicateAttributeName(this, _name, null);
     myName = _name;
     if (_fireEvents) {
@@ -328,7 +321,7 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
   }
 
   public void setReadOnly(Boolean _readOnly, boolean _fireEvents) {
-    Boolean oldReadOnly = myAllowsNull;
+    Boolean oldReadOnly = getAllowsNull();
     myReadOnly = (Boolean) _nullIfPrototyped(EOAttribute.READ_ONLY, _readOnly);
     if (_fireEvents) {
       firePropertyChange(EOAttribute.READ_ONLY, oldReadOnly, getReadOnly());
@@ -348,7 +341,7 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
   }
 
   public void setIndexed(Boolean _indexed, boolean _fireEvents) {
-    Boolean oldIndexed = myIndexed;
+    Boolean oldIndexed = getIndexed();
     myIndexed = (Boolean) _nullIfPrototyped(EOAttribute.INDEXED, _indexed);
     if (_fireEvents) {
       firePropertyChange(EOAttribute.INDEXED, oldIndexed, getIndexed());
@@ -368,9 +361,9 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
   }
 
   public void setAllowsNull(Boolean _allowsNull, boolean _fireEvents) {
-    Boolean oldAllowsNull = myAllowsNull;
+    Boolean oldAllowsNull = getAllowsNull();
     Boolean newAllowsNull = _allowsNull;
-    if (_fireEvents && BooleanUtils.isTrue(myPrimaryKey)) {
+    if (_fireEvents && BooleanUtils.isTrue(getPrimaryKey())) {
       newAllowsNull = Boolean.FALSE;
     }
     myAllowsNull = (Boolean) _nullIfPrototyped(EOAttribute.ALLOWS_NULL, newAllowsNull);
@@ -392,7 +385,7 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
   }
 
   public void setClassProperty(Boolean _classProperty, boolean _fireEvents) {
-    Boolean oldClassProperty = myClassProperty;
+    Boolean oldClassProperty = getClassProperty();
     //myClassProperty = (Boolean) _nullIfPrototyped(EOAttribute.CLASS_PROPERTY, _classProperty);
     myClassProperty = _classProperty;
     if (_fireEvents) {
@@ -401,12 +394,14 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
   }
 
   public String getColumnName() {
-    return (String) _prototypeValueIfNull(EOAttribute.COLUMN_NAME, myColumnName);
+    //return (String) _prototypeValueIfNull(EOAttribute.COLUMN_NAME, myColumnName);
+    return myColumnName;
   }
 
   public void setColumnName(String _columnName) {
-    String oldColumnName = myColumnName;
-    myColumnName = (String) _nullIfPrototyped(EOAttribute.COLUMN_NAME, _columnName);
+    String oldColumnName = getColumnName();
+    //myColumnName = (String) _nullIfPrototyped(EOAttribute.COLUMN_NAME, _columnName);
+    myColumnName = _columnName;
     firePropertyChange(EOAttribute.COLUMN_NAME, oldColumnName, getColumnName());
   }
 
@@ -428,7 +423,7 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
   }
 
   public void setPrimaryKey(Boolean _primaryKey, boolean _fireEvents) {
-    Boolean oldPrimaryKey = myPrimaryKey;
+    Boolean oldPrimaryKey = getPrimaryKey();
     //myPrimaryKey = (Boolean) _nullIfPrototyped(EOAttribute.PRIMARY_KEY, _primaryKey);
     myPrimaryKey = _primaryKey;
     if (_fireEvents && BooleanUtils.isTrue(_primaryKey)) {
@@ -453,7 +448,7 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
   }
 
   public void setUsedForLocking(Boolean _usedForLocking, boolean _fireEvents) {
-    Boolean oldUsedForLocking = myUsedForLocking;
+    Boolean oldUsedForLocking = getUsedForLocking();
     //myUsedForLocking = (Boolean) _nullIfPrototyped(EOAttribute.USED_FOR_LOCKING, _usedForLocking);
     myUsedForLocking = _usedForLocking;
     if (_fireEvents) {
@@ -466,7 +461,7 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
   }
 
   public void setAdaptorValueConversionMethodName(String _adaptorValueConversionMethodName) {
-    String oldAdaptorValueConversionMethodName = myAdaptorValueConversionMethodName;
+    String oldAdaptorValueConversionMethodName = getAdaptorValueConversionMethodName();
     myAdaptorValueConversionMethodName = (String) _nullIfPrototyped(EOAttribute.ADAPTOR_VALUE_CONVERSION_METHOD_NAME, _adaptorValueConversionMethodName);
     firePropertyChange(EOAttribute.ADAPTOR_VALUE_CONVERSION_METHOD_NAME, oldAdaptorValueConversionMethodName, getAdaptorValueConversionMethodName());
   }
@@ -476,7 +471,7 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
   }
 
   public void setExternalType(String _externalType) {
-    String oldExternalType = myExternalType;
+    String oldExternalType = getExternalType();
     myExternalType = (String) _nullIfPrototyped(EOAttribute.EXTERNAL_TYPE, _externalType);
     firePropertyChange(EOAttribute.EXTERNAL_TYPE, oldExternalType, getExternalType());
   }
@@ -486,7 +481,7 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
   }
 
   public void setFactoryMethodArgumentType(EOFactoryMethodArgumentType _factoryMethodArgumentType) {
-    EOFactoryMethodArgumentType oldFactoryMethodArgumentType = myFactoryMethodArgumentType;
+    EOFactoryMethodArgumentType oldFactoryMethodArgumentType = getFactoryMethodArgumentType();
     myFactoryMethodArgumentType = (EOFactoryMethodArgumentType) _nullIfPrototyped(EOAttribute.FACTORY_METHOD_ARGUMENT_TYPE, _factoryMethodArgumentType);
     firePropertyChange(EOAttribute.FACTORY_METHOD_ARGUMENT_TYPE, oldFactoryMethodArgumentType, getFactoryMethodArgumentType());
   }
@@ -496,7 +491,7 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
   }
 
   public void setPrecision(Integer _precision) {
-    Integer oldPrecision = myPrecision;
+    Integer oldPrecision = getPrecision();
     myPrecision = (Integer) _nullIfPrototyped(EOAttribute.PRECISION, _precision);
     firePropertyChange(EOAttribute.PRECISION, oldPrecision, getPrecision());
   }
@@ -506,7 +501,7 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
   }
 
   public void setScale(Integer _scale) {
-    Integer oldScale = myScale;
+    Integer oldScale = getScale();
     myScale = (Integer) _nullIfPrototyped(EOAttribute.SCALE, _scale);
     firePropertyChange(EOAttribute.SCALE, oldScale, getScale());
   }
@@ -552,7 +547,7 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
 
   public synchronized void setValueClassName(String _valueClassName, boolean _updateDataType) {
     EODataType oldDataType = getDataType();
-    String oldValueClassName = myValueClassName;
+    String oldValueClassName = getValueClassName();
     myValueClassName = (String) _nullIfPrototyped(EOAttribute.VALUE_CLASS_NAME, _valueClassName);
     myDataType = null;
     firePropertyChange(EOAttribute.VALUE_CLASS_NAME, oldValueClassName, getValueClassName());
@@ -566,7 +561,7 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
   }
 
   public void setValueFactoryMethodName(String _valueFactoryMethodName) {
-    String oldValueFactoryMethodName = myValueFactoryMethodName;
+    String oldValueFactoryMethodName = getValueFactoryMethodName();
     myValueFactoryMethodName = (String) _nullIfPrototyped(EOAttribute.VALUE_FACTORY_METHOD_NAME, _valueFactoryMethodName);
     firePropertyChange(EOAttribute.VALUE_FACTORY_METHOD_NAME, oldValueFactoryMethodName, getValueFactoryMethodName());
   }
@@ -581,7 +576,7 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
 
   public synchronized void setValueType(String _valueType, boolean _updateDataType) {
     EODataType oldDataType = getDataType();
-    String oldValueType = myValueType;
+    String oldValueType = getValueType();
     myValueType = (String) _nullIfPrototyped(EOAttribute.VALUE_TYPE, _valueType);
     myDataType = null;
     firePropertyChange(EOAttribute.VALUE_TYPE, oldValueType, getValueType());
@@ -595,7 +590,7 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
   }
 
   public void setWidth(Integer _width) {
-    Integer oldWidth = myWidth;
+    Integer oldWidth = getWidth();
     myWidth = (Integer) _nullIfPrototyped(EOAttribute.WIDTH, _width);
     firePropertyChange(EOAttribute.WIDTH, oldWidth, getWidth());
   }
@@ -605,7 +600,7 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
   }
 
   public void setDefinition(String _definition) {
-    String oldDefinition = myDefinition;
+    String oldDefinition = getDefinition();
     myDefinition = (String) _nullIfPrototyped(EOAttribute.DEFINITION, _definition);
     firePropertyChange(EOAttribute.DEFINITION, oldDefinition, getDefinition());
   }
@@ -615,7 +610,7 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
   }
 
   public void setReadFormat(String _readFormat) {
-    String oldReadFormat = myReadFormat;
+    String oldReadFormat = getReadFormat();
     myReadFormat = (String) _nullIfPrototyped(EOAttribute.READ_FORMAT, _readFormat);
     firePropertyChange(EOAttribute.READ_FORMAT, oldReadFormat, getReadFormat());
   }
@@ -625,13 +620,13 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
   }
 
   public void setWriteFormat(String _writeFormat) {
-    String oldWriteFormat = myWriteFormat;
+    String oldWriteFormat = getWriteFormat();
     myWriteFormat = (String) _nullIfPrototyped(EOAttribute.WRITE_FORMAT, _writeFormat);
     firePropertyChange(EOAttribute.WRITE_FORMAT, oldWriteFormat, getWriteFormat());
   }
 
   public void setClientClassProperty(Boolean _clientClassProperty) {
-    Boolean oldClientClassProperty = myClientClassProperty;
+    Boolean oldClientClassProperty = getClientClassProperty();
     //myClientClassProperty = (Boolean) _nullIfPrototyped(EOAttribute.CLIENT_CLASS_PROPERTY, _clientClassProperty);
     myClientClassProperty = _clientClassProperty;
     firePropertyChange(EOAttribute.CLIENT_CLASS_PROPERTY, oldClientClassProperty, getClientClassProperty());

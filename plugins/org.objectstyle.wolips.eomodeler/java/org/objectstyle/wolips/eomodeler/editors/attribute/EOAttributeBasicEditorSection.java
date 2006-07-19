@@ -166,14 +166,6 @@ public class EOAttributeBasicEditorSection extends AbstractPropertySection {
     myDefinitionText.setLayoutData(definitionFieldLayoutData);
     myColumnNameDefinitionLayout.topControl = myColumnNameText;
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EOAttribute." + EOAttribute.EXTERNAL_TYPE), SWT.NONE); //$NON-NLS-1$
-    myExternalTypeText = new Text(topForm, SWT.BORDER);
-    GridData externalTypeFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-    myExternalTypeText.setLayoutData(externalTypeFieldLayoutData);
-
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EOAttribute." + EOAttribute.ALLOWS_NULL), SWT.NONE); //$NON-NLS-1$
-    myAllowNullsButton = new Button(topForm, SWT.CHECK);
-
     getWidgetFactory().createCLabel(topForm, Messages.getString("EOAttribute." + EOAttribute.PROTOTYPE), SWT.NONE); //$NON-NLS-1$
     Combo prototypeCombo = new Combo(topForm, SWT.BORDER | SWT.FLAT | SWT.READ_ONLY);
     myPrototypeComboViewer = new ComboViewer(prototypeCombo);
@@ -181,6 +173,14 @@ public class EOAttributeBasicEditorSection extends AbstractPropertySection {
     myPrototypeComboViewer.setContentProvider(new EOPrototypeListContentProvider());
     GridData prototypeComboLayoutData = new GridData(GridData.FILL_HORIZONTAL);
     prototypeCombo.setLayoutData(prototypeComboLayoutData);
+
+    getWidgetFactory().createCLabel(topForm, Messages.getString("EOAttribute." + EOAttribute.EXTERNAL_TYPE), SWT.NONE); //$NON-NLS-1$
+    myExternalTypeText = new Text(topForm, SWT.BORDER);
+    GridData externalTypeFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+    myExternalTypeText.setLayoutData(externalTypeFieldLayoutData);
+
+    getWidgetFactory().createCLabel(topForm, Messages.getString("EOAttribute." + EOAttribute.ALLOWS_NULL), SWT.NONE); //$NON-NLS-1$
+    myAllowNullsButton = new Button(topForm, SWT.CHECK);
 
     getWidgetFactory().createCLabel(topForm, Messages.getString("EOAttribute." + EOAttribute.DATA_TYPE), SWT.NONE); //$NON-NLS-1$
     Combo dataTypeCombo = new Combo(topForm, SWT.BORDER | SWT.FLAT | SWT.READ_ONLY);
