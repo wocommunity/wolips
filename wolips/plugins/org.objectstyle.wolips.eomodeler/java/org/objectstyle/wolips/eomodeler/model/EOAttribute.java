@@ -626,10 +626,16 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
   }
 
   public void setClientClassProperty(Boolean _clientClassProperty) {
+    setClientClassProperty(_clientClassProperty, false);
+  }
+
+  public void setClientClassProperty(Boolean _clientClassProperty, boolean _fireEvents) {
     Boolean oldClientClassProperty = getClientClassProperty();
     //myClientClassProperty = (Boolean) _nullIfPrototyped(EOAttribute.CLIENT_CLASS_PROPERTY, _clientClassProperty);
     myClientClassProperty = _clientClassProperty;
-    firePropertyChange(EOAttribute.CLIENT_CLASS_PROPERTY, oldClientClassProperty, getClientClassProperty());
+    if (_fireEvents) {
+      firePropertyChange(EOAttribute.CLIENT_CLASS_PROPERTY, oldClientClassProperty, getClientClassProperty());
+    }
   }
 
   public Boolean getClientClassProperty() {
@@ -709,7 +715,7 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
     if (myPrototype != null) {
       attributeMap.setString("prototypeName", myPrototype.getName(), true); //$NON-NLS-1$
     }
-    attributeMap.setString("columnName", myColumnName, true); //$NON-NLS-1$
+    attributeMap.setString("columnName", (myColumnName == null) ? "" : myColumnName, false); //$NON-NLS-1$
     attributeMap.setString("externalType", myExternalType, true); //$NON-NLS-1$
     attributeMap.setInteger("scale", myScale); //$NON-NLS-1$
     attributeMap.setInteger("precision", myPrecision); //$NON-NLS-1$
@@ -721,9 +727,9 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
       attributeMap.setString("factoryMethodArgumentType", myFactoryMethodArgumentType.getID(), true); //$NON-NLS-1$
     }
     attributeMap.setString("adaptorValueConversionMethodName", myAdaptorValueConversionMethodName, true); //$NON-NLS-1$
-    attributeMap.setBoolean("allowsNull", myAllowsNull); //$NON-NLS-1$
-    attributeMap.setBoolean("isReadOnly", myReadOnly); //$NON-NLS-1$
-    attributeMap.setBoolean("isIndexed", myIndexed); //$NON-NLS-1$
+    attributeMap.setBoolean("allowsNull", myAllowsNull, EOModelMap.YN); //$NON-NLS-1$
+    attributeMap.setBoolean("isReadOnly", myReadOnly, EOModelMap.YN); //$NON-NLS-1$
+    attributeMap.setBoolean("isIndexed", myIndexed, EOModelMap.YN); //$NON-NLS-1$
     attributeMap.setString("definition", myDefinition, true); //$NON-NLS-1$
     attributeMap.setString("readFormat", myReadFormat, true); //$NON-NLS-1$
     attributeMap.setString("writeFormat", myWriteFormat, true); //$NON-NLS-1$

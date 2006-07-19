@@ -158,7 +158,7 @@ public class EclipseEOModelGroupFactory {
         if (_resource.getType() == IResource.FOLDER) {
           File resourceFile = _resource.getLocation().toFile();
           if (!mySearchedFolders.contains(resourceFile) && "eomodeld".equals(_resource.getFileExtension())) { //$NON-NLS-1$
-            myModelGroup.addModelFromFolder(resourceFile, false, myFailures);
+            myModelGroup.addModelFromFolder(resourceFile, myFailures);
             visitChildren = false;
           }
         }

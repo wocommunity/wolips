@@ -64,6 +64,7 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
   public static final String TO_MANY = "toMany"; //$NON-NLS-1$
   public static final String TO_ONE = "toOne"; //$NON-NLS-1$
   public static final String CLASS_PROPERTY = "classProperty"; //$NON-NLS-1$
+  public static final String CLIENT_CLASS_PROPERTY = "clientClassProperty"; //$NON-NLS-1$
   public static final String NAME = "name"; //$NON-NLS-1$
   public static final String DESTINATION = "destination"; //$NON-NLS-1$
   public static final String DEFINITION = "definition"; //$NON-NLS-1$
@@ -85,6 +86,7 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
   private Boolean myOwnsDestination;
   private Boolean myPropagatesPrimaryKey;
   private Boolean myClassProperty;
+  private Boolean myClientClassProperty;
   private Integer myNumberOfToManyFaultsToBatchFetch;
   private EODeleteRule myDeleteRule;
   private EOJoinSemantic myJoinSemantic;
@@ -127,6 +129,7 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
     relationship.myOwnsDestination = myOwnsDestination;
     relationship.myPropagatesPrimaryKey = myPropagatesPrimaryKey;
     relationship.myClassProperty = myClassProperty;
+    relationship.myClientClassProperty = myClientClassProperty;
     relationship.myNumberOfToManyFaultsToBatchFetch = myNumberOfToManyFaultsToBatchFetch;
     relationship.myDeleteRule = myDeleteRule;
     relationship.myJoinSemantic = myJoinSemantic;
@@ -194,6 +197,30 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
 
   public Boolean isClassProperty() {
     return myClassProperty;
+  }
+  
+  public Boolean getClassProperty() {
+    return isClassProperty();
+  }
+
+  public void setClientClassProperty(Boolean _clientClassProperty) {
+    setClientClassProperty(_clientClassProperty, true);
+  }
+
+  public void setClientClassProperty(Boolean _clientClassProperty, boolean _fireEvents) {
+    Boolean oldClientClassProperty = myClientClassProperty;
+    myClientClassProperty = _clientClassProperty;
+    if (_fireEvents) {
+      firePropertyChange(EORelationship.CLIENT_CLASS_PROPERTY, oldClientClassProperty, myClientClassProperty);
+    }
+  }
+
+  public Boolean isClientClassProperty() {
+    return myClientClassProperty;
+  }
+  
+  public Boolean getClientClassProperty() {
+    return isClientClassProperty();
   }
 
   public boolean isFlattened() {
@@ -458,8 +485,8 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
       relationshipMap.setString("destination", myDestination.getName(), true); //$NON-NLS-1$
     }
     relationshipMap.setString("definition", myDefinition, true); //$NON-NLS-1$
-    relationshipMap.setBoolean("isMandatory", myMandatory); //$NON-NLS-1$
-    relationshipMap.setBoolean("isToMany", myToMany); //$NON-NLS-1$
+    relationshipMap.setBoolean("isMandatory", myMandatory, EOModelMap.YN); //$NON-NLS-1$
+    relationshipMap.setBoolean("isToMany", myToMany, EOModelMap.YN); //$NON-NLS-1$
     if (!isFlattened() && myJoinSemantic != null) {
       relationshipMap.setString("joinSemantic", myJoinSemantic.getID(), true); //$NON-NLS-1$
     }
@@ -467,8 +494,8 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
     if (myDeleteRule != null && myDeleteRule != EODeleteRule.NULLIFY) {
       relationshipMap.setString("deleteRule", myDeleteRule.getID(), true); //$NON-NLS-1$
     }
-    relationshipMap.setBoolean("ownsDestination", myOwnsDestination); //$NON-NLS-1$
-    relationshipMap.setBoolean("propagatesPrimaryKey", myPropagatesPrimaryKey); //$NON-NLS-1$
+    relationshipMap.setBoolean("ownsDestination", myOwnsDestination, EOModelMap.YN); //$NON-NLS-1$
+    relationshipMap.setBoolean("propagatesPrimaryKey", myPropagatesPrimaryKey, EOModelMap.YN); //$NON-NLS-1$
     relationshipMap.setInteger("numberOfToManyFaultsToBatchFetch", myNumberOfToManyFaultsToBatchFetch); //$NON-NLS-1$
     Set joins = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
     Iterator joinsIter = myJoins.iterator();

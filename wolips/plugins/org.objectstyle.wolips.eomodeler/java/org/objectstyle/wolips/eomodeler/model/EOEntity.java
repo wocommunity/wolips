@@ -918,7 +918,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     myClassName = _entityMap.getString("className", true); //$NON-NLS-1$
     myCachesObjects = _entityMap.getBoolean("cachesObjects"); //$NON-NLS-1$
     myAbstractEntity = _entityMap.getBoolean("isAbstractEntity"); //$NON-NLS-1$
-    myReadOnly = _entityMap.getBoolean("readOnly"); //$NON-NLS-1$
+    myReadOnly = _entityMap.getBoolean("isReadOnly"); //$NON-NLS-1$
     myRestrictingQualifier = _entityMap.getString("restrictingQualifier", true); //$NON-NLS-1$
     myExternalQuery = _entityMap.getString("externalQuery", true); //$NON-NLS-1$
     myMaxNumberOfInstancesToBatchFetch = _entityMap.getInteger("maxNumberOfInstancesToBatchFetch"); //$NON-NLS-1$
@@ -987,9 +987,9 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     if (myParent != null) {
       entityMap.setString("parent", myParent.getName(), true); //$NON-NLS-1$
     }
-    entityMap.setBoolean("cachesObjects", myCachesObjects); //$NON-NLS-1$
-    entityMap.setBoolean("isAbstractEntity", myAbstractEntity); //$NON-NLS-1$
-    entityMap.setBoolean("readOnly", myReadOnly); //$NON-NLS-1$
+    entityMap.setBoolean("cachesObjects", myCachesObjects, EOModelMap.YN); //$NON-NLS-1$
+    entityMap.setBoolean("isAbstractEntity", myAbstractEntity, EOModelMap.YN); //$NON-NLS-1$
+    entityMap.setBoolean("isReadOnly", myReadOnly, EOModelMap.YN); //$NON-NLS-1$
     entityMap.setString("restrictingQualifier", myRestrictingQualifier, true); //$NON-NLS-1$
     entityMap.setString("externalQuery", myExternalQuery, true); //$NON-NLS-1$
     entityMap.setInteger("maxNumberOfInstancesToBatchFetch", myMaxNumberOfInstancesToBatchFetch); //$NON-NLS-1$
@@ -1031,6 +1031,9 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
       if (BooleanUtils.isTrue(relationship.isClassProperty())) {
         classProperties.add(relationship.getName());
       }
+      if (BooleanUtils.isTrue(relationship.isClientClassProperty())) {
+        clientClassProperties.add(relationship.getName());
+      }
     }
     entityMap.setSet("relationships", relationships, true); //$NON-NLS-1$
     entityMap.setSet("attributesUsedForLocking", attributesUsedForLocking, true); //$NON-NLS-1$
@@ -1050,11 +1053,14 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     Map internalInfoMap = entityMap.getMap("internalInfo"); //$NON-NLS-1$
     if (internalInfoMap == null) {
       internalInfoMap = new HashMap();
-      entityMap.setMap("internalInfo", internalInfoMap, false); //$NON-NLS-1$
     }
-    if (!clientClassProperties.isEmpty()) {
+    if (clientClassProperties != null && !clientClassProperties.isEmpty()) {
       internalInfoMap.put("_clientClassPropertyNames", clientClassProperties); //$NON-NLS-1$
     }
+    else {
+      internalInfoMap.remove("_clientClassPropertyNames"); //$NON-NLS-1$
+    }
+    entityMap.setMap("internalInfo", internalInfoMap, false); //$NON-NLS-1$
 
     entityMap.setMap("userInfo", getUserInfo(), true); //$NON-NLS-1$
 
@@ -1139,14 +1145,15 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
 
     Map internalInfo = myEntityMap.getMap("internalInfo"); //$NON-NLS-1$
     if (internalInfo != null) {
-      Set clientClassPropertyNames = myEntityMap.getSet("_clientClassPropertyNames"); //$NON-NLS-1$
+      EOModelMap internalInfoModelMap = new EOModelMap(internalInfo);
+      Set clientClassPropertyNames = internalInfoModelMap.getSet("_clientClassPropertyNames"); //$NON-NLS-1$
       if (clientClassPropertyNames != null) {
         Iterator clientClassPropertyNameIter = clientClassPropertyNames.iterator();
         while (clientClassPropertyNameIter.hasNext()) {
           String attributeName = (String) clientClassPropertyNameIter.next();
-          EOAttribute attribute = getAttributeNamed(attributeName);
+          IEOAttribute attribute = getAttributeOrRelationshipNamed(attributeName);
           if (attribute != null) {
-            attribute.setClientClassProperty(Boolean.TRUE);
+            attribute.setClientClassProperty(Boolean.TRUE, false);
           }
         }
       }

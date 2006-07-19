@@ -1,0 +1,86 @@
+{
+    attributes = (
+        {
+            adaptorValueConversionMethodName = archiveData; 
+            columnName = SubEntityID; 
+            name = id; 
+            prototypeName = id; 
+            valueClassName = NS; 
+            valueFactoryMethodName = "objectWithArchiveData:"; 
+        }, 
+        {
+            adaptorValueConversionMethodName = archiveData; 
+            columnName = test; 
+            isReadOnly = Y; 
+            name = name; 
+            precision = 20; 
+            prototypeName = varchar100; 
+            scale = 10; 
+            valueClassName = String; 
+            valueFactoryMethodName = "objectWithArchiveData:"; 
+            width = 0; 
+        }, 
+        {columnName = TestEntityID; name = testEntityID; prototypeName = id; }
+    ); 
+    attributesUsedForLocking = (id, testEntityID, name); 
+    className = SubEntity; 
+    classProperties = (
+        name, 
+        testEntity, 
+        "testEntity_subEntities", 
+        innerJoin, 
+        fullOuterJoin, 
+        leftOuterJoin
+    ); 
+    externalName = SubEntity; 
+    externalQuery = "External Query"; 
+    internalInfo = {"_clientClassPropertyNames" = (name, testEntity); }; 
+    isReadOnly = Y; 
+    maxNumberOfInstancesToBatchFetch = 5; 
+    name = SubEntity; 
+    primaryKeyAttributes = (id); 
+    relationships = (
+        {
+            destination = SubEntity; 
+            isToMany = Y; 
+            joinSemantic = EOFullOuterJoin; 
+            joins = ({destinationAttribute = id; sourceAttribute = id; }); 
+            name = fullOuterJoin; 
+            numberOfToManyFaultsToBatchFetch = 5; 
+        }, 
+        {
+            destination = SubEntity; 
+            internalInfo = {"_nameInObjectStore" = test; }; 
+            isToMany = N; 
+            joinSemantic = EOInnerJoin; 
+            joins = ({destinationAttribute = id; sourceAttribute = id; }); 
+            name = innerJoin; 
+            propagatesPrimaryKey = Y; 
+        }, 
+        {
+            deleteRule = EODeleteRuleNoAction; 
+            destination = SubEntity; 
+            isToMany = N; 
+            joinSemantic = EOLeftOuterJoin; 
+            joins = ({destinationAttribute = id; sourceAttribute = id; }); 
+            name = leftOuterJoin; 
+        }, 
+        {
+            destination = TestEntity; 
+            isMandatory = Y; 
+            isToMany = Y; 
+            joinSemantic = EOInnerJoin; 
+            joins = ({destinationAttribute = id; sourceAttribute = testEntityID; }); 
+            name = testEntity; 
+            numberOfToManyFaultsToBatchFetch = 10; 
+            ownsDestination = Y; 
+        }, 
+        {
+            definition = "testEntity.subEntities"; 
+            joinSemantic = EOInnerJoin; 
+            name = "testEntity_subEntities"; 
+        }
+    ); 
+    sharedObjectFetchSpecificationNames = (FetchAll, FetchAll, FetchAll); 
+    userInfo = {a = b; }; 
+}
