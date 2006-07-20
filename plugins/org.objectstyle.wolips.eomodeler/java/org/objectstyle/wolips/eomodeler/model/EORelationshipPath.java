@@ -64,19 +64,23 @@ public class EORelationshipPath extends IEOAttributePath {
   public IEOAttributePath[] getChildren() {
     IEOAttributePath[] children;
     EOEntity entity = getChildRelationship().getDestination();
-    Set relationshipsList = entity.getRelationships();
-    Set attributesList = entity.getAttributes();
-    children = new IEOAttributePath[relationshipsList.size() + attributesList.size()];
-    int childNum = 0;
-    Iterator relationshipsIter = relationshipsList.iterator();
-    for (; relationshipsIter.hasNext(); childNum++) {
-      EORelationship childRelationship = (EORelationship) relationshipsIter.next();
-      children[childNum] = new EORelationshipPath(this, childRelationship);
-    }
-    Iterator attributesIter = attributesList.iterator();
-    for (; attributesIter.hasNext(); childNum++) {
-      EOAttribute childAttribute = (EOAttribute) attributesIter.next();
-      children[childNum] = new EOAttributePath(this, childAttribute);
+    if(entity != null) {
+    	Set relationshipsList = entity.getRelationships();
+    	Set attributesList = entity.getAttributes();
+    	children = new IEOAttributePath[relationshipsList.size() + attributesList.size()];
+    	int childNum = 0;
+    	Iterator relationshipsIter = relationshipsList.iterator();
+    	for (; relationshipsIter.hasNext(); childNum++) {
+    		EORelationship childRelationship = (EORelationship) relationshipsIter.next();
+    		children[childNum] = new EORelationshipPath(this, childRelationship);
+    	}
+    	Iterator attributesIter = attributesList.iterator();
+    	for (; attributesIter.hasNext(); childNum++) {
+    		EOAttribute childAttribute = (EOAttribute) attributesIter.next();
+    		children[childNum] = new EOAttributePath(this, childAttribute);
+    	}
+    } else {
+    	children = new IEOAttributePath[0];
     }
     return children;
   }
