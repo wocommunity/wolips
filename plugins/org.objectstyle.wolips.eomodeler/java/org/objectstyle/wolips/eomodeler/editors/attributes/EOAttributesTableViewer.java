@@ -52,6 +52,7 @@ package org.objectstyle.wolips.eomodeler.editors.attributes;
 import java.beans.PropertyChangeEvent;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
@@ -198,12 +199,12 @@ public class EOAttributesTableViewer extends Composite implements ISelectionProv
 
     public void propertyChange(PropertyChangeEvent _event) {
       super.propertyChange(_event);
-      List oldAttributes = (List) _event.getOldValue();
-      List newAttributes = (List) _event.getNewValue();
-      if (newAttributes != null && oldAttributes != null && newAttributes.size() > oldAttributes.size()) {
-        newAttributes = new LinkedList(newAttributes);
-        newAttributes.removeAll(oldAttributes);
-        EOAttributesTableViewer.this.setSelection(new StructuredSelection(newAttributes));
+      Set oldValues = (Set) _event.getOldValue();
+      Set newValues = (Set) _event.getNewValue();
+      if (newValues != null && oldValues != null && newValues.size() > oldValues.size()) {
+        List newList = new LinkedList(oldValues);
+        newList.removeAll(oldValues);
+        EOAttributesTableViewer.this.setSelection(new StructuredSelection(newList));
       }
     }
   }
