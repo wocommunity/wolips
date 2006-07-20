@@ -52,6 +52,7 @@ package org.objectstyle.wolips.eomodeler.editors.relationships;
 import java.beans.PropertyChangeEvent;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
@@ -164,12 +165,12 @@ public class EORelationshipsTableViewer extends Composite implements ISelectionP
 
     public void propertyChange(PropertyChangeEvent _event) {
       super.propertyChange(_event);
-      List oldRelationships = (List) _event.getOldValue();
-      List newRelationships = (List) _event.getNewValue();
-      if (newRelationships != null && oldRelationships != null && newRelationships.size() > oldRelationships.size()) {
-        newRelationships = new LinkedList(newRelationships);
-        newRelationships.removeAll(oldRelationships);
-        EORelationshipsTableViewer.this.setSelection(new StructuredSelection(newRelationships));
+      Set oldValues = (Set) _event.getOldValue();
+      Set newValues = (Set) _event.getNewValue();
+      if (newValues != null && oldValues != null && newValues.size() > oldValues.size()) {
+        List newList = new LinkedList(oldValues);
+        newList.removeAll(oldValues);
+        EORelationshipsTableViewer.this.setSelection(new StructuredSelection(newList));
       }
     }
   }
