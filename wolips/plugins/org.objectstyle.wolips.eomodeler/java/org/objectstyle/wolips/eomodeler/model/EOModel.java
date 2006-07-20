@@ -223,6 +223,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 
   public void addEntity(EOEntity _entity, boolean _fireEvents, Set _failures) throws DuplicateEntityNameException {
     _checkForDuplicateEntityName(_entity, _entity.getName(), _failures);
+    myDeletedEntityNamesInObjectStore.remove(_entity.getName());
     Set oldEntities = null;
     if (_fireEvents) {
       oldEntities = myEntities;
@@ -239,6 +240,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 
   public void removeEntity(EOEntity _entity) {
     myEntities.remove(_entity);
+    myDeletedEntityNamesInObjectStore.add(_entity.getName());
     firePropertyChange(EOModel.ENTITIES, null, null);
   }
 
@@ -375,9 +377,13 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
       while (deletedEntityNameIter.hasNext()) {
         String entityName = (String) deletedEntityNameIter.next();
         File entityFile = new File(modelFolder, entityName + ".plist"); //$NON-NLS-1$
-        entityFile.delete();
+        if (entityFile.exists()) {
+          entityFile.delete();
+        }
         File fspecFile = new File(modelFolder, entityName + ".fspec"); //$NON-NLS-1$
-        fspecFile.delete();
+        if (fspecFile.exists()) {
+          fspecFile.delete();
+        }
       }
     }
 
