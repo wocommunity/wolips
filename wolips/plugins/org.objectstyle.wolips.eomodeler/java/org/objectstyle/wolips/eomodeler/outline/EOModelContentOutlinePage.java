@@ -113,7 +113,8 @@ public class EOModelContentOutlinePage extends ContentOutlinePage {
       treeViewer.setInput(new EOModelContainer(myModel));
     }
     treeViewer.expandToLevel(2);
-    setFocus();
+    //AK: commenting prevents an error in swt
+    // setFocus();
   }
 
   public void init(IPageSite _pageSite) {
