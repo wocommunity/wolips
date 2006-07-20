@@ -52,8 +52,8 @@ package org.objectstyle.wolips.eomodeler.editors;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -253,7 +253,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
       int result = switchMode;
       if (workbenchPage != null 
     		  && !EOModelerPerspectiveFactory.EOMODELER_PERSPECTIVE_ID.equals(workbenchPage.getPerspective().getId()) && result < 2) {
-    	  // FIXME AK: this sucks, as we only keep this pref for the session, but's I'm totally tired of this dialog
+    	  // FIXME AK: this sucks, as we only keep this pref for the session, but I'm totally tired of this dialog
     	  MessageDialog dialog = new MessageDialog(Display.getDefault().getActiveShell(), 
     			  Messages.getString("EOModelEditor.switchPerspectivesTitle"),  //$NON-NLS-2$
     			  null,
@@ -542,12 +542,12 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 
   protected class EntitiesChangeRefresher implements PropertyChangeListener {
     public void propertyChange(PropertyChangeEvent _event) {
-      List oldEntities = (List) _event.getOldValue();
-      List newEntities = (List) _event.getNewValue();
+    	Set oldEntities = (Set) _event.getOldValue();
+    	Set newEntities = (Set) _event.getNewValue();
       if (newEntities != null && oldEntities != null && newEntities.size() > oldEntities.size()) {
-        newEntities = new LinkedList(newEntities);
-        newEntities.removeAll(oldEntities);
-        EOModelEditor.this.setSelection(new StructuredSelection(newEntities));
+    	  List newSelection = new ArrayList(newEntities);
+    	  newSelection.removeAll(oldEntities);
+        EOModelEditor.this.setSelection(new StructuredSelection(newSelection));
         EOModelEditor.this.setActivePage(EOModelEditor.EOENTITY_PAGE);
       }
     }
