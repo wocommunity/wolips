@@ -7,7 +7,14 @@ public class StringUtilities {
     if (!_parameter.endsWith("=")) {
       commandlineFormat.append(" ");
     }
+    boolean quote = _value.indexOf(' ') != -1;
+    if (quote) {
+      commandlineFormat.append('\"');
+    }
     commandlineFormat.append(_value);
+    if (quote) {
+      commandlineFormat.append('\"');
+    }
     return commandlineFormat.toString();
   }
 
