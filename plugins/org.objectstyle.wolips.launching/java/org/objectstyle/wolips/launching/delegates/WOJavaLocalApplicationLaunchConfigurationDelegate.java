@@ -372,6 +372,7 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate extends
 						argument = workingDir.getAbsolutePath();
 					}
 					if ("-NSProjectSearchPath".equals(parameter)) {
+            IProject theProject = this.getJavaProject(configuration).getProject();
 						argument = javaProject.getGeneratedByWOLips(Preferences
 								.getPREF_NS_PROJECT_SEARCH_PATH());
 					}
