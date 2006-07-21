@@ -54,22 +54,24 @@
  *
  */
 package org.objectstyle.wolips.datasets.adaptable;
-
 import java.io.File;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.swt.widgets.Display;
 import org.objectstyle.woenvironment.util.FileStringScanner;
 import org.objectstyle.wolips.datasets.DataSetsPlugin;
 import org.objectstyle.wolips.variables.VariablesPlugin;
 import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
-
 /**
  * @author ulrich
  * 
@@ -83,7 +85,6 @@ public class JavaProjectLaunchParameter extends JavaProjectClasspath {
 	protected JavaProjectLaunchParameter(IProject project) {
 		super(project);
 	}
-
 	/**
 	 * @return
 	 */
@@ -91,7 +92,6 @@ public class JavaProjectLaunchParameter extends JavaProjectClasspath {
 		return VariablesPlugin.getDefault().getSystemRoot().toOSString()
 				.startsWith("/System");
 	}
-
 	/**
 	 * Method isTheLaunchAppOrFramework.
 	 * 
@@ -109,7 +109,6 @@ public class JavaProjectLaunchParameter extends JavaProjectClasspath {
 		}
 		return false;
 	}
-
 	/**
 	 * Method isValidProjectPath.
 	 * 
@@ -124,59 +123,64 @@ public class JavaProjectLaunchParameter extends JavaProjectClasspath {
 			return false;
 		}
 	}
-
+  
+  protected void addProjectsToSearchPath(IProject project, StringBuffer searchPathBuffer, Set visitedProjects, Set invalidProjects) throws JavaModelException {
+    if (!visitedProjects.contains(project)) {
+      visitedProjects.add(project);
+      if (isTheLaunchApp(project)) {
+        searchPathBuffer.append("\"..\",\"../..\"");
+      }
+      if (isValidProjectPath(project)) {
+        if (isAFramework(project)) {
+          searchPathBuffer.append(",\"");
+          searchPathBuffer.append(project.getLocation().toOSString());
+          searchPathBuffer.append("\"");
+        }
+      }
+      else {
+        invalidProjects.add(project);
+      }
+      IJavaProject javaProject = JavaCore.create(project);
+      if (javaProject != null) {
+        String[] requiredProjectNames = javaProject.getRequiredProjectNames();
+        for (int requiredProjectNameNum = 0; requiredProjectNameNum < requiredProjectNames.length; requiredProjectNameNum++) {
+          String requiredProjectName = requiredProjectNames[requiredProjectNameNum];
+          IProject requiredProject = ResourcesPlugin.getWorkspace().getRoot().getProject(requiredProjectName);
+          addProjectsToSearchPath(requiredProject, searchPathBuffer, visitedProjects, invalidProjects);
+        }
+      }
+    }
+  }
 	/**
 	 * Method getGeneratedByWOLips.
 	 * 
 	 * @param projectSearchPathPreferences
 	 * 
 	 * @return String
+	 * @throws JavaModelException 
 	 */
-	public String getGeneratedByWOLips(String projectSearchPathPreferences) {
-		String returnValue = "";
-		IProject[] projects = ResourcesPlugin.getWorkspace().getRoot()
-				.getProjects();
-		boolean isValidProjectPath = true;
-		for (int i = 0; i < projects.length; i++) {
-			if (isValidProjectPath(projects[i])) {
-				if (isAFramework(projects[i])) {
-					if (returnValue.length() > 0) {
-						returnValue = returnValue + ",";
-					}
-					returnValue = returnValue + "\""
-							+ projects[i].getLocation().toOSString() + "\"";
-				}
-				if (isTheLaunchApp(projects[i])) {
-					if (returnValue.length() > 0) {
-						returnValue = returnValue + ",";
-					}
-					returnValue = returnValue + "\"" + ".." + "\"" + "," + "\""
-							+ "../.." + "\"";
-				}
-			} else {
-				isValidProjectPath = false;
-			}
-		}
-		if (!isValidProjectPath) {
-			Display.getDefault().asyncExec(new Runnable() {
-				public void run() {
-					WorkbenchUtilitiesPlugin.errorDialog(
-							WorkbenchUtilitiesPlugin.getActiveWorkbenchShell(),
-							"NSProjectSearchPath",
-							"Path contains - . Rapid turnaround disabled",
-							(Throwable) null);
-				}});
-
-		}
-		returnValue = FileStringScanner.replace(returnValue, "\\", "/");
-		returnValue = this.addPreferencesValue(returnValue,
-				projectSearchPathPreferences);
-		if ("".equals(returnValue))
+	public String getGeneratedByWOLips(String projectSearchPathPreferences) throws JavaModelException {
+    StringBuffer searchPathBuffer = new StringBuffer();
+    final HashSet invalidProjects = new HashSet();
+    addProjectsToSearchPath(getIProject(), searchPathBuffer, new HashSet(), invalidProjects);
+		String returnValue = FileStringScanner.replace(searchPathBuffer.toString(), "\\", "/");
+		returnValue = this.addPreferencesValue(returnValue, projectSearchPathPreferences);
+		if ("".equals(returnValue)) {
 			returnValue = "\"" + ".." + "\"";
+    }
 		returnValue = "(" + returnValue + ")";
+    if (!invalidProjects.isEmpty()) {
+      Display.getDefault().asyncExec(new Runnable() {
+        public void run() {
+          WorkbenchUtilitiesPlugin.errorDialog(
+              WorkbenchUtilitiesPlugin.getActiveWorkbenchShell(),
+              "NSProjectSearchPath",
+              "The projects " + invalidProjects + " contain dashes in their paths.  This breaks NSProjectSearchPath. Rapid turnaround will be disabled.",
+              (Throwable) null);
+        }});
+    }
 		return returnValue;
 	}
-
 	/**
 	 * Method addPreferencesValue.
 	 * 
@@ -195,7 +199,6 @@ public class JavaProjectLaunchParameter extends JavaProjectClasspath {
 			aString = aString + ",";
 		return aString + nsProjectSarchPath;
 	}
-
 	/**
 	 * @param theProject
 	 * @param wd
@@ -213,19 +216,18 @@ public class JavaProjectLaunchParameter extends JavaProjectClasspath {
 				wdFolder = theProject.getFolder("build/" + theProject.getName()
 						+ ".woa");
 			}
-			if (wdFolder != null || !wdFolder.exists()) {
+			if(wdFolder != null || !wdFolder.exists()) {
 				if (this.isAnt()) {
 					wdFolder = theProject.getFolder("dist");
 				} else {
 					wdFolder = theProject.getFolder("build");
 				}
-				if (wdFolder != null || !wdFolder.exists()) {
+				if(wdFolder != null || !wdFolder.exists()) {
 					IResource[] members = wdFolder.members();
-					for (int i = 0; i < members.length; i++) {
+					for(int i = 0; i < members.length; i++) {
 						IResource member = members[i];
-						if (member.getType() == IResource.FOLDER
-								&& member.getName().endsWith(".woa")) {
-							wdFolder = (IFolder) member;
+						if(member.getType() ==IResource.FOLDER && member.getName().endsWith(".woa")) {
+							wdFolder = (IFolder)member;
 							break;
 						}
 					}
