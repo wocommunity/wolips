@@ -152,7 +152,7 @@ public class EOQualifierFactory {
     }
     return node;
   }
-  
+
   private static boolean isSelectorNameEqual(String _expectedName, String _possibleName) {
     return _expectedName.equals(_possibleName) || (_expectedName + ":").equals(_possibleName);
   }
@@ -190,8 +190,15 @@ public class EOQualifierFactory {
       map.put("value", _value); //$NON-NLS-1$
       value = map;
     }
+    else if (_value instanceof ExpressionParameter) {
+      EOModelMap map = new EOModelMap();
+      String name = ((ExpressionParameter) _value).getName();
+      map.setString("_key", name, true); //$NON-NLS-1$
+      map.setString("class", "EOQualifierVariable", false); //$NON-NLS-1$ //$NON-NLS-2$
+      value = map;
+    }
     else {
-      value = _value;
+      throw new IllegalArgumentException("Unknown qualifier value type: " + _value + " (type = " + _value.getClass().getName() + ")");
     }
     return value;
   }
