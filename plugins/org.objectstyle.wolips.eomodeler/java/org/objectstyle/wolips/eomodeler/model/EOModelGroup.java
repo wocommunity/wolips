@@ -173,6 +173,17 @@ public class EOModelGroup extends EOModelObject {
     return matchingAttribute;
   }
 
+  public String findUnusedEntityName(String _newName) {
+    String unusedName = _newName;
+    boolean unusedNameFound = (getEntityNamed(_newName) == null);
+    for (int dupeNameNum = 1; !unusedNameFound; dupeNameNum++) {
+      unusedName = _newName + dupeNameNum;
+      EOEntity renameEntity = getEntityNamed(unusedName);
+      unusedNameFound = (renameEntity == null);
+    }
+    return unusedName;
+  }
+
   public EOEntity getEntityNamed(String _entityName) {
     EOEntity matchingEntity = null;
     Iterator modelsIter = myModels.iterator();
@@ -187,24 +198,34 @@ public class EOModelGroup extends EOModelObject {
     return getModelNamed(_entityName) != null;
   }
 
-  public void _checkForDuplicateModelName(EOModel _model, String _newName) {
-    EOModel entity = getModelNamed(_newName);
-    if (entity != null && entity != _model) {
-      throw new IllegalArgumentException("There is already an entity named '" + _newName + "' in " + this + ".");
+  public void _checkForDuplicateModelName(EOModel _model, String _newName) throws DuplicateModelNameException {
+    EOModel model = getModelNamed(_newName);
+    if (model != null && model != _model) {
+      throw new DuplicateModelNameException(_newName, this);
     }
   }
 
-  public void addModel(EOModel _model) {
-    _checkForDuplicateModelName(_model, _model.getName());
+  public void addModel(EOModel _model) throws DuplicateEntityNameException, DuplicateModelNameException {
+    addModel(_model, null);
+  }
+
+  public void addModel(EOModel _model, Set _failures) throws DuplicateEntityNameException, DuplicateModelNameException {
     _model._setModelGroup(this);
+    _checkForDuplicateModelName(_model, _model.getName());
+    Iterator entitiesIter = _model.getEntities().iterator();
+    while (entitiesIter.hasNext()) {
+      EOEntity entity = (EOEntity) entitiesIter.next();
+      _model._checkForDuplicateEntityName(entity, entity.getName(), _failures);
+    }
     myModels.add(_model);
     myPrototypeAttributeCache = null;
     firePropertyChange(EOModelGroup.MODELS, null, null);
   }
 
-  public void removeModel(EOModel _entity) {
-    myModels.remove(_entity);
+  public void removeModel(EOModel _model) {
+    myModels.remove(_model);
     firePropertyChange(EOModelGroup.MODELS, null, null);
+    _model._setModelGroup(null);
   }
 
   public EOModel getModelNamed(String _name) {
@@ -244,8 +265,9 @@ public class EOModelGroup extends EOModelObject {
     EOModel model = getModelNamed(modelName);
     if (model == null) {
       model = new EOModel(modelName);
+      model._setModelGroup(this);
       model.loadFromFolder(_folder, _failures);
-      addModel(model);
+      addModel(model, _failures);
     }
     return model;
   }
