@@ -795,8 +795,12 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
   }
 
   public void removeFetchSpecification(EOFetchSpecification _fetchSpecification) {
-    myFetchSpecs.remove(_fetchSpecification);
-    firePropertyChange(EOEntity.FETCH_SPECIFICATIONS, null, null);
+    Set oldFetchSpecs = myFetchSpecs;
+    Set newFetchSpecs = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
+    newFetchSpecs.addAll(myFetchSpecs);
+    newFetchSpecs.remove(_fetchSpecification);
+    myFetchSpecs = newFetchSpecs;
+    firePropertyChange(EOEntity.FETCH_SPECIFICATIONS, oldFetchSpecs, newFetchSpecs);
   }
 
   public void addAttribute(EOAttribute _attribute) throws DuplicateNameException {
@@ -823,8 +827,12 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
 
   public void removeAttribute(EOAttribute _attribute, boolean _removeFromSubclasses) {
     String attributeName = _attribute.getName();
-    myAttributes.remove(_attribute);
-    firePropertyChange(EOEntity.ATTRIBUTES, null, null);
+    Set oldAttributes = myAttributes;
+    Set newAttributes = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
+    newAttributes.addAll(myAttributes);
+    newAttributes.remove(_attribute);
+    myAttributes = newAttributes;
+    firePropertyChange(EOEntity.ATTRIBUTES, oldAttributes, newAttributes);
     if (_removeFromSubclasses) {
       Iterator childrenEntitiesIter = getChildrenEntities().iterator();
       while (childrenEntitiesIter.hasNext()) {
@@ -908,8 +916,12 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
 
   public void removeRelationship(EORelationship _relationship, boolean _removeFromSubclasses) {
     String relationshipName = _relationship.getName();
-    myRelationships.remove(_relationship);
-    firePropertyChange(EOEntity.RELATIONSHIPS, null, null);
+    Set oldRelationships = myRelationships;
+    Set newRelationships = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
+    newRelationships.addAll(myRelationships);
+    newRelationships.remove(_relationship);
+    myRelationships = newRelationships;
+    firePropertyChange(EOEntity.RELATIONSHIPS, oldRelationships, newRelationships);
     if (_removeFromSubclasses) {
       Iterator childrenEntitiesIter = getChildrenEntities().iterator();
       while (childrenEntitiesIter.hasNext()) {

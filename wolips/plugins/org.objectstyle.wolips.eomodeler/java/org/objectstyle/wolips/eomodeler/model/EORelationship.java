@@ -467,8 +467,12 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
   }
 
   public void removeJoin(EOJoin _join) {
-    myJoins.remove(_join);
-    firePropertyChange(EORelationship.JOINS, null, null);
+    Set oldJoins = myJoins;
+    Set newJoins = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
+    newJoins.addAll(myJoins);
+    newJoins.remove(_join);
+    myJoins = newJoins;
+    firePropertyChange(EORelationship.JOINS, oldJoins, newJoins);
     _join._setRelationship(null);
   }
 
