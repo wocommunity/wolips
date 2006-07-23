@@ -278,7 +278,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
     catch (WorkbenchException e) {
       e.printStackTrace();
     }
-    
+
     try {
       IFileEditorInput fileEditorInput;
       if (_editorInput instanceof IFileEditorInput) {
@@ -313,7 +313,6 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
       updatePartName();
       _site.setSelectionProvider(this);
 
-      
       //      try {
       //        ILaunchConfigurationType launchConfigurationType = DebugPlugin.getDefault().getLaunchManager().getLaunchConfigurationType(WOJavaLocalApplicationLaunchConfigurationDelegate.WOJavaLocalApplicationID);
       //        ILaunchConfigurationWorkingCopy wc = launchConfigurationType.newInstance(null, "Temp");
@@ -545,11 +544,17 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
     public void propertyChange(PropertyChangeEvent _event) {
       Set oldValues = (Set) _event.getOldValue();
       Set newValues = (Set) _event.getNewValue();
-      if (newValues != null && oldValues != null && newValues.size() > oldValues.size()) {
-        List newList = new LinkedList(newValues);
-        newList.removeAll(oldValues);
-        EOModelEditor.this.setSelection(new StructuredSelection(newList));
-        EOModelEditor.this.setActivePage(EOModelEditor.EOENTITY_PAGE);
+      if (newValues != null && oldValues != null) {
+        if (newValues.size() > oldValues.size()) {
+          List newList = new LinkedList(newValues);
+          newList.removeAll(oldValues);
+          EOModelEditor.this.setSelection(new StructuredSelection(newList));
+          EOModelEditor.this.setActivePage(EOModelEditor.EOENTITY_PAGE);
+        }
+        else if (newValues.size() < oldValues.size()) {
+          EOModelEditor.this.setSelection(new StructuredSelection(EOModelEditor.this.getModel()));
+          EOModelEditor.this.setActivePage(EOModelEditor.EOMODEL_PAGE);
+        }
       }
     }
   }

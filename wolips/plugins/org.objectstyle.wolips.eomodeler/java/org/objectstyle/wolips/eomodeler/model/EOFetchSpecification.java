@@ -137,7 +137,7 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
 
   protected void _propertyChanged(String _propertyName, Object _oldValue, Object _newValue) {
     if (myEntity != null) {
-      myEntity._fetchSpecificationChanged(this);
+      myEntity._fetchSpecificationChanged(this, _propertyName, _oldValue, _newValue);
     }
   }
 

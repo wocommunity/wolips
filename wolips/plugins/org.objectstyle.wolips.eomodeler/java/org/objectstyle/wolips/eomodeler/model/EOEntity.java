@@ -397,7 +397,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
 
   protected void _propertyChanged(String _propertyName, Object _oldValue, Object _newValue) {
     if (myModel != null) {
-      myModel._entityChanged(this);
+      myModel._entityChanged(this, _propertyName, _oldValue, _newValue);
     }
   }
 
@@ -871,15 +871,15 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     }
   }
 
-  protected void _attributeChanged(EOAttribute _attribute) {
+  protected void _attributeChanged(EOAttribute _attribute, String _propertyName, Object _oldValue, Object _newValue) {
     firePropertyChange(EOEntity.ATTRIBUTE, null, _attribute);
   }
 
-  protected void _relationshipChanged(EORelationship _relationship) {
+  protected void _relationshipChanged(EORelationship _relationship, String _propertyName, Object _oldValue, Object _newValue) {
     firePropertyChange(EOEntity.RELATIONSHIP, null, _relationship);
   }
 
-  protected void _fetchSpecificationChanged(EOFetchSpecification _fetchSpecification) {
+  protected void _fetchSpecificationChanged(EOFetchSpecification _fetchSpecification, String _propertyName, Object _oldValue, Object _newValue) {
     firePropertyChange(EOEntity.FETCH_SPECIFICATION, null, _fetchSpecification);
   }
 

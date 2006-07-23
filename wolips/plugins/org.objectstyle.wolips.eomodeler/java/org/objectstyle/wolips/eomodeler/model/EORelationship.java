@@ -160,13 +160,13 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
     return relationship;
   }
 
-  protected void _joinChanged(EOJoin _join) {
+  protected void _joinChanged(EOJoin _join, String _propertyName, Object _oldValue, Object _newValue) {
     firePropertyChange(EORelationship.JOIN, null, _join);
   }
 
   protected void _propertyChanged(String _propertyName, Object _oldValue, Object _newValue) {
     if (myEntity != null) {
-      myEntity._relationshipChanged(this);
+      myEntity._relationshipChanged(this, _propertyName, _oldValue, _newValue);
     }
   }
 

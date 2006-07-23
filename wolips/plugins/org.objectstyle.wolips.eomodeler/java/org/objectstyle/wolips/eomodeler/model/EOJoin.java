@@ -75,7 +75,7 @@ public class EOJoin extends EOModelObject implements ISortableEOModelObject {
 
   protected void _propertyChanged(String _propertyName, Object _oldValue, Object _newValue) {
     if (myRelationship != null) {
-      myRelationship._joinChanged(this);
+      myRelationship._joinChanged(this, _propertyName, _oldValue, _newValue);
     }
   }
   
