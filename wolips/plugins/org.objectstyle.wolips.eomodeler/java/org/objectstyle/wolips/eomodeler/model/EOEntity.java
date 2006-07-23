@@ -376,6 +376,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     }
     else {
       attribute = new EOAttribute(newAttributeName);
+      attribute.setUsedForLocking(Boolean.TRUE);
     }
     attribute.setClassProperty(Boolean.TRUE);
     addAttribute(attribute);
