@@ -49,52 +49,80 @@
  */
 package org.objectstyle.wolips.eomodeler.model;
 
+import java.util.HashSet;
 import java.util.Set;
 
+import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
+
 public class EOJoin extends EOModelObject implements ISortableEOModelObject {
-  public static final String DESTINATION_ATTRIBUTE = "destinationAttribute"; //$NON-NLS-1$
-  public static final String SOURCE_ATTRIBUTE = "sourceAttribute"; //$NON-NLS-1$
-  public static final String DESTINATION_ATTRIBUTE_NAME = "destinationAttributeName"; //$NON-NLS-1$
-  public static final String SOURCE_ATTRIBUTE_NAME = "sourceAttributeName"; //$NON-NLS-1$
+  public static final String DESTINATION_ATTRIBUTE = "destinationAttribute";
+  public static final String SOURCE_ATTRIBUTE = "sourceAttribute";
+  public static final String DESTINATION_ATTRIBUTE_NAME = "destinationAttributeName";
+  public static final String SOURCE_ATTRIBUTE_NAME = "sourceAttributeName";
 
   private EORelationship myRelationship;
   private EOAttribute mySourceAttribute;
   private EOAttribute myDestinationAttribute;
   private EOModelMap myJoinMap;
 
-  public EOJoin(EORelationship _relationship) {
-    myRelationship = _relationship;
+  public EOJoin() {
     myJoinMap = new EOModelMap();
+  }
+
+  public Set getReferenceFailures() {
+    return new HashSet();
+  }
+
+  protected void _propertyChanged(String _propertyName, Object _oldValue, Object _newValue) {
+    if (myRelationship != null) {
+      myRelationship._joinChanged(this);
+    }
   }
   
   public String getName() {
     return ((mySourceAttribute != null) ? mySourceAttribute.getName() : "") + ((myDestinationAttribute != null) ? myDestinationAttribute.getName() : "");
   }
 
+  public void _setRelationship(EORelationship _relationship) {
+    myRelationship = _relationship;
+  }
+  
   public EORelationship getRelationship() {
     return myRelationship;
   }
 
-  public EOJoin cloneInto(EORelationship _relationship, boolean _fireEvents, Set _failures) throws DuplicateNameException {
-    EOJoin join = new EOJoin(_relationship);
+  public void pasted() throws DuplicateNameException {
     if (mySourceAttribute != null) {
-      join.mySourceAttribute = _relationship.getEntity().getAttributeNamed(mySourceAttribute.getName());
-      if (join.mySourceAttribute == null) {
-        mySourceAttribute.cloneInto(_relationship.getEntity(), _fireEvents, _failures);
+      EOAttribute sourceAttribute = myRelationship.getEntity().getAttributeNamed(mySourceAttribute.getName());
+      if (mySourceAttribute == null) {
+        mySourceAttribute = mySourceAttribute.cloneAttribute();
+        myRelationship.getEntity().addAttribute(sourceAttribute);
+      }
+      else {
+        mySourceAttribute = sourceAttribute;
       }
     }
     if (myDestinationAttribute != null) {
-      join.myDestinationAttribute = _relationship.getDestination().getAttributeNamed(myDestinationAttribute.getName());
-      if (join.myDestinationAttribute == null && myDestinationAttribute.getEntity() == myRelationship.getEntity()) {
-        myDestinationAttribute.cloneInto(_relationship.getEntity(), _fireEvents, _failures);
+      EOAttribute destinationAttribute = myRelationship.getDestination().getAttributeNamed(myDestinationAttribute.getName());
+      if (destinationAttribute == null && myDestinationAttribute.getEntity() == myRelationship.getEntity()) {
+        myDestinationAttribute = myDestinationAttribute.cloneAttribute();
+        myRelationship.getEntity().addAttribute(destinationAttribute);
+      }
+      else {
+        myDestinationAttribute = destinationAttribute;
       }
     }
-    _relationship.addJoin(join, _fireEvents);
+  }
+
+  public EOJoin cloneJoin() {
+    EOJoin join = new EOJoin();
+    join.mySourceAttribute = mySourceAttribute;
+    join.myDestinationAttribute = myDestinationAttribute;
     return join;
   }
 
   public int hashCode() {
-    int hashCode = myRelationship.hashCode();
+    int hashCode = (myRelationship == null) ? 1 : myRelationship.hashCode();
     if (mySourceAttribute != null) {
       hashCode *= mySourceAttribute.hashCode();
     }
@@ -112,7 +140,7 @@ public class EOJoin extends EOModelObject implements ISortableEOModelObject {
       }
       else {
         EOJoin otherJoin = (EOJoin) _obj;
-        if (otherJoin.myRelationship.equals(myRelationship)) {
+        if (ComparisonUtils.equals(otherJoin.myRelationship, myRelationship)) {
           if (mySourceAttribute != null && myDestinationAttribute != null && otherJoin.mySourceAttribute != null && otherJoin.myDestinationAttribute != null) {
             equals = mySourceAttribute.equals(otherJoin.mySourceAttribute) && myDestinationAttribute.equals(otherJoin.myDestinationAttribute);
           }
@@ -193,22 +221,22 @@ public class EOJoin extends EOModelObject implements ISortableEOModelObject {
   public EOModelMap toMap() {
     EOModelMap joinMap = myJoinMap.cloneModelMap();
     if (myDestinationAttribute != null) {
-      joinMap.setString("destinationAttribute", myDestinationAttribute.getName(), true); //$NON-NLS-1$
+      joinMap.setString("destinationAttribute", myDestinationAttribute.getName(), true);
     }
     if (mySourceAttribute != null) {
-      joinMap.setString("sourceAttribute", mySourceAttribute.getName(), true); //$NON-NLS-1$
+      joinMap.setString("sourceAttribute", mySourceAttribute.getName(), true);
     }
     return joinMap;
   }
 
   public void resolve(Set _failures) {
-    String sourceAttributeName = myJoinMap.getString("sourceAttribute", true); //$NON-NLS-1$
+    String sourceAttributeName = myJoinMap.getString("sourceAttribute", true);
     mySourceAttribute = myRelationship.getEntity().getAttributeNamed(sourceAttributeName);
     if (mySourceAttribute == null) {
       _failures.add(new MissingAttributeFailure(myRelationship.getEntity(), sourceAttributeName));
     }
 
-    String destinationAttributeName = myJoinMap.getString("destinationAttribute", true); //$NON-NLS-1$
+    String destinationAttributeName = myJoinMap.getString("destinationAttribute", true);
     EOEntity destination = myRelationship.getDestination();
     if (destination != null) {
       myDestinationAttribute = myRelationship.getDestination().getAttributeNamed(destinationAttributeName);
@@ -228,6 +256,6 @@ public class EOJoin extends EOModelObject implements ISortableEOModelObject {
   }
 
   public String toString() {
-    return "[EOJoin: sourceAttribute = " + ((mySourceAttribute == null) ? "null" : mySourceAttribute.getName()) + "; destinationAttribute = " + ((myDestinationAttribute == null) ? "null" : myDestinationAttribute.getName()) + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+    return "[EOJoin: sourceAttribute = " + ((mySourceAttribute == null) ? "null" : mySourceAttribute.getName()) + "; destinationAttribute = " + ((myDestinationAttribute == null) ? "null" : myDestinationAttribute.getName()) + "]"; //$NON-NLS-4$ //$NON-NLS-5$
   }
 }

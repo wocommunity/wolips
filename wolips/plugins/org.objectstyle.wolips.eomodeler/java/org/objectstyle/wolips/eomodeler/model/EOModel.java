@@ -52,10 +52,9 @@ package org.objectstyle.wolips.eomodeler.model;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -67,13 +66,13 @@ import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.utils.NotificationMap;
 
 public class EOModel extends UserInfoableEOModelObject implements IUserInfoable, ISortableEOModelObject {
-  public static final String DIRTY = "dirty"; //$NON-NLS-1$
-  public static final String ENTITY = "entity"; //$NON-NLS-1$
-  public static final String CONNECTION_DICTIONARY = "connectionDictionary"; //$NON-NLS-1$
-  public static final String ADAPTOR_NAME = "adaptorName"; //$NON-NLS-1$
-  public static final String VERSION = "version"; //$NON-NLS-1$
-  public static final String NAME = "name"; //$NON-NLS-1$
-  public static final String ENTITIES = "entities"; //$NON-NLS-1$
+  public static final String DIRTY = "dirty";
+  public static final String ENTITY = "entity";
+  public static final String CONNECTION_DICTIONARY = "connectionDictionary";
+  public static final String ADAPTOR_NAME = "adaptorName";
+  public static final String VERSION = "version";
+  public static final String NAME = "name";
+  public static final String ENTITIES = "entities";
 
   private EOModelGroup myModelGroup;
   private String myName;
@@ -86,18 +85,25 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
   private boolean myDirty;
   private PropertyChangeRepeater myConnectionDictionaryRepeater;
 
-  public EOModel(EOModelGroup _modelGroup, String _name) {
-    myModelGroup = _modelGroup;
+  public EOModel(String _name) {
     myName = _name;
     myEntities = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
     myDeletedEntityNamesInObjectStore = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
-    myVersion = "2.1"; //$NON-NLS-1$
+    myVersion = "2.1";
     myModelMap = new EOModelMap();
     myConnectionDictionaryRepeater = new PropertyChangeRepeater(EOModel.CONNECTION_DICTIONARY);
     setConnectionDictionary(new NotificationMap(), false);
   }
 
-  public EOEntity addBlankEntity(String _name) throws DuplicateEntityNameException {
+  public void _setModelGroup(EOModelGroup _modelGroup) {
+    myModelGroup = _modelGroup;
+  }
+
+  public Set getReferenceFailures() {
+    return new HashSet();
+  }
+
+  public EOEntity addBlankEntity(String _name) throws DuplicateNameException {
     String newEntityNameBase = _name;
     String newEntityName = newEntityNameBase;
     int newEntityNum = 0;
@@ -105,7 +111,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
       newEntityNum++;
       newEntityName = newEntityNameBase + newEntityNum;
     }
-    EOEntity entity = new EOEntity(this, newEntityName);
+    EOEntity entity = new EOEntity(newEntityName);
     addEntity(entity);
     return entity;
   }
@@ -189,20 +195,42 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
   }
 
   public String findUnusedEntityName(String _newName) {
-    boolean unusedNameFound = (getEntityNamed(_newName) == null);
     String unusedName = _newName;
-    for (int dupeNameNum = 1; !unusedNameFound; dupeNameNum++) {
-      unusedName = _newName + dupeNameNum;
-      EOEntity renameEntity = getEntityNamed(unusedName);
-      unusedNameFound = (renameEntity == null);
+    if (myModelGroup == null) {
+      boolean unusedNameFound = (getEntityNamed(_newName) == null);
+      for (int dupeNameNum = 1; !unusedNameFound; dupeNameNum++) {
+        unusedName = _newName + dupeNameNum;
+        EOEntity renameEntity = getEntityNamed(unusedName);
+        unusedNameFound = (renameEntity == null);
+      }
+
+    }
+    else {
+      boolean unusedNameFound = (myModelGroup.getEntityNamed(_newName) == null);
+      for (int dupeNameNum = 1; !unusedNameFound; dupeNameNum++) {
+        unusedName = _newName + dupeNameNum;
+        EOEntity renameEntity = myModelGroup.getEntityNamed(unusedName);
+        unusedNameFound = (renameEntity == null);
+      }
     }
     return unusedName;
   }
 
   public void _checkForDuplicateEntityName(EOEntity _entity, String _newName, Set _failures) throws DuplicateEntityNameException {
-    EOEntity entity = getModelGroup().getEntityNamed(_newName);
-    if (entity != null && entity != _entity) {
-      throw new DuplicateEntityNameException(_newName, this);
+    EOEntity existingEntity;
+    if (myModelGroup != null) {
+      existingEntity = myModelGroup.getEntityNamed(_newName);
+    }
+    else {
+      existingEntity = getEntityNamed(_newName);
+    }
+    if (existingEntity != null && existingEntity != _entity) {
+      if (_failures == null || _entity.getModel() != existingEntity.getModel()) {
+        throw new DuplicateEntityNameException(_newName, this);
+      }
+      String unusedName = findUnusedEntityName(_newName);
+      existingEntity.setName(unusedName, false);
+      _failures.add(new DuplicateEntityFailure(this, _newName, unusedName));
     }
   }
 
@@ -217,12 +245,14 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
     return getEntityNamed(_entityName) != null;
   }
 
-  public void addEntity(EOEntity _entity) throws DuplicateEntityNameException {
+  public void addEntity(EOEntity _entity) throws DuplicateNameException {
     addEntity(_entity, true, null);
   }
 
-  public void addEntity(EOEntity _entity, boolean _fireEvents, Set _failures) throws DuplicateEntityNameException {
+  public void addEntity(EOEntity _entity, boolean _fireEvents, Set _failures) throws DuplicateNameException {
+    _entity._setModel(this);
     _checkForDuplicateEntityName(_entity, _entity.getName(), _failures);
+    _entity.pasted();
     myDeletedEntityNamesInObjectStore.remove(_entity.getName());
     Set oldEntities = null;
     if (_fireEvents) {
@@ -242,6 +272,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
     myEntities.remove(_entity);
     myDeletedEntityNamesInObjectStore.add(_entity.getName());
     firePropertyChange(EOModel.ENTITIES, null, null);
+    _entity._setModel(null);
   }
 
   public EOEntity getEntityNamed(String _name) {
@@ -269,7 +300,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
   }
 
   public void loadFromFolder(File _modelFolder, Set _failures) throws EOModelException, IOException {
-    File indexFile = new File(_modelFolder, "index.eomodeld"); //$NON-NLS-1$
+    File indexFile = new File(_modelFolder, "index.eomodeld");
     if (!indexFile.exists()) {
       throw new EOModelException(indexFile + " does not exist.");
     }
@@ -279,7 +310,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
     }
     EOModelMap modelMap = new EOModelMap(rawModelMap);
     myModelMap = modelMap;
-    Object version = modelMap.get("EOModelVersion"); //$NON-NLS-1$
+    Object version = modelMap.get("EOModelVersion");
     if (version instanceof String) {
       myVersion = (String) version;
     }
@@ -289,35 +320,38 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
     else {
       throw new IllegalArgumentException("Unknown version format:" + version);
     }
-    myAdaptorName = modelMap.getString("adaptorName", true); //$NON-NLS-1$
-    setConnectionDictionary(modelMap.getMap("connectionDictionary", true), false); //$NON-NLS-1$
-    setUserInfo(modelMap.getMap("userInfo", true), false); //$NON-NLS-1$
+    myAdaptorName = modelMap.getString("adaptorName", true);
+    setConnectionDictionary(modelMap.getMap("connectionDictionary", true), false);
+    setUserInfo(modelMap.getMap("userInfo", true), false);
 
-    Set entities = modelMap.getSet("entities"); //$NON-NLS-1$
+    Set entities = modelMap.getSet("entities");
     if (entities != null) {
       Iterator entitiesIter = entities.iterator();
       while (entitiesIter.hasNext()) {
         EOModelMap entityMap = new EOModelMap((Map) entitiesIter.next());
-        String entityName = entityMap.getString("name", true); //$NON-NLS-1$
-        EOEntity entity = new EOEntity(this);
-        File entityFile = new File(_modelFolder, entityName + ".plist"); //$NON-NLS-1$
-        File fspecFile = new File(_modelFolder, entityName + ".fspec"); //$NON-NLS-1$
+        String entityName = entityMap.getString("name", true);
+        EOEntity entity = new EOEntity();
+        File entityFile = new File(_modelFolder, entityName + ".plist");
+        File fspecFile = new File(_modelFolder, entityName + ".fspec");
         entity.loadFromFile(entityFile, fspecFile, _failures);
         addEntity(entity, false, _failures);
       }
     }
 
-    Map internalInfoMap = modelMap.getMap("internalInfo"); //$NON-NLS-1$
+    Map internalInfoMap = modelMap.getMap("internalInfo");
     if (internalInfoMap != null) {
-      myDeletedEntityNamesInObjectStore = modelMap.getSet("_deletedEntityNamesInObjectStore", true); //$NON-NLS-1$
+      Set deletedEntityNamesInObjectStore = modelMap.getSet("_deletedEntityNamesInObjectStore", true);
+      if (deletedEntityNamesInObjectStore != null) {
+        myDeletedEntityNamesInObjectStore = deletedEntityNamesInObjectStore;
+      }
     }
   }
 
   public EOModelMap toMap() {
     EOModelMap modelMap = myModelMap.cloneModelMap();
-    modelMap.setString("EOModelVersion", myVersion, true); //$NON-NLS-1$
-    modelMap.setString("adaptorName", myAdaptorName, true); //$NON-NLS-1$
-    modelMap.put("connectionDictionary", myConnectionDictionary); //$NON-NLS-1$
+    modelMap.setString("EOModelVersion", myVersion, true);
+    modelMap.setString("adaptorName", myAdaptorName, true);
+    modelMap.put("connectionDictionary", myConnectionDictionary);
 
     Set entities = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
     Set entitiesWithSharedObjects = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
@@ -325,32 +359,32 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
     while (entitiesIter.hasNext()) {
       EOEntity entity = (EOEntity) entitiesIter.next();
       EOModelMap entityMap = new EOModelMap();
-      entityMap.setString("className", entity.getClassName(), true); //$NON-NLS-1$
+      entityMap.setString("className", entity.getClassName(), true);
       EOEntity parent = entity.getParent();
       String parentName = (parent == null) ? null : parent.getName();
-      entityMap.setString("parent", parentName, true); //$NON-NLS-1$
-      entityMap.setString("name", entity.getName(), true); //$NON-NLS-1$
+      entityMap.setString("parent", parentName, true);
+      entityMap.setString("name", entity.getName(), true);
       entities.add(entityMap);
       if (entity.hasSharedObjects()) {
         entitiesWithSharedObjects.add(entity.getName());
       }
     }
-    modelMap.setSet("entities", entities, true); //$NON-NLS-1$
+    modelMap.setSet("entities", entities, true);
 
-    modelMap.setSet("entitiesWithSharedObjects", entitiesWithSharedObjects, true); //$NON-NLS-1$
+    modelMap.setSet("entitiesWithSharedObjects", entitiesWithSharedObjects, true);
 
-    Map internalInfoMap = modelMap.getMap("internalInfo"); //$NON-NLS-1$
+    Map internalInfoMap = modelMap.getMap("internalInfo");
     if (internalInfoMap == null) {
       internalInfoMap = new HashMap();
     }
     if (myDeletedEntityNamesInObjectStore != null && !myDeletedEntityNamesInObjectStore.isEmpty()) {
-      internalInfoMap.put("_deletedEntityNamesInObjectStore", myDeletedEntityNamesInObjectStore); //$NON-NLS-1$
+      internalInfoMap.put("_deletedEntityNamesInObjectStore", myDeletedEntityNamesInObjectStore);
     }
     else {
-      internalInfoMap.remove("_deletedEntityNamesInObjectStore"); //$NON-NLS-1$
+      internalInfoMap.remove("_deletedEntityNamesInObjectStore");
     }
-    modelMap.setMap("internalInfo", internalInfoMap, true); //$NON-NLS-1$
-    modelMap.setMap("userInfo", getUserInfo(), true); //$NON-NLS-1$
+    modelMap.setMap("internalInfo", internalInfoMap, true);
+    modelMap.setMap("userInfo", getUserInfo(), true);
 
     return modelMap;
   }
@@ -361,14 +395,14 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
       modelFolder = _parentFolder;
     }
     else {
-      modelFolder = new File(_parentFolder, myName + ".eomodeld"); //$NON-NLS-1$
+      modelFolder = new File(_parentFolder, myName + ".eomodeld");
     }
     if (!modelFolder.exists()) {
       if (!modelFolder.mkdirs()) {
         throw new IOException("Failed to create folder '" + modelFolder + "'.");
       }
     }
-    File indexFile = new File(modelFolder, "index.eomodeld"); //$NON-NLS-1$
+    File indexFile = new File(modelFolder, "index.eomodeld");
     EOModelMap modelMap = toMap();
     PropertyListSerialization.propertyListToFile(indexFile, modelMap);
 
@@ -376,11 +410,11 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
       Iterator deletedEntityNameIter = myDeletedEntityNamesInObjectStore.iterator();
       while (deletedEntityNameIter.hasNext()) {
         String entityName = (String) deletedEntityNameIter.next();
-        File entityFile = new File(modelFolder, entityName + ".plist"); //$NON-NLS-1$
+        File entityFile = new File(modelFolder, entityName + ".plist");
         if (entityFile.exists()) {
           entityFile.delete();
         }
-        File fspecFile = new File(modelFolder, entityName + ".fspec"); //$NON-NLS-1$
+        File fspecFile = new File(modelFolder, entityName + ".fspec");
         if (fspecFile.exists()) {
           fspecFile.delete();
         }
@@ -391,8 +425,8 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
     while (entitiesIter.hasNext()) {
       EOEntity entity = (EOEntity) entitiesIter.next();
       String entityName = entity.getName();
-      File entityFile = new File(modelFolder, entityName + ".plist"); //$NON-NLS-1$
-      File fspecFile = new File(modelFolder, entityName + ".fspec"); //$NON-NLS-1$
+      File entityFile = new File(modelFolder, entityName + ".plist");
+      File fspecFile = new File(modelFolder, entityName + ".fspec");
       entity.saveToFile(entityFile, fspecFile);
     }
   }
@@ -416,31 +450,31 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
   }
 
   public String toString() {
-    return "[EOModel: name = " + myName + "; entities = " + myEntities + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+    return "[EOModel: name = " + myName + "; entities = " + myEntities + "]";
   }
 
   public static void main(String[] args) throws IOException, EOModelException {
     Set failures = new LinkedHashSet();
 
     EOModelGroup modelGroup = new EOModelGroup();
-    modelGroup.addModelsFromFolder(new File("/Library/Frameworks/ERPrototypes.framework/Resources"), false, failures); //$NON-NLS-1$
-    modelGroup.addModelsFromFolder(new File("/Users/mschrag/Documents/workspace/MDTask"), false, failures); //$NON-NLS-1$
-    modelGroup.addModelsFromFolder(new File("/Users/mschrag/Documents/workspace/MDTAccounting"), false, failures); //$NON-NLS-1$
-    modelGroup.addModelsFromFolder(new File("/Users/mschrag/Documents/workspace/MDTCMS"), false, failures); //$NON-NLS-1$
-    modelGroup.addModelsFromFolder(new File("/Users/mschrag/Documents/workspace/MDTWOExtensions"), false, failures); //$NON-NLS-1$
+    modelGroup.addModelsFromFolder(new File("/Library/Frameworks/ERPrototypes.framework/Resources"), false, failures);
+    modelGroup.addModelsFromFolder(new File("/Users/mschrag/Documents/workspace/MDTask"), false, failures);
+    modelGroup.addModelsFromFolder(new File("/Users/mschrag/Documents/workspace/MDTAccounting"), false, failures);
+    modelGroup.addModelsFromFolder(new File("/Users/mschrag/Documents/workspace/MDTCMS"), false, failures);
+    modelGroup.addModelsFromFolder(new File("/Users/mschrag/Documents/workspace/MDTWOExtensions"), false, failures);
 
     modelGroup.resolve(failures);
     modelGroup.verify(failures);
     Iterator failuresIter = failures.iterator();
     while (failuresIter.hasNext()) {
       EOModelVerificationFailure failure = (EOModelVerificationFailure) failuresIter.next();
-      System.out.println("EOModel.main: " + failure); //$NON-NLS-1$
+      System.out.println("EOModel.main: " + failure);
     }
 
-    File outputPath = new File("/tmp"); //$NON-NLS-1$
-    System.out.println("EOModel.main: Saving model to " + outputPath + " ..."); //$NON-NLS-1$ //$NON-NLS-2$
-    EOModel mdtaskModel = modelGroup.getModelNamed("MDTask"); //$NON-NLS-1$
+    File outputPath = new File("/tmp");
+    System.out.println("EOModel.main: Saving model to " + outputPath + " ...");
+    EOModel mdtaskModel = modelGroup.getModelNamed("MDTask");
     mdtaskModel.saveToFolder(outputPath);
-    System.out.println("EOModel.main: Done."); //$NON-NLS-1$
+    System.out.println("EOModel.main: Done.");
   }
 }

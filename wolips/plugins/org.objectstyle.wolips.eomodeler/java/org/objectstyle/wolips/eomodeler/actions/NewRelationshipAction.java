@@ -86,10 +86,10 @@ public class NewRelationshipAction implements IWorkbenchWindowActionDelegate {
   public void run(IAction _action) {
     try {
       if (myEntity != null) {
-        EORelationship newRelationship = myEntity.addBlankRelationship(Messages.getString("EORelationship.newName")); //$NON-NLS-1$
+        EORelationship newRelationship = myEntity.addBlankRelationship(Messages.getString("EORelationship.newName"));
       }
       else {
-        MessageDialog.openError(myWindow.getShell(), Messages.getString("EORelationship.noEntitySelectedTitle"), Messages.getString("EORelationship.noEntitySelectedMessage"));//$NON-NLS-1$ //$NON-NLS-2$
+        MessageDialog.openError(myWindow.getShell(), Messages.getString("EORelationship.noEntitySelectedTitle"), Messages.getString("EORelationship.noEntitySelectedMessage"));//$NON-NLS-1$
       }
     }
     catch (DuplicateNameException e) {

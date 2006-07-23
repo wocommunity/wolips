@@ -79,32 +79,32 @@ public class CustomDataTypePanel extends Composite implements IDataTypePanel {
     super(_parent, _style);
     setBackground(_parent.getBackground());
     setLayout(new GridLayout(2, false));
-    _widgetFactory.createCLabel(this, Messages.getString("EOAttribute." + EOAttribute.WIDTH), SWT.NONE); //$NON-NLS-1$
+    _widgetFactory.createCLabel(this, Messages.getString("EOAttribute." + EOAttribute.WIDTH), SWT.NONE);
     myExternalWidthText = new Text(this, SWT.BORDER);
     GridData externalWidthFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
     myExternalWidthText.setLayoutData(externalWidthFieldLayoutData);
 
-    _widgetFactory.createCLabel(this, Messages.getString("EOAttribute." + EOAttribute.VALUE_CLASS_NAME), SWT.NONE); //$NON-NLS-1$
+    _widgetFactory.createCLabel(this, Messages.getString("EOAttribute." + EOAttribute.VALUE_CLASS_NAME), SWT.NONE);
     myValueClassNameText = new Text(this, SWT.BORDER);
     GridData valueClassNameFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
     myValueClassNameText.setLayoutData(valueClassNameFieldLayoutData);
 
-    _widgetFactory.createCLabel(this, Messages.getString("EOAttribute." + EOAttribute.VALUE_TYPE), SWT.NONE); //$NON-NLS-1$
+    _widgetFactory.createCLabel(this, Messages.getString("EOAttribute." + EOAttribute.VALUE_TYPE), SWT.NONE);
     myValueTypeText = new Text(this, SWT.BORDER);
     GridData valueTypeFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
     myValueTypeText.setLayoutData(valueTypeFieldLayoutData);
 
-    _widgetFactory.createCLabel(this, Messages.getString("EOAttribute." + EOAttribute.VALUE_FACTORY_METHOD_NAME), SWT.NONE); //$NON-NLS-1$
+    _widgetFactory.createCLabel(this, Messages.getString("EOAttribute." + EOAttribute.VALUE_FACTORY_METHOD_NAME), SWT.NONE);
     myFactoryMethodText = new Text(this, SWT.BORDER);
     GridData factoryMethodFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
     myFactoryMethodText.setLayoutData(factoryMethodFieldLayoutData);
 
-    _widgetFactory.createCLabel(this, Messages.getString("EOAttribute." + EOAttribute.ADAPTOR_VALUE_CONVERSION_METHOD_NAME), SWT.NONE); //$NON-NLS-1$
+    _widgetFactory.createCLabel(this, Messages.getString("EOAttribute." + EOAttribute.ADAPTOR_VALUE_CONVERSION_METHOD_NAME), SWT.NONE);
     myConversionMethodText = new Text(this, SWT.BORDER);
     GridData conversionMethodFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
     myConversionMethodText.setLayoutData(conversionMethodFieldLayoutData);
 
-    _widgetFactory.createCLabel(this, Messages.getString("EOAttribute." + EOAttribute.FACTORY_METHOD_ARGUMENT_TYPE), SWT.NONE); //$NON-NLS-1$
+    _widgetFactory.createCLabel(this, Messages.getString("EOAttribute." + EOAttribute.FACTORY_METHOD_ARGUMENT_TYPE), SWT.NONE);
     Combo argumentTypeComboViewer = new Combo(this, SWT.BORDER | SWT.FLAT | SWT.READ_ONLY);
     myArgumentTypeComboViewer = new ComboViewer(argumentTypeComboViewer);
     myArgumentTypeComboViewer.setLabelProvider(new EOFactoryMethodArgumentTypeLabelProvider());

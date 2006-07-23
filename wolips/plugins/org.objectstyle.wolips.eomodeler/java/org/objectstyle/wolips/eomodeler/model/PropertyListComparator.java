@@ -89,8 +89,8 @@ public class PropertyListComparator implements Comparator {
     else if (arg0 instanceof Map && arg1 instanceof Map) {
       Map dic0 = (Map) arg0;
       Map dic1 = (Map) arg1;
-      Object key0 = dic0.get("name"); //$NON-NLS-1$
-      Object key1 = dic1.get("name"); //$NON-NLS-1$
+      Object key0 = dic0.get("name");
+      Object key1 = dic1.get("name");
       if (key0 != null && key1 != null) {
         return compare(key0, key1);
       }

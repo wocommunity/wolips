@@ -78,7 +78,7 @@ public class TableUtils {
       text = _propertyName;
     }
     else {
-      text = Messages.getString(_messagePrefix + "." + _propertyName); //$NON-NLS-1$
+      text = Messages.getString(_messagePrefix + "." + _propertyName);
     }
     column.setText(text);
     column.addSelectionListener(new TableSortHandler(_viewer, _propertyName));

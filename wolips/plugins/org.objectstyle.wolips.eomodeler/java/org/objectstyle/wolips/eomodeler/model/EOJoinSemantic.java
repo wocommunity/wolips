@@ -52,10 +52,10 @@ package org.objectstyle.wolips.eomodeler.model;
 import org.objectstyle.wolips.eomodeler.Messages;
 
 public class EOJoinSemantic {
-  public static final EOJoinSemantic INNER = new EOJoinSemantic("EOInnerJoin", Messages.getString("EOJoinSemantic.inner")); //$NON-NLS-1$ //$NON-NLS-2$
-  public static final EOJoinSemantic FULL_OUTER = new EOJoinSemantic("EOFullOuterJoin", Messages.getString("EOJoinSemantic.fullOuter")); //$NON-NLS-1$ //$NON-NLS-2$
-  public static final EOJoinSemantic LEFT_OUTER = new EOJoinSemantic("EOLeftOuterJoin", Messages.getString("EOJoinSemantic.leftOuter")); //$NON-NLS-1$ //$NON-NLS-2$
-  public static final EOJoinSemantic RIGHT_OUTER = new EOJoinSemantic("EORightOuterJoin", Messages.getString("EOJoinSemantic.rightOuter")); //$NON-NLS-1$ //$NON-NLS-2$
+  public static final EOJoinSemantic INNER = new EOJoinSemantic("EOInnerJoin", Messages.getString("EOJoinSemantic.inner"));
+  public static final EOJoinSemantic FULL_OUTER = new EOJoinSemantic("EOFullOuterJoin", Messages.getString("EOJoinSemantic.fullOuter"));
+  public static final EOJoinSemantic LEFT_OUTER = new EOJoinSemantic("EOLeftOuterJoin", Messages.getString("EOJoinSemantic.leftOuter"));
+  public static final EOJoinSemantic RIGHT_OUTER = new EOJoinSemantic("EORightOuterJoin", Messages.getString("EOJoinSemantic.rightOuter"));
   public static final EOJoinSemantic[] JOIN_SEMANTICS = new EOJoinSemantic[] { EOJoinSemantic.INNER, EOJoinSemantic.FULL_OUTER, EOJoinSemantic.LEFT_OUTER, EOJoinSemantic.RIGHT_OUTER };
 
   private String myID;
@@ -75,7 +75,7 @@ public class EOJoinSemantic {
   }
   
   public String toString() {
-    return "[EOJoinSemantic: name = " + myName + "]"; //$NON-NLS-1$ //$NON-NLS-2$
+    return "[EOJoinSemantic: name = " + myName + "]";
   }
   
   public static EOJoinSemantic getJoinSemanticByID(String _id) {

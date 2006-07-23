@@ -54,7 +54,7 @@ public class KeyPath implements IKey {
   private Key[] myKeys;
 
   public KeyPath(String _keyPath) {
-    this(_keyPath.split("\\.")); //$NON-NLS-1$
+    this(_keyPath.split("\\."));
   }
 
   public KeyPath(String[] _keyNames) {
@@ -73,7 +73,7 @@ public class KeyPath implements IKey {
     StringBuffer sb = new StringBuffer();
     for (int keyNum = 0; keyNum < myKeyNames.length; keyNum++) {
       sb.append(myKeyNames[keyNum]);
-      sb.append("."); //$NON-NLS-1$
+      sb.append(".");
     }
     if (myKeyNames.length > 0) {
       sb.setLength(sb.length() - 1);

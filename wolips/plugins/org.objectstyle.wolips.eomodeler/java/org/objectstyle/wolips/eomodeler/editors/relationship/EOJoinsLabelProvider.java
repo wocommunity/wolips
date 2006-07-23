@@ -12,7 +12,7 @@ public class EOJoinsLabelProvider extends TablePropertyLabelProvider {
   public String getColumnText(Object _element, String _property) {
     String text = super.getColumnText(_element, _property);
     if (text == null && (_property == EOJoin.SOURCE_ATTRIBUTE_NAME || _property == EOJoin.DESTINATION_ATTRIBUTE_NAME)) {
-      text = Messages.getString("EOJoin.selectAttribute"); //$NON-NLS-1$
+      text = Messages.getString("EOJoin.selectAttribute");
     }
     return text;
   }

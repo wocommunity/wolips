@@ -78,9 +78,9 @@ public class ConnectionDictionaryPropertySource implements IPropertySource {
   public IPropertyDescriptor[] getPropertyDescriptors() {
     if (myDescriptors == null) {
       List descriptorsList = new LinkedList();
-      descriptorsList.add(new TextPropertyDescriptor("username", "User Name")); //$NON-NLS-1$
-      descriptorsList.add(new TextPropertyDescriptor("password", "Password")); //$NON-NLS-1$
-      descriptorsList.add(new TextPropertyDescriptor("URL", "URL")); //$NON-NLS-1$
+      descriptorsList.add(new TextPropertyDescriptor("username", "User Name"));
+      descriptorsList.add(new TextPropertyDescriptor("password", "Password"));
+      descriptorsList.add(new TextPropertyDescriptor("URL", "URL"));
       myDescriptors = (IPropertyDescriptor[]) descriptorsList.toArray(new IPropertyDescriptor[descriptorsList.size()]);
     }
     return myDescriptors;

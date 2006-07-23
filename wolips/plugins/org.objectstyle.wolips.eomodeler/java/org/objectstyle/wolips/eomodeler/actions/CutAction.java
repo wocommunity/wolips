@@ -53,13 +53,16 @@ import java.util.Set;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PlatformUI;
-import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.editors.EOModelErrorDialog;
 import org.objectstyle.wolips.eomodeler.model.EOAttribute;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
@@ -67,11 +70,21 @@ import org.objectstyle.wolips.eomodeler.model.EOFetchSpecification;
 import org.objectstyle.wolips.eomodeler.model.EOModelObject;
 import org.objectstyle.wolips.eomodeler.model.EORelationship;
 
-public class DeleteAction extends Action {
+public class CutAction extends Action implements IWorkbenchWindowActionDelegate {
+  private IWorkbenchWindow myWindow;
   private ISelection mySelection;
+  private Clipboard myClipboard;
+
+  public CutAction(Clipboard _clipboard) {
+    myClipboard = _clipboard;
+  }
 
   public void dispose() {
     // DO NOTHING
+  }
+
+  public void init(IWorkbenchWindow _window) {
+    myWindow = _window;
   }
 
   public void selectionChanged(IAction _action, ISelection _selection) {
@@ -79,48 +92,54 @@ public class DeleteAction extends Action {
   }
 
   public void run() {
-    Object selectedObject = null;
-    if (mySelection instanceof IStructuredSelection) {
-      selectedObject = ((IStructuredSelection) mySelection).getFirstElement();
-    }
-    Shell activeShell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-    boolean hasReferenceFailures = false;
-    if (selectedObject instanceof EOModelObject) {
-      Set referenceFailures = ((EOModelObject) selectedObject).getReferenceFailures();
-      if (!referenceFailures.isEmpty()) {
-        hasReferenceFailures = false;
-        new EOModelErrorDialog(activeShell, referenceFailures).open();
+    try {
+      Shell activeShell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+      Object selectedObject = null;
+      if (mySelection instanceof IStructuredSelection) {
+        selectedObject = ((IStructuredSelection) mySelection).getFirstElement();
       }
-    }
-    if (!hasReferenceFailures) {
-      if (selectedObject instanceof EOEntity) {
-        EOEntity entity = (EOEntity) selectedObject;
-        if (MessageDialog.openConfirm(activeShell, Messages.getString("delete.entityTitle"), Messages.getString("delete.entityMessage"))) {
+      boolean hasReferenceFailures = false;
+      if (selectedObject instanceof EOModelObject) {
+        Set referenceFailures = ((EOModelObject) selectedObject).getReferenceFailures();
+        if (!referenceFailures.isEmpty()) {
+          hasReferenceFailures = false;
+          new EOModelErrorDialog(activeShell, referenceFailures).open();
+        }
+      }
+      if (!hasReferenceFailures) {
+        if (selectedObject instanceof EOEntity) {
+          EOEntity entity = (EOEntity) selectedObject;
+          LocalSelectionTransfer.getTransfer().setSelection(new StructuredSelection(entity.cloneEntity()));
+          LocalSelectionTransfer.getTransfer().setSelectionSetTime(System.currentTimeMillis());
           entity.getModel().removeEntity(entity);
         }
-      }
-      else if (selectedObject instanceof EORelationship) {
-        if (MessageDialog.openConfirm(activeShell, Messages.getString("delete.relationshipTitle"), Messages.getString("delete.relationshipMessage"))) {
+        else if (selectedObject instanceof EORelationship) {
           EORelationship relationship = (EORelationship) selectedObject;
-          relationship.getEntity().removeRelationship(relationship, true);
+          Set referenceFailures = relationship.getReferenceFailures();
+          if (!referenceFailures.isEmpty()) {
+            new EOModelErrorDialog(activeShell, referenceFailures).open();
+          }
+          else {
+            LocalSelectionTransfer.getTransfer().setSelection(new StructuredSelection(relationship.cloneRelationship()));
+            LocalSelectionTransfer.getTransfer().setSelectionSetTime(System.currentTimeMillis());
+            relationship.getEntity().removeRelationship(relationship, false); // TODO: Remove from subclasses?
+          }
         }
-      }
-      else if (selectedObject instanceof EOAttribute) {
-        EOAttribute attribute = (EOAttribute) selectedObject;
-        if (MessageDialog.openConfirm(activeShell, Messages.getString("delete.attributeTitle"), Messages.getString("delete.attributeMessage"))) {
-          attribute.getEntity().removeAttribute(attribute, true);
+        else if (selectedObject instanceof EOAttribute) {
+          EOAttribute attribute = (EOAttribute) selectedObject;
+          LocalSelectionTransfer.getTransfer().setSelection(new StructuredSelection(attribute.cloneAttribute()));
+          LocalSelectionTransfer.getTransfer().setSelectionSetTime(System.currentTimeMillis());
+          attribute.getEntity().removeAttribute(attribute, false); // TODO: Remove from subclasses?
         }
-      }
-      else if (selectedObject instanceof EOFetchSpecification) {
-        if (MessageDialog.openConfirm(activeShell, Messages.getString("delete.fetchSpecTitle"), Messages.getString("delete.fetchSpecMessage"))) {
+        else if (selectedObject instanceof EOFetchSpecification) {
           EOFetchSpecification fetchSpec = (EOFetchSpecification) selectedObject;
-          fetchSpec.getEntity().removeFetchSpecification(fetchSpec);
+          LocalSelectionTransfer.getTransfer().setSelection(new StructuredSelection(fetchSpec.cloneFetchSpecification()));
+          LocalSelectionTransfer.getTransfer().setSelectionSetTime(System.currentTimeMillis());
         }
       }
-      else {
-        System.out.println("DeleteAction.run: " + selectedObject);
-        MessageDialog.openError(activeShell, Messages.getString("delete.nothingSelectedTitle"), Messages.getString("delete.nothingSelectedMessage"));//$NON-NLS-1$
-      }
+    }
+    catch (Throwable t) {
+      t.printStackTrace();
     }
   }
 

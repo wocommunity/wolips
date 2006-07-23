@@ -62,7 +62,7 @@ import org.objectstyle.wolips.eomodeler.utils.TablePropertyCellModifier;
 import org.objectstyle.wolips.eomodeler.utils.TableUtils;
 
 public class EOAttributesCellModifier extends TablePropertyCellModifier {
-  private static final String NO_PROTOYPE_VALUE = Messages.getString("EOAttributesCellModifier.noPrototype"); //$NON-NLS-1$
+  private static final String NO_PROTOYPE_VALUE = Messages.getString("EOAttributesCellModifier.noPrototype");
   private CellEditor[] myCellEditors;
   private List myPrototypeNames;
 

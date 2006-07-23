@@ -108,22 +108,22 @@ public class EOEntityBasicEditorSection extends AbstractPropertySection {
     topFormLayout.numColumns = 2;
     topForm.setLayout(topFormLayout);
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.NAME), SWT.NONE); //$NON-NLS-1$
+    getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.NAME), SWT.NONE);
     myNameText = new Text(topForm, SWT.BORDER);
     GridData nameFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
     myNameText.setLayoutData(nameFieldLayoutData);
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.EXTERNAL_NAME), SWT.NONE); //$NON-NLS-1$
+    getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.EXTERNAL_NAME), SWT.NONE);
     myExternalNameText = new Text(topForm, SWT.BORDER);
     GridData externalNameFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
     myExternalNameText.setLayoutData(externalNameFieldLayoutData);
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.CLASS_NAME), SWT.NONE); //$NON-NLS-1$
+    getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.CLASS_NAME), SWT.NONE);
     myClassNameText = new Text(topForm, SWT.BORDER);
     GridData classNameFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
     myClassNameText.setLayoutData(classNameFieldLayoutData);
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.PARENT), SWT.NONE); //$NON-NLS-1$
+    getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.PARENT), SWT.NONE);
     Combo parentEntityCombo = new Combo(topForm, SWT.BORDER | SWT.FLAT | SWT.READ_ONLY);
     myParentEntityComboViewer = new ComboViewer(parentEntityCombo);
     myParentEntityComboViewer.setLabelProvider(new EOEntityLabelProvider());
@@ -131,12 +131,12 @@ public class EOEntityBasicEditorSection extends AbstractPropertySection {
     GridData entityComboLayoutData = new GridData(GridData.FILL_HORIZONTAL);
     parentEntityCombo.setLayoutData(entityComboLayoutData);
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.RESTRICTING_QUALIFIER), SWT.NONE); //$NON-NLS-1$
+    getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.RESTRICTING_QUALIFIER), SWT.NONE);
     myRestrictingQualifierText = new Text(topForm, SWT.BORDER);
     GridData restrictingQualifierFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
     myRestrictingQualifierText.setLayoutData(restrictingQualifierFieldLayoutData);
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.ABSTRACT_ENTITY), SWT.NONE); //$NON-NLS-1$
+    getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.ABSTRACT_ENTITY), SWT.NONE);
     myAbstractButton = new Button(topForm, SWT.CHECK);
   }
 
@@ -157,7 +157,7 @@ public class EOEntityBasicEditorSection extends AbstractPropertySection {
       myBindingContext.bind(myAbstractButton, new Property(myEntity, EOEntity.ABSTRACT_ENTITY), null);
 
       myParentEntityComboViewer.setInput(myEntity);
-      myParentEntityBinding = new ComboViewerBinding(myParentEntityComboViewer, myEntity, EOEntity.PARENT, myEntity.getModel(), EOModel.ENTITIES, EOEntityListContentProvider.BLANK_ENTITY); //$NON-NLS-1$
+      myParentEntityBinding = new ComboViewerBinding(myParentEntityComboViewer, myEntity, EOEntity.PARENT, myEntity.getModel(), EOModel.ENTITIES, EOEntityListContentProvider.BLANK_ENTITY);
     }
   }
 

@@ -10,9 +10,9 @@ import java.util.Map;
 public class MemberContainer {
   public static final int GET = 1;
   public static final int SET = 2;
-  private static final String[] GET_METHOD_PREFIXES = { "get", "", "_", "_get", "is", "_is" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
-  private static final String[] SET_METHOD_PREFIXES = { "set", "", "_", "_set" }; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-  private static final String[] FIELD_PREFIXES = { "", "_" }; //$NON-NLS-1$ //$NON-NLS-2$
+  private static final String[] GET_METHOD_PREFIXES = { "get", "", "_", "_get", "is", "_is" }; //$NON-NLS-4$ //$NON-NLS-5$ //$NON-NLS-6$
+  private static final String[] SET_METHOD_PREFIXES = { "set", "", "_", "_set" }; //$NON-NLS-4$
+  private static final String[] FIELD_PREFIXES = { "", "_" };
 
   private int myMemberType;
   private Class myClass;

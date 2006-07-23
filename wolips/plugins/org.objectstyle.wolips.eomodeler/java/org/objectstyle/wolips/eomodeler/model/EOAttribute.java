@@ -59,36 +59,35 @@ import java.util.Set;
 
 import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.kvc.IKey;
-import org.objectstyle.wolips.eomodeler.kvc.Key;
 import org.objectstyle.wolips.eomodeler.kvc.ResolvedKey;
 import org.objectstyle.wolips.eomodeler.utils.BooleanUtils;
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.utils.StringUtils;
 
 public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribute, ISortableEOModelObject {
-  public static final String PRIMARY_KEY = "primaryKey"; //$NON-NLS-1$
-  public static final String CLASS_PROPERTY = "classProperty"; //$NON-NLS-1$
-  public static final String USED_FOR_LOCKING = "usedForLocking"; //$NON-NLS-1$
-  public static final String ALLOWS_NULL = "allowsNull"; //$NON-NLS-1$
-  public static final String PROTOTYPE = "prototype"; //$NON-NLS-1$
-  public static final String NAME = "name"; //$NON-NLS-1$
-  public static final String COLUMN_NAME = "columnName"; //$NON-NLS-1$
-  public static final String ADAPTOR_VALUE_CONVERSION_METHOD_NAME = "adaptorValueConversionMethodName"; //$NON-NLS-1$
-  public static final String EXTERNAL_TYPE = "externalType"; //$NON-NLS-1$
-  public static final String FACTORY_METHOD_ARGUMENT_TYPE = "factoryMethodArgumentType"; //$NON-NLS-1$
-  public static final String PRECISION = "precision"; //$NON-NLS-1$
-  public static final String SCALE = "scale"; //$NON-NLS-1$
-  public static final String VALUE_CLASS_NAME = "valueClassName"; //$NON-NLS-1$
-  public static final String VALUE_FACTORY_METHOD_NAME = "valueFactoryMethodName"; //$NON-NLS-1$
-  public static final String VALUE_TYPE = "valueType"; //$NON-NLS-1$
-  public static final String DEFINITION = "definition"; //$NON-NLS-1$
-  public static final String WIDTH = "width"; //$NON-NLS-1$
-  public static final String READ_FORMAT = "readFormat"; //$NON-NLS-1$
-  public static final String WRITE_FORMAT = "writeFormat"; //$NON-NLS-1$
-  public static final String CLIENT_CLASS_PROPERTY = "clientClassProperty"; //$NON-NLS-1$
-  public static final String INDEXED = "indexed"; //$NON-NLS-1$
-  public static final String READ_ONLY = "readOnly"; //$NON-NLS-1$
-  public static final String DATA_TYPE = "dataType"; //$NON-NLS-1$
+  public static final String PRIMARY_KEY = "primaryKey";
+  public static final String CLASS_PROPERTY = "classProperty";
+  public static final String USED_FOR_LOCKING = "usedForLocking";
+  public static final String ALLOWS_NULL = "allowsNull";
+  public static final String PROTOTYPE = "prototype";
+  public static final String NAME = "name";
+  public static final String COLUMN_NAME = "columnName";
+  public static final String ADAPTOR_VALUE_CONVERSION_METHOD_NAME = "adaptorValueConversionMethodName";
+  public static final String EXTERNAL_TYPE = "externalType";
+  public static final String FACTORY_METHOD_ARGUMENT_TYPE = "factoryMethodArgumentType";
+  public static final String PRECISION = "precision";
+  public static final String SCALE = "scale";
+  public static final String VALUE_CLASS_NAME = "valueClassName";
+  public static final String VALUE_FACTORY_METHOD_NAME = "valueFactoryMethodName";
+  public static final String VALUE_TYPE = "valueType";
+  public static final String DEFINITION = "definition";
+  public static final String WIDTH = "width";
+  public static final String READ_FORMAT = "readFormat";
+  public static final String WRITE_FORMAT = "writeFormat";
+  public static final String CLIENT_CLASS_PROPERTY = "clientClassProperty";
+  public static final String INDEXED = "indexed";
+  public static final String READ_ONLY = "readOnly";
+  public static final String DATA_TYPE = "dataType";
 
   private static final String[] PROTOTYPED_PROPERTIES = { EOAttribute.ALLOWS_NULL, EOAttribute.ADAPTOR_VALUE_CONVERSION_METHOD_NAME, EOAttribute.EXTERNAL_TYPE, EOAttribute.FACTORY_METHOD_ARGUMENT_TYPE, EOAttribute.PRECISION, EOAttribute.SCALE, EOAttribute.VALUE_CLASS_NAME, EOAttribute.VALUE_FACTORY_METHOD_NAME, EOAttribute.VALUE_TYPE, EOAttribute.DEFINITION, EOAttribute.WIDTH, EOAttribute.READ_FORMAT, EOAttribute.WRITE_FORMAT, EOAttribute.INDEXED, EOAttribute.READ_ONLY };
 
@@ -133,27 +132,26 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
   private EOModelMap myAttributeMap;
   private EODataType myDataType;
 
-  public EOAttribute(EOEntity _entity) {
-    myEntity = _entity;
+  public EOAttribute() {
     myAttributeMap = new EOModelMap();
   }
 
-  public EOAttribute(EOEntity _entity, String _name) {
-    this(_entity);
+  public EOAttribute(String _name) {
+    this();
     myName = _name;
   }
 
-  public EOAttribute(EOEntity _entity, String _name, String _definition) {
-    this(_entity, _name);
+  public EOAttribute(String _name, String _definition) {
+    this(_name);
     myDefinition = _definition;
   }
 
-  public EOAttribute cloneInto(EOEntity _entity, boolean _fireEvents, Set _failures) throws DuplicateNameException {
-    return cloneInto(_entity, myName, _fireEvents, _failures);
+  public void pasted() {
+    // DO NOTHING
   }
 
-  public EOAttribute cloneInto(EOEntity _entity, String _name, boolean _fireEvents, Set _failures) throws DuplicateNameException {
-    EOAttribute attribute = new EOAttribute(_entity, _entity.findUnusedAttributeName(_name));
+  public EOAttribute cloneAttribute() {
+    EOAttribute attribute = new EOAttribute(myName);
     attribute.myPrototype = myPrototype;
     attribute.myColumnName = myColumnName;
     attribute.myExternalType = myExternalType;
@@ -175,16 +173,17 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
     attribute.myDefinition = myDefinition;
     attribute.myReadFormat = myReadFormat;
     attribute.myWriteFormat = myWriteFormat;
-    _entity.addAttribute(attribute, _fireEvents, _failures);
     return attribute;
   }
 
   protected void _propertyChanged(String _propertyName, Object _oldValue, Object _newValue) {
-    myEntity._attributeChanged(this);
+    if (myEntity != null) {
+      myEntity._attributeChanged(this);
+    }
   }
 
   public int hashCode() {
-    return myEntity.hashCode() * ((myName == null) ? super.hashCode() : myName.hashCode());
+    return ((myEntity == null) ? 1 : myEntity.hashCode()) * ((myName == null) ? super.hashCode() : myName.hashCode());
   }
 
   public boolean equals(Object _obj) {
@@ -224,10 +223,12 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
 
   public boolean isInherited() {
     boolean inherited = false;
-    EOEntity parent = myEntity.getParent();
-    if (parent != null) {
-      EOAttribute attribute = parent.getAttributeNamed(myName);
-      inherited = (attribute != null);
+    if (myEntity != null) {
+      EOEntity parent = myEntity.getParent();
+      if (parent != null) {
+        EOAttribute attribute = parent.getAttributeNamed(myName);
+        inherited = (attribute != null);
+      }
     }
     return inherited;
   }
@@ -294,10 +295,12 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
 
   public void setName(String _name, boolean _fireEvents) throws DuplicateNameException {
     if (_name == null) {
-      throw new NullPointerException(Messages.getString("EOAttribute.noBlankAttributeNames")); //$NON-NLS-1$
+      throw new NullPointerException(Messages.getString("EOAttribute.noBlankAttributeNames"));
     }
     String oldName = getName();
-    myEntity._checkForDuplicateAttributeName(this, _name, null);
+    if (myEntity != null) {
+      myEntity._checkForDuplicateAttributeName(this, _name, null);
+    }
     myName = _name;
     if (_fireEvents) {
       firePropertyChange(EOAttribute.NAME, oldName, getName());
@@ -405,6 +408,10 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
     firePropertyChange(EOAttribute.COLUMN_NAME, oldColumnName, getColumnName());
   }
 
+  public void _setEntity(EOEntity _entity) {
+    myEntity = _entity;
+  }
+  
   public EOEntity getEntity() {
     return myEntity;
   }
@@ -675,7 +682,7 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
       }
     }
 
-    if (_includeInheritedAttributes) {
+    if (_includeInheritedAttributes && myEntity != null) {
       Iterator childrenEntitiesIter = myEntity.getChildrenEntities().iterator();
       while (childrenEntitiesIter.hasNext()) {
         EOEntity childEntity = (EOEntity) childrenEntitiesIter.next();
@@ -689,56 +696,56 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
 
   public void loadFromMap(EOModelMap _attributeMap, Set _failures) {
     myAttributeMap = _attributeMap;
-    myName = _attributeMap.getString("name", true); //$NON-NLS-1$
-    myColumnName = _attributeMap.getString("columnName", true); //$NON-NLS-1$
-    myExternalType = _attributeMap.getString("externalType", true); //$NON-NLS-1$
-    myScale = _attributeMap.getInteger("scale"); //$NON-NLS-1$
-    myPrecision = _attributeMap.getInteger("precision"); //$NON-NLS-1$
-    myWidth = _attributeMap.getInteger("width"); //$NON-NLS-1$
-    myValueType = _attributeMap.getString("valueType", true); //$NON-NLS-1$
-    myValueClassName = _attributeMap.getString("valueClassName", true); //$NON-NLS-1$
-    myValueFactoryMethodName = _attributeMap.getString("valueFactoryMethodName", true); //$NON-NLS-1$
-    myFactoryMethodArgumentType = EOFactoryMethodArgumentType.getFactoryMethodArgumentTypeByID(_attributeMap.getString("factoryMethodArgumentType", true)); //$NON-NLS-1$
-    myAdaptorValueConversionMethodName = _attributeMap.getString("adaptorValueConversionMethodName", true); //$NON-NLS-1$
-    myAllowsNull = _attributeMap.getBoolean("allowsNull"); //$NON-NLS-1$
-    myReadOnly = _attributeMap.getBoolean("isReadOnly"); //$NON-NLS-1$
-    myIndexed = _attributeMap.getBoolean("isIndexed"); //$NON-NLS-1$
-    myDefinition = _attributeMap.getString("definition", true); //$NON-NLS-1$
-    myReadFormat = _attributeMap.getString("readFormat", true); //$NON-NLS-1$
-    myWriteFormat = _attributeMap.getString("writeFormat", true); //$NON-NLS-1$
-    setUserInfo(_attributeMap.getMap("userInfo", true), false); //$NON-NLS-1$
+    myName = _attributeMap.getString("name", true);
+    myColumnName = _attributeMap.getString("columnName", true);
+    myExternalType = _attributeMap.getString("externalType", true);
+    myScale = _attributeMap.getInteger("scale");
+    myPrecision = _attributeMap.getInteger("precision");
+    myWidth = _attributeMap.getInteger("width");
+    myValueType = _attributeMap.getString("valueType", true);
+    myValueClassName = _attributeMap.getString("valueClassName", true);
+    myValueFactoryMethodName = _attributeMap.getString("valueFactoryMethodName", true);
+    myFactoryMethodArgumentType = EOFactoryMethodArgumentType.getFactoryMethodArgumentTypeByID(_attributeMap.getString("factoryMethodArgumentType", true));
+    myAdaptorValueConversionMethodName = _attributeMap.getString("adaptorValueConversionMethodName", true);
+    myAllowsNull = _attributeMap.getBoolean("allowsNull");
+    myReadOnly = _attributeMap.getBoolean("isReadOnly");
+    myIndexed = _attributeMap.getBoolean("isIndexed");
+    myDefinition = _attributeMap.getString("definition", true);
+    myReadFormat = _attributeMap.getString("readFormat", true);
+    myWriteFormat = _attributeMap.getString("writeFormat", true);
+    setUserInfo(_attributeMap.getMap("userInfo", true), false);
   }
 
   public EOModelMap toMap() {
     EOModelMap attributeMap = myAttributeMap.cloneModelMap();
-    attributeMap.setString("name", myName, true); //$NON-NLS-1$
+    attributeMap.setString("name", myName, true);
     if (myPrototype != null) {
-      attributeMap.setString("prototypeName", myPrototype.getName(), true); //$NON-NLS-1$
+      attributeMap.setString("prototypeName", myPrototype.getName(), true);
     }
-    attributeMap.setString("columnName", (myColumnName == null) ? "" : myColumnName, false); //$NON-NLS-1$
-    attributeMap.setString("externalType", myExternalType, true); //$NON-NLS-1$
-    attributeMap.setInteger("scale", myScale); //$NON-NLS-1$
-    attributeMap.setInteger("precision", myPrecision); //$NON-NLS-1$
-    attributeMap.setInteger("width", myWidth); //$NON-NLS-1$
-    attributeMap.setString("valueType", myValueType, true); //$NON-NLS-1$
-    attributeMap.setString("valueClassName", myValueClassName, true); //$NON-NLS-1$
-    attributeMap.setString("valueFactoryMethodName", myValueFactoryMethodName, true); //$NON-NLS-1$
+    attributeMap.setString("columnName", (myColumnName == null) ? "" : myColumnName, false);
+    attributeMap.setString("externalType", myExternalType, true);
+    attributeMap.setInteger("scale", myScale);
+    attributeMap.setInteger("precision", myPrecision);
+    attributeMap.setInteger("width", myWidth);
+    attributeMap.setString("valueType", myValueType, true);
+    attributeMap.setString("valueClassName", myValueClassName, true);
+    attributeMap.setString("valueFactoryMethodName", myValueFactoryMethodName, true);
     if (myFactoryMethodArgumentType != null) {
-      attributeMap.setString("factoryMethodArgumentType", myFactoryMethodArgumentType.getID(), true); //$NON-NLS-1$
+      attributeMap.setString("factoryMethodArgumentType", myFactoryMethodArgumentType.getID(), true);
     }
-    attributeMap.setString("adaptorValueConversionMethodName", myAdaptorValueConversionMethodName, true); //$NON-NLS-1$
-    attributeMap.setBoolean("allowsNull", myAllowsNull, EOModelMap.YN); //$NON-NLS-1$
-    attributeMap.setBoolean("isReadOnly", myReadOnly, EOModelMap.YN); //$NON-NLS-1$
-    attributeMap.setBoolean("isIndexed", myIndexed, EOModelMap.YN); //$NON-NLS-1$
-    attributeMap.setString("definition", myDefinition, true); //$NON-NLS-1$
-    attributeMap.setString("readFormat", myReadFormat, true); //$NON-NLS-1$
-    attributeMap.setString("writeFormat", myWriteFormat, true); //$NON-NLS-1$
+    attributeMap.setString("adaptorValueConversionMethodName", myAdaptorValueConversionMethodName, true);
+    attributeMap.setBoolean("allowsNull", myAllowsNull, EOModelMap.YN);
+    attributeMap.setBoolean("isReadOnly", myReadOnly, EOModelMap.YN);
+    attributeMap.setBoolean("isIndexed", myIndexed, EOModelMap.YN);
+    attributeMap.setString("definition", myDefinition, true);
+    attributeMap.setString("readFormat", myReadFormat, true);
+    attributeMap.setString("writeFormat", myWriteFormat, true);
     return attributeMap;
   }
 
   public void resolve(Set _failures) {
-    String prototypeName = myAttributeMap.getString("prototypeName", true); //$NON-NLS-1$
-    if (prototypeName != null) {
+    String prototypeName = myAttributeMap.getString("prototypeName", true);
+    if (prototypeName != null && myEntity != null) {
       myPrototype = myEntity.getModel().getModelGroup().getPrototypeAttributeNamed(prototypeName);
       if (myPrototype == null) {
         _failures.add(new MissingPrototypeFailure(prototypeName, this));
@@ -753,6 +760,6 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
   }
 
   public String toString() {
-    return "[EOAttribute: " + myName + "]"; //$NON-NLS-1$ //$NON-NLS-2$
+    return "[EOAttribute: " + myName + "]";
   }
 }

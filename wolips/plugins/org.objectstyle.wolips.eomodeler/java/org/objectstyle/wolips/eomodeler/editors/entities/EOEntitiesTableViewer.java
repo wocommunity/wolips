@@ -90,7 +90,7 @@ public class EOEntitiesTableViewer extends Composite implements ISelectionProvid
     entitiesTable.setHeaderVisible(true);
     entitiesTable.setLinesVisible(true);
 
-    TableUtils.createTableColumns(myEntitiesTableViewer, "EOEntity", EOEntitiesConstants.COLUMNS); //$NON-NLS-1$
+    TableUtils.createTableColumns(myEntitiesTableViewer, "EOEntity", EOEntitiesConstants.COLUMNS);
 
     ((EOEntitiesViewerSorter) myEntitiesTableViewer.getSorter()).sort(EOEntity.NAME);
 

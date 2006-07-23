@@ -251,14 +251,6 @@
             label="Entity Modeler"
             visible="true">
          <action
-               class="org.objectstyle.wolips.eomodeler.actions.DeleteAction"
-               icon="icons/delete.gif"
-               id="org.objectstyle.wolips.eomodeler.actions.delete"
-               label="Delete"
-               style="push"
-               toolbarPath="/Normal"
-               tooltip="Delete"/>
-         <action
                class="org.objectstyle.wolips.eomodeler.actions.SubclassEntityAction"
                icon="icons/eoEntity.gif"
                id="org.objectstyle.wolips.eomodeler.actions.subclassEntity"

@@ -113,22 +113,22 @@ public class EOEntitySharedObjectsEditorSection extends AbstractPropertySection 
     topForm.setLayout(topFormLayout);
 
     myShareNoObjectsButton = new Button(topForm, SWT.RADIO);
-    myShareNoObjectsButton.setText(Messages.getString("EOEntity.shareNoObjects")); //$NON-NLS-1$
+    myShareNoObjectsButton.setText(Messages.getString("EOEntity.shareNoObjects"));
     myShareNoObjectsButton.addSelectionListener(new ShareNoObjectsListener());
 
     myShareAllObjectsButton = new Button(topForm, SWT.RADIO);
-    myShareAllObjectsButton.setText(Messages.getString("EOEntity.shareAllObjects")); //$NON-NLS-1$
+    myShareAllObjectsButton.setText(Messages.getString("EOEntity.shareAllObjects"));
     myShareAllObjectsButton.addSelectionListener(new ShareAllObjectsListener());
 
     myShareFetchSpecsButton = new Button(topForm, SWT.RADIO);
-    myShareFetchSpecsButton.setText(Messages.getString("EOEntity.shareFetchSpecs")); //$NON-NLS-1$
+    myShareFetchSpecsButton.setText(Messages.getString("EOEntity.shareFetchSpecs"));
     myShareFetchSpecsButton.addSelectionListener(new ShareFetchSpecsListener());
 
     myFetchSpecsViewer = new TableViewer(topForm, SWT.BORDER | SWT.FLAT | SWT.MULTI | SWT.FULL_SELECTION);
     myFetchSpecsViewer.getTable().setHeaderVisible(true);
     myFetchSpecsViewer.getTable().setLinesVisible(true);
-    TableUtils.createTableColumns(myFetchSpecsViewer, "EOFetchSpecification", EOFetchSpecsConstants.COLUMNS); //$NON-NLS-1$
-    myFetchSpecsViewer.getTable().getColumns()[TableUtils.getColumnNumber(EOFetchSpecsConstants.COLUMNS, EOFetchSpecification.SHARES_OBJECTS)].setText(""); //$NON-NLS-1$
+    TableUtils.createTableColumns(myFetchSpecsViewer, "EOFetchSpecification", EOFetchSpecsConstants.COLUMNS);
+    myFetchSpecsViewer.getTable().getColumns()[TableUtils.getColumnNumber(EOFetchSpecsConstants.COLUMNS, EOFetchSpecification.SHARES_OBJECTS)].setText("");
     myFetchSpecsViewer.setContentProvider(new EOFetchSpecsContentProvider());
     myFetchSpecsViewer.setLabelProvider(new EOFetchSpecsLabelProvider(EOFetchSpecsConstants.COLUMNS));
     myFetchSpecsViewer.setSorter(new TablePropertyViewerSorter(myFetchSpecsViewer, EOFetchSpecsConstants.COLUMNS));

@@ -101,18 +101,18 @@ public class EOAttributeAdvancedEditorSection extends AbstractPropertySection {
     topFormLayout.numColumns = 2;
     topForm.setLayout(topFormLayout);
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EOAttribute." + EOAttribute.READ_ONLY), SWT.NONE); //$NON-NLS-1$
+    getWidgetFactory().createCLabel(topForm, Messages.getString("EOAttribute." + EOAttribute.READ_ONLY), SWT.NONE);
     myReadOnlyButton = new Button(topForm, SWT.CHECK);
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EOAttribute." + EOAttribute.INDEXED), SWT.NONE); //$NON-NLS-1$
+    getWidgetFactory().createCLabel(topForm, Messages.getString("EOAttribute." + EOAttribute.INDEXED), SWT.NONE);
     myIndexedButton = new Button(topForm, SWT.CHECK);
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EOAttribute." + EOAttribute.READ_FORMAT), SWT.NONE); //$NON-NLS-1$
+    getWidgetFactory().createCLabel(topForm, Messages.getString("EOAttribute." + EOAttribute.READ_FORMAT), SWT.NONE);
     myReadFormatText = new Text(topForm, SWT.BORDER);
     GridData readFormatFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
     myReadFormatText.setLayoutData(readFormatFieldLayoutData);
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EOAttribute." + EOAttribute.WRITE_FORMAT), SWT.NONE); //$NON-NLS-1$
+    getWidgetFactory().createCLabel(topForm, Messages.getString("EOAttribute." + EOAttribute.WRITE_FORMAT), SWT.NONE);
     myWriteFormatText = new Text(topForm, SWT.BORDER);
     GridData writeFormatFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
     myWriteFormatText.setLayoutData(writeFormatFieldLayoutData);

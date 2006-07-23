@@ -72,15 +72,15 @@ public class EOSortOrdering {
   }
 
   public void loadFromMap(EOModelMap _map) {
-    myKey = _map.getString("key", true); //$NON-NLS-1$
-    mySelectorName = _map.getString("selectorName", true); //$NON-NLS-1$
+    myKey = _map.getString("key", true);
+    mySelectorName = _map.getString("selectorName", true);
   }
 
   public EOModelMap toMap() {
     EOModelMap sortOrderingMap = new EOModelMap();
-    sortOrderingMap.setString("class", "EOSortOrdering", true); //$NON-NLS-1$ //$NON-NLS-2$
-    sortOrderingMap.setString("key", myKey, true); //$NON-NLS-1$
-    sortOrderingMap.setString("selectorName", mySelectorName, true); //$NON-NLS-1$
+    sortOrderingMap.setString("class", "EOSortOrdering", true);
+    sortOrderingMap.setString("key", myKey, true);
+    sortOrderingMap.setString("selectorName", mySelectorName, true);
     return sortOrderingMap;
   }
 

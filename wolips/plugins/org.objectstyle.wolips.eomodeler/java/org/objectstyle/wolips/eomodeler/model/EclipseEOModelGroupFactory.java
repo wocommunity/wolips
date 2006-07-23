@@ -103,7 +103,7 @@ public class EclipseEOModelGroupFactory {
             IPath frameworkPath = null;
             while (frameworkPath == null && path.lastSegment() != null) {
               String lastSegment = path.lastSegment();
-              if (lastSegment != null && lastSegment.endsWith(".framework")) { //$NON-NLS-1$
+              if (lastSegment != null && lastSegment.endsWith(".framework")) {
                 frameworkPath = path;
               }
               else {
@@ -111,7 +111,7 @@ public class EclipseEOModelGroupFactory {
               }
             }
             if (frameworkPath != null) {
-              File resourcesFolder = frameworkPath.append("Resources").toFile(); //$NON-NLS-1$
+              File resourcesFolder = frameworkPath.append("Resources").toFile();
               if (!_searchedFolders.contains(resourcesFolder) && resourcesFolder.exists()) {
                 _searchedFolders.add(resourcesFolder);
                 _modelGroup.addModelsFromFolder(resourcesFolder, false, _failures);
@@ -130,14 +130,9 @@ public class EclipseEOModelGroupFactory {
 
   public static EOModelGroup createModelGroup(IProject _project, Set _failures) throws CoreException, IOException, EOModelException {
     EOModelGroup modelGroup = new EOModelGroup();
-    Set searchedFolders = new HashSet();
-    Set searchedProjects = new HashSet();
-
-    EclipseEOModelGroupFactory.addModelsFromProject(modelGroup, _project, searchedFolders, searchedProjects, _failures);
-
+    EclipseEOModelGroupFactory.addModelsFromProject(modelGroup, _project, new HashSet(), new HashSet(), _failures);
     modelGroup.resolve(_failures);
     modelGroup.verify(_failures);
-
     return modelGroup;
   }
 
@@ -157,7 +152,7 @@ public class EclipseEOModelGroupFactory {
         boolean visitChildren = true;
         if (_resource.getType() == IResource.FOLDER) {
           File resourceFile = _resource.getLocation().toFile();
-          if (!mySearchedFolders.contains(resourceFile) && "eomodeld".equals(_resource.getFileExtension())) { //$NON-NLS-1$
+          if (!mySearchedFolders.contains(resourceFile) && "eomodeld".equals(_resource.getFileExtension())) {
             myModelGroup.addModelFromFolder(resourceFile, myFailures);
             visitChildren = false;
           }

@@ -133,7 +133,7 @@ public class EOModelOutlineLabelProvider implements ILabelProvider {
       text = null;
     }
     if (text == null) {
-      text = "?"; //$NON-NLS-1$
+      text = "?";
     }
     return text;
   }

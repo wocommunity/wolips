@@ -53,6 +53,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.core.runtime.IAdaptable;
 import org.objectstyle.wolips.eomodeler.utils.NotificationMap;
@@ -87,9 +88,9 @@ public abstract class EOModelObject implements IAdaptable {
     }
   }
 
-  protected void _propertyChanged(String _propertyName, Object _oldValue, Object _newValue) {
-    // TO BE OVERRIDDEN
-  }
+  public abstract Set getReferenceFailures();
+  
+  protected abstract void _propertyChanged(String _propertyName, Object _oldValue, Object _newValue);
 
   public Object getAdapter(Class _adapter) {
     return null;

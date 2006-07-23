@@ -49,75 +49,41 @@
  */
 package org.objectstyle.wolips.eomodeler.editors;
 
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.part.MultiPageEditorActionBarContributor;
-import org.eclipse.ui.texteditor.ITextEditor;
 
 public class EOModelEditorContributor extends MultiPageEditorActionBarContributor {
-  private IEditorPart myActiveEditorPart;
-
-  //private NewEntityAction myNewEntityAction;
+  private IEditorPart myActiveEditor;
+  private IEditorPart myActiveEditorPage;
+  private EOModelClipboardHandler myClipboardHandler;
 
   public EOModelEditorContributor() {
-    createActions();
-  }
-
-  /**
-   * Returns the action registed with the given text editor.
-   * @return IAction or null if editor is null.
-   */
-  protected IAction getAction(ITextEditor _editor, String _actionID) {
-    return (_editor == null ? null : _editor.getAction(_actionID));
+    myClipboardHandler = new EOModelClipboardHandler();
   }
 
   public void setActiveEditor(IEditorPart _part) {
-    //System.out.println("EOModelEditorContributor.setActiveEditor: " + _part);
+    if (myActiveEditor != null) {
+      ((ISelectionProvider) myActiveEditor).removeSelectionChangedListener(myClipboardHandler);
+    }
+    myActiveEditor = _part;
+    if (myActiveEditor != null) {
+      ((ISelectionProvider) myActiveEditor).addSelectionChangedListener(myClipboardHandler);
+    }
     super.setActiveEditor(_part);
   }
 
   public void setActivePage(IEditorPart _editor) {
-    //System.out.println("EOModelEditorContributor.setActivePage: " + _editor);
-    if (myActiveEditorPart == _editor) {
-      return;
+    if (myActiveEditor != null) {
+      ((ISelectionProvider) myActiveEditorPage).addSelectionChangedListener(myClipboardHandler);
+    }
+    myActiveEditorPage = _editor;
+    if (myActiveEditor != null) {
+      ((ISelectionProvider) myActiveEditorPage).addSelectionChangedListener(myClipboardHandler);
     }
 
-    myActiveEditorPart = _editor;
-    //myNewEntityAction.setActiveEditor(_editor);
-    //    IActionBars actionBars = getActionBars();
-    //    if (actionBars != null) {
-    //      ITextEditor editor = (_part instanceof ITextEditor) ? (ITextEditor) _part : null;
-    //      actionBars.setGlobalActionHandler(ActionFactory.DELETE.getId(), getAction(editor, ITextEditorActionConstants.DELETE));
-    //      actionBars.setGlobalActionHandler(ActionFactory.UNDO.getId(), getAction(editor, ITextEditorActionConstants.UNDO));
-    //      actionBars.setGlobalActionHandler(ActionFactory.REDO.getId(), getAction(editor, ITextEditorActionConstants.REDO));
-    //      actionBars.setGlobalActionHandler(ActionFactory.CUT.getId(), getAction(editor, ITextEditorActionConstants.CUT));
-    //      actionBars.setGlobalActionHandler(ActionFactory.COPY.getId(), getAction(editor, ITextEditorActionConstants.COPY));
-    //      actionBars.setGlobalActionHandler(ActionFactory.PASTE.getId(), getAction(editor, ITextEditorActionConstants.PASTE));
-    //      actionBars.setGlobalActionHandler(ActionFactory.SELECT_ALL.getId(), getAction(editor, ITextEditorActionConstants.SELECT_ALL));
-    //      actionBars.setGlobalActionHandler(ActionFactory.FIND.getId(), getAction(editor, ITextEditorActionConstants.FIND));
-    //      actionBars.setGlobalActionHandler(IDEActionFactory.BOOKMARK.getId(), getAction(editor, IDEActionFactory.BOOKMARK.getId()));
-    //      actionBars.updateActionBars();
-    //    }
-  }
-
-  private void createActions() {
-    //System.out.println("EOModelEditorContributor.createActions: ");
-    //    myNewEntityAction = new NewEntityAction();
-    //    myNewEntityAction.setToolTipText("Add a New Entity");
-    //    myNewEntityAction.setText("New Entity");
-    //    myNewEntityAction.setImageDescriptor(Activator.getDefault().getImageRegistry().getDescriptor(Activator.EOENTITY_ICON));
-  }
-
-  public void contributeToMenu(IMenuManager _manager) {
-    //    IMenuManager menu = new MenuManager("EO&Modeler");
-    //    _manager.prependToGroup(IWorkbenchActionConstants.MB_ADDITIONS, menu);
-    //    menu.add(myNewEntityAction);
-  }
-
-  public void contributeToToolBar(IToolBarManager _manager) {
-    //    _manager.add(new Separator());
-    //    _manager.add(myNewEntityAction);
+    IActionBars actionBars = getActionBars();
+    myClipboardHandler.attach(actionBars, (EOModelEditor) myActiveEditor);
   }
 }

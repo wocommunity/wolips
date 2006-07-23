@@ -87,8 +87,8 @@ import org.objectstyle.wolips.eomodeler.utils.NotificationMap;
 import org.objectstyle.wolips.eomodeler.utils.TableUtils;
 
 public class UserInfoPropertySection extends AbstractPropertySection {
-  public static final String KEY = "key"; //$NON-NLS-1$
-  public static final String VALUE = "value"; //$NON-NLS-1$
+  public static final String KEY = "key";
+  public static final String VALUE = "value";
   public static final String[] COLUMNS = { UserInfoPropertySection.KEY, UserInfoPropertySection.VALUE };
 
   private TableViewer myUserInfoTableViewer;
@@ -113,7 +113,7 @@ public class UserInfoPropertySection extends AbstractPropertySection {
     myUserInfoTableViewer = new TableViewer(composite, SWT.BORDER | SWT.FLAT | SWT.FULL_SELECTION | SWT.SINGLE);
     myUserInfoTableViewer.getTable().setHeaderVisible(true);
     myUserInfoTableViewer.getTable().setLinesVisible(true);
-    TableUtils.createTableColumns(myUserInfoTableViewer, "UserInfo", UserInfoPropertySection.COLUMNS); //$NON-NLS-1$
+    TableUtils.createTableColumns(myUserInfoTableViewer, "UserInfo", UserInfoPropertySection.COLUMNS);
     myUserInfoTableViewer.setContentProvider(new UserInfoContentProvider());
     myUserInfoTableViewer.setLabelProvider(new UserInfoLabelProvider(UserInfoPropertySection.COLUMNS));
     myUserInfoTableViewer.setColumnProperties(UserInfoPropertySection.COLUMNS);
@@ -133,7 +133,7 @@ public class UserInfoPropertySection extends AbstractPropertySection {
     tableFormData.bottom = new FormAttachment(50, 0);
     myUserInfoTableViewer.getTable().setLayoutData(tableFormData);
 
-    myValueText = getWidgetFactory().createText(composite, "", SWT.BORDER | SWT.WRAP | SWT.MULTI | SWT.V_SCROLL); //$NON-NLS-1$
+    myValueText = getWidgetFactory().createText(composite, "", SWT.BORDER | SWT.WRAP | SWT.MULTI | SWT.V_SCROLL);
     FormData textFormData = new FormData();
     textFormData.left = new FormAttachment(0, 5);
     textFormData.right = new FormAttachment(100, -5);
@@ -154,14 +154,14 @@ public class UserInfoPropertySection extends AbstractPropertySection {
     buttonGroup.setLayout(layout);
 
     myAddButton = new Button(buttonGroup, SWT.PUSH);
-    myAddButton.setText(Messages.getString("button.add")); //$NON-NLS-1$
+    myAddButton.setText(Messages.getString("button.add"));
     FormData addButtonData = new FormData();
     addButtonData.right = new FormAttachment(100, 0);
     myAddButton.setLayoutData(addButtonData);
     myAddButton.addSelectionListener(new AddEntryHandler());
 
     myRemoveButton = new Button(buttonGroup, SWT.PUSH);
-    myRemoveButton.setText(Messages.getString("button.remove")); //$NON-NLS-1$
+    myRemoveButton.setText(Messages.getString("button.remove"));
     FormData remoteButtonData = new FormData();
     remoteButtonData.right = new FormAttachment(myAddButton, 0);
     myRemoveButton.setLayoutData(remoteButtonData);
@@ -246,8 +246,8 @@ public class UserInfoPropertySection extends AbstractPropertySection {
   }
 
   public void addEntry() {
-    String key = Messages.getString("UserInfoPropertySection.newKey"); //$NON-NLS-1$
-    String value = Messages.getString("UserInfoPropertySection.newValue"); //$NON-NLS-1$
+    String key = Messages.getString("UserInfoPropertySection.newKey");
+    String value = Messages.getString("UserInfoPropertySection.newValue");
     boolean unusedNameFound = (myUserInfoable.getUserInfo().get(key) == null);
     String unusedKey = key;
     for (int dupeNameNum = 1; !unusedNameFound; dupeNameNum++) {
@@ -275,7 +275,7 @@ public class UserInfoPropertySection extends AbstractPropertySection {
       myValueText.setEnabled(true);
     }
     else {
-      myValueText.setText(""); //$NON-NLS-1$
+      myValueText.setText("");
       myValueText.setEnabled(false);
     }
     myValueTextDirty = false;

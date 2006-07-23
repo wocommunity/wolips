@@ -135,7 +135,7 @@ public class EOAttributeBasicEditorSection extends AbstractPropertySection {
     topFormLayout.numColumns = 2;
     topForm.setLayout(topFormLayout);
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EOAttribute." + EOAttribute.NAME), SWT.NONE); //$NON-NLS-1$
+    getWidgetFactory().createCLabel(topForm, Messages.getString("EOAttribute." + EOAttribute.NAME), SWT.NONE);
     myNameText = new Text(topForm, SWT.BORDER);
     GridData nameFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
     myNameText.setLayoutData(nameFieldLayoutData);
@@ -155,18 +155,18 @@ public class EOAttributeBasicEditorSection extends AbstractPropertySection {
     myColumnNameDefinitionLayout = new StackLayout();
     myColumnNameDefinitionComposite.setLayout(myColumnNameDefinitionLayout);
 
-    getWidgetFactory().createCLabel(myColumnNameDefinitionComposite, Messages.getString("EOAttribute." + EOAttribute.COLUMN_NAME), SWT.NONE); //$NON-NLS-1$
+    getWidgetFactory().createCLabel(myColumnNameDefinitionComposite, Messages.getString("EOAttribute." + EOAttribute.COLUMN_NAME), SWT.NONE);
     myColumnNameText = new Text(myColumnNameDefinitionComposite, SWT.BORDER);
     GridData externalNameFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
     myColumnNameText.setLayoutData(externalNameFieldLayoutData);
 
-    getWidgetFactory().createCLabel(myColumnNameDefinitionComposite, Messages.getString("EOAttribute." + EOAttribute.DEFINITION), SWT.NONE); //$NON-NLS-1$
+    getWidgetFactory().createCLabel(myColumnNameDefinitionComposite, Messages.getString("EOAttribute." + EOAttribute.DEFINITION), SWT.NONE);
     myDefinitionText = new Text(myColumnNameDefinitionComposite, SWT.BORDER);
     GridData definitionFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
     myDefinitionText.setLayoutData(definitionFieldLayoutData);
     myColumnNameDefinitionLayout.topControl = myColumnNameText;
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EOAttribute." + EOAttribute.PROTOTYPE), SWT.NONE); //$NON-NLS-1$
+    getWidgetFactory().createCLabel(topForm, Messages.getString("EOAttribute." + EOAttribute.PROTOTYPE), SWT.NONE);
     Combo prototypeCombo = new Combo(topForm, SWT.BORDER | SWT.FLAT | SWT.READ_ONLY);
     myPrototypeComboViewer = new ComboViewer(prototypeCombo);
     myPrototypeComboViewer.setLabelProvider(new EOPrototypeListLabelProvider());
@@ -174,15 +174,15 @@ public class EOAttributeBasicEditorSection extends AbstractPropertySection {
     GridData prototypeComboLayoutData = new GridData(GridData.FILL_HORIZONTAL);
     prototypeCombo.setLayoutData(prototypeComboLayoutData);
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EOAttribute." + EOAttribute.EXTERNAL_TYPE), SWT.NONE); //$NON-NLS-1$
+    getWidgetFactory().createCLabel(topForm, Messages.getString("EOAttribute." + EOAttribute.EXTERNAL_TYPE), SWT.NONE);
     myExternalTypeText = new Text(topForm, SWT.BORDER);
     GridData externalTypeFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
     myExternalTypeText.setLayoutData(externalTypeFieldLayoutData);
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EOAttribute." + EOAttribute.ALLOWS_NULL), SWT.NONE); //$NON-NLS-1$
+    getWidgetFactory().createCLabel(topForm, Messages.getString("EOAttribute." + EOAttribute.ALLOWS_NULL), SWT.NONE);
     myAllowNullsButton = new Button(topForm, SWT.CHECK);
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EOAttribute." + EOAttribute.DATA_TYPE), SWT.NONE); //$NON-NLS-1$
+    getWidgetFactory().createCLabel(topForm, Messages.getString("EOAttribute." + EOAttribute.DATA_TYPE), SWT.NONE);
     Combo dataTypeCombo = new Combo(topForm, SWT.BORDER | SWT.FLAT | SWT.READ_ONLY);
     myDataTypeComboViewer = new ComboViewer(dataTypeCombo);
     myDataTypeComboViewer.setLabelProvider(new EODataTypeLabelProvider());
@@ -259,7 +259,7 @@ public class EOAttributeBasicEditorSection extends AbstractPropertySection {
         myBindingContext.bind(myAllowNullsButton, new Property(myAttribute, EOAttribute.ALLOWS_NULL), null);
 
         myPrototypeComboViewer.setInput(_attribute);
-        myPrototypeBinding = new ComboViewerBinding(myPrototypeComboViewer, myAttribute, EOAttribute.PROTOTYPE, myAttribute.getEntity().getModel(), EOModel.ENTITIES, EOEntityListContentProvider.BLANK_ENTITY); //$NON-NLS-1$
+        myPrototypeBinding = new ComboViewerBinding(myPrototypeComboViewer, myAttribute, EOAttribute.PROTOTYPE, myAttribute.getEntity().getModel(), EOModel.ENTITIES, EOEntityListContentProvider.BLANK_ENTITY);
         myDataTypeBinding = new ComboViewerBinding(myDataTypeComboViewer, myAttribute, EOAttribute.DATA_TYPE, null, null, null);
         if (myAttribute.getDefinition() == null) {
           myDerivedComboViewer.setSelection(new StructuredSelection(EOAttributeBasicEditorSection.COLUMN));

@@ -102,18 +102,18 @@ public class EOEntityAdvancedEditorSection extends AbstractPropertySection {
     topFormLayout.numColumns = 2;
     topForm.setLayout(topFormLayout);
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.MAX_NUMBER_OF_INSTANCES_TO_BATCH_FETCH), SWT.NONE); //$NON-NLS-1$
+    getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.MAX_NUMBER_OF_INSTANCES_TO_BATCH_FETCH), SWT.NONE);
     myMaxNumberOfInstancesToBatchFetchText = new Text(topForm, SWT.BORDER);
     GridData maxNumberOfInstancesToBatchFetchFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
     myMaxNumberOfInstancesToBatchFetchText.setLayoutData(maxNumberOfInstancesToBatchFetchFieldLayoutData);
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.CACHES_OBJECTS), SWT.NONE); //$NON-NLS-1$
+    getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.CACHES_OBJECTS), SWT.NONE);
     myCacheInMemoryButton = new Button(topForm, SWT.CHECK);
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.READ_ONLY), SWT.NONE); //$NON-NLS-1$
+    getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.READ_ONLY), SWT.NONE);
     myReadOnlyButton = new Button(topForm, SWT.CHECK);
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.EXTERNAL_QUERY), SWT.NONE); //$NON-NLS-1$
+    getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.EXTERNAL_QUERY), SWT.NONE);
     myExternalQueryText = new Text(topForm, SWT.BORDER);
     GridData externalQueryFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
     myExternalQueryText.setLayoutData(externalQueryFieldLayoutData);
@@ -126,7 +126,7 @@ public class EOEntityAdvancedEditorSection extends AbstractPropertySection {
     Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
     myEntity = (EOEntity) selectedObject;
     myBindingContext = BindingFactory.createContext();
-    myBindingContext.bind(myMaxNumberOfInstancesToBatchFetchText, new Property(myEntity, EOEntity.MAX_NUMBER_OF_INSTANCES_TO_BATCH_FETCH), new BindSpec(null, null, new RegexStringValidator("^[0-9]*$", "^[0-9]$", "Please enter a number"), null)); //$NON-NLS-1$ //$NON-NLS-2$
+    myBindingContext.bind(myMaxNumberOfInstancesToBatchFetchText, new Property(myEntity, EOEntity.MAX_NUMBER_OF_INSTANCES_TO_BATCH_FETCH), new BindSpec(null, null, new RegexStringValidator("^[0-9]*$", "^[0-9]$", "Please enter a number"), null));
     myBindingContext.bind(myCacheInMemoryButton, new Property(myEntity, EOEntity.CACHES_OBJECTS), null);
     myBindingContext.bind(myReadOnlyButton, new Property(myEntity, EOEntity.READ_ONLY), null);
     myBindingContext.bind(myExternalQueryText, new Property(myEntity, EOEntity.EXTERNAL_QUERY), null);

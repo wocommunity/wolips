@@ -49,66 +49,31 @@
  */
 package org.objectstyle.wolips.eomodeler.model;
 
-import java.util.Map;
+public class DuplicateEntityFailure extends EOModelVerificationFailure {
+  private EOModel myModel;
+  private String myEntityName;
+  private String myNewEntityName;
 
-import org.objectstyle.wolips.eomodeler.utils.NotificationMap;
-
-public class IEOAttributePath implements IUserInfoable, IEOEntityRelative {
-  private EORelationshipPath myParentRelationshipPath;
-  private IEOAttribute myChildAttribute;
-
-  public IEOAttributePath(EORelationshipPath _parentRelationshipPath, IEOAttribute _childAttribute) {
-    myParentRelationshipPath = _parentRelationshipPath;
-    myChildAttribute = _childAttribute;
+  public DuplicateEntityFailure(EOModel _model, String _entityName, String _newEntityName) {
+    this(_model, _entityName, _newEntityName, null);
   }
 
-  public EORelationshipPath getParentRelationshipPath() {
-    return myParentRelationshipPath;
+  public DuplicateEntityFailure(EOModel _model, String _entityName, String _newEntityName, Throwable _throwable) {
+    super("There was more than one entity named '" + _entityName + "' in " + _model.getName() + ", so one was renamed to '" + _newEntityName + "'.", _throwable);
+    myModel = _model;
+    myEntityName = _entityName;
+    myNewEntityName = _newEntityName;
   }
 
-  public IEOAttribute getChildIEOAttribute() {
-    return myChildAttribute;
+  public EOModel getModel() {
+    return myModel;
   }
 
-  public NotificationMap getUserInfo() {
-    return myChildAttribute.getUserInfo();
+  public String getRelationshipName() {
+    return myEntityName;
   }
 
-  public void setUserInfo(Map _userInfo) {
-    myChildAttribute.setUserInfo(_userInfo);
-  }
-
-  public void setUserInfo(Map _userInfo, boolean _fireEvents) {
-    myChildAttribute.setUserInfo(_userInfo, _fireEvents);
-  }
-
-  public EOEntity getEntity() {
-    return myChildAttribute.getEntity();
-  }
-
-  public EOEntity getRootEntity() {
-    EOEntity entity;
-    if (myParentRelationshipPath != null) {
-      entity = myParentRelationshipPath.getRootEntity();
-    }
-    else {
-      entity = getEntity();
-    }
-    return entity;
-  }
-
-  public String toKeyPath() {
-    StringBuffer sb = new StringBuffer();
-    toKeyPath(sb);
-    return sb.toString();
-  }
-
-  protected void toKeyPath(StringBuffer _keyPathBuffer) {
-    if (myParentRelationshipPath != null) {
-      myParentRelationshipPath.toKeyPath(_keyPathBuffer);
-      _keyPathBuffer.append(".");
-    }
-    String name = myChildAttribute.getName();
-    _keyPathBuffer.append(name);
+  public String getNewRelationshipName() {
+    return myNewEntityName;
   }
 }

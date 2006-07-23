@@ -63,7 +63,7 @@ import org.objectstyle.wolips.eomodeler.model.EOModelGroup;
 import org.objectstyle.wolips.eomodeler.model.EORelationship;
 
 public class EOEntityListContentProvider implements IStructuredContentProvider {
-  public static final Object BLANK_ENTITY = ""; //$NON-NLS-1$
+  public static final Object BLANK_ENTITY = "";
 
   private boolean myAllowBlank;
   private boolean myRestrictToSingleModel;
@@ -112,7 +112,7 @@ public class EOEntityListContentProvider implements IStructuredContentProvider {
     entitiesListCopy.addAll(entitiesList);
     Collections.sort(entitiesListCopy, myComparator);
     if (myAllowBlank) {
-      entitiesListCopy.add(0, EOEntityListContentProvider.BLANK_ENTITY); //$NON-NLS-1$
+      entitiesListCopy.add(0, EOEntityListContentProvider.BLANK_ENTITY);
     }
     Object[] entities = entitiesListCopy.toArray();
     return entities;

@@ -52,10 +52,10 @@ package org.objectstyle.wolips.eomodeler.model;
 import org.objectstyle.wolips.eomodeler.Messages;
 
 public class EODeleteRule {
-  public static final EODeleteRule NULLIFY = new EODeleteRule("EODeleteRuleNullify", Messages.getString("EODeleteRule.nullify")); //$NON-NLS-1$ //$NON-NLS-2$
-  public static final EODeleteRule CASCADE = new EODeleteRule("EODeleteRuleCascade", Messages.getString("EODeleteRule.cascade")); //$NON-NLS-1$ //$NON-NLS-2$
-  public static final EODeleteRule DENY = new EODeleteRule("EODeleteRuleDeny", Messages.getString("EODeleteRule.deny")); //$NON-NLS-1$ //$NON-NLS-2$
-  public static final EODeleteRule NO_ACTION = new EODeleteRule("EODeleteRuleNoAction", Messages.getString("EODeleteRule.noAction")); //$NON-NLS-1$ //$NON-NLS-2$
+  public static final EODeleteRule NULLIFY = new EODeleteRule("EODeleteRuleNullify", Messages.getString("EODeleteRule.nullify"));
+  public static final EODeleteRule CASCADE = new EODeleteRule("EODeleteRuleCascade", Messages.getString("EODeleteRule.cascade"));
+  public static final EODeleteRule DENY = new EODeleteRule("EODeleteRuleDeny", Messages.getString("EODeleteRule.deny"));
+  public static final EODeleteRule NO_ACTION = new EODeleteRule("EODeleteRuleNoAction", Messages.getString("EODeleteRule.noAction"));
   public static final EODeleteRule[] DELETE_RULES = new EODeleteRule[] { EODeleteRule.NULLIFY, EODeleteRule.CASCADE, EODeleteRule.DENY, EODeleteRule.NO_ACTION };
 
   private String myID;
@@ -75,7 +75,7 @@ public class EODeleteRule {
   }
 
   public String toString() {
-    return "[EODeleteRule: name = " + myName + "]"; //$NON-NLS-1$ //$NON-NLS-2$
+    return "[EODeleteRule: name = " + myName + "]";
   }
 
   public static EODeleteRule getDeleteRuleByID(String _id) {

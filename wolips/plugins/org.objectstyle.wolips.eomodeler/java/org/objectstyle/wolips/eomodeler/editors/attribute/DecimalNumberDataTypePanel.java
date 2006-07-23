@@ -70,12 +70,12 @@ public class DecimalNumberDataTypePanel extends Composite implements IDataTypePa
     super(_parent, _style);
     setBackground(_parent.getBackground());
     setLayout(new GridLayout(2, false));
-    _widgetFactory.createCLabel(this, Messages.getString("EOAttribute." + EOAttribute.PRECISION), SWT.NONE); //$NON-NLS-1$
+    _widgetFactory.createCLabel(this, Messages.getString("EOAttribute." + EOAttribute.PRECISION), SWT.NONE);
     myPrecisionText = new Text(this, SWT.BORDER);
     GridData precisionFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
     myPrecisionText.setLayoutData(precisionFieldLayoutData);
 
-    _widgetFactory.createCLabel(this, Messages.getString("EOAttribute." + EOAttribute.SCALE), SWT.NONE); //$NON-NLS-1$
+    _widgetFactory.createCLabel(this, Messages.getString("EOAttribute." + EOAttribute.SCALE), SWT.NONE);
     myScaleText = new Text(this, SWT.BORDER);
     GridData scaleFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
     myScaleText.setLayoutData(scaleFieldLayoutData);

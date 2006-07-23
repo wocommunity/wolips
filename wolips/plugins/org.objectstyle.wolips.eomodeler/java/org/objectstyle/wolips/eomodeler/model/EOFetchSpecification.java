@@ -50,31 +50,32 @@
 package org.objectstyle.wolips.eomodeler.model;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
-import org.eclipse.jface.internal.databinding.provisional.observable.list.WritableList;
 import org.objectstyle.cayenne.exp.parser.Node;
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
 
 public class EOFetchSpecification extends UserInfoableEOModelObject implements IEOEntityRelative, ISortableEOModelObject {
-  public static final String NAME = "name"; //$NON-NLS-1$
-  public static final String SORT_ORDERINGS = "sortOrderings"; //$NON-NLS-1$
-  public static final String QUALIFIER = "qualifier"; //$NON-NLS-1$
-  public static final String ENTITY = "entity"; //$NON-NLS-1$
-  public static final String FETCH_LIMIT = "fetchLimit"; //$NON-NLS-1$
-  public static final String DEEP = "deep"; //$NON-NLS-1$
-  public static final String LOCKS_OBJECTS = "locksObjects"; //$NON-NLS-1$
-  public static final String PREFETCHING_RELATIONSHIP_KEY_PATHS = "prefetchingRelationshipKeyPaths"; //$NON-NLS-1$
-  public static final String PROMPTS_AFTER_FETCH_LIMIT = "promptsAfterFetchLimit"; //$NON-NLS-1$
-  public static final String RAW_ROW_KEY_PATHS = "rawRowKeyPaths"; //$NON-NLS-1$
-  public static final String REFRESHES_REFETCHED_OBJECTS = "refreshesRefetchedObjects"; //$NON-NLS-1$
-  public static final String REQUIRES_ALL_QUALIFIER_BINDING_VARIABLES = "requiresAllQualifierBindingVariables"; //$NON-NLS-1$
-  public static final String USES_DISTINCT = "usesDistinct"; //$NON-NLS-1$
-  public static final String SHARES_OBJECTS = "sharesObjects"; //$NON-NLS-1$
+  public static final String NAME = "name";
+  public static final String SORT_ORDERINGS = "sortOrderings";
+  public static final String QUALIFIER = "qualifier";
+  public static final String ENTITY = "entity";
+  public static final String FETCH_LIMIT = "fetchLimit";
+  public static final String DEEP = "deep";
+  public static final String LOCKS_OBJECTS = "locksObjects";
+  public static final String PREFETCHING_RELATIONSHIP_KEY_PATHS = "prefetchingRelationshipKeyPaths";
+  public static final String PROMPTS_AFTER_FETCH_LIMIT = "promptsAfterFetchLimit";
+  public static final String RAW_ROW_KEY_PATHS = "rawRowKeyPaths";
+  public static final String REFRESHES_REFETCHED_OBJECTS = "refreshesRefetchedObjects";
+  public static final String REQUIRES_ALL_QUALIFIER_BINDING_VARIABLES = "requiresAllQualifierBindingVariables";
+  public static final String USES_DISTINCT = "usesDistinct";
+  public static final String SHARES_OBJECTS = "sharesObjects";
 
   private EOEntity myEntity;
   private String myName;
@@ -93,20 +94,55 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
   private EOModelMap myFetchSpecMap;
   private Boolean mySharesObjects;
 
-  public EOFetchSpecification(EOEntity _entity, String _name) {
-    myEntity = _entity;
+  public EOFetchSpecification(String _name) {
     myName = _name;
-    myClass = "EOFetchSpecification"; //$NON-NLS-1$
-    mySortOrderings = new WritableList(EOSortOrdering.class);
+    myClass = "EOFetchSpecification";
+    mySortOrderings = new LinkedList();
     myFetchSpecMap = new EOModelMap();
   }
 
+  public EOFetchSpecification cloneFetchSpecification() {
+    EOFetchSpecification fetchSpec = new EOFetchSpecification(myName);
+    fetchSpec.myClass = myClass;
+    fetchSpec.myFetchLimit = myFetchLimit;
+    fetchSpec.myDeep = myDeep;
+    fetchSpec.myLocksObjects = myLocksObjects;
+    if (myPrefetchingRelationshipKeyPaths != null) {
+      fetchSpec.myPrefetchingRelationshipKeyPaths = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
+      fetchSpec.myPrefetchingRelationshipKeyPaths.addAll(myPrefetchingRelationshipKeyPaths);
+    }
+    fetchSpec.myPromptsAfterFetchLimit = myPromptsAfterFetchLimit;
+    if (myRawRowKeyPaths != null) {
+      fetchSpec.myRawRowKeyPaths = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
+      fetchSpec.myRawRowKeyPaths.addAll(myRawRowKeyPaths);
+    }
+    fetchSpec.myRefreshesRefetchedObjects = myRefreshesRefetchedObjects;
+    fetchSpec.myRequiresAllQualifierBindingVariables = myRequiresAllQualifierBindingVariables;
+    fetchSpec.myUsesDistinct = myUsesDistinct;
+    fetchSpec.mySortOrderings.addAll(mySortOrderings);
+    if (myQualifier != null) {
+      fetchSpec.myQualifier = EOQualifierFactory.createNodeFromQualifierMap(EOQualifierFactory.createQualifierMapFromNode(myQualifier));
+    }
+    fetchSpec.mySharesObjects = mySharesObjects;
+    return fetchSpec;
+  }
+
+  public Set getReferenceFailures() {
+    return new HashSet();
+  }
+  
+  public void _setEntity(EOEntity _entity) {
+    myEntity = _entity;
+  }
+
   protected void _propertyChanged(String _propertyName, Object _oldValue, Object _newValue) {
-    myEntity._fetchSpecificationChanged(this);
+    if (myEntity != null) {
+      myEntity._fetchSpecificationChanged(this);
+    }
   }
 
   public int hashCode() {
-    return myEntity.hashCode() * ((myName == null) ? super.hashCode() : myName.hashCode());
+    return ((myEntity == null) ? 1 : myEntity.hashCode()) * ((myName == null) ? super.hashCode() : myName.hashCode());
   }
 
   public boolean equals(Object _obj) {
@@ -123,7 +159,9 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
   }
 
   public void setName(String _name, boolean _fireEvents) throws DuplicateFetchSpecNameException {
-    myEntity._checkForDuplicateFetchSpecName(this, _name, null);
+    if (myEntity != null) {
+      myEntity._checkForDuplicateFetchSpecName(this, _name, null);
+    }
     String oldName = myName;
     myName = _name;
     if (_fireEvents) {
@@ -211,7 +249,7 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
 
   public void setEntity(EOEntity _entity) {
     EOEntity oldEntity = myEntity;
-    myEntity = _entity;
+    _setEntity(_entity);
     firePropertyChange(EOFetchSpecification.ENTITY, oldEntity, myEntity);
   }
 
@@ -310,24 +348,24 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
   public void loadFromMap(EOModelMap _map, Set _failures) throws EOModelException {
     myFetchSpecMap = _map;
     // "entityName" = myEntity
-    myClass = _map.getString("class", true); //$NON-NLS-1$
-    myFetchLimit = _map.getInteger("fetchLimit"); //$NON-NLS-1$
-    myDeep = _map.getBoolean("isDeep"); //$NON-NLS-1$
-    myLocksObjects = _map.getBoolean("locksObjects"); //$NON-NLS-1$
-    myPrefetchingRelationshipKeyPaths = _map.getSet("prefetchingRelationshipKeyPaths", true); //$NON-NLS-1$
-    myPromptsAfterFetchLimit = _map.getBoolean("prompsAfterFetchLimit"); //$NON-NLS-1$
+    myClass = _map.getString("class", true);
+    myFetchLimit = _map.getInteger("fetchLimit");
+    myDeep = _map.getBoolean("isDeep");
+    myLocksObjects = _map.getBoolean("locksObjects");
+    myPrefetchingRelationshipKeyPaths = _map.getSet("prefetchingRelationshipKeyPaths", true);
+    myPromptsAfterFetchLimit = _map.getBoolean("prompsAfterFetchLimit");
 
-    Map qualifierMap = _map.getMap("qualifier"); //$NON-NLS-1$
+    Map qualifierMap = _map.getMap("qualifier");
     if (qualifierMap != null) {
       myQualifier = EOQualifierFactory.createNodeFromQualifierMap(new EOModelMap(qualifierMap));
     }
-    myRawRowKeyPaths = _map.getSet("rawRowKeyPaths", true); //$NON-NLS-1$
-    myRefreshesRefetchedObjects = _map.getBoolean("refreshesRefetchedObjects"); //$NON-NLS-1$
-    myRequiresAllQualifierBindingVariables = _map.getBoolean("requiresAllQualifierBindingVariables"); //$NON-NLS-1$
-    myUsesDistinct = _map.getBoolean("usesDistinct"); //$NON-NLS-1$
-    setUserInfo(_map.getMap("userInfo", true), false); //$NON-NLS-1$
+    myRawRowKeyPaths = _map.getSet("rawRowKeyPaths", true);
+    myRefreshesRefetchedObjects = _map.getBoolean("refreshesRefetchedObjects");
+    myRequiresAllQualifierBindingVariables = _map.getBoolean("requiresAllQualifierBindingVariables");
+    myUsesDistinct = _map.getBoolean("usesDistinct");
+    setUserInfo(_map.getMap("userInfo", true), false);
 
-    List sortOrderings = _map.getList("sortOrderings"); //$NON-NLS-1$
+    List sortOrderings = _map.getList("sortOrderings");
     if (sortOrderings != null) {
       Iterator sortOrderingsIter = sortOrderings.iterator();
       while (sortOrderingsIter.hasNext()) {
@@ -341,24 +379,24 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
 
   public EOModelMap toMap() {
     EOModelMap fetchSpecMap = myFetchSpecMap.cloneModelMap();
-    fetchSpecMap.setString("entityName", myEntity.getName(), true); //$NON-NLS-1$
-    fetchSpecMap.setString("class", myClass, true); //$NON-NLS-1$
-    fetchSpecMap.setInteger("fetchLimit", myFetchLimit); //$NON-NLS-1$
-    fetchSpecMap.setBoolean("isDeep", myDeep, EOModelMap.YESNO); //$NON-NLS-1$
-    fetchSpecMap.setBoolean("locksObjects", myLocksObjects, EOModelMap.YESNO); //$NON-NLS-1$
-    fetchSpecMap.setSet("prefetchingRelationshipKeyPaths", myPrefetchingRelationshipKeyPaths, true); //$NON-NLS-1$
-    fetchSpecMap.setBoolean("prompsAfterFetchLimit", myPromptsAfterFetchLimit, EOModelMap.YESNO); //$NON-NLS-1$
+    fetchSpecMap.setString("entityName", myEntity.getName(), true);
+    fetchSpecMap.setString("class", myClass, true);
+    fetchSpecMap.setInteger("fetchLimit", myFetchLimit);
+    fetchSpecMap.setBoolean("isDeep", myDeep, EOModelMap.YESNO);
+    fetchSpecMap.setBoolean("locksObjects", myLocksObjects, EOModelMap.YESNO);
+    fetchSpecMap.setSet("prefetchingRelationshipKeyPaths", myPrefetchingRelationshipKeyPaths, true);
+    fetchSpecMap.setBoolean("prompsAfterFetchLimit", myPromptsAfterFetchLimit, EOModelMap.YESNO);
     if (myQualifier == null) {
-      fetchSpecMap.setMap("qualifier", null, true); //$NON-NLS-1$
+      fetchSpecMap.setMap("qualifier", null, true);
     }
     else {
-      fetchSpecMap.setMap("qualifier", EOQualifierFactory.createQualifierMapFromNode(myQualifier), true); //$NON-NLS-1$
+      fetchSpecMap.setMap("qualifier", EOQualifierFactory.createQualifierMapFromNode(myQualifier), true);
     }
-    fetchSpecMap.setSet("rawRowKeyPaths", myRawRowKeyPaths, false); //$NON-NLS-1$
-    fetchSpecMap.setBoolean("refreshesRefetchedObjects", myRefreshesRefetchedObjects, EOModelMap.YESNO); //$NON-NLS-1$
-    fetchSpecMap.setBoolean("requiresAllQualifierBindingVariables", myRequiresAllQualifierBindingVariables, EOModelMap.YESNO); //$NON-NLS-1$
-    fetchSpecMap.setBoolean("usesDistinct", myUsesDistinct, EOModelMap.YESNO); //$NON-NLS-1$
-    fetchSpecMap.setMap("userInfo", getUserInfo(), true); //$NON-NLS-1$
+    fetchSpecMap.setSet("rawRowKeyPaths", myRawRowKeyPaths, false);
+    fetchSpecMap.setBoolean("refreshesRefetchedObjects", myRefreshesRefetchedObjects, EOModelMap.YESNO);
+    fetchSpecMap.setBoolean("requiresAllQualifierBindingVariables", myRequiresAllQualifierBindingVariables, EOModelMap.YESNO);
+    fetchSpecMap.setBoolean("usesDistinct", myUsesDistinct, EOModelMap.YESNO);
+    fetchSpecMap.setMap("userInfo", getUserInfo(), true);
 
     List sortOrderings = new LinkedList();
     Iterator sortOrderingsIter = mySortOrderings.iterator();
@@ -367,7 +405,7 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
       EOModelMap sortOrderingMap = sortOrdering.toMap();
       sortOrderings.add(sortOrderingMap);
     }
-    fetchSpecMap.setList("sortOrderings", sortOrderings, true); //$NON-NLS-1$
+    fetchSpecMap.setList("sortOrderings", sortOrderings, true);
     return fetchSpecMap;
   }
 

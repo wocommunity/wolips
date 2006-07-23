@@ -86,10 +86,10 @@ public class NewAttributeAction implements IWorkbenchWindowActionDelegate {
   public void run(IAction _action) {
     try {
       if (myEntity != null) {
-        EOAttribute newAttribute = myEntity.addBlankAttribute(Messages.getString("EOAttribute.newName")); //$NON-NLS-1$
+        EOAttribute newAttribute = myEntity.addBlankAttribute(Messages.getString("EOAttribute.newName"));
       }
       else {
-        MessageDialog.openError(myWindow.getShell(), Messages.getString("EOAttribute.noEntitySelectedTitle"), Messages.getString("EOAttribute.noEntitySelectedMessage"));//$NON-NLS-1$ //$NON-NLS-2$
+        MessageDialog.openError(myWindow.getShell(), Messages.getString("EOAttribute.noEntitySelectedTitle"), Messages.getString("EOAttribute.noEntitySelectedMessage"));//$NON-NLS-1$
       }
     }
     catch (DuplicateNameException e) {
