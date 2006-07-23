@@ -546,7 +546,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
       Set oldValues = (Set) _event.getOldValue();
       Set newValues = (Set) _event.getNewValue();
       if (newValues != null && oldValues != null && newValues.size() > oldValues.size()) {
-        List newList = new LinkedList(oldValues);
+        List newList = new LinkedList(newValues);
         newList.removeAll(oldValues);
         EOModelEditor.this.setSelection(new StructuredSelection(newList));
         EOModelEditor.this.setActivePage(EOModelEditor.EOENTITY_PAGE);
