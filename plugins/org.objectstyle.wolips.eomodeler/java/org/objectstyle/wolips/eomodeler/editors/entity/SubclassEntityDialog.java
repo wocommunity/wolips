@@ -89,7 +89,7 @@ public class SubclassEntityDialog extends Dialog {
 
   protected void configureShell(Shell _newShell) {
     super.configureShell(_newShell);
-    _newShell.setText(Messages.getString("SubclassEntityDialog.title")); //$NON-NLS-1$
+    _newShell.setText(Messages.getString("SubclassEntityDialog.title"));
   }
 
   public String getEntityName() {
@@ -135,7 +135,7 @@ public class SubclassEntityDialog extends Dialog {
     subclassDialogArea.setLayout(gridLayout);
 
     Label subclassNameLabel = new Label(subclassDialogArea, SWT.NONE);
-    subclassNameLabel.setText(Messages.getString("SubclassEntityDialog.entityNameLabel")); //$NON-NLS-1$
+    subclassNameLabel.setText(Messages.getString("SubclassEntityDialog.entityNameLabel"));
     myEntityNameText = new Text(subclassDialogArea, SWT.BORDER);
     myEntityNameText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
     myEntityNameText.addModifyListener(new ModifyListener() {
@@ -143,10 +143,10 @@ public class SubclassEntityDialog extends Dialog {
         SubclassEntityDialog.this._updateSubclassFromUI();
       }
     });
-    myEntityNameText.setText(Messages.getString("SubclassEntityDialog.newEntityNameDefault")); //$NON-NLS-1$
+    myEntityNameText.setText(myModel.findUnusedEntityName(myParentEntity.getName()));
 
     Label parentEntityLabel = new Label(subclassDialogArea, SWT.NONE);
-    parentEntityLabel.setText(Messages.getString("SubclassEntityDialog.parentEntityLabel")); //$NON-NLS-1$
+    parentEntityLabel.setText(Messages.getString("SubclassEntityDialog.parentEntityLabel"));
     myParentEntityViewer = new ComboViewer(subclassDialogArea);
     myParentEntityViewer.setContentProvider(new EOEntityListContentProvider(false, false));
     myParentEntityViewer.setLabelProvider(new EOEntityLabelProvider());
@@ -163,7 +163,7 @@ public class SubclassEntityDialog extends Dialog {
     }
 
     Label inheritanceTypeLabel = new Label(subclassDialogArea, SWT.NONE);
-    inheritanceTypeLabel.setText(Messages.getString("SubclassEntityDialog.inheritanceTypeLabel")); //$NON-NLS-1$
+    inheritanceTypeLabel.setText(Messages.getString("SubclassEntityDialog.inheritanceTypeLabel"));
     myInheritanceTypeViewer = new ComboViewer(subclassDialogArea);
     myInheritanceTypeViewer.setLabelProvider(new InheritanceTypeLabelProvider());
     myInheritanceTypeViewer.setContentProvider(new InheritanceTypeContentProvider());

@@ -60,8 +60,11 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.part.IPageSite;
 import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
+import org.objectstyle.wolips.eomodeler.editors.EOModelClipboardHandler;
+import org.objectstyle.wolips.eomodeler.editors.EOModelEditor;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
 import org.objectstyle.wolips.eomodeler.model.EOModelContainer;
@@ -72,22 +75,35 @@ public class EOModelContentOutlinePage extends ContentOutlinePage {
   private EntityPropertyChangeListener myEntityListener;
   private EOModel myModel;
   private List myEntities;
+  private EOModelEditor myEditor;
+  private EOModelClipboardHandler myClipboardHandler;
 
-  public EOModelContentOutlinePage(EOModel _model) {
+  public EOModelContentOutlinePage(EOModelEditor _editor) {
     myModelListener = new ModelPropertyChangeListener();
     myEntityListener = new EntityPropertyChangeListener();
-    setModel(_model);
+    myClipboardHandler = new EOModelClipboardHandler();
+    setModelEditor(_editor);
   }
 
-  public void setModel(EOModel _model) {
+  public void setModelEditor(EOModelEditor _editor) {
     removePropertyChangeListeners();
-    myModel = _model;
+    myEditor = _editor;
+    myModel = myEditor.getModel();
     if (myModel != null) {
       myEntities = new LinkedList(myModel.getEntities());
       addPropertyChangeListeners();
     }
     if (getTreeViewer() != null) {
-      getTreeViewer().setInput(new EOModelContainer(_model));
+      getTreeViewer().setInput(new EOModelContainer(myModel));
+    }
+    updateClipboardHandler();
+  }
+
+  protected void updateClipboardHandler() {
+    IPageSite site = getSite();
+    if (site != null && myEditor != null) {
+      IActionBars actionBars = site.getActionBars();
+      myClipboardHandler.attach(actionBars, myEditor);
     }
   }
 
@@ -119,10 +135,12 @@ public class EOModelContentOutlinePage extends ContentOutlinePage {
 
   public void init(IPageSite _pageSite) {
     super.init(_pageSite);
+    updateClipboardHandler();
   }
 
   public void selectionChanged(SelectionChangedEvent _event) {
     super.selectionChanged(_event);
+    myClipboardHandler.selectionChanged(_event);
   }
 
   public void setSelection(ISelection _selection) {

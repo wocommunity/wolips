@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class NotificationMap implements Map {
-  public static final String CONTENTS = "__contents__"; //$NON-NLS-1$
+  public static final String CONTENTS = "__contents__";
 
   private Map myMap;
   private PropertyChangeSupport myPropertyChangeSupport;

@@ -80,7 +80,7 @@ public class EOModelDecorator implements ILabelDecorator {
       text = fileNameWithoutExtension;
     }
     else {
-      text = fileNameWithoutExtension + " EOModel"; //$NON-NLS-1$
+      text = fileNameWithoutExtension + " EOModel";
     }
     return text;
   }

@@ -126,7 +126,7 @@ public class TablePropertyCellModifier implements ICellModifier, ISelectionChang
     }
     catch (Throwable t) {
       t.printStackTrace();
-      MessageDialog.openError(Display.getDefault().getActiveShell(), "", t.getMessage()); //$NON-NLS-1$
+      MessageDialog.openError(Display.getDefault().getActiveShell(), "", t.getMessage());
     }
   }
 

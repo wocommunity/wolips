@@ -65,23 +65,23 @@ import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.utils.StringUtils;
 
 public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRelative, ISortableEOModelObject {
-  private static final String FETCH_ALL = "FetchAll"; //$NON-NLS-1$
-  public static final String ATTRIBUTE = "attribute"; //$NON-NLS-1$
-  public static final String RELATIONSHIP = "relationship"; //$NON-NLS-1$
-  public static final String FETCH_SPECIFICATION = "fetchSpecification"; //$NON-NLS-1$
-  public static final String NAME = "name"; //$NON-NLS-1$
-  public static final String CLASS_NAME = "className"; //$NON-NLS-1$
-  public static final String PARENT = "parent"; //$NON-NLS-1$
-  public static final String EXTERNAL_QUERY = "externalQuery"; //$NON-NLS-1$
-  public static final String MAX_NUMBER_OF_INSTANCES_TO_BATCH_FETCH = "maxNumberOfInstancesToBatchFetch"; //$NON-NLS-1$
-  public static final String READ_ONLY = "readOnly"; //$NON-NLS-1$
-  public static final String EXTERNAL_NAME = "externalName"; //$NON-NLS-1$
-  public static final String ABSTRACT_ENTITY = "abstractEntity"; //$NON-NLS-1$
-  public static final String CACHES_OBJECTS = "cachesObjects"; //$NON-NLS-1$
-  public static final String RESTRICTING_QUALIFIER = "restrictingQualifier"; //$NON-NLS-1$
-  public static final String FETCH_SPECIFICATIONS = "fetchSpecifications"; //$NON-NLS-1$
-  public static final String ATTRIBUTES = "attributes"; //$NON-NLS-1$
-  public static final String RELATIONSHIPS = "relationships"; //$NON-NLS-1$
+  private static final String FETCH_ALL = "FetchAll";
+  public static final String ATTRIBUTE = "attribute";
+  public static final String RELATIONSHIP = "relationship";
+  public static final String FETCH_SPECIFICATION = "fetchSpecification";
+  public static final String NAME = "name";
+  public static final String CLASS_NAME = "className";
+  public static final String PARENT = "parent";
+  public static final String EXTERNAL_QUERY = "externalQuery";
+  public static final String MAX_NUMBER_OF_INSTANCES_TO_BATCH_FETCH = "maxNumberOfInstancesToBatchFetch";
+  public static final String READ_ONLY = "readOnly";
+  public static final String EXTERNAL_NAME = "externalName";
+  public static final String ABSTRACT_ENTITY = "abstractEntity";
+  public static final String CACHES_OBJECTS = "cachesObjects";
+  public static final String RESTRICTING_QUALIFIER = "restrictingQualifier";
+  public static final String FETCH_SPECIFICATIONS = "fetchSpecifications";
+  public static final String ATTRIBUTES = "attributes";
+  public static final String RELATIONSHIPS = "relationships";
 
   private EOModel myModel;
   private EOEntity myParent;
@@ -100,8 +100,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
   private EOModelMap myEntityMap;
   private EOModelMap myFetchSpecsMap;
 
-  public EOEntity(EOModel _model) {
-    myModel = _model;
+  public EOEntity() {
     myAttributes = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
     myRelationships = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
     myFetchSpecs = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
@@ -109,8 +108,8 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     myFetchSpecsMap = new EOModelMap();
   }
 
-  public EOEntity(EOModel _model, String _name) {
-    this(_model);
+  public EOEntity(String _name) {
+    this();
     myName = _name;
   }
 
@@ -146,20 +145,29 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     return targetAttribute;
   }
 
-  public EOEntity cloneInto(EOModel _model, boolean _fireEvents, Set _failures) throws DuplicateNameException {
-    return cloneInto(_model, myName, _fireEvents, _failures);
+  public void pasted() throws DuplicateNameException {
+    Iterator attributesIter = getAttributes().iterator();
+    while (attributesIter.hasNext()) {
+      EOAttribute attribute = (EOAttribute) attributesIter.next();
+      attribute.pasted();
+    }
+
+    Iterator relationshipsIter = getRelationships().iterator();
+    while (relationshipsIter.hasNext()) {
+      EORelationship relationship = (EORelationship) relationshipsIter.next();
+      relationship.pasted();
+    }
   }
 
-  public EOEntity cloneInto(EOModel _model, String _name, boolean _fireEvents, Set _failures) throws DuplicateNameException {
-    EOEntity entity = _cloneJustEntityInto(_model, _name);
-    _cloneAttributesAndRelationshipsInto(entity, _fireEvents, _failures);
-    // TODO: Clone Fetch Specs
-    _model.addEntity(entity, _fireEvents, _failures);
+  public EOEntity cloneEntity() throws DuplicateNameException {
+    EOEntity entity = _cloneJustEntity();
+    entity._cloneAttributesAndRelationshipsFrom(this, false);
+    entity._cloneFetchSpecificationsFrom(this, false);
     return entity;
   }
 
-  protected EOEntity _cloneJustEntityInto(EOModel _model, String _name) {
-    EOEntity entity = new EOEntity(_model, _model.findUnusedEntityName(_name));
+  protected EOEntity _cloneJustEntity() {
+    EOEntity entity = new EOEntity(myName);
     entity.myParent = myParent;
     entity.myExternalName = myExternalName;
     entity.myClassName = myClassName;
@@ -172,16 +180,16 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     return entity;
   }
 
-  public EOEntity subclassInto(String _subclassName, InheritanceType _inheritanceType, EOModel _model, Set _failures) throws DuplicateNameException {
+  public EOEntity subclass(String _subclassName, InheritanceType _inheritanceType) throws DuplicateNameException {
     EOEntity subclassEntity;
     if (_inheritanceType == InheritanceType.HORIZONTAL) {
-      subclassEntity = _horizontalSubclassInto(_subclassName, _model, _failures);
+      subclassEntity = _horizontalSubclass(_subclassName);
     }
     else if (_inheritanceType == InheritanceType.SINGLE_TABLE) {
-      subclassEntity = _singleTableSubclassInto(_subclassName, _model, _failures);
+      subclassEntity = _singleTableSubclass(_subclassName);
     }
     else if (_inheritanceType == InheritanceType.VERTICAL) {
-      subclassEntity = _verticalSubclassInto(_subclassName, _model, _failures);
+      subclassEntity = _verticalSubclass(_subclassName);
     }
     else {
       throw new IllegalArgumentException("Unknown inheritance type " + _inheritanceType + ".");
@@ -198,33 +206,34 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     return className;
   }
 
-  public EOEntity _horizontalSubclassInto(String _subclassName, EOModel _model, Set _failures) throws DuplicateNameException {
-    EOEntity subclassEntity = _cloneJustEntityInto(_model, _subclassName);
+  public EOEntity _horizontalSubclass(String _subclassName) throws DuplicateNameException {
+    EOEntity subclassEntity = _cloneJustEntity();
+    subclassEntity.setName(_subclassName, false);
     subclassEntity.myClassName = _toSubclassName(_subclassName);
     subclassEntity.myParent = this;
     subclassEntity.myExternalName = _subclassName;
     if (subclassEntity.isAbstractEntity() != null) {
       subclassEntity.myAbstractEntity = Boolean.FALSE;
     }
-    _cloneAttributesAndRelationshipsInto(subclassEntity, false, _failures);
-    _model.addEntity(subclassEntity, true, _failures);
+    subclassEntity._cloneAttributesAndRelationshipsFrom(this, false);
     return subclassEntity;
   }
 
-  public EOEntity _singleTableSubclassInto(String _subclassName, EOModel _model, Set _failures) throws DuplicateNameException {
-    EOEntity subclassEntity = _cloneJustEntityInto(_model, _subclassName);
+  public EOEntity _singleTableSubclass(String _subclassName) throws DuplicateNameException {
+    EOEntity subclassEntity = _cloneJustEntity();
+    subclassEntity.setName(_subclassName, false);
     subclassEntity.myClassName = _toSubclassName(_subclassName);
     subclassEntity.myParent = this;
     if (subclassEntity.isAbstractEntity() != null) {
       subclassEntity.myAbstractEntity = Boolean.FALSE;
     }
-    _cloneAttributesAndRelationshipsInto(subclassEntity, false, _failures);
-    _model.addEntity(subclassEntity, true, _failures);
+    subclassEntity._cloneAttributesAndRelationshipsFrom(this, false);
     return subclassEntity;
   }
 
-  public EOEntity _verticalSubclassInto(String _subclassName, EOModel _model, Set _failures) throws DuplicateNameException {
-    EOEntity subclassEntity = _cloneJustEntityInto(_model, _subclassName);
+  public EOEntity _verticalSubclass(String _subclassName) throws DuplicateNameException {
+    EOEntity subclassEntity = _cloneJustEntity();
+    subclassEntity.setName(_subclassName, false);
     subclassEntity.myClassName = _toSubclassName(_subclassName);
     subclassEntity.myParent = this;
     subclassEntity.myExternalName = _subclassName;
@@ -240,11 +249,12 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     Iterator primaryKeyAttributesIter = primaryKeyAttributes.iterator();
     while (primaryKeyAttributesIter.hasNext()) {
       EOAttribute superclassPrimaryKeyAttribute = (EOAttribute) primaryKeyAttributesIter.next();
-      EOAttribute subclassPrimaryKeyAttribute = superclassPrimaryKeyAttribute.cloneInto(subclassEntity, false, _failures);
-      EOJoin superclassJoin = new EOJoin(superclassRelationship);
+      EOAttribute subclassPrimaryKeyAttribute = superclassPrimaryKeyAttribute.cloneAttribute();
+      EOJoin superclassJoin = new EOJoin();
       superclassJoin.setSourceAttribute(subclassPrimaryKeyAttribute);
       superclassJoin.setDestinationAttribute(superclassPrimaryKeyAttribute);
       superclassRelationship.addJoin(superclassJoin, false);
+      subclassEntity.addAttribute(subclassPrimaryKeyAttribute);
     }
 
     Iterator attributesIter = getAttributes().iterator();
@@ -263,24 +273,39 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
       }
     }
 
-    _model.addEntity(subclassEntity, true, _failures);
     return subclassEntity;
   }
 
-  protected void _cloneAttributesAndRelationshipsInto(EOEntity _entity, boolean _fireEvents, Set _failures) throws DuplicateNameException {
-    Iterator attributesIter = getAttributes().iterator();
+  protected void _cloneFetchSpecificationsFrom(EOEntity _entity, boolean _skipExistingNames) throws DuplicateNameException {
+    Iterator fetchSpecsIter = _entity.getFetchSpecs().iterator();
+    while (fetchSpecsIter.hasNext()) {
+      EOFetchSpecification fetchSpec = (EOFetchSpecification) fetchSpecsIter.next();
+      if (!_skipExistingNames || getFetchSpecNamed(fetchSpec.getName()) == null) {
+        EOFetchSpecification clonedFetchSpec = fetchSpec.cloneFetchSpecification();
+        clonedFetchSpec.setName(findUnusedFetchSpecificationName(clonedFetchSpec.getName()));
+        addFetchSpecification(clonedFetchSpec);
+      }
+    }
+  }
+
+  protected void _cloneAttributesAndRelationshipsFrom(EOEntity _entity, boolean _skipExistingNames) throws DuplicateNameException {
+    Iterator attributesIter = _entity.getAttributes().iterator();
     while (attributesIter.hasNext()) {
       EOAttribute attribute = (EOAttribute) attributesIter.next();
-      if (_entity.getAttributeNamed(attribute.getName()) == null) {
-        attribute.cloneInto(_entity, _fireEvents, _failures);
+      if (!_skipExistingNames || getAttributeNamed(attribute.getName()) == null) {
+        EOAttribute clonedAttribute = attribute.cloneAttribute();
+        clonedAttribute.setName(findUnusedAttributeName(clonedAttribute.getName()));
+        addAttribute(clonedAttribute);
       }
     }
 
-    Iterator relationshipsIter = getRelationships().iterator();
+    Iterator relationshipsIter = _entity.getRelationships().iterator();
     while (relationshipsIter.hasNext()) {
       EORelationship relationship = (EORelationship) relationshipsIter.next();
-      if (_entity.getRelationshipNamed(relationship.getName()) == null) {
-        relationship.cloneInto(_entity, _fireEvents, _failures);
+      if (!_skipExistingNames || getRelationshipNamed(relationship.getName()) == null) {
+        EORelationship clonedRelationship = relationship.cloneRelationship();
+        clonedRelationship.setName(findUnusedRelationshipName(clonedRelationship.getName()));
+        addRelationship(clonedRelationship);
       }
     }
   }
@@ -319,10 +344,10 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     }
     EORelationship relationship;
     if (_flattenRelationship != null) {
-      relationship = new EORelationship(this, newRelationshipName, _flattenRelationship.toKeyPath());
+      relationship = new EORelationship(newRelationshipName, _flattenRelationship.toKeyPath());
     }
     else {
-      relationship = new EORelationship(this, newRelationshipName);
+      relationship = new EORelationship(newRelationshipName);
     }
     relationship.setClassProperty(Boolean.TRUE);
     addRelationship(relationship);
@@ -347,10 +372,10 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     }
     EOAttribute attribute;
     if (_flattenAttribute != null) {
-      attribute = new EOAttribute(this, newAttributeName, _flattenAttribute.toKeyPath());
+      attribute = new EOAttribute(newAttributeName, _flattenAttribute.toKeyPath());
     }
     else {
-      attribute = new EOAttribute(this, newAttributeName);
+      attribute = new EOAttribute(newAttributeName);
     }
     attribute.setClassProperty(Boolean.TRUE);
     addAttribute(attribute);
@@ -365,13 +390,15 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
       newFetchSpecNum++;
       newFetchSpecName = newFetchSpecNameBase + newFetchSpecNum;
     }
-    EOFetchSpecification fetchSpec = new EOFetchSpecification(this, newFetchSpecName);
+    EOFetchSpecification fetchSpec = new EOFetchSpecification(newFetchSpecName);
     addFetchSpecification(fetchSpec);
     return fetchSpec;
   }
 
   protected void _propertyChanged(String _propertyName, Object _oldValue, Object _newValue) {
-    myModel._entityChanged(this);
+    if (myModel != null) {
+      myModel._entityChanged(this);
+    }
   }
 
   public boolean hasSharedObjects() {
@@ -414,7 +441,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
       fetchAllFetchSpec.setSharesObjects(Boolean.TRUE);
     }
     else {
-      fetchAllFetchSpec = new EOFetchSpecification(this, EOEntity.FETCH_ALL);
+      fetchAllFetchSpec = new EOFetchSpecification(EOEntity.FETCH_ALL);
       fetchAllFetchSpec.setSharesObjects(Boolean.TRUE, false);
       addFetchSpecification(fetchAllFetchSpec);
     }
@@ -428,12 +455,16 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     return adapter;
   }
 
+  public void _setModel(EOModel _model) {
+    myModel = _model;
+  }
+
   public EOModel getModel() {
     return myModel;
   }
 
   public boolean isPrototype() {
-    return myName != null && myName.startsWith("EO") && myName.endsWith("Prototypes"); //$NON-NLS-1$ //$NON-NLS-2$
+    return myName != null && myName.startsWith("EO") && myName.endsWith("Prototypes");
   }
 
   public String getExternalQuery() {
@@ -480,11 +511,13 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
 
   public void setName(String _name, boolean _fireEvents) throws DuplicateEntityNameException {
     if (_name == null) {
-      throw new NullPointerException(Messages.getString("EOEntity.noBlankEntityNames")); //$NON-NLS-1$
+      throw new NullPointerException(Messages.getString("EOEntity.noBlankEntityNames"));
     }
     String oldName = myName;
-    myModel._checkForDuplicateEntityName(this, _name, null);
-    myModel._entityNameChanged(myName);
+    if (myModel != null) {
+      myModel._checkForDuplicateEntityName(this, _name, null);
+      myModel._entityNameChanged(myName);
+    }
     myName = _name;
     if (_fireEvents) {
       firePropertyChange(EOEntity.NAME, oldName, myName);
@@ -559,14 +592,16 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
 
   public Set getChildrenEntities() {
     Set children = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
-    Iterator modelsIter = myModel.getModelGroup().getModels().iterator();
-    while (modelsIter.hasNext()) {
-      EOModel model = (EOModel) modelsIter.next();
-      Iterator entitiesIter = model.getEntities().iterator();
-      while (entitiesIter.hasNext()) {
-        EOEntity entity = (EOEntity) entitiesIter.next();
-        if (entity.getParent() == this) {
-          children.add(entity);
+    if (myModel != null) {
+      Iterator modelsIter = myModel.getModelGroup().getModels().iterator();
+      while (modelsIter.hasNext()) {
+        EOModel model = (EOModel) modelsIter.next();
+        Iterator entitiesIter = model.getEntities().iterator();
+        while (entitiesIter.hasNext()) {
+          EOEntity entity = (EOEntity) entitiesIter.next();
+          if (entity.getParent() == this) {
+            children.add(entity);
+          }
         }
       }
     }
@@ -583,10 +618,10 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     firePropertyChange(EOEntity.PARENT, oldParent, myParent);
   }
 
-  public void inheritParentAttributesAndRelationships(Set _failures) throws DuplicateNameException {
+  public void inheritParentAttributesAndRelationships() throws DuplicateNameException {
     EOEntity parent = getParent();
     if (parent != null) {
-      parent._cloneAttributesAndRelationshipsInto(this, true, _failures);
+      _cloneAttributesAndRelationshipsFrom(parent, true);
     }
   }
 
@@ -742,6 +777,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
   }
 
   public void addFetchSpecification(EOFetchSpecification _fetchSpecification, boolean _fireEvents, Set _failures) throws DuplicateFetchSpecNameException {
+    _fetchSpecification._setEntity(this);
     _checkForDuplicateFetchSpecName(_fetchSpecification, _fetchSpecification.getName(), _failures);
     Set oldFetchSpecs = null;
     if (_fireEvents) {
@@ -767,7 +803,9 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
   }
 
   public synchronized void addAttribute(EOAttribute _attribute, boolean _fireEvents, Set _failures) throws DuplicateNameException {
+    _attribute._setEntity(this);
     _checkForDuplicateAttributeName(_attribute, _attribute.getName(), _failures);
+    _attribute.pasted();
     Set oldAttributes = null;
     if (_fireEvents) {
       oldAttributes = myAttributes;
@@ -794,6 +832,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
         childEntity.removeAttribute(childAttribute, _removeFromSubclasses);
       }
     }
+    _attribute._setEntity(null);
   }
 
   public EOAttribute getAttributeNamed(String _name) {
@@ -849,7 +888,9 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
   }
 
   public void addRelationship(EORelationship _relationship, boolean _fireEvents, Set _failures) throws DuplicateNameException {
+    _relationship._setEntity(this);
     _checkForDuplicateRelationshipName(_relationship, _relationship.getName(), _failures);
+    _relationship.pasted();
     Set oldRelationships = null;
     if (_fireEvents) {
       oldRelationships = myRelationships;
@@ -876,6 +917,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
         childEntity.removeRelationship(childRelationship, _removeFromSubclasses);
       }
     }
+    _relationship._setEntity(null);
   }
 
   public EORelationship getRelationshipNamed(String _name) {
@@ -890,66 +932,45 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     return matchingRelationship;
   }
 
-  public void loadFromFile(File _entityFile, File _fetchSpecFile, Set _failures) throws IOException, EOModelException {
-    try {
-      if (_entityFile.exists()) {
-        EOModelMap entityMap = new EOModelMap((Map) PropertyListSerialization.propertyListFromFile(_entityFile, new EOModelParserDataStructureFactory()));
-        loadFromMap(entityMap, _failures);
-      }
-    }
-    catch (EOModelException e) {
-      throw new EOModelException("Failed to load entity from '" + _entityFile + "'.", e);
-    }
-    try {
-      if (_fetchSpecFile.exists()) {
-        EOModelMap fspecMap = new EOModelMap((Map) PropertyListSerialization.propertyListFromFile(_fetchSpecFile, new EOModelParserDataStructureFactory()));
-        loadFetchSpecsFromMap(fspecMap, _failures);
-      }
-    }
-    catch (EOModelException e) {
-      throw new EOModelException("Failed to load fetch specifications from '" + _fetchSpecFile + "'.", e);
-    }
-  }
-
   public void loadFromMap(EOModelMap _entityMap, Set _failures) throws DuplicateNameException {
     myEntityMap = _entityMap;
-    myName = _entityMap.getString("name", true); //$NON-NLS-1$
-    myExternalName = _entityMap.getString("externalName", true); //$NON-NLS-1$
-    myClassName = _entityMap.getString("className", true); //$NON-NLS-1$
-    myCachesObjects = _entityMap.getBoolean("cachesObjects"); //$NON-NLS-1$
-    myAbstractEntity = _entityMap.getBoolean("isAbstractEntity"); //$NON-NLS-1$
-    myReadOnly = _entityMap.getBoolean("isReadOnly"); //$NON-NLS-1$
-    myRestrictingQualifier = _entityMap.getString("restrictingQualifier", true); //$NON-NLS-1$
-    myExternalQuery = _entityMap.getString("externalQuery", true); //$NON-NLS-1$
-    myMaxNumberOfInstancesToBatchFetch = _entityMap.getInteger("maxNumberOfInstancesToBatchFetch"); //$NON-NLS-1$
-    setUserInfo(_entityMap.getMap("userInfo", true), false); //$NON-NLS-1$
+    myName = _entityMap.getString("name", true);
+    myExternalName = _entityMap.getString("externalName", true);
+    myClassName = _entityMap.getString("className", true);
+    myCachesObjects = _entityMap.getBoolean("cachesObjects");
+    myAbstractEntity = _entityMap.getBoolean("isAbstractEntity");
+    myReadOnly = _entityMap.getBoolean("isReadOnly");
+    myRestrictingQualifier = _entityMap.getString("restrictingQualifier", true);
+    myExternalQuery = _entityMap.getString("externalQuery", true);
+    myMaxNumberOfInstancesToBatchFetch = _entityMap.getInteger("maxNumberOfInstancesToBatchFetch");
+    setUserInfo(_entityMap.getMap("userInfo", true), false);
 
     //Map fetchSpecifications = _entityMap.getMap("fetchSpecificationDictionary");
     // TODO: Fetch Specs
 
-    Set attributeList = _entityMap.getSet("attributes"); //$NON-NLS-1$
+    Set attributeList = _entityMap.getSet("attributes");
     if (attributeList != null) {
       Iterator attributeIter = attributeList.iterator();
       while (attributeIter.hasNext()) {
         EOModelMap attributeMap = new EOModelMap((Map) attributeIter.next());
-        EOAttribute attribute = new EOAttribute(this);
+        EOAttribute attribute = new EOAttribute();
         attribute.loadFromMap(attributeMap, _failures);
         addAttribute(attribute, false, _failures);
       }
     }
 
-    Set relationshipList = _entityMap.getSet("relationships"); //$NON-NLS-1$
+    Set relationshipList = _entityMap.getSet("relationships");
     if (relationshipList != null) {
       Iterator relationshipIter = relationshipList.iterator();
       while (relationshipIter.hasNext()) {
         EOModelMap relationshipMap = new EOModelMap((Map) relationshipIter.next());
-        EORelationship relationship = new EORelationship(this);
+        EORelationship relationship = new EORelationship();
         relationship.loadFromMap(relationshipMap, _failures);
         addRelationship(relationship, false, _failures);
       }
     }
 
-    Set attributesUsedForLocking = _entityMap.getSet("attributesUsedForLocking"); //$NON-NLS-1$
+    Set attributesUsedForLocking = _entityMap.getSet("attributesUsedForLocking");
     if (attributesUsedForLocking != null) {
       Iterator attributesUsedForLockingIter = attributesUsedForLocking.iterator();
       while (attributesUsedForLockingIter.hasNext()) {
@@ -964,13 +985,13 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
 
   public void loadFetchSpecsFromMap(EOModelMap _map, Set _failures) throws EOModelException {
     myFetchSpecsMap = _map;
-    Set sharedObjectFetchSpecificationNames = myEntityMap.getSet("sharedObjectFetchSpecificationNames"); //$NON-NLS-1$
+    Set sharedObjectFetchSpecificationNames = myEntityMap.getSet("sharedObjectFetchSpecificationNames");
     Iterator fetchSpecIter = _map.entrySet().iterator();
     while (fetchSpecIter.hasNext()) {
       Map.Entry fetchSpecEntry = (Map.Entry) fetchSpecIter.next();
       String fetchSpecName = (String) fetchSpecEntry.getKey();
       EOModelMap fetchSpecMap = new EOModelMap((Map) fetchSpecEntry.getValue());
-      EOFetchSpecification fetchSpec = new EOFetchSpecification(this, fetchSpecName);
+      EOFetchSpecification fetchSpec = new EOFetchSpecification(fetchSpecName);
       fetchSpec.loadFromMap(fetchSpecMap, _failures);
       if (sharedObjectFetchSpecificationNames != null && sharedObjectFetchSpecificationNames.contains(fetchSpecName)) {
         fetchSpec.setSharesObjects(Boolean.TRUE, false);
@@ -981,18 +1002,18 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
 
   public EOModelMap toEntityMap() {
     EOModelMap entityMap = myEntityMap.cloneModelMap();
-    entityMap.setString("name", myName, true); //$NON-NLS-1$
-    entityMap.setString("externalName", myExternalName, true); //$NON-NLS-1$
-    entityMap.setString("className", myClassName, true); //$NON-NLS-1$
+    entityMap.setString("name", myName, true);
+    entityMap.setString("externalName", myExternalName, true);
+    entityMap.setString("className", myClassName, true);
     if (myParent != null) {
-      entityMap.setString("parent", myParent.getName(), true); //$NON-NLS-1$
+      entityMap.setString("parent", myParent.getName(), true);
     }
-    entityMap.setBoolean("cachesObjects", myCachesObjects, EOModelMap.YN); //$NON-NLS-1$
-    entityMap.setBoolean("isAbstractEntity", myAbstractEntity, EOModelMap.YN); //$NON-NLS-1$
-    entityMap.setBoolean("isReadOnly", myReadOnly, EOModelMap.YN); //$NON-NLS-1$
-    entityMap.setString("restrictingQualifier", myRestrictingQualifier, true); //$NON-NLS-1$
-    entityMap.setString("externalQuery", myExternalQuery, true); //$NON-NLS-1$
-    entityMap.setInteger("maxNumberOfInstancesToBatchFetch", myMaxNumberOfInstancesToBatchFetch); //$NON-NLS-1$
+    entityMap.setBoolean("cachesObjects", myCachesObjects, EOModelMap.YN);
+    entityMap.setBoolean("isAbstractEntity", myAbstractEntity, EOModelMap.YN);
+    entityMap.setBoolean("isReadOnly", myReadOnly, EOModelMap.YN);
+    entityMap.setString("restrictingQualifier", myRestrictingQualifier, true);
+    entityMap.setString("externalQuery", myExternalQuery, true);
+    entityMap.setInteger("maxNumberOfInstancesToBatchFetch", myMaxNumberOfInstancesToBatchFetch);
 
     //Map fetchSpecifications = _entityMap.getMap("fetchSpecificationDictionary");
     // TODO: ???
@@ -1020,7 +1041,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
         clientClassProperties.add(attribute.getName());
       }
     }
-    entityMap.setSet("attributes", attributes, true); //$NON-NLS-1$
+    entityMap.setSet("attributes", attributes, true);
 
     Set relationships = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
     Iterator relationshipIter = myRelationships.iterator();
@@ -1035,10 +1056,10 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
         clientClassProperties.add(relationship.getName());
       }
     }
-    entityMap.setSet("relationships", relationships, true); //$NON-NLS-1$
-    entityMap.setSet("attributesUsedForLocking", attributesUsedForLocking, true); //$NON-NLS-1$
-    entityMap.setSet("classProperties", classProperties, true); //$NON-NLS-1$
-    entityMap.setSet("primaryKeyAttributes", primaryKeyAttributes, true); //$NON-NLS-1$
+    entityMap.setSet("relationships", relationships, true);
+    entityMap.setSet("attributesUsedForLocking", attributesUsedForLocking, true);
+    entityMap.setSet("classProperties", classProperties, true);
+    entityMap.setSet("primaryKeyAttributes", primaryKeyAttributes, true);
 
     Set sharedObjectFetchSpecificationNames = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
     Iterator fetchSpecsIter = myFetchSpecs.iterator();
@@ -1048,21 +1069,21 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
         sharedObjectFetchSpecificationNames.add(fetchSpec.getName());
       }
     }
-    entityMap.setSet("sharedObjectFetchSpecificationNames", sharedObjectFetchSpecificationNames, true); //$NON-NLS-1$
+    entityMap.setSet("sharedObjectFetchSpecificationNames", sharedObjectFetchSpecificationNames, true);
 
-    Map internalInfoMap = entityMap.getMap("internalInfo"); //$NON-NLS-1$
+    Map internalInfoMap = entityMap.getMap("internalInfo");
     if (internalInfoMap == null) {
       internalInfoMap = new HashMap();
     }
-    if (clientClassProperties != null && !clientClassProperties.isEmpty()) {
-      internalInfoMap.put("_clientClassPropertyNames", clientClassProperties); //$NON-NLS-1$
+    if (!clientClassProperties.isEmpty()) {
+      internalInfoMap.put("_clientClassPropertyNames", clientClassProperties);
     }
     else {
-      internalInfoMap.remove("_clientClassPropertyNames"); //$NON-NLS-1$
+      internalInfoMap.remove("_clientClassPropertyNames");
     }
-    entityMap.setMap("internalInfo", internalInfoMap, false); //$NON-NLS-1$
+    entityMap.setMap("internalInfo", internalInfoMap, false);
 
-    entityMap.setMap("userInfo", getUserInfo(), true); //$NON-NLS-1$
+    entityMap.setMap("userInfo", getUserInfo(), true);
 
     return entityMap;
   }
@@ -1079,6 +1100,27 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     return fetchSpecsMap;
   }
 
+  public void loadFromFile(File _entityFile, File _fetchSpecFile, Set _failures) throws IOException, EOModelException {
+    try {
+      if (_entityFile.exists()) {
+        EOModelMap entityMap = new EOModelMap((Map) PropertyListSerialization.propertyListFromFile(_entityFile, new EOModelParserDataStructureFactory()));
+        loadFromMap(entityMap, _failures);
+      }
+    }
+    catch (EOModelException e) {
+      throw new EOModelException("Failed to load entity from '" + _entityFile + "'.", e);
+    }
+    try {
+      if (_fetchSpecFile.exists()) {
+        EOModelMap fspecMap = new EOModelMap((Map) PropertyListSerialization.propertyListFromFile(_fetchSpecFile, new EOModelParserDataStructureFactory()));
+        loadFetchSpecsFromMap(fspecMap, _failures);
+      }
+    }
+    catch (EOModelException e) {
+      throw new EOModelException("Failed to load fetch specifications from '" + _fetchSpecFile + "'.", e);
+    }
+  }
+
   public void saveToFile(File _entityFile, File _fetchSpecFile) {
     EOModelMap entityMap = toEntityMap();
     PropertyListSerialization.propertyListToFile(_entityFile, entityMap);
@@ -1093,9 +1135,11 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
   }
 
   public void resolve(Set _failures) {
-    String parentName = myEntityMap.getString("parent", true); //$NON-NLS-1$
+    String parentName = myEntityMap.getString("parent", true);
     if (parentName != null) {
-      myParent = myModel.getModelGroup().getEntityNamed(parentName);
+      if (myModel != null) {
+        myParent = myModel.getModelGroup().getEntityNamed(parentName);
+      }
       if (myParent == null) {
         _failures.add(new MissingEntityFailure(parentName));
       }
@@ -1119,7 +1163,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
       fetchSpec.resolve(_failures);
     }
 
-    Set classProperties = myEntityMap.getSet("classProperties"); //$NON-NLS-1$
+    Set classProperties = myEntityMap.getSet("classProperties");
     if (classProperties != null) {
       Iterator classPropertiesIter = classProperties.iterator();
       while (classPropertiesIter.hasNext()) {
@@ -1131,7 +1175,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
       }
     }
 
-    Set primaryKeyAttributes = myEntityMap.getSet("primaryKeyAttributes"); //$NON-NLS-1$
+    Set primaryKeyAttributes = myEntityMap.getSet("primaryKeyAttributes");
     if (primaryKeyAttributes != null) {
       Iterator primaryKeyAttributesIter = primaryKeyAttributes.iterator();
       while (primaryKeyAttributesIter.hasNext()) {
@@ -1143,10 +1187,10 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
       }
     }
 
-    Map internalInfo = myEntityMap.getMap("internalInfo"); //$NON-NLS-1$
+    Map internalInfo = myEntityMap.getMap("internalInfo");
     if (internalInfo != null) {
       EOModelMap internalInfoModelMap = new EOModelMap(internalInfo);
-      Set clientClassPropertyNames = internalInfoModelMap.getSet("_clientClassPropertyNames"); //$NON-NLS-1$
+      Set clientClassPropertyNames = internalInfoModelMap.getSet("_clientClassPropertyNames");
       if (clientClassPropertyNames != null) {
         Iterator clientClassPropertyNameIter = clientClassPropertyNames.iterator();
         while (clientClassPropertyNameIter.hasNext()) {
@@ -1191,6 +1235,6 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
   }
 
   public String toString() {
-    return "[EOEntity: name = " + myName + "; attributes = " + myAttributes + "; relationships = " + myRelationships + "; fetchSpecs = " + myFetchSpecs + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+    return "[EOEntity: name = " + myName + "; attributes = " + myAttributes + "; relationships = " + myRelationships + "; fetchSpecs = " + myFetchSpecs + "]"; //$NON-NLS-4$ //$NON-NLS-5$
   }
 }

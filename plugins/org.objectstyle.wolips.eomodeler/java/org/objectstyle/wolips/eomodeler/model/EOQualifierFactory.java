@@ -78,32 +78,32 @@ public class EOQualifierFactory {
   public static Node createNodeFromQualifierMap(EOModelMap _qualifierMap) {
     Node node = null;
     if (_qualifierMap != null) {
-      String className = _qualifierMap.getString("class", true); //$NON-NLS-1$
-      if ("EOAndQualifier".equals(className) || "com.webobjects.eocontrol.EOAndQualifier".equals(className)) { //$NON-NLS-1$ //$NON-NLS-2$
-        node = new ASTAnd(EOQualifierFactory.createNodesFromQualifierMaps(_qualifierMap.getList("qualifiers"))); //$NON-NLS-1$
+      String className = _qualifierMap.getString("class", true);
+      if ("EOAndQualifier".equals(className) || "com.webobjects.eocontrol.EOAndQualifier".equals(className)) {
+        node = new ASTAnd(EOQualifierFactory.createNodesFromQualifierMaps(_qualifierMap.getList("qualifiers")));
       }
-      else if ("EOOrQualifier".equals(className) || "com.webobjects.eocontrol.EOOrQualifier".equals(className)) { //$NON-NLS-1$ //$NON-NLS-2$
-        node = new ASTOr(EOQualifierFactory.createNodesFromQualifierMaps(_qualifierMap.getList("qualifiers"))); //$NON-NLS-1$
+      else if ("EOOrQualifier".equals(className) || "com.webobjects.eocontrol.EOOrQualifier".equals(className)) {
+        node = new ASTOr(EOQualifierFactory.createNodesFromQualifierMaps(_qualifierMap.getList("qualifiers")));
       }
-      else if ("EONotQualifier".equals(className) || "com.webobjects.eocontrol.EONotQualifier".equals(className)) { //$NON-NLS-1$ //$NON-NLS-2$
-        node = new ASTNot(EOQualifierFactory.createNodeFromQualifierMap(new EOModelMap(_qualifierMap.getMap("qualifier")))); //$NON-NLS-1$
+      else if ("EONotQualifier".equals(className) || "com.webobjects.eocontrol.EONotQualifier".equals(className)) {
+        node = new ASTNot(EOQualifierFactory.createNodeFromQualifierMap(new EOModelMap(_qualifierMap.getMap("qualifier"))));
       }
-      else if ("EOKeyValueQualifier".equals(className) || "com.webobjects.eocontrol.EOKeyValueQualifier".equals(className)) { //$NON-NLS-1$ //$NON-NLS-2$
-        String key = _qualifierMap.getString("key", true); //$NON-NLS-1$
-        Object rawValue = _qualifierMap.get("value"); //$NON-NLS-1$
+      else if ("EOKeyValueQualifier".equals(className) || "com.webobjects.eocontrol.EOKeyValueQualifier".equals(className)) {
+        String key = _qualifierMap.getString("key", true);
+        Object rawValue = _qualifierMap.get("value");
         Object value;
         if (rawValue instanceof Map) {
           EOModelMap valueMap = new EOModelMap((Map) rawValue);
-          String valueClass = valueMap.getString("class", true); //$NON-NLS-1$
-          if ("EONull".equals(valueClass) || "com.webobjects.eocontrol.EONull".equals(className)) { //$NON-NLS-1$
+          String valueClass = valueMap.getString("class", true);
+          if ("EONull".equals(valueClass) || "com.webobjects.eocontrol.EONull".equals(className)) {
             value = null;
           }
-          else if ("EOQualifierVariable".equals(valueClass) || "com.webobjects.eocontrol.EOQualifierVariable".equals(className)) { //$NON-NLS-1$
-            String variableKey = valueMap.getString("_key", true); //$NON-NLS-1$
+          else if ("EOQualifierVariable".equals(valueClass) || "com.webobjects.eocontrol.EOQualifierVariable".equals(className)) {
+            String variableKey = valueMap.getString("_key", true);
             value = new ASTNamedParameter(variableKey);
           }
-          else if ("NSNumber".equals(valueClass)) { //$NON-NLS-1$
-            value = valueMap.get("value"); //$NON-NLS-1$
+          else if ("NSNumber".equals(valueClass)) {
+            value = valueMap.get("value");
           }
           else {
             throw new IllegalArgumentException("Unknown EOKeyValueQualifier value class " + valueClass);
@@ -112,34 +112,34 @@ public class EOQualifierFactory {
         else {
           value = rawValue;
         }
-        String selectorName = _qualifierMap.getString("selectorName", true); //$NON-NLS-1$
+        String selectorName = _qualifierMap.getString("selectorName", true);
         ASTObjPath objPath = new ASTObjPath(key);
-        if (EOQualifierFactory.isSelectorNameEqual("isEqualTo", selectorName)) { //$NON-NLS-1$
+        if (EOQualifierFactory.isSelectorNameEqual("isEqualTo", selectorName)) {
           node = new ASTEqual(objPath, value);
         }
-        else if (EOQualifierFactory.isSelectorNameEqual("isNotEqualTo", selectorName)) { //$NON-NLS-1$
+        else if (EOQualifierFactory.isSelectorNameEqual("isNotEqualTo", selectorName)) {
           node = new ASTNotEqual(objPath, value);
         }
-        else if (EOQualifierFactory.isSelectorNameEqual("isLessThan", selectorName)) { //$NON-NLS-1$
+        else if (EOQualifierFactory.isSelectorNameEqual("isLessThan", selectorName)) {
           node = new ASTLess(objPath, value);
         }
-        else if (EOQualifierFactory.isSelectorNameEqual("isGreaterThan", selectorName)) { //$NON-NLS-1$
+        else if (EOQualifierFactory.isSelectorNameEqual("isGreaterThan", selectorName)) {
           node = new ASTGreater(objPath, value);
         }
-        else if (EOQualifierFactory.isSelectorNameEqual("isLessThanOrEqualTo", selectorName)) { //$NON-NLS-1$
+        else if (EOQualifierFactory.isSelectorNameEqual("isLessThanOrEqualTo", selectorName)) {
           node = new ASTLessOrEqual(objPath, value);
         }
-        else if (EOQualifierFactory.isSelectorNameEqual("isGreaterThanOrEqualTo", selectorName)) { //$NON-NLS-1$
+        else if (EOQualifierFactory.isSelectorNameEqual("isGreaterThanOrEqualTo", selectorName)) {
           node = new ASTGreaterOrEqual(objPath, value);
         }
-        else if (EOQualifierFactory.isSelectorNameEqual("doesContain", selectorName)) { //$NON-NLS-1$
+        else if (EOQualifierFactory.isSelectorNameEqual("doesContain", selectorName)) {
           //node = new ASTEqual(objPath, value);
           throw new IllegalArgumentException("Not sure what 'doesContain:' maps onto.");
         }
-        else if (EOQualifierFactory.isSelectorNameEqual("isLike", selectorName)) { //$NON-NLS-1$
+        else if (EOQualifierFactory.isSelectorNameEqual("isLike", selectorName)) {
           node = new ASTLike(objPath, value);
         }
-        else if (EOQualifierFactory.isSelectorNameEqual("isCaseInsensitiveLike", selectorName)) { //$NON-NLS-1$
+        else if (EOQualifierFactory.isSelectorNameEqual("isCaseInsensitiveLike", selectorName)) {
           node = new ASTLikeIgnoreCase(objPath, value);
         }
         else {
@@ -174,27 +174,27 @@ public class EOQualifierFactory {
     Object value;
     if (_value == null) {
       EOModelMap map = new EOModelMap();
-      map.setString("class", "EONull", false); //$NON-NLS-1$ //$NON-NLS-2$
+      map.setString("class", "EONull", false);
       value = map;
     }
     else if (_value instanceof ASTNamedParameter) {
       EOModelMap map = new EOModelMap();
       String name = ((ExpressionParameter) ((ASTNamedParameter) _value).getValue()).getName();
-      map.setString("_key", name, true); //$NON-NLS-1$
-      map.setString("class", "EOQualifierVariable", false); //$NON-NLS-1$ //$NON-NLS-2$
+      map.setString("_key", name, true);
+      map.setString("class", "EOQualifierVariable", false);
       value = map;
     }
     else if (_value instanceof Number) {
       EOModelMap map = new EOModelMap();
-      map.setString("class", "NSNumber", false); //$NON-NLS-1$ //$NON-NLS-2$
-      map.put("value", _value); //$NON-NLS-1$
+      map.setString("class", "NSNumber", false);
+      map.put("value", _value);
       value = map;
     }
     else if (_value instanceof ExpressionParameter) {
       EOModelMap map = new EOModelMap();
       String name = ((ExpressionParameter) _value).getName();
-      map.setString("_key", name, true); //$NON-NLS-1$
-      map.setString("class", "EOQualifierVariable", false); //$NON-NLS-1$ //$NON-NLS-2$
+      map.setString("_key", name, true);
+      map.setString("class", "EOQualifierVariable", false);
       value = map;
     }
     else {
@@ -206,10 +206,10 @@ public class EOQualifierFactory {
   private static EOModelMap createQualifierMapFromConditionNode(ConditionNode _node, String _selectorName) {
     ASTPath path = (ASTPath) _node.getOperand(0);
     EOModelMap map = new EOModelMap();
-    map.setString("class", "EOKeyValueQualifier", false); //$NON-NLS-1$ //$NON-NLS-2$
-    map.setString("key", (String) path.getOperand(0), false); //$NON-NLS-1$
-    map.setString("selectorName", _selectorName, false); //$NON-NLS-1$
-    map.put("value", createQualifierValue(_node.getOperand(1))); //$NON-NLS-1$
+    map.setString("class", "EOKeyValueQualifier", false);
+    map.setString("key", (String) path.getOperand(0), false);
+    map.setString("selectorName", _selectorName, false);
+    map.put("value", createQualifierValue(_node.getOperand(1)));
     return map;
   }
 
@@ -225,43 +225,43 @@ public class EOQualifierFactory {
   public static EOModelMap createQualifierMapFromNode(Node _node) {
     EOModelMap map;
     if (_node instanceof ASTEqual) {
-      map = EOQualifierFactory.createQualifierMapFromConditionNode((ASTEqual) _node, "isEqualTo:"); //$NON-NLS-1$
+      map = EOQualifierFactory.createQualifierMapFromConditionNode((ASTEqual) _node, "isEqualTo:");
     }
     else if (_node instanceof ASTNotEqual) {
-      map = EOQualifierFactory.createQualifierMapFromConditionNode((ASTNotEqual) _node, "isNotEqualTo:"); //$NON-NLS-1$
+      map = EOQualifierFactory.createQualifierMapFromConditionNode((ASTNotEqual) _node, "isNotEqualTo:");
     }
     else if (_node instanceof ASTLess) {
-      map = EOQualifierFactory.createQualifierMapFromConditionNode((ASTLess) _node, "isLessThan:"); //$NON-NLS-1$
+      map = EOQualifierFactory.createQualifierMapFromConditionNode((ASTLess) _node, "isLessThan:");
     }
     else if (_node instanceof ASTGreater) {
-      map = EOQualifierFactory.createQualifierMapFromConditionNode((ASTGreater) _node, "isGreaterThan:"); //$NON-NLS-1$
+      map = EOQualifierFactory.createQualifierMapFromConditionNode((ASTGreater) _node, "isGreaterThan:");
     }
     else if (_node instanceof ASTLessOrEqual) {
-      map = EOQualifierFactory.createQualifierMapFromConditionNode((ASTLessOrEqual) _node, "isLessThanOrEqualTo:"); //$NON-NLS-1$
+      map = EOQualifierFactory.createQualifierMapFromConditionNode((ASTLessOrEqual) _node, "isLessThanOrEqualTo:");
     }
     else if (_node instanceof ASTGreaterOrEqual) {
-      map = EOQualifierFactory.createQualifierMapFromConditionNode((ASTGreaterOrEqual) _node, "isGreaterThanOrEqualTo:"); //$NON-NLS-1$
+      map = EOQualifierFactory.createQualifierMapFromConditionNode((ASTGreaterOrEqual) _node, "isGreaterThanOrEqualTo:");
     }
     else if (_node instanceof ASTLike) {
-      map = EOQualifierFactory.createQualifierMapFromConditionNode((ASTLike) _node, "isLike:"); //$NON-NLS-1$
+      map = EOQualifierFactory.createQualifierMapFromConditionNode((ASTLike) _node, "isLike:");
     }
     else if (_node instanceof ASTLikeIgnoreCase) {
-      map = EOQualifierFactory.createQualifierMapFromConditionNode((ASTLikeIgnoreCase) _node, "isCaseInsensitiveLike:"); //$NON-NLS-1$
+      map = EOQualifierFactory.createQualifierMapFromConditionNode((ASTLikeIgnoreCase) _node, "isCaseInsensitiveLike:");
     }
     else if (_node instanceof ASTAnd) {
       map = new EOModelMap();
-      map.setString("class", "EOAndQualifier", false); //$NON-NLS-1$//$NON-NLS-2$
-      map.setList("qualifiers", createQualifierMapsFromNode((ASTAnd) _node), true); //$NON-NLS-1$
+      map.setString("class", "EOAndQualifier", false);//$NON-NLS-2$
+      map.setList("qualifiers", createQualifierMapsFromNode((ASTAnd) _node), true);
     }
     else if (_node instanceof ASTOr) {
       map = new EOModelMap();
-      map.setString("class", "EOOrQualifier", false); //$NON-NLS-1$ //$NON-NLS-2$
-      map.setList("qualifiers", createQualifierMapsFromNode((ASTOr) _node), true); //$NON-NLS-1$
+      map.setString("class", "EOOrQualifier", false);
+      map.setList("qualifiers", createQualifierMapsFromNode((ASTOr) _node), true);
     }
     else if (_node instanceof ASTNot) {
       map = new EOModelMap();
-      map.setString("class", "EONotQualifier", false); //$NON-NLS-1$//$NON-NLS-2$
-      map.setMap("qualifier", createQualifierMapFromNode((Node) ((ASTNot) _node).getOperand(0)), true); //$NON-NLS-1$
+      map.setString("class", "EONotQualifier", false);//$NON-NLS-2$
+      map.setMap("qualifier", createQualifierMapFromNode((Node) ((ASTNot) _node).getOperand(0)), true);
     }
     else {
       throw new IllegalArgumentException("Unknown node " + _node + ".");

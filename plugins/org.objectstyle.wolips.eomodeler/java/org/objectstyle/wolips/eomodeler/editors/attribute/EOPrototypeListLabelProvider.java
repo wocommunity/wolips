@@ -67,7 +67,7 @@ public class EOPrototypeListLabelProvider implements ILabelProvider {
       prototypeName = prototype.getName();
     }
     else {
-      prototypeName = Messages.getString("EOAttributesCellModifier.noPrototype"); //$NON-NLS-1$
+      prototypeName = Messages.getString("EOAttributesCellModifier.noPrototype");
     }
     return prototypeName;
   }

@@ -85,10 +85,10 @@ public class EOModelMap implements Map {
       myBackingMap.remove(_value);
     }
     else if (_booleanStyle == EOModelMap.YESNO) {
-      myBackingMap.put(_key, _value.booleanValue() ? "YES" : "NO"); //$NON-NLS-1$ //$NON-NLS-2$
+      myBackingMap.put(_key, _value.booleanValue() ? "YES" : "NO");
     }
     else {
-      myBackingMap.put(_key, _value.booleanValue() ? "Y" : "N"); //$NON-NLS-1$ //$NON-NLS-2$
+      myBackingMap.put(_key, _value.booleanValue() ? "Y" : "N");
     }
   }
 
@@ -104,7 +104,7 @@ public class EOModelMap implements Map {
     else if (value instanceof String) {
       String strValue = getString(_key, true);
       if (strValue != null) {
-        boolValue = Boolean.valueOf("y".equalsIgnoreCase(strValue) || "yes".equalsIgnoreCase(strValue) || "true".equalsIgnoreCase(strValue) || "on".equalsIgnoreCase(strValue)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+        boolValue = Boolean.valueOf("y".equalsIgnoreCase(strValue) || "yes".equalsIgnoreCase(strValue) || "true".equalsIgnoreCase(strValue) || "on".equalsIgnoreCase(strValue)); //$NON-NLS-4$
       }
       else {
         boolValue = null;

@@ -61,7 +61,7 @@ import org.objectstyle.wolips.eomodeler.model.EOAttribute;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 
 public class EOPrototypeListContentProvider implements IStructuredContentProvider {
-  public static final Object BLANK_ENTITY = ""; //$NON-NLS-1$
+  public static final Object BLANK_ENTITY = "";
 
   private KVCComparator myComparator;
 

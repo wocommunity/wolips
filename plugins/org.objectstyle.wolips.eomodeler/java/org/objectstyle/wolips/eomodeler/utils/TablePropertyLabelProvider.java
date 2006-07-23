@@ -133,7 +133,7 @@ public class TablePropertyLabelProvider implements ITableLabelProvider {
         str = "N";
       }
       else {
-        str = ""; //$NON-NLS-1$
+        str = "";
       }
     }
     else if (_bool.booleanValue()) {

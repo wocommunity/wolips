@@ -52,7 +52,6 @@ package org.objectstyle.wolips.eomodeler.editors;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -108,7 +107,7 @@ import org.objectstyle.wolips.eomodeler.outline.EOModelContentOutlinePage;
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
 
 public class EOModelEditor extends MultiPageEditorPart implements IResourceChangeListener, ITabbedPropertySheetPageContributor, ISelectionProvider, IEOModelEditor {
-  public static final String EOMODEL_EDITOR_ID = "org.objectstyle.wolips.eomodeler.editors.EOModelEditor"; //$NON-NLS-1$
+  public static final String EOMODEL_EDITOR_ID = "org.objectstyle.wolips.eomodeler.editors.EOModelEditor";
 
   public static final int EOMODEL_PAGE = 0;
   public static final int EOENTITY_PAGE = 1;
@@ -138,7 +137,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 
   public EOModelContentOutlinePage getContentOutlinePage() {
     if (myContentOutlinePage == null) {
-      myContentOutlinePage = new EOModelContentOutlinePage(myModel);
+      myContentOutlinePage = new EOModelContentOutlinePage(this);
       myContentOutlinePage.addSelectionChangedListener(new EOModelContentSelectionChangedListener());
     }
     return myContentOutlinePage;
@@ -171,11 +170,11 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
     try {
       myEntitiesTableEditor = new EOEntitiesTableEditor();
       addPage(EOModelEditor.EOMODEL_PAGE, myEntitiesTableEditor, getEditorInput());
-      setPageText(EOModelEditor.EOMODEL_PAGE, Messages.getString("EOModelEditor.entitiesTab")); //$NON-NLS-1$
+      setPageText(EOModelEditor.EOMODEL_PAGE, Messages.getString("EOModelEditor.entitiesTab"));
 
       myEntityEditor = new EOEntityEditor();
       addPage(EOModelEditor.EOENTITY_PAGE, myEntityEditor, getEditorInput());
-      setPageText(EOModelEditor.EOENTITY_PAGE, Messages.getString("EOModelEditor.noEntitySelected")); //$NON-NLS-1$
+      setPageText(EOModelEditor.EOENTITY_PAGE, Messages.getString("EOModelEditor.noEntitySelected"));
 
       EOModelSelectionChangedListener modelSelectionChangedListener = new EOModelSelectionChangedListener();
       myEntitiesTableEditor.addSelectionChangedListener(modelSelectionChangedListener);
@@ -200,12 +199,12 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
       myEntitiesTableEditor.setSelectedEntity(_selectedEntity);
       myEntityEditor.setEntity(_selectedEntity);
       if (_selectedEntity == null) {
-        EOModelEditor.this.setPageText(EOModelEditor.EOENTITY_PAGE, Messages.getString("EOModelEditor.noEntitySelected")); //$NON-NLS-1$
+        EOModelEditor.this.setPageText(EOModelEditor.EOENTITY_PAGE, Messages.getString("EOModelEditor.noEntitySelected"));
       }
       else {
         String entityName = _selectedEntity.getName();
         if (entityName == null) {
-          entityName = "?"; //$NON-NLS-1$
+          entityName = "?";
         }
         EOModelEditor.this.setPageText(EOModelEditor.EOENTITY_PAGE, entityName);
       }
@@ -245,41 +244,41 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
     doSave(null);
   }
 
+  public void revert() {
+    boolean confirmed = MessageDialog.openConfirm(Display.getDefault().getActiveShell(), Messages.getString("EOModelEditor.revertTitle"), Messages.getString("EOModelEditor.revertMessage"));
+    if (confirmed) {
+      try {
+        init((IEditorSite) getSite(), getEditorInput());
+      }
+      catch (PartInitException e) {
+        e.printStackTrace();
+      }
+    }
+  }
+
   private static int switchMode = -1;
-  
+
   public void init(IEditorSite _site, IEditorInput _editorInput) throws PartInitException {
     try {
       IWorkbench workbench = Activator.getDefault().getWorkbench();
       IWorkbenchPage workbenchPage = workbench.getActiveWorkbenchWindow().getActivePage();
       int result = switchMode;
-      if (workbenchPage != null 
-    		  && !EOModelerPerspectiveFactory.EOMODELER_PERSPECTIVE_ID.equals(workbenchPage.getPerspective().getId()) && result < 2) {
-    	  // FIXME AK: this sucks, as we only keep this pref for the session, but I'm totally tired of this dialog
-    	  MessageDialog dialog = new MessageDialog(Display.getDefault().getActiveShell(), 
-    			  Messages.getString("EOModelEditor.switchPerspectivesTitle"),  //$NON-NLS-2$
-    			  null,
-    			  Messages.getString("EOModelEditor.switchPerspectivesMessage"),  //$NON-NLS-2$
-    			  MessageDialog.QUESTION, 
-    			  new String[] { 
-    		  IDialogConstants.YES_LABEL,
-    		  IDialogConstants.NO_LABEL,
-    		  Messages.getString("EOModelEditor.switchPerspectivesAlways"),  //$NON-NLS-2$
-    		  Messages.getString("EOModelEditor.switchPerspectivesNever") //$NON-NLS-2$
-    	  }, 
-    	  0); // yes is the default
-    	  result = dialog.open();
-    	  if(result > 1) {
-    		  switchMode = result;
-    	  }
+      if (workbenchPage != null && !EOModelerPerspectiveFactory.EOMODELER_PERSPECTIVE_ID.equals(workbenchPage.getPerspective().getId()) && result < 2) {
+        // FIXME AK: this sucks, as we only keep this pref for the session, but I'm totally tired of this dialog
+        MessageDialog dialog = new MessageDialog(Display.getDefault().getActiveShell(), Messages.getString("EOModelEditor.switchPerspectivesTitle"), null, Messages.getString("EOModelEditor.switchPerspectivesMessage"), MessageDialog.QUESTION, new String[] { IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL, Messages.getString("EOModelEditor.switchPerspectivesAlways"), Messages.getString("EOModelEditor.switchPerspectivesNever") }, 0); // yes is the default
+        result = dialog.open();
+        if (result > 1) {
+          switchMode = result;
+        }
       }
-      if(result == 0 || result == 2) {
-    		  workbench.showPerspective(EOModelerPerspectiveFactory.EOMODELER_PERSPECTIVE_ID, workbench.getActiveWorkbenchWindow());
+      if (result == 0 || result == 2) {
+        workbench.showPerspective(EOModelerPerspectiveFactory.EOMODELER_PERSPECTIVE_ID, workbench.getActiveWorkbenchWindow());
       }
     }
     catch (WorkbenchException e) {
       e.printStackTrace();
     }
-
+    
     try {
       IFileEditorInput fileEditorInput;
       if (_editorInput instanceof IFileEditorInput) {
@@ -295,10 +294,10 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 
       IFile file = fileEditorInput.getFile();
       String openingEntityName = null;
-      if ("plist".equalsIgnoreCase(file.getFileExtension())) { //$NON-NLS-1$
+      if ("plist".equalsIgnoreCase(file.getFileExtension())) {
         String name = file.getName();
         openingEntityName = name.substring(0, name.indexOf('.'));
-        fileEditorInput = new FileEditorInput(file.getParent().getFile(new Path("index.eomodeld"))); //$NON-NLS-1$
+        fileEditorInput = new FileEditorInput(file.getParent().getFile(new Path("index.eomodeld")));
       }
 
       myLoadFailures = new HashSet();
@@ -314,6 +313,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
       updatePartName();
       _site.setSelectionProvider(this);
 
+      
       //      try {
       //        ILaunchConfigurationType launchConfigurationType = DebugPlugin.getDefault().getLaunchManager().getLaunchConfigurationType(WOJavaLocalApplicationLaunchConfigurationDelegate.WOJavaLocalApplicationID);
       //        ILaunchConfigurationWorkingCopy wc = launchConfigurationType.newInstance(null, "Temp");
@@ -321,7 +321,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
       //        wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, JavaCore.create(file.getProject()).getElementName());
       //
       //        WOJavaLocalApplicationLaunchConfigurationDelegate.initConfiguration(wc);
-      //        wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_SOURCE_PATH_PROVIDER, "org.eclipse.pde.ui.workbenchClasspathProvider"); //$NON-NLS-1$
+      //        wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_SOURCE_PATH_PROVIDER, "org.eclipse.pde.ui.workbenchClasspathProvider");
       //        ILaunch launch = wc.launch(ILaunchManager.RUN_MODE, null);
       //        //ILaunchConfiguration config = wc.doSave();
       //      }
@@ -348,7 +348,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
       partName = myModel.getName();
     }
     else {
-      partName = Messages.getString("EOModelEditor.partName"); //$NON-NLS-1$
+      partName = Messages.getString("EOModelEditor.partName");
     }
     setPartName(partName);
   }
@@ -543,11 +543,11 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 
   protected class EntitiesChangeRefresher implements PropertyChangeListener {
     public void propertyChange(PropertyChangeEvent _event) {
-        Set oldValues = (Set) _event.getOldValue();
-        Set newValues = (Set) _event.getNewValue();
-        if (newValues != null && oldValues != null && newValues.size() > oldValues.size()) {
-          List newList = new LinkedList(oldValues);
-          newList.removeAll(oldValues);
+      Set oldValues = (Set) _event.getOldValue();
+      Set newValues = (Set) _event.getNewValue();
+      if (newValues != null && oldValues != null && newValues.size() > oldValues.size()) {
+        List newList = new LinkedList(oldValues);
+        newList.removeAll(oldValues);
         EOModelEditor.this.setSelection(new StructuredSelection(newList));
         EOModelEditor.this.setActivePage(EOModelEditor.EOENTITY_PAGE);
       }

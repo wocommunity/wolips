@@ -64,7 +64,6 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.FormAttachment;
@@ -82,7 +81,6 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.editors.entity.EOEntityLabelProvider;
 import org.objectstyle.wolips.eomodeler.editors.entity.EOEntityListContentProvider;
-import org.objectstyle.wolips.eomodeler.model.EOAttribute;
 import org.objectstyle.wolips.eomodeler.model.EODeleteRule;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOJoin;
@@ -102,7 +100,6 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
   private EORelationship myRelationship;
 
   private Text myNameText;
-  private CLabel myDefinitionLabel;
   private Text myDefinitionText;
   private Button myToOneButton;
   private Button myToManyButton;
@@ -148,51 +145,51 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
     topFormLayout.numColumns = 2;
     topForm.setLayout(topFormLayout);
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship." + EORelationship.NAME), SWT.NONE); //$NON-NLS-1$
+    getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship." + EORelationship.NAME), SWT.NONE);
     myNameText = new Text(topForm, SWT.BORDER);
     GridData nameFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
     myNameText.setLayoutData(nameFieldLayoutData);
 
-    myDefinitionLabel = getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship." + EORelationship.DEFINITION), SWT.NONE); //$NON-NLS-1$
+    getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship." + EORelationship.DEFINITION), SWT.NONE);
     myDefinitionText = new Text(topForm, SWT.BORDER);
     GridData definitionFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
     myDefinitionText.setLayoutData(definitionFieldLayoutData);
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship.cardinality"), SWT.NONE); //$NON-NLS-1$
+    getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship.cardinality"), SWT.NONE);
     Composite cardinalityComposite = getWidgetFactory().createPlainComposite(topForm, SWT.NONE);
     GridLayout cardinalityLayout = new GridLayout();
     cardinalityLayout.numColumns = 2;
     cardinalityLayout.makeColumnsEqualWidth = true;
     cardinalityComposite.setLayout(cardinalityLayout);
     myToOneButton = new Button(cardinalityComposite, SWT.RADIO);
-    myToOneButton.setText(Messages.getString("EORelationship.toOne")); //$NON-NLS-1$
+    myToOneButton.setText(Messages.getString("EORelationship.toOne"));
     GridData toOneButtonLayoutData = new GridData(GridData.FILL_HORIZONTAL);
     myToOneButton.setLayoutData(toOneButtonLayoutData);
     myToManyButton = new Button(cardinalityComposite, SWT.RADIO);
-    myToManyButton.setText(Messages.getString("EORelationship.toMany")); //$NON-NLS-1$
+    myToManyButton.setText(Messages.getString("EORelationship.toMany"));
     GridData toManyButtonLayoutData = new GridData(GridData.FILL_HORIZONTAL);
     myToManyButton.setLayoutData(toManyButtonLayoutData);
     GridData cardinalityCompositeLayoutData = new GridData(GridData.FILL_HORIZONTAL);
     cardinalityComposite.setLayoutData(cardinalityCompositeLayoutData);
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship.optionality"), SWT.NONE); //$NON-NLS-1$
+    getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship.optionality"), SWT.NONE);
     Composite optionalityComposite = getWidgetFactory().createPlainComposite(topForm, SWT.NONE);
     GridLayout optionalityLayout = new GridLayout();
     optionalityLayout.numColumns = 2;
     optionalityLayout.makeColumnsEqualWidth = true;
     optionalityComposite.setLayout(optionalityLayout);
     myOptionalButton = new Button(optionalityComposite, SWT.RADIO);
-    myOptionalButton.setText(Messages.getString("EORelationship.optional")); //$NON-NLS-1$
+    myOptionalButton.setText(Messages.getString("EORelationship.optional"));
     GridData optionalButtonLayoutData = new GridData(GridData.FILL_HORIZONTAL);
     myOptionalButton.setLayoutData(optionalButtonLayoutData);
     myMandatoryButton = new Button(optionalityComposite, SWT.RADIO);
-    myMandatoryButton.setText(Messages.getString("EORelationship.mandatory")); //$NON-NLS-1$
+    myMandatoryButton.setText(Messages.getString("EORelationship.mandatory"));
     GridData mandatoryButtonLayoutData = new GridData(GridData.FILL_HORIZONTAL);
     myMandatoryButton.setLayoutData(mandatoryButtonLayoutData);
     GridData optioanlityCompositeLayoutData = new GridData(GridData.FILL_HORIZONTAL);
     optionalityComposite.setLayoutData(optioanlityCompositeLayoutData);
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship." + EORelationship.DELETE_RULE), SWT.NONE); //$NON-NLS-1$
+    getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship." + EORelationship.DELETE_RULE), SWT.NONE);
     Combo deleteRuleCombo = new Combo(topForm, SWT.BORDER | SWT.FLAT | SWT.READ_ONLY);
     myDeleteRuleComboViewer = new ComboViewer(deleteRuleCombo);
     myDeleteRuleComboViewer.setLabelProvider(new EODeleteRuleLabelProvider());
@@ -202,7 +199,7 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
     GridData deleteRuleComboLayoutData = new GridData(GridData.FILL_HORIZONTAL);
     deleteRuleCombo.setLayoutData(deleteRuleComboLayoutData);
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship.model"), SWT.NONE); //$NON-NLS-1$
+    getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship.model"), SWT.NONE);
     Combo modelCombo = new Combo(topForm, SWT.BORDER | SWT.FLAT | SWT.READ_ONLY);
     myModelComboViewer = new ComboViewer(modelCombo);
     myModelComboViewer.setLabelProvider(new EOModelLabelProvider());
@@ -211,7 +208,7 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
     GridData modelRuleComboLayoutData = new GridData(GridData.FILL_HORIZONTAL);
     modelCombo.setLayoutData(modelRuleComboLayoutData);
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship." + EORelationship.DESTINATION), SWT.NONE); //$NON-NLS-1$
+    getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship." + EORelationship.DESTINATION), SWT.NONE);
     Combo entityCombo = new Combo(topForm, SWT.BORDER | SWT.FLAT | SWT.READ_ONLY);
     myEntityComboViewer = new ComboViewer(entityCombo);
     myEntityComboViewer.setLabelProvider(new EOEntityLabelProvider());
@@ -232,7 +229,7 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
     myJoinsTableViewer = new TableViewer(topForm, SWT.BORDER | SWT.FLAT | SWT.MULTI | SWT.FULL_SELECTION);
     myJoinsTableViewer.getTable().setHeaderVisible(true);
     myJoinsTableViewer.getTable().setLinesVisible(true);
-    TableUtils.createTableColumns(myJoinsTableViewer, "EOJoin", EOJoinsConstants.COLUMNS); //$NON-NLS-1$
+    TableUtils.createTableColumns(myJoinsTableViewer, "EOJoin", EOJoinsConstants.COLUMNS);
     myJoinsTableViewer.setContentProvider(new EOJoinsContentProvider());
     myJoinsTableViewer.setLabelProvider(new EOJoinsLabelProvider(EOJoinsConstants.COLUMNS));
     myJoinsTableViewer.setSorter(new TablePropertyViewerSorter(myJoinsTableViewer, EOJoinsConstants.COLUMNS));
@@ -259,14 +256,14 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
     buttonGroup.setLayout(layout);
 
     myAddButton = new Button(buttonGroup, SWT.PUSH);
-    myAddButton.setText(Messages.getString("button.add")); //$NON-NLS-1$
+    myAddButton.setText(Messages.getString("button.add"));
     FormData addButtonData = new FormData();
     addButtonData.right = new FormAttachment(100, 0);
     myAddButton.setLayoutData(addButtonData);
     myAddButton.addSelectionListener(new AddJoinHandler());
 
     myRemoveButton = new Button(buttonGroup, SWT.PUSH);
-    myRemoveButton.setText(Messages.getString("button.remove")); //$NON-NLS-1$
+    myRemoveButton.setText(Messages.getString("button.remove"));
     FormData remoteButtonData = new FormData();
     remoteButtonData.right = new FormAttachment(myAddButton, 0);
     myRemoveButton.setLayoutData(remoteButtonData);
@@ -365,7 +362,7 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
   }
 
   protected void addSelectedJoin() {
-    EOJoin newJoin = new EOJoin(myRelationship);
+    EOJoin newJoin = new EOJoin();
     myRelationship.addJoin(newJoin);
     myJoinsTableViewer.setSelection(new StructuredSelection(newJoin));
   }
@@ -373,7 +370,7 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
   protected void removeSelectedJoins() {
     Object[] selectedJoins = ((IStructuredSelection) myJoinsTableViewer.getSelection()).toArray();
     if (selectedJoins.length > 0) {
-      boolean confirmed = MessageDialog.openConfirm(getPart().getSite().getShell(), Messages.getString("EORelationshipBasicEditorSection.removeJoinsTitle"), Messages.getString("EORelationshipBasicEditorSection.removeJoinsMessage")); //$NON-NLS-1$ //$NON-NLS-2$
+      boolean confirmed = MessageDialog.openConfirm(getPart().getSite().getShell(), Messages.getString("EORelationshipBasicEditorSection.removeJoinsTitle"), Messages.getString("EORelationshipBasicEditorSection.removeJoinsMessage"));
       if (confirmed) {
         for (int joinNum = 0; joinNum < selectedJoins.length; joinNum++) {
           EOJoin join = (EOJoin) selectedJoins[joinNum];

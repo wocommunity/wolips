@@ -53,26 +53,26 @@ import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
 
 public class EODataType {
-  public static final EODataType STRING = new EODataType("NSString", new String[] { null, "" }, Messages.getString("EODataType.string")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-  public static final EODataType STRING_SET = new EODataType("NSString", "S", Messages.getString("EODataType.stringSetString")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-  public static final EODataType STRING_CHAR = new EODataType("NSString", "C", Messages.getString("EODataType.stringChar")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-  public static final EODataType STRING_UTF = new EODataType("NSString", "E", Messages.getString("EODataType.stringUTF")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-  public static final EODataType STRING_RTRIM = new EODataType("NSString", "c", Messages.getString("EODataType.stringRTRIM")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-  public static final EODataType BYTE = new EODataType("NSNumber", "b", Messages.getString("EODataType.byte")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-  public static final EODataType SHORT = new EODataType("NSNumber", "s", Messages.getString("EODataType.short")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-  public static final EODataType INTEGER = new EODataType("NSNumber", new String[] { "i", null, "" }, Messages.getString("EODataType.integer")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-  public static final EODataType LONG = new EODataType("NSNumber", "l", Messages.getString("EODataType.long")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-  public static final EODataType FLOAT = new EODataType("NSNumber", "f", Messages.getString("EODataType.float")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-  public static final EODataType DOUBLE = new EODataType("NSNumber", "d", Messages.getString("EODataType.double")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-  public static final EODataType BIGDECIMAL = new EODataType("NSNumber", "B", Messages.getString("EODataType.bigDecimal")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-  public static final EODataType DECIMAL_NUMBER = new EODataType("NSDecimalNumber", (String) null, Messages.getString("EODataType.decimalNumber")); //$NON-NLS-1$ //$NON-NLS-2$
-  public static final EODataType DATE_OBJ = new EODataType("NSCalendarDate", new String[] { null, "" }, Messages.getString("EODataType.dateObj")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-  public static final EODataType DATE = new EODataType("NSCalendarDate", "D", Messages.getString("EODataType.date")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-  public static final EODataType TIME = new EODataType("NSCalendarDate", "t", Messages.getString("EODataType.time")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-  public static final EODataType TIMESTAMP = new EODataType("NSCalendarDate", "T", Messages.getString("EODataType.timestamp")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-  public static final EODataType DATE_MSSQL = new EODataType("NSCalendarDate", "M", Messages.getString("EODataType.dateMSSQL")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-  public static final EODataType DATA = new EODataType("NSData", (String) null, Messages.getString("EODataType.data")); //$NON-NLS-1$ //$NON-NLS-2$
-  public static final EODataType CUSTOM = new EODataType(null, (String) null, Messages.getString("EODataType.custom")); //$NON-NLS-1$
+  public static final EODataType STRING = new EODataType("NSString", new String[] { null, "" }, Messages.getString("EODataType.string"));
+  public static final EODataType STRING_SET = new EODataType("NSString", "S", Messages.getString("EODataType.stringSetString"));
+  public static final EODataType STRING_CHAR = new EODataType("NSString", "C", Messages.getString("EODataType.stringChar"));
+  public static final EODataType STRING_UTF = new EODataType("NSString", "E", Messages.getString("EODataType.stringUTF"));
+  public static final EODataType STRING_RTRIM = new EODataType("NSString", "c", Messages.getString("EODataType.stringRTRIM"));
+  public static final EODataType BYTE = new EODataType("NSNumber", "b", Messages.getString("EODataType.byte"));
+  public static final EODataType SHORT = new EODataType("NSNumber", "s", Messages.getString("EODataType.short"));
+  public static final EODataType INTEGER = new EODataType("NSNumber", new String[] { "i", null, "" }, Messages.getString("EODataType.integer")); //$NON-NLS-4$
+  public static final EODataType LONG = new EODataType("NSNumber", "l", Messages.getString("EODataType.long"));
+  public static final EODataType FLOAT = new EODataType("NSNumber", "f", Messages.getString("EODataType.float"));
+  public static final EODataType DOUBLE = new EODataType("NSNumber", "d", Messages.getString("EODataType.double"));
+  public static final EODataType BIGDECIMAL = new EODataType("NSNumber", "B", Messages.getString("EODataType.bigDecimal"));
+  public static final EODataType DECIMAL_NUMBER = new EODataType("NSDecimalNumber", (String) null, Messages.getString("EODataType.decimalNumber"));
+  public static final EODataType DATE_OBJ = new EODataType("NSCalendarDate", new String[] { null, "" }, Messages.getString("EODataType.dateObj"));
+  public static final EODataType DATE = new EODataType("NSCalendarDate", "D", Messages.getString("EODataType.date"));
+  public static final EODataType TIME = new EODataType("NSCalendarDate", "t", Messages.getString("EODataType.time"));
+  public static final EODataType TIMESTAMP = new EODataType("NSCalendarDate", "T", Messages.getString("EODataType.timestamp"));
+  public static final EODataType DATE_MSSQL = new EODataType("NSCalendarDate", "M", Messages.getString("EODataType.dateMSSQL"));
+  public static final EODataType DATA = new EODataType("NSData", (String) null, Messages.getString("EODataType.data"));
+  public static final EODataType CUSTOM = new EODataType(null, (String) null, Messages.getString("EODataType.custom"));
   public static final EODataType[] DATA_TYPES = new EODataType[] { EODataType.STRING, EODataType.STRING_SET, EODataType.STRING_CHAR, EODataType.STRING_UTF, EODataType.STRING_RTRIM, EODataType.BYTE, EODataType.SHORT, EODataType.INTEGER, EODataType.LONG, EODataType.FLOAT, EODataType.DOUBLE, EODataType.BIGDECIMAL, EODataType.DECIMAL_NUMBER, EODataType.DATE_OBJ, EODataType.DATE, EODataType.TIME, EODataType.TIMESTAMP, EODataType.DATE_MSSQL, EODataType.DATA, EODataType.CUSTOM };
 
   private String myValueClass;
@@ -106,7 +106,7 @@ public class EODataType {
   }
 
   public String toString() {
-    return "[EODataType: name = " + myName + "]"; //$NON-NLS-1$ //$NON-NLS-2$
+    return "[EODataType: name = " + myName + "]";
   }
 
   public static EODataType getDataTypeByValueClassAndType(String _valueClass, String _valueType) {

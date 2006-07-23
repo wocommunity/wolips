@@ -62,7 +62,7 @@ import org.objectstyle.wolips.eomodeler.utils.TablePropertyCellModifier;
 import org.objectstyle.wolips.eomodeler.utils.TableUtils;
 
 public class EOEntitiesCellModifier extends TablePropertyCellModifier {
-  private static final String NO_PARENT_VALUE = Messages.getString("EOEntitiesCellModifier.noParent"); //$NON-NLS-1$
+  private static final String NO_PARENT_VALUE = Messages.getString("EOEntitiesCellModifier.noParent");
   private CellEditor[] myCellEditors;
   private List myEntityNames;
 

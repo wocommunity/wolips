@@ -49,8 +49,6 @@
  */
 package org.objectstyle.wolips.eomodeler.actions;
 
-import java.util.HashSet;
-
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
@@ -105,20 +103,21 @@ public class SubclassEntityAction implements IWorkbenchWindowActionDelegate {
           EOEntity parentEntity = dialog.getParentEntity();
           InheritanceType inheritanceType = dialog.getInheritanceType();
           try {
-            HashSet failures = new HashSet();
-            EOEntity newEntity = parentEntity.subclassInto(entityName, inheritanceType, myModel, failures);
+            EOEntity newEntity = parentEntity.subclass(entityName, inheritanceType);
+            System.out.println("SubclassEntityAction.run: new entity: " + newEntity.getName());
+            parentEntity.getModel().addEntity(newEntity);
           }
           catch (DuplicateNameException e) {
             e.printStackTrace();
           }
         }
         else {
-          MessageDialog.openError(myWindow.getShell(), Messages.getString("Subclass.noEntityNameTitle"), Messages.getString("Subclass.noEntityNameMessage"));//$NON-NLS-1$ //$NON-NLS-2$
+          MessageDialog.openError(myWindow.getShell(), Messages.getString("Subclass.noEntityNameTitle"), Messages.getString("Subclass.noEntityNameMessage"));//$NON-NLS-1$
         }
       }
     }
     else {
-      MessageDialog.openError(myWindow.getShell(), Messages.getString("Subclass.noModelSelectedTitle"), Messages.getString("Subclass.noModelSelectedMessage"));//$NON-NLS-1$ //$NON-NLS-2$
+      MessageDialog.openError(myWindow.getShell(), Messages.getString("Subclass.noModelSelectedTitle"), Messages.getString("Subclass.noModelSelectedMessage"));//$NON-NLS-1$
     }
   }
 }

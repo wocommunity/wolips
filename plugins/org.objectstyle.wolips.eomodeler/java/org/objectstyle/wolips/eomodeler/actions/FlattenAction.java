@@ -90,7 +90,7 @@ public class FlattenAction implements IWorkbenchWindowActionDelegate {
         IEOAttribute newAttribute = rootEntity.addBlankIEOAttribute(myAttributePath);
       }
       else {
-        MessageDialog.openError(myWindow.getShell(), Messages.getString("EORelationship.noRelationshipOrAttributeSelectedTitle"), Messages.getString("EORelationship.noRelationshipOrAttributeSelectedMessage"));//$NON-NLS-1$ //$NON-NLS-2$
+        MessageDialog.openError(myWindow.getShell(), Messages.getString("EORelationship.noRelationshipOrAttributeSelectedTitle"), Messages.getString("EORelationship.noRelationshipOrAttributeSelectedMessage"));//$NON-NLS-1$
       }
     }
     catch (DuplicateNameException e) {

@@ -49,6 +49,7 @@
  */
 package org.objectstyle.wolips.eomodeler.model;
 
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -61,21 +62,22 @@ import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.utils.StringUtils;
 
 public class EORelationship extends UserInfoableEOModelObject implements IEOAttribute, ISortableEOModelObject {
-  public static final String TO_MANY = "toMany"; //$NON-NLS-1$
-  public static final String TO_ONE = "toOne"; //$NON-NLS-1$
-  public static final String CLASS_PROPERTY = "classProperty"; //$NON-NLS-1$
-  public static final String CLIENT_CLASS_PROPERTY = "clientClassProperty"; //$NON-NLS-1$
-  public static final String NAME = "name"; //$NON-NLS-1$
-  public static final String DESTINATION = "destination"; //$NON-NLS-1$
-  public static final String DEFINITION = "definition"; //$NON-NLS-1$
-  public static final String DELETE_RULE = "deleteRule"; //$NON-NLS-1$
-  public static final String JOIN_SEMANTIC = "joinSemantic"; //$NON-NLS-1$
-  public static final String OPTIONAL = "optional"; //$NON-NLS-1$
-  public static final String MANDATORY = "mandatory"; //$NON-NLS-1$
-  public static final String OWNS_DESTINATION = "ownsDestination"; //$NON-NLS-1$
-  public static final String PROPAGATES_PRIMARY_KEY = "propagatesPrimaryKey"; //$NON-NLS-1$
-  public static final String NUMBER_OF_TO_MANY_FAULTS_TO_BATCH_FETCH = "numberOfToManyFaultsToBatchFetch"; //$NON-NLS-1$
-  public static final String JOINS = "joins"; //$NON-NLS-1$
+  public static final String TO_MANY = "toMany";
+  public static final String TO_ONE = "toOne";
+  public static final String CLASS_PROPERTY = "classProperty";
+  public static final String CLIENT_CLASS_PROPERTY = "clientClassProperty";
+  public static final String NAME = "name";
+  public static final String DESTINATION = "destination";
+  public static final String DEFINITION = "definition";
+  public static final String DELETE_RULE = "deleteRule";
+  public static final String JOIN_SEMANTIC = "joinSemantic";
+  public static final String OPTIONAL = "optional";
+  public static final String MANDATORY = "mandatory";
+  public static final String OWNS_DESTINATION = "ownsDestination";
+  public static final String PROPAGATES_PRIMARY_KEY = "propagatesPrimaryKey";
+  public static final String NUMBER_OF_TO_MANY_FAULTS_TO_BATCH_FETCH = "numberOfToManyFaultsToBatchFetch";
+  public static final String JOINS = "joins";
+  public static final String JOIN = "join";
 
   private EOEntity myEntity;
   private EOEntity myDestination;
@@ -93,36 +95,52 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
   private Set myJoins;
   private EOModelMap myRelationshipMap;
 
-  public EORelationship(EOEntity _entity) {
-    myEntity = _entity;
+  private EOEntity myEntityBeforeCloning;
+
+  public EORelationship() {
     myJoins = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
     myRelationshipMap = new EOModelMap();
     myDeleteRule = EODeleteRule.getDeleteRuleByID(null);
     myJoinSemantic = EOJoinSemantic.getJoinSemanticByID(null);
   }
 
-  public EORelationship(EOEntity _entity, String _name) {
-    this(_entity);
+  public EORelationship(String _name) {
+    this();
     myName = _name;
   }
 
-  public EORelationship(EOEntity _entity, String _name, String _definition) {
-    this(_entity, _name);
+  public EORelationship(String _name, String _definition) {
+    this(_name);
     myDefinition = _definition;
   }
 
-  public EORelationship cloneInto(EOEntity _entity, boolean _fireEvents, Set _failures) throws DuplicateNameException {
-    return cloneInto(_entity, myName, _fireEvents, _failures);
+  public Set getReferenceFailures() {
+    return new HashSet();
   }
 
-  public EORelationship cloneInto(EOEntity _entity, String _name, boolean _fireEvents, Set _failures) throws DuplicateNameException {
-    EORelationship relationship = new EORelationship(_entity, _entity.findUnusedRelationshipName(_name));
-    if (myDestination == getEntity()) {
-      relationship.myDestination = _entity;
+  public void pasted() throws DuplicateNameException {
+    if (myEntityBeforeCloning != null) {
+      if (myDestination == myEntityBeforeCloning) {
+        myDestination = myEntity;
+      }
+      Iterator joinsIter = myJoins.iterator();
+      while (joinsIter.hasNext()) {
+        EOJoin join = (EOJoin) joinsIter.next();
+        join.pasted();
+      }
+      myEntityBeforeCloning = null;
+    }
+  }
+
+  public EORelationship cloneRelationship() {
+    EORelationship relationship = new EORelationship(myName);
+    if (myEntity == null) {
+      relationship.myEntityBeforeCloning = myEntityBeforeCloning;
     }
     else {
-      relationship.myDestination = myDestination;
+      relationship.myEntityBeforeCloning = myEntity;
     }
+    relationship.myDestination = myDestination;
     relationship.myDefinition = myDefinition;
     relationship.myMandatory = myMandatory;
     relationship.myToMany = myToMany;
@@ -136,18 +154,24 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
     Iterator joinsIter = myJoins.iterator();
     while (joinsIter.hasNext()) {
       EOJoin join = (EOJoin) joinsIter.next();
-      join.cloneInto(relationship, _fireEvents, _failures);
+      EOJoin newJoin = join.cloneJoin();
+      relationship.addJoin(newJoin, false);
     }
-    _entity.addRelationship(relationship, _fireEvents, _failures);
     return relationship;
   }
 
+  protected void _joinChanged(EOJoin _join) {
+    firePropertyChange(EORelationship.JOIN, null, _join);
+  }
+
   protected void _propertyChanged(String _propertyName, Object _oldValue, Object _newValue) {
-    myEntity._relationshipChanged(this);
+    if (myEntity != null) {
+      myEntity._relationshipChanged(this);
+    }
   }
 
   public int hashCode() {
-    return myEntity.hashCode() * ((myName == null) ? super.hashCode() : myName.hashCode());
+    return ((myEntity == null) ? 1 : myEntity.hashCode()) * ((myName == null) ? super.hashCode() : myName.hashCode());
   }
 
   public boolean equals(Object _obj) {
@@ -198,7 +222,7 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
   public Boolean isClassProperty() {
     return myClassProperty;
   }
-  
+
   public Boolean getClassProperty() {
     return isClassProperty();
   }
@@ -218,7 +242,7 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
   public Boolean isClientClassProperty() {
     return myClientClassProperty;
   }
-  
+
   public Boolean getClientClassProperty() {
     return isClientClassProperty();
   }
@@ -237,6 +261,10 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
     return inherited;
   }
 
+  public void _setEntity(EOEntity _entity) {
+    myEntity = _entity;
+  }
+
   public EOEntity getEntity() {
     return myEntity;
   }
@@ -247,10 +275,12 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
 
   public void setName(String _name, boolean _fireEvents) throws DuplicateNameException {
     if (_name == null) {
-      throw new NullPointerException(Messages.getString("EORelationship.noBlankRelationshipNames")); //$NON-NLS-1$
+      throw new NullPointerException(Messages.getString("EORelationship.noBlankRelationshipNames"));
     }
     String oldName = myName;
-    myEntity._checkForDuplicateRelationshipName(this, _name, null);
+    if (myEntity != null) {
+      myEntity._checkForDuplicateRelationshipName(this, _name, null);
+    }
     myName = _name;
     if (_fireEvents) {
       firePropertyChange(EORelationship.NAME, oldName, myName);
@@ -358,7 +388,7 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
 
   public Boolean isToMany() {
     Boolean toMany;
-    if (isFlattened()) {
+    if (isFlattened() && myEntity != null) {
       IEOAttribute targetAttribute = myEntity.resolveKeyPath(getDefinition());
       if (targetAttribute instanceof EORelationship && targetAttribute != this) {
         toMany = ((EORelationship) targetAttribute).isToMany();
@@ -421,6 +451,7 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
 
   public void addJoin(EOJoin _join, boolean _fireEvents) {
     // TODO: Check duplicates?
+    _join._setRelationship(this);
     Set oldJoins = null;
     if (_fireEvents) {
       oldJoins = myJoins;
@@ -438,6 +469,7 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
   public void removeJoin(EOJoin _join) {
     myJoins.remove(_join);
     firePropertyChange(EORelationship.JOINS, null, null);
+    _join._setRelationship(null);
   }
 
   public Set getJoins() {
@@ -455,48 +487,48 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
 
   public void loadFromMap(EOModelMap _relationshipMap, Set _failures) {
     myRelationshipMap = _relationshipMap;
-    myDefinition = _relationshipMap.getString("definition", true); //$NON-NLS-1$
-    myMandatory = _relationshipMap.getBoolean("isMandatory"); //$NON-NLS-1$
-    myToMany = _relationshipMap.getBoolean("isToMany"); //$NON-NLS-1$
-    String joinSemanticID = _relationshipMap.getString("joinSemantic", true); //$NON-NLS-1$
+    myDefinition = _relationshipMap.getString("definition", true);
+    myMandatory = _relationshipMap.getBoolean("isMandatory");
+    myToMany = _relationshipMap.getBoolean("isToMany");
+    String joinSemanticID = _relationshipMap.getString("joinSemantic", true);
     myJoinSemantic = EOJoinSemantic.getJoinSemanticByID(joinSemanticID);
-    myName = _relationshipMap.getString("name", true); //$NON-NLS-1$
-    String deleteRuleID = _relationshipMap.getString("deleteRule", true); //$NON-NLS-1$
+    myName = _relationshipMap.getString("name", true);
+    String deleteRuleID = _relationshipMap.getString("deleteRule", true);
     myDeleteRule = EODeleteRule.getDeleteRuleByID(deleteRuleID);
-    myOwnsDestination = _relationshipMap.getBoolean("ownsDestination"); //$NON-NLS-1$
-    myNumberOfToManyFaultsToBatchFetch = _relationshipMap.getInteger("numberOfToManyFaultsToBatchFetch"); //$NON-NLS-1$
-    myPropagatesPrimaryKey = _relationshipMap.getBoolean("propagatesPrimaryKey"); //$NON-NLS-1$
-    Set joins = _relationshipMap.getSet("joins"); //$NON-NLS-1$
+    myOwnsDestination = _relationshipMap.getBoolean("ownsDestination");
+    myNumberOfToManyFaultsToBatchFetch = _relationshipMap.getInteger("numberOfToManyFaultsToBatchFetch");
+    myPropagatesPrimaryKey = _relationshipMap.getBoolean("propagatesPrimaryKey");
+    Set joins = _relationshipMap.getSet("joins");
     if (joins != null) {
       Iterator joinsIter = joins.iterator();
       while (joinsIter.hasNext()) {
         EOModelMap joinMap = new EOModelMap((Map) joinsIter.next());
-        EOJoin join = new EOJoin(this);
+        EOJoin join = new EOJoin();
         join.loadFromMap(joinMap, _failures);
         addJoin(join, false);
       }
     }
-    setUserInfo(_relationshipMap.getMap("userInfo", true), false); //$NON-NLS-1$
+    setUserInfo(_relationshipMap.getMap("userInfo", true), false);
   }
 
   public EOModelMap toMap() {
     EOModelMap relationshipMap = myRelationshipMap.cloneModelMap();
     if (myDestination != null) {
-      relationshipMap.setString("destination", myDestination.getName(), true); //$NON-NLS-1$
+      relationshipMap.setString("destination", myDestination.getName(), true);
     }
-    relationshipMap.setString("definition", myDefinition, true); //$NON-NLS-1$
-    relationshipMap.setBoolean("isMandatory", myMandatory, EOModelMap.YN); //$NON-NLS-1$
-    relationshipMap.setBoolean("isToMany", myToMany, EOModelMap.YN); //$NON-NLS-1$
+    relationshipMap.setString("definition", myDefinition, true);
+    relationshipMap.setBoolean("isMandatory", myMandatory, EOModelMap.YN);
+    relationshipMap.setBoolean("isToMany", myToMany, EOModelMap.YN);
     if (!isFlattened() && myJoinSemantic != null) {
-      relationshipMap.setString("joinSemantic", myJoinSemantic.getID(), true); //$NON-NLS-1$
+      relationshipMap.setString("joinSemantic", myJoinSemantic.getID(), true);
     }
-    relationshipMap.setString("name", myName, true); //$NON-NLS-1$
+    relationshipMap.setString("name", myName, true);
     if (myDeleteRule != null && myDeleteRule != EODeleteRule.NULLIFY) {
-      relationshipMap.setString("deleteRule", myDeleteRule.getID(), true); //$NON-NLS-1$
+      relationshipMap.setString("deleteRule", myDeleteRule.getID(), true);
     }
-    relationshipMap.setBoolean("ownsDestination", myOwnsDestination, EOModelMap.YN); //$NON-NLS-1$
-    relationshipMap.setBoolean("propagatesPrimaryKey", myPropagatesPrimaryKey, EOModelMap.YN); //$NON-NLS-1$
-    relationshipMap.setInteger("numberOfToManyFaultsToBatchFetch", myNumberOfToManyFaultsToBatchFetch); //$NON-NLS-1$
+    relationshipMap.setBoolean("ownsDestination", myOwnsDestination, EOModelMap.YN);
+    relationshipMap.setBoolean("propagatesPrimaryKey", myPropagatesPrimaryKey, EOModelMap.YN);
+    relationshipMap.setInteger("numberOfToManyFaultsToBatchFetch", myNumberOfToManyFaultsToBatchFetch);
     Set joins = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
     Iterator joinsIter = myJoins.iterator();
     while (joinsIter.hasNext()) {
@@ -504,14 +536,14 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
       EOModelMap joinMap = join.toMap();
       joins.add(joinMap);
     }
-    relationshipMap.setSet("joins", joins, true); //$NON-NLS-1$
-    relationshipMap.setMap("userInfo", getUserInfo(), true); //$NON-NLS-1$
+    relationshipMap.setSet("joins", joins, true);
+    relationshipMap.setMap("userInfo", getUserInfo(), true);
     return relationshipMap;
   }
 
   public void resolve(Set _failures) {
     if (!isFlattened()) {
-      String destinationName = myRelationshipMap.getString("destination", true); //$NON-NLS-1$
+      String destinationName = myRelationshipMap.getString("destination", true);
       if (destinationName == null) {
         _failures.add(new EOModelVerificationFailure(myEntity.getName() + "'s " + myName + " relationship has no destination entity."));
       }
@@ -552,6 +584,6 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
   }
 
   public String toString() {
-    return "[EORelationship: name = " + myName + "; destination = " + ((myDestination == null) ? "null" : myDestination.getName()) + "; joins = " + myJoins + "]"; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$ //$NON-NLS-5$
+    return "[EORelationship: name = " + myName + "; destination = " + ((myDestination == null) ? "null" : myDestination.getName()) + "; joins = " + myJoins + "]"; //$NON-NLS-4$ //$NON-NLS-5$
   }
 }

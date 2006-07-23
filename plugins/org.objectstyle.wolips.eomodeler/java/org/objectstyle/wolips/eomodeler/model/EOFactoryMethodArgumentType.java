@@ -53,9 +53,9 @@ import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
 
 public class EOFactoryMethodArgumentType {
-  public static final EOFactoryMethodArgumentType STRING = new EOFactoryMethodArgumentType("EOFactoryMethodArgumentIsNSString", Messages.getString("EOFactoryMethodArgumentType.string")); //$NON-NLS-1$ //$NON-NLS-2$
-  public static final EOFactoryMethodArgumentType BYTES = new EOFactoryMethodArgumentType("EOFactoryMethodArgumentIsBytes", Messages.getString("EOFactoryMethodArgumentType.bytes")); //$NON-NLS-1$ //$NON-NLS-2$
-  public static final EOFactoryMethodArgumentType DATA = new EOFactoryMethodArgumentType(null, Messages.getString("EOFactoryMethodArgumentType.data")); //$NON-NLS-1$
+  public static final EOFactoryMethodArgumentType STRING = new EOFactoryMethodArgumentType("EOFactoryMethodArgumentIsNSString", Messages.getString("EOFactoryMethodArgumentType.string"));
+  public static final EOFactoryMethodArgumentType BYTES = new EOFactoryMethodArgumentType("EOFactoryMethodArgumentIsBytes", Messages.getString("EOFactoryMethodArgumentType.bytes"));
+  public static final EOFactoryMethodArgumentType DATA = new EOFactoryMethodArgumentType(null, Messages.getString("EOFactoryMethodArgumentType.data"));
   public static final EOFactoryMethodArgumentType[] ARGUMENT_TYPES = new EOFactoryMethodArgumentType[] { EOFactoryMethodArgumentType.STRING, EOFactoryMethodArgumentType.DATA, EOFactoryMethodArgumentType.BYTES };
 
   private String myID;
@@ -76,7 +76,7 @@ public class EOFactoryMethodArgumentType {
   }
 
   public String toString() {
-    return "[EOFactoryMethodArgumentType: name = " + myName + "]"; //$NON-NLS-1$ //$NON-NLS-2$
+    return "[EOFactoryMethodArgumentType: name = " + myName + "]";
   }
 
   public static EOFactoryMethodArgumentType getFactoryMethodArgumentTypeByID(String _id) {

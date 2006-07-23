@@ -52,9 +52,9 @@ package org.objectstyle.wolips.eomodeler.model;
 import org.objectstyle.wolips.eomodeler.Messages;
 
 public class InheritanceType {
-  public static final InheritanceType VERTICAL = new InheritanceType("Vertical", Messages.getString("InheritanceType.vertical")); //$NON-NLS-1$ //$NON-NLS-2$
-  public static final InheritanceType HORIZONTAL = new InheritanceType("Horizontal", Messages.getString("InheritanceType.horizontal")); //$NON-NLS-1$ //$NON-NLS-2$
-  public static final InheritanceType SINGLE_TABLE = new InheritanceType("SingleTable", Messages.getString("InheritanceType.singleTable")); //$NON-NLS-1$ //$NON-NLS-2$
+  public static final InheritanceType VERTICAL = new InheritanceType("Vertical", Messages.getString("InheritanceType.vertical"));
+  public static final InheritanceType HORIZONTAL = new InheritanceType("Horizontal", Messages.getString("InheritanceType.horizontal"));
+  public static final InheritanceType SINGLE_TABLE = new InheritanceType("SingleTable", Messages.getString("InheritanceType.singleTable"));
   public static final InheritanceType[] INHERITANCE_TYPES = { InheritanceType.VERTICAL, InheritanceType.HORIZONTAL, InheritanceType.SINGLE_TABLE };
   private String myID;
   private String myName;

@@ -106,15 +106,15 @@ public class EORelationshipAdvancedEditorSection extends AbstractPropertySection
     topFormLayout.numColumns = 2;
     topForm.setLayout(topFormLayout);
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship." + EORelationship.NUMBER_OF_TO_MANY_FAULTS_TO_BATCH_FETCH), SWT.NONE); //$NON-NLS-1$
+    getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship." + EORelationship.NUMBER_OF_TO_MANY_FAULTS_TO_BATCH_FETCH), SWT.NONE);
     myNumberOfToManyFaultsToBatchFetchText = new Text(topForm, SWT.BORDER);
     GridData nameFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
     myNumberOfToManyFaultsToBatchFetchText.setLayoutData(nameFieldLayoutData);
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship." + EORelationship.OWNS_DESTINATION), SWT.NONE); //$NON-NLS-1$
+    getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship." + EORelationship.OWNS_DESTINATION), SWT.NONE);
     myOwnsDestinationButton = new Button(topForm, SWT.CHECK);
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship." + EORelationship.PROPAGATES_PRIMARY_KEY), SWT.NONE); //$NON-NLS-1$
+    getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship." + EORelationship.PROPAGATES_PRIMARY_KEY), SWT.NONE);
     myPropagatesPrimaryKeyButton = new Button(topForm, SWT.CHECK);
   }
 
@@ -133,7 +133,7 @@ public class EORelationshipAdvancedEditorSection extends AbstractPropertySection
       myRelationship.addPropertyChangeListener(EORelationship.TO_MANY, myRelationshipPropertyChangeListener);
     }
     myBindingContext = BindingFactory.createContext();
-    myBindingContext.bind(myNumberOfToManyFaultsToBatchFetchText, new Property(myRelationship, EORelationship.NUMBER_OF_TO_MANY_FAULTS_TO_BATCH_FETCH), new BindSpec(null, null, new RegexStringValidator("^[0-9]*$", "^[0-9]$", "Please enter a number"), null)); //$NON-NLS-1$ //$NON-NLS-2$
+    myBindingContext.bind(myNumberOfToManyFaultsToBatchFetchText, new Property(myRelationship, EORelationship.NUMBER_OF_TO_MANY_FAULTS_TO_BATCH_FETCH), new BindSpec(null, null, new RegexStringValidator("^[0-9]*$", "^[0-9]$", "Please enter a number"), null));
     myBindingContext.bind(myOwnsDestinationButton, new Property(myRelationship, EORelationship.OWNS_DESTINATION), null);
     myBindingContext.bind(myPropagatesPrimaryKeyButton, new Property(myRelationship, EORelationship.PROPAGATES_PRIMARY_KEY), null);
     updateCardinalityEnabled();

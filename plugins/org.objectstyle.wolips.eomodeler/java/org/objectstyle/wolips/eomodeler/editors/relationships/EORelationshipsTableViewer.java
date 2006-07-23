@@ -99,13 +99,13 @@ public class EORelationshipsTableViewer extends Composite implements ISelectionP
     relationshipsTable.setHeaderVisible(true);
     relationshipsTable.setLinesVisible(true);
 
-    TableUtils.createTableColumns(myRelationshipsTableViewer, "EORelationship", EORelationshipsConstants.COLUMNS); //$NON-NLS-1$
+    TableUtils.createTableColumns(myRelationshipsTableViewer, "EORelationship", EORelationshipsConstants.COLUMNS);
 
     TableColumn toManyColumn = relationshipsTable.getColumn(TableUtils.getColumnNumber(EORelationshipsConstants.COLUMNS, EORelationship.TO_MANY));
-    toManyColumn.setText(""); //$NON-NLS-1$
+    toManyColumn.setText("");
 
     TableColumn classPropertyColumn = relationshipsTable.getColumn(TableUtils.getColumnNumber(EORelationshipsConstants.COLUMNS, EORelationship.CLASS_PROPERTY));
-    classPropertyColumn.setText(""); //$NON-NLS-1$
+    classPropertyColumn.setText("");
     classPropertyColumn.setImage(Activator.getDefault().getImageRegistry().get(Activator.CLASS_PROPERTY_ICON));
 
     ((EORelationshipsViewerSorter) myRelationshipsTableViewer.getSorter()).sort(EORelationship.NAME);

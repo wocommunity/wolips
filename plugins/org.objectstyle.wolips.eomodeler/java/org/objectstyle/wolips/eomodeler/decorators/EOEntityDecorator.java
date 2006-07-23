@@ -58,7 +58,7 @@ import org.objectstyle.wolips.eomodeler.Activator;
 public class EOEntityDecorator implements ILabelDecorator {
   protected boolean shouldDecorate(Object _element) {
     IFile file = (IFile) _element;
-    return ("eomodeld".equals(file.getParent().getFileExtension())); //$NON-NLS-1$
+    return ("eomodeld".equals(file.getParent().getFileExtension()));
   }
 
   public Image decorateImage(Image _image, Object _element) {

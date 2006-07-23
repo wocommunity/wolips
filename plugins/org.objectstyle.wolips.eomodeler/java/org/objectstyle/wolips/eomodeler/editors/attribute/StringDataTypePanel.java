@@ -69,7 +69,7 @@ public class StringDataTypePanel extends Composite implements IDataTypePanel {
     super(_parent, _style);
     setBackground(_parent.getBackground());
     setLayout(new GridLayout(2, false));
-    _widgetFactory.createCLabel(this, Messages.getString("EOAttribute." + EOAttribute.WIDTH), SWT.NONE); //$NON-NLS-1$
+    _widgetFactory.createCLabel(this, Messages.getString("EOAttribute." + EOAttribute.WIDTH), SWT.NONE);
     myExternalWidthText = new Text(this, SWT.BORDER);
     GridData externalWidthFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
     myExternalWidthText.setLayoutData(externalWidthFieldLayoutData);
