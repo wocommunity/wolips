@@ -117,8 +117,10 @@ public class ComboViewerBinding implements ISelectionChangedListener, PropertyCh
     }
     else if (myListObj != null && source == myListObj && myListPropertyName.equals(propertyName)) {
       ISelection selection = myViewer.getSelection();
-      myViewer.setInput(myListObj);
-      myViewer.setSelection(selection);
+      if (myViewer.getContentProvider() != null) {
+        myViewer.setInput(myListObj);
+        myViewer.setSelection(selection);
+      }
     }
   }
 

@@ -178,7 +178,7 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
 
   protected void _propertyChanged(String _propertyName, Object _oldValue, Object _newValue) {
     if (myEntity != null) {
-      myEntity._attributeChanged(this);
+      myEntity._attributeChanged(this, _propertyName, _oldValue, _newValue);
     }
   }
 

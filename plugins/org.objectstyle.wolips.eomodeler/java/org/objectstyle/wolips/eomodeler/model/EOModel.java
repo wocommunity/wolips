@@ -136,7 +136,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
     }
   }
 
-  protected void _entityChanged(EOEntity _entity) {
+  protected void _entityChanged(EOEntity _entity, String _propertyName, Object _oldValue, Object _newValue) {
     firePropertyChange(EOModel.ENTITY, null, _entity);
   }
 
@@ -265,9 +265,13 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
   }
 
   public void removeEntity(EOEntity _entity) {
-    myEntities.remove(_entity);
     myDeletedEntityNamesInObjectStore.add(_entity.getName());
-    firePropertyChange(EOModel.ENTITIES, null, null);
+    Set oldEntities = myEntities;
+    Set newEntities = new TreeSet(new TreeSet(PropertyListComparator.AscendingPropertyListComparator));
+    newEntities.addAll(myEntities);
+    newEntities.remove(_entity);
+    myEntities = newEntities;
+    firePropertyChange(EOModel.ENTITIES, oldEntities, myEntities);
     _entity._setModel(null);
   }
 
