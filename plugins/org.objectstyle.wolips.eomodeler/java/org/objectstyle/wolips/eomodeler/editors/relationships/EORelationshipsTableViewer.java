@@ -167,10 +167,13 @@ public class EORelationshipsTableViewer extends Composite implements ISelectionP
       super.propertyChange(_event);
       Set oldValues = (Set) _event.getOldValue();
       Set newValues = (Set) _event.getNewValue();
-      if (newValues != null && oldValues != null && newValues.size() > oldValues.size()) {
-        List newList = new LinkedList(oldValues);
-        newList.removeAll(oldValues);
-        EORelationshipsTableViewer.this.setSelection(new StructuredSelection(newList));
+      if (newValues != null && oldValues != null) {
+        if (newValues.size() > oldValues.size()) {
+          List newList = new LinkedList(newValues);
+          newList.removeAll(oldValues);
+          EORelationshipsTableViewer.this.setSelection(new StructuredSelection(newList));
+        }
+        TableUtils.packTableColumns(EORelationshipsTableViewer.this.getTableViewer());
       }
     }
   }

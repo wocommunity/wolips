@@ -201,10 +201,13 @@ public class EOAttributesTableViewer extends Composite implements ISelectionProv
       super.propertyChange(_event);
       Set oldValues = (Set) _event.getOldValue();
       Set newValues = (Set) _event.getNewValue();
-      if (newValues != null && oldValues != null && newValues.size() > oldValues.size()) {
-        List newList = new LinkedList(oldValues);
-        newList.removeAll(oldValues);
-        EOAttributesTableViewer.this.setSelection(new StructuredSelection(newList));
+      if (newValues != null && oldValues != null) {
+        if (newValues.size() > oldValues.size()) {
+          List newList = new LinkedList(newValues);
+          newList.removeAll(oldValues);
+          EOAttributesTableViewer.this.setSelection(new StructuredSelection(newList));
+        }
+        TableUtils.packTableColumns(EOAttributesTableViewer.this.getTableViewer());
       }
     }
   }
