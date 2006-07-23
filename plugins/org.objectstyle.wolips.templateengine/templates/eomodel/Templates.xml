@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<document>
-	<type>EOModel</type>
-	<templates>
-		<template templateName="DiagramLayout.vm" destination="" finalName="DiagramLayout" type="DiagramLayout"/>
-		<template templateName="index.eomodeld.vm" destination="" finalName="index" type="eomodeld"/>
-	</templates>
-</document>
