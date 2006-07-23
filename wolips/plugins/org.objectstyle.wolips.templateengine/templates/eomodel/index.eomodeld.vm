@@ -1,5 +1,0 @@
-{
-	EOModelVersion = 2.1;
-	adaptorName = ${WOLipsContext.getAdaptorName()};
-	entities = ();
-}

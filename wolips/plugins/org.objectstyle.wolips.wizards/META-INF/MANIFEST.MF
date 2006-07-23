@@ -20,7 +20,8 @@ Require-Bundle: org.eclipse.jdt.ui,
  org.objectstyle.wolips.workbenchutilities,
  org.junit,
  org.objectstyle.wolips.ui,
- org.objectstyle.wolips.eogenerator.ui
+ org.objectstyle.wolips.eogenerator.ui,
+ org.objectstyle.wolips.eomodeler
 Eclipse-LazyStart: true
 Export-Package: org.objectstyle.wolips.wizards,
  org.objectstyle.wolips.wizards.actions

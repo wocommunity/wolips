@@ -55,15 +55,19 @@
  */
 package org.objectstyle.wolips.wizards;
 
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Vector;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
@@ -71,120 +75,94 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.objectstyle.wolips.datasets.adaptable.JavaProject;
 import org.objectstyle.wolips.datasets.resources.IWOLipsModel;
-import org.objectstyle.wolips.templateengine.TemplateDefinition;
-import org.objectstyle.wolips.templateengine.TemplateEngine;
+import org.objectstyle.wolips.eomodeler.model.EOModel;
+import org.objectstyle.wolips.eomodeler.model.EOModelException;
+import org.objectstyle.wolips.eomodeler.model.EOModelGroup;
+import org.objectstyle.wolips.eomodeler.model.EclipseEOModelGroupFactory;
 
 /**
  * @author mnolte
  * @author uli Creates new eo model file resources from values gathered by
  *         EOModelCreationPage. <br>
+ * @author mschrag uses Entity Modeler API's now
  */
 public class EOModelCreator implements IRunnableWithProgress {
-	private String modelName;
+  private String modelName;
+  private String adaptorName;
+  private IResource parentResource;
+  private EOModelCreationPage page;
 
-	private String adaptorName;
+  /**
+   * Constructor for EOModelCreator.
+   * 
+   * @param parentResource
+   * @param modelName
+   * @param adaptorName
+   */
+  public EOModelCreator(IResource parentResource, String modelName, String adaptorName, EOModelCreationPage page) {
+    this.parentResource = parentResource;
+    this.modelName = modelName;
+    this.adaptorName = adaptorName;
+    this.page = page;
+  }
 
-	private IResource parentResource;
+  public void run(IProgressMonitor monitor) throws InvocationTargetException {
+    try {
+      createEOModel(monitor);
+    }
+    catch (CoreException e) {
+      throw new InvocationTargetException(e);
+    }
+    catch (IOException e) {
+      throw new InvocationTargetException(e);
+    }
+    catch (EOModelException e) {
+      throw new InvocationTargetException(e);
+    }
+  }
 
-	private EOModelCreationPage page;
+  /**
+   * Method createEOModelNamed. Creates eo model file resources. All file
+   * resource changes are registered in ResourceChangeListener where the
+   * project file is updated. <br>
+   * All folder resource changes are registered in
+   * 
+   * @link WOProjectResourceCreator#createResourceFolderInProject(IFolder,
+   *       IProgressMonitor). <br>
+   * @param monitor
+   * @throws EOModelException 
+   * @throws IOException 
+   * @throws CoreException 
+   * @throws InvocationTargetException 
+   */
+  public void createEOModel(IProgressMonitor monitor) throws CoreException, IOException, EOModelException, InvocationTargetException {
+    EOModelGroup modelGroup = EclipseEOModelGroupFactory.createModelGroup(parentResource.getProject(), new HashSet());
+    EOModel model = new EOModel(modelName);
+    model.setAdaptorName(adaptorName);
+    modelGroup.addModel(model);
+    File modelFolderFile = model.saveToFolder(parentResource.getLocation().toFile());
+    IFolder modelFolder = ((IContainer) parentResource).getFolder(new Path(modelFolderFile.getName()));
+    parentResource.refreshLocal(IResource.DEPTH_INFINITE, monitor);
+    page.setResourceToReveal(modelFolder.findMember("index.eomodeld"));
 
-	/**
-	 * Constructor for EOModelCreator.
-	 * 
-	 * @param parentResource
-	 * @param modelName
-	 * @param adaptorName
-	 */
-	public EOModelCreator(IResource parentResource, String modelName,
-			String adaptorName, EOModelCreationPage page) {
-		this.parentResource = parentResource;
-		this.modelName = modelName;
-		this.adaptorName = adaptorName;
-		this.page = page;
-	}
-
-	public void run(IProgressMonitor monitor) throws InvocationTargetException {
-		try {
-			createEOModel(monitor);
-		} catch (CoreException e) {
-			throw new InvocationTargetException(e);
-		}
-	}
-
-	/**
-	 * Method createEOModelNamed. Creates eo model file resources. All file
-	 * resource changes are registered in ResourceChangeListener where the
-	 * project file is updated. <br>
-	 * All folder resource changes are registered in
-	 * 
-	 * @link WOProjectResourceCreator#createResourceFolderInProject(IFolder,
-	 *       IProgressMonitor). <br>
-	 * @param monitor
-	 * @throws CoreException
-	 * @throws InvocationTargetException
-	 */
-	public void createEOModel(IProgressMonitor monitor) throws CoreException,
-			InvocationTargetException {
-		IFolder modelFolder = null;
-		switch (this.parentResource.getType()) {
-		case IResource.PROJECT:
-			modelFolder = ((IProject) this.parentResource)
-					.getFolder(this.modelName + "." + IWOLipsModel.EXT_EOMODEL);
-			break;
-		case IResource.FOLDER:
-			modelFolder = ((IFolder) this.parentResource)
-					.getFolder(this.modelName + "." + IWOLipsModel.EXT_EOMODEL);
-			break;
-		default:
-			throw new InvocationTargetException(new Exception(
-					"Wrong parent resource - check validation"));
-		}
-		modelFolder.create(false, true, monitor);
-		String projectName = this.parentResource.getProject().getName();
-		String path = modelFolder.getLocation().toOSString();
-		TemplateEngine templateEngine = new TemplateEngine();
-		try {
-			templateEngine.init();
-		} catch (Exception e) {
-			WizardsPlugin.getDefault().log(e);
-			throw new InvocationTargetException(e);
-		}
-		templateEngine.getWolipsContext().setProjectName(projectName);
-		templateEngine.getWolipsContext().setAdaptorName(this.adaptorName);
-		templateEngine.addTemplate(new TemplateDefinition(
-				"eomodel/index.eomodeld.vm", path, "index.eomodeld",
-				"index.eomodeld"));
-		templateEngine.addTemplate(new TemplateDefinition(
-				"eomodel/DiagramLayout.vm", path, "DiagramLayout",
-				"DiagramLayout"));
-		try {
-			templateEngine.run(new NullProgressMonitor());
-		} catch (Exception e) {
-			WizardsPlugin.getDefault().log(e);
-			throw new InvocationTargetException(e);
-		}
-		modelFolder.refreshLocal(IResource.DEPTH_INFINITE, monitor);
-		page.setResourceToReveal(modelFolder.findMember("index.eomodeld"));
-		// add adaptor framework
-		if (!"None".equals(this.adaptorName)) {
-			IJavaProject projectToUpdate = JavaCore.create(this.parentResource
-					.getProject());
-			Vector newAdaptorFrameworkList = new Vector();
-			newAdaptorFrameworkList.add("Java" + this.adaptorName + "Adaptor."
-					+ IWOLipsModel.EXT_FRAMEWORK);
-			JavaProject javaProject = (JavaProject) projectToUpdate
-					.getAdapter(JavaProject.class);
-			IClasspathEntry[] newClasspathEntries = javaProject
-					.addFrameworkListToClasspathEntries(newAdaptorFrameworkList);
-			try {
-				projectToUpdate.setRawClasspath(newClasspathEntries, null);
-			} catch (JavaModelException e) {
-				throw new InvocationTargetException(e);
-			} finally {
-				projectToUpdate = null;
-				newAdaptorFrameworkList = null;
-				newClasspathEntries = null;
-			}
-		}
-	}
+    // add adaptor framework
+    if (!"None".equals(adaptorName)) {
+      IJavaProject projectToUpdate = JavaCore.create(this.parentResource.getProject());
+      List newAdaptorFrameworkList = new LinkedList();
+      newAdaptorFrameworkList.add("Java" + this.adaptorName + "Adaptor." + IWOLipsModel.EXT_FRAMEWORK);
+      JavaProject javaProject = (JavaProject) projectToUpdate.getAdapter(JavaProject.class);
+      IClasspathEntry[] newClasspathEntries = javaProject.addFrameworkListToClasspathEntries(newAdaptorFrameworkList);
+      try {
+        projectToUpdate.setRawClasspath(newClasspathEntries, null);
+      }
+      catch (JavaModelException e) {
+        throw new InvocationTargetException(e);
+      }
+      finally {
+        projectToUpdate = null;
+        newAdaptorFrameworkList = null;
+        newClasspathEntries = null;
+      }
+    }
+  }
 }

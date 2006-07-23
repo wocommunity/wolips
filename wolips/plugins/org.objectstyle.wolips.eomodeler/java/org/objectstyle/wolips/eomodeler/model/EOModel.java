@@ -389,7 +389,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
     return modelMap;
   }
 
-  public void saveToFolder(File _parentFolder) throws IOException {
+  public File saveToFolder(File _parentFolder) throws IOException {
     File modelFolder;
     if (_parentFolder.getName().endsWith(".eomodeld")) {
       modelFolder = _parentFolder;
@@ -429,6 +429,8 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
       File fspecFile = new File(modelFolder, entityName + ".fspec");
       entity.saveToFile(entityFile, fspecFile);
     }
+    
+    return modelFolder;
   }
 
   public void resolve(Set _failures) {

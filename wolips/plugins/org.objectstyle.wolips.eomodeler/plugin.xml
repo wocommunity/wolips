@@ -15,16 +15,6 @@
       </editor>
    </extension>
    <extension
-         point="org.eclipse.ui.newWizards">
-      <wizard
-            name="Entity Modeler (Experimental)"
-            icon="icons/eoModel.gif"
-            category="org.objectstyle.wolips.wizards"
-            class="org.objectstyle.wolips.eomodeler.wizards.SampleNewWizard"
-            id="org.objectstyle.wolips.eomodeler.wizards.SampleNewWizard">
-      </wizard>
-   </extension>
-   <extension
          point="org.eclipse.ui.decorators">
       <decorator
             class="org.objectstyle.wolips.eomodeler.decorators.EOEntityDecorator"
