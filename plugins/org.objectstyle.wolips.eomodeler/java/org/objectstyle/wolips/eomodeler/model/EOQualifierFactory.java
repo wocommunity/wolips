@@ -197,6 +197,9 @@ public class EOQualifierFactory {
       map.setString("class", "EOQualifierVariable", false);
       value = map;
     }
+    else if (_value instanceof String) {
+      value = _value;
+    }
     else {
       throw new IllegalArgumentException("Unknown qualifier value type: " + _value + " (type = " + _value.getClass().getName() + ")");
     }
