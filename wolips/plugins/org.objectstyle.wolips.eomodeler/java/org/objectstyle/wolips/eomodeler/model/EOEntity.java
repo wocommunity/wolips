@@ -731,7 +731,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
       }
 
       String unusedName = findUnusedAttributeName(_newName);
-      existingAttribute.setName(unusedName, false);
+      existingAttribute.setName(unusedName, true);
       _failures.add(new DuplicateAttributeFailure(this, _newName, unusedName));
     }
   }
@@ -767,7 +767,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
       }
 
       String unusedName = findUnusedFetchSpecificationName(_newName);
-      existingFetchSpec.setName(unusedName, false);
+      existingFetchSpec.setName(unusedName, true);
       _failures.add(new DuplicateFetchSpecFailure(this, _newName, unusedName));
     }
   }
@@ -866,7 +866,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
       }
 
       String unusedName = findUnusedRelationshipName(_newName);
-      existingRelationship.setName(unusedName, false);
+      existingRelationship.setName(unusedName, true);
       _failures.add(new DuplicateRelationshipFailure(this, _newName, unusedName));
     }
   }

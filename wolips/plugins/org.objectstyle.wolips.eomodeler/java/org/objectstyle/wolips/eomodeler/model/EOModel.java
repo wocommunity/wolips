@@ -196,40 +196,36 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 
   public String findUnusedEntityName(String _newName) {
     String unusedName = _newName;
-    if (myModelGroup == null) {
-      boolean unusedNameFound = (getEntityNamed(_newName) == null);
-      for (int dupeNameNum = 1; !unusedNameFound; dupeNameNum++) {
-        unusedName = _newName + dupeNameNum;
-        EOEntity renameEntity = getEntityNamed(unusedName);
-        unusedNameFound = (renameEntity == null);
+    boolean unusedNameFound = (myModelGroup.getEntityNamed(_newName) == null && getEntityNamed(_newName) == null);
+    for (int dupeNameNum = 1; !unusedNameFound; dupeNameNum++) {
+      unusedName = _newName + dupeNameNum;
+      EOEntity renameEntity = myModelGroup.getEntityNamed(unusedName);
+      if (renameEntity == null) {
+        renameEntity = getEntityNamed(unusedName);
       }
-
-    }
-    else {
-      boolean unusedNameFound = (myModelGroup.getEntityNamed(_newName) == null);
-      for (int dupeNameNum = 1; !unusedNameFound; dupeNameNum++) {
-        unusedName = _newName + dupeNameNum;
-        EOEntity renameEntity = myModelGroup.getEntityNamed(unusedName);
-        unusedNameFound = (renameEntity == null);
-      }
+      unusedNameFound = (renameEntity == null);
     }
     return unusedName;
   }
 
   public void _checkForDuplicateEntityName(EOEntity _entity, String _newName, Set _failures) throws DuplicateEntityNameException {
-    EOEntity existingEntity;
+    EOEntity existingEntity = null;
     if (myModelGroup != null) {
       existingEntity = myModelGroup.getEntityNamed(_newName);
     }
-    else {
+    // MS: We do this because at load time, the model thinks it's part of the model group, but the model group doesnt'
+    // think it contains the model, so we check both
+    if (existingEntity == null) {
       existingEntity = getEntityNamed(_newName);
     }
     if (existingEntity != null && existingEntity != _entity) {
+      // MS: For most duplicates, we can rename the original.  But for entities, they can be
+      // in a totally separate model.
       if (_failures == null || _entity.getModel() != existingEntity.getModel()) {
         throw new DuplicateEntityNameException(_newName, this);
       }
       String unusedName = findUnusedEntityName(_newName);
-      existingEntity.setName(unusedName, false);
+      existingEntity.setName(unusedName, true);
       _failures.add(new DuplicateEntityFailure(this, _newName, unusedName));
     }
   }
@@ -254,8 +250,8 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
     _checkForDuplicateEntityName(_entity, _entity.getName(), _failures);
     _entity.pasted();
     myDeletedEntityNamesInObjectStore.remove(_entity.getName());
-    Set oldEntities = null;
     if (_fireEvents) {
+      Set oldEntities = null;
       oldEntities = myEntities;
       Set newEntities = new TreeSet(new TreeSet(PropertyListComparator.AscendingPropertyListComparator));
       newEntities.addAll(myEntities);
