@@ -69,8 +69,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.objectstyle.wolips.eomodeler.Activator;
+import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EORelationship;
+import org.objectstyle.wolips.eomodeler.utils.EmptyTableRowDoubleClickHandler;
 import org.objectstyle.wolips.eomodeler.utils.TableRefreshPropertyListener;
 import org.objectstyle.wolips.eomodeler.utils.TableRowRefreshPropertyListener;
 import org.objectstyle.wolips.eomodeler.utils.TableUtils;
@@ -90,6 +92,7 @@ public class EORelationshipsTableViewer extends Composite implements ISelectionP
     myRelationshipsTableViewer.setLabelProvider(new EORelationshipsLabelProvider(myRelationshipsTableViewer, EORelationshipsConstants.COLUMNS));
     myRelationshipsTableViewer.setSorter(new EORelationshipsViewerSorter(myRelationshipsTableViewer, EORelationshipsConstants.COLUMNS));
     myRelationshipsTableViewer.setColumnProperties(EORelationshipsConstants.COLUMNS);
+    new DoubleClickNewRelationshipHandler().attachTo(myRelationshipsTableViewer);
     myRelationshipsChangedRefresher = new RelationshipsChangeRefresher(myRelationshipsTableViewer, EOEntity.RELATIONSHIPS);
     myParentChangedRefresher = new TableRefreshPropertyListener(myRelationshipsTableViewer, EOEntity.PARENT);
     myTableRowRefresher = new TableRowRefreshPropertyListener(myRelationshipsTableViewer, EOEntity.RELATIONSHIP);
@@ -156,6 +159,17 @@ public class EORelationshipsTableViewer extends Composite implements ISelectionP
 
   public void setSelection(ISelection _selection) {
     myRelationshipsTableViewer.setSelection(_selection);
+  }
+
+  protected class DoubleClickNewRelationshipHandler extends EmptyTableRowDoubleClickHandler {
+    protected void doubleSelectionOccurred() {
+      try {
+        EORelationshipsTableViewer.this.getEntity().addBlankRelationship(Messages.getString("EORelationship.newName"));
+      }
+      catch (Throwable e) {
+        e.printStackTrace();
+      }
+    }
   }
 
   protected class RelationshipsChangeRefresher extends TableRefreshPropertyListener {
