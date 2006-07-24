@@ -411,7 +411,7 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
   public void _setEntity(EOEntity _entity) {
     myEntity = _entity;
   }
-  
+
   public EOEntity getEntity() {
     return myEntity;
   }
@@ -754,8 +754,28 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
   }
 
   public void verify(Set _failures) {
-    if (!StringUtils.isLowercaseFirstLetter(myName)) {
-      _failures.add(new EOModelVerificationFailure("Attribute names should not be capitalized, but " + myEntity.getModel().getName() + "/" + myEntity.getName() + "/" + myName + " is."));
+    String name = getName();
+    if (name == null || name.trim().length() == 0) {
+      _failures.add(new EOModelVerificationFailure(myEntity.getModel().getName() + "/" + myEntity.getName() + "/" + myName + " has an empty name."));
+    }
+    else {
+      if (name.indexOf(' ') != -1) {
+        _failures.add(new EOModelVerificationFailure(myEntity.getModel().getName() + "/" + myEntity.getName() + "/" + myName + "'s name has a space in it."));
+      }
+      if (!StringUtils.isLowercaseFirstLetter(name)) {
+        _failures.add(new EOModelVerificationFailure("Attribute names should not be capitalized, but " + myEntity.getModel().getName() + "/" + myEntity.getName() + "/" + myName + " is."));
+      }
+    }
+    if (!myEntity.isPrototype()) {
+      if (!isFlattened()) {
+        String columnName = getColumnName();
+        if (columnName == null || columnName.trim().length() == 0) {
+          _failures.add(new EOModelVerificationFailure(myEntity.getModel().getName() + "/" + myEntity.getName() + "/" + myName + " does not have a column name set."));
+        }
+        else if (columnName.indexOf(' ') != -1) {
+          _failures.add(new EOModelVerificationFailure(myEntity.getModel().getName() + "/" + myEntity.getName() + "/" + myName + "'s column name '" + columnName + "' has a space in it."));
+        }
+      }
     }
   }
 

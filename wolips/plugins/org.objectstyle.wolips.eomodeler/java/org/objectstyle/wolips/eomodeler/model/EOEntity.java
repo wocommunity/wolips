@@ -465,7 +465,9 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
   }
 
   public boolean isPrototype() {
-    return myName != null && myName.startsWith("EO") && myName.endsWith("Prototypes");
+    // MS: Normally it would be .endsWith("Prototypes"), but if there are duplicate names, then
+    // the entities get renamed to be EOXxxPrototypes1
+    return myName != null && myName.startsWith("EO") && myName.indexOf("Prototypes") != -1;
   }
 
   public String getExternalQuery() {
@@ -1218,9 +1220,19 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
   }
 
   public void verify(Set _failures) {
-    if (!StringUtils.isUppercaseFirstLetter(myName)) {
-      _failures.add(new EOModelVerificationFailure("Entity names should be capitalized, but " + myModel.getName() + "/" + myName + " is not."));
+    String name = getName();
+    if (name == null || name.trim().length() == 0) {
+      _failures.add(new EOModelVerificationFailure(myModel.getName() + "/" + myName + " has an empty name."));
     }
+    else {
+      if (name.indexOf(' ') != -1) {
+        _failures.add(new EOModelVerificationFailure(myModel.getName() + "/" + myName + "'s name has a space in it."));
+      }
+      if (!StringUtils.isUppercaseFirstLetter(myName)) {
+        _failures.add(new EOModelVerificationFailure("Entity names should be capitalized, but " + myModel.getName() + "/" + myName + " is not."));
+      }
+    }
+
     Iterator attributeIter = myAttributes.iterator();
     while (attributeIter.hasNext()) {
       EOAttribute attribute = (EOAttribute) attributeIter.next();
@@ -1239,12 +1251,22 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
       fetchSpec.verify(_failures);
     }
 
-    //    EOEntity parent = getParent();
-    //    if (parent != null && getRestrictingQualifier() == null) {
-    //      if (ComparisonUtils.equals(getExternalName(), parent.getExternalName()) {
-    //        _failures.add(new EOModelVerificationFailure(myModel.getName() + "/" + getName() + " is a subclass of " + getParent().getName() + " but does not have a restricting qualifier."));
-    //      }
-    //    }
+    if (!isPrototype()) {
+      String externalName = getExternalName();
+      if (externalName == null || externalName.trim().length() == 0) {
+        _failures.add(new EOModelVerificationFailure(myModel.getName() + "/" + getName() + " has an empty table name."));
+      }
+      else if (externalName.indexOf(' ') != -1) {
+        _failures.add(new EOModelVerificationFailure(myModel.getName() + "/" + getName() + "'s table name '" + externalName + "' has a space in it."));
+      }
+    }
+
+    EOEntity parent = getParent();
+    if (parent != null && getRestrictingQualifier() == null) {
+      if (ComparisonUtils.equals(getExternalName(), parent.getExternalName())) {
+        _failures.add(new EOModelVerificationFailure(myModel.getName() + "/" + getName() + " is a subclass of " + getParent().getName() + " but does not have a restricting qualifier."));
+      }
+    }
   }
 
   public String toString() {

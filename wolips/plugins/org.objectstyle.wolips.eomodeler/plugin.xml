@@ -242,7 +242,7 @@
             visible="true">
          <action
                class="org.objectstyle.wolips.eomodeler.actions.SubclassEntityAction"
-               icon="icons/eoEntity.gif"
+               icon="icons/subclassEntity.gif"
                id="org.objectstyle.wolips.eomodeler.actions.subclassEntity"
                label="Subclass Entity"
                style="push"
