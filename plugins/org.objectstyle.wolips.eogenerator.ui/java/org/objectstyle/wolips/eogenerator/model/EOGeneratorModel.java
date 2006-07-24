@@ -50,6 +50,7 @@
 package org.objectstyle.wolips.eogenerator.model;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -59,10 +60,17 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jdt.core.IClasspathEntry;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.core.JavaModelException;
 import org.objectstyle.wolips.preferences.Preferences;
 
 public class EOGeneratorModel {
@@ -85,9 +93,13 @@ public class EOGeneratorModel {
   private boolean myDirty;
 
   public EOGeneratorModel(IProject _project, String _lineInfo) throws ParseException {
+    this(_project);
+    readFromString(_lineInfo);
+  }
+
+  public EOGeneratorModel(IProject _project) {
     this();
     myProject = _project;
-    readFromString(_lineInfo);
   }
 
   public EOGeneratorModel() {
@@ -97,23 +109,17 @@ public class EOGeneratorModel {
     myCustomSettings = new LinkedList();
   }
 
-  public static EOGeneratorModel createModelFromFile(IFile _file) throws ParseException, CoreException, IOException {
-    _file.refreshLocal(IResource.DEPTH_INFINITE, null);
-    InputStream eogenFileStream = _file.getContents();
-    try {
-      StringBuffer sb = new StringBuffer();
-      BufferedReader br = new BufferedReader(new InputStreamReader(eogenFileStream));
-      String line;
-      while ((line = br.readLine()) != null) {
-        sb.append(line);
-      }
-      EOGeneratorModel model = new EOGeneratorModel(_file.getProject(), sb.toString());
-      model.setEOGeneratorPath(Preferences.getEOGeneratorPath());
-      return model;
+  public void writeToFile(IFile _file, IProgressMonitor _monitor) throws CoreException, IOException {
+    String eogenFileContents = writeToString(Preferences.getEOGeneratorPath(), Preferences.getEOGeneratorTemplateDir(), Preferences.getEOGeneratorJavaTemplate(), Preferences.getEOGeneratorSubclassJavaTemplate());
+    InputStream stream = new ByteArrayInputStream(eogenFileContents.getBytes("UTF-8"));
+    if (_file.exists()) {
+      _file.setContents(stream, true, true, _monitor);
     }
-    finally {
-      eogenFileStream.close();
+    else {
+      _file.create(stream, true, _monitor);
     }
+    stream.close();
+    setDirty(false);
   }
 
   public String writeToString(String _defaultEOGeneratorPath, String _defaultTemplateDir, String _defaultJavaTemplate, String _defaultSubclassJavaTemplate) {
@@ -355,6 +361,11 @@ public class EOGeneratorModel {
     myDirty = true;
   }
 
+  public void addModel(EOModelReference _modelReference) {
+    myModels.add(_modelReference);
+    myDirty = true;
+  }
+
   public Boolean isPackageDirs() {
     return myPackageDirs;
   }
@@ -370,6 +381,11 @@ public class EOGeneratorModel {
 
   public void setRefModels(List _refModels) {
     myRefModels = _refModels;
+    myDirty = true;
+  }
+
+  public void addRefModel(EOModelReference _modelReference) {
+    myRefModels.add(_modelReference);
     myDirty = true;
   }
 
@@ -500,11 +516,56 @@ public class EOGeneratorModel {
     }
   }
 
-  public static EOGeneratorModel createDefaultModel() {
-    EOGeneratorModel model = new EOGeneratorModel();
+  public static EOGeneratorModel createModelFromFile(IFile _file) throws ParseException, CoreException, IOException {
+    _file.refreshLocal(IResource.DEPTH_INFINITE, null);
+    InputStream eogenFileStream = _file.getContents();
+    try {
+      StringBuffer sb = new StringBuffer();
+      BufferedReader br = new BufferedReader(new InputStreamReader(eogenFileStream));
+      String line;
+      while ((line = br.readLine()) != null) {
+        sb.append(line);
+      }
+      EOGeneratorModel model = new EOGeneratorModel(_file.getProject(), sb.toString());
+      model.setEOGeneratorPath(Preferences.getEOGeneratorPath());
+      return model;
+    }
+    finally {
+      eogenFileStream.close();
+    }
+  }
+
+  public static EOGeneratorModel createDefaultModel(IProject _project) {
+    EOGeneratorModel model = new EOGeneratorModel(_project);
     model.setJava(Boolean.TRUE);
     model.setPackageDirs(Boolean.TRUE);
     model.setVerbose(Boolean.TRUE);
+    //    model.setEOGeneratorPath(Preferences.getEOGeneratorPath());
+    //    model.setJavaTemplate(Preferences.getEOGeneratorJavaTemplate());
+    //    model.setTemplateDir(Preferences.getEOGeneratorTemplateDir());
+    //    model.setSubclassJavaTemplate(Preferences.getEOGeneratorSubclassJavaTemplate());
+    try {
+      IJavaProject javaProject = JavaCore.create(_project);
+      if (javaProject != null) {
+        IClasspathEntry[] classpathEntry = javaProject.getRawClasspath();
+        for (int classpathEntryNum = 0; classpathEntryNum < classpathEntry.length; classpathEntryNum++) {
+          IClasspathEntry entry = classpathEntry[classpathEntryNum];
+          if (entry.getEntryKind() == IClasspathEntry.CPE_SOURCE) {
+            IPath path = entry.getPath();
+            if (path != null) {
+              IFolder sourceFolder = _project.getWorkspace().getRoot().getFolder(path);
+              IPath projectRelativePath = sourceFolder.getProjectRelativePath();
+              String projectRelativePathStr = projectRelativePath.toPortableString();
+              model.setDestination(projectRelativePathStr);
+              model.setSubclassDestination(projectRelativePathStr);
+            }
+          }
+        }
+      }
+    }
+    catch (JavaModelException e) {
+      e.printStackTrace();
+    }
     return model;
   }
 }

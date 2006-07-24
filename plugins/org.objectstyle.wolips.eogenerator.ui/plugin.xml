@@ -14,16 +14,6 @@
       </editor>
    </extension>
    <extension
-         point="org.eclipse.ui.newWizards">
-      <wizard
-            name="EOGenerator"
-            icon="icons/eogenerator_wiz.gif"
-            category="org.objectstyle.wolips.wizards"
-            class="org.objectstyle.wolips.eogenerator.ui.wizards.EOGeneratorWizard"
-            id="org.objectstyle.wolips.eogenerator.ui.wizards.EOGeneratorWizard">
-      </wizard>
-   </extension>
-   <extension
          point="org.eclipse.ui.popupMenus">
       <objectContribution
             adaptable="true"

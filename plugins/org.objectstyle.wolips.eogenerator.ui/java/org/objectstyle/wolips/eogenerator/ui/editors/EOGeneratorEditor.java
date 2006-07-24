@@ -49,8 +49,6 @@
  */
 package org.objectstyle.wolips.eogenerator.ui.editors;
 
-import java.io.ByteArrayInputStream;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.ErrorDialog;
@@ -59,7 +57,6 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.part.FileEditorInput;
 import org.objectstyle.wolips.eogenerator.model.EOGeneratorModel;
-import org.objectstyle.wolips.preferences.Preferences;
 
 public class EOGeneratorEditor extends FormEditor {
   private EOGeneratorModel myModel;
@@ -91,18 +88,8 @@ public class EOGeneratorEditor extends FormEditor {
 
   public void doSave(IProgressMonitor _monitor) {
     try {
-      String eogenFileContents = myModel.writeToString(Preferences.getEOGeneratorPath(), Preferences.getEOGeneratorTemplateDir(), Preferences.getEOGeneratorJavaTemplate(), Preferences.getEOGeneratorSubclassJavaTemplate());
-      byte[] bytes = eogenFileContents.getBytes("UTF-8");
-      ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
       FileEditorInput editorInput = (FileEditorInput) getEditorInput();
-      IFile eogenFile = editorInput.getFile();
-      if (!eogenFile.exists()) {
-        eogenFile.create(bais, true, _monitor);
-      }
-      else {
-        eogenFile.setContents(bais, true, true, _monitor);
-      }
-      myModel.setDirty(false);
+      myModel.writeToFile(editorInput.getFile(), _monitor);
       editorDirtyStateChanged();
     }
     catch (Throwable e) {

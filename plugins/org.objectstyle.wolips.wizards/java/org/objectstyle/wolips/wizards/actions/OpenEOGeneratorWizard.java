@@ -57,7 +57,7 @@
 package org.objectstyle.wolips.wizards.actions;
 
 import org.eclipse.ui.INewWizard;
-import org.objectstyle.wolips.eogenerator.ui.wizards.EOGeneratorWizard;
+import org.objectstyle.wolips.wizards.EOGeneratorWizard;
 
 /**
  * @author uli
