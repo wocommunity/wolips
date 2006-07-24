@@ -102,6 +102,12 @@ public class EOAttributesCellModifier extends TablePropertyCellModifier {
       }
       value = new Integer(myPrototypeNames.indexOf(prototypeName));
     }
+    else if (_property == EOAttribute.ALLOWS_NULL || _property == EOAttribute.CLASS_PROPERTY || _property == EOAttribute.CLIENT_CLASS_PROPERTY || _property == EOAttribute.INDEXED || _property == EOAttribute.PRIMARY_KEY || _property == EOAttribute.READ_ONLY || _property== EOAttribute.USED_FOR_LOCKING) {
+      value = super.getValue(_element, _property);
+      if (value == null) {
+        value = Boolean.FALSE;
+      }
+    }
     else {
       value = super.getValue(_element, _property);
     }
