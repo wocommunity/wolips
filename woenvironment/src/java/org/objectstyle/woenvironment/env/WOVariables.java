@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 The ObjectStyle Group 
+ * Copyright (c) 2002 - 2006 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -67,19 +67,21 @@ import org.objectstyle.woenvironment.util.FileStringScanner;
 
 /**
  * @author uli
- *  
+ * 
  */
 public class WOVariables {
 	private static final String WO_ROOT = "wo.woroot";
 
-	//private final String LOCAL_ROOT = "wo.localroot";
+	// private final String LOCAL_ROOT = "wo.localroot";
 	private static final String WO_WO_SYSTEM_ROOT = "wo.wosystemroot";
 
 	private static final String WO_WO_LOCAL_ROOT = "wo.wolocalroot";
 
 	private static final String HOME_ROOT = "wo.homeroot";
 
-	//private final String ABSOLUTE_ROOT = "wo.absoluteroot";
+	private static final String REFERENCE_API_KEY = "wo.dir.reference.api";
+
+	// private final String ABSOLUTE_ROOT = "wo.absoluteroot";
 	/**
 	 * Key for setting wobuild.properties path by environment
 	 * 
@@ -218,6 +220,17 @@ public class WOVariables {
 	}
 
 	/**
+	 * Method referenceApi. WOVariables.REFERENCE_API_KEY defined in wobuild.properties (key:
+	 * <code>wo.dir.reference.api</code>)
+	 * 
+	 * @return String
+	 */
+	public String referenceApi() {
+		return this.wobuildProperties
+				.getProperty(WOVariables.REFERENCE_API_KEY);
+	}
+
+	/**
 	 * Method userHome
 	 * 
 	 * @return String
@@ -315,11 +328,11 @@ public class WOVariables {
 	 * @param aFile
 	 * @return String
 	 */
-    public String encodePathForFile(File aFile) {
-        return encodePath(aFile.getPath());
-    }
-    
-    public String encodePath(String path) {
+	public String encodePathForFile(File aFile) {
+		return encodePath(aFile.getPath());
+	}
+
+	public String encodePath(String path) {
 		String userHome = null;
 		String systemRoot = null;
 		String localRoot = null;
@@ -337,15 +350,15 @@ public class WOVariables {
 				userHomeLength = userHome.length();
 			if (systemRoot != null)
 				systemRootLength = systemRoot.length();
-			//aPath = aFile.getCanonicalPath();
-			//u.k. the CanonicalPath will resolve links this will
-			//result in path with /Versions/a in it
+			// aPath = aFile.getCanonicalPath();
+			// u.k. the CanonicalPath will resolve links this will
+			// result in path with /Versions/a in it
 			aPath = this.convertWindowsPath(path);
-			//            aPrefix = this.getAppRootPath();
-			//            if((aPrefix != null) && (aPrefix.length() > 1) &&
+			// aPrefix = this.getAppRootPath();
+			// if((aPrefix != null) && (aPrefix.length() > 1) &&
 			// (aPath.startsWith(aPrefix))) {
-			//            	return "APPROOT" + aPath.substring(aPrefix.length());
-			//            }
+			// return "APPROOT" + aPath.substring(aPrefix.length());
+			// }
 			if (localRoot != null && aPath.startsWith(localRoot)) {
 				boolean otherRoot = false;
 				if (localRootLength < userHomeLength
@@ -355,7 +368,7 @@ public class WOVariables {
 						&& aPath.startsWith(systemRoot))
 					otherRoot = true;
 				if (!otherRoot) {
-					if (localRootLength == 1) //MacOSX
+					if (localRootLength == 1) // MacOSX
 						return "LOCALROOT" + aPath;
 					return "LOCALROOT" + aPath.substring(localRootLength);
 				}

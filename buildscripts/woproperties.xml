@@ -25,7 +25,8 @@
       		        <isset property="wo.dir.local.library"/>
       		        <isset property="wo.dir.local.library.frameworks"/>
       		        <isset property="wo.dir.user.home.library"/>
-      		        <isset property="wo.dir.user.home.library.frameworks"/>
+          		    <isset property="wo.dir.user.home.library.frameworks"/>
+          		    <isset property="wo.dir.reference.api"/>
       	            </and>
     		</not>
   	    </condition>
@@ -57,6 +58,7 @@
  			<entry  key="wo.dir.local.library.frameworks" value="${env.NEXT_ROOT}/Local/Library/Frameworks"/>
  			<entry  key="wo.dir.user.home.library" value="${user.home}/Local/Library"/>
  			<entry  key="wo.dir.user.home.library.frameworks" value="${user.home}/Local/Library/Frameworks"/>
+ 			<entry  key="wo.dir.reference.api" value="${env.NEXT_ROOT}/Developer/Documentation/WebObjects/Reference/API/"/>
 		</propertyfile>
 		
 		<condition property="correct.win">
@@ -85,6 +87,7 @@
  			<entry  key="wo.dir.local.library.frameworks" value="/Library/Frameworks"/>
  			<entry  key="wo.dir.user.home.library" value="${user.home}/Library"/>
  			<entry  key="wo.dir.user.home.library.frameworks" value="${user.home}/Library/Frameworks"/>
+ 			<entry  key="wo.dir.reference.api" value="/Developer/ADC%20Reference%20Library/documentation/WebObjects/Reference/API/"/>
  		</propertyfile>
 	</target>
 		

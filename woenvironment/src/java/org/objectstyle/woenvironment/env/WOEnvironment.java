@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 The ObjectStyle Group 
+ * Copyright (c) 2002 - 2006 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -61,27 +61,27 @@ import java.util.Map;
 
 /**
  * @author uli
- *
- * To prevent static variables create an instance of WOEnvironment
- * to access the environment and WOVariables.
+ * 
+ * To prevent static variables create an instance of WOEnvironment to access the
+ * environment and WOVariables.
  */
 
 public final class WOEnvironment extends Environment {
 	private WOVariables woVariables;
-	
+
 	public WOEnvironment() {
 		super();
 		woVariables = new WOVariables(this);
 	}
-	
+
 	/**
 	 * Creates new WOEnvironment, specifying the list of alternative properties.
 	 * 
 	 * @param properties
 	 */
 	public WOEnvironment(Map altProperties) {
-	    super();
-        woVariables = new WOVariables(this, altProperties);
+		super();
+		woVariables = new WOVariables(this, altProperties);
 	}
 
 	/**
@@ -90,22 +90,28 @@ public final class WOEnvironment extends Environment {
 	public WOVariables getWOVariables() {
 		return woVariables;
 	}
+
 	/**
 	 * Method wo5or51 returns true if the installe WO version is 5.0 or 5.1.
+	 * 
 	 * @return boolean
 	 */
 	public boolean wo5or51() {
 		return (this.bootstrap() == null);
 	}
+
 	/**
 	 * Method wo52 returns true if the installe WO version is 5.2.
+	 * 
 	 * @return boolean
 	 */
 	public boolean wo52() {
 		return !this.wo5or51();
 	}
+
 	/**
 	 * Method bootstrap returns the bootstrap.jar if it exists.
+	 * 
 	 * @param project
 	 * @return File
 	 */
@@ -122,63 +128,68 @@ public final class WOEnvironment extends Environment {
 			return aFile;
 		return null;
 	}
+
 	/**
 	 * Method macBootstrap.
+	 * 
 	 * @param project
 	 * @return File
 	 */
 	private File macBootstrap() {
 		File aFile = null;
 		try {
-			aFile =
-				new File("/System/Library/WebObjects/JavaApplications/wotaskd.woa/WOBootstrap.jar");
-			if ((aFile != null) && (aFile.exists()))
+			aFile = new File(
+					"/System/Library/WebObjects/JavaApplications/wotaskd.woa/WOBootstrap.jar");
+			if (aFile.exists())
 				return aFile;
 		} catch (Exception anException) {
 			System.out.println(anException);
 		}
 		return null;
 	}
+
 	/**
 	 * Method winBootstrap.
+	 * 
 	 * @param project
 	 * @return File
 	 */
 	private File winBootstrap() {
 		File aFile = null;
 		try {
-			aFile =
-				new File(
+			aFile = new File(
 					this.getWOVariables().systemRoot()
-						+ "/Library/WebObjects/JavaApplications/wotaskd.woa/WOBootstrap.jar");
-			if ((aFile != null) && (aFile.exists()))
+							+ "/Library/WebObjects/JavaApplications/wotaskd.woa/WOBootstrap.jar");
+			if (aFile.exists())
 				return aFile;
 		} catch (Exception anException) {
 			System.out.println(anException);
 		}
 		return null;
 	}
+
 	/**
 	 * Method otherBootstrap.
+	 * 
 	 * @param project
 	 * @return File
 	 */
 	private File otherBootstrap() {
 		File aFile = null;
 		try {
-			aFile =
-				new File(
+			aFile = new File(
 					this.getWOVariables().systemRoot()
-						+ "\\Library\\WebObjects\\JavaApplications\\wotaskd.woa\\WOBootstrap.jar");
-			if ((aFile != null) && (aFile.exists()))
+							+ "\\Library\\WebObjects\\JavaApplications\\wotaskd.woa\\WOBootstrap.jar");
+			if (aFile.exists())
 				return aFile;
 		} catch (Exception anException) {
 			System.out.println(anException);
 		}
 		return null;
 	}
-	
+
 	public boolean variablesConfigured() {
-		 return getWOVariables().systemRoot() != null && getWOVariables().localRoot() != null;
+		return getWOVariables().systemRoot() != null
+				&& getWOVariables().localRoot() != null;
 	}
 }
