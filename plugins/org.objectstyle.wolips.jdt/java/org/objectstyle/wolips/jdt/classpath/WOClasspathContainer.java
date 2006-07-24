@@ -154,8 +154,18 @@ public final class WOClasspathContainer
 						    IClasspathAttribute javadoc[] = new IClasspathAttribute[0];
 						    if(framework.indexOf("Java") == 0) {
 						    	javadoc = new IClasspathAttribute[1];
-						    	javadoc[0] = JavaCore.newClasspathAttribute(IClasspathAttribute.JAVADOC_LOCATION_ATTRIBUTE_NAME, 
-						    			"file:///Developer/ADC%20Reference%20Library/documentation/WebObjects/Reference/API/");
+                  javadoc = new IClasspathAttribute[1];
+                  String osName = System.getProperty("os.name").toLowerCase();
+                  if (osName.indexOf("windows") >= 0) {
+                      javadoc[0] = JavaCore
+                              .newClasspathAttribute(IClasspathAttribute.JAVADOC_LOCATION_ATTRIBUTE_NAME,
+                                  "file:///C:/Apple/Developer/Documentation/WebObjects/Reference/API/");
+                  }
+                  else {
+                      javadoc[0] = JavaCore
+                              .newClasspathAttribute(IClasspathAttribute.JAVADOC_LOCATION_ATTRIBUTE_NAME,
+                                  "file:///Developer/ADC%20Reference%20Library/documentation/WebObjects/Reference/API/");
+                  }
 						    }
 						    IClasspathEntry entry = JavaCore.newLibraryEntry(archivePath, source, null, null, javadoc, false);
 						    _path.add(entry);
