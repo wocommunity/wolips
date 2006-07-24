@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 The ObjectStyle Group 
+ * Copyright (c) 2002 - 2006  The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -54,6 +54,7 @@
  *
  */
 package org.objectstyle.wolips.jdt.classpath;
+
 import java.io.File;
 import java.io.FilenameFilter;
 import java.net.MalformedURLException;
@@ -68,33 +69,36 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.ui.JavaUI;
 import org.objectstyle.wolips.variables.VariablesPlugin;
+
 /**
  * @author Harald Niesche
- *  
+ * 
  */
-public final class WOClasspathContainer
-		implements
-			IClasspathContainer {
+public final class WOClasspathContainer implements IClasspathContainer {
 	public static final String WOLIPS_CLASSPATH_CONTAINER_IDENTITY = "org.objectstyle.wolips.WO_CLASSPATH";
-	public static final String[] WOLIPS_CLASSPATH_STANDARD_FRAMEWORKS = new String[]{
+
+	public static final String[] WOLIPS_CLASSPATH_STANDARD_FRAMEWORKS = new String[] {
 			"JavaWebObjects", "JavaFoundation", "JavaXML", "JavaWOExtensions",
-			"JavaEOAccess", "JavaEOControl", "JavaJDBCAdaptor"};
-	
+			"JavaEOAccess", "JavaEOControl", "JavaJDBCAdaptor" };
+
 	private IClasspathEntry[] classpathEntries = null;
+
 	/**
 	 * Constructor for WOClassPathContainer.
-	 * @param id 
+	 * 
+	 * @param id
 	 */
 	public WOClasspathContainer(IPath id) {
 		super();
 		_id = id;
 		_initPath();
 	}
+
 	/**
 	 * @see org.eclipse.jdt.core.IClasspathContainer#getClasspathEntries()
 	 */
 	public IClasspathEntry[] getClasspathEntries() {
-		if(classpathEntries == null) {
+		if (classpathEntries == null) {
 			if (_path.size() == 0) {
 				_path.clear();
 				_initPath();
@@ -104,24 +108,28 @@ public final class WOClasspathContainer
 		}
 		return classpathEntries;
 	}
+
 	/**
 	 * @see org.eclipse.jdt.core.IClasspathContainer#getDescription()
 	 */
 	public String getDescription() {
 		return "WO Frameworks";
 	}
+
 	/**
 	 * @see org.eclipse.jdt.core.IClasspathContainer#getKind()
 	 */
 	public int getKind() {
 		return IClasspathContainer.K_APPLICATION;
 	}
+
 	/**
 	 * @see org.eclipse.jdt.core.IClasspathContainer#getPath()
 	 */
 	public IPath getPath() {
 		return _id;
 	}
+
 	private void _initPath() {
 		IPath[] paths = VariablesPlugin.getDefault().getFrameworkRoots();
 		for (int i = 1; i < _id.segmentCount(); i++) {
@@ -139,43 +147,44 @@ public final class WOClasspathContainer
 											.endsWith(".jar"));
 								}
 							});
-					IPath source = new Path(classpathVariable.toOSString() + "/" + framework + ".framework/Resources/Java/src.jar");
-					if(!source.toFile().exists()) {
-					    source = null;
+					IPath source = new Path(classpathVariable.toOSString()
+							+ "/" + framework
+							+ ".framework/Resources/Java/src.jar");
+					if (!source.toFile().exists()) {
+						source = null;
 					}
 					for (int j = 0; j < archives.length; j++) {
-						//framework found under this root
+						// framework found under this root
 						h = paths.length;
 						IPath archivePath = new Path(frameworkFile
 								.getAbsolutePath()
 								+ "/" + archives[j]);
-						//IClasspathEntry entry = JavaCore.newLibraryEntry(archivePath, null, null);
-						if(!archives[j].equals("src.jar")) {
-						    IClasspathAttribute javadoc[] = new IClasspathAttribute[0];
-						    if(framework.indexOf("Java") == 0) {
-						    	javadoc = new IClasspathAttribute[1];
-                  javadoc = new IClasspathAttribute[1];
-                  String osName = System.getProperty("os.name").toLowerCase();
-                  if (osName.indexOf("windows") >= 0) {
-                      javadoc[0] = JavaCore
-                              .newClasspathAttribute(IClasspathAttribute.JAVADOC_LOCATION_ATTRIBUTE_NAME,
-                                  "file:///C:/Apple/Developer/Documentation/WebObjects/Reference/API/");
-                  }
-                  else {
-                      javadoc[0] = JavaCore
-                              .newClasspathAttribute(IClasspathAttribute.JAVADOC_LOCATION_ATTRIBUTE_NAME,
-                                  "file:///Developer/ADC%20Reference%20Library/documentation/WebObjects/Reference/API/");
-                  }
-						    }
-						    IClasspathEntry entry = JavaCore.newLibraryEntry(archivePath, source, null, null, javadoc, false);
-						    _path.add(entry);
+						// IClasspathEntry entry =
+						// JavaCore.newLibraryEntry(archivePath, null, null);
+						if (!archives[j].equals("src.jar")) {
+							IClasspathAttribute javadoc[] = new IClasspathAttribute[0];
+							if (framework.indexOf("Java") == 0) {
+								javadoc = new IClasspathAttribute[1];
+								javadoc = new IClasspathAttribute[1];
+								javadoc[0] = JavaCore
+										.newClasspathAttribute(
+												IClasspathAttribute.JAVADOC_LOCATION_ATTRIBUTE_NAME,
+												VariablesPlugin.getDefault()
+														.getReferenceApi()
+														.toOSString());
+							}
+							IClasspathEntry entry = JavaCore.newLibraryEntry(
+									archivePath, source, null, null, javadoc,
+									false);
+							_path.add(entry);
 						}
 					}
 				}
 			}
 		}
 	}
-	
-    private IPath _id;
+
+	private IPath _id;
+
 	private ArrayList _path = new ArrayList();
 }
