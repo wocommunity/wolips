@@ -120,6 +120,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
   private IStructuredSelection mySelection;
   private PropertyChangeListener myDirtyModelListener;
   private EntitiesChangeRefresher myEntitiesChangeListener;
+  private AttributeAndRelationshipDeletedRefresher myAttributeAndRelationshipListener;
 
   private EOEntity mySelectedEntity;
   private EOEntity myOpeningEntity;
@@ -132,6 +133,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
     mySelectionChangedListeners = new ListenerList();
     myDirtyModelListener = new DirtyModelListener();
     myEntitiesChangeListener = new EntitiesChangeRefresher();
+    myAttributeAndRelationshipListener = new AttributeAndRelationshipDeletedRefresher();
     ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
   }
 
@@ -146,7 +148,11 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
   public EOModel getModel() {
     return myModel;
   }
-
+  
+  public EOEntity getSelectedEntity() {
+    return mySelectedEntity;
+  }
+  
   public String getContributorId() {
     return getSite().getId();
   }
@@ -195,7 +201,15 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 
   public void setSelectedEntity(EOEntity _selectedEntity) {
     if (!ComparisonUtils.equals(mySelectedEntity, _selectedEntity)) {
+      if (mySelectedEntity != null) {
+        mySelectedEntity.removePropertyChangeListener(EOEntity.ATTRIBUTES, myAttributeAndRelationshipListener);
+        mySelectedEntity.removePropertyChangeListener(EOEntity.RELATIONSHIPS, myAttributeAndRelationshipListener);
+      }
       mySelectedEntity = _selectedEntity;
+      if (mySelectedEntity != null) {
+        mySelectedEntity.addPropertyChangeListener(EOEntity.ATTRIBUTES, myAttributeAndRelationshipListener);
+        mySelectedEntity.addPropertyChangeListener(EOEntity.RELATIONSHIPS, myAttributeAndRelationshipListener);
+      }
       myEntitiesTableEditor.setSelectedEntity(_selectedEntity);
       myEntityEditor.setEntity(_selectedEntity);
       if (_selectedEntity == null) {
@@ -554,6 +568,19 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
         else if (newValues.size() < oldValues.size()) {
           EOModelEditor.this.setSelection(new StructuredSelection(EOModelEditor.this.getModel()));
           EOModelEditor.this.setActivePage(EOModelEditor.EOMODEL_PAGE);
+        }
+      }
+    }
+  }
+
+  protected class AttributeAndRelationshipDeletedRefresher implements PropertyChangeListener {
+    public void propertyChange(PropertyChangeEvent _event) {
+      Set oldValues = (Set) _event.getOldValue();
+      Set newValues = (Set) _event.getNewValue();
+      if (newValues != null && oldValues != null) {
+        if (newValues.size() < oldValues.size()) {
+          EOModelEditor.this.setSelection(new StructuredSelection(EOModelEditor.this.getSelectedEntity()));
+          EOModelEditor.this.setActivePage(EOModelEditor.EOENTITY_PAGE);
         }
       }
     }
