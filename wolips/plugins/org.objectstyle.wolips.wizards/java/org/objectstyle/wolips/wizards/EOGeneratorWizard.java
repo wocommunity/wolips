@@ -47,12 +47,12 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eogenerator.ui.wizards;
+package org.objectstyle.wolips.wizards;
 
-import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Iterator;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -77,6 +77,9 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.ide.IDE;
 import org.objectstyle.wolips.eogenerator.model.EOGeneratorModel;
+import org.objectstyle.wolips.eogenerator.model.EOModelReference;
+import org.objectstyle.wolips.eomodeler.model.EOModel;
+import org.objectstyle.wolips.eomodeler.model.EOModelGroup;
 
 /**
  * This is a sample new wizard. Its role is to create a new file 
@@ -151,7 +154,7 @@ public class EOGeneratorWizard extends Wizard implements INewWizard {
    * the editor on the newly created file.
    */
 
-  private void doFinish(String containerName, String fileName, IProgressMonitor monitor) throws CoreException {
+  protected void doFinish(String containerName, String fileName, IProgressMonitor monitor) throws CoreException {
     // create a sample file
     monitor.beginTask("Creating " + fileName, 2);
     IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
@@ -162,18 +165,11 @@ public class EOGeneratorWizard extends Wizard implements INewWizard {
     IContainer container = (IContainer) resource;
     final IFile file = container.getFile(new Path(fileName));
     try {
-      EOGeneratorModel model = EOGeneratorModel.createDefaultModel();
-      String modelStr = model.writeToString(null, null, null, null);
-      InputStream stream = new ByteArrayInputStream(modelStr.getBytes("UTF-8"));
-      if (file.exists()) {
-        file.setContents(stream, true, true, monitor);
-      }
-      else {
-        file.create(stream, true, monitor);
-      }
-      stream.close();
+      EOGeneratorModel model = EOGeneratorModel.createDefaultModel(container.getProject());
+      model.writeToFile(file, monitor);
     }
     catch (IOException e) {
+      e.printStackTrace();
     }
     monitor.worked(1);
     monitor.setTaskName("Opening file for editing...");
@@ -184,6 +180,7 @@ public class EOGeneratorWizard extends Wizard implements INewWizard {
           IDE.openEditor(page, file, true);
         }
         catch (PartInitException e) {
+          e.printStackTrace();
         }
       }
     });
@@ -200,7 +197,28 @@ public class EOGeneratorWizard extends Wizard implements INewWizard {
    * we can initialize from it.
    * @see IWorkbenchWizard#init(IWorkbench, IStructuredSelection)
    */
-  public void init(IWorkbench workbench, IStructuredSelection _selection) {
-    mySelection = _selection;
+  public void init(IWorkbench workbench, IStructuredSelection selection) {
+    mySelection = selection;
+  }
+
+  public static EOGeneratorModel createEOGeneratorModel(IContainer parentResource, EOModel targetModel) {
+    EOGeneratorModel eogenModel = EOGeneratorModel.createDefaultModel(parentResource.getProject());
+    EOModelGroup modelGroup = targetModel.getModelGroup();
+    Iterator modelsIter = modelGroup.getModels().iterator();
+    while (modelsIter.hasNext()) {
+      EOModel modelGroupModel = (EOModel) modelsIter.next();
+      File modelFolder = modelGroupModel.getModelFolder();
+      if (modelFolder != null) {
+        Path modelPath = new Path(modelFolder.getAbsolutePath());
+        EOModelReference modelReference = new EOModelReference(modelPath);
+        if (modelGroupModel == targetModel) {
+          eogenModel.addModel(modelReference);
+        }
+        else {
+          eogenModel.addRefModel(modelReference);
+        }
+      }
+    }
+    return eogenModel;
   }
 }

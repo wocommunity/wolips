@@ -98,6 +98,15 @@
                class="org.eclipse.core.resources.IResource">
          </selection>
       </wizard>
+      <wizard
+            category="org.objectstyle.wolips.wizards"
+            class="org.objectstyle.wolips.wizards.EOGeneratorWizard"
+            icon="icons/woproject/eogenerator_wiz.gif"
+            id="org.objectstyle.wolips.wizards.new.eogen"
+            name="EOGenerator">
+         <description/>
+         <selection class="org.eclipse.core.resources.IResource"/>
+      </wizard>
    </extension>
 <!-- =================================================================================== -->
 <!-- Extension: Action set in the perspective                                            -->

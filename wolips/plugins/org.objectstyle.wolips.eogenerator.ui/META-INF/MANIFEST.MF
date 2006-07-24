@@ -24,7 +24,7 @@ Require-Bundle: org.eclipse.ui,
  org.objectstyle.wolips.builder,
  org.objectstyle.wolips
 Eclipse-LazyStart: true
-Export-Package: org.objectstyle.wolips.eogenerator.ui.wizards,
- org.objectstyle.wolips.eogenerator.ui.editors,
+Export-Package: org.objectstyle.wolips.eogenerator.model,
+ org.objectstyle.wolips.eogenerator.ui,
  org.objectstyle.wolips.eogenerator.ui.actions,
- org.objectstyle.wolips.eogenerator.ui
+ org.objectstyle.wolips.eogenerator.ui.editors

@@ -63,6 +63,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
@@ -75,6 +76,7 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.objectstyle.wolips.datasets.adaptable.JavaProject;
 import org.objectstyle.wolips.datasets.resources.IWOLipsModel;
+import org.objectstyle.wolips.eogenerator.model.EOGeneratorModel;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
 import org.objectstyle.wolips.eomodeler.model.EOModelException;
 import org.objectstyle.wolips.eomodeler.model.EOModelGroup;
@@ -90,6 +92,7 @@ public class EOModelCreator implements IRunnableWithProgress {
   private String modelName;
   private String adaptorName;
   private IResource parentResource;
+  private boolean createEOGeneratorFile;
   private EOModelCreationPage page;
 
   /**
@@ -99,11 +102,12 @@ public class EOModelCreator implements IRunnableWithProgress {
    * @param modelName
    * @param adaptorName
    */
-  public EOModelCreator(IResource parentResource, String modelName, String adaptorName, EOModelCreationPage page) {
+  public EOModelCreator(IResource parentResource, String modelName, String adaptorName, boolean createEOGeneratorFile, EOModelCreationPage page) {
     this.parentResource = parentResource;
     this.modelName = modelName;
     this.adaptorName = adaptorName;
     this.page = page;
+    this.createEOGeneratorFile = createEOGeneratorFile;
   }
 
   public void run(IProgressMonitor monitor) throws InvocationTargetException {
@@ -140,9 +144,19 @@ public class EOModelCreator implements IRunnableWithProgress {
     EOModel model = new EOModel(modelName);
     model.setAdaptorName(adaptorName);
     modelGroup.addModel(model);
-    File modelFolderFile = model.saveToFolder(parentResource.getLocation().toFile());
-    IFolder modelFolder = ((IContainer) parentResource).getFolder(new Path(modelFolderFile.getName()));
-    parentResource.refreshLocal(IResource.DEPTH_INFINITE, monitor);
+    IContainer parentContainer = (IContainer) parentResource;
+    File modelFolderFile = model.saveToFolder(parentContainer.getLocation().toFile());
+    IFolder modelFolder = parentContainer.getFolder(new Path(modelFolderFile.getName()));
+    EOGeneratorModel eogenModel = EOGeneratorWizard.createEOGeneratorModel(parentContainer, model);
+    String baseName = model.getName();
+    IFile eogenFile = parentContainer.getFile(new Path(baseName + ".eogen"));
+    if (eogenFile.exists()) {
+      for (int dupeNum = 1; !eogenFile.exists(); dupeNum++) {
+        eogenFile = parentContainer.getFile(new Path(baseName + dupeNum + ".eogen"));
+      }
+    }
+    eogenModel.writeToFile(eogenFile, monitor);
+    parentContainer.refreshLocal(IResource.DEPTH_INFINITE, monitor);
     page.setResourceToReveal(modelFolder.findMember("index.eomodeld"));
 
     // add adaptor framework

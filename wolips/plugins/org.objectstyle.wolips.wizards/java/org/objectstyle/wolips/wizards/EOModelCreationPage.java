@@ -82,6 +82,8 @@ import org.objectstyle.wolips.variables.VariablesPlugin;
 public class EOModelCreationPage extends WizardNewWOResourcePage {
 	private HashMap availableAdaptors;
 	private IResource resourceToReveal;
+  private Button createEOGeneratorFileButton;
+  
 	// widgets
 	//	private Button adaptorJDBCCheckbox;
 	//	private Button adaptorJDBCPatchedCheckbox;
@@ -113,14 +115,21 @@ public class EOModelCreationPage extends WizardNewWOResourcePage {
 				.getString("EOModelCreationPage.newEOModel.defaultName"));
 		new Label(composite, SWT.NONE); // vertical spacer
 		// section generation group
+    
 		Group group = new Group(composite, SWT.NONE);
 		group.setLayout(new GridLayout());
 		group.setText(Messages
 				.getString("EOModelCreationPage.creationOptions.title"));
 		group.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
 				| GridData.HORIZONTAL_ALIGN_FILL));
+
 		createAvailableAdaptorButtons(group);
 		new Label(composite, SWT.NONE); // vertical spacer
+
+    createEOGeneratorFileButton = new Button(composite, SWT.CHECK);
+    createEOGeneratorFileButton.setText("Create EOGenerator File?");
+    createEOGeneratorFileButton.setSelection(true);
+
 		setPageComplete(validatePage());
 	}
 	/**
@@ -138,6 +147,7 @@ public class EOModelCreationPage extends WizardNewWOResourcePage {
 				.getProject(getContainerFullPath().segment(0));
 		// determine adaptor
 		String adaptorName = "";
+    boolean createEOGeneratorFile = createEOGeneratorFileButton.getSelection();
 		Button currentButton;
 		Iterator buttonIterator = availableAdaptors.keySet().iterator();
 		while (buttonIterator.hasNext()) {
@@ -155,14 +165,14 @@ public class EOModelCreationPage extends WizardNewWOResourcePage {
 				return false;
 			case 1 :
 				modelCreator = new EOModelCreator(actualProject, modelName,
-						adaptorName, this);
+						adaptorName, createEOGeneratorFile, this);
 				break;
 			default :
 				IFolder subprojectFolder = actualProject
 						.getFolder(getContainerFullPath()
 								.removeFirstSegments(1));
 				modelCreator = new EOModelCreator(subprojectFolder, modelName,
-						adaptorName, this);
+						adaptorName, createEOGeneratorFile, this);
 				break;
 		}
 		IRunnableWithProgress op = new WorkspaceModifyDelegatingOperation(

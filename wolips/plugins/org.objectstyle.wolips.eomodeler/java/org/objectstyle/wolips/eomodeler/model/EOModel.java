@@ -84,6 +84,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
   private EOModelMap myModelMap;
   private boolean myDirty;
   private PropertyChangeRepeater myConnectionDictionaryRepeater;
+  private File myModelFolder;
 
   public EOModel(String _name) {
     myName = _name;
@@ -156,6 +157,14 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
     return (_obj instanceof EOModel && ((EOModel) _obj).myName.equals(myName));
   }
 
+  public File getModelFolder() {
+    return myModelFolder;
+  }
+  
+  public void setModelFolder(File _modelFolder) {
+    myModelFolder = _modelFolder;
+  }
+  
   public EOModelGroup getModelGroup() {
     return myModelGroup;
   }
@@ -304,6 +313,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
     if (!indexFile.exists()) {
       throw new EOModelException(indexFile + " does not exist.");
     }
+    myModelFolder = _modelFolder;
     Map rawModelMap = (Map) PropertyListSerialization.propertyListFromFile(indexFile, new EOModelParserDataStructureFactory());
     if (rawModelMap == null) {
       throw new EOModelException(indexFile + " is corrupted.");
@@ -402,6 +412,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
         throw new IOException("Failed to create folder '" + modelFolder + "'.");
       }
     }
+    myModelFolder = modelFolder;
     File indexFile = new File(modelFolder, "index.eomodeld");
     EOModelMap modelMap = toMap();
     PropertyListSerialization.propertyListToFile(indexFile, modelMap);
