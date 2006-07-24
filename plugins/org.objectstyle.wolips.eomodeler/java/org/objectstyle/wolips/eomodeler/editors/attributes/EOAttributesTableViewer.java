@@ -69,8 +69,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.objectstyle.wolips.eomodeler.Activator;
+import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.model.EOAttribute;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
+import org.objectstyle.wolips.eomodeler.utils.EmptyTableRowDoubleClickHandler;
 import org.objectstyle.wolips.eomodeler.utils.KeyComboBoxCellEditor;
 import org.objectstyle.wolips.eomodeler.utils.TableRefreshPropertyListener;
 import org.objectstyle.wolips.eomodeler.utils.TableRowRefreshPropertyListener;
@@ -93,6 +95,7 @@ public class EOAttributesTableViewer extends Composite implements ISelectionProv
     myAttributesTableViewer.setLabelProvider(new EOAttributesLabelProvider(myAttributesTableViewer, EOAttributesConstants.COLUMNS));
     myAttributesTableViewer.setSorter(new EOAttributesViewerSorter(myAttributesTableViewer, EOAttributesConstants.COLUMNS));
     myAttributesTableViewer.setColumnProperties(EOAttributesConstants.COLUMNS);
+    new DoubleClickNewAttributeHandler().attachTo(myAttributesTableViewer);
     myAttributesChangedRefresher = new AttributesChangeRefresher(myAttributesTableViewer, EOEntity.ATTRIBUTES);
     myParentChangedRefresher = new TableRefreshPropertyListener(myAttributesTableViewer, EOEntity.PARENT);
     myTableRowRefresher = new TableRowRefreshPropertyListener(myAttributesTableViewer, EOEntity.ATTRIBUTE);
@@ -190,6 +193,17 @@ public class EOAttributesTableViewer extends Composite implements ISelectionProv
 
   public void setSelection(ISelection _selection) {
     myAttributesTableViewer.setSelection(_selection);
+  }
+
+  protected class DoubleClickNewAttributeHandler extends EmptyTableRowDoubleClickHandler {
+    protected void doubleSelectionOccurred() {
+      try {
+        EOAttributesTableViewer.this.getEntity().addBlankAttribute(Messages.getString("EOAttribute.newName"));
+      }
+      catch (Throwable e) {
+        e.printStackTrace();
+      }
+    }
   }
 
   protected class AttributesChangeRefresher extends TableRefreshPropertyListener {

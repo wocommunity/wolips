@@ -62,9 +62,11 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
+import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.editors.IEOModelEditor;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
+import org.objectstyle.wolips.eomodeler.utils.EmptyTableRowDoubleClickHandler;
 import org.objectstyle.wolips.eomodeler.utils.KeyComboBoxCellEditor;
 import org.objectstyle.wolips.eomodeler.utils.TableRefreshPropertyListener;
 import org.objectstyle.wolips.eomodeler.utils.TableRowRefreshPropertyListener;
@@ -84,6 +86,7 @@ public class EOEntitiesTableViewer extends Composite implements ISelectionProvid
     myEntitiesTableViewer.setLabelProvider(new EOEntitiesLabelProvider(EOEntitiesConstants.COLUMNS));
     myEntitiesTableViewer.setSorter(new EOEntitiesViewerSorter(myEntitiesTableViewer, EOEntitiesConstants.COLUMNS));
     myEntitiesTableViewer.setColumnProperties(EOEntitiesConstants.COLUMNS);
+    new DoubleClickNewEntityHandler().attachTo(myEntitiesTableViewer);
 
     Table entitiesTable = myEntitiesTableViewer.getTable();
     entitiesTable.setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -155,5 +158,16 @@ public class EOEntitiesTableViewer extends Composite implements ISelectionProvid
 
   public void removeSelectionChangedListener(ISelectionChangedListener _listener) {
     myEntitiesTableViewer.removeSelectionChangedListener(_listener);
+  }
+
+  protected class DoubleClickNewEntityHandler extends EmptyTableRowDoubleClickHandler {
+    protected void doubleSelectionOccurred() {
+      try {
+        EOEntitiesTableViewer.this.getModel().addBlankEntity(Messages.getString("EOEntity.newName"));
+      }
+      catch (Throwable e) {
+        e.printStackTrace();
+      }
+    }
   }
 }
