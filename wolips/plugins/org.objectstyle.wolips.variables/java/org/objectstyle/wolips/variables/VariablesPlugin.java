@@ -2,7 +2,7 @@
  *
  * The ObjectStyle Group Software License, Version 1.0
  *
- * Copyright (c) 2004 - 2005 The ObjectStyle Group
+ * Copyright (c) 2004 - 2006 The ObjectStyle Group
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -180,6 +180,14 @@ public class VariablesPlugin extends AbstractCorePlugin {
 	}
 
 	/**
+	 * @return the path to the reference api
+	 */
+	public IPath getReferenceApi() {
+		return this.fixMissingSeparatorAfterDevice(this.getWOVariables()
+				.referenceApi());
+	}
+
+	/**
 	 * @return the path to external build root
 	 */
 	public IPath getExternalBuildRoot() {
@@ -187,7 +195,7 @@ public class VariablesPlugin extends AbstractCorePlugin {
 				.userHome()
 				+ "/Roots");
 	}
-
+	
 	/**
 	 * @return the names of the framework roots
 	 */
