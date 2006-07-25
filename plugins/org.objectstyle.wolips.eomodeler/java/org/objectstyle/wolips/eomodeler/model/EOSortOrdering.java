@@ -49,14 +49,51 @@
  */
 package org.objectstyle.wolips.eomodeler.model;
 
+import java.util.HashSet;
 import java.util.Set;
 
-public class EOSortOrdering {
+import org.objectstyle.wolips.eomodeler.utils.StringUtils;
+
+public class EOSortOrdering extends EOModelObject {
+  public static final String SELECTOR_ASCENDING = "compareAscending";
+  public static final String SELECTOR_DESCENDING = "compareDescending";
+  public static final String SELECTOR_CASE_INSENSITIVE_ASCENDING = "compareCaseInsensitiveAscending";
+  public static final String SELECTOR_CASE_INSENSITIVE_DESCENDING = "compareCaseInsensitiveDescending";
+
+  public static final String KEY = "key";
+  public static final String SELECTOR_NAME = "selectorName";
+  public static final String CASE_INSENSITIVE = "caseInsensitive";
+  public static final String ASCENDING = "ascending";
+
   private String myKey;
   private String mySelectorName;
 
-  public void setKey(String _key) {
+  public EOSortOrdering() {
+    mySelectorName = EOSortOrdering.ASCENDING;
+  }
+
+  public EOSortOrdering(String _key, String _selectorName) {
     myKey = _key;
+    mySelectorName = _selectorName;
+  }
+
+  public EOSortOrdering cloneSortOrdering() {
+    EOSortOrdering cloneSortOrdering = new EOSortOrdering(myKey, mySelectorName);
+    return cloneSortOrdering;
+  }
+
+  public Set getReferenceFailures() {
+    return new HashSet();
+  }
+
+  protected void _propertyChanged(String _propertyName, Object _oldValue, Object _newValue) {
+    // DO NOTHING
+  }
+
+  public void setKey(String _key) {
+    String oldKey = myKey;
+    myKey = _key;
+    firePropertyChange(EOSortOrdering.KEY, oldKey, myKey);
   }
 
   public String getKey() {
@@ -64,11 +101,47 @@ public class EOSortOrdering {
   }
 
   public void setSelectorName(String _selectorName) {
+    String oldSelectorName = mySelectorName;
     mySelectorName = _selectorName;
+    firePropertyChange(EOSortOrdering.SELECTOR_NAME, oldSelectorName, mySelectorName);
   }
 
   public String getSelectorName() {
     return mySelectorName;
+  }
+
+  public void setAscending(boolean _ascending) {
+    String oldSelectorName = mySelectorName;
+    Boolean oldAscending = Boolean.valueOf(isAscending());
+    if (StringUtils.isSelectorNameEqual(EOSortOrdering.SELECTOR_ASCENDING, mySelectorName) || StringUtils.isSelectorNameEqual(EOSortOrdering.SELECTOR_DESCENDING, mySelectorName)) {
+      mySelectorName = (_ascending) ? EOSortOrdering.SELECTOR_ASCENDING : EOSortOrdering.SELECTOR_DESCENDING;
+    }
+    else if (StringUtils.isSelectorNameEqual(EOSortOrdering.SELECTOR_CASE_INSENSITIVE_ASCENDING, mySelectorName) || StringUtils.isSelectorNameEqual(EOSortOrdering.SELECTOR_CASE_INSENSITIVE_DESCENDING, mySelectorName)) {
+      mySelectorName = (_ascending) ? EOSortOrdering.SELECTOR_CASE_INSENSITIVE_ASCENDING : EOSortOrdering.SELECTOR_CASE_INSENSITIVE_DESCENDING;
+    }
+    firePropertyChange(EOSortOrdering.ASCENDING, oldAscending, Boolean.valueOf(isAscending()));
+    firePropertyChange(EOSortOrdering.SELECTOR_NAME, oldSelectorName, mySelectorName);
+  }
+
+  public boolean isAscending() {
+    return (StringUtils.isSelectorNameEqual(EOSortOrdering.SELECTOR_ASCENDING, mySelectorName) || StringUtils.isSelectorNameEqual(EOSortOrdering.SELECTOR_CASE_INSENSITIVE_ASCENDING, mySelectorName));
+  }
+
+  public void setCaseInsensitive(boolean _caseInsensitive) {
+    String oldSelectorName = mySelectorName;
+    Boolean oldCaseInsensitive = Boolean.valueOf(isCaseInsensitive());
+    if (StringUtils.isSelectorNameEqual(EOSortOrdering.SELECTOR_ASCENDING, mySelectorName) || StringUtils.isSelectorNameEqual(EOSortOrdering.SELECTOR_CASE_INSENSITIVE_ASCENDING, mySelectorName)) {
+      mySelectorName = (_caseInsensitive) ? EOSortOrdering.SELECTOR_CASE_INSENSITIVE_ASCENDING : EOSortOrdering.SELECTOR_ASCENDING;
+    }
+    else if (StringUtils.isSelectorNameEqual(EOSortOrdering.SELECTOR_DESCENDING, mySelectorName) || StringUtils.isSelectorNameEqual(EOSortOrdering.SELECTOR_CASE_INSENSITIVE_DESCENDING, mySelectorName)) {
+      mySelectorName = (_caseInsensitive) ? EOSortOrdering.SELECTOR_CASE_INSENSITIVE_DESCENDING : EOSortOrdering.SELECTOR_DESCENDING;
+    }
+    firePropertyChange(EOSortOrdering.CASE_INSENSITIVE, oldCaseInsensitive, Boolean.valueOf(isCaseInsensitive()));
+    firePropertyChange(EOSortOrdering.SELECTOR_NAME, oldSelectorName, mySelectorName);
+  }
+
+  public boolean isCaseInsensitive() {
+    return (StringUtils.isSelectorNameEqual(EOSortOrdering.SELECTOR_CASE_INSENSITIVE_ASCENDING, mySelectorName) || StringUtils.isSelectorNameEqual(EOSortOrdering.SELECTOR_CASE_INSENSITIVE_DESCENDING, mySelectorName));
   }
 
   public void loadFromMap(EOModelMap _map) {

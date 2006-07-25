@@ -49,6 +49,8 @@
  */
 package org.objectstyle.wolips.eomodeler.model;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -61,8 +63,9 @@ import java.util.TreeSet;
 import org.objectstyle.cayenne.exp.parser.Node;
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
 
-public class EOFetchSpecification extends UserInfoableEOModelObject implements IEOEntityRelative, ISortableEOModelObject {
+public class EOFetchSpecification extends UserInfoableEOModelObject implements IEOEntityRelative, ISortableEOModelObject, PropertyChangeListener {
   public static final String NAME = "name";
+  public static final String SORT_ORDERING = "sortOrdering";
   public static final String SORT_ORDERINGS = "sortOrderings";
   public static final String QUALIFIER = "qualifier";
   public static final String ENTITY = "entity";
@@ -130,9 +133,16 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
   public Set getReferenceFailures() {
     return new HashSet();
   }
-  
+
   public void _setEntity(EOEntity _entity) {
     myEntity = _entity;
+  }
+
+  public void propertyChange(PropertyChangeEvent _event) {
+    Object source = _event.getSource();
+    if (source instanceof EOSortOrdering) {
+      firePropertyChange(EOFetchSpecification.SORT_ORDERING, null, source);
+    }
   }
 
   protected void _propertyChanged(String _propertyName, Object _oldValue, Object _newValue) {
@@ -183,10 +193,10 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
     else {
       mySortOrderings.add(_sortOrdering);
     }
+    _sortOrdering.addPropertyChangeListener(this);
   }
 
   public void removeSortOrdering(EOSortOrdering _sortOrdering, boolean _fireEvents) {
-    mySortOrderings.remove(_sortOrdering);
     if (_fireEvents) {
       List oldSortOrderings = mySortOrderings;
       mySortOrderings = new LinkedList(mySortOrderings);
@@ -196,21 +206,32 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
     else {
       mySortOrderings.remove(_sortOrdering);
     }
+    _sortOrdering.removePropertyChangeListener(this);
   }
 
   public void setSortOrderings(List _sortOrderings, boolean _fireEvents) {
     if (_fireEvents) {
       List oldSortOrderings = mySortOrderings;
+      if (oldSortOrderings != null) {
+        Iterator oldSortOrderingsIter = oldSortOrderings.iterator();
+        while (oldSortOrderingsIter.hasNext()) {
+          EOSortOrdering sortOrdering = (EOSortOrdering) oldSortOrderingsIter.next();
+          sortOrdering.removePropertyChangeListener(this);
+        }
+      }
+      mySortOrderings = _sortOrderings;
+      if (mySortOrderings != null) {
+        Iterator newSortOrderingsIter = mySortOrderings.iterator();
+        while (newSortOrderingsIter.hasNext()) {
+          EOSortOrdering sortOrdering = (EOSortOrdering) newSortOrderingsIter.next();
+          sortOrdering.addPropertyChangeListener(this);
+        }
+      }
       firePropertyChange(EOFetchSpecification.SORT_ORDERINGS, oldSortOrderings, mySortOrderings);
     }
     else {
       mySortOrderings = _sortOrderings;
     }
-  }
-
-  public void clearSortOrderings() {
-    mySortOrderings.clear();
-    firePropertyChange(EOFetchSpecification.SORT_ORDERINGS, null, null);
   }
 
   public List getSortOrderings() {

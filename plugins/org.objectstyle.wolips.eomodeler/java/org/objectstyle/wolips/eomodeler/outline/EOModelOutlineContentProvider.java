@@ -66,7 +66,12 @@ import org.objectstyle.wolips.eomodeler.model.IEOAttributePath;
 import org.objectstyle.wolips.eomodeler.model.PropertyListComparator;
 
 public class EOModelOutlineContentProvider implements ITreeContentProvider {
-  private EOModelContainer myModelContainer;
+  private Object myModelContainer;
+  private boolean myShowAllObjects;
+  
+  public EOModelOutlineContentProvider(boolean _showAllObjects) {
+    myShowAllObjects = _showAllObjects;
+  }
 
   public Object[] getChildren(Object _parentElement) {
     Object[] children;
@@ -84,7 +89,9 @@ public class EOModelOutlineContentProvider implements ITreeContentProvider {
       Set entityChildren = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
       entityChildren.addAll(entity.getAttributes());
       entityChildren.addAll(entity.getRelationships());
-      entityChildren.addAll(entity.getFetchSpecs());
+      if (myShowAllObjects) {
+        entityChildren.addAll(entity.getFetchSpecs());
+      }
       children = entityChildren.toArray();
     }
     else if (_parentElement instanceof EORelationship) {
@@ -159,6 +166,6 @@ public class EOModelOutlineContentProvider implements ITreeContentProvider {
   }
 
   public void inputChanged(Viewer _viewer, Object _oldInput, Object _newInput) {
-    myModelContainer = (EOModelContainer) _newInput;
+    myModelContainer = _newInput;
   }
 }

@@ -85,4 +85,8 @@ public class StringUtils {
     }
     return name;
   }
+
+  public static boolean isSelectorNameEqual(String _expectedName, String _possibleName) {
+    return _expectedName.equals(_possibleName) || (_expectedName + ":").equals(_possibleName);
+  }
 }

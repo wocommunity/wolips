@@ -126,22 +126,26 @@ public class TablePropertyLabelProvider implements ITableLabelProvider {
     return image;
   }
 
-  protected String yesNoText(Boolean _bool, boolean _nullIsNo) {
+  protected String yesNoText(Boolean _bool, String _yesText, String _noText, boolean _nullIsNo) {
     String str;
     if (_bool == null) {
       if (_nullIsNo) {
-        str = "N";
+        str = _noText;
       }
       else {
         str = "";
       }
     }
     else if (_bool.booleanValue()) {
-      str = "Y";
+      str = _yesText;
     }
     else {
-      str = "N";
+      str = _noText;
     }
     return str;
+  }
+  
+  protected String yesNoText(Boolean _bool, boolean _nullIsNo) {
+    return yesNoText(_bool, "Y", "N", _nullIsNo);
   }
 }

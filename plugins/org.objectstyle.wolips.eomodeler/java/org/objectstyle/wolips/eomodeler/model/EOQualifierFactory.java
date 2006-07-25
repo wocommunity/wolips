@@ -73,6 +73,7 @@ import org.objectstyle.cayenne.exp.parser.ASTPath;
 import org.objectstyle.cayenne.exp.parser.AggregateConditionNode;
 import org.objectstyle.cayenne.exp.parser.ConditionNode;
 import org.objectstyle.cayenne.exp.parser.Node;
+import org.objectstyle.wolips.eomodeler.utils.StringUtils;
 
 public class EOQualifierFactory {
   public static Node createNodeFromQualifierMap(EOModelMap _qualifierMap) {
@@ -114,32 +115,32 @@ public class EOQualifierFactory {
         }
         String selectorName = _qualifierMap.getString("selectorName", true);
         ASTObjPath objPath = new ASTObjPath(key);
-        if (EOQualifierFactory.isSelectorNameEqual("isEqualTo", selectorName)) {
+        if (StringUtils.isSelectorNameEqual("isEqualTo", selectorName)) {
           node = new ASTEqual(objPath, value);
         }
-        else if (EOQualifierFactory.isSelectorNameEqual("isNotEqualTo", selectorName)) {
+        else if (StringUtils.isSelectorNameEqual("isNotEqualTo", selectorName)) {
           node = new ASTNotEqual(objPath, value);
         }
-        else if (EOQualifierFactory.isSelectorNameEqual("isLessThan", selectorName)) {
+        else if (StringUtils.isSelectorNameEqual("isLessThan", selectorName)) {
           node = new ASTLess(objPath, value);
         }
-        else if (EOQualifierFactory.isSelectorNameEqual("isGreaterThan", selectorName)) {
+        else if (StringUtils.isSelectorNameEqual("isGreaterThan", selectorName)) {
           node = new ASTGreater(objPath, value);
         }
-        else if (EOQualifierFactory.isSelectorNameEqual("isLessThanOrEqualTo", selectorName)) {
+        else if (StringUtils.isSelectorNameEqual("isLessThanOrEqualTo", selectorName)) {
           node = new ASTLessOrEqual(objPath, value);
         }
-        else if (EOQualifierFactory.isSelectorNameEqual("isGreaterThanOrEqualTo", selectorName)) {
+        else if (StringUtils.isSelectorNameEqual("isGreaterThanOrEqualTo", selectorName)) {
           node = new ASTGreaterOrEqual(objPath, value);
         }
-        else if (EOQualifierFactory.isSelectorNameEqual("doesContain", selectorName)) {
+        else if (StringUtils.isSelectorNameEqual("doesContain", selectorName)) {
           //node = new ASTEqual(objPath, value);
           throw new IllegalArgumentException("Not sure what 'doesContain:' maps onto.");
         }
-        else if (EOQualifierFactory.isSelectorNameEqual("isLike", selectorName)) {
+        else if (StringUtils.isSelectorNameEqual("isLike", selectorName)) {
           node = new ASTLike(objPath, value);
         }
-        else if (EOQualifierFactory.isSelectorNameEqual("isCaseInsensitiveLike", selectorName)) {
+        else if (StringUtils.isSelectorNameEqual("isCaseInsensitiveLike", selectorName)) {
           node = new ASTLikeIgnoreCase(objPath, value);
         }
         else {
@@ -151,10 +152,6 @@ public class EOQualifierFactory {
       }
     }
     return node;
-  }
-
-  private static boolean isSelectorNameEqual(String _expectedName, String _possibleName) {
-    return _expectedName.equals(_possibleName) || (_expectedName + ":").equals(_possibleName);
   }
 
   private static Collection createNodesFromQualifierMaps(Collection _qualifiers) {
