@@ -57,9 +57,8 @@ package org.objectstyle.wolips.jdt.classpath;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
+import java.util.Hashtable;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -67,12 +66,11 @@ import org.eclipse.jdt.core.IClasspathAttribute;
 import org.eclipse.jdt.core.IClasspathContainer;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.jdt.ui.JavaUI;
 import org.objectstyle.wolips.variables.VariablesPlugin;
 
 /**
  * @author Harald Niesche
- * 
+ * @author uli
  */
 public final class WOClasspathContainer implements IClasspathContainer {
 	public static final String WOLIPS_CLASSPATH_CONTAINER_IDENTITY = "org.objectstyle.wolips.WO_CLASSPATH";
@@ -83,6 +81,10 @@ public final class WOClasspathContainer implements IClasspathContainer {
 
 	private IClasspathEntry[] classpathEntries = null;
 
+	private static Hashtable allClasspathEntries = new Hashtable();
+
+	private IPath id;
+
 	/**
 	 * Constructor for WOClassPathContainer.
 	 * 
@@ -90,8 +92,7 @@ public final class WOClasspathContainer implements IClasspathContainer {
 	 */
 	public WOClasspathContainer(IPath id) {
 		super();
-		_id = id;
-		_initPath();
+		this.id = id;
 	}
 
 	/**
@@ -99,12 +100,7 @@ public final class WOClasspathContainer implements IClasspathContainer {
 	 */
 	public IClasspathEntry[] getClasspathEntries() {
 		if (classpathEntries == null) {
-			if (_path.size() == 0) {
-				_path.clear();
-				_initPath();
-			}
-			classpathEntries = (IClasspathEntry[]) _path
-					.toArray(new IClasspathEntry[_path.size()]);
+			initPath();
 		}
 		return classpathEntries;
 	}
@@ -127,64 +123,73 @@ public final class WOClasspathContainer implements IClasspathContainer {
 	 * @see org.eclipse.jdt.core.IClasspathContainer#getPath()
 	 */
 	public IPath getPath() {
-		return _id;
+		return id;
 	}
 
-	private void _initPath() {
+	private void initPath() {
+		ArrayList path = new ArrayList();
 		IPath[] paths = VariablesPlugin.getDefault().getFrameworkRoots();
-		for (int i = 1; i < _id.segmentCount(); i++) {
+		for (int i = 1; i < id.segmentCount(); i++) {
 			for (int h = 0; h < paths.length; h++) {
 				IPath classpathVariable = paths[h];
-				String framework = _id.segment(i);
-				File frameworkFile = new File(classpathVariable.toOSString(),
-						framework + ".framework/Resources/Java");
-				if (frameworkFile.isDirectory()) {
-					String archives[] = frameworkFile
-							.list(new FilenameFilter() {
-								public boolean accept(File dir, String name) {
-									String lowerName = name.toLowerCase();
-									return (lowerName.endsWith(".zip") || lowerName
-											.endsWith(".jar"));
+				String framework = id.segment(i);
+				if (!allClasspathEntries.containsKey(framework)) {
+					File frameworkFile = new File(classpathVariable
+							.toOSString(), framework
+							+ ".framework/Resources/Java");
+					if (frameworkFile.isDirectory()) {
+						String archives[] = frameworkFile
+								.list(new FilenameFilter() {
+									public boolean accept(File dir, String name) {
+										String lowerName = name.toLowerCase();
+										return (lowerName.endsWith(".zip") || lowerName
+												.endsWith(".jar"));
+									}
+								});
+						IPath source = new Path(classpathVariable.toOSString()
+								+ "/" + framework
+								+ ".framework/Resources/Java/src.jar");
+						if (!source.toFile().exists()) {
+							source = null;
+						}
+						for (int j = 0; j < archives.length; j++) {
+							// framework found under this root
+							h = paths.length;
+							IPath archivePath = new Path(frameworkFile
+									.getAbsolutePath()
+									+ "/" + archives[j]);
+							// IClasspathEntry entry =
+							// JavaCore.newLibraryEntry(archivePath, null,
+							// null);
+							if (!archives[j].equals("src.jar")) {
+								IClasspathAttribute javadoc[] = new IClasspathAttribute[0];
+								if (framework.indexOf("Java") == 0) {
+									javadoc = new IClasspathAttribute[1];
+									javadoc = new IClasspathAttribute[1];
+									javadoc[0] = JavaCore
+											.newClasspathAttribute(
+													IClasspathAttribute.JAVADOC_LOCATION_ATTRIBUTE_NAME,
+													VariablesPlugin
+															.getDefault()
+															.getReferenceApi()
+															.toOSString());
 								}
-							});
-					IPath source = new Path(classpathVariable.toOSString()
-							+ "/" + framework
-							+ ".framework/Resources/Java/src.jar");
-					if (!source.toFile().exists()) {
-						source = null;
-					}
-					for (int j = 0; j < archives.length; j++) {
-						// framework found under this root
-						h = paths.length;
-						IPath archivePath = new Path(frameworkFile
-								.getAbsolutePath()
-								+ "/" + archives[j]);
-						// IClasspathEntry entry =
-						// JavaCore.newLibraryEntry(archivePath, null, null);
-						if (!archives[j].equals("src.jar")) {
-							IClasspathAttribute javadoc[] = new IClasspathAttribute[0];
-							if (framework.indexOf("Java") == 0) {
-								javadoc = new IClasspathAttribute[1];
-								javadoc = new IClasspathAttribute[1];
-								javadoc[0] = JavaCore
-										.newClasspathAttribute(
-												IClasspathAttribute.JAVADOC_LOCATION_ATTRIBUTE_NAME,
-												VariablesPlugin.getDefault()
-														.getReferenceApi()
-														.toOSString());
+								IClasspathEntry entry = JavaCore
+										.newLibraryEntry(archivePath, source,
+												null, null, javadoc, false);
+								path.add(entry);
+								allClasspathEntries.put(framework, entry);
 							}
-							IClasspathEntry entry = JavaCore.newLibraryEntry(
-									archivePath, source, null, null, javadoc,
-									false);
-							_path.add(entry);
 						}
 					}
 				}
+				else {
+					path.add(allClasspathEntries.get(framework));
+					h = paths.length;
+				}
 			}
 		}
+		classpathEntries = (IClasspathEntry[]) path
+				.toArray(new IClasspathEntry[path.size()]);
 	}
-
-	private IPath _id;
-
-	private ArrayList _path = new ArrayList();
 }
