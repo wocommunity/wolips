@@ -137,7 +137,15 @@ public class VariablesPlugin extends AbstractCorePlugin {
 	private boolean wobuildPropertiesMissing() {
 		File wobuildDotProperties = new File(System.getProperty("user.home")
 				+ "/Library/wobuild.properties");
-		return !wobuildDotProperties.exists();
+		if(!wobuildDotProperties.exists()) {
+			return true;
+		}
+		boolean referenceApiSet = this.getReferenceApi() != null;
+		if(referenceApiSet) {
+			return false;
+		}
+		this.woEnvironment = null;
+		return true;
 	}
 
 	/**
@@ -183,8 +191,12 @@ public class VariablesPlugin extends AbstractCorePlugin {
 	 * @return the path to the reference api
 	 */
 	public IPath getReferenceApi() {
-		return this.fixMissingSeparatorAfterDevice(this.getWOVariables()
-				.referenceApi());
+		String referenceApi = this.getWOVariables()
+		.referenceApi();
+		if(referenceApi == null) {
+			return null;
+		}
+		return this.fixMissingSeparatorAfterDevice(referenceApi);
 	}
 
 	/**
