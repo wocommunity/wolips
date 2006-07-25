@@ -112,6 +112,7 @@
 		<ant dir="org.objectstyle.wolips.team" target="all" />
 		<ant dir="org.objectstyle.wolips.templateengine" target="all" />
 		<ant dir="org.objectstyle.wolips.eogenerator.ui" target="all" />
+		<ant dir="org.objectstyle.wolips.eomodeler" target="all" />
 		<ant dir="org.objectstyle.wolips.wizards" target="all" />
 		<ant dir="org.objectstyle.wolips.editors" target="all" />
 		<ant dir="org.objectstyle.wolips.components" target="all" />
@@ -123,7 +124,6 @@
 		<ant dir="org.objectstyle.wolips.ruleeditor" target="all" />
 		<ant dir="org.objectstyle.wolips.woproject" target="all" />
 		<ant dir="org.objectstyle.wolips.woproject.ant" target="all" />
-		<ant dir="org.objectstyle.wolips.eomodeler" target="all" />
 		<ant dir="org.objectstyle.wolips.tests" target="all" />
 	</target>
 	<!-- ========================================== -->
@@ -158,6 +158,7 @@
 		<ant dir="org.objectstyle.wolips.team" target="dist" />
 		<ant dir="org.objectstyle.wolips.templateengine" target="dist" />
 		<ant dir="org.objectstyle.wolips.eogenerator.ui" target="dist" />
+		<ant dir="org.objectstyle.wolips.eomodeler" target="dist" />
 		<ant dir="org.objectstyle.wolips.wizards" target="dist" />
 		<ant dir="org.objectstyle.wolips.editors" target="dist" />
 		<ant dir="org.objectstyle.wolips.components" target="dist" />
@@ -170,7 +171,6 @@
 		<ant dir="org.objectstyle.wolips.woproject" target="dist" />
 		<ant dir="org.objectstyle.wolips.woproject.ant" target="dist" />
 		<ant dir="org.objectstyle.wolips.builder" target="dist" />
-		<ant dir="org.objectstyle.wolips.eomodeler" target="dist" />
 		<ant dir="org.objectstyle.wolips.tests" target="dist" />
 	</target>
 
