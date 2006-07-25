@@ -70,6 +70,8 @@ public class Activator extends AbstractUIPlugin {
   public static final String LOCKING_ICON = "locking";
   public static final String CLASS_PROPERTY_ICON = "classProperty";
   public static final String ALLOW_NULL_ICON = "allowNull";
+  public static final String ASCENDING_ICON = "ascending";
+  public static final String DESCENDING_ICON = "descending";
 
   // The plug-in ID
   public static final String PLUGIN_ID = "org.objectstyle.wolips.eomodeler";
@@ -134,5 +136,7 @@ public class Activator extends AbstractUIPlugin {
     _reg.put(Activator.EORELATIONSHIP_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/eoRelationship.gif"));
     _reg.put(Activator.TO_MANY_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/toMany.gif"));
     _reg.put(Activator.TO_ONE_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/toOne.gif"));
+    _reg.put(Activator.ASCENDING_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/ascending.png"));
+    _reg.put(Activator.DESCENDING_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/descending.png"));
   }
 }

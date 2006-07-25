@@ -291,4 +291,7 @@ public class EOModelMap implements Map {
     return myBackingMap.values();
   }
 
+  public String toString() {
+    return "[EOModelMap: backingMap = " + myBackingMap + "]";
+  }
 }

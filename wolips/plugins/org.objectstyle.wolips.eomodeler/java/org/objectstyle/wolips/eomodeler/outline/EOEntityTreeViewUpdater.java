@@ -49,55 +49,32 @@
  */
 package org.objectstyle.wolips.eomodeler.outline;
 
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.IActionBars;
-import org.eclipse.ui.part.IPageSite;
-import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
-import org.objectstyle.wolips.eomodeler.editors.EOModelClipboardHandler;
-import org.objectstyle.wolips.eomodeler.editors.EOModelEditor;
+import org.objectstyle.wolips.eomodeler.model.EOEntity;
 
-public class EOModelContentOutlinePage extends ContentOutlinePage {
-  private EOModelTreeViewUpdater myUpdater;
-  private EOModelEditor myEditor;
-  private EOModelClipboardHandler myClipboardHandler;
+public class EOEntityTreeViewUpdater extends EOModelTreeViewUpdater {
+  private EOEntity myEntity;
 
-  public EOModelContentOutlinePage(EOModelEditor _editor) {
-    myClipboardHandler = new EOModelClipboardHandler();
-    myEditor = _editor;
+  public EOEntityTreeViewUpdater(TreeViewer _treeViewer) {
+    super(_treeViewer, false);
   }
 
-  protected void updateClipboardHandler() {
-    IPageSite site = getSite();
-    if (site != null && myEditor != null) {
-      IActionBars actionBars = site.getActionBars();
-      myClipboardHandler.attach(actionBars, myEditor);
+  public void setEntity(EOEntity _entity) {
+    myEntity = _entity;
+    if (_entity == null) {
+      super.setModel(null);
+    }
+    else {
+      super.setModel(_entity.getModel());
     }
   }
 
-  public void createControl(Composite _parent) {
-    super.createControl(_parent);
-    TreeViewer treeViewer = getTreeViewer();
-    myUpdater = new EOModelTreeViewUpdater(treeViewer, true);
-    myUpdater.setModel(myEditor.getModel());
-    updateClipboardHandler();
-    //AK: commenting prevents an error in swt
-    // setFocus();
+  public EOEntity getEntity() {
+    return myEntity;
   }
 
-  public void init(IPageSite _pageSite) {
-    super.init(_pageSite);
-    updateClipboardHandler();
-  }
-
-  public void selectionChanged(SelectionChangedEvent _event) {
-    super.selectionChanged(_event);
-    myClipboardHandler.selectionChanged(_event);
-  }
-
-  public void setSelection(ISelection _selection) {
-    super.setSelection(_selection);
+  protected void setInput(TreeViewer _treeViewer) {
+    _treeViewer.setInput(myEntity);
+    _treeViewer.expandToLevel(1);
   }
 }
