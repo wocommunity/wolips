@@ -341,6 +341,9 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate extends
 				.getAttribute(
 						WOJavaLocalApplicationLaunchConfigurationDelegate.ATTR_WOLIPS_LAUNCH_WOARGUMENTS,
 						Preferences.getPREF_LAUNCH_GLOBAL());
+        if (launchArguments != null && launchArguments.indexOf("<>-EOAdaptorDebugEnabled=<>") != -1) {
+            launchArguments = launchArguments.replaceAll("\\Q<>-EOAdaptorDebugEnabled=<>\\E", "<>-EOAdaptorDebugEnabled<>");
+        }
 		ILaunchInfo[] launchInfo = Preferences
 				.getLaunchInfoFrom(launchArguments);
 		String automatic = "Automatic";
