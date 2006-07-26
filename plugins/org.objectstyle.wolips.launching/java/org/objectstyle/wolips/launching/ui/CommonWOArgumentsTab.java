@@ -245,7 +245,7 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 			ILaunchInfo launchInfo = launchInfoArray[i];
 			TableItem item = new TableItem(this.includeTable, SWT.NONE);
 			item.setText(StringUtilities.toCommandlineParameterFormat(
-					launchInfo.getParameter(), launchInfo.getArgument()));
+					launchInfo.getParameter(), launchInfo.getArgument(), false));
 			this.allParameter.add(launchInfo.getParameter());
 			this.allArguments.add(launchInfo.getArgument());
 			item.setChecked(launchInfo.isEnabled());
@@ -285,7 +285,7 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 		}
 		TableItem item = new TableItem(this.includeTable, SWT.NONE);
 		item.setText(StringUtilities.toCommandlineParameterFormat(parameter,
-				argument));
+				argument, false));
 		this.allParameter.add(parameter);
 		this.allArguments.add(argument);
 		item.setChecked(true);
@@ -329,7 +329,7 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 		String argument = argumentDialog.getValue();
 		TableItem item = this.includeTable.getItem(index);
 		item.setText(StringUtilities.toCommandlineParameterFormat(parameter,
-				argument));
+				argument, false));
 		this.allArguments.setElementAt(argument, index);
 		this.updateLaunchConfigurationDialog();
 	}
