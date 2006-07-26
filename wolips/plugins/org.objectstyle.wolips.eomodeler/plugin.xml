@@ -258,7 +258,7 @@
             class="org.objectstyle.wolips.eomodeler.EOModelerPerspectiveFactory"
             icon="icons/eoModel.gif"
             id="org.objectstyle.wolips.eomodeler.EOModelerPerspective"
-            name="EO Modeler"/>
+            name="Entity Modeler"/>
    </extension>
    <extension
          point="org.eclipse.ui.actionSets">
@@ -285,7 +285,7 @@
                tooltip="Flatten"/>
          <action
                class="org.objectstyle.wolips.eomodeler.actions.NewFetchSpecAction"
-               icon="icons/eoFetchSpecification.gif"
+               icon="icons/newFetchSpecification.gif"
                id="org.objectstyle.wolips.eomodeler.actions.newFetchSpec"
                label="New Fetch Specification"
                style="push"
@@ -293,7 +293,7 @@
                tooltip="New Fetch Specification"/>
          <action
                class="org.objectstyle.wolips.eomodeler.actions.NewRelationshipAction"
-               icon="icons/eoRelationship.gif"
+               icon="icons/newRelationship.gif"
                id="org.objectstyle.wolips.eomodeler.actions.newRelationship"
                label="New Relationship"
                style="push"
@@ -301,7 +301,7 @@
                tooltip="New Relationship"/>
          <action
                class="org.objectstyle.wolips.eomodeler.actions.NewAttributeAction"
-               icon="icons/eoAttribute.gif"
+               icon="icons/newAttribute.gif"
                id="org.objectstyle.wolips.eomodeler.actions.newAttribute"
                label="New Attribute"
                style="push"
@@ -310,7 +310,7 @@
          </action>
          <action
                class="org.objectstyle.wolips.eomodeler.actions.NewEntityAction"
-               icon="icons/eoEntity.gif"
+               icon="icons/newEntity.gif"
                id="org.objectstyle.wolips.eomodeler.actions.newEntity"
                label="New Entity"
                style="push"
