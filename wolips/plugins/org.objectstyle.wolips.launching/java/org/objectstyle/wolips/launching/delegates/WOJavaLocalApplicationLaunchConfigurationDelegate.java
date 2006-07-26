@@ -383,7 +383,7 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate extends
 				}
 
 				launchArgument.append(StringUtilities
-						.toCommandlineParameterFormat(parameter, argument));
+						.toCommandlineParameterFormat(parameter, argument, true));
 				launchArgument.append(" ");
 			}
 		}
@@ -396,6 +396,7 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate extends
 			launchArgument.append(debugGroups);
 			launchArgument.append(")\"");
 		}
+    System.out.println("WOJavaLocalApplicationLaunchConfigurationDelegate.getProgramArguments: " + launchArgument);
 		return launchArgument.toString();
 	}
 
