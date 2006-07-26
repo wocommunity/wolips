@@ -50,37 +50,66 @@
 package org.objectstyle.wolips.eomodeler.utils;
 
 public class StringUtils {
+  public static int firstLetterIndex(String _name) {
+    int letterIndex = -1;
+    if (_name != null) {
+      int length = _name.length();
+      boolean found = false;
+      for (int index = 0; !found && index < length; index++) {
+        char ch = _name.charAt(index);
+        if (Character.isLetter(ch)) {
+          letterIndex = index;
+          found = true;
+        }
+        else if (ch != '_') {
+          found = true;
+        }
+      }
+    }
+    return letterIndex;
+  }
+
   public static boolean isUppercaseFirstLetter(String _name) {
-    return (_name != null && _name.length() > 0 && Character.isUpperCase(_name.charAt(0)));
+    int firstLetterIndex = StringUtils.firstLetterIndex(_name);
+    return (firstLetterIndex != -1 && Character.isUpperCase(_name.charAt(firstLetterIndex)));
   }
-  
+
   public static boolean isLowercaseFirstLetter(String _name) {
-    return (_name != null && _name.length() > 0 && Character.isLowerCase(_name.charAt(0)));
+    int firstLetterIndex = StringUtils.firstLetterIndex(_name);
+    return (firstLetterIndex != -1 && Character.isLowerCase(_name.charAt(firstLetterIndex)));
   }
-  
+
   public static String toLowercaseFirstLetter(String _name) {
+    int firstLetterIndex = StringUtils.firstLetterIndex(_name);
     String name;
-    if (_name == null || _name.length() == 0) {
+    if (firstLetterIndex == -1) {
       name = _name;
     }
     else {
       StringBuffer sb = new StringBuffer();
-      sb.append(Character.toLowerCase(_name.charAt(0)));
-      sb.append(_name.substring(1));
+      if (firstLetterIndex > 0) {
+        sb.append(_name.substring(0, firstLetterIndex));
+      }
+      sb.append(Character.toLowerCase(_name.charAt(firstLetterIndex)));
+      sb.append(_name.substring(firstLetterIndex + 1));
       name = sb.toString();
     }
     return name;
   }
 
   public static String toUppercaseFirstLetter(String _name) {
+    int firstLetterIndex = StringUtils.firstLetterIndex(_name);
     String name;
-    if (_name == null || _name.length() == 0) {
+    if (firstLetterIndex == -1) {
       name = _name;
     }
     else {
       StringBuffer sb = new StringBuffer();
-      sb.append(Character.toUpperCase(_name.charAt(0)));
-      sb.append(_name.substring(1));
+      if (firstLetterIndex > 0) {
+        sb.append(_name.substring(0, firstLetterIndex));
+      }
+      sb.append(Character.toUpperCase(_name.charAt(firstLetterIndex)));
+      sb.append(_name.substring(firstLetterIndex + 1));
       name = sb.toString();
     }
     return name;
