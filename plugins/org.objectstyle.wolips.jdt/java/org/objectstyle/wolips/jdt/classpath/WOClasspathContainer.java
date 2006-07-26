@@ -59,6 +59,8 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -99,6 +101,7 @@ public final class WOClasspathContainer implements IClasspathContainer {
 	 * @see org.eclipse.jdt.core.IClasspathContainer#getClasspathEntries()
 	 */
 	public IClasspathEntry[] getClasspathEntries() {
+    System.out.println("WOClasspathContainer.getClasspathEntries: " + allClasspathEntries);
 		if (classpathEntries == null) {
 			initPath();
 		}
@@ -178,13 +181,18 @@ public final class WOClasspathContainer implements IClasspathContainer {
 										.newLibraryEntry(archivePath, source,
 												null, null, javadoc, false);
 								path.add(entry);
-								allClasspathEntries.put(framework, entry);
+               List entryList = (List)allClasspathEntries.get(framework);
+               if (entryList == null) {
+                 entryList = new LinkedList();
+                 allClasspathEntries.put(framework, entryList);
+               }
+               entryList.add(entry);
 							}
 						}
 					}
 				}
 				else {
-					path.add(allClasspathEntries.get(framework));
+					path.addAll((List)allClasspathEntries.get(framework));
 					h = paths.length;
 				}
 			}
