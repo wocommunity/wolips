@@ -89,7 +89,7 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
   public static final String READ_ONLY = "readOnly";
   public static final String DATA_TYPE = "dataType";
 
-  private static final String[] PROTOTYPED_PROPERTIES = { EOAttribute.ALLOWS_NULL, EOAttribute.ADAPTOR_VALUE_CONVERSION_METHOD_NAME, EOAttribute.EXTERNAL_TYPE, EOAttribute.FACTORY_METHOD_ARGUMENT_TYPE, EOAttribute.PRECISION, EOAttribute.SCALE, EOAttribute.VALUE_CLASS_NAME, EOAttribute.VALUE_FACTORY_METHOD_NAME, EOAttribute.VALUE_TYPE, EOAttribute.DEFINITION, EOAttribute.WIDTH, EOAttribute.READ_FORMAT, EOAttribute.WRITE_FORMAT, EOAttribute.INDEXED, EOAttribute.READ_ONLY };
+  private static final String[] PROTOTYPED_PROPERTIES = { EOAttribute.COLUMN_NAME, EOAttribute.ALLOWS_NULL, EOAttribute.ADAPTOR_VALUE_CONVERSION_METHOD_NAME, EOAttribute.EXTERNAL_TYPE, EOAttribute.FACTORY_METHOD_ARGUMENT_TYPE, EOAttribute.PRECISION, EOAttribute.SCALE, EOAttribute.VALUE_CLASS_NAME, EOAttribute.VALUE_FACTORY_METHOD_NAME, EOAttribute.VALUE_TYPE, EOAttribute.DEFINITION, EOAttribute.WIDTH, EOAttribute.READ_FORMAT, EOAttribute.WRITE_FORMAT, EOAttribute.INDEXED, EOAttribute.READ_ONLY };
 
   private static Map myCachedPropertyKeys;
 
@@ -275,7 +275,7 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
 
   protected Object _prototypeValueIfNull(String _property, Object _value) {
     Object value = _value;
-    if (value == null && myPrototype != null) {
+    if ((value == null || (value instanceof String && ((String) _value).length() == 0)) && myPrototype != null) {
       value = EOAttribute.getPropertyKey(_property).getValue(myPrototype);
     }
     return value;
@@ -294,14 +294,15 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
   }
 
   public void setName(String _name, boolean _fireEvents) throws DuplicateNameException {
-    if (_name == null) {
+    String oldName = getName();
+    String name = (String) _prototypeValueIfNull(EOAttribute.NAME, _name);
+    if (name == null) {
       throw new NullPointerException(Messages.getString("EOAttribute.noBlankAttributeNames"));
     }
-    String oldName = getName();
     if (myEntity != null) {
-      myEntity._checkForDuplicateAttributeName(this, _name, null);
+      myEntity._checkForDuplicateAttributeName(this, name, null);
     }
-    myName = _name;
+    myName = (String) _nullIfPrototyped(EOAttribute.NAME, name);
     if (_fireEvents) {
       firePropertyChange(EOAttribute.NAME, oldName, getName());
     }
@@ -397,14 +398,13 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
   }
 
   public String getColumnName() {
-    //return (String) _prototypeValueIfNull(EOAttribute.COLUMN_NAME, myColumnName);
-    return myColumnName;
+    return (String) _prototypeValueIfNull(EOAttribute.COLUMN_NAME, myColumnName);
   }
 
   public void setColumnName(String _columnName) {
     String oldColumnName = getColumnName();
-    //myColumnName = (String) _nullIfPrototyped(EOAttribute.COLUMN_NAME, _columnName);
-    myColumnName = _columnName;
+    myColumnName = (String) _nullIfPrototyped(EOAttribute.COLUMN_NAME, _columnName);
+    //myColumnName = _columnName;
     firePropertyChange(EOAttribute.COLUMN_NAME, oldColumnName, getColumnName());
   }
 
@@ -666,31 +666,32 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
 
   public List getReferencingRelationships(boolean _includeInheritedAttributes) {
     List referencingRelationships = new LinkedList();
-    Iterator modelsIter = getEntity().getModel().getModelGroup().getModels().iterator();
-    while (modelsIter.hasNext()) {
-      EOModel model = (EOModel) modelsIter.next();
-      Iterator entitiesIter = model.getEntities().iterator();
-      while (entitiesIter.hasNext()) {
-        EOEntity entity = (EOEntity) entitiesIter.next();
-        Iterator relationshipsIter = entity.getRelationships().iterator();
-        while (relationshipsIter.hasNext()) {
-          EORelationship relationship = (EORelationship) relationshipsIter.next();
-          if (relationship.isRelatedTo(this)) {
-            referencingRelationships.add(relationship);
+    if (myEntity != null) {
+      Iterator modelsIter = getEntity().getModel().getModelGroup().getModels().iterator();
+      while (modelsIter.hasNext()) {
+        EOModel model = (EOModel) modelsIter.next();
+        Iterator entitiesIter = model.getEntities().iterator();
+        while (entitiesIter.hasNext()) {
+          EOEntity entity = (EOEntity) entitiesIter.next();
+          Iterator relationshipsIter = entity.getRelationships().iterator();
+          while (relationshipsIter.hasNext()) {
+            EORelationship relationship = (EORelationship) relationshipsIter.next();
+            if (relationship.isRelatedTo(this)) {
+              referencingRelationships.add(relationship);
+            }
           }
         }
       }
-    }
 
-    if (_includeInheritedAttributes && myEntity != null) {
-      Iterator childrenEntitiesIter = myEntity.getChildrenEntities().iterator();
-      while (childrenEntitiesIter.hasNext()) {
-        EOEntity childEntity = (EOEntity) childrenEntitiesIter.next();
-        EOAttribute childAttribute = childEntity.getAttributeNamed(myName);
-        referencingRelationships.addAll(childAttribute.getReferencingRelationships(_includeInheritedAttributes));
+      if (_includeInheritedAttributes && myEntity != null) {
+        Iterator childrenEntitiesIter = myEntity.getChildrenEntities().iterator();
+        while (childrenEntitiesIter.hasNext()) {
+          EOEntity childEntity = (EOEntity) childrenEntitiesIter.next();
+          EOAttribute childAttribute = childEntity.getAttributeNamed(myName);
+          referencingRelationships.addAll(childAttribute.getReferencingRelationships(_includeInheritedAttributes));
+        }
       }
     }
-
     return referencingRelationships;
   }
 
