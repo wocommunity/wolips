@@ -91,67 +91,83 @@ public class EOQualifierFactory {
       }
       else if ("EOKeyValueQualifier".equals(className) || "com.webobjects.eocontrol.EOKeyValueQualifier".equals(className)) {
         String key = _qualifierMap.getString("key", true);
-        Object rawValue = _qualifierMap.get("value");
-        Object value;
-        if (rawValue instanceof Map) {
-          EOModelMap valueMap = new EOModelMap((Map) rawValue);
-          String valueClass = valueMap.getString("class", true);
-          if ("EONull".equals(valueClass) || "com.webobjects.eocontrol.EONull".equals(className)) {
-            value = null;
-          }
-          else if ("EOQualifierVariable".equals(valueClass) || "com.webobjects.eocontrol.EOQualifierVariable".equals(className)) {
-            String variableKey = valueMap.getString("_key", true);
-            value = new ASTNamedParameter(variableKey);
-          }
-          else if ("NSNumber".equals(valueClass)) {
-            value = valueMap.get("value");
-          }
-          else {
-            throw new IllegalArgumentException("Unknown EOKeyValueQualifier value class " + valueClass);
-          }
-        }
-        else {
-          value = rawValue;
-        }
+        Object value = EOQualifierFactory.createValue(_qualifierMap.get("value"));
         String selectorName = _qualifierMap.getString("selectorName", true);
-        ASTObjPath objPath = new ASTObjPath(key);
-        if (StringUtils.isSelectorNameEqual("isEqualTo", selectorName)) {
-          node = new ASTEqual(objPath, value);
-        }
-        else if (StringUtils.isSelectorNameEqual("isNotEqualTo", selectorName)) {
-          node = new ASTNotEqual(objPath, value);
-        }
-        else if (StringUtils.isSelectorNameEqual("isLessThan", selectorName)) {
-          node = new ASTLess(objPath, value);
-        }
-        else if (StringUtils.isSelectorNameEqual("isGreaterThan", selectorName)) {
-          node = new ASTGreater(objPath, value);
-        }
-        else if (StringUtils.isSelectorNameEqual("isLessThanOrEqualTo", selectorName)) {
-          node = new ASTLessOrEqual(objPath, value);
-        }
-        else if (StringUtils.isSelectorNameEqual("isGreaterThanOrEqualTo", selectorName)) {
-          node = new ASTGreaterOrEqual(objPath, value);
-        }
-        else if (StringUtils.isSelectorNameEqual("doesContain", selectorName)) {
-          //node = new ASTEqual(objPath, value);
-          throw new IllegalArgumentException("Not sure what 'doesContain:' maps onto.");
-        }
-        else if (StringUtils.isSelectorNameEqual("isLike", selectorName)) {
-          node = new ASTLike(objPath, value);
-        }
-        else if (StringUtils.isSelectorNameEqual("isCaseInsensitiveLike", selectorName)) {
-          node = new ASTLikeIgnoreCase(objPath, value);
-        }
-        else {
-          throw new IllegalArgumentException("Unknown selectorName '" + selectorName + "'.");
-        }
+        node = EOQualifierFactory.createKeyValueQualifierNode(key, selectorName, value);
+      }
+      else if ("EOKeyComparisonQualifier".equals(className) || "com.webobjects.eocontrol.EOKeyComparisonQualifier".equals(className)) {
+        String leftKey = _qualifierMap.getString("leftKey", true);
+        String rightKey = _qualifierMap.getString("rightKey", true);
+        String selectorName = _qualifierMap.getString("selectorName", true);
+        node = EOQualifierFactory.createKeyValueQualifierNode(leftKey, selectorName, new ASTObjPath(rightKey));
       }
       else {
         throw new IllegalArgumentException("Unknown qualifier className '" + className + "'.");
       }
     }
     return node;
+  }
+
+  private static Node createKeyValueQualifierNode(Object _key, String _selectorName, Object _value) {
+    Node node = null;
+    ASTObjPath objPath = new ASTObjPath(_key);
+    if (StringUtils.isSelectorNameEqual("isEqualTo", _selectorName)) {
+      node = new ASTEqual(objPath, _value);
+    }
+    else if (StringUtils.isSelectorNameEqual("isNotEqualTo", _selectorName)) {
+      node = new ASTNotEqual(objPath, _value);
+    }
+    else if (StringUtils.isSelectorNameEqual("isLessThan", _selectorName)) {
+      node = new ASTLess(objPath, _value);
+    }
+    else if (StringUtils.isSelectorNameEqual("isGreaterThan", _selectorName)) {
+      node = new ASTGreater(objPath, _value);
+    }
+    else if (StringUtils.isSelectorNameEqual("isLessThanOrEqualTo", _selectorName)) {
+      node = new ASTLessOrEqual(objPath, _value);
+    }
+    else if (StringUtils.isSelectorNameEqual("isGreaterThanOrEqualTo", _selectorName)) {
+      node = new ASTGreaterOrEqual(objPath, _value);
+    }
+    else if (StringUtils.isSelectorNameEqual("doesContain", _selectorName)) {
+      //node = new ASTEqual(objPath, value);
+      throw new IllegalArgumentException("Not sure what 'doesContain:' maps onto.");
+    }
+    else if (StringUtils.isSelectorNameEqual("isLike", _selectorName)) {
+      node = new ASTLike(objPath, _value);
+    }
+    else if (StringUtils.isSelectorNameEqual("isCaseInsensitiveLike", _selectorName)) {
+      node = new ASTLikeIgnoreCase(objPath, _value);
+    }
+    else {
+      throw new IllegalArgumentException("Unknown selectorName '" + _selectorName + "'.");
+    }
+    return node;
+  }
+
+  private static Object createValue(Object _rawValue) {
+    Object value;
+    if (_rawValue instanceof Map) {
+      EOModelMap valueMap = new EOModelMap((Map) _rawValue);
+      String valueClass = valueMap.getString("class", true);
+      if ("EONull".equals(valueClass) || "com.webobjects.eocontrol.EONull".equals(valueClass)) {
+        value = null;
+      }
+      else if ("EOQualifierVariable".equals(valueClass) || "com.webobjects.eocontrol.EOQualifierVariable".equals(valueClass)) {
+        String variableKey = valueMap.getString("_key", true);
+        value = new ASTNamedParameter(variableKey);
+      }
+      else if ("NSNumber".equals(valueClass)) {
+        value = valueMap.get("value");
+      }
+      else {
+        throw new IllegalArgumentException("Unknown EOKeyValueQualifier value class " + valueClass);
+      }
+    }
+    else {
+      value = _rawValue;
+    }
+    return value;
   }
 
   private static Collection createNodesFromQualifierMaps(Collection _qualifiers) {
@@ -206,10 +222,20 @@ public class EOQualifierFactory {
   private static EOModelMap createQualifierMapFromConditionNode(ConditionNode _node, String _selectorName) {
     ASTPath path = (ASTPath) _node.getOperand(0);
     EOModelMap map = new EOModelMap();
-    map.setString("class", "EOKeyValueQualifier", false);
-    map.setString("key", (String) path.getOperand(0), false);
-    map.setString("selectorName", _selectorName, false);
-    map.put("value", createQualifierValue(_node.getOperand(1)));
+    Object valueObj = _node.getOperand(1);
+    if (valueObj instanceof ASTPath) {
+      map.setString("class", "EOKeyComparisonQualifier", false);
+      map.setString("leftKey", (String) path.getOperand(0), false);
+      map.setString("rightKey", (String) ((ASTPath) valueObj).getOperand(0), false);
+      map.setString("selectorName", _selectorName, false);
+    }
+    else {
+      map.setString("class", "EOKeyValueQualifier", false);
+      Object value = createQualifierValue(valueObj);
+      map.setString("key", (String) path.getOperand(0), false);
+      map.setString("selectorName", _selectorName, false);
+      map.put("value", value);
+    }
     return map;
   }
 
