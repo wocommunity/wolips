@@ -113,17 +113,23 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     myName = _name;
   }
 
-  public IEOAttribute resolveKeyPath(String _keyPath) {
-    IEOAttribute targetAttribute = resolveKeyPath(_keyPath, new HashSet());
+  public IEOAttributePath resolveKeyPath(String _keyPath) {
+    IEOAttributePath targetAttribute = resolveKeyPath(_keyPath, null, new HashSet());
     return targetAttribute;
   }
 
-  public IEOAttribute resolveKeyPath(String _keyPath, Set _visitedRelationships) {
-    IEOAttribute targetAttribute = null;
+  public IEOAttributePath resolveKeyPath(String _keyPath, EORelationshipPath _parentRelationshipPath, Set _visitedRelationships) {
+    IEOAttributePath targetAttributePath = null;
     if (_keyPath != null && _keyPath.length() > 0) {
       int dotIndex = _keyPath.indexOf('.');
       if (dotIndex == -1) {
-        targetAttribute = getAttributeOrRelationshipNamed(_keyPath);
+        IEOAttribute attribute = getAttributeOrRelationshipNamed(_keyPath);
+        if (attribute instanceof EOAttribute) {
+          targetAttributePath = new EOAttributePath(_parentRelationshipPath, (EOAttribute)attribute);
+        }
+        else {
+          targetAttributePath = new EORelationshipPath(_parentRelationshipPath, (EORelationship)attribute);
+        }
       }
       else {
         EORelationship relationship = getRelationshipNamed(_keyPath.substring(0, dotIndex));
@@ -136,13 +142,14 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
             _visitedRelationships.add(relationship);
             EOEntity destination = relationship.getDestination();
             if (destination != null) {
-              targetAttribute = destination.resolveKeyPath(_keyPath.substring(dotIndex + 1), _visitedRelationships);
+              EORelationshipPath nextRelationshipPath = new EORelationshipPath(_parentRelationshipPath, relationship);
+              targetAttributePath = destination.resolveKeyPath(_keyPath.substring(dotIndex + 1), nextRelationshipPath, _visitedRelationships);
             }
           }
         }
       }
     }
-    return targetAttribute;
+    return targetAttributePath;
   }
 
   public void pasted() throws DuplicateNameException {

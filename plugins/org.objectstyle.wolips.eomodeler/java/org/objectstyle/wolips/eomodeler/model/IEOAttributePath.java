@@ -53,7 +53,7 @@ import java.util.Map;
 
 import org.objectstyle.wolips.eomodeler.utils.NotificationMap;
 
-public class IEOAttributePath implements IUserInfoable, IEOEntityRelative {
+public abstract class IEOAttributePath implements IUserInfoable, IEOEntityRelative {
   private EORelationshipPath myParentRelationshipPath;
   private IEOAttribute myChildAttribute;
 
