@@ -67,10 +67,14 @@ import org.objectstyle.wolips.eomodeler.model.PropertyListComparator;
 
 public class EOModelOutlineContentProvider implements ITreeContentProvider {
   private Object myModelContainer;
-  private boolean myShowAllObjects;
-  
-  public EOModelOutlineContentProvider(boolean _showAllObjects) {
-    myShowAllObjects = _showAllObjects;
+  private boolean myShowAttributes;
+  private boolean myShowRelationships;
+  private boolean myShowFetchSpecs;
+
+  public EOModelOutlineContentProvider(boolean _showAttributes, boolean _showRelationships, boolean _showFetchSpecs) {
+    myShowAttributes = _showAttributes;
+    myShowRelationships = _showRelationships;
+    myShowFetchSpecs = _showFetchSpecs;
   }
 
   public Object[] getChildren(Object _parentElement) {
@@ -87,9 +91,13 @@ public class EOModelOutlineContentProvider implements ITreeContentProvider {
     else if (_parentElement instanceof EOEntity) {
       EOEntity entity = (EOEntity) _parentElement;
       Set entityChildren = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
-      entityChildren.addAll(entity.getAttributes());
-      entityChildren.addAll(entity.getRelationships());
-      if (myShowAllObjects) {
+      if (myShowAttributes) {
+        entityChildren.addAll(entity.getAttributes());
+      }
+      if (myShowRelationships) {
+        entityChildren.addAll(entity.getRelationships());
+      }
+      if (myShowFetchSpecs) {
         entityChildren.addAll(entity.getFetchSpecs());
       }
       children = entityChildren.toArray();

@@ -56,18 +56,13 @@ import org.eclipse.jface.viewers.TableViewer;
 
 public class TableRowRefreshPropertyListener implements PropertyChangeListener {
   private TableViewer myTableViewer;
-  private String myPropertyName;
 
-  public TableRowRefreshPropertyListener(TableViewer _tableViewer, String _propertyName) {
+  public TableRowRefreshPropertyListener(TableViewer _tableViewer) {
     myTableViewer = _tableViewer;
-    myPropertyName = _propertyName;
   }
 
   public void propertyChange(PropertyChangeEvent _event) {
-    String changedPropertyName = _event.getPropertyName();
-    if (myPropertyName.equals(changedPropertyName)) {
-      Object newValue = _event.getNewValue();
-      myTableViewer.refresh(newValue, true);
-    }
+    Object newValue = _event.getNewValue();
+    myTableViewer.refresh(newValue, true);
   }
 }

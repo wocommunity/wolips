@@ -49,13 +49,40 @@
  */
 package org.objectstyle.wolips.eomodeler.utils;
 
+import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.objectstyle.wolips.eomodeler.Messages;
 
 public class TableUtils {
+  public static TableViewer createTableViewer(Composite _parent, String _messagePrefix, String[] _columns, IStructuredContentProvider _contentProvider, ITableLabelProvider _labelProvider, ViewerSorter _sorter) {
+    return TableUtils.createTableViewer(_parent, SWT.FULL_SELECTION, _messagePrefix, _columns, _contentProvider, _labelProvider, _sorter);
+  }
+
+  public static TableViewer createTableViewer(Composite _parent, int _style, String _messagePrefix, String[] _columns, IStructuredContentProvider _contentProvider, ITableLabelProvider _labelProvider, ViewerSorter _sorter) {
+    TableViewer tableViewer = new TableViewer(_parent, _style);
+    tableViewer.setColumnProperties(_columns);
+    if (_contentProvider != null) {
+      tableViewer.setContentProvider(_contentProvider);
+    }
+    if (_labelProvider != null) {
+      tableViewer.setLabelProvider(_labelProvider);
+    }
+    if (_sorter != null) {
+      tableViewer.setSorter(_sorter);
+    }
+    Table table = tableViewer.getTable();
+    table.setHeaderVisible(true);
+    table.setLinesVisible(true);
+    TableUtils.createTableColumns(tableViewer, _messagePrefix, _columns, (_sorter instanceof TablePropertyViewerSorter));
+    return tableViewer;
+  }
+
   public static void packTableColumns(TableViewer _viewer) {
     Table table = _viewer.getTable();
     int columnCount = table.getColumnCount();
@@ -64,13 +91,13 @@ public class TableUtils {
     }
   }
 
-  public static void createTableColumns(TableViewer _viewer, String _messagePrefix, String[] _properties) {
+  public static void createTableColumns(TableViewer _viewer, String _messagePrefix, String[] _properties, boolean _addSortHandler) {
     for (int columnNum = 0; columnNum < _properties.length; columnNum++) {
-      TableUtils.createTableColumn(_viewer, _messagePrefix, _properties[columnNum]);
+      TableUtils.createTableColumn(_viewer, _messagePrefix, _properties[columnNum], _addSortHandler);
     }
   }
 
-  public static TableColumn createTableColumn(TableViewer _viewer, String _messagePrefix, String _propertyName) {
+  public static TableColumn createTableColumn(TableViewer _viewer, String _messagePrefix, String _propertyName, boolean _addSortHandler) {
     TableColumn column = new TableColumn(_viewer.getTable(), SWT.LEFT);
     column.setMoveable(true);
     String text;
@@ -81,7 +108,9 @@ public class TableUtils {
       text = Messages.getString(_messagePrefix + "." + _propertyName);
     }
     column.setText(text);
-    column.addSelectionListener(new TableSortHandler(_viewer, _propertyName));
+    if (_addSortHandler) {
+      column.addSelectionListener(new TableSortHandler(_viewer, _propertyName));
+    }
     return column;
   }
 
@@ -95,4 +124,10 @@ public class TableUtils {
     return matchingColumnIndex;
   }
 
+  public static void sort(TableViewer _tableViewer, String _propertyName) {
+    TablePropertyViewerSorter sorter = (TablePropertyViewerSorter) _tableViewer.getSorter();
+    if (sorter != null) {
+      sorter.sort(_tableViewer, _propertyName);
+    }
+  }
 }

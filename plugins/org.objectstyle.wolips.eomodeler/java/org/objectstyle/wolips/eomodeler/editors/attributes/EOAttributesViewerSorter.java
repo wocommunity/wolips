@@ -49,14 +49,13 @@
  */
 package org.objectstyle.wolips.eomodeler.editors.attributes;
 
-import org.eclipse.jface.viewers.TableViewer;
 import org.objectstyle.wolips.eomodeler.model.EOAttribute;
 import org.objectstyle.wolips.eomodeler.utils.TablePropertyViewerSorter;
 
 public class EOAttributesViewerSorter extends TablePropertyViewerSorter {
 
-  public EOAttributesViewerSorter(TableViewer _viewer, String[] _properties) {
-    super(_viewer, _properties);
+  public EOAttributesViewerSorter(String[] _properties) {
+    super(_properties);
   }
 
   public Object getComparisonValue(Object _obj, String _property) {

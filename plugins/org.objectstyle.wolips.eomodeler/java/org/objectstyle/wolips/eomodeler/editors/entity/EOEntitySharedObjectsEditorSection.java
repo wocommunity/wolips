@@ -124,15 +124,8 @@ public class EOEntitySharedObjectsEditorSection extends AbstractPropertySection 
     myShareFetchSpecsButton.setText(Messages.getString("EOEntity.shareFetchSpecs"));
     myShareFetchSpecsButton.addSelectionListener(new ShareFetchSpecsListener());
 
-    myFetchSpecsViewer = new TableViewer(topForm, SWT.BORDER | SWT.FLAT | SWT.MULTI | SWT.FULL_SELECTION);
-    myFetchSpecsViewer.getTable().setHeaderVisible(true);
-    myFetchSpecsViewer.getTable().setLinesVisible(true);
-    TableUtils.createTableColumns(myFetchSpecsViewer, "EOFetchSpecification", EOFetchSpecsConstants.COLUMNS);
+    myFetchSpecsViewer = TableUtils.createTableViewer(topForm, SWT.BORDER | SWT.FLAT | SWT.MULTI | SWT.FULL_SELECTION, "EOFetchSpecification", EOFetchSpecsConstants.COLUMNS, new EOFetchSpecsContentProvider(), new EOFetchSpecsLabelProvider(EOFetchSpecsConstants.COLUMNS), new TablePropertyViewerSorter(EOFetchSpecsConstants.COLUMNS));
     myFetchSpecsViewer.getTable().getColumns()[TableUtils.getColumnNumber(EOFetchSpecsConstants.COLUMNS, EOFetchSpecification.SHARES_OBJECTS)].setText("");
-    myFetchSpecsViewer.setContentProvider(new EOFetchSpecsContentProvider());
-    myFetchSpecsViewer.setLabelProvider(new EOFetchSpecsLabelProvider(EOFetchSpecsConstants.COLUMNS));
-    myFetchSpecsViewer.setSorter(new TablePropertyViewerSorter(myFetchSpecsViewer, EOFetchSpecsConstants.COLUMNS));
-    myFetchSpecsViewer.setColumnProperties(EOFetchSpecsConstants.COLUMNS);
 
     CellEditor[] cellEditors = new CellEditor[1];
     cellEditors[TableUtils.getColumnNumber(EOFetchSpecsConstants.COLUMNS, EOFetchSpecification.SHARES_OBJECTS)] = new CheckboxCellEditor(myFetchSpecsViewer.getTable());
@@ -180,16 +173,16 @@ public class EOEntitySharedObjectsEditorSection extends AbstractPropertySection 
 
   protected void fetchSpecsChanged() {
     myFetchSpecsViewer.refresh();
-    shareTypeChanged();
+    shareTypeChanged(false);
   }
 
   protected void fetchSpecChanged(EOFetchSpecification _fetchSpec) {
     myFetchSpecsViewer.refresh(_fetchSpec);
-    shareTypeChanged();
+    shareTypeChanged(false);
   }
 
-  protected void shareTypeChanged() {
-    if (!myEntity.hasSharedObjects()) {
+  protected void shareTypeChanged(boolean _selectedShareFetchSpecs) {
+    if (!_selectedShareFetchSpecs && !myEntity.hasSharedObjects()) {
       if (!myShareNoObjectsButton.getSelection()) {
         myShareNoObjectsButton.setSelection(true);
       }
@@ -197,7 +190,7 @@ public class EOEntitySharedObjectsEditorSection extends AbstractPropertySection 
       myShareFetchSpecsButton.setSelection(false);
       myFetchSpecsViewer.getTable().setEnabled(false);
     }
-    else if (myEntity.isSharesAllObjectsOnly()) {
+    else if (!_selectedShareFetchSpecs && myEntity.isSharesAllObjectsOnly()) {
       if (!myShareAllObjectsButton.getSelection()) {
         myShareAllObjectsButton.setSelection(true);
       }
@@ -261,7 +254,9 @@ public class EOEntitySharedObjectsEditorSection extends AbstractPropertySection 
     }
 
     public void widgetSelected(SelectionEvent _e) {
-      EOEntitySharedObjectsEditorSection.this.shareTypeChanged();
+      if (((Button) _e.getSource()).getSelection()) {
+        EOEntitySharedObjectsEditorSection.this.shareTypeChanged(true);
+      }
     }
   }
 }

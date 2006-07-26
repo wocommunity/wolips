@@ -102,7 +102,7 @@ public class CutAction extends Action implements IWorkbenchWindowActionDelegate 
       if (selectedObject instanceof EOModelObject) {
         Set referenceFailures = ((EOModelObject) selectedObject).getReferenceFailures();
         if (!referenceFailures.isEmpty()) {
-          hasReferenceFailures = false;
+          hasReferenceFailures = true;
           new EOModelErrorDialog(activeShell, referenceFailures).open();
         }
       }

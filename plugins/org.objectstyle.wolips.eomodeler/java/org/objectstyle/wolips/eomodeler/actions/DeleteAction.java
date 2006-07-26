@@ -88,7 +88,7 @@ public class DeleteAction extends Action {
     if (selectedObject instanceof EOModelObject) {
       Set referenceFailures = ((EOModelObject) selectedObject).getReferenceFailures();
       if (!referenceFailures.isEmpty()) {
-        hasReferenceFailures = false;
+        hasReferenceFailures = true;
         new EOModelErrorDialog(activeShell, referenceFailures).open();
       }
     }
@@ -118,7 +118,6 @@ public class DeleteAction extends Action {
         }
       }
       else {
-        System.out.println("DeleteAction.run: " + selectedObject);
         MessageDialog.openError(activeShell, Messages.getString("delete.nothingSelectedTitle"), Messages.getString("delete.nothingSelectedMessage"));//$NON-NLS-1$
       }
     }

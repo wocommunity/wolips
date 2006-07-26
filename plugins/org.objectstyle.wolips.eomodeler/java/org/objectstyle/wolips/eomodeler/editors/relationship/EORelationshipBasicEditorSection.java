@@ -89,6 +89,7 @@ import org.objectstyle.wolips.eomodeler.model.EOModel;
 import org.objectstyle.wolips.eomodeler.model.EOModelGroup;
 import org.objectstyle.wolips.eomodeler.model.EORelationship;
 import org.objectstyle.wolips.eomodeler.model.EORelationshipPath;
+import org.objectstyle.wolips.eomodeler.utils.AddRemoveButtonGroup;
 import org.objectstyle.wolips.eomodeler.utils.BindingFactory;
 import org.objectstyle.wolips.eomodeler.utils.ComboViewerBinding;
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
@@ -110,8 +111,7 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
   private ComboViewer myJoinSemanticComboViewer;
   private ComboViewer myEntityComboViewer;
   private TableViewer myJoinsTableViewer;
-  private Button myRemoveButton;
-  private Button myAddButton;
+  private AddRemoveButtonGroup myAddRemoveButtonGroup;
 
   private DataBindingContext myBindingContext;
   private ComboViewerBinding myDeleteRuleBinding;
@@ -226,14 +226,7 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
     joinSemanticLayoutData.verticalAlignment = SWT.TOP;
     joinSemanticCombo.setLayoutData(joinSemanticLayoutData);
 
-    myJoinsTableViewer = new TableViewer(topForm, SWT.BORDER | SWT.FLAT | SWT.MULTI | SWT.FULL_SELECTION);
-    myJoinsTableViewer.getTable().setHeaderVisible(true);
-    myJoinsTableViewer.getTable().setLinesVisible(true);
-    TableUtils.createTableColumns(myJoinsTableViewer, "EOJoin", EOJoinsConstants.COLUMNS);
-    myJoinsTableViewer.setContentProvider(new EOJoinsContentProvider());
-    myJoinsTableViewer.setLabelProvider(new EOJoinsLabelProvider(EOJoinsConstants.COLUMNS));
-    myJoinsTableViewer.setSorter(new TablePropertyViewerSorter(myJoinsTableViewer, EOJoinsConstants.COLUMNS));
-    myJoinsTableViewer.setColumnProperties(EOJoinsConstants.COLUMNS);
+    myJoinsTableViewer = TableUtils.createTableViewer(topForm, SWT.BORDER | SWT.FLAT | SWT.MULTI | SWT.FULL_SELECTION, "EOJoin", EOJoinsConstants.COLUMNS, new EOJoinsContentProvider(), new EOJoinsLabelProvider(EOJoinsConstants.COLUMNS), new TablePropertyViewerSorter(EOJoinsConstants.COLUMNS));
 
     CellEditor[] cellEditors = new CellEditor[EOJoinsConstants.COLUMNS.length];
     cellEditors[TableUtils.getColumnNumber(EOJoinsConstants.COLUMNS, EOJoin.SOURCE_ATTRIBUTE_NAME)] = new KeyComboBoxCellEditor(myJoinsTableViewer.getTable(), new String[0], SWT.READ_ONLY);
@@ -246,28 +239,7 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
     myJoinsTableViewer.getTable().setLayoutData(joinsTableLayoutData);
     myJoinsTableViewer.addSelectionChangedListener(myButtonUpdateListener);
 
-    Composite buttonGroup = getWidgetFactory().createPlainComposite(form, SWT.NONE);
-    FormData buttonGroupFormData = new FormData();
-    buttonGroupFormData.top = new FormAttachment(topForm, 5);
-    buttonGroupFormData.left = new FormAttachment(0, 5);
-    buttonGroupFormData.right = new FormAttachment(100, -5);
-    buttonGroup.setLayoutData(buttonGroupFormData);
-    FormLayout layout = new FormLayout();
-    buttonGroup.setLayout(layout);
-
-    myAddButton = new Button(buttonGroup, SWT.PUSH);
-    myAddButton.setText(Messages.getString("button.add"));
-    FormData addButtonData = new FormData();
-    addButtonData.right = new FormAttachment(100, 0);
-    myAddButton.setLayoutData(addButtonData);
-    myAddButton.addSelectionListener(new AddJoinHandler());
-
-    myRemoveButton = new Button(buttonGroup, SWT.PUSH);
-    myRemoveButton.setText(Messages.getString("button.remove"));
-    FormData remoteButtonData = new FormData();
-    remoteButtonData.right = new FormAttachment(myAddButton, 0);
-    myRemoveButton.setLayoutData(remoteButtonData);
-    myRemoveButton.addSelectionListener(new RemoveJoinsHandler());
+    myAddRemoveButtonGroup = new AddRemoveButtonGroup(topForm, new AddJoinHandler(), new RemoveJoinsHandler());
   }
 
   public void setInput(IWorkbenchPart _part, ISelection _selection) {
@@ -291,7 +263,7 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
       myEntityComboViewer.setInput(myRelationship);
       myModelComboViewer.setSelection(new StructuredSelection(myRelationship.getEntity().getModel()));
       myJoinsTableViewer.setInput(myRelationship);
-      ((TablePropertyViewerSorter) myJoinsTableViewer.getSorter()).sort(EOJoin.SOURCE_ATTRIBUTE);
+      TableUtils.sort(myJoinsTableViewer, EOJoin.SOURCE_ATTRIBUTE);
 
       myBindingContext = BindingFactory.createContext();
       myBindingContext.bind(myNameText, new Property(myRelationship, EORelationship.NAME), null);
@@ -304,14 +276,14 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
       myDeleteRuleBinding = new ComboViewerBinding(myDeleteRuleComboViewer, myRelationship, EORelationship.DELETE_RULE, null, null, null);
       myJoinSemanticBinding = new ComboViewerBinding(myJoinSemanticComboViewer, myRelationship, EORelationship.JOIN_SEMANTIC, myRelationship.getEntity().getModel().getModelGroup(), EOModelGroup.MODELS, null);
       myEntityBinding = new ComboViewerBinding(myEntityComboViewer, myRelationship, EORelationship.DESTINATION, myRelationship.getEntity().getModel(), EOModel.ENTITIES, null);
-      
+
       boolean enabled = !myRelationship.isFlattened();
       myModelComboViewer.getCombo().setEnabled(enabled);
       myEntityComboViewer.getCombo().setEnabled(enabled);
       myJoinSemanticComboViewer.getCombo().setEnabled(enabled);
       myJoinsTableViewer.getTable().setEnabled(enabled);
-      myAddButton.setEnabled(enabled);
-      myRemoveButton.setEnabled(enabled);
+      myAddRemoveButtonGroup.setAddEnabled(enabled);
+      myAddRemoveButtonGroup.setRemoveEnabled(enabled);
       myDefinitionText.setEnabled(false);
       //boolean flattened = myRelationship.isFlattened();
       //myDefinitionLabel.setVisible(flattened);
@@ -327,8 +299,8 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
     boolean buttonsEnabled = myRelationship.getDestination() != null;
     boolean removeEnabled = buttonsEnabled && !myJoinsTableViewer.getSelection().isEmpty() && !myRelationship.isFlattened();
     boolean addEnabled = buttonsEnabled;
-    myRemoveButton.setEnabled(removeEnabled);
-    myAddButton.setEnabled(addEnabled);
+    myAddRemoveButtonGroup.setRemoveEnabled(removeEnabled);
+    myAddRemoveButtonGroup.setAddEnabled(addEnabled);
   }
 
   protected void updateModelAndEntityCombosEnabled() {

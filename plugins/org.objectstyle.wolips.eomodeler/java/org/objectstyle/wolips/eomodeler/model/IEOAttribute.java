@@ -75,4 +75,6 @@ public interface IEOAttribute extends IEOEntityRelative, IUserInfoable {
   public Boolean getClientClassProperty();
   
   public boolean isInherited();
+  
+  public Boolean isToMany();
 }
