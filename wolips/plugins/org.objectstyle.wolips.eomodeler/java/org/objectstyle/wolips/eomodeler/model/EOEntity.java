@@ -1133,7 +1133,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
         loadFromMap(entityMap, _failures);
       }
     }
-    catch (EOModelException e) {
+    catch (Throwable e) {
       throw new EOModelException("Failed to load entity from '" + _entityFile + "'.", e);
     }
     try {
@@ -1142,7 +1142,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
         loadFetchSpecsFromMap(fspecMap, _failures);
       }
     }
-    catch (EOModelException e) {
+    catch (Throwable e) {
       throw new EOModelException("Failed to load fetch specifications from '" + _fetchSpecFile + "'.", e);
     }
   }
