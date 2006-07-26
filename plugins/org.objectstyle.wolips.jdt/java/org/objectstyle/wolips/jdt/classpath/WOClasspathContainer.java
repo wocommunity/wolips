@@ -101,7 +101,6 @@ public final class WOClasspathContainer implements IClasspathContainer {
 	 * @see org.eclipse.jdt.core.IClasspathContainer#getClasspathEntries()
 	 */
 	public IClasspathEntry[] getClasspathEntries() {
-    System.out.println("WOClasspathContainer.getClasspathEntries: " + allClasspathEntries);
 		if (classpathEntries == null) {
 			initPath();
 		}
