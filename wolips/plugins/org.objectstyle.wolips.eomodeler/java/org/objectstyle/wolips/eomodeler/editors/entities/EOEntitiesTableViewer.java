@@ -81,21 +81,11 @@ public class EOEntitiesTableViewer extends Composite implements ISelectionProvid
   public EOEntitiesTableViewer(Composite _parent, int _style) {
     super(_parent, _style);
     setLayout(new GridLayout(1, true));
-    myEntitiesTableViewer = new TableViewer(this, SWT.FULL_SELECTION);
-    myEntitiesTableViewer.setContentProvider(new EOEntitiesContentProvider());
-    myEntitiesTableViewer.setLabelProvider(new EOEntitiesLabelProvider(EOEntitiesConstants.COLUMNS));
-    myEntitiesTableViewer.setSorter(new EOEntitiesViewerSorter(myEntitiesTableViewer, EOEntitiesConstants.COLUMNS));
-    myEntitiesTableViewer.setColumnProperties(EOEntitiesConstants.COLUMNS);
+    myEntitiesTableViewer = TableUtils.createTableViewer(this, "EOEntity", EOEntitiesConstants.COLUMNS, new EOEntitiesContentProvider(), new EOEntitiesLabelProvider(EOEntitiesConstants.COLUMNS), new EOEntitiesViewerSorter(EOEntitiesConstants.COLUMNS));
     new DoubleClickNewEntityHandler().attachTo(myEntitiesTableViewer);
-
     Table entitiesTable = myEntitiesTableViewer.getTable();
     entitiesTable.setLayoutData(new GridData(GridData.FILL_BOTH));
-    entitiesTable.setHeaderVisible(true);
-    entitiesTable.setLinesVisible(true);
-
-    TableUtils.createTableColumns(myEntitiesTableViewer, "EOEntity", EOEntitiesConstants.COLUMNS);
-
-    ((EOEntitiesViewerSorter) myEntitiesTableViewer.getSorter()).sort(EOEntity.NAME);
+    TableUtils.sort(myEntitiesTableViewer, EOEntity.NAME);
 
     CellEditor[] cellEditors = new CellEditor[EOEntitiesConstants.COLUMNS.length];
     cellEditors[TableUtils.getColumnNumber(EOEntitiesConstants.COLUMNS, EOEntity.NAME)] = new TextCellEditor(entitiesTable);
@@ -105,21 +95,21 @@ public class EOEntitiesTableViewer extends Composite implements ISelectionProvid
     myEntitiesTableViewer.setCellModifier(new EOEntitiesCellModifier(myEntitiesTableViewer, cellEditors));
     myEntitiesTableViewer.setCellEditors(cellEditors);
 
-    myTableRefresher = new TableRefreshPropertyListener(myEntitiesTableViewer, EOModel.ENTITIES);
-    myTableRowRefresher = new TableRowRefreshPropertyListener(myEntitiesTableViewer, EOModel.ENTITY);
+    myTableRefresher = new TableRefreshPropertyListener(myEntitiesTableViewer);
+    myTableRowRefresher = new TableRowRefreshPropertyListener(myEntitiesTableViewer);
   }
 
   public void setModel(EOModel _model) {
     if (myModel != null) {
-      myModel.removePropertyChangeListener(myTableRefresher);
-      myModel.removePropertyChangeListener(myTableRowRefresher);
+      myModel.removePropertyChangeListener(EOModel.ENTITIES, myTableRefresher);
+      myModel.removePropertyChangeListener(EOModel.ENTITY, myTableRowRefresher);
     }
     myModel = _model;
     myEntitiesTableViewer.setInput(myModel);
     TableUtils.packTableColumns(myEntitiesTableViewer);
     if (myModel != null) {
-      myModel.addPropertyChangeListener(myTableRefresher);
-      myModel.addPropertyChangeListener(myTableRowRefresher);
+      myModel.addPropertyChangeListener(EOModel.ENTITIES, myTableRefresher);
+      myModel.addPropertyChangeListener(EOModel.ENTITY, myTableRowRefresher);
     }
 
   }

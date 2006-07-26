@@ -90,22 +90,14 @@ public class EOAttributesTableViewer extends Composite implements ISelectionProv
     super(_parent, _style);
 
     setLayout(new GridLayout(1, true));
-    myAttributesTableViewer = new TableViewer(this, SWT.FULL_SELECTION);
-    myAttributesTableViewer.setContentProvider(new EOAttributesContentProvider());
+    myAttributesTableViewer = TableUtils.createTableViewer(this, "EOAttribute", EOAttributesConstants.COLUMNS, new EOAttributesContentProvider(), null, new EOAttributesViewerSorter(EOAttributesConstants.COLUMNS));
     myAttributesTableViewer.setLabelProvider(new EOAttributesLabelProvider(myAttributesTableViewer, EOAttributesConstants.COLUMNS));
-    myAttributesTableViewer.setSorter(new EOAttributesViewerSorter(myAttributesTableViewer, EOAttributesConstants.COLUMNS));
-    myAttributesTableViewer.setColumnProperties(EOAttributesConstants.COLUMNS);
     new DoubleClickNewAttributeHandler().attachTo(myAttributesTableViewer);
-    myAttributesChangedRefresher = new AttributesChangeRefresher(myAttributesTableViewer, EOEntity.ATTRIBUTES);
-    myParentChangedRefresher = new TableRefreshPropertyListener(myAttributesTableViewer, EOEntity.PARENT);
-    myTableRowRefresher = new TableRowRefreshPropertyListener(myAttributesTableViewer, EOEntity.ATTRIBUTE);
-
+    myAttributesChangedRefresher = new AttributesChangeRefresher(myAttributesTableViewer);
+    myParentChangedRefresher = new TableRefreshPropertyListener(myAttributesTableViewer);
+    myTableRowRefresher = new TableRowRefreshPropertyListener(myAttributesTableViewer);
     Table attributesTable = myAttributesTableViewer.getTable();
     attributesTable.setLayoutData(new GridData(GridData.FILL_BOTH));
-    attributesTable.setHeaderVisible(true);
-    attributesTable.setLinesVisible(true);
-
-    TableUtils.createTableColumns(myAttributesTableViewer, "EOAttribute", EOAttributesConstants.COLUMNS);
 
     TableColumn primaryKeyColumn = attributesTable.getColumn(TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttribute.PRIMARY_KEY));
     primaryKeyColumn.setText("");
@@ -127,7 +119,7 @@ public class EOAttributesTableViewer extends Composite implements ISelectionProv
     //allowNullColumn.setAlignment(SWT.CENTER);
     //classPropertyColumn.setImage(Activator.getDefault().getImageRegistry().get(EOAttribute.CLASS_PROPERTY));
 
-    ((EOAttributesViewerSorter) myAttributesTableViewer.getSorter()).sort(EOAttribute.NAME);
+    TableUtils.sort(myAttributesTableViewer, EOAttribute.NAME);
 
     CellEditor[] cellEditors = new CellEditor[EOAttributesConstants.COLUMNS.length];
     cellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttribute.PROTOTYPE)] = new KeyComboBoxCellEditor(attributesTable, new String[0], SWT.READ_ONLY);
@@ -207,8 +199,8 @@ public class EOAttributesTableViewer extends Composite implements ISelectionProv
   }
 
   protected class AttributesChangeRefresher extends TableRefreshPropertyListener {
-    public AttributesChangeRefresher(TableViewer _tableViewer, String _propertyName) {
-      super(_tableViewer, _propertyName);
+    public AttributesChangeRefresher(TableViewer _tableViewer) {
+      super(_tableViewer);
     }
 
     public void propertyChange(PropertyChangeEvent _event) {

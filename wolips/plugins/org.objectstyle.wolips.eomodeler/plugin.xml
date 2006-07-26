@@ -146,11 +146,23 @@
                label="User Info"/>
          <propertyTab
                category="eofetchspec"
+               id="org.objectstyle.wolips.eomodeler.tabs.eofetchspecQualifier"
+               image="icons/eoFetchSpecification.gif"
+               label="Qualifier"/>
+         <propertyTab
+               afterTab="org.objectstyle.wolips.eomodeler.tabs.eofetchspecQualifier"
+               category="eofetchspec"
                id="org.objectstyle.wolips.eomodeler.tabs.eofetchspecSortOrderings"
                image="icons/eoFetchSpecification.gif"
                label="Sort Orderings"/>
          <propertyTab
                afterTab="org.objectstyle.wolips.eomodeler.tabs.eofetchspecSortOrderings"
+               category="eofetchspec"
+               id="org.objectstyle.wolips.eomodeler.tabs.eofetchspecPrefetching"
+               image="icons/eoFetchSpecification.gif"
+               label="Prefetching"/>
+         <propertyTab
+               afterTab="org.objectstyle.wolips.eomodeler.tabs.eofetchspecPrefetching"
                category="eofetchspec"
                id="org.objectstyle.wolips.eomodeler.tabs.eofetchspecUserInfo"
                image="icons/eoFetchSpecification.gif"
@@ -239,9 +251,21 @@
             <input type="org.objectstyle.wolips.eomodeler.model.EORelationshipPath"/>
          </propertySection>
          <propertySection
+               class="org.objectstyle.wolips.eomodeler.editors.fetchspecs.EOFetchSpecQualifierEditorSection"
+               id="org.objectstyle.wolips.eomodeler.sections.eofetchspecQualifier"
+               tab="org.objectstyle.wolips.eomodeler.tabs.eofetchspecQualifier">
+            <input type="org.objectstyle.wolips.eomodeler.model.EOFetchSpecification"/>
+         </propertySection>
+         <propertySection
                class="org.objectstyle.wolips.eomodeler.editors.fetchspecs.EOFetchSpecSortOrderingEditorSection"
                id="org.objectstyle.wolips.eomodeler.sections.eofetchspecSortOrderings"
                tab="org.objectstyle.wolips.eomodeler.tabs.eofetchspecSortOrderings">
+            <input type="org.objectstyle.wolips.eomodeler.model.EOFetchSpecification"/>
+         </propertySection>
+         <propertySection
+               class="org.objectstyle.wolips.eomodeler.editors.fetchspecs.EOFetchSpecPrefetchingEditorSection"
+               id="org.objectstyle.wolips.eomodeler.sections.eofetchspecPrefetching"
+               tab="org.objectstyle.wolips.eomodeler.tabs.eofetchspecPrefetching">
             <input type="org.objectstyle.wolips.eomodeler.model.EOFetchSpecification"/>
          </propertySection>
          <propertySection

@@ -69,9 +69,9 @@ public class EOModelTreeViewUpdater {
   private EOModel myModel;
   private List myEntities;
 
-  public EOModelTreeViewUpdater(TreeViewer _treeViewer, boolean _showAllObjects) {
+  public EOModelTreeViewUpdater(TreeViewer _treeViewer, EOModelOutlineContentProvider _contentProvider) {
     myTreeViewer = _treeViewer;
-    myTreeViewer.setContentProvider(new EOModelOutlineContentProvider(_showAllObjects));
+    myTreeViewer.setContentProvider(_contentProvider);
     myTreeViewer.setLabelProvider(new EOModelOutlineLabelProvider());
     myTreeViewer.setSorter(new ViewerSorter());
     myModelListener = new ModelPropertyChangeListener();

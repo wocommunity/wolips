@@ -164,7 +164,7 @@ public class EORelationshipsLabelProvider extends TablePropertyLabelProvider imp
     //    }
     return color;
   }
-
+  
   public void dispose() {
     if (myFlattenedFont != null) {
       myFlattenedFont.dispose();

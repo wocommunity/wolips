@@ -49,7 +49,6 @@
  */
 package org.objectstyle.wolips.eomodeler.editors.relationships;
 
-import org.eclipse.jface.viewers.TableViewer;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOJoin;
 import org.objectstyle.wolips.eomodeler.model.EORelationship;
@@ -57,8 +56,8 @@ import org.objectstyle.wolips.eomodeler.utils.TablePropertyViewerSorter;
 
 public class EORelationshipsViewerSorter extends TablePropertyViewerSorter {
 
-  public EORelationshipsViewerSorter(TableViewer _tableViewer, String[] _properties) {
-    super(_tableViewer, _properties);
+  public EORelationshipsViewerSorter(String[] _properties) {
+    super(_properties);
   }
 
   public Object getComparisonValue(Object _obj, String _property) {

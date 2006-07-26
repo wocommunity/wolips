@@ -55,8 +55,8 @@ import org.objectstyle.wolips.eomodeler.model.EOEntity;
 public class EOEntityTreeViewUpdater extends EOModelTreeViewUpdater {
   private EOEntity myEntity;
 
-  public EOEntityTreeViewUpdater(TreeViewer _treeViewer) {
-    super(_treeViewer, false);
+  public EOEntityTreeViewUpdater(TreeViewer _treeViewer, EOModelOutlineContentProvider _contentProvider) {
+    super(_treeViewer, _contentProvider);
   }
 
   public void setEntity(EOEntity _entity) {

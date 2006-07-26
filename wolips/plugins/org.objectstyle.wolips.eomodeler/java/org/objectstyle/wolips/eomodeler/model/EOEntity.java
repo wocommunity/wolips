@@ -125,10 +125,10 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
       if (dotIndex == -1) {
         IEOAttribute attribute = getAttributeOrRelationshipNamed(_keyPath);
         if (attribute instanceof EOAttribute) {
-          targetAttributePath = new EOAttributePath(_parentRelationshipPath, (EOAttribute)attribute);
+          targetAttributePath = new EOAttributePath(_parentRelationshipPath, (EOAttribute) attribute);
         }
         else {
-          targetAttributePath = new EORelationshipPath(_parentRelationshipPath, (EORelationship)attribute);
+          targetAttributePath = new EORelationshipPath(_parentRelationshipPath, (EORelationship) attribute);
         }
       }
       else {
@@ -847,7 +847,9 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
       while (childrenEntitiesIter.hasNext()) {
         EOEntity childEntity = (EOEntity) childrenEntitiesIter.next();
         EOAttribute childAttribute = childEntity.getAttributeNamed(attributeName);
-        childEntity.removeAttribute(childAttribute, _removeFromSubclasses);
+        if (childAttribute != null) {
+          childEntity.removeAttribute(childAttribute, _removeFromSubclasses);
+        }
       }
     }
     _attribute._setEntity(null);
@@ -936,7 +938,9 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
       while (childrenEntitiesIter.hasNext()) {
         EOEntity childEntity = (EOEntity) childrenEntitiesIter.next();
         EORelationship childRelationship = childEntity.getRelationshipNamed(relationshipName);
-        childEntity.removeRelationship(childRelationship, _removeFromSubclasses);
+        if (childRelationship != null) {
+          childEntity.removeRelationship(childRelationship, _removeFromSubclasses);
+        }
       }
     }
     _relationship._setEntity(null);
@@ -1261,7 +1265,9 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     if (!isPrototype()) {
       String externalName = getExternalName();
       if (externalName == null || externalName.trim().length() == 0) {
-        _failures.add(new EOModelVerificationFailure(myModel.getName() + "/" + getName() + " has an empty table name."));
+        if (!BooleanUtils.isTrue(isAbstractEntity())) {
+          _failures.add(new EOModelVerificationFailure(myModel.getName() + "/" + getName() + " has an empty table name."));
+        }
       }
       else if (externalName.indexOf(' ') != -1) {
         _failures.add(new EOModelVerificationFailure(myModel.getName() + "/" + getName() + "'s table name '" + externalName + "' has a space in it."));

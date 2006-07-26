@@ -72,8 +72,6 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchPart;
@@ -83,6 +81,7 @@ import org.objectstyle.cayenne.wocompat.PropertyListSerialization;
 import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.model.EOModelParserDataStructureFactory;
 import org.objectstyle.wolips.eomodeler.model.IUserInfoable;
+import org.objectstyle.wolips.eomodeler.utils.AddRemoveButtonGroup;
 import org.objectstyle.wolips.eomodeler.utils.NotificationMap;
 import org.objectstyle.wolips.eomodeler.utils.TableUtils;
 
@@ -93,8 +92,7 @@ public class UserInfoPropertySection extends AbstractPropertySection {
 
   private TableViewer myUserInfoTableViewer;
   private Text myValueText;
-  private Button myAddButton;
-  private Button myRemoveButton;
+  private AddRemoveButtonGroup myAddRemoveButtonGroup;
 
   private IUserInfoable myUserInfoable;
   private UserInfoListener myUserInfoListener;
@@ -110,15 +108,7 @@ public class UserInfoPropertySection extends AbstractPropertySection {
     super.createControls(_parent, _tabbedPropertySheetPage);
     Composite composite = getWidgetFactory().createFlatFormComposite(_parent);
 
-    myUserInfoTableViewer = new TableViewer(composite, SWT.BORDER | SWT.FLAT | SWT.FULL_SELECTION | SWT.SINGLE);
-    myUserInfoTableViewer.getTable().setHeaderVisible(true);
-    myUserInfoTableViewer.getTable().setLinesVisible(true);
-    TableUtils.createTableColumns(myUserInfoTableViewer, "UserInfo", UserInfoPropertySection.COLUMNS);
-    myUserInfoTableViewer.setContentProvider(new UserInfoContentProvider());
-    myUserInfoTableViewer.setLabelProvider(new UserInfoLabelProvider(UserInfoPropertySection.COLUMNS));
-    myUserInfoTableViewer.setColumnProperties(UserInfoPropertySection.COLUMNS);
-    myUserInfoTableViewer.setSorter(new ViewerSorter());
-    myUserInfoTableViewer.addSelectionChangedListener(new UserInfoSelectionListener());
+    myUserInfoTableViewer = TableUtils.createTableViewer(composite, SWT.BORDER | SWT.FLAT | SWT.FULL_SELECTION | SWT.SINGLE, "UserInfo", UserInfoPropertySection.COLUMNS, new UserInfoContentProvider(), new UserInfoLabelProvider(UserInfoPropertySection.COLUMNS), new ViewerSorter());
 
     CellEditor[] cellEditors = new CellEditor[UserInfoPropertySection.COLUMNS.length];
     cellEditors[TableUtils.getColumnNumber(UserInfoPropertySection.COLUMNS, UserInfoPropertySection.KEY)] = new TextCellEditor(myUserInfoTableViewer.getTable());
@@ -144,28 +134,12 @@ public class UserInfoPropertySection extends AbstractPropertySection {
     myValueText.addModifyListener(valueTextListener);
     myValueText.addFocusListener(valueTextListener);
 
-    Composite buttonGroup = getWidgetFactory().createPlainComposite(composite, SWT.NONE);
+    myAddRemoveButtonGroup = new AddRemoveButtonGroup(composite, new AddEntryHandler(), new RemoveEntriesHandler());
     FormData buttonGroupFormData = new FormData();
     buttonGroupFormData.top = new FormAttachment(myValueText, 5);
     buttonGroupFormData.left = new FormAttachment(0, 5);
     buttonGroupFormData.right = new FormAttachment(100, -5);
-    buttonGroup.setLayoutData(buttonGroupFormData);
-    FormLayout layout = new FormLayout();
-    buttonGroup.setLayout(layout);
-
-    myAddButton = new Button(buttonGroup, SWT.PUSH);
-    myAddButton.setText(Messages.getString("button.add"));
-    FormData addButtonData = new FormData();
-    addButtonData.right = new FormAttachment(100, 0);
-    myAddButton.setLayoutData(addButtonData);
-    myAddButton.addSelectionListener(new AddEntryHandler());
-
-    myRemoveButton = new Button(buttonGroup, SWT.PUSH);
-    myRemoveButton.setText(Messages.getString("button.remove"));
-    FormData remoteButtonData = new FormData();
-    remoteButtonData.right = new FormAttachment(myAddButton, 0);
-    myRemoveButton.setLayoutData(remoteButtonData);
-    myRemoveButton.addSelectionListener(new RemoveEntriesHandler());
+    myAddRemoveButtonGroup.setLayoutData(buttonGroupFormData);
 
     // updateValueText(null);
   }

@@ -51,6 +51,7 @@ package org.objectstyle.wolips.eomodeler.model;
 
 import java.util.Map;
 
+import org.objectstyle.wolips.eomodeler.utils.BooleanUtils;
 import org.objectstyle.wolips.eomodeler.utils.NotificationMap;
 
 public abstract class IEOAttributePath implements IUserInfoable, IEOEntityRelative {
@@ -95,6 +96,16 @@ public abstract class IEOAttributePath implements IUserInfoable, IEOEntityRelati
       entity = getEntity();
     }
     return entity;
+  }
+
+  public Boolean isToMany() {
+    Boolean toMany = null;
+    IEOAttributePath attributePath = this;
+    while (!BooleanUtils.isTrue(toMany) && attributePath != null) {
+      toMany = attributePath.getChildIEOAttribute().isToMany();
+      attributePath = attributePath.getParentRelationshipPath();
+    }
+    return toMany;
   }
 
   public String toKeyPath() {

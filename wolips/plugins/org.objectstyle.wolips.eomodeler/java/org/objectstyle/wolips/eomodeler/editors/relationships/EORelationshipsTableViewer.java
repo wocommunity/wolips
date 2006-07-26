@@ -62,7 +62,6 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TextCellEditor;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -87,22 +86,15 @@ public class EORelationshipsTableViewer extends Composite implements ISelectionP
   public EORelationshipsTableViewer(Composite _parent, int _style) {
     super(_parent, _style);
     setLayout(new GridLayout(1, true));
-    myRelationshipsTableViewer = new TableViewer(this, SWT.FULL_SELECTION);
-    myRelationshipsTableViewer.setContentProvider(new EORelationshipsContentProvider());
+    myRelationshipsTableViewer = TableUtils.createTableViewer(this, "EORelationship", EORelationshipsConstants.COLUMNS, new EORelationshipsContentProvider(), null, new EORelationshipsViewerSorter(EORelationshipsConstants.COLUMNS));
     myRelationshipsTableViewer.setLabelProvider(new EORelationshipsLabelProvider(myRelationshipsTableViewer, EORelationshipsConstants.COLUMNS));
-    myRelationshipsTableViewer.setSorter(new EORelationshipsViewerSorter(myRelationshipsTableViewer, EORelationshipsConstants.COLUMNS));
-    myRelationshipsTableViewer.setColumnProperties(EORelationshipsConstants.COLUMNS);
     new DoubleClickNewRelationshipHandler().attachTo(myRelationshipsTableViewer);
-    myRelationshipsChangedRefresher = new RelationshipsChangeRefresher(myRelationshipsTableViewer, EOEntity.RELATIONSHIPS);
-    myParentChangedRefresher = new TableRefreshPropertyListener(myRelationshipsTableViewer, EOEntity.PARENT);
-    myTableRowRefresher = new TableRowRefreshPropertyListener(myRelationshipsTableViewer, EOEntity.RELATIONSHIP);
+    myRelationshipsChangedRefresher = new RelationshipsChangeRefresher(myRelationshipsTableViewer);
+    myParentChangedRefresher = new TableRefreshPropertyListener(myRelationshipsTableViewer);
+    myTableRowRefresher = new TableRowRefreshPropertyListener(myRelationshipsTableViewer);
 
     Table relationshipsTable = myRelationshipsTableViewer.getTable();
     relationshipsTable.setLayoutData(new GridData(GridData.FILL_BOTH));
-    relationshipsTable.setHeaderVisible(true);
-    relationshipsTable.setLinesVisible(true);
-
-    TableUtils.createTableColumns(myRelationshipsTableViewer, "EORelationship", EORelationshipsConstants.COLUMNS);
 
     TableColumn toManyColumn = relationshipsTable.getColumn(TableUtils.getColumnNumber(EORelationshipsConstants.COLUMNS, EORelationship.TO_MANY));
     toManyColumn.setText("");
@@ -111,7 +103,7 @@ public class EORelationshipsTableViewer extends Composite implements ISelectionP
     classPropertyColumn.setText("");
     classPropertyColumn.setImage(Activator.getDefault().getImageRegistry().get(Activator.CLASS_PROPERTY_ICON));
 
-    ((EORelationshipsViewerSorter) myRelationshipsTableViewer.getSorter()).sort(EORelationship.NAME);
+    TableUtils.sort(myRelationshipsTableViewer, EORelationship.NAME);
 
     CellEditor[] cellEditors = new CellEditor[EORelationshipsConstants.COLUMNS.length];
     cellEditors[TableUtils.getColumnNumber(EORelationshipsConstants.COLUMNS, EORelationship.TO_MANY)] = new CheckboxCellEditor();
@@ -173,8 +165,8 @@ public class EORelationshipsTableViewer extends Composite implements ISelectionP
   }
 
   protected class RelationshipsChangeRefresher extends TableRefreshPropertyListener {
-    public RelationshipsChangeRefresher(TableViewer _tableViewer, String _propertyName) {
-      super(_tableViewer, _propertyName);
+    public RelationshipsChangeRefresher(TableViewer _tableViewer) {
+      super(_tableViewer);
     }
 
     public void propertyChange(PropertyChangeEvent _event) {

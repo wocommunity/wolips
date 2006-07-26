@@ -194,6 +194,10 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
     }
     return equals;
   }
+  
+  public Boolean isToMany() {
+    return Boolean.FALSE;
+  }
 
   public boolean isPrototyped(String _property) {
     boolean prototyped = false;
@@ -688,7 +692,9 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
         while (childrenEntitiesIter.hasNext()) {
           EOEntity childEntity = (EOEntity) childrenEntitiesIter.next();
           EOAttribute childAttribute = childEntity.getAttributeNamed(myName);
-          referencingRelationships.addAll(childAttribute.getReferencingRelationships(_includeInheritedAttributes));
+          if (childAttribute != null) {
+            referencingRelationships.addAll(childAttribute.getReferencingRelationships(_includeInheritedAttributes));
+          }
         }
       }
     }

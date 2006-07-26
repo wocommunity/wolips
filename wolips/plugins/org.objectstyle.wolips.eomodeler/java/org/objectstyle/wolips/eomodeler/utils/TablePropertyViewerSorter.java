@@ -65,11 +65,9 @@ public class TablePropertyViewerSorter extends ViewerSorter {
   private String[] myColumnProperties;
   private int mySortedColumn;
   private int myDirection;
-  private TableViewer myViewer;
   private Map myKeys;
 
-  public TablePropertyViewerSorter(TableViewer _viewer, String[] _columnProperties) {
-    myViewer = _viewer;
+  public TablePropertyViewerSorter(String[] _columnProperties) {
     myColumnProperties = _columnProperties;
     myKeys = new HashMap();
     for (int keyNum = 0; keyNum < _columnProperties.length; keyNum++) {
@@ -78,15 +76,15 @@ public class TablePropertyViewerSorter extends ViewerSorter {
     }
   }
 
-  public void sort(String _property) {
+  public void sort(TableViewer _viewer, String _property) {
     int matchingColumn = TableUtils.getColumnNumber(myColumnProperties, _property);
     if (matchingColumn != -1) {
-      sort(matchingColumn);
+      sort(_viewer, matchingColumn);
     }
   }
 
-  public void sort(int _column) {
-    Table table = myViewer.getTable();
+  public void sort(TableViewer _viewer, int _column) {
+    Table table = _viewer.getTable();
     TableColumn sortColumn = table.getSortColumn();
     TableColumn selectedColumn = table.getColumn(_column);
     int direction = table.getSortDirection();
@@ -100,7 +98,7 @@ public class TablePropertyViewerSorter extends ViewerSorter {
     table.setSortDirection(direction);
     mySortedColumn = _column;
     myDirection = direction;
-    myViewer.refresh();
+    _viewer.refresh();
   }
 
   public int compare(Viewer _viewer, Object _o1, Object _o2) {
