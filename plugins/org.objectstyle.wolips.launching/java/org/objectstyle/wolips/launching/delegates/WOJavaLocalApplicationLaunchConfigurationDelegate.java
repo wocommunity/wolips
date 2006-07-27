@@ -277,6 +277,7 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate extends
 										LaunchingMessages
 												.getString("WOJavaLocalApplicationLaunchConfigurationDelegate.JRE_{0}_does_not_support_run_mode._2"), new String[] { vm.getName() }), null, IJavaLaunchConfigurationConstants.ERR_VM_RUNNER_DOES_NOT_EXIST); //$NON-NLS-1$
 			}
+			return;
 		}
 
 		runner.run(runConfig, launch, monitor);
@@ -375,7 +376,6 @@ public class WOJavaLocalApplicationLaunchConfigurationDelegate extends
 						argument = workingDir.getAbsolutePath();
 					}
 					if ("-NSProjectSearchPath".equals(parameter)) {
-            IProject theProject = this.getJavaProject(configuration).getProject();
 						argument = javaProject.getGeneratedByWOLips(Preferences
 								.getPREF_NS_PROJECT_SEARCH_PATH());
 					}
