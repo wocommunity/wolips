@@ -198,6 +198,22 @@ public class VariablesPlugin extends AbstractCorePlugin {
 		}
 		return this.fixMissingSeparatorAfterDevice(referenceApi);
 	}
+	
+	/**
+	 * @return the path to the reference api
+	 */
+	public String getReferenceApiAsJavaDocCompatibleString() {
+		IPath referenceApi = this.getReferenceApi();
+		if(referenceApi == null) {
+			return null;
+		}
+		String referenceApiString = referenceApi.toOSString();
+		String osName = System.getProperty("os.name").toLowerCase();
+		if(osName.indexOf("windows") > 0) {
+			referenceApiString = "file:///" + referenceApiString;
+		}
+		return referenceApiString;
+	}
 
 	/**
 	 * @return the path to external build root
