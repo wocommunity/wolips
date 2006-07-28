@@ -51,7 +51,6 @@ package org.objectstyle.wolips.eomodeler.model;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -288,6 +287,10 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
     return myDeep;
   }
 
+  public Boolean getDeep() {
+    return isDeep();
+  }
+  
   public void setDeep(Boolean _deep) {
     Boolean oldDeep = myDeep;
     myDeep = _deep;
@@ -306,6 +309,10 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
 
   public Boolean isLocksObjects() {
     return myLocksObjects;
+  }
+  
+  public Boolean getLocksObjects() {
+    return isLocksObjects();
   }
 
   public void setLocksObjects(Boolean _locksObjects) {
@@ -415,6 +422,10 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
   public Boolean isPromptsAfterFetchLimit() {
     return myPromptsAfterFetchLimit;
   }
+  
+  public Boolean getPromptsAfterFetchLimit() {
+    return isPromptsAfterFetchLimit();
+  }
 
   public void setPromptsAfterFetchLimit(Boolean _promptsAfterFetchLimit) {
     Boolean oldPromptsAfterFetchLimit = myPromptsAfterFetchLimit;
@@ -434,6 +445,10 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
   public Boolean isRefreshesRefetchedObjects() {
     return myRefreshesRefetchedObjects;
   }
+  
+  public Boolean getRefreshesRefetchedObjects() {
+    return isRefreshesRefetchedObjects();
+  }
 
   public void setRefreshesRefetchedObjects(Boolean _refreshesRefetchedObjects) {
     Boolean oldRefreshesRefetchedObjects = myRefreshesRefetchedObjects;
@@ -444,6 +459,10 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
   public Boolean isRequiresAllQualifierBindingVariables() {
     return myRequiresAllQualifierBindingVariables;
   }
+  
+  public Boolean getRequiresAllQualifierBindingVariables() {
+    return isRequiresAllQualifierBindingVariables();
+  }
 
   public void setRequiresAllQualifierBindingVariables(Boolean _requiresAllQualifierBindingVariables) {
     Boolean oldRequiresAllQualifierBindingVariables = myRequiresAllQualifierBindingVariables;
@@ -453,6 +472,10 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
 
   public Boolean isUsesDistinct() {
     return myUsesDistinct;
+  }
+  
+  public Boolean getUsesDistinct() {
+    return isUsesDistinct();
   }
 
   public void setUsesDistinct(Boolean _usesDistinct) {
