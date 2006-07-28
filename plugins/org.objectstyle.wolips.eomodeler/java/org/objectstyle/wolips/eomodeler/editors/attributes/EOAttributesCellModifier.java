@@ -79,7 +79,7 @@ public class EOAttributesCellModifier extends TablePropertyCellModifier {
     //    }
     if (_property == EOAttribute.PROTOTYPE) {
       EOEntity entity = (EOEntity) getTableViewer().getInput();
-      myPrototypeNames = new LinkedList(entity.getModel().getModelGroup().getPrototypeAttributeNames());
+      myPrototypeNames = new LinkedList(entity.getModel().getPrototypeAttributeNames());
       myPrototypeNames.add(0, EOAttributesCellModifier.NO_PROTOYPE_VALUE);
       String[] prototypeNames = (String[]) myPrototypeNames.toArray(new String[myPrototypeNames.size()]);
       KeyComboBoxCellEditor cellEditor = (KeyComboBoxCellEditor) myCellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, _property)];
@@ -125,7 +125,7 @@ public class EOAttributesCellModifier extends TablePropertyCellModifier {
         attribute.setPrototype(null, true);
       }
       else {
-        EOAttribute prototype = attribute.getEntity().getModel().getModelGroup().getPrototypeAttributeNamed(prototypeName);
+        EOAttribute prototype = attribute.getEntity().getModel().getPrototypeAttributeNamed(prototypeName);
         attribute.setPrototype(prototype, true);
       }
       modified = true;

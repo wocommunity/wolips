@@ -72,7 +72,7 @@ public class EOPrototypeListContentProvider implements IStructuredContentProvide
   public Object[] getElements(Object _inputElement) {
     Set prototypeAttributesList;
     if (_inputElement instanceof EOAttribute) {
-      prototypeAttributesList = ((EOAttribute) _inputElement).getEntity().getModel().getModelGroup().getPrototypeAttributes();
+      prototypeAttributesList = ((EOAttribute) _inputElement).getEntity().getModel().getPrototypeAttributes();
     }
     else {
       throw new IllegalArgumentException("Unknown input element: " + _inputElement);

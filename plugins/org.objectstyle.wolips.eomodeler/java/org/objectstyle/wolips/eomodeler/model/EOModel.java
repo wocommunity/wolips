@@ -85,6 +85,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
   private boolean myDirty;
   private PropertyChangeRepeater myConnectionDictionaryRepeater;
   private File myModelFolder;
+  private Set myPrototypeAttributeCache;
 
   public EOModel(String _name) {
     myName = _name;
@@ -135,6 +136,9 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
     if (!myDirty && !EOModel.DIRTY.equals(_propertyName)) {
       setDirty(true);
     }
+    if (_propertyName == EOModel.CONNECTION_DICTIONARY) {
+      clearCachedPrototypes(null, false);
+    }
   }
 
   protected void _entityChanged(EOEntity _entity, String _propertyName, Object _oldValue, Object _newValue) {
@@ -160,11 +164,11 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
   public File getModelFolder() {
     return myModelFolder;
   }
-  
+
   public void setModelFolder(File _modelFolder) {
     myModelFolder = _modelFolder;
   }
-  
+
   public EOModelGroup getModelGroup() {
     return myModelGroup;
   }
@@ -301,7 +305,11 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
   }
 
   public void setConnectionDictionary(Map _connectionDictionary, boolean _fireEvents) {
-    myConnectionDictionary = mapChanged(myConnectionDictionary, _connectionDictionary, myConnectionDictionaryRepeater, _fireEvents);
+    Map oldConnectionDictionary = myConnectionDictionary;
+    myConnectionDictionary = mapChanged(myConnectionDictionary, _connectionDictionary, myConnectionDictionaryRepeater, false);
+    if (_fireEvents) {
+      firePropertyChange(myConnectionDictionaryRepeater.getPropertyName(), oldConnectionDictionary, myConnectionDictionary);
+    }
   }
 
   public NotificationMap getConnectionDictionary() {
@@ -440,7 +448,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
       File fspecFile = new File(modelFolder, entityName + ".fspec");
       entity.saveToFile(entityFile, fspecFile);
     }
-    
+
     return modelFolder;
   }
 
@@ -465,6 +473,90 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
   public String toString() {
     return "[EOModel: name = " + myName + "; entities = " + myEntities + "]";
   }
+
+  /** Begin Prototypes **/
+  public synchronized void clearCachedPrototypes(Set _failures, boolean _reload) {
+    myPrototypeAttributeCache = null;
+    Iterator entitiesIter = myEntities.iterator();
+    while (entitiesIter.hasNext()) {
+      EOEntity entity = (EOEntity) entitiesIter.next();
+      entity.clearCachedPrototypes(_failures, _reload);
+    }
+  }
+
+  public synchronized Set getPrototypeAttributeNames() {
+    Set prototypeAttributeNames = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
+    Iterator prototypeAttributesIter = getPrototypeAttributes().iterator();
+    while (prototypeAttributesIter.hasNext()) {
+      EOAttribute attribute = (EOAttribute) prototypeAttributesIter.next();
+      prototypeAttributeNames.add(attribute.getName());
+    }
+    return prototypeAttributeNames;
+  }
+
+  public synchronized Set getPrototypeAttributes() {
+    if (myPrototypeAttributeCache == null) {
+      Map prototypeAttributeCache = new HashMap();
+
+      Set prototypeEntityNames = new HashSet();
+      addPrototypeAttributes("EOPrototypes", prototypeEntityNames, prototypeAttributeCache);
+
+      String adaptorName = getAdaptorName();
+      String adaptorPrototypeEntityName = "EO" + adaptorName + "Prototypes";
+      addPrototypeAttributes(adaptorPrototypeEntityName, prototypeEntityNames, prototypeAttributeCache);
+
+      // MS: Hardcoded JDBC reference hack ...
+      if ("JDBC".equals(adaptorName)) {
+        Map connectionDictionary = getConnectionDictionary();
+        if (connectionDictionary != null) {
+          String jdbcUrl = (String) connectionDictionary.get("URL");
+          if (jdbcUrl != null) {
+            int firstColon = jdbcUrl.indexOf(':');
+            int secondColon = jdbcUrl.indexOf(':', firstColon + 1);
+            if (firstColon != -1 && secondColon != -1) {
+              String driverName = jdbcUrl.substring(firstColon + 1, secondColon);
+              String driverPrototypeEntityName = "EOJDBC" + driverName + "Prototypes";
+              addPrototypeAttributes(driverPrototypeEntityName, prototypeEntityNames, prototypeAttributeCache);
+            }
+          }
+        }
+      }
+
+      // Do we need to support "EOPrototypesToHide" entity?
+      myPrototypeAttributeCache = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
+      myPrototypeAttributeCache.addAll(prototypeAttributeCache.values());
+    }
+    return myPrototypeAttributeCache;
+  }
+
+  protected void addPrototypeAttributes(String _prototypeEntityName, Set _prototypeEntityNames, Map _prototypeAttributeCache) {
+    if (!_prototypeEntityNames.contains(_prototypeEntityName)) {
+      _prototypeEntityNames.add(_prototypeEntityName);
+      EOEntity prototypeEntity = myModelGroup.getEntityNamed(_prototypeEntityName);
+      if (prototypeEntity != null) {
+        Iterator attributeIter = prototypeEntity.getAttributes().iterator();
+        while (attributeIter.hasNext()) {
+          EOAttribute prototypeAttribute = (EOAttribute) attributeIter.next();
+          _prototypeAttributeCache.put(prototypeAttribute.getName(), prototypeAttribute);
+        }
+      }
+    }
+  }
+
+  public EOAttribute getPrototypeAttributeNamed(String _name) {
+    EOAttribute matchingAttribute = null;
+    Set prototypeAttributes = getPrototypeAttributes();
+    Iterator attributesIter = prototypeAttributes.iterator();
+    while (matchingAttribute == null && attributesIter.hasNext()) {
+      EOAttribute attribute = (EOAttribute) attributesIter.next();
+      if (attribute.getName().equals(_name)) {
+        matchingAttribute = attribute;
+      }
+    }
+    return matchingAttribute;
+  }
+
+  /** End Prototypes **/
 
   public static void main(String[] args) throws IOException, EOModelException {
     Set failures = new LinkedHashSet();
