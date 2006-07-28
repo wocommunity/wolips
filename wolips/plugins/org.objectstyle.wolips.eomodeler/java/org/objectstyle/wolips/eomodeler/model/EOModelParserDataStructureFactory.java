@@ -18,10 +18,16 @@ public class EOModelParserDataStructureFactory implements ParserDataStructureFac
     else if ("root.attributesUsedForLocking".equals(_keyPath)) {
       createSortedSet = true;
     }
+    else if ("root.arguments".equals(_keyPath)) {
+      createSortedSet = true;
+    }
     else if ("root.classProperties".equals(_keyPath)) {
       createSortedSet = true;
     }
     else if ("root.entities".equals(_keyPath)) {
+      createSortedSet = true;
+    }
+    else if ("root.storedProcedures".equals(_keyPath)) {
       createSortedSet = true;
     }
     else if ("root.sharedObjectFetchSpecificationNames".equals(_keyPath)) {

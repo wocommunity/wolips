@@ -59,7 +59,7 @@ import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.model.DuplicateNameException;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EORelationship;
-import org.objectstyle.wolips.eomodeler.model.IEOEntityRelative;
+import org.objectstyle.wolips.eomodeler.utils.EOModelUtils;
 
 public class NewRelationshipAction implements IWorkbenchWindowActionDelegate {
   private EOEntity myEntity;
@@ -77,9 +77,7 @@ public class NewRelationshipAction implements IWorkbenchWindowActionDelegate {
     myEntity = null;
     if (_selection instanceof IStructuredSelection) {
       Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
-      if (selectedObject instanceof IEOEntityRelative) {
-        myEntity = ((IEOEntityRelative) selectedObject).getEntity();
-      }
+      myEntity = EOModelUtils.getRelatedEntity(selectedObject);
     }
   }
 

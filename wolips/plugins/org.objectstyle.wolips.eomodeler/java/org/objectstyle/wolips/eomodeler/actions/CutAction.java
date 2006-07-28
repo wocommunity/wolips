@@ -64,11 +64,13 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PlatformUI;
 import org.objectstyle.wolips.eomodeler.editors.EOModelErrorDialog;
+import org.objectstyle.wolips.eomodeler.model.EOArgument;
 import org.objectstyle.wolips.eomodeler.model.EOAttribute;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOFetchSpecification;
 import org.objectstyle.wolips.eomodeler.model.EOModelObject;
 import org.objectstyle.wolips.eomodeler.model.EORelationship;
+import org.objectstyle.wolips.eomodeler.model.EOStoredProcedure;
 
 public class CutAction extends Action implements IWorkbenchWindowActionDelegate {
   private IWorkbenchWindow myWindow;
@@ -135,6 +137,19 @@ public class CutAction extends Action implements IWorkbenchWindowActionDelegate 
           EOFetchSpecification fetchSpec = (EOFetchSpecification) selectedObject;
           LocalSelectionTransfer.getTransfer().setSelection(new StructuredSelection(fetchSpec.cloneFetchSpecification()));
           LocalSelectionTransfer.getTransfer().setSelectionSetTime(System.currentTimeMillis());
+          fetchSpec.getEntity().removeFetchSpecification(fetchSpec);
+        }
+        else if (selectedObject instanceof EOStoredProcedure) {
+          EOStoredProcedure storedProcedure = (EOStoredProcedure) selectedObject;
+          LocalSelectionTransfer.getTransfer().setSelection(new StructuredSelection(storedProcedure.cloneStoredProcedure()));
+          LocalSelectionTransfer.getTransfer().setSelectionSetTime(System.currentTimeMillis());
+          storedProcedure.getModel().removeStoredProcedure(storedProcedure);
+        }
+        else if (selectedObject instanceof EOArgument) {
+          EOArgument argument = (EOArgument) selectedObject;
+          LocalSelectionTransfer.getTransfer().setSelection(new StructuredSelection(argument.cloneArgument()));
+          LocalSelectionTransfer.getTransfer().setSelectionSetTime(System.currentTimeMillis());
+          argument.getStoredProcedure().removeArgument(argument);
         }
       }
     }

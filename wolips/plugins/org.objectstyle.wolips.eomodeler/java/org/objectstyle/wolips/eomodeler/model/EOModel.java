@@ -73,6 +73,8 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
   public static final String VERSION = "version";
   public static final String NAME = "name";
   public static final String ENTITIES = "entities";
+  public static final String STORED_PROCEDURE = "storedProcedure";
+  public static final String STORED_PROCEDURES = "storedProcedures";
 
   private EOModelGroup myModelGroup;
   private String myName;
@@ -80,7 +82,10 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
   private String myAdaptorName;
   private NotificationMap myConnectionDictionary;
   private Set myEntities;
+  private Set myStoredProcedures;
   private Set myDeletedEntityNamesInObjectStore;
+  private Set myDeletedEntityNames;
+  private Set myDeletedStoredProcedureNames;
   private EOModelMap myModelMap;
   private boolean myDirty;
   private PropertyChangeRepeater myConnectionDictionaryRepeater;
@@ -90,11 +95,18 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
   public EOModel(String _name) {
     myName = _name;
     myEntities = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
+    myStoredProcedures = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
     myDeletedEntityNamesInObjectStore = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
+    myDeletedEntityNames = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
+    myDeletedStoredProcedureNames = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
     myVersion = "2.1";
     myModelMap = new EOModelMap();
     myConnectionDictionaryRepeater = new PropertyChangeRepeater(EOModel.CONNECTION_DICTIONARY);
     setConnectionDictionary(new NotificationMap(), false);
+  }
+
+  protected void _storedProcedureChanged(EOStoredProcedure _storedProcedure, String _propertyName, Object _oldValue, Object _newValue) {
+    firePropertyChange(EOModel.STORED_PROCEDURE, null, _storedProcedure);
   }
 
   public void _setModelGroup(EOModelGroup _modelGroup) {
@@ -243,11 +255,14 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
     }
   }
 
-  public void _entityNameChanged(String _oldName) {
+  public void _entityNameChanged(String _oldName, String _newName) {
     if (myDeletedEntityNamesInObjectStore == null) {
       myDeletedEntityNamesInObjectStore = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
     }
     myDeletedEntityNamesInObjectStore.add(_oldName);
+    myDeletedEntityNamesInObjectStore.remove(_newName);
+    myDeletedEntityNames.add(_oldName);
+    myDeletedEntityNames.remove(_newName);
   }
 
   public boolean containsEntityNamed(String _entityName) {
@@ -262,7 +277,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
     _entity._setModel(this);
     _checkForDuplicateEntityName(_entity, _entity.getName(), _failures);
     _entity.pasted();
-    myDeletedEntityNamesInObjectStore.remove(_entity.getName());
+    myDeletedEntityNames.remove(_entity.getName());
     if (_fireEvents) {
       Set oldEntities = null;
       oldEntities = myEntities;
@@ -278,7 +293,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
   }
 
   public void removeEntity(EOEntity _entity) {
-    myDeletedEntityNamesInObjectStore.add(_entity.getName());
+    myDeletedEntityNames.add(_entity.getName());
     Set oldEntities = myEntities;
     Set newEntities = new TreeSet(new TreeSet(PropertyListComparator.AscendingPropertyListComparator));
     newEntities.addAll(myEntities);
@@ -298,6 +313,93 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
       }
     }
     return matchingEntity;
+  }
+
+  public void _storedProcedureNameChanged(String _oldName, String _newName) {
+    myDeletedStoredProcedureNames.add(_oldName);
+    myDeletedStoredProcedureNames.remove(_newName);
+  }
+
+  public EOStoredProcedure addBlankStoredProcedure(String _name) throws DuplicateStoredProcedureNameException {
+    String newStoredProcedureNameBase = _name;
+    String newStoredProcedureName = findUnusedStoredProcedureName(newStoredProcedureNameBase);
+    EOStoredProcedure storedProcedure = new EOStoredProcedure(newStoredProcedureName);
+    addStoredProcedure(storedProcedure);
+    return storedProcedure;
+  }
+
+  public void addStoredProcedure(EOStoredProcedure _storedProcedure) throws DuplicateStoredProcedureNameException {
+    addStoredProcedure(_storedProcedure, true, null);
+  }
+
+  public void addStoredProcedure(EOStoredProcedure _storedProcedure, boolean _fireEvents, Set _failures) throws DuplicateStoredProcedureNameException {
+    _storedProcedure._setModel(this);
+    _checkForDuplicateStoredProcedureName(_storedProcedure, _storedProcedure.getName(), _failures);
+    _storedProcedure.pasted();
+    myDeletedStoredProcedureNames.remove(_storedProcedure.getName());
+    if (_fireEvents) {
+      Set oldStoredProcedures = null;
+      oldStoredProcedures = myStoredProcedures;
+      Set newStoredProcedures = new TreeSet(new TreeSet(PropertyListComparator.AscendingPropertyListComparator));
+      newStoredProcedures.addAll(myStoredProcedures);
+      newStoredProcedures.add(_storedProcedure);
+      myStoredProcedures = newStoredProcedures;
+      firePropertyChange(EOModel.STORED_PROCEDURES, oldStoredProcedures, myStoredProcedures);
+    }
+    else {
+      myStoredProcedures.add(_storedProcedure);
+    }
+  }
+
+  public void removeStoredProcedure(EOStoredProcedure _storedProcedure) {
+    myDeletedStoredProcedureNames.add(_storedProcedure.getName());
+    Set oldStoredProcedures = myStoredProcedures;
+    Set newStoredProcedures = new TreeSet(new TreeSet(PropertyListComparator.AscendingPropertyListComparator));
+    newStoredProcedures.addAll(myStoredProcedures);
+    newStoredProcedures.remove(_storedProcedure);
+    myStoredProcedures = newStoredProcedures;
+    firePropertyChange(EOModel.STORED_PROCEDURES, oldStoredProcedures, myStoredProcedures);
+    _storedProcedure._setModel(null);
+  }
+
+  public String findUnusedStoredProcedureName(String _newName) {
+    boolean unusedNameFound = (getStoredProcedureNamed(_newName) == null);
+    String unusedName = _newName;
+    for (int dupeNameNum = 1; !unusedNameFound; dupeNameNum++) {
+      unusedName = _newName + dupeNameNum;
+      EOStoredProcedure renameStoredProcedure = getStoredProcedureNamed(unusedName);
+      unusedNameFound = (renameStoredProcedure == null);
+    }
+    return unusedName;
+  }
+
+  public Set getStoredProcedures() {
+    return myStoredProcedures;
+  }
+
+  public EOStoredProcedure getStoredProcedureNamed(String _name) {
+    EOStoredProcedure matchingStoredProcedure = null;
+    Iterator storedProceduresIter = myStoredProcedures.iterator();
+    while (matchingStoredProcedure == null && storedProceduresIter.hasNext()) {
+      EOStoredProcedure attribute = (EOStoredProcedure) storedProceduresIter.next();
+      if (ComparisonUtils.equals(attribute.getName(), _name)) {
+        matchingStoredProcedure = attribute;
+      }
+    }
+    return matchingStoredProcedure;
+  }
+
+  public void _checkForDuplicateStoredProcedureName(EOStoredProcedure _storedProcedure, String _newName, Set _failures) throws DuplicateStoredProcedureNameException {
+    EOStoredProcedure existingStoredProcedure = getStoredProcedureNamed(_newName);
+    if (existingStoredProcedure != null && existingStoredProcedure != _storedProcedure) {
+      if (_failures == null) {
+        throw new DuplicateStoredProcedureNameException(_newName, this);
+      }
+
+      String unusedName = findUnusedStoredProcedureName(_newName);
+      existingStoredProcedure.setName(unusedName, true);
+      _failures.add(new DuplicateStoredProcedureFailure(this, _newName, unusedName));
+    }
   }
 
   public void setConnectionDictionary(Map _connectionDictionary) {
@@ -350,9 +452,34 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
         String entityName = entityMap.getString("name", true);
         EOEntity entity = new EOEntity();
         File entityFile = new File(_modelFolder, entityName + ".plist");
-        File fspecFile = new File(_modelFolder, entityName + ".fspec");
-        entity.loadFromFile(entityFile, fspecFile, _failures);
-        addEntity(entity, false, _failures);
+        if (entityFile.exists()) {
+          entity.loadFromFile(entityFile, _failures);
+          File fspecFile = new File(_modelFolder, entityName + ".fspec");
+          if (fspecFile.exists()) {
+            entity.loadFetchSpecsFromFile(fspecFile, _failures);
+          }
+          addEntity(entity, false, _failures);
+        }
+        else {
+          _failures.add(new EOModelVerificationFailure("The entity file " + entityFile.getAbsolutePath() + " was missing."));
+        }
+      }
+    }
+
+    Set storedProcedureNames = modelMap.getSet("storedProcedures");
+    if (storedProcedureNames != null) {
+      Iterator storedProcedureNamesIter = storedProcedureNames.iterator();
+      while (storedProcedureNamesIter.hasNext()) {
+        String storedProcedureName = (String) storedProcedureNamesIter.next();
+        EOStoredProcedure storedProcedure = new EOStoredProcedure();
+        File storedProcedureFile = new File(_modelFolder, storedProcedureName + ".storedProcedure");
+        if (storedProcedureFile.exists()) {
+          storedProcedure.loadFromFile(storedProcedureFile, _failures);
+          addStoredProcedure(storedProcedure, false, _failures);
+        }
+        else {
+          _failures.add(new EOModelVerificationFailure("The stored procedure file " + storedProcedureFile.getAbsolutePath() + " was missing."));
+        }
       }
     }
 
@@ -402,6 +529,15 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
       internalInfoMap.remove("_deletedEntityNamesInObjectStore");
     }
     modelMap.setMap("internalInfo", internalInfoMap, true);
+
+    Set storedProcedures = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
+    Iterator storedProceduresIter = myStoredProcedures.iterator();
+    while (storedProceduresIter.hasNext()) {
+      EOStoredProcedure storedProcedure = (EOStoredProcedure) storedProceduresIter.next();
+      storedProcedures.add(storedProcedure.getName());
+    }
+    modelMap.setSet("storedProcedures", storedProcedures, true);
+
     modelMap.setMap("userInfo", getUserInfo(), true);
 
     return modelMap;
@@ -425,8 +561,8 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
     EOModelMap modelMap = toMap();
     PropertyListSerialization.propertyListToFile(indexFile, modelMap);
 
-    if (myDeletedEntityNamesInObjectStore != null) {
-      Iterator deletedEntityNameIter = myDeletedEntityNamesInObjectStore.iterator();
+    if (myDeletedEntityNames != null) {
+      Iterator deletedEntityNameIter = myDeletedEntityNames.iterator();
       while (deletedEntityNameIter.hasNext()) {
         String entityName = (String) deletedEntityNameIter.next();
         File entityFile = new File(modelFolder, entityName + ".plist");
@@ -445,8 +581,28 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
       EOEntity entity = (EOEntity) entitiesIter.next();
       String entityName = entity.getName();
       File entityFile = new File(modelFolder, entityName + ".plist");
+      entity.saveToFile(entityFile);
       File fspecFile = new File(modelFolder, entityName + ".fspec");
-      entity.saveToFile(entityFile, fspecFile);
+      entity.saveFetchSpecsToFile(fspecFile);
+    }
+
+    if (myDeletedStoredProcedureNames != null) {
+      Iterator deletedStoredProcedureNameIter = myDeletedStoredProcedureNames.iterator();
+      while (deletedStoredProcedureNameIter.hasNext()) {
+        String storedProcedureName = (String) deletedStoredProcedureNameIter.next();
+        File storedProcedureFile = new File(modelFolder, storedProcedureName + ".storedProcedure");
+        if (storedProcedureFile.exists()) {
+          storedProcedureFile.delete();
+        }
+      }
+    }
+
+    Iterator storedProceduresIter = myStoredProcedures.iterator();
+    while (storedProceduresIter.hasNext()) {
+      EOStoredProcedure storedProcedure = (EOStoredProcedure) storedProceduresIter.next();
+      String storedProcedureName = storedProcedure.getName();
+      File storedProcedureFile = new File(modelFolder, storedProcedureName + ".storedProcedure");
+      storedProcedure.saveToFile(storedProcedureFile);
     }
 
     return modelFolder;

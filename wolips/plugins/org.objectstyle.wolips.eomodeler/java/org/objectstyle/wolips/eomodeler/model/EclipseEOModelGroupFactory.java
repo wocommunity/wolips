@@ -153,7 +153,6 @@ public class EclipseEOModelGroupFactory {
         if (_resource.getType() == IResource.FOLDER) {
           File resourceFile = _resource.getLocation().toFile();
           if (!mySearchedFolders.contains(resourceFile) && "eomodeld".equals(_resource.getFileExtension())) {
-            System.out.println("ModelVisitor.visit: " + resourceFile);
             myModelGroup.addModelFromFolder(resourceFile, myFailures);
             visitChildren = false;
           }

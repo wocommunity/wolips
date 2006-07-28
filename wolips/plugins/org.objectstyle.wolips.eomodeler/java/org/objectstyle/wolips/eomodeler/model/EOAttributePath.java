@@ -49,7 +49,7 @@
  */
 package org.objectstyle.wolips.eomodeler.model;
 
-public class EOAttributePath extends IEOAttributePath {
+public class EOAttributePath extends AbstractEOAttributePath {
   public EOAttributePath(EORelationshipPath _parentRelationshipPath, EOAttribute _childAttribute) {
     super(_parentRelationshipPath, _childAttribute);
   }

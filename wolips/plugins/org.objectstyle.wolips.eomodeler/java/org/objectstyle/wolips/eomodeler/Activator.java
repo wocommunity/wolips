@@ -64,6 +64,7 @@ public class Activator extends AbstractUIPlugin {
   public static final String EOATTRIBUTE_ICON = "eoAttribute";
   public static final String EORELATIONSHIP_ICON = "eoRelationship";
   public static final String EOFETCHSPEC_ICON = "eoFetchSpec";
+  public static final String EOSTOREDPROCEDURE_ICON = "eoStoredProcedure";
   public static final String TO_MANY_ICON = "toMany";
   public static final String TO_ONE_ICON = "toOne";
   public static final String PRIMARY_KEY_ICON = "primaryKey";
@@ -133,6 +134,7 @@ public class Activator extends AbstractUIPlugin {
     _reg.put(Activator.EOATTRIBUTE_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/eoAttribute.gif"));
     _reg.put(Activator.EOENTITY_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/eoEntity.gif"));
     _reg.put(Activator.EOFETCHSPEC_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/eoFetchSpecification.gif"));
+    _reg.put(Activator.EOSTOREDPROCEDURE_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/eoStoredProcedure.gif"));
     _reg.put(Activator.EORELATIONSHIP_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/eoRelationship.gif"));
     _reg.put(Activator.TO_MANY_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/toMany.gif"));
     _reg.put(Activator.TO_ONE_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/toOne.gif"));

@@ -47,26 +47,51 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eomodeler.editors.attribute;
+package org.objectstyle.wolips.eomodeler.actions;
 
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetWidgetFactory;
-import org.objectstyle.wolips.eomodeler.model.EOAttribute;
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.IWorkbenchWindowActionDelegate;
+import org.objectstyle.wolips.eomodeler.Messages;
+import org.objectstyle.wolips.eomodeler.model.DuplicateNameException;
+import org.objectstyle.wolips.eomodeler.model.EOArgument;
+import org.objectstyle.wolips.eomodeler.model.EOStoredProcedure;
+import org.objectstyle.wolips.eomodeler.utils.EOModelUtils;
 
-public class IntegerDataTypePanel extends Composite implements IDataTypePanel {
-  public IntegerDataTypePanel(Composite _parent, int _style, TabbedPropertySheetWidgetFactory _widgetFactory) {
-    super(_parent, _style);
-    setBackground(_parent.getBackground());
-    setLayout(new GridLayout(2, false));
+public class NewArgumentAction implements IWorkbenchWindowActionDelegate {
+  private EOStoredProcedure myStoredProcedure;
+  private IWorkbenchWindow myWindow;
+
+  public void init(IWorkbenchWindow _window) {
+    myWindow = _window;
   }
-  
-  public void setAttribute(EOAttribute _attribute) {
+
+  public void dispose() {
     // DO NOTHING
   }
-  
-  public void dispose() {
-    setAttribute(null);
-    super.dispose();
+
+  public void selectionChanged(IAction _action, ISelection _selection) {
+    myStoredProcedure = null;
+    if (_selection instanceof IStructuredSelection) {
+      Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
+      myStoredProcedure = EOModelUtils.getRelatedStoredProcedure(selectedObject);
+    }
+  }
+
+  public void run(IAction _action) {
+    try {
+      if (myStoredProcedure != null) {
+        EOArgument newArgument = myStoredProcedure.addBlankArgument(Messages.getString("EOArgument.newName"));
+      }
+      else {
+        MessageDialog.openError(myWindow.getShell(), Messages.getString("EOArgument.noStoredProcedureSelectedTitle"), Messages.getString("EOArgument.noStoredProcedureSelectedMessage"));//$NON-NLS-1$
+      }
+    }
+    catch (DuplicateNameException e) {
+      e.printStackTrace();
+    }
   }
 }

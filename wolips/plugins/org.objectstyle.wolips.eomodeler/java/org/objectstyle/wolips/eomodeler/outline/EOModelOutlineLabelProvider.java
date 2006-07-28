@@ -53,6 +53,7 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Image;
 import org.objectstyle.wolips.eomodeler.Activator;
+import org.objectstyle.wolips.eomodeler.model.EOArgument;
 import org.objectstyle.wolips.eomodeler.model.EOAttribute;
 import org.objectstyle.wolips.eomodeler.model.EOAttributePath;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
@@ -60,6 +61,7 @@ import org.objectstyle.wolips.eomodeler.model.EOFetchSpecification;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
 import org.objectstyle.wolips.eomodeler.model.EORelationship;
 import org.objectstyle.wolips.eomodeler.model.EORelationshipPath;
+import org.objectstyle.wolips.eomodeler.model.EOStoredProcedure;
 
 public class EOModelOutlineLabelProvider implements ILabelProvider {
   public void addListener(ILabelProviderListener _listener) {
@@ -92,6 +94,12 @@ public class EOModelOutlineLabelProvider implements ILabelProvider {
     }
     else if (_element instanceof EOFetchSpecification) {
       image = Activator.getDefault().getImageRegistry().get(Activator.EOFETCHSPEC_ICON);
+    }
+    else if (_element instanceof EOStoredProcedure) {
+      image = Activator.getDefault().getImageRegistry().get(Activator.EOSTOREDPROCEDURE_ICON);
+    }
+    else if (_element instanceof EOArgument) {
+      image = Activator.getDefault().getImageRegistry().get(Activator.EOATTRIBUTE_ICON);
     }
     else {
       image = null;
@@ -128,6 +136,14 @@ public class EOModelOutlineLabelProvider implements ILabelProvider {
     else if (_element instanceof EOFetchSpecification) {
       EOFetchSpecification fetchSpec = (EOFetchSpecification) _element;
       text = fetchSpec.getName();
+    }
+    else if (_element instanceof EOArgument) {
+      EOArgument argument = (EOArgument) _element;
+      text = argument.getName();
+    }
+    else if (_element instanceof EOStoredProcedure) {
+      EOStoredProcedure storedProcedure = (EOStoredProcedure) _element;
+      text = storedProcedure.getName();
     }
     else {
       text = null;

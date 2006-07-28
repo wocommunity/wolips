@@ -47,54 +47,26 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eomodeler.editors.attribute;
+package org.objectstyle.wolips.eomodeler.editors.dataType;
 
-import org.eclipse.jface.internal.databinding.provisional.DataBindingContext;
-import org.eclipse.jface.internal.databinding.provisional.description.Property;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetWidgetFactory;
-import org.objectstyle.wolips.eomodeler.Messages;
-import org.objectstyle.wolips.eomodeler.model.EOAttribute;
-import org.objectstyle.wolips.eomodeler.utils.BindingFactory;
+import org.objectstyle.wolips.eomodeler.model.AbstractEOArgument;
 
-public class DecimalNumberDataTypePanel extends Composite implements IDataTypePanel {
-  private Text myPrecisionText;
-  private Text myScaleText;
-  private DataBindingContext myBindingContext;
-
-  public DecimalNumberDataTypePanel(Composite _parent, int _style, TabbedPropertySheetWidgetFactory _widgetFactory) {
+public class DateDataTypePanel extends Composite implements IDataTypePanel {
+  public DateDataTypePanel(Composite _parent, int _style, TabbedPropertySheetWidgetFactory _widgetFactory) {
     super(_parent, _style);
     setBackground(_parent.getBackground());
     setLayout(new GridLayout(2, false));
-    _widgetFactory.createCLabel(this, Messages.getString("EOAttribute." + EOAttribute.PRECISION), SWT.NONE);
-    myPrecisionText = new Text(this, SWT.BORDER);
-    GridData precisionFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-    myPrecisionText.setLayoutData(precisionFieldLayoutData);
-
-    _widgetFactory.createCLabel(this, Messages.getString("EOAttribute." + EOAttribute.SCALE), SWT.NONE);
-    myScaleText = new Text(this, SWT.BORDER);
-    GridData scaleFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-    myScaleText.setLayoutData(scaleFieldLayoutData);
   }
 
-  public void setAttribute(EOAttribute _attribute) {
-    if (myBindingContext != null) {
-      myBindingContext.dispose();
-    }
-    if (_attribute != null) {
-      myBindingContext = BindingFactory.createContext();
-      myBindingContext.bind(myPrecisionText, new Property(_attribute, EOAttribute.PRECISION), null);
-      myBindingContext.bind(myScaleText, new Property(_attribute, EOAttribute.SCALE), null);
-    }
+  public void setArgument(AbstractEOArgument _argument) {
+    // DO NOTHING
   }
   
   public void dispose() {
-    setAttribute(null);
+    setArgument(null);
     super.dispose();
   }
-
 }

@@ -81,6 +81,8 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
   public static final String REQUIRES_ALL_QUALIFIER_BINDING_VARIABLES = "requiresAllQualifierBindingVariables";
   public static final String USES_DISTINCT = "usesDistinct";
   public static final String SHARES_OBJECTS = "sharesObjects";
+  public static final String CUSTOM_QUERY_EXPRESSION = "customQueryExpression";
+  public static final String STORED_PROCEDURE = "storedProcedure";
 
   private EOEntity myEntity;
   private String myName;
@@ -98,7 +100,8 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
   private Node myQualifier;
   private EOModelMap myFetchSpecMap;
   private Boolean mySharesObjects;
-  private boolean myFetchAllAttributesAsRawRows;
+  private String myCustomQueryExpression;
+  private String myStoredProcedure;
 
   public EOFetchSpecification(String _name) {
     myName = _name;
@@ -263,6 +266,38 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
     }
   }
 
+  public void useQualifier() {
+    setCustomQueryExpression(null);
+  }
+
+  public void useCustomQueryExpression() {
+    setCustomQueryExpression("");
+  }
+  
+  public void useStoredProcedure() {
+    setCustomQueryExpression("");
+  }
+
+  public void setCustomQueryExpression(String _customQueryExpression) {
+    String oldCustomQueryExpression = myCustomQueryExpression;
+    myCustomQueryExpression = _customQueryExpression;
+    firePropertyChange(EOFetchSpecification.CUSTOM_QUERY_EXPRESSION, oldCustomQueryExpression, myCustomQueryExpression);
+  }
+
+  public String getCustomQueryExpression() {
+    return myCustomQueryExpression;
+  }
+  
+  public void setStoredProcedure(String _storedProcedure) {
+    String oldStoredProcedure = myStoredProcedure;
+    myStoredProcedure = _storedProcedure;
+    firePropertyChange(EOFetchSpecification.STORED_PROCEDURE, oldStoredProcedure, myStoredProcedure);
+  }
+  
+  public String getStoredProcedure() {
+    return myStoredProcedure;
+  }
+
   public void setQualifier(Node _qualifier) {
     Node oldQualifier = myQualifier;
     myQualifier = _qualifier;
@@ -290,7 +325,7 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
   public Boolean getDeep() {
     return isDeep();
   }
-  
+
   public void setDeep(Boolean _deep) {
     Boolean oldDeep = myDeep;
     myDeep = _deep;
@@ -310,7 +345,7 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
   public Boolean isLocksObjects() {
     return myLocksObjects;
   }
-  
+
   public Boolean getLocksObjects() {
     return isLocksObjects();
   }
@@ -422,7 +457,7 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
   public Boolean isPromptsAfterFetchLimit() {
     return myPromptsAfterFetchLimit;
   }
-  
+
   public Boolean getPromptsAfterFetchLimit() {
     return isPromptsAfterFetchLimit();
   }
@@ -445,7 +480,7 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
   public Boolean isRefreshesRefetchedObjects() {
     return myRefreshesRefetchedObjects;
   }
-  
+
   public Boolean getRefreshesRefetchedObjects() {
     return isRefreshesRefetchedObjects();
   }
@@ -459,7 +494,7 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
   public Boolean isRequiresAllQualifierBindingVariables() {
     return myRequiresAllQualifierBindingVariables;
   }
-  
+
   public Boolean getRequiresAllQualifierBindingVariables() {
     return isRequiresAllQualifierBindingVariables();
   }
@@ -473,7 +508,7 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
   public Boolean isUsesDistinct() {
     return myUsesDistinct;
   }
-  
+
   public Boolean getUsesDistinct() {
     return isUsesDistinct();
   }
@@ -514,6 +549,11 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
         addSortOrdering(sortOrdering, false);
       }
     }
+
+    Map hintsMap = _map.getMap("hints");
+    if (hintsMap != null) {
+      myCustomQueryExpression = (String) hintsMap.get("EOCustomQueryExpressionHintKey");
+    }
   }
 
   public EOModelMap toMap() {
@@ -545,6 +585,11 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
       sortOrderings.add(sortOrderingMap);
     }
     fetchSpecMap.setList("sortOrderings", sortOrderings, true);
+
+    EOModelMap hintsMap = new EOModelMap(fetchSpecMap.getMap("hints", true));
+    hintsMap.setString("EOCustomQueryExpressionHintKey", myCustomQueryExpression, false);
+    fetchSpecMap.setMap("hints", hintsMap, true);
+
     return fetchSpecMap;
   }
 

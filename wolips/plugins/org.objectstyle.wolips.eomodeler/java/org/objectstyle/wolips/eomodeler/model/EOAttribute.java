@@ -64,30 +64,16 @@ import org.objectstyle.wolips.eomodeler.utils.BooleanUtils;
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.utils.StringUtils;
 
-public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribute, ISortableEOModelObject {
+public class EOAttribute extends AbstractEOArgument implements IEOAttribute, ISortableEOModelObject {
   public static final String PRIMARY_KEY = "primaryKey";
   public static final String CLASS_PROPERTY = "classProperty";
   public static final String USED_FOR_LOCKING = "usedForLocking";
-  public static final String ALLOWS_NULL = "allowsNull";
   public static final String PROTOTYPE = "prototype";
-  public static final String NAME = "name";
-  public static final String COLUMN_NAME = "columnName";
-  public static final String ADAPTOR_VALUE_CONVERSION_METHOD_NAME = "adaptorValueConversionMethodName";
-  public static final String EXTERNAL_TYPE = "externalType";
-  public static final String FACTORY_METHOD_ARGUMENT_TYPE = "factoryMethodArgumentType";
-  public static final String PRECISION = "precision";
-  public static final String SCALE = "scale";
-  public static final String VALUE_CLASS_NAME = "valueClassName";
-  public static final String VALUE_FACTORY_METHOD_NAME = "valueFactoryMethodName";
-  public static final String VALUE_TYPE = "valueType";
-  public static final String DEFINITION = "definition";
-  public static final String WIDTH = "width";
   public static final String READ_FORMAT = "readFormat";
   public static final String WRITE_FORMAT = "writeFormat";
   public static final String CLIENT_CLASS_PROPERTY = "clientClassProperty";
   public static final String INDEXED = "indexed";
   public static final String READ_ONLY = "readOnly";
-  public static final String DATA_TYPE = "dataType";
 
   private static final String[] PROTOTYPED_PROPERTIES = { EOAttribute.COLUMN_NAME, EOAttribute.ALLOWS_NULL, EOAttribute.ADAPTOR_VALUE_CONVERSION_METHOD_NAME, EOAttribute.EXTERNAL_TYPE, EOAttribute.FACTORY_METHOD_ARGUMENT_TYPE, EOAttribute.PRECISION, EOAttribute.SCALE, EOAttribute.VALUE_CLASS_NAME, EOAttribute.VALUE_FACTORY_METHOD_NAME, EOAttribute.VALUE_TYPE, EOAttribute.DEFINITION, EOAttribute.WIDTH, EOAttribute.READ_FORMAT, EOAttribute.WRITE_FORMAT, EOAttribute.INDEXED, EOAttribute.READ_ONLY };
 
@@ -109,70 +95,44 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
   private EOEntity myEntity;
   private String myPrototypeName;
   private EOAttribute myCachedPrototype;
-  private String myName;
-  private String myColumnName;
-  private String myExternalType;
-  private String myValueType;
-  private String myValueClassName;
-  private String myValueFactoryMethodName;
-  private EOFactoryMethodArgumentType myFactoryMethodArgumentType;
-  private String myAdaptorValueConversionMethodName;
-  private Integer myScale;
-  private Integer myPrecision;
-  private Integer myWidth;
-  private Boolean myAllowsNull;
   private Boolean myClassProperty;
   private Boolean myPrimaryKey;
   private Boolean myUsedForLocking;
   private Boolean myClientClassProperty;
   private Boolean myIndexed;
   private Boolean myReadOnly;
-  private String myDefinition;
   private String myReadFormat;
   private String myWriteFormat;
-  private EOModelMap myAttributeMap;
-  private EODataType myDataType;
 
   public EOAttribute() {
-    myAttributeMap = new EOModelMap();
   }
 
   public EOAttribute(String _name) {
-    this();
-    myName = _name;
+    super(_name);
   }
 
   public EOAttribute(String _name, String _definition) {
-    this(_name);
-    myDefinition = _definition;
+    super(_name, _definition);
   }
 
   public void pasted() {
     // DO NOTHING
   }
 
+  protected AbstractEOArgument _createArgument(String _name) {
+    return new EOAttribute(_name);
+  }
+
   public EOAttribute cloneAttribute() {
-    EOAttribute attribute = new EOAttribute(myName);
+    EOAttribute attribute = (EOAttribute) _cloneArgument();
     attribute.myPrototypeName = myPrototypeName;
     attribute.myCachedPrototype = myCachedPrototype;
-    attribute.myColumnName = myColumnName;
-    attribute.myExternalType = myExternalType;
-    attribute.myValueType = myValueType;
-    attribute.myValueClassName = myValueClassName;
-    attribute.myValueFactoryMethodName = myValueFactoryMethodName;
-    attribute.myFactoryMethodArgumentType = myFactoryMethodArgumentType;
-    attribute.myAdaptorValueConversionMethodName = myAdaptorValueConversionMethodName;
-    attribute.myScale = myScale;
-    attribute.myPrecision = myPrecision;
-    attribute.myWidth = myWidth;
-    attribute.myAllowsNull = myAllowsNull;
     attribute.myClassProperty = myClassProperty;
     attribute.myPrimaryKey = myPrimaryKey;
     attribute.myUsedForLocking = myUsedForLocking;
     attribute.myClientClassProperty = myClientClassProperty;
     attribute.myIndexed = myIndexed;
     attribute.myReadOnly = myReadOnly;
-    attribute.myDefinition = myDefinition;
     attribute.myReadFormat = myReadFormat;
     attribute.myWriteFormat = myWriteFormat;
     return attribute;
@@ -185,14 +145,14 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
   }
 
   public int hashCode() {
-    return ((myEntity == null) ? 1 : myEntity.hashCode()) * ((myName == null) ? super.hashCode() : myName.hashCode());
+    return ((myEntity == null) ? 1 : myEntity.hashCode()) * super.hashCode();
   }
 
   public boolean equals(Object _obj) {
     boolean equals = false;
     if (_obj instanceof EOAttribute) {
       EOAttribute attribute = (EOAttribute) _obj;
-      equals = (attribute == this) || (ComparisonUtils.equals(attribute.myEntity, myEntity) && ComparisonUtils.equals(attribute.myName, myName));
+      equals = (attribute == this) || (ComparisonUtils.equals(attribute.myEntity, myEntity) && ComparisonUtils.equals(attribute.getName(), getName()));
     }
     return equals;
   }
@@ -235,7 +195,7 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
     if (myEntity != null) {
       EOEntity parent = myEntity.getParent();
       if (parent != null) {
-        EOAttribute attribute = parent.getAttributeNamed(myName);
+        EOAttribute attribute = parent.getAttributeNamed(getName());
         inherited = (attribute != null);
       }
     }
@@ -337,27 +297,19 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
     return value;
   }
 
-  public void setName(String _name) throws DuplicateNameException {
-    setName(_name, true);
-  }
-
   public void setName(String _name, boolean _fireEvents) throws DuplicateNameException {
-    String oldName = getName();
-    String name = (String) _prototypeValueIfNull(EOAttribute.NAME, _name);
+    String name = (String) _prototypeValueIfNull(AbstractEOArgument.NAME, _name);
     if (name == null) {
       throw new NullPointerException(Messages.getString("EOAttribute.noBlankAttributeNames"));
     }
     if (myEntity != null) {
       myEntity._checkForDuplicateAttributeName(this, name, null);
     }
-    myName = (String) _nullIfPrototyped(EOAttribute.NAME, name);
-    if (_fireEvents) {
-      firePropertyChange(EOAttribute.NAME, oldName, getName());
-    }
+    super.setName((String) _nullIfPrototyped(AbstractEOArgument.NAME, name), _fireEvents);
   }
 
   public String getName() {
-    return (String) _prototypeValueIfNull(EOAttribute.NAME, myName);
+    return (String) _prototypeValueIfNull(AbstractEOArgument.NAME, super.getName());
   }
 
   public Boolean getReadOnly() {
@@ -400,28 +352,16 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
     }
   }
 
-  public Boolean getAllowsNull() {
-    return isAllowsNull();
-  }
-
   public Boolean isAllowsNull() {
-    return (Boolean) _prototypeValueIfNull(EOAttribute.ALLOWS_NULL, myAllowsNull);
-  }
-
-  public void setAllowsNull(Boolean _allowsNull) {
-    setAllowsNull(_allowsNull, true);
+    return (Boolean) _prototypeValueIfNull(AbstractEOArgument.ALLOWS_NULL, super.isAllowsNull());
   }
 
   public void setAllowsNull(Boolean _allowsNull, boolean _fireEvents) {
-    Boolean oldAllowsNull = getAllowsNull();
     Boolean newAllowsNull = _allowsNull;
     if (_fireEvents && BooleanUtils.isTrue(getPrimaryKey())) {
       newAllowsNull = Boolean.FALSE;
     }
-    myAllowsNull = (Boolean) _nullIfPrototyped(EOAttribute.ALLOWS_NULL, newAllowsNull);
-    if (_fireEvents) {
-      firePropertyChange(EOAttribute.ALLOWS_NULL, oldAllowsNull, getAllowsNull());
-    }
+    super.setAllowsNull((Boolean) _nullIfPrototyped(AbstractEOArgument.ALLOWS_NULL, newAllowsNull), _fireEvents);
   }
 
   public Boolean getClassProperty() {
@@ -446,14 +386,11 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
   }
 
   public String getColumnName() {
-    return (String) _prototypeValueIfNull(EOAttribute.COLUMN_NAME, myColumnName);
+    return (String) _prototypeValueIfNull(AbstractEOArgument.COLUMN_NAME, super.getColumnName());
   }
 
   public void setColumnName(String _columnName) {
-    String oldColumnName = getColumnName();
-    myColumnName = (String) _nullIfPrototyped(EOAttribute.COLUMN_NAME, _columnName);
-    //myColumnName = _columnName;
-    firePropertyChange(EOAttribute.COLUMN_NAME, oldColumnName, getColumnName());
+    super.setColumnName((String) _nullIfPrototyped(AbstractEOArgument.COLUMN_NAME, _columnName));
   }
 
   public void _setEntity(EOEntity _entity) {
@@ -512,152 +449,83 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
   }
 
   public String getAdaptorValueConversionMethodName() {
-    return (String) _prototypeValueIfNull(EOAttribute.ADAPTOR_VALUE_CONVERSION_METHOD_NAME, myAdaptorValueConversionMethodName);
+    return (String) _prototypeValueIfNull(AbstractEOArgument.ADAPTOR_VALUE_CONVERSION_METHOD_NAME, super.getAdaptorValueConversionMethodName());
   }
 
   public void setAdaptorValueConversionMethodName(String _adaptorValueConversionMethodName) {
-    String oldAdaptorValueConversionMethodName = getAdaptorValueConversionMethodName();
-    myAdaptorValueConversionMethodName = (String) _nullIfPrototyped(EOAttribute.ADAPTOR_VALUE_CONVERSION_METHOD_NAME, _adaptorValueConversionMethodName);
-    firePropertyChange(EOAttribute.ADAPTOR_VALUE_CONVERSION_METHOD_NAME, oldAdaptorValueConversionMethodName, getAdaptorValueConversionMethodName());
+    super.setAdaptorValueConversionMethodName((String) _nullIfPrototyped(AbstractEOArgument.ADAPTOR_VALUE_CONVERSION_METHOD_NAME, _adaptorValueConversionMethodName));
   }
 
   public String getExternalType() {
-    return (String) _prototypeValueIfNull(EOAttribute.EXTERNAL_TYPE, myExternalType);
+    return (String) _prototypeValueIfNull(AbstractEOArgument.EXTERNAL_TYPE, super.getExternalType());
   }
 
   public void setExternalType(String _externalType) {
-    String oldExternalType = getExternalType();
-    myExternalType = (String) _nullIfPrototyped(EOAttribute.EXTERNAL_TYPE, _externalType);
-    firePropertyChange(EOAttribute.EXTERNAL_TYPE, oldExternalType, getExternalType());
+    super.setExternalType((String) _nullIfPrototyped(AbstractEOArgument.EXTERNAL_TYPE, _externalType));
   }
 
   public EOFactoryMethodArgumentType getFactoryMethodArgumentType() {
-    return (EOFactoryMethodArgumentType) _prototypeValueIfNull(EOAttribute.FACTORY_METHOD_ARGUMENT_TYPE, myFactoryMethodArgumentType);
+    return (EOFactoryMethodArgumentType) _prototypeValueIfNull(AbstractEOArgument.FACTORY_METHOD_ARGUMENT_TYPE, super.getFactoryMethodArgumentType());
   }
 
   public void setFactoryMethodArgumentType(EOFactoryMethodArgumentType _factoryMethodArgumentType) {
-    EOFactoryMethodArgumentType oldFactoryMethodArgumentType = getFactoryMethodArgumentType();
-    myFactoryMethodArgumentType = (EOFactoryMethodArgumentType) _nullIfPrototyped(EOAttribute.FACTORY_METHOD_ARGUMENT_TYPE, _factoryMethodArgumentType);
-    firePropertyChange(EOAttribute.FACTORY_METHOD_ARGUMENT_TYPE, oldFactoryMethodArgumentType, getFactoryMethodArgumentType());
+    super.setFactoryMethodArgumentType((EOFactoryMethodArgumentType) _nullIfPrototyped(AbstractEOArgument.FACTORY_METHOD_ARGUMENT_TYPE, _factoryMethodArgumentType));
   }
 
   public Integer getPrecision() {
-    return (Integer) _prototypeValueIfNull(EOAttribute.PRECISION, myPrecision);
+    return (Integer) _prototypeValueIfNull(AbstractEOArgument.PRECISION, super.getPrecision());
   }
 
   public void setPrecision(Integer _precision) {
-    Integer oldPrecision = getPrecision();
-    myPrecision = (Integer) _nullIfPrototyped(EOAttribute.PRECISION, _precision);
-    firePropertyChange(EOAttribute.PRECISION, oldPrecision, getPrecision());
+    super.setPrecision((Integer) _nullIfPrototyped(AbstractEOArgument.PRECISION, _precision));
   }
 
   public Integer getScale() {
-    return (Integer) _prototypeValueIfNull(EOAttribute.SCALE, myScale);
+    return (Integer) _prototypeValueIfNull(AbstractEOArgument.SCALE, super.getScale());
   }
 
   public void setScale(Integer _scale) {
-    Integer oldScale = getScale();
-    myScale = (Integer) _nullIfPrototyped(EOAttribute.SCALE, _scale);
-    firePropertyChange(EOAttribute.SCALE, oldScale, getScale());
-  }
-
-  public synchronized EODataType getDataType() {
-    EODataType dataType = myDataType;
-    if (dataType == null) {
-      if (getValueFactoryMethodName() != null || getAdaptorValueConversionMethodName() != null) {
-        dataType = EODataType.CUSTOM;
-      }
-      else {
-        dataType = EODataType.getDataTypeByValueClassAndType(getValueClassName(), getValueType());
-      }
-      myDataType = dataType;
-    }
-    return dataType;
-  }
-
-  public void setDataType(EODataType _dataType) {
-    EODataType oldDataType = getDataType();
-    EODataType dataType = _dataType;
-    if (dataType == null) {
-      dataType = EODataType.CUSTOM;
-    }
-    setValueClassName(dataType.getValueClass(), false);
-    setValueType(dataType.getFirstValueType(), false);
-    myDataType = dataType;
-    updateDataType(oldDataType);
-  }
-
-  protected void updateDataType(EODataType _oldDataType) {
-    EODataType dataType = getDataType();
-    firePropertyChange(EOAttribute.DATA_TYPE, _oldDataType, dataType);
+    super.setScale((Integer) _nullIfPrototyped(AbstractEOArgument.SCALE, _scale));
   }
 
   public String getValueClassName() {
-    return (String) _prototypeValueIfNull(EOAttribute.VALUE_CLASS_NAME, myValueClassName);
-  }
-
-  public void setValueClassName(String _valueClassName) {
-    setValueClassName(_valueClassName, true);
+    return (String) _prototypeValueIfNull(AbstractEOArgument.VALUE_CLASS_NAME, super.getValueClassName());
   }
 
   public synchronized void setValueClassName(String _valueClassName, boolean _updateDataType) {
-    EODataType oldDataType = getDataType();
-    String oldValueClassName = getValueClassName();
-    myValueClassName = (String) _nullIfPrototyped(EOAttribute.VALUE_CLASS_NAME, _valueClassName);
-    myDataType = null;
-    firePropertyChange(EOAttribute.VALUE_CLASS_NAME, oldValueClassName, getValueClassName());
-    if (_updateDataType) {
-      updateDataType(oldDataType);
-    }
+    super.setValueClassName((String) _nullIfPrototyped(AbstractEOArgument.VALUE_CLASS_NAME, _valueClassName), _updateDataType);
   }
 
   public String getValueFactoryMethodName() {
-    return (String) _prototypeValueIfNull(EOAttribute.VALUE_FACTORY_METHOD_NAME, myValueFactoryMethodName);
+    return (String) _prototypeValueIfNull(AbstractEOArgument.VALUE_FACTORY_METHOD_NAME, super.getValueFactoryMethodName());
   }
 
   public void setValueFactoryMethodName(String _valueFactoryMethodName) {
-    String oldValueFactoryMethodName = getValueFactoryMethodName();
-    myValueFactoryMethodName = (String) _nullIfPrototyped(EOAttribute.VALUE_FACTORY_METHOD_NAME, _valueFactoryMethodName);
-    firePropertyChange(EOAttribute.VALUE_FACTORY_METHOD_NAME, oldValueFactoryMethodName, getValueFactoryMethodName());
+    super.setValueFactoryMethodName((String) _nullIfPrototyped(AbstractEOArgument.VALUE_FACTORY_METHOD_NAME, _valueFactoryMethodName));
   }
 
   public String getValueType() {
-    return (String) _prototypeValueIfNull(EOAttribute.VALUE_TYPE, myValueType);
-  }
-
-  public void setValueType(String _valueType) {
-    setValueType(_valueType, false);
+    return (String) _prototypeValueIfNull(AbstractEOArgument.VALUE_TYPE, super.getValueType());
   }
 
   public synchronized void setValueType(String _valueType, boolean _updateDataType) {
-    EODataType oldDataType = getDataType();
-    String oldValueType = getValueType();
-    myValueType = (String) _nullIfPrototyped(EOAttribute.VALUE_TYPE, _valueType);
-    myDataType = null;
-    firePropertyChange(EOAttribute.VALUE_TYPE, oldValueType, getValueType());
-    if (_updateDataType) {
-      updateDataType(oldDataType);
-    }
+    super.setValueType((String) _nullIfPrototyped(AbstractEOArgument.VALUE_TYPE, _valueType), _updateDataType);
   }
 
   public Integer getWidth() {
-    return (Integer) _prototypeValueIfNull(EOAttribute.WIDTH, myWidth);
+    return (Integer) _prototypeValueIfNull(AbstractEOArgument.WIDTH, super.getWidth());
   }
 
   public void setWidth(Integer _width) {
-    Integer oldWidth = getWidth();
-    myWidth = (Integer) _nullIfPrototyped(EOAttribute.WIDTH, _width);
-    firePropertyChange(EOAttribute.WIDTH, oldWidth, getWidth());
+    super.setWidth((Integer) _nullIfPrototyped(AbstractEOArgument.WIDTH, _width));
   }
 
   public String getDefinition() {
-    return (String) _prototypeValueIfNull(EOAttribute.DEFINITION, myDefinition);
+    return (String) _prototypeValueIfNull(AbstractEOArgument.DEFINITION, super.getDefinition());
   }
 
   public void setDefinition(String _definition) {
-    String oldDefinition = getDefinition();
-    myDefinition = (String) _nullIfPrototyped(EOAttribute.DEFINITION, _definition);
-    firePropertyChange(EOAttribute.DEFINITION, oldDefinition, getDefinition());
+    super.setDefinition((String) _nullIfPrototyped(AbstractEOArgument.DEFINITION, _definition));
   }
 
   public String getReadFormat() {
@@ -732,10 +600,11 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
       }
 
       if (_includeInheritedAttributes && myEntity != null) {
+        String name = getName();
         Iterator childrenEntitiesIter = myEntity.getChildrenEntities().iterator();
         while (childrenEntitiesIter.hasNext()) {
           EOEntity childEntity = (EOEntity) childrenEntitiesIter.next();
-          EOAttribute childAttribute = childEntity.getAttributeNamed(myName);
+          EOAttribute childAttribute = childEntity.getAttributeNamed(name);
           if (childAttribute != null) {
             referencingRelationships.addAll(childAttribute.getReferencingRelationships(_includeInheritedAttributes));
           }
@@ -746,86 +615,57 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
   }
 
   public void loadFromMap(EOModelMap _attributeMap, Set _failures) {
-    myAttributeMap = _attributeMap;
-    myName = _attributeMap.getString("name", true);
-    myColumnName = _attributeMap.getString("columnName", true);
-    myExternalType = _attributeMap.getString("externalType", true);
-    myScale = _attributeMap.getInteger("scale");
-    myPrecision = _attributeMap.getInteger("precision");
-    myWidth = _attributeMap.getInteger("width");
-    myValueType = _attributeMap.getString("valueType", true);
-    myValueClassName = _attributeMap.getString("valueClassName", true);
-    myValueFactoryMethodName = _attributeMap.getString("valueFactoryMethodName", true);
-    myFactoryMethodArgumentType = EOFactoryMethodArgumentType.getFactoryMethodArgumentTypeByID(_attributeMap.getString("factoryMethodArgumentType", true));
-    myAdaptorValueConversionMethodName = _attributeMap.getString("adaptorValueConversionMethodName", true);
-    myAllowsNull = _attributeMap.getBoolean("allowsNull");
+    super.loadFromMap(_attributeMap, _failures);
     myReadOnly = _attributeMap.getBoolean("isReadOnly");
     myIndexed = _attributeMap.getBoolean("isIndexed");
-    myDefinition = _attributeMap.getString("definition", true);
     myReadFormat = _attributeMap.getString("readFormat", true);
     myWriteFormat = _attributeMap.getString("writeFormat", true);
-    setUserInfo(_attributeMap.getMap("userInfo", true), false);
   }
 
   public EOModelMap toMap() {
-    EOModelMap attributeMap = myAttributeMap.cloneModelMap();
-    attributeMap.setString("name", myName, true);
+    EOModelMap attributeMap = super.toMap();
     if (myPrototypeName != null) {
       attributeMap.setString("prototypeName", myPrototypeName, true);
     }
-    attributeMap.setString("columnName", (myColumnName == null) ? "" : myColumnName, false);
-    attributeMap.setString("externalType", myExternalType, true);
-    attributeMap.setInteger("scale", myScale);
-    attributeMap.setInteger("precision", myPrecision);
-    attributeMap.setInteger("width", myWidth);
-    attributeMap.setString("valueType", myValueType, true);
-    attributeMap.setString("valueClassName", myValueClassName, true);
-    attributeMap.setString("valueFactoryMethodName", myValueFactoryMethodName, true);
-    if (myFactoryMethodArgumentType != null) {
-      attributeMap.setString("factoryMethodArgumentType", myFactoryMethodArgumentType.getID(), true);
-    }
-    attributeMap.setString("adaptorValueConversionMethodName", myAdaptorValueConversionMethodName, true);
-    attributeMap.setBoolean("allowsNull", myAllowsNull, EOModelMap.YN);
     attributeMap.setBoolean("isReadOnly", myReadOnly, EOModelMap.YN);
     attributeMap.setBoolean("isIndexed", myIndexed, EOModelMap.YN);
-    attributeMap.setString("definition", myDefinition, true);
     attributeMap.setString("readFormat", myReadFormat, true);
     attributeMap.setString("writeFormat", myWriteFormat, true);
     return attributeMap;
   }
 
   public void resolve(Set _failures) {
-    String prototypeName = myAttributeMap.getString("prototypeName", true);
+    String prototypeName = getArgumentMap().getString("prototypeName", true);
     clearCachedPrototype(prototypeName, _failures, false, true);
   }
 
   public void verify(Set _failures) {
     String name = getName();
     if (name == null || name.trim().length() == 0) {
-      _failures.add(new EOModelVerificationFailure(myEntity.getModel().getName() + "/" + myEntity.getName() + "/" + myName + " has an empty name."));
+      _failures.add(new EOModelVerificationFailure(myEntity.getModel().getName() + "/" + myEntity.getName() + "/" + name + " has an empty name."));
     }
     else {
       if (name.indexOf(' ') != -1) {
-        _failures.add(new EOModelVerificationFailure(myEntity.getModel().getName() + "/" + myEntity.getName() + "/" + myName + "'s name has a space in it."));
+        _failures.add(new EOModelVerificationFailure(myEntity.getModel().getName() + "/" + myEntity.getName() + "/" + name + "'s name has a space in it."));
       }
       if (!StringUtils.isLowercaseFirstLetter(name)) {
-        _failures.add(new EOModelVerificationFailure("Attribute names should not be capitalized, but " + myEntity.getModel().getName() + "/" + myEntity.getName() + "/" + myName + " is."));
+        _failures.add(new EOModelVerificationFailure("Attribute names should not be capitalized, but " + myEntity.getModel().getName() + "/" + myEntity.getName() + "/" + name + " is."));
       }
     }
     if (!myEntity.isPrototype()) {
       if (!isFlattened()) {
         String columnName = getColumnName();
         if (columnName == null || columnName.trim().length() == 0) {
-          _failures.add(new EOModelVerificationFailure(myEntity.getModel().getName() + "/" + myEntity.getName() + "/" + myName + " does not have a column name set."));
+          _failures.add(new EOModelVerificationFailure(myEntity.getModel().getName() + "/" + myEntity.getName() + "/" + name + " does not have a column name set."));
         }
         else if (columnName.indexOf(' ') != -1) {
-          _failures.add(new EOModelVerificationFailure(myEntity.getModel().getName() + "/" + myEntity.getName() + "/" + myName + "'s column name '" + columnName + "' has a space in it."));
+          _failures.add(new EOModelVerificationFailure(myEntity.getModel().getName() + "/" + myEntity.getName() + "/" + name + "'s column name '" + columnName + "' has a space in it."));
         }
       }
     }
   }
 
   public String toString() {
-    return "[EOAttribute: " + myName + "]";
+    return "[EOAttribute: " + getName() + "]";
   }
 }

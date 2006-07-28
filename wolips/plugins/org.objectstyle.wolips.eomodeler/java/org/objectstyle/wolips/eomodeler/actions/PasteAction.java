@@ -58,11 +58,13 @@ import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
+import org.objectstyle.wolips.eomodeler.model.EOArgument;
 import org.objectstyle.wolips.eomodeler.model.EOAttribute;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOFetchSpecification;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
 import org.objectstyle.wolips.eomodeler.model.EORelationship;
+import org.objectstyle.wolips.eomodeler.model.EOStoredProcedure;
 import org.objectstyle.wolips.eomodeler.utils.EOModelUtils;
 
 public class PasteAction extends Action implements IWorkbenchWindowActionDelegate {
@@ -137,6 +139,24 @@ public class PasteAction extends Action implements IWorkbenchWindowActionDelegat
           EOFetchSpecification clonedClipboardFetchSpecification = clipboardFetchSpecification.cloneFetchSpecification();
           clonedClipboardFetchSpecification.setName(entity.findUnusedFetchSpecificationName(clonedClipboardFetchSpecification.getName()));
           entity.addFetchSpecification(clonedClipboardFetchSpecification);
+        }
+      }
+      else if (clipboardObject instanceof EOStoredProcedure) {
+        EOModel model = EOModelUtils.getRelatedModel(selectedObject);
+        if (model != null) {
+          EOStoredProcedure clipboardStoredProcedure = (EOStoredProcedure) clipboardObject;
+          EOStoredProcedure clonedClipboardStoredProcedure = clipboardStoredProcedure.cloneStoredProcedure();
+          clonedClipboardStoredProcedure.setName(model.findUnusedStoredProcedureName(clonedClipboardStoredProcedure.getName()));
+          model.addStoredProcedure(clonedClipboardStoredProcedure);
+        }
+      }
+      else if (clipboardObject instanceof EOArgument) {
+        EOStoredProcedure storedProcedure = EOModelUtils.getRelatedStoredProcedure(selectedObject);
+        if (storedProcedure != null) {
+          EOArgument clipboardArgument = (EOArgument) clipboardObject;
+          EOArgument clonedClipboardArgument = clipboardArgument.cloneArgument();
+          clonedClipboardArgument.setName(storedProcedure.findUnusedArgumentName(clonedClipboardArgument.getName()));
+          storedProcedure.addArgument(clonedClipboardArgument);
         }
       }
     }

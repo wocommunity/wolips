@@ -47,10 +47,33 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eomodeler.editors.attribute;
+package org.objectstyle.wolips.eomodeler.model;
 
-import org.objectstyle.wolips.eomodeler.model.EOAttribute;
+public class DuplicateStoredProcedureFailure extends EOModelVerificationFailure {
+  private EOModel myModel;
+  private String myStoredProcedureName;
+  private String myNewStoredProcedureName;
 
-public interface IDataTypePanel {
-  public void setAttribute(EOAttribute _attribute);
+  public DuplicateStoredProcedureFailure(EOModel _entity, String _storedProcedureName, String _newStoredProcedureName) {
+    this(_entity, _storedProcedureName, _newStoredProcedureName, null);
+  }
+
+  public DuplicateStoredProcedureFailure(EOModel _entity, String _storedProcedureName, String _newStoredProcedureName, Throwable _throwable) {
+    super("There was more than one stored procedure named '" + _storedProcedureName + "' in " + _entity.getName() + ", so one was renamed to '" + _newStoredProcedureName + "'.", _throwable);
+    myModel = _entity;
+    myStoredProcedureName = _storedProcedureName;
+    myNewStoredProcedureName = _newStoredProcedureName;
+  }
+
+  public EOModel getModel() {
+    return myModel;
+  }
+
+  public String getStoredProcedureName() {
+    return myStoredProcedureName;
+  }
+
+  public String getNewStoredProcedureName() {
+    return myNewStoredProcedureName;
+  }
 }
