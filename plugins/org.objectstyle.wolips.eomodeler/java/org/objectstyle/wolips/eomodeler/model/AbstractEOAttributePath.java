@@ -47,52 +47,79 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eomodeler.actions;
+package org.objectstyle.wolips.eomodeler.model;
 
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.IWorkbenchWindowActionDelegate;
-import org.objectstyle.wolips.eomodeler.Messages;
-import org.objectstyle.wolips.eomodeler.model.DuplicateFetchSpecNameException;
-import org.objectstyle.wolips.eomodeler.model.EOEntity;
-import org.objectstyle.wolips.eomodeler.model.EOFetchSpecification;
-import org.objectstyle.wolips.eomodeler.utils.EOModelUtils;
+import java.util.Map;
 
-public class NewFetchSpecAction implements IWorkbenchWindowActionDelegate {
-  private EOEntity myEntity;
-  private IWorkbenchWindow myWindow;
+import org.objectstyle.wolips.eomodeler.utils.BooleanUtils;
+import org.objectstyle.wolips.eomodeler.utils.NotificationMap;
 
-  public void init(IWorkbenchWindow _window) {
-    myWindow = _window;
+public abstract class AbstractEOAttributePath implements IUserInfoable, IEOEntityRelative {
+  private EORelationshipPath myParentRelationshipPath;
+  private IEOAttribute myChildAttribute;
+
+  public AbstractEOAttributePath(EORelationshipPath _parentRelationshipPath, IEOAttribute _childAttribute) {
+    myParentRelationshipPath = _parentRelationshipPath;
+    myChildAttribute = _childAttribute;
   }
 
-  public void dispose() {
-    // DO NOTHING
+  public EORelationshipPath getParentRelationshipPath() {
+    return myParentRelationshipPath;
   }
 
-  public void selectionChanged(IAction _action, ISelection _selection) {
-    myEntity = null;
-    if (_selection instanceof IStructuredSelection) {
-      Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
-      myEntity = EOModelUtils.getRelatedEntity(selectedObject);
-    }
+  public IEOAttribute getChildIEOAttribute() {
+    return myChildAttribute;
   }
 
-  public void run(IAction _action) {
-    try {
-      if (myEntity != null) {
-        EOFetchSpecification newFetchSpec = myEntity.addBlankFetchSpec(Messages.getString("EOFetchSpecification.newName"));
-      }
-      else {
-        MessageDialog.openError(myWindow.getShell(), Messages.getString("EOFetchSpec.noEntitySelectedTitle"), Messages.getString("EOFetchSpec.noEntitySelectedMessage"));//$NON-NLS-1$
-      }
+  public NotificationMap getUserInfo() {
+    return myChildAttribute.getUserInfo();
+  }
+
+  public void setUserInfo(Map _userInfo) {
+    myChildAttribute.setUserInfo(_userInfo);
+  }
+
+  public void setUserInfo(Map _userInfo, boolean _fireEvents) {
+    myChildAttribute.setUserInfo(_userInfo, _fireEvents);
+  }
+
+  public EOEntity getEntity() {
+    return myChildAttribute.getEntity();
+  }
+
+  public EOEntity getRootEntity() {
+    EOEntity entity;
+    if (myParentRelationshipPath != null) {
+      entity = myParentRelationshipPath.getRootEntity();
     }
-    catch (DuplicateFetchSpecNameException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+    else {
+      entity = getEntity();
     }
+    return entity;
+  }
+
+  public Boolean isToMany() {
+    Boolean toMany = null;
+    AbstractEOAttributePath attributePath = this;
+    while (!BooleanUtils.isTrue(toMany) && attributePath != null) {
+      toMany = attributePath.getChildIEOAttribute().isToMany();
+      attributePath = attributePath.getParentRelationshipPath();
+    }
+    return toMany;
+  }
+
+  public String toKeyPath() {
+    StringBuffer sb = new StringBuffer();
+    toKeyPath(sb);
+    return sb.toString();
+  }
+
+  protected void toKeyPath(StringBuffer _keyPathBuffer) {
+    if (myParentRelationshipPath != null) {
+      myParentRelationshipPath.toKeyPath(_keyPathBuffer);
+      _keyPathBuffer.append(".");
+    }
+    String name = myChildAttribute.getName();
+    _keyPathBuffer.append(name);
   }
 }

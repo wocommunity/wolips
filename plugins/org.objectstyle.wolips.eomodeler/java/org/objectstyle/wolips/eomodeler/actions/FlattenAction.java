@@ -59,11 +59,11 @@ import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.model.DuplicateNameException;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.IEOAttribute;
-import org.objectstyle.wolips.eomodeler.model.IEOAttributePath;
+import org.objectstyle.wolips.eomodeler.model.AbstractEOAttributePath;
 
 public class FlattenAction implements IWorkbenchWindowActionDelegate {
   private IWorkbenchWindow myWindow;
-  private IEOAttributePath myAttributePath;
+  private AbstractEOAttributePath myAttributePath;
 
   public void dispose() {
     // DO NOTHING
@@ -77,8 +77,8 @@ public class FlattenAction implements IWorkbenchWindowActionDelegate {
     myAttributePath = null;
     if (_selection instanceof IStructuredSelection) {
       Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
-      if (selectedObject instanceof IEOAttributePath) {
-        myAttributePath = (IEOAttributePath) selectedObject;
+      if (selectedObject instanceof AbstractEOAttributePath) {
+        myAttributePath = (AbstractEOAttributePath) selectedObject;
       }
     }
   }

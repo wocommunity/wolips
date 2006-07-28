@@ -54,6 +54,8 @@ import java.util.TreeSet;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.objectstyle.wolips.eomodeler.model.AbstractEOAttributePath;
+import org.objectstyle.wolips.eomodeler.model.EOArgument;
 import org.objectstyle.wolips.eomodeler.model.EOAttribute;
 import org.objectstyle.wolips.eomodeler.model.EOAttributePath;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
@@ -62,19 +64,23 @@ import org.objectstyle.wolips.eomodeler.model.EOModel;
 import org.objectstyle.wolips.eomodeler.model.EOModelContainer;
 import org.objectstyle.wolips.eomodeler.model.EORelationship;
 import org.objectstyle.wolips.eomodeler.model.EORelationshipPath;
-import org.objectstyle.wolips.eomodeler.model.IEOAttributePath;
+import org.objectstyle.wolips.eomodeler.model.EOStoredProcedure;
 import org.objectstyle.wolips.eomodeler.model.PropertyListComparator;
 
 public class EOModelOutlineContentProvider implements ITreeContentProvider {
   private Object myModelContainer;
+  private boolean myShowEntities;
   private boolean myShowAttributes;
   private boolean myShowRelationships;
   private boolean myShowFetchSpecs;
+  private boolean myShowStoredProcedures;
 
-  public EOModelOutlineContentProvider(boolean _showAttributes, boolean _showRelationships, boolean _showFetchSpecs) {
+  public EOModelOutlineContentProvider(boolean _showEntities, boolean _showAttributes, boolean _showRelationships, boolean _showFetchSpecs, boolean _showStoredProcedures) {
+    myShowEntities = _showEntities;
     myShowAttributes = _showAttributes;
     myShowRelationships = _showRelationships;
     myShowFetchSpecs = _showFetchSpecs;
+    myShowStoredProcedures = _showStoredProcedures;
   }
 
   public Object[] getChildren(Object _parentElement) {
@@ -85,8 +91,14 @@ public class EOModelOutlineContentProvider implements ITreeContentProvider {
     }
     else if (_parentElement instanceof EOModel) {
       EOModel model = (EOModel) _parentElement;
-      Set entitiesList = model.getEntities();
-      children = entitiesList.toArray(new EOEntity[entitiesList.size()]);
+      Set modelChildren = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
+      if (myShowEntities) {
+        modelChildren.addAll(model.getEntities());
+      }
+      if (myShowStoredProcedures) {
+        modelChildren.addAll(model.getStoredProcedures());
+      }
+      children = modelChildren.toArray();
     }
     else if (_parentElement instanceof EOEntity) {
       EOEntity entity = (EOEntity) _parentElement;
@@ -109,6 +121,11 @@ public class EOModelOutlineContentProvider implements ITreeContentProvider {
     else if (_parentElement instanceof EORelationshipPath) {
       EORelationshipPath relationshipPath = (EORelationshipPath) _parentElement;
       children = relationshipPath.getChildren();
+    }
+    else if (_parentElement instanceof EOStoredProcedure) {
+      EOStoredProcedure storedProcedure = (EOStoredProcedure) _parentElement;
+      Set arguments = storedProcedure.getArguments();
+      children = arguments.toArray();
     }
     else {
       children = null;
@@ -144,10 +161,16 @@ public class EOModelOutlineContentProvider implements ITreeContentProvider {
     else if (_element instanceof EORelationship) {
       parent = ((EORelationship) _element).getEntity();
     }
-    else if (_element instanceof IEOAttributePath) {
-      EORelationshipPath parentRelationshipPath = ((IEOAttributePath) _element).getParentRelationshipPath();
+    else if (_element instanceof EOStoredProcedure) {
+      parent = ((EOStoredProcedure) _element).getModel();
+    }
+    else if (_element instanceof EOArgument) {
+      parent = ((EOArgument) _element).getStoredProcedure();
+    }
+    else if (_element instanceof AbstractEOAttributePath) {
+      EORelationshipPath parentRelationshipPath = ((AbstractEOAttributePath) _element).getParentRelationshipPath();
       if (parentRelationshipPath == null) {
-        parent = ((IEOAttributePath) _element).getChildIEOAttribute().getEntity();
+        parent = ((AbstractEOAttributePath) _element).getChildIEOAttribute().getEntity();
       }
       else {
         parent = parentRelationshipPath;
@@ -168,6 +191,9 @@ public class EOModelOutlineContentProvider implements ITreeContentProvider {
       hasChildren = false;
     }
     else if (_element instanceof EOAttributePath) {
+      hasChildren = false;
+    }
+    else if (_element instanceof EOArgument) {
       hasChildren = false;
     }
     return hasChildren;

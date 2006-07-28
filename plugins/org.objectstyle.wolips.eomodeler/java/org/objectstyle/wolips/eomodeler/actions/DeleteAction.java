@@ -61,11 +61,13 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.editors.EOModelErrorDialog;
+import org.objectstyle.wolips.eomodeler.model.EOArgument;
 import org.objectstyle.wolips.eomodeler.model.EOAttribute;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOFetchSpecification;
 import org.objectstyle.wolips.eomodeler.model.EOModelObject;
 import org.objectstyle.wolips.eomodeler.model.EORelationship;
+import org.objectstyle.wolips.eomodeler.model.EOStoredProcedure;
 
 public class DeleteAction extends Action {
   private ISelection mySelection;
@@ -115,6 +117,18 @@ public class DeleteAction extends Action {
         if (MessageDialog.openConfirm(activeShell, Messages.getString("delete.fetchSpecTitle"), Messages.getString("delete.fetchSpecMessage"))) {
           EOFetchSpecification fetchSpec = (EOFetchSpecification) selectedObject;
           fetchSpec.getEntity().removeFetchSpecification(fetchSpec);
+        }
+      }
+      else if (selectedObject instanceof EOStoredProcedure) {
+        if (MessageDialog.openConfirm(activeShell, Messages.getString("delete.storedProcedureTitle"), Messages.getString("delete.storedProcedureMessage"))) {
+          EOStoredProcedure storedProcedure = (EOStoredProcedure) selectedObject;
+          storedProcedure.getModel().removeStoredProcedure(storedProcedure);
+        }
+      }
+      else if (selectedObject instanceof EOArgument) {
+        if (MessageDialog.openConfirm(activeShell, Messages.getString("delete.argumentTitle"), Messages.getString("delete.argumentMessage"))) {
+          EOArgument argument = (EOArgument) selectedObject;
+          argument.getStoredProcedure().removeArgument(argument);
         }
       }
       else {

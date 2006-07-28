@@ -47,7 +47,7 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eomodeler.editors.attribute;
+package org.objectstyle.wolips.eomodeler.editors.dataType;
 
 import org.eclipse.jface.internal.databinding.provisional.DataBindingContext;
 import org.eclipse.jface.internal.databinding.provisional.description.Property;
@@ -58,7 +58,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetWidgetFactory;
 import org.objectstyle.wolips.eomodeler.Messages;
-import org.objectstyle.wolips.eomodeler.model.EOAttribute;
+import org.objectstyle.wolips.eomodeler.model.AbstractEOArgument;
+import org.objectstyle.wolips.eomodeler.model.AbstractEOArgument;
 import org.objectstyle.wolips.eomodeler.utils.BindingFactory;
 
 public class DataDataTypePanel extends Composite implements IDataTypePanel {
@@ -69,24 +70,24 @@ public class DataDataTypePanel extends Composite implements IDataTypePanel {
     super(_parent, _style);
     setBackground(_parent.getBackground());
     setLayout(new GridLayout(2, false));
-    _widgetFactory.createCLabel(this, Messages.getString("EOAttribute." + EOAttribute.WIDTH), SWT.NONE);
+    _widgetFactory.createCLabel(this, Messages.getString("AbstractEOArgument." + AbstractEOArgument.WIDTH), SWT.NONE);
     myExternalWidthText = new Text(this, SWT.BORDER);
     GridData externalWidthFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
     myExternalWidthText.setLayoutData(externalWidthFieldLayoutData);
   }
 
-  public void setAttribute(EOAttribute _attribute) {
+  public void setArgument(AbstractEOArgument _argument) {
     if (myBindingContext != null) {
       myBindingContext.dispose();
     }
-    if (_attribute != null) {
+    if (_argument != null) {
       myBindingContext = BindingFactory.createContext();
-      myBindingContext.bind(myExternalWidthText, new Property(_attribute, EOAttribute.WIDTH), null);
+      myBindingContext.bind(myExternalWidthText, new Property(_argument, AbstractEOArgument.WIDTH), null);
     }
   }
   
   public void dispose() {
-    setAttribute(null);
+    setArgument(null);
     super.dispose();
   }
 }

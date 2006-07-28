@@ -47,46 +47,47 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eomodeler.editors.attribute;
+package org.objectstyle.wolips.eomodeler.model;
 
-import org.eclipse.jface.internal.databinding.provisional.DataBindingContext;
-import org.eclipse.jface.internal.databinding.provisional.description.Property;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetWidgetFactory;
 import org.objectstyle.wolips.eomodeler.Messages;
-import org.objectstyle.wolips.eomodeler.model.EOAttribute;
-import org.objectstyle.wolips.eomodeler.utils.BindingFactory;
 
-public class StringDataTypePanel extends Composite implements IDataTypePanel {
-  private Text myExternalWidthText;
-  private DataBindingContext myBindingContext;
+public class EOArgumentDirection {
+  public static final EOArgumentDirection VOID = new EOArgumentDirection(0, Messages.getString("EOArgumentDirection.void"));
+  public static final EOArgumentDirection IN = new EOArgumentDirection(1, Messages.getString("EOArgumentDirection.in"));
+  public static final EOArgumentDirection OUT = new EOArgumentDirection(2, Messages.getString("EOArgumentDirection.out"));
+  public static final EOArgumentDirection IN_OUT = new EOArgumentDirection(3, Messages.getString("EOArgumentDirection.inOut"));
+  public static final EOArgumentDirection[] ARGUMENT_DIRECTIONS = new EOArgumentDirection[] { EOArgumentDirection.VOID, EOArgumentDirection.IN, EOArgumentDirection.OUT, EOArgumentDirection.IN_OUT };
 
-  public StringDataTypePanel(Composite _parent, int _style, TabbedPropertySheetWidgetFactory _widgetFactory) {
-    super(_parent, _style);
-    setBackground(_parent.getBackground());
-    setLayout(new GridLayout(2, false));
-    _widgetFactory.createCLabel(this, Messages.getString("EOAttribute." + EOAttribute.WIDTH), SWT.NONE);
-    myExternalWidthText = new Text(this, SWT.BORDER);
-    GridData externalWidthFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-    myExternalWidthText.setLayoutData(externalWidthFieldLayoutData);
+  private int myID;
+  private String myName;
+
+  public EOArgumentDirection(int _id, String _name) {
+    myID = _id;
+    myName = _name;
   }
 
-  public void setAttribute(EOAttribute _attribute) {
-    if (myBindingContext != null) {
-      myBindingContext.dispose();
-    }
-    if (_attribute != null) {
-      myBindingContext = BindingFactory.createContext();
-      myBindingContext.bind(myExternalWidthText, new Property(_attribute, EOAttribute.WIDTH), null);
-    }
+  public int getID() {
+    return myID;
   }
-  
-  public void dispose() {
-    setAttribute(null);
-    super.dispose();
+
+  public String getName() {
+    return myName;
+  }
+
+  public String toString() {
+    return "[EOArgumentDirection: name = " + myName + "]";
+  }
+
+  public static EOArgumentDirection getArgumentDirectionByID(int _id) {
+    EOArgumentDirection matchingArgumentDirection = null;
+    for (int argumentDirectionNum = 0; matchingArgumentDirection == null && argumentDirectionNum < EOArgumentDirection.ARGUMENT_DIRECTIONS.length; argumentDirectionNum++) {
+      if (EOArgumentDirection.ARGUMENT_DIRECTIONS[argumentDirectionNum].myID == _id) {
+        matchingArgumentDirection = EOArgumentDirection.ARGUMENT_DIRECTIONS[argumentDirectionNum];
+      }
+    }
+    if (matchingArgumentDirection == null) {
+      matchingArgumentDirection = EOArgumentDirection.VOID;
+    }
+    return matchingArgumentDirection;
   }
 }

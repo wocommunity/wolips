@@ -47,52 +47,55 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eomodeler.actions;
+package org.objectstyle.wolips.eomodeler.editors.dataType;
 
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.IWorkbenchWindowActionDelegate;
+import org.eclipse.jface.internal.databinding.provisional.DataBindingContext;
+import org.eclipse.jface.internal.databinding.provisional.description.Property;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetWidgetFactory;
 import org.objectstyle.wolips.eomodeler.Messages;
-import org.objectstyle.wolips.eomodeler.model.DuplicateFetchSpecNameException;
-import org.objectstyle.wolips.eomodeler.model.EOEntity;
-import org.objectstyle.wolips.eomodeler.model.EOFetchSpecification;
-import org.objectstyle.wolips.eomodeler.utils.EOModelUtils;
+import org.objectstyle.wolips.eomodeler.model.AbstractEOArgument;
+import org.objectstyle.wolips.eomodeler.model.AbstractEOArgument;
+import org.objectstyle.wolips.eomodeler.utils.BindingFactory;
 
-public class NewFetchSpecAction implements IWorkbenchWindowActionDelegate {
-  private EOEntity myEntity;
-  private IWorkbenchWindow myWindow;
+public class DecimalNumberDataTypePanel extends Composite implements IDataTypePanel {
+  private Text myPrecisionText;
+  private Text myScaleText;
+  private DataBindingContext myBindingContext;
 
-  public void init(IWorkbenchWindow _window) {
-    myWindow = _window;
+  public DecimalNumberDataTypePanel(Composite _parent, int _style, TabbedPropertySheetWidgetFactory _widgetFactory) {
+    super(_parent, _style);
+    setBackground(_parent.getBackground());
+    setLayout(new GridLayout(2, false));
+    _widgetFactory.createCLabel(this, Messages.getString("AbstractEOArgument." + AbstractEOArgument.PRECISION), SWT.NONE);
+    myPrecisionText = new Text(this, SWT.BORDER);
+    GridData precisionFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+    myPrecisionText.setLayoutData(precisionFieldLayoutData);
+
+    _widgetFactory.createCLabel(this, Messages.getString("AbstractEOArgument." + AbstractEOArgument.SCALE), SWT.NONE);
+    myScaleText = new Text(this, SWT.BORDER);
+    GridData scaleFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+    myScaleText.setLayoutData(scaleFieldLayoutData);
   }
 
+  public void setArgument(AbstractEOArgument _argument) {
+    if (myBindingContext != null) {
+      myBindingContext.dispose();
+    }
+    if (_argument != null) {
+      myBindingContext = BindingFactory.createContext();
+      myBindingContext.bind(myPrecisionText, new Property(_argument, AbstractEOArgument.PRECISION), null);
+      myBindingContext.bind(myScaleText, new Property(_argument, AbstractEOArgument.SCALE), null);
+    }
+  }
+  
   public void dispose() {
-    // DO NOTHING
+    setArgument(null);
+    super.dispose();
   }
 
-  public void selectionChanged(IAction _action, ISelection _selection) {
-    myEntity = null;
-    if (_selection instanceof IStructuredSelection) {
-      Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
-      myEntity = EOModelUtils.getRelatedEntity(selectedObject);
-    }
-  }
-
-  public void run(IAction _action) {
-    try {
-      if (myEntity != null) {
-        EOFetchSpecification newFetchSpec = myEntity.addBlankFetchSpec(Messages.getString("EOFetchSpecification.newName"));
-      }
-      else {
-        MessageDialog.openError(myWindow.getShell(), Messages.getString("EOFetchSpec.noEntitySelectedTitle"), Messages.getString("EOFetchSpec.noEntitySelectedMessage"));//$NON-NLS-1$
-      }
-    }
-    catch (DuplicateFetchSpecNameException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
-  }
 }

@@ -47,52 +47,33 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eomodeler.actions;
+package org.objectstyle.wolips.eomodeler.model;
 
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.IWorkbenchWindowActionDelegate;
-import org.objectstyle.wolips.eomodeler.Messages;
-import org.objectstyle.wolips.eomodeler.model.DuplicateFetchSpecNameException;
-import org.objectstyle.wolips.eomodeler.model.EOEntity;
-import org.objectstyle.wolips.eomodeler.model.EOFetchSpecification;
-import org.objectstyle.wolips.eomodeler.utils.EOModelUtils;
+public class DuplicateArgumentFailure extends EOModelVerificationFailure {
+  private EOStoredProcedure myStoredProcedure;
+  private String myArgumentName;
+  private String myNewArgumentName;
 
-public class NewFetchSpecAction implements IWorkbenchWindowActionDelegate {
-  private EOEntity myEntity;
-  private IWorkbenchWindow myWindow;
-
-  public void init(IWorkbenchWindow _window) {
-    myWindow = _window;
+  public DuplicateArgumentFailure(EOStoredProcedure _storedProcedure, String _argumentName, String _newArgumentName) {
+    this(_storedProcedure, _argumentName, _newArgumentName, null);
   }
 
-  public void dispose() {
-    // DO NOTHING
+  public DuplicateArgumentFailure(EOStoredProcedure _storedProcedure, String _argumentName, String _newArgumentName, Throwable _throwable) {
+    super("There was more than one argument named '" + _argumentName + "' in " + _storedProcedure.getName() + ", so one was renamed to '" + _newArgumentName + "'.", _throwable);
+    myStoredProcedure = _storedProcedure;
+    myArgumentName = _argumentName;
+    myNewArgumentName = _newArgumentName;
   }
 
-  public void selectionChanged(IAction _action, ISelection _selection) {
-    myEntity = null;
-    if (_selection instanceof IStructuredSelection) {
-      Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
-      myEntity = EOModelUtils.getRelatedEntity(selectedObject);
-    }
+  public EOStoredProcedure getModel() {
+    return myStoredProcedure;
   }
 
-  public void run(IAction _action) {
-    try {
-      if (myEntity != null) {
-        EOFetchSpecification newFetchSpec = myEntity.addBlankFetchSpec(Messages.getString("EOFetchSpecification.newName"));
-      }
-      else {
-        MessageDialog.openError(myWindow.getShell(), Messages.getString("EOFetchSpec.noEntitySelectedTitle"), Messages.getString("EOFetchSpec.noEntitySelectedMessage"));//$NON-NLS-1$
-      }
-    }
-    catch (DuplicateFetchSpecNameException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
+  public String getStoredProcedureName() {
+    return myArgumentName;
+  }
+
+  public String getNewStoredProcedureName() {
+    return myNewArgumentName;
   }
 }

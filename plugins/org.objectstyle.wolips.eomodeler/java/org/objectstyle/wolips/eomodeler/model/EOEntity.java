@@ -113,13 +113,13 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     myName = _name;
   }
 
-  public IEOAttributePath resolveKeyPath(String _keyPath) {
-    IEOAttributePath targetAttribute = resolveKeyPath(_keyPath, null, new HashSet());
+  public AbstractEOAttributePath resolveKeyPath(String _keyPath) {
+    AbstractEOAttributePath targetAttribute = resolveKeyPath(_keyPath, null, new HashSet());
     return targetAttribute;
   }
 
-  public IEOAttributePath resolveKeyPath(String _keyPath, EORelationshipPath _parentRelationshipPath, Set _visitedRelationships) {
-    IEOAttributePath targetAttributePath = null;
+  public AbstractEOAttributePath resolveKeyPath(String _keyPath, EORelationshipPath _parentRelationshipPath, Set _visitedRelationships) {
+    AbstractEOAttributePath targetAttributePath = null;
     if (_keyPath != null && _keyPath.length() > 0) {
       int dotIndex = _keyPath.indexOf('.');
       if (dotIndex == -1) {
@@ -321,7 +321,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     return this;
   }
 
-  public IEOAttribute addBlankIEOAttribute(IEOAttributePath _flattenAttribute) throws DuplicateNameException {
+  public IEOAttribute addBlankIEOAttribute(AbstractEOAttributePath _flattenAttribute) throws DuplicateNameException {
     if (_flattenAttribute instanceof EORelationshipPath) {
       return addBlankRelationship((EORelationshipPath) _flattenAttribute);
     }
@@ -526,7 +526,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     String oldName = myName;
     if (myModel != null) {
       myModel._checkForDuplicateEntityName(this, _name, null);
-      myModel._entityNameChanged(myName);
+      myModel._entityNameChanged(oldName, _name);
     }
     myName = _name;
     if (_fireEvents) {
@@ -680,7 +680,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
       attribute.clearCachedPrototype(_failures, _reload);
     }
   }
-  
+
   public Set getPrimaryKeyAttributes() {
     Set primaryKeyAttributes = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
     Iterator attributesIter = myAttributes.iterator();
@@ -912,10 +912,10 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
   }
 
   public void addRelationship(EORelationship _relationship) throws DuplicateNameException {
-    addRelationship(_relationship, true, null);
+    addRelationship(_relationship, null, true);
   }
 
-  public void addRelationship(EORelationship _relationship, boolean _fireEvents, Set _failures) throws DuplicateNameException {
+  public void addRelationship(EORelationship _relationship, Set _failures, boolean _fireEvents) throws DuplicateNameException {
     _relationship._setEntity(this);
     _checkForDuplicateRelationshipName(_relationship, _relationship.getName(), _failures);
     _relationship.pasted();
@@ -1000,7 +1000,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
         EOModelMap relationshipMap = new EOModelMap((Map) relationshipIter.next());
         EORelationship relationship = new EORelationship();
         relationship.loadFromMap(relationshipMap, _failures);
-        addRelationship(relationship, false, _failures);
+        addRelationship(relationship, _failures, false);
       }
     }
 
@@ -1134,31 +1134,32 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     return fetchSpecsMap;
   }
 
-  public void loadFromFile(File _entityFile, File _fetchSpecFile, Set _failures) throws IOException, EOModelException {
+  public void loadFromFile(File _entityFile, Set _failures) throws EOModelException {
     try {
-      if (_entityFile.exists()) {
-        EOModelMap entityMap = new EOModelMap((Map) PropertyListSerialization.propertyListFromFile(_entityFile, new EOModelParserDataStructureFactory()));
-        loadFromMap(entityMap, _failures);
-      }
+      EOModelMap entityMap = new EOModelMap((Map) PropertyListSerialization.propertyListFromFile(_entityFile, new EOModelParserDataStructureFactory()));
+      loadFromMap(entityMap, _failures);
     }
     catch (Throwable e) {
       throw new EOModelException("Failed to load entity from '" + _entityFile + "'.", e);
     }
+  }
+
+  public void loadFetchSpecsFromFile(File _fetchSpecFile, Set _failures) throws EOModelException {
     try {
-      if (_fetchSpecFile.exists()) {
-        EOModelMap fspecMap = new EOModelMap((Map) PropertyListSerialization.propertyListFromFile(_fetchSpecFile, new EOModelParserDataStructureFactory()));
-        loadFetchSpecsFromMap(fspecMap, _failures);
-      }
+      EOModelMap fspecMap = new EOModelMap((Map) PropertyListSerialization.propertyListFromFile(_fetchSpecFile, new EOModelParserDataStructureFactory()));
+      loadFetchSpecsFromMap(fspecMap, _failures);
     }
     catch (Throwable e) {
       throw new EOModelException("Failed to load fetch specifications from '" + _fetchSpecFile + "'.", e);
     }
   }
 
-  public void saveToFile(File _entityFile, File _fetchSpecFile) {
+  public void saveToFile(File _entityFile) {
     EOModelMap entityMap = toEntityMap();
     PropertyListSerialization.propertyListToFile(_entityFile, entityMap);
+  }
 
+  public void saveFetchSpecsToFile(File _fetchSpecFile) {
     if (myFetchSpecs.size() == 0) {
       _fetchSpecFile.delete();
     }
