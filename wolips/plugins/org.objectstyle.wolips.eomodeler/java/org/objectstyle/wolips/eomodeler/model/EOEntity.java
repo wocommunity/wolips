@@ -673,11 +673,14 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     firePropertyChange(EOEntity.RESTRICTING_QUALIFIER, oldRestrictingQualifier, myRestrictingQualifier);
   }
 
-  public void setAttributes(Set _attributes) {
-    myAttributes = _attributes;
-    firePropertyChange(EOEntity.ATTRIBUTES, null, null);
+  public void clearCachedPrototypes(Set _failures, boolean _reload) {
+    Iterator attributesIter = myAttributes.iterator();
+    while (attributesIter.hasNext()) {
+      EOAttribute attribute = (EOAttribute) attributesIter.next();
+      attribute.clearCachedPrototype(_failures, _reload);
+    }
   }
-
+  
   public Set getPrimaryKeyAttributes() {
     Set primaryKeyAttributes = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
     Iterator attributesIter = myAttributes.iterator();
@@ -689,6 +692,11 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
       }
     }
     return primaryKeyAttributes;
+  }
+
+  public void setAttributes(Set _attributes) {
+    myAttributes = _attributes;
+    firePropertyChange(EOEntity.ATTRIBUTES, null, null);
   }
 
   public Set getAttributes() {

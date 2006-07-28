@@ -53,7 +53,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -61,7 +60,6 @@ public class EOModelGroup extends EOModelObject {
   public static final String MODELS = "models";
 
   private Set myModels;
-  private Set myPrototypeAttributeCache;
 
   public EOModelGroup() {
     myModels = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
@@ -101,76 +99,6 @@ public class EOModelGroup extends EOModelObject {
       entities.addAll(model.getEntities());
     }
     return entities;
-  }
-
-  public Set getPrototypeAttributeNames() {
-    Set prototypeAttributeNames = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
-    Iterator prototypeAttributesIter = getPrototypeAttributes().iterator();
-    while (prototypeAttributesIter.hasNext()) {
-      EOAttribute attribute = (EOAttribute) prototypeAttributesIter.next();
-      prototypeAttributeNames.add(attribute.getName());
-    }
-    return prototypeAttributeNames;
-  }
-
-  public synchronized Set getPrototypeAttributes() {
-    if (myPrototypeAttributeCache == null) {
-      Set prototypeAttributeCache = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
-
-      Set prototypeEntityNames = new HashSet();
-      addPrototypeAttributes("EOPrototypes", prototypeEntityNames, prototypeAttributeCache);
-      Iterator modelsIter = myModels.iterator();
-      while (modelsIter.hasNext()) {
-        EOModel model = (EOModel) modelsIter.next();
-        String adaptorName = model.getAdaptorName();
-        String adaptorPrototypeEntityName = "EO" + adaptorName + "Prototypes";
-        addPrototypeAttributes(adaptorPrototypeEntityName, prototypeEntityNames, prototypeAttributeCache);
-
-        // MS: Hardcoded JDBC reference hack ...
-        if ("JDBC".equals(adaptorName)) {
-          Map connectionDictionary = model.getConnectionDictionary();
-          if (connectionDictionary != null) {
-            String jdbcUrl = (String) connectionDictionary.get("URL");
-            if (jdbcUrl != null) {
-              int firstColon = jdbcUrl.indexOf(':');
-              int secondColon = jdbcUrl.indexOf(':', firstColon + 1);
-              if (firstColon != -1 && secondColon != -1) {
-                String driverName = jdbcUrl.substring(firstColon + 1, secondColon);
-                String driverPrototypeEntityName = "EOJDBC" + driverName + "Prototypes";
-                addPrototypeAttributes(driverPrototypeEntityName, prototypeEntityNames, prototypeAttributeCache);
-              }
-            }
-          }
-        }
-      }
-
-      // Do we need to support "EOPrototypesToHide" entity?
-      myPrototypeAttributeCache = prototypeAttributeCache;
-    }
-    return myPrototypeAttributeCache;
-  }
-
-  protected void addPrototypeAttributes(String _prototypeEntityName, Set _prototypeEntityNames, Set _prototypeAttributeCache) {
-    if (!_prototypeEntityNames.contains(_prototypeEntityName)) {
-      _prototypeEntityNames.add(_prototypeEntityName);
-      EOEntity prototypeEntity = getEntityNamed(_prototypeEntityName);
-      if (prototypeEntity != null) {
-        _prototypeAttributeCache.addAll(prototypeEntity.getAttributes());
-      }
-    }
-  }
-
-  public EOAttribute getPrototypeAttributeNamed(String _name) {
-    EOAttribute matchingAttribute = null;
-    Set prototypeAttributes = getPrototypeAttributes();
-    Iterator attributesIter = prototypeAttributes.iterator();
-    while (matchingAttribute == null && attributesIter.hasNext()) {
-      EOAttribute attribute = (EOAttribute) attributesIter.next();
-      if (attribute.getName().equals(_name)) {
-        matchingAttribute = attribute;
-      }
-    }
-    return matchingAttribute;
   }
 
   public String findUnusedEntityName(String _newName) {
@@ -218,14 +146,23 @@ public class EOModelGroup extends EOModelObject {
       _model._checkForDuplicateEntityName(entity, entity.getName(), _failures);
     }
     myModels.add(_model);
-    myPrototypeAttributeCache = null;
+    clearCachedPrototypes(_failures);
     firePropertyChange(EOModelGroup.MODELS, null, null);
   }
 
-  public void removeModel(EOModel _model) {
+  public void removeModel(EOModel _model, Set _failures) {
     myModels.remove(_model);
+    clearCachedPrototypes(_failures);
     firePropertyChange(EOModelGroup.MODELS, null, null);
     _model._setModelGroup(null);
+  }
+  
+  protected void clearCachedPrototypes(Set _failures) {
+    Iterator modelsIter = myModels.iterator();
+    while (modelsIter.hasNext()) {
+      EOModel model = (EOModel) modelsIter.next();
+      model.clearCachedPrototypes(_failures, false);
+    }
   }
 
   public EOModel getModelNamed(String _name) {

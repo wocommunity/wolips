@@ -107,7 +107,8 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
   }
 
   private EOEntity myEntity;
-  private EOAttribute myPrototype;
+  private String myPrototypeName;
+  private EOAttribute myCachedPrototype;
   private String myName;
   private String myColumnName;
   private String myExternalType;
@@ -152,7 +153,8 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
 
   public EOAttribute cloneAttribute() {
     EOAttribute attribute = new EOAttribute(myName);
-    attribute.myPrototype = myPrototype;
+    attribute.myPrototypeName = myPrototypeName;
+    attribute.myCachedPrototype = myCachedPrototype;
     attribute.myColumnName = myColumnName;
     attribute.myExternalType = myExternalType;
     attribute.myValueType = myValueType;
@@ -194,19 +196,22 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
     }
     return equals;
   }
-  
+
   public Boolean isToMany() {
     return Boolean.FALSE;
   }
 
   public boolean isPrototyped(String _property) {
     boolean prototyped = false;
-    if (myPrototype != null) {
-      IKey key = EOAttribute.getPropertyKey(_property);
-      Object value = key.getValue(this);
-      if (value != null) {
-        Object prototypeValue = key.getValue(myPrototype);
-        prototyped = value.equals(prototypeValue);
+    if (myPrototypeName != null) {
+      EOAttribute prototype = getPrototype();
+      if (prototype != null) {
+        IKey key = EOAttribute.getPropertyKey(_property);
+        Object value = key.getValue(this);
+        if (value != null) {
+          Object prototypeValue = key.getValue(prototype);
+          prototyped = value.equals(prototypeValue);
+        }
       }
     }
     return prototyped;
@@ -238,7 +243,34 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
   }
 
   public EOAttribute getPrototype() {
-    return myPrototype;
+    if (myCachedPrototype == null && myPrototypeName != null && myEntity != null) {
+      myCachedPrototype = myEntity.getModel().getPrototypeAttributeNamed(myPrototypeName);
+    }
+    return myCachedPrototype;
+  }
+
+  public void clearCachedPrototype(Set _failures, boolean _reload) {
+    if (myPrototypeName != null) {
+      clearCachedPrototype(myPrototypeName, _failures, true, _reload);
+    }
+  }
+
+  public void clearCachedPrototype(String _prototypeName, Set _failures, boolean _callSetPrototype, boolean _reload) {
+    myCachedPrototype = null;
+    myPrototypeName = _prototypeName;
+    if (_reload && _prototypeName != null && myEntity != null) {
+      EOAttribute prototype = myEntity.getModel().getPrototypeAttributeNamed(_prototypeName);
+      if (_callSetPrototype) {
+        setPrototype(prototype);
+      }
+      if (prototype == null) {
+        myCachedPrototype = prototype;
+        myPrototypeName = _prototypeName;
+        if (_failures != null) {
+          _failures.add(new MissingPrototypeFailure(_prototypeName, this));
+        }
+      }
+    }
   }
 
   public void setPrototype(EOAttribute _prototype) {
@@ -262,7 +294,13 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
       Object oldValue = EOAttribute.getPropertyKey(propertyName).getValue(this);
       oldValues.put(propertyName, oldValue);
     }
-    myPrototype = _prototype;
+    myCachedPrototype = _prototype;
+    if (_prototype == null) {
+      myPrototypeName = null;
+    }
+    else {
+      myPrototypeName = _prototype.getName();
+    }
     firePropertyChange(EOAttribute.PROTOTYPE, oldPrototype, _prototype);
     if (prototypeNameChanged && _updateFromPrototype) {
       for (int propertyNum = 0; propertyNum < PROTOTYPED_PROPERTIES.length; propertyNum++) {
@@ -279,16 +317,22 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
 
   protected Object _prototypeValueIfNull(String _property, Object _value) {
     Object value = _value;
-    if ((value == null || (value instanceof String && ((String) _value).length() == 0)) && myPrototype != null) {
-      value = EOAttribute.getPropertyKey(_property).getValue(myPrototype);
+    if ((value == null || (value instanceof String && ((String) _value).length() == 0)) && myPrototypeName != null) {
+      EOAttribute prototype = getPrototype();
+      if (prototype != null) {
+        value = EOAttribute.getPropertyKey(_property).getValue(prototype);
+      }
     }
     return value;
   }
 
   protected Object _nullIfPrototyped(String _property, Object _value) {
     Object value = _value;
-    if (value != null && myPrototype != null && value.equals(EOAttribute.getPropertyKey(_property).getValue(myPrototype))) {
-      value = null;
+    if (value != null && myPrototypeName != null) {
+      EOAttribute prototype = getPrototype();
+      if (prototype != null && value.equals(EOAttribute.getPropertyKey(_property).getValue(prototype))) {
+        value = null;
+      }
     }
     return value;
   }
@@ -726,8 +770,8 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
   public EOModelMap toMap() {
     EOModelMap attributeMap = myAttributeMap.cloneModelMap();
     attributeMap.setString("name", myName, true);
-    if (myPrototype != null) {
-      attributeMap.setString("prototypeName", myPrototype.getName(), true);
+    if (myPrototypeName != null) {
+      attributeMap.setString("prototypeName", myPrototypeName, true);
     }
     attributeMap.setString("columnName", (myColumnName == null) ? "" : myColumnName, false);
     attributeMap.setString("externalType", myExternalType, true);
@@ -752,12 +796,7 @@ public class EOAttribute extends UserInfoableEOModelObject implements IEOAttribu
 
   public void resolve(Set _failures) {
     String prototypeName = myAttributeMap.getString("prototypeName", true);
-    if (prototypeName != null && myEntity != null) {
-      myPrototype = myEntity.getModel().getModelGroup().getPrototypeAttributeNamed(prototypeName);
-      if (myPrototype == null) {
-        _failures.add(new MissingPrototypeFailure(prototypeName, this));
-      }
-    }
+    clearCachedPrototype(prototypeName, _failures, false, true);
   }
 
   public void verify(Set _failures) {
