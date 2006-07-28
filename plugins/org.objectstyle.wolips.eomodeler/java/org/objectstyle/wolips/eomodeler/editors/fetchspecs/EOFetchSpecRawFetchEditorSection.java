@@ -65,29 +65,34 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
+import org.objectstyle.wolips.eomodeler.Messages;
+import org.objectstyle.wolips.eomodeler.model.EOAttribute;
+import org.objectstyle.wolips.eomodeler.model.EOAttributePath;
 import org.objectstyle.wolips.eomodeler.model.EOFetchSpecification;
-import org.objectstyle.wolips.eomodeler.model.EORelationship;
-import org.objectstyle.wolips.eomodeler.model.EORelationshipPath;
 import org.objectstyle.wolips.eomodeler.outline.EOEntityTreeViewUpdater;
 import org.objectstyle.wolips.eomodeler.outline.EOModelOutlineContentProvider;
 import org.objectstyle.wolips.eomodeler.utils.AddRemoveButtonGroup;
 import org.objectstyle.wolips.eomodeler.utils.TableRefreshPropertyListener;
 import org.objectstyle.wolips.eomodeler.utils.TableUtils;
 
-public class EOFetchSpecPrefetchingEditorSection extends AbstractPropertySection implements ISelectionChangedListener {
+public class EOFetchSpecRawFetchEditorSection extends AbstractPropertySection implements ISelectionChangedListener, SelectionListener {
   private EOFetchSpecification myFetchSpecification;
 
   private TreeViewer myModelTreeViewer;
-  private TableViewer myPrefetchKeyPathsTableViewer;
+  private TableViewer myRawRowKeyPathsTableViewer;
   private AddRemoveButtonGroup myAddRemoveButtonGroup;
   private EOEntityTreeViewUpdater myEntityTreeViewUpdater;
-  private TableRefreshPropertyListener myPrefetchKeyPathsChangedRefresher;
+  private TableRefreshPropertyListener myRawRowKeyPathsChangedRefresher;
+  private Button myFetchEnterpriseObjectsButton;
+  private Button myFetchAllAttributesAsRawRowsButton;
+  private Button myFetchSpecificAttributesAsRawRowsButton;
 
-  public EOFetchSpecPrefetchingEditorSection() {
+  public EOFetchSpecRawFetchEditorSection() {
     // DO NOTHING
   }
 
@@ -107,6 +112,16 @@ public class EOFetchSpecPrefetchingEditorSection extends AbstractPropertySection
     GridLayout topFormLayout = new GridLayout();
     topForm.setLayout(topFormLayout);
 
+    Composite fetchStyleComposite = getWidgetFactory().createPlainComposite(topForm, SWT.NONE);
+    GridLayout fetchStyleLayout = new GridLayout();
+    fetchStyleComposite.setLayout(fetchStyleLayout);
+    myFetchEnterpriseObjectsButton = new Button(fetchStyleComposite, SWT.RADIO);
+    myFetchEnterpriseObjectsButton.setText(Messages.getString("EOFetchSpecRawFetchEditorSection.fetchEnterpriseObjects")); //$NON-NLS-1$
+    myFetchAllAttributesAsRawRowsButton = new Button(fetchStyleComposite, SWT.RADIO);
+    myFetchAllAttributesAsRawRowsButton.setText(Messages.getString("EOFetchSpecRawFetchEditorSection.fetchAllAttributes")); //$NON-NLS-1$
+    myFetchSpecificAttributesAsRawRowsButton = new Button(fetchStyleComposite, SWT.RADIO);
+    myFetchSpecificAttributesAsRawRowsButton.setText(Messages.getString("EOFetchSpecRawFetchEditorSection.fetchSpecificAttributes")); //$NON-NLS-1$
+
     myModelTreeViewer = new TreeViewer(topForm);
     GridData modelTreeLayoutData = new GridData(GridData.FILL_HORIZONTAL);
     modelTreeLayoutData.heightHint = 100;
@@ -114,14 +129,14 @@ public class EOFetchSpecPrefetchingEditorSection extends AbstractPropertySection
     myEntityTreeViewUpdater = new EOEntityTreeViewUpdater(myModelTreeViewer, new EOModelOutlineContentProvider(true, true, false));
     myModelTreeViewer.addSelectionChangedListener(this);
 
-    myPrefetchKeyPathsTableViewer = TableUtils.createTableViewer(topForm, "EOFetchSpecification", EOPrefetchingKeyPathsConstants.COLUMNS, new PrefetchingKeyPathsContentProvider(), new PrefetchingKeyPathsLabelProvider(EOPrefetchingKeyPathsConstants.COLUMNS), new PrefetchingKeyPathsViewerSorter(EOPrefetchingKeyPathsConstants.COLUMNS));
-    GridData prefetchKeyPathsTableLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-    prefetchKeyPathsTableLayoutData.heightHint = 100;
-    myPrefetchKeyPathsTableViewer.getTable().setLayoutData(prefetchKeyPathsTableLayoutData);
-    myPrefetchKeyPathsTableViewer.addSelectionChangedListener(this);
-    myPrefetchKeyPathsChangedRefresher = new TableRefreshPropertyListener(myPrefetchKeyPathsTableViewer);
+    myRawRowKeyPathsTableViewer = TableUtils.createTableViewer(topForm, "EOFetchSpecification", EORawRowKeyPathsConstants.COLUMNS, new RawRowKeyPathsContentProvider(), new RawRowKeyPathsLabelProvider(EORawRowKeyPathsConstants.COLUMNS), new RawRowKeyPathsViewerSorter(EORawRowKeyPathsConstants.COLUMNS));
+    GridData rawRowKeyPathsTableLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+    rawRowKeyPathsTableLayoutData.heightHint = 100;
+    myRawRowKeyPathsTableViewer.getTable().setLayoutData(rawRowKeyPathsTableLayoutData);
+    myRawRowKeyPathsTableViewer.addSelectionChangedListener(this);
+    myRawRowKeyPathsChangedRefresher = new TableRefreshPropertyListener(myRawRowKeyPathsTableViewer);
 
-    myAddRemoveButtonGroup = new AddRemoveButtonGroup(topForm, new AddPrefetchKeyPathHandler(), new RemovePrefetchKeyPathHandler());
+    myAddRemoveButtonGroup = new AddRemoveButtonGroup(topForm, new AddRawRowKeyPathHandler(), new RemoveRawRowKeyPathHandler());
     myAddRemoveButtonGroup.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
   }
 
@@ -132,18 +147,30 @@ public class EOFetchSpecPrefetchingEditorSection extends AbstractPropertySection
     Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
     myFetchSpecification = (EOFetchSpecification) selectedObject;
     if (myFetchSpecification != null) {
-      myFetchSpecification.addPropertyChangeListener(EOFetchSpecification.PREFETCHING_RELATIONSHIP_KEY_PATHS, myPrefetchKeyPathsChangedRefresher);
+      myFetchSpecification.addPropertyChangeListener(EOFetchSpecification.RAW_ROW_KEY_PATHS, myRawRowKeyPathsChangedRefresher);
       myEntityTreeViewUpdater.setEntity(myFetchSpecification.getEntity());
     }
-    myPrefetchKeyPathsTableViewer.setInput(myFetchSpecification);
-    TableUtils.packTableColumns(myPrefetchKeyPathsTableViewer);
+    myRawRowKeyPathsTableViewer.setInput(myFetchSpecification);
+    TableUtils.packTableColumns(myRawRowKeyPathsTableViewer);
     updateButtonsEnabled();
   }
 
   protected void disposeBindings() {
     if (myFetchSpecification != null) {
-      myFetchSpecification.removePropertyChangeListener(EOFetchSpecification.PREFETCHING_RELATIONSHIP_KEY_PATHS, myPrefetchKeyPathsChangedRefresher);
+      myFetchSpecification.removePropertyChangeListener(EOFetchSpecification.RAW_ROW_KEY_PATHS, myRawRowKeyPathsChangedRefresher);
     }
+  }
+
+  protected void removeButtonListeners() {
+    myFetchEnterpriseObjectsButton.removeSelectionListener(this);
+    myFetchAllAttributesAsRawRowsButton.removeSelectionListener(this);
+    myFetchSpecificAttributesAsRawRowsButton.removeSelectionListener(this);
+  }
+
+  protected void addButtonListeners() {
+    myFetchEnterpriseObjectsButton.addSelectionListener(this);
+    myFetchAllAttributesAsRawRowsButton.addSelectionListener(this);
+    myFetchSpecificAttributesAsRawRowsButton.addSelectionListener(this);
   }
 
   public void dispose() {
@@ -151,60 +178,101 @@ public class EOFetchSpecPrefetchingEditorSection extends AbstractPropertySection
     disposeBindings();
   }
 
-  public void addPrefetchKeyPath() {
+  public void widgetDefaultSelected(SelectionEvent _e) {
+    widgetSelected(_e);
+  }
+
+  public void widgetSelected(SelectionEvent _e) {
+    Object source = _e.getSource();
+    if (source == myFetchEnterpriseObjectsButton) {
+      myFetchSpecification.fetchEnterpriseObjects();
+    }
+    else if (source == myFetchAllAttributesAsRawRowsButton) {
+      myFetchSpecification.fetchAllAttributesAsRawRows();
+    }
+    else if (source == myFetchSpecificAttributesAsRawRowsButton) {
+      myFetchSpecification.fetchSpecificAttributesAsRawRows();
+    }
+    updateButtonsEnabled();
+  }
+
+  public void addRawRowKeyPath() {
     IStructuredSelection selection = (IStructuredSelection) myModelTreeViewer.getSelection();
     Object selectedObject = selection.getFirstElement();
     String path;
-    if (selectedObject instanceof EORelationshipPath) {
-      path = ((EORelationshipPath) selectedObject).toKeyPath();
+    if (selectedObject instanceof EOAttributePath) {
+      path = ((EOAttributePath) selectedObject).toKeyPath();
     }
-    else if (selectedObject instanceof EORelationship) {
-      path = ((EORelationship) selectedObject).getName();
+    else if (selectedObject instanceof EOAttribute) {
+      path = ((EOAttribute) selectedObject).getName();
     }
     else {
       path = null;
     }
     if (path != null) {
-      myFetchSpecification.addPrefetchingRelationshipKeyPath(path, true);
-      TableUtils.packTableColumns(myPrefetchKeyPathsTableViewer);
+      myFetchSpecification.addRawRowKeyPath(path, true);
+      TableUtils.packTableColumns(myRawRowKeyPathsTableViewer);
+      updateButtonsEnabled();
     }
   }
 
   public void removePrefetchKeyPath() {
-    IStructuredSelection selection = (IStructuredSelection) myPrefetchKeyPathsTableViewer.getSelection();
+    IStructuredSelection selection = (IStructuredSelection) myRawRowKeyPathsTableViewer.getSelection();
     Iterator selectedObjectsIter = selection.toList().iterator();
     while (selectedObjectsIter.hasNext()) {
-      String prefetchKeyPath = (String) selectedObjectsIter.next();
-      myFetchSpecification.removePrefetchingRelationshipKeyPath(prefetchKeyPath, true);
+      String rawRowKeyPath = (String) selectedObjectsIter.next();
+      myFetchSpecification.removeRawRowKeyPath(rawRowKeyPath, true);
     }
+    updateButtonsEnabled();
   }
 
   public void updateButtonsEnabled() {
-    myAddRemoveButtonGroup.setAddEnabled(!myModelTreeViewer.getSelection().isEmpty());
-    myAddRemoveButtonGroup.setRemoveEnabled(!myPrefetchKeyPathsTableViewer.getSelection().isEmpty());
+    removeButtonListeners();
+    if (myFetchSpecification.isFetchEnterpriseObjects()) {
+      myFetchEnterpriseObjectsButton.setSelection(true);
+      myFetchAllAttributesAsRawRowsButton.setSelection(false);
+      myFetchSpecificAttributesAsRawRowsButton.setSelection(false);
+    }
+    else if (myFetchSpecification.isFetchAllAttributesAsRawRows()) {
+      myFetchEnterpriseObjectsButton.setSelection(false);
+      myFetchAllAttributesAsRawRowsButton.setSelection(true);
+      myFetchSpecificAttributesAsRawRowsButton.setSelection(false);
+    }
+    else {
+      myFetchEnterpriseObjectsButton.setSelection(false);
+      myFetchAllAttributesAsRawRowsButton.setSelection(false);
+      myFetchSpecificAttributesAsRawRowsButton.setSelection(true);
+    }
+    addButtonListeners();
+    boolean enabled = myFetchSpecification.isFetchSpecificAttributesAsRawRows();
+    Object selectedObject = ((IStructuredSelection) myModelTreeViewer.getSelection()).getFirstElement();
+    boolean addEnabled = (selectedObject instanceof EOAttributePath || selectedObject instanceof EOAttribute);
+    myModelTreeViewer.getTree().setEnabled(enabled);
+    myAddRemoveButtonGroup.setAddEnabled(enabled && addEnabled);
+    myAddRemoveButtonGroup.setRemoveEnabled(enabled && !myRawRowKeyPathsTableViewer.getSelection().isEmpty());
   }
 
   public void selectionChanged(SelectionChangedEvent _event) {
     updateButtonsEnabled();
   }
 
-  protected class AddPrefetchKeyPathHandler implements SelectionListener {
+  protected class AddRawRowKeyPathHandler implements SelectionListener {
     public void widgetDefaultSelected(SelectionEvent _e) {
       widgetSelected(_e);
     }
 
     public void widgetSelected(SelectionEvent _e) {
-      EOFetchSpecPrefetchingEditorSection.this.addPrefetchKeyPath();
+      EOFetchSpecRawFetchEditorSection.this.addRawRowKeyPath();
     }
   }
 
-  protected class RemovePrefetchKeyPathHandler implements SelectionListener {
+  protected class RemoveRawRowKeyPathHandler implements SelectionListener {
     public void widgetDefaultSelected(SelectionEvent _e) {
       widgetSelected(_e);
     }
 
     public void widgetSelected(SelectionEvent _e) {
-      EOFetchSpecPrefetchingEditorSection.this.removePrefetchKeyPath();
+      EOFetchSpecRawFetchEditorSection.this.removePrefetchKeyPath();
     }
   }
 }

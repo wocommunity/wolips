@@ -51,6 +51,7 @@ package org.objectstyle.wolips.eomodeler.model;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -75,6 +76,7 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
   public static final String PREFETCHING_RELATIONSHIP_KEY_PATH = "prefetchingRelationshipKeyPath";
   public static final String PREFETCHING_RELATIONSHIP_KEY_PATHS = "prefetchingRelationshipKeyPaths";
   public static final String PROMPTS_AFTER_FETCH_LIMIT = "promptsAfterFetchLimit";
+  public static final String RAW_ROW_KEY_PATH = "rawRowKeyPath";
   public static final String RAW_ROW_KEY_PATHS = "rawRowKeyPaths";
   public static final String REFRESHES_REFETCHED_OBJECTS = "refreshesRefetchedObjects";
   public static final String REQUIRES_ALL_QUALIFIER_BINDING_VARIABLES = "requiresAllQualifierBindingVariables";
@@ -97,6 +99,7 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
   private Node myQualifier;
   private EOModelMap myFetchSpecMap;
   private Boolean mySharesObjects;
+  private boolean myFetchAllAttributesAsRawRows;
 
   public EOFetchSpecification(String _name) {
     myName = _name;
@@ -315,17 +318,13 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
     return myPrefetchingRelationshipKeyPaths;
   }
 
-  public void setPrefetchingRelationshipKeyPaths(Set _prefetchingRelationshipKeyPaths) {
-    Set oldPrefetchingRelationshipKeyPaths = myPrefetchingRelationshipKeyPaths;
-    myPrefetchingRelationshipKeyPaths = _prefetchingRelationshipKeyPaths;
-    firePropertyChange(EOFetchSpecification.PREFETCHING_RELATIONSHIP_KEY_PATHS, oldPrefetchingRelationshipKeyPaths, _prefetchingRelationshipKeyPaths);
-  }
-
   public void addPrefetchingRelationshipKeyPath(String _prefetchingRelationshipKeyPath, boolean _fireEvents) {
     if (_fireEvents) {
       Set oldPrefetchingRelationshipKeyPaths = myPrefetchingRelationshipKeyPaths;
       myPrefetchingRelationshipKeyPaths = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
-      myPrefetchingRelationshipKeyPaths.addAll(oldPrefetchingRelationshipKeyPaths);
+      if (oldPrefetchingRelationshipKeyPaths != null) {
+        myPrefetchingRelationshipKeyPaths.addAll(oldPrefetchingRelationshipKeyPaths);
+      }
       myPrefetchingRelationshipKeyPaths.add(_prefetchingRelationshipKeyPath);
       firePropertyChange(EOFetchSpecification.PREFETCHING_RELATIONSHIP_KEY_PATHS, oldPrefetchingRelationshipKeyPaths, myPrefetchingRelationshipKeyPaths);
     }
@@ -337,13 +336,79 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
   public void removePrefetchingRelationshipKeyPath(String _prefetchingRelationshipKeyPath, boolean _fireEvents) {
     if (_fireEvents) {
       Set oldPrefetchingRelationshipKeyPaths = myPrefetchingRelationshipKeyPaths;
-      myPrefetchingRelationshipKeyPaths = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
-      myPrefetchingRelationshipKeyPaths.addAll(oldPrefetchingRelationshipKeyPaths);
-      myPrefetchingRelationshipKeyPaths.remove(_prefetchingRelationshipKeyPath);
+      if (oldPrefetchingRelationshipKeyPaths != null) {
+        myPrefetchingRelationshipKeyPaths = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
+        myPrefetchingRelationshipKeyPaths.addAll(oldPrefetchingRelationshipKeyPaths);
+        myPrefetchingRelationshipKeyPaths.remove(_prefetchingRelationshipKeyPath);
+      }
       firePropertyChange(EOFetchSpecification.PREFETCHING_RELATIONSHIP_KEY_PATHS, oldPrefetchingRelationshipKeyPaths, myPrefetchingRelationshipKeyPaths);
     }
     else {
       myPrefetchingRelationshipKeyPaths.remove(_prefetchingRelationshipKeyPath);
+    }
+  }
+
+  public void fetchEnterpriseObjects() {
+    Set oldRawRowKeyPaths = myRawRowKeyPaths;
+    myRawRowKeyPaths = null;
+    firePropertyChange(EOFetchSpecification.RAW_ROW_KEY_PATHS, oldRawRowKeyPaths, myRawRowKeyPaths);
+  }
+
+  public void fetchAllAttributesAsRawRows() {
+    Set oldRawRowKeyPaths = myRawRowKeyPaths;
+    myRawRowKeyPaths = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
+    firePropertyChange(EOFetchSpecification.RAW_ROW_KEY_PATHS, oldRawRowKeyPaths, myRawRowKeyPaths);
+  }
+
+  public void fetchSpecificAttributesAsRawRows() {
+    if (myEntity != null) {
+      String[] attributeNames = myEntity.getAttributeNames();
+      for (int attributeNum = 0; attributeNum < attributeNames.length; attributeNum++) {
+        String attributeName = attributeNames[attributeNum];
+        addRawRowKeyPath(attributeName, true);
+      }
+    }
+  }
+
+  public boolean isFetchEnterpriseObjects() {
+    return myRawRowKeyPaths == null;
+  }
+
+  public boolean isFetchAllAttributesAsRawRows() {
+    return myRawRowKeyPaths != null && myRawRowKeyPaths.isEmpty();
+  }
+
+  public boolean isFetchSpecificAttributesAsRawRows() {
+    return myRawRowKeyPaths != null && !myRawRowKeyPaths.isEmpty();
+  }
+
+  public void addRawRowKeyPath(String _rawRowKeyPath, boolean _fireEvents) {
+    if (_fireEvents) {
+      Set oldRawRowKeyPaths = myRawRowKeyPaths;
+      myRawRowKeyPaths = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
+      if (oldRawRowKeyPaths != null) {
+        myRawRowKeyPaths.addAll(oldRawRowKeyPaths);
+      }
+      myRawRowKeyPaths.add(_rawRowKeyPath);
+      firePropertyChange(EOFetchSpecification.RAW_ROW_KEY_PATHS, oldRawRowKeyPaths, myRawRowKeyPaths);
+    }
+    else {
+      myRawRowKeyPaths.add(_rawRowKeyPath);
+    }
+  }
+
+  public void removeRawRowKeyPath(String _rawRowKeyPath, boolean _fireEvents) {
+    if (_fireEvents) {
+      Set oldRawRowKeyPaths = myRawRowKeyPaths;
+      if (oldRawRowKeyPaths != null) {
+        myRawRowKeyPaths = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
+        myRawRowKeyPaths.addAll(oldRawRowKeyPaths);
+        myRawRowKeyPaths.remove(_rawRowKeyPath);
+      }
+      firePropertyChange(EOFetchSpecification.RAW_ROW_KEY_PATHS, oldRawRowKeyPaths, myRawRowKeyPaths);
+    }
+    else {
+      myRawRowKeyPaths.remove(_rawRowKeyPath);
     }
   }
 
@@ -404,9 +469,6 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
     myDeep = _map.getBoolean("isDeep");
     myLocksObjects = _map.getBoolean("locksObjects");
     myPrefetchingRelationshipKeyPaths = _map.getSet("prefetchingRelationshipKeyPaths", true);
-    if (myPrefetchingRelationshipKeyPaths == null) {
-      myPrefetchingRelationshipKeyPaths = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
-    }
     myPromptsAfterFetchLimit = _map.getBoolean("prompsAfterFetchLimit");
 
     Map qualifierMap = _map.getMap("qualifier");
@@ -414,9 +476,6 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
       myQualifier = EOQualifierFactory.createNodeFromQualifierMap(new EOModelMap(qualifierMap));
     }
     myRawRowKeyPaths = _map.getSet("rawRowKeyPaths", true);
-    if (myRawRowKeyPaths == null) {
-      myRawRowKeyPaths = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
-    }
     myRefreshesRefetchedObjects = _map.getBoolean("refreshesRefetchedObjects");
     myRequiresAllQualifierBindingVariables = _map.getBoolean("requiresAllQualifierBindingVariables");
     myUsesDistinct = _map.getBoolean("usesDistinct");
@@ -441,7 +500,7 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
     fetchSpecMap.setInteger("fetchLimit", myFetchLimit);
     fetchSpecMap.setBoolean("isDeep", myDeep, EOModelMap.YESNO);
     fetchSpecMap.setBoolean("locksObjects", myLocksObjects, EOModelMap.YESNO);
-    fetchSpecMap.setSet("prefetchingRelationshipKeyPaths", myPrefetchingRelationshipKeyPaths, true);
+    fetchSpecMap.setSet("prefetchingRelationshipKeyPaths", myPrefetchingRelationshipKeyPaths, false);
     fetchSpecMap.setBoolean("prompsAfterFetchLimit", myPromptsAfterFetchLimit, EOModelMap.YESNO);
     if (myQualifier == null) {
       fetchSpecMap.setMap("qualifier", null, true);

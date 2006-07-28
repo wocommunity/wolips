@@ -164,6 +164,12 @@
          <propertyTab
                afterTab="org.objectstyle.wolips.eomodeler.tabs.eofetchspecPrefetching"
                category="eofetchspec"
+               id="org.objectstyle.wolips.eomodeler.tabs.eofetchspecRawFetch"
+               image="icons/eoFetchSpecification.gif"
+               label="Raw Fetch"/>
+         <propertyTab
+               afterTab="org.objectstyle.wolips.eomodeler.tabs.eofetchspecRawFetch"
+               category="eofetchspec"
                id="org.objectstyle.wolips.eomodeler.tabs.eofetchspecUserInfo"
                image="icons/eoFetchSpecification.gif"
                label="User Info"/>
@@ -269,6 +275,12 @@
             <input type="org.objectstyle.wolips.eomodeler.model.EOFetchSpecification"/>
          </propertySection>
          <propertySection
+               class="org.objectstyle.wolips.eomodeler.editors.fetchspecs.EOFetchSpecRawFetchEditorSection"
+               id="org.objectstyle.wolips.eomodeler.sections.eofetchspecRawFetch"
+               tab="org.objectstyle.wolips.eomodeler.tabs.eofetchspecRawFetch">
+            <input type="org.objectstyle.wolips.eomodeler.model.EOFetchSpecification"/>
+         </propertySection>
+         <propertySection
                class="org.objectstyle.wolips.eomodeler.editors.userInfo.UserInfoPropertySection"
                id="org.objectstyle.wolips.eomodeler.sections.eofetchspecUserInfo"
                tab="org.objectstyle.wolips.eomodeler.tabs.eofetchspecUserInfo">
@@ -290,7 +302,7 @@
             description="Entity Modeler Actions"
             id="org.objectstyle.wolips.eomodeler.actionSet"
             label="Entity Modeler"
-            visible="true">
+            >
          <action
                class="org.objectstyle.wolips.eomodeler.actions.SubclassEntityAction"
                icon="icons/subclassEntity.gif"

@@ -55,18 +55,18 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.objectstyle.wolips.eomodeler.model.EOFetchSpecification;
 
-public class PrefetchingKeyPathsContentProvider implements IStructuredContentProvider {
+public class RawRowKeyPathsContentProvider implements IStructuredContentProvider {
   public Object[] getElements(Object _inputElement) {
     EOFetchSpecification fetchSpec = (EOFetchSpecification) _inputElement;
-    Collection prefetchingRelationshipKeyPathsSet = fetchSpec.getPrefetchingRelationshipKeyPaths();
-    Object[] prefetchingKeyPaths;
-    if (prefetchingRelationshipKeyPathsSet == null) {
-      prefetchingKeyPaths = new Object[0];
+    Collection rawRowKeyPathsSet = fetchSpec.getRawRowKeyPaths();
+    Object[] rawRowKeyPaths;
+    if (rawRowKeyPathsSet == null) {
+      rawRowKeyPaths = new Object[0];
     }
     else {
-      prefetchingKeyPaths = prefetchingRelationshipKeyPathsSet.toArray();
+      rawRowKeyPaths = rawRowKeyPathsSet.toArray();
     }
-    return prefetchingKeyPaths;
+    return rawRowKeyPaths;
   }
 
   public void dispose() {

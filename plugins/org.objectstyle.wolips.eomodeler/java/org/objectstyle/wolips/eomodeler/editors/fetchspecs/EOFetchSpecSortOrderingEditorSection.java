@@ -163,6 +163,7 @@ public class EOFetchSpecSortOrderingEditorSection extends AbstractPropertySectio
     }
     mySortOrderingsTableViewer.setInput(myFetchSpecification);
     TableUtils.packTableColumns(mySortOrderingsTableViewer);
+    updateButtonsEnabled();
   }
 
   protected void disposeBindings() {
