@@ -170,6 +170,12 @@
          <propertyTab
                afterTab="org.objectstyle.wolips.eomodeler.tabs.eofetchspecRawFetch"
                category="eofetchspec"
+               id="org.objectstyle.wolips.eomodeler.tabs.eofetchspecOptions"
+               image="icons/eoFetchSpecification.gif"
+               label="Options"/>
+         <propertyTab
+               afterTab="org.objectstyle.wolips.eomodeler.tabs.eofetchspecOptions"
+               category="eofetchspec"
                id="org.objectstyle.wolips.eomodeler.tabs.eofetchspecUserInfo"
                image="icons/eoFetchSpecification.gif"
                label="User Info"/>
@@ -278,6 +284,12 @@
                class="org.objectstyle.wolips.eomodeler.editors.fetchspecs.EOFetchSpecRawFetchEditorSection"
                id="org.objectstyle.wolips.eomodeler.sections.eofetchspecRawFetch"
                tab="org.objectstyle.wolips.eomodeler.tabs.eofetchspecRawFetch">
+            <input type="org.objectstyle.wolips.eomodeler.model.EOFetchSpecification"/>
+         </propertySection>
+         <propertySection
+               class="org.objectstyle.wolips.eomodeler.editors.fetchspecs.EOFetchSpecOptionsEditorSection"
+               id="org.objectstyle.wolips.eomodeler.sections.eofetchspecOptions"
+               tab="org.objectstyle.wolips.eomodeler.tabs.eofetchspecOptions">
             <input type="org.objectstyle.wolips.eomodeler.model.EOFetchSpecification"/>
          </propertySection>
          <propertySection
