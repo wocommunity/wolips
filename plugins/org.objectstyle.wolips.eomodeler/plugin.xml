@@ -193,6 +193,12 @@
          <propertyTab
                afterTab="org.objectstyle.wolips.eomodeler.tabs.eofetchspecOptions"
                category="eofetchspec"
+               id="org.objectstyle.wolips.eomodeler.tabs.eofetchspecSQL"
+               image="icons/eoFetchSpecification.gif"
+               label="SQL"/>
+         <propertyTab
+               afterTab="org.objectstyle.wolips.eomodeler.tabs.eofetchspecSQL"
+               category="eofetchspec"
                id="org.objectstyle.wolips.eomodeler.tabs.eofetchspecUserInfo"
                image="icons/eoFetchSpecification.gif"
                label="User Info"/>
@@ -312,38 +318,45 @@
             <input type="org.objectstyle.wolips.eomodeler.model.EORelationshipPath"/>
          </propertySection>
          <propertySection
-               class="org.objectstyle.wolips.eomodeler.editors.fetchspecs.EOFetchSpecQualifierEditorSection"
+               class="org.objectstyle.wolips.eomodeler.editors.fetchspec.EOFetchSpecQualifierEditorSection"
                enablesFor="1"
                id="org.objectstyle.wolips.eomodeler.sections.eofetchspecQualifier"
                tab="org.objectstyle.wolips.eomodeler.tabs.eofetchspecQualifier">
             <input type="org.objectstyle.wolips.eomodeler.model.EOFetchSpecification"/>
          </propertySection>
          <propertySection
-               class="org.objectstyle.wolips.eomodeler.editors.fetchspecs.EOFetchSpecSortOrderingEditorSection"
+               class="org.objectstyle.wolips.eomodeler.editors.fetchspec.EOFetchSpecSortOrderingEditorSection"
                enablesFor="1"
                id="org.objectstyle.wolips.eomodeler.sections.eofetchspecSortOrderings"
                tab="org.objectstyle.wolips.eomodeler.tabs.eofetchspecSortOrderings">
             <input type="org.objectstyle.wolips.eomodeler.model.EOFetchSpecification"/>
          </propertySection>
          <propertySection
-               class="org.objectstyle.wolips.eomodeler.editors.fetchspecs.EOFetchSpecPrefetchingEditorSection"
+               class="org.objectstyle.wolips.eomodeler.editors.fetchspec.EOFetchSpecPrefetchingEditorSection"
                enablesFor="1"
                id="org.objectstyle.wolips.eomodeler.sections.eofetchspecPrefetching"
                tab="org.objectstyle.wolips.eomodeler.tabs.eofetchspecPrefetching">
             <input type="org.objectstyle.wolips.eomodeler.model.EOFetchSpecification"/>
          </propertySection>
          <propertySection
-               class="org.objectstyle.wolips.eomodeler.editors.fetchspecs.EOFetchSpecRawFetchEditorSection"
+               class="org.objectstyle.wolips.eomodeler.editors.fetchspec.EOFetchSpecRawFetchEditorSection"
                enablesFor="1"
                id="org.objectstyle.wolips.eomodeler.sections.eofetchspecRawFetch"
                tab="org.objectstyle.wolips.eomodeler.tabs.eofetchspecRawFetch">
             <input type="org.objectstyle.wolips.eomodeler.model.EOFetchSpecification"/>
          </propertySection>
          <propertySection
-               class="org.objectstyle.wolips.eomodeler.editors.fetchspecs.EOFetchSpecOptionsEditorSection"
+               class="org.objectstyle.wolips.eomodeler.editors.fetchspec.EOFetchSpecOptionsEditorSection"
                enablesFor="1"
                id="org.objectstyle.wolips.eomodeler.sections.eofetchspecOptions"
                tab="org.objectstyle.wolips.eomodeler.tabs.eofetchspecOptions">
+            <input type="org.objectstyle.wolips.eomodeler.model.EOFetchSpecification"/>
+         </propertySection>
+         <propertySection
+               class="org.objectstyle.wolips.eomodeler.editors.fetchspec.EOFetchSpecSQLEditorSection"
+               enablesFor="1"
+               id="org.objectstyle.wolips.eomodeler.sections.eofetchspecSQL"
+               tab="org.objectstyle.wolips.eomodeler.tabs.eofetchspecSQL">
             <input type="org.objectstyle.wolips.eomodeler.model.EOFetchSpecification"/>
          </propertySection>
          <propertySection

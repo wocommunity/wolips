@@ -130,11 +130,13 @@ public class EOAttributeAdvancedEditorSection extends AbstractPropertySection {
       myAttribute = ((EOAttributePath) selectedObject).getChildAttribute();
     }
 
-    myBindingContext = BindingFactory.createContext();
-    myBindingContext.bind(myReadOnlyButton, new Property(myAttribute, EOAttribute.READ_ONLY), null);
-    myBindingContext.bind(myIndexedButton, new Property(myAttribute, EOAttribute.INDEXED), null);
-    myBindingContext.bind(myReadFormatText, new Property(myAttribute, EOAttribute.READ_FORMAT), null);
-    myBindingContext.bind(myWriteFormatText, new Property(myAttribute, EOAttribute.WRITE_FORMAT), null);
+    if (myAttribute != null) {
+      myBindingContext = BindingFactory.createContext();
+      myBindingContext.bind(myReadOnlyButton, new Property(myAttribute, EOAttribute.READ_ONLY), null);
+      myBindingContext.bind(myIndexedButton, new Property(myAttribute, EOAttribute.INDEXED), null);
+      myBindingContext.bind(myReadFormatText, new Property(myAttribute, EOAttribute.READ_FORMAT), null);
+      myBindingContext.bind(myWriteFormatText, new Property(myAttribute, EOAttribute.WRITE_FORMAT), null);
+    }
   }
 
   protected void disposeBindings() {

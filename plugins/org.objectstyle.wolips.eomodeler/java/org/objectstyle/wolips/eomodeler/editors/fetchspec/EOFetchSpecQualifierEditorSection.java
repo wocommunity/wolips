@@ -47,21 +47,21 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eomodeler.editors.fetchspecs;
+package org.objectstyle.wolips.eomodeler.editors.fetchspec;
 
-import org.eclipse.jface.internal.databinding.provisional.BindSpec;
 import org.eclipse.jface.internal.databinding.provisional.DataBindingContext;
 import org.eclipse.jface.internal.databinding.provisional.description.Property;
-import org.eclipse.jface.internal.databinding.provisional.validation.RegexStringValidator;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchPart;
@@ -69,22 +69,20 @@ import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.model.EOFetchSpecification;
+import org.objectstyle.wolips.eomodeler.outline.EOEntityTreeViewUpdater;
+import org.objectstyle.wolips.eomodeler.outline.EOModelOutlineContentProvider;
 import org.objectstyle.wolips.eomodeler.utils.BindingFactory;
 
-public class EOFetchSpecOptionsEditorSection extends AbstractPropertySection {
+public class EOFetchSpecQualifierEditorSection extends AbstractPropertySection implements ISelectionChangedListener {
   private EOFetchSpecification myFetchSpecification;
 
-  private Text myFetchLimitText;
-  private Button myPromptsAfterFetchLimitButton;
-  private Button myDeepButton;
-  private Button myUsesDistinctButton;
-  private Button myLockObjectsButton;
-  private Button myRefreshesRefetchedObjectsButton;
-  private Button myRequiresAllQualifierBindingVariablesButton;
+  private Text myNameText;
+  private TreeViewer myModelTreeViewer;
+  private EOEntityTreeViewUpdater myEntityTreeViewUpdater;
 
   private DataBindingContext myBindingContext;
 
-  public EOFetchSpecOptionsEditorSection() {
+  public EOFetchSpecQualifierEditorSection() {
     // DO NOTHING
   }
 
@@ -105,29 +103,18 @@ public class EOFetchSpecOptionsEditorSection extends AbstractPropertySection {
     topFormLayout.numColumns = 2;
     topForm.setLayout(topFormLayout);
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EOFetchSpecification." + EOFetchSpecification.FETCH_LIMIT), SWT.NONE);
-    myFetchLimitText = new Text(topForm, SWT.BORDER);
-    GridData fetchLimitLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-    myFetchLimitText.setLayoutData(fetchLimitLayoutData);
+    getWidgetFactory().createCLabel(topForm, Messages.getString("EOFetchSpecification." + EOFetchSpecification.NAME), SWT.NONE);
+    myNameText = new Text(topForm, SWT.BORDER);
+    GridData nameLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+    myNameText.setLayoutData(nameLayoutData);
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EOFetchSpecification." + EOFetchSpecification.PROMPTS_AFTER_FETCH_LIMIT), SWT.NONE);
-    myPromptsAfterFetchLimitButton = new Button(topForm, SWT.CHECK);
-
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EOFetchSpecification." + EOFetchSpecification.DEEP), SWT.NONE);
-    myDeepButton = new Button(topForm, SWT.CHECK);
-
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EOFetchSpecification." + EOFetchSpecification.USES_DISTINCT), SWT.NONE);
-    myUsesDistinctButton = new Button(topForm, SWT.CHECK);
-
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EOFetchSpecification." + EOFetchSpecification.LOCKS_OBJECTS), SWT.NONE);
-    myLockObjectsButton = new Button(topForm, SWT.CHECK);
-
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EOFetchSpecification." + EOFetchSpecification.REFRESHES_REFETCHED_OBJECTS), SWT.NONE);
-    myRefreshesRefetchedObjectsButton = new Button(topForm, SWT.CHECK);
-
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EOFetchSpecification." + EOFetchSpecification.REQUIRES_ALL_QUALIFIER_BINDING_VARIABLES), SWT.NONE);
-    myRequiresAllQualifierBindingVariablesButton = new Button(topForm, SWT.CHECK);
-
+    myModelTreeViewer = new TreeViewer(topForm);
+    GridData modelTreeLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+    modelTreeLayoutData.horizontalSpan = 2;
+    modelTreeLayoutData.heightHint = 100;
+    myModelTreeViewer.getTree().setLayoutData(modelTreeLayoutData);
+    myEntityTreeViewUpdater = new EOEntityTreeViewUpdater(myModelTreeViewer, new EOModelOutlineContentProvider(true, true, true, false, false));
+    myModelTreeViewer.addSelectionChangedListener(this);
   }
 
   public void setInput(IWorkbenchPart _part, ISelection _selection) {
@@ -136,14 +123,11 @@ public class EOFetchSpecOptionsEditorSection extends AbstractPropertySection {
 
     Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
     myFetchSpecification = (EOFetchSpecification) selectedObject;
-    myBindingContext = BindingFactory.createContext();
-    myBindingContext.bind(myFetchLimitText, new Property(myFetchSpecification, EOFetchSpecification.FETCH_LIMIT), new BindSpec(null, null, new RegexStringValidator("^[0-9]*$", "^[0-9]$", "Please enter a number"), null));
-    myBindingContext.bind(myPromptsAfterFetchLimitButton, new Property(myFetchSpecification, EOFetchSpecification.PROMPTS_AFTER_FETCH_LIMIT), null);
-    myBindingContext.bind(myDeepButton, new Property(myFetchSpecification, EOFetchSpecification.DEEP), null);
-    myBindingContext.bind(myUsesDistinctButton, new Property(myFetchSpecification, EOFetchSpecification.USES_DISTINCT), null);
-    myBindingContext.bind(myLockObjectsButton, new Property(myFetchSpecification, EOFetchSpecification.LOCKS_OBJECTS), null);
-    myBindingContext.bind(myRefreshesRefetchedObjectsButton, new Property(myFetchSpecification, EOFetchSpecification.REFRESHES_REFETCHED_OBJECTS), null);
-    myBindingContext.bind(myRequiresAllQualifierBindingVariablesButton, new Property(myFetchSpecification, EOFetchSpecification.REQUIRES_ALL_QUALIFIER_BINDING_VARIABLES), null);
+    if (myFetchSpecification != null) {
+      myBindingContext = BindingFactory.createContext();
+      myBindingContext.bind(myNameText, new Property(myFetchSpecification, EOFetchSpecification.NAME), null);
+      myEntityTreeViewUpdater.setEntity(myFetchSpecification.getEntity());
+    }
   }
 
   protected void disposeBindings() {
@@ -155,5 +139,9 @@ public class EOFetchSpecOptionsEditorSection extends AbstractPropertySection {
   public void dispose() {
     super.dispose();
     disposeBindings();
+  }
+
+  public void selectionChanged(SelectionChangedEvent _event) {
+    // DO NOTHING
   }
 }

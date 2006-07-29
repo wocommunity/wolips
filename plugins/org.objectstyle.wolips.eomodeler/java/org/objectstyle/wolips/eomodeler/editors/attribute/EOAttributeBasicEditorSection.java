@@ -81,8 +81,10 @@ public class EOAttributeBasicEditorSection extends AbstractEOArgumentBasicEditor
 
   protected void _argumentChanged(AbstractEOArgument _argument) {
     EOAttribute attribute = (EOAttribute) _argument;
-    myPrototypeComboViewer.setInput(attribute);
-    myPrototypeBinding = new ComboViewerBinding(myPrototypeComboViewer, attribute, EOAttribute.PROTOTYPE, attribute.getEntity().getModel(), EOModel.ENTITIES, EOEntityListContentProvider.BLANK_ENTITY);
+    if (attribute != null) {
+      myPrototypeComboViewer.setInput(attribute);
+      myPrototypeBinding = new ComboViewerBinding(myPrototypeComboViewer, attribute, EOAttribute.PROTOTYPE, attribute.getEntity().getModel(), EOModel.ENTITIES, EOEntityListContentProvider.BLANK_ENTITY);
+    }
   }
 
   protected void disposeBindings() {

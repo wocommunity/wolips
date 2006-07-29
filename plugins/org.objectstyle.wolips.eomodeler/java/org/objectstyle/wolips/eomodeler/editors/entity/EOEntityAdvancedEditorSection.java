@@ -125,11 +125,13 @@ public class EOEntityAdvancedEditorSection extends AbstractPropertySection {
 
     Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
     myEntity = (EOEntity) selectedObject;
-    myBindingContext = BindingFactory.createContext();
-    myBindingContext.bind(myMaxNumberOfInstancesToBatchFetchText, new Property(myEntity, EOEntity.MAX_NUMBER_OF_INSTANCES_TO_BATCH_FETCH), new BindSpec(null, null, new RegexStringValidator("^[0-9]*$", "^[0-9]$", "Please enter a number"), null));
-    myBindingContext.bind(myCacheInMemoryButton, new Property(myEntity, EOEntity.CACHES_OBJECTS), null);
-    myBindingContext.bind(myReadOnlyButton, new Property(myEntity, EOEntity.READ_ONLY), null);
-    myBindingContext.bind(myExternalQueryText, new Property(myEntity, EOEntity.EXTERNAL_QUERY), null);
+    if (myEntity != null) {
+      myBindingContext = BindingFactory.createContext();
+      myBindingContext.bind(myMaxNumberOfInstancesToBatchFetchText, new Property(myEntity, EOEntity.MAX_NUMBER_OF_INSTANCES_TO_BATCH_FETCH), new BindSpec(null, null, new RegexStringValidator("^[0-9]*$", "^[0-9]$", "Please enter a number"), null));
+      myBindingContext.bind(myCacheInMemoryButton, new Property(myEntity, EOEntity.CACHES_OBJECTS), null);
+      myBindingContext.bind(myReadOnlyButton, new Property(myEntity, EOEntity.READ_ONLY), null);
+      myBindingContext.bind(myExternalQueryText, new Property(myEntity, EOEntity.EXTERNAL_QUERY), null);
+    }
   }
 
   protected void disposeBindings() {

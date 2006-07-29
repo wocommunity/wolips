@@ -47,7 +47,7 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eomodeler.editors.fetchspecs;
+package org.objectstyle.wolips.eomodeler.editors.fetchspec;
 
 import java.util.Iterator;
 
@@ -149,10 +149,10 @@ public class EOFetchSpecRawFetchEditorSection extends AbstractPropertySection im
     if (myFetchSpecification != null) {
       myFetchSpecification.addPropertyChangeListener(EOFetchSpecification.RAW_ROW_KEY_PATHS, myRawRowKeyPathsChangedRefresher);
       myEntityTreeViewUpdater.setEntity(myFetchSpecification.getEntity());
+      myRawRowKeyPathsTableViewer.setInput(myFetchSpecification);
+      TableUtils.packTableColumns(myRawRowKeyPathsTableViewer);
+      updateButtonsEnabled();
     }
-    myRawRowKeyPathsTableViewer.setInput(myFetchSpecification);
-    TableUtils.packTableColumns(myRawRowKeyPathsTableViewer);
-    updateButtonsEnabled();
   }
 
   protected void disposeBindings() {

@@ -50,7 +50,6 @@
 package org.objectstyle.wolips.eomodeler.model;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;

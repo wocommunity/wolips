@@ -116,10 +116,11 @@ public class EOStoredProcedureBasicEditorSection extends AbstractPropertySection
 
     Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
     myStoredProcedure = (EOStoredProcedure) selectedObject;
-
-    myBindingContext = BindingFactory.createContext();
-    myBindingContext.bind(myNameText, new Property(myStoredProcedure, EOStoredProcedure.NAME), null);
-    myBindingContext.bind(myExternalNameText, new Property(myStoredProcedure, EOStoredProcedure.EXTERNAL_NAME), null);
+    if (myStoredProcedure != null) {
+      myBindingContext = BindingFactory.createContext();
+      myBindingContext.bind(myNameText, new Property(myStoredProcedure, EOStoredProcedure.NAME), null);
+      myBindingContext.bind(myExternalNameText, new Property(myStoredProcedure, EOStoredProcedure.EXTERNAL_NAME), null);
+    }
   }
 
   protected void disposeBindings() {

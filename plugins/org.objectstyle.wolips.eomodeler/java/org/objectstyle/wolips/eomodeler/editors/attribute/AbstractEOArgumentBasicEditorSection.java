@@ -118,7 +118,7 @@ public abstract class AbstractEOArgumentBasicEditorSection extends AbstractPrope
   public AbstractEOArgumentBasicEditorSection() {
     myDataTypeChangeListener = new DataTypeChangeListener();
   }
-  
+
   public AbstractEOArgument getArgument() {
     return myArgument;
   }
@@ -242,22 +242,22 @@ public abstract class AbstractEOArgumentBasicEditorSection extends AbstractPrope
         else {
           myDerivedComboViewer.setSelection(new StructuredSelection(AbstractEOArgumentBasicEditorSection.DERIVED));
         }
-      }
 
-      Iterator dataTypePanelsIter = myDataTypeToDataTypePanel.values().iterator();
-      while (dataTypePanelsIter.hasNext()) {
-        IDataTypePanel dataTypePanel = (IDataTypePanel) dataTypePanelsIter.next();
-        dataTypePanel.setArgument(_argument);
-      }
-      updateAttributePanel();
-      if (myArgument != null) {
-        myArgument.addPropertyChangeListener(AbstractEOArgument.DATA_TYPE, myDataTypeChangeListener);
+        Iterator dataTypePanelsIter = myDataTypeToDataTypePanel.values().iterator();
+        while (dataTypePanelsIter.hasNext()) {
+          IDataTypePanel dataTypePanel = (IDataTypePanel) dataTypePanelsIter.next();
+          dataTypePanel.setArgument(_argument);
+        }
+        updateAttributePanel();
+        if (myArgument != null) {
+          myArgument.addPropertyChangeListener(AbstractEOArgument.DATA_TYPE, myDataTypeChangeListener);
+        }
       }
     }
   }
-  
+
   protected abstract void _addComponents(Composite _parent);
-  
+
   protected abstract void _argumentChanged(AbstractEOArgument _argument);
 
   protected void disposeBindings() {
@@ -271,7 +271,7 @@ public abstract class AbstractEOArgumentBasicEditorSection extends AbstractPrope
       myDataTypeBinding.dispose();
     }
   }
-  
+
   public void dispose() {
     disposeBindings();
     setArgument(null);

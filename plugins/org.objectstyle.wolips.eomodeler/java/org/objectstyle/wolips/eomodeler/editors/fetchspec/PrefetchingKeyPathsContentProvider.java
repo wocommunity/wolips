@@ -47,17 +47,26 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eomodeler.editors.fetchspecs;
+package org.objectstyle.wolips.eomodeler.editors.fetchspec;
+
+import java.util.Collection;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.objectstyle.wolips.eomodeler.model.EOFetchSpecification;
 
-public class EOSortOrderingsContentProvider implements IStructuredContentProvider {
+public class PrefetchingKeyPathsContentProvider implements IStructuredContentProvider {
   public Object[] getElements(Object _inputElement) {
     EOFetchSpecification fetchSpec = (EOFetchSpecification) _inputElement;
-    Object[] sortOrderings = fetchSpec.getSortOrderings().toArray();
-    return sortOrderings;
+    Collection prefetchingRelationshipKeyPathsSet = fetchSpec.getPrefetchingRelationshipKeyPaths();
+    Object[] prefetchingKeyPaths;
+    if (prefetchingRelationshipKeyPathsSet == null) {
+      prefetchingKeyPaths = new Object[0];
+    }
+    else {
+      prefetchingKeyPaths = prefetchingRelationshipKeyPathsSet.toArray();
+    }
+    return prefetchingKeyPaths;
   }
 
   public void dispose() {

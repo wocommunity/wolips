@@ -47,58 +47,24 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eomodeler.editors.attribute;
+package org.objectstyle.wolips.eomodeler.editors.fetchspec;
 
-import org.eclipse.jface.viewers.ComboViewer;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Combo;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.IWorkbenchPart;
-import org.objectstyle.wolips.eomodeler.Messages;
-import org.objectstyle.wolips.eomodeler.model.AbstractEOArgument;
-import org.objectstyle.wolips.eomodeler.model.EOArgument;
-import org.objectstyle.wolips.eomodeler.model.EOArgumentDirection;
-import org.objectstyle.wolips.eomodeler.utils.ComboViewerBinding;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.Viewer;
+import org.objectstyle.wolips.eomodeler.model.EOFetchSpecification;
 
-public class EOArgumentBasicEditorSection extends AbstractEOArgumentBasicEditorSection {
-  private ComboViewer myDirectionComboViewer;
-  private ComboViewerBinding myDirectionBinding;
-
-  protected void _addComponents(Composite _parent) {
-    getWidgetFactory().createCLabel(_parent, Messages.getString("EOArgument." + EOArgument.DIRECTION), SWT.NONE);
-    Combo prototypeCombo = new Combo(_parent, SWT.BORDER | SWT.FLAT | SWT.READ_ONLY);
-    myDirectionComboViewer = new ComboViewer(prototypeCombo);
-    myDirectionComboViewer.setLabelProvider(new EOArgumentLabelProvider());
-    myDirectionComboViewer.setContentProvider(new EOArgumentContentProvider());
-    myDirectionComboViewer.setInput(EOArgumentDirection.ARGUMENT_DIRECTIONS);
-    GridData prototypeComboLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-    prototypeCombo.setLayoutData(prototypeComboLayoutData);
+public class EOSortOrderingsContentProvider implements IStructuredContentProvider {
+  public Object[] getElements(Object _inputElement) {
+    EOFetchSpecification fetchSpec = (EOFetchSpecification) _inputElement;
+    Object[] sortOrderings = fetchSpec.getSortOrderings().toArray();
+    return sortOrderings;
   }
 
-  protected void _argumentChanged(AbstractEOArgument _argument) {
-    EOArgument argument = (EOArgument) _argument;
-    if (argument != null) {
-      myDirectionBinding = new ComboViewerBinding(myDirectionComboViewer, argument, EOArgument.DIRECTION, null, null, null);
-    }
+  public void dispose() {
+    // DO NOTHING
   }
 
-  protected void disposeBindings() {
-    if (myDirectionBinding != null) {
-      myDirectionBinding.dispose();
-    }
-    super.disposeBindings();
-  }
-
-  public void setInput(IWorkbenchPart _part, ISelection _selection) {
-    super.setInput(_part, _selection);
-    EOArgument attribute = null;
-    Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
-    if (selectedObject instanceof EOArgument) {
-      attribute = (EOArgument) selectedObject;
-    }
-    setArgument(attribute);
+  public void inputChanged(Viewer _viewer, Object _oldInput, Object _newInput) {
+    // DO NOTHING
   }
 }
