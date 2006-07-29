@@ -94,14 +94,17 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.objectstyle.wolips.eomodeler.Activator;
 import org.objectstyle.wolips.eomodeler.EOModelerPerspectiveFactory;
 import org.objectstyle.wolips.eomodeler.Messages;
+import org.objectstyle.wolips.eomodeler.editors.arguments.EOArgumentsTableEditor;
 import org.objectstyle.wolips.eomodeler.editors.entities.EOEntitiesTableEditor;
 import org.objectstyle.wolips.eomodeler.editors.entity.EOEntityEditor;
 import org.objectstyle.wolips.eomodeler.model.AbstractEOAttributePath;
+import org.objectstyle.wolips.eomodeler.model.EOArgument;
 import org.objectstyle.wolips.eomodeler.model.EOAttribute;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOFetchSpecification;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
 import org.objectstyle.wolips.eomodeler.model.EORelationship;
+import org.objectstyle.wolips.eomodeler.model.EOStoredProcedure;
 import org.objectstyle.wolips.eomodeler.model.EclipseEOModelGroupFactory;
 import org.objectstyle.wolips.eomodeler.outline.EOModelContentOutlinePage;
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
@@ -109,11 +112,13 @@ import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
 public class EOModelEditor extends MultiPageEditorPart implements IResourceChangeListener, ITabbedPropertySheetPageContributor, ISelectionProvider, IEOModelEditor {
   public static final String EOMODEL_EDITOR_ID = "org.objectstyle.wolips.eomodeler.editors.EOModelEditor";
 
-  public static final int EOMODEL_PAGE = 0;
-  public static final int EOENTITY_PAGE = 1;
+  public static final String EOMODEL_PAGE = "eomodel";
+  public static final String EOENTITY_PAGE = "eoentity";
+  public static final String EOSTOREDPROCEDURE_PAGE = "eostoredprocedure";
 
   private EOEntitiesTableEditor myEntitiesTableEditor;
   private EOEntityEditor myEntityEditor;
+  private EOArgumentsTableEditor myStoredProcedureEditor;
   private EOModelContentOutlinePage myContentOutlinePage;
 
   private ListenerList mySelectionChangedListeners;
@@ -121,12 +126,15 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
   private PropertyChangeListener myDirtyModelListener;
   private EntitiesChangeRefresher myEntitiesChangeListener;
   private AttributeAndRelationshipDeletedRefresher myAttributeAndRelationshipListener;
+  private ArgumentDeletedRefresher myArgumentListener;
 
+  private EOStoredProcedure mySelectedStoredProcedure;
   private EOEntity mySelectedEntity;
   private EOEntity myOpeningEntity;
   private EOModel myModel;
   private Set myLoadFailures;
   private boolean myEntityPageVisible;
+  private boolean myStoredProcedurePageVisible;
 
   private int mySelectionDepth;
 
@@ -135,6 +143,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
     myDirtyModelListener = new DirtyModelListener();
     myEntitiesChangeListener = new EntitiesChangeRefresher();
     myAttributeAndRelationshipListener = new AttributeAndRelationshipDeletedRefresher();
+    myArgumentListener = new ArgumentDeletedRefresher();
     ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
   }
 
@@ -173,11 +182,41 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
     return adapter;
   }
 
+  protected int getPageNum(String _pageType) {
+    int pageNum;
+    if (_pageType == EOModelEditor.EOENTITY_PAGE) {
+      pageNum = getPageNum(myEntityEditor);
+    }
+    else if (_pageType == EOModelEditor.EOMODEL_PAGE) {
+      pageNum = getPageNum(myEntitiesTableEditor);
+    }
+    else if (_pageType == EOModelEditor.EOSTOREDPROCEDURE_PAGE) {
+      pageNum = getPageNum(myStoredProcedureEditor);
+    }
+    else {
+      pageNum = -1;
+    }
+    return pageNum;
+  }
+
+  protected int getPageNum(IEditorPart _editorPart) {
+    int matchingPageNum = -1;
+    int pageCount = getPageCount();
+    for (int pageNum = 0; matchingPageNum == -1 && pageNum < pageCount; pageNum++) {
+      IEditorPart editorPart = getEditor(pageNum);
+      if (editorPart == _editorPart) {
+        matchingPageNum = pageNum;
+      }
+    }
+    return matchingPageNum;
+  }
+
   protected void createPages() {
     try {
       myEntitiesTableEditor = new EOEntitiesTableEditor();
-      addPage(EOModelEditor.EOMODEL_PAGE, myEntitiesTableEditor, getEditorInput());
-      setPageText(EOModelEditor.EOMODEL_PAGE, Messages.getString("EOModelEditor.entitiesTab"));
+
+      addPage(myEntitiesTableEditor, getEditorInput());
+      setPageText(getPageNum(EOModelEditor.EOMODEL_PAGE), Messages.getString("EOModelEditor.entitiesTab"));
 
       myEntityEditor = new EOEntityEditor();
 
@@ -188,9 +227,13 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
       EOEntitySelectionChangedListener entitySelectionChangedListener = new EOEntitySelectionChangedListener();
       myEntityEditor.addSelectionChangedListener(entitySelectionChangedListener);
 
+      myStoredProcedureEditor = new EOArgumentsTableEditor();
+      EOArgumentSelectionChangedListener argumentSelectionChangedListener = new EOArgumentSelectionChangedListener();
+      myStoredProcedureEditor.addSelectionChangedListener(argumentSelectionChangedListener);
+
       if (myOpeningEntity != null) {
         setSelectedEntity(myOpeningEntity);
-        setActivePage(EOModelEditor.EOENTITY_PAGE);
+        setActivePage(getPageNum(EOModelEditor.EOENTITY_PAGE));
       }
     }
     catch (PartInitException e) {
@@ -202,18 +245,40 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
     try {
       if (_entityPageVisible) {
         if (!myEntityPageVisible) {
-          addPage(EOModelEditor.EOENTITY_PAGE, myEntityEditor, getEditorInput());
+          addPage(myEntityEditor, getEditorInput());
         }
         String entityName = mySelectedEntity.getName();
         if (entityName == null) {
           entityName = "?";
         }
-        setPageText(EOModelEditor.EOENTITY_PAGE, entityName);
+        setPageText(getPageNum(EOModelEditor.EOENTITY_PAGE), entityName);
       }
       else if (myEntityPageVisible) {
-        removePage(EOModelEditor.EOENTITY_PAGE);
+        removePage(getPageNum(EOModelEditor.EOENTITY_PAGE));
       }
       myEntityPageVisible = _entityPageVisible;
+    }
+    catch (PartInitException e) {
+      ErrorDialog.openError(getSite().getShell(), "Error creating editor.", null, e.getStatus());
+    }
+  }
+
+  protected void setStoredProcedurePageVisible(boolean _storedProcedurePageVisible) {
+    try {
+      if (_storedProcedurePageVisible) {
+        if (!myStoredProcedurePageVisible) {
+          addPage(myStoredProcedureEditor, getEditorInput());
+        }
+        String storedProcedureName = mySelectedStoredProcedure.getName();
+        if (storedProcedureName == null) {
+          storedProcedureName = "?";
+        }
+        setPageText(getPageNum(EOModelEditor.EOSTOREDPROCEDURE_PAGE), storedProcedureName);
+      }
+      else if (myStoredProcedurePageVisible) {
+        removePage(getPageNum(EOModelEditor.EOSTOREDPROCEDURE_PAGE));
+      }
+      myStoredProcedurePageVisible = _storedProcedurePageVisible;
     }
     catch (PartInitException e) {
       ErrorDialog.openError(getSite().getShell(), "Error creating editor.", null, e.getStatus());
@@ -240,6 +305,36 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
       myEntitiesTableEditor.setSelectedEntity(_selectedEntity);
       myEntityEditor.setEntity(_selectedEntity);
       updatePartName();
+    }
+    if (_selectedEntity != null) {
+      setSelectedStoredProcedure(null);
+    }
+  }
+
+  public EOStoredProcedure getSelectedStoredProcedure() {
+    return mySelectedStoredProcedure;
+  }
+
+  public void setSelectedStoredProcedure(EOStoredProcedure _selectedStoredProcedure) {
+    if (!ComparisonUtils.equals(mySelectedStoredProcedure, _selectedStoredProcedure)) {
+      if (mySelectedStoredProcedure != null) {
+        mySelectedStoredProcedure.removePropertyChangeListener(EOStoredProcedure.ARGUMENTS, myArgumentListener);
+      }
+      mySelectedStoredProcedure = _selectedStoredProcedure;
+      if (mySelectedStoredProcedure != null) {
+        mySelectedStoredProcedure.addPropertyChangeListener(EOStoredProcedure.ARGUMENTS, myArgumentListener);
+      }
+      if (_selectedStoredProcedure == null) {
+        setStoredProcedurePageVisible(false);
+      }
+      else {
+        setStoredProcedurePageVisible(true);
+      }
+      myStoredProcedureEditor.setStoredProcedure(_selectedStoredProcedure);
+      updatePartName();
+    }
+    if (_selectedStoredProcedure != null) {
+      setSelectedEntity(null);
     }
   }
 
@@ -343,21 +438,6 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
       super.init(_site, fileEditorInput);
       updatePartName();
       _site.setSelectionProvider(this);
-
-      //      try {
-      //        ILaunchConfigurationType launchConfigurationType = DebugPlugin.getDefault().getLaunchManager().getLaunchConfigurationType(WOJavaLocalApplicationLaunchConfigurationDelegate.WOJavaLocalApplicationID);
-      //        ILaunchConfigurationWorkingCopy wc = launchConfigurationType.newInstance(null, "Temp");
-      //        wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_MAIN_TYPE_NAME, "org.objectstyle.wolips.eomodeler.editors.EOModelerRunTest");
-      //        wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, JavaCore.create(file.getProject()).getElementName());
-      //
-      //        WOJavaLocalApplicationLaunchConfigurationDelegate.initConfiguration(wc);
-      //        wc.setAttribute(IJavaLaunchConfigurationConstants.ATTR_SOURCE_PATH_PROVIDER, "org.eclipse.pde.ui.workbenchClasspathProvider");
-      //        ILaunch launch = wc.launch(ILaunchManager.RUN_MODE, null);
-      //        //ILaunchConfiguration config = wc.doSave();
-      //      }
-      //      catch (CoreException exception) {
-      //        exception.printStackTrace();
-      //      }
     }
     catch (Exception e) {
       throw new PartInitException("Failed to create EOModelEditorInput for " + _editorInput + ".", e);
@@ -417,6 +497,10 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
   public EOEntityEditor getEntityEditor() {
     return myEntityEditor;
   }
+  
+  public EOArgumentsTableEditor getStoredProcedureEditor() {
+    return myStoredProcedureEditor;
+  }
 
   public void setActivePage(int _pageIndex) {
     super.setActivePage(_pageIndex);
@@ -449,7 +533,8 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
           if (selectedObject instanceof EOModel) {
             //EOModel selectedModel = (EOModel) selectedObject;
             setSelectedEntity(null);
-            setActivePage(EOModelEditor.EOMODEL_PAGE);
+            setSelectedStoredProcedure(null);
+            setActivePage(getPageNum(EOModelEditor.EOMODEL_PAGE));
           }
           else if (selectedObject instanceof EOEntity) {
             EOEntity selectedEntity = (EOEntity) selectedObject;
@@ -460,13 +545,13 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
             EOAttribute selectedAttribute = (EOAttribute) selectedObject;
             setSelectedEntity(selectedAttribute.getEntity());
             getEntityEditor().setSelection(_selection);
-            setActivePage(EOModelEditor.EOENTITY_PAGE);
+            setActivePage(getPageNum(EOModelEditor.EOENTITY_PAGE));
           }
           else if (selectedObject instanceof EORelationship) {
             EORelationship selectedRelationship = (EORelationship) selectedObject;
             setSelectedEntity(selectedRelationship.getEntity());
             getEntityEditor().setSelection(selection);
-            setActivePage(EOModelEditor.EOENTITY_PAGE);
+            setActivePage(getPageNum(EOModelEditor.EOENTITY_PAGE));
           }
           else if (selectedObject instanceof EOFetchSpecification) {
             EOFetchSpecification selectedFetchSpec = (EOFetchSpecification) selectedObject;
@@ -478,7 +563,18 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
             AbstractEOAttributePath selectedAttributePath = (AbstractEOAttributePath) selectedObject;
             setSelectedEntity(selectedAttributePath.getChildIEOAttribute().getEntity());
             getEntityEditor().setSelection(new StructuredSelection(selectedAttributePath.getChildIEOAttribute()));
-            setActivePage(EOModelEditor.EOENTITY_PAGE);
+            setActivePage(getPageNum(EOModelEditor.EOENTITY_PAGE));
+          }
+          else if (selectedObject instanceof EOStoredProcedure) {
+            EOStoredProcedure selectedStoredProcedure = (EOStoredProcedure) selectedObject;
+            setSelectedStoredProcedure(selectedStoredProcedure);
+            //setActivePage(EOModel)
+          }
+          else if (selectedObject instanceof EOArgument) {
+            EOArgument selectedArgument = (EOArgument) selectedObject;
+            setSelectedStoredProcedure(selectedArgument.getStoredProcedure());
+            getStoredProcedureEditor().setSelection(_selection);
+            setActivePage(getPageNum(EOModelEditor.EOSTOREDPROCEDURE_PAGE));
           }
           if (_updateOutline) {
             getContentOutlinePage().setSelection(selection);
@@ -524,7 +620,10 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 
   protected void doubleClickedObjectInOutline(Object _obj) {
     if (_obj instanceof EOEntity) {
-      setActivePage(EOModelEditor.EOENTITY_PAGE);
+      setActivePage(getPageNum(EOModelEditor.EOENTITY_PAGE));
+    }
+    else if (_obj instanceof EOStoredProcedure) {
+      setActivePage(getPageNum(EOModelEditor.EOSTOREDPROCEDURE_PAGE));
     }
   }
 
@@ -562,6 +661,13 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
     }
   }
 
+  protected class EOArgumentSelectionChangedListener implements ISelectionChangedListener {
+    public void selectionChanged(SelectionChangedEvent _event) {
+      IStructuredSelection selection = (IStructuredSelection) _event.getSelection();
+      setSelection(selection);
+    }
+  }
+
   protected class DirtyModelListener implements PropertyChangeListener {
     public void propertyChange(PropertyChangeEvent _event) {
       String propertyName = _event.getPropertyName();
@@ -580,11 +686,24 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
           List newList = new LinkedList(newValues);
           newList.removeAll(oldValues);
           EOModelEditor.this.setSelection(new StructuredSelection(newList));
-          EOModelEditor.this.setActivePage(EOModelEditor.EOENTITY_PAGE);
+          EOModelEditor.this.setActivePage(getPageNum(EOModelEditor.EOENTITY_PAGE));
         }
         else if (newValues.size() < oldValues.size()) {
           EOModelEditor.this.setSelection(new StructuredSelection(EOModelEditor.this.getModel()));
-          EOModelEditor.this.setActivePage(EOModelEditor.EOMODEL_PAGE);
+          EOModelEditor.this.setActivePage(getPageNum(EOModelEditor.EOMODEL_PAGE));
+        }
+      }
+    }
+  }
+
+  protected class ArgumentDeletedRefresher implements PropertyChangeListener {
+    public void propertyChange(PropertyChangeEvent _event) {
+      Set oldValues = (Set) _event.getOldValue();
+      Set newValues = (Set) _event.getNewValue();
+      if (newValues != null && oldValues != null) {
+        if (newValues.size() < oldValues.size()) {
+          EOModelEditor.this.setSelection(new StructuredSelection(EOModelEditor.this.getSelectedStoredProcedure()));
+          EOModelEditor.this.setActivePage(getPageNum(EOModelEditor.EOSTOREDPROCEDURE_PAGE));
         }
       }
     }
@@ -597,7 +716,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
       if (newValues != null && oldValues != null) {
         if (newValues.size() < oldValues.size()) {
           EOModelEditor.this.setSelection(new StructuredSelection(EOModelEditor.this.getSelectedEntity()));
-          EOModelEditor.this.setActivePage(EOModelEditor.EOENTITY_PAGE);
+          EOModelEditor.this.setActivePage(getPageNum(EOModelEditor.EOENTITY_PAGE));
         }
       }
     }

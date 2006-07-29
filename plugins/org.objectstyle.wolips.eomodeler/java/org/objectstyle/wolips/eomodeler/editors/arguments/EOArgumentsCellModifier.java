@@ -47,63 +47,27 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eomodeler.editors.attributes;
+package org.objectstyle.wolips.eomodeler.editors.arguments;
 
-import java.util.LinkedList;
-import java.util.List;
-
-import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.TableViewer;
-import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.model.AbstractEOArgument;
-import org.objectstyle.wolips.eomodeler.model.EOAttribute;
-import org.objectstyle.wolips.eomodeler.model.EOEntity;
-import org.objectstyle.wolips.eomodeler.utils.KeyComboBoxCellEditor;
+import org.objectstyle.wolips.eomodeler.model.EOArgument;
+import org.objectstyle.wolips.eomodeler.model.EOArgumentDirection;
 import org.objectstyle.wolips.eomodeler.utils.TablePropertyCellModifier;
-import org.objectstyle.wolips.eomodeler.utils.TableUtils;
 
-public class EOAttributesCellModifier extends TablePropertyCellModifier {
-  private static final String NO_PROTOYPE_VALUE = Messages.getString("EOAttributesCellModifier.noPrototype");
-  private CellEditor[] myCellEditors;
-  private List myPrototypeNames;
-
-  public EOAttributesCellModifier(TableViewer _attributesTableViewer, CellEditor[] _cellEditors) {
-    super(_attributesTableViewer);
-    myCellEditors = _cellEditors;
-  }
-
-  protected boolean _canModify(Object _element, String _property) {
-    boolean canModify = true;
-    //    EOAttribute attribute = (EOAttribute) _element;
-    //    if (attribute.isInherited()) {
-    //      canModify = false;
-    //    }
-    if (_property == EOAttribute.PROTOTYPE) {
-      EOEntity entity = (EOEntity) getTableViewer().getInput();
-      myPrototypeNames = new LinkedList(entity.getModel().getPrototypeAttributeNames());
-      myPrototypeNames.add(0, EOAttributesCellModifier.NO_PROTOYPE_VALUE);
-      String[] prototypeNames = (String[]) myPrototypeNames.toArray(new String[myPrototypeNames.size()]);
-      KeyComboBoxCellEditor cellEditor = (KeyComboBoxCellEditor) myCellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, _property)];
-      cellEditor.setItems(prototypeNames);
-    }
-    return canModify;
+public class EOArgumentsCellModifier extends TablePropertyCellModifier {
+  public EOArgumentsCellModifier(TableViewer _argumentsTableViewer) {
+    super(_argumentsTableViewer);
   }
 
   public Object getValue(Object _element, String _property) {
-    EOAttribute attribute = (EOAttribute) _element;
+    EOArgument argument = (EOArgument) _element;
     Object value = null;
-    if (_property == EOAttribute.PROTOTYPE) {
-      EOAttribute prototype = attribute.getPrototype();
-      String prototypeName;
-      if (prototype == null) {
-        prototypeName = EOAttributesCellModifier.NO_PROTOYPE_VALUE;
-      }
-      else {
-        prototypeName = prototype.getName();
-      }
-      value = new Integer(myPrototypeNames.indexOf(prototypeName));
+    if (_property == EOArgument.DIRECTION) {
+      EOArgumentDirection direction = argument.getDirection();
+      value = new Integer(direction.getID());
     }
-    else if (_property == AbstractEOArgument.ALLOWS_NULL || _property == EOAttribute.CLASS_PROPERTY || _property == EOAttribute.CLIENT_CLASS_PROPERTY || _property == EOAttribute.INDEXED || _property == EOAttribute.PRIMARY_KEY || _property == EOAttribute.READ_ONLY || _property== EOAttribute.USED_FOR_LOCKING) {
+    else if (_property == AbstractEOArgument.ALLOWS_NULL) {
       value = super.getValue(_element, _property);
       if (value == null) {
         value = Boolean.FALSE;
@@ -117,18 +81,12 @@ public class EOAttributesCellModifier extends TablePropertyCellModifier {
 
   protected boolean _modify(Object _element, String _property, Object _value) throws Throwable {
     boolean modified = false;
-    EOAttribute attribute = (EOAttribute) _element;
-    if (_property == EOAttribute.PROTOTYPE) {
-      Integer prototypeIndex = (Integer) _value;
-      int prototypeIndexInt = prototypeIndex.intValue();
-      String prototypeName = (prototypeIndexInt == -1) ? null : (String) myPrototypeNames.get(prototypeIndexInt);
-      if (EOAttributesCellModifier.NO_PROTOYPE_VALUE.equals(prototypeName)) {
-        attribute.setPrototype(null, true);
-      }
-      else {
-        EOAttribute prototype = attribute.getEntity().getModel().getPrototypeAttributeNamed(prototypeName);
-        attribute.setPrototype(prototype, true);
-      }
+    EOArgument argument = (EOArgument) _element;
+    if (_property == EOArgument.DIRECTION) {
+      Integer argumentID = (Integer) _value;
+      int argumentIDInt = argumentID.intValue();
+      EOArgumentDirection direction = EOArgumentDirection.getArgumentDirectionByID(argumentIDInt);
+      argument.setDirection(direction);
       modified = true;
     }
     return modified;
