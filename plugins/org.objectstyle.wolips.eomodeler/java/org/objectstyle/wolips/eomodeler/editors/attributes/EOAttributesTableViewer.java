@@ -137,10 +137,10 @@ public class EOAttributesTableViewer extends Composite implements ISelectionProv
       myEntity.removePropertyChangeListener(EOEntity.ATTRIBUTE, myTableRowRefresher);
     }
     myEntity = _entity;
-    myAttributesTableViewer.setInput(myEntity);
-    updateCellEditors(myAttributesTableViewer.getCellEditors());
-    TableUtils.packTableColumns(myAttributesTableViewer);
     if (myEntity != null) {
+      myAttributesTableViewer.setInput(myEntity);
+      updateCellEditors(myAttributesTableViewer.getCellEditors());
+      TableUtils.packTableColumns(myAttributesTableViewer);
       myEntity.addPropertyChangeListener(EOEntity.PARENT, myParentChangedRefresher);
       myEntity.addPropertyChangeListener(EOEntity.ATTRIBUTES, myAttributesChangedRefresher);
       myEntity.addPropertyChangeListener(EOEntity.ATTRIBUTE, myTableRowRefresher);

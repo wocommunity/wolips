@@ -120,9 +120,9 @@ public class EORelationshipsTableViewer extends Composite implements ISelectionP
       myEntity.removePropertyChangeListener(EOEntity.RELATIONSHIP, myTableRowRefresher);
     }
     myEntity = _entity;
-    myRelationshipsTableViewer.setInput(myEntity);
-    TableUtils.packTableColumns(myRelationshipsTableViewer);
     if (myEntity != null) {
+      myRelationshipsTableViewer.setInput(myEntity);
+      TableUtils.packTableColumns(myRelationshipsTableViewer);
       myEntity.addPropertyChangeListener(EOEntity.PARENT, myParentChangedRefresher);
       myEntity.addPropertyChangeListener(EOEntity.RELATIONSHIPS, myRelationshipsChangedRefresher);
       myEntity.addPropertyChangeListener(EOEntity.RELATIONSHIP, myTableRowRefresher);
