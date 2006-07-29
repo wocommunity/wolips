@@ -1036,12 +1036,22 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     myExternalName = _entityMap.getString("externalName", true);
     myClassName = _entityMap.getString("className", true);
     myCachesObjects = _entityMap.getBoolean("cachesObjects");
-    myAbstractEntity = _entityMap.getBoolean("isAbstractEntity");
+    if (_entityMap.containsKey("isFetchable")) {
+      myAbstractEntity = Boolean.valueOf(!_entityMap.getBoolean("isFetchable").booleanValue());
+    }
+    else {
+      myAbstractEntity = _entityMap.getBoolean("isAbstractEntity");
+    }
     myReadOnly = _entityMap.getBoolean("isReadOnly");
-    myRestrictingQualifier = _entityMap.getString("restrictingQualifier", true);
+    if (_entityMap.containsKey("mappingQualifier")) {
+      myRestrictingQualifier = _entityMap.getString("mappingQualifier", true);
+    }
+    else {
+      myRestrictingQualifier = _entityMap.getString("restrictingQualifier", true);
+    }
     myExternalQuery = _entityMap.getString("externalQuery", true);
     myMaxNumberOfInstancesToBatchFetch = _entityMap.getInteger("maxNumberOfInstancesToBatchFetch");
-    setUserInfo(_entityMap.getMap("userInfo", true), false);
+    loadUserInfo(_entityMap);
 
     //Map fetchSpecifications = _entityMap.getMap("fetchSpecificationDictionary");
     // TODO: Fetch Specs
@@ -1108,8 +1118,10 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     }
     entityMap.setBoolean("cachesObjects", myCachesObjects, EOModelMap.YN);
     entityMap.setBoolean("isAbstractEntity", myAbstractEntity, EOModelMap.YN);
+    entityMap.remove("isFetchable");
     entityMap.setBoolean("isReadOnly", myReadOnly, EOModelMap.YN);
     entityMap.setString("restrictingQualifier", myRestrictingQualifier, true);
+    entityMap.remove("mappingQualifier");
     entityMap.setString("externalQuery", myExternalQuery, true);
     entityMap.setInteger("maxNumberOfInstancesToBatchFetch", myMaxNumberOfInstancesToBatchFetch);
 
@@ -1216,7 +1228,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
       storedProcedureNames.put(EOEntity.EONEXT_PRIMARY_KEY_PROCEDURE, myNextPrimaryKeyProcedure.getName());
     }
 
-    entityMap.setMap("userInfo", getUserInfo(), true);
+    writeUserInfo(entityMap);
 
     return entityMap;
   }

@@ -338,11 +338,21 @@ public abstract class AbstractEOArgument extends UserInfoableEOModelObject imple
   public void loadFromMap(EOModelMap _argumentMap, Set _failures) {
     myArgumentMap = _argumentMap;
     myName = _argumentMap.getString("name", true);
-    myColumnName = _argumentMap.getString("columnName", true);
+    if (_argumentMap.containsKey("externalName")) {
+      myColumnName = _argumentMap.getString("externalName", true);
+    }
+    else {
+      myColumnName = _argumentMap.getString("columnName", true);
+    }
     myExternalType = _argumentMap.getString("externalType", true);
     myScale = _argumentMap.getInteger("scale");
     myPrecision = _argumentMap.getInteger("precision");
-    myWidth = _argumentMap.getInteger("width");
+    if (_argumentMap.containsKey("maximumLength")) {
+      myWidth = _argumentMap.getInteger("maximumLength");
+    }
+    else {
+      myWidth = _argumentMap.getInteger("width");
+    }
     myValueType = _argumentMap.getString("valueType", true);
     myValueClassName = _argumentMap.getString("valueClassName", true);
     myValueFactoryMethodName = _argumentMap.getString("valueFactoryMethodName", true);
@@ -350,17 +360,19 @@ public abstract class AbstractEOArgument extends UserInfoableEOModelObject imple
     myAdaptorValueConversionMethodName = _argumentMap.getString("adaptorValueConversionMethodName", true);
     myAllowsNull = _argumentMap.getBoolean("allowsNull");
     myDefinition = _argumentMap.getString("definition", true);
-    setUserInfo(_argumentMap.getMap("userInfo", true), false);
+    loadUserInfo(_argumentMap);
   }
 
   public EOModelMap toMap() {
     EOModelMap argumentMap = myArgumentMap.cloneModelMap();
     argumentMap.setString("name", myName, true);
     argumentMap.setString("columnName", (myColumnName == null) ? "" : myColumnName, false);
+    argumentMap.remove("externalName");
     argumentMap.setString("externalType", myExternalType, true);
     argumentMap.setInteger("scale", myScale);
     argumentMap.setInteger("precision", myPrecision);
     argumentMap.setInteger("width", myWidth);
+    argumentMap.remove("maximumLength");
     argumentMap.setString("valueType", myValueType, true);
     argumentMap.setString("valueClassName", myValueClassName, true);
     argumentMap.setString("valueFactoryMethodName", myValueFactoryMethodName, true);
@@ -370,6 +382,7 @@ public abstract class AbstractEOArgument extends UserInfoableEOModelObject imple
     argumentMap.setString("adaptorValueConversionMethodName", myAdaptorValueConversionMethodName, true);
     argumentMap.setBoolean("allowsNull", myAllowsNull, EOModelMap.YN);
     argumentMap.setString("definition", myDefinition, true);
+    writeUserInfo(argumentMap);
     return argumentMap;
   }
 

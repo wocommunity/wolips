@@ -105,6 +105,7 @@ public class EOAttribute extends AbstractEOArgument implements IEOAttribute, ISo
   private String myWriteFormat;
 
   public EOAttribute() {
+    // DO NOTHING
   }
 
   public EOAttribute(String _name) {
@@ -618,8 +619,21 @@ public class EOAttribute extends AbstractEOArgument implements IEOAttribute, ISo
     super.loadFromMap(_attributeMap, _failures);
     myReadOnly = _attributeMap.getBoolean("isReadOnly");
     myIndexed = _attributeMap.getBoolean("isIndexed");
-    myReadFormat = _attributeMap.getString("readFormat", true);
-    myWriteFormat = _attributeMap.getString("writeFormat", true);
+    if (_attributeMap.containsKey("selectFormat")) {
+      myReadFormat = _attributeMap.getString("selectFormat", true);
+    }
+    else {
+      myReadFormat = _attributeMap.getString("readFormat", true);
+    }
+    if (_attributeMap.containsKey("updateFormat")) {
+      myWriteFormat = _attributeMap.getString("updateFormat", true);
+    }
+    else if (_attributeMap.containsKey("insertFormat")) {
+      myWriteFormat = _attributeMap.getString("insertFormat", true);
+    }
+    else {
+      myWriteFormat = _attributeMap.getString("writeFormat", true);
+    }
   }
 
   public EOModelMap toMap() {
@@ -630,7 +644,10 @@ public class EOAttribute extends AbstractEOArgument implements IEOAttribute, ISo
     attributeMap.setBoolean("isReadOnly", myReadOnly, EOModelMap.YN);
     attributeMap.setBoolean("isIndexed", myIndexed, EOModelMap.YN);
     attributeMap.setString("readFormat", myReadFormat, true);
+    attributeMap.remove("selectFormat");
     attributeMap.setString("writeFormat", myWriteFormat, true);
+    attributeMap.remove("updateFormat");
+    attributeMap.remove("insertFormat");
     return attributeMap;
   }
 

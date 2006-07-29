@@ -580,7 +580,7 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
     myRefreshesRefetchedObjects = _map.getBoolean("refreshesRefetchedObjects");
     myRequiresAllQualifierBindingVariables = _map.getBoolean("requiresAllQualifierBindingVariables");
     myUsesDistinct = _map.getBoolean("usesDistinct");
-    setUserInfo(_map.getMap("userInfo", true), false);
+    loadUserInfo(_map);
 
     List sortOrderings = _map.getList("sortOrderings");
     if (sortOrderings != null) {
@@ -618,7 +618,7 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
     fetchSpecMap.setBoolean("refreshesRefetchedObjects", myRefreshesRefetchedObjects, EOModelMap.YESNO);
     fetchSpecMap.setBoolean("requiresAllQualifierBindingVariables", myRequiresAllQualifierBindingVariables, EOModelMap.YESNO);
     fetchSpecMap.setBoolean("usesDistinct", myUsesDistinct, EOModelMap.YESNO);
-    fetchSpecMap.setMap("userInfo", getUserInfo(), true);
+    writeUserInfo(fetchSpecMap);
 
     List sortOrderings = new LinkedList();
     Iterator sortOrderingsIter = mySortOrderings.iterator();

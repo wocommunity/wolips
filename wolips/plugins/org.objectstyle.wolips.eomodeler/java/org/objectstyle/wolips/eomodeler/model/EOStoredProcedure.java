@@ -304,7 +304,7 @@ public class EOStoredProcedure extends UserInfoableEOModelObject implements ISor
         addArgument(argument, _failures, false);
       }
     }
-    setUserInfo(_map.getMap("userInfo", true), false);
+    loadUserInfo(_map);
   }
 
   public EOModelMap toMap() {
@@ -320,9 +320,7 @@ public class EOStoredProcedure extends UserInfoableEOModelObject implements ISor
       arguments.add(argumentMap);
     }
     fetchSpecMap.setSet("arguments", arguments, true);
-
-    fetchSpecMap.setMap("userInfo", getUserInfo(), true);
-
+    writeUserInfo(fetchSpecMap);
     return fetchSpecMap;
   }
 

@@ -441,7 +441,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
     }
     myAdaptorName = modelMap.getString("adaptorName", true);
     setConnectionDictionary(modelMap.getMap("connectionDictionary", true), false);
-    setUserInfo(modelMap.getMap("userInfo", true), false);
+    loadUserInfo(modelMap);
 
     Set entities = modelMap.getSet("entities");
     if (entities != null) {
@@ -537,8 +537,8 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
     }
     modelMap.setSet("storedProcedures", storedProcedures, true);
 
-    modelMap.setMap("userInfo", getUserInfo(), true);
-
+    writeUserInfo(modelMap);
+    
     return modelMap;
   }
 
