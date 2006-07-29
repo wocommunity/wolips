@@ -53,7 +53,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -107,6 +106,7 @@ import org.objectstyle.wolips.eomodeler.model.EORelationship;
 import org.objectstyle.wolips.eomodeler.model.EOStoredProcedure;
 import org.objectstyle.wolips.eomodeler.model.EclipseEOModelGroupFactory;
 import org.objectstyle.wolips.eomodeler.outline.EOModelContentOutlinePage;
+import org.objectstyle.wolips.eomodeler.utils.AbstractAddRemoveChangeRefresher;
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
 
 public class EOModelEditor extends MultiPageEditorPart implements IResourceChangeListener, ITabbedPropertySheetPageContributor, ISelectionProvider, IEOModelEditor {
@@ -125,6 +125,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
   private IStructuredSelection mySelection;
   private PropertyChangeListener myDirtyModelListener;
   private EntitiesChangeRefresher myEntitiesChangeListener;
+  private StoredProceduresChangeRefresher myStoredProceduresChangeListener;
   private AttributeAndRelationshipDeletedRefresher myAttributeAndRelationshipListener;
   private ArgumentDeletedRefresher myArgumentListener;
 
@@ -142,6 +143,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
     mySelectionChangedListeners = new ListenerList();
     myDirtyModelListener = new DirtyModelListener();
     myEntitiesChangeListener = new EntitiesChangeRefresher();
+    myStoredProceduresChangeListener = new StoredProceduresChangeRefresher();
     myAttributeAndRelationshipListener = new AttributeAndRelationshipDeletedRefresher();
     myArgumentListener = new ArgumentDeletedRefresher();
     ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
@@ -416,6 +418,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
       if (myModel != null) {
         myModel.removePropertyChangeListener(EOModel.DIRTY, myDirtyModelListener);
         myModel.removePropertyChangeListener(EOModel.ENTITIES, myEntitiesChangeListener);
+        myModel.removePropertyChangeListener(EOModel.STORED_PROCEDURES, myStoredProceduresChangeListener);
       }
 
       IFile file = fileEditorInput.getFile();
@@ -435,6 +438,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 
       myModel.addPropertyChangeListener(EOModel.DIRTY, myDirtyModelListener);
       myModel.addPropertyChangeListener(EOModel.ENTITIES, myEntitiesChangeListener);
+      myModel.addPropertyChangeListener(EOModel.STORED_PROCEDURES, myStoredProceduresChangeListener);
       super.init(_site, fileEditorInput);
       updatePartName();
       _site.setSelectionProvider(this);
@@ -497,7 +501,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
   public EOEntityEditor getEntityEditor() {
     return myEntityEditor;
   }
-  
+
   public EOArgumentsTableEditor getStoredProcedureEditor() {
     return myStoredProcedureEditor;
   }
@@ -677,48 +681,49 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
     }
   }
 
-  protected class EntitiesChangeRefresher implements PropertyChangeListener {
-    public void propertyChange(PropertyChangeEvent _event) {
-      Set oldValues = (Set) _event.getOldValue();
-      Set newValues = (Set) _event.getNewValue();
-      if (newValues != null && oldValues != null) {
-        if (newValues.size() > oldValues.size()) {
-          List newList = new LinkedList(newValues);
-          newList.removeAll(oldValues);
-          EOModelEditor.this.setSelection(new StructuredSelection(newList));
-          EOModelEditor.this.setActivePage(getPageNum(EOModelEditor.EOENTITY_PAGE));
-        }
-        else if (newValues.size() < oldValues.size()) {
-          EOModelEditor.this.setSelection(new StructuredSelection(EOModelEditor.this.getModel()));
-          EOModelEditor.this.setActivePage(getPageNum(EOModelEditor.EOMODEL_PAGE));
-        }
-      }
+  protected class EntitiesChangeRefresher extends AbstractAddRemoveChangeRefresher {
+    protected void objectsAdded(List _addedObjects) {
+      EOModelEditor.this.setSelection(new StructuredSelection(_addedObjects));
+      EOModelEditor.this.setActivePage(getPageNum(EOModelEditor.EOENTITY_PAGE));
+    }
+
+    protected void objectsRemoved(List _removedObjects) {
+      EOModelEditor.this.setSelection(new StructuredSelection(EOModelEditor.this.getModel()));
+      EOModelEditor.this.setActivePage(getPageNum(EOModelEditor.EOMODEL_PAGE));
     }
   }
 
-  protected class ArgumentDeletedRefresher implements PropertyChangeListener {
-    public void propertyChange(PropertyChangeEvent _event) {
-      Set oldValues = (Set) _event.getOldValue();
-      Set newValues = (Set) _event.getNewValue();
-      if (newValues != null && oldValues != null) {
-        if (newValues.size() < oldValues.size()) {
-          EOModelEditor.this.setSelection(new StructuredSelection(EOModelEditor.this.getSelectedStoredProcedure()));
-          EOModelEditor.this.setActivePage(getPageNum(EOModelEditor.EOSTOREDPROCEDURE_PAGE));
-        }
-      }
+  protected class StoredProceduresChangeRefresher extends AbstractAddRemoveChangeRefresher {
+    protected void objectsAdded(List _addedObjects) {
+      EOModelEditor.this.setSelection(new StructuredSelection(_addedObjects));
+      EOModelEditor.this.setActivePage(getPageNum(EOModelEditor.EOSTOREDPROCEDURE_PAGE));
+    }
+
+    protected void objectsRemoved(List _removedObjects) {
+      EOModelEditor.this.setSelection(new StructuredSelection(EOModelEditor.this.getModel()));
+      EOModelEditor.this.setActivePage(getPageNum(EOModelEditor.EOMODEL_PAGE));
     }
   }
 
-  protected class AttributeAndRelationshipDeletedRefresher implements PropertyChangeListener {
-    public void propertyChange(PropertyChangeEvent _event) {
-      Set oldValues = (Set) _event.getOldValue();
-      Set newValues = (Set) _event.getNewValue();
-      if (newValues != null && oldValues != null) {
-        if (newValues.size() < oldValues.size()) {
-          EOModelEditor.this.setSelection(new StructuredSelection(EOModelEditor.this.getSelectedEntity()));
-          EOModelEditor.this.setActivePage(getPageNum(EOModelEditor.EOENTITY_PAGE));
-        }
-      }
+  protected class ArgumentDeletedRefresher extends AbstractAddRemoveChangeRefresher {
+    protected void objectsAdded(List _addedObjects) {
+      // DO NOTHING
+    }
+
+    protected void objectsRemoved(List _removedObjects) {
+      EOModelEditor.this.setSelection(new StructuredSelection(EOModelEditor.this.getSelectedStoredProcedure()));
+      EOModelEditor.this.setActivePage(getPageNum(EOModelEditor.EOSTOREDPROCEDURE_PAGE));
+    }
+  }
+
+  protected class AttributeAndRelationshipDeletedRefresher extends AbstractAddRemoveChangeRefresher {
+    protected void objectsAdded(List _addedObjects) {
+      // DO NOTHING
+    }
+
+    protected void objectsRemoved(List _removedObjects) {
+      EOModelEditor.this.setSelection(new StructuredSelection(EOModelEditor.this.getSelectedEntity()));
+      EOModelEditor.this.setActivePage(getPageNum(EOModelEditor.EOENTITY_PAGE));
     }
   }
 }

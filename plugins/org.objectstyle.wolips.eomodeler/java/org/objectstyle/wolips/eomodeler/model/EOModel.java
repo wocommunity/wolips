@@ -338,8 +338,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
     _storedProcedure.pasted();
     myDeletedStoredProcedureNames.remove(_storedProcedure.getName());
     if (_fireEvents) {
-      Set oldStoredProcedures = null;
-      oldStoredProcedures = myStoredProcedures;
+      Set oldStoredProcedures = myStoredProcedures;
       Set newStoredProcedures = new TreeSet(new TreeSet(PropertyListComparator.AscendingPropertyListComparator));
       newStoredProcedures.addAll(myStoredProcedures);
       newStoredProcedures.add(_storedProcedure);

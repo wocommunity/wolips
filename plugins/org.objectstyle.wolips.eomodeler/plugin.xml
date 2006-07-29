@@ -86,6 +86,7 @@
          <propertyCategory category="eoentity"/>
          <propertyCategory category="eoattribute"/>
          <propertyCategory category="eofetchspec"/>
+         <propertyCategory category="eostoredprocedure"/>
          <propertyCategory category="eoargument"/>
       </propertyContributor>
    </extension>
@@ -194,6 +195,17 @@
                category="eofetchspec"
                id="org.objectstyle.wolips.eomodeler.tabs.eofetchspecUserInfo"
                image="icons/eoFetchSpecification.gif"
+               label="User Info"/>
+         <propertyTab
+               category="eostoredprocedure"
+               id="org.objectstyle.wolips.eomodeler.tabs.eostoredprocedureBasic"
+               image="icons/eoStoredProcedure.gif"
+               label="Basic"/>
+         <propertyTab
+               afterTab="org.objectstyle.wolips.eomodeler.tabs.eostoredprocedureBasic"
+               category="eostoredprocedure"
+               id="org.objectstyle.wolips.eomodeler.tabs.eostoredprocedureUserInfo"
+               image="icons/eoStoredProcedure.gif"
                label="User Info"/>
          <propertyTab
                category="eoargument"
@@ -340,6 +352,20 @@
                id="org.objectstyle.wolips.eomodeler.sections.eofetchspecUserInfo"
                tab="org.objectstyle.wolips.eomodeler.tabs.eofetchspecUserInfo">
             <input type="org.objectstyle.wolips.eomodeler.model.EOFetchSpecification"/>
+         </propertySection>
+         <propertySection
+               class="org.objectstyle.wolips.eomodeler.editors.storedProcedure.EOStoredProcedureBasicEditorSection"
+               enablesFor="1"
+               id="org.objectstyle.wolips.eomodeler.sections.eostoredprocedureBasic"
+               tab="org.objectstyle.wolips.eomodeler.tabs.eostoredprocedureBasic">
+            <input type="org.objectstyle.wolips.eomodeler.model.EOStoredProcedure"/>
+         </propertySection>
+         <propertySection
+               class="org.objectstyle.wolips.eomodeler.editors.userInfo.UserInfoPropertySection"
+               enablesFor="1"
+               id="org.objectstyle.wolips.eomodeler.sections.eostoredprocedureUserInfo"
+               tab="org.objectstyle.wolips.eomodeler.tabs.eostoredprocedureUserInfo">
+            <input type="org.objectstyle.wolips.eomodeler.model.EOStoredProcedure"/>
          </propertySection>
          <propertySection
                class="org.objectstyle.wolips.eomodeler.editors.attribute.EOArgumentBasicEditorSection"
