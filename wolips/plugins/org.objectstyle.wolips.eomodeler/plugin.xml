@@ -7,7 +7,7 @@
       <editor
             class="org.objectstyle.wolips.eomodeler.editors.EOModelEditor"
             contributorClass="org.objectstyle.wolips.eomodeler.editors.EOModelEditorContributor"
-            extensions="eomodeld, plist, fspec"
+            extensions="eomodeld, plist, fspec, storedProcedure"
             icon="icons/eoModel.gif"
             id="org.objectstyle.wolips.eomodeler.editors.EOModelEditor"
             matchingStrategy="org.objectstyle.wolips.eomodeler.editors.EOModelMatchingStrategy"
@@ -62,6 +62,21 @@
             </and>
          </enablement>
       </decorator>
+      <decorator
+            icon="icons/eoStoredProcedure.gif"
+            id="org.objectstyle.wolips.eomodeler.decorators.EOStoredProcedureDecorator"
+            label="EOStoredProcedure Decorator"
+            lightweight="false"
+            state="true">
+         <enablement>
+            <and>
+               <objectClass name="org.eclipse.core.resources.IResource"/>
+               <objectState
+                     name="extension"
+                     value="storedProcedure"/>
+            </and>
+         </enablement>
+      </decorator>
    </extension>
    <extension
          point="org.eclipse.ui.views.properties.tabbed.propertyContributor">
@@ -71,6 +86,7 @@
          <propertyCategory category="eoentity"/>
          <propertyCategory category="eoattribute"/>
          <propertyCategory category="eofetchspec"/>
+         <propertyCategory category="eoargument"/>
       </propertyContributor>
    </extension>
    <extension
@@ -178,6 +194,17 @@
                category="eofetchspec"
                id="org.objectstyle.wolips.eomodeler.tabs.eofetchspecUserInfo"
                image="icons/eoFetchSpecification.gif"
+               label="User Info"/>
+         <propertyTab
+               category="eoargument"
+               id="org.objectstyle.wolips.eomodeler.tabs.eoargumentBasic"
+               image="icons/eoArgument.gif"
+               label="Basic"/>
+         <propertyTab
+               afterTab="org.objectstyle.wolips.eomodeler.tabs.eoargumentBasic"
+               category="eoargument"
+               id="org.objectstyle.wolips.eomodeler.tabs.eoargumentUserInfo"
+               image="icons/eoArgument.gif"
                label="User Info"/>
       </propertyTabs>
    </extension>
@@ -298,6 +325,18 @@
                tab="org.objectstyle.wolips.eomodeler.tabs.eofetchspecUserInfo">
             <input type="org.objectstyle.wolips.eomodeler.model.EOFetchSpecification"/>
          </propertySection>
+         <propertySection
+               class="org.objectstyle.wolips.eomodeler.editors.attribute.EOArgumentBasicEditorSection"
+               id="org.objectstyle.wolips.eomodeler.sections.eoargumentBasic"
+               tab="org.objectstyle.wolips.eomodeler.tabs.eoargumentBasic">
+            <input type="org.objectstyle.wolips.eomodeler.model.EOArgument"/>
+         </propertySection>
+         <propertySection
+               class="org.objectstyle.wolips.eomodeler.editors.userInfo.UserInfoPropertySection"
+               id="org.objectstyle.wolips.eomodeler.sections.eoargumentUserInfo"
+               tab="org.objectstyle.wolips.eomodeler.tabs.eoargumentUserInfo">
+            <input type="org.objectstyle.wolips.eomodeler.model.EOArgument"/>
+         </propertySection>
       </propertySections>
    </extension>
    <extension
@@ -331,6 +370,22 @@
                style="push"
                toolbarPath="/Normal"
                tooltip="Flatten"/>
+         <action
+               class="org.objectstyle.wolips.eomodeler.actions.NewArgumentAction"
+               icon="icons/newArgument.gif"
+               id="org.objectstyle.wolips.eomodeler.actions.newArgument"
+               label="New Argument"
+               style="push"
+               toolbarPath="/Normal"
+               tooltip="New Argument"/>
+         <action
+               class="org.objectstyle.wolips.eomodeler.actions.NewStoredProcedureAction"
+               icon="icons/newStoredProcedure.gif"
+               id="org.objectstyle.wolips.eomodeler.actions.newStoredProcedure"
+               label="New Stored Procedure"
+               style="push"
+               toolbarPath="/Normal"
+               tooltip="New Stored Procedure"/>
          <action
                class="org.objectstyle.wolips.eomodeler.actions.NewFetchSpecAction"
                icon="icons/newFetchSpecification.gif"
