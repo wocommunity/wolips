@@ -148,16 +148,17 @@ public class EOEntityBasicEditorSection extends AbstractPropertySection {
       disposeBindings();
 
       myEntity = entity;
+      if (myEntity != null) {
+        myBindingContext = BindingFactory.createContext();
+        myBindingContext.bind(myNameText, new Property(myEntity, EOEntity.NAME), null);
+        myBindingContext.bind(myExternalNameText, new Property(myEntity, EOEntity.EXTERNAL_NAME), null);
+        myBindingContext.bind(myClassNameText, new Property(myEntity, EOEntity.CLASS_NAME), null);
+        myBindingContext.bind(myRestrictingQualifierText, new Property(myEntity, EOEntity.RESTRICTING_QUALIFIER), null);
+        myBindingContext.bind(myAbstractButton, new Property(myEntity, EOEntity.ABSTRACT_ENTITY), null);
 
-      myBindingContext = BindingFactory.createContext();
-      myBindingContext.bind(myNameText, new Property(myEntity, EOEntity.NAME), null);
-      myBindingContext.bind(myExternalNameText, new Property(myEntity, EOEntity.EXTERNAL_NAME), null);
-      myBindingContext.bind(myClassNameText, new Property(myEntity, EOEntity.CLASS_NAME), null);
-      myBindingContext.bind(myRestrictingQualifierText, new Property(myEntity, EOEntity.RESTRICTING_QUALIFIER), null);
-      myBindingContext.bind(myAbstractButton, new Property(myEntity, EOEntity.ABSTRACT_ENTITY), null);
-
-      myParentEntityComboViewer.setInput(myEntity);
-      myParentEntityBinding = new ComboViewerBinding(myParentEntityComboViewer, myEntity, EOEntity.PARENT, myEntity.getModel(), EOModel.ENTITIES, EOEntityListContentProvider.BLANK_ENTITY);
+        myParentEntityComboViewer.setInput(myEntity);
+        myParentEntityBinding = new ComboViewerBinding(myParentEntityComboViewer, myEntity, EOEntity.PARENT, myEntity.getModel(), EOModel.ENTITIES, EOEntityListContentProvider.BLANK_ENTITY);
+      }
     }
   }
 

@@ -142,14 +142,13 @@ public class EOEntitySharedObjectsEditorSection extends AbstractPropertySection 
 
     Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
     myEntity = (EOEntity) selectedObject;
-    myBindingContext = BindingFactory.createContext();
     if (myEntity != null) {
+      myBindingContext = BindingFactory.createContext();
       myEntity.addPropertyChangeListener(EOEntity.FETCH_SPECIFICATION, myFetchSpecListener);
       myEntity.addPropertyChangeListener(EOEntity.FETCH_SPECIFICATIONS, myFetchSpecListener);
       myFetchSpecsViewer.setInput(myEntity);
+      fetchSpecsChanged();
     }
-
-    fetchSpecsChanged();
   }
 
   protected void disposeBindings() {

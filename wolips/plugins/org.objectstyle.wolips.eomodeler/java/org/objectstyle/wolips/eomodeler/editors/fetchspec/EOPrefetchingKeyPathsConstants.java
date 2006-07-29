@@ -1,4 +1,4 @@
-package org.objectstyle.wolips.eomodeler.editors.fetchspecs;
+package org.objectstyle.wolips.eomodeler.editors.fetchspec;
 
 import org.objectstyle.wolips.eomodeler.model.EOFetchSpecification;
 

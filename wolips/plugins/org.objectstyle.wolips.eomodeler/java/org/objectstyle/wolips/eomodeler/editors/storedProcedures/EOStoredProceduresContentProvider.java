@@ -47,26 +47,18 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eomodeler.editors.fetchspecs;
-
-import java.util.Collection;
+package org.objectstyle.wolips.eomodeler.editors.storedProcedures;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.objectstyle.wolips.eomodeler.model.EOFetchSpecification;
+import org.objectstyle.wolips.eomodeler.model.EOModel;
+import org.objectstyle.wolips.eomodeler.utils.EOModelUtils;
 
-public class PrefetchingKeyPathsContentProvider implements IStructuredContentProvider {
+public class EOStoredProceduresContentProvider implements IStructuredContentProvider {
   public Object[] getElements(Object _inputElement) {
-    EOFetchSpecification fetchSpec = (EOFetchSpecification) _inputElement;
-    Collection prefetchingRelationshipKeyPathsSet = fetchSpec.getPrefetchingRelationshipKeyPaths();
-    Object[] prefetchingKeyPaths;
-    if (prefetchingRelationshipKeyPathsSet == null) {
-      prefetchingKeyPaths = new Object[0];
-    }
-    else {
-      prefetchingKeyPaths = prefetchingRelationshipKeyPathsSet.toArray();
-    }
-    return prefetchingKeyPaths;
+    EOModel model = EOModelUtils.getRelatedModel(_inputElement);
+    Object[] storedProcedures = model.getStoredProcedures().toArray();
+    return storedProcedures;
   }
 
   public void dispose() {

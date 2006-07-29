@@ -118,4 +118,27 @@ public class StringUtils {
   public static boolean isSelectorNameEqual(String _expectedName, String _possibleName) {
     return _expectedName.equals(_possibleName) || (_expectedName + ":").equals(_possibleName);
   }
+
+  public static String toPlural(String _str) {
+    String plural;
+    if (_str != null && _str.length() > 0) {
+      char ch = _str.charAt(_str.length() - 1);
+      StringBuffer pluralBuffer = new StringBuffer(_str);
+      if (ch == 's' || ch == 'x') {
+        pluralBuffer.append("es");
+      }
+      else if (ch == 'y') {
+        pluralBuffer.setLength(pluralBuffer.length() - 1);
+        pluralBuffer.append("ies");
+      }
+      else {
+        pluralBuffer.append("s");
+      }
+      plural = pluralBuffer.toString();
+    }
+    else {
+      plural = _str;
+    }
+    return plural;
+  }
 }

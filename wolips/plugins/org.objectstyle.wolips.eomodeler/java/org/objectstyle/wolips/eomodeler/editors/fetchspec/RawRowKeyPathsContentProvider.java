@@ -47,7 +47,7 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eomodeler.editors.fetchspecs;
+package org.objectstyle.wolips.eomodeler.editors.fetchspec;
 
 import java.util.Collection;
 

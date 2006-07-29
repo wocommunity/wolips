@@ -1,11 +1,11 @@
-package org.objectstyle.wolips.eomodeler.editors.fetchspecs;
+package org.objectstyle.wolips.eomodeler.editors.fetchspec;
 
 import org.eclipse.swt.graphics.Image;
 import org.objectstyle.wolips.eomodeler.model.EOFetchSpecification;
 import org.objectstyle.wolips.eomodeler.utils.TablePropertyLabelProvider;
 
-public class RawRowKeyPathsLabelProvider extends TablePropertyLabelProvider {
-  public RawRowKeyPathsLabelProvider(String[] _columnProperties) {
+public class PrefetchingKeyPathsLabelProvider extends TablePropertyLabelProvider {
+  public PrefetchingKeyPathsLabelProvider(String[] _columnProperties) {
     super(_columnProperties);
   }
 
@@ -14,10 +14,10 @@ public class RawRowKeyPathsLabelProvider extends TablePropertyLabelProvider {
   }
 
   public String getColumnText(Object _element, String _property) {
-    String rawRowRelationshipKeyPath = (String) _element;
+    String prefetchingRelationshipKeyPath = (String) _element;
     String text = null;
-    if (_property == EOFetchSpecification.RAW_ROW_KEY_PATH) {
-      text = rawRowRelationshipKeyPath;
+    if (_property == EOFetchSpecification.PREFETCHING_RELATIONSHIP_KEY_PATH) {
+      text = prefetchingRelationshipKeyPath;
     }
     else {
       text = super.getColumnText(_element, _property);

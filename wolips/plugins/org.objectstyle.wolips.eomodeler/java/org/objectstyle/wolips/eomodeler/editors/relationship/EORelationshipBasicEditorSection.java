@@ -256,42 +256,44 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
       disposeBindings();
 
       myRelationship = relationship;
-      myRelationship.addPropertyChangeListener(EORelationship.DESTINATION, myRelationshipListener);
-      myRelationship.addPropertyChangeListener(EORelationship.JOINS, myRelationshipListener);
+      if (myRelationship != null) {
+        myRelationship.addPropertyChangeListener(EORelationship.DESTINATION, myRelationshipListener);
+        myRelationship.addPropertyChangeListener(EORelationship.JOINS, myRelationshipListener);
 
-      myModelComboViewer.setInput(myRelationship);
-      myEntityComboViewer.setInput(myRelationship);
-      myModelComboViewer.setSelection(new StructuredSelection(myRelationship.getEntity().getModel()));
-      myJoinsTableViewer.setInput(myRelationship);
-      TableUtils.sort(myJoinsTableViewer, EOJoin.SOURCE_ATTRIBUTE);
+        myModelComboViewer.setInput(myRelationship);
+        myEntityComboViewer.setInput(myRelationship);
+        myModelComboViewer.setSelection(new StructuredSelection(myRelationship.getEntity().getModel()));
+        myJoinsTableViewer.setInput(myRelationship);
+        TableUtils.sort(myJoinsTableViewer, EOJoin.SOURCE_ATTRIBUTE);
 
-      myBindingContext = BindingFactory.createContext();
-      myBindingContext.bind(myNameText, new Property(myRelationship, EORelationship.NAME), null);
-      myBindingContext.bind(myDefinitionText, new Property(myRelationship, EORelationship.DEFINITION), null);
-      myBindingContext.bind(myToOneButton, new Property(myRelationship, EORelationship.TO_ONE), null);
-      myBindingContext.bind(myToManyButton, new Property(myRelationship, EORelationship.TO_MANY), null);
-      myBindingContext.bind(myOptionalButton, new Property(myRelationship, EORelationship.OPTIONAL), null);
-      myBindingContext.bind(myMandatoryButton, new Property(myRelationship, EORelationship.MANDATORY), null);
+        myBindingContext = BindingFactory.createContext();
+        myBindingContext.bind(myNameText, new Property(myRelationship, EORelationship.NAME), null);
+        myBindingContext.bind(myDefinitionText, new Property(myRelationship, EORelationship.DEFINITION), null);
+        myBindingContext.bind(myToOneButton, new Property(myRelationship, EORelationship.TO_ONE), null);
+        myBindingContext.bind(myToManyButton, new Property(myRelationship, EORelationship.TO_MANY), null);
+        myBindingContext.bind(myOptionalButton, new Property(myRelationship, EORelationship.OPTIONAL), null);
+        myBindingContext.bind(myMandatoryButton, new Property(myRelationship, EORelationship.MANDATORY), null);
 
-      myDeleteRuleBinding = new ComboViewerBinding(myDeleteRuleComboViewer, myRelationship, EORelationship.DELETE_RULE, null, null, null);
-      myJoinSemanticBinding = new ComboViewerBinding(myJoinSemanticComboViewer, myRelationship, EORelationship.JOIN_SEMANTIC, myRelationship.getEntity().getModel().getModelGroup(), EOModelGroup.MODELS, null);
-      myEntityBinding = new ComboViewerBinding(myEntityComboViewer, myRelationship, EORelationship.DESTINATION, myRelationship.getEntity().getModel(), EOModel.ENTITIES, null);
+        myDeleteRuleBinding = new ComboViewerBinding(myDeleteRuleComboViewer, myRelationship, EORelationship.DELETE_RULE, null, null, null);
+        myJoinSemanticBinding = new ComboViewerBinding(myJoinSemanticComboViewer, myRelationship, EORelationship.JOIN_SEMANTIC, myRelationship.getEntity().getModel().getModelGroup(), EOModelGroup.MODELS, null);
+        myEntityBinding = new ComboViewerBinding(myEntityComboViewer, myRelationship, EORelationship.DESTINATION, myRelationship.getEntity().getModel(), EOModel.ENTITIES, null);
 
-      boolean enabled = !myRelationship.isFlattened();
-      myModelComboViewer.getCombo().setEnabled(enabled);
-      myEntityComboViewer.getCombo().setEnabled(enabled);
-      myJoinSemanticComboViewer.getCombo().setEnabled(enabled);
-      myJoinsTableViewer.getTable().setEnabled(enabled);
-      myAddRemoveButtonGroup.setAddEnabled(enabled);
-      myAddRemoveButtonGroup.setRemoveEnabled(enabled);
-      myDefinitionText.setEnabled(false);
-      //boolean flattened = myRelationship.isFlattened();
-      //myDefinitionLabel.setVisible(flattened);
-      //myDefinitionText.setVisible(flattened);
+        boolean enabled = !myRelationship.isFlattened();
+        myModelComboViewer.getCombo().setEnabled(enabled);
+        myEntityComboViewer.getCombo().setEnabled(enabled);
+        myJoinSemanticComboViewer.getCombo().setEnabled(enabled);
+        myJoinsTableViewer.getTable().setEnabled(enabled);
+        myAddRemoveButtonGroup.setAddEnabled(enabled);
+        myAddRemoveButtonGroup.setRemoveEnabled(enabled);
+        myDefinitionText.setEnabled(false);
+        //boolean flattened = myRelationship.isFlattened();
+        //myDefinitionLabel.setVisible(flattened);
+        //myDefinitionText.setVisible(flattened);
 
-      updateModelAndEntityCombosEnabled();
-      updateJoins();
-      updateButtons();
+        updateModelAndEntityCombosEnabled();
+        updateJoins();
+        updateButtons();
+      }
     }
   }
 

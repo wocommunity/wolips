@@ -101,7 +101,7 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
   private EOModelMap myFetchSpecMap;
   private Boolean mySharesObjects;
   private String myCustomQueryExpression;
-  private String myStoredProcedure;
+  private EOStoredProcedure myStoredProcedure;
 
   public EOFetchSpecification(String _name) {
     myName = _name;
@@ -267,33 +267,52 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
 
   public void useQualifier() {
     setCustomQueryExpression(null);
+    setStoredProcedure(null);
+  }
+
+  public boolean isUsingQualifier() {
+    return myCustomQueryExpression == null && myStoredProcedure == null;
+  }
+
+  public boolean isUsingCustomQuery() {
+    return myCustomQueryExpression != null && myStoredProcedure == null;
+  }
+
+  public boolean isUsingStoredProcedure() {
+    return myCustomQueryExpression == null && myStoredProcedure != null;
   }
 
   public void useCustomQueryExpression() {
     setCustomQueryExpression("");
   }
-  
-  public void useStoredProcedure() {
-    setCustomQueryExpression("");
-  }
 
   public void setCustomQueryExpression(String _customQueryExpression) {
-    String oldCustomQueryExpression = myCustomQueryExpression;
-    myCustomQueryExpression = _customQueryExpression;
-    firePropertyChange(EOFetchSpecification.CUSTOM_QUERY_EXPRESSION, oldCustomQueryExpression, myCustomQueryExpression);
+    if (_customQueryExpression != null) {
+      setStoredProcedure(null);
+    }
+    if (_customQueryExpression != null || myCustomQueryExpression != null) {
+      String oldCustomQueryExpression = myCustomQueryExpression;
+      myCustomQueryExpression = _customQueryExpression;
+      firePropertyChange(EOFetchSpecification.CUSTOM_QUERY_EXPRESSION, oldCustomQueryExpression, myCustomQueryExpression);
+    }
   }
 
   public String getCustomQueryExpression() {
     return myCustomQueryExpression;
   }
-  
-  public void setStoredProcedure(String _storedProcedure) {
-    String oldStoredProcedure = myStoredProcedure;
-    myStoredProcedure = _storedProcedure;
-    firePropertyChange(EOFetchSpecification.STORED_PROCEDURE, oldStoredProcedure, myStoredProcedure);
+
+  public void setStoredProcedure(EOStoredProcedure _storedProcedure) {
+    if (_storedProcedure != null) {
+      setCustomQueryExpression(null);
+    }
+    if (_storedProcedure != null || myStoredProcedure != null) {
+      EOStoredProcedure oldStoredProcedure = myStoredProcedure;
+      myStoredProcedure = _storedProcedure;
+      firePropertyChange(EOFetchSpecification.STORED_PROCEDURE, oldStoredProcedure, myStoredProcedure);
+    }
   }
-  
-  public String getStoredProcedure() {
+
+  public EOStoredProcedure getStoredProcedure() {
     return myStoredProcedure;
   }
 
@@ -587,12 +606,25 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
 
     EOModelMap hintsMap = new EOModelMap(fetchSpecMap.getMap("hints", true));
     hintsMap.setString("EOCustomQueryExpressionHintKey", myCustomQueryExpression, false);
+    if (myStoredProcedure != null) {
+      hintsMap.setString("EOStoredProcedureNameHintKey", myStoredProcedure.getName(), true);
+    }
     fetchSpecMap.setMap("hints", hintsMap, true);
 
     return fetchSpecMap;
   }
 
   public void resolve(Set _failures) {
+    Map hintsMap = myFetchSpecMap.getMap("hints");
+    if (hintsMap != null) {
+      String storedProcedureName = (String) hintsMap.get("EOStoredProcedureNameHintKey");
+      if (storedProcedureName != null) {
+        myStoredProcedure = myEntity.getModel().getStoredProcedureNamed(storedProcedureName);
+        if (myStoredProcedure == null) {
+          _failures.add(new EOModelVerificationFailure(myEntity.getModel().getName() + "/" + myEntity.getName() + "/" + myName + " specifies a stored procedure name '" + myStoredProcedure + "' which does not exist."));
+        }
+      }
+    }
     // TODO
   }
 
@@ -605,6 +637,13 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
     while (sortOrderingsIter.hasNext()) {
       EOSortOrdering sortOrdering = (EOSortOrdering) sortOrderingsIter.next();
       sortOrdering.verify(_failures);
+    }
+
+    if (myCustomQueryExpression != null && myCustomQueryExpression.trim().length() == 0) {
+      _failures.add(new EOModelVerificationFailure(myEntity.getModel().getName() + "/" + myEntity.getName() + "/" + myName + " has an empty custom SQL."));
+    }
+    if (myCustomQueryExpression != null && myStoredProcedure != null) {
+      _failures.add(new EOModelVerificationFailure(myEntity.getModel().getName() + "/" + myEntity.getName() + "/" + myName + " specifies custom SQL and a stored procedure name"));
     }
   }
 }

@@ -346,4 +346,8 @@ public class EOStoredProcedure extends UserInfoableEOModelObject implements ISor
       argument.verify(_failures);
     }
   }
+
+  public String toString() {
+    return "[EOStoredProcedure: name = " + myName + "; arguments = " + myArguments + "]";
+  }
 }
