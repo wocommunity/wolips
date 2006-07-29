@@ -49,6 +49,9 @@
  */
 package org.objectstyle.wolips.eomodeler.actions;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.util.LocalSelectionTransfer;
@@ -89,40 +92,42 @@ public class CopyAction extends Action implements IWorkbenchWindowActionDelegate
 
   public void run() {
     try {
-      Object selectedObject = null;
+      Object[] selectedObjects = null;
       if (mySelection instanceof IStructuredSelection) {
-        selectedObject = ((IStructuredSelection) mySelection).getFirstElement();
+        selectedObjects = ((IStructuredSelection) mySelection).toArray();
       }
-      if (selectedObject instanceof EOEntity) {
-        EOEntity entity = (EOEntity) selectedObject;
-        LocalSelectionTransfer.getTransfer().setSelection(new StructuredSelection(entity.cloneEntity()));
-        LocalSelectionTransfer.getTransfer().setSelectionSetTime(System.currentTimeMillis());
+      List selectedObjectsList = new LinkedList();
+      if (selectedObjects != null) {
+        for (int selectedObjectNum = 0; selectedObjectNum < selectedObjects.length; selectedObjectNum++) {
+          Object selectedObject = selectedObjects[selectedObjectNum];
+          if (selectedObject instanceof EOEntity) {
+            EOEntity entity = (EOEntity) selectedObject;
+            selectedObjectsList.add(entity.cloneEntity());
+          }
+          else if (selectedObject instanceof EORelationship) {
+            EORelationship relationship = (EORelationship) selectedObject;
+            selectedObjectsList.add(relationship.cloneRelationship());
+          }
+          else if (selectedObject instanceof EOAttribute) {
+            EOAttribute attribute = (EOAttribute) selectedObject;
+            selectedObjectsList.add(attribute.cloneAttribute());
+          }
+          else if (selectedObject instanceof EOFetchSpecification) {
+            EOFetchSpecification fetchSpec = (EOFetchSpecification) selectedObject;
+            selectedObjectsList.add(fetchSpec.cloneFetchSpecification());
+          }
+          else if (selectedObject instanceof EOStoredProcedure) {
+            EOStoredProcedure storedProcedure = (EOStoredProcedure) selectedObject;
+            selectedObjectsList.add(storedProcedure.cloneStoredProcedure());
+          }
+          else if (selectedObject instanceof EOArgument) {
+            EOArgument argument = (EOArgument) selectedObject;
+            selectedObjectsList.add(argument.cloneArgument());
+          }
+        }
       }
-      else if (selectedObject instanceof EORelationship) {
-        EORelationship relationship = (EORelationship) selectedObject;
-        LocalSelectionTransfer.getTransfer().setSelection(new StructuredSelection(relationship.cloneRelationship()));
-        LocalSelectionTransfer.getTransfer().setSelectionSetTime(System.currentTimeMillis());
-      }
-      else if (selectedObject instanceof EOAttribute) {
-        EOAttribute attribute = (EOAttribute) selectedObject;
-        LocalSelectionTransfer.getTransfer().setSelection(new StructuredSelection(attribute.cloneAttribute()));
-        LocalSelectionTransfer.getTransfer().setSelectionSetTime(System.currentTimeMillis());
-      }
-      else if (selectedObject instanceof EOFetchSpecification) {
-        EOFetchSpecification fetchSpec = (EOFetchSpecification) selectedObject;
-        LocalSelectionTransfer.getTransfer().setSelection(new StructuredSelection(fetchSpec.cloneFetchSpecification()));
-        LocalSelectionTransfer.getTransfer().setSelectionSetTime(System.currentTimeMillis());
-      }
-      else if (selectedObject instanceof EOStoredProcedure) {
-        EOStoredProcedure storedProcedure = (EOStoredProcedure) selectedObject;
-        LocalSelectionTransfer.getTransfer().setSelection(new StructuredSelection(storedProcedure.cloneStoredProcedure()));
-        LocalSelectionTransfer.getTransfer().setSelectionSetTime(System.currentTimeMillis());
-      }
-      else if (selectedObject instanceof EOArgument) {
-        EOArgument argument = (EOArgument) selectedObject;
-        LocalSelectionTransfer.getTransfer().setSelection(new StructuredSelection(argument.cloneArgument()));
-        LocalSelectionTransfer.getTransfer().setSelectionSetTime(System.currentTimeMillis());
-      }
+      LocalSelectionTransfer.getTransfer().setSelection(new StructuredSelection(selectedObjectsList));
+      LocalSelectionTransfer.getTransfer().setSelectionSetTime(System.currentTimeMillis());
     }
     catch (Throwable t) {
       t.printStackTrace();

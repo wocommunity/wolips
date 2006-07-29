@@ -217,6 +217,7 @@ public class EOStoredProcedure extends UserInfoableEOModelObject implements ISor
 
   public EOArgument addBlankArgument(String _name) throws DuplicateNameException {
     EOArgument argument = new EOArgument(findUnusedArgumentName(_name));
+    argument.setAllowsNull(Boolean.TRUE, false);
     addArgument(argument);
     return argument;
   }

@@ -90,7 +90,7 @@ public class EOAttributesTableViewer extends Composite implements ISelectionProv
     super(_parent, _style);
 
     setLayout(new GridLayout(1, true));
-    myAttributesTableViewer = TableUtils.createTableViewer(this, "EOAttribute", EOAttributesConstants.COLUMNS, new EOAttributesContentProvider(), null, new EOAttributesViewerSorter(EOAttributesConstants.COLUMNS));
+    myAttributesTableViewer = TableUtils.createTableViewer(this, SWT.MULTI | SWT.FULL_SELECTION, "EOAttribute", EOAttributesConstants.COLUMNS, new EOAttributesContentProvider(), null, new EOAttributesViewerSorter(EOAttributesConstants.COLUMNS));
     myAttributesTableViewer.setLabelProvider(new EOAttributesLabelProvider(myAttributesTableViewer, EOAttributesConstants.COLUMNS));
     new DoubleClickNewAttributeHandler().attachTo(myAttributesTableViewer);
     myAttributesChangedRefresher = new AttributesChangeRefresher(myAttributesTableViewer);

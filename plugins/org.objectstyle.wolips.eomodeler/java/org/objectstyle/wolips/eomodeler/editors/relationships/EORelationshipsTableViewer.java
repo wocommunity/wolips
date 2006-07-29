@@ -62,6 +62,7 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TextCellEditor;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -86,7 +87,7 @@ public class EORelationshipsTableViewer extends Composite implements ISelectionP
   public EORelationshipsTableViewer(Composite _parent, int _style) {
     super(_parent, _style);
     setLayout(new GridLayout(1, true));
-    myRelationshipsTableViewer = TableUtils.createTableViewer(this, "EORelationship", EORelationshipsConstants.COLUMNS, new EORelationshipsContentProvider(), null, new EORelationshipsViewerSorter(EORelationshipsConstants.COLUMNS));
+    myRelationshipsTableViewer = TableUtils.createTableViewer(this, SWT.MULTI | SWT.FULL_SELECTION, "EORelationship", EORelationshipsConstants.COLUMNS, new EORelationshipsContentProvider(), null, new EORelationshipsViewerSorter(EORelationshipsConstants.COLUMNS));
     myRelationshipsTableViewer.setLabelProvider(new EORelationshipsLabelProvider(myRelationshipsTableViewer, EORelationshipsConstants.COLUMNS));
     new DoubleClickNewRelationshipHandler().attachTo(myRelationshipsTableViewer);
     myRelationshipsChangedRefresher = new RelationshipsChangeRefresher(myRelationshipsTableViewer);
