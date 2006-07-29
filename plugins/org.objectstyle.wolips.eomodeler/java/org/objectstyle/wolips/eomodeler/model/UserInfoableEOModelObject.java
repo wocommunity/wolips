@@ -26,4 +26,18 @@ public abstract class UserInfoableEOModelObject extends EOModelObject implements
   public void setUserInfo(Map _userInfo, boolean _fireEvents) {
     myUserInfo = mapChanged(myUserInfo, _userInfo, myUserInfoRepeater, _fireEvents);
   }
+
+  protected void writeUserInfo(EOModelMap _modelMap) {
+    _modelMap.setMap("userInfo", myUserInfo, true);
+    _modelMap.remove("userDictionary");
+  }
+
+  protected void loadUserInfo(EOModelMap _modelMap) {
+    if (_modelMap.containsKey("userDictionary")) {
+      setUserInfo(_modelMap.getMap("userDictionary", true), false);
+    }
+    else {
+      setUserInfo(_modelMap.getMap("userInfo", true), false);
+    }
+  }
 }

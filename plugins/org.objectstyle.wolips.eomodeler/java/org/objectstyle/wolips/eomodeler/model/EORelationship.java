@@ -488,7 +488,12 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
 
   public void loadFromMap(EOModelMap _relationshipMap, Set _failures) {
     myRelationshipMap = _relationshipMap;
-    myDefinition = _relationshipMap.getString("definition", true);
+    if (_relationshipMap.containsKey("dataPath")) {
+      myDefinition = _relationshipMap.getString("dataPath", true);
+    }
+    else {
+      myDefinition = _relationshipMap.getString("definition", true);
+    }
     myMandatory = _relationshipMap.getBoolean("isMandatory");
     myToMany = _relationshipMap.getBoolean("isToMany");
     String joinSemanticID = _relationshipMap.getString("joinSemantic", true);
@@ -509,7 +514,7 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
         addJoin(join, false);
       }
     }
-    setUserInfo(_relationshipMap.getMap("userInfo", true), false);
+    loadUserInfo(_relationshipMap);
   }
 
   public EOModelMap toMap() {
@@ -518,6 +523,7 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
       relationshipMap.setString("destination", myDestination.getName(), true);
     }
     relationshipMap.setString("definition", myDefinition, true);
+    relationshipMap.remove("dataPath");
     relationshipMap.setBoolean("isMandatory", myMandatory, EOModelMap.YN);
     relationshipMap.setBoolean("isToMany", myToMany, EOModelMap.YN);
     if (!isFlattened() && myJoinSemantic != null) {
@@ -538,7 +544,7 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
       joins.add(joinMap);
     }
     relationshipMap.setSet("joins", joins, true);
-    relationshipMap.setMap("userInfo", getUserInfo(), true);
+    writeUserInfo(relationshipMap);
     return relationshipMap;
   }
 
