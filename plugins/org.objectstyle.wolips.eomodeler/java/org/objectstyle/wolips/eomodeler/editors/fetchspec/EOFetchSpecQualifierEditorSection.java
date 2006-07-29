@@ -65,10 +65,13 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.objectstyle.wolips.eomodeler.Messages;
+import org.objectstyle.wolips.eomodeler.model.AbstractEOAttributePath;
 import org.objectstyle.wolips.eomodeler.model.EOFetchSpecification;
+import org.objectstyle.wolips.eomodeler.model.IEOAttribute;
 import org.objectstyle.wolips.eomodeler.outline.EOEntityTreeViewUpdater;
 import org.objectstyle.wolips.eomodeler.outline.EOModelOutlineContentProvider;
 import org.objectstyle.wolips.eomodeler.utils.BindingFactory;
@@ -117,8 +120,10 @@ public class EOFetchSpecQualifierEditorSection extends AbstractPropertySection i
     myEntityTreeViewUpdater = new EOEntityTreeViewUpdater(myModelTreeViewer, new EOModelOutlineContentProvider(true, true, true, false, false));
     myModelTreeViewer.addSelectionChangedListener(this);
 
-    myQualifierText = new Text(topForm, SWT.BORDER | SWT.WRAP | SWT.MULTI | SWT.V_SCROLL);
-    GridData qualifierLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+    myQualifierText = getWidgetFactory().createText(topForm, "", SWT.WRAP | SWT.MULTI | SWT.V_SCROLL);
+    myQualifierText.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER);
+
+    GridData qualifierLayoutData = new GridData(GridData.FILL_BOTH);
     qualifierLayoutData.horizontalSpan = 2;
     qualifierLayoutData.heightHint = 150;
     myQualifierText.setLayoutData(qualifierLayoutData);
@@ -150,6 +155,44 @@ public class EOFetchSpecQualifierEditorSection extends AbstractPropertySection i
   }
 
   public void selectionChanged(SelectionChangedEvent _event) {
-    // DO NOTHING
+    IStructuredSelection selection = (IStructuredSelection) _event.getSelection();
+    String keyPath;
+    Object selectedObject = selection.getFirstElement();
+    if (selectedObject instanceof IEOAttribute) {
+      keyPath = ((IEOAttribute) selectedObject).getName();
+    }
+    else if (selectedObject instanceof AbstractEOAttributePath) {
+      keyPath = ((AbstractEOAttributePath) selectedObject).toKeyPath();
+    }
+    else {
+      keyPath = null;
+    }
+    if (keyPath != null) {
+      String qualifierString = myQualifierText.getText();
+      if (qualifierString != null) {
+        int caretPosition = myQualifierText.getCaretPosition();
+        int startPosition = caretPosition;
+        for (startPosition = caretPosition - 1; startPosition > 0; startPosition--) {
+          char ch = qualifierString.charAt(startPosition);
+          if (!Character.isLetterOrDigit(ch) && ch != '.') {
+            startPosition++;
+            break;
+          }
+        }
+        int endPosition;
+        for (endPosition = caretPosition; endPosition < qualifierString.length(); endPosition++) {
+          char ch = qualifierString.charAt(endPosition);
+          if (!Character.isLetterOrDigit(ch) && ch != '.') {
+            break;
+          }
+        }
+        myQualifierText.setSelection(startPosition, endPosition);
+        if (startPosition > 0 && qualifierString.charAt(startPosition - 1) != ' ' && qualifierString.charAt(startPosition - 1) != '(') {
+          keyPath = " " + keyPath;
+        }
+      }
+      myQualifierText.insert(keyPath);
+      myQualifierText.setFocus();
+    }
   }
 }
