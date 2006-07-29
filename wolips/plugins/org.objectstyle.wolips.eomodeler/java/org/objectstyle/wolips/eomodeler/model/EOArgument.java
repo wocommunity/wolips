@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.objectstyle.wolips.eomodeler.Messages;
+import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.utils.StringUtils;
 
 public class EOArgument extends AbstractEOArgument {
@@ -13,16 +14,31 @@ public class EOArgument extends AbstractEOArgument {
   private EOArgumentDirection myDirection;
 
   public EOArgument() {
-    // DO NOTHING
+    myDirection = EOArgumentDirection.VOID;
   }
 
   public EOArgument(String _name) {
     super(_name);
+    myDirection = EOArgumentDirection.VOID;
   }
 
   public EOArgument(String _name, String _definition) {
     super(_name, _definition);
+    myDirection = EOArgumentDirection.VOID;
   }
+  public int hashCode() {
+    return ((myStoredProcedure == null) ? 1 : myStoredProcedure.hashCode()) * super.hashCode();
+  }
+
+  public boolean equals(Object _obj) {
+    boolean equals = false;
+    if (_obj instanceof EOArgument) {
+      EOArgument argument = (EOArgument) _obj;
+      equals = (argument == this) || (ComparisonUtils.equals(argument.myStoredProcedure, myStoredProcedure) && ComparisonUtils.equals(argument.getName(), getName()));
+    }
+    return equals;
+  }
+
 
   public EOStoredProcedure getStoredProcedure() {
     return myStoredProcedure;
