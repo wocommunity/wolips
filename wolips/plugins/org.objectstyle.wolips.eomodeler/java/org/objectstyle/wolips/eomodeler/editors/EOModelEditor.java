@@ -96,13 +96,13 @@ import org.objectstyle.wolips.eomodeler.EOModelerPerspectiveFactory;
 import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.editors.entities.EOEntitiesTableEditor;
 import org.objectstyle.wolips.eomodeler.editors.entity.EOEntityEditor;
+import org.objectstyle.wolips.eomodeler.model.AbstractEOAttributePath;
 import org.objectstyle.wolips.eomodeler.model.EOAttribute;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOFetchSpecification;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
 import org.objectstyle.wolips.eomodeler.model.EORelationship;
 import org.objectstyle.wolips.eomodeler.model.EclipseEOModelGroupFactory;
-import org.objectstyle.wolips.eomodeler.model.AbstractEOAttributePath;
 import org.objectstyle.wolips.eomodeler.outline.EOModelContentOutlinePage;
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
 
@@ -126,6 +126,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
   private EOEntity myOpeningEntity;
   private EOModel myModel;
   private Set myLoadFailures;
+  private boolean myEntityPageVisible;
 
   private int mySelectionDepth;
 
@@ -148,11 +149,11 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
   public EOModel getModel() {
     return myModel;
   }
-  
+
   public EOEntity getSelectedEntity() {
     return mySelectedEntity;
   }
-  
+
   public String getContributorId() {
     return getSite().getId();
   }
@@ -179,8 +180,6 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
       setPageText(EOModelEditor.EOMODEL_PAGE, Messages.getString("EOModelEditor.entitiesTab"));
 
       myEntityEditor = new EOEntityEditor();
-      addPage(EOModelEditor.EOENTITY_PAGE, myEntityEditor, getEditorInput());
-      setPageText(EOModelEditor.EOENTITY_PAGE, Messages.getString("EOModelEditor.noEntitySelected"));
 
       EOModelSelectionChangedListener modelSelectionChangedListener = new EOModelSelectionChangedListener();
       myEntitiesTableEditor.addSelectionChangedListener(modelSelectionChangedListener);
@@ -199,6 +198,28 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
     }
   }
 
+  protected void setEntityPageVisible(boolean _entityPageVisible) {
+    try {
+      if (_entityPageVisible) {
+        if (!myEntityPageVisible) {
+          addPage(EOModelEditor.EOENTITY_PAGE, myEntityEditor, getEditorInput());
+        }
+        String entityName = mySelectedEntity.getName();
+        if (entityName == null) {
+          entityName = "?";
+        }
+        setPageText(EOModelEditor.EOENTITY_PAGE, entityName);
+      }
+      else if (myEntityPageVisible) {
+        removePage(EOModelEditor.EOENTITY_PAGE);
+      }
+      myEntityPageVisible = _entityPageVisible;
+    }
+    catch (PartInitException e) {
+      ErrorDialog.openError(getSite().getShell(), "Error creating editor.", null, e.getStatus());
+    }
+  }
+
   public void setSelectedEntity(EOEntity _selectedEntity) {
     if (!ComparisonUtils.equals(mySelectedEntity, _selectedEntity)) {
       if (mySelectedEntity != null) {
@@ -210,18 +231,14 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
         mySelectedEntity.addPropertyChangeListener(EOEntity.ATTRIBUTES, myAttributeAndRelationshipListener);
         mySelectedEntity.addPropertyChangeListener(EOEntity.RELATIONSHIPS, myAttributeAndRelationshipListener);
       }
-      myEntitiesTableEditor.setSelectedEntity(_selectedEntity);
-      myEntityEditor.setEntity(_selectedEntity);
       if (_selectedEntity == null) {
-        EOModelEditor.this.setPageText(EOModelEditor.EOENTITY_PAGE, Messages.getString("EOModelEditor.noEntitySelected"));
+        setEntityPageVisible(false);
       }
       else {
-        String entityName = _selectedEntity.getName();
-        if (entityName == null) {
-          entityName = "?";
-        }
-        EOModelEditor.this.setPageText(EOModelEditor.EOENTITY_PAGE, entityName);
+        setEntityPageVisible(true);
       }
+      myEntitiesTableEditor.setSelectedEntity(_selectedEntity);
+      myEntityEditor.setEntity(_selectedEntity);
       updatePartName();
     }
   }
