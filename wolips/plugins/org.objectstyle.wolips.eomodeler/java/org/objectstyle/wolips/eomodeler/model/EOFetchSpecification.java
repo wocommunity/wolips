@@ -109,7 +109,6 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
     mySortOrderings = new LinkedList();
     myFetchSpecMap = new EOModelMap();
     myPrefetchingRelationshipKeyPaths = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
-    myRawRowKeyPaths = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
   }
 
   public EOFetchSpecification cloneFetchSpecification() {
