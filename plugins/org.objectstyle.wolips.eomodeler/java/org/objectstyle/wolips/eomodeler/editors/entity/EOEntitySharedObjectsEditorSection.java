@@ -71,6 +71,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
+import org.objectstyle.wolips.eomodeler.Activator;
 import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.model.DuplicateFetchSpecNameException;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
@@ -126,6 +127,7 @@ public class EOEntitySharedObjectsEditorSection extends AbstractPropertySection 
 
     myFetchSpecsViewer = TableUtils.createTableViewer(topForm, SWT.BORDER | SWT.FLAT | SWT.MULTI | SWT.FULL_SELECTION, "EOFetchSpecification", EOFetchSpecsConstants.COLUMNS, new EOFetchSpecsContentProvider(), new EOFetchSpecsLabelProvider(EOFetchSpecsConstants.COLUMNS), new TablePropertyViewerSorter(EOFetchSpecsConstants.COLUMNS));
     myFetchSpecsViewer.getTable().getColumns()[TableUtils.getColumnNumber(EOFetchSpecsConstants.COLUMNS, EOFetchSpecification.SHARES_OBJECTS)].setText("");
+    myFetchSpecsViewer.getTable().getColumns()[TableUtils.getColumnNumber(EOFetchSpecsConstants.COLUMNS, EOFetchSpecification.SHARES_OBJECTS)].setImage(Activator.getDefault().getImageRegistry().get(Activator.CHECK_ICON));
 
     CellEditor[] cellEditors = new CellEditor[1];
     cellEditors[TableUtils.getColumnNumber(EOFetchSpecsConstants.COLUMNS, EOFetchSpecification.SHARES_OBJECTS)] = new CheckboxCellEditor(myFetchSpecsViewer.getTable());

@@ -64,6 +64,11 @@ import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.utils.StringUtils;
 
 public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRelative, ISortableEOModelObject {
+  private static final String EONEXT_PRIMARY_KEY_PROCEDURE = "EONextPrimaryKeyProcedure";
+  private static final String EOFETCH_WITH_PRIMARY_KEY_PROCEDURE = "EOFetchWithPrimaryKeyProcedure";
+  private static final String EOFETCH_ALL_PROCEDURE = "EOFetchAllProcedure";
+  private static final String EOINSERT_PROCEDURE = "EOInsertProcedure";
+  private static final String EODELETE_PROCEDURE = "EODeleteProcedure";
   private static final String FETCH_ALL = "FetchAll";
   public static final String ATTRIBUTE = "attribute";
   public static final String RELATIONSHIP = "relationship";
@@ -81,6 +86,11 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
   public static final String FETCH_SPECIFICATIONS = "fetchSpecifications";
   public static final String ATTRIBUTES = "attributes";
   public static final String RELATIONSHIPS = "relationships";
+  public static final String DELETE_PROCEDURE = "deleteProcedure";
+  public static final String FETCH_ALL_PROCEDURE = "fetchAllProcedure";
+  public static final String FETCH_WITH_PRIMARY_KEY_PROCEDURE = "fetchWithPrimaryKeyProcedure";
+  public static final String INSERT_PROCEDURE = "insertProcedure";
+  public static final String NEXT_PRIMARY_KEY_PROCEDURE = "nextPrimaryKeyProcedure";
 
   private EOModel myModel;
   private EOEntity myParent;
@@ -98,6 +108,11 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
   private Set myFetchSpecs;
   private EOModelMap myEntityMap;
   private EOModelMap myFetchSpecsMap;
+  private EOStoredProcedure myDeleteProcedure;
+  private EOStoredProcedure myFetchAllProcedure;
+  private EOStoredProcedure myFetchWithPrimaryKeyProcedure;
+  private EOStoredProcedure myInsertProcedure;
+  private EOStoredProcedure myNextPrimaryKeyProcedure;
 
   public EOEntity() {
     myAttributes = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
@@ -965,6 +980,56 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     return matchingRelationship;
   }
 
+  public void setDeleteProcedure(EOStoredProcedure _deleteProcedure) {
+    EOStoredProcedure oldDeleteProcedure = myDeleteProcedure;
+    myDeleteProcedure = _deleteProcedure;
+    firePropertyChange(EOEntity.DELETE_PROCEDURE, oldDeleteProcedure, myDeleteProcedure);
+  }
+
+  public EOStoredProcedure getDeleteProcedure() {
+    return myDeleteProcedure;
+  }
+
+  public void setFetchAllProcedure(EOStoredProcedure _fetchAllProcedure) {
+    EOStoredProcedure oldFetchAllProcedure = myFetchAllProcedure;
+    myFetchAllProcedure = _fetchAllProcedure;
+    firePropertyChange(EOEntity.FETCH_ALL_PROCEDURE, oldFetchAllProcedure, myFetchAllProcedure);
+  }
+
+  public EOStoredProcedure getFetchAllProcedure() {
+    return myFetchAllProcedure;
+  }
+
+  public void setFetchWithPrimaryKeyProcedure(EOStoredProcedure _fetchWithPrimaryKeyProcedure) {
+    EOStoredProcedure oldFetchWithPrimaryKeyProcedure = myFetchWithPrimaryKeyProcedure;
+    myFetchWithPrimaryKeyProcedure = _fetchWithPrimaryKeyProcedure;
+    firePropertyChange(EOEntity.FETCH_WITH_PRIMARY_KEY_PROCEDURE, oldFetchWithPrimaryKeyProcedure, myFetchWithPrimaryKeyProcedure);
+  }
+
+  public EOStoredProcedure getFetchWithPrimaryKeyProcedure() {
+    return myFetchWithPrimaryKeyProcedure;
+  }
+
+  public void setInsertProcedure(EOStoredProcedure _insertProcedure) {
+    EOStoredProcedure oldInsertProcedure = myInsertProcedure;
+    myInsertProcedure = _insertProcedure;
+    firePropertyChange(EOEntity.INSERT_PROCEDURE, oldInsertProcedure, myInsertProcedure);
+  }
+
+  public EOStoredProcedure getInsertProcedure() {
+    return myInsertProcedure;
+  }
+
+  public void setNextPrimaryKeyProcedure(EOStoredProcedure _nextPrimaryKeyProcedure) {
+    EOStoredProcedure oldNextPrimaryKeyProcedure = myNextPrimaryKeyProcedure;
+    myNextPrimaryKeyProcedure = _nextPrimaryKeyProcedure;
+    firePropertyChange(EOEntity.NEXT_PRIMARY_KEY_PROCEDURE, oldNextPrimaryKeyProcedure, myNextPrimaryKeyProcedure);
+  }
+
+  public EOStoredProcedure getNextPrimaryKeyProcedure() {
+    return myNextPrimaryKeyProcedure;
+  }
+
   public void loadFromMap(EOModelMap _entityMap, Set _failures) throws DuplicateNameException {
     myEntityMap = _entityMap;
     myName = _entityMap.getString("name", true);
@@ -1116,6 +1181,41 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     }
     entityMap.setMap("internalInfo", internalInfoMap, false);
 
+    Map storedProcedureNames = myEntityMap.getMap("storedProcedureNames");
+    if (storedProcedureNames == null) {
+      storedProcedureNames = new HashMap();
+    }
+    if (myDeleteProcedure == null) {
+      storedProcedureNames.remove(EOEntity.EODELETE_PROCEDURE);
+    }
+    else {
+      storedProcedureNames.put(EOEntity.EODELETE_PROCEDURE, myDeleteProcedure.getName());
+    }
+    if (myInsertProcedure == null) {
+      storedProcedureNames.remove(EOEntity.EOINSERT_PROCEDURE);
+    }
+    else {
+      storedProcedureNames.put(EOEntity.EOINSERT_PROCEDURE, myInsertProcedure.getName());
+    }
+    if (myFetchAllProcedure == null) {
+      storedProcedureNames.remove(EOEntity.EOFETCH_ALL_PROCEDURE);
+    }
+    else {
+      storedProcedureNames.put(EOEntity.EOFETCH_ALL_PROCEDURE, myFetchAllProcedure.getName());
+    }
+    if (myFetchWithPrimaryKeyProcedure == null) {
+      storedProcedureNames.remove(EOEntity.EOFETCH_WITH_PRIMARY_KEY_PROCEDURE);
+    }
+    else {
+      storedProcedureNames.put(EOEntity.EOFETCH_WITH_PRIMARY_KEY_PROCEDURE, myFetchWithPrimaryKeyProcedure.getName());
+    }
+    if (myNextPrimaryKeyProcedure == null) {
+      storedProcedureNames.remove(EOEntity.EONEXT_PRIMARY_KEY_PROCEDURE);
+    }
+    else {
+      storedProcedureNames.put(EOEntity.EONEXT_PRIMARY_KEY_PROCEDURE, myNextPrimaryKeyProcedure.getName());
+    }
+
     entityMap.setMap("userInfo", getUserInfo(), true);
 
     return entityMap;
@@ -1236,19 +1336,58 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
         }
       }
     }
+
+    Map storedProcedureNames = myEntityMap.getMap("storedProcedureNames");
+    if (storedProcedureNames != null) {
+      String deleteProcedureName = (String) storedProcedureNames.get(EOEntity.EODELETE_PROCEDURE);
+      if (deleteProcedureName != null) {
+        myDeleteProcedure = myModel.getStoredProcedureNamed(deleteProcedureName);
+        if (myDeleteProcedure == null) {
+          _failures.add(new EOModelVerificationFailure(getFullyQualifiedName() + "'s delete procedure '" + deleteProcedureName + "' is missing."));
+        }
+      }
+      String fetchAllProcedureName = (String) storedProcedureNames.get(EOEntity.EOFETCH_ALL_PROCEDURE);
+      if (fetchAllProcedureName != null) {
+        myFetchAllProcedure = myModel.getStoredProcedureNamed(fetchAllProcedureName);
+        if (myFetchAllProcedure == null) {
+          _failures.add(new EOModelVerificationFailure(getFullyQualifiedName() + "'s fetch all procedure '" + fetchAllProcedureName + "' is missing."));
+        }
+      }
+      String fetchWithPrimaryKeyProcedureName = (String) storedProcedureNames.get(EOEntity.EOFETCH_WITH_PRIMARY_KEY_PROCEDURE);
+      if (fetchWithPrimaryKeyProcedureName != null) {
+        myFetchWithPrimaryKeyProcedure = myModel.getStoredProcedureNamed(fetchWithPrimaryKeyProcedureName);
+        if (myFetchWithPrimaryKeyProcedure == null) {
+          _failures.add(new EOModelVerificationFailure(getFullyQualifiedName() + "'s fetch with primary key procedure '" + fetchWithPrimaryKeyProcedureName + "' is missing."));
+        }
+      }
+      String insertProcedureName = (String) storedProcedureNames.get(EOEntity.EOINSERT_PROCEDURE);
+      if (insertProcedureName != null) {
+        myInsertProcedure = myModel.getStoredProcedureNamed(insertProcedureName);
+        if (myInsertProcedure == null) {
+          _failures.add(new EOModelVerificationFailure(getFullyQualifiedName() + "'s insert procedure '" + insertProcedureName + "' is missing."));
+        }
+      }
+      String nextPrimaryKeyProcedureName = (String) storedProcedureNames.get(EOEntity.EONEXT_PRIMARY_KEY_PROCEDURE);
+      if (nextPrimaryKeyProcedureName != null) {
+        myNextPrimaryKeyProcedure = myModel.getStoredProcedureNamed(nextPrimaryKeyProcedureName);
+        if (myNextPrimaryKeyProcedure == null) {
+          _failures.add(new EOModelVerificationFailure(getFullyQualifiedName() + "'s next primary key procedure '" + nextPrimaryKeyProcedureName + "' is missing."));
+        }
+      }
+    }
   }
 
   public void verify(Set _failures) {
     String name = getName();
     if (name == null || name.trim().length() == 0) {
-      _failures.add(new EOModelVerificationFailure(myModel.getName() + "/" + myName + " has an empty name."));
+      _failures.add(new EOModelVerificationFailure(getFullyQualifiedName() + " has an empty name."));
     }
     else {
       if (name.indexOf(' ') != -1) {
-        _failures.add(new EOModelVerificationFailure(myModel.getName() + "/" + myName + "'s name has a space in it."));
+        _failures.add(new EOModelVerificationFailure(getFullyQualifiedName() + "'s name has a space in it."));
       }
       if (!StringUtils.isUppercaseFirstLetter(myName)) {
-        _failures.add(new EOModelVerificationFailure("Entity names should be capitalized, but " + myModel.getName() + "/" + myName + " is not."));
+        _failures.add(new EOModelVerificationFailure("Entity names should be capitalized, but " + getFullyQualifiedName() + " is not."));
       }
     }
 
@@ -1274,20 +1413,24 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
       String externalName = getExternalName();
       if (externalName == null || externalName.trim().length() == 0) {
         if (!BooleanUtils.isTrue(isAbstractEntity())) {
-          _failures.add(new EOModelVerificationFailure(myModel.getName() + "/" + getName() + " has an empty table name."));
+          _failures.add(new EOModelVerificationFailure(getFullyQualifiedName() + " has an empty table name."));
         }
       }
       else if (externalName.indexOf(' ') != -1) {
-        _failures.add(new EOModelVerificationFailure(myModel.getName() + "/" + getName() + "'s table name '" + externalName + "' has a space in it."));
+        _failures.add(new EOModelVerificationFailure(getFullyQualifiedName() + "'s table name '" + externalName + "' has a space in it."));
       }
     }
 
     EOEntity parent = getParent();
     if (parent != null && getRestrictingQualifier() == null) {
       if (ComparisonUtils.equals(getExternalName(), parent.getExternalName())) {
-        _failures.add(new EOModelVerificationFailure(myModel.getName() + "/" + getName() + " is a subclass of " + getParent().getName() + " but does not have a restricting qualifier."));
+        _failures.add(new EOModelVerificationFailure(getFullyQualifiedName() + " is a subclass of " + getParent().getName() + " but does not have a restricting qualifier."));
       }
     }
+  }
+
+  public String getFullyQualifiedName() {
+    return ((myModel == null) ? "?" : myModel.getFullyQualifiedName()) + "/Entity:" + myName;
   }
 
   public String toString() {

@@ -625,6 +625,10 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
     }
   }
 
+  public String getFullyQualifiedName() {
+    return myName;
+  }
+  
   public String toString() {
     return "[EOModel: name = " + myName + "; entities = " + myEntities + "]";
   }

@@ -160,4 +160,8 @@ public class EOSortOrdering extends EOModelObject {
   public void verify(Set _failures) {
     // TODO
   }
+
+  public String getFullyQualifiedName() {
+    return "EOSortOrdering:" + myKey;
+  }
 }

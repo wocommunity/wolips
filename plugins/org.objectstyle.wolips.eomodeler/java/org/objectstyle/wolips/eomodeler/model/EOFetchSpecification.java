@@ -60,7 +60,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.objectstyle.cayenne.exp.parser.Node;
+import org.objectstyle.cayenne.exp.Expression;
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
 
 public class EOFetchSpecification extends UserInfoableEOModelObject implements IEOEntityRelative, ISortableEOModelObject, PropertyChangeListener {
@@ -68,6 +68,7 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
   public static final String SORT_ORDERING = "sortOrdering";
   public static final String SORT_ORDERINGS = "sortOrderings";
   public static final String QUALIFIER = "qualifier";
+  public static final String QUALIFIER_STRING = "qualifierString";
   public static final String ENTITY = "entity";
   public static final String FETCH_LIMIT = "fetchLimit";
   public static final String DEEP = "deep";
@@ -97,7 +98,7 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
   private Boolean myRequiresAllQualifierBindingVariables;
   private Boolean myUsesDistinct;
   private List mySortOrderings;
-  private Node myQualifier;
+  private Expression myQualifier;
   private EOModelMap myFetchSpecMap;
   private Boolean mySharesObjects;
   private String myCustomQueryExpression;
@@ -131,7 +132,7 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
     fetchSpec.myUsesDistinct = myUsesDistinct;
     fetchSpec.mySortOrderings.addAll(mySortOrderings);
     if (myQualifier != null) {
-      fetchSpec.myQualifier = EOQualifierFactory.createNodeFromQualifierMap(EOQualifierFactory.createQualifierMapFromNode(myQualifier));
+      fetchSpec.myQualifier = EOQualifierFactory.createExpressionFromQualifierMap(EOQualifierFactory.createQualifierMapFromExpression(myQualifier));
     }
     fetchSpec.mySharesObjects = mySharesObjects;
     return fetchSpec;
@@ -316,14 +317,38 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
     return myStoredProcedure;
   }
 
-  public void setQualifier(Node _qualifier) {
-    Node oldQualifier = myQualifier;
+  public void setQualifier(Expression _qualifier) {
+    Expression oldQualifier = myQualifier;
     myQualifier = _qualifier;
     firePropertyChange(EOFetchSpecification.QUALIFIER, oldQualifier, myQualifier);
   }
 
-  public Node getQualifier() {
+  public Expression getQualifier() {
     return myQualifier;
+  }
+
+  public void setQualifierString(String _qualifierString) {
+    String oldQualifierString = getQualifierString();
+    Expression exp;
+    if (_qualifierString == null || _qualifierString.trim().length() == 0) {
+      exp = null;
+    }
+    else {
+      exp = EOQualifierFactory.fromString(_qualifierString);
+    }
+    setQualifier(exp);
+    firePropertyChange(EOFetchSpecification.QUALIFIER_STRING, oldQualifierString, getQualifierString());
+  }
+
+  public String getQualifierString() {
+    String qualifierString;
+    if (myQualifier == null) {
+      qualifierString = null;
+    }
+    else {
+      qualifierString = EOQualifierFactory.toString(myQualifier);
+    }
+    return qualifierString;
   }
 
   public void setEntity(EOEntity _entity) {
@@ -549,7 +574,7 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
 
     Map qualifierMap = _map.getMap("qualifier");
     if (qualifierMap != null) {
-      myQualifier = EOQualifierFactory.createNodeFromQualifierMap(new EOModelMap(qualifierMap));
+      myQualifier = EOQualifierFactory.createExpressionFromQualifierMap(new EOModelMap(qualifierMap));
     }
     myRawRowKeyPaths = _map.getSet("rawRowKeyPaths", true);
     myRefreshesRefetchedObjects = _map.getBoolean("refreshesRefetchedObjects");
@@ -587,7 +612,7 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
       fetchSpecMap.setMap("qualifier", null, true);
     }
     else {
-      fetchSpecMap.setMap("qualifier", EOQualifierFactory.createQualifierMapFromNode(myQualifier), true);
+      fetchSpecMap.setMap("qualifier", EOQualifierFactory.createQualifierMapFromExpression(myQualifier), true);
     }
     fetchSpecMap.setSet("rawRowKeyPaths", myRawRowKeyPaths, false);
     fetchSpecMap.setBoolean("refreshesRefetchedObjects", myRefreshesRefetchedObjects, EOModelMap.YESNO);
@@ -606,9 +631,8 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
 
     EOModelMap hintsMap = new EOModelMap(fetchSpecMap.getMap("hints", true));
     hintsMap.setString("EOCustomQueryExpressionHintKey", myCustomQueryExpression, false);
-    if (myStoredProcedure != null) {
-      hintsMap.setString("EOStoredProcedureNameHintKey", myStoredProcedure.getName(), true);
-    }
+    String storedProcedureName = (myStoredProcedure != null) ? myStoredProcedure.getName() : null;
+    hintsMap.setString("EOStoredProcedureNameHintKey", storedProcedureName, true);
     fetchSpecMap.setMap("hints", hintsMap, true);
 
     return fetchSpecMap;
@@ -621,7 +645,7 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
       if (storedProcedureName != null) {
         myStoredProcedure = myEntity.getModel().getStoredProcedureNamed(storedProcedureName);
         if (myStoredProcedure == null) {
-          _failures.add(new EOModelVerificationFailure(myEntity.getModel().getName() + "/" + myEntity.getName() + "/" + myName + " specifies a stored procedure name '" + myStoredProcedure + "' which does not exist."));
+          _failures.add(new EOModelVerificationFailure(getFullyQualifiedName() + " specifies a stored procedure name '" + myStoredProcedure + "' which does not exist."));
         }
       }
     }
@@ -640,10 +664,18 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
     }
 
     if (myCustomQueryExpression != null && myCustomQueryExpression.trim().length() == 0) {
-      _failures.add(new EOModelVerificationFailure(myEntity.getModel().getName() + "/" + myEntity.getName() + "/" + myName + " has an empty custom SQL."));
+      _failures.add(new EOModelVerificationFailure(getFullyQualifiedName() + " has an empty custom SQL expression."));
     }
     if (myCustomQueryExpression != null && myStoredProcedure != null) {
-      _failures.add(new EOModelVerificationFailure(myEntity.getModel().getName() + "/" + myEntity.getName() + "/" + myName + " specifies custom SQL and a stored procedure name"));
+      _failures.add(new EOModelVerificationFailure(getFullyQualifiedName() + " specifies a custom SQL expression AND a stored procedure name, which is invalid."));
     }
+  }
+
+  public String getFullyQualifiedName() {
+    return ((myEntity == null) ? "?" : myEntity.getFullyQualifiedName()) + "/FetchSpec:" + getName();
+  }
+
+  public String toString() {
+    return "[EOFetchSpecification: name = " + myName + "]";
   }
 }

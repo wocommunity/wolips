@@ -47,7 +47,7 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eomodeler.editors.entity;
+package org.objectstyle.wolips.eomodeler.editors.storedProcedures;
 
 import java.util.Collections;
 import java.util.LinkedList;
@@ -57,45 +57,29 @@ import java.util.Set;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.objectstyle.wolips.eomodeler.kvc.KVCComparator;
-import org.objectstyle.wolips.eomodeler.model.EOEntity;
-import org.objectstyle.wolips.eomodeler.model.EOModel;
+import org.objectstyle.wolips.eomodeler.model.EOStoredProcedure;
 import org.objectstyle.wolips.eomodeler.utils.EOModelUtils;
 
-public class EOEntityListContentProvider implements IStructuredContentProvider {
-  public static final Object BLANK_ENTITY = "";
+public class EOStoredProceduresListContentProvider implements IStructuredContentProvider {
+  public static final Object BLANK_STORED_PROCEDURE = "";
 
   private boolean myAllowBlank;
-  private boolean myRestrictToSingleModel;
   private KVCComparator myComparator;
 
-  public EOEntityListContentProvider(boolean _allowBlank, boolean _restrictToSingleModel) {
+  public EOStoredProceduresListContentProvider(boolean _allowBlank) {
     myAllowBlank = _allowBlank;
-    myRestrictToSingleModel = _restrictToSingleModel;
-    myComparator = new KVCComparator(EOEntity.class, EOEntity.NAME);
+    myComparator = new KVCComparator(EOStoredProcedure.class, EOStoredProcedure.NAME);
   }
 
   public Object[] getElements(Object _inputElement) {
-    Set entitiesList;
-    EOModel model = EOModelUtils.getRelatedModel(_inputElement);
-    if (model != null) {
-      if (myRestrictToSingleModel) {
-        entitiesList = model.getEntities();
-      }
-      else {
-        entitiesList = model.getModelGroup().getEntities();
-      }
-    }
-    else {
-      throw new IllegalArgumentException("Unknown input element: " + _inputElement);
-    }
-
-    List entitiesListCopy = new LinkedList();
-    entitiesListCopy.addAll(entitiesList);
-    Collections.sort(entitiesListCopy, myComparator);
+    Set storedProceduresList = EOModelUtils.getRelatedModel(_inputElement).getStoredProcedures();
+    List storedProceduresListCopy = new LinkedList();
+    storedProceduresListCopy.addAll(storedProceduresList);
+    Collections.sort(storedProceduresListCopy, myComparator);
     if (myAllowBlank) {
-      entitiesListCopy.add(0, EOEntityListContentProvider.BLANK_ENTITY);
+      storedProceduresListCopy.add(0, EOStoredProceduresListContentProvider.BLANK_STORED_PROCEDURE);
     }
-    Object[] entities = entitiesListCopy.toArray();
+    Object[] entities = storedProceduresListCopy.toArray();
     return entities;
   }
 

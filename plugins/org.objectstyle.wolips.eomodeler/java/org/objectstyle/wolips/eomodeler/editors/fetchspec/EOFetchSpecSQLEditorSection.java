@@ -147,15 +147,21 @@ public class EOFetchSpecSQLEditorSection extends AbstractPropertySection impleme
     Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
     myFetchSpecification = (EOFetchSpecification) selectedObject;
     if (myFetchSpecification != null) {
+      addBindings();
+      myStoredProcedureTableViewer.setInput(myFetchSpecification);
+      TableUtils.packTableColumns(myStoredProcedureTableViewer);
+      updateButtonsEnabled();
+    }
+  }
+
+  protected void addBindings() {
+    if (myFetchSpecification != null) {
       myBindingContext = BindingFactory.createContext();
       myBindingContext.bind(myRawSQLText, new Property(myFetchSpecification, EOFetchSpecification.CUSTOM_QUERY_EXPRESSION), null);
       myFetchSpecification.getEntity().getModel().addPropertyChangeListener(EOModel.STORED_PROCEDURES, myStoredProcedureChangedRefresher);
       myFetchSpecification.getEntity().getModel().addPropertyChangeListener(EOModel.STORED_PROCEDURE, myStoredProcedureChangedRefresher);
       myFetchSpecification.addPropertyChangeListener(EOFetchSpecification.STORED_PROCEDURE, myStoredProcedureChangedHandler);
       myFetchSpecification.addPropertyChangeListener(EOFetchSpecification.CUSTOM_QUERY_EXPRESSION, myStoredProcedureChangedHandler);
-      myStoredProcedureTableViewer.setInput(myFetchSpecification);
-      TableUtils.packTableColumns(myStoredProcedureTableViewer);
-      updateButtonsEnabled();
     }
   }
 
@@ -193,47 +199,41 @@ public class EOFetchSpecSQLEditorSection extends AbstractPropertySection impleme
   }
 
   public void widgetSelected(SelectionEvent _e) {
-    Object source = _e.getSource();
-    if (source == myUseQualifierButton && myUseQualifierButton.getSelection()) {
-      myFetchSpecification.useQualifier();
-    }
-    else if (source == myUseRawSQLButton && myUseRawSQLButton.getSelection()) {
-      myFetchSpecification.useCustomQueryExpression();
-    }
-    else if (source == myUseStoredProcedureButton && myUseStoredProcedureButton.getSelection()) {
-      Iterator storedProceduresIter = myFetchSpecification.getEntity().getModel().getStoredProcedures().iterator();
-      if (storedProceduresIter.hasNext()) {
-        EOStoredProcedure storedProcedure = (EOStoredProcedure) storedProceduresIter.next();
-        myFetchSpecification.setStoredProcedure(storedProcedure);
+    Button source = (Button) _e.getSource();
+    if (source.getSelection()) {
+      disposeBindings();
+      if (source == myUseQualifierButton) {
+        myFetchSpecification.useQualifier();
       }
+      else if (source == myUseRawSQLButton) {
+        myFetchSpecification.useCustomQueryExpression();
+      }
+      else if (source == myUseStoredProcedureButton) {
+        Iterator storedProceduresIter = myFetchSpecification.getEntity().getModel().getStoredProcedures().iterator();
+        if (storedProceduresIter.hasNext()) {
+          EOStoredProcedure storedProcedure = (EOStoredProcedure) storedProceduresIter.next();
+          myFetchSpecification.setStoredProcedure(storedProcedure);
+        }
+      }
+      updateButtonsEnabled();
+      addBindings();
     }
   }
 
   public void updateButtonsEnabled() {
     removeButtonListeners();
-    if (myFetchSpecification.isUsingStoredProcedure()) {
-      myUseQualifierButton.setSelection(false);
-      myUseRawSQLButton.setSelection(false);
-      myUseStoredProcedureButton.setSelection(true);
+    myUseQualifierButton.setSelection(myFetchSpecification.isUsingQualifier());
+    myUseRawSQLButton.setSelection(myFetchSpecification.isUsingCustomQuery());
+    myUseStoredProcedureButton.setSelection(myFetchSpecification.isUsingStoredProcedure());
+    myRawSQLText.setEnabled(myFetchSpecification.isUsingCustomQuery());
+    if (!myFetchSpecification.isUsingStoredProcedure() && !myStoredProcedureTableViewer.getSelection().isEmpty()) {
+      myStoredProcedureTableViewer.setSelection(new StructuredSelection());
+      myStoredProcedureTableViewer.getTable().setEnabled(false);
+    }
+    else if (myFetchSpecification.isUsingStoredProcedure()) {
+      myStoredProcedureTableViewer.getTable().setEnabled(true);
       myStoredProcedureTableViewer.setSelection(new StructuredSelection(myFetchSpecification.getStoredProcedure()));
     }
-    else if (myFetchSpecification.isUsingCustomQuery()) {
-      myUseQualifierButton.setSelection(false);
-      myUseRawSQLButton.setSelection(true);
-      myRawSQLText.setText(myFetchSpecification.getCustomQueryExpression());
-      myUseStoredProcedureButton.setSelection(false);
-    }
-    else {
-      myUseQualifierButton.setSelection(true);
-      myUseRawSQLButton.setSelection(false);
-      myUseStoredProcedureButton.setSelection(false);
-    }
-    myRawSQLText.setEnabled(myFetchSpecification.isUsingCustomQuery());
-    if (!myFetchSpecification.isUsingStoredProcedure()) {
-      myStoredProcedureTableViewer.setSelection(new StructuredSelection());
-    }
-    myStoredProcedureTableViewer.getTable().setEnabled(myFetchSpecification.isUsingStoredProcedure());
-
     addButtonListeners();
   }
 

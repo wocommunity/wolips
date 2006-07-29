@@ -5,7 +5,6 @@ import java.util.Set;
 
 import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
-import org.objectstyle.wolips.eomodeler.utils.StringUtils;
 
 public class EOArgument extends AbstractEOArgument {
   public static final String DIRECTION = "direction";
@@ -26,6 +25,7 @@ public class EOArgument extends AbstractEOArgument {
     super(_name, _definition);
     myDirection = EOArgumentDirection.VOID;
   }
+
   public int hashCode() {
     return ((myStoredProcedure == null) ? 1 : myStoredProcedure.hashCode()) * super.hashCode();
   }
@@ -38,7 +38,6 @@ public class EOArgument extends AbstractEOArgument {
     }
     return equals;
   }
-
 
   public EOStoredProcedure getStoredProcedure() {
     return myStoredProcedure;
@@ -115,11 +114,11 @@ public class EOArgument extends AbstractEOArgument {
   public void verify(Set _failures) {
     String name = getName();
     if (name == null || name.trim().length() == 0) {
-      _failures.add(new EOModelVerificationFailure(myStoredProcedure.getModel().getName() + "/" + myStoredProcedure.getName() + "/" + name + " has an empty name."));
+      _failures.add(new EOModelVerificationFailure(getFullyQualifiedName() + " has an empty name."));
     }
     else {
       if (name.indexOf(' ') != -1) {
-        _failures.add(new EOModelVerificationFailure(myStoredProcedure.getModel().getName() + "/" + myStoredProcedure.getName() + "/" + name + "'s name has a space in it."));
+        _failures.add(new EOModelVerificationFailure(getFullyQualifiedName() + "'s name has a space in it."));
       }
     }
     //    if (!isFlattened()) {
@@ -132,8 +131,15 @@ public class EOArgument extends AbstractEOArgument {
     //      }
     //    }
     if (myDirection == null) {
-      _failures.add(new EOModelVerificationFailure(myStoredProcedure.getModel().getName() + "/" + myStoredProcedure.getName() + "/" + name + " has no direction specified."));
+      _failures.add(new EOModelVerificationFailure(getFullyQualifiedName() + " has no direction specified."));
     }
   }
 
+  public String getFullyQualifiedName() {
+    return ((myStoredProcedure == null) ? "?" : myStoredProcedure.getFullyQualifiedName()) + "/Argument:" + getName();
+  }
+
+  public String toString() {
+    return "[EOArgument: name = " + getName() + "]";
+  }
 }

@@ -51,6 +51,6 @@ package org.objectstyle.wolips.eomodeler.model;
 
 public class EOEntityParentReferenceFailure extends EOModelVerificationFailure {
   public EOEntityParentReferenceFailure(EOEntity _parent, EOEntity _child) {
-    super(_child.getName() + " is a child of " + _parent.getModel().getName() + "/" + _parent.getName());
+    super(_child.getName() + " is a child of " + _parent.getFullyQualifiedName());
   }
 }

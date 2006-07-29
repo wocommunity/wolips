@@ -95,6 +95,8 @@ public abstract class EOModelObject implements IAdaptable {
   public Object getAdapter(Class _adapter) {
     return null;
   }
+  
+  public abstract String getFullyQualifiedName();
 
   protected NotificationMap mapChanged(NotificationMap _oldMap, Map _newMap, PropertyChangeRepeater _propertyChangeRepeater, boolean _fireEvents) {
     NotificationMap newMap;

@@ -225,6 +225,10 @@ public class EOModelGroup extends EOModelObject {
     }
   }
 
+  public String getFullyQualifiedName() {
+    return "EOModelGroup";
+  }
+
   public String toString() {
     return "[EOModelGroup: models = " + myModels + "]";
   }

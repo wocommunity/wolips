@@ -78,7 +78,7 @@ public class EOJoin extends EOModelObject implements ISortableEOModelObject {
       myRelationship._joinChanged(this, _propertyName, _oldValue, _newValue);
     }
   }
-  
+
   public String getName() {
     return ((mySourceAttribute != null) ? mySourceAttribute.getName() : "") + ((myDestinationAttribute != null) ? myDestinationAttribute.getName() : "");
   }
@@ -86,7 +86,7 @@ public class EOJoin extends EOModelObject implements ISortableEOModelObject {
   public void _setRelationship(EORelationship _relationship) {
     myRelationship = _relationship;
   }
-  
+
   public EORelationship getRelationship() {
     return myRelationship;
   }
@@ -253,6 +253,10 @@ public class EOJoin extends EOModelObject implements ISortableEOModelObject {
     if (myDestinationAttribute == null) {
       _failures.add(new EOModelVerificationFailure(getRelationship().getEntity().getName() + "'s " + getRelationship().getName() + "'s has a join with a missing destination attribute."));
     }
+  }
+
+  public String getFullyQualifiedName() {
+    return ((myRelationship == null) ? "?" : myRelationship.getFullyQualifiedName()) + "/Join:" + getSourceAttributeName() + "=>" + getDestinationAttributeName();
   }
 
   public String toString() {

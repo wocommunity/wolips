@@ -47,63 +47,43 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eomodeler.editors.entity;
+package org.objectstyle.wolips.eomodeler.editors.storedProcedures;
 
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.jface.viewers.ILabelProviderListener;
+import org.eclipse.swt.graphics.Image;
+import org.objectstyle.wolips.eomodeler.model.EOStoredProcedure;
 
-import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.jface.viewers.Viewer;
-import org.objectstyle.wolips.eomodeler.kvc.KVCComparator;
-import org.objectstyle.wolips.eomodeler.model.EOEntity;
-import org.objectstyle.wolips.eomodeler.model.EOModel;
-import org.objectstyle.wolips.eomodeler.utils.EOModelUtils;
-
-public class EOEntityListContentProvider implements IStructuredContentProvider {
-  public static final Object BLANK_ENTITY = "";
-
-  private boolean myAllowBlank;
-  private boolean myRestrictToSingleModel;
-  private KVCComparator myComparator;
-
-  public EOEntityListContentProvider(boolean _allowBlank, boolean _restrictToSingleModel) {
-    myAllowBlank = _allowBlank;
-    myRestrictToSingleModel = _restrictToSingleModel;
-    myComparator = new KVCComparator(EOEntity.class, EOEntity.NAME);
+public class EOStoredProceduresLabelProvider implements ILabelProvider {
+  public Image getImage(Object _element) {
+    return null;
   }
 
-  public Object[] getElements(Object _inputElement) {
-    Set entitiesList;
-    EOModel model = EOModelUtils.getRelatedModel(_inputElement);
-    if (model != null) {
-      if (myRestrictToSingleModel) {
-        entitiesList = model.getEntities();
-      }
-      else {
-        entitiesList = model.getModelGroup().getEntities();
-      }
+  public String getText(Object _element) {
+    String text = null;
+    if (_element == EOStoredProceduresListContentProvider.BLANK_STORED_PROCEDURE) {
+      // DO NOTHING
     }
-    else {
-      throw new IllegalArgumentException("Unknown input element: " + _inputElement);
+    else if (_element instanceof EOStoredProcedure) {
+      EOStoredProcedure storedProcedure = (EOStoredProcedure) _element;
+      text = storedProcedure.getName();
     }
+    return text;
+  }
 
-    List entitiesListCopy = new LinkedList();
-    entitiesListCopy.addAll(entitiesList);
-    Collections.sort(entitiesListCopy, myComparator);
-    if (myAllowBlank) {
-      entitiesListCopy.add(0, EOEntityListContentProvider.BLANK_ENTITY);
-    }
-    Object[] entities = entitiesListCopy.toArray();
-    return entities;
+  public void addListener(ILabelProviderListener _listener) {
+    // DO NOTHING
   }
 
   public void dispose() {
     // DO NOTHING
   }
 
-  public void inputChanged(Viewer _viewer, Object _oldInput, Object _newInput) {
+  public boolean isLabelProperty(Object _element, String _property) {
+    return true;
+  }
+
+  public void removeListener(ILabelProviderListener _listener) {
     // DO NOTHING
   }
 }
