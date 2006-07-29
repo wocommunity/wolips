@@ -49,6 +49,7 @@
  */
 package org.objectstyle.wolips.eomodeler.actions;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.eclipse.jface.action.Action;
@@ -81,58 +82,50 @@ public class DeleteAction extends Action {
   }
 
   public void run() {
-    Object selectedObject = null;
-    if (mySelection instanceof IStructuredSelection) {
-      selectedObject = ((IStructuredSelection) mySelection).getFirstElement();
-    }
     Shell activeShell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-    boolean hasReferenceFailures = false;
-    if (selectedObject instanceof EOModelObject) {
-      Set referenceFailures = ((EOModelObject) selectedObject).getReferenceFailures();
+    Object[] selectedObjects = null;
+    if (mySelection instanceof IStructuredSelection) {
+      selectedObjects = ((IStructuredSelection) mySelection).toArray();
+    }
+    if (selectedObjects != null) {
+      Set referenceFailures = new HashSet();
+      for (int selectedObjectNum = 0; selectedObjectNum < selectedObjects.length; selectedObjectNum++) {
+        Object selectedObject = selectedObjects[selectedObjectNum];
+        if (selectedObject instanceof EOModelObject) {
+          referenceFailures.addAll(((EOModelObject) selectedObject).getReferenceFailures());
+        }
+      }
       if (!referenceFailures.isEmpty()) {
-        hasReferenceFailures = true;
         new EOModelErrorDialog(activeShell, referenceFailures).open();
       }
-    }
-    if (!hasReferenceFailures) {
-      if (selectedObject instanceof EOEntity) {
-        EOEntity entity = (EOEntity) selectedObject;
-        if (MessageDialog.openConfirm(activeShell, Messages.getString("delete.entityTitle"), Messages.getString("delete.entityMessage"))) {
-          entity.getModel().removeEntity(entity);
+      else if (MessageDialog.openConfirm(activeShell, Messages.getString("delete.objectsTitle"), Messages.getString("delete.objectsMessage"))) {
+        for (int selectedObjectNum = 0; selectedObjectNum < selectedObjects.length; selectedObjectNum++) {
+          Object selectedObject = selectedObjects[selectedObjectNum];
+          if (selectedObject instanceof EOEntity) {
+            EOEntity entity = (EOEntity) selectedObject;
+            entity.getModel().removeEntity(entity);
+          }
+          else if (selectedObject instanceof EORelationship) {
+            EORelationship relationship = (EORelationship) selectedObject;
+            relationship.getEntity().removeRelationship(relationship, true);
+          }
+          else if (selectedObject instanceof EOAttribute) {
+            EOAttribute attribute = (EOAttribute) selectedObject;
+            attribute.getEntity().removeAttribute(attribute, true);
+          }
+          else if (selectedObject instanceof EOFetchSpecification) {
+            EOFetchSpecification fetchSpec = (EOFetchSpecification) selectedObject;
+            fetchSpec.getEntity().removeFetchSpecification(fetchSpec);
+          }
+          else if (selectedObject instanceof EOStoredProcedure) {
+            EOStoredProcedure storedProcedure = (EOStoredProcedure) selectedObject;
+            storedProcedure.getModel().removeStoredProcedure(storedProcedure);
+          }
+          else if (selectedObject instanceof EOArgument) {
+            EOArgument argument = (EOArgument) selectedObject;
+            argument.getStoredProcedure().removeArgument(argument);
+          }
         }
-      }
-      else if (selectedObject instanceof EORelationship) {
-        if (MessageDialog.openConfirm(activeShell, Messages.getString("delete.relationshipTitle"), Messages.getString("delete.relationshipMessage"))) {
-          EORelationship relationship = (EORelationship) selectedObject;
-          relationship.getEntity().removeRelationship(relationship, true);
-        }
-      }
-      else if (selectedObject instanceof EOAttribute) {
-        EOAttribute attribute = (EOAttribute) selectedObject;
-        if (MessageDialog.openConfirm(activeShell, Messages.getString("delete.attributeTitle"), Messages.getString("delete.attributeMessage"))) {
-          attribute.getEntity().removeAttribute(attribute, true);
-        }
-      }
-      else if (selectedObject instanceof EOFetchSpecification) {
-        if (MessageDialog.openConfirm(activeShell, Messages.getString("delete.fetchSpecTitle"), Messages.getString("delete.fetchSpecMessage"))) {
-          EOFetchSpecification fetchSpec = (EOFetchSpecification) selectedObject;
-          fetchSpec.getEntity().removeFetchSpecification(fetchSpec);
-        }
-      }
-      else if (selectedObject instanceof EOStoredProcedure) {
-        if (MessageDialog.openConfirm(activeShell, Messages.getString("delete.storedProcedureTitle"), Messages.getString("delete.storedProcedureMessage"))) {
-          EOStoredProcedure storedProcedure = (EOStoredProcedure) selectedObject;
-          storedProcedure.getModel().removeStoredProcedure(storedProcedure);
-        }
-      }
-      else if (selectedObject instanceof EOArgument) {
-        if (MessageDialog.openConfirm(activeShell, Messages.getString("delete.argumentTitle"), Messages.getString("delete.argumentMessage"))) {
-          EOArgument argument = (EOArgument) selectedObject;
-          argument.getStoredProcedure().removeArgument(argument);
-        }
-      }
-      else {
-        MessageDialog.openError(activeShell, Messages.getString("delete.nothingSelectedTitle"), Messages.getString("delete.nothingSelectedMessage"));//$NON-NLS-1$
       }
     }
   }

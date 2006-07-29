@@ -81,7 +81,7 @@ public class EOEntitiesTableViewer extends Composite implements ISelectionProvid
   public EOEntitiesTableViewer(Composite _parent, int _style) {
     super(_parent, _style);
     setLayout(new GridLayout(1, true));
-    myEntitiesTableViewer = TableUtils.createTableViewer(this, "EOEntity", EOEntitiesConstants.COLUMNS, new EOEntitiesContentProvider(), new EOEntitiesLabelProvider(EOEntitiesConstants.COLUMNS), new EOEntitiesViewerSorter(EOEntitiesConstants.COLUMNS));
+    myEntitiesTableViewer = TableUtils.createTableViewer(this, SWT.MULTI | SWT.FULL_SELECTION, "EOEntity", EOEntitiesConstants.COLUMNS, new EOEntitiesContentProvider(), new EOEntitiesLabelProvider(EOEntitiesConstants.COLUMNS), new EOEntitiesViewerSorter(EOEntitiesConstants.COLUMNS));
     new DoubleClickNewEntityHandler().attachTo(myEntitiesTableViewer);
     Table entitiesTable = myEntitiesTableViewer.getTable();
     entitiesTable.setLayoutData(new GridData(GridData.FILL_BOTH));

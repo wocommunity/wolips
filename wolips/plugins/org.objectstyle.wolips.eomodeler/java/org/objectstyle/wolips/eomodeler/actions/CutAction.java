@@ -49,6 +49,9 @@
  */
 package org.objectstyle.wolips.eomodeler.actions;
 
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 import org.eclipse.jface.action.Action;
@@ -96,61 +99,59 @@ public class CutAction extends Action implements IWorkbenchWindowActionDelegate 
   public void run() {
     try {
       Shell activeShell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-      Object selectedObject = null;
+      Object[] selectedObjects = null;
       if (mySelection instanceof IStructuredSelection) {
-        selectedObject = ((IStructuredSelection) mySelection).getFirstElement();
+        selectedObjects = ((IStructuredSelection) mySelection).toArray();
       }
-      boolean hasReferenceFailures = false;
-      if (selectedObject instanceof EOModelObject) {
-        Set referenceFailures = ((EOModelObject) selectedObject).getReferenceFailures();
+      List selectedObjectsList = new LinkedList();
+      if (selectedObjects != null) {
+        Set referenceFailures = new HashSet();
+        for (int selectedObjectNum = 0; selectedObjectNum < selectedObjects.length; selectedObjectNum++) {
+          Object selectedObject = selectedObjects[selectedObjectNum];
+          if (selectedObject instanceof EOModelObject) {
+            referenceFailures.addAll(((EOModelObject) selectedObject).getReferenceFailures());
+          }
+        }
         if (!referenceFailures.isEmpty()) {
-          hasReferenceFailures = true;
           new EOModelErrorDialog(activeShell, referenceFailures).open();
         }
-      }
-      if (!hasReferenceFailures) {
-        if (selectedObject instanceof EOEntity) {
-          EOEntity entity = (EOEntity) selectedObject;
-          LocalSelectionTransfer.getTransfer().setSelection(new StructuredSelection(entity.cloneEntity()));
-          LocalSelectionTransfer.getTransfer().setSelectionSetTime(System.currentTimeMillis());
-          entity.getModel().removeEntity(entity);
-        }
-        else if (selectedObject instanceof EORelationship) {
-          EORelationship relationship = (EORelationship) selectedObject;
-          Set referenceFailures = relationship.getReferenceFailures();
-          if (!referenceFailures.isEmpty()) {
-            new EOModelErrorDialog(activeShell, referenceFailures).open();
+        else {
+          for (int selectedObjectNum = 0; selectedObjectNum < selectedObjects.length; selectedObjectNum++) {
+            Object selectedObject = selectedObjects[selectedObjectNum];
+            if (selectedObject instanceof EOEntity) {
+              EOEntity entity = (EOEntity) selectedObject;
+              selectedObjectsList.add(entity.cloneEntity());
+              entity.getModel().removeEntity(entity);
+            }
+            else if (selectedObject instanceof EORelationship) {
+              EORelationship relationship = (EORelationship) selectedObject;
+              selectedObjectsList.add(relationship.cloneRelationship());
+              relationship.getEntity().removeRelationship(relationship, false); // TODO: Remove from subclasses?
+            }
+            else if (selectedObject instanceof EOAttribute) {
+              EOAttribute attribute = (EOAttribute) selectedObject;
+              selectedObjectsList.add(attribute.cloneAttribute());
+              attribute.getEntity().removeAttribute(attribute, false); // TODO: Remove from subclasses?
+            }
+            else if (selectedObject instanceof EOFetchSpecification) {
+              EOFetchSpecification fetchSpec = (EOFetchSpecification) selectedObject;
+              selectedObjectsList.add(fetchSpec.cloneFetchSpecification());
+              fetchSpec.getEntity().removeFetchSpecification(fetchSpec);
+            }
+            else if (selectedObject instanceof EOStoredProcedure) {
+              EOStoredProcedure storedProcedure = (EOStoredProcedure) selectedObject;
+              selectedObjectsList.add(storedProcedure.cloneStoredProcedure());
+              storedProcedure.getModel().removeStoredProcedure(storedProcedure);
+            }
+            else if (selectedObject instanceof EOArgument) {
+              EOArgument argument = (EOArgument) selectedObject;
+              selectedObjectsList.add(argument.cloneArgument());
+              argument.getStoredProcedure().removeArgument(argument);
+            }
           }
-          else {
-            LocalSelectionTransfer.getTransfer().setSelection(new StructuredSelection(relationship.cloneRelationship()));
-            LocalSelectionTransfer.getTransfer().setSelectionSetTime(System.currentTimeMillis());
-            relationship.getEntity().removeRelationship(relationship, false); // TODO: Remove from subclasses?
-          }
         }
-        else if (selectedObject instanceof EOAttribute) {
-          EOAttribute attribute = (EOAttribute) selectedObject;
-          LocalSelectionTransfer.getTransfer().setSelection(new StructuredSelection(attribute.cloneAttribute()));
-          LocalSelectionTransfer.getTransfer().setSelectionSetTime(System.currentTimeMillis());
-          attribute.getEntity().removeAttribute(attribute, false); // TODO: Remove from subclasses?
-        }
-        else if (selectedObject instanceof EOFetchSpecification) {
-          EOFetchSpecification fetchSpec = (EOFetchSpecification) selectedObject;
-          LocalSelectionTransfer.getTransfer().setSelection(new StructuredSelection(fetchSpec.cloneFetchSpecification()));
-          LocalSelectionTransfer.getTransfer().setSelectionSetTime(System.currentTimeMillis());
-          fetchSpec.getEntity().removeFetchSpecification(fetchSpec);
-        }
-        else if (selectedObject instanceof EOStoredProcedure) {
-          EOStoredProcedure storedProcedure = (EOStoredProcedure) selectedObject;
-          LocalSelectionTransfer.getTransfer().setSelection(new StructuredSelection(storedProcedure.cloneStoredProcedure()));
-          LocalSelectionTransfer.getTransfer().setSelectionSetTime(System.currentTimeMillis());
-          storedProcedure.getModel().removeStoredProcedure(storedProcedure);
-        }
-        else if (selectedObject instanceof EOArgument) {
-          EOArgument argument = (EOArgument) selectedObject;
-          LocalSelectionTransfer.getTransfer().setSelection(new StructuredSelection(argument.cloneArgument()));
-          LocalSelectionTransfer.getTransfer().setSelectionSetTime(System.currentTimeMillis());
-          argument.getStoredProcedure().removeArgument(argument);
-        }
+        LocalSelectionTransfer.getTransfer().setSelection(new StructuredSelection(selectedObjectsList));
+        LocalSelectionTransfer.getTransfer().setSelectionSetTime(System.currentTimeMillis());
       }
     }
     catch (Throwable t) {
