@@ -122,7 +122,13 @@
                image="icons/eoEntity.gif"
                label="Shared Objects"/>
          <propertyTab
-               afterTab="org.objectstyle.wolips.eomodeler.tabs.eoentityAdvanced"
+               afterTab="org.objectstyle.wolips.eomodeler.tabs.eoentitySharedObjects"
+               category="eoentity"
+               id="org.objectstyle.wolips.eomodeler.tabs.eoentityStoredProcedures"
+               image="icons/eoStoredProcedure.gif"
+               label="Stored Procs"/>
+         <propertyTab
+               afterTab="org.objectstyle.wolips.eomodeler.tabs.eoentityStoredProcedures"
                category="eoentity"
                id="org.objectstyle.wolips.eomodeler.tabs.eoentityUserInfo"
                image="icons/eoEntity.gif"
@@ -393,6 +399,13 @@
                id="org.objectstyle.wolips.eomodeler.sections.eoargumentUserInfo"
                tab="org.objectstyle.wolips.eomodeler.tabs.eoargumentUserInfo">
             <input type="org.objectstyle.wolips.eomodeler.model.EOArgument"/>
+         </propertySection>
+         <propertySection
+               class="org.objectstyle.wolips.eomodeler.editors.entity.EOEntityStoredProceduresEditorSection"
+               enablesFor="1"
+               id="org.objectstyle.wolips.eomodeler.sections.eoentityStoredProcedures"
+               tab="org.objectstyle.wolips.eomodeler.tabs.eoentityStoredProcedures">
+            <input type="org.objectstyle.wolips.eomodeler.model.EOEntity"/>
          </propertySection>
       </propertySections>
    </extension>

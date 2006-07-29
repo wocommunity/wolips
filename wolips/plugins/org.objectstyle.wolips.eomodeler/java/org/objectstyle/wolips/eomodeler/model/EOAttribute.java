@@ -642,27 +642,31 @@ public class EOAttribute extends AbstractEOArgument implements IEOAttribute, ISo
   public void verify(Set _failures) {
     String name = getName();
     if (name == null || name.trim().length() == 0) {
-      _failures.add(new EOModelVerificationFailure(myEntity.getModel().getName() + "/" + myEntity.getName() + "/" + name + " has an empty name."));
+      _failures.add(new EOModelVerificationFailure(getFullyQualifiedName() + " has an empty name."));
     }
     else {
       if (name.indexOf(' ') != -1) {
-        _failures.add(new EOModelVerificationFailure(myEntity.getModel().getName() + "/" + myEntity.getName() + "/" + name + "'s name has a space in it."));
+        _failures.add(new EOModelVerificationFailure(getFullyQualifiedName() + "'s name has a space in it."));
       }
       if (!StringUtils.isLowercaseFirstLetter(name)) {
-        _failures.add(new EOModelVerificationFailure("Attribute names should not be capitalized, but " + myEntity.getModel().getName() + "/" + myEntity.getName() + "/" + name + " is."));
+        _failures.add(new EOModelVerificationFailure("Attribute names should not be capitalized, but " + getFullyQualifiedName() + " is."));
       }
     }
     if (!myEntity.isPrototype()) {
       if (!isFlattened()) {
         String columnName = getColumnName();
         if (columnName == null || columnName.trim().length() == 0) {
-          _failures.add(new EOModelVerificationFailure(myEntity.getModel().getName() + "/" + myEntity.getName() + "/" + name + " does not have a column name set."));
+          _failures.add(new EOModelVerificationFailure(getFullyQualifiedName() + " does not have a column name set."));
         }
         else if (columnName.indexOf(' ') != -1) {
-          _failures.add(new EOModelVerificationFailure(myEntity.getModel().getName() + "/" + myEntity.getName() + "/" + name + "'s column name '" + columnName + "' has a space in it."));
+          _failures.add(new EOModelVerificationFailure(getFullyQualifiedName() + "'s column name '" + columnName + "' has a space in it."));
         }
       }
     }
+  }
+
+  public String getFullyQualifiedName() {
+    return ((myEntity == null) ? "?" : myEntity.getFullyQualifiedName()) + "/Attribute:" + getName();
   }
 
   public String toString() {

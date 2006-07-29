@@ -80,14 +80,17 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.MultiPageEditorPart;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
+import org.eclipse.ui.views.properties.PropertySheet;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributor;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.objectstyle.wolips.eomodeler.Activator;
@@ -346,6 +349,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
   }
 
   public void doSave(IProgressMonitor _monitor) {
+    showBusy(true);
     try {
       IEditorInput input = getEditorInput();
       if (input != null && myModel != null) {
@@ -366,6 +370,14 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
     catch (CoreException e) {
       e.printStackTrace();
     }
+    finally {
+      showBusy(false);
+    }
+  }
+
+  public boolean isDirty() {
+    // TODO Auto-generated method stub
+    return super.isDirty();
   }
 
   public void doSaveAs() {

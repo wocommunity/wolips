@@ -77,6 +77,7 @@ public class EOFetchSpecQualifierEditorSection extends AbstractPropertySection i
   private EOFetchSpecification myFetchSpecification;
 
   private Text myNameText;
+  private Text myQualifierText;
   private TreeViewer myModelTreeViewer;
   private EOEntityTreeViewUpdater myEntityTreeViewUpdater;
 
@@ -115,6 +116,12 @@ public class EOFetchSpecQualifierEditorSection extends AbstractPropertySection i
     myModelTreeViewer.getTree().setLayoutData(modelTreeLayoutData);
     myEntityTreeViewUpdater = new EOEntityTreeViewUpdater(myModelTreeViewer, new EOModelOutlineContentProvider(true, true, true, false, false));
     myModelTreeViewer.addSelectionChangedListener(this);
+
+    myQualifierText = new Text(topForm, SWT.BORDER | SWT.WRAP | SWT.MULTI | SWT.V_SCROLL);
+    GridData qualifierLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+    qualifierLayoutData.horizontalSpan = 2;
+    qualifierLayoutData.heightHint = 150;
+    myQualifierText.setLayoutData(qualifierLayoutData);
   }
 
   public void setInput(IWorkbenchPart _part, ISelection _selection) {
@@ -126,6 +133,7 @@ public class EOFetchSpecQualifierEditorSection extends AbstractPropertySection i
     if (myFetchSpecification != null) {
       myBindingContext = BindingFactory.createContext();
       myBindingContext.bind(myNameText, new Property(myFetchSpecification, EOFetchSpecification.NAME), null);
+      myBindingContext.bind(myQualifierText, new Property(myFetchSpecification, EOFetchSpecification.QUALIFIER_STRING), null);
       myEntityTreeViewUpdater.setEntity(myFetchSpecification.getEntity());
     }
   }

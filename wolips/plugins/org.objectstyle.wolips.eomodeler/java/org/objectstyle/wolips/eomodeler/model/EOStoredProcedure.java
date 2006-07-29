@@ -115,6 +115,37 @@ public class EOStoredProcedure extends UserInfoableEOModelObject implements ISor
       EOArgument argument = (EOArgument) argumentsIter.next();
       referenceFailures.addAll(argument.getReferenceFailures());
     }
+
+    if (myModel != null) {
+      Iterator entitiesIter = myModel.getEntities().iterator();
+      while (entitiesIter.hasNext()) {
+        EOEntity entity = (EOEntity) entitiesIter.next();
+        if (entity.getDeleteProcedure() == this) {
+          referenceFailures.add(new EOModelVerificationFailure(entity.getFullyQualifiedName() + " uses " + myName + " as its delete procedure."));
+        }
+        if (entity.getInsertProcedure() == this) {
+          referenceFailures.add(new EOModelVerificationFailure(entity.getFullyQualifiedName() + " uses " + myName + " as its insert procedure."));
+        }
+        if (entity.getNextPrimaryKeyProcedure() == this) {
+          referenceFailures.add(new EOModelVerificationFailure(entity.getFullyQualifiedName() + " uses " + myName + " as its next primary key procedure."));
+        }
+        if (entity.getFetchWithPrimaryKeyProcedure() == this) {
+          referenceFailures.add(new EOModelVerificationFailure(entity.getFullyQualifiedName() + " uses " + myName + " as its fetch with primary key procedure."));
+        }
+        if (entity.getFetchAllProcedure() == this) {
+          referenceFailures.add(new EOModelVerificationFailure(entity.getFullyQualifiedName() + " uses " + myName + " as its fetch all procedure."));
+        }
+        
+        Iterator fetchSpecsIter = entity.getFetchSpecs().iterator();
+        while (fetchSpecsIter.hasNext()) {
+          EOFetchSpecification fetchSpec = (EOFetchSpecification)fetchSpecsIter.next();
+          if (fetchSpec.getStoredProcedure() == this) {
+            referenceFailures.add(new EOModelVerificationFailure(fetchSpec.getFullyQualifiedName() + " uses " + myName + " as its stored procedure."));
+          }
+        }
+      }
+    }
+
     return referenceFailures;
   }
 
@@ -345,6 +376,10 @@ public class EOStoredProcedure extends UserInfoableEOModelObject implements ISor
       EOArgument argument = (EOArgument) argumentsIter.next();
       argument.verify(_failures);
     }
+  }
+
+  public String getFullyQualifiedName() {
+    return ((myModel == null) ? "?" : myModel.getFullyQualifiedName()) + "/StoredProc:" + getName();
   }
 
   public String toString() {
