@@ -73,6 +73,7 @@ public class Activator extends AbstractUIPlugin {
   public static final String ALLOW_NULL_ICON = "allowNull";
   public static final String ASCENDING_ICON = "ascending";
   public static final String DESCENDING_ICON = "descending";
+  public static final String SQL_ICON = "sql";
 
   // The plug-in ID
   public static final String PLUGIN_ID = "org.objectstyle.wolips.eomodeler";
@@ -140,5 +141,6 @@ public class Activator extends AbstractUIPlugin {
     _reg.put(Activator.TO_ONE_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/toOne.gif"));
     _reg.put(Activator.ASCENDING_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/ascending.png"));
     _reg.put(Activator.DESCENDING_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/descending.png"));
+    _reg.put(Activator.SQL_ICON, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, "icons/sql.gif"));
   }
 }

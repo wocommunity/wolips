@@ -425,6 +425,14 @@
             label="Entity Modeler"
             >
          <action
+               class="org.objectstyle.wolips.eomodeler.actions.GenerateSQLAction"
+               icon="icons/sql.gif"
+               id="org.objectstyle.wolips.eomodeler.actions.generateSQL"
+               label="Generate SQL"
+               style="push"
+               toolbarPath="/Normal"
+               tooltip="Generate SQL"/>
+         <action
                class="org.objectstyle.wolips.eomodeler.actions.SubclassEntityAction"
                icon="icons/subclassEntity.gif"
                id="org.objectstyle.wolips.eomodeler.actions.subclassEntity"
