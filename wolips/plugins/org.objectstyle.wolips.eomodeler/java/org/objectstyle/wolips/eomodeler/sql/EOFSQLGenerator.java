@@ -71,7 +71,6 @@ import com.webobjects.foundation.NSArray;
 import com.webobjects.foundation.NSBundle;
 import com.webobjects.foundation.NSMutableArray;
 import com.webobjects.foundation.NSMutableDictionary;
-import com.webobjects.foundation.NSProperties;
 import com.webobjects.jdbcadaptor.JDBCAdaptor;
 
 public class EOFSQLGenerator {
