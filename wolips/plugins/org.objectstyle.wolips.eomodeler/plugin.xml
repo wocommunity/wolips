@@ -434,6 +434,14 @@
                toolbarPath="/Normal"
                tooltip="Generate SQL"/>
          <action
+               class="org.objectstyle.wolips.eomodeler.actions.VerifyAction"
+               icon="icons/verify.gif"
+               id="org.objectstyle.wolips.eomodeler.actions.verify"
+               label="Verify Model"
+               style="push"
+               toolbarPath="/Normal"
+               tooltip="Verify Model"/>
+         <action
                class="org.objectstyle.wolips.eomodeler.actions.SubclassEntityAction"
                icon="icons/subclassEntity.gif"
                id="org.objectstyle.wolips.eomodeler.actions.subclassEntity"
