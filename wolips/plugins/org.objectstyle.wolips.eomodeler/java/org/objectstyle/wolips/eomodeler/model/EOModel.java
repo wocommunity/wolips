@@ -714,7 +714,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
     }
     return matchingAttribute;
   }
-
+  
   /** End Prototypes **/
 
   public static void main(String[] args) throws IOException, EOModelException {
