@@ -25,6 +25,11 @@ public class EOModelErrorDialog extends Dialog {
     super(_parentShell);
     myFailures = _failures;
   }
+  
+  protected void configureShell(Shell _newShell) {
+    super.configureShell(_newShell);
+    _newShell.setText("EOModel Verification Failures");
+  }
 
   protected Control createDialogArea(Composite _parent) {
     Composite composite = (Composite) super.createDialogArea(_parent);
