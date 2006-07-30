@@ -593,15 +593,16 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
       }
     }
     boolean mandatory = BooleanUtils.isTrue(isMandatory());
+    boolean toOne = BooleanUtils.isTrue(isToOne());
     Iterator joinsIter = myJoins.iterator();
     while (joinsIter.hasNext()) {
       EOJoin join = (EOJoin) joinsIter.next();
       join.verify(_failures);
       EOAttribute sourceAttribute = join.getSourceAttribute();
-      if (mandatory && sourceAttribute != null && BooleanUtils.isTrue(sourceAttribute.isAllowsNull())) {
+      if (toOne && mandatory && sourceAttribute != null && BooleanUtils.isTrue(sourceAttribute.isAllowsNull())) {
         _failures.add(new EOModelVerificationFailure(getFullyQualifiedName() + " is mandatory but " + sourceAttribute.getFullyQualifiedName() + " allows nulls."));
       }
-      else if (!mandatory && sourceAttribute != null && !BooleanUtils.isTrue(sourceAttribute.isAllowsNull())) {
+      else if (toOne && !mandatory && sourceAttribute != null && !BooleanUtils.isTrue(sourceAttribute.isAllowsNull())) {
         _failures.add(new EOModelVerificationFailure(getFullyQualifiedName() + " is optional but " + sourceAttribute.getFullyQualifiedName() + " does not allow nulls."));
       }
     }
