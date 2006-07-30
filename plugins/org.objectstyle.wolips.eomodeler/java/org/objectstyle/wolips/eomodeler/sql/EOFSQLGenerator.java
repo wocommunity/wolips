@@ -59,6 +59,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.webobjects.eoaccess.EOAdaptorContext;
+import com.webobjects.eoaccess.EOAttribute;
 import com.webobjects.eoaccess.EODatabase;
 import com.webobjects.eoaccess.EODatabaseContext;
 import com.webobjects.eoaccess.EOEntity;
@@ -66,6 +67,7 @@ import com.webobjects.eoaccess.EOModel;
 import com.webobjects.eoaccess.EOModelGroup;
 import com.webobjects.eoaccess.EOSchemaGeneration;
 import com.webobjects.eoaccess.EOSynchronizationFactory;
+import com.webobjects.foundation.NSArray;
 import com.webobjects.foundation.NSBundle;
 import com.webobjects.foundation.NSMutableArray;
 import com.webobjects.foundation.NSMutableDictionary;
@@ -98,9 +100,7 @@ public class EOFSQLGenerator {
       Enumeration entitiesEnum = myModel.entities().objectEnumerator();
       while (entitiesEnum.hasMoreElements()) {
         EOEntity entity = (EOEntity) entitiesEnum.nextElement();
-        String entityName = entity.name();
-        boolean isPrototype = (entityName.startsWith("EO") && entityName.endsWith("Prototypes"));
-        if (!isPrototype) {// && entityUsesSeparateTable(entity)) {
+        if (!isPrototype(entity)) {// && entityUsesSeparateTable(entity)) {
           myEntities.addObject(entity);
         }
       }
@@ -113,33 +113,120 @@ public class EOFSQLGenerator {
         myEntities.addObject(entity);
       }
     }
+
+    ensureSingleTableInheritanceParentEntitiesAreIncluded();
+    ensureSingleTableInheritanceChildEntitiesAreIncluded();
+    fixAllowsNullOnSingleTableInheritance();
+  }
+
+  protected void ensureSingleTableInheritanceParentEntitiesAreIncluded() {
+    Enumeration entitiesEnum = new NSArray(myEntities).objectEnumerator();
+    while (entitiesEnum.hasMoreElements()) {
+      EOEntity entity = (EOEntity) entitiesEnum.nextElement();
+      ensureSingleTableInheritanceParentEntitiesAreIncluded(entity);
+    }
+  }
+
+  protected void ensureSingleTableInheritanceChildEntitiesAreIncluded() {
+    Enumeration entitiesEnum = myModel.entities().objectEnumerator();
+    while (entitiesEnum.hasMoreElements()) {
+      EOEntity entity = (EOEntity) entitiesEnum.nextElement();
+      if (isSingleTableInheritance(entity)) {
+        EOEntity parentEntity = entity.parentEntity();
+        if (myEntities.containsObject(parentEntity) && !myEntities.containsObject(entity)) {
+          myEntities.addObject(entity);
+        }
+      }
+    }
+  }
+
+  protected void ensureSingleTableInheritanceParentEntitiesAreIncluded(EOEntity _entity) {
+    if (isSingleTableInheritance(_entity)) {
+      EOEntity parentEntity = _entity.parentEntity();
+      if (!myEntities.containsObject(parentEntity)) {
+        myEntities.addObject(parentEntity);
+        ensureSingleTableInheritanceParentEntitiesAreIncluded(_entity);
+      }
+    }
+  }
+
+  protected boolean isPrototype(EOEntity _entity) {
+    String entityName = _entity.name();
+    boolean isPrototype = (entityName.startsWith("EO") && entityName.endsWith("Prototypes"));
+    return isPrototype;
+  }
+
+  protected void fixAllowsNullOnSingleTableInheritance() {
+    Enumeration entitiesEnum = myEntities.objectEnumerator();
+    while (entitiesEnum.hasMoreElements()) {
+      EOEntity entity = (EOEntity) entitiesEnum.nextElement();
+      if (isSingleTableInheritance(entity)) {
+        Enumeration attributeEnum = entity.attributes().objectEnumerator();
+        while (attributeEnum.hasMoreElements()) {
+          EOAttribute attribute = (EOAttribute) attributeEnum.nextElement();
+          if (!isInherited(attribute)) {
+            attribute.setAllowsNull(true);
+          }
+        }
+      }
+    }
+  }
+
+  protected boolean isSingleTableInheritance(EOEntity _entity) {
+    EOEntity parentEntity = _entity.parentEntity();
+    return parentEntity != null && _entity.externalName() != null && _entity.externalName().equalsIgnoreCase(parentEntity.externalName());
+  }
+
+  protected boolean isInherited(EOAttribute _attribute) {
+    boolean inherited = false;
+    EOEntity parentEntity = _attribute.entity().parentEntity();
+    while (!inherited && parentEntity != null) {
+      inherited = (parentEntity.attributeNamed(_attribute.name()) != null);
+      parentEntity = parentEntity.parentEntity();
+    }
+    return inherited;
+  }
+
+  protected void fixDuplicateSingleTableInheritanceDropStatements(EOSynchronizationFactory _syncFactory, NSMutableDictionary _flags, StringBuffer _sqlBuffer) {
+    if ("NO".equals(_flags.objectForKey(EOSchemaGeneration.DropDatabaseKey)) && "YES".equals(_flags.objectForKey(EOSchemaGeneration.DropTablesKey))) {
+      NSMutableArray dropEntities = new NSMutableArray(myEntities);
+      for (int entityNum = dropEntities.count() - 1; entityNum >= 0; entityNum--) {
+        EOEntity entity = (EOEntity) dropEntities.objectAtIndex(entityNum);
+        if (isSingleTableInheritance(entity)) {
+          dropEntities.removeObjectAtIndex(entityNum);
+        }
+      }
+      if (dropEntities.count() != myEntities.count()) {
+        NSMutableDictionary dropFlags = new NSMutableDictionary();
+        dropFlags.setObjectForKey("YES", EOSchemaGeneration.DropTablesKey);
+        dropFlags.setObjectForKey("NO", EOSchemaGeneration.DropPrimaryKeySupportKey);
+        dropFlags.setObjectForKey("NO", EOSchemaGeneration.CreateTablesKey);
+        dropFlags.setObjectForKey("NO", EOSchemaGeneration.CreatePrimaryKeySupportKey);
+        dropFlags.setObjectForKey("NO", EOSchemaGeneration.PrimaryKeyConstraintsKey);
+        dropFlags.setObjectForKey("NO", EOSchemaGeneration.ForeignKeyConstraintsKey);
+        dropFlags.setObjectForKey("NO", EOSchemaGeneration.CreateDatabaseKey);
+        dropFlags.setObjectForKey("NO", EOSchemaGeneration.DropDatabaseKey);
+        _flags.removeObjectForKey(EOSchemaGeneration.DropTablesKey);
+        String dropSql = _syncFactory.schemaCreationScriptForEntities(dropEntities, dropFlags);
+        _sqlBuffer.append(dropSql);
+        _sqlBuffer.append("\n");
+      }
+    }
   }
 
   public String getSchemaCreationScript() {
     EODatabaseContext dbc = new EODatabaseContext(new EODatabase(myModel));
     EOAdaptorContext ac = dbc.adaptorContext();
     EOSynchronizationFactory sf = ((JDBCAdaptor) ac.adaptor()).plugIn().synchronizationFactory();
-    String result = sf.schemaCreationScriptForEntities(myEntities, myFlags);
-    return result;
-  }
 
-  protected boolean entityUsesSeparateTable(EOEntity _entity) {
-    boolean usesSeparateTable = false;
-    if (_entity.parentEntity() == null) {
-      usesSeparateTable = true;
-    }
-    EOEntity entity = _entity;
-    EOEntity parent = entity.parentEntity();
-    while (!usesSeparateTable && parent != null) {
-      if (!entity.externalName().equals(parent.externalName())) {
-        usesSeparateTable = true;
-      }
-      else {
-        entity = parent;
-        parent = entity.parentEntity();
-      }
-    }
-    return usesSeparateTable;
+    StringBuffer sqlBuffer = new StringBuffer();
+    NSMutableDictionary flags = new NSMutableDictionary(myFlags);
+    fixDuplicateSingleTableInheritanceDropStatements(sf, flags, sqlBuffer);
+
+    String sql = sf.schemaCreationScriptForEntities(myEntities, flags);
+    sqlBuffer.append(sql);
+
+    return sqlBuffer.toString();
   }
 
   public static void main(String argv[]) throws MalformedURLException {
