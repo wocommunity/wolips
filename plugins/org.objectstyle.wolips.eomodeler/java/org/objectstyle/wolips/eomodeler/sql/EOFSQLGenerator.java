@@ -81,7 +81,6 @@ public class EOFSQLGenerator {
   private EOModelGroup myGroup;
 
   public EOFSQLGenerator(String _modelName, List _modelFolders, List _entityNames, Map _flags) throws MalformedURLException {
-    NSProperties._setMainBundleName("/Volumes/mDT Workspace/workspace/MDTask/build/MDTask.woa/");
     myFlags = new NSMutableDictionary();
     Iterator entriesIter = _flags.entrySet().iterator();
     while (entriesIter.hasNext()) {
