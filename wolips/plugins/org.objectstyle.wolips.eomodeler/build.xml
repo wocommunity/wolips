@@ -23,6 +23,7 @@
       <pathelement path = "${wo.wosystemroot}/Library/Frameworks/JavaEOAccess.framework/Resources/Java/javaeoaccess.jar"/>
       <pathelement path = "${wo.wosystemroot}/Library/Frameworks/JavaFoundation.framework/Resources/Java/javafoundation.jar"/>
 	    <pathelement path = "${wo.wosystemroot}/Library/Frameworks/JavaEOControl.framework/Resources/Java/javaeocontrol.jar"/>
+	    <pathelement path = "${wo.wosystemroot}/Library/Frameworks/JavaJDBCAdaptor.framework/Resources/Java/javajdbcadaptor.jar"/>
       <pathelement path = "${wo.wosystemroot}/Library/Frameworks/JavaXML.framework/Resources/Java/javaxml.jar"/>
 		</path>
 		<ant dir="." antfile="../../../${project.buildscripts.dir}/plugin-project.xml" target="java">
