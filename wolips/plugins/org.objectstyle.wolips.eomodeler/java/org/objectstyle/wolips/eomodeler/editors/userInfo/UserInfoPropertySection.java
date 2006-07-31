@@ -164,6 +164,7 @@ public class UserInfoPropertySection extends AbstractPropertySection {
     myUserInfoTableViewer.setInput(userInfo);
     ((UserInfoLabelProvider) myUserInfoTableViewer.getLabelProvider()).setUserInfo(userInfo);
     ((UserInfoCellModifier) myUserInfoTableViewer.getCellModifier()).setUserInfo(userInfo);
+    myUserInfoTableViewer.addSelectionChangedListener(new UserInfoSelectionListener());
     refresh();
   }
 
