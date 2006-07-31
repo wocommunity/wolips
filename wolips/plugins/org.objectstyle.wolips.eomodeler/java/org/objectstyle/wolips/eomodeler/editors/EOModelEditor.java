@@ -365,8 +365,11 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
       e.printStackTrace();
     }
     catch (CoreException e) {
-      e.printStackTrace();
-    }
+        e.printStackTrace();
+      }
+    catch (Exception e) {
+        e.printStackTrace();
+      }
     finally {
       showBusy(false);
     }
