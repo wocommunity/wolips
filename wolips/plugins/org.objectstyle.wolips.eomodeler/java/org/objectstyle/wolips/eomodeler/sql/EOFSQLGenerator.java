@@ -114,7 +114,6 @@ public class EOFSQLGenerator {
 
     ensureSingleTableInheritanceParentEntitiesAreIncluded();
     ensureSingleTableInheritanceChildEntitiesAreIncluded();
-    fixAllowsNullOnSingleTableInheritance();
   }
 
   protected void ensureSingleTableInheritanceParentEntitiesAreIncluded() {
@@ -152,22 +151,6 @@ public class EOFSQLGenerator {
     String entityName = _entity.name();
     boolean isPrototype = (entityName.startsWith("EO") && entityName.endsWith("Prototypes"));
     return isPrototype;
-  }
-
-  protected void fixAllowsNullOnSingleTableInheritance() {
-    Enumeration entitiesEnum = myEntities.objectEnumerator();
-    while (entitiesEnum.hasMoreElements()) {
-      EOEntity entity = (EOEntity) entitiesEnum.nextElement();
-      if (isSingleTableInheritance(entity)) {
-        Enumeration attributeEnum = entity.attributes().objectEnumerator();
-        while (attributeEnum.hasMoreElements()) {
-          EOAttribute attribute = (EOAttribute) attributeEnum.nextElement();
-          if (!isInherited(attribute)) {
-            attribute.setAllowsNull(true);
-          }
-        }
-      }
-    }
   }
 
   protected boolean isSingleTableInheritance(EOEntity _entity) {
