@@ -67,7 +67,11 @@ public class EOModelMap implements Map {
   }
 
   public EOModelMap(Map _backingMap) {
-    myBackingMap = _backingMap;
+	if(_backingMap == null) {
+		myBackingMap = new TreeMap(PropertyListComparator.AscendingPropertyListComparator);
+	} else {
+		myBackingMap = _backingMap;
+	}
   }
 
   public EOModelMap cloneModelMap() {
