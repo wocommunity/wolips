@@ -457,12 +457,16 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
     }
   }
 
-  protected void handleModelErrors(Set _failures) {
-    if (!_failures.isEmpty()) {
-      EOModelErrorDialog dialog = new EOModelErrorDialog(Display.getDefault().getActiveShell(), _failures);
-      dialog.setBlockOnOpen(true);
-      dialog.open();
-    }
+  protected void handleModelErrors(final Set _failures) {
+    Display.getDefault().asyncExec(new Runnable() {
+      public void run() {
+        if (!_failures.isEmpty()) {
+          EOModelErrorDialog dialog = new EOModelErrorDialog(getEditorSite().getShell(), _failures);
+          dialog.setBlockOnOpen(true);
+          dialog.open();
+        }
+      }
+    });
   }
 
   protected void updatePartName() {
