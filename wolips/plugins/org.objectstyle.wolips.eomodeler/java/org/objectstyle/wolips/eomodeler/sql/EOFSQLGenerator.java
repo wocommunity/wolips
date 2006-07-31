@@ -213,18 +213,22 @@ public class EOFSQLGenerator {
   }
 
   public String getSchemaCreationScript() {
-    EODatabaseContext dbc = new EODatabaseContext(new EODatabase(myModel));
-    EOAdaptorContext ac = dbc.adaptorContext();
-    EOSynchronizationFactory sf = ((JDBCAdaptor) ac.adaptor()).plugIn().synchronizationFactory();
+	  try {
+		  EODatabaseContext dbc = new EODatabaseContext(new EODatabase(myModel));
+		  EOAdaptorContext ac = dbc.adaptorContext();
+		  EOSynchronizationFactory sf = ((JDBCAdaptor) ac.adaptor()).plugIn().synchronizationFactory();
 
-    StringBuffer sqlBuffer = new StringBuffer();
-    NSMutableDictionary flags = new NSMutableDictionary(myFlags);
-    fixDuplicateSingleTableInheritanceDropStatements(sf, flags, sqlBuffer);
+		  StringBuffer sqlBuffer = new StringBuffer();
+		  NSMutableDictionary flags = new NSMutableDictionary(myFlags);
+		  fixDuplicateSingleTableInheritanceDropStatements(sf, flags, sqlBuffer);
 
-    String sql = sf.schemaCreationScriptForEntities(myEntities, flags);
-    sqlBuffer.append(sql);
+		  String sql = sf.schemaCreationScriptForEntities(myEntities, flags);
+		  sqlBuffer.append(sql);
 
-    return sqlBuffer.toString();
+		  return sqlBuffer.toString();
+	  } catch (Exception ex) {
+		  return ex.getMessage();
+	  }
   }
 
   public static void main(String argv[]) throws MalformedURLException {
