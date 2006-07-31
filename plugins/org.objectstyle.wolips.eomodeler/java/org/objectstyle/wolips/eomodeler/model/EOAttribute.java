@@ -489,6 +489,14 @@ public class EOAttribute extends AbstractEOArgument implements IEOAttribute, ISo
     super.setScale((Integer) _nullIfPrototyped(AbstractEOArgument.SCALE, _scale));
   }
 
+  public String getServerTimeZone() {
+    return (String) _prototypeValueIfNull(AbstractEOArgument.SERVER_TIME_ZONE, super.getServerTimeZone());
+  }
+
+  public void setServerTimeZone(String _serverTimeZone) {
+    super.setServerTimeZone((String) _nullIfPrototyped(AbstractEOArgument.SERVER_TIME_ZONE, _serverTimeZone));
+  }
+
   public String getValueClassName() {
     return (String) _prototypeValueIfNull(AbstractEOArgument.VALUE_CLASS_NAME, super.getValueClassName());
   }

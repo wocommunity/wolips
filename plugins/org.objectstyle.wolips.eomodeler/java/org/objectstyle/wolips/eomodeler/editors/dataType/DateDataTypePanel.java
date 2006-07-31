@@ -49,20 +49,40 @@
  */
 package org.objectstyle.wolips.eomodeler.editors.dataType;
 
+import org.eclipse.jface.internal.databinding.provisional.DataBindingContext;
+import org.eclipse.jface.internal.databinding.provisional.description.Property;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetWidgetFactory;
+import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.model.AbstractEOArgument;
+import org.objectstyle.wolips.eomodeler.utils.BindingFactory;
 
 public class DateDataTypePanel extends Composite implements IDataTypePanel {
+  private Text myServerTimeZoneText;
+  private DataBindingContext myBindingContext;
+
   public DateDataTypePanel(Composite _parent, int _style, TabbedPropertySheetWidgetFactory _widgetFactory) {
     super(_parent, _style);
     setBackground(_parent.getBackground());
     setLayout(new GridLayout(2, false));
+    _widgetFactory.createCLabel(this, Messages.getString("AbstractEOArgument." + AbstractEOArgument.SERVER_TIME_ZONE), SWT.NONE);
+    myServerTimeZoneText = new Text(this, SWT.BORDER);
+    GridData externalWidthFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+    myServerTimeZoneText.setLayoutData(externalWidthFieldLayoutData);
   }
 
   public void setArgument(AbstractEOArgument _argument) {
-    // DO NOTHING
+    if (myBindingContext != null) {
+      myBindingContext.dispose();
+    }
+    if (_argument != null) {
+      myBindingContext = BindingFactory.createContext();
+      myBindingContext.bind(myServerTimeZoneText, new Property(_argument, AbstractEOArgument.SERVER_TIME_ZONE), null);
+    }
   }
   
   public void dispose() {

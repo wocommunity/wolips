@@ -59,9 +59,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.eclipse.ui.views.properties.IPropertySource;
 import org.objectstyle.cayenne.wocompat.PropertyListSerialization;
-import org.objectstyle.wolips.eomodeler.properties.EOModelPropertySource;
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.utils.NotificationMap;
 
@@ -75,6 +73,11 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
   public static final String ENTITIES = "entities";
   public static final String STORED_PROCEDURE = "storedProcedure";
   public static final String STORED_PROCEDURES = "storedProcedures";
+  public static final String USERNAME = "username";
+  public static final String PASSWORD = "password";
+  public static final String URL = "URL";
+  public static final String DRIVER = "driver";
+  public static final String PLUGIN = "plugin";
 
   private EOModelGroup myModelGroup;
   private String myName;
@@ -155,14 +158,6 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 
   protected void _entityChanged(EOEntity _entity, String _propertyName, Object _oldValue, Object _newValue) {
     firePropertyChange(EOModel.ENTITY, null, _entity);
-  }
-
-  public Object getAdapter(Class _adapter) {
-    Object adapter = null;
-    if (_adapter == IPropertySource.class) {
-      adapter = new EOModelPropertySource(this);
-    }
-    return adapter;
   }
 
   public int hashCode() {
@@ -401,6 +396,46 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
     }
   }
 
+  public void setUsername(String _userName) {
+    getConnectionDictionary().put("username", _userName);
+  }
+
+  public String getUsername() {
+    return (String) getConnectionDictionary().get("username");
+  }
+
+  public void setPassword(String _password) {
+    getConnectionDictionary().put("password", _password);
+  }
+
+  public String getPassword() {
+    return (String) getConnectionDictionary().get("password");
+  }
+
+  public void setPlugin(String _plugin) {
+    getConnectionDictionary().put("plugin", _plugin);
+  }
+
+  public String getPlugin() {
+    return (String) getConnectionDictionary().get("plugin");
+  }
+
+  public void setDriver(String _driver) {
+    getConnectionDictionary().put("driver", _driver);
+  }
+
+  public String getDriver() {
+    return (String) getConnectionDictionary().get("driver");
+  }
+
+  public void setURL(String _url) {
+    getConnectionDictionary().put("URL", _url);
+  }
+
+  public String getURL() {
+    return (String) getConnectionDictionary().get("URL");
+  }
+
   public void setConnectionDictionary(Map _connectionDictionary) {
     setConnectionDictionary(_connectionDictionary, true);
   }
@@ -538,7 +573,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
     modelMap.setSet("storedProcedures", storedProcedures, true);
 
     writeUserInfo(modelMap);
-    
+
     return modelMap;
   }
 
@@ -628,7 +663,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
   public String getFullyQualifiedName() {
     return myName;
   }
-  
+
   public String toString() {
     return "[EOModel: name = " + myName + "; entities = " + myEntities + "]";
   }
@@ -714,7 +749,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
     }
     return matchingAttribute;
   }
-  
+
   /** End Prototypes **/
 
   public static void main(String[] args) throws IOException, EOModelException {

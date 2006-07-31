@@ -201,13 +201,26 @@ public abstract class AbstractEOArgumentBasicEditorSection extends AbstractPrope
     myDataTypePanel.setLayout(myDataTypeStackLayout);
 
     myDataTypeToDataTypePanel = new HashMap();
+    myDataTypeToDataTypePanel.put(EODataType.BIGDECIMAL, new StringDataTypePanel(myDataTypePanel, SWT.NONE, getWidgetFactory()));
+    myDataTypeToDataTypePanel.put(EODataType.BYTE, new StringDataTypePanel(myDataTypePanel, SWT.NONE, getWidgetFactory()));
     myDataTypeToDataTypePanel.put(EODataType.CUSTOM, new CustomDataTypePanel(myDataTypePanel, SWT.NONE, getWidgetFactory()));
     myDataTypeToDataTypePanel.put(EODataType.DATA, new DataDataTypePanel(myDataTypePanel, SWT.NONE, getWidgetFactory()));
     myDataTypeToDataTypePanel.put(EODataType.DATE, new DateDataTypePanel(myDataTypePanel, SWT.NONE, getWidgetFactory()));
+    myDataTypeToDataTypePanel.put(EODataType.DATE_MSSQL, new DateDataTypePanel(myDataTypePanel, SWT.NONE, getWidgetFactory()));
+    myDataTypeToDataTypePanel.put(EODataType.DATE_OBJ, new DateDataTypePanel(myDataTypePanel, SWT.NONE, getWidgetFactory()));
     myDataTypeToDataTypePanel.put(EODataType.DECIMAL_NUMBER, new DecimalNumberDataTypePanel(myDataTypePanel, SWT.NONE, getWidgetFactory()));
     myDataTypeToDataTypePanel.put(EODataType.DOUBLE, new DoubleDataTypePanel(myDataTypePanel, SWT.NONE, getWidgetFactory()));
+    myDataTypeToDataTypePanel.put(EODataType.FLOAT, new DoubleDataTypePanel(myDataTypePanel, SWT.NONE, getWidgetFactory()));
     myDataTypeToDataTypePanel.put(EODataType.INTEGER, new IntegerDataTypePanel(myDataTypePanel, SWT.NONE, getWidgetFactory()));
+    myDataTypeToDataTypePanel.put(EODataType.LONG, new IntegerDataTypePanel(myDataTypePanel, SWT.NONE, getWidgetFactory()));
+    myDataTypeToDataTypePanel.put(EODataType.SHORT, new IntegerDataTypePanel(myDataTypePanel, SWT.NONE, getWidgetFactory()));
     myDataTypeToDataTypePanel.put(EODataType.STRING, new StringDataTypePanel(myDataTypePanel, SWT.NONE, getWidgetFactory()));
+    myDataTypeToDataTypePanel.put(EODataType.STRING_CHAR, new StringDataTypePanel(myDataTypePanel, SWT.NONE, getWidgetFactory()));
+    myDataTypeToDataTypePanel.put(EODataType.STRING_RTRIM, new StringDataTypePanel(myDataTypePanel, SWT.NONE, getWidgetFactory()));
+    myDataTypeToDataTypePanel.put(EODataType.STRING_SET, new StringDataTypePanel(myDataTypePanel, SWT.NONE, getWidgetFactory()));
+    myDataTypeToDataTypePanel.put(EODataType.STRING_UTF, new StringDataTypePanel(myDataTypePanel, SWT.NONE, getWidgetFactory()));
+    myDataTypeToDataTypePanel.put(EODataType.TIME, new DateDataTypePanel(myDataTypePanel, SWT.NONE, getWidgetFactory()));
+    myDataTypeToDataTypePanel.put(EODataType.TIMESTAMP, new DateDataTypePanel(myDataTypePanel, SWT.NONE, getWidgetFactory()));
 
     Iterator dataTypePanelsIter = myDataTypeToDataTypePanel.values().iterator();
     while (dataTypePanelsIter.hasNext()) {
@@ -248,7 +261,7 @@ public abstract class AbstractEOArgumentBasicEditorSection extends AbstractPrope
           IDataTypePanel dataTypePanel = (IDataTypePanel) dataTypePanelsIter.next();
           dataTypePanel.setArgument(_argument);
         }
-        updateAttributePanel();
+        updateAttributePanel(null);
         if (myArgument != null) {
           myArgument.addPropertyChangeListener(AbstractEOArgument.DATA_TYPE, myDataTypeChangeListener);
         }
@@ -292,10 +305,14 @@ public abstract class AbstractEOArgumentBasicEditorSection extends AbstractPrope
     myColumnNameDefinitionComposite.layout();
   }
 
-  protected void updateAttributePanel() {
+  protected void updateAttributePanel(EODataType _oldDataType) {
+    //System.out.println("AbstractEOArgumentBasicEditorSection.updateAttributePanel: updateAttributePanel");
     if (myArgument != null) {
       EODataType dataType = myArgument.getDataType();
       Control dataTypePanel = (Control) myDataTypeToDataTypePanel.get(dataType);
+      if (dataTypePanel == null) {
+        dataTypePanel = (Control)myDataTypeToDataTypePanel.get(EODataType.CUSTOM);
+      }
       myDataTypeStackLayout.topControl = dataTypePanel;
       myDataTypePanel.layout();
     }
@@ -309,7 +326,9 @@ public abstract class AbstractEOArgumentBasicEditorSection extends AbstractPrope
 
   protected class DataTypeChangeListener implements PropertyChangeListener {
     public void propertyChange(PropertyChangeEvent _event) {
-      AbstractEOArgumentBasicEditorSection.this.updateAttributePanel();
+      EODataType oldDataType = (EODataType) _event.getOldValue();
+      //System.out.println("DataTypeChangeListener.propertyChange: " + _event.getNewValue());
+      AbstractEOArgumentBasicEditorSection.this.updateAttributePanel(oldDataType);
     }
   }
 }

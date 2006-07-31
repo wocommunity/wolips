@@ -237,7 +237,7 @@
          point="org.eclipse.ui.views.properties.tabbed.propertySections">
       <propertySections contributorId="org.objectstyle.wolips.eomodeler.editors.EOModelEditor">
          <propertySection
-               class="org.objectstyle.wolips.eomodeler.properties.ConnectionDictionarySection"
+               class="org.objectstyle.wolips.eomodeler.properties.EOConnectionDictionarySection"
                id="org.objectstyle.wolips.eomodeler.sections.connectionDictionary"
                tab="org.objectstyle.wolips.eomodeler.tabs.connectionDictionary">
             <input type="org.objectstyle.wolips.eomodeler.model.EOModel"/>

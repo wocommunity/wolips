@@ -58,6 +58,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 import org.objectstyle.cayenne.exp.Expression;
@@ -629,7 +630,11 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
     }
     fetchSpecMap.setList("sortOrderings", sortOrderings, true);
 
-    EOModelMap hintsMap = new EOModelMap(fetchSpecMap.getMap("hints", true));
+    Map rawHintsMap = fetchSpecMap.getMap("hints", true);
+    if (rawHintsMap == null) {
+      rawHintsMap = new TreeMap(PropertyListComparator.AscendingPropertyListComparator);
+    }
+    EOModelMap hintsMap = new EOModelMap(rawHintsMap);
     hintsMap.setString("EOCustomQueryExpressionHintKey", myCustomQueryExpression, false);
     String storedProcedureName = (myStoredProcedure != null) ? myStoredProcedure.getName() : null;
     hintsMap.setString("EOStoredProcedureNameHintKey", storedProcedureName, true);

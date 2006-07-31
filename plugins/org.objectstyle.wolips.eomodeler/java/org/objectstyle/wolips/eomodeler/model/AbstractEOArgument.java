@@ -69,6 +69,7 @@ public abstract class AbstractEOArgument extends UserInfoableEOModelObject imple
   public static final String DEFINITION = "definition";
   public static final String WIDTH = "width";
   public static final String DATA_TYPE = "dataType";
+  public static final String SERVER_TIME_ZONE = "serverTimeZone";
 
   private String myName;
   private String myColumnName;
@@ -83,6 +84,7 @@ public abstract class AbstractEOArgument extends UserInfoableEOModelObject imple
   private Integer myWidth;
   private Boolean myAllowsNull;
   private String myDefinition;
+  private String myServerTimeZone;
   private EOModelMap myArgumentMap;
   private EODataType myDataType;
 
@@ -117,6 +119,7 @@ public abstract class AbstractEOArgument extends UserInfoableEOModelObject imple
     argument.myAdaptorValueConversionMethodName = myAdaptorValueConversionMethodName;
     argument.myScale = myScale;
     argument.myPrecision = myPrecision;
+    argument.myServerTimeZone = myServerTimeZone;
     argument.myWidth = myWidth;
     argument.myAllowsNull = myAllowsNull;
     argument.myDefinition = myDefinition;
@@ -235,6 +238,16 @@ public abstract class AbstractEOArgument extends UserInfoableEOModelObject imple
     myScale = _scale;
     firePropertyChange(AbstractEOArgument.SCALE, oldScale, getScale());
   }
+  
+  public String getServerTimeZone() {
+    return myServerTimeZone;
+  }
+  
+  public void setServerTimeZone(String _serverTimeZone) {
+    String oldServerTimeZone = getServerTimeZone();
+    myServerTimeZone = _serverTimeZone;
+    firePropertyChange(AbstractEOArgument.SERVER_TIME_ZONE, oldServerTimeZone, getServerTimeZone());
+  }
 
   public synchronized EODataType getDataType() {
     EODataType dataType = myDataType;
@@ -256,6 +269,14 @@ public abstract class AbstractEOArgument extends UserInfoableEOModelObject imple
     if (dataType == null) {
       dataType = EODataType.CUSTOM;
     }
+    setFactoryMethodArgumentType(null);
+    setAdaptorValueConversionMethodName(null);
+    setExternalType(null);
+    setPrecision(null);
+    setScale(null);
+    setServerTimeZone(null);
+    setValueFactoryMethodName(null);
+    setWidth(null);
     setValueClassName(dataType.getValueClass(), false);
     setValueType(dataType.getFirstValueType(), false);
     myDataType = dataType;
@@ -358,6 +379,7 @@ public abstract class AbstractEOArgument extends UserInfoableEOModelObject imple
     myValueFactoryMethodName = _argumentMap.getString("valueFactoryMethodName", true);
     myFactoryMethodArgumentType = EOFactoryMethodArgumentType.getFactoryMethodArgumentTypeByID(_argumentMap.getString("factoryMethodArgumentType", true));
     myAdaptorValueConversionMethodName = _argumentMap.getString("adaptorValueConversionMethodName", true);
+    myServerTimeZone = _argumentMap.getString("serverTimeZone", true);
     myAllowsNull = _argumentMap.getBoolean("allowsNull");
     myDefinition = _argumentMap.getString("definition", true);
     loadUserInfo(_argumentMap);
@@ -372,6 +394,7 @@ public abstract class AbstractEOArgument extends UserInfoableEOModelObject imple
     argumentMap.setInteger("scale", myScale);
     argumentMap.setInteger("precision", myPrecision);
     argumentMap.setInteger("width", myWidth);
+    argumentMap.setString("serverTimeZone", myServerTimeZone, true);
     argumentMap.remove("maximumLength");
     argumentMap.setString("valueType", myValueType, true);
     argumentMap.setString("valueClassName", myValueClassName, true);
