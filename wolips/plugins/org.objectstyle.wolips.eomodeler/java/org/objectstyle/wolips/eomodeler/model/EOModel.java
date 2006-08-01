@@ -455,7 +455,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
     return myConnectionDictionary;
   }
 
-  public Map getAlternativeConnectionDictionaries() {
+  public Map getExtraInfoDictionaries() {
     File[] connectionDictionaryFiles = myModelFolder.listFiles(new FileFilter() {
       public boolean accept(File _pathname) {
         return _pathname.getName().endsWith(".eosql");

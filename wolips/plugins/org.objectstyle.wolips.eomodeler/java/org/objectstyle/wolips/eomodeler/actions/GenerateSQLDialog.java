@@ -34,8 +34,8 @@ public class GenerateSQLDialog extends Dialog {
   private Text mySqlText;
   private EOModel myModel;
   private List myEntityNames;
-  private Map myAlternativeConnectionDictionaries;
-  private Combo myAlternativeConnectionDictionaryCombo;
+  private Map myExtraInfoDictionaries;
+  private Combo myExtraInfoCombo;
 
   public GenerateSQLDialog(Shell _parentShell, EOModel _model, List _entityNames) {
     super(_parentShell);
@@ -57,16 +57,16 @@ public class GenerateSQLDialog extends Dialog {
     layout.numColumns = 2;
     control.setLayout(layout);
 
-    myAlternativeConnectionDictionaries = myModel.getAlternativeConnectionDictionaries();
-    if (myAlternativeConnectionDictionaries.size() > 1) {
-      Set alternativeConnectionDictionaryNamesSet = myAlternativeConnectionDictionaries.keySet();
-      String[] alternativeConnectionDictionaryNames = (String[]) alternativeConnectionDictionaryNamesSet.toArray(new String[alternativeConnectionDictionaryNamesSet.size()]);
-      myAlternativeConnectionDictionaryCombo = new Combo(control, SWT.READ_ONLY);
-      GridData alternativeConnectionDictionaryData = new GridData(GridData.FILL_HORIZONTAL);
-      alternativeConnectionDictionaryData.horizontalSpan = 2;
-      myAlternativeConnectionDictionaryCombo.setLayoutData(alternativeConnectionDictionaryData);
-      myAlternativeConnectionDictionaryCombo.setItems(alternativeConnectionDictionaryNames);
-      myAlternativeConnectionDictionaryCombo.select(0);
+    myExtraInfoDictionaries = myModel.getExtraInfoDictionaries();
+    if (myExtraInfoDictionaries.size() > 1) {
+      Set extraInfoNamesSet = myExtraInfoDictionaries.keySet();
+      String[] extraInfoNames = (String[]) extraInfoNamesSet.toArray(new String[extraInfoNamesSet.size()]);
+      myExtraInfoCombo = new Combo(control, SWT.READ_ONLY);
+      GridData extraInfoData = new GridData(GridData.FILL_HORIZONTAL);
+      extraInfoData.horizontalSpan = 2;
+      myExtraInfoCombo.setLayoutData(extraInfoData);
+      myExtraInfoCombo.setItems(extraInfoNames);
+      myExtraInfoCombo.select(0);
     }
 
     myDropDatabaseButton = new Button(control, SWT.CHECK);
@@ -147,15 +147,15 @@ public class GenerateSQLDialog extends Dialog {
     flags.put("createDatabase", yesNo(myCreateDatabaseButton));
     flags.put("dropDatabase", yesNo(myDropDatabaseButton));
     try {
-      Map alternativeConnectionDictionary = null;
-      if (myAlternativeConnectionDictionaryCombo != null) {
-        int selectionIndex = myAlternativeConnectionDictionaryCombo.getSelectionIndex();
+      Map extraInfo = null;
+      if (myExtraInfoCombo != null) {
+        int selectionIndex = myExtraInfoCombo.getSelectionIndex();
         if (selectionIndex > 0) {
-          String alternativeConnectionDictionaryName = myAlternativeConnectionDictionaryCombo.getItem(selectionIndex);
-          alternativeConnectionDictionary = (Map) myAlternativeConnectionDictionaries.get(alternativeConnectionDictionaryName);
+          String extraInfoName = myExtraInfoCombo.getItem(selectionIndex);
+          extraInfo = (Map) myExtraInfoDictionaries.get(extraInfoName);
         }
       }
-      String sqlScript = SQLUtils.generateSqlScript(myModel, myEntityNames, flags, alternativeConnectionDictionary);
+      String sqlScript = SQLUtils.generateSqlScript(myModel, myEntityNames, flags, extraInfo);
       mySqlText.setText(sqlScript);
     }
     catch (Throwable t) {
