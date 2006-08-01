@@ -51,10 +51,15 @@ package org.objectstyle.wolips.eomodeler.model;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceVisitor;
@@ -67,22 +72,50 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.objectstyle.wolips.datasets.adaptable.Project;
+import org.objectstyle.wolips.eogenerator.model.EOGeneratorModel;
+import org.objectstyle.wolips.eogenerator.model.EOModelReference;
 import org.objectstyle.wolips.eomodeler.Activator;
 
 public class EclipseEOModelGroupFactory {
-  public static EOModel createModel(IResource _modelResource, Set _failures) throws CoreException, IOException, EOModelException {
+  public static EOModel createModel(IResource _modelResource, Set _failures) throws CoreException, IOException, EOModelException, ParseException {
     IProject project = _modelResource.getProject();
-    EOModelGroup modelGroup = EclipseEOModelGroupFactory.createModelGroup(project, _failures);
-    IContainer modelContainer;
-    if (_modelResource.getType() == IResource.FILE) {
-      modelContainer = _modelResource.getParent();
+    EOModel model = null;
+    EOModelGroup modelGroup;
+    if ("eomodelgroup".equals(_modelResource.getFileExtension())) {
+      modelGroup = new EOModelGroup();
+      EOGeneratorModel eogeneratorModel = EOGeneratorModel.createModelFromFile((IFile) _modelResource);
+      List modelRefList = new LinkedList();
+      modelRefList.addAll(eogeneratorModel.getModels());
+      modelRefList.addAll(eogeneratorModel.getRefModels());
+      Iterator modelIter = modelRefList.iterator();
+      while (modelIter.hasNext()) {
+        EOModelReference modelRef = (EOModelReference) modelIter.next();
+        String modelPath = modelRef.getPath(project);
+        File modelFolder = new File(modelPath);
+        if (!modelFolder.isAbsolute()) {
+          modelFolder = new File(project.getLocation().toFile(), modelPath);
+        }
+        EOModel modelGroupModel = modelGroup.addModelFromFolder(modelFolder, _failures);
+        if (model == null) {
+          model = modelGroupModel;
+        }
+      }
+      modelGroup.resolve(_failures);
+      modelGroup.verify(_failures);
     }
     else {
-      modelContainer = (IContainer) _modelResource;
+      IContainer modelContainer;
+      if (_modelResource.getType() == IResource.FILE) {
+        modelContainer = _modelResource.getParent();
+      }
+      else {
+        modelContainer = (IContainer) _modelResource;
+      }
+      modelGroup = EclipseEOModelGroupFactory.createModelGroup(project, _failures);
+      String modelFileName = modelContainer.getName();
+      String modelName = modelFileName.substring(0, modelFileName.indexOf('.'));
+      model = modelGroup.getModelNamed(modelName);
     }
-    String modelFileName = modelContainer.getName();
-    String modelName = modelFileName.substring(0, modelFileName.indexOf('.'));
-    EOModel model = modelGroup.getModelNamed(modelName);
     return model;
   }
 
