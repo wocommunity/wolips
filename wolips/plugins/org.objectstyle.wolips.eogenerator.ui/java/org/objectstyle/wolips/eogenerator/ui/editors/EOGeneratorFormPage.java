@@ -113,10 +113,12 @@ public class EOGeneratorFormPage extends FormPage {
   private TableViewer myModelsTableViewer;
   private TableViewer myRefModelsTableViewer;
   private TableViewer myDefinesTableViewer;
+  private boolean myModelGroupEditor;
 
-  public EOGeneratorFormPage(FormEditor _editor, EOGeneratorModel _model) {
-    super(_editor, "EOGeneratorForm", "EOGenerator Form");
+  public EOGeneratorFormPage(FormEditor _editor, EOGeneratorModel _model, boolean _modelGroupEditor) {
+    super(_editor, "EOGeneratorForm", (_modelGroupEditor) ? "EOModelGroup Form" : "EOGenerator Form");
     myModel = _model;
+    myModelGroupEditor = _modelGroupEditor;
   }
 
   protected void setInput(IEditorInput _input) {
@@ -143,16 +145,32 @@ public class EOGeneratorFormPage extends FormPage {
     body.setLayout(bodyLayout);
 
     ModelsTableContentProvider modelsModel = new ModelsTableContentProvider();
-    myModelsTableViewer = createModelsSection("Models", "These models will have Java files generated for all of their entities.", toolkit, body, modelsModel, modelsModel, new ModelAddModelListener(), new ModelRemoveModelListener());
+    String modelsDescription;
+    if (myModelGroupEditor) {
+      modelsDescription = "For editing a model group, there should only be one entry in the model list.  If there are multiple models, they will all be loaded into the group, but the first entry will be the model that is opened by entity modeler.";
+    }
+    else {
+      modelsDescription = "These models will have Java files generated for all of their entities.";
+    }
+    myModelsTableViewer = createModelsSection("Models", modelsDescription, toolkit, body, modelsModel, modelsModel, new ModelAddModelListener(), new ModelRemoveModelListener());
 
     RefModelsTableContentProvider refModelsModel = new RefModelsTableContentProvider();
-    myRefModelsTableViewer = createModelsSection("Referenced Models", "These models are used to resolve type references from models listed in the first section.  No Java files will be generated for these models.", toolkit, body, refModelsModel, refModelsModel, new RefModelAddModelListener(), new RefModelRemoveModelListener());
+    String refModelDescription;
+    if (myModelGroupEditor) {
+      refModelDescription = "Add all addition models that should be a model of this model group into the list below.";
+    }
+    else {
+      refModelDescription = "These models are used to resolve type references from models listed in the first section.  No Java files will be generated for these models.";
+    }
+    myRefModelsTableViewer = createModelsSection("Referenced Models", refModelDescription, toolkit, body, refModelsModel, refModelsModel, new RefModelAddModelListener(), new RefModelRemoveModelListener());
 
-    createNamingSection(toolkit, body);
+    if (!myModelGroupEditor) {
+      createNamingSection(toolkit, body);
 
-    createPathsSection(toolkit, body);
+      createPathsSection(toolkit, body);
 
-    createDefinesSection(toolkit, body);
+      createDefinesSection(toolkit, body);
+    }
 
     updateViewsFromModel();
 
@@ -471,12 +489,14 @@ public class EOGeneratorFormPage extends FormPage {
   protected void updateViewsFromModel() {
     myModelsTableViewer.setInput(myModel);
     myRefModelsTableViewer.setInput(myModel);
-    myDefinesTableViewer.setInput(myModel);
-    myDestinationEntry.setValue(myModel.getDestination());
-    mySubclassDestinationEntry.setValue(myModel.getSubclassDestination());
-    mySubclassTemplateEntry.setValue(myModel.getSubclassJavaTemplate(null));
-    myTemplateEntry.setValue(myModel.getJavaTemplate(null));
-    myTemplatesFolderEntry.setValue(myModel.getTemplateDir(null));
+    if (!myModelGroupEditor) {
+      myDefinesTableViewer.setInput(myModel);
+      myDestinationEntry.setValue(myModel.getDestination());
+      mySubclassDestinationEntry.setValue(myModel.getSubclassDestination());
+      mySubclassTemplateEntry.setValue(myModel.getSubclassJavaTemplate(null));
+      myTemplateEntry.setValue(myModel.getJavaTemplate(null));
+      myTemplatesFolderEntry.setValue(myModel.getTemplateDir(null));
+    }
   }
 
   protected Composite createSection(FormToolkit _toolkit, Composite _parent, String _title, String _description, int _spanColumns, int _sectionColumns) {

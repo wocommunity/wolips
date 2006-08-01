@@ -60,6 +60,8 @@ import org.objectstyle.wolips.eogenerator.model.EOGeneratorModel;
 
 public class EOGeneratorEditor extends FormEditor {
   private EOGeneratorModel myModel;
+  private EOGeneratorFormPage myFormPage;
+  private boolean myModelGroupEditor;
 
   public EOGeneratorEditor() {
     super();
@@ -71,6 +73,7 @@ public class EOGeneratorEditor extends FormEditor {
       FileEditorInput editorInput = (FileEditorInput) _input;
       IFile eogenFile = editorInput.getFile();
       myModel = EOGeneratorModel.createModelFromFile(eogenFile);
+      myModelGroupEditor = "eomodelgroup".equals(eogenFile.getFileExtension());
     }
     catch (Throwable e) {
       throw new RuntimeException("Failed to read EOGen file.", e);
@@ -79,7 +82,8 @@ public class EOGeneratorEditor extends FormEditor {
 
   protected void addPages() {
     try {
-      addPage(new EOGeneratorFormPage(this, myModel));
+      myFormPage = new EOGeneratorFormPage(this, myModel, myModelGroupEditor);
+      addPage(myFormPage);
     }
     catch (PartInitException e) {
       ErrorDialog.openError(getSite().getShell(), "Error creating form pages.", null, e.getStatus());
