@@ -79,7 +79,7 @@ public class EOFSQLGenerator {
   private EOModel myModel;
   private EOModelGroup myGroup;
 
-  public EOFSQLGenerator(String _modelName, List _modelFolders, List _entityNames, Map _flags) throws MalformedURLException {
+  public EOFSQLGenerator(String _modelName, List _modelFolders, List _entityNames, Map _flags, Map _overrideConnectionDictionary) throws MalformedURLException {
     myFlags = new NSMutableDictionary();
     Iterator entriesIter = _flags.entrySet().iterator();
     while (entriesIter.hasNext()) {
@@ -94,6 +94,19 @@ public class EOFSQLGenerator {
     }
     myEntities = new NSMutableArray();
     myModel = myGroup.modelNamed(_modelName);
+    if (_overrideConnectionDictionary != null) {
+      NSMutableDictionary connectionDictionary = new NSMutableDictionary();
+      Iterator overrideConnectionDictionaryIter = _overrideConnectionDictionary.entrySet().iterator();
+      while (overrideConnectionDictionaryIter.hasNext()) {
+        Map.Entry overrideEntry = (Map.Entry) overrideConnectionDictionaryIter.next();
+        Object key = overrideEntry.getKey();
+        Object value = overrideEntry.getValue();
+        if (key instanceof String && value instanceof String) {
+          connectionDictionary.setObjectForKey(value, key);
+        }
+      }
+      myModel.setConnectionDictionary(connectionDictionary);
+    }
     if (_entityNames == null) {
       Enumeration entitiesEnum = myModel.entities().objectEnumerator();
       while (entitiesEnum.hasMoreElements()) {
@@ -169,7 +182,8 @@ public class EOFSQLGenerator {
   }
 
   protected void fixDuplicateSingleTableInheritanceDropStatements(EOSynchronizationFactory _syncFactory, NSMutableDictionary _flags, StringBuffer _sqlBuffer) {
-    if ("NO".equals(_flags.objectForKey(EOSchemaGeneration.DropDatabaseKey)) && "YES".equals(_flags.objectForKey(EOSchemaGeneration.DropTablesKey))) {
+    if ("YES".equals(_flags.objectForKey(EOSchemaGeneration.DropTablesKey))) {
+      System.out.println("EOFSQLGenerator.fixDuplicateSingleTableInheritanceDropStatements: removing keys");
       NSMutableArray dropEntities = new NSMutableArray(myEntities);
       for (int entityNum = dropEntities.count() - 1; entityNum >= 0; entityNum--) {
         EOEntity entity = (EOEntity) dropEntities.objectAtIndex(entityNum);
@@ -187,7 +201,7 @@ public class EOFSQLGenerator {
         dropFlags.setObjectForKey("NO", EOSchemaGeneration.ForeignKeyConstraintsKey);
         dropFlags.setObjectForKey("NO", EOSchemaGeneration.CreateDatabaseKey);
         dropFlags.setObjectForKey("NO", EOSchemaGeneration.DropDatabaseKey);
-        _flags.removeObjectForKey(EOSchemaGeneration.DropTablesKey);
+        _flags.setObjectForKey("NO", EOSchemaGeneration.DropTablesKey);
         String dropSql = _syncFactory.schemaCreationScriptForEntities(dropEntities, dropFlags);
         _sqlBuffer.append(dropSql);
         _sqlBuffer.append("\n");
@@ -196,22 +210,25 @@ public class EOFSQLGenerator {
   }
 
   public String getSchemaCreationScript() {
-	  try {
-		  EODatabaseContext dbc = new EODatabaseContext(new EODatabase(myModel));
-		  EOAdaptorContext ac = dbc.adaptorContext();
-		  EOSynchronizationFactory sf = ((JDBCAdaptor) ac.adaptor()).plugIn().synchronizationFactory();
+    try {
+      EODatabaseContext dbc = new EODatabaseContext(new EODatabase(myModel));
+      EOAdaptorContext ac = dbc.adaptorContext();
+      EOSynchronizationFactory sf = ((JDBCAdaptor) ac.adaptor()).plugIn().synchronizationFactory();
 
-		  StringBuffer sqlBuffer = new StringBuffer();
-		  NSMutableDictionary flags = new NSMutableDictionary(myFlags);
-		  fixDuplicateSingleTableInheritanceDropStatements(sf, flags, sqlBuffer);
+      StringBuffer sqlBuffer = new StringBuffer();
+      NSMutableDictionary flags = new NSMutableDictionary(myFlags);
+      fixDuplicateSingleTableInheritanceDropStatements(sf, flags, sqlBuffer);
 
-		  String sql = sf.schemaCreationScriptForEntities(myEntities, flags);
-		  sqlBuffer.append(sql);
+      System.out.println("EOFSQLGenerator.getSchemaCreationScript: " + flags);
+      String sql = sf.schemaCreationScriptForEntities(myEntities, flags);
+      sqlBuffer.append(sql);
 
-		  return sqlBuffer.toString();
-	  } catch (Exception ex) {
-		  return ex.getMessage();
-	  }
+      return sqlBuffer.toString();
+    }
+    catch (Exception ex) {
+      ex.printStackTrace();
+      return ex.getMessage();
+    }
   }
 
   public static void main(String argv[]) throws MalformedURLException {
@@ -228,7 +245,7 @@ public class EOFSQLGenerator {
     File[] paths = new File[] { new File("/Library/Frameworks/JavaBusinessLogic.framework/Resources/Movies.eomodeld"), new File("/Library/Frameworks/JavaBusinessLogic.framework/Resources/Rentals.eomodeld") };
     // probably should have an option to change the connection dict to use a specific plugin or url
     // all entities in one model
-    EOFSQLGenerator generator1 = new EOFSQLGenerator("Movies", Arrays.asList(paths), null, flags);
+    EOFSQLGenerator generator1 = new EOFSQLGenerator("Movies", Arrays.asList(paths), null, flags, null);
     System.out.println("EOFSQLGenerator.main: " + NSBundle.mainBundle());
     System.out.println(generator1.getSchemaCreationScript());
     //
