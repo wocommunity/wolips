@@ -5,13 +5,21 @@
    <extension
          point="org.eclipse.ui.editors">
       <editor
-            name="EOGenerator Editor"
+            class="org.objectstyle.wolips.eogenerator.ui.editors.EOGeneratorEditor"
+            contributorClass="org.objectstyle.wolips.eogenerator.ui.editors.EOGeneratorEditorContributor"
+            default="true"
             extensions="eogen"
             icon="icons/eogenerator_wiz.gif"
-            contributorClass="org.objectstyle.wolips.eogenerator.ui.editors.EOGeneratorEditorContributor"
-            class="org.objectstyle.wolips.eogenerator.ui.editors.EOGeneratorEditor"
-            id="org.objectstyle.wolips.eogenerator.ui.editors.EOGeneratorEditor">
+            id="org.objectstyle.wolips.eogenerator.ui.editors.EOGeneratorEditor"
+            name="EOGenerator Editor">
       </editor>
+      <editor
+            class="org.objectstyle.wolips.eogenerator.ui.editors.EOGeneratorEditor"
+            default="true"
+            extensions="eomodelgroup"
+            icon="icons/eomodelGroup.gif"
+            id="org.objectstyle.wolips.eogenerator.ui.editors.EOModelGroupEditor"
+            name="EOModelGroup Editor"/>
    </extension>
    <extension
          point="org.eclipse.ui.popupMenus">

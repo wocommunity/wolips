@@ -107,6 +107,15 @@
          <description/>
          <selection class="org.eclipse.core.resources.IResource"/>
       </wizard>
+      <wizard
+            category="org.objectstyle.wolips.wizards"
+            class="org.objectstyle.wolips.wizards.EOModelGroupWizard"
+            icon="icons/woproject/eomodelGroup_wiz.gif"
+            id="org.objectstyle.wolips.wizards.new.eomodelgroup"
+            name="EOModelGroup">
+         <description/>
+         <selection class="org.eclipse.core.resources.IResource"/>
+      </wizard>
    </extension>
 <!-- =================================================================================== -->
 <!-- Extension: Action set in the perspective                                            -->

@@ -51,13 +51,17 @@ package org.objectstyle.wolips.eomodeler.editors;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
@@ -90,6 +94,8 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 import org.eclipse.ui.views.properties.IPropertySheetPage;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributor;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
+import org.objectstyle.wolips.eogenerator.model.EOGeneratorModel;
+import org.objectstyle.wolips.eogenerator.model.EOModelReference;
 import org.objectstyle.wolips.eomodeler.Activator;
 import org.objectstyle.wolips.eomodeler.EOModelerPerspectiveFactory;
 import org.objectstyle.wolips.eomodeler.Messages;
@@ -102,6 +108,7 @@ import org.objectstyle.wolips.eomodeler.model.EOAttribute;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOFetchSpecification;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
+import org.objectstyle.wolips.eomodeler.model.EOModelGroup;
 import org.objectstyle.wolips.eomodeler.model.EORelationship;
 import org.objectstyle.wolips.eomodeler.model.EOStoredProcedure;
 import org.objectstyle.wolips.eomodeler.model.EclipseEOModelGroupFactory;
@@ -365,11 +372,11 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
       e.printStackTrace();
     }
     catch (CoreException e) {
-        e.printStackTrace();
-      }
+      e.printStackTrace();
+    }
     catch (Exception e) {
-        e.printStackTrace();
-      }
+      e.printStackTrace();
+    }
     finally {
       showBusy(false);
     }
@@ -442,9 +449,34 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
       }
 
       myLoadFailures = new HashSet();
-      myModel = EclipseEOModelGroupFactory.createModel(fileEditorInput.getFile().getParent(), myLoadFailures);
-      if (openingEntityName != null) {
-        myOpeningEntity = myModel.getEntityNamed(openingEntityName);
+      if ("eomodelgroup".equals(file.getFileExtension())) {
+        EOModelGroup modelGroup = new EOModelGroup();
+        IProject project = file.getProject();
+        EOGeneratorModel eogeneratorModel = EOGeneratorModel.createModelFromFile(file);
+        List modelRefList = new LinkedList();
+        modelRefList.addAll(eogeneratorModel.getModels());
+        modelRefList.addAll(eogeneratorModel.getRefModels());
+        Iterator modelIter = modelRefList.iterator();
+        while (modelIter.hasNext()) {
+          EOModelReference modelRef = (EOModelReference) modelIter.next();
+          String modelPath = modelRef.getPath(project);
+          File modelFolder = new File(modelPath);
+          if (!modelFolder.isAbsolute()) {
+            modelFolder = new File(project.getLocation().toFile(), modelPath);
+          }
+          EOModel model = modelGroup.addModelFromFolder(modelFolder, myLoadFailures);
+          if (myModel == null) {
+            myModel = model;
+          }
+        }
+        modelGroup.resolve(myLoadFailures);
+        modelGroup.verify(myLoadFailures);
+      }
+      else {
+        myModel = EclipseEOModelGroupFactory.createModel(fileEditorInput.getFile().getParent(), myLoadFailures);
+        if (openingEntityName != null) {
+          myOpeningEntity = myModel.getEntityNamed(openingEntityName);
+        }
       }
       handleModelErrors(myLoadFailures);
 
