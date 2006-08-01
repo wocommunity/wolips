@@ -81,8 +81,8 @@ public class EOFSQLGenerator {
 
 	public EOFSQLGenerator(String _modelName, List _modelFolders, List _entityNames, Map _flags, Map _extraInfo) throws MalformedURLException {
 		myFlags = new NSMutableDictionary();
-		_extraInfo = (_extraInfo == null ? new HashMap() : _extraInfo);
-		String prototypeEntityName = (String) _extraInfo.get("prototypeEntityName");
+		Map extraInfo = (_extraInfo == null ? new HashMap() : _extraInfo);
+		String prototypeEntityName = (String) extraInfo.get("prototypeEntityName");
 
 		Iterator entriesIter = _flags.entrySet().iterator();
 		while (entriesIter.hasNext()) {
@@ -110,7 +110,7 @@ public class EOFSQLGenerator {
 		}
 		myEntities = new NSMutableArray();
 		myModel = myGroup.modelNamed(_modelName);
-			Map overrideConnectionDictionary = (Map)_extraInfo.get("connectionDictionary");
+			Map overrideConnectionDictionary = (Map)extraInfo.get("connectionDictionary");
 			if(overrideConnectionDictionary != null) {
 				NSMutableDictionary connectionDictionary = new NSMutableDictionary();
 				Iterator overrideConnectionDictionaryIter = overrideConnectionDictionary.entrySet().iterator();
@@ -200,7 +200,6 @@ public class EOFSQLGenerator {
 
 	protected void fixDuplicateSingleTableInheritanceDropStatements(EOSynchronizationFactory _syncFactory, NSMutableDictionary _flags, StringBuffer _sqlBuffer) {
 		if ("YES".equals(_flags.objectForKey(EOSchemaGeneration.DropTablesKey))) {
-			System.out.println("EOFSQLGenerator.fixDuplicateSingleTableInheritanceDropStatements: removing keys");
 			NSMutableArray dropEntities = new NSMutableArray(myEntities);
 			for (int entityNum = dropEntities.count() - 1; entityNum >= 0; entityNum--) {
 				EOEntity entity = (EOEntity) dropEntities.objectAtIndex(entityNum);
