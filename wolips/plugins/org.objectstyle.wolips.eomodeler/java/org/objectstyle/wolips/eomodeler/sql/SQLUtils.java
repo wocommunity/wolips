@@ -35,7 +35,6 @@ public class SQLUtils {
     }
     modelFiles.add(_model.getModelFolder());
 
-
     Constructor sqlGeneratorConstructor = sqlGeneratorClass.getConstructor(new Class[] { String.class, List.class, List.class, Map.class, Map.class });
     Object sqlGenerator = sqlGeneratorConstructor.newInstance(new Object[] { _model.getName(), modelFiles, _entityNames, _flags, _overrideConnectionDictionary });
     Method getSchemaCreationScriptMethod = sqlGeneratorClass.getMethod("getSchemaCreationScript", null);
