@@ -49,7 +49,6 @@ public class ClasspathUtils {
   }
 
   protected static void fillInClasspath(IClasspathEntry _entry, Set _classpathUrls, IJavaProject _project) throws MalformedURLException, JavaModelException {
-    //System.out.println("EOModelEditor.launch: " + _entry);
     if (_entry.getEntryKind() == IClasspathEntry.CPE_LIBRARY && _entry.getContentKind() == IPackageFragmentRoot.K_BINARY) {
       IPath path = _entry.getPath();
       File externalFile = path.toFile();
@@ -66,6 +65,14 @@ public class ClasspathUtils {
     else if (_entry.getEntryKind() == IClasspathEntry.CPE_PROJECT) {
       IProject dependencyProject = _project.getProject().getWorkspace().getRoot().getProject(_entry.getPath().lastSegment());
       ClasspathUtils.fillInClasspath(dependencyProject, _classpathUrls);
+    }
+    else if (_entry.getEntryKind() == IClasspathEntry.CPE_SOURCE) {
+      IPath outputLocation = _entry.getOutputLocation();
+      if (outputLocation == null || outputLocation.isEmpty()) {
+        outputLocation = _project.getOutputLocation();
+      }
+      IPath srcPath = _project.getProject().getWorkspace().getRoot().getLocation().append(outputLocation);
+      _classpathUrls.add(srcPath.toFile().toURL());
     }
   }
 
@@ -90,6 +97,7 @@ public class ClasspathUtils {
       URL classpathUrl = (URL) classpathIter.next();
       webobjectsClasspath.append(File.pathSeparator);
       webobjectsClasspath.append(classpathUrl.getPath());
+      //System.out.println("ClasspathUtils.createEOModelClassLoader: " + classpathUrl);
     }
     System.setProperty("com.webobjects.classpath", webobjectsClasspath.toString());
     ClassLoader eomodelClassLoader = ClasspathUtils.createEOModelClassLoader(classpathSet);
