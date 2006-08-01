@@ -15,9 +15,13 @@ import org.objectstyle.wolips.eomodeler.model.EOModel;
 import org.objectstyle.wolips.eomodeler.utils.ClasspathUtils;
 
 public class SQLUtils {
-  public static String generateSqlScript(EOModel _model, List _entityNames, Map _flags, Map _overrideConnectionDictionary) throws SecurityException, NoSuchMethodException, MalformedURLException, JavaModelException, ClassNotFoundException, IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException {
+  public static String generateSqlScript(EOModel _model, List _entityNames, Map _flags, Map _overrideConnectionDictionary) throws SecurityException, NoSuchMethodException, ClassNotFoundException, IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException, MalformedURLException, JavaModelException {
     ClassLoader eomodelClassLoader = ClasspathUtils.createEOModelClassLoader(_model);
-    Class sqlGeneratorClass = eomodelClassLoader.loadClass("org.objectstyle.wolips.eomodeler.sql.EOFSQLGenerator");
+    return generateSqlScript(_model, _entityNames, _flags, _overrideConnectionDictionary, eomodelClassLoader);
+  }
+
+  public static String generateSqlScript(EOModel _model, List _entityNames, Map _flags, Map _overrideConnectionDictionary, ClassLoader _eomodelClassLoader) throws SecurityException, NoSuchMethodException, ClassNotFoundException, IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException {
+    Class sqlGeneratorClass = _eomodelClassLoader.loadClass("org.objectstyle.wolips.eomodeler.sql.EOFSQLGenerator");
     
     List modelFiles = new LinkedList();
     //AK: I hope this does the right thing... we add all other models before the one in question

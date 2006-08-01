@@ -21,6 +21,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
 import org.objectstyle.wolips.eomodeler.sql.SQLUtils;
+import org.objectstyle.wolips.eomodeler.utils.ClasspathUtils;
 
 public class GenerateSQLDialog extends Dialog {
   private Button myDropDatabaseButton;
@@ -36,6 +37,7 @@ public class GenerateSQLDialog extends Dialog {
   private List myEntityNames;
   private Map myExtraInfoDictionaries;
   private Combo myExtraInfoCombo;
+  private ClassLoader myEOModelClassLoader;
 
   public GenerateSQLDialog(Shell _parentShell, EOModel _model, List _entityNames) {
     super(_parentShell);
@@ -155,7 +157,10 @@ public class GenerateSQLDialog extends Dialog {
           extraInfo = (Map) myExtraInfoDictionaries.get(extraInfoName);
         }
       }
-      String sqlScript = SQLUtils.generateSqlScript(myModel, myEntityNames, flags, extraInfo);
+      if (myEOModelClassLoader == null) {
+        myEOModelClassLoader = ClasspathUtils.createEOModelClassLoader(myModel);
+      }
+      String sqlScript = SQLUtils.generateSqlScript(myModel, myEntityNames, flags, extraInfo, myEOModelClassLoader);
       mySqlText.setText(sqlScript);
     }
     catch (Throwable t) {
