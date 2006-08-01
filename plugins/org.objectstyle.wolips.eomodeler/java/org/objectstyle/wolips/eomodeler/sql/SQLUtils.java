@@ -15,7 +15,7 @@ import org.objectstyle.wolips.eomodeler.model.EOModel;
 import org.objectstyle.wolips.eomodeler.utils.ClasspathUtils;
 
 public class SQLUtils {
-  public static String generateSqlScript(EOModel _model, List _entityNames, Map _flags) throws SecurityException, NoSuchMethodException, MalformedURLException, JavaModelException, ClassNotFoundException, IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException {
+  public static String generateSqlScript(EOModel _model, List _entityNames, Map _flags, Map _overrideConnectionDictionary) throws SecurityException, NoSuchMethodException, MalformedURLException, JavaModelException, ClassNotFoundException, IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException {
     ClassLoader eomodelClassLoader = ClasspathUtils.createEOModelClassLoader(_model);
     Class sqlGeneratorClass = Class.forName("org.objectstyle.wolips.eomodeler.sql.EOFSQLGenerator", true, eomodelClassLoader);
 
@@ -27,8 +27,8 @@ public class SQLUtils {
       modelFiles.add(otherModelFolder);
     }
 
-    Constructor sqlGeneratorConstructor = sqlGeneratorClass.getConstructor(new Class[] { String.class, List.class, List.class, Map.class });
-    Object sqlGenerator = sqlGeneratorConstructor.newInstance(new Object[] { _model.getName(), modelFiles, _entityNames, _flags });
+    Constructor sqlGeneratorConstructor = sqlGeneratorClass.getConstructor(new Class[] { String.class, List.class, List.class, Map.class, Map.class });
+    Object sqlGenerator = sqlGeneratorConstructor.newInstance(new Object[] { _model.getName(), modelFiles, _entityNames, _flags, _overrideConnectionDictionary });
     Method getSchemaCreationScriptMethod = sqlGeneratorClass.getMethod("getSchemaCreationScript", null);
     String sqlScript = (String) getSchemaCreationScriptMethod.invoke(sqlGenerator, null);
     return sqlScript;

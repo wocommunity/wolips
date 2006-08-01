@@ -50,10 +50,13 @@
 package org.objectstyle.wolips.eomodeler.model;
 
 import java.io.File;
+import java.io.FileFilter;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
@@ -448,8 +451,30 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
     }
   }
 
-  public NotificationMap getConnectionDictionary() {
+  public Map getConnectionDictionary() {
     return myConnectionDictionary;
+  }
+
+  public Map getAlternativeConnectionDictionaries() {
+    File[] connectionDictionaryFiles = myModelFolder.listFiles(new FileFilter() {
+      public boolean accept(File _pathname) {
+        return _pathname.getName().endsWith(".eosql");
+      }
+    });
+    Map alternativeConnectionDictionaries = new LinkedHashMap();
+    alternativeConnectionDictionaries.put("Default", getConnectionDictionary());
+    for (int connectionDictionaryNum = 0; connectionDictionaryNum < connectionDictionaryFiles.length; connectionDictionaryNum++) {
+      File connectionDictionaryFile = connectionDictionaryFiles[connectionDictionaryNum];
+      String name = connectionDictionaryFile.getName();
+      try {
+        Map alternativeConnectionDictionary = (Map) PropertyListSerialization.propertyListFromFile(connectionDictionaryFile);
+        alternativeConnectionDictionaries.put(name.substring(0, name.indexOf('.')), alternativeConnectionDictionary);
+      }
+      catch (FileNotFoundException e) {
+        e.printStackTrace();
+      }
+    }
+    return alternativeConnectionDictionaries;
   }
 
   public void loadFromFolder(File _modelFolder, Set _failures) throws EOModelException, IOException {
