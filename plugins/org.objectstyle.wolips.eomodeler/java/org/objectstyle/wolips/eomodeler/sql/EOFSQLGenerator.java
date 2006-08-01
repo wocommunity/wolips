@@ -74,186 +74,203 @@ import com.webobjects.foundation.NSMutableDictionary;
 import com.webobjects.jdbcadaptor.JDBCAdaptor;
 
 public class EOFSQLGenerator {
-  private NSMutableDictionary myFlags;
-  private NSMutableArray myEntities;
-  private EOModel myModel;
-  private EOModelGroup myGroup;
+	private NSMutableDictionary myFlags;
+	private NSMutableArray myEntities;
+	private EOModel myModel;
+	private EOModelGroup myGroup;
 
-  public EOFSQLGenerator(String _modelName, List _modelFolders, List _entityNames, Map _flags, Map _overrideConnectionDictionary) throws MalformedURLException {
-    myFlags = new NSMutableDictionary();
-    Iterator entriesIter = _flags.entrySet().iterator();
-    while (entriesIter.hasNext()) {
-      Map.Entry flag = (Map.Entry) entriesIter.next();
-      myFlags.setObjectForKey(flag.getValue(), flag.getKey());
-    }
-    myGroup = new EOModelGroup();
-    Iterator modelFoldersIter = _modelFolders.iterator();
-    while (modelFoldersIter.hasNext()) {
-      File modelFolder = (File) modelFoldersIter.next();
-      myGroup.addModelWithPathURL(modelFolder.toURL());
-    }
-    myEntities = new NSMutableArray();
-    myModel = myGroup.modelNamed(_modelName);
-    if (_overrideConnectionDictionary != null) {
-      NSMutableDictionary connectionDictionary = new NSMutableDictionary();
-      Iterator overrideConnectionDictionaryIter = _overrideConnectionDictionary.entrySet().iterator();
-      while (overrideConnectionDictionaryIter.hasNext()) {
-        Map.Entry overrideEntry = (Map.Entry) overrideConnectionDictionaryIter.next();
-        Object key = overrideEntry.getKey();
-        Object value = overrideEntry.getValue();
-        if (key instanceof String && value instanceof String) {
-          connectionDictionary.setObjectForKey(value, key);
-        }
-      }
-      myModel.setConnectionDictionary(connectionDictionary);
-    }
-    if (_entityNames == null) {
-      Enumeration entitiesEnum = myModel.entities().objectEnumerator();
-      while (entitiesEnum.hasMoreElements()) {
-        EOEntity entity = (EOEntity) entitiesEnum.nextElement();
-        if (!isPrototype(entity)) {// && entityUsesSeparateTable(entity)) {
-          myEntities.addObject(entity);
-        }
-      }
-    }
-    else {
-      Iterator entityNamesIter = _entityNames.iterator();
-      while (entityNamesIter.hasNext()) {
-        String entityName = (String) entityNamesIter.next();
-        EOEntity entity = myModel.entityNamed(entityName);
-        myEntities.addObject(entity);
-      }
-    }
+	public EOFSQLGenerator(String _modelName, List _modelFolders, List _entityNames, Map _flags, Map _extraInfo) throws MalformedURLException {
+		myFlags = new NSMutableDictionary();
+		_extraInfo = (_extraInfo == null ? new HashMap() : _extraInfo);
+		String prototypeEntityName = (String) _extraInfo.get("prototypeEntityName");
 
-    ensureSingleTableInheritanceParentEntitiesAreIncluded();
-    ensureSingleTableInheritanceChildEntitiesAreIncluded();
-  }
+		Iterator entriesIter = _flags.entrySet().iterator();
+		while (entriesIter.hasNext()) {
+			Map.Entry flag = (Map.Entry) entriesIter.next();
+			myFlags.setObjectForKey(flag.getValue(), flag.getKey());
+		}
+		myGroup = new EOModelGroup();
+		Iterator modelFoldersIter = _modelFolders.iterator();
+		while (modelFoldersIter.hasNext()) {
+			File modelFolder = (File) modelFoldersIter.next();
+			EOModel newModel = myGroup.addModelWithPathURL(modelFolder.toURL());
+			System.out.println("Loading model: " + newModel.name());
+			if(prototypeEntityName != null) {
+				EOEntity entity = newModel.entityNamed("EOPrototypes");
+				if(entity != null) {
+					newModel.removeEntity(entity);
+				}
+				entity = newModel.entityNamed(prototypeEntityName);
+				if(entity != null) {
+					newModel.removeEntity(entity);
+					entity.setName("EOPrototypes");
+					newModel.addEntity(entity);
+				}
+			}
+		}
+		myEntities = new NSMutableArray();
+		myModel = myGroup.modelNamed(_modelName);
+			Map overrideConnectionDictionary = (Map)_extraInfo.get("connectionDictionary");
+			if(overrideConnectionDictionary != null) {
+				NSMutableDictionary connectionDictionary = new NSMutableDictionary();
+				Iterator overrideConnectionDictionaryIter = overrideConnectionDictionary.entrySet().iterator();
+				while (overrideConnectionDictionaryIter.hasNext()) {
+					Map.Entry overrideEntry = (Map.Entry) overrideConnectionDictionaryIter.next();
+					Object key = overrideEntry.getKey();
+					Object value = overrideEntry.getValue();
+					if (key instanceof String && value instanceof String) {
+						connectionDictionary.setObjectForKey(value, key);
+					}
+				}
+				myModel.setConnectionDictionary(connectionDictionary);
+			}
+		if (_entityNames == null) {
+			Enumeration entitiesEnum = myModel.entities().objectEnumerator();
+			while (entitiesEnum.hasMoreElements()) {
+				EOEntity entity = (EOEntity) entitiesEnum.nextElement();
+				if (!isPrototype(entity)) {// && entityUsesSeparateTable(entity)) {
+					myEntities.addObject(entity);
+				}
+			}
+		}
+		else {
+			Iterator entityNamesIter = _entityNames.iterator();
+			while (entityNamesIter.hasNext()) {
+				String entityName = (String) entityNamesIter.next();
+				EOEntity entity = myModel.entityNamed(entityName);
+				myEntities.addObject(entity);
+			}
+		}
 
-  protected void ensureSingleTableInheritanceParentEntitiesAreIncluded() {
-    Enumeration entitiesEnum = new NSArray(myEntities).objectEnumerator();
-    while (entitiesEnum.hasMoreElements()) {
-      EOEntity entity = (EOEntity) entitiesEnum.nextElement();
-      ensureSingleTableInheritanceParentEntitiesAreIncluded(entity);
-    }
-  }
+		ensureSingleTableInheritanceParentEntitiesAreIncluded();
+		ensureSingleTableInheritanceChildEntitiesAreIncluded();
+	}
 
-  protected void ensureSingleTableInheritanceChildEntitiesAreIncluded() {
-    Enumeration entitiesEnum = myModel.entities().objectEnumerator();
-    while (entitiesEnum.hasMoreElements()) {
-      EOEntity entity = (EOEntity) entitiesEnum.nextElement();
-      if (isSingleTableInheritance(entity)) {
-        EOEntity parentEntity = entity.parentEntity();
-        if (myEntities.containsObject(parentEntity) && !myEntities.containsObject(entity)) {
-          myEntities.addObject(entity);
-        }
-      }
-    }
-  }
+	protected void ensureSingleTableInheritanceParentEntitiesAreIncluded() {
+		Enumeration entitiesEnum = new NSArray(myEntities).objectEnumerator();
+		while (entitiesEnum.hasMoreElements()) {
+			EOEntity entity = (EOEntity) entitiesEnum.nextElement();
+			ensureSingleTableInheritanceParentEntitiesAreIncluded(entity);
+		}
+	}
 
-  protected void ensureSingleTableInheritanceParentEntitiesAreIncluded(EOEntity _entity) {
-    if (isSingleTableInheritance(_entity)) {
-      EOEntity parentEntity = _entity.parentEntity();
-      if (!myEntities.containsObject(parentEntity)) {
-        myEntities.addObject(parentEntity);
-        ensureSingleTableInheritanceParentEntitiesAreIncluded(_entity);
-      }
-    }
-  }
+	protected void ensureSingleTableInheritanceChildEntitiesAreIncluded() {
+		Enumeration entitiesEnum = myModel.entities().objectEnumerator();
+		while (entitiesEnum.hasMoreElements()) {
+			EOEntity entity = (EOEntity) entitiesEnum.nextElement();
+			if (isSingleTableInheritance(entity)) {
+				EOEntity parentEntity = entity.parentEntity();
+				if (myEntities.containsObject(parentEntity) && !myEntities.containsObject(entity)) {
+					myEntities.addObject(entity);
+				}
+			}
+		}
+	}
 
-  protected boolean isPrototype(EOEntity _entity) {
-    String entityName = _entity.name();
-    boolean isPrototype = (entityName.startsWith("EO") && entityName.endsWith("Prototypes"));
-    return isPrototype;
-  }
+	protected void ensureSingleTableInheritanceParentEntitiesAreIncluded(EOEntity _entity) {
+		if (isSingleTableInheritance(_entity)) {
+			EOEntity parentEntity = _entity.parentEntity();
+			if (!myEntities.containsObject(parentEntity)) {
+				myEntities.addObject(parentEntity);
+				ensureSingleTableInheritanceParentEntitiesAreIncluded(_entity);
+			}
+		}
+	}
 
-  protected boolean isSingleTableInheritance(EOEntity _entity) {
-    EOEntity parentEntity = _entity.parentEntity();
-    return parentEntity != null && _entity.externalName() != null && _entity.externalName().equalsIgnoreCase(parentEntity.externalName());
-  }
+	protected boolean isPrototype(EOEntity _entity) {
+		String entityName = _entity.name();
+		boolean isPrototype = (entityName.startsWith("EO") && entityName.endsWith("Prototypes"));
+		return isPrototype;
+	}
 
-  protected boolean isInherited(EOAttribute _attribute) {
-    boolean inherited = false;
-    EOEntity parentEntity = _attribute.entity().parentEntity();
-    while (!inherited && parentEntity != null) {
-      inherited = (parentEntity.attributeNamed(_attribute.name()) != null);
-      parentEntity = parentEntity.parentEntity();
-    }
-    return inherited;
-  }
+	protected boolean isSingleTableInheritance(EOEntity _entity) {
+		EOEntity parentEntity = _entity.parentEntity();
+		return parentEntity != null && _entity.externalName() != null && _entity.externalName().equalsIgnoreCase(parentEntity.externalName());
+	}
 
-  protected void fixDuplicateSingleTableInheritanceDropStatements(EOSynchronizationFactory _syncFactory, NSMutableDictionary _flags, StringBuffer _sqlBuffer) {
-    if ("YES".equals(_flags.objectForKey(EOSchemaGeneration.DropTablesKey))) {
-      System.out.println("EOFSQLGenerator.fixDuplicateSingleTableInheritanceDropStatements: removing keys");
-      NSMutableArray dropEntities = new NSMutableArray(myEntities);
-      for (int entityNum = dropEntities.count() - 1; entityNum >= 0; entityNum--) {
-        EOEntity entity = (EOEntity) dropEntities.objectAtIndex(entityNum);
-        if (isSingleTableInheritance(entity)) {
-          dropEntities.removeObjectAtIndex(entityNum);
-        }
-      }
-      if (dropEntities.count() != myEntities.count()) {
-        NSMutableDictionary dropFlags = new NSMutableDictionary();
-        dropFlags.setObjectForKey("YES", EOSchemaGeneration.DropTablesKey);
-        dropFlags.setObjectForKey("NO", EOSchemaGeneration.DropPrimaryKeySupportKey);
-        dropFlags.setObjectForKey("NO", EOSchemaGeneration.CreateTablesKey);
-        dropFlags.setObjectForKey("NO", EOSchemaGeneration.CreatePrimaryKeySupportKey);
-        dropFlags.setObjectForKey("NO", EOSchemaGeneration.PrimaryKeyConstraintsKey);
-        dropFlags.setObjectForKey("NO", EOSchemaGeneration.ForeignKeyConstraintsKey);
-        dropFlags.setObjectForKey("NO", EOSchemaGeneration.CreateDatabaseKey);
-        dropFlags.setObjectForKey("NO", EOSchemaGeneration.DropDatabaseKey);
-        _flags.setObjectForKey("NO", EOSchemaGeneration.DropTablesKey);
-        String dropSql = _syncFactory.schemaCreationScriptForEntities(dropEntities, dropFlags);
-        _sqlBuffer.append(dropSql);
-        _sqlBuffer.append("\n");
-      }
-    }
-  }
+	protected boolean isInherited(EOAttribute _attribute) {
+		boolean inherited = false;
+		EOEntity parentEntity = _attribute.entity().parentEntity();
+		while (!inherited && parentEntity != null) {
+			inherited = (parentEntity.attributeNamed(_attribute.name()) != null);
+			parentEntity = parentEntity.parentEntity();
+		}
+		return inherited;
+	}
 
-  public String getSchemaCreationScript() {
-    try {
-      EODatabaseContext dbc = new EODatabaseContext(new EODatabase(myModel));
-      EOAdaptorContext ac = dbc.adaptorContext();
-      EOSynchronizationFactory sf = ((JDBCAdaptor) ac.adaptor()).plugIn().synchronizationFactory();
+	protected void fixDuplicateSingleTableInheritanceDropStatements(EOSynchronizationFactory _syncFactory, NSMutableDictionary _flags, StringBuffer _sqlBuffer) {
+		if ("YES".equals(_flags.objectForKey(EOSchemaGeneration.DropTablesKey))) {
+			System.out.println("EOFSQLGenerator.fixDuplicateSingleTableInheritanceDropStatements: removing keys");
+			NSMutableArray dropEntities = new NSMutableArray(myEntities);
+			for (int entityNum = dropEntities.count() - 1; entityNum >= 0; entityNum--) {
+				EOEntity entity = (EOEntity) dropEntities.objectAtIndex(entityNum);
+				if (isSingleTableInheritance(entity)) {
+					dropEntities.removeObjectAtIndex(entityNum);
+				}
+			}
+			if (dropEntities.count() != myEntities.count()) {
+				NSMutableDictionary dropFlags = new NSMutableDictionary();
+				dropFlags.setObjectForKey("YES", EOSchemaGeneration.DropTablesKey);
+				dropFlags.setObjectForKey("NO", EOSchemaGeneration.DropPrimaryKeySupportKey);
+				dropFlags.setObjectForKey("NO", EOSchemaGeneration.CreateTablesKey);
+				dropFlags.setObjectForKey("NO", EOSchemaGeneration.CreatePrimaryKeySupportKey);
+				dropFlags.setObjectForKey("NO", EOSchemaGeneration.PrimaryKeyConstraintsKey);
+				dropFlags.setObjectForKey("NO", EOSchemaGeneration.ForeignKeyConstraintsKey);
+				dropFlags.setObjectForKey("NO", EOSchemaGeneration.CreateDatabaseKey);
+				dropFlags.setObjectForKey("NO", EOSchemaGeneration.DropDatabaseKey);
+				_flags.setObjectForKey("NO", EOSchemaGeneration.DropTablesKey);
+				String dropSql = _syncFactory.schemaCreationScriptForEntities(dropEntities, dropFlags);
+				_sqlBuffer.append(dropSql);
+				_sqlBuffer.append("\n");
+			}
+		}
+	}
 
-      StringBuffer sqlBuffer = new StringBuffer();
-      NSMutableDictionary flags = new NSMutableDictionary(myFlags);
-      fixDuplicateSingleTableInheritanceDropStatements(sf, flags, sqlBuffer);
+	public String getSchemaCreationScript() {
+		try {
+			EODatabaseContext dbc = new EODatabaseContext(new EODatabase(myModel));
+			EOAdaptorContext ac = dbc.adaptorContext();
+			EOSynchronizationFactory sf = ((JDBCAdaptor) ac.adaptor()).plugIn().synchronizationFactory();
 
-      System.out.println("EOFSQLGenerator.getSchemaCreationScript: " + flags);
-      String sql = sf.schemaCreationScriptForEntities(myEntities, flags);
-      sqlBuffer.append(sql);
+			StringBuffer sqlBuffer = new StringBuffer();
+			NSMutableDictionary flags = new NSMutableDictionary(myFlags);
+			fixDuplicateSingleTableInheritanceDropStatements(sf, flags, sqlBuffer);
 
-      return sqlBuffer.toString();
-    }
-    catch (Exception ex) {
-      ex.printStackTrace();
-      return ex.getMessage();
-    }
-  }
+			System.out.println("EOFSQLGenerator.getSchemaCreationScript: " + flags);
+			String sql = sf.schemaCreationScriptForEntities(myEntities, flags);
+			sqlBuffer.append(sql);
 
-  public static void main(String argv[]) throws MalformedURLException {
-    Map flags = new HashMap();
-    flags.put(EOSchemaGeneration.DropTablesKey, "YES");
-    flags.put(EOSchemaGeneration.DropPrimaryKeySupportKey, "YES");
-    flags.put(EOSchemaGeneration.CreateTablesKey, "YES");
-    flags.put(EOSchemaGeneration.CreatePrimaryKeySupportKey, "YES");
-    flags.put(EOSchemaGeneration.PrimaryKeyConstraintsKey, "YES");
-    flags.put(EOSchemaGeneration.ForeignKeyConstraintsKey, "YES");
-    flags.put(EOSchemaGeneration.CreateDatabaseKey, "NO");
-    flags.put(EOSchemaGeneration.DropDatabaseKey, "NO");
+			return sqlBuffer.toString();
+		}
+		catch (Exception ex) {
+			ex.printStackTrace();
+			return ex.getMessage();
+		}
+	}
 
-    File[] paths = new File[] { new File("/Library/Frameworks/JavaBusinessLogic.framework/Resources/Movies.eomodeld"), new File("/Library/Frameworks/JavaBusinessLogic.framework/Resources/Rentals.eomodeld") };
-    // probably should have an option to change the connection dict to use a specific plugin or url
-    // all entities in one model
-    EOFSQLGenerator generator1 = new EOFSQLGenerator("Movies", Arrays.asList(paths), null, flags, null);
-    System.out.println("EOFSQLGenerator.main: " + NSBundle.mainBundle());
-    System.out.println(generator1.getSchemaCreationScript());
-    //
-    //    System.out.println("***********************************");
-    //
-    //    // only movie entity
-    //
-    //    EOFSQLGenerator generator2 = new EOFSQLGenerator("Movies", Arrays.asList(paths), Arrays.asList(new String[] { "Movie" }), optionsCreate);
-    //    System.out.println(generator2.getSchemaCreationScript());
-  }
+	public static void main(String argv[]) throws MalformedURLException {
+		Map flags = new HashMap();
+		flags.put(EOSchemaGeneration.DropTablesKey, "YES");
+		flags.put(EOSchemaGeneration.DropPrimaryKeySupportKey, "YES");
+		flags.put(EOSchemaGeneration.CreateTablesKey, "YES");
+		flags.put(EOSchemaGeneration.CreatePrimaryKeySupportKey, "YES");
+		flags.put(EOSchemaGeneration.PrimaryKeyConstraintsKey, "YES");
+		flags.put(EOSchemaGeneration.ForeignKeyConstraintsKey, "YES");
+		flags.put(EOSchemaGeneration.CreateDatabaseKey, "NO");
+		flags.put(EOSchemaGeneration.DropDatabaseKey, "NO");
+
+		File[] paths = new File[] { new File("/Library/Frameworks/JavaBusinessLogic.framework/Resources/Movies.eomodeld"), new File("/Library/Frameworks/JavaBusinessLogic.framework/Resources/Rentals.eomodeld") };
+		// probably should have an option to change the connection dict to use a specific plugin or url
+		// all entities in one model
+		EOFSQLGenerator generator1 = new EOFSQLGenerator("Movies", Arrays.asList(paths), null, flags, null);
+		System.out.println("EOFSQLGenerator.main: " + NSBundle.mainBundle());
+		System.out.println(generator1.getSchemaCreationScript());
+		//
+		//    System.out.println("***********************************");
+		//
+		//    // only movie entity
+		//
+		//    EOFSQLGenerator generator2 = new EOFSQLGenerator("Movies", Arrays.asList(paths), Arrays.asList(new String[] { "Movie" }), optionsCreate);
+		//    System.out.println(generator2.getSchemaCreationScript());
+	}
 }
