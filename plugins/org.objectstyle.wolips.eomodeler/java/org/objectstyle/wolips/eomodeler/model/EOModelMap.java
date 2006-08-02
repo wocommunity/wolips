@@ -67,11 +67,12 @@ public class EOModelMap implements Map {
   }
 
   public EOModelMap(Map _backingMap) {
-	if(_backingMap == null) {
-		myBackingMap = new TreeMap(PropertyListComparator.AscendingPropertyListComparator);
-	} else {
-		myBackingMap = _backingMap;
-	}
+    if (_backingMap == null) {
+      myBackingMap = new TreeMap(PropertyListComparator.AscendingPropertyListComparator);
+    }
+    else {
+      myBackingMap = _backingMap;
+    }
   }
 
   public EOModelMap cloneModelMap() {
@@ -204,11 +205,24 @@ public class EOModelMap implements Map {
   }
 
   public String getString(String _key, boolean _emptyIsNull) {
-    String value = (String) myBackingMap.get(_key);
-    if (_emptyIsNull && value != null && value.trim().length() == 0) {
-      value = null;
+    Object objValue = myBackingMap.get(_key);
+    String strValue;
+    if (objValue instanceof String) {
+      strValue = (String) objValue;
     }
-    return value;
+    else if (objValue instanceof Number) {
+      strValue = objValue.toString();
+    }
+    else if (objValue instanceof Boolean) {
+      strValue = objValue.toString();
+    }
+    else {
+      strValue = (String) objValue; // MS: Force a class cast in this case
+    }
+    if (_emptyIsNull && strValue != null && strValue.trim().length() == 0) {
+      strValue = null;
+    }
+    return strValue;
   }
 
   public void setInteger(String _key, Integer _value) {
