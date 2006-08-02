@@ -74,7 +74,8 @@ public class EOAttributeAdvancedEditorSection extends AbstractPropertySection {
   private EOAttribute myAttribute;
 
   private Button myReadOnlyButton;
-  private Button myIndexedButton;
+  private Button myClientClassPropertyButton;
+  //private Button myIndexedButton;
   private Text myReadFormatText;
   private Text myWriteFormatText;
 
@@ -104,8 +105,11 @@ public class EOAttributeAdvancedEditorSection extends AbstractPropertySection {
     getWidgetFactory().createCLabel(topForm, Messages.getString("EOAttribute." + EOAttribute.READ_ONLY), SWT.NONE);
     myReadOnlyButton = new Button(topForm, SWT.CHECK);
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EOAttribute." + EOAttribute.INDEXED), SWT.NONE);
-    myIndexedButton = new Button(topForm, SWT.CHECK);
+    //getWidgetFactory().createCLabel(topForm, Messages.getString("EOAttribute." + EOAttribute.INDEXED), SWT.NONE);
+    //myIndexedButton = new Button(topForm, SWT.CHECK);
+
+    getWidgetFactory().createCLabel(topForm, Messages.getString("EOAttribute." + EOAttribute.CLIENT_CLASS_PROPERTY), SWT.NONE);
+    myClientClassPropertyButton = new Button(topForm, SWT.CHECK);
 
     getWidgetFactory().createCLabel(topForm, Messages.getString("EOAttribute." + EOAttribute.READ_FORMAT), SWT.NONE);
     myReadFormatText = new Text(topForm, SWT.BORDER);
@@ -133,7 +137,8 @@ public class EOAttributeAdvancedEditorSection extends AbstractPropertySection {
     if (myAttribute != null) {
       myBindingContext = BindingFactory.createContext();
       myBindingContext.bind(myReadOnlyButton, new Property(myAttribute, EOAttribute.READ_ONLY), null);
-      myBindingContext.bind(myIndexedButton, new Property(myAttribute, EOAttribute.INDEXED), null);
+      //myBindingContext.bind(myIndexedButton, new Property(myAttribute, EOAttribute.INDEXED), null);
+      myBindingContext.bind(myClientClassPropertyButton, new Property(myAttribute, EOAttribute.CLIENT_CLASS_PROPERTY), null);
       myBindingContext.bind(myReadFormatText, new Property(myAttribute, EOAttribute.READ_FORMAT), null);
       myBindingContext.bind(myWriteFormatText, new Property(myAttribute, EOAttribute.WRITE_FORMAT), null);
     }

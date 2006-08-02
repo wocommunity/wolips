@@ -78,6 +78,7 @@ public class EOEntityAdvancedEditorSection extends AbstractPropertySection {
   private Button myCacheInMemoryButton;
   private Button myReadOnlyButton;
   private Text myExternalQueryText;
+  private Text myClientClassNameText;
 
   private DataBindingContext myBindingContext;
 
@@ -117,6 +118,11 @@ public class EOEntityAdvancedEditorSection extends AbstractPropertySection {
     myExternalQueryText = new Text(topForm, SWT.BORDER);
     GridData externalQueryFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
     myExternalQueryText.setLayoutData(externalQueryFieldLayoutData);
+
+    getWidgetFactory().createCLabel(topForm, Messages.getString("EOEntity." + EOEntity.CLIENT_CLASS_NAME), SWT.NONE);
+    myClientClassNameText = new Text(topForm, SWT.BORDER);
+    GridData clientClassNameLayoutData = new GridData(GridData.FILL_HORIZONTAL);
+    myClientClassNameText.setLayoutData(clientClassNameLayoutData);
   }
 
   public void setInput(IWorkbenchPart _part, ISelection _selection) {
@@ -131,6 +137,7 @@ public class EOEntityAdvancedEditorSection extends AbstractPropertySection {
       myBindingContext.bind(myCacheInMemoryButton, new Property(myEntity, EOEntity.CACHES_OBJECTS), null);
       myBindingContext.bind(myReadOnlyButton, new Property(myEntity, EOEntity.READ_ONLY), null);
       myBindingContext.bind(myExternalQueryText, new Property(myEntity, EOEntity.EXTERNAL_QUERY), null);
+      myBindingContext.bind(myClientClassNameText, new Property(myEntity, EOEntity.CLIENT_CLASS_NAME), null);
     }
   }
 

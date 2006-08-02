@@ -75,6 +75,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
   public static final String FETCH_SPECIFICATION = "fetchSpecification";
   public static final String NAME = "name";
   public static final String CLASS_NAME = "className";
+  public static final String CLIENT_CLASS_NAME = "clientClassName";
   public static final String PARENT = "parent";
   public static final String EXTERNAL_QUERY = "externalQuery";
   public static final String MAX_NUMBER_OF_INSTANCES_TO_BATCH_FETCH = "maxNumberOfInstancesToBatchFetch";
@@ -97,6 +98,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
   private String myName;
   private String myExternalName;
   private String myClassName;
+  private String myClientClassName;
   private String myRestrictingQualifier;
   private String myExternalQuery;
   private Boolean myCachesObjects;
@@ -192,6 +194,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     entity.myParent = myParent;
     entity.myExternalName = myExternalName;
     entity.myClassName = myClassName;
+    entity.myClientClassName = myClientClassName;
     entity.myRestrictingQualifier = myRestrictingQualifier;
     entity.myExternalQuery = myExternalQuery;
     entity.myCachesObjects = myCachesObjects;
@@ -556,6 +559,16 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     String oldClassName = myClassName;
     myClassName = _className;
     firePropertyChange(EOEntity.CLASS_NAME, oldClassName, myClassName);
+  }
+
+  public String getClientClassName() {
+    return myClientClassName;
+  }
+
+  public void setClientClassName(String _clientClassName) {
+    String oldClientClassName = myClientClassName;
+    myClientClassName = _clientClassName;
+    firePropertyChange(EOEntity.CLIENT_CLASS_NAME, oldClientClassName, myClientClassName);
   }
 
   public String getExternalName() {
@@ -1035,6 +1048,13 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     myName = _entityMap.getString("name", true);
     myExternalName = _entityMap.getString("externalName", true);
     myClassName = _entityMap.getString("className", true);
+
+    Map internalInfo = myEntityMap.getMap("internalInfo");
+    if (internalInfo != null) {
+      EOModelMap internalInfoModelMap = new EOModelMap(internalInfo);
+      myClientClassName = internalInfoModelMap.getString("_javaClientClassName", true);
+    }
+
     myCachesObjects = _entityMap.getBoolean("cachesObjects");
     if (_entityMap.containsKey("isFetchable")) {
       myAbstractEntity = Boolean.valueOf(!_entityMap.getBoolean("isFetchable").booleanValue());
@@ -1052,9 +1072,6 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     myExternalQuery = _entityMap.getString("externalQuery", true);
     myMaxNumberOfInstancesToBatchFetch = _entityMap.getInteger("maxNumberOfInstancesToBatchFetch");
     loadUserInfo(_entityMap);
-
-    //Map fetchSpecifications = _entityMap.getMap("fetchSpecificationDictionary");
-    // TODO: Fetch Specs
 
     Set attributeList = _entityMap.getSet("attributes");
     if (attributeList != null) {
@@ -1094,18 +1111,34 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
   public void loadFetchSpecsFromMap(EOModelMap _map, Set _failures) throws EOModelException {
     myFetchSpecsMap = _map;
     Set sharedObjectFetchSpecificationNames = myEntityMap.getSet("sharedObjectFetchSpecificationNames");
-    Iterator fetchSpecIter = _map.entrySet().iterator();
-    while (fetchSpecIter.hasNext()) {
-      Map.Entry fetchSpecEntry = (Map.Entry) fetchSpecIter.next();
-      String fetchSpecName = (String) fetchSpecEntry.getKey();
-      EOModelMap fetchSpecMap = new EOModelMap((Map) fetchSpecEntry.getValue());
-      EOFetchSpecification fetchSpec = new EOFetchSpecification(fetchSpecName);
-      fetchSpec.loadFromMap(fetchSpecMap, _failures);
-      if (sharedObjectFetchSpecificationNames != null && sharedObjectFetchSpecificationNames.contains(fetchSpecName)) {
-        fetchSpec.setSharesObjects(Boolean.TRUE, false);
+
+    if (_map != null && !_map.isEmpty()) {
+      Iterator fetchSpecIter = _map.entrySet().iterator();
+      while (fetchSpecIter.hasNext()) {
+        Map.Entry fetchSpecEntry = (Map.Entry) fetchSpecIter.next();
+        _addFetchSpecificationFromMap(fetchSpecEntry, _failures, sharedObjectFetchSpecificationNames);
       }
-      addFetchSpecification(fetchSpec, false, _failures);
     }
+
+    Map fetchSpecificationsDictionary = myEntityMap.getMap("fetchSpecificationDictionary");
+    if (fetchSpecificationsDictionary != null && !fetchSpecificationsDictionary.isEmpty()) {
+      Iterator fetchSpecIter = fetchSpecificationsDictionary.entrySet().iterator();
+      while (fetchSpecIter.hasNext()) {
+        Map.Entry fetchSpecEntry = (Map.Entry) fetchSpecIter.next();
+        _addFetchSpecificationFromMap(fetchSpecEntry, _failures, sharedObjectFetchSpecificationNames);
+      }
+    }
+  }
+
+  protected void _addFetchSpecificationFromMap(Map.Entry _fetchSpecEntry, Set _failures, Set _sharedObjectFetchSpecificationNames) throws EOModelException {
+    String fetchSpecName = (String) _fetchSpecEntry.getKey();
+    EOModelMap fetchSpecMap = new EOModelMap((Map) _fetchSpecEntry.getValue());
+    EOFetchSpecification fetchSpec = new EOFetchSpecification(fetchSpecName);
+    fetchSpec.loadFromMap(fetchSpecMap, _failures);
+    if (_sharedObjectFetchSpecificationNames != null && _sharedObjectFetchSpecificationNames.contains(fetchSpecName)) {
+      fetchSpec.setSharesObjects(Boolean.TRUE, false);
+    }
+    addFetchSpecification(fetchSpec, false, _failures);
   }
 
   public EOModelMap toEntityMap() {
@@ -1125,8 +1158,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     entityMap.setString("externalQuery", myExternalQuery, true);
     entityMap.setInteger("maxNumberOfInstancesToBatchFetch", myMaxNumberOfInstancesToBatchFetch);
 
-    //Map fetchSpecifications = _entityMap.getMap("fetchSpecificationDictionary");
-    // TODO: ???
+    entityMap.remove("fetchSpecificationDictionary");
 
     Set classProperties = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
     Set primaryKeyAttributes = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
@@ -1190,6 +1222,12 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     }
     else {
       internalInfoMap.remove("_clientClassPropertyNames");
+    }
+    if (myClientClassName != null && myClientClassName.length() > 0) {
+      internalInfoMap.put("_javaClientClassName", myClientClassName);
+    }
+    else {
+      internalInfoMap.remove("_javaClientClassName");
     }
     entityMap.setMap("internalInfo", internalInfoMap, false);
 
