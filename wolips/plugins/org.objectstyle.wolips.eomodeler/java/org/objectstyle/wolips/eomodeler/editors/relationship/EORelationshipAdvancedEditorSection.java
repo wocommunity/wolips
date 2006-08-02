@@ -71,6 +71,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.objectstyle.wolips.eomodeler.Messages;
+import org.objectstyle.wolips.eomodeler.model.EOAttribute;
 import org.objectstyle.wolips.eomodeler.model.EORelationship;
 import org.objectstyle.wolips.eomodeler.model.EORelationshipPath;
 import org.objectstyle.wolips.eomodeler.utils.BindingFactory;
@@ -81,6 +82,7 @@ public class EORelationshipAdvancedEditorSection extends AbstractPropertySection
   private Text myNumberOfToManyFaultsToBatchFetchText;
   private Button myOwnsDestinationButton;
   private Button myPropagatesPrimaryKeyButton;
+  private Button myClientClassPropertyButton;
 
   private DataBindingContext myBindingContext;
   private RelationshipPropertyChangeListener myRelationshipPropertyChangeListener;
@@ -116,6 +118,9 @@ public class EORelationshipAdvancedEditorSection extends AbstractPropertySection
 
     getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship." + EORelationship.PROPAGATES_PRIMARY_KEY), SWT.NONE);
     myPropagatesPrimaryKeyButton = new Button(topForm, SWT.CHECK);
+
+    getWidgetFactory().createCLabel(topForm, Messages.getString("EORelationship." + EORelationship.CLIENT_CLASS_PROPERTY), SWT.NONE);
+    myClientClassPropertyButton = new Button(topForm, SWT.CHECK);
   }
 
   public void setInput(IWorkbenchPart _part, ISelection _selection) {
@@ -135,6 +140,7 @@ public class EORelationshipAdvancedEditorSection extends AbstractPropertySection
       myBindingContext.bind(myNumberOfToManyFaultsToBatchFetchText, new Property(myRelationship, EORelationship.NUMBER_OF_TO_MANY_FAULTS_TO_BATCH_FETCH), new BindSpec(null, null, new RegexStringValidator("^[0-9]*$", "^[0-9]$", "Please enter a number"), null));
       myBindingContext.bind(myOwnsDestinationButton, new Property(myRelationship, EORelationship.OWNS_DESTINATION), null);
       myBindingContext.bind(myPropagatesPrimaryKeyButton, new Property(myRelationship, EORelationship.PROPAGATES_PRIMARY_KEY), null);
+      myBindingContext.bind(myClientClassPropertyButton, new Property(myRelationship, EORelationship.CLIENT_CLASS_PROPERTY), null);
       updateCardinalityEnabled();
     }
   }
