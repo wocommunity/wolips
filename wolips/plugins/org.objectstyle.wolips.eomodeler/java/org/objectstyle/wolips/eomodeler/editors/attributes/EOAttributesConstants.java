@@ -52,5 +52,5 @@ package org.objectstyle.wolips.eomodeler.editors.attributes;
 import org.objectstyle.wolips.eomodeler.model.EOAttribute;
 
 public class EOAttributesConstants {
-  public static final String[] COLUMNS = { EOAttribute.PRIMARY_KEY, EOAttribute.CLASS_PROPERTY, EOAttribute.USED_FOR_LOCKING, EOAttribute.ALLOWS_NULL, EOAttribute.PROTOTYPE, EOAttribute.NAME, EOAttribute.COLUMN_NAME };
+  public static final String[] COLUMNS = { EOAttribute.PRIMARY_KEY, EOAttribute.CLASS_PROPERTY, EOAttribute.USED_FOR_LOCKING, EOAttribute.ALLOWS_NULL, EOAttribute.PROTOTYPE, EOAttribute.NAME, EOAttribute.COLUMN_NAME, EOAttribute.WIDTH, EOAttribute.PRECISION, EOAttribute.SCALE };
 }
