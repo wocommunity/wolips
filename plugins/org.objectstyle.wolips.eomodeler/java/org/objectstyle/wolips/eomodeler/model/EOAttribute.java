@@ -75,7 +75,7 @@ public class EOAttribute extends AbstractEOArgument implements IEOAttribute, ISo
   public static final String INDEXED = "indexed";
   public static final String READ_ONLY = "readOnly";
   
-  private static final String[] PROTOTYPED_PROPERTIES = { EOAttribute.COLUMN_NAME, EOAttribute.ALLOWS_NULL, EOAttribute.ADAPTOR_VALUE_CONVERSION_METHOD_NAME, EOAttribute.EXTERNAL_TYPE, EOAttribute.FACTORY_METHOD_ARGUMENT_TYPE, EOAttribute.PRECISION, EOAttribute.SCALE, EOAttribute.VALUE_CLASS_NAME, EOAttribute.VALUE_FACTORY_METHOD_NAME, EOAttribute.VALUE_TYPE, EOAttribute.DEFINITION, EOAttribute.WIDTH, EOAttribute.READ_FORMAT, EOAttribute.WRITE_FORMAT, EOAttribute.INDEXED, EOAttribute.READ_ONLY };
+  private static final String[] PROTOTYPED_PROPERTIES = { AbstractEOArgument.NAME, AbstractEOArgument.COLUMN_NAME, AbstractEOArgument.ALLOWS_NULL, AbstractEOArgument.ADAPTOR_VALUE_CONVERSION_METHOD_NAME, AbstractEOArgument.EXTERNAL_TYPE, AbstractEOArgument.FACTORY_METHOD_ARGUMENT_TYPE, AbstractEOArgument.PRECISION, AbstractEOArgument.SCALE, AbstractEOArgument.VALUE_CLASS_NAME, AbstractEOArgument.VALUE_FACTORY_METHOD_NAME, AbstractEOArgument.VALUE_TYPE, AbstractEOArgument.DEFINITION, AbstractEOArgument.WIDTH, EOAttribute.READ_FORMAT, EOAttribute.WRITE_FORMAT, EOAttribute.INDEXED, EOAttribute.READ_ONLY };
 
   private static Map myCachedPropertyKeys;
 
