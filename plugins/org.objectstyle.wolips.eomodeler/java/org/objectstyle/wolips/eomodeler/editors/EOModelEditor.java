@@ -69,6 +69,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.internal.databinding.provisional.observable.set.SetDiff;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -376,8 +377,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
   }
 
   public boolean isDirty() {
-    // TODO Auto-generated method stub
-    return super.isDirty();
+    return myModel.isDirty();
   }
 
   public void doSaveAs() {
@@ -454,6 +454,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
       super.init(_site, fileEditorInput);
       updatePartName();
       _site.setSelectionProvider(this);
+      EOModelEditor.this.editorDirtyStateChanged();
     }
     catch (Exception e) {
       throw new PartInitException("Failed to create EOModelEditorInput for " + _editorInput + ".", e);
