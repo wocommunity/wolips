@@ -54,6 +54,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -102,6 +103,9 @@ public class GenerateSQLAction implements IWorkbenchWindowActionDelegate {
         }
 
         if (model != null) {
+          if (model.isDirty()) {
+            MessageDialog.openWarning(myWindow.getShell(), "Model Not Saved", "Your model has unsaved changes. Unsaved changes will not be reflected in generated SQL.");
+          }
           GenerateSQLDialog dialog = new GenerateSQLDialog(myWindow.getShell(), model, entityNames);
           dialog.open();
         }
