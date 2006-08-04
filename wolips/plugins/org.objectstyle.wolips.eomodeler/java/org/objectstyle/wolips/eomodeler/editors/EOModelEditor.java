@@ -51,6 +51,7 @@ package org.objectstyle.wolips.eomodeler.editors;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
@@ -69,7 +70,6 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.internal.databinding.provisional.observable.set.SetDiff;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -438,7 +438,6 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
       if ("plist".equalsIgnoreCase(file.getFileExtension())) {
         String name = file.getName();
         openingEntityName = name.substring(0, name.indexOf('.'));
-        fileEditorInput = new FileEditorInput(file.getParent().getFile(new Path("index.eomodeld")));
       }
 
       myLoadFailures = new HashSet();
@@ -446,6 +445,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
       if (openingEntityName != null) {
         myOpeningEntity = myModel.getEntityNamed(openingEntityName);
       }
+      fileEditorInput = new FileEditorInput(fileEditorInput.getFile().getWorkspace().getRoot().getFileForLocation(new Path(new File(myModel.getModelFolder(), "index.eomodeld").getAbsolutePath())));
       handleModelErrors(myLoadFailures);
 
       myModel.addPropertyChangeListener(EOModel.DIRTY, myDirtyModelListener);
