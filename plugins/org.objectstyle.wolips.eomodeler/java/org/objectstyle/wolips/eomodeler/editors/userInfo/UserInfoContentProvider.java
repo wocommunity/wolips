@@ -49,10 +49,13 @@
  */
 package org.objectstyle.wolips.eomodeler.editors.userInfo;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.objectstyle.wolips.eomodeler.model.EOModel;
 
 public class UserInfoContentProvider implements IStructuredContentProvider {
   public void dispose() {
@@ -60,7 +63,9 @@ public class UserInfoContentProvider implements IStructuredContentProvider {
   }
 
   public Object[] getElements(Object _inputElement) {
-    return ((Map) _inputElement).keySet().toArray();
+    Set keys = new HashSet(((Map) _inputElement).keySet());
+    keys.remove(EOModel.ENTITY_MODELER_KEY);
+    return keys.toArray();
   }
 
   public void inputChanged(Viewer _viewer, Object _oldInput, Object _newInput) {
