@@ -56,7 +56,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.viewers.ViewerSorter;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
 import org.objectstyle.wolips.eomodeler.model.EOModelContainer;
@@ -76,7 +75,7 @@ public class EOModelTreeViewUpdater {
     myTreeViewer = _treeViewer;
     myTreeViewer.setContentProvider(_contentProvider);
     myTreeViewer.setLabelProvider(new EOModelOutlineLabelProvider());
-    myTreeViewer.setSorter(new ViewerSorter());
+    myTreeViewer.setSorter(new EOModelOutlineViewerSorter());
     myModelListener = new ModelPropertyChangeListener();
     myEntityListener = new EntityPropertyChangeListener();
     myStoredProcedureListener = new StoredProcedurePropertyChangeListener();
@@ -172,7 +171,7 @@ public class EOModelTreeViewUpdater {
       TreeViewer treeViewer = getTreeViewer();
       if (treeViewer != null && !treeViewer.getTree().isDisposed()) {
         String changedPropertyName = _event.getPropertyName();
-        if (EOModel.ENTITIES.equals(changedPropertyName) || EOModel.STORED_PROCEDURES.equals(changedPropertyName)) {
+        if (EOModel.ENTITIES.equals(changedPropertyName) || EOModel.STORED_PROCEDURES.equals(changedPropertyName) || EOModel.DATABASE_CONFIGS.equals(changedPropertyName) || EOModel.DATABASE_CONFIG.equals(changedPropertyName)) {
           //getTreeViewer().refresh(true);
           treeViewer.refresh(true);
           refreshPropertyChangeListeners();

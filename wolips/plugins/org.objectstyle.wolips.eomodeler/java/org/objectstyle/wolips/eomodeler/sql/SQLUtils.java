@@ -15,12 +15,12 @@ import org.objectstyle.wolips.eomodeler.model.EOModel;
 import org.objectstyle.wolips.eomodeler.utils.ClasspathUtils;
 
 public class SQLUtils {
-  public static String generateSqlScript(EOModel _model, List _entityNames, Map _flags, Map _overrideConnectionDictionary) throws SecurityException, NoSuchMethodException, ClassNotFoundException, IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException, MalformedURLException, JavaModelException {
+  public static String generateSqlScript(EOModel _model, List _entityNames, Map _flags, Map _databaseConfig) throws SecurityException, NoSuchMethodException, ClassNotFoundException, IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException, MalformedURLException, JavaModelException {
     ClassLoader eomodelClassLoader = ClasspathUtils.createEOModelClassLoader(_model);
-    return generateSqlScript(_model, _entityNames, _flags, _overrideConnectionDictionary, eomodelClassLoader);
+    return generateSqlScript(_model, _entityNames, _flags, _databaseConfig, eomodelClassLoader);
   }
 
-  public static String generateSqlScript(EOModel _model, List _entityNames, Map _flags, Map _overrideConnectionDictionary, ClassLoader _eomodelClassLoader) throws SecurityException, NoSuchMethodException, ClassNotFoundException, IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException {
+  public static String generateSqlScript(EOModel _model, List _entityNames, Map _flags, Map _databaseConfig, ClassLoader _eomodelClassLoader) throws SecurityException, NoSuchMethodException, ClassNotFoundException, IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException {
     Class sqlGeneratorClass = _eomodelClassLoader.loadClass("org.objectstyle.wolips.eomodeler.sql.EOFSQLGenerator");
     
     List modelFiles = new LinkedList();
@@ -36,7 +36,7 @@ public class SQLUtils {
     modelFiles.add(_model.getModelFolder());
 
     Constructor sqlGeneratorConstructor = sqlGeneratorClass.getConstructor(new Class[] { String.class, List.class, List.class, Map.class, Map.class });
-    Object sqlGenerator = sqlGeneratorConstructor.newInstance(new Object[] { _model.getName(), modelFiles, _entityNames, _flags, _overrideConnectionDictionary });
+    Object sqlGenerator = sqlGeneratorConstructor.newInstance(new Object[] { _model.getName(), modelFiles, _entityNames, _flags, _databaseConfig });
     Method getSchemaCreationScriptMethod = sqlGeneratorClass.getMethod("getSchemaCreationScript", null);
     String sqlScript = (String) getSchemaCreationScriptMethod.invoke(sqlGenerator, null);
 

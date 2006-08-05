@@ -64,6 +64,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.objectstyle.wolips.eomodeler.model.EOArgument;
 import org.objectstyle.wolips.eomodeler.model.EOAttribute;
+import org.objectstyle.wolips.eomodeler.model.EODatabaseConfig;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOFetchSpecification;
 import org.objectstyle.wolips.eomodeler.model.EORelationship;
@@ -123,6 +124,10 @@ public class CopyAction extends Action implements IWorkbenchWindowActionDelegate
           else if (selectedObject instanceof EOArgument) {
             EOArgument argument = (EOArgument) selectedObject;
             selectedObjectsList.add(argument.cloneArgument());
+          }
+          else if (selectedObject instanceof EODatabaseConfig) {
+            EODatabaseConfig databaseConfig = (EODatabaseConfig) selectedObject;
+            selectedObjectsList.add(databaseConfig.cloneDatabaseConfig());
           }
         }
       }

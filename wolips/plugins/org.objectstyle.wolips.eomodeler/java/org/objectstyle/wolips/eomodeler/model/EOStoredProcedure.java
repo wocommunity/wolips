@@ -74,7 +74,7 @@ public class EOStoredProcedure extends UserInfoableEOModelObject implements ISor
 
   public EOStoredProcedure() {
     myStoredProcedureMap = new EOModelMap();
-    myArguments = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
+    myArguments = new PropertyListSet();
   }
 
   public EOStoredProcedure(String _name) {
@@ -264,7 +264,7 @@ public class EOStoredProcedure extends UserInfoableEOModelObject implements ISor
     Set oldArguments = null;
     if (_fireEvents) {
       oldArguments = myArguments;
-      Set newArguments = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
+      Set newArguments = new PropertyListSet();
       newArguments.addAll(myArguments);
       newArguments.add(_argument);
       myArguments = newArguments;
@@ -277,7 +277,7 @@ public class EOStoredProcedure extends UserInfoableEOModelObject implements ISor
 
   public void removeArgument(EOArgument _argument) {
     Set oldArguments = myArguments;
-    Set newArguments = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
+    Set newArguments = new PropertyListSet();
     newArguments.addAll(myArguments);
     newArguments.remove(_argument);
     myArguments = newArguments;
@@ -312,7 +312,7 @@ public class EOStoredProcedure extends UserInfoableEOModelObject implements ISor
     fetchSpecMap.setString("name", myName, true);
     fetchSpecMap.setString("externalName", myExternalName, true);
 
-    Set arguments = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
+    Set arguments = new PropertyListSet();
     Iterator argumentsIter = myArguments.iterator();
     while (argumentsIter.hasNext()) {
       EOArgument argument = (EOArgument) argumentsIter.next();

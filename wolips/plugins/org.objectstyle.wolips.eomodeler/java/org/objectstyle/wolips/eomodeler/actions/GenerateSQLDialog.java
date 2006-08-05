@@ -1,6 +1,8 @@
 package org.objectstyle.wolips.eomodeler.actions;
 
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -19,6 +21,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.objectstyle.wolips.eomodeler.model.EODatabaseConfig;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
 import org.objectstyle.wolips.eomodeler.sql.SQLUtils;
 import org.objectstyle.wolips.eomodeler.utils.ClasspathUtils;
@@ -35,8 +38,8 @@ public class GenerateSQLDialog extends Dialog {
   private Text mySqlText;
   private EOModel myModel;
   private List myEntityNames;
-  private Map myExtraInfoDictionaries;
-  private Combo myExtraInfoCombo;
+  private Set myDatabaseConfigs;
+  private Combo myDatabaseConfigCombo;
   private ClassLoader myEOModelClassLoader;
 
   public GenerateSQLDialog(Shell _parentShell, EOModel _model, List _entityNames) {
@@ -59,16 +62,21 @@ public class GenerateSQLDialog extends Dialog {
     layout.numColumns = 2;
     control.setLayout(layout);
 
-    myExtraInfoDictionaries = myModel.getExtraInfoDictionaries();
-    if (myExtraInfoDictionaries.size() > 1) {
-      Set extraInfoNamesSet = myExtraInfoDictionaries.keySet();
-      String[] extraInfoNames = (String[]) extraInfoNamesSet.toArray(new String[extraInfoNamesSet.size()]);
-      myExtraInfoCombo = new Combo(control, SWT.READ_ONLY);
+    myDatabaseConfigs = myModel.getDatabaseConfigs(true);
+    if (myDatabaseConfigs.size() > 1) {
+      List databaseConfigNames = new LinkedList();
+      Iterator databaseConfigsIter = myDatabaseConfigs.iterator();
+      while (databaseConfigsIter.hasNext()) {
+        EODatabaseConfig databaseConfig = (EODatabaseConfig) databaseConfigsIter.next();
+        databaseConfigNames.add(databaseConfig.getName());
+      }
+      String[] extraInfoNames = (String[]) databaseConfigNames.toArray(new String[databaseConfigNames.size()]);
+      myDatabaseConfigCombo = new Combo(control, SWT.READ_ONLY);
       GridData extraInfoData = new GridData(GridData.FILL_HORIZONTAL);
       extraInfoData.horizontalSpan = 2;
-      myExtraInfoCombo.setLayoutData(extraInfoData);
-      myExtraInfoCombo.setItems(extraInfoNames);
-      myExtraInfoCombo.select(0);
+      myDatabaseConfigCombo.setLayoutData(extraInfoData);
+      myDatabaseConfigCombo.setItems(extraInfoNames);
+      myDatabaseConfigCombo.select(0);
     }
 
     myDropDatabaseButton = new Button(control, SWT.CHECK);
@@ -149,18 +157,28 @@ public class GenerateSQLDialog extends Dialog {
     flags.put("createDatabase", yesNo(myCreateDatabaseButton));
     flags.put("dropDatabase", yesNo(myDropDatabaseButton));
     try {
-      Map extraInfo = null;
-      if (myExtraInfoCombo != null) {
-        int selectionIndex = myExtraInfoCombo.getSelectionIndex();
+      Map selectedDatabaseConfigDictionary = null;
+      if (myDatabaseConfigCombo != null) {
+        int selectionIndex = myDatabaseConfigCombo.getSelectionIndex();
         if (selectionIndex > 0) {
-          String extraInfoName = myExtraInfoCombo.getItem(selectionIndex);
-          extraInfo = (Map) myExtraInfoDictionaries.get(extraInfoName);
+          String selectedDatabaseConfigName = myDatabaseConfigCombo.getItem(selectionIndex);
+          Iterator databaseConfigsIter = myDatabaseConfigs.iterator();
+          EODatabaseConfig selectedDatabaseConfig = null;
+          while (selectedDatabaseConfig == null && databaseConfigsIter.hasNext()) {
+            EODatabaseConfig databaseConfig = (EODatabaseConfig) databaseConfigsIter.next();
+            if (databaseConfig.getName().equals(selectedDatabaseConfigName)) {
+              selectedDatabaseConfig = databaseConfig;
+            }
+          }
+          if (selectedDatabaseConfig != null) {
+            selectedDatabaseConfigDictionary = selectedDatabaseConfig.toMap().getBackingMap();
+          }
         }
       }
       if (myEOModelClassLoader == null) {
         myEOModelClassLoader = ClasspathUtils.createEOModelClassLoader(myModel);
       }
-      String sqlScript = SQLUtils.generateSqlScript(myModel, myEntityNames, flags, extraInfo, myEOModelClassLoader);
+      String sqlScript = SQLUtils.generateSqlScript(myModel, myEntityNames, flags, selectedDatabaseConfigDictionary, myEOModelClassLoader);
       mySqlText.setText(sqlScript);
     }
     catch (Throwable t) {

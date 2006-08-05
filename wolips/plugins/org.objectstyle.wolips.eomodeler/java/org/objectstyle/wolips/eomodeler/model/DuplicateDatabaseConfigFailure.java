@@ -47,57 +47,33 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eomodeler.outline;
+package org.objectstyle.wolips.eomodeler.model;
 
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.IActionBars;
-import org.eclipse.ui.part.IPageSite;
-import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
-import org.objectstyle.wolips.eomodeler.editors.EOModelClipboardHandler;
-import org.objectstyle.wolips.eomodeler.editors.EOModelEditor;
+public class DuplicateDatabaseConfigFailure extends EOModelVerificationFailure {
+  private EOModel myModel;
+  private String myDatabaseConfigName;
+  private String myNewDatabaseConfigName;
 
-public class EOModelContentOutlinePage extends ContentOutlinePage {
-  private EOModelTreeViewUpdater myUpdater;
-  private EOModelEditor myEditor;
-  private EOModelClipboardHandler myClipboardHandler;
-
-  public EOModelContentOutlinePage(EOModelEditor _editor) {
-    myClipboardHandler = new EOModelClipboardHandler();
-    myEditor = _editor;
+  public DuplicateDatabaseConfigFailure(EOModel _model, String _databaseConfigName, String _newDatabaseConfigName) {
+    this(_model, _databaseConfigName, _newDatabaseConfigName, null);
   }
 
-  protected void updateClipboardHandler() {
-    IPageSite site = getSite();
-    if (site != null && myEditor != null) {
-      IActionBars actionBars = site.getActionBars();
-      myClipboardHandler.attach(actionBars, myEditor);
-    }
+  public DuplicateDatabaseConfigFailure(EOModel _model, String _databaseConfigName, String _newDatabaseConfigName, Throwable _throwable) {
+    super("There was more than one entity named '" + _databaseConfigName + "' in " + _model.getName() + ", so one was renamed to '" + _newDatabaseConfigName + "'.", _throwable);
+    myModel = _model;
+    myDatabaseConfigName = _databaseConfigName;
+    myNewDatabaseConfigName = _newDatabaseConfigName;
   }
 
-  public void createControl(Composite _parent) {
-    super.createControl(_parent);
-    TreeViewer treeViewer = getTreeViewer();
-    myUpdater = new EOModelTreeViewUpdater(treeViewer, new EOModelOutlineContentProvider(true, true, true, true, true, true));
-    myUpdater.setModel(myEditor.getModel());
-    updateClipboardHandler();
-    //AK: commenting prevents an error in swt
-    // setFocus();
+  public EOModel getModel() {
+    return myModel;
   }
 
-  public void init(IPageSite _pageSite) {
-    super.init(_pageSite);
-    updateClipboardHandler();
+  public String getDatabaseConfigName() {
+    return myDatabaseConfigName;
   }
 
-  public void selectionChanged(SelectionChangedEvent _event) {
-    super.selectionChanged(_event);
-    myClipboardHandler.selectionChanged(_event);
-  }
-
-  public void setSelection(ISelection _selection) {
-    super.setSelection(_selection);
+  public String getNewDatabaseConfigName() {
+    return myNewDatabaseConfigName;
   }
 }

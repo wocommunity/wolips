@@ -54,7 +54,6 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-import java.util.TreeSet;
 
 public class EOModelGroup extends EOModelObject {
   public static final String MODELS = "models";
@@ -62,7 +61,7 @@ public class EOModelGroup extends EOModelObject {
   private Set myModels;
 
   public EOModelGroup() {
-    myModels = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
+    myModels = new PropertyListSet();
   }
 
   public Set getReferenceFailures() {
@@ -78,7 +77,7 @@ public class EOModelGroup extends EOModelObject {
   }
 
   public Set getEntityNames() {
-    Set entityNames = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
+    Set entityNames = new PropertyListSet();
     Iterator modelsIter = myModels.iterator();
     while (modelsIter.hasNext()) {
       EOModel model = (EOModel) modelsIter.next();
@@ -92,7 +91,7 @@ public class EOModelGroup extends EOModelObject {
   }
 
   public Set getEntities() {
-    Set entities = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
+    Set entities = new PropertyListSet();
     Iterator modelsIter = myModels.iterator();
     while (modelsIter.hasNext()) {
       EOModel model = (EOModel) modelsIter.next();
@@ -155,6 +154,22 @@ public class EOModelGroup extends EOModelObject {
     clearCachedPrototypes(_failures);
     firePropertyChange(EOModelGroup.MODELS, null, null);
     _model._setModelGroup(null);
+  }
+  
+  public Set getPrototypeEntities() {
+    Set prototypeEntities = new HashSet();
+    Iterator modelsIter = myModels.iterator();
+    while (modelsIter.hasNext()) {
+      EOModel model = (EOModel) modelsIter.next();
+      Iterator entitiesIter = model.getEntities().iterator();
+      while (entitiesIter.hasNext()) {
+        EOEntity entity = (EOEntity) entitiesIter.next();
+        if (entity.isPrototype()) {
+          prototypeEntities.add(entity);
+        }
+      }
+    }
+    return prototypeEntities;
   }
   
   protected void clearCachedPrototypes(Set _failures) {

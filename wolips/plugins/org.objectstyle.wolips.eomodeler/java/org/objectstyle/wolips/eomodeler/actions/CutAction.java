@@ -69,6 +69,7 @@ import org.eclipse.ui.PlatformUI;
 import org.objectstyle.wolips.eomodeler.editors.EOModelErrorDialog;
 import org.objectstyle.wolips.eomodeler.model.EOArgument;
 import org.objectstyle.wolips.eomodeler.model.EOAttribute;
+import org.objectstyle.wolips.eomodeler.model.EODatabaseConfig;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOFetchSpecification;
 import org.objectstyle.wolips.eomodeler.model.EOModelObject;
@@ -147,6 +148,11 @@ public class CutAction extends Action implements IWorkbenchWindowActionDelegate 
               EOArgument argument = (EOArgument) selectedObject;
               selectedObjectsList.add(argument.cloneArgument());
               argument.getStoredProcedure().removeArgument(argument);
+            }
+            else if (selectedObject instanceof EODatabaseConfig) {
+              EODatabaseConfig databaseConfig = (EODatabaseConfig) selectedObject;
+              selectedObjectsList.add(databaseConfig.cloneDatabaseConfig());
+              databaseConfig.getModel().removeDatabaseConfig(databaseConfig);
             }
           }
         }

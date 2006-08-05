@@ -60,6 +60,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.objectstyle.wolips.eomodeler.model.EOArgument;
 import org.objectstyle.wolips.eomodeler.model.EOAttribute;
+import org.objectstyle.wolips.eomodeler.model.EODatabaseConfig;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOFetchSpecification;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
@@ -159,6 +160,15 @@ public class PasteAction extends Action implements IWorkbenchWindowActionDelegat
             EOArgument clonedClipboardArgument = clipboardArgument.cloneArgument();
             clonedClipboardArgument.setName(storedProcedure.findUnusedArgumentName(clonedClipboardArgument.getName()));
             storedProcedure.addArgument(clonedClipboardArgument);
+          }
+        }
+        else if (clipboardObject instanceof EODatabaseConfig) {
+          EOModel model = EOModelUtils.getRelatedModel(selectedObject);
+          if (model != null) {
+            EODatabaseConfig clipboardDatabaseConfig = (EODatabaseConfig) clipboardObject;
+            EODatabaseConfig clonedClipboardDatabaseConfig = clipboardDatabaseConfig.cloneDatabaseConfig();
+            clonedClipboardDatabaseConfig.setName(model.findUnusedDatabaseConfigName(clonedClipboardDatabaseConfig.getName()), false);
+            model.addDatabaseConfig(clonedClipboardDatabaseConfig);
           }
         }
       }

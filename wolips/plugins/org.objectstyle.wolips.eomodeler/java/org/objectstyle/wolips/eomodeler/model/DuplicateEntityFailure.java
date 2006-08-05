@@ -69,11 +69,11 @@ public class DuplicateEntityFailure extends EOModelVerificationFailure {
     return myModel;
   }
 
-  public String getRelationshipName() {
+  public String getEntityName() {
     return myEntityName;
   }
 
-  public String getNewRelationshipName() {
+  public String getNewEntityName() {
     return myNewEntityName;
   }
 }

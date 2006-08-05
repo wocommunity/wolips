@@ -89,6 +89,7 @@
          <propertyCategory category="eofetchspec"/>
          <propertyCategory category="eostoredprocedure"/>
          <propertyCategory category="eoargument"/>
+         <propertyCategory category="eodatabaseconfig"/>
       </propertyContributor>
    </extension>
    <extension
@@ -231,13 +232,18 @@
                id="org.objectstyle.wolips.eomodeler.tabs.eoargumentUserInfo"
                image="icons/eoArgument.gif"
                label="User Info"/>
+         <propertyTab
+               category="eodatabaseconfig"
+               id="org.objectstyle.wolips.eomodeler.tabs.eodatabaseconfigBasic"
+               image="icons/sql.gif"
+               label="Config"/>
       </propertyTabs>
    </extension>
    <extension
          point="org.eclipse.ui.views.properties.tabbed.propertySections">
       <propertySections contributorId="org.objectstyle.wolips.eomodeler.editors.EOModelEditor">
          <propertySection
-               class="org.objectstyle.wolips.eomodeler.properties.EOConnectionDictionarySection"
+               class="org.objectstyle.wolips.eomodeler.properties.ConnectionDictionarySection"
                id="org.objectstyle.wolips.eomodeler.sections.connectionDictionary"
                tab="org.objectstyle.wolips.eomodeler.tabs.connectionDictionary">
             <input type="org.objectstyle.wolips.eomodeler.model.EOModel"/>
@@ -408,6 +414,13 @@
                tab="org.objectstyle.wolips.eomodeler.tabs.eoentityStoredProcedures">
             <input type="org.objectstyle.wolips.eomodeler.model.EOEntity"/>
          </propertySection>
+         <propertySection
+               class="org.objectstyle.wolips.eomodeler.properties.DatabaseConfigSection"
+               enablesFor="1"
+               id="org.objectstyle.wolips.eomodeler.sections.eodatabaseconfigBasic"
+               tab="org.objectstyle.wolips.eomodeler.tabs.eodatabaseconfigBasic">
+            <input type="org.objectstyle.wolips.eomodeler.model.EODatabaseConfig"/>
+         </propertySection>
       </propertySections>
    </extension>
    <extension
@@ -425,6 +438,14 @@
             id="org.objectstyle.wolips.eomodeler.actionSet"
             label="Entity Modeler"
             >
+         <action
+               class="org.objectstyle.wolips.eomodeler.actions.NewDatabaseConfigAction"
+               icon="icons/newDatabaseConfig.gif"
+               id="org.objectstyle.wolips.eomodeler.actions.newDatabaseConfig"
+               label="New Database Config"
+               style="push"
+               toolbarPath="/Normal"
+               tooltip="New Database Config"/>
          <action
                class="org.objectstyle.wolips.eomodeler.actions.GenerateSQLAction"
                icon="icons/sql.gif"

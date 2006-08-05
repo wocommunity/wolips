@@ -58,6 +58,7 @@ import org.objectstyle.wolips.eomodeler.model.AbstractEOAttributePath;
 import org.objectstyle.wolips.eomodeler.model.EOArgument;
 import org.objectstyle.wolips.eomodeler.model.EOAttribute;
 import org.objectstyle.wolips.eomodeler.model.EOAttributePath;
+import org.objectstyle.wolips.eomodeler.model.EODatabaseConfig;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOFetchSpecification;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
@@ -74,13 +75,15 @@ public class EOModelOutlineContentProvider implements ITreeContentProvider {
   private boolean myShowRelationships;
   private boolean myShowFetchSpecs;
   private boolean myShowStoredProcedures;
+  private boolean myShowDatabaseConfigs;
 
-  public EOModelOutlineContentProvider(boolean _showEntities, boolean _showAttributes, boolean _showRelationships, boolean _showFetchSpecs, boolean _showStoredProcedures) {
+  public EOModelOutlineContentProvider(boolean _showEntities, boolean _showAttributes, boolean _showRelationships, boolean _showFetchSpecs, boolean _showStoredProcedures, boolean _showDatabaseConfigs) {
     myShowEntities = _showEntities;
     myShowAttributes = _showAttributes;
     myShowRelationships = _showRelationships;
     myShowFetchSpecs = _showFetchSpecs;
     myShowStoredProcedures = _showStoredProcedures;
+    myShowDatabaseConfigs = _showDatabaseConfigs;
   }
 
   public Object[] getChildren(Object _parentElement) {
@@ -97,6 +100,9 @@ public class EOModelOutlineContentProvider implements ITreeContentProvider {
       }
       if (myShowStoredProcedures) {
         modelChildren.addAll(model.getStoredProcedures());
+      }
+      if (myShowDatabaseConfigs) {
+        modelChildren.addAll(model.getDatabaseConfigs(false));
       }
       children = modelChildren.toArray();
     }
@@ -164,6 +170,9 @@ public class EOModelOutlineContentProvider implements ITreeContentProvider {
     else if (_element instanceof EOStoredProcedure) {
       parent = ((EOStoredProcedure) _element).getModel();
     }
+    else if (_element instanceof EODatabaseConfig) {
+      parent = ((EODatabaseConfig) _element).getModel();
+    }
     else if (_element instanceof EOArgument) {
       parent = ((EOArgument) _element).getStoredProcedure();
     }
@@ -194,6 +203,9 @@ public class EOModelOutlineContentProvider implements ITreeContentProvider {
       hasChildren = false;
     }
     else if (_element instanceof EOArgument) {
+      hasChildren = false;
+    }
+    else if (_element instanceof EODatabaseConfig) {
       hasChildren = false;
     }
     return hasChildren;
