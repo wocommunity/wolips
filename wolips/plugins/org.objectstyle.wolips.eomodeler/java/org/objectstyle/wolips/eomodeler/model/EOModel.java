@@ -64,6 +64,7 @@ import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.utils.NotificationMap;
 
 public class EOModel extends UserInfoableEOModelObject implements IUserInfoable, ISortableEOModelObject, IConnectionDictionaryOwner {
+  public static final String ENTITY_MODELER_KEY = "_EntityModeler";
   public static final String DIRTY = "dirty";
   public static final String ENTITY = "entity";
   public static final String ADAPTOR_NAME = "adaptorName";
@@ -614,7 +615,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
       }
     }
 
-    EOModelMap entityModelerMap = new EOModelMap((Map) getUserInfo().get("_EntityModeler"));
+    EOModelMap entityModelerMap = new EOModelMap((Map) getUserInfo().get(EOModel.ENTITY_MODELER_KEY));
     Map databaseConfigs = entityModelerMap.getMap("databaseConfigs");
     if (databaseConfigs != null) {
       Iterator databaseConfigsIter = databaseConfigs.entrySet().iterator();
@@ -674,7 +675,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
     }
     modelMap.setSet("storedProcedures", storedProcedures, true);
 
-    EOModelMap entityModelerMap = new EOModelMap((Map) getUserInfo().get("_EntityModeler"));
+    EOModelMap entityModelerMap = new EOModelMap((Map) getUserInfo().get(EOModel.ENTITY_MODELER_KEY));
     Map databaseConfigs = new PropertyListMap();
     Iterator databaseConfigsIter = myDatabaseConfigs.iterator();
     while (databaseConfigsIter.hasNext()) {
@@ -683,10 +684,10 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
     }
     entityModelerMap.setMap("databaseConfigs", databaseConfigs, true);
     if (entityModelerMap.isEmpty()) {
-      getUserInfo().remove("_EntityModeler");
+      getUserInfo().remove(EOModel.ENTITY_MODELER_KEY);
     }
     else {
-      getUserInfo().put("_EntityModeler", entityModelerMap);
+      getUserInfo().put(EOModel.ENTITY_MODELER_KEY, entityModelerMap);
     }
 
     writeUserInfo(modelMap);
