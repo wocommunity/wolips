@@ -1,21 +1,31 @@
 package org.objectstyle.wolips.eomodeler.actions;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.MalformedURLException;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.jface.viewers.ILabelProviderListener;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -39,7 +49,7 @@ public class GenerateSQLDialog extends Dialog {
   private EOModel myModel;
   private List myEntityNames;
   private Set myDatabaseConfigs;
-  private Combo myDatabaseConfigCombo;
+  private ComboViewer myDatabaseConfigComboViewer;
   private ClassLoader myEOModelClassLoader;
 
   public GenerateSQLDialog(Shell _parentShell, EOModel _model, List _entityNames) {
@@ -64,19 +74,14 @@ public class GenerateSQLDialog extends Dialog {
 
     myDatabaseConfigs = myModel.getDatabaseConfigs(true);
     if (myDatabaseConfigs.size() > 1) {
-      List databaseConfigNames = new LinkedList();
-      Iterator databaseConfigsIter = myDatabaseConfigs.iterator();
-      while (databaseConfigsIter.hasNext()) {
-        EODatabaseConfig databaseConfig = (EODatabaseConfig) databaseConfigsIter.next();
-        databaseConfigNames.add(databaseConfig.getName());
-      }
-      String[] extraInfoNames = (String[]) databaseConfigNames.toArray(new String[databaseConfigNames.size()]);
-      myDatabaseConfigCombo = new Combo(control, SWT.READ_ONLY);
+      myDatabaseConfigComboViewer = new ComboViewer(control, SWT.READ_ONLY);
       GridData extraInfoData = new GridData(GridData.FILL_HORIZONTAL);
       extraInfoData.horizontalSpan = 2;
-      myDatabaseConfigCombo.setLayoutData(extraInfoData);
-      myDatabaseConfigCombo.setItems(extraInfoNames);
-      myDatabaseConfigCombo.select(0);
+      myDatabaseConfigComboViewer.setContentProvider(new DatabaseConfigContentProvider());
+      myDatabaseConfigComboViewer.setLabelProvider(new DatabaseConfigLabelProvider());
+      myDatabaseConfigComboViewer.setInput(myDatabaseConfigs);
+      myDatabaseConfigComboViewer.getCombo().setLayoutData(extraInfoData);
+      myDatabaseConfigComboViewer.setSelection(new StructuredSelection(myDatabaseConfigs.iterator().next()));
     }
 
     myDropDatabaseButton = new Button(control, SWT.CHECK);
@@ -122,7 +127,7 @@ public class GenerateSQLDialog extends Dialog {
   protected Control createButtonBar(Composite _parent) {
     Composite composite = new Composite(_parent, SWT.NONE);
     GridLayout layout = new GridLayout();
-    layout.numColumns = 2;
+    layout.numColumns = 3;
     layout.makeColumnsEqualWidth = true;
     layout.marginWidth = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_MARGIN);
     layout.marginHeight = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_MARGIN);
@@ -138,6 +143,9 @@ public class GenerateSQLDialog extends Dialog {
     Button generateSqlButton = new Button(composite, SWT.PUSH);
     generateSqlButton.setText("View SQL");
     generateSqlButton.addSelectionListener(new GenerateSqlHandler());
+    Button executeSqlButton = new Button(composite, SWT.PUSH);
+    executeSqlButton.setText("Execute SQL");
+    executeSqlButton.addSelectionListener(new ExecuteSqlHandler());
     getShell().setDefaultButton(generateSqlButton);
     return composite;
   }
@@ -146,7 +154,8 @@ public class GenerateSQLDialog extends Dialog {
     return (_button.getSelection()) ? "YES" : "NO";
   }
 
-  public void generateSql() {
+  public synchronized void generateSql() {
+    Text sqlText = mySqlText;
     Map flags = new HashMap();
     flags.put("dropTables", yesNo(myDropTablesButton));
     flags.put("dropPrimaryKeySupport", yesNo(myDropPrimaryKeySupportButton));
@@ -157,33 +166,72 @@ public class GenerateSQLDialog extends Dialog {
     flags.put("createDatabase", yesNo(myCreateDatabaseButton));
     flags.put("dropDatabase", yesNo(myDropDatabaseButton));
     try {
-      Map selectedDatabaseConfigDictionary = null;
-      if (myDatabaseConfigCombo != null) {
-        int selectionIndex = myDatabaseConfigCombo.getSelectionIndex();
-        if (selectionIndex > 0) {
-          String selectedDatabaseConfigName = myDatabaseConfigCombo.getItem(selectionIndex);
-          Iterator databaseConfigsIter = myDatabaseConfigs.iterator();
-          EODatabaseConfig selectedDatabaseConfig = null;
-          while (selectedDatabaseConfig == null && databaseConfigsIter.hasNext()) {
-            EODatabaseConfig databaseConfig = (EODatabaseConfig) databaseConfigsIter.next();
-            if (databaseConfig.getName().equals(selectedDatabaseConfigName)) {
-              selectedDatabaseConfig = databaseConfig;
-            }
+      Object eofSQLGenerator = SQLUtils.createEOFSQLGenerator(myModel, myEntityNames, getSelectedDatabaseConfigMap(), getEOModelClassLoader());
+      Method getSchemaCreationScriptMethod = eofSQLGenerator.getClass().getMethod("getSchemaCreationScript", new Class[] { Map.class });
+      String sqlScript = (String) getSchemaCreationScriptMethod.invoke(eofSQLGenerator, new Object[] { flags });
+      sqlText.setText(sqlScript);
+    }
+    catch (Throwable t) {
+      MessageDialog.openError(getShell(), "Error", getErrorMessage(t));
+    }
+  }
+
+  protected Map getSelectedDatabaseConfigMap() {
+    Map selectedDatabaseConfigMap = null;
+    if (myDatabaseConfigComboViewer != null) {
+      IStructuredSelection selection = (IStructuredSelection) myDatabaseConfigComboViewer.getSelection();
+      EODatabaseConfig selectedDatabaseConfig = (EODatabaseConfig) selection.getFirstElement();
+      if (selectedDatabaseConfig != null) {
+        selectedDatabaseConfigMap = selectedDatabaseConfig.toMap().getBackingMap();
+      }
+    }
+    return selectedDatabaseConfigMap;
+  }
+
+  protected ClassLoader getEOModelClassLoader() throws MalformedURLException, JavaModelException {
+    if (myEOModelClassLoader == null) {
+      myEOModelClassLoader = ClasspathUtils.createEOModelClassLoader(myModel);
+    }
+    return myEOModelClassLoader;
+  }
+
+  public synchronized void executeSql() {
+    try {
+      generateSql();
+      Object eofSQLGenerator = SQLUtils.createEOFSQLGenerator(myModel, myEntityNames, getSelectedDatabaseConfigMap(), getEOModelClassLoader());
+      Method executeSQLMethod = eofSQLGenerator.getClass().getMethod("executeSQL", new Class[] { String.class });
+      String allSql = mySqlText.getText();
+      String[] statements = allSql.split(";");
+      boolean cancel = false;
+      for (int statementsNum = 0; !cancel && statementsNum < statements.length; statementsNum++) {
+        String statement = statements[statementsNum];
+        statement = statement.trim().replaceAll("[\n\r]", " ");
+        if (statement.length() > 0) {
+          try {
+            executeSQLMethod.invoke(eofSQLGenerator, new Object[] { statement });
           }
-          if (selectedDatabaseConfig != null) {
-            selectedDatabaseConfigDictionary = selectedDatabaseConfig.toMap().getBackingMap();
+          catch (Throwable t) {
+            cancel = MessageDialog.openQuestion(getShell(), "Error", getErrorMessage(t) + "  Do you want to cancel the rest of the script?");
           }
         }
       }
-      if (myEOModelClassLoader == null) {
-        myEOModelClassLoader = ClasspathUtils.createEOModelClassLoader(myModel);
-      }
-      String sqlScript = SQLUtils.generateSqlScript(myModel, myEntityNames, flags, selectedDatabaseConfigDictionary, myEOModelClassLoader);
-      mySqlText.setText(sqlScript);
     }
     catch (Throwable t) {
-      t.printStackTrace();
+      MessageDialog.openError(getShell(), "Error", getErrorMessage(t));
     }
+  }
+
+  protected String getErrorMessage(Throwable _t) {
+    _t.printStackTrace();
+    String message;
+    if (_t instanceof InvocationTargetException) {
+      Throwable cause = _t.getCause();
+      message = cause.getClass().getName() + ": " + cause.getMessage();
+    }
+    else {
+      message = _t.getClass().getName() + ": " + _t.getMessage();
+    }
+    return message;
   }
 
   public class GenerateSqlHandler implements SelectionListener {
@@ -196,6 +244,16 @@ public class GenerateSQLDialog extends Dialog {
     }
   }
 
+  public class ExecuteSqlHandler implements SelectionListener {
+    public void widgetDefaultSelected(SelectionEvent _e) {
+      widgetSelected(_e);
+    }
+
+    public void widgetSelected(SelectionEvent _e) {
+      GenerateSQLDialog.this.executeSql();
+    }
+  }
+
   public class CloseHandler implements SelectionListener {
     public void widgetDefaultSelected(SelectionEvent _e) {
       widgetSelected(_e);
@@ -204,5 +262,55 @@ public class GenerateSQLDialog extends Dialog {
     public void widgetSelected(SelectionEvent _e) {
       GenerateSQLDialog.this.close();
     }
+  }
+
+  protected class DatabaseConfigLabelProvider implements ILabelProvider {
+    public void addListener(ILabelProviderListener _listener) {
+      // DO NOTHING
+    }
+
+    public void dispose() {
+      // DO NOTHING
+    }
+
+    public Image getImage(Object _element) {
+      return null;
+    }
+
+    public String getText(Object _element) {
+      EODatabaseConfig config = (EODatabaseConfig) _element;
+      StringBuffer text = new StringBuffer();
+      text.append(config.getName());
+      text.append(" (");
+      text.append(config.getUsername());
+      text.append(" @ ");
+      text.append(config.getURL());
+      text.append(")");
+      return text.toString();
+    }
+
+    public boolean isLabelProperty(Object _element, String _property) {
+      return true;
+    }
+
+    public void removeListener(ILabelProviderListener _listener) {
+      // DO NOTHING
+    }
+
+  }
+
+  protected class DatabaseConfigContentProvider implements IStructuredContentProvider {
+    public void dispose() {
+      // DO NOTHING
+    }
+
+    public Object[] getElements(Object _inputElement) {
+      return ((Set) _inputElement).toArray();
+    }
+
+    public void inputChanged(Viewer _viewer, Object _oldInput, Object _newInput) {
+      // DO NOTHING
+    }
+
   }
 }
