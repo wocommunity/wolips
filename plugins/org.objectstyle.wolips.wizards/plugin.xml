@@ -136,8 +136,8 @@
                id="org.objectstyle.wolips.wizards.actions.OpenEOModelWizard">
          </action>
          <action
-               label="EOGnerator"
-               icon="icons/woproject/eomodel_wiz.gif"
+               label="EOGenerator"
+               icon="icons/woproject/eogenerator_wiz.gif"
                class="org.objectstyle.wolips.wizards.actions.OpenEOGeneratorWizard"
                tooltip="New EOGenerator"
                toolbarPath="Normal/WOLipsWizards"
@@ -231,6 +231,18 @@
                menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group4"
                id="org.objectstyle.wolips.wizards.actions.UpgradeAllBuildXML">
          </action>
+      </objectContribution>
+      <objectContribution
+            adaptable="false"
+            id="org.objectstyle.wolips.wizards.actions.eogenFromEOModel"
+            nameFilter="*.eomodeld"
+            objectClass="org.eclipse.core.resources.IResource">
+         <action
+               class="org.objectstyle.wolips.wizards.actions.CreateEOGenFromEOModelAction"
+               icon="icons/woproject/eogenerator_wiz.gif"
+               id="org.objectstyle.wolips.wizards.actions.eogenFromEOModel"
+               label="Create EOGenerator File"
+               menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group4"/>
       </objectContribution>
    </extension>
 </plugin>
