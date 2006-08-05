@@ -110,7 +110,7 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
     myClass = "EOFetchSpecification";
     mySortOrderings = new LinkedList();
     myFetchSpecMap = new EOModelMap();
-    myPrefetchingRelationshipKeyPaths = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
+    myPrefetchingRelationshipKeyPaths = new PropertyListSet();
   }
 
   public EOFetchSpecification cloneFetchSpecification() {
@@ -120,12 +120,12 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
     fetchSpec.myDeep = myDeep;
     fetchSpec.myLocksObjects = myLocksObjects;
     if (myPrefetchingRelationshipKeyPaths != null) {
-      fetchSpec.myPrefetchingRelationshipKeyPaths = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
+      fetchSpec.myPrefetchingRelationshipKeyPaths = new PropertyListSet();
       fetchSpec.myPrefetchingRelationshipKeyPaths.addAll(myPrefetchingRelationshipKeyPaths);
     }
     fetchSpec.myPromptsAfterFetchLimit = myPromptsAfterFetchLimit;
     if (myRawRowKeyPaths != null) {
-      fetchSpec.myRawRowKeyPaths = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
+      fetchSpec.myRawRowKeyPaths = new PropertyListSet();
       fetchSpec.myRawRowKeyPaths.addAll(myRawRowKeyPaths);
     }
     fetchSpec.myRefreshesRefetchedObjects = myRefreshesRefetchedObjects;
@@ -407,7 +407,7 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
   public void addPrefetchingRelationshipKeyPath(String _prefetchingRelationshipKeyPath, boolean _fireEvents) {
     if (_fireEvents) {
       Set oldPrefetchingRelationshipKeyPaths = myPrefetchingRelationshipKeyPaths;
-      myPrefetchingRelationshipKeyPaths = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
+      myPrefetchingRelationshipKeyPaths = new PropertyListSet();
       if (oldPrefetchingRelationshipKeyPaths != null) {
         myPrefetchingRelationshipKeyPaths.addAll(oldPrefetchingRelationshipKeyPaths);
       }
@@ -423,7 +423,7 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
     if (_fireEvents) {
       Set oldPrefetchingRelationshipKeyPaths = myPrefetchingRelationshipKeyPaths;
       if (oldPrefetchingRelationshipKeyPaths != null) {
-        myPrefetchingRelationshipKeyPaths = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
+        myPrefetchingRelationshipKeyPaths = new PropertyListSet();
         myPrefetchingRelationshipKeyPaths.addAll(oldPrefetchingRelationshipKeyPaths);
         myPrefetchingRelationshipKeyPaths.remove(_prefetchingRelationshipKeyPath);
       }
@@ -442,7 +442,7 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
 
   public void fetchAllAttributesAsRawRows() {
     Set oldRawRowKeyPaths = myRawRowKeyPaths;
-    myRawRowKeyPaths = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
+    myRawRowKeyPaths = new PropertyListSet();
     firePropertyChange(EOFetchSpecification.RAW_ROW_KEY_PATHS, oldRawRowKeyPaths, myRawRowKeyPaths);
   }
 
@@ -471,7 +471,7 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
   public void addRawRowKeyPath(String _rawRowKeyPath, boolean _fireEvents) {
     if (_fireEvents) {
       Set oldRawRowKeyPaths = myRawRowKeyPaths;
-      myRawRowKeyPaths = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
+      myRawRowKeyPaths = new PropertyListSet();
       if (oldRawRowKeyPaths != null) {
         myRawRowKeyPaths.addAll(oldRawRowKeyPaths);
       }
@@ -487,7 +487,7 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
     if (_fireEvents) {
       Set oldRawRowKeyPaths = myRawRowKeyPaths;
       if (oldRawRowKeyPaths != null) {
-        myRawRowKeyPaths = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
+        myRawRowKeyPaths = new PropertyListSet();
         myRawRowKeyPaths.addAll(oldRawRowKeyPaths);
         myRawRowKeyPaths.remove(_rawRowKeyPath);
       }
@@ -632,7 +632,7 @@ public class EOFetchSpecification extends UserInfoableEOModelObject implements I
 
     Map rawHintsMap = fetchSpecMap.getMap("hints", true);
     if (rawHintsMap == null) {
-      rawHintsMap = new TreeMap(PropertyListComparator.AscendingPropertyListComparator);
+      rawHintsMap = new PropertyListMap();
     }
     EOModelMap hintsMap = new EOModelMap(rawHintsMap);
     hintsMap.setString("EOCustomQueryExpressionHintKey", myCustomQueryExpression, false);

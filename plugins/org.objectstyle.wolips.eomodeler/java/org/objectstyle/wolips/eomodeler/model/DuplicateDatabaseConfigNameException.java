@@ -47,57 +47,21 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eomodeler.outline;
+package org.objectstyle.wolips.eomodeler.model;
 
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.IActionBars;
-import org.eclipse.ui.part.IPageSite;
-import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
-import org.objectstyle.wolips.eomodeler.editors.EOModelClipboardHandler;
-import org.objectstyle.wolips.eomodeler.editors.EOModelEditor;
+public class DuplicateDatabaseConfigNameException extends DuplicateNameException {
+  private EOModel myModel;
 
-public class EOModelContentOutlinePage extends ContentOutlinePage {
-  private EOModelTreeViewUpdater myUpdater;
-  private EOModelEditor myEditor;
-  private EOModelClipboardHandler myClipboardHandler;
-
-  public EOModelContentOutlinePage(EOModelEditor _editor) {
-    myClipboardHandler = new EOModelClipboardHandler();
-    myEditor = _editor;
+  public DuplicateDatabaseConfigNameException(String _name, EOModel _model) {
+    this(_name, _model, null);
   }
 
-  protected void updateClipboardHandler() {
-    IPageSite site = getSite();
-    if (site != null && myEditor != null) {
-      IActionBars actionBars = site.getActionBars();
-      myClipboardHandler.attach(actionBars, myEditor);
-    }
+  public DuplicateDatabaseConfigNameException(String _name, EOModel _model, Throwable _throwable) {
+    super(_name, "There is more than one database config named '" + _name + "' in this model.", _throwable);
+    myModel = _model;
   }
 
-  public void createControl(Composite _parent) {
-    super.createControl(_parent);
-    TreeViewer treeViewer = getTreeViewer();
-    myUpdater = new EOModelTreeViewUpdater(treeViewer, new EOModelOutlineContentProvider(true, true, true, true, true, true));
-    myUpdater.setModel(myEditor.getModel());
-    updateClipboardHandler();
-    //AK: commenting prevents an error in swt
-    // setFocus();
-  }
-
-  public void init(IPageSite _pageSite) {
-    super.init(_pageSite);
-    updateClipboardHandler();
-  }
-
-  public void selectionChanged(SelectionChangedEvent _event) {
-    super.selectionChanged(_event);
-    myClipboardHandler.selectionChanged(_event);
-  }
-
-  public void setSelection(ISelection _selection) {
-    super.setSelection(_selection);
+  public EOModel getModel() {
+    return myModel;
   }
 }

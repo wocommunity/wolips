@@ -56,6 +56,7 @@ import org.objectstyle.wolips.eomodeler.Activator;
 import org.objectstyle.wolips.eomodeler.model.EOArgument;
 import org.objectstyle.wolips.eomodeler.model.EOAttribute;
 import org.objectstyle.wolips.eomodeler.model.EOAttributePath;
+import org.objectstyle.wolips.eomodeler.model.EODatabaseConfig;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOFetchSpecification;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
@@ -101,6 +102,9 @@ public class EOModelOutlineLabelProvider implements ILabelProvider {
     else if (_element instanceof EOArgument) {
       image = Activator.getDefault().getImageRegistry().get(Activator.EOATTRIBUTE_ICON);
     }
+    else if (_element instanceof EODatabaseConfig) {
+      image = Activator.getDefault().getImageRegistry().get(Activator.SQL_ICON);
+    }
     else {
       image = null;
     }
@@ -144,6 +148,10 @@ public class EOModelOutlineLabelProvider implements ILabelProvider {
     else if (_element instanceof EOStoredProcedure) {
       EOStoredProcedure storedProcedure = (EOStoredProcedure) _element;
       text = storedProcedure.getName();
+    }
+    else if (_element instanceof EODatabaseConfig) {
+      EODatabaseConfig databaseConfig = (EODatabaseConfig) _element;
+      text = databaseConfig.getName();
     }
     else {
       text = null;

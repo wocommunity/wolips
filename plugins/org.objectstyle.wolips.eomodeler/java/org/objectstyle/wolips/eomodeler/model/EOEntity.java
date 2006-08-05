@@ -117,9 +117,9 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
   private EOStoredProcedure myNextPrimaryKeyProcedure;
 
   public EOEntity() {
-    myAttributes = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
-    myRelationships = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
-    myFetchSpecs = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
+    myAttributes = new PropertyListSet();
+    myRelationships = new PropertyListSet();
+    myFetchSpecs = new PropertyListSet();
     myEntityMap = new EOModelMap();
     myFetchSpecsMap = new EOModelMap();
   }
@@ -606,7 +606,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
   }
 
   public Set getReferencingRelationships() {
-    Set referencingRelationships = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
+    Set referencingRelationships = new PropertyListSet();
     Iterator modelsIter = getModel().getModelGroup().getModels().iterator();
     while (modelsIter.hasNext()) {
       EOModel model = (EOModel) modelsIter.next();
@@ -628,7 +628,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
   }
 
   public Set getChildrenEntities() {
-    Set children = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
+    Set children = new PropertyListSet();
     if (myModel != null) {
       Iterator modelsIter = myModel.getModelGroup().getModels().iterator();
       while (modelsIter.hasNext()) {
@@ -709,7 +709,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
   }
 
   public Set getPrimaryKeyAttributes() {
-    Set primaryKeyAttributes = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
+    Set primaryKeyAttributes = new PropertyListSet();
     Iterator attributesIter = myAttributes.iterator();
     while (attributesIter.hasNext()) {
       EOAttribute attribute = (EOAttribute) attributesIter.next();
@@ -827,7 +827,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     Set oldFetchSpecs = null;
     if (_fireEvents) {
       oldFetchSpecs = myFetchSpecs;
-      Set newFetchSpecs = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
+      Set newFetchSpecs = new PropertyListSet();
       newFetchSpecs.addAll(myFetchSpecs);
       newFetchSpecs.add(_fetchSpecification);
       myFetchSpecs = newFetchSpecs;
@@ -840,7 +840,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
 
   public void removeFetchSpecification(EOFetchSpecification _fetchSpecification) {
     Set oldFetchSpecs = myFetchSpecs;
-    Set newFetchSpecs = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
+    Set newFetchSpecs = new PropertyListSet();
     newFetchSpecs.addAll(myFetchSpecs);
     newFetchSpecs.remove(_fetchSpecification);
     myFetchSpecs = newFetchSpecs;
@@ -858,7 +858,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     Set oldAttributes = null;
     if (_fireEvents) {
       oldAttributes = myAttributes;
-      Set newAttributes = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
+      Set newAttributes = new PropertyListSet();
       newAttributes.addAll(myAttributes);
       newAttributes.add(_attribute);
       myAttributes = newAttributes;
@@ -872,7 +872,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
   public void removeAttribute(EOAttribute _attribute, boolean _removeFromSubclasses) {
     String attributeName = _attribute.getName();
     Set oldAttributes = myAttributes;
-    Set newAttributes = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
+    Set newAttributes = new PropertyListSet();
     newAttributes.addAll(myAttributes);
     newAttributes.remove(_attribute);
     myAttributes = newAttributes;
@@ -949,7 +949,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     Set oldRelationships = null;
     if (_fireEvents) {
       oldRelationships = myRelationships;
-      Set newRelationships = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
+      Set newRelationships = new PropertyListSet();
       newRelationships.addAll(myRelationships);
       newRelationships.add(_relationship);
       myRelationships = newRelationships;
@@ -963,7 +963,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
   public void removeRelationship(EORelationship _relationship, boolean _removeFromSubclasses) {
     String relationshipName = _relationship.getName();
     Set oldRelationships = myRelationships;
-    Set newRelationships = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
+    Set newRelationships = new PropertyListSet();
     newRelationships.addAll(myRelationships);
     newRelationships.remove(_relationship);
     myRelationships = newRelationships;
@@ -1160,11 +1160,11 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
 
     entityMap.remove("fetchSpecificationDictionary");
 
-    Set classProperties = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
-    Set primaryKeyAttributes = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
-    Set attributesUsedForLocking = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
-    Set clientClassProperties = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
-    Set attributes = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
+    Set classProperties = new PropertyListSet();
+    Set primaryKeyAttributes = new PropertyListSet();
+    Set attributesUsedForLocking = new PropertyListSet();
+    Set clientClassProperties = new PropertyListSet();
+    Set attributes = new PropertyListSet();
     Iterator attributeIter = myAttributes.iterator();
     while (attributeIter.hasNext()) {
       EOAttribute attribute = (EOAttribute) attributeIter.next();
@@ -1185,7 +1185,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     }
     entityMap.setSet("attributes", attributes, true);
 
-    Set relationships = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
+    Set relationships = new PropertyListSet();
     Iterator relationshipIter = myRelationships.iterator();
     while (relationshipIter.hasNext()) {
       EORelationship relationship = (EORelationship) relationshipIter.next();
@@ -1203,7 +1203,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     entityMap.setSet("classProperties", classProperties, true);
     entityMap.setSet("primaryKeyAttributes", primaryKeyAttributes, true);
 
-    Set sharedObjectFetchSpecificationNames = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
+    Set sharedObjectFetchSpecificationNames = new PropertyListSet();
     Iterator fetchSpecsIter = myFetchSpecs.iterator();
     while (fetchSpecsIter.hasNext()) {
       EOFetchSpecification fetchSpec = (EOFetchSpecification) fetchSpecsIter.next();

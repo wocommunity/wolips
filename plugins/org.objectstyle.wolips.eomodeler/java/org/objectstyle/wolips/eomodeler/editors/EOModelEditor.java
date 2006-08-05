@@ -100,6 +100,7 @@ import org.objectstyle.wolips.eomodeler.editors.entity.EOEntityEditor;
 import org.objectstyle.wolips.eomodeler.model.AbstractEOAttributePath;
 import org.objectstyle.wolips.eomodeler.model.EOArgument;
 import org.objectstyle.wolips.eomodeler.model.EOAttribute;
+import org.objectstyle.wolips.eomodeler.model.EODatabaseConfig;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOFetchSpecification;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
@@ -127,6 +128,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
   private PropertyChangeListener myDirtyModelListener;
   private EntitiesChangeRefresher myEntitiesChangeListener;
   private StoredProceduresChangeRefresher myStoredProceduresChangeListener;
+  private DatabaseConfigsChangeRefresher myDatabaseConfigsChangeListener;
   private AttributeAndRelationshipDeletedRefresher myAttributeAndRelationshipListener;
   private ArgumentDeletedRefresher myArgumentListener;
 
@@ -145,6 +147,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
     myDirtyModelListener = new DirtyModelListener();
     myEntitiesChangeListener = new EntitiesChangeRefresher();
     myStoredProceduresChangeListener = new StoredProceduresChangeRefresher();
+    myDatabaseConfigsChangeListener = new DatabaseConfigsChangeRefresher();
     myAttributeAndRelationshipListener = new AttributeAndRelationshipDeletedRefresher();
     myArgumentListener = new ArgumentDeletedRefresher();
     ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
@@ -431,6 +434,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
         myModel.removePropertyChangeListener(EOModel.DIRTY, myDirtyModelListener);
         myModel.removePropertyChangeListener(EOModel.ENTITIES, myEntitiesChangeListener);
         myModel.removePropertyChangeListener(EOModel.STORED_PROCEDURES, myStoredProceduresChangeListener);
+        myModel.removePropertyChangeListener(EOModel.DATABASE_CONFIGS, myDatabaseConfigsChangeListener);
       }
 
       IFile file = fileEditorInput.getFile();
@@ -451,6 +455,7 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
       myModel.addPropertyChangeListener(EOModel.DIRTY, myDirtyModelListener);
       myModel.addPropertyChangeListener(EOModel.ENTITIES, myEntitiesChangeListener);
       myModel.addPropertyChangeListener(EOModel.STORED_PROCEDURES, myStoredProceduresChangeListener);
+      myModel.addPropertyChangeListener(EOModel.DATABASE_CONFIGS, myDatabaseConfigsChangeListener);
       super.init(_site, fileEditorInput);
       updatePartName();
       _site.setSelectionProvider(this);
@@ -597,6 +602,11 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
             getStoredProcedureEditor().setSelection(_selection);
             setActivePage(getPageNum(EOModelEditor.EOSTOREDPROCEDURE_PAGE));
           }
+          else if (selectedObject instanceof EODatabaseConfig) {
+            EODatabaseConfig selectedDatabaseConfig = (EODatabaseConfig) selectedObject;
+            setSelectedEntity(null);
+            setActivePage(getPageNum(EOModelEditor.EOMODEL_PAGE));
+          }
           if (_updateOutline) {
             getContentOutlinePage().setSelection(selection);
           }
@@ -714,6 +724,17 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
     protected void objectsAdded(List _addedObjects) {
       EOModelEditor.this.setSelection(new StructuredSelection(_addedObjects));
       EOModelEditor.this.setActivePage(getPageNum(EOModelEditor.EOSTOREDPROCEDURE_PAGE));
+    }
+
+    protected void objectsRemoved(List _removedObjects) {
+      EOModelEditor.this.setSelection(new StructuredSelection(EOModelEditor.this.getModel()));
+      EOModelEditor.this.setActivePage(getPageNum(EOModelEditor.EOMODEL_PAGE));
+    }
+  }
+
+  protected class DatabaseConfigsChangeRefresher extends AbstractAddRemoveChangeRefresher {
+    protected void objectsAdded(List _addedObjects) {
+      EOModelEditor.this.setSelection(new StructuredSelection(_addedObjects));
     }
 
     protected void objectsRemoved(List _removedObjects) {

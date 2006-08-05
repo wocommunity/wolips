@@ -59,7 +59,7 @@ public class EOModelParserDataStructureFactory implements ParserDataStructureFac
     }
     Collection collection;
     if (createSortedSet) {
-      collection = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
+      collection = new PropertyListSet();
     }
     else {
       collection = new LinkedList();
@@ -68,7 +68,7 @@ public class EOModelParserDataStructureFactory implements ParserDataStructureFac
   }
 
   public Map createMap(String _keyPath) {
-    return new TreeMap(PropertyListComparator.AscendingPropertyListComparator);
+    return new PropertyListMap();
   }
 
 }

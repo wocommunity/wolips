@@ -64,6 +64,7 @@ import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.editors.EOModelErrorDialog;
 import org.objectstyle.wolips.eomodeler.model.EOArgument;
 import org.objectstyle.wolips.eomodeler.model.EOAttribute;
+import org.objectstyle.wolips.eomodeler.model.EODatabaseConfig;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOFetchSpecification;
 import org.objectstyle.wolips.eomodeler.model.EOModelObject;
@@ -124,6 +125,10 @@ public class DeleteAction extends Action {
           else if (selectedObject instanceof EOArgument) {
             EOArgument argument = (EOArgument) selectedObject;
             argument.getStoredProcedure().removeArgument(argument);
+          }
+          else if (selectedObject instanceof EODatabaseConfig) {
+            EODatabaseConfig databaseConfig = (EODatabaseConfig) selectedObject;
+            databaseConfig.getModel().removeDatabaseConfig(databaseConfig);
           }
         }
       }

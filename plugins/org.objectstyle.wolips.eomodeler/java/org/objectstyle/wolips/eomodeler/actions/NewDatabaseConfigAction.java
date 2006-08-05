@@ -47,57 +47,52 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eomodeler.outline;
+package org.objectstyle.wolips.eomodeler.actions;
 
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.IActionBars;
-import org.eclipse.ui.part.IPageSite;
-import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
-import org.objectstyle.wolips.eomodeler.editors.EOModelClipboardHandler;
-import org.objectstyle.wolips.eomodeler.editors.EOModelEditor;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.IWorkbenchWindowActionDelegate;
+import org.objectstyle.wolips.eomodeler.Messages;
+import org.objectstyle.wolips.eomodeler.model.DuplicateNameException;
+import org.objectstyle.wolips.eomodeler.model.EODatabaseConfig;
+import org.objectstyle.wolips.eomodeler.model.EOModel;
+import org.objectstyle.wolips.eomodeler.utils.EOModelUtils;
 
-public class EOModelContentOutlinePage extends ContentOutlinePage {
-  private EOModelTreeViewUpdater myUpdater;
-  private EOModelEditor myEditor;
-  private EOModelClipboardHandler myClipboardHandler;
+public class NewDatabaseConfigAction implements IWorkbenchWindowActionDelegate {
+  private EOModel myModel;
+  private IWorkbenchWindow myWindow;
 
-  public EOModelContentOutlinePage(EOModelEditor _editor) {
-    myClipboardHandler = new EOModelClipboardHandler();
-    myEditor = _editor;
+  public void dispose() {
+    // DO NOTHING
   }
 
-  protected void updateClipboardHandler() {
-    IPageSite site = getSite();
-    if (site != null && myEditor != null) {
-      IActionBars actionBars = site.getActionBars();
-      myClipboardHandler.attach(actionBars, myEditor);
+  public void init(IWorkbenchWindow _window) {
+    myWindow = _window;
+  }
+
+  public void selectionChanged(IAction _action, ISelection _selection) {
+    myModel = null;
+    if (_selection instanceof IStructuredSelection) {
+      Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
+      myModel = EOModelUtils.getRelatedModel(selectedObject);
     }
   }
 
-  public void createControl(Composite _parent) {
-    super.createControl(_parent);
-    TreeViewer treeViewer = getTreeViewer();
-    myUpdater = new EOModelTreeViewUpdater(treeViewer, new EOModelOutlineContentProvider(true, true, true, true, true, true));
-    myUpdater.setModel(myEditor.getModel());
-    updateClipboardHandler();
-    //AK: commenting prevents an error in swt
-    // setFocus();
-  }
-
-  public void init(IPageSite _pageSite) {
-    super.init(_pageSite);
-    updateClipboardHandler();
-  }
-
-  public void selectionChanged(SelectionChangedEvent _event) {
-    super.selectionChanged(_event);
-    myClipboardHandler.selectionChanged(_event);
-  }
-
-  public void setSelection(ISelection _selection) {
-    super.setSelection(_selection);
+  public void run(IAction _action) {
+    try {
+      if (myModel != null) {
+        EODatabaseConfig newDatabaseConfig = myModel.addBlankDatabaseConfig(Messages.getString("EODatabaseConfig.newName"));
+      }
+      else {
+        MessageDialog.openError(myWindow.getShell(), Messages.getString("EOEntity.noModelSelectedTitle"), Messages.getString("EOEntity.noModelSelectedMessage"));//$NON-NLS-1$
+      }
+    }
+    catch (DuplicateNameException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
   }
 }

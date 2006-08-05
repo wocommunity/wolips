@@ -54,8 +54,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
-import java.util.TreeSet;
 
 public class EOModelMap implements Map {
   public static final int YESNO = 1;
@@ -63,12 +61,12 @@ public class EOModelMap implements Map {
   private Map myBackingMap;
 
   public EOModelMap() {
-    this(new TreeMap(PropertyListComparator.AscendingPropertyListComparator));
+    this(new PropertyListMap());
   }
 
   public EOModelMap(Map _backingMap) {
     if (_backingMap == null) {
-      myBackingMap = new TreeMap(PropertyListComparator.AscendingPropertyListComparator);
+      myBackingMap = new PropertyListMap();
     }
     else {
       myBackingMap = _backingMap;
@@ -76,7 +74,7 @@ public class EOModelMap implements Map {
   }
 
   public EOModelMap cloneModelMap() {
-    Map sortedMap = new TreeMap(PropertyListComparator.AscendingPropertyListComparator);
+    Map sortedMap = new PropertyListMap();
     sortedMap.putAll(myBackingMap);
     return new EOModelMap(sortedMap);
   }
@@ -141,7 +139,7 @@ public class EOModelMap implements Map {
   public Map getMap(String _key, boolean _clone) {
     Map map = (Map) myBackingMap.get(_key);
     if (_clone && map != null) {
-      Map sortedMap = new TreeMap(PropertyListComparator.AscendingPropertyListComparator);
+      Map sortedMap = new PropertyListMap();
       sortedMap.putAll(map);
       map = sortedMap;
     }
@@ -176,7 +174,7 @@ public class EOModelMap implements Map {
   public Set getSet(String _key, boolean _clone) {
     Set set = (Set) myBackingMap.get(_key);
     if (_clone && set != null) {
-      Set sortedSet = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
+      Set sortedSet = new PropertyListSet();
       sortedSet.addAll(set);
       set = sortedSet;
     }

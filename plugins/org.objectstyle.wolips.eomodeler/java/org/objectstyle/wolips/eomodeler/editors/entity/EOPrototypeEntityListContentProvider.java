@@ -47,57 +47,56 @@
  * Group, please see <http://objectstyle.org/>.
  *  
  */
-package org.objectstyle.wolips.eomodeler.outline;
+package org.objectstyle.wolips.eomodeler.editors.entity;
 
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.IActionBars;
-import org.eclipse.ui.part.IPageSite;
-import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
-import org.objectstyle.wolips.eomodeler.editors.EOModelClipboardHandler;
-import org.objectstyle.wolips.eomodeler.editors.EOModelEditor;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
-public class EOModelContentOutlinePage extends ContentOutlinePage {
-  private EOModelTreeViewUpdater myUpdater;
-  private EOModelEditor myEditor;
-  private EOModelClipboardHandler myClipboardHandler;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.Viewer;
+import org.objectstyle.wolips.eomodeler.kvc.KVCComparator;
+import org.objectstyle.wolips.eomodeler.model.EOEntity;
+import org.objectstyle.wolips.eomodeler.model.EOModel;
+import org.objectstyle.wolips.eomodeler.utils.EOModelUtils;
 
-  public EOModelContentOutlinePage(EOModelEditor _editor) {
-    myClipboardHandler = new EOModelClipboardHandler();
-    myEditor = _editor;
+public class EOPrototypeEntityListContentProvider implements IStructuredContentProvider {
+  public static final Object BLANK_ENTITY = "";
+
+  private boolean myAllowBlank;
+  private KVCComparator myComparator;
+
+  public EOPrototypeEntityListContentProvider(boolean _allowBlank) {
+    myAllowBlank = _allowBlank;
+    myComparator = new KVCComparator(EOEntity.class, EOEntity.NAME);
   }
 
-  protected void updateClipboardHandler() {
-    IPageSite site = getSite();
-    if (site != null && myEditor != null) {
-      IActionBars actionBars = site.getActionBars();
-      myClipboardHandler.attach(actionBars, myEditor);
+  public Object[] getElements(Object _inputElement) {
+    Set entitiesList;
+    EOModel model = EOModelUtils.getRelatedModel(_inputElement);
+    if (model != null) {
+      entitiesList = model.getModelGroup().getPrototypeEntities();
     }
+    else {
+      throw new IllegalArgumentException("Unknown input element: " + _inputElement);
+    }
+
+    List entitiesListCopy = new LinkedList();
+    entitiesListCopy.addAll(entitiesList);
+    Collections.sort(entitiesListCopy, myComparator);
+    if (myAllowBlank) {
+      entitiesListCopy.add(0, EOPrototypeEntityListContentProvider.BLANK_ENTITY);
+    }
+    Object[] entities = entitiesListCopy.toArray();
+    return entities;
   }
 
-  public void createControl(Composite _parent) {
-    super.createControl(_parent);
-    TreeViewer treeViewer = getTreeViewer();
-    myUpdater = new EOModelTreeViewUpdater(treeViewer, new EOModelOutlineContentProvider(true, true, true, true, true, true));
-    myUpdater.setModel(myEditor.getModel());
-    updateClipboardHandler();
-    //AK: commenting prevents an error in swt
-    // setFocus();
+  public void dispose() {
+    // DO NOTHING
   }
 
-  public void init(IPageSite _pageSite) {
-    super.init(_pageSite);
-    updateClipboardHandler();
-  }
-
-  public void selectionChanged(SelectionChangedEvent _event) {
-    super.selectionChanged(_event);
-    myClipboardHandler.selectionChanged(_event);
-  }
-
-  public void setSelection(ISelection _selection) {
-    super.setSelection(_selection);
+  public void inputChanged(Viewer _viewer, Object _oldInput, Object _newInput) {
+    // DO NOTHING
   }
 }

@@ -126,7 +126,7 @@ public class EOFetchSpecRawFetchEditorSection extends AbstractPropertySection im
     GridData modelTreeLayoutData = new GridData(GridData.FILL_HORIZONTAL);
     modelTreeLayoutData.heightHint = 100;
     myModelTreeViewer.getTree().setLayoutData(modelTreeLayoutData);
-    myEntityTreeViewUpdater = new EOEntityTreeViewUpdater(myModelTreeViewer, new EOModelOutlineContentProvider(true, true, true, false, false));
+    myEntityTreeViewUpdater = new EOEntityTreeViewUpdater(myModelTreeViewer, new EOModelOutlineContentProvider(true, true, true, false, false, false));
     myModelTreeViewer.addSelectionChangedListener(this);
 
     myRawRowKeyPathsTableViewer = TableUtils.createTableViewer(topForm, "EOFetchSpecification", EORawRowKeyPathsConstants.COLUMNS, new RawRowKeyPathsContentProvider(), new RawRowKeyPathsLabelProvider(EORawRowKeyPathsConstants.COLUMNS), new RawRowKeyPathsViewerSorter(EORawRowKeyPathsConstants.COLUMNS));

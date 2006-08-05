@@ -59,20 +59,18 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.views.properties.tabbed.AbstractPropertySection;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.objectstyle.wolips.eomodeler.Messages;
-import org.objectstyle.wolips.eomodeler.model.EOAttribute;
-import org.objectstyle.wolips.eomodeler.model.EOAttributePath;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
+import org.objectstyle.wolips.eomodeler.model.IConnectionDictionaryOwner;
 import org.objectstyle.wolips.eomodeler.utils.BindingFactory;
 
-public class EOConnectionDictionarySection extends AbstractPropertySection {
-  private EOModel myModel;
+public class ConnectionDictionarySection extends AbstractPropertySection {
+  private IConnectionDictionaryOwner myConnectionDictionaryOwner;
 
   private Text myUsernameText;
   private Text myPasswordText;
@@ -82,7 +80,7 @@ public class EOConnectionDictionarySection extends AbstractPropertySection {
 
   private DataBindingContext myBindingContext;
 
-  public EOConnectionDictionarySection() {
+  public ConnectionDictionarySection() {
     // DO NOTHING
   }
 
@@ -103,25 +101,37 @@ public class EOConnectionDictionarySection extends AbstractPropertySection {
     topFormLayout.numColumns = 2;
     topForm.setLayout(topFormLayout);
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EOModel." + EOModel.USERNAME), SWT.NONE);
+    addFormEntriesAbove(topForm);
+
+    getWidgetFactory().createCLabel(topForm, Messages.getString("EOModel." + IConnectionDictionaryOwner.USERNAME), SWT.NONE);
     myUsernameText = new Text(topForm, SWT.BORDER);
     myUsernameText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EOModel." + EOModel.PASSWORD), SWT.NONE);
+    getWidgetFactory().createCLabel(topForm, Messages.getString("EOModel." + IConnectionDictionaryOwner.PASSWORD), SWT.NONE);
     myPasswordText = new Text(topForm, SWT.BORDER);
     myPasswordText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EOModel." + EOModel.URL), SWT.NONE);
+    getWidgetFactory().createCLabel(topForm, Messages.getString("EOModel." + IConnectionDictionaryOwner.URL), SWT.NONE);
     myURLText = new Text(topForm, SWT.BORDER);
     myURLText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EOModel." + EOModel.DRIVER), SWT.NONE);
+    getWidgetFactory().createCLabel(topForm, Messages.getString("EOModel." + IConnectionDictionaryOwner.DRIVER), SWT.NONE);
     myDriverText = new Text(topForm, SWT.BORDER);
     myDriverText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-    getWidgetFactory().createCLabel(topForm, Messages.getString("EOModel." + EOModel.PLUGIN), SWT.NONE);
+    getWidgetFactory().createCLabel(topForm, Messages.getString("EOModel." + IConnectionDictionaryOwner.PLUGIN), SWT.NONE);
     myPluginText = new Text(topForm, SWT.BORDER);
     myPluginText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+    
+    addFormEntriesBelow(topForm);
+  }
+  
+  protected void addFormEntriesAbove(Composite _form) {
+    // DO NOTHING
+  }
+  
+  protected void addFormEntriesBelow(Composite _form) {
+    // DO NOTHING
   }
 
   public void setInput(IWorkbenchPart _part, ISelection _selection) {
@@ -129,18 +139,26 @@ public class EOConnectionDictionarySection extends AbstractPropertySection {
     disposeBindings();
 
     Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
-    if (selectedObject instanceof EOModel) {
-      myModel = (EOModel) selectedObject;
+    if (selectedObject instanceof IConnectionDictionaryOwner) {
+      myConnectionDictionaryOwner = (IConnectionDictionaryOwner) selectedObject;
     }
 
-    if (myModel != null) {
+    if (myConnectionDictionaryOwner != null) {
       myBindingContext = BindingFactory.createContext();
-      myBindingContext.bind(myUsernameText, new Property(myModel, EOModel.USERNAME), null);
-      myBindingContext.bind(myPasswordText, new Property(myModel, myModel.PASSWORD), null);
-      myBindingContext.bind(myURLText, new Property(myModel, myModel.URL), null);
-      myBindingContext.bind(myDriverText, new Property(myModel, myModel.DRIVER), null);
-      myBindingContext.bind(myPluginText, new Property(myModel, myModel.PLUGIN), null);
+      addBindings(myBindingContext);
     }
+  }
+  
+  public IConnectionDictionaryOwner getConnectionDictionaryOwner() {
+    return myConnectionDictionaryOwner;
+  }
+  
+  protected void addBindings(DataBindingContext _context) {
+    _context.bind(myUsernameText, new Property(myConnectionDictionaryOwner, IConnectionDictionaryOwner.USERNAME), null);
+    _context.bind(myPasswordText, new Property(myConnectionDictionaryOwner, IConnectionDictionaryOwner.PASSWORD), null);
+    _context.bind(myURLText, new Property(myConnectionDictionaryOwner, IConnectionDictionaryOwner.URL), null);
+    _context.bind(myDriverText, new Property(myConnectionDictionaryOwner, IConnectionDictionaryOwner.DRIVER), null);
+    _context.bind(myPluginText, new Property(myConnectionDictionaryOwner, IConnectionDictionaryOwner.PLUGIN), null);
   }
 
   protected void disposeBindings() {

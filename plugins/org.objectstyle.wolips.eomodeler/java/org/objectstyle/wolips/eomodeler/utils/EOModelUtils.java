@@ -1,6 +1,7 @@
 package org.objectstyle.wolips.eomodeler.utils;
 
 import org.objectstyle.wolips.eomodeler.model.EOArgument;
+import org.objectstyle.wolips.eomodeler.model.EODatabaseConfig;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
 import org.objectstyle.wolips.eomodeler.model.EOStoredProcedure;
@@ -20,6 +21,9 @@ public class EOModelUtils {
     }
     else if (_obj instanceof EOArgument) {
       model = ((EOArgument) _obj).getStoredProcedure().getModel();
+    }
+    else if (_obj instanceof EODatabaseConfig) {
+      model = ((EODatabaseConfig) _obj).getModel();
     }
     return model;
   }

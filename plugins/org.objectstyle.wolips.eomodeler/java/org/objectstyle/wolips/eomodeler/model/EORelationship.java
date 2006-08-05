@@ -98,7 +98,7 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
   private EOEntity myEntityBeforeCloning;
 
   public EORelationship() {
-    myJoins = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
+    myJoins = new PropertyListSet();
     myRelationshipMap = new EOModelMap();
     myDeleteRule = EODeleteRule.getDeleteRuleByID(null);
     myJoinSemantic = EOJoinSemantic.getJoinSemanticByID(null);
@@ -452,7 +452,7 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
     Set oldJoins = null;
     if (_fireEvents) {
       oldJoins = myJoins;
-      Set newJoins = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
+      Set newJoins = new PropertyListSet();
       newJoins.addAll(myJoins);
       newJoins.add(_join);
       myJoins = newJoins;
@@ -465,7 +465,7 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
 
   public void removeJoin(EOJoin _join) {
     Set oldJoins = myJoins;
-    Set newJoins = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
+    Set newJoins = new PropertyListSet();
     newJoins.addAll(myJoins);
     newJoins.remove(_join);
     myJoins = newJoins;
@@ -536,7 +536,7 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
     relationshipMap.setBoolean("ownsDestination", myOwnsDestination, EOModelMap.YN);
     relationshipMap.setBoolean("propagatesPrimaryKey", myPropagatesPrimaryKey, EOModelMap.YN);
     relationshipMap.setInteger("numberOfToManyFaultsToBatchFetch", myNumberOfToManyFaultsToBatchFetch);
-    Set joins = new TreeSet(PropertyListComparator.AscendingPropertyListComparator);
+    Set joins = new PropertyListSet();
     Iterator joinsIter = myJoins.iterator();
     while (joinsIter.hasNext()) {
       EOJoin join = (EOJoin) joinsIter.next();
