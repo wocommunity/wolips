@@ -52,6 +52,9 @@ package org.objectstyle.wolips.eomodeler.sql;
 import java.io.File;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -59,9 +62,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.webobjects.eoaccess.EOAdaptorChannel;
 import com.webobjects.eoaccess.EOAdaptorContext;
 import com.webobjects.eoaccess.EOAttribute;
 import com.webobjects.eoaccess.EODatabase;
+import com.webobjects.eoaccess.EODatabaseChannel;
 import com.webobjects.eoaccess.EODatabaseContext;
 import com.webobjects.eoaccess.EOEntity;
 import com.webobjects.eoaccess.EOModel;
@@ -73,6 +78,7 @@ import com.webobjects.foundation.NSBundle;
 import com.webobjects.foundation.NSMutableArray;
 import com.webobjects.foundation.NSMutableDictionary;
 import com.webobjects.jdbcadaptor.JDBCAdaptor;
+import com.webobjects.jdbcadaptor.JDBCContext;
 
 /**
  * Declare a class named "org.objectstyle.wolips.eomodeler.EOModelProcessor" with the following methods:
@@ -87,22 +93,15 @@ import com.webobjects.jdbcadaptor.JDBCAdaptor;
  *
  */
 public class EOFSQLGenerator {
-  private NSMutableDictionary myFlags;
   private NSMutableArray myEntities;
   private EOModel myModel;
   private EOModelGroup myGroup;
   private Object myModelProcessor;
 
-  public EOFSQLGenerator(String _modelName, List _modelFolders, List _entityNames, Map _flags, Map _extraInfo) throws MalformedURLException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-    myFlags = new NSMutableDictionary();
-    Map extraInfo = (_extraInfo == null ? new HashMap() : _extraInfo);
-    String prototypeEntityName = (String) extraInfo.get("prototypeEntityName");
+  public EOFSQLGenerator(String _modelName, List _modelFolders, List _entityNames, Map _databaseConfig) throws MalformedURLException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+    Map databaseConfig = (_databaseConfig == null ? new HashMap() : _databaseConfig);
+    String prototypeEntityName = (String) databaseConfig.get("prototypeEntityName");
 
-    Iterator entriesIter = _flags.entrySet().iterator();
-    while (entriesIter.hasNext()) {
-      Map.Entry flag = (Map.Entry) entriesIter.next();
-      myFlags.setObjectForKey(flag.getValue(), flag.getKey());
-    }
     myGroup = new EOModelGroup();
     Iterator modelFoldersIter = _modelFolders.iterator();
     while (modelFoldersIter.hasNext()) {
@@ -124,7 +123,7 @@ public class EOFSQLGenerator {
     }
     myEntities = new NSMutableArray();
     myModel = myGroup.modelNamed(_modelName);
-    Map overrideConnectionDictionary = (Map) extraInfo.get("connectionDictionary");
+    Map overrideConnectionDictionary = (Map) databaseConfig.get("connectionDictionary");
     if (overrideConnectionDictionary != null) {
       NSMutableDictionary connectionDictionary = new NSMutableDictionary();
       Iterator overrideConnectionDictionaryIter = overrideConnectionDictionary.entrySet().iterator();
@@ -246,30 +245,32 @@ public class EOFSQLGenerator {
     }
   }
 
-  public String getSchemaCreationScript() {
-    try {
-      callModelProcessorMethodIfExists("processModel", new Object[] { myModel, myEntities, myFlags });
-
-      EODatabaseContext dbc = new EODatabaseContext(new EODatabase(myModel));
-      EOAdaptorContext ac = dbc.adaptorContext();
-      EOSynchronizationFactory sf = ((JDBCAdaptor) ac.adaptor()).plugIn().synchronizationFactory();
-
-      StringBuffer sqlBuffer = new StringBuffer();
-      NSMutableDictionary flags = new NSMutableDictionary(myFlags);
-      fixDuplicateSingleTableInheritanceDropStatements(sf, flags, sqlBuffer);
-
-      String sql = sf.schemaCreationScriptForEntities(myEntities, flags);
-      sqlBuffer.append(sql);
-
-      callModelProcessorMethodIfExists("processSQL", new Object[] { sqlBuffer, myModel, myEntities, myFlags });
-
-      String sqlBufferStr = sqlBuffer.toString();
-      return sqlBufferStr;
+  public String getSchemaCreationScript(Map _flagsMap) {
+    NSMutableDictionary flags = new NSMutableDictionary();
+    if (_flagsMap != null) {
+      Iterator entriesIter = _flagsMap.entrySet().iterator();
+      while (entriesIter.hasNext()) {
+        Map.Entry flag = (Map.Entry) entriesIter.next();
+        flags.setObjectForKey(flag.getValue(), flag.getKey());
+      }
     }
-    catch (Exception ex) {
-      ex.printStackTrace();
-      return ex.getMessage();
-    }
+
+    callModelProcessorMethodIfExists("processModel", new Object[] { myModel, myEntities, flags });
+
+    EODatabaseContext dbc = new EODatabaseContext(new EODatabase(myModel));
+    EOAdaptorContext ac = dbc.adaptorContext();
+    EOSynchronizationFactory sf = ((JDBCAdaptor) ac.adaptor()).plugIn().synchronizationFactory();
+
+    StringBuffer sqlBuffer = new StringBuffer();
+    fixDuplicateSingleTableInheritanceDropStatements(sf, flags, sqlBuffer);
+
+    String sql = sf.schemaCreationScriptForEntities(myEntities, flags);
+    sqlBuffer.append(sql);
+
+    callModelProcessorMethodIfExists("processSQL", new Object[] { sqlBuffer, myModel, myEntities, flags });
+
+    String sqlBufferStr = sqlBuffer.toString();
+    return sqlBufferStr;
   }
 
   public Object callModelProcessorMethodIfExists(String _methodName, Object[] _objs) {
@@ -343,6 +344,30 @@ public class EOFSQLGenerator {
     }
   }
 
+  public void executeSQL(String _sql) throws SQLException {
+    System.out.println("EOFSQLGenerator.executeSQL: " + myModel.connectionDictionary());
+    EODatabaseContext databaseContext = new EODatabaseContext(new EODatabase(myModel));
+    EODatabaseChannel databaseChannel = databaseContext.availableChannel();
+    EOAdaptorChannel adaptorChannel = databaseChannel.adaptorChannel();
+    if (!adaptorChannel.isOpen()) {
+      adaptorChannel.openChannel();
+    }
+    JDBCContext jdbccontext = (JDBCContext) adaptorChannel.adaptorContext();
+    try {
+      jdbccontext.beginTransaction();
+      Connection conn = jdbccontext.connection();
+      Statement stmt = conn.createStatement();
+      stmt.executeUpdate(_sql);
+      conn.commit();
+    }
+    catch (SQLException sqlexception) {
+      sqlexception.printStackTrace(System.out);
+      jdbccontext.rollbackTransaction();
+      throw sqlexception;
+    }
+    adaptorChannel.closeChannel();
+  }
+
   public static void main(String argv[]) throws MalformedURLException, ClassNotFoundException, InstantiationException, IllegalAccessException {
     Map flags = new HashMap();
     flags.put(EOSchemaGeneration.DropTablesKey, "YES");
@@ -357,9 +382,9 @@ public class EOFSQLGenerator {
     File[] paths = new File[] { new File("/Library/Frameworks/JavaBusinessLogic.framework/Resources/Movies.eomodeld"), new File("/Library/Frameworks/JavaBusinessLogic.framework/Resources/Rentals.eomodeld") };
     // probably should have an option to change the connection dict to use a specific plugin or url
     // all entities in one model
-    EOFSQLGenerator generator1 = new EOFSQLGenerator("Movies", Arrays.asList(paths), null, flags, null);
+    EOFSQLGenerator generator1 = new EOFSQLGenerator("Movies", Arrays.asList(paths), null, null);
     System.out.println("EOFSQLGenerator.main: " + NSBundle.mainBundle());
-    System.out.println(generator1.getSchemaCreationScript());
+    System.out.println(generator1.getSchemaCreationScript(null));
     //
     //    System.out.println("***********************************");
     //
