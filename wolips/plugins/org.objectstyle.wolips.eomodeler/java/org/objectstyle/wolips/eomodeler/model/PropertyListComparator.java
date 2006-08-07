@@ -90,7 +90,13 @@ public class PropertyListComparator implements Comparator {
       Map dic0 = (Map) arg0;
       Map dic1 = (Map) arg1;
       Object key0 = dic0.get("name");
+      if (key0 == null) {
+        key0 = dic0.get("prototypeName");
+      }
       Object key1 = dic1.get("name");
+      if (key1 == null) {
+        key1 = dic1.get("prototypeName");
+      }
       if (key0 != null && key1 != null) {
         return compare(key0, key1);
       }
