@@ -104,6 +104,7 @@ public class SubclassEntityAction implements IWorkbenchWindowActionDelegate {
           InheritanceType inheritanceType = dialog.getInheritanceType();
           try {
             EOEntity newEntity = parentEntity.subclass(entityName, inheritanceType);
+            newEntity.setRestrictingQualifier(dialog.getRestrictingQualifier());
             parentEntity.getModel().addEntity(newEntity);
           }
           catch (DuplicateNameException e) {

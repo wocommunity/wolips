@@ -49,8 +49,13 @@
  */
 package org.objectstyle.wolips.eomodeler.outline;
 
+import org.eclipse.jface.viewers.IFontProvider;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
+import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
 import org.objectstyle.wolips.eomodeler.Activator;
 import org.objectstyle.wolips.eomodeler.model.EOArgument;
@@ -63,8 +68,16 @@ import org.objectstyle.wolips.eomodeler.model.EOModel;
 import org.objectstyle.wolips.eomodeler.model.EORelationship;
 import org.objectstyle.wolips.eomodeler.model.EORelationshipPath;
 import org.objectstyle.wolips.eomodeler.model.EOStoredProcedure;
+import org.objectstyle.wolips.eomodeler.utils.BooleanUtils;
 
-public class EOModelOutlineLabelProvider implements ILabelProvider {
+public class EOModelOutlineLabelProvider implements ILabelProvider, IFontProvider {
+  private TreeViewer myTreeViewer;
+  private Font myInheritedFont;
+
+  public EOModelOutlineLabelProvider(TreeViewer _treeViewer) {
+    myTreeViewer = _treeViewer;
+  }
+
   public void addListener(ILabelProviderListener _listener) {
     // DO NOTHING
   }
@@ -160,6 +173,22 @@ public class EOModelOutlineLabelProvider implements ILabelProvider {
       text = "?";
     }
     return text;
+  }
+
+  public Font getFont(Object _element) {
+    Font font = null;
+    if (_element instanceof EOEntity) {
+      EOEntity entity = (EOEntity)_element;
+      if (BooleanUtils.isTrue(entity.isAbstractEntity())) {
+        if (myInheritedFont == null) {
+          Font originalFont = myTreeViewer.getTree().getFont();
+          FontData[] fontData = myTreeViewer.getTree().getFont().getFontData();
+          myInheritedFont = new Font(originalFont.getDevice(), fontData[0].getName(), fontData[0].getHeight(), SWT.ITALIC);
+        }
+        font = myInheritedFont;
+      }
+    }
+    return font;
   }
 
   public boolean isLabelProperty(Object _element, String _property) {

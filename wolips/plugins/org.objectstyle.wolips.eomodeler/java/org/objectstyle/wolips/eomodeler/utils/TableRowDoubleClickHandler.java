@@ -49,6 +49,7 @@
  */
 package org.objectstyle.wolips.eomodeler.utils;
 
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
@@ -56,16 +57,30 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 
-public abstract class EmptyTableRowDoubleClickHandler implements MouseListener {
-  public void attachTo(TableViewer _viewer) {
-    _viewer.getTable().addMouseListener(this);
+public abstract class TableRowDoubleClickHandler implements MouseListener {
+  private TableViewer myTableViewer;
+  
+  public TableRowDoubleClickHandler(TableViewer _viewer) {
+    myTableViewer = _viewer;
   }
 
+  public void attach() {
+    myTableViewer.getTable().addMouseListener(this);
+  }
+  
+  public void detach() {
+    myTableViewer.getTable().removeMouseListener(this);
+  }
+  
   public void mouseDoubleClick(MouseEvent _e) {
     Table table = (Table) _e.getSource();
     TableItem item = table.getItem(new Point(_e.x, _e.y));
     if (item == null) {
-      doubleSelectionOccurred();
+      emptyDoubleSelectionOccurred();
+    }
+    else {
+      ISelection selection = myTableViewer.getSelection();
+      doubleSelectionOccurred(selection);
     }
   }
 
@@ -77,5 +92,7 @@ public abstract class EmptyTableRowDoubleClickHandler implements MouseListener {
     // DO NOTHING
   }
 
-  protected abstract void doubleSelectionOccurred();
+  protected abstract void emptyDoubleSelectionOccurred();
+
+  protected abstract void doubleSelectionOccurred(ISelection _selection);
 }

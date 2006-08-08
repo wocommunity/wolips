@@ -70,16 +70,19 @@ import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
 import org.objectstyle.wolips.eomodeler.model.InheritanceType;
+import org.objectstyle.wolips.eomodeler.utils.BooleanUtils;
 
 public class SubclassEntityDialog extends Dialog {
   private EOModel myModel;
   private String myEntityName;
   private EOEntity myParentEntity;
   private InheritanceType myInheritanceType;
+  private String myRestrictingQualifier;
 
   private Text myEntityNameText;
   private ComboViewer myParentEntityViewer;
   private ComboViewer myInheritanceTypeViewer;
+  private Text myRestrictingQualifierText;
 
   public SubclassEntityDialog(Shell _shell, EOModel _model, EOEntity _parentEntity) {
     super(_shell);
@@ -104,6 +107,10 @@ public class SubclassEntityDialog extends Dialog {
     return myInheritanceType;
   }
 
+  public String getRestrictingQualifier() {
+    return myRestrictingQualifier;
+  }
+
   protected void _updateSubclassFromUI() {
     if (myEntityNameText != null) {
       myEntityName = myEntityNameText.getText();
@@ -113,6 +120,16 @@ public class SubclassEntityDialog extends Dialog {
     }
     if (myInheritanceTypeViewer != null) {
       myInheritanceType = (InheritanceType) ((IStructuredSelection) myInheritanceTypeViewer.getSelection()).getFirstElement();
+    }
+    if (myRestrictingQualifierText != null) {
+      if (myParentEntity != null && !BooleanUtils.isTrue(myParentEntity.isAbstractEntity())) {
+        myRestrictingQualifierText.setEnabled(true);
+        myRestrictingQualifier = myRestrictingQualifierText.getText();
+      }
+      else {
+        myRestrictingQualifierText.setEnabled(false);
+        myRestrictingQualifier = null;
+      }
     }
   }
 
@@ -176,6 +193,19 @@ public class SubclassEntityDialog extends Dialog {
       }
     });
     myInheritanceTypeViewer.setSelection(new StructuredSelection(InheritanceType.HORIZONTAL));
+
+    Label restrictingQualifierLabel = new Label(subclassDialogArea, SWT.NONE);
+    restrictingQualifierLabel.setText(Messages.getString("SubclassEntityDialog.restrictingQualifierLabel"));
+    myRestrictingQualifierText = new Text(subclassDialogArea, SWT.BORDER);
+    myRestrictingQualifierText.addModifyListener(new ModifyListener() {
+      public void modifyText(ModifyEvent _e) {
+        SubclassEntityDialog.this._updateSubclassFromUI();
+      }
+    });
+    myRestrictingQualifierText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+
+    _updateSubclassFromUI();
+    
     return subclassDialogArea;
   }
 }

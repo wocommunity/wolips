@@ -66,9 +66,9 @@ import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.editors.IEOModelEditor;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
-import org.objectstyle.wolips.eomodeler.utils.EmptyTableRowDoubleClickHandler;
 import org.objectstyle.wolips.eomodeler.utils.KeyComboBoxCellEditor;
 import org.objectstyle.wolips.eomodeler.utils.TableRefreshPropertyListener;
+import org.objectstyle.wolips.eomodeler.utils.TableRowDoubleClickHandler;
 import org.objectstyle.wolips.eomodeler.utils.TableRowRefreshPropertyListener;
 import org.objectstyle.wolips.eomodeler.utils.TableUtils;
 
@@ -82,7 +82,7 @@ public class EOEntitiesTableViewer extends Composite implements ISelectionProvid
     super(_parent, _style);
     setLayout(new GridLayout(1, true));
     myEntitiesTableViewer = TableUtils.createTableViewer(this, SWT.MULTI | SWT.FULL_SELECTION, "EOEntity", EOEntitiesConstants.COLUMNS, new EOEntitiesContentProvider(), new EOEntitiesLabelProvider(EOEntitiesConstants.COLUMNS), new EOEntitiesViewerSorter(EOEntitiesConstants.COLUMNS));
-    new DoubleClickNewEntityHandler().attachTo(myEntitiesTableViewer);
+    new DoubleClickNewEntityHandler(myEntitiesTableViewer).attach();
     Table entitiesTable = myEntitiesTableViewer.getTable();
     entitiesTable.setLayoutData(new GridData(GridData.FILL_BOTH));
     TableUtils.sort(myEntitiesTableViewer, EOEntity.NAME);
@@ -150,14 +150,22 @@ public class EOEntitiesTableViewer extends Composite implements ISelectionProvid
     myEntitiesTableViewer.removeSelectionChangedListener(_listener);
   }
 
-  protected class DoubleClickNewEntityHandler extends EmptyTableRowDoubleClickHandler {
-    protected void doubleSelectionOccurred() {
+  protected class DoubleClickNewEntityHandler extends TableRowDoubleClickHandler {
+    public DoubleClickNewEntityHandler(TableViewer _viewer) {
+      super(_viewer);
+    }
+
+    protected void emptyDoubleSelectionOccurred() {
       try {
         EOEntitiesTableViewer.this.getModel().addBlankEntity(Messages.getString("EOEntity.newName"));
       }
       catch (Throwable e) {
         e.printStackTrace();
       }
+    }
+
+    protected void doubleSelectionOccurred(ISelection _selection) {
+      // DO NOTHING
     }
   }
 }
