@@ -269,6 +269,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     superclassRelationship.setToMany(Boolean.FALSE);
     superclassRelationship.setDestination(this);
     superclassRelationship.setClassProperty(Boolean.FALSE, false);
+    superclassRelationship.setMandatory(Boolean.TRUE);
     Set primaryKeyAttributes = getPrimaryKeyAttributes();
     Iterator primaryKeyAttributesIter = primaryKeyAttributes.iterator();
     while (primaryKeyAttributesIter.hasNext()) {

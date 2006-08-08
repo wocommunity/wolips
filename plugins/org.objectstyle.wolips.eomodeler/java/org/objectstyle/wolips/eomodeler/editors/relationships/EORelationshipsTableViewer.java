@@ -50,6 +50,7 @@
 package org.objectstyle.wolips.eomodeler.editors.relationships;
 
 import java.beans.PropertyChangeEvent;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -59,6 +60,8 @@ import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TextCellEditor;
@@ -72,8 +75,8 @@ import org.objectstyle.wolips.eomodeler.Activator;
 import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EORelationship;
-import org.objectstyle.wolips.eomodeler.utils.EmptyTableRowDoubleClickHandler;
 import org.objectstyle.wolips.eomodeler.utils.TableRefreshPropertyListener;
+import org.objectstyle.wolips.eomodeler.utils.TableRowDoubleClickHandler;
 import org.objectstyle.wolips.eomodeler.utils.TableRowRefreshPropertyListener;
 import org.objectstyle.wolips.eomodeler.utils.TableUtils;
 
@@ -83,13 +86,15 @@ public class EORelationshipsTableViewer extends Composite implements ISelectionP
   private RelationshipsChangeRefresher myRelationshipsChangedRefresher;
   private TableRefreshPropertyListener myParentChangedRefresher;
   private TableRowRefreshPropertyListener myTableRowRefresher;
+  private List mySelectionListeners;
 
   public EORelationshipsTableViewer(Composite _parent, int _style) {
     super(_parent, _style);
     setLayout(new GridLayout(1, true));
+    mySelectionListeners = new LinkedList();
     myRelationshipsTableViewer = TableUtils.createTableViewer(this, SWT.MULTI | SWT.FULL_SELECTION, "EORelationship", EORelationshipsConstants.COLUMNS, new EORelationshipsContentProvider(), null, new EORelationshipsViewerSorter(EORelationshipsConstants.COLUMNS));
     myRelationshipsTableViewer.setLabelProvider(new EORelationshipsLabelProvider(myRelationshipsTableViewer, EORelationshipsConstants.COLUMNS));
-    new DoubleClickNewRelationshipHandler().attachTo(myRelationshipsTableViewer);
+    new DoubleClickNewRelationshipHandler(myRelationshipsTableViewer).attach();
     myRelationshipsChangedRefresher = new RelationshipsChangeRefresher(myRelationshipsTableViewer);
     myParentChangedRefresher = new TableRefreshPropertyListener(myRelationshipsTableViewer);
     myTableRowRefresher = new TableRowRefreshPropertyListener(myRelationshipsTableViewer);
@@ -140,10 +145,12 @@ public class EORelationshipsTableViewer extends Composite implements ISelectionP
 
   public void addSelectionChangedListener(ISelectionChangedListener _listener) {
     myRelationshipsTableViewer.addSelectionChangedListener(_listener);
+    mySelectionListeners.add(_listener);
   }
 
   public void removeSelectionChangedListener(ISelectionChangedListener _listener) {
     myRelationshipsTableViewer.removeSelectionChangedListener(_listener);
+    mySelectionListeners.remove(_listener);
   }
 
   public ISelection getSelection() {
@@ -154,13 +161,35 @@ public class EORelationshipsTableViewer extends Composite implements ISelectionP
     myRelationshipsTableViewer.setSelection(_selection);
   }
 
-  protected class DoubleClickNewRelationshipHandler extends EmptyTableRowDoubleClickHandler {
-    protected void doubleSelectionOccurred() {
+  protected List getSelectionListeners() {
+    return mySelectionListeners;
+  }
+
+  protected TableViewer getRelationshipsTableViewer() {
+    return myRelationshipsTableViewer;
+  }
+
+  protected class DoubleClickNewRelationshipHandler extends TableRowDoubleClickHandler {
+    public DoubleClickNewRelationshipHandler(TableViewer _viewer) {
+      super(_viewer);
+    }
+
+    protected void emptyDoubleSelectionOccurred() {
       try {
         EORelationshipsTableViewer.this.getEntity().addBlankRelationship(Messages.getString("EORelationship.newName"));
       }
       catch (Throwable e) {
         e.printStackTrace();
+      }
+    }
+
+    protected void doubleSelectionOccurred(ISelection _selection) {
+      EORelationship relationship = (EORelationship) ((IStructuredSelection) _selection).getFirstElement();
+      EOEntity destination = relationship.getDestination();
+      Iterator selectionListenersIter = EORelationshipsTableViewer.this.getSelectionListeners().iterator();
+      while (selectionListenersIter.hasNext()) {
+        ISelectionChangedListener selectionChangedListener = (ISelectionChangedListener) selectionListenersIter.next();
+        selectionChangedListener.selectionChanged(new SelectionChangedEvent(EORelationshipsTableViewer.this.getRelationshipsTableViewer(), new StructuredSelection(destination)));
       }
     }
   }

@@ -70,9 +70,10 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.objectstyle.wolips.eomodeler.Activator;
 import org.objectstyle.wolips.eomodeler.Messages;
+import org.objectstyle.wolips.eomodeler.model.AbstractEOArgument;
 import org.objectstyle.wolips.eomodeler.model.EOAttribute;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
-import org.objectstyle.wolips.eomodeler.utils.EmptyTableRowDoubleClickHandler;
+import org.objectstyle.wolips.eomodeler.utils.TableRowDoubleClickHandler;
 import org.objectstyle.wolips.eomodeler.utils.KeyComboBoxCellEditor;
 import org.objectstyle.wolips.eomodeler.utils.TableRefreshPropertyListener;
 import org.objectstyle.wolips.eomodeler.utils.TableRowRefreshPropertyListener;
@@ -92,7 +93,7 @@ public class EOAttributesTableViewer extends Composite implements ISelectionProv
     setLayout(new GridLayout(1, true));
     myAttributesTableViewer = TableUtils.createTableViewer(this, SWT.MULTI | SWT.FULL_SELECTION, "EOAttribute", EOAttributesConstants.COLUMNS, new EOAttributesContentProvider(), null, new EOAttributesViewerSorter(EOAttributesConstants.COLUMNS));
     myAttributesTableViewer.setLabelProvider(new EOAttributesLabelProvider(myAttributesTableViewer, EOAttributesConstants.COLUMNS));
-    new DoubleClickNewAttributeHandler().attachTo(myAttributesTableViewer);
+    new DoubleClickNewAttributeHandler(myAttributesTableViewer).attach();
     myAttributesChangedRefresher = new AttributesChangeRefresher(myAttributesTableViewer);
     myParentChangedRefresher = new TableRefreshPropertyListener(myAttributesTableViewer);
     myTableRowRefresher = new TableRowRefreshPropertyListener(myAttributesTableViewer);
@@ -114,17 +115,17 @@ public class EOAttributesTableViewer extends Composite implements ISelectionProv
     //classPropertyColumn.setAlignment(SWT.CENTER);
     classPropertyColumn.setImage(Activator.getDefault().getImageRegistry().get(Activator.CLASS_PROPERTY_ICON));
 
-    TableColumn allowNullColumn = attributesTable.getColumn(TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttribute.ALLOWS_NULL));
+    TableColumn allowNullColumn = attributesTable.getColumn(TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, AbstractEOArgument.ALLOWS_NULL));
     allowNullColumn.setText("0");
     //allowNullColumn.setAlignment(SWT.CENTER);
     //classPropertyColumn.setImage(Activator.getDefault().getImageRegistry().get(EOAttribute.CLASS_PROPERTY));
 
-    TableUtils.sort(myAttributesTableViewer, EOAttribute.NAME);
+    TableUtils.sort(myAttributesTableViewer, AbstractEOArgument.NAME);
 
     CellEditor[] cellEditors = new CellEditor[EOAttributesConstants.COLUMNS.length];
     cellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttribute.PROTOTYPE)] = new KeyComboBoxCellEditor(attributesTable, new String[0], SWT.READ_ONLY);
-    cellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttribute.NAME)] = new TextCellEditor(attributesTable);
-    cellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttribute.COLUMN_NAME)] = new TextCellEditor(attributesTable);
+    cellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, AbstractEOArgument.NAME)] = new TextCellEditor(attributesTable);
+    cellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, AbstractEOArgument.COLUMN_NAME)] = new TextCellEditor(attributesTable);
     updateCellEditors(cellEditors);
     myAttributesTableViewer.setCellModifier(new EOAttributesCellModifier(myAttributesTableViewer, cellEditors));
     myAttributesTableViewer.setCellEditors(cellEditors);
@@ -161,13 +162,13 @@ public class EOAttributesTableViewer extends Composite implements ISelectionProv
       _cellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttribute.PRIMARY_KEY)] = new TriStateCellEditor(attributesTable);
       _cellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttribute.CLASS_PROPERTY)] = new TriStateCellEditor(attributesTable);
       _cellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttribute.USED_FOR_LOCKING)] = new TriStateCellEditor(attributesTable);
-      _cellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttribute.ALLOWS_NULL)] = new TriStateCellEditor(attributesTable);
+      _cellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, AbstractEOArgument.ALLOWS_NULL)] = new TriStateCellEditor(attributesTable);
     }
     else {
       _cellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttribute.PRIMARY_KEY)] = new CheckboxCellEditor(attributesTable);
       _cellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttribute.CLASS_PROPERTY)] = new CheckboxCellEditor(attributesTable);
       _cellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttribute.USED_FOR_LOCKING)] = new CheckboxCellEditor(attributesTable);
-      _cellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttribute.ALLOWS_NULL)] = new CheckboxCellEditor(attributesTable);
+      _cellEditors[TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, AbstractEOArgument.ALLOWS_NULL)] = new CheckboxCellEditor(attributesTable);
     }
   }
 
@@ -187,14 +188,22 @@ public class EOAttributesTableViewer extends Composite implements ISelectionProv
     myAttributesTableViewer.setSelection(_selection);
   }
 
-  protected class DoubleClickNewAttributeHandler extends EmptyTableRowDoubleClickHandler {
-    protected void doubleSelectionOccurred() {
+  protected class DoubleClickNewAttributeHandler extends TableRowDoubleClickHandler {
+    public DoubleClickNewAttributeHandler(TableViewer _viewer) {
+      super(_viewer);
+    }
+
+    protected void emptyDoubleSelectionOccurred() {
       try {
         EOAttributesTableViewer.this.getEntity().addBlankAttribute(Messages.getString("EOAttribute.newName"));
       }
       catch (Throwable e) {
         e.printStackTrace();
       }
+    }
+    
+    protected void doubleSelectionOccurred(ISelection _selection) {
+      // DO NOTHING
     }
   }
 

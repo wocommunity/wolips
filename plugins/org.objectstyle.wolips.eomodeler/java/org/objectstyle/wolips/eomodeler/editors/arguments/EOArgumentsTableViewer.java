@@ -71,10 +71,10 @@ import org.objectstyle.wolips.eomodeler.model.AbstractEOArgument;
 import org.objectstyle.wolips.eomodeler.model.EOArgument;
 import org.objectstyle.wolips.eomodeler.model.EOArgumentDirection;
 import org.objectstyle.wolips.eomodeler.model.EOStoredProcedure;
-import org.objectstyle.wolips.eomodeler.utils.EmptyTableRowDoubleClickHandler;
 import org.objectstyle.wolips.eomodeler.utils.KeyComboBoxCellEditor;
 import org.objectstyle.wolips.eomodeler.utils.TablePropertyViewerSorter;
 import org.objectstyle.wolips.eomodeler.utils.TableRefreshPropertyListener;
+import org.objectstyle.wolips.eomodeler.utils.TableRowDoubleClickHandler;
 import org.objectstyle.wolips.eomodeler.utils.TableRowRefreshPropertyListener;
 import org.objectstyle.wolips.eomodeler.utils.TableUtils;
 
@@ -89,7 +89,7 @@ public class EOArgumentsTableViewer extends Composite implements ISelectionProvi
 
     setLayout(new GridLayout(1, true));
     myArgumentsTableViewer = TableUtils.createTableViewer(this, SWT.MULTI | SWT.FULL_SELECTION, "EOArgument", EOArgumentsConstants.COLUMNS, new EOArgumentsContentProvider(), new EOArgumentsLabelProvider(EOArgumentsConstants.COLUMNS), new TablePropertyViewerSorter(EOArgumentsConstants.COLUMNS));
-    new DoubleClickNewAttributeHandler().attachTo(myArgumentsTableViewer);
+    new DoubleClickNewAttributeHandler(myArgumentsTableViewer).attach();
     myArgumentsChangedRefresher = new ArgumentsChangeRefresher(myArgumentsTableViewer);
     myTableRowRefresher = new TableRowRefreshPropertyListener(myArgumentsTableViewer);
     Table argumentsTable = myArgumentsTableViewer.getTable();
@@ -151,14 +151,22 @@ public class EOArgumentsTableViewer extends Composite implements ISelectionProvi
     myArgumentsTableViewer.setSelection(_selection);
   }
 
-  protected class DoubleClickNewAttributeHandler extends EmptyTableRowDoubleClickHandler {
-    protected void doubleSelectionOccurred() {
+  protected class DoubleClickNewAttributeHandler extends TableRowDoubleClickHandler {
+    public DoubleClickNewAttributeHandler(TableViewer _viewer) {
+      super(_viewer);
+    }
+
+    protected void emptyDoubleSelectionOccurred() {
       try {
         EOArgumentsTableViewer.this.getStoredProcedure().addBlankArgument(Messages.getString("EOArgument.newName"));
       }
       catch (Throwable e) {
         e.printStackTrace();
       }
+    }
+
+    protected void doubleSelectionOccurred(ISelection _selection) {
+      // DO NOTHING
     }
   }
 
