@@ -362,7 +362,20 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
   }
 
   public EOEntity getDestination() {
-    return myDestination;
+    EOEntity destination;
+    if (isFlattened()) {
+      AbstractEOAttributePath targetAttributePath = myEntity.resolveKeyPath(getDefinition());
+      if (targetAttributePath != null && targetAttributePath.getChildIEOAttribute() != null) {
+        destination = ((EORelationshipPath) targetAttributePath).getChildRelationship().getDestination();
+      }
+      else {
+        destination = null;
+      }
+    }
+    else {
+      destination = myDestination;
+    }
+    return destination;
   }
 
   public void setDestination(EOEntity _destination) {
