@@ -51,10 +51,10 @@ package org.objectstyle.wolips.eomodeler.model;
 
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 
 import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.utils.BooleanUtils;
@@ -172,6 +172,66 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
 
   public int hashCode() {
     return ((myEntity == null) ? 1 : myEntity.hashCode()) * ((myName == null) ? super.hashCode() : myName.hashCode());
+  }
+
+  public boolean isInverseRelationship(EORelationship _relationship) {
+    boolean isInverse;
+    if (_relationship == null) {
+      isInverse = false;
+    }
+    else {
+      List inverseJoins = new LinkedList(_relationship.getJoins());
+      if (inverseJoins.size() != myJoins.size()) {
+        isInverse = false;
+      }
+      else {
+        Iterator joinsIter = myJoins.iterator();
+        isInverse = true;
+        while (isInverse && joinsIter.hasNext()) {
+          EOJoin join = (EOJoin) joinsIter.next();
+          EOJoin inverseJoin = null;
+          int inverseJoinsSize = inverseJoins.size();
+          for (int inverseJoinNum = 0; inverseJoin == null && inverseJoinNum < inverseJoinsSize; inverseJoinNum++) {
+            EOJoin potentialInverseJoin = (EOJoin) inverseJoins.get(inverseJoinNum);
+            if (potentialInverseJoin.isInverseJoin(join)) {
+              inverseJoin = potentialInverseJoin;
+            }
+          }
+          if (inverseJoin == null) {
+            isInverse = false;
+          }
+        }
+      }
+    }
+    return isInverse;
+  }
+
+  public EORelationship getInverseRelationship() {
+    EORelationship inverseRelationship = null;
+    if (myDestination != null) {
+      Iterator relationshipsIter = myDestination.getRelationships().iterator();
+      while (inverseRelationship == null && relationshipsIter.hasNext()) {
+        EORelationship potentialInverseRelationship = (EORelationship) relationshipsIter.next();
+        if (potentialInverseRelationship.isInverseRelationship(this)) {
+          inverseRelationship = potentialInverseRelationship;
+        }
+      }
+    }
+    return inverseRelationship;
+  }
+
+  public EORelationship createInverseRelationshipNamed(String _name, boolean _toMany) {
+    EORelationship inverseRelationship = new EORelationship(myDestination.findUnusedRelationshipName(_name));
+    inverseRelationship.setClassProperty(getClassProperty());
+    inverseRelationship.setToMany(Boolean.valueOf(_toMany));
+    inverseRelationship.setDestination(myEntity);
+    Iterator joinsIter = getJoins().iterator();
+    while (joinsIter.hasNext()) {
+      EOJoin join = (EOJoin) joinsIter.next();
+      join.addInverseJoinInto(inverseRelationship, false);
+    }
+    inverseRelationship._setEntity(myDestination);
+    return inverseRelationship;
   }
 
   public boolean equals(Object _obj) {

@@ -74,6 +74,7 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.objectstyle.wolips.eomodeler.Activator;
 import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
+import org.objectstyle.wolips.eomodeler.model.EOModelObject;
 import org.objectstyle.wolips.eomodeler.model.EORelationship;
 import org.objectstyle.wolips.eomodeler.utils.TableRefreshPropertyListener;
 import org.objectstyle.wolips.eomodeler.utils.TableRowDoubleClickHandler;
@@ -185,11 +186,21 @@ public class EORelationshipsTableViewer extends Composite implements ISelectionP
 
     protected void doubleSelectionOccurred(ISelection _selection) {
       EORelationship relationship = (EORelationship) ((IStructuredSelection) _selection).getFirstElement();
-      EOEntity destination = relationship.getDestination();
-      Iterator selectionListenersIter = EORelationshipsTableViewer.this.getSelectionListeners().iterator();
-      while (selectionListenersIter.hasNext()) {
-        ISelectionChangedListener selectionChangedListener = (ISelectionChangedListener) selectionListenersIter.next();
-        selectionChangedListener.selectionChanged(new SelectionChangedEvent(EORelationshipsTableViewer.this.getRelationshipsTableViewer(), new StructuredSelection(destination)));
+      EOModelObject jumpToModelObject = null;
+      EORelationship inverseRelationship = relationship.getInverseRelationship();
+      if (inverseRelationship != null) {
+        jumpToModelObject = inverseRelationship;
+      }
+      else {
+        EOEntity destination = relationship.getDestination();
+        jumpToModelObject = destination;
+      }
+      if (jumpToModelObject != null) {
+        Iterator selectionListenersIter = EORelationshipsTableViewer.this.getSelectionListeners().iterator();
+        while (selectionListenersIter.hasNext()) {
+          ISelectionChangedListener selectionChangedListener = (ISelectionChangedListener) selectionListenersIter.next();
+          selectionChangedListener.selectionChanged(new SelectionChangedEvent(EORelationshipsTableViewer.this.getRelationshipsTableViewer(), new StructuredSelection(jumpToModelObject)));
+        }
       }
     }
   }

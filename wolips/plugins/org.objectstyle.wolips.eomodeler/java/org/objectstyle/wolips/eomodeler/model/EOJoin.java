@@ -69,6 +69,14 @@ public class EOJoin extends EOModelObject implements ISortableEOModelObject {
     myJoinMap = new EOModelMap();
   }
 
+  public EOJoin addInverseJoinInto(EORelationship _relationship, boolean _fireEvents) {
+    EOJoin inverseJoin = new EOJoin();
+    inverseJoin.setSourceAttribute(myDestinationAttribute);
+    inverseJoin.setDestinationAttribute(mySourceAttribute);
+    _relationship.addJoin(inverseJoin, _fireEvents);
+    return inverseJoin;
+  }
+
   public Set getReferenceFailures() {
     return new HashSet();
   }
@@ -89,6 +97,10 @@ public class EOJoin extends EOModelObject implements ISortableEOModelObject {
 
   public EORelationship getRelationship() {
     return myRelationship;
+  }
+
+  public boolean isInverseJoin(EOJoin _join) {
+    return _join != null && ComparisonUtils.equals(mySourceAttribute, _join.myDestinationAttribute) && ComparisonUtils.equals(myDestinationAttribute, _join.mySourceAttribute);
   }
 
   public void pasted() throws DuplicateNameException {

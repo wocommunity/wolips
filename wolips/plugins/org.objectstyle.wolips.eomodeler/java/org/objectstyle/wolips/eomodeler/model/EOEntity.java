@@ -55,7 +55,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 
 import org.objectstyle.cayenne.wocompat.PropertyListSerialization;
 import org.objectstyle.wolips.eomodeler.Messages;
@@ -180,6 +179,35 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
       EORelationship relationship = (EORelationship) relationshipsIter.next();
       relationship.pasted();
     }
+  }
+
+  public String _findUnusedRelationshipName(String _name, boolean _toMany) {
+    String name = StringUtils.toLowercaseFirstLetter(_name);
+    if (_toMany) {
+      name = StringUtils.toPlural(name);
+    }
+    name = findUnusedRelationshipName(name);
+    return name;
+  }
+
+  public EORelationship createRelationshipTo(EOEntity _destinationEntity, boolean _toMany) {
+    return createRelationshipTo(_destinationEntity, _toMany, _findUnusedRelationshipName(_destinationEntity.getName(), _toMany));
+  }
+
+  public EORelationship createRelationshipTo(EOEntity _destinationEntity, boolean _toMany, String _name) {
+    EORelationship relationship = new EORelationship(_name);
+    relationship.setDestination(_destinationEntity, false);
+    relationship.setClassProperty(Boolean.TRUE);
+    relationship.setToMany(Boolean.valueOf(_toMany));
+    Iterator destinationPrimaryKeyIter = _destinationEntity.getPrimaryKeyAttributes().iterator();
+    while (destinationPrimaryKeyIter.hasNext()) {
+      EOAttribute destinationPrimaryKeyAttribute = (EOAttribute) destinationPrimaryKeyIter.next();
+      EOJoin inverseJoin = new EOJoin();
+      inverseJoin.setDestinationAttribute(destinationPrimaryKeyAttribute, false);
+      relationship.addJoin(inverseJoin, false);
+    }
+    relationship._setEntity(this);
+    return relationship;
   }
 
   public EOEntity cloneEntity() throws DuplicateNameException {
