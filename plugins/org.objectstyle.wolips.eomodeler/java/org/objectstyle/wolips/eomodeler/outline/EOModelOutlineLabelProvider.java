@@ -83,7 +83,9 @@ public class EOModelOutlineLabelProvider implements ILabelProvider, IFontProvide
   }
 
   public void dispose() {
-    // DO NOTHING
+    if (myInheritedFont != null) {
+      myInheritedFont.dispose();
+    }
   }
 
   public Image getImage(Object _element) {

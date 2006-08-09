@@ -53,16 +53,19 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.window.Window;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.objectstyle.wolips.eomodeler.Messages;
+import org.objectstyle.wolips.eomodeler.editors.entity.CreateRelationshipDialog;
 import org.objectstyle.wolips.eomodeler.model.DuplicateNameException;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EORelationship;
 import org.objectstyle.wolips.eomodeler.utils.EOModelUtils;
 
 public class NewRelationshipAction implements IWorkbenchWindowActionDelegate {
-  private EOEntity myEntity;
+  private EOEntity myEntity1;
+  private EOEntity myEntity2;
   private IWorkbenchWindow myWindow;
 
   public void init(IWorkbenchWindow _window) {
@@ -74,17 +77,38 @@ public class NewRelationshipAction implements IWorkbenchWindowActionDelegate {
   }
 
   public void selectionChanged(IAction _action, ISelection _selection) {
-    myEntity = null;
+    myEntity1 = null;
+    myEntity2 = null;
     if (_selection instanceof IStructuredSelection) {
-      Object selectedObject = ((IStructuredSelection) _selection).getFirstElement();
-      myEntity = EOModelUtils.getRelatedEntity(selectedObject);
+      Object[] selectedObjects = ((IStructuredSelection) _selection).toArray();
+      if (selectedObjects.length == 1) {
+        myEntity1 = EOModelUtils.getRelatedEntity(selectedObjects[0]);
+      }
+      else if (selectedObjects.length == 2) {
+        myEntity1 = EOModelUtils.getRelatedEntity(selectedObjects[0]);
+        myEntity2 = EOModelUtils.getRelatedEntity(selectedObjects[1]);
+      }
     }
   }
 
   public void run(IAction _action) {
     try {
-      if (myEntity != null) {
-        EORelationship newRelationship = myEntity.addBlankRelationship(Messages.getString("EORelationship.newName"));
+      if (myEntity1 != null && myEntity2 != null) {
+        CreateRelationshipDialog dialog = new CreateRelationshipDialog(myWindow.getShell(), myEntity1, myEntity2);
+        int results = dialog.open();
+        if (results == Window.OK) {
+          EORelationship relationship = dialog.getRelationship();
+          if (relationship != null) {
+            relationship.getEntity().addRelationship(relationship);
+          }
+          EORelationship inverseRelationship = dialog.getInverseRelationship();
+          if (inverseRelationship != null) {
+            inverseRelationship.getEntity().addRelationship(inverseRelationship);
+          }
+        }
+      }
+      else if (myEntity1 != null) {
+        EORelationship newRelationship = myEntity1.addBlankRelationship(Messages.getString("EORelationship.newName"));
       }
       else {
         MessageDialog.openError(myWindow.getShell(), Messages.getString("EORelationship.noEntitySelectedTitle"), Messages.getString("EORelationship.noEntitySelectedMessage"));//$NON-NLS-1$
