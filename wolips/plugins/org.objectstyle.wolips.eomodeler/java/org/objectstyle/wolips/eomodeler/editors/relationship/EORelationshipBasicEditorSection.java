@@ -205,7 +205,7 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
     joinSemanticLayoutData.verticalAlignment = SWT.TOP;
     joinSemanticCombo.setLayoutData(joinSemanticLayoutData);
 
-    myJoinsTableEditor = new JoinsTableEditor(topForm);
+    myJoinsTableEditor = new JoinsTableEditor(topForm, SWT.NONE);
     GridData joinsTableLayoutData = new GridData(GridData.FILL_HORIZONTAL);
     myJoinsTableEditor.setLayoutData(joinsTableLayoutData);
   }

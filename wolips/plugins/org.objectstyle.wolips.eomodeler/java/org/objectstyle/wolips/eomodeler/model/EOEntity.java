@@ -58,6 +58,7 @@ import java.util.Set;
 
 import org.objectstyle.cayenne.wocompat.PropertyListSerialization;
 import org.objectstyle.wolips.eomodeler.Messages;
+import org.objectstyle.wolips.eomodeler.kvc.KeyPath;
 import org.objectstyle.wolips.eomodeler.utils.BooleanUtils;
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
 import org.objectstyle.wolips.eomodeler.utils.StringUtils;
@@ -188,6 +189,75 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     }
     name = findUnusedRelationshipName(name);
     return name;
+  }
+
+  public EOEntity joinInManyToManyWith(EOEntity _entity2) throws DuplicateNameException {
+    return joinInManyToManyWith(_entity2, findUnusedRelationshipName(StringUtils.toPlural(StringUtils.toLowercaseFirstLetter(_entity2.getName()))), _entity2.findUnusedRelationshipName(StringUtils.toPlural(StringUtils.toLowercaseFirstLetter(getName()))));
+  }
+
+  public EOEntity joinInManyToManyWith(EOEntity _entity2, String _relationshipName, String _inverseRelationshipName) throws DuplicateNameException {
+    EOEntity manyToManyEntity = new EOEntity(getModel().findUnusedEntityName(getName() + _entity2.getName()));
+
+    EORelationship entity1Relationship = manyToManyEntity.addBlankRelationship(StringUtils.toLowercaseFirstLetter(getName()));
+    entity1Relationship.setToMany(Boolean.FALSE);
+    entity1Relationship.setDestination(this);
+    entity1Relationship.setClassProperty(Boolean.FALSE);
+    entity1Relationship.setMandatory(Boolean.TRUE);
+    Iterator entity1PrimaryKeyAttributesIter = getPrimaryKeyAttributes().iterator();
+    while (entity1PrimaryKeyAttributesIter.hasNext()) {
+      EOAttribute entity1PrimaryKeyAttribute = (EOAttribute) entity1PrimaryKeyAttributesIter.next();
+      EOAttribute manyToManyPrimaryKeyAttribute = entity1PrimaryKeyAttribute.cloneAttribute();
+      manyToManyPrimaryKeyAttribute.setName(manyToManyEntity.findUnusedAttributeName(manyToManyPrimaryKeyAttribute.getName()));
+      EOJoin entity1Join = new EOJoin();
+      entity1Join.setSourceAttribute(manyToManyPrimaryKeyAttribute);
+      entity1Join.setDestinationAttribute(entity1PrimaryKeyAttribute);
+      entity1Relationship.addJoin(entity1Join, false);
+      manyToManyEntity.addAttribute(manyToManyPrimaryKeyAttribute);
+    }
+    manyToManyEntity.addRelationship(entity1Relationship);
+
+    EORelationship entity2Relationship = manyToManyEntity.addBlankRelationship(StringUtils.toLowercaseFirstLetter(_entity2.getName()));
+    entity2Relationship.setToMany(Boolean.FALSE);
+    entity2Relationship.setDestination(_entity2);
+    entity2Relationship.setClassProperty(Boolean.FALSE);
+    entity2Relationship.setMandatory(Boolean.TRUE);
+    Iterator primaryKeyAttributesIter = _entity2.getPrimaryKeyAttributes().iterator();
+    while (primaryKeyAttributesIter.hasNext()) {
+      EOAttribute entity2PrimaryKeyAttribute = (EOAttribute) primaryKeyAttributesIter.next();
+      EOAttribute manyToManyPrimaryKeyAttribute = entity2PrimaryKeyAttribute.cloneAttribute();
+      manyToManyPrimaryKeyAttribute.setName(manyToManyEntity.findUnusedAttributeName(manyToManyPrimaryKeyAttribute.getName()));
+      EOJoin entity2Join = new EOJoin();
+      entity2Join.setSourceAttribute(manyToManyPrimaryKeyAttribute);
+      entity2Join.setDestinationAttribute(entity2PrimaryKeyAttribute);
+      entity2Relationship.addJoin(entity2Join, false);
+      manyToManyEntity.addAttribute(manyToManyPrimaryKeyAttribute);
+    }
+    manyToManyEntity.addRelationship(entity2Relationship);
+
+    String toManyPluralName = StringUtils.toPlural(StringUtils.toLowercaseFirstLetter(manyToManyEntity.getName()));
+    EORelationship entity1ToManyRelationship = entity1Relationship.createInverseRelationshipNamed(toManyPluralName, true);
+    entity1ToManyRelationship.setClassProperty(Boolean.FALSE);
+    entity1ToManyRelationship.setPropagatesPrimaryKey(Boolean.TRUE);
+    entity1ToManyRelationship.setDeleteRule(EODeleteRule.CASCADE);
+    addRelationship(entity1ToManyRelationship);
+
+    EORelationship entity1ToManyFlattenedRelationship = new EORelationship(_relationshipName, new KeyPath(new String[] { entity1ToManyRelationship.getName(), entity2Relationship.getName() }).toKeyPath());
+    entity1ToManyFlattenedRelationship.setClassProperty(Boolean.TRUE);
+    addRelationship(entity1ToManyFlattenedRelationship);
+
+    EORelationship entity2ToManyRelationship = entity2Relationship.createInverseRelationshipNamed(toManyPluralName, true);
+    entity2ToManyRelationship.setClassProperty(Boolean.FALSE);
+    entity2ToManyRelationship.setPropagatesPrimaryKey(Boolean.TRUE);
+    entity2ToManyRelationship.setDeleteRule(EODeleteRule.CASCADE);
+    _entity2.addRelationship(entity2ToManyRelationship);
+
+    EORelationship entity2ToManyFlattenedRelationship = new EORelationship(_inverseRelationshipName, new KeyPath(new String[] { entity2ToManyRelationship.getName(), entity1Relationship.getName() }).toKeyPath());
+    entity2ToManyFlattenedRelationship.setClassProperty(Boolean.TRUE);
+    _entity2.addRelationship(entity2ToManyFlattenedRelationship);
+
+    getModel().addEntity(manyToManyEntity);
+
+    return manyToManyEntity;
   }
 
   public EORelationship createRelationshipTo(EOEntity _destinationEntity, boolean _toMany) {
@@ -388,13 +458,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
   }
 
   public EORelationship addBlankRelationship(String _name, EORelationshipPath _flattenRelationship) throws DuplicateNameException {
-    String newRelationshipNameBase = _name;
-    String newRelationshipName = newRelationshipNameBase;
-    int newRelationshipNum = 0;
-    while (getRelationshipNamed(newRelationshipName) != null) {
-      newRelationshipNum++;
-      newRelationshipName = newRelationshipNameBase + newRelationshipNum;
-    }
+    String newRelationshipName = findUnusedRelationshipName(_name);
     EORelationship relationship;
     if (_flattenRelationship != null) {
       relationship = new EORelationship(newRelationshipName, _flattenRelationship.toKeyPath());

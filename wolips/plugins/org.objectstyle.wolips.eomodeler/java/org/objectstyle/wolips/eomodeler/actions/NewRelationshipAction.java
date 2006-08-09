@@ -97,13 +97,18 @@ public class NewRelationshipAction implements IWorkbenchWindowActionDelegate {
         CreateRelationshipDialog dialog = new CreateRelationshipDialog(myWindow.getShell(), myEntity1, myEntity2);
         int results = dialog.open();
         if (results == Window.OK) {
-          EORelationship relationship = dialog.getRelationship();
-          if (relationship != null) {
-            relationship.getEntity().addRelationship(relationship);
+          if (dialog.isManyToMany()) {
+            myEntity1.joinInManyToManyWith(myEntity2, dialog.getName(), dialog.getInverseName());
           }
-          EORelationship inverseRelationship = dialog.getInverseRelationship();
-          if (inverseRelationship != null) {
-            inverseRelationship.getEntity().addRelationship(inverseRelationship);
+          else {
+            EORelationship relationship = dialog.getRelationship();
+            if (relationship != null) {
+              relationship.getEntity().addRelationship(relationship);
+            }
+            EORelationship inverseRelationship = dialog.getInverseRelationship();
+            if (inverseRelationship != null) {
+              inverseRelationship.getEntity().addRelationship(inverseRelationship);
+            }
           }
         }
       }

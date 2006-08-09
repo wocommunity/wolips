@@ -85,8 +85,8 @@ public class JoinsTableEditor extends Composite {
   private RelationshipListener myRelationshipListener;
   private ButtonUpdateListener myButtonUpdateListener;
 
-  public JoinsTableEditor(Composite _parent) {
-    super(_parent, SWT.NONE);
+  public JoinsTableEditor(Composite _parent, int _style) {
+    super(_parent, _style);
     setBackground(_parent.getBackground());
 
     myRelationshipListener = new RelationshipListener();
@@ -135,7 +135,7 @@ public class JoinsTableEditor extends Composite {
   }
 
   protected void updateButtons() {
-    boolean buttonsEnabled = myRelationship.getDestination() != null;
+    boolean buttonsEnabled = isEnabled() && myRelationship.getDestination() != null;
     boolean removeEnabled = buttonsEnabled && !myJoinsTableViewer.getSelection().isEmpty() && !myRelationship.isFlattened();
     boolean addEnabled = buttonsEnabled;
     myAddRemoveButtonGroup.setRemoveEnabled(removeEnabled);
@@ -188,6 +188,12 @@ public class JoinsTableEditor extends Composite {
         destination.removePropertyChangeListener(EOEntity.ATTRIBUTES, myAttributesListener);
       }
     }
+  }
+  
+  public void setEnabled(boolean _enabled) {
+    super.setEnabled(_enabled);
+    myJoinsTableViewer.getTable().setEnabled(_enabled);
+    updateButtons();
   }
 
   public void dispose() {
