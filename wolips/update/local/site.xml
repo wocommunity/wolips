@@ -35,6 +35,12 @@
          	Goodies for the Mac.
       	</description>
 	</category-def>
+	
+	<category-def name="WOLips.maven" label="maven">
+    		<description>
+         		maven
+      		</description>
+	</category-def>
    
    	<feature url="features/org.objectstyle.wolips.feature_1.0.6.jar" id="org.objectstyle.wolips.feature" version="1.0.6">
     		<category name="WOLips.main"/>
@@ -54,6 +60,10 @@
 
 	<feature url="features/org.objectstyle.wolips.goodies.mac.feature_1.0.6.jar" id="org.objectstyle.wolips.goodies.mac.feature" version="1.0.6">
     		<category name="WOLips.goodies.mac"/>
+   	</feature>
+
+	<feature url="features/org.objectstyle.wolips.maven_1.0.6.jar" id="org.objectstyle.wolips.maven" version="1.0.6">
+    		<category name="WOLips.maven"/>
    	</feature>
 
 </site>
