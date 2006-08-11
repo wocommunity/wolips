@@ -19,7 +19,7 @@ public class EOModelParserDataStructureFactory implements ParserDataStructureFac
       createSortedSet = true;
     }
     else if ("root.arguments".equals(_keyPath)) {
-      createSortedSet = true;
+      createSortedSet = false;
     }
     else if ("root.classProperties".equals(_keyPath)) {
       createSortedSet = true;

@@ -52,9 +52,10 @@ package org.objectstyle.wolips.eomodeler.model;
 import java.io.File;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 
 import org.objectstyle.cayenne.wocompat.PropertyListSerialization;
 import org.objectstyle.wolips.eomodeler.utils.ComparisonUtils;
@@ -69,12 +70,12 @@ public class EOStoredProcedure extends UserInfoableEOModelObject implements ISor
   private EOModel myModel;
   private String myName;
   private String myExternalName;
-  private Set myArguments;
+  private List myArguments;
   private EOModelMap myStoredProcedureMap;
 
   public EOStoredProcedure() {
     myStoredProcedureMap = new EOModelMap();
-    myArguments = new PropertyListSet();
+    myArguments = new LinkedList();
   }
 
   public EOStoredProcedure(String _name) {
@@ -261,10 +262,10 @@ public class EOStoredProcedure extends UserInfoableEOModelObject implements ISor
     _argument._setStoredProcedure(this);
     _checkForDuplicateArgumentName(_argument, _argument.getName(), _failures);
     _argument.pasted();
-    Set oldArguments = null;
+    List oldArguments = null;
     if (_fireEvents) {
       oldArguments = myArguments;
-      Set newArguments = new PropertyListSet();
+      List newArguments = new LinkedList();
       newArguments.addAll(myArguments);
       newArguments.add(_argument);
       myArguments = newArguments;
@@ -276,8 +277,8 @@ public class EOStoredProcedure extends UserInfoableEOModelObject implements ISor
   }
 
   public void removeArgument(EOArgument _argument) {
-    Set oldArguments = myArguments;
-    Set newArguments = new PropertyListSet();
+    List oldArguments = myArguments;
+    List newArguments = new LinkedList();
     newArguments.addAll(myArguments);
     newArguments.remove(_argument);
     myArguments = newArguments;
@@ -285,7 +286,7 @@ public class EOStoredProcedure extends UserInfoableEOModelObject implements ISor
     _argument._setStoredProcedure(null);
   }
 
-  public Set getArguments() {
+  public List getArguments() {
     return myArguments;
   }
 
@@ -294,9 +295,9 @@ public class EOStoredProcedure extends UserInfoableEOModelObject implements ISor
     myName = _map.getString("name", true);
     myExternalName = _map.getString("externalName", true);
 
-    Set argumentsSet = _map.getSet("arguments", false);
-    if (argumentsSet != null) {
-      Iterator argumentsIter = argumentsSet.iterator();
+    List argumentsList = _map.getList("arguments", false);
+    if (argumentsList != null) {
+      Iterator argumentsIter = argumentsList.iterator();
       while (argumentsIter.hasNext()) {
         EOModelMap argumentMap = new EOModelMap((Map) argumentsIter.next());
         EOArgument argument = new EOArgument();
@@ -312,14 +313,14 @@ public class EOStoredProcedure extends UserInfoableEOModelObject implements ISor
     fetchSpecMap.setString("name", myName, true);
     fetchSpecMap.setString("externalName", myExternalName, true);
 
-    Set arguments = new PropertyListSet();
+    List arguments = new LinkedList();
     Iterator argumentsIter = myArguments.iterator();
     while (argumentsIter.hasNext()) {
       EOArgument argument = (EOArgument) argumentsIter.next();
       EOModelMap argumentMap = argument.toMap();
       arguments.add(argumentMap);
     }
-    fetchSpecMap.setSet("arguments", arguments, true);
+    fetchSpecMap.setList("arguments", arguments, true);
     writeUserInfo(fetchSpecMap);
     return fetchSpecMap;
   }
