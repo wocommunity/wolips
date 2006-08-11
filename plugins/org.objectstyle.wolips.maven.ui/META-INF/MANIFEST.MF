@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: WOLips Maven UI Plug-in
+Bundle-SymbolicName: org.objectstyle.wolips.maven.ui
+Bundle-Version: 1.0.6
+Bundle-Activator: org.objectstyle.wolips.maven.ui.MavenUIPlugin
+Bundle-Vendor: objectstyle.org
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.objectstyle.wolips.ui
+Eclipse-LazyStart: true

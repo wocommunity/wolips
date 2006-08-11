@@ -15,6 +15,7 @@
 		<ant dir="org.objectstyle.wolips.tptp.feature" target="all" />
 		<ant dir="org.objectstyle.wolips.tests.feature" target="all" />
 		<ant dir="org.objectstyle.wolips.goodies.mac.feature" target="all" />
+		<ant dir="org.objectstyle.wolips.maven" target="all" />
 	</target>
 	<!-- ========================================== -->
 	<!-- Build dist.                                -->
@@ -26,6 +27,7 @@
 		<ant dir="org.objectstyle.wolips.tptp.feature" target="dist" />
 		<ant dir="org.objectstyle.wolips.tests.feature" target="dist" />
 		<ant dir="org.objectstyle.wolips.goodies.mac.feature" target="dist" />
+		<ant dir="org.objectstyle.wolips.maven" target="dist" />
 	</target>
 
 </project>
