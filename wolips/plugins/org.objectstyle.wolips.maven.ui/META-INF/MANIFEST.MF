@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: WOLips Maven UI Plug-in
-Bundle-SymbolicName: org.objectstyle.wolips.maven.ui
+Bundle-SymbolicName: org.objectstyle.wolips.maven.ui; singleton:=true
 Bundle-Version: 1.0.6
 Bundle-Activator: org.objectstyle.wolips.maven.ui.MavenUIPlugin
 Bundle-Vendor: objectstyle.org

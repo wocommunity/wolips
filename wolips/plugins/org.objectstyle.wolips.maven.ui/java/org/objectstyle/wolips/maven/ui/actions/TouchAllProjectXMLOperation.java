@@ -65,7 +65,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 
 /**
- * @author ulrich
+ * @author uli
  */
 public class TouchAllProjectXMLOperation extends WorkspaceModifyOperation {
 	private IProject[] projects;
