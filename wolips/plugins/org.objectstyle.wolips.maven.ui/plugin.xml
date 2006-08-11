@@ -1,4 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
 <plugin>
+<!-- =================================================================================== -->
+<!-- project actions                                                                     -->
+<!-- =================================================================================== -->
+      <objectContribution
+            objectClass="org.eclipse.core.resources.IProject"
+            adaptable="true"
+            id="org.objectstyle.wolips.ui">
+         <filter
+               name="nature"
+               value="org.eclipse.jdt.core.javanature">
+         </filter>
+         <action
+               label="Touch project.xml"
+               class="org.objectstyle.wolips.maven.ui.actions.TouchProjectXMLAction"
+               menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group1"
+               enablesFor="1"
+               id="org.objectstyle.wolips.maven.ui.actions.TouchProjectXMLAction">
+         </action>
+      </objectContribution>
 </plugin>
