@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 The ObjectStyle Group 
+ * Copyright (c) 2002 - 2006 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -54,49 +54,59 @@
  *
  */
 package org.objectstyle.woenvironment.env;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Properties;
+
 /**
- * @author uli
- * Utility for the environment.
+ * @author uli Utility for the environment.
  */
 public class Environment {
 	/**
 	 * The String NEXT_ROOT.
 	 */
 	private final String NEXT_ROOT = "NEXT_ROOT";
+
 	private final String NEXT_LOCAL_ROOT = "NEXT_LOCAL_ROOT";
+
 	private final String NEXT_SYSTEM_ROOT = "NEXT_SYSTEM_ROOT";
 
 	private Properties envVars;
+
 	/**
 	 * Constructor for Environment.
 	 */
 	protected Environment() {
 		super();
 	}
-	
+
 	/**
 	 * The values are cached.
+	 * 
 	 * @return environment variables as Properties.
 	 * @throws Exception
 	 */
 	public Properties getEnvVars() {
 		if (envVars != null)
 			return envVars;
-		Process p = null;
+		Process process = null;
 		BufferedReader br = null;
 		String line = null;
 		try {
-			p = Environment.osProcess();
+			process = Environment.osProcess();
 		} catch (InvocationTargetException e) {
-			System.out.println("getEnvVars -> unable to load environment variables" + e);
+			System.out
+					.println("getEnvVars -> unable to load environment variables"
+							+ e);
 		}
 		envVars = new Properties();
-		br = new BufferedReader(new InputStreamReader(p.getInputStream()));
+		if (process == null) {
+			return envVars;
+		}
+		br = new BufferedReader(new InputStreamReader(process.getInputStream()));
 		try {
 			while ((line = br.readLine()) != null) {
 				int idx = line.indexOf('=');
@@ -105,17 +115,17 @@ public class Environment {
 				envVars.setProperty(key, value);
 			}
 		} catch (IOException e) {
-			System.out.println("getEnvVars -> unable to load environment variables" + e);
+			System.out
+					.println("getEnvVars -> unable to load environment variables"
+							+ e);
 		}
-		p = null;
-		br = null;
-		line = null;
-		if(p != null)
-			p.destroy();
+		process.destroy();
 		return envVars;
 	}
+
 	/**
 	 * Method osProcess.
+	 * 
 	 * @return Process
 	 * @throws Exception
 	 */
@@ -128,20 +138,14 @@ public class Environment {
 			OS = System.getProperty("os.name").toLowerCase();
 			if (OS.indexOf("windows 9") > -1) {
 				p = r.exec("command.com /c set");
-			} else if (
-				(OS.indexOf("nt") > -1) || (OS.indexOf("windows 2000") > -1)) {
+			} else if ((OS.indexOf("nt") > -1)
+					|| (OS.indexOf("windows 2000") > -1)) {
 				p = r.exec("cmd.exe /c set");
 			} else {
 				p = r.exec("env");
 			}
-			//p = null;
-			r = null;
-			OS = null;
 			return p;
 		} catch (IOException e) {
-			p = null;
-			r = null;
-			OS = null;
 			throw new InvocationTargetException(e);
 		}
 	}
@@ -156,6 +160,7 @@ public class Environment {
 			return null;
 		}
 	}
+
 	/**
 	 * @return
 	 */

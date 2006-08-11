@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 The ObjectStyle Group 
+ * Copyright (c) 2002 - 2006 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -54,6 +54,7 @@
  *
  */
 package org.objectstyle.woproject.ant;
+
 import java.io.File;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -73,6 +74,7 @@ import org.objectstyle.woenvironment.pbx.PBXResourcesBuildPhase;
 import org.objectstyle.woenvironment.pbx.PBXSourcesBuildPhase;
 import org.objectstyle.woenvironment.pbx.PBXTarget;
 import org.objectstyle.woenvironment.util.Parser;
+
 /**
  * This Task uses a WOTask to builds either frameworks or WOApps
  * 
@@ -83,25 +85,35 @@ import org.objectstyle.woenvironment.util.Parser;
  */
 public class WOPBXBuild extends Task {
 	protected String pbxproj;
+
 	protected WOTask task;
+
 	protected Vector classes = new Vector();
+
 	protected String name = "";
+
 	protected String destDir = "";
+
 	public void setPbxproj(String pbxproj) {
 		this.pbxproj = pbxproj;
 	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
+
 	public void setDestDir(String destDir) {
 		this.destDir = destDir;
 	}
+
 	public String getPbxproj() {
 		return this.pbxproj;
 	}
+
 	public void addClasses(FileSet set) {
 		this.classes.add(set);
 	}
+
 	public void execute() throws BuildException {
 		Map dico = null;
 		Enumeration e;
@@ -134,7 +146,7 @@ public class WOPBXBuild extends Task {
 		 */
 		Javac javac = new Javac();
 		task.getSubtaskFactory().initChildTask(javac);
-		javac.setClasspathRef(new Reference("classpath"));
+		javac.setClasspathRef(new Reference(this.getProject(), "classpath"));
 		javac.setDestdir(new File(this.getProject().getBaseDir(), "build"));
 		javac.setSrcdir(new Path(this.getProject(), "."));
 		javac.setIncludes(sourcesFiles);
@@ -149,6 +161,7 @@ public class WOPBXBuild extends Task {
 		}
 		task.execute();
 	}
+
 	private String setUp(PBXProjectCoder coder, String rootObject) {
 		Iterator i;
 		PBXProject pbxProject = (PBXProject) coder.objectForRef(rootObject);

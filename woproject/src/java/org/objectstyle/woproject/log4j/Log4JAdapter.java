@@ -1,9 +1,10 @@
 package org.objectstyle.woproject.log4j;
+
 /* ====================================================================
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 The ObjectStyle Group 
+ * Copyright (c) 2002 - 2006 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -55,69 +56,73 @@ package org.objectstyle.woproject.log4j;
  *
  */
 
-
 import com.webobjects.foundation.NSLog;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
-
-/** Adapter class that allows NSLog to use Log4J. 
-  *
-  * @author Andrei Adamchik
-  */
+/**
+ * Adapter class that allows NSLog to use Log4J.
+ * 
+ * @author Andrei Adamchik
+ */
 public class Log4JAdapter extends NSLog.Logger {
-    static final Logger logger = Logger.getLogger(Log4JAdapter.class);
+	static final Logger logger = Logger.getLogger(Log4JAdapter.class);
 
-    protected Level logLevel;
+	protected Level logLevel;
 
-    /** Sets an instance of Log4JAdapter as logger for all NSLog levels. */
-    public static void replaceNSLog() {
-        NSLog.err = new Log4JAdapter(Level.ERROR);
-        NSLog.out = new Log4JAdapter(Level.INFO);
-        NSLog.debug = new Log4JAdapter(Level.DEBUG);
-    }
+	/** Sets an instance of Log4JAdapter as logger for all NSLog levels. */
+	public static void replaceNSLog() {
+		NSLog.err = new Log4JAdapter(Level.ERROR);
+		NSLog.out = new Log4JAdapter(Level.INFO);
+		NSLog.debug = new Log4JAdapter(Level.DEBUG);
+	}
 
-    public Log4JAdapter(Level logLevel) {
-        this.logLevel = logLevel;
-    }
+	public Log4JAdapter(Level logLevel) {
+		this.logLevel = logLevel;
+	}
 
-    /**
-     * @see Logger#appendln()
-     */
-    public void appendln() {
-        logger.log(logLevel, "");
-    }
+	/**
+	 * @see Logger#appendln()
+	 */
+	public void appendln() {
+		logger.log(logLevel, "");
+	}
 
-    /**
-     * @see Logger#appendln(Object)
-     */
-    public void appendln(Object arg0) {
-        logger.log(logLevel, arg0);
-    }
+	/**
+	 * @see Logger#appendln(Object)
+	 */
+	public void appendln(Object arg0) {
+		logger.log(logLevel, arg0);
+	}
 
-    public void appendln(Throwable th) {
-        logger.log(logLevel, "wo exception", th);
-    }
+	public void appendln(Throwable th) {
+		logger.log(logLevel, "wo exception", th);
+	}
 
-    /**
-     * @see Logger#flush()
-     */
-    public void flush() {}
+	/**
+	 * @see Logger#flush()
+	 */
+	public void flush() {
+		// do nothing
+	}
 
-    /**
-     * Gets the logLevel.
-     * @return Returns a Level
-     */
-    public Level getLogLevel() {
-        return logLevel;
-    }
+	/**
+	 * Gets the logLevel.
+	 * 
+	 * @return Returns a Level
+	 */
+	public Level getLogLevel() {
+		return logLevel;
+	}
 
-    /**
-     * Sets the logLevel.
-     * @param logLevel The logLevel to set
-     */
-    public void setLogLevel(Level logLevel) {
-        this.logLevel = logLevel;
-    }
+	/**
+	 * Sets the logLevel.
+	 * 
+	 * @param logLevel
+	 *            The logLevel to set
+	 */
+	public void setLogLevel(Level logLevel) {
+		this.logLevel = logLevel;
+	}
 }

@@ -2,7 +2,7 @@
  *
  * The ObjectStyle Group Software License, Version 1.0
  *
- * Copyright (c) 2002 - 2005 The ObjectStyle Group
+ * Copyright (c) 2002 - 2006 The ObjectStyle Group
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -55,36 +55,47 @@
  */
 package org.objectstyle.woproject.ant;
 
-import org.apache.tools.ant.ProjectHelper;
+import java.util.Hashtable;
+
+import org.apache.tools.ant.BuildException;
+import org.apache.tools.ant.Project;
+import org.apache.tools.ant.PropertyHelper;
 import org.apache.tools.ant.types.FileSet;
 
-
 /**
- * A subclass of FileSet with special support for building a destination Resources directory.
+ * A subclass of FileSet with special support for building a destination
+ * Resources directory.
  * 
  * @author Bob Schwarzmann
  */
 public class ResourcesSet extends FileSet {
-	
-    protected String ifCondition = "";
 
-    /**
-     * Creates new ResourcesSet.
-     */
-    public ResourcesSet() {
-        super();
-    }
+	protected String ifCondition = "";
 
-    public void setIf(String string) {
-        ifCondition = string == null ? "" : string;
-    }
+	/**
+	 * Creates new ResourcesSet.
+	 */
+	public ResourcesSet() {
+		super();
+	}
 
-    protected boolean testIfCondition() {
-        if ("".equals(ifCondition)) {
-            return true;
-        }
+	private static String replaceProperties(Project project, String value,
+			Hashtable keys) throws BuildException {
+		PropertyHelper ph = PropertyHelper.getPropertyHelper(project);
+		return ph.replaceProperties(null, value, keys);
+	}
 
-        String string = ProjectHelper.replaceProperties(getProject(), ifCondition, getProject().getProperties());
-        return getProject().getProperty(string) != null;
-    }
+	public void setIf(String string) {
+		ifCondition = string == null ? "" : string;
+	}
+
+	protected boolean testIfCondition() {
+		if ("".equals(ifCondition)) {
+			return true;
+		}
+
+		String string = ResourcesSet.replaceProperties(getProject(),
+				ifCondition, getProject().getProperties());
+		return getProject().getProperty(string) != null;
+	}
 }
