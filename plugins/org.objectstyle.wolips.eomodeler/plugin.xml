@@ -8,7 +8,7 @@
             class="org.objectstyle.wolips.eomodeler.editors.EOModelEditor"
             contributorClass="org.objectstyle.wolips.eomodeler.editors.EOModelEditorContributor"
             default="true"
-            extensions="eomodeld, plist, fspec, storedProcedure, eomodelgroup"
+            extensions="eomodeld, fspec, storedProcedure, eomodelgroup"
             icon="icons/eoModel.gif"
             id="org.objectstyle.wolips.eomodeler.editors.EOModelEditor"
             matchingStrategy="org.objectstyle.wolips.eomodeler.editors.EOModelMatchingStrategy"
