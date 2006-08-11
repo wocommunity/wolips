@@ -49,7 +49,7 @@
  */
 package org.objectstyle.wolips.eomodeler.editors.arguments;
 
-import java.util.Set;
+import java.util.List;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
@@ -59,7 +59,7 @@ import org.objectstyle.wolips.eomodeler.model.EOStoredProcedure;
 public class EOArgumentsContentProvider implements IStructuredContentProvider {
   public Object[] getElements(Object _inputElement) {
     EOStoredProcedure storedProcedure = (EOStoredProcedure) _inputElement;
-    Set argumentsList = storedProcedure.getArguments();
+    List argumentsList = storedProcedure.getArguments();
     EOArgument[] arguments = (EOArgument[]) argumentsList.toArray(new EOArgument[argumentsList.size()]);
     return arguments;
   }

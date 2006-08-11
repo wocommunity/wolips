@@ -49,6 +49,7 @@
  */
 package org.objectstyle.wolips.eomodeler.outline;
 
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -130,7 +131,7 @@ public class EOModelOutlineContentProvider implements ITreeContentProvider {
     }
     else if (_parentElement instanceof EOStoredProcedure) {
       EOStoredProcedure storedProcedure = (EOStoredProcedure) _parentElement;
-      Set arguments = storedProcedure.getArguments();
+      List arguments = storedProcedure.getArguments();
       children = arguments.toArray();
     }
     else {
