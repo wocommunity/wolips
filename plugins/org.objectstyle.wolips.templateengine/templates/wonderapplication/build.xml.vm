@@ -14,6 +14,7 @@
 
 	<!-- property determination  -->
 	<target name="setProps">
+		<property file="${user.home}${file.separator}build.properties"/>
 		<property file="build.properties"/>
 		<property file="${user.home}${file.separator}Library${file.separator}wobuild.properties"/>
 		<condition property="wo.properties.check.failed">
