@@ -60,7 +60,7 @@ public class OtherClasspathSet extends FileSet {
 
 				if (paths == null || paths.length == 0) {
 					log(
-						"No Jars in " + paths[i] + ", ignoring.",
+						"No Jars in project:" + aProject + ", ignoring.",
 						Project.MSG_VERBOSE);
 					continue;
 				}
