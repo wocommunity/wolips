@@ -53,6 +53,7 @@ import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorMatchingStrategy;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IFileEditorInput;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
@@ -72,9 +73,10 @@ public class EOModelMatchingStrategy implements IEditorMatchingStrategy {
       IFile file = ((IFileEditorInput) _input).getFile();
       IContainer container = file.getParent();
       if ("eomodeld".equals(container.getFileExtension())) {
-        EOModelEditor editor = (EOModelEditor) _editorRef.getEditor(true);
-        if (editor != null) {
-          IFileEditorInput existingEditorInput = (IFileEditorInput) editor.getEditorInput();
+        IEditorPart editorPart = _editorRef.getEditor(true);
+        if (editorPart instanceof EOModelEditor) {
+          EOModelEditor eomodelEditorPart = (EOModelEditor) editorPart;
+          IFileEditorInput existingEditorInput = (IFileEditorInput) eomodelEditorPart.getEditorInput();
           IContainer existingEOModelFolder = existingEditorInput.getFile().getParent();
           IFileEditorInput possibleEditorInput = (IFileEditorInput) _input;
           IFile possibleEditorFile = possibleEditorInput.getFile();
@@ -83,9 +85,9 @@ public class EOModelMatchingStrategy implements IEditorMatchingStrategy {
           if ("plist".equals(possibleEditorFile.getFileExtension())) {
             String entityName = possibleEditorFile.getName();
             entityName = entityName.substring(0, entityName.indexOf('.'));
-            EOModel eoModel = editor.getModel();
+            EOModel eoModel = eomodelEditorPart.getModel();
             EOEntity entity = eoModel.getEntityNamed(entityName);
-            editor.setSelectedEntity(entity);
+            eomodelEditorPart.setSelectedEntity(entity);
           }
         }
       }
