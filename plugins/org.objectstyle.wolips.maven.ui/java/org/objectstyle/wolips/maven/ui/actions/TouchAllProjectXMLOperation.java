@@ -70,9 +70,6 @@ import org.eclipse.ui.actions.WorkspaceModifyOperation;
 public class TouchAllProjectXMLOperation extends WorkspaceModifyOperation {
 	private IProject[] projects;
 
-	/**
-	 * @param iProject
-	 */
 	public TouchAllProjectXMLOperation(IProject[] projects) {
 		this.projects = projects;
 	}
