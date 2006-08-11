@@ -21,7 +21,6 @@
                label="Touch project.xml"
                class="org.objectstyle.wolips.maven.ui.actions.TouchProjectXMLAction"
                menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group1"
-               enablesFor="1"
                id="org.objectstyle.wolips.maven.ui.actions.TouchProjectXMLAction">
          </action>
       </objectContribution>
