@@ -58,9 +58,12 @@ import java.sql.Statement;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.webobjects.eoaccess.EOAdaptorChannel;
 import com.webobjects.eoaccess.EOAdaptorContext;
@@ -75,8 +78,10 @@ import com.webobjects.eoaccess.EOSchemaGeneration;
 import com.webobjects.eoaccess.EOSynchronizationFactory;
 import com.webobjects.foundation.NSArray;
 import com.webobjects.foundation.NSBundle;
+import com.webobjects.foundation.NSDictionary;
 import com.webobjects.foundation.NSMutableArray;
 import com.webobjects.foundation.NSMutableDictionary;
+import com.webobjects.foundation.NSSet;
 import com.webobjects.jdbcadaptor.JDBCAdaptor;
 import com.webobjects.jdbcadaptor.JDBCContext;
 
@@ -366,6 +371,56 @@ public class EOFSQLGenerator {
       throw sqlexception;
     }
     adaptorChannel.closeChannel();
+  }
+
+  public Map externalTypes() {
+    EODatabaseContext dbc = new EODatabaseContext(new EODatabase(myModel));
+    EOAdaptorContext ac = dbc.adaptorContext();
+    NSDictionary jdbc2Info = ((JDBCAdaptor) ac.adaptor()).plugIn().jdbcInfo();
+    return (Map) toJavaCollections(jdbc2Info);
+  }
+
+  protected static Object toJavaCollections(Object _obj) {
+    Object result;
+    if (_obj instanceof NSDictionary) {
+      Map map = new HashMap();
+      NSDictionary nsDict = (NSDictionary) _obj;
+      Enumeration keysEnum = nsDict.allKeys().objectEnumerator();
+      while (keysEnum.hasMoreElements()) {
+        Object key = keysEnum.nextElement();
+        Object value = nsDict.objectForKey(key);
+        key = toJavaCollections(key);
+        value = toJavaCollections(value);
+        map.put(key, value);
+      }
+      result = map;
+    }
+    else if (_obj instanceof NSArray) {
+      List list = new LinkedList();
+      NSArray nsArray = (NSArray) _obj;
+      Enumeration valuesEnum = nsArray.objectEnumerator();
+      while (valuesEnum.hasMoreElements()) {
+        Object value = valuesEnum.nextElement();
+        value = toJavaCollections(value);
+        list.add(value);
+      }
+      result = list;
+    }
+    else if (_obj instanceof NSSet) {
+      Set set = new HashSet();
+      NSSet nsSet = (NSSet) _obj;
+      Enumeration valuesEnum = nsSet.objectEnumerator();
+      while (valuesEnum.hasMoreElements()) {
+        Object value = valuesEnum.nextElement();
+        value = toJavaCollections(value);
+        set.add(value);
+      }
+      result = set;
+    }
+    else {
+      result = _obj;
+    }
+    return result;
   }
 
   public static void main(String argv[]) throws MalformedURLException, ClassNotFoundException, InstantiationException, IllegalAccessException {
