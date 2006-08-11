@@ -197,6 +197,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
 
   public EOEntity joinInManyToManyWith(EOEntity _entity2, String _relationshipName, String _inverseRelationshipName) throws DuplicateNameException {
     EOEntity manyToManyEntity = new EOEntity(getModel().findUnusedEntityName(getName() + _entity2.getName()));
+    manyToManyEntity.setExternalName(manyToManyEntity.getName());
 
     EORelationship entity1Relationship = manyToManyEntity.addBlankRelationship(StringUtils.toLowercaseFirstLetter(getName()));
     entity1Relationship.setToMany(Boolean.FALSE);
