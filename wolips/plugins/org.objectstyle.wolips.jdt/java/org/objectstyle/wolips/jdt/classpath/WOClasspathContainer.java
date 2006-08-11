@@ -57,10 +57,9 @@ package org.objectstyle.wolips.jdt.classpath;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -129,7 +128,7 @@ public final class WOClasspathContainer implements IClasspathContainer {
 	}
 
 	private void initPath() {
-		ArrayList path = new ArrayList();
+		Set path = new LinkedHashSet();
 		IPath[] paths = VariablesPlugin.getDefault().getFrameworkRoots();
 		for (int i = 1; i < id.segmentCount(); i++) {
 			for (int h = 0; h < paths.length; h++) {
@@ -180,18 +179,18 @@ public final class WOClasspathContainer implements IClasspathContainer {
 										.newLibraryEntry(archivePath, source,
 												null, null, javadoc, false);
 								path.add(entry);
-               List entryList = (List)allClasspathEntries.get(framework);
-               if (entryList == null) {
-                 entryList = new LinkedList();
-                 allClasspathEntries.put(framework, entryList);
+               Set entrySet = (Set)allClasspathEntries.get(framework);
+               if (entrySet == null) {
+                 entrySet = new LinkedHashSet();
+                 allClasspathEntries.put(framework, entrySet);
                }
-               entryList.add(entry);
+               entrySet.add(entry);
 							}
 						}
 					}
 				}
 				else {
-					path.addAll((List)allClasspathEntries.get(framework));
+					path.addAll((Set)allClasspathEntries.get(framework));
 					h = paths.length;
 				}
 			}
