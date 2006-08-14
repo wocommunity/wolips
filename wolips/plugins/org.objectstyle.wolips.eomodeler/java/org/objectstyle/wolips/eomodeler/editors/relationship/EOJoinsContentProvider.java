@@ -1,6 +1,6 @@
 package org.objectstyle.wolips.eomodeler.editors.relationship;
 
-import java.util.Set;
+import java.util.List;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
@@ -10,7 +10,7 @@ import org.objectstyle.wolips.eomodeler.model.EORelationship;
 public class EOJoinsContentProvider implements IStructuredContentProvider {
   public Object[] getElements(Object _inputElement) {
     EORelationship relationship = (EORelationship) _inputElement;
-    Set joinsList = relationship.getJoins();
+    List joinsList = relationship.getJoins();
     EOJoin[] joins = (EOJoin[]) joinsList.toArray(new EOJoin[joinsList.size()]);
     return joins;
   }

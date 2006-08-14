@@ -92,13 +92,13 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
   private Integer myNumberOfToManyFaultsToBatchFetch;
   private EODeleteRule myDeleteRule;
   private EOJoinSemantic myJoinSemantic;
-  private Set myJoins;
+  private List myJoins;
   private EOModelMap myRelationshipMap;
 
   private EOEntity myEntityBeforeCloning;
 
   public EORelationship() {
-    myJoins = new PropertyListSet();
+    myJoins = new LinkedList();
     myRelationshipMap = new EOModelMap();
     myDeleteRule = EODeleteRule.getDeleteRuleByID(null);
     myJoinSemantic = EOJoinSemantic.getJoinSemanticByID(null);
@@ -522,10 +522,10 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
   public void addJoin(EOJoin _join, boolean _fireEvents) {
     // TODO: Check duplicates?
     _join._setRelationship(this);
-    Set oldJoins = null;
+    List oldJoins = null;
     if (_fireEvents) {
       oldJoins = myJoins;
-      Set newJoins = new PropertyListSet();
+      List newJoins = new LinkedList();
       newJoins.addAll(myJoins);
       newJoins.add(_join);
       myJoins = newJoins;
@@ -537,8 +537,8 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
   }
 
   public void removeJoin(EOJoin _join) {
-    Set oldJoins = myJoins;
-    Set newJoins = new PropertyListSet();
+    List oldJoins = myJoins;
+    List newJoins = new LinkedList();
     newJoins.addAll(myJoins);
     newJoins.remove(_join);
     myJoins = newJoins;
@@ -546,7 +546,7 @@ public class EORelationship extends UserInfoableEOModelObject implements IEOAttr
     _join._setRelationship(null);
   }
 
-  public Set getJoins() {
+  public List getJoins() {
     return myJoins;
   }
 
