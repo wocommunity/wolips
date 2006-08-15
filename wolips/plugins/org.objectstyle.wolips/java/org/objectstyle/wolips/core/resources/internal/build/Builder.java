@@ -121,7 +121,21 @@ public abstract class Builder extends IncrementalProjectBuilder {
 		if (kind == IncrementalProjectBuilder.FULL_BUILD) {
 			this.clean(monitor);
 		}
-		IProject[] projects = build(kind, args, monitor, this.builderWrappers);
+		BuilderWrapper[] deltaBuilderWrappersRequestingFullBuild = build(kind,
+				args, monitor, this.builderWrappers);
+		Set builderWrappersRequestingFullBuild = new HashSet();
+		for (int i = 0; i < deltaBuilderWrappersRequestingFullBuild.length; i++) {
+			builderWrappersRequestingFullBuild
+					.add(deltaBuilderWrappersRequestingFullBuild[i]);
+		}
+
+		if (builderWrappersRequestingFullBuild.size() > 0) {
+			BuilderWrapper[] builderWrappersRequestingFullBuildList = (BuilderWrapper[]) builderWrappersRequestingFullBuild
+					.toArray(new BuilderWrapper[builderWrappersRequestingFullBuild
+							.size()]);
+			build(IncrementalProjectBuilder.FULL_BUILD, args, monitor,
+					builderWrappersRequestingFullBuildList);
+		}
 		if (kind != IncrementalProjectBuilder.CLEAN_BUILD) {
 			if (buildAdapter != null) {
 				buildAdapter.markAsDerivated(monitor);
@@ -145,11 +159,12 @@ public abstract class Builder extends IncrementalProjectBuilder {
 		};
 		ResourcesPlugin.getWorkspace().run(workspaceRunnable,
 				workspaceRunnableProject, 0, (IProgressMonitor) null);
-		return projects;
+		return null;
 	}
 
-	protected IProject[] build(int kind, Map args, IProgressMonitor monitor,
-			BuilderWrapper[] _builderWrappers) throws CoreException {
+	protected BuilderWrapper[] build(int kind, Map args,
+			IProgressMonitor monitor, BuilderWrapper[] _builderWrappers)
+			throws CoreException {
 		IProject project = this.getProject();
 		Map buildCache = new HashMap();
 		DeltaVisitor deltaVisitor;
@@ -172,19 +187,7 @@ public abstract class Builder extends IncrementalProjectBuilder {
 		}
 		BuilderWrapper[] deltaBuilderWrappersRequestingFullBuild = deltaVisitor
 				.getBuilderWrappersRequestingFullBuild();
-		for (int i = 0; i < deltaBuilderWrappersRequestingFullBuild.length; i++) {
-			builderWrappersRequestingFullBuild
-					.add(deltaBuilderWrappersRequestingFullBuild[i]);
-		}
-
-		if (builderWrappersRequestingFullBuild.size() > 0) {
-			BuilderWrapper[] builderWrappersRequestingFullBuildList = (BuilderWrapper[]) builderWrappersRequestingFullBuild
-					.toArray(new BuilderWrapper[builderWrappersRequestingFullBuild
-							.size()]);
-			build(IncrementalProjectBuilder.FULL_BUILD, args, monitor,
-					builderWrappersRequestingFullBuildList);
-		}
-		return null;
+		return deltaBuilderWrappersRequestingFullBuild;
 	}
 
 	private void invokeOldBuilder(int kind, Map args, IProgressMonitor monitor,
