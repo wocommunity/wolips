@@ -56,7 +56,13 @@
 
 package org.objectstyle.wolips.datasets.resources;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.core.resources.IResource;
+import org.eclipse.jdt.core.ICompilationUnit;
+import org.objectstyle.wolips.datasets.DataSetsPlugin;
+import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 
 /**
  * @author ulrich
@@ -84,5 +90,43 @@ public abstract class WOLipsResource implements IWOLipsResource {
 	public void setCorrespondingResource(IResource resource) {
 		this.resource = resource;
 	}
+
+
+    public List getRelatedResources() {
+        return getRelatedWOComponentResources(this.getCorrespondingResource());
+    }
+    
+    /** static help method to find all related resources for WO component files */
+    public static List getRelatedWOComponentResources(IResource resource) {
+    	List list = new ArrayList();
+    	if (resource != null) {
+    		try {
+    			String fileName = resource.getName();
+    			String extName = resource.getFileExtension();
+                            int length = fileName.length() - extName.length() - 1;
+                            if(length > 0) {
+    			fileName = fileName.substring(0, length);
+    			String[] extensions =
+    			    new String[] {
+    			                  "java",
+    			                  WOLipsModel.WOCOMPONENT_BUNDLE_EXTENSION,
+    			                  WOLipsModel.WOCOMPONENT_HTML_EXTENSION,
+    			                  WOLipsModel.WOCOMPONENT_WOD_EXTENSION,
+    			                  WOLipsModel.WOCOMPONENT_WOO_EXTENSION,
+    			                  WOLipsModel.WOCOMPONENT_API_EXTENSION};
+    			list =
+    				WorkbenchUtilitiesPlugin
+    					.findResourcesInProjectByNameAndExtensions(
+    					resource.getProject(),
+    					fileName,
+    					extensions,
+    					true);
+                            }
+    		} catch (Exception e) {
+    			DataSetsPlugin.getDefault().getPluginLogger().log(e);
+    		}
+    	}
+    	return list;
+    }
 
 }

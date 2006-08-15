@@ -55,9 +55,14 @@
  */
 package org.objectstyle.wolips.ui.view;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
@@ -107,6 +112,7 @@ import org.eclipse.ui.views.navigator.ShowInNavigatorAction;
 import org.objectstyle.wolips.datasets.project.WOLipsCore;
 import org.objectstyle.wolips.datasets.resources.IWOLipsResource;
 import org.objectstyle.wolips.ui.UIPlugin;
+import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 
 /**
  * @author ulrich To change the template for this generated type comment go to
@@ -121,6 +127,8 @@ public final class RelatedView extends ViewPart implements ISelectionListener,
 		Object input = null;
 
 		private Object lastParent;
+        
+        ViewLabelProvider labelProvider;
 
 		public void inputChanged(Viewer v, Object oldInput, Object newInput) {
 			this.input = newInput;
@@ -204,7 +212,10 @@ public final class RelatedView extends ViewPart implements ISelectionListener,
 				}
 			}
 			lastParent = parent;
-			return result.toArray();
+            Object[] resultList = result.toArray();
+            // labelProvider needs the element list to check for duplicate filenames
+            labelProvider.setResultList(resultList);
+			return resultList;
 		}
 
 		ViewContentProvider() {
@@ -241,6 +252,8 @@ public final class RelatedView extends ViewPart implements ISelectionListener,
 
 	class ViewLabelProvider extends AppearanceAwareLabelProvider implements
 			ITableLabelProvider {
+        private Set duplicateFilenameSet;
+        
 		public ViewLabelProvider() {
 			super(AppearanceAwareLabelProvider.DEFAULT_TEXTFLAGS
 					| JavaElementLabels.P_COMPRESSED,
@@ -250,17 +263,44 @@ public final class RelatedView extends ViewPart implements ISelectionListener,
 					.getLabelDecorator());
 		}
 
-		public String getColumnText(Object _element, int _columnIndex) {
+    public void setResultList(Object[] items) {
+      int length = items.length;
+      duplicateFilenameSet = new HashSet(length);
+      Map filenameToItemMap = new HashMap(length);
+      int i = length;
+      while (i-->0) {
+          if (! (items[i] instanceof IResource)) {
+              continue;
+          }
+          IResource thisResource = (IResource) items[i];
+          IResource otherResource = (IResource) filenameToItemMap.get(thisResource.getName());
+          if (otherResource != null) {
+              duplicateFilenameSet.add(thisResource);
+              duplicateFilenameSet.add(otherResource);
+          }
+          filenameToItemMap.put(thisResource.getName(), thisResource);
+      }
+    }
+
+        public String getColumnText(Object _element, int _columnIndex) {
 			String text = null;
 			if (_element instanceof IResource) {
 				IResource resource = (IResource) _element;
 				String ext = resource.getFileExtension();
+				String name = resource.getName();
 				if (ext != null) {
 					if ("java".equalsIgnoreCase(ext)) {
 						text = "Java";
 					} else {
 						text = ext.toUpperCase();
 					}
+                    text += " ("+name+")";
+                    if ("eomodeld".equalsIgnoreCase(ext)) {                        
+                        text = name;
+                    }
+                    if (duplicateFilenameSet.contains(resource)) {
+                        text += " - "+resource.getProject().getName();
+                    }
 				}
 			}
 			if (text == null) {
@@ -301,9 +341,13 @@ public final class RelatedView extends ViewPart implements ISelectionListener,
 
 		this.viewer = new TableViewer(parent, 770);
 
-		this.viewer.setContentProvider(new ViewContentProvider());
+        ViewContentProvider viewContentProvider = new ViewContentProvider();
+		this.viewer.setContentProvider(viewContentProvider);
 
-		this.viewer.setLabelProvider(new ViewLabelProvider());
+        ViewLabelProvider viewLabelProvider = new ViewLabelProvider();
+        this.viewer.setLabelProvider(viewLabelProvider );
+        viewContentProvider.labelProvider = viewLabelProvider;
+        
 		// new DecoratingLabelProvider(
 		// new LabelProvider(), getSite().getWorkbenchWindow()
 		// .getWorkbench().getDecoratorManager()
@@ -335,14 +379,18 @@ public final class RelatedView extends ViewPart implements ISelectionListener,
 					IWOLipsResource wolipsResource = null;
 					if (object != null) {
 						if (object instanceof IResource) {
+                            IResource resource = (IResource) object;
 							wolipsResource = WOLipsCore.getWOLipsModel()
 									.getWOLipsResource((IResource) object);
+							if (wolipsResource != null) {
+							    wolipsResource.open(isForceOpenInTextEditor());
+							} else if (resource.getType() == IResource.FILE){
+							    WorkbenchUtilitiesPlugin.open((IFile)resource);
+							}
 						} else if (object instanceof ICompilationUnit) {
 							wolipsResource = WOLipsCore.getWOLipsModel()
 									.getWOLipsCompilationUnit(
 											(ICompilationUnit) object);
-						}
-						if (wolipsResource != null) {
 							wolipsResource.open(isForceOpenInTextEditor());
 						}
 					}

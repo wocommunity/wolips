@@ -126,6 +126,16 @@ public final class EOEntityJava
 							projects,
 							fileName,
 							extensions);
+				// assuming that the superclasses start with _
+                if (fileName.startsWith("_")) {
+				plists.addAll(
+				    WorkbenchUtilitiesPlugin
+				    .findResourcesInResourcesByNameAndExtensions(
+				                                                 projects,
+				                                                 fileName.substring(1),
+				                                                 extensions)
+                                                                 );
+                }
 				for(int i = 0; i < plists.size(); i++) {
 					IResource resource = (IResource)plists.get(i);
 					if(resource != null) {
