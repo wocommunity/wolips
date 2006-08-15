@@ -175,13 +175,14 @@ public class ProjectAdapter extends AbstractResourceAdapter implements
 	}
 
 	private IFolder getBuildFolder() {
+		//:TODO what if we have both folder
 		IResource resource = this.getUnderlyingProject().getFolder(
 				IBuildAdapter.FILE_NAME_DIST);
 		if (resource.exists() && resource instanceof IFolder) {
 			return (IFolder) resource;
 		}
 		resource = this.getUnderlyingProject().getFolder(
-				IBuildAdapter.FILE_NAME_DIST);
+				IBuildAdapter.FILE_NAME_BUILD);
 		if (resource.exists() && resource instanceof IFolder) {
 			return (IFolder) resource;
 		}
