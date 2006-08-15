@@ -64,6 +64,7 @@ import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOFetchSpecification;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
 import org.objectstyle.wolips.eomodeler.model.EOModelContainer;
+import org.objectstyle.wolips.eomodeler.model.EOModelGroup;
 import org.objectstyle.wolips.eomodeler.model.EORelationship;
 import org.objectstyle.wolips.eomodeler.model.EORelationshipPath;
 import org.objectstyle.wolips.eomodeler.model.EOStoredProcedure;
@@ -92,6 +93,10 @@ public class EOModelOutlineContentProvider implements ITreeContentProvider {
     if (_parentElement instanceof EOModelContainer) {
       EOModelContainer modelContainer = (EOModelContainer) _parentElement;
       children = new Object[] { modelContainer.getModel() };
+    }
+    else if (_parentElement instanceof EOModelGroup) {
+      EOModelGroup modelGroup = (EOModelGroup) _parentElement;
+      children = modelGroup.getModels().toArray();
     }
     else if (_parentElement instanceof EOModel) {
       EOModel model = (EOModel) _parentElement;
@@ -153,6 +158,9 @@ public class EOModelOutlineContentProvider implements ITreeContentProvider {
     if (_element instanceof EOModelContainer) {
       parent = null;
     }
+    //    else if (_element instanceof EOModelGroup) {
+    //      parent = myModelContainer;
+    //    }
     else if (_element instanceof EOModel) {
       parent = myModelContainer;
     }
