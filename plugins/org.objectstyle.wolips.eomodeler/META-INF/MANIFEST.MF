@@ -5,25 +5,14 @@ Bundle-SymbolicName: org.objectstyle.wolips.eomodeler; singleton:=true
 Bundle-Version: 1.0.6
 Bundle-Activator: org.objectstyle.wolips.eomodeler.Activator
 Bundle-Localization: plugin
-Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime,
- org.eclipse.jface.text,
+Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources,
- org.eclipse.ui.editors,
  org.eclipse.ui.ide,
- org.eclipse.ui.workbench.texteditor,
  org.eclipse.jdt.core,
- org.eclipse.jdt,
  org.objectstyle.wolips.datasets,
- org.objectstyle.wolips.woproject,
  org.objectstyle.wolips.cayenne,
  org.eclipse.ui.views.properties.tabbed,
  org.eclipse.jface.databinding,
- org.eclipse.jdt.launching,
- org.eclipse.jdt.debug,
- org.eclipse.debug.core,
- org.objectstyle.wolips.launching,
- org.objectstyle.wolips.templateengine,
  org.objectstyle.wolips.eogenerator.ui
 Eclipse-LazyStart: true
 Bundle-Vendor: objectstyle.org
