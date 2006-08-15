@@ -85,6 +85,16 @@ public abstract class Builder extends IncrementalProjectBuilder {
 
 	public abstract String getContext();
 
+	protected void clean(IProgressMonitor monitor) throws CoreException {
+		IProject project = this.getProject();
+		IProjectAdapter projectAdapter = (IProjectAdapter) project
+				.getAdapter(IProjectAdapter.class);
+		IBuildAdapter buildAdapter = projectAdapter.getBuildAdapter();
+		if (buildAdapter != null) {
+			buildAdapter.clean(monitor);
+		}
+	}
+
 	protected IProject[] build(int kind, Map args, IProgressMonitor monitor)
 			throws CoreException {
 		if (this.builderWrappers == null) {
@@ -100,9 +110,13 @@ public abstract class Builder extends IncrementalProjectBuilder {
 		IProjectAdapter projectAdapter = (IProjectAdapter) project
 				.getAdapter(IProjectAdapter.class);
 		IBuildAdapter buildAdapter = projectAdapter.getBuildAdapter();
-		if (kind == IncrementalProjectBuilder.CLEAN_BUILD) {
+		if (kind == IncrementalProjectBuilder.CLEAN_BUILD
+				|| kind == IncrementalProjectBuilder.FULL_BUILD) {
 			if (buildAdapter != null) {
 				buildAdapter.clean(monitor);
+			}
+			if (kind == IncrementalProjectBuilder.CLEAN_BUILD) {
+				return null;
 			}
 		}
 		Map buildCache = new HashMap();
