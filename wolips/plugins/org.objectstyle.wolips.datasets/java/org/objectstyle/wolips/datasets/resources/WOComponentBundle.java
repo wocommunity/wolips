@@ -56,12 +56,9 @@
 
 package org.objectstyle.wolips.datasets.resources;
 
-import java.util.ArrayList;
-import java.util.List;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
-import org.objectstyle.wolips.datasets.DataSetsPlugin;
 import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 
 /**
@@ -83,39 +80,6 @@ public final class WOComponentBundle
 	 */
 	public final int getType() {
 		return IWOLipsResource.WOCOMPONENT_BUNDLE;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.objectstyle.wolips.core.resources.IWOLipsResource#getRelatedResources()
-	 */
-	public final List getRelatedResources() {
-		List list = new ArrayList();
-		if (this.getCorrespondingResource() != null) {
-			try {
-				String fileName = this.getCorrespondingResource().getName();
-                            int length = fileName.length();
-                            if(length > 3) {
-				fileName = fileName.substring(0,length - 3);
-				String[] extensions =
-					new String[] {
-						WOLipsModel.WOCOMPONENT_WOD_EXTENSION,
-						WOLipsModel.WOCOMPONENT_HTML_EXTENSION,
-						WOLipsModel.WOCOMPONENT_WOO_EXTENSION,
-						WOLipsModel.WOCOMPONENT_API_EXTENSION,
-            "java"};
-				list =
-					WorkbenchUtilitiesPlugin
-						.findResourcesInProjectByNameAndExtensions(
-						this.getCorrespondingResource().getProject(),
-						fileName,
-						extensions,
-						true);
-                            }
-			} catch (Exception e) {
-				DataSetsPlugin.getDefault().getPluginLogger().log(e);
-			}
-		}
-		return list;
 	}
 
 	/**

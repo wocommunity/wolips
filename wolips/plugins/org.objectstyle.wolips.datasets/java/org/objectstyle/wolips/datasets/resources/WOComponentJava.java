@@ -100,37 +100,15 @@ public final class WOComponentJava
 	/* (non-Javadoc)
 	 * @see org.objectstyle.wolips.core.resources.IWOLipsResource#getRelatedResources()
 	 */
-	public final List getRelatedResources() {
-		List list = new ArrayList();
-		if (this.getCorrespondingCompilationUnit() != null) {
-			try {
-				String fileName =
-					this
-						.getCorrespondingCompilationUnit()
-						.getCorrespondingResource()
-						.getName();
-				fileName = fileName.substring(0, fileName.length() - 5);
-				String[] extensions =
-					new String[] {
-						WOLipsModel.WOCOMPONENT_BUNDLE_EXTENSION,
-						WOLipsModel.WOCOMPONENT_WOD_EXTENSION,
-						WOLipsModel.WOCOMPONENT_HTML_EXTENSION,
-						WOLipsModel.WOCOMPONENT_WOO_EXTENSION,
-						WOLipsModel.WOCOMPONENT_API_EXTENSION };
-				list =
-					WorkbenchUtilitiesPlugin
-						.findResourcesInProjectByNameAndExtensions(
-						this.getCorrespondingCompilationUnit().getJavaProject().getProject(),
-						fileName,
-						extensions,
-						true);
 
-			} catch (Exception e) {
-				DataSetsPlugin.getDefault().getPluginLogger().log(e);
-			}
-		}
-		return list;
-	}
+    public List getRelatedResources() {
+        try {
+            return WOLipsResource.getRelatedWOComponentResources(this.getCorrespondingCompilationUnit().getCorrespondingResource());
+        } catch (Exception e) {
+            DataSetsPlugin.getDefault().getPluginLogger().log(e);
+        }
+        return new ArrayList();
+    }
 
 	/**
 	 * Opens the resource in a Editor.
