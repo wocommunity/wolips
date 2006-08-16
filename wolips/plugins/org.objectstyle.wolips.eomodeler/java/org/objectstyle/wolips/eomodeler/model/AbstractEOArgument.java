@@ -237,11 +237,11 @@ public abstract class AbstractEOArgument extends UserInfoableEOModelObject imple
     myScale = _scale;
     firePropertyChange(AbstractEOArgument.SCALE, oldScale, getScale());
   }
-  
+
   public String getServerTimeZone() {
     return myServerTimeZone;
   }
-  
+
   public void setServerTimeZone(String _serverTimeZone) {
     String oldServerTimeZone = getServerTimeZone();
     myServerTimeZone = _serverTimeZone;
@@ -387,7 +387,13 @@ public abstract class AbstractEOArgument extends UserInfoableEOModelObject imple
   public EOModelMap toMap() {
     EOModelMap argumentMap = myArgumentMap.cloneModelMap();
     argumentMap.setString("name", getName(), true);
-    argumentMap.setString("columnName", myColumnName, false);
+    // If columnName is prototyped, EOModeler leaves out the columnName.  If, however, columnName is MISSING, then it needs to write a "". 
+    if (myColumnName == null && getColumnName() == null) {
+      argumentMap.setString("columnName", "", false);
+    }
+    else {
+      argumentMap.setString("columnName", myColumnName, false);
+    }
     argumentMap.remove("externalName");
     argumentMap.setString("externalType", myExternalType, true);
     argumentMap.setInteger("scale", myScale);
