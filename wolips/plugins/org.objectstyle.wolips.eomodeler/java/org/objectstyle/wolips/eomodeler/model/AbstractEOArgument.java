@@ -387,7 +387,7 @@ public abstract class AbstractEOArgument extends UserInfoableEOModelObject imple
   public EOModelMap toMap() {
     EOModelMap argumentMap = myArgumentMap.cloneModelMap();
     argumentMap.setString("name", myName, true);
-    argumentMap.setString("columnName", (myColumnName == null) ? "" : myColumnName, false);
+    argumentMap.setString("columnName", myColumnName, false);
     argumentMap.remove("externalName");
     argumentMap.setString("externalType", myExternalType, true);
     argumentMap.setInteger("scale", myScale);
