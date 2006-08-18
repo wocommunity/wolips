@@ -88,6 +88,8 @@ public abstract class WOTask extends Task {
 
 	protected String principalClass;
 
+	protected String manifest;
+
 	protected String jarName;
 
 	protected String customInfoPListContent;
@@ -158,6 +160,15 @@ public abstract class WOTask extends Task {
 		this.principalClass = principalClass;
 	}
 
+    /**
+     * Method setManifest.
+     *
+     * @param manifest
+     */
+    public void setManifest(String manifest) {
+        this.manifest = manifest;
+    }
+
 	public void setWsDestDir(String wsDestDir) {
 		this.wsDestDir = wsDestDir;
 	}
@@ -170,6 +181,15 @@ public abstract class WOTask extends Task {
 	public String getPrincipalClass() {
 		return principalClass;
 	}
+
+    /**
+     * Method getManifest.
+     *
+     * @return String
+     */
+    public String getManifest() {
+        return manifest;
+    }
 
 	/**
 	 * @return The CustomContent for the Info.plist
@@ -376,6 +396,24 @@ public abstract class WOTask extends Task {
 		return classes.size() > 0;
 	}
 
+    /**
+     * Method hasManifest.
+     *
+     * @return boolean
+     */
+    public boolean hasManifest() {
+        return( manifest != null );
+    }
+
+    /**
+     * Method getManifestFile.
+     *
+     * @return File
+     */
+    public File getManifestFile() {
+        return( new File( manifest ) );
+    }
+
 	/**
 	 * Method jarSources
 	 * 
@@ -418,6 +456,10 @@ public abstract class WOTask extends Task {
 				jar.addFileset((FileSet) en.nextElement());
 			}
 		}
+
+        if( hasManifest() ){
+            jar.setManifest( getManifestFile() );
+        }
 
 		jar.execute();
 	}
