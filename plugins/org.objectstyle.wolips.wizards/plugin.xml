@@ -215,7 +215,7 @@
                label="Replace with latest build.xml"
                icon="icons/action/ant_buildfile.gif"
                class="org.objectstyle.wolips.wizards.actions.UpgradeBuildXML"
-               menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group4"
+               menubarPath="org.objectstyle.wolips.ant.ui.ResourceContributions/group2"
                enablesFor="1"
                id="org.objectstyle.wolips.wizards.actions.UpgradeBuildXML">
          </action>
@@ -228,7 +228,7 @@
                label="Replace with latest build.xml"
                icon="icons/action/ant_buildfile.gif"
                class="org.objectstyle.wolips.wizards.actions.UpgradeAllBuildXML"
-               menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group4"
+               menubarPath="org.objectstyle.wolips.ant.ui.ResourceContributions/group2"
                id="org.objectstyle.wolips.wizards.actions.UpgradeAllBuildXML">
          </action>
       </objectContribution>
