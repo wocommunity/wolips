@@ -125,6 +125,8 @@
 		<ant dir="org.objectstyle.wolips.woproject" target="all" />
 		<ant dir="org.objectstyle.wolips.woproject.ant" target="all" />
 		<ant dir="org.objectstyle.wolips.tests" target="all" />
+		<ant dir="org.objectstyle.wolips.maven.core" target="all" />
+		<ant dir="org.objectstyle.wolips.maven.launching" target="all" />
 		<ant dir="org.objectstyle.wolips.maven.ui" target="all" />
 	</target>
 	<!-- ========================================== -->
@@ -173,6 +175,8 @@
 		<ant dir="org.objectstyle.wolips.woproject.ant" target="dist" />
 		<ant dir="org.objectstyle.wolips.builder" target="dist" />
 		<ant dir="org.objectstyle.wolips.tests" target="dist" />
+		<ant dir="org.objectstyle.wolips.maven.core" target="dist" />
+		<ant dir="org.objectstyle.wolips.maven.launching" target="dist" />
 		<ant dir="org.objectstyle.wolips.maven.ui" target="dist" />
 	</target>
 
