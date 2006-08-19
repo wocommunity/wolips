@@ -3,7 +3,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0
  * 
- * Copyright (c) 2004 - 2005 The ObjectStyle Group and individual authors of the
+ * Copyright (c) 2004 - 2006 The ObjectStyle Group and individual authors of the
  * software. All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -91,14 +91,10 @@ public class DefaultAntlauncher implements IAntlauncher {
 	public void launchAntInExternalVM(IFile buildFile,
 			IProgressMonitor monitor, boolean captureOutput, String targets)
 			throws CoreException {
-		// ILaunchConfiguration config = null;
 		ILaunchConfigurationWorkingCopy workingCopy = null;
 		try {
-			// config = this.createDefaultLaunchConfiguration(buildFile,
-			// monitor);
 			workingCopy = DefaultAntlauncher.createDefaultLaunchConfiguration(
 					buildFile, captureOutput, targets);
-			// config = workingCopy.doSave();
 			ILaunch launch = workingCopy.launch(ILaunchManager.RUN_MODE,
 					new SubProgressMonitor(monitor, 1));
 			if (!captureOutput) {
