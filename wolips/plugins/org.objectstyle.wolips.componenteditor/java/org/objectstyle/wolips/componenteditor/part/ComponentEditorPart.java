@@ -119,18 +119,11 @@ public class ComponentEditorPart extends MultiPageEditorPart {
 		return 0;
 	}
 
-	private int pageIndexToEditorPartOffset(int page) {
+	int pageIndexToEditorPartOffset(int page) {
 		if(!useJavaEditor) {
 			return page - 1;
 		}
 		return page;
-	}
-	
-	private int editorPartOffsetToPageIndex(int offset) {
-		if(!useJavaEditor) {
-			return offset + 1;
-		}
-		return offset;
 	}
 	
 	private ComponentEditorOutline getComponentEditorOutline() {
@@ -438,7 +431,6 @@ public class ComponentEditorPart extends MultiPageEditorPart {
 	}
 
 	protected IEditorPart getEditor(int pageIndex) {
-		IEditorPart part = editorParts[pageIndex];
 		if (pageIndex == pageIndexToEditorPartOffset(0)) {
 			return compilationUnitEditor;
 		}

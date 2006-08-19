@@ -79,13 +79,14 @@ import org.objectstyle.wolips.variables.VariablesPlugin;
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public class WOClasspathContainerContentProvider
-		implements
-			ITreeContentProvider,
-			ILabelProvider {
+public class WOClasspathContainerContentProvider implements
+		ITreeContentProvider, ILabelProvider {
 	private WOClasspathContainerRoot[] roots;
+
 	private CheckboxTreeViewer checkboxTreeViewer;
+
 	protected ArrayList allEntries = new ArrayList();
+
 	private boolean isExported = false;
 
 	/**
@@ -124,9 +125,13 @@ public class WOClasspathContainerContentProvider
 	 */
 	public final class WOClasspathContainerRoot {
 		private String root;
+
 		private IPath rootPath;
+
 		private IPath containerPath;
+
 		private WOClasspathContainerEntry[] entries;
+
 		protected WOClasspathContainerRoot(String root, IPath rootPath,
 				IPath containerPath) {
 			this.root = root;
@@ -173,15 +178,18 @@ public class WOClasspathContainerContentProvider
 	 */
 	public final class WOClasspathContainerEntry {
 		private WOClasspathContainerRoot root;
+
 		private boolean checked = false;
+
 		private String name;
+
 		protected WOClasspathContainerEntry(WOClasspathContainerRoot root,
 				IPath path, File framework) {
 			this.root = root;
 			if (path != null) {
 				String[] segments = path.segments();
 				this.name = framework.getName();
-				//				cut off the .framework
+				// cut off the .framework
 				this.name = this.name.substring(0, this.name.length() - 10);
 				for (int i = 0; i < segments.length; i++) {
 					this.checked = (i > 0
@@ -205,6 +213,7 @@ public class WOClasspathContainerContentProvider
 			File frameworkFile = new File(frameworkPath.toOSString());
 			return frameworkFile.isDirectory();
 		}
+
 		/**
 		 * @return
 		 */
@@ -245,10 +254,11 @@ public class WOClasspathContainerContentProvider
 		}
 
 		String _prefix;
+
 		String _suffix;
 	}
 
-	private static final class WOFWFilenameFilter implements FilenameFilter {
+	static final class WOFWFilenameFilter implements FilenameFilter {
 		public boolean accept(File file, String name) {
 			/* name.startsWith("Java") && */
 			boolean candidate = name.endsWith(".framework");
@@ -288,7 +298,7 @@ public class WOClasspathContainerContentProvider
 						if (root.getEntries() != null
 								&& this.checkboxTreeViewer.getChecked(root
 										.getEntries()[j])) {
-							//path = path.append(root.root);
+							// path = path.append(root.root);
 							path = path.append(root.getEntries()[j].getName());
 						}
 					}
@@ -302,6 +312,7 @@ public class WOClasspathContainerContentProvider
 	public WOClasspathContainerRoot[] getRoots() {
 		return this.roots;
 	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
