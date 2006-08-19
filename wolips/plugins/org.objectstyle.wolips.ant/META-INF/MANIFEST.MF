@@ -3,7 +3,6 @@ Bundle-ManifestVersion: 2
 Bundle-Name: WOLips Ant Plug-in
 Bundle-SymbolicName: org.objectstyle.wolips.ant; singleton:=true
 Bundle-Version: 1.0.6
-Bundle-ClassPath: lib/wolips-ant.jar
 Bundle-Activator: org.objectstyle.wolips.ant.AntPlugin
 Bundle-Vendor: objectstyle.org
 Bundle-Localization: plugin
