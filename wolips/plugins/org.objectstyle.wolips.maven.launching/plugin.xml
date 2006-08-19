@@ -1,4 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
 <plugin>
+<!-- =================================================================================== -->
+<!-- Extension: MavenLauncher                                                              -->
+<!-- =================================================================================== -->  
+   <extension point="org.objectstyle.wolips.maven.core.mavenlaunchers">
+	  <antlauncher
+		id="org.objectstyle.wolips.maven.launching.mavenlauncher"
+         name="Default Maven Launcher"
+         class="org.objectstyle.wolips.maven.launching.internal.DefaultMavenLauncher"/>
+   </extension>
 </plugin>
