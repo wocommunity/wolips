@@ -9,7 +9,45 @@
    <extension
          point="org.eclipse.ui.popupMenus">
 <!-- =================================================================================== -->
-<!-- menu                                                                                -->
+<!-- menu maven                                                                          -->
+<!-- =================================================================================== -->
+      <objectContribution
+            adaptable="true"
+            objectClass="org.eclipse.core.resources.IResource"
+            id="org.objectstyle.wolips.maven.ui.ResourceContributions">
+         <menu
+               label="&amp;WOLips Maven Tools"
+               path="additions"
+               id="org.objectstyle.wolips.maven.ui.ResourceContributions">
+            <separator
+                  name="group1">
+            </separator>
+            <separator
+                  name="group2">
+            </separator>
+         </menu>
+      </objectContribution>
+<!-- =================================================================================== -->
+<!-- menu ant                                                                            -->
+<!-- =================================================================================== -->
+<objectContribution
+            adaptable="true"
+            objectClass="org.eclipse.core.resources.IResource"
+            id="org.objectstyle.wolips.deployment.ui.ResourceContributions">
+         <menu
+               label="&amp;WOLips Ant Tools"
+               path="additions"
+               id="org.objectstyle.wolips.ant.ui.ResourceContributions">
+            <separator
+                  name="group1">
+            </separator>
+            <separator
+                  name="group2">
+            </separator>
+         </menu>
+      </objectContribution>
+<!-- =================================================================================== -->
+<!-- menu wolips tools                                                                   -->
 <!-- =================================================================================== -->
       <objectContribution
             adaptable="true"
@@ -30,15 +68,6 @@
             </separator>
             <separator
                   name="group4">
-            </separator>
-            <separator
-                  name="group5">
-            </separator>
-            <separator
-                  name="group6">
-            </separator>
-            <separator
-                  name="group7">
             </separator>
          </menu>
       </objectContribution>
