@@ -6,6 +6,9 @@
 <!-- =================================================================================== -->
    <extension
          point="org.eclipse.ui.popupMenus">
+<!-- =================================================================================== -->
+<!-- menu                                                                                -->
+<!-- =================================================================================== -->
       <objectContribution
             objectClass="org.eclipse.core.resources.IResource"
             adaptable="true"
@@ -14,7 +17,7 @@
                label="Install..."
                icon="icons/action/ant_buildfile.gif"
                class="org.objectstyle.wolips.deployment.ui.actions.InstallWithSelectionDialogAction"
-               menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group5"
+               menubarPath="org.objectstyle.wolips.ant.ui.ResourceContributions/group1"
                enablesFor="1"
                id="org.objectstyle.wolips.deployment.ui.actions.InstallWithSelectionDialogAction">
          </action>
@@ -22,9 +25,9 @@
                label="Install"
                icon="icons/action/ant_buildfile.gif"
                class="org.objectstyle.wolips.deployment.ui.actions.InstallAction"
-               menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group5"
+               menubarPath="org.objectstyle.wolips.deployment.ui.ResourceContributions/group1"
                enablesFor="1"
-               id="org.objectstyle.wolips.deployment.ui.actions.InstallAction">
+               id="org.objectstyle.wolips.deployment.ant.actions.InstallAction">
          </action>
       </objectContribution>
    </extension>
