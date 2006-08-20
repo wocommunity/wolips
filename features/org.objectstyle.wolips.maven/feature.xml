@@ -72,14 +72,30 @@
    </url>
 
    <requires>
-      <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.core.resources"/>
-      <import plugin="org.eclipse.ui.ide"/>
-      <import feature="org.eclipse.jst"/>
+      <import plugin="org.eclipse.ui"/>
       <import plugin="org.objectstyle.wolips.ui"/>
       <import plugin="org.objectstyle.wolips.workbenchutilities"/>
+      <import plugin="org.eclipse.ui.ide"/>
+      <import feature="org.eclipse.jst"/>
+      <import plugin="org.junit"/>
+      <import plugin="org.objectstyle.wolips"/>
    </requires>
+
+   <plugin
+         id="org.objectstyle.wolips.maven.core"
+         download-size="8"
+         install-size="8"
+         version="1.0.6"
+         unpack="false"/>
+
+   <plugin
+         id="org.objectstyle.wolips.maven.launching"
+         download-size="8"
+         install-size="8"
+         version="1.0.6"
+         unpack="false"/>
 
    <plugin
          id="org.objectstyle.wolips.maven.ui"
