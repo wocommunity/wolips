@@ -8,9 +8,6 @@
    class="org.objectstyle.wolips.goodies.core.mac.MacPlugin">
 
    <runtime>
-      <library name="lib/wolips-goodies-mac.jar">
-         <export name="*"/>
-      </library>
    </runtime>
 
    <requires>

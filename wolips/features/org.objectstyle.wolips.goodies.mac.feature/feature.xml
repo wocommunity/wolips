@@ -5,6 +5,8 @@
       version="1.0.6"
       provider-name="%providerName"
       os="macosx"
+      ws="carbon"
+      arch="ppc,x86,x86_64"
       image="%image">
 
    <description url="http://objectstyle.org/confluence/display/WOL/Home">
@@ -83,12 +85,14 @@
          id="org.objectstyle.wolips.goodies.core.mac"
          download-size="0"
          install-size="0"
-         version="1.0.6"/>
+         version="1.0.6"
+         unpack="false"/>
 
    <plugin
          id="org.objectstyle.wolips.goodies.ui.mac"
          download-size="0"
          install-size="0"
-         version="1.0.6"/>
+         version="1.0.6"
+         unpack="false"/>
 
 </feature>
