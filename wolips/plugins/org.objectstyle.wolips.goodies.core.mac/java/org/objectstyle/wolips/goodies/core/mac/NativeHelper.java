@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2004 The ObjectStyle Group 
+ * Copyright (c) 2004 - 2006 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -70,61 +70,80 @@ import org.eclipse.core.resources.IResource;
  * @author Mike Schrag
  */
 public class NativeHelper {
-  private static URLClassLoader APPLE_CLASS_LOADER;
+	private static URLClassLoader APPLE_CLASS_LOADER;
 
-  static {
-    try {
-      // Note: This HAS to only be loaded one time or the app will explode because the dylib will have already been loaded
-      // in another class loader.
-      NativeHelper.APPLE_CLASS_LOADER = URLClassLoader.newInstance(new URL[] { new File("/System/Library/Java").toURL() });
-    }
-    catch (Throwable t) {
-      t.printStackTrace();
-    }
-  }
+	static {
+		try {
+			// Note: This HAS to only be loaded one time or the app will explode
+			// because the dylib will have already been loaded
+			// in another class loader.
+			NativeHelper.APPLE_CLASS_LOADER = URLClassLoader
+					.newInstance(new URL[] { new File("/System/Library/Java")
+							.toURL() });
+		} catch (Throwable t) {
+			t.printStackTrace();
+		}
+	}
 
-  public static void revealInFinder(IResource resource) {
-    try {
-      Class nsApplicationClass = NativeHelper.APPLE_CLASS_LOADER.loadClass("com.apple.cocoa.application.NSApplication");
-      Method nsApplicationSharedApplicationMethod = nsApplicationClass.getMethod("sharedApplication", null);
-      nsApplicationSharedApplicationMethod.invoke(null, null);
+	public static void revealInFinder(IResource resource) {
+		try {
+			Class nsApplicationClass = NativeHelper.APPLE_CLASS_LOADER
+					.loadClass("com.apple.cocoa.application.NSApplication");
+			Method nsApplicationSharedApplicationMethod = nsApplicationClass
+					.getMethod("sharedApplication", null);
+			nsApplicationSharedApplicationMethod.invoke(null, null);
 
-      Class nsWorkspaceClass = NativeHelper.APPLE_CLASS_LOADER.loadClass("com.apple.cocoa.application.NSWorkspace");
-      Method nsWorkspaceSharedWorkspaceMethod = nsWorkspaceClass.getMethod("sharedWorkspace", null);
-      Object nsWorkspace = nsWorkspaceSharedWorkspaceMethod.invoke(null, null);
+			Class nsWorkspaceClass = NativeHelper.APPLE_CLASS_LOADER
+					.loadClass("com.apple.cocoa.application.NSWorkspace");
+			Method nsWorkspaceSharedWorkspaceMethod = nsWorkspaceClass
+					.getMethod("sharedWorkspace", null);
+			Object nsWorkspace = nsWorkspaceSharedWorkspaceMethod.invoke(null,
+					null);
 
-      Method nsWorkspaceSelectFileMethod = nsWorkspaceClass.getMethod("selectFile", new Class[] { String.class, String.class });
-      String resourcePath = resource.getLocation().toOSString();
-      Object selectFileResults = nsWorkspaceSelectFileMethod.invoke(nsWorkspace, new Object[] { resourcePath, resourcePath });
-    }
-    catch (Throwable t) {
-      t.printStackTrace();
-    }
-  }
+			Method nsWorkspaceSelectFileMethod = nsWorkspaceClass.getMethod(
+					"selectFile", new Class[] { String.class, String.class });
+			String resourcePath = resource.getLocation().toOSString();
+			nsWorkspaceSelectFileMethod.invoke(nsWorkspace, new Object[] {
+					resourcePath, resourcePath });
+		} catch (Throwable t) {
+			t.printStackTrace();
+		}
+	}
 
-  public static void cdInTerminal(IContainer container) {
-    try {
-      Class nsApplicationClass = NativeHelper.APPLE_CLASS_LOADER.loadClass("com.apple.cocoa.application.NSApplication");
-      Method nsApplicationSharedApplicationMethod = nsApplicationClass.getMethod("sharedApplication", null);
-      nsApplicationSharedApplicationMethod.invoke(null, null);
+	public static void cdInTerminal(IContainer container) {
+		try {
+			Class nsApplicationClass = NativeHelper.APPLE_CLASS_LOADER
+					.loadClass("com.apple.cocoa.application.NSApplication");
+			Method nsApplicationSharedApplicationMethod = nsApplicationClass
+					.getMethod("sharedApplication", null);
+			nsApplicationSharedApplicationMethod.invoke(null, null);
 
-      Class nsAppleScriptClass = NativeHelper.APPLE_CLASS_LOADER.loadClass("com.apple.cocoa.foundation.NSAppleScript");
-      Constructor nsAppleScriptConstructor = nsAppleScriptClass.getConstructor(new Class[] { String.class });
+			Class nsAppleScriptClass = NativeHelper.APPLE_CLASS_LOADER
+					.loadClass("com.apple.cocoa.foundation.NSAppleScript");
+			Constructor nsAppleScriptConstructor = nsAppleScriptClass
+					.getConstructor(new Class[] { String.class });
 
-      Class nsMutableDictionaryClass = NativeHelper.APPLE_CLASS_LOADER.loadClass("com.apple.cocoa.foundation.NSMutableDictionary");
-      Constructor nsMutableDictionaryConstructor = nsMutableDictionaryClass.getConstructor(null);
-      Object errorsDictionary = nsMutableDictionaryConstructor.newInstance(null);
+			Class nsMutableDictionaryClass = NativeHelper.APPLE_CLASS_LOADER
+					.loadClass("com.apple.cocoa.foundation.NSMutableDictionary");
+			Constructor nsMutableDictionaryConstructor = nsMutableDictionaryClass
+					.getConstructor(null);
+			Object errorsDictionary = nsMutableDictionaryConstructor
+					.newInstance(null);
 
-      String containerPath = container.getLocation().toOSString().replaceAll(" ", "\\ ");
-      String openInTerminalString = "tell application \"Terminal\"\n do script \"cd " + containerPath + "\"\n activate\nend tell";
-      Object nsAppleScript = nsAppleScriptConstructor.newInstance(new Object[] { openInTerminalString });
+			String containerPath = container.getLocation().toOSString()
+					.replaceAll(" ", "\\ ");
+			String openInTerminalString = "tell application \"Terminal\"\n do script \"cd "
+					+ containerPath + "\"\n activate\nend tell";
+			Object nsAppleScript = nsAppleScriptConstructor
+					.newInstance(new Object[] { openInTerminalString });
 
-      Method nsAppleScriptExecuteMethod = nsAppleScriptClass.getMethod("execute", new Class[] { nsMutableDictionaryClass });
-      nsAppleScriptExecuteMethod.invoke(nsAppleScript, new Object[] { errorsDictionary });
-    }
-    catch (Throwable t) {
-      t.printStackTrace();
-    }
-  }
+			Method nsAppleScriptExecuteMethod = nsAppleScriptClass.getMethod(
+					"execute", new Class[] { nsMutableDictionaryClass });
+			nsAppleScriptExecuteMethod.invoke(nsAppleScript,
+					new Object[] { errorsDictionary });
+		} catch (Throwable t) {
+			t.printStackTrace();
+		}
+	}
 
 }
