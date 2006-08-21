@@ -53,6 +53,7 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.objectstyle.wolips.componenteditor.ComponenteditorPlugin;
 import org.objectstyle.wolips.componenteditor.part.ComponentEditor;
 import org.objectstyle.wolips.components.input.ComponentEditorInput;
+import org.objectstyle.wolips.editors.EditorsPlugin;
 
 public class ComponentEditorMatchingStrategy implements IEditorMatchingStrategy {
 	
@@ -63,7 +64,7 @@ public class ComponentEditorMatchingStrategy implements IEditorMatchingStrategy 
 		if(editorID == null) {
 			return false;
 		}
-		if(!editorID.equals(ComponenteditorPlugin.ComponentEditorID)) {
+		if(!editorID.equals(EditorsPlugin.ComponentEditorID)) {
 			return false;
 		}
 		if (editorInput instanceof ComponentEditorInput) {
