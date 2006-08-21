@@ -2,7 +2,7 @@
  *
  * The ObjectStyle Group Software License, Version 1.0
  *
- * Copyright (c) 2002 - 2004 The ObjectStyle Group
+ * Copyright (c) 2002 - 2006 The ObjectStyle Group
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -85,11 +85,6 @@ import org.objectstyle.wolips.commons.util.StringUtilities;
 
 /**
  * @author uli
- *
- * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates.
- * To enable and disable the creation of type comments go to
- * Window>Preferences>Java>Code Generation.
  */
 public class LaunchPreferencesPage
 	extends PreferencePage
@@ -152,8 +147,6 @@ public class LaunchPreferencesPage
 		this.addButton.setText(PreferencesMessages.getString("LaunchPreferencesPage.add")); //$NON-NLS-1$
 		data = new GridData();
 		data.horizontalAlignment = GridData.FILL;
-		data.heightHint =
-			convertVerticalDLUsToPixels(IDialogConstants.BUTTON_HEIGHT);
         data.heightHint =
             Math.max(
                 data.heightHint,
@@ -175,8 +168,6 @@ public class LaunchPreferencesPage
 		this.removeButton.setText(PreferencesMessages.getString("LaunchPreferencesPage.remove")); //$NON-NLS-1$
 		data = new GridData();
 		data.horizontalAlignment = GridData.FILL;
-		data.heightHint =
-			convertVerticalDLUsToPixels(IDialogConstants.BUTTON_HEIGHT);
         data.heightHint =
           Math.max(
               data.heightHint,
@@ -198,8 +189,6 @@ public class LaunchPreferencesPage
 		this.changeButton.setText(PreferencesMessages.getString("LaunchPreferencesPage.change")); //$NON-NLS-1$
 		data = new GridData();
 		data.horizontalAlignment = GridData.FILL;
-		data.heightHint =
-			convertVerticalDLUsToPixels(IDialogConstants.BUTTON_HEIGHT);
         data.heightHint =
           Math.max(
               data.heightHint,
