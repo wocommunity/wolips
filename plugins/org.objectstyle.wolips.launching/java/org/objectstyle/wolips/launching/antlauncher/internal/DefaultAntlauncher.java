@@ -102,7 +102,6 @@ public class DefaultAntlauncher implements IAntlauncher {
 						.getLaunchManager();
 				manager.removeLaunch(launch);
 			}
-			// config.setAttribute(IExternalToolConstants.ATTR_LOCATION, null);
 		} finally {
 			workingCopy = null;
 		}
@@ -178,6 +177,7 @@ public class DefaultAntlauncher implements IAntlauncher {
 				IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME, file
 						.getProject().getName());
 		workingCopy.setAttribute(ATTR_ANT_TARGETS, targets);
+		workingCopy.setAttribute(BuildFailedConsoleLineTracker.ATTR_BUILD_FAILED_CONSOLE_LINE_TRACKER_ENABLED, true);
 		return workingCopy;
 	}
 

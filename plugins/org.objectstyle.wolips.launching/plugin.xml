@@ -123,6 +123,11 @@
 		class="org.objectstyle.wolips.launching.browsersupport.ConsoleLineTracker"
 		processType="java">
 	</consoleLineTracker>
+   	<consoleLineTracker
+   		id="org.objectstyle.wolips.launching.antlauncher.internal.BuildFailedConsoleLineTracker"
+		class="org.objectstyle.wolips.launching.antlauncher.internal.BuildFailedConsoleLineTracker"
+		processType="org.eclipse.ant.ui.antProcess">
+	</consoleLineTracker>
    </extension>
 <!-- =================================================================================== -->
 <!-- Extension: classpath dynamic variables                                              -->
