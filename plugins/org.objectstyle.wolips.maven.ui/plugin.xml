@@ -23,12 +23,12 @@
                menubarPath="org.objectstyle.wolips.maven.ui.ResourceContributions/group1"
                id="org.objectstyle.wolips.maven.ui.actions.TouchProjectXMLAction">
          </action>
-         <action
+         <!-- action
                label="jar:install:snapshot"
                class="org.objectstyle.wolips.maven.ui.actions.JarInstallSnapshotAction"
                menubarPath="org.objectstyle.wolips.maven.ui.ResourceContributions/group2"
                id="org.objectstyle.wolips.maven.ui.actions.JarInstallSnapshotAction">
-         </action>
+         </action -->
       </objectContribution>
       </extension>
 </plugin>
