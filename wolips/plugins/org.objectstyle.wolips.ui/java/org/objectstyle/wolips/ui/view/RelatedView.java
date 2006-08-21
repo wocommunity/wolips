@@ -87,9 +87,6 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -115,20 +112,17 @@ import org.objectstyle.wolips.ui.UIPlugin;
 import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 
 /**
- * @author ulrich To change the template for this generated type comment go to
- *         Window>Preferences>Java>Code Generation>Code and Comments
+ * @author ulrich
  */
 public final class RelatedView extends ViewPart implements ISelectionListener,
 		IPartListener {
-	private boolean forceOpenInTextEditor = false;
-
 	protected class ViewContentProvider implements ITreeContentProvider {
 
 		Object input = null;
 
 		private Object lastParent;
-        
-        ViewLabelProvider labelProvider;
+
+		ViewLabelProvider labelProvider;
 
 		public void inputChanged(Viewer v, Object oldInput, Object newInput) {
 			this.input = newInput;
@@ -212,9 +206,10 @@ public final class RelatedView extends ViewPart implements ISelectionListener,
 				}
 			}
 			lastParent = parent;
-            Object[] resultList = result.toArray();
-            // labelProvider needs the element list to check for duplicate filenames
-            labelProvider.setResultList(resultList);
+			Object[] resultList = result.toArray();
+			// labelProvider needs the element list to check for duplicate
+			// filenames
+			labelProvider.setResultList(resultList);
 			return resultList;
 		}
 
@@ -252,8 +247,8 @@ public final class RelatedView extends ViewPart implements ISelectionListener,
 
 	class ViewLabelProvider extends AppearanceAwareLabelProvider implements
 			ITableLabelProvider {
-        private Set duplicateFilenameSet;
-        
+		private Set duplicateFilenameSet;
+
 		public ViewLabelProvider() {
 			super(AppearanceAwareLabelProvider.DEFAULT_TEXTFLAGS
 					| JavaElementLabels.P_COMPRESSED,
@@ -263,26 +258,27 @@ public final class RelatedView extends ViewPart implements ISelectionListener,
 					.getLabelDecorator());
 		}
 
-    public void setResultList(Object[] items) {
-      int length = items.length;
-      duplicateFilenameSet = new HashSet(length);
-      Map filenameToItemMap = new HashMap(length);
-      int i = length;
-      while (i-->0) {
-          if (! (items[i] instanceof IResource)) {
-              continue;
-          }
-          IResource thisResource = (IResource) items[i];
-          IResource otherResource = (IResource) filenameToItemMap.get(thisResource.getName());
-          if (otherResource != null) {
-              duplicateFilenameSet.add(thisResource);
-              duplicateFilenameSet.add(otherResource);
-          }
-          filenameToItemMap.put(thisResource.getName(), thisResource);
-      }
-    }
+		public void setResultList(Object[] items) {
+			int length = items.length;
+			duplicateFilenameSet = new HashSet(length);
+			Map filenameToItemMap = new HashMap(length);
+			int i = length;
+			while (i-- > 0) {
+				if (!(items[i] instanceof IResource)) {
+					continue;
+				}
+				IResource thisResource = (IResource) items[i];
+				IResource otherResource = (IResource) filenameToItemMap
+						.get(thisResource.getName());
+				if (otherResource != null) {
+					duplicateFilenameSet.add(thisResource);
+					duplicateFilenameSet.add(otherResource);
+				}
+				filenameToItemMap.put(thisResource.getName(), thisResource);
+			}
+		}
 
-        public String getColumnText(Object _element, int _columnIndex) {
+		public String getColumnText(Object _element, int _columnIndex) {
 			String text = null;
 			if (_element instanceof IResource) {
 				IResource resource = (IResource) _element;
@@ -294,13 +290,13 @@ public final class RelatedView extends ViewPart implements ISelectionListener,
 					} else {
 						text = ext.toUpperCase();
 					}
-                    text += " ("+name+")";
-                    if ("eomodeld".equalsIgnoreCase(ext)) {                        
-                        text = name;
-                    }
-                    if (duplicateFilenameSet.contains(resource)) {
-                        text += " - "+resource.getProject().getName();
-                    }
+					text += " (" + name + ")";
+					if ("eomodeld".equalsIgnoreCase(ext)) {
+						text = name;
+					}
+					if (duplicateFilenameSet.contains(resource)) {
+						text += " - " + resource.getProject().getName();
+					}
 				}
 			}
 			if (text == null) {
@@ -341,29 +337,14 @@ public final class RelatedView extends ViewPart implements ISelectionListener,
 
 		this.viewer = new TableViewer(parent, 770);
 
-        ViewContentProvider viewContentProvider = new ViewContentProvider();
+		ViewContentProvider viewContentProvider = new ViewContentProvider();
 		this.viewer.setContentProvider(viewContentProvider);
 
-        ViewLabelProvider viewLabelProvider = new ViewLabelProvider();
-        this.viewer.setLabelProvider(viewLabelProvider );
-        viewContentProvider.labelProvider = viewLabelProvider;
-        
-		// new DecoratingLabelProvider(
-		// new LabelProvider(), getSite().getWorkbenchWindow()
-		// .getWorkbench().getDecoratorManager()
-		// .getLabelDecorator()));
+		ViewLabelProvider viewLabelProvider = new ViewLabelProvider();
+		this.viewer.setLabelProvider(viewLabelProvider);
+		viewContentProvider.labelProvider = viewLabelProvider;
 
 		this.viewer.setSorter(new NameSorter());
-		this.viewer.getTable().addKeyListener(new KeyListener() {
-			public void keyPressed(KeyEvent e) {
-				if (e.keyCode == SWT.COMMAND || e.keyCode == SWT.ALT)
-					setForceOpenInTextEditor(true);
-			}
-
-			public void keyReleased(KeyEvent e) {
-				setForceOpenInTextEditor(false);
-			}
-		});
 
 		this.showInNavigatorAction = new ShowInNavigatorAction(this
 				.getViewSite().getPage(), this.viewer);
@@ -379,19 +360,19 @@ public final class RelatedView extends ViewPart implements ISelectionListener,
 					IWOLipsResource wolipsResource = null;
 					if (object != null) {
 						if (object instanceof IResource) {
-                            IResource resource = (IResource) object;
+							IResource resource = (IResource) object;
 							wolipsResource = WOLipsCore.getWOLipsModel()
 									.getWOLipsResource((IResource) object);
 							if (wolipsResource != null) {
-							    wolipsResource.open(isForceOpenInTextEditor());
-							} else if (resource.getType() == IResource.FILE){
-							    WorkbenchUtilitiesPlugin.open((IFile)resource);
+								wolipsResource.open();
+							} else if (resource.getType() == IResource.FILE) {
+								WorkbenchUtilitiesPlugin.open((IFile) resource);
 							}
 						} else if (object instanceof ICompilationUnit) {
 							wolipsResource = WOLipsCore.getWOLipsModel()
 									.getWOLipsCompilationUnit(
 											(ICompilationUnit) object);
-							wolipsResource.open(isForceOpenInTextEditor());
+							wolipsResource.open();
 						}
 					}
 				}
@@ -405,7 +386,6 @@ public final class RelatedView extends ViewPart implements ISelectionListener,
 
 			public void doubleClick(DoubleClickEvent event) {
 				getDoubleClickAction().run();
-				setForceOpenInTextEditor(false);
 			}
 
 		});
@@ -528,20 +508,6 @@ public final class RelatedView extends ViewPart implements ISelectionListener,
 
 	protected TableViewer getViewer() {
 		return this.viewer;
-	}
-
-	/**
-	 * @return force open in text editor
-	 */
-	protected boolean isForceOpenInTextEditor() {
-		return this.forceOpenInTextEditor;
-	}
-
-	/**
-	 * @param b
-	 */
-	protected void setForceOpenInTextEditor(boolean b) {
-		this.forceOpenInTextEditor = b;
 	}
 
 	/**
