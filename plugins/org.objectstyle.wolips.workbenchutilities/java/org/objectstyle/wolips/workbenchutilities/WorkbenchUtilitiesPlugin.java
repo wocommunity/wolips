@@ -2,7 +2,7 @@
  *
  * The ObjectStyle Group Software License, Version 1.0
  *
- * Copyright (c) 2004 - 2005 The ObjectStyle Group
+ * Copyright (c) 2004 - 2006 The ObjectStyle Group
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -79,6 +79,7 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.objectstyle.wolips.commons.logging.ILogger;
@@ -305,8 +306,8 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 			IResource resource, String name, String[] extensions) {
 		ArrayList list = new ArrayList();
 		if ((resource != null)) {
-			if (((resource instanceof IContainer)
-					|| (resource instanceof IProject)) && resource.isAccessible()) {
+			if (((resource instanceof IContainer) || (resource instanceof IProject))
+					&& resource.isAccessible()) {
 				for (int i = 0; i < extensions.length; i++) {
 					IResource foundResource = ((IContainer) resource)
 							.findMember(name + "." + extensions[i]);
@@ -333,9 +334,9 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 	private final static void findResourcesInResourceByNameAndExtensionsAndAddToArrayList(
 			IResource[] resources, String name, String[] extensions,
 			ArrayList list) {
-    if (resources == null) {
-      return;
-    }
+		if (resources == null) {
+			return;
+		}
 		for (int i = 0; i < resources.length; i++) {
 			IResource resource = resources[i];
 			if ((resource != null)
@@ -350,8 +351,8 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 					&& (!(resource.getName().equalsIgnoreCase("target") && resource
 							.getParent().equals(resource.getProject())))) {
 				if ((resource != null)) {
-					if (((resource instanceof IContainer)
-							|| (resource instanceof IProject)) && resource.isAccessible()) {
+					if (((resource instanceof IContainer) || (resource instanceof IProject))
+							&& resource.isAccessible()) {
 						for (int j = 0; j < extensions.length; j++) {
 							IResource foundResource = ((IContainer) resource)
 									.findMember(name + "." + extensions[j]);
@@ -381,8 +382,8 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 	public final static void findFilesInResourceByName(ArrayList anArrayList,
 			IResource aResource, String aFileName) {
 		if ((aResource != null)) {
-			if (((aResource instanceof IContainer)
-					|| (aResource instanceof IProject)) && aResource.isAccessible()) {
+			if (((aResource instanceof IContainer) || (aResource instanceof IProject))
+					&& aResource.isAccessible()) {
 				IResource resource = ((IContainer) aResource)
 						.findMember(aFileName);
 				if ((resource != null) && (resource instanceof IFile)
@@ -522,45 +523,7 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 	 *            The file to open.
 	 */
 	public final static void open(IFile file) {
-		WorkbenchUtilitiesPlugin.open(file, false, null);
-	}
-
-	/**
-	 * Method open.
-	 * 
-	 * @param file
-	 *            The file to open.
-	 * @param forceToOpenIntextEditor
-	 *            If forceToOpenIntextEditor is set to true the resource opens
-	 *            in a texteditor.
-	 * @param editor
-	 */
-	public final static void open(IFile file, boolean forceToOpenIntextEditor,
-			String editor) {
-		IWorkbenchWindow workbenchWindow = WorkbenchUtilitiesPlugin
-				.getDefault().getWorkbench().getActiveWorkbenchWindow();
-		if (workbenchWindow != null) {
-			IWorkbenchPage workbenchPage = workbenchWindow.getActivePage();
-			if (workbenchPage != null) {
-				try {
-					IEditorDescriptor editorDescriptor = WorkbenchUtilitiesPlugin
-							.getDefault().getWorkbench().getEditorRegistry()
-							.getDefaultEditor(file.getName());
-					if (forceToOpenIntextEditor) {
-						workbenchPage.openEditor(new FileEditorInput(file),
-								editor);
-						WorkbenchUtilitiesPlugin.getDefault().getWorkbench()
-								.getEditorRegistry().setDefaultEditor(
-										file.getName(),
-										editorDescriptor.getId());
-					} else
-						workbenchPage.openEditor(new FileEditorInput(file),
-								editorDescriptor.getId());
-				} catch (Exception anException) {
-					WorkbenchUtilitiesPlugin.log(anException);
-				}
-			}
-		}
+		WorkbenchUtilitiesPlugin.open(file, null);
 	}
 
 	/**
@@ -577,7 +540,20 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 			IWorkbenchPage workbenchPage = workbenchWindow.getActivePage();
 			if (workbenchPage != null) {
 				try {
-					workbenchPage.openEditor(new FileEditorInput(file), editor);
+					String id = null;
+					if (editor == null) {
+						IEditorDescriptor editorDescriptor = IDE
+								.getDefaultEditor(file);
+						if (editorDescriptor == null) {
+							editorDescriptor = IDE.getEditorDescriptor(file);
+						}
+						if (editorDescriptor != null) {
+							id = editorDescriptor.getId();
+						}
+					} else {
+						id = editor;
+					}
+					workbenchPage.openEditor(new FileEditorInput(file), id);
 				} catch (Exception anException) {
 					WorkbenchUtilitiesPlugin.log(anException);
 				}
@@ -591,16 +567,17 @@ public class WorkbenchUtilitiesPlugin extends AbstractUIPlugin {
 	public ILogger getPluginLogger() {
 		return this.pluginLogger;
 	}
-	
-	
+
 	/**
 	 * Returns the selection of the ActiveWorkbenchWindow
+	 * 
 	 * @return the configured selection
 	 */
 	public final static IStructuredSelection getActiveWorkbenchWindowSelection() {
-		IWorkbenchWindow window= WorkbenchUtilitiesPlugin.getActiveWorkbenchWindow();
+		IWorkbenchWindow window = WorkbenchUtilitiesPlugin
+				.getActiveWorkbenchWindow();
 		if (window != null) {
-			ISelection selection= window.getSelectionService().getSelection();
+			ISelection selection = window.getSelectionService().getSelection();
 			if (selection instanceof IStructuredSelection) {
 				return (IStructuredSelection) selection;
 			}
