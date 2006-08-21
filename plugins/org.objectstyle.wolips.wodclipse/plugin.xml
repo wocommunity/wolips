@@ -8,9 +8,8 @@
             class="org.objectstyle.wolips.wodclipse.wod.WodEditor"
             contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
             default="false"
-            extensions="wod"
             icon="icons/WODEditor.gif"
-            id="org.objectstyle.wolips.wodclipse.wod.WodEditor"
+            id="org.objectstyle.wolips.wodclipse.WodEditor"
             name="Wod Editor">
 			<contentTypeBinding
                contentTypeId="org.objectstyle.wolips.editors.wod"
