@@ -2,7 +2,7 @@
  *
  * The ObjectStyle Group Software License, Version 1.0
  *
- * Copyright (c) 2002 - 2005 The ObjectStyle Group
+ * Copyright (c) 2002 - 2006 The ObjectStyle Group
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -79,10 +79,7 @@ import org.objectstyle.wolips.launching.delegates.WOJavaLocalApplicationLaunchCo
 import org.objectstyle.wolips.preferences.PreferencesMessages;
 
 /**
- * @author uli To change this generated comment edit the template variable
- *         "typecomment": Window>Preferences>Java>Templates. To enable and
- *         disable the creation of type comments go to
- *         Window>Preferences>Java>Code Generation.
+ * @author uli 
  */
 public class LogTab extends AbstractWOArgumentsTab {
 
@@ -127,6 +124,7 @@ public class LogTab extends AbstractWOArgumentsTab {
 
 		this.debugGroupsTable.addListener(SWT.CHECK, new Listener() {
 			public void handleEvent(Event e) {
+				setDirty(true);
 				updateLaunchConfigurationDialog();
 			}
 		});
