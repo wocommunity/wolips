@@ -2,7 +2,7 @@
  *
  * The ObjectStyle Group Software License, Version 1.0
  *
- * Copyright (c) 2002 - 2005 The ObjectStyle Group
+ * Copyright (c) 2002 - 2006 The ObjectStyle Group
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -157,6 +157,7 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 
 		this.includeTable.addListener(SWT.CHECK, new Listener() {
 			public void handleEvent(Event e) {
+setDirty(true);
 				updateLaunchConfigurationDialog();
 			}
 		});
@@ -289,6 +290,7 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 		this.allParameter.add(parameter);
 		this.allArguments.add(argument);
 		item.setChecked(true);
+		setDirty(true);
 		this.updateLaunchConfigurationDialog();
 	}
 
@@ -310,6 +312,7 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 
 			last = index;
 		}
+		setDirty(true);
 		this.updateLaunchConfigurationDialog();
 	}
 
@@ -331,6 +334,7 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 		item.setText(StringUtilities.toCommandlineParameterFormat(parameter,
 				argument, false));
 		this.allArguments.setElementAt(argument, index);
+		setDirty(true);
 		this.updateLaunchConfigurationDialog();
 	}
 
