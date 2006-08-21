@@ -44,12 +44,9 @@
 package org.objectstyle.wolips.componenteditor;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IResourceChangeEvent;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.objectstyle.wolips.componenteditor.listener.ComponentEditorResourceChangeListener;
 import org.objectstyle.wolips.componenteditor.part.ComponentEditor;
 import org.objectstyle.wolips.ui.UIPlugin;
 import org.objectstyle.wolips.ui.plugins.AbstractWOLipsUIPlugin;
@@ -63,12 +60,8 @@ import org.osgi.framework.BundleContext;
 public class ComponenteditorPlugin extends AbstractWOLipsUIPlugin {
 	// The shared instance.
 	private static ComponenteditorPlugin plugin;
-	private boolean _openJavaInTab = false;
 
-	public static String ComponentEditorID = "org.objectstyle.wolips.componenteditor";
-	
-	public static String WOOEditorID = "org.eclipse.ui.DefaultTextEditor";
-	private ComponentEditorResourceChangeListener componentEditorResourceChangeListener;
+	private boolean _openJavaInTab = false;
 
 	/**
 	 * The constructor.
@@ -83,19 +76,16 @@ public class ComponenteditorPlugin extends AbstractWOLipsUIPlugin {
 	 */
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
-		componentEditorResourceChangeListener = new ComponentEditorResourceChangeListener();
-		ResourcesPlugin.getWorkspace().addResourceChangeListener(componentEditorResourceChangeListener, IResourceChangeEvent.PRE_BUILD);
 	}
 
 	/**
 	 * This method is called when the plug-in is stopped
 	 */
 	public void stop(BundleContext context) throws Exception {
-		ResourcesPlugin.getWorkspace().removeResourceChangeListener(componentEditorResourceChangeListener);
-		componentEditorResourceChangeListener = null;
 		super.stop(context);
 		plugin = null;
 	}
+
 	/**
 	 * Returns the shared instance.
 	 */
@@ -115,13 +105,14 @@ public class ComponenteditorPlugin extends AbstractWOLipsUIPlugin {
 		return AbstractUIPlugin.imageDescriptorFromPlugin(
 				"org.objectstyle.wolips.componenteditor", path);
 	}
-	
+
 	public Image getImage(String key) {
 		return getImageRegistry().get(key);
 	}
-	
+
 	public boolean canHandleExtension(String extension) {
-		// AK: the java part of the component editor is just not working in Eclipse 3.2
+		// AK: the java part of the component editor is just not working in
+		// Eclipse 3.2
 		// so we skip .java
 
 		if (!((_openJavaInTab && "java".equalsIgnoreCase(extension))
@@ -136,14 +127,14 @@ public class ComponenteditorPlugin extends AbstractWOLipsUIPlugin {
 	}
 
 	public void openJavaFile(ComponentEditor componentEditor, IFile inputFile) {
-		if(_openJavaInTab) {
+		if (_openJavaInTab) {
 			componentEditor.switchToJava();
 		} else {
-			if(inputFile == null) {
-				inputFile =  (IFile) componentEditor.getJavaFile();
+			if (inputFile == null) {
+				inputFile = (IFile) componentEditor.getJavaFile();
 			}
 			UIPlugin.getDefault().openJavaFile(inputFile);
 		}
 	}
-	
+
 }
