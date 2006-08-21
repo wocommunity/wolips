@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 - 2004 The ObjectStyle Group 
+ * Copyright (c) 2002 - 2006 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -53,32 +53,29 @@
  * <http://objectstyle.org/>.
  *
  */
- 
-package org.objectstyle.wolips.datasets.resources;
 
+package org.objectstyle.wolips.datasets.resources;
 
 import org.eclipse.core.resources.IFile;
 import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 
-
 /**
  * @author ulrich
- *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public final class WOComponentWoo extends WOLipsResource implements IWOComponentWoo {
+public final class WOComponentWoo extends WOLipsResource implements
+		IWOComponentWoo {
 
 	protected WOComponentWoo() {
 		super();
 	}
-	
+
 	public final int getType() {
 		return IWOLipsResource.WOCOMPONENT_WOO;
 	}
-	
-	public final void open(boolean forceToOpenIntextEditor) {
-		WorkbenchUtilitiesPlugin.open((IFile)this.getCorrespondingResource(), forceToOpenIntextEditor, "org.objectstyle.wolips.internal.wod.editor");
+
+	public final void open() {
+		WorkbenchUtilitiesPlugin.open((IFile) this.getCorrespondingResource(),
+				null);
 	}
 
 }

@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 - 2004 The ObjectStyle Group 
+ * Copyright (c) 2002 - 2006 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -56,56 +56,35 @@
 
 package org.objectstyle.wolips.datasets.resources;
 
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 
 /**
  * @author ulrich
- *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public final class WOComponentBundle
-	extends WOLipsResource
-	implements IWOComponentBundle {
+public final class WOComponentBundle extends WOLipsResource implements
+		IWOComponentBundle {
 
 	protected WOComponentBundle() {
 		super();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.objectstyle.wolips.core.resources.IWOLipsResource#getType()
 	 */
 	public final int getType() {
 		return IWOLipsResource.WOCOMPONENT_BUNDLE;
 	}
 
-	/**
-	 * Opens the resource in a Editor.
-	 * @param forceToOpenIntextEditor If forceToOpenIntextEditor is set to true the resource opens in a texteditor.
-	 */
-	public final void open(boolean forceToOpenIntextEditor) {
+	public final void open() {
 		String fileName = this.getCorrespondingResource().getName();
 		fileName = fileName.substring(0, fileName.length() - 3);
-		if (forceToOpenIntextEditor) {
-			WorkbenchUtilitiesPlugin.open(
-				(IFile) ((IFolder) this.getCorrespondingResource()).findMember(
-					fileName + "." + WOLipsModel.WOCOMPONENT_WOD_EXTENSION),
-				forceToOpenIntextEditor,
+		WorkbenchUtilitiesPlugin.open((IFile) ((IFolder) this
+				.getCorrespondingResource()).findMember(fileName + "."
+				+ WOLipsModel.WOCOMPONENT_WOD_EXTENSION),
 				"org.objectstyle.wolips.internal.wod.editor");
-			WorkbenchUtilitiesPlugin.open(
-				(IFile) ((IFolder) this.getCorrespondingResource()).findMember(
-					fileName + "." + WOLipsModel.WOCOMPONENT_HTML_EXTENSION),
-				forceToOpenIntextEditor,
-				"org.objectstyle.wolips.internal.html.editor");
-		} else {
-			WorkbenchUtilitiesPlugin.open(
-				(IFile) ((IFolder) this.getCorrespondingResource()).findMember(
-					fileName + "." + WOLipsModel.WOCOMPONENT_WOD_EXTENSION),
-				forceToOpenIntextEditor,
-				"org.objectstyle.wolips.internal.wod.editor");
-		}
 	}
 }
