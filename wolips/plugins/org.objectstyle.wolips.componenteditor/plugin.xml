@@ -7,9 +7,9 @@
       <editor
             class="org.objectstyle.wolips.componenteditor.part.ComponentEditor"
             contributorClass="org.objectstyle.wolips.componenteditor.contributor.ComponentEditorContributor"
-            default="false"
+            default="true"
             icon="icons/ComponentEditor.gif"
-            id="org.objectstyle.wolips.componenteditor"
+            id="org.objectstyle.wolips.componenteditor.ComponentEditor"
             matchingStrategy="org.objectstyle.wolips.componenteditor.launcher.ComponentEditorMatchingStrategy"
             name="WOComponent Editor">
 			<contentTypeBinding
@@ -20,10 +20,7 @@
             /> 
 			<contentTypeBinding
                contentTypeId="org.objectstyle.wolips.editors.woo"
-            /> 
-			<contentTypeBinding
-               contentTypeId="org.eclipse.core.runtime.text"
-            /> 
+            />
       </editor>
    </extension>
    
@@ -32,36 +29,36 @@
         <category
             name="Component Editor"
             description="Component Editor"
-            id="org.objectstyle.wolips.componenteditor.componenteditor">
+            id="org.objectstyle.wolips.componenteditor.componenteditorcommands">
       </category>
         <command
                 name="Switch to Java Editor"
                 description="Switch to Java Editor"
-                categoryId="org.objectstyle.wolips.componenteditor.componenteditor"
+                categoryId="org.objectstyle.wolips.componenteditor.componenteditorcommands"
                 id="org.objectstyle.wolips.componenteditor.editors.tojava">
         </command>
         <command
                 name="Switch to Html Editor"
                 description="Switch to Html Editor"
-                categoryId="org.objectstyle.wolips.componenteditor.componenteditor"
+                categoryId="org.objectstyle.wolips.componenteditor.componenteditorcommands"
                 id="org.objectstyle.wolips.componenteditor.editors.tohtml">
         </command>
         <command
                 name="Switch to Wod Editor"
                 description="Switch to Wod Editor"
-                categoryId="org.objectstyle.wolips.componenteditor.componenteditor"
+                categoryId="org.objectstyle.wolips.componenteditor.componenteditorcommands"
                 id="org.objectstyle.wolips.componenteditor.editors.towod">
         </command>
         <command
                 name="Switch to Preview"
                 description="Switch to Preview"
-                categoryId="org.objectstyle.wolips.componenteditor.componenteditor"
+                categoryId="org.objectstyle.wolips.componenteditor.componenteditorcommands"
                 id="org.objectstyle.wolips.componenteditor.editors.topreview">
         </command>
         <command
                 name="Switch to Api Editor"
                 description="Switch to Api Editor"
-                categoryId="org.objectstyle.wolips.componenteditor.componenteditor"
+                categoryId="org.objectstyle.wolips.componenteditor.componenteditorcommands"
                 id="org.objectstyle.wolips.componenteditor.editors.toapi">
         </command>
     </extension>
