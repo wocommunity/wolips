@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 - 2004 The ObjectStyle Group 
+ * Copyright (c) 2002 - 2006 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -70,17 +70,14 @@ import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 
 /**
  * @author ulrich
- *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public final class EOEntityJava
-	extends WOLipsCompilationUnit
-	implements IEOEntityJava {
+public final class EOEntityJava extends WOLipsCompilationUnit implements
+		IEOEntityJava {
 
 	protected EOEntityJava() {
 		super();
 	}
+
 	/**
 	 * @return Returns the IResource.
 	 */
@@ -93,14 +90,19 @@ public final class EOEntityJava
 		}
 		return resource;
 	}
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.objectstyle.wolips.core.resources.IWOLipsResource#getType()
 	 */
 	public final int getType() {
 		return IWOLipsCompilationUnit.EOENTITY_JAVA;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.objectstyle.wolips.core.resources.IWOLipsResource#getRelatedResources()
 	 */
 	public final List getRelatedResources() {
@@ -108,64 +110,54 @@ public final class EOEntityJava
 		List plists = new ArrayList();
 		if (this.getCorrespondingCompilationUnit() != null) {
 			try {
-				IProject[] projects =
-					WorkbenchUtilitiesPlugin.getWorkspace().getRoot().getProjects();
-				String fileName =
-					this
-					.getCorrespondingCompilationUnit()
-					.getCorrespondingResource()
-					.getName();
-				fileName = fileName.substring(0, 
-						fileName.length() - IWOLipsModel.EXT_JAVA.length() - 1 );
-				String[] extensions =
-					new String[] {
-						WOLipsModel.EOENTITY_PLIST_EXTENSION };
-				plists =
-					WorkbenchUtilitiesPlugin
-					.findResourcesInResourcesByNameAndExtensions(
-							projects,
-							fileName,
-							extensions);
+				IProject[] projects = WorkbenchUtilitiesPlugin.getWorkspace()
+						.getRoot().getProjects();
+				String fileName = this.getCorrespondingCompilationUnit()
+						.getCorrespondingResource().getName();
+				fileName = fileName.substring(0, fileName.length()
+						- IWOLipsModel.EXT_JAVA.length() - 1);
+				String[] extensions = new String[] { WOLipsModel.EOENTITY_PLIST_EXTENSION };
+				plists = WorkbenchUtilitiesPlugin
+						.findResourcesInResourcesByNameAndExtensions(projects,
+								fileName, extensions);
 				// assuming that the superclasses start with _
-                if (fileName.startsWith("_")) {
-				plists.addAll(
-				    WorkbenchUtilitiesPlugin
-				    .findResourcesInResourcesByNameAndExtensions(
-				                                                 projects,
-				                                                 fileName.substring(1),
-				                                                 extensions)
-                                                                 );
-                }
-				for(int i = 0; i < plists.size(); i++) {
-					IResource resource = (IResource)plists.get(i);
-					if(resource != null) {
+				if (fileName.startsWith("_")) {
+					plists
+							.addAll(WorkbenchUtilitiesPlugin
+									.findResourcesInResourcesByNameAndExtensions(
+											projects, fileName.substring(1),
+											extensions));
+				}
+				for (int i = 0; i < plists.size(); i++) {
+					IResource resource = (IResource) plists.get(i);
+					if (resource != null) {
 						IContainer parent = resource.getParent();
-						if(parent != null && parent.getName().endsWith(WOLipsModel.EOMODEL_EXTENSION)) {
-							list.add(parent);		
+						if (parent != null
+								&& parent.getName().endsWith(
+										WOLipsModel.EOMODEL_EXTENSION)) {
+							list.add(parent);
 						}
 					}
 				}
-				//try also for files starting with _
-				if(fileName.startsWith("_")) {
-					fileName = fileName.substring(1, 
-							fileName.length() - 1 );
-					plists =
-						WorkbenchUtilitiesPlugin
-						.findResourcesInResourcesByNameAndExtensions(
-								projects,
-								fileName,
-								extensions);
-					for(int i = 0; i < plists.size(); i++) {
-						IResource resource = (IResource)plists.get(i);
-						if(resource != null) {
+				// try also for files starting with _
+				if (fileName.startsWith("_")) {
+					fileName = fileName.substring(1, fileName.length() - 1);
+					plists = WorkbenchUtilitiesPlugin
+							.findResourcesInResourcesByNameAndExtensions(
+									projects, fileName, extensions);
+					for (int i = 0; i < plists.size(); i++) {
+						IResource resource = (IResource) plists.get(i);
+						if (resource != null) {
 							IContainer parent = resource.getParent();
-							if(parent != null && parent.getName().endsWith(WOLipsModel.EOMODEL_EXTENSION)) {
-								list.add(parent);		
+							if (parent != null
+									&& parent.getName().endsWith(
+											WOLipsModel.EOMODEL_EXTENSION)) {
+								list.add(parent);
 							}
 						}
 					}
 				}
-				
+
 			} catch (Exception e) {
 				DataSetsPlugin.getDefault().getPluginLogger().log(e);
 			}
@@ -173,12 +165,9 @@ public final class EOEntityJava
 		return list;
 	}
 
-	/**
-	 * Opens the resource in a Editor.
-	 * @paramforceToOpenIntextEditor If forceToOpenIntextEditor is set to true the resource opens in a texteditor.
-	 */
-	public final void open(boolean forceToOpenIntextEditor) {
-		IFile index = (IFile) ((IFolder) this.getCorrespondingResource()).findMember("index.eomodeld");
+	public final void open() {
+		IFile index = (IFile) ((IFolder) this.getCorrespondingResource())
+				.findMember("index.eomodeld");
 		WorkbenchUtilitiesPlugin.open(index);
 	}
 

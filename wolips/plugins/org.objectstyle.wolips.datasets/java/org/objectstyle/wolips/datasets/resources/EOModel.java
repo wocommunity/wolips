@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 - 2004 The ObjectStyle Group 
+ * Copyright (c) 2002 - 2006 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -65,26 +65,25 @@ import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 
 /**
  * @author ulrich
- *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public final class EOModel
-	extends WOLipsResource
-	implements IEOModel {
+public final class EOModel extends WOLipsResource implements IEOModel {
 
 	protected EOModel() {
 		super();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.objectstyle.wolips.core.resources.IWOLipsResource#getType()
 	 */
 	public final int getType() {
 		return IWOLipsResource.EOMODEL;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.objectstyle.wolips.core.resources.IWOLipsResource#getRelatedResources()
 	 */
 	public final List getRelatedResources() {
@@ -93,12 +92,9 @@ public final class EOModel
 		return list;
 	}
 
-	/**
-	 * Opens the resource in a Editor.
-	 * @param forceToOpenIntextEditor If forceToOpenIntextEditor is set to true the resource opens in a texteditor.
-	 */
-	public final void open(boolean forceToOpenIntextEditor) {
-	    IFile index = (IFile) ((IFolder) this.getCorrespondingResource()).findMember("index.eomodeld");
+	public final void open() {
+		IFile index = (IFile) ((IFolder) this.getCorrespondingResource())
+				.findMember("index.eomodeld");
 		WorkbenchUtilitiesPlugin.open(index);
 	}
 }

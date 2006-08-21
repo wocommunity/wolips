@@ -2,7 +2,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0 
  *
- * Copyright (c) 2002 The ObjectStyle Group 
+ * Copyright (c) 2002 - 2006 The ObjectStyle Group 
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -67,17 +67,14 @@ import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 
 /**
  * @author ulrich
- *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public final class WOComponentJava
-	extends WOLipsCompilationUnit
-	implements IWOComponentJava {
+public final class WOComponentJava extends WOLipsCompilationUnit implements
+		IWOComponentJava {
 
 	protected WOComponentJava() {
 		super();
 	}
+
 	/**
 	 * @return Returns the IResource.
 	 */
@@ -90,31 +87,34 @@ public final class WOComponentJava
 		}
 		return resource;
 	}
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.objectstyle.wolips.core.resources.IWOLipsResource#getType()
 	 */
 	public final int getType() {
 		return IWOLipsCompilationUnit.WOCOMPONENT_JAVA;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.objectstyle.wolips.core.resources.IWOLipsResource#getRelatedResources()
 	 */
 
-    public List getRelatedResources() {
-        try {
-            return WOLipsResource.getRelatedWOComponentResources(this.getCorrespondingCompilationUnit().getCorrespondingResource());
-        } catch (Exception e) {
-            DataSetsPlugin.getDefault().getPluginLogger().log(e);
-        }
-        return new ArrayList();
-    }
+	public List getRelatedResources() {
+		try {
+			return WOLipsResource.getRelatedWOComponentResources(this
+					.getCorrespondingCompilationUnit()
+					.getCorrespondingResource());
+		} catch (Exception e) {
+			DataSetsPlugin.getDefault().getPluginLogger().log(e);
+		}
+		return new ArrayList();
+	}
 
-	/**
-	 * Opens the resource in a Editor.
-	 * @param forceToOpenIntextEditor If forceToOpenIntextEditor is set to true the resource opens in a texteditor.
-	 */
-	public final void open(boolean forceToOpenIntextEditor) {
+	public final void open() {
 		WorkbenchUtilitiesPlugin.open((IFile) this.getCorrespondingResource());
 	}
 

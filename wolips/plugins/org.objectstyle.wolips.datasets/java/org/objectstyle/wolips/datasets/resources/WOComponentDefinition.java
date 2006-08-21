@@ -53,32 +53,29 @@
  * <http://objectstyle.org/>.
  *
  */
- 
-package org.objectstyle.wolips.datasets.resources;
 
+package org.objectstyle.wolips.datasets.resources;
 
 import org.eclipse.core.resources.IFile;
 import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 
-
 /**
  * @author ulrich
- *
- * To change the template for this generated type comment go to
- * Window>Preferences>Java>Code Generation>Code and Comments
  */
-public final class WOComponentDefinition extends WOLipsResource implements IWOComponentDefinition {
+public final class WOComponentDefinition extends WOLipsResource implements
+		IWOComponentDefinition {
 
 	protected WOComponentDefinition() {
 		super();
 	}
-	
+
 	public final int getType() {
 		return IWOLipsResource.WOCOMPONENT_WOD;
 	}
-	
-	public final void open(boolean forceToOpenIntextEditor) {
-		WorkbenchUtilitiesPlugin.open((IFile)this.getCorrespondingResource(), forceToOpenIntextEditor, "org.objectstyle.wolips.internal.wod.editor");
+
+	public final void open() {
+		WorkbenchUtilitiesPlugin.open((IFile) this.getCorrespondingResource(),
+				null);
 	}
 
 }
