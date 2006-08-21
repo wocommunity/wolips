@@ -256,6 +256,48 @@
       </perspective>
    </extension>
 <!-- =================================================================================== -->
+<!-- Extension: Perspective Extensions                                                   -->
+<!-- =================================================================================== -->
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.eclipse.ui.resourcePerspective">
+         <perspectiveShortcut
+               id="org.objectstyle.wolips.ui.Perspective">
+         </perspectiveShortcut>
+      </perspectiveExtension>
+      <perspectiveExtension
+            targetID="org.eclipse.jdt.ui.JavaPerspective">
+         <perspectiveShortcut
+               id="org.objectstyle.wolips.ui.Perspective">
+         </perspectiveShortcut>
+      </perspectiveExtension>
+      <perspectiveExtension
+            targetID="org.eclipse.debug.ui.DebugPerspective">
+         <perspectiveShortcut
+               id="org.objectstyle.wolips.ui.Perspective">
+         </perspectiveShortcut>
+      </perspectiveExtension>
+      <perspectiveExtension
+            targetID="org.objectstyle.wolips.ui.Perspective">
+         <perspectiveShortcut
+               id="org.eclipse.debug.ui.DebugPerspective">
+         </perspectiveShortcut>
+      </perspectiveExtension>
+      <perspectiveExtension
+            targetID="org.objectstyle.wolips.ui.Perspective">
+         <perspectiveShortcut
+               id="org.eclipse.jdt.ui.JavaPerspective">
+         </perspectiveShortcut>
+      </perspectiveExtension>
+      <perspectiveExtension
+            targetID="org.objectstyle.wolips.ui.Perspective">
+         <perspectiveShortcut
+               id="org.eclipse.ui.resourcePerspective">
+         </perspectiveShortcut>
+      </perspectiveExtension>
+     </extension>
+<!-- =================================================================================== -->
 <!-- Extension: View                                                                     -->
 <!-- =================================================================================== -->
    <extension
