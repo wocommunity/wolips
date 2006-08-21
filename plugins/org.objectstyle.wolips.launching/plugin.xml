@@ -119,6 +119,11 @@
    </extension>
    <extension point="org.eclipse.debug.ui.consoleLineTrackers">
    	<consoleLineTracker
+   		id="org.objectstyle.wolips.launching.errors.ErrorConsoleLineTracker"
+		class="org.objectstyle.wolips.launching.errors.ErrorConsoleLineTracker"
+		processType="java">
+	</consoleLineTracker>
+   	<consoleLineTracker
    		id="org.objectstyle.wolips.launching.ConsoleLineTracker"
 		class="org.objectstyle.wolips.launching.browsersupport.ConsoleLineTracker"
 		processType="java">
