@@ -43,6 +43,7 @@
 				<exclude name=".project" />
 				<exclude name=".classpath" />
 				<exclude name="**/java/**" />
+				<exclude name="**/.settings/**" />
 				<exclude name="lib/woproject.jar" />
 				<exclude name="lib/cayenne.jar" />
 			</fileset>
