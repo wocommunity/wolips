@@ -65,7 +65,9 @@ public class EditorsPlugin extends AbstractWOLipsUIPlugin {
 
 	public static String HTMLEditorID = "org.objectstyle.wolips.wodclipse.html.HtmlEditor";
 
-	public static String WodEditorID = "org.objectstyle.wolips.wodclipse.wod.WodEditor";
+	public static String WodEditorID = "org.objectstyle.wolips.wodclipse.WodEditor";
+
+	public static String ComponentEditorID = "org.objectstyle.wolips.componenteditor.ComponentEditor";
 
 	/**
 	 * The constructor.
