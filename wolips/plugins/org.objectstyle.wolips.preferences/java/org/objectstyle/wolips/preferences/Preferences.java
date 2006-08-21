@@ -72,29 +72,29 @@ import org.eclipse.jface.preference.IPreferenceStore;
 public class Preferences {
 
 	/**
-	 * Comment for <code>PREF_RUN_WOBUILDER_ON_BUILD</code>
+	 * Comment for <code>PREF_WRITE_PB_DOT_PROJECT_ON_BUILD</code>
 	 */
-	public static final String PREF_RUN_WOBUILDER_ON_BUILD = "org.objectstyle.wolips.preference.RunWOBuilderOnBuild";
+	public static final String PREF_WRITE_PB_DOT_PROJECT_ON_BUILD = "org.objectstyle.wolips.preference.WritePB_DotProjectOnBuild";
 
-  /**
-   * Comment for <code>PREF_WRITE_XCODE_ON_BUILD</code>
-   */
-  public static final String PREF_WRITE_XCODE_ON_BUILD = "org.objectstyle.wolips.preference.WriteXcodeOnBuild";
+	/**
+	 * Comment for <code>PREF_WRITE_XCODE_ON_BUILD</code>
+	 */
+	public static final String PREF_WRITE_XCODE_ON_BUILD = "org.objectstyle.wolips.preference.WriteXcodeOnBuild";
 
-  /**
-   * Comment for <code>PREF_WRITE_XCODE21_ON_BUILD</code>
-   */
-  public static final String PREF_WRITE_XCODE21_ON_BUILD = "org.objectstyle.wolips.preference.WriteXcode21OnBuild";
+	/**
+	 * Comment for <code>PREF_WRITE_XCODE21_ON_BUILD</code>
+	 */
+	public static final String PREF_WRITE_XCODE21_ON_BUILD = "org.objectstyle.wolips.preference.WriteXcode21OnBuild";
 
-  /**
-   * Comment for <code>PREF_VALIDATE_WOD_ON_BUILD</code>
-   */
-  public static final String PREF_VALIDATE_WOD_ON_BUILD = "org.objectstyle.wolips.preference.ValidateWODOnBuild";
+	/**
+	 * Comment for <code>PREF_VALIDATE_WOD_ON_BUILD</code>
+	 */
+	public static final String PREF_VALIDATE_WOD_ON_BUILD = "org.objectstyle.wolips.preference.ValidateWODOnBuild";
 
-  /**
-   * Comment for <code>PREF_AUTOEOGENERATE_ON_BUILD</code>
-   */
-  public static final String PREF_AUTOEOGENERATE_ON_BUILD = "org.objectstyle.wolips.preference.AutoEOGenerateOnBuild";
+	/**
+	 * Comment for <code>PREF_AUTOEOGENERATE_ON_BUILD</code>
+	 */
+	public static final String PREF_AUTOEOGENERATE_ON_BUILD = "org.objectstyle.wolips.preference.AutoEOGenerateOnBuild";
 
 	/**
 	 * Comment for <code>PREF_CAPTURE_ANT_OUTPUT</code>
@@ -126,18 +126,19 @@ public class Preferences {
 	 */
 	public static final String PREF_LAUNCH_GLOBAL = "org.objectstyle.wolips.Preference.Launch_Global";
 
-  public static final String PREF_EOGENERATOR_PATH = "org.objectstyle.wolips.Preference.EOGeneratorPath";
+	public static final String PREF_EOGENERATOR_PATH = "org.objectstyle.wolips.Preference.EOGeneratorPath";
 
-  public static final String PREF_EOGENERATOR_TEMPLATE_DIR = "org.objectstyle.wolips.Preference.EOGeneratorTemplateDir";
+	public static final String PREF_EOGENERATOR_TEMPLATE_DIR = "org.objectstyle.wolips.Preference.EOGeneratorTemplateDir";
 
-  public static final String PREF_EOGENERATOR_JAVA_TEMPLATE = "org.objectstyle.wolips.Preference.EOGeneratorTemplate";
+	public static final String PREF_EOGENERATOR_JAVA_TEMPLATE = "org.objectstyle.wolips.Preference.EOGeneratorTemplate";
 
-  public static final String PREF_EOGENERATOR_SUBCLASS_JAVA_TEMPLATE = "org.objectstyle.wolips.Preference.EOGeneratorSubclassTemplate";
+	public static final String PREF_EOGENERATOR_SUBCLASS_JAVA_TEMPLATE = "org.objectstyle.wolips.Preference.EOGeneratorSubclassTemplate";
 
 	/**
 	 * Comment for <code>FLAG_INCLUDE_EXCLUDE_RULES_CHANGED</code>
 	 */
 	public static boolean FLAG_INCLUDE_EXCLUDE_RULES_CHANGED = false;
+
 	/**
 	 * Comment for <code>trueString</code>
 	 */
@@ -182,33 +183,56 @@ public class Preferences {
 					Preferences.falseString);
 		if (Preferences.SET_DEFAULTS_STRING == null
 				|| Preferences.SET_DEFAULTS_STRING
-						.equals(Preferences.PREF_RUN_WOBUILDER_ON_BUILD))
-			store.setDefault(Preferences.PREF_RUN_WOBUILDER_ON_BUILD,
+						.equals(Preferences.PREF_WRITE_PB_DOT_PROJECT_ON_BUILD))
+			store.setDefault(Preferences.PREF_WRITE_PB_DOT_PROJECT_ON_BUILD,
 					Preferences.trueString);
-    if (Preferences.SET_DEFAULTS_STRING == null || Preferences.SET_DEFAULTS_STRING.equals(Preferences.PREF_EOGENERATOR_PATH)) {
-      store.setDefault(Preferences.PREF_EOGENERATOR_PATH, "");
-    }
-    if (Preferences.SET_DEFAULTS_STRING == null || Preferences.SET_DEFAULTS_STRING.equals(Preferences.PREF_EOGENERATOR_TEMPLATE_DIR)) {
-      store.setDefault(Preferences.PREF_EOGENERATOR_TEMPLATE_DIR, "");
-    }
-    if (Preferences.SET_DEFAULTS_STRING == null || Preferences.SET_DEFAULTS_STRING.equals(Preferences.PREF_EOGENERATOR_JAVA_TEMPLATE)) {
-      store.setDefault(Preferences.PREF_EOGENERATOR_JAVA_TEMPLATE, "JavaSourceEOF52.eotemplate");
-    }
-    if (Preferences.SET_DEFAULTS_STRING == null || Preferences.SET_DEFAULTS_STRING.equals(Preferences.PREF_EOGENERATOR_SUBCLASS_JAVA_TEMPLATE)) {
-      store.setDefault(Preferences.PREF_EOGENERATOR_SUBCLASS_JAVA_TEMPLATE, "JavaSubclassSourceEOF5.eotemplate");
-    }
-    if (Preferences.SET_DEFAULTS_STRING == null || Preferences.SET_DEFAULTS_STRING.equals(Preferences.PREF_WRITE_XCODE_ON_BUILD)) {
-      store.setDefault(Preferences.PREF_WRITE_XCODE_ON_BUILD, Preferences.falseString);
-    }
-    if (Preferences.SET_DEFAULTS_STRING == null || Preferences.SET_DEFAULTS_STRING.equals(Preferences.PREF_WRITE_XCODE21_ON_BUILD)) {
-      store.setDefault(Preferences.PREF_WRITE_XCODE21_ON_BUILD, Preferences.trueString);
-    }
-    if (Preferences.SET_DEFAULTS_STRING == null || Preferences.SET_DEFAULTS_STRING.equals(Preferences.PREF_VALIDATE_WOD_ON_BUILD)) {
-      store.setDefault(Preferences.PREF_VALIDATE_WOD_ON_BUILD, Preferences.trueString);
-    }
-    if (Preferences.SET_DEFAULTS_STRING == null || Preferences.SET_DEFAULTS_STRING.equals(Preferences.PREF_AUTOEOGENERATE_ON_BUILD)) {
-      store.setDefault(Preferences.PREF_AUTOEOGENERATE_ON_BUILD, Preferences.falseString);
-    }
+		if (Preferences.SET_DEFAULTS_STRING == null
+				|| Preferences.SET_DEFAULTS_STRING
+						.equals(Preferences.PREF_EOGENERATOR_PATH)) {
+			store.setDefault(Preferences.PREF_EOGENERATOR_PATH, "");
+		}
+		if (Preferences.SET_DEFAULTS_STRING == null
+				|| Preferences.SET_DEFAULTS_STRING
+						.equals(Preferences.PREF_EOGENERATOR_TEMPLATE_DIR)) {
+			store.setDefault(Preferences.PREF_EOGENERATOR_TEMPLATE_DIR, "");
+		}
+		if (Preferences.SET_DEFAULTS_STRING == null
+				|| Preferences.SET_DEFAULTS_STRING
+						.equals(Preferences.PREF_EOGENERATOR_JAVA_TEMPLATE)) {
+			store.setDefault(Preferences.PREF_EOGENERATOR_JAVA_TEMPLATE,
+					"JavaSourceEOF52.eotemplate");
+		}
+		if (Preferences.SET_DEFAULTS_STRING == null
+				|| Preferences.SET_DEFAULTS_STRING
+						.equals(Preferences.PREF_EOGENERATOR_SUBCLASS_JAVA_TEMPLATE)) {
+			store.setDefault(
+					Preferences.PREF_EOGENERATOR_SUBCLASS_JAVA_TEMPLATE,
+					"JavaSubclassSourceEOF5.eotemplate");
+		}
+		if (Preferences.SET_DEFAULTS_STRING == null
+				|| Preferences.SET_DEFAULTS_STRING
+						.equals(Preferences.PREF_WRITE_XCODE_ON_BUILD)) {
+			store.setDefault(Preferences.PREF_WRITE_XCODE_ON_BUILD,
+					Preferences.falseString);
+		}
+		if (Preferences.SET_DEFAULTS_STRING == null
+				|| Preferences.SET_DEFAULTS_STRING
+						.equals(Preferences.PREF_WRITE_XCODE21_ON_BUILD)) {
+			store.setDefault(Preferences.PREF_WRITE_XCODE21_ON_BUILD,
+					Preferences.trueString);
+		}
+		if (Preferences.SET_DEFAULTS_STRING == null
+				|| Preferences.SET_DEFAULTS_STRING
+						.equals(Preferences.PREF_VALIDATE_WOD_ON_BUILD)) {
+			store.setDefault(Preferences.PREF_VALIDATE_WOD_ON_BUILD,
+					Preferences.trueString);
+		}
+		if (Preferences.SET_DEFAULTS_STRING == null
+				|| Preferences.SET_DEFAULTS_STRING
+						.equals(Preferences.PREF_AUTOEOGENERATE_ON_BUILD)) {
+			store.setDefault(Preferences.PREF_AUTOEOGENERATE_ON_BUILD,
+					Preferences.falseString);
+		}
 		if (Preferences.SET_DEFAULTS_STRING == null
 				|| Preferences.SET_DEFAULTS_STRING
 						.equals(Preferences.PREF_OPEN_WOCOMPONENT_ACTION_INCLUDES_OPEN_HTML))
@@ -444,61 +468,63 @@ public class Preferences {
 		return Preferences.getBoolean(Preferences.PREF_CAPTURE_ANT_OUTPUT);
 	}
 
-	/**
-	 * @return the preferences
-	 */
-	public static boolean getPREF_RUN_WOBUILDER_ON_BUILD() {
-		return Preferences.getBoolean(Preferences.PREF_RUN_WOBUILDER_ON_BUILD);
+	public static boolean getPREF_WRITE_PB_DOT_PROJECT_ON_BUILD() {
+		return Preferences
+				.getBoolean(Preferences.PREF_WRITE_PB_DOT_PROJECT_ON_BUILD);
 	}
-  
-  public static boolean getPREF_WRITE_XCODE_ON_BUILD() {
-    return Preferences.getBoolean(Preferences.PREF_WRITE_XCODE_ON_BUILD);
-  }
-  
-  public static boolean getPREF_WRITE_XCODE21_ON_BUILD() {
-    return Preferences.getBoolean(Preferences.PREF_WRITE_XCODE21_ON_BUILD);
-  }
-  
-  public static boolean getPREF_VALIDATE_WOD_ON_BUILD() {
-    return Preferences.getBoolean(Preferences.PREF_VALIDATE_WOD_ON_BUILD);
-  }
 
-  public static boolean getPREF_AUTOEOGENERATE_ON_BUILD() {
-    return Preferences.getBoolean(Preferences.PREF_AUTOEOGENERATE_ON_BUILD);
-  }
+	public static boolean getPREF_WRITE_XCODE_ON_BUILD() {
+		return Preferences.getBoolean(Preferences.PREF_WRITE_XCODE_ON_BUILD);
+	}
 
-  public static String getEOGeneratorPath() {
-    return Preferences.getString(Preferences.PREF_EOGENERATOR_PATH);
-  }
-  
-  public static void setEOGeneratorPath(String _path) {
-    Preferences.setString(Preferences.PREF_EOGENERATOR_PATH, _path);
-  }
+	public static boolean getPREF_WRITE_XCODE21_ON_BUILD() {
+		return Preferences.getBoolean(Preferences.PREF_WRITE_XCODE21_ON_BUILD);
+	}
 
-  public static String getEOGeneratorTemplateDir() {
-    return Preferences.getString(Preferences.PREF_EOGENERATOR_TEMPLATE_DIR);
-  }
-  
-  public static void setEOGeneratorTemplateDir(String _path) {
-    Preferences.setString(Preferences.PREF_EOGENERATOR_TEMPLATE_DIR, _path);
-  }
+	public static boolean getPREF_VALIDATE_WOD_ON_BUILD() {
+		return Preferences.getBoolean(Preferences.PREF_VALIDATE_WOD_ON_BUILD);
+	}
 
-  public static String getEOGeneratorJavaTemplate() {
-    return Preferences.getString(Preferences.PREF_EOGENERATOR_JAVA_TEMPLATE);
-  }
-  
-  public static void setEOGeneratorJavaTemplate(String _path) {
-    Preferences.setString(Preferences.PREF_EOGENERATOR_JAVA_TEMPLATE, _path);
-  }
+	public static boolean getPREF_AUTOEOGENERATE_ON_BUILD() {
+		return Preferences.getBoolean(Preferences.PREF_AUTOEOGENERATE_ON_BUILD);
+	}
 
-  public static String getEOGeneratorSubclassJavaTemplate() {
-    return Preferences.getString(Preferences.PREF_EOGENERATOR_SUBCLASS_JAVA_TEMPLATE);
-  }
-  
-  public static void setEOGeneratorSubclassJavaTemplate(String _path) {
-    Preferences.setString(Preferences.PREF_EOGENERATOR_SUBCLASS_JAVA_TEMPLATE, _path);
-  }
-  
+	public static String getEOGeneratorPath() {
+		return Preferences.getString(Preferences.PREF_EOGENERATOR_PATH);
+	}
+
+	public static void setEOGeneratorPath(String _path) {
+		Preferences.setString(Preferences.PREF_EOGENERATOR_PATH, _path);
+	}
+
+	public static String getEOGeneratorTemplateDir() {
+		return Preferences.getString(Preferences.PREF_EOGENERATOR_TEMPLATE_DIR);
+	}
+
+	public static void setEOGeneratorTemplateDir(String _path) {
+		Preferences.setString(Preferences.PREF_EOGENERATOR_TEMPLATE_DIR, _path);
+	}
+
+	public static String getEOGeneratorJavaTemplate() {
+		return Preferences
+				.getString(Preferences.PREF_EOGENERATOR_JAVA_TEMPLATE);
+	}
+
+	public static void setEOGeneratorJavaTemplate(String _path) {
+		Preferences
+				.setString(Preferences.PREF_EOGENERATOR_JAVA_TEMPLATE, _path);
+	}
+
+	public static String getEOGeneratorSubclassJavaTemplate() {
+		return Preferences
+				.getString(Preferences.PREF_EOGENERATOR_SUBCLASS_JAVA_TEMPLATE);
+	}
+
+	public static void setEOGeneratorSubclassJavaTemplate(String _path) {
+		Preferences.setString(
+				Preferences.PREF_EOGENERATOR_SUBCLASS_JAVA_TEMPLATE, _path);
+	}
+
 	/**
 	 * @return the preferences
 	 */
@@ -551,25 +577,25 @@ public class Preferences {
 	/**
 	 * @param value
 	 */
-	public static void setPREF_RUN_WOBUILDER_ON_BUILD(boolean value) {
-		Preferences.setBoolean(Preferences.PREF_RUN_WOBUILDER_ON_BUILD, value);
+	public static void setPREF_WRITE_PB_DOT_PROJECT_ON_BUILD(boolean value) {
+		Preferences.setBoolean(PREF_WRITE_PB_DOT_PROJECT_ON_BUILD, value);
 	}
-  
-  public static void setPREF_WRITE_XCODE_ON_BUILD(boolean value) {
-    Preferences.setBoolean(Preferences.PREF_WRITE_XCODE_ON_BUILD, value);
-  }
-  
-  public static void setPREF_WRITE_XCODE21_ON_BUILD(boolean value) {
-    Preferences.setBoolean(Preferences.PREF_WRITE_XCODE21_ON_BUILD, value);
-  }
 
-  public static void setPREF_VALIDATE_WOD_ON_BUILD(boolean value) {
-    Preferences.setBoolean(Preferences.PREF_VALIDATE_WOD_ON_BUILD, value);
-  }
+	public static void setPREF_WRITE_XCODE_ON_BUILD(boolean value) {
+		Preferences.setBoolean(Preferences.PREF_WRITE_XCODE_ON_BUILD, value);
+	}
 
-  public static void setPREF_AUTOEOGENERATE_ON_BUILD(boolean value) {
-    Preferences.setBoolean(Preferences.PREF_AUTOEOGENERATE_ON_BUILD, value);
-  }
+	public static void setPREF_WRITE_XCODE21_ON_BUILD(boolean value) {
+		Preferences.setBoolean(Preferences.PREF_WRITE_XCODE21_ON_BUILD, value);
+	}
+
+	public static void setPREF_VALIDATE_WOD_ON_BUILD(boolean value) {
+		Preferences.setBoolean(Preferences.PREF_VALIDATE_WOD_ON_BUILD, value);
+	}
+
+	public static void setPREF_AUTOEOGENERATE_ON_BUILD(boolean value) {
+		Preferences.setBoolean(Preferences.PREF_AUTOEOGENERATE_ON_BUILD, value);
+	}
 
 	/**
 	 * @param string

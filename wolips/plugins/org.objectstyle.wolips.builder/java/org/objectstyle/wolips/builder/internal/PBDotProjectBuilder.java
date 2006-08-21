@@ -74,6 +74,7 @@ import org.objectstyle.wolips.core.resources.types.folder.IDotEOModeldAdapter;
 import org.objectstyle.wolips.core.resources.types.folder.IDotSubprojAdapter;
 import org.objectstyle.wolips.core.resources.types.folder.IDotWoAdapter;
 import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
+import org.objectstyle.wolips.preferences.Preferences;
 
 public class PBDotProjectBuilder implements IDeltaBuilder, ICleanBuilder {
 	private Hashtable affectedPBDotProjectOwner;
@@ -102,6 +103,9 @@ public class PBDotProjectBuilder implements IDeltaBuilder, ICleanBuilder {
 
 	public boolean buildStarted(int kind, Map args, IProgressMonitor monitor,
 			IProject project, Map _buildCache) {
+		if (!Preferences.getPREF_WRITE_PB_DOT_PROJECT_ON_BUILD()) {
+			return false;
+		}
 		this.affectedPBDotProjectOwner = new Hashtable();
 		IProjectAdapter projectAdapter = (IProjectAdapter) project
 				.getAdapter(IProjectAdapter.class);
@@ -112,6 +116,9 @@ public class PBDotProjectBuilder implements IDeltaBuilder, ICleanBuilder {
 
 	public boolean buildPreparationDone(int _kind, Map _args,
 			IProgressMonitor _monitor, IProject _project, Map _buildCache) {
+		if (!Preferences.getPREF_WRITE_PB_DOT_PROJECT_ON_BUILD()) {
+			return false;
+		}
 		Iterator iterator = affectedPBDotProjectOwner.values().iterator();
 		while (iterator.hasNext()) {
 			Object object = iterator.next();
@@ -146,6 +153,9 @@ public class PBDotProjectBuilder implements IDeltaBuilder, ICleanBuilder {
 
 	public boolean handleSourceDelta(IResourceDelta delta,
 			IProgressMonitor monitor, Map _buildCache) {
+		if (!Preferences.getPREF_WRITE_PB_DOT_PROJECT_ON_BUILD()) {
+			return false;
+		}
 		IResource resource = delta.getResource();
 		handleSource(delta.getKind(), resource, monitor, _buildCache);
 		return false;
@@ -153,12 +163,18 @@ public class PBDotProjectBuilder implements IDeltaBuilder, ICleanBuilder {
 
 	public void handleSource(IResource _resource,
 			IProgressMonitor _progressMonitor, Map _buildCache) {
+		if (!Preferences.getPREF_WRITE_PB_DOT_PROJECT_ON_BUILD()) {
+			return;
+		}
 		handleSource(IResourceDelta.ADDED, _resource, _progressMonitor,
 				_buildCache);
 	}
 
 	public boolean handleSource(int _kind, IResource _resource,
 			IProgressMonitor _progressMonitor, Map _buildCache) {
+		if (!Preferences.getPREF_WRITE_PB_DOT_PROJECT_ON_BUILD()) {
+			return false;
+		}
 		String extension = _resource.getFileExtension();
 		if (_kind == IResourceDelta.ADDED || _kind == IResourceDelta.CHANGED
 				|| _kind == IResourceDelta.REMOVED) {
@@ -180,6 +196,9 @@ public class PBDotProjectBuilder implements IDeltaBuilder, ICleanBuilder {
 
 	public boolean handleClassesDelta(IResourceDelta delta,
 			IProgressMonitor monitor, Map _buildCache) {
+		if (!Preferences.getPREF_WRITE_PB_DOT_PROJECT_ON_BUILD()) {
+			return false;
+		}
 		IResource resource = delta.getResource();
 		handleClasses(delta.getKind(), resource, monitor, _buildCache);
 		return false;
@@ -187,6 +206,9 @@ public class PBDotProjectBuilder implements IDeltaBuilder, ICleanBuilder {
 
 	public void handleClasses(IResource _resource,
 			IProgressMonitor _progressMonitor, Map _buildCache) {
+		if (!Preferences.getPREF_WRITE_PB_DOT_PROJECT_ON_BUILD()) {
+			return;
+		}
 		handleClasses(IResourceDelta.ADDED, _resource, _progressMonitor,
 				_buildCache);
 	}
@@ -198,6 +220,9 @@ public class PBDotProjectBuilder implements IDeltaBuilder, ICleanBuilder {
 
 	public boolean handleWoappResourcesDelta(IResourceDelta delta,
 			IProgressMonitor monitor, Map _buildCache) {
+		if (!Preferences.getPREF_WRITE_PB_DOT_PROJECT_ON_BUILD()) {
+			return false;
+		}
 		handleWoappResources(delta.getKind(), delta.getResource(), monitor,
 				_buildCache);
 		return false;
@@ -205,12 +230,18 @@ public class PBDotProjectBuilder implements IDeltaBuilder, ICleanBuilder {
 
 	public void handleWoappResources(IResource _resource,
 			IProgressMonitor _progressMonitor, Map _buildCache) {
+		if (!Preferences.getPREF_WRITE_PB_DOT_PROJECT_ON_BUILD()) {
+			return;
+		}
 		handleWoappResources(IResourceDelta.ADDED, _resource, _progressMonitor,
 				_buildCache);
 	}
 
 	public void handleWoappResources(int _kind, IResource resource,
 			IProgressMonitor monitor, Map _buildCache) {
+		if (!Preferences.getPREF_WRITE_PB_DOT_PROJECT_ON_BUILD()) {
+			return;
+		}
 		if (_kind == IResourceDelta.ADDED || _kind == IResourceDelta.CHANGED
 				|| _kind == IResourceDelta.REMOVED) {
 			IPBDotProjectOwner pbDotProjectOwner = this
@@ -259,12 +290,18 @@ public class PBDotProjectBuilder implements IDeltaBuilder, ICleanBuilder {
 
 	public void handleWebServerResources(IResource _resource,
 			IProgressMonitor _progressMonitor, Map _buildCache) {
+		if (!Preferences.getPREF_WRITE_PB_DOT_PROJECT_ON_BUILD()) {
+			return;
+		}
 		handleWebServerResources(IResourceDelta.ADDED, _resource,
 				_progressMonitor, _buildCache);
 	}
 
 	public boolean handleWebServerResourcesDelta(IResourceDelta delta,
 			IProgressMonitor monitor, Map _buildCache) {
+		if (!Preferences.getPREF_WRITE_PB_DOT_PROJECT_ON_BUILD()) {
+			return false;
+		}
 		IResource resource = delta.getResource();
 		handleWebServerResources(delta.getKind(), resource, monitor,
 				_buildCache);
@@ -273,6 +310,9 @@ public class PBDotProjectBuilder implements IDeltaBuilder, ICleanBuilder {
 
 	public void handleWebServerResources(int _kind, IResource resource,
 			IProgressMonitor monitor, Map _buildCache) {
+		if (!Preferences.getPREF_WRITE_PB_DOT_PROJECT_ON_BUILD()) {
+			return;
+		}
 		if (_kind == IResourceDelta.ADDED || _kind == IResourceDelta.CHANGED
 				|| _kind == IResourceDelta.REMOVED) {
 			IPBDotProjectOwner pbDotProjectOwner = this
@@ -292,11 +332,17 @@ public class PBDotProjectBuilder implements IDeltaBuilder, ICleanBuilder {
 
 	public void handleOther(IResource resource, IProgressMonitor monitor,
 			Map _buildCache) {
+		if (!Preferences.getPREF_WRITE_PB_DOT_PROJECT_ON_BUILD()) {
+			return;
+		}
 		handleOther(IResourceDelta.ADDED, resource, monitor, _buildCache);
 	}
 
 	public boolean handleOtherDelta(IResourceDelta delta,
 			IProgressMonitor monitor, Map _buildCache) {
+		if (!Preferences.getPREF_WRITE_PB_DOT_PROJECT_ON_BUILD()) {
+			return false;
+		}
 		IResource resource = delta.getResource();
 		handleOther(delta.getKind(), resource, monitor, _buildCache);
 		return false;
@@ -304,6 +350,9 @@ public class PBDotProjectBuilder implements IDeltaBuilder, ICleanBuilder {
 
 	public void handleOther(int _kind, IResource resource,
 			IProgressMonitor monitor, Map _buildCache) {
+		if (!Preferences.getPREF_WRITE_PB_DOT_PROJECT_ON_BUILD()) {
+			return;
+		}
 		IDotSubprojAdapter dotSubprojAdapter = (IDotSubprojAdapter) resource
 				.getAdapter(IDotSubprojAdapter.class);
 		if (dotSubprojAdapter == null) {
@@ -321,30 +370,31 @@ public class PBDotProjectBuilder implements IDeltaBuilder, ICleanBuilder {
 		}
 	}
 
-	public void handleClasspath(IResource _resource,
-			IProgressMonitor _progressMonitor, Map _buildCache) {
-		handleClasspath(IResourceDelta.ADDED, _resource, _progressMonitor,
-				_buildCache);
-	}
+	public void handleClasspath(IResource resource,
+			IProgressMonitor progressMonitor, Map buildCache) {
 
-	public boolean classpathChanged(IResourceDelta delta,
-			IProgressMonitor monitor, Map _buildCache) {
-		IResource resource = delta.getResource();
-		handleClasspath(delta.getKind(), resource, monitor, _buildCache);
-		return false;
-	}
-
-	public void handleClasspath(int _kind, IResource _resource,
-			IProgressMonitor _progressMonitor, Map _buildCache) {
+		if (!Preferences.getPREF_WRITE_PB_DOT_PROJECT_ON_BUILD()) {
+			return;
+		}
 		IPBDotProjectOwner pbDotProjectOwner = this
-				.getIPBDotProjectOwner(_resource);
+				.getIPBDotProjectOwner(resource);
 		IPBDotProjectAdapter pbDotProjectAdapter = this
 				.getIPBDotProjectAdapter(pbDotProjectOwner);
-		IProject project = _resource.getProject();
+		IProject project = resource.getProject();
 		IProjectAdapter projectAdapter = (IProjectAdapter) project
 				.getAdapter(IProjectAdapter.class);
 		List frameworkNames = projectAdapter.getFrameworkNames();
 		pbDotProjectAdapter.updateFrameworkNames(frameworkNames);
+	}
+
+	public boolean classpathChanged(IResourceDelta delta,
+			IProgressMonitor monitor, Map _buildCache) {
+		if (!Preferences.getPREF_WRITE_PB_DOT_PROJECT_ON_BUILD()) {
+			return false;
+		}
+		IResource resource = delta.getResource();
+		handleClasspath(resource, monitor, _buildCache);
+		return false;
 	}
 
 }

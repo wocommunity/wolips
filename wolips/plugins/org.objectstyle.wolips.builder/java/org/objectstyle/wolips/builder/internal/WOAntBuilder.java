@@ -78,17 +78,12 @@ public class WOAntBuilder extends AbstractIncrementalProjectBuilder {
 
 	public void invokeOldBuilder(int kind, Map args, IProgressMonitor monitor,
 			IResourceDelta delta) {
-		if (this.getProject() == null) {
+		if (getProject() == null || !getProject().exists()) {
 			monitor.done();
 			return;
 		}
 		monitor.beginTask(AntBuildMessages.getString("Build.Monitor.Title"),
 				WOAntBuilder.TOTAL_WORK_UNITS);
-		if (!Preferences.getPREF_RUN_WOBUILDER_ON_BUILD()
-				|| getProject() == null || !getProject().exists()) {
-			monitor.done();
-			return;
-		}
 		String aBuildFile = null;
 		try {
 			if (!projectNeedsAnUpdate(delta)

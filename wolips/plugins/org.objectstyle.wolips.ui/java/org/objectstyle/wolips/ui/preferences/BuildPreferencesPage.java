@@ -58,10 +58,6 @@ import org.objectstyle.wolips.preferences.PreferencesMessages;
 
 /**
  * @author uli
- * 
- * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates. To enable and disable the creation of type
- * comments go to Window>Preferences>Java>Code Generation.
  */
 public class BuildPreferencesPage extends FieldEditorPreferencePage implements
 		IWorkbenchPreferencePage {
@@ -81,12 +77,12 @@ public class BuildPreferencesPage extends FieldEditorPreferencePage implements
 	 */
 	public void createFieldEditors() {
 		addField(new BooleanFieldEditor(
-				Preferences.PREF_RUN_WOBUILDER_ON_BUILD, PreferencesMessages
-						.getString("Preferences.RunWOBuilderOnBuild.Label"),
-				getFieldEditorParent()));
-		addField(new BooleanFieldEditor(
 				Preferences.PREF_CAPTURE_ANT_OUTPUT, PreferencesMessages
 						.getString("Preferences.CaptureAntOutput.Label"),
+				getFieldEditorParent()));
+		addField(new BooleanFieldEditor(
+				Preferences.PREF_WRITE_PB_DOT_PROJECT_ON_BUILD, PreferencesMessages
+						.getString("Preferences.WritePBDotProjectOnBuild.Label"),
 				getFieldEditorParent()));
 		addField(new BooleanFieldEditor(Preferences.PREF_WRITE_XCODE_ON_BUILD,
 				PreferencesMessages
