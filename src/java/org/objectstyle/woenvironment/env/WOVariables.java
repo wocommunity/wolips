@@ -81,6 +81,8 @@ public class WOVariables {
 
 	private static final String REFERENCE_API_KEY = "wo.dir.reference.api";
 
+	private static final String EXTERNAL_BUILD_ROOT = "wo.externalbuildroot";
+
 	// private final String ABSOLUTE_ROOT = "wo.absoluteroot";
 	/**
 	 * Key for setting wobuild.properties path by environment
@@ -196,6 +198,17 @@ public class WOVariables {
 	 */
 	public String nextRoot() {
 		return this.wobuildProperties.getProperty(WOVariables.WO_ROOT);
+	}
+
+
+	/**
+	 * Where you store your XCode or ant generated stuff.
+	 * 
+	 * @return String
+	 */
+	public String externalBuildRoot() {
+		return this.wobuildProperties
+				.getProperty(WOVariables.EXTERNAL_BUILD_ROOT);
 	}
 
 	/**
