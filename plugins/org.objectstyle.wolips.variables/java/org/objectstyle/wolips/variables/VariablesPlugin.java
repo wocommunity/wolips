@@ -220,28 +220,40 @@ public class VariablesPlugin extends AbstractCorePlugin {
 	 * @return the path to external build root
 	 */
 	public IPath getExternalBuildRoot() {
-		return this.fixMissingSeparatorAfterDevice(this.getWOVariables()
-				.userHome()
-				+ "/Roots");
+	String root = this.getWOVariables().externalBuildRoot();
+	if(root != null) {
+		IPath result = this.fixMissingSeparatorAfterDevice(root);
+		  return result;
+	}
+	   return null;
 	}
 	
 	/**
 	 * @return the names of the framework roots
 	 */
 	public String[] getFrameworkRootsNames() {
-		return new String[] { "External Build Root", "User Home", "Local",
-				"System" };
+	   if( getExternalBuildRoot() != null) {
+		return new String[] { "External Build Root", "User Home", "Local", "System" };
+        }
+		return new String[] { "User Home", "Local", "System" };
 	}
 
 	/**
 	 * @return the paths to the framework roots
 	 */
 	public IPath[] getFrameworkRoots() {
+	   if( getExternalBuildRoot() != null) {
 		IPath[] paths = new IPath[4];
 		paths[0] = this.getExternalBuildRoot();
 		paths[1] = this.appendLibraryFrameworks(this.getUserHome());
 		paths[2] = this.appendLibraryFrameworks(this.getLocalRoot());
 		paths[3] = this.appendLibraryFrameworks(this.getSystemRoot());
+		return paths;
+		}
+		IPath[] paths = new IPath[3];
+		paths[0] = this.appendLibraryFrameworks(this.getUserHome());
+		paths[1] = this.appendLibraryFrameworks(this.getLocalRoot());
+		paths[2] = this.appendLibraryFrameworks(this.getSystemRoot());
 		return paths;
 	}
 
