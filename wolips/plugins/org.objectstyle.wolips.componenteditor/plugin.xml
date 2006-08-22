@@ -93,7 +93,7 @@
 	<extension point = "org.eclipse.ui.editorActions">
       <editorContribution 
          id="org.objectstyle.wolips.componenteditor.editorActionsContribution" 
-         targetID="org.objectstyle.wolips.componenteditor">        
+         targetID="org.objectstyle.wolips.componenteditor.ComponentEditor">        
            <menu id="org.objectstyle.wolips.componenteditor.navigateMenuContribution"
 			label="&amp;Component Editor" 
              path="navigate/additions">
