@@ -82,14 +82,6 @@
                name="nature"
                value="org.eclipse.jdt.core.javanature">
          </filter>
-         <action
-               label="Update PB.project"
-               icon="icons/projectbuilder/projectbuilderwo.gif"
-               class="org.objectstyle.wolips.ui.actions.PBAction"
-               menubarPath="org.objectstyle.wolips.ui.ResourceContributions/group1"
-               enablesFor="1"
-               id="org.objectstyle.wolips.ui.actions.PBAction">
-         </action>
       </objectContribution>
 <!-- =================================================================================== -->
 <!-- Extension: File actions                                                             -->

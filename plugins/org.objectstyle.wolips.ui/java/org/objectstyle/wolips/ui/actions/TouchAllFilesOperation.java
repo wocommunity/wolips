@@ -64,8 +64,6 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
-import org.objectstyle.wolips.datasets.adaptable.Project;
-import org.objectstyle.wolips.ui.UIPlugin;
 
 /**
  * @author ulrich
@@ -90,14 +88,6 @@ public class TouchAllFilesOperation extends WorkspaceModifyOperation {
 	 */
 	protected void execute(IProgressMonitor monitor) throws CoreException,
 			InvocationTargetException, InterruptedException {
-		Project project = project = (Project) this.iProject
-				.getAdapter(Project.class);
-		try {
-			//remove all existing entries
-			project.cleanAllFileTables();
-		} catch (Throwable e) {
-			UIPlugin.getDefault().log(e);
-		}
 		this.touch(this.iProject, monitor);
 	}
 

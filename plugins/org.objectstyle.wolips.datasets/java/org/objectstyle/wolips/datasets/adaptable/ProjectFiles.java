@@ -54,14 +54,10 @@
  *
  */
 package org.objectstyle.wolips.datasets.adaptable;
-import java.util.ArrayList;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.objectstyle.wolips.datasets.DataSetsPlugin;
-import org.objectstyle.wolips.datasets.project.PBProjectUpdater;
 import org.objectstyle.wolips.datasets.resources.IWOLipsModel;
-import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 /**
  * @author ulrich
  * 
@@ -107,35 +103,5 @@ public class ProjectFiles extends ProjectPatternsets {
 		if (findFolder.findMember(IWOLipsModel.PROJECT_FILE_NAME) != null)
 			return findFolder;
 		return null;
-	}
-	/**
-	 * cleans all tables
-	 */
-	public void cleanAllFileTables() {
-		ArrayList arrayList = new ArrayList();
-		WorkbenchUtilitiesPlugin.findFilesInResourceByName(arrayList, this
-				.getIProject(), IWOLipsModel.PROJECT_FILE_NAME);
-		for (int i = 0; i < arrayList.size(); i++) {
-			IResource resource = (IResource) arrayList.get(i);
-			PBProjectUpdater pbProjectUpdater = PBProjectUpdater
-					.instance(resource.getParent());
-			pbProjectUpdater.cleanTables();
-		}
-	}
-	/**
-	 *  
-	 */
-	public void addLocalFrameworkSectionToPBProject() {
-		try {
-			IResource pbproject = this.getIProject().findMember(
-					IWOLipsModel.PROJECT_FILE_NAME);
-			if (pbproject != null) {
-				PBProjectUpdater pbProjectUpdater = PBProjectUpdater
-						.instance(pbproject.getParent());
-				pbProjectUpdater.addLocalFrameworkSectionToPBProject();
-			}
-		} catch (Exception exception) {
-			DataSetsPlugin.getDefault().getPluginLogger().log(exception);
-		}
 	}
 }
