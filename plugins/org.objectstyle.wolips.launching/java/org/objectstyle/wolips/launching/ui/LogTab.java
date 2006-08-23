@@ -63,10 +63,14 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.ILaunchConfigurationTab;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.InputDialog;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
@@ -76,14 +80,21 @@ import org.eclipse.swt.widgets.TableItem;
 import org.objectstyle.wolips.launching.LaunchingMessages;
 import org.objectstyle.wolips.launching.LaunchingPlugin;
 import org.objectstyle.wolips.launching.delegates.WOJavaLocalApplicationLaunchConfigurationDelegate;
+import org.objectstyle.wolips.preferences.Preferences;
 import org.objectstyle.wolips.preferences.PreferencesMessages;
 
 /**
- * @author uli 
+ * @author uli
  */
 public class LogTab extends AbstractWOArgumentsTab {
 
 	private Table debugGroupsTable;
+
+	private Button addButton;
+
+	private Button removeButton;
+
+	private Button renameButton;
 
 	protected static final String EMPTY_STRING = ""; //$NON-NLS-1$
 
@@ -122,6 +133,12 @@ public class LogTab extends AbstractWOArgumentsTab {
 		gd2.heightHint = 250;
 		this.debugGroupsTable.setLayoutData(gd2);
 
+		this.debugGroupsTable.addListener(SWT.Selection, new Listener() {
+			public void handleEvent(Event e) {
+				handleSelection();
+			}
+		});
+
 		this.debugGroupsTable.addListener(SWT.CHECK, new Listener() {
 			public void handleEvent(Event e) {
 				setDirty(true);
@@ -129,8 +146,151 @@ public class LogTab extends AbstractWOArgumentsTab {
 			}
 		});
 
+		Composite buttons = new Composite(parent, SWT.NULL);
+		buttons.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
+		layout = new GridLayout();
+		layout.marginHeight = 0;
+		layout.marginWidth = 0;
+		buttons.setLayout(layout);
+
+		this.addButton = new Button(buttons, SWT.PUSH);
+		this.addButton.setText(PreferencesMessages
+				.getString("LaunchPreferencesPage.add")); //$NON-NLS-1$
+		data = new GridData();
+		data.horizontalAlignment = GridData.FILL;
+		data.heightHint = 20;
+		data.heightHint = Math.max(data.heightHint, this.addButton.computeSize(
+				SWT.DEFAULT, SWT.DEFAULT, true).y);
+		// convertVerticalDLUsToPixels(IDialogConstants.BUTTON_HEIGHT);
+		int widthHint = 100;
+		// convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
+		data.widthHint = Math.max(widthHint, this.addButton.computeSize(
+				SWT.DEFAULT, SWT.DEFAULT, true).x);
+		this.addButton.setLayoutData(data);
+		this.addButton.addListener(SWT.Selection, new Listener() {
+			public void handleEvent(Event e) {
+				addLaunchGroup();
+			}
+		});
+
+		this.removeButton = new Button(buttons, SWT.PUSH);
+		this.removeButton.setText(PreferencesMessages
+				.getString("LaunchPreferencesPage.remove")); //$NON-NLS-1$
+		data = new GridData();
+		data.horizontalAlignment = GridData.FILL;
+		data.heightHint = 20;
+		data.heightHint = Math.max(data.heightHint, this.removeButton
+				.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).y);
+		// Dialog.convertVerticalDLUsToPixels(new FontMetrics(),
+		// IDialogConstants.BUTTON_HEIGHT);
+		widthHint = 100;
+		// Dialog.convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
+		data.widthHint = Math.max(widthHint, this.removeButton.computeSize(
+				SWT.DEFAULT, SWT.DEFAULT, true).x);
+		this.removeButton.setLayoutData(data);
+		this.removeButton.setEnabled(false);
+		this.removeButton.addListener(SWT.Selection, new Listener() {
+			public void handleEvent(Event e) {
+				removeLaunchGroup();
+			}
+		});
+
+		this.renameButton = new Button(buttons, SWT.PUSH);
+		this.renameButton.setText(PreferencesMessages
+				.getString("LaunchPreferencesPage.change")); //$NON-NLS-1$
+		data = new GridData();
+		data.horizontalAlignment = GridData.FILL;
+		data.heightHint = 20;
+		data.heightHint = Math.max(data.heightHint, this.renameButton
+				.computeSize(SWT.DEFAULT, SWT.DEFAULT, true).y);
+
+		// Dialog.convertVerticalDLUsToPixels(new FontMetrics(),
+		// IDialogConstants.BUTTON_HEIGHT);
+		widthHint = 100;
+		// Dialog.convertHorizontalDLUsToPixels(IDialogConstants.BUTTON_WIDTH);
+		data.widthHint = Math.max(widthHint, this.renameButton.computeSize(
+				SWT.DEFAULT, SWT.DEFAULT, true).x);
+		this.renameButton.setLayoutData(data);
+		this.renameButton.setEnabled(false);
+		this.renameButton.addListener(SWT.Selection, new Listener() {
+			public void handleEvent(Event e) {
+				renameLaunchGroup();
+			}
+		});
+
 		Dialog.applyDialogFont(parent);
 		this.setControl(parent);
+	}
+
+	protected void removeLaunchGroup() {
+
+		int[] selection = this.debugGroupsTable.getSelectionIndices();
+		this.debugGroupsTable.remove(selection);
+		if (selection == null) {
+			return;
+		}
+		setDirty(true);
+		this.updateLaunchConfigurationDialog();
+	}
+
+	protected void renameLaunchGroup() {
+		int[] selection = this.debugGroupsTable.getSelectionIndices();
+		if (selection.length != 1)
+			return;
+		int index = selection[0];
+		TableItem item = this.debugGroupsTable.getItem(index);
+		String oldValue = item.getText();
+		InputDialog launchGroupDialog = new InputDialog(
+				getShell(),
+				oldValue
+						+ " " + PreferencesMessages.getString("LaunchPreferencesPage.enterArgumentShort"), Preferences.getString("IgnorePreferencePage.enterPatternLong"), oldValue, null); //$NON-NLS-1$ //$NON-NLS-2$
+		launchGroupDialog.open();
+		if (launchGroupDialog.getReturnCode() != Window.OK)
+			return;
+		String newValue = launchGroupDialog.getValue();
+		if (this.itemExist(newValue)) {
+			return;
+		}
+		item.setText(newValue);
+		setDirty(true);
+		this.updateLaunchConfigurationDialog();
+	}
+
+	protected void addLaunchGroup() {
+		InputDialog parameterDialog = new InputDialog(
+				getShell(),
+				PreferencesMessages
+						.getString("LaunchPreferencesPage.enterParameterShort"), Preferences.getString("IgnorePreferencePage.enterPatternLong"), null, null); //$NON-NLS-1$ //$NON-NLS-2$
+		parameterDialog.open();
+		if (parameterDialog.getReturnCode() != Window.OK)
+			return;
+		String parameter = parameterDialog.getValue();
+		if (parameter.equals(""))
+			return;
+		// Check if the item already exists
+		if (this.itemExist(parameter)) {
+			return;
+		}
+		TableItem item = new TableItem(this.debugGroupsTable, SWT.NONE);
+		item.setText(parameter);
+		item.setChecked(true);
+		setDirty(true);
+		this.updateLaunchConfigurationDialog();
+	}
+
+	private boolean itemExist(String item) {
+		TableItem[] items = this.debugGroupsTable.getItems();
+		for (int i = 0; i < items.length; i++) {
+			if (items[i].getText().equals(item)) {
+				MessageDialog
+						.openWarning(
+								getShell(),
+								PreferencesMessages
+										.getString("LaunchPreferencesPage.parameterExistsShort"), Preferences.getString("IgnorePreferencePage.patternExistsLong")); //$NON-NLS-1$ //$NON-NLS-2$
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private void fillDebugGroupsTable(String aString) {
@@ -229,6 +389,16 @@ public class LogTab extends AbstractWOArgumentsTab {
 	protected void updateLaunchConfigurationDialog() {
 		super.updateLaunchConfigurationDialog();
 		this.getControl().update();
+	}
+
+	protected void handleSelection() {
+		if (this.debugGroupsTable.getSelectionCount() > 0) {
+			this.removeButton.setEnabled(true);
+			this.renameButton.setEnabled(true);
+		} else {
+			this.removeButton.setEnabled(false);
+			this.renameButton.setEnabled(false);
+		}
 	}
 
 }
