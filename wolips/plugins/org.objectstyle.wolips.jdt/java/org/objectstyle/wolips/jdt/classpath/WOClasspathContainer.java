@@ -166,13 +166,9 @@ public final class WOClasspathContainer implements IClasspathContainer {
 								IClasspathAttribute javadoc[] = new IClasspathAttribute[0];
 								if (framework.indexOf("Java") == 0) {
 									javadoc = new IClasspathAttribute[1];
-									javadoc = new IClasspathAttribute[1];
 									String referenceApiString = VariablesPlugin.getDefault().getReferenceApiAsJavaDocCompatibleString();
 									if(referenceApiString != null) {
-										javadoc[0] = JavaCore
-										.newClasspathAttribute(
-												IClasspathAttribute.JAVADOC_LOCATION_ATTRIBUTE_NAME,
-												referenceApiString);
+										javadoc[0] = JavaCore.newClasspathAttribute(IClasspathAttribute.JAVADOC_LOCATION_ATTRIBUTE_NAME, referenceApiString);
 									}
 								}
 								IClasspathEntry entry = JavaCore

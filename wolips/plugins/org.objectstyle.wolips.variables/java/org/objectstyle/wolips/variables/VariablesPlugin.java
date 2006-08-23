@@ -211,8 +211,8 @@ public class VariablesPlugin extends AbstractCorePlugin {
 		String osName = System.getProperty("os.name").toLowerCase();
 		if(osName.indexOf("windows") >= 0) {
 			referenceApiString = referenceApiString.replace('\\', '/');
-			referenceApiString = "file:///" + referenceApiString;
 		}
+		referenceApiString = "file://" + referenceApiString;
 		return referenceApiString;
 	}
 
