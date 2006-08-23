@@ -69,6 +69,8 @@ public class EditorsPlugin extends AbstractWOLipsUIPlugin {
 
 	public static String ComponentEditorID = "org.objectstyle.wolips.componenteditor.ComponentEditor";
 
+	public static String WOBuilderID = "org.objectstyle.wolips.editors.editor.wobuilder";
+
 	/**
 	 * The constructor.
 	 */

@@ -61,6 +61,12 @@
                 categoryId="org.objectstyle.wolips.componenteditor.componenteditorcommands"
                 id="org.objectstyle.wolips.componenteditor.editors.toapi">
         </command>
+        <command
+                name="Switch to WOBuilder"
+                description="Switch to WOBuilder"
+                categoryId="org.objectstyle.wolips.componenteditor.componenteditorcommands"
+                id="org.objectstyle.wolips.componenteditor.editors.towobuilder">
+        </command>
     </extension>
     <extension point="org.eclipse.ui.bindings">
 		<key
@@ -88,6 +94,11 @@
         		contextId="org.eclipse.ui.contexts.window"
         		schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
         		sequence="M1+M3+5"/>
+		<key
+        		commandId="org.objectstyle.wolips.componenteditor.editors.towobuilder"
+        		contextId="org.eclipse.ui.contexts.window"
+        		schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+        		sequence="M1+M3+6"/>
 	</extension>
 	
 	<extension point = "org.eclipse.ui.editorActions">
@@ -100,6 +111,12 @@
  				<separator name="group1"/>
  				<separator name="group2"/>
 		  </menu>
+         <action
+               class="org.objectstyle.wolips.componenteditor.editormenu.SwitchToWOBuilderActionDelegate"
+               definitionId="org.objectstyle.wolips.componenteditor.editors.towobuilder"
+               id="org.objectstyle.wolips.componenteditor.editors.switchtowobuilder"
+               label="Switch to WOBuilder"
+               menubarPath="navigate/org.objectstyle.wolips.componenteditor.navigateMenuContribution/group1"/>
          <action
                class="org.objectstyle.wolips.componenteditor.editormenu.SwitchToApiEditorActionDelegate"
                definitionId="org.objectstyle.wolips.componenteditor.editors.toapi"
@@ -140,6 +157,12 @@
  				<separator name="group1"/>
  				<separator name="group2"/>
 		  </menu>
+         <action
+               class="org.objectstyle.wolips.componenteditor.editormenu.SwitchToWOBuilderActionDelegate"
+               definitionId="org.objectstyle.wolips.componenteditor.editors.towobuilder"
+               id="org.objectstyle.wolips.javaeditor.editors.switchtowobuilder"
+               label="Switch to WOBuilder"
+               menubarPath="navigate/org.objectstyle.wolips.javaeditor.navigateMenuContribution/group1"/>
          <action
                class="org.objectstyle.wolips.componenteditor.editormenu.SwitchToApiEditorActionDelegate"
                definitionId="org.objectstyle.wolips.componenteditor.editors.toapi"
