@@ -60,7 +60,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.objectstyle.wolips.builder.BuilderPlugin;
 import org.objectstyle.wolips.core.resources.builder.AbstractOldBuilder;
 import org.objectstyle.wolips.datasets.adaptable.Project;
-import org.objectstyle.wolips.datasets.listener.PatternsetDeltaVisitor;
 
 /**
  * @author ulrich
