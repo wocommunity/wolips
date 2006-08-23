@@ -62,8 +62,6 @@ import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.ILaunchConfigurationTab;
@@ -93,10 +91,7 @@ import org.objectstyle.wolips.preferences.Preferences;
 import org.objectstyle.wolips.preferences.PreferencesMessages;
 
 /**
- * @author uli To change this generated comment edit the template variable
- *         "typecomment": Window>Preferences>Java>Templates. To enable and
- *         disable the creation of type comments go to
- *         Window>Preferences>Java>Code Generation.
+ * @author uli
  */
 public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 
@@ -157,7 +152,7 @@ public class CommonWOArgumentsTab extends AbstractWOArgumentsTab {
 
 		this.includeTable.addListener(SWT.CHECK, new Listener() {
 			public void handleEvent(Event e) {
-setDirty(true);
+				setDirty(true);
 				updateLaunchConfigurationDialog();
 			}
 		});
@@ -245,8 +240,10 @@ setDirty(true);
 		for (int i = 0; i < launchInfoArray.length; i++) {
 			ILaunchInfo launchInfo = launchInfoArray[i];
 			TableItem item = new TableItem(this.includeTable, SWT.NONE);
-			item.setText(StringUtilities.toCommandlineParameterFormat(
-					launchInfo.getParameter(), launchInfo.getArgument(), false));
+			item
+					.setText(StringUtilities.toCommandlineParameterFormat(
+							launchInfo.getParameter(),
+							launchInfo.getArgument(), false));
 			this.allParameter.add(launchInfo.getParameter());
 			this.allArguments.add(launchInfo.getArgument());
 			item.setChecked(launchInfo.isEnabled());
@@ -273,16 +270,8 @@ setDirty(true);
 		if (parameter.equals("") || argument.equals(""))
 			return; //$NON-NLS-1$
 		// Check if the item already exists
-		TableItem[] items = this.includeTable.getItems();
-		for (int i = 0; i < items.length; i++) {
-			if (items[i].getText(1).equals(parameter)) {
-				MessageDialog
-						.openWarning(
-								getShell(),
-								PreferencesMessages
-										.getString("LaunchPreferencesPage.parameterExistsShort"), Preferences.getString("IgnorePreferencePage.patternExistsLong")); //$NON-NLS-1$ //$NON-NLS-2$
-				return;
-			}
+		if (this.itemExist(parameter)) {
+			return;
 		}
 		TableItem item = new TableItem(this.includeTable, SWT.NONE);
 		item.setText(StringUtilities.toCommandlineParameterFormat(parameter,
@@ -292,6 +281,21 @@ setDirty(true);
 		item.setChecked(true);
 		setDirty(true);
 		this.updateLaunchConfigurationDialog();
+	}
+
+	private boolean itemExist(String item) {
+		TableItem[] items = this.includeTable.getItems();
+		for (int i = 0; i < items.length; i++) {
+			if (items[i].getText(1).equals(item)) {
+				MessageDialog
+						.openWarning(
+								getShell(),
+								PreferencesMessages
+										.getString("LaunchPreferencesPage.parameterExistsShort"), Preferences.getString("IgnorePreferencePage.patternExistsLong")); //$NON-NLS-1$ //$NON-NLS-2$
+				return true;
+			}
+		}
+		return false;
 	}
 
 	protected void removeIgnore() {
@@ -322,10 +326,12 @@ setDirty(true);
 			return;
 		int index = selection[0];
 		String parameter = (String) this.allParameter.elementAt(index);
-		InputDialog argumentDialog = new InputDialog(
-				getShell(),
-				parameter
-						+ " " + PreferencesMessages.getString("LaunchPreferencesPage.enterArgumentShort"), Preferences.getString("IgnorePreferencePage.enterPatternLong"), (String) this.allArguments.elementAt(index), null); //$NON-NLS-1$ //$NON-NLS-2$
+		InputDialog argumentDialog = new InputDialog(getShell(), parameter
+				+ " "
+				+ PreferencesMessages
+						.getString("LaunchPreferencesPage.enterArgumentShort"),
+				Preferences.getString("IgnorePreferencePage.enterPatternLong"),
+				(String) this.allArguments.elementAt(index), null);
 		argumentDialog.open();
 		if (argumentDialog.getReturnCode() != Window.OK)
 			return;
@@ -445,27 +451,27 @@ setDirty(true);
 			String path = config.getAttribute(
 					IJavaLaunchConfigurationConstants.ATTR_PROJECT_NAME,
 					(String) null);
-			IPath aPath = null;
-			if (path != null) {
-				aPath = new Path(path);
-			}
-			IResource res = ResourcesPlugin.getWorkspace().getRoot()
+			IResource resource = ResourcesPlugin.getWorkspace().getRoot()
 					.findMember(path);
-			if (res instanceof IContainer && res.exists()) {
-				IResource aDistRes = ((IContainer) res).findMember("dist");
-				IResource aRes;
-				if (aDistRes instanceof IContainer && aDistRes.exists())
-					aRes = ((IContainer) aDistRes).findMember(aPath.toString()
+			if (resource != null && resource instanceof IContainer
+					&& resource.exists()) {
+				IResource distFolder = ((IContainer) resource)
+						.findMember("dist");
+				IResource product;
+				if (distFolder instanceof IContainer && distFolder.exists())
+					product = ((IContainer) distFolder).findMember(path
+							.toString()
 							+ ".woa");
 				else
-					aRes = ((IContainer) res).findMember(aPath.toString()
+					product = ((IContainer) resource).findMember(path
+							.toString()
 							+ ".woa");
-				if (aRes != null) {
-					if (aRes instanceof IContainer && aRes.exists()) {
+				if (product != null) {
+					if (product instanceof IContainer && product.exists()) {
 						config
 								.setAttribute(
 										IJavaLaunchConfigurationConstants.ATTR_WORKING_DIRECTORY,
-										((IContainer) aRes).getFullPath()
+										((IContainer) product).getFullPath()
 												.toString().substring(1));
 					}
 				}
