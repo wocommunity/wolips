@@ -662,7 +662,7 @@ public class ParserTokenManager implements ParserConstants {
 					input_stream.backup(1);
 					error_after = curPos <= 1 ? "" : input_stream.GetImage();
 				}
-				throw new TokenMgrError(EOFSeen, curLexState, error_line,
+				throw new TokenMgrError(EOFSeen, error_line,
 						error_column, error_after, curChar,
 						TokenMgrError.LEXICAL_ERROR);
 			}
