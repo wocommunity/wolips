@@ -90,6 +90,7 @@ public class DotXcodeBuilder implements IDeltaBuilder, ICleanBuilder {
 	private XcodeProjProject myXcodeProjProject;
 
 	public DotXcodeBuilder() {
+		super();
 	}
 
 	public boolean buildStarted(int _kind, Map _args,
