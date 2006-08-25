@@ -359,8 +359,4 @@ public class Parser implements ParserConstants {
 		}
 		return new ParseException(token, exptokseq, tokenImage);
 	}
-	final public void enable_tracing() {
-	}
-	final public void disable_tracing() {
-	}
 }
