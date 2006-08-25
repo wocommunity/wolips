@@ -21,7 +21,6 @@ Eclipse-LazyStart: true
 Export-Package: org.objectstyle.wolips.datasets,
  org.objectstyle.wolips.datasets.adaptable,
  org.objectstyle.wolips.datasets.internal,
- org.objectstyle.wolips.datasets.listener,
  org.objectstyle.wolips.datasets.pattern,
  org.objectstyle.wolips.datasets.project,
  org.objectstyle.wolips.datasets.resources
