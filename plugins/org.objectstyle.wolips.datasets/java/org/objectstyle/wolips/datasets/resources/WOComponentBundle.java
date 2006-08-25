@@ -85,6 +85,6 @@ public final class WOComponentBundle extends WOLipsResource implements
 		WorkbenchUtilitiesPlugin.open((IFile) ((IFolder) this
 				.getCorrespondingResource()).findMember(fileName + "."
 				+ WOLipsModel.WOCOMPONENT_WOD_EXTENSION),
-				"org.objectstyle.wolips.internal.wod.editor");
+				"org.objectstyle.wolips.componenteditor.ComponentEditor");
 	}
 }
