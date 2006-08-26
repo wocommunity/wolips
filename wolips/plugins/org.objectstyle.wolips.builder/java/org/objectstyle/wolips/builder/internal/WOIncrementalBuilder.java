@@ -120,23 +120,23 @@ public class WOIncrementalBuilder extends AbstractIncrementalProjectBuilder {
 		return result;
 	}
 
-	public void invokeOldBuilder(int kind, Map args, IProgressMonitor monitor,
-			IResourceDelta delta) throws CoreException {
-		if (null == monitor) {
-			monitor = new NullProgressMonitor();
+	public void invokeOldBuilder(int kind, Map args, IProgressMonitor progressMonitor,
+			IResourceDelta resourceDelta) throws CoreException {
+		IProgressMonitor subProgressMonitor = null;
+		if (null == progressMonitor) {
+			subProgressMonitor = new NullProgressMonitor();
 		}
-		monitor = new SubProgressMonitor(monitor, 100 * 1000);
+		else {
+		subProgressMonitor = new SubProgressMonitor(progressMonitor, 100 * 1000);
+		}
+		IResourceDelta delta = resourceDelta;
 		if (kind != IncrementalProjectBuilder.FULL_BUILD
 				&& !projectNeedsAnUpdate(delta)) {
-			monitor.done();
+			subProgressMonitor.done();
 		}
 		getLogger().debug("<incremental build>");
-		monitor.beginTask("building WebObjects layout ...", 100);
+		subProgressMonitor.beginTask("building WebObjects layout ...", 100);
 		try {
-			// if(delta != null)
-			// wird schon in projectNeedsAnUpdate() geprüft
-			// delta.accept(new PatternsetDeltaVisitor());
-			// _getLogger().debug(delta);
 			Project project = (Project) this.getProject().getAdapter(
 					Project.class);
 			boolean fullBuild = (null != delta)
@@ -159,43 +159,42 @@ public class WOIncrementalBuilder extends AbstractIncrementalProjectBuilder {
 			}
 			buildVisitor.reinitForNextBuild(project);
 			if (!fullBuild) {
-				monitor.subTask("checking directory structure ...");
+				subProgressMonitor.subTask("checking directory structure ...");
 				if (!buildVisitor._checkDirs()) {
 					delta = null;
-					monitor.worked(5);
+					subProgressMonitor.worked(5);
 				}
 			} else {
 				delta = null;
 				long t0 = System.currentTimeMillis();
-				delta = null;
 				IFolder buildFolder = getProject().getFolder("build");
-				monitor.subTask("scrubbing build folder ...");
+				subProgressMonitor.subTask("scrubbing build folder ...");
 				buildFolder.refreshLocal(IResource.DEPTH_INFINITE, null);
-				monitor.worked(1);
+				subProgressMonitor.worked(1);
 				getLogger().debug(
 						"refresh build folder took: "
 								+ (System.currentTimeMillis() - t0) + " ms");
 				t0 = System.currentTimeMillis();
 				buildFolder.delete(true, false, null);
-				monitor.worked(2);
+				subProgressMonitor.worked(2);
 				getLogger().debug(
 						"scrubbing build folder took: "
 								+ (System.currentTimeMillis() - t0) + " ms");
 				t0 = System.currentTimeMillis();
 				buildFolder.refreshLocal(IResource.DEPTH_INFINITE, null);
-				monitor.subTask("re-creating structure ...");
+				subProgressMonitor.subTask("re-creating structure ...");
 				buildVisitor._checkDirs();
-				monitor.worked(2);
+				subProgressMonitor.worked(2);
 				getLogger().debug(
 						"re-creating build folder took: "
 								+ (System.currentTimeMillis() - t0) + " ms");
 			}
-			monitor.subTask("creating Info.plist");
+			subProgressMonitor.subTask("creating Info.plist");
 			createInfoPlist();
-			monitor.worked(1);
+			subProgressMonitor.worked(1);
 			if ((null != delta)) {
 				getLogger().debug("<partial build>");
-				monitor.subTask("preparing partial build");
+				subProgressMonitor.subTask("preparing partial build");
 				long t0 = System.currentTimeMillis();
 				buildVisitor.resetCount();
 				delta.accept(buildVisitor, IResourceDelta.ALL_WITH_PHANTOMS);
@@ -204,10 +203,10 @@ public class WOIncrementalBuilder extends AbstractIncrementalProjectBuilder {
 								+ " delta nodes took: "
 								+ (System.currentTimeMillis() - t0) + " ms");
 				getLogger().debug("</partial build>");
-				monitor.worked(12);
+				subProgressMonitor.worked(12);
 			} else {
 				getLogger().debug("<full build>");
-				monitor.subTask("preparing full build");
+				subProgressMonitor.subTask("preparing full build");
 				long t0 = System.currentTimeMillis();
 				t0 = System.currentTimeMillis();
 				buildVisitor.resetCount();
@@ -217,20 +216,20 @@ public class WOIncrementalBuilder extends AbstractIncrementalProjectBuilder {
 								+ " project nodes took: "
 								+ (System.currentTimeMillis() - t0) + " ms");
 				getLogger().debug("</full build>");
-				monitor.worked(12);
+				subProgressMonitor.worked(12);
 			}
 			long t0 = System.currentTimeMillis();
-			buildVisitor.executeTasks(monitor);
+			buildVisitor.executeTasks(subProgressMonitor);
 			getLogger().debug(
 					"building structure took: "
 							+ (System.currentTimeMillis() - t0) + " ms");
 			t0 = System.currentTimeMillis();
-			monitor.subTask("copying classes");
-			jarBuild(delta, monitor, project);
+			subProgressMonitor.subTask("copying classes");
+			jarBuild(delta, subProgressMonitor, project);
 			getLogger().debug(
 					"copying classes took: "
 							+ (System.currentTimeMillis() - t0) + " ms");
-			monitor.done();
+			subProgressMonitor.done();
 		} catch (RuntimeException up) {
 			getLogger().log(up);
 			throw up;

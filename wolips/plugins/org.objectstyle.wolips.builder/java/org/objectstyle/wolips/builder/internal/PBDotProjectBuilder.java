@@ -175,7 +175,6 @@ public class PBDotProjectBuilder implements IDeltaBuilder, ICleanBuilder {
 		if (!Preferences.getPREF_WRITE_PB_DOT_PROJECT_ON_BUILD()) {
 			return false;
 		}
-		String extension = _resource.getFileExtension();
 		if (_kind == IResourceDelta.ADDED || _kind == IResourceDelta.CHANGED
 				|| _kind == IResourceDelta.REMOVED) {
 			IPBDotProjectOwner pbDotProjectOwner = this
@@ -196,26 +195,12 @@ public class PBDotProjectBuilder implements IDeltaBuilder, ICleanBuilder {
 
 	public boolean handleClassesDelta(IResourceDelta delta,
 			IProgressMonitor monitor, Map _buildCache) {
-		if (!Preferences.getPREF_WRITE_PB_DOT_PROJECT_ON_BUILD()) {
-			return false;
-		}
-		IResource resource = delta.getResource();
-		handleClasses(delta.getKind(), resource, monitor, _buildCache);
 		return false;
 	}
 
 	public void handleClasses(IResource _resource,
 			IProgressMonitor _progressMonitor, Map _buildCache) {
-		if (!Preferences.getPREF_WRITE_PB_DOT_PROJECT_ON_BUILD()) {
-			return;
-		}
-		handleClasses(IResourceDelta.ADDED, _resource, _progressMonitor,
-				_buildCache);
-	}
-
-	public boolean handleClasses(int _kind, IResource _resource,
-			IProgressMonitor _progressMonitor, Map _buildCache) {
-		return false;
+		//do nothing
 	}
 
 	public boolean handleWoappResourcesDelta(IResourceDelta delta,
@@ -223,8 +208,7 @@ public class PBDotProjectBuilder implements IDeltaBuilder, ICleanBuilder {
 		if (!Preferences.getPREF_WRITE_PB_DOT_PROJECT_ON_BUILD()) {
 			return false;
 		}
-		handleWoappResources(delta.getKind(), delta.getResource(), monitor,
-				_buildCache);
+		handleWoappResources(delta.getKind(), delta.getResource());
 		return false;
 	}
 
@@ -233,12 +217,10 @@ public class PBDotProjectBuilder implements IDeltaBuilder, ICleanBuilder {
 		if (!Preferences.getPREF_WRITE_PB_DOT_PROJECT_ON_BUILD()) {
 			return;
 		}
-		handleWoappResources(IResourceDelta.ADDED, _resource, _progressMonitor,
-				_buildCache);
+		handleWoappResources(IResourceDelta.ADDED, _resource);
 	}
 
-	public void handleWoappResources(int _kind, IResource resource,
-			IProgressMonitor monitor, Map _buildCache) {
+	public void handleWoappResources(int _kind, IResource resource) {
 		if (!Preferences.getPREF_WRITE_PB_DOT_PROJECT_ON_BUILD()) {
 			return;
 		}
