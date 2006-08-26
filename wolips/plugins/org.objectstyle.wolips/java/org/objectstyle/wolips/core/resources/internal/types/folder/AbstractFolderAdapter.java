@@ -142,13 +142,13 @@ public abstract class AbstractFolderAdapter extends AbstractResourceAdapter
 		}
 	}
 
-	public void markAsDerivated(IFolder folder, IProgressMonitor monitor)
+	public void markAsDerivated(IFolder folderToMarkAsDerivated, IProgressMonitor monitor)
 			throws CoreException {
-		if(!folder.exists()) {
+		if(!folderToMarkAsDerivated.exists()) {
 			return;
 		}
-		folder.setDerived(true);
-		IResource[] members = folder.members();
+		folderToMarkAsDerivated.setDerived(true);
+		IResource[] members = folderToMarkAsDerivated.members();
 		for (int i = 0; i < members.length; i++) {
 			IResource member = members[i];
 			if (member instanceof IFolder) {
