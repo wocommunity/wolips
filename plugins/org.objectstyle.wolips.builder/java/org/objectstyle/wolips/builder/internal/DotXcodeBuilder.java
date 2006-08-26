@@ -236,14 +236,17 @@ public class DotXcodeBuilder implements IDeltaBuilder, ICleanBuilder {
 
 	public void handleClasses(IResource _resource,
 			IProgressMonitor _progressMonitor, Map _buildCache) {
+		//do nothing
 	}
 
 	public void handleClasspath(IResource _resource,
 			IProgressMonitor _progressMonitor, Map _buildCache) {
+//		do nothing
 	}
 
 	public void handleOther(IResource _resource,
 			IProgressMonitor _progressMonitor, Map _buildCache) {
+//		do nothing
 	}
 
 	public void handleWebServerResources(IResource _resource,
