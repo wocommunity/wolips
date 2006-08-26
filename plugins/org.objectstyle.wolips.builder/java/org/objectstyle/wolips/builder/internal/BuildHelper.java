@@ -324,19 +324,19 @@ public abstract class BuildHelper extends ResourceUtilities implements
 	 * @param m
 	 * @throws CoreException
 	 */
-	public void executeTasks(IProgressMonitor m) throws CoreException {
-		m = new SubProgressMonitor(m, 41);
-		m.beginTask("building ...", _buildWork);
+	public void executeTasks(IProgressMonitor progressMonitor) throws CoreException {
+		SubProgressMonitor subProgressMonitor = new SubProgressMonitor(progressMonitor, 41);
+		subProgressMonitor.beginTask("building ...", _buildWork);
 		Iterator iter = _buildTasks.iterator();
 		while (iter.hasNext()) {
 			Buildtask thisTask = (Buildtask) iter.next();
-			thisTask.doWork(m);
-			m.worked(thisTask.amountOfWork());
-			if (m.isCanceled()) {
+			thisTask.doWork(subProgressMonitor);
+			subProgressMonitor.worked(thisTask.amountOfWork());
+			if (subProgressMonitor.isCanceled()) {
 				throw new OperationCanceledException();
 			}
 		}
-		m.done();
+		subProgressMonitor.done();
 	}
 
 	protected AbstractCorePlugin _getLogger() {
