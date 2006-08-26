@@ -116,7 +116,7 @@ public class ComponentEditorInput extends MultiEditorInput implements IPersistab
 			ComponentsPlugin.getDefault().log(e);
 			return null;
 		}
-		if (localizedComponentsLocateResult.getDotJava() == null || localizedComponentsLocateResult.getComponents() == null || localizedComponentsLocateResult.getComponents().length == 0) {
+		if (localizedComponentsLocateResult.getComponents() == null || localizedComponentsLocateResult.getComponents().length == 0) {
 			return null;
 		}
 		ComponentEditorInput input = create(localizedComponentsLocateResult);

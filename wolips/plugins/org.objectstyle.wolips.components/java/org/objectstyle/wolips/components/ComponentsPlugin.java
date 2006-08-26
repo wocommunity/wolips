@@ -66,6 +66,7 @@ import org.osgi.framework.BundleContext;
 public class ComponentsPlugin extends AbstractWOLipsUIPlugin {
 	// The shared instance.
 	private static ComponentsPlugin plugin;
+
 	/**
 	 * The constructor.
 	 */
@@ -87,6 +88,7 @@ public class ComponentsPlugin extends AbstractWOLipsUIPlugin {
 	public void stop(BundleContext context) throws Exception {
 		plugin = null;
 	}
+
 	/**
 	 * Returns the shared instance.
 	 */
@@ -103,8 +105,7 @@ public class ComponentsPlugin extends AbstractWOLipsUIPlugin {
 	 * @return the image descriptor
 	 */
 	public static ImageDescriptor getImageDescriptor(String path) {
-		return AbstractUIPlugin.imageDescriptorFromPlugin(
-				"org.objectstyle.wolips.components", path);
+		return AbstractUIPlugin.imageDescriptorFromPlugin("org.objectstyle.wolips.components", path);
 	}
-	
+
 }

@@ -5,8 +5,7 @@ import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IPersistableElement;
 import org.eclipse.ui.part.FileEditorInput;
 
-public class ComponentEditorFileEditorInput extends FileEditorInput implements
-		IPersistableElement {
+public class ComponentEditorFileEditorInput extends FileEditorInput implements IPersistableElement {
 
 	private ComponentEditorInput componentEditorInput;
 
@@ -18,15 +17,13 @@ public class ComponentEditorFileEditorInput extends FileEditorInput implements
 		return componentEditorInput;
 	}
 
-	public void setComponentEditorInput(
-			ComponentEditorInput componentEditorInput) {
+	public void setComponentEditorInput(ComponentEditorInput componentEditorInput) {
 		this.componentEditorInput = componentEditorInput;
 	}
 
 	public String getFactoryId() {
 		return this.componentEditorInput.getFactoryId();
 	}
-	
 
 	public void saveState(IMemento memento) {
 		this.componentEditorInput.saveState(memento);
