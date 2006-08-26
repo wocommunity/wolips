@@ -66,8 +66,7 @@ public class ComponentEditorInputFactory implements IElementFactory {
 
 	private static final String TAG_DISPLAY_WOO_PART_ON_REVEAL = "woo";
 
-	public static final String ID_FACTORY = ComponentEditorInputFactory.class
-			.getName();
+	public static final String ID_FACTORY = ComponentEditorInputFactory.class.getName();
 
 	public ComponentEditorInputFactory() {
 		super();
@@ -85,14 +84,12 @@ public class ComponentEditorInputFactory implements IElementFactory {
 		for (int i = 0; i < count; i++) {
 			editors[i] = memento.getString(TAG_EDITOR + i);
 			String fileName = memento.getString(TAG_INPUT + i);
-			IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(
-					new Path(fileName));
+			IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(fileName));
 			input[i] = new ComponentEditorFileEditorInput(file);
 		}
 
-		ComponentEditorInput componentEditorInput = new ComponentEditorInput(
-				editors, input);
-		for(int i = 0; i < input.length; i++) {
+		ComponentEditorInput componentEditorInput = new ComponentEditorInput(editors, input);
+		for (int i = 0; i < input.length; i++) {
 			input[i].setComponentEditorInput(componentEditorInput);
 		}
 		if (memento.getString(TAG_DISPLAY_API_PART_ON_REVEAL) != null) {
@@ -123,7 +120,8 @@ public class ComponentEditorInputFactory implements IElementFactory {
 			memento.putString(TAG_DISPLAY_WOD_PART_ON_REVEAL, "true");
 		} else if (input.isDisplayWooPartOnReveal()) {
 			memento.putString(TAG_DISPLAY_WOO_PART_ON_REVEAL, "true");
-		} if (input.isDisplayHtmlPartOnReveal()) {
+		}
+		if (input.isDisplayHtmlPartOnReveal()) {
 			memento.putString(TAG_DISPLAY_HTML_PART_ON_REVEAL, "true");
 		}
 	}

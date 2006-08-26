@@ -49,5 +49,6 @@ package org.objectstyle.wolips.components.editor;
 public interface IEmbeddedEditor {
 
 	public abstract void initEditorInteraction(EditorInteraction editorInteraction);
+
 	public abstract EditorInteraction getEditorInteraction();
 }

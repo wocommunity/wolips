@@ -58,8 +58,7 @@ public class EditorInteraction {
 		super();
 	}
 
-	public void setWebObjectTagListener(
-			IWebobjectTagListener webobjectTagListener) {
+	public void setWebObjectTagListener(IWebobjectTagListener webobjectTagListener) {
 		this.webObjectTagListener = webobjectTagListener;
 	}
 
@@ -71,8 +70,7 @@ public class EditorInteraction {
 		return htmlDocumentProvider;
 	}
 
-	public void setHtmlDocumentProvider(
-			IHtmlDocumentProvider htmlDocumentProvider) {
+	public void setHtmlDocumentProvider(IHtmlDocumentProvider htmlDocumentProvider) {
 		this.htmlDocumentProvider = htmlDocumentProvider;
 	}
 
