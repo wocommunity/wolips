@@ -34,9 +34,28 @@
                <describer class="org.eclipse.core.internal.content.TextContentDescriber"/>
       </content-type>
       <content-type
+            base-type="org.eclipse.core.runtime.text"
             file-names="index.eomodeld"
             id="indexdoteomodeld"
-            name="EOModel"
+            name="EOModel index"
+            priority="normal"/>
+      <content-type
+            base-type="org.eclipse.core.runtime.text"
+            file-extensions="fspec"
+            id="fspec"
+            name="EOModel Fetch Specification"
+            priority="normal"/>
+      <content-type
+            base-type="org.eclipse.core.runtime.text"
+            file-extensions="storedProcedure"
+            id="storedProcedure"
+            name="EOModel Stored Procedure"
+            priority="normal"/>
+      <content-type
+            base-type="org.eclipse.core.runtime.text"
+            file-extensions="eomodelgroup"
+            id="eomodelgroup"
+            name="EOModel Group"
             priority="normal"/>
       <content-type
             base-type="org.eclipse.core.runtime.text"
@@ -108,13 +127,22 @@
             />
       </editor>
    	  <editor
-            default="true"
+            default="false"
             icon="icons/editors/eomodeler.gif"
             id="org.objectstyle.wolips.editors.editor.eomodeld"
             launcher="org.objectstyle.wolips.editors.launcher.SystemEditorLauncher"
             name="EOModeler">
 			<contentTypeBinding
                contentTypeId="org.objectstyle.wolips.editors.indexdoteomodeld"
+            />
+			<contentTypeBinding
+               contentTypeId="org.objectstyle.wolips.editors.fspec"
+            />
+			<contentTypeBinding
+               contentTypeId="org.objectstyle.wolips.editors.storedProcedure"
+            />
+			<contentTypeBinding
+               contentTypeId="org.objectstyle.wolips.editors.eomodelgroup"
             />
       </editor>
       <editor

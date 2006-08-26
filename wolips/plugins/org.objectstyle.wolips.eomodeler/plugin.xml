@@ -8,11 +8,22 @@
             class="org.objectstyle.wolips.eomodeler.editors.EOModelEditor"
             contributorClass="org.objectstyle.wolips.eomodeler.editors.EOModelEditorContributor"
             default="true"
-            extensions="eomodeld, fspec, storedProcedure, eomodelgroup"
             icon="icons/eoModel.gif"
             id="org.objectstyle.wolips.eomodeler.editors.EOModelEditor"
             matchingStrategy="org.objectstyle.wolips.eomodeler.editors.EOModelMatchingStrategy"
             name="Entity Modeler">
+			<contentTypeBinding
+               contentTypeId="org.objectstyle.wolips.editors.indexdoteomodeld"
+            />
+			<contentTypeBinding
+               contentTypeId="org.objectstyle.wolips.editors.fspec"
+            />
+			<contentTypeBinding
+               contentTypeId="org.objectstyle.wolips.editors.storedProcedure"
+            />
+			<contentTypeBinding
+               contentTypeId="org.objectstyle.wolips.editors.eomodelgroup"
+            />
       </editor>
    </extension>
    <extension
@@ -445,7 +456,17 @@
                label="New Database Config"
                style="push"
                toolbarPath="/Normal"
-               tooltip="New Database Config"/>
+               tooltip="New Database Config">
+               <enablement>
+                   <or>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOModel"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.IEOEntityRelative"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOStoredProcedure"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOArgument"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EODatabaseConfig"/>
+                   </or>
+               </enablement>
+         </action>
          <action
                class="org.objectstyle.wolips.eomodeler.actions.GenerateSQLAction"
                icon="icons/sql.gif"
@@ -453,7 +474,17 @@
                label="Generate SQL"
                style="push"
                toolbarPath="/Normal"
-               tooltip="Generate SQL"/>
+               tooltip="Generate SQL">
+               <enablement>
+                   <or>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOModel"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.IEOEntityRelative"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOStoredProcedure"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOArgument"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EODatabaseConfig"/>
+                   </or>
+               </enablement>
+         </action>
          <action
                class="org.objectstyle.wolips.eomodeler.actions.VerifyAction"
                icon="icons/verify.gif"
@@ -461,7 +492,17 @@
                label="Verify Model"
                style="push"
                toolbarPath="/Normal"
-               tooltip="Verify Model"/>
+               tooltip="Verify Model">
+               <enablement>
+                   <or>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOModel"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.IEOEntityRelative"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOStoredProcedure"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOArgument"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EODatabaseConfig"/>
+                   </or>
+               </enablement>
+         </action>
          <action
                class="org.objectstyle.wolips.eomodeler.actions.SubclassEntityAction"
                icon="icons/subclassEntity.gif"
@@ -469,7 +510,16 @@
                label="Subclass Entity"
                style="push"
                toolbarPath="/Normal"
-               tooltip="Subclass Entity"/>
+               tooltip="Subclass Entity">
+               <enablement>
+                   <or>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.IEOEntityRelative"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOStoredProcedure"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOArgument"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EODatabaseConfig"/>
+                   </or>
+               </enablement>
+         </action>
          <action
                class="org.objectstyle.wolips.eomodeler.actions.FlattenAction"
                icon="icons/flattenRelationship.gif"
@@ -477,7 +527,16 @@
                label="Flatten"
                style="push"
                toolbarPath="/Normal"
-               tooltip="Flatten"/>
+               tooltip="Flatten">
+               <enablement>
+                   <or>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.IEOEntityRelative"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOStoredProcedure"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOArgument"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EODatabaseConfig"/>
+                   </or>
+               </enablement>
+         </action>
          <action
                class="org.objectstyle.wolips.eomodeler.actions.NewArgumentAction"
                icon="icons/newArgument.gif"
@@ -485,7 +544,16 @@
                label="New Argument"
                style="push"
                toolbarPath="/Normal"
-               tooltip="New Argument"/>
+               tooltip="New Argument">
+               <enablement>
+                   <or>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.IEOEntityRelative"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOStoredProcedure"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOArgument"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EODatabaseConfig"/>
+                   </or>
+               </enablement>
+         </action>
          <action
                class="org.objectstyle.wolips.eomodeler.actions.NewStoredProcedureAction"
                icon="icons/newStoredProcedure.gif"
@@ -493,7 +561,16 @@
                label="New Stored Procedure"
                style="push"
                toolbarPath="/Normal"
-               tooltip="New Stored Procedure"/>
+               tooltip="New Stored Procedure">
+               <enablement>
+                   <or>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.IEOEntityRelative"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOStoredProcedure"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOArgument"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EODatabaseConfig"/>
+                   </or>
+               </enablement>
+         </action>
          <action
                class="org.objectstyle.wolips.eomodeler.actions.NewFetchSpecAction"
                icon="icons/newFetchSpecification.gif"
@@ -501,7 +578,16 @@
                label="New Fetch Specification"
                style="push"
                toolbarPath="/Normal"
-               tooltip="New Fetch Specification"/>
+               tooltip="New Fetch Specification">
+               <enablement>
+                   <or>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.IEOEntityRelative"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOStoredProcedure"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOArgument"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EODatabaseConfig"/>
+                   </or>
+               </enablement>
+         </action>
          <action
                class="org.objectstyle.wolips.eomodeler.actions.NewRelationshipAction"
                icon="icons/newRelationship.gif"
@@ -509,7 +595,16 @@
                label="New Relationship"
                style="push"
                toolbarPath="/Normal"
-               tooltip="New Relationship"/>
+               tooltip="New Relationship">
+               <enablement>
+                   <or>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.IEOEntityRelative"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOStoredProcedure"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOArgument"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EODatabaseConfig"/>
+                   </or>
+               </enablement>
+         </action>
          <action
                class="org.objectstyle.wolips.eomodeler.actions.NewAttributeAction"
                icon="icons/newAttribute.gif"
@@ -518,6 +613,14 @@
                style="push"
                toolbarPath="/Normal"
                tooltip="New Attribute">
+               <enablement>
+                   <or>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.IEOEntityRelative"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOStoredProcedure"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOArgument"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EODatabaseConfig"/>
+                   </or>
+               </enablement>
          </action>
          <action
                class="org.objectstyle.wolips.eomodeler.actions.NewEntityAction"
@@ -526,7 +629,17 @@
                label="New Entity"
                style="push"
                toolbarPath="/Normal"
-               tooltip="New Entity"/>
+               tooltip="New Entity">
+               <enablement>
+                   <or>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOModel"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.IEOEntityRelative"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOStoredProcedure"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EOArgument"/>
+                       <objectClass name="org.objectstyle.wolips.eomodeler.model.EODatabaseConfig"/>
+                   </or>
+               </enablement>
+         </action>
       </actionSet>
    </extension>
    <extension
