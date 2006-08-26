@@ -3,7 +3,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0
  * 
- * Copyright (c) 2005 The ObjectStyle Group and individual authors of the
+ * Copyright (c) 2005 - 2006 The ObjectStyle Group and individual authors of the
  * software. All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -63,7 +63,6 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import org.objectstyle.wolips.componenteditor.ComponenteditorPlugin;
 import org.objectstyle.wolips.components.input.ComponentEditorInput;
 
-
 /**
  * @author uli
  */
@@ -74,21 +73,14 @@ public class ComponentEditor extends ComponentEditorPart implements IGotoMarker,
 	}
 
 	public void init(IEditorSite site, IEditorInput editorInput) throws PartInitException {
-		if(editorInput instanceof ComponentEditorInput) {
+		if (editorInput instanceof ComponentEditorInput) {
 			super.init(site, editorInput);
 			return;
 		}
-		FileEditorInput fileEditorInput = (FileEditorInput)editorInput;
+		FileEditorInput fileEditorInput = (FileEditorInput) editorInput;
 		IFile file = fileEditorInput.getFile();
 		String extension = file.getFileExtension();
 		ComponentEditorInput input = null;
-		if (extension.equals("java")) {
-			try {
-				input = ComponentEditorInput.createWithDotJava(file);
-			} catch (CoreException e) {
-				ComponenteditorPlugin.getDefault().log(e);
-			}
-		}
 		if (extension.equals("html")) {
 			try {
 				input = ComponentEditorInput.createWithDotHtml(file);
@@ -120,139 +112,138 @@ public class ComponentEditor extends ComponentEditorPart implements IGotoMarker,
 		super.init(site, input);
 	}
 
-
 	public IDocumentProvider getDocumentProvider() {
 		IEditorPart editorPart = this.getActiveEditor();
-		if(editorPart == null || !(this.getActiveEditor() instanceof ITextEditor)) {
+		if (editorPart == null || !(this.getActiveEditor() instanceof ITextEditor)) {
 			return null;
 		}
-		ITextEditor textEditor = (ITextEditor)editorPart;
+		ITextEditor textEditor = (ITextEditor) editorPart;
 		return textEditor.getDocumentProvider();
 	}
 
 	public void close(boolean save) {
 		IEditorPart editorPart = this.getActiveEditor();
-		if(editorPart == null || !(this.getActiveEditor() instanceof ITextEditor)) {
+		if (editorPart == null || !(this.getActiveEditor() instanceof ITextEditor)) {
 			return;
 		}
-		ITextEditor textEditor = (ITextEditor)editorPart;
+		ITextEditor textEditor = (ITextEditor) editorPart;
 		textEditor.close(save);
 	}
 
 	public boolean isEditable() {
 		IEditorPart editorPart = this.getActiveEditor();
-		if(editorPart == null || !(this.getActiveEditor() instanceof ITextEditor)) {
+		if (editorPart == null || !(this.getActiveEditor() instanceof ITextEditor)) {
 			return false;
 		}
-		ITextEditor textEditor = (ITextEditor)editorPart;
+		ITextEditor textEditor = (ITextEditor) editorPart;
 		return textEditor.isEditable();
 	}
 
 	public void doRevertToSaved() {
 		IEditorPart editorPart = this.getActiveEditor();
-		if(editorPart == null || !(this.getActiveEditor() instanceof ITextEditor)) {
+		if (editorPart == null || !(this.getActiveEditor() instanceof ITextEditor)) {
 			return;
 		}
-		ITextEditor textEditor = (ITextEditor)editorPart;
+		ITextEditor textEditor = (ITextEditor) editorPart;
 		textEditor.doRevertToSaved();
 	}
 
 	public void setAction(String actionID, IAction action) {
 		IEditorPart editorPart = this.getActiveEditor();
-		if(editorPart == null || !(this.getActiveEditor() instanceof ITextEditor)) {
+		if (editorPart == null || !(this.getActiveEditor() instanceof ITextEditor)) {
 			return;
 		}
-		ITextEditor textEditor = (ITextEditor)editorPart;
+		ITextEditor textEditor = (ITextEditor) editorPart;
 		textEditor.setAction(actionID, action);
 	}
 
 	public IAction getAction(String actionId) {
 		IEditorPart editorPart = this.getActiveEditor();
-		if(editorPart == null || !(this.getActiveEditor() instanceof ITextEditor)) {
+		if (editorPart == null || !(this.getActiveEditor() instanceof ITextEditor)) {
 			return null;
 		}
-		ITextEditor textEditor = (ITextEditor)editorPart;
+		ITextEditor textEditor = (ITextEditor) editorPart;
 		return textEditor.getAction(actionId);
 	}
 
 	public void setActionActivationCode(String actionId, char activationCharacter, int activationKeyCode, int activationStateMask) {
 		IEditorPart editorPart = this.getActiveEditor();
-		if(editorPart == null || !(this.getActiveEditor() instanceof ITextEditor)) {
+		if (editorPart == null || !(this.getActiveEditor() instanceof ITextEditor)) {
 			return;
 		}
-		ITextEditor textEditor = (ITextEditor)editorPart;
+		ITextEditor textEditor = (ITextEditor) editorPart;
 		textEditor.setActionActivationCode(actionId, activationCharacter, activationKeyCode, activationStateMask);
 	}
 
 	public void removeActionActivationCode(String actionId) {
 		IEditorPart editorPart = this.getActiveEditor();
-		if(editorPart == null || !(this.getActiveEditor() instanceof ITextEditor)) {
+		if (editorPart == null || !(this.getActiveEditor() instanceof ITextEditor)) {
 			return;
 		}
-		ITextEditor textEditor = (ITextEditor)editorPart;
+		ITextEditor textEditor = (ITextEditor) editorPart;
 		textEditor.removeActionActivationCode(actionId);
 	}
 
 	public boolean showsHighlightRangeOnly() {
 		IEditorPart editorPart = this.getActiveEditor();
-		if(editorPart == null || !(this.getActiveEditor() instanceof ITextEditor)) {
+		if (editorPart == null || !(this.getActiveEditor() instanceof ITextEditor)) {
 			return false;
 		}
-		ITextEditor textEditor = (ITextEditor)editorPart;
+		ITextEditor textEditor = (ITextEditor) editorPart;
 		return textEditor.showsHighlightRangeOnly();
 	}
 
 	public void showHighlightRangeOnly(boolean showHighlightRangeOnly) {
 		IEditorPart editorPart = this.getActiveEditor();
-		if(editorPart == null || !(this.getActiveEditor() instanceof ITextEditor)) {
+		if (editorPart == null || !(this.getActiveEditor() instanceof ITextEditor)) {
 			return;
 		}
-		ITextEditor textEditor = (ITextEditor)editorPart;
+		ITextEditor textEditor = (ITextEditor) editorPart;
 		textEditor.showHighlightRangeOnly(showHighlightRangeOnly);
 	}
 
 	public void setHighlightRange(int offset, int length, boolean moveCursor) {
 		IEditorPart editorPart = this.getActiveEditor();
-		if(editorPart == null || !(this.getActiveEditor() instanceof ITextEditor)) {
+		if (editorPart == null || !(this.getActiveEditor() instanceof ITextEditor)) {
 			return;
 		}
-		ITextEditor textEditor = (ITextEditor)editorPart;
+		ITextEditor textEditor = (ITextEditor) editorPart;
 		textEditor.setHighlightRange(offset, length, moveCursor);
 	}
 
 	public IRegion getHighlightRange() {
 		IEditorPart editorPart = this.getActiveEditor();
-		if(editorPart == null || !(this.getActiveEditor() instanceof ITextEditor)) {
+		if (editorPart == null || !(this.getActiveEditor() instanceof ITextEditor)) {
 			return null;
 		}
-		ITextEditor textEditor = (ITextEditor)editorPart;
+		ITextEditor textEditor = (ITextEditor) editorPart;
 		return textEditor.getHighlightRange();
 	}
 
 	public void resetHighlightRange() {
 		IEditorPart editorPart = this.getActiveEditor();
-		if(editorPart == null || !(this.getActiveEditor() instanceof ITextEditor)) {
+		if (editorPart == null || !(this.getActiveEditor() instanceof ITextEditor)) {
 			return;
 		}
-		ITextEditor textEditor = (ITextEditor)editorPart;
+		ITextEditor textEditor = (ITextEditor) editorPart;
 		textEditor.resetHighlightRange();
 	}
 
 	public ISelectionProvider getSelectionProvider() {
 		IEditorPart editorPart = this.getActiveEditor();
-		if(editorPart == null || !(this.getActiveEditor() instanceof ITextEditor)) {
+		if (editorPart == null || !(this.getActiveEditor() instanceof ITextEditor)) {
 			return null;
 		}
-		ITextEditor textEditor = (ITextEditor)editorPart;
+		ITextEditor textEditor = (ITextEditor) editorPart;
 		return textEditor.getSelectionProvider();
 	}
 
 	public void selectAndReveal(int offset, int length) {
 		IEditorPart editorPart = this.getActiveEditor();
-		if(editorPart == null || !(this.getActiveEditor() instanceof ITextEditor)) {
+		if (editorPart == null || !(this.getActiveEditor() instanceof ITextEditor)) {
 			return;
 		}
-		ITextEditor textEditor = (ITextEditor)editorPart;
+		ITextEditor textEditor = (ITextEditor) editorPart;
 		textEditor.selectAndReveal(offset, length);
 	}
 
@@ -262,19 +253,19 @@ public class ComponentEditor extends ComponentEditorPart implements IGotoMarker,
 		IEditorInput[] editorInputArray = componentEditorInput.getInput();
 		for (int i = 0; i < editorInputArray.length; i++) {
 			IFile inputFileFromEditor = ResourceUtil.getFile(editorInputArray[i]);
-			if(inputFileFromEditor == null) {
+			if (inputFileFromEditor == null) {
 				continue;
 			}
 			IPath pathFromInputFile = inputFileFromEditor.getFullPath();
-			if(pathFromInputFile == null) {
+			if (pathFromInputFile == null) {
 				continue;
 			}
 			toolTip.append(pathFromInputFile.toString());
 			toolTip.append("\n");
 		}
-        return toolTip.toString();
-    }
-	
+		return toolTip.toString();
+	}
+
 	public Object getAdapter(Class adapter) {
 		if (adapter.equals(IGotoMarker.class)) {
 			return this;
@@ -284,54 +275,50 @@ public class ComponentEditor extends ComponentEditorPart implements IGotoMarker,
 
 	public void gotoMarker(IMarker marker) {
 		IResource resource = marker.getResource();
-		if(resource == null) {
+		if (resource == null) {
 			return;
 		}
 		IEditorInput[] editorInputArray = componentEditorInput.getInput();
 		for (int i = 0; i < editorInputArray.length; i++) {
 			IFile inputFileFromEditor = ResourceUtil.getFile(editorInputArray[i]);
-			if(inputFileFromEditor == null) {
+			if (inputFileFromEditor == null) {
 				continue;
 			}
 			IPath pathFromInputFile = inputFileFromEditor.getLocation();
-			if(pathFromInputFile == null) {
+			if (pathFromInputFile == null) {
 				continue;
 			}
 			IPath pathFromResource = resource.getLocation();
-			if(pathFromResource == null) {
+			if (pathFromResource == null) {
 				continue;
 			}
-			if(pathFromInputFile.equals(pathFromResource)) {
+			if (pathFromInputFile.equals(pathFromResource)) {
 				IEditorPart editorPart = null;
-				if(pathFromInputFile.getFileExtension().equals("java")) {
-					editorPart = compilationUnitEditor;
+				if (pathFromInputFile.getFileExtension().equals("html")) {
+					htmlWodTab.setHtmlActive();
+					editorPart = htmlWodTab.getActiveEmbeddedEditor();
 				}
-				if(pathFromInputFile.getFileExtension().equals("html")) {
-					editorPart = structuredTextEditorWO;
+				if (pathFromInputFile.getFileExtension().equals("wod")) {
+					htmlWodTab.setWodActive();
+					editorPart = htmlWodTab.getActiveEmbeddedEditor();
 				}
-				if(pathFromInputFile.getFileExtension().equals("wod")) {
-					editorPart = wodEditor;
-				}
-				if(editorPart == null) {
+				if (editorPart == null) {
 					continue;
 				}
-				IGotoMarker gotoMarker = (IGotoMarker)editorPart.getAdapter(IGotoMarker.class);
-				if(gotoMarker == null) {
+				IGotoMarker gotoMarker = (IGotoMarker) editorPart.getAdapter(IGotoMarker.class);
+				if (gotoMarker == null) {
 					return;
 				}
-				if(editorPart == compilationUnitEditor) {
-					this.switchToJava();
-				}
-				if(editorPart == structuredTextEditorWO) {
+				if (htmlWodTab.htmlActive) {
 					this.switchToHtml();
 				}
-				if(pathFromInputFile.getFileExtension().equals("wod")) {
+				if (!htmlWodTab.htmlActive) {
 					this.switchToWod();
 				}
 				gotoMarker.gotoMarker(marker);
 				return;
 			}
-			
+
 		}
 	}
 

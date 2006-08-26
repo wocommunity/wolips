@@ -94,8 +94,7 @@ public class EmptyOutlinePage implements IContentOutlinePage {
 		};
 	}
 
-	public void removeSelectionChangedListener(
-			ISelectionChangedListener listener) {
+	public void removeSelectionChangedListener(ISelectionChangedListener listener) {
 		return;
 	}
 

@@ -63,8 +63,7 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 /**
  * @author uli
  */
-public class ComponentEditorOutline extends Page implements
-		IContentOutlinePage, ISelectionProvider, ISelectionChangedListener {
+public class ComponentEditorOutline extends Page implements IContentOutlinePage, ISelectionProvider, ISelectionChangedListener {
 	private PageBook pagebook;
 
 	private IContentOutlinePage currentPage;
@@ -119,8 +118,7 @@ public class ComponentEditorOutline extends Page implements
 		return selection;
 	}
 
-	public void removeSelectionChangedListener(
-			ISelectionChangedListener listener) {
+	public void removeSelectionChangedListener(ISelectionChangedListener listener) {
 		listeners.remove(listener);
 	}
 
@@ -138,11 +136,10 @@ public class ComponentEditorOutline extends Page implements
 		}
 	}
 
-	public void makeContributions(IMenuManager menuManager,
-			IToolBarManager toolBarManager, IStatusLineManager statusLineManager) {
-		this.menuManager = menuManager;
-		this.toolBarManager = toolBarManager;
-		this.statusLineManager = statusLineManager;
+	public void makeContributions(IMenuManager newMenuManager, IToolBarManager newToolBarManager, IStatusLineManager newStatusLineManager) {
+		this.menuManager = newMenuManager;
+		this.toolBarManager = newToolBarManager;
+		this.statusLineManager = newStatusLineManager;
 	}
 
 	public void setActionBars(IActionBars actionBars) {
@@ -167,7 +164,8 @@ public class ComponentEditorOutline extends Page implements
 		return emptyPage;
 	}
 
-	public void setPageActive(IContentOutlinePage page) {
+	public void setPageActive(IContentOutlinePage contentOutlinePage) {
+		IContentOutlinePage page = contentOutlinePage;
 		if (page == null) {
 			page = getEmptyPage();
 		}
@@ -189,8 +187,7 @@ public class ComponentEditorOutline extends Page implements
 			page.createControl(pagebook);
 			control = page.getControl();
 			if (page instanceof Page) {
-				((Page) page).makeContributions(menuManager, toolBarManager,
-						statusLineManager);
+				((Page) page).makeContributions(menuManager, toolBarManager, statusLineManager);
 			}
 		}
 		pagebook.showPage(control);

@@ -58,8 +58,6 @@ public class ComponentEditorInputFactory implements IElementFactory {
 
 	private static final String TAG_INPUT = "input";
 
-	private static final String TAG_DISPLAY_JAVA_PART_ON_REVEAL = "java";
-
 	private static final String TAG_DISPLAY_HTML_PART_ON_REVEAL = "html";
 
 	private static final String TAG_DISPLAY_WOD_PART_ON_REVEAL = "wod";
@@ -94,9 +92,6 @@ public class ComponentEditorInputFactory implements IElementFactory {
 
 		ComponentEditorInput componentEditorInput = new ComponentEditorInput(
 				editors, input);
-		if (componentEditorInput == null) {
-			return null;
-		}
 		for(int i = 0; i < input.length; i++) {
 			input[i].setComponentEditorInput(componentEditorInput);
 		}
@@ -104,14 +99,12 @@ public class ComponentEditorInputFactory implements IElementFactory {
 			componentEditorInput.setDisplayApiPartOnReveal(true);
 		} else if (memento.getString(TAG_DISPLAY_HTML_PART_ON_REVEAL) != null) {
 			componentEditorInput.setDisplayHtmlPartOnReveal(true);
-		} else if (memento.getString(TAG_DISPLAY_JAVA_PART_ON_REVEAL) != null) {
-			componentEditorInput.setDisplayJavaPartOnReveal(true);
 		} else if (memento.getString(TAG_DISPLAY_WOD_PART_ON_REVEAL) != null) {
 			componentEditorInput.setDisplayWodPartOnReveal(true);
 		} else if (memento.getString(TAG_DISPLAY_WOO_PART_ON_REVEAL) != null) {
 			componentEditorInput.setDisplayWooPartOnReveal(true);
 		} else {
-			componentEditorInput.setDisplayJavaPartOnReveal(true);
+			componentEditorInput.setDisplayHtmlPartOnReveal(true);
 		}
 		return componentEditorInput;
 	}
@@ -126,14 +119,12 @@ public class ComponentEditorInputFactory implements IElementFactory {
 		}
 		if (input.isDisplayApiPartOnReveal()) {
 			memento.putString(TAG_DISPLAY_API_PART_ON_REVEAL, "true");
-		} else if (input.isDisplayHtmlPartOnReveal()) {
-			memento.putString(TAG_DISPLAY_HTML_PART_ON_REVEAL, "true");
-		} else if (input.isDisplayJavaPartOnReveal()) {
-			memento.putString(TAG_DISPLAY_JAVA_PART_ON_REVEAL, "true");
 		} else if (input.isDisplayWodPartOnReveal()) {
 			memento.putString(TAG_DISPLAY_WOD_PART_ON_REVEAL, "true");
 		} else if (input.isDisplayWooPartOnReveal()) {
 			memento.putString(TAG_DISPLAY_WOO_PART_ON_REVEAL, "true");
+		} if (input.isDisplayHtmlPartOnReveal()) {
+			memento.putString(TAG_DISPLAY_HTML_PART_ON_REVEAL, "true");
 		}
 	}
 }

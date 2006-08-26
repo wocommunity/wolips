@@ -54,9 +54,9 @@ public class SwitchToPreviewActionDelegate extends AbstractSwitchToActionDelegat
 
 	public void run(IAction action) {
 		ComponentEditor componentEditor = this.getComponentEditor();
-		if(componentEditor != null) {
+		if (componentEditor != null) {
 			componentEditor.switchToPreview();
 		}
-		
+
 	}
 }

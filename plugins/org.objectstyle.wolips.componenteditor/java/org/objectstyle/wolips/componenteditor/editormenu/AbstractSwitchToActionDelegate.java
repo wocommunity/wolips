@@ -57,8 +57,7 @@ import org.objectstyle.wolips.locate.LocateException;
 import org.objectstyle.wolips.locate.LocatePlugin;
 import org.objectstyle.wolips.locate.result.LocalizedComponentsLocateResult;
 
-public abstract class AbstractSwitchToActionDelegate implements
-		IEditorActionDelegate {
+public abstract class AbstractSwitchToActionDelegate implements IEditorActionDelegate {
 
 	private ComponentEditor componentEditor;
 
@@ -90,12 +89,11 @@ public abstract class AbstractSwitchToActionDelegate implements
 
 	public LocalizedComponentsLocateResult getLocalizedComponentsLocateResult() {
 		IEditorInput editorInput = this.editorPart.getEditorInput();
-		FileEditorInput fileEditorInput = (FileEditorInput)editorInput;
+		FileEditorInput fileEditorInput = (FileEditorInput) editorInput;
 		IFile file = fileEditorInput.getFile();
 		LocalizedComponentsLocateResult localizedComponentsLocateResult = null;
 		try {
-			localizedComponentsLocateResult = LocatePlugin.getDefault()
-					.getLocalizedComponentsLocateResult(file);
+			localizedComponentsLocateResult = LocatePlugin.getDefault().getLocalizedComponentsLocateResult(file);
 		} catch (CoreException e) {
 			ComponentsPlugin.getDefault().log(e);
 			return null;
@@ -103,9 +101,7 @@ public abstract class AbstractSwitchToActionDelegate implements
 			ComponentsPlugin.getDefault().log(e);
 			return null;
 		}
-		if (localizedComponentsLocateResult.getDotJava() == null
-				|| localizedComponentsLocateResult.getComponents() == null
-				|| localizedComponentsLocateResult.getComponents().length == 0) {
+		if (localizedComponentsLocateResult.getDotJava() == null || localizedComponentsLocateResult.getComponents() == null || localizedComponentsLocateResult.getComponents().length == 0) {
 			return null;
 		}
 		return localizedComponentsLocateResult;

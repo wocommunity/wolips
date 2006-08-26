@@ -49,8 +49,7 @@ import org.objectstyle.wolips.editors.EditorsPlugin;
 import org.objectstyle.wolips.locate.result.LocalizedComponentsLocateResult;
 import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 
-public class SwitchToApiEditorActionDelegate extends
-		AbstractSwitchToActionDelegate {
+public class SwitchToApiEditorActionDelegate extends AbstractSwitchToActionDelegate {
 
 	public SwitchToApiEditorActionDelegate() {
 		super();
@@ -61,16 +60,14 @@ public class SwitchToApiEditorActionDelegate extends
 		if (componentEditor != null) {
 			componentEditor.switchToApi();
 		} else {
-			LocalizedComponentsLocateResult localizedComponentsLocateResult = this
-					.getLocalizedComponentsLocateResult();
+			LocalizedComponentsLocateResult localizedComponentsLocateResult = this.getLocalizedComponentsLocateResult();
 			if (localizedComponentsLocateResult == null) {
 				return;
 			}
 			if (localizedComponentsLocateResult.getDotApi() == null) {
 				return;
 			}
-			WorkbenchUtilitiesPlugin.open(localizedComponentsLocateResult
-					.getDotApi(), EditorsPlugin.ComponentEditorID);
+			WorkbenchUtilitiesPlugin.open(localizedComponentsLocateResult.getDotApi(), EditorsPlugin.ComponentEditorID);
 		}
 
 	}

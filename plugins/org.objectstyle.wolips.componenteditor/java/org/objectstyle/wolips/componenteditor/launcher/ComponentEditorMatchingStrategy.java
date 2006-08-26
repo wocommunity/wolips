@@ -50,29 +50,33 @@ import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.ide.ResourceUtil;
 import org.eclipse.ui.part.FileEditorInput;
-import org.objectstyle.wolips.componenteditor.ComponenteditorPlugin;
 import org.objectstyle.wolips.componenteditor.part.ComponentEditor;
 import org.objectstyle.wolips.components.input.ComponentEditorInput;
 import org.objectstyle.wolips.editors.EditorsPlugin;
 
 public class ComponentEditorMatchingStrategy implements IEditorMatchingStrategy {
-	
-	
-	public boolean matches(IEditorReference editorReference,
-			IEditorInput editorInput) {
-		String editorID = editorReference.getId();
-		if(editorID == null) {
+
+	private boolean canHandleExtension(String extension) {
+		if (!("wod".equalsIgnoreCase(extension) || "html".equalsIgnoreCase(extension) || "woo".equalsIgnoreCase(extension) || "api".equalsIgnoreCase(extension) || "tiff".equalsIgnoreCase(extension))) {
 			return false;
 		}
-		if(!editorID.equals(EditorsPlugin.ComponentEditorID)) {
+		return true;
+	}
+
+	public boolean matches(IEditorReference editorReference, IEditorInput editorInput) {
+		String editorID = editorReference.getId();
+		if (editorID == null) {
+			return false;
+		}
+		if (!editorID.equals(EditorsPlugin.ComponentEditorID)) {
 			return false;
 		}
 		if (editorInput instanceof ComponentEditorInput) {
 			IWorkbenchPart workbenchPart = editorReference.getPart(true);
-			if(workbenchPart == null) {
+			if (workbenchPart == null) {
 				return false;
 			}
-			ComponentEditor componentEditor = (ComponentEditor)workbenchPart;
+			ComponentEditor componentEditor = (ComponentEditor) workbenchPart;
 			ComponentEditorInput componentEditorInput = componentEditor.getComponentEditorInput();
 			return componentEditorInput.equals(editorInput);
 		}
@@ -87,42 +91,40 @@ public class ComponentEditorMatchingStrategy implements IEditorMatchingStrategy 
 		if (extension == null) {
 			return false;
 		}
-		if (!ComponenteditorPlugin.getDefault().canHandleExtension(extension)) {
+		if (!this.canHandleExtension(extension)) {
 			return false;
 		}
-//		IEditorInput editorReferenceEditorInput = null;
-		//expensive: call it as late as possible
+		// IEditorInput editorReferenceEditorInput = null;
+		// expensive: call it as late as possible
 		IWorkbenchPart workbenchPart = editorReference.getPart(true);
-		if(workbenchPart == null) {
+		if (workbenchPart == null) {
 			return false;
 		}
-		ComponentEditor componentEditor = (ComponentEditor)workbenchPart;
+		ComponentEditor componentEditor = (ComponentEditor) workbenchPart;
 		ComponentEditorInput componentEditorInput = componentEditor.getComponentEditorInput();
-//		if(editorReferenceEditorInput == null) {
-//			return false;
-//		}
-//		if(!(editorReferenceEditorInput instanceof ComponentEditorInput)) {
-//			return false;
-//		}
-//		ComponentEditorInput componentEditorInput = (ComponentEditorInput)editorReferenceEditorInput;
+		// if(editorReferenceEditorInput == null) {
+		// return false;
+		// }
+		// if(!(editorReferenceEditorInput instanceof ComponentEditorInput)) {
+		// return false;
+		// }
+		// ComponentEditorInput componentEditorInput =
+		// (ComponentEditorInput)editorReferenceEditorInput;
 		IEditorInput[] editorInputArray = componentEditorInput.getInput();
 		for (int i = 0; i < editorInputArray.length; i++) {
 			IFile inputFileFromEditor = ResourceUtil.getFile(editorInputArray[i]);
-			if(inputFileFromEditor == null) {
+			if (inputFileFromEditor == null) {
 				continue;
 			}
-			if(inputFileFromEditor.equals(inputFile)) {
+			if (inputFileFromEditor.equals(inputFile)) {
 				switch (i) {
 				case 0:
-					componentEditor.switchToJava();
-					break;
-				case 1:
 					componentEditor.switchToHtml();
 					break;
-				case 2:
+				case 1:
 					componentEditor.switchToWod();
 					break;
-				case 3:
+				case 2:
 					componentEditor.switchToApi();
 					break;
 
@@ -131,7 +133,7 @@ public class ComponentEditorMatchingStrategy implements IEditorMatchingStrategy 
 				}
 				return true;
 			}
-			
+
 		}
 		return false;
 	}
