@@ -51,8 +51,7 @@ import org.objectstyle.wolips.editors.EditorsPlugin;
 import org.objectstyle.wolips.locate.result.LocalizedComponentsLocateResult;
 import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 
-public class SwitchToHtmlEditorActionDelegate extends
-		AbstractSwitchToActionDelegate {
+public class SwitchToHtmlEditorActionDelegate extends AbstractSwitchToActionDelegate {
 
 	public SwitchToHtmlEditorActionDelegate() {
 		super();
@@ -63,8 +62,7 @@ public class SwitchToHtmlEditorActionDelegate extends
 		if (componentEditor != null) {
 			componentEditor.switchToHtml();
 		} else {
-			LocalizedComponentsLocateResult localizedComponentsLocateResult = this
-					.getLocalizedComponentsLocateResult();
+			LocalizedComponentsLocateResult localizedComponentsLocateResult = this.getLocalizedComponentsLocateResult();
 			if (localizedComponentsLocateResult == null) {
 				return;
 			}
@@ -72,8 +70,7 @@ public class SwitchToHtmlEditorActionDelegate extends
 				if (localizedComponentsLocateResult.getFirstHtmlFile() == null) {
 					return;
 				}
-				WorkbenchUtilitiesPlugin.open(localizedComponentsLocateResult
-						.getFirstHtmlFile(), EditorsPlugin.ComponentEditorID);
+				WorkbenchUtilitiesPlugin.open(localizedComponentsLocateResult.getFirstHtmlFile(), EditorsPlugin.ComponentEditorID);
 			} catch (CoreException e) {
 				ComponentsPlugin.getDefault().log(e);
 			}

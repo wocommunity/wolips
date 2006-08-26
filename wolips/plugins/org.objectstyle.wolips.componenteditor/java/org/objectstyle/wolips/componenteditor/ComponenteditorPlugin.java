@@ -43,12 +43,9 @@
  */
 package org.objectstyle.wolips.componenteditor;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.objectstyle.wolips.componenteditor.part.ComponentEditor;
-import org.objectstyle.wolips.ui.UIPlugin;
 import org.objectstyle.wolips.ui.plugins.AbstractWOLipsUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -60,8 +57,6 @@ import org.osgi.framework.BundleContext;
 public class ComponenteditorPlugin extends AbstractWOLipsUIPlugin {
 	// The shared instance.
 	private static ComponenteditorPlugin plugin;
-
-	private boolean _openJavaInTab = false;
 
 	/**
 	 * The constructor.
@@ -102,39 +97,11 @@ public class ComponenteditorPlugin extends AbstractWOLipsUIPlugin {
 	 * @return the image descriptor
 	 */
 	public static ImageDescriptor getImageDescriptor(String path) {
-		return AbstractUIPlugin.imageDescriptorFromPlugin(
-				"org.objectstyle.wolips.componenteditor", path);
+		return AbstractUIPlugin.imageDescriptorFromPlugin("org.objectstyle.wolips.componenteditor", path);
 	}
 
 	public Image getImage(String key) {
 		return getImageRegistry().get(key);
-	}
-
-	public boolean canHandleExtension(String extension) {
-		// AK: the java part of the component editor is just not working in
-		// Eclipse 3.2
-		// so we skip .java
-
-		if (!((_openJavaInTab && "java".equalsIgnoreCase(extension))
-				|| "wod".equalsIgnoreCase(extension)
-				|| "html".equalsIgnoreCase(extension)
-				|| "woo".equalsIgnoreCase(extension)
-				|| "api".equalsIgnoreCase(extension) || "tiff"
-				.equalsIgnoreCase(extension))) {
-			return false;
-		}
-		return true;
-	}
-
-	public void openJavaFile(ComponentEditor componentEditor, IFile inputFile) {
-		if (_openJavaInTab) {
-			componentEditor.switchToJava();
-		} else {
-			if (inputFile == null) {
-				inputFile = (IFile) componentEditor.getJavaFile();
-			}
-			UIPlugin.getDefault().openJavaFile(inputFile);
-		}
 	}
 
 }

@@ -44,18 +44,23 @@
 package org.objectstyle.wolips.componenteditor.editormenu;
 
 import org.eclipse.jface.action.IAction;
-import org.objectstyle.wolips.componenteditor.ComponenteditorPlugin;
-import org.objectstyle.wolips.componenteditor.part.ComponentEditor;
+import org.objectstyle.wolips.locate.result.LocalizedComponentsLocateResult;
+import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 
-public class SwitchToJavaEditorActionDelegate extends
-		AbstractSwitchToActionDelegate {
+public class SwitchToJavaEditorActionDelegate extends AbstractSwitchToActionDelegate {
 
 	public SwitchToJavaEditorActionDelegate() {
 		super();
 	}
 
 	public void run(IAction action) {
-		ComponentEditor componentEditor = this.getComponentEditor();
-		ComponenteditorPlugin.getDefault().openJavaFile(componentEditor, null);
+		LocalizedComponentsLocateResult localizedComponentsLocateResult = this.getLocalizedComponentsLocateResult();
+		if (localizedComponentsLocateResult == null) {
+			return;
+		}
+		if (localizedComponentsLocateResult.getDotJava() == null) {
+			return;
+		}
+		WorkbenchUtilitiesPlugin.open(localizedComponentsLocateResult.getDotJava());
 	}
 }

@@ -51,8 +51,7 @@ import org.objectstyle.wolips.editors.EditorsPlugin;
 import org.objectstyle.wolips.locate.result.LocalizedComponentsLocateResult;
 import org.objectstyle.wolips.workbenchutilities.WorkbenchUtilitiesPlugin;
 
-public class SwitchToWOBuilderActionDelegate extends
-		AbstractSwitchToActionDelegate {
+public class SwitchToWOBuilderActionDelegate extends AbstractSwitchToActionDelegate {
 
 	public SwitchToWOBuilderActionDelegate() {
 		super();
@@ -63,8 +62,7 @@ public class SwitchToWOBuilderActionDelegate extends
 		if (componentEditor != null) {
 			componentEditor.switchToWod();
 		} else {
-			LocalizedComponentsLocateResult localizedComponentsLocateResult = this
-					.getLocalizedComponentsLocateResult();
+			LocalizedComponentsLocateResult localizedComponentsLocateResult = this.getLocalizedComponentsLocateResult();
 			if (localizedComponentsLocateResult == null) {
 				return;
 			}
@@ -72,8 +70,7 @@ public class SwitchToWOBuilderActionDelegate extends
 				if (localizedComponentsLocateResult.getFirstWodFile() == null) {
 					return;
 				}
-				WorkbenchUtilitiesPlugin.open(localizedComponentsLocateResult
-						.getFirstWodFile(), EditorsPlugin.WOBuilderID);
+				WorkbenchUtilitiesPlugin.open(localizedComponentsLocateResult.getFirstWodFile(), EditorsPlugin.WOBuilderID);
 			} catch (CoreException e) {
 				ComponentsPlugin.getDefault().log(e);
 			}

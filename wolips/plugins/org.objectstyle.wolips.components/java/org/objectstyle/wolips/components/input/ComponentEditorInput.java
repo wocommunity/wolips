@@ -47,7 +47,6 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.jdt.ui.JavaUI;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IPersistableElement;
@@ -58,12 +57,9 @@ import org.objectstyle.wolips.locate.LocateException;
 import org.objectstyle.wolips.locate.LocatePlugin;
 import org.objectstyle.wolips.locate.result.LocalizedComponentsLocateResult;
 
-public class ComponentEditorInput extends MultiEditorInput implements
-		IPersistableElement {
+public class ComponentEditorInput extends MultiEditorInput implements IPersistableElement {
 
-	private boolean displayJavaPartOnReveal = false;
-
-	private boolean displayHtmlPartOnReveal = false;
+	private boolean displayHtmlPartOnReveal = true;
 
 	private boolean displayWodPartOnReveal = false;
 
@@ -77,39 +73,26 @@ public class ComponentEditorInput extends MultiEditorInput implements
 		super(editorIDs, innerEditors);
 	}
 
-	private static ComponentEditorInput create(
-			LocalizedComponentsLocateResult localizedComponentsLocateResult)
-			throws CoreException {
+	private static ComponentEditorInput create(LocalizedComponentsLocateResult localizedComponentsLocateResult) throws CoreException {
 		String ids[] = null;
 		ComponentEditorFileEditorInput allInput[] = null;
-//		if (localizedComponentsLocateResult.getDotApi() == null) {
-//			ids = new String[3];
-//			allInput = new ComponentEditorFileEditorInput[3];
-//		} else {
-			ids = new String[4];
-			allInput = new ComponentEditorFileEditorInput[4];
-//		}
-		ids[0] = JavaUI.ID_CU_EDITOR;
-		allInput[0] = new ComponentEditorFileEditorInput(
-				localizedComponentsLocateResult.getDotJava());
-		ids[1] = EditorsPlugin.HTMLEditorID;
+		ids = new String[3];
+		allInput = new ComponentEditorFileEditorInput[3];
+		ids[0] = EditorsPlugin.HTMLEditorID;
 		IFolder folder = localizedComponentsLocateResult.getComponents()[0];
 		IFile htmlFile = LocalizedComponentsLocateResult.getHtml(folder);
 		IFile wodFile = LocalizedComponentsLocateResult.getWod(folder);
-		allInput[1] = new ComponentEditorFileEditorInput(htmlFile);
-		ids[2] = EditorsPlugin.WodEditorID;
-		allInput[2] = new ComponentEditorFileEditorInput(wodFile);
+		allInput[0] = new ComponentEditorFileEditorInput(htmlFile);
+		ids[1] = EditorsPlugin.WodEditorID;
+		allInput[1] = new ComponentEditorFileEditorInput(wodFile);
 		if (localizedComponentsLocateResult.getDotApi() != null) {
-			ids[3] = EditorsPlugin.ApiEditorID;
-			allInput[3] = new ComponentEditorFileEditorInput(
-					localizedComponentsLocateResult.getDotApi());
+			ids[2] = EditorsPlugin.ApiEditorID;
+			allInput[2] = new ComponentEditorFileEditorInput(localizedComponentsLocateResult.getDotApi());
 		} else {
-			ids[3] = EditorsPlugin.ApiEditorID;
+			ids[2] = EditorsPlugin.ApiEditorID;
 			String apiFileName = LocatePlugin.getDefault().fileNameWithoutExtension(wodFile);
-			IFile api = wodFile.getParent().getParent().getFile(
-					new Path(apiFileName + ".api"));
-			allInput[3] = new ComponentEditorFileEditorInput(api);
-
+			IFile api = wodFile.getParent().getParent().getFile(new Path(apiFileName + ".api"));
+			allInput[2] = new ComponentEditorFileEditorInput(api);
 		}
 		ComponentEditorInput input = new ComponentEditorInput(ids, allInput);
 		input.localizedComponentsLocateResult = localizedComponentsLocateResult;
@@ -125,8 +108,7 @@ public class ComponentEditorInput extends MultiEditorInput implements
 	private static ComponentEditorInput create(IFile file) throws CoreException {
 		LocalizedComponentsLocateResult localizedComponentsLocateResult = null;
 		try {
-			localizedComponentsLocateResult = LocatePlugin.getDefault()
-					.getLocalizedComponentsLocateResult(file);
+			localizedComponentsLocateResult = LocatePlugin.getDefault().getLocalizedComponentsLocateResult(file);
 		} catch (CoreException e) {
 			ComponentsPlugin.getDefault().log(e);
 			return null;
@@ -134,9 +116,7 @@ public class ComponentEditorInput extends MultiEditorInput implements
 			ComponentsPlugin.getDefault().log(e);
 			return null;
 		}
-		if (localizedComponentsLocateResult.getDotJava() == null
-				|| localizedComponentsLocateResult.getComponents() == null
-				|| localizedComponentsLocateResult.getComponents().length == 0) {
+		if (localizedComponentsLocateResult.getDotJava() == null || localizedComponentsLocateResult.getComponents() == null || localizedComponentsLocateResult.getComponents().length == 0) {
 			return null;
 		}
 		ComponentEditorInput input = create(localizedComponentsLocateResult);
@@ -146,20 +126,7 @@ public class ComponentEditorInput extends MultiEditorInput implements
 	/*
 	 * may return null
 	 */
-	public static ComponentEditorInput createWithDotJava(IFile file)
-			throws CoreException {
-		ComponentEditorInput input = create(file);
-		if (input != null) {
-			input.displayJavaPartOnReveal = true;
-		}
-		return input;
-	}
-
-	/*
-	 * may return null
-	 */
-	public static ComponentEditorInput createWithDotHtml(IFile file)
-			throws CoreException {
+	public static ComponentEditorInput createWithDotHtml(IFile file) throws CoreException {
 		ComponentEditorInput input = create(file);
 		if (input != null) {
 			input.displayHtmlPartOnReveal = true;
@@ -170,8 +137,7 @@ public class ComponentEditorInput extends MultiEditorInput implements
 	/*
 	 * may return null
 	 */
-	public static ComponentEditorInput createWithDotWod(IFile file)
-			throws CoreException {
+	public static ComponentEditorInput createWithDotWod(IFile file) throws CoreException {
 		ComponentEditorInput input = create(file);
 		if (input != null) {
 			input.displayWodPartOnReveal = true;
@@ -182,8 +148,7 @@ public class ComponentEditorInput extends MultiEditorInput implements
 	/*
 	 * may return null
 	 */
-	public static ComponentEditorInput createWithDotApi(IFile file)
-			throws CoreException {
+	public static ComponentEditorInput createWithDotApi(IFile file) throws CoreException {
 		ComponentEditorInput input = create(file);
 		input.displayApiPartOnReveal = true;
 		return input;
@@ -192,8 +157,7 @@ public class ComponentEditorInput extends MultiEditorInput implements
 	/*
 	 * may return null
 	 */
-	public static ComponentEditorInput createWithDotWoo(IFile file)
-			throws CoreException {
+	public static ComponentEditorInput createWithDotWoo(IFile file) throws CoreException {
 		ComponentEditorInput input = create(file);
 		if (input != null) {
 			input.displayWooPartOnReveal = true;
@@ -231,14 +195,6 @@ public class ComponentEditorInput extends MultiEditorInput implements
 
 	public void setDisplayHtmlPartOnReveal(boolean displayHtmlPartOnReveal) {
 		this.displayHtmlPartOnReveal = displayHtmlPartOnReveal;
-	}
-
-	public boolean isDisplayJavaPartOnReveal() {
-		return displayJavaPartOnReveal;
-	}
-
-	public void setDisplayJavaPartOnReveal(boolean displayJavaPartOnReveal) {
-		this.displayJavaPartOnReveal = displayJavaPartOnReveal;
 	}
 
 	public boolean isDisplayWodPartOnReveal() {
