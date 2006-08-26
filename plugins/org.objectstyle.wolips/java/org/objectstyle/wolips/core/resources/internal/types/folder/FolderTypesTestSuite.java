@@ -60,7 +60,7 @@ import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 /**
- * Run all compiler regression tests
+ * Run all folder regression tests
  */
 public class FolderTypesTestSuite extends TestCase {
 
@@ -77,17 +77,7 @@ public class FolderTypesTestSuite extends TestCase {
 	 */
 	public static Test suite() throws Exception {
 		TestSuite suite = new TestSuite();
-		suite.addTestSuite(BuildAdapterTest.class);
-		suite.addTestSuite(ProductAdapterTest.class);
-		suite.addTestSuite(ContentsAdapterTest.class);
-		suite.addTestSuite(ResourcesAdapterTest.class);
-		suite.addTestSuite(WebServerResourcesAdapterTest.class);
-		suite.addTestSuite(DotWoAdapterTest.class);
-		suite.addTestSuite(DotApplicationAdapterTest.class);
-		suite.addTestSuite(DotFrameworkAdapterTest.class);
-		suite.addTestSuite(DotLprojAdapterTest.class);
 		suite.addTestSuite(DotSubprojAdapterTest.class);
-		suite.addTestSuite(WoprojectAdapterTest.class);
 		return suite;
 	}
 }
