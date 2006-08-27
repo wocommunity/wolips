@@ -79,18 +79,21 @@ public class ComponentEditorInputFactory implements IElementFactory {
 		}
 		int count = Integer.parseInt(countString);
 		String[] editors = new String[count];
-		ComponentEditorFileEditorInput[] input = new ComponentEditorFileEditorInput[count];
-
+		ComponentEditorFileEditorInput[] allInputs = new ComponentEditorFileEditorInput[count];
+		ComponentEditorFileEditorInput[] allComponentInputs = new ComponentEditorFileEditorInput[count - 1];
 		for (int i = 0; i < count; i++) {
 			editors[i] = memento.getString(TAG_EDITOR + i);
 			String fileName = memento.getString(TAG_INPUT + i);
 			IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(fileName));
-			input[i] = new ComponentEditorFileEditorInput(file);
+			allInputs[i] = new ComponentEditorFileEditorInput(file);
+			if (i < (count - 1)) {
+				allComponentInputs[1] = allInputs[i];
+			}
 		}
 
-		ComponentEditorInput componentEditorInput = new ComponentEditorInput(editors, input);
-		for (int i = 0; i < input.length; i++) {
-			input[i].setComponentEditorInput(componentEditorInput);
+		ComponentEditorInput componentEditorInput = new ComponentEditorInput(editors, allInputs, allComponentInputs, allInputs[allInputs.length - 1]);
+		for (int i = 0; i < allInputs.length; i++) {
+			allInputs[i].setComponentEditorInput(componentEditorInput);
 		}
 		if (memento.getString(TAG_DISPLAY_API_PART_ON_REVEAL) != null) {
 			componentEditorInput.setDisplayApiPartOnReveal(true);
