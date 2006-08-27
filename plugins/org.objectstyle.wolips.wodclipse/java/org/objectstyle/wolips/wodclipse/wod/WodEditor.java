@@ -49,7 +49,9 @@ import java.util.Set;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.internal.ui.IJavaHelpContextIds;
 import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IDocumentListener;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.IVerticalRuler;
@@ -81,100 +83,117 @@ import org.objectstyle.wolips.wodclipse.wod.parser.WodScanner;
  * @author uli
  */
 public class WodEditor extends TextEditor implements IEmbeddedEditor, IWebobjectTagListener, IWodDocumentProvider {
-  private WodContentOutlinePage myContentOutlinePage;
-  private IEditorInput myInput;
-  private LocalizedComponentsLocateResult myComponentsLocateResults;
-  private EditorInteraction editorInteraction;
+	private WodContentOutlinePage myContentOutlinePage;
 
-  public WodEditor() {
-    setSourceViewerConfiguration(new WodSourceViewerConfiguration(this));
-  }
+	private IEditorInput myInput;
 
-  protected void initializeKeyBindingScopes() {
-    setKeyBindingScopes(new String[] { "org.objectstyle.wolips.wodclipse.wodEditorScope" });
-  }
+	private LocalizedComponentsLocateResult myComponentsLocateResults;
 
-  protected ISourceViewer createSourceViewer(Composite _parent, IVerticalRuler _verticalRuler, int _styles) {
-    return super.createSourceViewer(_parent, _verticalRuler, _styles);
-  }
+	private EditorInteraction editorInteraction;
 
-  protected void createActions() {
-    super.createActions();
+	public WodEditor() {
+		setSourceViewerConfiguration(new WodSourceViewerConfiguration(this));
+	}
 
-    String BUNDLE_FOR_CONSTRUCTED_KEYS = "org.eclipse.jdt.internal.ui.javaeditor.ConstructedJavaEditorMessages";//$NON-NLS-1$
-    ResourceBundle fgBundleForConstructedKeys = ResourceBundle.getBundle(BUNDLE_FOR_CONSTRUCTED_KEYS);
-    //WodclipsePlugin.getDefault().getResourceBundle()
-    ContentAssistAction action = new ContentAssistAction(fgBundleForConstructedKeys, "ContentAssistProposal.", this); //$NON-NLS-1$
-    action.setActionDefinitionId(ITextEditorActionDefinitionIds.CONTENT_ASSIST_PROPOSALS);
-    setAction("ContentAssistProposal", action);
-    markAsStateDependentAction("ContentAssistProposal", true);
-    PlatformUI.getWorkbench().getHelpSystem().setHelp(action, IJavaHelpContextIds.CONTENT_ASSIST_ACTION);
-  }
+	protected void initializeKeyBindingScopes() {
+		setKeyBindingScopes(new String[] { "org.objectstyle.wolips.wodclipse.wodEditorScope" });
+	}
 
-  public void updateWebObjectsTagNames() {
-    try {
-      IDocument document = getDocumentProvider().getDocument(getEditorInput());
-      Set elementNamesSet = WodScanner.getTextForRulesOfType(document, ElementNameRule.class);
-      String[] elementNames = (String[]) elementNamesSet.toArray(new String[elementNamesSet.size()]);
-      HtmleditorPlugin.getDefault().setWebObjectsTagNames(elementNames);
-    }
-    catch (BadLocationException t) {
-      //null means no tags
-      //the user has to enter the name manually
-      HtmleditorPlugin.getDefault().setWebObjectsTagNames(null);
-    }
-  }
+	protected ISourceViewer createSourceViewer(Composite _parent, IVerticalRuler _verticalRuler, int _styles) {
+		return super.createSourceViewer(_parent, _verticalRuler, _styles);
+	}
 
-  public Object getAdapter(Class adapter) {
-    if (IContentOutlinePage.class.equals(adapter)) {
-      if (myContentOutlinePage == null) {
-        myContentOutlinePage = new WodContentOutlinePage(getDocumentProvider(), this);
-        myContentOutlinePage.setInput(myInput);
-      }
-      return myContentOutlinePage;
-    }
-    return super.getAdapter(adapter);
-  }
+	protected void createActions() {
+		super.createActions();
 
-  public void init(IEditorSite _site, IEditorInput _input) throws PartInitException {
-    super.init(_site, _input);
-    myInput = _input;
-  }
+		String BUNDLE_FOR_CONSTRUCTED_KEYS = "org.eclipse.jdt.internal.ui.javaeditor.ConstructedJavaEditorMessages";//$NON-NLS-1$
+		ResourceBundle fgBundleForConstructedKeys = ResourceBundle.getBundle(BUNDLE_FOR_CONSTRUCTED_KEYS);
+		// WodclipsePlugin.getDefault().getResourceBundle()
+		ContentAssistAction action = new ContentAssistAction(fgBundleForConstructedKeys, "ContentAssistProposal.", this); //$NON-NLS-1$
+		action.setActionDefinitionId(ITextEditorActionDefinitionIds.CONTENT_ASSIST_PROPOSALS);
+		setAction("ContentAssistProposal", action);
+		markAsStateDependentAction("ContentAssistProposal", true);
+		PlatformUI.getWorkbench().getHelpSystem().setHelp(action, IJavaHelpContextIds.CONTENT_ASSIST_ACTION);
+	}
 
-  public LocalizedComponentsLocateResult getComponentsLocateResults() throws CoreException, LocateException {
-    if (myComponentsLocateResults == null) {
-      myComponentsLocateResults = LocatePlugin.getDefault().getLocalizedComponentsLocateResult(((IFileEditorInput)myInput).getFile());
-    }
-    return myComponentsLocateResults;
-  }
+	public void updateWebObjectsTagNames() {
+		try {
+			IDocument document = getDocumentProvider().getDocument(getEditorInput());
+			Set elementNamesSet = WodScanner.getTextForRulesOfType(document, ElementNameRule.class);
+			String[] elementNames = (String[]) elementNamesSet.toArray(new String[elementNamesSet.size()]);
+			HtmleditorPlugin.getDefault().setWebObjectsTagNames(elementNames);
+		} catch (BadLocationException t) {
+			// null means no tags
+			// the user has to enter the name manually
+			HtmleditorPlugin.getDefault().setWebObjectsTagNames(null);
+		}
+	}
 
-  public void initEditorInteraction(EditorInteraction editorInteraction) {
-	  editorInteraction.setWebObjectTagListener(this);
-	  editorInteraction.setWodDocumentProvider(this);
-	  this.editorInteraction = editorInteraction;
-  }
+	public Object getAdapter(Class adapter) {
+		if (IContentOutlinePage.class.equals(adapter)) {
+			if (myContentOutlinePage == null) {
+				myContentOutlinePage = new WodContentOutlinePage(getDocumentProvider(), this);
+				myContentOutlinePage.setInput(myInput);
+			}
+			return myContentOutlinePage;
+		}
+		return super.getAdapter(adapter);
+	}
 
-  public void webObjectTagSelected(String name) {
-	 try {
-	      IDocument document = getDocumentProvider().getDocument(getEditorInput());
-	      WodScanner wodScanner = WodScanner.wodScannerForDocument(document);
-	      RulePosition elementNameRulePosition = wodScanner.firstRulePositionOfTypeWithText(ElementNameRule.class, name);
-	      if (elementNameRulePosition != null) {
-	        IRegion region = document.getLineInformationOfOffset(elementNameRulePosition.getTokenOffset());
-	        setHighlightRange(region.getOffset(), region.getLength(), true);
-	      }
-	    }
-	    catch (BadLocationException e) {
-	      WodclipsePlugin.getDefault().log(e);
-	    }
-	  }
+	public void init(IEditorSite _site, IEditorInput _input) throws PartInitException {
+		super.init(_site, _input);
+		myInput = _input;
+		IDocument document = getDocumentProvider().getDocument(getEditorInput());
+		document.addDocumentListener(new IDocumentListener() {
+			
+			public void documentAboutToBeChanged(DocumentEvent event) {
+				// Do nothing
+			}
 
-  public IDocument getWodEditDocument() {
-	  IDocument document = getDocumentProvider().getDocument(getEditorInput());
-	  return document;
-  }
+			public void documentChanged(DocumentEvent event) {
+				IContentOutlinePage contentOutlinePage = (IContentOutlinePage) WodEditor.this.getAdapter(IContentOutlinePage.class);
+				if (contentOutlinePage instanceof WodContentOutlinePage) {
+					WodContentOutlinePage wodContentOutlinePage = (WodContentOutlinePage) contentOutlinePage;
+					wodContentOutlinePage.update();
+				}
+			}
+		});
+	}
 
-  public EditorInteraction getEditorInteraction() {
+	public LocalizedComponentsLocateResult getComponentsLocateResults() throws CoreException, LocateException {
+		if (myComponentsLocateResults == null) {
+			myComponentsLocateResults = LocatePlugin.getDefault().getLocalizedComponentsLocateResult(((IFileEditorInput) myInput).getFile());
+		}
+		return myComponentsLocateResults;
+	}
+
+	public void initEditorInteraction(EditorInteraction intiEditorInteraction) {
+		this.editorInteraction = intiEditorInteraction;
+		editorInteraction.setWebObjectTagListener(this);
+		editorInteraction.setWodDocumentProvider(this);
+	}
+
+	public void webObjectTagSelected(String name) {
+		try {
+			IDocument document = getDocumentProvider().getDocument(getEditorInput());
+			WodScanner wodScanner = WodScanner.wodScannerForDocument(document);
+			RulePosition elementNameRulePosition = wodScanner.firstRulePositionOfTypeWithText(ElementNameRule.class, name);
+			if (elementNameRulePosition != null) {
+				IRegion region = document.getLineInformationOfOffset(elementNameRulePosition.getTokenOffset());
+				setHighlightRange(region.getOffset(), region.getLength(), true);
+			}
+		} catch (BadLocationException e) {
+			WodclipsePlugin.getDefault().log(e);
+		}
+	}
+
+	public IDocument getWodEditDocument() {
+		IDocument document = getDocumentProvider().getDocument(getEditorInput());
+		return document;
+	}
+
+	public EditorInteraction getEditorInteraction() {
 		return editorInteraction;
 	}
+
 }
