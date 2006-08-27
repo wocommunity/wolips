@@ -72,8 +72,8 @@ public class HtmlWodTab extends ComponentEditorTab {
 
 	private IEditorInput wodInput;
 
-	public HtmlWodTab(ComponentEditorPart componentEditorPart, IEditorInput htmlInput, IEditorInput wodInput) {
-		super(componentEditorPart);
+	public HtmlWodTab(ComponentEditorPart componentEditorPart, int tabIndex, IEditorInput htmlInput, IEditorInput wodInput) {
+		super(componentEditorPart, tabIndex);
 		this.htmlInput = htmlInput;
 		this.wodInput = wodInput;
 	}
@@ -126,14 +126,14 @@ public class HtmlWodTab extends ComponentEditorTab {
 		htmlSashform.addListener(SWT.Activate, new Listener() {
 			public void handleEvent(Event event) {
 				htmlActive = true;
-				// pageChange(pageIndexToEditorPartOffset(1));
+				HtmlWodTab.this.getComponentEditorPart().pageChange(HtmlWodTab.this.getTabIndex());
 				HtmlWodTab.this.getComponentEditorPart().updateOutline();
 			}
 		});
 		wodSashform.addListener(SWT.Activate, new Listener() {
 			public void handleEvent(Event event) {
 				htmlActive = false;
-				// pageChange(pageIndexToEditorPartOffset(1));
+				HtmlWodTab.this.getComponentEditorPart().pageChange(HtmlWodTab.this.getTabIndex());
 				HtmlWodTab.this.getComponentEditorPart().updateOutline();
 			}
 		});

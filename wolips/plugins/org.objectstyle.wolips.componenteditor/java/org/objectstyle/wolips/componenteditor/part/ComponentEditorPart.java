@@ -136,7 +136,7 @@ public class ComponentEditorPart extends MultiPageEditorPart {
 			j++;
 			wodInput = (IFileEditorInput) editorInput[j];
 			j++;
-			HtmlWodTab htmlWodTab = new HtmlWodTab(this, htmlInput, wodInput);
+			HtmlWodTab htmlWodTab = new HtmlWodTab(this, tabIndex, htmlInput, wodInput);
 			componentEditorTabs[tabIndex] = htmlWodTab;
 			htmlWodTabs[tabIndex] = htmlWodTab;
 			htmlWodTab.createTab();
@@ -146,7 +146,7 @@ public class ComponentEditorPart extends MultiPageEditorPart {
 		}
 
 		// html preview tab
-		htmlPreviewTab = new HtmlPreviewTab(this, htmlInput);
+		htmlPreviewTab = new HtmlPreviewTab(this, tabIndex, htmlInput);
 		componentEditorTabs[tabIndex] = htmlPreviewTab;
 		htmlPreviewTab.createTab();
 		this.addPage(htmlPreviewTab);
@@ -154,7 +154,7 @@ public class ComponentEditorPart extends MultiPageEditorPart {
 		tabIndex++;
 		// api tab
 		IFileEditorInput apiInput = (IFileEditorInput) componentEditorInput.getApiEditor();
-		apiTab = new ApiTab(this, apiInput);
+		apiTab = new ApiTab(this, tabIndex, apiInput);
 		componentEditorTabs[tabIndex] = apiTab;
 		apiTab.createTab();
 		this.addPage(apiTab);

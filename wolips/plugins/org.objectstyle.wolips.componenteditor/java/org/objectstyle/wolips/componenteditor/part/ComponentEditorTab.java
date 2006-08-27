@@ -57,12 +57,14 @@ public abstract class ComponentEditorTab extends Composite {
 	private ComponentEditorPart componentEditorPart;
 
 	private SashForm parentSashForm;
+	private int tabIndex;
 
-	public ComponentEditorTab(ComponentEditorPart componentEditorPart) {
+	public ComponentEditorTab(ComponentEditorPart componentEditorPart, int tabIndex) {
 		super(componentEditorPart.publicGetContainer(), SWT.NONE);
 		this.componentEditorPart = componentEditorPart;
 		parentSashForm = new SashForm(this, SWT.VERTICAL | SWT.SMOOTH);
 		this.setLayout(new FillLayout());
+		this.tabIndex = tabIndex;
 	}
 
 	public ComponentEditorPart getComponentEditorPart() {
@@ -96,4 +98,8 @@ public abstract class ComponentEditorTab extends Composite {
 	}
 
 	public abstract IEditorInput getActiveEditorInput();
+
+	public int getTabIndex() {
+		return tabIndex;
+	}
 }
