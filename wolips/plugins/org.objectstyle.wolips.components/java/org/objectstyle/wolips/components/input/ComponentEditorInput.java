@@ -69,32 +69,55 @@ public class ComponentEditorInput extends MultiEditorInput implements IPersistab
 
 	private LocalizedComponentsLocateResult localizedComponentsLocateResult;
 
-	public ComponentEditorInput(String[] editorIDs, IEditorInput[] innerEditors) {
-		super(editorIDs, innerEditors);
+	private IEditorInput[] componentEditors;
+
+	private IEditorInput apiEditor;
+
+	public ComponentEditorInput(String[] allEditorIDs, IEditorInput[] allInnerEditors, IEditorInput[] componentEditors, IEditorInput apiEditor) {
+		super(allEditorIDs, allInnerEditors);
+		this.componentEditors = componentEditors;
+		this.apiEditor = apiEditor;
 	}
 
 	private static ComponentEditorInput create(LocalizedComponentsLocateResult localizedComponentsLocateResult) throws CoreException {
-		String ids[] = null;
+		IFolder[] folder = localizedComponentsLocateResult.getComponents();
+		int folderCountTimesTwo = folder.length * 2;
+		String allIds[] = null;
 		ComponentEditorFileEditorInput allInput[] = null;
-		ids = new String[3];
-		allInput = new ComponentEditorFileEditorInput[3];
-		ids[0] = EditorsPlugin.HTMLEditorID;
-		IFolder folder = localizedComponentsLocateResult.getComponents()[0];
-		IFile htmlFile = LocalizedComponentsLocateResult.getHtml(folder);
-		IFile wodFile = LocalizedComponentsLocateResult.getWod(folder);
-		allInput[0] = new ComponentEditorFileEditorInput(htmlFile);
-		ids[1] = EditorsPlugin.WodEditorID;
-		allInput[1] = new ComponentEditorFileEditorInput(wodFile);
-		if (localizedComponentsLocateResult.getDotApi() != null) {
-			ids[2] = EditorsPlugin.ApiEditorID;
-			allInput[2] = new ComponentEditorFileEditorInput(localizedComponentsLocateResult.getDotApi());
-		} else {
-			ids[2] = EditorsPlugin.ApiEditorID;
-			String apiFileName = LocatePlugin.getDefault().fileNameWithoutExtension(wodFile);
-			IFile api = wodFile.getParent().getParent().getFile(new Path(apiFileName + ".api"));
-			allInput[2] = new ComponentEditorFileEditorInput(api);
+		ComponentEditorFileEditorInput allComponentInput[] = null;
+		ComponentEditorFileEditorInput apiInput = null;
+		allIds = new String[folderCountTimesTwo + 1];
+		allInput = new ComponentEditorFileEditorInput[folderCountTimesTwo + 1];
+		allComponentInput = new ComponentEditorFileEditorInput[folderCountTimesTwo];
+		int j = 0;
+		IFile htmlFile = null;
+		IFile wodFile = null;
+		for (int i = 0; i < folder.length; i++) {
+			IFolder currentFolder = folder[i];
+			htmlFile = LocalizedComponentsLocateResult.getHtml(currentFolder);
+			wodFile = LocalizedComponentsLocateResult.getWod(currentFolder);
+			allIds[j] = EditorsPlugin.HTMLEditorID;
+			allInput[j] = new ComponentEditorFileEditorInput(htmlFile);
+			allComponentInput[j] = allInput[j];
+			j++;
+			allIds[j] = EditorsPlugin.WodEditorID;
+			allInput[j] = new ComponentEditorFileEditorInput(wodFile);
+			allComponentInput[j] = allInput[j];
+			j++;
 		}
-		ComponentEditorInput input = new ComponentEditorInput(ids, allInput);
+		if (wodFile != null) {
+			if (localizedComponentsLocateResult.getDotApi() != null) {
+				allIds[j] = EditorsPlugin.ApiEditorID;
+				allInput[j] = new ComponentEditorFileEditorInput(localizedComponentsLocateResult.getDotApi());
+			} else {
+				allIds[j] = EditorsPlugin.ApiEditorID;
+				String apiFileName = LocatePlugin.getDefault().fileNameWithoutExtension(wodFile);
+				IFile api = wodFile.getParent().getParent().getFile(new Path(apiFileName + ".api"));
+				allInput[j] = new ComponentEditorFileEditorInput(api);
+			}
+			apiInput = allInput[j];
+		}
+		ComponentEditorInput input = new ComponentEditorInput(allIds, allInput, allComponentInput, apiInput);
 		input.localizedComponentsLocateResult = localizedComponentsLocateResult;
 		for (int i = 0; i < allInput.length; i++) {
 			allInput[i].setComponentEditorInput(input);
@@ -211,5 +234,13 @@ public class ComponentEditorInput extends MultiEditorInput implements IPersistab
 
 	public void setDisplayWooPartOnReveal(boolean displayWooPartOnReveal) {
 		this.displayWooPartOnReveal = displayWooPartOnReveal;
+	}
+
+	public IEditorInput getApiEditor() {
+		return apiEditor;
+	}
+
+	public IEditorInput[] getComponentEditors() {
+		return componentEditors;
 	}
 }

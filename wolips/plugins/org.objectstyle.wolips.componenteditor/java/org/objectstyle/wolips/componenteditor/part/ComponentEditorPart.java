@@ -74,13 +74,13 @@ public class ComponentEditorPart extends MultiPageEditorPart {
 
 	private ComponentEditorOutline componentEditorOutline;
 
-	protected HtmlWodTab htmlWodTab;
+	protected HtmlWodTab[] htmlWodTabs;
 
 	private HtmlPreviewTab htmlPreviewTab;
 
 	private ApiTab apiTab;
 
-	private ComponentEditorTab[] componentEditorTabs = new ComponentEditorTab[3];
+	private ComponentEditorTab[] componentEditorTabs;
 
 	public ComponentEditorPart() {
 		super();
@@ -123,30 +123,42 @@ public class ComponentEditorPart extends MultiPageEditorPart {
 		if (componentEditorInput == null) {
 			return;
 		}
-		IEditorInput[] editorInput = componentEditorInput.getInput();
+		IEditorInput[] editorInput = componentEditorInput.getComponentEditors();
+		componentEditorTabs = new ComponentEditorTab[editorInput.length / 2 + 2];
+		htmlWodTabs = new HtmlWodTab[editorInput.length / 2];
+		// htmlwod tabs
+		IFileEditorInput htmlInput = null;
+		IFileEditorInput wodInput = null;
+		int j = 0;
+		int tabIndex = 0;
+		for (int i = 0; i < editorInput.length / 2; i++) {
+			htmlInput = (IFileEditorInput) editorInput[j];
+			j++;
+			wodInput = (IFileEditorInput) editorInput[j];
+			j++;
+			HtmlWodTab htmlWodTab = new HtmlWodTab(this, htmlInput, wodInput);
+			componentEditorTabs[tabIndex] = htmlWodTab;
+			htmlWodTabs[tabIndex] = htmlWodTab;
+			htmlWodTab.createTab();
+			this.addPage(htmlWodTab);
+			this.setPageText(tabIndex, "Component");
+			tabIndex++;
+		}
 
-		IFileEditorInput htmlInput = (IFileEditorInput) editorInput[0];
-		IFileEditorInput wodInput = (IFileEditorInput) editorInput[1];
-		IFileEditorInput apiInput = (IFileEditorInput) editorInput[2];
-
-		htmlWodTab = new HtmlWodTab(this, htmlInput, wodInput);
-
+		// html preview tab
 		htmlPreviewTab = new HtmlPreviewTab(this, htmlInput);
-
-		apiTab = new ApiTab(this, apiInput);
-
-		componentEditorTabs[0] = htmlWodTab;
-		componentEditorTabs[1] = htmlPreviewTab;
-		componentEditorTabs[2] = apiTab;
-		htmlWodTab.createTab();
-		this.addPage(htmlWodTab);
-		this.setPageText(0, "Component");
+		componentEditorTabs[tabIndex] = htmlPreviewTab;
 		htmlPreviewTab.createTab();
 		this.addPage(htmlPreviewTab);
-		this.setPageText(1, "Preview");
+		this.setPageText(tabIndex, "Preview");
+		tabIndex++;
+		// api tab
+		IFileEditorInput apiInput = (IFileEditorInput) componentEditorInput.getApiEditor();
+		apiTab = new ApiTab(this, apiInput);
+		componentEditorTabs[tabIndex] = apiTab;
 		apiTab.createTab();
 		this.addPage(apiTab);
-		this.setPageText(2, "Api");
+		this.setPageText(tabIndex, "Api");
 
 		CTabFolder tabFolder = (CTabFolder) this.getContainer();
 		tabFolder.addSelectionListener(new SelectionListener() {
@@ -211,21 +223,21 @@ public class ComponentEditorPart extends MultiPageEditorPart {
 	}
 
 	public void switchToHtml() {
-		this.htmlWodTab.setHtmlActive();
+		this.htmlWodTabs[0].setHtmlActive();
 		switchToPage(0);
 	}
 
 	public void switchToWod() {
-		this.htmlWodTab.setWodActive();
+		this.htmlWodTabs[0].setWodActive();
 		switchToPage(0);
 	}
 
 	public void switchToPreview() {
-		switchToPage(1);
+		switchToPage(htmlWodTabs.length);
 	}
 
 	public void switchToApi() {
-		switchToPage(2);
+		switchToPage(htmlWodTabs.length + 1);
 	}
 
 	public void switchToPage(int page) {
