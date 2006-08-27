@@ -57,8 +57,8 @@ public class HtmlPreviewTab extends ComponentEditorTab {
 
 	private IEditorInput htmlInput;
 
-	public HtmlPreviewTab(ComponentEditorPart componentEditorPart, IEditorInput htmlInput) {
-		super(componentEditorPart);
+	public HtmlPreviewTab(ComponentEditorPart componentEditorPart, int tabIndex, IEditorInput htmlInput) {
+		super(componentEditorPart, tabIndex);
 		this.htmlInput = htmlInput;
 	}
 

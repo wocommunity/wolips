@@ -57,8 +57,8 @@ public class ApiTab extends ComponentEditorTab {
 
 	private IEditorInput apiInput;
 
-	public ApiTab(ComponentEditorPart componentEditorPart, IEditorInput apiInput) {
-		super(componentEditorPart);
+	public ApiTab(ComponentEditorPart componentEditorPart, int tabIndex, IEditorInput apiInput) {
+		super(componentEditorPart, tabIndex);
 		this.apiInput = apiInput;
 	}
 
