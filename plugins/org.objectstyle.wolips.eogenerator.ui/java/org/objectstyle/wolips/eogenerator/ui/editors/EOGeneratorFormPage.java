@@ -109,6 +109,7 @@ public class EOGeneratorFormPage extends FormPage {
   private FormEntry myFilenameTemplateEntry;
   //  private Button myVerboseButton;
   private Button myJavaButton;
+  private Button myJavaClientButton;
   private Button myPackageDirsButton;
   private TableViewer myModelsTableViewer;
   private TableViewer myRefModelsTableViewer;
@@ -351,6 +352,25 @@ public class EOGeneratorFormPage extends FormPage {
 
       public void widgetSelected(SelectionEvent _e) {
         EOGeneratorFormPage.this.getModel().setJava(Boolean.valueOf(myJavaButton.getSelection()));
+        getEditor().editorDirtyStateChanged();
+      }
+    });
+
+    Label javaClientLabel = _toolkit.createLabel(templatesSection, "Java Client?");
+    javaClientLabel.setForeground(_toolkit.getColors().getColor(FormColors.TITLE));
+
+    myJavaClientButton = _toolkit.createButton(templatesSection, "", SWT.CHECK);
+    GridData javaClientButtonGridData = new GridData(GridData.VERTICAL_ALIGN_CENTER);
+    javaClientButtonGridData.horizontalSpan = 2;
+    myJavaClientButton.setLayoutData(packageDirsButtonGridData);
+    myJavaClientButton.setSelection(myModel.isJavaClient() != null && myModel.isJavaClient().booleanValue());
+    myJavaClientButton.addSelectionListener(new SelectionListener() {
+      public void widgetDefaultSelected(SelectionEvent _e) {
+        widgetSelected(_e);
+      }
+
+      public void widgetSelected(SelectionEvent _e) {
+        EOGeneratorFormPage.this.getModel().setJavaClient(Boolean.valueOf(myJavaClientButton.getSelection()));
         getEditor().editorDirtyStateChanged();
       }
     });

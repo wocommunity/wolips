@@ -86,6 +86,7 @@ public class EOGeneratorModel {
   private List myDefines;
   private Boolean myPackageDirs;
   private Boolean myJava;
+  private Boolean myJavaClient;
   private Boolean myVerbose;
   private String myPrefix;
   private String myFilenameTemplate;
@@ -130,6 +131,7 @@ public class EOGeneratorModel {
     append(sb, "-destination", myDestination);
     append(sb, "-filenameTemplate", myFilenameTemplate);
     append(sb, "-java", myJava);
+    append(sb, "-javaclient", myJavaClient);
     append(sb, "-javaTemplate", getJavaTemplate(_defaultJavaTemplate));
 
     Iterator modelsIter = myModels.iterator();
@@ -183,6 +185,9 @@ public class EOGeneratorModel {
         }
         else if ("-java".equalsIgnoreCase(token)) {
           myJava = Boolean.TRUE;
+        }
+        else if ("-javaclient".equalsIgnoreCase(token)) {
+          myJavaClient = Boolean.TRUE;
         }
         else if ("-javaTemplate".equalsIgnoreCase(token)) {
           myJavaTemplate = nextTokenValue(token, tokenizer);
@@ -314,6 +319,15 @@ public class EOGeneratorModel {
     }
   }
 
+  public Boolean isJavaClient() {
+    return myJavaClient;
+  }
+  
+  public void setJavaClient(Boolean _javaClient) {
+    myJavaClient = _javaClient;
+    myDirty = true;
+  }
+  
   public Boolean isJava() {
     return myJava;
   }
