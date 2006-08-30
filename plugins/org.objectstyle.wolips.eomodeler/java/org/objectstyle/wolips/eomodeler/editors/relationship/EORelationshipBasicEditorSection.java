@@ -49,6 +49,9 @@
  */
 package org.objectstyle.wolips.eomodeler.editors.relationship;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 import org.eclipse.jface.internal.databinding.provisional.DataBindingContext;
 import org.eclipse.jface.internal.databinding.provisional.description.Property;
 import org.eclipse.jface.viewers.ComboViewer;
@@ -98,6 +101,7 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
   private ComboViewer myJoinSemanticComboViewer;
   private ComboViewer myEntityComboViewer;
 
+  private JoinsListener myJoinsListener;
   private DataBindingContext myBindingContext;
   private ComboViewerBinding myDeleteRuleBinding;
   private ComboViewerBinding myJoinSemanticBinding;
@@ -105,6 +109,7 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
   private ComboViewerBinding myEntityBinding;
 
   public EORelationshipBasicEditorSection() {
+    myJoinsListener = new JoinsListener();
   }
 
   public void createControls(Composite _parent, TabbedPropertySheetPage _tabbedPropertySheetPage) {
@@ -225,6 +230,7 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
 
       myRelationship = relationship;
       if (myRelationship != null) {
+        myRelationship.addPropertyChangeListener(EORelationship.JOINS, myJoinsListener);
         myJoinsTableEditor.setRelationship(myRelationship);
         myModelComboViewer.setInput(myRelationship);
         myEntityComboViewer.setInput(myRelationship);
@@ -269,6 +275,9 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
   }
 
   protected void disposeBindings() {
+    if (myRelationship != null) {
+      myRelationship.removePropertyChangeListener(EORelationship.JOINS, myJoinsListener);
+    }
     if (myBindingContext != null) {
       myBindingContext.dispose();
     }
@@ -290,6 +299,12 @@ public class EORelationshipBasicEditorSection extends AbstractPropertySection {
   public void dispose() {
     super.dispose();
     disposeBindings();
+  }
+
+  protected class JoinsListener implements PropertyChangeListener {
+    public void propertyChange(PropertyChangeEvent _evt) {
+      EORelationshipBasicEditorSection.this.updateModelAndEntityCombosEnabled();
+    }
   }
 
   protected class ModelSelectionListener implements ISelectionChangedListener {
