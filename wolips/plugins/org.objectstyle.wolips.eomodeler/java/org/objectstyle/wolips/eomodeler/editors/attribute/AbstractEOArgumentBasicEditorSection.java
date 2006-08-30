@@ -256,11 +256,11 @@ public abstract class AbstractEOArgumentBasicEditorSection extends AbstractPrope
           myDerivedComboViewer.setSelection(new StructuredSelection(AbstractEOArgumentBasicEditorSection.DERIVED));
         }
 
-        Iterator dataTypePanelsIter = myDataTypeToDataTypePanel.values().iterator();
-        while (dataTypePanelsIter.hasNext()) {
-          IDataTypePanel dataTypePanel = (IDataTypePanel) dataTypePanelsIter.next();
-          dataTypePanel.setArgument(_argument);
-        }
+        //        Iterator dataTypePanelsIter = myDataTypeToDataTypePanel.values().iterator();
+        //        while (dataTypePanelsIter.hasNext()) {
+        //          IDataTypePanel dataTypePanel = (IDataTypePanel) dataTypePanelsIter.next();
+        //          dataTypePanel.setArgument(_argument);
+        //        }
         updateAttributePanel(null);
         if (myArgument != null) {
           myArgument.addPropertyChangeListener(AbstractEOArgument.DATA_TYPE, myDataTypeChangeListener);
@@ -287,7 +287,11 @@ public abstract class AbstractEOArgumentBasicEditorSection extends AbstractPrope
 
   public void dispose() {
     disposeBindings();
-    setArgument(null);
+    Iterator dataTypePanelsIter = myDataTypeToDataTypePanel.values().iterator();
+    while (dataTypePanelsIter.hasNext()) {
+      IDataTypePanel dataTypePanel = (IDataTypePanel) dataTypePanelsIter.next();
+      dataTypePanel.setArgument(null);
+    }
     super.dispose();
   }
 
@@ -311,7 +315,13 @@ public abstract class AbstractEOArgumentBasicEditorSection extends AbstractPrope
       EODataType dataType = myArgument.getDataType();
       Control dataTypePanel = (Control) myDataTypeToDataTypePanel.get(dataType);
       if (dataTypePanel == null) {
-        dataTypePanel = (Control)myDataTypeToDataTypePanel.get(EODataType.CUSTOM);
+        dataTypePanel = (Control) myDataTypeToDataTypePanel.get(EODataType.CUSTOM);
+      }
+      if (myDataTypeStackLayout.topControl instanceof IDataTypePanel) {
+        ((IDataTypePanel) myDataTypeStackLayout.topControl).setArgument(null);
+      }
+      if (dataTypePanel instanceof IDataTypePanel) {
+        ((IDataTypePanel) dataTypePanel).setArgument(myArgument);
       }
       myDataTypeStackLayout.topControl = dataTypePanel;
       myDataTypePanel.layout();
