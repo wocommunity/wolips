@@ -270,7 +270,8 @@ public abstract class AbstractEOArgument extends UserInfoableEOModelObject imple
     }
     setFactoryMethodArgumentType(null);
     setAdaptorValueConversionMethodName(null);
-    setExternalType(null);
+    // MS: I think clearing external type may be a little aggressive
+    // setExternalType(null);
     setPrecision(null);
     setScale(null);
     setServerTimeZone(null);
