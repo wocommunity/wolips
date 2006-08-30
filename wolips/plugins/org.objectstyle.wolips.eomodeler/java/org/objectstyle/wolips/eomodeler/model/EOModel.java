@@ -165,11 +165,16 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 
   public EODatabaseConfig getDatabaseConfigNamed(String _name) {
     EODatabaseConfig matchingDatabaseConfig = null;
-    Iterator databaseConfigsIter = myDatabaseConfigs.iterator();
-    while (matchingDatabaseConfig == null && databaseConfigsIter.hasNext()) {
-      EODatabaseConfig entity = (EODatabaseConfig) databaseConfigsIter.next();
-      if (ComparisonUtils.equals(entity.getName(), _name)) {
-        matchingDatabaseConfig = entity;
+    if (EODatabaseConfig.DEFAULT_NAME.equals(_name)) {
+      matchingDatabaseConfig = createDefaultDatabaseConfig();
+    }
+    else {
+      Iterator databaseConfigsIter = myDatabaseConfigs.iterator();
+      while (matchingDatabaseConfig == null && databaseConfigsIter.hasNext()) {
+        EODatabaseConfig entity = (EODatabaseConfig) databaseConfigsIter.next();
+        if (ComparisonUtils.equals(entity.getName(), _name)) {
+          matchingDatabaseConfig = entity;
+        }
       }
     }
     return matchingDatabaseConfig;
@@ -238,13 +243,18 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
     _databaseConfig._setModel(null);
   }
 
+  public EODatabaseConfig createDefaultDatabaseConfig() {
+    EODatabaseConfig defaultDatabaseConfig = new EODatabaseConfig(EODatabaseConfig.DEFAULT_NAME);
+    defaultDatabaseConfig.setConnectionDictionary(new HashMap(myConnectionDictionary));
+    defaultDatabaseConfig.setPrototype(getPreferredPrototypeEntity());
+    defaultDatabaseConfig._setModel(this);
+    return defaultDatabaseConfig;
+  }
+
   public Set getDatabaseConfigs(boolean _includeDefault) {
     Set databaseConfigs = new LinkedHashSet();
     if (_includeDefault) {
-      EODatabaseConfig defaultDatabaseConfig = new EODatabaseConfig(EODatabaseConfig.DEFAULT_NAME);
-      defaultDatabaseConfig.setConnectionDictionary(new HashMap(myConnectionDictionary));
-      defaultDatabaseConfig._setModel(this);
-      databaseConfigs.add(defaultDatabaseConfig);
+      databaseConfigs.add(createDefaultDatabaseConfig());
     }
     databaseConfigs.addAll(myDatabaseConfigs);
     return databaseConfigs;
@@ -806,33 +816,71 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
     return prototypeAttributeNames;
   }
 
+  public String getDefaultPrototypeEntityName() {
+    return "EOPrototypes";
+  }
+
+  public String getAdaptorPrototypeEntityName() {
+    String adaptorName = getAdaptorName();
+    String adaptorPrototypeEntityName = null;
+    if (adaptorName != null) {
+      adaptorPrototypeEntityName = "EO" + adaptorName + "Prototypes";
+    }
+    return adaptorPrototypeEntityName;
+  }
+
+  public String getDriverPrototypeEntityName() {
+    String driverPrototypeEntityName = null;
+    String adaptorName = getAdaptorName();
+    // MS: Hardcoded JDBC reference hack ...
+    if ("JDBC".equals(adaptorName)) {
+      Map connectionDictionary = getConnectionDictionary();
+      if (connectionDictionary != null) {
+        String jdbcUrl = (String) connectionDictionary.get("URL");
+        if (jdbcUrl != null) {
+          int firstColon = jdbcUrl.indexOf(':');
+          int secondColon = jdbcUrl.indexOf(':', firstColon + 1);
+          if (firstColon != -1 && secondColon != -1) {
+            String driverName = jdbcUrl.substring(firstColon + 1, secondColon);
+            driverPrototypeEntityName = "EOJDBC" + driverName + "Prototypes";
+          }
+        }
+      }
+    }
+    return driverPrototypeEntityName;
+  }
+
+  public EOEntity getPreferredPrototypeEntity() {
+    EOEntity prototypeEntity = null;
+    String driverPrototypeEntityName = getDriverPrototypeEntityName();
+    if (driverPrototypeEntityName != null) {
+      prototypeEntity = myModelGroup.getEntityNamed(driverPrototypeEntityName);
+    }
+    if (prototypeEntity == null) {
+      String adaptorPrototypeEntityName = getAdaptorPrototypeEntityName();
+      if (adaptorPrototypeEntityName != null) {
+        prototypeEntity = myModelGroup.getEntityNamed(adaptorPrototypeEntityName);
+      }
+    }
+    if (prototypeEntity == null) {
+      String defaultPrototypeEntityName = getDefaultPrototypeEntityName();
+      prototypeEntity = myModelGroup.getEntityNamed(defaultPrototypeEntityName);
+    }
+    return prototypeEntity;
+  }
+
   public synchronized Set getPrototypeAttributes() {
     if (myPrototypeAttributeCache == null) {
       Map prototypeAttributeCache = new HashMap();
 
       Set prototypeEntityNames = new HashSet();
-      addPrototypeAttributes("EOPrototypes", prototypeEntityNames, prototypeAttributeCache);
+      addPrototypeAttributes(getDefaultPrototypeEntityName(), prototypeEntityNames, prototypeAttributeCache);
 
-      String adaptorName = getAdaptorName();
-      String adaptorPrototypeEntityName = "EO" + adaptorName + "Prototypes";
+      String adaptorPrototypeEntityName = getAdaptorPrototypeEntityName();
       addPrototypeAttributes(adaptorPrototypeEntityName, prototypeEntityNames, prototypeAttributeCache);
 
-      // MS: Hardcoded JDBC reference hack ...
-      if ("JDBC".equals(adaptorName)) {
-        Map connectionDictionary = getConnectionDictionary();
-        if (connectionDictionary != null) {
-          String jdbcUrl = (String) connectionDictionary.get("URL");
-          if (jdbcUrl != null) {
-            int firstColon = jdbcUrl.indexOf(':');
-            int secondColon = jdbcUrl.indexOf(':', firstColon + 1);
-            if (firstColon != -1 && secondColon != -1) {
-              String driverName = jdbcUrl.substring(firstColon + 1, secondColon);
-              String driverPrototypeEntityName = "EOJDBC" + driverName + "Prototypes";
-              addPrototypeAttributes(driverPrototypeEntityName, prototypeEntityNames, prototypeAttributeCache);
-            }
-          }
-        }
-      }
+      String driverPrototypeEntityName = getDriverPrototypeEntityName();
+      addPrototypeAttributes(driverPrototypeEntityName, prototypeEntityNames, prototypeAttributeCache);
 
       // Do we need to support "EOPrototypesToHide" entity?
       myPrototypeAttributeCache = new PropertyListSet();
@@ -842,7 +890,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
   }
 
   protected void addPrototypeAttributes(String _prototypeEntityName, Set _prototypeEntityNames, Map _prototypeAttributeCache) {
-    if (!_prototypeEntityNames.contains(_prototypeEntityName)) {
+    if (_prototypeEntityName != null && !_prototypeEntityNames.contains(_prototypeEntityName)) {
       _prototypeEntityNames.add(_prototypeEntityName);
       EOEntity prototypeEntity = myModelGroup.getEntityNamed(_prototypeEntityName);
       if (prototypeEntity != null) {

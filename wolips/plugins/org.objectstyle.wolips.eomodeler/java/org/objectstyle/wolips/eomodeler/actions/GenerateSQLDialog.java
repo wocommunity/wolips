@@ -177,13 +177,17 @@ public class GenerateSQLDialog extends Dialog {
   }
 
   protected Map getSelectedDatabaseConfigMap() {
-    Map selectedDatabaseConfigMap = null;
+    EODatabaseConfig selectedDatabaseConfig = null;
     if (myDatabaseConfigComboViewer != null) {
       IStructuredSelection selection = (IStructuredSelection) myDatabaseConfigComboViewer.getSelection();
-      EODatabaseConfig selectedDatabaseConfig = (EODatabaseConfig) selection.getFirstElement();
-      if (selectedDatabaseConfig != null) {
-        selectedDatabaseConfigMap = selectedDatabaseConfig.toMap().getBackingMap();
-      }
+      selectedDatabaseConfig = (EODatabaseConfig) selection.getFirstElement();
+    }
+    else {
+      selectedDatabaseConfig = myModel.createDefaultDatabaseConfig();
+    }
+    Map selectedDatabaseConfigMap = null;
+    if (selectedDatabaseConfig != null) {
+      selectedDatabaseConfigMap = selectedDatabaseConfig.toMap().getBackingMap();
     }
     return selectedDatabaseConfigMap;
   }
