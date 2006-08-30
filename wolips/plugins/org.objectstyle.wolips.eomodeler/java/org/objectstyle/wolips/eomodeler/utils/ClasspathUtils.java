@@ -86,6 +86,11 @@ public class ClasspathUtils {
       ClasspathUtils.fillInClasspath(modelProject, classpathSet);
     }
 
+    // AK: yeah, this sucks. This is just an example on how to get rapid turnaournd to work...
+    URL classUrl = new URL("file:///Users/ak/extras/woproject/wolips/plugins/org.objectstyle.wolips.eomodeler/bin/");
+    if (classUrl != null) {
+      classpathSet.add(classUrl);
+    }
     Bundle bundle = InternalPlatform.getDefault().getBundle("org.objectstyle.wolips.eomodeler");
     URL sqlJarUrl = bundle.getEntry("/lib/EntityModelerSQL.jar");
     if (sqlJarUrl != null) {
