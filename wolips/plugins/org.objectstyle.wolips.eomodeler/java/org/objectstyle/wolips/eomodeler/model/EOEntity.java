@@ -1225,7 +1225,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
   }
 
   protected void _addFetchSpecificationFromMap(Map.Entry _fetchSpecEntry, Set _failures, Set _sharedObjectFetchSpecificationNames) throws EOModelException {
-    String fetchSpecName = (String) _fetchSpecEntry.getKey();
+    String fetchSpecName = _fetchSpecEntry.getKey().toString();
     EOModelMap fetchSpecMap = new EOModelMap((Map) _fetchSpecEntry.getValue());
     EOFetchSpecification fetchSpec = new EOFetchSpecification(fetchSpecName);
     fetchSpec.loadFromMap(fetchSpecMap, _failures);
