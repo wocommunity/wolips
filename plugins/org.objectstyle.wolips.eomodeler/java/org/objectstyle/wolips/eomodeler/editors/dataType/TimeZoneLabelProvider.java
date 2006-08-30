@@ -49,46 +49,32 @@
  */
 package org.objectstyle.wolips.eomodeler.editors.dataType;
 
-import org.eclipse.jface.viewers.ComboViewer;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Combo;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetWidgetFactory;
-import org.objectstyle.wolips.eomodeler.Messages;
-import org.objectstyle.wolips.eomodeler.model.AbstractEOArgument;
-import org.objectstyle.wolips.eomodeler.utils.ComboViewerBinding;
+import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.jface.viewers.ILabelProviderListener;
+import org.eclipse.swt.graphics.Image;
 
-public class DateDataTypePanel extends Composite implements IDataTypePanel {
-  private ComboViewer myServerTimeZoneViewer;
-  private ComboViewerBinding myServerTimeZoneBinding;
-
-  public DateDataTypePanel(Composite _parent, int _style, TabbedPropertySheetWidgetFactory _widgetFactory) {
-    super(_parent, _style);
-    setBackground(_parent.getBackground());
-    setLayout(new GridLayout(2, false));
-    _widgetFactory.createCLabel(this, Messages.getString("AbstractEOArgument." + AbstractEOArgument.SERVER_TIME_ZONE), SWT.NONE);
-    Combo timeZoneCombo = new Combo(this, SWT.BORDER | SWT.FLAT | SWT.READ_ONLY);
-    myServerTimeZoneViewer = new ComboViewer(timeZoneCombo);
-    myServerTimeZoneViewer.setLabelProvider(new TimeZoneLabelProvider());
-    myServerTimeZoneViewer.setContentProvider(new TimeZoneContentProvider());
-    GridData timeZoneFieldLayoutData = new GridData(GridData.FILL_HORIZONTAL);
-    myServerTimeZoneViewer.getCombo().setLayoutData(timeZoneFieldLayoutData);
+public class TimeZoneLabelProvider implements ILabelProvider {
+  public Image getImage(Object _element) {
+    return null;
   }
 
-  public void setArgument(AbstractEOArgument _argument) {
-    if (myServerTimeZoneBinding != null) {
-      myServerTimeZoneBinding.dispose();
-    }
-    if (_argument != null) {
-      myServerTimeZoneViewer.setInput(_argument);
-      myServerTimeZoneBinding = new ComboViewerBinding(myServerTimeZoneViewer, _argument, AbstractEOArgument.SERVER_TIME_ZONE, null, null, TimeZoneContentProvider.BLANK_VALUE);
-    }
+  public String getText(Object _element) {
+    return (String) _element;
+  }
+
+  public void addListener(ILabelProviderListener _listener) {
+    // DO NOTHING
   }
 
   public void dispose() {
-    setArgument(null);
-    super.dispose();
+    // DO NOTHING
+  }
+
+  public boolean isLabelProperty(Object _element, String _property) {
+    return true;
+  }
+
+  public void removeListener(ILabelProviderListener _listener) {
+    // DO NOTHING
   }
 }
