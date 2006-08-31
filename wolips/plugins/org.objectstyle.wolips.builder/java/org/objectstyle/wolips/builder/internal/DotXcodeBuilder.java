@@ -123,7 +123,7 @@ public class DotXcodeBuilder implements IDeltaBuilder, ICleanBuilder {
 				} catch (CoreException e) {
 					BuilderPlugin.getDefault().log(e);
 				}
-				myXcodeProject = null;
+				// myXcodeProject = null;
 			}
 
 			if (myXcodeProjProject != null) {
@@ -132,7 +132,7 @@ public class DotXcodeBuilder implements IDeltaBuilder, ICleanBuilder {
 				} catch (CoreException e) {
 					BuilderPlugin.getDefault().log(e);
 				}
-				myXcodeProjProject = null;
+				// myXcodeProjProject = null;
 			}
 		}
 		return false;
