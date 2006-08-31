@@ -78,27 +78,33 @@ import org.objectstyle.cayenne.wocompat.PropertyListSerialization;
  */
 public class PBXProject {
 	public void addSourceReference( String path ) {
-		_sourceRefs.add( path );
+		if(!_sourceRefs.contains(path))
+			_sourceRefs.add( path );
 	}
 
 	public void addResourceFileReference( String path ) {
-		_resourceFileRefs.add( path );
+		if(!_resourceFileRefs.contains(path))
+			_resourceFileRefs.add( path );
 	}
 
 	public void addResourceFolderReference( String path ) {
-		_resourceFolderRefs.add( path );
+		if(!_resourceFolderRefs.contains(path))
+			_resourceFolderRefs.add( path );
 	}
 
 	public void addWSResourceFileReference( String path ) {
-		_wsresourceFileRefs.add( path );
+		if(!_wsresourceFileRefs.contains(path))
+			_wsresourceFileRefs.add( path );
 	}
 
 	public void addWSResourceFolderReference( String path ) {
-		_wsresourceFolderRefs.add( path );
+		if(!_wsresourceFolderRefs.contains(path))
+			_wsresourceFolderRefs.add( path );
 	}
 
 	public void addFrameworkReference( String path ) {
-		_frameworkRefs.add( path );
+		if(!_frameworkRefs.contains(path))
+			_frameworkRefs.add( path );
 	}
 
 	public void save( File projectFile ) {
