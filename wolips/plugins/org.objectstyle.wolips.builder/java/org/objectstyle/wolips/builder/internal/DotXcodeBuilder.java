@@ -93,77 +93,66 @@ public class DotXcodeBuilder implements IDeltaBuilder, ICleanBuilder {
 		super();
 	}
 
-	public boolean buildStarted(int _kind, Map _args,
-			IProgressMonitor _monitor, IProject _project, Map _buildCache) {
+	public boolean buildStarted(int _kind, Map _args, IProgressMonitor _monitor, IProject _project, Map _buildCache) {
 		boolean fullRebuild = false;
 		if (Preferences.getPREF_WRITE_XCODE_ON_BUILD()) {
-			myXcodeProject = new XcodeProject();
-			fullRebuild = !_project.getFolder(_project.getName() + ".xcode")
-					.getFile("project.pbxproj").exists();
+			if(myXcodeProject == null) {
+				myXcodeProject = new XcodeProject();
+			}
+			fullRebuild |= !_project.getFolder(_project.getName() + ".xcode").getFile("project.pbxproj").exists();
 		} else {
 			myXcodeProject = null;
 		}
 
 		if (Preferences.getPREF_WRITE_XCODE21_ON_BUILD()) {
-			myXcodeProjProject = new XcodeProjProject();
-			fullRebuild = !_project
-					.getFolder(_project.getName() + ".xcodeproj").getFile(
-							"project.pbxproj").exists();
+			if( myXcodeProjProject == null){
+				myXcodeProjProject = new XcodeProjProject();
+			}
+			fullRebuild |= !_project.getFolder(_project.getName() + ".xcodeproj").getFile("project.pbxproj").exists();
 		} else {
 			myXcodeProjProject = null;
 		}
 		return fullRebuild;
 	}
 
-	public boolean buildPreparationDone(int _kind, Map _args,
-			IProgressMonitor _monitor, IProject _project, Map _buildCache) {
-		if (_kind == IncrementalProjectBuilder.FULL_BUILD
-				|| _kind == IncrementalProjectBuilder.CLEAN_BUILD) {
+	public boolean buildPreparationDone(int _kind, Map _args, IProgressMonitor _monitor, IProject _project, Map _buildCache) {
+		if (_kind == IncrementalProjectBuilder.FULL_BUILD || _kind == IncrementalProjectBuilder.CLEAN_BUILD) {
 			if (myXcodeProject != null) {
 				try {
-					writeXcodeProject(_monitor, _project, myXcodeProject,
-							_project.getName() + ".xcode");
+					writeXcodeProject(_monitor, _project, myXcodeProject, _project.getName() + ".xcode");
 				} catch (CoreException e) {
 					BuilderPlugin.getDefault().log(e);
 				}
+				myXcodeProject = null;
 			}
 
 			if (myXcodeProjProject != null) {
 				try {
-					writeXcodeProject(_monitor, _project, myXcodeProjProject,
-							_project.getName() + ".xcodeproj");
+					writeXcodeProject(_monitor, _project, myXcodeProjProject, _project.getName() + ".xcodeproj");
 				} catch (CoreException e) {
 					BuilderPlugin.getDefault().log(e);
 				}
+				myXcodeProjProject = null;
 			}
 		}
 		return false;
 	}
 
-	protected void writeXcodeProject(IProgressMonitor _monitor,
-			IProject _project, PBXProject _xcodeProject,
-			String _projectFolderName) throws CoreException {
-		IProjectAdapter projectAdapter = (IProjectAdapter) _project
-				.getAdapter(IProjectAdapter.class);
+	protected void writeXcodeProject(IProgressMonitor _monitor, IProject _project, PBXProject _xcodeProject, String _projectFolderName) throws CoreException {
+		IProjectAdapter projectAdapter = (IProjectAdapter) _project.getAdapter(IProjectAdapter.class);
 		List frameworkPaths = projectAdapter.getFrameworkPaths();
 		Iterator frameworkPathsIter = frameworkPaths.iterator();
 		while (frameworkPathsIter.hasNext()) {
 			IPath frameworkPath = (IPath) frameworkPathsIter.next();
-			IContainer frameworkContainer = ResourcesPlugin.getWorkspace()
-					.getRoot().getContainerForLocation(frameworkPath);
+			IContainer frameworkContainer = ResourcesPlugin.getWorkspace().getRoot().getContainerForLocation(frameworkPath);
 			if (frameworkContainer instanceof IProject) {
 				IProject frameworkProject = (IProject) frameworkContainer;
-				IJavaProject frameworkJavaProject = JavaCore
-						.create(frameworkProject);
+				IJavaProject frameworkJavaProject = JavaCore.create(frameworkProject);
 				if (frameworkJavaProject != null) {
-					IPath defaultOutputLocation = frameworkProject
-							.getLocation().append("build");
+					IPath defaultOutputLocation = frameworkProject.getLocation().append("build");
 					if (defaultOutputLocation != null) {
-						IPath builtFrameworkPath = defaultOutputLocation
-								.append(frameworkProject.getName()
-										+ ".framework");
-						_xcodeProject.addFrameworkReference(builtFrameworkPath
-								.toOSString());
+						IPath builtFrameworkPath = defaultOutputLocation.append(frameworkProject.getName() + ".framework");
+						_xcodeProject.addFrameworkReference(builtFrameworkPath.toOSString());
 					}
 				}
 			} else {
@@ -174,9 +163,7 @@ public class DotXcodeBuilder implements IDeltaBuilder, ICleanBuilder {
 		IFile projectFolderFile = _project.getFile(_projectFolderName);
 		if (projectFolderFile.exists()) {
 			// NTS: ??
-			BuilderPlugin.getDefault().log(
-					"Specified Xcode project package (" + _projectFolderName
-							+ ") is not a directory.");
+			BuilderPlugin.getDefault().log("Specified Xcode project package (" + _projectFolderName + ") is not a directory.");
 		} else {
 			IFolder projectFolder = _project.getFolder(_projectFolderName);
 			if (!projectFolder.exists()) {
@@ -188,96 +175,76 @@ public class DotXcodeBuilder implements IDeltaBuilder, ICleanBuilder {
 		}
 	}
 
-	public boolean handleSourceDelta(IResourceDelta _delta,
-			IProgressMonitor monitor, Map _buildCache) {
-		return _delta.getKind() == IResourceDelta.ADDED
-				|| _delta.getKind() == IResourceDelta.REMOVED;
+	public boolean handleSourceDelta(IResourceDelta _delta, IProgressMonitor monitor, Map _buildCache) {
+		return _delta.getKind() == IResourceDelta.ADDED || _delta.getKind() == IResourceDelta.REMOVED;
 	}
 
-	public boolean handleClassesDelta(IResourceDelta _delta,
-			IProgressMonitor monitor, Map _buildCache) {
-		return _delta.getKind() == IResourceDelta.ADDED
-				|| _delta.getKind() == IResourceDelta.REMOVED;
+	public boolean handleClassesDelta(IResourceDelta _delta, IProgressMonitor monitor, Map _buildCache) {
+		return _delta.getKind() == IResourceDelta.ADDED || _delta.getKind() == IResourceDelta.REMOVED;
 	}
 
-	public boolean handleWoappResourcesDelta(IResourceDelta _delta,
-			IProgressMonitor monitor, Map _buildCache) {
-		return _delta.getKind() == IResourceDelta.ADDED
-				|| _delta.getKind() == IResourceDelta.REMOVED;
+	public boolean handleWoappResourcesDelta(IResourceDelta _delta, IProgressMonitor monitor, Map _buildCache) {
+		return _delta.getKind() == IResourceDelta.ADDED || _delta.getKind() == IResourceDelta.REMOVED;
 	}
 
-	public boolean handleWebServerResourcesDelta(IResourceDelta _delta,
-			IProgressMonitor monitor, Map _buildCache) {
-		return _delta.getKind() == IResourceDelta.ADDED
-				|| _delta.getKind() == IResourceDelta.REMOVED;
+	public boolean handleWebServerResourcesDelta(IResourceDelta _delta, IProgressMonitor monitor, Map _buildCache) {
+		return _delta.getKind() == IResourceDelta.ADDED || _delta.getKind() == IResourceDelta.REMOVED;
 	}
 
-	public boolean handleOtherDelta(IResourceDelta _delta,
-			IProgressMonitor monitor, Map _buildCache) {
+	public boolean handleOtherDelta(IResourceDelta _delta, IProgressMonitor monitor, Map _buildCache) {
 		return false;
 	}
 
-	public boolean classpathChanged(IResourceDelta _delta,
-			IProgressMonitor monitor, Map _buildCache) {
+	public boolean classpathChanged(IResourceDelta _delta, IProgressMonitor monitor, Map _buildCache) {
 		return false;
 	}
 
-	public void handleSource(IResource _resource,
-			IProgressMonitor _progressMonitor, Map _buildCache) {
+	public void handleSource(IResource _resource, IProgressMonitor _progressMonitor, Map _buildCache) {
 		if (myXcodeProject != null) {
-			myXcodeProject.addSourceReference(_resource.getLocation()
-					.toOSString());
+			myXcodeProject.addSourceReference(_resource.getLocation().toOSString());
 		}
 		if (myXcodeProjProject != null) {
-			myXcodeProjProject.addSourceReference(_resource.getLocation()
-					.toOSString());
+			myXcodeProjProject.addSourceReference(_resource.getLocation().toOSString());
 		}
 	}
 
-	public void handleClasses(IResource _resource,
-			IProgressMonitor _progressMonitor, Map _buildCache) {
+	public void handleClasses(IResource _resource, IProgressMonitor _progressMonitor, Map _buildCache) {
 		//do nothing
 	}
 
-	public void handleClasspath(IResource _resource,
-			IProgressMonitor _progressMonitor, Map _buildCache) {
-//		do nothing
+	public void handleClasspath(IResource _resource, IProgressMonitor _progressMonitor, Map _buildCache) {
+		//		do nothing
 	}
 
-	public void handleOther(IResource _resource,
-			IProgressMonitor _progressMonitor, Map _buildCache) {
-//		do nothing
+	public void handleOther(IResource _resource, IProgressMonitor _progressMonitor, Map _buildCache) {
+		//		do nothing
 	}
 
-	public void handleWebServerResources(IResource _resource,
-			IProgressMonitor _progressMonitor, Map _buildCache) {
+	public void handleWebServerResources(IResource _resource, IProgressMonitor _progressMonitor, Map _buildCache) {
 		// NTS: Do something here?
 	}
 
-	public void handleWoappResources(IResource _resource,
-			IProgressMonitor _progressMonitor, Map _buildCache) {
+	public void handleWoappResources(IResource _resource, IProgressMonitor _progressMonitor, Map _buildCache) {
 		String resourcePath = _resource.getLocation().toOSString();
 		// System.out.println("DotXcodeBuilder.handleWoappResources: " +
 		// resourcePath + ", " + (_resource instanceof IFolder));
 		if (_resource instanceof IFolder) {
-		  // PJYF May 21 2006 We need to exclude the temp wrappers
-      if (! _resource.getName().endsWith("~")) {
-        if (myXcodeProject != null) {
-          myXcodeProject.addResourceFolderReference(resourcePath);
-        }
-        if (myXcodeProjProject != null) {
-          myXcodeProjProject.addResourceFolderReference(resourcePath);
-        }
-      }
+			// PJYF May 21 2006 We need to exclude the temp wrappers
+			if (!_resource.getName().endsWith("~")) {
+				if (myXcodeProject != null) {
+					myXcodeProject.addResourceFolderReference(resourcePath);
+				}
+				if (myXcodeProjProject != null) {
+					myXcodeProjProject.addResourceFolderReference(resourcePath);
+				}
+			}
 		} else if (_resource instanceof IFile) {
 			IContainer parent = _resource.getParent();
 			boolean addResourceFileReference = true;
 			if (parent != null) {
 				String parentName = parent.getName().toLowerCase();
-        // PJYF May 21 2006 We need to exclude the temp wrappers
-				if (parentName.endsWith(".eomodeld")
-            || parentName.endsWith(".wo")
-            || parentName.endsWith("~")) {
+				// PJYF May 21 2006 We need to exclude the temp wrappers
+				if (parentName.endsWith(".eomodeld") || parentName.endsWith(".wo") || parentName.endsWith("~")) {
 					addResourceFileReference = false;
 				}
 			}
