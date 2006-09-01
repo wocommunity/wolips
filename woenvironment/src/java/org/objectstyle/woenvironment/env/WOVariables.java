@@ -416,6 +416,10 @@ public class WOVariables {
 		return FileStringScanner.replace(path, "\\", "/");
 	}
 
+    public String getProperty(String aKey) {
+        return (wobuildProperties != null ? wobuildProperties.getProperty(aKey) : null);
+    }
+
 	/**
 	 * @return boolean
 	 */
