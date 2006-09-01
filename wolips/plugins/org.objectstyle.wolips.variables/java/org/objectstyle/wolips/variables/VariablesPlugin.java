@@ -298,4 +298,8 @@ public class VariablesPlugin extends AbstractCorePlugin {
 					+ " " + anException.getStackTrace());
 		}
 	}
+
+	public String getWOProjectDevelopmentPath() {
+		return getWOVariables().getProperty("woproject.development.root");
+	}
 }

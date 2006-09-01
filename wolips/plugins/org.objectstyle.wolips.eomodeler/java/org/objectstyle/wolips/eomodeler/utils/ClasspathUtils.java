@@ -21,6 +21,7 @@ import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
+import org.objectstyle.wolips.variables.VariablesPlugin;
 import org.osgi.framework.Bundle;
 
 public class ClasspathUtils {
@@ -85,11 +86,11 @@ public class ClasspathUtils {
       IProject modelProject = modelContainer.getProject();
       ClasspathUtils.fillInClasspath(modelProject, classpathSet);
     }
-
-    // AK: yeah, this sucks. This is just an example on how to get rapid turnaournd to work...
-    URL classUrl = new URL("file:///Users/ak/extras/woproject/wolips/plugins/org.objectstyle.wolips.eomodeler/bin/");
-    if (classUrl != null) {
-      classpathSet.add(classUrl);
+    // AK: we don't want to re-jar each time we make a change....
+    String workSpacePath = VariablesPlugin.getDefault().getWOProjectDevelopmentPath();
+    if(workSpacePath != null) {
+    	URL classUrl = new URL("file://" + workSpacePath + "wolips/plugins/org.objectstyle.wolips.eomodeler/bin/");
+    	classpathSet.add(classUrl);
     }
     Bundle bundle = InternalPlatform.getDefault().getBundle("org.objectstyle.wolips.eomodeler");
     URL sqlJarUrl = bundle.getEntry("/lib/EntityModelerSQL.jar");
