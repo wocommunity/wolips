@@ -36,61 +36,61 @@ import org.eclipse.swt.widgets.Control;
  */
 public class BindingFactory {
 
-  /**
-   * Creates a data binding context whose lifecycle is bound to an SWT
-   * control, and which supports binding to SWT controls, JFace viewers, and
-   * POJO model objects with JavaBeans-style notification.
-   * <p>
-   * This method is a convenience method; its implementation is equivalent to
-   * calling
-   * {@link DataBindingContext#createContext(Control, IObservableFactory[]) }
-   * where the array of factories consists of a
-   * {@link NestedObservableFactory}, a {@link BeanObservableFactory}
-   * instance, a {@link SWTObservableFactory}, and a
-   * {@link ViewersObservableFactory}.
-   * </p>
-   * 
-   * @param control
-   * @return a data binding context
-   */
-  public static DataBindingContext createContext(Control control) {
-    final DataBindingContext context = createContext();
-    control.addDisposeListener(new DisposeListener() {
-      public void widgetDisposed(DisposeEvent e) {
-        context.dispose();
-      }
-    });
-    return context;
-  }
+	/**
+	 * Creates a data binding context whose lifecycle is bound to an SWT
+	 * control, and which supports binding to SWT controls, JFace viewers, and
+	 * POJO model objects with JavaBeans-style notification.
+	 * <p>
+	 * This method is a convenience method; its implementation is equivalent to
+	 * calling
+	 * {@link DataBindingContext#createContext(Control, IObservableFactory[]) }
+	 * where the array of factories consists of a
+	 * {@link NestedObservableFactory}, a {@link BeanObservableFactory}
+	 * instance, a {@link SWTObservableFactory}, and a
+	 * {@link ViewersObservableFactory}.
+	 * </p>
+	 * 
+	 * @param control
+	 * @return a data binding context
+	 */
+	public static DataBindingContext createContext(Control control) {
+		final DataBindingContext context = createContext();
+		control.addDisposeListener(new DisposeListener() {
+			public void widgetDisposed(DisposeEvent e) {
+				context.dispose();
+			}
+		});
+		return context;
+	}
 
-  /**
-   * Creates a data binding context which supports binding to SWT controls,
-   * JFace viewers, and POJO model objects with JavaBeans-style notification.
-   * This data binding context's life cycle is not bound to the dispose event
-   * of any SWT control. Consequently, the programmer is responsible to
-   * manually dispose any IObservables created using this data binding context
-   * as necessary.
-   * <p>
-   * This method is a convenience method; its implementation is equivalent to
-   * calling
-   * {@link DataBindingContext#createContext(Control, IObservableFactory[]) }
-   * where the array of factories consists of a
-   * {@link NestedObservableFactory}, a {@link BeanObservableFactory}
-   * instance, a {@link SWTObservableFactory}, and a
-   * {@link ViewersObservableFactory}.
-   * </p>
-   * 
-   * @return a data binding context
-   */
-  public static DataBindingContext createContext() {
-    DataBindingContext context = new DataBindingContext();
-    context.addObservableFactory(new NestedObservableFactory(context));
-    context.addObservableFactory(new BeanObservableFactory(context, null, null));
-    context.addObservableFactory(new SWTObservableFactory());
-    context.addObservableFactory(new ViewersObservableFactory());
-    context.addBindSupportFactory(new DefaultBindSupportFactory());
-    context.addBindingFactory(new DefaultBindingFactory());
-    context.addBindingFactory(new ViewersBindingFactory());
-    return context;
-  }
+	/**
+	 * Creates a data binding context which supports binding to SWT controls,
+	 * JFace viewers, and POJO model objects with JavaBeans-style notification.
+	 * This data binding context's life cycle is not bound to the dispose event
+	 * of any SWT control. Consequently, the programmer is responsible to
+	 * manually dispose any IObservables created using this data binding context
+	 * as necessary.
+	 * <p>
+	 * This method is a convenience method; its implementation is equivalent to
+	 * calling
+	 * {@link DataBindingContext#createContext(Control, IObservableFactory[]) }
+	 * where the array of factories consists of a
+	 * {@link NestedObservableFactory}, a {@link BeanObservableFactory}
+	 * instance, a {@link SWTObservableFactory}, and a
+	 * {@link ViewersObservableFactory}.
+	 * </p>
+	 * 
+	 * @return a data binding context
+	 */
+	public static DataBindingContext createContext() {
+		DataBindingContext context = new DataBindingContext();
+		context.addObservableFactory(new NestedObservableFactory(context));
+		context.addObservableFactory(new BeanObservableFactory(context, null, null));
+		context.addObservableFactory(new SWTObservableFactory(DataBindingContext.TIME_EARLY));
+		context.addObservableFactory(new ViewersObservableFactory(DataBindingContext.TIME_EARLY));
+		context.addBindSupportFactory(new DefaultBindSupportFactory());
+		context.addBindingFactory(new DefaultBindingFactory());
+		context.addBindingFactory(new ViewersBindingFactory());
+		return context;
+	}
 }
