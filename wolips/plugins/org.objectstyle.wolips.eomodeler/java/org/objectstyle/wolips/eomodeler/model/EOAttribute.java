@@ -297,7 +297,7 @@ public class EOAttribute extends AbstractEOArgument implements IEOAttribute, ISo
     }
     return value;
   }
-
+  
   public void setName(String _name, boolean _fireEvents) throws DuplicateNameException {
     String name = (String) _prototypeValueIfNull(AbstractEOArgument.NAME, _name);
     if (name == null) {
@@ -685,6 +685,15 @@ public class EOAttribute extends AbstractEOArgument implements IEOAttribute, ISo
         }
         else if (columnName.indexOf(' ') != -1) {
           _failures.add(new EOModelVerificationFailure(getFullyQualifiedName() + "'s column name '" + columnName + "' has a space in it."));
+        }
+        else {
+        	Iterator attributesIter = myEntity.getAttributes().iterator();
+        	while (attributesIter.hasNext()) {
+				EOAttribute attribute = (EOAttribute) attributesIter.next();
+				if (attribute != this && columnName.equals(attribute.getColumnName())) {
+					_failures.add(new EOModelVerificationFailure(getFullyQualifiedName() + "'s column name is the same as " + attribute.getFullyQualifiedName() + "'s."));
+				}
+			}
         }
       }
     }
