@@ -198,6 +198,15 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
   public EOEntity joinInManyToManyWith(EOEntity _entity2, String _relationshipName, String _inverseRelationshipName) throws DuplicateNameException {
     EOEntity manyToManyEntity = new EOEntity(getModel().findUnusedEntityName(getName() + _entity2.getName()));
     manyToManyEntity.setExternalName(manyToManyEntity.getName());
+    Set joiningEntitiesSet = new HashSet();
+    joiningEntitiesSet.add(this);
+    joiningEntitiesSet.add(_entity2);
+    String packageName = getModel().guessPackageName(joiningEntitiesSet);
+    String className = manyToManyEntity.getName();
+    if (packageName != null && packageName.length() > 0) {
+    	className = packageName + "." + className;
+    }
+    manyToManyEntity.setClassName(className);
 
     EORelationship entity1Relationship = manyToManyEntity.addBlankRelationship(StringUtils.toLowercaseFirstLetter(getName()));
     entity1Relationship.setToMany(Boolean.FALSE);
@@ -208,7 +217,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     while (entity1PrimaryKeyAttributesIter.hasNext()) {
       EOAttribute entity1PrimaryKeyAttribute = (EOAttribute) entity1PrimaryKeyAttributesIter.next();
       EOAttribute manyToManyPrimaryKeyAttribute = entity1PrimaryKeyAttribute.cloneAttribute();
-      manyToManyPrimaryKeyAttribute.setName(manyToManyEntity.findUnusedAttributeName(manyToManyPrimaryKeyAttribute.getName()));
+      manyToManyPrimaryKeyAttribute.setName(manyToManyEntity.findUnusedAttributeName(StringUtils.toLowercaseFirstLetter(getName()) + StringUtils.toUppercaseFirstLetter(manyToManyPrimaryKeyAttribute.getName())));
       EOJoin entity1Join = new EOJoin();
       entity1Join.setSourceAttribute(manyToManyPrimaryKeyAttribute);
       entity1Join.setDestinationAttribute(entity1PrimaryKeyAttribute);
@@ -226,7 +235,7 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     while (primaryKeyAttributesIter.hasNext()) {
       EOAttribute entity2PrimaryKeyAttribute = (EOAttribute) primaryKeyAttributesIter.next();
       EOAttribute manyToManyPrimaryKeyAttribute = entity2PrimaryKeyAttribute.cloneAttribute();
-      manyToManyPrimaryKeyAttribute.setName(manyToManyEntity.findUnusedAttributeName(manyToManyPrimaryKeyAttribute.getName()));
+      manyToManyPrimaryKeyAttribute.setName(manyToManyEntity.findUnusedAttributeName(StringUtils.toLowercaseFirstLetter(_entity2.getName()) + StringUtils.toUppercaseFirstLetter(manyToManyPrimaryKeyAttribute.getName())));
       EOJoin entity2Join = new EOJoin();
       entity2Join.setSourceAttribute(manyToManyPrimaryKeyAttribute);
       entity2Join.setDestinationAttribute(entity2PrimaryKeyAttribute);
