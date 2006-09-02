@@ -73,6 +73,8 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.objectstyle.wolips.eomodeler.Activator;
 import org.objectstyle.wolips.eomodeler.Messages;
+import org.objectstyle.wolips.eomodeler.editors.attributes.EOAttributesConstants;
+import org.objectstyle.wolips.eomodeler.model.EOAttribute;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOModelObject;
 import org.objectstyle.wolips.eomodeler.model.EORelationship;
@@ -130,6 +132,8 @@ public class EORelationshipsTableViewer extends Composite implements ISelectionP
     if (myEntity != null) {
       myRelationshipsTableViewer.setInput(myEntity);
       TableUtils.packTableColumns(myRelationshipsTableViewer);
+      TableColumn nameColumn = myRelationshipsTableViewer.getTable().getColumn(TableUtils.getColumnNumber(EORelationshipsConstants.COLUMNS, EORelationship.NAME));
+      nameColumn.setWidth(Math.max(nameColumn.getWidth(), 100));
       myEntity.addPropertyChangeListener(EOEntity.PARENT, myParentChangedRefresher);
       myEntity.addPropertyChangeListener(EOEntity.RELATIONSHIPS, myRelationshipsChangedRefresher);
       myEntity.addPropertyChangeListener(EOEntity.RELATIONSHIP, myTableRowRefresher);
