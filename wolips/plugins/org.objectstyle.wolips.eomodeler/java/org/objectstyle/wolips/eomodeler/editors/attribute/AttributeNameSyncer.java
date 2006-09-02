@@ -16,7 +16,7 @@ public class AttributeNameSyncer implements PropertyChangeListener {
 			String propertyName = _evt.getPropertyName();
 			if (AbstractEOArgument.NAME.equals(propertyName)) {
 				String oldName = (String)_evt.getOldValue();
-				if (ComparisonUtils.equals(oldName, attribute.getColumnName())) {
+				if (ComparisonUtils.equals(oldName, attribute.getColumnName(), true)) {
 					String newName = (String)_evt.getNewValue();
 					attribute.setColumnName(newName);
 				}
