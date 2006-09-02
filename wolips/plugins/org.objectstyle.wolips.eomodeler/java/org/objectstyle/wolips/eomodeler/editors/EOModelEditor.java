@@ -79,6 +79,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IWorkbench;
@@ -346,7 +347,29 @@ public class EOModelEditor extends MultiPageEditorPart implements IResourceChang
 
   public void dispose() {
     ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
+    
     super.dispose();
+    
+    try {
+		IWorkbench workbench = Activator.getDefault().getWorkbench();
+		IWorkbenchPage workbenchPage = workbench.getActiveWorkbenchWindow().getActivePage();
+		if (EOModelerPerspectiveFactory.EOMODELER_PERSPECTIVE_ID.equals(workbenchPage.getPerspective().getId())) {
+			IEditorReference[] editorReferences = workbenchPage.getEditorReferences();
+			int eomodelerEditorCount = 0;
+			for (int editorReferenceNum = 0; editorReferenceNum < editorReferences.length; editorReferenceNum++) {
+				IEditorReference editorReference = editorReferences[editorReferenceNum];
+				if (EOModelEditor.EOMODEL_EDITOR_ID.equals(editorReference.getId())) {
+					eomodelerEditorCount ++;
+				}
+			}
+			if (eomodelerEditorCount == 0) {
+				  workbench.showPerspective("org.objectstyle.wolips.ui.Perspective", workbench.getActiveWorkbenchWindow());
+			}
+		}
+	}
+	catch (WorkbenchException e) {
+	  e.printStackTrace();
+	}
   }
 
   public void doSave(IProgressMonitor _monitor) {
