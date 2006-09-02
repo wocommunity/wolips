@@ -55,6 +55,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.eclipse.jface.internal.databinding.provisional.BindSpec;
 import org.eclipse.jface.internal.databinding.provisional.DataBindingContext;
 import org.eclipse.jface.internal.databinding.provisional.description.Property;
 import org.eclipse.jface.viewers.ComboViewer;
@@ -111,12 +112,14 @@ public abstract class AbstractEOArgumentBasicEditorSection extends AbstractPrope
   private DataBindingContext myBindingContext;
   private ComboViewerBinding myDataTypeBinding;
   private DataTypeChangeListener myDataTypeChangeListener;
+  private AttributeNameSyncer myNameColumnNameSyncer;
 
   private Composite myDataTypePanel;
   private Composite myColumnNameDefinitionComposite;
 
   public AbstractEOArgumentBasicEditorSection() {
     myDataTypeChangeListener = new DataTypeChangeListener();
+    myNameColumnNameSyncer = new AttributeNameSyncer();
   }
 
   public AbstractEOArgument getArgument() {
@@ -264,6 +267,7 @@ public abstract class AbstractEOArgumentBasicEditorSection extends AbstractPrope
         updateAttributePanel(null);
         if (myArgument != null) {
           myArgument.addPropertyChangeListener(AbstractEOArgument.DATA_TYPE, myDataTypeChangeListener);
+          myArgument.addPropertyChangeListener(AbstractEOArgument.NAME, myNameColumnNameSyncer);
         }
       }
     }
@@ -279,6 +283,7 @@ public abstract class AbstractEOArgumentBasicEditorSection extends AbstractPrope
     }
     if (myArgument != null) {
       myArgument.removePropertyChangeListener(AbstractEOArgument.DATA_TYPE, myDataTypeChangeListener);
+      myArgument.removePropertyChangeListener(AbstractEOArgument.NAME, myNameColumnNameSyncer);
     }
     if (myDataTypeBinding != null) {
       myDataTypeBinding.dispose();
