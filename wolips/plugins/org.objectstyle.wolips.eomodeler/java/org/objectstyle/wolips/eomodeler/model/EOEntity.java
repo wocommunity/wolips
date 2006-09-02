@@ -1569,6 +1569,11 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     if (parent != null && !BooleanUtils.isTrue(parent.isAbstractEntity()) && getRestrictingQualifier() == null) {
       _failures.add(new EOModelVerificationFailure(getFullyQualifiedName() + " is a subclass of " + getParent().getName() + " but does not have a restricting qualifier."));
     }
+    
+    Set primaryKeyAttributes = getPrimaryKeyAttributes();
+    if (primaryKeyAttributes.isEmpty()) {
+        _failures.add(new EOModelVerificationFailure(getFullyQualifiedName() + " does not have a primary key."));
+    }
   }
 
   public String getFullyQualifiedName() {
