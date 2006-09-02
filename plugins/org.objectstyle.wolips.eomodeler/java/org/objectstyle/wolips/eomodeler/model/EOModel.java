@@ -120,8 +120,12 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
   }
   
   public String guessPackageName() {
+	  return guessPackageName(getEntities());
+  }
+  
+  public String guessPackageName(Set _entities) {
 	  String guessPackageName = null;
-	  Iterator entitiesIter = getEntities().iterator();
+	  Iterator entitiesIter = _entities.iterator();
 	  while (entitiesIter.hasNext()) {
 		  EOEntity entity = (EOEntity)entitiesIter.next();
 		  String className = entity.getClassName();
