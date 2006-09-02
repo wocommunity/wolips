@@ -118,6 +118,60 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
   public Set getReferenceFailures() {
     return new HashSet();
   }
+  
+  public String guessPackageName() {
+	  String guessPackageName = null;
+	  Iterator entitiesIter = getEntities().iterator();
+	  while (entitiesIter.hasNext()) {
+		  EOEntity entity = (EOEntity)entitiesIter.next();
+		  String className = entity.getClassName();
+		  if (className != null) {
+			  int packageNameEnd = className.lastIndexOf('.');
+			  String packageName;
+			  if (packageNameEnd != -1) {
+				  packageName = className.substring(0, packageNameEnd);
+			  }
+			  else {
+				  packageName = "";
+			  }
+			  if (guessPackageName == null) {
+				  guessPackageName = packageName;
+			  }
+			  else if ("".equals(guessPackageName)) {
+				  // it can't change from ""
+			  }
+			  else if (!guessPackageName.equals(packageName)) {
+				  if (guessPackageName.startsWith(packageName)) {
+					  guessPackageName = packageName;
+				  }
+				  else if (packageName.startsWith(guessPackageName)) {
+					  // leave it as is
+				  }
+				  else {
+					  int lastMatchingIndex = -1;
+					  for (int index = 0; index < guessPackageName.length() && index < packageName.length(); index++) {
+						if (guessPackageName.charAt(index) == packageName.charAt(index)) {
+							lastMatchingIndex = index;
+						}
+						else {
+							break;
+						}
+					  }
+					  if (lastMatchingIndex != -1) {
+						  guessPackageName = guessPackageName.substring(0, lastMatchingIndex);
+						  if (guessPackageName.endsWith(".")) {
+							  guessPackageName = guessPackageName.substring(0, guessPackageName.length() - 1);
+						  }
+					  }
+					  else {
+						  guessPackageName = "";
+					  }
+				  }
+			  }
+		  }
+	  }
+	  return guessPackageName;
+  }
 
   public EOEntity addBlankEntity(String _name) throws DuplicateNameException {
     String newEntityNameBase = _name;
@@ -128,6 +182,13 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
       newEntityName = newEntityNameBase + newEntityNum;
     }
     EOEntity entity = new EOEntity(newEntityName);
+    entity.setExternalName(newEntityName);
+    String className = newEntityName;
+    String packageName = guessPackageName();
+    if (packageName != null && packageName.length() > 0) {
+    	className = packageName + "." + newEntityName;
+    }
+    entity.setClassName(className);
     addEntity(entity);
     return entity;
   }
