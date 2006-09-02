@@ -62,10 +62,13 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
 import org.objectstyle.wolips.eomodeler.Messages;
 import org.objectstyle.wolips.eomodeler.editors.IEOModelEditor;
+import org.objectstyle.wolips.eomodeler.editors.relationships.EORelationshipsConstants;
 import org.objectstyle.wolips.eomodeler.model.EOEntity;
 import org.objectstyle.wolips.eomodeler.model.EOModel;
+import org.objectstyle.wolips.eomodeler.model.EORelationship;
 import org.objectstyle.wolips.eomodeler.utils.KeyComboBoxCellEditor;
 import org.objectstyle.wolips.eomodeler.utils.TableRefreshPropertyListener;
 import org.objectstyle.wolips.eomodeler.utils.TableRowDoubleClickHandler;
@@ -107,6 +110,14 @@ public class EOEntitiesTableViewer extends Composite implements ISelectionProvid
     myModel = _model;
     myEntitiesTableViewer.setInput(myModel);
     TableUtils.packTableColumns(myEntitiesTableViewer);
+    TableColumn nameColumn = myEntitiesTableViewer.getTable().getColumn(TableUtils.getColumnNumber(EOEntitiesConstants.COLUMNS, EOEntity.NAME));
+    nameColumn.setWidth(Math.max(nameColumn.getWidth(), 100));
+    TableColumn externalName = myEntitiesTableViewer.getTable().getColumn(TableUtils.getColumnNumber(EOEntitiesConstants.COLUMNS, EOEntity.EXTERNAL_NAME));
+    externalName.setWidth(Math.max(externalName.getWidth(), 100));
+    TableColumn className = myEntitiesTableViewer.getTable().getColumn(TableUtils.getColumnNumber(EOEntitiesConstants.COLUMNS, EOEntity.CLASS_NAME));
+    className.setWidth(Math.max(className.getWidth(), 100));
+    TableColumn parentName = myEntitiesTableViewer.getTable().getColumn(TableUtils.getColumnNumber(EOEntitiesConstants.COLUMNS, EOEntity.PARENT));
+    parentName.setWidth(Math.max(parentName.getWidth(), 100));
     if (myModel != null) {
       myModel.addPropertyChangeListener(EOModel.ENTITIES, myTableRefresher);
       myModel.addPropertyChangeListener(EOModel.ENTITY, myTableRowRefresher);

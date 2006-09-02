@@ -142,6 +142,12 @@ public class EOAttributesTableViewer extends Composite implements ISelectionProv
       myAttributesTableViewer.setInput(myEntity);
       updateCellEditors(myAttributesTableViewer.getCellEditors());
       TableUtils.packTableColumns(myAttributesTableViewer);
+      TableColumn prototypeColumn = myAttributesTableViewer.getTable().getColumn(TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, EOAttribute.PROTOTYPE));
+      prototypeColumn.setWidth(Math.max(prototypeColumn.getWidth(), 100));
+      TableColumn nameColumn = myAttributesTableViewer.getTable().getColumn(TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, AbstractEOArgument.NAME));
+      nameColumn.setWidth(Math.max(nameColumn.getWidth(), 100));
+      TableColumn allowsNullColumn = myAttributesTableViewer.getTable().getColumn(TableUtils.getColumnNumber(EOAttributesConstants.COLUMNS, AbstractEOArgument.ALLOWS_NULL));
+      allowsNullColumn.setWidth(Math.max(allowsNullColumn.getWidth(), 30));
       myEntity.addPropertyChangeListener(EOEntity.PARENT, myParentChangedRefresher);
       myEntity.addPropertyChangeListener(EOEntity.ATTRIBUTES, myAttributesChangedRefresher);
       myEntity.addPropertyChangeListener(EOEntity.ATTRIBUTE, myTableRowRefresher);
