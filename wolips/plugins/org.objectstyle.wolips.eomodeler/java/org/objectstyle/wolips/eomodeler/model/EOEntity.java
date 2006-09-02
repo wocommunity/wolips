@@ -214,6 +214,9 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     entity1Relationship.setClassProperty(Boolean.FALSE);
     entity1Relationship.setMandatory(Boolean.TRUE);
     Iterator entity1PrimaryKeyAttributesIter = getPrimaryKeyAttributes().iterator();
+    if (!entity1PrimaryKeyAttributesIter.hasNext()) {
+    	throw new IllegalStateException("The entity " + getFullyQualifiedName() + " does not have any primary keys.");
+    }
     while (entity1PrimaryKeyAttributesIter.hasNext()) {
       EOAttribute entity1PrimaryKeyAttribute = (EOAttribute) entity1PrimaryKeyAttributesIter.next();
       EOAttribute manyToManyPrimaryKeyAttribute = entity1PrimaryKeyAttribute.cloneAttribute();
@@ -231,9 +234,12 @@ public class EOEntity extends UserInfoableEOModelObject implements IEOEntityRela
     entity2Relationship.setDestination(_entity2);
     entity2Relationship.setClassProperty(Boolean.FALSE);
     entity2Relationship.setMandatory(Boolean.TRUE);
-    Iterator primaryKeyAttributesIter = _entity2.getPrimaryKeyAttributes().iterator();
-    while (primaryKeyAttributesIter.hasNext()) {
-      EOAttribute entity2PrimaryKeyAttribute = (EOAttribute) primaryKeyAttributesIter.next();
+    Iterator entity2PrimaryKeyAttributesIter = _entity2.getPrimaryKeyAttributes().iterator();
+    if (!entity2PrimaryKeyAttributesIter.hasNext()) {
+    	throw new IllegalStateException("The entity " + _entity2.getFullyQualifiedName() + " does not have any primary keys.");
+    }
+    while (entity2PrimaryKeyAttributesIter.hasNext()) {
+      EOAttribute entity2PrimaryKeyAttribute = (EOAttribute) entity2PrimaryKeyAttributesIter.next();
       EOAttribute manyToManyPrimaryKeyAttribute = entity2PrimaryKeyAttribute.cloneAttribute();
       manyToManyPrimaryKeyAttribute.setName(manyToManyEntity.findUnusedAttributeName(StringUtils.toLowercaseFirstLetter(_entity2.getName()) + StringUtils.toUppercaseFirstLetter(manyToManyPrimaryKeyAttribute.getName())));
       EOJoin entity2Join = new EOJoin();
