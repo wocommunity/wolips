@@ -14,11 +14,11 @@ public class EntityNameSyncer implements PropertyChangeListener {
 		if (EOEntity.NAME.equals(propertyName)) {
 			String oldName = (String) _evt.getOldValue();
 			String newName = (String) _evt.getNewValue();
-			if (ComparisonUtils.equals(oldName, entity.getExternalName())) {
+			if (ComparisonUtils.equals(oldName, entity.getExternalName(), true)) {
 				entity.setExternalName(newName);
 			}
 			String className = entity.getClassName();
-			if (ComparisonUtils.equals(oldName, className)) {
+			if (ComparisonUtils.equals(oldName, className, true)) {
 				entity.setClassName(newName);
 			}
 			else if (className != null && className.endsWith("." + oldName)) {
