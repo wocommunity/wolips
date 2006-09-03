@@ -55,6 +55,7 @@
  */
 package org.objectstyle.wolips.builder.internal;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -86,32 +87,62 @@ import org.objectstyle.wolips.preferences.Preferences;
  */
 public class DotXcodeBuilder implements IDeltaBuilder, ICleanBuilder {
 	private XcodeProject myXcodeProject;
-
 	private XcodeProjProject myXcodeProjProject;
+
+	private Map myXcodeProjects = new HashMap();
+	private Map myXcodeProjProjects = new HashMap();
 
 	public DotXcodeBuilder() {
 		super();
 	}
+	
+	private XcodeProject getXcodeProject(IProject _project, boolean create, boolean force) {
+		String key = _project.getName();
+		XcodeProject xcodeproject = (XcodeProject) myXcodeProjects.get(key);
+		if(xcodeproject == null && create) {
+			xcodeproject = new XcodeProject();
+			myXcodeProjects.put(key, xcodeproject);
+		}
+		return xcodeproject;
+	}
+
+	private XcodeProjProject getXcodeProjProject(IProject _project, boolean create, boolean force) {
+		String key = _project.getName();
+		XcodeProjProject xcodeproject = (XcodeProjProject) myXcodeProjProjects.get(key);
+		if(xcodeproject == null && create) {
+			xcodeproject = new XcodeProjProject();
+			myXcodeProjProjects.put(key, xcodeproject);
+		}
+		return xcodeproject;
+	}
 
 	public boolean buildStarted(int _kind, Map _args, IProgressMonitor _monitor, IProject _project, Map _buildCache) {
-		boolean fullRebuild = false;
-		if (Preferences.getPREF_WRITE_XCODE_ON_BUILD()) {
-			if(myXcodeProject == null) {
-				myXcodeProject = new XcodeProject();
-			}
-			fullRebuild |= !_project.getFolder(_project.getName() + ".xcode").getFile("project.pbxproj").exists();
-		} else {
+		boolean fullRebuild = (_kind == IncrementalProjectBuilder.FULL_BUILD);
+		if(false && _kind == IncrementalProjectBuilder.CLEAN_BUILD) {
+			// ak: this doesn't work as when we do a full build, the resources are updated after the clean runs
+			// and before the full build
+			myXcodeProjects.remove(_project.getName());
+			myXcodeProjProjects.remove(_project.getName());
 			myXcodeProject = null;
-		}
-
-		if (Preferences.getPREF_WRITE_XCODE21_ON_BUILD()) {
-			if( myXcodeProjProject == null){
-				myXcodeProjProject = new XcodeProjProject();
-			}
-			fullRebuild |= !_project.getFolder(_project.getName() + ".xcodeproj").getFile("project.pbxproj").exists();
-		} else {
 			myXcodeProjProject = null;
+		} else {
+			if (Preferences.getPREF_WRITE_XCODE_ON_BUILD()) {
+				boolean exists = _project.getFolder(_project.getName() + ".xcode").getFile("project.pbxproj").exists();
+				myXcodeProject = getXcodeProject(_project, true, !exists);
+				fullRebuild |= !exists;
+			} else {
+				myXcodeProject = null;
+			}
+
+			if (Preferences.getPREF_WRITE_XCODE21_ON_BUILD()) {
+				boolean exists = _project.getFolder(_project.getName() + ".xcodeproj").getFile("project.pbxproj").exists();
+				myXcodeProjProject = getXcodeProjProject(_project, true, fullRebuild || !exists);
+				fullRebuild |= !exists;
+			} else {
+				myXcodeProjProject = null;
+			}
 		}
+		// System.err.println("Started: " + _kind + " " + _project.getName() + "->" + myXcodeProjProject);
 		return fullRebuild;
 	}
 
@@ -123,7 +154,6 @@ public class DotXcodeBuilder implements IDeltaBuilder, ICleanBuilder {
 				} catch (CoreException e) {
 					BuilderPlugin.getDefault().log(e);
 				}
-				// myXcodeProject = null;
 			}
 
 			if (myXcodeProjProject != null) {
@@ -132,7 +162,6 @@ public class DotXcodeBuilder implements IDeltaBuilder, ICleanBuilder {
 				} catch (CoreException e) {
 					BuilderPlugin.getDefault().log(e);
 				}
-				// myXcodeProjProject = null;
 			}
 		}
 		return false;
@@ -141,6 +170,7 @@ public class DotXcodeBuilder implements IDeltaBuilder, ICleanBuilder {
 	protected void writeXcodeProject(IProgressMonitor _monitor, IProject _project, PBXProject _xcodeProject, String _projectFolderName) throws CoreException {
 		IProjectAdapter projectAdapter = (IProjectAdapter) _project.getAdapter(IProjectAdapter.class);
 		List frameworkPaths = projectAdapter.getFrameworkPaths();
+		// System.err.println("Writing: " + _project.getName() + "->" + _xcodeProject);
 		Iterator frameworkPathsIter = frameworkPaths.iterator();
 		while (frameworkPathsIter.hasNext()) {
 			IPath frameworkPath = (IPath) frameworkPathsIter.next();
@@ -226,8 +256,7 @@ public class DotXcodeBuilder implements IDeltaBuilder, ICleanBuilder {
 
 	public void handleWoappResources(IResource _resource, IProgressMonitor _progressMonitor, Map _buildCache) {
 		String resourcePath = _resource.getLocation().toOSString();
-		// System.out.println("DotXcodeBuilder.handleWoappResources: " +
-		// resourcePath + ", " + (_resource instanceof IFolder));
+		// System.out.println("DotXcodeBuilder.handleWoappResources: " + resourcePath + ", " + (_resource instanceof IFolder));
 		if (_resource instanceof IFolder) {
 			// PJYF May 21 2006 We need to exclude the temp wrappers
 			if (!_resource.getName().endsWith("~")) {
