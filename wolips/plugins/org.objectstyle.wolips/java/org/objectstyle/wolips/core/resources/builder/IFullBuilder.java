@@ -2,7 +2,7 @@
  *
  * The ObjectStyle Group Software License, Version 1.0
  *
- * Copyright (c) 2005 The ObjectStyle Group,
+ * Copyright (c) 2005 - 2006 The ObjectStyle Group,
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -60,7 +60,7 @@ import java.util.Map;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IProgressMonitor;
 
-public interface ICleanBuilder extends IBuilder {
+public interface IFullBuilder extends IBuilder {
   public abstract void handleSource(IResource resource, IProgressMonitor _progressMonitor, Map _buildCache);
 
 	public abstract void handleClasses(IResource resource, IProgressMonitor _progressMonitor, Map _buildCache);

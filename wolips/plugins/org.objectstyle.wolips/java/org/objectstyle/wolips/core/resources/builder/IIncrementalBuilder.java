@@ -2,7 +2,7 @@
  *
  * The ObjectStyle Group Software License, Version 1.0
  *
- * Copyright (c) 2005 The ObjectStyle Group,
+ * Copyright (c) 2005 - 2006 The ObjectStyle Group,
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -60,16 +60,16 @@ import java.util.Map;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.IProgressMonitor;
 
-public interface IDeltaBuilder extends IBuilder {
-  public abstract boolean handleSourceDelta(IResourceDelta delta, IProgressMonitor _progressMonitor, Map _buildCache);
+public interface IIncrementalBuilder extends IBuilder {
+	public abstract void handleSourceDelta(IResourceDelta delta, IProgressMonitor progressMonitor, Map buildCache);
 
-  public abstract boolean handleClassesDelta(IResourceDelta delta, IProgressMonitor _progressMonitor, Map _buildCache);
+	public abstract void handleClassesDelta(IResourceDelta delta, IProgressMonitor progressMonitor, Map buildCache);
 
-	public abstract boolean handleWoappResourcesDelta(IResourceDelta delta, IProgressMonitor _progressMonitor, Map _buildCache);
+	public abstract void handleWoappResourcesDelta(IResourceDelta delta, IProgressMonitor progressMonitor, Map buildCache);
 
-	public abstract boolean handleWebServerResourcesDelta(IResourceDelta delta, IProgressMonitor _progressMonitor, Map _buildCache);
+	public abstract void handleWebServerResourcesDelta(IResourceDelta delta, IProgressMonitor progressMonitor, Map buildCache);
 
-	public abstract boolean handleOtherDelta(IResourceDelta delta, IProgressMonitor _progressMonitor, Map _buildCache);
+	public abstract void handleOtherDelta(IResourceDelta delta, IProgressMonitor progressMonitor, Map buildCache);
 
-	public abstract boolean classpathChanged(IResourceDelta delta, IProgressMonitor _progressMonitor, Map _buildCache);
+	public abstract void classpathChanged(IResourceDelta delta, IProgressMonitor progressMonitor, Map buildCache);
 }

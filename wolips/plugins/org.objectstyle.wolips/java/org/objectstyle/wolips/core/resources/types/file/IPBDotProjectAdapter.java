@@ -89,4 +89,6 @@ public interface IPBDotProjectAdapter extends IFileAdapter {
 	public abstract void removeWebServerResource(ILocalizedPath localizedPath);
 
 	public abstract void updateFrameworkNames(List frameworkNames);
+	
+	public abstract void cleanTables();
 }

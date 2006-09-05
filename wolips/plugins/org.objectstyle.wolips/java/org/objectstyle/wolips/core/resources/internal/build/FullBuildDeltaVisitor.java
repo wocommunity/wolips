@@ -3,7 +3,7 @@
  * 
  * The ObjectStyle Group Software License, Version 1.0
  * 
- * Copyright (c) 2005 The ObjectStyle Group and individual authors of the
+ * Copyright (c) 2005 - 2006 The ObjectStyle Group and individual authors of the
  * software. All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -56,13 +56,13 @@ import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.objectstyle.wolips.core.resources.builder.IBuilder;
-import org.objectstyle.wolips.core.resources.builder.ICleanBuilder;
+import org.objectstyle.wolips.core.resources.builder.IFullBuilder;
 
 /**
  * @author ulrich
  */
-public class CleanVisitor extends AbstractBuildVisitor implements IResourceVisitor {
-  public CleanVisitor(BuilderWrapper[] builderWrappers, IProgressMonitor _progressMonitor, Map _buildCache) {
+public class FullBuildDeltaVisitor extends AbstractBuildVisitor implements IResourceVisitor {
+  public FullBuildDeltaVisitor(BuilderWrapper[] builderWrappers, IProgressMonitor _progressMonitor, Map _buildCache) {
     super(builderWrappers, _progressMonitor, _buildCache);
   }
 
@@ -106,8 +106,8 @@ public class CleanVisitor extends AbstractBuildVisitor implements IResourceVisit
     BuilderWrapper[] builderWrappers = getBuilderWrappers();
     for (int i = 0; i < builderWrappers.length; i++) {
       IBuilder builder = builderWrappers[i].getBuilder();
-      if (builder instanceof ICleanBuilder) {
-        ((ICleanBuilder) builder).handleClasspath(resource, _progressMonitor, _buildCache);
+      if (builder instanceof IFullBuilder) {
+        ((IFullBuilder) builder).handleClasspath(resource, _progressMonitor, _buildCache);
       }
     }
   }
@@ -116,8 +116,8 @@ public class CleanVisitor extends AbstractBuildVisitor implements IResourceVisit
     BuilderWrapper[] builderWrappers = getBuilderWrappers();
     for (int i = 0; i < builderWrappers.length; i++) {
       IBuilder builder = builderWrappers[i].getBuilder();
-      if (builder instanceof ICleanBuilder) {
-        ((ICleanBuilder) builder).handleClasses(resource, _progressMonitor, _buildCache);
+      if (builder instanceof IFullBuilder) {
+        ((IFullBuilder) builder).handleClasses(resource, _progressMonitor, _buildCache);
       }
     }
   }
@@ -126,8 +126,8 @@ public class CleanVisitor extends AbstractBuildVisitor implements IResourceVisit
     BuilderWrapper[] builderWrappers = getBuilderWrappers();
     for (int i = 0; i < builderWrappers.length; i++) {
       IBuilder builder = builderWrappers[i].getBuilder();
-      if (builder instanceof ICleanBuilder) {
-        ((ICleanBuilder) builder).handleSource(resource, _progressMonitor, _buildCache);
+      if (builder instanceof IFullBuilder) {
+        ((IFullBuilder) builder).handleSource(resource, _progressMonitor, _buildCache);
       }
     }
   }
@@ -136,8 +136,8 @@ public class CleanVisitor extends AbstractBuildVisitor implements IResourceVisit
     BuilderWrapper[] builderWrappers = getBuilderWrappers();
     for (int i = 0; i < builderWrappers.length; i++) {
       IBuilder builder = builderWrappers[i].getBuilder();
-      if (builder instanceof ICleanBuilder) {
-        ((ICleanBuilder) builder).handleWoappResources(resource, _progressMonitor, _buildCache);
+      if (builder instanceof IFullBuilder) {
+        ((IFullBuilder) builder).handleWoappResources(resource, _progressMonitor, _buildCache);
       }
     }
   }
@@ -146,8 +146,8 @@ public class CleanVisitor extends AbstractBuildVisitor implements IResourceVisit
     BuilderWrapper[] builderWrappers = getBuilderWrappers();
     for (int i = 0; i < builderWrappers.length; i++) {
       IBuilder builder = builderWrappers[i].getBuilder();
-      if (builder instanceof ICleanBuilder) {
-        ((ICleanBuilder) builder).handleWebServerResources(resource, _progressMonitor, _buildCache);
+      if (builder instanceof IFullBuilder) {
+        ((IFullBuilder) builder).handleWebServerResources(resource, _progressMonitor, _buildCache);
       }
     }
   }
@@ -156,8 +156,8 @@ public class CleanVisitor extends AbstractBuildVisitor implements IResourceVisit
     BuilderWrapper[] builderWrappers = getBuilderWrappers();
     for (int i = 0; i < builderWrappers.length; i++) {
       IBuilder builder = builderWrappers[i].getBuilder();
-      if (builder instanceof ICleanBuilder) {
-        ((ICleanBuilder) builder).handleOther(resource, _progressMonitor, _buildCache);
+      if (builder instanceof IFullBuilder) {
+        ((IFullBuilder) builder).handleOther(resource, _progressMonitor, _buildCache);
       }
     }
   }
