@@ -72,6 +72,7 @@ public class PBProjectTest extends TestCase {
 
 	/**
 	 * Constructor for PBProjectTest.
+	 * 
 	 * @param arg0
 	 */
 	public PBProjectTest(String arg0) {
@@ -90,12 +91,11 @@ public class PBProjectTest extends TestCase {
 		proj.setProjectName("abc");
 		assertEquals("abc", proj.getProjectName());
 	}
-	
-    public void testDefaultProjectFile() throws Exception {
-    		assertNotNull(proj.pathToProjectFile);
+
+	public void testDefaultProjectFile() throws Exception {
+		assertNotNull(proj.pathToProjectFile);
 		assertEquals("PB.project", proj.pathToProjectFile);
 	}
-
 
 	public void testProjectVersion() throws Exception {
 		proj.setProjectVersion("abc");
@@ -121,7 +121,7 @@ public class PBProjectTest extends TestCase {
 			}
 		}
 	}
-	
+
 	public void testClasses() throws Exception {
 		ArrayList classes = new ArrayList();
 		classes.add("abc");

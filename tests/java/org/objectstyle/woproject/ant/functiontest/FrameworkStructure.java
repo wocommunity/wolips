@@ -56,32 +56,30 @@
 
 package org.objectstyle.woproject.ant.functiontest;
 
-
 /**
- * Java bean that keeps information about WebObjects
- * project structure.
- *
+ * Java bean that keeps information about WebObjects project structure.
+ * 
  * @author Andrei Adamchik
  */
 public class FrameworkStructure extends ProjectStructure {
 
-    public FrameworkStructure(String name) {
-        super(name);
-    }
+	public FrameworkStructure(String name) {
+		super(name);
+	}
 
-    public String getDirectoryPath() {
-        return "Frameworks/" + name + ".framework";
-    }
+	public String getDirectoryPath() {
+		return "Frameworks/" + name + ".framework";
+	}
 
-    public String getRelativeResourcesPath() {
-        return "Resources";
-    }
+	public String getRelativeResourcesPath() {
+		return "Resources";
+	}
 
-    public String getRelativeWSResourcesPath() {
-        return "WebServerResources";
-    }
+	public String getRelativeWSResourcesPath() {
+		return "WebServerResources";
+	}
 
-    public String getRelativeInfoPath() {
-        return "Resources";
-    }
+	public String getRelativeInfoPath() {
+		return "Resources";
+	}
 }

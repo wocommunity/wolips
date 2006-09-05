@@ -114,8 +114,7 @@ public class FrameworkSet extends FileSet {
 			// /System/Library/Frameworks/Baz.framework
 			String oldPath = file.getPath();
 			String newRoot = deploymentDir.getPath();
-			String newPath = oldPath.replaceFirst("(.*?)(/\\w+\\.framework/)",
-					newRoot + "$2");
+			String newPath = oldPath.replaceFirst("(.*?)(/\\w+\\.framework/)", newRoot + "$2");
 			System.out.println(oldPath + "->" + newPath);
 			result = new File(newPath);
 		}
@@ -148,8 +147,7 @@ public class FrameworkSet extends FileSet {
 		ifCondition = string == null ? "" : string;
 	}
 
-	private static String replaceProperties(Project project, String value,
-			Hashtable keys) throws BuildException {
+	private static String replaceProperties(Project project, String value, Hashtable keys) throws BuildException {
 		PropertyHelper ph = PropertyHelper.getPropertyHelper(project);
 		return ph.replaceProperties(null, value, keys);
 	}
@@ -158,14 +156,12 @@ public class FrameworkSet extends FileSet {
 		if ("".equals(ifCondition)) {
 			return true;
 		}
-		String string = FrameworkSet.replaceProperties(getProject(),
-				ifCondition, getProject().getProperties());
+		String string = FrameworkSet.replaceProperties(getProject(), ifCondition, getProject().getProperties());
 		return getProject().getProperty(string) != null;
 	}
 
 	public String[] getFrameworks() {
-		String[] files = getDirectoryScanner(getProject())
-				.getIncludedDirectories();
+		String[] files = getDirectoryScanner(getProject()).getIncludedDirectories();
 		return files;
 	}
 
@@ -173,8 +169,7 @@ public class FrameworkSet extends FileSet {
 		if (!testIfCondition())
 			return new File[] {};
 
-		String jarDirName = frameworkDir + File.separator + "Resources"
-				+ File.separator + "Java";
+		String jarDirName = frameworkDir + File.separator + "Resources" + File.separator + "Java";
 
 		File jarDir = new File(getDir(this.getProject()), jarDirName);
 		if (!jarDir.isDirectory()) {
@@ -188,16 +183,14 @@ public class FrameworkSet extends FileSet {
 	class JarFilter implements FilenameFilter {
 
 		public boolean accept(File dir, String name) {
-			return (name.endsWith(".jar") || name.endsWith(".zip"))
-					&& !name.equals("src.jar");
+			return (name.endsWith(".jar") || name.endsWith(".zip")) && !name.equals("src.jar");
 		}
 	}
 
 	private void addJarsForFrameworkNameToPath(String frameworkName, Path path) {
 		File[] jarFiles = findJars(frameworkName);
 		if (jarFiles == null || jarFiles.length == 0) {
-			log("No Jars in " + getDir(getProject()).getPath() + "/"
-					+ frameworkName + ".", Project.MSG_VERBOSE);
+			log("No Jars in " + getDir(getProject()).getPath() + "/" + frameworkName + ".", Project.MSG_VERBOSE);
 		} else {
 			for (int jarFileIndex = 0; jarFileIndex < jarFiles.length; jarFileIndex++) {
 				try {
@@ -215,18 +208,14 @@ public class FrameworkSet extends FileSet {
 		Path path = new Path(getProject());
 		String[] frameworkNames = getFrameworks();
 		for (int frameworkNameIndex = 0; frameworkNameIndex < frameworkNames.length; frameworkNameIndex++)
-			addJarsForFrameworkNameToPath(frameworkNames[frameworkNameIndex],
-					path);
+			addJarsForFrameworkNameToPath(frameworkNames[frameworkNameIndex], path);
 		return path;
 	}
 
-	public static Path jarsPathForFrameworkSets(Project project,
-			Collection frameworkSets, boolean excludeEmbed) {
+	public static Path jarsPathForFrameworkSets(Project project, Collection frameworkSets, boolean excludeEmbed) {
 		Path path = new Path(project);
-		for (Iterator frameworkSetIterator = frameworkSets.iterator(); frameworkSetIterator
-				.hasNext();) {
-			FrameworkSet frameworkSet = (FrameworkSet) frameworkSetIterator
-					.next();
+		for (Iterator frameworkSetIterator = frameworkSets.iterator(); frameworkSetIterator.hasNext();) {
+			FrameworkSet frameworkSet = (FrameworkSet) frameworkSetIterator.next();
 			if (!(excludeEmbed && frameworkSet.getEmbed()))
 				path.append(frameworkSet.jarsPath());
 		}
@@ -278,24 +267,19 @@ public class FrameworkSet extends FileSet {
 			String frameworkDir1 = (String) o1;
 			String frameworkDir2 = (String) o2;
 			if (isCaseSensitive())
-				return includeNonPatternList.indexOf(frameworkDir1)
-						- includeNonPatternList.indexOf(frameworkDir2);
-			return includeNonPatternList.indexOf(frameworkDir1.toUpperCase())
-					- includeNonPatternList
-							.indexOf(frameworkDir2.toUpperCase());
+				return includeNonPatternList.indexOf(frameworkDir1) - includeNonPatternList.indexOf(frameworkDir2);
+			return includeNonPatternList.indexOf(frameworkDir1.toUpperCase()) - includeNonPatternList.indexOf(frameworkDir2.toUpperCase());
 		}
 
 		private String[] fillNonPatternList(List list, String patterns[]) {
 			ArrayList al = new ArrayList(patterns.length);
 			for (int i = 0; i < patterns.length; i++)
 				if (!SelectorUtils.hasWildcards(patterns[i]))
-					list.add(isCaseSensitive() ? ((Object) (patterns[i]))
-							: ((Object) (patterns[i].toUpperCase())));
+					list.add(isCaseSensitive() ? ((Object) (patterns[i])) : ((Object) (patterns[i].toUpperCase())));
 				else
 					al.add(patterns[i]);
 
-			return list.size() != 0 ? (String[]) al.toArray(new String[al
-					.size()]) : patterns;
+			return list.size() != 0 ? (String[]) al.toArray(new String[al.size()]) : patterns;
 		}
 
 	}

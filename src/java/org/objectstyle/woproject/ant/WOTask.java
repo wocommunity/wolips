@@ -160,14 +160,14 @@ public abstract class WOTask extends Task {
 		this.principalClass = principalClass;
 	}
 
-    /**
-     * Method setManifest.
-     *
-     * @param manifest
-     */
-    public void setManifest(String manifest) {
-        this.manifest = manifest;
-    }
+	/**
+	 * Method setManifest.
+	 * 
+	 * @param manifest
+	 */
+	public void setManifest(String manifest) {
+		this.manifest = manifest;
+	}
 
 	public void setWsDestDir(String wsDestDir) {
 		this.wsDestDir = wsDestDir;
@@ -182,14 +182,14 @@ public abstract class WOTask extends Task {
 		return principalClass;
 	}
 
-    /**
-     * Method getManifest.
-     *
-     * @return String
-     */
-    public String getManifest() {
-        return manifest;
-    }
+	/**
+	 * Method getManifest.
+	 * 
+	 * @return String
+	 */
+	public String getManifest() {
+		return manifest;
+	}
 
 	/**
 	 * @return The CustomContent for the Info.plist
@@ -396,23 +396,23 @@ public abstract class WOTask extends Task {
 		return classes.size() > 0;
 	}
 
-    /**
-     * Method hasManifest.
-     *
-     * @return boolean
-     */
-    public boolean hasManifest() {
-        return( manifest != null );
-    }
+	/**
+	 * Method hasManifest.
+	 * 
+	 * @return boolean
+	 */
+	public boolean hasManifest() {
+		return (manifest != null);
+	}
 
-    /**
-     * Method getManifestFile.
-     *
-     * @return File
-     */
-    public File getManifestFile() {
-        return( new File( manifest ) );
-    }
+	/**
+	 * Method getManifestFile.
+	 * 
+	 * @return File
+	 */
+	public File getManifestFile() {
+		return (new File(manifest));
+	}
 
 	/**
 	 * Method jarSources
@@ -421,8 +421,7 @@ public abstract class WOTask extends Task {
 	 */
 	protected void jarSources() throws BuildException {
 		Jar jar = this.getSubtaskFactory().getJar();
-		File taskJar = new File(resourcesDir(), "Java" + File.separator
-				+ "src.jar");
+		File taskJar = new File(resourcesDir(), "Java" + File.separator + "src.jar");
 		// jar.setJarfile(taskJar);
 		// jar.setLocation(new Location(resourcesDir() + "Java" + File.separator
 		// + getJarName() + ".jar"));
@@ -444,8 +443,7 @@ public abstract class WOTask extends Task {
 	 */
 	protected void jarClasses() throws BuildException {
 		Jar jar = this.getSubtaskFactory().getJar();
-		File taskJar = new File(resourcesDir(), "Java" + File.separator
-				+ getJarName() + ".jar");
+		File taskJar = new File(resourcesDir(), "Java" + File.separator + getJarName() + ".jar");
 		// jar.setJarfile(taskJar);
 		// jar.setLocation(new Location(resourcesDir() + "Java" + File.separator
 		// + getJarName() + ".jar"));
@@ -457,9 +455,9 @@ public abstract class WOTask extends Task {
 			}
 		}
 
-        if( hasManifest() ){
-            jar.setManifest( getManifestFile() );
-        }
+		if (hasManifest()) {
+			jar.setManifest(getManifestFile());
+		}
 
 		jar.execute();
 	}
@@ -473,19 +471,19 @@ public abstract class WOTask extends Task {
 		Copy cp = this.getSubtaskFactory().getResourceCopy();
 
 		cp.setTodir(resourcesDir());
-        int count = 0;
+		int count = 0;
 		Enumeration en = resources.elements();
 		while (en.hasMoreElements()) {
-            ResourcesSet rs = (ResourcesSet) en.nextElement();
-            if( rs.testIfCondition() ){
-                cp.addFileset( rs );
-                count++;
-            }
-        }
- 
+			ResourcesSet rs = (ResourcesSet) en.nextElement();
+			if (rs.testIfCondition()) {
+				cp.addFileset(rs);
+				count++;
+			}
+		}
+
 		// if no filesets were added, then don't run copy
-		if( count > 0){
-		    cp.execute();
+		if (count > 0) {
+			cp.execute();
 		}
 	}
 
@@ -499,28 +497,27 @@ public abstract class WOTask extends Task {
 		Copy cp = this.getSubtaskFactory().getResourceCopy();
 		cp.setTodir(wsresourcesDir());
 
-        int count = 0;
+		int count = 0;
 		Enumeration en = wsresources.elements();
 		while (en.hasMoreElements()) {
-            ResourcesSet rs = (ResourcesSet) en.nextElement();
-            if( rs.testIfCondition() ){
-                cp.addFileset( rs );
-                count++;
-            }
-              }
-        
-        // if no filesets were added, then don't run copy
-        if( count > 0){
-              cp.execute();
+			ResourcesSet rs = (ResourcesSet) en.nextElement();
+			if (rs.testIfCondition()) {
+				cp.addFileset(rs);
+				count++;
+			}
+		}
 
-              // do split install
-              if (doingSplitInstall()) {
-              log("Split install WebServerResources of " + name + " in "
-                              + wsDestDir);
-                      cp.setTodir(wsresourcesDestDir());
-                      cp.execute();
-            }
-        }
+		// if no filesets were added, then don't run copy
+		if (count > 0) {
+			cp.execute();
+
+			// do split install
+			if (doingSplitInstall()) {
+				log("Split install WebServerResources of " + name + " in " + wsDestDir);
+				cp.setTodir(wsresourcesDestDir());
+				cp.execute();
+			}
+		}
 	}
 
 	/**

@@ -61,27 +61,27 @@ import org.apache.tools.ant.taskdefs.Javac;
 
 /**
  * Customized subclass of Javac used to locate jars in frameworks.
- *
+ * 
  * @author Anjo Krank
  */
 public class WOCompile extends Javac {
-    private ArrayList frameworkSets = new ArrayList();
-    
-    public void addFrameworks(FrameworkSet frameworks) throws BuildException {
-        frameworkSets.add(frameworks);
-    }
+	private ArrayList frameworkSets = new ArrayList();
 
-    private String dumpClasspath;
+	public void addFrameworks(FrameworkSet frameworks) throws BuildException {
+		frameworkSets.add(frameworks);
+	}
 
-    public void setDumpClasspath( String dumpClasspath ){
-        this.dumpClasspath = dumpClasspath;
-    }
+	private String dumpClasspath;
 
-    public void execute() throws BuildException {
-        setClasspath(FrameworkSet.jarsPathForFrameworkSets(getProject(), frameworkSets, false));
-        if( dumpClasspath != null ){
-            getProject().setProperty( dumpClasspath, getClasspath().toString() );
-        }
-        super.execute();
-    }
+	public void setDumpClasspath(String dumpClasspath) {
+		this.dumpClasspath = dumpClasspath;
+	}
+
+	public void execute() throws BuildException {
+		setClasspath(FrameworkSet.jarsPathForFrameworkSets(getProject(), frameworkSets, false));
+		if (dumpClasspath != null) {
+			getProject().setProperty(dumpClasspath, getClasspath().toString());
+		}
+		super.execute();
+	}
 }

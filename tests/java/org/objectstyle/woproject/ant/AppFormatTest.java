@@ -64,11 +64,12 @@ import org.apache.tools.ant.Project;
 
 /**
  * TestCase for AppFormat class.
- *
+ * 
  * @author Andrei Adamchik
  */
 public class AppFormatTest extends TestCase {
 	protected AppFormat format;
+
 	protected WOTask formatTask;
 
 	public AppFormatTest(String name) {
@@ -97,30 +98,29 @@ public class AppFormatTest extends TestCase {
 			String file = (String) it.next();
 			String template = format.templateForTarget(file);
 			assertNotNull(template);
-			assertNotNull(
-				format.getClass().getClassLoader().getResource(template));
+			assertNotNull(format.getClass().getClassLoader().getResource(template));
 		}
 	}
 
-	/** 
-	 * Helper class to allow testing of partially initialized 
-	 * WOApplication task. 
+	/**
+	 * Helper class to allow testing of partially initialized WOApplication
+	 * task.
 	 */
 	class TestWOApplication extends WOApplication {
 		protected File taskDir() {
 			return new File(".");
 		}
 	}
-	
+
 	class TestAppFormat extends AppFormat {
 		/**
 		 * Constructor for TestAppFormat.
+		 * 
 		 * @param task
 		 */
 		public TestAppFormat(WOTask task) {
 			super(task);
 		}
-
 
 		/**
 		 * @see org.objectstyle.woproject.ant.AppFormat#buildAppPaths()

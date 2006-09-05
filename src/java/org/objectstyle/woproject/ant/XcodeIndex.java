@@ -67,50 +67,50 @@ import org.objectstyle.woenvironment.pb.XcodeProject;
  * @author Jonathan 'Wolf' Rentzsch
  */
 public class XcodeIndex extends PBXIndex {
-  private boolean myXcodeProj;
-  
-  /**
-   * If true, this outputs .xcodeproj format files from Xcode 2.1.
-   * 
-   * @param _xcodeProj whether or not to output .xcodeproj files
-   */
-  public void setXcodeProj(boolean _xcodeProj) {
-    myXcodeProj = _xcodeProj;
-  }
-  
-  public boolean isXcodeProj() {
-    return myXcodeProj;
-  }
-  
+	private boolean myXcodeProj;
+
+	/**
+	 * If true, this outputs .xcodeproj format files from Xcode 2.1.
+	 * 
+	 * @param _xcodeProj
+	 *            whether or not to output .xcodeproj files
+	 */
+	public void setXcodeProj(boolean _xcodeProj) {
+		myXcodeProj = _xcodeProj;
+	}
+
+	public boolean isXcodeProj() {
+		return myXcodeProj;
+	}
+
 	/**
 	 * @see org.apache.tools.ant.Task#execute()
 	 */
 	public void execute() throws BuildException {
 		validateAttributes();
-		
-    PBXProject proj;
-    if (myXcodeProj) {
-      proj = new XcodeProjProject();
-    }
-    else {
-      proj = new XcodeProject();
-    }
-		addToProject( proj );
-		
-		if( getProjectFile().exists() ) {
-			if( !getProjectFile().isDirectory() )
+
+		PBXProject proj;
+		if (myXcodeProj) {
+			proj = new XcodeProjProject();
+		} else {
+			proj = new XcodeProject();
+		}
+		addToProject(proj);
+
+		if (getProjectFile().exists()) {
+			if (!getProjectFile().isDirectory())
 				throw new BuildException("Specified Xcode project package is not a directory.");
 		} else
 			getProjectFile().mkdir();
-		File pbxprojFile = new File( getProjectFile(), "project.pbxproj" );
-		if( !pbxprojFile.exists() ) {
+		File pbxprojFile = new File(getProjectFile(), "project.pbxproj");
+		if (!pbxprojFile.exists()) {
 			try {
 				pbxprojFile.createNewFile();
-			} catch( IOException x ) {
-				throw new BuildException("Failed to create project.pbxproj Xcode project package file: "+x);
+			} catch (IOException x) {
+				throw new BuildException("Failed to create project.pbxproj Xcode project package file: " + x);
 			}
 		}
 
-		proj.save( pbxprojFile );
+		proj.save(pbxprojFile);
 	}
 }

@@ -113,7 +113,7 @@ public abstract class ProjectFormat {
 		try {
 			ClassLoader cl = this.task.getClass().getClassLoader();
 			if (cl == null) {
-				//cl = ClassLoader.getSystemClassLoader();
+				// cl = ClassLoader.getSystemClassLoader();
 				throw new BuildException("Could not load classloader");
 			}
 			while (it.hasNext()) {
@@ -144,15 +144,13 @@ public abstract class ProjectFormat {
 	 * Returns a path to the template that should be used to build a target
 	 * file.
 	 */
-	public abstract String templateForTarget(String targetName)
-			throws BuildException;
+	public abstract String templateForTarget(String targetName) throws BuildException;
 
 	/**
 	 * Returns a FilterSetCollection that should be applied when generating a
 	 * target file.
 	 */
-	public abstract FilterSetCollection filtersForTarget(String targetName)
-			throws BuildException;
+	public abstract FilterSetCollection filtersForTarget(String targetName) throws BuildException;
 
 	/**
 	 * Convienence method to copy a file from a source to a destination
@@ -167,16 +165,13 @@ public abstract class ProjectFormat {
 	 * @throws IOException
 	 *             Returns true when a .sh file is copied.
 	 */
-	public boolean copyFile(InputStream src, File destFile,
-			FilterSetCollection filters) throws IOException {
-		log("destFile.getName(): " + destFile.getName() + " this.getName(): "
-				+ this.getName(), Project.MSG_VERBOSE);
-		if (destFile.exists() && destFile.isFile()
-				&& destFile.getName().equals(this.getName())) {
-			//these files only need an update when a new Version of WO is
+	public boolean copyFile(InputStream src, File destFile, FilterSetCollection filters) throws IOException {
+		log("destFile.getName(): " + destFile.getName() + " this.getName(): " + this.getName(), Project.MSG_VERBOSE);
+		if (destFile.exists() && destFile.isFile() && destFile.getName().equals(this.getName())) {
+			// these files only need an update when a new Version of WO is
 			// installed.
-			//A clean in that case is better.
-			//destFile.delete();
+			// A clean in that case is better.
+			// destFile.delete();
 			src.close();
 			return false;
 		}
@@ -238,8 +233,7 @@ public abstract class ProjectFormat {
 
 		buf.append("<array>");
 		if (task.hasClasses()) {
-			buf.append(endLine).append("\t\t<string>").append(getJarName())
-					.append("</string>");
+			buf.append(endLine).append("\t\t<string>").append(getJarName()).append("</string>");
 		}
 
 		if (extLibs != null) {
@@ -261,11 +255,9 @@ public abstract class ProjectFormat {
 	private String principalClassString() {
 		String endLine = System.getProperty("line.separator");
 		StringBuffer buf = new StringBuffer();
-		if (task.getPrincipalClass() != null
-				&& task.getPrincipalClass().length() > 0) {
+		if (task.getPrincipalClass() != null && task.getPrincipalClass().length() > 0) {
 			buf.append("<key>NSPrincipalClass</key>").append(endLine);
-			buf.append("\t<string>").append(task.getPrincipalClass()).append(
-					"</string>").append(endLine);
+			buf.append("\t<string>").append(task.getPrincipalClass()).append("</string>").append(endLine);
 		}
 		return buf.toString();
 	}

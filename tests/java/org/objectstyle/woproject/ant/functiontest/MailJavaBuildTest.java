@@ -60,45 +60,44 @@ import java.io.File;
 import org.apache.tools.ant.Project;
 
 /**
- * A test case that builds the MailJava and MailUtilities frameworks
- * then does various assertions about what ant produced.
- *
+ * A test case that builds the MailJava and MailUtilities frameworks then does
+ * various assertions about what ant produced.
+ * 
  * @author Emily Bache
  */
 public class MailJavaBuildTest extends BuildTestCase {
 
-    Project project;
+	Project project;
 
-    public MailJavaBuildTest(String name) {
-        super(name);
-    }
+	public MailJavaBuildTest(String name) {
+		super(name);
+	}
 
+	public void testBuildMailJava() throws Exception {
+		String projectDir = "tests/wo/frameworks/MailJava";
+		Project aProject = getProject(new File(projectDir), new File(projectDir, "build.xml"));
+		String defaultTarget = aProject.getDefaultTarget();
+		aProject.executeTarget(defaultTarget);
 
-    public void testBuildMailJava() throws Exception {
-        String projectDir = "tests/wo/frameworks/MailJava";
-        Project aProject = getProject(new File(projectDir), new File(projectDir, "build.xml"));
-        String defaultTarget = aProject.getDefaultTarget();
-        aProject.executeTarget(defaultTarget);
+		FrameworkStructure fw = new FrameworkStructure("MailJava");
+		fw.setJars(new String[] { "activation", "mail" });
 
-        FrameworkStructure fw = new FrameworkStructure("MailJava");
-        fw.setJars(new String[]{"activation", "mail"});
+		assertStructure(fw);
+	}
 
-        assertStructure(fw);
-    }
+	public void testBuildMailUtilities() throws Exception {
+		String projectDir = "tests/wo/frameworks/MailUtilities";
+		Project aProject = getProject(new File(projectDir), new File(projectDir, "build.xml"));
+		String defaultTarget = aProject.getDefaultTarget();
+		aProject.executeTarget(defaultTarget);
 
-    public void testBuildMailUtilities() throws Exception {
-        String projectDir = "tests/wo/frameworks/MailUtilities";
-        Project aProject = getProject(new File(projectDir), new File(projectDir, "build.xml"));
-        String defaultTarget = aProject.getDefaultTarget();
-        aProject.executeTarget(defaultTarget);
+		FrameworkStructure fw = new FrameworkStructure("MailUtilities");
+		fw.setJars(new String[] { "mailutilities" });
 
-        FrameworkStructure fw = new FrameworkStructure("MailUtilities");
-        fw.setJars(new String[]{"mailutilities"});
+		assertStructure(fw);
+	}
 
-        assertStructure(fw);
-    }
-
-    public static void main(String[] args) {
-        junit.textui.TestRunner.main(new String[]{MailJavaBuildTest.class.getName()});
-    }
+	public static void main(String[] args) {
+		junit.textui.TestRunner.main(new String[] { MailJavaBuildTest.class.getName() });
+	}
 }

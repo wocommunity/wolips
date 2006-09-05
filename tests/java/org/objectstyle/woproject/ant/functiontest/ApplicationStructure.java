@@ -56,44 +56,43 @@
 
 package org.objectstyle.woproject.ant.functiontest;
 
-
 /**
- * Java bean that keeps information about WebObjects
- * application project structure.
- *
+ * Java bean that keeps information about WebObjects application project
+ * structure.
+ * 
  * @author Andrei Adamchik
  */
 public class ApplicationStructure extends ProjectStructure {
 
-    public ApplicationStructure(String name) {
-        super(name);
-    }
+	public ApplicationStructure(String name) {
+		super(name);
+	}
 
-    public String getDirectoryPath() {
-        return "WebObjects/Applications/" + name + ".woa";
-    }
+	public String getDirectoryPath() {
+		return "WebObjects/Applications/" + name + ".woa";
+	}
 
-    public String getRelativeResourcesPath() {
-        return "Contents/Resources";
-    }
+	public String getRelativeResourcesPath() {
+		return "Contents/Resources";
+	}
 
-    public String getRelativeWSResourcesPath() {
-        return "Contents/WebServerResources";
-    }
+	public String getRelativeWSResourcesPath() {
+		return "Contents/WebServerResources";
+	}
 
-    public String getRelativeInfoPath() {
-        return "Contents";
-    }
-    
-    public String getMacFolder() {
-    	return getDirectoryPath() + "/" + getRelativeInfoPath() + "/MacOS";
-    }
-    
-    public String getWindowsFolder() {
-    	return getDirectoryPath() + "/" + getRelativeInfoPath() + "/Windows";
-    }
-    
-    public String getUnixFolder() {
-    	return getDirectoryPath() + "/" + getRelativeInfoPath() + "/UNIX";
-    }
+	public String getRelativeInfoPath() {
+		return "Contents";
+	}
+
+	public String getMacFolder() {
+		return getDirectoryPath() + "/" + getRelativeInfoPath() + "/MacOS";
+	}
+
+	public String getWindowsFolder() {
+		return getDirectoryPath() + "/" + getRelativeInfoPath() + "/Windows";
+	}
+
+	public String getUnixFolder() {
+		return getDirectoryPath() + "/" + getRelativeInfoPath() + "/UNIX";
+	}
 }

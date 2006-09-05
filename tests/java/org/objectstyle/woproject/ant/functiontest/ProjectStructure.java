@@ -56,106 +56,109 @@
 
 package org.objectstyle.woproject.ant.functiontest;
 
-
 /**
- * Java bean that keeps information about WebObjects
- * project structure.
- *
+ * Java bean that keeps information about WebObjects project structure.
+ * 
  * @author Andrei Adamchik
  */
 public abstract class ProjectStructure {
-    protected String name;
-    protected String[] jars;
-    protected String[] wocomps;
-    protected String[] wsResources;
+	protected String name;
 
-    public ProjectStructure(String name) {
-        this.name = name;
-    }
+	protected String[] jars;
 
-    /**
-     * Subclasses must implement that to return either framework
-     * or application directory name relative to tests distribution
-     * directory.
-     * @return
-     */
-    public abstract String getDirectoryPath();
+	protected String[] wocomps;
 
-    public abstract String getRelativeResourcesPath();
+	protected String[] wsResources;
 
-    public abstract String getRelativeWSResourcesPath();
+	public ProjectStructure(String name) {
+		this.name = name;
+	}
 
-    public abstract String getRelativeInfoPath();
+	/**
+	 * Subclasses must implement that to return either framework or application
+	 * directory name relative to tests distribution directory.
+	 * 
+	 * @return
+	 */
+	public abstract String getDirectoryPath();
 
-    public String getName() {
-        return name;
-    }
+	public abstract String getRelativeResourcesPath();
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public abstract String getRelativeWSResourcesPath();
 
-    public boolean hasWebServerResources() {
-        return wsResources != null && wsResources.length > 0;
-    }
+	public abstract String getRelativeInfoPath();
 
-    public boolean hasJava() {
-        return jars != null && jars.length > 0;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public boolean hasWos() {
-        return wocomps != null && wocomps.length > 0;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public String[] getJars() {
-        return jars;
-    }
+	public boolean hasWebServerResources() {
+		return wsResources != null && wsResources.length > 0;
+	}
 
-    public void setJars(String[] jars) {
-        this.jars = jars;
-    }
-    
-    public void addToJars(String jar) {
-    	this.jars = addToArray(jars, jar);
-    }
+	public boolean hasJava() {
+		return jars != null && jars.length > 0;
+	}
 
-    public String[] getWocomps() {
-        return wocomps;
-    }
+	public boolean hasWos() {
+		return wocomps != null && wocomps.length > 0;
+	}
 
-    public void setWocomps(String[] wocomps) {
-        this.wocomps = wocomps;
-    }
-    
-    public void addToWocomps(String wocomp) {
-    	this.wocomps = addToArray(wocomps, wocomp);
-    }
+	public String[] getJars() {
+		return jars;
+	}
 
-    public String[] getWsResources() {
-        return wsResources;
-    }
+	public void setJars(String[] jars) {
+		this.jars = jars;
+	}
 
-    public void setWsResources(String[] wsres) {
-        this.wsResources = wsres;
-    }
-    
-    public void addToWsResources(String wsResource) {
-    	this.wsResources = addToArray(wsResources, wsResource);
-    }
+	public void addToJars(String jar) {
+		this.jars = addToArray(jars, jar);
+	}
 
-    /** Grows String array by one element, adds the element at the end.
-     * @param array
-     * @param element
-     * @return
-     */
-    public static String[] addToArray(String[] array, String element) {
-    	if(array == null || array.length == 0) {
-    		return new String[] {element};
-    	}
-    	
-    	String[] grown = new String[array.length + 1];
-    	System.arraycopy(array, 0, grown, 0, array.length);
-    	grown[array.length] = element;
-    	return grown;
-    }
+	public String[] getWocomps() {
+		return wocomps;
+	}
+
+	public void setWocomps(String[] wocomps) {
+		this.wocomps = wocomps;
+	}
+
+	public void addToWocomps(String wocomp) {
+		this.wocomps = addToArray(wocomps, wocomp);
+	}
+
+	public String[] getWsResources() {
+		return wsResources;
+	}
+
+	public void setWsResources(String[] wsres) {
+		this.wsResources = wsres;
+	}
+
+	public void addToWsResources(String wsResource) {
+		this.wsResources = addToArray(wsResources, wsResource);
+	}
+
+	/**
+	 * Grows String array by one element, adds the element at the end.
+	 * 
+	 * @param array
+	 * @param element
+	 * @return
+	 */
+	public static String[] addToArray(String[] array, String element) {
+		if (array == null || array.length == 0) {
+			return new String[] { element };
+		}
+
+		String[] grown = new String[array.length + 1];
+		System.arraycopy(array, 0, grown, 0, array.length);
+		grown[array.length] = element;
+		return grown;
+	}
 }

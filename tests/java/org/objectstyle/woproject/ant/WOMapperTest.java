@@ -61,7 +61,7 @@ import junit.framework.TestCase;
 
 import org.apache.tools.ant.util.FileNameMapper;
 
-/** 
+/**
  * Test cases for WOMapper class.
  * 
  * @author Andrei Adamchik
@@ -81,9 +81,9 @@ public class WOMapperTest extends TestCase {
 	public void testOtherResource() throws Exception {
 		runMapperTest("Other/model.eomodeld", "Other/model.eomodeld");
 		runMapperTest("English.lproj/Other/model.eomodeld", "English.lproj/Other/model.eomodeld");
-	    runMapperTest("Nonlocalized.lproj/Other/a.plist", "Other/a.plist");
+		runMapperTest("Nonlocalized.lproj/Other/a.plist", "Other/a.plist");
 	}
-	
+
 	public void testWOComponent() throws Exception {
 		runMapperTest("comp/Comp.wo", "Comp.wo");
 		runMapperTest("comp/Some.lproj/comp/Comp.wo", "Comp.wo");
@@ -106,8 +106,6 @@ public class WOMapperTest extends TestCase {
 
 	/** Fixes path to be platform dependent before running tests. */
 	private String substSlashes(String s) {
-		return (File.separatorChar == '/')
-			? s
-			: s.replace('/', File.separatorChar);
+		return (File.separatorChar == '/') ? s : s.replace('/', File.separatorChar);
 	}
 }

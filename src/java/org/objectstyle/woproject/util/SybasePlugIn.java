@@ -1,4 +1,5 @@
 package org.objectstyle.woproject.util;
+
 /* ====================================================================
  * 
  * The ObjectStyle Group Software License, Version 1.0 
@@ -55,7 +56,6 @@ package org.objectstyle.woproject.util;
  *
  */
 
-
 import java.sql.Connection;
 
 import com.webobjects.eoaccess.EOEntity;
@@ -65,115 +65,109 @@ import com.webobjects.jdbcadaptor.*;
 
 import org.apache.log4j.Logger;
 
-/** EOF Adaptor Plugin for Sybase. 
-  * Fixes Sybase primary key generation procedure. Note that
-  * "eo_pk_for_table" stored procedure must be included in the 
-  * EOModel that uses this plugin.
-  * 
-  * @author Antony Glover
-  * @author Andrei Adamchik
-  */
+/**
+ * EOF Adaptor Plugin for Sybase. Fixes Sybase primary key generation procedure.
+ * Note that "eo_pk_for_table" stored procedure must be included in the EOModel
+ * that uses this plugin.
+ * 
+ * @author Antony Glover
+ * @author Andrei Adamchik
+ */
 public class SybasePlugIn extends JDBCPlugIn {
-    static Logger logger = Logger.getLogger(SybasePlugIn.class.getName());
+	static Logger logger = Logger.getLogger(SybasePlugIn.class.getName());
 
-    public static final String PK_TABLE_NAME = "eo_sequence_table";
-    public static final String PK_SPROC_NAME = "EoPkForTable";
+	public static final String PK_TABLE_NAME = "eo_sequence_table";
 
-    public SybasePlugIn(JDBCAdaptor adaptor) {
-        super(adaptor);
-    }
+	public static final String PK_SPROC_NAME = "EoPkForTable";
 
-    public String primaryKeyTableName() {
-        // Note that the default value returned is "EO_PK_TABLE". This 
-        // is not what was created under 4.5.
-        // The old table name is "eo_sequence_table".
-        return PK_TABLE_NAME;
-    }
+	public SybasePlugIn(JDBCAdaptor adaptor) {
+		super(adaptor);
+	}
 
+	public String primaryKeyTableName() {
+		// Note that the default value returned is "EO_PK_TABLE". This
+		// is not what was created under 4.5.
+		// The old table name is "eo_sequence_table".
+		return PK_TABLE_NAME;
+	}
 
-    public NSArray newPrimaryKeys(
-        int count,
-        EOEntity entity,
-        JDBCChannel channel) {
+	public NSArray newPrimaryKeys(int count, EOEntity entity, JDBCChannel channel) {
 
-        // Retrieve the primary key attribute names of the entity and 
-        // verify that there is only one attribute. If not,
-        // return null; otherwise, proceed
+		// Retrieve the primary key attribute names of the entity and
+		// verify that there is only one attribute. If not,
+		// return null; otherwise, proceed
 
-        NSArray pkAttributes = entity.primaryKeyAttributeNames();
-        if (entity.primaryKeyAttributeNames().count() > 1) {
-            return null;
-        }
+		NSArray pkAttributes = entity.primaryKeyAttributeNames();
+		if (entity.primaryKeyAttributeNames().count() > 1) {
+			return null;
+		}
 
-        //
-        // At this point of execution, something has set the autoCommit 
-        // flag to false, i.e.chained transactions.This
-        // will not allow us to execute the stored procedure for 
-        // generating primary keys;
-        // therefore, set the flag to true.
-        //
+		//
+		// At this point of execution, something has set the autoCommit
+		// flag to false, i.e.chained transactions.This
+		// will not allow us to execute the stored procedure for
+		// generating primary keys;
+		// therefore, set the flag to true.
+		//
 
-        // Retrieve the JDBC Connection
+		// Retrieve the JDBC Connection
 
-        JDBCContext myContext = (JDBCContext) channel.adaptorContext();
-        Connection myConnection = myContext.connection();
+		JDBCContext myContext = (JDBCContext) channel.adaptorContext();
+		Connection myConnection = myContext.connection();
 
-        // Set the JDBC Connection's autoCommit to 'true', i.e. 
-        // unchained transactions.
-        // QUESTION: Should the autoCommit flag be reset to its previous 
-        // value ? 
-        try {
-            myConnection.setAutoCommit(true);
-        }
-        catch (java.sql.SQLException e) {
-            logger.warn("Can't set AutoCommit to true.", e);
-        }
+		// Set the JDBC Connection's autoCommit to 'true', i.e.
+		// unchained transactions.
+		// QUESTION: Should the autoCommit flag be reset to its previous
+		// value ?
+		try {
+			myConnection.setAutoCommit(true);
+		} catch (java.sql.SQLException e) {
+			logger.warn("Can't set AutoCommit to true.", e);
+		}
 
-        //
-        // Now that autoCommit has been set to true, locate and execute
-        // the stored procedure.
-        //
+		//
+		// Now that autoCommit has been set to true, locate and execute
+		// the stored procedure.
+		//
 
-        // Find the stored procedure used to generate primary keys
-        EOStoredProcedure eoPkForTable =
-            entity.model().storedProcedureNamed(PK_SPROC_NAME);
+		// Find the stored procedure used to generate primary keys
+		EOStoredProcedure eoPkForTable = entity.model().storedProcedureNamed(PK_SPROC_NAME);
 
-        // Set the parameters to the stored procedure
-        NSDictionary spParameters = new NSDictionary(entity.externalName(), "tname");
+		// Set the parameters to the stored procedure
+		NSDictionary spParameters = new NSDictionary(entity.externalName(), "tname");
 
-        // Allocate an array for storing the primary keys
-        NSMutableArray pkArray = new NSMutableArray();
+		// Allocate an array for storing the primary keys
+		NSMutableArray pkArray = new NSMutableArray();
 
-        // Invoke the stored procedure for Count number of primary keys
-        for (int i = 1; i <= count; i++) {
+		// Invoke the stored procedure for Count number of primary keys
+		for (int i = 1; i <= count; i++) {
 
-            // Execute the stored procedure
-            channel.executeStoredProcedure(eoPkForTable, spParameters);
+			// Execute the stored procedure
+			channel.executeStoredProcedure(eoPkForTable, spParameters);
 
-            // Fetch the rows returned from the call
-            NSDictionary row = channel.fetchRow();
+			// Fetch the rows returned from the call
+			NSDictionary row = channel.fetchRow();
 
-            // Re-package the output into a primary key dictionary
-            NSMutableDictionary pkDictionary = new NSMutableDictionary();
-            pkDictionary.takeValueForKey(
-                row.valueForKey("COUNTER"),
-                (String) (pkAttributes.objectAtIndex(0)));
+			// Re-package the output into a primary key dictionary
+			NSMutableDictionary pkDictionary = new NSMutableDictionary();
+			pkDictionary.takeValueForKey(row.valueForKey("COUNTER"), (String) (pkAttributes.objectAtIndex(0)));
 
-            // Add the primary key dictionary to the array
-            pkArray.addObject(pkDictionary);
+			// Add the primary key dictionary to the array
+			pkArray.addObject(pkDictionary);
 
-            // Only one row of data would have been returned; however, 
-            // it is VERY important to perform an additional fetch.
-            // When fetchRow returns a null dictionary, this indicates 
-            // to the supporting classes that the operation has terminated.
-            // If this line is removed, then saves to the editing 
-            // contexts will result in a message about no open channels available.
-            // Do not remove the following line!
-            row = channel.fetchRow();
+			// Only one row of data would have been returned; however,
+			// it is VERY important to perform an additional fetch.
+			// When fetchRow returns a null dictionary, this indicates
+			// to the supporting classes that the operation has terminated.
+			// If this line is removed, then saves to the editing
+			// contexts will result in a message about no open channels
+			// available.
+			// Do not remove the following line!
+			row = channel.fetchRow();
 
-        }
+		}
 
-        return pkArray;
+		return pkArray;
 
-    }
+	}
 }

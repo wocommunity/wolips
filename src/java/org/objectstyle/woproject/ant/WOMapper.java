@@ -248,8 +248,7 @@ public class WOMapper extends Mapper {
 		private String localizationFilter(String path) {
 			String startPattern = NON_LOCALIZED + File.separator;
 
-			return (path.startsWith(startPattern)) ? path
-					.substring(startPattern.length()) : path;
+			return (path.startsWith(startPattern)) ? path.substring(startPattern.length()) : path;
 		}
 
 		/**
@@ -288,8 +287,7 @@ public class WOMapper extends Mapper {
 					String fileName = (String) iterator.next();
 					addPattern(fileName, arrayList);
 				}
-				pattern = (String[]) arrayList.toArray(new String[arrayList
-						.size()]);
+				pattern = (String[]) arrayList.toArray(new String[arrayList.size()]);
 			}
 			return pattern;
 		}
@@ -297,8 +295,7 @@ public class WOMapper extends Mapper {
 		private void addPattern(String fileName, ArrayList arrayList) {
 			BufferedReader patternReader = null;
 			try {
-				patternReader = new BufferedReader(new FileReader(new File(
-						fileName)));
+				patternReader = new BufferedReader(new FileReader(new File(fileName)));
 				String line = patternReader.readLine();
 				while (line != null) {
 					if (line.length() > 0) {
@@ -307,8 +304,7 @@ public class WOMapper extends Mapper {
 					line = patternReader.readLine();
 				}
 			} catch (IOException ioe) {
-				WOMapper.this.log("Error while reading file: "
-						+ ioe.getMessage());
+				WOMapper.this.log("Error while reading file: " + ioe.getMessage());
 			} finally {
 				if (null != patternReader) {
 					try {

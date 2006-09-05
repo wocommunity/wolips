@@ -79,8 +79,7 @@ public class ResourcesSet extends FileSet {
 		super();
 	}
 
-	private static String replaceProperties(Project project, String value,
-			Hashtable keys) throws BuildException {
+	private static String replaceProperties(Project project, String value, Hashtable keys) throws BuildException {
 		PropertyHelper ph = PropertyHelper.getPropertyHelper(project);
 		return ph.replaceProperties(null, value, keys);
 	}
@@ -94,8 +93,7 @@ public class ResourcesSet extends FileSet {
 			return true;
 		}
 
-		String string = ResourcesSet.replaceProperties(getProject(),
-				ifCondition, getProject().getProperties());
+		String string = ResourcesSet.replaceProperties(getProject(), ifCondition, getProject().getProperties());
 		return getProject().getProperty(string) != null;
 	}
 }

@@ -121,8 +121,7 @@ public class WOPBXBuild extends Task {
 		 * Get Dictionary from pbproj
 		 */
 		try {
-			dico = (Map) new Parser(new File(new Path(this.getProject(),
-					getPbxproj()).toString())).propertyList();
+			dico = (Map) new Parser(new File(new Path(this.getProject(), getPbxproj()).toString())).propertyList();
 		} catch (Exception ex) {
 			ex.printStackTrace(System.err);
 		}
@@ -224,8 +223,7 @@ public class WOPBXBuild extends Task {
 		i = resourcesFiles.iterator();
 		while (i.hasNext()) {
 			ResourcesSet set = new ResourcesSet();
-			File tempFile = new File(this.getProject().getBaseDir(),
-					((PBXBuildFile) i.next()).getPath());
+			File tempFile = new File(this.getProject().getBaseDir(), ((PBXBuildFile) i.next()).getPath());
 			set.setProject(this.getProject());
 			if (tempFile.isDirectory()) {
 				set.setDir(tempFile.getParentFile());
@@ -240,8 +238,7 @@ public class WOPBXBuild extends Task {
 		i = webResourcesFiles.iterator();
 		while (i.hasNext()) {
 			ResourcesSet set = new ResourcesSet();
-			File tempFile = new File(this.getProject().getBaseDir(),
-					((PBXBuildFile) i.next()).getPath());
+			File tempFile = new File(this.getProject().getBaseDir(), ((PBXBuildFile) i.next()).getPath());
 			set.setProject(this.getProject());
 			if (tempFile.isDirectory()) {
 				set.setDir(tempFile.getParentFile());

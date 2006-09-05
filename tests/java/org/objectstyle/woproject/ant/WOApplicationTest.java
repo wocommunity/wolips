@@ -59,7 +59,7 @@ import junit.framework.TestCase;
 
 /**
  * Unit test for WOApplication
- *
+ * 
  * @author Andrei Adamchik
  */
 public class WOApplicationTest extends TestCase {
@@ -75,8 +75,8 @@ public class WOApplicationTest extends TestCase {
 	}
 
 	public void testSetStdFrameworks() throws Exception {
-        assertTrue(appTask.stdFrameworks);
-        appTask.setStdFrameworks(false);
-        assertTrue(!appTask.stdFrameworks);
+		assertTrue(appTask.stdFrameworks);
+		appTask.setStdFrameworks(false);
+		assertTrue(!appTask.stdFrameworks);
 	}
 }
