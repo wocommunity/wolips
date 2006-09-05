@@ -65,8 +65,8 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.objectstyle.wolips.core.resources.builder.ICleanBuilder;
-import org.objectstyle.wolips.core.resources.builder.IDeltaBuilder;
+import org.objectstyle.wolips.core.resources.builder.IFullBuilder;
+import org.objectstyle.wolips.core.resources.builder.IIncrementalBuilder;
 import org.objectstyle.wolips.core.resources.types.ILocalizedPath;
 import org.objectstyle.wolips.core.resources.types.IPBDotProjectOwner;
 import org.objectstyle.wolips.core.resources.types.file.IPBDotProjectAdapter;
@@ -76,7 +76,7 @@ import org.objectstyle.wolips.core.resources.types.folder.IDotWoAdapter;
 import org.objectstyle.wolips.core.resources.types.project.IProjectAdapter;
 import org.objectstyle.wolips.preferences.Preferences;
 
-public class PBDotProjectBuilder implements IDeltaBuilder, ICleanBuilder {
+public class PBDotProjectBuilder implements IIncrementalBuilder, IFullBuilder {
 	private Hashtable affectedPBDotProjectOwner;
 
 	public PBDotProjectBuilder() {
@@ -87,8 +87,7 @@ public class PBDotProjectBuilder implements IDeltaBuilder, ICleanBuilder {
 		return resource.getLocation().toPortableString();
 	}
 
-	private IPBDotProjectAdapter getIPBDotProjectAdapterForKey(
-			IResource resource) {
+	private IPBDotProjectAdapter getIPBDotProjectAdapterForKey(IResource resource) {
 		String key = this.key(resource);
 		if (affectedPBDotProjectOwner.containsKey(key)) {
 			return (IPBDotProjectAdapter) affectedPBDotProjectOwner.get(key);
@@ -96,26 +95,22 @@ public class PBDotProjectBuilder implements IDeltaBuilder, ICleanBuilder {
 		return null;
 	}
 
-	private void setIPBDotProjectOwnerForKey(
-			IPBDotProjectAdapter pbDotProjectAdapter, IResource resource) {
+	private void setIPBDotProjectOwnerForKey(IPBDotProjectAdapter pbDotProjectAdapter, IResource resource) {
 		affectedPBDotProjectOwner.put(this.key(resource), pbDotProjectAdapter);
 	}
 
-	public boolean buildStarted(int kind, Map args, IProgressMonitor monitor,
-			IProject project, Map _buildCache) {
+	public boolean buildStarted(int kind, Map args, IProgressMonitor monitor, IProject project, Map buildCache) {
 		if (!Preferences.getPREF_WRITE_PB_DOT_PROJECT_ON_BUILD()) {
 			return false;
 		}
 		this.affectedPBDotProjectOwner = new Hashtable();
-		IProjectAdapter projectAdapter = (IProjectAdapter) project
-				.getAdapter(IProjectAdapter.class);
+		IProjectAdapter projectAdapter = (IProjectAdapter) project.getAdapter(IProjectAdapter.class);
 		IPBDotProjectAdapter adapter = projectAdapter.getPBDotProjectAdapter();
 		boolean fullBuildRequested = adapter.isRebuildRequired();
 		return fullBuildRequested;
 	}
 
-	public boolean buildPreparationDone(int _kind, Map _args,
-			IProgressMonitor _monitor, IProject _project, Map _buildCache) {
+	public boolean buildPreparationDone(int kind, Map args, IProgressMonitor monitor, IProject project, Map buildCache) {
 		if (!Preferences.getPREF_WRITE_PB_DOT_PROJECT_ON_BUILD()) {
 			return false;
 		}
@@ -131,114 +126,88 @@ public class PBDotProjectBuilder implements IDeltaBuilder, ICleanBuilder {
 
 	private IPBDotProjectOwner getIPBDotProjectOwner(IResource resource) {
 		IProject project = resource.getProject();
-		IProjectAdapter projectAdapter = (IProjectAdapter) project
-				.getAdapter(IProjectAdapter.class);
-		IPBDotProjectOwner pbDotProjectOwner = projectAdapter
-				.getPBDotProjectOwner(resource);
+		IProjectAdapter projectAdapter = (IProjectAdapter) project.getAdapter(IProjectAdapter.class);
+		IPBDotProjectOwner pbDotProjectOwner = projectAdapter.getPBDotProjectOwner(resource);
 		return pbDotProjectOwner;
 	}
 
-	public IPBDotProjectAdapter getIPBDotProjectAdapter(
-			IPBDotProjectOwner pbDotProjectOwner) {
-		IPBDotProjectAdapter pbDotProjectAdapter = this
-				.getIPBDotProjectAdapterForKey(pbDotProjectOwner
-						.getUnderlyingResource());
+	public IPBDotProjectAdapter getIPBDotProjectAdapter(IPBDotProjectOwner pbDotProjectOwner) {
+		IPBDotProjectAdapter pbDotProjectAdapter = this.getIPBDotProjectAdapterForKey(pbDotProjectOwner.getUnderlyingResource());
 		if (pbDotProjectAdapter == null) {
 			pbDotProjectAdapter = pbDotProjectOwner.getPBDotProjectAdapter();
-			this.setIPBDotProjectOwnerForKey(pbDotProjectAdapter,
-					pbDotProjectOwner.getUnderlyingResource());
+			this.setIPBDotProjectOwnerForKey(pbDotProjectAdapter, pbDotProjectOwner.getUnderlyingResource());
+			// pbDotProjectAdapter.cleanTables();
 		}
 		return pbDotProjectAdapter;
 	}
 
-	public boolean handleSourceDelta(IResourceDelta delta,
-			IProgressMonitor monitor, Map _buildCache) {
-		if (!Preferences.getPREF_WRITE_PB_DOT_PROJECT_ON_BUILD()) {
-			return false;
-		}
-		IResource resource = delta.getResource();
-		handleSource(delta.getKind(), resource, monitor, _buildCache);
-		return false;
-	}
-
-	public void handleSource(IResource _resource,
-			IProgressMonitor _progressMonitor, Map _buildCache) {
+	public void handleSourceDelta(IResourceDelta delta, IProgressMonitor monitor, Map buildCache) {
 		if (!Preferences.getPREF_WRITE_PB_DOT_PROJECT_ON_BUILD()) {
 			return;
 		}
-		handleSource(IResourceDelta.ADDED, _resource, _progressMonitor,
-				_buildCache);
+		IResource resource = delta.getResource();
+		handleSource(delta.getKind(), resource);
 	}
 
-	public boolean handleSource(int _kind, IResource _resource,
-			IProgressMonitor _progressMonitor, Map _buildCache) {
+	public void handleSource(IResource resource, IProgressMonitor progressMonitor, Map buildCache) {
+		if (!Preferences.getPREF_WRITE_PB_DOT_PROJECT_ON_BUILD()) {
+			return;
+		}
+		handleSource(IResourceDelta.ADDED, resource);
+	}
+
+	private boolean handleSource(int kind, IResource resource) {
 		if (!Preferences.getPREF_WRITE_PB_DOT_PROJECT_ON_BUILD()) {
 			return false;
 		}
-		if (_kind == IResourceDelta.ADDED || _kind == IResourceDelta.CHANGED
-				|| _kind == IResourceDelta.REMOVED) {
-			IPBDotProjectOwner pbDotProjectOwner = this
-					.getIPBDotProjectOwner(_resource);
-			IPBDotProjectAdapter pbDotProjectAdapter = this
-					.getIPBDotProjectAdapter(pbDotProjectOwner);
-			ILocalizedPath localizedPath = pbDotProjectAdapter
-					.localizedRelativeResourcePath(pbDotProjectOwner, _resource);
-			if (_kind == IResourceDelta.ADDED
-					|| _kind == IResourceDelta.CHANGED) {
+		if (kind == IResourceDelta.ADDED || kind == IResourceDelta.CHANGED || kind == IResourceDelta.REMOVED) {
+			IPBDotProjectOwner pbDotProjectOwner = this.getIPBDotProjectOwner(resource);
+			IPBDotProjectAdapter pbDotProjectAdapter = this.getIPBDotProjectAdapter(pbDotProjectOwner);
+			ILocalizedPath localizedPath = pbDotProjectAdapter.localizedRelativeResourcePath(pbDotProjectOwner, resource);
+			if (kind == IResourceDelta.ADDED || kind == IResourceDelta.CHANGED) {
 				pbDotProjectAdapter.addClass(localizedPath);
-			} else if (_kind == IResourceDelta.REMOVED) {
+			} else if (kind == IResourceDelta.REMOVED) {
 				pbDotProjectAdapter.removeClass(localizedPath);
 			}
 		}
 		return false;
 	}
 
-	public boolean handleClassesDelta(IResourceDelta delta,
-			IProgressMonitor monitor, Map _buildCache) {
-		return false;
+	public void handleClassesDelta(IResourceDelta delta, IProgressMonitor monitor, Map buildCache) {
+		// do nothing
 	}
 
-	public void handleClasses(IResource _resource,
-			IProgressMonitor _progressMonitor, Map _buildCache) {
-		//do nothing
+	public void handleClasses(IResource resource, IProgressMonitor progressMonitor, Map buildCache) {
+		// do nothing
 	}
 
-	public boolean handleWoappResourcesDelta(IResourceDelta delta,
-			IProgressMonitor monitor, Map _buildCache) {
+	public void handleWoappResourcesDelta(IResourceDelta delta, IProgressMonitor monitor, Map buildCache) {
 		if (!Preferences.getPREF_WRITE_PB_DOT_PROJECT_ON_BUILD()) {
-			return false;
+			return;
 		}
 		handleWoappResources(delta.getKind(), delta.getResource());
-		return false;
 	}
 
-	public void handleWoappResources(IResource _resource,
-			IProgressMonitor _progressMonitor, Map _buildCache) {
+	public void handleWoappResources(IResource resource, IProgressMonitor progressMonitor, Map buildCache) {
 		if (!Preferences.getPREF_WRITE_PB_DOT_PROJECT_ON_BUILD()) {
 			return;
 		}
-		handleWoappResources(IResourceDelta.ADDED, _resource);
+		handleWoappResources(IResourceDelta.ADDED, resource);
 	}
 
-	public void handleWoappResources(int _kind, IResource resource) {
+	public void handleWoappResources(int kind, IResource resource) {
 		if (!Preferences.getPREF_WRITE_PB_DOT_PROJECT_ON_BUILD()) {
 			return;
 		}
-		if (_kind == IResourceDelta.ADDED || _kind == IResourceDelta.CHANGED
-				|| _kind == IResourceDelta.REMOVED) {
-			IPBDotProjectOwner pbDotProjectOwner = this
-					.getIPBDotProjectOwner(resource);
-			IPBDotProjectAdapter pbDotProjectAdapter = this
-					.getIPBDotProjectAdapter(pbDotProjectOwner);
-			ILocalizedPath localizedPath = pbDotProjectAdapter
-					.localizedRelativeResourcePath(pbDotProjectOwner, resource);
-			IDotWoAdapter dotWoAdapter = (IDotWoAdapter) resource
-					.getAdapter(IDotWoAdapter.class);
+		if (kind == IResourceDelta.ADDED || kind == IResourceDelta.CHANGED || kind == IResourceDelta.REMOVED) {
+			IPBDotProjectOwner pbDotProjectOwner = this.getIPBDotProjectOwner(resource);
+			IPBDotProjectAdapter pbDotProjectAdapter = this.getIPBDotProjectAdapter(pbDotProjectOwner);
+			ILocalizedPath localizedPath = pbDotProjectAdapter.localizedRelativeResourcePath(pbDotProjectOwner, resource);
+			IDotWoAdapter dotWoAdapter = (IDotWoAdapter) resource.getAdapter(IDotWoAdapter.class);
 			boolean isDotWO = dotWoAdapter != null;
 			IDotWoAdapter parentWoAdapter = null;
 			if (resource.getParent() != null) {
-				parentWoAdapter = (IDotWoAdapter) resource.getParent()
-						.getAdapter(IDotWoAdapter.class);
+				parentWoAdapter = (IDotWoAdapter) resource.getParent().getAdapter(IDotWoAdapter.class);
 			}
 			boolean parentIsDotWO = parentWoAdapter != null;
 			if (parentIsDotWO) {
@@ -246,21 +215,19 @@ public class PBDotProjectBuilder implements IDeltaBuilder, ICleanBuilder {
 			}
 			IDotEOModeldAdapter parentDotEOModeldAdapter = null;
 			if (resource.getParent() != null) {
-				parentDotEOModeldAdapter = (IDotEOModeldAdapter) resource
-						.getParent().getAdapter(IDotEOModeldAdapter.class);
+				parentDotEOModeldAdapter = (IDotEOModeldAdapter) resource.getParent().getAdapter(IDotEOModeldAdapter.class);
 			}
 			boolean parentIsDotEOModeld = parentDotEOModeldAdapter != null;
 			if (parentIsDotEOModeld) {
 				return;
 			}
-			if (_kind == IResourceDelta.ADDED
-					|| _kind == IResourceDelta.CHANGED) {
+			if (kind == IResourceDelta.ADDED || kind == IResourceDelta.CHANGED) {
 				if (isDotWO) {
 					pbDotProjectAdapter.addWoComponent(localizedPath);
 				} else {
 					pbDotProjectAdapter.addWoappResource(localizedPath);
 				}
-			} else if (_kind == IResourceDelta.REMOVED) {
+			} else if (kind == IResourceDelta.REMOVED) {
 				if (isDotWO) {
 					pbDotProjectAdapter.removeWoComponent(localizedPath);
 				} else {
@@ -270,113 +237,89 @@ public class PBDotProjectBuilder implements IDeltaBuilder, ICleanBuilder {
 		}
 	}
 
-	public void handleWebServerResources(IResource _resource,
-			IProgressMonitor _progressMonitor, Map _buildCache) {
+	public void handleWebServerResources(IResource resource, IProgressMonitor progressMonitor, Map buildCache) {
 		if (!Preferences.getPREF_WRITE_PB_DOT_PROJECT_ON_BUILD()) {
 			return;
 		}
-		handleWebServerResources(IResourceDelta.ADDED, _resource,
-				_progressMonitor, _buildCache);
+		handleWebServerResources(IResourceDelta.ADDED, resource);
 	}
 
-	public boolean handleWebServerResourcesDelta(IResourceDelta delta,
-			IProgressMonitor monitor, Map _buildCache) {
+	public void handleWebServerResourcesDelta(IResourceDelta delta, IProgressMonitor monitor, Map buildCache) {
 		if (!Preferences.getPREF_WRITE_PB_DOT_PROJECT_ON_BUILD()) {
-			return false;
+			return;
 		}
 		IResource resource = delta.getResource();
-		handleWebServerResources(delta.getKind(), resource, monitor,
-				_buildCache);
-		return false;
+		handleWebServerResources(delta.getKind(), resource);
 	}
 
-	public void handleWebServerResources(int _kind, IResource resource,
-			IProgressMonitor monitor, Map _buildCache) {
+	private void handleWebServerResources(int kind, IResource resource) {
 		if (!Preferences.getPREF_WRITE_PB_DOT_PROJECT_ON_BUILD()) {
 			return;
 		}
-		if (_kind == IResourceDelta.ADDED || _kind == IResourceDelta.CHANGED
-				|| _kind == IResourceDelta.REMOVED) {
-			IPBDotProjectOwner pbDotProjectOwner = this
-					.getIPBDotProjectOwner(resource);
-			IPBDotProjectAdapter pbDotProjectAdapter = this
-					.getIPBDotProjectAdapter(pbDotProjectOwner);
-			ILocalizedPath localizedPath = pbDotProjectAdapter
-					.localizedRelativeResourcePath(pbDotProjectOwner, resource);
-			if (_kind == IResourceDelta.ADDED
-					|| _kind == IResourceDelta.CHANGED) {
+		if (kind == IResourceDelta.ADDED || kind == IResourceDelta.CHANGED || kind == IResourceDelta.REMOVED) {
+			IPBDotProjectOwner pbDotProjectOwner = this.getIPBDotProjectOwner(resource);
+			IPBDotProjectAdapter pbDotProjectAdapter = this.getIPBDotProjectAdapter(pbDotProjectOwner);
+			ILocalizedPath localizedPath = pbDotProjectAdapter.localizedRelativeResourcePath(pbDotProjectOwner, resource);
+			if (kind == IResourceDelta.ADDED || kind == IResourceDelta.CHANGED) {
 				pbDotProjectAdapter.addWebServerResource(localizedPath);
-			} else if (_kind == IResourceDelta.REMOVED) {
+			} else if (kind == IResourceDelta.REMOVED) {
 				pbDotProjectAdapter.removeWebServerResource(localizedPath);
 			}
 		}
 	}
 
-	public void handleOther(IResource resource, IProgressMonitor monitor,
-			Map _buildCache) {
+	public void handleOther(IResource resource, IProgressMonitor monitor, Map buildCache) {
 		if (!Preferences.getPREF_WRITE_PB_DOT_PROJECT_ON_BUILD()) {
 			return;
 		}
-		handleOther(IResourceDelta.ADDED, resource, monitor, _buildCache);
+		handleOther(IResourceDelta.ADDED, resource);
 	}
 
-	public boolean handleOtherDelta(IResourceDelta delta,
-			IProgressMonitor monitor, Map _buildCache) {
+	public void handleOtherDelta(IResourceDelta delta, IProgressMonitor monitor, Map buildCache) {
 		if (!Preferences.getPREF_WRITE_PB_DOT_PROJECT_ON_BUILD()) {
-			return false;
+			return;
 		}
 		IResource resource = delta.getResource();
-		handleOther(delta.getKind(), resource, monitor, _buildCache);
-		return false;
+		handleOther(delta.getKind(), resource);
 	}
 
-	public void handleOther(int _kind, IResource resource,
-			IProgressMonitor monitor, Map _buildCache) {
+	private void handleOther(int kind, IResource resource) {
 		if (!Preferences.getPREF_WRITE_PB_DOT_PROJECT_ON_BUILD()) {
 			return;
 		}
-		IDotSubprojAdapter dotSubprojAdapter = (IDotSubprojAdapter) resource
-				.getAdapter(IDotSubprojAdapter.class);
+		IDotSubprojAdapter dotSubprojAdapter = (IDotSubprojAdapter) resource.getAdapter(IDotSubprojAdapter.class);
 		if (dotSubprojAdapter == null) {
 			return;
 		}
-		IPBDotProjectOwner pbDotProjectOwner = this
-				.getIPBDotProjectOwner(resource.getParent());
-		IPBDotProjectAdapter pbDotProjectAdapter = this
-				.getIPBDotProjectAdapter(pbDotProjectOwner);
-		if (_kind == IResourceDelta.ADDED) {
+		IPBDotProjectOwner pbDotProjectOwner = this.getIPBDotProjectOwner(resource.getParent());
+		IPBDotProjectAdapter pbDotProjectAdapter = this.getIPBDotProjectAdapter(pbDotProjectOwner);
+		if (kind == IResourceDelta.ADDED) {
 			pbDotProjectAdapter.addSubproject(dotSubprojAdapter);
 		}
-		if (_kind == IResourceDelta.REMOVED) {
+		if (kind == IResourceDelta.REMOVED) {
 			pbDotProjectAdapter.removeSubproject(dotSubprojAdapter);
 		}
 	}
 
-	public void handleClasspath(IResource resource,
-			IProgressMonitor progressMonitor, Map buildCache) {
+	public void handleClasspath(IResource resource, IProgressMonitor progressMonitor, Map buildCache) {
 
 		if (!Preferences.getPREF_WRITE_PB_DOT_PROJECT_ON_BUILD()) {
 			return;
 		}
-		IPBDotProjectOwner pbDotProjectOwner = this
-				.getIPBDotProjectOwner(resource);
-		IPBDotProjectAdapter pbDotProjectAdapter = this
-				.getIPBDotProjectAdapter(pbDotProjectOwner);
+		IPBDotProjectOwner pbDotProjectOwner = this.getIPBDotProjectOwner(resource);
+		IPBDotProjectAdapter pbDotProjectAdapter = this.getIPBDotProjectAdapter(pbDotProjectOwner);
 		IProject project = resource.getProject();
-		IProjectAdapter projectAdapter = (IProjectAdapter) project
-				.getAdapter(IProjectAdapter.class);
+		IProjectAdapter projectAdapter = (IProjectAdapter) project.getAdapter(IProjectAdapter.class);
 		List frameworkNames = projectAdapter.getFrameworkNames();
 		pbDotProjectAdapter.updateFrameworkNames(frameworkNames);
 	}
 
-	public boolean classpathChanged(IResourceDelta delta,
-			IProgressMonitor monitor, Map _buildCache) {
+	public void classpathChanged(IResourceDelta delta, IProgressMonitor monitor, Map buildCache) {
 		if (!Preferences.getPREF_WRITE_PB_DOT_PROJECT_ON_BUILD()) {
-			return false;
+			return;
 		}
 		IResource resource = delta.getResource();
-		handleClasspath(resource, monitor, _buildCache);
-		return false;
+		handleClasspath(resource, monitor, buildCache);
 	}
 
 }

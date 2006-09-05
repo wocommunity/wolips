@@ -2,7 +2,7 @@
  *
  * The ObjectStyle Group Software License, Version 1.0
  *
- * Copyright (c) 2005 The ObjectStyle Group,
+ * Copyright (c) 2005 - 2006 The ObjectStyle Group,
  * and individual authors of the software.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -62,7 +62,7 @@ import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
-public abstract class AbstractOldBuilder implements IDeltaBuilder {
+public abstract class AbstractOldBuilder implements IIncrementalBuilder {
 
 	private IProject currentProject;
 
@@ -70,9 +70,7 @@ public abstract class AbstractOldBuilder implements IDeltaBuilder {
 		super();
 	}
 
-	public abstract void invokeOldBuilder(int kind, Map args,
-			IProgressMonitor monitor, IResourceDelta delta)
-			throws CoreException;
+	public abstract void invokeOldBuilder(int kind, Map args, IProgressMonitor monitor, IResourceDelta delta) throws CoreException;
 
 	public IProject getProject() {
 		return currentProject;
@@ -82,44 +80,37 @@ public abstract class AbstractOldBuilder implements IDeltaBuilder {
 		this.currentProject = project;
 	}
 
-	public boolean buildStarted(int kind, Map args, IProgressMonitor monitor,
-			IProject project, Map _buildCache) {
+	public boolean buildStarted(int kind, Map args, IProgressMonitor monitor, IProject project, Map buildCache) {
 		// do nothing
-    return false;
+		return false;
 	}
 
-  public boolean buildPreparationDone(int _kind, Map _args, IProgressMonitor _monitor, IProject _project, Map _buildCache) {
-    // TODO Auto-generated method stub
-    return false;
-  }
-
-	public boolean handleClassesDelta(IResourceDelta delta, IProgressMonitor monitor, Map _buildCache) {
+	public boolean buildPreparationDone(int kind, Map args, IProgressMonitor monitor, IProject project, Map buildCache) {
 		// do nothing
-    return false;
+		return false;
 	}
 
-	public boolean handleWoappResourcesDelta(IResourceDelta delta, IProgressMonitor monitor, Map _buildCache) {
+	public void handleClassesDelta(IResourceDelta delta, IProgressMonitor monitor, Map buildCache) {
 		// do nothing
-    return false;
 	}
 
-	public boolean handleWebServerResourcesDelta(IResourceDelta delta, IProgressMonitor monitor, Map _buildCache) {
+	public void handleWoappResourcesDelta(IResourceDelta delta, IProgressMonitor monitor, Map buildCache) {
 		// do nothing
-    return false;
 	}
 
-	public boolean handleOtherDelta(IResourceDelta delta, IProgressMonitor monitor, Map _buildCache) {
+	public void handleWebServerResourcesDelta(IResourceDelta delta, IProgressMonitor monitor, Map buildCache) {
 		// do nothing
-    return false;
 	}
-  
-  public boolean handleSourceDelta(IResourceDelta _delta, IProgressMonitor _progressMonitor, Map _buildCache) {
-    // do nothing
-    return false;
-  }
 
-	public boolean classpathChanged(IResourceDelta delta, IProgressMonitor monitor, Map _buildCache) {
+	public void handleOtherDelta(IResourceDelta delta, IProgressMonitor monitor, Map buildCache) {
 		// do nothing
-    return false;
+	}
+
+	public void handleSourceDelta(IResourceDelta delta, IProgressMonitor progressMonitor, Map buildCache) {
+		// do nothing
+	}
+
+	public void classpathChanged(IResourceDelta delta, IProgressMonitor monitor, Map buildCache) {
+		// do nothing
 	}
 }
