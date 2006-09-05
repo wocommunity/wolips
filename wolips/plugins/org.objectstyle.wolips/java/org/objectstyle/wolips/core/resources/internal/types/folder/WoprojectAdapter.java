@@ -55,14 +55,37 @@
  */
 package org.objectstyle.wolips.core.resources.internal.types.folder;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.objectstyle.wolips.core.CorePlugin;
 import org.objectstyle.wolips.core.resources.types.folder.IWoprojectAdapter;
 
-public class WoprojectAdapter extends AbstractFolderAdapter implements
-		IWoprojectAdapter {
+public class WoprojectAdapter extends AbstractFolderAdapter implements IWoprojectAdapter {
 
 	public WoprojectAdapter(IFolder folder) {
 		super(folder);
 	}
 
+	public void markAsDerivated(IProgressMonitor monitor) {
+		try {
+			IResource[] members = this.getUnderlyingFolder().members();
+			for (int i = 0; i < members.length; i++) {
+				IResource member = members[i];
+				if (member instanceof IFile) {
+					if (member.exists()) {
+						String name = member.getName();
+						if (name != null && name.startsWith("ant.")) {
+							member.setDerived(true);
+						}
+					}
+				}
+			}
+		} catch (CoreException e) {
+
+			CorePlugin.getDefault().log(e);
+		}
+	}
 }
