@@ -64,6 +64,7 @@ public class EODataType {
   public static final EODataType LONG = new EODataType("NSNumber", "l", Messages.getString("EODataType.long"));
   public static final EODataType FLOAT = new EODataType("NSNumber", "f", Messages.getString("EODataType.float"));
   public static final EODataType DOUBLE = new EODataType("NSNumber", "d", Messages.getString("EODataType.double"));
+  public static final EODataType BOOLEAN = new EODataType("NSNumber", "c", Messages.getString("EODataType.boolean"));
   public static final EODataType BIGDECIMAL = new EODataType("NSNumber", "B", Messages.getString("EODataType.bigDecimal"));
   public static final EODataType DECIMAL_NUMBER = new EODataType("NSDecimalNumber", (String) null, Messages.getString("EODataType.decimalNumber"));
   public static final EODataType DATE_OBJ = new EODataType("NSCalendarDate", new String[] { null, "" }, Messages.getString("EODataType.dateObj"));
@@ -73,7 +74,7 @@ public class EODataType {
   public static final EODataType DATE_MSSQL = new EODataType("NSCalendarDate", "M", Messages.getString("EODataType.dateMSSQL"));
   public static final EODataType DATA = new EODataType("NSData", (String) null, Messages.getString("EODataType.data"));
   public static final EODataType CUSTOM = new EODataType(null, (String) null, Messages.getString("EODataType.custom"));
-  public static final EODataType[] DATA_TYPES = new EODataType[] { EODataType.STRING, EODataType.STRING_SET, EODataType.STRING_CHAR, EODataType.STRING_UTF, EODataType.STRING_RTRIM, EODataType.BYTE, EODataType.SHORT, EODataType.INTEGER, EODataType.LONG, EODataType.FLOAT, EODataType.DOUBLE, EODataType.BIGDECIMAL, EODataType.DECIMAL_NUMBER, EODataType.DATE_OBJ, EODataType.DATE, EODataType.TIME, EODataType.TIMESTAMP, EODataType.DATE_MSSQL, EODataType.DATA, EODataType.CUSTOM };
+  public static final EODataType[] DATA_TYPES = new EODataType[] { EODataType.STRING, EODataType.STRING_SET, EODataType.STRING_CHAR, EODataType.STRING_UTF, EODataType.STRING_RTRIM, EODataType.BYTE, EODataType.SHORT, EODataType.INTEGER, EODataType.LONG, EODataType.FLOAT, EODataType.DOUBLE, EODataType.BIGDECIMAL, EODataType.DECIMAL_NUMBER, EODataType.BOOLEAN, EODataType.DATE_OBJ, EODataType.DATE, EODataType.TIME, EODataType.TIMESTAMP, EODataType.DATE_MSSQL, EODataType.DATA, EODataType.CUSTOM };
 
   private String myValueClass;
   private String[] myValueTypes;

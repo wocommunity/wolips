@@ -212,6 +212,7 @@ public abstract class AbstractEOArgumentBasicEditorSection extends AbstractPrope
     myDataTypeToDataTypePanel.put(EODataType.DATE_MSSQL, new DateDataTypePanel(myDataTypePanel, SWT.NONE, getWidgetFactory()));
     myDataTypeToDataTypePanel.put(EODataType.DATE_OBJ, new DateDataTypePanel(myDataTypePanel, SWT.NONE, getWidgetFactory()));
     myDataTypeToDataTypePanel.put(EODataType.DECIMAL_NUMBER, new DecimalNumberDataTypePanel(myDataTypePanel, SWT.NONE, getWidgetFactory()));
+    myDataTypeToDataTypePanel.put(EODataType.BOOLEAN, new IntegerDataTypePanel(myDataTypePanel, SWT.NONE, getWidgetFactory()));
     myDataTypeToDataTypePanel.put(EODataType.DOUBLE, new DoubleDataTypePanel(myDataTypePanel, SWT.NONE, getWidgetFactory()));
     myDataTypeToDataTypePanel.put(EODataType.FLOAT, new DoubleDataTypePanel(myDataTypePanel, SWT.NONE, getWidgetFactory()));
     myDataTypeToDataTypePanel.put(EODataType.INTEGER, new IntegerDataTypePanel(myDataTypePanel, SWT.NONE, getWidgetFactory()));
