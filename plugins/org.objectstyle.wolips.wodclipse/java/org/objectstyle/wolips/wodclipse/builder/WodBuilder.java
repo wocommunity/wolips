@@ -56,7 +56,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.ui.part.FileEditorInput;
-import org.objectstyle.wolips.core.resources.builder.AbstractDeltaCleanBuilder;
+import org.objectstyle.wolips.core.resources.builder.AbstractFullAndIncrementalBuilder;
 import org.objectstyle.wolips.locate.LocateException;
 import org.objectstyle.wolips.locate.LocatePlugin;
 import org.objectstyle.wolips.locate.result.LocalizedComponentsLocateResult;
@@ -66,7 +66,7 @@ import org.objectstyle.wolips.wodclipse.wod.WodFileDocumentProvider;
 import org.objectstyle.wolips.wodclipse.wod.WodReconcilingStrategy;
 import org.objectstyle.wolips.wodclipse.wod.model.WodProblem;
 
-public class WodBuilder extends AbstractDeltaCleanBuilder {
+public class WodBuilder extends AbstractFullAndIncrementalBuilder {
   private boolean myValidateWOD;
 
   public WodBuilder() {
