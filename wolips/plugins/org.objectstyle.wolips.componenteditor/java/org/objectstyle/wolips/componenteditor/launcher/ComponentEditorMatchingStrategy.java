@@ -100,6 +100,9 @@ public class ComponentEditorMatchingStrategy implements IEditorMatchingStrategy 
 		if (workbenchPart == null) {
 			return false;
 		}
+		if (!(workbenchPart instanceof ComponentEditor)) {
+			return false;
+		}
 		ComponentEditor componentEditor = (ComponentEditor) workbenchPart;
 		ComponentEditorInput componentEditorInput = componentEditor.getComponentEditorInput();
 		// if(editorReferenceEditorInput == null) {
