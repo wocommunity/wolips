@@ -64,93 +64,79 @@ import java.util.Map;
 import org.objectstyle.woenvironment.pb.PBXProject.ObjectsTable.ID;
 
 /**
- * A <b>XcodeProjProject</b> represents an Xcode 2.1 project package
- * (<code>*.xcodeproj</code>).
+ * A <b>XcodeProjProject</b> represents an Xcode 2.1 project package (<code>*.xcodeproj</code>).
  * 
  * @author Mike Schrag
  */
 public class XcodeProjProject extends PBXProject {
-  protected Map newFrameworkReference(String name, String path) {
-    return map(new Object[] { "isa", "PBXFileReference", "lastKnownFileType", "wrapper.framework", 
-    		"sourceTree", "<absolute>", "name", name, "path", path});
-  }
+	protected Map newFrameworkReference(String name, String path) {
+		return map(new Object[] { "isa", "PBXFileReference", "lastKnownFileType", "wrapper.framework", "sourceTree", "<absolute>", "name", name, "path", path });
+	}
 
-  protected Map newGroup(String name, List childrenIDs) {
-    return map(new Object[] { "isa", "PBXGroup", "sourceTree", "<group>", "name", name, "children", childrenIDs });
-  }
+	protected Map newGroup(String name, List childrenIDs) {
+		return map(new Object[] { "isa", "PBXGroup", "sourceTree", "<group>", "name", name, "children", childrenIDs });
+	}
 
-  protected Map newFileReference(String name, String path) {
-    return map(new Object[] { "isa", "PBXFileReference", "lastKnownFileType", "sourcecode.java", 
-    		"sourceTree", new File(path).isAbsolute() ? "<absolute>" : "<group>", "name", name, "path", path });
-  }
+	protected Map newFileReference(String name, String path) {
+		return map(new Object[] { "isa", "PBXFileReference", "lastKnownFileType", "sourcecode.java", "sourceTree", new File(path).isAbsolute() ? "<absolute>" : "<group>", "name", name, "path", path });
+	}
 
-  protected Map newFolderReference(String name, String path) {
-    String lastKnownFileType;
-    if (path.endsWith(".eomodeld")) {
-      lastKnownFileType = "wrapper.eomodeld";
-    }
-    else if (path.endsWith(".wo")) {
-      lastKnownFileType = "folder";
-    }
-    else if (path.endsWith(".nib")) {
-      lastKnownFileType = "wrapper.nib";
-    }
-    else {
-      lastKnownFileType = "folder";
-    }
-    Map result = map(new Object[] { "isa", "PBXFileReference", "lastKnownFileType", lastKnownFileType, 
-    		"sourceTree", new File(path).isAbsolute() ? "<absolute>" : "<group>",  "name", name, "path", path });
-    return result;
-  }
+	protected Map newFolderReference(String name, String path) {
+		String lastKnownFileType;
+		if (path.endsWith(".eomodeld")) {
+			lastKnownFileType = "wrapper.eomodeld";
+		} else if (path.endsWith(".wo")) {
+			lastKnownFileType = "folder";
+		} else if (path.endsWith(".nib")) {
+			lastKnownFileType = "wrapper.nib";
+		} else {
+			lastKnownFileType = "folder";
+		}
+		Map result = map(new Object[] { "isa", "PBXFileReference", "lastKnownFileType", lastKnownFileType, "sourceTree", new File(path).isAbsolute() ? "<absolute>" : "<group>", "name", name, "path", path });
+		return result;
+	}
 
-  protected Map newAntTarget(List _buildPhaseIDs, ObjectsTable _objectsTable) {
-    Map result = map( new Object[] {
-			"isa",				"PBXLegacyTarget",
-			"buildArgumentsString", "-emacs $(ACTION)",
-			"buildSettings",	new HashMap(),
-			"buildToolPath", "/Developer/Java/Ant/bin/ant",
-			"passBuildSettingsInEnvironment", "1",
-			"name",				"Ant",
-			"buildPhases",		_buildPhaseIDs });
-    List buildConfigurations = new LinkedList();
-    buildConfigurations.add(_objectsTable.insert(newBuildConfiguration(map(new Object[] { "COPY_PHASE_STRIP", "NO" }), "Debug")));
-    buildConfigurations.add(_objectsTable.insert(newBuildConfiguration(map(new Object[] { "COPY_PHASE_STRIP", "YES" }), "Release")));
-    buildConfigurations.add(_objectsTable.insert(newBuildConfiguration(new HashMap(), "Default")));
-    result.put("buildConfigurationList", _objectsTable.insert(newBuildConfigurationList(buildConfigurations, false, "Default")));
-    result.put("productName", "Ant");
-    return result;
-  }
+	protected Map newAntTarget(List _buildPhaseIDs, ObjectsTable _objectsTable) {
+		Map result = map(new Object[] { "isa", "PBXLegacyTarget", "buildArgumentsString", "-emacs $(ACTION)", "buildSettings", new HashMap(), "buildToolPath", "/Developer/Java/Ant/bin/ant", "passBuildSettingsInEnvironment", "1", "name", "Ant", "buildPhases", _buildPhaseIDs });
+		List buildConfigurations = new LinkedList();
+		buildConfigurations.add(_objectsTable.insert(newBuildConfiguration(map(new Object[] { "COPY_PHASE_STRIP", "NO" }), "Debug")));
+		buildConfigurations.add(_objectsTable.insert(newBuildConfiguration(map(new Object[] { "COPY_PHASE_STRIP", "YES" }), "Release")));
+		buildConfigurations.add(_objectsTable.insert(newBuildConfiguration(new HashMap(), "Default")));
+		result.put("buildConfigurationList", _objectsTable.insert(newBuildConfigurationList(buildConfigurations, false, "Default")));
+		result.put("productName", "Ant");
+		return result;
+	}
 
-  protected Map newProject(ID _groupID, List _targetIDs, ObjectsTable _objectsTable) {
-    Map project = super.newProject(_groupID, _targetIDs, _objectsTable);
+	protected Map newProject(ID _groupID, List _targetIDs, ObjectsTable _objectsTable) {
+		Map project = super.newProject(_groupID, _targetIDs, _objectsTable);
 
-    List buildConfigurations = new LinkedList();
-    buildConfigurations.add(_objectsTable.insert(newBuildConfiguration(new HashMap(), "Debug")));
-    buildConfigurations.add(_objectsTable.insert(newBuildConfiguration(new HashMap(), "Release")));
-    buildConfigurations.add(_objectsTable.insert(newBuildConfiguration(new HashMap(), "Default")));
-    project.put("buildConfigurationList", _objectsTable.insert(newBuildConfigurationList(buildConfigurations, false, "Default")));
+		List buildConfigurations = new LinkedList();
+		buildConfigurations.add(_objectsTable.insert(newBuildConfiguration(new HashMap(), "Debug")));
+		buildConfigurations.add(_objectsTable.insert(newBuildConfiguration(new HashMap(), "Release")));
+		buildConfigurations.add(_objectsTable.insert(newBuildConfiguration(new HashMap(), "Default")));
+		project.put("buildConfigurationList", _objectsTable.insert(newBuildConfigurationList(buildConfigurations, false, "Default")));
 
-    project.put("buildSettings", new HashMap());
+		project.put("buildSettings", new HashMap());
 
-    List buildStyles = new LinkedList();
-    buildStyles.add(_objectsTable.insert(newBuildStyle(map(new Object[] { "COPY_PHASE_STRIP", "NO" }), "Debug")));
-    buildStyles.add(_objectsTable.insert(newBuildStyle(map(new Object[] { "COPY_PHASE_STRIP", "YES" }), "Release")));
-    project.put("buildStyles", buildStyles);
+		List buildStyles = new LinkedList();
+		buildStyles.add(_objectsTable.insert(newBuildStyle(map(new Object[] { "COPY_PHASE_STRIP", "NO" }), "Debug")));
+		buildStyles.add(_objectsTable.insert(newBuildStyle(map(new Object[] { "COPY_PHASE_STRIP", "YES" }), "Release")));
+		project.put("buildStyles", buildStyles);
 
-    return project;
-  }
+		return project;
+	}
 
-  protected Map newBuildConfigurationList(List _buildConfigurations, boolean _defaultConfigurationIsVisible, String _defaultConfigurationName) {
-    Map buildConfigurationList = map(new Object[] { "buildConfigurations", _buildConfigurations, "defaultConfigurationIsVisible", (_defaultConfigurationIsVisible) ? "1" : "0", "defaultConfigurationName", _defaultConfigurationName, "isa", "XCConfigurationList" });
-    return buildConfigurationList;
-  }
+	protected Map newBuildConfigurationList(List _buildConfigurations, boolean _defaultConfigurationIsVisible, String _defaultConfigurationName) {
+		Map buildConfigurationList = map(new Object[] { "buildConfigurations", _buildConfigurations, "defaultConfigurationIsVisible", (_defaultConfigurationIsVisible) ? "1" : "0", "defaultConfigurationName", _defaultConfigurationName, "isa", "XCConfigurationList" });
+		return buildConfigurationList;
+	}
 
-  protected Map newPBXProj(Map objectsTable, ObjectsTable.ID rootObject) {
-    return map(new Object[] { "archiveVersion", "1", "classes", new HashMap(), "objectVersion", "42", "rootObject", rootObject, "objects", objectsTable });
-  }
-  
-  protected boolean hasBuildPhases() {
-	  return true;
-  }
-  
+	protected Map newPBXProj(Map objectsTable, ObjectsTable.ID rootObject) {
+		return map(new Object[] { "archiveVersion", "1", "classes", new HashMap(), "objectVersion", "42", "rootObject", rootObject, "objects", objectsTable });
+	}
+
+	protected boolean hasBuildPhases() {
+		return true;
+	}
+
 }

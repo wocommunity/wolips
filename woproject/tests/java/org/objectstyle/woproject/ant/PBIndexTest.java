@@ -69,6 +69,7 @@ public class PBIndexTest extends TestCase {
 
 	/**
 	 * Constructor for PBIndexTest.
+	 * 
 	 * @param arg0
 	 */
 	public PBIndexTest(String arg0) {
@@ -76,8 +77,8 @@ public class PBIndexTest extends TestCase {
 	}
 
 	/**
-	* @see junit.framework.TestCase#setUp()
-	*/
+	 * @see junit.framework.TestCase#setUp()
+	 */
 	protected void setUp() throws Exception {
 		super.setUp();
 		indexTask = new PBIndex();
@@ -87,7 +88,7 @@ public class PBIndexTest extends TestCase {
 		indexTask.setName("xyz");
 		assertEquals("xyz", indexTask.getName());
 	}
-	
+
 	public void testProjectFile() throws Exception {
 		File f = new File("xyz");
 		indexTask.setProjectFile(f);
@@ -104,8 +105,8 @@ public class PBIndexTest extends TestCase {
 	}
 
 	public void testValidateAttributes2() throws Exception {
-        indexTask.setName("123");
+		indexTask.setName("123");
 		indexTask.validateAttributes();
-		// no exception  by now - indicator of success
+		// no exception by now - indicator of success
 	}
 }

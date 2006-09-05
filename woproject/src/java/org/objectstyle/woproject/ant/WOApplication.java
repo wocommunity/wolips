@@ -81,9 +81,7 @@ import org.objectstyle.woenvironment.env.WOEnvironment;
  */
 public class WOApplication extends WOTask {
 
-	private final String[] stdFrameworkNames = new String[] { "JavaWebObjects",
-			"JavaWOExtensions", "JavaEOAccess", "JavaEOControl",
-			"JavaFoundation", "JavaJDBCAdaptor", "JavaXML" };
+	private final String[] stdFrameworkNames = new String[] { "JavaWebObjects", "JavaWOExtensions", "JavaEOAccess", "JavaEOControl", "JavaFoundation", "JavaJDBCAdaptor", "JavaXML" };
 
 	protected ArrayList frameworkSets = new ArrayList();
 
@@ -159,7 +157,7 @@ public class WOApplication extends WOTask {
 			copyEmbeddedFrameworks();
 		}
 		if (hasEmbeddedOtherClasspaths()) {
-		    copyEmbeddedOtherClasspaths();
+			copyEmbeddedOtherClasspaths();
 		}
 
 		// create all needed scripts
@@ -203,8 +201,7 @@ public class WOApplication extends WOTask {
 				aChmod = null;
 			}
 		} else {
-			super.log("'" + System.getProperty("os.name")
-					+ "' is some kind of windows, skipping chmod.");
+			super.log("'" + System.getProperty("os.name") + "' is some kind of windows, skipping chmod.");
 		}
 	}
 
@@ -245,8 +242,7 @@ public class WOApplication extends WOTask {
 				String includeName = dirs[j];
 
 				if (includeName.endsWith(".framework") == false) {
-					throw new BuildException(
-							"'name' attribute must end with '.framework'");
+					throw new BuildException("'name' attribute must end with '.framework'");
 				}
 
 				FileSet newFs = new FileSet();
@@ -266,57 +262,57 @@ public class WOApplication extends WOTask {
 			cp.execute();
 	}
 
-    /**
-     * Method copyEmbeddedFrameworks.
-     *
-     * @throws BuildException
-     */
-    protected void copyEmbeddedOtherClasspaths() throws BuildException {
-        Copy cp = new Copy();
-        cp.setOwningTarget(getOwningTarget());
-        cp.setProject(getProject());
-        cp.setTaskName(getTaskName());
-        cp.setLocation(getLocation());
+	/**
+	 * Method copyEmbeddedFrameworks.
+	 * 
+	 * @throws BuildException
+	 */
+	protected void copyEmbeddedOtherClasspaths() throws BuildException {
+		Copy cp = new Copy();
+		cp.setOwningTarget(getOwningTarget());
+		cp.setProject(getProject());
+		cp.setTaskName(getTaskName());
+		cp.setLocation(getLocation());
 
-        cp.setTodir(contentsDir());
+		cp.setTodir(contentsDir());
 
-        List theOtherClasspathSets = getOtherClasspath();
-        int size = theOtherClasspathSets.size();
-        boolean hasSet = false;
-        for (int i = 0; i < size; i++) {
-            OtherClasspathSet cs = (OtherClasspathSet) theOtherClasspathSets.get(i);
+		List theOtherClasspathSets = getOtherClasspath();
+		int size = theOtherClasspathSets.size();
+		boolean hasSet = false;
+		for (int i = 0; i < size; i++) {
+			OtherClasspathSet cs = (OtherClasspathSet) theOtherClasspathSets.get(i);
 
-            if (cs.getEmbed() == false) {
-                continue;
-            }
+			if (cs.getEmbed() == false) {
+				continue;
+			}
 
-            File root = cs.getDir(getProject());
-            DirectoryScanner ds = cs.getDirectoryScanner(getProject());
-            String[] dirs = ds.getIncludedDirectories();
+			File root = cs.getDir(getProject());
+			DirectoryScanner ds = cs.getDirectoryScanner(getProject());
+			String[] dirs = ds.getIncludedDirectories();
 
-            for (int j = 0; j < dirs.length; j++) {
-                String includeName = dirs[j];
+			for (int j = 0; j < dirs.length; j++) {
+				String includeName = dirs[j];
 
-                FileSet newCs = new FileSet();
-                PatternSet.NameEntry include;
+				FileSet newCs = new FileSet();
+				PatternSet.NameEntry include;
 
-                newCs.setDir(root);
-                include = newCs.createInclude();
-                
-                // Since we're embedding, we expect to copy the entire subtree 
-                // for this included entry.  Force it if the task user didn't.
-                if ( includeName.endsWith("/") == false ) {
-                    includeName = includeName + "/";
-                }
-                include.setName(includeName);
+				newCs.setDir(root);
+				include = newCs.createInclude();
 
-                cp.addFileset(newCs);
-                hasSet = true;
-            }
-        }
-        if (hasSet)
-            cp.execute();
-    }
+				// Since we're embedding, we expect to copy the entire subtree
+				// for this included entry. Force it if the task user didn't.
+				if (includeName.endsWith("/") == false) {
+					includeName = includeName + "/";
+				}
+				include.setName(includeName);
+
+				cp.addFileset(newCs);
+				hasSet = true;
+			}
+		}
+		if (hasSet)
+			cp.execute();
+	}
 
 	/**
 	 * Returns a list of standard frameworks as a FrameworkSet.
@@ -324,9 +320,7 @@ public class WOApplication extends WOTask {
 	public FrameworkSet standardSet() {
 		FrameworkSet set = new FrameworkSet();
 		set.setProject(this.getProject());
-		set.setDir(new File(this.getWOEnvironment().getWOVariables()
-				.systemRoot()
-				+ "/Library/Frameworks"));
+		set.setDir(new File(this.getWOEnvironment().getWOVariables().systemRoot() + "/Library/Frameworks"));
 
 		for (int i = 0; i < stdFrameworkNames.length; i++) {
 			String path =
@@ -366,8 +360,7 @@ public class WOApplication extends WOTask {
 	 * applications this is a <code>.woa</code> directory.
 	 */
 	protected File taskDir() {
-		return getProject().resolveFile(
-				destDir + File.separator + name + ".woa");
+		return getProject().resolveFile(destDir + File.separator + name + ".woa");
 	}
 
 	protected File contentsDir() {
@@ -418,9 +411,7 @@ public class WOApplication extends WOTask {
 	 * @return
 	 */
 	public String getWebXML_WOROOT() {
-		log(
-				" WOApplication.getWebXML_WOROOT() webXML_WOROOT: "
-						+ webXML_WOROOT, Project.MSG_VERBOSE);
+		log(" WOApplication.getWebXML_WOROOT() webXML_WOROOT: " + webXML_WOROOT, Project.MSG_VERBOSE);
 		return webXML_WOROOT;
 	}
 
@@ -518,26 +509,26 @@ public class WOApplication extends WOTask {
 		return frameworkSets;
 	}
 
-    /**
-     * Return true if any of the otherclasspath elements have the 'embed'
-     * attribute set to true.
-     *
-     * @return true if an otherclasspath element is embedded
-     */
-    protected boolean hasEmbeddedOtherClasspaths() {
-        List theClasspathSets = getOtherClasspath();
-        int size = theClasspathSets.size();
+	/**
+	 * Return true if any of the otherclasspath elements have the 'embed'
+	 * attribute set to true.
+	 * 
+	 * @return true if an otherclasspath element is embedded
+	 */
+	protected boolean hasEmbeddedOtherClasspaths() {
+		List theClasspathSets = getOtherClasspath();
+		int size = theClasspathSets.size();
 
-        for (int i = 0; i < size; i++) {
-            OtherClasspathSet cs = (OtherClasspathSet) theClasspathSets.get(i);
+		for (int i = 0; i < size; i++) {
+			OtherClasspathSet cs = (OtherClasspathSet) theClasspathSets.get(i);
 
-            if (cs.getEmbed()) {
-                return true;
-            }
-        }
+			if (cs.getEmbed()) {
+				return true;
+			}
+		}
 
-        return false;
-    }
+		return false;
+	}
 
 	/**
 	 * Create a nested OtherClasspath.
@@ -563,8 +554,7 @@ public class WOApplication extends WOTask {
 			return woEnvironment;
 		woEnvironment = new WOEnvironment(this.getProject().getProperties());
 		if (!woEnvironment.variablesConfigured())
-			this.getProject().fireBuildFinished(
-					new WOBuildPropertiesNotFoundException());
+			this.getProject().fireBuildFinished(new WOBuildPropertiesNotFoundException());
 		return woEnvironment;
 	}
 
@@ -611,49 +601,40 @@ public class WOApplication extends WOTask {
 	 *             if task attributes are inconsistent or missing.
 	 */
 	protected void validateAttributes() throws BuildException {
-		log(" this.getName().validateAttributes(): " + this.getName()
-				+ " webXML: " + webXML + " webXML_WOROOT: " + webXML_WOROOT,
-				Project.MSG_VERBOSE);
+		log(" this.getName().validateAttributes(): " + this.getName() + " webXML: " + webXML + " webXML_WOROOT: " + webXML_WOROOT, Project.MSG_VERBOSE);
 		if (webXML) {
 			if (webXML_WOROOT == null) {
-				webXML_WOROOT = this.getWOEnvironment().getWOVariables()
-						.systemRoot();
+				webXML_WOROOT = this.getWOEnvironment().getWOVariables().systemRoot();
 				if (webXML_WOROOT == null)
-					throw new BuildException(
-							"'webXML_WOROOT' attribute is missing.");
+					throw new BuildException("'webXML_WOROOT' attribute is missing.");
 			}
 			if (webXML_LOCALROOT == null) {
-				webXML_LOCALROOT = this.getWOEnvironment().getWOVariables()
-						.localRoot();
+				webXML_LOCALROOT = this.getWOEnvironment().getWOVariables().localRoot();
 				if (webXML_LOCALROOT == null)
-					throw new BuildException(
-							"'webXML_LOCALROOT' attribute is missing.");
+					throw new BuildException("'webXML_LOCALROOT' attribute is missing.");
 			}
 			if (webXML_WOAINSTALLROOT == null) {
-				webXML_WOAINSTALLROOT = this.getWOEnvironment()
-						.getWOVariables().localLibraryDir()
-						+ "/WebObjects/Applications";
+				webXML_WOAINSTALLROOT = this.getWOEnvironment().getWOVariables().localLibraryDir() + "/WebObjects/Applications";
 				if (webXML_WOAINSTALLROOT == null)
-					throw new BuildException(
-							"'webXML_WOAINSTALLROOT' attribute is missing.");
+					throw new BuildException("'webXML_WOAINSTALLROOT' attribute is missing.");
 			}
 			if (webXML_WOAppMode == null) {
 				webXML_WOAppMode = "Development";
 				if (webXML_WOAppMode == null)
-					throw new BuildException(
-							"'webXML_WOAppMode' attribute is missing.");
+					throw new BuildException("'webXML_WOAppMode' attribute is missing.");
 			}
 			if (webXML_WOtaglib == null) {
 				webXML_WOtaglib = "/WEB-INF/tlds/WOtaglib_1_0.tld";
 				if (webXML_WOtaglib == null)
-					throw new BuildException(
-							"'webXML_WOtaglib' attribute is missing.");
+					throw new BuildException("'webXML_WOtaglib' attribute is missing.");
 			}
 		}
 	}
+
 	public String getWebXML_CustomContent() {
 		return webXML_CustomContent;
 	}
+
 	public void setWebXML_CustomContent(String webXML_CustomContent) {
 		this.webXML_CustomContent = webXML_CustomContent;
 	}

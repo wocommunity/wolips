@@ -103,8 +103,7 @@ public class WOGenerator extends CayenneGenerator {
 	 * instead of Cayenne DataMap XML file.
 	 */
 	protected DataMap loadDataMap() throws Exception {
-		return new EOModelReader(useValueType).loadEOModel(map
-				.getCanonicalPath());
+		return new EOModelReader(useValueType).loadEOModel(map.getCanonicalPath());
 	}
 
 	protected DefaultClassGenerator createGenerator() {
@@ -120,8 +119,7 @@ public class WOGenerator extends CayenneGenerator {
 
 		private final String WOGEN_SINGLE_CLASS_TEMPLATE = "wogen/singleclass.vm";
 
-		private final String[] RESERVED_CLASS_NAMES = new String[] {
-				"EOGenericRecord", "EOCustomObject" };
+		private final String[] RESERVED_CLASS_NAMES = new String[] { "EOGenericRecord", "EOCustomObject" };
 
 		protected String defaultSingleClassTemplate() {
 			return WOGEN_SINGLE_CLASS_TEMPLATE;
@@ -135,8 +133,7 @@ public class WOGenerator extends CayenneGenerator {
 			return WOGEN_SUPERCLASS_TEMPLATE;
 		}
 
-		protected File fileForClass(String packageName, String className)
-				throws Exception {
+		protected File fileForClass(String packageName, String className) throws Exception {
 
 			if (isReservedName(className)) {
 				return null;
@@ -145,8 +142,7 @@ public class WOGenerator extends CayenneGenerator {
 			return super.fileForClass(packageName, className);
 		}
 
-		protected File fileForSuperclass(String packageName, String className)
-				throws Exception {
+		protected File fileForSuperclass(String packageName, String className) throws Exception {
 
 			if (isReservedName(className)) {
 				return null;
@@ -157,13 +153,11 @@ public class WOGenerator extends CayenneGenerator {
 		protected boolean isReservedName(String className) {
 			String classNameWithoutSuperClassPrefix = className;
 			if (className.startsWith(MapClassGenerator.SUPERCLASS_PREFIX)) {
-				classNameWithoutSuperClassPrefix = className
-						.substring(MapClassGenerator.SUPERCLASS_PREFIX.length());
+				classNameWithoutSuperClassPrefix = className.substring(MapClassGenerator.SUPERCLASS_PREFIX.length());
 			}
 
 			for (int i = 0; i < RESERVED_CLASS_NAMES.length; i++) {
-				if (RESERVED_CLASS_NAMES[i]
-						.equals(classNameWithoutSuperClassPrefix)) {
+				if (RESERVED_CLASS_NAMES[i].equals(classNameWithoutSuperClassPrefix)) {
 					return true;
 				}
 			}
@@ -174,14 +168,11 @@ public class WOGenerator extends CayenneGenerator {
 		/**
 		 * Fixes some Classgenerator defaults assumed by Cayenne.
 		 */
-		protected void initClassGenerator(ClassGenerator gen, ObjEntity entity,
-				boolean superclass) {
+		protected void initClassGenerator(ClassGenerator gen, ObjEntity entity, boolean superclass) {
 			super.initClassGenerator(gen, entity, superclass);
 
 			// fix default superclass
-			if (gen.getSuperClassName() == null
-					|| gen.getSuperClassName().indexOf(
-							"org.objectstyle.cayenne") >= 0) {
+			if (gen.getSuperClassName() == null || gen.getSuperClassName().indexOf("org.objectstyle.cayenne") >= 0) {
 
 				gen.setSuperClassName("EOGenericRecord");
 			}

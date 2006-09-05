@@ -1,4 +1,5 @@
 package org.objectstyle.woproject.log4j;
+
 /* ====================================================================
  * 
  * The ObjectStyle Group Software License, Version 1.0 
@@ -55,25 +56,25 @@ package org.objectstyle.woproject.log4j;
  *
  */
 
-
 import com.webobjects.foundation.NSArray;
 
-/** Log4J renderer for NSArrays
-  *
-  * @author Andrei Adamchik
-  */
+/**
+ * Log4J renderer for NSArrays
+ * 
+ * @author Andrei Adamchik
+ */
 public final class NSArrayRenderer extends CollectionRenderer {
-    public String doRender(Object o) {
-        NSArray a = (NSArray) o;
-        int len = a.count();
-        if (len == 0) {
-            return "()";
-        }
+	public String doRender(Object o) {
+		NSArray a = (NSArray) o;
+		int len = a.count();
+		if (len == 0) {
+			return "()";
+		}
 
-        StringBuffer buf = new StringBuffer("(");
-        for (int i = 0; i < len; i++) {
-            buf.append("\n\t").append(renderObject(a.objectAtIndex(i)));
-        }
-        return buf.append("\n)").toString();
-    }
+		StringBuffer buf = new StringBuffer("(");
+		for (int i = 0; i < len; i++) {
+			buf.append("\n\t").append(renderObject(a.objectAtIndex(i)));
+		}
+		return buf.append("\n)").toString();
+	}
 }

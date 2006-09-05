@@ -65,11 +65,12 @@ import org.apache.tools.ant.types.FilterSetCollection;
 
 /**
  * TestCase for ProjectFormat class.
- *
+ * 
  * @author Andrei Adamchik
  */
 public class ProjectFormatTest extends TestCase {
 	protected ProjectFormat format;
+
 	protected WOTask formatTask;
 
 	public ProjectFormatTest(String name) {
@@ -87,7 +88,7 @@ public class ProjectFormatTest extends TestCase {
 		assertEquals(formatTask.getName(), format.getName());
 	}
 
-    /** Helper class to allow testing of the abstract ProjectFormat. */
+	/** Helper class to allow testing of the abstract ProjectFormat. */
 	class TestProjectFormat extends ProjectFormat {
 
 		public TestProjectFormat(WOTask task) {
@@ -98,13 +99,11 @@ public class ProjectFormatTest extends TestCase {
 			return new ArrayList().iterator();
 		}
 
-		public String templateForTarget(String targetName)
-			throws BuildException {
+		public String templateForTarget(String targetName) throws BuildException {
 			return null;
 		}
 
-		public FilterSetCollection filtersForTarget(String targetName)
-			throws BuildException {
+		public FilterSetCollection filtersForTarget(String targetName) throws BuildException {
 			return null;
 		}
 	}

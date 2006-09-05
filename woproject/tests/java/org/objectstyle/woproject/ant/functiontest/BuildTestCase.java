@@ -69,122 +69,113 @@ import org.apache.tools.ant.Project;
 import org.apache.tools.ant.ProjectHelper;
 
 /**
- * Provides testing framework for the functional tests 
- * of project building tasks.
- *
+ * Provides testing framework for the functional tests of project building
+ * tasks.
+ * 
  * @author Andrei Adamchik
  * @author Emily Bache
  */
 public abstract class BuildTestCase extends TestCase {
-    private static Logger logger = Logger.getLogger(BuildTestCase.class);
+	private static Logger logger = Logger.getLogger(BuildTestCase.class);
 
-    private static File testDist;
+	private static File testDist;
 
-    static {
-        // initialize base directory
-        try {
-            testDist =
-                new File("tests" + File.separator + "wo" + File.separator + "dist")
-                    .getCanonicalFile();
-        }
-        catch (IOException ioex) {
-            logger.warn("Error creation distribution directory object.", ioex);
-            throw new RuntimeException("Error creation distribution directory object.");
-        }
-    }
+	static {
+		// initialize base directory
+		try {
+			testDist = new File("tests" + File.separator + "wo" + File.separator + "dist").getCanonicalFile();
+		} catch (IOException ioex) {
+			logger.warn("Error creation distribution directory object.", ioex);
+			throw new RuntimeException("Error creation distribution directory object.");
+		}
+	}
 
-    public BuildTestCase(String name) {
-        super(name);
-    }
+	public BuildTestCase(String name) {
+		super(name);
+	}
 
-    public static final Project getProject(File projectBaseDir, File projectBuildFile)
-            throws BuildException, ClassNotFoundException {
-        Project project = new Project();
-        project.setBaseDir(projectBaseDir);
+	public static final Project getProject(File projectBaseDir, File projectBuildFile) throws BuildException, ClassNotFoundException {
+		Project project = new Project();
+		project.setBaseDir(projectBaseDir);
 
-        project.init();
-        project.setUserProperty("ant.version", Main.getAntVersion());
+		project.init();
+		project.setUserProperty("ant.version", Main.getAntVersion());
 
-        project.setUserProperty("ant.file" , projectBuildFile.getAbsolutePath() );
+		project.setUserProperty("ant.file", projectBuildFile.getAbsolutePath());
 
-        Class.forName("javax.xml.parsers.SAXParserFactory");
-        ProjectHelper.configureProject(project, projectBuildFile);
-        return project;
-    }
+		Class.forName("javax.xml.parsers.SAXParserFactory");
+		ProjectHelper.configureProject(project, projectBuildFile);
+		return project;
+	}
 
-    public void assertStructure(ProjectStructure struct) throws AssertionFailedError {
-        String path = struct.getDirectoryPath();
-        File projDir = resolveDistPath(path);
-        Assert.assertTrue("Project directory is missing: " + projDir, projDir.isDirectory());
+	public void assertStructure(ProjectStructure struct) throws AssertionFailedError {
+		String path = struct.getDirectoryPath();
+		File projDir = resolveDistPath(path);
+		Assert.assertTrue("Project directory is missing: " + projDir, projDir.isDirectory());
 
-        File res = new File(projDir, struct.getRelativeResourcesPath());
-        Assert.assertTrue("Resources directory is missing: " + res, res.isDirectory());
+		File res = new File(projDir, struct.getRelativeResourcesPath());
+		Assert.assertTrue("Resources directory is missing: " + res, res.isDirectory());
 
-        File info = new File(projDir, struct.getRelativeInfoPath() + "/Info.plist");
-        Assert.assertTrue("Info.plist is missing: " + info, info.isFile());
+		File info = new File(projDir, struct.getRelativeInfoPath() + "/Info.plist");
+		Assert.assertTrue("Info.plist is missing: " + info, info.isFile());
 
-        if (struct.hasWebServerResources()) {
-            File wsres = new File(projDir, struct.getRelativeWSResourcesPath());
-            Assert.assertTrue(
-                "WebServerResources directory is missing: " + wsres,
-                wsres.isDirectory());
-            assertWsResources(wsres, struct.getWsResources());
-        }
+		if (struct.hasWebServerResources()) {
+			File wsres = new File(projDir, struct.getRelativeWSResourcesPath());
+			Assert.assertTrue("WebServerResources directory is missing: " + wsres, wsres.isDirectory());
+			assertWsResources(wsres, struct.getWsResources());
+		}
 
-        if (struct.hasJava()) {
-            File javaDir = new File(projDir, struct.getRelativeResourcesPath() + "/Java");
-            Assert.assertTrue("Java directory is missing: " + javaDir, javaDir.isDirectory());
-            assertJars(javaDir, struct.getJars());
-        }
+		if (struct.hasJava()) {
+			File javaDir = new File(projDir, struct.getRelativeResourcesPath() + "/Java");
+			Assert.assertTrue("Java directory is missing: " + javaDir, javaDir.isDirectory());
+			assertJars(javaDir, struct.getJars());
+		}
 
-        if (struct.hasWos()) {
-            assertWos(res, struct.getWocomps());
-        }
-    }
-    
+		if (struct.hasWos()) {
+			assertWos(res, struct.getWocomps());
+		}
+	}
 
-    /**
-     * Returns a "canonical" file located at <code>path</code>
-     * relative to tests distribution directory. Note that
-     * when building a path, forward slash can be used as path
-     * separator even on Windows. This method will do all needed
-     * replacements.
-     */
-    protected File resolveDistPath(String path) {
-        if (File.separator != "/") {
-            path = path.replace('/', File.separatorChar);
-        }
+	/**
+	 * Returns a "canonical" file located at <code>path</code> relative to
+	 * tests distribution directory. Note that when building a path, forward
+	 * slash can be used as path separator even on Windows. This method will do
+	 * all needed replacements.
+	 */
+	protected File resolveDistPath(String path) {
+		if (File.separator != "/") {
+			path = path.replace('/', File.separatorChar);
+		}
 
-        return new File(testDist, path);
-    }
+		return new File(testDist, path);
+	}
 
+	protected void assertJars(File javaDir, String[] jars) throws AssertionFailedError {
+		for (int i = 0; i < jars.length; i++) {
+			File jar = new File(javaDir, jars[i] + ".jar");
+			Assert.assertTrue("Jar file is missing: " + jar, jar.isFile());
+		}
+	}
 
-    protected void assertJars(File javaDir, String[] jars) throws AssertionFailedError {
-        for (int i = 0; i < jars.length; i++) {
-            File jar = new File(javaDir, jars[i] + ".jar");
-            Assert.assertTrue("Jar file is missing: " + jar, jar.isFile());
-        }
-    }
+	protected void assertWos(File resourceDir, String[] wos) throws AssertionFailedError {
+		for (int i = 0; i < wos.length; i++) {
+			File wo = new File(resourceDir, wos[i] + ".wo");
+			Assert.assertTrue("Component .wo directory is missing: " + wo, wo.isDirectory());
 
-    protected void assertWos(File resourceDir, String[] wos) throws AssertionFailedError {
-        for (int i = 0; i < wos.length; i++) {
-            File wo = new File(resourceDir, wos[i] + ".wo");
-            Assert.assertTrue("Component .wo directory is missing: " + wo, wo.isDirectory());
+			String compName = new File(wos[i]).getName();
+			File wod = new File(wo, compName + ".wod");
+			Assert.assertTrue("Component .wod file is missing: " + wod, wod.isFile());
 
-            String compName = new File(wos[i]).getName();
-            File wod = new File(wo, compName + ".wod");
-            Assert.assertTrue("Component .wod file is missing: " + wod, wod.isFile());
+			File html = new File(wo, compName + ".html");
+			Assert.assertTrue("Component .html file is missing: " + html, html.isFile());
+		}
+	}
 
-            File html = new File(wo, compName + ".html");
-            Assert.assertTrue("Component .html file is missing: " + html, html.isFile());
-        }
-    }
-
-    protected void assertWsResources(File resDir, String[] res) throws AssertionFailedError {
-        for (int i = 0; i < res.length; i++) {
-            String path = res[i].replace('/', File.separatorChar);
-            File wsfile = new File(resDir, path);
-            Assert.assertTrue("WebServerResource is missing: " + wsfile, wsfile.isFile());
-        }
-    }
+	protected void assertWsResources(File resDir, String[] res) throws AssertionFailedError {
+		for (int i = 0; i < res.length; i++) {
+			String path = res[i].replace('/', File.separatorChar);
+			File wsfile = new File(resDir, path);
+			Assert.assertTrue("WebServerResource is missing: " + wsfile, wsfile.isFile());
+		}
+	}
 }

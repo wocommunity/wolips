@@ -60,17 +60,19 @@ import java.io.StringWriter;
 import java.util.Vector;
 
 /**
- * Copyright (c) 2002 The Apache Group,
- * A set of helper methods related to string manipulation.
- *
+ * Copyright (c) 2002 The Apache Group, A set of helper methods related to
+ * string manipulation.
+ * 
  * @author <a href="mailto:sbailliez@apache.org">Stephane Bailliez</a>
  */
 public final class AntStringUtils {
 
 	/**
-	 * Splits up a string into a list of lines. It is equivalent
-	 * to <tt>split(data, '\n')</tt>.
-	 * @param data the string to split up into lines.
+	 * Splits up a string into a list of lines. It is equivalent to
+	 * <tt>split(data, '\n')</tt>.
+	 * 
+	 * @param data
+	 *            the string to split up into lines.
 	 * @return the list of lines available in the string.
 	 */
 	public static Vector lineSplit(String data) {
@@ -78,10 +80,13 @@ public final class AntStringUtils {
 	}
 
 	/**
-	 * Splits up a string where elements are separated by a specific
-	 * character and return all elements.
-	 * @param data the string to split up.
-	 * @param ch the separator character.
+	 * Splits up a string where elements are separated by a specific character
+	 * and return all elements.
+	 * 
+	 * @param data
+	 *            the string to split up.
+	 * @param ch
+	 *            the separator character.
 	 * @return the list of elements.
 	 */
 	public static Vector split(String data, int ch) {
@@ -99,9 +104,13 @@ public final class AntStringUtils {
 
 	/**
 	 * Replace occurrences into a string.
-	 * @param data the string to replace occurrences into
-	 * @param from the occurrence to replace.
-	 * @param to the occurrence to be used as a replacement.
+	 * 
+	 * @param data
+	 *            the string to replace occurrences into
+	 * @param from
+	 *            the occurrence to replace.
+	 * @param to
+	 *            the occurrence to be used as a replacement.
 	 * @return the new string with replaced occurrences.
 	 */
 	public static String replace(String data, String from, String to) {
@@ -118,7 +127,9 @@ public final class AntStringUtils {
 
 	/**
 	 * Convenient method to retrieve the full stacktrace from a given exception.
-	 * @param t the exception to get the stacktrace from.
+	 * 
+	 * @param t
+	 *            the exception to get the stacktrace from.
 	 * @return the stacktrace from the given exception.
 	 */
 	public static String getStackTrace(Throwable t) {

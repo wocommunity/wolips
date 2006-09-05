@@ -1,4 +1,5 @@
 package org.objectstyle.woproject.log4j;
+
 /* ====================================================================
  * 
  * The ObjectStyle Group Software License, Version 1.0 
@@ -60,21 +61,22 @@ import com.webobjects.eocontrol.EOEditingContext;
 
 import org.apache.log4j.or.ObjectRenderer;
 
-/** Log4J renderer for EOCustomObjects
-  *
-  * @author Andrei Adamchik
-  */
+/**
+ * Log4J renderer for EOCustomObjects
+ * 
+ * @author Andrei Adamchik
+ */
 public class EORenderer implements ObjectRenderer {
-    public String doRender(Object o) {
-        EOCustomObject eo = (EOCustomObject) o;
-        EOEditingContext ec = eo.editingContext();
-        
-        StringBuffer buf = new StringBuffer("[\tentity: ");
-        buf.append(eo.entityName());
-        buf.append("\n\tec: ").append(ec);
-        if(ec != null) {
-            buf.append("\n\tgid: ").append(ec.globalIDForObject(eo));
-        }
-        return buf.append("]").toString();
-    }
+	public String doRender(Object o) {
+		EOCustomObject eo = (EOCustomObject) o;
+		EOEditingContext ec = eo.editingContext();
+
+		StringBuffer buf = new StringBuffer("[\tentity: ");
+		buf.append(eo.entityName());
+		buf.append("\n\tec: ").append(ec);
+		if (ec != null) {
+			buf.append("\n\tgid: ").append(ec.globalIDForObject(eo));
+		}
+		return buf.append("]").toString();
+	}
 }

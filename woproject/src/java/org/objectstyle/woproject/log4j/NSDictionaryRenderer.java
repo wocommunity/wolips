@@ -1,4 +1,5 @@
 package org.objectstyle.woproject.log4j;
+
 /* ====================================================================
  * 
  * The ObjectStyle Group Software License, Version 1.0 
@@ -55,33 +56,30 @@ package org.objectstyle.woproject.log4j;
  *
  */
 
-
 import java.util.Enumeration;
 
 import com.webobjects.foundation.NSDictionary;
 
-/** Log4J renderer for NSArrays
-  *
-  * @author Andrei Adamchik
-  */
+/**
+ * Log4J renderer for NSArrays
+ * 
+ * @author Andrei Adamchik
+ */
 public final class NSDictionaryRenderer extends CollectionRenderer {
-    public String doRender(Object o) {
-        
-        NSDictionary d = (NSDictionary) o;
-        int len = d.count();
-        if (len == 0) {
-            return "{}";
-        }
+	public String doRender(Object o) {
 
-        StringBuffer buf = new StringBuffer("{");
-        Enumeration en = d.keyEnumerator();
-        while (en.hasMoreElements()) {
-            String key = (String)en.nextElement();
-            buf.append("\n\t")
-            .append(key)
-            .append(" = ")
-            .append(renderObject(d.objectForKey(key)));
-        }
-        return buf.append("\n}").toString();
-    }
+		NSDictionary d = (NSDictionary) o;
+		int len = d.count();
+		if (len == 0) {
+			return "{}";
+		}
+
+		StringBuffer buf = new StringBuffer("{");
+		Enumeration en = d.keyEnumerator();
+		while (en.hasMoreElements()) {
+			String key = (String) en.nextElement();
+			buf.append("\n\t").append(key).append(" = ").append(renderObject(d.objectForKey(key)));
+		}
+		return buf.append("\n}").toString();
+	}
 }

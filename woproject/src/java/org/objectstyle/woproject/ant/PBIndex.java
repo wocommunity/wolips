@@ -74,14 +74,21 @@ import org.objectstyle.woenvironment.pb.PBProject;
  */
 public class PBIndex extends Task {
 	protected String name;
+
 	protected File projectFile;
+
 	protected boolean framework;
 
 	protected Vector src = new Vector();
+
 	protected Vector wocomponents = new Vector();
+
 	protected Vector resources = new Vector();
+
 	protected Vector wsresources = new Vector();
+
 	protected Vector frameworkSets = new Vector();
+
 	protected SubtaskFactory subtaskFactory = new SubtaskFactory(this);
 
 	public void addWocomponents(FileSet set) {
@@ -106,7 +113,9 @@ public class PBIndex extends Task {
 
 	/**
 	 * Sets the name.
-	 * @param name The name to set
+	 * 
+	 * @param name
+	 *            The name to set
 	 */
 	public void setName(String name) {
 		this.name = name;
@@ -114,6 +123,7 @@ public class PBIndex extends Task {
 
 	/**
 	 * Returns the name.
+	 * 
 	 * @return String
 	 */
 	public String getName() {
@@ -122,6 +132,7 @@ public class PBIndex extends Task {
 
 	/**
 	 * Returns the projectFile.
+	 * 
 	 * @return String
 	 */
 	public File getProjectFile() {
@@ -130,7 +141,9 @@ public class PBIndex extends Task {
 
 	/**
 	 * Sets the projectFile.
-	 * @param projectFile The projectFile to set
+	 * 
+	 * @param projectFile
+	 *            The projectFile to set
 	 */
 	public void setProjectFile(File projectFile) {
 		this.projectFile = projectFile;
@@ -138,6 +151,7 @@ public class PBIndex extends Task {
 
 	/**
 	 * Returns the framework.
+	 * 
 	 * @return boolean
 	 */
 	public boolean isFramework() {
@@ -146,7 +160,9 @@ public class PBIndex extends Task {
 
 	/**
 	 * Sets the framework.
-	 * @param framework The framework to set
+	 * 
+	 * @param framework
+	 *            The framework to set
 	 */
 	public void setFramework(boolean framework) {
 		this.framework = framework;
@@ -159,16 +175,12 @@ public class PBIndex extends Task {
 		validateAttributes();
 		PBProject proj = null;
 		try {
-			proj =
-				(projectFile != null)
-					? new PBProject(projectFile.getPath(), framework)
-					: new PBProject(framework);
+			proj = (projectFile != null) ? new PBProject(projectFile.getPath(), framework) : new PBProject(framework);
 
 			proj.setProjectName(name);
 			proj.setClasses(extractJavaFiles(src));
 			proj.setWoComponents(extractWOComponents(wocomponents));
-			proj.setWoAppResources(
-				extractResources(resources, "**/*.eomodeld/index.eomodeld"));
+			proj.setWoAppResources(extractResources(resources, "**/*.eomodeld/index.eomodeld"));
 			proj.setWebServerResources(extractResources(wsresources, null));
 			extractFrameworks(proj);
 
@@ -187,8 +199,9 @@ public class PBIndex extends Task {
 	/**
 	 * Ensure we have a consistent and legal set of attributes, and set any
 	 * internal flags necessary based on different combinations of attributes.
-	 *
-	 * @throws BuildException if task attributes are inconsistent or missing.
+	 * 
+	 * @throws BuildException
+	 *             if task attributes are inconsistent or missing.
 	 */
 	protected void validateAttributes() throws BuildException {
 		if (name == null) {
@@ -229,7 +242,7 @@ public class PBIndex extends Task {
 		while (it.hasNext()) {
 			FileSet fs = (FileSet) it.next();
 
-			// for now exclude subprojects, 
+			// for now exclude subprojects,
 			// later we must create a better support for subprojects
 			fs.createExclude().setName("*.subproj/**");
 
@@ -278,29 +291,29 @@ public class PBIndex extends Task {
 		}
 		return files;
 	}
-	
-	/** 
-     * Loads extra frameworks and inserts their /Library/Frameworks-relative paths. 
-     */
-    protected void extractFrameworks(PBProject proj) {
-        List projectFrameworkPaths = proj.getFrameworks();
 
-        Iterator it = frameworkSets.iterator();
-        while (it.hasNext()) {
-            FrameworkSet fs = (FrameworkSet) it.next();
-            File baseDir = fs.getDir(fs.getProject());
-            String[] frameworkSubPaths =
-                fs.getDirectoryScanner(fs.getProject()).getIncludedDirectories();
-            for (int i = 0; i < frameworkSubPaths.length; i++) {
-                File aFramework = new File(baseDir, frameworkSubPaths[i]);
+	/**
+	 * Loads extra frameworks and inserts their /Library/Frameworks-relative
+	 * paths.
+	 */
+	protected void extractFrameworks(PBProject proj) {
+		List projectFrameworkPaths = proj.getFrameworks();
 
-                if (!projectFrameworkPaths.contains(aFramework.getName())) {
-                    // modifying the original list
-                    projectFrameworkPaths.add(aFramework.getName());
-                }
-            }
-        }
-    }
+		Iterator it = frameworkSets.iterator();
+		while (it.hasNext()) {
+			FrameworkSet fs = (FrameworkSet) it.next();
+			File baseDir = fs.getDir(fs.getProject());
+			String[] frameworkSubPaths = fs.getDirectoryScanner(fs.getProject()).getIncludedDirectories();
+			for (int i = 0; i < frameworkSubPaths.length; i++) {
+				File aFramework = new File(baseDir, frameworkSubPaths[i]);
+
+				if (!projectFrameworkPaths.contains(aFramework.getName())) {
+					// modifying the original list
+					projectFrameworkPaths.add(aFramework.getName());
+				}
+			}
+		}
+	}
 
 	/** Replaces back slashes with forward slashes */
 	protected String fixPath(String path) {

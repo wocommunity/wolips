@@ -54,6 +54,7 @@
  *
  */
 package org.objectstyle.woenvironment.pbx;
+
 /**
  * @author tlg
  * 
@@ -62,8 +63,11 @@ package org.objectstyle.woenvironment.pbx;
  */
 public class PBXGroup extends PBXReference {
 	public static final String _KCHILDREN = "children";
+
 	public static final String _KCOMMENTS = "comments";
+
 	protected String comments;
+
 	/**
 	 * @param ref
 	 * @param coder
@@ -72,9 +76,11 @@ public class PBXGroup extends PBXReference {
 		super(ref);
 		this.comments = null;
 	}
+
 	public void setComments(Object comments) {
 		this.comments = (String) comments;
 	}
+
 	public String getComments() {
 		return this.comments;
 	}

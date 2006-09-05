@@ -69,8 +69,7 @@ public class HelloWorldBuildTest extends AppBuildTestCase {
 
 	public void testBuildHelloWorld() throws Exception {
 		String projectDir = "tests/wo/applications/HelloWorld";
-		Project aProject =
-			getProject(new File(projectDir), new File(projectDir, "build.xml"));
+		Project aProject = getProject(new File(projectDir), new File(projectDir, "build.xml"));
 		String defaultTarget = aProject.getDefaultTarget();
 		aProject.executeTarget(defaultTarget);
 
@@ -79,11 +78,9 @@ public class HelloWorldBuildTest extends AppBuildTestCase {
 		app.setWsResources(new String[] { "hello.gif" });
 		assertStructure(app);
 	}
-	
-	
+
 	public static void main(String[] args) {
 		org.apache.log4j.BasicConfigurator.configure();
-		junit.textui.TestRunner.main(
-			new String[] { HelloWorldBuildTest.class.getName()});
+		junit.textui.TestRunner.main(new String[] { HelloWorldBuildTest.class.getName() });
 	}
 }

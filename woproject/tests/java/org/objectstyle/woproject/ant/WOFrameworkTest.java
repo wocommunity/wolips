@@ -59,7 +59,7 @@ import junit.framework.TestCase;
 
 /**
  * Unit test for WOFramework
- *
+ * 
  * @author Emily Bache
  */
 public class WOFrameworkTest extends TestCase {
@@ -69,40 +69,28 @@ public class WOFrameworkTest extends TestCase {
 	}
 
 	public void testCreateInfo() throws Exception {
-		/*		WOFramework wofw = new WOFramework() {
-					public File resourcesDir() {
-						 // avoid creating temporary files in the root project directory
-			             return new File("output" + File.separator + "test_results");
-					}
-				};
-				File createdInfoFile = new File(wofw.resourcesDir(), "Info.plist");
-				
-				try {
-					wofw.setName("Poodle");
-					wofw.formatProject();
-					
-					assertTrue(createdInfoFile.exists());
-					String fileContents = getContents(createdInfoFile);
-					assertTrue(fileContents.indexOf("poodle") > 0);
-				} finally {
-					if (createdInfoFile.exists()) {
-						createdInfoFile.delete();
-					}
-				} */
+		/*
+		 * WOFramework wofw = new WOFramework() { public File resourcesDir() { //
+		 * avoid creating temporary files in the root project directory return
+		 * new File("output" + File.separator + "test_results"); } }; File
+		 * createdInfoFile = new File(wofw.resourcesDir(), "Info.plist");
+		 * 
+		 * try { wofw.setName("Poodle"); wofw.formatProject();
+		 * 
+		 * assertTrue(createdInfoFile.exists()); String fileContents =
+		 * getContents(createdInfoFile);
+		 * assertTrue(fileContents.indexOf("poodle") > 0); } finally { if
+		 * (createdInfoFile.exists()) { createdInfoFile.delete(); } }
+		 */
 
 	}
 
-	//never used
+	// never used
 	/*
-	private String getContents(File file) throws Exception {
-		FileInputStream fin = new FileInputStream(file);
-		DataInput din = new DataInputStream(fin);
-		StringBuffer contents = new StringBuffer();
-		String line = null;
-		while ((line = din.readLine()) != null) {
-			contents.append(line);
-		}
-		return contents.toString();
-	}
-	*/
+	 * private String getContents(File file) throws Exception { FileInputStream
+	 * fin = new FileInputStream(file); DataInput din = new
+	 * DataInputStream(fin); StringBuffer contents = new StringBuffer(); String
+	 * line = null; while ((line = din.readLine()) != null) {
+	 * contents.append(line); } return contents.toString(); }
+	 */
 }

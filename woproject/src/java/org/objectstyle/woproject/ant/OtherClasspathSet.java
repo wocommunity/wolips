@@ -10,12 +10,14 @@ import org.apache.tools.ant.types.FileSet;
 
 /**
  * @author mnolte
- *
+ * 
  */
 public class OtherClasspathSet extends FileSet {
 
 	protected File aDirectory;
+
 	protected boolean packagesOnly = false;
+
 	protected boolean embed = false;
 
 	/**
@@ -45,8 +47,7 @@ public class OtherClasspathSet extends FileSet {
 		return finalFiles;
 	}
 
-	public void collectClassPaths(Project aProject, HashSet pathSet)
-		throws BuildException {
+	public void collectClassPaths(Project aProject, HashSet pathSet) throws BuildException {
 
 		DirectoryScanner ds = getDirectoryScanner(aProject);
 		String[] directories = ds.getIncludedDirectories();
@@ -59,15 +60,13 @@ public class OtherClasspathSet extends FileSet {
 				File[] paths = findPackages(aProject, directories[i]);
 
 				if (paths == null || paths.length == 0) {
-					log(
-						"No Jars in project:" + aProject + ", ignoring.",
-						Project.MSG_VERBOSE);
+					log("No Jars in project:" + aProject + ", ignoring.", Project.MSG_VERBOSE);
 					continue;
 				}
-				
-				if ( getEmbed() ) {
-				    log("embed and isPackagesOnly are mutually exclusive");
-				    continue;
+
+				if (getEmbed()) {
+					log("embed and isPackagesOnly are mutually exclusive");
+					continue;
 				}
 
 				int jsize = paths.length;
@@ -77,11 +76,11 @@ public class OtherClasspathSet extends FileSet {
 			} else {
 				File directory = new File(getDir(aProject), directories[i]);
 				if (directory.exists()) {
-				    if ( getEmbed() ) {
+					if (getEmbed()) {
 						pathSet.add(new File("APPROOT", directories[i]));
-				    } else {
-				        pathSet.add(directory);
-				    }
+					} else {
+						pathSet.add(directory);
+					}
 				}
 			}
 		}
@@ -89,9 +88,7 @@ public class OtherClasspathSet extends FileSet {
 		// files must be packages - ignoring packages only flag
 		for (int i = 0; i < files.length; i++) {
 			if (!files[i].endsWith(".zip") && !files[i].endsWith(".jar")) {
-				log(
-					"No Jars in " + files[i] + ", ignoring.",
-					Project.MSG_VERBOSE);
+				log("No Jars in " + files[i] + ", ignoring.", Project.MSG_VERBOSE);
 				continue;
 			}
 			File packageFile = new File(getDir(aProject), files[i]);
@@ -103,6 +100,7 @@ public class OtherClasspathSet extends FileSet {
 
 	/**
 	 * Returns the packagesOnly.
+	 * 
 	 * @return boolean
 	 */
 	public boolean isPackagesOnly() {
@@ -121,20 +119,23 @@ public class OtherClasspathSet extends FileSet {
 
 	/**
 	 * Sets the packagesOnly.
-	 * @param packagesOnly The packagesOnly to set
+	 * 
+	 * @param packagesOnly
+	 *            The packagesOnly to set
 	 */
 	public void setPackagesOnly(boolean packagesOnly) {
 		this.packagesOnly = packagesOnly;
 	}
-	
+
 	/**
 	 * Sets the embed.
-	 * @param embed 
+	 * 
+	 * @param embed
 	 */
 	public void setEmbed(boolean embed) {
 		this.embed = embed;
 	}
-	
+
 	public boolean getEmbed() {
 		return embed;
 	}

@@ -54,6 +54,7 @@
  *
  */
 package org.objectstyle.woenvironment.pbx;
+
 import java.io.StringWriter;
 import java.lang.reflect.Method;
 import java.util.Collection;
@@ -62,6 +63,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+
 /**
  * @author tlg
  * 
@@ -70,8 +72,11 @@ import java.util.TreeSet;
  */
 public class PBXProjectCoder {
 	protected Map objects;
+
 	protected Map alocatedObjects;
+
 	protected Object root;
+
 	/**
 	 * PBXProjectCoder class is used to serialse/unserialise objects from a pbx
 	 * proj, the goal is to have an exact match from ProjectBuilder and eclipse
@@ -84,6 +89,7 @@ public class PBXProjectCoder {
 		this.root = root;
 		this.alocatedObjects = new Hashtable();
 	}
+
 	/**
 	 * Returns the dictionary asociated to an object ref
 	 * 
@@ -93,6 +99,7 @@ public class PBXProjectCoder {
 	public Map getRef(Object ref) {
 		return (Map) objects.get(ref);
 	}
+
 	/**
 	 * objectForRef returns the object asociated with it's reference.
 	 * 
@@ -120,10 +127,8 @@ public class PBXProjectCoder {
 		String isa = (String) dico.get("isa");
 		Class newClass = null;
 		try {
-			newClass = Class.forName(this.getClass().getPackage().getName()
-					+ "." + isa);
-			object = newClass.getConstructor(new Class[]{Object.class})
-					.newInstance(new Object[]{ref});
+			newClass = Class.forName(this.getClass().getPackage().getName() + "." + isa);
+			object = newClass.getConstructor(new Class[] { Object.class }).newInstance(new Object[] { ref });
 		} catch (Exception e) {
 			System.err.println("Class not found : " + isa);
 			return null;
@@ -145,19 +150,16 @@ public class PBXProjectCoder {
 				String methodName = "add" + new String(chars);
 				Method method = null;
 				try {
-					method = newClass.getMethod(methodName,
-							new Class[]{Object.class});
+					method = newClass.getMethod(methodName, new Class[] { Object.class });
 					Iterator i = array.iterator();
 					Object v, n = null;
 					while (i.hasNext()) {
 						n = i.next();
 						v = objectForRef(n);
-						method.invoke(object,
-								new Object[]{((v == null) ? n : v)});
+						method.invoke(object, new Object[] { ((v == null) ? n : v) });
 					}
 				} catch (Exception e) {
-					System.err.println("Method : " + methodName + " on class ["
-							+ isa + "] not found.");
+					System.err.println("Method : " + methodName + " on class [" + isa + "] not found.");
 					continue;
 				}
 			} else {
@@ -167,14 +169,11 @@ public class PBXProjectCoder {
 				Method method = null;
 				Object v = null;
 				try {
-					method = newClass.getMethod(methodName,
-							new Class[]{Object.class});
+					method = newClass.getMethod(methodName, new Class[] { Object.class });
 					v = objectForRef(value);
-					method.invoke(object,
-							new Object[]{((v == null) ? value : v)});
+					method.invoke(object, new Object[] { ((v == null) ? value : v) });
 				} catch (Exception e) {
-					System.err.println("Method : " + methodName + " on class ["
-							+ isa + "] not found.");
+					System.err.println("Method : " + methodName + " on class [" + isa + "] not found.");
 					continue;
 				}
 			}
@@ -182,6 +181,7 @@ public class PBXProjectCoder {
 		alocatedObjects.put(ref, object);
 		return object;
 	}
+
 	/**
 	 * serialize is used to serialize back the objects in a pbxproj file
 	 * 
@@ -196,9 +196,7 @@ public class PBXProjectCoder {
 		}
 		StringWriter writer = new StringWriter();
 		Iterator iter = sorted.iterator();
-		writer.write("// !$*UTF8*$!\n" + "{\n" + "\tarchiveVersion = 1;\n"
-				+ "\tclasses = {\n" + "\t};\n" + "\tobjectVersion = 38;\n"
-				+ "\tobjects = {\n");
+		writer.write("// !$*UTF8*$!\n" + "{\n" + "\tarchiveVersion = 1;\n" + "\tclasses = {\n" + "\t};\n" + "\tobjectVersion = 38;\n" + "\tobjects = {\n");
 		String oldKey = new String();
 		while (iter.hasNext()) {
 			String key = (String) iter.next();
@@ -213,9 +211,7 @@ public class PBXProjectCoder {
 					writer.write("//" + oldKey + i + "\n");
 				}
 			}
-			writer
-					.write("\t\t" + key + " = " + alocatedObjects.get(key)
-							+ "\n");
+			writer.write("\t\t" + key + " = " + alocatedObjects.get(key) + "\n");
 		}
 		writer.write("\t};\n");
 		writer.write("\trootObject = " + root + ";\n");

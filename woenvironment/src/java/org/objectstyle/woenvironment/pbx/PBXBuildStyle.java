@@ -54,9 +54,11 @@
  *
  */
 package org.objectstyle.woenvironment.pbx;
+
 import java.util.Collection;
 import java.util.Map;
 import java.util.Vector;
+
 /**
  * @author tlg
  * 
@@ -65,11 +67,17 @@ import java.util.Vector;
  */
 public class PBXBuildStyle extends PBXItem {
 	public final static String _KBUILDRULES = "buildRules";
+
 	public final static String _KBUILDSETTINGS = "buildSettings";
+
 	public final static String _KNAME = "name";
+
 	protected Collection buildRules;
+
 	protected Map buildSettings;
+
 	protected String name;
+
 	/**
 	 * @param object
 	 * @param coder
@@ -78,21 +86,27 @@ public class PBXBuildStyle extends PBXItem {
 		super(ref);
 		buildRules = new Vector();
 	}
+
 	public void addBuildRules(Object rule) {
 		this.buildRules.add(rule);
 	}
+
 	public Collection getBuildRules() {
 		return this.buildRules;
 	}
+
 	public void setBuildSettings(Object buildSettings) {
 		this.buildSettings = (Map) buildSettings;
 	}
+
 	public Map getBuildSettings() {
 		return this.buildSettings;
 	}
+
 	public void setName(Object name) {
 		this.name = (String) name;
 	}
+
 	public String getName() {
 		return this.name;
 	}

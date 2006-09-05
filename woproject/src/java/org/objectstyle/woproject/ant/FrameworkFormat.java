@@ -96,8 +96,7 @@ public class FrameworkFormat extends ProjectFormat {
 		throw new BuildException("Invalid target: " + targetName);
 	}
 
-	public FilterSetCollection filtersForTarget(String targetName)
-			throws BuildException {
+	public FilterSetCollection filtersForTarget(String targetName) throws BuildException {
 
 		if (targetName.endsWith("Info.plist")) {
 			return infoFilter(getFrameworkTask().getLibNames());
@@ -112,8 +111,7 @@ public class FrameworkFormat extends ProjectFormat {
 		FilterSetCollection filterSetCollection = super.infoFilter(extLibs);
 		FilterSet filter = new FilterSet();
 
-		filter.addFilter("EOAdaptorClassName", getFrameworkTask()
-				.getEOAdaptorClassName());
+		filter.addFilter("EOAdaptorClassName", getFrameworkTask().getEOAdaptorClassName());
 		filterSetCollection.addFilterSet(filter);
 
 		return filterSetCollection;

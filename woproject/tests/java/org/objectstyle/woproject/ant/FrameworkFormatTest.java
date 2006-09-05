@@ -62,11 +62,12 @@ import junit.framework.TestCase;
 
 /**
  * TestCase for FrameworkFormat class.
- *
+ * 
  * @author Andrei Adamchik
  */
 public class FrameworkFormatTest extends TestCase {
 	protected FrameworkFormat format;
+
 	protected WOTask formatTask;
 
 	public FrameworkFormatTest(String name) {
@@ -94,14 +95,12 @@ public class FrameworkFormatTest extends TestCase {
 			String file = (String) it.next();
 			String template = format.templateForTarget(file);
 			assertNotNull(template);
-			assertNotNull(
-				format.getClass().getClassLoader().getResource(template));
+			assertNotNull(format.getClass().getClassLoader().getResource(template));
 		}
 	}
-	
-	/** 
-	 * Helper class to allow testing of partially initialized 
-	 * WOFramework task. 
+
+	/**
+	 * Helper class to allow testing of partially initialized WOFramework task.
 	 */
 	class TestWOFramework extends WOFramework {
 		protected File taskDir() {

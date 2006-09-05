@@ -59,66 +59,62 @@ import org.objectstyle.cayenne.wocompat.EOModelHelper;
 import org.objectstyle.cayenne.wocompat.EOModelProcessor;
 
 /**
- * WebObjects-friendly subclass of Cayenne EOModelProcessor.
- * Unlike Cayenne version, this processor uses data types
- * specific to WebObjects.
- *
+ * WebObjects-friendly subclass of Cayenne EOModelProcessor. Unlike Cayenne
+ * version, this processor uses data types specific to WebObjects.
+ * 
  * @author Andrei Adamchik
  */
 public class EOModelReader extends EOModelProcessor {
-    protected boolean useValueType;
+	protected boolean useValueType;
 
-    /**
-     * Constructor for EOModelProcessor.
-     */
-    public EOModelReader() {
-        this(false);
-    }
+	/**
+	 * Constructor for EOModelProcessor.
+	 */
+	public EOModelReader() {
+		this(false);
+	}
 
-    /**
-     * Constructor for EOModelProcessor.
-     */
-    public EOModelReader(boolean useValueType) {
-        this.useValueType = useValueType;
-    }
+	/**
+	 * Constructor for EOModelProcessor.
+	 */
+	public EOModelReader(boolean useValueType) {
+		this.useValueType = useValueType;
+	}
 
-    /**
-     * @see org.objectstyle.cayenne.wocompat.EOModelProcessor#makeHelper(String)
-     */
-    protected EOModelHelper makeHelper(String arg0, boolean genereateClientClass)
-        throws Exception {
-        return new WOFriendlyHelper(arg0);
-    }
+	/**
+	 * @see org.objectstyle.cayenne.wocompat.EOModelProcessor#makeHelper(String)
+	 */
+	protected EOModelHelper makeHelper(String arg0, boolean genereateClientClass) throws Exception {
+		return new WOFriendlyHelper(arg0);
+	}
 
-    class WOFriendlyHelper extends EOModelHelper {
+	class WOFriendlyHelper extends EOModelHelper {
 
-        public WOFriendlyHelper(String path) throws Exception {
-            super(path);
-        }
+		public WOFriendlyHelper(String path) throws Exception {
+			super(path);
+		}
 
-        /**
-         * Returns WO common Java types.
-         * 
-         * @deprecated Corresponding super method is deprecated. 
-         * Use {@link #javaTypeForEOModelerType(String, String)}
-         */
-        public String javaTypeForEOModelerType(String type) {
-            return javaTypeForEOModelerType(type, null);
-        }
+		/**
+		 * Returns WO common Java types.
+		 * 
+		 * @deprecated Corresponding super method is deprecated. Use
+		 *             {@link #javaTypeForEOModelerType(String, String)}
+		 */
+		public String javaTypeForEOModelerType(String type) {
+			return javaTypeForEOModelerType(type, null);
+		}
 
-        public String javaTypeForEOModelerType(String valueClassName, String valueType) {
-            if (valueClassName.equals("NSCalendarDate")) {
-                return "com.webobjects.foundation.NSTimestamp";
-            }
+		public String javaTypeForEOModelerType(String valueClassName, String valueType) {
+			if (valueClassName.equals("NSCalendarDate")) {
+				return "com.webobjects.foundation.NSTimestamp";
+			}
 
-            if (valueClassName.equals("NSData")) {
-                return "com.webobjects.foundation.NSData";
-            }
+			if (valueClassName.equals("NSData")) {
+				return "com.webobjects.foundation.NSData";
+			}
 
-            // hide valueType if we are configured to do so
-            return super.javaTypeForEOModelerType(
-                valueClassName,
-                useValueType ? valueType : null);
-        }
-    }
+			// hide valueType if we are configured to do so
+			return super.javaTypeForEOModelerType(valueClassName, useValueType ? valueType : null);
+		}
+	}
 }

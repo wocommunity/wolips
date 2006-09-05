@@ -98,9 +98,7 @@ public class Environment {
 		try {
 			process = Environment.osProcess();
 		} catch (InvocationTargetException e) {
-			System.out
-					.println("getEnvVars -> unable to load environment variables"
-							+ e);
+			System.out.println("getEnvVars -> unable to load environment variables" + e);
 		}
 		envVars = new Properties();
 		if (process == null) {
@@ -115,9 +113,7 @@ public class Environment {
 				envVars.setProperty(key, value);
 			}
 		} catch (IOException e) {
-			System.out
-					.println("getEnvVars -> unable to load environment variables"
-							+ e);
+			System.out.println("getEnvVars -> unable to load environment variables" + e);
 		}
 		process.destroy();
 		return envVars;
@@ -138,8 +134,7 @@ public class Environment {
 			OS = System.getProperty("os.name").toLowerCase();
 			if (OS.indexOf("windows 9") > -1) {
 				p = r.exec("command.com /c set");
-			} else if ((OS.indexOf("nt") > -1)
-					|| (OS.indexOf("windows 2000") > -1)) {
+			} else if ((OS.indexOf("nt") > -1) || (OS.indexOf("windows 2000") > -1)) {
 				p = r.exec("cmd.exe /c set");
 			} else {
 				p = r.exec("env");

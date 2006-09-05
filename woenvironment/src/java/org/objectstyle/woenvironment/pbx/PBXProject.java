@@ -54,7 +54,9 @@
  *
  */
 package org.objectstyle.woenvironment.pbx;
+
 import java.util.Vector;
+
 /**
  * @author tlg
  * 
@@ -63,59 +65,83 @@ import java.util.Vector;
  */
 public class PBXProject extends PBXItem {
 	public final static String _KBUILDSTYLES = "buildStyles";
-	//public final static String _KBUILDSETTINGS = "buildSettings";
+
+	// public final static String _KBUILDSETTINGS = "buildSettings";
 	public final static String _KMAINGROUP = "mainGroup";
+
 	public final static String _KPRODUCTREFGROUP = "productRefGroup";
+
 	public final static String _KPROJECTDIRPATH = "projectDirPath";
+
 	public final static String _KTARGETS = "targets";
+
 	protected Vector buildStyles;
+
 	protected Vector buildSettings;
+
 	protected PBXGroup mainGroup;
+
 	protected PBXGroup productRefGroup;
+
 	protected String projectDirPath;
+
 	protected Vector targets;
+
 	public PBXProject(Object ref) {
 		super(ref);
 		buildStyles = new Vector();
 		buildSettings = new Vector();
 		targets = new Vector();
 	}
+
 	public void addBuildStyles(Object buildStyle) {
 		this.buildStyles.add(buildStyle);
 	}
+
 	public Vector getBuildStyles() {
 		return this.buildStyles;
 	}
+
 	public void addBuildSettings(Object buildSetting) {
 		this.buildSettings.add(buildSetting);
 	}
+
 	public Vector getBuildSettings() {
 		return this.buildSettings;
 	}
+
 	public void setMainGroup(Object mainGroup) {
 		this.mainGroup = (PBXGroup) mainGroup;
 	}
+
 	public PBXGroup getMainGroup() {
 		return this.mainGroup;
 	}
+
 	public void setProductRefGroup(Object productRefGroup) {
 		this.productRefGroup = (PBXGroup) productRefGroup;
 	}
+
 	public PBXGroup getProductRefGroup() {
 		return this.productRefGroup;
 	}
+
 	public void setProjectDirPath(Object projectDirPath) {
 		this.projectDirPath = (String) projectDirPath;
 	}
+
 	public String getProjectDirPath() {
 		return this.projectDirPath;
 	}
+
 	public String projectDirectoryPath() {
 		return this.projectDirPath;
 	}
+
 	public void addTargets(Object target) {
 		this.targets.add(target);
 	}
+
 	public Vector getTargets() {
 		return this.targets;
 	}

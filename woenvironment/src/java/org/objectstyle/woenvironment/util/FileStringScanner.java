@@ -63,11 +63,10 @@ import java.io.IOException;
 
 /**
  * @author uli
- *
+ * 
  * To change this generated comment edit the template variable "typecomment":
- * Window>Preferences>Java>Templates.
- * To enable and disable the creation of type comments go to
- * Window>Preferences>Java>Code Generation.
+ * Window>Preferences>Java>Templates. To enable and disable the creation of type
+ * comments go to Window>Preferences>Java>Code Generation.
  */
 public class FileStringScanner {
 
@@ -77,25 +76,22 @@ public class FileStringScanner {
 	public FileStringScanner() {
 		super();
 	}
+
 	/**
 	 * Method fileOpenReplaceWith.
+	 * 
 	 * @param file
 	 * @param replace
 	 * @param with
 	 * @throws IOException
 	 */
-	public static void fileOpenReplaceWith(
-		String file,
-		String replace,
-		String with)
-		throws IOException {
+	public static void fileOpenReplaceWith(String file, String replace, String with) throws IOException {
 		String stringFromFile = null;
 		String replacedString = null;
 		try {
 			stringFromFile = FileStringScanner.stringFromFile(new File(file));
-			replacedString =
-				FileStringScanner.replace(stringFromFile, replace, with);
-			//if nothing replaced
+			replacedString = FileStringScanner.replace(stringFromFile, replace, with);
+			// if nothing replaced
 			if (replacedString != null)
 				FileStringScanner.stringToFile(new File(file), replacedString);
 		} finally {
@@ -103,8 +99,10 @@ public class FileStringScanner {
 			replacedString = null;
 		}
 	}
+
 	/**
 	 * Method stringFromFile.
+	 * 
 	 * @param aFile
 	 * @return String
 	 * @throws IOException
@@ -123,18 +121,19 @@ public class FileStringScanner {
 			fis.close();
 		} finally {
 			fis = null;
-			//data = null;
+			// data = null;
 		}
 		return new String(data);
 	}
+
 	/**
 	 * Method stringToFile.
+	 * 
 	 * @param aFile
 	 * @param aString
 	 * @throws IOException
 	 */
-	public static void stringToFile(File aFile, String aString)
-		throws IOException {
+	public static void stringToFile(File aFile, String aString) throws IOException {
 		int length = aString.length();
 		FileOutputStream fos = null;
 		try {
@@ -145,8 +144,10 @@ public class FileStringScanner {
 			fos = null;
 		}
 	}
+
 	/**
 	 * Method replace.
+	 * 
 	 * @param text
 	 * @param replace
 	 * @param with

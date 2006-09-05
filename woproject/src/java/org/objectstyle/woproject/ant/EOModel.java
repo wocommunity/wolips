@@ -66,18 +66,24 @@ import org.objectstyle.cayenne.wocompat.PropertyListSerialization;
 
 /**
  * @author ulrich
- *
+ * 
  * To change the template for this generated type comment go to
  * Window>Preferences>Java>Code Generation>Code and Comments
  */
 public class EOModel extends Task {
 	protected String password;
+
 	protected String username;
+
 	protected String url;
+
 	protected File eomodelFile;
+
 	/**
 	 * Sets the password.
-	 * @param password The password to set
+	 * 
+	 * @param password
+	 *            The password to set
 	 */
 	public void setPassword(String password) {
 		this.password = password;
@@ -85,6 +91,7 @@ public class EOModel extends Task {
 
 	/**
 	 * Returns the password.
+	 * 
 	 * @return String
 	 */
 	public String getPassword() {
@@ -93,7 +100,9 @@ public class EOModel extends Task {
 
 	/**
 	 * Sets the username.
-	 * @param username The username to set
+	 * 
+	 * @param username
+	 *            The username to set
 	 */
 	public void setUsername(String username) {
 		this.username = username;
@@ -101,15 +110,18 @@ public class EOModel extends Task {
 
 	/**
 	 * Returns the username.
+	 * 
 	 * @return String
 	 */
 	public String getUsername() {
 		return username;
 	}
-	
+
 	/**
 	 * Sets the url.
-	 * @param username The url to set
+	 * 
+	 * @param username
+	 *            The url to set
 	 */
 	public void setUrl(String url) {
 		this.url = url;
@@ -117,14 +129,16 @@ public class EOModel extends Task {
 
 	/**
 	 * Returns the url.
+	 * 
 	 * @return String
 	 */
 	public String getUrl() {
 		return url;
 	}
-	
+
 	/**
 	 * Returns the eomodelFile.
+	 * 
 	 * @return File
 	 */
 	public File getEomodelFile() {
@@ -133,7 +147,9 @@ public class EOModel extends Task {
 
 	/**
 	 * Sets the eomodelFile.
-	 * @param eomodelFile The eomodelFile to set
+	 * 
+	 * @param eomodelFile
+	 *            The eomodelFile to set
 	 */
 	public void setEomodelFile(File eomodelFile) {
 		this.eomodelFile = eomodelFile;
@@ -146,19 +162,19 @@ public class EOModel extends Task {
 		validateAttributes();
 		Map index;
 		try {
-			index = (Map)PropertyListSerialization.propertyListFromFile(eomodelFile);
-			Map connectionDictionary = (Map)index.get("connectionDictionary");
-			if(connectionDictionary != null) {
-				if(password != null)
+			index = (Map) PropertyListSerialization.propertyListFromFile(eomodelFile);
+			Map connectionDictionary = (Map) index.get("connectionDictionary");
+			if (connectionDictionary != null) {
+				if (password != null)
 					connectionDictionary.put("password", password);
-				if(username != null)
+				if (username != null)
 					connectionDictionary.put("username", username);
-				if(url != null)
+				if (url != null)
 					connectionDictionary.put("URL", url);
 				index.put("connectionDictionary", connectionDictionary);
 				PropertyListSerialization.propertyListToFile(eomodelFile, index);
-				}
-			} catch (IOException ioex) {
+			}
+		} catch (IOException ioex) {
 			log("Error reading/saving eomodel file", Project.MSG_ERR);
 			throw new BuildException("Error reading/saving eomodel file", ioex);
 		} finally {
@@ -169,8 +185,9 @@ public class EOModel extends Task {
 	/**
 	 * Ensure we have a consistent and legal set of attributes, and set any
 	 * internal flags necessary based on different combinations of attributes.
-	 *
-	 * @throws BuildException if task attributes are inconsistent or missing.
+	 * 
+	 * @throws BuildException
+	 *             if task attributes are inconsistent or missing.
 	 */
 	protected void validateAttributes() throws BuildException {
 		if (eomodelFile == null) {

@@ -71,9 +71,13 @@ import org.objectstyle.woenvironment.pb.PBXProject;
  */
 public class PBXIndex extends Task {
 	protected File projectFile;
+
 	protected Vector resources = new Vector();
+
 	protected Vector wsresources = new Vector();
+
 	protected Vector frameworkSets = new Vector();
+
 	protected Vector sources = new Vector();
 
 	protected SubtaskFactory subtaskFactory = new SubtaskFactory(this);
@@ -96,6 +100,7 @@ public class PBXIndex extends Task {
 
 	/**
 	 * Returns the projectFile.
+	 * 
 	 * @return String
 	 */
 	public File getProjectFile() {
@@ -104,7 +109,9 @@ public class PBXIndex extends Task {
 
 	/**
 	 * Sets the projectFile.
-	 * @param projectFile The projectFile to set
+	 * 
+	 * @param projectFile
+	 *            The projectFile to set
 	 */
 	public void setProjectFile(File projectFile) {
 		this.projectFile = projectFile;
@@ -115,100 +122,100 @@ public class PBXIndex extends Task {
 	 */
 	public void execute() throws BuildException {
 		validateAttributes();
-		
+
 		PBXProject proj = new PBXProject();
-		addToProject( proj );
-		
-		if( getProjectFile().exists() ) {
-			if( !getProjectFile().isDirectory() )
+		addToProject(proj);
+
+		if (getProjectFile().exists()) {
+			if (!getProjectFile().isDirectory())
 				throw new BuildException("Specified PBX project package is not a directory.");
 		} else
 			getProjectFile().mkdir();
-		File pbxprojFile = new File( getProjectFile(), "project.pbxproj" );
-		if( !pbxprojFile.exists() ) {
+		File pbxprojFile = new File(getProjectFile(), "project.pbxproj");
+		if (!pbxprojFile.exists()) {
 			try {
 				pbxprojFile.createNewFile();
-			} catch( IOException x ) {
-				throw new BuildException("Failed to create project.pbxproj PBX project package file: "+x);
+			} catch (IOException x) {
+				throw new BuildException("Failed to create project.pbxproj PBX project package file: " + x);
 			}
 		}
 
-		proj.save( pbxprojFile );
+		proj.save(pbxprojFile);
 	}
-	
-	protected void addToProject( PBXProject proj ) {
-		File	dir;
+
+	protected void addToProject(PBXProject proj) {
+		File dir;
 		Iterator it;
 
-		//	Add source file references.
+		// Add source file references.
 		it = sources.iterator();
 		while (it.hasNext()) {
 			FileSet fs = (FileSet) it.next();
 			dir = fs.getDir(getProject());
 			DirectoryScanner ds = fs.getDirectoryScanner(getProject());
 			ds.scan();
-			
+
 			String[] allFiles = ds.getIncludedFiles();
 			for (int i = 0; i < allFiles.length; i++) {
-				proj.addSourceReference((new File(dir,fixPath(allFiles[i]))).getAbsolutePath());
+				proj.addSourceReference((new File(dir, fixPath(allFiles[i]))).getAbsolutePath());
 			}
 
 			String[] allDirs = ds.getIncludedDirectories();
 			for (int i = 0; i < allDirs.length; i++) {
-				proj.addSourceReference((new File(dir,fixPath(allDirs[i]))).getAbsolutePath());
+				proj.addSourceReference((new File(dir, fixPath(allDirs[i]))).getAbsolutePath());
 			}
 		}
 
-		//	Add Resources references.
+		// Add Resources references.
 		it = resources.iterator();
 		while (it.hasNext()) {
 			FileSet fs = (FileSet) it.next();
 			dir = fs.getDir(getProject());
 			DirectoryScanner ds = fs.getDirectoryScanner(getProject());
 			ds.scan();
-			
+
 			String[] allFiles = ds.getIncludedFiles();
 			for (int i = 0; i < allFiles.length; i++) {
-				proj.addResourceFileReference((new File(dir,fixPath(allFiles[i]))).getAbsolutePath());
+				proj.addResourceFileReference((new File(dir, fixPath(allFiles[i]))).getAbsolutePath());
 			}
 
 			String[] allDirs = ds.getIncludedDirectories();
 			for (int i = 0; i < allDirs.length; i++) {
-				proj.addResourceFolderReference((new File(dir,fixPath(allDirs[i]))).getAbsolutePath());
+				proj.addResourceFolderReference((new File(dir, fixPath(allDirs[i]))).getAbsolutePath());
 			}
 		}
 
-		//	Add WebServerResources references.
+		// Add WebServerResources references.
 		it = wsresources.iterator();
 		while (it.hasNext()) {
 			FileSet fs = (FileSet) it.next();
 			dir = fs.getDir(getProject());
 			DirectoryScanner ds = fs.getDirectoryScanner(getProject());
 			ds.scan();
-			
+
 			String[] allFiles = ds.getIncludedFiles();
 			for (int i = 0; i < allFiles.length; i++) {
-				proj.addWSResourceFileReference((new File(dir,fixPath(allFiles[i]))).getAbsolutePath());
+				proj.addWSResourceFileReference((new File(dir, fixPath(allFiles[i]))).getAbsolutePath());
 			}
 
 			String[] allDirs = ds.getIncludedDirectories();
 			for (int i = 0; i < allDirs.length; i++) {
-				proj.addWSResourceFolderReference((new File(dir,fixPath(allDirs[i]))).getAbsolutePath());
+				proj.addWSResourceFolderReference((new File(dir, fixPath(allDirs[i]))).getAbsolutePath());
 			}
 		}
 
-		//	Add framework references.
+		// Add framework references.
 		it = frameworkSets.iterator();
-		while(it.hasNext()) {
+		while (it.hasNext()) {
 			FrameworkSet fs = (FrameworkSet) it.next();
 			dir = fs.getDir(getProject());
-			//System.out.println( "**** frameworks dir: "+dir );
+			// System.out.println( "**** frameworks dir: "+dir );
 			DirectoryScanner ds = fs.getDirectoryScanner(getProject());
 			ds.scan();
 
 			String[] allDirs = ds.getIncludedDirectories();
 			for (int i = 0; i < allDirs.length; i++) {
-				proj.addFrameworkReference((new File(dir,fixPath(allDirs[i]))).getAbsolutePath());
+				proj.addFrameworkReference((new File(dir, fixPath(allDirs[i]))).getAbsolutePath());
 			}
 		}
 	}
@@ -216,8 +223,9 @@ public class PBXIndex extends Task {
 	/**
 	 * Ensure we have a consistent and legal set of attributes, and set any
 	 * internal flags necessary based on different combinations of attributes.
-	 *
-	 * @throws BuildException if task attributes are inconsistent or missing.
+	 * 
+	 * @throws BuildException
+	 *             if task attributes are inconsistent or missing.
 	 */
 	protected void validateAttributes() throws BuildException {
 		if (projectFile == null) {

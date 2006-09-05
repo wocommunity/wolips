@@ -65,139 +65,142 @@ import junit.framework.TestFailure;
 import junit.framework.TestResult;
 import junit.framework.TestSuite;
 
-/** 
- * Test runner to run batches of test suites. 
+/**
+ * Test runner to run batches of test suites.
  * 
  * @author Andrei Adamchik
  */
 public class WOProjectRunner extends junit.textui.TestRunner {
-    protected ArrayList suites = new ArrayList();
-    protected ArrayList statsList = new ArrayList();
-    protected int failureCount;
-    protected int errorCount;
+	protected ArrayList suites = new ArrayList();
 
+	protected ArrayList statsList = new ArrayList();
 
-    /** 
-     * Runs all internal test suites.
-     * 
-     * @return <code>true</code> if all tests succeeded, 
-     * <code>false</code> otherwise.
-     */
-    public boolean runAll() {
-        failureCount = 0;
-        errorCount = 0;
-        
-        Iterator it = suites.iterator();
-        while (it.hasNext()) {
-            runSuite((TestSuite) it.next());
-        }
-        printAll();
-        return !hasFailures();
-    }
-    
+	protected int failureCount;
 
-    /** Adds TestSuite to the list of suites. */
-    public void addSuite(TestSuite suite) {
-        suites.add(suite);
-    }
+	protected int errorCount;
 
-    /** 
-     * Returns true if there were either errors or failures
-     * during test run. 
-     */
-    public boolean hasFailures() {
-        return (errorCount + failureCount) > 0;
-    }
+	/**
+	 * Runs all internal test suites.
+	 * 
+	 * @return <code>true</code> if all tests succeeded, <code>false</code>
+	 *         otherwise.
+	 */
+	public boolean runAll() {
+		failureCount = 0;
+		errorCount = 0;
 
-    /** Prints all test results to stdout. */
-    public void printAll() {
-        writer().println();
-        writer().println();
-        writer().println("Test Runs");
-        writer().println("======================================================");
+		Iterator it = suites.iterator();
+		while (it.hasNext()) {
+			runSuite((TestSuite) it.next());
+		}
+		printAll();
+		return !hasFailures();
+	}
 
-        Iterator it = statsList.iterator();
-        int runCount = 0;
-        failureCount = 0;
-        errorCount = 0;
-        long totalTime = 0;
-        while (it.hasNext()) {
-            SuiteStatistics stats = (SuiteStatistics) it.next();
-            writer().print("Suite: " + stats.suiteName);
-            writer().println(" - " + elapsedTimeAsString(stats.elapsedTime) + " sec.");
-            runCount += stats.result.runCount();
-            failureCount += stats.result.failureCount();
-            errorCount += stats.result.errorCount();
-            totalTime += stats.elapsedTime;
-            writer().print(stats.result);
-        }
+	/** Adds TestSuite to the list of suites. */
+	public void addSuite(TestSuite suite) {
+		suites.add(suite);
+	}
 
-        writer().println();
-        writer().println("Totals:");
-        writer().println("======================================================");
-        writer().println("Test Runs: " + runCount);
-        writer().println("Error count: " + errorCount);
-        writer().println("Failure count: " + failureCount);
-        writer().println("Total time: " + elapsedTimeAsString(totalTime) + " sec.");
-        writer().println();
-    }
+	/**
+	 * Returns true if there were either errors or failures during test run.
+	 */
+	public boolean hasFailures() {
+		return (errorCount + failureCount) > 0;
+	}
 
-    public void runSuite(TestSuite suite) {
-        TestResult result = createTestResult();
-        result.addListener(this);
+	/** Prints all test results to stdout. */
+	public void printAll() {
+		writer().println();
+		writer().println();
+		writer().println("Test Runs");
+		writer().println("======================================================");
 
-        long startTime = System.currentTimeMillis();
-        suite.run(result);
-        long endTime = System.currentTimeMillis();
+		Iterator it = statsList.iterator();
+		int runCount = 0;
+		failureCount = 0;
+		errorCount = 0;
+		long totalTime = 0;
+		while (it.hasNext()) {
+			SuiteStatistics stats = (SuiteStatistics) it.next();
+			writer().print("Suite: " + stats.suiteName);
+			writer().println(" - " + elapsedTimeAsString(stats.elapsedTime) + " sec.");
+			runCount += stats.result.runCount();
+			failureCount += stats.result.failureCount();
+			errorCount += stats.result.errorCount();
+			totalTime += stats.elapsedTime;
+			writer().print(stats.result);
+		}
 
-        SuiteStatistics stats = new SuiteStatistics();
-        stats.result = result;
-        stats.elapsedTime = endTime - startTime;
-        stats.suiteName = suite.getName();
-        statsList.add(stats);
-    }
+		writer().println();
+		writer().println("Totals:");
+		writer().println("======================================================");
+		writer().println("Test Runs: " + runCount);
+		writer().println("Error count: " + errorCount);
+		writer().println("Failure count: " + failureCount);
+		writer().println("Total time: " + elapsedTimeAsString(totalTime) + " sec.");
+		writer().println();
+	}
 
-    public void printErrors(TestResult result) {
-        if (result.errorCount() != 0) {
-            if (result.errorCount() == 1)
-                writer().println("There was " + result.errorCount() + " error:");
-            else
-                writer().println("There were " + result.errorCount() + " errors:");
+	public void runSuite(TestSuite suite) {
+		TestResult result = createTestResult();
+		result.addListener(this);
 
-            int i = 1;
-            for (Enumeration e = result.errors(); e.hasMoreElements(); i++) {
-                TestFailure failure = (TestFailure) e.nextElement();
-                writer().println(i + ") " + failure.failedTest());
-                writer().print(getFilteredTrace(failure.thrownException()));
-            }
-        }
-    }
+		long startTime = System.currentTimeMillis();
+		suite.run(result);
+		long endTime = System.currentTimeMillis();
 
-    public void printFailures(TestResult result) {
-        if (result.failureCount() != 0) {
-            if (result.failureCount() == 1)
-                writer().println("There was " + result.failureCount() + " failure:");
-            else
-                writer().println("There were " + result.failureCount() + " failures:");
-            int i = 1;
-            for (Enumeration e = result.failures(); e.hasMoreElements(); i++) {
-                TestFailure failure = (TestFailure) e.nextElement();
-                writer().print(i + ") " + failure.failedTest());
-                writer().print(getFilteredTrace(failure.thrownException()));
-            }
-        }
-    }
+		SuiteStatistics stats = new SuiteStatistics();
+		stats.result = result;
+		stats.elapsedTime = endTime - startTime;
+		stats.suiteName = suite.getName();
+		statsList.add(stats);
+	}
 
-    public void printHeader(TestResult result) {}
+	public void printErrors(TestResult result) {
+		if (result.errorCount() != 0) {
+			if (result.errorCount() == 1)
+				writer().println("There was " + result.errorCount() + " error:");
+			else
+				writer().println("There were " + result.errorCount() + " errors:");
 
-    class SuiteStatistics {
-        TestResult result;
-        long elapsedTime;
-        String suiteName;
-    }
-    
-    public PrintStream writer() {
-    	return System.out;
-    }
-    
+			int i = 1;
+			for (Enumeration e = result.errors(); e.hasMoreElements(); i++) {
+				TestFailure failure = (TestFailure) e.nextElement();
+				writer().println(i + ") " + failure.failedTest());
+				writer().print(getFilteredTrace(failure.thrownException()));
+			}
+		}
+	}
+
+	public void printFailures(TestResult result) {
+		if (result.failureCount() != 0) {
+			if (result.failureCount() == 1)
+				writer().println("There was " + result.failureCount() + " failure:");
+			else
+				writer().println("There were " + result.failureCount() + " failures:");
+			int i = 1;
+			for (Enumeration e = result.failures(); e.hasMoreElements(); i++) {
+				TestFailure failure = (TestFailure) e.nextElement();
+				writer().print(i + ") " + failure.failedTest());
+				writer().print(getFilteredTrace(failure.thrownException()));
+			}
+		}
+	}
+
+	public void printHeader(TestResult result) {
+	}
+
+	class SuiteStatistics {
+		TestResult result;
+
+		long elapsedTime;
+
+		String suiteName;
+	}
+
+	public PrintStream writer() {
+		return System.out;
+	}
+
 }

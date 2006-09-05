@@ -63,11 +63,10 @@ import org.apache.tools.ant.taskdefs.Copy;
 import org.apache.tools.ant.taskdefs.Jar;
 import org.apache.tools.ant.taskdefs.Mkdir;
 
-/** 
- * Factory of standard ant tasks that are used as 
- * subtasks in other parts of WOProject. This class
- * customizes certain things of returned tasks, like logging
- * levels, etc.
+/**
+ * Factory of standard ant tasks that are used as subtasks in other parts of
+ * WOProject. This class customizes certain things of returned tasks, like
+ * logging levels, etc.
  * 
  * @author Andrei Adamchik
  */
@@ -81,14 +80,15 @@ public class SubtaskFactory {
 	public void release() {
 		parent = null;
 	}
-	/** 
-	 * Modifies log level to avoid log flood 
-	 * when using subtasks within a main task.
+
+	/**
+	 * Modifies log level to avoid log flood when using subtasks within a main
+	 * task.
 	 */
 	public static int subtaskLogLevel(int level) {
 		if (level == Project.MSG_INFO) {
 			return Project.MSG_VERBOSE;
-		} 
+		}
 		return level;
 	}
 
@@ -99,7 +99,7 @@ public class SubtaskFactory {
 		t.setLocation(parent.getLocation());
 	}
 
-	/** 
+	/**
 	 * Returns Copy task configured to copy WebObjects resources.
 	 */
 	public Copy getResourceCopy() {
@@ -107,8 +107,8 @@ public class SubtaskFactory {
 		initChildTask(task);
 		return task;
 	}
-	
-	/** 
+
+	/**
 	 * Returns a new Chmod task.
 	 */
 	public Chmod getChmod() {
@@ -117,7 +117,7 @@ public class SubtaskFactory {
 		return task;
 	}
 
-	/** 
+	/**
 	 * Returns Jar task.
 	 */
 	public Jar getJar() {
@@ -125,8 +125,8 @@ public class SubtaskFactory {
 		initChildTask(task);
 		return task;
 	}
-	
-	/** 
+
+	/**
 	 * Returns Mkdir task.
 	 */
 	public Mkdir getMkdir() {

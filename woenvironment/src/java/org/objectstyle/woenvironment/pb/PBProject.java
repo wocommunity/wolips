@@ -135,8 +135,7 @@ public class PBProject {
 	 * Creates a new PBProject object with an associated project file. If file
 	 * does not exist, PBProject object is initialized using default template.
 	 */
-	public PBProject(String pathToProjectFile, boolean isFramework)
-			throws IOException {
+	public PBProject(String pathToProjectFile, boolean isFramework) throws IOException {
 		this.pathToProjectFile = pathToProjectFile;
 		this.isFramework = isFramework;
 
@@ -161,13 +160,11 @@ public class PBProject {
 		try {
 			projectFile = new File(pathToProjectFile);
 			if (!projectFile.exists()) {
-				in = this.getClass().getClassLoader().getResourceAsStream(
-						getDefaultTemplate());
+				in = this.getClass().getClassLoader().getResourceAsStream(getDefaultTemplate());
 			} else {
 				in = new FileInputStream(projectFile);
 			}
-			pbProject = (Map) PropertyListSerialization
-					.propertyListFromStream(in);
+			pbProject = (Map) PropertyListSerialization.propertyListFromStream(in);
 		} finally {
 			projectFile = null;
 			if (in != null) {
@@ -176,8 +173,7 @@ public class PBProject {
 			in = null;
 		}
 		if (pbProject == null) {
-			throw new IOException("Error reading project file: "
-					+ pathToProjectFile);
+			throw new IOException("Error reading project file: " + pathToProjectFile);
 		}
 
 		readFilesTable();
@@ -192,8 +188,7 @@ public class PBProject {
 		File projectFile = null;
 		try {
 			projectFile = new File(pathToProjectFile);
-			PropertyListSerialization
-					.propertyListToFile(projectFile, sortedMap);
+			PropertyListSerialization.propertyListToFile(projectFile, sortedMap);
 		} finally {
 			projectFile = null;
 		}
@@ -258,8 +253,7 @@ public class PBProject {
 		if (language == null) {
 			return getWebServerResources();
 		}
-		return (List) getFilesTable().get(
-				language + "_" + PBProject.WEB_SERVER_RESOURCES);
+		return (List) getFilesTable().get(language + "_" + PBProject.WEB_SERVER_RESOURCES);
 	}
 
 	public void setWebServerResources(List anArray, String language) {
@@ -267,8 +261,7 @@ public class PBProject {
 			setWebServerResources(anArray);
 			return;
 		}
-		getFilesTable().put(language + "_" + PBProject.WEB_SERVER_RESOURCES,
-				anArray);
+		getFilesTable().put(language + "_" + PBProject.WEB_SERVER_RESOURCES, anArray);
 	}
 
 	public List getFrameworkSearch() {
@@ -323,8 +316,7 @@ public class PBProject {
 		if (language == null) {
 			return getWoAppResources();
 		}
-		return (List) getFilesTable().get(
-				language + "_" + PBProject.WOAPP_RESOURCES);
+		return (List) getFilesTable().get(language + "_" + PBProject.WOAPP_RESOURCES);
 	}
 
 	public void setWoAppResources(List anArray, String language) {
@@ -332,8 +324,7 @@ public class PBProject {
 			setWoAppResources(anArray);
 			return;
 		}
-		getFilesTable()
-				.put(language + "_" + PBProject.WOAPP_RESOURCES, anArray);
+		getFilesTable().put(language + "_" + PBProject.WOAPP_RESOURCES, anArray);
 	}
 
 	public List getWoComponents() {
@@ -348,8 +339,7 @@ public class PBProject {
 		if (language == null) {
 			return getWoComponents();
 		}
-		return (List) getFilesTable().get(
-				language + "_" + PBProject.WOCOMPONENTS);
+		return (List) getFilesTable().get(language + "_" + PBProject.WOCOMPONENTS);
 	}
 
 	public void setWoComponents(List anArray, String language) {

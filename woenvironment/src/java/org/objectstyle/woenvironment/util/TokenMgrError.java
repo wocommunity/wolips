@@ -126,8 +126,7 @@ public class TokenMgrError extends Error {
 			default:
 				if ((ch = str.charAt(i)) < 0x20 || ch > 0x7e) {
 					String s = "0000" + Integer.toString(ch, 16);
-					retval.append("\\u"
-							+ s.substring(s.length() - 4, s.length()));
+					retval.append("\\u" + s.substring(s.length() - 4, s.length()));
 				} else {
 					retval.append(ch);
 				}
@@ -140,22 +139,14 @@ public class TokenMgrError extends Error {
 	/**
 	 * Returns a detailed message for the Error when it is thrown by the token
 	 * manager to indicate a lexical error. Parameters : EOFSeen : indicates if
-	 * EOF caused the lexicl error errorLine : line number when the error occured errorColumn :
-	 * column number when the error occured errorAfter : prefix that was seen
-	 * before this error occured curchar : the offending character Note: You can
-	 * customize the lexical error message by modifying this method.
+	 * EOF caused the lexicl error errorLine : line number when the error
+	 * occured errorColumn : column number when the error occured errorAfter :
+	 * prefix that was seen before this error occured curchar : the offending
+	 * character Note: You can customize the lexical error message by modifying
+	 * this method.
 	 */
-	protected static String LexicalError(boolean EOFSeen,
-			int errorLine, int errorColumn, String errorAfter, char curChar) {
-		return ("Lexical error at line "
-				+ errorLine
-				+ ", column "
-				+ errorColumn
-				+ ".  Encountered: "
-				+ (EOFSeen ? "<EOF> " : ("\""
-						+ addEscapes(String.valueOf(curChar)) + "\"")
-						+ " (" + (int) curChar + "), ") + "after : \""
-				+ addEscapes(errorAfter) + "\"");
+	protected static String LexicalError(boolean EOFSeen, int errorLine, int errorColumn, String errorAfter, char curChar) {
+		return ("Lexical error at line " + errorLine + ", column " + errorColumn + ".  Encountered: " + (EOFSeen ? "<EOF> " : ("\"" + addEscapes(String.valueOf(curChar)) + "\"") + " (" + (int) curChar + "), ") + "after : \"" + addEscapes(errorAfter) + "\"");
 	}
 
 	/**
@@ -184,9 +175,7 @@ public class TokenMgrError extends Error {
 		errorCode = reason;
 	}
 
-	public TokenMgrError(boolean EOFSeen, int errorLine,
-			int errorColumn, String errorAfter, char curChar, int reason) {
-		this(LexicalError(EOFSeen, errorLine, errorColumn,
-				errorAfter, curChar), reason);
+	public TokenMgrError(boolean EOFSeen, int errorLine, int errorColumn, String errorAfter, char curChar, int reason) {
+		this(LexicalError(EOFSeen, errorLine, errorColumn, errorAfter, curChar), reason);
 	}
 }

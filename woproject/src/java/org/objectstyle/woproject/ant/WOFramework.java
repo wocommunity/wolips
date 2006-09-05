@@ -64,64 +64,62 @@ import org.apache.tools.ant.types.FileSet;
 /**
  * Ant task to build WebObjects framework. For detailed instructions go to the
  * <a href="../../../../../ant/woframework.html">manual page</a> .
- *
+ * 
  * @ant.task category="packaging"
  */
 public class WOFramework extends WOTask {
 
 	protected String eoAdaptorClassName;
-	
-    public void addLib(FileSet set) {
-        lib.addElement(set);
-    }
 
-    public void execute() throws BuildException {
-        validateAttributes();
-        
-        log("Installing " + name + " in " + destDir);
-        createDirectories();
+	public void addLib(FileSet set) {
+		lib.addElement(set);
+	}
 
-        if (hasClasses()) {
-            jarClasses();
-        }
+	public void execute() throws BuildException {
+		validateAttributes();
 
-        if (hasSources()) {
-            jarSources();
-        }
+		log("Installing " + name + " in " + destDir);
+		createDirectories();
 
-        if (hasLib()) {
-            copyLibs();
-        }
+		if (hasClasses()) {
+			jarClasses();
+		}
 
-        if (hasResources()) {
-            copyResources();
-        }
+		if (hasSources()) {
+			jarSources();
+		}
 
-        if (hasWs()) {
-            copyWsresources();
-        }
+		if (hasLib()) {
+			copyLibs();
+		}
 
-        new FrameworkFormat(this).processTemplates();
-    }
+		if (hasResources()) {
+			copyResources();
+		}
 
-    /**
-     * location where WOTask is being built up: ie the .woa dir or the .framework dir.
-     * In this case, the .framework dir.
-     */
-    protected File taskDir() {
-        return getProject().resolveFile(destDir + File.separator + name + ".framework");
-    }
+		if (hasWs()) {
+			copyWsresources();
+		}
 
+		new FrameworkFormat(this).processTemplates();
+	}
 
-    protected File resourcesDir() {
-        return new File(taskDir(), "Resources");
-    }
+	/**
+	 * location where WOTask is being built up: ie the .woa dir or the
+	 * .framework dir. In this case, the .framework dir.
+	 */
+	protected File taskDir() {
+		return getProject().resolveFile(destDir + File.separator + name + ".framework");
+	}
 
+	protected File resourcesDir() {
+		return new File(taskDir(), "Resources");
+	}
 
-    protected File wsresourcesDir() {
-        return new File(taskDir(), "WebServerResources");
-    }
-    
+	protected File wsresourcesDir() {
+		return new File(taskDir(), "WebServerResources");
+	}
+
 	protected File wsresourcesDestDir() {
 		File woLocation = new File(webServerDir(), "WebObjects");
 		File frameworksLocation = new File(woLocation, "Frameworks");
@@ -129,19 +127,21 @@ public class WOFramework extends WOTask {
 		return new File(frameworkLocation, "WebServerResources");
 	}
 
-    /**
-     * Do any clean up necessary to allow this instance to be used again.
-     */
-    protected void cleanUp() {
-        classes.clear();
-        lib.clear();
-        resources.clear();
-        wsresources.clear();
-        sources.clear();
-    }
+	/**
+	 * Do any clean up necessary to allow this instance to be used again.
+	 */
+	protected void cleanUp() {
+		classes.clear();
+		lib.clear();
+		resources.clear();
+		wsresources.clear();
+		sources.clear();
+	}
+
 	public String getEOAdaptorClassName() {
 		return eoAdaptorClassName;
 	}
+
 	public void setEOAdaptorClassName(String eoAdaptorClassName) {
 		this.eoAdaptorClassName = eoAdaptorClassName;
 	}

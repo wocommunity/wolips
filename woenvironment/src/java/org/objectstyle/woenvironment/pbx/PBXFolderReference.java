@@ -54,6 +54,7 @@
  *
  */
 package org.objectstyle.woenvironment.pbx;
+
 /**
  * @author tlg
  * 
@@ -62,7 +63,9 @@ package org.objectstyle.woenvironment.pbx;
  */
 public class PBXFolderReference extends PBXReference {
 	public static final String _KINCLUDEININDEX = "includeInIndex";
+
 	protected int includeInIndex;
+
 	/**
 	 * @param ref
 	 * @param coder
@@ -71,9 +74,11 @@ public class PBXFolderReference extends PBXReference {
 		super(ref);
 		// TODO Auto-generated constructor stub
 	}
+
 	public void setIncludeInIndex(Object includeInIndex) {
 		this.includeInIndex = Integer.parseInt(includeInIndex.toString());
 	}
+
 	public int getIncludeInIndex() {
 		return this.includeInIndex;
 	}

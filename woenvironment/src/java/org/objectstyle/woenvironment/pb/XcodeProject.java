@@ -59,35 +59,24 @@ import java.io.File;
 import java.util.Map;
 
 /**
- * A <b>XcodeProject</b> represents an Xcode project package
- * (<code>*.xcode</code>).
+ * A <b>XcodeProject</b> represents an Xcode project package (<code>*.xcode</code>).
  * 
  * @author Jonathan 'Wolf' Rentzsch
  * @author Anjo Krank
  */
 public class XcodeProject extends PBXProject {
-    
-    protected Map newFolderReference( String name, String path ) {
-        Map result = map( new Object[] {
-                "isa",		"PBXFolderReference",
-                "refType",	(new File(path)).isAbsolute() ? "0" : "2",
-                "name",		name,
-                "path",		path }
-        );
-        // AK: wrapper-type folders need an extra flag so they get recognized
-        if(path.endsWith(".wo") || path.endsWith(".eomodeld") || path.endsWith(".nib")) {
-            result.put("explicitFileType", "wrapper");
-            result.put("lastKnownFileType", "folder");
-        }
-        return result;
-    }
 
-	
-	protected Map newPBXProj( Map objectsTable, ObjectsTable.ID rootObject) {
-		return map( new Object[] {
-			"archiveVersion",	"1",
-			"objectVersion",	"39",
-			"rootObject",		rootObject,
-			"objects",			objectsTable });
+	protected Map newFolderReference(String name, String path) {
+		Map result = map(new Object[] { "isa", "PBXFolderReference", "refType", (new File(path)).isAbsolute() ? "0" : "2", "name", name, "path", path });
+		// AK: wrapper-type folders need an extra flag so they get recognized
+		if (path.endsWith(".wo") || path.endsWith(".eomodeld") || path.endsWith(".nib")) {
+			result.put("explicitFileType", "wrapper");
+			result.put("lastKnownFileType", "folder");
+		}
+		return result;
+	}
+
+	protected Map newPBXProj(Map objectsTable, ObjectsTable.ID rootObject) {
+		return map(new Object[] { "archiveVersion", "1", "objectVersion", "39", "rootObject", rootObject, "objects", objectsTable });
 	}
 }
