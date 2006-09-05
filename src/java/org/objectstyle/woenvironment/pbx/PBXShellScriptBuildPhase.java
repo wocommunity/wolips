@@ -54,8 +54,10 @@
  *
  */
 package org.objectstyle.woenvironment.pbx;
+
 import java.util.Collection;
 import java.util.Vector;
+
 /**
  * @author tlg
  * 
@@ -64,13 +66,21 @@ import java.util.Vector;
  */
 public class PBXShellScriptBuildPhase extends PBXBuildPhase {
 	public final static String _KNEEDEDFILENAMES = "neededFileNames";
+
 	public final static String _KSHELLPATH = "shellPath";
+
 	public final static String _KSHELLSCRIPT = "shellScript";
+
 	public final static String _KGENERATEDFILENAMES = "generatedFileNames";
+
 	protected Collection neededFileNames;
+
 	protected String shellPath;
+
 	protected String shellScript;
+
 	protected Collection generatedFileNames;
+
 	/**
 	 * @param ref
 	 * @param coder
@@ -82,27 +92,35 @@ public class PBXShellScriptBuildPhase extends PBXBuildPhase {
 		this.shellScript = null;
 		this.generatedFileNames = new Vector();
 	}
+
 	public void addNeededFileNames(Object neededFileName) {
 		this.neededFileNames.add(neededFileName);
 	}
+
 	public Collection getNeededFileNames() {
 		return this.neededFileNames;
 	}
+
 	public void setShellPath(Object shellPath) {
 		this.shellPath = (String) shellPath;
 	}
+
 	public String getShellPath() {
 		return this.shellPath;
 	}
+
 	public void setShellScript(Object shellScript) {
 		this.shellScript = (String) shellScript;
 	}
+
 	public String getShellScript() {
 		return this.shellScript;
 	}
+
 	public void addGeneratedFileNames(Object generatedFileName) {
 		this.generatedFileNames.add(generatedFileName);
 	}
+
 	public Collection getGeneratedFileNames() {
 		return this.generatedFileNames;
 	}

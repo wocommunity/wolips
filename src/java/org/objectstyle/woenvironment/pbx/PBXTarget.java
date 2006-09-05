@@ -54,9 +54,11 @@
  *
  */
 package org.objectstyle.woenvironment.pbx;
+
 import java.util.Collection;
 import java.util.Map;
 import java.util.Vector;
+
 /**
  * @author tlg
  * 
@@ -65,23 +67,41 @@ import java.util.Vector;
  */
 public class PBXTarget extends PBXItem {
 	public static final String _KBUILDPHASES = "buildPhases";
+
 	public static final String _KBUILDSETTINGS = "buildSettings";
+
 	public static final String _KDEPENDENCIES = "dependencies";
+
 	public static final String _KNAME = "name";
+
 	public static final String _KPRODUCTINSTALLPATH = "productInstallPath";
+
 	public static final String _KPRODUCTNAME = "productName";
+
 	public static final String _KPRODUCTREFERENCE = "productReference";
+
 	public static final String _KPRODUCTSETTINGSXML = "productSettingsXML";
+
 	public static final String _KSOULDUSEHEADERMAP = "shouldUseHeadermap";
+
 	protected Collection buildPhases;
+
 	protected Map buildSettings;
+
 	protected Collection dependencies;
+
 	protected String name;
+
 	protected String productInstallPath;
+
 	protected String productName;
+
 	protected PBXReference productReference;
+
 	protected String productSettingsXML;
+
 	protected int shouldUseHeadermap;
+
 	/**
 	 * @param object
 	 * @param coder
@@ -91,58 +111,75 @@ public class PBXTarget extends PBXItem {
 		this.buildPhases = new Vector();
 		this.dependencies = new Vector();
 	}
+
 	public void addBuildPhases(Object buildPhase) {
 		this.buildPhases.add(buildPhase);
 	}
+
 	public Collection getBuildPhases() {
 		return this.buildPhases;
 	}
+
 	public void setBuildSettings(Object buildSettings) {
 		this.buildSettings = (Map) buildSettings;
 	}
+
 	public Map getBuildSettings() {
 		return this.buildSettings;
 	}
+
 	public void addDependencies(Object dependecy) {
 		this.dependencies.add(dependecy);
 	}
+
 	public Collection getDependencies() {
 		return this.dependencies;
 	}
+
 	public void setName(Object name) {
 		this.name = (String) name;
 	}
+
 	public String getName() {
 		return this.name;
 	}
+
 	public void setProductInstallPath(Object productInstallPath) {
 		this.productInstallPath = (String) productInstallPath;
 	}
+
 	public String getProductInstallPath() {
 		return this.productInstallPath;
 	}
+
 	public void setProductName(Object productName) {
 		this.productName = (String) productName;
 	}
+
 	public String getProductName() {
 		return this.productName;
 	}
+
 	public void setProductReference(Object productReference) {
 		this.productReference = (PBXReference) productReference;
 	}
+
 	public PBXReference getProductReference() {
 		return this.productReference;
 	}
+
 	public void setProductSettingsXML(Object productSettingsXML) {
 		this.productSettingsXML = (String) productSettingsXML;
 	}
+
 	public String getProductSettingsXML() {
 		return this.productSettingsXML;
 	}
+
 	public void setShouldUseHeadermap(Object shouldUseHeadermap) {
-		this.shouldUseHeadermap = Integer.parseInt(shouldUseHeadermap
-				.toString());
+		this.shouldUseHeadermap = Integer.parseInt(shouldUseHeadermap.toString());
 	}
+
 	public int getShouldUseHeadermap() {
 		return this.shouldUseHeadermap;
 	}

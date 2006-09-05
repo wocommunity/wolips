@@ -54,6 +54,7 @@
  *
  */
 package org.objectstyle.woenvironment.pbx;
+
 /**
  * @author tlg
  * 
@@ -62,13 +63,17 @@ package org.objectstyle.woenvironment.pbx;
  */
 public class PBXTargetDependency extends PBXItem {
 	public static final String _KTARGET = "target";
+
 	protected PBXTarget target;
+
 	public PBXTargetDependency(Object ref) {
 		super(ref);
 	}
+
 	public void setTarget(Object target) {
 		this.target = (PBXTarget) target;
 	}
+
 	public PBXTarget getTarget() {
 		return this.target;
 	}

@@ -138,8 +138,7 @@ public final class WOEnvironment extends Environment {
 	private File macBootstrap() {
 		File aFile = null;
 		try {
-			aFile = new File(
-					"/System/Library/WebObjects/JavaApplications/wotaskd.woa/WOBootstrap.jar");
+			aFile = new File("/System/Library/WebObjects/JavaApplications/wotaskd.woa/WOBootstrap.jar");
 			if (aFile.exists())
 				return aFile;
 		} catch (Exception anException) {
@@ -157,9 +156,7 @@ public final class WOEnvironment extends Environment {
 	private File winBootstrap() {
 		File aFile = null;
 		try {
-			aFile = new File(
-					this.getWOVariables().systemRoot()
-							+ "/Library/WebObjects/JavaApplications/wotaskd.woa/WOBootstrap.jar");
+			aFile = new File(this.getWOVariables().systemRoot() + "/Library/WebObjects/JavaApplications/wotaskd.woa/WOBootstrap.jar");
 			if (aFile.exists())
 				return aFile;
 		} catch (Exception anException) {
@@ -177,9 +174,7 @@ public final class WOEnvironment extends Environment {
 	private File otherBootstrap() {
 		File aFile = null;
 		try {
-			aFile = new File(
-					this.getWOVariables().systemRoot()
-							+ "\\Library\\WebObjects\\JavaApplications\\wotaskd.woa\\WOBootstrap.jar");
+			aFile = new File(this.getWOVariables().systemRoot() + "\\Library\\WebObjects\\JavaApplications\\wotaskd.woa\\WOBootstrap.jar");
 			if (aFile.exists())
 				return aFile;
 		} catch (Exception anException) {
@@ -189,7 +184,6 @@ public final class WOEnvironment extends Environment {
 	}
 
 	public boolean variablesConfigured() {
-		return getWOVariables().systemRoot() != null
-				&& getWOVariables().localRoot() != null;
+		return getWOVariables().systemRoot() != null && getWOVariables().localRoot() != null;
 	}
 }

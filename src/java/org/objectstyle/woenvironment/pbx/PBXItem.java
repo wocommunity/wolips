@@ -54,6 +54,7 @@
  *
  */
 package org.objectstyle.woenvironment.pbx;
+
 import java.io.StringWriter;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -64,6 +65,7 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.Vector;
+
 /**
  * @author tlg
  * 
@@ -72,16 +74,18 @@ import java.util.Vector;
  */
 public class PBXItem {
 	public static final String _KISA = "isa";
+
 	protected Object ref;
+
 	public PBXItem(Object ref) {
 		this.ref = ref;
 	}
+
 	private String serializeString(String aString) {
 		char[] chars = aString.toCharArray();
 		boolean simple = (chars.length != 0);
 		for (int i = 0; i < chars.length & simple; i++) {
-			simple = (Character.isLetterOrDigit(chars[i]) || chars[i] == '.'
-					|| chars[i] == '/' || chars[i] == '_');
+			simple = (Character.isLetterOrDigit(chars[i]) || chars[i] == '.' || chars[i] == '/' || chars[i] == '_');
 		}
 		if (!simple) {
 			if (!aString.startsWith("<?xml")) {
@@ -91,6 +95,7 @@ public class PBXItem {
 		}
 		return aString;
 	}
+
 	public String toString() {
 		StringWriter writer = new StringWriter();
 		try {
@@ -120,9 +125,7 @@ public class PBXItem {
 					writer.write("\t\t\t" + key + " = {\n");
 					while (i.hasNext()) {
 						Object k = i.next();
-						writer.write("\t\t\t\t" + k + " = "
-								+ serializeString(((Map) ob).get(k).toString())
-								+ ";\n");
+						writer.write("\t\t\t\t" + k + " = " + serializeString(((Map) ob).get(k).toString()) + ";\n");
 					}
 					writer.write("\t\t\t};\n");
 				} else if (ob instanceof Collection) {
@@ -137,8 +140,7 @@ public class PBXItem {
 					}
 					writer.write("\t\t\t);\n");
 				} else {
-					writer.write("\t\t\t" + key + " = "
-							+ serializeString(ob.toString()) + ";\n");
+					writer.write("\t\t\t" + key + " = " + serializeString(ob.toString()) + ";\n");
 				}
 			}
 			writer.write("\t\t};");
@@ -147,6 +149,7 @@ public class PBXItem {
 		}
 		return writer.toString();
 	}
+
 	public String getIsa() {
 		String isa = this.getClass().toString();
 		return isa.substring(isa.lastIndexOf('.') + 1);

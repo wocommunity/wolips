@@ -54,6 +54,7 @@
  *
  */
 package org.objectstyle.woenvironment.pbx;
+
 /**
  * @author tlg
  * 
@@ -68,6 +69,7 @@ public class PBXFileReference extends PBXReference {
 	public PBXFileReference(Object ref) {
 		super(ref);
 	}
+
 	protected String fileSeparator() {
 		return "";
 	}

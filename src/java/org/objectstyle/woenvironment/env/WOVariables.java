@@ -136,21 +136,16 @@ public class WOVariables {
 		// load properties
 		this.wobuildProperties = new Properties();
 		// try user home
-		if (!validateWobuildPropertiesFile(this.environment.userHome()
-				+ File.separator + "Library" + File.separator
-				+ this.WOBUILD_PROPERTIES_FILE_NAME)) {
+		if (!validateWobuildPropertiesFile(this.environment.userHome() + File.separator + "Library" + File.separator + this.WOBUILD_PROPERTIES_FILE_NAME)) {
 			// try system property
-			if (!validateWobuildPropertiesFile(System
-					.getProperty(this.WOBUILD_PROPERTIES))) {
+			if (!validateWobuildPropertiesFile(System.getProperty(this.WOBUILD_PROPERTIES))) {
 				// try environment variable
-				validateWobuildPropertiesFile(this.environment.getEnvVars()
-						.getProperty(this.WOBUILD_PROPERTIES));
+				validateWobuildPropertiesFile(this.environment.getEnvVars().getProperty(this.WOBUILD_PROPERTIES));
 			}
 		}
 		if (this.wobuildPropertiesFile != null) {
 			try {
-				this.wobuildProperties.load(new FileInputStream(
-						this.wobuildPropertiesFile));
+				this.wobuildProperties.load(new FileInputStream(this.wobuildPropertiesFile));
 			} catch (FileNotFoundException e) {
 				System.out.println(e);
 			} catch (IOException e) {
@@ -160,18 +155,15 @@ public class WOVariables {
 			// import required properties from project.. maybe do a scan on
 			// "wo.*"?
 			if (altProperties.get(WO_ROOT) != null) {
-				this.wobuildProperties.setProperty(WO_ROOT, altProperties.get(
-						WO_ROOT).toString());
+				this.wobuildProperties.setProperty(WO_ROOT, altProperties.get(WO_ROOT).toString());
 			}
 
 			if (altProperties.get(WO_WO_LOCAL_ROOT) != null) {
-				this.wobuildProperties.setProperty(WO_WO_LOCAL_ROOT,
-						altProperties.get(WO_WO_LOCAL_ROOT).toString());
+				this.wobuildProperties.setProperty(WO_WO_LOCAL_ROOT, altProperties.get(WO_WO_LOCAL_ROOT).toString());
 			}
 
 			if (altProperties.get(WO_WO_SYSTEM_ROOT) != null) {
-				this.wobuildProperties.setProperty(WO_WO_SYSTEM_ROOT,
-						altProperties.get(WO_WO_SYSTEM_ROOT).toString());
+				this.wobuildProperties.setProperty(WO_WO_SYSTEM_ROOT, altProperties.get(WO_WO_SYSTEM_ROOT).toString());
 			}
 		}
 	}
@@ -179,8 +171,7 @@ public class WOVariables {
 	private boolean validateWobuildPropertiesFile(String fileName) {
 		if (fileName != null) {
 			this.wobuildPropertiesFile = new File(fileName);
-			if (this.wobuildPropertiesFile.exists()
-					&& !this.wobuildPropertiesFile.isDirectory()) {
+			if (this.wobuildPropertiesFile.exists() && !this.wobuildPropertiesFile.isDirectory()) {
 				return true;
 			}
 		}
@@ -200,15 +191,13 @@ public class WOVariables {
 		return this.wobuildProperties.getProperty(WOVariables.WO_ROOT);
 	}
 
-
 	/**
 	 * Where you store your XCode or ant generated stuff.
 	 * 
 	 * @return String
 	 */
 	public String externalBuildRoot() {
-		return this.wobuildProperties
-				.getProperty(WOVariables.EXTERNAL_BUILD_ROOT);
+		return this.wobuildProperties.getProperty(WOVariables.EXTERNAL_BUILD_ROOT);
 	}
 
 	/**
@@ -228,19 +217,17 @@ public class WOVariables {
 	 * @return String
 	 */
 	public String systemRoot() {
-		return this.wobuildProperties
-				.getProperty(WOVariables.WO_WO_SYSTEM_ROOT);
+		return this.wobuildProperties.getProperty(WOVariables.WO_WO_SYSTEM_ROOT);
 	}
 
 	/**
-	 * Method referenceApi. WOVariables.REFERENCE_API_KEY defined in wobuild.properties (key:
-	 * <code>wo.dir.reference.api</code>)
+	 * Method referenceApi. WOVariables.REFERENCE_API_KEY defined in
+	 * wobuild.properties (key: <code>wo.dir.reference.api</code>)
 	 * 
 	 * @return String
 	 */
 	public String referenceApi() {
-		return this.wobuildProperties
-				.getProperty(WOVariables.REFERENCE_API_KEY);
+		return this.wobuildProperties.getProperty(WOVariables.REFERENCE_API_KEY);
 	}
 
 	/**
@@ -249,8 +236,7 @@ public class WOVariables {
 	 * @return String
 	 */
 	public String userHome() {
-		String userHome = this.wobuildProperties
-				.getProperty(WOVariables.HOME_ROOT);
+		String userHome = this.wobuildProperties.getProperty(WOVariables.HOME_ROOT);
 		if (userHome == null) {
 			userHome = this.environment.userHome();
 		}
@@ -277,8 +263,7 @@ public class WOVariables {
 	 * @return String
 	 */
 	public String developerAppsDir() {
-		return systemRoot() + File.separator + "Developer" + File.separator
-				+ "Applications";
+		return systemRoot() + File.separator + "Developer" + File.separator + "Applications";
 	}
 
 	/**
@@ -330,9 +315,7 @@ public class WOVariables {
 	 * @return String with path to the foundation.jar
 	 */
 	public String foundationJarPath() {
-		return "file:///"
-				+ systemRoot()
-				+ "/Library/Frameworks/JavaFoundation.framework/Resources/Java/javafoundation.jar";
+		return "file:///" + systemRoot() + "/Library/Frameworks/JavaFoundation.framework/Resources/Java/javafoundation.jar";
 	}
 
 	/**
@@ -374,11 +357,9 @@ public class WOVariables {
 			// }
 			if (localRoot != null && aPath.startsWith(localRoot)) {
 				boolean otherRoot = false;
-				if (localRootLength < userHomeLength
-						&& aPath.startsWith(userHome))
+				if (localRootLength < userHomeLength && aPath.startsWith(userHome))
 					otherRoot = true;
-				if (localRootLength < systemRootLength
-						&& aPath.startsWith(systemRoot))
+				if (localRootLength < systemRootLength && aPath.startsWith(systemRoot))
 					otherRoot = true;
 				if (!otherRoot) {
 					if (localRootLength == 1) // MacOSX
@@ -388,8 +369,7 @@ public class WOVariables {
 			}
 			if (userHome != null && aPath.startsWith(userHome)) {
 				boolean otherRoot = false;
-				if (userHomeLength < systemRootLength
-						&& aPath.startsWith(systemRoot))
+				if (userHomeLength < systemRootLength && aPath.startsWith(systemRoot))
 					otherRoot = true;
 				if (!otherRoot)
 					return "HOMEROOT" + aPath.substring(userHomeLength);
@@ -399,8 +379,7 @@ public class WOVariables {
 			}
 			return aPath;
 		} catch (Exception anException) {
-			System.out.println("Exception occured during encoding of the path "
-					+ anException);
+			System.out.println("Exception occured during encoding of the path " + anException);
 		} finally {
 			localRoot = null;
 			userHome = null;
@@ -416,9 +395,9 @@ public class WOVariables {
 		return FileStringScanner.replace(path, "\\", "/");
 	}
 
-    public String getProperty(String aKey) {
-        return (wobuildProperties != null ? wobuildProperties.getProperty(aKey) : null);
-    }
+	public String getProperty(String aKey) {
+		return (wobuildProperties != null ? wobuildProperties.getProperty(aKey) : null);
+	}
 
 	/**
 	 * @return boolean

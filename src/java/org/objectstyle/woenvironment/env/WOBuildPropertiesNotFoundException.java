@@ -58,9 +58,9 @@ package org.objectstyle.woenvironment.env;
 
 /**
  * @author uli
- *
- * To change this generated comment go to 
- * Window>Preferences>Java>Code Generation>Code Template
+ * 
+ * To change this generated comment go to Window>Preferences>Java>Code
+ * Generation>Code Template
  */
 public class WOBuildPropertiesNotFoundException extends Throwable {
 

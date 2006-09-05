@@ -57,22 +57,21 @@ package org.objectstyle.woenvironment.util;
 
 import com.webobjects.foundation.NSKeyValueCoding;
 
-
-/** Convenience superclass for custom classes that need
-  * default Key-Value Coding implemented. 
-  *
-  * @author Andrei Adamchik
-  */
+/**
+ * Convenience superclass for custom classes that need default Key-Value Coding
+ * implemented.
+ * 
+ * @author Andrei Adamchik
+ */
 public class KVCImpl implements NSKeyValueCoding {
-    
-    /** Retrieves the value associated with the property named <code>key</code>. */
-    public Object valueForKey(String key) {
-        return NSKeyValueCoding.DefaultImplementation.valueForKey(this, key);
-    }
-    
-    
-    /** Sets property identified by <code>key</code> to <code>value</code>.*/
-    public void takeValueForKey(Object obj, String key) {
-        NSKeyValueCoding.DefaultImplementation.takeValueForKey(this, obj, key);
-    }
+
+	/** Retrieves the value associated with the property named <code>key</code>. */
+	public Object valueForKey(String key) {
+		return NSKeyValueCoding.DefaultImplementation.valueForKey(this, key);
+	}
+
+	/** Sets property identified by <code>key</code> to <code>value</code>. */
+	public void takeValueForKey(Object obj, String key) {
+		NSKeyValueCoding.DefaultImplementation.takeValueForKey(this, obj, key);
+	}
 }
