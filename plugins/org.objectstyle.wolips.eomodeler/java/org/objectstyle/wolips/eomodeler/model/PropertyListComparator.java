@@ -85,7 +85,6 @@ public class PropertyListComparator implements Comparator {
     }
     else if (arg0 instanceof ISortableEOModelObject && arg1 instanceof ISortableEOModelObject) {
       int comparison = compare(((ISortableEOModelObject) arg0).getName(), ((ISortableEOModelObject) arg1).getName());
-      System.out.println("PropertyListComparator.compare: " + ((ISortableEOModelObject) arg0).getName() + "/" + ((ISortableEOModelObject) arg1).getName() + "=" + comparison);
       return comparison;
     }
     else if (arg0 instanceof Map && arg1 instanceof Map) {
