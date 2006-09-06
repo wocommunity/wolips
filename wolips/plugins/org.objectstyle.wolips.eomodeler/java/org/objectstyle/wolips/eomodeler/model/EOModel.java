@@ -95,12 +95,12 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 
   public EOModel(String _name) {
     myName = _name;
-    myEntities = new PropertyListSet();
-    myStoredProcedures = new PropertyListSet();
-    myDeletedEntityNamesInObjectStore = new PropertyListSet();
-    myDeletedEntityNames = new PropertyListSet();
-    myDeletedStoredProcedureNames = new PropertyListSet();
-    myDatabaseConfigs = new PropertyListSet();
+    myEntities = new HashSet();
+    myStoredProcedures = new HashSet();
+    myDeletedEntityNamesInObjectStore = new TreeSet();
+    myDeletedEntityNames = new TreeSet();
+    myDeletedStoredProcedureNames = new TreeSet();
+    myDatabaseConfigs = new HashSet();
     myVersion = "2.1";
     myModelMap = new EOModelMap();
     myConnectionDictionaryRepeater = new PropertyChangeRepeater(IConnectionDictionaryOwner.CONNECTION_DICTIONARY);
@@ -287,7 +287,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
     if (_fireEvents) {
       Set oldDatabaseConfigs = null;
       oldDatabaseConfigs = myDatabaseConfigs;
-      Set newEntities = new TreeSet(new PropertyListSet());
+      Set newEntities = new HashSet();
       newEntities.addAll(myDatabaseConfigs);
       newEntities.add(_databaseConfig);
       myDatabaseConfigs = newEntities;
@@ -300,7 +300,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 
   public void removeDatabaseConfig(EODatabaseConfig _databaseConfig) {
     Set oldDatabaseConfigs = myDatabaseConfigs;
-    Set newDatabaseConfigs = new TreeSet(new PropertyListSet());
+    Set newDatabaseConfigs = new HashSet();
     newDatabaseConfigs.addAll(myDatabaseConfigs);
     newDatabaseConfigs.remove(_databaseConfig);
     myDatabaseConfigs = newDatabaseConfigs;
@@ -417,7 +417,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
 
   public void _entityNameChanged(String _oldName, String _newName) {
     if (myDeletedEntityNamesInObjectStore == null) {
-      myDeletedEntityNamesInObjectStore = new PropertyListSet();
+      myDeletedEntityNamesInObjectStore = new TreeSet();
     }
     myDeletedEntityNamesInObjectStore.add(_oldName);
     myDeletedEntityNamesInObjectStore.remove(_newName);
@@ -441,7 +441,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
     if (_fireEvents) {
       Set oldEntities = null;
       oldEntities = myEntities;
-      Set newEntities = new TreeSet(new PropertyListSet());
+      Set newEntities = new HashSet();
       newEntities.addAll(myEntities);
       newEntities.add(_entity);
       myEntities = newEntities;
@@ -455,7 +455,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
   public void removeEntity(EOEntity _entity) {
     myDeletedEntityNames.add(_entity.getName());
     Set oldEntities = myEntities;
-    Set newEntities = new TreeSet(new PropertyListSet());
+    Set newEntities = new HashSet();
     newEntities.addAll(myEntities);
     newEntities.remove(_entity);
     myEntities = newEntities;
@@ -499,7 +499,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
     myDeletedStoredProcedureNames.remove(_storedProcedure.getName());
     if (_fireEvents) {
       Set oldStoredProcedures = myStoredProcedures;
-      Set newStoredProcedures = new TreeSet(new PropertyListSet());
+      Set newStoredProcedures = new HashSet();
       newStoredProcedures.addAll(myStoredProcedures);
       newStoredProcedures.add(_storedProcedure);
       myStoredProcedures = newStoredProcedures;
@@ -513,7 +513,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
   public void removeStoredProcedure(EOStoredProcedure _storedProcedure) {
     myDeletedStoredProcedureNames.add(_storedProcedure.getName());
     Set oldStoredProcedures = myStoredProcedures;
-    Set newStoredProcedures = new TreeSet(new PropertyListSet());
+    Set newStoredProcedures = new HashSet();
     newStoredProcedures.addAll(myStoredProcedures);
     newStoredProcedures.remove(_storedProcedure);
     myStoredProcedures = newStoredProcedures;
@@ -872,7 +872,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
   }
 
   public synchronized Set getPrototypeAttributeNames() {
-    Set prototypeAttributeNames = new PropertyListSet();
+    Set prototypeAttributeNames = new TreeSet();
     Iterator prototypeAttributesIter = getPrototypeAttributes().iterator();
     while (prototypeAttributesIter.hasNext()) {
       EOAttribute attribute = (EOAttribute) prototypeAttributesIter.next();
@@ -948,7 +948,7 @@ public class EOModel extends UserInfoableEOModelObject implements IUserInfoable,
       addPrototypeAttributes(driverPrototypeEntityName, prototypeEntityNames, prototypeAttributeCache);
 
       // Do we need to support "EOPrototypesToHide" entity?
-      myPrototypeAttributeCache = new PropertyListSet();
+      myPrototypeAttributeCache = new HashSet();
       myPrototypeAttributeCache.addAll(prototypeAttributeCache.values());
     }
     return myPrototypeAttributeCache;

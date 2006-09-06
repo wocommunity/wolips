@@ -146,7 +146,8 @@ public class EOAttribute extends AbstractEOArgument implements IEOAttribute, ISo
   }
 
   public int hashCode() {
-    return ((myEntity == null) ? 1 : myEntity.hashCode()) * super.hashCode();
+    int hashCode = ((myEntity == null) ? 1 : myEntity.hashCode()) * super.hashCode();
+    return hashCode;
   }
 
   public boolean equals(Object _obj) {
